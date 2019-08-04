@@ -6,7 +6,7 @@ v5.0 has also been posted to <https://github.com/FIRST-Tech-Challenge/SkyStone> 
 
 Why are we doing this? Git/GitHub is not designed to store large binary blobs. As such the ftc_app repository has grown to over 1GB. Not only does this violate GitHub's usage policies, but puts an undue burden on users of the repository when they download it. For the foreseeable future a season specific version of the repository will be hosted at the url above. Different approaches to prevent the size problem from recurring are being evaluated by the FTC Technology Team. We realize that this creates a problem with teams that have maintained a history of software within the ftc_app workspace. We appreciate your patience and understanding as work to migrate to a permanent solution.
 
-## Welcome!
+# Welcome!
 
 This GitHub repository contains the source code that is used to build an Android app to control a *FIRST* Tech Challenge competition robot.  To use this SDK, download/clone the entire project to your local computer.
 

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Tests;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.lynx.LynxModule;
@@ -22,10 +22,10 @@ public class LoopTimeTest extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        m1 = hardwareMap.get(DcMotorEx.class, "m1");
-        m2 = hardwareMap.get(DcMotorEx.class, "m2");
-        m3 = hardwareMap.get(DcMotorEx.class, "m3");
-        m4 = hardwareMap.get(DcMotorEx.class, "m4");
+        m1 = hardwareMap.get(DcMotorEx.class,"motorFrontRight");
+        m2 = hardwareMap.get(DcMotorEx.class,"motorFrontLeft");
+        m3 = hardwareMap.get(DcMotorEx.class,"motorBackRight");
+        m4 = hardwareMap.get(DcMotorEx.class,"motorBackLeft");
 
         LynxModule module = hardwareMap.getAll(LynxModule.class).iterator().next();
 

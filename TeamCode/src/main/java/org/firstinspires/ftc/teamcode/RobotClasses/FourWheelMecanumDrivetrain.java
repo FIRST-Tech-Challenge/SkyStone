@@ -33,9 +33,12 @@ Getting current position
 Sets motors to RUN_USING_ENCODER
 Gets angle
 Resets angle
+45 degree strafe (2 wheel)
+Strafe in any direction (4 wheel)
  */
 
 public class FourWheelMecanumDrivetrain {
+    double encoderCountsPerRevolution = 537.6;
     //Motors of the drivetrain
     private DcMotorEx motorFrontRight;
     private DcMotorEx motorFrontLeft;
@@ -198,4 +201,89 @@ public class FourWheelMecanumDrivetrain {
         lastLeftVelo = motorFrontLeft.getVelocity();
 
     }
+
+    public void strafe(double power, double hypotenuseLength, double angle) {
+        // resets encoders
+        motorFrontRight.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        motorFrontLeft.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        motorBackRight.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        motorBackLeft.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+
+        double sinDegrees = Math.toDegrees(Math.sin(angle));
+        double cosDegrees = Math.toDegrees(Math.cos(angle));
+
+        double distanceRequiredSin = hypotenuseLength*sinDegrees;
+        double distanceRequiredCos = hypotenuseLength*cosDegrees;
+
+        // Sets the inches to how many encoder counts are required
+        distanceRequiredSin *= encoderCountsPerRevolution;
+        distanceRequiredCos *= encoderCountsPerRevolution;
+
+        // creates a variable which calculates the ratio of power needed for each wheel
+        double powerRequiredCos = power*cosDegrees;
+        double powerRequiredSin = power*sinDegrees;
+
+        // rounds rounds the target position in encoders down (assuming the amount of encoder counts required is a double)
+        motorFrontRight.setTargetPosition((int)distanceRequiredSin);
+        motorFrontLeft.setTargetPosition((int)distanceRequiredCos);
+        motorBackRight.setTargetPosition((int)distanceRequiredCos);
+        motorBackLeft.setTargetPosition((int)distanceRequiredSin);
+
+        motorFrontRight.setPower(powerRequiredSin);
+        motorFrontLeft.setPower(powerRequiredCos);
+        motorBackRight.setPower(powerRequiredCos);
+        motorBackLeft.setPower(powerRequiredSin);
+
+        while(motorBackLeft.isBusy() && motorBackRight.isBusy() && motorFrontLeft.isBusy() && motorFrontRight.isBusy()) {
+            // do nothing
+        }
+
+        // sets power to 0
+        motorFrontRight.setPower(0);
+        motorFrontLeft.setPower(0);
+        motorBackRight.setPower(0);
+        motorBackLeft.setPower(0);
+
+    }
+    public void strafe45DegreesRight(double power, double inches) {
+        motorFrontRight.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        motorBackLeft.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+
+        inches *= encoderCountsPerRevolution;
+
+        motorFrontRight.setTargetPosition((int)inches);
+        motorBackLeft.setTargetPosition((int)inches);
+
+        motorFrontRight.setPower(power);
+        motorBackLeft.setPower(power);
+
+        while(motorFrontRight.isBusy() && motorBackLeft.isBusy() ) {
+
+        }
+
+        motorFrontRight.setPower(0);
+        motorBackLeft.setPower(0);
+    }
+
+    public void strafe45DegreesLeft(double power, double inches) {
+        motorFrontLeft.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        motorBackRight.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+
+        inches *= encoderCountsPerRevolution;
+
+        motorFrontLeft.setTargetPosition((int)inches);
+        motorBackRight.setTargetPosition((int)inches);
+
+        motorFrontLeft.setPower(power);
+        motorBackRight.setPower(power);
+
+        while(motorFrontLeft.isBusy() && motorBackRight.isBusy() ) {
+
+        }
+
+        motorFrontLeft.setPower(0);
+        motorBackRight.setPower(0);
+    }
 }
+
+

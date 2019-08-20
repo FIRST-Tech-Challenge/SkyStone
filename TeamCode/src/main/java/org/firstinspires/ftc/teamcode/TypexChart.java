@@ -39,17 +39,16 @@ public class TypexChart {
         TR.setDirection(DcMotorSimple.Direction.REVERSE);
         BR.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        /* Securing Brake Field */
-        TL.setPower(0);
-        TR.setPower(0);
-        BL.setPower(0);
-        BR.setPower(0);
-
         /* Setting Power Modes */
         TL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         TR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         BL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         BR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        /* Securing Brake Field */
+        TL.setPower(0);
+        TR.setPower(0);
+        BL.setPower(0);
+        BR.setPower(0);
     }
 }

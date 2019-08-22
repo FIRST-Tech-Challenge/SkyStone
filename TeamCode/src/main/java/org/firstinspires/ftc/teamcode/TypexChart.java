@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+//import com.qualcomm.hardware.modernrobotics.ModernRoboticsAnalogOpticalDistanceSensor;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -12,7 +14,7 @@ public class TypexChart {
     public DcMotor TR = null;
     public DcMotor BL = null;
     public DcMotor BR = null;
-    public DistanceSensor Optic1 = null;
+    //public DistanceSensor Optic1 = null;
 
     /* Recharging local members */
     HardwareMap hwMap = null;
@@ -31,7 +33,7 @@ public class TypexChart {
         TR = hwMap.get(DcMotor.class, "TR");
         BL = hwMap.get(DcMotor.class, "BL");
         BR = hwMap.get(DcMotor.class, "BR");
-        Optic1 = hwMap.get(DistanceSensor.class, "Optic1");
+        //Optic1 = hwMap.get(ModernRoboticsI2cRangeSensor.class, "Optic1");
 
         /* Setting Quantum Harmonizer */
         TL.setDirection(DcMotorSimple.Direction.FORWARD);

@@ -1,5 +1,7 @@
 dependencies {
     implementation project(':FtcRobotController')
+    implementation project(':DarbotsFtcLib')
+
     implementation (name: 'RobotCore-release', ext: 'aar')
     implementation (name: 'Hardware-release', ext: 'aar')
     implementation (name: 'FtcCommon-release', ext: 'aar')

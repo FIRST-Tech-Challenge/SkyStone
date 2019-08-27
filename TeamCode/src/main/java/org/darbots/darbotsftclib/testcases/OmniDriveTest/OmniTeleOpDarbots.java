@@ -1,4 +1,4 @@
-package org.darbots.darbotsftclib.testcases;
+package org.darbots.darbotsftclib.testcases.OmniDriveTest;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 

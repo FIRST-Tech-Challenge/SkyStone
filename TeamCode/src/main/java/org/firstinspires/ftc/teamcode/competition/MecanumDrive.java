@@ -149,13 +149,9 @@ public class MecanumDrive {
      * Resets all motor positions back to 0
      */
     public void resetMotors() {
-        robot.leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.leftRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.leftRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.rightRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.rightRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
@@ -163,7 +159,7 @@ public class MecanumDrive {
      * Brakes the motors so robot can't move
      */
     public void brakeMotors() {
-        forwardInch(0);
-        powerSet(0.1);
+        //forwardInch(0);
+        powerSet(0);
     }
 }

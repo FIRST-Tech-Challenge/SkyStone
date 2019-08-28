@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.competition.Autonomous;
+package org.firstinspires.ftc.teamcode.competition.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -33,6 +33,11 @@ public class OdometryTest extends LinearOpMode {
            * Create a Virtual-Player class which keeps track of everything controlling the robot
            * Use the autonomous class to feed the Virtual-Player anything it needs to know
            * Have a checkpoint system to know when to activate certain mechanisms or do different tasks
+           *
+          TODO
+            If the robot is near a wall or any other boundary, it should restrict its movements
+             Ex: Near wall (within 25.5" of it) then turning needs to be disabled (auto only)
+                AND/OR make it orient parallel to the wall (left/right side against wall)
         */
     }
 }

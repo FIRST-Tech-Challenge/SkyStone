@@ -14,14 +14,14 @@ public class Hardware {
 
     // Measurements and such kept as variables for ease of use
     private static final double ODOM_ROTATION_TICKS = 360;
-    private static final double ODOM_WHEEL_RADIUS = 3;
-    private static final double ODOM_WHEEL_DIST = 0; // TODO: Distance between odometry wheels
+    private static final double ODOM_WHEEL_RADIUS = 3; // cm
+    private static final double ODOM_WHEEL_DIST = 39.37; // TODO: Distance between odometry wheels
 
     // Robot physical location
     public double x = 0;
     public double y = 0;
     public double theta = 0;
-    public  double thetaCenter = 0;
+    public  double centerEncVal = 0;
 
     // Hardware mapping
     private HardwareMap hwMap;
@@ -67,11 +67,9 @@ public class Hardware {
         rightRear.setDirection(DcMotor.Direction.REVERSE);
 
         // Odometry encoder setup
-        leftEncoder = hwMap.dcMotor.get("leftEncoder");
-        rightEncoder = hwMap.dcMotor.get("rightEncoder");
-        rightEncoder.setDirection(DcMotor.Direction.REVERSE);
-        centerEncoder = hwMap.dcMotor.get("centerEncoder");
-        centerEncoder.setDirection(DcMotor.Direction.REVERSE);
+        leftEncoder = leftFront;
+        rightEncoder = rightFront;  // These would need to be reversed anyway
+        centerEncoder = rightRear;  //  so they are set to the motors which get reversed
     }
 
     /**
@@ -80,14 +78,19 @@ public class Hardware {
     public void updatePosition() {
         // Get the circumference of the distance traveled by the wheel since the last update
         // Circumference multiplied by degrees the wheel has rotated
+        double wheelCircum = 2.0 * Math.PI * ODOM_WHEEL_RADIUS;
         double deltaLeftDist =  2.0 * Math.PI * ODOM_WHEEL_RADIUS * (getLeftTicks() / ODOM_ROTATION_TICKS);
         double deltaRightDist = 2.0 * Math.PI * ODOM_WHEEL_RADIUS * (getRightTicks() / ODOM_ROTATION_TICKS);
         // TODO: Create/find a method for using the third odometry wheel
-        double deltaCenterDist = 2.0 * Math.PI * ODOM_WHEEL_RADIUS * (getCenterTicks() / ODOM_ROTATION_TICKS);
-        x  += (((deltaLeftDist + deltaRightDist) / 2.0)) * Math.cos(theta);
-        y  += (((deltaLeftDist + deltaRightDist) / 2.0)) * Math.sin(theta);
+        x  += (((deltaLeftDist + deltaRightDist) / 2.0)) * Math.cos(theta) / 2; // Divide by 2 for correction
+        y  += (((deltaLeftDist + deltaRightDist) / 2.0)) * Math.sin(theta) / 2; // Divide by 2 for correction
         theta  += (deltaLeftDist - deltaRightDist) / ODOM_WHEEL_DIST;
-        thetaCenter += deltaCenterDist / ODOM_WHEEL_DIST;
+
+
+        double deltaCenterDist = wheelCircum * (getCenterTicks() / ODOM_ROTATION_TICKS);
+        centerEncVal += getCenterTicks(); // JUST DOING A QUICK CHECK, SHOULD BE deltaCenterDist
+        // THERE ARE 1790 TICKS IN 30cm
+
         resetTicks();
     }
 
@@ -119,5 +122,24 @@ public class Hardware {
 
     public int getCenterTicks() {
         return centerEncoder.getCurrentPosition() - centerEncoderPos;
+    }
+
+    /**
+     * Resets position of the robot to x=0, y=0, theta=0
+     */
+    public void resetPosition(){
+        x = 0;
+        y = 0;
+        theta = 0;
+        centerEncVal = 0;
+    }
+
+    /**
+     * Resets the encoder values to zero
+     */
+    public void resetEncoders(){
+        leftEncoderPos = 0;
+        rightEncoderPos = 0;
+        centerEncoderPos = 0;
     }
 }

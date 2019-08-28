@@ -1,6 +1,5 @@
-package org.firstinspires.ftc.teamcode.competition.Autonomous;
+package org.firstinspires.ftc.teamcode.competition.autonomous;
 
-import org.firstinspires.ftc.teamcode.competition.Hardware;
 import org.firstinspires.ftc.teamcode.helperclasses.WayPoint;
 
 import java.util.ArrayList;
@@ -29,13 +28,15 @@ public class VirtualPlayer {
        TODO: Implement a checkpoint system where the robot knows to pause the pursuit and activate
         certain mechanisms or do other tasks
        TODO: Options for how to get checkpoints:
-         - Robot has a circle and checkPOINTS need to enter them
-         - Robot has a circle and the checkpoint is a circle, they need to intersect
-         - Robot has a single point and checkpoints have a radius the robot needs to enter
+        - Robot has a circle and checkPOINTS need to enter them
+        - Robot has a circle and the checkpoint is a circle, they need to intersect
+        - Robot has a single point and checkpoints have a radius the robot needs to enter
        TODO: Write all recording data to a human-readable file which can be edited in case we messed
         up a certain points or want to adjust the data in anyway
        TODO: Section off the field into certain parts which will have their own Pursuit and certain
         ways it needs to do something
        TODO: (At the end of a path it could do a certain tasks)
+       TODO: Auto-generate alternate routes based on current position if odometry values aren't
+        getting closer to the value it needs to
     */
 }

@@ -19,6 +19,7 @@ public class Teleop extends OpMode {
     private MecanumDrive driveTrain;
 
     private boolean brake;
+    private boolean resettingPos = false;
 
     /**
      * Instantiates objects
@@ -46,6 +47,8 @@ public class Teleop extends OpMode {
         robot.imu = hardwareMap.get(BNO055IMU.class, "imu");
         robot.imu.initialize(parameters);
         robot.imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
+
+        robot.resetEncoders();
     }
 
     /**
@@ -66,7 +69,7 @@ public class Teleop extends OpMode {
         telemetry.addData("xPos", robot.x);
         telemetry.addData("yPos", robot.y);
         telemetry.addData("theta", robot.theta);
-        telemetry.addData("theta with center odom", robot.thetaCenter);
+        telemetry.addData("center odom", robot.centerEncVal);
         telemetry.update();
 
         if(gamepad1.left_stick_x == 0 && gamepad1.left_stick_y == 0 && gamepad1.right_stick_x == 0) {
@@ -81,5 +84,27 @@ public class Teleop extends OpMode {
             }
             driveTrain.drive(gamepad1.left_stick_y, gamepad1.left_stick_x, -gamepad1.right_stick_x);
         }
+
+        if(gamepad1.x && !resettingPos){
+            robot.resetPosition();
+            resettingPos = true;
+        } else if (!gamepad1.x){
+            resettingPos = false;
+        }
+
+        /*
+          TODO:
+            Autosave position data every run-through of the main loop
+            Make a button which will load position data (for robot restarts mid match)
+         */
+    }
+
+    /**
+     * Logs recording data from the robot to an external file
+     * - X, Y, Theta
+     * - Motor/servo values
+     */
+    private void logRecording(){
+
     }
 }

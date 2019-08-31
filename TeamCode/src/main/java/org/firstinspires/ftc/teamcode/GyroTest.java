@@ -18,7 +18,6 @@ public class GyroTest extends LinearOpMode {
     double currentHeading = 0;
     Chassis robot = new Chassis();
     Orientation angles;
-
     @Override
     public void runOpMode() {
         robot.init(hardwareMap);
@@ -27,7 +26,10 @@ public class GyroTest extends LinearOpMode {
         angles = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
         waitForStart();
-        gyroTurn(84);
+        gyroTurn(90);
+        gyroTurn(90);
+        gyroTurn(90);
+        gyroTurn(90);
 
         sleep(3000);
         angles = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
@@ -63,11 +65,19 @@ public class GyroTest extends LinearOpMode {
             }
         }
         currentHeading += targetAngle;
+        if(currentHeading>=360){
+            currentHeading-=360;
+        }
+        if(currentHeading<0){
+            currentHeading+=360;
+        }
         brake();
 
 
     }
+    public void encoderDrive(double speed, double distance){
 
+    }
     public void brake() {
         robot.leftRear.setPower(0);
         robot.rightRear.setPower(0);

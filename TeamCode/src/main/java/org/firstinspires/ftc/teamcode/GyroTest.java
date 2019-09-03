@@ -22,14 +22,11 @@ public class GyroTest extends LinearOpMode {
     public void runOpMode() {
         robot.init(hardwareMap);
         composeTelemetry();
-        telemetry.update();
         angles = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        telemetry.update();
 
         waitForStart();
-        gyroTurn(90);
-        gyroTurn(90);
-        gyroTurn(90);
-        gyroTurn(90);
+        gyroTurn(-90);
 
         sleep(3000);
         angles = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
@@ -42,7 +39,7 @@ public class GyroTest extends LinearOpMode {
     public void gyroTurn(double targetAngle) {
         double currentSpeed = 0.2;
         angles = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        double headingAngle = angles.firstAngle + 180;
+        double headingAngle = angles.firstAngle;
         if (targetAngle > 0) {
             while (headingAngle < targetAngle && opModeIsActive()) {
                 robot.leftFront.setPower(currentSpeed);
@@ -50,7 +47,7 @@ public class GyroTest extends LinearOpMode {
                 robot.leftRear.setPower(currentSpeed);
                 robot.rightRear.setPower(-currentSpeed);
                 angles = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-                headingAngle = angles.firstAngle + 180;
+                headingAngle = angles.firstAngle;
                 telemetry.update();
             }
         } else if (targetAngle < 0) {
@@ -60,7 +57,7 @@ public class GyroTest extends LinearOpMode {
                 robot.leftRear.setPower(-currentSpeed);
                 robot.rightRear.setPower(currentSpeed);
                 angles = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-                headingAngle = angles.firstAngle + 180;
+                headingAngle = angles.firstAngle;
                 telemetry.update();
             }
         }

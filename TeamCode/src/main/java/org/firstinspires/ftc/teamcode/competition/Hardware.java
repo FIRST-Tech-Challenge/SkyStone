@@ -13,15 +13,15 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class Hardware {
 
     // Measurements and such kept as variables for ease of use
-    private static final double ODOM_ROTATION_TICKS = 360;
-    private static final double ODOM_WHEEL_RADIUS = 3; // cm
-    private static final double ODOM_WHEEL_DIST = 39.37; // TODO: Distance between odometry wheels
+    private static final double ODOM_ROTATION_TICKS = 1440; // Pules Per Minute of the encoders
+    private static final double ODOM_WHEEL_RADIUS = 3.6;
+    private static final double ODOM_WHEEL_DIST = 39.37;
+    private static final double DIST_FROM_CENTER_OF_TURN = 0;
 
     // Robot physical location
     public double x = 0;
     public double y = 0;
     public double theta = 0;
-    public  double centerEncVal = 0;
 
     // Hardware mapping
     private HardwareMap hwMap;
@@ -76,20 +76,27 @@ public class Hardware {
      * Update robot position using odometry
      */
     public void updatePosition() {
+        double wheelCircum = 2.0 * Math.PI * ODOM_WHEEL_RADIUS;
+
         // Get the circumference of the distance traveled by the wheel since the last update
         // Circumference multiplied by degrees the wheel has rotated
-        double wheelCircum = 2.0 * Math.PI * ODOM_WHEEL_RADIUS;
-        double deltaLeftDist =  2.0 * Math.PI * ODOM_WHEEL_RADIUS * (getLeftTicks() / ODOM_ROTATION_TICKS);
-        double deltaRightDist = 2.0 * Math.PI * ODOM_WHEEL_RADIUS * (getRightTicks() / ODOM_ROTATION_TICKS);
-        // TODO: Create/find a method for using the third odometry wheel
-        x  += (((deltaLeftDist + deltaRightDist) / 2.0)) * Math.cos(theta) / 2; // Divide by 2 for correction
-        y  += (((deltaLeftDist + deltaRightDist) / 2.0)) * Math.sin(theta) / 2; // Divide by 2 for correction
-        theta  += (deltaLeftDist - deltaRightDist) / ODOM_WHEEL_DIST;
-
-
+        double deltaLeftDist =  wheelCircum * (getLeftTicks() / ODOM_ROTATION_TICKS);
+        double deltaRightDist = wheelCircum * (getRightTicks() / ODOM_ROTATION_TICKS);
         double deltaCenterDist = wheelCircum * (getCenterTicks() / ODOM_ROTATION_TICKS);
-        centerEncVal += getCenterTicks(); // JUST DOING A QUICK CHECK, SHOULD BE deltaCenterDist
-        // THERE ARE 1790 TICKS IN 30cm
+
+        // Average of the change in the wheel multiplied by the cos/sin of the theta to account for rotation
+        double deltaTheta = (deltaLeftDist - deltaRightDist) / ODOM_WHEEL_DIST;
+        theta += deltaTheta;
+        // TODO: Make theta have a clipped range (0 to 2pi) use division so that it finds in between
+
+        /* Ensures that when spinning the X and Y values don't change
+        Adding the movement measured by front encoders and the movement measured by the back
+        encoder then subtracting the measurement from the turning on the back encoder
+         */
+        x  += ((deltaLeftDist+deltaRightDist) / 2.0) * Math.sin(theta) +
+                (deltaCenterDist-deltaTheta)* DIST_FROM_CENTER_OF_TURN * Math.cos(theta);
+        y  += ((deltaLeftDist+deltaRightDist) / 2.0) * Math.cos(theta) +
+                (deltaCenterDist-deltaTheta)* DIST_FROM_CENTER_OF_TURN * Math.sin(theta);
 
         resetTicks();
     }
@@ -131,7 +138,6 @@ public class Hardware {
         x = 0;
         y = 0;
         theta = 0;
-        centerEncVal = 0;
     }
 
     /**

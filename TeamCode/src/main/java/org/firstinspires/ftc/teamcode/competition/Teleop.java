@@ -69,7 +69,6 @@ public class Teleop extends OpMode {
         telemetry.addData("xPos", robot.x);
         telemetry.addData("yPos", robot.y);
         telemetry.addData("theta", robot.theta);
-        telemetry.addData("center odom", robot.centerEncVal);
         telemetry.update();
 
         if(gamepad1.left_stick_x == 0 && gamepad1.left_stick_y == 0 && gamepad1.right_stick_x == 0) {

@@ -33,6 +33,7 @@ public class RobotFixCountSpeedCtlTask extends RobotFixedSpeedTask {
 
     public RobotFixCountSpeedCtlTask(int Count, double Speed, RobotMotorTaskCallBack TaskCallBack, boolean CountCtl) {
         super(0,Speed,TaskCallBack);
+        this.setSpeed(Speed);
         this.m_Count = Count;
         this.m_CountCtl = CountCtl;
     }
@@ -63,16 +64,15 @@ public class RobotFixCountSpeedCtlTask extends RobotFixedSpeedTask {
 
     protected void fixCounts(){
         double rev = ((double) super.getStartCount() + this.getCounts() - super.getMotorController().getMotor().getCurrentCount()) / super.getMotorController().getMotor().getMotorType().getCountsPerRev();
-        double speed = this.getSpeed() * super.getMotorController().getMotor().getMotorType().getRevPerSec();
+        double speed = Math.abs(this.getSpeed() * super.getMotorController().getMotor().getMotorType().getRevPerSec());
         double FineTime = Math.abs(rev / speed);
         if(super.isTimeControlEnabled()) {
             FineTime *= Math.abs(super.getTimeOutFactor());
         }else{
             FineTime = 0;
         }
-        double FineTimeAfter = FineTime == 0 ? 0 : super.getSecondsSinceStart() + FineTime;
+        double FineTimeAfter = (FineTime == 0 ? 0 : super.getSecondsSinceStart() + FineTime);
         this.setTimeInSeconds(FineTimeAfter);
-        this.setSpeed(super.getSpeed());
     }
 
     @Override
@@ -84,10 +84,18 @@ public class RobotFixCountSpeedCtlTask extends RobotFixedSpeedTask {
     }
 
     protected double fixSpeed(double speed){
-        if(super.getStartCount() + this.m_Count < 0){
-            return -Math.abs(speed);
+        if(this.isBusy()) {
+            if (super.getStartCount() + this.m_Count < 0) {
+                return -Math.abs(speed);
+            } else {
+                return Math.abs(this.getSpeed());
+            }
         }else{
-            return Math.abs(this.getSpeed());
+            if(this.m_Count < 0){
+                return -Math.abs(speed);
+            }else{
+                return Math.abs(speed);
+            }
         }
     }
 

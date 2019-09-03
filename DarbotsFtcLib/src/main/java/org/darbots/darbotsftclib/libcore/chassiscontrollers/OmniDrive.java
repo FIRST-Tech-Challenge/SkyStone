@@ -6,11 +6,11 @@ import org.darbots.darbotsftclib.libcore.calculations.dimentionalcalculation.Rob
 import org.darbots.darbotsftclib.libcore.sensors.motion_related.RobotMotion;
 import org.darbots.darbotsftclib.libcore.tasks.motor_tasks.RobotFixCountSpeedCtlTask;
 import org.darbots.darbotsftclib.libcore.tasks.motor_tasks.RobotFixedSpeedTask;
-import org.darbots.darbotsftclib.libcore.templates.motion_related.RobotMotionSystem;
-import org.darbots.darbotsftclib.libcore.templates.motion_related.RobotMotionSystemFixedTurnTask;
-import org.darbots.darbotsftclib.libcore.templates.motion_related.RobotMotionSystemFixedXDistanceTask;
-import org.darbots.darbotsftclib.libcore.templates.motion_related.RobotMotionSystemFixedZDistanceTask;
-import org.darbots.darbotsftclib.libcore.templates.motion_related.RobotMotionSystemTeleOpControlTask;
+import org.darbots.darbotsftclib.libcore.templates.chassis_related.RobotMotionSystem;
+import org.darbots.darbotsftclib.libcore.templates.chassis_related.RobotMotionSystemFixedTurnTask;
+import org.darbots.darbotsftclib.libcore.templates.chassis_related.RobotMotionSystemFixedXDistanceTask;
+import org.darbots.darbotsftclib.libcore.templates.chassis_related.RobotMotionSystemFixedZDistanceTask;
+import org.darbots.darbotsftclib.libcore.templates.chassis_related.RobotMotionSystemTeleOpControlTask;
 
 public class OmniDrive extends RobotMotionSystem {
     public static class FixedXDistanceTask extends RobotMotionSystemFixedXDistanceTask{

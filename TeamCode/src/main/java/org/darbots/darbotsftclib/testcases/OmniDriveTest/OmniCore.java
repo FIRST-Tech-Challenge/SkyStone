@@ -11,7 +11,7 @@ import org.darbots.darbotsftclib.libcore.sensors.motion_related.RobotWheel;
 import org.darbots.darbotsftclib.libcore.sensors.motors.RobotMotorController;
 import org.darbots.darbotsftclib.libcore.sensors.motors.RobotMotorWithEncoder;
 import org.darbots.darbotsftclib.libcore.templates.RobotCore;
-import org.darbots.darbotsftclib.libcore.templates.motion_related.RobotMotionSystem;
+import org.darbots.darbotsftclib.libcore.templates.chassis_related.RobotMotionSystem;
 import org.darbots.darbotsftclib.libcore.templates.motor_related.MotorType;
 
 public class OmniCore extends RobotCore {

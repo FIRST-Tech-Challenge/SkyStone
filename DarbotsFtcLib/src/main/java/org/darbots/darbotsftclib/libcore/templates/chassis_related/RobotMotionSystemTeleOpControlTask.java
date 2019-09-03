@@ -23,7 +23,7 @@ SOFTWARE.
 
 */
 
-package org.darbots.darbotsftclib.libcore.templates.motion_related;
+package org.darbots.darbotsftclib.libcore.templates.chassis_related;
 
 public abstract class RobotMotionSystemTeleOpControlTask extends RobotMotionSystemTask {
     private double m_DriveXSpeed;

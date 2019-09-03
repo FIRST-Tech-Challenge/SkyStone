@@ -20,8 +20,8 @@ public class RobotLogger {
     public RobotLogger(String FileName){
         this.m_FileName = FileName;
         this.m_DebugOn = false;
-        setupCurrentLog();
-        this.readLoggerFile();
+        this.__setupCurrentLog();
+        this.__readLoggerFile();
     }
     public boolean isDebugOn(){
         return this.m_DebugOn;
@@ -29,7 +29,7 @@ public class RobotLogger {
     public void setDebugOn(boolean onDebug){
         this.m_DebugOn = onDebug;
     }
-    protected void setupCurrentLog(){
+    protected void __setupCurrentLog(){
         m_CurrentLog = new JSONObject();
         m_Logs = new JSONArray();
         Calendar currentTime = Calendar.getInstance();
@@ -38,7 +38,7 @@ public class RobotLogger {
         m_CurrentLog.put("runningOpMode",GlobalRegister.runningOpMode.getClass().getName());
         m_CurrentLog.put("logs",m_Logs);
     }
-    protected void readLoggerFile(){
+    protected void __readLoggerFile(){
         File logFile = FTCFileIO.getSettingFile(m_FileName);
         String logFileContent = FTCFileIO.readFile(logFile);
         if(logFileContent == null || logFileContent.isEmpty()){
@@ -58,9 +58,9 @@ public class RobotLogger {
                 m_Array = new JSONArray();
             }
         }
-        checkCurrentLog();
+        __checkCurrentLog();
     }
-    protected void checkCurrentLog(){
+    protected void __checkCurrentLog(){
         if(!m_Array.contains(m_CurrentLog)){
             m_Array.add(m_CurrentLog);
         }
@@ -71,7 +71,7 @@ public class RobotLogger {
     public void setFileName(String fileName){
         if(!m_FileName.equals(fileName)){
             this.m_FileName = fileName;
-            readLoggerFile();
+            __readLoggerFile();
         }
     }
     public List getLogs(){
@@ -92,7 +92,7 @@ public class RobotLogger {
     }
     public void clearPreviousRunLogs(){
         m_Array.clear();
-        checkCurrentLog();
+        __checkCurrentLog();
     }
     public void clearPreviousLogs(){
         m_Logs.clear();

@@ -1,4 +1,4 @@
-package org.darbots.darbotsftclib.libcore.templates.motion_related;
+package org.darbots.darbotsftclib.libcore.templates.chassis_related;
 
 public abstract class RobotMotionSystemFixedTurnTask extends RobotMotionSystemTask{
     private double m_TurnDeg;

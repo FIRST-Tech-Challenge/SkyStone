@@ -23,7 +23,7 @@ SOFTWARE.
 
 */
 
-package org.darbots.darbotsftclib.libcore.templates.motion_related;
+package org.darbots.darbotsftclib.libcore.templates.chassis_related;
 
 import android.support.annotation.NonNull;
 
@@ -38,13 +38,13 @@ public abstract class RobotMotionSystem implements RobotNonBlockingDevice {
     private double m_LinearMotionDistanceFactor;
     private double m_RotationalMotionDistanceFactor;
     public RobotMotionSystem(Robot2DPositionTracker PositionTracker){
-        this.m_TaskLists = new ArrayList<>();
+        this.m_TaskLists = new ArrayList();
         this.m_PosTracker = PositionTracker;
         this.m_LinearMotionDistanceFactor = 1;
         this.m_RotationalMotionDistanceFactor = 1;
     }
     public RobotMotionSystem(RobotMotionSystem MotionSystem){
-        this.m_TaskLists = new ArrayList<>();
+        this.m_TaskLists = new ArrayList();
         this.m_PosTracker = MotionSystem.m_PosTracker;
         this.m_LinearMotionDistanceFactor = MotionSystem.m_LinearMotionDistanceFactor;
         this.m_RotationalMotionDistanceFactor = MotionSystem.m_RotationalMotionDistanceFactor;
@@ -106,8 +106,8 @@ public abstract class RobotMotionSystem implements RobotNonBlockingDevice {
     }
 
     public void deleteAllTasks(){
-        this.__stopMotion();
         if(this.m_TaskLists.isEmpty()){
+            this.__stopMotion();
             return;
         }
         RobotMotionSystemTask currentTask = this.m_TaskLists.get(0);

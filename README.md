@@ -4,6 +4,8 @@ Welcome!
 
 This module, TeamCode, is the place where our team has wrote the code for our robot controller app for the FTC Rover Ruckus season.
 
+Programmers: Read the issue in the Issues tab. This is where you can assign different team members to do different things.
+
 Software Team: Ian Fernandes, Melissa Fusco, and Bella Gonzalez
 
 

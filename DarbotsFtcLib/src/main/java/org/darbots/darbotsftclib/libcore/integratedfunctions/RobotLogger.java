@@ -39,7 +39,7 @@ public class RobotLogger {
         m_CurrentLog.put("logs",m_Logs);
     }
     protected void __readLoggerFile(){
-        File logFile = FTCFileIO.getSettingFile(m_FileName);
+        File logFile = FTCFileIO.getLogFolderFile(this.m_FileName);
         String logFileContent = FTCFileIO.readFile(logFile);
         if(logFileContent == null || logFileContent.isEmpty()){
             m_Array = new JSONArray();
@@ -101,8 +101,15 @@ public class RobotLogger {
         if(!isDebugOn()){
             return;
         }
-        File logFile = FTCFileIO.getSettingFile(m_FileName);
+        File logFile = FTCFileIO.getLogFolderFile(m_FileName);
         String logFileContent = this.m_Array.toJSONString();
         FTCFileIO.writeFile(logFile,logFileContent);
+    }
+    public static void deleteAllLogs(){
+        File[] logFiles = FTCFileIO.getLogFolder().listFiles();
+        for(int i=0;i<logFiles.length;i++){
+            if(logFiles[i].isFile())
+                logFiles[i].delete();
+        }
     }
 }

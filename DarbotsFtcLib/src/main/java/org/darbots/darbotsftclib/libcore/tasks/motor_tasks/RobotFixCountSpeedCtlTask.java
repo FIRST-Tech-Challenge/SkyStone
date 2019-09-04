@@ -33,8 +33,8 @@ public class RobotFixCountSpeedCtlTask extends RobotFixedSpeedTask {
 
     public RobotFixCountSpeedCtlTask(int Count, double Speed, RobotMotorTaskCallBack TaskCallBack, boolean CountCtl) {
         super(0,Speed,TaskCallBack);
-        this.setSpeed(Speed);
         this.m_Count = Count;
+        this.setSpeed(Speed);
         this.m_CountCtl = CountCtl;
     }
     public RobotFixCountSpeedCtlTask(RobotFixCountSpeedCtlTask FixCountSpeedCtlTask){
@@ -85,7 +85,7 @@ public class RobotFixCountSpeedCtlTask extends RobotFixedSpeedTask {
 
     protected double fixSpeed(double speed){
         if(this.isBusy()) {
-            if (super.getStartCount() + this.m_Count < 0) {
+            if (this.m_Count + super.getStartCount() - super.getMotorController().getMotor().getCurrentCount() < 0) {
                 return -Math.abs(speed);
             } else {
                 return Math.abs(this.getSpeed());
@@ -102,6 +102,7 @@ public class RobotFixCountSpeedCtlTask extends RobotFixedSpeedTask {
     @Override
     protected void __startTask() {
         this.fixCounts();
+        this.setSpeed(fixSpeed(this.getSpeed()));
         super.__startTask();
         if(this.m_Count == 0){
             this.endTask(true);

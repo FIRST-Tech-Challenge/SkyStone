@@ -27,7 +27,7 @@ public class OmniCore extends RobotCore {
 
     public OmniCore(HardwareMap Hardwares) {
         super("OmniDriveTest.log");
-        this.getLogger().setDebugOn(true);
+        this.getLogger().setDebugOn(false);
         DcMotor m_LeftTopDC = Hardwares.dcMotor.get("LT");
         DcMotor m_LeftBottomDC = Hardwares.dcMotor.get("LB");
         DcMotor m_RightTopDC = Hardwares.dcMotor.get("RT");

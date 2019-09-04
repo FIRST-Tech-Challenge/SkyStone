@@ -31,6 +31,7 @@ public class OmniAutoDarbots extends DarbotsBasicOpMode<OmniCore> {
     public void RunThisOpMode() {
         telemetry.addData("ChassisStatus",this.getChassisStatus());
         while(this.opModeIsActive()){
+            this.m_RobotCore.updateStatus();
             if(this.m_RobotCore.getChassis().isBusy()){
                 this.m_ChassisStatus = "Busy";
                 continue;

@@ -1,11 +1,11 @@
-## NOTICE
+# FTC-Skystone-2019-2020-Programming
 
-This repository contains the public FTC SDK for the SKYSTONE (2019-2020) competition season.  
+Welcome!
 
-Formerly this software project was hosted [here](https://github.com/ftctechnh/ftc_app).  Teams who are competing in the SKYSTONE Challenge should use this [new SKYSTONE repository](https://github.com/FIRST-Tech-Challenge/SKYSTONE) instead of the older (and no longer updated) ftc_app repository.
+This module, TeamCode, is the place where our team has wrote the code for our robot controller app for the FTC Rover Ruckus season.
 
-## Welcome!
-This GitHub repository contains the source code that is used to build an Android app to control a *FIRST* Tech Challenge competition robot.  To use this SDK, download/clone the entire project to your local computer.
+Software Team: Ian Fernandes, Melissa Fusco, and Bella Gonzalez
+
 
 ## Getting Started
 If you are new to robotics or new to the *FIRST* Tech Challenge, then you should consider reviewing the [FTC Blocks Tutorial](https://github.com/FIRST-Tech-Challenge/SKYSTONE/wiki/Blocks-Tutorial) to get familiar with how to use the control system:  

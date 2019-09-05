@@ -55,7 +55,7 @@ public class TargetPosSpeedCtlTask extends RobotServoUsingMotorTask {
 
     @Override
     protected void __startTask() {
-        if((getTargetPos() > this.getServoUsingMotor().getMaxPos() || getTargetPos() < this.getServoUsingMotor().getMinPos()) && this.getServoUsingMotor().isBorderContorl()){
+        if((getTargetPos() > this.getServoUsingMotor().getMaxPos() || getTargetPos() < this.getServoUsingMotor().getMinPos()) && this.getServoUsingMotor().isBorderControl()){
             this.endTask(false);
         }
         double deltaPos = this.getTargetPos() - super.getTaskStartPos();
@@ -73,7 +73,7 @@ public class TargetPosSpeedCtlTask extends RobotServoUsingMotorTask {
     public void updateStatus(){
         super.updateStatus();
         if(this.isBusy()){
-            if((this.m_TargetPos >= this.getServoUsingMotor().getMaxPos() || this.m_TargetPos <= this.getServoUsingMotor().getMinPos()) && this.getServoUsingMotor().isBorderContorl()){
+            if((this.m_TargetPos >= this.getServoUsingMotor().getMaxPos() || this.m_TargetPos <= this.getServoUsingMotor().getMinPos()) && this.getServoUsingMotor().isBorderControl()){
                 this.endTask(false);
             }
         }

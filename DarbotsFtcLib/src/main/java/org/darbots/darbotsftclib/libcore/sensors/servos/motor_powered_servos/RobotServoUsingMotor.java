@@ -38,7 +38,7 @@ public class RobotServoUsingMotor implements RobotNonBlockingDevice {
         this.m_DefaultPreCheck = preCheck;
     }
 
-    public boolean isBorderContorl(){
+    public boolean isBorderControl(){
         return this.m_BorderControl;
     }
 
@@ -167,7 +167,7 @@ public class RobotServoUsingMotor implements RobotNonBlockingDevice {
         result += "CurrentPct: " + this.getCurrentPercent() + ", ";
         result += "MinPos: " + this.getMinPos() + ", ";
         result += "MaxPos: " + this.getMaxPos() + ", ";
-        result += "BorderControl: " + (this.isBorderContorl() ? "Enabled" : "Disabled");
+        result += "BorderControl: " + (this.isBorderControl() ? "Enabled" : "Disabled");
         return result;
     }
 }

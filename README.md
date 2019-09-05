@@ -1,8 +1,27 @@
-## NOTICE
+## Darbots
 
-This repository contains the public FTC SDK for the SKYSTONE (2019-2020) competition season.  
+![4100Logo](https://github.com/DarlingtonProgramming/DarBots-Shared-Doc/blob/master/static/teamImage/4100Logo.png)
+![5100Logo](https://github.com/DarlingtonProgramming/DarBots-Shared-Doc/blob/master/static/teamImage/5100Logo.png)
 
-Formerly this software project was hosted [here](https://github.com/ftctechnh/ftc_app).  Teams who are competing in the SKYSTONE Challenge should use this [new SKYSTONE repository](https://github.com/FIRST-Tech-Challenge/SKYSTONE) instead of the older (and no longer updated) ftc_app repository.
+Darbots aims to build safer and more efficient robots by using software fallback mechanisms and hardware advancements.   
+This Github repository is the robot controller code developed by Darbots, and is forked from [First-Tech-Challenge/SkyStone](https://github.com/FIRST-Tech-Challenge/SkyStone).   
+To use this code, download / clone the entire project to your local computer.   
+
+## Team Status
+
+|Team Number|Current Status|Is playing|
+|-|-|-|
+|5100|Pre-Season|No|
+|4100|Pre-Season|No|
+
+## Library Status
+
+Current version: 4.0.2 Dev   
+This library is currently the 4th iteration, and the documentations can be found in [DarBots-Shared-Doc](https://github.com/DarlingtonProgramming/DarBots-Shared-Doc) Repository of this organization    
+
+## Questions
+
+Please submit an issue.   
 
 ## Welcome!
 This GitHub repository contains the source code that is used to build an Android app to control a *FIRST* Tech Challenge competition robot.  To use this SDK, download/clone the entire project to your local computer.

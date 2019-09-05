@@ -15,9 +15,9 @@ import java.util.Locale;
 @Autonomous(name = "GyroTest", group = "8872")
 //@Disabled
 public class GyroTest extends LinearOpMode {
-    double currentHeading = 0;
     Chassis robot = new Chassis();
     Orientation angles;
+    double adjust=4;
     @Override
     public void runOpMode() {
         robot.init(hardwareMap);
@@ -26,7 +26,31 @@ public class GyroTest extends LinearOpMode {
         telemetry.update();
 
         waitForStart();
-        gyroTurn(-90);
+        gyroTurn(20);
+        sleep(1000);
+        normalizeAngle();
+        sleep(3000);
+        gyroTurn(0);
+        sleep(1000);
+        normalizeAngle();
+        sleep(3000);
+        gyroTurn(90);
+        sleep(1000);
+        normalizeAngle();
+        sleep(3000);
+        gyroTurn(45);
+        sleep(1000);
+        normalizeAngle();
+        sleep(3000);
+        gyroTurn(180);
+        sleep(1000);
+        normalizeAngle();
+        sleep(3000);
+        gyroTurn(0);
+
+
+        telemetry.addData("DONE", angles);
+
 
         sleep(3000);
         angles = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
@@ -37,44 +61,56 @@ public class GyroTest extends LinearOpMode {
     }
 
     public void gyroTurn(double targetAngle) {
-        double currentSpeed = 0.2;
-        angles = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        double headingAngle = angles.firstAngle;
-        if (targetAngle > 0) {
-            while (headingAngle < targetAngle && opModeIsActive()) {
+        double error = 2;
+        double currentSpeed = 1;
+        double headingAngle = normalizeAngle();
+        double originalTargetAngle=targetAngle;
+        adjust+=Math.abs(targetAngle-headingAngle)*.012;
+        if (shortestDirection(targetAngle)) {
+            targetAngle-=adjust;
+            if(targetAngle<-180) targetAngle+=360;
+            while (headingAngle > targetAngle + error / 2 || headingAngle < targetAngle - error / 2 && opModeIsActive()) {
+                if(Math.abs(targetAngle-headingAngle)<40) currentSpeed=.2;
+                else currentSpeed=1;
                 robot.leftFront.setPower(currentSpeed);
                 robot.rightFront.setPower(-currentSpeed);
                 robot.leftRear.setPower(currentSpeed);
                 robot.rightRear.setPower(-currentSpeed);
-                angles = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-                headingAngle = angles.firstAngle;
-                telemetry.update();
+                headingAngle = normalizeAngle();
+
             }
-        } else if (targetAngle < 0) {
-            while (headingAngle > targetAngle && opModeIsActive()) {
+        } else {
+            targetAngle+=adjust;
+            if(targetAngle>180) targetAngle-=360;
+            while (headingAngle > targetAngle + error / 2 || headingAngle < targetAngle - error / 2 && opModeIsActive()) {
+                if(Math.abs(targetAngle-headingAngle)<40) currentSpeed=.2;
+                else currentSpeed=1;
                 robot.leftFront.setPower(-currentSpeed);
                 robot.rightFront.setPower(currentSpeed);
                 robot.leftRear.setPower(-currentSpeed);
                 robot.rightRear.setPower(currentSpeed);
-                angles = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-                headingAngle = angles.firstAngle;
-                telemetry.update();
+
+                headingAngle = normalizeAngle();
+
             }
         }
-        currentHeading += targetAngle;
-        if(currentHeading>=360){
-            currentHeading-=360;
-        }
-        if(currentHeading<0){
-            currentHeading+=360;
-        }
         brake();
+        sleep(200);
+        headingAngle = normalizeAngle();
+    }
 
+    public boolean shortestDirection(double angle) {
+        if (normalizeAngle() < angle) return true;
+        else return false;
 
     }
-    public void encoderDrive(double speed, double distance){
-
+    public double normalizeAngle() {
+        angles = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        double headingAngle = angles.firstAngle;
+        telemetry.update();
+        return headingAngle;
     }
+
     public void brake() {
         robot.leftRear.setPower(0);
         robot.rightRear.setPower(0);
@@ -90,6 +126,7 @@ public class GyroTest extends LinearOpMode {
                         return formatAngle(angles.angleUnit, angles.firstAngle);
                     }
                 });
+
 
     }
 

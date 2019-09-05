@@ -144,6 +144,9 @@ public class RobotServoUsingMotor implements RobotNonBlockingDevice {
                 this.m_TaskList.get(0).updateStatus();
             }
         }
+        if(this.m_MotorController != null) {
+            this.m_MotorController.updateStatus();
+        }
     }
 
     @Override

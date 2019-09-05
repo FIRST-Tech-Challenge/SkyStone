@@ -3,7 +3,6 @@ package org.darbots.darbotsftclib.libcore.tasks.servo_tasks.motor_powered_servo_
 import android.support.annotation.NonNull;
 
 import org.darbots.darbotsftclib.libcore.tasks.motor_tasks.RobotFixCountTask;
-import org.darbots.darbotsftclib.libcore.templates.motor_related.RobotMotorTaskCallBack;
 import org.darbots.darbotsftclib.libcore.templates.servo_related.motor_powered_servos.RobotServoUsingMotorCallBack;
 import org.darbots.darbotsftclib.libcore.templates.servo_related.motor_powered_servos.RobotServoUsingMotorTask;
 

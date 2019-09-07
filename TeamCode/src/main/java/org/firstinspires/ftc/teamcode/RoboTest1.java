@@ -50,4 +50,13 @@ public class RoboTest1 extends OpMode {
         
 
     }
+
+    /**
+     * a tangens hyperbolic function for a smooth gaming experience 
+     * @param p
+     * @return 0.390911 * tanh (6.66 * (p - 0.5))) + 0.5 )
+     */
+    private int smoothThePower(int p){
+        return (0.390911*(java.lang.Math.tanh(6.66*(p-0.5)))+0.5)
+    }
 }

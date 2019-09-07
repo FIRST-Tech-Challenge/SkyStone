@@ -16,38 +16,31 @@ public class RoboTest1 extends OpMode {
 
     @Override
     public void init() {
+
         first = hardwareMap.dcMotor.get("first");
         second = hardwareMap.dcMotor.get("second");
         third = hardwareMap.dcMotor.get("third");
         fourth = hardwareMap.dcMotor.get("fourth");
 
-
+        for (int i = 0; i < 100; i++){
+            System.out.println(i/100+" -> "+smoothThePower(i/100));
+        }
 
     }
 
     @Override
     public void loop() {
 
-        /*
-        if(gamepad1.a) {
-            first.setPower(0.5);
-            second.setPower(-0.5);
-
-        }else if(gamepad1.b){
-            first.setPower(-0.5);
-            second.setPower(0.5);
-        }
-        else {
-            first.setPower(0);
-            second.setPower(0);
-        }
-         */
-
         first.setPower(gamepad1.left_stick_x);
         second.setPower(-gamepad1.left_stick_x);
         third.setPower(gamepad1.left_stick_y);
         fourth.setPower(-gamepad1.left_stick_y);
-        
+
+        first.setPower(gamepad1.right_stick_x);
+        second.setPower(gamepad1.right_stick_x);
+        third.setPower(gamepad1.left_stick_y);
+        fourth.setPower(gamepad1.left_stick_y);
+
 
     }
 

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -14,7 +15,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 import java.util.Locale;
 
-@Autonomous(name = "GyroTest", group = "8872")
+@Autonomous(name = "GyroTest1", group = "8872")
 //@Disabled
 public class GyroTest extends LinearOpMode {
     Chassis robot = new Chassis();
@@ -22,10 +23,12 @@ public class GyroTest extends LinearOpMode {
     double adjust = 4;
     private ElapsedTime runtime = new ElapsedTime();
 
-    static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder
-    static final double     DRIVE_GEAR_REDUCTION    = 2.0 ;     // This is < 1.0 if geared UP
+    static final double     COUNTS_PER_MOTOR_REV    = 537.6;    // Neverest 20
+    static final double     DRIVE_GEAR_REDUCTION    = 1 ;     // This is < 1.0 if geared UP
     static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415);
+
+    static final double coeff = 0.3;
     @Override
 
     public void runOpMode() {
@@ -35,7 +38,9 @@ public class GyroTest extends LinearOpMode {
         telemetry.update();
 
         waitForStart();
-        encoderDrive(1,  48,  48, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
+        gyroDrive(0.2, 30, 20);
+        sleep(1000);
+        gyroTurn(90);
         sleep(1000);
 
 
@@ -144,7 +149,7 @@ public class GyroTest extends LinearOpMode {
                 telemetry.update();
             }
 
-            
+
 
             // Stop all motion;
 
@@ -161,6 +166,59 @@ public class GyroTest extends LinearOpMode {
 
             //  sleep(250);   // optional pause after each move
         }
+    }
+
+    public void gyroDrive(double speed, double inches, double timeout) {
+
+        double encoderCount = inches * COUNTS_PER_INCH;
+        double startPosition = robot.leftRear.getCurrentPosition();
+
+        runtime.reset();
+
+        if(encoderCount > 0) {
+
+            while (robot.leftRear.getCurrentPosition() < (encoderCount + startPosition)) {
+                if (!opModeIsActive()) {
+                    return;
+                }
+
+                robot.leftFront.setPower(-speed * coeff); //negative because random problem with TMK chassis
+                robot.rightFront.setPower(-speed); //negative because random problem with TMK chassis
+                robot.leftRear.setPower(speed * coeff);
+                robot.rightRear.setPower(speed);
+
+                telemetry.addData("encoder value", robot.leftRear.getCurrentPosition());
+                telemetry.addData("inches travelled", Math.round((robot.leftRear.getCurrentPosition() - startPosition) / COUNTS_PER_INCH));
+                telemetry.update();
+                sleep(50);
+            }
+        }
+
+        else if(encoderCount < 0) {
+
+            while (robot.leftRear.getCurrentPosition() > (encoderCount + startPosition)) {
+                if (!opModeIsActive()) {
+                    return;
+                }
+
+                robot.leftFront.setPower(speed);
+                robot.rightFront.setPower(speed * coeff);
+                robot.leftRear.setPower(-speed);
+                robot.rightRear.setPower(-speed * coeff);
+
+                telemetry.addData("encoder value", robot.leftRear.getCurrentPosition());
+                telemetry.update();
+                sleep(50);
+            }
+        }
+
+        robot.leftFront.setPower(0);
+        robot.rightFront.setPower(0);
+        robot.leftRear.setPower(0);
+        robot.rightRear.setPower(0);
+
+
+        sleep(50);
     }
 
 

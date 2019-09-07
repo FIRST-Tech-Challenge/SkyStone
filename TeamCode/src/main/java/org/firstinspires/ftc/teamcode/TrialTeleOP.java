@@ -24,6 +24,7 @@ public class TrialTeleOP extends OpMode {
 
     @Override
     public void loop() {
+        /**
         double leftPower;
         double rightPower;
 
@@ -34,6 +35,15 @@ public class TrialTeleOP extends OpMode {
 
         leftDrive.setPower(leftPower);
         rightDrive.setPower(rightPower);
+        */
+
+        leftDrive.setPower(gamepad1.left_stick_y);
+        leftDrive.setPower(gamepad1.left_stick_x);
+        rightDrive.setPower(gamepad1.right_stick_y);
+        rightDrive.setPower(gamepad1.right_stick_x);
+
+
+
 
 
 

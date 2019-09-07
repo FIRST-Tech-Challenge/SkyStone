@@ -13,3 +13,15 @@
 
 // Include common definitions from above.
 apply from: '../build.common.gradle'
+
+android {
+    sourceSets {
+        main.java.srcDirs += '../../ares-sky-stone/src'
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+    }
+}

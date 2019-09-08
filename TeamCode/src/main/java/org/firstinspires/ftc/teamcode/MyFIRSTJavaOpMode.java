@@ -30,11 +30,11 @@ public class MyFIRSTJavaOpMode extends LinearOpMode {
         waitForStart();
 
         // run until the end of the match (driver presses STOP)
-        double tgtPower = 0;
+//        double tgtPower = 0;
         while (opModeIsActive()) {
-            tgtPower = -this.gamepad1.left_stick_y;
-            motorTest.setPower(tgtPower);
-            telemetry.addData("Target Power", tgtPower);
+//            tgtPower = -this.gamepad1.left_stick_y;
+//            motorTest.setPower(tgtPower);
+//            telemetry.addData("Target Power", tgtPower);
             telemetry.addData("Motor Power", motorTest.getPower());
             telemetry.addData("Status", "Running");
             telemetry.update();

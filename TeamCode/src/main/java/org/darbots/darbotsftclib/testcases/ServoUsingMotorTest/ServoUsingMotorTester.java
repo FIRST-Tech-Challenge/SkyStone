@@ -1,5 +1,6 @@
 package org.darbots.darbotsftclib.testcases.ServoUsingMotorTest;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.darbots.darbotsftclib.libcore.OpModes.DarbotsBasicOpMode;
@@ -8,6 +9,7 @@ import org.darbots.darbotsftclib.libcore.tasks.servo_tasks.motor_powered_servo_t
 import org.darbots.darbotsftclib.libcore.templates.RobotCore;
 
 @TeleOp(group = "DarbotsLib-TestCases",name="ServoUsingMotorTester")
+@Disabled
 public class ServoUsingMotorTester extends DarbotsBasicOpMode<ServoUsingMotorCore> {
     private static final double SERVOUSINGMOTOR_SPEED = 0.2;
 

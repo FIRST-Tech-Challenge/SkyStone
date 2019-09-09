@@ -29,7 +29,7 @@ import android.support.annotation.NonNull;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import org.darbots.darbotsftclib.libcore.templates.RobotCamera;
+import org.darbots.darbotsftclib.libcore.templates.other_sensors.RobotCamera;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 

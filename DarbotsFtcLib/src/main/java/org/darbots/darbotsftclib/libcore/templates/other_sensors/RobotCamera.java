@@ -23,7 +23,7 @@ SOFTWARE.
 
 */
 
-package org.darbots.darbotsftclib.libcore.templates;
+package org.darbots.darbotsftclib.libcore.templates.other_sensors;
 
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 

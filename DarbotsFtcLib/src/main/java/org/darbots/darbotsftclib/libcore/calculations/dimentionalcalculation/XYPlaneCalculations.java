@@ -32,8 +32,22 @@ public class XYPlaneCalculations {
         }
         return tempRad;
     }
+    public static float normalizeRad(float Rad){
+        float tempRad = (float) (Rad % (Math.PI * 2));
+        if(tempRad >= Math.PI){
+            tempRad -= (Math.PI) * 2;
+        }
+        return tempRad;
+    }
     public static double normalizeDeg(double Deg) {
         double tempDeg = Deg % 360;
+        if(tempDeg >= 180){
+            tempDeg -= 360;
+        }
+        return tempDeg;
+    }
+    public static float normalizeDeg(float Deg) {
+        float tempDeg = Deg % 360;
         if(tempDeg >= 180){
             tempDeg -= 360;
         }

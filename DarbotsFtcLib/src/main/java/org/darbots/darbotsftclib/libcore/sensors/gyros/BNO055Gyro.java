@@ -53,4 +53,9 @@ public class BNO055Gyro extends RobotGyro {
     public float getHeading() {
         return this.getZ();
     }
+
+    @Override
+    public HeadingRotationPositiveOrientation getHeadingRotationPositiveOrientation() {
+        return HeadingRotationPositiveOrientation.CounterClockwise;
+    }
 }

@@ -24,7 +24,6 @@ import android.util.Log;
 
 import com.hfrobots.tnt.corelib.control.LowPassFilteredRangeInput;
 import com.hfrobots.tnt.corelib.control.RangeInput;
-import com.hfrobots.tnt.corelib.metrics.StatsDMetricSampler;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -35,16 +34,14 @@ import static com.hfrobots.tnt.corelib.Constants.LOG_TAG;
 /**
  * Provide a basic manual operational mode that controls the tank drive.
  */
-@TeleOp(name="Jackiebot", group="Utilities")
-//@Disabled
-public class JackiebotTeleop extends JackiebotTelemetry
+@TeleOp(name="Drinkbot", group="Utilities")
+@Disabled
+public class DrinkbotTeleop extends JackiebotTelemetry
 
 {
 
-    private StatsDMetricSampler metricSampler;
-
     @SuppressWarnings("unused")
-    public JackiebotTeleop() {
+    public DrinkbotTeleop() {
         imuNeeded = false;
     }
 
@@ -61,8 +58,6 @@ public class JackiebotTeleop extends JackiebotTelemetry
         for (DcMotor motor : mecanumDrive.motors) {
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
-
-        metricSampler = new StatsDMetricSampler(hardwareMap, driversGamepad, operatorsGamepad);
     }
 
 
@@ -79,9 +74,7 @@ public class JackiebotTeleop extends JackiebotTelemetry
         updateTelemetry(); // Update common telemetry
         updateGamepadTelemetry();
 
-        metricSampler.doSamples();
-
-        //logBatteryState("-- requested by log mark --");
+        logBatteryState("-- requested by log mark --");
     }
 
     @Override
@@ -128,9 +121,29 @@ public class JackiebotTeleop extends JackiebotTelemetry
 
         // do this first, it will be cancelled out by bump-strafe
         if (!driveFastButton.isPressed()) {
-            y /= 1.25;
-            x /= 1.25;
-            rot /= 1.25;
+            y /= 2;  //1.5
+            x /= 1.75;  //1.25
+            rot /= 2;  //1.5
+        } else {
+            double randomRotationNumber = Math.random(); // random between 0 and 1
+            double randomSignNumber = Math.random(); // random between 0 and 1
+
+            if(randomSignNumber >= .5){
+                y /= 2;
+                x /= 1.75;
+
+                rot = (rot / 2) + randomRotationNumber;
+
+                fakeInput.setInputValue((float)rot);
+                rot = randomFilteredInput.getPosition();
+
+            } else {
+                y /= 2;
+                x /= 1.75;
+                rot = (rot / 2) - randomRotationNumber;
+                
+                fakeInput.setInputValue((float)rot);
+            }   rot = randomFilteredInput.getPosition();
         }
 
         final boolean driveInverted;

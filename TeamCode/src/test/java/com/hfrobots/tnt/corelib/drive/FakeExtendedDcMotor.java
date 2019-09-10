@@ -31,6 +31,12 @@ public class FakeExtendedDcMotor implements ExtendedDcMotor {
 
     private int currentEncoderPosition;
 
+    private NinjaMotor.MotorVelocityTracker velocityTracker;
+
+    public FakeExtendedDcMotor() {
+        velocityTracker = new NinjaMotor.MotorVelocityTracker(this);
+    }
+
     // The two things we need to allow set and get for our fakes to work with the
     // ParticleScoringMechanism are power (type double), and currentPosition (of encoder, type int)
     // Create the variables here, and reference them in the correct places labeled with "FIXME LMM"
@@ -102,6 +108,11 @@ public class FakeExtendedDcMotor implements ExtendedDcMotor {
     @Override
     public void setPowerFloat() {
 
+    }
+
+    @Override
+    public int getVelocity(){
+        return velocityTracker.getVelocity();
     }
 
     @Override

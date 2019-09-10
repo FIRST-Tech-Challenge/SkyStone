@@ -63,4 +63,11 @@ public interface ExtendedDcMotor extends DcMotor {
      * operation (it requires cycles).
      */
     void resetLogicalEncoderCount();
+
+    /**
+     * Returns the motor's current velocity relative to the last time the robot's velocity was recorded
+     * @return relative velocity
+     */
+    int getVelocity();
+
 }

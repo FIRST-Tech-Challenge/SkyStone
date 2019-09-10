@@ -337,7 +337,7 @@ public abstract class JackiebotHardware extends OpMode {
         operatorsGamepad = new NinjaGamePad(gamepad2);
     }
 
-    private final float lowPassFilterFactor = .75F; // Fixme may not be right value...
+    private final float lowPassFilterFactor = .95F; // Fixme may not be right value...
 
     private void setupDriverControls() {
         driversGamepad = new NinjaGamePad(gamepad1);

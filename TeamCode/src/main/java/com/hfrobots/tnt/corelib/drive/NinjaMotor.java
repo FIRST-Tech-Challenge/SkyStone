@@ -42,6 +42,7 @@ public class NinjaMotor implements ExtendedDcMotor {
     private final Rotation motorNativeDirection;
     private int zeroEncoderValue;
     private int prevEncoderPosition;
+    private MotorVelocityTracker velocityTracker;
 
     public static ExtendedDcMotor wrap32Motor(DcMotor dcMotor) {
         MotorConfigurationType type = dcMotor.getMotorType();
@@ -111,6 +112,7 @@ public class NinjaMotor implements ExtendedDcMotor {
         this.dcMotor = dcMotor;
         this.motorNativeDirection = motorNativeDirection;
         zeroEncoderValue = dcMotor.getCurrentPosition(); // it's expensive to reset this via the SDK!
+        velocityTracker = new MotorVelocityTracker(dcMotor);
     }
 
     /**
@@ -190,6 +192,11 @@ public class NinjaMotor implements ExtendedDcMotor {
     @Override
     public void resetLogicalEncoderCount() {
         zeroEncoderValue = dcMotor.getCurrentPosition();
+    }
+
+    @Override
+    public int getVelocity() {
+        return velocityTracker.getVelocity();
     }
 
     @Override
@@ -290,6 +297,34 @@ public class NinjaMotor implements ExtendedDcMotor {
     @Override
     public void setMotorType(MotorConfigurationType motorType) {
         dcMotor.setMotorType(motorType);
+    }
+
+    public static class MotorVelocityTracker {
+        private final DcMotor motor;
+
+        public MotorVelocityTracker(DcMotor motor) {
+            this.motor = motor;
+            lastTimeSinceVelocityCheck = System.currentTimeMillis();
+            lastPositionSinceVelocityCheck = motor.getCurrentPosition();
+        }
+
+        private long lastTimeSinceVelocityCheck;
+
+        private int lastPositionSinceVelocityCheck;
+
+        public int getVelocity() {
+            long currentTime = System.currentTimeMillis();
+            int currentPosition = motor.getCurrentPosition();
+
+            if(currentTime == lastTimeSinceVelocityCheck) {
+                // FIXME: Explain why +1 on current time
+                return (int) ((currentPosition- lastPositionSinceVelocityCheck) / ((currentTime+1) - lastTimeSinceVelocityCheck));
+            }
+
+            long velocity = (currentPosition - lastPositionSinceVelocityCheck) / (currentTime - lastTimeSinceVelocityCheck);
+
+            return (int)velocity;
+        }
     }
 }
 

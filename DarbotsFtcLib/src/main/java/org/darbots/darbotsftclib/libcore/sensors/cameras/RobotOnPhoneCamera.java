@@ -34,20 +34,24 @@ import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 
 public class RobotOnPhoneCamera implements RobotCamera {
+    enum PhoneCameraDirection{
+        Selfie,
+        Back
+    }
     private VuforiaLocalizer.CameraDirection m_CameraDirection;
     private VuforiaLocalizer m_Vuforia;
     private String m_VuforiaKey;
     private boolean m_Preview;
     private OpMode m_ControllingOpMode;
-    public RobotOnPhoneCamera(@NonNull OpMode controllerOpMode, boolean preview, VuforiaLocalizer.CameraDirection CameraDirection, String VuforiaKey){
-        this.m_CameraDirection = CameraDirection;
+    public RobotOnPhoneCamera(@NonNull OpMode controllerOpMode, boolean preview, PhoneCameraDirection CameraDirection, String VuforiaKey){
+        this.m_CameraDirection = CameraDirection == PhoneCameraDirection.Selfie ? VuforiaLocalizer.CameraDirection.FRONT : VuforiaLocalizer.CameraDirection.BACK;
         this.m_ControllingOpMode = controllerOpMode;
         this.m_VuforiaKey = VuforiaKey;
         this.m_Preview = preview;
         this.createVuforia();
     }
-    public VuforiaLocalizer.CameraDirection getCameraDirection(){
-        return this.m_CameraDirection;
+    public PhoneCameraDirection getCameraDirection(){
+        return this.m_CameraDirection == VuforiaLocalizer.CameraDirection.FRONT ? PhoneCameraDirection.Selfie : PhoneCameraDirection.Back;
     }
     @Override
     public VuforiaLocalizer getVuforia() {

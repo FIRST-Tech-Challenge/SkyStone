@@ -2,8 +2,10 @@ package org.darbots.darbotsftclib.libcore.chassiscontrollers;
 
 import com.qualcomm.robotcore.util.Range;
 
+import org.darbots.darbotsftclib.libcore.calculations.dimentionalcalculation.Robot2DPositionIndicator;
 import org.darbots.darbotsftclib.libcore.calculations.dimentionalcalculation.Robot2DPositionTracker;
 import org.darbots.darbotsftclib.libcore.sensors.motion_related.RobotMotion;
+import org.darbots.darbotsftclib.libcore.sensors.motors.RobotMotorController;
 import org.darbots.darbotsftclib.libcore.tasks.motor_tasks.RobotFixCountSpeedCtlTask;
 import org.darbots.darbotsftclib.libcore.tasks.motor_tasks.RobotFixedSpeedTask;
 import org.darbots.darbotsftclib.libcore.templates.chassis_related.RobotMotionSystem;
@@ -11,6 +13,7 @@ import org.darbots.darbotsftclib.libcore.templates.chassis_related.RobotMotionSy
 import org.darbots.darbotsftclib.libcore.templates.chassis_related.RobotMotionSystemFixedXDistanceTask;
 import org.darbots.darbotsftclib.libcore.templates.chassis_related.RobotMotionSystemFixedZDistanceTask;
 import org.darbots.darbotsftclib.libcore.templates.chassis_related.RobotMotionSystemTeleOpControlTask;
+import org.darbots.darbotsftclib.libcore.templates.motor_related.RobotMotorTaskCallBack;
 
 public class OmniDrive extends RobotMotionSystem {
     public static class FixedXDistanceTask extends RobotMotionSystemFixedXDistanceTask{
@@ -27,10 +30,21 @@ public class OmniDrive extends RobotMotionSystem {
 
         @Override
         protected void __startTask() {
-            int CountToMove = (int) Math.round(this.getXDistance() / this.m_Drive.m_LeftTopMotor.getRobotWheel().getXPerCounterClockwiseDistance() / this.m_Drive.m_LeftTopMotor.getRobotWheel().getCircumference() * this.m_Drive.m_LeftTopMotor.getMotorController().getMotor().getMotorType().getCountsPerRev() * m_Drive.getLinearMotionDistanceFactor());
+            int CountToMove = (int) Math.round(this.getXDistance() / m_Drive.m_LeftTopMotor.getRobotWheel().getXPerCounterClockwiseDistance() / m_Drive.m_LeftTopMotor.getRobotWheel().getCircumference() * m_Drive.m_LeftTopMotor.getMotorController().getMotor().getMotorType().getCountsPerRev() * m_Drive.getLinearMotionDistanceFactor());
             CountToMove = Math.abs(CountToMove);
             int CountToMoveRight = (this.getXDistance() >= 0 ? CountToMove : -CountToMove);
-            m_Drive.m_LeftTopMotor.getMotorController().replaceTask(new RobotFixCountSpeedCtlTask(-CountToMoveRight,this.getSpeed(),null,true));
+            RobotMotorTaskCallBack FLCB = (this.getMotionSystem().getPositionTracker() == null ? null :
+                new RobotMotorTaskCallBack() {
+                    @Override
+                    public void finishRunning(RobotMotorController Controller, boolean timeOut, double timeUsedInSec, int CountsMoved) {
+                        double DistanceMoved = CountsMoved / m_Drive.m_LeftTopMotor.getMotorController().getMotor().getMotorType().getCountsPerRev() * m_Drive.m_LeftTopMotor.getRobotWheel().getCircumference() * m_Drive.m_LeftTopMotor.getRobotWheel().getXPerCounterClockwiseDistance() / m_Drive.getLinearMotionDistanceFactor();
+                        getMotionSystem().getPositionTracker().drive_MoveThroughRobotAngle(
+                                -90,
+                                DistanceMoved
+                                );
+                    }
+                });
+            m_Drive.m_LeftTopMotor.getMotorController().replaceTask(new RobotFixCountSpeedCtlTask(-CountToMoveRight, this.getSpeed(), FLCB , true));
             m_Drive.m_RightTopMotor.getMotorController().replaceTask(new RobotFixCountSpeedCtlTask(-CountToMoveRight,this.getSpeed(),null,true));
             m_Drive.m_LeftBottomMotor.getMotorController().replaceTask(new RobotFixCountSpeedCtlTask(CountToMoveRight,this.getSpeed(),null,true));
             m_Drive.m_RightBottomMotor.getMotorController().replaceTask(new RobotFixCountSpeedCtlTask(CountToMoveRight,this.getSpeed(),null,true));
@@ -69,7 +83,18 @@ public class OmniDrive extends RobotMotionSystem {
             int CountToMove = (int) Math.round(this.getZDistance() / this.m_Drive.m_LeftTopMotor.getRobotWheel().getZPerCounterClockwiseDistance() / this.m_Drive.m_LeftTopMotor.getRobotWheel().getCircumference() * this.m_Drive.m_LeftTopMotor.getMotorController().getMotor().getMotorType().getCountsPerRev() * m_Drive.getLinearMotionDistanceFactor());
             CountToMove = Math.abs(CountToMove);
             int CountToMoveForward = (this.getZDistance() >= 0 ? CountToMove : -CountToMove);
-            m_Drive.m_LeftTopMotor.getMotorController().replaceTask(new RobotFixCountSpeedCtlTask(-CountToMoveForward,this.getSpeed(),null,true));
+            RobotMotorTaskCallBack FLCB = (this.getMotionSystem().getPositionTracker() == null ? null :
+                    new RobotMotorTaskCallBack() {
+                        @Override
+                        public void finishRunning(RobotMotorController Controller, boolean timeOut, double timeUsedInSec, int CountsMoved) {
+                            double DistanceMoved = CountsMoved / m_Drive.m_LeftTopMotor.getMotorController().getMotor().getMotorType().getCountsPerRev() * m_Drive.m_LeftTopMotor.getRobotWheel().getCircumference() * m_Drive.m_LeftTopMotor.getRobotWheel().getZPerCounterClockwiseDistance() / m_Drive.getLinearMotionDistanceFactor();
+                            getMotionSystem().getPositionTracker().drive_MoveThroughRobotAngle(
+                                    0,
+                                    DistanceMoved
+                            );
+                        }
+                    });
+            m_Drive.m_LeftTopMotor.getMotorController().replaceTask(new RobotFixCountSpeedCtlTask(-CountToMoveForward,this.getSpeed(),FLCB,true));
             m_Drive.m_RightTopMotor.getMotorController().replaceTask(new RobotFixCountSpeedCtlTask(CountToMoveForward,this.getSpeed(),null,true));
             m_Drive.m_LeftBottomMotor.getMotorController().replaceTask(new RobotFixCountSpeedCtlTask(-CountToMoveForward,this.getSpeed(),null,true));
             m_Drive.m_RightBottomMotor.getMotorController().replaceTask(new RobotFixCountSpeedCtlTask(CountToMoveForward,this.getSpeed(),null,true));
@@ -108,7 +133,19 @@ public class OmniDrive extends RobotMotionSystem {
             int CountToMove = (int) Math.round(this.getTurnDeg() / 360.0 * 2.0 * Math.PI * this.m_Drive.m_LeftTopMotor.getRobotWheel().getDistanceFromCenterOfRobot() / this.m_Drive.m_LeftTopMotor.getRobotWheel().getCircumference() * this.m_Drive.m_LeftTopMotor.getMotorController().getMotor().getMotorType().getCountsPerRev() * m_Drive.getRotationalMotionDistanceFactor());
             CountToMove = Math.abs(CountToMove);
             int CountToMoveCounterClockwise = (this.getTurnDeg() >= 0 ? CountToMove : -CountToMove);
-            m_Drive.m_LeftTopMotor.getMotorController().replaceTask(new RobotFixCountSpeedCtlTask(CountToMoveCounterClockwise,this.getSpeed(),null,true));
+            RobotMotorTaskCallBack FLCB = (this.getMotionSystem().getPositionTracker() == null ? null :
+                    new RobotMotorTaskCallBack() {
+                        @Override
+                        public void finishRunning(RobotMotorController Controller, boolean timeOut, double timeUsedInSec, int CountsMoved) {
+                            double DistanceMoved = CountsMoved / m_Drive.m_LeftTopMotor.getMotorController().getMotor().getMotorType().getCountsPerRev() * m_Drive.m_LeftTopMotor.getRobotWheel().getCircumference() / m_Drive.getRotationalMotionDistanceFactor();
+                            getMotionSystem().getPositionTracker().drive_RotateAroundRobotPointWithRadiusAndPowerPoint(
+                                    new Robot2DPositionIndicator(0,0,0),
+                                    m_Drive.m_LeftTopMotor.getRobotWheel().getDistanceFromCenterOfRobot(),
+                                    DistanceMoved
+                            );
+                        }
+                    });
+            m_Drive.m_LeftTopMotor.getMotorController().replaceTask(new RobotFixCountSpeedCtlTask(CountToMoveCounterClockwise,this.getSpeed(),FLCB,true));
             m_Drive.m_RightTopMotor.getMotorController().replaceTask(new RobotFixCountSpeedCtlTask(CountToMoveCounterClockwise,this.getSpeed(),null,true));
             m_Drive.m_LeftBottomMotor.getMotorController().replaceTask(new RobotFixCountSpeedCtlTask(CountToMoveCounterClockwise,this.getSpeed(),null,true));
             m_Drive.m_RightBottomMotor.getMotorController().replaceTask(new RobotFixCountSpeedCtlTask(CountToMoveCounterClockwise,this.getSpeed(),null,true));

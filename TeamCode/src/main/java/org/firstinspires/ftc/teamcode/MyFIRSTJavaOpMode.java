@@ -24,6 +24,7 @@ public class MyFIRSTJavaOpMode extends LinearOpMode {
     @Override
     public void runOpMode() {
 //        imu = hardwareMap.get(Gyroscope.class, "imu");
+        //text
         motorTest1 = hardwareMap.get(DcMotor.class, "left_drive");
         motorTest2 = hardwareMap.get(DcMotor.class, "right_drive");
 //        digitalTouch = hardwareMap.get(DigitalChannel.class, "digitalTouch");

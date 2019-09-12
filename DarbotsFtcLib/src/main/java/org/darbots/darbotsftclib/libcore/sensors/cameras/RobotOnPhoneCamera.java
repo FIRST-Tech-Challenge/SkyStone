@@ -34,7 +34,7 @@ import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 
 public class RobotOnPhoneCamera implements RobotCamera {
-    enum PhoneCameraDirection{
+    public enum PhoneCameraDirection{
         Selfie,
         Back
     }
@@ -52,6 +52,9 @@ public class RobotOnPhoneCamera implements RobotCamera {
     }
     public PhoneCameraDirection getCameraDirection(){
         return this.m_CameraDirection == VuforiaLocalizer.CameraDirection.FRONT ? PhoneCameraDirection.Selfie : PhoneCameraDirection.Back;
+    }
+    public VuforiaLocalizer.CameraDirection getVuforiaCameraDirection(){
+        return this.m_CameraDirection;
     }
     @Override
     public VuforiaLocalizer getVuforia() {

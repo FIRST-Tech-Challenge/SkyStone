@@ -20,6 +20,7 @@ public class GamePadSafeDualMotor extends BaconComponent {
     private boolean motorOn = false;
     private boolean lastButtonState = false;
     private final Telemetry.Item item;
+    private boolean showTelemetry = true;
 
 
 
@@ -45,6 +46,7 @@ public class GamePadSafeDualMotor extends BaconComponent {
         this.buttonControl1 = buttonControl1;
         this.buttonControl2 = buttonControl2;
         this.motorPower = power;
+        this.showTelemetry = showTelemetry;
 
         if (showTelemetry) {
             item = opMode.telemetry.addData("Control " + buttonControl1.name() + " + " + buttonControl2.name(), 0.0f);

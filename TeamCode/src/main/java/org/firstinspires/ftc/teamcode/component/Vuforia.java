@@ -23,7 +23,6 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
 
 public class Vuforia {
 
-
     private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
 
     //TODO: Update for competition
@@ -53,8 +52,7 @@ public class Vuforia {
     private VuforiaTrackables targetsSkyStone;
     private List<VuforiaTrackable> allTrackables;
 
-    public Vuforia(OpMode opMode) {
-        HardwareMap hardwareMap = opMode.hardwareMap;
+    public Vuforia(HardwareMap hardwareMap) {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
@@ -219,6 +217,10 @@ public class Vuforia {
         }
 
         return targetVisible;
+    }
+
+    public void activate() {
+        targetsSkyStone.activate();
     }
 
     public void disable() {

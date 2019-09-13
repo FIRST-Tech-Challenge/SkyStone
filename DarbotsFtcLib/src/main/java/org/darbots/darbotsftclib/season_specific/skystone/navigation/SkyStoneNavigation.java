@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.darbots.darbotsftclib.libcore.calculations.dimentionalcalculation.Robot3DPositionIndicator;
 import org.darbots.darbotsftclib.libcore.calculations.dimentionalcalculation.XYPlaneCalculations;
 import org.darbots.darbotsftclib.libcore.sensors.cameras.RobotOnPhoneCamera;
+import org.darbots.darbotsftclib.libcore.templates.RobotNonBlockingDevice;
 import org.darbots.darbotsftclib.libcore.templates.other_sensors.RobotCamera;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
@@ -22,7 +23,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 
-public class SkyStoneNavigation {
+public class SkyStoneNavigation implements RobotNonBlockingDevice {
     private static final float MMPERINCH        = 25.4f;
     private static final float MMTARGETHEIGHT   = (6) * MMPERINCH;
     // Constant for Stone Target
@@ -43,6 +44,29 @@ public class SkyStoneNavigation {
     private RobotCamera m_Camera;
     private VuforiaTrackables m_TargetsSkyStone;
     private List<VuforiaTrackable> m_AllTrackables;
+    private ElapsedTime m_LastTime;
+    private Robot3DPositionIndicator m_LastPosition;
+    private boolean m_LastUpdateGotLocation;
+
+    public SkyStoneNavigation(Robot3DPositionIndicator CameraPosition, RobotCamera Camera){
+        this.m_LastUpdateGotLocation = false;
+        this.m_Camera = Camera;
+        this.m_CameraPos = CameraPosition;
+        m_AllTrackables = new ArrayList<VuforiaTrackable>();
+        this.m_LastPosition = null;
+        this.m_LastTime = new ElapsedTime(ElapsedTime.Resolution.SECONDS);
+        this.__setupVuforia();
+    }
+
+    public SkyStoneNavigation(SkyStoneNavigation oldNav){
+        this.m_LastUpdateGotLocation = false;
+        this.m_CameraPos = oldNav.m_CameraPos;
+        this.m_Camera = oldNav.m_Camera;
+        this.m_TargetsSkyStone = oldNav.m_TargetsSkyStone;
+        this.m_AllTrackables = oldNav.m_AllTrackables;
+        this.m_LastTime = oldNav.m_LastTime;
+        this.m_LastPosition = oldNav.m_LastPosition;
+    }
 
     public RobotCamera getCamera(){
         return this.m_Camera;
@@ -54,7 +78,10 @@ public class SkyStoneNavigation {
         this.m_CameraPos = CameraPosition;
         this.__setupCamera();
     }
-    
+
+    public Robot3DPositionIndicator getDarbotsFieldPosition(){
+        return this.__getFTCFieldPosition();
+    }
 
     protected void __setupVuforia(){
         VuforiaLocalizer vuforia = this.m_Camera.getVuforia();
@@ -254,5 +281,41 @@ public class SkyStoneNavigation {
         else {
             return null;
         }
+    }
+
+    @Override
+    public boolean isBusy() {
+        return false;
+    }
+
+    @Override
+    public void updateStatus() {
+        Robot3DPositionIndicator newestPos = this.getDarbotsFieldPosition();
+        if(newestPos != null){
+            this.m_LastTime.reset();
+            this.m_LastPosition = newestPos;
+            this.m_LastUpdateGotLocation = true;
+        }else{
+            this.m_LastUpdateGotLocation = false;
+        }
+    }
+
+    @Override
+    public void waitUntilFinish() {
+        return;
+    }
+
+    public Robot3DPositionIndicator getLastPosition(){
+        return this.m_LastPosition;
+    }
+
+    public double getSecondsSinceLastPosition(){
+        return this.m_LastTime.seconds();
+    }
+
+    public void clearLastPosition(){
+        this.m_LastPosition = null;
+        this.m_LastTime.reset();
+        this.m_LastUpdateGotLocation = false;
     }
 }

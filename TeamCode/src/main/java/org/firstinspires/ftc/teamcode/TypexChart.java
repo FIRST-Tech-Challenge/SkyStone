@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 public class TypexChart {
 
     /* Plotting public stars */
@@ -36,17 +38,19 @@ public class TypexChart {
         //Optic1 = hwMap.get(ModernRoboticsI2cRangeSensor.class, "Optic1");
 
         /* Setting Quantum Harmonizer */
-        TL.setDirection(DcMotorSimple.Direction.FORWARD);
+       /* TL.setDirection(DcMotorSimple.Direction.FORWARD);
         BL.setDirection(DcMotorSimple.Direction.FORWARD);
         TR.setDirection(DcMotorSimple.Direction.REVERSE);
-        BR.setDirection(DcMotorSimple.Direction.REVERSE);
+        BR.setDirection(DcMotorSimple.Direction.REVERSE);*/
 
         /* Setting Power Modes */
-        TL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+/*        TL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         TR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         BL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        BR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        BR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);*/
 
+        BL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         /* Securing Brake Field */
         TL.setPower(0);
         TR.setPower(0);

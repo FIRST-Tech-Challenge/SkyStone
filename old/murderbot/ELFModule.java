@@ -1,4 +1,4 @@
-package org.eastsideprep.ftc.murderbot;
+package org.eastsideprep.murderbot;
 
 import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
@@ -14,6 +14,7 @@ import static android.os.SystemClock.sleep;
 /**
  * Created by gmein on 2/13/2018.
  */
+// I2CSensor is deprecated, see https://github.com/ftctechnh/ftc_app/wiki/Writing-an-I2C-Driver to fix
 @I2cSensor(name = "EPS Laser Tag Module", description = "Laser cannon turret and hit detector", xmlTag = "ELF01")
 public class ELFModule extends I2cDeviceSynchDevice<I2cDeviceSynch> {
     final int ELF_I2C_ADDRESS = 0x47;

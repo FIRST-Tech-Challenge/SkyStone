@@ -1,4 +1,4 @@
-package org.eastsideprep.ftc.murderbot;
+package org.eastsideprep.murderbot;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.hardware.AnalogInput;

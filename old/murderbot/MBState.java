@@ -1,4 +1,4 @@
-package org.eastsideprep.ftc.murderbot;
+package org.eastsideprep.murderbot;
 
 /**
  * Created by gmein on 2/6/2018.

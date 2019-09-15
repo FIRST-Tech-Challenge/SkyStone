@@ -153,7 +153,7 @@ public class Auto15203 extends LinearOpMode {
         robot.rightFrontMotor.setPower(1.0);
         robot.rightBackMotor.setPower(1.0);
         robot.marker.setPosition(0.0);
-        sleep(2100wwwwwww00);
+        sleep(2100);
 
 
         robot.leftFrontMotor.setPower(1.0);

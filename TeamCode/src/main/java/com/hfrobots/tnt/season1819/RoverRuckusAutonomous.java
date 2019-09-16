@@ -85,10 +85,10 @@ public class RoverRuckusAutonomous extends RoverRuckusHardware {
     private int initialDelaySeconds = 0;
 
     // change these constraints to something reasonable for your drive
-    DriveConstraints baseConstraints = new DriveConstraints(25.0,
-            40.0,
-            Math.PI / 2,
-            Math.PI / 2);
+    DriveConstraints baseConstraints = null; //new DriveConstraints(25.0,
+            //40.0,
+            //Math.PI / 2,
+            //Math.PI / 2);
 
     MecanumConstraints mecanumConstraints = mecanumConstraints  = new MecanumConstraints(
             baseConstraints, RoadrunnerMecanumDriveAdapter.TRACK_WIDTH
@@ -363,7 +363,8 @@ public class RoverRuckusAutonomous extends RoverRuckusHardware {
         Trajectory toAlignWithWallTrajectory = new TrajectoryBuilder(
                 TntPose2d.toPose2d(0, 0, 0), mecanumConstraints) // Always starting from 0, 0, 0
                 .lineTo(TntPose2d.toVector2d(0, 34.5 - 4), new ConstantInterpolator(0))
-                .turnTo(Math.toRadians(turnInDegrees)).build();
+                //.turnTo(Math.toRadians(turnInDegrees))
+                .build();
 
         TrajectoryFollowerState toAlignWithWallState = new TrajectoryFollowerState(
                 "To align with wall",
@@ -469,7 +470,8 @@ public class RoverRuckusAutonomous extends RoverRuckusHardware {
         Trajectory toAlignWithWallTrajectory = new TrajectoryBuilder(
                 TntPose2d.toPose2d(0, 0, 0), mecanumConstraints) // Always starting from 0, 0, 0
                 .lineTo(TntPose2d.toVector2d(0, 34.5 - 4), new ConstantInterpolator(0))
-                .turnTo(Math.toRadians(turnInDegrees)).build();
+                //.turnTo(Math.toRadians(turnInDegrees))
+                .build();
 
         TrajectoryFollowerState toAlignWithWallState = new TrajectoryFollowerState(
                 "To align with wall",
@@ -782,10 +784,10 @@ public class RoverRuckusAutonomous extends RoverRuckusHardware {
         return new TrajectoryBuilder(
                 TntPose2d.toPose2d(0, 0, 0), mecanumConstraints) // Always starting from 0, 0, 0
                 .lineTo(TntPose2d.toVector2d(0, 8.0), new ConstantInterpolator(0)) // get to mineral
-                .turnTo(Math.toRadians(-85)) // turn towards mineral
-                .turnTo(Math.toRadians(0)) // turn back
+                //.turnTo(Math.toRadians(-85)) // turn towards mineral
+                //.turnTo(Math.toRadians(0)) // turn back
                 .lineTo(TntPose2d.toVector2d(0, 34.5 - 6.0 /* distance traveled to mineral */), new ConstantInterpolator(0))
-                .turnTo(Math.toRadians(turnToStrafeInDegrees))
+                //.turnTo(Math.toRadians(turnToStrafeInDegrees))
                 .build();
     }
 
@@ -795,10 +797,10 @@ public class RoverRuckusAutonomous extends RoverRuckusHardware {
         return new TrajectoryBuilder(
                 TntPose2d.toPose2d(0, 0, 0), mecanumConstraints) // Always starting from 0, 0, 0
                 .lineTo(TntPose2d.toVector2d(0, -3 /* FIXME: how far and in what direction do we drive? */), new ConstantInterpolator(0)) // get to mineral
-                .turnTo(Math.toRadians(85)) // turn towards mineral
-                .turnTo(Math.toRadians(0)) // turn back
+                //.turnTo(Math.toRadians(85)) // turn towards mineral
+                //.turnTo(Math.toRadians(0)) // turn back
                 .lineTo(TntPose2d.toVector2d(0, 34.5 - 4 + 3 /* distance traveled to mineral */), new ConstantInterpolator(0))
-                .turnTo(Math.toRadians(turnToStrafeInDegrees))
+                //.turnTo(Math.toRadians(turnToStrafeInDegrees))
                 .build();
     }
 
@@ -808,10 +810,10 @@ public class RoverRuckusAutonomous extends RoverRuckusHardware {
         return new TrajectoryBuilder(
                 TntPose2d.toPose2d(0, 0, 0), mecanumConstraints) // Always starting from 0, 0, 0
                 .lineTo(TntPose2d.toVector2d(0, -19), new ConstantInterpolator(0)) // get to mineral
-                .turnTo(Math.toRadians(75)) // turn towards mineral
-                .turnTo(Math.toRadians(0)) // turn back
+                //.turnTo(Math.toRadians(75)) // turn towards mineral
+                //.turnTo(Math.toRadians(0)) // turn back
                 .lineTo(TntPose2d.toVector2d(0, 34.5 - 4 + 5 /* distance traveled to mineral */), new ConstantInterpolator(0))
-                .turnTo(Math.toRadians(turnToStrafeInDegrees))
+                //.turnTo(Math.toRadians(turnToStrafeInDegrees))
                 .build();
     }
 

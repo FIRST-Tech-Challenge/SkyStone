@@ -81,10 +81,10 @@ public class NewRoverRuckusAutonomous extends RoverRuckusHardware {
     private int initialDelaySeconds = 0;
 
     // change these constraints to something reasonable for your drive
-    DriveConstraints baseConstraints = new DriveConstraints(25.0,
-            40.0,
-            Math.PI / 2,
-            Math.PI / 2);
+    DriveConstraints baseConstraints = null; //new DriveConstraints(25.0,
+            //40.0,
+            //Math.PI / 2,
+            //Math.PI / 2);
 
     MecanumConstraints mecanumConstraints = mecanumConstraints  = new MecanumConstraints(
             baseConstraints, RoadrunnerMecanumDriveAdapter.TRACK_WIDTH
@@ -502,7 +502,8 @@ public class NewRoverRuckusAutonomous extends RoverRuckusHardware {
         Trajectory toAlignWithWallTrajectory = new TrajectoryBuilder(
                 TntPose2d.toPose2d(0, 0, 0), mecanumConstraints) // Always starting from 0, 0, 0
                 .lineTo(TntPose2d.toVector2d(0, 34.5 - 4), new ConstantInterpolator(0))
-                .turnTo(Math.toRadians(turnInDegrees)).build();
+                //.turnTo(Math.toRadians(turnInDegrees))
+                .build();
 
         TrajectoryFollowerState toAlignWithWallState = new TrajectoryFollowerState(
                 "To align with wall",
@@ -858,7 +859,7 @@ public class NewRoverRuckusAutonomous extends RoverRuckusHardware {
         Trajectory toTurnAndStrafe  = new TrajectoryBuilder(
                 TntPose2d.toPose2d(0, 0, 0), mecanumConstraints)
                 .lineTo(TntPose2d.toVector2d(0, 22 + THROUGH_MINERAL_DISTANCE + 2), new ConstantInterpolator(0))
-                .turnTo(Math.toRadians(turnToStrafeInDegrees))
+                //.turnTo(Math.toRadians(turnToStrafeInDegrees))
                 .build();
 
         return new NewMineralTrajectoryState.MineralTrajectorySegments(pastGoldMineral, throughGoldMineral, toTurnAndStrafe);
@@ -884,7 +885,7 @@ public class NewRoverRuckusAutonomous extends RoverRuckusHardware {
         Trajectory toTurnAndStrafe  = new TrajectoryBuilder(
                 TntPose2d.toPose2d(0, 0, 0), mecanumConstraints)
                 .lineTo(TntPose2d.toVector2d(0, 38.5), new ConstantInterpolator(0))
-                .turnTo(Math.toRadians(turnToStrafeInDegrees))
+                //.turnTo(Math.toRadians(turnToStrafeInDegrees))
                 .build();
 
         return new NewMineralTrajectoryState.MineralTrajectorySegments(pastGoldMineral, throughGoldMineral, toTurnAndStrafe);
@@ -909,7 +910,7 @@ public class NewRoverRuckusAutonomous extends RoverRuckusHardware {
         Trajectory toTurnAndStrafe  = new TrajectoryBuilder(
                 TntPose2d.toPose2d(0, 0, 0), mecanumConstraints)
                 .lineTo(TntPose2d.toVector2d(0, 54.5), new ConstantInterpolator(0))
-                .turnTo(Math.toRadians(turnToStrafeInDegrees))
+                //.turnTo(Math.toRadians(turnToStrafeInDegrees))
                 .build();
 
         return new NewMineralTrajectoryState.MineralTrajectorySegments(pastGoldMineral, throughGoldMineral, toTurnAndStrafe);

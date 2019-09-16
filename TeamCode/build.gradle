@@ -22,8 +22,8 @@ repositories {
 dependencies {
     implementation 'junit:junit:4.12'
     // other dependencies
-    //implementation 'compile "com.timgroup:java-statsd-client:3.0.1"'
-    implementation 'com.acmerobotics.roadrunner:core:0.2.6'
+    implementation 'com.acmerobotics.roadrunner:core:0.4.5'
+    implementation 'com.acmerobotics.dashboard:dashboard:0.3.4'
     implementation 'com.android.support:multidex:1.0.3'
     implementation 'org.openftc:rev-extensions-2:1.2'
     compileOnly 'org.projectlombok:lombok:1.18.6'

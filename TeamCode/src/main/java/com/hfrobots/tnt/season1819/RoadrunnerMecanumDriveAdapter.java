@@ -39,7 +39,7 @@ public class RoadrunnerMecanumDriveAdapter extends MecanumDrive {
 
     public RoadrunnerMecanumDriveAdapter(HardwareMap hardwareMap) {
         // TODO: this needs to be tuned using FeedforwardTuningOpMode
-        super(TRACK_WIDTH, WHEEL_BASE);
+        super(TRACK_WIDTH, WHEEL_BASE, 0, 0);
 
         setLocalizer(new MecanumLocalizer(this, false));
 
@@ -67,7 +67,7 @@ public class RoadrunnerMecanumDriveAdapter extends MecanumDrive {
 
     public RoadrunnerMecanumDriveAdapter(final DcMotorEx leftFront, final DcMotorEx leftRear,
                                          final DcMotorEx rightRear, final DcMotorEx rightFront) {
-        super(TRACK_WIDTH, WHEEL_BASE);
+        super(TRACK_WIDTH, WHEEL_BASE,0, 0);
 
         this.leftFront = leftFront;
         this.leftRear = leftRear;
@@ -112,7 +112,7 @@ public class RoadrunnerMecanumDriveAdapter extends MecanumDrive {
     }
 
     @Override
-    public double getExternalHeading() {
+    protected double getRawExternalHeading() {
         return 0;
     }
 }

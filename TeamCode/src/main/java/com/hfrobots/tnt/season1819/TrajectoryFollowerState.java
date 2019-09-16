@@ -21,9 +21,9 @@ package com.hfrobots.tnt.season1819;
 
 import android.util.Log;
 
-import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.control.PIDCoefficients;
-import com.acmerobotics.roadrunner.followers.MecanumPIDVAFollower;
+//import com.acmerobotics.roadrunner.Pose2d;
+//import com.acmerobotics.roadrunner.control.PIDCoefficients;
+//import com.acmerobotics.roadrunner.followers.MecanumPIDVAFollower;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 import com.acmerobotics.roadrunner.trajectory.constraints.MecanumConstraints;
@@ -50,7 +50,7 @@ public class TrajectoryFollowerState extends TimeoutSafetyState {
 
     private boolean initialized = false;
 
-    private MecanumPIDVAFollower follower;
+    // private MecanumPIDVAFollower follower;
 
     private HardwareMap hardwareMap;
 
@@ -83,9 +83,11 @@ public class TrajectoryFollowerState extends TimeoutSafetyState {
 
         }
 
+        /*
         if (!initialized) {
             // This is different than the hardware (bah) so we have to lazy init
             driveAdapter = new RoadrunnerMecanumDriveAdapter(hardwareMap);
+
 
             // TODO: Eventually all of this data should come from arguments -- we should fix that
             // the next robot we build that uses this concept.
@@ -116,10 +118,13 @@ public class TrajectoryFollowerState extends TimeoutSafetyState {
             return this;
         }
 
+*/
+
         // stop moving
         driveAdapter.setMotorPowers(0, 0, 0, 0);
 
         return nextState;
+
     }
 
     @Override

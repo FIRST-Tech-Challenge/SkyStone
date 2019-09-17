@@ -14,8 +14,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 
 
-@Autonomous(name = "encoderTestv3", group = "Experimental")
-public class BasicAuto extends LinearOpMode {
+@Autonomous(name = "encoderTestv4", group = "Experimental")
+public class EncoderTestV3 extends LinearOpMode {
 
     public int TPR = 1120;
     public int gearRatio = 1;
@@ -38,15 +38,15 @@ public class BasicAuto extends LinearOpMode {
         waitForStart();
         while (opModeIsActive()) {
 
-            //Telemetry Data is added to the driver control console
+            //Telemetry data is added to the DriverController screen
             telemetry.addData("Encoder", BL.getCurrentPosition());
-            telemetry.addData("Past", threshold(BL, targetPos(10)));
+            telemetry.addData("Past", toleranceStoppage(BL, targetPos(10), 27.3));
 
-            //Used to move wheel back to random position
+            //Used for repositioning the wheel
             BL.setPower(gamepad1.left_stick_y);
 
-            //Loop will run as long as within accepted value
-            while ((threshold(BL, targetPos(10))) && gamepad1.a) {
+            //While loop that runs so long as it is not within the range of accepted values
+            while ((toleranceStoppage(BL, targetPos(10), 26.7)) && gamepad1.a) {
                 BL.setPower(0.1);
                 telemetry.update();
             }
@@ -54,11 +54,12 @@ public class BasicAuto extends LinearOpMode {
     }
 
     /*
-   The targetPos is slightly redundant, but it esentially allows for the user to input a certain
-   distance as opposed to using pure encoder values. In other words, it takes in a certain amount
-   in human distance (inches, centimeter, etc) and changes it to a value that the program can
-   understand and use (encoder values).
-    */
+    The targetPos is slightly redundant, but it esentially allows for the user to input a certain
+    distance as opposed to using pure encoder values. In other words, it takes in a certain amount
+    in human distance (inches, centimeter, etc) and changes it to a value that the program can
+    understand and use (encoder values).
+     */
+
     public int targetPos(double dist) {
         int position = (int) Math.round(unitRate * dist);
         if (0 == 0) {
@@ -69,10 +70,15 @@ public class BasicAuto extends LinearOpMode {
     }
 
     /*
-    Returns a value of true so long as the encoder value that is being returned is less than or
-    equal to the targetPos.
-     */
-    public boolean threshold(DcMotor wheel, int targetPos) {
-        return wheel.getCurrentPosition() <= targetPos;
+    This toleranceStoppage method works exactly like the threshold function that has been described
+    in the Basic Auto file, but the main difference is that this function takes in a tolerance value
+    that *should* take into account the relationship between the momentum and encoder error. The way
+    that it works is by stopping by the amount that the error had calculated to be the difference
+    in encoder distance.
+    */
+
+    public boolean toleranceStoppage(DcMotor wheel, int targetPos, double tolerance) {
+        int intTolerance = (int) Math.round(tolerance);
+        return wheel.getCurrentPosition() <= (targetPos-intTolerance);
     }
 }

@@ -66,6 +66,7 @@ public class SkyStoneNavigation implements RobotNonBlockingDevice {
         this.m_AllTrackables = oldNav.m_AllTrackables;
         this.m_LastTime = oldNav.m_LastTime;
         this.m_LastPosition = oldNav.m_LastPosition;
+        this.__setupVuforia();
     }
 
     public RobotCamera getCamera(){
@@ -317,5 +318,9 @@ public class SkyStoneNavigation implements RobotNonBlockingDevice {
         this.m_LastPosition = null;
         this.m_LastTime.reset();
         this.m_LastUpdateGotLocation = false;
+    }
+    public void terminate(){
+        this.m_AllTrackables.clear();
+        this.m_TargetsSkyStone.deactivate();
     }
 }

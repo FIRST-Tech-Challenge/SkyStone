@@ -29,96 +29,56 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.teamcode.drive.AngleConverter;
+import org.firstinspires.ftc.teamcode.drive.Direction;
 import org.firstinspires.ftc.teamcode.drive.MecanumDriver;
 
+
 /**
- * This file contains an example of an iterative (Non-Linear) "OpMode".
- * An OpMode is a 'program' that runs in either the autonomous or the teleop period of an FTC match.
- * The names of OpModes appear on the menu of the FTC Driver Station.
- * When an selection is made from the menu, the corresponding OpMode
+ * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
+ * the autonomous or the teleop period of an FTC match. The names of OpModes appear on the menu
+ * of the FTC Driver Station. When an selection is made from the menu, the corresponding OpMode
  * class is instantiated on the Robot Controller and executed.
  *
  * This particular OpMode just executes a basic Tank Drive Teleop for a two wheeled robot
- * It includes all the skeletal structure that all iterative OpModes contain.
+ * It includes all the skeletal structure that all linear OpModes contain.
  *
  * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Driver op mode", group="Iterative Opmode")
-public class DriveOpMode extends OpMode {
+@Autonomous(name="Basic: Linear OpMode", group="Linear Opmode")
+public class AutoOpMode extends LinearOpMode {
     private MecanumDriver driver;
+
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    /*
-     * Code to run ONCE when the driver hits INIT
-     */
+
     @Override
-    public void init() {
+    public void runOpMode() {
         DeviceMap.setTelemetry(telemetry);
         telemetry.addData("Status", "Initialized");
         DeviceMap.getInstance(hardwareMap);
-        // Initialize the hardware variables. Note that the strings used here as parameters
-        // to 'get' must correspond to the names assigned during the robot configuration
-        // step (using the FTC Robot Controller app on the phone).
-
-        // Most robots need the motor on one side to be reversed to drive forward
-        // Reverse the motor that runs backwards when connected directly to the battery
-
-        // Tell the driver that initialization is complete.
         driver = new MecanumDriver();
         driver.setTelemetry(telemetry);
-        telemetry.addData("Status", "Initialized");
-    }
+        telemetry.update();
 
-    /*
-     * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
-     */
-    @Override
-    public void init_loop() {
-    }
-
-    /*
-     * Code to run ONCE when the driver hits PLAY
-     */
-    @Override
-    public void start() {
+        // Wait for the game to start (driver presses PLAY)
+        waitForStart();
         runtime.reset();
+
+        driver.move(Direction.FORWARD, 1, 10);
+        driver.move(Direction.BACKWARD, 1, 10);
+        driver.move(Direction.LEFT, 1, 10);
+        driver.move(Direction.RIGHT, 1, 10);
+        // run until the end of the match (driver presses STOP)
+
     }
-
-    /*
-     * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
-     */
-    @Override
-    public void loop() {
-        double x = gamepad1.left_stick_x;
-        double y = -gamepad1.left_stick_y;
-        double right_stick_x = gamepad1.right_stick_x;
-        driver.move(x, y, right_stick_x);
-        // Tank Mode uses one stick to control each wheel.
-        // - This requires no math, but it is hard to drive forward slowly and keep straight.
-        // leftPower  = -gamepad1.left_stick_y ;
-        // rightPower = -gamepad1.right_stick_y ;
-
-        // Send calculated power to wheels
-
-        // Show the elapsed game time and wheel power.
-        telemetry.addData("Status", "Run Time: " + runtime.toString());
-    }
-
-    /*
-     * Code to run ONCE after the driver hits STOP
-     */
-    @Override
-    public void stop() {
-    }
-
 }

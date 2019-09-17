@@ -29,13 +29,11 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.teamcode.DeviceMap;
 import org.firstinspires.ftc.teamcode.drive.AngleConverter;
 import org.firstinspires.ftc.teamcode.drive.MecanumDriver;
 
@@ -53,8 +51,8 @@ import org.firstinspires.ftc.teamcode.drive.MecanumDriver;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Driver op mode", group="Iterative Opmode")
-public class DriveOpMode extends OpMode {
+@TeleOp(name="Driver op mode2", group="Iterative Opmode")
+public class DriveOpMode2 extends OpMode {
     private MecanumDriver driver;
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -101,8 +99,8 @@ public class DriveOpMode extends OpMode {
     public void loop() {
         double x = gamepad1.left_stick_x;
         double y = -gamepad1.left_stick_y;
-        double right_stick_x = gamepad1.right_stick_x;
-        driver.move(x, y, right_stick_x);
+        AngleConverter angleConverter = AngleConverter.fromAngle(x, y);
+        if(angleConverter != null) driver.move(angleConverter);
         // Tank Mode uses one stick to control each wheel.
         // - This requires no math, but it is hard to drive forward slowly and keep straight.
         // leftPower  = -gamepad1.left_stick_y ;

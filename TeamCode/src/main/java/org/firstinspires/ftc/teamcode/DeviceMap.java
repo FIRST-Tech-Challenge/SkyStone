@@ -41,6 +41,8 @@ public final class DeviceMap {
             motor.setDirection(DcMotorSimple.Direction.FORWARD);
             motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
+        rightTop.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightBottom.setDirection(DcMotorSimple.Direction.REVERSE);
         telemetry.addLine("Finished setting up motors");
         telemetry.update();
     }
@@ -59,7 +61,7 @@ public final class DeviceMap {
         return rightBottom;
     }
     public DcMotor[] getMotors() {
-        return new DcMotor[]{leftTop, leftBottom, rightTop, rightBottom};
+        return new DcMotor[]{leftTop, rightTop, leftBottom, rightBottom};
     }
 
     public static DeviceMap getInstance() {

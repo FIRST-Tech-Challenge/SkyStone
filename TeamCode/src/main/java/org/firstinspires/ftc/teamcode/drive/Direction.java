@@ -28,6 +28,10 @@ public enum Direction {
         this.movement = movement;
     }
 
+    public int[] getMovement() {
+        return movement;
+    }
+
     public int getLeftTop() {
         return movement[0];
     }

@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-@Autonomous(name = "Autonomous")
+@Autonomous(name = "TestAutonomous")
 public class TestAutonomous extends LinearOpMode {
 
     DcMotor motorFL;
@@ -20,7 +20,6 @@ public class TestAutonomous extends LinearOpMode {
         initMotors();
         actionList = new ActionList(motorFL, motorFR, motorBL, motorBR);
         telemetry.addData("status", "Initialized");
-
         waitForStart();
 
 

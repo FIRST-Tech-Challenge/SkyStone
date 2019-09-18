@@ -7,13 +7,9 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 //This class will include all of the action functions such as Movement
-
 @TeleOp(name = "Function Test", group = "Iterative Opmode")
 public class FunctionClass extends OpMode {
-    DcMotor motorFL;
-    DcMotor motorFR;
-    DcMotor motorBL;
-    DcMotor motorBR;
+    DcMotor motorFL, motorFR, motorBL, motorBR;
 
     public FunctionClass() {
         super();

@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.vuforia.HINT;
 import com.vuforia.Vuforia;
 
@@ -16,7 +15,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefau
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import org.firstinspires.ftc.teamcode.R;
 
-@Autonomous(name = "VuforiaSensorClass")
 public class VuforiaSensor {
 
     public VuforiaLocalizer vuforiaLocalizer;

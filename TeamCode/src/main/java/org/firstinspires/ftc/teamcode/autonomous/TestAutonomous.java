@@ -13,16 +13,11 @@ public class TestAutonomous extends LinearOpMode {
     DcMotor motorBL;
     DcMotor motorBR;
 
-    ActionList actionList;
-
     @Override
     public void runOpMode() {
         initMotors();
-        actionList = new ActionList(motorFL, motorFR, motorBL, motorBR);
         telemetry.addData("status", "Initialized");
         waitForStart();
-
-
     }
 
     public void initMotors() {

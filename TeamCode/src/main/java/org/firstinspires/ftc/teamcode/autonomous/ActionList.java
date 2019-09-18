@@ -19,5 +19,4 @@ public class ActionList {
         this.motorBL = motorBL;
         this.motorBR = motorBR;
     }
-
 }

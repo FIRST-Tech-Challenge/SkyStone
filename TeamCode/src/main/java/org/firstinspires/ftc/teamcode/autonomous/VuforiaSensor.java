@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.vuforia.HINT;
 import com.vuforia.Vuforia;
 
@@ -26,29 +25,35 @@ public class VuforiaSensor {
 
     public VuforiaTrackables visionTargets;
 
-    public VuforiaTrackable targetBluePerimeter;
-    public VuforiaTrackable targetRedPerimeter;
-    public VuforiaTrackable targetFrontPerimeter;
-    public VuforiaTrackable targetBackPerimeter;
-//    public VuforiaTrackable targetRedPerimeterTgt1;
-//    public VuforiaTrackable targetRedPerimeterTgt2;
-//    public VuforiaTrackable targetFrontPerimeterTgt1;
-//    public VuforiaTrackable targetFrontPerimeterTgt2;
-//    public VuforiaTrackable targetBluePerimeterTgt1;
-//    public VuforiaTrackable targetBluePerimeterTgt2;
-//    public VuforiaTrackable targetRearPerimeterTgt1;
-//    public VuforiaTrackable targetRearPerimeterTgt2;
+    public VuforiaTrackable targetSkystone;
+    public VuforiaTrackable targetRedPerimeterTgt1;
+    public VuforiaTrackable targetRedPerimeterTgt2;
+    public VuforiaTrackable targetFrontPerimeterTgt1;
+    public VuforiaTrackable targetFrontPerimeterTgt2;
+    public VuforiaTrackable targetBluePerimeterTgt1;
+    public VuforiaTrackable targetBluePerimeterTgt2;
+    public VuforiaTrackable targetRearPerimeterTgt1;
+    public VuforiaTrackable targetRearPerimeterTgt2;
 
+    public VuforiaTrackableDefaultListener listenerSkystone;
+    public VuforiaTrackableDefaultListener listenerRedPerimeterTgt1;
+    public VuforiaTrackableDefaultListener listenerRedPerimeterTgt2;
+    public VuforiaTrackableDefaultListener listenerFrontPerimeterTgt1;
+    public VuforiaTrackableDefaultListener listenerFrontPerimeterTgt2;
+    public VuforiaTrackableDefaultListener listenerBluePerimeterTgt1;
+    public VuforiaTrackableDefaultListener listenerBluePerimeterTgt2;
+    public VuforiaTrackableDefaultListener listenerRearPerimeterTgt1;
+    public VuforiaTrackableDefaultListener listenerRearPerimeterTgt2;
 
-    public VuforiaTrackableDefaultListener listenerBluePerimeter;
-    public VuforiaTrackableDefaultListener listenerRedPerimeter;
-    public VuforiaTrackableDefaultListener listenerFrontPerimeter;
-    public VuforiaTrackableDefaultListener listenerBackPerimeter;
-
-    public OpenGLMatrix lastKnownLocationBluePerimeter;
-    public OpenGLMatrix lastKnownLocationRedPerimeter;
-    public OpenGLMatrix lastKnownLocationFrontPerimeter;
-    public OpenGLMatrix lastKnownLocationBackPerimeter;
+    public OpenGLMatrix lastKnownLocationSkystone;
+    public OpenGLMatrix lastKnownLocationRedPerimeterTgt1;
+    public OpenGLMatrix lastKnownLocationRedPerimeterTgt2;
+    public OpenGLMatrix lastKnownLocationFrontPerimeterTgt1;
+    public OpenGLMatrix lastKnownLocationFrontPerimeterTgt2;
+    public OpenGLMatrix lastKnownLocationBluePerimeterTgt1;
+    public OpenGLMatrix lastKnownLocationBluePerimeterTgt2;
+    public OpenGLMatrix lastKnownLocationRearPerimeterTgt1;
+    public OpenGLMatrix lastKnownLocationRearPerimeterTgt2;
 
     public OpenGLMatrix phoneLocation;
 
@@ -62,46 +67,86 @@ public class VuforiaSensor {
 
         // These are the vision targets that we want to use
         // The string needs to be the name of the appropriate .xml file in the assets folder
-        visionTargets = vuforiaLocalizer.loadTrackablesFromAsset("RoverRuckus");
-        Vuforia.setHint(HINT.HINT_MAX_SIMULTANEOUS_IMAGE_TARGETS, 4);
+        visionTargets = vuforiaLocalizer.loadTrackablesFromAsset("Skystone");
+        Vuforia.setHint(HINT.HINT_MAX_SIMULTANEOUS_IMAGE_TARGETS, 9);
 
         // Setup the target to be tracked
-        targetBluePerimeter = visionTargets.get(0); // 0 corresponds to the BluePerimeter target
-        targetBluePerimeter.setName("BluePerimeter");
-        targetBluePerimeter.setLocation(createMatrix(0, 0, 0, 0, 0, 0));
+        targetSkystone = visionTargets.get(0);
+        targetSkystone.setName("Skystone");
+        targetSkystone.setLocation(createMatrix(0, 0, 0, 0, 0, 0));
 
-        targetRedPerimeter = visionTargets.get(1);
-        targetRedPerimeter.setName("RedPerimeter");
-        targetRedPerimeter.setLocation(createMatrix(0, 0, 0, 0, 0, 0));
+        targetRedPerimeterTgt1 = visionTargets.get(5); // 0 corresponds to the BluePerimeter target
+        targetRedPerimeterTgt1.setName("RedP1");
+        targetRedPerimeterTgt1.setLocation(createMatrix(0, 0, 0, 0, 0, 0));
 
-        targetFrontPerimeter = visionTargets.get(2);
-        targetFrontPerimeter.setName("FrontPerimeter");
-        targetFrontPerimeter.setLocation(createMatrix(0, 0, 0, 0, 0, 0));
+        targetRedPerimeterTgt2 = visionTargets.get(6);
+        targetRedPerimeterTgt2.setName("RedP2");
+        targetRedPerimeterTgt2.setLocation(createMatrix(0, 0, 0, 0, 0, 0));
 
-        targetBackPerimeter = visionTargets.get(3);
-        targetBackPerimeter.setName("BackPerimeter");
-        targetBackPerimeter.setLocation(createMatrix(0, 0, 0, 0, 0, 0));
+        targetFrontPerimeterTgt1 = visionTargets.get(7);
+        targetFrontPerimeterTgt1.setName("FP1");
+        targetFrontPerimeterTgt1.setLocation(createMatrix(0, 0, 0, 0, 0, 0));
+
+        targetFrontPerimeterTgt2 = visionTargets.get(8);
+        targetFrontPerimeterTgt2.setName("FP2");
+        targetFrontPerimeterTgt2.setLocation(createMatrix(0, 0, 0, 0, 0, 0));
+
+        targetBluePerimeterTgt1 = visionTargets.get(9);
+        targetBluePerimeterTgt1.setName("BP1");
+        targetBluePerimeterTgt1.setLocation(createMatrix(0, 0, 0, 0, 0, 0));
+
+        targetBluePerimeterTgt2 = visionTargets.get(10);
+        targetBluePerimeterTgt2.setName("BP2");
+        targetBluePerimeterTgt2.setLocation(createMatrix(0, 0, 0, 0, 0, 0));
+
+        targetRearPerimeterTgt1 = visionTargets.get(11);
+        targetRearPerimeterTgt1.setName("RP1");
+        targetRearPerimeterTgt1.setLocation(createMatrix(0, 0, 0, 0, 0, 0));
+
+        targetRearPerimeterTgt2 = visionTargets.get(12);
+        targetRearPerimeterTgt2.setName("RP1");
+        targetRearPerimeterTgt2.setLocation(createMatrix(0, 0, 0, 0, 0, 0));
 
         //Set phone location on robot
         phoneLocation = createMatrix(0, 0, 0, 0, 0, 0);
 
         // Setup listener and inform it of phone information
-        listenerBluePerimeter = (VuforiaTrackableDefaultListener) targetBluePerimeter.getListener();
-        listenerBluePerimeter.setPhoneInformation(phoneLocation, parameters.cameraDirection);
+        listenerSkystone = (VuforiaTrackableDefaultListener) targetSkystone.getListener();
+        listenerSkystone.setPhoneInformation(phoneLocation, parameters.cameraDirection);
 
-        listenerRedPerimeter = (VuforiaTrackableDefaultListener) targetRedPerimeter.getListener();
-        listenerRedPerimeter.setPhoneInformation(phoneLocation, parameters.cameraDirection);
+        listenerRedPerimeterTgt1 = (VuforiaTrackableDefaultListener) targetRedPerimeterTgt1.getListener();
+        listenerRedPerimeterTgt1.setPhoneInformation(phoneLocation, parameters.cameraDirection);
 
-        listenerFrontPerimeter = (VuforiaTrackableDefaultListener) targetFrontPerimeter.getListener();
-        listenerFrontPerimeter.setPhoneInformation(phoneLocation, parameters.cameraDirection);
+        listenerRedPerimeterTgt2 = (VuforiaTrackableDefaultListener) targetRedPerimeterTgt2.getListener();
+        listenerRedPerimeterTgt2.setPhoneInformation(phoneLocation, parameters.cameraDirection);
 
-        listenerBackPerimeter = (VuforiaTrackableDefaultListener) targetBackPerimeter.getListener();
-        listenerBackPerimeter.setPhoneInformation(phoneLocation, parameters.cameraDirection);
+        listenerFrontPerimeterTgt1 = (VuforiaTrackableDefaultListener) targetFrontPerimeterTgt1.getListener();
+        listenerFrontPerimeterTgt1.setPhoneInformation(phoneLocation, parameters.cameraDirection);
 
-        lastKnownLocationBluePerimeter = createMatrix(0, 0, 0, 0, 0, 0);
-        lastKnownLocationRedPerimeter = createMatrix(0, 0, 0, 0, 0, 0);
-        lastKnownLocationFrontPerimeter = createMatrix(0, 0, 0, 0, 0, 0);
-        lastKnownLocationBackPerimeter = createMatrix(0, 0, 0, 0, 0, 0);
+        listenerFrontPerimeterTgt2 = (VuforiaTrackableDefaultListener) targetFrontPerimeterTgt2.getListener();
+        listenerFrontPerimeterTgt2.setPhoneInformation(phoneLocation, parameters.cameraDirection);
+
+        listenerBluePerimeterTgt1 = (VuforiaTrackableDefaultListener) targetBluePerimeterTgt1.getListener();
+        listenerBluePerimeterTgt1.setPhoneInformation(phoneLocation, parameters.cameraDirection);
+
+        listenerBluePerimeterTgt2 = (VuforiaTrackableDefaultListener) targetBluePerimeterTgt2.getListener();
+        listenerBluePerimeterTgt2.setPhoneInformation(phoneLocation, parameters.cameraDirection);
+
+        listenerRearPerimeterTgt1 = (VuforiaTrackableDefaultListener) targetRearPerimeterTgt1.getListener();
+        listenerRearPerimeterTgt1.setPhoneInformation(phoneLocation, parameters.cameraDirection);
+
+        listenerRearPerimeterTgt2 = (VuforiaTrackableDefaultListener) targetRearPerimeterTgt2.getListener();
+        listenerRearPerimeterTgt2.setPhoneInformation(phoneLocation, parameters.cameraDirection);
+
+        lastKnownLocationSkystone = createMatrix(0, 0, 0, 0, 0, 0);
+        lastKnownLocationRedPerimeterTgt1 = createMatrix(0, 0, 0, 0, 0, 0);
+        lastKnownLocationRedPerimeterTgt2 = createMatrix(0, 0, 0, 0, 0, 0);
+        lastKnownLocationFrontPerimeterTgt1 = createMatrix(0, 0, 0, 0, 0, 0);
+        lastKnownLocationFrontPerimeterTgt2 = createMatrix(0, 0, 0, 0, 0, 0);
+        lastKnownLocationBluePerimeterTgt1 = createMatrix(0, 0, 0, 0, 0, 0);
+        lastKnownLocationBluePerimeterTgt2 = createMatrix(0, 0, 0, 0, 0, 0);
+        lastKnownLocationRearPerimeterTgt1 = createMatrix(0, 0, 0, 0, 0, 0);
+        lastKnownLocationRearPerimeterTgt2 = createMatrix(0, 0, 0, 0, 0, 0);
     }
 
     private OpenGLMatrix createMatrix(float x, float y, float z, float u, float v, float w) {

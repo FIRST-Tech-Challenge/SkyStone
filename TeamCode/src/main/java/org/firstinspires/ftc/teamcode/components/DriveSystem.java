@@ -6,12 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.teamcode.components.scale.ExponentialRamp;
 import org.firstinspires.ftc.teamcode.components.scale.IScale;
 import org.firstinspires.ftc.teamcode.components.scale.LinearScale;
-import org.firstinspires.ftc.teamcode.components.scale.Point;
-import org.firstinspires.ftc.teamcode.components.scale.Ramp;
-import org.firstinspires.ftc.teamcode.systems.base.System;
 import org.firstinspires.ftc.teamcode.systems.imu.IMUSystem;
 import org.firstinspires.ftc.teamcode.systems.logging.PhoneLogger;
 
@@ -139,11 +135,25 @@ public class DriveSystem {
         leftX = scaleJoystickValue(leftX);
         leftY = scaleJoystickValue(leftY);
 
+        // Prevent small values from causing the robot to drift
+        if (Math.abs(rightX) < 0.01) {
+            rightX = 0.0f;
+        }
+        if (Math.abs(leftX) < 0.01) {
+            leftX = 0.0f;
+        }
+        if (Math.abs(leftY) < 0.01) {
+            leftY = 0.0f;
+        }
+        if (Math.abs(rightY) < 0.01) {
+            rightY = 0.0f;
+        }
+
         // write the values to the motors 1
         double frontRightPower = -leftY + leftX - rightX;
-        double backRightPower = -leftY - leftX - rightX;
+        double backRightPower = -leftY + leftX + rightX;
         double frontLeftPower = -leftY - leftX + rightX;
-        double backLeftPower = -leftY + leftX + rightX;
+        double backLeftPower = -leftY - leftX - rightX;
 
 
         this.motorFrontRight.setPower(Range.clip(frontRightPower, -1, 1));

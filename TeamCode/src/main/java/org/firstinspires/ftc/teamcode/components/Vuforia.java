@@ -1,6 +1,5 @@
-package org.firstinspires.ftc.teamcode.component;
+package org.firstinspires.ftc.teamcode.components;
 
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;

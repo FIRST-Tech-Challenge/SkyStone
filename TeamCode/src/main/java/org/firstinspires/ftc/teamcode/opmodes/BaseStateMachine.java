@@ -34,12 +34,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-//------------------------------------------------------------------------------
-// A2818_StateMachine.java
-//------------------------------------------------------------------------------
-// Extends the OpMode class to provide a Example Autonomous code
-//------------------------------------------------------------------------------
-    public class TestStateMachine extends OpMode {
+
+    public class BaseStateMachine extends OpMode {
         // A list of system States.
         private enum State {
             STATE_INITIAL,
@@ -52,11 +48,6 @@ import com.qualcomm.robotcore.util.Range;
             STATE_DRAG_FOUNDATION,
             STATE_RETURN,
         }
-
-        //--------------------------------------------------------------------------
-        // Robot device Objects
-        //--------------------------------------------------------------------------
-
 
         // Loop cycle time stats variables
         public ElapsedTime  mRuntime = new ElapsedTime();   // Time into round.
@@ -94,14 +85,6 @@ import com.qualcomm.robotcore.util.Range;
         //--------------------------------------------------------------------------
         @Override
         public void loop() {
-            // Send the current state info (state and time) back to first line of driver station telemetry.
-
-            // Execute the current state.  Each STATE's case code does the following:
-            // 1: Look for an EVENT that will cause a STATE change
-            // 2: If an EVENT is found, take any required ACTION, and then set the next STATE
-            //   else
-            // 3: If no EVENT is found, do processing for the current STATE and send TELEMETRY data for STATE.
-            //
             switch (mCurrentState) {
                 case STATE_INITIAL:
                     // Initialize
@@ -151,9 +134,7 @@ import com.qualcomm.robotcore.util.Range;
             }
         }
 
-        //--------------------------------------------------------------------------
-        // stop
-        //--------------------------------------------------------------------------
+        // Stop
         @Override
         public void stop() {
         }

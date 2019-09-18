@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.slf4j.MDC;
+
 /*
  *
  * This encoder test program serves as a form of data collection for the tuning
@@ -23,17 +25,18 @@ public class BasicAuto extends LinearOpMode {
     public double unitRate = TPR / circumference;
     public DcMotor BL;
     public DcMotor TR;
-    TypexChart chart = new TypexChart();
+    //TypexChart chart = new TypexChart();
     ElapsedTime time = new ElapsedTime();
 
     @Override
     public void runOpMode() throws InterruptedException {
 
         BL = hardwareMap.get(DcMotor.class, "BL");
-        TR = hardwareMap.get(DcMotor.class, "TR");
         BL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    //    TR = hardwareMap.get(DcMotor.class, "TR");
 
-        chart.init(hardwareMap);
+    //    chart.init(hardwareMap);
 
         waitForStart();
         while (opModeIsActive()) {
@@ -47,9 +50,9 @@ public class BasicAuto extends LinearOpMode {
 
             //Loop will run as long as within accepted value
             while ((threshold(BL, targetPos(10))) && gamepad1.a) {
-                BL.setPower(0.1);
-                telemetry.update();
+                BL.setPower(0.2);
             }
+            telemetry.update();
         }
     }
 
@@ -73,6 +76,7 @@ public class BasicAuto extends LinearOpMode {
     equal to the targetPos.
      */
     public boolean threshold(DcMotor wheel, int targetPos) {
-        return wheel.getCurrentPosition() <= targetPos;
+        int tolerance = targetPos - 27;
+        return wheel.getCurrentPosition() <= tolerance;
     }
 }

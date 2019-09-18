@@ -23,17 +23,17 @@ public class EncoderTestV3 extends LinearOpMode {
     public double unitRate = TPR / circumference;
     public DcMotor BL;
     public DcMotor TR;
-    TypexChart chart = new TypexChart();
+    //TypexChart chart = new TypexChart();
     ElapsedTime time = new ElapsedTime();
 
     @Override
     public void runOpMode() throws InterruptedException {
 
         BL = hardwareMap.get(DcMotor.class, "BL");
-        TR = hardwareMap.get(DcMotor.class, "TR");
+        //TR = hardwareMap.get(DcMotor.class, "TR");
         BL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        chart.init(hardwareMap);
+        //chart.init(hardwareMap);
 
         waitForStart();
         while (opModeIsActive()) {
@@ -79,6 +79,6 @@ public class EncoderTestV3 extends LinearOpMode {
 
     public boolean toleranceStoppage(DcMotor wheel, int targetPos, double tolerance) {
         int intTolerance = (int) Math.round(tolerance);
-        return wheel.getCurrentPosition() <= (targetPos-intTolerance);
+        return wheel.getCurrentPosition() <= targetPos-intTolerance;
     }
 }

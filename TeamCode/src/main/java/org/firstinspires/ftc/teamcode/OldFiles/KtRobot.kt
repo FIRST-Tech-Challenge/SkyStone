@@ -19,7 +19,6 @@ class KtRobot
     var touch: DigitalChannel? = null
     var stick: CRServo? = null
 
-
     var motF = DcMotorSimple.Direction.FORWARD
     var motR = DcMotorSimple.Direction.REVERSE
     var serR = Servo.Direction.REVERSE

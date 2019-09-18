@@ -7,9 +7,8 @@ import com.qualcomm.robotcore.hardware.IntegratingGyroscope;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.westtorrancerobotics.lib.hardware.MecanumController;
-import org.westtorrancerobotics.lib.hardware.MecanumDrive;
-import org.westtorrancerobotics.lib.spline.Angle;
+import org.westtorrancerobotics.lib.MecanumDrive;
+import org.westtorrancerobotics.lib.Angle;
 
 public class MecanumDriveImpl implements MecanumDrive {
 

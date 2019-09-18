@@ -30,16 +30,15 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.westtorrancerobotics.lib.hardware.MecanumController;
-import org.westtorrancerobotics.lib.hardware.MecanumDrive;
+import org.westtorrancerobotics.lib.Angle;
+import org.westtorrancerobotics.lib.MecanumController;
+import org.westtorrancerobotics.lib.MecanumDrive;
 
 @TeleOp(name="Two Drivers", group="Iterative Opmode")
 //@Disabled
@@ -54,6 +53,7 @@ public class OfficialTeleop extends OpMode
     private DcMotorEx rightBack;
     private ModernRoboticsI2cGyro gyro;
     private MecanumController driveTrain;
+    private MecanumDrive train;
 
     private DcMotorEx lift;
     private float liftLevel;
@@ -87,8 +87,8 @@ public class OfficialTeleop extends OpMode
         rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        MecanumDrive drive = new MecanumDriveImpl(leftFront, leftBack, rightFront, rightBack, gyro);
-        driveTrain = new MecanumController(drive);
+        train = new MecanumDriveImpl(leftFront, leftBack, rightFront, rightBack, gyro);
+        driveTrain = new MecanumController(train);
 
 
         lift = hardwareMap.get(DcMotorEx.class, "lift");
@@ -130,6 +130,8 @@ public class OfficialTeleop extends OpMode
         lastDpad = 0;
         dPadDebounce = -250;
 
+        driveTrain.zeroDeadReckoner();
+
         telemetry.addData("Status", "Lift Initialized.");
         telemetry.update();
 
@@ -162,8 +164,11 @@ public class OfficialTeleop extends OpMode
 
         lift.setTargetPosition((int) (liftLevel * 300));
 
+        driveTrain.updateLocation();
+
         telemetry.addData("Drive", "x:%f, y:%f, turn:%f", x, y, turn);
         telemetry.addData("Lift level", Math.round(liftLevel));
+        telemetry.addData("Drive Base Location", driveTrain.getLocation());
 
     }
 
@@ -172,6 +177,81 @@ public class OfficialTeleop extends OpMode
      */
     @Override
     public void stop() {
+    }
+
+    // TODO replace spinDrive and add the auto methods (to MecanumController)
+    // TODO add CONSTANT_BOTH_SPEED to TranslTurnWay enum
+    // TODO add sources library with MecanumAttempts class library
+    public void spinDrive(Angle ang, double speed, double turn, MecanumDrive.TranslTurnMethod way) {
+        double x = ang.getValue(Angle.AngleUnit.RADIANS, Angle.AngleOrientation.COMPASS_HEADING) % 6.283185307179586D;
+        x = x < 0.0D ? x + 6.283185307179586D : x;
+        double a = Math.cos(x - 0.7853981633974483D);
+        double b = Math.cos(x + 0.7853981633974483D);
+        double sc = 1.0D;
+        double scTurn = 0.0D;
+        double turnPwr;
+        switch(way) {
+            case CONSTANT_TRANSLATION_SPEED:
+                sc = speed;
+                scTurn = 1 - Math.max(Math.abs(a), Math.abs(b)) * speed;
+                break;
+            case EQUAL_POWERS:
+                sc = speed / (Math.abs(a) + Math.abs(b));
+                scTurn = 0.5D;
+                break;
+            case EQUAL_SPEED_RATIOS:
+                double max = Math.max(Math.abs(turn), Math.abs(speed));
+                scTurn = Math.abs(turn) * max / (Math.abs(turn) + Math.abs(speed));
+                sc = max - scTurn;
+                break;
+            case CONSTANT_BOTH_SPEED:
+                if (Math.abs(speed + turn - 1) > 0.0001) {
+                    throw new IllegalArgumentException("Speed and turn must add to one " +
+                            "for CONSTANT_BOTH_SPEED drive mode");
+                }
+                sc = speed;
+                scTurn = turn;
+                break;
+        }
+        a *= sc;
+        b *= sc;
+        turnPwr = turn * scTurn;
+        this.train.setMotorPowers(a + turnPwr, b + turnPwr, b - turnPwr, a - turnPwr);
+    }
+
+    private long lastLeftFront;
+    private long lastRightFront;
+    private long lastLeftBack;
+    private long lastRightBack;
+
+    private Location location;
+
+    public void zeroDeadReckoner() {
+        lastLeftFront = train.getFrontLeftEncoder();
+        lastLeftBack = train.getBackLeftEncoder();
+        lastRightFront = train.getFrontRightEncoder();
+        lastRightBack = train.getBackRightEncoder();
+        location = new Location(0, 0, new Angle(0, Angle.AngleUnit.DEGREES, Angle.AngleOrientation.COMPASS_HEADING));
+    }
+
+    public void updateLocation() {
+        double a = (Math.abs(train.getFrontLeftEncoder() - lastLeftFront) +
+                Math.abs(train.getBackRightEncoder() - lastRightBack)) / (2 * Math.sqrt(2));
+        double b = (Math.abs(train.getBackLeftEncoder() - lastLeftBack) +
+                Math.abs(train.getFrontRightEncoder() - lastRightFront)) / (2 * Math.sqrt(2));
+        location.translate(new Point2D(a, new Angle(train.getGyro().getValue(Angle.AngleUnit.DEGREES, Angle.AngleOrientation.COMPASS_HEADING) + 45,
+                Angle.AngleUnit.DEGREES, Angle.AngleOrientation.COMPASS_HEADING)));
+        location.translate(new Point2D(b, new Angle(train.getGyro().getValue(Angle.AngleUnit.DEGREES, Angle.AngleOrientation.COMPASS_HEADING) - 45,
+                Angle.AngleUnit.DEGREES, Angle.AngleOrientation.COMPASS_HEADING)));
+        location = new Location(location.x, location.y, train.getGyro());
+        lastLeftFront = train.getFrontLeftEncoder();
+        lastLeftBack = train.getBackLeftEncoder();
+        lastRightFront = train.getFrontRightEncoder();
+        lastRightBack = train.getBackRightEncoder();
+    }
+
+    public Location getLocation() {
+        return location;
     }
 
 }

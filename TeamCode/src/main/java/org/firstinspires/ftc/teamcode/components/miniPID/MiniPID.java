@@ -8,7 +8,7 @@ package org.firstinspires.ftc.teamcode.components.miniPID;
  * output= pid.getOutput(sensorvalue,target); <br>
  * }
  *
- * @see http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-direction/improving-the-beginners-pid-introduction
+ * //@see http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-direction/improving-the-beginners-pid-introduction
  */
 public class MiniPID
 {
@@ -205,7 +205,7 @@ public class MiniPID
      * Set the maximum output scale contributed by the I component of the system
      * This can be used to prevent large windup issues and make tuning simpler
      *
-     * @param maximum. Units are the same as the expected output scale
+     * //@param maximum. Units are the same as the expected output scale
      */
     public void setMaxIOutput(double maximum)
     {
@@ -272,7 +272,7 @@ public class MiniPID
      * position, velocity, or angle. <br>
      *
      * @param setpoint
-     * @see MiniPID#getOutput(actual) <br>
+     * //@see MiniPID#getOutput(actual) <br>
      */
     public void setSetpoint(double setpoint)
     {
@@ -405,9 +405,9 @@ public class MiniPID
      * In one parameter mode, the last configured setpoint will be used.<br>
      *
      * @param actual   The monitored scale, typically as a sensor input.
-     * @param setpoint The target scale for the system
+     * //@param setpoint The target scale for the system
      * @return calculated output scale for driving the system
-     * @see MiniPID#setSetpoint()
+     * //@see MiniPID#setSetpoint()
      */
     public double getOutput(double actual)
     {
@@ -465,7 +465,7 @@ public class MiniPID
      * Uses an exponential wieghted rolling sum filter, according to a simple <br>
      * <pre>output*(1-strength)*sum(0..n){output*strength^n}</pre> algorithm.
      *
-     * @param output valid between [0..1), meaning [current output only.. historical output only)
+     * //@param output valid between [0..1), meaning [current output only.. historical output only)
      */
     public void setOutputFilter(double strength)
     {

@@ -4,6 +4,7 @@ import com.vuforia.HINT;
 import com.vuforia.Vuforia;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -55,7 +56,12 @@ public class VuforiaSensor {
 
     public OpenGLMatrix phoneLocation;
 
-    public VuforiaSensor() {
+    public Telemetry telemetry;
+
+    public VuforiaSensor(Telemetry telemetry) {
+
+        this.telemetry = telemetry;
+
         // Setup parameters to create localizer
         parameters = new VuforiaLocalizer.Parameters(R.id.cameraMonitorViewId); // To remove the camera view from the screen, remove the R.id.cameraMonitorViewId
         parameters.vuforiaLicenseKey = "ATUNNu//////AAABmU6BPERoN0USgSQzxPQZ8JYg9RVnQhKO6YEHbNnOhkfL/iNrji3x9vzFkKsBgVzWgwH72G6eXpb3VCllKTrt1cD3gvQXZ48f+5EN43eYUQ3nuP3943NZB822XzV1djS3s6wDdaiS20PErO5K7lZUGyf9Z4Tb2TliOXv/ZoxUvwNQ/ndRjN344G0TAo8PUja0V3x2WKk+mCJavoZIgmOqgaitgmg5jim/aWBL2yk0a/QpqbP87KQfGn69zpisDBc98xdGPdSFj9ENkU9WTMem9UgnOFPgpdrHV5Zr5IpQH1jxLZIvwGuKOT97npm54kIvnJM0dzhBVA+s95JA3cxyac5ArHUYVtDePwlExuekZy9l"; // Insert your own key here
@@ -157,4 +163,61 @@ public class VuforiaSensor {
         return matrix.formatAsTransform();
     }
 
+    public void activate() {
+        visionTargets.activate();
+    }
+
+    public void loop() {
+        // Ask the listener for the latest information on where the robot is
+        OpenGLMatrix latestLocationSkystone = listenerSkystone.getUpdatedRobotLocation();
+        OpenGLMatrix latestLocationRedPerimeterTgt1 = listenerRedPerimeterTgt1.getUpdatedRobotLocation();
+        OpenGLMatrix latestLocationRedPerimeterTgt2 = listenerRedPerimeterTgt2.getUpdatedRobotLocation();
+        OpenGLMatrix latestLocationFrontPerimeterTgt1 = listenerFrontPerimeterTgt1.getUpdatedRobotLocation();
+        OpenGLMatrix latestLocationFrontPerimeterTgt2 = listenerFrontPerimeterTgt2.getUpdatedRobotLocation();
+        OpenGLMatrix latestLocationBluePerimeterTgt1 = listenerBluePerimeterTgt1.getUpdatedRobotLocation();
+        OpenGLMatrix latestLocationBluePerimeterTgt2 = listenerBluePerimeterTgt2.getUpdatedRobotLocation();
+        OpenGLMatrix latestLocationRearPerimeterTgt1 = listenerRearPerimeterTgt1.getUpdatedRobotLocation();
+        OpenGLMatrix latestLocationRearPerimeterTgt2 = listenerRearPerimeterTgt2.getUpdatedRobotLocation();
+
+        // The listener will sometimes return null, so we check for that to prevent errors
+        if (latestLocationSkystone != null)
+            lastKnownLocationSkystone = latestLocationSkystone;
+        if (latestLocationRedPerimeterTgt1 != null)
+            lastKnownLocationRedPerimeterTgt1 = latestLocationRedPerimeterTgt1;
+        if (latestLocationRedPerimeterTgt2 != null)
+            lastKnownLocationRedPerimeterTgt2 = latestLocationRedPerimeterTgt2;
+        if (latestLocationFrontPerimeterTgt1 != null)
+            lastKnownLocationFrontPerimeterTgt1 = latestLocationFrontPerimeterTgt1;
+        if (latestLocationFrontPerimeterTgt2 != null)
+            lastKnownLocationFrontPerimeterTgt2 = latestLocationFrontPerimeterTgt2;
+        if (latestLocationBluePerimeterTgt1 != null)
+            lastKnownLocationBluePerimeterTgt2 = latestLocationBluePerimeterTgt1;
+        if (latestLocationBluePerimeterTgt2 != null)
+            lastKnownLocationBluePerimeterTgt2 = latestLocationBluePerimeterTgt2;
+        if (latestLocationRearPerimeterTgt1 != null)
+            lastKnownLocationRearPerimeterTgt2 = latestLocationRearPerimeterTgt1;
+        if (latestLocationRearPerimeterTgt2 != null)
+            lastKnownLocationRearPerimeterTgt2 = latestLocationRearPerimeterTgt2;
+
+        // Send information about whether the target is visible, and where the robot is
+        if (listenerSkystone.isVisible())
+            telemetry.addData("Tracking", targetSkystone.getName());
+        if (listenerRedPerimeterTgt1.isVisible())
+            telemetry.addData("Tracking", targetRedPerimeterTgt1.getName());
+        if (listenerRedPerimeterTgt2.isVisible())
+            telemetry.addData("Tracking", targetRedPerimeterTgt2.getName());
+        if (listenerFrontPerimeterTgt1.isVisible())
+            telemetry.addData("Tracking", targetFrontPerimeterTgt1.getName());
+        if (listenerFrontPerimeterTgt2.isVisible())
+            telemetry.addData("Tracking", targetFrontPerimeterTgt2.getName());
+        if (listenerBluePerimeterTgt1.isVisible())
+            telemetry.addData("Tracking", targetBluePerimeterTgt1.getName());
+        if (listenerBluePerimeterTgt2.isVisible())
+            telemetry.addData("Tracking", targetBluePerimeterTgt2.getName());
+        if (listenerRearPerimeterTgt1.isVisible())
+            telemetry.addData("Tracking", targetRearPerimeterTgt1.getName());
+        if (listenerRearPerimeterTgt2.isVisible())
+            telemetry.addData("Tracking", targetRearPerimeterTgt2.getName());
+    }
+    
 }

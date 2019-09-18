@@ -39,21 +39,6 @@ import com.qualcomm.robotcore.util.Range;
 //------------------------------------------------------------------------------
 // Extends the OpMode class to provide a Example Autonomous code
 //------------------------------------------------------------------------------
-    /* This opMode does the following steps:
-     * 0) Wait till the encoders show reset to zero.
-     * 1) Drives to the vicinity of the beacon using encoder counts
-     * 2) Use the Legacy light sensor to locate the white line
-     * 3) Tracks the line until the wall is reached
-     * 4) Pushes up against wall to get square using constant power an time.
-     * 5) Deploys the Climbers using the servo
-     * 6) Drives to the Mountain using encoder counts
-     * 7) Climbs the Mountain using constant speed and time
-     * 8) Stops and waits for end of Auto
-     *
-     * The code is executed as a state machine.  Each "State" performs a specific task which takes time to execute.
-     * An "Event" can cause a change in the state.  One or more "Actions" are performed when moving on to next state
-     */
-
     public class TestStateMachine extends OpMode {
         // A list of system States.
         private enum State {
@@ -65,7 +50,7 @@ import com.qualcomm.robotcore.util.Range;
             STATE_PARK_AT_LINE,
             STATE_DEPOSIT_STONE,
             STATE_DRAG_FOUNDATION,
-            STATE_SCOOP_STONE,
+            STATE_RETURN,
         }
 
         //--------------------------------------------------------------------------
@@ -126,34 +111,42 @@ import com.qualcomm.robotcore.util.Range;
                     // Strafe towards line
                     // Identify SkyStone
                     // If we can't see it after 3 feet, start driving  until we do
+                    newState(State.STATE_GRAB_STONE);
                     break;
 
                 case STATE_GRAB_STONE:
-
+                    newState(State.STATE_DELIVER_STONE);
                     break;
 
                 case STATE_DELIVER_STONE:
-
+                    // Drive with stone to the foundation
+                    // Go under bridge
+                    newState(State.STATE_DEPOSIT_STONE);
                     break;
 
                 case STATE_FIND_STONE:
-
+                    // Find a stone using TensorFlow
+                    newState(State.STATE_GRAB_STONE);
                     break;
 
                 case STATE_PARK_AT_LINE:
-
+                    // Find the line
+                    // Park
                     break;
 
                 case STATE_DEPOSIT_STONE:
-
+                    // Put stone down on foundation
+                    newState(State.STATE_RETURN);
                     break;
 
                 case STATE_DRAG_FOUNDATION:
-
+                    // Drag foundation out of box
+                    newState(State.STATE_PARK_AT_LINE);
                     break;
 
-                case STATE_SCOOP_STONE:
-
+                case STATE_RETURN:
+                    // Go back to block repository
+                    newState(State.STATE_FIND_SKYSTONE);
                     break;
             }
         }
@@ -165,6 +158,13 @@ import com.qualcomm.robotcore.util.Range;
         public void stop() {
         }
 
-
+    private void newState(State newState) {
+        // Reset the state time, and then change to next state.
+        mStateTime.reset();
+        mCurrentState = newState;
     }
+
+
+
+}
 

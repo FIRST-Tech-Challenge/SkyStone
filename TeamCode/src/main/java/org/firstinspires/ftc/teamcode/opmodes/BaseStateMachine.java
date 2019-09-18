@@ -26,17 +26,10 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorController;
-import com.qualcomm.robotcore.hardware.LightSensor;
-import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
 
     public class BaseStateMachine extends OpMode {
-        // A list of system States.
         private enum State {
             STATE_INITIAL,
             STATE_FIND_SKYSTONE,
@@ -49,40 +42,27 @@ import com.qualcomm.robotcore.util.Range;
             STATE_RETURN,
         }
 
-        // Loop cycle time stats variables
         public ElapsedTime  mRuntime = new ElapsedTime();   // Time into round.
 
         private ElapsedTime mStateTime = new ElapsedTime();  // Time into current state
 
         private State       mCurrentState;    // Current State Machine State.
 
-
-        //--------------------------------------------------------------------------
-        // init
-        //--------------------------------------------------------------------------
         @Override
         public void init() {
-            // Initialize class members
+
         }
 
-        //--------------------------------------------------------------------------
-        // loop
-        //--------------------------------------------------------------------------
+
         // @Override
         public void init_loop() {
         }
 
-        //--------------------------------------------------------------------------
-        // start
-        //--------------------------------------------------------------------------
         @Override
         public void start() {
 
         }
 
-        //--------------------------------------------------------------------------
-        // loop
-        //--------------------------------------------------------------------------
         @Override
         public void loop() {
             switch (mCurrentState) {
@@ -140,7 +120,7 @@ import com.qualcomm.robotcore.util.Range;
         }
 
     private void newState(State newState) {
-        // Reset the state time, and then change to next state.
+        // Restarts the state clock as well as the state
         mStateTime.reset();
         mCurrentState = newState;
     }

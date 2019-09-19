@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.components.scale.IScale;
 import org.firstinspires.ftc.teamcode.components.scale.LinearScale;
 import org.firstinspires.ftc.teamcode.systems.imu.IMUSystem;
 import org.firstinspires.ftc.teamcode.systems.logging.PhoneLogger;
+import org.firstinspires.ftc.teamcode.components.scale.*;
 
 public class DriveSystem {
     private final IScale JOYSTICK_SCALE = new LinearScale(0.62, 0);
@@ -184,99 +185,99 @@ public class DriveSystem {
 
 
 
-//    private void driveToPositionTicks(int ticks, double power, boolean shouldRamp) {
-//        setMotorPower(0);
-//
-//        motorFrontRight.setTargetPosition(motorFrontRight.getCurrentPosition() + ticks);
-//        motorFrontLeft.setTargetPosition(motorFrontLeft.getCurrentPosition() + ticks);
-//        motorBackRight.setTargetPosition(motorBackRight.getCurrentPosition() + ticks);
-//        motorBackLeft.setTargetPosition(motorBackLeft.getCurrentPosition() + ticks);
-//
-//        setRunMode(DcMotor.RunMode.RUN_TO_POSITION);
-//
-//        Ramp ramp = new ExponentialRamp(new Point(0, RAMP_POWER_CUTOFF),
-//                new Point(RAMP_DISTANCE_TICKS, power));
-//
-//        double adjustedPower = Range.clip(power, -1.0, 1.0);
-//        setMotorPower(adjustedPower);
-//
-//        while (anyMotorsBusy()) {
-//            int distance = getMinDistanceFromTarget();
-//
-//            if (distance < 50) {
-//                break;
-//            }
-//
-//            double direction = 1.0;
-//            if (distance < 0) {
-//                distance = -distance;
-//                direction = -1.0;
-//            }
-//
-//            double scaledPower = shouldRamp ? ramp.scaleX(distance) : power;
-//
-//            setMotorPower(direction * scaledPower);
-//            telemetry.log("MecanumDriveSystem", "distance left (ticks): " + getMinDistanceFromTarget());
-//            telemetry.log("MecanumDriveSystem","scaled power: " + scaledPower);
-//            telemetry.write();
-//        }
-//        setMotorPower(0);
-//    }
-//
-//    public void setRunMode(DcMotor.RunMode runMode) {
-//        for (DcMotor motor : motors) {
-//            motor.setMode(runMode);
-//        }
-//    }
-//
-//    public void mecanumDriveXY(double x, double y) {
-//        this.motorFrontRight.setPower(Range.clip(y + x, -1, 1));
-//        this.motorBackRight.setPower(Range.clip(y - x, -1, 1));
-//        this.motorFrontLeft.setPower(Range.clip(y - x, -1, 1));
-//        this.motorBackLeft.setPower(Range.clip(y + x, -1, 1));
-//    }
-//
-//    /**
-//     * Checks if any of the motors are currently running
-//     * @return Returns true if any motors are busy
-//     */
-//    public boolean anyMotorsBusy()
-//    {
-//        return motorFrontLeft.isBusy() ||
-//                motorFrontRight.isBusy() ||
-//                motorBackLeft.isBusy() ||
-//                motorBackRight.isBusy();
-//    }
-//
-//    /**
-//     * Gets the minimum distance from the target
-//     * @return
-//     */
-//    public int  getMinDistanceFromTarget() {
-//        int d = this.motorFrontLeft.getTargetPosition() - this.motorFrontLeft.getCurrentPosition();
-//        d = Math.min(d, this.motorFrontRight.getTargetPosition() - this.motorFrontRight.getCurrentPosition());
-//        d = Math.min(d, this.motorBackLeft.getTargetPosition() - this.motorBackLeft.getCurrentPosition());
-//        d = Math.min(d, this.motorBackRight.getTargetPosition() - this.motorBackRight.getCurrentPosition());
-//        return d;
-//    }
-//
-//    public void driveToPositionInches(int inches, double power, boolean shouldRamp) {
-//         if (power <= 0 || inches <= 0) {
-//             setMotorDirection(FORWARD);
-//         } else {
-//             setMotorDirection(BACKWARD);
-//         }
-//        int ticks = (int) inchesToTicks(inches);
-//        driveToPositionTicks(ticks, power, shouldRamp);
-//    }
-//
-//    /**
-//     * Converts inches to ticks
-//     * @param inches Inches to convert to ticks
-//     * @return
-//     */
-//    public int inchesToTicks(int inches) {
-//        return inches * TICKS_IN_INCH;
-//    }
+    private void driveToPositionTicks(int ticks, double power, boolean shouldRamp) {
+        setMotorPower(0);
+
+        motorFrontRight.setTargetPosition(motorFrontRight.getCurrentPosition() + ticks);
+        motorFrontLeft.setTargetPosition(motorFrontLeft.getCurrentPosition() + ticks);
+        motorBackRight.setTargetPosition(motorBackRight.getCurrentPosition() + ticks);
+        motorBackLeft.setTargetPosition(motorBackLeft.getCurrentPosition() + ticks);
+
+        setRunMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        Ramp ramp = new ExponentialRamp(new Point(0, RAMP_POWER_CUTOFF),
+                new Point(RAMP_DISTANCE_TICKS, power));
+
+        double adjustedPower = Range.clip(power, -1.0, 1.0);
+        setMotorPower(adjustedPower);
+
+        while (anyMotorsBusy()) {
+            int distance = getMinDistanceFromTarget();
+
+            if (distance < 50) {
+                break;
+            }
+
+            double direction = 1.0;
+            if (distance < 0) {
+                distance = -distance;
+                direction = -1.0;
+            }
+
+            double scaledPower = shouldRamp ? ramp.scaleX(distance) : power;
+
+            setMotorPower(direction * scaledPower);
+            telemetry.log("MecanumDriveSystem", "distance left (ticks): " + getMinDistanceFromTarget());
+            telemetry.log("MecanumDriveSystem","scaled power: " + scaledPower);
+            telemetry.write();
+        }
+        setMotorPower(0);
+    }
+
+    public void setRunMode(DcMotor.RunMode runMode) {
+        for (DcMotor motor : motors) {
+            motor.setMode(runMode);
+        }
+    }
+
+    public void mecanumDriveXY(double x, double y) {
+        this.motorFrontRight.setPower(Range.clip(y + x, -1, 1));
+        this.motorBackRight.setPower(Range.clip(y - x, -1, 1));
+        this.motorFrontLeft.setPower(Range.clip(y - x, -1, 1));
+        this.motorBackLeft.setPower(Range.clip(y + x, -1, 1));
+    }
+
+    /**
+     * Checks if any of the motors are currently running
+     * @return Returns true if any motors are busy
+     */
+    public boolean anyMotorsBusy()
+    {
+        return motorFrontLeft.isBusy() ||
+                motorFrontRight.isBusy() ||
+                motorBackLeft.isBusy() ||
+                motorBackRight.isBusy();
+    }
+
+    /**
+     * Gets the minimum distance from the target
+     * @return
+     */
+    public int  getMinDistanceFromTarget() {
+        int d = this.motorFrontLeft.getTargetPosition() - this.motorFrontLeft.getCurrentPosition();
+        d = Math.min(d, this.motorFrontRight.getTargetPosition() - this.motorFrontRight.getCurrentPosition());
+        d = Math.min(d, this.motorBackLeft.getTargetPosition() - this.motorBackLeft.getCurrentPosition());
+        d = Math.min(d, this.motorBackRight.getTargetPosition() - this.motorBackRight.getCurrentPosition());
+        return d;
+    }
+
+    public void driveToPositionInches(int inches, double power, boolean shouldRamp) {
+         if (power <= 0 || inches <= 0) {
+             setMotorDirection(FORWARD);
+         } else {
+             setMotorDirection(BACKWARD);
+         }
+        int ticks = (int) inchesToTicks(inches);
+        driveToPositionTicks(ticks, power, shouldRamp);
+    }
+
+    /**
+     * Converts inches to ticks
+     * @param inches Inches to convert to ticks
+     * @return
+     */
+    public int inchesToTicks(int inches) {
+        return inches * TICKS_IN_INCH;
+    }
 
 }

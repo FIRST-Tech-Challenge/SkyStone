@@ -27,11 +27,11 @@ public class Hardware {
     private static final double WHEEL_CIRCUM = 2.0 * Math.PI * ODOM_WHEEL_RADIUS;
         // Constants determined through 12 trials of moving the robot around
     private static final double ODOM_TICKS_PER_CM = 63.04490471;
+    private static final double ODOM_TICKS_PER_CM_LEFT = 62.8066872076;
+    private static final double ODOM_TICKS_PER_CM_RIGHT = 63.2831222184;
     private static final double ODOM_CORRECTION_FORWARD = 1.62322867463;
     private static final double ODOM_CORRECTION_SIDEWAYS = 1.2296775794 * 1.22624369 * 0.910719701;
     private static final double ODOM_CORRECTION_THETA = 20.45383245 / 2;
-    private static final double ODOM_TICKS_PER_CM_LEFT = 62.8066872076;
-    private static final double ODOM_TICKS_PER_CM_RIGHT = 63.2831222184;
 
     // Robot physical location
     public double x = 0;
@@ -133,7 +133,7 @@ public class Hardware {
         centerOdomTraveled += deltaCenterDist;
 
         // To get theta, we find the tangent of the distance between the two wheels
-        theta += (deltaLeftDist - deltaRightDist) / ODOM_CORRECTION_THETA;
+        theta += Math.atan((deltaLeftDist - deltaRightDist) / DIST_BETWEEN_WHEELS);
 
         // Finds the unrotated point's position, then rotates it around the origin, then adjusts to robot position
         x += (deltaLeftDist + deltaRightDist) / 2.0 /* * Math.cos(theta) +

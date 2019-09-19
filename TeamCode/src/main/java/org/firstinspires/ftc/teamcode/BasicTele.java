@@ -18,13 +18,27 @@ public class BasicTele extends LinearOpMode {
 
         //Setting drive parameters
         while(opModeIsActive()) {
-            chart.TL.setPower(gamepad1.left_stick_y);
-            chart.BL.setPower(gamepad1.left_stick_y);
-            chart.TR.setPower(gamepad1.right_stick_y);
-            chart.BR.setPower(gamepad1.right_stick_y);
 
-            telemetry.addLine();
-            telemetry.addData("Distance", "74");
+            //Strafe Code and Standard Drive Code
+            if (gamepad1.dpad_left) {
+                chart.TL.setPower(1);
+                chart.BL.setPower(-1);
+                chart.TR.setPower(-1);
+                chart.BR.setPower(1);
+            }
+            else if (gamepad1.dpad_right) {
+                chart.TL.setPower(-1);
+                chart.BL.setPower(1);
+                chart.TR.setPower(1);
+                chart.BR.setPower(-1);
+            }
+            else {
+                chart.TL.setPower(gamepad1.left_stick_y);
+                chart.BL.setPower(gamepad1.left_stick_y);
+                chart.TR.setPower(gamepad1.right_stick_y);
+                chart.BR.setPower(gamepad1.right_stick_y);
+            }
+
         }
     }
 }

@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.components.scale;
 
-public class LinearScale implements IScale
-{
+public class LinearScale {
     private double scaleFactor;
     private double scaleOffset;
 
@@ -21,7 +20,6 @@ public class LinearScale implements IScale
      * @param x The x to be scaled
      * @return the scaled X
      */
-    @Override
     public double scaleX(double x)
     {
         return scaleFactor * x + scaleOffset;
@@ -32,7 +30,6 @@ public class LinearScale implements IScale
      * @param y The y value for be scaled
      * @return the scaled y
      */
-    @Override
     public double scaleY(double y)
     {
         return (y - scaleOffset) / scaleFactor;

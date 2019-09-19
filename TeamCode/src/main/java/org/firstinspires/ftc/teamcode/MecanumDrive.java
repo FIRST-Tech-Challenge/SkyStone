@@ -36,10 +36,16 @@ public class MecanumDrive extends LinearOpMode {
     }
     
     public void moveYWX(double forward, double turn, double strafe) {
-        robot.leftFront.setPower(forward + turn + strafe);
-        robot.rightFront.setPower(forward - turn - strafe);
-        robot.leftBack.setPower(forward + turn - strafe);
-        robot.rightBack.setPower(forward - turn + strafe);
+
+        leftFrontPower = Range.clip(forward + turn + strafe, -0.3, 0.3);
+        rightFrontPower = Range.clip(forward - turn - strafe, -0.3, 0.3);
+        leftBackPower = Range.clip(forward + turn - strafe, -0.3, 0.3);
+        rightBackPower = Range.clip(forward - turn + strafe, -0.3, 0.3);
+
+        robot.leftFront.setPower(leftFrontPower);
+        robot.rightFront.setPower(rightFrontPower);
+        robot.leftBack.setPower(leftBackPower);
+        robot.rightBack.setPower(rightBackPower);
     }
     
 }

@@ -4,7 +4,6 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
@@ -18,7 +17,7 @@ public class Teleop extends OpMode {
     private Hardware robot;
     private MecanumDrive driveTrain;
 
-    private boolean brake;
+
     private boolean resettingPos = false;
 
     /**
@@ -33,6 +32,7 @@ public class Teleop extends OpMode {
      * Method run on init to initialize hardware
      */
     public void init() {
+        // Hardware map setup
         robot.init(hardwareMap);
 
         // Gyro setup
@@ -43,12 +43,13 @@ public class Teleop extends OpMode {
         parameters.loggingEnabled       = true;
         parameters.loggingTag           = "IMU";
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-
         robot.imu = hardwareMap.get(BNO055IMU.class, "imu");
         robot.imu.initialize(parameters);
         robot.imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
+        // Odometry setup
         robot.resetEncoders();
+
     }
 
     /**
@@ -65,45 +66,38 @@ public class Teleop extends OpMode {
      */
     @Override
     public void loop() {
+        //robot.bulkData = robot.expansionHub.getBulkInputData();
         robot.updatePosition();
+        telemetry.addData("left traveled", robot.rightOdomTraveled);
+        telemetry.addData("right traveled", robot.leftOdomTraveled);
+        telemetry.addData("center traveled", robot.centerOdomTraveled);
+        telemetry.addData("avg forward traveled", robot.avgForwardOdomTraveled);
+        telemetry.addLine("==========");
         telemetry.addData("xPos", robot.x);
         telemetry.addData("yPos", robot.y);
         telemetry.addData("theta", robot.theta);
+        telemetry.addLine("==========");
+        telemetry.addData("leftEncoder", robot.leftEncoderPos);
+        telemetry.addData("rightEncoder", robot.rightEncoderPos);
+        telemetry.addData("centerEncoder", robot.centerEncoderPos);
+        telemetry.addLine("==========");
+        telemetry.addData("X pressed", gamepad1.x);
+        telemetry.addData("Resetting", resettingPos);
         telemetry.update();
 
-        if(gamepad1.left_stick_x == 0 && gamepad1.left_stick_y == 0 && gamepad1.right_stick_x == 0) {
-            driveTrain.brakeMotors();
-            brake = true;
-        } else {
-            if(brake) {
-                robot.leftRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                robot.leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                robot.rightRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                robot.rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            }
-            driveTrain.drive(gamepad1.left_stick_y, gamepad1.left_stick_x, -gamepad1.right_stick_x);
-        }
-
+        // Reset robot position = X
         if(gamepad1.x && !resettingPos){
             robot.resetPosition();
+            robot.resetEncoders();
             resettingPos = true;
         } else if (!gamepad1.x){
             resettingPos = false;
         }
 
-        /*
-          TODO:
-            Autosave position data every run-through of the main loop
-            Make a button which will load position data (for robot restarts mid match)
-         */
-    }
-
-    /**
-     * Logs recording data from the robot to an external file
-     * - X, Y, Theta
-     * - Motor/servo values
-     */
-    private void logRecording(){
-
+        if(gamepad1.left_stick_x == 0 && gamepad1.left_stick_y == 0 && gamepad1.right_stick_x == 0) {
+            driveTrain.brakeMotors();
+        } else {
+            driveTrain.drive(gamepad1.left_stick_y, gamepad1.left_stick_x, -gamepad1.right_stick_x);
+        }
     }
 }

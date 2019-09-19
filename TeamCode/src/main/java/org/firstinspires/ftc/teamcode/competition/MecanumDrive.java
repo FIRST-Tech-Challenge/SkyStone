@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.competition;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -25,36 +26,32 @@ public class MecanumDrive {
 
     /**
      * sets up the hardware refernce so you don't have to pass it as a parameter and sets the adjust
-     *
      * @param r The hardware reference from the code
      */
-    public MecanumDrive(Hardware r) {
-        robot = r;
-    }
+    public MecanumDrive(Hardware r) { robot = r; }
 
     /**
      * this method is for driving the mecanum with the three inputs
      *
-     * @param forward  The forward value input
-     * @param sideways The sideways value input
-     * @param rotation The rotation value input
+     * @param forward  The forward value input (left stick y)
+     * @param sideways The sideways value input (left stick x)
+     * @param rotation The rotation value input (right stick x)
      */
     public void drive(double forward, double sideways, double rotation) {
-
         //adds all the inputs together to get the number to scale it by
         double scale = abs(rotation) + abs(forward) + abs(sideways);
 
         //scales the inputs when needed
-        if (scale > 1) {
+        if(scale > 1) {
             forward /= scale;
             rotation /= scale;
             sideways /= scale;
         }
         //setting the motor powers to move
-        robot.leftFront.setPower(forward - rotation - sideways);
-        robot.leftRear.setPower(forward - rotation + sideways);
-        robot.rightFront.setPower(forward + rotation + sideways);
-        robot.rightRear.setPower(forward + rotation - sideways);
+        robot.leftFront.setPower(forward-rotation-sideways);
+        robot.leftRear.setPower(forward-rotation+sideways);
+        robot.rightFront.setPower(forward+rotation+sideways);
+        robot.rightRear.setPower(forward+rotation-sideways);
         //Left Front = +Speed + Turn - Strafe      Right Front = +Speed - Turn + Strafe
         //Left Rear  = +Speed + Turn + Strafe      Right Rear  = +Speed - Turn - Strafe
     }
@@ -106,14 +103,14 @@ public class MecanumDrive {
      * @param fCm Centimeters forward
      */
     public void forwardCm(double fCm) {
-        fCm += robot.y;
+        fCm += robot.x;
 
         if(fCm > robot.x){
-            while(robot.y < fCm)
+            while(robot.x < fCm)
                 drive(1, 0, 0);
             return;
         }
-        while(robot.y > fCm)
+        while(robot.x > fCm)
             drive(-1, 0, 0);
     }
 
@@ -196,7 +193,7 @@ public class MecanumDrive {
     public void sidewaysCmAtSpeed(double sCm, double power) {
         sCm += robot.x;
 
-        if(sCm > 0){
+        if(sCm >= 0){
             while(robot.x < sCm)
                 drive(0, power, 0);
             powerSet(0);
@@ -312,20 +309,7 @@ public class MecanumDrive {
     }
 
     /**
-     * Resets all motor positions back to 0
-     */
-    public void resetMotors() {
-        robot.leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.leftRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.rightRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    }
-
-    /**
      * Brakes the motors so robot can't move
      */
-    public void brakeMotors() {
-        forwardCm(0);
-        powerSet(0);
-    }
+    public void brakeMotors() { powerSet(0); }
 }

@@ -30,7 +30,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
     public class BaseStateMachine extends OpMode {
-        private enum State {
+        public enum State {
             STATE_INITIAL,
             STATE_FIND_SKYSTONE,
             STATE_DELIVER_STONE,
@@ -46,7 +46,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
         private ElapsedTime mStateTime = new ElapsedTime();  // Time into current state
 
-        private State       mCurrentState;    // Current State Machine State.
+        protected State mCurrentState;    // Current State Machine State.
 
         @Override
         public void init() {
@@ -78,6 +78,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
                     break;
 
                 case STATE_GRAB_STONE:
+                    // Grab the stone and slurp it into the machine
                     newState(State.STATE_DELIVER_STONE);
                     break;
 
@@ -119,7 +120,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         public void stop() {
         }
 
-    private void newState(State newState) {
+    public void newState(State newState) {
         // Restarts the state clock as well as the state
         mStateTime.reset();
         mCurrentState = newState;

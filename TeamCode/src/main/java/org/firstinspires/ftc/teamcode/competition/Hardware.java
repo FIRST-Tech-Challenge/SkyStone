@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.competition;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.openftc.revextensions2.ExpansionHubEx;
@@ -28,10 +27,9 @@ public class Hardware {
     private static final double WHEEL_CIRCUM = 2.0 * Math.PI * ODOM_WHEEL_RADIUS;
         // Constants determined through 12 trials of moving the robot around
     private static final double ODOM_TICKS_PER_CM = 63.04490471;
-    private static final double ODOM_CORRECTION_VAL_FORWARD = 1.62322867463;
-    private static final double ODOM_CORRECTION_VAL_SIDEWAYS = 1.2296775794 * 1.22624369 *
-            0.910719701;
-    private static final double ODOM_CORRECTION_VAL_THETA = 1.29733193 * 1;
+    private static final double ODOM_CORRECTION_FORWARD = 1.62322867463;
+    private static final double ODOM_CORRECTION_SIDEWAYS = 1.2296775794 * 1.22624369 * 0.910719701;
+    private static final double ODOM_CORRECTION_THETA = 20.45383245 / 2;
     private static final double ODOM_TICKS_PER_CM_LEFT = 62.8066872076;
     private static final double ODOM_TICKS_PER_CM_RIGHT = 63.2831222184;
 
@@ -71,7 +69,6 @@ public class Hardware {
     public double leftOdomTraveled = 0;
     public double rightOdomTraveled = 0;
     public double centerOdomTraveled = 0;
-    public double avgForwardOdomTraveled = 0;
 
 
     /**
@@ -128,20 +125,18 @@ public class Hardware {
         // Circumference multiplied by degrees the wheel has rotated
         double deltaLeftDist = getLeftTicks() / ODOM_TICKS_PER_CM_LEFT;
         double deltaRightDist = getRightTicks() / ODOM_TICKS_PER_CM_RIGHT;
-        double avgForwardDist = (getLeftTicks() + getRightTicks()) / 2.0 / ODOM_TICKS_PER_CM * ODOM_CORRECTION_VAL_FORWARD;
-        double deltaCenterDist = getCenterTicks() / ODOM_TICKS_PER_CM * ODOM_CORRECTION_VAL_SIDEWAYS;
+        double deltaCenterDist = getCenterTicks() / ODOM_TICKS_PER_CM;
 
         // Update real world distance traveled by the odometry wheels
         leftOdomTraveled += deltaLeftDist;
         rightOdomTraveled += deltaRightDist;
-        avgForwardOdomTraveled += avgForwardDist;
         centerOdomTraveled += deltaCenterDist;
 
-        // To get theta, we find the tangent between the two wheels traveled
-        theta += (deltaLeftDist - deltaRightDist) / 20.45383245 * (6.28/4.9);
+        // To get theta, we find the tangent of the distance between the two wheels
+        theta += (deltaLeftDist - deltaRightDist) / ODOM_CORRECTION_THETA;
 
         // Finds the unrotated point's position, then rotates it around the origin, then adjusts to robot position
-        x += (avgForwardDist)/* * Math.cos(theta) +
+        x += (deltaLeftDist + deltaRightDist) / 2.0 /* * Math.cos(theta) +
                 ((deltaCenterDist) - Math.sin(theta))*/;
         y += (deltaCenterDist)/* * Math.cos(theta) +
                 (((deltaLeftDist+deltaRightDist) / 2.0) - Math.sin(theta))*/;
@@ -150,24 +145,16 @@ public class Hardware {
     }
 
     public void resetTicks() {
-        //leftEncoderPos = bulkData.getMotorCurrentPosition(leftOdom);
-        //rightEncoderPos = bulkData.getMotorCurrentPosition(rightOdom);
-        //centerEncoderPos = bulkData.getMotorCurrentPosition(centerOdom);
-
-        leftEncoderPos = leftEncoder.getCurrentPosition();
-        rightEncoderPos = rightEncoder.getCurrentPosition();
-        centerEncoderPos = centerEncoder.getCurrentPosition();
+        leftEncoderPos = bulkData.getMotorCurrentPosition(leftOdom);
+        rightEncoderPos = bulkData.getMotorCurrentPosition(rightOdom);
+        centerEncoderPos = bulkData.getMotorCurrentPosition(centerOdom);
     }
 
-    //public int getLeftTicks() { return bulkData.getMotorCurrentPosition(leftOdom) - leftEncoderPos; }
+    public int getLeftTicks() { return bulkData.getMotorCurrentPosition(leftOdom) - leftEncoderPos; }
 
-    //public int getRightTicks() { return bulkData.getMotorCurrentPosition(rightOdom) - rightEncoderPos; }
+    public int getRightTicks() { return bulkData.getMotorCurrentPosition(rightOdom) - rightEncoderPos; }
 
-    //public int getCenterTicks() { return bulkData.getMotorCurrentPosition(centerOdom) - centerEncoderPos; }
-
-    public int getLeftTicks() { return leftEncoder.getCurrentPosition() - leftEncoderPos; }
-    public int getRightTicks() { return rightEncoder.getCurrentPosition() - rightEncoderPos; }
-    public int getCenterTicks() { return centerEncoder.getCurrentPosition() - centerEncoderPos; }
+    public int getCenterTicks() { return bulkData.getMotorCurrentPosition(centerOdom) - centerEncoderPos; }
 
     /**
      * Resets position of the robot to x=0, y=0, theta=0
@@ -179,7 +166,6 @@ public class Hardware {
         leftOdomTraveled = 0;
         rightOdomTraveled = 0;
         centerOdomTraveled = 0;
-        avgForwardOdomTraveled = 0;
     }
 
     /**

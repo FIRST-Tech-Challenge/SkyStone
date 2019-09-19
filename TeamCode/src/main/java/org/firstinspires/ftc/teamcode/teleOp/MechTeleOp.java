@@ -4,44 +4,43 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name = "TestBotTeleOp")
-//@Disabled
-public class TestBotTeleOp extends OpMode {
-    // Declare OpMode members.
-    private ElapsedTime runtime = new ElapsedTime();
-
+@TeleOp(name = "MechTeleOp")
+public class MechTeleOp extends OpMode {
     DcMotor motorFL;
     DcMotor motorFR;
     DcMotor motorBL;
     DcMotor motorBR;
 
-    final double calibFL = 0.75f;
-    final double calibFR = 0.50f;
+    final double calibFL = 1.00f;
+    final double calibFR = 1.00f;
     final double calibBL = 1.00f;
-    final double calibBR = 0.75f;
+    final double calibBR = 1.00f;
+
+    public MechTeleOp() {
+        super();
+    }
 
     @Override
     public void init() {
         setupMotors();
-
-
+        resetStartTime();
         telemetry.addData("Status", "Initialized");
-    }
-
-    @Override
-    public void start() {
-        runtime.reset();
+        telemetry.update();
     }
 
     @Override
     public void loop() {
-        telemetry.clearAll();
-        telemetry.update();
+        telemetry.addData("gpad1LX", gamepad1.left_stick_x);
+        telemetry.addData("gpad1LY", gamepad1.left_stick_y);
         driveRobot();
-        telemetry.addData("Status", "Run Time: " + runtime.toString());
+        telemetry.update();
+    }
+
+    @Override
+    public void stop() {
+        moveForward(0.0);
     }
 
     public void moveForward(double power) {
@@ -60,9 +59,9 @@ public class TestBotTeleOp extends OpMode {
 
     public void straifLeft(double power) {
         motorFL.setPower(calibFL * -power);
-        motorFR.setPower(calibFR * power);
+        motorFR.setPower(calibFR * -power);
         motorBL.setPower(calibBR * power);
-        motorBR.setPower(calibBR * -power);
+        motorBR.setPower(calibBR * power);
     }
 
     public void setupMotors() {

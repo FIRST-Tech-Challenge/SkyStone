@@ -331,24 +331,25 @@ public class DriveSystem {
     private void turn(double degrees, double maxPower, double initialHeading) {
         setMotorDirection(FORWARD);
 
-        double heading = -initialHeading;
-        double targetHeading = 0;
+        double targetHeading = degrees + initialHeading;
+        targetHeading = targetHeading % 360;
 
-        if ((degrees % 360) > 180) {
-            targetHeading = heading + ((degrees % 360) - 360);
-        } else {
-            targetHeading = heading + (degrees % 360);
+        if (targetHeading < 0) {
+            targetHeading = targetHeading + 360;
         }
 
-        while (Math.abs(targetHeading - heading) > 10.0) {
+        double heading = -imuSystem.getHeading();
+        double difference = computeDegreesDiff(targetHeading, heading);
+        while (Math.abs(difference) > 5.0) {
             double power = getTurnPower(targetHeading, heading);
-            telemetry.log("MecanumDriveSystem","heading: " + heading);
-            telemetry.log("MecanumDriveSystem","target heading: " + targetHeading);
-            telemetry.log("MecanumDriveSystem","power: " + power);
-            telemetry.log("MecanumDriveSystem","distance left: " + Math.abs(targetHeading - heading));
-            telemetry.write();
+            telemetry.addData("MecanumDriveSystem","heading: " + heading);
+            telemetry.addData("MecanumDriveSystem","target heading: " + targetHeading);
+            telemetry.addData("MecanumDriveSystem","power: " + power);
+            telemetry.addData("MecanumDriveSystem","distance left: " + Math.abs(targetHeading - heading));
+            telemetry.update();
 
-            tankDrive(-power, power);
+            difference = computeDegreesDiff(targetHeading, heading);
+            tankDrive(-power * Math.signum(difference), power * Math.signum(difference));
             heading = -imuSystem.getHeading();
         }
         this.setMotorPower(0);
@@ -373,11 +374,19 @@ public class DriveSystem {
      * @return
      */
     private double getTurnPower(double targetHeading, double heading) {
-        return Range.clip((Math.abs(targetHeading - heading) / 360.0) * 0.4, 0.0, 1.0);
+        double power = Math.abs((computeDegreesDiff(targetHeading, heading)) / 360.0);
+        return Range.clip(power * power, 0.0, 0.8);
     }
 
     private double computeDegreesDiff(double targetHeading, double heading) {
-        return targetHeading - heading;
+        double diff = targetHeading - heading;
+        if (diff > 180) {
+            return diff - 360;
+        }
+        if (diff < -180) {
+            return 360 + diff;
+        }
+        return diff;
     }
 
 }

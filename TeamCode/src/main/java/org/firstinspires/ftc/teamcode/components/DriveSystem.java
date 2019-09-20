@@ -344,22 +344,15 @@ public class DriveSystem {
             targetHeading = heading + (degrees % 360);
         }
 
-        setRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        // Between 90 (changed from 130) and 2 degrees away from the target
-        // we want to slow down from maxPower to 0.1
-        ExponentialRamp ramp = new ExponentialRamp(new Point(2.0, TURN_RAMP_POWER_CUTOFF), new Point(90, maxPower));
-
-        while (Math.abs(computeDegreesDiff(targetHeading, heading)) > 1) {
-            double power = getTurnPower(ramp, targetHeading, heading);
+        while (Math.abs(targetHeading - heading) > 10.0) {
+            double power = getTurnPower(targetHeading, heading);
             telemetry.log("MecanumDriveSystem","heading: " + heading);
             telemetry.log("MecanumDriveSystem","target heading: " + targetHeading);
             telemetry.log("MecanumDriveSystem","power: " + power);
             telemetry.log("MecanumDriveSystem","distance left: " + Math.abs(targetHeading - heading));
             telemetry.write();
 
-
-            tankDrive(power, -power);
+            tankDrive(-power, power);
             heading = -imuSystem.getHeading();
         }
         this.setMotorPower(0);
@@ -379,19 +372,12 @@ public class DriveSystem {
 
     /**
      * Gets the turn power needed
-     * @param ramp the ramp
      * @param targetHeading the target heading
      * @param heading the heading
      * @return
      */
-    private double getTurnPower(Ramp ramp, double targetHeading, double heading) {
-        double diff = computeDegreesDiff(targetHeading, heading);
-
-        if (diff < 0) {
-            return -ramp.scaleX(Math.abs(diff));
-        } else {
-            return ramp.scaleX(Math.abs(diff));
-        }
+    private double getTurnPower(double targetHeading, double heading) {
+        return Range.clip((Math.abs(targetHeading - heading) / 360.0) * 0.4, 0.0, 1.0);
     }
 
     private double computeDegreesDiff(double targetHeading, double heading) {

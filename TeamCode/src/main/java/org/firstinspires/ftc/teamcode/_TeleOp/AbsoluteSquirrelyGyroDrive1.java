@@ -32,6 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 package org.firstinspires.ftc.teamcode._TeleOp;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -48,7 +49,7 @@ import org.firstinspires.ftc.teamcode._Libs.SensorLib;
  */
 
 @TeleOp(name="AbsoluteSquirrelyGyroDrive1", group="Test")  // @Autonomous(...) is the other common choice
-//@Disabled
+@Disabled
 public class AbsoluteSquirrelyGyroDrive1 extends OpMode {
 
 	DcMotor motorFrontRight;

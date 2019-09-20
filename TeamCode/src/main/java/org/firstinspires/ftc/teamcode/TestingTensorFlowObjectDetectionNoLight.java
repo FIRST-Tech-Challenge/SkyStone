@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * without the phone light for Tensor Flow. This is the go to program. This program... .
  */
 @Autonomous(name = "Skystone Blue Depot No Light", group = "Beep")
-public class SkystoneBlueDepotNoLight extends LinearOpMode {
+public class TestingTensorFlowObjectDetectionNoLight extends LinearOpMode {
 
     // Declaring a timer
     public ElapsedTime runtime = new ElapsedTime();

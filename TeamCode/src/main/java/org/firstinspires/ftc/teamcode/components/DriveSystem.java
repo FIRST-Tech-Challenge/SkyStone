@@ -341,14 +341,14 @@ public class DriveSystem {
         double heading = -imuSystem.getHeading();
         double difference = computeDegreesDiff(targetHeading, heading);
         while (Math.abs(difference) > 5.0) {
-            double power = getTurnPower(targetHeading, heading);
+            difference = computeDegreesDiff(targetHeading, heading);
+            double power = getTurnPower(difference);
             telemetry.addData("MecanumDriveSystem","heading: " + heading);
             telemetry.addData("MecanumDriveSystem","target heading: " + targetHeading);
             telemetry.addData("MecanumDriveSystem","power: " + power);
             telemetry.addData("MecanumDriveSystem","distance left: " + Math.abs(targetHeading - heading));
             telemetry.update();
 
-            difference = computeDegreesDiff(targetHeading, heading);
             tankDrive(-power * Math.signum(difference), power * Math.signum(difference));
             heading = -imuSystem.getHeading();
         }
@@ -369,12 +369,11 @@ public class DriveSystem {
 
     /**
      * Gets the turn power needed
-     * @param targetHeading the target heading
-     * @param heading the heading
-     * @return
+     * @param degrees Number of degrees to turn
+     * @return motor power from 0 - 0.8
      */
-    private double getTurnPower(double targetHeading, double heading) {
-        double power = Math.abs((computeDegreesDiff(targetHeading, heading)) / 360.0);
+    private double getTurnPower(double degrees) {
+        double power = Math.abs(degrees / 360.0);
         return Range.clip(power * power, 0.0, 0.8);
     }
 

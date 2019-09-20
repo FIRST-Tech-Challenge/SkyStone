@@ -1,45 +1,34 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import org.firstinspires.ftc.teamcode.controller.Controller;
-import org.firstinspires.ftc.teamcode.opmodes.debuggers.TeleOpModeDebugger;
+import com.qualcomm.robotcore.hardware.Gamepad;
+
 import org.firstinspires.ftc.teamcode.components.DriveSystem;
 
 
-@TeleOp(name = "CompetitionTeleOp", group="TeleOp")
-public class DriveTeleop extends TeleOpModeDebugger {
-    private Controller controller1;
+@TeleOp(name = "Drive", group="TeleOp")
+public class DriveTeleop extends LinearOpMode {
     private DriveSystem driveSystem;
     private boolean slowDrive;
 
-    public DriveTeleop() {
-        msStuckDetectLoop = 1000000000;
-    }
-
-    @Override
-    public void init()
+    public void initialize()
     {
-        this.controller1 = new Controller(gamepad1);
 
         this.driveSystem = new DriveSystem(this);
         slowDrive = false;
     }
 
 
-    @Override
-    public void initialize() {
+    public void runOpMode(){
+        initialize();
 
-    }
-
-    @Override
-    public void run(){
-        controller1.handle();
-
-        float rx = controller1.gamepad.right_stick_x;
-        float ry = controller1.gamepad.right_stick_y;
-        float lx = controller1.gamepad.left_stick_x;
-        float ly = controller1.gamepad.left_stick_y;
+        float rx = gamepad1.right_stick_x;
+        float ry = gamepad1.right_stick_y;
+        float lx = gamepad1.left_stick_x;
+        float ly = gamepad1.left_stick_y;
 
         driveSystem.drive(rx, ry, lx, ly, slowDrive);
     }

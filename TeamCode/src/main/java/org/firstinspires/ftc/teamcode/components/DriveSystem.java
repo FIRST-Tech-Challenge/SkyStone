@@ -7,15 +7,13 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.components.scale.ExponentialRamp;
-import org.firstinspires.ftc.teamcode.components.scale.IScale;
 import org.firstinspires.ftc.teamcode.components.scale.LinearScale;
 import org.firstinspires.ftc.teamcode.components.scale.Point;
 import org.firstinspires.ftc.teamcode.components.scale.Ramp;
-import org.firstinspires.ftc.teamcode.systems.imu.IMUSystem;
-import org.firstinspires.ftc.teamcode.systems.logging.PhoneLogger;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class DriveSystem {
-    private final IScale JOYSTICK_SCALE = new LinearScale(0.62, 0);
+    private final LinearScale JOYSTICK_SCALE = new LinearScale(0.62, 0);
 
     private DcMotor motorFrontLeft;
     private DcMotor motorFrontRight;
@@ -28,7 +26,6 @@ public class DriveSystem {
     private double initImuRoll;
 
     protected HardwareMap hardwareMap;
-    public PhoneLogger telemetry;
 
     private final int FORWARD = 1;
     private final int BACKWARD = 0;
@@ -39,6 +36,8 @@ public class DriveSystem {
     private int RAMP_DISTANCE_TICKS;
     private final int TICKS_IN_INCH = 69;
     private double TURN_RAMP_POWER_CUTOFF = 0.1;
+
+    private Telemetry telemetry;
 
 
 
@@ -51,7 +50,6 @@ public class DriveSystem {
     public DriveSystem(OpMode opMode) {
 
         this.hardwareMap = opMode.hardwareMap;
-        this.telemetry = new PhoneLogger(opMode.telemetry);
 
 
         initMotors();
@@ -60,8 +58,6 @@ public class DriveSystem {
         initialImuHeading = imuSystem.getHeading();
         initImuPitch = imuSystem.getPitch();
         initImuRoll = imuSystem.getRoll();
-
-        telemetry.log("DriveSystem","power: {0}", 0);
     }
 
     /**
@@ -163,14 +159,14 @@ public class DriveSystem {
 
 
         this.motorFrontRight.setPower(Range.clip(frontRightPower, -1, 1));
-        telemetry.log("Mecanum Drive System","FRpower: {0}", Range.clip(frontRightPower, -1, 1));
+        telemetry.addData("Mecanum Drive System","FRpower: {0}", Range.clip(frontRightPower, -1, 1));
         this.motorBackRight.setPower(Range.clip(backRightPower, -1, 1));
-        telemetry.log("Mecanum Drive System","BRPower: {0}", Range.clip(backRightPower, -1, 1));
+        telemetry.addData("Mecanum Drive System","BRPower: {0}", Range.clip(backRightPower, -1, 1));
         this.motorFrontLeft.setPower(Range.clip(frontLeftPower, -1, 1));
-        telemetry.log("Mecanum Drive System", "FLPower: {0}", Range.clip(frontLeftPower, -1, 1));
+        telemetry.addData("Mecanum Drive System", "FLPower: {0}", Range.clip(frontLeftPower, -1, 1));
         this.motorBackLeft.setPower(Range.clip(backLeftPower, -1, 1));
-        telemetry.log("Mecanum Drive System", "BLPower: {0}", Range.clip(backLeftPower, -1, 1));
-        telemetry.write();
+        telemetry.addData("Mecanum Drive System", "BLPower: {0}", Range.clip(backLeftPower, -1, 1));
+        telemetry.update();
     }
 
     /**
@@ -222,9 +218,9 @@ public class DriveSystem {
             double scaledPower = shouldRamp ? ramp.scaleX(distance) : power;
 
             setMotorPower(direction * scaledPower);
-            telemetry.log("MecanumDriveSystem", "distance left (ticks): " + getMinDistanceFromTarget());
-            telemetry.log("MecanumDriveSystem","scaled power: " + scaledPower);
-            telemetry.write();
+            telemetry.addData("MecanumDriveSystem", "distance left (ticks): " + getMinDistanceFromTarget());
+            telemetry.addData("MecanumDriveSystem","scaled power: " + scaledPower);
+            telemetry.update();
         }
         setMotorPower(0);
     }

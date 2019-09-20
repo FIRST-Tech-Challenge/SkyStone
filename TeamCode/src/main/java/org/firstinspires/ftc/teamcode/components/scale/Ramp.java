@@ -5,8 +5,7 @@ package org.firstinspires.ftc.teamcode.components.scale;
  * as an input and gives a y value as output. The ramp also can take in a y value and give the
  * inverse.
  */
-abstract public class Ramp implements IScale
-{
+abstract public class Ramp {
     private Point point1;
     private Point point2;
 

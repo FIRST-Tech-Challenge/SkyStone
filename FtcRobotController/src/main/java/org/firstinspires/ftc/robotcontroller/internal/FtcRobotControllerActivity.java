@@ -60,6 +60,7 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.google.blocks.ftcrobotcontroller.BlocksActivity;
 import com.google.blocks.ftcrobotcontroller.ProgrammingModeActivity;
 import com.google.blocks.ftcrobotcontroller.ProgrammingModeControllerImpl;
@@ -388,6 +389,8 @@ public class FtcRobotControllerActivity extends Activity
     if (preferencesHelper.readBoolean(getString(R.string.pref_wifi_automute), false)) {
       initWifiMute(true);
     }
+
+    FtcDashboard.start();
   }
 
   protected UpdateUI createUpdateUI() {
@@ -455,6 +458,7 @@ public class FtcRobotControllerActivity extends Activity
   @Override
   protected void onDestroy() {
     super.onDestroy();
+
     RobotLog.vv(TAG, "onDestroy()");
 
     shutdownRobot();  // Ensure the robot is put away to bed
@@ -468,6 +472,8 @@ public class FtcRobotControllerActivity extends Activity
     ServiceController.stopService(FtcRobotControllerWatchdogService.class);
     if (wifiLock != null) wifiLock.release();
     if (preferencesHelper != null) preferencesHelper.getSharedPreferences().unregisterOnSharedPreferenceChangeListener(sharedPreferencesListener);
+
+    FtcDashboard.stop();
 
     RobotLog.cancelWriteLogcatToDisk();
   }
@@ -679,6 +685,9 @@ public class FtcRobotControllerActivity extends Activity
 
   public void onServiceBind(final FtcRobotControllerService service) {
     RobotLog.vv(FtcRobotControllerService.TAG, "%s.controllerService=bound", TAG);
+
+    FtcDashboard.attachWebServer(service.getWebServer());
+
     controllerService = service;
     updateUI.setControllerService(controllerService);
 

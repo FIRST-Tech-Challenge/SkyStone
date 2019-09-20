@@ -158,7 +158,7 @@ public abstract class JackiebotHardware extends OpMode {
     protected void setupDrivebase() {
         try {
             leftFrontDriveMotor = NinjaMotor.asNeverest20Orbital(hardwareMap.dcMotor.get("leftFrontDriveMotor"));
-            leftFrontDriveMotor.setDirection(DcMotor.Direction.REVERSE);
+            leftFrontDriveMotor.setDirection(DcMotor.Direction.FORWARD);
         } catch (Exception ex) {
             appendWarningMessage("leftFrontDriveMotor");
             Log.e(LOG_TAG, ex.getLocalizedMessage());
@@ -168,7 +168,7 @@ public abstract class JackiebotHardware extends OpMode {
 
         try {
             leftRearDriveMotor = NinjaMotor.asNeverest20Orbital(hardwareMap.dcMotor.get("leftRearDriveMotor"));
-            leftRearDriveMotor.setDirection(DcMotor.Direction.REVERSE);
+            leftRearDriveMotor.setDirection(DcMotor.Direction.FORWARD);
         } catch (Exception ex) {
             appendWarningMessage("leftRearDriveMotor");
             Log.e(LOG_TAG, ex.getLocalizedMessage());
@@ -178,7 +178,7 @@ public abstract class JackiebotHardware extends OpMode {
 
         try {
             rightFrontDriveMotor = NinjaMotor.asNeverest20Orbital(hardwareMap.dcMotor.get("rightFrontDriveMotor"));
-            rightFrontDriveMotor.setDirection(DcMotor.Direction.FORWARD);
+            rightFrontDriveMotor.setDirection(DcMotor.Direction.REVERSE);
         } catch (Exception ex) {
             appendWarningMessage("rightFrontDriveMotor");
             Log.e(LOG_TAG, ex.getLocalizedMessage());
@@ -188,7 +188,7 @@ public abstract class JackiebotHardware extends OpMode {
 
         try {
             rightRearDriveMotor = NinjaMotor.asNeverest20Orbital(hardwareMap.dcMotor.get("rightRearDriveMotor"));
-            rightRearDriveMotor.setDirection(DcMotor.Direction.FORWARD);
+            rightRearDriveMotor.setDirection(DcMotor.Direction.REVERSE);
         } catch (Exception ex) {
             appendWarningMessage("rightRearDriveMotor");
             Log.e(LOG_TAG, ex.getLocalizedMessage());

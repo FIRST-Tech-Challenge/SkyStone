@@ -114,10 +114,8 @@ public class DrinkbotTeleop extends JackiebotTelemetry
 
     private void handleDrivingInputs() {
         double x = - driveStrafe.getPosition(); // positive robot x axis is negative joystick axis
-        double y = - driveForwardReverse.getPosition();
+        double y = - driveForwardReverse.getPosition(); // positive robot y axis is negative joystick axis
         double rot = - driveRotate.getPosition(); // positive robot z rotation (human-normal) is negative joystick x axis
-
-        y = -y; // still need to figure this one out!
 
         // do this first, it will be cancelled out by bump-strafe
         if (!driveFastButton.isPressed()) {

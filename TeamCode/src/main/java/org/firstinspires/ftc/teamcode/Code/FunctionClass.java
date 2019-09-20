@@ -36,7 +36,7 @@ public class FunctionClass extends OpMode {
         reportData(); // Report the data to the controller phone.
     }
 
-    private void controlMovement() {
+    public void controlMovement() {
         //left joystick of the first controller will control the movement of the robot.
         if (gamepad1.left_stick_y != 0 || gamepad1.left_stick_x != 0) {
             if (Math.abs(gamepad1.left_stick_x) > Math.abs(gamepad1.left_stick_y))
@@ -74,7 +74,7 @@ public class FunctionClass extends OpMode {
     }
 
     //helper method to reset all motors to not moving.
-    private void resetMotors() {
+    public void resetMotors() {
         motorFL.setPower(0.0);
         motorFR.setPower(0.0);
         motorBL.setPower(0.0);
@@ -83,7 +83,7 @@ public class FunctionClass extends OpMode {
 
     //helper method to move the robot
     //pass in negative value to move backward
-    private void moveForward(double power) {
+    public void moveForward(double power) { // Move backward by giving negative value to the valuable "power"
         motorFL.setPower(power);
         motorFR.setPower(power);
         motorBL.setPower(power);
@@ -92,7 +92,7 @@ public class FunctionClass extends OpMode {
 
     //helper method to rotate the robot
     //pass in negative value to rotate right
-    private void rotate(double power) {
+    public void rotate(double power) { // Rotating method, Negative value to rotate right side.
         motorFL.setPower(-power);
         motorFR.setPower(power);
         motorBL.setPower(-power);

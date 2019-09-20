@@ -65,15 +65,15 @@ public class MechTeleOp extends OpMode {
     }
 
     public void setupMotors() {
-        motorFL = hardwareMap.get(DcMotor.class, "motorFL");
-        motorFR = hardwareMap.get(DcMotor.class, "motorFR");
-        motorBL = hardwareMap.get(DcMotor.class, "motorBL");
-        motorBR = hardwareMap.get(DcMotor.class, "motorBR");
+        motorFL = hardwareMap.get(DcMotor.class, "frontLeft"); // frontLeft
+        motorFR = hardwareMap.get(DcMotor.class, "frontRight"); // frontRight
+        motorBL = hardwareMap.get(DcMotor.class, "backLeft"); // backLeft
+        motorBR = hardwareMap.get(DcMotor.class, "backRight"); // backRight
 
         motorFL.setDirection(DcMotorSimple.Direction.FORWARD);
         motorFR.setDirection(DcMotorSimple.Direction.FORWARD);
-        motorBL.setDirection(DcMotorSimple.Direction.REVERSE);
-        motorBR.setDirection(DcMotorSimple.Direction.FORWARD);
+        motorBL.setDirection(DcMotorSimple.Direction.FORWARD);
+        motorBR.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     public void driveRobot() {
@@ -81,7 +81,7 @@ public class MechTeleOp extends OpMode {
             if (Math.abs(getLX()) < 0.1 && Math.abs(getLY()) < 0.1)
                 moveForward(0);
             else if (Math.abs(getLX()) > Math.abs(getLY()))
-                straifLeft(Range.clip(getLX(), -1.0, 1.0));
+                straifLeft(Range.clip(-getLX(), -1.0, 1.0));
             else if (Math.abs(getLY()) > Math.abs(getLX()))
                 moveForward(Range.clip(getLY(), -1.0, 1.0));
         } else {

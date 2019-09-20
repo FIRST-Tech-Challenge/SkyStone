@@ -11,7 +11,7 @@ import teamcode.common.Vector2;
 @TeleOp(name = "TT TeleOp")
 public class TTTeleOp extends TTOpMode {
 
-    private static final double TURN_SPEED_MODIFIER = 0.69;
+    private static final double TURN_SPEED_MODIFIER = 0.4;
 
     private TTDriveSystem driveSystem;
 

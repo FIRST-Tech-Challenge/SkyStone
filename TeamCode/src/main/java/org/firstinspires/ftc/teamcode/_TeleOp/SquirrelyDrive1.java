@@ -31,6 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 package org.firstinspires.ftc.teamcode._TeleOp;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -44,7 +45,7 @@ import org.firstinspires.ftc.teamcode._Libs.AutoLib;
  * Enables control of the robot via the gamepad using Squirrely Wheels
  */
 @TeleOp(name="SquirrelyDrive1", group="Test")  // @Autonomous(...) is the other common choice
-//@Disabled
+@Disabled
 public class SquirrelyDrive1 extends OpMode {
 
 	DcMotor motorFrontRight;

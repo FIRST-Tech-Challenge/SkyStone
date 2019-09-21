@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode._Test._Sensors;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -11,7 +12,7 @@ import org.firstinspires.ftc.teamcode._Libs.ToggleButton;
  * Test software toggle buttons
  */
 @TeleOp(name="Test: Toggle Button Test 1", group ="Test")
-//@Disabled
+@Disabled
 public class ToggleButtonTestOp extends OpMode {
 
     private ToggleButton toggleA;

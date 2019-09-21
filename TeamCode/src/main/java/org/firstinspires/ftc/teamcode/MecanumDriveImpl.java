@@ -1,12 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.IntegratingGyroscope;
+import com.qualcomm.robotcore.hardware.GyroSensor;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.westtorrancerobotics.lib.MecanumDrive;
 import org.westtorrancerobotics.lib.Angle;
 
@@ -16,11 +12,11 @@ public class MecanumDriveImpl implements MecanumDrive {
     private final DcMotorEx leftBack;
     private final DcMotorEx rightFront;
     private final DcMotorEx rightBack;
-    private final IntegratingGyroscope gyro;
+    private final GyroSensor gyro;
 
-    public MecanumDriveImpl(DcMotorEx leftFront, DcMotorEx leftBack,
+    MecanumDriveImpl(DcMotorEx leftFront, DcMotorEx leftBack,
                             DcMotorEx rightFront, DcMotorEx rightBack,
-                            IntegratingGyroscope gyro) {
+                            GyroSensor gyro) {
         this.leftFront = leftFront;
         this.leftBack = leftBack;
         this.rightFront = rightFront;
@@ -78,9 +74,20 @@ public class MecanumDriveImpl implements MecanumDrive {
 
     @Override
     public Angle getGyro() {
-        return new Angle(gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle,
+        return new Angle(gyro.getHeading(),
                 Angle.AngleUnit.DEGREES,
                 Angle.AngleOrientation.COMPASS_HEADING);
+    }
+
+    @Override
+    public void calibrateGyro() {
+        gyro.calibrate();
+        gyro.resetZAxisIntegrator();
+    }
+
+    @Override
+    public boolean isGyroCalibrating() {
+        return gyro.isCalibrating();
     }
 
     @Override

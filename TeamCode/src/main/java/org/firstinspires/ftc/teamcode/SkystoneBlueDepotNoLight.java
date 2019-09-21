@@ -28,10 +28,10 @@ public class SkystoneBlueDepotNoLight extends LinearOpMode {
     LibraryGridNavigation gridNavigation = new LibraryGridNavigation();
 
     // Calling the Library Tensor Flow No Light to use the Tensor Flow function without
-    LibraryTensorFlowObjectDetectionNoLight tensorFlow =
-            new LibraryTensorFlowObjectDetectionNoLight(robot, telemetry);
+    LibraryTensorFlowObjectDetectionWithLight tensorFlow =
+            new LibraryTensorFlowObjectDetectionWithLight(robot, telemetry);
     // Declaring skystone position value to read what position Tensor Flow sees the skystone position
-    String skystonePosition = "";
+    String SkystonePosition = "";
 
     /**
      * This method is the main body of our code which contains the set of commands carried out in our crater side autonomous program.
@@ -89,13 +89,13 @@ public class SkystoneBlueDepotNoLight extends LinearOpMode {
 
         // This is a switch block that plays the program in relation to the skystone position
         // Tensor Flow reads
-        switch (skystonePosition) {
+        switch (SkystonePosition) {
 
             // If Tensor Flow reads the first skystone position then it plays this case
             case "Pos 1":
                 telemetry.addData("Telemetry", "Skystone Pos = Pos 1");
                 printTelemetry(20);
-                if (skystonePosition == "Pos 1") {
+                if (SkystonePosition == "Pos 1") {
                     gridNavigation.driveToPosition(SKYSTONE_POS_1[X], SKYSTONE_POS_1[Y], .5);
                     telemetry.addData("Grid Nav Go to Pos X", SKYSTONE_POS_1[X]);
                     telemetry.addData("Grid Nav Go to Pos Y", SKYSTONE_POS_1[Y]);
@@ -113,7 +113,7 @@ public class SkystoneBlueDepotNoLight extends LinearOpMode {
             case "Pos 2":
                 telemetry.addData("Telemetry", "Skystone Pos = 2");
                 printTelemetry(40);
-                if (skystonePosition == "Pos 2") {
+                if (SkystonePosition == "Pos 2") {
                     gridNavigation.driveToPosition(SKYSTONE_POS_2[X], SKYSTONE_POS_2[Y], .5);
                     telemetry.addData("Grid Nav Goto Pos X", SKYSTONE_POS_2[X]);
                     telemetry.addData("Grid Nav Goto Pos Y", SKYSTONE_POS_2[Y]);
@@ -130,7 +130,7 @@ public class SkystoneBlueDepotNoLight extends LinearOpMode {
             case "Pos 3":
                 telemetry.addData("Telemetry", "Skystone Pos = 3");
                 printTelemetry(60);
-                if (skystonePosition == "Pos 3") {
+                if (SkystonePosition == "Pos 3") {
                     telemetry.addData("Grid Nav Goto Pos X", SKYSTONE_POS_3[X]);
                     telemetry.addData("Grid Nav Goto Pos Y", SKYSTONE_POS_3[Y]);
                     // drive to the third skystone position
@@ -173,7 +173,7 @@ public class SkystoneBlueDepotNoLight extends LinearOpMode {
      * @param codePos This is the value we use in telemetry to see where in the code we are
      */
     private void printTelemetry(int codePos) {
-        telemetry.addData("skystone Pos", skystonePosition);
+        telemetry.addData("skystone Pos", SkystonePosition);
         telemetry.addData("Code Position", codePos);
         telemetry.update();
     }
@@ -188,10 +188,10 @@ public class SkystoneBlueDepotNoLight extends LinearOpMode {
         /*
          * UPDATE WITH NEW REPOSITORY
          */
-        skystonePosition = tensorFlow.findSkystone();
+        SkystonePosition = tensorFlow.findSkystone();
 
         // Switch block that indicated which skystone position it reads
-        switch (skystonePosition) {
+        switch (SkystonePosition) {
             case ("Pos 1"):
                 telemetry.addData("Telemetry", "Pos 1");
                 telemetry.update();
@@ -210,7 +210,7 @@ public class SkystoneBlueDepotNoLight extends LinearOpMode {
                 telemetry.addData("Telemetry", "Unknown Position");
                 telemetry.update();
                 // sets skystone pos to center as default
-                skystonePosition = "Pos 1";
+                SkystonePosition = "Pos 1";
                 break;
         }
 

@@ -49,10 +49,10 @@ public class TestingTensorFlowObjectDetectionNoLight extends LinearOpMode {
         switch (SkystonePosition) {
 
             // If Tensor Flow reads the first skystone position then it plays this case
-            case "Pos 1":
-                telemetry.addData("Telemetry", "Skystone Pos = Pos 1");
+            case "Pos 3":
+                telemetry.addData("Telemetry", "Skystone Pos = Pos 3");
                 printTelemetry(20);
-                if (SkystonePosition == "Pos 1") {
+                if (SkystonePosition == "Pos 3") {
 
                 } else {
                     telemetry.addData("Telemetry", "No Position Found");
@@ -71,12 +71,11 @@ public class TestingTensorFlowObjectDetectionNoLight extends LinearOpMode {
                     printTelemetry(50);
                 }
                 break;
-
-            // If Tensor Flow reads the third skystone position then it plays this case
-            case "Pos 3":
-                telemetry.addData("Telemetry", "Skystone Pos = 3");
+// If Tensor Flow reads the third skystone position then it plays this case
+            case "Pos 1":
+                telemetry.addData("Telemetry", "Skystone Pos = 1");
                 printTelemetry(60);
-                if (SkystonePosition == "Pos 3") {
+                if (SkystonePosition == "Pos 1") {
 
                 } else {
                     telemetry.addData("Telemetry", "No Position Found");
@@ -113,16 +112,16 @@ public class TestingTensorFlowObjectDetectionNoLight extends LinearOpMode {
         SkystonePosition = tensorFlow.findSkystone();
         // Switch block that indicated which skystone position it reads
         switch (SkystonePosition) {
+            case ("Pos 3"):
+                telemetry.addData("Telemetry", "Pos 3");
+                telemetry.update();
+                break;
             case ("Pos 1"):
                 telemetry.addData("Telemetry", "Pos 1");
                 telemetry.update();
                 break;
             case ("Pos 2"):
                 telemetry.addData("Telemetry", "Pos 2");
-                telemetry.update();
-                break;
-            case ("Pos 3"):
-                telemetry.addData("Telemetry", "Pos 3");
                 telemetry.update();
                 break;
 

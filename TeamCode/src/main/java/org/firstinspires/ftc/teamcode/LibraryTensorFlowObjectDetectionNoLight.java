@@ -86,7 +86,7 @@ public class LibraryTensorFlowObjectDetectionNoLight {
         initVuforia();
 
         // Turn on the light on phone to make the stones visible
-        phoneLight(false);
+        phoneLight(true);
 
         if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
             initTfod();
@@ -107,7 +107,7 @@ public class LibraryTensorFlowObjectDetectionNoLight {
 
         // sets the TensorFlow to read the mineral for at least 3 seconds to verify that it is the
         // correct mineral
-        while (System.currentTimeMillis() < (startTime + 30000)) { /**DEBUG CHANGED TO 30000*/
+        while (System.currentTimeMillis() < (startTime + 7000)) { /**DEBUG CHANGED TO 30000*/
 
             // sets skystone position values to the read skystone function
             SkystonePosition = readSkystone();
@@ -220,21 +220,21 @@ public class LibraryTensorFlowObjectDetectionNoLight {
                         // if it reads two stones than it sets the current skystone position as
                         // LEFT
                         if (Skystone1X == -1 && stone1X != -1 && stone2X != -1) {
-                            telemetry.addData("Skystone Position", "Left");
-                            currentPos = "LEFT";
+                            telemetry.addData("Skystone Position", "Pos 3");
+                            currentPos = "Pos 3";
                         }
                         // if it reads a skystone and a stone than it goes into this function
                         if (Skystone1X != -1 && stone1X != -1) {
                             // if it reads the skystone as greater than the stone than
                             // it sets the current skystone position as RIGHT
                             if (Skystone1X > stone1X) {
-                                telemetry.addData("Skystone Position", "Right");
-                                currentPos = "RIGHT";
+                                telemetry.addData("Skystone Position", "Pos 1");
+                                currentPos = "Pos 1";
                                 //if the skystone is not greater than the stone than
                                 // it sets the current skystone position as CENTER
                             } else {
-                                telemetry.addData("Skystone Position", "Center");
-                                currentPos = "CENTER";
+                                telemetry.addData("Skystone Position", "Pos 2");
+                                currentPos = "Pos 2";
                             }
                         }
                     }
@@ -264,12 +264,12 @@ public class LibraryTensorFlowObjectDetectionNoLight {
     /**
      * This method is called to start up the phone light
      *
-     * @param off This parameter is used to start up the phone light
+     * @param on This parameter is used to start up the phone light
      */
-    private void phoneLight(boolean off) {
+    private void phoneLight(boolean on) {
 
         // if you set the phone light to true than it turns on the phone flashlight
-        com.vuforia.CameraDevice.getInstance().setFlashTorchMode(off);
+        com.vuforia.CameraDevice.getInstance().setFlashTorchMode(on);
 
     }
 
@@ -280,7 +280,7 @@ public class LibraryTensorFlowObjectDetectionNoLight {
         int tfodMonitorViewId = robot.hwMap.appContext.getResources().getIdentifier(
             "tfodMonitorViewId", "id", robot.hwMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minimumConfidence = 0.8;
+        tfodParameters.minimumConfidence = 0.5;
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
     }

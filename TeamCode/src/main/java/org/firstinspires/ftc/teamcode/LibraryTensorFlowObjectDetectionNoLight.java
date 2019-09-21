@@ -107,7 +107,7 @@ public class LibraryTensorFlowObjectDetectionNoLight {
 
         // sets the TensorFlow to read the mineral for at least 3 seconds to verify that it is the
         // correct mineral
-        while (System.currentTimeMillis() < (startTime + 2000)) { /**DEBUG CHANGED TO 30000*/
+        while (System.currentTimeMillis() < (startTime + 30000)) { /**DEBUG CHANGED TO 30000*/
 
             // sets skystone position values to the read skystone function
             SkystonePosition = readSkystone();
@@ -147,7 +147,7 @@ public class LibraryTensorFlowObjectDetectionNoLight {
         timer.reset();
 
         // while mineral position is not found and the timer counts 6 seconds
-        while (currentPos == "" && timer.seconds() < 2) { /**DEBUG CHANGED TO 600 */
+        while (currentPos == "" && timer.seconds() < 6) { /**DEBUG CHANGED TO 600 */
             // getUpdatedRecognitions() will return null if no new information is available since
 
             if (tfod != null) {

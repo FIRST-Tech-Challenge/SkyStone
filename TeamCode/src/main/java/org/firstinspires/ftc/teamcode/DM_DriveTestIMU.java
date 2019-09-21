@@ -143,11 +143,13 @@ public class DM_DriveTestIMU extends LinearOpMode {
 
                 // turn 90 degrees right.
 //                if (touched || aButton) rotate(-90, power);
-                rotate(-90, power);
+                rotate(-90, power * 0.5);
 
                 // turn 90 degrees left.
 //                if (bButton) rotate(90, power);
+                runtime.reset();
             }
+
         }
 
         // turn the motors off.

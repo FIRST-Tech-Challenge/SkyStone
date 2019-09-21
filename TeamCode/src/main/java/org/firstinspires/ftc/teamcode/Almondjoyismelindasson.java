@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.Gyroscope;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp
-public class MyFIRSTJavaOpMode extends LinearOpMode {
+public class Almondjoyismelindasson extends LinearOpMode {
     private Gyroscope imu;
     private DcMotor motorTest1;
     private DcMotor motorTest2;

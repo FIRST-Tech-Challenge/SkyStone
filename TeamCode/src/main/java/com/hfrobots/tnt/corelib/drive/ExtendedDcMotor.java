@@ -68,6 +68,6 @@ public interface ExtendedDcMotor extends DcMotor {
      * Returns the motor's current velocity relative to the last time the robot's velocity was recorded
      * @return relative velocity
      */
-    int getVelocity();
+    //int getVelocity();
 
 }

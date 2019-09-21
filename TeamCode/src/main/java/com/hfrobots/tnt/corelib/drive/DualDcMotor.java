@@ -253,8 +253,8 @@ public class DualDcMotor implements ExtendedDcMotor {
         secondMotor.resetLogicalEncoderCount();
     }
 
-    @Override
-    public int getVelocity() {
-        return 0;
-    }
+    //@Override
+    //public int getVelocity() {
+    //    return 0;
+    //}
 }

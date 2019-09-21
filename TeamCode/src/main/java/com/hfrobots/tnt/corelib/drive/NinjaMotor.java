@@ -194,10 +194,10 @@ public class NinjaMotor implements ExtendedDcMotor {
         zeroEncoderValue = dcMotor.getCurrentPosition();
     }
 
-    @Override
-    public int getVelocity() {
-        return velocityTracker.getVelocity();
-    }
+    //@Override
+    //public int getVelocity() {
+    //    return velocityTracker.getVelocity();
+    //}
 
     @Override
     public int getCurrentPosition() {

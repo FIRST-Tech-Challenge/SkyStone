@@ -20,11 +20,84 @@
 package com.hfrobots.tnt.corelib.drive;
 
 import com.qualcomm.robotcore.hardware.DcMotorController;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.PIDCoefficients;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Rotation;
 
-public class FakeExtendedDcMotor implements ExtendedDcMotor {
+public class FakeExtendedDcMotor implements ExtendedDcMotor, DcMotorEx {
+    @Override
+    public void setMotorEnable() {
+
+    }
+
+    @Override
+    public void setMotorDisable() {
+
+    }
+
+    @Override
+    public boolean isMotorEnabled() {
+        return false;
+    }
+
+    @Override
+    public void setVelocity(double angularRate) {
+
+    }
+
+    @Override
+    public void setVelocity(double angularRate, AngleUnit unit) {
+
+    }
+
+    @Override
+    public double getVelocity(AngleUnit unit) {
+        return 0;
+    }
+
+    @Override
+    public void setPIDCoefficients(RunMode mode, PIDCoefficients pidCoefficients) {
+
+    }
+
+    @Override
+    public void setPIDFCoefficients(RunMode mode, PIDFCoefficients pidfCoefficients) throws UnsupportedOperationException {
+
+    }
+
+    @Override
+    public void setVelocityPIDFCoefficients(double p, double i, double d, double f) {
+
+    }
+
+    @Override
+    public void setPositionPIDFCoefficients(double p) {
+
+    }
+
+    @Override
+    public PIDCoefficients getPIDCoefficients(RunMode mode) {
+        return null;
+    }
+
+    @Override
+    public PIDFCoefficients getPIDFCoefficients(RunMode mode) {
+        return null;
+    }
+
+    @Override
+    public void setTargetPositionTolerance(int tolerance) {
+
+    }
+
+    @Override
+    public int getTargetPositionTolerance() {
+        return 0;
+    }
 
     // FIXME LMM
     private double motorPower;
@@ -111,8 +184,8 @@ public class FakeExtendedDcMotor implements ExtendedDcMotor {
     }
 
     @Override
-    public int getVelocity(){
-        return velocityTracker.getVelocity();
+    public double getVelocity(){
+        return 0;
     }
 
     @Override

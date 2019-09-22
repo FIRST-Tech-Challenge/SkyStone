@@ -104,6 +104,9 @@ public class TestBotTeleOp extends OpMode {
     public float getRX() {
         return -gamepad1.right_stick_x;
     }
-//    public float getRY() { return -gamepad1.right_stick_y; }
+
+    public float getRY() {
+         return -gamepad1.right_stick_y;
+    }
 
 }

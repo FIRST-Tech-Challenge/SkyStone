@@ -17,7 +17,13 @@ public class DriveTrain {
     public final ModernRoboticsI2cGyro gyro;
     public final MecanumController mecanumController;
 
-    public DriveTrain(HardwareMap hardwareMap) {
+    private static DriveTrain instance = null;
+
+    public static DriveTrain getInstance(HardwareMap hardwareMap) {
+        return instance != null ? instance : (instance = new DriveTrain(hardwareMap));
+    }
+
+    private DriveTrain(HardwareMap hardwareMap) {
         leftFront  = hardwareMap.get(DcMotorEx.class, "leftFront");
         leftBack  = hardwareMap.get(DcMotorEx.class, "leftBack");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");

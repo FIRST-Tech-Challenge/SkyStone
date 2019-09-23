@@ -29,43 +29,18 @@
 
 package org.firstinspires.ftc.teamcode.opmodes;
 
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveImpl;
-import org.westtorrancerobotics.lib.MecanumController;
+import org.firstinspires.ftc.robotcore.external.Supplier;
+import org.firstinspires.ftc.teamcode.Robot;
 import org.westtorrancerobotics.lib.MecanumDrive;
 
 @TeleOp(name="Two Drivers", group="none")
 //@Disabled
-public class OfficialTeleop extends OpMode
-{
-    // Declare OpMode members.
-    private ElapsedTime runtime;
+public class OfficialTeleop extends OpMode {
 
-    private DcMotorEx leftFront;
-    private DcMotorEx leftBack;
-    private DcMotorEx rightFront;
-    private DcMotorEx rightBack;
-    private ModernRoboticsI2cGyro gyro;
-    private MecanumController driveTrain;
-
-    private Servo foundationGrabber;
-
-    private DcMotorEx lift;
-    private int liftLevel;
-    private int LEVEL_HEIGHT = 300; // ticks per lift level
-    private int liftOffset;
-    private int lastDpad;
-    private long dPadDebounce;
-    private final int MAX_LIFT_HEIGHT = 4;
-
-    // sensors and servos
+    private Robot robot;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -73,40 +48,19 @@ public class OfficialTeleop extends OpMode
     @Override
     public void init() {
 
-        runtime = new ElapsedTime();
-
         telemetry.addData("Status", "Initializing...");
         telemetry.update();
 
-        leftFront  = hardwareMap.get(DcMotorEx.class, "leftFront");
-        leftBack  = hardwareMap.get(DcMotorEx.class, "leftBack");
-        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
-        rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
+        robot = Robot.getInstance(hardwareMap);
 
-        leftFront.setDirection(DcMotor.Direction.FORWARD);
-        leftBack.setDirection(DcMotor.Direction.FORWARD);
-        rightFront.setDirection(DcMotor.Direction.REVERSE);
-        rightBack.setDirection(DcMotor.Direction.REVERSE);
-
-        leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        gyro = hardwareMap.get(ModernRoboticsI2cGyro.class, "gyro");
-
-        MecanumDrive train = new MecanumDriveImpl(leftFront, leftBack, rightFront, rightBack, gyro);
-        driveTrain = new MecanumController(train);
-
-        foundationGrabber = hardwareMap.get(Servo.class, "foundation");
-        foundationGrabber.scaleRange(0.4, 0.9);
-        foundationGrabber.setDirection(Servo.Direction.FORWARD);
-
-        lift = hardwareMap.get(DcMotorEx.class, "lift");
-        lift.setDirection(DcMotor.Direction.FORWARD);
-        lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-//        lift.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDFCoefficients(1, 0, 0.1, 0.2));
+        lastDebRead = new boolean[NUMBER_DEBOUNCERS];
+        for (int i = 0; i < NUMBER_DEBOUNCERS; i++) {
+            lastDebRead[i] = false;
+        }
+        lastDebTime = new long[NUMBER_DEBOUNCERS];
+        for (int i = 0; i < NUMBER_DEBOUNCERS; i++) {
+            lastDebTime[i] = Long.MIN_VALUE;
+        }
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -119,9 +73,9 @@ public class OfficialTeleop extends OpMode
     @Override
     public void init_loop() {
 
-        lift.setPower(0.1);
+        robot.lift.idle();
 
-        foundationGrabber.setPosition(0);
+        robot.foundationGrabber.setGrabbed(false);
 
         telemetry.addData("Status", "Idling Lift Motor...");
         telemetry.update();
@@ -134,18 +88,12 @@ public class OfficialTeleop extends OpMode
     @Override
     public void start() {
 
-        runtime.reset();
+        robot.runtime.reset();
 
-        lift.setPower(0);
-        lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        liftLevel = 0;
-        liftOffset = 0;
-        lastDpad = 0;
-        dPadDebounce = -50;
+        robot.lift.zero();
 
-        gyro.calibrate();
-        driveTrain.zeroDeadReckoner();
+        robot.driveTrain.gyro.calibrate();
+        robot.driveTrain.mecanumController.zeroDeadReckoner();
 
         telemetry.addData("Status", "Lift Initialized.");
         telemetry.update();
@@ -158,38 +106,27 @@ public class OfficialTeleop extends OpMode
     @Override
     public void loop() {
 
-        if (driveTrain.isGyroCalibrating()) {
+        if (robot.driveTrain.gyro.isCalibrating()) {
             return;
         }
 
         double turn = deadZone(-deadZone(gamepad1.left_stick_y) - -deadZone(gamepad1.right_stick_y));
         double y = deadZone(-deadZone(gamepad1.left_stick_y) + -deadZone(gamepad1.right_stick_y)) / 2;
         double x = deadZone(deadZone(gamepad1.left_stick_x) + deadZone(gamepad1.right_stick_x)) / 2;
-        driveTrain.spinDrive(x, y, turn, MecanumDrive.TranslTurnMethod.EQUAL_SPEED_RATIOS);
+        robot.driveTrain.mecanumController.spinDrive(x, y, turn, MecanumDrive.TranslTurnMethod.EQUAL_SPEED_RATIOS);
 
-        if (runtime.milliseconds() - dPadDebounce > 50) {
-            int dpad = (gamepad2.dpad_up ? 1 : 0) - (gamepad2.dpad_down ? 1 : 0);
-            if (dpad != lastDpad && dpad != 0) {
-                liftLevel += dpad;
-                if (liftLevel < 0) {
-                    liftLevel = 0;
-                }
-                if (liftLevel > MAX_LIFT_HEIGHT) {
-                    liftLevel = MAX_LIFT_HEIGHT;
-                }
-            }
-            lastDpad = dpad;
-        }
+        whenPressedDebounce(() -> gamepad2.dpad_up,   () -> robot.lift.moveUp(),   0);
+        whenPressedDebounce(() -> gamepad2.dpad_down, () -> robot.lift.moveDown(), 1);
 
-        lift.setTargetPosition((liftLevel * LEVEL_HEIGHT) + liftOffset);
+        robot.lift.updatePosition();
 
-        foundationGrabber.setPosition(gamepad2.a ? 1 : 0);
+        robot.foundationGrabber.setGrabbed(gamepad2.a);
 
-        driveTrain.updateLocation();
+        robot.driveTrain.mecanumController.updateLocation();
 
         telemetry.addData("Drive", "x:%f, y:%f, turn:%f", x, y, turn);
-        telemetry.addData("Lift level", liftLevel);
-        telemetry.addData("Drive Base Location", driveTrain.getLocation());
+        telemetry.addData("Lift level", robot.lift.getLevel());
+        telemetry.addData("Drive Base Location", robot.driveTrain.mecanumController.getLocation());
 
     }
 
@@ -200,8 +137,41 @@ public class OfficialTeleop extends OpMode
     public void stop() {
     }
 
+    // Controller Utilities
+
     private double deadZone(double original) {
         return Math.abs(original) < 0.12 ? 0 : original;
+    }
+
+    private boolean[] lastDebRead;
+    private long[] lastDebTime;
+    private final int NUMBER_DEBOUNCERS = 10;
+    private void whenPressedDebounce(Supplier<Boolean> button, Runnable action, int id) {
+        if (button.get() == lastDebRead[id]) {
+            return;
+        }
+        if (robot.runtime.milliseconds() - lastDebTime[id] < 50) {
+            return;
+        }
+        if (button.get()) {
+            action.run();
+        }
+        lastDebRead[id] = button.get();
+        lastDebTime[id] = (long) robot.runtime.milliseconds();
+    }
+
+    private void whenReleasedDebounce(Supplier<Boolean> button, Runnable action, int id) {
+        if (button.get() == lastDebRead[id]) {
+            return;
+        }
+        if (robot.runtime.milliseconds() - lastDebTime[id] < 50) {
+            return;
+        }
+        if (!button.get()) {
+            action.run();
+        }
+        lastDebRead[id] = button.get();
+        lastDebTime[id] = (long) robot.runtime.milliseconds();
     }
 
 }

@@ -170,6 +170,9 @@ public class DM_Auto_Simple extends LinearOpMode {
             idle();
         }
 
+        telemetry.addData("Status", "IMU Calibration Done");
+        telemetry.update();
+
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 

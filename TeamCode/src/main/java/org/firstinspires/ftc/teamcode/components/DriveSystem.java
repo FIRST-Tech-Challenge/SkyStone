@@ -50,7 +50,7 @@ public class DriveSystem {
     public DriveSystem(OpMode opMode) {
 
         this.hardwareMap = opMode.hardwareMap;
-
+        telemetry = opMode.telemetry;
 
         initMotors();
 
@@ -128,15 +128,6 @@ public class DriveSystem {
         this.slowDrive = slowDrive;
         setMotorDirection(FORWARD);
 
-
-        rightX = Range.clip(rightX, -1, 1);
-        leftX = Range.clip(leftX, -1, 1);
-        leftY = Range.clip(leftY, -1, 1);
-
-        rightX = scaleJoystickValue(rightX);
-        leftX = scaleJoystickValue(leftX);
-        leftY = scaleJoystickValue(leftY);
-
         // Prevent small values from causing the robot to drift
         if (Math.abs(rightX) < 0.01) {
             rightX = 0.0f;
@@ -159,13 +150,16 @@ public class DriveSystem {
 
 
         this.motorFrontRight.setPower(Range.clip(frontRightPower, -1, 1));
-        telemetry.addData("Mecanum Drive System","FRpower: {0}", Range.clip(frontRightPower, -1, 1));
+        telemetry.addData("Mecanum Drive System", motorFrontRight.getPower());
+
         this.motorBackRight.setPower(Range.clip(backRightPower, -1, 1));
-        telemetry.addData("Mecanum Drive System","BRPower: {0}", Range.clip(backRightPower, -1, 1));
+        telemetry.addData("Mecanum Drive System",motorBackRight.getPower());
+
         this.motorFrontLeft.setPower(Range.clip(frontLeftPower, -1, 1));
-        telemetry.addData("Mecanum Drive System", "FLPower: {0}", Range.clip(frontLeftPower, -1, 1));
+        telemetry.addData("Mecanum Drive System", motorFrontLeft.getPower());
+
         this.motorBackLeft.setPower(Range.clip(backLeftPower, -1, 1));
-        telemetry.addData("Mecanum Drive System", "BLPower: {0}", Range.clip(backLeftPower, -1, 1));
+        telemetry.addData("Mecanum Drive System", motorBackLeft.getPower());
         telemetry.update();
     }
 
@@ -181,10 +175,6 @@ public class DriveSystem {
                 ? (float)  JOYSTICK_SCALE.scaleX(joystickValue * joystickValue) * slowDriveCoefficient
                 : (float) -JOYSTICK_SCALE.scaleX(joystickValue * joystickValue) * slowDriveCoefficient;
     }
-
-
-
-
 
     private void driveToPositionTicks(int ticks, double power, boolean shouldRamp) {
         setMotorPower(0);
@@ -310,16 +300,7 @@ public class DriveSystem {
      * @param maxPower The maximum power of the motors
      */
     public void turnAbsolute(double degrees, double maxPower) {
-        turn(degrees, maxPower, initialImuHeading);
-    }
-
-    /**
-     * Turns the robot by a given amount of degrees using the current heading
-     * @param degrees The degrees to turn the robot by
-     * @param maxPower The maximum power of the motors
-     */
-    public void turn(double degrees, double maxPower) {
-        turn(degrees, maxPower, imuSystem.getHeading());
+        turn(degrees, maxPower);
     }
 
     /**
@@ -328,10 +309,10 @@ public class DriveSystem {
      * @param maxPower The maximum power of the motors
      * @param initialHeading The initial starting point
      */
-    private void turn(double degrees, double maxPower, double initialHeading) {
+    public void turn(double degrees, double maxPower) {
         setMotorDirection(FORWARD);
 
-        double targetHeading = degrees + initialHeading;
+        double targetHeading = degrees + -imuSystem.getHeading();
         targetHeading = targetHeading % 360;
 
         if (targetHeading < 0) {
@@ -340,9 +321,9 @@ public class DriveSystem {
 
         double heading = -imuSystem.getHeading();
         double difference = computeDegreesDiff(targetHeading, heading);
-        while (Math.abs(difference) > 5.0) {
+        while (Math.abs(difference) > 1.0) {
             difference = computeDegreesDiff(targetHeading, heading);
-            double power = getTurnPower(difference);
+            double power = getTurnPower(difference, maxPower);
             telemetry.addData("MecanumDriveSystem","heading: " + heading);
             telemetry.addData("MecanumDriveSystem","target heading: " + targetHeading);
             telemetry.addData("MecanumDriveSystem","power: " + power);
@@ -372,9 +353,9 @@ public class DriveSystem {
      * @param degrees Number of degrees to turn
      * @return motor power from 0 - 0.8
      */
-    private double getTurnPower(double degrees) {
+    private double getTurnPower(double degrees, double maxPower) {
         double power = Math.abs(degrees / 360.0);
-        return Range.clip(power * power, 0.0, 0.8);
+        return Range.clip(power * 1.3 + 0.05, 0.0, maxPower);
     }
 
     private double computeDegreesDiff(double targetHeading, double heading) {

@@ -34,6 +34,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.westtorrancerobotics.lib.MecanumController;
@@ -52,6 +53,8 @@ public class OfficialTeleop extends OpMode
     private DcMotorEx rightBack;
     private ModernRoboticsI2cGyro gyro;
     private MecanumController driveTrain;
+
+    private Servo foundationGrabber;
 
     private DcMotorEx lift;
     private int liftLevel;
@@ -94,11 +97,14 @@ public class OfficialTeleop extends OpMode
         MecanumDrive train = new MecanumDriveImpl(leftFront, leftBack, rightFront, rightBack, gyro);
         driveTrain = new MecanumController(train);
 
+        foundationGrabber = hardwareMap.get(Servo.class, "foundation");
+        foundationGrabber.scaleRange(0.4, 0.9);
+        foundationGrabber.setDirection(Servo.Direction.FORWARD);
 
         lift = hardwareMap.get(DcMotorEx.class, "lift");
         lift.setDirection(DcMotor.Direction.FORWARD);
         lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 //        lift.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDFCoefficients(1, 0, 0.1, 0.2));
 
         telemetry.addData("Status", "Initialized");
@@ -113,6 +119,8 @@ public class OfficialTeleop extends OpMode
     public void init_loop() {
 
         lift.setPower(0.1);
+
+        foundationGrabber.setPosition(0);
 
         telemetry.addData("Status", "Idling Lift Motor...");
         telemetry.update();
@@ -174,10 +182,12 @@ public class OfficialTeleop extends OpMode
 
         lift.setTargetPosition((liftLevel * LEVEL_HEIGHT) + liftOffset);
 
+        foundationGrabber.setPosition(gamepad2.a ? 1 : 0);
+
         driveTrain.updateLocation();
 
         telemetry.addData("Drive", "x:%f, y:%f, turn:%f", x, y, turn);
-        telemetry.addData("Lift level", Math.round(liftLevel));
+        telemetry.addData("Lift level", liftLevel);
         telemetry.addData("Drive Base Location", driveTrain.getLocation());
 
     }

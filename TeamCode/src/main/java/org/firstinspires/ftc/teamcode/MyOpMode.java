@@ -10,21 +10,27 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp
 public class MyOpMode extends LinearOpMode {
-    OutOfBoundsRobot robot;
+    OutOfBoundsRobot robot = new OutOfBoundsRobot();
 
     @Override
     public void runOpMode() {
-        robot.initDriveTrainMotors(this);
+        try {
+            robot.initDriveTrainMotors(this);
 
-        telemetry.addData("Status", "Initialized");
-        telemetry.update();
-        // Wait for the game to start (driver presses PLAY)
-        waitForStart();
+            telemetry.addData("Status", "Hardware Initialized");
+            telemetry.update();
+            // Wait for the game to start (driver presses PLAY)
+            waitForStart();
 
-        // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()) {
-            robot.Move();
-            telemetry.addData("Status", "Running");
+            // run until the end of the match (driver presses STOP)
+
+            while (opModeIsActive()) {
+                robot.Move();
+                telemetry.addData("Status", "Running");
+                telemetry.update();
+            }
+        } catch (IllegalArgumentException e) {
+            telemetry.addData("Status", e.getMessage());
             telemetry.update();
         }
     }

@@ -18,20 +18,15 @@ public class Hardware {
 
     // Measurements and such kept as variables for ease of use
         // Ticks Per Rotation of an odometry wheel
-    private static final double ODOM_ROTATION_TICKS = 360*4;
-        // Radius of an odometry wheel
+    private static final double ODOM_TICKS_PER_ROTATION = 1440;
+        // Radius of an odometry wheel in cm
     private static final double ODOM_WHEEL_RADIUS = 3.6;
-        // Distance from left odometry wheel to the right odometry wheel
+        // Distance from left odometry wheel to the right odometry wheel in cm
     private static final double DIST_BETWEEN_WHEELS = 40.194;
-        // Circumference of an odometry wheel
+        // Circumference of an odometry wheel in cm
     private static final double WHEEL_CIRCUM = 2.0 * Math.PI * ODOM_WHEEL_RADIUS;
-        // Constants determined through 12 trials of moving the robot around
-    private static final double ODOM_TICKS_PER_CM = 63.04490471;
-    private static final double ODOM_TICKS_PER_CM_LEFT = 62.8066872076;
-    private static final double ODOM_TICKS_PER_CM_RIGHT = 63.2831222184;
-    private static final double ODOM_CORRECTION_FORWARD = 1.62322867463;
-    private static final double ODOM_CORRECTION_SIDEWAYS = 1.2296775794 * 1.22624369 * 0.910719701;
-    private static final double ODOM_CORRECTION_THETA = 20.45383245 / 2;
+        // Number of ticks in a centimeter using dimensional analysis
+    private static final double ODOM_TICKS_PER_CM = ODOM_TICKS_PER_ROTATION / WHEEL_CIRCUM;
 
     // Robot physical location
     public double x = 0;
@@ -123,8 +118,8 @@ public class Hardware {
     public void updatePosition() {
         // Get the circumference of the distance traveled by the wheel since the last update
         // Circumference multiplied by degrees the wheel has rotated
-        double deltaLeftDist = getLeftTicks() / ODOM_TICKS_PER_CM_LEFT;
-        double deltaRightDist = getRightTicks() / ODOM_TICKS_PER_CM_RIGHT;
+        double deltaLeftDist = getLeftTicks() / ODOM_TICKS_PER_CM;
+        double deltaRightDist = getRightTicks() / ODOM_TICKS_PER_CM;
         double deltaCenterDist = getCenterTicks() / ODOM_TICKS_PER_CM;
 
         // Update real world distance traveled by the odometry wheels
@@ -132,8 +127,9 @@ public class Hardware {
         rightOdomTraveled += deltaRightDist;
         centerOdomTraveled += deltaCenterDist;
 
-        // To get theta, we find the tangent of the distance between the two wheels
-        theta += Math.atan((deltaLeftDist - deltaRightDist) / DIST_BETWEEN_WHEELS);
+        /* To get theta, we find the arc tangent of the difference between the two wheels'
+            distance traveled divided by the distance between the two wheels */
+        theta += Math.atan2((deltaLeftDist - deltaRightDist), DIST_BETWEEN_WHEELS);
 
         // Finds the unrotated point's position, then rotates it around the origin, then adjusts to robot position
         x += (deltaLeftDist + deltaRightDist) / 2.0 /* * Math.cos(theta) +

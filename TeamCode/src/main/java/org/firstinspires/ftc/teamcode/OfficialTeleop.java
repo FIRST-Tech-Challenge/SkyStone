@@ -75,9 +75,9 @@ public class OfficialTeleop extends OpMode
         telemetry.update();
 
         leftFront  = hardwareMap.get(DcMotorEx.class, "leftFront");
-        leftBack  = hardwareMap.get(DcMotorEx.class, "leftFront");
+        leftBack  = hardwareMap.get(DcMotorEx.class, "leftBack");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
-        rightBack = hardwareMap.get(DcMotorEx.class, "rightFront");
+        rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
 
         leftFront.setDirection(DcMotor.Direction.FORWARD);
         leftBack.setDirection(DcMotor.Direction.FORWARD);

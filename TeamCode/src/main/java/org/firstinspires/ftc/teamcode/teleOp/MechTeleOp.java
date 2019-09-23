@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import java.lang.Math;
 import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name = "MechTeleOp")
@@ -69,8 +70,8 @@ public class MechTeleOp extends OpMode {
         motorBR.setPower(calibBR * power);
     }
 
-    public void matrixToPower(double[][] power){
-        motorFl.setPower(calibFL * power[0][0]);
+    public void matrixToPowers(double[][] power){
+        motorFL.setPower(calibFL * power[0][0]);
         motorFR.setPower(calibFR * power[0][1]);
         motorBL.setPower(calibBL * power[1][0]);
         motorBR.setPower(calibBR * power[1][1]);
@@ -105,7 +106,7 @@ public class MechTeleOp extends OpMode {
          * with his code. */
         double leftX = getLX(), leftY = getLY(), rightX = getRX(), rightY = getRY();
 
-        if(Math.max(abs(leftX), abs(leftY), abs(rightX), abs(rightY)) > 0.1){ // Makes sure that atleast one of the sticks is being pressed
+        if(Math.max(Math.max(Math.abs(leftX), Math.abs(leftY)), Math.max(Math.abs(rightX), Math.abs(rightY))) > 0.1){ // Makes sure that atleast one of the sticks is being pressed
             /* The switch statement below can probably be deleted at some point. It's
              * possible that I could just add together all of the vectors of the
              * joysticks and take the average. 
@@ -114,37 +115,61 @@ public class MechTeleOp extends OpMode {
              * pressed forward or backwards to go max speed. This will also effect 
              * the speeds of straifing and turning. A counterbalance can be added 
              * to offset that effect.*/
-            switch (Math.max(abs(leftX), abs(leftY), abs(rightX), abs(rightY)) { // Picks the joystick vector with the most distance from the orgin
-                //TODO: Add the system that takes the averages of the joystick inputs
-                //TODO: Get rid of the switch
-                case leftX:
-                    motorPowers = {
-                        {-leftX, -leftX},
-                        { leftX,  leftX}
-                    }
-                    break;                
-                case leftY:
-                    motorPowers = {
-                        { leftY,  leftY},
-                        { leftY,  leftY}
-                    }
-                    break;
-                case rightX:
-                    motorPowers = {
-                        {-rightX,  rightX},
-                        {-rightX,  rightX}
-                    }
-                    break;
-                case rightY:
-                    motorPowers = {
-                        { rightY,  rightY},
-                        { rightY,  rightY}
-                    }
-                    break;
-            }
+
+            //TODO: Add the system that takes the averages of the joystick inputs
+            //TODO: Get rid of the switch
+            //TODO: Make function to add together matrices
+//            motorPowers = Math.add({
+//                { leftY, leftY},
+//                { leftY, leftY}
+//            } + {
+//                { rightY,  rightY},
+//                { rightY,  rightY}
+//
+//            } + {
+//                {-rightX,  rightX},
+//                {-rightX,  rightX}
+//            } + {
+//                {-leftX, -leftX},
+//                { leftX,  leftX}
+//            });
+            
+            // switch (Math.max(abs(leftX), abs(leftY), abs(rightX), abs(rightY)) { // Picks the joystick vector with the most distance from the orgin
+            //
+            //     case leftX:
+            //         motorPowers = {
+            //             {-leftX, -leftX},
+            //             { leftX,  leftX}
+            //         }
+            //         break;                
+            //     case leftY:
+            //         motorPowers = {
+            //             { leftY,  leftY},
+            //             { leftY,  leftY}
+            //         }
+            //         break;
+            //     case rightX:
+            //         motorPowers = {
+            //             {-rightX,  rightX},
+            //             {-rightX,  rightX}
+            //         }
+            //         break;
+            //     case rightY:
+            //         motorPowers = {
+            //             { rightY,  rightY},
+            //             { rightY,  rightY}
+            //         }
+            //         break;
+            // }
+        }else{
+            //TODO: Set motor powers to zero
+//            motorPowers = {
+//                { 0.0,  0.0},
+//                { 0.0,  0.0}
+//            }
         }
 
-        matrixToPower(motorPowers);
+        matrixToPowers(motorPowers);
         
         // if (Math.abs(getRX()) < Math.abs(getLX()) || Math.abs(getRX()) < Math.abs(getLY())) {
         //     if (Math.abs(getLX()) < 0.1 && Math.abs(getLY()) < 0.1)

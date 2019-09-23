@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
-@TeleOp(name="Practice Drive Train", group="Linear Opmode")
+@TeleOp(name="Practice Drive Train", group="none")
 //@Disabled
 public class DriveTrainPracticeCode extends LinearOpMode {
 

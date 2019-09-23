@@ -39,7 +39,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.westtorrancerobotics.lib.MecanumController;
 import org.westtorrancerobotics.lib.MecanumDrive;
 
-@TeleOp(name="Two Drivers", group="Iterative Opmode")
+@TeleOp(name="Two Drivers", group="none")
 //@Disabled
 public class OfficialTeleop extends OpMode
 {

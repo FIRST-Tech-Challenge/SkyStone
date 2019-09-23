@@ -27,6 +27,8 @@ public class Hardware {
     private static final double WHEEL_CIRCUM = 2.0 * Math.PI * ODOM_WHEEL_RADIUS;
         // Number of ticks in a centimeter using dimensional analysis
     private static final double ODOM_TICKS_PER_CM = ODOM_TICKS_PER_ROTATION / WHEEL_CIRCUM;
+        // Adjust for theta so it reads proper values
+    private static final double THETA_ADJUST = 1;
 
     // Robot physical location
     public double x = 0;
@@ -129,7 +131,7 @@ public class Hardware {
 
         /* To get theta, we find the arc tangent of the difference between the two wheels'
             distance traveled divided by the distance between the two wheels */
-        theta += Math.atan2((deltaLeftDist - deltaRightDist), DIST_BETWEEN_WHEELS);
+        theta += THETA_ADJUST * Math.atan2((deltaLeftDist - deltaRightDist), DIST_BETWEEN_WHEELS);
 
         // Finds the unrotated point's position, then rotates it around the origin, then adjusts to robot position
         x += (deltaLeftDist + deltaRightDist) / 2.0 /* * Math.cos(theta) +

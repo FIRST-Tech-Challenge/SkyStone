@@ -61,13 +61,13 @@ public class DM_Auto_Simple extends LinearOpMode {
 
     private ElapsedTime     runtime = new ElapsedTime();
 
-    static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder
-    static final double     DRIVE_GEAR_REDUCTION    = 2.0 ;     // This is < 1.0 if geared UP
-    static final double     WHEEL_DIAMETER_INCHES   = 3.5 ;     // For figuring circumference
+    static final double     COUNTS_PER_MOTOR_REV    = 1440 / 2 ;    // eg: TETRIX Motor Encoder
+    static final double     DRIVE_GEAR_REDUCTION    = 2.0 / 3 ;     // This is < 1.0 if geared UP
+    static final double     WHEEL_DIAMETER_INCHES   = 3.937 ;   // For figuring circumference - 100mm
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double     DRIVE_SPEED_SLOW        = 0.2;
-    static final double     DRIVE_SPEED             = 0.5;
+    static final double     DRIVE_SPEED_SLOW        = 0.4;
+    static final double     DRIVE_SPEED             = 0.6;
     static final double     TURN_SPEED              = 0.15;
     boolean                 soundPlaying            = false;
 
@@ -266,7 +266,7 @@ public class DM_Auto_Simple extends LinearOpMode {
         // S8: Move forward 108 inches with 10 Sec timeout
         telemetry.addData("Status",  ">> S8 Started");
         telemetry.update();
-        encoderDrive(DRIVE_SPEED, 108, 108, 10.0);
+        encoderDrive(DRIVE_SPEED, 72, 72, 4.5);
 
         // S9: Turn right 90 degrees
         telemetry.addData("Status",  ">> S9 Started");
@@ -276,7 +276,7 @@ public class DM_Auto_Simple extends LinearOpMode {
         // S10: Move forward 24 inches with 6 Sec timeout
         telemetry.addData("Status",  ">> S10 Started");
         telemetry.update();
-        encoderDrive(DRIVE_SPEED, 24, 24, 6.0);
+        encoderDrive(DRIVE_SPEED, 16, 16, 2.0);
 
         sleep(1000);     // pause for servos to move
 
@@ -334,8 +334,8 @@ public class DM_Auto_Simple extends LinearOpMode {
                 // Check whether robot is almost at target
                 int leftDiff = leftMotor.getTargetPosition() - leftMotor.getCurrentPosition();
                 double slowDownFactor = 1.0;
-                if (leftDiff < 4 * COUNTS_PER_INCH) {
-                    slowDownFactor = (double) leftDiff / (4 * COUNTS_PER_INCH);
+                if (leftDiff < 2 * COUNTS_PER_INCH) {
+                    slowDownFactor = (double) leftDiff / (2 * COUNTS_PER_INCH);
                 }
 
                 // Use gyro to drive in a straight line.

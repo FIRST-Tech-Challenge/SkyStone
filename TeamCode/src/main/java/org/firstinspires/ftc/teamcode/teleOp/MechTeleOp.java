@@ -24,6 +24,26 @@ public class MechTeleOp extends OpMode {
         {0.0, 0.0}
     };
 
+    double[][] leftXMat = {
+            { 0.0,  0.0},
+            { 0.0,  0.0}
+    };
+
+    double[][] leftYMat = {
+            { 0.0,  0.0},
+            { 0.0,  0.0}
+    };
+
+    double[][] rightXMat = {
+            { 0.0,  0.0},
+            { 0.0,  0.0}
+    };
+
+    double[][] rightYMat = {
+            { 0.0,  0.0},
+            { 0.0,  0.0}
+    };
+
     public MechTeleOp() {
         super();
     }
@@ -77,6 +97,27 @@ public class MechTeleOp extends OpMode {
         motorBR.setPower(calibBR * power[1][1]);
     }
 
+    public double[][] avgPowerMatrix(double[][] leftY, double[][] leftX, double[][] rightY, double[][]rightX){
+        double[][] result = {
+                { 0.0,  0.0},
+                { 0.0,  0.0}
+        };
+
+        for(int i = 0; i < 1; i++){
+            for(int k = 0; k < 1; k++){
+                result[i][k] = leftY[i][k] + leftX[i][k] + rightY[i][k] + rightX[i][k];
+            }
+        }
+
+        for(int i = 0; i < 1; i++){
+            for(int k = 0; k < 1; k++){
+                result[i][k] /= 4;
+            }
+        }
+
+        return result;
+    }
+
     public void setupMotors() {
         motorFL = hardwareMap.get(DcMotor.class, "frontLeft"); // frontLeft
         motorFR = hardwareMap.get(DcMotor.class, "frontRight"); // frontRight
@@ -107,70 +148,71 @@ public class MechTeleOp extends OpMode {
         double leftX = getLX(), leftY = getLY(), rightX = getRX(), rightY = getRY();
 
         if(Math.max(Math.max(Math.abs(leftX), Math.abs(leftY)), Math.max(Math.abs(rightX), Math.abs(rightY))) > 0.1){ // Makes sure that atleast one of the sticks is being pressed
-            /* The switch statement below can probably be deleted at some point. It's
-             * possible that I could just add together all of the vectors of the
-             * joysticks and take the average. 
-             * 
-             * If we stick with a plain averaging system, both joysticks have to be 
+            /* If we stick with a plain averaging system, both joysticks have to be
              * pressed forward or backwards to go max speed. This will also effect 
              * the speeds of straifing and turning. A counterbalance can be added 
              * to offset that effect.*/
 
-            //TODO: Add the system that takes the averages of the joystick inputs
-            //TODO: Get rid of the switch
-            //TODO: Make function to add together matrices
-//            motorPowers = Math.add({
-//                { leftY, leftY},
-//                { leftY, leftY}
-//            } + {
-//                { rightY,  rightY},
-//                { rightY,  rightY}
-//
-//            } + {
-//                {-rightX,  rightX},
-//                {-rightX,  rightX}
-//            } + {
-//                {-leftX, -leftX},
-//                { leftX,  leftX}
-//            });
-            
-            // switch (Math.max(abs(leftX), abs(leftY), abs(rightX), abs(rightY)) { // Picks the joystick vector with the most distance from the orgin
-            //
+            leftXMat = new double[][]{
+                    {-leftX, -leftX}, //Here the negative will probably have to on the bottom motors
+                    { leftX,  leftX}
+            };
+
+            leftYMat = new double[][] {
+                    { leftY,  leftY},
+                    { leftY,  leftY}
+            };
+
+            rightXMat = new double[][] {
+                    {-rightX,  rightX},
+                    {-rightX,  rightX}
+            };
+
+            rightYMat = new double[][] {
+                    { rightY,  rightY},
+                    { rightY,  rightY}
+            };
+
+            avgPowerMatrix(leftYMat, leftXMat, rightYMat, rightXMat);
+
+            /*New Implementation of old code*/
+            // switch (Math.max(abs(leftX), abs(leftY), abs(rightX), abs(rightY)) { // Picks the joystick vector with the most distance from the origin
             //     case leftX:
-            //         motorPowers = {
+            //         motorPowers = new double[][]{
             //             {-leftX, -leftX},
             //             { leftX,  leftX}
             //         }
             //         break;                
             //     case leftY:
-            //         motorPowers = {
+            //         motorPowers = new double[][]{
             //             { leftY,  leftY},
             //             { leftY,  leftY}
             //         }
             //         break;
             //     case rightX:
-            //         motorPowers = {
+            //         motorPowers = new double[][]{
             //             {-rightX,  rightX},
             //             {-rightX,  rightX}
             //         }
             //         break;
             //     case rightY:
-            //         motorPowers = {
+            //         motorPowers = new double[][]{
             //             { rightY,  rightY},
             //             { rightY,  rightY}
             //         }
             //         break;
             // }
+
         }else{
-            //TODO: Set motor powers to zero
-//            motorPowers = {
-//                { 0.0,  0.0},
-//                { 0.0,  0.0}
-//            }
+            motorPowers = new double[][] {
+                { 0.0,  0.0},
+                { 0.0,  0.0}
+            };
         }
 
         matrixToPowers(motorPowers);
-        
+
+        /*Old Code for Joystick Movement*/
         // if (Math.abs(getRX()) < Math.abs(getLX()) || Math.abs(getRX()) < Math.abs(getLY())) {
         //     if (Math.abs(getLX()) < 0.1 && Math.abs(getLY()) < 0.1)
         //         moveForward(0);

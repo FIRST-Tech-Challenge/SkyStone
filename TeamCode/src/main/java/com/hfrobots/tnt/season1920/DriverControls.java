@@ -29,41 +29,45 @@ import com.hfrobots.tnt.corelib.control.RangeInputButton;
 
 import lombok.Builder;
 
-@Builder
 public class DriverControls {
-    protected RangeInput driverLeftStickX;
+    protected RangeInput leftStickX;
 
-    protected RangeInput driverLeftStickY;
+    protected RangeInput leftStickY;
 
-    protected RangeInput driverRightStickX;
+    protected RangeInput rightStickX;
 
-    protected RangeInput driverRightStickY;
+    protected RangeInput rightStickY;
 
+    protected DebouncedButton dpadUp;
+
+    protected DebouncedButton dpadDown;
+
+    protected DebouncedButton dpadLeft;
+
+    protected DebouncedButton dpadRight;
+
+    protected DebouncedButton xBlueButton;
+
+    protected DebouncedButton bRedButton;
+
+    protected DebouncedButton yYellowButton;
+
+    protected DebouncedButton aGreenButton;
+
+    protected OnOffButton rightBumper;
+
+    protected OnOffButton leftBumper;
+
+    protected RangeInput leftTrigger;
+
+    protected RangeInput rightTrigger;
+
+    // Derived
     protected RangeInput driveForwardReverse;
 
     protected RangeInput driveStrafe;
 
     protected RangeInput driveRotate;
-
-    protected DebouncedButton driverDpadUp;
-
-    protected DebouncedButton driverDpadDown;
-
-    protected DebouncedButton driverDpadLeft;
-
-    protected DebouncedButton driverDpadRight;
-
-    protected DebouncedButton driverXBlueButton;
-
-    protected DebouncedButton driverBRedButton;
-
-    protected DebouncedButton driverYYellowButton;
-
-    protected DebouncedButton driverAGreenButton;
-
-    protected DebouncedButton driverRightBumper;
-
-    protected DebouncedButton driverLeftBumper;
 
     protected DebouncedButton lockButton;
 
@@ -79,70 +83,118 @@ public class DriverControls {
 
     private NinjaGamePad driversGamepad;
 
-    protected final float throttleGain = 0.7F;
+    private OpenLoopMecanumKinematics kinematics;
 
-    protected final float throttleExponent = 5; // MUST BE AN ODD NUMBER!
+    private final float throttleGain = 0.7F;
 
-    protected final float throttleDeadband = 0;
+    private final float throttleExponent = 5; // MUST BE AN ODD NUMBER!
+
+    private final float throttleDeadband = 0;
 
     private final float lowPassFilterFactor = .92F;
 
-    private OpenLoopMecanumKinematics kinematics;
+    @Builder
+    private DriverControls(RangeInput leftStickX,
+                           RangeInput leftStickY,
+                           RangeInput rightStickX,
+                           RangeInput rightStickY,
+                           DebouncedButton dpadUp,
+                           DebouncedButton dpadDown,
+                           DebouncedButton dpadLeft,
+                           DebouncedButton dpadRight,
+                           DebouncedButton xBlueButton,
+                           DebouncedButton bRedButton,
+                           DebouncedButton yYellowButton,
+                           DebouncedButton aGreenButton,
+                           OnOffButton rightBumper,
+                           OnOffButton leftBumper,
+                           RangeInput leftTrigger,
+                           RangeInput rightTrigger,
+                           NinjaGamePad driversGamepad,
+                           OpenLoopMecanumKinematics kinematics) {
+        if (driversGamepad != null) {
+            this.driversGamepad = driversGamepad;
+            setupFromGamepad();
+        } else {
+            this.leftStickX = leftStickX;
+            this.leftStickY = leftStickY;
+            this.rightStickX = rightStickX;
+            this.rightStickY = rightStickY;
+            this.dpadUp = dpadUp;
+            this.dpadDown = dpadDown;
+            this.dpadLeft = dpadLeft;
+            this.dpadRight = dpadRight;
+            this.xBlueButton = xBlueButton;
+            this.bRedButton = bRedButton;
+            this.yYellowButton = yYellowButton;
+            this.aGreenButton = aGreenButton;
+            this.rightBumper = rightBumper;
+            this.leftBumper = leftBumper;
+            this.leftTrigger = leftTrigger;
+            this.rightTrigger = rightTrigger;
+        }
 
-    public void setGamepad(NinjaGamePad driversGamepad) {
-        this.driversGamepad = driversGamepad;
+        setupDerivedControls();
+        setupCurvesAndFilters();
 
-        setupDriverControls();
+        this.kinematics = kinematics;
     }
 
-    public void setupCurvesAndFilters() {
+    private void setupCurvesAndFilters() {
         driveStrafe = new ParametricScaledRangeInput(
-                new LowPassFilteredRangeInput(driverLeftStickX, lowPassFilterFactor),
+                new LowPassFilteredRangeInput(leftStickX, lowPassFilterFactor),
                 throttleDeadband, throttleGain, throttleExponent);
 
         driveForwardReverse = new ParametricScaledRangeInput(
-                new LowPassFilteredRangeInput(driverLeftStickY, lowPassFilterFactor),
+                new LowPassFilteredRangeInput(leftStickY, lowPassFilterFactor),
                 throttleDeadband, throttleGain, throttleExponent);
 
-        driveRotate = new LowPassFilteredRangeInput(driverRightStickX, lowPassFilterFactor);
+        driveRotate = new LowPassFilteredRangeInput(rightStickX, lowPassFilterFactor);
     }
 
-    private void setupDriverControls() {
-        driverLeftStickX = driversGamepad.getLeftStickX();
-        driverLeftStickY = driversGamepad.getLeftStickY();
-        driverRightStickX = driversGamepad.getRightStickX();
-        driverRightStickY = driversGamepad.getRightStickY();
+    private void setupFromGamepad() {
+        leftStickX = driversGamepad.getLeftStickX();
+        leftStickY = driversGamepad.getLeftStickY();
+        rightStickX = driversGamepad.getRightStickX();
+        rightStickY = driversGamepad.getRightStickY();
 
-        driverDpadDown = new DebouncedButton(driversGamepad.getDpadDown());
-        driverDpadUp = new DebouncedButton(driversGamepad.getDpadUp());
-        driverDpadLeft = new DebouncedButton(driversGamepad.getDpadLeft());
-        driverDpadRight = new DebouncedButton(driversGamepad.getDpadRight());
-        driverAGreenButton = new DebouncedButton(driversGamepad.getAButton());
-        driverBRedButton = new DebouncedButton(driversGamepad.getBButton());
-        driverXBlueButton = new DebouncedButton(driversGamepad.getXButton());
-        driverYYellowButton = new DebouncedButton(driversGamepad.getYButton());
-        driverLeftBumper = new DebouncedButton(driversGamepad.getLeftBumper());
-        driverRightBumper = new DebouncedButton(driversGamepad.getRightBumper());
+        dpadDown = new DebouncedButton(driversGamepad.getDpadDown());
+        dpadUp = new DebouncedButton(driversGamepad.getDpadUp());
+        dpadLeft = new DebouncedButton(driversGamepad.getDpadLeft());
+        dpadRight = new DebouncedButton(driversGamepad.getDpadRight());
+        aGreenButton = new DebouncedButton(driversGamepad.getAButton());
+        bRedButton = new DebouncedButton(driversGamepad.getBButton());
+        xBlueButton = new DebouncedButton(driversGamepad.getXButton());
+        yYellowButton = new DebouncedButton(driversGamepad.getYButton());
+        leftBumper = driversGamepad.getLeftBumper();
+        rightBumper = driversGamepad.getRightBumper();
+        leftTrigger = driversGamepad.getLeftTrigger();
+        rightTrigger = driversGamepad.getRightTrigger();
+
+        // FIXME: Not yet mocked for tests
         lockButton = new DebouncedButton(driversGamepad.getLeftStickButton());
         unlockButton = new DebouncedButton(driversGamepad.getRightStickButton());
-        driveFastButton = new RangeInputButton(driversGamepad.getLeftTrigger(), 0.65f);
-        driveInvertedButton = new RangeInputButton(driversGamepad.getRightTrigger(), 0.65f);
-        driveBumpStrafeLeftButton = driversGamepad.getLeftBumper();
-        driveBumpStrafeRightButton = driversGamepad.getRightBumper();
+    }
+
+    private void setupDerivedControls() {
+        driveFastButton = new RangeInputButton(leftTrigger, 0.65f);
+        driveInvertedButton = new RangeInputButton(rightTrigger, 0.65f);
+        driveBumpStrafeLeftButton = leftBumper;
+        driveBumpStrafeRightButton = rightBumper;
     }
 
     public void periodicTask() {
         double x = - driveStrafe.getPosition(); // positive robot x axis is negative joystick axis
         double y = - driveForwardReverse.getPosition();
         double rot = - driveRotate.getPosition(); // positive robot z rotation (human-normal) is negative joystick x axis
-
-        y = -y; // still need to figure this one out!
+        boolean useEncoders = true;
 
         // do this first, it will be cancelled out by bump-strafe
         if (!driveFastButton.isPressed()) {
             y /= 1.5;
             x /= 1.25;
             rot /= 1.5;
+            useEncoders = false;
         }
 
         final boolean driveInverted;
@@ -169,7 +221,7 @@ public class DriverControls {
             rotateScaled = 0;
         }
 
-        kinematics.driveCartesian(xScaled, yScaled, rotateScaled, driveInverted, 0.0);
+        kinematics.driveCartesian(xScaled, yScaled, rotateScaled, driveInverted, 0.0, useEncoders);
     }
 
 }

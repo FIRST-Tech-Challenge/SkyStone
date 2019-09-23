@@ -28,7 +28,12 @@ import lombok.AllArgsConstructor;
 public class OpenLoopMecanumKinematics {
     private final RoadRunnerMecanumDriveREV mecanumDrive;
 
-    public void driveCartesian(double xPower, double yPower, double rotationPower, boolean inverted, double gyroAngle)
+    public void driveCartesian(double xPower,
+                               double yPower,
+                               double rotationPower,
+                               boolean inverted,
+                               double gyroAngle,
+                               boolean useEncoders)
     {
         xPower = Range.clip(xPower, -1.0, 1.0);
         yPower = Range.clip(yPower, -1.0, 1.0);
@@ -46,6 +51,12 @@ public class OpenLoopMecanumKinematics {
 
         xPower = xPower * cosA - yPower * sinA;
         yPower = xPower * sinA + yPower * cosA;
+
+        if (useEncoders) {
+            mecanumDrive.enableEncoders();
+        } else {
+            mecanumDrive.disableEncoders();
+        }
 
         //if (gyroAssistEnabled)
         //{

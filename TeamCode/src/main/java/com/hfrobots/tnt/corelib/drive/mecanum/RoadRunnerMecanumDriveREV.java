@@ -42,8 +42,12 @@ import static com.acmerobotics.roadrunner.quickstart.drive.DriveConstants.encode
  */
 public class RoadRunnerMecanumDriveREV extends RoadRunnerMecanumDriveBase {
     private DcMotorEx leftFront, leftRear, rightRear, rightFront;
+
     private List<DcMotorEx> motors;
+
     private BNO055IMU imu;
+
+    private boolean encodersEnabled = false;
 
     public RoadRunnerMecanumDriveREV(SimplerHardwareMap hardwareMap) {
         super();
@@ -66,6 +70,8 @@ public class RoadRunnerMecanumDriveREV extends RoadRunnerMecanumDriveBase {
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFrontDriveMotor");
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
+
+        encodersEnabled = true;
 
         for (DcMotorEx motor : motors) {
             // TODO: decide whether or not to use the built-in velocity PID
@@ -122,5 +128,31 @@ public class RoadRunnerMecanumDriveREV extends RoadRunnerMecanumDriveBase {
     @Override
     public double getRawExternalHeading() {
         return imu.getAngularOrientation().firstAngle;
+    }
+
+    public void enableEncoders() {
+        if (encodersEnabled) {
+            return; // don't do it again if not needed
+        }
+
+        for (DcMotorEx motor : motors) {
+           motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+           motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        }
+
+        encodersEnabled = true;
+    }
+
+    public void disableEncoders() {
+        if (!encodersEnabled) {
+            return; // don't do it again if not needed
+        }
+
+        for (DcMotorEx motor : motors) {
+           motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+           motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        }
+
+        encodersEnabled = false;
     }
 }

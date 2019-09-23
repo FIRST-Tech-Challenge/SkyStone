@@ -31,7 +31,7 @@ import static com.hfrobots.tnt.corelib.Constants.LOG_TAG;
 /**
  * Provide a basic manual operational mode that controls the tank drive.
  */
-@TeleOp(name="00 RoverRuckus Teleop")
+@TeleOp(name="RoverRuckus Teleop")
 public class RoverRuckusTeleop extends RoverRuckusTelemetry
 
 {

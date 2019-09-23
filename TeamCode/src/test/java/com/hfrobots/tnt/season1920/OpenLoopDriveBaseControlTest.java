@@ -22,6 +22,7 @@ package com.hfrobots.tnt.season1920;
 import com.hfrobots.tnt.corelib.control.FakeOnOffButton;
 import com.hfrobots.tnt.corelib.control.FakeRangeInput;
 import com.hfrobots.tnt.corelib.control.OnOffButton;
+import com.hfrobots.tnt.corelib.control.RangeInput;
 import com.hfrobots.tnt.corelib.drive.FakeExtendedDcMotor;
 import com.hfrobots.tnt.corelib.drive.mecanum.RoadRunnerMecanumDriveREV;
 import com.hfrobots.tnt.corelib.sensors.FakeBNO055IMU;
@@ -46,15 +47,15 @@ public class OpenLoopDriveBaseControlTest {
 
     private RoadRunnerMecanumDriveREV drivebase;
 
-    protected FakeRangeInput driveForwardReverse;
+    protected FakeRangeInput leftStickY;
 
-    protected FakeRangeInput driveStrafe;
+    protected FakeRangeInput leftStickX;
 
-    protected FakeRangeInput driveRotate;
+    protected FakeRangeInput rightStickX;
 
-    protected OnOffButton driveInvertedButton;
+    protected RangeInput driveInvertedButton;
 
-    protected OnOffButton driveFastButton;
+    protected RangeInput driveFastButton;
 
     protected OnOffButton driveBumpStrafeRightButton;
 
@@ -88,15 +89,15 @@ public class OpenLoopDriveBaseControlTest {
         // FIXME: Create the driver controls
 
         // First, you need to create fake versions of all of the buttons above
-        driveForwardReverse = new FakeRangeInput();
+        leftStickY = new FakeRangeInput();
 
-        driveStrafe = new FakeRangeInput();
+        leftStickX = new FakeRangeInput();
 
-        driveRotate = new FakeRangeInput();
+        rightStickX = new FakeRangeInput();
 
-        driveInvertedButton = new FakeOnOffButton();
+        driveInvertedButton = new FakeRangeInput();
 
-        driveFastButton = new FakeOnOffButton();
+        driveFastButton = new FakeRangeInput();
 
         driveBumpStrafeRightButton = new FakeOnOffButton();
 
@@ -104,19 +105,19 @@ public class OpenLoopDriveBaseControlTest {
 
         controls = DriverControls.builder()
                 .kinematics(kinematics)
-                .driveForwardReverse(driveForwardReverse)
-                .driveStrafe(driveStrafe)
-                .driveRotate(driveRotate)
-                .driveInvertedButton(driveInvertedButton)
-                .driveFastButton(driveFastButton)
-                .driveBumpStrafeRightButton(driveBumpStrafeRightButton)
-                .driveBumpStrafeLeftButton(driveBumpStrafeLeftButton).build();
+                .leftStickY(leftStickY)
+                .leftStickX(leftStickX)
+                .rightStickX(rightStickX)
+                .rightTrigger(driveInvertedButton)
+                .leftTrigger(driveFastButton)
+                .rightBumper(driveBumpStrafeRightButton)
+                .leftBumper(driveBumpStrafeLeftButton).build();
     }
 
     @Test
     public void openLoopControl() {
        // drive straight
-        driveForwardReverse.setCurrentPosition(-1);
+        leftStickY.setCurrentPosition(-1);
         controls.periodicTask();
 
         double leftFrontPower = leftFrontDriveMotor.getPower();
@@ -129,9 +130,9 @@ public class OpenLoopDriveBaseControlTest {
 
 
         // stop all movement or standstill
-        driveForwardReverse.setCurrentPosition(0);
-        driveStrafe.setCurrentPosition(0);
-        driveRotate.setCurrentPosition(0);
+        leftStickY.setCurrentPosition(0);
+        leftStickX.setCurrentPosition(0);
+        rightStickX.setCurrentPosition(0);
         controls.periodicTask();
 
         leftFrontPower = leftFrontDriveMotor.getPower();
@@ -139,14 +140,14 @@ public class OpenLoopDriveBaseControlTest {
         rightFrontPower = rightFrontDriveMotor.getPower();
         rightRearPower = rightRearDriveMotor.getPower();
 
-        Assert.assertEquals(0, leftFrontPower, .01);
-        Assert.assertEquals(0, leftRearPower, .01);
-        Assert.assertEquals(0, rightFrontPower, .01);
-        Assert.assertEquals(0, rightRearPower, .01);
+        Assert.assertEquals(0, leftFrontPower, .02);
+        Assert.assertEquals(0, leftRearPower, .02);
+        Assert.assertEquals(0, rightFrontPower, .02);
+        Assert.assertEquals(0, rightRearPower, .02);
 
-        driveForwardReverse.setCurrentPosition(0);
-        driveStrafe.setCurrentPosition(0);
-        driveRotate.setCurrentPosition(-1);
+        leftStickY.setCurrentPosition(0);
+        leftStickX.setCurrentPosition(0);
+        rightStickX.setCurrentPosition(-1);
         controls.periodicTask();
 
         leftFrontPower = leftFrontDriveMotor.getPower();
@@ -159,9 +160,9 @@ public class OpenLoopDriveBaseControlTest {
         Assert.assertTrue(rightFrontPower < 0);
         Assert.assertTrue(rightRearPower < 0);
 
-        driveForwardReverse.setCurrentPosition(0);
-        driveStrafe.setCurrentPosition(-1);
-        driveRotate.setCurrentPosition(0);
+        leftStickY.setCurrentPosition(0);
+        leftStickX.setCurrentPosition(-1);
+        rightStickX.setCurrentPosition(0);
         controls.periodicTask();
 
         leftFrontPower = leftFrontDriveMotor.getPower();

@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 //This class will include all of the action functions such as Movement
 @TeleOp(name = "Function Test", group = "Iterative Opmode")
 public class FunctionClass extends OpMode {
-    DcMotor motorFL, motorFR, motorBL, motorBR;
+    DcMotor motorFL, motorFR; //, motorBL, motorBR;
 
     public FunctionClass() {
         super();
@@ -20,14 +20,14 @@ public class FunctionClass extends OpMode {
         // Use the same motor name when you sets on configuration.
         motorFL = hardwareMap.dcMotor.get("motorFL");
         motorFR = hardwareMap.dcMotor.get("motorFR");
-        motorBL = hardwareMap.dcMotor.get("motorBL");
-        motorBR = hardwareMap.dcMotor.get("motorBR");
+        //motorBL = hardwareMap.dcMotor.get("motorBL");
+        //motorBR = hardwareMap.dcMotor.get("motorBR");
 
         // This code is used set the directions of the motors.
-        motorFL.setDirection(DcMotorSimple.Direction.REVERSE);
-        motorFR.setDirection(DcMotorSimple.Direction.FORWARD);
-        motorBL.setDirection(DcMotorSimple.Direction.REVERSE);
-        motorBR.setDirection(DcMotorSimple.Direction.FORWARD);
+        motorFL.setDirection(DcMotorSimple.Direction.FORWARD);
+        motorFR.setDirection(DcMotorSimple.Direction.REVERSE);
+        //motorBL.setDirection(DcMotorSimple.Direction.REVERSE);
+        //motorBR.setDirection(DcMotorSimple.Direction.FORWARD);
     }
 
     @Override
@@ -52,8 +52,8 @@ public class FunctionClass extends OpMode {
 
             motorFL.setPower(leftPower);
             motorFR.setPower(rightPower);
-            motorBL.setPower(leftPower);
-            motorBR.setPower(rightPower);
+            //motorBL.setPower(leftPower);
+            //motorBR.setPower(rightPower);
         }
     }
 
@@ -66,8 +66,8 @@ public class FunctionClass extends OpMode {
         //report motors' power
         telemetry.addData("motorFL", motorFL.getPower());
         telemetry.addData("motorFR", motorFR.getPower());
-        telemetry.addData("motorBL", motorBL.getPower());
-        telemetry.addData("motorBR", motorBR.getPower());
+        //telemetry.addData("motorBL", motorBL.getPower());
+        //telemetry.addData("motorBR", motorBR.getPower());
 
         //update the data screen.
         telemetry.update();
@@ -77,8 +77,8 @@ public class FunctionClass extends OpMode {
     public void resetMotors() {
         motorFL.setPower(0.0);
         motorFR.setPower(0.0);
-        motorBL.setPower(0.0);
-        motorBR.setPower(0.0);
+        //motorBL.setPower(0.0);
+        //motorBR.setPower(0.0);
     }
 
     //helper method to move the robot
@@ -86,8 +86,8 @@ public class FunctionClass extends OpMode {
     public void moveForward(double power) { // Move backward by giving negative value to the valuable "power"
         motorFL.setPower(power);
         motorFR.setPower(power);
-        motorBL.setPower(power);
-        motorBR.setPower(power);
+        //motorBL.setPower(power);
+        //motorBR.setPower(power);
     }
 
     //helper method to rotate the robot
@@ -95,7 +95,7 @@ public class FunctionClass extends OpMode {
     public void rotate(double power) { // Rotating method, Negative value to rotate right side.
         motorFL.setPower(-power);
         motorFR.setPower(power);
-        motorBL.setPower(-power);
-        motorBR.setPower(power);
+        //motorBL.setPower(-power);
+        //motorBR.setPower(power);
     }
 }

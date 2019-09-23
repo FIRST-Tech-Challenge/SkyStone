@@ -288,6 +288,7 @@ public class My_Navigation extends LinearOpMode {
         }
 
         // Rotate the phone vertical about the X axis if it's in portrait mode
+        // No need to rotate about X axis if phone is in landscape mode.
         if (PHONE_IS_PORTRAIT) {
             phoneXRotate = 90 ;
         }

@@ -1,33 +1,23 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.westtorrancerobotics.lib.MecanumController;
 import org.westtorrancerobotics.lib.MecanumDrive;
 
-public class Robot {
-    public final ElapsedTime runtime;
+public class DriveTrain {
 
     private DcMotorEx leftFront;
     private DcMotorEx leftBack;
     private DcMotorEx rightFront;
     private DcMotorEx rightBack;
     public final ModernRoboticsI2cGyro gyro;
-    public final MecanumController driveTrain;
+    public final MecanumController mecanumController;
 
-    private Servo foundationGrabber;
-
-    public final Lift lift;
-
-    public Robot(HardwareMap hardwareMap) {
-
-        runtime = new ElapsedTime();
-
+    public DriveTrain(HardwareMap hardwareMap) {
         leftFront  = hardwareMap.get(DcMotorEx.class, "leftFront");
         leftBack  = hardwareMap.get(DcMotorEx.class, "leftBack");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
@@ -45,12 +35,21 @@ public class Robot {
 
         gyro = hardwareMap.get(ModernRoboticsI2cGyro.class, "gyro");
 
-        MecanumDrive train = new MecanumDriveImpl(leftFront, leftBack, rightFront, rightBack, gyro);
-        driveTrain = new MecanumController(train);
+        MecanumDrive wheels = new MecanumDriveImpl(leftFront, leftBack, rightFront, rightBack, gyro);
+        mecanumController = new MecanumController(wheels);
+    }
 
-        foundationGrabber = hardwareMap.get(Servo.class, "foundation");
-        foundationGrabber.scaleRange(0.4, 0.9);
-        foundationGrabber.setDirection(Servo.Direction.FORWARD);
+    public void setMode(DcMotor.RunMode mode) {
+        leftFront.setMode(mode);
+        leftBack.setMode(mode);
+        rightFront.setMode(mode);
+        rightBack.setMode(mode);
+    }
 
+    public void setZeroPowerBehavior(DcMotor.ZeroPowerBehavior mode) {
+        leftFront.setZeroPowerBehavior(mode);
+        leftBack.setZeroPowerBehavior(mode);
+        rightFront.setZeroPowerBehavior(mode);
+        rightBack.setZeroPowerBehavior(mode);
     }
 }

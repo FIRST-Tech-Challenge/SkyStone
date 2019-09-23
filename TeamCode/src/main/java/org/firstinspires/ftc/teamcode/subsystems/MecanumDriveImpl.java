@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.GyroSensor;
@@ -14,7 +14,7 @@ public class MecanumDriveImpl implements MecanumDrive {
     private final DcMotorEx rightBack;
     private final GyroSensor gyro;
 
-    MecanumDriveImpl(DcMotorEx leftFront, DcMotorEx leftBack,
+    public MecanumDriveImpl(DcMotorEx leftFront, DcMotorEx leftBack,
                             DcMotorEx rightFront, DcMotorEx rightBack,
                             GyroSensor gyro) {
         this.leftFront = leftFront;

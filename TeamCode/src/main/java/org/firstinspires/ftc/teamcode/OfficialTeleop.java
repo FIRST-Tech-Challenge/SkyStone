@@ -135,6 +135,7 @@ public class OfficialTeleop extends OpMode
         lastDpad = 0;
         dPadDebounce = -50;
 
+        gyro.calibrate();
         driveTrain.zeroDeadReckoner();
 
         telemetry.addData("Status", "Lift Initialized.");

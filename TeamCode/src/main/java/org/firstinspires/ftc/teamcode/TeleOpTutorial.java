@@ -16,6 +16,7 @@ public class TeleOpTutorial extends LinearOpMode
     private DcMotor motorLeft;
     private DcMotor motorRight;
 
+
     // Declare arm servo
    private Servo armServo;
 
@@ -50,6 +51,7 @@ public class TeleOpTutorial extends LinearOpMode
         while(opModeIsActive())
         {
             // Tank drive
+
             motorLeft.setPower(-gamepad1.left_stick_y);
             motorRight.setPower(-gamepad1.right_stick_y);
 

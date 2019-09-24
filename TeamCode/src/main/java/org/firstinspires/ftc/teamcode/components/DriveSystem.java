@@ -13,8 +13,6 @@ import org.firstinspires.ftc.teamcode.components.scale.Ramp;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class DriveSystem {
-    private final LinearScale JOYSTICK_SCALE = new LinearScale(0.62, 0);
-
     private DcMotor motorFrontLeft;
     private DcMotor motorFrontRight;
     private DcMotor motorBackLeft;
@@ -29,8 +27,8 @@ public class DriveSystem {
 
     private final int FORWARD = 1;
     private final int BACKWARD = 0;
-    private final int STRAFE_LEFT = 0;
-    private final int STRAFE_RIGHT = 1;
+//    private final int STRAFE_LEFT = 0;
+//    private final int STRAFE_RIGHT = 1;
 
     private double RAMP_POWER_CUTOFF = 0.3;
     private int RAMP_DISTANCE_TICKS;
@@ -143,11 +141,10 @@ public class DriveSystem {
         }
 
         // write the values to the motors 1
-        double frontRightPower = -leftY + leftX - rightX;
-        double backRightPower = -leftY + leftX + rightX;
         double frontLeftPower = -leftY - leftX + rightX;
+        double frontRightPower = -leftY + leftX - rightX;
         double backLeftPower = -leftY - leftX - rightX;
-
+        double backRightPower = -leftY + leftX + rightX;
 
         this.motorFrontRight.setPower(Range.clip(frontRightPower, -1, 1));
         telemetry.addData("Mecanum Drive System", motorFrontRight.getPower());
@@ -163,56 +160,24 @@ public class DriveSystem {
         telemetry.update();
     }
 
-    /**
-     * Scales the joystick value while keeping in mind slow mode.
-     * @param joystickValue
-     * @return a value from 0 - 1 based on the given value
-     */
-    private float scaleJoystickValue(float joystickValue) {
-        float slowDriveCoefficient = .3f;
-        if (!slowDrive) slowDriveCoefficient = 1;
-        return joystickValue > 0
-                ? (float)  JOYSTICK_SCALE.scaleX(joystickValue * joystickValue) * slowDriveCoefficient
-                : (float) -JOYSTICK_SCALE.scaleX(joystickValue * joystickValue) * slowDriveCoefficient;
-    }
-
-    private void driveToPositionTicks(int ticks, double power, boolean shouldRamp) {
-        setMotorPower(0);
-
+    private void driveToPositionTicks(int ticks) {
         motorFrontRight.setTargetPosition(motorFrontRight.getCurrentPosition() + ticks);
         motorFrontLeft.setTargetPosition(motorFrontLeft.getCurrentPosition() + ticks);
         motorBackRight.setTargetPosition(motorBackRight.getCurrentPosition() + ticks);
         motorBackLeft.setTargetPosition(motorBackLeft.getCurrentPosition() + ticks);
 
         setRunMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        Ramp ramp = new ExponentialRamp(new Point(0, RAMP_POWER_CUTOFF),
-                new Point(RAMP_DISTANCE_TICKS, power));
-
-        double adjustedPower = Range.clip(power, -1.0, 1.0);
-        setMotorPower(adjustedPower);
-
-        while (anyMotorsBusy()) {
-            int distance = getMinDistanceFromTarget();
-
-            if (distance < 50) {
-                break;
-            }
-
-            double direction = 1.0;
-            if (distance < 0) {
-                distance = -distance;
-                direction = -1.0;
-            }
-
-            double scaledPower = shouldRamp ? ramp.scaleX(distance) : power;
-
-            setMotorPower(direction * scaledPower);
-            telemetry.addData("MecanumDriveSystem", "distance left (ticks): " + getMinDistanceFromTarget());
-            telemetry.addData("MecanumDriveSystem","scaled power: " + scaledPower);
+        setMotorPower(0.7);
+        double heading = -imuSystem.getHeading();
+        while (motorBackLeft.isBusy()) {
+            telemetry.addData("Position", motorBackLeft.getCurrentPosition());
             telemetry.update();
+            double power = Range.clip(Math.abs(getMinDistanceFromTarget()) / 250.0, 0.06, 1.0);
+            setMotorPower(power);
         }
-        setMotorPower(0);
+        setMotorPower(0.0);
+        setRunMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        turn(heading + imuSystem.getHeading(), 0.5);
     }
 
     public void setRunMode(DcMotor.RunMode runMode) {
@@ -229,18 +194,6 @@ public class DriveSystem {
     }
 
     /**
-     * Checks if any of the motors are currently running
-     * @return Returns true if any motors are busy
-     */
-    public boolean anyMotorsBusy()
-    {
-        return motorFrontLeft.isBusy() ||
-                motorFrontRight.isBusy() ||
-                motorBackLeft.isBusy() ||
-                motorBackRight.isBusy();
-    }
-
-    /**
      * Gets the minimum distance from the target
      * @return
      */
@@ -252,14 +205,8 @@ public class DriveSystem {
         return d;
     }
 
-    public void driveToPositionInches(int inches, double power, boolean shouldRamp) {
-         if (power <= 0 || inches <= 0) {
-             setMotorDirection(FORWARD);
-         } else {
-             setMotorDirection(BACKWARD);
-         }
-        int ticks = (int) inchesToTicks(inches);
-        driveToPositionTicks(ticks, power, shouldRamp);
+    public void driveToPositionInches(double inches) {
+        driveToPositionTicks(inchesToTicks(inches));
     }
 
     /**
@@ -267,8 +214,8 @@ public class DriveSystem {
      * @param inches Inches to convert to ticks
      * @return
      */
-    public int inchesToTicks(int inches) {
-        return inches * TICKS_IN_INCH;
+    public int inchesToTicks(double inches) {
+        return (int) inches * TICKS_IN_INCH;
     }
 
     /**
@@ -307,7 +254,6 @@ public class DriveSystem {
      * Turns the robot by a given amount of degrees
      * @param degrees The degrees to turn the robot by
      * @param maxPower The maximum power of the motors
-     * @param initialHeading The initial starting point
      */
     public void turn(double degrees, double maxPower) {
         setMotorDirection(FORWARD);
@@ -354,8 +300,8 @@ public class DriveSystem {
      * @return motor power from 0 - 0.8
      */
     private double getTurnPower(double degrees, double maxPower) {
-        double power = Math.abs(degrees / 360.0);
-        return Range.clip(power * 1.3 + 0.05, 0.0, maxPower);
+        double power = Math.abs(degrees / 100.0);
+        return Range.clip(power + 0.06, 0.0, maxPower);
     }
 
     private double computeDegreesDiff(double targetHeading, double heading) {

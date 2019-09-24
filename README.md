@@ -30,7 +30,7 @@ Congratulations! You now have git!
 4. Change into your repos directory (EX: <code>cd repos</code>)
 5. Make your directory for Mount Si repos (EX: <code>md mount-si</code>)
 6. Change into your Mount Si repos directory (EX: <code>cd mount-si</code>)
-7. Clone the Mount Si SkyStone repo onto your computer <code>git clone https://github.com/mount-si/SKYSTONE.git</code>
+7. Clone the Mount Si SkyStone repo onto your computer <code>git clone https://github.com/mount-si/SKYSTONE</code>
 
 Well done! Now you have all our code on your computer!
 

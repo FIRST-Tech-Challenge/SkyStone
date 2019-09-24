@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import java.lang.Math;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name = "MechTeleOp")
+@TeleOp(name = "MechTeleOpAvgAtpt")
 public class MechTeleOp extends OpMode {
     DcMotor motorFL;
     DcMotor motorFR;
@@ -70,10 +70,10 @@ public class MechTeleOp extends OpMode {
     }
 
     public void moveForward(double power) {
-        motorFL.setPower(calibFL * power);
-        motorFR.setPower(calibFR * power);
-        motorBL.setPower(calibBL * power);
-        motorBR.setPower(calibBR * power);
+        motorFL.setPower(Range.clip(calibFL * power, -1, 1));
+        motorFR.setPower(Range.clip(calibFR * power, -1, 1));
+        motorBL.setPower(Range.clip(calibBL * power, -1, 1));
+        motorBR.setPower(Range.clip(calibBR * power, -1, 1));
     }
 
     public void rotateLeft(double power) {
@@ -103,15 +103,15 @@ public class MechTeleOp extends OpMode {
                 { 0.0,  0.0}
         };
 
-        for(int i = 0; i < 1; i++){
-            for(int k = 0; k < 1; k++){
+        for (int i = 0; i < 2; i++) {
+            for (int k = 0; k < 2; k++) {
                 result[i][k] = leftY[i][k] + leftX[i][k] + rightY[i][k] + rightX[i][k];
             }
         }
 
-        for(int i = 0; i < 1; i++){
-            for(int k = 0; k < 1; k++){
-                result[i][k] /= 4;
+        for (int i = 0; i < 2; i++) {
+            for (int k = 0; k < 2; k++) {
+                result[i][k] /= 2;
             }
         }
 
@@ -125,9 +125,14 @@ public class MechTeleOp extends OpMode {
         motorBR = hardwareMap.get(DcMotor.class, "backRight"); // backRight
 
         motorFL.setDirection(DcMotorSimple.Direction.FORWARD);
-        motorFR.setDirection(DcMotorSimple.Direction.FORWARD);
+        motorFR.setDirection(DcMotorSimple.Direction.REVERSE);
         motorBL.setDirection(DcMotorSimple.Direction.FORWARD);
         motorBR.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     public void driveRobot() {
@@ -173,7 +178,7 @@ public class MechTeleOp extends OpMode {
                     { rightY,  rightY}
             };
 
-            avgPowerMatrix(leftYMat, leftXMat, rightYMat, rightXMat);
+            motorPowers = avgPowerMatrix(leftYMat, leftXMat, rightYMat, rightXMat);
 
             /*New Implementation of old code*/
             // switch (Math.max(abs(leftX), abs(leftY), abs(rightX), abs(rightY)) { // Picks the joystick vector with the most distance from the origin
@@ -229,7 +234,7 @@ public class MechTeleOp extends OpMode {
     }
 
     public float getLX() {
-        return -gamepad1.left_stick_x;
+        return gamepad1.left_stick_x;
     }
 
     public float getLY() {

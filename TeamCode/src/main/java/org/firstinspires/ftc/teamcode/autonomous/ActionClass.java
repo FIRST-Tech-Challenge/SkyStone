@@ -4,26 +4,77 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 public class ActionClass {
 
-    private final String[] actions = {"forward", "backward", "left", "right", "rotate"};
+    private static final String[] actions = {"forward", "backward", "left", "right", "rotate"};
 
-    private int action;
-    private double degree;
+    private static int action;
+    private static double degree;
 
-    DcMotor motorFL;
-    DcMotor motorFR;
-    DcMotor motorBL;
-    DcMotor motorBR;
+    static DcMotor motorFL;
+    static DcMotor motorFR;
+    static DcMotor motorBL;
+    static DcMotor motorBR;
 
-    public ActionClass(String action, double degree, DcMotor motorFL, DcMotor motorFR, DcMotor motorBL, DcMotor motorBR) {
-        this.degree = degree;
+    static double calibFL;
+    static double calibFR;
+    static double calibBL;
+    static double calibBR;
+
+    public static void doAction(double fl, double fr, double bl, double br, DcMotor FL, DcMotor FR, DcMotor BL, DcMotor BR, String a, double d) {
+
+        motorFL = FL;
+        motorFR = FR;
+        motorBL = BL;
+        motorBR = BR;
+
+        calibFL = fl;
+        calibFR = fr;
+        calibBL = bl;
+        calibBR = br;
+
+        degree = d;
         for (int i = 0; i < 5; i++) {
-            if (action.equals(actions[i]))
-                this.action = i;
+            if (a.equals(actions[i]))
+                action = i;
         }
-        this.motorFL = motorFL;
-        this.motorFR = motorFR;
-        this.motorBL = motorBL;
-        this.motorBR = motorBR;
+
+        switch (action) {
+            case 0:
+                moveForward(degree);
+                break;
+            case 1:
+                moveForward(-degree);
+                break;
+            case 2:
+                straifLeft(degree);
+                break;
+            case 3:
+                straifLeft(-degree);
+                break;
+            case 4:
+                rotateLeft(degree);
+                break;
+        }
+    }
+
+    public static void moveForward(double power) {
+        motorFL.setPower(calibFL * power);
+        motorFR.setPower(calibFR * power);
+        motorBL.setPower(calibBL * power);
+        motorBR.setPower(calibBR * power);
+    }
+
+    public static void rotateLeft(double power) {
+        motorFL.setPower(calibFL * -power);
+        motorFR.setPower(calibFR * power);
+        motorBL.setPower(calibBL * -power);
+        motorBR.setPower(calibBR * power);
+    }
+
+    public static void straifLeft(double power) {
+        motorFL.setPower(calibFL * -power);
+        motorFR.setPower(calibFR * power);
+        motorBL.setPower(calibBR * power);
+        motorBR.setPower(calibBR * -power);
     }
 
 }

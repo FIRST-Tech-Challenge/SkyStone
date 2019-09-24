@@ -53,6 +53,19 @@ I am sorry... you now have Android Studio on your computer. Sacrifices must be m
 That's it! You now have a completely functional development environment to start writing code.
 
 ## Getting Help
+### Slack
+We have a specific channel for programming questions in our Slack that *every* programmer should be watching:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Mount Si Robotics Programming Channel](https://mshsrobotics.slack.com/messages/C2Q0WA0T1)
+
+### Online User Forum
+For technical questions regarding the Control System or the FTC SDK, please visit the FTC Technology forum:
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[FTC Technology Forum](https://ftcforum.usfirst.org/forumdisplay.php?156-FTC-Technology)
+
+For any FTC questions including technical/programming, please visit the FTC Reddit:
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[FTC Reddit](https://www.reddit.com/r/FTC/)
+
 ### User Documentation and Tutorials
 *FIRST* maintains online documentation with information and tutorials on how to use the *FIRST* Tech Challenge software and robot control system.  You can access this documentation using the following link:
 
@@ -70,11 +83,3 @@ Documentation for the FTC SDK is also included with this repository.  There is a
  * The folder "apk" contains the .apk files for the FTC Driver Station and FTC Robot Controller apps.
  * The folder "javadoc" contains the JavaDoc user documentation for the FTC SDK.
 
-### Online User Forum
-For technical questions regarding the Control System or the FTC SDK, please visit the FTC Technology forum:
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[FTC Technology Forum](https://ftcforum.usfirst.org/forumdisplay.php?156-FTC-Technology)
-
-For any FTC questions including technical/programming, please visit the FTC Reddit:
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[FTC Reddit](https://www.reddit.com/r/FTC/)

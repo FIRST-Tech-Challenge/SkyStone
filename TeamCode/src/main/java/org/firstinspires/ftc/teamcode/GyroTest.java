@@ -19,6 +19,10 @@ public class GyroTest extends MyOpMode {
         composeTelemetry();
         telemetry.update();
         waitForStart();
+        encoderDrive(0.5, 10, 10);
+    }
+
+    private void gyroTest() {
         gyroTurn(-90);
         telemetry.addData("Angle", angles.firstAngle);
         telemetry.update();

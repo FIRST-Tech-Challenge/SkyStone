@@ -55,6 +55,7 @@ That's it! You now have a completely functional development environment to start
 ## Getting Help
 ### Slack
 We have a specific channel for programming questions in our Slack that *every* programmer should be watching:
+
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Mount Si Robotics Programming Channel](https://mshsrobotics.slack.com/messages/C2Q0WA0T1)
 
 ### Online User Forum

@@ -27,8 +27,8 @@ public class Hardware {
     private static final double WHEEL_CIRCUM = 2.0 * Math.PI * ODOM_WHEEL_RADIUS;
         // Number of ticks in a centimeter using dimensional analysis
     private static final double ODOM_TICKS_PER_CM = ODOM_TICKS_PER_ROTATION / WHEEL_CIRCUM;
-        // Adjust for theta so it reads proper values
-    private static final double THETA_ADJUST = 1;
+        // Adjust for theta so it reads proper values (found through testing)
+    private static final double THETA_ADJUST = 1.06221854294517;
 
     // Robot physical location
     public double x = 0;

@@ -29,36 +29,81 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="Two Drivers", group="Iterative Opmode")
+import org.westtorrancerobotics.lib.MecanumController;
+import org.westtorrancerobotics.lib.MecanumDrive;
+
+@TeleOp(name="Two Drivers", group="none")
 //@Disabled
 public class OfficialTeleop extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime;
-    private DcMotor leftDrive;
-    private DcMotor rightDrive;
+
+    private DcMotorEx leftFront;
+    private DcMotorEx leftBack;
+    private DcMotorEx rightFront;
+    private DcMotorEx rightBack;
+    private ModernRoboticsI2cGyro gyro;
+    private MecanumController driveTrain;
+
+    private DcMotorEx lift;
+    private int liftLevel;
+    private int LEVEL_HEIGHT = 300; // ticks per lift level
+    private int liftOffset;
+    private int lastDpad;
+    private long dPadDebounce;
+    private final int MAX_LIFT_HEIGHT = 4;
+
+    // sensors and servos
 
     /*
      * Code to run ONCE when the driver hits INIT
      */
     @Override
     public void init() {
+
+        runtime = new ElapsedTime();
+
+        telemetry.addData("Status", "Initializing...");
+        telemetry.update();
+
+        leftFront  = hardwareMap.get(DcMotorEx.class, "leftFront");
+        leftBack  = hardwareMap.get(DcMotorEx.class, "leftBack");
+        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
+        rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
+
+        leftFront.setDirection(DcMotor.Direction.FORWARD);
+        leftBack.setDirection(DcMotor.Direction.FORWARD);
+        rightFront.setDirection(DcMotor.Direction.REVERSE);
+        rightBack.setDirection(DcMotor.Direction.REVERSE);
+
+        leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        gyro = hardwareMap.get(ModernRoboticsI2cGyro.class, "gyro");
+
+        MecanumDrive train = new MecanumDriveImpl(leftFront, leftBack, rightFront, rightBack, gyro);
+        driveTrain = new MecanumController(train);
+
+
+        lift = hardwareMap.get(DcMotorEx.class, "lift");
+        lift.setDirection(DcMotor.Direction.FORWARD);
+        lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        lift.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDFCoefficients(1, 0, 0.1, 0.2));
+
         telemetry.addData("Status", "Initialized");
+        telemetry.update();
 
-        leftDrive  = hardwareMap.get(DcMotor.class, "left_drive");
-        rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
-
-        leftDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightDrive.setDirection(DcMotor.Direction.REVERSE);
-
-        telemetry.addData("Status", "Initialized");
     }
 
     /*
@@ -66,6 +111,12 @@ public class OfficialTeleop extends OpMode
      */
     @Override
     public void init_loop() {
+
+        lift.setPower(0.1);
+
+        telemetry.addData("Status", "Idling Lift Motor...");
+        telemetry.update();
+
     }
 
     /*
@@ -73,7 +124,23 @@ public class OfficialTeleop extends OpMode
      */
     @Override
     public void start() {
+
         runtime.reset();
+
+        lift.setPower(0);
+        lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        liftLevel = 0;
+        liftOffset = 0;
+        lastDpad = 0;
+        dPadDebounce = -50;
+
+        gyro.calibrate();
+        driveTrain.zeroDeadReckoner();
+
+        telemetry.addData("Status", "Lift Initialized.");
+        telemetry.update();
+
     }
 
     /*
@@ -81,19 +148,38 @@ public class OfficialTeleop extends OpMode
      */
     @Override
     public void loop() {
-         // Setup a variable for each drive wheel to save power level for telemetry
-         double leftPower;
-         double rightPower;
-         leftPower  = -gamepad1.left_stick_y ;
-         rightPower = -gamepad1.right_stick_y ;
 
-         // Send calculated power to wheels
-         leftDrive.setPower(leftPower);
-         rightDrive.setPower(rightPower);
+        if (driveTrain.isGyroCalibrating()) {
+            return;
+        }
 
-         // Show the elapsed game time and wheel power.
-         telemetry.addData("Status", "Run Time: " + runtime.toString());
-         telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+        double turn = deadZone(-deadZone(gamepad1.left_stick_y) - -deadZone(gamepad1.right_stick_y));
+        double y = deadZone(-deadZone(gamepad1.left_stick_y) + -deadZone(gamepad1.right_stick_y)) / 2;
+        double x = deadZone(deadZone(gamepad1.left_stick_x) + deadZone(gamepad1.right_stick_x)) / 2;
+        driveTrain.spinDrive(x, y, turn, MecanumDrive.TranslTurnMethod.EQUAL_SPEED_RATIOS);
+
+        if (runtime.milliseconds() - dPadDebounce > 50) {
+            int dpad = (gamepad2.dpad_up ? 1 : 0) - (gamepad2.dpad_down ? 1 : 0);
+            if (dpad != lastDpad && dpad != 0) {
+                liftLevel += dpad;
+                if (liftLevel < 0) {
+                    liftLevel = 0;
+                }
+                if (liftLevel > MAX_LIFT_HEIGHT) {
+                    liftLevel = MAX_LIFT_HEIGHT;
+                }
+            }
+            lastDpad = dpad;
+        }
+
+        lift.setTargetPosition((liftLevel * LEVEL_HEIGHT) + liftOffset);
+
+        driveTrain.updateLocation();
+
+        telemetry.addData("Drive", "x:%f, y:%f, turn:%f", x, y, turn);
+        telemetry.addData("Lift level", Math.round(liftLevel));
+        telemetry.addData("Drive Base Location", driveTrain.getLocation());
+
     }
 
     /*
@@ -101,6 +187,10 @@ public class OfficialTeleop extends OpMode
      */
     @Override
     public void stop() {
+    }
+
+    private double deadZone(double original) {
+        return Math.abs(original) < 0.12 ? 0 : original;
     }
 
 }

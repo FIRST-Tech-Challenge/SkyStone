@@ -14,7 +14,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
-
 @TeleOp(name="Prototype Tester", group="none")
 //@Disabled
 public class PrototypeTester extends LinearOpMode {
@@ -88,10 +87,12 @@ public class PrototypeTester extends LinearOpMode {
             }
         }
     }
+
     void setLeftPower(double n){
         left1.setPower(n);
         left2.setPower(n);
     }
+
     void setRightPower(double n){
         right1.setPower(n);
         right2.setPower(n);

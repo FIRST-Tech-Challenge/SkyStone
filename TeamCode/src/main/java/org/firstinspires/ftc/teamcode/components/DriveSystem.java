@@ -68,27 +68,6 @@ public class DriveSystem {
         }
     }
 
-    /**
-     * Sets the direction of all the motors
-     * @param direction The new direction of the motors
-     */
-    public void setMotorDirection(int direction) {
-        switch (direction){
-            case FORWARD:
-                motorFrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
-                motorFrontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-                motorBackRight.setDirection(DcMotorSimple.Direction.REVERSE);
-                motorBackLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-                break;
-            case BACKWARD:
-                motorFrontRight.setDirection(DcMotorSimple.Direction.FORWARD);
-                motorFrontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-                motorBackRight.setDirection(DcMotorSimple.Direction.FORWARD);
-                motorBackLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-                break;
-        }
-    }
-
     public void initMotors() {
 
         this.motorFrontLeft = hardwareMap.dcMotor.get("motorFL");
@@ -101,8 +80,6 @@ public class DriveSystem {
         motors[2] = motorBackRight;
         motors[3] = motorBackLeft;
 
-        setMotorDirection(FORWARD);
-
         for (DcMotor motor : motors) {
             motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         }
@@ -110,6 +87,11 @@ public class DriveSystem {
         for (DcMotor motor : motors) {
             motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
+
+        motorFrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        motorFrontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        motorBackRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        motorBackLeft.setDirection(DcMotorSimple.Direction.FORWARD);
 
         setMotorPower(0);
     }
@@ -124,7 +106,6 @@ public class DriveSystem {
      */
     public void drive(float rightX, float rightY, float leftX, float leftY, boolean slowDrive) {
         this.slowDrive = slowDrive;
-        setMotorDirection(FORWARD);
 
         // Prevent small values from causing the robot to drift
         if (Math.abs(rightX) < 0.01) {
@@ -160,19 +141,43 @@ public class DriveSystem {
         telemetry.update();
     }
 
-    private void driveToPositionTicks(int ticks) {
-        motorFrontRight.setTargetPosition(motorFrontRight.getCurrentPosition() + ticks);
-        motorFrontLeft.setTargetPosition(motorFrontLeft.getCurrentPosition() + ticks);
-        motorBackRight.setTargetPosition(motorBackRight.getCurrentPosition() + ticks);
-        motorBackLeft.setTargetPosition(motorBackLeft.getCurrentPosition() + ticks);
+    private void driveToPositionTicks(int ticks, Direction direction) {
+        if (direction == Direction.FORWARD) {
+            motorFrontRight.setTargetPosition(motorFrontRight.getCurrentPosition() + ticks);
+            motorFrontLeft.setTargetPosition(motorFrontLeft.getCurrentPosition() + ticks);
+            motorBackRight.setTargetPosition(motorBackRight.getCurrentPosition() + ticks);
+            motorBackLeft.setTargetPosition(motorBackLeft.getCurrentPosition() + ticks);
+        }
+
+        if (direction == Direction.BACKWARD) {
+            motorFrontRight.setTargetPosition(motorFrontRight.getCurrentPosition() - ticks);
+            motorFrontLeft.setTargetPosition(motorFrontLeft.getCurrentPosition() - ticks);
+            motorBackRight.setTargetPosition(motorBackRight.getCurrentPosition() - ticks);
+            motorBackLeft.setTargetPosition(motorBackLeft.getCurrentPosition() - ticks);
+        }
+
+        if (direction == Direction.RIGHT) {
+            motorFrontRight.setTargetPosition(motorFrontRight.getCurrentPosition() - ticks);
+            motorFrontLeft.setTargetPosition(motorFrontLeft.getCurrentPosition() + ticks);
+            motorBackRight.setTargetPosition(motorBackRight.getCurrentPosition() + ticks);
+            motorBackLeft.setTargetPosition(motorBackLeft.getCurrentPosition() - ticks);
+        }
+
+        if (direction == Direction.LEFT) {
+            motorFrontRight.setTargetPosition(motorFrontRight.getCurrentPosition() + ticks);
+            motorFrontLeft.setTargetPosition(motorFrontLeft.getCurrentPosition() - ticks);
+            motorBackRight.setTargetPosition(motorBackRight.getCurrentPosition() - ticks);
+            motorBackLeft.setTargetPosition(motorBackLeft.getCurrentPosition() + ticks);
+        }
 
         setRunMode(DcMotor.RunMode.RUN_TO_POSITION);
-        setMotorPower(0.7);
+        setMotorPower(0.05);
         double heading = -imuSystem.getHeading();
         while (motorBackLeft.isBusy()) {
+            telemetry.addData("Distance", getMinDistanceFromTarget());
             telemetry.addData("Position", motorBackLeft.getCurrentPosition());
             telemetry.update();
-            double power = Range.clip(Math.abs(getMinDistanceFromTarget()) / 250.0, 0.06, 1.0);
+            double power = Range.clip(Math.abs(getMinDistanceFromTarget()) / 1000.0, 0.1, 1.0);
             setMotorPower(power);
         }
         setMotorPower(0.0);
@@ -184,13 +189,6 @@ public class DriveSystem {
         for (DcMotor motor : motors) {
             motor.setMode(runMode);
         }
-    }
-
-    public void mecanumDriveXY(double x, double y) {
-        this.motorFrontRight.setPower(Range.clip(y + x, -1, 1));
-        this.motorBackRight.setPower(Range.clip(y - x, -1, 1));
-        this.motorFrontLeft.setPower(Range.clip(y - x, -1, 1));
-        this.motorBackLeft.setPower(Range.clip(y + x, -1, 1));
     }
 
     /**
@@ -205,8 +203,8 @@ public class DriveSystem {
         return d;
     }
 
-    public void driveToPositionInches(double inches) {
-        driveToPositionTicks(inchesToTicks(inches));
+    public void driveToPositionInches(double inches, Direction direction) {
+        driveToPositionTicks(inchesToTicks(inches), direction);
     }
 
     /**
@@ -217,29 +215,6 @@ public class DriveSystem {
     public int inchesToTicks(double inches) {
         return (int) inches * TICKS_IN_INCH;
     }
-
-    /**
-     * Strafes left for the given amount of inches
-     * @param inches Amount of inches to strafe
-     * @param power Power of the motors
-     */
-    public void strafeLeftToPositionInches(int inches, double power) {
-        setMotorDirection(STRAFE_LEFT);
-        int ticks = inchesToTicks(inches);
-        driveToPositionTicks(ticks, power, true);
-    }
-    /**
-     * Strafes right for the given amount of inches
-     * @param inches Amount of inches to strafe
-     * @param power Power of the motors
-     */
-    public void strafeRightToPositionInches(int inches, double power) {
-        setMotorDirection(STRAFE_RIGHT);
-        int ticks =  inchesToTicks(inches);
-        driveToPositionTicks(ticks, power, true);
-    }
-
-
 
     /**
      * Turns relative the heading upon construction
@@ -256,8 +231,6 @@ public class DriveSystem {
      * @param maxPower The maximum power of the motors
      */
     public void turn(double degrees, double maxPower) {
-        setMotorDirection(FORWARD);
-
         double targetHeading = degrees + -imuSystem.getHeading();
         targetHeading = targetHeading % 360;
 
@@ -301,7 +274,7 @@ public class DriveSystem {
      */
     private double getTurnPower(double degrees, double maxPower) {
         double power = Math.abs(degrees / 100.0);
-        return Range.clip(power + 0.06, 0.0, maxPower);
+        return Range.clip(power + 0.065, 0.0, maxPower);
     }
 
     private double computeDegreesDiff(double targetHeading, double heading) {

@@ -6,25 +6,21 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
 
 public class DriveSystem {
-    private DcMotor motorFrontLeft;
-    private DcMotor motorFrontRight;
-    private DcMotor motorBackLeft;
-    private DcMotor motorBackRight;
+    public DcMotor motorFrontLeft;
+    public DcMotor motorFrontRight;
+    public DcMotor motorBackLeft;
+    public DcMotor motorBackRight;
     public DcMotor[] motors = new DcMotor[4];
 
-    public IMUSystem imuSystem;
-    protected HardwareMap hardwareMap;
+    public IMUSystem imuSystem = new IMUSystem();
 
     private final int TICKS_IN_INCH = 69;
 
     /**
      * Handles the data for the abstract creation of a drive system with four wheels
      */
-    public DriveSystem(HardwareMap hardwareMap) {
-
-        this.hardwareMap = hardwareMap;
+    public DriveSystem() {
         initMotors();
-        imuSystem = new IMUSystem(hardwareMap);
     }
 
     /**
@@ -38,11 +34,6 @@ public class DriveSystem {
     }
 
     public void initMotors() {
-
-        this.motorFrontLeft = hardwareMap.dcMotor.get("motorFL");
-        this.motorFrontRight = hardwareMap.dcMotor.get("motorFR");
-        this.motorBackRight = hardwareMap.dcMotor.get("motorBR");
-        this.motorBackLeft = hardwareMap.dcMotor.get("motorBL");
 
         motors[0] = motorFrontLeft;
         motors[1] = motorFrontRight;

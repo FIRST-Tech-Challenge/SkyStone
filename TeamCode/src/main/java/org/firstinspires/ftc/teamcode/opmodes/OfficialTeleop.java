@@ -62,6 +62,8 @@ public class OfficialTeleop extends OpMode {
             lastDebTime[i] = Long.MIN_VALUE;
         }
 
+        robot.driveTrain.calibrateGyro();
+
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
@@ -72,6 +74,10 @@ public class OfficialTeleop extends OpMode {
      */
     @Override
     public void init_loop() {
+
+        if (robot.driveTrain.isCalibratingGyro()) {
+            return;
+        }
 
         robot.lift.idle();
 
@@ -92,8 +98,7 @@ public class OfficialTeleop extends OpMode {
 
         robot.lift.zero();
 
-        robot.driveTrain.gyro.calibrate();
-        robot.driveTrain.mecanumController.zeroDeadReckoner();
+        robot.driveTrain.setLocationZero();
 
         telemetry.addData("Status", "Lift Initialized.");
         telemetry.update();
@@ -106,14 +111,10 @@ public class OfficialTeleop extends OpMode {
     @Override
     public void loop() {
 
-        if (robot.driveTrain.gyro.isCalibrating()) {
-            return;
-        }
-
         double turn = deadZone(-deadZone(gamepad1.left_stick_y) - -deadZone(gamepad1.right_stick_y));
         double y = deadZone(-deadZone(gamepad1.left_stick_y) + -deadZone(gamepad1.right_stick_y)) / 2;
         double x = deadZone(deadZone(gamepad1.left_stick_x) + deadZone(gamepad1.right_stick_x)) / 2;
-        robot.driveTrain.mecanumController.spinDrive(x, y, turn, MecanumDrive.TranslTurnMethod.EQUAL_SPEED_RATIOS);
+        robot.driveTrain.spinDrive(x, y, turn);
 
         whenPressedDebounce(() -> gamepad2.dpad_up,   () -> robot.lift.moveUp(),   0);
         whenPressedDebounce(() -> gamepad2.dpad_down, () -> robot.lift.moveDown(), 1);
@@ -122,11 +123,11 @@ public class OfficialTeleop extends OpMode {
 
         robot.foundationGrabber.setGrabbed(gamepad2.a);
 
-        robot.driveTrain.mecanumController.updateLocation();
+        robot.driveTrain.updateLocation();
 
         telemetry.addData("Drive", "x:%f, y:%f, turn:%f", x, y, turn);
         telemetry.addData("Lift level", robot.lift.getLevel());
-        telemetry.addData("Drive Base Location", robot.driveTrain.mecanumController.getLocation());
+        telemetry.addData("Drive Base Location", robot.driveTrain.getLocation());
 
     }
 

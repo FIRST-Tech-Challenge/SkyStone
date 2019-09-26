@@ -1,10 +1,14 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import android.graphics.Color;
+
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cColorSensor;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.westtorrancerobotics.lib.Location;
 import org.westtorrancerobotics.lib.MecanumController;
 import org.westtorrancerobotics.lib.MecanumDrive;
 
@@ -14,8 +18,12 @@ public class DriveTrain {
     private DcMotorEx leftBack;
     private DcMotorEx rightFront;
     private DcMotorEx rightBack;
-    public final ModernRoboticsI2cGyro gyro;
-    public final MecanumController mecanumController;
+    private final ModernRoboticsI2cGyro gyro;
+    private final MecanumController mecanumController;
+
+    private final ModernRoboticsI2cColorSensor lineSpotter;
+    private static final int RED_THRESHOLD  = 5;
+    private static final int BLUE_THRESHOLD = 5;
 
     private static DriveTrain instance = null;
 
@@ -41,6 +49,8 @@ public class DriveTrain {
 
         gyro = hardwareMap.get(ModernRoboticsI2cGyro.class, "gyro");
 
+        lineSpotter = hardwareMap.get(ModernRoboticsI2cColorSensor.class, "driveColor");
+
         MecanumDrive wheels = new MecanumDriveImpl(leftFront, leftBack, rightFront, rightBack, gyro);
         mecanumController = new MecanumController(wheels);
     }
@@ -57,5 +67,41 @@ public class DriveTrain {
         leftBack.setZeroPowerBehavior(mode);
         rightFront.setZeroPowerBehavior(mode);
         rightBack.setZeroPowerBehavior(mode);
+    }
+
+    public void spinDrive(double x, double y, double turn) {
+        mecanumController.spinDrive(x, y, turn, MecanumDrive.TranslTurnMethod.EQUAL_SPEED_RATIOS);
+    }
+
+    public void calibrateGyro() {
+        gyro.calibrate();
+    }
+
+    public boolean isCalibratingGyro() {
+        return gyro.isCalibrating();
+    }
+
+    public void updateLocation() {
+        mecanumController.updateLocation();
+    }
+
+    public void setLocationZero() {
+        mecanumController.zeroDeadReckoner();
+    }
+
+    public void setLocation(Location l) {
+        mecanumController.setLocation(l);
+    }
+
+    public Location getLocation() {
+        return mecanumController.getLocation();
+    }
+
+    public boolean onRedLine() {
+        return lineSpotter.red() > RED_THRESHOLD;
+    }
+
+    public boolean onBlueLine() {
+        return lineSpotter.blue() > BLUE_THRESHOLD;
     }
 }

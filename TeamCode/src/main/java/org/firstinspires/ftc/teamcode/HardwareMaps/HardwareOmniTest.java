@@ -12,14 +12,14 @@ public class HardwareOmniTest {
     public DcMotor motor_back_left = null;
 
     // State used for updating telemetry
-    private HardwareMap hwMap           =  null;
+    private HardwareMap hwMxap           =  null;
 
     /* Constructor */
     public HardwareOmniTest(HardwareMap hwMap){
         init(hwMap);
     }
 
-    public void init() {
+    public void init(HardwareMap hwMap) {
         //super(hwMap);
         //initialize motors with directs to Expansion Hub
         motor_front_right = hwMap.get(DcMotor.class, "motor0");

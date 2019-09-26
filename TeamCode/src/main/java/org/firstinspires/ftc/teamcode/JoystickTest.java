@@ -9,6 +9,26 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.view.ViewParent;
 
+/*
+
+
+// tank drive
+// note that if y equal -1 then joystick is pushed all of the way forward.
+float left = -gamepad1.left_stick_y;
+float right = -gamepad1.right_stick_y;
+
+
+Java
+// write the values to the motors
+motorRight.setPower(right);
+motorLeft.setPower(left);
+Before this you have to make sure to “clip” the joystick values to they never go above 1 and below -1, because those are the only value range that the motors now take.  To do this:
+// clip the right/left values so that the values never exceed +/- 1
+right = Range.clip(right, -1, 1);
+left = Range.clip(left, -1, 1);
+
+*/
+
 public class JoystickTest extends OpMode {
     DcMotor frontleft, frontright, backleft, backright, collectorOne, collectorTwo, liftleft, liftright; //TODO convert to motormap @jake
     Servo flag, clamp, dump;

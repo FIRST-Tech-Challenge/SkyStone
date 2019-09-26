@@ -14,6 +14,7 @@ public class JoystickTest extends OpMode {
     Servo flag, clamp, dump;
     public float x, y, z, w, pwr;
     public static double deadzone = 0.2;
+    //remember, has to be float
 
     //servo minmax
     final static double CLAMP_MIN  = 172.0/255.0;

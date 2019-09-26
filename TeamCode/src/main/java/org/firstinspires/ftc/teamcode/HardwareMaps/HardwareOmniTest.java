@@ -19,7 +19,7 @@ public class HardwareOmniTest {
         init(hwMap);
     }
 
-    public void init(HardwareMap hwMap) {
+    public void init() {
         //super(hwMap);
         //initialize motors with directs to Expansion Hub
         motor_front_right = hwMap.get(DcMotor.class, "motor0");

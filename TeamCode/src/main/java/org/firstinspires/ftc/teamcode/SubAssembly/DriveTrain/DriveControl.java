@@ -10,6 +10,7 @@ public class DriveControl {
     private DcMotor FrontLeftM = null;
     private DcMotor BackRightM = null;
     private DcMotor BackLeftM = null;
+    private double MAX_SPEED = 0.6;
 
     public void init(LinearOpMode opMode) {
         HardwareMap hwMap;
@@ -43,10 +44,81 @@ public class DriveControl {
         BackLeftM.setPower(0);
     }
 
+    private double limitSpeed(double speed) {
+        return Math.max(-MAX_SPEED, Math.min(speed, MAX_SPEED));
+    }
+
+    // !!!! NOT TESTED !!!!
     public void joystick(double LF, double RF, double LR, double RR) {
+        LF = limitSpeed(LF);
+        RF = limitSpeed(RF);
+        LR = limitSpeed(LR);
+        RR = limitSpeed(RR);
         FrontLeftM.setPower(LF);
         FrontRightM.setPower(RF);
         BackLeftM.setPower(LR);
         BackRightM.setPower(RR);
+    }
+
+    // !!!! NOT TESTED !!!!
+    public void stop() {
+        FrontLeftM.setPower(0);
+        FrontRightM.setPower(0);
+        BackLeftM.setPower(0);
+        BackRightM.setPower(0);
+    }
+
+    // !!!! NOT TESTED !!!!
+    public void moveForward(double speed) {
+        speed = limitSpeed(speed);
+        FrontLeftM.setPower(speed);
+        FrontRightM.setPower(speed);
+        BackLeftM.setPower(speed);
+        BackRightM.setPower(speed);
+    }
+
+    // !!!! NOT TESTED !!!!
+    public void moveBackward(double speed) {
+        speed = limitSpeed(speed);
+        FrontLeftM.setPower(speed);
+        FrontRightM.setPower(speed);
+        BackLeftM.setPower(speed);
+        BackRightM.setPower(speed);
+    }
+
+    // !!!! NOT TESTED !!!!
+    public void strafeLeft(double speed) {
+        speed = limitSpeed(speed);
+        FrontLeftM.setPower(speed);
+        FrontRightM.setPower(speed);
+        BackLeftM.setPower(speed);
+        BackRightM.setPower(speed);
+    }
+
+    // !!!! NOT TESTED !!!!
+    public void strafeRight(double speed) {
+        speed = limitSpeed(speed);
+        FrontLeftM.setPower(speed);
+        FrontRightM.setPower(speed);
+        BackLeftM.setPower(speed);
+        BackRightM.setPower(speed);
+    }
+
+    // !!!! NOT TESTED !!!!
+    public void turnLeft(double speed) {
+        speed = limitSpeed(speed);
+        FrontLeftM.setPower(speed);
+        FrontRightM.setPower(speed);
+        BackLeftM.setPower(speed);
+        BackRightM.setPower(speed);
+    }
+
+    // !!!! NOT TESTED !!!!
+    public void turnRight(double speed) {
+        speed = limitSpeed(speed);
+        FrontLeftM.setPower(speed);
+        FrontRightM.setPower(speed);
+        BackLeftM.setPower(speed);
+        BackRightM.setPower(speed);
     }
 }

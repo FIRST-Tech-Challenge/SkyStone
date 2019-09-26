@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import java.lang.Math;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name = "MechTeleOpAvgAtpt")
+@TeleOp(name = "MechTeleOp")
 public class MechTeleOp extends OpMode {
     DcMotor motorFL;
     DcMotor motorFR;

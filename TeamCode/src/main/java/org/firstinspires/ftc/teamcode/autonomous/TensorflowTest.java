@@ -24,11 +24,6 @@ public class TensorflowTest extends LinearOpMode {
 
     private TFObjectDetector tfod;
 
-    DcMotor motorFL;
-    DcMotor motorFR;
-    DcMotor motorBL;
-    DcMotor motorBR;
-
     @Override
     public void runOpMode() {
         initVuforia();
@@ -57,13 +52,13 @@ public class TensorflowTest extends LinearOpMode {
                         telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
                                 recognition.getRight(), recognition.getBottom());
                     }
+                    telemetry.update();
                 }
             }
         }
         if (tfod != null) {
             tfod.shutdown();
         }
-        telemetry.update();
     }
 
     /**
@@ -96,37 +91,6 @@ public class TensorflowTest extends LinearOpMode {
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
     }
 
-    public void initMotors() {
-        motorFL = hardwareMap.get(DcMotor.class, "motorFL");
-        motorFR = hardwareMap.get(DcMotor.class, "motorFR");
-        motorBL = hardwareMap.get(DcMotor.class, "motorBL");
-        motorBR = hardwareMap.get(DcMotor.class, "motorBR");
 
-        motorFL.setDirection(DcMotorSimple.Direction.REVERSE);
-        motorFR.setDirection(DcMotorSimple.Direction.FORWARD);
-        motorBL.setDirection(DcMotorSimple.Direction.REVERSE);
-        motorBR.setDirection(DcMotorSimple.Direction.FORWARD);
-    }
-
-    public void moveForward(double power) {
-        motorFL.setPower(power);
-        motorFR.setPower(power);
-        motorBL.setPower(power);
-        motorBR.setPower(power);
-    }
-
-    public void rotateLeft(double power) {
-        motorFL.setPower(-power);
-        motorFL.setPower(-power);
-        motorFL.setPower(power);
-        motorFL.setPower(power);
-    }
-
-    public void straifLeft(double power) {
-        motorFL.setPower(-power);
-        motorFR.setPower(power);
-        motorBL.setPower(power);
-        motorBR.setPower(-power);
-    }
 
 }

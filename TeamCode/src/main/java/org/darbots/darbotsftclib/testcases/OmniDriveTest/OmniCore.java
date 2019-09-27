@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.darbots.darbotsftclib.libcore.calculations.dimentionalcalculation.Robot2DPositionIndicator;
 import org.darbots.darbotsftclib.libcore.chassiscontrollers.OmniDrive;
 import org.darbots.darbotsftclib.libcore.motortypes.RevHDHex20Motor;
+import org.darbots.darbotsftclib.libcore.sensors.gyros.BNO055Gyro;
 import org.darbots.darbotsftclib.libcore.sensors.motion_related.RobotMotion;
 import org.darbots.darbotsftclib.libcore.sensors.motion_related.RobotWheel;
 import org.darbots.darbotsftclib.libcore.sensors.motors.RobotMotorController;
@@ -13,6 +14,7 @@ import org.darbots.darbotsftclib.libcore.sensors.motors.RobotMotorWithEncoder;
 import org.darbots.darbotsftclib.libcore.templates.RobotCore;
 import org.darbots.darbotsftclib.libcore.templates.chassis_related.RobotMotionSystem;
 import org.darbots.darbotsftclib.libcore.templates.motor_related.MotorType;
+import org.darbots.darbotsftclib.libcore.templates.other_sensors.RobotGyro;
 
 public class OmniCore extends RobotCore {
     private static double[] WHEEL_POS = {15,15}; //{X, Z}
@@ -24,6 +26,7 @@ public class OmniCore extends RobotCore {
 
     private RobotMotion m_LeftTopMotion, m_LeftBottomMotion, m_RightTopMotion, m_RightBottomMotion;
     private OmniDrive m_Drive;
+    private RobotGyro m_Gyro;
 
     public OmniCore(HardwareMap Hardwares) {
         super("OmniDriveTest.log");
@@ -41,6 +44,7 @@ public class OmniCore extends RobotCore {
         this.m_RightTopMotion = new RobotMotion(new RobotMotorController(new RobotMotorWithEncoder(m_RightTopDC,MOTOR_TYPE),TIMEOUT_ENABLED,TIMEOUT_FACTOR),m_RightTopWheel);
         this.m_RightBottomMotion = new RobotMotion(new RobotMotorController(new RobotMotorWithEncoder(m_RightBottomDC,MOTOR_TYPE),TIMEOUT_ENABLED,TIMEOUT_FACTOR),m_RightBottomWheel);
         this.m_Drive = new OmniDrive(this.m_LeftTopMotion,this.m_RightTopMotion,this.m_LeftBottomMotion,this.m_RightBottomMotion,null);
+        m_Gyro = new BNO055Gyro(Hardwares,"imu");
     }
 
     @Override
@@ -56,6 +60,10 @@ public class OmniCore extends RobotCore {
     @Override
     public boolean isBusy() {
         return false;
+    }
+
+    public RobotGyro getGyro(){
+        return this.m_Gyro;
     }
 
     @Override

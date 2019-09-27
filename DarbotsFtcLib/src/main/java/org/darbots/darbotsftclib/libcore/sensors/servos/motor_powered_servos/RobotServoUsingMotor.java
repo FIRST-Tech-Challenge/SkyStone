@@ -159,6 +159,14 @@ public class RobotServoUsingMotor implements RobotNonBlockingDevice {
         int correspondingDesignatedCount = (int) Math.round(designatedPos * motorType.getCountsPerRev());
         this.m_CountAtZeroPos = Count - correspondingDesignatedCount;
     }
+
+    public void adjustCurrentPosition(double currentPosition){
+        this.__adjustInitialPos(this.m_MotorController.getMotor().getCurrentCount(),currentPosition,this.m_MotorController.getMotor().getMotorType());
+        if(!this.m_TaskList.isEmpty()){
+            this.m_TaskList.get(0).servoPositionAdjusted();
+        }
+    }
+
     public double percentFromPos(double pos){
         return (pos - this.getMinPos()) / (this.getMaxPos() - this.getMinPos()) * 100;
     }

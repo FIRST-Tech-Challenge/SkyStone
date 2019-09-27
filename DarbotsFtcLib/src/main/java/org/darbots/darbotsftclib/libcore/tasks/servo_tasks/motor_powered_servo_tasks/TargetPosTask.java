@@ -2,6 +2,7 @@ package org.darbots.darbotsftclib.libcore.tasks.servo_tasks.motor_powered_servo_
 
 import android.support.annotation.NonNull;
 
+import org.darbots.darbotsftclib.libcore.sensors.servos.motor_powered_servos.RobotServoUsingMotor_WithLimitSwitch;
 import org.darbots.darbotsftclib.libcore.tasks.motor_tasks.RobotFixCountTask;
 import org.darbots.darbotsftclib.libcore.templates.servo_related.motor_powered_servos.RobotServoUsingMotorCallBack;
 import org.darbots.darbotsftclib.libcore.templates.servo_related.motor_powered_servos.RobotServoUsingMotorTask;
@@ -75,6 +76,27 @@ public class TargetPosTask extends RobotServoUsingMotorTask {
                 this.endTask(false);
             }
         }
+        if(this.getServoUsingMotor() instanceof RobotServoUsingMotor_WithLimitSwitch){
+            RobotServoUsingMotor_WithLimitSwitch mServo = (RobotServoUsingMotor_WithLimitSwitch) this.getServoUsingMotor();
+            if(mServo.getMinSwitch() != null){
+                if(mServo.getMinSwitch().isPressed() && this.m_TargetPos <= this.getTaskStartPos()){
+                    this.endTask(false);
+                }
+            }
+            if(mServo.getMaxSwitch() != null){
+                if(mServo.getMaxSwitch().isPressed() && this.m_TargetPos >= this.getTaskStartPos()){
+                    this.endTask(false);
+                }
+            }
+        }
+    }
+
+    @Override
+    protected void __recalculateMotorCounts() {
+        double deltaPos = this.getTargetPos() - super.getServoUsingMotor().getCurrentPosition();
+        int deltaCount = (int) Math.round(deltaPos * this.getServoUsingMotor().getMotorController().getMotor().getMotorType().getCountsPerRev());
+        RobotFixCountTask fixCountTask = new RobotFixCountTask(deltaCount,this.getPower(),null);
+        this.getServoUsingMotor().getMotorController().replaceTask(fixCountTask);
     }
 
     @Override

@@ -7,18 +7,33 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.CurvePoint;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
+import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
+import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
+import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
+import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
+import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 import static org.firstinspires.ftc.teamcode.Skystone.MathFunctions.lineCircleIntersection;
 
 public class Robot {
@@ -346,104 +361,104 @@ public class Robot {
     public boolean followCurve(Vector<CurvePoint> allPoints, double followAngle) {
         Vector<CurvePoint> pathExtended = (Vector<CurvePoint>) allPoints.clone();
 
-        pointWithIndex distanceAlongPath = distanceAlongPath(allPoints,robotPos);
-        int currFollowIndex = distanceAlongPath.index+1;
+        pointWithIndex distanceAlongPath = distanceAlongPath(allPoints, robotPos);
+        int currFollowIndex = distanceAlongPath.index + 1;
 
-        CurvePoint followMe = getFollowPointPath(pathExtended,robotPos, allPoints.get(currFollowIndex).followDistance);
+        CurvePoint followMe = getFollowPointPath(pathExtended, robotPos, allPoints.get(currFollowIndex).followDistance);
 
-        pathExtended.set(pathExtended.size()-1, extendLine(allPoints.get(allPoints.size()-2),allPoints.get(allPoints.size()-1), allPoints.get(allPoints.size()-1).pointLength * 1.5));
+        pathExtended.set(pathExtended.size() - 1, extendLine(allPoints.get(allPoints.size() - 2), allPoints.get(allPoints.size() - 1), allPoints.get(allPoints.size() - 1).pointLength * 1.5));
 
-        distanceToEnd = Math.hypot(distanceAlongPath.x-allPoints.get(allPoints.size()-1).x, distanceAlongPath.y-allPoints.get(allPoints.size()-1).y);
+        distanceToEnd = Math.hypot(distanceAlongPath.x - allPoints.get(allPoints.size() - 1).x, distanceAlongPath.y - allPoints.get(allPoints.size() - 1).y);
 
-        if(distanceToEnd <= followMe.followDistance + 15 || Math.hypot(robotPos.x-allPoints.get(allPoints.size()-1).x, robotPos.y-allPoints.get(allPoints.size()-1).y) < followMe.followDistance + 15){
-            followMe.setPoint(allPoints.get(allPoints.size()-1).toPoint());
+        if (distanceToEnd <= followMe.followDistance + 15 || Math.hypot(robotPos.x - allPoints.get(allPoints.size() - 1).x, robotPos.y - allPoints.get(allPoints.size() - 1).y) < followMe.followDistance + 15) {
+            followMe.setPoint(allPoints.get(allPoints.size() - 1).toPoint());
         }
 
         goToPoint(followMe.x, followMe.y, followMe.moveSpeed, followMe.turnSpeed, followAngle);
-        if((distanceToEnd <1)) {
+        if ((distanceToEnd < 1)) {
             return false;
         }
-        if(distanceToEnd<5){
-            i+=0.1;
+        if (distanceToEnd < 5) {
+            i += 0.1;
         }
-        i = Range.clip(i,1,2);
+        i = Range.clip(i, 1, 2);
         applyMove();
         return true;
     }
 
-    public void moveFollowCurve(Vector<CurvePoint> points){
-        pathDistance = Math.hypot(points.get(points.size()-1).x,-points.get(points.size()-1).y);
-        while(linearOpMode.opModeIsActive()) {
+    public void moveFollowCurve(Vector<CurvePoint> points) {
+        pathDistance = Math.hypot(points.get(points.size() - 1).x, points.get(points.size() - 1).y);
+        while (linearOpMode.opModeIsActive()) {
 
             // if followCurve returns false then it is ready to stop
             // else, it moves
 
-            if(!followCurve(points, Math.toRadians(0))){
+            if (!followCurve(points, Math.toRadians(0))) {
                 brakeRobot();
                 return;
             }
         }
     }
 
-    public static class pointWithIndex{
+    public static class pointWithIndex {
         private double x;
         private double y;
         private int index;
 
-        public pointWithIndex(double xPos, double yPos, int index){
+        public pointWithIndex(double xPos, double yPos, int index) {
             this.x = xPos;
             this.y = yPos;
             this.index = index;
         }
     }
 
-    public static pointWithIndex distanceAlongPath(Vector<CurvePoint> pathPoints, Point robot){
+    public static pointWithIndex distanceAlongPath(Vector<CurvePoint> pathPoints, Point robot) {
         double closestDistance = Integer.MAX_VALUE;
 
         int closestDistanceIndex = 0;
 
         Point distanceAlongLine = new Point();
 
-        for(int i = 0; i < pathPoints.size()-1; i ++){
+        for (int i = 0; i < pathPoints.size() - 1; i++) {
             CurvePoint firstPoint = pathPoints.get(i);
-            CurvePoint secondPoint = pathPoints.get(i+1);
+            CurvePoint secondPoint = pathPoints.get(i + 1);
 
             Point currentDistanceAlongLine = distanceAlongLine(firstPoint, secondPoint, robot);
 
-            double distanceToClip = Math.hypot(robot.x-currentDistanceAlongLine.x, robot.y-currentDistanceAlongLine.y);
+            double distanceToClip = Math.hypot(robot.x - currentDistanceAlongLine.x, robot.y - currentDistanceAlongLine.y);
 
-            if(distanceToClip < closestDistance){
+            if (distanceToClip < closestDistance) {
                 closestDistance = distanceToClip;
                 closestDistanceIndex = i;
                 distanceAlongLine = currentDistanceAlongLine;
             }
         }
         //return the three things
-        return new pointWithIndex(distanceAlongLine.x,distanceAlongLine.y,closestDistanceIndex);//now return the closestDistanceIndex
+        return new pointWithIndex(distanceAlongLine.x, distanceAlongLine.y, closestDistanceIndex);//now return the closestDistanceIndex
     }
 
-    public static Point distanceAlongLine(CurvePoint line1, CurvePoint line2, Point robot){
-        if(line1.x == line2.x){
+    public static Point distanceAlongLine(CurvePoint line1, CurvePoint line2, Point robot) {
+        if (line1.x == line2.x) {
             line1.x = line2.x + 0.01;
         }
-        if(line1.y == line2.y){
+        if (line1.y == line2.y) {
             line1.y = line2.y + 0.01;
         }
 
         //calculate the slope of the line
-        double m1 = (line2.y - line1.y)/(line2.x - line1.x);
+        double m1 = (line2.y - line1.y) / (line2.x - line1.x);
         //calculate the slope perpendicular to this line
-        double m2 = (line1.x - line2.x)/(line2.y - line1.y);
+        double m2 = (line1.x - line2.x) / (line2.y - line1.y);
 
         //clip the robot's position to be on the line
-        double xAlongLine = ((-m2*robot.x) + robot.y + (m1 * line1.x) - line1.y)/(m1-m2);
+        double xAlongLine = ((-m2 * robot.x) + robot.y + (m1 * line1.x) - line1.y) / (m1 - m2);
         double yAlongLine = (m1 * (xAlongLine - line1.x)) + line1.y;
-        return new Point(xAlongLine,yAlongLine);
+        return new Point(xAlongLine, yAlongLine);
     }
 
     public CurvePoint extendLine(CurvePoint firstPoint, CurvePoint secondPoint, double distance) {
-        double lineAngle = Math.atan2(secondPoint.y - firstPoint.y,secondPoint.x - firstPoint.x);
-        double lineLength = Math.hypot(secondPoint.x - firstPoint.x,secondPoint.y - firstPoint.y);
+        double lineAngle = Math.atan2(secondPoint.y - firstPoint.y, secondPoint.x - firstPoint.x);
+        double lineLength = Math.hypot(secondPoint.x - firstPoint.x, secondPoint.y - firstPoint.y);
         //extend the line by 1.5 pointLengths
         double extendedLineLength = lineLength + distance;
 
@@ -478,7 +493,7 @@ public class Robot {
         return followMe;
     }
 
-    public void goToPoint ( double x, double y, double moveSpeed, double turnSpeed, double optimalAngle){
+    public void goToPoint(double x, double y, double moveSpeed, double turnSpeed, double optimalAngle) {
 
         double xStart = robotPos.x;
         double yStart = robotPos.y;
@@ -502,7 +517,7 @@ public class Robot {
         turnMovement = Range.clip(relativeTurnAngle / Math.toRadians(30), -1, 1) * turnSpeed;
     }
 
-    public void applyMove () {
+    public void applyMove() {
         double fLeftPower = (yMovement * 1.414 + turnMovement + xMovement);
         double fRightPower = (-yMovement * 1.414 - turnMovement + xMovement);
         double bLeftPower = (-yMovement * 1.414 + turnMovement + xMovement);
@@ -519,8 +534,8 @@ public class Robot {
             maxPower = Math.abs(fRightPower);
         }
 
-        double scaler = (distanceToEnd/pathDistance)*1.5;
-        scaler = Range.clip(scaler,0.43,Integer.MAX_VALUE);
+        double scaler = (distanceToEnd / pathDistance) * 1.5;
+        scaler = Range.clip(scaler, 0.43, Integer.MAX_VALUE);
 
         fLeftPower *= scaler;
         fRightPower *= scaler;
@@ -546,5 +561,136 @@ public class Robot {
         fRight.setPower(fRightPower);
         bLeft.setPower(bLeftPower);
         bRight.setPower(bRightPower);
+    }
+
+    public void moveToPoint(double x, double y, double moveSpeed, double turnSpeed, double optimalAngle) {
+        double xStart = robotPos.x;
+        double yStart = robotPos.y;
+        double distanceTotal = Math.hypot(x - xStart, y - yStart);
+        while (linearOpMode.opModeIsActive()) {
+            double xPos = robotPos.x;
+            double yPos = robotPos.y;
+            double anglePos = this.anglePos;
+            double distanceToTarget = Math.hypot(x - xPos, y - yPos);
+            double absoluteAngleToTarget = Math.atan2(y - yPos, x - xPos);
+            double relativeAngleToPoint = MathFunctions.angleWrap(absoluteAngleToTarget - anglePos);
+            double relativeXToPoint = Math.cos(relativeAngleToPoint) * distanceToTarget;
+            double relativeYToPoint = Math.sin(relativeAngleToPoint) * distanceToTarget;
+            double relativeTurnAngle = relativeAngleToPoint + optimalAngle;
+            double xPower = relativeXToPoint / (Math.abs(relativeXToPoint) + Math.abs(relativeYToPoint));
+            double yPower = relativeYToPoint / (Math.abs(relativeYToPoint) + Math.abs(relativeXToPoint));
+            double xMovement = xPower * moveSpeed;
+            double yMovement = yPower * moveSpeed;
+            double turnMovement = Range.clip(relativeTurnAngle / Math.toRadians(30), -1, 1) * turnSpeed;
+            double fLeftPower = (yMovement + turnMovement + xMovement * 1.414);
+            double fRightPower = (-yMovement - turnMovement + xMovement * 1.414);
+            double bLeftPower = (-yMovement + turnMovement + xMovement * 1.414);
+            double bRightPower = (yMovement - turnMovement + xMovement * 1.414);
+            telemetry.addLine("XPOS: " + xPos);
+            telemetry.addLine("YPOS: " + yPos);
+            telemetry.addLine("ANGPOS: " + Math.toDegrees(anglePos));
+            telemetry.update();
+            //op scaling
+            double maxPower = Math.abs(fLeftPower);
+            if (Math.abs(bLeftPower) > maxPower) {
+                maxPower = Math.abs(bLeftPower);
+            }
+            if (Math.abs(bRightPower) > maxPower) {
+                maxPower = Math.abs(bRightPower);
+            }
+            if (Math.abs(fRightPower) > maxPower) {
+                maxPower = Math.abs(fRightPower);
+            }
+            fLeftPower *= Range.clip(distanceToTarget / distanceTotal, -1, 1);
+            fRightPower *= Range.clip(distanceToTarget / distanceTotal, -1, 1);
+            bLeftPower *= Range.clip(distanceToTarget / distanceTotal, -1, 1);
+            bRightPower *= Range.clip(distanceToTarget / distanceTotal, -1, 1);
+            double scaleDownAmount = 1.0;
+            if (maxPower > 1.0) {
+                scaleDownAmount = 1.0 / maxPower;
+            }
+            fLeftPower *= scaleDownAmount;
+            fRightPower *= scaleDownAmount;
+            bLeftPower *= scaleDownAmount;
+            bRightPower *= scaleDownAmount;
+            if (fLeftPower < 0.1 && fRightPower < 0.1 && bLeftPower < 0.1 && bRightPower < 0.1) {
+                brakeRobot();
+                return;
+            }
+            if (distanceToTarget < 0.75) {
+                brakeRobot();
+                return;
+            }
+            fLeft.setPower(fLeftPower);
+            fRight.setPower(fRightPower);
+            bLeft.setPower(bLeftPower);
+            bRight.setPower(bRightPower);
+        }
+    }
+
+    public Point detectSkystone() {
+        final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
+        final boolean PHONE_IS_PORTRAIT = false;
+        final String VUFORIA_KEY = "AbSCRq//////AAAAGYEdTZut2U7TuZCfZGlOu7ZgOzsOlUVdiuQjgLBC9B3dNvrPE1x/REDktOALxt5jBEJJBAX4gM9ofcwMjCzaJKoZQBBlXXxrOscekzvrWkhqs/g+AtWJLkpCOOWKDLSixgH0bF7HByYv4h3fXECqRNGUUCHELf4Uoqea6tCtiGJvee+5K+5yqNfGduJBHcA1juE3kxGMdkqkbfSjfrNgWuolkjXR5z39tRChoOUN24HethAX8LiECiLhlKrJeC4BpdRCRazgJXGLvvI74Tmih9nhCz6zyVurHAHttlrXV17nYLyt6qQB1LtVEuSCkpfLJS8lZWS9ztfC1UEfrQ8m5zA6cYGQXjDMeRumdq9ugMkS";
+        final float mmPerInch = 25.4f;
+
+        final float stoneZ = 2.00f * mmPerInch;
+        Point point;
+                OpenGLMatrix lastLocation = null;
+                VuforiaLocalizer vuforia = null;
+                boolean targetVisible = false;
+                float phoneXRotate = 0;
+                float phoneYRotate = 0;
+                float phoneZRotate = 0;
+
+                int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+                VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+                parameters.vuforiaLicenseKey = VUFORIA_KEY;
+                parameters.cameraDirection = CAMERA_CHOICE;
+                vuforia = ClassFactory.getInstance().createVuforia(parameters);
+
+                VuforiaTrackables targetsSkyStone = vuforia.loadTrackablesFromAsset("Skystone");
+                VuforiaTrackable stoneTarget = targetsSkyStone.get(0);
+                stoneTarget.setName("Stone Target");
+                List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
+                allTrackables.addAll(targetsSkyStone);
+                stoneTarget.setLocation(OpenGLMatrix.translation(0, 0, stoneZ).multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
+                final float CAMERA_FORWARD_DISPLACEMENT = 9f * mmPerInch;
+                final float CAMERA_VERTICAL_DISPLACEMENT = 9f * mmPerInch;
+                final float CAMERA_LEFT_DISPLACEMENT = -4;
+
+                OpenGLMatrix robotFromCamera = OpenGLMatrix.translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT).multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
+                ((VuforiaTrackableDefaultListener) stoneTarget.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
+                targetsSkyStone.activate();
+
+                while(true) {
+
+                    // check all the trackable targets to see which one (if any) is visible.
+                    targetVisible = false;
+                    for (VuforiaTrackable trackable : allTrackables) {
+                        if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
+                            telemetry.addData("Visible Target", trackable.getName());
+                            targetVisible = true;
+
+                            // getUpdatedRobotLocation() will return null if no new information is available since
+                            // the last time that call was made, or if the trackable is not currently visible.
+                            OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
+                            if (robotLocationTransform != null) {
+                                lastLocation = robotLocationTransform;
+                            }
+                            break;
+                        }
+                    }
+                    if (targetVisible) {
+                        // express position (translation) of robot in inches.
+                        VectorF translation = lastLocation.getTranslation();
+                        return new Point(translation.get(0) / mmPerInch, translation.get(1) / mmPerInch);
+
+                        // express the rotation of the robot in degrees.
+                    } else {
+                        telemetry.addData("Visible Target", "none");
+                    }
+                    telemetry.update();
+                }
     }
 }

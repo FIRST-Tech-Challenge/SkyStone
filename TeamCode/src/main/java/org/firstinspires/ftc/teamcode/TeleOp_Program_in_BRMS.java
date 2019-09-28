@@ -1,13 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-@TeleOp (name = "TeleOp_Program_in_BRMS")
-@Disabled
+@TeleOp(name = "TeleOp_Program_in_BRMS")
+
 public class TeleOp_Program_in_BRMS extends LinearOpMode {
     private DcMotor Left;
     private DcMotor Right;
@@ -21,20 +20,19 @@ public class TeleOp_Program_in_BRMS extends LinearOpMode {
         Left.setDirection(DcMotor.Direction.FORWARD);
         Right.setDirection(DcMotor.Direction.FORWARD);
 
-                waitForStart();
+        waitForStart();
 
         while (opModeIsActive()) {
 
-         Left.setPower(-gamepad1.left_stick_y);
-         Right.setPower(-gamepad1.right_stick_y);
-                    idle();
-    }
-
-    }
-
-
+            Left.setPower(gamepad1.left_stick_y);
+            Right.setPower(-gamepad1.right_stick_y);
+            idle();
+        }
 
     }
 
 
 }
+
+
+

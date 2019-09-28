@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.teamcode.Hardware;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import java.math.*;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
@@ -33,6 +34,14 @@ public class Sensors {
     public double getGyroYaw() {
 
         return angles.firstAngle;
+    }
+
+    public double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        BigDecimal bd = new BigDecimal(Double.toString(value));
+        bd = bd.setScale(places, RoundingMode.HALF_UP);
+        return bd.doubleValue();
     }
 
     public double getGyroPitch() {

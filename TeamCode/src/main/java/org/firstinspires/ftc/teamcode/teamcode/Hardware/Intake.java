@@ -20,7 +20,6 @@ public class Intake {
     DcMotor leftSide;
 
     ElapsedTime time = new ElapsedTime();
-    DriveTrain driveTrain = new DriveTrain();
 
     private LinearOpMode opMode;
 

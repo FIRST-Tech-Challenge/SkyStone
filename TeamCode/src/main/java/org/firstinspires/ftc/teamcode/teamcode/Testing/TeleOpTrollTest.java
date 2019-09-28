@@ -182,6 +182,7 @@ public class TeleOpTrollTest extends OpMode {
         telemetry.addData("Speed : ", speed);
 
         //Sets Power to Wheel
+        /*
         if (gamepad1.b && !cfmToggle) {
             cfmToggle = true;
         } else if (gamepad1.b && cfmToggle) {
@@ -189,7 +190,7 @@ public class TeleOpTrollTest extends OpMode {
         }
 
         telemetry.addData("CFM Toggle : ", cfmToggle);
-
+*/
         //Gets Magnitude of Left Stick
         velocity = Math.hypot(leftStickX, leftStickY);
         //Gets Direction of Left Stick
@@ -236,8 +237,10 @@ public class TeleOpTrollTest extends OpMode {
                 }
             }
 
-        } else if (cfmToggle) {
+        }
+        //else if (false) {
             //  Max CFM velocity, calculated
+            /*
             maxCFM_Velocity = fix * Math.sqrt((2 * tolerance * 9.81 * massStone * numberStackedBlocks * muBlocks)
                     / mass);
 
@@ -289,7 +292,8 @@ public class TeleOpTrollTest extends OpMode {
                     frMod = frMod + 0.25;
                 }
             }
-        }
+             */
+     //   }
 
             telemetry.addData("CFM Power : ", cfm_power);
 

@@ -56,6 +56,13 @@ public class TeleOpTrollTest extends OpMode {
     int numberStackedBlocks = 0;
 
 
+    //Holon Variables
+
+    double frHolon = 0.0;
+    double flHolon = 0.0;
+    double brHolon = 0.0;
+    double blHolon = 0.0;
+
     //Initializes Method
     @Override
     public void init() {
@@ -94,6 +101,7 @@ public class TeleOpTrollTest extends OpMode {
     public void loop() {
 
 
+
         // motorPos = (drive.fr.getCurrentPosition() * drive.fl.getCurrentPosition() * drive.bl.getCurrentPosition()
         // * drive.br.getCurrentPosition()) / 4;
         speed = gamepad1.right_stick_x;
@@ -130,7 +138,6 @@ public class TeleOpTrollTest extends OpMode {
                 }
             }
         }
-
 
 
         //Foundation Moving Toggle
@@ -199,27 +206,32 @@ public class TeleOpTrollTest extends OpMode {
 
         //Sets Power to Wheel
         if (!cfmToggle) {
-            drive.fl.setPower((velocity * Math.cos(direction) + speed) * speedProp);
-            drive.fr.setPower((velocity * Math.sin(direction) - speed) * speedProp);
+            drive.fl.setPower((velocity * Math.cos(direction) + speed + flHolo) * speedProp);
+            drive.fr.setPower((velocity * Math.sin(direction) - speed + frHolo) * speedProp);
             drive.bl.setPower((velocity * Math.sin(direction) + speed) * speedProp);
             drive.br.setPower((velocity * Math.cos(direction) - speed) * speedProp);
 
-            if(drive.getHolon(drive.fl) > drive.getHolon(drive.br) + 0.25 ||
-                    drive.getHolon(drive.fl) < drive.getHolon(drive.br) - 0.25) {
-                if (drive.getHolon(drive.fl) > drive.getHolon(drive.br) + 0.25) {
+
+            blHolon = drive.getHolon(drive.bl);
+            flHolon = drive.getHolon(drive.fl);
+            brHolon = drive.getHolon(drive.br);
+            frHolon = drive.getHolon(drive.fr);
+
+
+            if (flHolon > brHolon + 0.25 ||
+                    flHolon < brHolon - 0.25) {
+                if (flHolon > brHolon + 0.25) {
                     flHolo = flHolo - 0.25;
-                }
-                else {
+                } else {
                     flHolo = flHolo + 0.25;
                 }
             }
 
-            if (drive.getHolon(drive.fr) > drive.getHolon(drive.bl) + 0.25 ||
-                    drive.getHolon(drive.fr) < drive.getHolon(drive.bl) - 0.25) {
-                if (drive.getHolon(drive.fr) > drive.getHolon(drive.bl) + 0.25) {
+            if (frHolon > blHolon + 0.25 ||
+                    frHolon < blHolon - 0.25) {
+                if (frHolon > blHolon + 0.25) {
                     frHolo = frHolo - 0.25;
-                }
-                else {
+                } else {
                     frHolo = frHolo + 0.25;
                 }
             }
@@ -251,14 +263,15 @@ public class TeleOpTrollTest extends OpMode {
                 CFM_Velocity = 0;
             }
 
+
             drive.fl.setPower(-cfm_power * direct + flMod);
             drive.fr.setPower(cfm_power * direct + frMod);
             drive.bl.setPower(cfm_power * direct);
             drive.br.setPower(-cfm_power * direct);
 
-            if(drive.getHolon(drive.fl) > drive.getHolon(drive.br) + 0.25 ||
-                drive.getHolon(drive.fl) < drive.getHolon(drive.br) - 0.25) {
-                if (drive.getHolon(drive.fl) > drive.getHolon(drive.br) + 0.25) {
+            if(flHolon > brHolon + 0.25 ||
+                flHolon < brHolon - 0.25) {
+                if (flHolon > brHolon + 0.25) {
                     flMod = flMod - 0.25;
                 }
                 else {
@@ -266,9 +279,10 @@ public class TeleOpTrollTest extends OpMode {
                 }
             }
 
-            if (drive.getHolon(drive.fr) > drive.getHolon(drive.bl) + 0.25 ||
-            drive.getHolon(drive.fr) < drive.getHolon(drive.bl) - 0.25) {
-                if (drive.getHolon(drive.fr) > drive.getHolon(drive.bl) + 0.25) {
+
+            if (frHolon > blHolon + 0.25 ||
+            frHolon < blHolon - 0.25) {
+                if (frHolon > blHolon + 0.25) {
                     frMod = frMod - 0.25;
                 }
                 else {
@@ -276,30 +290,34 @@ public class TeleOpTrollTest extends OpMode {
                 }
             }
         }
-        telemetry.addData("CFM Power : ", cfm_power);
 
-        if(gamepad1.dpad_left)
-        {
-            drive.fl.setPower(1);
-            drive.fr.setPower(-1);
-            drive.bl.setPower(-1);
-            drive.br.setPower(1);
-        }
-        if(gamepad1.dpad_right)
-        {
-            drive.fl.setPower(-1);
-            drive.fr.setPower(1);
-            drive.bl.setPower(1);
-            drive.br.setPower(-1);
-        }
+            telemetry.addData("CFM Power : ", cfm_power);
 
-        telemetry.addData("Halfing Speed : ", pastX);
-        telemetry.addData("Encoded Acceleration : ", drive.getEncodedAccel());
-        telemetry.addData("Get Holon : ",
-                " FL: " + drive.getHolon(drive.fl) +
-                        "FR :" + drive.getHolon(drive.fr) +
-                     "BL : " + drive.getHolon(drive.bl) +
-                        "BR : " + drive.getHolon(drive.br));
-        telemetry.update();
+            if (gamepad1.dpad_left) {
+                drive.fl.setPower(1);
+                drive.fr.setPower(-1);
+                drive.bl.setPower(-1);
+                drive.br.setPower(1);
+            }
+            if (gamepad1.dpad_right) {
+                drive.fl.setPower(-1);
+                drive.fr.setPower(1);
+                drive.bl.setPower(1);
+                drive.br.setPower(-1);
+            }
+
+
+
+            telemetry.addData("Halfing Speed : ", pastX);
+            telemetry.addData("Encoded Acceleration : ", drive.getEncodedAccel());
+
+            telemetry.addData("Get Holon : ",
+                    " FL: " + drive.getHolon(drive.fl) +
+                            "FR :" + drive.getHolon(drive.fr) +
+                            "BL : " + drive.getHolon(drive.bl) +
+                            "BR : " + drive.getHolon(drive.br));
+            telemetry.update();
+
+
         }
     }

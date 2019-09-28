@@ -12,19 +12,17 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaSkyStone;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TfodSkyStone;
 
-@Autonomous(name = "SeekSkyStone1 (Blocks to Java)", group = "")
+@Autonomous(name = "BlockyDude", group = "")
 public class blockydudescode extends LinearOpMode {
 
-    private DcMotor LeftMotor;
-    private Servo UpperServo;
-    private Servo LowerServo;
+
     private VuforiaSkyStone vuforiaSkyStone;
     private TfodSkyStone tfodSkyStone;
-    private DcMotor RightMotor;
 
     /**
      * This function is executed when this Op Mode is selected from the Driver Station.
      */
+
     @Override
     public void runOpMode() {
         List<Recognition> recognitions;
@@ -38,20 +36,13 @@ public class blockydudescode extends LinearOpMode {
         boolean SkystoneFound;
         double TargetHeightRatio;
 
-        LeftMotor = hardwareMap.dcMotor.get("LeftMotor");
-        UpperServo = hardwareMap.servo.get("UpperServo");
-        LowerServo = hardwareMap.servo.get("LowerServo");
         vuforiaSkyStone = new VuforiaSkyStone();
         tfodSkyStone = new TfodSkyStone();
-        RightMotor = hardwareMap.dcMotor.get("RightMotor");
+
 
         // Initialization
         telemetry.addData("Init ", "started");
         telemetry.update();
-        LeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        UpperServo.setPosition(1);
-        LowerServo.setPosition(0);
-        // Init Vuforia because Tensor Flow needs it.
         vuforiaSkyStone.initialize(
                 "AbSCRq//////AAAAGYEdTZut2U7TuZCfZGlOu7ZgOzsOlUVdiuQjgLBC9B3dNvrPE1x/REDktOALxt5jBEJJBAX4gM9ofcwMjCzaJKoZQBBlXXxrOscekzvrWkhqs/g+AtWJLkpCOOWKDLSixgH0bF7HByYv4h3fXECqRNGUUCHELf4Uoqea6tCtiGJvee+5K+5yqNfGduJBHcA1juE3kxGMdkqkbfSjfrNgWuolkjXR5z39tRChoOUN24HethAX8LiECiLhlKrJeC4BpdRCRazgJXGLvvI74Tmih9nhCz6zyVurHAHttlrXV17nYLyt6qQB1LtVEuSCkpfLJS8lZWS9ztfC1UEfrQ8m5zA6cYGQXjDMeRumdq9ugMkS", // vuforiaLicenseKey
                 VuforiaLocalizer.CameraDirection.BACK, // cameraDirection
@@ -162,8 +153,7 @@ public class blockydudescode extends LinearOpMode {
                                 LeftPower = 0;
                                 RightPower = 0;
                                 // Lower neck and open jaw.
-                                LowerServo.setPosition(0.5);
-                                UpperServo.setPosition(0.5);
+
                                 SkystoneFound = true;
                             } else {
                                 // Otherwise use current power levels to turn
@@ -174,8 +164,7 @@ public class blockydudescode extends LinearOpMode {
                         telemetry.addData("Left Power", LeftPower);
                         telemetry.addData("Right Power", RightPower);
                         // Set power levels to get closer to Skystone.
-                        LeftMotor.setPower(LeftPower);
-                        RightMotor.setPower(RightPower);
+
                         // We've found a Skystone so we don't have
                         // to look at rest of detected objects.
                         // Break out of For-each-recognition.
@@ -187,23 +176,19 @@ public class blockydudescode extends LinearOpMode {
                     telemetry.addData("Status", "No Skystone");
                     telemetry.addData("Action", "Back up");
                     // Back up slowly hoping to bring Skystone in view.
-                    LeftMotor.setPower(-0.1);
-                    RightMotor.setPower(-0.1);
+
                 }
             } else {
                 // No objects detected
                 telemetry.addData("Status", "No objects detected");
                 telemetry.addData("Action", "Back up");
                 // Back up slowly hoping to bring objects in view.
-                LeftMotor.setPower(-0.1);
-                RightMotor.setPower(-0.1);
+
             }
             telemetry.update();
         }
         // Skystone found, time is up or stop was requested.
         tfodSkyStone.deactivate();
-        LeftMotor.setPower(0);
-        RightMotor.setPower(0);
         // Pause to let driver station to see last telemetry.
         sleep(2000);
     }

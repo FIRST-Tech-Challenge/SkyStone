@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.teamcode.Hardware;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import java.text.DecimalFormat;
 
 public class DriveTrain {
 
@@ -21,6 +22,8 @@ public class DriveTrain {
     public DcMotor fr; //Front Right Motor
     public DcMotor bl; //Back Left Motor
     public DcMotor br; //Back Right Motor
+
+    DecimalFormat format = new DecimalFormat("###.##");
 
     public double prevError = 0;
     public double prevTime = 0;
@@ -364,7 +367,7 @@ public class DriveTrain {
         accel = ((position - prevPosition) / (time_ea - prevNewTime));
 
         masterAccel =  Math.abs(((accel - prevAccel) / (time_ea - prevTime_ea)));
-        return masterAccel;
+        return sensors.round(masterAccel, 2);
     }
 
 }

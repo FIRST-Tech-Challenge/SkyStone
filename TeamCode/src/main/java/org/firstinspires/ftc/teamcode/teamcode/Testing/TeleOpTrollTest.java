@@ -187,11 +187,11 @@ public class TeleOpTrollTest extends OpMode {
         direction = Math.atan2(leftStickY, -leftStickX) - Math.PI / 4;
         speed = gamepad1.right_stick_x;
 
-        if (Math.abs(gamepad1.right_stick_x) > 0.5) {
+        if (Math.abs(gamepad1.right_stick_x) < 0.5) {
             speed = 0;
         }
 
-        if (Math.abs(gamepad1.left_stick_x) > 0.5 && Math.abs(gamepad1.left_stick_y) > 0.5) {
+        if (Math.abs(gamepad1.left_stick_x) < 0.5 && Math.abs(gamepad1.left_stick_y) < 0.5) {
             velocity = 0;
         }
 

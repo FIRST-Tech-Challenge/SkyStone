@@ -225,7 +225,7 @@ public class TeleOpTrollTest extends OpMode {
             drive.bl.setPower(cfm_power * direct);
             drive.br.setPower(-cfm_power * direct);
 
-            /*if(drive.getHolon(drive.fl) > drive.getHolon(drive.br) + 0.25 ||
+            if(drive.getHolon(drive.fl) > drive.getHolon(drive.br) + 0.25 ||
                 drive.getHolon(drive.fl) < drive.getHolon(drive.br) - 0.25) {
                 if (drive.getHolon(drive.fl) > drive.getHolon(drive.br) + 0.25) {
                     flMod = flMod - 0.25;
@@ -269,7 +269,7 @@ public class TeleOpTrollTest extends OpMode {
                         "FR :" + drive.getHolon(drive.fr) +
                      "BL : " + drive.getHolon(drive.bl) +
                         "BR : " + drive.getHolon(drive.br));
-        telemetry.update();*/
+        telemetry.update();
         }
     }
 }

@@ -25,6 +25,9 @@ public class DriveTrain {
 
     DecimalFormat format = new DecimalFormat("###.##");
 
+    public double secondPrevPosition;
+    public double secondTime;
+    public double secondPosition;
     public double prevError = 0;
     public double prevTime = 0;
     public double power = 0;
@@ -344,6 +347,25 @@ public class DriveTrain {
         br.setPower(0);
         bl.setPower(0);
     }
+
+    public double getHolon (DcMotor motor) {
+        runtime.reset();
+
+        prevPosition = motor.getCurrentPosition();
+        prevTime = runtime.milliseconds();
+        time = runtime.milliseconds();
+        position = motor.getCurrentPosition();
+
+        secondPrevPosition = motor.getCurrentPosition();
+        prevNewTime = runtime.milliseconds();
+        secondTime = runtime.milliseconds();
+        secondPosition = motor.getCurrentPosition();
+
+        masterAccel =  (((secondPosition - secondPrevPosition) * (time - prevTime) + (prevPosition - position) * (secondTime - prevNewTime)) / (runtime.milliseconds() - prevTime) * (secondTime -
+                prevNewTime) * (time - prevTime)) ;
+        return sensors.round(masterAccel, 2);
+    }
+
 
     public double getEncodedAccel () {
         runtime.reset();

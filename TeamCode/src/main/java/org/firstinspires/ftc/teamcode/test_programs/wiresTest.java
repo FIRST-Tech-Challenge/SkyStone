@@ -17,13 +17,9 @@ public class wiresTest extends LinearOpMode
     DcMotor rightMotorBack;
 
     //Define glyph motors
-    DcMotor mineralSpool;
-    DcMotor spinner;
-    DcMotor hanger;
-
-    Servo mineralFlipper;
-    Servo dunker;
-    Servo markerDropper;
+    DcMotor dumper;
+    DcMotor intakeLeft;
+    DcMotor intakeRight;
 
     //Define drive powers to avoid magic numbers
     float power = (float) 0.5;
@@ -39,13 +35,10 @@ public class wiresTest extends LinearOpMode
         leftMotorBack = hardwareMap.dcMotor.get("leftMotorBack");
         rightMotorBack = hardwareMap.dcMotor.get("rightMotorBack");
 
-        mineralSpool = hardwareMap.dcMotor.get("mineralSpool");
-        spinner = hardwareMap.dcMotor.get("spinner");
-        hanger = hardwareMap.dcMotor.get("hanger");
+        dumper = hardwareMap.dcMotor.get("dumper");
+        intakeLeft = hardwareMap.dcMotor.get("intakeLeft");
+        intakeRight = hardwareMap.dcMotor.get("intakeRight");
 
-        mineralFlipper = hardwareMap.servo.get("mineralFlipper");
-        dunker = hardwareMap.servo.get("dunker");
-        markerDropper = hardwareMap.servo.get("markerDropper");
 
         //Wait for start button to be clicked
         waitForStart();

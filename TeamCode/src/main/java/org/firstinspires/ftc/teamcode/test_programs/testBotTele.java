@@ -2,15 +2,11 @@
 package org.firstinspires.ftc.teamcode.test_programs;
 
 //Import necessary items
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
-@Disabled
+
 @TeleOp(name="test bot") //Name the class
 public class testBotTele extends LinearOpMode
 {
@@ -22,7 +18,7 @@ public class testBotTele extends LinearOpMode
 
     DcMotor intakeLeft;
     DcMotor intakeRight;
-    DcMotor flipper;
+    DcMotor dumper;
 
     //Define floats to be used as joystick inputs and trigger inputs
     float drivePower;
@@ -57,11 +53,12 @@ public class testBotTele extends LinearOpMode
         //Get references to the Servo Motors from the hardware map
         intakeLeft = hardwareMap.dcMotor.get("intakeLeft");
         intakeRight = hardwareMap.dcMotor.get("intakeRight");
-        flipper = hardwareMap.dcMotor.get("flipper");
+        dumper = hardwareMap.dcMotor.get("dumper");
 
-        leftMotorFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        leftMotorBack.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightMotorFront.setDirection(DcMotorSimple.Direction.FORWARD);
+        leftMotorFront.setDirection(DcMotorSimple.Direction.FORWARD);
+        leftMotorBack.setDirection(DcMotorSimple.Direction.FORWARD);
+        //rightMotorFront goes in wrong direction. Gearbox is messed up
+        rightMotorFront.setDirection(DcMotorSimple.Direction.REVERSE);
         rightMotorBack.setDirection(DcMotorSimple.Direction.FORWARD);
 
         intakeRight.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -95,25 +92,25 @@ public class testBotTele extends LinearOpMode
             //Drive if the joystick is pushed more Y than X
             if (Math.abs(drivePower) > Math.abs(shiftPower))
             {
-                setDriveMotorPowers(- drivePower, drivePower, drivePower, - drivePower);
+                setDriveMotorPowers(drivePower, drivePower, drivePower, drivePower);
             }
 
             //Shift if the joystick is pushed more on X than Y
             if (Math.abs(shiftPower) > Math.abs(drivePower))
             {
-                setDriveMotorPowers(shiftPower, shiftPower, shiftPower, shiftPower);
+                setDriveMotorPowers(-shiftPower, shiftPower, shiftPower, -shiftPower);
             }
 
             //If the left trigger is pushed, turn left at that power
             if (leftTurnPower > 0)
             {
-                setDriveMotorPowers(leftTurnPower, leftTurnPower, -leftTurnPower, -leftTurnPower);
+                setDriveMotorPowers(-leftTurnPower, -leftTurnPower, leftTurnPower, leftTurnPower);
             }
 
             //If the right trigger is pushed, turn right at that power
             if (rightTurnPower > 0)
             {
-                setDriveMotorPowers(-rightTurnPower, -rightTurnPower, rightTurnPower, rightTurnPower);
+                setDriveMotorPowers(rightTurnPower, rightTurnPower, -rightTurnPower, -rightTurnPower);
             }
 
             //If the joysticks are not pushed significantly shut off the wheels
@@ -126,16 +123,16 @@ public class testBotTele extends LinearOpMode
             //Then reset the flipper
             if (gamepad1.dpad_up)
             {
-                flipper.setPower(flipPower);
+                dumper.setPower(flipPower);
                 Thread.sleep(300);
-                flipper.setPower(0.0);
+                dumper.setPower(0.0);
             }
 
             if (gamepad1.dpad_down)
             {
-                flipper.setPower(-flipPower);
+                dumper.setPower(-flipPower);
                 Thread.sleep(300);
-                flipper.setPower(0.0);
+                dumper.setPower(0.0);
             }
 
             //Count time

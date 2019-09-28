@@ -32,6 +32,8 @@ public class TeleOpTrollTest extends OpMode {
 
     double flMod = 0;
     double frMod = 0;
+    double frHolo = 0;
+    double flHolo = 0;
 
     //  Variables for Cruise Foundation Moving (CFM)
 
@@ -201,6 +203,27 @@ public class TeleOpTrollTest extends OpMode {
             drive.fr.setPower((velocity * Math.sin(direction) - speed) * speedProp);
             drive.bl.setPower((velocity * Math.sin(direction) + speed) * speedProp);
             drive.br.setPower((velocity * Math.cos(direction) - speed) * speedProp);
+
+            if(drive.getHolon(drive.fl) > drive.getHolon(drive.br) + 0.25 ||
+                    drive.getHolon(drive.fl) < drive.getHolon(drive.br) - 0.25) {
+                if (drive.getHolon(drive.fl) > drive.getHolon(drive.br) + 0.25) {
+                    flHolo = flHolo - 0.25;
+                }
+                else {
+                    flHolo = flHolo + 0.25;
+                }
+            }
+
+            if (drive.getHolon(drive.fr) > drive.getHolon(drive.bl) + 0.25 ||
+                    drive.getHolon(drive.fr) < drive.getHolon(drive.bl) - 0.25) {
+                if (drive.getHolon(drive.fr) > drive.getHolon(drive.bl) + 0.25) {
+                    frHolo = frHolo - 0.25;
+                }
+                else {
+                    frHolo = frHolo + 0.25;
+                }
+            }
+
         } else if (cfmToggle) {
             //  Max CFM velocity, calculated
             maxCFM_Velocity = fix * Math.sqrt((2 * tolerance * 9.81 * massStone * numberStackedBlocks * muBlocks)

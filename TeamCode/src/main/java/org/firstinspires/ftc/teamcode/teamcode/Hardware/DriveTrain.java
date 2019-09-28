@@ -363,7 +363,7 @@ public class DriveTrain {
 
         masterAccel =  (((secondPosition - secondPrevPosition) * (time - prevTime) + (prevPosition - position) * (secondTime - prevNewTime)) / (runtime.milliseconds() - prevTime) * (secondTime -
                 prevNewTime) * (time - prevTime)) ;
-        return sensors.round(masterAccel, 2);
+        return masterAccel;
     }
 
 
@@ -389,7 +389,7 @@ public class DriveTrain {
         accel = ((position - prevPosition) / (time_ea - prevNewTime));
 
         masterAccel =  Math.abs(((accel - prevAccel) / (time_ea - prevTime_ea)));
-        return sensors.round(masterAccel, 2);
+        return masterAccel;
     }
 
 }

@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.robotcontroller.external.samples;
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.ftccommon.SoundPlayer;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -38,44 +38,38 @@ import java.io.File;
 
 /**
  * This file demonstrates how to play simple sounds on both the RC and DS phones.
- * It illustrates how to build sounds into your application as a resource.
- * This technique is best suited for use with Android Studio since it assumes you will be creating a new application
- *
- * If you are using OnBotJava, please see the ConceptSoundsOnBotJava sample
- *
- * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
+ * It illustrates how to play sound files that have been copied to the RC Phone
+ * This technique is best suited for use with OnBotJava since it does not require the app to be modified.
  *
  * Operation:
  *
  * Gamepad X & B buttons are used to trigger sounds in this example, but any event can be used.
  * Note: Time should be allowed for sounds to complete before playing other sounds.
  *
- * For sound files to be used as a compiled-in resource, they need to be located in a folder called "raw" under your "res" (resources) folder.
- * You can create your own "raw" folder from scratch, or you can copy the one from the FtcRobotController module.
+ *  To play a new sound, you will need to copy the .wav files to the phone, and then provide the full path to them as part of your OpMode.
+ *  This is done in this sample for the two sound files.  silver.wav and gold.wav
  *
-m *       <project root>/TeamCode/src/main/res/raw
+ *  You can put the files in a variety of soundPaths, but we recommend you put them in the /FIRST/blocks/sounds folder.
+ *  Your OpModes will have guaranteed access to this folder, and you can transfer files into this folder using the BLOCKS web page.
+ *  --  There is a link called "sounds" on the right hand side of the color bar on the BLOCKS page that can be used to send sound files to this folder by default.
+ *  Or you can use Windows File Manager, or ADB to transfer the sound files
  *
- *     Copy any .wav files you want to play into this folder.
- *     Make sure that your files ONLY use lower-case characters, and have no spaces or special characters other than underscore.
- *
- *     The name you give your .wav files will become the resource ID for these sounds.
- *     eg:  gold.wav becomes R.raw.gold
- *
- *     If you wish to use the sounds provided for this sample, they are located in:
- *     <project root>/FtcRobotController/src/main/res/raw
- *     You can copy and paste the entire 'raw' folder using Android Studio.
- *
+ *  To get full use of THIS sample, you will need to copy two sound file called silver.wav and gold.wav to /FIRST/blocks/sounds on the RC phone.
+ *  They can be located here:
+ *      https://github.com/ftctechnh/ftc_app/tree/master/FtcRobotController/src/main/res/raw/gold.wav
+ *      https://github.com/ftctechnh/ftc_app/tree/master/FtcRobotController/src/main/res/raw/silver.wav
  */
 
-@TeleOp(name="Concept: Sound Resources", group="Concept")
+@TeleOp(name="Concept: Sound Files", group="Concept")
 @Disabled
-public class ConceptSoundsASJava extends LinearOpMode {
+public class ConceptSoundsOnBotJava extends LinearOpMode {
+
+    // Point to sound files on the phone's drive
+    private String soundPath = "/FIRST/blocks/sounds";
+    private File goldFile   = new File("/sdcard" + soundPath + "/gold.wav");
+    private File silverFile = new File("/sdcard" + soundPath + "/silver.wav");
 
     // Declare OpMode members.
-    private boolean goldFound;      // Sound file present flags
-    private boolean silverFound;
-
     private boolean isX = false;    // Gamepad button state variables
     private boolean isB = false;
 
@@ -85,28 +79,20 @@ public class ConceptSoundsASJava extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        // Determine Resource IDs for sounds built into the RC application.
-        int silverSoundID = hardwareMap.appContext.getResources().getIdentifier("silver", "raw", hardwareMap.appContext.getPackageName());
-        int goldSoundID   = hardwareMap.appContext.getResources().getIdentifier("gold",   "raw", hardwareMap.appContext.getPackageName());
-
-        // Determine if sound resources are found.
-        // Note: Preloading is NOT required, but it's a good way to verify all your sounds are available before you run.
-        if (goldSoundID != 0)
-            goldFound   = SoundPlayer.getInstance().preload(hardwareMap.appContext, goldSoundID);
-
-        if (silverSoundID != 0)
-            silverFound = SoundPlayer.getInstance().preload(hardwareMap.appContext, silverSoundID);
+        // Make sure that the sound files exist on the phone
+        boolean goldFound   = goldFile.exists();
+        boolean silverFound = silverFile.exists();
 
         // Display sound status
-        telemetry.addData("gold resource",   goldFound ?   "Found" : "NOT found\n Add gold.wav to /src/main/res/raw" );
-        telemetry.addData("silver resource", silverFound ? "Found" : "Not found\n Add silver.wav to /src/main/res/raw" );
+        telemetry.addData("gold sound",   goldFound ?   "Found" : "NOT Found \nCopy gold.wav to " + soundPath  );
+        telemetry.addData("silver sound", silverFound ? "Found" : "NOT Found \nCopy silver.wav to " + soundPath );
 
         // Wait for the game to start (driver presses PLAY)
         telemetry.addData(">", "Press Start to continue");
         telemetry.update();
         waitForStart();
 
-        telemetry.addData(">", "Press X, B to play sounds.");
+        telemetry.addData(">", "Press X or B to play sounds.");
         telemetry.update();
 
         // run until the end of the match (driver presses STOP)
@@ -114,15 +100,15 @@ public class ConceptSoundsASJava extends LinearOpMode {
 
             // say Silver each time gamepad X is pressed (This sound is a resource)
             if (silverFound && (isX = gamepad1.x) && !wasX) {
-                SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, silverSoundID);
-                telemetry.addData("Playing", "Resource Silver");
+                SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, silverFile);
+                telemetry.addData("Playing", "Silver File");
                 telemetry.update();
             }
 
             // say Gold each time gamepad B is pressed  (This sound is a resource)
             if (goldFound && (isB = gamepad1.b) && !WasB) {
-                SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, goldSoundID);
-                telemetry.addData("Playing", "Resource Gold");
+                SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, goldFile);
+                telemetry.addData("Playing", "Gold File");
                 telemetry.update();
             }
 

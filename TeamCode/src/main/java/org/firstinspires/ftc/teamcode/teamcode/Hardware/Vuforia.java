@@ -236,14 +236,14 @@ public class Vuforia {
                     stonePos = posOne;
                     break;
                 } else {
-                    driveTrain.encoderDrive(.6,8, -8, -8);
+                    driveTrain.encoderDrive(opMode, .6,8, -8, -8);
                 }
                 if (stonePos == posOne) {
                     break;
                 } else if (trackable.getName() == "TargetElement") {
                     stonePos = posTwo;
                 } else {
-                    driveTrain.encoderDrive(.6,8, -8, -8);
+                    driveTrain.encoderDrive(opMode, .6,8, -8, -8);
                     stonePos = posThree;
                 }
 

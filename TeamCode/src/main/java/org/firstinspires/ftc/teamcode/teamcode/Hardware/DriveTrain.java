@@ -173,11 +173,10 @@ public class DriveTrain {
         opMode.sleep(50);
     }
 
-    public void encoderStrafe(boolean isRight, double speed,
+    public void encoderStrafe(LinearOpMode opMode,boolean isRight, double speed,
                               double leftInches, double rightInches,
                               double timeoutS) {
 
-        double headingTarget = sensors.getGyroYaw();
 
         int newLeftTarget = 0;
         int newRightTarget = 0;
@@ -246,11 +245,10 @@ public class DriveTrain {
 
     }
 
-    public void encoderDrive(double speed,
+    public void encoderDrive(LinearOpMode opMode, double speed,
                              double leftInches, double rightInches,
                              double timeoutS) {
 
-        double headingTarget = sensors.getGyroYaw();
 
         int newLeftTarget = 0;
         int newRightTarget = 0;
@@ -315,7 +313,7 @@ public class DriveTrain {
 
     //PID Turns for Macanum Wheels
     //Proportional Integral Derivative Turn
-    public void turnPID (double goal, boolean isRight, double kP, double kI, double kD, double timeOutMS) {
+    public void turnPID (LinearOpMode opMode, double goal, boolean isRight, double kP, double kI, double kD, double timeOutMS) {
 
         runtime.reset();
         sensors.angles = sensors.gyro.getAngularOrientation();

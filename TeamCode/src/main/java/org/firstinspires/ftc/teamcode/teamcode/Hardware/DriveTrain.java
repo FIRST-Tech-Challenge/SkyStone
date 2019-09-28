@@ -109,7 +109,6 @@ public class DriveTrain {
     }
 
 
-
     public void runEncoders() {
         fl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         fr.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

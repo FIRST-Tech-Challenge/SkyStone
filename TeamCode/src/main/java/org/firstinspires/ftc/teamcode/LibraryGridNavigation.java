@@ -290,21 +290,24 @@ public class LibraryGridNavigation {
         getDriveDistance(xDestination, yDestination);
         getTurnAngle(xDestination, yDestination);
 
-//        turnAngle = (turnAngle - 180);
+        //turnAngle = (turnAngle - 180);
 
-        if (turnAngle > 180) {
-            turnAngle = turnAngle - 180;
-            StartingAngle = (StartingAngle - 180);
-
-        } else if (turnAngle < -180) {
-            turnAngle = turnAngle + 180;
-            StartingAngle = (StartingAngle + 180);
-
-        } else {
-        }
+//        if (turnAngle > 180) {
+//            turnAngle = turnAngle - 180;
+//            StartingAngle = (StartingAngle - 180);
+//
+//        } else if (turnAngle < -180) {
+//            turnAngle = turnAngle + 180;
+//            StartingAngle = (StartingAngle + 180);
+//
+//        } else {
+//        }
 
         gyroDrive.gyro.turnGyro(turnAngle);
-        gyroDrive.gyroDrive(-power, -(int) Distance, 0.0);
+        gyroDrive.gyroDrive(-power, (int) Distance, 0.0);
+
+        telemetry.addData("Angle", turnAngle);
+        telemetry.update();
 
     }
 
@@ -338,7 +341,7 @@ public class LibraryGridNavigation {
         getDriveDistance(xDestination, yDestination);
         getTurnAngle(xDestination, yDestination);
 
-        turnAngle = (turnAngle + 180);
+        turnAngle = (0 + 180);
         StartingAngle = (StartingAngle + 180);
 
         gyroDrive.gyro.turnGyro(turnAngle);

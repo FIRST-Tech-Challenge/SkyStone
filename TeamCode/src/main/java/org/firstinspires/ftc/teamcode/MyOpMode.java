@@ -25,7 +25,7 @@ public class MyOpMode extends LinearOpMode {
             // run until the end of the match (driver presses STOP)
 
             while (opModeIsActive()) {
-                robot.Move();
+                robot.loop();
                 telemetry.addData("Status", "Running");
                 telemetry.update();
             }

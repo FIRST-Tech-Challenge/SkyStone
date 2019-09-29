@@ -79,6 +79,7 @@ public class OutOfBoundsRobot {
         boolean G1LeftBumper = opMode_.gamepad1.left_bumper;
 
         if (G1RightBumper) {
+            // strafe 
             leftFrontMotor_.setPower(-1);
             leftBackMotor_.setPower(1);
             rightFrontMotor_.setPower(-1);

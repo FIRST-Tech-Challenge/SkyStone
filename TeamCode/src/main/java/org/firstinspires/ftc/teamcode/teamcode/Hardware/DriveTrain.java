@@ -18,6 +18,11 @@ public class DriveTrain {
     private LinearOpMode opMode;
     private Sensors sensors;
 
+    int newLeftTarget = 0;
+    int newRightTarget = 0;
+    int newRightBlarget = 0;
+    int newLeftBlarget = 0;
+
     public DcMotor fl; //Front Left Motor
     public DcMotor fr; //Front Right Motor
     public DcMotor bl; //Back Left Motor
@@ -133,7 +138,9 @@ public class DriveTrain {
         encoderStrafe(opMode, true,.6, -8, 2);
     }
 
-    public void encoderBase (double speed, int leftFront, int rightFront, int leftBack, int rightBack, double timeoutS) {
+    public void encoderBase (double speed, int leftFront, int rightFront, int leftBack,
+                             int rightBack, double timeoutS) {
+
         fl.setTargetPosition(leftFront);
         fr.setTargetPosition(rightFront);
         bl.setTargetPosition(leftBack);
@@ -180,12 +187,6 @@ public class DriveTrain {
     public void encoderStrafe(LinearOpMode opMode,boolean isRight, double speed,
                               double Inches,
                               double timeoutS) {
-
-
-        int newLeftTarget = 0;
-        int newRightTarget = 0;
-        int newRightBlarget = 0;
-        int newLeftBlarget = 0;
 
         if (isRight) {
             if (opMode.opModeIsActive()) {
@@ -252,12 +253,6 @@ public class DriveTrain {
     public void encoderDrive(LinearOpMode opMode, double speed,
                              double leftInches, double rightInches,
                              double timeoutS) {
-
-
-        int newLeftTarget = 0;
-        int newRightTarget = 0;
-        int newRightBlarget = 0;
-        int newLeftBlarget = 0;
 
         if (opMode.opModeIsActive()) {
             newLeftTarget = fl.getCurrentPosition() + (int) (leftInches * inchCounts);

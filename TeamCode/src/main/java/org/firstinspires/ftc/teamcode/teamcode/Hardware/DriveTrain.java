@@ -177,7 +177,7 @@ public class DriveTrain {
         opMode.sleep(50);
     }
 
-    public void encoderStrafe(LinearOpMode opMode,boolean isRight, double speed,
+    public void encoderStrafe(LinearOpMode opMode, boolean isRight, double speed,
                               double leftInches, double rightInches,
                               double timeoutS) {
 

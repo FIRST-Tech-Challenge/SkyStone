@@ -174,7 +174,7 @@ public class DriveTrain {
     }
 
     public void encoderStrafe(LinearOpMode opMode,boolean isRight, double speed,
-                              double leftInches, double rightInches,
+                              double Inches,
                               double timeoutS) {
 
 
@@ -185,20 +185,20 @@ public class DriveTrain {
 
         if (isRight) {
             if (opMode.opModeIsActive()) {
-                newLeftTarget = fl.getCurrentPosition() + (int) (leftInches * inchCounts);
-                newRightTarget = fr.getCurrentPosition() + (int) (rightInches * inchCounts);
-                newLeftBlarget = bl.getCurrentPosition() + (int) (-leftInches * inchCounts);
-                newRightBlarget = br.getCurrentPosition() + (int) (-rightInches * inchCounts);
+                newLeftTarget = fl.getCurrentPosition() + (int) (-Inches * inchCounts);
+                newRightTarget = fr.getCurrentPosition() + (int) (Inches * inchCounts);
+                newLeftBlarget = bl.getCurrentPosition() + (int) (Inches * inchCounts);
+                newRightBlarget = br.getCurrentPosition() + (int) (-Inches * inchCounts);
             }
 
         }
 
         else {
             if (opMode.opModeIsActive()) {
-                newLeftTarget = fl.getCurrentPosition() + (int) (-leftInches * inchCounts);
-                newRightTarget = fr.getCurrentPosition() + (int) (-rightInches * inchCounts);
-                newLeftBlarget = bl.getCurrentPosition() + (int) (leftInches * inchCounts);
-                newRightBlarget = br.getCurrentPosition() + (int) (rightInches * inchCounts);
+                newLeftTarget = fl.getCurrentPosition() + (int) (Inches * inchCounts);
+                newRightTarget = fr.getCurrentPosition() + (int) (-Inches * inchCounts);
+                newLeftBlarget = bl.getCurrentPosition() + (int) (-Inches * inchCounts);
+                newRightBlarget = br.getCurrentPosition() + (int) (Inches * inchCounts);
             }
         }
         fl.setTargetPosition(newLeftTarget);

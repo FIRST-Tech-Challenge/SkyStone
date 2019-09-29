@@ -32,8 +32,8 @@ public class TeleOpTrollTest extends OpMode {
 
     double flMod = 0;
     double frMod = 0;
-    double frHolo = 0;
-    double flHolo = 0;
+    double frHolo = 1;
+    double flHolo = 1;
 
     //  Variables for Cruise Foundation Moving (CFM)
 
@@ -204,10 +204,11 @@ public class TeleOpTrollTest extends OpMode {
             velocity = 0;
         }
 
+
         //Sets Power to Wheel
         if (!cfmToggle) {
-            drive.fl.setPower((velocity * Math.cos(direction) + speed + flHolo) * speedProp);
-            drive.fr.setPower((velocity * Math.sin(direction) - speed + frHolo) * speedProp);
+            drive.fl.setPower(((velocity * Math.cos(direction) + speed) * flHolo) * speedProp);
+            drive.fr.setPower(((velocity * Math.sin(direction) - speed) * frHolo) * speedProp);
             drive.bl.setPower((velocity * Math.sin(direction) + speed) * speedProp);
             drive.br.setPower((velocity * Math.cos(direction) - speed) * speedProp);
 
@@ -218,25 +219,22 @@ public class TeleOpTrollTest extends OpMode {
             frHolon = drive.getHolon(drive.fr);
 
 
-            if (flHolon > brHolon + 0.25 ||
-                    flHolon < brHolon - 0.25) {
-                if (flHolon > brHolon + 0.25) {
-                    flHolo = flHolo - 0.25;
-                } else {
-                    flHolo = flHolo + 0.25;
-                }
+            if (flHolon != brHolon) {
+                flHolo = brHolon / flHolon;
             }
 
-            if (frHolon > blHolon + 0.25 ||
-                    frHolon < blHolon - 0.25) {
-                if (frHolon > blHolon + 0.25) {
-                    frHolo = frHolo - 0.25;
-                } else {
-                    frHolo = frHolo + 0.25;
-                }
+            if (frHolon != blHolon) {
+                frHolo = blHolon / frHolon;
             }
 
-        } else if (cfmToggle) {
+            if (flHolo != frHolo) {
+                flHolo = frHolo / flHolo;
+                frHolo = flHolo;
+            }
+        }
+
+
+/*        else if (cfmToggle) {
             //  Max CFM velocity, calculated
             maxCFM_Velocity = fix * Math.sqrt((2 * tolerance * 9.81 * massStone * numberStackedBlocks * muBlocks)
                     / mass);
@@ -318,6 +316,6 @@ public class TeleOpTrollTest extends OpMode {
                             "BR : " + drive.getHolon(drive.br));
             telemetry.update();
 
-
+*/
         }
     }

@@ -129,6 +129,10 @@ public class DriveTrain {
         br.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
+    public void nextCheck () {
+        encoderStrafe(opMode, true,.6, -8, 2);
+    }
+
     public void encoderBase (double speed, int leftFront, int rightFront, int leftBack, int rightBack, double timeoutS) {
         fl.setTargetPosition(leftFront);
         fr.setTargetPosition(rightFront);

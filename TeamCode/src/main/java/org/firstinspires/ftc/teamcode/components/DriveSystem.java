@@ -98,41 +98,16 @@ public class DriveSystem {
     }
 
     private void driveToPositionTicks(int ticks, Direction direction, double maxPower) {
-        if (direction == Direction.FORWARD) {
-            motorFrontRight.setTargetPosition(motorFrontRight.getCurrentPosition() + ticks);
-            motorFrontLeft.setTargetPosition(motorFrontLeft.getCurrentPosition() + ticks);
-            motorBackRight.setTargetPosition(motorBackRight.getCurrentPosition() + ticks);
-            motorBackLeft.setTargetPosition(motorBackLeft.getCurrentPosition() + ticks);
-        }
-
-        if (direction == Direction.BACKWARD) {
-            motorFrontRight.setTargetPosition(motorFrontRight.getCurrentPosition() - ticks);
-            motorFrontLeft.setTargetPosition(motorFrontLeft.getCurrentPosition() - ticks);
-            motorBackRight.setTargetPosition(motorBackRight.getCurrentPosition() - ticks);
-            motorBackLeft.setTargetPosition(motorBackLeft.getCurrentPosition() - ticks);
-        }
-
-        if (direction == Direction.RIGHT) {
-            motorFrontRight.setTargetPosition(motorFrontRight.getCurrentPosition() - ticks);
-            motorFrontLeft.setTargetPosition(motorFrontLeft.getCurrentPosition() + ticks);
-            motorBackRight.setTargetPosition(motorBackRight.getCurrentPosition() + ticks);
-            motorBackLeft.setTargetPosition(motorBackLeft.getCurrentPosition() - ticks);
-        }
-
-        if (direction == Direction.LEFT) {
-            motorFrontRight.setTargetPosition(motorFrontRight.getCurrentPosition() + ticks);
-            motorFrontLeft.setTargetPosition(motorFrontLeft.getCurrentPosition() - ticks);
-            motorBackRight.setTargetPosition(motorBackRight.getCurrentPosition() - ticks);
-            motorBackLeft.setTargetPosition(motorBackLeft.getCurrentPosition() + ticks);
-        }
+        int dir = direction.ordinal();
+        motorFrontRight.setTargetPosition(motorFrontRight.getCurrentPosition() + (int)(Math.pow(-1, dir)) * ticks);
+        motorFrontLeft.setTargetPosition(motorFrontLeft.getCurrentPosition() + (int)(Math.pow(-1, Integer.bitCount(dir)) * ticks));
+        motorBackRight.setTargetPosition(motorBackRight.getCurrentPosition() + (int)(Math.pow(-1, Integer.bitCount(dir)) * ticks));
+        motorBackLeft.setTargetPosition(motorBackLeft.getCurrentPosition() + (int)(Math.pow(-1, dir)) * ticks);
 
         setRunMode(DcMotor.RunMode.RUN_TO_POSITION);
         setMotorPower(maxPower);
         double heading = -imuSystem.getHeading();
-        while (motorBackLeft.isBusy()) {
-            double power = Range.clip(Math.abs(getMinDistanceFromTarget()) / 1000.0, 0.1, maxPower);
-            setMotorPower(power);
-        }
+
         setMotorPower(0.0);
         setRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
         turn(heading + imuSystem.getHeading(), 0.5);

@@ -105,7 +105,7 @@ public class Auto_FoundationMove extends LinearOpMode {
                           robot.rightDrive.getCurrentPosition());
         telemetry.update();
 
-        robot.hookServo.setPosition(0.0); //set foundation hook to initial position during init
+        robot.hookServo.setPosition(0.15); //set foundation hook to initial position during init
         sleep(1000);     // pause for servos to move
 
         // Wait for the game to start (driver presses PLAY)

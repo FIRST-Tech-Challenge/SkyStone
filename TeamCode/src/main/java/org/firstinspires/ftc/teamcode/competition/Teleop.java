@@ -69,6 +69,7 @@ public class Teleop extends OpMode {
         telemetry.addData("xPos", robot.x);
         telemetry.addData("yPos", robot.y);
         telemetry.addData("theta", robot.theta);
+        telemetry.addData("theta degrees", Math.toDegrees(robot.theta));
         telemetry.addLine("==========");
         telemetry.addData("total left traveled(cm)", robot.rightOdomTraveled);
         telemetry.addData("total right traveled(cm)", robot.leftOdomTraveled);

@@ -29,6 +29,7 @@ public class TeleOpTrollTest extends OpMode {
     double direct = 1.0;
     boolean pastDPadUp = false;
     boolean pastDPadDown = false;
+    boolean pastA;
 
     double flMod = 0;
     double frMod = 0;
@@ -54,7 +55,7 @@ public class TeleOpTrollTest extends OpMode {
     double cfm_power = 0.0;
 
     int numberStackedBlocks = 0;
-
+    int reverse = 1;
 
     //Holon Variables
 
@@ -139,6 +140,13 @@ public class TeleOpTrollTest extends OpMode {
             }
         }
 
+        if (gamepad1.a != pastA) {
+            pastA = gamepad1.a;
+            if (gamepad1.a) {
+                    reverse = -reverse;
+            }
+        }
+
 
         //Foundation Moving Toggle
         //Toggle sets speed such that the robot can move the fastest
@@ -207,10 +215,10 @@ public class TeleOpTrollTest extends OpMode {
 
         //Sets Power to Wheel
         if (!cfmToggle) {
-            drive.fl.setPower(((velocity * Math.cos(direction) + speed) * flHolo) * speedProp);
-            drive.fr.setPower(((velocity * Math.sin(direction) - speed) * frHolo) * speedProp);
-            drive.bl.setPower((velocity * Math.sin(direction) + speed) * speedProp);
-            drive.br.setPower((velocity * Math.cos(direction) - speed) * speedProp);
+            drive.fl.setPower(((velocity * Math.cos(direction) + speed) * flHolo) * speedProp * reverse);
+            drive.fr.setPower(((velocity * Math.sin(direction) - speed) * frHolo) * speedProp * reverse);
+            drive.bl.setPower((velocity * Math.sin(direction) + speed) * speedProp * reverse);
+            drive.br.setPower((velocity * Math.cos(direction) - speed) * speedProp * reverse);
 
 
             blHolon = drive.getHolon(drive.bl);

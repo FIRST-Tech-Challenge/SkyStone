@@ -1,113 +1,82 @@
 package org.firstinspires.ftc.teamcode.opmodes.utility;
 
-import android.app.Activity;
-import android.content.Context;
-import android.graphics.Color;
-import android.view.View;
-
-import com.qualcomm.ftccommon.SoundPlayer;
-import com.qualcomm.hardware.bosch.BNO055IMUImpl;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.VoltageSensor;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.android.AndroidGyroscope;
-import org.firstinspires.ftc.robotcore.external.android.AndroidTextToSpeech;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
-import org.firstinspires.ftc.robotcore.internal.ui.UILocation;
+import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.subsystems.ExpansionHub;
 
 @TeleOp(name = "Concept Tester", group = "none")
 public class ExperimentalStuff extends OpMode {
 
-    View relativeLayout;
-    VoltageSensor batteryVoltage;
-    AndroidTextToSpeech speaker;
+    private Robot bot;
     private int lastSpake;
-    ElapsedTime timer;
-    BNO055IMUImpl backupGyro1;
-    AndroidGyroscope backupGyro2;
-    double lastUpdate;
-    double integral;
-    Context myApp;
-    SoundPlayer.PlaySoundParams params;
-    boolean soundPlaying;
+    private BNO055IMU backupGyro1;
 
     @Override
     public void init() {
-        batteryVoltage = hardwareMap.get(VoltageSensor.class, "battery");
+        bot = Robot.getInstance(hardwareMap);
 
-        speaker = new AndroidTextToSpeech();
-        speaker.initialize();
-
-        myApp = hardwareMap.appContext;
-        params = new SoundPlayer.PlaySoundParams();
-        params.loopControl = 0;
-        params.waitForNonLoopingSoundsToFinish = true;
-
-        int relativeLayoutId = hardwareMap.appContext.getResources()
-                .getIdentifier("RelativeLayout", "id", hardwareMap.appContext.getPackageName());
-        relativeLayout = ((Activity) hardwareMap.appContext).findViewById(relativeLayoutId);
-        double volts = batteryVoltage.getVoltage();
+        double volts = bot.expansionHubs.get(0).voltageBattery(ExpansionHub.VoltageUnits.VOLTS);
         if (volts < 11) {
-            relativeLayout.setBackgroundColor(Color.RED);
+            bot.phone.setBackgroundColor(0xFF, 0x00, 0x00);
         } else if (volts < 12) {
-            relativeLayout.setBackgroundColor(Color.rgb(0xFF, 0x80, 0x00));
+            bot.phone.setBackgroundColor(0xFF, 0x80, 0x00);
         } else if (volts < 12.5) {
-            relativeLayout.setBackgroundColor(Color.YELLOW);
+            bot.phone.setBackgroundColor(0xFF, 0xFF, 0x00);
         } else {
-            relativeLayout.setBackgroundColor(Color.TRANSPARENT);
+            bot.phone.resetBackgroundColor();
         }
         telemetry.addData("Battery Voltage", volts);
         telemetry.update();
 
-        backupGyro1 = hardwareMap.getAll(BNO055IMUImpl.class).get(0);
-        backupGyro2 = hardwareMap.getAll(AndroidGyroscope.class).get(0);
-        backupGyro2.setAngleUnit(AngleUnit.DEGREES);
+        bot.phone.toast("Program Initialized.", 2000);
 
-        AppUtil.getInstance().showToast(UILocation.BOTH, "Program Initialized.");
+        backupGyro1 = hardwareMap.getAll(BNO055IMU.class).get(0);
+    }
+
+    @Override
+    public void init_loop() {
+        double volts = bot.expansionHubs.get(0).voltageBattery(ExpansionHub.VoltageUnits.VOLTS);
+        telemetry.addData("Battery Voltage", volts);
+        telemetry.update();
     }
 
     @Override
     public void start() {
-        relativeLayout.setBackgroundColor(Color.TRANSPARENT);
-        AppUtil.getInstance().showToast(UILocation.BOTH, "Program started.");
-        timer.reset();
+        bot.phone.resetBackgroundColor();
+        bot.phone.toast("Program started.", 0);
+        bot.runtime.reset();
         lastSpake = 30;
-        integral = 0;
     }
 
     @Override
     public void loop() {
 
-        if (30 - timer.seconds() < lastSpake) {
-            speaker.speak(String.valueOf((int) (30 - timer.seconds())));
+        if (30 - bot.runtime.seconds() < lastSpake && lastSpake >= 0) {
+            bot.phone.queueWordSpeak(String.valueOf(lastSpake));
+            lastSpake--;
         }
-        telemetry.addData("Speaking", speaker.isSpeaking());
+        telemetry.addData("Speaking", bot.phone.hasQueuedSound());
 
         double rev = backupGyro1.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
-        double time = timer.seconds() - lastUpdate;
-        lastUpdate = timer.seconds();
-        integral += backupGyro2.getZ() * time;
 
         telemetry.addData("Rev Gyro", rev);
-        telemetry.addData("Phone Gyro", integral);
+        telemetry.addData("Phone Gyro", bot.phone.getGyroAngle());
 
-        if (gamepad1.b && timer.seconds() > 30 && !speaker.isSpeaking()) {
-            soundPlaying = true;
-            SoundPlayer.getInstance().startPlaying(myApp,
-                    myApp.getResources().getIdentifier("ss_laser_burst", "raw", myApp.getPackageName()), params, null,
-                    new Runnable() {
-                        public void run() {
-                            soundPlaying = false;
-                        }
-                    }
-            );
+        if (gamepad1.b && bot.runtime.seconds() > 30 && !bot.phone.hasQueuedSound()) {
+            bot.phone.queueSoundFile("ss_laser_burst");
         }
 
         telemetry.update();
+    }
+
+    @Override
+    public void stop() {
+        bot.close();
     }
 }

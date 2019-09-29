@@ -29,7 +29,7 @@ public class HardwareTester extends LinearOpMode {
                 telemetry.addData("Device Type", device.getDeviceName());
                 telemetry.addData("Device Class", device.getClass());
                 telemetry.update();
-                sleep(500);
+                sleep(2000);
                 if (device instanceof DcMotorSimple) {
                     DcMotorSimple motor = (DcMotorSimple) device;
                     telemetry.addLine("Turning Motor Forward...");

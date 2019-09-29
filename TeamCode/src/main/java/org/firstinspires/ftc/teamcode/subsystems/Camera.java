@@ -1,3 +1,7 @@
+/*
+ * Based on ConceptVuforiaSkyStoneNavigation.
+ */
+
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;

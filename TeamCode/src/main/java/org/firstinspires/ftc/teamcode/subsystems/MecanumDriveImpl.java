@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.IntegratingGyroscope;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;

@@ -25,8 +25,8 @@ public class TeleOpTrollTest extends OpMode {
     double speed;
     double speedProp = 1.0;
     boolean pastX = false;
-    boolean cfmToggle = false;
-    double direct = 1.0;
+   // boolean cfmToggle = false;
+   // double direct = 1.0;
     boolean pastDPadUp = false;
     boolean pastDPadDown = false;
 
@@ -36,7 +36,7 @@ public class TeleOpTrollTest extends OpMode {
     double flHolo = 0;
 
     //  Variables for Cruise Foundation Moving (CFM)
-
+    /*
     ElapsedTime cfmTime = new ElapsedTime();
 
     private static final double massFoundation = 1.905; // Mass in kg
@@ -55,7 +55,7 @@ public class TeleOpTrollTest extends OpMode {
 
     int numberStackedBlocks = 0;
 
-
+    */
     //Holon Variables
 
     double frHolon = 0.0;
@@ -67,7 +67,7 @@ public class TeleOpTrollTest extends OpMode {
     @Override
     public void init() {
 
-        cfmToggle = false;
+        //cfmToggle = false;
 
         //Sets Hardware Map
         drive.fl = hardwareMap.dcMotor.get("fl");
@@ -92,7 +92,7 @@ public class TeleOpTrollTest extends OpMode {
 
         drive.runtime.reset();
 
-        numberStackedBlocks = 0;
+        //numberStackedBlocks = 0;
 
     }
 
@@ -147,7 +147,7 @@ public class TeleOpTrollTest extends OpMode {
         //and the friction of the floor
 
         //  Counter Assumes Each Layer is 2 blocks
-
+        /*
         if (gamepad2.dpad_up != pastDPadUp) {
             pastDPadUp = gamepad2.dpad_up;
             if (gamepad2.dpad_up) {
@@ -166,9 +166,9 @@ public class TeleOpTrollTest extends OpMode {
         //  Max CFM Acceleration, calculated
 
         maxCFM_Acceleration = 9.81 * muBlocks * massStone * numberStackedBlocks / mass;
+        */
 
-
-        telemetry.addData("Number of Blocks : ", numberStackedBlocks);
+        //telemetry.addData("Number of Blocks : ", numberStackedBlocks);
 
 
         //set up power conversion
@@ -206,7 +206,7 @@ public class TeleOpTrollTest extends OpMode {
         }
 
         //Sets Power to Wheel
-        if (!cfmToggle) {
+        //if (!cfmToggle) {
             drive.fl.setPower((velocity * Math.cos(direction) + speed + flHolo) * speedProp);
             drive.fr.setPower((velocity * Math.sin(direction) - speed + frHolo) * speedProp);
             drive.bl.setPower((velocity * Math.sin(direction) + speed) * speedProp);
@@ -237,7 +237,7 @@ public class TeleOpTrollTest extends OpMode {
                 }
             }
 
-        }
+        //}
         //else if (false) {
             //  Max CFM velocity, calculated
             /*
@@ -295,7 +295,7 @@ public class TeleOpTrollTest extends OpMode {
              */
      //   }
 
-            telemetry.addData("CFM Power : ", cfm_power);
+           // telemetry.addData("CFM Power : ", cfm_power);
 
             if (gamepad1.dpad_left) {
                 drive.fl.setPower(1);

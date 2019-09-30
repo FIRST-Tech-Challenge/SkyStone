@@ -21,9 +21,9 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
-@Autonomous(name = "SkyStoneSampleTest", group = "LinearOpMode")
-//@Disabled
-public class SkyStoneSampleTest extends LinearOpMode {
+
+@Autonomous(name ="PlainObjTest")
+public class PlainObjTest extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
@@ -89,30 +89,14 @@ public class SkyStoneSampleTest extends LinearOpMode {
                     if (updatedRecognitions != null) {
                       telemetry.addData("# Object Detected", updatedRecognitions.size());
                       // step through the list of recognitions and display boundary info.
-    
-                      int stone1 = -1;
-                      int stone2 = -1;
-                      int skyStone = -1;
-                      
+                      int i = 0;
                       for (Recognition recognition : updatedRecognitions) {
-                          if (recognition.getLabel().equals(LABEL_SECOND_ELEMENT)) {
-                              skyStone = (int) recognition.getLeft();
-                          } else if (stone1 == -1) {
-                              stone1 = (int) recognition.getLeft();
-                          } else {
-                              stone2 = (int) recognition.getLeft();
-                          }
+                        telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
+                        telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
+                                recognition.getLeft(), recognition.getTop());
+                        telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
+                                recognition.getRight(), recognition.getBottom());
                       }
-                         if (skyStone != -1 && stone1 != -1 && stone2 != -1) {
-                          if (skyStone < stone1 && skyStone < stone2) {
-                            telemetry.addData("SkyStone Position", "Left");
-                          } else if (skyStone > stone1 && skyStone > stone2) {
-                            telemetry.addData("SkyStone", "Right");
-                          } else {
-                            telemetry.addData("SkyStone", "Center");
-                          }
-                        }
-                      
                       telemetry.update();
                     }
                 }
@@ -149,7 +133,7 @@ public class SkyStoneSampleTest extends LinearOpMode {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
             "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-       tfodParameters.minimumConfidence = 0.1;
+       tfodParameters.minimumConfidence = 0.2;
        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
     }

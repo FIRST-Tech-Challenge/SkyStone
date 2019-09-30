@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -21,12 +24,17 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
-@Autonomous(name = "SkyStoneSampleTest", group = "LinearOpMode")
+@Autonomous(name = "RedSide", group = "LinearOpMode")
 //@Disabled
-public class SkyStoneSampleTest extends LinearOpMode {
+public class RedSide extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
+    
+    HardwareRobot robot = new HardwareRobot();
+    private BNO055IMU imu;
+    double lastZ = 0;
+    int turns = 0;
 
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
@@ -54,12 +62,27 @@ public class SkyStoneSampleTest extends LinearOpMode {
      * Detection engine.
      */
     private TFObjectDetector tfod;
+    
+    public void robotInit() {
+        robot.init(hardwareMap);
 
+        BNO055IMU.Parameters params = new BNO055IMU.Parameters();
+        params.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        params.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(params);
+    }
+    
     @Override
     public void runOpMode() {
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
         initVuforia();
+        robotInit();
+        telemetry.addData("Status", "Initialized");
+        telemetry.update();
+        // wait for the game to start (driver presses PLAY)
+        waitForStart();
 
         if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
             initTfod();
@@ -152,5 +175,36 @@ public class SkyStoneSampleTest extends LinearOpMode {
        tfodParameters.minimumConfidence = 0.1;
        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
+    }
+    
+    public void moveYW(double forward, double turn, double strafe) {
+        robot.leftFront.setPower(forward + turn + strafe);
+        robot.rightFront.setPower(forward - turn - strafe);
+        robot.leftBack.setPower(forward + turn - strafe);
+        robot.rightBack.setPower(forward - turn + strafe);
+    }
+
+    public void moveYB(double forward, double bearing, double strafe) {
+        Orientation angles = imu.getAngularOrientation();
+        moveYW(forward, (heading() - bearing) * 0.01, strafe);
+    }
+
+    public void driveYBT(double forward, double bearing, double strafe, double sec) {
+        ElapsedTime timer = new ElapsedTime();
+        timer.reset();
+        while (opModeIsActive()) {
+            if (timer.seconds() > sec) break;
+            moveYB(forward, bearing, strafe);
+        }
+    }
+
+    public double heading() {
+        Orientation angles = imu.getAngularOrientation();
+        double imuZ = angles.firstAngle;
+        // see if cross boundary from plus to minus or vice-versa
+        if (lastZ > 140 && imuZ < -140) turns++;
+        if (lastZ < -140 && imuZ > 140) turns--;
+        lastZ = imuZ;
+        return imuZ + turns * 360;
     }
 }

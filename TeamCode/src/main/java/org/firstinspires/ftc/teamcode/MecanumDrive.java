@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Hardware;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -25,27 +26,28 @@ public class MecanumDrive extends LinearOpMode {
             double leftStickX = gamepad1.left_stick_x;
             double rightStickX = gamepad1.right_stick_x;
             
-            moveYWX(jy,rightStickX,leftStickX);
+            mecDrive(leftStickY,rightStickX,leftStickX);
+            
+            
+            while (gamepad1.a) {
+                mecDrive(0,0,0.4);
+            }
+            
+            while (gamepad1.b) {
+                mecDrive(0,0,-0.4);
+            }
+            
+            robot.leftIntake.setPower(+gamepad1.left_trigger - gamepad1.right_trigger);
+            robot.rightIntake.setPower(+gamepad1.left_trigger - gamepad1.right_trigger);
             
         }
     }
     
-    public void moveYW(double forward, double turn) {
-        robot.leftBack.setPower(forward + turn);
-        robot.rightBack.setPower(forward - turn);
-    }
-    
-    public void moveYWX(double forward, double turn, double strafe) {
-
-        leftFrontPower = Range.clip(forward + turn + strafe, -0.3, 0.3);
-        rightFrontPower = Range.clip(forward - turn - strafe, -0.3, 0.3);
-        leftBackPower = Range.clip(forward + turn - strafe, -0.3, 0.3);
-        rightBackPower = Range.clip(forward - turn + strafe, -0.3, 0.3);
-
-        robot.leftFront.setPower(leftFrontPower);
-        robot.rightFront.setPower(rightFrontPower);
-        robot.leftBack.setPower(leftBackPower);
-        robot.rightBack.setPower(rightBackPower);
+    public void mecDrive(double forward, double turn, double strafe) {
+        robot.leftFront.setPower(Range.clip(forward + turn + strafe, -0.5, 0.5));
+        robot.rightFront.setPower(Range.clip(forward - turn - strafe, -0.5, 0.5));
+        robot.leftBack.setPower(Range.clip(forward + turn - strafe, -0.5, 0.5));
+        robot.rightBack.setPower(Range.clip(forward - turn + strafe, -0.5, 0.5));
     }
     
 }

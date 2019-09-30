@@ -130,6 +130,8 @@ public class Outtake {
             liftRight.setPower(LIFTPOWER * k);
             liftLeft.setPower(LIFTPOWER * k);
 
+
+
             while(encoderLevelCount * blockHeight * level + 320  > liftLeft.getCurrentPosition())
             {
             }

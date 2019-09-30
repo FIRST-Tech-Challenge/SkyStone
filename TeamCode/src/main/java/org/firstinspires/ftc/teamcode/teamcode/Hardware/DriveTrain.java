@@ -14,6 +14,11 @@ public class DriveTrain {
     public static double stallTorque = 2.1; // Max Torque in Newton Meters for 20 : 1 motor
     private static double inchCounts = (motorCounts / gearUp) / (wheelDiam * Math.PI);
 
+    double flAcc = 0.0;
+    double frAcc = 0.0;
+    double brAcc = 0.0;
+    double blAcc = 0.0;
+
     public ElapsedTime runtime = new ElapsedTime();
     private LinearOpMode opMode;
     private Sensors sensors;
@@ -361,6 +366,32 @@ public class DriveTrain {
         masterAccel =  (((secondPosition - secondPrevPosition) * (time - prevTime) + (prevPosition - position) * (secondTime - prevNewTime)) / (runtime.milliseconds() - prevTime) * (secondTime -
                 prevNewTime) * (time - prevTime)) ;
         return masterAccel;
+    }
+
+    public void equalize(double prop)
+    {
+        flAcc = getHolon(fl);
+        frAcc = getHolon(fr);
+        brAcc = getHolon(br);
+        blAcc = getHolon(bl);
+
+        if(flAcc - brAcc >= .25)
+        {
+            fl.setPower(prop*(fl.getPower() - (flAcc - brAcc)));
+        }
+        else if(flAcc - brAcc <= -.25)
+        {
+            fl.setPower(prop*(br.getPower() + (flAcc - brAcc)));
+        }
+
+        if(frAcc - blAcc >= .25)
+        {
+            fr.setPower(prop*(fr.getPower() + (frAcc - blAcc)));
+        }
+        else if(frAcc - blAcc <= -.25)
+        {
+            fr.setPower(prop*(fr.getPower() + (frAcc - blAcc)));
+        }
     }
 
 

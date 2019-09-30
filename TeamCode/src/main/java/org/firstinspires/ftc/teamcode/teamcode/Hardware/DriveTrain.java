@@ -14,14 +14,14 @@ public class DriveTrain {
     public static double stallTorque = 2.1; // Max Torque in Newton Meters for 20 : 1 motor
     private static double inchCounts = (motorCounts / gearUp) / (wheelDiam * Math.PI);
 
+    double flAcc = 0.0;
+    double frAcc = 0.0;
+    double brAcc = 0.0;
+    double blAcc = 0.0;
+
     public ElapsedTime runtime = new ElapsedTime();
     private LinearOpMode opMode;
     private Sensors sensors;
-
-    int newLeftTarget = 0;
-    int newRightTarget = 0;
-    int newRightBlarget = 0;
-    int newLeftBlarget = 0;
 
     public DcMotor fl; //Front Left Motor
     public DcMotor fr; //Front Right Motor
@@ -76,6 +76,10 @@ public class DriveTrain {
         fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        resetEncoders();
+        runEncoders();
+        runToPosition();
     }
 
 
@@ -134,13 +138,7 @@ public class DriveTrain {
         br.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
-    public void nextCheck () {
-        encoderStrafe(opMode, true,.6, -8, 2);
-    }
-
-    public void encoderBase (double speed, int leftFront, int rightFront, int leftBack,
-                             int rightBack, double timeoutS) {
-
+    public void encoderBase (double speed, int leftFront, int rightFront, int leftBack, int rightBack, double timeoutS) {
         fl.setTargetPosition(leftFront);
         fr.setTargetPosition(rightFront);
         bl.setTargetPosition(leftBack);
@@ -184,26 +182,33 @@ public class DriveTrain {
         opMode.sleep(50);
     }
 
-    public void encoderStrafe(LinearOpMode opMode,boolean isRight, double speed,
-                              double Inches,
+    public void encoderStrafe(LinearOpMode opMode, boolean isRight, double speed,
+                              double leftInches, double rightInches,
                               double timeoutS) {
+
+        runtime.reset();
+
+        int newLeftTarget = 0;
+        int newRightTarget = 0;
+        int newRightBlarget = 0;
+        int newLeftBlarget = 0;
 
         if (isRight) {
             if (opMode.opModeIsActive()) {
-                newLeftTarget = fl.getCurrentPosition() + (int) (-Inches * inchCounts);
-                newRightTarget = fr.getCurrentPosition() + (int) (Inches * inchCounts);
-                newLeftBlarget = bl.getCurrentPosition() + (int) (Inches * inchCounts);
-                newRightBlarget = br.getCurrentPosition() + (int) (-Inches * inchCounts);
+                newLeftTarget = fl.getCurrentPosition() + (int) (-leftInches * inchCounts);
+                newRightTarget = fr.getCurrentPosition() + (int) (rightInches * inchCounts);
+                newLeftBlarget = bl.getCurrentPosition() + (int) (leftInches * inchCounts);
+                newRightBlarget = br.getCurrentPosition() + (int) (-rightInches * inchCounts);
             }
 
         }
 
         else {
             if (opMode.opModeIsActive()) {
-                newLeftTarget = fl.getCurrentPosition() + (int) (Inches * inchCounts);
-                newRightTarget = fr.getCurrentPosition() + (int) (-Inches * inchCounts);
-                newLeftBlarget = bl.getCurrentPosition() + (int) (-Inches * inchCounts);
-                newRightBlarget = br.getCurrentPosition() + (int) (Inches * inchCounts);
+                newLeftTarget = fl.getCurrentPosition() + (int) (leftInches * inchCounts);
+                newRightTarget = fr.getCurrentPosition() + (int) (-rightInches * inchCounts);
+                newLeftBlarget = bl.getCurrentPosition() + (int) (leftInches * inchCounts);
+                newRightBlarget = br.getCurrentPosition() + (int) (-rightInches * inchCounts);
             }
         }
         fl.setTargetPosition(newLeftTarget);
@@ -216,7 +221,6 @@ public class DriveTrain {
         bl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         br.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        runtime.reset();
 
         fl.setPower(Math.abs(speed));
         fr.setPower(Math.abs(speed));
@@ -228,18 +232,15 @@ public class DriveTrain {
                 (runtime.seconds() < timeoutS) &&
                 (bl.isBusy() && br.isBusy())) {
 
-            //opMode.telemetry.addData("Path1", "Running to %7d :%7d", newLeftTarget, newRightTarget);
-            //opMode.telemetry.addData("Path2", "Running at %7d :%7d",
-            // fl.getCurrentPosition(),
-            //  fr.getCurrentPosition());
-
+            opMode.telemetry.addData("Path1", "Running to %7d :%7d", newLeftTarget, newRightTarget);
+            opMode.telemetry.addData("Path2", "Running at %7d :%7d",
+            fl.getCurrentPosition(),
+            fr.getCurrentPosition());
             opMode.telemetry.update();
+
         }
 
-        fl.setPower(0);
-        fr.setPower(0);
-        bl.setPower(0);
-        br.setPower(0);
+        snowWhite();
 
         fl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         fr.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -254,7 +255,19 @@ public class DriveTrain {
                              double leftInches, double rightInches,
                              double timeoutS) {
 
-        if (opMode.opModeIsActive()) {
+
+        int newLeftTarget = 0;
+        int newRightTarget = 0;
+        int newRightBlarget = 0;
+        int newLeftBlarget = 0;
+
+        runtime.reset();
+        while (opMode.opModeIsActive() &&
+                (runtime.seconds() < timeoutS) &&
+                (bl.isBusy() && br.isBusy())) {
+
+
+            if (opMode.opModeIsActive()) {
             newLeftTarget = fl.getCurrentPosition() + (int) (leftInches * inchCounts);
             newRightTarget = fr.getCurrentPosition() + (int) (rightInches * inchCounts);
             newLeftBlarget = bl.getCurrentPosition() + (int) (leftInches * inchCounts);
@@ -271,30 +284,22 @@ public class DriveTrain {
         bl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         br.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        runtime.reset();
-
-        fl.setPower(Math.abs(speed));
-        fr.setPower(Math.abs(speed));
-        bl.setPower(Math.abs(speed));
-        br.setPower(Math.abs(speed));
+        fl.setPower(speed);
+        fr.setPower(speed);
+        bl.setPower(speed);
+        br.setPower(speed);
 
 
-        while (opMode.opModeIsActive() &&
-                (runtime.seconds() < timeoutS) &&
-                (bl.isBusy() && br.isBusy())) {
 
-            //opMode.telemetry.addData("Path1", "Running to %7d :%7d", newLeftTarget, newRightTarget);
-            //opMode.telemetry.addData("Path2", "Running at %7d :%7d",
-            // fl.getCurrentPosition(),
-            //  fr.getCurrentPosition());
+            opMode.telemetry.addData("Targets: ", "fl %7d : fr %7d : bl %7d : br %7d",
+                    newLeftTarget, newRightTarget, newLeftBlarget, newRightBlarget);
+            opMode.telemetry.addData("Current Positions: ", "fl %7d : fr %7d : bl %7d : br %7d",
+            fl.getCurrentPosition(), fr.getCurrentPosition(), bl.getCurrentPosition(), br.getCurrentPosition());
 
             opMode.telemetry.update();
         }
 
-        fl.setPower(0);
-        fr.setPower(0);
-        bl.setPower(0);
-        br.setPower(0);
+        snowWhite();
 
         fl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         fr.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -363,6 +368,32 @@ public class DriveTrain {
         return masterAccel;
     }
 
+    public void equalize(double prop)
+    {
+        flAcc = getHolon(fl);
+        frAcc = getHolon(fr);
+        brAcc = getHolon(br);
+        blAcc = getHolon(bl);
+
+        if(flAcc - brAcc >= .25)
+        {
+            fl.setPower(prop*(fl.getPower() - (flAcc - brAcc)));
+        }
+        else if(flAcc - brAcc <= -.25)
+        {
+            fl.setPower(prop*(br.getPower() + (flAcc - brAcc)));
+        }
+
+        if(frAcc - blAcc >= .25)
+        {
+            fr.setPower(prop*(fr.getPower() + (frAcc - blAcc)));
+        }
+        else if(frAcc - blAcc <= -.25)
+        {
+            fr.setPower(prop*(fr.getPower() + (frAcc - blAcc)));
+        }
+    }
+//hello
 
     public double getEncodedAccel () {
         runtime.reset();

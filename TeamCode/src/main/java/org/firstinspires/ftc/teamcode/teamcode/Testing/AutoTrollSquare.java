@@ -19,6 +19,8 @@ public class AutoTrollSquare extends LinearOpMode {
     @Override
     public void runOpMode() {
 
+        drive.initDriveTrain(this);
+        waitForStart();
 
         drive.encoderDrive(this, 1, 24, 24, 3 );
         drive.encoderStrafe(this, true, 1, 24, 24, 2);

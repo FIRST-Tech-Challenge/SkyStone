@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class Outtake {
 
+    private static final double MAXLEVEL = 14;
     public Servo pushBlock;
     CRServo rightSideY;
     CRServo leftSideY;
@@ -19,19 +20,23 @@ public class Outtake {
     LinearOpMode opMode;
     ElapsedTime time = new ElapsedTime();
 
+    //1.055 Inches Base, Foundation is 2.25 inches
+
     boolean top;
     boolean bottom;
     boolean blockInLift;
 
+    static final double distanceBetweenBlocks = 4.0; // In Inches
     static final double liftExtensionTime = 1000; // Time it takes for lift to extend out = length of lift / speed of motors
 
-    static final double encoderLevelCount = (1800.61842251 / Math.PI) ;
+    static final double encoderLevelCount = (1440 / Math.PI) ;
 
-    double liftPower = 1;
+    static double LIFTPOWER = 1.0;
 
     double k = 1.0;
-
     double level = 1.0;
+    double blockCount = 1.0;
+    double blockHeight = 5.0; //Block Height In Inches
 
     public boolean initOuttake(OpMode opMode)
     {
@@ -43,6 +48,7 @@ public class Outtake {
         blockInLift = false;
 
         k = 1.0;
+        level = 1.0;
 
         try
         {
@@ -67,13 +73,12 @@ public class Outtake {
 
             return false;
         }
+
+        resetOuttake(); // Might Give Some Errors
         return true;
     }
 
 
-    //  x_coord - robot moves side to side along x axis
-    // y_coord - robot moves output system forward and backwards using CRservos
-    // z_coord - robot lift moves up and down using Lift DcMotors
     // once coordinates placed into method robot auto aligns the whole output system to
     // drop the block off on at the right spot
 
@@ -81,42 +86,69 @@ public class Outtake {
     // is in contact with block, when block needs to be released hook from servo extended out
 
 
-    public void outTake_Auto (double x_coord, double y_coord, double z_coord)
+    public void outTake_Auto(DriveTrain drive)
     {
 
+            liftRight.setPower(LIFTPOWER);
+            liftLeft.setPower(LIFTPOWER);
+
+            while(encoderLevelCount * blockHeight * level + 320  > liftLeft.getCurrentPosition())
+            {
+            }
+
+            liftLeft.setPower(0);
+            liftRight.setPower(0);
+
+            level += 1;
+
+            if(blockCount % 2 == 1)
+            {
+                openBasket();
+            }
+            else if(blockCount % 2 == 0)
+            {
+                //  Strafe Right
+                drive.encoderStrafe(opMode, true, .25, distanceBetweenBlocks,
+                        distanceBetweenBlocks, 1); // OpMode, isRight, speed, Left Inches, Right Inches, timeOutS
+                openBasket();
+                //  Strafe Back Left
+                drive.encoderStrafe(opMode, false, .25, distanceBetweenBlocks,
+                        distanceBetweenBlocks, 1); // OpMode, isRight, speed, Left Inches, Right Inches, timeOutS
+            }
+
+            resetOuttake();
     }
 
     //moves lift up and down by increments
 
     public void outTake_TeleOp()
     {
-
-
-
-        if(opMode.gamepad2.dpad_up && !top)
+        if(opMode.gamepad2.dpad_up && level < MAXLEVEL)
         {
             // move lift up
 
-            liftRight.setPower(liftPower * k);
-            liftLeft.setPower(liftPower * k);
+            liftRight.setPower(LIFTPOWER * k);
+            liftLeft.setPower(LIFTPOWER * k);
 
-            while(encoderLevelCount * level > liftLeft.getCurrentPosition())
+
+
+            while(encoderLevelCount * blockHeight * level + 320  > liftLeft.getCurrentPosition())
             {
             }
 
             level += 1;
 
         }
-        else if(opMode.gamepad2.dpad_down && !bottom)
+        else if(opMode.gamepad2.dpad_down && level > 1)
         {
             // move lift down
 
-            liftRight.setPower(-liftPower * k);
-            liftLeft.setPower(-liftPower * k);
+            liftRight.setPower(-LIFTPOWER * k);
+            liftLeft.setPower(-LIFTPOWER * k);
 
             level -= 1;
 
-            while(encoderLevelCount * (level - 1) < liftLeft.getCurrentPosition())
+            while(encoderLevelCount * blockHeight * (level - 1) - 320 < liftLeft.getCurrentPosition())
             {
             }
         }
@@ -155,8 +187,6 @@ public class Outtake {
             k += .1;
         }
 
-
-
         opMode.telemetry.addData("Lift Power", k);
         opMode.telemetry.update();
     }
@@ -170,6 +200,7 @@ public class Outtake {
         rightSideY.setPower(1);
         leftSideY.setPower(1);
 
+        //8.78 inches extends out
         while(time.milliseconds() < liftExtensionTime)
         {
         }
@@ -205,8 +236,8 @@ public class Outtake {
 
         while(!bottom) // once lift registers to bottom then bottom will equal to true
         {
-            liftLeft.setPower(-liftPower);
-            liftRight.setPower(-liftPower);
+            liftLeft.setPower(-LIFTPOWER);
+            liftRight.setPower(-LIFTPOWER);
         }
 
         top = false;

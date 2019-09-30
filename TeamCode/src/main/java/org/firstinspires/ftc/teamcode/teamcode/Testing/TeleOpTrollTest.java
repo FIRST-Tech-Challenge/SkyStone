@@ -25,19 +25,18 @@ public class TeleOpTrollTest extends OpMode {
     double speed;
     double speedProp = 1.0;
     boolean pastX = false;
-    boolean cfmToggle = false;
-    double direct = 1.0;
+   // boolean cfmToggle = false;
+   // double direct = 1.0;
     boolean pastDPadUp = false;
     boolean pastDPadDown = false;
-    boolean pastA;
 
     double flMod = 0;
     double frMod = 0;
-    double frHolo = 1;
-    double flHolo = 1;
+    double frHolo = 0;
+    double flHolo = 0;
 
     //  Variables for Cruise Foundation Moving (CFM)
-
+    /*
     ElapsedTime cfmTime = new ElapsedTime();
 
     private static final double massFoundation = 1.905; // Mass in kg
@@ -55,8 +54,8 @@ public class TeleOpTrollTest extends OpMode {
     double cfm_power = 0.0;
 
     int numberStackedBlocks = 0;
-    int reverse = 1;
 
+    */
     //Holon Variables
 
     double frHolon = 0.0;
@@ -68,7 +67,7 @@ public class TeleOpTrollTest extends OpMode {
     @Override
     public void init() {
 
-        cfmToggle = false;
+        //cfmToggle = false;
 
         //Sets Hardware Map
         drive.fl = hardwareMap.dcMotor.get("fl");
@@ -93,7 +92,7 @@ public class TeleOpTrollTest extends OpMode {
 
         drive.runtime.reset();
 
-        numberStackedBlocks = 0;
+        //numberStackedBlocks = 0;
 
     }
 
@@ -140,13 +139,6 @@ public class TeleOpTrollTest extends OpMode {
             }
         }
 
-        if (gamepad1.a != pastA) {
-            pastA = gamepad1.a;
-            if (gamepad1.a) {
-                    reverse = -reverse;
-            }
-        }
-
 
         //Foundation Moving Toggle
         //Toggle sets speed such that the robot can move the fastest
@@ -155,7 +147,7 @@ public class TeleOpTrollTest extends OpMode {
         //and the friction of the floor
 
         //  Counter Assumes Each Layer is 2 blocks
-
+        /*
         if (gamepad2.dpad_up != pastDPadUp) {
             pastDPadUp = gamepad2.dpad_up;
             if (gamepad2.dpad_up) {
@@ -174,9 +166,9 @@ public class TeleOpTrollTest extends OpMode {
         //  Max CFM Acceleration, calculated
 
         maxCFM_Acceleration = 9.81 * muBlocks * massStone * numberStackedBlocks / mass;
+        */
 
-
-        telemetry.addData("Number of Blocks : ", numberStackedBlocks);
+        //telemetry.addData("Number of Blocks : ", numberStackedBlocks);
 
 
         //set up power conversion
@@ -190,6 +182,7 @@ public class TeleOpTrollTest extends OpMode {
         telemetry.addData("Speed : ", speed);
 
         //Sets Power to Wheel
+        /*
         if (gamepad1.b && !cfmToggle) {
             cfmToggle = true;
         } else if (gamepad1.b && cfmToggle) {
@@ -197,7 +190,7 @@ public class TeleOpTrollTest extends OpMode {
         }
 
         telemetry.addData("CFM Toggle : ", cfmToggle);
-
+*/
         //Gets Magnitude of Left Stick
         velocity = Math.hypot(leftStickX, leftStickY);
         //Gets Direction of Left Stick
@@ -212,38 +205,49 @@ public class TeleOpTrollTest extends OpMode {
             velocity = 0;
         }
 
-
         //Sets Power to Wheel
-        if (!cfmToggle) {
-            drive.fl.setPower(((velocity * Math.cos(direction) + speed) * flHolo) * speedProp * reverse);
-            drive.fr.setPower(((velocity * Math.sin(direction) - speed) * frHolo) * speedProp * reverse);
-            drive.bl.setPower((velocity * Math.sin(direction) + speed) * speedProp * reverse);
-            drive.br.setPower((velocity * Math.cos(direction) - speed) * speedProp * reverse);
+        //if (!cfmToggle) {
+            drive.fl.setPower((velocity * Math.cos(direction) + speed + flHolo) * speedProp);
+            drive.fr.setPower((velocity * Math.sin(direction) - speed + frHolo) * speedProp);
+            drive.bl.setPower((velocity * Math.sin(direction) + speed) * speedProp);
+            drive.br.setPower((velocity * Math.cos(direction) - speed) * speedProp);
 
 
+            drive.equalize(speedProp); // Gets Holon, and based on the acceleration of each wheel fixes the
+                              // power inputted into each motor
+                                // Just a TEST - didn't delete any code to make
+
+            /*
             blHolon = drive.getHolon(drive.bl);
             flHolon = drive.getHolon(drive.fl);
             brHolon = drive.getHolon(drive.br);
             frHolon = drive.getHolon(drive.fr);
 
 
-            if (flHolon != brHolon) {
-                flHolo = brHolon / flHolon;
+            if (flHolon > brHolon + 0.25 ||
+                    flHolon < brHolon - 0.25) {
+                if (flHolon > brHolon + 0.25) {
+                    flHolo = flHolo - 0.25;
+                } else {
+                    flHolo = flHolo + 0.25;
+                }
             }
 
-            if (frHolon != blHolon) {
-                frHolo = blHolon / frHolon;
+            //Test
+
+            if (frHolon > blHolon + 0.25 ||
+                    frHolon < blHolon - 0.25) {
+                if (frHolon > blHolon + 0.25) {
+                    frHolo = frHolo - 0.25;
+                } else {
+                    frHolo = frHolo + 0.25;
+                }
             }
-
-            if (flHolo != frHolo) {
-                flHolo = frHolo / flHolo;
-                frHolo = flHolo;
-            }
-        }
-
-
-/*        else if (cfmToggle) {
+*/
+        //}
+        //else if (false) {
             //  Max CFM velocity, calculated
+            /*
             maxCFM_Velocity = fix * Math.sqrt((2 * tolerance * 9.81 * massStone * numberStackedBlocks * muBlocks)
                     / mass);
 
@@ -295,9 +299,10 @@ public class TeleOpTrollTest extends OpMode {
                     frMod = frMod + 0.25;
                 }
             }
-        }
+             */
+     //   }
 
-            telemetry.addData("CFM Power : ", cfm_power);
+           // telemetry.addData("CFM Power : ", cfm_power);
 
             if (gamepad1.dpad_left) {
                 drive.fl.setPower(1);
@@ -324,6 +329,6 @@ public class TeleOpTrollTest extends OpMode {
                             "BR : " + drive.getHolon(drive.br));
             telemetry.update();
 
-*/
+
         }
     }

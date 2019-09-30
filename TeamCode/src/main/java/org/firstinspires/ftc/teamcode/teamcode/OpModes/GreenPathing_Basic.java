@@ -28,9 +28,6 @@ public class GreenPathing_Basic extends LinearOpMode {
     public void runOpMode() {
 
         drivetrain.initDriveTrain(this);
-        waitForStart();
-
-
         drivetrain.initDriveTrain(this);
         drivetrain.resetEncoders();
 
@@ -45,26 +42,26 @@ public class GreenPathing_Basic extends LinearOpMode {
         switch (vuf.senseSkystone(this)) {
             case 1:
                 drivetrain.encoderDrive(this, driveSpeed,  5,  5, 5);
-                intake.compliantIntake_Auto(1, true);
+                intake.compliantIntake_Auto(drivetrain,1, true);
                 //rest of code for EVERYTHING
                 break;
             case 2:
                 drivetrain.encoderDrive(this, driveSpeed,  5,  5, 5);
-                intake.compliantIntake_Auto(1, true);
+                intake.compliantIntake_Auto(drivetrain,1, true);
 
                 //rest of code for EVERYTHING
 
                 break;
             case 3:
                 drivetrain.encoderDrive(this, driveSpeed,  5,  5, 5);
-                intake.compliantIntake_Auto(1, true);
+                intake.compliantIntake_Auto(drivetrain,1, true);
 
                 //rest of code for EVERYTHING
 
                 break;
         }
 
-        intake.compliantIntake_Auto(1, true);
+        intake.compliantIntake_Auto(drivetrain,1, true);
 
         drivetrain.encoderDrive(this, driveSpeed, -48, -48, -48);
         drivetrain.encoderDrive(this, driveSpeed,144, -144, -144);

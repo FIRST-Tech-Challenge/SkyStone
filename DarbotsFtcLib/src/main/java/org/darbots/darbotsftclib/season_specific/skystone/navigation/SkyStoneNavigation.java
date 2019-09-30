@@ -319,8 +319,12 @@ public class SkyStoneNavigation implements RobotNonBlockingDevice {
         this.m_LastTime.reset();
         this.m_LastUpdateGotLocation = false;
     }
-    public void terminate(){
-        this.m_AllTrackables.clear();
-        this.m_TargetsSkyStone.deactivate();
+
+    public void setActivated(boolean enabled){
+        if(enabled){
+            this.m_TargetsSkyStone.activate();
+        }else{
+            this.m_TargetsSkyStone.deactivate();
+        }
     }
 }

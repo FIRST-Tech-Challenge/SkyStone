@@ -28,6 +28,7 @@ package org.darbots.darbotsftclib.libcore.sensors.cameras;
 import android.support.annotation.NonNull;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.vuforia.CameraDevice;
 
 import org.darbots.darbotsftclib.libcore.templates.other_sensors.RobotCamera;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -81,5 +82,10 @@ public class RobotOnPhoneCamera implements RobotCamera {
 
         //  Instantiate the Vuforia engine
         this.m_Vuforia = ClassFactory.getInstance().createVuforia(parameters);
+    }
+
+    public void setFlashlightEnabled(boolean enabled)
+    {
+        CameraDevice.getInstance().setFlashTorchMode(enabled);
     }
 }

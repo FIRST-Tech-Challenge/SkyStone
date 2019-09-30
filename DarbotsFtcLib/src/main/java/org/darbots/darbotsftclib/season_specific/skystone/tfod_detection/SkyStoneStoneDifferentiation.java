@@ -128,12 +128,6 @@ public class SkyStoneStoneDifferentiation {
         } else {
             throw new Exception("Your device cannot create TFOD instances");
         }
-
-        /**
-         * Activate TensorFlow Object Detection before we wait for the start command.
-         * Do it here so that the Camera Stream window will have the TensorFlow annotations visible.
-         **/
-        m_TFOD.activate();
     }
 
     public void terminate(){
@@ -179,5 +173,13 @@ public class SkyStoneStoneDifferentiation {
         tfodParameters.minimumConfidence = 0.8;
         m_TFOD = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, this.m_Camera.getVuforia());
         m_TFOD.loadModelFromAsset("Skystone.tflite", "Stone", "Skystone");
+    }
+
+    public void setActivated(boolean enabled){
+        if(enabled){
+            this.m_TFOD.activate();
+        }else{
+            this.m_TFOD.deactivate();
+        }
     }
 }

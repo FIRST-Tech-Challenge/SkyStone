@@ -100,11 +100,9 @@ public class DriveSystem {
     private void driveToPositionTicks(int ticks, Direction direction, double maxPower) {
         int dir = direction.ordinal();
         for (int i = 0; i < motors.length; i++) {
-            if (i == 1 || i == 2) {
-                motors[i].setTargetPosition(motors[i].getCurrentPosition() + (int)(Math.pow(-1, Integer.bitCount(dir)) * ticks));
-            } else {
-                motors[i].setTargetPosition(motors[i].getCurrentPosition() + (int)(Math.pow(-1, dir)) * ticks);
-            }
+            DcMotor motor = motors[i];
+            motor.setTargetPosition(motor.getCurrentPosition() +
+                    (int)(Math.pow(-1, (i == 1 || i == 2) ? dir : Integer.bitCount(dir))) * ticks);
         }
 
         setRunMode(DcMotor.RunMode.RUN_TO_POSITION);

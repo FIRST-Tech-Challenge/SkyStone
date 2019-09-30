@@ -60,7 +60,6 @@ public class DriveControl {
         BackRightM.setPower(RR);
     }
 
-    // !!!! NOT TESTED !!!!
     public void stop() {
         FrontLeftM.setPower(0);
         FrontRightM.setPower(0);
@@ -68,7 +67,6 @@ public class DriveControl {
         BackRightM.setPower(0);
     }
 
-    // !!!! NOT TESTED !!!!
     public void moveForward(double speed) {
         speed = limitSpeed(speed);
         FrontLeftM.setPower(speed);
@@ -77,48 +75,45 @@ public class DriveControl {
         BackRightM.setPower(speed);
     }
 
-    // !!!! NOT TESTED !!!!
     public void moveBackward(double speed) {
         speed = limitSpeed(speed);
-        FrontLeftM.setPower(speed);
-        FrontRightM.setPower(speed);
-        BackLeftM.setPower(speed);
-        BackRightM.setPower(speed);
+        FrontLeftM.setPower(-speed);
+        FrontRightM.setPower(-speed);
+        BackLeftM.setPower(-speed);
+        BackRightM.setPower(-speed);
     }
 
-    // !!!! NOT TESTED !!!!
+    // tested, back wheels not working
     public void strafeLeft(double speed) {
         speed = limitSpeed(speed);
-        FrontLeftM.setPower(speed);
+        FrontLeftM.setPower(-speed);
         FrontRightM.setPower(speed);
         BackLeftM.setPower(speed);
-        BackRightM.setPower(speed);
+        BackRightM.setPower(-speed);
     }
 
-    // !!!! NOT TESTED !!!!
+    // tested, back wheels not working
     public void strafeRight(double speed) {
         speed = limitSpeed(speed);
         FrontLeftM.setPower(speed);
-        FrontRightM.setPower(speed);
-        BackLeftM.setPower(speed);
+        FrontRightM.setPower(-speed);
+        BackLeftM.setPower(-speed);
         BackRightM.setPower(speed);
     }
 
-    // !!!! NOT TESTED !!!!
     public void turnLeft(double speed) {
         speed = limitSpeed(speed);
-        FrontLeftM.setPower(speed);
+        FrontLeftM.setPower(-speed);
         FrontRightM.setPower(speed);
-        BackLeftM.setPower(speed);
+        BackLeftM.setPower(-speed);
         BackRightM.setPower(speed);
     }
 
-    // !!!! NOT TESTED !!!!
     public void turnRight(double speed) {
         speed = limitSpeed(speed);
         FrontLeftM.setPower(speed);
-        FrontRightM.setPower(speed);
+        FrontRightM.setPower(-speed);
         BackLeftM.setPower(speed);
-        BackRightM.setPower(speed);
+        BackRightM.setPower(-speed);
     }
 }

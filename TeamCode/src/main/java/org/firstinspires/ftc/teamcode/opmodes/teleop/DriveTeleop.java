@@ -17,7 +17,7 @@ public class DriveTeleop extends LinearOpMode {
 
     public void initialize()
     {
-
+        this.driveSystem = new DriveSystem();
         this.driveSystem.motorFrontLeft = hardwareMap.dcMotor.get("motorFL");
         this.driveSystem.motorFrontRight = hardwareMap.dcMotor.get("motorFR");
         this.driveSystem.motorBackRight = hardwareMap.dcMotor.get("motorBR");

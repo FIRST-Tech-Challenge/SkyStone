@@ -213,6 +213,11 @@ public class TeleOpTrollTest extends OpMode {
             drive.br.setPower((velocity * Math.cos(direction) - speed) * speedProp);
 
 
+            drive.equalize(speedProp); // Gets Holon, and based on the acceleration of each wheel fixes the
+                              // power inputted into each motor
+                                // Just a TEST - didn't delete any code to make
+
+            /*
             blHolon = drive.getHolon(drive.bl);
             flHolon = drive.getHolon(drive.fl);
             brHolon = drive.getHolon(drive.br);
@@ -228,6 +233,8 @@ public class TeleOpTrollTest extends OpMode {
                 }
             }
 
+            //Test
+
             if (frHolon > blHolon + 0.25 ||
                     frHolon < blHolon - 0.25) {
                 if (frHolon > blHolon + 0.25) {
@@ -236,7 +243,7 @@ public class TeleOpTrollTest extends OpMode {
                     frHolo = frHolo + 0.25;
                 }
             }
-
+*/
         //}
         //else if (false) {
             //  Max CFM velocity, calculated

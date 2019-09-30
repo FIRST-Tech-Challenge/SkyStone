@@ -197,24 +197,25 @@ public class TeleOpTrollTest extends OpMode {
         direction = Math.atan2(leftStickY, -leftStickX) - Math.PI / 4;
         speed = gamepad1.right_stick_x;
 
-        if (Math.abs(gamepad1.right_stick_x) < 0.05) {
+        if (Math.abs(gamepad1.right_stick_x) < 0.075 ) {
             speed = 0;
         }
 
-        if (Math.abs(gamepad1.left_stick_x) < 0.05 && Math.abs(gamepad1.left_stick_y) < 0.05) {
+        if (Math.abs(gamepad1.left_stick_x) < 0.075 && Math.abs(gamepad1.left_stick_y) < 0.075) {
             velocity = 0;
         }
 
         //Sets Power to Wheel
         //if (!cfmToggle) {
-            drive.fl.setPower((velocity * Math.cos(direction) + speed + flHolo) * speedProp);
-            drive.fr.setPower((velocity * Math.sin(direction) - speed + frHolo) * speedProp);
+            drive.fl.setPower((velocity * Math.cos(direction) + speed) * speedProp);
+            drive.fr.setPower((velocity * Math.sin(direction) - speed) * speedProp);
             drive.bl.setPower((velocity * Math.sin(direction) + speed) * speedProp);
             drive.br.setPower((velocity * Math.cos(direction) - speed) * speedProp);
 
 
-            drive.equalize(speedProp); // Gets Holon, and based on the acceleration of each wheel fixes the
-                              // power inputted into each motor
+            //drive.equalize(speedProp);
+                                // Gets Holon, and based on the acceleration of each wheel fixes the
+                                // power inputted into each motor
                                 // Just a TEST - didn't delete any code to make
 
             /*

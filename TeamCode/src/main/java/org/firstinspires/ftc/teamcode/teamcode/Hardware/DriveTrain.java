@@ -343,6 +343,7 @@ public class DriveTrain {
     }
 
 
+
     public void snowWhite () {
         fr.setPower(0);
         fl.setPower(0);
@@ -375,23 +376,15 @@ public class DriveTrain {
         brAcc = getHolon(br);
         blAcc = getHolon(bl);
 
-        if(flAcc - brAcc >= .25)
+        if(flAcc - brAcc >= .25 || flAcc - brAcc <= -.25)
         {
-            fl.setPower(prop*(fl.getPower() - (flAcc - brAcc)));
+            fl.setPower(fl.getPower() + prop * (flAcc - brAcc));
         }
-        else if(flAcc - brAcc <= -.25)
+        else if(frAcc - blAcc >= .25 || frAcc - blAcc <= -.25)
         {
-            fl.setPower(prop*(br.getPower() + (flAcc - brAcc)));
+            fr.setPower(fr.getPower() + prop * (frAcc - blAcc));
         }
 
-        if(frAcc - blAcc >= .25)
-        {
-            fr.setPower(prop*(fr.getPower() + (frAcc - blAcc)));
-        }
-        else if(frAcc - blAcc <= -.25)
-        {
-            fr.setPower(prop*(fr.getPower() + (frAcc - blAcc)));
-        }
     }
 //hello
 

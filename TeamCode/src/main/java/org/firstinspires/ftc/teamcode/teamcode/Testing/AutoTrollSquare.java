@@ -13,6 +13,8 @@ public class AutoTrollSquare extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
     private double driveSpeed = 0.6;
+    private boolean right = true;
+    private boolean left = false;
 
     DriveTrain drive = new DriveTrain();
 
@@ -23,9 +25,24 @@ public class AutoTrollSquare extends LinearOpMode {
         waitForStart();
 
         drive.encoderDrive(this, 1, 24, 24, 3 );
-        drive.encoderStrafe(this, true, 1, 24, 24, 2);
+        drive.snowWhite();
+        sleep(1000);
+        telemetry.addData("1st method", runtime);
+        telemetry.update();
+
+        drive.encoderDrive(this,  1, 24, 24, 2);
+        drive.snowWhite();
+        sleep(1000);
+        telemetry.addData("2nd method", runtime);
+        telemetry.update();
+
         drive.encoderDrive(this, 1, -24, -24, 3);
-        drive.encoderStrafe(this, false, 1, 24, 24, 2);
+        drive.snowWhite();
+        sleep(1000);
+        telemetry.addData("3rd method", runtime);
+        telemetry.update();
+
+        drive.encoderDrive(this, -1, 24, 24, 2);
     }
 
 }

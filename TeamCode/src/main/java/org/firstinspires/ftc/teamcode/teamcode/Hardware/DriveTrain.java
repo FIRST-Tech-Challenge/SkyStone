@@ -258,7 +258,7 @@ public class DriveTrain {
     public void encoderDrive(LinearOpMode opMode, double speed,
                              double leftInches, double rightInches,
                              double timeoutS) {
-
+        runtime.reset();
 
         newLeftTarget = fl.getCurrentPosition() + (int) (leftInches * inchCounts);
         newRightTarget = fr.getCurrentPosition() + (int) (rightInches * inchCounts);
@@ -266,28 +266,34 @@ public class DriveTrain {
         newRightBlarget = br.getCurrentPosition() + (int) (rightInches * inchCounts);
 
 
-        fl.setTargetPosition(newLeftTarget);
-        fr.setTargetPosition(newRightTarget);
-        bl.setTargetPosition(newLeftBlarget);
-        br.setTargetPosition(newRightBlarget);
+        while (opMode.opModeIsActive() && (runtime.seconds() < timeoutS)) {
 
-        fl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        fr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        bl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        br.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        runtime.reset();
 
-        while (opMode.opModeIsActive() &&
-                (runtime.seconds() < timeoutS) &&
-                (bl.isBusy() && br.isBusy())) {
+            fl.setTargetPosition(newLeftTarget);
+            fr.setTargetPosition(newRightTarget);
+            bl.setTargetPosition(newLeftBlarget);
+            br.setTargetPosition(newRightBlarget);
+
+            fl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            fr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            bl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            br.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
 
             fl.setPower(speed);
             fr.setPower(speed);
             bl.setPower(speed);
             br.setPower(speed);
 
+            opMode.telemetry.addData("Targets: ", "fl %7d : fr %7d : bl %7d : br %7d",
+                    newLeftTarget, newRightTarget, newLeftBlarget, newRightBlarget);
+            opMode.telemetry.addData("Current Positions: ", "fl %7d : fr %7d : bl %7d : br %7d",
+                    fl.getCurrentPosition(), fr.getCurrentPosition(), bl.getCurrentPosition(), br.getCurrentPosition());
 
+            opMode.telemetry.update();
+
+        }
 
 /*            opMode.telemetry.addData("Targets: ", "fl %7d : fr %7d : bl %7d : br %7d",
                     newLeftTarget, newRightTarget, newLeftBlarget, newRightBlarget);
@@ -295,7 +301,6 @@ public class DriveTrain {
             fl.getCurrentPosition(), fr.getCurrentPosition(), bl.getCurrentPosition(), br.getCurrentPosition());
 
             opMode.telemetry.update();*/
-        }
 
         snowWhite();
 

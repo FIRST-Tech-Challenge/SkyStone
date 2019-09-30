@@ -202,7 +202,7 @@ public class Vuforia extends LinearOpMode {
         return checkPos(3);
     }
     public void nextCheck () {
-        drive.encoderStrafe(this, true,.6, -8, 2, 3);
+       // drive.encoderStrafe(this, true,.6, -8, 2, 3);
     }
 
 }

@@ -2,8 +2,8 @@ package org.firstinspires.ftc.teamcode.components;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 
 public class DriveSystem {
     public DcMotor motorFrontLeft;
@@ -12,14 +12,16 @@ public class DriveSystem {
     public DcMotor motorBackRight;
     public DcMotor[] motors = new DcMotor[4];
 
-    public IMUSystem imuSystem = new IMUSystem();
+    public IMUSystem imuSystem;
 
     private final int TICKS_IN_INCH = 69;
 
     /**
      * Handles the data for the abstract creation of a drive system with four wheels
      */
-    public DriveSystem() {
+    public DriveSystem(DcMotor[] motors, BNO055IMU imu) {
+        this.imuSystem = new IMUSystem(imu);
+        this.motors = motors;
         initMotors();
     }
 
@@ -35,10 +37,10 @@ public class DriveSystem {
 
     public void initMotors() {
 
-        motors[0] = motorFrontLeft;
-        motors[1] = motorFrontRight;
-        motors[2] = motorBackRight;
-        motors[3] = motorBackLeft;
+        motorFrontLeft = motors[0];
+        motorFrontRight = motors[1];
+        motorBackRight = motors[2];
+        motorBackLeft = motors[3];
 
         for (DcMotor motor : motors) {
             motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -225,5 +227,11 @@ public class DriveSystem {
         }
         return diff;
     }
+
+    private enum Direction {
+        FORWARD, BACKWARD, LEFT, RIGHT
+    }
+
+
 
 }

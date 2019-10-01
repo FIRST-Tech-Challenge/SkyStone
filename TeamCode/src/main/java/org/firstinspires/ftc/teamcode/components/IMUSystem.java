@@ -18,7 +18,7 @@ import java.util.Locale;
  * Creates an IMU system that handles the angle and movement of the robot through a gyroscope.
  */
 public class IMUSystem {
-    public BNO055IMU imu;
+    private BNO055IMU imu;
     public BNO055IMU.Parameters parameters;
 
     // State used for updating telemetry
@@ -28,7 +28,7 @@ public class IMUSystem {
     /**
      * Creates a new IMU System
      */
-    public IMUSystem()
+    public IMUSystem(BNO055IMU imu)
     {
         this.parameters = new BNO055IMU.Parameters();
         this.parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
@@ -36,6 +36,7 @@ public class IMUSystem {
         this.parameters.loggingEnabled = true;
         this.parameters.loggingTag = "BNO055";
         this.parameters.calibrationDataFile = "AdafruitIMUCalibration.json"; // see the calibration sample opmode
+        this.imu = imu;
         this.imu.initialize(parameters);
 
         // Enable reporting of position using the naive integrator

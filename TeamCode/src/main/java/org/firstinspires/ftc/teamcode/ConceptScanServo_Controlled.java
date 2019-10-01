@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.Gamepad;
 
 /**
  * This OpMode scans a single servo back and forwards until Stop is pressed.
@@ -47,8 +48,8 @@ import com.qualcomm.robotcore.hardware.Servo;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
-@TeleOp(name = "Concept: Get servo position", group = "Concept")
-public class ConceptScanServo extends LinearOpMode {
+@TeleOp(name = "Concept: controlled arm", group = "Concept")
+public class ConceptScanServo_Controlled extends LinearOpMode {
 
     static final double INCREMENT   = 0.01;     // amount to slew servo each CYCLE_MS cycle
     static final int    CYCLE_MS    =   50;     // period of each cycle
@@ -56,7 +57,9 @@ public class ConceptScanServo extends LinearOpMode {
     static final double MIN_POS     =  0.0;     // Minimum rotational position
 
     // Define class members
-    Servo   servo;
+    Servo gripper;
+    Servo wrist;
+    Servo elbow;
     double  position = (MAX_POS - MIN_POS) / 2; // Start at halfway position
     boolean rampUp = true;
 
@@ -66,8 +69,8 @@ public class ConceptScanServo extends LinearOpMode {
 
         // Connect to servo (Assume PushBot Left Hand)
         // Change the text in quotes to match any servo name on your robot.
-        servo = hardwareMap.get(Servo.class, "left_hand");
-
+        gripper = hardwareMap.get(Servo.class, "gripper");
+        wrist = hardwareMap.get(Servo.class, "wrist");
         // Wait for the start button
         telemetry.addData(">", "Press Start to scan Servo." );
         telemetry.update();
@@ -75,10 +78,18 @@ public class ConceptScanServo extends LinearOpMode {
 
 
         // Scan servo till stop pressed.
+        float gripperPos = 0;
         while(opModeIsActive()){
             // Display the current value
             try {
-                telemetry.addData("Servo Position: " + servo.getPosition() + Double.toString(Math.random()), "");
+                if (gamepad1.a && gripperPos <= 1) {
+                    gripperPos += 0.0001;
+                } else if (gamepad1.b && gripperPos >= 0){
+                    gripperPos -= 0.0001;
+                }
+                gripper.setPosition(gripperPos);
+                telemetry.addData("Gripper Position: " + gripper.getPosition(), "");
+                telemetry.addData("Wrist position: " + wrist.getPosition(), "");
                 telemetry.addData(">", "Press Stop to end test." );
                 telemetry.update();
             } catch (Exception e) {

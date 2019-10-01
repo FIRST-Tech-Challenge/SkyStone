@@ -102,7 +102,7 @@ public class DriveSystem {
         for (int i = 0; i < motors.length; i++) {
             DcMotor motor = motors[i];
             motor.setTargetPosition(motor.getCurrentPosition() +
-                    (int)(Math.pow(-1, (i == 1 || i == 2) ? dir : Integer.bitCount(dir))) * ticks);
+                    (int)(Math.pow(-1, (i == 1 || i == 2) ? Integer.bitCount(dir) : dir)) * ticks);
         }
 
         setRunMode(DcMotor.RunMode.RUN_TO_POSITION);

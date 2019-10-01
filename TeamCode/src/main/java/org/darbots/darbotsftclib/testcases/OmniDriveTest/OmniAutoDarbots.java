@@ -56,7 +56,7 @@ public class OmniAutoDarbots extends DarbotsBasicOpMode<OmniCore> {
             }else if(this.gamepad1.dpad_left){
                 this.m_RobotCore.getChassis().replaceTask(new GyroGuidedTurn(this.m_RobotCore.getChassis(),this.m_RobotCore.getGyro(),90,0.2));
             }else if(this.gamepad1.dpad_right){
-                this.m_RobotCore.getChassis().replaceTask(new GyroGuidedTurn(this.m_RobotCore.getChassis(),this.m_RobotCore.getGyro(),90,0.2));
+                this.m_RobotCore.getChassis().replaceTask(new GyroGuidedTurn(this.m_RobotCore.getChassis(),this.m_RobotCore.getGyro(),-90,0.2));
             }
             telemetry.update();
         }

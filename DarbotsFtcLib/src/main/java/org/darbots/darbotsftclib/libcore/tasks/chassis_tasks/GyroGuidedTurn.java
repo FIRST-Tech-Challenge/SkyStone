@@ -12,7 +12,7 @@ public class GyroGuidedTurn extends RobotMotionSystemTask {
     private double m_TurnDeg;
     private double m_StartDeg;
     private RobotGyro m_Gyro;
-    private double m_ErrorMarginAng = 1.0;
+    private double m_ErrorMarginAng = 0.2;
 
     public GyroGuidedTurn(RobotMotionSystem MotionSystem, RobotGyro Gyro, double turnDeg, double power){
         this.m_TeleOpTask = MotionSystem.getTeleOpTask();
@@ -59,6 +59,7 @@ public class GyroGuidedTurn extends RobotMotionSystemTask {
     protected void __startTask() {
         this.getGyro().updateStatus();
         this.m_StartDeg = this.getGyro().getHeading();
+        this.m_TeleOpTask.setMotionSystem(super.getMotionSystem());
         this.m_TeleOpTask.startTask();
     }
 

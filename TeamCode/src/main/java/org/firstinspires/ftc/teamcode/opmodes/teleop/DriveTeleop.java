@@ -22,7 +22,7 @@ public class DriveTeleop extends LinearOpMode {
     public void initialize(){
         EnumMap<DriveSystem.MotorNames, DcMotor> driveMap = new EnumMap<>(DriveSystem.MotorNames.class);
         for(DriveSystem.MotorNames name : DriveSystem.MotorNames.values()){
-            driveMap.put(name,hardwareMap.get(DcMotor.class, name.toString());
+            driveMap.put(name,hardwareMap.get(DcMotor.class, name.toString()));
         }
 
 <<<<<<< refs/remotes/origin/Arm

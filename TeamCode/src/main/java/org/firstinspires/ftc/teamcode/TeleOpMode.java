@@ -26,6 +26,19 @@ public class TeleOpMode extends LinearOpMode {
             else {
                 hook.setPower(0);
             }
+            //Intake test
+            if (gamepad1.x == true) {
+                leftIntake.setPower(1);
+                rightIntake.setPower(-1);
+            }
+            else if (gamepad1.y == true) {
+                leftIntake.setPower(-1);
+                rightIntake.setPower(1);
+            }
+            else {
+                leftIntake.setPower(0);
+                rightIntake.setPower(0);
+            }
             //Chassis test
             double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
             double robotAngle = Math.atan2(gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;

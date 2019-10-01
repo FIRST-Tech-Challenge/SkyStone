@@ -34,12 +34,15 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 <<<<<<< refs/remotes/origin/Arm
 <<<<<<< refs/remotes/origin/Arm
+<<<<<<< refs/remotes/origin/Arm
 import com.qualcomm.robotcore.hardware.Gamepad;
 =======
 >>>>>>> Wrote some tests
 =======
 import com.qualcomm.robotcore.hardware.Gamepad;
 >>>>>>> More tests for build team, ready to make a component!
+=======
+>>>>>>> Revert "More tests for build team, ready to make a component!"
 
 /**
  * This OpMode scans a single servo back and forwards until Stop is pressed.
@@ -57,6 +60,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
  */
 <<<<<<< refs/remotes/origin/Arm
 <<<<<<< refs/remotes/origin/Arm
+<<<<<<< refs/remotes/origin/Arm
 @TeleOp(name = "Concept: controlled arm", group = "Concept")
 public class ConceptScanServo_Controlled extends LinearOpMode {
 =======
@@ -67,6 +71,10 @@ public class ConceptScanServo extends LinearOpMode {
 @TeleOp(name = "Concept: controlled arm", group = "Concept")
 public class ConceptScanServo_Controlled extends LinearOpMode {
 >>>>>>> More tests for build team, ready to make a component!
+=======
+@TeleOp(name = "Concept: Get servo position", group = "Concept")
+public class ConceptScanServo extends LinearOpMode {
+>>>>>>> Revert "More tests for build team, ready to make a component!"
 
     static final double INCREMENT   = 0.01;     // amount to slew servo each CYCLE_MS cycle
     static final int    CYCLE_MS    =   50;     // period of each cycle
@@ -74,6 +82,7 @@ public class ConceptScanServo_Controlled extends LinearOpMode {
     static final double MIN_POS     =  0.0;     // Minimum rotational position
 
     // Define class members
+<<<<<<< refs/remotes/origin/Arm
 <<<<<<< refs/remotes/origin/Arm
 <<<<<<< refs/remotes/origin/Arm
     Servo gripper;
@@ -87,6 +96,9 @@ public class ConceptScanServo_Controlled extends LinearOpMode {
     Servo wrist;
     Servo elbow;
 >>>>>>> More tests for build team, ready to make a component!
+=======
+    Servo   servo;
+>>>>>>> Revert "More tests for build team, ready to make a component!"
     double  position = (MAX_POS - MIN_POS) / 2; // Start at halfway position
     boolean rampUp = true;
 
@@ -96,6 +108,7 @@ public class ConceptScanServo_Controlled extends LinearOpMode {
 
         // Connect to servo (Assume PushBot Left Hand)
         // Change the text in quotes to match any servo name on your robot.
+<<<<<<< refs/remotes/origin/Arm
 <<<<<<< refs/remotes/origin/Arm
 <<<<<<< refs/remotes/origin/Arm
         gripper = hardwareMap.get(Servo.class, "gripper");
@@ -108,6 +121,10 @@ public class ConceptScanServo_Controlled extends LinearOpMode {
         gripper = hardwareMap.get(Servo.class, "gripper");
         wrist = hardwareMap.get(Servo.class, "wrist");
 >>>>>>> More tests for build team, ready to make a component!
+=======
+        servo = hardwareMap.get(Servo.class, "left_hand");
+
+>>>>>>> Revert "More tests for build team, ready to make a component!"
         // Wait for the start button
         telemetry.addData(">", "Press Start to scan Servo." );
         telemetry.update();
@@ -115,6 +132,7 @@ public class ConceptScanServo_Controlled extends LinearOpMode {
 
 
         // Scan servo till stop pressed.
+<<<<<<< refs/remotes/origin/Arm
 <<<<<<< refs/remotes/origin/Arm
 <<<<<<< refs/remotes/origin/Arm
         float gripperPos = 0;
@@ -149,6 +167,12 @@ public class ConceptScanServo_Controlled extends LinearOpMode {
                 telemetry.addData("Gripper Position: " + gripper.getPosition(), "");
                 telemetry.addData("Wrist position: " + wrist.getPosition(), "");
 >>>>>>> More tests for build team, ready to make a component!
+=======
+        while(opModeIsActive()){
+            // Display the current value
+            try {
+                telemetry.addData("Servo Position: " + servo.getPosition() + Double.toString(Math.random()), "");
+>>>>>>> Revert "More tests for build team, ready to make a component!"
                 telemetry.addData(">", "Press Stop to end test." );
                 telemetry.update();
             } catch (Exception e) {

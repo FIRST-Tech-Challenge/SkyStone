@@ -15,7 +15,6 @@ public class DriveTeleop extends LinearOpMode {
     private boolean slowDrive;
 
     public void initialize() {
-
         DcMotor[] motors = {hardwareMap.dcMotor.get("motorFL"), hardwareMap.dcMotor.get("motorFR"),
                             hardwareMap.dcMotor.get("motorBR"), hardwareMap.dcMotor.get("motorBL") };
         this.driveSystem = new DriveSystem(motors, hardwareMap.get(BNO055IMU.class, "imu"));
@@ -30,7 +29,6 @@ public class DriveTeleop extends LinearOpMode {
         float ry = gamepad1.right_stick_y;
         float lx = gamepad1.left_stick_x;
         float ly = gamepad1.left_stick_y;
-
         driveSystem.drive(rx, ry, lx, ly, slowDrive);
     }
 }

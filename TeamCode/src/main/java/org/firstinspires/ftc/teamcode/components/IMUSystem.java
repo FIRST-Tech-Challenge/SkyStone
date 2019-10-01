@@ -19,7 +19,7 @@ import java.util.Locale;
  */
 public class IMUSystem {
     private BNO055IMU imu;
-    public BNO055IMU.Parameters parameters;
+    private BNO055IMU.Parameters parameters;
 
     // State used for updating telemetry
     private Orientation angles;

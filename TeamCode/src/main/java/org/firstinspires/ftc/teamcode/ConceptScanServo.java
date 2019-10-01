@@ -81,7 +81,7 @@ public class ConceptScanServo extends LinearOpMode {
                 telemetry.addData("Servo Position: " + servo.getPosition() + Double.toString(Math.random()), "");
                 telemetry.addData(">", "Press Stop to end test." );
                 telemetry.update();
-            } catch (Exception e) {
+            } catch (Exception e) { // shh
                 telemetry.addData("oopsie whoopsie", "");
                 telemetry.update();
             }

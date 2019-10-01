@@ -96,6 +96,7 @@ public class Outtake {
             {
             }
 
+
             liftLeft.setPower(0);
             liftRight.setPower(0);
 

@@ -105,6 +105,11 @@ public class DriveTrain {
         }
     }
 
+    public double getEncoderAverage() {
+        return (fl.getCurrentPosition() + fr.getCurrentPosition()+ bl.getCurrentPosition() +
+                br.getCurrentPosition()) / 4;
+    }
+
     //Method for Resetting Encoders
     public void resetEncoders() {
 
@@ -266,14 +271,15 @@ public class DriveTrain {
         newRightBlarget = br.getCurrentPosition() + (int) (rightInches * inchCounts);
 
 
-        while (opMode.opModeIsActive() && (runtime.seconds() < timeoutS)) {
+        while (opMode.opModeIsActive() && (runtime.seconds() < timeoutS) && getEncoderAverage() <
+                (newLeftTarget + newRightTarget + newRightBlarget + newLeftBlarget) / 4) {
 
 
-
+            getEncoderAverage();
             fl.setTargetPosition(newLeftTarget);
             fr.setTargetPosition(newRightTarget);
-            bl.setTargetPosition(newLeftBlarget);
-            br.setTargetPosition(newRightBlarget);
+            bl.setTargetPosition(newLeftTarget);
+            br.setTargetPosition(newRightTarget);
 
             fl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             fr.setMode(DcMotor.RunMode.RUN_TO_POSITION);

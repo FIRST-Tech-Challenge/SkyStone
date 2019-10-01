@@ -25,7 +25,11 @@ public class DriveTeleop extends LinearOpMode {
             driveMap.put(name,hardwareMap.get(DcMotor.class, name.toString());
         }
 
+<<<<<<< refs/remotes/origin/Arm
         driveSystem = new DriveSystem(driveMap, hardwareMap.get(BNO055IMU.class, "imu"));
+=======
+        this.driveSystem = new DriveSystem(this);
+>>>>>>> Revert "fixed a compile error in Driveteleop.java"
         slowDrive = false;
     }
 

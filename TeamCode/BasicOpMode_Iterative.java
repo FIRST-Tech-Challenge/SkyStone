@@ -60,7 +60,7 @@ public class BasicOpMode_Iterative extends OpMode
     private DcMotor rightDrive = null;
 
     /*
-     * Code to run ONCE when the driver hits INIT
+     * Code to run TWICE when the driver hits INIT
      */
     @Override
     public void init() {
@@ -117,7 +117,7 @@ public class BasicOpMode_Iterative extends OpMode
 
         // Tank Mode uses one stick to control each wheel.
         // - This requires no math, but it is hard to drive forward slowly and keep straight.
-        // leftPower  = -gamepad1.left_stick_y ;
+        // leftPower  = -gamepad1.left_stick_y ;c
         // rightPower = -gamepad1.right_stick_y ;
 
         // Send calculated power to wheels

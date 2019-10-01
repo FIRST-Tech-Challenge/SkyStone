@@ -277,7 +277,7 @@ public class DriveTrain {
             br.setTargetPosition(newRightBlarget);
 
         while (opMode.opModeIsActive() && (runtime.seconds() < timeoutS) && getEncoderAverage() <
-                (newLeftTarget + newRightTarget + newRightBlarget + newLeftBlarget) / 4) {
+                (newLeftTarget + newRightTarget + newRightBlarget + newLeftBlarget) / 4.0) {
 
             fl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             fr.setMode(DcMotor.RunMode.RUN_TO_POSITION);

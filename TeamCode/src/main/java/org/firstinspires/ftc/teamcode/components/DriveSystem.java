@@ -23,7 +23,6 @@ public class DriveSystem {
      * Handles the data for the abstract creation of a drive system with four wheels
      */
     public DriveSystem(EnumMap<MotorNames, DcMotor> motors, BNO055IMU imu) {
-
         this.motors = motors;
         initMotors();
         imuSystem = new IMUSystem(imu);
@@ -109,12 +108,60 @@ public class DriveSystem {
 
     // TODO
     private void driveToPositionTicks(int ticks, Direction direction, double maxPower) {
+        if (direction == Direction.FORWARD) {
+            motors.forEach((name, motor) -> {
+                switch(name) {
+                    case FRONTRIGHT:
+                    case FRONTLEFT:
+                    case BACKLEFT:
+                    case BACKRIGHT:
+                        motor.setTargetPosition(motor.getCurrentPosition() + ticks);
+                        break;
+                }
+            });
+        }
 
-        int dir = direction.ordinal();
-        for (int i = 0; i < motors.length; i++) {
-            DcMotor motor = motors[i];
-            motor.setTargetPosition(motor.getCurrentPosition() +
-                    (int)(Math.pow(-1, (i == 1 || i == 2) ? Integer.bitCount(dir) : dir)) * ticks);
+        if (direction == Direction.BACKWARD) {
+            motors.forEach((name, motor) -> {
+                switch(name) {
+                    case FRONTRIGHT:
+                    case BACKLEFT:
+                    case FRONTLEFT:
+                    case BACKRIGHT:
+                        motor.setTargetPosition(motor.getCurrentPosition() - ticks);
+                        break;
+                }
+            });
+        }
+
+        if (direction == Direction.RIGHT) {
+            motors.forEach((name, motor) -> {
+                switch(name) {
+                    case FRONTRIGHT:
+                    case BACKLEFT:
+                        motor.setTargetPosition(motor.getCurrentPosition() - ticks);
+                        break;
+                    case FRONTLEFT:
+                    case BACKRIGHT:
+                        motor.setTargetPosition(motor.getCurrentPosition() + ticks);
+                        break;
+                }
+            });
+        }
+
+        if (direction == Direction.LEFT) {
+            motors.forEach((name, motor) -> {
+                switch(name) {
+                    case FRONTRIGHT:
+                    case BACKLEFT:
+                        motor.setTargetPosition(motor.getCurrentPosition() + ticks);
+                        break;
+                    case FRONTLEFT:
+                    case BACKRIGHT:
+                        motor.setTargetPosition(motor.getCurrentPosition() - ticks);
+                        break;
+                }
+            });
         }
 
         setRunMode(DcMotor.RunMode.RUN_TO_POSITION);

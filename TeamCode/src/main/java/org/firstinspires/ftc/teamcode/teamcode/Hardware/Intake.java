@@ -61,7 +61,7 @@ public class Intake {
         opMode.telemetry.addData("Active", "Intake Running");
         opMode.telemetry.update();
 
-        drive.encoderDrive(opMode,.5, 10, 10, 10);
+        drive.encoderDrive(opMode,.5, 10,  10);
         //move to block?
         rightSide.setPower(PICKUP);
         leftSide.setPower(PICKUP);
@@ -71,7 +71,7 @@ public class Intake {
         }
 
         //move toward block
-        drive.encoderDrive(opMode,.5, -10, -10, -10);
+        drive.encoderDrive(opMode,.5, -10,  10);
 
         rightSide.setPower(IDLE);
         leftSide.setPower(IDLE);

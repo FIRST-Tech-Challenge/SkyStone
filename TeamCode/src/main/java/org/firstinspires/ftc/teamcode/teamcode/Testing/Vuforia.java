@@ -94,7 +94,7 @@ public class Vuforia extends LinearOpMode {
             stonePos = 5;
         }
         else {
-            nextCheck();
+            //drive.nextCheck();
             if (second) {
                 shuffle[secondGet] = stonePos;
                 stonePos = 5;
@@ -119,12 +119,12 @@ public class Vuforia extends LinearOpMode {
     }
 
     private boolean targetLock (VuforiaTrackable track) {
-        if (track.getName() == element) {
-            return true;
-        }
-        else {
-            return false;
-        }
+         if (track.getName() == element) {
+             return true;
+         }
+         else {
+             return false;
+         }
     }
 
     int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId",
@@ -200,9 +200,6 @@ public class Vuforia extends LinearOpMode {
 
     public int getNextPos () {
         return checkPos(3);
-    }
-    public void nextCheck () {
-       // drive.encoderStrafe(this, true,.6, -8, 2, 3);
     }
 
 }

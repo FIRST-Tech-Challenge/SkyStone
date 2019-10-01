@@ -92,6 +92,12 @@ public abstract class RobotServoUsingMotorTask implements RobotNonBlockingDevice
             this.updateStatus();
         }
     }
+    public void servoPositionAdjusted(){
+        if(this.isBusy()){
+            this.__recalculateMotorCounts();
+        }
+    }
+    protected abstract void __recalculateMotorCounts();
     @Override
     public boolean isBusy(){
         return this.m_IsBusy;

@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.darbots.darbotsftclib.libcore.OpModes.DarbotsBasicOpMode;
 import org.darbots.darbotsftclib.libcore.chassiscontrollers.OmniDrive;
+import org.darbots.darbotsftclib.libcore.tasks.chassis_tasks.GyroGuidedTurn;
 
 @TeleOp(group = "DarbotsLib-TestCases", name = "OmniAutoTest")
 @Disabled
@@ -52,6 +53,10 @@ public class OmniAutoDarbots extends DarbotsBasicOpMode<OmniCore> {
                 this.m_RobotCore.getChassis().replaceTask(this.m_RobotCore.getChassis().getFixedTurnTask(90,0.2));
             }else if(this.gamepad1.right_stick_x > 0.1){
                 this.m_RobotCore.getChassis().replaceTask(this.m_RobotCore.getChassis().getFixedTurnTask(-90,0.2));
+            }else if(this.gamepad1.dpad_left){
+                this.m_RobotCore.getChassis().replaceTask(new GyroGuidedTurn(this.m_RobotCore.getChassis(),this.m_RobotCore.getGyro(),90,0.2));
+            }else if(this.gamepad1.dpad_right){
+                this.m_RobotCore.getChassis().replaceTask(new GyroGuidedTurn(this.m_RobotCore.getChassis(),this.m_RobotCore.getGyro(),90,0.2));
             }
             telemetry.update();
         }

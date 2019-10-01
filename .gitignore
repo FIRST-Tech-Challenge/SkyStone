@@ -26,3 +26,5 @@ build/
 
 *ASUS_PC_01*
 
+# Project Specific
+TeamCode/src/main/java/org/firstinspires/ftc/teamcode/robot_common/Robot4100Common.java

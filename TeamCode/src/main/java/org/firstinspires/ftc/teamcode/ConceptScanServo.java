@@ -90,6 +90,7 @@ public class ConceptScanServo extends LinearOpMode {
                 telemetry.addData(">", "Press Stop to end test." );
                 telemetry.update();
 <<<<<<< refs/remotes/origin/Arm
+<<<<<<< refs/remotes/origin/Arm
 <<<<<<< HEAD
             } catch (Exception e) { // shh
 =======
@@ -98,6 +99,9 @@ public class ConceptScanServo extends LinearOpMode {
 =======
             } catch (Exception e) { // shh
 >>>>>>> Wrote some tests
+=======
+            } catch (Exception e) {
+>>>>>>> More tests for build team, ready to make a component!
                 telemetry.addData("oopsie whoopsie", "");
                 telemetry.update();
             }

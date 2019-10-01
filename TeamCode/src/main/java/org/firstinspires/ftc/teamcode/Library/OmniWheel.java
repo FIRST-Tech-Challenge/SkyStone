@@ -46,12 +46,16 @@ public class OmniWheel {
                 {1,  1, -(sideDistance+frontBackDistance)/2},
                 {1, -1, (sideDistance+frontBackDistance)/2}
         };
-        double[] velocities = {forwardVelocity*20, sidewardsVelocity*20, rotationVelocity*0.5};
+        double[] velocities = {forwardVelocity, sidewardsVelocity, rotationVelocity};
         double[] mat_multiplied = matrixMultiply(wheel_matrix, velocities);
 
         double[] wheel_speeds = new double[mat_multiplied.length];
         for (int i = 0; i < mat_multiplied.length; i++){
-            wheel_speeds[i] = mat_multiplied[i]*1/(2*Math.PI*wheelRadius);
+            if (i==1 || i == 3){
+                wheel_speeds[i] = -mat_multiplied[i];
+            } else {
+                wheel_speeds[i] = mat_multiplied[i];
+            }
         }
         return maxToOne(wheel_speeds);
     }

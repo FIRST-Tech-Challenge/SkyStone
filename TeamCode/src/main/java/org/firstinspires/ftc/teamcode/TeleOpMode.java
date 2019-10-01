@@ -10,6 +10,8 @@ public class TeleOpMode extends LinearOpMode {
         DcMotor frontRightDrive = hardwareMap.dcMotor.get("front_right_drive");
         DcMotor backLeftDrive = hardwareMap.dcMotor.get("back_left_drive");
         DcMotor backRightDrive = hardwareMap.dcMotor.get("back_right_drive");
+        DcMotor leftIntake = hardwareMap.dcMotor.get("left_intake");
+        DcMotor rightIntake = hardwareMap.dcMotor.get("right_intake");
         telemetry.addData("Init","v:1.0");
         waitForStart();
         

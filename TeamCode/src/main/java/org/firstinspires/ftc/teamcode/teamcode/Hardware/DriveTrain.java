@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.teamcode.Hardware;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import java.text.DecimalFormat;
 
@@ -71,10 +72,10 @@ public class DriveTrain {
         br = this.opMode.hardwareMap.dcMotor.get("br");
 
         //Sets Motor Directions
-        fl.setDirection(DcMotor.Direction.REVERSE);
-        fr.setDirection(DcMotor.Direction.FORWARD);
-        bl.setDirection(DcMotor.Direction.REVERSE);
-        br.setDirection(DcMotor.Direction.FORWARD);
+        fl.setDirection(DcMotor.Direction.FORWARD);
+        fr.setDirection(DcMotor.Direction.REVERSE);
+        bl.setDirection(DcMotor.Direction.FORWARD);
+        br.setDirection(DcMotor.Direction.REVERSE);
 
         //Set Power For Static Motors - When Robot Not Moving
         fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -265,15 +266,13 @@ public class DriveTrain {
         newLeftBlarget = bl.getCurrentPosition() + (int) (leftInches * inchCounts);
         newRightBlarget = br.getCurrentPosition() + (int) (rightInches * inchCounts);
 
+        fl.setTargetPosition(newLeftTarget);
+        fr.setTargetPosition(newRightTarget);
+        bl.setTargetPosition(newLeftBlarget);
+        br.setTargetPosition(newRightBlarget);
 
         while (opMode.opModeIsActive() && (runtime.seconds() < timeoutS)) {
 
-
-
-            fl.setTargetPosition(newLeftTarget);
-            fr.setTargetPosition(newRightTarget);
-            bl.setTargetPosition(newLeftBlarget);
-            br.setTargetPosition(newRightBlarget);
 
             fl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             fr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -295,12 +294,6 @@ public class DriveTrain {
 
         }
 
-/*            opMode.telemetry.addData("Targets: ", "fl %7d : fr %7d : bl %7d : br %7d",
-                    newLeftTarget, newRightTarget, newLeftBlarget, newRightBlarget);
-            opMode.telemetry.addData("Current Positions: ", "fl %7d : fr %7d : bl %7d : br %7d",
-            fl.getCurrentPosition(), fr.getCurrentPosition(), bl.getCurrentPosition(), br.getCurrentPosition());
-
-            opMode.telemetry.update();*/
 
         snowWhite();
 

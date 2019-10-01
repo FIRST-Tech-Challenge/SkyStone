@@ -1,30 +1,32 @@
 package org.firstinspires.ftc.teamcode.components;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
 
+import java.util.EnumMap;
+
 public class DriveSystem {
-    private DcMotor motorFrontLeft;
-    private DcMotor motorFrontRight;
-    private DcMotor motorBackLeft;
-    private DcMotor motorBackRight;
-    public DcMotor[] motors = new DcMotor[4];
+
+    public enum MotorNames {
+        FRONTLEFT, FRONTRIGHT, BACKLEFT, BACKRIGHT
+    }
+
+    public EnumMap<MotorNames, DcMotor> motors;
 
     public IMUSystem imuSystem;
-    protected HardwareMap hardwareMap;
 
     private final int TICKS_IN_INCH = 69;
 
     /**
      * Handles the data for the abstract creation of a drive system with four wheels
      */
-    public DriveSystem(HardwareMap hardwareMap) {
+    public DriveSystem(EnumMap<MotorNames, DcMotor> motors, BNO055IMU imu) {
 
-        this.hardwareMap = hardwareMap;
+        this.motors = motors;
         initMotors();
-        imuSystem = new IMUSystem(hardwareMap);
+        imuSystem = new IMUSystem(imu);
     }
 
     /**
@@ -32,32 +34,25 @@ public class DriveSystem {
      * @param power power of the system
      */
     public void setMotorPower(double power) {
-        for (DcMotor motor : motors) {
+        for (DcMotor motor : motors.values()) {
             motor.setPower(power);
         }
     }
-
     public void initMotors() {
 
-        this.motorFrontLeft = hardwareMap.dcMotor.get("motorFL");
-        this.motorFrontRight = hardwareMap.dcMotor.get("motorFR");
-        this.motorBackRight = hardwareMap.dcMotor.get("motorBR");
-        this.motorBackLeft = hardwareMap.dcMotor.get("motorBL");
-
-        motors[0] = motorFrontLeft;
-        motors[1] = motorFrontRight;
-        motors[2] = motorBackRight;
-        motors[3] = motorBackLeft;
-
-        for (DcMotor motor : motors) {
+        motors.forEach((name, motor) -> {
             motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        }
-
-        motorFrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        motorFrontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        motorBackRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        motorBackLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+            switch(name) {
+                case FRONTLEFT:
+                case BACKLEFT:
+                    motor.setDirection(DcMotorSimple.Direction.FORWARD);
+                    break;
+                case FRONTRIGHT:
+                case BACKRIGHT:
+                    motor.setDirection(DcMotorSimple.Direction.REVERSE);
+            }
+        });
 
         setMotorPower(0);
     }
@@ -98,6 +93,7 @@ public class DriveSystem {
     }
 
     private void driveToPositionTicks(int ticks, Direction direction, double maxPower) {
+        motors.forEach()
         int dir = direction.ordinal();
         for (int i = 0; i < motors.length; i++) {
             DcMotor motor = motors[i];

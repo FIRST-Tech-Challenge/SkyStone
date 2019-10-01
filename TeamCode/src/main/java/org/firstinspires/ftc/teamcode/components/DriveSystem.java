@@ -38,7 +38,7 @@ public class DriveSystem {
             motor.setPower(power);
         }
     }
-    
+
     public void initMotors() {
 
         motors.forEach((name, motor) -> {
@@ -52,6 +52,7 @@ public class DriveSystem {
                 case FRONTRIGHT:
                 case BACKRIGHT:
                     motor.setDirection(DcMotorSimple.Direction.REVERSE);
+                    break;
             }
         });
 
@@ -194,15 +195,19 @@ public class DriveSystem {
      * @param leftPower sets the left side power of the robot
      * @param rightPower sets the right side power of the robot
      */
-    // TODO
     public void tankDrive(double leftPower, double rightPower) {
-        for (DcMotor motor : motors.values()) {
-            if ()
-        }
-        this.motorFrontLeft.setPower(leftPower);
-        this.motorBackLeft.setPower(leftPower);
-        this.motorFrontRight.setPower(rightPower);
-        this.motorBackRight.setPower(rightPower);
+        motors.forEach((name, motor) -> {
+            switch(name) {
+                case FRONTLEFT:
+                case BACKLEFT:
+                    motor.setPower(leftPower);
+                    break;
+                case FRONTRIGHT:
+                case BACKRIGHT:
+                    motor.setPower(rightPower);
+                    break;
+            }
+        });
     }
 
     /**

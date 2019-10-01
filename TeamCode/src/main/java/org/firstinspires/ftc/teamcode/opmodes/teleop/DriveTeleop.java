@@ -17,7 +17,7 @@ public class DriveTeleop extends LinearOpMode {
     public void initialize()
     {
 
-        this.driveSystem = new DriveSystem(this.hardwareMap);
+        this.driveSystem = new DriveSystem(this);
         slowDrive = false;
     }
 

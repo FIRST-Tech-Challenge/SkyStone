@@ -11,30 +11,25 @@ public class TTRobot {
     private final TTHardwareManager hardwareManager;
     private final TTDriveSystem driveSystem;
     private final TTArm arm;
+    private final TTIntake intake;
 
-    public TTRobot(HardwareMap hardwareMap, TTHardwareManager.TTHardwareRestriction hardwareRestriction) {
-        hardwareManager = new TTHardwareManager(hardwareMap, hardwareRestriction);
+    public TTRobot(HardwareMap hardwareMap) {
+        hardwareManager = new TTHardwareManager(hardwareMap);
 
-        if (hardwareRestriction == TTHardwareManager.TTHardwareRestriction.ARM_ONLY) {
-            driveSystem = null;
-        } else {
-            DcMotor frontLeftDrive = hardwareManager.getFrontLeftDrive();
-            DcMotor frontRightDrive = hardwareManager.getFrontRightDrive();
-            DcMotor backLeftDrive = hardwareManager.getBackLeftDrive();
-            DcMotor backRightDrive = hardwareManager.getBackRightDrive();
-            driveSystem = new TTDriveSystem(frontLeftDrive, frontRightDrive, backLeftDrive, backRightDrive);
-        }
+        DcMotor frontLeftDrive = hardwareManager.getFrontLeftDrive();
+        DcMotor frontRightDrive = hardwareManager.getFrontRightDrive();
+        DcMotor backLeftDrive = hardwareManager.getBackLeftDrive();
+        DcMotor backRightDrive = hardwareManager.getBackRightDrive();
+        driveSystem = new TTDriveSystem(frontLeftDrive, frontRightDrive, backLeftDrive, backRightDrive);
 
-        if (hardwareRestriction == TTHardwareManager.TTHardwareRestriction.DRIVE_SYSTEM_ONLY) {
-            arm = null;
-        } else {
-            DcMotor armElbow = hardwareManager.getArmElbow();
-            DistanceSensor armLiftSensor = hardwareManager.getArmLiftSensor();
-            DcMotor armLift = hardwareManager.getArmLift();
-            DcMotor armIntake = hardwareManager.getArmIntake();
-            Servo claw = hardwareManager.getClaw();
-            arm = new TTArm(armLift, armLiftSensor, armElbow, armIntake, claw);
-        }
+        DcMotor armElbow = hardwareManager.getArmElbow();
+        DistanceSensor armLiftSensor = hardwareManager.getArmLiftSensor();
+        DcMotor armLift = hardwareManager.getArmLift();
+        arm = new TTArm(armLift, armLiftSensor, armElbow);
+
+        DcMotor intakeLeft = hardwareManager.getIntakeLeft();
+        DcMotor intakeRight = hardwareManager.getIntakeRight();
+        intake = new TTIntake(intakeLeft, intakeRight);
     }
 
     public TTHardwareManager getHardwareManager() {

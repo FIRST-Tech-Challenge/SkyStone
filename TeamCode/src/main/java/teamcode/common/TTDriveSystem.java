@@ -4,15 +4,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-
-import java.util.TimerTask;
 
 public class TTDriveSystem {
 
-    //    // correct ticks = current ticks * correct distance / current distance
+    // correct ticks = current ticks * correct distance / current distance
     private static final double INCHES_TO_TICKS_VERTICAL = -43.46;
     private static final double INCHES_TO_TICKS_LATERAL = 47.06;
     private static final double INCHES_TO_TICKS_DIAGONAL = -64.29;
@@ -65,7 +60,7 @@ public class TTDriveSystem {
     }
 
     public void continuous(Vector2 velocity, double turnSpeed) {
-        setRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        setRunMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         double direction = velocity.getDirection();
         double power = velocity.magnitude();
@@ -85,13 +80,6 @@ public class TTDriveSystem {
         frontRight.setPower(frontRightPow);
         backLeft.setPower(backLeftPow);
         backRight.setPower(backRightPow);
-
-        Telemetry telemetry = TTOpMode.getOpMode().telemetry;
-        telemetry.addData("fl", frontLeftPow);
-        telemetry.addData("fr,", frontRightPow);
-        telemetry.addData("bl", backLeftPow);
-        telemetry.addData("br", backRightPow);
-        telemetry.update();
     }
 
     public void vertical(double inches, double speed) {

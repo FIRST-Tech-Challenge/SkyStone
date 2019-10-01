@@ -12,16 +12,13 @@ public class TTArm {
     private double MINIMUM_LIFT_DISTANCE_FROM_GROUND = 14;
     private double MAXIMUM_LIFT_INCHES_FROM_GROUND = 25;
 
-    private final DcMotor lift, elbow, intake;
+    private final DcMotor lift, elbow;
     private final DistanceSensor liftSensor;
-    private final Servo claw;
 
-    public TTArm(DcMotor lift, DistanceSensor liftSensor, DcMotor elbow, DcMotor intake, Servo claw) {
+    public TTArm(DcMotor lift, DistanceSensor liftSensor, DcMotor elbow) {
         this.lift = lift;
         this.liftSensor = liftSensor;
         this.elbow = elbow;
-        this.intake = intake;
-        this.claw = claw;
     }
 
     /**
@@ -74,18 +71,6 @@ public class TTArm {
 
     public void rotateContinuous(double power) {
         elbow.setPower(power);
-    }
-
-    public void intake(double power) {
-        intake.setPower(power);
-    }
-
-    public void setClawPosition(double position) {
-        claw.setPosition(position);
-    }
-
-    public double getClawPosition() {
-        return claw.getPosition();
     }
 
 }

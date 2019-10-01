@@ -109,29 +109,17 @@ public class DriveSystem {
     // TODO
     private void driveToPositionTicks(int ticks, Direction direction, double maxPower) {
         if (direction == Direction.FORWARD) {
-            motors.forEach((name, motor) -> {
-                switch(name) {
-                    case FRONTRIGHT:
-                    case FRONTLEFT:
-                    case BACKLEFT:
-                    case BACKRIGHT:
-                        motor.setTargetPosition(motor.getCurrentPosition() + ticks);
-                        break;
-                }
-            });
+            for (DcMotor motor : motors.values()) {
+                motor.setTargetPosition(motor.getCurrentPosition() + ticks);
+            }
+
         }
 
         if (direction == Direction.BACKWARD) {
-            motors.forEach((name, motor) -> {
-                switch(name) {
-                    case FRONTRIGHT:
-                    case BACKLEFT:
-                    case FRONTLEFT:
-                    case BACKRIGHT:
-                        motor.setTargetPosition(motor.getCurrentPosition() - ticks);
-                        break;
-                }
-            });
+            for (DcMotor motor : motors.values()) {
+                motor.setTargetPosition(motor.getCurrentPosition() - ticks);
+
+            }
         }
 
         if (direction == Direction.RIGHT) {

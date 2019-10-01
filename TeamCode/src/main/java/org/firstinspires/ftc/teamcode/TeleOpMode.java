@@ -1,36 +1,43 @@
-package org.firstinspires.ftc.teamcode.opModes;
+package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.TouchSensor;
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.subsystems.Climb;
-import org.firstinspires.ftc.teamcode.subsystems.Drive;
 @TeleOp(name = "TeleOpMode", group = "Teleop")
 public class TeleOpMode extends LinearOpMode {
     public void runOpMode() {
-        DcMotor hook = hardwareMap.dcMotor.get("front_left_motor");
+        DcMotor hook = hardwareMap.dcMotor.get("hook");
+        DcMotor frontLeftDrive = hardwareMap.dcMotor.get("front_left_drive");
+        DcMotor frontRightDrive = hardwareMap.dcMotor.get("front_right_drive");
+        DcMotor backLeftDrive = hardwareMap.dcMotor.get("back_left_drive");
+        DcMotor backRightDrive = hardwareMap.dcMotor.get("back_right_drive");
         telemetry.addData("Init","v:1.0");
         waitForStart();
         
         while (opModeIsActive()) {
-            double power;
-            
-            if (gamepad1.a == 1) {
-                motor.setpower(1);
-                
+            //Hook test
+            if (gamepad1.a == true) {
+                hook.setPower(1);
             }
-            else if (gamepad1.b == 1) {
-                motor.setpower(-1);
-            
+            else if (gamepad1.b == true) {
+                hook.setPower(-1);
             }
             else {
-                motor.setpower(0);
+                hook.setPower(0);
             }
-            
-            
-            telemetry.addData("climb", hook.getCurrentPosition());
+            //Chassis test
+            double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
+            double robotAngle = Math.atan2(gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;
+            double rightX = gamepad1.right_stick_x;
+            final double v1 = r * Math.cos(robotAngle) + rightX;
+            final double v2 = r * Math.sin(robotAngle) - rightX;
+            final double v3 = r * Math.sin(robotAngle) + rightX;
+            final double v4 = r * Math.cos(robotAngle) - rightX;
+            frontLeftDrive.setPower(v1);
+            frontRightDrive.setPower(v2);
+            backLeftDrive.setPower(v3);
+            backRightDrive.setPower(v4);
+            telemetry.addData("robot angle: ", robotAngle);
+            telemetry.addData("hook position: ", hook.getCurrentPosition());
             telemetry.update();
         }
     }

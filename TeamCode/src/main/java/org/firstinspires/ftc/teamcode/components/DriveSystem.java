@@ -10,7 +10,7 @@ import java.util.EnumMap;
 public class DriveSystem {
 
     public enum MotorNames {
-        FRONTLEFT, FRONTRIGHT, BACKLEFT, BACKRIGHT
+        FRONTLEFT, FRONTRIGHT, BACKRIGHT, BACKLEFT
     }
 
     public EnumMap<MotorNames, DcMotor> motors;
@@ -38,6 +38,7 @@ public class DriveSystem {
             motor.setPower(power);
         }
     }
+    
     public void initMotors() {
 
         motors.forEach((name, motor) -> {
@@ -65,6 +66,7 @@ public class DriveSystem {
      * @param leftY Left Y joystick value in case you couldn't tell from the others
      * @param slowDrive Set to true for 30 % motor power.
      */
+    // TODO
     public void drive(float rightX, float rightY, float leftX, float leftY, boolean slowDrive) {
         // Prevent small values from causing the robot to drift
         if (Math.abs(rightX) < 0.01) {
@@ -86,14 +88,27 @@ public class DriveSystem {
         double backLeftPower = -leftY - leftX - rightX;
         double backRightPower = -leftY + leftX + rightX;
 
-        this.motorFrontRight.setPower(Range.clip(frontRightPower, -1, 1));
-        this.motorBackRight.setPower(Range.clip(backRightPower, -1, 1));
-        this.motorFrontLeft.setPower(Range.clip(frontLeftPower, -1, 1));
-        this.motorBackLeft.setPower(Range.clip(backLeftPower, -1, 1));
+        motors.forEach((name, motor) -> {
+            switch(name) {
+                case FRONTRIGHT:
+                    motor.setPower(Range.clip(frontRightPower, -1, 1));
+                    break;
+                case BACKLEFT:
+                    motor.setPower(Range.clip(backLeftPower, -1, 1));
+                    break;
+                case FRONTLEFT:
+                    motor.setPower(Range.clip(frontLeftPower, -1, 1));
+                    break;
+                case BACKRIGHT:
+                    motor.setPower(Range.clip(backRightPower, -1, 1));
+                    break;
+            }
+        });
     }
 
+    // TODO
     private void driveToPositionTicks(int ticks, Direction direction, double maxPower) {
-        motors.forEach()
+
         int dir = direction.ordinal();
         for (int i = 0; i < motors.length; i++) {
             DcMotor motor = motors[i];
@@ -111,7 +126,7 @@ public class DriveSystem {
     }
 
     public void setRunMode(DcMotor.RunMode runMode) {
-        for (DcMotor motor : motors) {
+        for (DcMotor motor : motors.values()) {
             motor.setMode(runMode);
         }
     }
@@ -122,7 +137,7 @@ public class DriveSystem {
      */
     public int  getMinDistanceFromTarget() {
         int distance = Integer.MAX_VALUE;
-        for (DcMotor motor : motors) {
+        for (DcMotor motor : motors.values()) {
             distance = Math.min(distance, motor.getTargetPosition() - motor.getCurrentPosition());
         }
         return distance;
@@ -179,7 +194,11 @@ public class DriveSystem {
      * @param leftPower sets the left side power of the robot
      * @param rightPower sets the right side power of the robot
      */
+    // TODO
     public void tankDrive(double leftPower, double rightPower) {
+        for (DcMotor motor : motors.values()) {
+            if ()
+        }
         this.motorFrontLeft.setPower(leftPower);
         this.motorBackLeft.setPower(leftPower);
         this.motorFrontRight.setPower(rightPower);

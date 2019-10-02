@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.Code;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-//@TeleOp(name = "AutonomousMode", group = "Iterative Opmode")
+//@TeleOp(name = "AutonomousMode", group = "Jun")
 public class AutonomousMode extends LinearOpMode {
     ControlMode FC = new ControlMode();
 

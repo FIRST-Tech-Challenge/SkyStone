@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  */
 
 //This class is for the matching the motor name with the coded name and configuration name.
-@TeleOp(name = "Motor Test (Warning)", group = "Iterative Opmode")
+@TeleOp(name = "Motor Test (Warning)", group = "Jun")
 public class MotorNameTest extends OpMode {
     DcMotor motorFL, motorFR, motorBL, motorBR;
 

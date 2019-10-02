@@ -71,11 +71,13 @@ public class Camera {
     private OpenGLMatrix lastStoneLoc = null;
     private boolean stoneVisible = false;
 
-    public static Camera getInstance(HardwareMap hardwareMap) {
-        return instance != null ? instance : (instance = new Camera(hardwareMap));
+    public static synchronized Camera getInstance() {
+        return instance != null ? instance : (instance = new Camera());
     }
 
-    private Camera (HardwareMap hardwareMap) {
+    private Camera() {}
+
+    public void init(HardwareMap hardwareMap) {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
                 "cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);

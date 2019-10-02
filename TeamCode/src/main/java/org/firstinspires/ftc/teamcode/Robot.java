@@ -21,22 +21,31 @@ public class Robot implements AutoCloseable {
 
     private static Robot instance = null;
 
-    public static Robot getInstance(HardwareMap hardwareMap) {
-        return instance != null ? instance : (instance = new Robot(hardwareMap));
+    public static synchronized Robot getInstance() {
+        return instance != null ? instance : (instance = new Robot());
     }
 
-    private Robot(HardwareMap hardwareMap) {
+    private Robot() {
 
         runtime = new ElapsedTime();
 
-        driveTrain = DriveTrain.getInstance(hardwareMap);
-        foundationGrabber = FoundationGrabber.getInstance(hardwareMap);
-        lift = Lift.getInstance(hardwareMap);
-        stoneManipulator = StoneManipulator.getInstance(hardwareMap);
-        camera = Camera.getInstance(hardwareMap);
-        phone = Phone.getInstance(hardwareMap);
-        expansionHubs = ExpansionHub.getAvailableHubs(hardwareMap);
+        driveTrain = DriveTrain.getInstance();
+        foundationGrabber = FoundationGrabber.getInstance();
+        lift = Lift.getInstance();
+        stoneManipulator = StoneManipulator.getInstance();
+        camera = Camera.getInstance();
+        phone = Phone.getInstance();
 
+    }
+
+    public void init(HardwareMap hardwareMap) {
+        driveTrain.init(hardwareMap);
+        foundationGrabber.init(hardwareMap);
+        lift.init(hardwareMap);
+        stoneManipulator.init(hardwareMap);
+        camera.init(hardwareMap);
+        phone.init(hardwareMap);
+        expansionHubs = ExpansionHub.getAvailableHubs(hardwareMap);
     }
 
     @Override

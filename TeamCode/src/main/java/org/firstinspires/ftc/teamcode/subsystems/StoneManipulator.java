@@ -6,11 +6,13 @@ public class StoneManipulator {
 
     private static StoneManipulator instance = null;
 
-    public static StoneManipulator getInstance(HardwareMap hardwareMap) {
-        return instance != null ? instance : (instance = new StoneManipulator(hardwareMap));
+    public static synchronized StoneManipulator getInstance() {
+        return instance != null ? instance : (instance = new StoneManipulator());
     }
 
-    private StoneManipulator(HardwareMap hardwareMap) {
+    private StoneManipulator() {}
+
+    public void init(HardwareMap hardwareMap) {
 
     }
 }

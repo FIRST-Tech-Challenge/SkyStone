@@ -96,7 +96,7 @@ public class ExpansionHub extends LynxController {
 
     private static HashMap<DcMotorEx, Integer> motorAddresses = new HashMap<>();
 
-    private static int getModuleAddress(DcMotorEx motor) {
+    private static synchronized int getModuleAddress(DcMotorEx motor) {
         if (motorAddresses.containsKey(motor)) {
             return motorAddresses.get(motor);
         }
@@ -135,11 +135,12 @@ public class ExpansionHub extends LynxController {
     }
 
     private static List<ExpansionHub> availableHubs = null;
+    private static HardwareMap hardwareMap = null;
 
-    public final LynxModule lynxModule;
+    private final LynxModule lynxModule;
 
-    public static List<ExpansionHub> getAvailableHubs(HardwareMap hardwareMap) {
-        return availableHubs != null ? availableHubs : (availableHubs = findHubs(hardwareMap));
+    public static synchronized List<ExpansionHub> getAvailableHubs(HardwareMap hardwareMap) {
+        return ExpansionHub.hardwareMap.equals(hardwareMap) ? availableHubs : (availableHubs = findHubs(hardwareMap));
     }
 
     private static List<ExpansionHub> findHubs(HardwareMap hardwareMap) {

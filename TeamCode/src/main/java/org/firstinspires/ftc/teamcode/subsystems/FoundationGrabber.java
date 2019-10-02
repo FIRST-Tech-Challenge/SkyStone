@@ -9,11 +9,13 @@ public class FoundationGrabber {
 
     private static FoundationGrabber instance = null;
 
-    public static FoundationGrabber getInstance(HardwareMap hardwareMap) {
-        return instance != null ? instance : (instance = new FoundationGrabber(hardwareMap));
+    public static synchronized FoundationGrabber getInstance() {
+        return instance != null ? instance : (instance = new FoundationGrabber());
     }
 
-    private FoundationGrabber(HardwareMap hardwareMap) {
+    private FoundationGrabber() {}
+
+    public void init(HardwareMap hardwareMap) {
         grabber = hardwareMap.get(Servo.class, "foundation");
         grabber.scaleRange(0.4, 0.9);
         grabber.setDirection(Servo.Direction.FORWARD);

@@ -18,20 +18,22 @@ public class DriveTrain {
     private DcMotorEx leftBack;
     private DcMotorEx rightFront;
     private DcMotorEx rightBack;
-    private final ModernRoboticsI2cGyro gyro;
-    private final MecanumController mecanumController;
+    private ModernRoboticsI2cGyro gyro;
+    private MecanumController mecanumController;
 
-    private final ModernRoboticsI2cColorSensor lineSpotter;
+    private ModernRoboticsI2cColorSensor lineSpotter;
     private static final int RED_THRESHOLD  = 5;
     private static final int BLUE_THRESHOLD = 5;
 
     private static DriveTrain instance = null;
 
-    public static DriveTrain getInstance(HardwareMap hardwareMap) {
-        return instance != null ? instance : (instance = new DriveTrain(hardwareMap));
+    public static synchronized DriveTrain getInstance() {
+        return instance != null ? instance : (instance = new DriveTrain());
     }
 
-    private DriveTrain(HardwareMap hardwareMap) {
+    private DriveTrain() {}
+
+    public void init(HardwareMap hardwareMap) {
         leftFront  = hardwareMap.get(DcMotorEx.class, "leftFront");
         leftBack  = hardwareMap.get(DcMotorEx.class, "leftBack");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");

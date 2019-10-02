@@ -21,11 +21,13 @@ public class Lift {
 
     private static Lift instance = null;
 
-    public static Lift getInstance(HardwareMap hardwareMap) {
-        return instance != null ? instance : (instance = new Lift(hardwareMap));
+    public static synchronized Lift getInstance() {
+        return instance != null ? instance : (instance = new Lift());
     }
 
-    private Lift(HardwareMap hardwareMap) {
+    private Lift() {}
+
+    public void init(HardwareMap hardwareMap) {
         motor = hardwareMap.get(DcMotorEx.class, "motor");
         motor.setDirection(DcMotor.Direction.FORWARD);
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);

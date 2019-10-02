@@ -20,22 +20,24 @@ import org.firstinspires.ftc.robotcore.internal.ui.UILocation;
 
 public class Phone {
 
-    private final Context context;
-    private final AndroidGyroscope gyro;
+    private Context context;
+    private AndroidGyroscope gyro;
     private double integratedGyroZ;
     private long lastGyroRead;
-    private final TextToSpeech wordSpeaker;
-    private final SoundPlayer.PlaySoundParams soundParams;
+    private TextToSpeech wordSpeaker;
+    private SoundPlayer.PlaySoundParams soundParams;
     private int sounds;
-    private final View relativeLayout;
+    private View relativeLayout;
 
     private static Phone instance = null;
 
-    public static Phone getInstance(HardwareMap hardwareMap) {
-        return instance != null ? instance : (instance = new Phone(hardwareMap));
+    public static synchronized Phone getInstance() {
+        return instance != null ? instance : (instance = new Phone());
     }
 
-    private Phone(HardwareMap hardwareMap) {
+    private Phone() {}
+
+    public void init(HardwareMap hardwareMap) {
         context = hardwareMap.appContext;
         lastGyroRead = 0;
         integratedGyroZ = 0;

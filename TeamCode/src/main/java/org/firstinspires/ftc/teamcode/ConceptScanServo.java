@@ -48,6 +48,7 @@ import com.qualcomm.robotcore.hardware.Servo;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 <<<<<<< refs/remotes/origin/Arm
+<<<<<<< refs/remotes/origin/Arm
 <<<<<<< HEAD
 @TeleOp(name = "Concept: Control wrist", group = "Concept")
 =======
@@ -56,6 +57,9 @@ import com.qualcomm.robotcore.hardware.Servo;
 =======
 @TeleOp(name = "Concept: Get servo position", group = "Concept")
 >>>>>>> Wrote some tests
+=======
+@TeleOp(name = "Concept: Control wrist", group = "Concept")
+>>>>>>> Worked on arm system
 public class ConceptScanServo extends LinearOpMode {
 
     static final double INCREMENT   = 0.01;     // amount to slew servo each CYCLE_MS cycle

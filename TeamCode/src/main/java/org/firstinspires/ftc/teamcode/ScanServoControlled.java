@@ -1,4 +1,7 @@
 <<<<<<< refs/remotes/origin/Arm
+<<<<<<< refs/remotes/origin/Arm
+=======
+>>>>>>> Worked on arm system
 /* Copyright (c) 2017 FIRST. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -28,6 +31,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+<<<<<<< refs/remotes/origin/Arm
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -98,4 +102,71 @@ package org.firstinspires.ftc.teamcode;
 
 public class ScanServoControlled {
 >>>>>>> Fixed duplicate naming errors
+=======
+package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.Servo;
+
+/**
+ * This OpMode scans a single servo back and forwards until Stop is pressed.
+ * The code is structured as a LinearOpMode
+ * INCREMENT sets how much to increase/decrease the servo position each cycle
+ * CYCLE_MS sets the update period.
+ *
+ * This code assumes a Servo configured with the name "left_hand" as is found on a pushbot.
+ *
+ * NOTE: When any servo position is set, ALL attached servos are activated, so ensure that any other
+ * connected servos are able to move freely before running this test.
+ *
+ * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
+ * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
+ */
+@TeleOp(name = "Concept: Control wrist", group = "Concept")
+public class ScanServoControlled extends LinearOpMode {
+
+    static final double INCREMENT   = 0.01;     // amount to slew servo each CYCLE_MS cycle
+    static final int    CYCLE_MS    =   50;     // period of each cycle
+    static final double MAX_POS     =  1.0;     // Maximum rotational position, "%5.2f", servo.getDirection()
+    static final double MIN_POS     =  0.0;     // Minimum rotational position
+
+    // Define class members
+    Servo   servo;
+    double  position = (MAX_POS - MIN_POS) / 2; // Start at halfway position
+    boolean rampUp = true;
+
+
+    @Override
+    public void runOpMode() {
+
+        // Connect to servo (Assume PushBot Left Hand)
+        // Change the text in quotes to match any servo name on your robot.
+        servo = hardwareMap.get(Servo.class, "left_hand");
+
+        // Wait for the start button
+        telemetry.addData(">", "Press Start to scan Servo." );
+        telemetry.update();
+        waitForStart();
+
+
+        // Scan servo till stop pressed.
+        while(opModeIsActive()){
+            // Display the current value
+            try {
+                telemetry.addData("Servo Position: " + servo.getPosition() + Double.toString(Math.random()), "");
+                telemetry.addData(">", "Press Stop to end test." );
+                telemetry.update();
+            } catch (Exception e) { // shh
+                telemetry.addData("oopsie whoopsie", "");
+                telemetry.update();
+            }
+
+        }
+
+        // Signal done;
+        telemetry.addData(">", "Done");
+        telemetry.update();
+    }
+>>>>>>> Worked on arm system
 }

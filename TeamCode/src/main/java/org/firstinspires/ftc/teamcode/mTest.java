@@ -86,7 +86,7 @@ public class mTest extends LinearOpMode {
 
             // Send values to the motors
             //this sets speed not power because they are run using encoders
-            Drive.joystick(LF, RF, LR, RR);
+            Drive.moveMotors(LF, RF, LR, RR);
 
             // Send the motor speeds to the driver station
             telemetry.addData("LF", "%.3f", LF);

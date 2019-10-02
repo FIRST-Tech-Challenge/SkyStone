@@ -115,7 +115,7 @@ public class DriveSystem {
             }
         }
 
-        if (direction == Direction.RIGHT) {
+        if (direction == Direction.RIGHT || direction == Direction.LEFT) {
             int sign = (direction == Direction.RIGHT ? 1 : -1);
             motors.forEach((name, motor) -> {
                 switch(name) {

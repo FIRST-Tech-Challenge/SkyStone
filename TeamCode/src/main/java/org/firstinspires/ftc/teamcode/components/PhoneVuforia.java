@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.components;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
@@ -10,15 +9,13 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PhoneVuforia {
 
@@ -184,37 +181,47 @@ public class PhoneVuforia {
         targetsSkyStone.activate();
     }
 
-    public Orientation getHeading() {
-        if (isTargetVisible()) {
-            return Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
-        }
-        return null;
+    public Orientation getRobotHeading() {
+        updateLastLocation();
+        return Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
     }
 
-    public VectorF getPosition() {
-        if (isTargetVisible()) {
-            return lastLocation.getTranslation();
-        }
-        return null;
+    public VectorF getRobotPosition() {
+        updateLastLocation();
+        return lastLocation.getTranslation();
     }
 
-    private boolean isTargetVisible() {
-        targetVisible = false;
+    public boolean isTargetVisible(VuforiaTrackable targetTrackable) {
         for (VuforiaTrackable trackable : allTrackables) {
             if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
-                targetVisible = true;
+                if (trackable.getName().equals(targetTrackable.getName())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
-                // getUpdatedRobotLocation() will return null if no new information is available since
-                // the last time that call was made, or if the trackable is not currently visible.
+    public VuforiaTrackable getVuforiaTrackable(VuforiaTrackable targetTrackable) {
+        for (VuforiaTrackable trackable : allTrackables) {
+            if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
+                if (trackable.getName().equals(targetTrackable.getName())) {
+                    return trackable;
+                }
+            }
+        }
+        return null;
+    }
+
+    private void updateLastLocation() {
+        for (VuforiaTrackable trackable : allTrackables) {
+            if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
                 OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
                 if (robotLocationTransform != null) {
                     lastLocation = robotLocationTransform;
                 }
-                break;
             }
         }
-
-        return targetVisible;
     }
 
     public void activate() {

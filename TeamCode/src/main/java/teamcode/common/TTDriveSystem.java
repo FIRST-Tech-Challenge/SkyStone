@@ -65,16 +65,16 @@ public class TTDriveSystem {
         double direction = velocity.getDirection();
         double power = velocity.magnitude();
 
-        double angle = -direction + Math.PI / 4;
+        double angle = direction - Math.PI / 4;
         double sin = Math.sin(angle);
         double cos = Math.cos(angle);
 
         double maxPow = Math.sin(Math.PI / 4);
 
-        double frontLeftPow = (power * sin - turnSpeed) / maxPow;
-        double frontRightPow = (power * cos + turnSpeed) / maxPow;
-        double backLeftPow = (power * cos - turnSpeed) / maxPow;
-        double backRightPow = (power * sin + turnSpeed) / maxPow;
+        double frontLeftPow = (power * cos - turnSpeed) / maxPow;
+        double frontRightPow = (power * sin + turnSpeed) / maxPow;
+        double backLeftPow = (power * sin - turnSpeed) / maxPow;
+        double backRightPow = (power * cos + turnSpeed) / maxPow;
 
         frontLeft.setPower(frontLeftPow);
         frontRight.setPower(frontRightPow);

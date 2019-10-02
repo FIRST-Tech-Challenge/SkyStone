@@ -1,9 +1,15 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.content.Context;
+
+import com.qualcomm.ftccommon.SoundPlayer;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 
 /**
@@ -11,6 +17,13 @@ import com.qualcomm.robotcore.util.Range;
  */
 @TeleOp(name="Tyler TeleOp", group="AAA")
 public class TylerController extends OpMode {
+
+
+
+    //is sound playing?
+    boolean soundPlaying = false;
+
+    int soundID = -1;
 
     // Motors connected to the hub.
     private DcMotor motorBackLeft;
@@ -24,6 +37,7 @@ public class TylerController extends OpMode {
     private boolean useArm = true; // HACK
     private boolean useLifter = true; // HACL
     private boolean useDropper = true;
+    private boolean useRange = true;
 
     //Movement State
     private int armState;
@@ -38,12 +52,21 @@ public class TylerController extends OpMode {
     //Drive State
     private boolean switchFront = false;
 
+    //distance sensors
+    private DistanceSensor rangeFront;
+    private DistanceSensor rangeBack;
+    private DistanceSensor rangeLeft;
+    private DistanceSensor rangeRight;
+
+    //
 
     /**
      * Code to run ONCE when the driver hits INIT
      */
     @Override
     public void init() {
+
+
 
         // Initialize the motors.
         if (useMotors) {
@@ -70,6 +93,19 @@ public class TylerController extends OpMode {
                 motorFrontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 motorFrontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             }
+        }
+
+        if (useRange) {
+            //initialize the four lidar sensors
+            rangeFront = hardwareMap.get(DistanceSensor.class, "range_front");
+            rangeBack = hardwareMap.get(DistanceSensor.class, "range_back");
+            rangeLeft = hardwareMap.get(DistanceSensor.class, "range_left");
+            rangeRight = hardwareMap.get(DistanceSensor.class, "range_right");
+
+            Context myApp = hardwareMap.appContext;
+
+            //load sound file
+            soundID = myApp.getResources().getIdentifier("ss_roger_roger", "raw", myApp.getPackageName());
         }
 
     }
@@ -102,6 +138,34 @@ public class TylerController extends OpMode {
      */
     @Override
     public void loop() {
+
+        if (useRange) {
+
+            Context myApp = hardwareMap.appContext;
+            //getting the ranges from the lidar sensors on to the phones
+            telemetry.addData("range: f,b", String.format("%.01f, %.01f ", rangeFront.getDistance(DistanceUnit.CM), rangeBack.getDistance(DistanceUnit.CM)));
+            telemetry.addData("range: r,l", String.format("%.01f, %.01f", rangeLeft.getDistance(DistanceUnit.CM), rangeRight.getDistance(DistanceUnit.CM)));
+
+            if (rangeFront.getDistance(DistanceUnit.CM) < 5) {
+
+                if (soundID != 0) {
+
+                    SoundPlayer.PlaySoundParams params = new SoundPlayer.PlaySoundParams();
+
+                    // Signal that the sound is now playing.
+                    soundPlaying = true;
+
+                    // Start playing, and also Create a callback that will clear the playing flag when the sound is complete.
+
+                    SoundPlayer.getInstance().startPlaying(myApp, soundID, params, null,
+                            new Runnable() {
+                                public void run() {
+                                    soundPlaying = false;
+                                }
+                            });
+                }
+            }
+        }
 
 
         if (useMotors) {
@@ -154,22 +218,20 @@ public class TylerController extends OpMode {
                 motorBackRight.setPower(rightBackPower);
                 motorFrontLeft.setPower(leftFrontPower);
                 motorFrontRight.setPower(rightFrontPower);
-                telemetry.addData("Motor", "full left-back:%02.1f, %d", leftBackPower, motorBackLeft.getCurrentPosition());
-                telemetry.addData("Motor", "full rght-back:%02.1f, %d", rightBackPower, motorBackRight.getCurrentPosition());
-                telemetry.addData("Motor", "full left-frnt:%02.1f, %d", leftFrontPower, motorFrontLeft.getCurrentPosition());
-                telemetry.addData("Motor", "full rght-frnt:%02.1f, %d", rightFrontPower, motorFrontRight.getCurrentPosition());
-                telemetry.addData("Motor", "SwitchFront ;%b", switchFront);
+                telemetry.addData("Motor: f,b", "full left-back:%02.1f, (%d), rigt-back: %02.1f, (%d)", leftBackPower, motorBackLeft.getCurrentPosition(), rightBackPower, motorBackRight.getCurrentPosition());
+                telemetry.addData("Motor: l,r", "full left-frnt:%02.1f, (%d), rigt-frnt: %02.1f, (%d)", leftFrontPower, motorFrontLeft.getCurrentPosition(), rightFrontPower, motorFrontRight.getCurrentPosition());
+                //telemetry.addData("Motor", "SwitchFront ;%b", switchFront);
             }
         }
     }
 
-            protected void sleep (long milliseconds){
+        protected void sleep ( long milliseconds){
             try {
                 Thread.sleep(milliseconds);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
 
-
+            telemetry.update();
         }
-    }
+}

@@ -63,7 +63,7 @@ public class SensorREV2mDistance extends LinearOpMode {
         // methods associated with the Rev2mDistanceSensor class.
         Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor)rangeFront;
         Rev2mDistanceSensor sensorTimeOfFlight0 = (Rev2mDistanceSensor)rangeBack;
-        telemetry.addData("deviceName", String.format("init 1:%s, 2:%s", rangeFront.getDeviceName(), rangeBack.getDeviceName()));
+        telemetry.addData("Front, Back", String.format("init 1:%s, 2:%s", rangeFront.getDeviceName(), rangeBack.getDeviceName()));
 
         telemetry.addData(">>", "Press start to continue");
         telemetry.update();

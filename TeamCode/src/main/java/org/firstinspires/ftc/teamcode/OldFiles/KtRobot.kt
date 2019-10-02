@@ -57,7 +57,7 @@ class KtRobot
 
     fun swingStick(gp: Gamepad)
     {
-        var change = true
+        //var change = true
 
         when {
             gp.x -> stick?.power = 0.55
@@ -124,7 +124,7 @@ class KtRobot
         val quartPow = 0.25
         val quart: Long = 150
         val dist2: Long = 27
-        val center: Boolean = false;
+        //val center: Boolean = false;
 
         if(dir == "left")
         {

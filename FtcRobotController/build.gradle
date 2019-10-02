@@ -12,7 +12,7 @@ android {
         targetSdkVersion 26
     }
 
-    compileSdkVersion 28
+    compileSdkVersion 29
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7

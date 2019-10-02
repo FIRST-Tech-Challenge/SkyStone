@@ -18,7 +18,11 @@ public class ArmSystem {
     private Servo elbow;
     private Servo pivot; // Not yet implemented by build team, ignore until we have it
     protected HardwareMap hardwareMap;
-
+    private final double WRIST_HOME = 0;
+    private final double ELBOW_HOME = 0;
+    private final double PIVOT_HOME = 0;
+    private final double GRIPPER_OPEN = 0;
+    private final double GRIPPER_CLOSE = 0.5; // I think? TODO: Figure out overheating issue
     public ArmSystem(HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
         this.gripper = hardwareMap.get(Servo.class, "gripper");
@@ -39,6 +43,11 @@ public class ArmSystem {
         elbow.setPosition(pos);
     }
 
+    public void movePivot(double pos) {
+        // Uncomment this line when build team implements the pivot
+        // elbow.setPosition(pos);
+    }
+
     public double getGripper() {
         return gripper.getPosition();
     }
@@ -49,6 +58,26 @@ public class ArmSystem {
 
     public double getElbow() {
         return elbow.getPosition();
+    }
+
+    public double getPivot() {
+        return 0;
+    }
+
+    // Moves the arm to the "home state" - the grabber is open, right above the block in the intake.
+    // The values of the servos in the home state can be set by editing the final variables.
+    public void goHome() {
+        openGripper();
+        moveWrist(WRIST_HOME);
+        moveElbow(ELBOW_HOME);
+        movePivot(PIVOT_HOME);
+    }
+
+    public void openGripper() {
+        moveGripper(GRIPPER_OPEN);
+    }
+    public void closeGripper() {
+        moveGripper(GRIPPER_CLOSE);
     }
 
 }

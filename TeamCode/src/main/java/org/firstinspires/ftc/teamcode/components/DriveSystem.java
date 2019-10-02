@@ -108,45 +108,24 @@ public class DriveSystem {
 
     // TODO
     private void driveToPositionTicks(int ticks, Direction direction, double maxPower) {
-        if (direction == Direction.FORWARD) {
+        if (direction == Direction.FORWARD || direction == Direction.BACKWARD) {
+            int sign = (direction == Direction.FORWARD ? 1 : -1);
             for (DcMotor motor : motors.values()) {
-                motor.setTargetPosition(motor.getCurrentPosition() + ticks);
-            }
-
-        }
-
-        if (direction == Direction.BACKWARD) {
-            for (DcMotor motor : motors.values()) {
-                motor.setTargetPosition(motor.getCurrentPosition() - ticks);
-
+                motor.setTargetPosition(motor.getCurrentPosition() + sign * ticks);
             }
         }
 
         if (direction == Direction.RIGHT) {
+            int sign = (direction == Direction.RIGHT ? 1 : -1);
             motors.forEach((name, motor) -> {
                 switch(name) {
                     case FRONTRIGHT:
                     case BACKLEFT:
-                        motor.setTargetPosition(motor.getCurrentPosition() - ticks);
+                        motor.setTargetPosition(motor.getCurrentPosition() - sign * ticks);
                         break;
                     case FRONTLEFT:
                     case BACKRIGHT:
-                        motor.setTargetPosition(motor.getCurrentPosition() + ticks);
-                        break;
-                }
-            });
-        }
-
-        if (direction == Direction.LEFT) {
-            motors.forEach((name, motor) -> {
-                switch(name) {
-                    case FRONTRIGHT:
-                    case BACKLEFT:
-                        motor.setTargetPosition(motor.getCurrentPosition() + ticks);
-                        break;
-                    case FRONTLEFT:
-                    case BACKRIGHT:
-                        motor.setTargetPosition(motor.getCurrentPosition() - ticks);
+                        motor.setTargetPosition(motor.getCurrentPosition() + sign * ticks);
                         break;
                 }
             });

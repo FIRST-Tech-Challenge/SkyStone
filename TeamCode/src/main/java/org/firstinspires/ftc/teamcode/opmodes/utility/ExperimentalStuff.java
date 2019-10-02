@@ -19,7 +19,8 @@ public class ExperimentalStuff extends OpMode {
 
     @Override
     public void init() {
-        bot = Robot.getInstance(hardwareMap);
+        bot = Robot.getInstance();
+        bot.init(hardwareMap);
 
         double volts = bot.expansionHubs.get(0).voltageBattery(ExpansionHub.VoltageUnits.VOLTS);
         if (volts < 11) {
@@ -69,7 +70,7 @@ public class ExperimentalStuff extends OpMode {
         telemetry.addData("Phone Gyro", bot.phone.getGyroAngle());
 
         if (gamepad1.b && bot.runtime.seconds() > 30 && !bot.phone.hasQueuedSound()) {
-            bot.phone.queueSoundFile("ss_laser_burst");
+            bot.phone.queueSoundFile("Thus_Spach_Zarathustra");
         }
 
         telemetry.update();

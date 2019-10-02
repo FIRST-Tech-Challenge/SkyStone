@@ -51,7 +51,8 @@ public class OfficialTeleop extends OpMode {
         telemetry.addData("Status", "Initializing...");
         telemetry.update();
 
-        robot = Robot.getInstance(hardwareMap);
+        robot = Robot.getInstance();
+        robot.init(hardwareMap);
 
         lastDebRead = new boolean[NUMBER_DEBOUNCERS];
         for (int i = 0; i < NUMBER_DEBOUNCERS; i++) {
@@ -136,6 +137,7 @@ public class OfficialTeleop extends OpMode {
      */
     @Override
     public void stop() {
+        robot.close();
     }
 
     // Controller Utilities

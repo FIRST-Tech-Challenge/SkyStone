@@ -12,7 +12,8 @@ import org.westtorrancerobotics.lib.Location;
 public class AutoBuildZoneBlue extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        Robot bot = Robot.getInstance(hardwareMap);
+        Robot bot = Robot.getInstance();
+        bot.init(hardwareMap);
         bot.foundationGrabber.setGrabbed(false);
         bot.lift.idle();
 //        bot.stoneManipulator.stow();
@@ -42,5 +43,6 @@ public class AutoBuildZoneBlue extends LinearOpMode {
             sleep(1);
         }
         bot.driveTrain.spinDrive(0, 0, 0);
+        bot.close();
     }
 }

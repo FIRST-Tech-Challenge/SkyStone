@@ -17,7 +17,6 @@ import java.util.EnumMap;
 public class DriveTeleop extends OpMode {
 
     private DriveSystem driveSystem;
-    private boolean slowDrive;
 
     public void init(){
         telemetry.addLine("in init");
@@ -27,22 +26,17 @@ public class DriveTeleop extends OpMode {
             telemetry.addLine("adding motors");
             driveMap.put(name,hardwareMap.get(DcMotor.class, name.toString()));
         }
-
         telemetry.update();
 
         driveSystem = new DriveSystem(driveMap, hardwareMap.get(BNO055IMU.class, "imu"));
-        slowDrive = false;
     }
 
 
     public void loop(){
-
-
             float rx = gamepad1.right_stick_x;
             float ry = gamepad1.right_stick_y;
             float lx = gamepad1.left_stick_x;
             float ly = gamepad1.left_stick_y;
-            driveSystem.drive(rx, ry, lx, ly, slowDrive);
-
+            driveSystem.drive(rx, ry, lx, ly);
     }
 }

@@ -1,30 +1,39 @@
 package org.firstinspires.ftc.teamcode.components;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
 
+import java.util.EnumMap;
+
 public class DriveSystem {
-    private DcMotor motorFrontLeft;
-    private DcMotor motorFrontRight;
-    private DcMotor motorBackLeft;
-    private DcMotor motorBackRight;
-    public DcMotor[] motors = new DcMotor[4];
+
+    public enum MotorNames {
+        FRONTLEFT, FRONTRIGHT, BACKRIGHT, BACKLEFT
+    }
+
+    private enum Direction {
+        FORWARD, BACKWARD, LEFT, RIGHT;
+
+        private static boolean isStrafe(Direction direction) {
+            return direction == Direction.LEFT || direction == Direction.RIGHT;
+        }
+    }
+
+    public EnumMap<MotorNames, DcMotor> motors;
 
     public IMUSystem imuSystem;
-    protected HardwareMap hardwareMap;
 
     private final int TICKS_IN_INCH = 69;
 
     /**
      * Handles the data for the abstract creation of a drive system with four wheels
      */
-    public DriveSystem(HardwareMap hardwareMap) {
-
-        this.hardwareMap = hardwareMap;
+    public DriveSystem(EnumMap<MotorNames, DcMotor> motors, BNO055IMU imu) {
+        this.motors = motors;
         initMotors();
-        imuSystem = new IMUSystem(hardwareMap);
+        imuSystem = new IMUSystem(imu);
     }
 
     /**
@@ -32,32 +41,27 @@ public class DriveSystem {
      * @param power power of the system
      */
     public void setMotorPower(double power) {
-        for (DcMotor motor : motors) {
+        for (DcMotor motor : motors.values()) {
             motor.setPower(power);
         }
     }
 
     public void initMotors() {
 
-        this.motorFrontLeft = hardwareMap.dcMotor.get("motorFL");
-        this.motorFrontRight = hardwareMap.dcMotor.get("motorFR");
-        this.motorBackRight = hardwareMap.dcMotor.get("motorBR");
-        this.motorBackLeft = hardwareMap.dcMotor.get("motorBL");
-
-        motors[0] = motorFrontLeft;
-        motors[1] = motorFrontRight;
-        motors[2] = motorBackRight;
-        motors[3] = motorBackLeft;
-
-        for (DcMotor motor : motors) {
+        motors.forEach((name, motor) -> {
             motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        }
-
-        motorFrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        motorFrontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        motorBackRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        motorBackLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+            switch(name) {
+                case FRONTLEFT:
+                case BACKLEFT:
+                    motor.setDirection(DcMotorSimple.Direction.FORWARD);
+                    break;
+                case FRONTRIGHT:
+                case BACKRIGHT:
+                    motor.setDirection(DcMotorSimple.Direction.REVERSE);
+                    break;
+            }
+        });
 
         setMotorPower(0);
     }
@@ -68,9 +72,9 @@ public class DriveSystem {
      * @param rightY Right Y joystick value
      * @param leftX Left X joystick value
      * @param leftY Left Y joystick value in case you couldn't tell from the others
-     * @param slowDrive Set to true for 30 % motor power.
      */
-    public void drive(float rightX, float rightY, float leftX, float leftY, boolean slowDrive) {
+    // TODO
+    public void drive(float rightX, float rightY, float leftX, float leftY) {
         // Prevent small values from causing the robot to drift
         if (Math.abs(rightX) < 0.01) {
             rightX = 0.0f;
@@ -86,23 +90,49 @@ public class DriveSystem {
         }
 
         // write the values to the motors 1
-        double frontLeftPower = -leftY - leftX + rightX;
-        double frontRightPower = -leftY + leftX - rightX;
-        double backLeftPower = -leftY - leftX - rightX;
-        double backRightPower = -leftY + leftX + rightX;
+        double frontLeftPower = -leftY - rightX + leftX;
+        double frontRightPower = -leftY + rightX - leftX;
+        double backLeftPower = -leftY - rightX - leftX;
+        double backRightPower = -leftY + rightX + leftX;
 
-        this.motorFrontRight.setPower(Range.clip(frontRightPower, -1, 1));
-        this.motorBackRight.setPower(Range.clip(backRightPower, -1, 1));
-        this.motorFrontLeft.setPower(Range.clip(frontLeftPower, -1, 1));
-        this.motorBackLeft.setPower(Range.clip(backLeftPower, -1, 1));
+        motors.forEach((name, motor) -> {
+            switch(name) {
+                case FRONTRIGHT:
+                    motor.setPower(Range.clip(frontRightPower, -1, 1));
+                    break;
+                case BACKLEFT:
+                    motor.setPower(Range.clip(backLeftPower, -1, 1));
+                    break;
+                case FRONTLEFT:
+                    motor.setPower(Range.clip(frontLeftPower, -1, 1));
+                    break;
+                case BACKRIGHT:
+                    motor.setPower(Range.clip(backRightPower, -1, 1));
+                    break;
+            }
+        });
     }
 
     private void driveToPositionTicks(int ticks, Direction direction, double maxPower) {
-        int dir = direction.ordinal();
-        for (int i = 0; i < motors.length; i++) {
-            DcMotor motor = motors[i];
-            motor.setTargetPosition(motor.getCurrentPosition() +
-                    (int)(Math.pow(-1, (i == 1 || i == 2) ? Integer.bitCount(dir) : dir)) * ticks);
+        if (!Direction.isStrafe(direction)) {
+            int sign = (direction == Direction.FORWARD ? 1 : -1);
+            for (DcMotor motor : motors.values()) {
+                motor.setTargetPosition(motor.getCurrentPosition() + sign * ticks);
+            }
+        } else {
+            int sign = (direction == Direction.RIGHT ? 1 : -1);
+            motors.forEach((name, motor) -> {
+                switch(name) {
+                    case FRONTRIGHT:
+                    case BACKLEFT:
+                        motor.setTargetPosition(motor.getCurrentPosition() - sign * ticks);
+                        break;
+                    case FRONTLEFT:
+                    case BACKRIGHT:
+                        motor.setTargetPosition(motor.getCurrentPosition() + sign * ticks);
+                        break;
+                }
+            });
         }
 
         setRunMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -115,7 +145,7 @@ public class DriveSystem {
     }
 
     public void setRunMode(DcMotor.RunMode runMode) {
-        for (DcMotor motor : motors) {
+        for (DcMotor motor : motors.values()) {
             motor.setMode(runMode);
         }
     }
@@ -126,7 +156,7 @@ public class DriveSystem {
      */
     public int  getMinDistanceFromTarget() {
         int distance = Integer.MAX_VALUE;
-        for (DcMotor motor : motors) {
+        for (DcMotor motor : motors.values()) {
             distance = Math.min(distance, motor.getTargetPosition() - motor.getCurrentPosition());
         }
         return distance;
@@ -184,10 +214,18 @@ public class DriveSystem {
      * @param rightPower sets the right side power of the robot
      */
     public void tankDrive(double leftPower, double rightPower) {
-        this.motorFrontLeft.setPower(leftPower);
-        this.motorBackLeft.setPower(leftPower);
-        this.motorFrontRight.setPower(rightPower);
-        this.motorBackRight.setPower(rightPower);
+        motors.forEach((name, motor) -> {
+            switch(name) {
+                case FRONTLEFT:
+                case BACKLEFT:
+                    motor.setPower(leftPower);
+                    break;
+                case FRONTRIGHT:
+                case BACKRIGHT:
+                    motor.setPower(rightPower);
+                    break;
+            }
+        });
     }
 
     /**
@@ -210,5 +248,4 @@ public class DriveSystem {
         }
         return diff;
     }
-
 }

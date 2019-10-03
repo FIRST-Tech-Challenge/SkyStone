@@ -50,8 +50,8 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Basic: Linear OpMode", group="Linear Opmode")
-@Disabled
+@TeleOp(name="In And Out", group="Linear Opmode")
+//@Disabled
 public class InAndOut extends LinearOpMode {
 
     // Declare OpMode members.
@@ -103,11 +103,14 @@ public class InAndOut extends LinearOpMode {
             // rightPower = -gamepad1.right_stick_y ;
 
             // Send calculated power to wheels
-            leftDrive.setPower(leftPower);
+            //leftDrive.setPower(leftPower);
             //rightDrive.setPower(rightPower);
 
             if (forward) {
                 InAndOut.setDirection(DcMotor.Direction.FORWARD);
+                InAndOut.setPower(1);
+            } else if (reverse) {
+                InAndOut.setDirection(DcMotor.Direction.REVERSE);
                 InAndOut.setPower(1);
             }
 

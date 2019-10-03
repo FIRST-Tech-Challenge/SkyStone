@@ -213,7 +213,6 @@ public class TestAutonomous extends LinearOpMode {
             while (opModeIsActive() &&
                     (runtime.seconds() < timeoutS) &&
                     (motorFL.isBusy() || motorFR.isBusy() || motorBL.isBusy() || motorBR.isBusy())) {
-                updateTensorflow();
             }
 
             // Stop all motion;

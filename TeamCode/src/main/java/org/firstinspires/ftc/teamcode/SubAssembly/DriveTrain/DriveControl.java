@@ -58,12 +58,18 @@ public class DriveControl {
         startTime = runtime.seconds();
         do {
             elapsedTime = runtime.seconds() - startTime;
+            opmode.sleep(40);
         } while ((elapsedTime < delayTimeSEC) && !opmode.isStopRequested());
     }
 
     // limits speed to +/- maximum speed
-    private double limitSpeed(double speed) {
+    public double limitSpeed(double speed) {
         return Math.max(-MAX_SPEED, Math.min(speed, MAX_SPEED));
+    }
+
+    // limits speed to 0, maximum speed
+    public double limitSpeedPositive(double speed) {
+        return Math.max(0.0, Math.min(speed, MAX_SPEED));
     }
 
     // stops all motors
@@ -227,6 +233,7 @@ public class DriveControl {
                     BackLeftM.getCurrentPosition(),
                     BackRightM.getCurrentPosition());
             opmode.telemetry.update();
+            opmode.sleep(40);
         }
 
         // Stop all motion

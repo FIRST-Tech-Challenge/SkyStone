@@ -13,6 +13,14 @@ public class DriveSystem {
         FRONTLEFT, FRONTRIGHT, BACKRIGHT, BACKLEFT
     }
 
+    private enum Direction {
+        FORWARD, BACKWARD, LEFT, RIGHT;
+
+        private static boolean isStrafe(Direction direction) {
+            return direction == Direction.LEFT || direction == Direction.RIGHT;
+        }
+    }
+
     public EnumMap<MotorNames, DcMotor> motors;
 
     public IMUSystem imuSystem;
@@ -64,10 +72,9 @@ public class DriveSystem {
      * @param rightY Right Y joystick value
      * @param leftX Left X joystick value
      * @param leftY Left Y joystick value in case you couldn't tell from the others
-     * @param slowDrive Set to true for 30 % motor power.
      */
     // TODO
-    public void drive(float rightX, float rightY, float leftX, float leftY, boolean slowDrive) {
+    public void drive(float rightX, float rightY, float leftX, float leftY) {
         // Prevent small values from causing the robot to drift
         if (Math.abs(rightX) < 0.01) {
             rightX = 0.0f;
@@ -107,12 +114,18 @@ public class DriveSystem {
     }
 
     private void driveToPositionTicks(int ticks, Direction direction, double maxPower) {
-        if (!isStrafe(direction)) {
+        if (!Direction.isStrafe(direction)) {
             int sign = (direction == Direction.FORWARD ? 1 : -1);
             for (DcMotor motor : motors.values()) {
                 motor.setTargetPosition(motor.getCurrentPosition() + sign * ticks);
             }
+<<<<<<< refs/remotes/origin/Arm
         } else {
+=======
+        }
+
+        if (Direction.isStrafe(direction)) {
+>>>>>>> Removed slowdrive. Reintroduced Direction enum and isStrafe method to DriveSystem.
             int sign = (direction == Direction.RIGHT ? 1 : -1);
             motors.forEach((name, motor) -> {
                 switch(name) {
@@ -241,9 +254,4 @@ public class DriveSystem {
         }
         return diff;
     }
-
-    private boolean isStrafe(Direction direction) {
-        return direction == Direction.LEFT || direction == Direction.RIGHT;
-    }
-
 }

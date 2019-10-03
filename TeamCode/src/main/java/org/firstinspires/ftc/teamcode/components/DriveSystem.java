@@ -106,16 +106,15 @@ public class DriveSystem {
         });
     }
 
-    // TODO
     private void driveToPositionTicks(int ticks, Direction direction, double maxPower) {
-        if (direction == Direction.FORWARD || direction == Direction.BACKWARD) {
+        if (!isStrafe(direction)) {
             int sign = (direction == Direction.FORWARD ? 1 : -1);
             for (DcMotor motor : motors.values()) {
                 motor.setTargetPosition(motor.getCurrentPosition() + sign * ticks);
             }
         }
 
-        if (direction == Direction.RIGHT || direction == Direction.LEFT) {
+        if (isStrafe(direction)) {
             int sign = (direction == Direction.RIGHT ? 1 : -1);
             motors.forEach((name, motor) -> {
                 switch(name) {
@@ -243,6 +242,10 @@ public class DriveSystem {
             return 360 + diff;
         }
         return diff;
+    }
+
+    private boolean isStrafe(Direction direction) {
+        return direction == Direction.LEFT || direction == Direction.RIGHT;
     }
 
 }

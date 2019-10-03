@@ -38,10 +38,10 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 //@Disabled
 public class DriveMecanumWheels extends OpMode {
 
+    private DcMotor = hardwareMap(DcMotor.class, "LeftFront");
+    private DcMotor = hardwareMap(DcMotor.class,"LeftBack");
     private DcMotor = hardwareMap
-    private DcMotor =
-    private DcMotor =
-    private DcMotor =
+    private DcMotor = hardwareMap
 
  @Override
     public void init() {

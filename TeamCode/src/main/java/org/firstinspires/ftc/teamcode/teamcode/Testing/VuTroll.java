@@ -18,7 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.DriveTrain;
 
-public class Vuforia extends LinearOpMode {
+@Autonomous(name ="Troll vuforia", group="Auto Basic")
+public class VuTroll extends LinearOpMode {
 
     public static final String tag = "VuCode";
     public static final String element = "TargetElement";

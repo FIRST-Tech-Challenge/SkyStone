@@ -8,6 +8,6 @@ public class VuforiaLocalizerClose extends VuforiaLocalizerImpl {
     }
 
     public void close() {
-        close();
+        super.close();
     }
 }

@@ -83,10 +83,10 @@ public class DriveSystem {
         }
 
         // write the values to the motors 1
-        double frontLeftPower = -leftY - leftX + rightX;
-        double frontRightPower = -leftY + leftX - rightX;
-        double backLeftPower = -leftY - leftX - rightX;
-        double backRightPower = -leftY + leftX + rightX;
+        double frontLeftPower = -leftY - rightX + leftX;
+        double frontRightPower = -leftY + rightX - leftX;
+        double backLeftPower = -leftY - rightX - leftX;
+        double backRightPower = -leftY + rightX + leftX;
 
         motors.forEach((name, motor) -> {
             switch(name) {

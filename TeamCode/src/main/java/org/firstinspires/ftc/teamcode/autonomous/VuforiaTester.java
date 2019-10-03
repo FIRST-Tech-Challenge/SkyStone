@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 @Autonomous
 public class VuforiaTester extends LinearOpMode {
@@ -40,14 +41,74 @@ public class VuforiaTester extends LinearOpMode {
     @Override
     public void runOpMode() {
         vSensor.activate();
-
-//        while(opModeIsActive()) {
-//            vSensor.loop();
-//        }
+        initMotors();
 
 
+        waitForStart();
 
 
+
+
+
+    }
+
+    public void moveForwardRaw(double power) {
+        motorFL.setPower(Range.clip(calibFL * power, -1, 1));
+        motorFR.setPower(Range.clip(calibFR * power, -1, 1));
+        motorBL.setPower(Range.clip(calibBL * power, -1, 1));
+        motorBR.setPower(Range.clip(calibBR * power, -1, 1));
+    }
+
+    public void rotateLeftRaw(double power) {
+        motorFL.setPower(calibFL * -power);
+        motorFR.setPower(calibFR * power);
+        motorBL.setPower(calibBL * -power);
+        motorBR.setPower(calibBR * power);
+    }
+
+    public void straifLeftRaw(double power) {
+        motorFL.setPower(calibFL * -power);
+        motorFR.setPower(calibFR * -power);
+        motorBL.setPower(calibBR * power);
+        motorBR.setPower(calibBR * power);
+    }
+
+    public void doAction(String action, double distance) {
+        int actionInt = -1;
+        for (int i = 0; i < 5; i++) {
+            if (action.equals(actions[i]))
+                actionInt = i;
+        }
+
+        switch (actionInt) {
+            case 0:
+                moveForward(distance);
+                break;
+            case 1:
+                moveForward(-distance);
+                break;
+            case 2:
+                straifLeft(distance);
+                break;
+            case 3:
+                straifLeft(-distance);
+                break;
+            case 4:
+                rotateLeft(distance);
+                break;
+        }
+    }
+
+    public void moveForward(double distance) {
+        encoderDrive(DRIVE_SPEED, distance, distance, 10, false);
+    }
+
+    public void rotateLeft(double distance) {
+        encoderDrive(TURN_SPEED, -distance, distance, 10, false);
+    }
+
+    public void straifLeft(double distance) {
+        encoderDrive(DRIVE_SPEED, -distance, -distance, 10, true);
     }
 
     public void initMotors() {
@@ -116,6 +177,7 @@ public class VuforiaTester extends LinearOpMode {
             while (opModeIsActive() &&
                     (runtime.seconds() < timeoutS) &&
                     (motorFL.isBusy() || motorFR.isBusy() || motorBL.isBusy() || motorBR.isBusy())) {
+                vSensor.loop();
             }
 
             // Stop all motion;

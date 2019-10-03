@@ -119,9 +119,7 @@ public class DriveSystem {
             for (DcMotor motor : motors.values()) {
                 motor.setTargetPosition(motor.getCurrentPosition() + sign * ticks);
             }
-        }
-
-        if (Direction.isStrafe(direction)) {
+        } else {
             int sign = (direction == Direction.RIGHT ? 1 : -1);
             motors.forEach((name, motor) -> {
                 switch(name) {

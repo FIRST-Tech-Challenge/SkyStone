@@ -78,10 +78,12 @@ public abstract class RobotMotionSystemTeleOpControlTask extends RobotMotionSyst
 
     @Override
     public void updateStatus() {
+        this.__updateMotorStatus();
         if(this.isBusy()) {
             this.__updateDriveSpeedAndPositionTracker();
         }
     }
+    protected abstract void __updateMotorStatus();
     @Override
     public String getTaskDetailString(){
         String result = "TaskType: MotionSystemTeleOpControlTask, ";

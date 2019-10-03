@@ -66,13 +66,13 @@ public class TargetPosTask extends RobotServoUsingMotorTask {
 
     @Override
     protected void __finishTask() {
-
+        return;
     }
     @Override
     public void updateStatus(){
         super.updateStatus();
         if(this.isBusy()){
-            if((this.m_TargetPos >= this.getServoUsingMotor().getMaxPos() || this.m_TargetPos <= this.getServoUsingMotor().getMinPos()) && this.getServoUsingMotor().isBorderControl()){
+            if((this.m_TargetPos > this.getServoUsingMotor().getMaxPos() || this.m_TargetPos < this.getServoUsingMotor().getMinPos()) && this.getServoUsingMotor().isBorderControl()){
                 this.endTask(false);
             }
         }

@@ -9,6 +9,7 @@ public abstract class RobotCore implements RobotNonBlockingDevice {
         m_Logger = new RobotLogger(logFileName);
     }
     public abstract void stop();
+    public abstract void terminate();
     public RobotLogger getLogger(){
         return this.m_Logger;
     }

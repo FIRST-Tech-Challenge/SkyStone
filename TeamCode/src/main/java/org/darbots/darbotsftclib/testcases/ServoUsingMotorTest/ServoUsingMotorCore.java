@@ -48,6 +48,11 @@ public class ServoUsingMotorCore extends RobotCore {
     }
 
     @Override
+    public void terminate() {
+        return;
+    }
+
+    @Override
     public RobotMotionSystem getChassis() {
         return null;
     }

@@ -85,17 +85,23 @@ public class Robot4100Generation1_LindaCore extends RobotCore {
     }
 
     @Override
+    public void terminate() {
+        return;
+    }
+
+    @Override
     public RobotMotionSystem getChassis() {
         return this.m_Chassis;
     }
 
     @Override
     public boolean isBusy() {
-        return false;
+        return this.m_linearSlide.isBusy();
     }
 
     @Override
     public void updateStatus() {
         this.m_Chassis.updateStatus();
+        this.m_linearSlide.updateStatus();
     }
 }

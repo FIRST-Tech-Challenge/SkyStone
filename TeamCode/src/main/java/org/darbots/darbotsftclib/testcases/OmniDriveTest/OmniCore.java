@@ -53,6 +53,11 @@ public class OmniCore extends RobotCore {
     }
 
     @Override
+    public void terminate() {
+        return;
+    }
+
+    @Override
     public RobotMotionSystem getChassis() {
         return this.m_Drive;
     }

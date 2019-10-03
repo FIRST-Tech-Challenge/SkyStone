@@ -129,6 +129,7 @@ public class RobotServoUsingMotor implements RobotNonBlockingDevice {
                 this.m_TaskList.get(0).startTask();
             }
         }else{ //if(this.m_TaskLists.isEmpty()){
+            this.m_MotorController.deleteAllTasks();
             return;
         }
     }

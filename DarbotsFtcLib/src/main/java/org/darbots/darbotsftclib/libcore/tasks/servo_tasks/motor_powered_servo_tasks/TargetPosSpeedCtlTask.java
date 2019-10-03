@@ -74,7 +74,7 @@ public class TargetPosSpeedCtlTask extends RobotServoUsingMotorTask {
     public void updateStatus(){
         super.updateStatus();
         if(this.isBusy()){
-            if((this.m_TargetPos >= this.getServoUsingMotor().getMaxPos() || this.m_TargetPos <= this.getServoUsingMotor().getMinPos()) && this.getServoUsingMotor().isBorderControl()){
+            if((this.m_TargetPos > this.getServoUsingMotor().getMaxPos() || this.m_TargetPos < this.getServoUsingMotor().getMinPos()) && this.getServoUsingMotor().isBorderControl()){
                 this.endTask(false);
             }
         }

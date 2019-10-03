@@ -213,6 +213,14 @@ public class OmniDrive extends RobotMotionSystem {
         }
 
         @Override
+        protected void __updateMotorStatus() {
+            this.m_Drive.m_LeftTopMotor.getMotorController().updateStatus();
+            this.m_Drive.m_LeftBottomMotor.getMotorController().updateStatus();
+            this.m_Drive.m_RightTopMotor.getMotorController().updateStatus();
+            this.m_Drive.m_RightBottomMotor.getMotorController().updateStatus();
+        }
+
+        @Override
         protected void __taskFinished() {
 
         }

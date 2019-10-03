@@ -25,6 +25,8 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 import com.qualcomm.robotcore.util.ElapsedTime;
+import org.firstinspires.ftc.teamcode.components.*;
+import android.util.*;
 
 public class AutoStateMachinePattern1 extends BaseStateMachine {
     public ElapsedTime mRuntime = new ElapsedTime();   // Time into round.
@@ -37,17 +39,35 @@ public class AutoStateMachinePattern1 extends BaseStateMachine {
     public void loop() {
         switch (mCurrentState) {
             case STATE_INITIAL:
+                Log.d("Initial State Begun");
                 // Initialize
+                mStateTime.reset();
+                /*colorSensor = hardwareMap.get(ColorSensor.class, "color_Sensor");
+                Log.d("Color Sensor Initialized");
+                this.motorFrontLeft = hardwareMap.dcMotor.get("motorFrontLeft");
+                this.motorFrontRight = hardwareMap.dcMotor.get("motorFrontRight");
+                this.motorBackRight = hardwareMap.dcMotor.get("motorBackRight");
+                this.motorBackLeft = hardwareMap.dcMotor.get("motorBackLeft");
+                Log.d("DriveMotors - Initialized");*/
                 break;
 
             case STATE_FIND_SKYSTONE:
+                Log.d("Finding/Looking for Skystone");
                 // Strafe towards line
                 // Identify SkyStone
+                if(/*vuforia circumstances met */ && !isYellow()){
+                    newState(State.STATE_GRAB_STONE);
+                    //STATE_GRAB_STONE
+                }
                 // If we can't see it after 3 feet, start driving  until we do
-                newState(State.STATE_GRAB_STONE);
+                else{
+
+                }
                 break;
 
             case STATE_GRAB_STONE:
+
+
                 // Grab the stone and slurp it into the machine
                 newState(State.STATE_DELIVER_STONE);
                 break;
@@ -84,4 +104,6 @@ public class AutoStateMachinePattern1 extends BaseStateMachine {
                 break;
         }
     }
+}
+
 }

@@ -22,7 +22,29 @@ public class ArmSystem {
     private final double ELBOW_HOME = 0;
     private final double PIVOT_HOME = 0;
     private final double GRIPPER_OPEN = 0;
-    private final double GRIPPER_CLOSE = 0.5; // I think? TODO: Figure out overheating issue
+    private final double GRIPPER_CLOSE = 0.5; // I think? TODO: Figure out overheating issueo
+
+    public enum Position {
+        POSITION_HOME, POSITION_WEST, POSITION_SOUTH, POSITION_EAST, POSITION_NORTH
+    }
+    /*
+     If the robot is at the bottom of the screen, and X is the block:
+
+     XO
+     XO  <--- Position A
+
+     OO
+     XX  <--- Position B
+
+     OX
+     OX  <--- Position C
+
+     XX
+     OO  <--- Position D
+
+     Probably should be controlled by the D pad or something.
+     */
+
     public ArmSystem(HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
         this.gripper = hardwareMap.get(Servo.class, "gripper");
@@ -48,6 +70,29 @@ public class ArmSystem {
         // elbow.setPosition(pos);
     }
 
+    public void increaseGripper(double pos) {
+        if (gripper.getPosition() + pos <= 1 && gripper.getPosition() + pos >= 0) {
+            gripper.setPosition(gripper.getPosition());
+        }
+    }
+
+    public void increaseWrist(double pos) {
+        if (wrist.getPosition() + pos <= 1 && wrist.getPosition() + pos >= 0) {
+            wrist.setPosition(wrist.getPosition());
+        }
+    }
+
+    public void increaseElbow(double pos) {
+        if (elbow.getPosition() + pos <= 1 && elbow.getPosition() + pos >= 0) {
+            elbow.setPosition(elbow.getPosition());
+        }
+    }
+
+    public void increasePivot(double pos) {
+        if (pivot.getPosition() + pos <= 1 && pivot.getPosition() + pos >= 0) {
+            //gripper.setPosition(gripper.getPosition());
+        }
+    }
     public double getGripper() {
         return gripper.getPosition();
     }
@@ -76,8 +121,34 @@ public class ArmSystem {
     public void openGripper() {
         moveGripper(GRIPPER_OPEN);
     }
+
     public void closeGripper() {
         moveGripper(GRIPPER_CLOSE);
     }
 
+    public void movePresetPosition(Position pos) {
+        switch(pos) {
+            case POSITION_HOME:
+                openGripper();
+                moveWrist(0);
+                moveElbow(0);
+                movePivot(0);
+            case POSITION_NORTH:
+                moveWrist(0);
+                moveElbow(0);
+                movePivot(0);
+            case POSITION_EAST:
+                moveWrist(0);
+                moveElbow(0);
+                movePivot(0);
+            case POSITION_WEST:
+                moveWrist(0);
+                moveElbow(0);
+                movePivot(0);
+            case POSITION_SOUTH:
+                moveWrist(0);
+                moveElbow(0);
+                movePivot(0);
+        }
+    }
 }

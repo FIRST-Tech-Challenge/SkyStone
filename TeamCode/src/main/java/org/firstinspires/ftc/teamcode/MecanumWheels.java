@@ -31,7 +31,7 @@ package org.firstinspires.ftc.teamcode;
 
 //import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import comTriston.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 //import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -59,8 +59,8 @@ public class MecanumWheels extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftFront = null;
     private DcMotor rightFront = null;
-    private DcMotor leftBack = null;
-    private DcMotor rightBack = null;
+   // private DcMotor leftBack = null;
+  //  private DcMotor rightBack = null;
 
     @Override
     public void runOpMode() {
@@ -71,8 +71,8 @@ public class MecanumWheels extends LinearOpMode {
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
         leftFront  = hardwareMap.get(DcMotor.class, "left_Front");
-        rightBack = hardwareMap.get(DcMotor.class, "right_Back");
-        leftBack = hardwareMap.get(DcMotor.class,"left_Back");
+       // rightBack = hardwareMap.get(DcMotor.class, "right_Back");
+        //leftBack = hardwareMap.get(DcMotor.class,"left_Back");
         rightFront = hardwareMap.get(DcMotor.class,"right_Front");
 
         // Most robots need the motor on one side to be reversed to drive forward
@@ -96,12 +96,12 @@ public class MecanumWheels extends LinearOpMode {
 
             leftFront.setPower(v1);
             rightFront.setPower(v2);
-            leftBack.setPower(v3);
-            rightBack.setPower(v4);
+            //leftBack.setPower(v3);
+            //rightBack.setPower(v4);
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftFront, rightFront, leftBack, rightBack);
+            telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftFront, rightFront);
             telemetry.update();
         }
     }

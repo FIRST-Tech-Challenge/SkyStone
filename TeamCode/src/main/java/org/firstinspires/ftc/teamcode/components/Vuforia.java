@@ -5,14 +5,13 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
+import org.firstinspires.ftc.robotcore.internal.vuforia.VuforiaLocalizerImpl;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
-import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +20,16 @@ public class Vuforia {
 
     public enum CameraChoice {
         PHONE_FRONT, PHONE_BACK, WEBCAM1, WEBCAM2;
+    }
+
+    private class VuforiaLocalizer extends VuforiaLocalizerImpl {
+        public VuforiaLocalizer(Parameters parameters) {
+            super(parameters);
+        }
+
+        public void close() {
+            super.close();
+        }
     }
 
     private static final String VUFORIA_KEY =
@@ -37,7 +46,7 @@ public class Vuforia {
     private static final float halfField = 72 * mmPerInch;
     private static final float quadField  = 36 * mmPerInch;
     private OpenGLMatrix lastLocation = null;
-    private VuforiaLocalizerClose vuforia = null;
+    private VuforiaLocalizer vuforia = null;
     private float phoneXRotate    = 0;
     private float phoneYRotate    = 0;
     private float phoneZRotate    = 0;
@@ -108,7 +117,7 @@ public class Vuforia {
         targetsSkyStone.deactivate();
     }
 
-    public VuforiaLocalizerClose setCamera(HardwareMap hardwareMap, CameraChoice cameraChoice) {
+    public VuforiaLocalizer setCamera(HardwareMap hardwareMap, CameraChoice cameraChoice) {
         if (vuforia != null)
             vuforia.close();
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -130,12 +139,12 @@ public class Vuforia {
                 parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam2");
                 break;
         }
-        vuforia = new VuforiaLocalizerClose(parameters);
+        vuforia = new VuforiaLocalizer(parameters);
         initializeTrackables(vuforia);
         return vuforia;
     }
 
-    private void initializeTrackables(VuforiaLocalizerClose vuforia) {
+    private void initializeTrackables(VuforiaLocalizer vuforia) {
         targetsSkyStone = vuforia.loadTrackablesFromAsset("Skystone");
 
         VuforiaTrackable stoneTarget = targetsSkyStone.get(0);
@@ -232,10 +241,10 @@ public class Vuforia {
         final float CAMERA_VERTICAL_DISPLACEMENT = 8.0f * mmPerInch;   // eg: Camera is 8 Inches above ground
         final float CAMERA_LEFT_DISPLACEMENT     = 0;     // eg: Camera is ON the robot's center line
 
-        OpenGLMatrix robotFromCamera = OpenGLMatrix
-                .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
-
+//        OpenGLMatrix robotFromCamera = OpenGLMatrix
+//                .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
+//                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
+//
 //        for (VuforiaTrackable trackable : allTrackables) {
 //            ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
 //        }

@@ -2,6 +2,7 @@ package teamcode.impl;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.GyroSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
@@ -23,7 +24,8 @@ public class DriveSystemTest extends TTOpMode {
     protected void onStart() {
         TTRobot robot = getRobot();
         TTDriveSystem driveSystem = robot.getDriveSystem();
-        driveSystem.diagonal(1, 100, 0.5);
+        driveSystem.turn(180, 0.5);
+        driveSystem.vertical(100, 0.75);
     }
 
 }

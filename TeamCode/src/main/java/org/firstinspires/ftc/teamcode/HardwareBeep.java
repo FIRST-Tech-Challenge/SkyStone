@@ -77,8 +77,9 @@ public class HardwareBeep {
         imu = hwMap.get(BNO055IMU.class, "imu");
         colorSensor = hwMap.get(ModernRoboticsI2cColorSensor.class, "color_Sensor");
         leftSonic = hwMap.get(SensorMB1242.class, "left_sonic");
-        leftSonic.changeI2cAddress(225);
+        leftSonic.changeI2cAddress(125);
         rightSonic = hwMap.get(SensorMB1242.class, "right_sonic");
+        rightSonic.changeI2cAddress(126);
         touchSensor = hwMap.get(DigitalChannel.class, "sensor_digital");
 
         // Set Motor and Servo Direction

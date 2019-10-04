@@ -56,12 +56,12 @@ public class TestingGridNav extends LinearOpMode {
         gridNavigation.setGridPosition(0, 0, 0);
 
         gridNavigation.driveToPosition(1, 1, .5);
+//
+//        telemetry.addData("Angle", gridNavigation.turnAngle);
+//        telemetry.update();
 
-        telemetry.addData("Angle", gridNavigation.turnAngle);
-        telemetry.update();
+//        sleep(3000);
 
-        sleep(3000);
-
-        gridNavigation.driveToPositionBackwards(0, 0, .5);
+        gridNavigation.driveToPositionReverse(0, 0, .5);
     }
 }

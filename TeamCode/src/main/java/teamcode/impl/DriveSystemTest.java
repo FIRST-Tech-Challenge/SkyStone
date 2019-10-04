@@ -17,8 +17,9 @@ public class DriveSystemTest extends TTOpMode {
     @Override
     protected void onStart() {
         TTRobot robot = getRobot();
-        TTDriveSystem driveSystem = robot.getHardwareManager().getDriveSystem();
-        driveSystem.diagonal(1, 100, 0.5);
+        TTDriveSystem driveSystem = robot.getDriveSystem();
+        driveSystem.turn(180, 0.5);
+        driveSystem.vertical(100, 0.75);
     }
 
 }

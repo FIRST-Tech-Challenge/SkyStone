@@ -6,19 +6,22 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class TTRobot {
 
-    private final TTHardwareManager hardwareManager;
+    private TTDriveSystem driveSystem;
+    private TTVision vision;
 
-    public TTRobot(HardwareMap hardwareMap, TTHardwareManager.TTHardwareRestriction... hardwareRestrictions) {
-        hardwareManager = new TTHardwareManager(hardwareMap, hardwareRestrictions);
+    public TTRobot(HardwareMap hardwareMap) {
+        driveSystem = new TTDriveSystem(hardwareMap);
+        vision = new TTVision(hardwareMap);
     }
 
-    public TTHardwareManager getHardwareManager() {
-        return hardwareManager;
+    public TTDriveSystem getDriveSystem() {
+        return driveSystem;
+    }
+
+    public TTVision getVision() {
+        return vision;
     }
 
 }

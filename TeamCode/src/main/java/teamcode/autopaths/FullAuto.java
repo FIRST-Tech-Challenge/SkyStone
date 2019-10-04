@@ -84,7 +84,7 @@ public class FullAuto extends TTOpMode {
     List<VuforiaTrackable> allTrackables;
 
     TTRobot robot;
-    TTDriveSystem driveSystem = robot.getHardwareManager().getDriveSystem();
+    TTDriveSystem driveSystem = robot.getDriveSystem();
 
     /* this is going to have all of the tasks the game requires ideally,
     collecting the first Skystone, pulling the foundation,

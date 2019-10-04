@@ -5,15 +5,15 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 public abstract class TTOpMode extends LinearOpMode {
 
     private static TTOpMode opMode;
-    private TTHardwareManager.TTHardwareRestriction[] hardwareRestrictions;
+
     private TTRobot robot;
 
     @Override
     public void runOpMode() {
         opMode = this;
         TTTimer.init();
+        robot = new TTRobot(hardwareMap);
         onInitialize();
-        robot = new TTRobot(hardwareMap, hardwareRestrictions);
         waitForStart();
         onStart();
         while (opModeIsActive()) ; // this is necessary if code is being run on separate threads
@@ -26,10 +26,6 @@ public abstract class TTOpMode extends LinearOpMode {
 
     public TTRobot getRobot() {
         return robot;
-    }
-
-    protected void setHardwareRestrictions(TTHardwareManager.TTHardwareRestriction... restrictions) {
-        hardwareRestrictions = restrictions;
     }
 
     protected abstract void onInitialize();

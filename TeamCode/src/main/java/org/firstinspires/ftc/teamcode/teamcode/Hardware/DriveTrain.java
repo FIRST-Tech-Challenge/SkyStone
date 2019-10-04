@@ -60,6 +60,14 @@ public class DriveTrain {
     int newRightBlarget;
     int newLeftBlarget;
 
+    // Get Velocity Variables
+    private double masterVelocity;
+    private double flVel;
+    private double frVel;
+    private double brVel;
+    private double blVel;
+    private double modPower = 0.0;
+
 
     public void initDriveTrain(LinearOpMode opMode) {
 
@@ -73,10 +81,10 @@ public class DriveTrain {
         br = this.opMode.hardwareMap.dcMotor.get("br");
 
         //Sets Motor Directions
-        fl.setDirection(DcMotor.Direction.REVERSE);
-        fr.setDirection(DcMotor.Direction.FORWARD);
-        bl.setDirection(DcMotor.Direction.REVERSE);
-        br.setDirection(DcMotor.Direction.FORWARD);
+        fl.setDirection(DcMotor.Direction.FORWARD);
+        fr.setDirection(DcMotor.Direction.REVERSE);
+        bl.setDirection(DcMotor.Direction.FORWARD);
+        br.setDirection(DcMotor.Direction.REVERSE);
 
         //Set Power For Static Motors - When Robot Not Moving
         fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -85,6 +93,7 @@ public class DriveTrain {
         br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         count = 4.0;
+        modPower = 0.0;
 
         resetEncoders();
         runEncoders();
@@ -226,13 +235,13 @@ public class DriveTrain {
         brAcc = getHolon(br);
         blAcc = getHolon(bl);
 
-        if(flAcc + blAcc >= .05 || flAcc + blAcc <= -.05)
+        if(Math.abs(flAcc + blAcc) >= .05)
         {
             fl.setPower(fl.getPower() - (flAcc + blAcc));
         }
-        else if(frAcc + brAcc >= .05 || frAcc + brAcc <= -.05)
+        if(Math.abs(frAcc + brAcc) >= .05)
         {
-            fr.setPower(fr.getPower() - (flAcc + brAcc));
+            fr.setPower(fr.getPower() - (frAcc + brAcc));
         }
     }
 
@@ -245,9 +254,10 @@ public class DriveTrain {
 
         double averageStrafe = 0.0;
 
+        setStrafePower(power);
         while(Math.abs(averageStrafe) < target * inchCounts && runtime.seconds() < timeout)
         {
-            setStrafePower(power);
+
             strafeEqualizer();
             averageStrafe = getStrafeEncoderAverage(power);
 
@@ -433,9 +443,10 @@ public class DriveTrain {
 
         double average = 0.0;
 
+        setMotorsPower(power);
         while (Math.abs(average) < target * inchCounts && runtime.seconds() < timeout)
         {
-            setMotorsPower(power);
+
             average = getEncoderAverage();
             equalize();
 
@@ -516,7 +527,6 @@ public class DriveTrain {
 
     public void snowWhite () {
 
-        equalize();
         fr.setPower(0);
         fl.setPower(0);
         br.setPower(0);
@@ -543,6 +553,17 @@ public class DriveTrain {
             fl.setPower(1);
             bl.setPower(1);
         }
+    }
+
+    public double getVelocity(DcMotor motor)
+    {
+        runtime.reset();
+
+        prevPosition = motor.getCurrentPosition();
+        prevTime = runtime.seconds();
+
+        masterVelocity = (motor.getCurrentPosition() - prevPosition) / (runtime.seconds() - prevTime);
+        return masterVelocity;
     }
 
     public double getHolon (DcMotor motor) {
@@ -572,13 +593,13 @@ public class DriveTrain {
         brAcc = getHolon(br);
         blAcc = getHolon(bl);
 
-        if(flAcc - brAcc >= .25 || flAcc - brAcc <= -.25)
+        if(Math.abs(flAcc - brAcc) >= .25)
         {
-            fl.setPower(fl.getPower() + (flAcc - brAcc));
+            fl.setPower(fl.getPower() - (flAcc - brAcc));
         }
-        else if(frAcc - blAcc >= .25 || frAcc - blAcc <= -.25)
+        if(Math.abs(frAcc - blAcc) >= .25)
         {
-            fr.setPower(fr.getPower() + (frAcc - blAcc));
+            fr.setPower(fr.getPower() - (frAcc - blAcc));
         }
 
     }

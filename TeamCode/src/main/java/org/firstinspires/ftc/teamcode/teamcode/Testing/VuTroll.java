@@ -128,15 +128,16 @@ public class VuTroll extends LinearOpMode {
         }
     }
 
-    int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId",
-            "id", hardwareMap.appContext.getPackageName());
-
-    VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-    VuforiaTrackables stonesAndChips = this.vuforia.loadTrackablesFromAsset("StonesAndChips");
-    VuforiaTrackable redTarget = stonesAndChips.get(0);
-    VuforiaTrackable blueTarget = stonesAndChips.get(1);
-
     public void runOpMode() {
+
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId",
+                "id", hardwareMap.appContext.getPackageName());
+
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+        VuforiaTrackables stonesAndChips = this.vuforia.loadTrackablesFromAsset("Skystone");
+        VuforiaTrackable redTarget = stonesAndChips.get(0);
+        VuforiaTrackable blueTarget = stonesAndChips.get(1);
+
 
         parameters.vuforiaLicenseKey = key;
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;

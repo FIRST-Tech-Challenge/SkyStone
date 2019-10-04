@@ -45,10 +45,10 @@ public class Holonomic extends LinearOpMode {
 
         //Zero Power Behavior
 
-        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //Running with or without Encoders
         backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

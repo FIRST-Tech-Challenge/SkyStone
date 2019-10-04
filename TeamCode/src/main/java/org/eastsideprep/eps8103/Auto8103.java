@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.eastsideprep.eps9884.Hardware9884;
 
 
-@Autonomous(name="Autonomous 1", group="8103")
+@Autonomous(name="Skystone Gang", group="8103")
 
 public class Auto8103 extends LinearOpMode {
 

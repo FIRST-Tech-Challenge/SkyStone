@@ -32,9 +32,9 @@ package org.eastsideprep.eps8103;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.eastsideprep.eps9884.Hardware9884;
+import org.eastsideprep.eps8103.Hardware8103;
 
-@TeleOp(name = "Teleop Simple", group = "8103")
+@TeleOp(name = "Kalie Teleop", group = "8103")
 
 public class Simple8103 extends LinearOpMode {
 
@@ -43,13 +43,12 @@ public class Simple8103 extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-       /* double left;
-        double right;*/
+        double left;
+        double right;
         boolean armU;
         boolean armD;
         boolean hoist;
         boolean release;
-
 
 
 
@@ -59,7 +58,7 @@ public class Simple8103 extends LinearOpMode {
         robot.init(hardwareMap);
 
         // Send telemetry message to signify robot waiting;
-        telemetry.addData("Say", "Hello Peter");
+        telemetry.addData("Say", "Ready");
         telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
@@ -72,7 +71,7 @@ public class Simple8103 extends LinearOpMode {
             float x = gamepad1.left_stick_x;
             float y = -gamepad1.left_stick_y; // Negate to get +y forward.
             float rotation = -gamepad1.right_stick_x;
-            float speedControl = 0.5f * (1.0f + gamepad1.left_trigger);
+            float speedControl = 0.75f * (1.0f + gamepad1.left_trigger);
             double biggestControl = Math.sqrt(x * x + y * y);
             double biggestWithRotation = Math.sqrt(x * x + y * y + rotation * rotation);
 
@@ -97,14 +96,16 @@ public class Simple8103 extends LinearOpMode {
                     robot.allMotors[i].setPower(0.0);
             }
 
+
             armU = gamepad1.dpad_up;
             armD = gamepad1.dpad_down;
             hoist = gamepad1.x;
             release = gamepad1.b;
 
-            // Send telemetry message to signify robot running;
-            telemetry.addLine()
-                    .addData("some variable", "%.2f", 0);
+
+
+            // Send telemetry message to signify robot running
+           /* telemetry.addLine().addData("some variable", "%.2f", 0); */
 
             telemetry.addLine();
             telemetry.update();
@@ -115,3 +116,4 @@ public class Simple8103 extends LinearOpMode {
         }
     }
 }
+

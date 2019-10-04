@@ -29,6 +29,8 @@ import org.firstinspires.ftc.teamcode.components.*;
 import android.util.*;
 
 public class AutoStateMachinePattern1 extends BaseStateMachine {
+
+    private final String TAG = "AutoState1";
     public ElapsedTime mRuntime = new ElapsedTime();   // Time into round.
 
     private ElapsedTime mStateTime = new ElapsedTime();  // Time into current state
@@ -39,7 +41,7 @@ public class AutoStateMachinePattern1 extends BaseStateMachine {
     public void loop() {
         switch (mCurrentState) {
             case STATE_INITIAL:
-                Log.d("Initial State Begun");
+                Log.d(TAG, "Initial State Begun");
                 // Initialize
                 mStateTime.reset();
                 /*colorSensor = hardwareMap.get(ColorSensor.class, "color_Sensor");
@@ -52,10 +54,11 @@ public class AutoStateMachinePattern1 extends BaseStateMachine {
                 break;
 
             case STATE_FIND_SKYSTONE:
-                Log.d("Finding/Looking for Skystone");
+                Log.d(TAG, "Finding/Looking for Skystone");
                 // Strafe towards line
                 // Identify SkyStone
-                if(/*vuforia circumstances met */ && !isYellow()){
+                /*
+                if(vuforia circumstances met && !isYellow()){
                     newState(State.STATE_GRAB_STONE);
                     //STATE_GRAB_STONE
                 }
@@ -63,6 +66,7 @@ public class AutoStateMachinePattern1 extends BaseStateMachine {
                 else{
 
                 }
+                */
                 break;
 
             case STATE_GRAB_STONE:
@@ -104,6 +108,4 @@ public class AutoStateMachinePattern1 extends BaseStateMachine {
                 break;
         }
     }
-}
-
 }

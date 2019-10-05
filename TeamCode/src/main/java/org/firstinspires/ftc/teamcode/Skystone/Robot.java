@@ -227,6 +227,12 @@ public class Robot {
             telemetry.update();
         }
 
+        if (outtakeArm.getCurrentPosition() != outtakeArm.getTargetPosition()) {
+            outtakeArm.setPower(1);
+        } else {
+            outtakeArm.setPower(0);
+        }
+
         outtakeSpool.setPower(outtakeSpoolPower);
     }
 

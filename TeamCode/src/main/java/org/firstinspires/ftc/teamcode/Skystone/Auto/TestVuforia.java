@@ -69,9 +69,9 @@ public class TestVuforia extends AutoBase {
             }
         }
 
-        double[][] testPoints = {{0,5},{15 + (Math.abs(position)/4.0), position*1.2}};
-        sleep(100);
-        PathPoints testPath = new PathPoints(testPoints, 3);
+        double[][] testPoints = {{0,6},{position*1.2,13 + Math.abs(position)}};
+        //sleep(100);
+        PathPoints testPath = new PathPoints(testPoints, 4);
         robot.moveFollowCurve(testPath.targetPoints, 0.3);
 
         telemetry.addData("X Value: ", 15 + (Math.abs(position)/5));
@@ -79,6 +79,7 @@ public class TestVuforia extends AutoBase {
         telemetry.update();
 
     }
+
     protected void initVuforia() {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 

@@ -39,10 +39,10 @@ public class Holonomic extends LinearOpMode {
 
         //Set the direction of the motors
         //Reversed motors
-        backLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        frontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        backRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        frontRight.setDirection(DcMotorSimple.Direction.FORWARD);
 
         //Zero Power Behavior
 
@@ -59,18 +59,20 @@ public class Holonomic extends LinearOpMode {
 
         waitForStart();
         runtime.reset();
-        double speedSet = 7;
+        double speedSet = 4;
 
         while (opModeIsActive()) {
 
             //dpad up-down sets speed of robot
             if(gamepad1.dpad_up)
-                speedSet += 0.0001;
+                speedSet += 0.001;
             else if(gamepad1.dpad_down)
-                speedSet -= 0.0001;
+                speedSet -= 0.001;
 
             speedSet =  Range.clip(speedSet, 1, 10);
-            speedSet = Math.round(speedSet);
+
+            if(gamepad1.dpad_down == false && gamepad1.dpad_up == false)
+                speedSet = Math.round(speedSet);
 
             //directional
             if((Math.abs(gamepad1.left_stick_x) > deadZone) || (Math.abs(gamepad1.left_stick_y) > deadZone) || (Math.abs(gamepad1.right_stick_x) > deadZone)) {
@@ -87,6 +89,8 @@ public class Holonomic extends LinearOpMode {
 
             telemetry.addData("Drive", "Holonomic");
             telemetry.addData("speedSet", "%.2f", speedSet);
+            telemetry.addData("V", 3);//change this every time uploading new code to phone
+            //V2: 10/5/2019
             telemetry.update();
 
         }

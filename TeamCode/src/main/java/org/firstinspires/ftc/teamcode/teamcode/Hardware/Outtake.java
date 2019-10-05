@@ -108,10 +108,10 @@ public class Outtake {
             else if(blockCount % 2 == 0)
             {
                 //  Strafe Right
-                drive.encoderStrafe(opMode, true, .25, distanceBetweenBlocks, 1); // OpMode, isRight, speed, Left Inches, Right Inches, timeOutS
+                //drive.encoderStrafe(opMode, true, .25, distanceBetweenBlocks, 1); // OpMode, isRight, speed, Left Inches, Right Inches, timeOutS
                 openBasket();
                 //  Strafe Back Left
-                drive.encoderStrafe(opMode, false, .25, distanceBetweenBlocks, 1); // OpMode, isRight, speed, Left Inches, Right Inches, timeOutS
+                //drive.encoderStrafe(opMode, false, .25, distanceBetweenBlocks, 1); // OpMode, isRight, speed, Left Inches, Right Inches, timeOutS
             }
 
             resetOuttake();

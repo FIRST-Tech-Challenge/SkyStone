@@ -6,13 +6,14 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.DriveTrain;
+import org.firstinspires.ftc.teamcode.teamcode.Hardware.Sensors;
 
 
 @TeleOp(name="TrollMac", group= "Troll")
 public class TeleOpTrollTest extends OpMode {
 
     DriveTrain drive = new DriveTrain();
-
+    Sensors sensors = new Sensors();
 
     //Instantiate Variables
 
@@ -25,15 +26,19 @@ public class TeleOpTrollTest extends OpMode {
     double speed;
     double speedProp = 1.0;
     boolean pastX = false;
-   // boolean cfmToggle = false;
-   // double direct = 1.0;
+    // boolean cfmToggle = false;
+    // double direct = 1.0;
     boolean pastDPadUp = false;
     boolean pastDPadDown = false;
 
     double flMod = 0;
     double frMod = 0;
-    double frHolo = 0;
-    double flHolo = 0;
+    double frHolo = 1;
+    double flHolo = 1;
+    double brHolo = 1;
+    double blHolo = 1;
+    double radiax;
+    boolean radiaxSet = false;
 
     //  Variables for Cruise Foundation Moving (CFM)
     /*
@@ -69,6 +74,8 @@ public class TeleOpTrollTest extends OpMode {
 
         //cfmToggle = false;
 
+        sensors.initSensors(this);
+
         //Sets Hardware Map
         drive.fl = hardwareMap.dcMotor.get("fl");
         drive.fr = hardwareMap.dcMotor.get("fr");
@@ -99,7 +106,6 @@ public class TeleOpTrollTest extends OpMode {
     //Main Loop
     @Override
     public void loop() {
-
 
 
         // motorPos = (drive.fr.getCurrentPosition() * drive.fl.getCurrentPosition() * drive.bl.getCurrentPosition()
@@ -181,6 +187,10 @@ public class TeleOpTrollTest extends OpMode {
 
         telemetry.addData("Speed : ", speed);
 
+        telemetry.addData("Right HoloMod: ", frHolo);
+
+        telemetry.addData("Left HoloMod: ", flHolo);
+
         //Sets Power to Wheel
         /*
         if (gamepad1.b && !cfmToggle) {
@@ -192,62 +202,68 @@ public class TeleOpTrollTest extends OpMode {
         telemetry.addData("CFM Toggle : ", cfmToggle);
 */
         //Gets Magnitude of Left Stick
-        velocity = Math.hypot(leftStickX, leftStickY);
-        //Gets Direction of Left Stick
-        direction = Math.atan2(leftStickY, -leftStickX) - Math.PI / 4;
-        speed = gamepad1.right_stick_x;
+        if (!gamepad1.dpad_left) {
+            velocity = Math.hypot(leftStickX, leftStickY);
+            //Gets Direction of Left Stick
+            direction = Math.atan2(leftStickY, -leftStickX) - Math.PI / 4;
+            speed = gamepad1.right_stick_x;
 
-        if (Math.abs(gamepad1.right_stick_x) < 0.075 ) {
-            speed = 0;
+            if (Math.abs(gamepad1.right_stick_x) < 0.075) {
+                speed = 0;
+            }
+
+            if (Math.abs(gamepad1.left_stick_x) < 0.075 && Math.abs(gamepad1.left_stick_y) < 0.075) {
+                velocity = 0;
+            }
+
+            if (Math.abs(gamepad1.right_trigger) > 0.5f) {
+                drive.holonize(drive.fl, drive.bl, flHolo, blHolo, false);
+                drive.holonize(drive.fr, drive.br, frHolo, brHolo, true);
+            } else {
+                brHolo = 1;
+                frHolo = 1;
+                flHolo = 1;
+                blHolo = 1;
+            }
+
+
+            //NEED TO RE-ADD SPEED PROP
+
+            drive.fl.setPower((velocity * Math.cos(direction) + speed) * flHolo);
+            drive.fr.setPower((velocity * Math.sin(direction) - speed) * frHolo);
+            drive.bl.setPower((velocity * Math.sin(direction) + speed) * blHolo);
+            drive.br.setPower((velocity * Math.cos(direction) - speed) * brHolo);
+        }
+        else if (gamepad1.dpad_left) {
+            drive.fl.setPower(1);
+            drive.bl.setPower(-1);
+            drive.fr.setPower(-1);
+            drive.br.setPower(1);
         }
 
-        if (Math.abs(gamepad1.left_stick_x) < 0.075 && Math.abs(gamepad1.left_stick_y) < 0.075) {
-            velocity = 0;
+        if (gamepad1.a) {
+            telemetry.addData("Left Front: ", drive.fl.getCurrentPosition());
+            telemetry.addData("Right Front: ", drive.fr.getCurrentPosition());
+            telemetry.addData("Right Back: ", drive.br.getCurrentPosition());
+            telemetry.addData("Left Back: ", drive.bl.getCurrentPosition());
+            telemetry.update();
         }
 
-        //Sets Power to Wheel
-        //if (!cfmToggle) {
-            drive.fl.setPower((velocity * Math.cos(direction) + speed) * speedProp);
-            drive.fr.setPower((velocity * Math.sin(direction) - speed) * speedProp);
-            drive.bl.setPower((velocity * Math.sin(direction) + speed) * speedProp);
-            drive.br.setPower((velocity * Math.cos(direction) - speed) * speedProp);
-
-
-            //drive.equalize(speedProp);
-                                // Gets Holon, and based on the acceleration of each wheel fixes the
-                                // power inputted into each motor
-                                // Just a TEST - didn't delete any code to make
-
-            /*
-            blHolon = drive.getHolon(drive.bl);
-            flHolon = drive.getHolon(drive.fl);
-            brHolon = drive.getHolon(drive.br);
-            frHolon = drive.getHolon(drive.fr);
-
-
-            if (flHolon > brHolon + 0.25 ||
-                    flHolon < brHolon - 0.25) {
-                if (flHolon > brHolon + 0.25) {
-                    flHolo = flHolo - 0.25;
+            /* if (frHolo * frHolon != flHolo * flHolon) {
+                if (frHolo > flHolo) {
+                    frHolo = flHolo/frHolo;
+                    frHolo = (flHolon * flHolo) / frHolon;
                 } else {
-                    flHolo = flHolo + 0.25;
+                    frHolo = frHolo/flHolo;
+                    frHolo = (flHolon * flHolo) / frHolon;
                 }
             }
 
-            //Test
+           */
 
-            if (frHolon > blHolon + 0.25 ||
-                    frHolon < blHolon - 0.25) {
-                if (frHolon > blHolon + 0.25) {
-                    frHolo = frHolo - 0.25;
-                } else {
-                    frHolo = frHolo + 0.25;
-                }
-            }
-*/
         //}
         //else if (false) {
-            //  Max CFM velocity, calculated
+        //  Max CFM velocity, calculated
             /*
             maxCFM_Velocity = fix * Math.sqrt((2 * tolerance * 9.81 * massStone * numberStackedBlocks * muBlocks)
                     / mass);
@@ -301,10 +317,10 @@ public class TeleOpTrollTest extends OpMode {
                 }
             }
              */
-     //   }
+        //   }
 
-           // telemetry.addData("CFM Power : ", cfm_power);
-
+        // telemetry.addData("CFM Power : ", cfm_power);
+/*
             if (gamepad1.dpad_left) {
                 drive.fl.setPower(1);
                 drive.fr.setPower(-1);
@@ -329,7 +345,7 @@ public class TeleOpTrollTest extends OpMode {
                             "BL : " + drive.getHolon(drive.bl) +
                             "BR : " + drive.getHolon(drive.br));
             telemetry.update();
+*/
 
-
-        }
     }
+}

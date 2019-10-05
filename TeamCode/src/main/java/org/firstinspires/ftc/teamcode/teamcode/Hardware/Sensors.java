@@ -6,15 +6,16 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import java.math.*;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.teamcode.teamcode.Testing.TeleOpTrollTest;
 
 public class Sensors {
 
-    private LinearOpMode opMode;
+    private TeleOpTrollTest opMode;
     public BNO055IMU gyro;
     public Orientation angles;
     public BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
-    public void initSensors(LinearOpMode opMode) {
+    public void initSensors(TeleOpTrollTest opMode) {
 
         this.opMode = opMode;
 

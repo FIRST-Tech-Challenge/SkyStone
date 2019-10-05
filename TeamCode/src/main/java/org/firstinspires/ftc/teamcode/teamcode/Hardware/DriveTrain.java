@@ -347,7 +347,7 @@ public class DriveTrain {
         bl.setPower(0);
     }
 
-    public double getHolon (DcMotor motor) {
+/*    public double getHolon (DcMotor motor) {
         runtime.reset();
 
         prevPosition = motor.getCurrentPosition();
@@ -360,10 +360,12 @@ public class DriveTrain {
         secondTime = runtime.milliseconds();
         secondPosition = motor.getCurrentPosition();
 
-        masterAccel =  (((secondPosition - secondPrevPosition) * (time - prevTime) + (prevPosition - position) * (secondTime - prevNewTime)) / (runtime.milliseconds() - prevTime) * (secondTime -
-                prevNewTime) * (time - prevTime)) ;
+        masterAccel =  Math.abs((((secondPosition - secondPrevPosition) * (time - prevTime) + (prevPosition - position) * (secondTime - prevNewTime)) /
+                (runtime.milliseconds() - prevTime) * (secondTime -
+                prevNewTime) * (time - prevTime))) ;
         return masterAccel;
     }
+ */
 
     public void equalize(double prop)
     {
@@ -382,31 +384,40 @@ public class DriveTrain {
         }
 
     }
-//hello
 
-    public double getEncodedAccel () {
+    public double getHolon (DcMotor motor) {
         runtime.reset();
 
-        prevPosition = (fl.getCurrentPosition() + fr.getCurrentPosition()
-                + br.getCurrentPosition() + bl.getCurrentPosition()) / 4;
+        prevPosition = (motor.getCurrentPosition());
         prevTime = runtime.milliseconds();
         time_ea = runtime.milliseconds();
-        position = (fl.getCurrentPosition() + fr.getCurrentPosition()
-                + br.getCurrentPosition() + bl.getCurrentPosition()) / 4;
+        position = (fl.getCurrentPosition());
 
         prevAccel = ((position - prevPosition) / (time_ea - prevTime_ea));
 
-        prevPosition = (fl.getCurrentPosition() + fr.getCurrentPosition()
-                + br.getCurrentPosition() + bl.getCurrentPosition()) / 4;
+        prevPosition = (motor.getCurrentPosition());
         prevNewTime = runtime.milliseconds();
         time_ea = runtime.milliseconds();
-        position = (fl.getCurrentPosition() + fr.getCurrentPosition()
-                + br.getCurrentPosition() + bl.getCurrentPosition()) / 4;
+        position = (fl.getCurrentPosition());
 
         accel = ((position - prevPosition) / (time_ea - prevNewTime));
 
         masterAccel =  Math.abs(((accel - prevAccel) / (time_ea - prevTime_ea)));
         return masterAccel;
+    }
+
+    public void holonize(DcMotor frontMotor, DcMotor backMotor, double frontHolo,
+                         double backHolo, boolean frontRev) {
+        if (frontMotor.getPower() != - backMotor.getPower()) {
+            frontHolo = (backHolo * backMotor.getPower()) / frontMotor.getPower();
+            backHolo = (frontHolo * frontMotor.getPower()) / backMotor.getPower();
+            if (frontRev) {
+                frontHolo = -frontHolo;
+            }
+            else if (!frontRev) {
+                backHolo = -backHolo;
+            }
+        }
     }
 
 }

@@ -42,7 +42,7 @@ public class AutoTrollSquare extends LinearOpMode {
         telemetry.addData("3rd method", runtime);
         telemetry.update();
 
-        drive.encoderDrive(this, -1, 24, 24, 2);
+        drive.encoderDrive(this, -1, 24,  -24, 2);
     }
 
-}
+    }

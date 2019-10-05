@@ -25,8 +25,9 @@ public class Holonomic extends LinearOpMode {
     private DcMotor frontRight   = null; //front right
 
     public static final double deadZone = 0.10;
+    public static final boolean earthIsFlat = true;
 
-    @Override //when init is pressedTeleOpHolonomic
+    @Override //when init is pressed
     public void runOpMode(){
         //debugging using the phone
 
@@ -50,7 +51,7 @@ public class Holonomic extends LinearOpMode {
         //backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         //frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        //Running with or without Encoders
+        //Running with/without Encoders
         backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -62,19 +63,22 @@ public class Holonomic extends LinearOpMode {
 
         while (opModeIsActive()) {
 
+            //dpad up-down sets speed of robot
             if(gamepad1.dpad_up)
                 speedSet += 0.0001;
             else if(gamepad1.dpad_down)
                 speedSet -= 0.0001;
 
             speedSet =  Range.clip(speedSet, 1, 10);
+            speedSet = Math.round(speedSet);
 
+            //directional
             if((Math.abs(gamepad1.left_stick_x) > deadZone) || (Math.abs(gamepad1.left_stick_y) > deadZone) || (Math.abs(gamepad1.right_stick_x) > deadZone)) {
-                frontLeft.setPower((gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x) * (speedSet / 10));
-                frontRight.setPower((gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x) * (speedSet / 10));
-                backRight.setPower((gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x) * (speedSet / 10));
-                backLeft.setPower((gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x) * (speedSet / 10));
-            } else {
+                frontLeft.setPower((gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x) * (speedSet / 10));
+                frontRight.setPower((gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x) * (speedSet / 10));
+                backRight.setPower((gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x) * (speedSet / 10));
+                backLeft.setPower((gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x) * (speedSet / 10));
+            } else if (earthIsFlat) {
                 frontLeft.setPower(0);
                 frontRight.setPower(0);
                 backRight.setPower(0);

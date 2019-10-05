@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.david_cao.generation1_linda_code;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -16,11 +17,16 @@ import org.darbots.darbotsftclib.libcore.templates.chassis_related.RobotMotionSy
 import org.darbots.darbotsftclib.libcore.templates.motor_related.RobotMotor;
 
 public class Robot4100Generation1_LindaCore extends RobotCore {
+    public enum IntakeSystemStatus{
+        SUCK,
+        VOMIT,
+        STOP
+    }
     private OmniDrive m_Chassis;
     private Servo m_DragServoL, m_DragServoR;
     private Servo m_Grabber, m_GrabberRot;
     private RobotServoUsingMotor m_linearSlide;
-
+    private DcMotor m_IntakeLeft, m_IntakeRight;
 
     public Robot4100Generation1_LindaCore(HardwareMap hardwares) {
         super("4100Generation1_LindaCore.log");
@@ -47,6 +53,9 @@ public class Robot4100Generation1_LindaCore extends RobotCore {
         RobotMotor LinearSlideMotor = new RobotMotorWithEncoder(hardwares.dcMotor.get("motorLinearSlide"),Robot4100Generation1_Settings.linearSlideMotorType);
         RobotMotorController linearSlideController = new RobotMotorController(LinearSlideMotor,Robot4100Generation1_Settings.LINEARSLIDE_TIMEOUTCONTROLENABLE,Robot4100Generation1_Settings.LINEARSLIDE_TIMEOUTFACTOR);
         this.m_linearSlide = new RobotServoUsingMotor(linearSlideController,Robot4100Generation1_Settings.LINEARSLIDE_START,Robot4100Generation1_Settings.LINEARSLIDE_MIN,Robot4100Generation1_Settings.LINEARSLIDE_MAX);
+
+        this.m_IntakeLeft = hardwares.dcMotor.get("motorIntakeLeft");
+        this.m_IntakeRight = hardwares.dcMotor.get("motorIntakeRight");
     }
 
     public RobotServoUsingMotor getLinearSlide(){
@@ -76,6 +85,33 @@ public class Robot4100Generation1_LindaCore extends RobotCore {
             this.m_GrabberRot.setPosition(Robot4100Generation1_Settings.GRABBERROTSERVO_OUTSIDEPOS);
         }else{
             this.m_GrabberRot.setPosition(Robot4100Generation1_Settings.GRABBERROTSERVO_INSIDEPOS);
+        }
+    }
+
+    public void setIntakeSystemStatus(IntakeSystemStatus status){
+        switch(status){
+            case SUCK:
+                this.m_IntakeLeft.setPower(Robot4100Generation1_Settings.INTAKEMOTOR_SPEED);
+                this.m_IntakeRight.setPower(-Robot4100Generation1_Settings.INTAKEMOTOR_SPEED);
+                break;
+            case VOMIT:
+                this.m_IntakeLeft.setPower(-Robot4100Generation1_Settings.INTAKEMOTOR_SPEED);
+                this.m_IntakeRight.setPower(Robot4100Generation1_Settings.INTAKEMOTOR_SPEED);
+                break;
+            case STOP:
+                this.m_IntakeLeft.setPower(0);
+                this.m_IntakeRight.setPower(0);
+                break;
+        }
+    }
+
+    public IntakeSystemStatus getIntakeSystemStatus(){
+        if(this.m_IntakeLeft.getPower() == Robot4100Generation1_Settings.INTAKEMOTOR_SPEED) {
+            return IntakeSystemStatus.SUCK;
+        }else if(this.m_IntakeLeft.getPower() == -Robot4100Generation1_Settings.INTAKEMOTOR_SPEED){
+            return IntakeSystemStatus.VOMIT;
+        }else{
+            return IntakeSystemStatus.STOP;
         }
     }
 

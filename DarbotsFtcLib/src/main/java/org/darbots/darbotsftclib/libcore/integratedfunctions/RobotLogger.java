@@ -12,16 +12,58 @@ import java.util.Calendar;
 import java.util.List;
 
 public class RobotLogger {
+    public enum LogLevel{
+        FATAL(5),
+        ERROR(4),
+        WARNING(3),
+        INFO(2),
+        DEBUG(1);
+
+        private int value = 0;
+
+        private LogLevel(int value) {    //    必须是private的，否则编译错误
+            this.value = value;
+        }
+
+        public static LogLevel valueOf(int value) {    //    手写的从int到enum的转换函数
+            switch (value) {
+                case 1:
+                    return DEBUG;
+                case 2:
+                    return INFO;
+                case 3:
+                    return WARNING;
+                case 4:
+                    return ERROR;
+                case 5:
+                    return FATAL;
+                default:
+                    return null;
+            }
+        }
+
+        public int value() {
+            return this.value;
+        }
+    }
     private JSONArray m_Array;
     private JSONObject m_CurrentLog;
     private JSONArray m_Logs;
     private String m_FileName;
     private boolean m_DebugOn;
+    private LogLevel m_LowestLogLevel;
     public RobotLogger(String FileName){
         this.m_FileName = FileName;
         this.m_DebugOn = false;
+        this.m_LowestLogLevel = LogLevel.INFO;
         this.__setupCurrentLog();
         this.__readLoggerFile();
+    }
+    public LogLevel getLowestLogLevel(){
+        return this.m_LowestLogLevel;
+    }
+    public void setLowestLogLevel(LogLevel lowestLevel){
+        this.m_LowestLogLevel = lowestLevel;
     }
     public boolean isDebugOn(){
         return this.m_DebugOn;
@@ -33,8 +75,8 @@ public class RobotLogger {
         m_CurrentLog = new JSONObject();
         m_Logs = new JSONArray();
         Calendar currentTime = Calendar.getInstance();
-        String currentTimeStr = DateFormat.getInstance().format(currentTime.getTime());
-        m_CurrentLog.put("startTime", currentTimeStr);
+        long currentTimeLong = currentTime.getTime().getTime();
+        m_CurrentLog.put("startTime", currentTimeLong);
         m_CurrentLog.put("runningOpMode",GlobalRegister.runningOpMode.getClass().getName());
         m_CurrentLog.put("logs",m_Logs);
     }
@@ -74,20 +116,26 @@ public class RobotLogger {
             __readLoggerFile();
         }
     }
-    public List getLogs(){
+    public List getAllLogs(){
+        return this.m_Array;
+    }
+    public List getCurrentLogs(){
         return m_Logs;
     }
-    public void addLog(String module, String caption, String content){
+    public void addLog(String module, String caption, Object content, LogLevel logLevel){
         if(!isDebugOn()){
+            return;
+        }else if(logLevel.value() < this.m_LowestLogLevel.value()){
             return;
         }
         JSONObject logContent = new JSONObject();
         Calendar currentTime = Calendar.getInstance();
-        String currentTimeStr = DateFormat.getInstance().format(currentTime.getTime());
+        long currentTimeLong =  currentTime.getTime().getTime();
         logContent.put("module",module);
         logContent.put("caption",caption);
-        logContent.put("timeStamp",currentTimeStr);
+        logContent.put("timeStamp",currentTimeLong);
         logContent.put("content",content);
+        logContent.put("level",logLevel.value());
         m_Logs.add(logContent);
     }
     public void clearPreviousRunLogs(){

@@ -67,6 +67,12 @@ public class Robot4100Generation1_TeleOp extends DarbotsBasicOpMode<Robot4100Gen
                 this.m_RobotCore.setGrabberRotServoToOutside(false);
             }
 
+            if(gamepad2.left_bumper){
+                this.m_RobotCore.setIntakeSystemStatus(Robot4100Generation1_LindaCore.IntakeSystemStatus.SUCK);
+            }else{
+                this.m_RobotCore.setIntakeSystemStatus(Robot4100Generation1_LindaCore.IntakeSystemStatus.STOP);
+            }
+
             telemetry.addData("LinearSlide","" + this.m_RobotCore.getLinearSlide().getCurrentPosition() + "[" + this.m_RobotCore.getLinearSlide().getCurrentPercent() + "%]," + (this.m_RobotCore.getLinearSlide().isBusy() ? "Busy" : "Not Busy"));
             telemetry.update();
             this.m_RobotCore.updateStatus();

@@ -100,17 +100,17 @@ public class Robot {
         bLeft.setDirection(DcMotor.Direction.FORWARD);
         bRight.setDirection(DcMotor.Direction.REVERSE);
 
-        // Map intake motors
-        intakeLeft = hardwareMap.dcMotor.get("intakeLeft");
-        intakeRight = hardwareMap.dcMotor.get("intakeRight");
-
-        // Set direction of intake motors
-        intakeLeft.setDirection(DcMotor.Direction.FORWARD);
-        intakeRight.setDirection(DcMotor.Direction.REVERSE);
-
-        // Map outtake motors
-        outtakeSpool = hardwareMap.dcMotor.get("outtakeSpool");
-        outtakeArm = hardwareMap.dcMotor.get("outtakeArm");
+//        // Map intake motors
+//        intakeLeft = hardwareMap.dcMotor.get("intakeLeft");
+//        intakeRight = hardwareMap.dcMotor.get("intakeRight");
+//
+//        // Set direction of intake motors
+//        intakeLeft.setDirection(DcMotor.Direction.FORWARD);
+//        intakeRight.setDirection(DcMotor.Direction.REVERSE);
+//
+//        // Map outtake motors
+//        outtakeSpool = hardwareMap.dcMotor.get("outtakeSpool");
+//        outtakeArm = hardwareMap.dcMotor.get("outtakeArm");
     }
 
     public void intializeIMU() {

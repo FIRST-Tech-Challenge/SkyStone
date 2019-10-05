@@ -15,6 +15,12 @@ public class MainTeleop extends LinearOpMode {
     double bLPower;
     double bRPower;
 
+    double intakeLeftPower;
+    double intakeRightPower;
+
+    char outtakeButton;
+    double outtakeSpoolPower;
+
     boolean onSlowDrive, changedSlowDrive = false;
 
     public static double powerScaleFactor = 0.9;
@@ -28,6 +34,8 @@ public class MainTeleop extends LinearOpMode {
         while (opModeIsActive()) {
             slowDriveLogic();
             driveLogic();
+            intakeLogic();
+            outtakeLogic();
         }
     }
 
@@ -36,6 +44,9 @@ public class MainTeleop extends LinearOpMode {
         robot.setMotorMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         robot.setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        robot.outtakeArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.outtakeArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     //teleop methods
@@ -97,6 +108,35 @@ public class MainTeleop extends LinearOpMode {
         }else if(!gamepad1.left_bumper){
             changedSlowDrive = false;
         }
+    }
+
+    private void intakeLogic() {
+        intakeLeftPower = gamepad2.left_stick_y;
+        intakeRightPower = gamepad2.right_stick_y;
+
+        robot.intake(intakeLeftPower,intakeRightPower);
+    }
+
+    private void outtakeLogic() {
+        outtakeSpoolPower = 0;
+
+        if (gamepad2.a) { // Clamp and Extend
+            outtakeButton = 'a';
+        } else if (gamepad2.b) { // Deposit and Reset
+            outtakeButton = 'b';
+        } else if (gamepad2.x) {
+            outtakeButton = 'x'; // Clamp
+        } else if (gamepad2.y) {
+            outtakeButton = 'y'; // Extend
+        }
+
+        if (gamepad2.dpad_up) {
+            outtakeSpoolPower = .5;
+        } else if (gamepad2.dpad_down) {
+            outtakeSpoolPower = -.5;
+        }
+
+        robot.outtake(outtakeButton,outtakeSpoolPower);
     }
 }
 

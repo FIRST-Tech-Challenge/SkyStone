@@ -6,34 +6,21 @@ import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
-import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.CurvePoint;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Vector;
 
-import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
-import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
-import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
-import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
-import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 import static org.firstinspires.ftc.teamcode.Skystone.MathFunctions.lineCircleIntersection;
 
 public class Robot {
@@ -42,6 +29,25 @@ public class Robot {
     public DcMotor fRight;
     public DcMotor bLeft;
     public DcMotor bRight;
+
+    // Intake Motors
+    public DcMotor intakeLeft;
+    public DcMotor intakeRight;
+
+    // Outtake Motors
+    public DcMotor outtakeSpool;
+    public DcMotor outtakeArm;
+
+    // Outtake Arm Positions
+    final int OUTTAKE_ARM_EXTENDED = -10;
+    final int OUTTAKE_ARM_RESET = 0;
+
+    // Outtake Servo
+    public Servo clawServo;
+
+    // Outtake Servo Positions
+    final float CLAW_SERVO_CLAMPED = 1;
+    final float CLAW_SERVO_RELEASED = -1;
 
     double i = 1;
 
@@ -80,17 +86,31 @@ public class Robot {
         this.telemetry = telemetry;
         this.hardwareMap = hardwareMap;
         this.linearOpMode = linearOpMode;
+
         //config names need to match configs on the phone
         //Map drive motors
         fLeft = hardwareMap.dcMotor.get("fLeft");
         fRight = hardwareMap.dcMotor.get("fRight");
         bLeft = hardwareMap.dcMotor.get("bLeft");
         bRight = hardwareMap.dcMotor.get("bRight");
+
         //Set direction of drive motors
         fLeft.setDirection(DcMotor.Direction.FORWARD);
         fRight.setDirection(DcMotor.Direction.REVERSE);
         bLeft.setDirection(DcMotor.Direction.FORWARD);
         bRight.setDirection(DcMotor.Direction.REVERSE);
+
+        // Map intake motors
+        intakeLeft = hardwareMap.dcMotor.get("intakeLeft");
+        intakeRight = hardwareMap.dcMotor.get("intakeRight");
+
+        // Set direction of intake motors
+        intakeLeft.setDirection(DcMotor.Direction.FORWARD);
+        intakeRight.setDirection(DcMotor.Direction.REVERSE);
+
+        // Map outtake motors
+        outtakeSpool = hardwareMap.dcMotor.get("outtakeSpool");
+        outtakeArm = hardwareMap.dcMotor.get("outtakeArm");
     }
 
     public void intializeIMU() {
@@ -128,7 +148,7 @@ public class Robot {
         bRight.setMode(runMode);
     }
 
-    //normal use method default 10 second kill time
+    //normal use method default 2 second kill time
     public void finalTurn(double targetHeading) {
         finalTurn(targetHeading, 2000);
     }
@@ -180,6 +200,34 @@ public class Robot {
         fRight.setPower(fRpower);
         bLeft.setPower(bLpower);
         bRight.setPower(bRpower);
+    }
+
+    public void intake (double intakeLeftPower, double intakeRightPower) {
+        intakeLeft.setPower(intakeLeftPower);
+        intakeRight.setPower(intakeRightPower);
+    }
+
+    public void outtake (char outtakeButton, double outtakeSpoolPower) {
+        if (outtakeButton == 'a') {
+            // Clamp and Extend
+            clawServo.setPosition(CLAW_SERVO_CLAMPED);
+            outtakeArm.setTargetPosition(OUTTAKE_ARM_EXTENDED);
+        } else if (outtakeButton == 'b') {
+            // Deposit and Reset
+            clawServo.setPosition(CLAW_SERVO_RELEASED);
+            outtakeArm.setTargetPosition(OUTTAKE_ARM_RESET);
+        } else if (outtakeButton == 'x') {
+            // Clamp
+            clawServo.setPosition(CLAW_SERVO_CLAMPED);
+        } else if (outtakeButton == 'y') {
+            // Extend
+            outtakeArm.setTargetPosition(OUTTAKE_ARM_EXTENDED);
+        } else {
+            telemetry.addData("status","there is a bug in robot.outtake() and it's ethan's fault");
+            telemetry.update();
+        }
+
+        outtakeSpool.setPower(outtakeSpoolPower);
     }
 
     public void resetMotor(DcMotor motor) {
@@ -628,69 +676,69 @@ public class Robot {
         }
     }
 
-    public Point detectSkystone() {
-        final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
-        final boolean PHONE_IS_PORTRAIT = false;
-        final String VUFORIA_KEY = "AbSCRq//////AAAAGYEdTZut2U7TuZCfZGlOu7ZgOzsOlUVdiuQjgLBC9B3dNvrPE1x/REDktOALxt5jBEJJBAX4gM9ofcwMjCzaJKoZQBBlXXxrOscekzvrWkhqs/g+AtWJLkpCOOWKDLSixgH0bF7HByYv4h3fXECqRNGUUCHELf4Uoqea6tCtiGJvee+5K+5yqNfGduJBHcA1juE3kxGMdkqkbfSjfrNgWuolkjXR5z39tRChoOUN24HethAX8LiECiLhlKrJeC4BpdRCRazgJXGLvvI74Tmih9nhCz6zyVurHAHttlrXV17nYLyt6qQB1LtVEuSCkpfLJS8lZWS9ztfC1UEfrQ8m5zA6cYGQXjDMeRumdq9ugMkS";
-        final float mmPerInch = 25.4f;
-
-        final float stoneZ = 2.00f * mmPerInch;
-        Point point;
-                OpenGLMatrix lastLocation = null;
-                VuforiaLocalizer vuforia = null;
-                boolean targetVisible = false;
-                float phoneXRotate = 0;
-                float phoneYRotate = 0;
-                float phoneZRotate = 0;
-
-                int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-                VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-                parameters.vuforiaLicenseKey = VUFORIA_KEY;
-                parameters.cameraDirection = CAMERA_CHOICE;
-                vuforia = ClassFactory.getInstance().createVuforia(parameters);
-
-                VuforiaTrackables targetsSkyStone = vuforia.loadTrackablesFromAsset("Skystone");
-                VuforiaTrackable stoneTarget = targetsSkyStone.get(0);
-                stoneTarget.setName("Stone Target");
-                List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
-                allTrackables.addAll(targetsSkyStone);
-                stoneTarget.setLocation(OpenGLMatrix.translation(0, 0, stoneZ).multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
-                final float CAMERA_FORWARD_DISPLACEMENT = 9f * mmPerInch;
-                final float CAMERA_VERTICAL_DISPLACEMENT = 9f * mmPerInch;
-                final float CAMERA_LEFT_DISPLACEMENT = -4;
-
-                OpenGLMatrix robotFromCamera = OpenGLMatrix.translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT).multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
-                ((VuforiaTrackableDefaultListener) stoneTarget.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
-                targetsSkyStone.activate();
-
-                while(true) {
-
-                    // check all the trackable targets to see which one (if any) is visible.
-                    targetVisible = false;
-                    for (VuforiaTrackable trackable : allTrackables) {
-                        if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
-                            telemetry.addData("Visible Target", trackable.getName());
-                            targetVisible = true;
-
-                            // getUpdatedRobotLocation() will return null if no new information is available since
-                            // the last time that call was made, or if the trackable is not currently visible.
-                            OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
-                            if (robotLocationTransform != null) {
-                                lastLocation = robotLocationTransform;
-                            }
-                            break;
-                        }
-                    }
-                    if (targetVisible) {
-                        // express position (translation) of robot in inches.
-                        VectorF translation = lastLocation.getTranslation();
-                        return new Point(translation.get(0) / mmPerInch, translation.get(1) / mmPerInch);
-
-                        // express the rotation of the robot in degrees.
-                    } else {
-                        telemetry.addData("Visible Target", "none");
-                    }
-                    telemetry.update();
-                }
-    }
+//    public Point detectSkystone() {
+//        final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
+//        final boolean PHONE_IS_PORTRAIT = false;
+//        final String VUFORIA_KEY = "AbSCRq//////AAAAGYEdTZut2U7TuZCfZGlOu7ZgOzsOlUVdiuQjgLBC9B3dNvrPE1x/REDktOALxt5jBEJJBAX4gM9ofcwMjCzaJKoZQBBlXXxrOscekzvrWkhqs/g+AtWJLkpCOOWKDLSixgH0bF7HByYv4h3fXECqRNGUUCHELf4Uoqea6tCtiGJvee+5K+5yqNfGduJBHcA1juE3kxGMdkqkbfSjfrNgWuolkjXR5z39tRChoOUN24HethAX8LiECiLhlKrJeC4BpdRCRazgJXGLvvI74Tmih9nhCz6zyVurHAHttlrXV17nYLyt6qQB1LtVEuSCkpfLJS8lZWS9ztfC1UEfrQ8m5zA6cYGQXjDMeRumdq9ugMkS";
+//        final float mmPerInch = 25.4f;
+//
+//        final float stoneZ = 2.00f * mmPerInch;
+//        Point point;
+//                OpenGLMatrix lastLocation = null;
+//                VuforiaLocalizer vuforia = null;
+//                boolean targetVisible = false;
+//                float phoneXRotate = 0;
+//                float phoneYRotate = 0;
+//                float phoneZRotate = 0;
+//
+//                int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+//                VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+//                parameters.vuforiaLicenseKey = VUFORIA_KEY;
+//                parameters.cameraDirection = CAMERA_CHOICE;
+//                vuforia = ClassFactory.getInstance().createVuforia(parameters);
+//
+//                VuforiaTrackables targetsSkyStone = vuforia.loadTrackablesFromAsset("Skystone");
+//                VuforiaTrackable stoneTarget = targetsSkyStone.get(0);
+//                stoneTarget.setName("Stone Target");
+//                List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
+//                allTrackables.addAll(targetsSkyStone);
+//                stoneTarget.setLocation(OpenGLMatrix.translation(0, 0, stoneZ).multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
+//                final float CAMERA_FORWARD_DISPLACEMENT = 9f * mmPerInch;
+//                final float CAMERA_VERTICAL_DISPLACEMENT = 9f * mmPerInch;
+//                final float CAMERA_LEFT_DISPLACEMENT = -4;
+//
+//                OpenGLMatrix robotFromCamera = OpenGLMatrix.translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT).multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
+//                ((VuforiaTrackableDefaultListener) stoneTarget.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
+//                targetsSkyStone.activate();
+//
+//                while(true) {
+//
+//                    // check all the trackable targets to see which one (if any) is visible.
+//                    targetVisible = false;
+//                    for (VuforiaTrackable trackable : allTrackables) {
+//                        if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
+//                            telemetry.addData("Visible Target", trackable.getName());
+//                            targetVisible = true;
+//
+//                            // getUpdatedRobotLocation() will return null if no new information is available since
+//                            // the last time that call was made, or if the trackable is not currently visible.
+//                            OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
+//                            if (robotLocationTransform != null) {
+//                                lastLocation = robotLocationTransform;
+//                            }
+//                            break;
+//                        }
+//                    }
+//                    if (targetVisible) {
+//                        // express position (translation) of robot in inches.
+//                        VectorF translation = lastLocation.getTranslation();
+//                        return new Point(translation.get(0) / mmPerInch, translation.get(1) / mmPerInch);
+//
+//                        // express the rotation of the robot in degrees.
+//                    } else {
+//                        telemetry.addData("Visible Target", "none");
+//                    }
+//                    telemetry.update();
+//                }
+//    }
 }

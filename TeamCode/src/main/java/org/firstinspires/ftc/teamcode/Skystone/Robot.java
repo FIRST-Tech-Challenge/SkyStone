@@ -358,7 +358,7 @@ public class Robot {
 //        bRightOLD = bRightNEW;
 //    }
 
-    public boolean followCurve(Vector<CurvePoint> allPoints, double followAngle) {
+    public boolean followCurve(Vector<CurvePoint> allPoints, double followAngle, double speed) {
         Vector<CurvePoint> pathExtended = (Vector<CurvePoint>) allPoints.clone();
 
         pointWithIndex distanceAlongPath = distanceAlongPath(allPoints, robotPos);
@@ -382,18 +382,18 @@ public class Robot {
             i += 0.1;
         }
         i = Range.clip(i, 1, 2);
-        applyMove();
+        applyMove(speed);
         return true;
     }
 
-    public void moveFollowCurve(Vector<CurvePoint> points) {
+    public void moveFollowCurve(Vector<CurvePoint> points, double speed) {
         pathDistance = Math.hypot(points.get(points.size() - 1).x, points.get(points.size() - 1).y);
         while (linearOpMode.opModeIsActive()) {
 
             // if followCurve returns false then it is ready to stop
             // else, it moves
 
-            if (!followCurve(points, Math.toRadians(0))) {
+            if (!followCurve(points, Math.toRadians(0), speed)) {
                 brakeRobot();
                 return;
             }
@@ -517,7 +517,7 @@ public class Robot {
         turnMovement = Range.clip(relativeTurnAngle / Math.toRadians(30), -1, 1) * turnSpeed;
     }
 
-    public void applyMove() {
+    public void applyMove(double scaler) {
         double fLeftPower = (yMovement * 1.414 + turnMovement + xMovement);
         double fRightPower = (-yMovement * 1.414 - turnMovement + xMovement);
         double bLeftPower = (-yMovement * 1.414 + turnMovement + xMovement);
@@ -534,7 +534,7 @@ public class Robot {
             maxPower = Math.abs(fRightPower);
         }
 
-        double scaler = (distanceToEnd / pathDistance) * 1.5;
+        scaler *= (distanceToEnd / pathDistance);
         scaler = Range.clip(scaler, 0.43, Integer.MAX_VALUE);
 
         fLeftPower *= scaler;

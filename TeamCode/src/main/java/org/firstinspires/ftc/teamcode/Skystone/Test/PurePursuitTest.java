@@ -44,7 +44,7 @@ public class PurePursuitTest  extends LinearOpMode
 
         while (opModeIsActive()){
 //            robot.followCurve(testPath.targetPoints,Math.toRadians(0));
-            robot.moveFollowCurve(testPath.targetPoints);
+            robot.moveFollowCurve(testPath.targetPoints, 0.5);
             sleep(5000);
             break;
         }

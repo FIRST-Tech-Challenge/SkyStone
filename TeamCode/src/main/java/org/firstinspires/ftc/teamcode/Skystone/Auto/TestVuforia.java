@@ -50,35 +50,35 @@ public class TestVuforia extends AutoBase {
 
             if (translation.get(0) / mmPerInch > 5) {
                 telemetry.addData("Position: ", "Left");
-                position = -1;
+                position = 1;
                 telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
                         translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
                 telemetry.update();
             } else if (translation.get(0) / mmPerInch < -5) {
                 telemetry.addData("Position: ", "Right");
-                position = 1;
+                position = -1;
                 telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
                         translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
                 telemetry.update();
             } else {
                 telemetry.addData("Position: ", "Center");
-                position = -1;
+                position = 0;
                 telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
                         translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
                 telemetry.update();
             }
         }
-        double[][] testPoints = {{0,5},{15.5 + (Math.abs(position)/4.0), position*1.2}};
+
+        double[][] testPoints = {{0,5},{15 + (Math.abs(position)/4.0), position*1.2}};
         sleep(100);
         PathPoints testPath = new PathPoints(testPoints, 3);
-        robot.moveFollowCurve(testPath.targetPoints); 
+        robot.moveFollowCurve(testPath.targetPoints, 0.3);
 
         telemetry.addData("X Value: ", 15 + (Math.abs(position)/5));
         telemetry.addData("Y Value: ", position);
         telemetry.update();
 
     }
-
     protected void initVuforia() {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 

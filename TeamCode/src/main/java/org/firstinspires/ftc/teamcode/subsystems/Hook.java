@@ -14,4 +14,11 @@ public class Hook {
     public void setHook(Servo hook){
         this.hook = hook;
     }
+    
+    public void setHookPower(double power) {
+        hook.setPower(power);
+    }
+    
+    public void setPower(double power) {
+        setHookPower(power);
 }

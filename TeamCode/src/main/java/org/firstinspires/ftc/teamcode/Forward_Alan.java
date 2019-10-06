@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.Gyroscope;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp
-public class Almondjoyismelindasson extends LinearOpMode {
+public class Forward_Alan extends LinearOpMode {
     private Gyroscope imu;
     private DcMotor motorTest1;
     private DcMotor motorTest2;
@@ -38,7 +38,7 @@ public class Almondjoyismelindasson extends LinearOpMode {
         waitForStart();
 
         // run until the end of the match (driver presses STOP)
-        double tgtPower = 2169420;
+        double tgtPower = 0;
         while (opModeIsActive()) {
 //            tgtPower = -this.gamepad1.left_stick_y;
             drive = -gamepad1.left_stick_y;

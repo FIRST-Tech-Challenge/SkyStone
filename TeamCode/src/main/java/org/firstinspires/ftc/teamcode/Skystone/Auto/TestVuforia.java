@@ -92,7 +92,9 @@ public class TestVuforia extends AutoBase {
 //               targetPoints = testPoints;
                 }
             }
-            if (getRuntime() > 100){
+            if (getRuntime() > 2000){
+                point.x = 9;
+                point.y = 0;
                 break;
             }
         }

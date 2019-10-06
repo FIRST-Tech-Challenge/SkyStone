@@ -49,7 +49,7 @@ public class TestVuforia extends AutoBase {
         targetsSkyStone.activate();
         boolean detected = false;
         int num = 0;
-        while (!detected){
+        while (true){
             if (((VuforiaTrackableDefaultListener) skyStoneTarget.getListener()).isVisible()) {
 
                 OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) skyStoneTarget.getListener()).getUpdatedRobotLocation();
@@ -67,7 +67,7 @@ public class TestVuforia extends AutoBase {
 //               targetPoints = testPoints;
                     point.x = 9;
                     point.y = -3;
-                    detected = true;
+                    break;
 
                 } else if (translation.get(0) / mmPerInch < -5) {
                     telemetry.addData("Position: ", "Right");
@@ -78,7 +78,7 @@ public class TestVuforia extends AutoBase {
 
                     point.x = 9;
                     point.y = 3;
-                    detected = true;
+                    break;
 
                 } else {
                     telemetry.addData("Position: ", "Center");
@@ -87,17 +87,13 @@ public class TestVuforia extends AutoBase {
                     telemetry.update();
                     point.x = 9;
                     point.y = 0;
-                    detected = true;
+                    break;
 //               double[][]testPoints = {{6, 0},{17, 0}};
 //               targetPoints = testPoints;
                 }
-                num++;
-                if (num>100){
-                    point.x = 9;
-                    point.y = 0;
-                    detected = true;
-                    telemetry.addData("No Detect: ", "Defaulted");
-                }
+            }
+            if (getRuntime() > 100){
+                break;
             }
         }
 

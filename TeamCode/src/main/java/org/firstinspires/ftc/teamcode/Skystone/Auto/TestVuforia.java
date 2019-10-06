@@ -92,12 +92,12 @@ public class TestVuforia extends AutoBase {
 //               targetPoints = testPoints;
                 }
                 num++;
-            }
-            if (num>100){
-                point.x = 9;
-                point.y = 0;
-                detected = true;
-                telemetry.addData("No Detect: ", "Defaulted");
+                if (num>100){
+                    point.x = 9;
+                    point.y = 0;
+                    detected = true;
+                    telemetry.addData("No Detect: ", "Defaulted");
+                }
             }
         }
 

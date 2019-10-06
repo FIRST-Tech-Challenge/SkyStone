@@ -120,12 +120,12 @@ class Odometry{
         rightPodOld = rightPodNew;
         mecanumPodOld = mecanumPodNew;
 
-        robot.telemetry.addLine("left x odo " + leftPodNew);
-        robot.telemetry.addLine("right x odo " + rightPodNew);
-        robot.telemetry.addLine("mecanum odo " + mecanumPodNew);
-        robot.telemetry.addLine("XPOS: " + robot.robotPos.x);
-        robot.telemetry.addLine("YPOS: " + robot.robotPos.y);
-        robot.telemetry.addLine("ANGPOS: " + Math.toDegrees(robot.anglePos));
+//        robot.telemetry.addLine("left x odo " + leftPodNew);
+//        robot.telemetry.addLine("right x odo " + rightPodNew);
+//        robot.telemetry.addLine("mecanum odo " + mecanumPodNew);
+//        robot.telemetry.addLine("XPOS: " + robot.robotPos.x);
+//        robot.telemetry.addLine("YPOS: " + robot.robotPos.y);
+//        robot.telemetry.addLine("ANGPOS: " + Math.toDegrees(robot.anglePos));
         robot.telemetry.update();
     }
 
@@ -162,9 +162,9 @@ class Odometry{
         bLeftOLD = bLeftNEW;
         bRightOLD = bRightNEW;
 
-        robot.telemetry.addLine("XPOS: " + xPosGlobal);
-        robot.telemetry.addLine("YPOS: " + yPosGlobal);
-        robot.telemetry.addLine("ANGPOS: " + Math.toDegrees(Math.toDegrees(angleGlobal)));
+//        robot.telemetry.addLine("XPOS: " + xPosGlobal);
+//        robot.telemetry.addLine("YPOS: " + yPosGlobal);
+//        robot.telemetry.addLine("ANGPOS: " + Math.toDegrees(Math.toDegrees(angleGlobal)));
         robot.telemetry.update();
     }
 }

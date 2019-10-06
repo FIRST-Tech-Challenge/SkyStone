@@ -40,6 +40,7 @@ public class TestVuforia extends AutoBase {
 
         point.x = 17;
         point.y = 0;
+
         robot.moveToPoint(4,0,0.5,0.5,Math.toRadians(0));
 
         VuforiaTrackables targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
@@ -50,8 +51,9 @@ public class TestVuforia extends AutoBase {
         boolean detected = false;
         int num = 0;
         while (true){
+            telemetry.addLine("in loop");
             if (((VuforiaTrackableDefaultListener) skyStoneTarget.getListener()).isVisible()) {
-
+                telemetry.addLine("Visible");
                 OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) skyStoneTarget.getListener()).getUpdatedRobotLocation();
                 if (robotLocationTransform != null) {
                     lastLocation = robotLocationTransform;
@@ -93,13 +95,13 @@ public class TestVuforia extends AutoBase {
                 }
             }
             if (getRuntime() > 2000){
+                telemetry.addLine("No detection");
+                telemetry.update();
                 point.x = 9;
                 point.y = 0;
                 break;
             }
         }
-
-        sleep(10000);
 
         robot.moveToPoint(point.x,point.y,0.5,0.5,Math.toRadians(0));
         robot.finalTurn(0);

@@ -83,6 +83,8 @@ public class MecanumAuto extends LinearOpMode
             robotHardware.wheelTargetPositions[motorIndex] = targetPosition*calculateWheelCoefficient(direction, robotHardware.wheelAngles[motorIndex]);
             robotHardware.motorList[motorIndex].setTargetPosition((int)(robotHardware.wheelTargetPositions[motorIndex]+0.5));
         }
+
+        return 0.0;
     }
 
     private void updateMotorPowers()

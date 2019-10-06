@@ -16,19 +16,12 @@ public class MecanumHardwareMap
     public double[] wheelTargetPositions;
     public DcMotor.RunMode[] runModes;
 
-    private HardwareMap chwMap;
-
     MecanumHardwareMap(HardwareMap hwMap)
     {
-        chwMap = hwMap;
-    }
-
-    public void init()
-    {
-        driveFrontLeft = chwMap.get(DcMotor.class, "driveFrontLeft");
-        driveFrontRight = chwMap.get(DcMotor.class, "driveFrontRight");
-        driveRearRight = chwMap.get(DcMotor.class, "driveRearRight");
-        driveRearLeft = chwMap.get(DcMotor.class, "driveRearLeft");
+        driveFrontLeft = hwMap.get(DcMotor.class, "driveFrontLeft");
+        driveFrontRight = hwMap.get(DcMotor.class, "driveFrontRight");
+        driveRearRight = hwMap.get(DcMotor.class, "driveRearRight");
+        driveRearLeft = hwMap.get(DcMotor.class, "driveRearLeft");
 
         motorList = new DcMotor[]{driveFrontLeft, driveFrontRight, driveRearLeft, driveRearRight};
         wheelAngles = new double[]{-3*Math.PI/4, 3*Math.PI/4, -Math.PI/4, Math.PI/4};

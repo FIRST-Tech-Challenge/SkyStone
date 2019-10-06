@@ -10,6 +10,7 @@ import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.*;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.PathPoints;
+import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
 import org.firstinspires.ftc.teamcode.Skystone.Odometry.Position2D;
 import org.firstinspires.ftc.teamcode.Skystone.Robot;
 
@@ -23,8 +24,11 @@ public class TestVuforia extends AutoBase {
     int position = 0;
     private static final float mmPerInch = 25.4f;
 
+    Point point = new Point();
+
     @Override
     public void runOpMode() {
+
         initVuforia();
         Robot robot = new Robot(this.hardwareMap, this.telemetry, this);
 
@@ -34,49 +38,73 @@ public class TestVuforia extends AutoBase {
         Position2D position2D = new Position2D(robot);
         position2D.startOdometry();
 
+        point.x = 17;
+        point.y = 0;
+        robot.moveToPoint(4,0,0.5,0.5,Math.toRadians(0));
+
         VuforiaTrackables targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
+
         VuforiaTrackable skyStoneTarget = targetsSkyStone.get(0);
 
         targetsSkyStone.activate();
+        boolean detected = false;
+        int num = 0;
+        while (!detected){
+            if (((VuforiaTrackableDefaultListener) skyStoneTarget.getListener()).isVisible()) {
 
+                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) skyStoneTarget.getListener()).getUpdatedRobotLocation();
+                if (robotLocationTransform != null) {
+                    lastLocation = robotLocationTransform;
+                }
+                VectorF translation = lastLocation.getTranslation();
 
-        if (((VuforiaTrackableDefaultListener) skyStoneTarget.getListener()).isVisible()) {
-            OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) skyStoneTarget.getListener()).getUpdatedRobotLocation();
-            if (robotLocationTransform != null) {
-                lastLocation = robotLocationTransform;
+                if (translation.get(0) / mmPerInch > 5) {
+                    telemetry.addData("Position: ", "Left");
+                    telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
+                            translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
+//                double[][]testPoints={{6, -3},{17, -3}};
+                    telemetry.update();
+//               targetPoints = testPoints;
+                    point.x = 9;
+                    point.y = -3;
+                    detected = true;
+
+                } else if (translation.get(0) / mmPerInch < -5) {
+                    telemetry.addData("Position: ", "Right");
+                    telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
+                            translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
+//                telemetry.update();
+//                double[][]testPoints = {{6, 3},{17, 3}};
+
+                    point.x = 9;
+                    point.y = 3;
+                    detected = true;
+
+                } else {
+                    telemetry.addData("Position: ", "Center");
+                    telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
+                            translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
+                    telemetry.update();
+                    point.x = 9;
+                    point.y = 0;
+                    detected = true;
+//               double[][]testPoints = {{6, 0},{17, 0}};
+//               targetPoints = testPoints;
+                }
+                num++;
             }
-
-            VectorF translation = lastLocation.getTranslation();
-
-            if (translation.get(0) / mmPerInch > 5) {
-                telemetry.addData("Position: ", "Left");
-                position = 1;
-                telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
-                        translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
-                telemetry.update();
-            } else if (translation.get(0) / mmPerInch < -5) {
-                telemetry.addData("Position: ", "Right");
-                position = -1;
-                telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
-                        translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
-                telemetry.update();
-            } else {
-                telemetry.addData("Position: ", "Center");
-                position = 0;
-                telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
-                        translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
-                telemetry.update();
+            if (num>100){
+                point.x = 9;
+                point.y = 0;
+                detected = true;
+                telemetry.addData("No Detect: ", "Defaulted");
             }
         }
 
-        double[][] testPoints = {{0,6},{position*1.2,13 + Math.abs(position)}};
-        //sleep(100);
-        PathPoints testPath = new PathPoints(testPoints, 4);
-        robot.moveFollowCurve(testPath.targetPoints, 0.3);
+        sleep(10000);
 
-        telemetry.addData("X Value: ", 15 + (Math.abs(position)/5));
-        telemetry.addData("Y Value: ", position);
-        telemetry.update();
+        robot.moveToPoint(point.x,point.y,0.5,0.5,Math.toRadians(0));
+        robot.finalTurn(0);
 
     }
 

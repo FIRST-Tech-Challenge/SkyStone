@@ -78,6 +78,8 @@ public class Robot {
     public double turnMovement;
     public double decelerationScaleFactor;
 
+    double distanceToTarget;
+
     public double pathDistance;
 
     public double distanceToEnd;
@@ -381,38 +383,8 @@ public class Robot {
         }
     }
 
-    //odometryUsingCircles
-    //    public void odometryUsingCircles() {
-//        double fLeftNEW = fLeft.getCurrentPosition();
-//        double fRightNEW = fRight.getCurrentPosition();
-//        double bLeftNEW = bLeft.getCurrentPosition();
-//        double bRightNEW = bRight.getCurrentPosition();
-//        double r;
-//
-//        double deltaLeft = wheelCircumference * (fLeftNEW-fLeftOLD)/encoderPerRevolution;
-//        double deltaRight = wheelCircumference * (fRightNEW-fRightOLD)/encoderPerRevolution;
-//
-//        if (deltaRight == deltaLeft){
-//            yDeltaRobot = deltaRight;
-//        } else {
-//            r = l * (deltaRight / (deltaLeft-deltaRight) + 1/2);
-//            angleDeltaRobot = (deltaLeft-deltaRight)/14 * 0.51428571428;
-//            xDeltaRobot = r * (1 - Math.cos(angleDeltaRobot));
-//            yDeltaRobot = r * Math.sin(angleDeltaRobot);
-//        }
-//
-//        //converting to global frame
-//        xPosGlobal += xDeltaRobot * Math.cos(angleGlobal) - yDeltaRobot * Math.sin(angleGlobal);
-//        yPosGlobal += xDeltaRobot * Math.sin(angleGlobal) + yDeltaRobot * Math.cos(angleGlobal);
-//        angleGlobal  = (wheelCircumference * (fLeftNEW)/encoderPerRevolution - wheelCircumference * (fRightNEW)/encoderPerRevolution) / 14 * 0.51428571428;
-//
-//        fLeftOLD = fLeftNEW;
-//        fRightOLD = fRightNEW;
-//        bLeftOLD = bLeftNEW;
-//        bRightOLD = bRightNEW;
-//    }
 
-    public boolean followCurve(Vector<CurvePoint> allPoints, double followAngle, double speed) {
+    public boolean followCurve(Vector<CurvePoint> allPoints, double followAngle) {
         Vector<CurvePoint> pathExtended = (Vector<CurvePoint>) allPoints.clone();
 
         pointWithIndex distanceAlongPath = distanceAlongPath(allPoints, robotPos);
@@ -436,18 +408,18 @@ public class Robot {
             i += 0.1;
         }
         i = Range.clip(i, 1, 2);
-        applyMove(speed);
+        applyMove();
         return true;
     }
 
-    public void moveFollowCurve(Vector<CurvePoint> points, double speed) {
+    public void moveFollowCurve(Vector<CurvePoint> points) {
         pathDistance = Math.hypot(points.get(points.size() - 1).x, points.get(points.size() - 1).y);
         while (linearOpMode.opModeIsActive()) {
 
             // if followCurve returns false then it is ready to stop
             // else, it moves
 
-            if (!followCurve(points, Math.toRadians(0), speed)) {
+            if (!followCurve(points, Math.toRadians(0))) {
                 brakeRobot();
                 return;
             }
@@ -553,7 +525,7 @@ public class Robot {
         double yStart = robotPos.y;
         double distanceTotal = Math.hypot(x - xStart, y - yStart);
 
-        double distanceToTarget = Math.hypot(x - robotPos.x, y - robotPos.y);
+        distanceToTarget = Math.hypot(x - robotPos.x, y - robotPos.y);
         double absoluteAngleToTarget = Math.atan2(y - robotPos.y, x - robotPos.x);
 
         double relativeAngleToPoint = MathFunctions.angleWrap(absoluteAngleToTarget - anglePos);
@@ -564,19 +536,21 @@ public class Robot {
         double xPower = relativeXToPoint / (Math.abs(relativeXToPoint) + Math.abs(relativeYToPoint));
         double yPower = relativeYToPoint / (Math.abs(relativeYToPoint) + Math.abs(relativeXToPoint));
 
-//        decelerationScaleFactor = Range.clip(distanceToTarget / distanceTotal, -1, 1);
+        decelerationScaleFactor = Range.clip(distanceToTarget / distanceTotal, -1, 1);
 
         xMovement = xPower * moveSpeed;
         yMovement = yPower * moveSpeed;
         turnMovement = Range.clip(relativeTurnAngle / Math.toRadians(30), -1, 1) * turnSpeed;
     }
 
-    public void applyMove(double scaler) {
-        double fLeftPower = (yMovement * 1.414 + turnMovement + xMovement);
-        double fRightPower = (-yMovement * 1.414 - turnMovement + xMovement);
-        double bLeftPower = (-yMovement * 1.414 + turnMovement + xMovement);
-        double bRightPower = (yMovement * 1.414 - turnMovement + xMovement);
+    public void applyMove() {
 
+        double fLeftPower = (yMovement + turnMovement + xMovement * 1.414);
+        double fRightPower = (-yMovement - turnMovement + xMovement * 1.414);
+        double bLeftPower = (-yMovement + turnMovement + xMovement * 1.414);
+        double bRightPower = (yMovement - turnMovement + xMovement * 1.414);
+
+        //op scaling
         double maxPower = Math.abs(fLeftPower);
         if (Math.abs(bLeftPower) > maxPower) {
             maxPower = Math.abs(bLeftPower);
@@ -587,14 +561,10 @@ public class Robot {
         if (Math.abs(fRightPower) > maxPower) {
             maxPower = Math.abs(fRightPower);
         }
-
-        scaler *= (distanceToEnd / pathDistance);
-        scaler = Range.clip(scaler, 0.43, Integer.MAX_VALUE);
-
-        fLeftPower *= scaler;
-        fRightPower *= scaler;
-        bLeftPower *= scaler;
-        bRightPower *= scaler;
+        fLeftPower *= decelerationScaleFactor;
+        fRightPower *= decelerationScaleFactor;
+        bLeftPower *= decelerationScaleFactor;
+        bRightPower *= decelerationScaleFactor;
 
         double scaleDownAmount = 1.0;
         if (maxPower > 1.0) {
@@ -606,79 +576,96 @@ public class Robot {
         bLeftPower *= scaleDownAmount;
         bRightPower *= scaleDownAmount;
 
-        fLeftPower *= scaler;
-        fRightPower *= scaler;
-        bLeftPower *= scaler;
-        bRightPower *= scaler;
+        if (fLeftPower < 0.1 && fRightPower < 0.1 && bLeftPower < 0.1 && bRightPower < 0.1) {
+            brakeRobot();
+            return;
+        }
+
+        if (distanceToTarget < 0.75) {
+            brakeRobot();
+            return;
+        }
 
         fLeft.setPower(fLeftPower);
         fRight.setPower(fRightPower);
         bLeft.setPower(bLeftPower);
         bRight.setPower(bRightPower);
+
+//        double fLeftPower = (yMovement * 1.414 + turnMovement + xMovement);
+//        double fRightPower = (-yMovement * 1.414 - turnMovement + xMovement);
+//        double bLeftPower = (-yMovement * 1.414 + turnMovement + xMovement);
+//        double bRightPower = (yMovement * 1.414 - turnMovement + xMovement);
+//
+//        double maxPower = Math.abs(fLeftPower);
+//        if (Math.abs(bLeftPower) > maxPower) {
+//            maxPower = Math.abs(bLeftPower);
+//        }
+//        if (Math.abs(bRightPower) > maxPower) {
+//            maxPower = Math.abs(bRightPower);
+//        }
+//        if (Math.abs(fRightPower) > maxPower) {
+//            maxPower = Math.abs(fRightPower);
+//        }
+//
+//        scaler *= (distanceToEnd / pathDistance);
+//        scaler = Range.clip(scaler, 0.43, Integer.MAX_VALUE);
+//
+//        fLeftPower *= scaler;
+//        fRightPower *= scaler;
+//        bLeftPower *= scaler;
+//        bRightPower *= scaler;
+//
+//        double scaleDownAmount = 1.0;
+//        if (maxPower > 1.0) {
+//            scaleDownAmount = 1.0 / maxPower;
+//        }
+//
+//        fLeftPower *= scaleDownAmount;
+//        fRightPower *= scaleDownAmount;
+//        bLeftPower *= scaleDownAmount;
+//        bRightPower *= scaleDownAmount;
+//
+//        fLeftPower *= scaler;
+//        fRightPower *= scaler;
+//        bLeftPower *= scaler;
+//        bRightPower *= scaler;
+//
+//        fLeft.setPower(fLeftPower);
+//        fRight.setPower(fRightPower);
+//        bLeft.setPower(bLeftPower);
+//        bRight.setPower(bRightPower);
     }
+
 
     public void moveToPoint(double x, double y, double moveSpeed, double turnSpeed, double optimalAngle) {
         double xStart = robotPos.x;
         double yStart = robotPos.y;
         double distanceTotal = Math.hypot(x - xStart, y - yStart);
         while (linearOpMode.opModeIsActive()) {
+
             double xPos = robotPos.x;
             double yPos = robotPos.y;
             double anglePos = this.anglePos;
-            double distanceToTarget = Math.hypot(x - xPos, y - yPos);
+
+            distanceToTarget = Math.hypot(x - xPos, y - yPos);
+
             double absoluteAngleToTarget = Math.atan2(y - yPos, x - xPos);
+
             double relativeAngleToPoint = MathFunctions.angleWrap(absoluteAngleToTarget - anglePos);
             double relativeXToPoint = Math.cos(relativeAngleToPoint) * distanceToTarget;
             double relativeYToPoint = Math.sin(relativeAngleToPoint) * distanceToTarget;
             double relativeTurnAngle = relativeAngleToPoint + optimalAngle;
+
             double xPower = relativeXToPoint / (Math.abs(relativeXToPoint) + Math.abs(relativeYToPoint));
             double yPower = relativeYToPoint / (Math.abs(relativeYToPoint) + Math.abs(relativeXToPoint));
-            double xMovement = xPower * moveSpeed;
-            double yMovement = yPower * moveSpeed;
-            double turnMovement = Range.clip(relativeTurnAngle / Math.toRadians(30), -1, 1) * turnSpeed;
-            double fLeftPower = (yMovement + turnMovement + xMovement * 1.414);
-            double fRightPower = (-yMovement - turnMovement + xMovement * 1.414);
-            double bLeftPower = (-yMovement + turnMovement + xMovement * 1.414);
-            double bRightPower = (yMovement - turnMovement + xMovement * 1.414);
-            telemetry.addLine("XPOS: " + xPos);
-            telemetry.addLine("YPOS: " + yPos);
-            telemetry.addLine("ANGPOS: " + Math.toDegrees(anglePos));
-            telemetry.update();
-            //op scaling
-            double maxPower = Math.abs(fLeftPower);
-            if (Math.abs(bLeftPower) > maxPower) {
-                maxPower = Math.abs(bLeftPower);
-            }
-            if (Math.abs(bRightPower) > maxPower) {
-                maxPower = Math.abs(bRightPower);
-            }
-            if (Math.abs(fRightPower) > maxPower) {
-                maxPower = Math.abs(fRightPower);
-            }
-            fLeftPower *= Range.clip(distanceToTarget / distanceTotal, -1, 1);
-            fRightPower *= Range.clip(distanceToTarget / distanceTotal, -1, 1);
-            bLeftPower *= Range.clip(distanceToTarget / distanceTotal, -1, 1);
-            bRightPower *= Range.clip(distanceToTarget / distanceTotal, -1, 1);
-            double scaleDownAmount = 1.0;
-            if (maxPower > 1.0) {
-                scaleDownAmount = 1.0 / maxPower;
-            }
-            fLeftPower *= scaleDownAmount;
-            fRightPower *= scaleDownAmount;
-            bLeftPower *= scaleDownAmount;
-            bRightPower *= scaleDownAmount;
-            if (fLeftPower < 0.1 && fRightPower < 0.1 && bLeftPower < 0.1 && bRightPower < 0.1) {
-                brakeRobot();
-                return;
-            }
-            if (distanceToTarget < 0.75) {
-                brakeRobot();
-                return;
-            }
-            fLeft.setPower(fLeftPower);
-            fRight.setPower(fRightPower);
-            bLeft.setPower(bLeftPower);
-            bRight.setPower(bRightPower);
+
+            xMovement = xPower * moveSpeed;
+            yMovement = yPower * moveSpeed;
+            turnMovement = Range.clip(relativeTurnAngle / Math.toRadians(30), -1, 1) * turnSpeed;
+
+            decelerationScaleFactor = Range.clip(distanceToTarget / distanceTotal, -1, 1);
+
+            applyMove();
         }
     }
 

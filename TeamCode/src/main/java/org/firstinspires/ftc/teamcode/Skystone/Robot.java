@@ -10,12 +10,18 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.CurvePoint;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
 
@@ -152,7 +158,7 @@ public class Robot {
 
     //normal use method default 2 second kill time
     public void finalTurn(double targetHeading) {
-        finalTurn(targetHeading, 2000);
+        finalTurn(targetHeading, 2500);
     }
 
     public void finalTurn(double targetHeading, long timeInMilli) {
@@ -183,7 +189,7 @@ public class Robot {
                 brakeRobot();
                 return;
             }
-            double power = 0.5 * absolutePower * sign;
+            double power = 0.3 * absolutePower * sign;
             if (scaleFactor > 1 || ((SystemClock.elapsedRealtime() - startTime) > timeInMilli)) {
                 break;
             }
@@ -204,12 +210,12 @@ public class Robot {
         bRight.setPower(bRpower);
     }
 
-    public void intake (double intakeLeftPower, double intakeRightPower) {
+    public void intake(double intakeLeftPower, double intakeRightPower) {
         intakeLeft.setPower(intakeLeftPower);
         intakeRight.setPower(intakeRightPower);
     }
 
-    public void outtake (char outtakeButton, double outtakeSpoolPower) {
+    public void outtake(char outtakeButton, double outtakeSpoolPower) {
         if (outtakeButton == 'a') {
             // Clamp and Extend
             clawServo.setPosition(CLAW_SERVO_CLAMPED);
@@ -225,7 +231,7 @@ public class Robot {
             // Extend
             outtakeArm.setTargetPosition(OUTTAKE_ARM_EXTENDED);
         } else {
-            telemetry.addData("status","there is a bug in robot.outtake() and it's ethan's fault");
+            telemetry.addData("status", "there is a bug in robot.outtake() and it's ethan's fault");
             telemetry.update();
         }
 
@@ -545,10 +551,10 @@ public class Robot {
 
     public void applyMove() {
 
-        double fLeftPower = (yMovement + turnMovement + xMovement * 1.414);
-        double fRightPower = (-yMovement - turnMovement + xMovement * 1.414);
-        double bLeftPower = (-yMovement + turnMovement + xMovement * 1.414);
-        double bRightPower = (yMovement - turnMovement + xMovement * 1.414);
+        double fLeftPower = (yMovement * 1.414 + turnMovement + xMovement);
+        double fRightPower = (-yMovement * 1.414 - turnMovement + xMovement);
+        double bLeftPower = (-yMovement * 1.414 + turnMovement + xMovement);
+        double bRightPower = (yMovement * 1.414 - turnMovement + xMovement);
 
         //op scaling
         double maxPower = Math.abs(fLeftPower);
@@ -577,11 +583,6 @@ public class Robot {
         bRightPower *= scaleDownAmount;
 
         if (fLeftPower < 0.1 && fRightPower < 0.1 && bLeftPower < 0.1 && bRightPower < 0.1) {
-            brakeRobot();
-            return;
-        }
-
-        if (distanceToTarget < 0.75) {
             brakeRobot();
             return;
         }
@@ -649,7 +650,7 @@ public class Robot {
 
             distanceToTarget = Math.hypot(x - xPos, y - yPos);
 
-            if (distanceToTarget < 0.5){
+            if (distanceToTarget < 2.5) {
                 brakeRobot();
                 break;
             }
@@ -672,6 +673,63 @@ public class Robot {
 
             applyMove();
         }
+    }
+
+    public int detectVuforia(VuforiaLocalizer vuforia) {
+
+        OpenGLMatrix lastLocation = new OpenGLMatrix();
+
+        VuforiaTrackables targetsSkyStone = vuforia.loadTrackablesFromAsset("Skystone");
+
+        VuforiaTrackable skyStoneTarget = targetsSkyStone.get(0);
+
+        final float mmPerInch = 25.4f;
+
+        targetsSkyStone.activate();
+        boolean detected = false;
+        int num = 0;
+        long startTime = SystemClock.elapsedRealtime();
+
+        while (linearOpMode.opModeIsActive()) {
+            telemetry.addLine("in loop");
+            telemetry.update();
+            if (((VuforiaTrackableDefaultListener) skyStoneTarget.getListener()).isVisible()) {
+                telemetry.addLine("Visible");
+                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) skyStoneTarget.getListener()).getUpdatedRobotLocation();
+                if (robotLocationTransform != null) {
+                    lastLocation = robotLocationTransform;
+                }
+                VectorF translation = lastLocation.getTranslation();
+
+                if (translation.get(0) / mmPerInch > 5) {
+                    telemetry.addData("Position: ", "Left");
+                    telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
+                            translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
+                    telemetry.update();
+                    return 1;
+
+                } else if (translation.get(0) / mmPerInch < -5) {
+                    telemetry.addData("Position: ", "Right");
+                    telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
+                            translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
+                    return 2;
+
+                } else {
+                    telemetry.addData("Position: ", "Center");
+                    telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
+                            translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
+                    telemetry.update();
+                    return 3;
+                }
+            }
+            if (SystemClock.elapsedRealtime() - startTime > 2000) {
+                telemetry.addLine("No detection");
+                telemetry.update();
+                return 2;
+            }
+        }
+
+        return 2;
     }
 
 //    public Point detectSkystone() {

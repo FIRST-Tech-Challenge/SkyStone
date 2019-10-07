@@ -96,7 +96,7 @@ class Odometry{
         double leftIncrement = (leftPodNew-leftPodOld) * moveScaleFactor;
         double rightIncrement = (rightPodNew - rightPodOld) * moveScaleFactor;
         double mecanumIncrement = (mecanumPodNew - mecanumPodOld) * strafeScaleFactor;
-        double angleIncrement = (leftIncrement - rightIncrement) * turnScaleFactor;
+        double angleIncrement = (leftIncrement - rightIncrement) * strafeScaleFactor;
         double mecanumIncrementPrediction = Math.toDegrees(angleIncrement)*(strafePredictionScalingFactor/10.0);
 
         double actualRealKindaMecanumDistance = mecanumIncrement -  mecanumIncrementPrediction;

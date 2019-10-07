@@ -20,18 +20,12 @@ import org.firstinspires.ftc.teamcode.Skystone.Robot;
 public class TestVuforia extends AutoBase {
     private static final String VUFORIA_KEY = "AbSCRq//////AAAAGYEdTZut2U7TuZCfZGlOu7ZgOzsOlUVdiuQjgLBC9B3dNvrPE1x/REDktOALxt5jBEJJBAX4gM9ofcwMjCzaJKoZQBBlXXxrOscekzvrWkhqs/g+AtWJLkpCOOWKDLSixgH0bF7HByYv4h3fXECqRNGUUCHELf4Uoqea6tCtiGJvee+5K+5yqNfGduJBHcA1juE3kxGMdkqkbfSjfrNgWuolkjXR5z39tRChoOUN24HethAX8LiECiLhlKrJeC4BpdRCRazgJXGLvvI74Tmih9nhCz6zyVurHAHttlrXV17nYLyt6qQB1LtVEuSCkpfLJS8lZWS9ztfC1UEfrQ8m5zA6cYGQXjDMeRumdq9ugMkS";
 
-    private VuforiaLocalizer vuforia = null;
-
-    OpenGLMatrix lastLocation;
-    int position = 0;
-    private static final float mmPerInch = 25.4f;
-
-    Point point = new Point();
 
     @Override
     public void runOpMode() {
 
-        initVuforia();
+        VuforiaLocalizer vuforia = initVuforia();
+
         Robot robot = new Robot(this.hardwareMap, this.telemetry, this);
 
         waitForStart();
@@ -40,85 +34,31 @@ public class TestVuforia extends AutoBase {
         Position2D position2D = new Position2D(robot);
         position2D.startOdometry();
 
-        point.x = 17;
-        point.y = 0;
+        robot.moveToPoint(5,0,1,1,Math.toRadians(90));
+        telemetry.addLine("done with move");
+        telemetry.update();
 
-        robot.moveToPoint(4,0,0.5,0.5,Math.toRadians(0));
+        int position = robot.detectVuforia(vuforia);
 
-        VuforiaTrackables targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
-
-        VuforiaTrackable skyStoneTarget = targetsSkyStone.get(0);
-
-        targetsSkyStone.activate();
-        boolean detected = false;
-        int num = 0;
-        long startTime = SystemClock.elapsedRealtime();
-        while (opModeIsActive()){
-            telemetry.addLine("in loop");
-            telemetry.update();
-            if (((VuforiaTrackableDefaultListener) skyStoneTarget.getListener()).isVisible()) {
-                telemetry.addLine("Visible");
-                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) skyStoneTarget.getListener()).getUpdatedRobotLocation();
-                if (robotLocationTransform != null) {
-                    lastLocation = robotLocationTransform;
-                }
-                VectorF translation = lastLocation.getTranslation();
-
-                if (translation.get(0) / mmPerInch > 5) {
-                    telemetry.addData("Position: ", "Left");
-                    telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
-                            translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
-//                double[][]testPoints={{6, -3},{17, -3}};
-                    telemetry.update();
-//               targetPoints = testPoints;
-                    point.x = 9;
-                    point.y = -3;
-                    break;
-
-                } else if (translation.get(0) / mmPerInch < -5) {
-                    telemetry.addData("Position: ", "Right");
-                    telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
-                            translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
-//                telemetry.update();
-//                double[][]testPoints = {{6, 3},{17, 3}};
-
-                    point.x = 9;
-                    point.y = 3;
-                    break;
-
-                } else {
-                    telemetry.addData("Position: ", "Center");
-                    telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
-                            translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
-                    telemetry.update();
-                    point.x = 9;
-                    point.y = 0;
-                    break;
-//               double[][]testPoints = {{6, 0},{17, 0}};
-//               targetPoints = testPoints;
-                }
-            }
-            if (SystemClock.elapsedRealtime()-startTime > 2000){
-                telemetry.addLine("No detection");
-                telemetry.update();
-                point.x = 9;
-                point.y = 0;
-                break;
-            }
+        if (position==1) {
+            robot.moveToPoint(12, -3, 0.5, 0.5, Math.toRadians(90));
+        } else if (position == 2){
+            robot.moveToPoint(12,0,0.5,0.5,Math.toRadians(90));
+        } else if (position == 3) {
+            robot.moveToPoint(12,3,0.5,0.5,Math.toRadians(90));
         }
 
-        robot.moveToPoint(point.x,point.y,0.5,0.5,Math.toRadians(0));
         robot.finalTurn(0);
 
     }
 
-    protected void initVuforia() {
+    protected VuforiaLocalizer initVuforia() {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 
         VuforiaLocalizer.Parameters paramaters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
         paramaters.vuforiaLicenseKey = VUFORIA_KEY;
         paramaters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
 
-        vuforia = ClassFactory.getInstance().createVuforia(paramaters);
+        return ClassFactory.getInstance().createVuforia(paramaters);
     }
 }

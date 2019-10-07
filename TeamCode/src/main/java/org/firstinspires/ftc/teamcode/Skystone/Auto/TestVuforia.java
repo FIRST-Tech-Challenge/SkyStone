@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Skystone.Auto;
 
+import android.os.SystemClock;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -50,8 +52,10 @@ public class TestVuforia extends AutoBase {
         targetsSkyStone.activate();
         boolean detected = false;
         int num = 0;
-        while (true){
+        long startTime = SystemClock.elapsedRealtime();
+        while (opModeIsActive()){
             telemetry.addLine("in loop");
+            telemetry.update();
             if (((VuforiaTrackableDefaultListener) skyStoneTarget.getListener()).isVisible()) {
                 telemetry.addLine("Visible");
                 OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) skyStoneTarget.getListener()).getUpdatedRobotLocation();
@@ -94,7 +98,7 @@ public class TestVuforia extends AutoBase {
 //               targetPoints = testPoints;
                 }
             }
-            if (getRuntime() > 2000){
+            if (SystemClock.elapsedRealtime()-startTime > 2000){
                 telemetry.addLine("No detection");
                 telemetry.update();
                 point.x = 9;

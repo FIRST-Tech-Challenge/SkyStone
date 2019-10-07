@@ -13,7 +13,7 @@ public class DriveSystem {
         FRONTLEFT, FRONTRIGHT, BACKRIGHT, BACKLEFT
     }
 
-    private enum Direction {
+    public enum Direction {
         FORWARD, BACKWARD, LEFT, RIGHT;
 
         private static boolean isStrafe(Direction direction) {

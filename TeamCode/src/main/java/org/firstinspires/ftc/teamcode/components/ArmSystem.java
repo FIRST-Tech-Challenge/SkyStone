@@ -18,7 +18,6 @@ public class ArmSystem {
     private Servo elbow;
     private Servo pivot; // Not yet implemented by build team, ignore until we have it
     protected HardwareMap hardwareMap;
-<<<<<<< refs/remotes/origin/Arm
     private final double WRIST_HOME = 0;
     private final double ELBOW_HOME = 0;
     private final double PIVOT_HOME = 0;
@@ -45,8 +44,6 @@ public class ArmSystem {
 
      Probably should be controlled by the D pad or something.
      */
-=======
->>>>>>> Worked on arm system
 
     public ArmSystem(HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
@@ -68,7 +65,6 @@ public class ArmSystem {
         elbow.setPosition(pos);
     }
 
-<<<<<<< refs/remotes/origin/Arm
     public void movePivot(double pos) {
         // Uncomment this line when build team implements the pivot
         // elbow.setPosition(pos);
@@ -97,8 +93,6 @@ public class ArmSystem {
             //gripper.setPosition(gripper.getPosition());
         }
     }
-=======
->>>>>>> Worked on arm system
     public double getGripper() {
         return gripper.getPosition();
     }
@@ -111,7 +105,6 @@ public class ArmSystem {
         return elbow.getPosition();
     }
 
-<<<<<<< refs/remotes/origin/Arm
     public double getPivot() {
         return 0;
     }
@@ -158,6 +151,4 @@ public class ArmSystem {
                 movePivot(0);
         }
     }
-=======
->>>>>>> Worked on arm system
 }

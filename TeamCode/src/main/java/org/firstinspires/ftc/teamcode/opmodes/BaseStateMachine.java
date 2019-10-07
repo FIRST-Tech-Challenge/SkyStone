@@ -19,6 +19,7 @@ public abstract class BaseStateMachine extends OpMode {
             STATE_FIND_SKYSTONE,
             DRIVE_TO_FOUNDATION_TARGET,
             STATE_DELIVER_STONE,
+            STATE_CAMERA_SWITCHED,
             STATE_GRAB_STONE,
             STATE_FIND_STONE,
             STATE_PARK_AT_LINE,
@@ -36,7 +37,11 @@ public abstract class BaseStateMachine extends OpMode {
 
         protected Vuforia vuforia;
 
-        VuforiaTrackable stoneTarget;
+        protected VuforiaTrackable stoneTarget;
+
+        protected VuforiaTrackable wallTarget;
+
+        protected VuforiaTrackables targetsSkyStone;
 
         protected DriveSystem driveSystem;
 
@@ -53,7 +58,7 @@ public abstract class BaseStateMachine extends OpMode {
             currentCamera = Vuforia.CameraChoice.PHONE_BACK;
             vuforia = new Vuforia(hardwareMap, currentCamera);
             mCurrentState = State.STATE_FIND_SKYSTONE;
-            VuforiaTrackables targetsSkyStone = vuforia.loadTrackablesFromAsset("Skystone");
+            targetsSkyStone = vuforia.loadTrackablesFromAsset("Skystone");
             stoneTarget = targetsSkyStone.get(0);
             stoneTarget.setName("Stone Target");
         }

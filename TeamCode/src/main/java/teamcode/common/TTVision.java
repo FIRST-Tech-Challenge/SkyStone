@@ -12,10 +12,15 @@ import java.util.List;
 public class TTVision {
 
     private static final String VUFORIA_KEY = "AQR2KKb/////AAABmcBOjjqXfkjtrjI9/Ps5Rs1yoVMyJe0wdjaX8pHqOaPu2gRcObwPjsuWCCo7Xt52/kJ4dAZfUM5Gy73z3ogM2E2qzyVObda1EFHZuUrrYkJzKM3AhY8vUz6R3fH0c/R9j/pufFYAABOAFoc5PtjMQ2fbeFI95UYXtl0u+6OIkCUJ3Zw71tvoD9Fs/cOiLB45FrWrxHPbinEhsOlCTWK/sAC2OK2HuEsBFCebaV57vKyATHW4w2LMWEZaCByHMk9RJDR38WCqivXz753bsiBVMbCzPYzwzc3DKztTbK8/cXqPPBLBKwU8ls0RN52akror1xE9lPwwksMXwJwolpyIZGnZngWcBWX4lLH+HlDNZ8Qm";
+    private static final String ASSET_NAME = "Skystone.tflite";
+    public static final String LABEL_STONE = "Boring Boy";
+    public static final String LABEL_SKYSTONE = "Extra Scory Point Boi";
+    public static final String[] LABELS = {LABEL_STONE, LABEL_SKYSTONE};
+    private static final double MINIMUM_CONFIDENCE = 0.75;
 
     private HardwareMap hardwareMap;
     private TFObjectDetector tfod;
-    private boolean active;
+    private boolean enabled;
 
     public TTVision(HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
@@ -24,11 +29,16 @@ public class TTVision {
     /**
      * Must be called from an OpMode before use.
      */
-    public void activate() {
+    public void enable() {
         VuforiaLocalizer vuforia = createVuforia();
         tfod = createTFOD(vuforia);
         tfod.activate();
-        active = true;
+        enabled = true;
+    }
+
+    public void disable() {
+        tfod.shutdown();
+        enabled = false;
     }
 
     private VuforiaLocalizer createVuforia() {
@@ -43,16 +53,21 @@ public class TTVision {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
+        tfodParameters.minimumConfidence = MINIMUM_CONFIDENCE;
         TFObjectDetector tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
-        tfod.loadModelFromAsset("");
+        tfod.loadModelFromAsset(ASSET_NAME, LABELS);
         return tfod;
     }
 
     public List<Recognition> getRecognitions() {
-        if (!active) {
-            throw new IllegalStateException("Vision must be active first");
+        if (!enabled) {
+            throw new IllegalStateException("Vision must be enabled first");
         }
-        return tfod.getRecognitions();
+        List<Recognition> recognitions = null;
+        while (recognitions == null) {
+            recognitions = tfod.getUpdatedRecognitions();
+        }
+        return recognitions;
     }
 
 }

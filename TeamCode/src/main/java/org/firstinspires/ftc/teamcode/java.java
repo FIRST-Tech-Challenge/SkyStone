@@ -12,6 +12,7 @@ public class java extends LinearOpMode {
 
         while (opModeIsActive()) {
             telemetry.addData("Hello there", 4396);
+            telemetry.addData("Boy Next Door", "That's good");
             telemetry.update();
         }
     }

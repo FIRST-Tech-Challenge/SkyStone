@@ -42,9 +42,9 @@ public class ColombiaMecanumTeleop extends OpMode {
 
     @Override
     public void loop() {
-        double turn = deadZone(-deadZone(gamepad1.left_stick_y) - -deadZone(gamepad1.right_stick_y));
-        double y = deadZone(-deadZone(gamepad1.left_stick_y) + -deadZone(gamepad1.right_stick_y)) / 2;
-        double x = deadZone(deadZone(gamepad1.left_stick_x) + deadZone(gamepad1.right_stick_x)) / 2;
+        double turn = deadZone(gamepad1.right_stick_x);
+        double y = -deadZone(gamepad1.left_stick_y);
+        double x = deadZone(gamepad1.left_stick_x);
         driveTrain.spinDrive(x, y, turn, MecanumDrive.TranslTurnMethod.EQUAL_SPEED_RATIOS);
     }
 

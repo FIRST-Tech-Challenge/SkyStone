@@ -649,6 +649,11 @@ public class Robot {
 
             distanceToTarget = Math.hypot(x - xPos, y - yPos);
 
+            if (distanceToTarget < 0.5){
+                brakeRobot();
+                break;
+            }
+
             double absoluteAngleToTarget = Math.atan2(y - yPos, x - xPos);
 
             double relativeAngleToPoint = MathFunctions.angleWrap(absoluteAngleToTarget - anglePos);

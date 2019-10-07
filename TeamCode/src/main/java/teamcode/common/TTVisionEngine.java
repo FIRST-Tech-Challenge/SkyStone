@@ -1,4 +1,4 @@
-package teamcode.autopaths;
+package teamcode.common;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -46,7 +46,6 @@ public class TTVisionEngine implements Runnable{
 
     public void run()
     {
-
         tfod.activate();
         activated = true;
         Thread t = new Thread();

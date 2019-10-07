@@ -15,7 +15,7 @@ public class TTVision {
 
     private HardwareMap hardwareMap;
     private TFObjectDetector tfod;
-    private boolean initialized;
+    private boolean active;
 
     public TTVision(HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
@@ -24,11 +24,11 @@ public class TTVision {
     /**
      * Must be called from an OpMode before use.
      */
-    public void init() {
+    public void activate() {
         VuforiaLocalizer vuforia = createVuforia();
         tfod = createTFOD(vuforia);
         tfod.activate();
-        initialized = true;
+        active = true;
     }
 
     private VuforiaLocalizer createVuforia() {
@@ -44,12 +44,13 @@ public class TTVision {
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
         TFObjectDetector tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+        tfod.loadModelFromAsset("");
         return tfod;
     }
 
     public List<Recognition> getRecognitions() {
-        if (!initialized) {
-            throw new IllegalStateException("Vision must be initialized first");
+        if (!active) {
+            throw new IllegalStateException("Vision must be active first");
         }
         return tfod.getRecognitions();
     }

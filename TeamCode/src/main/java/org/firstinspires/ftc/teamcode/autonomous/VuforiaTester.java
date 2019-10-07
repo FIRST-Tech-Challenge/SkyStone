@@ -46,9 +46,14 @@ public class VuforiaTester extends LinearOpMode {
 
         waitForStart();
 
+        doAction("forward", 6);
+
+//        while(!vSensor.listenerSkystone.isVisible() && ) {
+//            straifLeftRaw(0.4);
+//        }
 
 
-
+        stop();
 
     }
 

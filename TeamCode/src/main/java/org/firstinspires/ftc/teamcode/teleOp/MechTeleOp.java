@@ -2,10 +2,16 @@ package org.firstinspires.ftc.teamcode.teleOp;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import java.lang.Math;
+
 import com.qualcomm.robotcore.util.Range;
+
+
+
+import java.lang.Math;
 
 @TeleOp(name = "MechTeleOp")
 public class MechTeleOp extends OpMode {
@@ -18,6 +24,11 @@ public class MechTeleOp extends OpMode {
     final double calibFR = 1.00f;
     final double calibBL = 1.00f;
     final double calibBR = 1.00f;
+
+    CRServo leftArmBase;
+    CRServo rightArmBase;
+    CRServo leftElbow;
+    CRServo rightElbow;
 
     double[][] motorPowers = {
         {0.0, 0.0},
@@ -133,29 +144,34 @@ public class MechTeleOp extends OpMode {
         motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        leftArmBase = hardwareMap.get(CRServo.class, "leftArmBase");
+        rightArmBase = hardwareMap.get(CRServo.class, "rightArmBase");
+        leftElbow = hardwareMap.get(CRServo.class, "leftElbow");
+        rightElbow = hardwareMap.get(CRServo.class, "rightElbow");
     }
 
     public void driveRobot() {
-        /* I want to change the movement code of the robot to 
+        /* I want to change the movement code of the robot to
          * a sumation based system. This means that each movement
          * of the joystick will add some value (positive or negative)
          * to each of the powers of the motors.
-         * 
+         *
          * This would let the robot have an increased range of motion.
-         * For instance, if you moved the left stick on a diagonal, 
+         * For instance, if you moved the left stick on a diagonal,
          * the robot currently chooses to either go forward or straif.
          * The addition system will add together some values for each motor
          * to make the robot straif diagonally. */
 
         /* So far the system, in theory, works exactly like Jimmy's code does
-         * This is probably a more visual explanation of what Jimmy is doing 
+         * This is probably a more visual explanation of what Jimmy is doing
          * with his code. */
         double leftX = getLX(), leftY = getLY(), rightX = getRX(), rightY = getRY();
 
         if(Math.max(Math.max(Math.abs(leftX), Math.abs(leftY)), Math.max(Math.abs(rightX), Math.abs(rightY))) > 0.1){ // Makes sure that atleast one of the sticks is being pressed
             /* If we stick with a plain averaging system, both joysticks have to be
-             * pressed forward or backwards to go max speed. This will also effect 
-             * the speeds of straifing and turning. A counterbalance can be added 
+             * pressed forward or backwards to go max speed. This will also effect
+             * the speeds of straifing and turning. A counterbalance can be added
              * to offset that effect.*/
 
             leftXMat = new double[][]{
@@ -231,6 +247,29 @@ public class MechTeleOp extends OpMode {
         //     else
         //         rotateLeft(getRX());
         // }
+
+        if (gamepad2.dpad_up) {
+            leftArmBase.setPower(1.0);
+            rightArmBase.setPower(1.0);
+        } else {
+            leftArmBase.setPower(0.0);
+            rightArmBase.setPower(0.0);
+        }
+        if (gamepad2.dpad_up) {
+            leftArmBase.setPower(-1.0);
+            rightArmBase.setPower(-1.0);
+        } else {
+            leftArmBase.setPower(0.0);
+            rightArmBase.setPower(0.0);
+        }
+
+        if (Math.abs(gamepad2.right_stick_y) > 0.1) {
+            leftElbow.setPower(gamepad2.right_stick_y);
+            rightElbow.setPower(gamepad2.right_stick_y);
+        } else {
+            leftElbow.setPower(0.0);
+            rightElbow.setPower(0.0);
+        }
     }
 
     public float getLX() {

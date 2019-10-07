@@ -26,24 +26,9 @@ public class DriveTeleop extends OpMode {
             telemetry.addLine("adding motors");
             driveMap.put(name,hardwareMap.get(DcMotor.class, name.toString()));
         }
-<<<<<<< refs/remotes/origin/Arm
-
-<<<<<<< refs/remotes/origin/Arm
-<<<<<<< refs/remotes/origin/Arm
-=======
-=======
->>>>>>> Removed slowdrive. Reintroduced Direction enum and isStrafe method to DriveSystem.
         telemetry.update();
-
->>>>>>> added some stuff to op mode to make it work.
         driveSystem = new DriveSystem(driveMap, hardwareMap.get(BNO055IMU.class, "imu"));
-<<<<<<< refs/remotes/origin/Arm
-=======
         this.driveSystem = new DriveSystem(this);
->>>>>>> Revert "fixed a compile error in Driveteleop.java"
-        slowDrive = false;
-=======
->>>>>>> Removed slowdrive. Reintroduced Direction enum and isStrafe method to DriveSystem.
     }
 
 

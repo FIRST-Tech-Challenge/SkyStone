@@ -119,13 +119,7 @@ public class DriveSystem {
             for (DcMotor motor : motors.values()) {
                 motor.setTargetPosition(motor.getCurrentPosition() + sign * ticks);
             }
-<<<<<<< refs/remotes/origin/Arm
         } else {
-=======
-        }
-
-        if (Direction.isStrafe(direction)) {
->>>>>>> Removed slowdrive. Reintroduced Direction enum and isStrafe method to DriveSystem.
             int sign = (direction == Direction.RIGHT ? 1 : -1);
             motors.forEach((name, motor) -> {
                 switch(name) {

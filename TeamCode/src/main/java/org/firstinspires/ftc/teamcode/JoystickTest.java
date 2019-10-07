@@ -1,4 +1,5 @@
-package com.qualcomm.ftcrobotcontroller.opmodes;
+package org.firstinspires.ftc.teamcode;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.GyroSensor;
@@ -46,6 +47,11 @@ public class JoystickTest extends OpMode {
         frontright.setDirection(DcMotor.Direction.REVERSE);
         frontleft.setDirection(DcMotor.Direction.REVERSE);
 
+        frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
     }
 
     @Override
@@ -55,11 +61,22 @@ public class JoystickTest extends OpMode {
 
         pwr = y; //this can be tweaked for exponential power increase
 
+
         frontright.setPower(Range.clip(pwr - x+z, -1, 1));
-        backleft.setPower(Range.clip(pwr - x-z, -1, 1));
+        backleft.setPower(Range.clip(pwr + x-z, -1, 1));
         frontleft.setPower(Range.clip(pwr + x-z, -1, 1));
-        backright.setPower(Range.clip(pwr + x+z, -1, 1));
-        
+        backright.setPower(Range.clip(pwr - x+z, -1, 1));
+
+       if(gamepad1.a){ frontright.setPower(1); } else{ frontright.setPower(0); }
+       if(gamepad1.b){ frontleft.setPower(1); } else{ frontleft.setPower(0); }
+       if(gamepad1.x){ backright.setPower(1); } else{ backright.setPower(0); }
+       if(gamepad1.y){ backleft.setPower(1); } else{ backleft.setPower(0); }
+
+       if(gamepad1.dpad_up){ frontright.setPower(-1); } else{ frontright.setPower(0); }
+       if(gamepad1.dpad_left){ frontleft.setPower(-1); } else{ frontleft.setPower(0); }
+       if(gamepad1.dpad_down){ backright.setPower(-1); } else{ backright.setPower(0); }
+       if(gamepad1.dpad_right){ backleft.setPower(-1); } else{ backleft.setPower(0); }
+
     }
 
     public void getJoyVals()
@@ -80,6 +97,6 @@ public class JoystickTest extends OpMode {
 
     @Override
     public void stop() {
-        //nothing here? probably gotta call garbage collection at some point
+        telemetry.clearAll();
     }
 }

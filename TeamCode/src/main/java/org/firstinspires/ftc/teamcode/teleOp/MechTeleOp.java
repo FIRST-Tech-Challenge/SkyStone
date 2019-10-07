@@ -3,9 +3,9 @@ package org.firstinspires.ftc.teamcode.teleOp;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import com.qualcomm.robotcore.util.Range;
 
@@ -25,10 +25,21 @@ public class MechTeleOp extends OpMode {
     final double calibBL = 1.00f;
     final double calibBR = 1.00f;
 
-    CRServo leftArmBase;
-    CRServo rightArmBase;
-    CRServo leftElbow;
-    CRServo rightElbow;
+    final double INCREMENT = 0.01;
+
+    Servo leftArmBase;
+    double posLAB = 0.5;
+
+    Servo rightArmBase;
+    double posRAB = 0.5;
+
+    Servo leftElbow;
+    double posLE = 0.5;
+
+    Servo rightElbow;
+    double posRE = 0.5;
+
+
 
     double[][] motorPowers = {
         {0.0, 0.0},
@@ -145,10 +156,10 @@ public class MechTeleOp extends OpMode {
         motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        leftArmBase = hardwareMap.get(CRServo.class, "leftArmBase");
-        rightArmBase = hardwareMap.get(CRServo.class, "rightArmBase");
-        leftElbow = hardwareMap.get(CRServo.class, "leftElbow");
-        rightElbow = hardwareMap.get(CRServo.class, "rightElbow");
+        leftArmBase = hardwareMap.get(Servo.class, "leftArmBase");
+        rightArmBase = hardwareMap.get(Servo.class, "rightArmBase");
+        leftElbow = hardwareMap.get(Servo.class, "leftElbow");
+        rightElbow = hardwareMap.get(Servo.class, "rightElbow");
     }
 
     public void driveRobot() {
@@ -248,28 +259,31 @@ public class MechTeleOp extends OpMode {
         //         rotateLeft(getRX());
         // }
 
-        if (gamepad2.dpad_up) {
-            leftArmBase.setPower(1.0);
-            rightArmBase.setPower(1.0);
-        } else {
-            leftArmBase.setPower(0.0);
-            rightArmBase.setPower(0.0);
+        if (gamepad1.dpad_up) {
+            posLAB = Range.clip(posLAB - INCREMENT, 0.0, 1.0);
+            leftArmBase.setPosition(posLAB);
+            posRAB = Range.clip(posRAB + INCREMENT, 0.0, 1.0);
+            rightArmBase.setPosition(posRAB);
         }
-        if (gamepad2.dpad_up) {
-            leftArmBase.setPower(-1.0);
-            rightArmBase.setPower(-1.0);
-        } else {
-            leftArmBase.setPower(0.0);
-            rightArmBase.setPower(0.0);
+        if (gamepad1.dpad_down) {
+            posLAB = Range.clip(posLAB - INCREMENT, 0.0, 1.0);
+            leftArmBase.setPosition(posLAB);
+            posRAB = Range.clip(posRAB + INCREMENT, 0.0, 1.0);
+            rightArmBase.setPosition(posRAB);
         }
 
-        if (Math.abs(gamepad2.right_stick_y) > 0.1) {
-            leftElbow.setPower(gamepad2.right_stick_y);
-            rightElbow.setPower(gamepad2.right_stick_y);
-        } else {
-            leftElbow.setPower(0.0);
-            rightElbow.setPower(0.0);
+        if (gamepad1.y) {
+            posLE = Range.clip(posLE - INCREMENT, 0.0, 1.0);
+            leftElbow.setPosition(posLE);
+            posRE = Range.clip(posRE + INCREMENT, 0.0, 1.0);
+            rightElbow.setPosition(posRE);
+        } else if (gamepad1.a) {
+            posLE = Range.clip(posLE + INCREMENT, 0.0, 1.0);
+            leftElbow.setPosition(posLE);
+            posRE = Range.clip(posRE - INCREMENT, 0.0, 1.0);
+            rightElbow.setPosition(posRE);
         }
+
     }
 
     public float getLX() {

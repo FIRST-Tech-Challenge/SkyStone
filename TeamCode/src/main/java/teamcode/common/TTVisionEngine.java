@@ -1,5 +1,7 @@
 package teamcode.common;
 
+import android.graphics.Point;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
@@ -48,8 +50,6 @@ public class TTVisionEngine implements Runnable{
     {
         tfod.activate();
         activated = true;
-        Thread t = new Thread();
-        t.run();
         while(activated)
         {
             //looks at Tfod to find objects and updates the robot position using vuforia
@@ -201,29 +201,37 @@ public class TTVisionEngine implements Runnable{
         return allTrackables;
     }
 
-    private void lookAtTfod(List<Recognition> updatedRecognitions)
+    private ArrayList<Recognition> lookAtTfod(List<Recognition> updatedRecognitions)
     {
+        //method returns null if
+        ArrayList<Recognition> skyStones = new ArrayList<>();
         if (updatedRecognitions != null) {
             opMode.telemetry.addData("# Object Detected", updatedRecognitions.size());
-
-            // step through the list of recognitions and display boundary info.
-            for (Recognition recognition : updatedRecognitions) {
-                //todo get position data of each recognition into some kind of list
+            for (Recognition r : updatedRecognitions) {
+                if(r.getLabel().equals("SkyStone"))
+                {
+                    skyStones.add(r);
+                }
             }
             opMode.telemetry.update();
         }
+        if(skyStones.size() > 0)
+        {
+            return skyStones;
+        }
+        else
+        {
+            return null;
+        }
     }
-
+    
     private void updateRobotPos()
     {
-        boolean targetVisible = false;
         for (VuforiaTrackable trackable : allTrackables) {
             if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
                 opMode.telemetry.addData("Visible Target", trackable.getName());
-                targetVisible = true;
 
-                // getUpdatedRobotLocation() will return null if no new information is available since
-                // the last time that call was made, or if the trackable is not currently visible.
+
                 OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
                 if (robotLocationTransform != null) {
                     lastLocation = robotLocationTransform;

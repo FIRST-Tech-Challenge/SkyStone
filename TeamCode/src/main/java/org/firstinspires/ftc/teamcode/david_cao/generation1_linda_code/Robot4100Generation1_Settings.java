@@ -21,7 +21,7 @@ public class Robot4100Generation1_Settings {
     public static final double LINEARSLIDE_MIN = 0;
     public static final double LINEARSLIDE_START = 0;
 
-    public static final double INTAKEMOTOR_SPEED = 0.5;
+    public static final double INTAKEMOTOR_SPEED = 0.8;
 
 
     public static final boolean CHASSIS_TIMEOUTENABLE = false;
@@ -31,7 +31,7 @@ public class Robot4100Generation1_Settings {
     public static final double DRAGSERVO_DRAGPOS_L = 1.0;
     public static final double DRAGSERVO_DRAGPOS_R = 1.0;
     public static final double GRABBERSERVO_RESTPOS = 1.0;
-    public static final double GRABBERSERVO_GRABPOS = 0.0;
+    public static final double GRABBERSERVO_GRABPOS = 0.3;
     public static final double GRABBERROTSERVO_INSIDEPOS = 0.9;
     public static final double GRABBERROTSERVO_OUTSIDEPOS = 0;
     //------------End of Configuration Settings------------

@@ -1,35 +1,39 @@
 package org.firstinspires.ftc.teamcode.components;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.firstinspires.ftc.robotcore.internal.vuforia.VuforiaLocalizerImpl;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
-import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
-import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Vuforia {
 
-    private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
+    public enum CameraChoice {
+        PHONE_FRONT, PHONE_BACK, WEBCAM1, WEBCAM2;
+    }
 
-    //TODO: Update for competition
-    private static final boolean PHONE_IS_PORTRAIT = true;
+    private class VuforiaLocalizer extends VuforiaLocalizerImpl {
+        public VuforiaLocalizer(Parameters parameters) {
+            super(parameters);
+        }
+
+        public void close() {
+            super.close();
+        }
+    }
 
     private static final String VUFORIA_KEY =
             "Ad0Srbr/////AAABmdpa0/j2K0DPhXQjE2Hyum9QUQXZO8uAVCNpwlogfxiVmEaSuqHoTMWcV9nLlQpEnh5bwTlQG+T35Vir8IpdrSdk7TctIqH3QBuJFdHsx5hlcn74xa7AiQSJgUD/n7JJ2zJ/Er5Hc+b+r616Jf1YU6RO63Ajk5+TFB9N3a85NjMD6eDm+C6f14647ELnmGC03poSOeczbX7hZpIEObtYdVyKZ2NQ/26xDfSwwJuyMgUHwWY6nl6mk0GMnIGvu0/HoGNgyR5EkUQWyx9XlmxSrldY7BIEVkiKmracvD7W9hEGZ2nPied6DTY5RFNuFX07io6+I59/d7291NXKVMDnFAqSt4a2JYsECv+j7b25S0mD";
-
 
     private static final float mmPerInch        = 25.4f;
     private static final float mmTargetHeight   = (6) * mmPerInch;          // the height of the center of the target image above the floor
@@ -43,29 +47,104 @@ public class Vuforia {
     private static final float quadField  = 36 * mmPerInch;
     private OpenGLMatrix lastLocation = null;
     private VuforiaLocalizer vuforia = null;
-    private boolean targetVisible = false;
     private float phoneXRotate    = 0;
     private float phoneYRotate    = 0;
     private float phoneZRotate    = 0;
-
     private VuforiaTrackables targetsSkyStone;
     private List<VuforiaTrackable> allTrackables;
 
-    public Vuforia(HardwareMap hardwareMap) {
+    public Vuforia(HardwareMap hardwareMap, CameraChoice choice) {
+        vuforia = setCamera(hardwareMap, choice);
+    }
+
+    public Orientation getRobotHeading() {
+        updateLastLocation();
+        return Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
+    }
+
+    public VectorF getRobotPosition() {
+        updateLastLocation();
+        return lastLocation.getTranslation();
+    }
+
+    public boolean isTargetVisible(VuforiaTrackable targetTrackable) {
+        for (VuforiaTrackable trackable : allTrackables) {
+            if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
+                if (trackable.getName().equals(targetTrackable.getName())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean isAnyTargetVisible() {
+        for (VuforiaTrackable trackable : allTrackables) {
+            if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public VuforiaTrackable getVuforiaTrackable(VuforiaTrackable targetTrackable) {
+        for (VuforiaTrackable trackable : allTrackables) {
+            if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
+                if (trackable.getName().equals(targetTrackable.getName())) {
+                    return trackable;
+                }
+            }
+        }
+        return null;
+    }
+
+    private void updateLastLocation() {
+        for (VuforiaTrackable trackable : allTrackables) {
+            if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
+                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
+                if (robotLocationTransform != null) {
+                    lastLocation = robotLocationTransform;
+                }
+            }
+        }
+    }
+
+    public void activate() {
+        targetsSkyStone.activate();
+    }
+
+    public void disable() {
+        targetsSkyStone.deactivate();
+    }
+
+    public VuforiaLocalizer setCamera(HardwareMap hardwareMap, CameraChoice cameraChoice) {
+        if (vuforia != null)
+            vuforia.close();
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
-        // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
-
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        parameters.cameraDirection   = CAMERA_CHOICE;
+        switch (cameraChoice) {
+            case PHONE_FRONT:
+                parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
+                break;
+            case PHONE_BACK:
+                parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+                break;
+            case WEBCAM1:
+                parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam1");
+                break;
+            case WEBCAM2:
+                parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam2");
+                break;
+        }
+        vuforia = new VuforiaLocalizer(parameters);
+        initializeTrackables(vuforia);
+        return vuforia;
+    }
 
-        //  Instantiate the Vuforia engine
-        vuforia = ClassFactory.getInstance().createVuforia(parameters);
-
-        // Load the data sets for the trackable objects. These particular data
-        // sets are stored in the 'assets' part of our application.
+    private void initializeTrackables(VuforiaLocalizer vuforia) {
         targetsSkyStone = vuforia.loadTrackablesFromAsset("Skystone");
 
         VuforiaTrackable stoneTarget = targetsSkyStone.get(0);
@@ -156,73 +235,20 @@ public class Vuforia {
                 .translation(halfField, -quadField, mmTargetHeight)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
 
-        if (CAMERA_CHOICE == BACK) {
-            phoneYRotate = -90;
-        } else {
-            phoneYRotate = 90;
-        }
-
-        // Rotate the phone vertical about the X axis if it's in portrait mode
-        if (PHONE_IS_PORTRAIT) {
-            phoneXRotate = 90 ;
-        }
-
-        // Next, translate the camera lens to where it is on the robot.
-        // In this example, it is centered (left to right), but forward of the middle of the robot, and above ground level.
+        // TODO most likely will need to end up establishing precise positions in the future
+        /**  Let all the trackable listeners know where the phone is.  */
         final float CAMERA_FORWARD_DISPLACEMENT  = 4.0f * mmPerInch;   // eg: Camera is 4 Inches in front of robot center
         final float CAMERA_VERTICAL_DISPLACEMENT = 8.0f * mmPerInch;   // eg: Camera is 8 Inches above ground
         final float CAMERA_LEFT_DISPLACEMENT     = 0;     // eg: Camera is ON the robot's center line
 
-        OpenGLMatrix robotFromCamera = OpenGLMatrix
-                .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
-
-        /**  Let all the trackable listeners know where the phone is.  */
-        for (VuforiaTrackable trackable : allTrackables) {
-            ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
-        }
+//        OpenGLMatrix robotFromCamera = OpenGLMatrix
+//                .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
+//                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
+//
+//        for (VuforiaTrackable trackable : allTrackables) {
+//            ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
+//        }
 
         targetsSkyStone.activate();
-    }
-
-    public Orientation getHeading() {
-        if (isTargetVisible()) {
-            return Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
-        }
-        return null;
-    }
-
-    public VectorF getPosition() {
-        if (isTargetVisible()) {
-            return lastLocation.getTranslation();
-        }
-        return null;
-    }
-
-    private boolean isTargetVisible() {
-        targetVisible = false;
-        for (VuforiaTrackable trackable : allTrackables) {
-            if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
-                targetVisible = true;
-
-                // getUpdatedRobotLocation() will return null if no new information is available since
-                // the last time that call was made, or if the trackable is not currently visible.
-                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
-                if (robotLocationTransform != null) {
-                    lastLocation = robotLocationTransform;
-                }
-                break;
-            }
-        }
-
-        return targetVisible;
-    }
-
-    public void activate() {
-        targetsSkyStone.activate();
-    }
-
-    public void disable() {
-        targetsSkyStone.deactivate();
     }
 }

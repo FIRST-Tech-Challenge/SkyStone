@@ -28,7 +28,7 @@ public class IMUSystem {
     /**
      * Creates a new IMU System
      */
-    public IMUSystem(HardwareMap hardwareMap)
+    public IMUSystem(BNO055IMU imu)
     {
         this.parameters = new BNO055IMU.Parameters();
         this.parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
@@ -36,7 +36,7 @@ public class IMUSystem {
         this.parameters.loggingEnabled = true;
         this.parameters.loggingTag = "BNO055";
         this.parameters.calibrationDataFile = "AdafruitIMUCalibration.json"; // see the calibration sample opmode
-        this.imu = hardwareMap.get(BNO055IMU.class, "imu");
+        this.imu = imu;
         this.imu.initialize(parameters);
 
         // Enable reporting of position using the naive integrator

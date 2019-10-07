@@ -1,6 +1,7 @@
 package teamcode.autopaths;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
@@ -22,41 +23,52 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 
-@Autonomous(name="Real Auto", group ="Autonomous")
-public class RealAuto extends TTOpMode {
+public class TTVisionEngine implements Runnable{
 
     private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
     private VuforiaLocalizer vuforia = null;
     private TFObjectDetector tfod = null;
     private OpenGLMatrix lastLocation = null;
-    List<VuforiaTrackable> allTrackables = null;
+    private List<VuforiaTrackable> allTrackables = null;
+    OpMode opMode;
 
+    private boolean activated = false;
 
-    @Override
-    protected void onInitialize() {
+    public TTVisionEngine(OpMode opMode)
+    {
+        this.opMode = opMode;
+
         // sets up vuforia and the Tfod
         //this shouldn't move the robot
         initVuforia();
         initTfod();
     }
 
-    @Override
-    protected void onStart() {
-    }
-
-    @Override
-    public void runOpMode() {
-        waitForStart();
+    public void run()
+    {
 
         tfod.activate();
-
-        while(opModeIsActive())
+        activated = true;
+        Thread t = new Thread();
+        t.run();
+        while(activated)
         {
             //looks at Tfod to find objects and updates the robot position using vuforia
             updateRobotPos();
             List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
             lookAtTfod(updatedRecognitions);
         }
+    }
+
+    public void stop()
+    {
+        activated = false;
+        tfod.deactivate();
+    }
+
+    public OpenGLMatrix getRobotPosition()
+    {
+        return lastLocation;
     }
 
     private void initVuforia()
@@ -74,8 +86,8 @@ public class RealAuto extends TTOpMode {
 
     private void initTfod()
     {
-        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
-                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        int tfodMonitorViewId = opMode.hardwareMap.appContext.getResources().getIdentifier(
+                "tfodMonitorViewId", "id", opMode.hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
         tfodParameters.minimumConfidence = 0.8;
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
@@ -193,22 +205,22 @@ public class RealAuto extends TTOpMode {
     private void lookAtTfod(List<Recognition> updatedRecognitions)
     {
         if (updatedRecognitions != null) {
-            telemetry.addData("# Object Detected", updatedRecognitions.size());
+            opMode.telemetry.addData("# Object Detected", updatedRecognitions.size());
 
             // step through the list of recognitions and display boundary info.
-            int i = 0;
             for (Recognition recognition : updatedRecognitions) {
                 //todo get position data of each recognition into some kind of list
             }
-            telemetry.update();
+            opMode.telemetry.update();
         }
     }
 
-    private void updateRobotPos(){
+    private void updateRobotPos()
+    {
         boolean targetVisible = false;
         for (VuforiaTrackable trackable : allTrackables) {
             if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
-                telemetry.addData("Visible Target", trackable.getName());
+                opMode.telemetry.addData("Visible Target", trackable.getName());
                 targetVisible = true;
 
                 // getUpdatedRobotLocation() will return null if no new information is available since

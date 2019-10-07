@@ -27,8 +27,8 @@ public class DriveTeleop extends OpMode {
             driveMap.put(name,hardwareMap.get(DcMotor.class, name.toString()));
         }
         telemetry.update();
+
         driveSystem = new DriveSystem(driveMap, hardwareMap.get(BNO055IMU.class, "imu"));
-        this.driveSystem = new DriveSystem(this);
     }
 
 

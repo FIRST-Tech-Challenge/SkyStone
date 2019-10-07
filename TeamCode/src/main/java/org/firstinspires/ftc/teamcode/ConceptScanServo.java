@@ -47,19 +47,7 @@ import com.qualcomm.robotcore.hardware.Servo;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
-<<<<<<< refs/remotes/origin/Arm
-<<<<<<< refs/remotes/origin/Arm
-<<<<<<< HEAD
 @TeleOp(name = "Concept: Control wrist", group = "Concept")
-=======
-@TeleOp(name = "Concept: Get servo position", group = "Concept")
->>>>>>> 4c7c245802d94a8b1b515e04735009acc540965b
-=======
-@TeleOp(name = "Concept: Get servo position", group = "Concept")
->>>>>>> Wrote some tests
-=======
-@TeleOp(name = "Concept: Control wrist", group = "Concept")
->>>>>>> Worked on arm system
 public class ConceptScanServo extends LinearOpMode {
 
     static final double INCREMENT   = 0.01;     // amount to slew servo each CYCLE_MS cycle
@@ -93,23 +81,7 @@ public class ConceptScanServo extends LinearOpMode {
                 telemetry.addData("Servo Position: " + servo.getPosition() + Double.toString(Math.random()), "");
                 telemetry.addData(">", "Press Stop to end test." );
                 telemetry.update();
-<<<<<<< refs/remotes/origin/Arm
-<<<<<<< refs/remotes/origin/Arm
-<<<<<<< refs/remotes/origin/Arm
-<<<<<<< HEAD
             } catch (Exception e) { // shh
-=======
-            } catch (Exception e) {
->>>>>>> 4c7c245802d94a8b1b515e04735009acc540965b
-=======
-            } catch (Exception e) { // shh
->>>>>>> Wrote some tests
-=======
-            } catch (Exception e) {
->>>>>>> More tests for build team, ready to make a component!
-=======
-            } catch (Exception e) { // shh
->>>>>>> Revert "More tests for build team, ready to make a component!"
                 telemetry.addData("oopsie whoopsie", "");
                 telemetry.update();
             }

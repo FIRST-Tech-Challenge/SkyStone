@@ -51,7 +51,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="wheely", group="Linear Opmode")
+@TeleOp(name="wheely", group="myOp")
 //@Disabled
 public class MecanumWheels extends LinearOpMode {
 
@@ -101,7 +101,7 @@ public class MecanumWheels extends LinearOpMode {
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftFront, rightFront);
+            //telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftFront, rightFront);
             telemetry.update();
         }
     }

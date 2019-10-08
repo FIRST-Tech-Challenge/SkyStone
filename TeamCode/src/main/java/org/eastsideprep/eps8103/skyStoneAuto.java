@@ -1,5 +1,6 @@
 package org.eastsideprep.eps8103;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.RobotLog;
@@ -18,7 +19,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import java.util.ArrayList;
 import java.util.List;
 
-@TeleOp(name = "UKSSA", group = "Concept")
+@Autonomous(name = "2UKSSA", group = "Concept")
 public class skyStoneAuto extends LinearOpMode {
 
     Hardware8103 robot = new Hardware8103();
@@ -29,15 +30,10 @@ public class skyStoneAuto extends LinearOpMode {
     VuforiaLocalizer vuforia;
 
     public void driveForward() {
-        //double forwardPower = 1.0;
-        //double strafePower = 1.0;
-        //double turnPower = 1.0;
-        //WheelDriveVector powers = new WheelDriveVector(forwardPower, strafePower, turnPower);
-        // double[] drivePowers = powers.getDrivePowers();
-        robot.leftBackMotor.setPower(1.0);
-        robot.leftFrontMotor.setPower(1.0);
-        robot.rightBackMotor.setPower(1.0);
-        robot.rightBackMotor.setPower(1.0);
+        robot.leftBackMotor.setPower(0.25);
+        robot.leftFrontMotor.setPower(0.25);
+        robot.rightFrontMotor.setPower(0.25);
+        robot.rightBackMotor.setPower(0.25);
     }
 
     public void turnright() {
@@ -55,17 +51,17 @@ public class skyStoneAuto extends LinearOpMode {
     }
 
     public void turnleft() {
-        robot.leftFrontMotor.setPower(1.0);
-        robot.leftBackMotor.setPower(-1.0);
-        robot.rightBackMotor.setPower(-1.0);
-        robot.rightFrontMotor.setPower(1.0);
+        robot.leftFrontMotor.setPower(0.25);
+        robot.leftBackMotor.setPower(-0.25);
+        robot.rightBackMotor.setPower(-0.25);
+        robot.rightFrontMotor.setPower(0.25);
     }
 
     public void backwards() {
-        robot.leftBackMotor.setPower(-1.0);
-        robot.leftFrontMotor.setPower(-1.0);
-        robot.rightFrontMotor.setPower(-1.0);
-        robot.rightBackMotor.setPower(-1.0);
+        robot.leftBackMotor.setPower(-0.25);
+        robot.leftFrontMotor.setPower(-0.25);
+        robot.rightFrontMotor.setPower(-0.25);
+        robot.rightBackMotor.setPower(-0.25);
     }
 
     public void motorStop() {
@@ -276,15 +272,18 @@ public class skyStoneAuto extends LinearOpMode {
 
         while (opModeIsActive()) {
             driveForward();
-            sleep(40000);
+            sleep(1200);
+            straferightslowly();
+            sleep(10000);
             strafeleft();
-            sleep(40000);
-            turnleft();
-            sleep(40000);
+            sleep(2000);
+            driveForward();
+            sleep(1700);
             strafeleft();
-            sleep(40000);
+            sleep(700);
             backwards();
-            sleep(40000);
+            sleep(3500 );
+
             // update all visuals
 
             for (VuforiaTrackable trackable : allTrackables) {
@@ -293,16 +292,16 @@ public class skyStoneAuto extends LinearOpMode {
                 if (robotLocationTransform != null) {
                     lastLocation = robotLocationTransform;
                 }
-                if (!((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
+               // if (!((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
                     //if you can't see anything
-                    straferightslowly(); //start turning
-                }
-                if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
+                 //   straferightslowly(); //start turning
+                //}
+                //if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
                     //if you see something
-                    stopmotors(); //stop
+                  //  stopmotors(); //stop
                     //grab block
-                    backwards();
-                }
+                   // backwards();
+                //}
 
 
             }

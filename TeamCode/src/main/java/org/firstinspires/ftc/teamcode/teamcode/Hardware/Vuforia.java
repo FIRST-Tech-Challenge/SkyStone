@@ -279,7 +279,7 @@ public class Vuforia {
                 driveTrain.strafeMove(opMode, 8, 1, .7);
             }
 
-            if (targetVisible == true) {
+            if (targetVisible) {
                 break;
             }
             else if (trackable.getName() == "Stone Target") {

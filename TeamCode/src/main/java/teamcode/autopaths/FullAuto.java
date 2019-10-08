@@ -1,7 +1,6 @@
 package teamcode.autopaths;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
@@ -19,7 +18,6 @@ import java.util.List;
 
 import teamcode.common.TTDriveSystem;
 import teamcode.common.TTOpMode;
-import teamcode.common.TTRobot;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;

@@ -4,7 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import teamcode.common.TTDriveSystem;
 import teamcode.common.TTOpMode;
-import teamcode.common.TTRobot;
 import teamcode.common.Vector2;
 
 @TeleOp(name = "TT TeleOp")
@@ -21,8 +20,7 @@ public class TTTeleOp extends TTOpMode {
 
     @Override
     protected void onStart() {
-        TTRobot robot = getRobot();
-        driveSystem = robot.getDriveSystem();
+        driveSystem = new TTDriveSystem(hardwareMap);
 
         while (opModeIsActive()) {
             update();
@@ -32,6 +30,9 @@ public class TTTeleOp extends TTOpMode {
     private void update() {
         driveUpdate();
         armUpdate();
+    }
+
+    protected void onStop() {
     }
 
     private void driveUpdate() {

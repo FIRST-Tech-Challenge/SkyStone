@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.PreseasonTest;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.All.HardwareMap;
 
 @TeleOp(name="EncoderTester", group="Linear Opmode")
+@Disabled
 public class encoderCountsPerRevTest extends LinearOpMode {
     boolean onA = false;
     boolean onB = false;

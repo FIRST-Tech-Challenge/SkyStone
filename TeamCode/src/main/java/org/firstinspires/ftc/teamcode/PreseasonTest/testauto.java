@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.PreseasonTest;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -10,6 +11,7 @@ import org.firstinspires.ftc.teamcode.All.DriveConstant;
 import org.firstinspires.ftc.teamcode.All.HardwareMap;
 
 @Autonomous(name="Test Auto", group="Test")
+@Disabled
 
 public class testauto extends LinearOpMode {
     @Override

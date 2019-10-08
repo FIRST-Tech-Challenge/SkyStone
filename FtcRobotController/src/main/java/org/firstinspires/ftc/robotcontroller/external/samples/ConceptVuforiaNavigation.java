@@ -33,7 +33,10 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.RobotLog;
+import com.vuforia.PIXEL_FORMAT;
+import com.vuforia.Vuforia;
 
+import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.MatrixF;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
@@ -81,7 +84,6 @@ import java.util.List;
  */
 
 @TeleOp(name="Concept: Vuforia Navigation", group ="Concept")
-@Disabled
 public class ConceptVuforiaNavigation extends LinearOpMode {
 
     public static final String TAG = "Vuforia Navigation Sample";
@@ -94,7 +96,7 @@ public class ConceptVuforiaNavigation extends LinearOpMode {
      */
     VuforiaLocalizer vuforia;
 
-    @Override public void runOpMode() {
+    @Override public void runOpMode() throws InterruptedException{
         /*
          * To start up Vuforia, tell it the view that we wish to use for camera monitor (on the RC phone);
          * If no camera monitor is desired, use the parameterless constructor instead (commented out below).
@@ -117,7 +119,7 @@ public class ConceptVuforiaNavigation extends LinearOpMode {
          * Once you've obtained a license key, copy the string from the Vuforia web site
          * and paste it in to your code on the next line, between the double quotes.
          */
-        parameters.vuforiaLicenseKey = " -- YOUR NEW VUFORIA KEY GOES HERE  --- ";
+        parameters.vuforiaLicenseKey = "ARjSEzX/////AAABmTyfc/uSOUjluYpQyDMk15tX0Mf3zESzZKo6V7Y0O/qtPvPQOVben+DaABjfl4m5YNOhGW1HuHywuYGMHpJ5/uXY6L8Mu93OdlOYwwVzeYBhHZx9le+rUMr7NtQO/zWEHajiZ6Jmx7K+A+UmRZMpCmr//dMQdlcuyHmPagFERkl4fdP0UKsRxANaHpwfQcY3npBkmgE8XsmK4zuFEmzfN2/FV0Cns/tiTfXtx1WaFD0YWYfkTHRyNwhmuBxY6MXNmaG8VlLwJcoanBFmor2PVBaRYZ9pnJ4TJU5w25h1lAFAFPbLTz1RT/UB3sHT5CeG0bMyM4mTYLi9SHPOUQjmIomxp9D7R39j8g5G7hiKr2JP";  //Variable Place--Remember to insert key here
 
         /*
          * We also indicate which camera on the RC that we wish to use.
@@ -129,6 +131,7 @@ public class ConceptVuforiaNavigation extends LinearOpMode {
         /**
          * Instantiate the Vuforia engine
          */
+        Vuforia.setFrameFormat(PIXEL_FORMAT.GRAYSCALE,false);
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
 
         /**
@@ -292,6 +295,7 @@ public class ConceptVuforiaNavigation extends LinearOpMode {
 
         /** Wait for the game to begin */
         telemetry.addData(">", "Press Play to start tracking");
+        telemetry.addData("Cam Params", FtcRobotControllerActivity.vals);
         telemetry.update();
         waitForStart();
 
@@ -299,6 +303,12 @@ public class ConceptVuforiaNavigation extends LinearOpMode {
         stonesAndChips.activate();
 
         while (opModeIsActive()) {
+            Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true); //enables RGB565 format for the image
+            vuforia.setFrameQueueCapacity(1); //tells VuforiaLocalizer to only store one frame at a time
+            VuforiaLocalizer.CloseableFrame frame = vuforia.getFrameQueue().take();
+
+            telemetry.addData("img params: ", frame.getImage(0).getHeight() + ", " + frame.getImage(0).getWidth());
+            telemetry.update();
 
             for (VuforiaTrackable trackable : allTrackables) {
                 /**

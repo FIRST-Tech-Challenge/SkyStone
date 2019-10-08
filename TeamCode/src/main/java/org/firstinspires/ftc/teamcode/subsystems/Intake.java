@@ -39,4 +39,4 @@ public class Intake {
     public void setPower(double power) {
         setLeftIntakePower(power);
         setRightIntakePower(-power);
-}
+}}

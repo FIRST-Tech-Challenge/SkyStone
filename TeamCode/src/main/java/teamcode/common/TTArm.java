@@ -5,11 +5,13 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 import java.util.concurrent.TimeUnit;
 
 public class TTArm {
-    private final double INCHES_TO_TICKS = 2912.0/9.42;
-    private final double TICKS_TO_INCHES = 9.42/2912.0;
+    private final double INCHES_TO_TICKS = 309.13;
+    private final double TICKS_TO_INCHES = 0.0032349;
     private final DcMotor armLift;
     private final Servo armWrist, armClaw;
     private static final double TICK_ERROR = 25.0;
@@ -19,6 +21,7 @@ public class TTArm {
         armLift = hardwareMap.get(DcMotor.class, HardwareComponentNames.ARM_LIFT);
         armWrist = hardwareMap.get(Servo.class, HardwareComponentNames.ARM_WRIST);
         armClaw = hardwareMap.get(Servo.class, HardwareComponentNames.ARM_CLAW);
+        armLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     public void armMove(double inches) {
@@ -54,11 +57,11 @@ public class TTArm {
         armMove(0);
     }
     public void rotateClaw(double position) {
-        armWrist.setPosition(position);
+        armClaw.setPosition(position);
     }
 
     public void rotateWrist(double position){
-        armClaw.setPosition(position);
+        armWrist.setPosition(position);
     }
 
     public double getWristPos(){
@@ -67,5 +70,12 @@ public class TTArm {
 
     public double getClawPos(){
         return this.armClaw.getPosition();
+    }
+
+    public int getArmLiftPos() {
+        return this.armLift.getCurrentPosition();
+    }
+    public int getArmTarget(){
+        return  this.armLift.getTargetPosition();
     }
 }

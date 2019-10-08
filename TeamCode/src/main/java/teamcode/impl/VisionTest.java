@@ -16,7 +16,7 @@ public class VisionTest extends TTOpMode {
 
     @Override
     protected void onInitialize() {
-        //vision = getRobot().getVision();
+        vision = new TTVision(hardwareMap);
         vision.enable();
     }
 
@@ -25,10 +25,14 @@ public class VisionTest extends TTOpMode {
         while (opModeIsActive()) {
             List<Recognition> recognitions = vision.getRecognitions();
             for (Recognition recognition : recognitions) {
-                telemetry.addData("Recognitions", recognition.getLabel());
+                telemetry.addData("Recognition", "x: %.2f y: %.2f", (recognition.getLeft() + recognition.getRight()) / 2, (recognition.getBottom() + recognition.getTop()) / 2);
             }
             telemetry.update();
         }
+    }
+
+    protected void onStop() {
+        vision.disable();
     }
 
 }

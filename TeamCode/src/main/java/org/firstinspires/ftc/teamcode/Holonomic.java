@@ -29,22 +29,23 @@ public class Holonomic extends LinearOpMode {
 
     @Override //when init is pressed
     public void runOpMode(){
-        //debugging using the phone
 
-        //Naming, Initialization of the hardware
+        //Naming, Initialization of the hardware, use this deviceName in the robot controller phone
+        //use the name of the object in the code
         backLeft = hardwareMap.get(DcMotor.class, "left_drive");
-        frontLeft = hardwareMap.get(DcMotor.class, "front_left");
         backRight = hardwareMap.get(DcMotor.class, "right_drive");
+        frontLeft = hardwareMap.get(DcMotor.class, "front_left");
         frontRight = hardwareMap.get(DcMotor.class, "front_right");
 
         //Set the direction of the motors
-        //Reversed motors
+        //Reversed motors on one side to ensure forward movement.
+        //invert all of them to change the robot's front/back
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backRight.setDirection(DcMotorSimple.Direction.FORWARD);
         frontRight.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        //Zero Power Behavior
+        //Zero Power Behavior -> use only for autonomous for precious movement
 
         //backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         //frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -59,28 +60,29 @@ public class Holonomic extends LinearOpMode {
 
         waitForStart();
         runtime.reset();
-        double speedSet = 4;
+        double speedSet = 5;//robot starts with 5 speed due to 40 ratio motors being op
 
         while (opModeIsActive()) {
 
-            //dpad up-down sets speed of robot
-            if(gamepad1.dpad_up)
+            //bumpers set speed of robot
+            if(gamepad1.right_bumper)
                 speedSet += 0.001;
-            else if(gamepad1.dpad_down)
+            else if(gamepad1.left_bumper)
                 speedSet -= 0.001;
 
-            speedSet =  Range.clip(speedSet, 1, 10);
+            speedSet =  Range.clip(speedSet, 1, 10);//makes sure speed is limited at 10.
 
-            if(gamepad1.dpad_down == false && gamepad1.dpad_up == false)
+            if(!gamepad1.right_bumper && !gamepad1.left_bumper)//makes sure speed does not round every refresh. otherwise, speed is "pulled back" by the round
                 speedSet = Math.round(speedSet);
 
             //directional
+            //using range.clip makes sure you can use all sticks and directions at the same time without conflicts. power stays limited at 1
             if((Math.abs(gamepad1.left_stick_x) > deadZone) || (Math.abs(gamepad1.left_stick_y) > deadZone) || (Math.abs(gamepad1.right_stick_x) > deadZone)) {
-                frontLeft.setPower((gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x) * (speedSet / 10));
-                frontRight.setPower((gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x) * (speedSet / 10));
-                backRight.setPower((gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x) * (speedSet / 10));
-                backLeft.setPower((gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x) * (speedSet / 10));
-            } else if (earthIsFlat) {
+                frontLeft.setPower(Range.clip((gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x) * (speedSet / 10), 0, 1));
+                frontRight.setPower(Range.clip((gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x) * (speedSet / 10), 0, 1));
+                backRight.setPower(Range.clip((gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x) * (speedSet / 10), 0, 1));
+                backLeft.setPower(Range.clip((gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x) * (speedSet / 10), 0, 1));
+            } else if (earthIsFlat) {//stop robot
                 frontLeft.setPower(0);
                 frontRight.setPower(0);
                 backRight.setPower(0);
@@ -89,8 +91,6 @@ public class Holonomic extends LinearOpMode {
 
             telemetry.addData("Drive", "Holonomic");
             telemetry.addData("speedSet", "%.2f", speedSet);
-            telemetry.addData("V", 3);//change this every time uploading new code to phone
-            //V2: 10/5/2019
             telemetry.update();
 
         }

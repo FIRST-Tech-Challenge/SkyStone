@@ -57,9 +57,6 @@ public class cameron extends OpMode {
 
     }
 
-
-
-
     @Override //run loop after start code finishes
     public void loop(){
         double leftPower = 0.0;

@@ -27,7 +27,7 @@ import java.util.Locale;
  * 20 560
  */
 @Autonomous(name= "DepotAuto", group="mecanum autonomous")
-//@Disabled
+@Disabled//comment this out to use
 public class DepotAuto extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 

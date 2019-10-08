@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import android.graphics.Color;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -24,7 +25,7 @@ import java.util.Locale;
  * 20 560
  */
 @Autonomous(name= "CraterAuto", group="mecanum autonomous")
-//@Disabled
+@Disabled//comment this out to use
 public class CraterAuto extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 

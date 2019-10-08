@@ -11,7 +11,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class Outtake {
 
     private static final double MAXLEVEL = 14;
+    private static final double DISTANCE_TO_BUILD_ZONE = 1; // what ever distance is from foundation to build zone
     public Servo pushBlock;
+    Servo hookRight;
+    Servo hookLeft;
     CRServo rightSideY;
     CRServo leftSideY;
     DcMotor liftRight;
@@ -32,11 +35,14 @@ public class Outtake {
     static final double encoderLevelCount = (1440 / Math.PI) ;
 
     static double LIFTPOWER = 1.0;
+    static double HOOKDOWN = 0.0;
+    static double HOOKUP = 1.0;
 
     double k = 1.0;
     double level = 1.0;
     double blockCount = 1.0;
     double blockHeight = 5.0; //Block Height In Inches
+    private boolean toggled = false;
 
     public boolean initOuttake(OpMode opMode)
     {
@@ -49,6 +55,7 @@ public class Outtake {
 
         k = 1.0;
         level = 1.0;
+        blockCount = 0.0;
 
         try
         {
@@ -57,11 +64,22 @@ public class Outtake {
             leftSideY = opMode.hardwareMap.crservo.get("Left Outtake");
             liftLeft = opMode.hardwareMap.dcMotor.get("Left Lift");
             liftRight = opMode.hardwareMap.dcMotor.get("Right Lift");
+            hookLeft = opMode.hardwareMap.servo.get("Left Hook");
+            hookRight = opMode.hardwareMap.servo.get("Right Hook");
 
             liftLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
             liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+            liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            ((LinearOpMode) opMode).idle();
+            liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            ((LinearOpMode) opMode).idle();
+            liftLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            ((LinearOpMode) opMode).idle();
+            liftRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            ((LinearOpMode) opMode).idle();
 
             opMode.telemetry.addData("Success", "Outtake Initialized");
             opMode.telemetry.update();
@@ -85,22 +103,51 @@ public class Outtake {
     // Process : Robot Aligns, Lift Extends Up, CRServos move forward while hook connected to servo
     // is in contact with block, when block needs to be released hook from servo extended out
 
+    public void hookAuto(DriveTrain drive)
+    {
+        hookRight.setPosition(HOOKDOWN);
+        hookLeft.setPosition(HOOKDOWN);
+
+        //assuming robot is lined up with foundation
+        raiseLift();
+        openBasket();
+
+        drive.strafeMove(opMode, DISTANCE_TO_BUILD_ZONE, 5, -1);
+
+        //possible add a test case to make sure robot has foundation
+
+        hookLeft.setPosition(HOOKUP);
+        hookRight.setPosition(HOOKUP);
+    }
+    public double averageLiftPosition()
+    {
+        int count = 2;
+
+        if(liftRight.getCurrentPosition() == 0) count--;
+        if(liftLeft.getCurrentPosition() == 0) count--;
+        if(count == 0) return 0;
+        return (liftLeft.getCurrentPosition() + liftRight.getCurrentPosition()) / count;
+
+    }
+
+    public void raiseLift()
+    {
+        liftRight.setPower(LIFTPOWER);
+        liftLeft.setPower(LIFTPOWER);
+
+        while(encoderLevelCount * blockHeight * level + 320  > averageLiftPosition())
+        {
+        }
+
+
+        liftLeft.setPower(0);
+        liftRight.setPower(0);
+    }
 
     public void outTake_Auto(DriveTrain drive)
     {
 
-            liftRight.setPower(LIFTPOWER);
-            liftLeft.setPower(LIFTPOWER);
-
-            while(encoderLevelCount * blockHeight * level + 320  > liftLeft.getCurrentPosition())
-            {
-            }
-
-
-            liftLeft.setPower(0);
-            liftRight.setPower(0);
-
-            level += 1;
+            raiseLift();
 
             if(blockCount % 2 == 1)
             {
@@ -109,12 +156,14 @@ public class Outtake {
             else if(blockCount % 2 == 0)
             {
                 //  Strafe Right
-                drive.encoderDrive(opMode,  .25, distanceBetweenBlocks,
-                        -distanceBetweenBlocks, 1); // OpMode, isRight, speed, Left Inches, Right Inches, timeOutS
+                drive.strafeMove(opMode,  .25, 5, 1);
+
                 openBasket();
-                //  Strafe Back Left
-                drive.encoderDrive(opMode,  .25, distanceBetweenBlocks,
-                        -distanceBetweenBlocks, 1); // OpMode, isRight, speed, Left Inches, Right Inches, timeOutS
+
+                //  Strafe Left
+                drive.strafeMove(opMode,  .25, 5, -1);
+
+                level++;
             }
 
             resetOuttake();
@@ -188,6 +237,8 @@ public class Outtake {
             k += .1;
         }
 
+        hookToggle();
+
         opMode.telemetry.addData("Lift Power", k);
         opMode.telemetry.update();
     }
@@ -197,6 +248,8 @@ public class Outtake {
     {
         // pushes front servo in while as rotating CRServos to open basket
         time.reset();
+
+        blockCount++;
 
         rightSideY.setPower(1);
         leftSideY.setPower(1);
@@ -244,6 +297,33 @@ public class Outtake {
         top = false;
         bottom = true;
 
+        if(hookRight.getPosition() != 1)
+        {
+            hookRight.setPosition(1);
+            hookLeft.setPosition(1);
+        }
+
+    }
+
+    public void hookToggle()
+    {
+       if(!toggled && opMode.gamepad2.y)
+       {
+           toggled = true;
+
+           //set hook position to what ever the angle is, I assume servo is at (1) = 180,
+           // and moves to (0) = 0 degrees
+
+           hookLeft.setPosition(HOOKDOWN);
+           hookRight.setPosition(HOOKDOWN);
+       }
+       else if(toggled && opMode.gamepad2.y)
+       {
+           toggled = false;
+
+           hookLeft.setPosition(HOOKUP);
+           hookRight.setPosition(HOOKUP);
+       }
     }
 
 }

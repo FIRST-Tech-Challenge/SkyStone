@@ -228,8 +228,13 @@ public class DriveTrain {
         opMode.sleep(50);
     }
 
-    public void strafeEqualizer()
+    public boolean strafeEqualizer()
     {
+        if(!All_Motors_Working())
+        {
+            return false;
+        }
+
         flAcc = getHolon(fl);
         frAcc = getHolon(fr);
         brAcc = getHolon(br);
@@ -239,12 +244,22 @@ public class DriveTrain {
         {
             fl.setPower(fl.getPower() - (flAcc + blAcc));
         }
-        if(Math.abs(frAcc + brAcc) >= .05)
+        if(Math.abs(frAcc + blAcc) >= .05)
         {
             fr.setPower(fr.getPower() - (frAcc + brAcc));
         }
+        return true;
     }
 
+
+    public boolean All_Motors_Working()
+    {
+        runtime.reset();
+        if(runtime.milliseconds() > 100 || fr.getCurrentPosition() == 0 || fl.getCurrentPosition() == 0 || br.getCurrentPosition() == 0
+        || bl.getCurrentPosition() == 0) return false;
+
+        return true;
+    }
 
     public void strafeMove(LinearOpMode opMode, double target, double timeout, double power)
     {
@@ -566,28 +581,33 @@ public class DriveTrain {
         return masterVelocity;
     }
 
+
     public double getHolon (DcMotor motor) {
         runtime.reset();
 
-        prevPosition = motor.getCurrentPosition();
+        prevPosition = (motor.getCurrentPosition());
         prevTime = runtime.milliseconds();
-        time = runtime.milliseconds();
-        position = motor.getCurrentPosition();
+        time_ea = runtime.milliseconds();
+        position = (fl.getCurrentPosition());
 
-        secondPrevPosition = motor.getCurrentPosition();
+        prevAccel = ((position - prevPosition) / (time_ea - prevTime_ea));
+
+        prevPosition = (motor.getCurrentPosition());
         prevNewTime = runtime.milliseconds();
-        secondTime = runtime.milliseconds();
-        secondPosition = motor.getCurrentPosition();
+        time_ea = runtime.milliseconds();
+        position = (fl.getCurrentPosition());
 
-        masterAccel =  (((secondPosition - secondPrevPosition) * (time - prevTime) +
-                (prevPosition - position) * (secondTime - prevNewTime))
-                / (runtime.milliseconds() - prevTime) * (secondTime -
-                prevNewTime) * (time - prevTime)) ;
+        accel = ((position - prevPosition) / (time_ea - prevNewTime));
+
+        masterAccel =  Math.abs(((accel - prevAccel) / (time_ea - prevTime_ea)));
         return masterAccel;
+
     }
 
-    public void equalize()
+    public boolean equalize()
     {
+        if(!All_Motors_Working()) return false;
+
         flAcc = getHolon(fl);
         frAcc = getHolon(fr);
         brAcc = getHolon(br);
@@ -601,9 +621,8 @@ public class DriveTrain {
         {
             fr.setPower(fr.getPower() - (frAcc - blAcc));
         }
-
+        return true;
     }
-//hello
 
     public double getEncodedAccel () {
         runtime.reset();

@@ -3,12 +3,16 @@ package org.firstinspires.ftc.teamcode.david_cao.generation1_linda_code;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.darbots.darbotsftclib.libcore.OpModes.DarbotsBasicOpMode;
+import org.darbots.darbotsftclib.libcore.integratedfunctions.LoopableTimer;
 import org.darbots.darbotsftclib.libcore.tasks.servo_tasks.motor_powered_servo_tasks.TargetPosTask;
 import org.darbots.darbotsftclib.libcore.templates.chassis_related.RobotMotionSystemTeleOpControlTask;
 
 @TeleOp(name = "4100Gen1TeleOp_dcao",group = "4100")
 public class Robot4100Generation1_TeleOp extends DarbotsBasicOpMode<Robot4100Generation1_LindaCore> {
     private Robot4100Generation1_LindaCore m_RobotCore;
+    private boolean m_LastDragServoOut;
+    private LoopableTimer m_Timer = null;
+
     @Override
     public Robot4100Generation1_LindaCore getRobotCore() {
         return m_RobotCore;
@@ -18,6 +22,8 @@ public class Robot4100Generation1_TeleOp extends DarbotsBasicOpMode<Robot4100Gen
     public void hardwareInitialize() {
         this.m_RobotCore = new Robot4100Generation1_LindaCore(this.hardwareMap);
         this.m_RobotCore.getChassis().replaceTask(this.m_RobotCore.getChassis().getTeleOpTask());
+
+        this.m_LastDragServoOut = false;
     }
 
     @Override
@@ -73,9 +79,33 @@ public class Robot4100Generation1_TeleOp extends DarbotsBasicOpMode<Robot4100Gen
                 this.m_RobotCore.setIntakeSystemStatus(Robot4100Generation1_LindaCore.IntakeSystemStatus.STOP);
             }
 
+            if(gamepad2.a){
+                //Set StoneOrientServo to Orient Pos, then come back
+                if(this.m_Timer == null) {
+                    this.m_RobotCore.setOrientServoToOrient(true);
+                    this.m_Timer = new LoopableTimer(0.8) {
+                        @Override
+                        protected void run() {
+                            m_RobotCore.setOrientServoToOrient(false);
+                            m_Timer = null;
+                        }
+                    };
+                    this.m_Timer.start();
+                }
+            }
+
+            if(gamepad2.dpad_down){
+                this.m_RobotCore.setDragServoToDrag(true);
+            }else if(gamepad2.dpad_up){
+                this.m_RobotCore.setDragServoToDrag(false);
+            }
+
             telemetry.addData("LinearSlide","" + this.m_RobotCore.getLinearSlide().getCurrentPosition() + "[" + this.m_RobotCore.getLinearSlide().getCurrentPercent() + "%]," + (this.m_RobotCore.getLinearSlide().isBusy() ? "Busy" : "Not Busy"));
             telemetry.update();
             this.m_RobotCore.updateStatus();
+            if(this.m_Timer != null){
+                this.m_Timer.updateStatus();
+            }
         }
     }
 }

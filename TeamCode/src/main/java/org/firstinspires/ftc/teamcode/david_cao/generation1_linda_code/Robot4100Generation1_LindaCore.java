@@ -24,6 +24,7 @@ public class Robot4100Generation1_LindaCore extends RobotCore {
     private OmniDrive m_Chassis;
     private Servo m_DragServoL, m_DragServoR;
     private Servo m_Grabber, m_GrabberRot;
+    private Servo m_StoneOrientServo;
     private RobotServoUsingMotor m_linearSlide;
     private DcMotor m_IntakeLeft, m_IntakeRight;
 
@@ -55,6 +56,8 @@ public class Robot4100Generation1_LindaCore extends RobotCore {
 
         this.m_IntakeLeft = hardwares.dcMotor.get("motorIntakeLeft");
         this.m_IntakeRight = hardwares.dcMotor.get("motorIntakeRight");
+
+        this.m_StoneOrientServo = hardwares.servo.get("servoStoneOrient");
     }
 
     public RobotServoUsingMotor getLinearSlide(){
@@ -101,6 +104,14 @@ public class Robot4100Generation1_LindaCore extends RobotCore {
                 this.m_IntakeLeft.setPower(0);
                 this.m_IntakeRight.setPower(0);
                 break;
+        }
+    }
+
+    public void setOrientServoToOrient(boolean orient){
+        if(orient){
+            this.m_StoneOrientServo.setPosition(Robot4100Generation1_Settings.STONEORIENTSERVO_ORIENTPOS);
+        }else{
+            this.m_StoneOrientServo.setPosition(Robot4100Generation1_Settings.STONEORIENTSERVO_ZEROPOS);
         }
     }
 

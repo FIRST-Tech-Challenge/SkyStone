@@ -2,6 +2,7 @@ package teamcode.impl;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import teamcode.common.TTArm;
 import teamcode.common.TTDriveSystem;
 import teamcode.common.TTOpMode;
 import teamcode.common.Vector2;
@@ -13,6 +14,7 @@ public class TTTeleOp extends TTOpMode {
     private static final double REDUCED_DRIVE_SPEED = 0.6;
 
     private TTDriveSystem driveSystem;
+    private TTArm arm;
 
     @Override
     protected void onInitialize() {
@@ -28,7 +30,7 @@ public class TTTeleOp extends TTOpMode {
     }
 
     private void update() {
-        driveUpdate();
+        //driveUpdate();
         armUpdate();
     }
 
@@ -46,8 +48,21 @@ public class TTTeleOp extends TTOpMode {
         driveSystem.continuous(velocity, turn);
     }
 
-    private void armUpdate() {
-
+    private void armUpdate(){
+        arm.armLift(gamepad2.right_trigger);
+        arm.armLower(gamepad2.left_trigger * -1);
+        if(gamepad2.x && arm.getClawPos() == 1){
+            arm.rotateClaw(0);
+        }
+        if (gamepad2.x && arm.getClawPos() == 0){
+            arm.rotateClaw(1);
+        }
+        if (gamepad2.b && arm.getWristPos() < 0.7) {
+            arm.rotateWrist(0);
+        }
+        if (gamepad2.b && arm.getWristPos() > 0){
+            arm.rotateWrist(0.7);
+        }
     }
 
 }

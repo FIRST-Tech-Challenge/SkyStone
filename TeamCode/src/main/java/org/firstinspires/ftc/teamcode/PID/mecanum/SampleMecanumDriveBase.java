@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.PID.mecanum;
 
+import static org.firstinspires.ftc.teamcode.PID.DriveConstants.BASE_CONSTRAINTS;
+import static org.firstinspires.ftc.teamcode.PID.DriveConstants.TRACK_WIDTH;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.canvas.Canvas;
@@ -22,13 +24,8 @@ import com.acmerobotics.roadrunner.trajectory.constraints.MecanumConstraints;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.PID.DriveConstants;
 import org.firstinspires.ftc.teamcode.PID.util.DashboardUtil;
-
-import static org.firstinspires.ftc.teamcode.PID.constants.DriveConstants.BASE_CONSTRAINTS;
-import static org.firstinspires.ftc.teamcode.PID.constants.DriveConstants.TRACK_WIDTH;
-import static org.firstinspires.ftc.teamcode.PID.constants.DriveConstants.kA;
-import static org.firstinspires.ftc.teamcode.PID.constants.DriveConstants.kStatic;
-import static org.firstinspires.ftc.teamcode.PID.constants.DriveConstants.kV;
 
 /*
  * Base class with shared functionality for sample mecanum drives. All hardware-specific details are
@@ -59,7 +56,7 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
     private TrajectoryFollower follower;
 
     public SampleMecanumDriveBase() {
-        super(kV, kA, kStatic, TRACK_WIDTH);
+        super(DriveConstants.kV, DriveConstants.kA, DriveConstants.kStatic, TRACK_WIDTH);
 
         dashboard = FtcDashboard.getInstance();
         clock = NanoClock.system();

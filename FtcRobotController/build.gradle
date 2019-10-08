@@ -10,11 +10,16 @@ android {
         targetSdkVersion 26
     }
 
-    compileSdkVersion 28
+    compileSdkVersion 26
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    aaptOptions {
+        noCompress "tflite"
+        noCompress "lite"
     }
 }
 

@@ -16,7 +16,7 @@ public class VisionTest extends TTOpMode {
 
     @Override
     protected void onInitialize() {
-        //vision = getRobot().getVision();
+        vision = getRobot().getVision();
         vision.enable();
     }
 

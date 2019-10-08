@@ -9,14 +9,14 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp
  */
 
 @TeleOp(name="SSTeleOp", group="TeleOp")
-@Disabled
+//@Disabled
 class SSTeleOp : OpMode() {
     //using robot class for motors, servos etc
     val robot = SSRobot()
     var slowDown = 1//default
 
     override fun init() {
-        telemetry.addData("Status", "TeleOp Initialized")
+        telemetry.addData("Status: ", "TeleOp Initialized")
         telemetry.update()
         //initializes all parts
         robot.init(hardwareMap)
@@ -30,13 +30,12 @@ class SSTeleOp : OpMode() {
     override fun loop() {
         //slowDown = if(gamepad1.left_bumper) 2.0 else 1.25 //condensed if else
 
-        //Tank Drive
+        //Tank Drive-sets power equal to numerical value of joystick positions
         var leftPower: Float = -gamepad1.left_stick_y
         var rightPower: Float = -gamepad1.right_stick_y
 
         robot.leftDrive?.power = leftPower.toDouble() / slowDown
         robot.rightDrive?.power = rightPower.toDouble() / slowDown
-        //robot.armMot?.power = extPower.toDouble()
 
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower)
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower)

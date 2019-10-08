@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
  */
 
 @Autonomous(name="KtAutoCrater", group = "Autonomous")
-//@Disabled
+@Disabled
 class KtAutoCrater : LinearOpMode()
 {
     //adds robot objects for variables and methods

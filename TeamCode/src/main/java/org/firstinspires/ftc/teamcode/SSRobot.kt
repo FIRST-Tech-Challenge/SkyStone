@@ -24,6 +24,7 @@ class SSRobot {
     }
 
     fun init(ahwdMap: HardwareMap) {
+        //hardware maping motors, servos, and sensors
         hwdMap = ahwdMap
         leftDrive = ahwdMap.dcMotor.get("leftDrive")
         rightDrive = ahwdMap.dcMotor.get("rightDrive")
@@ -48,7 +49,7 @@ class SSRobot {
         rightDrive?.power = rightM
     }
 
-    fun drive(pow: Double)//OVERLOAD
+    fun drive(pow: Double)//OVERLOAD-both motors run at same velocity
     {
         drive(pow, pow)
     }

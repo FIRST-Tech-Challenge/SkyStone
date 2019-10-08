@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
  * Created by KasaiYuki on 9/21/2018.
  */
 @Autonomous(name = "SSAutoOp", group = "Autonomous")
-@Disabled
+//@Disabled
 class SSAutoOp : LinearOpMode()
 {
     val robot = SSRobot()
@@ -24,7 +24,7 @@ class SSAutoOp : LinearOpMode()
         robot.init(hardwareMap)
 
         waitForStart()
-
+        //CODE GOES HERE
         telemetry.addData("Status: ", "Autonomous Terminated")
         telemetry.update()
     }

@@ -8,5 +8,8 @@ public class HardwareComponentNames {
     public static final String BACK_RIGHT_DRIVE = "BackRightDrive";
     public static final String INTAKE_LEFT = "IntakeLeft";
     public static final String INTAKE_RIGHT = "IntakeRight";
+    public static final String ARM_LIFT = "ArmLift";
+    public static final String ARM_WRIST = "ArmWrist";
+    public static final String ARM_CLAW = "ArmClaw";
 
 }

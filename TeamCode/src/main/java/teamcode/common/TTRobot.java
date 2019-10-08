@@ -8,20 +8,24 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class TTRobot {
 
-    private TTDriveSystem driveSystem;
-    private TTVision vision;
+    //private TTDriveSystem driveSystem;
+    //private TTVision vision;
+    private TTArm arm;
 
     public TTRobot(HardwareMap hardwareMap) {
-        driveSystem = new TTDriveSystem(hardwareMap);
-        vision = new TTVision(hardwareMap);
+        //driveSystem = new TTDriveSystem(hardwareMap);
+        //vision = new TTVision(hardwareMap);
+        arm = new TTArm(hardwareMap);
     }
 
-    public TTDriveSystem getDriveSystem() {
-        return driveSystem;
-    }
+//    public TTDriveSystem getDriveSystem() {
+//        return driveSystem;
+//    }
+//
+//    public TTVision getVision() {
+//        return vision;
+//    }
 
-    public TTVision getVision() {
-        return vision;
-    }
+    public TTArm getArm() { return arm; }
 
 }

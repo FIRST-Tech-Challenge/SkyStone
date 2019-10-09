@@ -6,16 +6,18 @@ public abstract class TTOpMode extends LinearOpMode {
 
     private static TTOpMode opMode;
 
+    private TTRobot robot;
+
     @Override
     public void runOpMode() {
 
         opMode = this;
         TTTimer.init();
+        robot = new TTRobot(hardwareMap);
         onInitialize();
         waitForStart();
         onStart();
         while (opModeIsActive()) ; // this is necessary if code is being run on separate threads
-        onStop();
         TTTimer.cancel();
     }
 
@@ -23,10 +25,12 @@ public abstract class TTOpMode extends LinearOpMode {
         return opMode;
     }
 
+    public TTRobot getRobot() {
+        return robot;
+    }
+
     protected abstract void onInitialize();
 
     protected abstract void onStart();
-
-    protected abstract void onStop();
 
 }

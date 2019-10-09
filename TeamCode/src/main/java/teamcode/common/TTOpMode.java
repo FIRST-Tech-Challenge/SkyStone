@@ -11,6 +11,7 @@ public abstract class TTOpMode extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+
         opMode = this;
         TTTimer.init();
         onInitialize();

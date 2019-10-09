@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.GyroSensor;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 
 import teamcode.common.TTDriveSystem;
@@ -25,7 +26,9 @@ public class DriveSystemTest extends TTOpMode {
         TTRobot robot = getRobot();
         TTDriveSystem driveSystem = robot.getDriveSystem();
         driveSystem.turn(180, 0.5);
+        telemetry.addData("status:", "about to run second methods");
         driveSystem.vertical(100, 0.75);
+        stop();
     }
 
 }

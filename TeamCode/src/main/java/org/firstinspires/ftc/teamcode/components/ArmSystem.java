@@ -31,16 +31,16 @@ public class ArmSystem {
      If the robot is at the bottom of the screen, and X is the block:
 
      XO
-     XO  <--- Position A
+     XO  <--- Position west
 
      OO
-     XX  <--- Position B
+     XX  <--- Position south
 
      OX
-     OX  <--- Position C
+     OX  <--- Position east
 
      XX
-     OO  <--- Position D
+     OO  <--- Position north
 
      Probably should be controlled by the D pad or something.
      */
@@ -50,7 +50,7 @@ public class ArmSystem {
         this.gripper = hardwareMap.get(Servo.class, "gripper");
         this.wrist = hardwareMap.get(Servo.class, "wrist");
         this.elbow = hardwareMap.get(Servo.class, "elbow");
-        // this.pivot = hardwareMap.get(Servo.class, "pivot");
+        this.pivot = hardwareMap.get(Servo.class, "pivot");
     }
 
     public void moveGripper(double pos) {
@@ -66,8 +66,7 @@ public class ArmSystem {
     }
 
     public void movePivot(double pos) {
-        // Uncomment this line when build team implements the pivot
-        // elbow.setPosition(pos);
+        pivot.setPosition(pos);
     }
 
     public void increaseGripper(double pos) {
@@ -90,7 +89,7 @@ public class ArmSystem {
 
     public void increasePivot(double pos) {
         if (pivot.getPosition() + pos <= 1 && pivot.getPosition() + pos >= 0) {
-            //gripper.setPosition(gripper.getPosition());
+            gripper.setPosition(gripper.getPosition());
         }
     }
     public double getGripper() {
@@ -130,25 +129,30 @@ public class ArmSystem {
         switch(pos) {
             case POSITION_HOME:
                 openGripper();
-                moveWrist(0);
-                moveElbow(0);
-                movePivot(0);
+                moveWrist(0.6);
+                moveElbow(0.35);
+                movePivot(0.86);
+                break;
             case POSITION_NORTH:
-                moveWrist(0);
-                moveElbow(0);
-                movePivot(0);
+                moveWrist(0.88);
+                moveElbow(0.9);
+                movePivot(0.1);
+                break;
             case POSITION_EAST:
-                moveWrist(0);
-                moveElbow(0);
-                movePivot(0);
+                moveWrist(0.55);
+                moveElbow(0.9);
+                movePivot(0.1);
+                break;
             case POSITION_WEST:
-                moveWrist(0);
-                moveElbow(0);
-                movePivot(0);
+                moveWrist(0.1);
+                moveElbow(0.45);
+                movePivot(0.1);
+                break;
             case POSITION_SOUTH:
-                moveWrist(0);
-                moveElbow(0);
-                movePivot(0);
+                moveWrist(0.55);
+                moveElbow(0.45);
+                movePivot(0.1);
+                break;
         }
     }
 }

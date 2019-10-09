@@ -82,24 +82,25 @@ public class ArmSystemTest extends LinearOpMode {
             try {
                 telemetry.addData("Positions: " + armSystem.getGripper() + ", " + armSystem.getWrist() + ", " + armSystem.getElbow(),  "");
                 telemetry.addData(">", "Press Stop to end test." );
+
+                if (gamepad1.x) {
+                    armSystem.movePresetPosition(ArmSystem.Position.POSITION_WEST);
+                    telemetry.addData("x", "");
+                } else if (gamepad1.y){
+                    armSystem.movePresetPosition(ArmSystem.Position.POSITION_NORTH);
+                    telemetry.addData("y", "");
+                } else if (gamepad1.b) {
+                    armSystem.movePresetPosition(ArmSystem.Position.POSITION_EAST);
+                    telemetry.addData("b", "");
+                } else if (gamepad1.a) {
+                    armSystem.movePresetPosition(ArmSystem.Position.POSITION_SOUTH);
+                    telemetry.addData("a", "");
+                } else if (gamepad1.right_bumper) {
+                    armSystem.movePresetPosition(ArmSystem.Position.POSITION_HOME);
+                    telemetry.addData("rb", "");
+                }
                 telemetry.update();
-                double speed = 0.001;
-                if (gamepad1.a) {
-                    armSystem.increaseGripper(speed);
-                } else if (gamepad1.dpad_down) {
-                    armSystem.increaseGripper(-speed);
-                }
-                if (gamepad1.b) {
-                    armSystem.increaseWrist(speed);
-                } else if (gamepad1.dpad_right) {
-                    armSystem.increaseWrist(-speed);
-                }
-                if (gamepad1.y) {
-                    armSystem.increaseElbow(speed);
-                } else if (gamepad1.dpad_up) {
-                    armSystem.increaseElbow(-speed);
-                }
-            } catch (Exception e) { // shh
+            } catch (Exception e) {
                 telemetry.addData("oopsie whoopsie", "");
                 telemetry.update();
             }

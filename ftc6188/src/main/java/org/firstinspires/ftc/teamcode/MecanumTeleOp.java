@@ -4,16 +4,21 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name="Mecanum TeleOp", group="TeleOp")
+import org.firstinspires.ftc.robotlib.drivetrain.MecanumDrivetrain;
+import org.firstinspires.ftc.robotlib.hardwaremap.MecanumHardwareMap;
+
+@TeleOp(name="MecanumDrivetrain TeleOp", group="TeleOp")
 public class MecanumTeleOp extends OpMode
 {
     private MecanumHardwareMap robotHardware;
+    private MecanumDrivetrain robotDrivetrain;
     private ElapsedTime elapsedTime;
 
     @Override
     public void init()
     {
         robotHardware = new MecanumHardwareMap(this.hardwareMap);
+        robotDrivetrain = new MecanumDrivetrain(robotHardware.motorList);
         elapsedTime = new ElapsedTime();
     }
 
@@ -33,14 +38,9 @@ public class MecanumTeleOp extends OpMode
     @Override
     public void loop()
     {
-        double movementSpeed = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
-        double robotAngle = Math.atan2(gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI/4;
-        double robotRotation = gamepad1.right_stick_x;
-
-        robotHardware.driveFrontLeft.setPower(movementSpeed * Math.cos(robotAngle) + robotRotation);
-        robotHardware.driveFrontRight.setPower(movementSpeed * Math.sin(robotAngle) + robotRotation);
-        robotHardware.driveRearLeft.setPower(movementSpeed * Math.cos(robotAngle) + robotRotation);
-        robotHardware.driveRearRight.setPower(movementSpeed * Math.cos(robotAngle) + robotRotation);
+        robotDrivetrain.setCourse(Math.atan2(-gamepad1.right_stick_y, gamepad1.right_stick_x) - Math.PI/2);
+        robotDrivetrain.setVelocity(Math.hypot(gamepad1.right_stick_x, gamepad1.right_stick_y));
+        robotDrivetrain.setRotation(-gamepad1.left_stick_x);
 
         telemetry.addData("Status", "Loop: " + elapsedTime.toString());
         telemetry.update();

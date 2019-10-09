@@ -5,11 +5,12 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.Range;
 
 //This class will include all of the action functions such as Movement
 @TeleOp(name = "Function Test", group = "Jun")
 public class ControlMode extends OpMode {
-    DcMotor motorFL, motorFR, motorBL, motorBR;
+    DcMotor motorFL, motorFR, motorBL, motorBR, motorArm1, motorArm2, motorArm3;
 
     public ControlMode() {
         super();
@@ -23,11 +24,19 @@ public class ControlMode extends OpMode {
         motorBL = hardwareMap.dcMotor.get("BL");
         motorBR = hardwareMap.dcMotor.get("BR");
 
+        motorArm1 = hardwareMap.dcMotor.get("A1");
+        motorArm2 = hardwareMap.dcMotor.get("A2");
+        motorArm3 = hardwareMap.dcMotor.get("A3");
+
         // This code is used set the directions of the motors.
         motorFL.setDirection(DcMotorSimple.Direction.FORWARD);
         motorFR.setDirection(DcMotorSimple.Direction.REVERSE);
         motorBL.setDirection(DcMotorSimple.Direction.FORWARD);
         motorBR.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        motorArm1.setDirection(DcMotorSimple.Direction.FORWARD);
+        motorArm2.setDirection(DcMotorSimple.Direction.FORWARD);
+        motorArm3.setDirection(DcMotorSimple.Direction.FORWARD);
     }
 
     @Override
@@ -43,9 +52,9 @@ public class ControlMode extends OpMode {
                 rotate((double) -gamepad1.left_stick_x);
             else if (Math.abs(gamepad1.left_stick_x) < Math.abs(gamepad1.left_stick_y))
                 moveForward((double) -gamepad1.left_stick_y);
-        } else if ((gamepad1.left_stick_y != 0 && gamepad1.left_stick_x != 0) || gamepad1.right_stick_y != 0 && gamepad1.right_stick_x != 0) {
+        } else if (gamepad1.right_stick_y != 0 || gamepad1.right_stick_x != 0 ) {
+            double power = Math.abs(gamepad1.right_stick_x);
             if (Math.abs(gamepad1.right_stick_x) > Math.abs(gamepad1.right_stick_y)) {
-                double power = Math.abs(gamepad1.right_stick_x);
                 if (gamepad1.right_stick_x < 0) { // Wheels rotate outside to move the vehicle left vertically
                     motorFL.setPower(power);
                     motorFR.setPower(power);
@@ -58,7 +67,12 @@ public class ControlMode extends OpMode {
                     motorBR.setPower(power);
                 }
             }
-        } else if (Math.abs(gamepad1.left_stick_x) < Math.abs(gamepad1.left_stick_y)) {
+        }
+        if (gamepad1.left_stick_y == 0 && gamepad1.left_stick_x == 0)
+            moveForward((0));
+
+        /*
+        else if (Math.abs(gamepad1.left_stick_x) < Math.abs(gamepad1.left_stick_y)) {
             moveForward((double) -gamepad1.left_stick_y);
         } else {
             double leftPower = -gamepad1.right_stick_y;
@@ -71,7 +85,37 @@ public class ControlMode extends OpMode {
             motorFR.setPower(rightPower);
             motorBL.setPower(leftPower);
             motorBR.setPower(rightPower);
-        }
+        } */
+
+        if (gamepad1.dpad_up)
+            motorArm1.setPower(0.5);
+        else if (gamepad1.dpad_down)
+            motorArm1.setPower(-0.5);
+        else
+            motorArm1.setPower(0);
+
+        if (gamepad1.dpad_left)
+            motorArm3.setPower(0.5);
+        else if (gamepad1.dpad_right)
+            motorArm3.setPower(-0.5);
+        else
+            motorArm3.setPower(0);
+
+        if (gamepad1.b)
+            motorArm2.setPower(1);
+        else
+            if (motorArm2.getPower() > 0)
+                motorArm2.setPower(motorArm2.getPower() - 0.1);
+            else
+                motorArm2.setPower(0);
+
+        if (gamepad1.a)
+            motorArm2.setPower(-1);
+        else
+            if (motorArm2.getPower() < 0)
+                motorArm2.setPower(motorArm2.getPower() + 0.1);
+            else
+                motorArm2.setPower(0);
     }
 
     //helper method to report data to controller phone.
@@ -79,6 +123,8 @@ public class ControlMode extends OpMode {
         //report gamepad1 left joystick data
         telemetry.addData("gamepad1 leftX", gamepad1.left_stick_x);
         telemetry.addData("gamepad1 leftY", gamepad1.left_stick_y);
+        telemetry.addData("gamepad1 dpad a", gamepad1.a);
+        telemetry.addData("gamepad1 dpad b", gamepad1.b);
 
         //report motors' power
         telemetry.addData("motorFL", motorFL.getPower());
@@ -86,6 +132,9 @@ public class ControlMode extends OpMode {
         telemetry.addData("motorBL", motorBL.getPower());
         telemetry.addData("motorBR", motorBR.getPower());
 
+        telemetry.addData("A1", motorArm1.getPower());
+        telemetry.addData("A2", motorArm2.getPower());
+        telemetry.addData("A3", motorArm3.getPower());
         //update the data screen.
         telemetry.update();
     }

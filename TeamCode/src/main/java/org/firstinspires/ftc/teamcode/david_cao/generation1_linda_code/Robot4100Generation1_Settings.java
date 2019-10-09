@@ -37,7 +37,7 @@ public class Robot4100Generation1_Settings {
     public static final double GRABBERROTSERVO_INSIDEPOS = 0.9;
     public static final double GRABBERROTSERVO_OUTSIDEPOS = 0;
 
-    public static final double STONEORIENTSERVO_ZEROPOS = 0.05;
+    public static final double STONEORIENTSERVO_ZEROPOS = 0;
     public static final double STONEORIENTSERVO_ORIENTPOS = 0.5;
     //------------End of Configuration Settings------------
 

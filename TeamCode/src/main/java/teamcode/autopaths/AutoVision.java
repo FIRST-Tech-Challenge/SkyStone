@@ -58,7 +58,7 @@ public class AutoVision extends TTOpMode
     private float phoneZRotate    = 0;
 
     private TFObjectDetector tfod;
-    VuforiaTrackables targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
+    VuforiaTrackables targetsSkyStone;
 
     List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
 
@@ -247,6 +247,8 @@ public class AutoVision extends TTOpMode
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
 
         allTrackables.addAll(targetsSkyStone);
+
+        targetsSkyStone  = this.vuforia.loadTrackablesFromAsset("Skystone");
 
     }
 

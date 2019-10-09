@@ -1,91 +1,71 @@
 package teamcode.common;
 
+
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import java.util.concurrent.TimeUnit;
 
 public class TTArm {
+    private final double INCHES_TO_TICKS = 2912.0/9.42;
+    private final double TICKS_TO_INCHES = 9.42/2912.0;
+    private final DcMotor armLift;
+    private final Servo armWrist, armClaw;
+    private static final double TICK_ERROR = 25.0;
+    private double lastPosition = 0;
 
-    private static final double ELBOW_DEGREES_TO_TICKS = 3.506493506;
-    private double MINIMUM_LIFT_DISTANCE_FROM_GROUND = 14;
-    private double MAXIMUM_LIFT_INCHES_FROM_GROUND = 25;
-
-    private final DcMotor lift, elbow, intake;
-    private final DistanceSensor liftSensor;
-    private final Servo claw;
-
-    public TTArm(DcMotor lift, DistanceSensor liftSensor, DcMotor elbow, DcMotor intake, Servo claw) {
-        this.lift = lift;
-        this.liftSensor = liftSensor;
-        this.elbow = elbow;
-        this.intake = intake;
-        this.claw = claw;
+    public TTArm(HardwareMap hardwareMap) {
+        armLift = hardwareMap.get(DcMotor.class, HardwareComponentNames.ARM_LIFT);
+        armWrist = hardwareMap.get(Servo.class, HardwareComponentNames.ARM_WRIST);
+        armClaw = hardwareMap.get(Servo.class, HardwareComponentNames.ARM_CLAW);
     }
 
-    /**
-     * @param inches how far above minimum position
-     */
-    public void setLiftHeight(double inches, double power) {
-        if (inches < 0.0) {
-            inches = 0.0;
-        } else if (inches > MAXIMUM_LIFT_INCHES_FROM_GROUND - MINIMUM_LIFT_DISTANCE_FROM_GROUND) {
-            inches = MAXIMUM_LIFT_INCHES_FROM_GROUND - MINIMUM_LIFT_DISTANCE_FROM_GROUND;
+    public void armMove(double inches) {
+        int ticks = (int) (inches * INCHES_TO_TICKS);
+        armLift.setTargetPosition(ticks);
+        armLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armLift.setPower(1.0);
+        while(!nearTarget()) {
+            brake();
         }
-        lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        double startingHeight = getLiftHeight();
-        if (inches < startingHeight) {
-            lift.setPower(-Math.abs(power));
-            while (getLiftHeight() > inches && TTOpMode.getOpMode().opModeIsActive()) {
-                TTOpMode.getOpMode().telemetry.addData("current height", getLiftHeight());
-                TTOpMode.getOpMode().telemetry.update();
+    }
+
+    private boolean nearTarget() {
+            int targetPosition = armLift.getTargetPosition();
+            int currentPosition = armLift.getCurrentPosition();
+            double ticksFromTarget = Math.abs(targetPosition - currentPosition);
+            if (ticksFromTarget > TICK_ERROR) {
+                return false;
             }
-        } else if (inches > startingHeight) {
-            lift.setPower(Math.abs(power));
-            while (getLiftHeight() < inches && TTOpMode.getOpMode().opModeIsActive()) {
-                TTOpMode.getOpMode().telemetry.addData("current height", getLiftHeight());
-                TTOpMode.getOpMode().telemetry.update();
-            }
-        }
-        lift.setPower(0.0);
+        return true;
     }
 
-    public void liftContinuous(double power) {
-        lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        lift.setPower(power);
+    public void brake() {
+        armLift.setPower(0.0);
     }
 
-    /**
-     * Returns the number of inches that the lift is above its minimum position.
-     */
-    public double getLiftHeight() {
-        return liftSensor.getDistance(DistanceUnit.INCH) - MINIMUM_LIFT_DISTANCE_FROM_GROUND;
+    public void armLift(){
+        double startingPosition = lastPosition * TICKS_TO_INCHES;
+        armMove(startingPosition + 5.0);
+        lastPosition = armLift.getCurrentPosition();
+    }
+    public void armLower(){
+        armMove(0);
+    }
+    public void rotateClaw(double position) {
+        armWrist.setPosition(position);
     }
 
-    public void rotate(int degrees, double power) {
-        elbow.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        int ticks = (int) (degrees * ELBOW_DEGREES_TO_TICKS);
-        elbow.setTargetPosition(ticks);
-        elbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        elbow.setPower(power);
-        while (elbow.isBusy()) ;
+    public void rotateWrist(double position){
+        armClaw.setPosition(position);
     }
 
-    public void rotateContinuous(double power) {
-        elbow.setPower(power);
+    public double getWristPos(){
+        return this.armWrist.getPosition();
     }
 
-    public void intake(double power) {
-        intake.setPower(power);
+    public double getClawPos(){
+        return this.armClaw.getPosition();
     }
-
-    public void setClawPosition(double position) {
-        claw.setPosition(position);
-    }
-
-    public double getClawPosition() {
-        return claw.getPosition();
-    }
-
 }

@@ -11,10 +11,8 @@ import java.util.EnumMap;
 
 public abstract class BaseOpModeConfig extends OpMode {
     private DriveSystem driveSystem;
-    public ElapsedTime elapsedTime;   // Time into round.
 
     public void init(){
-        telemetry.addLine("in init");
 
         EnumMap<DriveSystem.MotorNames, DcMotor> driveMap = new EnumMap<>(DriveSystem.MotorNames.class);
         for(DriveSystem.MotorNames name : DriveSystem.MotorNames.values()){
@@ -23,7 +21,5 @@ public abstract class BaseOpModeConfig extends OpMode {
 
         driveSystem = new DriveSystem(driveMap, hardwareMap.get(BNO055IMU.class, "imu"));
 
-
-        elapsedTime = new ElapsedTime();
     }
 }

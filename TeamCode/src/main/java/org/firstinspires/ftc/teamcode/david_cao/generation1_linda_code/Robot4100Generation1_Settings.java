@@ -11,6 +11,8 @@ public class Robot4100Generation1_Settings {
     //------------End of TeleOp Settings------------
     //------------Configuration Settings------------
     public static final double[] wheelPosition = {18.415,14};
+
+
     public static final MotorType motorType = new AndyMark3637();
     public static final double wheelRadius = 5;
     public static final MotorType linearSlideMotorType = new AndyMark2964();

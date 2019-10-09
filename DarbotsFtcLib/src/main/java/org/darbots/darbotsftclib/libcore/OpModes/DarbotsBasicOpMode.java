@@ -28,4 +28,22 @@ public abstract class DarbotsBasicOpMode<CoreType extends RobotCore> extends Lin
         this.hardwareDestroy();
         GlobalRegister.runningOpMode = null;
     }
+    @Override
+    public void waitForStart(){
+        while (!opModeIsActive() && !isStopRequested()) {
+            telemetry.addData("status", "Initialized, waiting for start command...");
+            telemetry.update();
+        }
+    }
+
+    public void waitForStart_NoDisplay(){
+        super.waitForStart();
+    }
+
+    public boolean waitForDrive(){
+        while(this.opModeIsActive() && this.getRobotCore().getChassis().isBusy()){
+            this.getRobotCore().updateStatus();
+        }
+        return this.opModeIsActive();
+    }
 }

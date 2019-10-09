@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.darbots.darbotsftclib.libcore.calculations.dimentionalcalculation.Robot2DPositionIndicator;
 import org.darbots.darbotsftclib.libcore.chassiscontrollers.OmniDrive;
+import org.darbots.darbotsftclib.libcore.sensors.gyros.BNO055Gyro;
 import org.darbots.darbotsftclib.libcore.sensors.motion_related.RobotMotion;
 import org.darbots.darbotsftclib.libcore.sensors.motion_related.RobotWheel;
 import org.darbots.darbotsftclib.libcore.sensors.motors.RobotMotorController;
@@ -14,6 +15,7 @@ import org.darbots.darbotsftclib.libcore.sensors.servos.motor_powered_servos.Rob
 import org.darbots.darbotsftclib.libcore.templates.RobotCore;
 import org.darbots.darbotsftclib.libcore.templates.chassis_related.RobotMotionSystem;
 import org.darbots.darbotsftclib.libcore.templates.motor_related.RobotMotor;
+import org.darbots.darbotsftclib.libcore.templates.other_sensors.RobotGyro;
 
 public class Robot4100Generation1_LindaCore extends RobotCore {
     public enum IntakeSystemStatus{
@@ -27,6 +29,7 @@ public class Robot4100Generation1_LindaCore extends RobotCore {
     private Servo m_StoneOrientServo;
     private RobotServoUsingMotor m_linearSlide;
     private DcMotor m_IntakeLeft, m_IntakeRight;
+    private BNO055Gyro m_Gyro;
 
     public Robot4100Generation1_LindaCore(HardwareMap hardwares) {
         super("4100Generation1_LindaCore.log");
@@ -46,6 +49,9 @@ public class Robot4100Generation1_LindaCore extends RobotCore {
                 LBMotion = new RobotMotion(new RobotMotorController(LBMotor,Robot4100Generation1_Settings.CHASSIS_TIMEOUTENABLE,Robot4100Generation1_Settings.CHASSIS_TIMEOUTFACTOR),LBWheel),
                 RBMotion = new RobotMotion(new RobotMotorController(RBMotor,Robot4100Generation1_Settings.CHASSIS_TIMEOUTENABLE,Robot4100Generation1_Settings.CHASSIS_TIMEOUTFACTOR),RBWheel);
         m_Chassis = new OmniDrive(LFMotion,RFMotion,LBMotion,RBMotion,null);
+        m_Chassis.setLinearMotionDistanceFactor(0.6);
+        m_Chassis.setRotationalMotionDistanceFactor(1.3);
+
         this.m_DragServoL = hardwares.servo.get("servoDragLeft");
         this.m_DragServoR = hardwares.servo.get("servoDragRight");
         this.m_Grabber = hardwares.servo.get("servoGrabber");
@@ -58,6 +64,7 @@ public class Robot4100Generation1_LindaCore extends RobotCore {
         this.m_IntakeRight = hardwares.dcMotor.get("motorIntakeRight");
 
         this.m_StoneOrientServo = hardwares.servo.get("servoStoneOrient");
+        m_Gyro = new BNO055Gyro(hardwares,"imu");
     }
 
     public RobotServoUsingMotor getLinearSlide(){
@@ -123,6 +130,10 @@ public class Robot4100Generation1_LindaCore extends RobotCore {
         }else{
             return IntakeSystemStatus.STOP;
         }
+    }
+
+    public RobotGyro getGyro(){
+        return this.m_Gyro;
     }
 
     @Override

@@ -36,83 +36,83 @@ public class RobotSelftest extends LinearOpMode {
         waitForStart();
 
         do {
-            int leftForeEncoderStart = robot.leftMotorFore.getCurrentPosition();
-            int rightForeEncoderStart = robot.rightMotorFore.getCurrentPosition();
-            int rightRearEncoderStart = robot.rightMotorRear.getCurrentPosition();
-            int leftRearEncoderStart = robot.leftMotorRear.getCurrentPosition();
+            int leftForeEncoderStart = robot.frontLeft.getCurrentPosition();
+            int rightForeEncoderStart = robot.frontRight.getCurrentPosition();
+            int rightRearEncoderStart = robot.rearRight.getCurrentPosition();
+            int leftRearEncoderStart = robot.rearLeft.getCurrentPosition();
             robot.setAllDrive(0.1);
             sleep(500);
             robot.setAllDriveZero();
-            int leftForeEncoder = robot.leftMotorFore.getCurrentPosition();
-            int rightForeEncoder = robot.rightMotorFore.getCurrentPosition();
-            int rightRearEncoder = robot.rightMotorRear.getCurrentPosition();
-            int leftRearEncoder = robot.leftMotorRear.getCurrentPosition();
+            int leftForeEncoder = robot.frontLeft.getCurrentPosition();
+            int rightForeEncoder = robot.frontRight.getCurrentPosition();
+            int rightRearEncoder = robot.rearRight.getCurrentPosition();
+            int leftRearEncoder = robot.rearLeft.getCurrentPosition();
             robot.setAllDrive(-0.1);
             sleep(500);
             robot.setAllDriveZero();
-            int leftForeEncoderEnd = robot.leftMotorFore.getCurrentPosition();
-            int rightForeEncoderEnd = robot.rightMotorFore.getCurrentPosition();
-            int rightRearEncoderEnd = robot.rightMotorRear.getCurrentPosition();
-            int leftRearEncoderEnd = robot.leftMotorRear.getCurrentPosition();
+            int leftForeEncoderEnd = robot.frontLeft.getCurrentPosition();
+            int rightForeEncoderEnd = robot.frontRight.getCurrentPosition();
+            int rightRearEncoderEnd = robot.rearRight.getCurrentPosition();
+            int leftRearEncoderEnd = robot.rearLeft.getCurrentPosition();
             telemetry.addData("Left Fore Count", leftForeEncoder);
             telemetry.addData("Right Fore Count", rightForeEncoder);
             telemetry.addData("Right Rear Count", rightRearEncoder);
             telemetry.addData("Left Rear Count", leftRearEncoder);
 
-            int extenderEncoderStart = robot.extender.getCurrentPosition();
-            robot.setExtenderMotorPower(0.1, true);
+//            int extenderEncoderStart = robot.extender.getCurrentPosition();
+//            robot.setExtenderMotorPower(0.1, true);
             sleep(500);
-            robot.setExtenderMotorPower(0.0, true);
-            int extenderEncoder = robot.extender.getCurrentPosition();
-            telemetry.addData("Extender Count", extenderEncoder);
+//            robot.setExtenderMotorPower(0.0, true);
+//            int extenderEncoder = robot.extender.getCurrentPosition();
+//            telemetry.addData("Extender Count", extenderEncoder);
 
-            int leftRotatorEncoderStart = robot.rotator1.getCurrentPosition();
-            int rightRotatorEncoderStart = robot.rotator2.getCurrentPosition();
-            robot.setRotatorMotorPower(0.2);
+//            int leftRotatorEncoderStart = robot.rotator1.getCurrentPosition();
+//            int rightRotatorEncoderStart = robot.rotator2.getCurrentPosition();
+//            robot.setRotatorMotorPower(0.2);
             sleep(500);
-            robot.setRotatorMotorPower(0.0);
-            int leftRotatorEncoder = robot.rotator1.getCurrentPosition();
-            int rightRotatorEncoder = robot.rotator2.getCurrentPosition();
-            robot.setRotatorMotorPower(-0.2);
+//            robot.setRotatorMotorPower(0.0);
+//            int leftRotatorEncoder = robot.rotator1.getCurrentPosition();
+//            int rightRotatorEncoder = robot.rotator2.getCurrentPosition();
+//            robot.setRotatorMotorPower(-0.2);
             sleep(500);
-            robot.setRotatorMotorPower(0.0);
-            int leftRotatorEncoderEnd = robot.rotator1.getCurrentPosition();
-            int rightRotatorEncoderEnd = robot.rotator2.getCurrentPosition();
+//            robot.setRotatorMotorPower(0.0);
+//            int leftRotatorEncoderEnd = robot.rotator1.getCurrentPosition();
+//            int rightRotatorEncoderEnd = robot.rotator2.getCurrentPosition();
 
-            telemetry.addData("Left Rotator Count", leftRotatorEncoder);
-            telemetry.addData("Right Rotator Count", rightRotatorEncoder);
+//            telemetry.addData("Left Rotator Count", leftRotatorEncoder);
+//            telemetry.addData("Right Rotator Count", rightRotatorEncoder);
 
-            robot.setExtenderMotorPower(-0.1, true);
+//            robot.setExtenderMotorPower(-0.1, true);
             sleep(500);
-            robot.setExtenderMotorPower(0.0, true);
-            int extenderEncoderEnd = robot.extender.getCurrentPosition();
+//            robot.setExtenderMotorPower(0.0, true);
+//            int extenderEncoderEnd = robot.extender.getCurrentPosition();
 
             float hsvValues[] = {0F, 0F, 0F};
-            int leftRed = robot.sensorColorLeft.red();
-            int leftGreen = robot.sensorColorLeft.green();
-            int leftBlue = robot.sensorColorLeft.blue();
-            Color.RGBToHSV((int) (leftRed * SCALE_FACTOR),
-                    (int) (leftGreen * SCALE_FACTOR),
-                    (int) (leftBlue * SCALE_FACTOR),
-                    hsvValues);
+//            int leftRed = robot.sensorColorLeft.red();
+//            int leftGreen = robot.sensorColorLeft.green();
+//            int leftBlue = robot.sensorColorLeft.blue();
+//            Color.RGBToHSV((int) (leftRed * SCALE_FACTOR),
+//                    (int) (leftGreen * SCALE_FACTOR),
+//                    (int) (leftBlue * SCALE_FACTOR),
+//                    hsvValues);
             double leftColorSensor = hsvValues[0];
             telemetry.addData("Left Color Hue", leftColorSensor);
 
-            int rightRed = robot.sensorColorRight.red();
-            int rightGreen = robot.sensorColorRight.green();
-            int rightBlue = robot.sensorColorRight.blue();
-            Color.RGBToHSV((int) (rightRed * SCALE_FACTOR),
-                    (int) (rightGreen * SCALE_FACTOR),
-                    (int) (rightBlue * SCALE_FACTOR),
-                    hsvValues);
+//            int rightRed = robot.sensorColorRight.red();
+//            int rightGreen = robot.sensorColorRight.green();
+//            int rightBlue = robot.sensorColorRight.blue();
+//            Color.RGBToHSV((int) (rightRed * SCALE_FACTOR),
+//                    (int) (rightGreen * SCALE_FACTOR),
+//                    (int) (rightBlue * SCALE_FACTOR),
+//                    hsvValues);
             double rightColorSensor = hsvValues[0];
             telemetry.addData("Right Color Hue", rightColorSensor);
 
-            double leftDistanceSensor = robot.sensorDistanceLeft.getDistance(DistanceUnit.CM);
-            telemetry.addData("Left Distance", leftDistanceSensor);
+//            double leftDistanceSensor = robot.sensorDistanceLeft.getDistance(DistanceUnit.CM);
+//            telemetry.addData("Left Distance", leftDistanceSensor);
 
-            double rightDistanceSensor = robot.sensorDistanceRight.getDistance(DistanceUnit.CM);
-            telemetry.addData("Right Distance", rightDistanceSensor);
+//            double rightDistanceSensor = robot.sensorDistanceRight.getDistance(DistanceUnit.CM);
+//            telemetry.addData("Right Distance", rightDistanceSensor);
             telemetry.update();
             while(!gamepad1.x && opModeIsActive()) {
                 sleep(20);

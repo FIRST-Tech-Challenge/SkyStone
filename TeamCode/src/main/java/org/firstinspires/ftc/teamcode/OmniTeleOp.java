@@ -74,9 +74,9 @@ public class OmniTeleOp extends OpMode {
     public void start()
     {
         float leftHsvValues[] = {0F, 0F, 0F};
-        leftRed = robot.sensorColorLeft.red();
-        leftGreen = robot.sensorColorLeft.green();
-        leftBlue = robot.sensorColorLeft.blue();
+//        leftRed = robot.sensorColorLeft.red();
+//        leftGreen = robot.sensorColorLeft.green();
+//        leftBlue = robot.sensorColorLeft.blue();
         Color.RGBToHSV((int) (leftRed * SCALE_FACTOR),
                 (int) (leftGreen * SCALE_FACTOR),
                 (int) (leftBlue * SCALE_FACTOR),
@@ -84,9 +84,9 @@ public class OmniTeleOp extends OpMode {
         leftHueRoomCorrection = leftHueBase - leftHsvValues[0];
 
         float rightHsvValues[] = {0F, 0F, 0F};
-        rightRed = robot.sensorColorRight.red();
-        rightGreen = robot.sensorColorRight.green();
-        rightBlue = robot.sensorColorRight.blue();
+//        rightRed = robot.sensorColorRight.red();
+//        rightGreen = robot.sensorColorRight.green();
+//        rightBlue = robot.sensorColorRight.blue();
         Color.RGBToHSV((int) (rightRed * SCALE_FACTOR),
                 (int) (rightGreen * SCALE_FACTOR),
                 (int) (rightBlue * SCALE_FACTOR),
@@ -174,29 +174,29 @@ public class OmniTeleOp extends OpMode {
             }
         }
 
-        lifterEncoder = robot.lifter.getCurrentPosition();
+//        lifterEncoder = robot.lifter.getCurrentPosition();
         if(raisingLifter) {
-            if(!robot.lifter.isBusy()) {
-                raisingLifter = false;
-                robot.stopLifter();
-            }
+//            if(!robot.lifter.isBusy()) {
+//                raisingLifter = false;
+//                robot.stopLifter();
+//            }
         }
         if(gamepad1.y) {
             raisingLifter = true;
-            robot.startLifterUp();
+//            robot.startLifterUp();
         }
         if(gamepad1.right_trigger > 0.4)
         {
             if(raisingLifter) {
                 raisingLifter = false;
-                robot.stopLifter();
+//                robot.stopLifter();
             }
             liftPower = 1.0;
         } else if(gamepad1.left_trigger > 0.4)
         {
             if(raisingLifter) {
                 raisingLifter = false;
-                robot.stopLifter();
+//                robot.stopLifter();
             }
             liftPower = -1.0;
         } else
@@ -220,11 +220,11 @@ public class OmniTeleOp extends OpMode {
 
         if(autoCollectLeft && !leftHasElement) {
             float hsvValues[] = {0F, 0F, 0F};
-            double leftDistance = robot.sensorDistanceLeft.getDistance(DistanceUnit.CM);
-            if(leftDistance < ELEMENT_PRESENT) {
-                leftRed = robot.sensorColorLeft.red();
-                leftGreen = robot.sensorColorLeft.green();
-                leftBlue = robot.sensorColorLeft.blue();
+//            double leftDistance = robot.sensorDistanceLeft.getDistance(DistanceUnit.CM);
+//            if(leftDistance < ELEMENT_PRESENT) {
+//                leftRed = robot.sensorColorLeft.red();
+//                leftGreen = robot.sensorColorLeft.green();
+//                leftBlue = robot.sensorColorLeft.blue();
                 Color.RGBToHSV((int) (leftRed * SCALE_FACTOR),
                         (int) (leftGreen * SCALE_FACTOR),
                         (int) (leftBlue * SCALE_FACTOR),
@@ -244,41 +244,41 @@ public class OmniTeleOp extends OpMode {
                     leftElement = NOTHING;
                 }
                 updateLeds = true;
-            }
+//            }
         }
 
-        if(autoCollectRight && !rightHasElement) {
+//        if(autoCollectRight && !rightHasElement) {
             float hsvValues[] = {0F, 0F, 0F};
-            double rightDistance = robot.sensorDistanceRight.getDistance(DistanceUnit.CM);
-            if(rightDistance < ELEMENT_PRESENT) {
-                rightRed = robot.sensorColorRight.red();
-                rightGreen = robot.sensorColorRight.green();
-                rightBlue = robot.sensorColorRight.blue();
-                Color.RGBToHSV((int) (rightRed * SCALE_FACTOR),
-                        (int) (rightGreen * SCALE_FACTOR),
-                        (int) (rightBlue * SCALE_FACTOR),
-                        hsvValues);
-                autoCollectRight = false;
-                rightCollectorPower = 0.0;
-                rightHasElement = true;
-                rightH = hsvValues[0] + rightHueRoomCorrection;
-                if(hsvValues[0] > 20 && hsvValues[0] < 75) {
-                    rightColor = GOLD_ELEMENT_COLOR;
-                    rightElement = CUBE;
-                } else if(hsvValues[0] > 75) {
-                    rightColor = SILVER_ELEMENT_COLOR;
-                    rightElement = BALL;
-                } else {
-                    rightColor = NO_ELEMENT_COLOR;
-                    rightElement = NOTHING;
-                }
-                updateLeds = true;
-            }
-        }
+//            double rightDistance = robot.sensorDistanceRight.getDistance(DistanceUnit.CM);
+//            if(rightDistance < ELEMENT_PRESENT) {
+//                rightRed = robot.sensorColorRight.red();
+//                rightGreen = robot.sensorColorRight.green();
+//                rightBlue = robot.sensorColorRight.blue();
+//                Color.RGBToHSV((int) (rightRed * SCALE_FACTOR),
+//                        (int) (rightGreen * SCALE_FACTOR),
+//                        (int) (rightBlue * SCALE_FACTOR),
+//                        hsvValues);
+//                autoCollectRight = false;
+//                rightCollectorPower = 0.0;
+//                rightHasElement = true;
+//                rightH = hsvValues[0] + rightHueRoomCorrection;
+//                if(hsvValues[0] > 20 && hsvValues[0] < 75) {
+//                    rightColor = GOLD_ELEMENT_COLOR;
+//                    rightElement = CUBE;
+//                } else if(hsvValues[0] > 75) {
+//                    rightColor = SILVER_ELEMENT_COLOR;
+//                    rightElement = BALL;
+//                } else {
+//                    rightColor = NO_ELEMENT_COLOR;
+//                    rightElement = NOTHING;
+//                }
+//                updateLeds = true;
+//            }
+//        }
 
         //slow up
 //        robot.drive(speedMultiplier * xPower, speedMultiplier * yPower, spinMultiplier * spin, driverAngle);
-        robot.newDrive(speedMultiplier * xPower, speedMultiplier * yPower, spinMultiplier * spin, driverAngle);
+        robot.drive(speedMultiplier * xPower, speedMultiplier * yPower, spinMultiplier * spin, driverAngle);
 
         //Set null zones
         if(abs(liftPower) <= 0.1)
@@ -294,15 +294,15 @@ public class OmniTeleOp extends OpMode {
             rotatePower = 0.0;
         }
         if(!raisingLifter) {
-            robot.setLiftMotorPower(liftPower);
+//            robot.setLiftMotorPower(liftPower);
         }
-        robot.setRotatorMotorPower(rotatePower);
-        robot.setExtenderMotorPower(extendPower, extenderOverride);
-        robot.setLeftCollectorPower(rightCollectorPower);
-        robot.setRightCollectorPower(leftCollectorPower);
+//        robot.setRotatorMotorPower(rotatePower);
+//        robot.setExtenderMotorPower(extendPower, extenderOverride);
+//        robot.setLeftCollectorPower(rightCollectorPower);
+//        robot.setRightCollectorPower(leftCollectorPower);
 
-        rotatorEncoder = robot.rotator1.getCurrentPosition();
-        extenderEncoder = robot.extender.getCurrentPosition();
+//        rotatorEncoder = robot.rotator1.getCurrentPosition();
+//        extenderEncoder = robot.extender.getCurrentPosition();
 
         if(updateLeds) {
             robot.updateElementColors(rightColor, leftColor);
@@ -322,10 +322,10 @@ public class OmniTeleOp extends OpMode {
         telemetry.addData("Left H: ", leftH);
         telemetry.addData("Element Detected Right: ", rightElement);
         telemetry.addData("Right H: ", rightH);
-        telemetry.addData("LF Power: ", robot.leftForeMotorPower);
-        telemetry.addData("RF Power: ", robot.rightForeMotorPower);
-        telemetry.addData("LR Power: ", robot.leftRearMotorPower);
-        telemetry.addData("RR Power: ", robot.rightRearMotorPower);
+        telemetry.addData("LF Power: ", robot.frontLeftMotorPower);
+        telemetry.addData("RF Power: ", robot.frontRightMotorPower);
+        telemetry.addData("LR Power: ", robot.rearLeftMotorPower);
+        telemetry.addData("RR Power: ", robot.rearRightMotorPower);
         updateTelemetry(telemetry);
     }
 

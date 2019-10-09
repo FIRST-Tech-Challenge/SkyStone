@@ -91,19 +91,19 @@ public abstract class OmniAutoClassTest extends LinearOpMode {
      *
      */
     public void deployArm() {
-        robot.setExtenderMotorPower(0.0, true);
-        robot.setRotatorMotorPower(0.0);
-        robot.extender.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.rotator1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.rotator2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.extender.setTargetPosition(1100);
-        robot.rotator1.setTargetPosition(-3000);
-        robot.rotator2.setTargetPosition(-3000);
-        robot.extender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.rotator1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.rotator2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.setExtenderMotorPower(1.0, true);
-        robot.setRotatorMotorPower(1.0);
+//        robot.setExtenderMotorPower(0.0, true);
+//        robot.setRotatorMotorPower(0.0);
+//        robot.extender.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        robot.rotator1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        robot.rotator2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        robot.extender.setTargetPosition(1100);
+//        robot.rotator1.setTargetPosition(-3000);
+//        robot.rotator2.setTargetPosition(-3000);
+//        robot.extender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        robot.rotator1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        robot.rotator2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        robot.setExtenderMotorPower(1.0, true);
+//        robot.setRotatorMotorPower(1.0);
     }
 
     /**
@@ -112,10 +112,10 @@ public abstract class OmniAutoClassTest extends LinearOpMode {
      */
     public void setupRobotParameters(double newWheelSize, double newMotorRatio) {
         robot.init(hardwareMap);
-        robot.lifter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.extender.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.rotator1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.rotator2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        robot.lifter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        robot.extender.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        robot.rotator1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        robot.rotator2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         timer = new ElapsedTime();
 
         robot.setInputShaping(false);
@@ -231,7 +231,7 @@ public abstract class OmniAutoClassTest extends LinearOpMode {
 
         int sleepTime = 0;
         final int deltaSleep = 50;
-        int position = robot.leftMotorFore.getCurrentPosition();
+        int position = robot.frontLeft.getCurrentPosition();
         int finalEncoderValue;
         double gyroReading = robot.readIMU();
 
@@ -261,7 +261,7 @@ public abstract class OmniAutoClassTest extends LinearOpMode {
 
             sleep(deltaSleep);
             sleepTime += deltaSleep;
-            position = robot.leftMotorFore.getCurrentPosition();
+            position = robot.frontLeft.getCurrentPosition();
             if (isStopRequested()) {
                 // If stop has been requested, break out of the while loop.
                 break;
@@ -523,16 +523,16 @@ public abstract class OmniAutoClassTest extends LinearOpMode {
 
     public void Land() {
         double endTime = timer.milliseconds() + 5000.0;
-        robot.startLifterUp();
-        while((robot.lifter.isBusy()) && (timer.milliseconds() <= endTime) && (!isStopRequested()));
-        robot.stopLifter();
+//        robot.startLifterUp();
+//        while((robot.lifter.isBusy()) && (timer.milliseconds() <= endTime) && (!isStopRequested()));
+//        robot.stopLifter();
 
         // Drive away from hook
         driveAtHeadingForTime(0.2, 0.05, 0, 0, 150);
         driveAtHeadingForTime(0.2, 0.05, -90, 0, 300);
         driveAtHeadingForTime(0.2, 0.05, 0, 0, 100);
 
-        robot.startLifterDown();
+//        robot.startLifterDown();
     }
 
     // Input: samplePosition 1 = left
@@ -736,11 +736,11 @@ public abstract class OmniAutoClassTest extends LinearOpMode {
             driveAtHeadingForTime(0.2, 0.05, 225, 45, 500);
             driveAtHeadingForTime(0.2, 0.05, 315, 45, 200);
 
-            robot.setLeftCollectorPower(-1.0);
-            robot.setRightCollectorPower(-1.0);
+//            robot.setLeftCollectorPower(-1.0);
+//            robot.setRightCollectorPower(-1.0);
             sleep(500);
-            robot.setLeftCollectorPower(0.0);
-            robot.setRightCollectorPower(0.0);
+//            robot.setLeftCollectorPower(0.0);
+//            robot.setRightCollectorPower(0.0);
             deployArm();
 
             driveAtHeadingForTime(0.2, 0.1, 43, 43, 2000);
@@ -752,11 +752,11 @@ public abstract class OmniAutoClassTest extends LinearOpMode {
             rotateRobotToAngle(0.2, 45.0, 5000);
             driveAtHeadingForTime(0.2, 0.05, 315, 45, 450);
 
-            robot.setLeftCollectorPower(-1.0);
-            robot.setRightCollectorPower(-1.0);
+//            robot.setLeftCollectorPower(-1.0);
+//            robot.setRightCollectorPower(-1.0);
             sleep(500);
-            robot.setLeftCollectorPower(0.0);
-            robot.setRightCollectorPower(0.0);
+//            robot.setLeftCollectorPower(0.0);
+//            robot.setRightCollectorPower(0.0);
             deployArm();
 
             driveAtHeadingForTime(0.2, 0.05, 43, 43, 2000);
@@ -773,11 +773,11 @@ public abstract class OmniAutoClassTest extends LinearOpMode {
             driveAtHeadingForTime(0.2, 0.05, 45, 45, 150);
             driveAtHeadingForTime(0.2, 0.05, 315, 45, 550);
 
-            robot.setLeftCollectorPower(-1.0);
-            robot.setRightCollectorPower(-1.0);
+//            robot.setLeftCollectorPower(-1.0);
+//            robot.setRightCollectorPower(-1.0);
             sleep(500);
-            robot.setLeftCollectorPower(0.0);
-            robot.setRightCollectorPower(0.0);
+//            robot.setLeftCollectorPower(0.0);
+//            robot.setRightCollectorPower(0.0);
             deployArm();
 
             driveAtHeadingForTime(0.4, 0.05, 43, 43, 850);
@@ -802,11 +802,11 @@ public abstract class OmniAutoClassTest extends LinearOpMode {
             driveAtHeadingForTime(slowMove, 0.05, 315, 225, 520);
             driveAtHeadingForTime(fastMove, 0.1, 43, 227, 725);
 
-            robot.setLeftCollectorPower(-1.0);
-            robot.setRightCollectorPower(-1.0);
+//            robot.setLeftCollectorPower(-1.0);
+//            robot.setRightCollectorPower(-1.0);
             sleep(500);
-            robot.setLeftCollectorPower(0.0);
-            robot.setRightCollectorPower(0.0);
+//            robot.setLeftCollectorPower(0.0);
+//            robot.setRightCollectorPower(0.0);
             deployArm();
 
             driveAtHeadingForTime(fastMove, 0.1, 227, 227, 900);
@@ -824,11 +824,11 @@ public abstract class OmniAutoClassTest extends LinearOpMode {
             driveAtHeadingForTime(slowMove, 0.05, 315, 225, 600);
             driveAtHeadingForTime(fastMove, 0.1, 43, 227, 700);
 
-            robot.setLeftCollectorPower(-1.0);
-            robot.setRightCollectorPower(-1.0);
+//            robot.setLeftCollectorPower(-1.0);
+//            robot.setRightCollectorPower(-1.0);
             sleep(500);
-            robot.setLeftCollectorPower(0.0);
-            robot.setRightCollectorPower(0.0);
+//            robot.setLeftCollectorPower(0.0);
+//            robot.setRightCollectorPower(0.0);
             deployArm();
 
             driveAtHeadingForTime(fastMove, 0.1, 227, 227, 850);
@@ -847,11 +847,11 @@ public abstract class OmniAutoClassTest extends LinearOpMode {
             driveAtHeadingForTime(slowMove, 0.05, 315, 225, 550);
             driveAtHeadingForTime(fastMove, 0.1, 43, 227, 650);
 
-            robot.setLeftCollectorPower(-1.0);
-            robot.setRightCollectorPower(-1.0);
+//            robot.setLeftCollectorPower(-1.0);
+//            robot.setRightCollectorPower(-1.0);
             sleep(500);
-            robot.setLeftCollectorPower(0.0);
-            robot.setRightCollectorPower(0.0);
+//            robot.setLeftCollectorPower(0.0);
+//            robot.setRightCollectorPower(0.0);
             deployArm();
 
             driveAtHeadingForTime(fastMove, 0.1, 227, 227, 850);
@@ -862,11 +862,11 @@ public abstract class OmniAutoClassTest extends LinearOpMode {
         driveAtHeadingForTime(0.2, 0.05, -90, 0, 500);
         rotateRobotToAngle(0.2, 90, 5000);
         driveAtHeadingForTime(0.2, 0.05, 270, 90, 1700);
-        robot.setLeftCollectorPower(1.0);
-        robot.setRightCollectorPower(1.0);
+//        robot.setLeftCollectorPower(1.0);
+//        robot.setRightCollectorPower(1.0);
         sleep(500);
-        robot.setLeftCollectorPower(0.0);
-        robot.setRightCollectorPower(0.0);
+//        robot.setLeftCollectorPower(0.0);
+//        robot.setRightCollectorPower(0.0);
         rotateRobotToAngle(0.2, 50, 5000);
         driveAtHeadingForTime(0.2, 0.05, 0, 50, 300);
         driveAtHeadingForTime(0.2, 0.05, 40, 50, 2500);
@@ -878,11 +878,11 @@ public abstract class OmniAutoClassTest extends LinearOpMode {
         driveAtHeadingForTime(0.2, 0.05, 0, 0, 1600);
         rotateRobotToAngle(0.2, 210, 5000);
         driveAtHeadingForTime(0.2, 0.05, 40, 220, 1200);
-        robot.setLeftCollectorPower(1.0);
-        robot.setRightCollectorPower(1.0);
+//        robot.setLeftCollectorPower(1.0);
+//        robot.setRightCollectorPower(1.0);
         sleep(500);
-        robot.setLeftCollectorPower(0.0);
-        robot.setRightCollectorPower(0.0);
+//        robot.setLeftCollectorPower(0.0);
+//        robot.setRightCollectorPower(0.0);
         driveAtHeadingForTime(0.2, 0.05, 220, 230, 2200);
     }
     /**

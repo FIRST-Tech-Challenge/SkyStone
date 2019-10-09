@@ -54,13 +54,17 @@ public abstract class BaseStateMachine extends OpMode {
             }
 
             driveSystem = new DriveSystem(driveMap, hardwareMap.get(BNO055IMU.class, "imu"));
+
+
             elapsedTime = new ElapsedTime();
             currentCamera = Vuforia.CameraChoice.PHONE_BACK;
             vuforia = new Vuforia(hardwareMap, currentCamera);
-            mCurrentState = State.STATE_FIND_SKYSTONE;
+            mCurrentState = State.STATE_INITIAL;
+            /*
             targetsSkyStone = vuforia.loadTrackablesFromAsset("Skystone");
             stoneTarget = targetsSkyStone.get(0);
             stoneTarget.setName("Stone Target");
+            */
         }
 
 

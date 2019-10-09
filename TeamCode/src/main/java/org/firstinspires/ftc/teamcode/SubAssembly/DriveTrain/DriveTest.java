@@ -16,6 +16,7 @@ public class DriveTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         // declare local variables
+        double X1, Y1, X2, Y2, FL, FR, BL, BR;  // for joystick control
         double speed = 0.3;
 
         // display welcome message
@@ -45,13 +46,11 @@ public class DriveTest extends LinearOpMode {
             egamepad2.updateEdge();
 
             // check speed input
-            if (egamepad1.left_trigger.pressed) {
+            if (egamepad1.right_bumper.pressed)
                 speed += 0.1;
-                if (speed > 1.0) speed = 1.0;
-            } else if (egamepad1.left_bumper.pressed) {
+            if (egamepad1.right_trigger.pressed)
                 speed -= 0.1;
-                if (speed < 0) speed = 0;
-            }
+            speed = Drive.limitSpeedPositive(speed);
 
             // check for move input
             if (egamepad1.dpad_up.state) {
@@ -67,34 +66,20 @@ public class DriveTest extends LinearOpMode {
             } else if (gamepad1.left_stick_x < -0.4) {
                 Drive.turnLeft(speed);
             } else {
-                Drive.stop();
-            }
+                // Get joystick values
+                Y1 = -gamepad1.left_stick_y;    // invert so up is positive
+                X1 = gamepad1.left_stick_x;
+                Y2 = -gamepad1.right_stick_y;   // Y2 is not used at present
+                X2 = gamepad1.right_stick_x;
 
-            if (egamepad1.a.state) {
-                Drive.moveForwardTime(speed, 3.0);
-            }
-            if (egamepad1.b.state) {
-                Drive.moveForwardDistance(speed, 100);
-            }
-            if (egamepad1.x.state) {
-                telemetry.addLine("Time Test...");
-                telemetry.update();
-                Drive.moveForwardTime(speed, 3.0);
-                Drive.moveBackwardTime(speed, 3.0);
-                Drive.strafeLeftTime(speed, 3.0);
-                Drive.strafeRightTime(speed, 3.0);
-                Drive.turnLeftTime(speed, 3.0);
-                Drive.turnRightTime(speed, 3.0);
-            }
-            if (egamepad1.y.state) {
-                telemetry.addLine("Distance Test...");
-                telemetry.update();
-                Drive.moveForwardDistance(speed, 100);
-                Drive.moveBackwardDistance(speed, 100);
-                Drive.strafeLeftDistance(speed, 100);
-                Drive.strafeRightDistance(speed, 100);
-                Drive.turnLeftDistance(speed, 100);
-                Drive.turnRightDistance(speed, 100);
+                // Combine Forward/back, Side to side, Rotation movement
+                // scale for speed
+                FL = (Y1 + X1 + X2) * speed;
+                FR = (Y1 - X1 - X2) * speed;
+                BL = (Y1 - X1 + X2) * speed;
+                BR = (Y1 + X1 - X2) * speed;
+
+                Drive.moveMotors(FL, FR, BL, BR);
             }
 
             telemetry.addLine("Speed: " + speed);

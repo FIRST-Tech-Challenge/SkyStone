@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.SubAssembly.DriveTrain.DriveControl;
+import org.firstinspires.ftc.teamcode.Utilities.UserControl;
 
 @Autonomous(name = "Autonomous", group = "Auto")
 public class autonomous extends LinearOpMode {
@@ -19,8 +20,15 @@ public class autonomous extends LinearOpMode {
         telemetry.update();
 
         // create and initialize sub-assemblies
+        UserControl User = new UserControl();
         DriveControl Drive = new DriveControl();
+        User.init(this);
         Drive.init(this);
+
+        // get user input
+        boolean bAnswer;
+
+        bAnswer = User.getYesNo("Wait?");
 
         // wait for PLAY button to be pressed on driver station
         telemetry.addLine(">> Press PLAY to start");
@@ -31,13 +39,16 @@ public class autonomous extends LinearOpMode {
         // begin autonomous actions
         telemetry.setAutoClear(false);
 
+        // add code here
         telemetry.addLine("move forward 2 seconds");
         telemetry.update();
         Drive.moveForwardTime(speed, 2.0);
 
-        telemetry.addLine("wait for 5 seconds");
-        telemetry.update();
-        Drive.TimeDelay(5.0);
+        if (bAnswer) {
+            telemetry.addLine("wait for 5 seconds");
+            telemetry.update();
+            Drive.TimeDelay(5.0);
+        }
 
         telemetry.addLine("move backward 100 cm");
         telemetry.update();

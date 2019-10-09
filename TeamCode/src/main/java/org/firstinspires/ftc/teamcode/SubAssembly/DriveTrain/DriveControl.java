@@ -12,6 +12,9 @@ public class DriveControl {
     private DcMotor BackRightM = null;
     private DcMotor BackLeftM = null;
     private double MAX_SPEED = 0.6;
+    private double ENCODER_LINES = 1120;
+    private double WHEEL_DIAMETER_CM = 4*2.54;
+    private double CONVERT_CM_TO_ENCODER = ENCODER_LINES/(3.1415*WHEEL_DIAMETER_CM);
     private ElapsedTime runtime = new ElapsedTime();
 
     public void init(LinearOpMode opMode) {
@@ -178,7 +181,7 @@ public class DriveControl {
         int distance;
 
         // convert distance in cm to encoder value
-        distance = (int) (distCM * 20.0);
+        distance = (int) (distCM * CONVERT_CM_TO_ENCODER);
 
         // Determine new target position, and pass to motor controller
         startFL = FrontLeftM.getCurrentPosition();

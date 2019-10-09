@@ -5,16 +5,14 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import java.util.concurrent.TimeUnit;
-
 public class TTArm {
     private final DcMotor armLift;
     private final Servo armWrist, armClaw;
 
     public TTArm(HardwareMap hardwareMap) {
-        armLift = hardwareMap.get(DcMotor.class, HardwareComponentNames.ARM_LIFT);
-        armWrist = hardwareMap.get(Servo.class, HardwareComponentNames.ARM_WRIST);
-        armClaw = hardwareMap.get(Servo.class, HardwareComponentNames.ARM_CLAW);
+        armLift = hardwareMap.get(DcMotor.class, TTHardwareComponentNames.ARM_LIFT);
+        armWrist = hardwareMap.get(Servo.class, TTHardwareComponentNames.ARM_WRIST);
+        armClaw = hardwareMap.get(Servo.class, TTHardwareComponentNames.ARM_CLAW);
     }
 
     public void armLift(float power) {

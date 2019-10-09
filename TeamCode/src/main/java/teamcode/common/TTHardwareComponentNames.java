@@ -1,6 +1,6 @@
 package teamcode.common;
 
-public class HardwareComponentNames {
+public class TTHardwareComponentNames {
 
     public static final String FRONT_LEFT_DRIVE = "FrontLeftDrive";
     public static final String FRONT_RIGHT_DRIVE = "FrontRightDrive";

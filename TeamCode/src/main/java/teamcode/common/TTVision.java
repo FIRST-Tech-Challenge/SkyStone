@@ -67,11 +67,7 @@ public class TTVision {
             throw new IllegalStateException("Vision must be enabled first");
         }
 
-        List<Recognition> recognitions = tfod.getUpdatedRecognitions();
-        if (recognitions == null) {
-            recognitions = Collections.emptyList();
-        }
-        return recognitions;
+        return tfod.getRecognitions();
     }
 
 }

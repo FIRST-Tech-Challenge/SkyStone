@@ -50,7 +50,7 @@ public class Vuforia {
     private float phoneXRotate    = 0;
     private float phoneYRotate    = 0;
     private float phoneZRotate    = 0;
-    private VuforiaTrackables targetsSkyStone;
+    public VuforiaTrackables targetsSkyStone;
     private List<VuforiaTrackable> allTrackables;
 
     public Vuforia(HardwareMap hardwareMap, CameraChoice choice) {
@@ -58,12 +58,10 @@ public class Vuforia {
     }
 
     public Orientation getRobotHeading() {
-        updateLastLocation();
         return Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
     }
 
     public VectorF getRobotPosition() {
-        updateLastLocation();
         return lastLocation.getTranslation();
     }
 
@@ -71,6 +69,10 @@ public class Vuforia {
         for (VuforiaTrackable trackable : allTrackables) {
             if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
                 if (trackable.getName().equals(targetTrackable.getName())) {
+                    OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
+                    if (robotLocationTransform != null) {
+                        lastLocation = robotLocationTransform;
+                    }
                     return true;
                 }
             }
@@ -81,32 +83,14 @@ public class Vuforia {
     public boolean isAnyTargetVisible() {
         for (VuforiaTrackable trackable : allTrackables) {
             if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public VuforiaTrackable getVuforiaTrackable(VuforiaTrackable targetTrackable) {
-        for (VuforiaTrackable trackable : allTrackables) {
-            if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
-                if (trackable.getName().equals(targetTrackable.getName())) {
-                    return trackable;
-                }
-            }
-        }
-        return null;
-    }
-
-    private void updateLastLocation() {
-        for (VuforiaTrackable trackable : allTrackables) {
-            if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
                 OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
                 if (robotLocationTransform != null) {
                     lastLocation = robotLocationTransform;
                 }
+                return true;
             }
         }
+        return false;
     }
 
     public void activate() {
@@ -123,6 +107,7 @@ public class Vuforia {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+        parameters.useExtendedTracking = false;
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
         switch (cameraChoice) {

@@ -25,11 +25,22 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.teamcode.components.DriveSystem;
+import org.firstinspires.ftc.teamcode.components.Vuforia;
 
-    public class BaseStateMachine extends OpMode {
+import java.util.EnumMap;
+
+@TeleOp(name = "Vuforia", group="Autonomous")
+public class BaseStateMachine extends OpMode {
         public enum State {
             STATE_INITIAL,
             STATE_FIND_SKYSTONE,
@@ -45,12 +56,23 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         public ElapsedTime  mRuntime = new ElapsedTime();   // Time into round.
 
         private ElapsedTime mStateTime = new ElapsedTime();  // Time into current state
+        private Vuforia vuforia;
+        private VuforiaTrackable skystone;
+        private DriveSystem driveSystem;
+        private static final float mmPerInch = 25.4f;
 
         protected State mCurrentState;    // Current State Machine State.
 
         @Override
         public void init() {
-
+            vuforia = new Vuforia(hardwareMap, Vuforia.CameraChoice.PHONE_BACK);
+            skystone = vuforia.targetsSkyStone.get(0);
+            EnumMap<DriveSystem.MotorNames, DcMotor> driveMap = new EnumMap<>(DriveSystem.MotorNames.class);
+            for(DriveSystem.MotorNames name : DriveSystem.MotorNames.values()){
+                driveMap.put(name,hardwareMap.get(DcMotor.class, name.toString()));
+            }
+            driveSystem = new DriveSystem(driveMap, hardwareMap.get(BNO055IMU.class, "imu"));
+            newState(State.STATE_INITIAL);
         }
 
 
@@ -68,24 +90,47 @@ import com.qualcomm.robotcore.util.ElapsedTime;
             switch (mCurrentState) {
                 case STATE_INITIAL:
                     // Initialize
+                    newState(State.STATE_FIND_SKYSTONE);
                     break;
 
                 case STATE_FIND_SKYSTONE:
                     // Strafe towards line
                     // Identify SkyStone
                     // If we can't see it after 3 feet, start driving  until we do
-                    newState(State.STATE_GRAB_STONE);
+                    telemetry.addData("State", "STATE_FIND_SKYSTONE");
+
+                    if (vuforia.isTargetVisible(skystone)) {
+                        newState(State.STATE_GRAB_STONE);
+                    } else {
+
+                    }
+                    telemetry.update();
+
                     break;
 
                 case STATE_GRAB_STONE:
                     // Grab the stone and slurp it into the machine
-                    newState(State.STATE_DELIVER_STONE);
+                    telemetry.addData("State", "STATE_GRAB_STONE");
+
+                    if (vuforia.isTargetVisible(skystone)) {
+                        Orientation rotation = vuforia.getRobotHeading();
+                        VectorF translation = vuforia.getRobotPosition();
+                        driveSystem.turn(rotation.thirdAngle - 90, 0.8);
+                        // THIS DOES NOT WORK TODO: FIX DRIVESYSTEM
+                        driveSystem.driveToPositionInches(translation.get(0) / mmPerInch, DriveSystem.Direction.RIGHT, 0.8);
+                    }
+                    telemetry.update();
+
+//                    newState(State.STATE_DELIVER_STONE);
                     break;
 
                 case STATE_DELIVER_STONE:
+                    telemetry.addData("State", "STATE_GRAB_STONE");
+
                     // Drive with stone to the foundation
                     // Go under bridge
-                    newState(State.STATE_DEPOSIT_STONE);
+                    telemetry.update();
+//                    newState(State.STATE_DEPOSIT_STONE);
                     break;
 
                 case STATE_FIND_STONE:
@@ -125,8 +170,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         mStateTime.reset();
         mCurrentState = newState;
     }
-
-
 
 }
 

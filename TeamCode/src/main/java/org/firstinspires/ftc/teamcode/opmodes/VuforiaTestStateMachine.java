@@ -17,35 +17,52 @@ public class VuforiaTestStateMachine extends BaseStateMachine {
     public void loop() {
         switch (mCurrentState) {
             case STATE_INITIAL:
-                // Initialize
+                telemetry.addLine("State: Initial");
+                telemetry.update();
+
+                newState(State.STATE_CAMERA_SWITCHED);
                 break;
 
             case STATE_FIND_SKYSTONE:
+                telemetry.addLine("State: Find_Skystone");
+                telemetry.update();
+
                 if(vuforia.isTargetVisible(stoneTarget)){
                     newState(State.STATE_DELIVER_STONE);
                 }
                 break;
             case DRIVE_TO_FOUNDATION_TARGET:
-                // Engage drive
-                driveSystem.driveToPositionInches(12, DriveSystem.Direction.FORWARD, 1);
+                telemetry.addLine("State: Drive_To_Foundation_Target");
+                telemetry.update();
+
+                driveSystem.driveToPositionInches(24, DriveSystem.Direction.FORWARD, 1);
+                break;
+
+            case STATE_CAMERA_SWITCHED:
+                telemetry.addLine("State: Camera_Switched");
+                telemetry.update();
 
                 // Switch camera on another thread
-                if(currentCamera == Vuforia.CameraChoice.PHONE_BACK){
-                    Thread t = new Thread(new ChangeCamera());
-                }
-                newState(State.STATE_DELIVER_STONE);
-                break;
-            case STATE_CAMERA_SWITCHED:
-                if (!currentCamera.equals(Vuforia.CameraChoice.PHONE_FRONT)) {
+                Thread t = new Thread(new ChangeCamera());
+                t.start();
+                newState(State.DRIVE_TO_FOUNDATION_TARGET);
+
+                //ELIMINATED FOR TESTING PURPOSES
+                /*if (!currentCamera.equals(Vuforia.CameraChoice.PHONE_FRONT)) {
                     newState(State.STATE_CAMERA_SWITCHED);
                 } else {
-                    newState(State.STATE_DELIVER_STONE);
+                    Thread t = new Thread(new ChangeCamera());
+                    t.start();
+
                     wallTarget = targetsSkyStone.get(8);
                     wallTarget.setName("Wall Target");
-                }
+                }*/
                 break;
             case STATE_DELIVER_STONE:
+                telemetry.addLine("State: Deliver_Stone");
+                telemetry.update();
 
+                break;
         }
     }
 
@@ -55,7 +72,6 @@ public class VuforiaTestStateMachine extends BaseStateMachine {
             vuforia.close();
             vuforia = new Vuforia(hardwareMap, currentCamera);
         }
-
     }
 }
 

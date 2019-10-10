@@ -52,7 +52,7 @@ public class ControlMode extends OpMode {
                 rotate((double) -gamepad1.left_stick_x);
             else if (Math.abs(gamepad1.left_stick_x) < Math.abs(gamepad1.left_stick_y))
                 moveForward((double) -gamepad1.left_stick_y);
-        } else if (gamepad1.right_stick_y != 0 || gamepad1.right_stick_x != 0 ) {
+        } /*else if (gamepad1.right_stick_y != 0 || gamepad1.right_stick_x != 0 ) {
             double power = Math.abs(gamepad1.right_stick_x);
             if (Math.abs(gamepad1.right_stick_x) > Math.abs(gamepad1.right_stick_y)) {
                 if (gamepad1.right_stick_x < 0) { // Wheels rotate outside to move the vehicle left vertically
@@ -67,12 +67,7 @@ public class ControlMode extends OpMode {
                     motorBR.setPower(power);
                 }
             }
-        }
-        if (gamepad1.left_stick_y == 0 && gamepad1.left_stick_x == 0)
-            moveForward((0));
-
-        /*
-        else if (Math.abs(gamepad1.left_stick_x) < Math.abs(gamepad1.left_stick_y)) {
+        } else if (Math.abs(gamepad1.left_stick_x) < Math.abs(gamepad1.left_stick_y)) {
             moveForward((double) -gamepad1.left_stick_y);
         } else {
             double leftPower = -gamepad1.right_stick_y;
@@ -86,6 +81,9 @@ public class ControlMode extends OpMode {
             motorBL.setPower(leftPower);
             motorBR.setPower(rightPower);
         } */
+
+        if (gamepad1.left_stick_y == 0 && gamepad1.left_stick_x == 0)
+            moveForward((0));
 
         if (gamepad1.dpad_up)
             motorArm1.setPower(0.5);

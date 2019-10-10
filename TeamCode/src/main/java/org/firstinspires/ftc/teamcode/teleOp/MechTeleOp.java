@@ -283,7 +283,6 @@ public class MechTeleOp extends OpMode {
             posRE = Range.clip(posRE - INCREMENT, 0.0, 1.0);
             rightElbow.setPosition(posRE);
         }
-
     }
 
     public float getLX() {

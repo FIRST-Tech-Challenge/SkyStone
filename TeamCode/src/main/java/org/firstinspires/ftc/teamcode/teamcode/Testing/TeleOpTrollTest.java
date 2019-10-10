@@ -193,9 +193,9 @@ public class TeleOpTrollTest extends OpMode {
         telemetry.addData("CFM Toggle : ", cfmToggle);
 */
         //Gets Magnitude of Left Stick
-        velocity = Math.hypot(leftStickX, leftStickY);
+        velocity = Math.hypot(-leftStickX, -leftStickY);
         //Gets Direction of Left Stick
-        direction = Math.atan2(leftStickY, -leftStickX) - Math.PI / 4;
+        direction = Math.atan2(-leftStickY, -leftStickX) - Math.PI / 4;
         speed = gamepad1.right_stick_x;
 
         if (Math.abs(gamepad1.right_stick_x) < 0.075 ) {
@@ -208,10 +208,10 @@ public class TeleOpTrollTest extends OpMode {
 
         //Sets Power to Wheel
         //if (!cfmToggle) {
-            drive.fl.setPower((velocity * Math.cos(direction) + speed) * speedProp);
-            drive.fr.setPower((velocity * Math.sin(direction) - speed) * speedProp);
-            drive.bl.setPower((velocity * Math.sin(direction) + speed) * speedProp);
-            drive.br.setPower((velocity * Math.cos(direction) - speed) * speedProp);
+            drive.fl.setPower((velocity * Math.sin(direction) + speed) * speedProp);
+            drive.fr.setPower((velocity * Math.cos(direction) - speed) * speedProp);
+            drive.bl.setPower((velocity * Math.cos(direction) + speed) * speedProp);
+            drive.br.setPower((velocity * Math.sin(direction) - speed) * speedProp);
 
 
             //drive.equalize(speedProp);

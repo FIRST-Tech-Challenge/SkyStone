@@ -55,14 +55,7 @@ public class HeadingableMecanumTeleOp extends OpMode
         //toggles the robots headingless ability maybe
         if (gamepad1.left_stick_button)
         {
-            if (robotHardware.drivetrain.getExtrinsic())
-            {
-                robotHardware.drivetrain.setExtrinsic(false);
-            }
-            else
-            {
-                robotHardware.drivetrain.setExtrinsic(true);
-            }
+            robotHardware.drivetrain.setExtrinsic(!robotHardware.drivetrain.getExtrinsic());
         }
 
         robotHardware.drivetrain.setCourse(course);

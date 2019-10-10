@@ -72,6 +72,7 @@ public class BaseStateMachine extends OpMode {
                 driveMap.put(name,hardwareMap.get(DcMotor.class, name.toString()));
             }
             driveSystem = new DriveSystem(driveMap, hardwareMap.get(BNO055IMU.class, "imu"));
+            this.msStuckDetectLoop = 15000;
             newState(State.STATE_INITIAL);
         }
 
@@ -99,10 +100,11 @@ public class BaseStateMachine extends OpMode {
                     // If we can't see it after 3 feet, start driving  until we do
                     telemetry.addData("State", "STATE_FIND_SKYSTONE");
 
-                    if (vuforia.isTargetVisible(skystone)) {
-                        newState(State.STATE_GRAB_STONE);
+                    if (!vuforia.isTargetVisible(skystone)) {
+                        driveSystem.setMotorPower(0.2);
                     } else {
-
+                        driveSystem.setMotorPower(0);
+                        newState(State.STATE_GRAB_STONE);
                     }
                     telemetry.update();
 
@@ -112,20 +114,21 @@ public class BaseStateMachine extends OpMode {
                     // Grab the stone and slurp it into the machine
                     telemetry.addData("State", "STATE_GRAB_STONE");
 
+                    Orientation rotation = vuforia.getRobotHeading();
+                    driveSystem.turn(rotation.thirdAngle - 90, 0.8);
                     if (vuforia.isTargetVisible(skystone)) {
-                        Orientation rotation = vuforia.getRobotHeading();
                         VectorF translation = vuforia.getRobotPosition();
-                        driveSystem.turn(rotation.thirdAngle - 90, 0.8);
-                        // THIS DOES NOT WORK TODO: FIX DRIVESYSTEM
-                        driveSystem.driveToPositionInches(translation.get(0) / mmPerInch, DriveSystem.Direction.RIGHT, 0.8);
+                        driveSystem.driveToPositionInches(translation.get(0) / mmPerInch, DriveSystem.Direction.BACKWARD, 0.5);
                     }
+                    driveSystem.turn(-90, 1.0);
+                    driveSystem.driveToPositionInches(24, DriveSystem.Direction.FORWARD, 1.0);
                     telemetry.update();
 
-//                    newState(State.STATE_DELIVER_STONE);
+                    newState(State.STATE_DELIVER_STONE);
                     break;
 
                 case STATE_DELIVER_STONE:
-                    telemetry.addData("State", "STATE_GRAB_STONE");
+                    telemetry.addData("State", "STATE_DELIVER_STONE");
 
                     // Drive with stone to the foundation
                     // Go under bridge

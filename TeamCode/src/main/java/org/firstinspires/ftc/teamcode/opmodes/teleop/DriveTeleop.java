@@ -37,6 +37,19 @@ public class DriveTeleop extends OpMode {
             float ry = gamepad1.right_stick_y;
             float lx = gamepad1.left_stick_x;
             float ly = gamepad1.left_stick_y;
+
+            if (gamepad1.a) {
+                driveSystem.driveToPositionInches(50, DriveSystem.Direction.RIGHT, 0.5);
+            }
+            if (gamepad1.b) {
+                driveSystem.driveToPositionInches(50, DriveSystem.Direction.LEFT, 0.5);
+            }
+            if (gamepad1.x) {
+                driveSystem.driveToPositionInches(50, DriveSystem.Direction.FORWARD, 0.5);
+            }
+            if (gamepad1.y) {
+                driveSystem.driveToPositionInches(50, DriveSystem.Direction.BACKWARD, 0.5);
+            }
             driveSystem.drive(rx, ry, lx, ly);
     }
 }

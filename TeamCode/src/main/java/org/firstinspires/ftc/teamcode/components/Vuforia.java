@@ -1,13 +1,10 @@
 package org.firstinspires.ftc.teamcode.components;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
@@ -15,7 +12,6 @@ import org.firstinspires.ftc.robotcore.internal.vuforia.VuforiaLocalizerImpl;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
-import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +20,16 @@ public class Vuforia {
 
     public enum CameraChoice {
         PHONE_FRONT, PHONE_BACK, WEBCAM1, WEBCAM2;
+    }
+
+    private class VuforiaLocalizer extends VuforiaLocalizerImpl {
+        public VuforiaLocalizer(Parameters parameters) {
+            super(parameters);
+        }
+
+        public void close() {
+            super.close();
+        }
     }
 
     private static final String VUFORIA_KEY =
@@ -40,24 +46,22 @@ public class Vuforia {
     private static final float halfField = 72 * mmPerInch;
     private static final float quadField  = 36 * mmPerInch;
     private OpenGLMatrix lastLocation = null;
+    private VuforiaLocalizer vuforia = null;
     private float phoneXRotate    = 0;
     private float phoneYRotate    = 0;
     private float phoneZRotate    = 0;
-    private VuforiaTrackables targetsSkyStone;
+    public VuforiaTrackables targetsSkyStone;
     private List<VuforiaTrackable> allTrackables;
-    private VuforiaImpl vuforia;
 
     public Vuforia(HardwareMap hardwareMap, CameraChoice choice) {
         vuforia = setCamera(hardwareMap, choice);
     }
 
     public Orientation getRobotHeading() {
-        updateLastLocation();
         return Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
     }
 
     public VectorF getRobotPosition() {
-        updateLastLocation();
         return lastLocation.getTranslation();
     }
 
@@ -65,6 +69,10 @@ public class Vuforia {
         for (VuforiaTrackable trackable : allTrackables) {
             if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
                 if (trackable.getName().equals(targetTrackable.getName())) {
+                    OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
+                    if (robotLocationTransform != null) {
+                        lastLocation = robotLocationTransform;
+                    }
                     return true;
                 }
             }
@@ -75,32 +83,14 @@ public class Vuforia {
     public boolean isAnyTargetVisible() {
         for (VuforiaTrackable trackable : allTrackables) {
             if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public VuforiaTrackable getVuforiaTrackable(VuforiaTrackable targetTrackable) {
-        for (VuforiaTrackable trackable : allTrackables) {
-            if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
-                if (trackable.getName().equals(targetTrackable.getName())) {
-                    return trackable;
-                }
-            }
-        }
-        return null;
-    }
-
-    private void updateLastLocation() {
-        for (VuforiaTrackable trackable : allTrackables) {
-            if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
                 OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
                 if (robotLocationTransform != null) {
                     lastLocation = robotLocationTransform;
                 }
+                return true;
             }
         }
+        return false;
     }
 
     public void activate() {
@@ -111,36 +101,13 @@ public class Vuforia {
         targetsSkyStone.deactivate();
     }
 
-    private class VuforiaImpl extends VuforiaLocalizerImpl {
-
-        VuforiaImpl(VuforiaLocalizer.Parameters parameters){
-            super(parameters);
-        }
-
-        @Override public VuforiaTrackables loadTrackablesFromAsset(String assetName){
-            return super.loadTrackablesFromAsset(assetName);
-        }
-
-        protected void close(){
-            super.close();
-        }
-
-    }
-
-    public VuforiaTrackables loadTrackablesFromAsset(String assetName){
-
-        return vuforia.loadTrackablesFromAsset(assetName);
-    }
-    public void close(){
-
-        vuforia.close();
-    }
-
-    public VuforiaImpl setCamera(HardwareMap hardwareMap, CameraChoice cameraChoice) {
-
+    public VuforiaLocalizer setCamera(HardwareMap hardwareMap, CameraChoice cameraChoice) {
+        if (vuforia != null)
+            vuforia.close();
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+        parameters.useExtendedTracking = false;
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
         switch (cameraChoice) {
@@ -151,14 +118,13 @@ public class Vuforia {
                 parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
                 break;
             case WEBCAM1:
-                //  parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam1");
+                parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam1");
                 break;
             case WEBCAM2:
-                //  parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam2");
+                parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam2");
                 break;
         }
-        vuforia = new VuforiaImpl(parameters);
-
+        vuforia = new VuforiaLocalizer(parameters);
         initializeTrackables(vuforia);
         return vuforia;
     }
@@ -260,10 +226,10 @@ public class Vuforia {
         final float CAMERA_VERTICAL_DISPLACEMENT = 8.0f * mmPerInch;   // eg: Camera is 8 Inches above ground
         final float CAMERA_LEFT_DISPLACEMENT     = 0;     // eg: Camera is ON the robot's center line
 
-        OpenGLMatrix robotFromCamera = OpenGLMatrix
-                .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
-
+//        OpenGLMatrix robotFromCamera = OpenGLMatrix
+//                .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
+//                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
+//
 //        for (VuforiaTrackable trackable : allTrackables) {
 //            ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
 //        }

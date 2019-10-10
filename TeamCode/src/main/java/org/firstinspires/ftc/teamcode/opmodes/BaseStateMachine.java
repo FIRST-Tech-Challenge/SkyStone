@@ -118,7 +118,7 @@ public class BaseStateMachine extends OpMode {
                     driveSystem.turn(rotation.thirdAngle - 90, 0.8);
                     if (vuforia.isTargetVisible(skystone)) {
                         VectorF translation = vuforia.getRobotPosition();
-                        driveSystem.driveToPositionInches(translation.get(0) / mmPerInch, DriveSystem.Direction.BACKWARD, 0.5);
+                        driveSystem.driveToPositionInches(translation.get(1) / mmPerInch, DriveSystem.Direction.FORWARD, 0.5);
                     }
                     driveSystem.turn(-90, 1.0);
                     driveSystem.driveToPositionInches(24, DriveSystem.Direction.FORWARD, 1.0);

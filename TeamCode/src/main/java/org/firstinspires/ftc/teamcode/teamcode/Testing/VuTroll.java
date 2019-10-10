@@ -18,7 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.DriveTrain;
 
-public class Vuforia extends LinearOpMode {
+@Autonomous(name ="Troll vuforia", group="Auto Basic")
+public class VuTroll extends LinearOpMode {
 
     public static final String tag = "VuCode";
     public static final String element = "TargetElement";
@@ -127,15 +128,16 @@ public class Vuforia extends LinearOpMode {
          }
     }
 
-    int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId",
-            "id", hardwareMap.appContext.getPackageName());
-
-    VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-    VuforiaTrackables stonesAndChips = this.vuforia.loadTrackablesFromAsset("StonesAndChips");
-    VuforiaTrackable redTarget = stonesAndChips.get(0);
-    VuforiaTrackable blueTarget = stonesAndChips.get(1);
-
     public void runOpMode() {
+
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId",
+                "id", hardwareMap.appContext.getPackageName());
+
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+        VuforiaTrackables stonesAndChips = this.vuforia.loadTrackablesFromAsset("Skystone");
+        VuforiaTrackable redTarget = stonesAndChips.get(0);
+        VuforiaTrackable blueTarget = stonesAndChips.get(1);
+
 
         parameters.vuforiaLicenseKey = key;
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;

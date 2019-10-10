@@ -29,6 +29,7 @@ public class TeleOpMecanum extends OpMode {
     boolean halfTrue = false;
     boolean cfmToggle = false;
     double direct = 1.0;
+    boolean pastX = false;
 
 
     //  Variables for Cruise Foundation Moving (CFM)
@@ -81,10 +82,10 @@ public class TeleOpMecanum extends OpMode {
             //Latitudinal Direction
             if (Math.abs(gamepad1.left_stick_y) > .05) {
                 leftStickY = gamepad1.left_stick_y;
-            }
-            else {
+            } else {
                 leftStickY = 0;
             }
+
             //Longitudinal Direction
             if (Math.abs(gamepad1.left_stick_x) > .05) {
                 leftStickX = gamepad1.left_stick_x;
@@ -94,11 +95,42 @@ public class TeleOpMecanum extends OpMode {
             }
 
             //Speed Reducer
-            if (gamepad1.right_bumper && !halfTrue) {
-                speedProp = .5;
-            } else if (gamepad1.right_bumper && halfTrue){
-                speedProp = 1;
+            if (gamepad1.x != pastX) {
+                pastX = gamepad1.x;
+                if (gamepad1.x) {
+                    if (speedProp == 1) {
+                        speedProp = 0.5;
+                    } else {
+                        speedProp = 1;
+                    }
+                }
             }
+
+        telemetry.addData("Velocity : ", velocity);
+
+        telemetry.addData("Direction : ", direction);
+
+        telemetry.addData("Speed : ", speed);
+
+
+        //Gets Magnitude of Left Stick
+        velocity = Math.hypot(leftStickX, leftStickY);
+        //Gets Direction of Left Stick
+        direction = Math.atan2(leftStickY, -leftStickX) - Math.PI / 4;
+        speed = gamepad1.right_stick_x;
+
+            if (Math.abs(gamepad1.right_stick_x) < 0.075 ) {
+                speed = 0;
+            }
+
+            if (Math.abs(gamepad1.left_stick_x) < 0.075 && Math.abs(gamepad1.left_stick_y) < 0.075) {
+                velocity = 0;
+            }
+
+            drive.fl.setPower((velocity * Math.cos(direction) + speed) * speedProp);
+            drive.fr.setPower((velocity * Math.sin(direction) - speed) * speedProp);
+            drive.bl.setPower((velocity * Math.sin(direction) + speed) * speedProp);
+            drive.br.setPower((velocity * Math.cos(direction) - speed) * speedProp);
 
             //Foundation Moving Toggle
             //Toggle sets speed such that the robot can move the fastest
@@ -106,7 +138,7 @@ public class TeleOpMecanum extends OpMode {
             //Takes into account the mass of the foundation and block stack
             //and the friction of the floor
 
-        if (gamepad2.dpad_up) {
+        /*if (gamepad2.dpad_up) {
             while(gamepad1.dpad_down)
             {
             }
@@ -118,8 +150,6 @@ public class TeleOpMecanum extends OpMode {
             }
             numberStackedBlocks--;
         }
-
-
             //  Mass of Whole Object
             mass = massFoundation + numberStackedBlocks * massStone;
 
@@ -158,12 +188,9 @@ public class TeleOpMecanum extends OpMode {
 
             //Sets Power to Wheel
             if(!cfmToggle)
-            {
-                drive.fl.setPower((velocity * Math.cos(direction) + speed) * speedProp);
-                drive.fr.setPower((velocity * Math.sin(direction) - speed) * speedProp);
-                drive.bl.setPower((velocity * Math.sin(direction) + speed) * speedProp);
-                drive.br.setPower((velocity * Math.cos(direction) - speed) * speedProp);
-            }
+            {*/
+
+         /*   }
             else if(cfmToggle)
             {
 
@@ -175,12 +202,8 @@ public class TeleOpMecanum extends OpMode {
                 drive.br.setPower(cfm_power * direct);
             }
 
-            telemetry.addData("CFM Power : ", cfm_power);
-            //Intake
-            intake.compliantIntake_TeleOp();
+            telemetry.addData("CFM Power : ", cfm_power);*/
 
-            //Outtake
-            outtake.outTake_TeleOp();
 
             // dont need, implemented in outtake class already
             /*
@@ -190,6 +213,12 @@ public class TeleOpMecanum extends OpMode {
                 outtake.pushBlock.setPosition(1);
             }
              */
+
+            //Intake
+            intake.compliantIntake_TeleOp();
+
+            //Outtake
+            outtake.outTake_TeleOp();
             telemetry.update();
     }
 }

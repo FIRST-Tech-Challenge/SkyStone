@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotlib.drivetrain.MecanumDrivetrain;
 import org.firstinspires.ftc.robotlib.hardwaremap.MecanumHardwareMap;
 
-@Autonomous(name="MecanumDrivetrain Auto", group="Auto")
+@Autonomous(name="Mecanum Auto", group="Auto")
 public class MecanumAuto extends LinearOpMode
 {
     private MecanumHardwareMap robotHardware;

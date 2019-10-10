@@ -4,12 +4,16 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotlib.drivetrain.MecanumDrivetrain;
+
 public class MecanumHardwareMap
 {
-    DcMotor driveFrontLeft;
-    DcMotor driveFrontRight;
-    DcMotor driveRearRight;
-    DcMotor driveRearLeft;
+    private DcMotor driveFrontLeft;
+    private DcMotor driveFrontRight;
+    private DcMotor driveRearRight;
+    private DcMotor driveRearLeft;
+
+    public MecanumDrivetrain drivetrain;
 
     public final double wheelRadius = 4; //inches
 
@@ -38,5 +42,7 @@ public class MecanumHardwareMap
         driveFrontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         driveRearRight.setDirection(DcMotorSimple.Direction.FORWARD);
         driveRearLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        drivetrain = new MecanumDrivetrain(motorList);
     }
 }

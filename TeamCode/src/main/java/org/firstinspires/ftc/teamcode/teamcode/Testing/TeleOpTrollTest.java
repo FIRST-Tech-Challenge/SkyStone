@@ -26,8 +26,8 @@ public class TeleOpTrollTest extends OpMode {
     double speed;
     double speedProp = 1.0;
     boolean pastX = false;
-    // boolean cfmToggle = false;
-    // double direct = 1.0;
+   // boolean cfmToggle = false;
+   // double direct = 1.0;
     boolean pastDPadUp = false;
     boolean pastDPadDown = false;
 
@@ -35,13 +35,7 @@ public class TeleOpTrollTest extends OpMode {
     double frMod = 0;
     double frHolo = 0;
     double flHolo = 0;
-    double brHolo = 0;
-    double blHolo = 0;
 
-
-    double speedLock = 1;
-    boolean changeable = true;
-    boolean stickButton = false;
     //  Variables for Cruise Foundation Moving (CFM)
     /*
     ElapsedTime cfmTime = new ElapsedTime();
@@ -106,6 +100,7 @@ public class TeleOpTrollTest extends OpMode {
     //Main Loop
     @Override
     public void loop() {
+
 
 
         // motorPos = (drive.fr.getCurrentPosition() * drive.fl.getCurrentPosition() * drive.bl.getCurrentPosition()
@@ -198,12 +193,12 @@ public class TeleOpTrollTest extends OpMode {
         telemetry.addData("CFM Toggle : ", cfmToggle);
 */
         //Gets Magnitude of Left Stick
-        velocity = Math.hypot(leftStickX, leftStickY);
+        velocity = Math.hypot(-leftStickX, -leftStickY);
         //Gets Direction of Left Stick
-        direction = Math.atan2(leftStickY, -leftStickX) - Math.PI / 4;
+        direction = Math.atan2(-leftStickY, -leftStickX) - Math.PI / 4;
         speed = gamepad1.right_stick_x;
 
-        if (Math.abs(gamepad1.right_stick_x) < 0.075) {
+        if (Math.abs(gamepad1.right_stick_x) < 0.075 ) {
             speed = 0;
         }
 
@@ -213,44 +208,16 @@ public class TeleOpTrollTest extends OpMode {
 
         //Sets Power to Wheel
         //if (!cfmToggle) {
-        if (changeable) {
-            drive.fl.setPower((velocity * Math.cos(direction) + speed) * flHolo * speedProp);
-            drive.fr.setPower((velocity * Math.sin(direction) - speed) * frHolo * speedProp);
-            drive.bl.setPower((velocity * Math.sin(direction) + speed) * blHolo * speedProp);
-            drive.br.setPower((velocity * Math.cos(direction) - speed) * brHolo * speedProp);
-        } else if (!changeable) {
-            drive.fl.setPower((speedLock) + speed);
-            drive.fr.setPower((speedLock) - speed);
-            drive.bl.setPower((speedLock) + speed);
-            drive.br.setPower((speedLock) - speed);
-        } else {
-            drive.snowWhite();
-        }
+            drive.fl.setPower((velocity * Math.sin(direction) + speed) * speedProp);
+            drive.fr.setPower((velocity * Math.cos(direction) - speed) * speedProp);
+            drive.bl.setPower((velocity * Math.cos(direction) + speed) * speedProp);
+            drive.br.setPower((velocity * Math.sin(direction) - speed) * speedProp);
 
-        if (gamepad1.left_stick_button != stickButton) {
-            stickButton = gamepad1.left_stick_button;
-            if (gamepad1.left_stick_button) {
-                if (changeable) {
-                    speedLock = gamepad1.left_stick_y;
-                    changeable = false;
-                    drive.fl.setPower(speedLock * speed);
-                    drive.fr.setPower(speedLock * speed);
-                    drive.bl.setPower(speedLock * speed);
-                    drive.br.setPower(speedLock * speed);
-                } else if (!changeable) {
-                    changeable = true;
-                    drive.fl.setPower(-gamepad1.left_stick_y * speed);
-                    drive.fr.setPower(-gamepad1.left_stick_y * speed);
-                    drive.bl.setPower(-gamepad1.left_stick_y * speed);
-                    drive.br.setPower(-gamepad1.left_stick_y * speed);
-                }
-            }
-        }
 
-        //drive.equalize(speedProp);
-        // Gets Holon, and based on the acceleration of each wheel fixes the
-        // power inputted into each motor
-        // Just a TEST - didn't delete any code to make
+            //drive.equalize(speedProp);
+                                // Gets Holon, and based on the acceleration of each wheel fixes the
+                                // power inputted into each motor
+                                // Just a TEST - didn't delete any code to make
 
             /*
             blHolon = drive.getHolon(drive.bl);
@@ -281,7 +248,7 @@ public class TeleOpTrollTest extends OpMode {
 */
         //}
         //else if (false) {
-        //  Max CFM velocity, calculated
+            //  Max CFM velocity, calculated
             /*
             maxCFM_Velocity = fix * Math.sqrt((2 * tolerance * 9.81 * massStone * numberStackedBlocks * muBlocks)
                     / mass);
@@ -335,10 +302,10 @@ public class TeleOpTrollTest extends OpMode {
                 }
             }
              */
-        //   }
+     //   }
 
-        // telemetry.addData("CFM Power : ", cfm_power);
-/*
+           // telemetry.addData("CFM Power : ", cfm_power);
+
             if (gamepad1.dpad_left) {
                 drive.fl.setPower(1);
                 drive.fr.setPower(-1);
@@ -364,8 +331,6 @@ public class TeleOpTrollTest extends OpMode {
                             "BR : " + drive.getHolon(drive.br));
             telemetry.update();
 
- */
 
-
+        }
     }
-}

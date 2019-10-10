@@ -3,6 +3,7 @@ package org.firstinspires.ftc.robotlib.hardwaremap;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotlib.drivetrain.MecanumDrivetrain;
 
@@ -12,6 +13,9 @@ public class MecanumHardwareMap
     private DcMotor driveFrontRight;
     private DcMotor driveRearRight;
     private DcMotor driveRearLeft;
+
+    public Servo servoBuildClawLeft;
+    public Servo servoBuildClawRight;
 
     public MecanumDrivetrain drivetrain;
 
@@ -42,6 +46,14 @@ public class MecanumHardwareMap
         driveFrontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         driveRearRight.setDirection(DcMotorSimple.Direction.FORWARD);
         driveRearLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        /**
+        servoBuildClawLeft = hwMap.get(Servo.class, "servoBuildClawLeft");
+        servoBuildClawRight = hwMap.get(Servo.class, "servoBuildClawRight");
+
+        servoBuildClawLeft.setDirection(Servo.Direction.FORWARD);
+        servoBuildClawRight.setDirection(Servo.Direction.FORWARD);
+         **/
 
         drivetrain = new MecanumDrivetrain(motorList);
     }

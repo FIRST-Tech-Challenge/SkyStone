@@ -35,11 +35,31 @@ public class MecanumTeleOp extends OpMode
     @Override
     public void loop()
     {
-        robotHardware.drivetrain.setCourse(Math.atan2(-gamepad1.right_stick_y, gamepad1.right_stick_x) - Math.PI/2);
-        robotHardware.drivetrain.setVelocity(Math.hypot(gamepad1.right_stick_x, gamepad1.right_stick_y));
+        double course = Math.atan2(-gamepad1.right_stick_y, gamepad1.right_stick_x) - Math.PI/2;
+        double velocity = Math.hypot(gamepad1.right_stick_x, gamepad1.right_stick_y);
+
+        robotHardware.drivetrain.setCourse(course);
+        robotHardware.drivetrain.setVelocity(velocity);
         robotHardware.drivetrain.setRotation(-gamepad1.left_stick_x);
 
+        /**
+        if (gamepad1.dpad_down)
+        {
+            robotHardware.servoBuildClawLeft.setPosition(120);
+            robotHardware.servoBuildClawRight.setPosition(120);
+        }
+
+        if (gamepad1.dpad_up)
+        {
+            robotHardware.servoBuildClawLeft.setPosition(0);
+            robotHardware.servoBuildClawRight.setPosition(0);
+        }
+         **/
+
         telemetry.addData("Status", "Loop: " + elapsedTime.toString());
+        telemetry.addData("Course", course);
+        telemetry.addData("Velocity", velocity);
+        telemetry.addData("Rotation", -gamepad1.left_stick_x);
         telemetry.update();
     }
 

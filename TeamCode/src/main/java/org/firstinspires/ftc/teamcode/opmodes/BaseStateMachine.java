@@ -3,11 +3,8 @@ package org.firstinspires.ftc.teamcode.opmodes;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import org.firstinspires.ftc.teamcode.components.DriveSystem;
 import org.firstinspires.ftc.teamcode.components.Vuforia;
 
@@ -30,12 +27,7 @@ public abstract class BaseStateMachine extends OpMode {
             ;
         }
 
-        public ElapsedTime  mRuntime = new ElapsedTime();   // Time into round.
-
-        private ElapsedTime mStateTime = new ElapsedTime();  // Time into current state
-        private Vuforia vuforia;
         private VuforiaTrackable skystone;
-        private DriveSystem driveSystem;
         private static final float mmPerInch = 25.4f;
 
         protected State mCurrentState;    // Current State Machine State.
@@ -61,9 +53,6 @@ public abstract class BaseStateMachine extends OpMode {
             }
 
             driveSystem = new DriveSystem(driveMap, hardwareMap.get(BNO055IMU.class, "imu"));
-
-
-            elapsedTime = new ElapsedTime();
             currentCamera = Vuforia.CameraChoice.PHONE_BACK;
             vuforia = new Vuforia(hardwareMap, currentCamera);
             mCurrentState = State.STATE_INITIAL;
@@ -84,13 +73,8 @@ public abstract class BaseStateMachine extends OpMode {
 
         }
 
-
-
     public void newState(State newState) {
         mCurrentState = newState;
     }
 
 }
-
-
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;

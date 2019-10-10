@@ -35,7 +35,7 @@ public class VuforiaTestStateMachine extends BaseStateMachine {
                 telemetry.addLine("State: Drive_To_Foundation_Target");
                 telemetry.update();
 
-                driveSystem.driveToPositionInches(24, DriveSystem.Direction.FORWARD, 1);
+                driveSystem.driveToPositionInches(24, DriveSystem.Direction.FORWARD, 0.5);
                 break;
 
             case STATE_CAMERA_SWITCHED:

@@ -13,7 +13,7 @@ public class DriveSystem {
         FRONTLEFT, FRONTRIGHT, BACKRIGHT, BACKLEFT
     }
 
-    private enum Direction {
+    public enum Direction {
         FORWARD, BACKWARD, LEFT, RIGHT;
 
         private static boolean isStrafe(Direction direction) {
@@ -138,10 +138,19 @@ public class DriveSystem {
         setRunMode(DcMotor.RunMode.RUN_TO_POSITION);
         setMotorPower(maxPower);
         double heading = -imuSystem.getHeading();
-
+        while (anyMotorsBusy()) { }
         setMotorPower(0.0);
         setRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
         turn(heading + imuSystem.getHeading(), 0.5);
+    }
+
+    public boolean anyMotorsBusy() {
+        for (DcMotor motor : motors.values()) {
+            if (motor.isBusy()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void setRunMode(DcMotor.RunMode runMode) {
@@ -181,7 +190,7 @@ public class DriveSystem {
      * @param maxPower The maximum power of the motors
      */
     public void turnAbsolute(double degrees, double maxPower) {
-        turn(degrees, maxPower);
+        turn(imuSystem.getHeading() + degrees, maxPower);
     }
 
     /**

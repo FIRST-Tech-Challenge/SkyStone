@@ -57,6 +57,7 @@ public class BasicMecanum extends LinearOpMode {
     private DcMotor rightFront = null;
     private DcMotor leftRear = null;
     private DcMotor rightRear = null;
+    private boolean rightMotion = false;
 
     @Override
     public void runOpMode() {
@@ -84,10 +85,24 @@ public class BasicMecanum extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            double Speed = -gamepad1.left_stick_y;
-            double Turn = gamepad1.left_stick_x;
-            double Strafe = gamepad1.right_stick_x;
+            double Speed;
+            double Turn;
+            double Strafe;
+
+            if (rightMotion) {
+                Speed = gamepad1.right_stick_y;
+                Turn = gamepad1.left_stick_x;
+                Strafe = gamepad1.right_stick_x;
+            } else {
+                Speed = gamepad1.left_stick_y;
+                Turn = gamepad1.right_stick_x;
+                Strafe = gamepad1.left_stick_x;
+            }
             double MAX_SPEED = 1.0;
+
+            if (gamepad1.a) rightMotion = false;
+            if (gamepad1.b) rightMotion = true;
+            telemetry.addData("Motion", rightMotion ? "RIGHT" : "LEFT");
             holonomic(Speed, Turn, Strafe, MAX_SPEED );
         }
     }

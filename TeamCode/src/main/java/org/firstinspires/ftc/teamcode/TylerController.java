@@ -23,7 +23,8 @@ public class TylerController extends OpMode {
     //is sound playing?
     boolean soundPlaying = false;
 
-    int soundID = -1;
+    int bruhSoundID = -1;
+    int oofSoundID = -1;
 
     // Motors connected to the hub.
     private DcMotor motorBackLeft;
@@ -105,7 +106,8 @@ public class TylerController extends OpMode {
             Context myApp = hardwareMap.appContext;
 
             //load sound file
-            soundID = myApp.getResources().getIdentifier("ss_roger_roger", "raw", myApp.getPackageName());
+            bruhSoundID = myApp.getResources().getIdentifier("bruh", "raw", myApp.getPackageName());
+            oofSoundID = myApp.getResources().getIdentifier("oof", "raw", myApp.getPackageName());
         }
 
     }
@@ -148,7 +150,7 @@ public class TylerController extends OpMode {
 
             if (rangeFront.getDistance(DistanceUnit.CM) < 5) {
 
-                if (soundID != 0) {
+                if (bruhSoundID != 0) {
 
                     SoundPlayer.PlaySoundParams params = new SoundPlayer.PlaySoundParams();
 
@@ -157,7 +159,25 @@ public class TylerController extends OpMode {
 
                     // Start playing, and also Create a callback that will clear the playing flag when the sound is complete.
 
-                    SoundPlayer.getInstance().startPlaying(myApp, soundID, params, null,
+                    SoundPlayer.getInstance().startPlaying(myApp, bruhSoundID, params, null,
+                            new Runnable() {
+                                public void run() {
+                                    soundPlaying = false;
+                                }
+                            });
+                }
+            } else if (rangeBack.getDistance(DistanceUnit.CM) < 5) {
+
+                if (oofSoundID != 0) {
+
+                    SoundPlayer.PlaySoundParams params = new SoundPlayer.PlaySoundParams();
+
+                    // Signal that the sound is now playing.
+                    soundPlaying = true;
+
+                    // Start playing, and also Create a callback that will clear the playing flag when the sound is complete.
+
+                    SoundPlayer.getInstance().startPlaying(myApp, oofSoundID, params, null,
                             new Runnable() {
                                 public void run() {
                                     soundPlaying = false;

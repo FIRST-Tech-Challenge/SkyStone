@@ -21,30 +21,35 @@ public class TTArm {
         armLift = hardwareMap.get(DcMotor.class, HardwareComponentNames.ARM_LIFT);
         armWrist = hardwareMap.get(Servo.class, HardwareComponentNames.ARM_WRIST);
         armClaw = hardwareMap.get(Servo.class, HardwareComponentNames.ARM_CLAW);
-        armLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     public void armMove(double inches) {
+        armLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         int ticks = (int) (inches * INCHES_TO_TICKS);
         armLift.setTargetPosition(ticks);
         armLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         armLift.setPower(1.0);
-        while(!nearTarget()) {
-            brake();
+        Telemetry telemetry = TTOpMode.getOpMode().telemetry;
+
+        while(!nearTarget()){
+            telemetry.addData("Target Pos", getArmTarget());
+            telemetry.addData("Current Pos", getArmLiftPos());
+            telemetry.update();
         }
+        brake();
     }
 
     private boolean nearTarget() {
             int targetPosition = armLift.getTargetPosition();
             int currentPosition = armLift.getCurrentPosition();
             double ticksFromTarget = Math.abs(targetPosition - currentPosition);
-            if (ticksFromTarget > TICK_ERROR) {
-                return false;
-            }
-        return true;
+            return ticksFromTarget < TICK_ERROR;
     }
 
     public void brake() {
+        Telemetry telemetry = TTOpMode.getOpMode().telemetry;
+        telemetry.addData("Status", "Brake Method Called");
+        telemetry.update();
         armLift.setPower(0.0);
     }
 

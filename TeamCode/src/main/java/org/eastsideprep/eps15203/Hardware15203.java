@@ -35,7 +35,6 @@ public class Hardware15203 {
     public void init(HardwareMap ahwMap) {
         // Save reference to Hardware map
         hwMap = ahwMap;
-        // hey bob
 
         // Define and Initialize Motors
         leftFrontMotor = hwMap.dcMotor.get("LF");
@@ -50,6 +49,7 @@ public class Hardware15203 {
         rightBackMotor.setDirection(DcMotor.Direction.REVERSE);
         leftFrontMotor.setDirection(DcMotor.Direction.FORWARD);
         rightFrontMotor.setDirection(DcMotor.Direction.REVERSE);
+
 
          for (DcMotor m : allMotors) {
             m.setPower(0.0);

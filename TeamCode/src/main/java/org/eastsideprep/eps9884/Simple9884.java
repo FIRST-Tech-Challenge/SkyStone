@@ -33,7 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-@TeleOp(name = "Teleop Simple", group = "9884")
+@TeleOp(name = "Teleop Simple 9884", group = "9884")
 
 public class Simple9884 extends LinearOpMode {
 

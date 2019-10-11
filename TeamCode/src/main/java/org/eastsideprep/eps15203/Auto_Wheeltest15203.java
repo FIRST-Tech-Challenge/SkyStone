@@ -20,12 +20,15 @@ public class Auto_Wheeltest15203 extends LinearOpMode {
         telemetry.addData("Status", "started");    //
         telemetry.update();
 
-        while(true) {
+        waitForStart();
+
+        while(opModeIsActive()) {
             robot.leftFrontMotor.setPower(1.0);
             sleep(1000);
             robot.leftFrontMotor.setPower(0.0);
             robot.leftBackMotor.setPower(1.0);
-            sleep(1000);
+            sleep(
+                    1000);
             robot.leftBackMotor.setPower(0.0);
             robot.rightFrontMotor.setPower(1.0);
             sleep(1000);
@@ -47,6 +50,14 @@ public class Auto_Wheeltest15203 extends LinearOpMode {
             sleep(1000);
             robot.rightBackMotor.setPower(0.0);
         }
+
+        robot.leftFrontMotor.setPower(0);
+        robot.leftBackMotor.setPower(0);
+        robot.rightFrontMotor.setPower(0);
+        robot.rightBackMotor.setPower(0);
+
     }
+
+
 }
 

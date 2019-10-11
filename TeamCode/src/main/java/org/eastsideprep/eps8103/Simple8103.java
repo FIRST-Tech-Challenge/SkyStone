@@ -34,7 +34,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.eastsideprep.eps9884.Hardware9884;
 
-@TeleOp(name = "Teleop Simple", group = "8103")
+@TeleOp(name = "Teleop Simple 8103", group = "8103")
 
 public class Simple8103 extends LinearOpMode {
 

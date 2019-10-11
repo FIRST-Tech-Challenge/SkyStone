@@ -650,7 +650,7 @@ public class Robot {
 
             distanceToTarget = Math.hypot(x - xPos, y - yPos);
 
-            if (distanceToTarget < 2.5) {
+            if (distanceToTarget < 3) {
                 brakeRobot();
                 break;
             }

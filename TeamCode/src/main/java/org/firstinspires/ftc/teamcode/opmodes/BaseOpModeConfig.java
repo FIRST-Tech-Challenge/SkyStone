@@ -6,11 +6,15 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.components.DriveSystem;
+import org.firstinspires.ftc.teamcode.components.Vuforia;
 
 import java.util.EnumMap;
 
 public abstract class BaseOpModeConfig extends OpMode {
-    private DriveSystem driveSystem;
+    protected DriveSystem driveSystem;
+    protected Vuforia.CameraChoice currentCamera;
+
+    protected Vuforia vuforia;
 
     public void init(){
 
@@ -18,8 +22,9 @@ public abstract class BaseOpModeConfig extends OpMode {
         for(DriveSystem.MotorNames name : DriveSystem.MotorNames.values()){
             driveMap.put(name,hardwareMap.get(DcMotor.class, name.toString()));
         }
-
         driveSystem = new DriveSystem(driveMap, hardwareMap.get(BNO055IMU.class, "imu"));
 
+        currentCamera = Vuforia.CameraChoice.PHONE_BACK;
+        vuforia = new Vuforia(hardwareMap, currentCamera);
     }
 }

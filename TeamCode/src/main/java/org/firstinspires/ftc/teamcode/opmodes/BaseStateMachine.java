@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.components.Vuforia;
 import java.util.EnumMap;
 
 
-public abstract class BaseStateMachine extends OpMode {
+public abstract class BaseStateMachine extends BaseOpModeConfig {
         public enum State {
             STATE_INITIAL,
             STATE_FIND_SKYSTONE,
@@ -46,21 +46,8 @@ public abstract class BaseStateMachine extends OpMode {
 
         @Override
         public void init() {
-
-            EnumMap<DriveSystem.MotorNames, DcMotor> driveMap = new EnumMap<>(DriveSystem.MotorNames.class);
-            for(DriveSystem.MotorNames name : DriveSystem.MotorNames.values()){
-                driveMap.put(name,hardwareMap.get(DcMotor.class, name.toString()));
-            }
-
-            driveSystem = new DriveSystem(driveMap, hardwareMap.get(BNO055IMU.class, "imu"));
-            currentCamera = Vuforia.CameraChoice.PHONE_BACK;
-            vuforia = new Vuforia(hardwareMap, currentCamera);
+            super.init();
             mCurrentState = State.STATE_INITIAL;
-            /*
-            targetsSkyStone = vuforia.loadTrackablesFromAsset("Skystone");
-            stoneTarget = targetsSkyStone.get(0);
-            stoneTarget.setName("Stone Target");
-            */
         }
 
 

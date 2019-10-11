@@ -86,8 +86,6 @@ public class TTDriveSystem {
     }
 
     public void vertical(double inches, double speed) {
-        Telemetry telemetry = TTOpMode.getOpMode().telemetry;
-        telemetry.addData("Status:", "entering second method");
         setRunMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         int ticks = (int) (inches * INCHES_TO_TICKS_VERTICAL);
 

@@ -1,8 +1,15 @@
 package teamcode.common;
 
+/**
+ * An immutable bounding box.
+ */
 public class BoundingBox {
 
-    private double x1, y1, x2, y2;
+    private final double x1, y1, x2, y2;
+
+    public BoundingBox(Vector2 topLeft, Vector2 bottomRight) {
+        this(topLeft.getX(), topLeft.getY(), bottomRight.getX(), bottomRight.getY());
+    }
 
     public BoundingBox(double x1, double y1, double x2, double y2) {
         this.x1 = x1;
@@ -15,32 +22,20 @@ public class BoundingBox {
         return x1;
     }
 
-    public void setX1(double x1) {
-        this.x1 = x1;
-    }
-
     public double getY1() {
         return y1;
-    }
-
-    public void setY1(double y1) {
-        this.y1 = y1;
     }
 
     public double getX2() {
         return x2;
     }
 
-    public void setX2(double x2) {
-        this.x2 = x2;
-    }
-
     public double getY2() {
         return y2;
     }
 
-    public void setY2(double y2) {
-        this.y2 = y2;
+    public boolean contains(Vector2 point) {
+        return contains(point.getX(), point.getY());
     }
 
     /**

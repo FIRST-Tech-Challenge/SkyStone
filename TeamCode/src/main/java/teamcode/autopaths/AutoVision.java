@@ -266,4 +266,9 @@ public class AutoVision extends TTOpMode
     {
 
     }
+
+    @Override
+    protected void onStop(){
+    }
+
 }

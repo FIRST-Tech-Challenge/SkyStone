@@ -6,8 +6,8 @@ import org.darbots.darbotsftclib.libcore.templates.motor_related.MotorType;
 
 public class Robot4100Generation1_Settings {
     //------------TeleOp Settings------------
-    public static final double TELEOP_MAXSPEED = 0.5;
-    public static final double TELEOP_LINEARSLIDESPEED = 0.2;
+    public static final double TELEOP_MAXSPEED = 1.0;
+    public static final double TELEOP_LINEARSLIDESPEED = 0.5;
     //------------End of TeleOp Settings------------
     //------------Configuration Settings------------
     public static final double[] wheelPosition = {18.415,14};
@@ -19,8 +19,9 @@ public class Robot4100Generation1_Settings {
 
     public static final boolean LINEARSLIDE_TIMEOUTCONTROLENABLE = true;
     public static final double LINEARSLIDE_TIMEOUTFACTOR = 1.5;
-    public static final double LINEARSLIDE_MAX = 1000;
+    public static final double LINEARSLIDE_MAX = 7.2804;
     public static final double LINEARSLIDE_MIN = 0;
+    public static final double LINEARSLIDE_GRAB = 0.76786;
     public static final double LINEARSLIDE_START = 0;
 
     public static final double INTAKEMOTOR_SPEED = 0.8;

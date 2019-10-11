@@ -48,6 +48,9 @@ public class Robot4100Generation1_TeleOp extends DarbotsBasicOpMode<Robot4100Gen
             if(Math.abs(Turn) < 0.1){
                 Turn = 0;
             }
+            ZAxis *= Robot4100Generation1_Settings.TELEOP_MAXSPEED;
+            XAxis *= Robot4100Generation1_Settings.TELEOP_MAXSPEED;
+            Turn *= Robot4100Generation1_Settings.TELEOP_MAXSPEED;
             teleOpTask.setDriveXSpeed(XAxis);
             teleOpTask.setDriveZSpeed(ZAxis);
             teleOpTask.setDriveRotationSpeed(Turn);

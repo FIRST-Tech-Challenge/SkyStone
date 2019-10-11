@@ -12,6 +12,7 @@ import org.darbots.darbotsftclib.libcore.sensors.motion_related.RobotWheel;
 import org.darbots.darbotsftclib.libcore.sensors.motors.RobotMotorController;
 import org.darbots.darbotsftclib.libcore.sensors.motors.RobotMotorWithEncoder;
 import org.darbots.darbotsftclib.libcore.sensors.servos.motor_powered_servos.RobotServoUsingMotor;
+import org.darbots.darbotsftclib.libcore.tasks.servo_tasks.motor_powered_servo_tasks.TargetPosTask;
 import org.darbots.darbotsftclib.libcore.templates.RobotCore;
 import org.darbots.darbotsftclib.libcore.templates.chassis_related.RobotMotionSystem;
 import org.darbots.darbotsftclib.libcore.templates.motor_related.RobotMotor;
@@ -71,6 +72,9 @@ public class Robot4100Generation1_LindaCore extends RobotCore {
         return this.m_linearSlide;
     }
 
+    public void setLinearSlideToRecieveStonePos(double speed){
+        this.getLinearSlide().replaceTask(new TargetPosTask(null,Robot4100Generation1_Settings.LINEARSLIDE_GRAB,speed));
+    }
     public void setDragServoToDrag(boolean drag){
         if(drag){
             this.m_DragServoL.setPosition(Robot4100Generation1_Settings.DRAGSERVO_DRAGPOS_L);

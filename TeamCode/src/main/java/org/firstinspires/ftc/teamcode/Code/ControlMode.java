@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.Range;
 
 //This class will include all of the action functions such as Movement
-@TeleOp(name = "Function Test", group = "Jun")
+@TeleOp(name = "Control Mode", group = "Jun")
 public class ControlMode extends OpMode {
     DcMotor motorFL, motorFR, motorBL, motorBR, motorArm1, motorArm2, motorArm3;
 
@@ -45,6 +45,7 @@ public class ControlMode extends OpMode {
         reportData(); // Report the data to the controller phone.
     }
 
+    boolean grab = false;
     public void controlMovement() {
         //left joystick of the first controller will control the movement of the robot.
         if (gamepad1.left_stick_y != 0 || gamepad1.left_stick_x != 0) {
@@ -102,18 +103,28 @@ public class ControlMode extends OpMode {
         if (gamepad1.b)
             motorArm2.setPower(1);
         else
-            if (motorArm2.getPower() > 0)
-                motorArm2.setPower(motorArm2.getPower() - 0.1);
-            else
-                motorArm2.setPower(0);
+            for(int i = 0; i < 10; i++)
+                if(gamepad1.b) {
+                    motorArm2.setPower(1);
+                    break;
+                } else if(i == 9) {
+                    motorArm2.setPower(0);
+                } else {
+                    motorArm2.setPower(1);
+                }
 
         if (gamepad1.a)
-            motorArm2.setPower(-1);
+            motorArm2.setPower(-0.5);
         else
-            if (motorArm2.getPower() < 0)
-                motorArm2.setPower(motorArm2.getPower() + 0.1);
-            else
-                motorArm2.setPower(0);
+            for(int i = 0; i < 10; i++)
+                if(gamepad1.b) {
+                    motorArm2.setPower(-0.5);
+                    break;
+                } else if(i == 9) {
+                    motorArm2.setPower(0);
+                } else {
+                    motorArm2.setPower(-0.5);
+                }
     }
 
     //helper method to report data to controller phone.

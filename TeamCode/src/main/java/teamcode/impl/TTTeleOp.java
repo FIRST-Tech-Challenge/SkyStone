@@ -32,6 +32,11 @@ public class TTTeleOp extends TTOpMode {
         }
     }
 
+    @Override
+    protected void onStop() {
+
+    }
+
     private void update() {
         //driveUpdate();
         armUpdate();
@@ -50,7 +55,11 @@ public class TTTeleOp extends TTOpMode {
 
     private void armUpdate(){
         if(gamepad2.y){
+            telemetry.addData("status", "reached armLift");
+            telemetry.update();
             arm.armLift();
+            telemetry.addData("status", "cleared armLift");
+            telemetry.update();
         }else if(gamepad2.a){
             arm.armLower();
         }

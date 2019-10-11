@@ -31,4 +31,9 @@ public class VisionTest extends TTOpMode {
         }
     }
 
+    @Override
+    protected void onStop() {
+
+    }
+
 }

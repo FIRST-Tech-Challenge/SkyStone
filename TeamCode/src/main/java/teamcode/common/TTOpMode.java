@@ -33,4 +33,5 @@ public abstract class TTOpMode extends LinearOpMode {
 
     protected abstract void onStart();
 
+    protected abstract void onStop();
 }

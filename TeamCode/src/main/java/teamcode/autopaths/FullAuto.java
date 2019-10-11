@@ -349,6 +349,11 @@ public class FullAuto extends TTOpMode {
         targetsSkyStone.deactivate();
     }
 
+    @Override
+    protected void onStop() {
+
+    }
+
     private void orientTo(double targetPos, double power)
     {
         double startingPos = getCurrentRotation();

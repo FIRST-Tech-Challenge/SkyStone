@@ -5,6 +5,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
+import java.sql.SQLOutput;
 import java.util.concurrent.TimeUnit;
 
 public class TTArm {
@@ -12,8 +15,9 @@ public class TTArm {
     private final double TICKS_TO_INCHES = 9.42/2912.0;
     private final DcMotor armLift;
     private final Servo armWrist, armClaw;
-    private static final double TICK_ERROR = 25.0;
+    private static final double TICK_ERROR = 25;
     private double lastPosition = 0;
+
 
     public TTArm(HardwareMap hardwareMap) {
         armLift = hardwareMap.get(DcMotor.class, HardwareComponentNames.ARM_LIFT);
@@ -22,13 +26,16 @@ public class TTArm {
     }
 
     public void armMove(double inches) {
+        armLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         int ticks = (int) (inches * INCHES_TO_TICKS);
         armLift.setTargetPosition(ticks);
         armLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        armLift.setPower(1.0);
-        while(!nearTarget()) {
+        armLift.setPower(0.2);
+        while(!nearTarget());
             brake();
-        }
+
+
     }
 
     private boolean nearTarget() {
@@ -42,6 +49,7 @@ public class TTArm {
     }
 
     public void brake() {
+
         armLift.setPower(0.0);
     }
 

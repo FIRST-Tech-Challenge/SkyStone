@@ -35,10 +35,10 @@ public class TTDriveSystem {
     private final DcMotor[] motors;
 
     public TTDriveSystem(HardwareMap hardwareMap) {
-        frontLeft = hardwareMap.get(DcMotor.class, HardwareComponentNames.FRONT_LEFT_DRIVE);
-        frontRight = hardwareMap.get(DcMotor.class, HardwareComponentNames.FRONT_RIGHT_DRIVE);
-        backLeft = hardwareMap.get(DcMotor.class, HardwareComponentNames.BACK_LEFT_DRIVE);
-        backRight = hardwareMap.get(DcMotor.class, HardwareComponentNames.BACK_RIGHT_DRIVE);
+        frontLeft = hardwareMap.get(DcMotor.class, TTHardwareComponentNames.FRONT_LEFT_DRIVE);
+        frontRight = hardwareMap.get(DcMotor.class, TTHardwareComponentNames.FRONT_RIGHT_DRIVE);
+        backLeft = hardwareMap.get(DcMotor.class, TTHardwareComponentNames.BACK_LEFT_DRIVE);
+        backRight = hardwareMap.get(DcMotor.class, TTHardwareComponentNames.BACK_RIGHT_DRIVE);
         motors = new DcMotor[]{frontLeft, frontRight, backLeft, backRight};
         correctDirections();
         setPID();
@@ -204,7 +204,8 @@ public class TTDriveSystem {
         }
 
         while (!nearTarget()) ;
-        brake();
+        //brake();
+        setRunMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     public void brake() {

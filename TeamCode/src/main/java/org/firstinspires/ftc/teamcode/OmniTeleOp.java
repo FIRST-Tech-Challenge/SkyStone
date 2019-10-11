@@ -51,6 +51,7 @@ public class OmniTeleOp extends OpMode {
     private double liftPower;
     private double extendPower;
     private double collectPower;
+	private LiftPosition liftTargetHeight = LiftPosition.STOWED;
 
     @Override
     public void start()
@@ -105,7 +106,7 @@ public class OmniTeleOp extends OpMode {
         if(!yHeld && yPressed)
         {
             yHeld = true;
-            robot.rotateClawdricopter();
+            robot.setLiftHeight(liftTargetHeight);
         } else if(!yPressed) {
             yHeld = false;
         }
@@ -113,10 +114,22 @@ public class OmniTeleOp extends OpMode {
         if(!upHeld && upPressed)
         {
             upHeld = true;
-            // move to next stone.
-        }
+            liftTargetHeight = LiftPosition.addStone(liftTargetHeight);
+        } else if (!upPressed) {
+			upHeld = false;
+		}
+
+        if(!downHeld && downPressed)
+        {
+            downHeld = true;
+            liftTargetHeight = LiftPosition.removeStone(liftTargetHeight);
+        } else if (!upPressed) {
+			downHeld = false;
+		}
+
         robot.drive(speedMultiplier * xPower, speedMultiplier * yPower, spinMultiplier * spin, driverAngle);
 
+		telemetry.addData("Lift Target Height: ", liftTargetHeight.toString());
         telemetry.addData("Y Power: ", yPower);
         telemetry.addData("X Power: ", xPower);
         telemetry.addData("Spin: ", spin);

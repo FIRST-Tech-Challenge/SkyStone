@@ -15,6 +15,26 @@ import static java.lang.Math.*;
  */
 public class HardwareOmnibot extends HardwareOmnibotDrive
 {
+    public enum ExtendPosition {
+        RETRACTED(10),
+		CAPSTONE(1036),
+		SPINMIN(1425),
+		EJECT(1618),
+		EXTENDED(1877);
+
+        private final int encoderCount;
+
+        ExtendPosition(int encoderCount)
+		{
+			this.encoderCount = encoderCount;
+		}
+
+        public int getEncoderCount()
+		{
+			return encoderCount;
+		}
+	}
+
     public enum LiftPosition {
         STOWED(10),
         STONE1(149),
@@ -47,7 +67,11 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 		{
 			switch(currentStone)
 			{
+				case STOWED:
+					return STONE1;
 				case STONE1:
+					return STONE2;
+				case ROTATE:
 					return STONE2;
 				case STONE2:
 					return STONE3;
@@ -80,7 +104,11 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 		{
 			switch(currentStone)
 			{
+				case STOWED:
+					return STONE1;
 				case STONE1:
+					return STONE1;
+				case ROTATE:
 					return STONE1;
 				case STONE2:
 					return STONE1;

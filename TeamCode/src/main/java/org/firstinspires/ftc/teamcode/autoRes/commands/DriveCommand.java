@@ -20,7 +20,7 @@ public class DriveCommand implements ICommand {
         final double frontRightPower = power * Math.sin(angle) - turn;
         final double backLeftPower = power * Math.sin(angle) + turn;
         final double backRightPower = power * Math.cos(angle) - turn;
-        //chassis.setAllPower(frontLeftPower, frontRightPower, backLeftPower, backRightPower);
+        chassis.setAllPower(frontLeftPower, frontRightPower, backLeftPower, backRightPower);
         return true;
     }
 }

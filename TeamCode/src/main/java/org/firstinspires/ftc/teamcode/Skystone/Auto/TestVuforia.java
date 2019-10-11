@@ -24,6 +24,7 @@ public class TestVuforia extends AutoBase {
     @Override
     public void runOpMode() {
 
+
         VuforiaLocalizer vuforia = initVuforia();
 
         Robot robot = new Robot(this.hardwareMap, this.telemetry, this);
@@ -34,18 +35,18 @@ public class TestVuforia extends AutoBase {
         Position2D position2D = new Position2D(robot);
         position2D.startOdometry();
 
-        robot.moveToPoint(5,0,1,1,Math.toRadians(90));
+        robot.moveToPoint(4,0,1,1,Math.toRadians(90));
         telemetry.addLine("done with move");
         telemetry.update();
 
         int position = robot.detectVuforia(vuforia);
 
         if (position==1) {
-            robot.moveToPoint(12, -3, 0.5, 0.5, Math.toRadians(90));
+            robot.moveToPoint(10, -4, 0.5, 0.5, Math.toRadians(-25));
         } else if (position == 2){
-            robot.moveToPoint(12,0,0.5,0.5,Math.toRadians(90));
+            robot.moveToPoint(10,0,0.5,0.5,Math.toRadians(25));
         } else if (position == 3) {
-            robot.moveToPoint(12,3,0.5,0.5,Math.toRadians(90));
+            robot.moveToPoint(10,4,0.5,0.5,Math.toRadians(0));
         }
 
         robot.finalTurn(0);

@@ -13,7 +13,7 @@ public class TeleOpMode extends LinearOpMode {
     public void runOpMode() {
         Chassis chassis;
         try {
-            chassis = new Chassis(hardwareMap, "chassisMotors.txt");
+            chassis = new Chassis(hardwareMap, "/res/config/chassisMotors.txt");
         } catch (IOException e) {
             chassis = new Chassis();
             e.printStackTrace();
@@ -66,8 +66,6 @@ public class TeleOpMode extends LinearOpMode {
             chassis.setMotors(chassisPowers);
 
             //Telemetry
-            telemetry.addData("robot angle: ", targetAngle);
-            //telemetry.addData("hook position: ", hook.getCurrentPosition());
             telemetry.update();
         }
     }

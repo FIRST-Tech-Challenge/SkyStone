@@ -88,9 +88,8 @@ public class HardwareOmnibotDrive
         // Read IMU Code
         //double heading = (double)gyro.getHeading();
         Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        double heading = (double)angles.firstAngle;
         //heading = abs(heading - 360.0);
-        return heading;
+        return (double)angles.firstAngle;
     }
 
     public void setFrontLeftMotorPower(double power)
@@ -276,7 +275,7 @@ public class HardwareOmnibotDrive
         frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rearLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rearRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//        resetDriveEncoders();
+        resetDriveEncoders();
 
         initIMU();
     }

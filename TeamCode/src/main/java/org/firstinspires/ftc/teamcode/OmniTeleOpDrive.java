@@ -18,7 +18,7 @@ import static java.lang.Math.toDegrees;
 @TeleOp(name="Omni: TeleOpDrive", group ="TeleOp")
 public class OmniTeleOpDrive extends OpMode {
 
-    public HardwareOmnibot robot = new HardwareOmnibot();
+    public HardwareOmnibotDrive robot = new HardwareOmnibotDrive();
 
     @Override
     public void init() {
@@ -35,9 +35,10 @@ public class OmniTeleOpDrive extends OpMode {
     private final double MAX_SPIN = 1.0;
     private double speedMultiplier = MAX_SPEED;
     private double spinMultiplier = MAX_SPIN;
-    private boolean aHeld = false;
-    private boolean bHeld = false;
-    private boolean yHeld = false;
+    private double yPower;
+    private double xPower;
+    private double spin;
+    private double gyroAngle;
 
     @Override
     public void start()
@@ -48,20 +49,12 @@ public class OmniTeleOpDrive extends OpMode {
     public void loop() {
         //left joystick is for moving
         //right joystick is for rotation
-        double yPower;
-        double xPower;
-        double spin;
-        boolean aPressed;
-        boolean bPressed;
-        boolean yPressed;
-        double gyroAngle = robot.readIMU();
 
         yPower = -gamepad1.left_stick_y;
         xPower = gamepad1.left_stick_x;
         spin = gamepad1.right_stick_x;
-        aPressed = gamepad1.a;
-        bPressed = gamepad1.b;
-        yPressed = gamepad1.y;
+        gyroAngle = robot.readIMU();
+
 
         if (gamepad1.x) {
             // The driver presses X, then uses the left joystick to say what angle the robot
@@ -77,37 +70,18 @@ public class OmniTeleOpDrive extends OpMode {
             spin = 0.0;
         }
 
-        if(!aHeld && aPressed)
-        {
-            aHeld = true;
-            robot.toggleFingers();
-        } else if(!aPressed) {
-            aHeld = false;
-        }
-
-        if(!bHeld && bPressed)
-        {
-            bHeld = true;
-            robot.toggleClaw();
-        } else if(!bPressed) {
-            bHeld = false;
-        }
-
-        if(!yHeld && yPressed)
-        {
-            yHeld = true;
-            robot.rotateClawdricopter();
-        } else if(!yPressed) {
-            yHeld = false;
-        }
-
         robot.drive(speedMultiplier * xPower, speedMultiplier * yPower, spinMultiplier * spin, driverAngle);
+
 
         telemetry.addData("Y Power: ", yPower);
         telemetry.addData("X Power: ", xPower);
         telemetry.addData("Spin: ", spin);
         telemetry.addData("Offset Angle: ", driverAngle);
         telemetry.addData("Gyro Angle: ", gyroAngle);
+        telemetry.addData("Front Left Encoder: ", robot.frontLeft.getCurrentPosition());
+        telemetry.addData("Front Right Encoder: ", robot.frontRight.getCurrentPosition());
+        telemetry.addData("Rear Left Encoder: ", robot.rearLeft.getCurrentPosition());
+        telemetry.addData("Rear Right Encoder: ", robot.rearRight.getCurrentPosition());
         updateTelemetry(telemetry);
     }
 }

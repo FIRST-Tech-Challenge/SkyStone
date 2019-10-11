@@ -112,7 +112,7 @@ public class MechTeleOp extends OpMode {
         motorBR.setPower(calibBR * power);
     }
 
-    public void matrixToPowers(double[][] power){
+    public void matrixToPowers(double[][] power) {
         motorFL.setPower(calibFL * power[0][0]);
         motorFR.setPower(calibFR * power[0][1]);
         motorBL.setPower(calibBL * power[1][0]);
@@ -283,7 +283,6 @@ public class MechTeleOp extends OpMode {
             posRE = Range.clip(posRE - INCREMENT, 0.0, 1.0);
             rightElbow.setPosition(posRE);
         }
-
     }
 
     public float getLX() {

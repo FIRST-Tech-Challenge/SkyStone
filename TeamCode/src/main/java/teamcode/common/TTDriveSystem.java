@@ -17,19 +17,19 @@ public class TTDriveSystem {
      * Maximum number of ticks a motor's current position must be away from it's target for it to
      * be considered near its target.
      */
-    private static final double TICK_ERROR = 25.0;
+    private static final double TICK_ERROR = /*25.0*/ 0.0;
     /**
      * Proportional.
      */
-    private static final double P = 2.5;
+    private static final double P = 10;
     /**
      * Integral.
      */
-    private static final double I = 0.1;
+    private static final double I = 0;
     /**
      * Derivative.
      */
-    private static final double D = 0.2;
+    private static final double D = 0;
 
     private final DcMotor frontLeft, frontRight, backLeft, backRight;
     private final DcMotor[] motors;
@@ -61,7 +61,7 @@ public class TTDriveSystem {
     }
 
     public void continuous(Vector2 velocity, double turnSpeed) {
-        velocity = new Vector2(velocity.getY(), velocity.getX()); // A VERY JANKY SOLUTION, FIX IN FUTURE
+        velocity = velocity.invert(); // A VERY JANKY SOLUTION, FIX IN FUTURE
 
         setRunMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 

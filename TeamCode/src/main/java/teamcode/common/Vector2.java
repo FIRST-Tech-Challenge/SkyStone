@@ -62,4 +62,17 @@ public final class Vector2 {
         return Math.atan2(y, x);
     }
 
+    /**
+     * Returns a new vector whose x component is this vector's y component and whose y component is
+     * this vector's x component.
+     */
+    public Vector2 invert() {
+        return new Vector2(y, x);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("[%.2f, %.2f]", x, y);
+    }
+
 }

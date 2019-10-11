@@ -41,13 +41,8 @@ public class BlueBuild extends BaseStateMachine {
 
     @Override
     public void init() {
-        vuforia = new Vuforia(hardwareMap, Vuforia.CameraChoice.PHONE_BACK);
+        super.init();
         skystone = vuforia.targetsSkyStone.get(0);
-        EnumMap<DriveSystem.MotorNames, DcMotor> driveMap = new EnumMap<>(DriveSystem.MotorNames.class);
-        for(DriveSystem.MotorNames name : DriveSystem.MotorNames.values()){
-            driveMap.put(name,hardwareMap.get(DcMotor.class, name.toString()));
-        }
-        driveSystem = new DriveSystem(driveMap, hardwareMap.get(BNO055IMU.class, "imu"));
         this.msStuckDetectLoop = 15000;
         newState(State.STATE_INITIAL);
     }

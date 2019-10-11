@@ -18,7 +18,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public enum LiftPosition {
         STOWED(10),
         STONE1(149),
-        ROTATE(300),
+        ROTATE(208),
         STONE2(412),
         STONE3(660),
         STONE4(908),
@@ -32,8 +32,82 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         STONE12(2890);
 
         private final int encoderCount;
-        LiftPosition(int encoderCount) { this.encoderCount = encoderCount; }
-        public int getEncoderCount() { return encoderCount; }
+
+        LiftPosition(int encoderCount)
+		{
+			this.encoderCount = encoderCount;
+		}
+
+        public int getEncoderCount()
+		{
+			return encoderCount;
+		}
+
+		public LiftPosition addStone(LiftPosition currentStone)
+		{
+			switch(currentStone)
+			{
+				case STONE1:
+					return STONE2;
+				case STONE2:
+					return STONE3;
+				case STONE3:
+					return STONE4;
+				case STONE4:
+					return STONE5;
+				case STONE5:
+					return STONE6;
+				case STONE6:
+					return STONE7;
+				case STONE7:
+					return STONE8;
+				case STONE8:
+					return STONE9;
+				case STONE9:
+					return STONE10;
+				case STONE10:
+					return STONE11;
+				case STONE11:
+					return STONE12;
+				case STONE12:
+					return STONE12;
+				default:
+					return currentStone;
+			}
+		}
+
+		public LiftPosition removeStone(LiftPosition currentStone)
+		{
+			switch(currentStone)
+			{
+				case STONE1:
+					return STONE1;
+				case STONE2:
+					return STONE1;
+				case STONE3:
+					return STONE2;
+				case STONE4:
+					return STONE3;
+				case STONE5:
+					return STONE4;
+				case STONE6:
+					return STONE5;
+				case STONE7:
+					return STONE6;
+				case STONE8:
+					return STONE7;
+				case STONE9:
+					return STONE8;
+				case STONE10:
+					return STONE9;
+				case STONE11:
+					return STONE10;
+				case STONE12:
+					return STONE11;
+				default:
+					return currentStone;
+			}
+		}
     }
 
     /* Public OpMode members. */

@@ -34,7 +34,8 @@ public class TTAutoBlue extends TTOpMode {
     protected void onStart() {
         skystonePos = scanStones();
         driveSystem.lateral(10, 0.25);
-        driveSystem.vertical(34.5, 0.25);
+        driveSystem.vertical(32.5, 0.25);
+        driveSystem.vertical(-10, 0.25);
         driveSystem.turn(-90, 0.25);
         driveSystem.vertical(78, 0.5);
     }

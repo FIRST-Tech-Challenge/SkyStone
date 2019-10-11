@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.util.Hardware;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-import teamcode.common.HardwareComponentNames;
+import teamcode.common.TTHardwareComponentNames;
 import teamcode.common.TTArm;
 import teamcode.common.TTDriveSystem;
 import teamcode.common.TTOpMode;
@@ -27,7 +27,7 @@ public class TTTeleOp extends TTOpMode {
 
     @Override
     protected void onStart() {
-        DcMotor armLift = hardwareMap.get(DcMotor.class, HardwareComponentNames.ARM_LIFT);
+        DcMotor armLift = hardwareMap.get(DcMotor.class, TTHardwareComponentNames.ARM_LIFT);
         armLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armLift.setTargetPosition(1545);
         armLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);

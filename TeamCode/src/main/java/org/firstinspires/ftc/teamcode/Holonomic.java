@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -23,6 +24,7 @@ public class Holonomic extends LinearOpMode {
     private DcMotor backRight    = null; //rear right
     private DcMotor frontLeft    = null; //front left
     private DcMotor frontRight   = null; //front right
+    private Servo servo = null;
 
     public static final double deadZone = 0.10;
     public static final boolean earthIsFlat = true;
@@ -36,6 +38,8 @@ public class Holonomic extends LinearOpMode {
         backRight = hardwareMap.get(DcMotor.class, "right_drive");
         frontLeft = hardwareMap.get(DcMotor.class, "front_left");
         frontRight = hardwareMap.get(DcMotor.class, "front_right");
+
+        servo = hardwareMap.get(Servo.class, "servo");
 
         //Set the direction of the motors
         //Reversed motors on one side to ensure forward movement.
@@ -58,30 +62,37 @@ public class Holonomic extends LinearOpMode {
         backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        servo.setPosition(0);
+
         waitForStart();
         runtime.reset();
-        double speedSet = 5;//robot starts with 5 speed due to 40 ratio motors being op
+        double speedSet = 7;//robot starts with 7 speed due to 40 ratio motors being op
 
         while (opModeIsActive()) {
 
             //bumpers set speed of robot
             if(gamepad1.right_bumper)
-                speedSet += 0.001;
+                speedSet += 0.005;
             else if(gamepad1.left_bumper)
-                speedSet -= 0.001;
+                speedSet -= 0.005;
 
             speedSet =  Range.clip(speedSet, 1, 10);//makes sure speed is limited at 10.
 
             if(!gamepad1.right_bumper && !gamepad1.left_bumper)//makes sure speed does not round every refresh. otherwise, speed is "pulled back" by the round
                 speedSet = Math.round(speedSet);
 
+            if(gamepad1.a)
+                servo.setPosition(0.5);
+            else
+                servo.setPosition(0);
+
             //directional
             //using range.clip makes sure you can use all sticks and directions at the same time without conflicts. power stays limited at 1
             if((Math.abs(gamepad1.left_stick_x) > deadZone) || (Math.abs(gamepad1.left_stick_y) > deadZone) || (Math.abs(gamepad1.right_stick_x) > deadZone)) {
-                frontLeft.setPower(Range.clip((gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x) * (speedSet / 10), 0, 1));
-                frontRight.setPower(Range.clip((gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x) * (speedSet / 10), 0, 1));
-                backRight.setPower(Range.clip((gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x) * (speedSet / 10), 0, 1));
-                backLeft.setPower(Range.clip((gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x) * (speedSet / 10), 0, 1));
+                frontLeft.setPower(Range.clip((gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x) * (speedSet / 10), -1, 1));
+                frontRight.setPower(Range.clip((gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x) * (speedSet / 10), -1, 1));
+                backRight.setPower(Range.clip((gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x) * (speedSet / 10), -1, 1));
+                backLeft.setPower(Range.clip((gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x) * (speedSet / 10), -1, 1));
             } else if (earthIsFlat) {//stop robot
                 frontLeft.setPower(0);
                 frontRight.setPower(0);

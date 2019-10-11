@@ -14,9 +14,12 @@ public class Chassis{
     //Vars
     HashMap<String, DcMotor> motors;
     //Constructors
-    public Chassis(HardwareMap hardwareMap, String motorFile) throws IOException {
+    public Chassis() {
         motors = new HashMap<String, DcMotor>();
-        Scanner motorScanner = new Scanner(new File(motorFile));
+    }
+    public Chassis(HardwareMap hardwareMap, String motorFilePath) throws IOException {
+        motors = new HashMap<String, DcMotor>();
+        Scanner motorScanner = new Scanner(new File(motorFilePath));
         while(motorScanner.hasNextLine()) {
             String[] motorParts = motorScanner.nextLine().split(",");
             motors.put(motorParts[0], hardwareMap.dcMotor.get(motorParts[1]));

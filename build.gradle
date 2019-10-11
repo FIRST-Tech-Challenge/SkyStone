@@ -1,3 +1,4 @@
+
 /**
  * Top-level build file for ftc_app project.
  *
@@ -9,7 +10,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.0'
+        classpath 'com.android.tools.build:gradle:3.4.1'
     }
 }
 

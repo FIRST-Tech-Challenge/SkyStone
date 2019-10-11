@@ -19,7 +19,7 @@ public class UnitTest extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        //chassis = new Chassis();
+        chassis = new Chassis();
         waitForStart();
         while (opModeIsActive()) {
 

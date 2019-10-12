@@ -43,18 +43,29 @@ public class Robot {
 
     // Outtake Motors
     public DcMotor outtakeSpool;
-    public DcMotor outtakeArm;
 
-    // Outtake Arm Positions
-    final int OUTTAKE_ARM_EXTENDED = -10;
-    final int OUTTAKE_ARM_RESET = 0;
+    // Outtake Actuator Servos
+    public Servo leftOuttakeActuatorServo;
+    public Servo rightOuttakeActuatorServo;
 
-    // Outtake Servo
+    // Outtake Actuator Positions
+    final double OUTTAKE_ACTUATOR_EXTENDED = .82;
+    final double OUTTAKE_ACTUATOR_RETRACTED = .17;
+
+    // For outtake()
+    double outtakeActuatorPosition = OUTTAKE_ACTUATOR_RETRACTED;
+
+    // Outtake Servos
     public Servo clawServo;
+    public Servo outtakePivotServo;
 
     // Outtake Servo Positions
-    final float CLAW_SERVO_CLAMPED = 1;
-    final float CLAW_SERVO_RELEASED = -1;
+    final double CLAW_SERVO_CLAMPED = 1;
+    final double CLAW_SERVO_RELEASED = -1;
+
+    // Outtake Pivot Positions
+    final double OUTTAKE_PIVOT_EXTENDED = 1;
+    final double OUTTAKE_PIVOT_RETRACTED = -1;
 
     double i = 1;
 
@@ -116,7 +127,14 @@ public class Robot {
 //
 //        // Map outtake motors
 //        outtakeSpool = hardwareMap.dcMotor.get("outtakeSpool");
-//        outtakeArm = hardwareMap.dcMotor.get("outtakeArm");
+//
+//        // Map outtake Servos
+//        clawServo = hardwareMap.servo.get("clawServo");
+//        outtakePivotServo = hardwareMap.servo.get("outtakePivotServo");
+//
+//        // Map actuator servos
+//        leftOuttakeActuatorServo = hardwareMap.servo.get("leftOuttakeActuatorServo");
+//        rightOuttakeActuatorServo = hardwareMap.servo.get("rightOuttakeActuatorServo");
     }
 
     public void intializeIMU() {
@@ -233,35 +251,6 @@ public class Robot {
     public void intake(double intakeLeftPower, double intakeRightPower) {
         intakeLeft.setPower(intakeLeftPower);
         intakeRight.setPower(intakeRightPower);
-    }
-
-    public void outtake(char outtakeButton, double outtakeSpoolPower) {
-        if (outtakeButton == 'a') {
-            // Clamp and Extend
-            clawServo.setPosition(CLAW_SERVO_CLAMPED);
-            outtakeArm.setTargetPosition(OUTTAKE_ARM_EXTENDED);
-        } else if (outtakeButton == 'b') {
-            // Deposit and Reset
-            clawServo.setPosition(CLAW_SERVO_RELEASED);
-            outtakeArm.setTargetPosition(OUTTAKE_ARM_RESET);
-        } else if (outtakeButton == 'x') {
-            // Clamp
-            clawServo.setPosition(CLAW_SERVO_CLAMPED);
-        } else if (outtakeButton == 'y') {
-            // Extend
-            outtakeArm.setTargetPosition(OUTTAKE_ARM_EXTENDED);
-        } else {
-            telemetry.addData("status", "there is a bug in robot.outtake() and it's ethan's fault");
-            telemetry.update();
-        }
-
-        if (outtakeArm.getCurrentPosition() != outtakeArm.getTargetPosition()) {
-            outtakeArm.setPower(1);
-        } else {
-            outtakeArm.setPower(0);
-        }
-
-        outtakeSpool.setPower(outtakeSpoolPower);
     }
 
     public void resetMotor(DcMotor motor) {

@@ -68,7 +68,13 @@ public class RealRobotMecanumWheels
 
 
 while (opModeIsActive()) {
-    double r = Math.hypot(gamepad1.left_stick_x,     double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x)
+    double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x)
     double
-    double
+    double rightx
+    double leftx
+    double lefty
+final double v1 =
+final double v2 =
+final double v3 =
+final double v4 =
         }

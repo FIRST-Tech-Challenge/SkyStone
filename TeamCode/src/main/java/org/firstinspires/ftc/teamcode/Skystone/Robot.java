@@ -156,12 +156,29 @@ public class Robot {
         bRight.setMode(runMode);
     }
 
+//    public void finalfinaTurn(double targetHeadingRadians, double turnSpeed){
+//        targetHeadingRadians = Range.clip(targetHeadingRadians,-2*Math.PI + 0.01, 2 * Math.PI - 0.01);
+//        double startHeading = anglePos;
+//
+//        while (linearOpMode.opModeIsActive()){
+//            turnMovement = turnSpeed * (targetHeadingRadians - anglePos) / (Math.abs(targetHeadingRadians - startHeading));
+//            if (Math.abs(targetHeadingRadians - anglePos) < 0.0349066){
+//                brakeRobot();
+//                break;
+//            }
+//            applyMove();
+//        }
+//        brakeRobot();
+//        linearOpMode.sleep(100);
+//        this.setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//    }
+
     //normal use method default 2 second kill time
-    public void finalTurn(double targetHeading, double speedScaler) {
-        finalTurn(targetHeading, 2500, speedScaler);
+    public void finalTurn(double targetHeading) {
+        finalTurn(targetHeading, 2500);
     }
 
-    public void finalTurn(double targetHeading, long timeInMilli, double speedScaler) {
+    public void finalTurn(double targetHeading, long timeInMilli) {
         targetHeading = Range.clip(targetHeading, -179, 179);
         long startTime = SystemClock.elapsedRealtime();
         this.setMotorMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -189,14 +206,14 @@ public class Robot {
                 brakeRobot();
                 return;
             }
-            double power = 0.3 * absolutePower * sign;
+            double power = 0.1 * absolutePower * sign;
             if (scaleFactor > 1 || ((SystemClock.elapsedRealtime() - startTime) > timeInMilli)) {
                 break;
             }
-            fLeft.setPower(-power * speedScaler);
-            fRight.setPower(power * speedScaler);
-            bLeft.setPower(-power * speedScaler);
-            bRight.setPower(power * speedScaler);
+            fLeft.setPower(-power);
+            fRight.setPower(power);
+            bLeft.setPower(-power);
+            bRight.setPower(power);
         }
         brakeRobot();
         linearOpMode.sleep(100);

@@ -39,7 +39,7 @@ public class TestVuforia extends AutoBase {
         telemetry.addLine("Got into runopmode");
 
         robot.moveToPoint(8,0,1,1,Math.toRadians(0));
-        robot.finalTurn(0, 0.1);
+        robot.finalTurn(0);
 
         telemetry.addLine("done with move");
         telemetry.update();
@@ -57,15 +57,12 @@ public class TestVuforia extends AutoBase {
         }
 
         telemetry.addLine("go back");
-        robot.finalTurn(180, 0.1);
-        robot.moveToPoint(-6,0,0.5,0.5,Math.toRadians(0));
-        robot.finalTurn(90, 0.1);
+        robot.moveToPoint(-6,0,0.5,0.5, Math.toRadians(180));
+        robot.finalTurn(Math.toRadians(90));
 
         telemetry.addLine("go under lander");
         PathPoints goUnderLander = new PathPoints(underLander, 9);
         robot.moveFollowCurve(goUnderLander.targetPoints);
-
-
     }
 
     protected VuforiaLocalizer initVuforia() {

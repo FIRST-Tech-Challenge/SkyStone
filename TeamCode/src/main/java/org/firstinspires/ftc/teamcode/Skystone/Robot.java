@@ -52,9 +52,6 @@ public class Robot {
     final double OUTTAKE_ACTUATOR_EXTENDED = .82;
     final double OUTTAKE_ACTUATOR_RETRACTED = .17;
 
-    // For outtake()
-    double outtakeActuatorPosition = OUTTAKE_ACTUATOR_RETRACTED;
-
     // Outtake Servos
     public Servo clawServo;
     public Servo outtakePivotServo;

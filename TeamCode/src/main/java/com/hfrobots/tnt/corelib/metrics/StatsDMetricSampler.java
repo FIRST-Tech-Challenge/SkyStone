@@ -40,8 +40,11 @@ public class StatsDMetricSampler implements MetricsSampler {
         addGamepad("drv", driverControls);
         addGamepad("opr", operatorControls);
 
+        String metricsServerHost = "192.168.49.21"; // External WI-FI on Red Macbook
+        // String metricsServerHost = "192.168.49.239"; // Internal WI-FI on Red Macbook
+
         try {
-            statsDClient = new NonBlockingStatsDClient("", "192.168.49.239", 8126);
+            statsDClient = new NonBlockingStatsDClient("",   metricsServerHost, 8126);
         } catch (Exception ex) {
             throw new RuntimeException("Can't open statsd client", ex);
         }

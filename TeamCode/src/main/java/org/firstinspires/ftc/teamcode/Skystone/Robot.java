@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
@@ -640,7 +641,15 @@ public class Robot {
             applyMove(decelerationScaleFactor);
         }
     }
+    public VuforiaLocalizer initVuforia(String VUFORIA_KEY) {
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 
+        VuforiaLocalizer.Parameters paramaters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+        paramaters.vuforiaLicenseKey = VUFORIA_KEY;
+        paramaters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+
+        return ClassFactory.getInstance().createVuforia(paramaters);
+    }
     public int detectVuforia(VuforiaLocalizer vuforia) {
 
         OpenGLMatrix lastLocation = new OpenGLMatrix();

@@ -25,14 +25,20 @@ public class TestVuforia extends AutoBase {
     @Override
     public void runOpMode() {
 
-
-        VuforiaLocalizer vuforia = initVuforia();
+        // init vuforia
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        VuforiaLocalizer.Parameters paramaters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+        paramaters.vuforiaLicenseKey = VUFORIA_KEY;
+        paramaters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+        VuforiaLocalizer vuforia = ClassFactory.getInstance().createVuforia(paramaters);
 
         Robot robot = new Robot(this.hardwareMap, this.telemetry, this);
 
         waitForStart();
 
         robot.changeRunModeToUsingEncoder();
+
+        // start odometry
         Position2D position2D = new Position2D(robot);
         position2D.startOdometry();
 
@@ -63,15 +69,5 @@ public class TestVuforia extends AutoBase {
         telemetry.addLine("go under lander");
         PathPoints goUnderLander = new PathPoints(underLander, 9);
         robot.moveFollowCurve(goUnderLander.targetPoints);
-    }
-
-    protected VuforiaLocalizer initVuforia() {
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-
-        VuforiaLocalizer.Parameters paramaters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-        paramaters.vuforiaLicenseKey = VUFORIA_KEY;
-        paramaters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-
-        return ClassFactory.getInstance().createVuforia(paramaters);
     }
 }

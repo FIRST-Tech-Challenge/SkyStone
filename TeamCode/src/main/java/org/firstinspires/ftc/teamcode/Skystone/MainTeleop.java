@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Skystone;
 
+import android.os.SystemClock;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -19,7 +21,9 @@ public class MainTeleop extends LinearOpMode {
     double intakeRightPower;
 
     char outtakeButton;
-    double outtakeSpoolPower;
+
+    long outtakeExecutionTime;
+    double outtakePivotExecutePosition;
 
     boolean onSlowDrive, changedSlowDrive = false;
 
@@ -99,16 +103,16 @@ public class MainTeleop extends LinearOpMode {
 
     private void slowDriveLogic(){
         //toggle driving speed
-        if(powerScaleFactor == 0.3){
+        if (powerScaleFactor == 0.3) {
 //            telemetry.addData("Driving Mode","Slow");
-        }else{
+        } else {
 //            telemetry.addData("Driving Mode","Normal");
         }
-        if(gamepad1.left_bumper && !changedSlowDrive){
+        if (gamepad1.left_bumper && !changedSlowDrive) {
             powerScaleFactor = (onSlowDrive) ? 0.9 : 0.3;
             onSlowDrive = !onSlowDrive;
             changedSlowDrive = true;
-        }else if(!gamepad1.left_bumper){
+        } else if(!gamepad1.left_bumper) {
             changedSlowDrive = false;
         }
     }
@@ -121,27 +125,47 @@ public class MainTeleop extends LinearOpMode {
     }
 
     private void outtakeLogic() {
-        outtakeSpoolPower = 0;
-
         if (gamepad2.a) { // Clamp and Extend
-            outtakeButton = 'a';
+            outtakeExecutionTime = SystemClock.elapsedRealtime();
+
+            robot.clawServo.setPosition(robot.CLAW_SERVO_CLAMPED);
+
+            robot.leftOuttakeActuatorServo.setPosition(robot.OUTTAKE_ACTUATOR_EXTENDED);
+            robot.rightOuttakeActuatorServo.setPosition(robot.OUTTAKE_ACTUATOR_EXTENDED);
+
+            outtakePivotExecutePosition = robot.OUTTAKE_PIVOT_EXTENDED;
         } else if (gamepad2.b) { // Deposit and Reset
-            outtakeButton = 'b';
-        } else if (gamepad2.x) {
-            outtakeButton = 'x'; // Clamp
-        } else if (gamepad2.y) {
-            outtakeButton = 'y'; // Extend
+            outtakeExecutionTime = SystemClock.elapsedRealtime();
+
+            robot.clawServo.setPosition(robot.CLAW_SERVO_RELEASED);
+
+            robot.leftOuttakeActuatorServo.setPosition(robot.OUTTAKE_ACTUATOR_RETRACTED);
+            robot.rightOuttakeActuatorServo.setPosition(robot.OUTTAKE_ACTUATOR_RETRACTED);
+
+            outtakePivotExecutePosition = robot.OUTTAKE_ACTUATOR_RETRACTED;
+        } else if (gamepad2.x) { // Clamp
+            robot.clawServo.setPosition(robot.CLAW_SERVO_CLAMPED);
+        } else if (gamepad2.y) { // Extend
+            outtakeExecutionTime = SystemClock.elapsedRealtime();
+
+            robot.leftOuttakeActuatorServo.setPosition(robot.OUTTAKE_ACTUATOR_EXTENDED);
+            robot.rightOuttakeActuatorServo.setPosition(robot.OUTTAKE_ACTUATOR_EXTENDED);
+
+            outtakePivotExecutePosition = robot.OUTTAKE_PIVOT_EXTENDED;
+        }
+
+        if (SystemClock.elapsedRealtime() == outtakeExecutionTime + 200) {
+            robot.outtakePivotServo.setPosition(outtakePivotExecutePosition);
         }
 
         if (gamepad2.dpad_up) {
-            outtakeSpoolPower = .5;
+            robot.outtakeSpool.setPower(.5);
         } else if (gamepad2.dpad_down) {
-            outtakeSpoolPower = -.5;
+            robot.outtakeSpool.setPower(-.5);
+        } else {
+            robot.outtakeSpool.setPower(0);
         }
-
-        robot.outtake(outtakeButton,outtakeSpoolPower);
     }
 }
-
 
 

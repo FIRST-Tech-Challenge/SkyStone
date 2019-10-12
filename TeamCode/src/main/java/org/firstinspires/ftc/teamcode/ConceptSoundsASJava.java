@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.robotcontroller.external.samples;
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.ftccommon.SoundPlayer;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -68,67 +68,52 @@ m *       <project root>/TeamCode/src/main/res/raw
  *
  */
 
-@TeleOp(name="Concept: Sound Resources", group="Concept")
-@Disabled
+@TeleOp(name="don't ask who joe is", group="Concept")
 public class ConceptSoundsASJava extends LinearOpMode {
 
     // Declare OpMode members.
-    private boolean goldFound;      // Sound file present flags
-    private boolean silverFound;
+    private boolean bruh;      // Sound file present flags
 
     private boolean isX = false;    // Gamepad button state variables
-    private boolean isB = false;
 
     private boolean wasX = false;   // Gamepad button history variables
-    private boolean WasB = false;
 
     @Override
     public void runOpMode() {
 
         // Determine Resource IDs for sounds built into the RC application.
-        int silverSoundID = hardwareMap.appContext.getResources().getIdentifier("silver", "raw", hardwareMap.appContext.getPackageName());
-        int goldSoundID   = hardwareMap.appContext.getResources().getIdentifier("gold",   "raw", hardwareMap.appContext.getPackageName());
+        int bruhSoundID = hardwareMap.appContext.getResources().getIdentifier("bruh", "raw", hardwareMap.appContext.getPackageName());
 
         // Determine if sound resources are found.
         // Note: Preloading is NOT required, but it's a good way to verify all your sounds are available before you run.
-        if (goldSoundID != 0)
-            goldFound   = SoundPlayer.getInstance().preload(hardwareMap.appContext, goldSoundID);
 
-        if (silverSoundID != 0)
-            silverFound = SoundPlayer.getInstance().preload(hardwareMap.appContext, silverSoundID);
+        if (bruhSoundID != 0)
+            bruh = SoundPlayer.getInstance().preload(hardwareMap.appContext, bruhSoundID);
 
         // Display sound status
-        telemetry.addData("gold resource",   goldFound ?   "Found" : "NOT found\n Add gold.wav to /src/main/res/raw" );
-        telemetry.addData("silver resource", silverFound ? "Found" : "Not found\n Add silver.wav to /src/main/res/raw" );
+        telemetry.addData("joe", bruh ? "Found" : "Not found\n Add bruh.wav to /src/main/res/raw" );
 
         // Wait for the game to start (driver presses PLAY)
-        telemetry.addData(">", "Press Start to continue");
+        telemetry.addData(">", "Press Start to glimpse nirvana");
         telemetry.update();
         waitForStart();
 
-        telemetry.addData(">", "Press X, B to play sounds.");
+        telemetry.addData(">", "Press X to be reborn");
         telemetry.update();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
             // say Silver each time gamepad X is pressed (This sound is a resource)
-            if (silverFound && (isX = gamepad1.x) && !wasX) {
-                SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, silverSoundID);
-                telemetry.addData("Playing", "Resource Silver");
+            if (bruh && (isX = gamepad1.x) && !wasX) {
+                SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, bruhSoundID);
+                telemetry.addData("Having", "a Bruh Moment");
                 telemetry.update();
             }
 
-            // say Gold each time gamepad B is pressed  (This sound is a resource)
-            if (goldFound && (isB = gamepad1.b) && !WasB) {
-                SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, goldSoundID);
-                telemetry.addData("Playing", "Resource Gold");
-                telemetry.update();
-            }
 
             // Save last button states
             wasX = isX;
-            WasB = isB;
         }
     }
 }

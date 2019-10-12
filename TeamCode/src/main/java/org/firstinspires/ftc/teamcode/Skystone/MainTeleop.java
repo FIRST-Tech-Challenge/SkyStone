@@ -118,10 +118,8 @@ public class MainTeleop extends LinearOpMode {
     }
 
     private void intakeLogic() {
-        intakeLeftPower = gamepad2.left_stick_y;
-        intakeRightPower = gamepad2.right_stick_y;
-
-        robot.intake(intakeLeftPower,intakeRightPower);
+        robot.intakeLeft.setPower(gamepad2.left_stick_y);
+        robot.intakeRight.setPower(gamepad2.right_stick_y);
     }
 
     private void outtakeLogic() {

@@ -39,4 +39,36 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 //import com.qualcomm.robotcore.hardware.DcMotorSimple;
 //import com.qualcomm.robotcore.util.Range;
 
+@TeleOp(name="Mecanumy", group = "RealRobotMecanumWheels")
+//@Disabled
+public class RealRobotMecanumWheels
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+while (opModeIsActive()) {
+    double r = Math.hypot(gamepad1.left_stick_x,     double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x)
+    double
+    double
+        }

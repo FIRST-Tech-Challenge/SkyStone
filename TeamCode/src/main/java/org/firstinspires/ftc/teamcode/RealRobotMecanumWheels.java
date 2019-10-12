@@ -34,6 +34,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 //import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -41,41 +42,54 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name="Mecanumy", group = "RealRobotMecanumWheels")
 //@Disabled
-public class RealRobotMecanumWheels
+public class RealRobotMecanumWheels extends LinearOpMode {
 
 
+    private ElapsedTime runtime = new ElapsedTime();
+    private DcMotor leftFront = null;
+    private DcMotor rightFront = null;
+    private DcMotor leftBack = null;
+    private DcMotor rightBack = null;
 
 
+    @Override
+    public void runOpMode() {
+        telemetry.addData("status", "Initialized");
+        telemetry.update();
+
+        leftFront = hardwareMap.get(DcMotor.class, "left_front");
+        leftBack = hardwareMap.get(DcMotor.class, "left_back");
+        rightFront = hardwareMap.get(DcMotor.class, "right_front");
+        rightBack = hardwareMap.get(DcMotor.class, "right_back");
+
+        //leftFront.setDirection(DcMotor.Direction.FORWARD);
+        //leftBack.setDirection(DcMotor.Direction.FORWARD);
+        //rightFront.setDirection(DcMotor.Direction.REVERSE);
+        //rightBack.setDirection(DcMotor.Direction.REVERSE);
+
+        double move = gamepad1.left_stick_y;
+        double tank = gamepad1.right_stick_x;
+        double slide = gamepad1.left_stick_x;
 
 
+        while (opModeIsActive()) {
 
+            if (move = -1) {
+                leftFront.setDirection(DcMotor.Direction.REVERSE);
+                leftBack.setDirection(DcMotor.Direction.REVERSE);
+                rightFront.setDirection(DcMotor.Direction.FORWARD);
+                rightBack.setDirection(DcMotor.Direction.FORWARD);
+            }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-while (opModeIsActive()) {
-    double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x)
-    double
-    double rightx
-    double leftx
-    double lefty
-final double v1 =
-final double v2 =
-final double v3 =
-final double v4 =
+            double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x)
+            double
+            double rightx
+            double leftx
+            double lefty
+            final double v1 =
+            final double v2 =
+            final double v3 =
+            final double v4 =
         }
+    }
+}

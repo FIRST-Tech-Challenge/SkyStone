@@ -190,7 +190,7 @@ public class Robot {
         double startHeading = angles.firstAngle;
         double maxAngle = startHeading - targetHeading;
         maxAngle = Math.abs(maxAngle);
-        int sign = 0;
+        int sign;
         if (targetHeading > startHeading) {
             sign = 1;
         } else {
@@ -517,7 +517,7 @@ public class Robot {
         return extended;
     }
 
-    public CurvePoint getFollowPointPath(Vector<CurvePoint> pathPoints, Point robotLocation, double followRadius) {
+    private CurvePoint getFollowPointPath(Vector<CurvePoint> pathPoints, Point robotLocation, double followRadius) {
         CurvePoint followMe = new CurvePoint(pathPoints.get(0));
 
         for (int i = 0; i < pathPoints.size() - 1; i++) {
@@ -544,9 +544,6 @@ public class Robot {
 
     public void goToPoint(double x, double y, double moveSpeed, double turnSpeed, double optimalAngle) {
 
-        double xStart = robotPos.x;
-        double yStart = robotPos.y;
-
         double distanceToTarget = Math.hypot(x - robotPos.x, y - robotPos.y);
         double absoluteAngleToTarget = Math.atan2(y - robotPos.y, x - robotPos.x);
 
@@ -563,7 +560,7 @@ public class Robot {
         turnMovement = Range.clip(relativeTurnAngle / Math.toRadians(30), -1, 1) * turnSpeed;
     }
 
-    public void applyMove(double decelerationScaleFactor) {
+    private void applyMove(double decelerationScaleFactor) {
 
         double fLeftPower = (yMovement * 1.414 + turnMovement + xMovement);
         double fRightPower = (-yMovement * 1.414 - turnMovement + xMovement);
@@ -605,9 +602,6 @@ public class Robot {
 
 
     public void moveToPoint(double x, double y, double moveSpeed, double turnSpeed, double optimalAngle) {
-        double xStart = robotPos.x;
-        double yStart = robotPos.y;
-        double distanceTotal = Math.hypot(x - xStart, y - yStart);
 
         while (linearOpMode.opModeIsActive()) {
 

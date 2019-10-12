@@ -142,7 +142,7 @@ public class MainTeleop extends LinearOpMode {
             robot.leftOuttakeActuatorServo.setPosition(robot.OUTTAKE_ACTUATOR_RETRACTED);
             robot.rightOuttakeActuatorServo.setPosition(robot.OUTTAKE_ACTUATOR_RETRACTED);
 
-            outtakePivotExecutePosition = robot.OUTTAKE_ACTUATOR_RETRACTED;
+            outtakePivotExecutePosition = robot.OUTTAKE_PIVOT_RETRACTED;
         } else if (gamepad2.x) { // Clamp
             robot.clawServo.setPosition(robot.CLAW_SERVO_CLAMPED);
         } else if (gamepad2.y) { // Extend

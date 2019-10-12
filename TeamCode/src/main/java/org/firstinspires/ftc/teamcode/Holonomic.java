@@ -67,14 +67,15 @@ public class Holonomic extends LinearOpMode {
         waitForStart();
         runtime.reset();
         double speedSet = 7;//robot starts with 7 speed due to 40 ratio motors being op
+        double reduction = 10;//fine rotation for precise stacking. higher value = slower rotation using triggers
 
         while (opModeIsActive()) {
 
             //bumpers set speed of robot
             if(gamepad1.right_bumper)
-                speedSet += 0.005;
+                speedSet += 0.0005;
             else if(gamepad1.left_bumper)
-                speedSet -= 0.005;
+                speedSet -= 0.0005;
 
             speedSet =  Range.clip(speedSet, 1, 10);//makes sure speed is limited at 10.
 
@@ -93,6 +94,11 @@ public class Holonomic extends LinearOpMode {
                 frontRight.setPower(Range.clip((gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x) * (speedSet / 10), -1, 1));
                 backRight.setPower(Range.clip((gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x) * (speedSet / 10), -1, 1));
                 backLeft.setPower(Range.clip((gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x) * (speedSet / 10), -1, 1));
+            } else if(gamepad1.left_trigger > deadZone || gamepad1.left_trigger > deadZone){
+                frontLeft.setPower((-gamepad1.left_trigger + gamepad1.right_trigger)/reduction);
+                frontRight.setPower((gamepad1.left_trigger - gamepad1.right_trigger)/reduction);
+                backRight.setPower((gamepad1.left_trigger - gamepad1.right_trigger)/reduction);
+                backLeft.setPower((-gamepad1.left_trigger + gamepad1.right_trigger)/reduction);
             } else if (earthIsFlat) {//stop robot
                 frontLeft.setPower(0);
                 frontRight.setPower(0);

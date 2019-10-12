@@ -33,16 +33,27 @@ public class SkystoneTeleop extends OpMode {
     private RoadRunnerMecanumDriveREV driveBase;
 
     private DriverControls driverControls;
+
+    private OperatorControls operatorControls;
+
+    private DeliveryMechanism deliveryMechanism;
+
     // Go look at com.hfrobots.tnt.season1920.OpenLoopDriveBaseControlTest and see what
     // class members you need to begin to make the drivebase move using the drivers' controller
 
     @Override
     public void init() {
-        driveBase = new RoadRunnerMecanumDriveREV(new RealSimplerHardwareMap(hardwareMap));
+        RealSimplerHardwareMap simplerHardwareMap = new RealSimplerHardwareMap(this.hardwareMap);
+        driveBase = new RoadRunnerMecanumDriveREV(simplerHardwareMap);
         kinematics = new OpenLoopMecanumKinematics(driveBase);
 
         driverControls = DriverControls.builder().driversGamepad(new NinjaGamePad(gamepad1))
                 .kinematics(kinematics)
+                .build();
+        deliveryMechanism = new DeliveryMechanism(simplerHardwareMap);
+
+        operatorControls = OperatorControls.builder().operatorsGamepad(new NinjaGamePad(gamepad2))
+                .deliveryMechanism(deliveryMechanism)
                 .build();
     }
 
@@ -59,5 +70,6 @@ public class SkystoneTeleop extends OpMode {
     @Override
     public void loop() {
         driverControls.periodicTask();
+        operatorControls.periodicTask();
     }
 }

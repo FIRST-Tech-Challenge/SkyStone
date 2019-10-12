@@ -29,6 +29,7 @@ import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CompassSensor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.GyroSensor;
@@ -75,6 +76,8 @@ public class SensorTester extends OpMode {
 
     private List<NamedDeviceMap.NamedDevice<DigitalChannel>> namedDigitalChannels;
 
+    private List<NamedDeviceMap.NamedDevice<AnalogInput>> namedAnalogInputs;
+
     private List<NamedDeviceMap.NamedDevice<LynxEmbeddedIMU>> namedImus;
 
     private int currentListPosition;
@@ -108,6 +111,7 @@ public class SensorTester extends OpMode {
         namedTouchDevices = namedDeviceMap.getAll(TouchSensor.class);
         namedImus = namedDeviceMap.getAll(LynxEmbeddedIMU.class);
         namedTofSensors = namedDeviceMap.getAll(Rev2mDistanceSensor.class);
+        namedAnalogInputs = namedDeviceMap.getAll(AnalogInput.class);
 
         for (NamedDeviceMap.NamedDevice<GyroSensor> namedGyro : namedGyroDevices) {
             namedGyro.getDevice().calibrate();
@@ -145,7 +149,7 @@ public class SensorTester extends OpMode {
 
     private boolean ledEnabled = false;
 
-    private enum Mode { COLOR, LYNX_COLOR, LYNX_IMU, TOF_SENSOR, RANGE, ODS, DIGITAL_CHANNEL, GYRO, COMPASS, TOUCH }
+    private enum Mode { COLOR, LYNX_COLOR, LYNX_IMU, TOF_SENSOR, RANGE, ODS, DIGITAL_CHANNEL, ANALOG_INPUT, GYRO, COMPASS, TOUCH }
 
     private Mode currentMode = Mode.COLOR;
 
@@ -171,6 +175,9 @@ public class SensorTester extends OpMode {
                     currentMode = Mode.DIGITAL_CHANNEL;
                     break;
                 case DIGITAL_CHANNEL:
+                    currentMode = Mode.ANALOG_INPUT;
+                    break;
+                case ANALOG_INPUT:
                     currentMode = Mode.GYRO;
                     break;
                 case GYRO:
@@ -206,6 +213,9 @@ public class SensorTester extends OpMode {
                 break;
             case DIGITAL_CHANNEL:
                 doDigitalChannelLoop();
+                break;
+            case ANALOG_INPUT:
+                doAnalogInputLoop();
                 break;
             case GYRO:
                 doGyroSensorLoop();
@@ -459,6 +469,34 @@ public class SensorTester extends OpMode {
         String sensorName = currentNamedDigitalChannel.getName();
 
         telemetry.addData("digital ",  "%s = %s", sensorName, String.valueOf(currentDigitalChannel.getState()));
+
+        updateTelemetry(telemetry);
+    }
+
+    int currentAnalogInputListPosition = 0;
+
+    private void doAnalogInputLoop() {
+        namedAnalogInputs = namedDeviceMap.getAll(AnalogInput.class);
+
+        if (namedAnalogInputs.isEmpty()) {
+            telemetry.addData("No analog inputs", "");
+            updateTelemetry(telemetry);
+            return;
+        }
+
+        if (rightBumper.getRise()) {
+            currentAnalogInputListPosition++;
+
+            if (currentAnalogInputListPosition == namedAnalogInputs.size()) {
+                currentAnalogInputListPosition = 0;
+            }
+        }
+
+        NamedDeviceMap.NamedDevice<AnalogInput> currentNamedAnalogInput = namedAnalogInputs.get(currentAnalogInputListPosition);
+        AnalogInput currentAnalogInput = currentNamedAnalogInput.getDevice();
+        String sensorName = currentNamedAnalogInput.getName();
+
+        telemetry.addData("analog ",  "%s = %s", sensorName, String.valueOf(currentAnalogInput.getVoltage()));
 
         updateTelemetry(telemetry);
     }

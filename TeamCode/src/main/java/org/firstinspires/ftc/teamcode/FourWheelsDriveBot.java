@@ -109,14 +109,15 @@ public class FourWheelsDriveBot
         this.opMode.sleep(3000);
 
     }
-    public void driveStraightByDistance(int direction, float distance){
+    public void driveStraightByDistance(int direction, double distance){
         // default max power 0.5
-        return driveStraightByDistance(direction, distance, 0.5);
+        driveStraightByDistance(direction, distance, 0.5);
     }
 
-    public void driveStraightByDistance(int direction, float distance, float maxPower){
+    public void driveStraightByDistance(int direction, double distance, double maxPower){
         // distance (in mm) = revolution * pi * diameter (100 mm)
         int target = (int)(distance / 3.1415 / 100 * DRIVING_MOTOR_TICK_COUNT);
+        int startingPosition = leftFront.getCurrentPosition();
         switch (direction){
             case DIRECTION_FORWARD:
                 leftFront.setTargetPosition(leftFront.getCurrentPosition() + target);

@@ -44,7 +44,7 @@ public class TestVuforia extends AutoBase {
 
         telemetry.addLine("Got into runopmode");
 
-        robot.moveToPoint(8,0,1,1,Math.toRadians(0));
+        robot.moveToPoint(10,0,1,1,Math.toRadians(0));
         robot.finalTurn(0);
 
         telemetry.addLine("done with move");

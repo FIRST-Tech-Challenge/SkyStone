@@ -16,7 +16,7 @@ public class HardwareBot
     public DcMotor rightFront = null;
     public DcMotor leftRear = null;
     public DcMotor rightRear = null;
-    public DcMotor heavyDutyArm = null;
+//    public DcMotor heavyDutyArm = null;
 
     HardwareMap hwMap = null;
     private ElapsedTime period = new ElapsedTime();
@@ -31,20 +31,21 @@ public class HardwareBot
         rightFront = hwMap.get(DcMotor.class, "rightFront");
         leftRear = hwMap.get(DcMotor.class, "leftRear");
         rightRear = hwMap.get(DcMotor.class, "rightRear");
-        leftFront.setDirection(DcMotor.Direction.REVERSE);
+        rightRear.setDirection(DcMotor.Direction.REVERSE);
+        rightFront.setDirection(DcMotor.Direction.REVERSE);
 
-        heavyDutyArm = hwMap.get(DcMotor.class, "arm");
+//        heavyDutyArm = hwMap.get(DcMotor.class, "arm");
 
         leftFront.setPower(0);
         rightFront.setPower(0);
         leftRear.setPower(0);
         rightRear.setPower(0);
 
-        heavyDutyArm.setPower(0);
+//        heavyDutyArm.setPower(0);
 
         leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        heavyDutyArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        heavyDutyArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
     }
 }

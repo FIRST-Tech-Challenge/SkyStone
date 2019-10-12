@@ -36,44 +36,44 @@ public class FourWDEncoder extends LinearOpMode {
 
         double quarterTurn = 10/4;
 
-        robot.heavyDutyArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        int newTarget = robot.heavyDutyArm.getTargetPosition() + (int)quarterTurn;
-        robot.heavyDutyArm.setTargetPosition(newTarget);
-        robot.heavyDutyArm.setPower(0.5);
-        robot.heavyDutyArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        while (robot.heavyDutyArm.isBusy()) {
-            telemetry.addData("Status", "Running the motor to a quarter turn.");
-            telemetry.update();
-        }
-
-        robot.heavyDutyArm.setPower(0);
-        robot.heavyDutyArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        newTarget = robot.heavyDutyArm.getTargetPosition() - (int)quarterTurn;
-        robot.heavyDutyArm.setTargetPosition(newTarget);
-        robot.heavyDutyArm.setPower(0.5);
-        robot.heavyDutyArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        while(robot.heavyDutyArm.isBusy()) {
-            telemetry.addData("Status", "Running the motor BACK a quarter turn.");
-            telemetry.update();
-        }
-
-        robot.heavyDutyArm.setPower(0);
-
-        newTarget = robot.heavyDutyArm.getTargetPosition() + (int)MOTOR_TICK_COUNT*3;
-        robot.heavyDutyArm.setTargetPosition(newTarget);
-        robot.heavyDutyArm.setPower(1);
-        robot.heavyDutyArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        while(robot.heavyDutyArm.isBusy()) {
-            telemetry.addData("Status", "Running the motor BACK a quarter turn.");
-            telemetry.update();
-        }
-
-        sleep(5000);
-        robot.heavyDutyArm.setPower(0);
+//        robot.heavyDutyArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        int newTarget = robot.heavyDutyArm.getTargetPosition() + (int)quarterTurn;
+//        robot.heavyDutyArm.setTargetPosition(newTarget);
+//        robot.heavyDutyArm.setPower(0.5);
+//        robot.heavyDutyArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//
+//        while (robot.heavyDutyArm.isBusy()) {
+//            telemetry.addData("Status", "Running the motor to a quarter turn.");
+//            telemetry.update();
+//        }
+//
+//        robot.heavyDutyArm.setPower(0);
+//        robot.heavyDutyArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//
+//        newTarget = robot.heavyDutyArm.getTargetPosition() - (int)quarterTurn;
+//        robot.heavyDutyArm.setTargetPosition(newTarget);
+//        robot.heavyDutyArm.setPower(0.5);
+//        robot.heavyDutyArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//
+//        while(robot.heavyDutyArm.isBusy()) {
+//            telemetry.addData("Status", "Running the motor BACK a quarter turn.");
+//            telemetry.update();
+//        }
+//
+//        robot.heavyDutyArm.setPower(0);
+//
+//        newTarget = robot.heavyDutyArm.getTargetPosition() + (int)MOTOR_TICK_COUNT*3;
+//        robot.heavyDutyArm.setTargetPosition(newTarget);
+//        robot.heavyDutyArm.setPower(1);
+//        robot.heavyDutyArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//
+//        while(robot.heavyDutyArm.isBusy()) {
+//            telemetry.addData("Status", "Running the motor BACK a quarter turn.");
+//            telemetry.update();
+//        }
+//
+//        sleep(5000);
+//        robot.heavyDutyArm.setPower(0);
 
         telemetry.addData("Path", "Complete");
         telemetry.update();

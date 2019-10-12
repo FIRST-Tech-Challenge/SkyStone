@@ -91,7 +91,7 @@ class Odometry{
     public void circularOdometry () {
         double leftPodNew = -1 * robot.fLeft.getCurrentPosition(); // fix this for new odo config
         double rightPodNew = -1 * robot.fRight.getCurrentPosition(); //fix this for new odo config
-        double mecanumPodNew = robot.bLeft.getCurrentPosition(); // fix this for new odo config
+        double mecanumPodNew = -1 * robot.bLeft.getCurrentPosition(); // fix this for new odo config
 
         double leftIncrement = (leftPodNew-leftPodOld) * moveScaleFactor;
         double rightIncrement = (rightPodNew - rightPodOld) * moveScaleFactor;
@@ -116,7 +116,7 @@ class Odometry{
         worldY += relativeY * Math.sin(worldAngle) - relativeX * Math.cos(worldAngle);
         worldAngle  = (leftPodNew - rightPodNew)  * turnScaleFactor;
 
-        leftPodOld =leftPodNew;
+        leftPodOld = leftPodNew;
         rightPodOld = rightPodNew;
         mecanumPodOld = mecanumPodNew;
 
@@ -162,9 +162,9 @@ class Odometry{
         bLeftOLD = bLeftNEW;
         bRightOLD = bRightNEW;
 
-//        robot.telemetry.addLine("XPOS: " + xPosGlobal);
-//        robot.telemetry.addLine("YPOS: " + yPosGlobal);
-//        robot.telemetry.addLine("ANGPOS: " + Math.toDegrees(Math.toDegrees(angleGlobal)));
+        robot.telemetry.addLine("XPOS: " + xPosGlobal);
+        robot.telemetry.addLine("YPOS: " + yPosGlobal);
+        robot.telemetry.addLine("ANGPOS: " + Math.toDegrees(Math.toDegrees(angleGlobal)));
         robot.telemetry.update();
     }
 }

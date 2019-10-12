@@ -34,8 +34,11 @@ public class MainTeleop extends LinearOpMode {
         while (opModeIsActive()) {
             slowDriveLogic();
             driveLogic();
-            intakeLogic();
-            outtakeLogic();
+//            telemetry.addData("X Value: ", robot.robotPos.x);
+//            telemetry.addData("Y Value: ", robot.robotPos.y);
+//            telemetry.update();
+//            intakeLogic();
+//            outtakeLogic();
         }
     }
 
@@ -45,8 +48,8 @@ public class MainTeleop extends LinearOpMode {
 
         robot.setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        robot.outtakeArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.outtakeArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        robot.outtakeArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        robot.outtakeArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     //teleop methods

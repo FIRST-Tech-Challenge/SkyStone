@@ -139,7 +139,11 @@ public class FourWheelsDriveBot
                 leftRear.setTargetPosition(leftRear.getCurrentPosition() + target);
                 rightRear.setTargetPosition(rightRear.getCurrentPosition() - target);
                 break;
+            default:
+                String msg = String.format("Unexcepted direction value (%d) for driveStraightByDistance()", direction);
+                print(msg);
         }
+
         leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         leftRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);

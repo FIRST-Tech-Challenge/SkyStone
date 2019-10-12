@@ -20,6 +20,7 @@ import org.firstinspires.ftc.teamcode.Skystone.Robot;
 public class TestVuforia extends AutoBase {
     private static final String VUFORIA_KEY = "AbSCRq//////AAAAGYEdTZut2U7TuZCfZGlOu7ZgOzsOlUVdiuQjgLBC9B3dNvrPE1x/REDktOALxt5jBEJJBAX4gM9ofcwMjCzaJKoZQBBlXXxrOscekzvrWkhqs/g+AtWJLkpCOOWKDLSixgH0bF7HByYv4h3fXECqRNGUUCHELf4Uoqea6tCtiGJvee+5K+5yqNfGduJBHcA1juE3kxGMdkqkbfSjfrNgWuolkjXR5z39tRChoOUN24HethAX8LiECiLhlKrJeC4BpdRCRazgJXGLvvI74Tmih9nhCz6zyVurHAHttlrXV17nYLyt6qQB1LtVEuSCkpfLJS8lZWS9ztfC1UEfrQ8m5zA6cYGQXjDMeRumdq9ugMkS";
 
+    public static double[][] underLander = {{8,0},{8,50},{20,50}};
 
     @Override
     public void runOpMode() {
@@ -35,21 +36,35 @@ public class TestVuforia extends AutoBase {
         Position2D position2D = new Position2D(robot);
         position2D.startOdometry();
 
-        robot.moveToPoint(4,0,1,1,Math.toRadians(90));
+        telemetry.addLine("Got into runopmode");
+
+        robot.moveToPoint(8,0,1,1,Math.toRadians(0));
+        robot.finalTurn(0, 0.1);
+
         telemetry.addLine("done with move");
         telemetry.update();
 
+        telemetry.addLine("detecting vuforia");
         int position = robot.detectVuforia(vuforia);
 
+        telemetry.addLine("go to point");
         if (position==1) {
-            robot.moveToPoint(10, -4, 0.5, 0.5, Math.toRadians(-25));
+            robot.moveToPoint(15, -4, 0.5, 0.5, Math.toRadians(0));
         } else if (position == 2){
-            robot.moveToPoint(10,0,0.5,0.5,Math.toRadians(25));
+            robot.moveToPoint(15,0,0.5,0.5,Math.toRadians(0));
         } else if (position == 3) {
-            robot.moveToPoint(10,4,0.5,0.5,Math.toRadians(0));
+            robot.moveToPoint(15,4,0.5,0.5,Math.toRadians(0));
         }
 
-        robot.finalTurn(0);
+        telemetry.addLine("go back");
+        robot.finalTurn(180, 0.1);
+        robot.moveToPoint(-6,0,0.5,0.5,Math.toRadians(0));
+        robot.finalTurn(90, 0.1);
+
+        telemetry.addLine("go under lander");
+        PathPoints goUnderLander = new PathPoints(underLander, 9);
+        robot.moveFollowCurve(goUnderLander.targetPoints);
+
 
     }
 

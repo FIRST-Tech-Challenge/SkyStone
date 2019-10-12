@@ -157,11 +157,11 @@ public class Robot {
     }
 
     //normal use method default 2 second kill time
-    public void finalTurn(double targetHeading) {
-        finalTurn(targetHeading, 2500);
+    public void finalTurn(double targetHeading, double speedScaler) {
+        finalTurn(targetHeading, 2500, speedScaler);
     }
 
-    public void finalTurn(double targetHeading, long timeInMilli) {
+    public void finalTurn(double targetHeading, long timeInMilli, double speedScaler) {
         targetHeading = Range.clip(targetHeading, -179, 179);
         long startTime = SystemClock.elapsedRealtime();
         this.setMotorMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -193,10 +193,10 @@ public class Robot {
             if (scaleFactor > 1 || ((SystemClock.elapsedRealtime() - startTime) > timeInMilli)) {
                 break;
             }
-            fLeft.setPower(-power);
-            fRight.setPower(power);
-            bLeft.setPower(-power);
-            bRight.setPower(power);
+            fLeft.setPower(-power * speedScaler);
+            fRight.setPower(power * speedScaler);
+            bLeft.setPower(-power * speedScaler);
+            bRight.setPower(power * speedScaler);
         }
         brakeRobot();
         linearOpMode.sleep(100);
@@ -567,10 +567,10 @@ public class Robot {
         if (Math.abs(fRightPower) > maxPower) {
             maxPower = Math.abs(fRightPower);
         }
-        fLeftPower *= decelerationScaleFactor;
-        fRightPower *= decelerationScaleFactor;
-        bLeftPower *= decelerationScaleFactor;
-        bRightPower *= decelerationScaleFactor;
+//        fLeftPower *= decelerationScaleFactor;
+//        fRightPower *= decelerationScaleFactor;
+//        bLeftPower *= decelerationScaleFactor;
+//        bRightPower *= decelerationScaleFactor;
 
         double scaleDownAmount = 1.0;
         if (maxPower > 1.0) {
@@ -641,7 +641,6 @@ public class Robot {
     public void moveToPoint(double x, double y, double moveSpeed, double turnSpeed, double optimalAngle) {
         double xStart = robotPos.x;
         double yStart = robotPos.y;
-        double distanceTotal = Math.hypot(x - xStart, y - yStart);
         while (linearOpMode.opModeIsActive()) {
 
             double xPos = robotPos.x;
@@ -668,8 +667,6 @@ public class Robot {
             xMovement = xPower * moveSpeed;
             yMovement = yPower * moveSpeed;
             turnMovement = Range.clip(relativeTurnAngle / Math.toRadians(30), -1, 1) * turnSpeed;
-
-            decelerationScaleFactor = Range.clip(distanceToTarget / distanceTotal, -1, 1);
 
             applyMove();
         }
@@ -731,70 +728,4 @@ public class Robot {
 
         return 2;
     }
-
-//    public Point detectSkystone() {
-//        final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
-//        final boolean PHONE_IS_PORTRAIT = false;
-//        final String VUFORIA_KEY = "AbSCRq//////AAAAGYEdTZut2U7TuZCfZGlOu7ZgOzsOlUVdiuQjgLBC9B3dNvrPE1x/REDktOALxt5jBEJJBAX4gM9ofcwMjCzaJKoZQBBlXXxrOscekzvrWkhqs/g+AtWJLkpCOOWKDLSixgH0bF7HByYv4h3fXECqRNGUUCHELf4Uoqea6tCtiGJvee+5K+5yqNfGduJBHcA1juE3kxGMdkqkbfSjfrNgWuolkjXR5z39tRChoOUN24HethAX8LiECiLhlKrJeC4BpdRCRazgJXGLvvI74Tmih9nhCz6zyVurHAHttlrXV17nYLyt6qQB1LtVEuSCkpfLJS8lZWS9ztfC1UEfrQ8m5zA6cYGQXjDMeRumdq9ugMkS";
-//        final float mmPerInch = 25.4f;
-//
-//        final float stoneZ = 2.00f * mmPerInch;
-//        Point point;
-//                OpenGLMatrix lastLocation = null;
-//                VuforiaLocalizer vuforia = null;
-//                boolean targetVisible = false;
-//                float phoneXRotate = 0;
-//                float phoneYRotate = 0;
-//                float phoneZRotate = 0;
-//
-//                int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-//                VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-//                parameters.vuforiaLicenseKey = VUFORIA_KEY;
-//                parameters.cameraDirection = CAMERA_CHOICE;
-//                vuforia = ClassFactory.getInstance().createVuforia(parameters);
-//
-//                VuforiaTrackables targetsSkyStone = vuforia.loadTrackablesFromAsset("Skystone");
-//                VuforiaTrackable stoneTarget = targetsSkyStone.get(0);
-//                stoneTarget.setName("Stone Target");
-//                List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
-//                allTrackables.addAll(targetsSkyStone);
-//                stoneTarget.setLocation(OpenGLMatrix.translation(0, 0, stoneZ).multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
-//                final float CAMERA_FORWARD_DISPLACEMENT = 9f * mmPerInch;
-//                final float CAMERA_VERTICAL_DISPLACEMENT = 9f * mmPerInch;
-//                final float CAMERA_LEFT_DISPLACEMENT = -4;
-//
-//                OpenGLMatrix robotFromCamera = OpenGLMatrix.translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT).multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
-//                ((VuforiaTrackableDefaultListener) stoneTarget.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
-//                targetsSkyStone.activate();
-//
-//                while(true) {
-//
-//                    // check all the trackable targets to see which one (if any) is visible.
-//                    targetVisible = false;
-//                    for (VuforiaTrackable trackable : allTrackables) {
-//                        if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
-//                            telemetry.addData("Visible Target", trackable.getName());
-//                            targetVisible = true;
-//
-//                            // getUpdatedRobotLocation() will return null if no new information is available since
-//                            // the last time that call was made, or if the trackable is not currently visible.
-//                            OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
-//                            if (robotLocationTransform != null) {
-//                                lastLocation = robotLocationTransform;
-//                            }
-//                            break;
-//                        }
-//                    }
-//                    if (targetVisible) {
-//                        // express position (translation) of robot in inches.
-//                        VectorF translation = lastLocation.getTranslation();
-//                        return new Point(translation.get(0) / mmPerInch, translation.get(1) / mmPerInch);
-//
-//                        // express the rotation of the robot in degrees.
-//                    } else {
-//                        telemetry.addData("Visible Target", "none");
-//                    }
-//                    telemetry.update();
-//                }
-//    }
 }

@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.components.Vuforia;
 import java.util.EnumMap;
 
 
-public abstract class BaseStateMachine extends BaseOpModeConfig {
+public abstract class BaseStateMachine extends BaseOpMode {
         public enum State {
             STATE_INITIAL,
             STATE_FIND_SKYSTONE,

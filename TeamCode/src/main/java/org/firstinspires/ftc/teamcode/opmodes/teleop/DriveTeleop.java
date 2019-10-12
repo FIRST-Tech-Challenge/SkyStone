@@ -9,13 +9,13 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.components.DriveSystem;
-import org.firstinspires.ftc.teamcode.opmodes.BaseOpModeConfig;
+import org.firstinspires.ftc.teamcode.opmodes.BaseOpMode;
 
 import java.util.EnumMap;
 
 
 @TeleOp(name = "Drive", group="TeleOp")
-public class DriveTeleop extends BaseOpModeConfig {
+public class DriveTeleop extends BaseOpMode {
 
     private DriveSystem driveSystem;
 

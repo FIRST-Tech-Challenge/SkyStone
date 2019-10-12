@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.components.Vuforia;
 
 import java.util.EnumMap;
 
-public abstract class BaseOpModeConfig extends OpMode {
+public abstract class BaseOpMode extends OpMode {
     protected DriveSystem driveSystem;
     protected Vuforia.CameraChoice currentCamera;
 

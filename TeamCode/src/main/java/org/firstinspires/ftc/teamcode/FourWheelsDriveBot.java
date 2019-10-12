@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 //@Autonomous(name="Drive Encoder2", group="Exercises")
 
-public class HardwareBot
+public class FourWheelsDriveBot
 {
     public DcMotor leftFront = null;
     public DcMotor rightFront = null;
@@ -21,7 +21,7 @@ public class HardwareBot
     HardwareMap hwMap = null;
     private ElapsedTime period = new ElapsedTime();
 
-    public HardwareBot() {
+    public FourWheelsDriveBot() {
     }
 
     public void init(HardwareMap ahwMap) {

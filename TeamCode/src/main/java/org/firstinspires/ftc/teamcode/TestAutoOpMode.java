@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class TestAutoOpMode extends LinearOpMode {
 
-    HardwareBot robot = new HardwareBot();
+    FourWheelsDriveBot robot = new FourWheelsDriveBot();
     static final double MOTOR_TICK_COUNT = 1120;
     private ElapsedTime runtime = new ElapsedTime();
 

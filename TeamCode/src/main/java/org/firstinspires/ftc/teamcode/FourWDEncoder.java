@@ -6,14 +6,13 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 
 @Autonomous(name="Encoder Final", group="Exercises")
 
 public class FourWDEncoder extends LinearOpMode {
 
-    HardwareBot robot = new HardwareBot();
+    FourWheelsDriveBot robot = new FourWheelsDriveBot();
     static final double MOTOR_TICK_COUNT = 1120;
 
     @Override

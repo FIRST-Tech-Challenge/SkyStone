@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 public class FourWDEncoder extends LinearOpMode {
 
-    FourWheelsDriveBot robot = new FourWheelsDriveBot();
+    FourWheelsDriveBot robot = new FourWheelsDriveBot(this);
     static final double MOTOR_TICK_COUNT = 1120;
 
     @Override

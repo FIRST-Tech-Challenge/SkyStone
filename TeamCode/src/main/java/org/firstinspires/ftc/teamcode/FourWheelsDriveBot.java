@@ -16,7 +16,12 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class FourWheelsDriveBot
 {
-    static final double MOTOR_TICK_COUNT = 1120;
+    // Gobilda 435 rpm DC motor : Encoder Countable Events Per Revolution (Output Shaft) : 383.6 * 2 (2:1 belev gear ratio)
+    static final double DRIVING_MOTOR_TICK_COUNT = 767;
+    static final int DIRECTION_FORWARD = 1;
+    static final int DIRECTION_BACKWARD = 2;
+    static final int DIRECTION_LEFT = 3;
+    static final int DIRECTION_RIGHT = 4;
 
     public DcMotor leftFront = null;
     public DcMotor rightFront = null;
@@ -85,7 +90,7 @@ public class FourWheelsDriveBot
 
         double timeoutS = 5.0;
         // make 3 turn
-        int target = motor.getCurrentPosition() + (int)MOTOR_TICK_COUNT * 3 * direction;
+        int target = motor.getCurrentPosition() + (int)DRIVING_MOTOR_TICK_COUNT * 3 * direction;
         print(String.format("Start %s @ %7d", motor.getDeviceName(), motor.getCurrentPosition()));
 
         motor.setTargetPosition(target);
@@ -106,6 +111,62 @@ public class FourWheelsDriveBot
     }
 
     public void driveStraightByDistance(int direction, float distance){
-
+        // distance (in mm) = revolution * pi * diameter (100 mm)
+        int target = (int)(distance / 3.1415 / 100 * DRIVING_MOTOR_TICK_COUNT);
+        double power = 0.3;
+        switch (direction){
+            case DIRECTION_FORWARD:
+                leftFront.setTargetPosition(leftFront.getCurrentPosition() + target);
+                rightFront.setTargetPosition(rightFront.getCurrentPosition() + target);
+                leftRear.setTargetPosition(leftRear.getCurrentPosition() + target);
+                rightRear.setTargetPosition(rightRear.getCurrentPosition() + target);
+                break;
+            case DIRECTION_BACKWARD:
+                leftFront.setTargetPosition(leftFront.getCurrentPosition() - target);
+                rightFront.setTargetPosition(rightFront.getCurrentPosition() - target);
+                leftRear.setTargetPosition(leftRear.getCurrentPosition() - target);
+                rightRear.setTargetPosition(rightRear.getCurrentPosition() - target);
+                break;
+            case DIRECTION_LEFT:
+                leftFront.setTargetPosition(leftFront.getCurrentPosition() + target);
+                rightFront.setTargetPosition(rightFront.getCurrentPosition() - target);
+                leftRear.setTargetPosition(leftRear.getCurrentPosition() - target);
+                rightRear.setTargetPosition(rightRear.getCurrentPosition() + target);
+                break;
+            case DIRECTION_RIGHT:
+                leftFront.setTargetPosition(leftFront.getCurrentPosition() - target);
+                rightFront.setTargetPosition(rightFront.getCurrentPosition() + target);
+                leftRear.setTargetPosition(leftRear.getCurrentPosition() + target);
+                rightRear.setTargetPosition(rightRear.getCurrentPosition() - target);
+                break;
+        }
+        leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftFront.setPower(power);
+        rightFront.setPower(power);
+        leftRear.setPower(power);
+        rightRear.setPower(power);
+        while (this.opMode.opModeIsActive() && leftFront.isBusy()) {
+            // Display it for the driver.
+            print(String.format("Target : %7d @ leftFront: %7d, rightFront:%7d, leftRear:%7d, rightRear:%7d",
+                    target,
+                    leftFront.getCurrentPosition(),
+                    rightFront.getCurrentPosition(),
+                    leftRear.getCurrentPosition(),
+                    rightRear.getCurrentPosition()));
+        }
+        // Stop all motion;
+        leftFront.setPower(0);
+        rightFront.setPower(0);
+        leftRear.setPower(0);
+        rightRear.setPower(0);
+        print(String.format("Arrive target : %7d @ leftFront: %7d, rightFront:%7d, leftRear:%7d, rightRear:%7d",
+                target,
+                leftFront.getCurrentPosition(),
+                rightFront.getCurrentPosition(),
+                leftRear.getCurrentPosition(),
+                rightRear.getCurrentPosition()));
     }
 }

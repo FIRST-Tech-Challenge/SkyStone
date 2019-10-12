@@ -61,17 +61,32 @@ public class VuforiaSensorSkystone {
     public Telemetry telemetry;
     public HardwareMap hardwareMap;
 
-    public VuforiaSensorSkystone(Telemetry telemetry, HardwareMap hardWareMap) {
-
+    public VuforiaSensorSkystone(Telemetry telemetry, HardwareMap hardwareMap) {
         this.telemetry = telemetry;
-        this.hardwareMap = hardWareMap;
+        this.hardwareMap = hardwareMap;
+    }
 
+    private OpenGLMatrix createMatrix(float x, float y, float z, float u, float v, float w) {
+        return OpenGLMatrix.translation(x, y, z).
+                multiplied(Orientation.getRotationMatrix(
+                        AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES, u, v, w));
+    }
+
+    private String formatMatrix(OpenGLMatrix matrix) {
+        return matrix.formatAsTransform();
+    }
+
+    public void activate() {
+        visionTargets.activate();
+    }
+
+    public void setUpVuforia() {
         // Setup parameters to create localizer
         parameters = new VuforiaLocalizer.Parameters(R.id.cameraMonitorViewId); // To remove the camera view from the screen, remove the R.id.cameraMonitorViewId
         parameters.vuforiaLicenseKey = "ATUNNu//////AAABmU6BPERoN0USgSQzxPQZ8JYg9RVnQhKO6YEHbNnOhkfL/iNrji3x9vzFkKsBgVzWgwH72G6eXpb3VCllKTrt1cD3gvQXZ48f+5EN43eYUQ3nuP3943NZB822XzV1djS3s6wDdaiS20PErO5K7lZUGyf9Z4Tb2TliOXv/ZoxUvwNQ/ndRjN344G0TAo8PUja0V3x2WKk+mCJavoZIgmOqgaitgmg5jim/aWBL2yk0a/QpqbP87KQfGn69zpisDBc98xdGPdSFj9ENkU9WTMem9UgnOFPgpdrHV5Zr5IpQH1jxLZIvwGuKOT97npm54kIvnJM0dzhBVA+s95JA3cxyac5ArHUYVtDePwlExuekZy9l"; // Insert your own key here
 
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-//        parameters.cameraName = hardWareMap.get(WebcamName.class, "Webcam 1");
+//        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+        parameters.cameraName = this.hardwareMap.get(WebcamName.class, "Webcam 1");
 
         parameters.useExtendedTracking = false;
         vuforiaLocalizer = ClassFactory.createVuforiaLocalizer(parameters);
@@ -160,20 +175,6 @@ public class VuforiaSensorSkystone {
         lastKnownLocationRearPerimeterTgt2 = createMatrix(0, 0, 0, 0, 0, 0);
     }
 
-    private OpenGLMatrix createMatrix(float x, float y, float z, float u, float v, float w) {
-        return OpenGLMatrix.translation(x, y, z).
-                multiplied(Orientation.getRotationMatrix(
-                        AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES, u, v, w));
-    }
-
-    private String formatMatrix(OpenGLMatrix matrix) {
-        return matrix.formatAsTransform();
-    }
-
-    public void activate() {
-        visionTargets.activate();
-    }
-
     public void loop() {
         // Ask the listener for the latest information on where the robot is
         OpenGLMatrix latestLocationSkystone = listenerSkystone.getUpdatedRobotLocation();
@@ -209,49 +210,90 @@ public class VuforiaSensorSkystone {
         // Send information about whether the target is visible, and where the robot is
         if (listenerSkystone.isVisible()) {
             telemetry.addData("Tracking", targetSkystone.getName());
-            telemetry.addData("position", lastKnownLocationSkystone);
+            reportLocation(lastKnownLocationSkystone);
         }
         if (listenerRedPerimeterTgt1.isVisible()) {
             telemetry.addData("Tracking", targetRedPerimeterTgt1.getName());
-            telemetry.addData("position", lastKnownLocationRedPerimeterTgt1);
+            reportLocation(lastKnownLocationRedPerimeterTgt1);
         }
         if (listenerRedPerimeterTgt2.isVisible()) {
             telemetry.addData("Tracking", targetRedPerimeterTgt2.getName());
-            telemetry.addData("position", lastKnownLocationRedPerimeterTgt2);
+            reportLocation(lastKnownLocationRedPerimeterTgt2);
         }
         if (listenerFrontPerimeterTgt1.isVisible()) {
             telemetry.addData("Tracking", targetFrontPerimeterTgt1.getName());
-            telemetry.addData("position", lastKnownLocationFrontPerimeterTgt1);
+            reportLocation(lastKnownLocationFrontPerimeterTgt1);
         }
         if (listenerFrontPerimeterTgt2.isVisible()) {
             telemetry.addData("Tracking", targetFrontPerimeterTgt2.getName());
-            telemetry.addData("position", lastKnownLocationFrontPerimeterTgt2);
+            reportLocation(lastKnownLocationFrontPerimeterTgt2);
         }
         if (listenerBluePerimeterTgt1.isVisible()) {
             telemetry.addData("Tracking", targetBluePerimeterTgt1.getName());
-            telemetry.addData("position", lastKnownLocationBluePerimeterTgt1);
+            reportLocation(lastKnownLocationBluePerimeterTgt1);
         }
         if (listenerBluePerimeterTgt2.isVisible()) {
             telemetry.addData("Tracking", targetBluePerimeterTgt2.getName());
-            telemetry.addData("position", lastKnownLocationBluePerimeterTgt2);
+            reportLocation(lastKnownLocationBluePerimeterTgt2);
         }
         if (listenerRearPerimeterTgt1.isVisible()) {
             telemetry.addData("Tracking", targetRearPerimeterTgt1.getName());
-            telemetry.addData("position", lastKnownLocationRearPerimeterTgt1);
+            reportLocation(lastKnownLocationRearPerimeterTgt1);
         }
         if (listenerRearPerimeterTgt2.isVisible()) {
             telemetry.addData("Tracking", targetRearPerimeterTgt2.getName());
-            telemetry.addData("position", lastKnownLocationRearPerimeterTgt2);
+            reportLocation(lastKnownLocationRearPerimeterTgt2);
         }
     }
 
-    public float[] getTranslation(OpenGLMatrix lastKnownLocation) {
+    public void reportLocation(OpenGLMatrix lastKnownLocation) {
+        float[] translation = getTrans(lastKnownLocation);
+        telemetry.addData("X pos", translation[0]);
+        telemetry.addData("Y pos", translation[1]);
+        telemetry.addData("Z pos", translation[2]);
+        float[] rotation = getRot(lastKnownLocation);
+        telemetry.addData("X rot", rotation[0]);
+        telemetry.addData("Y rot", rotation[1]);
+        telemetry.addData("Z rot", rotation[2]);
+    }
+
+    public float[] getTrans(OpenGLMatrix lastKnownLocation) {
         float[] result = {lastKnownLocation.get(0, 3), lastKnownLocation.get(2, 3), lastKnownLocation.get(1, 3)};
         return result;
     }
 
-    public float[] getRotation(OpenGLMatrix lastKnownLocation) {
+    public float getTransX(OpenGLMatrix lastKnownLocation) {
+        float[] trans = getTrans(lastKnownLocation);
+        return trans[0];
+    }
+
+    public float getTransY(OpenGLMatrix lastKnownLocation) {
+        float[] trans = getTrans(lastKnownLocation);
+        return trans[1];
+    }
+
+    public float getTransZ(OpenGLMatrix lastKnownLocation) {
+        float[] trans = getTrans(lastKnownLocation);
+        return trans[2];
+    }
+
+    public float[] getRot(OpenGLMatrix lastKnownLocation) {
         float[] result = {lastKnownLocation.get(1, 2), lastKnownLocation.get(1, 1), lastKnownLocation.get(0, 2)};
         return result;
+    }
+
+    public float getRotX(OpenGLMatrix lastKnownLocation) {
+        float[] rot = getRot(lastKnownLocation);
+        return rot[0];
+    }
+
+    public float getRotY(OpenGLMatrix lastKnownLocation) {
+        float[] rot = getRot(lastKnownLocation);
+        return rot[1];
+    }
+
+    public float getRotZ(OpenGLMatrix lastKnownLocation) {
+        float[] rot = getRot(lastKnownLocation);
+        return rot[2];
     }
 }

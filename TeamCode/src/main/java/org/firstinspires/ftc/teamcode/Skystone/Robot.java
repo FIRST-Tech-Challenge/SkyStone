@@ -245,9 +245,14 @@ public class Robot {
         bRight.setPower(bRpower);
     }
 
-    public void intake(double intakeLeftPower, double intakeRightPower) {
-        intakeLeft.setPower(intakeLeftPower);
-        intakeRight.setPower(intakeRightPower);
+    public void intake(boolean toggle) {
+        if (toggle) {
+            intakeLeft.setPower(1);
+            intakeRight.setPower(1);
+        } else {
+            intakeLeft.setPower(0);
+            intakeRight.setPower(0);
+        }
     }
 
     public void resetMotor(DcMotor motor) {

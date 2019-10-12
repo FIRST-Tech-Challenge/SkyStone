@@ -74,12 +74,17 @@ public class RealRobotMecanumWheels extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            if (move == -1) {
+            if ( move >= -1 && move < 0 ) {
                 leftFront.setDirection(DcMotor.Direction.REVERSE);
                 leftBack.setDirection(DcMotor.Direction.REVERSE);
                 rightFront.setDirection(DcMotor.Direction.FORWARD);
                 rightBack.setDirection(DcMotor.Direction.FORWARD);
-                
+                leftFront.setPower(move);
+                rightFront.setPower(move);
+                leftBack.setPower(move);
+                rightBack.setPower(move);
+            } else if ( move >0 && move <= 1) {
+
             }
 
             double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x)

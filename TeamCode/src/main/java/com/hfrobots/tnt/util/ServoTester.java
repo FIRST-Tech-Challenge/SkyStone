@@ -106,7 +106,7 @@ public class ServoTester extends OpMode {
 
         double newPosition = currentPosition + leftStickYPosition + microAdjust;
         newPosition = Range.clip(newPosition, 0, 1.0);
-        telemetry.addData("servo ",  "%s - %s", servoName, Double.toString(newPosition));
+        telemetry.addData("servo ",  "%s : %s", servoName, Double.toString(newPosition));
         updateTelemetry(telemetry);
 
         currentServo.setPosition(newPosition);

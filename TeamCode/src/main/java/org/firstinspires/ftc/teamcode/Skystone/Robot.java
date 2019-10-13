@@ -28,6 +28,7 @@ import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
 
 import java.util.Vector;
 
+import static org.firstinspires.ftc.teamcode.Skystone.MathFunctions.angleWrap;
 import static org.firstinspires.ftc.teamcode.Skystone.MathFunctions.lineCircleIntersection;
 
 public class Robot {
@@ -155,25 +156,22 @@ public class Robot {
     }
 
     public void absoluteTurn (double targetHeadingRadians, double turnSpeed){
-        targetHeadingRadians = Range.clip(targetHeadingRadians,-2*Math.PI + 0.01, 2 * Math.PI - 0.01);
+        targetHeadingRadians = angleWrap(targetHeadingRadians);
         this.setMotorMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        this.setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        this.setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         double startHeading = anglePos;
 
         while (linearOpMode.opModeIsActive()){
-            double power = turnSpeed * (targetHeadingRadians - anglePos) / (Math.abs(targetHeadingRadians - startHeading));
-            if (Math.abs(targetHeadingRadians - anglePos) < 0.0349066){
+            turnMovement = 0.77 * (targetHeadingRadians - anglePos) / (Math.abs(targetHeadingRadians - startHeading));
+            if (Math.abs(targetHeadingRadians - anglePos) < Math.toRadians(1)){
                 brakeRobot();
                 break;
             }
-            fLeft.setPower(power);
-            fRight.setPower(-power);
-            bLeft.setPower(power);
-            bRight.setPower(-power);
+            applyMove(1);
         }
         brakeRobot();
         linearOpMode.sleep(100);
-        this.setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        turnMovement = 0;
     }
 
     //normal use method default 2 second kill time
@@ -184,32 +182,28 @@ public class Robot {
     public void finalTurn(double targetHeading, long timeInMilli) {
         targetHeading = Range.clip(targetHeading, -179, 179);
         long startTime = SystemClock.elapsedRealtime();
-        this.setMotorMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        this.setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        this.setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         position = imu.getPosition();
-        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZXY, AngleUnit.DEGREES);
         double startHeading = angles.firstAngle;
-        double maxAngle = startHeading - targetHeading;
-        maxAngle = Math.abs(maxAngle);
         int sign;
         if (targetHeading > startHeading) {
             sign = 1;
         } else {
             sign = -1;
         }
-        if (maxAngle == 0) {
+        if (startHeading == targetHeading) {
             return;
         }
         while (linearOpMode.opModeIsActive()) {
-            angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-            double currentDeltatAngle = Math.abs(angles.firstAngle - startHeading);
-            double scaleFactor = currentDeltatAngle / maxAngle;
+            angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZXY, AngleUnit.DEGREES);
+            double scaleFactor = 0.9 * Math.abs((angles.firstAngle - startHeading) / (startHeading - targetHeading));
             double absolutePower = 1 - scaleFactor;
             if (absolutePower < 0.1) {
                 brakeRobot();
                 return;
             }
-            double power = 0.1 * absolutePower * sign;
+            double power = absolutePower * sign;
             if (scaleFactor > 1 || ((SystemClock.elapsedRealtime() - startTime) > timeInMilli)) {
                 break;
             }
@@ -220,7 +214,6 @@ public class Robot {
         }
         brakeRobot();
         linearOpMode.sleep(100);
-        this.setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     public void allWheelDrive(double fLpower, double fRpower, double bLpower, double bRpower) {
@@ -427,7 +420,8 @@ public class Robot {
         }
 
         goToPoint(followMe.x, followMe.y, followMe.moveSpeed, followMe.turnSpeed, followAngle);
-        if ((distanceToEnd < 1)) {
+
+        if ((distanceToEnd < 0.25)) {
             return false;
         }
 
@@ -563,12 +557,15 @@ public class Robot {
 
     private void applyMove(double decelerationScaleFactor) {
 
+        this.setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        // convert movements to motor powers
         double fLeftPower = (yMovement * 1.414 + turnMovement + xMovement);
         double fRightPower = (-yMovement * 1.414 - turnMovement + xMovement);
         double bLeftPower = (-yMovement * 1.414 + turnMovement + xMovement);
         double bRightPower = (yMovement * 1.414 - turnMovement + xMovement);
 
-        //op scaling
+        //scale all powers to below 1
         double maxPower = Math.abs(fLeftPower);
         if (Math.abs(bLeftPower) > maxPower) {
             maxPower = Math.abs(bLeftPower);
@@ -579,46 +576,39 @@ public class Robot {
         if (Math.abs(fRightPower) > maxPower) {
             maxPower = Math.abs(fRightPower);
         }
-
         double scaleDownAmount = 1.0;
         if (maxPower > 1.0) {
             scaleDownAmount = 1.0 / maxPower;
         }
-
         fLeftPower *= scaleDownAmount;
         fRightPower *= scaleDownAmount;
         bLeftPower *= scaleDownAmount;
         bRightPower *= scaleDownAmount;
 
-        if (fLeftPower < 0.1 && fRightPower < 0.1 && bLeftPower < 0.1 && bRightPower < 0.1) {
-            brakeRobot();
-            return;
-        }
-
+        // apply movement with decelerationScaleFactor
         fLeft.setPower(fLeftPower * decelerationScaleFactor);
         fRight.setPower(fRightPower * decelerationScaleFactor);
         bLeft.setPower(bLeftPower * decelerationScaleFactor);
         bRight.setPower(bRightPower * decelerationScaleFactor);
+
+        telemetry.addLine("deceleration: " + decelerationScaleFactor);
     }
 
 
     public void moveToPoint(double x, double y, double moveSpeed, double turnSpeed, double optimalAngle) {
-
         while (linearOpMode.opModeIsActive()) {
-
             double xPos = robotPos.x;
             double yPos = robotPos.y;
             double anglePos = this.anglePos;
 
             double distanceToTarget = Math.hypot(x - xPos, y - yPos);
 
-            if (distanceToTarget < 1) {
+            if (distanceToTarget < 3.5) {
                 brakeRobot();
                 break;
             }
 
             double absoluteAngleToTarget = Math.atan2(y - yPos, x - xPos);
-
             double relativeAngleToPoint = MathFunctions.angleWrap(absoluteAngleToTarget - anglePos);
             double relativeXToPoint = Math.cos(relativeAngleToPoint) * distanceToTarget;
             double relativeYToPoint = Math.sin(relativeAngleToPoint) * distanceToTarget;
@@ -632,30 +622,30 @@ public class Robot {
             turnMovement = Range.clip(relativeTurnAngle / Math.toRadians(30), -1, 1) * turnSpeed;
 
             double decelerationScaleFactor = Range.clip(distanceToTarget/5,-1,1);
+
             applyMove(decelerationScaleFactor);
         }
     }
-    public VuforiaLocalizer initVuforia(String VUFORIA_KEY) {
+
+    public String detectVuforia(String VUFORIA_KEY) {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 
         VuforiaLocalizer.Parameters paramaters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
         paramaters.vuforiaLicenseKey = VUFORIA_KEY;
         paramaters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
 
-        return ClassFactory.getInstance().createVuforia(paramaters);
-    }
-    public int detectVuforia(VuforiaLocalizer vuforia) {
+       VuforiaLocalizer vuforia = ClassFactory.getInstance().createVuforia(paramaters);
 
         OpenGLMatrix lastLocation = new OpenGLMatrix();
 
         VuforiaTrackables targetsSkyStone = vuforia.loadTrackablesFromAsset("Skystone");
-
         VuforiaTrackable skyStoneTarget = targetsSkyStone.get(0);
+        paramaters.vuforiaLicenseKey = VUFORIA_KEY;
+        paramaters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
 
         final float mmPerInch = 25.4f;
 
         targetsSkyStone.activate();
-        boolean detected = false;
         int num = 0;
         long startTime = SystemClock.elapsedRealtime();
 
@@ -671,33 +661,34 @@ public class Robot {
                 VectorF translation = lastLocation.getTranslation();
 
                 if (translation.get(0) / mmPerInch > 5) {
-                    telemetry.addData("Position: ", "Left");
+                    telemetry.addData("Position: ", "right");
                     telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
                             translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
                     telemetry.update();
-                    return 1;
+                    return "right";
 
                 } else if (translation.get(0) / mmPerInch < -5) {
-                    telemetry.addData("Position: ", "Right");
+                    telemetry.addData("Position: ", "left");
                     telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
                             translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
-                    return 2;
+                    return "left";
 
                 } else {
                     telemetry.addData("Position: ", "Center");
                     telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
                             translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
                     telemetry.update();
-                    return 3;
+                    return "center";
                 }
             }
-            if (SystemClock.elapsedRealtime() - startTime > 2000) {
+            if (SystemClock.elapsedRealtime() - startTime > 5000) {
                 telemetry.addLine("No detection");
                 telemetry.update();
-                return 2;
+                return "none";
             }
         }
 
-        return 2;
+        return "none";
     }
+
 }

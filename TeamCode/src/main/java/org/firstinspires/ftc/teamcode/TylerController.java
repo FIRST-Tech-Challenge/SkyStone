@@ -6,6 +6,8 @@ import com.qualcomm.ftccommon.SoundPlayer;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.util.Range;
 
@@ -32,12 +34,19 @@ public class TylerController extends OpMode {
     private DcMotor motorFrontLeft;
     private DcMotor motorFrontRight;
 
+    private Servo crab;
+
+    private DigitalChannel digitalTouch;  // Hardware Device Object
+
+
     // Hack stuff.
     private boolean useMotors = true;
     private boolean useEncoders = true;
     private boolean useArm = true; // HACK
+    private boolean useCrab = true;
     private boolean useLifter = true; // HACL
     private boolean useDropper = true;
+    private boolean useTouch = true;
     private boolean useRange = true;
 
     //Movement State
@@ -50,6 +59,9 @@ public class TylerController extends OpMode {
     private int shoulderTarget;
     private int shoulderStartPosition = 0;
 
+   // Claw state
+    private double angleHand;
+
     //Drive State
     private boolean switchFront = false;
 
@@ -58,8 +70,6 @@ public class TylerController extends OpMode {
     private DistanceSensor rangeBack;
     private DistanceSensor rangeLeft;
     private DistanceSensor rangeRight;
-
-    //
 
     /**
      * Code to run ONCE when the driver hits INIT
@@ -96,6 +106,30 @@ public class TylerController extends OpMode {
             }
         }
 
+        if (useCrab) {
+            crab = hardwareMap.get(Servo.class, "servoCrab");
+
+            if (crab == null){
+                telemetry.addData("Crab", "You forgot to set up crab, set up servoCrab");
+                useCrab = false;
+            }
+        }
+
+        if (useTouch) {
+            try {
+                digitalTouch = hardwareMap.get(DigitalChannel.class, "sensorTouch");
+            } catch (Exception e) {
+                telemetry.addData("Touch", "exception on init: " + e.toString());
+                digitalTouch = null;
+            }
+
+            if (digitalTouch == null) {
+                telemetry.addData("Touch", "You forgot to set up sensorTouch, set up ");
+                useTouch = false;
+            }else {
+                digitalTouch.setMode(DigitalChannel.Mode.INPUT);
+            }
+          
         if (useRange) {
             //initialize the four lidar sensors
             rangeFront = hardwareMap.get(DistanceSensor.class, "range_front");
@@ -109,8 +143,8 @@ public class TylerController extends OpMode {
             bruhSoundID = myApp.getResources().getIdentifier("bruh", "raw", myApp.getPackageName());
             oofSoundID = myApp.getResources().getIdentifier("oof", "raw", myApp.getPackageName());
         }
-
     }
+
 
 
     /**
@@ -187,7 +221,6 @@ public class TylerController extends OpMode {
             }
         }
 
-
         if (useMotors) {
             // Switch the directions for driving!
             if (gamepad1.b) {
@@ -243,15 +276,44 @@ public class TylerController extends OpMode {
                 //telemetry.addData("Motor", "SwitchFront ;%b", switchFront);
             }
         }
+
+        if (useCrab) {
+            if (gamepad1.b) {
+                dropLock();
+            }
+            if (gamepad1.a) {
+                raiseLock();
+            }
+        }
+
+        if (useTouch) {
+            if (digitalTouch.getState() == false) {
+                telemetry.addData("Digital Touch", "we touching");
+            }
+        }
+      
+        telemetry.update();
+    }
+            
+    protected void sleep(long milliseconds) {
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 
-        protected void sleep ( long milliseconds){
-            try {
-                Thread.sleep(milliseconds);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
+    public void dropLock() {
+            if (useCrab) {
+                angleHand = 0.0;
             }
+            crab.setPosition(angleHand);
+    }
 
-            telemetry.update();
+    public void raiseLock() {
+        if (useCrab) {
+            angleHand = 1.0;
         }
+        crab.setPosition(angleHand);
+    }
 }

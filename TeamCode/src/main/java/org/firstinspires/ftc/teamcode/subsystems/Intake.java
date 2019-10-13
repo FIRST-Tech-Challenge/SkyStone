@@ -1,43 +1,34 @@
 package org.firstinspires.ftc.teamcode.subsystems;
+
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorController;
+
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.firstinspires.ftc.teamcode.subsystems.RobotMap.IntakeMotor;
 
 public class Intake {
-    DcMotor leftIntake;
-    DcMotor rightIntake;
+    HashMap<RobotMap.IntakeMotor, DcMotor> motors;
 
-    public Intake(DcMotor leftIntake, DcMotor rightIntake) {
-        this.leftIntake = leftIntake;
-        this.rightIntake = rightIntake;
+    public Intake(HardwareMap hardwareMap, HashMap<IntakeMotor, String> motorsNames) {
+        motors = new HashMap<>();
+        for (Map.Entry<IntakeMotor, String> motorName : motorsNames.entrySet()) {
+            motors.put(motorName.getKey(), hardwareMap.dcMotor.get(motorName.getValue()));
+        }
     }
 
-    public DcMotor getLeftIntake() {
-        return leftIntake;
+    public void setMotors(HashMap<IntakeMotor, Double> powers) {
+        for (Map.Entry<IntakeMotor, Double> power : powers.entrySet()) {
+            motors.get(power.getKey()).setPower(power.getValue());
+        }
     }
 
-    public void setLeftIntake(DcMotor leftIntake) {
-        this.leftIntake = leftIntake;
-    }
+    public void runIntake(final double power) {
+        setMotors(new HashMap<IntakeMotor, Double>() {{
+            put(IntakeMotor.LEFT, power);
 
-    public DcMotor getRightIntake() {
-        return rightIntake;
-    }
-
-    public void setRightIntake(DcMotor rightIntake) {
-        this.rightIntake = rightIntake;
-    }
-
-    public void setLeftIntakePower(double power) {
-        leftIntake.setPower(power);
-    }
-
-    public void setRightIntakePower(double power) {
-        rightIntake.setPower(power);
-    }
-
-    public void setPower(double power) {
-        setLeftIntakePower(power);
-        setRightIntakePower(-power);
+        }});
     }
 }

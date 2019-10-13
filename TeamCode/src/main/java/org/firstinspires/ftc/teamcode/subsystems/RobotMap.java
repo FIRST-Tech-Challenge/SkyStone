@@ -9,4 +9,7 @@ public class RobotMap {
     {
         MAIN
     }
+    public enum IntakeMotor{
+        LEFT,RIGHT
+    }
 }

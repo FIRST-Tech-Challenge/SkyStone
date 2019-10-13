@@ -4,18 +4,18 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 public class Controller {
     Gamepad controller;
-    double leftStickXMod;
+    double leftStickXMod = 1;
     double leftStickYMod = -1;
-    double rightStickXMod;
+    double rightStickXMod = 1;
     double rightStickYMod = -1;
-    boolean aMod;
-    boolean bMod;
-    boolean xMod;
-    boolean yMod;
-    boolean rightBumperMod;
-    boolean leftBumperMod;
-    double rightTriggerMod;
-    double leftTriggerMod;
+    boolean aMod = true;
+    boolean bMod = true;
+    boolean xMod = true;
+    boolean yMod = true;
+    boolean rightBumperMod = true;
+    boolean leftBumperMod = true;
+    double rightTriggerMod = 1.0;
+    double leftTriggerMod = 1.0;
 
     public Controller(Gamepad controller) {
         this.controller = controller;

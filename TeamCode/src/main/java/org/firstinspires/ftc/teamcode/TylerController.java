@@ -1,11 +1,17 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.content.Context;
+
+import com.qualcomm.ftccommon.SoundPlayer;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 
 /**
@@ -13,6 +19,14 @@ import com.qualcomm.robotcore.util.Range;
  */
 @TeleOp(name="Tyler TeleOp", group="AAA")
 public class TylerController extends OpMode {
+
+
+
+    //is sound playing?
+    boolean soundPlaying = false;
+
+    int bruhSoundID = -1;
+    int oofSoundID = -1;
 
     // Motors connected to the hub.
     private DcMotor motorBackLeft;
@@ -33,6 +47,7 @@ public class TylerController extends OpMode {
     private boolean useLifter = true; // HACL
     private boolean useDropper = true;
     private boolean useTouch = true;
+    private boolean useRange = true;
 
     //Movement State
     private int armState;
@@ -44,18 +59,25 @@ public class TylerController extends OpMode {
     private int shoulderTarget;
     private int shoulderStartPosition = 0;
 
-
+   // Claw state
     private double angleHand;
 
     //Drive State
     private boolean switchFront = false;
 
+    //distance sensors
+    private DistanceSensor rangeFront;
+    private DistanceSensor rangeBack;
+    private DistanceSensor rangeLeft;
+    private DistanceSensor rangeRight;
 
     /**
      * Code to run ONCE when the driver hits INIT
      */
     @Override
     public void init() {
+
+
 
         // Initialize the motors.
         if (useMotors) {
@@ -107,8 +129,20 @@ public class TylerController extends OpMode {
             }else {
                 digitalTouch.setMode(DigitalChannel.Mode.INPUT);
             }
-        }
+          
+        if (useRange) {
+            //initialize the four lidar sensors
+            rangeFront = hardwareMap.get(DistanceSensor.class, "range_front");
+            rangeBack = hardwareMap.get(DistanceSensor.class, "range_back");
+            rangeLeft = hardwareMap.get(DistanceSensor.class, "range_left");
+            rangeRight = hardwareMap.get(DistanceSensor.class, "range_right");
 
+            Context myApp = hardwareMap.appContext;
+
+            //load sound file
+            bruhSoundID = myApp.getResources().getIdentifier("bruh", "raw", myApp.getPackageName());
+            oofSoundID = myApp.getResources().getIdentifier("oof", "raw", myApp.getPackageName());
+        }
     }
 
 
@@ -140,6 +174,52 @@ public class TylerController extends OpMode {
      */
     @Override
     public void loop() {
+
+        if (useRange) {
+
+            Context myApp = hardwareMap.appContext;
+            //getting the ranges from the lidar sensors on to the phones
+            telemetry.addData("range: f,b", String.format("%.01f, %.01f ", rangeFront.getDistance(DistanceUnit.CM), rangeBack.getDistance(DistanceUnit.CM)));
+            telemetry.addData("range: r,l", String.format("%.01f, %.01f", rangeLeft.getDistance(DistanceUnit.CM), rangeRight.getDistance(DistanceUnit.CM)));
+
+            if (rangeFront.getDistance(DistanceUnit.CM) < 5) {
+
+                if (bruhSoundID != 0) {
+
+                    SoundPlayer.PlaySoundParams params = new SoundPlayer.PlaySoundParams();
+
+                    // Signal that the sound is now playing.
+                    soundPlaying = true;
+
+                    // Start playing, and also Create a callback that will clear the playing flag when the sound is complete.
+
+                    SoundPlayer.getInstance().startPlaying(myApp, bruhSoundID, params, null,
+                            new Runnable() {
+                                public void run() {
+                                    soundPlaying = false;
+                                }
+                            });
+                }
+            } else if (rangeBack.getDistance(DistanceUnit.CM) < 5) {
+
+                if (oofSoundID != 0) {
+
+                    SoundPlayer.PlaySoundParams params = new SoundPlayer.PlaySoundParams();
+
+                    // Signal that the sound is now playing.
+                    soundPlaying = true;
+
+                    // Start playing, and also Create a callback that will clear the playing flag when the sound is complete.
+
+                    SoundPlayer.getInstance().startPlaying(myApp, oofSoundID, params, null,
+                            new Runnable() {
+                                public void run() {
+                                    soundPlaying = false;
+                                }
+                            });
+                }
+            }
+        }
 
         if (useMotors) {
             // Switch the directions for driving!
@@ -191,11 +271,9 @@ public class TylerController extends OpMode {
                 motorBackRight.setPower(rightBackPower);
                 motorFrontLeft.setPower(leftFrontPower);
                 motorFrontRight.setPower(rightFrontPower);
-                telemetry.addData("Motor", "full left-back:%02.1f, %d", leftBackPower, motorBackLeft.getCurrentPosition());
-                telemetry.addData("Motor", "full rght-back:%02.1f, %d", rightBackPower, motorBackRight.getCurrentPosition());
-                telemetry.addData("Motor", "full left-frnt:%02.1f, %d", leftFrontPower, motorFrontLeft.getCurrentPosition());
-                telemetry.addData("Motor", "full rght-frnt:%02.1f, %d", rightFrontPower, motorFrontRight.getCurrentPosition());
-                telemetry.addData("Motor", "SwitchFront ;%b", switchFront);
+                telemetry.addData("Motor: f,b", "full left-back:%02.1f, (%d), rigt-back: %02.1f, (%d)", leftBackPower, motorBackLeft.getCurrentPosition(), rightBackPower, motorBackRight.getCurrentPosition());
+                telemetry.addData("Motor: l,r", "full left-frnt:%02.1f, (%d), rigt-frnt: %02.1f, (%d)", leftFrontPower, motorFrontLeft.getCurrentPosition(), rightFrontPower, motorFrontRight.getCurrentPosition());
+                //telemetry.addData("Motor", "SwitchFront ;%b", switchFront);
             }
         }
 
@@ -213,8 +291,10 @@ public class TylerController extends OpMode {
                 telemetry.addData("Digital Touch", "we touching");
             }
         }
+      
+        telemetry.update();
     }
-
+            
     protected void sleep(long milliseconds) {
         try {
             Thread.sleep(milliseconds);
@@ -237,5 +317,3 @@ public class TylerController extends OpMode {
         crab.setPosition(angleHand);
     }
 }
-
-

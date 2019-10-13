@@ -42,10 +42,10 @@ public class MecanumHardwareMap
         driveRearRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         driveRearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        driveFrontRight.setDirection(DcMotorSimple.Direction.FORWARD);
-        driveFrontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        driveRearRight.setDirection(DcMotorSimple.Direction.FORWARD);
-        driveRearLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        driveFrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        driveFrontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        driveRearRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        driveRearLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
         /**
         servoBuildClawLeft = hwMap.get(Servo.class, "servoBuildClawLeft");

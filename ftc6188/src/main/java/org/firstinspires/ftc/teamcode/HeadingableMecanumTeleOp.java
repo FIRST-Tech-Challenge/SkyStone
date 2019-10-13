@@ -9,7 +9,7 @@ import org.firstinspires.ftc.robotlib.hardwaremap.HeadingableMecanumHardwareMap;
 @TeleOp (name="Headingable Mecanum TeleOp", group="Headingable")
 public class HeadingableMecanumTeleOp extends OpMode
 {
-    private static final double HEADING_COEFF = 0.005;
+    private static final double HEADING_COEFF = 0.01;
     private HeadingableMecanumHardwareMap robotHardware;
 
     private double desiredHeading = 0;
@@ -64,9 +64,11 @@ public class HeadingableMecanumTeleOp extends OpMode
         robotHardware.drivetrain.updateHeading();
 
         telemetry.addData("Status", "Loop: " + rotationTimer.toString());
+        telemetry.addData("Headingless", robotHardware.drivetrain.getExtrinsic());
         telemetry.addData("Course", course);
         telemetry.addData("Velocity", velocity);
         telemetry.addData("Rotation", -gamepad1.left_stick_x);
+        telemetry.addData("Current Heading", robotHardware.controller.getSensorValue());
         telemetry.addData("Desired Heading", desiredHeading);
         telemetry.addData("Extrinsic Offset", robotHardware.drivetrain.getExtrinsicOffset());
         telemetry.update();

@@ -7,7 +7,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveImpl;
 import org.westtorrancerobotics.lib.MecanumController;
 import org.westtorrancerobotics.lib.MecanumDrive;
@@ -18,6 +20,7 @@ public class ColombiaMecanumTeleop extends OpMode {
     private MecanumController driveTrain;
     ColorSensor sensorColor;
     DistanceSensor sensorDistance;
+    Servo servoTest;
     final double SCALE_FACTOR = 255;
     float hsvValues[] = {0F, 0F, 0F};
 
@@ -28,6 +31,8 @@ public class ColombiaMecanumTeleop extends OpMode {
 
         sensorColor = hardwareMap.get(ColorSensor.class, "sensor_color_distance");
         sensorDistance = hardwareMap.get(DistanceSensor.class, "sensor_color_distance");
+
+        servoTest = hardwareMap.get(Servo.class, "armTune");
 
 
         DcMotorEx leftFront = hardwareMap.get(DcMotorEx.class, "left1");
@@ -68,9 +73,17 @@ public class ColombiaMecanumTeleop extends OpMode {
         telemetry.addData("Red  ", sensorColor.red());
         telemetry.addData("Green", sensorColor.green());
         telemetry.addData("Blue ", sensorColor.blue());
+        telemetry.addData("Distance ", sensorDistance.getDistance(DistanceUnit.CM));
         telemetry.addData("Hue", hsvValues[0]);
         telemetry.addData("Saturation", hsvValues[1]);
         telemetry.addData("Value", hsvValues[2]);
+
+        if (sensorColor.red() < 20 && sensorColor.green() < 20 && sensorColor.blue() < 20) {
+            servoTest.setPosition(0.5);
+        }
+        else{
+            servoTest.setPosition(0);
+        }
 
     }
 

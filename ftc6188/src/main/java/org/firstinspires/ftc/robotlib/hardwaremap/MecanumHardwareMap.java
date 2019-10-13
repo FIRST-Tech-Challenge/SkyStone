@@ -14,6 +14,8 @@ public class MecanumHardwareMap
     private DcMotor driveRearRight;
     private DcMotor driveRearLeft;
 
+    public DcMotor armParallelLift;
+
     public Servo servoBuildClawLeft;
     public Servo servoBuildClawRight;
 
@@ -46,6 +48,13 @@ public class MecanumHardwareMap
         driveFrontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         driveRearRight.setDirection(DcMotorSimple.Direction.REVERSE);
         driveRearLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        /**
+        armParallelLift = hwMap.get(DcMotor.class, "armParallelLift");
+        armParallelLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        armParallelLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        armParallelLift.setDirection(DcMotorSimple.Direction.FORWARD);
+         **/
 
         /**
         servoBuildClawLeft = hwMap.get(Servo.class, "servoBuildClawLeft");

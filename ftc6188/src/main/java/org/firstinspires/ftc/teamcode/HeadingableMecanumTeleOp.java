@@ -36,6 +36,8 @@ public class HeadingableMecanumTeleOp extends OpMode
         double course = Math.atan2(-gamepad1.right_stick_y, gamepad1.right_stick_x) - Math.PI/2;
         double velocity = Math.hypot(gamepad1.right_stick_x, gamepad1.right_stick_y);
 
+        robotHardware.drivetrain.halfPowerInput(gamepad1.right_stick_button);
+
         desiredHeading += -gamepad1.left_stick_x*rotationTimer.time()*HEADING_COEFF;
         rotationTimer.reset();
 

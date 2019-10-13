@@ -26,11 +26,6 @@ public class TestVuforia extends AutoBase {
     public void runOpMode() {
 
         // init vuforia
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        VuforiaLocalizer.Parameters paramaters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-        paramaters.vuforiaLicenseKey = VUFORIA_KEY;
-        paramaters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-        VuforiaLocalizer vuforia = ClassFactory.getInstance().createVuforia(paramaters);
 
         Robot robot = new Robot(this.hardwareMap, this.telemetry, this);
 
@@ -44,30 +39,30 @@ public class TestVuforia extends AutoBase {
 
         telemetry.addLine("Got into runopmode");
 
-        robot.moveToPoint(10,0,1,1,Math.toRadians(0));
-        robot.finalTurn(0);
+        robot.moveToPoint(11 ,0,0.5,0.5,Math.toRadians(0));
+        robot.absoluteTurn(Math.toRadians(0),0.5);
 
         telemetry.addLine("done with move");
         telemetry.update();
 
         telemetry.addLine("detecting vuforia");
-        int position = robot.detectVuforia(vuforia);
+        String position = robot.detectVuforia(VUFORIA_KEY);
 
         telemetry.addLine("go to point");
-        if (position==1) {
-            robot.moveToPoint(15, -4, 0.5, 0.5, Math.toRadians(0));
-        } else if (position == 2){
-            robot.moveToPoint(15,0,0.5,0.5,Math.toRadians(0));
-        } else if (position == 3) {
-            robot.moveToPoint(15,4,0.5,0.5,Math.toRadians(0));
+        if (position.equals("left")) {
+            robot.moveToPoint(14, -3, 0.5, 0.5, Math.toRadians(0));
+        } else if (position.equals("right")){
+            robot.moveToPoint(14,3,0.5,0.5,Math.toRadians(0));
+        } else if (position.equals("none") || position.equals("center")) {
+             robot.moveToPoint(14,0,0.5,0.5,Math.toRadians(0));
         }
 
-        telemetry.addLine("go back");
-        robot.moveToPoint(-6,0,0.5,0.5, Math.toRadians(180));
-        robot.finalTurn(Math.toRadians(90));
+//        telemetry.addLine("go back");
+//        robot.moveToPoint(7,0,0.5,0.5, Math.toRadians(180));
+//        robot.finalTurn(Math.toRadians(90));
 
-        telemetry.addLine("go under lander");
-        PathPoints goUnderLander = new PathPoints(underLander, 9);
-        robot.moveFollowCurve(goUnderLander.targetPoints);
+//        telemetry.addLine("go under lander");
+//        PathPoints goUnderLander = new PathPoints(underLander, 9);
+//        robot.moveFollowCurve(goUnderLander.targetPoints);
     }
 }

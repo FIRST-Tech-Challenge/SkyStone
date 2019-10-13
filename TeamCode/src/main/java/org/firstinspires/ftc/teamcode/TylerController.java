@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 
@@ -18,12 +20,19 @@ public class TylerController extends OpMode {
     private DcMotor motorFrontLeft;
     private DcMotor motorFrontRight;
 
+    private Servo crab;
+
+    private DigitalChannel digitalTouch;  // Hardware Device Object
+
+
     // Hack stuff.
     private boolean useMotors = true;
     private boolean useEncoders = true;
     private boolean useArm = true; // HACK
+    private boolean useCrab = true;
     private boolean useLifter = true; // HACL
     private boolean useDropper = true;
+    private boolean useTouch = true;
 
     //Movement State
     private int armState;
@@ -34,6 +43,9 @@ public class TylerController extends OpMode {
     private int lifterStartPosition = 0;
     private int shoulderTarget;
     private int shoulderStartPosition = 0;
+
+
+    private double angleHand;
 
     //Drive State
     private boolean switchFront = false;
@@ -72,7 +84,33 @@ public class TylerController extends OpMode {
             }
         }
 
+        if (useCrab) {
+            crab = hardwareMap.get(Servo.class, "servoCrab");
+
+            if (crab == null){
+                telemetry.addData("Crab", "You forgot to set up crab, set up servoCrab");
+                useCrab = false;
+            }
+        }
+
+        if (useTouch) {
+            try {
+                digitalTouch = hardwareMap.get(DigitalChannel.class, "sensorTouch");
+            } catch (Exception e) {
+                telemetry.addData("Touch", "exception on init: " + e.toString());
+                digitalTouch = null;
+            }
+
+            if (digitalTouch == null) {
+                telemetry.addData("Touch", "You forgot to set up sensorTouch, set up ");
+                useTouch = false;
+            }else {
+                digitalTouch.setMode(DigitalChannel.Mode.INPUT);
+            }
+        }
+
     }
+
 
 
     /**
@@ -102,7 +140,6 @@ public class TylerController extends OpMode {
      */
     @Override
     public void loop() {
-
 
         if (useMotors) {
             // Switch the directions for driving!
@@ -161,15 +198,44 @@ public class TylerController extends OpMode {
                 telemetry.addData("Motor", "SwitchFront ;%b", switchFront);
             }
         }
-    }
 
-            protected void sleep (long milliseconds){
-            try {
-                Thread.sleep(milliseconds);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
+        if (useCrab) {
+            if (gamepad1.b) {
+                dropLock();
             }
+            if (gamepad1.a) {
+                raiseLock();
+            }
+        }
 
-
+        if (useTouch) {
+            if (digitalTouch.getState() == false) {
+                telemetry.addData("Digital Touch", "we touching");
+            }
         }
     }
+
+    protected void sleep(long milliseconds) {
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    public void dropLock() {
+            if (useCrab) {
+                angleHand = 0.0;
+            }
+            crab.setPosition(angleHand);
+    }
+
+    public void raiseLock() {
+        if (useCrab) {
+            angleHand = 1.0;
+        }
+        crab.setPosition(angleHand);
+    }
+}
+
+

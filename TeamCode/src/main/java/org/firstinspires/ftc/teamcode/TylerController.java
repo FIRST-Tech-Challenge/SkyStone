@@ -77,8 +77,6 @@ public class TylerController extends OpMode {
     @Override
     public void init() {
 
-
-
         // Initialize the motors.
         if (useMotors) {
             motorBackLeft = hardwareMap.get(DcMotor.class, "motor0");
@@ -126,9 +124,10 @@ public class TylerController extends OpMode {
             if (digitalTouch == null) {
                 telemetry.addData("Touch", "You forgot to set up sensorTouch, set up ");
                 useTouch = false;
-            }else {
+            } else {
                 digitalTouch.setMode(DigitalChannel.Mode.INPUT);
             }
+        }
           
         if (useRange) {
             //initialize the four lidar sensors

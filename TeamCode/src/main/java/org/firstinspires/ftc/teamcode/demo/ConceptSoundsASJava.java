@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.demo;
 
 import com.qualcomm.ftccommon.SoundPlayer;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -91,7 +91,7 @@ public class ConceptSoundsASJava extends LinearOpMode {
             bruh = SoundPlayer.getInstance().preload(hardwareMap.appContext, bruhSoundID);
 
         // Display sound status
-        telemetry.addData("joe", bruh ? "Found" : "Not found\n Add bruh.wav to /src/main/res/raw" );
+        telemetry.addData("SafetyPatrol", bruh ? "Found" : "Not found\n Add bruh.wav to /src/main/res/raw" );
 
         // Wait for the game to start (driver presses PLAY)
         telemetry.addData(">", "Press Start to glimpse nirvana");

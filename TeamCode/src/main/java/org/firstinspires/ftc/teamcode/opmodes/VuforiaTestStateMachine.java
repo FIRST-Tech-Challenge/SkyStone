@@ -11,6 +11,11 @@ public class VuforiaTestStateMachine extends BaseStateMachine {
     @Override
     public void init() {
         super.init();
+        /*
+            targetsSkyStone = vuforia.loadTrackablesFromAsset("Skystone");
+            stoneTarget = targetsSkyStone.get(0);
+            stoneTarget.setName("Stone Target");
+            */
     }
 
     @Override

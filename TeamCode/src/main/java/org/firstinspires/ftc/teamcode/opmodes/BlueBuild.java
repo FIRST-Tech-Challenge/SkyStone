@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.opmodes;
 
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -15,7 +16,7 @@ import org.firstinspires.ftc.teamcode.components.Vuforia;
 
 import java.util.EnumMap;
 
-@TeleOp(name = "Vuforia", group="Autonomous")
+@Autonomous(name = "BlueBuild", group="Autonomous")
 public class BlueBuild extends BaseStateMachine {
     public enum State {
         STATE_INITIAL,
@@ -41,13 +42,8 @@ public class BlueBuild extends BaseStateMachine {
 
     @Override
     public void init() {
-        vuforia = new Vuforia(hardwareMap, Vuforia.CameraChoice.PHONE_BACK);
+        super.init();
         skystone = vuforia.targetsSkyStone.get(0);
-        EnumMap<DriveSystem.MotorNames, DcMotor> driveMap = new EnumMap<>(DriveSystem.MotorNames.class);
-        for(DriveSystem.MotorNames name : DriveSystem.MotorNames.values()){
-            driveMap.put(name,hardwareMap.get(DcMotor.class, name.toString()));
-        }
-        driveSystem = new DriveSystem(driveMap, hardwareMap.get(BNO055IMU.class, "imu"));
         this.msStuckDetectLoop = 15000;
         newState(State.STATE_INITIAL);
     }

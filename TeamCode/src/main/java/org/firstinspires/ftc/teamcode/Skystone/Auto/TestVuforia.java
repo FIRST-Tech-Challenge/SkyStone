@@ -39,24 +39,29 @@ public class TestVuforia extends AutoBase {
 
         telemetry.addLine("Got into runopmode");
 
-        robot.moveToPoint(11 ,0,0.5,0.5,Math.toRadians(0));
+        robot.moveToPoint(12 ,0,1,1,Math.toRadians(0));
+        robot.absoluteTurn(0, 0.7);
         robot.absoluteTurn(Math.toRadians(0),0.5);
 
         telemetry.addLine("done with move");
         telemetry.update();
 
-        telemetry.addLine("detecting vuforia");
-        String position = robot.detectVuforia(VUFORIA_KEY);
-
         telemetry.addLine("go to point");
-        if (position.equals("left")) {
-            robot.moveToPoint(14, -3, 0.5, 0.5, Math.toRadians(0));
-        } else if (position.equals("right")){
-            robot.moveToPoint(14,3,0.5,0.5,Math.toRadians(0));
-        } else if (position.equals("none") || position.equals("center")) {
-             robot.moveToPoint(14,0,0.5,0.5,Math.toRadians(0));
+        int position = 0;
+        String str1ng = robot.detectTensorflow();
+        robot.intakeRight.setPower(1);
+        robot.intakeLeft.setPower(1);
+
+        if (str1ng.equals("right")) {
+            robot.moveToPoint(39, 9, 0.45, 0.5, Math.toRadians(0));
+        } else if (str1ng.equals("left")){
+            robot.moveToPoint(39, -9, 0.45, 0.5, Math.toRadians(0));
+        } else {
+            robot.moveToPoint(39, 0, 0.45, 0.5, Math.toRadians(0));
         }
 
+//        telemetry.addData("Position: -1:Left, 0:Center, 1:Right", position);
+//        telemetry.update();
 //        telemetry.addLine("go back");
 //        robot.moveToPoint(7,0,0.5,0.5, Math.toRadians(180));
 //        robot.finalTurn(Math.toRadians(90));

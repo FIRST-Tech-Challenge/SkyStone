@@ -4,6 +4,9 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
 // THIS IS NOT AN OPMODE
 
 public class Robot {
@@ -78,7 +81,7 @@ public class Robot {
     }
 
     public void driveForwardDistance(double distance, double power) {
-        /* drives forward a certain distance(in) using encoders */
+        //* drives forward a certain distance(in) using encoders *//*
 
         // calculate ticks
         long NUM_TICKS_LONG = StrictMath.round(this.TICKS_PER_INCH * distance);
@@ -100,12 +103,16 @@ public class Robot {
             // wait until target position is reached
         }
 
+
+
         // stop driving
         this.stopDrive();
 
         // set mode back to normal
         this.setDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
+
+
 
     public void setStrafe(double power) {
         /* strafes at certain power

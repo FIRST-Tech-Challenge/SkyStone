@@ -19,7 +19,8 @@ public class MMAutonomous extends LinearOpMode {
 
         waitForStart();
         // Drive to quarry
-        robot.driveForwardDistance(47.0, speed);
+        this.driveForwardDistance(47.0, speed);
+
         switch (skystonePos) {
             case LEFT:
                 distanceToBuildZone = 32;
@@ -37,16 +38,54 @@ public class MMAutonomous extends LinearOpMode {
         }
 
         // back up
-        robot.driveForwardDistance(-6, speed);
+        this.driveForwardDistance(-6, speed);
         // turn towards skybridge
         //robot.turnRight(speed, 2000);
         // drive to skybridge
-        robot.driveForwardDistance(distanceToBuildZone + 6, speed);
+        this.driveForwardDistance(distanceToBuildZone + 6, speed);
         // park
-        robot.driveForwardDistance(-6, speed);
+        this.driveForwardDistance(-6, speed);
 
 
 
     }
+    public void driveForwardDistance(double distance, double power) {
+        //* drives forward a certain distance(in) using encoders *//*
+
+        // calculate ticks
+        long NUM_TICKS_LONG = StrictMath.round(robot.TICKS_PER_INCH * distance);
+        int NUM_TICKS = (int) NUM_TICKS_LONG;
+
+        // reset encoders
+        robot.setDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        // set target position
+        robot.setDriveTargetPos(NUM_TICKS);
+
+        // Set to RUN_TO_POSITION mode
+        robot.setDriveMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        // set drive power
+        robot.setDrivePower(power);
+
+        // while (this.rearLeft.isBusy() && this.frontLeft.isBusy() && this.rearRight.isBusy() && this.frontRight.isBusy()) {
+        // wait until target position is reached
+        //}
+
+        while (opModeIsActive() && robot.rearLeft.isBusy())
+        {
+            telemetry.addData("encoder-fwd", robot.rearLeft.getCurrentPosition() + "  busy=" + robot.rearLeft.isBusy());
+            telemetry.update();
+            idle()
+        }
+
+        // stop driving
+        robot.stopDrive();
+
+        // set mode back to normal
+        robot.setDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
 
 }
+

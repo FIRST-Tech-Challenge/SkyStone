@@ -17,7 +17,7 @@ public class DriveCallibration extends TTOpMode {
 
     @Override
     protected void onStart() {
-        driveSystem.vertical(50.0, 0.5);
+        driveSystem.vertical(1000, 0.5);
     }
 
     @Override

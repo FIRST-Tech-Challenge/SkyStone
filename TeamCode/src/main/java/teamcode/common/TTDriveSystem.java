@@ -61,23 +61,21 @@ public class TTDriveSystem {
     }
 
     public void continuous(Vector2 velocity, double turnSpeed) {
-        velocity = new Vector2(velocity.getY(), velocity.getX()); // A VERY JANKY SOLUTION, FIX IN FUTURE
-
         setRunMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         double direction = velocity.getDirection();
-        double power = velocity.magnitude();
+
+        double maxPow = Math.sin(Math.PI / 4);
+        double power = velocity.magnitude() / maxPow;
 
         double angle = direction - Math.PI / 4;
         double sin = Math.sin(angle);
         double cos = Math.cos(angle);
 
-        double maxPow = Math.sin(Math.PI / 4);
-
-        double frontLeftPow = (power * cos - turnSpeed) / maxPow;
-        double frontRightPow = (power * sin + turnSpeed) / maxPow;
-        double backLeftPow = (power * sin - turnSpeed) / maxPow;
-        double backRightPow = (power * cos + turnSpeed) / maxPow;
+        double frontLeftPow = power * sin - turnSpeed;
+        double frontRightPow = power * cos + turnSpeed;
+        double backLeftPow = power * cos - turnSpeed;
+        double backRightPow = power * sin + turnSpeed;
 
         frontLeft.setPower(frontLeftPow);
         frontRight.setPower(frontRightPow);
@@ -192,7 +190,6 @@ public class TTDriveSystem {
     public void turn(double degrees, double speed) {
         setRunMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         int ticks = (int) (degrees * DEGREES_TO_TICKS);
-
         frontLeft.setTargetPosition(ticks);
         frontRight.setTargetPosition(-ticks);
         backLeft.setTargetPosition(ticks);

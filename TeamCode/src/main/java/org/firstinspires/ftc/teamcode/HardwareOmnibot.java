@@ -3,18 +3,40 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Arrays;
-
-import static java.lang.Math.*;
 
 /**
  *Created by Ethan
  */
 public class HardwareOmnibot extends HardwareOmnibotDrive
 {
+    public enum LiftActivity {
+        IDLE,
+        GRABBING_STONE,
+        LIFTING_TO_ROTATE,
+        ROTATING,
+        LIFTING_TO_STONE,
+        STOPPING
+    }
+
+    public enum ReleaseActivity {
+        IDLE,
+        ALIGN_TO_FOUNDATION,
+        RELEASE_STONE,
+        STOPPING
+    }
+
+    public enum StowActivity {
+        IDLE,
+        LOWERING_TO_ROTATE,
+        ROTATING,
+        LOWERING_TO_STOW,
+        STOPPING
+    }
+
     public enum ExtendPosition {
         RETRACTED(10),
 		CAPSTONE(1036),
@@ -38,7 +60,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public enum LiftPosition {
         STOWED(10),
         STONE1(149),
-        ROTATE(208),
+        ROTATE(372),
         STONE2(412),
         STONE3(660),
         STONE4(908),
@@ -63,7 +85,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 			return encoderCount;
 		}
 
-		public LiftPosition addStone(LiftPosition currentStone)
+		public static LiftPosition addStone(LiftPosition currentStone)
 		{
 			switch(currentStone)
 			{
@@ -100,7 +122,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 			}
 		}
 
-		public LiftPosition removeStone(LiftPosition currentStone)
+		public static LiftPosition removeStone(LiftPosition currentStone)
 		{
 			switch(currentStone)
 			{
@@ -139,16 +161,21 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     }
 
     /* Public OpMode members. */
-    public static double RIGHT_FINGER_DOWN = 0.82;
+    public static double RIGHT_FINGER_DOWN = 0.32;
     public static double LEFT_FINGER_DOWN = 0.82;
-    public static double RIGHT_FINGER_UP = 0.25;
+    public static double RIGHT_FINGER_UP = 0.89;
     public static double LEFT_FINGER_UP = 0.25;
     public static double CLAW_OPEN = 0.0;
     public static double CLAW_PINCHED = 1.0;
     public static double CLAWDRICOPTER_FRONT = 0.0;
     public static double CLAWDRICOPTER_BACK = 1.0;
-    public static int MAX_STONE_HEIGHT = 13;
-    public static int MIN_STONE_HEIGHT = 0;
+    public static int CLAW_OPEN_TIME = 500;
+    public static int CLAW_CLOSE_TIME = 500;
+    public static int ROTATE_BACK_TIME = 500;
+    public static int ROTATE_FRONT_TIME = 500;
+
+    public LiftPosition liftTargetHeight = LiftPosition.STOWED;
+
 
     // Robot Controller Config Strings
     public final static String RIGHT_FINGER = "RightFinger";
@@ -178,9 +205,15 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     private List<Integer> colors;
 
     // Tracking variables
+    private ElapsedTime stateTimer;
+    private LiftActivity liftState = LiftActivity.IDLE;
+    private ReleaseActivity releaseState = ReleaseActivity.IDLE;
+    private StowActivity stowState = StowActivity.IDLE;
     private boolean fingersUp = true;
     private boolean clawPinched = false;
     private boolean clawdricopterBack = false;
+    private boolean intakeForward = false;
+    private boolean intakeReverse = false;
     // These are the heights of the stone levels to auto set the lift to
     protected LiftPosition lastLiftHeight = LiftPosition.STOWED;
     protected int liftZero = 0;
@@ -228,6 +261,88 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         }
     }
 
+    public void startLifting() {
+        if(liftState == LiftActivity.IDLE) {
+            if(releaseState != ReleaseActivity.IDLE) {
+                releaseState = ReleaseActivity.STOPPING;
+            }
+            if(stowState != StowActivity.IDLE) {
+                stowState = StowActivity.STOPPING;
+            }
+        }
+    }
+
+    public void performLifting() {
+        if(liftState != LiftActivity.IDLE) {
+
+        }
+    }
+
+    public void startReleasing() {
+        if(releaseState == ReleaseActivity.IDLE) {
+            if(liftState != LiftActivity.IDLE) {
+                liftState = LiftActivity.STOPPING;
+            }
+            if(stowState != StowActivity.IDLE) {
+                stowState = StowActivity.STOPPING;
+            }
+            releaseState = ReleaseActivity.RELEASE_STONE;
+            claw.setPosition(CLAW_OPEN);
+            stateTimer.reset();
+
+        }
+    }
+
+    public void performReleasing() {
+        switch(releaseState)
+        {
+            case IDLE:
+                break;
+            case STOPPING:
+                // I don't think we can do anything here. The servo going
+                // either way is about the same.  Maybe when we implement
+                // the ALIGN_TO_FOUNDATION
+                releaseState = ReleaseActivity.IDLE;
+                break;
+            case ALIGN_TO_FOUNDATION:
+                // In the future this should use distance sensors to line
+                // up to the foundation.
+                releaseState = ReleaseActivity.RELEASE_STONE;
+                break;
+            case RELEASE_STONE:
+                if(stateTimer.milliseconds() >= CLAW_OPEN_TIME)
+                {
+                    releaseState = ReleaseActivity.IDLE;
+                }
+                break;
+        }
+    }
+
+    public void startStowing() {
+        if(stowState == StowActivity.IDLE) {
+            if(liftState != LiftActivity.IDLE) {
+                liftState = LiftActivity.STOPPING;
+            }
+            if(releaseState != ReleaseActivity.IDLE) {
+                releaseState = ReleaseActivity.STOPPING;
+            }
+        }
+    }
+
+    public void performStowing() {
+        if(stowState != StowActivity.IDLE) {
+
+        }
+    }
+
+    public void addStone() {
+        liftTargetHeight = LiftPosition.addStone(liftTargetHeight);
+    }
+
+    public void removeStone() {
+        liftTargetHeight = LiftPosition.removeStone(liftTargetHeight);
+    }
+
     public void toggleClaw() {
         if(clawPinched) {
             claw.setPosition(CLAW_OPEN);
@@ -248,17 +363,69 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         }
     }
 
-    public void setLiftZero(int value) {
-        liftZero = value;
+    public void manualExtendIntake(double power) {
+        extender.setPower(power);
     }
 
-    public void setLiftHeight(LiftPosition liftHeight) {
-        if(liftHeight != lastLiftHeight) {
-            lastLiftHeight = liftHeight;
-            lifter.setTargetPosition(liftHeight.getEncoderCount() + liftZero);
-            lifter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            lifter.setPower(1.0);
+    public void manualLift(double power) {
+        lifter.setPower(power);
+    }
+
+    public void extendIntake() {
+        extender.setTargetPosition(ExtendPosition.SPINMIN.getEncoderCount());
+        extender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        extender.setPower(1.0);
+    }
+
+    public void retractIntake() {
+        extender.setTargetPosition(ExtendPosition.RETRACTED.getEncoderCount());
+        extender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        extender.setPower(1.0);
+    }
+
+    public void runLift() {
+        lifter.setTargetPosition(liftTargetHeight.getEncoderCount());
+        lifter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        lifter.setPower(0.5);
+    }
+
+    public void toggleIntake(boolean reverse) {
+        if(reverse) {
+            if(intakeReverse) {
+                stopIntake();
+            } else {
+                if (intakeForward) {
+                    stopIntake();
+                }
+                leftIntake.setPower(-1.0);
+                rightIntake.setPower(-1.0);
+                intakeReverse = true;
+            }
+        } else {
+            if(intakeForward) {
+                stopIntake();
+            } else {
+                if (intakeReverse) {
+                    stopIntake();
+                }
+                leftIntake.setPower(1.0);
+                rightIntake.setPower(1.0);
+                intakeForward = true;
+            }
         }
+    }
+
+    public void stopIntake() {
+        if(intakeForward || intakeReverse) {
+            intakeForward = false;
+            intakeReverse = false;
+            leftIntake.setPower(0.0);
+            rightIntake.setPower(0.0);
+        }
+    }
+
+    public void setLiftZero(int value) {
+        liftZero = value;
     }
 
     /* Initialize standard Hardware interfaces */
@@ -266,6 +433,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         // Save reference to Hardware map
         super.init(ahwMap);
 
+        stateTimer = new ElapsedTime();
         rightFinger = hwMap.get(Servo.class, RIGHT_FINGER);
         leftFinger = hwMap.get(Servo.class, LEFT_FINGER);
         claw = hwMap.get(Servo.class, CLAW);
@@ -279,10 +447,10 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         // This makes lift go up with positive encoder values and power
         lifter.setDirection(DcMotor.Direction.REVERSE);
         // This makes extender go out with positive encoder values and power
-        extender.setDirection(DcMotor.Direction.REVERSE);
+        extender.setDirection(DcMotor.Direction.FORWARD);
         // This makes intake pull in with positive encoder values and power
-        leftIntake.setDirection(DcMotor.Direction.REVERSE);
-        rightIntake.setDirection(DcMotor.Direction.FORWARD);
+        leftIntake.setDirection(DcMotor.Direction.FORWARD);
+        rightIntake.setDirection(DcMotor.Direction.REVERSE);
 
         // Set motor encoder usage
         // Lifter encoder allows us to go to specific heights.
@@ -308,9 +476,8 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
             encoderCount = lifter.getCurrentPosition();
         }
 
-        lifter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        extender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
+        lifter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        extender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         // Set the stop mode
         lifter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         extender.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

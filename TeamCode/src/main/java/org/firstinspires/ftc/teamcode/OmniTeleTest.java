@@ -2,16 +2,16 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import org.firstinspires.ftc.teamcode.HardwareOmnibot.LiftPosition;
 
-import static java.lang.Math.*;
+import static java.lang.Math.atan2;
+import static java.lang.Math.toDegrees;
 
 /**
  * Created by Ethan on 12/2/2016.
  */
 
-@TeleOp(name="Omni: TeleOp", group ="TeleOp")
-public class OmniTeleOp extends OpMode {
+@TeleOp(name="Omni: TeleOpTest", group ="TeleOp")
+public class OmniTeleTest extends OpMode {
 
     public HardwareOmnibot robot = new HardwareOmnibot();
 
@@ -33,17 +33,21 @@ public class OmniTeleOp extends OpMode {
     private boolean aHeld = false;
     private boolean bHeld = false;
     private boolean yHeld = false;
+    private boolean xHeld = false;
     private boolean a2Held = false;
     private boolean b2Held = false;
     private boolean y2Held = false;
+    private boolean x2Held = false;
     private boolean up2Held = false;
     private boolean down2Held = false;
     private boolean aPressed;
     private boolean bPressed;
     private boolean yPressed;
+    private boolean xPressed;
     private boolean a2Pressed;
     private boolean b2Pressed;
     private boolean y2Pressed;
+    private boolean x2Pressed;
     private boolean up2Pressed;
     private boolean down2Pressed;
     private double yPower;
@@ -71,30 +75,18 @@ public class OmniTeleOp extends OpMode {
         aPressed = gamepad1.a;
         bPressed = gamepad1.b;
         yPressed = gamepad1.y;
+        xPressed = gamepad1.x;
         a2Pressed = gamepad2.a;
         b2Pressed = gamepad2.b;
         y2Pressed = gamepad2.y;
+        x2Pressed = gamepad2.x;
         up2Pressed = gamepad2.dpad_up;
         down2Pressed = gamepad2.dpad_down;
-
-        if (gamepad1.x) {
-            // The driver presses X, then uses the left joystick to say what angle the robot
-            // is aiming.  This will calculate the values as long as X is pressed, and will
-            // not drive the robot using the left stick.  Once X is released, it will use the
-            // final calculated angle and drive with the left stick.  Button should be released
-            // before stick.  The default behavior of atan2 is 0 to -180 on Y Axis CCW, and 0 to
-            // 180 CW.  This code normalizes that to 0 to 360 CCW from the Y Axis
-            //robot.resetGyro();
-            driverAngle = toDegrees(atan2(yPower, xPower)) - robot.readIMU();
-            xPower = 0.0;
-            yPower = 0.0;
-            spin = 0.0;
-        }
 
         if(!aHeld && aPressed)
         {
             aHeld = true;
-            robot.toggleFingers();
+            robot.extendIntake();
         } else if(!aPressed) {
             aHeld = false;
         }
@@ -115,10 +107,22 @@ public class OmniTeleOp extends OpMode {
             yHeld = false;
         }
 
+        if(!xHeld && xPressed)
+        {
+            xHeld = true;
+            robot.retractIntake();
+        } else if(!xPressed) {
+            xHeld = false;
+        }
+
         if(!a2Held && a2Pressed)
         {
             a2Held = true;
-            robot.startStowing();
+            if(robot.frontLeftMotorPower > 0.5) {
+                robot.setFrontLeftMotorPower(0.0);
+            } else {
+                robot.setFrontLeftMotorPower(1.0);
+            }
         } else if(!a2Pressed) {
             a2Held = false;
         }
@@ -126,7 +130,11 @@ public class OmniTeleOp extends OpMode {
         if(!b2Held && b2Pressed)
         {
             b2Held = true;
-            robot.startLifting();
+            if(robot.frontRightMotorPower > 0.5) {
+                robot.setFrontRightMotorPower(0.0);
+            } else {
+                robot.setFrontRightMotorPower(1.0);
+            }
         } else if(!b2Pressed) {
             b2Held = false;
         }
@@ -134,9 +142,21 @@ public class OmniTeleOp extends OpMode {
         if(!y2Held && y2Pressed)
         {
             y2Held = true;
-            robot.startReleasing();
+            if(robot.rearLeftMotorPower > 0.5) {
+                robot.setRearLeftMotorPower(0.0);
+            } else {
+                robot.setRearLeftMotorPower(1.0);
+            }
         } else if(!y2Pressed) {
             y2Held = false;
+        }
+
+        if(!x2Held && x2Pressed)
+        {
+            x2Held = true;
+            robot.runLift();
+        } else if(!x2Pressed) {
+            x2Held = false;
         }
 
         if(!up2Held && up2Pressed)
@@ -155,12 +175,22 @@ public class OmniTeleOp extends OpMode {
 			down2Held = false;
 		}
 
-        // If the activity is not performing, it will be idle and return.
-        robot.performLifting();
-        robot.performReleasing();
-        robot.performStowing();
+        if(Math.abs(xPower) > 0.1) {
+            robot.manualExtendIntake(xPower);
+        } else {
+            robot.manualExtendIntake(0.0);
+        }
 
-        robot.drive(speedMultiplier * xPower, speedMultiplier * yPower, spinMultiplier * spin, driverAngle);
+        if(Math.abs(spin) > 0.1) {
+            robot.manualLift(spin);
+        } else {
+            robot.manualLift(0.0);
+        }
+        // If the activity is not performing, it will be idle and return.
+//        robot.performLifting();
+//        robot.performReleasing();
+//        robot.performStowing();
+
 
 		telemetry.addData("Lift Target Height: ", robot.liftTargetHeight.toString());
         telemetry.addData("Y Power: ", yPower);
@@ -168,6 +198,9 @@ public class OmniTeleOp extends OpMode {
         telemetry.addData("Spin: ", spin);
         telemetry.addData("Offset Angle: ", driverAngle);
         telemetry.addData("Gyro Angle: ", gyroAngle);
+        telemetry.addData("Gyro X Angle: ", robot.xAngle);
+        telemetry.addData("Gyro Y Angle: ", robot.yAngle);
+        telemetry.addData("Gyro Z Angle: ", robot.zAngle);
         telemetry.addData("Front Left Encoder: ", robot.frontLeft.getCurrentPosition());
         telemetry.addData("Front Right Encoder: ", robot.frontRight.getCurrentPosition());
         telemetry.addData("Rear Left Encoder: ", robot.rearLeft.getCurrentPosition());

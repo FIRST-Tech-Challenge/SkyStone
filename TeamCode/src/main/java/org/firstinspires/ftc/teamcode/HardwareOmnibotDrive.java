@@ -51,6 +51,7 @@ public class HardwareOmnibotDrive
     protected double rearRightMotorPower = 0.0;
     private boolean inputShaping = true;
 
+    public double xAngle, yAngle, zAngle;
     /* local OpMode members. */
     protected HardwareMap hwMap  =  null;
 
@@ -83,6 +84,9 @@ public class HardwareOmnibotDrive
         //double heading = (double)gyro.getHeading();
         Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         //heading = abs(heading - 360.0);
+        zAngle = (double)angles.firstAngle;
+        yAngle = (double)angles.secondAngle;
+        xAngle = (double)angles.thirdAngle;
         return (double)angles.firstAngle;
     }
 

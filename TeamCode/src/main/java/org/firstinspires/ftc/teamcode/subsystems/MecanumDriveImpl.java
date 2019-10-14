@@ -84,7 +84,7 @@ public class MecanumDriveImpl implements MecanumDrive {
 
     @Override
     public double getWheelbaseWidth() {
-        return 16.5;
+        return 14.544475;
     }
 
     @Override
@@ -94,6 +94,6 @@ public class MecanumDriveImpl implements MecanumDrive {
 
     @Override
     public double getEncoderTicksPerRevolution() {
-        return 1440;
+        return 56 * 20;
     }
 }

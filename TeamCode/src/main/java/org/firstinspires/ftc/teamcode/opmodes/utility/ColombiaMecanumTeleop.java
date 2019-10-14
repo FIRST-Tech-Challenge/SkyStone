@@ -1,9 +1,15 @@
 package org.firstinspires.ftc.teamcode.opmodes.utility;
 
+import android.graphics.Color;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveImpl;
 import org.westtorrancerobotics.lib.MecanumController;
 import org.westtorrancerobotics.lib.MecanumDrive;
@@ -12,11 +18,22 @@ import org.westtorrancerobotics.lib.MecanumDrive;
 public class ColombiaMecanumTeleop extends OpMode {
 
     private MecanumController driveTrain;
-    
+    ColorSensor sensorColor;
+    DistanceSensor sensorDistance;
+    Servo servoTest;
+    final double SCALE_FACTOR = 255;
+    float hsvValues[] = {0F, 0F, 0F};
+
     @Override
     public void init() {
         telemetry.addData("Status", "Initializing...");
         telemetry.update();
+
+        sensorColor = hardwareMap.get(ColorSensor.class, "sensor_color_distance");
+        sensorDistance = hardwareMap.get(DistanceSensor.class, "sensor_color_distance");
+
+        servoTest = hardwareMap.get(Servo.class, "armTune");
+
 
         DcMotorEx leftFront = hardwareMap.get(DcMotorEx.class, "left1");
         DcMotorEx leftBack = hardwareMap.get(DcMotorEx.class, "left2");
@@ -46,6 +63,28 @@ public class ColombiaMecanumTeleop extends OpMode {
         double y = -deadZone(gamepad1.left_stick_y);
         double x = deadZone(gamepad1.left_stick_x);
         driveTrain.spinDrive(x, y, turn, MecanumDrive.TranslTurnMethod.EQUAL_SPEED_RATIOS);
+
+        Color.RGBToHSV((int) (sensorColor.red() * SCALE_FACTOR),
+                (int) (sensorColor.green() * SCALE_FACTOR),
+                (int) (sensorColor.blue() * SCALE_FACTOR),
+                hsvValues);
+
+        telemetry.addData("Alpha", sensorColor.alpha());
+        telemetry.addData("Red  ", sensorColor.red());
+        telemetry.addData("Green", sensorColor.green());
+        telemetry.addData("Blue ", sensorColor.blue());
+        telemetry.addData("Distance ", sensorDistance.getDistance(DistanceUnit.CM));
+        telemetry.addData("Hue", hsvValues[0]);
+        telemetry.addData("Saturation", hsvValues[1]);
+        telemetry.addData("Value", hsvValues[2]);
+
+        if (sensorColor.red() < 20 && sensorColor.green() < 20 && sensorColor.blue() < 20) {
+            servoTest.setPosition(0.5);
+        }
+        else{
+            servoTest.setPosition(0);
+        }
+
     }
 
     private double deadZone(double original) {

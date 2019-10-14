@@ -102,7 +102,7 @@ public class OmniTeleOp extends OpMode {
         if(!bHeld && bPressed)
         {
             bHeld = true;
-            robot.toggleIntake(false);
+            robot.startIntake(false);
         } else if(!bPressed) {
             bHeld = false;
         }
@@ -110,7 +110,7 @@ public class OmniTeleOp extends OpMode {
         if(!yHeld && yPressed)
         {
             yHeld = true;
-            robot.toggleIntake(true);
+            robot.startIntake(true);
         } else if(!yPressed) {
             yHeld = false;
         }

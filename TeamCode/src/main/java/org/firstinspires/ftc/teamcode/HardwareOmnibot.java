@@ -31,19 +31,20 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 
     public enum StowActivity {
         IDLE,
-        LOWERING_TO_ROTATE,
+        RAISING_TO_ROTATE,
         ROTATING,
         LOWERING_TO_STOW,
         STOPPING
     }
 
     public enum ExtendPosition {
-        RETRACTED(10),
-		CAPSTONE(1036),
-		SPINMIN(1425),
-		EJECT(1618),
-		EXTENDED(1877);
-
+        RETRACTED(30),
+		CAPSTONE(836),
+		SPINMIN(1225),
+		EJECT(1418),
+		EXTENDED(1677);
+		// Runtime Max
+//        EXTENDED(1719);
         private final int encoderCount;
 
         ExtendPosition(int encoderCount)
@@ -58,20 +59,22 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 	}
 
     public enum LiftPosition {
-        STOWED(10),
+        STOWED(30),
         STONE1(149),
-        ROTATE(372),
-        STONE2(412),
-        STONE3(660),
-        STONE4(908),
-        STONE5(1156),
-        STONE6(1403),
-        STONE7(1651),
-        STONE8(1899),
-        STONE9(2147),
-        STONE10(2395),
-        STONE11(2643),
-        STONE12(2890);
+        ROTATE(272),
+        STONE2(312),
+        STONE3(560),
+        STONE4(808),
+        STONE5(1056),
+        STONE6(1303),
+        STONE7(1551),
+        STONE8(1799),
+        STONE9(2047),
+        STONE10(2495),
+        STONE11(2543),
+        STONE12(2790);
+		// Runtime Max
+//		STONE12(2854);
 
         private final int encoderCount;
 
@@ -161,6 +164,8 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     }
 
     /* Public OpMode members. */
+	public static double LIFT_SPEED = 1.0;
+	public static double EXTEND_SPEED = 1.0;
     public static double RIGHT_FINGER_DOWN = 0.32;
     public static double LEFT_FINGER_DOWN = 0.82;
     public static double RIGHT_FINGER_UP = 0.89;
@@ -171,10 +176,12 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public static double CLAWDRICOPTER_BACK = 1.0;
     public static int CLAW_OPEN_TIME = 500;
     public static int CLAW_CLOSE_TIME = 500;
-    public static int ROTATE_BACK_TIME = 500;
-    public static int ROTATE_FRONT_TIME = 500;
+    public static int CLAW_ROTATE_BACK_TIME = 500;
+    public static int CLAW_ROTATE_FRONT_TIME = 500;
 
-    public LiftPosition liftTargetHeight = LiftPosition.STOWED;
+    public LiftPosition liftTargetHeight = LiftPosition.STONE1;
+	private LiftPosition liftStateTargetHeight;
+	private ExtendPosition extenderPosition = ExtendPosition.RETRACTED;
 
 
     // Robot Controller Config Strings
@@ -269,13 +276,60 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
             if(stowState != StowActivity.IDLE) {
                 stowState = StowActivity.STOPPING;
             }
+			// Extend the intake to make sure it isn't in the way.
+			extendIntake(ExtendPosition.EXTENDED);
+
+			// We don't want the intake spinning while we are trying to lift the stone.
+			stopIntake();
+
+			// Start grabbing the stone.  updateLifting will take over.
+            liftState = LiftActivity.GRABBING_STONE;
+            claw.setPosition(CLAW_PINCHED);
+            stateTimer.reset();
         }
     }
 
     public void performLifting() {
-        if(liftState != LiftActivity.IDLE) {
-
-        }
+		switch(liftState) {
+			case LIFTING_TO_STONE:
+			    if(Math.abs(lifter.getCurrentPosition() - liftStateTargetHeight.getEncoderCount()) < 20) {
+					liftState = LiftActivity.IDLE;
+				}
+			    break;
+		    case ROTATING:
+			    if(stateTimer.milliseconds() >= CLAW_ROTATE_BACK_TIME) {
+					liftState = LiftActivity.LIFTING_TO_STONE;
+					liftStateTargetHeight = liftTargetHeight;
+					runLift(liftStateTargetHeight);
+				}
+			    break;
+		    case LIFTING_TO_ROTATE:
+			    // It has gotten high enough
+			    if(lifter.getCurrentPosition() >= LiftPosition.ROTATE.getEncoderCount()) {
+					liftState = LiftActivity.ROTATING;
+					clawdricopter.setPosition(CLAWDRICOPTER_BACK);
+					stateTimer.reset();
+				}
+			    break;
+		    case GRABBING_STONE:
+                if(stateTimer.milliseconds() >= CLAW_CLOSE_TIME)
+                {
+                    liftState = LiftActivity.LIFTING_TO_ROTATE;
+					// If our target height is less than rotation height, we have to
+					// stop at rotation height first.
+					if(liftTargetHeight <= LiftPosition.ROTATE) {
+						runLift(LiftPosition.ROTATE);
+					} else {
+						runLift(liftTargetHeight);
+					}
+                }
+			    break;
+			case STOPPING:
+			    liftState = LiftActivity.IDLE;
+		    case IDLE:
+			default:
+				break;
+		}
     }
 
     public void startReleasing() {
@@ -289,32 +343,35 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
             releaseState = ReleaseActivity.RELEASE_STONE;
             claw.setPosition(CLAW_OPEN);
             stateTimer.reset();
-
         }
     }
 
     public void performReleasing() {
         switch(releaseState)
         {
-            case IDLE:
+            case ALIGN_TO_FOUNDATION:
+                // In the future this should use distance sensors to line
+                // up to the foundation.
+                releaseState = ReleaseActivity.RELEASE_STONE;
+                claw.setPosition(CLAW_OPEN);
+                stateTimer.reset();
+                break;
+            case RELEASE_STONE:
+                if(stateTimer.milliseconds() >= CLAW_OPEN_TIME)
+                {
+                    releaseState = ReleaseActivity.IDLE;
+					// Add to our tower height for next lift.
+					addStone();
+                }
                 break;
             case STOPPING:
                 // I don't think we can do anything here. The servo going
                 // either way is about the same.  Maybe when we implement
                 // the ALIGN_TO_FOUNDATION
                 releaseState = ReleaseActivity.IDLE;
-                break;
-            case ALIGN_TO_FOUNDATION:
-                // In the future this should use distance sensors to line
-                // up to the foundation.
-                releaseState = ReleaseActivity.RELEASE_STONE;
-                break;
-            case RELEASE_STONE:
-                if(stateTimer.milliseconds() >= CLAW_OPEN_TIME)
-                {
-                    releaseState = ReleaseActivity.IDLE;
-                }
-                break;
+            case IDLE:
+		    default:
+			    break;
         }
     }
 
@@ -326,12 +383,49 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
             if(releaseState != ReleaseActivity.IDLE) {
                 releaseState = ReleaseActivity.STOPPING;
             }
+			// Extend the intake to make sure it isn't in the way.
+			extendIntake(ExtendPosition.EXTENDED);
+
+			// We don't want the intake spinning while we are trying to stow the
+			// lift.
+			stopIntake();
+
+			// Start rotating back to the front.
+            liftState = StowActivity.RAISING_TO_ROTATE;
+			runLift(LiftPosition.ROTATE);
         }
     }
 
     public void performStowing() {
-        if(stowState != StowActivity.IDLE) {
-
+		case(stowState) {
+			case LOWERING_TO_STOW:
+			    if(Math.abs(lifter.getCurrentPosition() - LiftPosition.STOWED.getEncoderCount()) < 20) {
+					stowState = StowActivity.IDLE;
+					startIntake(false);
+				}
+				break;
+			case ROTATING:
+			    if(stateTimer.milliseconds() >= CLAW_ROTATE_FRONT_TIME) {
+					stowState = StowActivity.LOWERING_TO_STOW;
+					runLift(LiftPosition.STOWED);
+				}
+			    break;
+			case RAISING_TO_ROTATE:
+			    // It has gotten high enough
+			    if(lifter.getCurrentPosition() > LiftPosition.ROTATE.getEncoderCount()) {
+					stowState = StowActivity.ROTATING;
+					clawdricopter.setPosition(CLAWDRICOPTER_FRONT);
+					stateTimer.reset();
+				}
+			    break;
+            case STOPPING:
+                // I don't think we can do anything here. The servo going
+                // either way is about the same.  Maybe when we implement
+                // the ALIGN_TO_FOUNDATION
+                stowState = StowActivity.IDLE;
+            case IDLE:
+		    default:
+			    break;
         }
     }
 
@@ -371,10 +465,13 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         lifter.setPower(power);
     }
 
-    public void extendIntake() {
-        extender.setTargetPosition(ExtendPosition.SPINMIN.getEncoderCount());
-        extender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        extender.setPower(1.0);
+    public void extendIntake(ExtendPosition targetExtension) {
+		if(targetExtension != extenderPosition) {
+            extender.setTargetPosition(targetExtension.getEncoderCount());
+            extender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            extender.setPower(EXTEND_SPEED);
+			extenderPosition = targetExtension;
+		}
     }
 
     public void retractIntake() {
@@ -383,35 +480,27 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         extender.setPower(1.0);
     }
 
-    public void runLift() {
-        lifter.setTargetPosition(liftTargetHeight.getEncoderCount());
+    public void runLift(LiftPosition targetHeight) {
+        lifter.setTargetPosition(targetHeight.getEncoderCount());
         lifter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        lifter.setPower(0.5);
+        lifter.setPower(LIFT_SPEED);
     }
 
-    public void toggleIntake(boolean reverse) {
+    public void startIntake(boolean reverse) {
         if(reverse) {
-            if(intakeReverse) {
-                stopIntake();
-            } else {
-                if (intakeForward) {
-                    stopIntake();
-                }
-                leftIntake.setPower(-1.0);
-                rightIntake.setPower(-1.0);
-                intakeReverse = true;
-            }
-        } else {
             if(intakeForward) {
                 stopIntake();
-            } else {
-                if (intakeReverse) {
-                    stopIntake();
-                }
-                leftIntake.setPower(1.0);
-                rightIntake.setPower(1.0);
-                intakeForward = true;
             }
+			leftIntake.setPower(-1.0);
+			rightIntake.setPower(-1.0);
+			intakeReverse = true;
+        } else {
+            if(intakeReverse) {
+                stopIntake();
+            }
+			leftIntake.setPower(1.0);
+			rightIntake.setPower(1.0);
+			intakeForward = true;
         }
     }
 

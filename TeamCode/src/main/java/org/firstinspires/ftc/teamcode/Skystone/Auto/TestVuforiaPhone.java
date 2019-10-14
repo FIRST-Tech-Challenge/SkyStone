@@ -11,13 +11,12 @@ public class TestVuforiaPhone extends AutoBase {
     @Override
     public void runOpMode() {
 
-
-
         Robot robot = new Robot(this.hardwareMap, this.telemetry, this);
 
         waitForStart();
 
-        telemetry.addData("Vuforia Position: 1:Left, 2:Right, 3:Center: ", robot.detectVuforia(VUFORIA_KEY));
-
+        telemetry.addData("Vuforia Position: ", robot.detectVuforia(VUFORIA_KEY));
+        telemetry.update();
+        sleep(100000);
     }
 }

@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
+import com.vuforia.Vuforia;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -23,11 +24,16 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.CurvePoint;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
 
+import java.util.List;
 import java.util.Vector;
 
+import static org.firstinspires.ftc.robotcore.external.tfod.TfodRoverRuckus.TFOD_MODEL_ASSET;
+import static org.firstinspires.ftc.teamcode.RoverRuckus.RR2.Auto.TensorFlowMineralDetection.VUFORIA_KEY;
 import static org.firstinspires.ftc.teamcode.Skystone.MathFunctions.angleWrap;
 import static org.firstinspires.ftc.teamcode.Skystone.MathFunctions.lineCircleIntersection;
 
@@ -115,19 +121,19 @@ public class Robot {
         bLeft.setDirection(DcMotor.Direction.FORWARD);
         bRight.setDirection(DcMotor.Direction.REVERSE);
 
-//        // Map intake motors
-//        intakeLeft = hardwareMap.dcMotor.get("intakeLeft");
-//        intakeRight = hardwareMap.dcMotor.get("intakeRight");
-//
-//        // Set direction of intake motors
-//        intakeLeft.setDirection(DcMotor.Direction.FORWARD);
-//        intakeRight.setDirection(DcMotor.Direction.REVERSE);
-//
-//        // Map outtake motors
-//        outtakeSpool = hardwareMap.dcMotor.get("outtakeSpool");
-//
-//        // Map outtake Servos
-//        clawServo = hardwareMap.servo.get("clawServo");
+        // Map intake motors
+        intakeLeft = hardwareMap.dcMotor.get("intakeLeft");
+        intakeRight = hardwareMap.dcMotor.get("intakeRight");
+
+        // Set direction of intake motors
+        intakeLeft.setDirection(DcMotor.Direction.FORWARD);
+        intakeRight.setDirection(DcMotor.Direction.REVERSE);
+
+        // Map outtake motors
+        outtakeSpool = hardwareMap.dcMotor.get("outtakeSpool");
+
+        // Map outtake Servos
+//       / clawServo = hardwareMap.servo.get("clawServo");
 //        outtakePivotServo = hardwareMap.servo.get("outtakePivotServo");
 //
 //        // Map actuator servos
@@ -594,7 +600,7 @@ public class Robot {
 
             double distanceToTarget = Math.hypot(x - xPos, y - yPos);
 
-            if (distanceToTarget < 3.5) {
+            if (distanceToTarget < 2) {
                 brakeRobot();
                 break;
             }
@@ -612,7 +618,7 @@ public class Robot {
             yMovement = yPower * moveSpeed;
             turnMovement = Range.clip(relativeTurnAngle / Math.toRadians(30), -1, 1) * turnSpeed;
 
-            double decelerationScaleFactor = Range.clip(distanceToTarget/5,-1,1);
+            double decelerationScaleFactor = Range.clip(distanceToTarget/15,-1,1);
 
             applyMove(decelerationScaleFactor);
         }
@@ -625,10 +631,9 @@ public class Robot {
         paramaters.vuforiaLicenseKey = VUFORIA_KEY;
         paramaters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
 
-       VuforiaLocalizer vuforia = ClassFactory.getInstance().createVuforia(paramaters);
+        VuforiaLocalizer vuforia = ClassFactory.getInstance().createVuforia(paramaters);
 
         OpenGLMatrix lastLocation = new OpenGLMatrix();
-
         VuforiaTrackables targetsSkyStone = vuforia.loadTrackablesFromAsset("Skystone");
         VuforiaTrackable skyStoneTarget = targetsSkyStone.get(0);
         paramaters.vuforiaLicenseKey = VUFORIA_KEY;
@@ -651,25 +656,21 @@ public class Robot {
                 }
                 VectorF translation = lastLocation.getTranslation();
 
-                if (translation.get(0) / mmPerInch > 5) {
-                    telemetry.addData("Position: ", "right");
-                    telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
-                            translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
-                    telemetry.update();
-                    return "right";
-
-                } else if (translation.get(0) / mmPerInch < -5) {
+                if (translation.get(0) / mmPerInch > 7.5) {
                     telemetry.addData("Position: ", "left");
                     telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
                             translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
                     return "left";
 
-                } else {
+                } else if (translation.get(0) / mmPerInch < 7.5){
                     telemetry.addData("Position: ", "Center");
                     telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
                             translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
                     telemetry.update();
                     return "center";
+                } else {
+                    telemetry.addData("Position: ", "Right");
+                    return "Right";
                 }
             }
             if (SystemClock.elapsedRealtime() - startTime > 5000) {
@@ -680,6 +681,85 @@ public class Robot {
         }
 
         return "none";
+    }
+    private VuforiaLocalizer initVuforia() {
+        /*
+         * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
+         */
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+
+        parameters.vuforiaLicenseKey = VUFORIA_KEY;
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+
+        //  Instantiate the Vuforia engine
+        return ClassFactory.getInstance().createVuforia(parameters);
+
+        // Loading trackables is not necessary for the TensorFlow Object Detection engine.
+    }
+
+    /**
+     * Initialize the TensorFlow Object Detection engine.
+     */
+    private TFObjectDetector initTfod(VuforiaLocalizer vuforia) {
+        final String TFOD_MODEL_ASSET = "Skystone.tflite";
+        final String LABEL_FIRST_ELEMENT = "Stone";
+        final String LABEL_SECOND_ELEMENT = "Skystone";
+        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
+                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
+        tfodParameters.minimumConfidence = 0.5;
+        TFObjectDetector tfod;
+        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
+        return tfod;
+    }
+
+    public String detectTensorflow(){
+        VuforiaLocalizer vuforia = initVuforia();
+        TFObjectDetector tfod;
+        tfod = initTfod(vuforia);
+        tfod.activate();
+        while (linearOpMode.opModeIsActive()){
+            if (tfod != null) {
+                // getUpdatedRecognitions() will return null if no new information is available since
+                // the last time that call was made.
+                List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+                if (updatedRecognitions != null) {
+                    telemetry.addData("# Object Detected", updatedRecognitions.size());
+                    telemetry.update();
+                    // step through the list of recognitions and display boundary info.
+                    int i = 0;
+
+                    for (Recognition recognition : updatedRecognitions) {
+                        float value = (recognition.getTop()+recognition.getBottom())/2;
+                        telemetry.addLine(Float.toString(value));
+                        telemetry.update();
+
+                        if(value <475){
+                            telemetry.addLine("right");
+                            telemetry.addLine(Float.toString(value));
+                            telemetry.update();
+                            linearOpMode.sleep(2000);
+                            return "right";
+                        }else if(value <800){
+                            telemetry.addLine("center");
+                            telemetry.addLine(Float.toString(value));
+                            telemetry.update();
+                            linearOpMode.sleep(2000);
+                            return "center";
+                        }else{
+                            telemetry.addLine("left");
+                            telemetry.addLine(Float.toString(value));
+                            telemetry.update();
+                            linearOpMode.sleep(2000);
+                            return "left";
+                        }
+                    }
+
+                }
+            }
+        }
+        return "NONE";
     }
 
 }

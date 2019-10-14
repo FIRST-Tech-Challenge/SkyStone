@@ -5,8 +5,10 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
@@ -14,6 +16,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.westtorrancerobotics.lib.Angle;
 import org.westtorrancerobotics.lib.Location;
 
@@ -27,13 +31,13 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.ZYX;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
-import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.FRONT;
+import static org.firstinspires.ftc.robotcore.external.tfod.TfodSkyStone.TFOD_MODEL_ASSET;
 
 public class Camera {
     private static Camera instance = null;
 
-    private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = FRONT;
-    private static final boolean PHONE_IS_PORTRAIT = true;
+    private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
+    private static final boolean PHONE_IS_PORTRAIT = false;
     private float phoneXRotate    = 0;
     private float phoneYRotate    = 0;
     private float phoneZRotate    = 0;
@@ -69,7 +73,16 @@ public class Camera {
     private List<VuforiaTrackable> allTrackables;
 
     private OpenGLMatrix lastStoneLoc = null;
+    private boolean skyStoneVisible = false;
+
+    private TFObjectDetector tfod;
+    private static final String LABEL_FIRST_ELEMENT = "Stone";
+    private static final String LABEL_SECOND_ELEMENT = "Skystone";
     private boolean stoneVisible = false;
+    private double angleToStone = Double.NaN;
+
+    private static final double CAMERA_WIDTH = 640;
+    private static final double CAMERA_ANGLE = 60;
 
     public static synchronized Camera getInstance() {
         return instance != null ? instance : (instance = new Camera());
@@ -84,6 +97,7 @@ public class Camera {
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
         parameters.cameraDirection   = CAMERA_CHOICE;
+        parameters.cameraName = hardwareMap.get(WebcamName.class, "Vision Camera");
 
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
 
@@ -201,14 +215,29 @@ public class Camera {
         }
 
         allTrackables.remove(stoneTarget);
+
+        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
+            int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
+                    "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+            TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
+            tfodParameters.minimumConfidence = 0.8;
+            tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+            tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
+
+        } else {
+            RobotLog.v("TFOD cannot be created.");
+        }
     }
 
     public void start() {
         targetsSkyStone.activate();
+        tfod.activate();
     }
 
     public void stop() {
         targetsSkyStone.deactivate();
+        tfod.deactivate();
+        tfod.shutdown();
     }
 
     public void process() {
@@ -224,15 +253,34 @@ public class Camera {
             }
         }
         if (((VuforiaTrackableDefaultListener) stoneTarget.getListener()).isVisible()) {
-            stoneVisible = true;
+            skyStoneVisible = true;
             OpenGLMatrix stoneLoc = ((VuforiaTrackableDefaultListener) stoneTarget.getListener()).getVuforiaCameraFromTarget();
             lastStoneLoc = stoneLoc != null ? stoneLoc : lastStoneLoc;
         } else {
-            stoneVisible = false;
+            skyStoneVisible = false;
+        }
+        List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+        if (updatedRecognitions != null) {
+            if (updatedRecognitions.isEmpty()) {
+                stoneVisible = false;
+            } else {
+                double angle = Double.POSITIVE_INFINITY;
+                for (Recognition recognition : updatedRecognitions) {
+                    double newAngle = (recognition.getLeft() + recognition.getRight()) / 2;
+                    newAngle /= CAMERA_ANGLE;
+                    newAngle -= CAMERA_WIDTH / 2;
+                    angle = Math.abs(angle) > Math.abs(newAngle) ? angle : newAngle;
+                }
+                angleToStone = angle;
+            }
         }
     }
 
     public boolean hasSkystone() {
+        return skyStoneVisible;
+    }
+
+    public boolean hasStone() {
         return stoneVisible;
     }
 
@@ -244,6 +292,10 @@ public class Camera {
                         Angle.AngleUnit.DEGREES,
                         Angle.AngleOrientation.COMPASS_HEADING
                 ));
+    }
+
+    public double getAngleToStone() {
+        return angleToStone;
     }
 
     public boolean hasStationaryTarget() {

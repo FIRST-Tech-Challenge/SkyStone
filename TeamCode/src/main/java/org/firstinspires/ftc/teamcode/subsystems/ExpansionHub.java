@@ -110,6 +110,12 @@ public class ExpansionHub extends LynxController {
         }
     }
 
+    /**
+     * Not guaranteed behavior, merely asks if the motor "has lost counts" and returns the opposite
+     * @param hardwareMap
+     * @param motor
+     * @return
+     */
     public static boolean encoderWorks(HardwareMap hardwareMap, DcMotorEx motor) {
         int port = motor.getPortNumber();
         LynxModule lynxModule = null;
@@ -127,7 +133,7 @@ public class ExpansionHub extends LynxController {
         LynxGetModuleStatusCommand command = new LynxGetModuleStatusCommand(lynxModule);
         try {
             LynxGetModuleStatusResponse response = command.sendReceive();
-            return response.hasMotorLostCounts(port);
+            return !response.hasMotorLostCounts(port);
         } catch (Exception e) {
             chosenHub.handleException(e);
         }
@@ -140,7 +146,7 @@ public class ExpansionHub extends LynxController {
     private final LynxModule lynxModule;
 
     public static synchronized List<ExpansionHub> getAvailableHubs(HardwareMap hardwareMap) {
-        return ExpansionHub.hardwareMap.equals(hardwareMap) ? availableHubs : (availableHubs = findHubs(hardwareMap));
+        return hardwareMap.equals(ExpansionHub.hardwareMap) ? availableHubs : (availableHubs = findHubs(hardwareMap));
     }
 
     private static List<ExpansionHub> findHubs(HardwareMap hardwareMap) {

@@ -1,9 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import android.graphics.Color;
-
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cColorSensor;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -21,7 +19,7 @@ public class DriveTrain {
     private ModernRoboticsI2cGyro gyro;
     private MecanumController mecanumController;
 
-    private ModernRoboticsI2cColorSensor lineSpotter;
+    private ColorSensor lineSpotter;
     private static final int RED_THRESHOLD  = 5;
     private static final int BLUE_THRESHOLD = 5;
 
@@ -51,7 +49,7 @@ public class DriveTrain {
 
         gyro = hardwareMap.get(ModernRoboticsI2cGyro.class, "gyro");
 
-        lineSpotter = hardwareMap.get(ModernRoboticsI2cColorSensor.class, "driveColor");
+        lineSpotter = hardwareMap.get(ColorSensor.class, "driveColor");
 
         MecanumDrive wheels = new MecanumDriveImpl(leftFront, leftBack, rightFront, rightBack, gyro);
         mecanumController = new MecanumController(wheels);

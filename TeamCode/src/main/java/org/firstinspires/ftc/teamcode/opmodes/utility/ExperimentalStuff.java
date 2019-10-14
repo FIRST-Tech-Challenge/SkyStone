@@ -23,6 +23,8 @@ public class ExperimentalStuff extends OpMode {
         bot.init(hardwareMap);
 
         double volts = bot.expansionHubs.get(0).voltageBattery(ExpansionHub.VoltageUnits.VOLTS);
+        telemetry.addData("Battery Voltage", volts);
+        telemetry.update();
         if (volts < 11) {
             bot.phone.setBackgroundColor(0xFF, 0x00, 0x00);
         } else if (volts < 12) {
@@ -32,8 +34,6 @@ public class ExperimentalStuff extends OpMode {
         } else {
             bot.phone.resetBackgroundColor();
         }
-        telemetry.addData("Battery Voltage", volts);
-        telemetry.update();
 
         bot.phone.toast("Program Initialized.", 2000);
 
@@ -70,7 +70,7 @@ public class ExperimentalStuff extends OpMode {
         telemetry.addData("Phone Gyro", bot.phone.getGyroAngle());
 
         if (gamepad1.b && bot.runtime.seconds() > 30 && !bot.phone.hasQueuedSound()) {
-            bot.phone.queueSoundFile("Thus_Spach_Zarathustra");
+            bot.phone.queueSoundFile("space_odyssey");
         }
 
         telemetry.update();

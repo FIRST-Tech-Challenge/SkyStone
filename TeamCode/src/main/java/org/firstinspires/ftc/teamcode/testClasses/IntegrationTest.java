@@ -19,7 +19,7 @@ import java.util.Iterator;
 import java.util.Scanner;
 
 @TeleOp
-public class UnitTest extends LinearOpMode {
+public class IntegrationTest extends LinearOpMode {
     Chassis chassis;
     Hook hook;
 
@@ -34,16 +34,16 @@ public class UnitTest extends LinearOpMode {
         Hook hook = new Hook(hardwareMap, new HashMap<HookServo, String>() {{
             put(HookServo.MAIN, "hook");
         }});
-        Intake intake = new Intake(hardwareMap, new HashMap<IntakeMotor, String>(){{
+        Intake intake = new Intake(hardwareMap, new HashMap<IntakeMotor, String>() {{
             put(IntakeMotor.LEFT, "left_intake");
             put(IntakeMotor.RIGHT, "right_intake");
         }});
         telemetry.setMsTransmissionInterval(1);
         telemetry.addLine("Init | v1.0");
-        Iterator<DcMotor> motorIterator= hardwareMap.dcMotor.iterator();
-        while (motorIterator.hasNext()){
+        Iterator<DcMotor> motorIterator = hardwareMap.dcMotor.iterator();
+        while (motorIterator.hasNext()) {
             DcMotor motor = motorIterator.next();
-            telemetry.addData("Motor Name: ",motor.toString());
+            telemetry.addData("Motor Name: ", motor.toString());
             telemetry.addLine("Direction: Forward");
             motor.setPower(1);
             sleep(100);
@@ -55,7 +55,6 @@ public class UnitTest extends LinearOpMode {
         Controller controller = new Controller(gamepad1);
         waitForStart();
         while (opModeIsActive()) {
-            telemetry.addData("Right Stick X: ",controller.getRightStickX());
             //Other unit test code if you want
             telemetry.update();
         }

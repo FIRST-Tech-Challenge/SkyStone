@@ -20,6 +20,10 @@ public class TeleOpMode extends LinearOpMode {
             put(ChassisMotor.BACK_LEFT, "back_left_drive");
             put(ChassisMotor.BACK_RIGHT, "back_right_drive");
         }});
+        chassis.reverseMotors(new ChassisMotor[]{
+                ChassisMotor.FRONT_LEFT,
+                ChassisMotor.BACK_LEFT
+        });
         Hook hook = new Hook(hardwareMap, new HashMap<HookServo, String>() {{
             put(HookServo.MAIN, "hook");
         }});

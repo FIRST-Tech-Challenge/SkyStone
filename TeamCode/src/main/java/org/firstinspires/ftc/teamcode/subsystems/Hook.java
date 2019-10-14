@@ -27,7 +27,7 @@ public class Hook {
     }
 
     public void runServo(double power) {
-        servos.get(HookServo.MAIN).setPosition(servos.get(HookServo.MAIN).getPosition() + power);
+        setPosition(getPosition() + power);
     }
 
 }

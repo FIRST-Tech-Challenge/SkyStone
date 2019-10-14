@@ -29,7 +29,7 @@ public class TTDriveSystem {
     /**
      * Derivative.
      */
-    private static final double D = 0.2;
+    private static final double D = 0.0;
 
     private final DcMotor frontLeft, frontRight, backLeft, backRight;
     private final DcMotor[] motors;

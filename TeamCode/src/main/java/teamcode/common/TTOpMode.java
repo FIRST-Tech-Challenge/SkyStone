@@ -2,24 +2,28 @@ package teamcode.common;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import java.util.Timer;
+
 public abstract class TTOpMode extends LinearOpMode {
 
     private static TTOpMode opMode;
 
+    private Timer timer;
+
+    public static TTOpMode currentOpMode() {
+        return opMode;
+    }
+
     @Override
     public final void runOpMode() {
         opMode = this;
-        TTTimer.init();
+        timer = new Timer();
         onInitialize();
         waitForStart();
         onStart();
         while (opModeIsActive()) ; // this is necessary if code is being run on separate threads
         onStop();
-        TTTimer.cancel();
-    }
-
-    public static TTOpMode getOpMode() {
-        return opMode;
+        timer.cancel();
     }
 
     protected abstract void onInitialize();
@@ -27,5 +31,9 @@ public abstract class TTOpMode extends LinearOpMode {
     protected abstract void onStart();
 
     protected abstract void onStop();
+
+    public Timer getTimer() {
+        return timer;
+    }
 
 }

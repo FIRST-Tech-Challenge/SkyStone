@@ -68,7 +68,7 @@ public class InAndOut extends LinearOpMode {
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
 
-        InAndOut = hardwareMap.get(DcMotor.class, "inAndOut");
+        InAndOut = hardwareMap.get(DcMotor.class, "InAndOut");
         //rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
 
         // Most robots need the motor on one side to be reversed to drive forward
@@ -116,7 +116,7 @@ public class InAndOut extends LinearOpMode {
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Motors", "left (%.2f), right (%.2f)", InAndOut);
+            //telemetry.addData("Motors", "left (%.2f), right (%.2f)", InAndOut);
             telemetry.update();
         }
     }

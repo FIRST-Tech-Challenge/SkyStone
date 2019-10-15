@@ -68,7 +68,7 @@ public class InAndOut extends LinearOpMode {
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
 
-        InAndOut = hardwareMap.get(DcMotor.class, "inAndOut");
+        InAndOut = hardwareMap.get(DcMotor.class, "InAndOut");
         //rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
 
         // Most robots need the motor on one side to be reversed to drive forward
@@ -84,7 +84,7 @@ public class InAndOut extends LinearOpMode {
         while (opModeIsActive()) {
 
             // Setup a variable for each drive wheel to save power level for telemetry
-            double leftPower;
+            //double leftPower;
            // double rightPower;
 
             // Choose to drive using either Tank Mode, or POV Mode
@@ -106,17 +106,17 @@ public class InAndOut extends LinearOpMode {
             //leftDrive.setPower(leftPower);
             //rightDrive.setPower(rightPower);
 
-            if (forward) {
+            if ( forward == true ) {
                 InAndOut.setDirection(DcMotor.Direction.FORWARD);
                 InAndOut.setPower(1);
-            } else if (reverse) {
+            } else if (reverse == true ) {
                 InAndOut.setDirection(DcMotor.Direction.REVERSE);
                 InAndOut.setPower(1);
             }
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Motors", "left (%.2f), right (%.2f)", InAndOut);
+            //telemetry.addData("Motors", "left (%.2f), right (%.2f)", InAndOut);
             telemetry.update();
         }
     }

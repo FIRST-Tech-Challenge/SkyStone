@@ -28,6 +28,8 @@ public class ArmSystem {
     private final double GRIPPER_OPEN = 0.47;
     private final double GRIPPER_CLOSE = 0;
     private int origin;
+    private int targetHeight;
+    private final int distanceConstant = 1000; // used for calculating motor speed
 
     // Use these so we can change it easily if the motor is put on backwards
     private final DcMotor.Direction FORWARD = DcMotor.Direction.FORWARD;
@@ -200,7 +202,23 @@ public class ArmSystem {
     // IMPORTANT - MUST BE SET EVERY LOOP OF AN OPMODE
     public void setSliderHeight(int pos) {
         if (pos > 8) throw new IllegalArgumentException();
-        slider.setTargetPosition(positions[pos] + origin);
+        targetHeight = pos;
+    }
+
+    public void updateHeight() {
+        /*
+        if (slider.getCurrentPosition() > targetHeight) {
+            slider.setDirection(REVERSE);
+            slider.setPower((slider.getCurrentPosition() - targetHeight) / );
+        } else {
+            slider.setDirection(FORWARD);
+        }
+
+        slider.setPower(0.1);
+
+         */
+        slider.setPower(1);
+        slider.setTargetPosition(targetHeight);
     }
 
 

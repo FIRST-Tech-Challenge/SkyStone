@@ -27,8 +27,7 @@ public class Auto_Wheeltest15203 extends LinearOpMode {
             sleep(1000);
             robot.leftFrontMotor.setPower(0.0);
             robot.leftBackMotor.setPower(1.0);
-            sleep(
-                    1000);
+            sleep(1000);
             robot.leftBackMotor.setPower(0.0);
             robot.rightFrontMotor.setPower(1.0);
             sleep(1000);

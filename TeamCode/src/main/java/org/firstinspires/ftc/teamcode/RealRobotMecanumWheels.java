@@ -84,18 +84,60 @@ public class RealRobotMecanumWheels extends LinearOpMode {
                 leftBack.setPower(move);
                 rightBack.setPower(move);
             } else if ( move >0 && move <= 1) {
-
+                leftFront.setDirection(DcMotor.Direction.FORWARD);
+                leftBack.setDirection(DcMotor.Direction.FORWARD);
+                rightFront.setDirection(DcMotor.Direction.REVERSE);
+                rightBack.setDirection(DcMotor.Direction.REVERSE);
+                leftFront.setPower(move);
+                rightFront.setPower(move);
+                leftBack.setPower(move);
+                rightBack.setPower(move);
+            } else if ( tank <= 1 && tank > 0) {
+                leftFront.setDirection(DcMotor.Direction.REVERSE);
+                leftBack.setDirection(DcMotor.Direction.REVERSE);
+                rightFront.setDirection(DcMotor.Direction.REVERSE);
+                rightBack.setDirection(DcMotor.Direction.REVERSE);
+                leftFront.setPower(tank);
+                rightFront.setPower(tank);
+                leftBack.setPower(tank);
+                rightBack.setPower(tank);
+            } else if ( tank < 0 && tank >= -1 ) {
+                leftFront.setDirection(DcMotor.Direction.FORWARD);
+                leftBack.setDirection(DcMotor.Direction.FORWARD);
+                rightFront.setDirection(DcMotor.Direction.FORWARD);
+                rightBack.setDirection(DcMotor.Direction.FORWARD);
+                leftFront.setPower(tank);
+                rightFront.setPower(tank);
+                leftBack.setPower(tank);
+                rightBack.setPower(tank);
+            } else if ( slide <= 1 && slide > 0) {
+                leftBack.setDirection(DcMotor.Direction.REVERSE);
+                leftFront.setDirection(DcMotor.Direction.FORWARD);
+                rightBack.setDirection(DcMotor.Direction.REVERSE);
+                rightFront.setDirection(DcMotor.Direction.FORWARD);
+                leftFront.setPower(slide);
+                leftBack.setPower(slide);
+                rightFront.setPower(slide);
+                rightBack.setPower(slide);
+            } else if ( slide < 0 && slide > -1) {
+                leftBack.setDirection(DcMotor.Direction.FORWARD);
+                leftFront.setDirection(DcMotor.Direction.REVERSE);
+                rightBack.setDirection(DcMotor.Direction.FORWARD);
+                rightFront.setDirection(DcMotor.Direction.REVERSE);
+                leftFront.setPower(slide);
+                leftBack.setPower(slide);
+                rightFront.setPower(slide);
+                rightBack.setPower(slide);
             }
-
-            double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x)
-            double
-            double rightx
-            double leftx
-            double lefty
-            final double v1 =
-            final double v2 =
-            final double v3 =
-            final double v4 =
+//            double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x)
+//            double
+//            double rightx
+//            double leftx
+//            double lefty
+//            final double v1 =
+//            final double v2 =
+//            final double v3 =
+//            final double v4 =
         }
     }
 }

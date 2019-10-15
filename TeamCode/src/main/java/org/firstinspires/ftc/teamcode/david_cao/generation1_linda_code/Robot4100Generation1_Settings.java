@@ -40,6 +40,12 @@ public class Robot4100Generation1_Settings {
 
     public static final double STONEORIENTSERVO_ZEROPOS = 0;
     public static final double STONEORIENTSERVO_ORIENTPOS = 0.5;
+
+    public static final double AUTONOMOUSDRAGSTONESERVO_OUTPOS = 0;
+    public static final double AUTONOMOUSDRAGSTONESERVO_INPOS = 0.6;
+
+    public static final double CAPSTONESERVO_INITIALPOS = 1.0;
+    public static final double CAPSTONESERVO_DEPOSITPOS = 0.0;
     //------------End of Configuration Settings------------
 
 }

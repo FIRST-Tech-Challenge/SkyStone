@@ -11,7 +11,8 @@ import org.darbots.darbotsftclib.libcore.templates.chassis_related.RobotMotionSy
 public class Robot4100Generation1_TeleOp extends DarbotsBasicOpMode<Robot4100Generation1_LindaCore> {
     private Robot4100Generation1_LindaCore m_RobotCore;
     private boolean m_LastDragServoOut;
-    private LoopableTimer m_Timer = null;
+    private LoopableTimer m_TimerStoneOrient = null;
+    private LoopableTimer m_TimerCapStoneDelivery = null;
 
     @Override
     public Robot4100Generation1_LindaCore getRobotCore() {
@@ -55,10 +56,10 @@ public class Robot4100Generation1_TeleOp extends DarbotsBasicOpMode<Robot4100Gen
             teleOpTask.setDriveZSpeed(ZAxis);
             teleOpTask.setDriveRotationSpeed(Turn);
 
-            if(gamepad2.dpad_up){
+            if(gamepad2.dpad_right){
                 if(!this.m_RobotCore.getLinearSlide().isBusy())
                     this.m_RobotCore.getLinearSlide().replaceTask(new TargetPosTask(null,this.m_RobotCore.getLinearSlide().getMaxPos(),Robot4100Generation1_Settings.TELEOP_LINEARSLIDESPEED));
-            }else if(gamepad2.dpad_down){
+            }else if(gamepad2.dpad_left){
                 if(!this.m_RobotCore.getLinearSlide().isBusy())
                     this.m_RobotCore.getLinearSlide().replaceTask(new TargetPosTask(null,this.m_RobotCore.getLinearSlide().getMinPos(),Robot4100Generation1_Settings.TELEOP_LINEARSLIDESPEED));
             }else{
@@ -84,16 +85,29 @@ public class Robot4100Generation1_TeleOp extends DarbotsBasicOpMode<Robot4100Gen
 
             if(gamepad2.a){
                 //Set StoneOrientServo to Orient Pos, then come back
-                if(this.m_Timer == null) {
+                if(this.m_TimerStoneOrient == null) {
                     this.m_RobotCore.setOrientServoToOrient(true);
-                    this.m_Timer = new LoopableTimer(0.8) {
+                    this.m_TimerStoneOrient = new LoopableTimer(0.8) {
                         @Override
                         protected void run() {
                             m_RobotCore.setOrientServoToOrient(false);
-                            m_Timer = null;
+                            m_TimerStoneOrient = null;
                         }
                     };
-                    this.m_Timer.start();
+                    this.m_TimerStoneOrient.start();
+                }
+            }
+            if(gamepad2.x){
+                if(m_TimerCapStoneDelivery == null){
+                    this.m_RobotCore.setCapStoneServoToDeposit(true);
+                    this.m_TimerCapStoneDelivery = new LoopableTimer(1.0) {
+                        @Override
+                        protected void run() {
+                            m_RobotCore.setCapStoneServoToDeposit(false);
+                            m_TimerCapStoneDelivery = null;
+                        }
+                    };
+                    this.m_TimerCapStoneDelivery.start();
                 }
             }
 
@@ -106,8 +120,11 @@ public class Robot4100Generation1_TeleOp extends DarbotsBasicOpMode<Robot4100Gen
             telemetry.addData("LinearSlide","" + this.m_RobotCore.getLinearSlide().getCurrentPosition() + "[" + this.m_RobotCore.getLinearSlide().getCurrentPercent() + "%]," + (this.m_RobotCore.getLinearSlide().isBusy() ? "Busy" : "Not Busy"));
             telemetry.update();
             this.m_RobotCore.updateStatus();
-            if(this.m_Timer != null){
-                this.m_Timer.updateStatus();
+            if(this.m_TimerStoneOrient != null){
+                this.m_TimerStoneOrient.updateStatus();
+            }
+            if(this.m_TimerCapStoneDelivery != null){
+                this.m_TimerCapStoneDelivery.updateStatus();
             }
         }
     }

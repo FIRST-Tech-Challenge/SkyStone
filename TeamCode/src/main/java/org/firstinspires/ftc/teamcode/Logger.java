@@ -35,7 +35,6 @@ public class Logger {
             if (pw == null) {
                 init();
             }
-
             String timestamp = new SimpleDateFormat("HH:mm:ss.SSS", Locale.US).format(new Date());
 
             pw.println(timestamp + " " + message);

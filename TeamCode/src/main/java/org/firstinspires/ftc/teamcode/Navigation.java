@@ -6,13 +6,15 @@ public class Navigation {
     final double ROBOT_WHEELBASE_WIDTH = 36.83; //unit in cm
     Position position = new Position();
 
+    //10/5 Gavin and Hayden, calculate relative angle
     public double calculateAngle(double left_encoder, double right_encoder){
         double encoder_difference = convertEncoderCountsToCentimeters( right_encoder - left_encoder);
         double angle =  (180 * (encoder_difference))/(Math.PI * ROBOT_WHEELBASE_WIDTH);
         return angleWrap(angle);
     }
 
-    //William Gutrich 10/13/19, Set all positions
+    //10/5 & 10/11 Athena, Alejandra, Claire, Marianna implemented and calculated displacement for robot
+    //William Gutrich 10/13/19, refactor code to a method to set all positions
     public void setAllPosition(double leftEncoder, double rightEncoder, double horEncoder, double angle) {
         double x, y = 0;
 
@@ -30,7 +32,6 @@ public class Navigation {
                 y = convertEncoderCountsToCentimeters  (leftEncoder);
 
         }
-
 
         double hypot = Math.hypot(x, y);
 
@@ -50,31 +51,9 @@ public class Navigation {
         position.setWorldAngle(Math.atan2(worldY,worldX));
     }
 
-    //Alejandra, Athena, Marianna update the world position 10/11/19
-    public void  calculateWorldX(){
-        double pX = position.getWorldPreviousX();
-        double rX = position.getRelativeX();
-        position.setWorldX(pX + rX);
-    }
-
-    public void calculateWorldY () {
-        double pY = position.getWorldPreviousY();
-        double rY = position.getRelativeY();
-        position.setWorldY(pY + rY);
-    }
-
-    public void calculateWorldAngle () {
-        double pA = position.getWorldPreviousAngle();
-        double rA = position.getRelativeAngle();
-        position.setWorldAngle(pA + rA);
-    }
     // October 6th: Lucas and Marianna
     public double convertEncoderCountsToCentimeters(double encoderCounts) {
         return encoderCounts*((ENCODER_WHEEL_DIAMETER*Math.PI)/ENCODER_COUNTS_PER_ROTATION);
-    }
-
-    public void findDisplacement() {
-
     }
 
     //10/14 Gabriel, limit angle range -180 to 180

@@ -1,9 +1,8 @@
 package org.firstinspires.ftc.teamcode.components;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import  com.qualcomm.robotcore.hardware.Servo;
-
-import java.io.Console;
 import java.util.EnumMap;
 
 /*
@@ -20,13 +19,21 @@ public class ArmSystem {
     private Servo gripper;
     private Servo wrist;
     private Servo elbow;
-    private Servo pivot; // Not yet implemented by build team, ignore until we have it
-    protected HardwareMap hardwareMap;
+    private Servo pivot;
+    private DcMotor slider;
+    private DigitalChannel limitSwitch; // DigitalChannel is just fancy talk for a switch
     private final double WRIST_HOME = 0;
     private final double ELBOW_HOME = 0;
     private final double PIVOT_HOME = 0;
     private final double GRIPPER_OPEN = 0.47;
-    private final double GRIPPER_CLOSE = 0; // I think? TODO: Figure out overheating issue
+    private final double GRIPPER_CLOSE = 0;
+    private int origin;
+
+    // Use these so we can change it easily if the motor is put on backwards
+    private final DcMotor.Direction FORWARD = DcMotor.Direction.FORWARD;
+    private final DcMotor.Direction REVERSE = DcMotor.Direction.REVERSE;
+
+    private int[] positions = {0, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000};
     protected Position QueuedPosition;
 
     public enum Position {
@@ -55,12 +62,13 @@ public class ArmSystem {
      Probably should be controlled by the D pad or something.
      */
 
-    public ArmSystem(EnumMap<ServoNames, Servo> servos) {
-        this.hardwareMap = hardwareMap;
+    public ArmSystem(EnumMap<ServoNames, Servo> servos, DcMotor slider, DigitalChannel limitSwitch) {
         this.gripper = servos.get(ServoNames.GRIPPER);
         this.wrist = servos.get(ServoNames.WRIST);
         this.elbow = servos.get(ServoNames.ELBOW);
         this.pivot = servos.get(ServoNames.PIVOT);
+        this.slider = slider;
+
     }
 
     public void moveGripper(double pos) {
@@ -172,4 +180,28 @@ public class ArmSystem {
     public void go() {
         this.movePresetPosition(QueuedPosition);
     }
+
+    // Moves the slider down until it hits the limit switch. Used to callibrate the encoder.
+    public void callibrate() {
+        slider.setDirection(REVERSE);
+        while (!limitSwitch.getState()) {
+            slider.setPower(0.1);
+        }
+        slider.setPower(0);
+        slider.setDirection(FORWARD);
+        // move up slightly to fix tension on the string
+        while (limitSwitch.getState()) {
+            slider.setPower(0.1);
+        }
+        this.origin = slider.getCurrentPosition();
+    }
+
+    // Pos should be the # of blocks high it should be
+    // IMPORTANT - MUST BE SET EVERY LOOP OF AN OPMODE
+    public void setSliderHeight(int pos) {
+        if (pos > 8) throw new IllegalArgumentException();
+        slider.setTargetPosition(positions[pos] + origin);
+    }
+
+
 }

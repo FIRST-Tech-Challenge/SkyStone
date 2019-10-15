@@ -106,10 +106,10 @@ public class InAndOut extends LinearOpMode {
             //leftDrive.setPower(leftPower);
             //rightDrive.setPower(rightPower);
 
-            if ( forward = 1 ) {
+            if ( forward = true ) {
                 InAndOut.setDirection(DcMotor.Direction.FORWARD);
                 InAndOut.setPower(1);
-            } else if (reverse) {
+            } else if (reverse = true ) {
                 InAndOut.setDirection(DcMotor.Direction.REVERSE);
                 InAndOut.setPower(1);
             }

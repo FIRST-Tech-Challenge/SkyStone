@@ -53,7 +53,12 @@ public class ControlMode extends OpMode {
                 rotate((double) -gamepad1.left_stick_x);
             else if (Math.abs(gamepad1.left_stick_x) < Math.abs(gamepad1.left_stick_y))
                 moveForward((double) -gamepad1.left_stick_y);
-        } /*else if (gamepad1.right_stick_y != 0 || gamepad1.right_stick_x != 0 ) {
+        } else {
+            moveForward(0.0);
+        }
+
+
+        /*else if (gamepad1.right_stick_y != 0 || gamepad1.right_stick_x != 0 ) {
             double power = Math.abs(gamepad1.right_stick_x);
             if (Math.abs(gamepad1.right_stick_x) > Math.abs(gamepad1.right_stick_y)) {
                 if (gamepad1.right_stick_x < 0) { // Wheels rotate outside to move the vehicle left vertically
@@ -83,8 +88,8 @@ public class ControlMode extends OpMode {
             motorBR.setPower(rightPower);
         } */
 
-        if (gamepad1.left_stick_y == 0 && gamepad1.left_stick_x == 0)
-            moveForward((0));
+//        if (gamepad1.left_stick_y == 0 && gamepad1.left_stick_x == 0)
+//            moveForward((0));
 
         if (gamepad1.dpad_up)
             motorArm1.setPower(0.5);
@@ -101,30 +106,11 @@ public class ControlMode extends OpMode {
             motorArm3.setPower(0);
 
         if (gamepad1.b)
-            motorArm2.setPower(1);
+            motorArm2.setPower(0.25);
+        else if (gamepad1.a)
+            motorArm2.setPower(-0.25);
         else
-            for(int i = 0; i < 10; i++)
-                if(gamepad1.b) {
-                    motorArm2.setPower(1);
-                    break;
-                } else if(i == 9) {
-                    motorArm2.setPower(0);
-                } else {
-                    motorArm2.setPower(1);
-                }
-
-        if (gamepad1.a)
-            motorArm2.setPower(-0.5);
-        else
-            for(int i = 0; i < 10; i++)
-                if(gamepad1.b) {
-                    motorArm2.setPower(-0.5);
-                    break;
-                } else if(i == 9) {
-                    motorArm2.setPower(0);
-                } else {
-                    motorArm2.setPower(-0.5);
-                }
+            motorArm2.setPower(0.0);
     }
 
     //helper method to report data to controller phone.

@@ -13,7 +13,7 @@ public class ServoTester extends OpMode {
     private String name;
     private Object[] servos;
     private int index;
-    private boolean pressed;
+    private int pressed;
     private double position;
 
     @Override
@@ -26,7 +26,7 @@ public class ServoTester extends OpMode {
         }
         index = 0;
         position = 0;
-        pressed = false;
+        pressed = 0;
     }
 
     @Override
@@ -43,11 +43,16 @@ public class ServoTester extends OpMode {
         telemetry.addData("Servo", name);
         telemetry.addData("Position", position);
         telemetry.update();
-        if (gamepad1.dpad_up && !gamepad1.dpad_down) {
+        if (gamepad1.dpad_up && !gamepad1.dpad_down && pressed != 1) {
+            pressed = 1;
             index++;
         }
-        if (gamepad1.dpad_down && !gamepad1.dpad_up) {
+        if (gamepad1.dpad_down && !gamepad1.dpad_up && pressed != -1) {
+            pressed = -1;
             index += servos.length - 1;
+        }
+        if (!gamepad1.dpad_up && !gamepad1.dpad_down) {
+            pressed = 0;
         }
         index %= servos.length;
     }

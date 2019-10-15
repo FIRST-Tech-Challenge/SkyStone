@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.components;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import  com.qualcomm.robotcore.hardware.Servo;
 import java.util.EnumMap;
@@ -21,15 +22,20 @@ public class ArmSystem {
     private Servo elbow;
     private Servo pivot;
     private DcMotor slider;
-    private DigitalChannel limitSwitch; // true is unpressed, false is pressed
+    private DigitalChannel limitSwitch; // DigitalChannel is just fancy talk for a switch
     private final double WRIST_HOME = 0;
     private final double ELBOW_HOME = 0;
     private final double PIVOT_HOME = 0;
     private final double GRIPPER_OPEN = 0.47;
     private final double GRIPPER_CLOSE = 0;
     private int origin;
-    private int targetHeight;
-    private final int distanceConstant = 1000; // used for calculating motor speed
+
+    // Use these so we can change it easily if the motor is put on backwards
+    private final DcMotor.Direction FORWARD = DcMotor.Direction.FORWARD;
+    private final DcMotor.Direction REVERSE = DcMotor.Direction.REVERSE;
+
+    private int[] positions = {0, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000};
+    protected Position QueuedPosition;
 
     // Use these so we can change it easily if the motor is put on backwards
     private final DcMotor.Direction UP = DcMotor.Direction.FORWARD;
@@ -204,6 +210,30 @@ public class ArmSystem {
     public void go() {
         this.movePresetPosition(queuedPosition);
     }
+
+    // Moves the slider down until it hits the limit switch. Used to callibrate the encoder.
+    public void callibrate() {
+        slider.setDirection(REVERSE);
+        while (!limitSwitch.getState()) {
+            slider.setPower(0.1);
+        }
+        slider.setPower(0);
+        slider.setDirection(FORWARD);
+        // move up slightly to fix tension on the string
+        while (limitSwitch.getState()) {
+            slider.setPower(0.1);
+        }
+        this.origin = slider.getCurrentPosition();
+    }
+
+    // Pos should be the # of blocks high it should be
+    // IMPORTANT - MUST BE SET EVERY LOOP OF AN OPMODE
+    public void setSliderHeight(int pos) {
+        if (pos > 8) throw new IllegalArgumentException();
+        slider.setTargetPosition(positions[pos] + origin);
+    }
+
+
 
     // Moves the slider down until it hits the limit switch. Used to calibrate the encoder.
     // Must be called every iteration of init_loop.

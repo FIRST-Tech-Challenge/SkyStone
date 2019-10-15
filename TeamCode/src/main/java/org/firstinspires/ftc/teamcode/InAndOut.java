@@ -84,7 +84,7 @@ public class InAndOut extends LinearOpMode {
         while (opModeIsActive()) {
 
             // Setup a variable for each drive wheel to save power level for telemetry
-            double leftPower;
+            //double leftPower;
            // double rightPower;
 
             // Choose to drive using either Tank Mode, or POV Mode

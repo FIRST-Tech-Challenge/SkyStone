@@ -10,7 +10,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
+import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
+import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -31,7 +33,7 @@ import java.util.List;
  * 40 1120
  * 20 560
  */
-@Autonomous(name= "opencvtest", group="Sky autonomous")
+@Autonomous(name= "opencvtest1", group="Sky autonomous")
 //@Disabled
 public class onlyopencv extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
@@ -43,6 +45,7 @@ public class onlyopencv extends LinearOpMode {
 //
 //    private Servo   servo        = null;
     private final int encoderTicks = 1120;
+    public static double val = -1;
 
     OpenCvCamera phoneCam;
     StageSwitchingPipeline stageSwitchingPipeline;
@@ -139,7 +142,9 @@ public class onlyopencv extends LinearOpMode {
         while (opModeIsActive())
         {
 
-            telemetry.addData("Num contours found", stageSwitchingPipeline.getNumContoursFound());
+            //telemetry.addData("Num contours found", stageSwitchingPipeline.getNumContoursFound());
+            telemetry.addData("val", val);
+
             telemetry.update();
             sleep(100);
             //call movement functions
@@ -151,66 +156,20 @@ public class onlyopencv extends LinearOpMode {
 
     }
 
-    //draws rectangle
-    class SamplePipeline extends OpenCvPipeline
-    {
-        /*
-         * NOTE: if you wish to use additional Mat objects in your processing pipeline, it is
-         * highly recommended to declare them here as instance variables and re-use them for
-         * each invocation of processFrame(), rather than declaring them as new local variables
-         * each time through processFrame(). This removes the danger of causing a memory leak
-         * by forgetting to call mat.release(), and it also reduces memory pressure by not
-         * constantly allocating and freeing large chunks of memory.
-         */
-
-        @Override
-        public Mat processFrame(Mat input)
-        {
-            /*
-             * IMPORTANT NOTE: the input Mat that is passed in as a parameter to this method
-             * will only dereference to the same image for the duration of this particular
-             * invocation of this method. That is, if for some reason you'd like to save a copy
-             * of this particular frame for later use, you will need to either clone it or copy
-             * it to another Mat.
-             */
-
-            /*
-             * Draw a simple box around the middle 1/2 of the entire frame
-             */
-            Imgproc.rectangle(
-                    input,
-                    new Point(
-                            input.cols()/4,
-                            input.rows()/4),
-                    new Point(
-                            input.cols()*(3f/4f),
-                            input.rows()*(3f/4f)),
-                    new Scalar(0, 255, 0), 4);
-
-            /**
-             * NOTE: to see how to get data from your pipeline to your OpMode as well as how
-             * to change which stage of the pipeline is rendered to the viewport when it is
-             * tapped, please see {@link PipelineStageSwitchingExample}
-             */
-
-            return input;
-        }
-    }
-
     //detection, get pipeline data to opmode
     static class StageSwitchingPipeline extends OpenCvPipeline
     {
         Mat yCbCrChan2Mat = new Mat();
         Mat thresholdMat = new Mat();
-        Mat contoursOnFrameMat = new Mat();
+        Mat all = new Mat();
         List<MatOfPoint> contoursList = new ArrayList<>();
         int numContoursFound;
 
         enum Stage
         {
-            YCbCr_CHAN2,//color difference.
-            THRESHOLD,//idk
-            CONTOURS_OVERLAYED_ON_FRAME,//includes outlines
+            YCbCr_CHAN2,//color difference. greyscale
+            THRESHOLD,//b&w
+            detection,//includes outlines
             RAW_IMAGE,//displays raw view
         }
 
@@ -247,18 +206,84 @@ public class onlyopencv extends LinearOpMode {
              * from the Rover Ruckus game.
              */
 
-            //color diff cb. lower cb = more blue = skystone
-            Imgproc.cvtColor(input, yCbCrChan2Mat, Imgproc.COLOR_RGB2YCrCb);
-            Core.extractChannel(yCbCrChan2Mat, yCbCrChan2Mat, 2);
+            //color diff cb.
+            //lower cb = more blue = skystone = white
+            //higher cb = less blue = yellow stone = grey
+            Imgproc.cvtColor(input, yCbCrChan2Mat, Imgproc.COLOR_RGB2YCrCb);//converts rgb to ycrcb
+            Core.extractChannel(yCbCrChan2Mat, yCbCrChan2Mat, 2);//takes cb difference and stores
 
-            //idk
+            //b&w
             Imgproc.threshold(yCbCrChan2Mat, thresholdMat, 102, 255, Imgproc.THRESH_BINARY_INV);
 
-            //outline
+            //outline/contour
             Imgproc.findContours(thresholdMat, contoursList, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
-            numContoursFound = contoursList.size();
-            input.copyTo(contoursOnFrameMat);
-            Imgproc.drawContours(contoursOnFrameMat, contoursList, -1, new Scalar(0, 0, 255), 3, 8);
+            numContoursFound = contoursList.size();//sets size according to number of contours/outlines
+            yCbCrChan2Mat.copyTo(all);//copies mat object
+            //Imgproc.drawContours(all, contoursList, -1, new Scalar(255, 0, 0), 3, 8);//draws blue contours
+
+            MatOfPoint2f approxCurve = new MatOfPoint2f();
+            //For each contour found
+            for (int i=0; i<contoursList.size(); i++)
+            {
+                //Convert contours(i) from MatOfPoint to MatOfPoint2f
+                MatOfPoint2f contour2f = new MatOfPoint2f( contoursList.get(i).toArray() );
+                //Processing on mMOP2f1 which is in type MatOfPoint2f
+                double approxDistance = Imgproc.arcLength(contour2f, true)*0.02;
+                Imgproc.approxPolyDP(contour2f, approxCurve, approxDistance, true);
+
+                //Convert back to MatOfPoint
+                MatOfPoint points = new MatOfPoint(approxCurve.toArray() );
+
+                // Get bounding rect of contour
+                Rect rect = Imgproc.boundingRect(points);
+
+                double[] pix = thresholdMat.get(input.rows()/2, input.cols()/2);
+
+                val = pix[0];
+
+                Point center = new Point(input.cols()/2, input.rows()/2);
+
+                Imgproc.circle(all, center,10, new Scalar( 255, 0, 0 ),1 );
+
+                Point point = new Point(input.cols()/2, input.rows()*5f/8f);
+
+                if(rect.contains(point)) {
+                    Imgproc.rectangle(all,
+                            new Point(rect.x, rect.y),
+                            new Point(rect.x + rect.width, rect.y + rect.height),
+                            new Scalar(255, 0, 0, 255), 3);
+                    break;
+                }
+
+            }
+
+            Imgproc.rectangle(
+                    all,
+                    new Point(
+                            input.cols()/8,
+                            input.rows()*4.5/8),
+                    new Point(
+                            input.cols()*(2.9f/8f),
+                            input.rows()*(5.5f/8f)),
+                    new Scalar(0, 255, 0), 4);
+            Imgproc.rectangle(
+                    all,
+                    new Point(
+                            input.cols()*(3.1/8),
+                            input.rows()*4.5/8),
+                    new Point(
+                            input.cols()*(4.9f/8f),
+                            input.rows()*(5.5f/8f)),
+                    new Scalar(0, 255, 0), 4);
+            Imgproc.rectangle(
+                    all,
+                    new Point(
+                            input.cols()*(5.1/8),
+                            input.rows()*4.5/8),
+                    new Point(
+                            input.cols()*(7f/8f),
+                            input.rows()*(5.5f/8f)),
+                    new Scalar(0, 255, 0), 4);
 
             switch (stageToRenderToViewport)
             {
@@ -272,9 +297,9 @@ public class onlyopencv extends LinearOpMode {
                     return thresholdMat;
                 }
 
-                case CONTOURS_OVERLAYED_ON_FRAME:
+                case detection:
                 {
-                    return contoursOnFrameMat;
+                    return all;
                 }
 
                 case RAW_IMAGE:

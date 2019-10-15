@@ -51,6 +51,8 @@ public class RealRobotMecanumWheels extends LinearOpMode {
     private DcMotor leftBack = null;
     private DcMotor rightBack = null;
 
+        waitForStart();
+        runtime.reset();
 
     @Override
     public void runOpMode() {

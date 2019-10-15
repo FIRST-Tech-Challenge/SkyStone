@@ -52,7 +52,7 @@ public class LibraryTensorFlowObjectDetectionNoLight {
 
     // Set Vuforia Key so it knows what phone it is connecting to
     private static final String VUFORIA_KEY = "Aa4mtdP/////AAABmSRcR7UP9kS4nIeX1am8Tf5TlWuaSoXF9p9tlyFSx0zDxT39pe+kg1dseqSvlAQBMws92KngQN7wl3RHkCgjre8b+A9RXXtGx0mlQ1PWbMIf4AlDdHncv6ERajxzi+HwOgFkMt44eQ9gVLBLUvxzDepzfZaMSfalcWz3qtbhq8hH2R3npGb+p2x6XVY6IWZSwkKpnCFVddAhsyuToQ/S5ndIkeB2O4mquvWESjFDc6ALl/SU7Rcg5Qb/chtv2dK+EWkcaf+XSjzn7KvOsaykUeOk2ChCIEQizneBH0ILH28lPMGjxTky7qnTf+5Jb/IHpd64ZtTZN9Q2Nyrlce1750yUVtnqSxRdUPPaJTiBQrKo";
-    HardwareBeepTest robot;
+    HardwareBeep robot;
     Telemetry telemetry;
     ElapsedTime timer;
     // Set Vuforia as a Localizer
@@ -63,13 +63,13 @@ public class LibraryTensorFlowObjectDetectionNoLight {
     /**
      * Sets the robot and telemetry for the program.
      *
-     * @param newHardwareBeepTest A new variable for Hardware Beep
+     * @param newHardwareBeep A new variable for Hardware Beep
      * @param newTelemetry    A call to use telemetry
      */
-    public LibraryTensorFlowObjectDetectionNoLight(HardwareBeepTest newHardwareBeepTest, Telemetry
+    public LibraryTensorFlowObjectDetectionNoLight(HardwareBeep newHardwareBeep, Telemetry
             newTelemetry) {
 
-        robot = newHardwareBeepTest;
+        robot = newHardwareBeep;
         telemetry = newTelemetry;
 
     }
@@ -86,7 +86,7 @@ public class LibraryTensorFlowObjectDetectionNoLight {
         initVuforia();
 
         // Turn on the light on phone to make the stones visible
-        phoneLight(true);
+        phoneLight(false);
 
         if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
             initTfod();

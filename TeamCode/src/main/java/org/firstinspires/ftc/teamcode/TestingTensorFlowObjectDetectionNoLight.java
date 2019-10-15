@@ -30,13 +30,13 @@ public class TestingTensorFlowObjectDetectionNoLight extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-
         telemetry.addData("Telemetry", "robot initializing");
         telemetry.update();
         //initializing the hardware map
         robot.init(hardwareMap);
         telemetry.addData("Telemetry", "run opMode start");
         telemetry.update();
+
 
         //wait for start
         waitForStart();

@@ -5,12 +5,8 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cColorSensor;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.sensors.SensorMB1242;
@@ -24,26 +20,20 @@ import org.firstinspires.ftc.teamcode.sensors.SensorMB1242;
  * robot. We pull this Hardware Map in all the programs we use a part of the robot. In this program
  * we intialize the encoders on the motors we want to call the encoder for.
  */
-public class HardwareBeep {
+public class TestHardwareBeep {
 
     // Set Public OpMode Members
     public DcMotor leftFront = null;
     public DcMotor leftBack = null;
     public DcMotor rightFront = null;
     public DcMotor rightBack = null;
-    public DcMotor rightIntake = null;
-    public DcMotor leftIntake = null;
-    public BNO055IMU imu = null;
-    public ModernRoboticsI2cColorSensor colorSensor = null;
-    public SensorMB1242 rightSonic = null;
-    public SensorMB1242 leftSonic = null;
 
     // Set local OpMode Members
     HardwareMap hwMap = null;
     private ElapsedTime period = new ElapsedTime();
 
     // Constructor
-    public HardwareBeep() {
+    public TestHardwareBeep() {
     }
 
     /**
@@ -67,13 +57,6 @@ public class HardwareBeep {
 //        leftIntake = hwMap.get(DcMotor.class, "left_intake");
 //        rightIntake = hwMap.get(DcMotor.class, "right_intake");
 
-
-        imu = hwMap.get(BNO055IMU.class, "imu");
-        colorSensor = hwMap.get(ModernRoboticsI2cColorSensor.class, "color_Sensor");
-        leftSonic = hwMap.get(SensorMB1242.class, "left_sonic");
-        rightSonic = hwMap.get(SensorMB1242.class, "right_sonic");
-        //rightSonic.changeI2cAddress(0xe2);
-
         // Set Motor and Servo Direction
         leftFront.setDirection(DcMotor.Direction.FORWARD);
         leftBack.setDirection(DcMotor.Direction.FORWARD);
@@ -96,18 +79,5 @@ public class HardwareBeep {
         rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        // Set Motors to Run Using Encoders
-//        leftIntake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        rightIntake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        // Set IMU Parameters
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.mode = BNO055IMU.SensorMode.IMU;
-        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.loggingEnabled = false;
-
-        // Initialize IMU
-        imu.initialize(parameters);
     }
 }

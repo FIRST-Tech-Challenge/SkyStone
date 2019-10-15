@@ -44,12 +44,16 @@ public class League1TTArm {
         TTOpMode.currentOpMode().telemetry.update();
     }
 
-    public void setClawPos(double pos) {
-        claw.setPosition(pos);
+    public void openClaw() {
+        claw.setPosition(1.0);
     }
 
-    public double getClawPos() {
-        return this.claw.getPosition();
+    public void closeClaw() {
+        claw.setPosition(0.0);
+    }
+
+    public boolean clawIsOpen() {
+        return claw.getPosition() == 1.0;
     }
 
 }

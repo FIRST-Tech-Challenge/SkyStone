@@ -22,6 +22,8 @@ public class FourWheelsDriveBot
     static final int DIRECTION_BACKWARD = 2;
     static final int DIRECTION_LEFT = 3;
     static final int DIRECTION_RIGHT = 4;
+    static final int DIRECTION_RQUARTER = 5;
+    static final int DIRECTION_LQUARTER = 6;
 
     public DcMotor leftFront = null;
     public DcMotor rightFront = null;
@@ -53,6 +55,7 @@ public class FourWheelsDriveBot
         rightRear.setDirection(DcMotor.Direction.REVERSE);
         rightFront.setDirection(DcMotor.Direction.REVERSE);
 
+
 //        heavyDutyArm = hwMap.get(DcMotor.class, "arm");
 
         leftFront.setPower(0);
@@ -83,6 +86,25 @@ public class FourWheelsDriveBot
 //        heavyDutyArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
     }
+
+    public void driveByVector(double vectorX, double vectorY){
+        leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        // assume leftFront and rightRear runs at same speed as a
+        // assume rightFront and leftRear runs at same speed as b
+        // 4x = 2a - 2b
+        // 4y = 2a + 2b
+        // =====>
+        // a = x + y
+        // b = y - x
+        leftFront.setPower(vectorX + vectorY);
+        rightFront.setPower(vectorY - vectorX);
+        leftRear.setPower(vectorY - vectorX);
+        rightRear.setPower(vectorY + vectorX);
+    }
+
 
     public void testOneMotor(DcMotor motor, double speed, int direction){
         // reset the timeout time and start motion.
@@ -142,6 +164,16 @@ public class FourWheelsDriveBot
                 rightFront.setTargetPosition(rightFront.getCurrentPosition() + target);
                 leftRear.setTargetPosition(leftRear.getCurrentPosition() + target);
                 rightRear.setTargetPosition(rightRear.getCurrentPosition() - target);
+            case DIRECTION_RQUARTER:
+                leftFront.setTargetPosition(leftFront.getCurrentPosition() + target);
+                rightFront.setTargetPosition(rightFront.getCurrentPosition() - target);
+                leftRear.setTargetPosition(leftRear.getCurrentPosition() + target);
+                rightRear.setTargetPosition(rightRear.getCurrentPosition() - target);
+            case DIRECTION_LQUARTER:
+                leftFront.setTargetPosition(leftFront.getCurrentPosition() - target);
+                rightFront.setTargetPosition(rightFront.getCurrentPosition() + target);
+                leftRear.setTargetPosition(leftRear.getCurrentPosition() - target);
+                rightRear.setTargetPosition(rightRear.getCurrentPosition() + target);
                 break;
             default:
                 String msg = String.format("Unexcepted direction value (%d) for driveStraightByDistance()", direction);

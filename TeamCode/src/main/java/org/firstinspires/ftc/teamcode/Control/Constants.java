@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Control;
 
+import com.qualcomm.robotcore.hardware.Servo;
+
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
@@ -46,6 +48,10 @@ public class Constants {
     public static final String motorFLS = "motorFL";
     public static final String motorBRS = "motorBR";
     public static final String motorBLS = "motorBL";
+    public static final String linears = "linear";
+    public static final String racks = "rack";
+    public static final String servos = "servo";
+
 
 
 }

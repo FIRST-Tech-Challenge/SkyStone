@@ -30,10 +30,13 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 import static org.firstinspires.ftc.teamcode.Control.Constants.COUNTS_PER_INCH;
 import static org.firstinspires.ftc.teamcode.Control.Constants.COUNTS_PER_MOTOR_REV;
+import static org.firstinspires.ftc.teamcode.Control.Constants.linears;
 import static org.firstinspires.ftc.teamcode.Control.Constants.motorBLS;
 import static org.firstinspires.ftc.teamcode.Control.Constants.motorBRS;
 import static org.firstinspires.ftc.teamcode.Control.Constants.motorFLS;
 import static org.firstinspires.ftc.teamcode.Control.Constants.motorFRS;
+import static org.firstinspires.ftc.teamcode.Control.Constants.racks;
+import static org.firstinspires.ftc.teamcode.Control.Constants.servos;
 
 public class Crane {
 
@@ -48,11 +51,16 @@ public class Crane {
         for (setupType type: setup) {
             switch (type) {
                 case autonomous:
-
+                    setupDrivetrain();
+                    break;
+                case drive:
                     setupDrivetrain();
                     break;
                 case camera:
                     setupCamera();
+                    break;
+                case claw:
+                    setupClaw();
                     break;
             }
 
@@ -113,6 +121,11 @@ public class Crane {
     public DcMotor motorBR;
     public DcMotor motorBL;
 
+    public DcMotor linear;
+    public DcMotor rack;
+
+    public Servo servo;
+
     public double StrafetoTotalPower = 2.0/3.0;
 
     //----       IMU        ----
@@ -150,6 +163,14 @@ public class Crane {
         motorBL = motor(motorBLS, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.FLOAT);
 
         motorDriveMode(EncoderMode.ON, motorFR, motorFL, motorBR, motorBL);
+    }
+
+    public void setupClaw() throws InterruptedException {
+        rack = motor(racks, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.FLOAT);
+        linear = motor(linears, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.BRAKE);
+        servo = servo(servos, Servo.Direction.FORWARD, 0, 1, 0);
+
+        motorDriveMode(EncoderMode.ON, rack, linear);
     }
 
     //-----------------------HARDWARE SETUP FUNCTIONS---------------------------------------
@@ -537,7 +558,7 @@ public class Crane {
         ON, OFF;
     }
     public enum setupType{
-        autonomous, teleop, endgame, drive, camera;
+        autonomous, teleop, endgame, drive, camera, claw;
     }
 
     //-------------------SET FUNCTIONS--------------------------------

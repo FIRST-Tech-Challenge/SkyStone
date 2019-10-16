@@ -33,17 +33,21 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
+
 @TeleOp(name = "Servo Test1", group = "Concept")
 
 public class Servotest extends LinearOpMode {
-    Servo servo;
+    Servo Rotationservo, RightServo, LeftServo;
 
     @Override
     public void runOpMode() {
 
         // Connect to servo (Assume PushBot Left Hand)
         // Change the text in quotes to match any servo name on your robot.
-        servo = hardwareMap.get(Servo.class, "servo");
+        Rotationservo = hardwareMap.get(Servo.class, "rotservo");
+        RightServo = hardwareMap.get(Servo.class, "rightservo");
+        LeftServo = hardwareMap.get(Servo.class, "leftservo");
+
 
         // Wait for the start button
         telemetry.addData(">", "Press Start to scan Servo.");
@@ -56,11 +60,20 @@ public class Servotest extends LinearOpMode {
         // Scan servo till stop pressed.
         while (opModeIsActive()) {
 
-            if (gamepad1.a) {
-                servo.setPosition(0);
-            } else if (gamepad1.b) {
-                servo.setPosition(1);
+            if (gamepad1.y) {
+                Rotationservo.setPosition(1);
+            } else if (gamepad1.a) {
+                Rotationservo.setPosition(0);
             }
+            if (gamepad1.b) {
+                LeftServo.setPosition(1);
+                RightServo.setPosition(1);
+            } else if (gamepad1.x) {
+                LeftServo.setPosition(0);
+                RightServo.setPosition(0);
+
+            }
+
         }
     }
 }

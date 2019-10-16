@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -29,6 +30,7 @@ right = Range.clip(right, -1, 1);
 left = Range.clip(left, -1, 1);
 
 */
+@TeleOp(name="TeleOP", group="Iterative Opmode")
 
 public class JoystickTest extends OpMode {
     DcMotor frontleft, frontright, backleft, backright;

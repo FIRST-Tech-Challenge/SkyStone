@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.SubAssembly.Claimer;
+package org.firstinspires.ftc.teamcode.SubAssembly.Grabber;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;

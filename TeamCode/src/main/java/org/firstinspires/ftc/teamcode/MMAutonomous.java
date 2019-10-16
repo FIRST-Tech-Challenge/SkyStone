@@ -76,7 +76,7 @@ public class MMAutonomous extends LinearOpMode {
         {
             telemetry.addData("encoder-fwd", robot.rearLeft.getCurrentPosition() + "  busy=" + robot.rearLeft.isBusy());
             telemetry.update();
-            idle()
+            idle();
         }
 
         // stop driving

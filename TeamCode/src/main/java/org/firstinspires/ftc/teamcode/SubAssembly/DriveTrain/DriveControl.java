@@ -11,10 +11,11 @@ public class DriveControl {
     private DcMotor FrontLeftM = null;
     private DcMotor BackRightM = null;
     private DcMotor BackLeftM = null;
-    private double MAX_SPEED = 0.6;
+    private double MAX_SPEED = 0.8;
+    private double GEARING = 2.0/3.0;
     private double ENCODER_LINES = 1120;
-    private double WHEEL_DIAMETER_CM = 4*2.54;
-    private double CONVERT_CM_TO_ENCODER = ENCODER_LINES/(3.1415*WHEEL_DIAMETER_CM);
+    private double WHEEL_CIRCUMFERENCE_CM = 3.1415 * (4 * 2.54);
+    private double CONVERT_CM_TO_ENCODER = GEARING * ENCODER_LINES / WHEEL_CIRCUMFERENCE_CM;
     private ElapsedTime runtime = new ElapsedTime();
 
     public void init(LinearOpMode opMode) {
@@ -217,6 +218,10 @@ public class DriveControl {
         BackLeftM.setPower(speedBL);
         BackRightM.setPower(speedBR);
 
+        // Display it for the driver.
+        opmode.telemetry.addData("Start -> Target", "%7d :%7d", startFL, targetFL);
+        opmode.telemetry.update();
+
         // keep looping while we are still active, and there is time left, and both motors are running.
         // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
         // its target position, the motion will stop.  This is "safer" in the event that the robot will
@@ -226,16 +231,6 @@ public class DriveControl {
         while (!opmode.isStopRequested() &&
                 (FrontLeftM.isBusy() || FrontRightM.isBusy() ||
                         BackLeftM.isBusy() || BackRightM.isBusy())) {
-
-            // Display it for the driver.
-            opmode.telemetry.addData("Start -> Target", "%7d :%7d", startFL, targetFL);
-            opmode.telemetry.addData("Running", "%7d :%7d",
-                    FrontLeftM.getCurrentPosition(),
-                    FrontRightM.getCurrentPosition());
-            opmode.telemetry.addData("Running", "%7d :%7d",
-                    BackLeftM.getCurrentPosition(),
-                    BackRightM.getCurrentPosition());
-            opmode.telemetry.update();
             opmode.sleep(40);
         }
 

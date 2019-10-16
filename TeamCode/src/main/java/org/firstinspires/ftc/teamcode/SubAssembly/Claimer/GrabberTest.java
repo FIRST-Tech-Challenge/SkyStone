@@ -46,10 +46,10 @@ public class GrabberTest extends LinearOpMode {
 
             if (egamepad1.x.released) {
 
-                for(int p=0;p<180;p++){
-                Grabber.wrist(p);
-                wait(25);
-            }
+                for (int p = 0; p < 180; p++) {
+                    Grabber.wrist(p);
+                    wait(25);
+                }
 
             }
 

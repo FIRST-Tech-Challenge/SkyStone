@@ -61,10 +61,6 @@ public class DriveTest extends LinearOpMode {
                 Drive.strafeLeft(speed);
             } else if (egamepad1.dpad_right.state) {
                 Drive.strafeRight(speed);
-            } else if (gamepad1.left_stick_x > 0.4) {
-                Drive.turnRight(speed);
-            } else if (gamepad1.left_stick_x < -0.4) {
-                Drive.turnLeft(speed);
             } else {
                 // Get joystick values
                 Y1 = -gamepad1.left_stick_y;    // invert so up is positive

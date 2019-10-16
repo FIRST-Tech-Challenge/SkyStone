@@ -61,18 +61,18 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public enum LiftPosition {
         STOWED(30),
         STONE1(149),
-        ROTATE(272),
-        STONE2(312),
-        STONE3(560),
-        STONE4(808),
-        STONE5(1056),
-        STONE6(1303),
-        STONE7(1551),
-        STONE8(1799),
-        STONE9(2047),
-        STONE10(2495),
-        STONE11(2543),
-        STONE12(2790);
+        ROTATE(372),
+        STONE2(412),
+        STONE3(660),
+        STONE4(908),
+        STONE5(1156),
+        STONE6(1403),
+        STONE7(1651),
+        STONE8(1899),
+        STONE9(2147),
+        STONE10(2395),
+        STONE11(2643),
+        STONE12(2830);
 		// Runtime Max
 //		STONE12(2854);
 
@@ -174,10 +174,10 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public static double CLAW_PINCHED = 1.0;
     public static double CLAWDRICOPTER_FRONT = 0.0;
     public static double CLAWDRICOPTER_BACK = 1.0;
-    public static int CLAW_OPEN_TIME = 500;
-    public static int CLAW_CLOSE_TIME = 500;
-    public static int CLAW_ROTATE_BACK_TIME = 500;
-    public static int CLAW_ROTATE_FRONT_TIME = 500;
+    public static int CLAW_OPEN_TIME = 1000;
+    public static int CLAW_CLOSE_TIME = 1000;
+    public static int CLAW_ROTATE_BACK_TIME = 1000;
+    public static int CLAW_ROTATE_FRONT_TIME = 1000;
 
     public LiftPosition liftTargetHeight = LiftPosition.STONE1;
 	private LiftPosition liftStateTargetHeight;
@@ -213,9 +213,9 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 
     // Tracking variables
     private ElapsedTime stateTimer;
-    private LiftActivity liftState = LiftActivity.IDLE;
-    private ReleaseActivity releaseState = ReleaseActivity.IDLE;
-    private StowActivity stowState = StowActivity.IDLE;
+    public LiftActivity liftState = LiftActivity.IDLE;
+    public ReleaseActivity releaseState = ReleaseActivity.IDLE;
+    public StowActivity stowState = StowActivity.IDLE;
     private boolean fingersUp = true;
     private boolean clawPinched = false;
     private boolean clawdricopterBack = false;
@@ -317,7 +317,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                     liftState = LiftActivity.LIFTING_TO_ROTATE;
 					// If our target height is less than rotation height, we have to
 					// stop at rotation height first.
-					if(liftTargetHeight <= LiftPosition.ROTATE) {
+					if(liftTargetHeight.getEncoderCount() <= LiftPosition.ROTATE.getEncoderCount()) {
 						runLift(LiftPosition.ROTATE);
 					} else {
 						runLift(liftTargetHeight);
@@ -391,13 +391,13 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 			stopIntake();
 
 			// Start rotating back to the front.
-            liftState = StowActivity.RAISING_TO_ROTATE;
+            stowState = StowActivity.RAISING_TO_ROTATE;
 			runLift(LiftPosition.ROTATE);
         }
     }
 
     public void performStowing() {
-		case(stowState) {
+		switch(stowState) {
 			case LOWERING_TO_STOW:
 			    if(Math.abs(lifter.getCurrentPosition() - LiftPosition.STOWED.getEncoderCount()) < 20) {
 					stowState = StowActivity.IDLE;

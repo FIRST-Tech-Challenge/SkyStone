@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import org.firstinspires.ftc.teamcode.HardwareOmnibot.LiftPosition;
 
 import static java.lang.Math.*;
 
@@ -168,6 +167,9 @@ public class OmniTeleOp extends OpMode {
         telemetry.addData("Spin: ", spin);
         telemetry.addData("Offset Angle: ", driverAngle);
         telemetry.addData("Gyro Angle: ", gyroAngle);
+        telemetry.addData("Lift State: ", robot.liftState);
+        telemetry.addData("Release State: ", robot.releaseState);
+        telemetry.addData("Stow State: ", robot.stowState);
         telemetry.addData("Front Left Encoder: ", robot.frontLeft.getCurrentPosition());
         telemetry.addData("Front Right Encoder: ", robot.frontRight.getCurrentPosition());
         telemetry.addData("Rear Left Encoder: ", robot.rearLeft.getCurrentPosition());

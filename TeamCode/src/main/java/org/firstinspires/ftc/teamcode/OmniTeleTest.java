@@ -34,6 +34,10 @@ public class OmniTeleTest extends OpMode {
     private boolean bHeld = false;
     private boolean yHeld = false;
     private boolean xHeld = false;
+    private boolean upHeld = false;
+    private boolean downHeld = false;
+    private boolean rightHeld = false;
+    private boolean leftHeld = false;
     private boolean a2Held = false;
     private boolean b2Held = false;
     private boolean y2Held = false;
@@ -44,6 +48,10 @@ public class OmniTeleTest extends OpMode {
     private boolean bPressed;
     private boolean yPressed;
     private boolean xPressed;
+    private boolean upPressed;
+    private boolean downPressed;
+    private boolean rightPressed;
+    private boolean leftPressed;
     private boolean a2Pressed;
     private boolean b2Pressed;
     private boolean y2Pressed;
@@ -57,6 +65,7 @@ public class OmniTeleTest extends OpMode {
     private double liftPower;
     private double extendPower;
     private double collectPower;
+    private HardwareOmnibot.ExtendPosition extendPosition = HardwareOmnibot.ExtendPosition.RETRACTED;
 
     @Override
     public void start()
@@ -76,6 +85,10 @@ public class OmniTeleTest extends OpMode {
         bPressed = gamepad1.b;
         yPressed = gamepad1.y;
         xPressed = gamepad1.x;
+        upPressed = gamepad1.dpad_up;
+        downPressed = gamepad1.dpad_down;
+        rightPressed = gamepad1.dpad_right;
+        leftPressed = gamepad1.dpad_left;
         a2Pressed = gamepad2.a;
         b2Pressed = gamepad2.b;
         y2Pressed = gamepad2.y;
@@ -86,106 +99,163 @@ public class OmniTeleTest extends OpMode {
         if(!aHeld && aPressed)
         {
             aHeld = true;
-            robot.extendIntake();
+            robot.runLift(robot.liftTargetHeight);
+//            robot.startLifting();
         } else if(!aPressed) {
             aHeld = false;
         }
 
-        if(!bHeld && bPressed)
-        {
-            bHeld = true;
-            robot.toggleIntake(false);
-        } else if(!bPressed) {
-            bHeld = false;
-        }
+//        if(!bHeld && bPressed)
+//        {
+//            bHeld = true;
+//            robot.startReleasing();
+//        } else if(!bPressed) {
+//            bHeld = false;
+//        }
 
-        if(!yHeld && yPressed)
-        {
-            yHeld = true;
-            robot.toggleIntake(true);
-        } else if(!yPressed) {
-            yHeld = false;
-        }
+//        if(!yHeld && yPressed)
+//        {
+//            yHeld = true;
+//            robot.startStowing();
+//        } else if(!yPressed) {
+//            yHeld = false;
+//        }
 
-        if(!xHeld && xPressed)
-        {
-            xHeld = true;
-            robot.retractIntake();
-        } else if(!xPressed) {
-            xHeld = false;
-        }
-
-        if(!a2Held && a2Pressed)
-        {
-            a2Held = true;
-            if(robot.frontLeftMotorPower > 0.5) {
-                robot.setFrontLeftMotorPower(0.0);
-            } else {
-                robot.setFrontLeftMotorPower(1.0);
-            }
-        } else if(!a2Pressed) {
-            a2Held = false;
-        }
-
-        if(!b2Held && b2Pressed)
-        {
-            b2Held = true;
-            if(robot.frontRightMotorPower > 0.5) {
-                robot.setFrontRightMotorPower(0.0);
-            } else {
-                robot.setFrontRightMotorPower(1.0);
-            }
-        } else if(!b2Pressed) {
-            b2Held = false;
-        }
-
-        if(!y2Held && y2Pressed)
-        {
-            y2Held = true;
-            if(robot.rearLeftMotorPower > 0.5) {
-                robot.setRearLeftMotorPower(0.0);
-            } else {
-                robot.setRearLeftMotorPower(1.0);
-            }
-        } else if(!y2Pressed) {
-            y2Held = false;
-        }
-
-        if(!x2Held && x2Pressed)
-        {
-            x2Held = true;
-            robot.runLift();
-        } else if(!x2Pressed) {
-            x2Held = false;
-        }
-
-        if(!up2Held && up2Pressed)
-        {
-            up2Held = true;
+        if(!upHeld && upPressed) {
+            upHeld = true;
             robot.addStone();
-        } else if (!up2Pressed) {
-			up2Held = false;
-		}
+        } else if(!upPressed) {
+            upHeld = false;
+        }
 
-        if(!down2Held && down2Pressed)
-        {
-            down2Held = true;
+        if(!downHeld && downPressed) {
+            downHeld = true;
             robot.removeStone();
-        } else if (!down2Pressed) {
-			down2Held = false;
-		}
-
-        if(Math.abs(xPower) > 0.1) {
-            robot.manualExtendIntake(xPower);
-        } else {
-            robot.manualExtendIntake(0.0);
+        } else if(!downPressed) {
+            downHeld = false;
         }
 
-        if(Math.abs(spin) > 0.1) {
-            robot.manualLift(spin);
-        } else {
-            robot.manualLift(0.0);
-        }
+//        if(!rightHeld && rightPressed) {
+//            rightHeld = true;
+//            switch(extendPosition)
+//            {
+//                case RETRACTED:
+//                    extendPosition = HardwareOmnibot.ExtendPosition.CAPSTONE;
+//                    break;
+//                case CAPSTONE:
+//                    extendPosition = HardwareOmnibot.ExtendPosition.SPINMIN;
+//                    break;
+//                case SPINMIN:
+//                    extendPosition = HardwareOmnibot.ExtendPosition.EJECT;
+//                    break;
+//                case EJECT:
+//                    extendPosition = HardwareOmnibot.ExtendPosition.EXTENDED;
+//                    break;
+//            }
+//        } else if(!rightPressed) {
+//            rightHeld = false;
+//        }
+
+//        if(!leftHeld && leftPressed) {
+//            leftHeld = true;
+//            switch(extendPosition)
+//            {
+//                case CAPSTONE:
+//                    extendPosition = HardwareOmnibot.ExtendPosition.RETRACTED;
+//                    break;
+//                case SPINMIN:
+//                    extendPosition = HardwareOmnibot.ExtendPosition.CAPSTONE;
+//                    break;
+//                case EJECT:
+//                    extendPosition = HardwareOmnibot.ExtendPosition.SPINMIN;
+//                    break;
+//                case EXTENDED:
+//                    extendPosition = HardwareOmnibot.ExtendPosition.EJECT;
+//                    break;
+//            }
+//        } else if(!leftPressed) {
+//            leftHeld = false;
+//        }
+
+//        if(!xHeld && xPressed)
+//        {
+//            xHeld = true;
+//            robot.extendIntake(HardwareOmnibot.ExtendPosition.EXTENDED);
+//        } else if(!xPressed) {
+//            xHeld = false;
+//        }
+
+//        if(!a2Held && a2Pressed)
+//        {
+//            a2Held = true;
+//            if(robot.frontLeftMotorPower > 0.5) {
+//                robot.setFrontLeftMotorPower(0.0);
+//            } else {
+//                robot.setFrontLeftMotorPower(1.0);
+//            }
+//        } else if(!a2Pressed) {
+//            a2Held = false;
+//        }
+
+//        if(!b2Held && b2Pressed)
+//        {
+//            b2Held = true;
+//            if(robot.frontRightMotorPower > 0.5) {
+//                robot.setFrontRightMotorPower(0.0);
+//            } else {
+//                robot.setFrontRightMotorPower(1.0);
+//            }
+//        } else if(!b2Pressed) {
+//            b2Held = false;
+//        }
+
+//        if(!y2Held && y2Pressed)
+//        {
+//            y2Held = true;
+//            if(robot.rearLeftMotorPower > 0.5) {
+//                robot.setRearLeftMotorPower(0.0);
+//            } else {
+//                robot.setRearLeftMotorPower(1.0);
+//            }
+//        } else if(!y2Pressed) {
+//            y2Held = false;
+//        }
+
+//        if(!x2Held && x2Pressed)
+//        {
+//            x2Held = true;
+//            robot.runLift(robot.liftTargetHeight);
+//        } else if(!x2Pressed) {
+//            x2Held = false;
+//        }
+
+//        if(!up2Held && up2Pressed)
+//        {
+//            up2Held = true;
+//            robot.addStone();
+//        } else if (!up2Pressed) {
+//			up2Held = false;
+//		}
+
+//        if(!down2Held && down2Pressed)
+//        {
+//            down2Held = true;
+//            robot.removeStone();
+//        } else if (!down2Pressed) {
+//			down2Held = false;
+//		}
+
+//        if(Math.abs(xPower) > 0.1) {
+//            robot.manualExtendIntake(xPower);
+//        } else {
+//            robot.manualExtendIntake(0.0);
+//        }
+
+//        if(Math.abs(spin) > 0.1) {
+//            robot.manualLift(spin);
+//        } else {
+//            robot.manualLift(0.0);
+//        }
         // If the activity is not performing, it will be idle and return.
 //        robot.performLifting();
 //        robot.performReleasing();
@@ -193,6 +263,10 @@ public class OmniTeleTest extends OpMode {
 
 
 		telemetry.addData("Lift Target Height: ", robot.liftTargetHeight.toString());
+        telemetry.addData("Extend Target: ", extendPosition.toString());
+        telemetry.addData("Lift State: ", robot.liftState);
+        telemetry.addData("Release State: ", robot.releaseState);
+        telemetry.addData("Stow State: ", robot.stowState);
         telemetry.addData("Y Power: ", yPower);
         telemetry.addData("X Power: ", xPower);
         telemetry.addData("Spin: ", spin);

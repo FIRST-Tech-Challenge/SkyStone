@@ -103,6 +103,7 @@ public class FourWheelsDriveBot
         rightFront.setPower(vectorY - vectorX);
         leftRear.setPower(vectorY - vectorX);
         rightRear.setPower(vectorY + vectorX);
+        print(String.format("driveByVector(%.2f, %.2f) => leftFront|rightRear : %.2f, rightFront|leftRear : %.2f", vectorX, vectorY, vectorX + vectorY, vectorY - vectorX));
     }
 
 

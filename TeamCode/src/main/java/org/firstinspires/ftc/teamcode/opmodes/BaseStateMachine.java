@@ -12,25 +12,11 @@ import java.util.EnumMap;
 
 
 public abstract class BaseStateMachine extends BaseOpMode {
-        public enum State {
-            STATE_INITIAL,
-            STATE_FIND_SKYSTONE,
-            DRIVE_TO_FOUNDATION_TARGET,
-            STATE_DELIVER_STONE,
-            STATE_CAMERA_SWITCHED,
-            STATE_GRAB_STONE,
-            STATE_FIND_STONE,
-            STATE_PARK_AT_LINE,
-            STATE_DEPOSIT_STONE,
-            STATE_DRAG_FOUNDATION,
-            STATE_RETURN,
-            ;
-        }
+
 
         private VuforiaTrackable skystone;
         private static final float mmPerInch = 25.4f;
 
-        protected State mCurrentState;    // Current State Machine State.
 
         protected Vuforia.CameraChoice currentCamera;
 
@@ -47,21 +33,7 @@ public abstract class BaseStateMachine extends BaseOpMode {
         @Override
         public void init() {
             super.init();
-            mCurrentState = State.STATE_INITIAL;
+            driveSystem = super.driveSystem;
         }
-
-
-        // @Override
-        public void init_loop() {
-        }
-
-        @Override
-        public void start() {
-
-        }
-
-    public void newState(State newState) {
-        mCurrentState = newState;
-    }
 
 }

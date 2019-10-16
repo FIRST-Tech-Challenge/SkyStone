@@ -24,7 +24,7 @@ public abstract class BaseOpMode extends OpMode {
         }
         driveSystem = new DriveSystem(driveMap, hardwareMap.get(BNO055IMU.class, "imu"));
 
-        currentCamera = Vuforia.CameraChoice.PHONE_BACK;
-        vuforia = new Vuforia(hardwareMap, currentCamera);
+//        currentCamera = Vuforia.CameraChoice.PHONE_BACK;
+//        vuforia = new Vuforia(hardwareMap, currentCamera);
     }
 }

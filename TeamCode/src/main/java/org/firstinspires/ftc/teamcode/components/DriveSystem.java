@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.components;
 
+import android.util.Log;
+
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -21,9 +23,13 @@ public class DriveSystem {
         }
     }
 
+    public static final String TAG = "DriveSystem";
+
     public EnumMap<MotorNames, DcMotor> motors;
 
     public IMUSystem imuSystem;
+
+    private int mTargetTicks;
 
     private final int TICKS_IN_INCH = 69;
 
@@ -32,6 +38,7 @@ public class DriveSystem {
      */
     public DriveSystem(EnumMap<MotorNames, DcMotor> motors, BNO055IMU imu) {
         this.motors = motors;
+        mTargetTicks = 0;
         initMotors();
         imuSystem = new IMUSystem(imu);
     }
@@ -113,35 +120,48 @@ public class DriveSystem {
         });
     }
 
-    private void driveToPositionTicks(int ticks, Direction direction, double maxPower) {
-        if (!Direction.isStrafe(direction)) {
-            int sign = (direction == Direction.FORWARD ? 1 : -1);
+    private boolean driveToPositionTicks(int ticks, Direction direction, double maxPower) {
+
+        if(mTargetTicks == 0){
+            mTargetTicks = ticks;
             for (DcMotor motor : motors.values()) {
-                motor.setTargetPosition(motor.getCurrentPosition() + sign * ticks);
+                motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             }
-        } else {
-            int sign = (direction == Direction.RIGHT ? 1 : -1);
-            motors.forEach((name, motor) -> {
-                switch(name) {
-                    case FRONTRIGHT:
-                    case BACKLEFT:
-                        motor.setTargetPosition(motor.getCurrentPosition() - sign * ticks);
-                        break;
-                    case FRONTLEFT:
-                    case BACKRIGHT:
-                        motor.setTargetPosition(motor.getCurrentPosition() + sign * ticks);
-                        break;
-                }
-            });
+            setRunMode(DcMotor.RunMode.RUN_TO_POSITION);
+            setMotorPower(maxPower);
+
         }
 
-        setRunMode(DcMotor.RunMode.RUN_TO_POSITION);
-        setMotorPower(maxPower);
-        double heading = -imuSystem.getHeading();
-        while (anyMotorsBusy()) { }
-        setMotorPower(0.0);
-        setRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        turn(heading + imuSystem.getHeading(), 0.5);
+        boolean arrived = false;
+        if (!Direction.isStrafe(direction)) {
+            for (DcMotor motor : motors.values()) {
+                int offset = Math.abs(motor.getCurrentPosition() - mTargetTicks);
+                Log.d(TAG, "Offset is " + offset);
+                if(offset < 100){
+                    return true;
+                }
+                motor.setTargetPosition(mTargetTicks);
+            }
+
+        } else {
+
+//            motors.forEach((name, motor) -> {
+//                switch(name) {
+//                    case FRONTRIGHT:
+//                    case BACKLEFT:
+//                        motor.setTargetPosition(motor.getCurrentPosition() - sign * ticks);
+//                        break;
+//                    case FRONTLEFT:
+//                    case BACKRIGHT:
+//                        motor.setTargetPosition(motor.getCurrentPosition() + sign * ticks);
+//                        break;
+//                }
+//            });
+        }
+
+
+        return arrived;
+
     }
 
     public boolean anyMotorsBusy() {
@@ -171,8 +191,8 @@ public class DriveSystem {
         return distance;
     }
 
-    public void driveToPositionInches(double inches, Direction direction, double maxPower) {
-        driveToPositionTicks(inchesToTicks(inches), direction, maxPower);
+    public boolean driveToPositionInches(double inches, Direction direction, double maxPower) {
+        return driveToPositionTicks(inchesToTicks(inches), direction, maxPower);
     }
 
     /**

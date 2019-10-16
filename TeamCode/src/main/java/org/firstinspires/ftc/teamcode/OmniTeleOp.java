@@ -45,6 +45,7 @@ public class OmniTeleOp extends OpMode {
     private boolean y2Pressed;
     private boolean up2Pressed;
     private boolean down2Pressed;
+    private boolean fingersUp = true;
     private double yPower;
     private double xPower;
     private double spin;
@@ -93,7 +94,13 @@ public class OmniTeleOp extends OpMode {
         if(!aHeld && aPressed)
         {
             aHeld = true;
-            robot.toggleFingers();
+            if(fingersUp) {
+                robot.fingersDown();
+                fingersUp = false;
+            } else {
+                robot.fingersUp();
+                fingersUp = true;
+            }
         } else if(!aPressed) {
             aHeld = false;
         }

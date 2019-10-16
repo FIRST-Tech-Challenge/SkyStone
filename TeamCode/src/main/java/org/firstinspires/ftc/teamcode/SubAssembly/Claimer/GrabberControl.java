@@ -29,20 +29,24 @@ public class GrabberControl {
         hwMap = opMode.hardwareMap;
 
         /* Map hardware devices */
-         grabberS = hwMap.servo.get("grabberS");
-         wristS = hwMap.servo.get("wristS");
+        grabberS = hwMap.servo.get("grabberS");
+        wristS = hwMap.servo.get("wristS");
 
         grabberS.setPosition(0);
         wristS.setPosition(0);
 
     }
 
-    public void open() {grabberS.setPosition(0.92);}
+    public void open() {
+        grabberS.setPosition(0.92);
+    }
 
     public void close() {
         grabberS.setPosition(0);
     }
 
-    public void wrist(int position) {wristS.setPosition(position);}
+    public void wrist(int position) {
+        wristS.setPosition(position);
+    }
 
 }

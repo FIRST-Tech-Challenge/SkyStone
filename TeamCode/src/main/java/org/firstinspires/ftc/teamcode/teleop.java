@@ -1,17 +1,17 @@
-package org.firstinspires.ftc.teamcode.SubAssembly.DriveTrain;
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.SubAssembly.DriveTrain.DriveControl;
 import org.firstinspires.ftc.teamcode.Utilities.GamepadWrapper;
 
 /* Sub Assembly Test OpMode
  * This TeleOp OpMode is used to test the functionality of the specific sub assembly
  */
-
 // Assign OpMode type (TeleOp or Autonomous), name, and grouping
-@TeleOp(name = "Drive Test", group = "Test")
-public class DriveTest extends LinearOpMode {
+@TeleOp(name = "teleop", group = "Drive")
+public class teleop extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -21,7 +21,7 @@ public class DriveTest extends LinearOpMode {
 
         // display welcome message
         telemetry.setAutoClear(false);
-        telemetry.addLine("Drive Test: ");
+        telemetry.addLine("TeleOp");
         telemetry.update();
 
         // create extended gamepads (for press and release options)

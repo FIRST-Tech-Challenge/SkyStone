@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
 import static java.lang.Math.PI;
+import static java.lang.Math.abs;
+import static java.lang.Math.random;
 import static java.lang.Math.sqrt;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-public class Octo358MecanumAutoCentral extends LinearOpMode {
+abstract public class Octo358MecanumAutoCentral extends LinearOpMode {
 
     private static final double WHEEL_DIAMETER = (double) 4;
     private static final double DRIVE_TRAIN_LENGTH = 11.811;
@@ -15,52 +17,37 @@ public class Octo358MecanumAutoCentral extends LinearOpMode {
             DRIVE_TRAIN_WIDTH * DRIVE_TRAIN_WIDTH + DRIVE_TRAIN_LENGTH * DRIVE_TRAIN_LENGTH);
     private static final int ENCODER_TICKS = 1120;
 
-    private DcMotor fL = null;
-    private DcMotor fR = null;
-    private DcMotor bL = null;
-    private DcMotor bR = null;
+    DcMotor fL = null;
+    DcMotor fR = null;
+    DcMotor bL = null;
+    DcMotor bR = null;
 
-    private static final double POWER = 0.3;
+    static final double POWER = 0.3;
 
-    public void runOpMode() {
+    double gameField = 12 * 12;
+    double quarryLength = 48.5;
+    double sideWallToQuarry = 47;
 
-        fL = hardwareMap.dcMotor.get("0");
-        fR = hardwareMap.dcMotor.get("2");
-        bL = hardwareMap.dcMotor.get("1");
-        bR = hardwareMap.dcMotor.get("3");
-        fL.setDirection(DcMotor.Direction.REVERSE);
-        fL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        fR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        bL.setDirection(DcMotor.Direction.REVERSE);
-        bL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        bR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    double boxSideLength = 22.75;
+    double stoneLength = 8;
+    double stoneWidth = 4;
+    double stoneBoxHeight = 4;
+    double stoneKnobHeight = 1;
+    double chassisLength = 16.5;
+    double chassisWidth = 18;
+    double chassisDiff = abs(chassisWidth - chassisLength);
 
-        drive(POWER, 12);
-
-        rotate(POWER, 360);
-
-        /*
-        drive(POWER, 12);
-
-        rotate(POWER, -90);
-
-        drive(POWER, 12);
-
-        rotate(POWER, 45);
-
-        drive(POWER, -(sqrt(2) * 12))
-
-        rotate(POWER, 45);
-        */
-
-    }
-
-    private void drive(double power, double distance) {
+    void drive(double power, double distance) {
         int ticks = distanceToTicks(distance);
         driveTrain(power, ticks, ticks, ticks, ticks);
     }
 
-    private void rotate(double power, double degree) {
+    void strafeLeft(double power, double distance) {
+        int ticks = distanceToTicks(distance);
+        driveTrain(power, -ticks, ticks, ticks, -ticks);
+    }
+
+    void rotate(double power, double degree) {
         int ticks = distanceToTicks((degree / 360) * (DRIVE_TRAIN_DIAGONAL * PI));
         driveTrain(power, -ticks, ticks, -ticks, ticks);
     }

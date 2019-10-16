@@ -12,7 +12,7 @@ import teamcode.common.Vector2;
 @TeleOp(name = "TT TeleOp")
 public class TTTeleOp extends TTOpMode {
 
-    private static final double TURN_SPEED_MODIFIER = 0.4;
+    private static final double TURN_SPEED_MODIFIER = 0.3;
     private static final double REDUCED_DRIVE_SPEED = 0.4;
     private static final double CLAW_COOLDOWN_SECONDS = 0.5;
 
@@ -55,11 +55,13 @@ public class TTTeleOp extends TTOpMode {
     }
 
     private void armUpdate() {
-        while (gamepad1.y) {
-            arm.lift(1);
+        if (gamepad1.y) {
+            arm.liftContinuous(1);
         }
-        while (gamepad1.a) {
-            arm.lift(-1);
+        if (gamepad1.a) {
+            arm.liftContinuous(-1);
+        } else {
+            arm.liftContinuous(0);
         }
         if (gamepad1.x && canUseClaw) {
             if (arm.clawIsOpen()) {
@@ -69,7 +71,6 @@ public class TTTeleOp extends TTOpMode {
             }
             clawCooldown();
         }
-        arm.lift(0);
     }
 
     private void clawCooldown() {

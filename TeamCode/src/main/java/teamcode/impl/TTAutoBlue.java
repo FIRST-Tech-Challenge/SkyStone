@@ -6,7 +6,8 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 
 import java.util.List;
 
-import teamcode.common.BoundingBox;
+import teamcode.common.BoundingBox2D;
+import teamcode.common.League1TTArm;
 import teamcode.common.TTDriveSystem;
 import teamcode.common.TTOpMode;
 import teamcode.common.TTVision;
@@ -15,11 +16,12 @@ import teamcode.common.Vector2;
 @Autonomous(name = "TT Auto Blue")
 public class TTAutoBlue extends TTOpMode {
 
-    private static final BoundingBox SKYSTONE_POS_1 = new BoundingBox(0, 0, 0, 0);
-    private static final BoundingBox SKYSTONE_POS_2 = new BoundingBox(0, 0, 0, 0);
-    private static final BoundingBox SKYSTONE_POS_3 = new BoundingBox(0, 0, 0, 0);
+    private static final BoundingBox2D SKYSTONE_POS_1 = new BoundingBox2D(0, 0, 0, 0);
+    private static final BoundingBox2D SKYSTONE_POS_2 = new BoundingBox2D(0, 0, 0, 0);
+    private static final BoundingBox2D SKYSTONE_POS_3 = new BoundingBox2D(0, 0, 0, 0);
 
     private TTDriveSystem driveSystem;
+    private League1TTArm arm;
     private TTVision vision;
     private int skystonePos;
 
@@ -32,12 +34,8 @@ public class TTAutoBlue extends TTOpMode {
 
     @Override
     protected void onStart() {
-        skystonePos = scanStones();
-        driveSystem.lateral(10, 0.25);
-        driveSystem.vertical(32.5, 0.25);
-        driveSystem.vertical(-10, 0.25);
-        driveSystem.turn(-90, 0.25);
-        driveSystem.vertical(78, 0.5);
+//        skystonePos = scanStones();
+  //      grabBlock4();
     }
 
     @Override
@@ -64,6 +62,14 @@ public class TTAutoBlue extends TTOpMode {
             }
         }
         return 1; // assume left position if image recognition fails.
+    }
+
+    public void grabBlock4() {
+        driveSystem.lateral(10, 0.25);
+        driveSystem.vertical(32.5, 0.25);
+        driveSystem.vertical(-10, 0.25);
+        driveSystem.turn(-90, 0.25);
+        driveSystem.vertical(78, 0.5);
     }
 
 }

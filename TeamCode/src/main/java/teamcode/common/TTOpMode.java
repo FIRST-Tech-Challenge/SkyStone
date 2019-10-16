@@ -21,7 +21,6 @@ public abstract class TTOpMode extends LinearOpMode {
         onInitialize();
         waitForStart();
         onStart();
-        while (opModeIsActive()) ; // this is necessary if code is being run on separate threads
         onStop();
         timer.cancel();
     }

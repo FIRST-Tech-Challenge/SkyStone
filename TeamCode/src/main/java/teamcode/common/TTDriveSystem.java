@@ -17,7 +17,7 @@ public class TTDriveSystem {
      * Maximum number of ticks a motor's current position must be away from it's target for it to
      * be considered near its target.
      */
-    private static final double TICK_ERROR = 25.0;
+    private static final double TICK_ERROR_TOLERANCE = 25.0;
     /**
      * Proportional.
      */
@@ -216,7 +216,7 @@ public class TTDriveSystem {
             int targetPosition = motor.getTargetPosition();
             int currentPosition = motor.getCurrentPosition();
             double ticksFromTarget = Math.abs(targetPosition - currentPosition);
-            if (ticksFromTarget > TICK_ERROR) {
+            if (ticksFromTarget >= TICK_ERROR_TOLERANCE) {
                 return false;
             }
         }

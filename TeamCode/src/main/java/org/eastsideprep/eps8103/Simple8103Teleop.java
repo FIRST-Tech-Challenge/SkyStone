@@ -36,7 +36,7 @@ import org.eastsideprep.eps8103.Hardware8103;
 
 @TeleOp(name = "Kalie Teleop", group = "8103")
 
-public class Simple8103 extends LinearOpMode {
+public class Simple8103Teleop extends LinearOpMode {
 
     /* Declare OpMode members. */
     Hardware8103 robot = new Hardware8103();

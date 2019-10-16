@@ -92,18 +92,23 @@ public class FourWheelsDriveBot
         rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         leftRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        // assume leftFront and rightRear runs at same speed as a
-        // assume rightFront and leftRear runs at same speed as b
-        // 4x = 2a - 2b
-        // 4y = 2a + 2b
+        // the vector x positive value means right direction
+        // the vector y positive value means backward direction
+        //
+        // assume rightFront and leftRear runs at same speed as a
+        // assume leftFront and rightRear runs at same speed as b
+        // 4x = -2a + 2b
+        // -4y = 2a + 2b
         // =====>
-        // a = x + y
-        // b = y - x
-        leftFront.setPower(vectorX + vectorY);
-        rightFront.setPower(vectorY - vectorX);
-        leftRear.setPower(vectorY - vectorX);
-        rightRear.setPower(vectorY + vectorX);
-        print(String.format("driveByVector(%.2f, %.2f) => leftFront|rightRear : %.2f, rightFront|leftRear : %.2f", vectorX, vectorY, vectorX + vectorY, vectorY - vectorX));
+        // a = -x - y
+        // b = x - y
+        double a = -vectorX - vectorY;
+        double b = vectorX - vectorY;
+        rightFront.setPower(a);
+        leftFront.setPower(b);
+        rightRear.setPower(b);
+        leftRear.setPower(a);
+        print(String.format("driveByVector(%.2f, %.2f) => leftFront|rightRear : %.2f, rightFront|leftRear : %.2f", vectorX, vectorY, b, a));
     }
 
 
@@ -155,21 +160,23 @@ public class FourWheelsDriveBot
                 rightRear.setTargetPosition(rightRear.getCurrentPosition() - target);
                 break;
             case DIRECTION_LEFT:
+                leftFront.setTargetPosition(leftFront.getCurrentPosition() - target);
+                rightFront.setTargetPosition(rightFront.getCurrentPosition() + target);
+                leftRear.setTargetPosition(leftRear.getCurrentPosition() + target);
+                rightRear.setTargetPosition(rightRear.getCurrentPosition() - target);
+                break;
+            case DIRECTION_RIGHT:
                 leftFront.setTargetPosition(leftFront.getCurrentPosition() + target);
                 rightFront.setTargetPosition(rightFront.getCurrentPosition() - target);
                 leftRear.setTargetPosition(leftRear.getCurrentPosition() - target);
                 rightRear.setTargetPosition(rightRear.getCurrentPosition() + target);
                 break;
-            case DIRECTION_RIGHT:
-                leftFront.setTargetPosition(leftFront.getCurrentPosition() - target);
-                rightFront.setTargetPosition(rightFront.getCurrentPosition() + target);
-                leftRear.setTargetPosition(leftRear.getCurrentPosition() + target);
-                rightRear.setTargetPosition(rightRear.getCurrentPosition() - target);
             case DIRECTION_RQUARTER:
                 leftFront.setTargetPosition(leftFront.getCurrentPosition() + target);
                 rightFront.setTargetPosition(rightFront.getCurrentPosition() - target);
                 leftRear.setTargetPosition(leftRear.getCurrentPosition() + target);
                 rightRear.setTargetPosition(rightRear.getCurrentPosition() - target);
+                break;
             case DIRECTION_LQUARTER:
                 leftFront.setTargetPosition(leftFront.getCurrentPosition() - target);
                 rightFront.setTargetPosition(rightFront.getCurrentPosition() + target);

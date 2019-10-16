@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.MovingStatistics;
 
 import org.firstinspires.ftc.robotcore.internal.system.Misc;
-import org.firstinspires.ftc.teamcode.PID.DriveConstants;
+import org.firstinspires.ftc.teamcode.PID.DriveConstantsPID;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveBase;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveREV;
 
@@ -65,7 +65,7 @@ public class TrackWidthTuner extends LinearOpMode {
                 drive.update();
             }
 
-            double trackWidth = DriveConstants.TRACK_WIDTH * ANGLE / headingAccumulator;
+            double trackWidth = DriveConstantsPID.TRACK_WIDTH * ANGLE / headingAccumulator;
             trackWidthStats.add(trackWidth);
 
             sleep(1000);

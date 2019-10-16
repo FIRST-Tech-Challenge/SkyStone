@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.PID.mecanum;
 
-import static org.firstinspires.ftc.teamcode.PID.DriveConstants.BASE_CONSTRAINTS;
-import static org.firstinspires.ftc.teamcode.PID.DriveConstants.TRACK_WIDTH;
+import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.BASE_CONSTRAINTS;
+import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.TRACK_WIDTH;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.canvas.Canvas;
@@ -24,7 +24,7 @@ import com.acmerobotics.roadrunner.trajectory.constraints.MecanumConstraints;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.PID.DriveConstants;
+import org.firstinspires.ftc.teamcode.PID.DriveConstantsPID;
 import org.firstinspires.ftc.teamcode.PID.util.DashboardUtil;
 
 /*
@@ -56,7 +56,7 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
     private TrajectoryFollower follower;
 
     public SampleMecanumDriveBase() {
-        super(DriveConstants.kV, DriveConstants.kA, DriveConstants.kStatic, TRACK_WIDTH);
+        super(DriveConstantsPID.kV, DriveConstantsPID.kA, DriveConstantsPID.kStatic, TRACK_WIDTH);
 
         dashboard = FtcDashboard.getInstance();
         clock = NanoClock.system();

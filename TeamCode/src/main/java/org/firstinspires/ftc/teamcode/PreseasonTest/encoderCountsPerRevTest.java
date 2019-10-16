@@ -44,7 +44,7 @@ public class encoderCountsPerRevTest extends LinearOpMode {
                 onB = false;
             }
             if(gamepad1.x){
-                map.resetEncoders();
+                //map.resetEncoders();
                 telemetry.clear();
                 telemetry.addData(map.TAG, "frontRight: " + map.frontRight.getCurrentPosition());
                 telemetry.addData(map.TAG, "frontLeft: " + map.frontLeft.getCurrentPosition());

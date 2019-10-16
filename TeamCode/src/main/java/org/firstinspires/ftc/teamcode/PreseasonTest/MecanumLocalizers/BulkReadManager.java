@@ -13,8 +13,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
-import de.siegmar.fastcsv.writer.CsvAppender;
-import de.siegmar.fastcsv.writer.CsvWriter;
+//import de.siegmar.fastcsv.writer.CsvAppender;
+//import de.siegmar.fastcsv.writer.CsvWriter;
 
 public class BulkReadManager {
 
@@ -26,7 +26,7 @@ public class BulkReadManager {
     private ArrayList<BulkReadConsumer> lowPriorityCallbacks;
 
     private long lastPoll;
-    private CsvWriter csvWriter;
+    //private CsvWriter csvWriter;
     private File logfile;
 
     private RevBulkData revBulkData;
@@ -38,7 +38,7 @@ public class BulkReadManager {
         lowPriorityCallbacks = new ArrayList<>();
 
         logfile = new File(AppUtil.LOG_FOLDER + "poll.txt");
-        csvWriter = new CsvWriter();
+        //csvWriter = new CsvWriter();
 
     }
 
@@ -55,12 +55,12 @@ public class BulkReadManager {
         double elapsedTime = (System.nanoTime() - lastPoll) / Math.pow(10, 9);
         double pollrate = 1 / elapsedTime;
 
-        try (CsvAppender csvAppender = csvWriter.append(logfile, StandardCharsets.UTF_8)){
+        /*try (CsvAppender csvAppender = csvWriter.append(logfile, StandardCharsets.UTF_8)){
             csvAppender.appendLine(String.valueOf(elapsedTime), String.valueOf(pollrate));
         }
         catch (IOException e) {
             RobotLog.e("Failed to write to log file");
-        }
+        }*/
 
         revBulkData = expansionHub.getBulkInputData();
 

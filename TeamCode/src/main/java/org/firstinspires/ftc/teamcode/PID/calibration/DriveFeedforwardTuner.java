@@ -14,8 +14,8 @@ import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveBase;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveREV;
 import org.firstinspires.ftc.teamcode.PID.util.LoggingUtil;
 
-import static org.firstinspires.ftc.teamcode.PID.DriveConstants.getMaxRpm;
-import static org.firstinspires.ftc.teamcode.PID.DriveConstants.rpmToVelocity;
+import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.getMaxRpm;
+import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.rpmToVelocity;
 
 /*
  * Op mode for computing kV, kStatic, and kA from various drive routines. For the curious, here's an

@@ -43,9 +43,9 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
                 new Pose2d(FORWARD_OFFSET, 0, Math.toRadians(90)) // front
         ));
 
-        leftEncoder = hardwareMap.dcMotor.get("leftEncoder");
-        rightEncoder = hardwareMap.dcMotor.get("rightEncoder");
-        frontEncoder = hardwareMap.dcMotor.get("frontEncoder");
+        leftEncoder = hardwareMap.dcMotor.get("leftForward");
+        //rightEncoder = hardwareMap.dcMotor.get("rightForward");
+        //frontEncoder = hardwareMap.dcMotor.get("sideways");
     }
 
     public static double encoderTicksToInches(int ticks) {
@@ -56,9 +56,12 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
     @Override
     public List<Double> getWheelPositions() {
         return Arrays.asList(
-                encoderTicksToInches(leftEncoder.getCurrentPosition()),
-                encoderTicksToInches(rightEncoder.getCurrentPosition()),
-                encoderTicksToInches(frontEncoder.getCurrentPosition())
+                org.firstinspires.ftc.teamcode.All.HardwareMap.track.getEncoderTicks().get(0),
+                org.firstinspires.ftc.teamcode.All.HardwareMap.track.getEncoderTicks().get(1),
+                org.firstinspires.ftc.teamcode.All.HardwareMap.track.getEncoderTicks().get(2)
+                //encoderTicksToInches(leftEncoder.getCurrentPosition()),
+                //encoderTicksToInches(rightEncoder.getCurrentPosition()),
+                //encoderTicksToInches(frontEncoder.getCurrentPosition())
         );
     }
 }

@@ -17,7 +17,7 @@ public class testauto extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException{
         HardwareMap map = new HardwareMap(hardwareMap);
-        map.resetEncoders();
+        //map.resetEncoders();
         map.gyroInit();
 
         waitForStart();

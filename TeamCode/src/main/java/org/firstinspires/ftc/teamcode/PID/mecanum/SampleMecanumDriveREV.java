@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.teamcode.PID.localizer.StandardTrackingWheelLocalizer;
 import org.firstinspires.ftc.teamcode.PID.util.AxesSigns;
 import org.firstinspires.ftc.teamcode.PID.util.BNO055IMUUtil;
 import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
@@ -18,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.firstinspires.ftc.teamcode.PID.DriveConstants.encoderTicksToInches;
+import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.encoderTicksToInches;
 
 
 /*
@@ -43,7 +44,7 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
 
         // TODO: if your hub is mounted vertically, remap the IMU axes so that the z-axis points
         // upward (normal to the floor) using a command like the following:
-         BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NNN);  //NOT: PPP, NPP, NNP
+         BNO055IMUUtil.remapAxes(imu, AxesOrder.ZXY, AxesSigns.PPP);  //NOT: PPP, NPP, NNP, XYZ, YZX, ZXY
 
         leftFront = hardwareMap.get(DcMotorEx.class, "frontLeft");
         leftRear = hardwareMap.get(DcMotorEx.class, "backLeft");
@@ -67,6 +68,7 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
 
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
+        setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
     }
 
     @Override

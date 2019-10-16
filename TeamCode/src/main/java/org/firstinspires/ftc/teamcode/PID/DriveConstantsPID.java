@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigu
  * Constants shared between multiple drive types.
  */
 @Config
-public class DriveConstants {
+public class DriveConstantsPID {
 
     /*
      * TODO: Tune or adjust the following constants to fit your robot. Note that the non-final

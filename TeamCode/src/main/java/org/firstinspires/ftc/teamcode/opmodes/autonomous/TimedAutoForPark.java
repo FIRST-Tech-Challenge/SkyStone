@@ -18,6 +18,10 @@ import org.westtorrancerobotics.lib.MecanumDrive;
 public class TimedAutoForPark extends LinearOpMode {
 
     private MecanumController driveTrain;
+    double aParam = 315;
+    double binvParam = 0.605;
+    double cParam = 169.7;
+    double maxDist = 6.0; // inches
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -42,8 +46,16 @@ public class TimedAutoForPark extends LinearOpMode {
 
         Servo servoTest = hardwareMap.get(Servo.class, "armTune");
 
-        RevColorSensorV3 color = hardwareMap.get(RevColorSensorV3.class, "sensor_color_distance");
+//        RevColorSensorV3 color = hardwareMap.get(RevColorSensorV3.class, "sensor_color_distance");
+        RevColorSensorV3 color = new RevColorSensorV3(
+                hardwareMap.get(RevColorSensorV3.class, "color").getDeviceClient()) {
+            @Override
+            protected double inFromOptical(int rawOptical) {
+                return Math.pow((rawOptical - cParam)/aParam, -binvParam);
+            }
+        };
 
+        color.rawOptical();
 
         ElapsedTime runtime = new ElapsedTime();
 
@@ -52,37 +64,45 @@ public class TimedAutoForPark extends LinearOpMode {
         int DST_CONST = 46;
         servoTest.setPosition(0);
 //        secs * spedConst; 0.9 sec/30 inch
-        driveTrain.translate(0.2, 0.75, MecanumDrive.TranslationMethod.CONSTANT_SPEED);
+        //driveTrain.translate(0.2, 0.75, MecanumDrive.TranslationMethod.CONSTANT_SPEED);
         sleep((long) 27*DST_CONST);
         //need to fix so that its around ~2 cm away from blocks
         while (true) {
+            double avg = 0;
+            for (int i = 0; i < 10; i++){
+                double initial = Math.pow((color.rawOptical()-cParam)/aParam, -binvParam);
+                avg = avg + initial;
+            }
+            double actualAvg = avg/10;
             telemetry.addData("R", color.red());
             telemetry.addData("G", color.green());
             telemetry.addData("B", color.blue());
-            telemetry.addData("Distance", color.getDistance(DistanceUnit.CM));
+            telemetry.addData("InputData", actualAvg);
+            //telemetry.addData("Distance", color.getDistance(DistanceUnit.CM));
             telemetry.update();
+            sleep(500);
             //Reads color values and sends them to driver station
             if (color.red() > 2 * color.blue() && color.green() > 3 * color.blue()) {
                 servoTest.setPosition(1);
                 driveTrain.translate(0, 0, MecanumDrive.TranslationMethod.CONSTANT_SPEED);
-                telemetry.addData("This detects yellow block", 5);
+                //telemetry.addData("This detects yellow block", 5);
                 telemetry.update();
-                telemetry.addData("R", color.red());
-                telemetry.addData("G", color.green());
-                telemetry.addData("B", color.blue());
+//                telemetry.addData("R", color.red());
+//                telemetry.addData("G", color.green());
+//                telemetry.addData("B", color.blue());
                 sleep(2000);
-                break;
-            } else {
-                telemetry.addData("Detects it's too close", "true");
-                telemetry.update();
             }
+//            else {
+//                telemetry.addData("Detects it's too close", "true");
+//                telemetry.update();
+//            }
 
             //The if statement above allows the robot to detect yellow to find a block and move the servo accordingly
         }
 
 //        driveTrain.translate(0,0, MecanumDrive.TranslationMethod.CONSTANT_SPEED);
-        driveTrain.translate(-0.2, -0.5, MecanumDrive.TranslationMethod.CONSTANT_SPEED);
-        sleep((long) (15*(DST_CONST)));
+        //driveTrain.translate(-0.2, -0.5, MecanumDrive.TranslationMethod.CONSTANT_SPEED);
+//        sleep((long) (15*(DST_CONST)));
         //The code above moves the bot back to starting position
 //        driveTrain.translate(0,0, MecanumDrive.TranslationMethod.CONSTANT_SPEED);
 //        servoTest.setPosition(1);

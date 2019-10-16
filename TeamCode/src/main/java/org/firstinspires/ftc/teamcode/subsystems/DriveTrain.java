@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.lib.TestableGyro;
 import org.westtorrancerobotics.lib.Location;
 import org.westtorrancerobotics.lib.MecanumController;
 import org.westtorrancerobotics.lib.MecanumDrive;
@@ -51,7 +52,7 @@ public class DriveTrain {
 
         lineSpotter = hardwareMap.get(ColorSensor.class, "line_color");
 
-        MecanumDrive wheels = new MecanumDriveImpl(leftFront, leftBack, rightFront, rightBack, gyro);
+        MecanumDrive wheels = new MecanumDriveImpl(leftFront, leftBack, rightFront, rightBack, TestableGyro.generate(gyro));
         mecanumController = new MecanumController(wheels);
     }
 

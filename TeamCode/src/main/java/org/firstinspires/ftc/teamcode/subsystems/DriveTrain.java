@@ -32,10 +32,10 @@ public class DriveTrain {
     private DriveTrain() {}
 
     public void init(HardwareMap hardwareMap) {
-        leftFront  = hardwareMap.get(DcMotorEx.class, "leftFront");
-        leftBack  = hardwareMap.get(DcMotorEx.class, "leftBack");
-        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
-        rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
+        leftFront  = hardwareMap.get(DcMotorEx.class, "left_front");
+        leftBack  = hardwareMap.get(DcMotorEx.class, "left_back");
+        rightFront = hardwareMap.get(DcMotorEx.class, "right_front");
+        rightBack = hardwareMap.get(DcMotorEx.class, "right_back");
 
         leftFront.setDirection(DcMotor.Direction.FORWARD);
         leftBack.setDirection(DcMotor.Direction.FORWARD);
@@ -49,7 +49,7 @@ public class DriveTrain {
 
         gyro = hardwareMap.get(ModernRoboticsI2cGyro.class, "gyro");
 
-        lineSpotter = hardwareMap.get(ColorSensor.class, "driveColor");
+        lineSpotter = hardwareMap.get(ColorSensor.class, "line_color");
 
         MecanumDrive wheels = new MecanumDriveImpl(leftFront, leftBack, rightFront, rightBack, gyro);
         mecanumController = new MecanumController(wheels);

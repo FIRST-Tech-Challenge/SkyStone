@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.qualcomm.hardware.motors.RevRobotics20HdHexMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.IntegratingGyroscope;
 
@@ -94,6 +95,6 @@ public class MecanumDriveImpl implements MecanumDrive {
 
     @Override
     public double getEncoderTicksPerRevolution() {
-        return 56 * 20;
+        return 560;
     }
 }

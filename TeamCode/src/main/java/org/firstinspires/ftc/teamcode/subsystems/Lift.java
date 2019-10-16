@@ -28,7 +28,7 @@ public class Lift {
     private Lift() {}
 
     public void init(HardwareMap hardwareMap) {
-        motor = hardwareMap.get(DcMotorEx.class, "motor");
+        motor = hardwareMap.get(DcMotorEx.class, "lift_right");
         motor.setDirection(DcMotor.Direction.FORWARD);
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);

@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.testClasses;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.subsystems.Arm;
 import org.firstinspires.ftc.teamcode.subsystems.Chassis;
 import org.firstinspires.ftc.teamcode.subsystems.Controller;
 import org.firstinspires.ftc.teamcode.subsystems.Hook;
@@ -27,9 +28,11 @@ public class TeleOpMode extends LinearOpMode {
         Hook hook = new Hook(hardwareMap, new HashMap<HookServo, String>() {{
             put(HookServo.MAIN, "hook");
         }});
-        Intake intake = new Intake(hardwareMap, new HashMap<IntakeMotor, String>(){{
-            put(IntakeMotor.LEFT, "left_intake");
-            put(IntakeMotor.RIGHT, "right_intake");
+        Arm arm = new Arm(hardwareMap, new HashMap<ArmMotor, String>() {{
+            put(ArmMotor.MAIN, "arm");
+        }}, new HashMap<ArmServo, String>() {{
+            put(ArmServo.INTAKE, "intake");
+            put(ArmServo.WRIST, "wrist");
         }});
         telemetry.addData("Init", "v:1.0");
         waitForStart();
@@ -42,14 +45,28 @@ public class TeleOpMode extends LinearOpMode {
             */
             runChassis(chassis, controller);
             runHook(hook, controller);
+            runArm(arm, controller);
             telemetry.update();
         }
     }
 
+    public void runArm(Arm arm, Controller controller) {
+        if(controller.getX()){
+            HashMap<ArmServo, Double> positions = new HashMap<>();
+            HashMap<ArmMotor, Double> power = new HashMap<>();
+            if(controller.getX()){
+                positions.put(ArmServo.INTAKE, .01);
+            }else if(controller.getY()){
+                positions.put(ArmServo.INTAKE, -.01);
+            }
+            arm.runArm(new HashMap<ArmServo, Double>(), new HashMap<ArmMotor, Double>());
+        }
+    }
+
     public void runHook(Hook hook, Controller controller) {
-        if (controller.getA() == true) {
+        if (controller.getA()) {
             hook.runServo(.01);
-        } else if (controller.getB() == true) {
+        } else if (controller.getB()) {
             hook.runServo(-.01);
         }
     }

@@ -30,14 +30,10 @@ public class TTTeleOp extends TTOpMode {
 
     @Override
     protected void onStart() {
+        new ArmInputListener().start();
         while (opModeIsActive()) {
-            update();
+            driveUpdate();
         }
-    }
-
-    private void update() {
-        driveUpdate();
-        armUpdate();
     }
 
     protected void onStop() {
@@ -54,34 +50,50 @@ public class TTTeleOp extends TTOpMode {
         driveSystem.continuous(velocity, turn);
     }
 
-    private void armUpdate() {
-        if (gamepad1.y) {
-            arm.liftContinuous(1);
-        }
-        if (gamepad1.a) {
-            arm.liftContinuous(-1);
-        } else {
-            arm.liftContinuous(0);
-        }
-        if (gamepad1.x && canUseClaw) {
-            if (arm.clawIsOpen()) {
-                arm.closeClaw();
-            } else {
-                arm.openClaw();
-            }
-            clawCooldown();
-        }
-    }
+    private class ArmInputListener extends Thread {
 
-    private void clawCooldown() {
-        canUseClaw = false;
-        TimerTask enableClaw = new TimerTask() {
-            @Override
-            public void run() {
-                canUseClaw = true;
+        @Override
+        public void run() {
+            while (opModeIsActive()) {
+                armUpdate();
             }
-        };
-        getTimer().schedule(enableClaw, (long) (CLAW_COOLDOWN_SECONDS * 1000));
+        }
+
+        private void armUpdate() {
+            if (gamepad1.y) {
+                arm.raise(1.0);
+            } else if (gamepad1.a) {
+                arm.lower(1.0);
+            }
+            if (gamepad1.dpad_up) {
+                arm.liftContinuous(1.0);
+            }
+            if (gamepad1.dpad_down) {
+                arm.liftContinuous(-1.0);
+            } else {
+                arm.liftContinuous(0.0);
+            }
+            if (gamepad1.x && canUseClaw) {
+                if (arm.clawIsOpen()) {
+                    arm.closeClaw();
+                } else {
+                    arm.openClaw();
+                }
+                clawCooldown();
+            }
+        }
+
+        private void clawCooldown() {
+            canUseClaw = false;
+            TimerTask enableClaw = new TimerTask() {
+                @Override
+                public void run() {
+                    canUseClaw = true;
+                }
+            };
+            getTimer().schedule(enableClaw, (long) (CLAW_COOLDOWN_SECONDS * 1000));
+        }
+
     }
 
 }

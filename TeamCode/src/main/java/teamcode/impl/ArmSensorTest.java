@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import teamcode.common.League1TTArm;
 import teamcode.common.TTOpMode;
 
-@TeleOp(name = "Distance Sensor Test")
-public class DistanceSensorTest extends TTOpMode {
+@TeleOp(name = "Arm Sensor Test")
+public class ArmSensorTest extends TTOpMode {
 
     private League1TTArm arm;
 
@@ -19,14 +19,11 @@ public class DistanceSensorTest extends TTOpMode {
     protected void onStart() {
         while (opModeIsActive()) {
             if (gamepad1.y) {
-                arm.liftContinuous(0.25);
+                arm.raise(0.5);
             } else if (gamepad1.a) {
-                arm.liftContinuous(-0.25);
-            } else {
-                arm.liftContinuous(0.0);
+                arm.lower(0.5);
             }
-            telemetry.addData("Lift height", arm.getLiftHeight());
-            telemetry.update();
+            arm.testColorSensor(telemetry);
         }
     }
 

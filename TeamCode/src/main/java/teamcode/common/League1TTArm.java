@@ -1,67 +1,72 @@
 package teamcode.common;
 
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class League1TTArm {
 
-    /**
-     * In inches.
-     */
-    private static final double LIFT_HEIGHT_ERROR_TOLERANCE = 0.25;
-    /**
-     * In inches.
-     */
-    private static final double MIN_LIFT_HEIGHT = 4.0;
-    /**
-     * In inches.
-     */
-    private static final double MAX_LIFT_HEIGHT = 10.0;
-
+    private static final int RED_THRESHOLD = 800;
+    private static final int BLUE_THRESHOLD = 800;
     private static final double CLAW_OPEN_POS = 1.0;
     private static final double CLAW_CLOSE_POS = 0.0;
 
     private final CRServo lift;
-    private final DistanceSensor liftSensor;
+    private final ColorSensor liftSensor;
     private final Servo claw;
 
     public League1TTArm(HardwareMap hardwareMap) {
         lift = hardwareMap.get(CRServo.class, TTHardwareComponentNames.ARM_LIFT);
         lift.setDirection(DcMotorSimple.Direction.REVERSE);
-        liftSensor = hardwareMap.get(DistanceSensor.class, TTHardwareComponentNames.ARM_LIFT_SENSOR);
+        liftSensor = hardwareMap.get(ColorSensor.class, TTHardwareComponentNames.ARM_LIFT_SENSOR);
         claw = hardwareMap.get(Servo.class, TTHardwareComponentNames.ARM_CLAW);
     }
 
-    public void setLiftHeight(double inches, double speed) {
-        while (!liftNearTarget(inches)) {
-            int sign;
-            if (getLiftHeight() <= inches) {
-                sign = 1;
-            } else {
-                sign = -1;
-            }
-            double power = sign * speed;
+    public void testColorSensor(Telemetry telemetry) {
+        int red = liftSensor.red();
+        int blue = liftSensor.blue();
+        telemetry.addData("red", red);
+        telemetry.addData("blue", blue);
+        LiftColor color = getColor();
+        telemetry.addData("color detected", color);
+        telemetry.update();
+    }
+
+    public void raise(double power) {
+        power = Math.abs(power);
+        while (getColor() != LiftColor.RED) {
             lift.setPower(power);
         }
         lift.setPower(0.0);
     }
 
-    private boolean liftNearTarget(double targetInches) {
-        return Math.abs(getLiftHeight() - targetInches) <= LIFT_HEIGHT_ERROR_TOLERANCE;
+    public void lower(double power) {
+        power = Math.abs(power);
+        while (getColor() != LiftColor.BLUE) {
+            lift.setPower(-power);
+        }
+        lift.setPower(0.0);
+    }
+
+    private LiftColor getColor() {
+        int r = liftSensor.red();
+        int b = liftSensor.blue();
+        if (r < 800 && b < 800) {
+            if (r > b) {
+                return LiftColor.RED;
+            } else if (b > r) {
+                return LiftColor.BLUE;
+            }
+        }
+        return LiftColor.NONE;
     }
 
     public void liftContinuous(double power) {
         lift.setPower(power);
-    }
-
-    public double getLiftHeight() {
-        return liftSensor.getDistance(DistanceUnit.INCH);
     }
 
     public void openClaw() {
@@ -74,6 +79,10 @@ public class League1TTArm {
 
     public boolean clawIsOpen() {
         return claw.getPosition() == CLAW_OPEN_POS;
+    }
+
+    private enum LiftColor {
+        RED, BLUE, NONE
     }
 
 }

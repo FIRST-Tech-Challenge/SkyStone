@@ -9,7 +9,7 @@ import org.firstinspires.ftc.robotlib.hardwaremap.HeadingableMecanumHardwareMap;
 @TeleOp (name="Headingable Mecanum TeleOp", group="Headingable")
 public class HeadingableMecanumTeleOp extends OpMode
 {
-    private static final double HEADING_COEFF = 0.005;
+    private static final double HEADING_COEFF = 0.01;
     private HeadingableMecanumHardwareMap robotHardware;
 
     private double desiredHeading = 0;
@@ -35,6 +35,8 @@ public class HeadingableMecanumTeleOp extends OpMode
     {
         double course = Math.atan2(-gamepad1.right_stick_y, gamepad1.right_stick_x) - Math.PI/2;
         double velocity = Math.hypot(gamepad1.right_stick_x, gamepad1.right_stick_y);
+
+        robotHardware.drivetrain.halfPowerInput(gamepad1.right_stick_button);
 
         desiredHeading += -gamepad1.left_stick_x*rotationTimer.time()*HEADING_COEFF;
         rotationTimer.reset();
@@ -64,9 +66,11 @@ public class HeadingableMecanumTeleOp extends OpMode
         robotHardware.drivetrain.updateHeading();
 
         telemetry.addData("Status", "Loop: " + rotationTimer.toString());
+        telemetry.addData("Headingless", robotHardware.drivetrain.getExtrinsic());
         telemetry.addData("Course", course);
         telemetry.addData("Velocity", velocity);
         telemetry.addData("Rotation", -gamepad1.left_stick_x);
+        telemetry.addData("Current Heading", robotHardware.controller.getSensorValue());
         telemetry.addData("Desired Heading", desiredHeading);
         telemetry.addData("Extrinsic Offset", robotHardware.drivetrain.getExtrinsicOffset());
         telemetry.update();

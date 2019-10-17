@@ -6,14 +6,15 @@ import org.darbots.darbotsftclib.libcore.OpModes.DarbotsBasicOpMode;
 import org.darbots.darbotsftclib.libcore.calculations.dimentionalcalculation.XYPlaneCalculations;
 import org.darbots.darbotsftclib.libcore.sensors.cameras.RobotOnPhoneCamera;
 import org.darbots.darbotsftclib.libcore.tasks.chassis_tasks.GyroGuidedTurn;
+import org.darbots.darbotsftclib.libcore.templates.RobotCore;
 import org.darbots.darbotsftclib.libcore.templates.other_sensors.RobotCamera;
 import org.darbots.darbotsftclib.season_specific.skystone.tfod_detection.SkyStoneStoneDifferentiation;
 import org.firstinspires.ftc.teamcode.robot_common.Robot4100Common;
 
 import java.util.ArrayList;
 
-@Autonomous(name = "4100Gen1Auto-BlueScanBasic",group="4100")
-public class Robot4100Generation1_BlueScanBasic extends DarbotsBasicOpMode {
+@Autonomous(name = "4100Gen1Auto-BlueScanComplex",group="4100")
+public class Robot4100Generation1_BlueScanComplex extends DarbotsBasicOpMode {
     private SkyStoneStoneDifferentiation m_SkyStoneDetection;
     private Robot4100Generation1_LindaCore m_RobotCore;
     private float m_OldAng;
@@ -232,19 +233,95 @@ public class Robot4100Generation1_BlueScanBasic extends DarbotsBasicOpMode {
         sleep(300);
         waitForGamepadX();
 
-        if(!fixAng()){
-            return;
-        }
 
-        this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedZDistanceTask(
-                -40,
-                0.5
+        this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedTurnTask(
+                90,
+                0.3
         ));
         if(!waitForDrive()){
             return;
         }
-
         waitForGamepadX();
+
+        m_OldAng += 90;
+        m_OldAng = XYPlaneCalculations.normalizeDeg(m_OldAng);
+
+        this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedZDistanceTask(
+                10,
+                0.3
+        ));
+        if(!waitForDrive()){
+            return;
+        }
+        waitForGamepadX();
+
+        if(!fixAng()){
+            return;
+        }
+
+        if(!waitForDrive()){
+            return;
+        }
+        waitForGamepadX();
+
+        this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedXDistanceTask(
+                50,
+                0.2
+        ));
+
+        if(!waitForDrive()){
+            return;
+        }
+        waitForGamepadX();
+        if(!fixAng()){
+            return;
+        }
+
+        this.m_RobotCore.getChassis().replaceTask(
+                this.m_RobotCore.getChassis().getFixedZDistanceTask(
+                        -50,
+                        0.4
+                )
+        );
+        if(!waitForDrive()){
+            return;
+        }
+
+        this.m_RobotCore.setDragServoToDrag(true);
+        sleep(500);
+        this.m_RobotCore.getChassis().replaceTask(
+                this.m_RobotCore.getChassis().getFixedZDistanceTask(
+                        95,
+                        0.5
+                )
+        );
+        if(!waitForDrive()){
+            return;
+        }
+
+        this.m_RobotCore.getChassis().replaceTask(
+                this.m_RobotCore.getChassis().getFixedZDistanceTask(
+                        -5,
+                        0.1
+                )
+        );
+        if(!waitForDrive()){
+            return;
+        }
+
+        this.m_RobotCore.setDragServoToDrag(false);
+        sleep(300);
+
+        this.m_RobotCore.getChassis().replaceTask(
+                this.m_RobotCore.getChassis().getFixedXDistanceTask(
+                        -130,
+                        0.2
+                )
+        );
+        if(!waitForDrive()){
+            return;
+        }
+
 
     }
 }

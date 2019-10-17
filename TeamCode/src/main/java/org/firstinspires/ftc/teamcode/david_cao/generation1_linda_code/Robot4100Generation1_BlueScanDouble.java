@@ -1,19 +1,21 @@
 package org.firstinspires.ftc.teamcode.david_cao.generation1_linda_code;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.darbots.darbotsftclib.libcore.OpModes.DarbotsBasicOpMode;
 import org.darbots.darbotsftclib.libcore.calculations.dimentionalcalculation.XYPlaneCalculations;
 import org.darbots.darbotsftclib.libcore.sensors.cameras.RobotOnPhoneCamera;
 import org.darbots.darbotsftclib.libcore.tasks.chassis_tasks.GyroGuidedTurn;
+import org.darbots.darbotsftclib.libcore.templates.chassis_related.RobotMotionSystemTeleOpControlTask;
 import org.darbots.darbotsftclib.libcore.templates.other_sensors.RobotCamera;
 import org.darbots.darbotsftclib.season_specific.skystone.tfod_detection.SkyStoneStoneDifferentiation;
 import org.firstinspires.ftc.teamcode.robot_common.Robot4100Common;
 
 import java.util.ArrayList;
 
-@Autonomous(name = "4100Gen1Auto-BlueScanBasic",group="4100")
-public class Robot4100Generation1_BlueScanBasic extends DarbotsBasicOpMode {
+@Autonomous(name = "4100Gen1Auto-BlueScanDouble",group="4100")
+public class Robot4100Generation1_BlueScanDouble extends DarbotsBasicOpMode {
     private SkyStoneStoneDifferentiation m_SkyStoneDetection;
     private Robot4100Generation1_LindaCore m_RobotCore;
     private float m_OldAng;
@@ -70,6 +72,11 @@ public class Robot4100Generation1_BlueScanBasic extends DarbotsBasicOpMode {
         while(this.opModeIsActive() && this.getRobotCore().getChassis().isBusy()){
             this.m_RobotCore.updateStatus();
         }
+        __tryRecognizeStoneOnce();
+        return this.opModeIsActive();
+    }
+
+    public void __tryRecognizeStoneOnce(){
         if(m_OnRecognition) {
             ArrayList<SkyStoneStoneDifferentiation.RecognitionResult> recognitionResults = this.m_SkyStoneDetection.getUpdatedRecognitions();
             if (recognitionResults != null && (!recognitionResults.isEmpty())) {
@@ -81,7 +88,6 @@ public class Robot4100Generation1_BlueScanBasic extends DarbotsBasicOpMode {
                 }
             }
         }
-        return this.opModeIsActive();
     }
 
     public void waitForGamepadX(){
@@ -173,7 +179,6 @@ public class Robot4100Generation1_BlueScanBasic extends DarbotsBasicOpMode {
         telemetry.update();
 
         //Grab Stone;
-        this.m_SkyStoneDetection.setActivated(false);
         this.m_OnRecognition = false;
 
         if(!fixAng()){
@@ -236,6 +241,92 @@ public class Robot4100Generation1_BlueScanBasic extends DarbotsBasicOpMode {
             return;
         }
 
+
+        double searchTime = 0;
+        if(recognitionResult != 3) {
+
+            this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedZDistanceTask(
+                    -(130 + firstStepExtraForwardDistance),
+                    0.5
+            ));
+            if (!waitForDrive()) {
+                return;
+            }
+            if (!fixAng()) {
+                return;
+            }
+
+            this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedZDistanceTask(
+                    -(3 *LENGTH_OF_EACH_STONE - 10),
+                    0.2
+            ));
+            if (!waitForDrive()) {
+                return;
+            }
+            waitForGamepadX();
+            if (!fixAng()) {
+                return;
+            }
+
+            m_OnRecognition = true;
+            m_LastDriveSkyStone = false;
+            ElapsedTime time = new ElapsedTime(ElapsedTime.Resolution.SECONDS);
+
+            RobotMotionSystemTeleOpControlTask TOPTask = this.getRobotCore().getChassis().getTeleOpTask();
+            TOPTask.setDriveZSpeed(-0.1);
+            this.getRobotCore().getChassis().replaceTask(TOPTask);
+            time.reset();
+            while(time.seconds() < 2 && !m_LastDriveSkyStone){
+                __tryRecognizeStoneOnce();
+                this.getRobotCore().updateStatus();
+            }
+            this.getRobotCore().getChassis().deleteAllTasks();
+
+            m_OnRecognition = false;
+            searchTime = time.seconds();
+
+            this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedXDistanceTask(
+                    70,
+                    0.2
+            ));
+            if (!waitForDrive()) {
+                return;
+            }
+            waitForGamepadX();
+
+            this.getRobotCore().setAutonomousDragStoneServoToDrag(true);
+            sleep(400);
+            waitForGamepadX();
+
+            this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedXDistanceTask(
+                    -110,
+                    0.2
+            ));
+            if(!waitForDrive()){
+                return;
+            }
+            waitForGamepadX();
+
+            if(!fixAng()){
+                return;
+            }
+
+            this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedZDistanceTask(
+                    130 + firstStepExtraForwardDistance + (3*LENGTH_OF_EACH_STONE - 10),
+                    0.5
+            ));
+            if(!waitForDrive()){
+                return;
+            }
+
+            waitForGamepadX();
+
+
+            this.getRobotCore().setAutonomousDragStoneServoToDrag(false);
+            sleep(300);
+            waitForGamepadX();
+        }
+
         this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedZDistanceTask(
                 -40,
                 0.5
@@ -244,7 +335,16 @@ public class Robot4100Generation1_BlueScanBasic extends DarbotsBasicOpMode {
             return;
         }
 
+        if(searchTime>0) {
+            RobotMotionSystemTeleOpControlTask TOPBackSearchTask = this.getRobotCore().getChassis().getTeleOpTask();
+            TOPBackSearchTask.setDriveZSpeed(-0.2);
+            ElapsedTime mTime = new ElapsedTime(ElapsedTime.Resolution.SECONDS);
+            this.getRobotCore().getChassis().replaceTask(TOPBackSearchTask);
+            while(mTime.seconds() < (searchTime / 2) && opModeIsActive()){
+                this.getRobotCore().updateStatus();
+            }
+            this.getRobotCore().getChassis().deleteAllTasks();
+        }
         waitForGamepadX();
-
     }
 }

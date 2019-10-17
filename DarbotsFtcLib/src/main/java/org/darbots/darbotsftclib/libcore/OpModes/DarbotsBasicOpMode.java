@@ -30,7 +30,7 @@ public abstract class DarbotsBasicOpMode<CoreType extends RobotCore> extends Lin
     }
     @Override
     public void waitForStart(){
-        while (!opModeIsActive() && !isStopRequested()) {
+        while ((!opModeIsActive()) && (!isStopRequested())) {
             telemetry.addData("status", "Initialized, waiting for start command...");
             telemetry.update();
         }

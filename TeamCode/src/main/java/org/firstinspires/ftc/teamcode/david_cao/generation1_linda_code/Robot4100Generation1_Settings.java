@@ -21,7 +21,7 @@ public class Robot4100Generation1_Settings {
     public static final double LINEARSLIDE_TIMEOUTFACTOR = 1.5;
     public static final double LINEARSLIDE_MAX = 7.2804;
     public static final double LINEARSLIDE_MIN = 0;
-    public static final double LINEARSLIDE_GRAB = 0.76786;
+    public static final double LINEARSLIDE_GRAB = 0.88843;
     public static final double LINEARSLIDE_START = 0;
 
     public static final double INTAKEMOTOR_SPEED = 0.8;
@@ -35,8 +35,8 @@ public class Robot4100Generation1_Settings {
     public static final double DRAGSERVO_DRAGPOS_R = 0;
     public static final double GRABBERSERVO_RESTPOS = 1.0;
     public static final double GRABBERSERVO_GRABPOS = 0.3;
-    public static final double GRABBERROTSERVO_INSIDEPOS = 0.9;
-    public static final double GRABBERROTSERVO_OUTSIDEPOS = 0;
+    public static final double GRABBERROTSERVO_INSIDEPOS = 1.0;
+    public static final double GRABBERROTSERVO_OUTSIDEPOS = 0.05;
 
     public static final double STONEORIENTSERVO_ZEROPOS = 0;
     public static final double STONEORIENTSERVO_ORIENTPOS = 0.5;

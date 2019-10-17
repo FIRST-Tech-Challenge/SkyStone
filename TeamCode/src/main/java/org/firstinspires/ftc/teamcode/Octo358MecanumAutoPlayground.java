@@ -11,23 +11,23 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 abstract public class Octo358MecanumAutoPlayground extends LinearOpMode {
 
     private static final double WHEEL_DIAMETER = (double) 4;
-    private static final double DRIVE_TRAIN_LENGTH = 11.811;
-    private static final double DRIVE_TRAIN_WIDTH = 15.748;
+    private static final double DRIVE_TRAIN_LENGTH = 11.5;
+    private static final double DRIVE_TRAIN_WIDTH = 15.5;
     private static final double DRIVE_TRAIN_DIAGONAL = sqrt(
             DRIVE_TRAIN_WIDTH * DRIVE_TRAIN_WIDTH + DRIVE_TRAIN_LENGTH * DRIVE_TRAIN_LENGTH);
     private static final int ENCODER_TICKS = 1120;
 
-    private static final double DRIVE_ADJUST = 0.4710638298;
-    private static final double STRAFE_ADJUST = 0.5818181818;
-    private static final double ROTATE_ADJUST = 0.7;
+    private static final double GEAR_RATIO = (double) 5/2;
+
+    private static final double DRIVE_ADJUST = 1.1776595745;
+    private static final double STRAFE_ADJUST = 1.4545454525;
+    private static final double ROTATE_ADJUST = 1.75;
     private double SHIFT_AT = 500;
 
     DcMotor fL = null;
     DcMotor fR = null;
     DcMotor bL = null;
     DcMotor bR = null;
-
-    static final double POWER = 0.3;
 
     /*
     double gameField = 12 * 12;
@@ -115,7 +115,7 @@ abstract public class Octo358MecanumAutoPlayground extends LinearOpMode {
     }
 
     private int distanceToTicks(double distance) {
-        return (int) ((distance / (WHEEL_DIAMETER * Math.PI) * ENCODER_TICKS) + 0.5);
+        return (int) ((distance / (WHEEL_DIAMETER * Math.PI) * ENCODER_TICKS) / GEAR_RATIO + 0.5);
     }
 
     private double maxBeginningProgress(int fLO, int fRO, int bLO, int bRO) {

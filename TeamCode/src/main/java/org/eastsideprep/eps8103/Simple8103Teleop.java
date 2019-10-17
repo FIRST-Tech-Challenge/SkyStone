@@ -45,11 +45,9 @@ public class Simple8103Teleop extends LinearOpMode {
     public void runOpMode() {
         double left;
         double right;
-        boolean armU;
-        boolean armD;
-        boolean hoist;
-        boolean release;
-
+        boolean isClawOpen;
+        boolean extendUp;
+        boolean extendDown;
 
 
         /* Initialize the hardware variables.
@@ -97,11 +95,15 @@ public class Simple8103Teleop extends LinearOpMode {
             }
 
 
-            armU = gamepad1.dpad_up;
-            armD = gamepad1.dpad_down;
-            hoist = gamepad1.x;
-            release = gamepad1.b;
-
+            extendUp = gamepad2.dpad_up;
+            extendDown = gamepad2.dpad_down;
+            isClawOpen = gamepad2.x;
+            boolean openclaw = gamepad2.b;
+            if(extendUp){
+                robot.armExtender.setPower(-0.5);
+            } else if (extendDown){
+                robot.armExtender.setPower(0.5);
+            }
 
 
             // Send telemetry message to signify robot running

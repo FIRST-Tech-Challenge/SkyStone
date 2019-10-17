@@ -26,6 +26,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import org.firstinspires.ftc.robotcore.internal.vuforia.VuforiaLocalizerImpl;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.teamcode.R;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -145,13 +146,12 @@ public class VuforiaLib_SkyStone implements HeadingSensor, LocationSensor {
          * random data. As an example, here is a example of a fragment of a valid key:
          *      ... yIgIzTqZ4mWjk9wd3cZO9T1axEqzuhxoGlfOOI2dRzKS4T0hQ8kT ...
          * Once you've obtained a license key, copy the string form of the key from the Vuforia web site
-         * and paste it in to your code as the value of the 'vuforiaLicenseKey' field of the
-         * {@link Parameters} instance with which you initialize Vuforia.
+         * and paste it in to your code as the value of the 'vuforiaLicense' field of the
+         * file TeamCode/res/values/licenses.xml in your project.
          */
+
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(com.qualcomm.ftcrobotcontroller.R.id.cameraMonitorViewId);
-        parameters.vuforiaLicenseKey =
-                (licenseKey != null && licenseKey.length() > 0) ? licenseKey :
-                        "ARf809H/////AAAAGRswBQwUCUJ5nqfgZxGbDEQ8oO7YP5GdnbReYr8ZHinqQ74OsP7UdOxNZJDmhaF2OeGD20jpSexpr2CcXGSGuHXNB2p9Z6zUNLDTfEggL+yg4ujefoqdkSpCqZf1medpwh3KXcK76FcfSJuqEudik2PC6kQW/cqJXnnHofVrrDTzJmWMnK3hlqTMjig81DEPMAHbRnA5wn7Eu0irnmqqboWyOlQ0xTF+P4LVuxaOUFlQC8zPqkr1Gvzvix45paWtyuLCnS9YDWMvI1jIM4giMrTRCT0lG8F+vkuKMiK647KJp9QIsFdWQ0ecQhau3ODNQ03pcTzprVN72b9VObpv6FNBpjGKRAcA59xlZiM2l6fc";
+        parameters.vuforiaLicenseKey = opMode.hardwareMap.appContext.getString(R.string.vuforiaLicense);
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
         this.vuforia = new myVuforiaLocalizerImpl(parameters); // ClassFactory.createVuforiaLocalizer(parameters);
 

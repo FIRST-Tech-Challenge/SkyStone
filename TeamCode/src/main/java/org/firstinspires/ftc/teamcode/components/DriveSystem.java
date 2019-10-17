@@ -78,12 +78,11 @@ public class DriveSystem {
     /**
      * Clips joystick values and drives the motors.
      * @param rightX Right X joystick value
-     * @param rightY Right Y joystick value
      * @param leftX Left X joystick value
      * @param leftY Left Y joystick value in case you couldn't tell from the others
      */
     // TODO
-    public void drive(float rightX, float rightY, float leftX, float leftY) {
+    public void drive(float rightX, float leftX, float leftY) {
         // Prevent small values from causing the robot to drift
         if (Math.abs(rightX) < 0.01) {
             rightX = 0.0f;
@@ -94,15 +93,12 @@ public class DriveSystem {
         if (Math.abs(leftY) < 0.01) {
             leftY = 0.0f;
         }
-        if (Math.abs(rightY) < 0.01) {
-            rightY = 0.0f;
-        }
 
         // write the values to the motors 1
-        double frontLeftPower = -leftY - rightX + leftX;
-        double frontRightPower = -leftY + rightX - leftX;
-        double backLeftPower = -leftY - rightX - leftX;
-        double backRightPower = -leftY + rightX + leftX;
+        double frontLeftPower = -leftY + rightX + leftX;
+        double frontRightPower = -leftY - rightX - leftX;
+        double backLeftPower = -leftY + rightX - leftX;
+        double backRightPower = -leftY - rightX + leftX;
 
         motors.forEach((name, motor) -> {
             switch(name) {

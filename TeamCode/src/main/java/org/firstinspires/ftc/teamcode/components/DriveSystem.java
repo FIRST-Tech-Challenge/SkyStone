@@ -121,7 +121,6 @@ public class DriveSystem {
     }
 
     private boolean driveToPositionTicks(int ticks, Direction direction, double maxPower) {
-
         if(mTargetTicks == 0){
             mTargetTicks = ticks;
             for (DcMotor motor : motors.values()) {
@@ -129,15 +128,15 @@ public class DriveSystem {
             }
             setRunMode(DcMotor.RunMode.RUN_TO_POSITION);
             setMotorPower(maxPower);
-
         }
 
-        boolean arrived = false;
         if (!Direction.isStrafe(direction)) {
             for (DcMotor motor : motors.values()) {
                 int offset = Math.abs(motor.getCurrentPosition() - mTargetTicks);
                 Log.d(TAG, "Offset is " + offset);
                 if(offset < 100){
+                    setMotorPower(0.0);
+                    mTargetTicks = 0;
                     return true;
                 }
                 motor.setTargetPosition(mTargetTicks);
@@ -149,7 +148,7 @@ public class DriveSystem {
 //                switch(name) {
 //                    case FRONTRIGHT:
 //                    case BACKLEFT:
-//                        motor.setTargetPosition(motor.getCurrentPosition() - sign * ticks);
+//                        motor.setTargetPosition(mTargetTick);
 //                        break;
 //                    case FRONTLEFT:
 //                    case BACKRIGHT:
@@ -158,9 +157,7 @@ public class DriveSystem {
 //                }
 //            });
         }
-
-
-        return arrived;
+        return false;
 
     }
 

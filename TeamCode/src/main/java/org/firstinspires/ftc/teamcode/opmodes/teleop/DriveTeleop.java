@@ -9,28 +9,15 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.components.DriveSystem;
+import org.firstinspires.ftc.teamcode.opmodes.BaseOpMode;
 
 import java.util.EnumMap;
 
 
 @TeleOp(name = "Drive", group="TeleOp")
-public class DriveTeleop extends OpMode {
+public class DriveTeleop extends BaseOpMode {
 
     private DriveSystem driveSystem;
-
-    public void init(){
-        telemetry.addLine("in init");
-
-        EnumMap<DriveSystem.MotorNames, DcMotor> driveMap = new EnumMap<>(DriveSystem.MotorNames.class);
-        for(DriveSystem.MotorNames name : DriveSystem.MotorNames.values()){
-            telemetry.addLine("adding motors");
-            driveMap.put(name,hardwareMap.get(DcMotor.class, name.toString()));
-        }
-        telemetry.update();
-
-        driveSystem = new DriveSystem(driveMap, hardwareMap.get(BNO055IMU.class, "imu"));
-    }
-
 
     public void loop(){
             float rx = gamepad1.right_stick_x;

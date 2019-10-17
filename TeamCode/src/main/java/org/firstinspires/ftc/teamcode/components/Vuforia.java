@@ -57,6 +57,10 @@ public class Vuforia {
         vuforia = setCamera(hardwareMap, choice);
     }
 
+    public void close() {
+        vuforia.close();
+    }
+
     public Orientation getRobotHeading() {
         return Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
     }

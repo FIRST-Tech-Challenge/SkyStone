@@ -10,8 +10,6 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class League1TTArm {
 
-    private static final int RED_THRESHOLD = 800;
-    private static final int BLUE_THRESHOLD = 800;
     private static final double CLAW_OPEN_POS = 1.0;
     private static final double CLAW_CLOSE_POS = 0.0;
 
@@ -33,23 +31,30 @@ public class League1TTArm {
         telemetry.addData("blue", blue);
         LiftColor color = getColor();
         telemetry.addData("color detected", color);
+        telemetry.addData("lift power",lift.getPower());
         telemetry.update();
     }
 
     public void raise(double power) {
         power = Math.abs(power);
+        Telemetry telemetry = TTOpMode.currentOpMode().telemetry;
         while (getColor() != LiftColor.RED) {
+            testColorSensor(telemetry);
             lift.setPower(power);
         }
         lift.setPower(0.0);
+        testColorSensor(telemetry);
     }
 
     public void lower(double power) {
         power = Math.abs(power);
+        Telemetry telemetry = TTOpMode.currentOpMode().telemetry;
         while (getColor() != LiftColor.BLUE) {
+            testColorSensor(telemetry);
             lift.setPower(-power);
         }
         lift.setPower(0.0);
+        testColorSensor(telemetry);
     }
 
     private LiftColor getColor() {

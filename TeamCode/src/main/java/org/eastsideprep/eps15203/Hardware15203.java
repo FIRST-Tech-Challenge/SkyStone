@@ -88,13 +88,21 @@ public class Hardware15203 {
         rightBackMotor.setPower(0);
     }
 
-    public void RTurn(double power){
+    public void RTurn(double power, int milliseconds){
         //Front motors
         leftFrontMotor.setPower(-power);
         rightFrontMotor.setPower(power);
         //Back motors
         leftBackMotor.setPower(-power);
         rightBackMotor.setPower(power);
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException e) {
+        }
+        leftFrontMotor.setPower(0);
+        leftBackMotor.setPower(0);
+        rightFrontMotor.setPower(0);
+        rightBackMotor.setPower(0);
     }
 
 }

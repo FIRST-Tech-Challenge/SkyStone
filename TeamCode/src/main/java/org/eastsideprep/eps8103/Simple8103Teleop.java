@@ -103,6 +103,8 @@ public class Simple8103Teleop extends LinearOpMode {
                 robot.armExtender.setPower(-0.5);
             } else if (extendDown){
                 robot.armExtender.setPower(0.5);
+            }else {
+                robot.armExtender.setPower(0.0);
             }
 
 

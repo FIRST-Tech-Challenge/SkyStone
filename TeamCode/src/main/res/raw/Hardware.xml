@@ -47,6 +47,6 @@
             <!-- I2C Bus 2 -->
             <!-- I2C Bus 3 -->
         </LynxModule>
-        <VideoCamera name="Vision Camera" port="3"/>
+        <VideoCamera name="Vision Camera" port="3" />
     </LynxUsbDevice>
 </Robot>

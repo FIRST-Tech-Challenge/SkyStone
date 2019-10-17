@@ -22,8 +22,9 @@ public class ExperimentalStuff extends OpMode {
         bot = Robot.getInstance();
         bot.init(hardwareMap);
 
-        double volts = bot.expansionHubs.get(0).voltageBattery(ExpansionHub.VoltageUnits.VOLTS);
+        double volts = bot.expansionHubs.get("Expansion Hub 2").voltageBattery(ExpansionHub.VoltageUnits.VOLTS);
         telemetry.addData("Battery Voltage", volts);
+        telemetry.addData("Phone Battery", bot.phone.batteryPct());
         telemetry.update();
         if (volts < 11) {
             bot.phone.setBackgroundColor(0xFF, 0x00, 0x00);
@@ -37,12 +38,12 @@ public class ExperimentalStuff extends OpMode {
 
         bot.phone.toast("Program Initialized.", 2000);
 
-        backupGyro1 = hardwareMap.getAll(BNO055IMU.class).get(0);
+        backupGyro1 = hardwareMap.get(BNO055IMU.class, "imu");
     }
 
     @Override
     public void init_loop() {
-        double volts = bot.expansionHubs.get(0).voltageBattery(ExpansionHub.VoltageUnits.VOLTS);
+        double volts = bot.expansionHubs.get("Expansion Hub 2").voltageBattery(ExpansionHub.VoltageUnits.VOLTS);
         telemetry.addData("Battery Voltage", volts);
         telemetry.update();
     }
@@ -57,14 +58,15 @@ public class ExperimentalStuff extends OpMode {
 
     @Override
     public void loop() {
+        double rev = backupGyro1.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+
+        bot.driveTrain.spinDrive(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
 
         if (30 - bot.runtime.seconds() < lastSpake && lastSpake >= 0) {
             bot.phone.queueWordSpeak(String.valueOf(lastSpake));
             lastSpake--;
         }
         telemetry.addData("Speaking", bot.phone.hasQueuedSound());
-
-        double rev = backupGyro1.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
 
         telemetry.addData("Rev Gyro", rev);
         telemetry.addData("Phone Gyro", bot.phone.getGyroAngle());

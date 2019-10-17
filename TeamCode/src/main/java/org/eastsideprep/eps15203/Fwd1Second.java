@@ -4,9 +4,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 
-@Autonomous(name="Park on Tape [TapePark] (15203)", group="15203")
+@Autonomous(name="Go Forward for 1 Second 15203", group="15203")
 
-public class TapePark15203 extends LinearOpMode {
+public class Fwd1Second extends LinearOpMode {
 
     /* Declare OpMode members. */
     Hardware15203 robot = new Hardware15203();   // Use a Pushbot's hardware
@@ -20,15 +20,9 @@ public class TapePark15203 extends LinearOpMode {
         telemetry.addData("Status", "started");    //
         telemetry.update();
 
-        waitForStart();
 
-        robot.allDrive(0.5, 4000);
-        sleep(1000);
-        robot.RTurn(0.5);
-        sleep(1000);
-        robot.allDrive(0,0);
-        sleep(1000);
-        robot.allDrive(0.5, 1750);
+        waitForStart();
+        robot.allDrive(0.5, 1000);
     }
 }
 

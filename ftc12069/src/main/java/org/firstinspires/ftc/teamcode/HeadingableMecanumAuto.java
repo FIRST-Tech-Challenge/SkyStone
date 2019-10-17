@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotlib.controller.PIDController;
-import org.firstinspires.ftc.robotlib.hardwaremap.HeadingableMecanumHardwareMap;
+import org.firstinspires.ftc.robotlib.robot.HeadingableMecanumHardwareMap;
 
 @Autonomous (name="Headingable Mecanum Auto", group="Headingable")
 public class HeadingableMecanumAuto extends LinearOpMode

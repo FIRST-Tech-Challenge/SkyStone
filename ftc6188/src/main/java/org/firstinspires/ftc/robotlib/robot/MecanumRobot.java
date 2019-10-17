@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.robotlib.hardwaremap;
+package org.firstinspires.ftc.robotlib.robot;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -7,30 +7,29 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotlib.drivetrain.MecanumDrivetrain;
 
-public class MecanumHardwareMap
+public class MecanumRobot
 {
     private DcMotor driveFrontLeft;
     private DcMotor driveFrontRight;
     private DcMotor driveRearRight;
     private DcMotor driveRearLeft;
 
+    public DcMotor armParallelLift;
+
     public Servo servoBuildClawLeft;
     public Servo servoBuildClawRight;
 
     public MecanumDrivetrain drivetrain;
+    public DcMotor[] motorList;
 
     public final double wheelRadius = 4; //inches
 
-    public DcMotor[] motorList;
-
-    public MecanumHardwareMap(HardwareMap hwMap)
+    public MecanumRobot(HardwareMap hwMap)
     {
         driveFrontLeft = hwMap.get(DcMotor.class, "driveFrontLeft");
         driveFrontRight = hwMap.get(DcMotor.class, "driveFrontRight");
         driveRearRight = hwMap.get(DcMotor.class, "driveRearRight");
         driveRearLeft = hwMap.get(DcMotor.class, "driveRearLeft");
-
-        motorList = new DcMotor[]{driveFrontLeft, driveFrontRight, driveRearLeft, driveRearRight};
 
         driveFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         driveFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -42,10 +41,17 @@ public class MecanumHardwareMap
         driveRearRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         driveRearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        driveFrontRight.setDirection(DcMotorSimple.Direction.FORWARD);
-        driveFrontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        driveRearRight.setDirection(DcMotorSimple.Direction.FORWARD);
-        driveRearLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        driveFrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        driveFrontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        driveRearRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        driveRearLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        /**
+        armParallelLift = hwMap.get(DcMotor.class, "armParallelLift");
+        armParallelLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        armParallelLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        armParallelLift.setDirection(DcMotorSimple.Direction.FORWARD);
+         **/
 
         /**
         servoBuildClawLeft = hwMap.get(Servo.class, "servoBuildClawLeft");
@@ -55,6 +61,7 @@ public class MecanumHardwareMap
         servoBuildClawRight.setDirection(Servo.Direction.FORWARD);
          **/
 
+        motorList = new DcMotor[]{driveFrontLeft, driveFrontRight, driveRearLeft, driveRearRight};
         drivetrain = new MecanumDrivetrain(motorList);
     }
 }

@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotlib.controller.PIDController;
-import org.firstinspires.ftc.robotlib.hardwaremap.HeadingableMecanumHardwareMap;
+import org.firstinspires.ftc.robotlib.robot.HeadingableMecanumHardwareMap;
 import org.firstinspires.ftc.robotlib.util.PIDTuner;
 
 @TeleOp (name="Headingable Mecanum PIDTuner", group="Headingable")

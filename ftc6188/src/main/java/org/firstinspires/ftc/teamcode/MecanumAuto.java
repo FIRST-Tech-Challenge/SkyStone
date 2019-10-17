@@ -5,12 +5,12 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotlib.drivetrain.MecanumDrivetrain;
-import org.firstinspires.ftc.robotlib.hardwaremap.MecanumHardwareMap;
+import org.firstinspires.ftc.robotlib.robot.MecanumRobot;
 
 @Autonomous(name="Mecanum Auto", group="Auto")
 public class MecanumAuto extends LinearOpMode
 {
-    private MecanumHardwareMap robotHardware;
+    private MecanumRobot robot;
     private MecanumDrivetrain robotDrivetrain;
     private ElapsedTime elapsedTime;
 
@@ -19,10 +19,10 @@ public class MecanumAuto extends LinearOpMode
     @Override
     public void runOpMode() throws InterruptedException
     {
-        robotHardware = new MecanumHardwareMap(this.hardwareMap);
-        robotDrivetrain = new MecanumDrivetrain(robotHardware.motorList);
+        robot = new MecanumRobot(this.hardwareMap);
+        robotDrivetrain = new MecanumDrivetrain(robot.motorList);
         elapsedTime = new ElapsedTime();
-        ticksPerUnit = robotDrivetrain.getTicksPerUnit()*Math.PI*robotHardware.wheelRadius;
+        ticksPerUnit = robotDrivetrain.getTicksPerUnit()*Math.PI* robot.wheelRadius;
 
         waitForStart();
 

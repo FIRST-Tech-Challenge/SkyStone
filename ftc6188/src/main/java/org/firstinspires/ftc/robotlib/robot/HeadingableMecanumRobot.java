@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.robotlib.hardwaremap;
+package org.firstinspires.ftc.robotlib.robot;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.BNO055IMUImpl;
@@ -11,14 +11,14 @@ import org.firstinspires.ftc.robotlib.controller.PIDController;
 import org.firstinspires.ftc.robotlib.drivetrain.HeadingableMecanumDrivetrain;
 import org.firstinspires.ftc.robotlib.sensor.IntegratingGyroscopeSensor;
 
-public class HeadingableMecanumHardwareMap extends MecanumHardwareMap
+public class HeadingableMecanumRobot extends MecanumRobot
 {
     public BNO055IMUImpl imu;
 
     public FinishableIntegratedController controller;
     public HeadingableMecanumDrivetrain drivetrain;
 
-    public HeadingableMecanumHardwareMap(HardwareMap hwMap)
+    public HeadingableMecanumRobot(HardwareMap hwMap)
     {
         super(hwMap);
 

@@ -4,13 +4,13 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotlib.hardwaremap.HeadingableMecanumHardwareMap;
+import org.firstinspires.ftc.robotlib.robot.HeadingableMecanumRobot;
 
 @TeleOp (name="Headingable Mecanum TeleOp", group="Headingable")
 public class HeadingableMecanumTeleOp extends OpMode
 {
     private static final double HEADING_COEFF = 0.01;
-    private HeadingableMecanumHardwareMap robotHardware;
+    private HeadingableMecanumRobot robot;
 
     private double desiredHeading = 0;
     private ElapsedTime rotationTimer;
@@ -19,7 +19,7 @@ public class HeadingableMecanumTeleOp extends OpMode
     @Override
     public void init()
     {
-        robotHardware = new HeadingableMecanumHardwareMap(this.hardwareMap);
+        robot = new HeadingableMecanumRobot(this.hardwareMap);
         rotationTimer = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
         elapsedTime = new ElapsedTime();
     }
@@ -36,7 +36,7 @@ public class HeadingableMecanumTeleOp extends OpMode
         double course = Math.atan2(-gamepad1.right_stick_y, gamepad1.right_stick_x) - Math.PI/2;
         double velocity = Math.hypot(gamepad1.right_stick_x, gamepad1.right_stick_y);
 
-        robotHardware.drivetrain.halfPowerInput(gamepad1.right_stick_button);
+        robot.drivetrain.halfPowerInput(gamepad1.right_stick_button);
 
         desiredHeading += -gamepad1.left_stick_x*rotationTimer.time()*HEADING_COEFF;
         rotationTimer.reset();
@@ -51,28 +51,28 @@ public class HeadingableMecanumTeleOp extends OpMode
         }
         if (gamepad1.y)
         {
-            robotHardware.drivetrain.setExtrinsicOffset(desiredHeading);
+            robot.drivetrain.setExtrinsicOffset(desiredHeading);
         }
 
         //toggles the robots headingless ability maybe
         if (gamepad1.left_stick_button)
         {
-            robotHardware.drivetrain.setExtrinsic(!robotHardware.drivetrain.getExtrinsic());
+            robot.drivetrain.setExtrinsic(!robot.drivetrain.getExtrinsic());
         }
 
-        robotHardware.drivetrain.setCourse(course);
-        robotHardware.drivetrain.setVelocity(velocity);
-        robotHardware.drivetrain.setTargetHeading(desiredHeading);
-        robotHardware.drivetrain.updateHeading();
+        robot.drivetrain.setCourse(course);
+        robot.drivetrain.setVelocity(velocity);
+        robot.drivetrain.setTargetHeading(desiredHeading);
+        robot.drivetrain.updateHeading();
 
         telemetry.addData("Status", "Loop: " + rotationTimer.toString());
-        telemetry.addData("Headingless", robotHardware.drivetrain.getExtrinsic());
+        telemetry.addData("Headingless", robot.drivetrain.getExtrinsic());
         telemetry.addData("Course", course);
         telemetry.addData("Velocity", velocity);
         telemetry.addData("Rotation", -gamepad1.left_stick_x);
-        telemetry.addData("Current Heading", robotHardware.controller.getSensorValue());
+        telemetry.addData("Current Heading", robot.controller.getSensorValue());
         telemetry.addData("Desired Heading", desiredHeading);
-        telemetry.addData("Extrinsic Offset", robotHardware.drivetrain.getExtrinsicOffset());
+        telemetry.addData("Extrinsic Offset", robot.drivetrain.getExtrinsicOffset());
         telemetry.update();
     }
 }

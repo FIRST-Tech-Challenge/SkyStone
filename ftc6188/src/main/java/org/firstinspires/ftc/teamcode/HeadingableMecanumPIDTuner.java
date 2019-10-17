@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotlib.controller.PIDController;
-import org.firstinspires.ftc.robotlib.hardwaremap.HeadingableMecanumHardwareMap;
+import org.firstinspires.ftc.robotlib.robot.HeadingableMecanumRobot;
 import org.firstinspires.ftc.robotlib.util.PIDTuner;
 
 @TeleOp (name="Headingable Mecanum PIDTuner", group="Headingable")
@@ -15,8 +15,8 @@ public class HeadingableMecanumPIDTuner extends OpMode
     @Override
     public void init()
     {
-        HeadingableMecanumHardwareMap robotHardware = new HeadingableMecanumHardwareMap(this.hardwareMap);
-        tuner = new PIDTuner(robotHardware.drivetrain, (PIDController) robotHardware.controller.algorithm, this.gamepad1, this.telemetry);
+        HeadingableMecanumRobot robot = new HeadingableMecanumRobot(this.hardwareMap);
+        tuner = new PIDTuner(robot.drivetrain, (PIDController) robot.controller.algorithm, this.gamepad1, this.telemetry);
     }
 
     @Override

@@ -18,8 +18,6 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
         this.wheelAngles = wheelAngles;
     }
 
-
-
     @Override
     public void setRotation(double rotation)
     {

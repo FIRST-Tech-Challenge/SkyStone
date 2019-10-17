@@ -4,18 +4,18 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotlib.hardwaremap.MecanumHardwareMap;
+import org.firstinspires.ftc.robotlib.robot.MecanumRobot;
 
 @TeleOp(name="Mecanum TeleOp", group="TeleOp")
 public class MecanumTeleOp extends OpMode
 {
-    private MecanumHardwareMap robotHardware;
+    private MecanumRobot robot;
     private ElapsedTime elapsedTime;
 
     @Override
     public void init()
     {
-        robotHardware = new MecanumHardwareMap(this.hardwareMap);
+        robot = new MecanumRobot(this.hardwareMap);
         elapsedTime = new ElapsedTime();
     }
 
@@ -38,25 +38,25 @@ public class MecanumTeleOp extends OpMode
         double course = Math.atan2(-gamepad1.right_stick_y, gamepad1.right_stick_x) - Math.PI/2;
         double velocity = Math.hypot(gamepad1.right_stick_x, gamepad1.right_stick_y);
 
-        robotHardware.drivetrain.halfPowerInput(gamepad1.right_stick_button);
+        robot.drivetrain.halfPowerInput(gamepad1.right_stick_button);
 
-        robotHardware.drivetrain.setCourse(course);
-        robotHardware.drivetrain.setVelocity(velocity);
-        robotHardware.drivetrain.setRotation(-gamepad1.left_stick_x);
+        robot.drivetrain.setCourse(course);
+        robot.drivetrain.setVelocity(velocity);
+        robot.drivetrain.setRotation(-gamepad1.left_stick_x);
 
-        //robotHardware.armParallelLift.setPower(gamepad2.left_stick_y);
+        //robot.armParallelLift.setPower(gamepad2.left_stick_y);
 
         /**
         if (gamepad1.dpad_down)
         {
-            robotHardware.servoBuildClawLeft.setPosition(120);
-            robotHardware.servoBuildClawRight.setPosition(120);
+            robot.servoBuildClawLeft.setPosition(120);
+            robot.servoBuildClawRight.setPosition(120);
         }
 
         if (gamepad1.dpad_up)
         {
-            robotHardware.servoBuildClawLeft.setPosition(0);
-            robotHardware.servoBuildClawRight.setPosition(0);
+            robot.servoBuildClawLeft.setPosition(0);
+            robot.servoBuildClawRight.setPosition(0);
         }
          **/
 

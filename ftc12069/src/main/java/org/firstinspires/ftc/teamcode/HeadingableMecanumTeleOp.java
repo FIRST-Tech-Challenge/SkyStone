@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotlib.hardwaremap.HeadingableMecanumHardwareMap;
+import org.firstinspires.ftc.robotlib.robot.HeadingableMecanumHardwareMap;
 
 @TeleOp (name="Headingable Mecanum TeleOp", group="Headingable")
 public class HeadingableMecanumTeleOp extends OpMode

@@ -62,9 +62,7 @@ public class testOpMode_TeleOp extends OpMode
     private DcMotor rightDrive = null;
     private DcMotor frontLeftMotor=null;
 
-    /*
-     * Code to run ONCE when the driver hits INIT
-     */
+
     @Override
     public void init() {
         telemetry.addData("Status", "Initialized");

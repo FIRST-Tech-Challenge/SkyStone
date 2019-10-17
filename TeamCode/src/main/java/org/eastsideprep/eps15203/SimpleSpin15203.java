@@ -4,9 +4,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 
-@Autonomous(name="Simple Spin 15203", group="15203")
+@Autonomous(name="SpinTurn", group="15203")
 
-public class SimpleSpin15203 extends LinearOpMode {
+public class SpinTurn extends LinearOpMode {
 
     /* Declare OpMode members. */
     Hardware15203 robot = new Hardware15203();   // Use a Pushbot's hardware
@@ -19,6 +19,24 @@ public class SimpleSpin15203 extends LinearOpMode {
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "started");    //
         telemetry.update();
+
+
+        waitForStart();
+        //Front motors
+        leftFrontMotor.setPower(-power);
+        rightFrontMotor.setPower(power);
+        //Back motors
+        leftBackMotor.setPower(power);
+        rightBackMotor.setPower(power);
+/*
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException e) {
+        }
+        leftFrontMotor.setPower(0);
+        leftBackMotor.setPower(0);
+        rightFrontMotor.setPower(0);
+        rightBackMotor.setPower(0);
+        */
     }
 }
-

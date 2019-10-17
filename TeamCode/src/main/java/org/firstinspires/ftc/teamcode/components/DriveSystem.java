@@ -124,56 +124,44 @@ public class DriveSystem {
 
     public boolean driveToPositionTicks(int ticks, Direction direction, double maxPower) {
         if(mTargetTicks == 0){
-            mTargetTicks = ticks;
-            for (DcMotor motor : motors.values()) {
+            mTargetTicks = direction == Direction.BACKWARD ? -ticks : ticks;
+            motors.forEach((name, motor) -> {
                 motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            }
+                if(Direction.isStrafe(direction)){
+                    int sign = direction == Direction.LEFT ? -1 : 1;
+                    switch(name){
+                        case BACKLEFT:
+                        case BACKRIGHT:
+                            motor.setTargetPosition(sign * mTargetTicks);
+                            break;
+                        case FRONTRIGHT:
+                        case FRONTLEFT:
+                            motor.setTargetPosition(sign * (-mTargetTicks));
+                            break;
+                    }
+                } else {
+                    motor.setTargetPosition(mTargetTicks);
+                }
+
+
+            });
             setRunMode(DcMotor.RunMode.RUN_TO_POSITION);
             setMotorPower(maxPower);
         }
 
-        if (!Direction.isStrafe(direction)) {
-            for (DcMotor motor : motors.values()) {
-                int offset = Math.abs(motor.getCurrentPosition() - mTargetTicks);
-                Log.d(TAG, "Offset is " + offset);
-                Log.d(TAG, "Ticks is " + ticks);
-                if(offset < 100){
-                    setMotorPower(0.0);
-                    mTargetTicks = 0;
-                    return true;
-                }
-                motor.setTargetPosition(mTargetTicks);
+
+        for (DcMotor motor : motors.values()) {
+
+            int offset = Math.abs(motor.getCurrentPosition() - mTargetTicks);
+            Log.d(TAG, "Offset is " + offset);
+
+            if(offset < 100){
+                setMotorPower(0.0);
+                mTargetTicks = 0;
+                return true;
             }
-
-        } else {
-
-//            motors.forEach((name, motor) -> {
-//                switch(name) {
-//                    case FRONTRIGHT:
-//                    case BACKLEFT:
-//                        int offset = Math.abs(motor.getCurrentPosition() - mTargetTicks);
-//                        Log.d(TAG, "Offset is " + offset);
-//                        Log.d(TAG, "Ticks is " + ticks);
-//                        if(offset < 100){
-//                          setMotorPower(0.0);
-//                          mTargetTicks = 0;
-//                          return true;
-//                        }
-//                        break;
-//                    case FRONTLEFT:
-//                    case BACKRIGHT:
-//                        int offset = Math.abs(motor.getCurrentPosition() - mTargetTicks);
-//                        Log.d(TAG, "Offset is " + offset);
-//                        Log.d(TAG, "Ticks is " + ticks);
-//                        if(offset < 100){
-//                          setMotorPower(0.0);
-//                          mTargetTicks = 0;
-//                          return true;
-//                        }
-//                        break;
-//                }
-//            });
         }
+
         return false;
 
     }

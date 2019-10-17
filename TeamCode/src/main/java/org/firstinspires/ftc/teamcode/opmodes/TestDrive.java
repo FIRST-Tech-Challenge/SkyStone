@@ -58,11 +58,11 @@ public class TestDrive extends BaseStateMachine {
                 // Strafe towards line
                 // Identify SkyStone
                 // If we can't see it after 3 feet, start driving  until we do
-                if(driveSystem.driveToPositionInches(24, DriveSystem.Direction.FORWARD, .5)){
+                if(driveSystem.driveToPositionInches(48, DriveSystem.Direction.RIGHT, .5)){
                     Log.d(TAG,"exiting loop");
                     newState(State.STATE_RETURN);
                 }
-                Log.d(TAG,"not there, continuing");
+
                 break;
 
             case STATE_RETURN:

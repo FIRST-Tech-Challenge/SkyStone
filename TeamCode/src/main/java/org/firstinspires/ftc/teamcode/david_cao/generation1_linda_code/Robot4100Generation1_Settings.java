@@ -24,7 +24,7 @@ public class Robot4100Generation1_Settings {
     public static final double LINEARSLIDE_GRAB = 0.88843;
     public static final double LINEARSLIDE_START = 0;
 
-    public static final double INTAKEMOTOR_SPEED = 0.8;
+    public static final double INTAKEMOTOR_SPEED = 1.0;
 
 
     public static final boolean CHASSIS_TIMEOUTENABLE = false;

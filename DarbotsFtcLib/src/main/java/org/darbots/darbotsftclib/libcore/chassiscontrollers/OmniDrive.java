@@ -49,9 +49,9 @@ public class OmniDrive extends RobotMotionSystem {
             RobotFixCountSpeedCtlTask LBTask = new RobotFixCountSpeedCtlTask(CountToMoveRight,this.getSpeed(),null,true);
             RobotFixCountSpeedCtlTask RBTask = new RobotFixCountSpeedCtlTask(CountToMoveRight,this.getSpeed(),null,true);
             m_Drive.m_LeftTopMotor.getMotorController().replaceTask(LTTask);
-            m_Drive.m_RightBottomMotor.getMotorController().replaceTask(RBTask);
             m_Drive.m_LeftBottomMotor.getMotorController().replaceTask(LBTask);
             m_Drive.m_RightTopMotor.getMotorController().replaceTask(RTTask);
+            m_Drive.m_RightBottomMotor.getMotorController().replaceTask(RBTask);
         }
 
         @Override

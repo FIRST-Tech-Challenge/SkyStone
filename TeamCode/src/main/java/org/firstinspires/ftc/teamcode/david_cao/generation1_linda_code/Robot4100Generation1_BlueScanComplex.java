@@ -235,7 +235,7 @@ public class Robot4100Generation1_BlueScanComplex extends DarbotsBasicOpMode {
 
 
         this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedTurnTask(
-                90,
+                180,
                 0.3
         ));
         if(!waitForDrive()){
@@ -243,85 +243,57 @@ public class Robot4100Generation1_BlueScanComplex extends DarbotsBasicOpMode {
         }
         waitForGamepadX();
 
-        m_OldAng += 90;
+        m_OldAng += 180;
         m_OldAng = XYPlaneCalculations.normalizeDeg(m_OldAng);
 
-        this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedZDistanceTask(
-                10,
-                0.3
-        ));
-        if(!waitForDrive()){
-            return;
-        }
-        waitForGamepadX();
-
         if(!fixAng()){
             return;
         }
-
-        if(!waitForDrive()){
-            return;
-        }
-        waitForGamepadX();
 
         this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedXDistanceTask(
-                50,
+                -60,
                 0.2
         ));
-
         if(!waitForDrive()){
             return;
         }
         waitForGamepadX();
+
+        this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedZDistanceTask(
+                -20,
+                0.2
+        ));
+        if(!waitForDrive()){
+            return;
+        }
+        waitForGamepadX();
+
+        this.getRobotCore().setDragServoToDrag(true);
+        sleep(300);
+
+        this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedTurnTask(
+                45,
+                0.2
+        ));
+        if(!waitForDrive()){
+            return;
+        }
+        waitForGamepadX();
+
+        m_OldAng += 45;
+        m_OldAng = XYPlaneCalculations.normalizeDeg(m_OldAng);
+
         if(!fixAng()){
             return;
         }
 
-        this.m_RobotCore.getChassis().replaceTask(
-                this.m_RobotCore.getChassis().getFixedZDistanceTask(
-                        -50,
-                        0.4
-                )
-        );
+        this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedZDistanceTask(
+                -50,
+                0.2
+        ));
         if(!waitForDrive()){
             return;
         }
-
-        this.m_RobotCore.setDragServoToDrag(true);
-        sleep(500);
-        this.m_RobotCore.getChassis().replaceTask(
-                this.m_RobotCore.getChassis().getFixedZDistanceTask(
-                        95,
-                        0.5
-                )
-        );
-        if(!waitForDrive()){
-            return;
-        }
-
-        this.m_RobotCore.getChassis().replaceTask(
-                this.m_RobotCore.getChassis().getFixedZDistanceTask(
-                        -5,
-                        0.1
-                )
-        );
-        if(!waitForDrive()){
-            return;
-        }
-
-        this.m_RobotCore.setDragServoToDrag(false);
-        sleep(300);
-
-        this.m_RobotCore.getChassis().replaceTask(
-                this.m_RobotCore.getChassis().getFixedXDistanceTask(
-                        -130,
-                        0.2
-                )
-        );
-        if(!waitForDrive()){
-            return;
-        }
-
-
+        waitForGamepadX();
     }
 }

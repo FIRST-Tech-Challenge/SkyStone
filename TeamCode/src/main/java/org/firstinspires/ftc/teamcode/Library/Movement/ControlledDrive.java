@@ -24,7 +24,7 @@ public class ControlledDrive {
 
     private ElapsedTime runtime = new ElapsedTime();
     private Telemetry telemetry;
-    
+
     HardwareMap hardwareMap;
     HardwareOmniTest robot;
 

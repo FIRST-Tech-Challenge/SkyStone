@@ -27,7 +27,9 @@ package org.darbots.darbotsftclib.libcore.templates.chassis_related;
 
 import android.support.annotation.NonNull;
 
+import org.darbots.darbotsftclib.libcore.integratedfunctions.RobotLogger;
 import org.darbots.darbotsftclib.libcore.runtime.GlobalRegister;
+import org.darbots.darbotsftclib.libcore.runtime.GlobalUtil;
 import org.darbots.darbotsftclib.libcore.templates.RobotNonBlockingDevice;
 
 public abstract class RobotMotionSystemTask implements RobotNonBlockingDevice {
@@ -51,8 +53,8 @@ public abstract class RobotMotionSystemTask implements RobotNonBlockingDevice {
             return;
         }
         this.m_IsWorking = true;
-        GlobalRegister.runningOpMode.getRobotCore().getLogger().addLog("RobotMotionSystemTask","BeforeTask","");
-        GlobalRegister.runningOpMode.getRobotCore().getLogger().addLog("RobotMotionSystemTask","TaskInfo",this.getTaskDetailString());
+        GlobalUtil.addLog("RobotMotionSystemTask","BeforeTask","", RobotLogger.LogLevel.DEBUG);
+        GlobalUtil.addLog("RobotMotionSystemTask","TaskInfo",this.getTaskDetailString(), RobotLogger.LogLevel.DEBUG);
         this.__startTask();
     }
     protected abstract void __startTask();
@@ -61,7 +63,7 @@ public abstract class RobotMotionSystemTask implements RobotNonBlockingDevice {
         if(!this.m_IsWorking){
             return;
         }
-        GlobalRegister.runningOpMode.getRobotCore().getLogger().addLog("RobotMotionSystemTask","AfterTask","Task ends");
+        GlobalUtil.addLog("RobotMotionSystemTask","AfterTask","Task ends", RobotLogger.LogLevel.DEBUG);
         this.m_IsWorking = false;
         this.__taskFinished();
         this.m_MotionSystem.__checkTasks();

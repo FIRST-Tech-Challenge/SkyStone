@@ -44,10 +44,14 @@ public class OmniDrive extends RobotMotionSystem {
                                 );
                     }
                 });
-            m_Drive.m_LeftTopMotor.getMotorController().replaceTask(new RobotFixCountSpeedCtlTask(-CountToMoveRight, this.getSpeed(), FLCB , true));
-            m_Drive.m_RightTopMotor.getMotorController().replaceTask(new RobotFixCountSpeedCtlTask(-CountToMoveRight,this.getSpeed(),null,true));
-            m_Drive.m_LeftBottomMotor.getMotorController().replaceTask(new RobotFixCountSpeedCtlTask(CountToMoveRight,this.getSpeed(),null,true));
-            m_Drive.m_RightBottomMotor.getMotorController().replaceTask(new RobotFixCountSpeedCtlTask(CountToMoveRight,this.getSpeed(),null,true));
+            RobotFixCountSpeedCtlTask LTTask = new RobotFixCountSpeedCtlTask(-CountToMoveRight, this.getSpeed(), FLCB , true);
+            RobotFixCountSpeedCtlTask RTTask = new RobotFixCountSpeedCtlTask(-CountToMoveRight,this.getSpeed(),null,true);
+            RobotFixCountSpeedCtlTask LBTask = new RobotFixCountSpeedCtlTask(CountToMoveRight,this.getSpeed(),null,true);
+            RobotFixCountSpeedCtlTask RBTask = new RobotFixCountSpeedCtlTask(CountToMoveRight,this.getSpeed(),null,true);
+            m_Drive.m_LeftTopMotor.getMotorController().replaceTask(LTTask);
+            m_Drive.m_RightBottomMotor.getMotorController().replaceTask(RBTask);
+            m_Drive.m_LeftBottomMotor.getMotorController().replaceTask(LBTask);
+            m_Drive.m_RightTopMotor.getMotorController().replaceTask(RTTask);
         }
 
         @Override
@@ -94,10 +98,14 @@ public class OmniDrive extends RobotMotionSystem {
                             );
                         }
                     });
-            m_Drive.m_LeftTopMotor.getMotorController().replaceTask(new RobotFixCountSpeedCtlTask(-CountToMoveForward,this.getSpeed(),FLCB,true));
-            m_Drive.m_RightTopMotor.getMotorController().replaceTask(new RobotFixCountSpeedCtlTask(CountToMoveForward,this.getSpeed(),null,true));
-            m_Drive.m_LeftBottomMotor.getMotorController().replaceTask(new RobotFixCountSpeedCtlTask(-CountToMoveForward,this.getSpeed(),null,true));
-            m_Drive.m_RightBottomMotor.getMotorController().replaceTask(new RobotFixCountSpeedCtlTask(CountToMoveForward,this.getSpeed(),null,true));
+            RobotFixCountSpeedCtlTask LTTask = new RobotFixCountSpeedCtlTask(-CountToMoveForward,this.getSpeed(),FLCB,true);
+            RobotFixCountSpeedCtlTask RTTask = new RobotFixCountSpeedCtlTask(CountToMoveForward,this.getSpeed(),null,true);
+            RobotFixCountSpeedCtlTask LBTask = new RobotFixCountSpeedCtlTask(-CountToMoveForward,this.getSpeed(),null,true);
+            RobotFixCountSpeedCtlTask RBTask = new RobotFixCountSpeedCtlTask(CountToMoveForward,this.getSpeed(),null,true);
+            m_Drive.m_LeftTopMotor.getMotorController().replaceTask(LTTask);
+            m_Drive.m_RightTopMotor.getMotorController().replaceTask(RTTask);
+            m_Drive.m_LeftBottomMotor.getMotorController().replaceTask(LBTask);
+            m_Drive.m_RightBottomMotor.getMotorController().replaceTask(RBTask);
         }
 
         @Override
@@ -145,10 +153,15 @@ public class OmniDrive extends RobotMotionSystem {
                             );
                         }
                     });
-            m_Drive.m_LeftTopMotor.getMotorController().replaceTask(new RobotFixCountSpeedCtlTask(CountToMoveCounterClockwise,this.getSpeed(),FLCB,true));
-            m_Drive.m_RightTopMotor.getMotorController().replaceTask(new RobotFixCountSpeedCtlTask(CountToMoveCounterClockwise,this.getSpeed(),null,true));
-            m_Drive.m_LeftBottomMotor.getMotorController().replaceTask(new RobotFixCountSpeedCtlTask(CountToMoveCounterClockwise,this.getSpeed(),null,true));
-            m_Drive.m_RightBottomMotor.getMotorController().replaceTask(new RobotFixCountSpeedCtlTask(CountToMoveCounterClockwise,this.getSpeed(),null,true));
+
+            RobotFixCountSpeedCtlTask LTTask = new RobotFixCountSpeedCtlTask(CountToMoveCounterClockwise,this.getSpeed(),FLCB,true);
+            RobotFixCountSpeedCtlTask RTTask = new RobotFixCountSpeedCtlTask(CountToMoveCounterClockwise,this.getSpeed(),null,true);
+            RobotFixCountSpeedCtlTask LBTask = new RobotFixCountSpeedCtlTask(CountToMoveCounterClockwise,this.getSpeed(),null,true);
+            RobotFixCountSpeedCtlTask RBTask = new RobotFixCountSpeedCtlTask(CountToMoveCounterClockwise,this.getSpeed(),null,true);
+            m_Drive.m_LeftTopMotor.getMotorController().replaceTask(LTTask);
+            m_Drive.m_RightTopMotor.getMotorController().replaceTask(RTTask);
+            m_Drive.m_LeftBottomMotor.getMotorController().replaceTask(LBTask);
+            m_Drive.m_RightBottomMotor.getMotorController().replaceTask(RBTask);
         }
 
         @Override

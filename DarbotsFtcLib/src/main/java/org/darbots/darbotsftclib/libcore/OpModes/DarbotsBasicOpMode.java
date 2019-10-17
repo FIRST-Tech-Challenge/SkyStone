@@ -2,7 +2,9 @@ package org.darbots.darbotsftclib.libcore.OpModes;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.darbots.darbotsftclib.libcore.integratedfunctions.RobotLogger;
 import org.darbots.darbotsftclib.libcore.runtime.GlobalRegister;
+import org.darbots.darbotsftclib.libcore.runtime.GlobalUtil;
 import org.darbots.darbotsftclib.libcore.templates.RobotCore;
 
 public abstract class DarbotsBasicOpMode<CoreType extends RobotCore> extends LinearOpMode {
@@ -14,16 +16,34 @@ public abstract class DarbotsBasicOpMode<CoreType extends RobotCore> extends Lin
     public void runOpMode() throws InterruptedException {
         GlobalRegister.runningOpMode = this;
         this.hardwareInitialize();
-        this.getRobotCore().getLogger().addLog("DarbotsBasicOpMode","Status","OpMode initialized");
+        GlobalUtil.addLog("DarbotsBasicOpMode","Status","OpMode initialized", RobotLogger.LogLevel.DEBUG);
         this.waitForStart();
         if(this.opModeIsActive()){
             RunThisOpMode();
         }
-        this.getRobotCore().getLogger().addLog("DarbotsBasicOpMode","Status","OpMode stopping");
+        GlobalUtil.addLog("DarbotsBasicOpMode","Status","OpMode stopping", RobotLogger.LogLevel.DEBUG);
         this.getRobotCore().stop();
-        this.getRobotCore().getLogger().addLog("DarbotsBasicOpMode","Status","OpMode finished");
+        GlobalUtil.addLog("DarbotsBasicOpMode","Status","OpMode finished", RobotLogger.LogLevel.DEBUG);
         this.getRobotCore().getLogger().saveLogsToFile();
         this.hardwareDestroy();
         GlobalRegister.runningOpMode = null;
+    }
+    @Override
+    public void waitForStart(){
+        while ((!opModeIsActive()) && (!isStopRequested())) {
+            telemetry.addData("status", "Initialized, waiting for start command...");
+            telemetry.update();
+        }
+    }
+
+    public void waitForStart_NoDisplay(){
+        super.waitForStart();
+    }
+
+    public boolean waitForDrive(){
+        while(this.opModeIsActive() && this.getRobotCore().getChassis().isBusy()){
+            this.getRobotCore().updateStatus();
+        }
+        return this.opModeIsActive();
     }
 }

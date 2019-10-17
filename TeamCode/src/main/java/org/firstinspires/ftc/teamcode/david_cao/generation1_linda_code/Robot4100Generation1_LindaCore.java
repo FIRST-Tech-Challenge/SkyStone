@@ -1,26 +1,38 @@
 package org.firstinspires.ftc.teamcode.david_cao.generation1_linda_code;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.darbots.darbotsftclib.libcore.OpModes.DarbotsBasicOpMode;
 import org.darbots.darbotsftclib.libcore.calculations.dimentionalcalculation.Robot2DPositionIndicator;
 import org.darbots.darbotsftclib.libcore.chassiscontrollers.OmniDrive;
+import org.darbots.darbotsftclib.libcore.sensors.gyros.BNO055Gyro;
 import org.darbots.darbotsftclib.libcore.sensors.motion_related.RobotMotion;
 import org.darbots.darbotsftclib.libcore.sensors.motion_related.RobotWheel;
 import org.darbots.darbotsftclib.libcore.sensors.motors.RobotMotorController;
 import org.darbots.darbotsftclib.libcore.sensors.motors.RobotMotorWithEncoder;
 import org.darbots.darbotsftclib.libcore.sensors.servos.motor_powered_servos.RobotServoUsingMotor;
+import org.darbots.darbotsftclib.libcore.tasks.servo_tasks.motor_powered_servo_tasks.TargetPosTask;
 import org.darbots.darbotsftclib.libcore.templates.RobotCore;
 import org.darbots.darbotsftclib.libcore.templates.chassis_related.RobotMotionSystem;
 import org.darbots.darbotsftclib.libcore.templates.motor_related.RobotMotor;
+import org.darbots.darbotsftclib.libcore.templates.other_sensors.RobotGyro;
 
 public class Robot4100Generation1_LindaCore extends RobotCore {
+    public enum IntakeSystemStatus{
+        SUCK,
+        VOMIT,
+        STOP
+    }
     private OmniDrive m_Chassis;
     private Servo m_DragServoL, m_DragServoR;
     private Servo m_Grabber, m_GrabberRot;
+    private Servo m_StoneOrientServo;
     private RobotServoUsingMotor m_linearSlide;
-
+    private DcMotor m_IntakeLeft, m_IntakeRight;
+    private BNO055Gyro m_Gyro;
+    private Servo m_AutoDragStoneServo;
+    private Servo m_CapStoneServo;
 
     public Robot4100Generation1_LindaCore(HardwareMap hardwares) {
         super("4100Generation1_LindaCore.log");
@@ -40,19 +52,56 @@ public class Robot4100Generation1_LindaCore extends RobotCore {
                 LBMotion = new RobotMotion(new RobotMotorController(LBMotor,Robot4100Generation1_Settings.CHASSIS_TIMEOUTENABLE,Robot4100Generation1_Settings.CHASSIS_TIMEOUTFACTOR),LBWheel),
                 RBMotion = new RobotMotion(new RobotMotorController(RBMotor,Robot4100Generation1_Settings.CHASSIS_TIMEOUTENABLE,Robot4100Generation1_Settings.CHASSIS_TIMEOUTFACTOR),RBWheel);
         m_Chassis = new OmniDrive(LFMotion,RFMotion,LBMotion,RBMotion,null);
+        m_Chassis.setLinearMotionDistanceFactor(0.6);
+        m_Chassis.setRotationalMotionDistanceFactor(1.3);
+
         this.m_DragServoL = hardwares.servo.get("servoDragLeft");
         this.m_DragServoR = hardwares.servo.get("servoDragRight");
         this.m_Grabber = hardwares.servo.get("servoGrabber");
         this.m_GrabberRot = hardwares.servo.get("servoGrabberRot");
         RobotMotor LinearSlideMotor = new RobotMotorWithEncoder(hardwares.dcMotor.get("motorLinearSlide"),Robot4100Generation1_Settings.linearSlideMotorType);
+        LinearSlideMotor.setDirectionReversed(true);
         RobotMotorController linearSlideController = new RobotMotorController(LinearSlideMotor,Robot4100Generation1_Settings.LINEARSLIDE_TIMEOUTCONTROLENABLE,Robot4100Generation1_Settings.LINEARSLIDE_TIMEOUTFACTOR);
         this.m_linearSlide = new RobotServoUsingMotor(linearSlideController,Robot4100Generation1_Settings.LINEARSLIDE_START,Robot4100Generation1_Settings.LINEARSLIDE_MIN,Robot4100Generation1_Settings.LINEARSLIDE_MAX);
+
+        this.m_IntakeLeft = hardwares.dcMotor.get("motorIntakeLeft");
+        this.m_IntakeRight = hardwares.dcMotor.get("motorIntakeRight");
+
+        this.m_StoneOrientServo = hardwares.servo.get("servoStoneOrient");
+        this.m_AutoDragStoneServo = hardwares.servo.get("servoAutoDragStone");
+        this.m_CapStoneServo = hardwares.servo.get("servoCapStone");
+        m_Gyro = new BNO055Gyro(hardwares,"imu");
+
+        this.setCapStoneServoToDeposit(false);
+        this.setOrientServoToOrient(false);
+        this.setDragServoToDrag(false);
+        this.setAutonomousDragStoneServoToDrag(false);
+    }
+
+
+    public void setAutonomousDragStoneServoToDrag(boolean toDrag){
+        if(toDrag){
+            this.m_AutoDragStoneServo.setPosition(Robot4100Generation1_Settings.AUTONOMOUSDRAGSTONESERVO_OUTPOS);
+        }else{
+            this.m_AutoDragStoneServo.setPosition(Robot4100Generation1_Settings.AUTONOMOUSDRAGSTONESERVO_INPOS);
+        }
+    }
+
+    public void setCapStoneServoToDeposit(boolean toDeposit){
+        if(toDeposit){
+            this.m_CapStoneServo.setPosition(Robot4100Generation1_Settings.CAPSTONESERVO_DEPOSITPOS);
+        }else{
+            this.m_CapStoneServo.setPosition(Robot4100Generation1_Settings.CAPSTONESERVO_INITIALPOS);
+        }
     }
 
     public RobotServoUsingMotor getLinearSlide(){
         return this.m_linearSlide;
     }
 
+    public void setLinearSlideToRecieveStonePos(double speed){
+        this.getLinearSlide().replaceTask(new TargetPosTask(null,Robot4100Generation1_Settings.LINEARSLIDE_GRAB,speed));
+    }
     public void setDragServoToDrag(boolean drag){
         if(drag){
             this.m_DragServoL.setPosition(Robot4100Generation1_Settings.DRAGSERVO_DRAGPOS_L);
@@ -77,6 +126,45 @@ public class Robot4100Generation1_LindaCore extends RobotCore {
         }else{
             this.m_GrabberRot.setPosition(Robot4100Generation1_Settings.GRABBERROTSERVO_INSIDEPOS);
         }
+    }
+
+    public void setIntakeSystemStatus(IntakeSystemStatus status){
+        switch(status){
+            case SUCK:
+                this.m_IntakeLeft.setPower(Robot4100Generation1_Settings.INTAKEMOTOR_SPEED);
+                this.m_IntakeRight.setPower(-Robot4100Generation1_Settings.INTAKEMOTOR_SPEED);
+                break;
+            case VOMIT:
+                this.m_IntakeLeft.setPower(-Robot4100Generation1_Settings.INTAKEMOTOR_SPEED);
+                this.m_IntakeRight.setPower(Robot4100Generation1_Settings.INTAKEMOTOR_SPEED);
+                break;
+            case STOP:
+                this.m_IntakeLeft.setPower(0);
+                this.m_IntakeRight.setPower(0);
+                break;
+        }
+    }
+
+    public void setOrientServoToOrient(boolean orient){
+        if(orient){
+            this.m_StoneOrientServo.setPosition(Robot4100Generation1_Settings.STONEORIENTSERVO_ORIENTPOS);
+        }else{
+            this.m_StoneOrientServo.setPosition(Robot4100Generation1_Settings.STONEORIENTSERVO_ZEROPOS);
+        }
+    }
+
+    public IntakeSystemStatus getIntakeSystemStatus(){
+        if(this.m_IntakeLeft.getPower() == Robot4100Generation1_Settings.INTAKEMOTOR_SPEED) {
+            return IntakeSystemStatus.SUCK;
+        }else if(this.m_IntakeLeft.getPower() == -Robot4100Generation1_Settings.INTAKEMOTOR_SPEED){
+            return IntakeSystemStatus.VOMIT;
+        }else{
+            return IntakeSystemStatus.STOP;
+        }
+    }
+
+    public RobotGyro getGyro(){
+        return this.m_Gyro;
     }
 
     @Override

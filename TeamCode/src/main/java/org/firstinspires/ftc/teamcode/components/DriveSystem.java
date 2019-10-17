@@ -63,11 +63,11 @@ public class DriveSystem {
             switch(name) {
                 case FRONTLEFT:
                 case BACKLEFT:
-                    motor.setDirection(DcMotorSimple.Direction.FORWARD);
+                    motor.setDirection(DcMotorSimple.Direction.REVERSE);
                     break;
                 case FRONTRIGHT:
                 case BACKRIGHT:
-                    motor.setDirection(DcMotorSimple.Direction.REVERSE);
+                    motor.setDirection(DcMotorSimple.Direction.FORWARD);
                     break;
             }
         });
@@ -130,13 +130,13 @@ public class DriveSystem {
                 if(Direction.isStrafe(direction)){
                     int sign = direction == Direction.LEFT ? -1 : 1;
                     switch(name){
-                        case BACKLEFT:
+                        case FRONTLEFT:
                         case BACKRIGHT:
                             motor.setTargetPosition(sign * mTargetTicks);
                             break;
                         case FRONTRIGHT:
-                        case FRONTLEFT:
-                            motor.setTargetPosition(sign * (-mTargetTicks));
+                        case BACKLEFT:
+                            motor.setTargetPosition(sign * -mTargetTicks);
                             break;
                     }
                 } else {

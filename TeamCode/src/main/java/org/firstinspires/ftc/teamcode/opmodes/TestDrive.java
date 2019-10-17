@@ -16,14 +16,11 @@ import org.firstinspires.ftc.teamcode.components.Vuforia;
 public class TestDrive extends BaseStateMachine {
     public enum State {
         STATE_INITIAL,
-        STATE_FIND_SKYSTONE,
-        STATE_DELIVER_STONE,
-        STATE_GRAB_STONE,
-        STATE_FIND_STONE,
-        STATE_PARK_AT_LINE,
-        STATE_DEPOSIT_STONE,
-        STATE_DRAG_FOUNDATION,
-        STATE_RETURN,
+        STATE_RIGHT,
+        STATE_LEFT,
+        STATE_FORWARD,
+        STATE_BACKWARD,
+        STATE_FINISHED,
     }
 
     public ElapsedTime  mRuntime = new ElapsedTime();   // Time into round.
@@ -51,22 +48,31 @@ public class TestDrive extends BaseStateMachine {
         switch (mCurrentState) {
             case STATE_INITIAL:
                 // Initialize
-                newState(State.STATE_FIND_SKYSTONE);
+                newState(State.STATE_FORWARD);
                 break;
 
-            case STATE_FIND_SKYSTONE:
-                // Strafe towards line
-                // Identify SkyStone
-                // If we can't see it after 3 feet, start driving  until we do
-                if(driveSystem.driveToPositionInches(48, DriveSystem.Direction.RIGHT, .5)){
-                    Log.d(TAG,"exiting loop");
-                    newState(State.STATE_RETURN);
+            case STATE_FORWARD:
+                if(driveSystem.driveToPositionInches(48, DriveSystem.Direction.FORWARD, .5)){
+                    newState(State.STATE_BACKWARD);
                 }
-
                 break;
+            case STATE_BACKWARD:
+                if(driveSystem.driveToPositionInches(48, DriveSystem.Direction.BACKWARD, .5)){
+                    newState(State.STATE_RIGHT);
+                }
+                break;
+            case STATE_RIGHT:
+                if(driveSystem.driveToPositionInches(48, DriveSystem.Direction.RIGHT, .5)){
+                    newState(State.STATE_LEFT);
+                }
+                break;
+            case STATE_LEFT:
+                if(driveSystem.driveToPositionInches(48, DriveSystem.Direction.LEFT, .5)){
+                    newState(State.STATE_FINISHED);
+                }
+                break;
+            case STATE_FINISHED:
 
-            case STATE_RETURN:
-                Log.d(TAG,"Target reached");
         }
     }
 

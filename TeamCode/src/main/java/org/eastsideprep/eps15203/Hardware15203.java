@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 
 /**
  * Hardware definitions for 15203
@@ -60,6 +62,7 @@ public class Hardware15203 {
         }
 
 
+
     }
     public double[] getDrivePowersFromAngle(double angle) {
         double[] unscaledPowers = new double[4];
@@ -68,6 +71,23 @@ public class Hardware15203 {
         unscaledPowers[2] = unscaledPowers[1];
         unscaledPowers[3] = unscaledPowers[0];
         return unscaledPowers;
+    }
+
+    public boolean allDrive(double power, int milliseconds){
+        leftFrontMotor.setPower(power);
+        leftBackMotor.setPower(power);
+        rightFrontMotor.setPower(power);
+        rightBackMotor.setPower(power);
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException e) {
+            return false;
+        }
+        leftFrontMotor.setPower(0);
+        leftBackMotor.setPower(0);
+        rightFrontMotor.setPower(0);
+        rightBackMotor.setPower(0);
+        return true;
     }
 
 }

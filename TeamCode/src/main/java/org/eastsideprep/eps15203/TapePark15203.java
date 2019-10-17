@@ -1,16 +1,12 @@
 package org.eastsideprep.eps15203;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 
+@Autonomous(name="Park on Tape [TapePark] (15203)", group="15203")
 
-@Autonomous(name="Autonomous Template 15203", group="15203")
-
-public class Auto15203 extends LinearOpMode {
+public class TapePark15203 extends LinearOpMode {
 
     /* Declare OpMode members. */
     Hardware15203 robot = new Hardware15203();   // Use a Pushbot's hardware
@@ -23,6 +19,10 @@ public class Auto15203 extends LinearOpMode {
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "started");    //
         telemetry.update();
+
+        waitForStart();
+
+        robot.allDrive(0.5, 2000);
     }
 }
 

@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 
-@Autonomous(name="Autonomous 1", group="9884")
+@Autonomous(name="Autonomous 9884", group="9884")
 
 public class Auto9884 extends LinearOpMode {
 

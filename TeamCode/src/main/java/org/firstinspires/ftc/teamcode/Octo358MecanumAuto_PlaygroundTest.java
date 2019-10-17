@@ -2,9 +2,14 @@ package org.firstinspires.ftc.teamcode;
 
 import static java.lang.Math.random;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-public class Octo358MecanumAuto_Red extends Octo358MecanumAutoCentral {
+@Autonomous
+
+public class Octo358MecanumAuto_PlaygroundTest extends Octo358MecanumAutoPlayground {
+
+    private final double POWER = 0.6;
 
     public void runOpMode() {
 
@@ -28,9 +33,11 @@ public class Octo358MecanumAuto_Red extends Octo358MecanumAutoCentral {
 
         waitForStart();
 
-        drive(POWER, 12);
+        drive(POWER, 120);
 
-        //rotate(POWER, 360);
+        strafeLeft(POWER, 20);
+
+        rotate(POWER, 360 * 4);
 
     }
 

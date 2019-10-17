@@ -1,8 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import static java.lang.Math.PI;
-import static java.lang.Math.abs;
-import static java.lang.Math.random;
 import static java.lang.Math.sqrt;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -16,39 +14,26 @@ abstract public class Octo358MecanumAutoCentral extends LinearOpMode {
     private static final double DRIVE_TRAIN_DIAGONAL = sqrt(
             DRIVE_TRAIN_WIDTH * DRIVE_TRAIN_WIDTH + DRIVE_TRAIN_LENGTH * DRIVE_TRAIN_LENGTH);
     private static final int ENCODER_TICKS = 1120;
-
+    private static final double DRIVE_ADJUST = 0.4710638298;
+    private static final double STRAFE_ADJUST = 0.5818181818;
+    private static final double ROTATE_ADJUST = 0.7;
     DcMotor fL = null;
     DcMotor fR = null;
     DcMotor bL = null;
     DcMotor bR = null;
 
-    static final double POWER = 0.3;
-
-    double gameField = 12 * 12;
-    double quarryLength = 48.5;
-    double sideWallToQuarry = 47;
-
-    double boxSideLength = 22.75;
-    double stoneLength = 8;
-    double stoneWidth = 4;
-    double stoneBoxHeight = 4;
-    double stoneKnobHeight = 1;
-    double chassisLength = 16.5;
-    double chassisWidth = 18;
-    double chassisDiff = abs(chassisWidth - chassisLength);
-
     void drive(double power, double distance) {
-        int ticks = distanceToTicks(distance);
+        int ticks = distanceToTicks(distance * DRIVE_ADJUST);
         driveTrain(power, ticks, ticks, ticks, ticks);
     }
 
     void strafeLeft(double power, double distance) {
-        int ticks = distanceToTicks(distance);
+        int ticks = distanceToTicks(distance * STRAFE_ADJUST);
         driveTrain(power, -ticks, ticks, ticks, -ticks);
     }
 
     void rotate(double power, double degree) {
-        int ticks = distanceToTicks((degree / 360) * (DRIVE_TRAIN_DIAGONAL * PI));
+        int ticks = distanceToTicks((degree / 360) * (DRIVE_TRAIN_DIAGONAL * PI) * ROTATE_ADJUST);
         driveTrain(power, -ticks, ticks, -ticks, ticks);
     }
 

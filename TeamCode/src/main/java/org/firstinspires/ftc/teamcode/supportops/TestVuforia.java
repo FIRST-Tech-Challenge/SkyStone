@@ -15,10 +15,10 @@ public class TestVuforia extends LinearOpMode {
         initialize();
         telemetry.addData("about to move", "initialized");
         telemetry.update();
-        String stonePosition = autoLib.findSkyStone();
+       // String stonePosition = autoLib.findSkyStone();
         telemetry.addData("Status", "Found Skystone");
         telemetry.update();
-        telemetry.addData("Status", stonePosition);
+       // telemetry.addData("Status", stonePosition);
         telemetry.update();
     }
 

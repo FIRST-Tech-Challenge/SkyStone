@@ -66,7 +66,7 @@ public class AutoLib {
         robot = new Robot(opMode);
         this.opMode = opMode;
 
-       // initTfod();
+        // initTfod();
     }
 
 
@@ -100,7 +100,7 @@ public class AutoLib {
             opMode.idle();
         }
 
-          setBaseMotorPowers(0);      //TODO: Might need to uncomment
+        setBaseMotorPowers(0);      //TODO: Might need to uncomment
     }
 
     public void calcTurn(int degrees, float power) {

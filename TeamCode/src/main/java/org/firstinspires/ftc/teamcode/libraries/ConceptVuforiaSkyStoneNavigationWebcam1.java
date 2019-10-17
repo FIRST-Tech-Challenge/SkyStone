@@ -1,3 +1,5 @@
+package org.firstinspires.ftc.teamcode.libraries;
+
 /* Copyright (c) 2019 FIRST. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -9,7 +11,7 @@
  *
  * Redistributions in binary form must reproduce the above copyright notice, this
  * list of conditions and the following disclaimer in the documentation and/or
- * other materials provided with the distribution.
+ * other materials provided wit  h the distribution.
  *
  * Neither the name of FIRST nor the names of its contributors may be used to endorse or
  * promote products derived from this software without specific prior written permission.
@@ -27,9 +29,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.libraries;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -63,7 +63,6 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  *
  * From the Audience perspective, the Red Alliance station is on the right and the
  * Blue Alliance Station is on the left.
-
  * Eight perimeter targets are distributed evenly around the four perimeter walls
  * Four Bridge targets are located on the bridge uprights.
  * Refer to the Field Setup manual for more specific location details
@@ -82,9 +81,9 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  * is explained below.
  */
 
-@TeleOp(name="SKYSTONE Vuforia Nav Webcam2", group ="Concept")
-
-public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
+//@TeleOp(name="SKYSTONE Vuforia Nav Webcam1", group ="Concept")
+//@Disabled
+public class ConceptVuforiaSkyStoneNavigationWebcam1 extends LinearOpMode {
 
     // IMPORTANT: If you are using a USB WebCam, you must select CAMERA_CHOICE = BACK; and PHONE_IS_PORTRAIT = false;
     private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
@@ -103,7 +102,6 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
      * and paste it in to your code on the next line, between the double quotes.
      */
     private static final String VUFORIA_KEY = "ARSzhHP/////AAABmQ3dyIKKfkcipjZh0HtnoDEkjuCn18CTNUWRN7PTFoedxZLS+QZmpkyXpQnQXFpQ5ol//l0ZwTejVrGRQ4i/kQBrrFJ8E0C7ckr4lzf5bLCvi1/E9x8anPwt2D0UToZ3MB5jPx4T6s/EOs575BtxjL7uv5jrCbQDsXebm2PROU4zC/Dj7+AYFkKCqD3YYLbGPGV4YoSgp9Ihoe+ZF/eae0FLG8K/o4eyfZj0B3aXkRvYi3dC5LY+c76aU72bKTrQ2PDYSxDG8xCaY1JyEyfDA6XqjHjYMvh0BBbb8bAQvPgG6/G50+5L+c/a8u6sbYJLbvVtXdMtrG1EA4CglbnsDs7GyyJmH5AusSwIDb9DQnTA";
-
 
     // Since ImageTarget trackables use mm to specifiy their dimensions, we must use mm for all the physical dimension.
     // We will define some constants and conversions here
@@ -138,16 +136,10 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
     private float phoneXRotate    = 0;
     private float phoneYRotate    = 0;
     private float phoneZRotate    = 0;
-    private AutoLib autoLib;
-
-
-
-
-    @Override public void runOpMode() {
-        initialize();
-        /*
-         * Retrieve the camera we are to use.
-         */
+    List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
+    VuforiaTrackables targetsSkyStone =null;
+    public ConceptVuforiaSkyStoneNavigationWebcam1()
+    {
         webcamName = hardwareMap.get(WebcamName.class, "Webcam1");
 
         /*
@@ -172,7 +164,7 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
 
         // Load the data sets for the trackable objects. These particular data
         // sets are stored in the 'assets' part of our application.
-        VuforiaTrackables targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
+        targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
 
         VuforiaTrackable stoneTarget = targetsSkyStone.get(0);
         stoneTarget.setName("Stone Target");
@@ -202,7 +194,7 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
         rear2.setName("Rear Perimeter 2");
 
         // For convenience, gather together all the trackable objects in one easily-iterable collection */
-        List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
+
         allTrackables.addAll(targetsSkyStone);
 
         /**
@@ -320,6 +312,12 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
         for (VuforiaTrackable trackable : allTrackables) {
             ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
         }
+    }
+    @Override public void runOpMode() {
+        /*
+         * Retrieve the camera we are to use.
+         */
+
 
         // WARNING:
         // In this sample, we do not wait for PLAY to be pressed.  Target Tracking is started immediately when INIT is pressed.
@@ -341,6 +339,9 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
             for (VuforiaTrackable trackable : allTrackables) {
                 if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
                     telemetry.addData("Visible Target", trackable.getName());
+                    if(trackable.getName().equals("Stone Target")) {
+                        telemetry.addLine("Stone target is visible");
+                    }
                     targetVisible = true;
 
                     // getUpdatedRobotLocation() will return null if no new information is available since
@@ -364,7 +365,6 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
                 double xPosition = translation.get(0);
                 if (xPosition < -5) {
                     positionSkystone = "Right";
-                    autoLib.calcMove(10,.2f, Constants.Direction.FORWARD);
                 } else {
                     positionSkystone = "Center";
                 }
@@ -384,17 +384,76 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
         // Disable Tracking when we are done;
         targetsSkyStone.deactivate();
     }
-    private void initialize() {
-        telemetry.addData("Status", "Initializing...");
-        telemetry.update();
 
-        autoLib = new AutoLib(this);
+     public void findSkyStone() {
+        /*
+         * Retrieve the camera we are to use.
+         */
 
-        telemetry.addData("Status", "Ready");
-        telemetry.update();
-        waitForStart();
 
-        telemetry.addData("Status", "Running");
-        telemetry.update();
+        // WARNING:
+        // In this sample, we do not wait for PLAY to be pressed.  Target Tracking is started immediately when INIT is pressed.
+        // This sequence is used to enable the new remote DS Camera Preview feature to be used with this sample.
+        // CONSEQUENTLY do not put any driving commands in this loop.
+        // To restore the normal opmode structure, just un-comment the following line:
+
+        // waitForStart();
+
+        // Note: To use the remote camera preview:
+        // AFTER you hit Init on the Driver Station, use the "options menu" to select "Camera Stream"
+        // Tap the preview window to receive a fresh image.
+
+        targetsSkyStone.activate();
+        while (!isStopRequested()) {
+
+            // check all the trackable targets to see which one (if any) is visible.
+            targetVisible = false;
+            for (VuforiaTrackable trackable : allTrackables) {
+                if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
+                    telemetry.addData("Visible Target", trackable.getName());
+                    if(trackable.getName().equals("Stone Target")) {
+                        telemetry.addLine("Stone target is visible");
+                    }
+                    targetVisible = true;
+
+                    // getUpdatedRobotLocation() will return null if no new information is available since
+                    // the last time that call was made, or if the trackable is not currently visible.
+                    OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
+                    if (robotLocationTransform != null) {
+                        lastLocation = robotLocationTransform;
+                    }
+                    break;
+                }
+            }
+
+            // Provide feedback as to where the robot is located (if we know).
+            String positionSkystone = "";
+            if (targetVisible) {
+                // express position (translation) of robot in inches.
+                VectorF translation = lastLocation.getTranslation();
+                telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
+                        translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
+
+                double xPosition = translation.get(0);
+                if (xPosition < -5) {
+                    positionSkystone = "Right";
+                } else {
+                    positionSkystone = "Center";
+                }
+
+                // express the rotation of the robot in degrees.
+                Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
+                telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
+            }
+            else {
+                positionSkystone = "Left";
+                telemetry.addData("Visible Target", "none");
+            }
+            telemetry.addData("Skystone Position", positionSkystone);
+            telemetry.update();
+        }
+
+        // Disable Tracking when we are done;
+        targetsSkyStone.deactivate();
     }
 }

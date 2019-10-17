@@ -168,7 +168,6 @@ public class Crane {
     public void setupClaw() throws InterruptedException {
         rack = motor(racks, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.FLOAT);
         linear = motor(linears, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.BRAKE);
-        servo = servo(servos, Servo.Direction.FORWARD, 0, 1, 0);
 
         motorDriveMode(EncoderMode.ON, rack, linear);
     }

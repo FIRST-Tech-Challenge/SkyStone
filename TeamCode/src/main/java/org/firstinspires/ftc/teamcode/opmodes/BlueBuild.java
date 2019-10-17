@@ -49,15 +49,6 @@ public class BlueBuild extends BaseStateMachine {
     }
 
 
-    // @Override
-    public void init_loop() {
-    }
-
-    @Override
-    public void start() {
-
-    }
-
     @Override
     public void loop() {
         switch (mCurrentState) {

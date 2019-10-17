@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.components;
 
+import android.util.Log;
+
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -21,9 +23,15 @@ public class DriveSystem {
         }
     }
 
+    public int counter = 0;
+
+    public static final String TAG = "DriveSystem";
+
     public EnumMap<MotorNames, DcMotor> motors;
 
     public IMUSystem imuSystem;
+
+    private int mTargetTicks;
 
     private final int TICKS_IN_INCH = 69;
 
@@ -32,6 +40,7 @@ public class DriveSystem {
      */
     public DriveSystem(EnumMap<MotorNames, DcMotor> motors, BNO055IMU imu) {
         this.motors = motors;
+        mTargetTicks = 0;
         initMotors();
         imuSystem = new IMUSystem(imu);
     }
@@ -54,11 +63,11 @@ public class DriveSystem {
             switch(name) {
                 case FRONTLEFT:
                 case BACKLEFT:
-                    motor.setDirection(DcMotorSimple.Direction.FORWARD);
+                    motor.setDirection(DcMotorSimple.Direction.REVERSE);
                     break;
                 case FRONTRIGHT:
                 case BACKRIGHT:
-                    motor.setDirection(DcMotorSimple.Direction.REVERSE);
+                    motor.setDirection(DcMotorSimple.Direction.FORWARD);
                     break;
             }
         });
@@ -69,12 +78,11 @@ public class DriveSystem {
     /**
      * Clips joystick values and drives the motors.
      * @param rightX Right X joystick value
-     * @param rightY Right Y joystick value
      * @param leftX Left X joystick value
      * @param leftY Left Y joystick value in case you couldn't tell from the others
      */
     // TODO
-    public void drive(float rightX, float rightY, float leftX, float leftY) {
+    public void drive(float rightX, float leftX, float leftY) {
         // Prevent small values from causing the robot to drift
         if (Math.abs(rightX) < 0.01) {
             rightX = 0.0f;
@@ -85,15 +93,12 @@ public class DriveSystem {
         if (Math.abs(leftY) < 0.01) {
             leftY = 0.0f;
         }
-        if (Math.abs(rightY) < 0.01) {
-            rightY = 0.0f;
-        }
 
         // write the values to the motors 1
-        double frontLeftPower = -leftY - rightX + leftX;
-        double frontRightPower = -leftY + rightX - leftX;
-        double backLeftPower = -leftY - rightX - leftX;
-        double backRightPower = -leftY + rightX + leftX;
+        double frontLeftPower = -leftY + rightX + leftX;
+        double frontRightPower = -leftY - rightX - leftX;
+        double backLeftPower = -leftY + rightX - leftX;
+        double backRightPower = -leftY - rightX + leftX;
 
         motors.forEach((name, motor) -> {
             switch(name) {
@@ -113,35 +118,48 @@ public class DriveSystem {
         });
     }
 
-    private void driveToPositionTicks(int ticks, Direction direction, double maxPower) {
-        if (!Direction.isStrafe(direction)) {
-            int sign = (direction == Direction.FORWARD ? 1 : -1);
-            for (DcMotor motor : motors.values()) {
-                motor.setTargetPosition(motor.getCurrentPosition() + sign * ticks);
-            }
-        } else {
-            int sign = (direction == Direction.RIGHT ? 1 : -1);
+    public boolean driveToPositionTicks(int ticks, Direction direction, double maxPower) {
+        if(mTargetTicks == 0){
+            mTargetTicks = direction == Direction.BACKWARD ? -ticks : ticks;
             motors.forEach((name, motor) -> {
-                switch(name) {
-                    case FRONTRIGHT:
-                    case BACKLEFT:
-                        motor.setTargetPosition(motor.getCurrentPosition() - sign * ticks);
-                        break;
-                    case FRONTLEFT:
-                    case BACKRIGHT:
-                        motor.setTargetPosition(motor.getCurrentPosition() + sign * ticks);
-                        break;
+                motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                if(Direction.isStrafe(direction)){
+                    int sign = direction == Direction.LEFT ? -1 : 1;
+                    switch(name){
+                        case FRONTLEFT:
+                        case BACKRIGHT:
+                            motor.setTargetPosition(sign * mTargetTicks);
+                            break;
+                        case FRONTRIGHT:
+                        case BACKLEFT:
+                            motor.setTargetPosition(sign * -mTargetTicks);
+                            break;
+                    }
+                } else {
+                    motor.setTargetPosition(mTargetTicks);
                 }
+
+
             });
+            setRunMode(DcMotor.RunMode.RUN_TO_POSITION);
+            setMotorPower(maxPower);
         }
 
-        setRunMode(DcMotor.RunMode.RUN_TO_POSITION);
-        setMotorPower(maxPower);
-        double heading = -imuSystem.getHeading();
-        while (anyMotorsBusy()) { }
-        setMotorPower(0.0);
-        setRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        turn(heading + imuSystem.getHeading(), 0.5);
+
+        for (DcMotor motor : motors.values()) {
+
+            int offset = Math.abs(motor.getCurrentPosition() - mTargetTicks);
+            Log.d(TAG, "Offset is " + offset);
+
+            if(offset < 100){
+                setMotorPower(0.0);
+                mTargetTicks = 0;
+                return true;
+            }
+        }
+
+        return false;
+
     }
 
     public boolean anyMotorsBusy() {
@@ -171,8 +189,8 @@ public class DriveSystem {
         return distance;
     }
 
-    public void driveToPositionInches(double inches, Direction direction, double maxPower) {
-        driveToPositionTicks(inchesToTicks(inches), direction, maxPower);
+    public boolean driveToPositionInches(double inches, Direction direction, double maxPower) {
+        return driveToPositionTicks(inchesToTicks(inches), direction, maxPower);
     }
 
     /**

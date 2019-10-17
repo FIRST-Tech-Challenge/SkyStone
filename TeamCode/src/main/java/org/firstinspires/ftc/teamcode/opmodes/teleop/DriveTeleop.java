@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.components.DriveSystem;
 import org.firstinspires.ftc.teamcode.opmodes.BaseOpMode;
+import org.firstinspires.ftc.teamcode.opmodes.TestDrive;
 
 import java.util.EnumMap;
 
@@ -19,9 +20,13 @@ public class DriveTeleop extends BaseOpMode {
 
     private DriveSystem driveSystem;
 
+    @Override
+    public void init() {
+        super.init();
+        driveSystem = super.driveSystem;
+    }
     public void loop(){
             float rx = gamepad1.right_stick_x;
-            float ry = gamepad1.right_stick_y;
             float lx = gamepad1.left_stick_x;
             float ly = gamepad1.left_stick_y;
 
@@ -37,6 +42,6 @@ public class DriveTeleop extends BaseOpMode {
             if (gamepad1.y) {
                 driveSystem.driveToPositionInches(50, DriveSystem.Direction.BACKWARD, 0.5);
             }
-            driveSystem.drive(rx, ry, lx, ly);
+            driveSystem.drive(rx, lx, ly);
     }
 }

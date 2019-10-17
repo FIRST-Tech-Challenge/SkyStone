@@ -47,8 +47,7 @@ public class MMAutonomous extends LinearOpMode {
 
 
     }
-<<<<<<< HEAD
-=======
+
     public void driveForwardDistance(double distance, double power) {
         //* drives forward a certain distance(in) using encoders *//*
 
@@ -86,6 +85,6 @@ public class MMAutonomous extends LinearOpMode {
         robot.setDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
->>>>>>> 5456ef24c17c9229b9b62a9c24cbeb5cf5c7789a
+
 
 }

@@ -38,36 +38,28 @@ public class MecanumTeleOp extends OpMode
     {
         double course;
         double velocity;
+        double rotation;
         if (rightMotion) {
             course = Math.atan2(-gamepad1.right_stick_y, gamepad1.right_stick_x) - Math.PI/2;
             velocity = Math.hypot(gamepad1.right_stick_x, gamepad1.right_stick_y);
+            rotation = -gamepad1.left_stick_x;
         } else {
             course = Math.atan2(-gamepad1.right_stick_x, gamepad1.right_stick_y) - Math.PI/2;
             velocity = Math.hypot(gamepad1.right_stick_y, gamepad1.right_stick_x);
+            rotation = -gamepad1.right_stick_x;
         }
 
         robotHardware.drivetrain.setCourse(course);
         robotHardware.drivetrain.setVelocity(velocity);
-        robotHardware.drivetrain.setRotation(-gamepad1.left_stick_x);
+        robotHardware.drivetrain.setRotation(rotation);
 
-        /**
-        if (gamepad1.dpad_down)
-        {
-            robotHardware.servoBuildClawLeft.setPosition(120);
-            robotHardware.servoBuildClawRight.setPosition(120);
-        }
-
-        if (gamepad1.dpad_up)
-        {
-            robotHardware.servoBuildClawLeft.setPosition(0);
-            robotHardware.servoBuildClawRight.setPosition(0);
-        }
-         **/
+        if (gamepad1.a) rightMotion = false;
+        if (gamepad1.b) rightMotion = true;
 
         telemetry.addData("Status", "Loop: " + elapsedTime.toString());
         telemetry.addData("Course", course);
         telemetry.addData("Velocity", velocity);
-        telemetry.addData("Rotation", -gamepad1.left_stick_x);
+        telemetry.addData("Rotation", rotation);
         telemetry.update();
     }
 

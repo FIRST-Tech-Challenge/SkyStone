@@ -51,13 +51,16 @@ public class HardwareMap {
         static double numOfLeftLoops = 0;
         static double numOfRightLoops = 0;
         static double numOfSideLoops = 0;
+        static double totalLeft = 0;
+        static double totalRight = 0;
+        static double totalSide = 0;
         static boolean tracking = false;
         static double startTime = -1;
         static double elapsedTime = -1;
         static int delay = 25;
         static int readDelay = 15;
 
-        private static void beginTracking() {        //Left & Side--Encoders: Forward = 3 - 2 - 1 - 0 - 3 - 2..., Backward = 0 - 1 - 2 - 3 - 0 - 1...
+        /*private static void beginTracking() {        //Left & Side--Encoders: Forward = 3 - 2 - 1 - 0 - 3 - 2..., Backward = 0 - 1 - 2 - 3 - 0 - 1...
             Thread left = new Thread() {      //Right--Encoders: Forward = 0 - 1 - 2 - 3 - 0 - 1..., Backward = 3 - 2 - 1 - 0 - 3 - 2...
                 public void run() {
                     if (tracking && startTime == -1)
@@ -168,6 +171,63 @@ public class HardwareMap {
             left.start();
             right.start();
             side.start();
+        }*/
+        private static void beginTracking() {        //Left & Side--Encoders: Forward = 3 - 2 - 1 - 0 - 3 - 2..., Backward = 0 - 1 - 2 - 3 - 0 - 1...
+            Thread update = new Thread() {      //Right--Encoders: Forward = 0 - 1 - 2 - 3 - 0 - 1..., Backward = 3 - 2 - 1 - 0 - 3 - 2...
+                public void run() {
+                    if (tracking && startTime == -1)
+                        startTime = System.nanoTime();
+                    while (tracking) {
+                        double leftInit = leftForward.getVoltage();
+                        double rightInit = rightForward.getVoltage();
+                        double sideInit = sideways.getVoltage();
+
+                        try {
+                            Thread.sleep(readDelay);
+                        } catch (Exception e) {
+                        }
+
+                        double leftFinal = leftForward.getVoltage();
+                        double rightFinal = rightForward.getVoltage();
+                        double sideFinal = sideways.getVoltage();
+
+                        double leftDelta = leftFinal - leftInit;
+                        double rightDelta = rightFinal - rightInit;
+                        double sideDelta = sideFinal - sideInit;
+
+                        if(leftDelta >= 2.7){
+                            totalLeft += leftInit + (3.3 - leftFinal);
+                        } else if(leftDelta <= -2.7){
+                            totalLeft -= (3.3 - leftInit) + leftFinal;
+                        } else {
+                            totalLeft += leftDelta;
+                        }
+
+                        if(rightDelta >= 2.7){
+                            totalRight -= (3.3 - rightInit) + rightFinal;
+                        } else if(rightDelta <= -2.7){
+                            totalRight += rightInit + (3.3 - rightFinal);
+                        } else {
+                            totalRight += rightDelta;
+                        }
+
+                        if(sideDelta >= 2.7){
+                            totalSide += sideInit + (3.3 - sideFinal);
+                        } else if(sideDelta <= -2.7){
+                            totalSide -= (3.3 - sideInit) + sideFinal;
+                        } else {
+                            totalSide += sideDelta;
+                        }
+
+                        try {
+                            Thread.sleep(delay);
+                        } catch (Exception e) {
+                        }
+                    }
+                    elapsedTime = System.nanoTime() - startTime;
+                }
+            };
+            update.start();
         }
 
         public static ArrayList<Double> getEncoderTicks() {  //Returns ArrayList [leftTicks, rightTicks, sideTicks] in cm
@@ -192,13 +252,22 @@ public class HardwareMap {
                 sVal += 1;
             }
 
-            totalTicks.add((addLeftVal - leftForward.getVoltage() + 3.3 * lVal) /*/
+            //totalTicks.add((addLeftVal - leftForward.getVoltage() + 3.3 * lVal) /*/
+            //        DriveConstant.ENCODER_COUNTS_PER_REVOLUTION * DriveConstant.LEFT_GEAR_RATIO *
+            //       (2 * Math.PI * DriveConstant.ODOMETRY_RAD) * (DriveConstant.ODOMETRY_RAD / DriveConstant.MECANUM_RAD)*/);
+            //totalTicks.add((addRightVal - rightForward.getVoltage() + 3.3 * rVal) /*/
+            //        DriveConstant.ENCODER_COUNTS_PER_REVOLUTION * DriveConstant.RIGHT_GEAR_RATIO *
+            //        (2 * Math.PI * DriveConstant.ODOMETRY_RAD) * (DriveConstant.ODOMETRY_RAD / DriveConstant.MECANUM_RAD)*/);
+            //totalTicks.add((addSideVal - sideways.getVoltage() + 3.3 * sVal) /*/
+            //        DriveConstant.ENCODER_COUNTS_PER_REVOLUTION * DriveConstant.SIDE_GEAR_RATIO *
+             //       (2 * Math.PI * DriveConstant.ODOMETRY_RAD) * (DriveConstant.ODOMETRY_RAD / DriveConstant.MECANUM_RAD)*/);
+            totalTicks.add(totalLeft /*/
                     DriveConstant.ENCODER_COUNTS_PER_REVOLUTION * DriveConstant.LEFT_GEAR_RATIO *
                     (2 * Math.PI * DriveConstant.ODOMETRY_RAD) * (DriveConstant.ODOMETRY_RAD / DriveConstant.MECANUM_RAD)*/);
-            totalTicks.add((addRightVal - rightForward.getVoltage() + 3.3 * rVal) /*/
+            totalTicks.add(totalRight /*/
                     DriveConstant.ENCODER_COUNTS_PER_REVOLUTION * DriveConstant.RIGHT_GEAR_RATIO *
                     (2 * Math.PI * DriveConstant.ODOMETRY_RAD) * (DriveConstant.ODOMETRY_RAD / DriveConstant.MECANUM_RAD)*/);
-            totalTicks.add((addSideVal - sideways.getVoltage() + 3.3 * sVal) /*/
+            totalTicks.add(totalSide /*/
                     DriveConstant.ENCODER_COUNTS_PER_REVOLUTION * DriveConstant.SIDE_GEAR_RATIO *
                     (2 * Math.PI * DriveConstant.ODOMETRY_RAD) * (DriveConstant.ODOMETRY_RAD / DriveConstant.MECANUM_RAD)*/);
             return totalTicks;
@@ -227,20 +296,32 @@ public class HardwareMap {
                 sVal += 1;
             }
 
-            debug.add("(ignoreLoopsAdditionalValue - getVoltage + 3.3 * numOfLoops) / VOLTS_PER_REVOLUTION * GEAR_RATIO * " +
+            debug.add(/*"(ignoreLoopsAdditionalValue - getVoltage + 3.3 * numOfLoops)*/ "totalLeft / VOLTS_PER_REVOLUTION * GEAR_RATIO * " +
                     "(2 * PI * ODOMETRY_RADIUS) * (ODOMETRY_RADIUS / MECANUM_RADIUS)");
-            debug.add("(" + addLeftVal + " - " + leftForward.getVoltage() + " + " + 3.3 + " * " + lVal + ")" /*+ " / " +
+            debug.add("" + totalLeft /*+ " / " +
                     DriveConstant.ENCODER_COUNTS_PER_REVOLUTION + " * " + DriveConstant.LEFT_GEAR_RATIO + " * " +
                     "(" + 2 + " * " + Math.PI + " * " + DriveConstant.ODOMETRY_RAD + ")" + " * " +
                     "(" + DriveConstant.ODOMETRY_RAD + " / " + DriveConstant.MECANUM_RAD + ")"*/);
-            debug.add("(" + addRightVal + " - " + rightForward.getVoltage() + " + " + 3.3 + " * " + rVal + ")" /*+ " / " +
+            debug.add("" + totalRight /*+ " / " +
                     DriveConstant.ENCODER_COUNTS_PER_REVOLUTION + " * " + DriveConstant.RIGHT_GEAR_RATIO + " * " +
                     "(" + 2 + " * " + Math.PI + " * " + DriveConstant.ODOMETRY_RAD + ")" + " * " +
                     "(" + DriveConstant.ODOMETRY_RAD + " / " + DriveConstant.MECANUM_RAD + ")"*/);
-            debug.add("(" + addSideVal + " - " + sideways.getVoltage() + " + " + 3.3 + " * " + sVal + ")" /*+ " / " +
+            debug.add("" + totalSide /*+ " / " +
                     DriveConstant.ENCODER_COUNTS_PER_REVOLUTION + " * " + DriveConstant.SIDE_GEAR_RATIO + " * " +
                     "(" + 2 + " * " + Math.PI + " * " + DriveConstant.ODOMETRY_RAD + ")" + " * " +
                     "(" + DriveConstant.ODOMETRY_RAD + " / " + DriveConstant.MECANUM_RAD + ")"*/);
+            //debug.add("(" + addLeftVal + " - " + leftForward.getVoltage() + " + " + 3.3 + " * " + lVal + ")" /*+ " / " +
+            //        DriveConstant.ENCODER_COUNTS_PER_REVOLUTION + " * " + DriveConstant.LEFT_GEAR_RATIO + " * " +
+            //        "(" + 2 + " * " + Math.PI + " * " + DriveConstant.ODOMETRY_RAD + ")" + " * " +
+            //        "(" + DriveConstant.ODOMETRY_RAD + " / " + DriveConstant.MECANUM_RAD + ")"*/);
+            //debug.add("(" + addRightVal + " - " + rightForward.getVoltage() + " + " + 3.3 + " * " + rVal + ")" /*+ " / " +
+            //        DriveConstant.ENCODER_COUNTS_PER_REVOLUTION + " * " + DriveConstant.RIGHT_GEAR_RATIO + " * " +
+            //        "(" + 2 + " * " + Math.PI + " * " + DriveConstant.ODOMETRY_RAD + ")" + " * " +
+            //        "(" + DriveConstant.ODOMETRY_RAD + " / " + DriveConstant.MECANUM_RAD + ")"*/);
+            //debug.add("(" + addSideVal + " - " + sideways.getVoltage() + " + " + 3.3 + " * " + sVal + ")" /*+ " / " +
+            //        DriveConstant.ENCODER_COUNTS_PER_REVOLUTION + " * " + DriveConstant.SIDE_GEAR_RATIO + " * " +
+            //        "(" + 2 + " * " + Math.PI + " * " + DriveConstant.ODOMETRY_RAD + ")" + " * " +
+            //        "(" + DriveConstant.ODOMETRY_RAD + " / " + DriveConstant.MECANUM_RAD + ")"*/);
             return debug;
         }
 

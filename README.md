@@ -11,8 +11,8 @@ To use this code, download / clone the entire project to your local computer.
 
 |Team Number|Current Status|Is playing|
 |-|-|-|
-|5100|Pre-Season|No|
-|4100|Pre-Season|No|
+|5100|Not playing this year|No|
+|4100|First Match Oct. 18|Yes|
 
 ## Library Status
 

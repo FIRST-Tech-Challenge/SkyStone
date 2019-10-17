@@ -47,5 +47,45 @@ public class MMAutonomous extends LinearOpMode {
 
 
     }
+<<<<<<< HEAD
+=======
+    public void driveForwardDistance(double distance, double power) {
+        //* drives forward a certain distance(in) using encoders *//*
+
+        // calculate ticks
+        long NUM_TICKS_LONG = StrictMath.round(robot.TICKS_PER_INCH * distance);
+        int NUM_TICKS = (int) NUM_TICKS_LONG;
+
+        // reset encoders
+        robot.setDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        // set target position
+        robot.setDriveTargetPos(NUM_TICKS);
+
+        // Set to RUN_TO_POSITION mode
+        robot.setDriveMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        // set drive power
+        robot.setDrivePower(power);
+
+        // while (this.rearLeft.isBusy() && this.frontLeft.isBusy() && this.rearRight.isBusy() && this.frontRight.isBusy()) {
+        // wait until target position is reached
+        //}
+
+        while (opModeIsActive() && robot.rearLeft.isBusy())
+        {
+            telemetry.addData("encoder-fwd", robot.rearLeft.getCurrentPosition() + "  busy=" + robot.rearLeft.isBusy());
+            telemetry.update();
+            idle();
+        }
+
+        // stop driving
+        robot.stopDrive();
+
+        // set mode back to normal
+        robot.setDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+>>>>>>> 5456ef24c17c9229b9b62a9c24cbeb5cf5c7789a
 
 }

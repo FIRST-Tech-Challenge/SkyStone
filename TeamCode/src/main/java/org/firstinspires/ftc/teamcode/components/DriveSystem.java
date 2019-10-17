@@ -23,6 +23,8 @@ public class DriveSystem {
         }
     }
 
+    public int counter = 0;
+
     public static final String TAG = "DriveSystem";
 
     public EnumMap<MotorNames, DcMotor> motors;
@@ -120,7 +122,7 @@ public class DriveSystem {
         });
     }
 
-    private boolean driveToPositionTicks(int ticks, Direction direction, double maxPower) {
+    public boolean driveToPositionTicks(int ticks, Direction direction, double maxPower) {
         if(mTargetTicks == 0){
             mTargetTicks = ticks;
             for (DcMotor motor : motors.values()) {
@@ -134,6 +136,7 @@ public class DriveSystem {
             for (DcMotor motor : motors.values()) {
                 int offset = Math.abs(motor.getCurrentPosition() - mTargetTicks);
                 Log.d(TAG, "Offset is " + offset);
+                Log.d(TAG, "Ticks is " + ticks);
                 if(offset < 100){
                     setMotorPower(0.0);
                     mTargetTicks = 0;
@@ -148,11 +151,25 @@ public class DriveSystem {
 //                switch(name) {
 //                    case FRONTRIGHT:
 //                    case BACKLEFT:
-//                        motor.setTargetPosition(mTargetTick);
+//                        int offset = Math.abs(motor.getCurrentPosition() - mTargetTicks);
+//                        Log.d(TAG, "Offset is " + offset);
+//                        Log.d(TAG, "Ticks is " + ticks);
+//                        if(offset < 100){
+//                          setMotorPower(0.0);
+//                          mTargetTicks = 0;
+//                          return true;
+//                        }
 //                        break;
 //                    case FRONTLEFT:
 //                    case BACKRIGHT:
-//                        motor.setTargetPosition(motor.getCurrentPosition() + sign * ticks);
+//                        int offset = Math.abs(motor.getCurrentPosition() - mTargetTicks);
+//                        Log.d(TAG, "Offset is " + offset);
+//                        Log.d(TAG, "Ticks is " + ticks);
+//                        if(offset < 100){
+//                          setMotorPower(0.0);
+//                          mTargetTicks = 0;
+//                          return true;
+//                        }
 //                        break;
 //                }
 //            });

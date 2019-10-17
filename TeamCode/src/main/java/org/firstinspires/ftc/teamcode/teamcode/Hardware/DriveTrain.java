@@ -71,22 +71,25 @@ public class DriveTrain {
 
     public void initDriveTrain(LinearOpMode opMode) {
 
+        //  Hardware Map Drive Train Motors
+        //  Sets Motor Directions
+        //  Sets Zero Power Behavior
+
+
         this.opMode = opMode;
         sensors = new Sensors();
 
-        //Sets Hardware Map
+
         fl = this.opMode.hardwareMap.dcMotor.get("fl");
         fr = this.opMode.hardwareMap.dcMotor.get("fr");
         bl = this.opMode.hardwareMap.dcMotor.get("bl");
         br = this.opMode.hardwareMap.dcMotor.get("br");
 
-        //Sets Motor Directions
         fl.setDirection(DcMotor.Direction.FORWARD);
         fr.setDirection(DcMotor.Direction.REVERSE);
         bl.setDirection(DcMotor.Direction.FORWARD);
         br.setDirection(DcMotor.Direction.REVERSE);
 
-        //Set Power For Static Motors - When Robot Not Moving
         fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -96,7 +99,7 @@ public class DriveTrain {
         modPower = 0.0;
 
         resetEncoders();
-        runEncoders();
+        //runEncoders();
     }
 
 
@@ -230,10 +233,6 @@ public class DriveTrain {
 
     public boolean strafeEqualizer()
     {
-        if(!All_Motors_Working())
-        {
-            return false;
-        }
 
         flAcc = getHolon(fl);
         frAcc = getHolon(fr);
@@ -273,7 +272,7 @@ public class DriveTrain {
         while(Math.abs(averageStrafe) < target * inchCounts && runtime.seconds() < timeout)
         {
 
-            strafeEqualizer();
+            //strafeEqualizer();
             averageStrafe = getStrafeEncoderAverage(power);
 
             opMode.telemetry.addData("Target : ", target * inchCounts);
@@ -287,10 +286,10 @@ public class DriveTrain {
 
     public void setStrafePower(double power)
     {
-        fr.setPower(-power);
-        br.setPower(power);
-        fl.setPower(power);
-        bl.setPower(-power);
+        fl.setPower(-power);
+        fr.setPower(power);
+        bl.setPower(power);
+        br.setPower(-power);
     }
 
     private double getStrafeEncoderAverage(double direction) {
@@ -463,17 +462,12 @@ public class DriveTrain {
         {
 
             average = getEncoderAverage();
-            equalize();
 
             opMode.telemetry.addData("Current Positions: ", "fl %7d : fr %7d : bl %7d : br %7d",
                     fl.getCurrentPosition(), fr.getCurrentPosition(), bl.getCurrentPosition(), br.getCurrentPosition());
             opMode.telemetry.update();
         }
 
-
-        opMode.telemetry.addData("Encoder Average : ", getEncoderAverage());
-        opMode.telemetry.addData("Target : ", target * inchCounts);
-        opMode.telemetry.update();
         snowWhite();
     }
 
@@ -541,7 +535,6 @@ public class DriveTrain {
     }
 
     public void snowWhite () {
-
         fr.setPower(0);
         fl.setPower(0);
         br.setPower(0);
@@ -582,45 +575,46 @@ public class DriveTrain {
     }
 
 
-    public double getHolon (DcMotor motor) {
+    public double getHolon(DcMotor motor) {
         runtime.reset();
 
-        prevPosition = (motor.getCurrentPosition());
-        prevTime = runtime.milliseconds();
-        time_ea = runtime.milliseconds();
-        position = (fl.getCurrentPosition());
+        prevPosition = motor.getCurrentPosition();
+        prevTime = runtime.seconds();
+        time_ea = runtime.seconds();
+        position = motor.getCurrentPosition();
 
         prevAccel = ((position - prevPosition) / (time_ea - prevTime_ea));
 
-        prevPosition = (motor.getCurrentPosition());
-        prevNewTime = runtime.milliseconds();
-        time_ea = runtime.milliseconds();
-        position = (fl.getCurrentPosition());
+        prevPosition = motor.getCurrentPosition();
+        prevNewTime = runtime.seconds();
+        time_ea = runtime.seconds();
+        position = motor.getCurrentPosition();
 
-        accel = ((position - prevPosition) / (time_ea - prevNewTime));
+        accel = (position - prevPosition) / (time_ea - prevNewTime);
 
-        masterAccel =  Math.abs(((accel - prevAccel) / (time_ea - prevTime_ea)));
+        masterAccel =  (accel - prevAccel) / (time_ea - prevTime_ea);
         return masterAccel;
 
     }
 
     public boolean equalize()
     {
-        if(!All_Motors_Working()) return false;
+        //if(!All_Motors_Working()) return false;
 
         flAcc = getHolon(fl);
         frAcc = getHolon(fr);
         brAcc = getHolon(br);
         blAcc = getHolon(bl);
 
-        if(Math.abs(flAcc - brAcc) >= .25)
+        if(Math.abs(flAcc - brAcc) >= .05)
         {
             fl.setPower(fl.getPower() - (flAcc - brAcc));
         }
-        if(Math.abs(frAcc - blAcc) >= .25)
+        else if(Math.abs(frAcc - blAcc) >= .05)
         {
             fr.setPower(fr.getPower() - (frAcc - blAcc));
         }
+
         return true;
     }
 

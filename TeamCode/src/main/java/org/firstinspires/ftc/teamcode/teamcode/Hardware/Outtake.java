@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-public class Outtake {
+public class Outtake{
 
     private static final double MAXLEVEL = 14;
     private static final double DISTANCE_TO_BUILD_ZONE = 1; // what ever distance is from foundation to build zone
@@ -288,7 +288,7 @@ public class Outtake {
         rightSideY.setPower(0);
         leftSideY.setPower(0);
 
-        while(!bottom) // once lift registers to bottom then bottom will equal to true
+        while(liftRight.getCurrentPosition() > 0 && liftLeft.getCurrentPosition() > 0) // once lift registers to bottom then bottom will equal to true
         {
             liftLeft.setPower(-LIFTPOWER);
             liftRight.setPower(-LIFTPOWER);
@@ -325,5 +325,4 @@ public class Outtake {
            hookRight.setPosition(HOOKUP);
        }
     }
-
 }

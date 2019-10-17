@@ -100,21 +100,25 @@ public class TeleOpTrollTest extends OpMode {
     //Main Loop
     @Override
     public void loop() {
+
         speed = gamepad1.right_stick_x;
+        velocity = gamepad1.left_stick_y;
+        direction = gamepad1.left_stick_x;
 
-        telemetry.addData("Status", "Run Time: " + drive.runtime.toString());
-        telemetry.addData("Motor Position", "Motor Rotation", +speed);
+        telemetry.addData("Velocity : ", velocity);
+        telemetry.addData("Direction : ", direction);
+        telemetry.addData("Speed : ", speed);
 
-        if (Math.abs(gamepad1.left_stick_y) > .05) {
-            leftStickY = gamepad1.left_stick_y;
-        } else {
-            leftStickY = 0;
+        if (Math.abs(velocity) < .05) {
+            velocity = 0;
         }
 
-        if (Math.abs(gamepad1.left_stick_x) > .05) {
-            leftStickX = gamepad1.left_stick_x;
-        } else {
-            leftStickX = 0;
+        if (Math.abs(direction) < .05) {
+            direction = 0;
+        }
+
+        if (Math.abs(speed) < .05) {
+            speed = 0;
         }
 
         if (gamepad1.x != pastX) {
@@ -128,24 +132,8 @@ public class TeleOpTrollTest extends OpMode {
             }
         }
 
-        telemetry.addData("Velocity : ", velocity);
-
-        telemetry.addData("Direction : ", direction);
-
-        telemetry.addData("Speed : ", speed);
-
-        velocity = leftStickY;
-                //Math.hypot(leftStickX, leftStickY);
-        direction = leftStickX;
-                //Math.atan2(leftStickY, leftStickX) - Math.PI / 4;
-        speed = gamepad1.right_stick_x;
-
-        if (Math.abs(gamepad1.right_stick_x) < 0.075 ) {
-            speed = 0;
-        }
-
-        if (Math.abs(gamepad1.left_stick_x) > 0.075 || Math.abs(gamepad1.left_stick_y) >
-                0.075 || Math.abs(gamepad1.right_stick_x) > 0.075) {
+        if (Math.abs(direction) > 0.075 || Math.abs(velocity) >
+                0.075 || Math.abs(speed) > 0.075) {
             drive.fl.setPower((velocity - direction) - speed);
             drive.fr.setPower((velocity + direction) + speed);
             drive.bl.setPower((velocity + direction) - speed);
@@ -156,20 +144,12 @@ public class TeleOpTrollTest extends OpMode {
             drive.snowWhite();
         }
 
-                //drive.fl.setPower((velocity * Math.cos(direction) - speed) * speedProp);
-                //drive.fr.setPower((velocity * Math.sin(direction) + speed) * speedProp);
-                //drive.bl.setPower((velocity * Math.sin(direction) - speed) * speedProp);
-                //drive.br.setPower((velocity * Math.cos(direction) + speed) * speedProp);
-
-
-
-            telemetry.addData("Halfing Speed : ", pastX);
-            telemetry.addData("Encoded Acceleration : ", drive.getEncodedAccel());
-
-            telemetry.addData("Get Holon : ",
-                            "FR :" + drive.getHolon(drive.fr) +
-                            "BL : " + drive.getHolon(drive.bl) +
-                            "BR : " + drive.getHolon(drive.br));
+        telemetry.addData("Halfing Speed : ", pastX);
+        telemetry.addData("Encoded Acceleration : ", drive.getEncodedAccel());
+        telemetry.addData("Get Holon : ",
+                "FR :" + drive.getHolon(drive.fr) +
+                        "BL : " + drive.getHolon(drive.bl) +
+                        "BR : " + drive.getHolon(drive.br));
             telemetry.update();
 
 

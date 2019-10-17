@@ -62,11 +62,11 @@ public abstract class TeleOpControl extends Central {
     /*
     left_stick       right_stick
     -       -             |
-     -  1  -          6   |   5         left_button      9
-       - -         -------|-------      right_button     10
-   2   - -   4            |
-     -     -          7   |   8
-    -   3   -             |
+     -  0  -          5   |   4         left_button      8
+       - -         -------|-------      right_button     9
+   1   - -   3            |
+     -     -          6   |   7
+    -   2   -             |
      */
 
 
@@ -74,9 +74,9 @@ public abstract class TeleOpControl extends Central {
 
         return new boolean[]{yAxis1 >= Math.abs(xAxis1), -Math.abs(yAxis1) > xAxis1, yAxis1 <= -Math.abs(xAxis1), Math.abs(yAxis1) < xAxis1,
                 yAxis2 >= 0 && xAxis2 >= 0, yAxis2 >= 0 && xAxis2 < 0, yAxis2 < 0 && xAxis2 < 0, yAxis2 < 0 && xAxis2 >= 0,
-                gamepad1.left_stick_button, gamepad1.right_stick_button}[n + 1]
+                gamepad1.left_stick_button, gamepad1.right_stick_button}[n]
 
-                && (n + 1 < 5 ? (validStick(xAxis1, yAxis1)) : (n + 1 >= 9 || validStick(xAxis2, yAxis2)));
+                && (n < 4 ? (validStick(xAxis1, yAxis1)) : (n >= 8 || validStick(xAxis2, yAxis2)));
 
     }
     public void setMotorPower(double power, DcMotor... motors){

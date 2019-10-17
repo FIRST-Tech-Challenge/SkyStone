@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotlib.drivetrain.MecanumDrivetrain;
 
-public class MecanumHardwareMap
+public class MecanumHardwareMap extends HardwareMapTemplate
 {
     private DcMotor driveFrontLeft;
     private DcMotor driveFrontRight;
@@ -19,11 +19,7 @@ public class MecanumHardwareMap
     public Servo servoBuildClawLeft;
     public Servo servoBuildClawRight;
 
-    public MecanumDrivetrain drivetrain;
-
     public final double wheelRadius = 4; //inches
-
-    public DcMotor[] motorList;
 
     public MecanumHardwareMap(HardwareMap hwMap)
     {

@@ -137,11 +137,9 @@ public class DriveSystem {
 
         setRunMode(DcMotor.RunMode.RUN_TO_POSITION);
         setMotorPower(maxPower);
-        double heading = -imuSystem.getHeading();
         while (anyMotorsBusy()) { }
         setMotorPower(0.0);
         setRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        turn(heading + imuSystem.getHeading(), 0.5);
     }
 
     public boolean anyMotorsBusy() {

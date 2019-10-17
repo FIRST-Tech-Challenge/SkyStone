@@ -60,6 +60,7 @@ public class testOpMode_TeleOp extends OpMode
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftDrive = null;
     private DcMotor rightDrive = null;
+    private DcMotor frontLeftMotor=null;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -73,6 +74,7 @@ public class testOpMode_TeleOp extends OpMode
         // step (using the FTC Robot Controller app on the phone).
         leftDrive  = hardwareMap.get(DcMotor.class, "left_drive");
         rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
+
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery

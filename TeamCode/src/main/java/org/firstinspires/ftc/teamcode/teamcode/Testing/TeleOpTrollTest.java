@@ -144,8 +144,10 @@ public class TeleOpTrollTest extends OpMode {
             speed = 0;
         }
 
-        if (Math.abs(gamepad1.left_stick_x) > 0.075 || Math.abs(gamepad1.left_stick_y) >
-                0.075 || Math.abs(gamepad1.right_stick_x) > 0.075) {
+        if (Math.abs(gamepad1.left_stick_x) > 0.075 ||
+                Math.abs(gamepad1.left_stick_y) >
+                0.075 || Math.abs(gamepad1.right_stick_x)
+                > 0.075) {
             drive.fl.setPower((velocity - direction) - speed);
             drive.fr.setPower((velocity + direction) + speed);
             drive.bl.setPower((velocity + direction) - speed);

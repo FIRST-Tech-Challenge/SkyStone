@@ -1,12 +1,9 @@
 package org.firstinspires.ftc.teamcode.components;
 
-import android.util.Log;
-
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.Range;
-
 import java.util.EnumMap;
 
 public class DriveSystem {
@@ -19,7 +16,7 @@ public class DriveSystem {
         FORWARD, BACKWARD, LEFT, RIGHT;
 
         private static boolean isStrafe(Direction direction) {
-            return direction == Direction.LEFT || direction == Direction.RIGHT;
+            return direction == LEFT || direction == RIGHT;
         }
     }
 
@@ -33,7 +30,7 @@ public class DriveSystem {
 
     private int mTargetTicks;
 
-    private final int TICKS_IN_INCH = 69;
+    private final int TICKS_IN_MM = 69;
 
     /**
      * Handles the data for the abstract creation of a drive system with four wheels
@@ -94,7 +91,6 @@ public class DriveSystem {
             leftY = 0.0f;
         }
 
-        // write the values to the motors 1
         double frontLeftPower = -leftY + rightX + leftX;
         double frontRightPower = -leftY - rightX - leftX;
         double backLeftPower = -leftY + rightX - leftX;
@@ -138,21 +134,15 @@ public class DriveSystem {
                 } else {
                     motor.setTargetPosition(mTargetTicks);
                 }
-
-
             });
             setRunMode(DcMotor.RunMode.RUN_TO_POSITION);
             setMotorPower(maxPower);
         }
 
-
         for (DcMotor motor : motors.values()) {
-
             int offset = Math.abs(motor.getCurrentPosition() - mTargetTicks);
-            Log.d(TAG, "Offset is " + offset);
-
-            if(offset < 100){
-                setMotorPower(0.0);
+            if(offset <= 0){
+                setMotorPower(0);
                 mTargetTicks = 0;
                 return true;
             }
@@ -160,15 +150,6 @@ public class DriveSystem {
 
         return false;
 
-    }
-
-    public boolean anyMotorsBusy() {
-        for (DcMotor motor : motors.values()) {
-            if (motor.isBusy()) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public void setRunMode(DcMotor.RunMode runMode) {
@@ -189,17 +170,17 @@ public class DriveSystem {
         return distance;
     }
 
-    public boolean driveToPositionInches(double inches, Direction direction, double maxPower) {
-        return driveToPositionTicks(inchesToTicks(inches), direction, maxPower);
+    public boolean driveToPosition(int millimeters, Direction direction, double maxPower) {
+        return driveToPositionTicks(millimetersToTicks(millimeters), direction, maxPower);
     }
 
     /**
-     * Converts inches to ticks
-     * @param inches Inches to convert to ticks
+     * Converts millimeters to ticks
+     * @param millimeters Millimeters to convert to ticks
      * @return
      */
-    public int inchesToTicks(double inches) {
-        return (int) inches * TICKS_IN_INCH;
+    public int millimetersToTicks(int millimeters) {
+        return (int) millimeters * TICKS_IN_MM;
     }
 
     /**

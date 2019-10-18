@@ -1,11 +1,7 @@
-package org.firstinspires.ftc.teamcode.opmodes;
+package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
@@ -13,8 +9,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.teamcode.components.DriveSystem;
 import org.firstinspires.ftc.teamcode.components.Vuforia;
-
-import java.util.EnumMap;
+import org.firstinspires.ftc.teamcode.opmodes.autonomous.BaseStateMachine;
 
 @Autonomous(name = "BlueBuild", group="Autonomous")
 public class BlueBuild extends BaseStateMachine {
@@ -81,10 +76,10 @@ public class BlueBuild extends BaseStateMachine {
                 driveSystem.turn(rotation.thirdAngle - 90, 0.8);
                 if (vuforia.isTargetVisible(skystone)) {
                     VectorF translation = vuforia.getRobotPosition();
-                    driveSystem.driveToPositionInches(translation.get(1) / mmPerInch, DriveSystem.Direction.FORWARD, 0.5);
+                   // driveSystem.driveToPositionInches(translation.get(1) / mmPerInch, DriveSystem.Direction.FORWARD, 0.5);
                 }
                 driveSystem.turn(-90, 1.0);
-                driveSystem.driveToPositionInches(24, DriveSystem.Direction.FORWARD, 1.0);
+              //  driveSystem.driveToPositionInches(24, DriveSystem.Direction.FORWARD, 1.0);
                 telemetry.update();
 
                 newState(State.STATE_DELIVER_STONE);

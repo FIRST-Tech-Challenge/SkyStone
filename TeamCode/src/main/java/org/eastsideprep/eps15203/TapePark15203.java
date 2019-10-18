@@ -23,8 +23,8 @@ public class TapePark15203 extends LinearOpMode {
         waitForStart();
 
         robot.allDrive(0.5, 750);
-        robot.RTurn(0.5, 785);
-        robot.allDrive(0.5, 1550);
+        robot.turn(0.5, 785);
+        robot.allDrive(0.5, 1250);
     }
 }
 

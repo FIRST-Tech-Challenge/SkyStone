@@ -88,7 +88,7 @@ public class Hardware15203 {
         rightBackMotor.setPower(0);
     }
 
-    public void RTurn(double power, int milliseconds){
+    public void turn(double power, int milliseconds){
         //Front motors
         leftFrontMotor.setPower(-power);
         rightFrontMotor.setPower(power);
@@ -105,7 +105,7 @@ public class Hardware15203 {
         rightBackMotor.setPower(0);
     }
 
-    public void LSpinTurn(double power, int milliseconds){
+    public void spinTurn(double power, int milliseconds){
         leftFrontMotor.setPower(-power);
         rightFrontMotor.setPower(power);
         //Back motors

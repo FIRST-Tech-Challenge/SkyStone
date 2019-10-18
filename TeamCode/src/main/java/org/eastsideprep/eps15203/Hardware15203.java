@@ -73,7 +73,7 @@ public class Hardware15203 {
         return unscaledPowers;
     }
 
-    public boolean allDrive(double power, int milliseconds){
+    public void allDrive(double power, int milliseconds){
         leftFrontMotor.setPower(power);
         leftBackMotor.setPower(power);
         rightFrontMotor.setPower(power);
@@ -81,14 +81,45 @@ public class Hardware15203 {
         try {
             Thread.sleep(milliseconds);
         } catch (InterruptedException e) {
-            return false;
         }
         leftFrontMotor.setPower(0);
         leftBackMotor.setPower(0);
         rightFrontMotor.setPower(0);
         rightBackMotor.setPower(0);
-        return true;
     }
 
+    public void turn(double power, int milliseconds){
+        //Front motors
+        leftFrontMotor.setPower(-power);
+        rightFrontMotor.setPower(power);
+        //Back motors
+        leftBackMotor.setPower(-power);
+        rightBackMotor.setPower(power);
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException e) {
+        }
+        leftFrontMotor.setPower(0);
+        leftBackMotor.setPower(0);
+        rightFrontMotor.setPower(0);
+        rightBackMotor.setPower(0);
+    }
+
+    public void spinTurn(double power, int milliseconds){
+        leftFrontMotor.setPower(-power);
+        rightFrontMotor.setPower(power);
+        //Back motors
+        leftBackMotor.setPower(power);
+        rightBackMotor.setPower(power);
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException e) {
+        }
+        leftFrontMotor.setPower(0);
+        rightFrontMotor.setPower(0);
+        //Back motors
+        leftBackMotor.setPower(0);
+        rightBackMotor.setPower(0);
+    }
 }
 

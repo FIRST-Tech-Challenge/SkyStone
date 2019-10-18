@@ -23,5 +23,26 @@ public class SimpleSpin15203 extends LinearOpMode {
 
         waitForStart();
 
+<<<<<<< HEAD
+=======
+        while (opModeIsActive()){
+        //Front Motors
+            leftFrontMotor.setPower(-0.5);
+            rightFrontMotor.setPower(0.5);
+        //Back motors
+            leftBackMotor.setPower(0.5);
+            rightBackMotor.setPower(0.5);
+        }
+/*
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException e) {
+        }
+        leftFrontMotor.setPower(0);
+        leftBackMotor.setPower(0);
+        rightFrontMotor.setPower(0);
+        rightBackMotor.setPower(0);
+        */
+>>>>>>> 9c81c081b2ea6f3cef62005f6930979e50661e92
     }
 }

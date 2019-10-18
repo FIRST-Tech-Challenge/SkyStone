@@ -36,13 +36,13 @@ public class Robot {
     private LinearOpMode opMode;
 
     // Motors
-    private DcMotor[] dcMotors = new DcMotor[8];
+    private DcMotor[] dcMotors = new DcMotor[4];
 
     // Servos
-    private Servo[] servos = new Servo[4];
+//    private Servo[] servos = new Servo[4];
 
     // Sensors
-    private RevTouchSensor[] touchSensors = new RevTouchSensor[6];
+//    private RevTouchSensor[] touchSensors = new RevTouchSensor[6];
 
     Robot(LinearOpMode opMode) {
         this.opMode = opMode;
@@ -101,7 +101,6 @@ public class Robot {
         return dcMotors[index].isBusy();
     }
 
-
     // Servo methods
 //    void setServoPosition(int index, float position) {
 //        servos[index].setPosition(position);
@@ -112,12 +111,15 @@ public class Robot {
 //                // This makes sure the servo positions are between 0 and 1
 //                Range.clip(servos[index].getPosition() + delta, 0, 1));
 //    }
-    public void setServoPosition(int servoArm, float servoArmPosGrab) {
-    }
-
-    public float getServoPosition(int servoArm) {
-        return 0;
-    }
+//    public void setServoPosition(int servoArm, float servoArmPosGrab) {
+//    }
+//
+//    public float getServoPosition(int servoArm) {
+//        return 0;
+//    }
+//
+//    public void setDeltaServoPosition(int servoArm, float f) {
+//    }
 
 //    float getServoPosition(int index) {
 //        return (float) servos[index].getPosition();

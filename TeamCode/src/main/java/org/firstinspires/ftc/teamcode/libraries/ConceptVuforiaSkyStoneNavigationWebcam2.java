@@ -355,18 +355,26 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
 
             // Provide feedback as to where the robot is located (if we know).
             String positionSkystone = "";
+            double yPosition =0;
+            double xPosition =0;
             if (targetVisible) {
                 // express position (translation) of robot in inches.
                 VectorF translation = lastLocation.getTranslation();
                 telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
                         translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
 
-                double xPosition = translation.get(0);
-                if (xPosition < -5) {
+                 yPosition = translation.get(0);
+                 xPosition = translation.get(0);
+                if (yPosition > 4.6) {
                     positionSkystone = "Right";
-                    autoLib.calcMove(10,.2f, Constants.Direction.FORWARD);
-                } else {
+                    autoLib.calcMove(5,.2f, Constants.Direction.RIGHT);
+                } else if (yPosition <= 0) {
                     positionSkystone = "Center";
+                    if(xPosition <= -10) {
+                        autoLib.calcMove(5, .2f, Constants.Direction.FORWARD);
+                    }else{
+                        telemetry.addData("Final Position Reached", "none");
+                    }
                 }
 
                 // express the rotation of the robot in degrees.
@@ -376,6 +384,9 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
             else {
                 positionSkystone = "Left";
                 telemetry.addData("Visible Target", "none");
+
+                    autoLib.calcMove(5, .2f, Constants.Direction.LEFT);
+
             }
             telemetry.addData("Skystone Position", positionSkystone);
             telemetry.update();

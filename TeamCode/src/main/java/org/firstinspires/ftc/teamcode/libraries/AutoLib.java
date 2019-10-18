@@ -20,11 +20,19 @@ import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_BACK_LEFT
 import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_BACK_RIGHT_WHEEL;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_FRONT_LEFT_WHEEL;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_FRONT_RIGHT_WHEEL;
+import static org.firstinspires.ftc.teamcode.libraries.Constants.NEVEREST_40_REVOLUTION_ENCODER_COUNT;
+import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_ARM;
+import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_ARM_POS_GRAB;
+import static org.firstinspires.ftc.teamcode.libraries.Constants.TENSOR_READING_TIME;
+import static org.firstinspires.ftc.teamcode.libraries.Constants.TRACK_DISTANCE;
+//import static org.firstinspires.ftc.teamcode.libraries.Constants.VUFORIA_KEY;
+import static org.firstinspires.ftc.teamcode.libraries.Constants.WHEEL_DIAMETER;
+import static org.firstinspires.ftc.teamcode.libraries.Constants.WHEEL_GEAR_RATIO;
+
 //import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_INTAKE;
 //import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_INTAKE_SLIDE;
 //import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_LATCHER;
 //import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_SCORING_SLIDE;
-import static org.firstinspires.ftc.teamcode.libraries.Constants.NEVEREST_40_REVOLUTION_ENCODER_COUNT;
 //import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_INTAKE_ANGLE;
 //import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_INTAKE_ANGLE_POS_CRATER;
 //import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_LATCHER;
@@ -34,16 +42,6 @@ import static org.firstinspires.ftc.teamcode.libraries.Constants.NEVEREST_40_REV
 //import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_SCORING_POS_RETRACT_MARKER;
 //import static org.firstinspires.ftc.teamcode.libraries.Constants.TOUCH_LATCHER_BOTTOM;
 //import static org.firstinspires.ftc.teamcode.libraries.Constants.TOUCH_LATCHER_TOP;
-import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_ARM;
-import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_ARM_POS_GRAB;
-import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_ARM_POS_REST;
-import static org.firstinspires.ftc.teamcode.libraries.Constants.TENSOR_READING_TIME;
-import static org.firstinspires.ftc.teamcode.libraries.Constants.TRACK_DISTANCE;
-import static org.firstinspires.ftc.teamcode.libraries.Constants.WHEEL_DIAMETER;
-import static org.firstinspires.ftc.teamcode.libraries.Constants.WHEEL_GEAR_RATIO;
-
-import static org.firstinspires.ftc.teamcode.libraries.Constants.TENSOR_READING_TIME;
-import static org.firstinspires.ftc.teamcode.libraries.Constants.VUFORIA_KEY;
 
 /*
  * Title: AutoLib
@@ -66,7 +64,7 @@ public class AutoLib {
         robot = new Robot(opMode);
         this.opMode = opMode;
 
-        // initTfod();
+       // initTfod();
     }
 
 
@@ -78,10 +76,10 @@ public class AutoLib {
                 NEVEREST_40_REVOLUTION_ENCODER_COUNT)) * WHEEL_GEAR_RATIO);
 
         switch (direction) {
-            case FORWARD:
+            case BACKWARD:
                 prepMotorsForCalcMove(targetPosition, targetPosition, targetPosition, targetPosition);
                 break;
-            case BACKWARD:
+            case FORWARD:
                 prepMotorsForCalcMove(-targetPosition, -targetPosition, -targetPosition, -targetPosition);
                 break;
             case LEFT:
@@ -100,7 +98,7 @@ public class AutoLib {
             opMode.idle();
         }
 
-        setBaseMotorPowers(0);      //TODO: Might need to uncomment
+        setBaseMotorPowers(0);
     }
 
     public void calcTurn(int degrees, float power) {
@@ -110,7 +108,7 @@ public class AutoLib {
                 (WHEEL_DIAMETER * 360));
 
 
-        prepMotorsForCalcMove(-targetPosition, targetPosition, -targetPosition, targetPosition);    //TODO: Check negative signs
+        prepMotorsForCalcMove(-targetPosition, targetPosition, -targetPosition, targetPosition);
 
         setBaseMotorPowers(power);
 
@@ -133,6 +131,12 @@ public class AutoLib {
 
     private void prepMotorsForCalcMove(int frontLeftTargetPosition, int frontRightTargetPosition,
                                        int backLeftTargetPosition, int backRightTargetPosition) {
+
+        robot.setDcMotorTargetPosition(MOTOR_FRONT_LEFT_WHEEL, frontLeftTargetPosition);
+        robot.setDcMotorTargetPosition(MOTOR_FRONT_RIGHT_WHEEL, frontRightTargetPosition);
+        robot.setDcMotorTargetPosition(MOTOR_BACK_LEFT_WHEEL, backLeftTargetPosition);
+        robot.setDcMotorTargetPosition(MOTOR_BACK_RIGHT_WHEEL, backRightTargetPosition);
+
         robot.setDcMotorMode(MOTOR_FRONT_LEFT_WHEEL, STOP_AND_RESET_ENCODER);
         robot.setDcMotorMode(MOTOR_FRONT_RIGHT_WHEEL, STOP_AND_RESET_ENCODER);
         robot.setDcMotorMode(MOTOR_BACK_LEFT_WHEEL, STOP_AND_RESET_ENCODER);
@@ -143,10 +147,7 @@ public class AutoLib {
         robot.setDcMotorMode(MOTOR_BACK_LEFT_WHEEL, RUN_TO_POSITION);
         robot.setDcMotorMode(MOTOR_BACK_RIGHT_WHEEL, RUN_TO_POSITION);
 
-        robot.setDcMotorTargetPosition(MOTOR_FRONT_LEFT_WHEEL, frontLeftTargetPosition);
-        robot.setDcMotorTargetPosition(MOTOR_FRONT_RIGHT_WHEEL, frontRightTargetPosition);
-        robot.setDcMotorTargetPosition(MOTOR_BACK_LEFT_WHEEL, backLeftTargetPosition);
-        robot.setDcMotorTargetPosition(MOTOR_BACK_RIGHT_WHEEL, backRightTargetPosition);
+
     }
 
 //    public void moveLinearSlideToDepot(int encoderCount) {
@@ -170,9 +171,9 @@ public class AutoLib {
                 robot.isMotorBusy(MOTOR_BACK_LEFT_WHEEL) || robot.isMotorBusy(MOTOR_BACK_RIGHT_WHEEL);
     }
 
-    public void moveArm() {
-        robot.setServoPosition(SERVO_ARM, SERVO_ARM_POS_GRAB);
-    }
+//    public void moveArm() {
+//        robot.setServoPosition(SERVO_ARM, SERVO_ARM_POS_GRAB);
+//    }
 
 //    public void intakeMinerals() {
 //        ElapsedTime time = new ElapsedTime();
@@ -254,7 +255,7 @@ public class AutoLib {
          */
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
-        parameters.vuforiaLicenseKey = VUFORIA_KEY;
+       // parameters.vuforiaLicenseKey = VUFORIA_KEY;
         parameters.cameraName = opMode.hardwareMap.get(WebcamName.class, "Webcam");
 
         //  Instantiate the Vuforia engine

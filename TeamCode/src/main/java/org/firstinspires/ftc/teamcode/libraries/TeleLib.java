@@ -108,17 +108,24 @@ public class TeleLib {
 //        }
 //    }
 
-    public void GrabServoArm() {
-        if (opMode.gamepad2.x && servoArmInputDelay.seconds() > .25)
-            if (robot.getServoPosition(SERVO_ARM) == SERVO_ARM_POS_REST) {
-                robot.setServoPosition(SERVO_ARM, SERVO_ARM_POS_GRAB);
-            } else {
-                robot.setServoPosition(SERVO_ARM, SERVO_ARM_POS_REST);
-            }
-        latcherServoInputDelay.reset();
-    }
+//    public void processGrabServoArm() {
+//        if (opMode.gamepad2.x && servoArmInputDelay.seconds() > .25)
+//            if (robot.getServoPosition(SERVO_ARM) == SERVO_ARM_POS_REST) {
+//                robot.setServoPosition(SERVO_ARM, SERVO_ARM_POS_GRAB);
+//            } else {
+//                robot.setServoPosition(SERVO_ARM, SERVO_ARM_POS_REST);
+//            }
+//        latcherServoInputDelay.reset();
+//        if (opMode.gamepad1.dpad_up && scoringServoInputDelay.seconds() > .2f) {
+//            robot.setDeltaServoPosition(SERVO_ARM, .02f);
+//            scoringServoInputDelay.reset();
+//        } else if (opMode.gamepad1.dpad_down && scoringServoInputDelay.seconds() > .2f) {
+//            robot.setDeltaServoPosition(SERVO_ARM, -.02f);
+//            scoringServoInputDelay.reset();
+//        }
+//    }
 }
-        // Uses gamepad 1 triggers for movement
+// Uses gamepad 1 triggers for movement
 //    public void processScoringSlide() {
 //        if (opMode.gamepad1.right_trigger > GAMEPAD_TRIGGER_TOLERANCE) {
 //            // Extend
@@ -131,7 +138,7 @@ public class TeleLib {
 //        }
 //    }
 
-        // Uses gamepad 1 Y and d-pad up/down
+// Uses gamepad 1 Y and d-pad up/down
 //    public void processScoringServo() {
 //        // Preset
 //        if (opMode.gamepad1.a) {
@@ -150,7 +157,7 @@ public class TeleLib {
 //        }
 //    }
 
-        // Uses gamepad 2 triggers to move the intake
+// Uses gamepad 2 triggers to move the intake
 //    public void processIntakeSlide() {
 //        if (opMode.gamepad2.right_trigger > GAMEPAD_TRIGGER_TOLERANCE) {
 //            // Extend
@@ -163,7 +170,7 @@ public class TeleLib {
 //        }
 //    }
 
-        // Uses gamepad 2 bumpers & Y
+// Uses gamepad 2 bumpers & Y
 //    public void processIntake() {
 //        if (opMode.gamepad2.right_bumper) {
 //            robot.setDcMotorPower(MOTOR_INTAKE, -.75f);

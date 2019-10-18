@@ -2,9 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.opencv.core.Core;
@@ -19,7 +16,6 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 import org.openftc.easyopencv.OpenCvPipeline;
-import org.openftc.easyopencv.examples.PipelineStageSwitchingExample;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,18 +34,30 @@ import java.util.List;
 public class onlyopencv extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
-//    private DcMotor backLeft     = null; //rear left
+    //    private DcMotor backLeft     = null; //rear left
 //    private DcMotor backRight    = null; //rear right
 //    private DcMotor frontLeft    = null; //front left
 //    private DcMotor frontRight   = null; //front right
 //
 //    private Servo   servo        = null;
     private final int encoderTicks = 1120;
-    public static double val = -1;
+    private final double wheelDiameter = 3.85827;//in inches
+    public static double valMid = -1;
+    public static double valLeft = -1;
+    public static double valRight = -1;
+
+    public static double[] midPos = {1f/2f, 6f/8f};
+    public static double[] leftPos = {1f/4f, 6f/8f};
+    public static double[] rightPos = {3f/4f, 6f/8f};
+
+
+
 
     OpenCvCamera phoneCam;
     StageSwitchingPipeline stageSwitchingPipeline;
 
+    //x, y = distance in x,y direction, angle = angle for rotation, power = motor power/speed
+    //x must equal y if both are nonzero.
 //    public void move(double x, double y, double angle, double power) {
 //        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 //        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -61,8 +69,15 @@ public class onlyopencv extends LinearOpMode {
 //        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //
+//
+//          if(x == y){
+//              double h = Math.sqrt(x*x+y*y);
+//              x=h;
+//              y=h;
+//          }
+
 //        //y
-//        double distancePerRotationY = 3.1415 * 6; //pi * diameter (inches)
+//        double distancePerRotationY = 3.1415 * wheelDiameter; //pi * diameter (inches)
 //        double rotationsY = y/distancePerRotationY; //distance / circumference (inches)
 //        int encoderTargetY = (int)(rotationsY*encoderTicks);
 //
@@ -72,15 +87,18 @@ public class onlyopencv extends LinearOpMode {
 //        int encoderTargetX = (int)(rotationsX*encoderTicks);
 //
 //        //angle
-//        double anglePerRotation = 1;//measure this
-//        double rotationsA = angle/anglePerRotation;
-//        int encoderTargetA = (int)(rotationsA*encoderTicks);
+//        double ticksPerRotation = 0;//measure how many ticks for a 360 rotation
+//        double rotationsA = angle/360;
+//        int encoderTargetA = (int)(rotationsA*ticksPerRotation);
 //
 //        if(opModeIsActive()) {
-//            backLeft.setTargetPosition(encoderTargetY+encoderTargetX-encoderTargetA);
-//            backRight.setTargetPosition(encoderTargetY-encoderTargetX+encoderTargetA);
-//            frontLeft.setTargetPosition(encoderTargetY-encoderTargetX-encoderTargetA);
-//            frontRight.setTargetPosition(encoderTargetY+encoderTargetX+encoderTargetA);
+             // if(x==y)
+               //
+                //
+//            backLeft.setTargetPosition(encoderTargetY-encoderTargetX+encoderTargetA);
+//            backRight.setTargetPosition(encoderTargetY+encoderTargetX-encoderTargetA);
+//            frontLeft.setTargetPosition(encoderTargetY+encoderTargetX+encoderTargetA);
+//            frontRight.setTargetPosition(encoderTargetY-encoderTargetX-encoderTargetA);
 //
 //            backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 //            frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -143,7 +161,10 @@ public class onlyopencv extends LinearOpMode {
         {
 
             //telemetry.addData("Num contours found", stageSwitchingPipeline.getNumContoursFound());
-            telemetry.addData("val", val);
+            telemetry.addData("Middle", valMid);
+            telemetry.addData("Left", valRight);
+            telemetry.addData("Right", valLeft);
+
 
             telemetry.update();
             sleep(100);
@@ -233,21 +254,27 @@ public class onlyopencv extends LinearOpMode {
 
                 //Convert back to MatOfPoint
                 MatOfPoint points = new MatOfPoint(approxCurve.toArray() );
-
                 // Get bounding rect of contour
                 Rect rect = Imgproc.boundingRect(points);
 
-                double[] pix = thresholdMat.get(input.rows()/2, input.cols()/2);
+                double[] pixMid = thresholdMat.get((int)(input.rows()* midPos[0]), (int)(input.cols()* midPos[1]));//gets value at circle
+                valMid = pixMid[0];
 
-                val = pix[0];
+                double[] pixLeft = thresholdMat.get((int)(input.rows()* leftPos[0]), (int)(input.cols()* leftPos[1]));//gets value at circle
+                valLeft = pixLeft[0];
 
-                Point center = new Point(input.cols()/2, input.rows()/2);
+                double[] pixRight = thresholdMat.get((int)(input.rows()* rightPos[0]), (int)(input.cols()* rightPos[1]));//gets value at circle
+                valRight = pixRight[0];
 
-                Imgproc.circle(all, center,10, new Scalar( 255, 0, 0 ),1 );
+                Point point1 = new Point((int)(input.rows()* midPos[0]), (int)(input.cols()* midPos[1]));
+                Point point2 = new Point((int)(input.rows()* leftPos[0]), (int)(input.cols()* leftPos[1]));
+                Point point3 = new Point((int)(input.rows()* rightPos[0]), (int)(input.cols()* rightPos[1]));
 
-                Point point = new Point(input.cols()/2, input.rows()*5f/8f);
+                Imgproc.circle(all, point1,10, new Scalar( 255, 0, 0 ),1 );//draws circle
+                Imgproc.circle(all, point2,10, new Scalar( 255, 0, 0 ),1 );//draws circle
+                Imgproc.circle(all, point3,10, new Scalar( 255, 0, 0 ),1 );//draws circle
 
-                if(rect.contains(point)) {
+                if((rect.contains(point1) || rect.contains(point2) || rect.contains(point3)) && (valMid == 0 || valLeft == 0 || valRight == 0)) {
                     Imgproc.rectangle(all,
                             new Point(rect.x, rect.y),
                             new Point(rect.x + rect.width, rect.y + rect.height),

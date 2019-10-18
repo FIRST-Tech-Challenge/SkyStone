@@ -1,6 +1,7 @@
 package org.eastsideprep.eps15203;
 
 import com.qualcomm.robotcore.hardware.AnalogInput;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
@@ -21,6 +22,9 @@ public class Hardware15203 {
     public DcMotor leftBackMotor = null;
     public DcMotor rightBackMotor = null;
     public DcMotor [] allMotors;
+    public CRServo garageLeftServo = null;
+    public CRServo garageRightServo = null;
+    public CRServo [] allCRServos;
     double [] rotationArray;
 
 
@@ -39,10 +43,14 @@ public class Hardware15203 {
         hwMap = ahwMap;
 
         // Define and Initialize Motors
+
         leftFrontMotor = hwMap.dcMotor.get("LF");
         rightFrontMotor = hwMap.dcMotor.get("RF");
         leftBackMotor = hwMap.dcMotor.get("LB");
         rightBackMotor = hwMap.dcMotor.get("RB");
+
+        garageLeftServo = hwMap.crservo.get("GL");
+        garageRightServo = hwMap.crservo.get("GR");
 
         allMotors = new DcMotor[]{ leftFrontMotor, rightFrontMotor, leftBackMotor, rightBackMotor};
         rotationArray= new double[]{-1.0, 1.0, -1.0, 1.0};
@@ -121,5 +129,6 @@ public class Hardware15203 {
         leftBackMotor.setPower(0);
         rightBackMotor.setPower(0);
     }
+
 }
 

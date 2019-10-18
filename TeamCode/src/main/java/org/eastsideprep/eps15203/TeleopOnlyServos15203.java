@@ -31,11 +31,10 @@ package org.eastsideprep.eps15203;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
-@TeleOp(name = "Teleop Simple 15203", group = "15203")
+@TeleOp(name = "Only Garage [TeleopOnlyServos] 15203", group = "15203")
 
-public class Simple15203 extends LinearOpMode {
+public class TeleopOnlyServos15203 extends LinearOpMode {
 
     /* Declare OpMode members. */
     Hardware15203 robot = new Hardware15203();
@@ -68,34 +67,6 @@ public class Simple15203 extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            float x = gamepad1.left_stick_x;
-            float y = -gamepad1.left_stick_y; // Negate to get +y forward.
-            float rotation = -gamepad1.right_stick_x;
-            float speedControl = 0.5f * (1.0f + gamepad1.left_trigger);
-            double biggestControl = Math.sqrt(x * x + y * y);
-            double biggestWithRotation = Math.sqrt(x * x + y * y + rotation * rotation);
-
-            double angle = Math.atan2(y, -x) - Math.PI / 2.0;
-
-            double[] powers = robot.getDrivePowersFromAngle(angle);
-            double pow2 = 0.0;
-            for (int i = 0; i < robot.allMotors.length; i++) {
-                double pow = powers[i] * biggestControl + rotation * robot.rotationArray[i];
-                powers[i] = pow;
-                pow2 += pow * pow;
-            }
-
-            if (biggestWithRotation != 0.0) {
-                double scale = Math.sqrt(pow2);
-                for (int i = 0; i < robot.allMotors.length; i++) {
-                    robot.allMotors[i].setPower(
-                            powers[i] / scale * biggestWithRotation * speedControl);
-                }
-            } else {
-                for (int i = 0; i < robot.allMotors.length; i++)
-                    robot.allMotors[i].setPower(0.0);
-            }
-
             if(gamepad1.y){
                 robot.garageRightServo.setPower(-1.0);
                 robot.garageLeftServo.setPower(-1.0);

@@ -22,12 +22,15 @@ public class SpinTurn extends LinearOpMode {
 
 
         waitForStart();
-        //Front motors
-        leftFrontMotor.setPower(-power);
-        rightFrontMotor.setPower(power);
+
+        while (opModeIsActive()){
+        //Front Motors
+            leftFrontMotor.setPower(-0.5);
+            rightFrontMotor.setPower(0.5);
         //Back motors
-        leftBackMotor.setPower(power);
-        rightBackMotor.setPower(power);
+            leftBackMotor.setPower(0.5);
+            rightBackMotor.setPower(0.5);
+        }
 /*
         try {
             Thread.sleep(milliseconds);

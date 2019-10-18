@@ -33,7 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-@TeleOp(name = "Teleop Simple 2", group = "15203")
+@TeleOp(name = "Teleop Simple 15203", group = "15203")
 
 public class Simple15203 extends LinearOpMode {
 
@@ -103,7 +103,7 @@ public class Simple15203 extends LinearOpMode {
 
             // Send telemetry message to signify robot running;
             telemetry.addLine()
-                    .addData("some variable", "%.2f", 0);
+                    .addData("Status", "Robot is running", 0);
 
             telemetry.addLine();
             telemetry.update();

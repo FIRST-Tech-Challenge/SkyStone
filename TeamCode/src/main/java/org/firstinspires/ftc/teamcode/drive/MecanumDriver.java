@@ -4,15 +4,17 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.internal.opmode.TelemetryImpl;
 import org.firstinspires.ftc.teamcode.DeviceMap;
-
-import java.util.Locale;
+import org.firstinspires.ftc.teamcode.monitor.MonitorIMU;
 
 public final class MecanumDriver implements IDriver {
+    private static final float TURN_OFFSET = 1.5F;
+
     private DeviceMap map;
     private Telemetry telemetry;
     private DcMotor[] motors;
+
+    private boolean conveyerCurrent;
 
     private static final double COUNTS_PER_MOTOR_REV = 560;
     private static final double WHEEL_DIAMETER_INCHES   = 4.0;
@@ -20,7 +22,7 @@ public final class MecanumDriver implements IDriver {
 
     public MecanumDriver() {
         this.map = DeviceMap.getInstance();
-        this.motors = map.getMotors();
+        this.motors = map.getDriveMotors();
     }
 
     /**
@@ -40,7 +42,7 @@ public final class MecanumDriver implements IDriver {
         int[] movements = direction.getMovement();
         int length = movements.length;
         for(int i = 0; i < length; i++) {
-            map.getMotors()[i].setPower(movements[i] * power);
+            map.getDriveMotors()[i].setPower(movements[i] * power);
         }
          */
 
@@ -60,23 +62,20 @@ public final class MecanumDriver implements IDriver {
         DcMotor leftBottom = map.getLeftBottom();
         DcMotor rightBottom = map.getRightBottom();
 
+        double calc = COUNTS_PER_INCH * inches;
         //other calculations needed
-        leftTop.setTargetPosition(leftTop.getCurrentPosition() + (int) (COUNTS_PER_INCH * inches * direction.getLeftTop()));
-        rightTop.setTargetPosition(rightTop.getCurrentPosition() + (int) (COUNTS_PER_INCH * inches * direction.getRightTop()));
-        leftBottom.setTargetPosition(leftBottom.getCurrentPosition() + (int) (COUNTS_PER_INCH * inches * direction.getLeftBottom()));
-        rightBottom.setTargetPosition(rightBottom.getCurrentPosition() + (int) (COUNTS_PER_INCH * inches * direction.getRightBottom()));
+        leftTop.setTargetPosition(leftTop.getCurrentPosition() + (int) (calc * direction.getLeftTop()));
+        rightTop.setTargetPosition(rightTop.getCurrentPosition() + (int) (calc * direction.getRightTop()));
+        leftBottom.setTargetPosition(leftBottom.getCurrentPosition() + (int) (calc * direction.getLeftBottom()));
+        rightBottom.setTargetPosition(rightBottom.getCurrentPosition() + (int) (calc * direction.getRightBottom()));
 
-        for(DcMotor motor : motors)
+        for(DcMotor motor : motors) {
             motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
 
         move(direction, power);
         while(motorsBusy()) {
-            telemetry.addLine(String.format(Locale.ENGLISH,"%d : %d", leftTop.getCurrentPosition(), leftTop.getTargetPosition()));
-            telemetry.addLine(String.format(Locale.ENGLISH,"%d : %d", rightTop.getCurrentPosition(), rightTop.getTargetPosition()));
-            telemetry.addLine(String.format(Locale.ENGLISH,"%d : %d", rightBottom.getCurrentPosition(), rightBottom.getTargetPosition()));
-            telemetry.addLine(String.format(Locale.ENGLISH,"%d : %d", leftBottom.getCurrentPosition(), leftBottom.getTargetPosition()));
-            telemetry.addLine("Direction: " + direction.name());
-            telemetry.update();
+
         }
         stop();
 
@@ -85,7 +84,6 @@ public final class MecanumDriver implements IDriver {
             motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
     }
-
     public void move(AngleConverter angleConverter) {
         map.getLeftTop().setPower(angleConverter.getLeftTop());
         map.getRightTop().setPower(angleConverter.getRightTop());
@@ -100,11 +98,10 @@ public final class MecanumDriver implements IDriver {
      * @param right_stick_x gamepadrightX
      */
     public void move(double left_stick_x, double left_stick_y, double right_stick_x){
-        right_stick_x *= -1;
-        double LB = Range.clip(left_stick_x + left_stick_y + right_stick_x, -1, 1);
-        double LF = Range.clip(left_stick_x - left_stick_y + right_stick_x, -1, 1);
-        double RB = Range.clip(left_stick_x - left_stick_y - right_stick_x, -1, 1);
-        double RF = Range.clip(left_stick_x + left_stick_y - right_stick_x, -1, 1);
+        double LF = Range.clip(left_stick_y + left_stick_x + right_stick_x, -1, 1);
+        double RF = Range.clip(left_stick_y - left_stick_x - right_stick_x, -1, 1);
+        double LB = Range.clip(left_stick_y - left_stick_x + right_stick_x, -1, 1);
+        double RB = Range.clip(left_stick_y + left_stick_x - right_stick_x, -1, 1);
         map.getLeftBottom().setPower(LB);
         map.getLeftTop().setPower(LF);
         map.getRightBottom().setPower(RB);
@@ -112,8 +109,52 @@ public final class MecanumDriver implements IDriver {
     }
 
     @Override
+    public void turn(double power, double angle, IActive stopRequested) {
+        if(stopRequested == null) stopRequested = () -> {return false;};
+        angle = MathUtil.convert180to360(angle);
+        if(Math.abs(angle) > 180) {
+            //if it's more than +180 or less than -180, add towards 0: 180
+            turn(power, angle + ((angle < 0) ? +180D : -180D), stopRequested);
+            return;
+        }
+        Direction direction = angle > 0 ? Direction.COUNTERCLOCKWISE : Direction.CLOCKWISE;
+
+        move(direction, power);
+        float min = (float) angle - TURN_OFFSET;
+        float max = (float) angle + TURN_OFFSET;
+
+        float currentAngle = MonitorIMU.getAngleThird();
+            while ((currentAngle < min || currentAngle > max)) {
+
+                telemetry.addData("Direction: ", direction);
+                telemetry.addData("Min: ", min);
+                telemetry.addData("Max: ", max);
+                telemetry.addData("zAngle: ", currentAngle);
+                telemetry.update();
+                currentAngle = MonitorIMU.getAngleThird();
+            }
+        stop();
+    }
+
+    public void turnOrigin(double power, IActive stopRequested) {
+        float angle = MonitorIMU.getAngleThird();
+        turn(power, angle, stopRequested);
+    }
+
+    public void intake(double leftPower, double rightPower) {
+        map.getLeftIntake().setPower(leftPower);
+        map.getRightIntake().setPower(rightPower);
+    }
+
+    public void conveyer(double power) {
+        DcMotor motor = map.getConveyer();
+        if(motor.getPower() == power) return;
+        map.getConveyer().setPower(power);
+    }
+
+    @Override
     public void stop() {
-        for(DcMotor motor : map.getMotors())
+        for(DcMotor motor : map.getDriveMotors())
             motor.setPower(0);
     }
 
@@ -121,10 +162,13 @@ public final class MecanumDriver implements IDriver {
         this.telemetry = telemetry;
     }
 
-    private boolean motorsBusy() {
+    public boolean motorsBusy() {
         for(DcMotor motor : motors) {
             if(motor.isBusy()) return true;
         }
         return false;
+    }
+    public DcMotor[] getMotors() {
+        return motors;
     }
 }

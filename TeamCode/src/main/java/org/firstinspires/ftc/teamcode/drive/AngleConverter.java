@@ -2,23 +2,18 @@ package org.firstinspires.ftc.teamcode.drive;
 
 import com.qualcomm.robotcore.util.RobotLog;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-
 import java.util.Locale;
-import java.util.Objects;
 
 public class AngleConverter {
-    private static final double QUARTER_RADIANS = Math.PI/4D;
     private double[] movement;
     private AngleConverter(double magnitude, double angle) {
         RobotLog.d(String.format(Locale.ENGLISH, "Magnitude: %f, Angle: %f", magnitude, angle));
-        this.setUp(magnitude, angle);
+        this.setUp(magnitude, Math.toRadians(angle));
     }
 
     private void setUp(double magnitude, double angle) {
-        double adjust = angle - QUARTER_RADIANS;
-        double sin = magnitude * Math.sin(adjust);
-        double cos = magnitude * Math.cos(adjust);
+        double sin = magnitude * Math.sin(angle);
+        double cos = magnitude * Math.cos(angle);
         this.movement = new double[]{cos,sin,sin,cos};
         RobotLog.d(String.format(Locale.ENGLISH, "Movement: %f %f %f %f",
                 movement[0], movement[1], movement[2], movement[3]));

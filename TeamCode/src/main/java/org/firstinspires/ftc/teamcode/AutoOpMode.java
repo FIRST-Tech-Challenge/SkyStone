@@ -38,7 +38,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.drive.Direction;
+import org.firstinspires.ftc.teamcode.drive.IActive;
 import org.firstinspires.ftc.teamcode.drive.MecanumDriver;
+import org.firstinspires.ftc.teamcode.monitor.MonitorIMU;
+import org.firstinspires.ftc.teamcode.monitor.MonitorManager;
+
+import java.util.Locale;
 
 
 /**
@@ -54,31 +59,54 @@ import org.firstinspires.ftc.teamcode.drive.MecanumDriver;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Basic: Linear OpMode", group="Linear Opmode")
-public class AutoOpMode extends LinearOpMode {
+@Autonomous(name="help me", group="Linear Opmode")
+public class AutoOpMode extends LinearOpMode implements IActive {
     private MecanumDriver driver;
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
-    public void runOpMode() {
+    public boolean opModeisActive() {
+        return this.opModeIsActive();
+    }
+
+    public void preInit() {
         DeviceMap.setTelemetry(telemetry);
         telemetry.addData("Status", "Initialized");
-        DeviceMap.getInstance(hardwareMap);
+
+        DeviceMap mapper = DeviceMap.getInstance(hardwareMap);
+        MonitorManager.startAll(mapper);
         driver = new MecanumDriver();
         driver.setTelemetry(telemetry);
         telemetry.update();
+    }
 
+    public void afterStop() {
+        MonitorManager.stopAll();
+
+    }
+
+    @Override
+    public void runOpMode() {
+        preInit();
         // Wait for the game to start (driver presses PLAY)
+        while(!isStarted()) {
+            for(DcMotor motor : driver.getMotors())
+                telemetry.addLine("Motor: " + motor.getCurrentPosition());
+            float[] floats = MonitorIMU.getXYZAngle();
+            telemetry.addLine(String.format(Locale.ENGLISH, "Angles: %f %f %f", floats[0], floats[1], floats[2]));
+            telemetry.update();
+
+        }
         waitForStart();
         runtime.reset();
 
-        driver.move(Direction.FORWARD, 1, 10);
-        driver.move(Direction.BACKWARD, 1, 10);
-        driver.move(Direction.LEFT, 1, 10);
-        driver.move(Direction.RIGHT, 1, 10);
-        // run until the end of the match (driver presses STOP)
+        driver.turn(0.5, 180, this);
+        driver.turn(0.5, 90, this);
 
+
+        // run until the end of the match (driver presses STOP)
+        afterStop();
     }
 }

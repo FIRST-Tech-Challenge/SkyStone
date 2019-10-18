@@ -16,14 +16,16 @@ public class IntakeTest extends LinearOpMode {
         r.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         waitForStart();
         while (opModeIsActive()) {
-            if (gamepad1.a) {
+            while (gamepad1.a) {
                 l.setPower(0.5);
                 r.setPower(0.5);
             }
-            if (gamepad1.b) {
+            while (gamepad1.b) {
                 l.setPower(-0.5);
                 r.setPower(-0.5);
             }
+            l.setPower(0);
+            r.setPower(0);
             idle();
         }
     }

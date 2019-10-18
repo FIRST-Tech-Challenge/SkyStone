@@ -105,5 +105,21 @@ public class Hardware15203 {
         rightBackMotor.setPower(0);
     }
 
+    public void LSpinTurn(double power, int milliseconds){
+        leftFrontMotor.setPower(-power);
+        rightFrontMotor.setPower(power);
+        //Back motors
+        leftBackMotor.setPower(power);
+        rightBackMotor.setPower(power);
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException e) {
+        }
+        leftFrontMotor.setPower(0);
+        rightFrontMotor.setPower(0);
+        //Back motors
+        leftBackMotor.setPower(0);
+        rightBackMotor.setPower(0);
+    }
 }
 

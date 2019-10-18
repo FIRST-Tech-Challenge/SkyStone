@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 @Autonomous
 
-public class Octo358MecanumAuto_StrafeTest extends Octo358MecanumAutoCentral {
+public class MecanumAuto_StrafeTest extends MecanumAutoCentral {
 
     private final double POWER = 0.3;
 

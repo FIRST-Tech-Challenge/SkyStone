@@ -6,7 +6,7 @@ import static java.lang.Math.sqrt;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-abstract public class Octo358MecanumAutoCentral extends LinearOpMode {
+abstract class MecanumAutoCentral extends LinearOpMode {
 
     private static final double WHEEL_DIAMETER = (double) 4;
     private static final double DRIVE_TRAIN_LENGTH = 11.5;

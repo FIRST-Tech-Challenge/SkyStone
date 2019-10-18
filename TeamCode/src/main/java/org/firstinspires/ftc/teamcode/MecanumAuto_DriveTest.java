@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 @Autonomous
 
-public class Octo358MecanumAuto_RotateTest extends Octo358MecanumAutoCentral {
+public class MecanumAuto_DriveTest extends MecanumAutoCentral {
 
     private final double POWER = 0.3;
 
@@ -33,7 +33,7 @@ public class Octo358MecanumAuto_RotateTest extends Octo358MecanumAutoCentral {
 
         waitForStart();
 
-        rotate(POWER, 360);
+        drive(POWER, 12);
 
     }
 

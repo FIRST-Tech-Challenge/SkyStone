@@ -41,7 +41,7 @@ public class MM_BuildingZone extends LinearOpMode {
         robot.driveForwardDistance(12.0, speed, this);
 
         // if parking close to center, move forward more
-        if (parkingPosition == ParkingPosition.Close {
+        if (parkingPosition == ParkingPosition.Close) {
             robot.driveForwardDistance(12.0, speed, this);
         }
     }

@@ -8,9 +8,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 
-@Autonomous(name="Square Driving Test", group="Exercises")
+@Autonomous(name="CoolerCameraTricksOpMode", group="Exercises")
 
-public class SquareDrivingTestAutoOpMode extends LinearOpMode {
+public class CoolerCameraTricksOpMode extends LinearOpMode {
 
     FourWheelsDriveBot robot = new FourWheelsDriveBot(this);
 
@@ -20,10 +20,9 @@ public class SquareDrivingTestAutoOpMode extends LinearOpMode {
 
         waitForStart();
 
-        robot.driveStraightByDistance( robot.DIRECTION_FORWARD, 200);
-        robot.driveStraightByDistance( robot.DIRECTION_LEFT, 200);
-        robot.driveStraightByDistance( robot.DIRECTION_BACKWARD, 200);
-        robot.driveStraightByDistance( robot.DIRECTION_RIGHT, 200);
+        robot.driveStraightByDistance( robot.DIRECTION_RIGHT, 500);
+
+        robot.driveUntilSeeSkystone(robot.DIRECTION_FORWARD, -0.3);
     }
 
 }

@@ -44,5 +44,11 @@ public class MM_BuildingZone extends LinearOpMode {
         if (parkingPosition == ParkingPosition.Close) {
             robot.driveForwardDistance(12.0, speed, this);
         }
+
+        // turn towards skybridge
+        robot.turnRight(-speed, 1475);
+
+        // park under skybridge
+        robot.driveForwardDistance(45.0, speed, this);
     }
 }

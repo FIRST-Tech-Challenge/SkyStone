@@ -9,13 +9,14 @@ import org.firstinspires.ftc.teamcode.All.HardwareMap;
 @Autonomous(name="Test Encoders", group="Test")       //Dashboard: https://192.168.49.1:8080/dash
 public class TestWheels extends LinearOpMode {
     private static double power = 0.5;
+    private static boolean blocked = false;
 
     @Override
     public void runOpMode(){
         HardwareMap map = new HardwareMap(hardwareMap);
 
         HardwareMap.track.resetEncoders();
-        HardwareMap.track.encoders(true,25,25);
+        HardwareMap.track.encoders(true,15,0);
 
         telemetry.addData("STATUS", "Ready for START!");
         telemetry.update();
@@ -23,10 +24,20 @@ public class TestWheels extends LinearOpMode {
         waitForStart();
 
         while(opModeIsActive()){
-            if(gamepad1.y && power < 1)
+            if(gamepad1.y && power < 1 && !blocked) {
                 power += 0.1;
-            if(gamepad1.a && power > 0.1)
+                power = Math.round(power * 10.0) / 10.0;
+                blocked = true;
+            }
+            if(gamepad1.a && power > 0.1 && !blocked) {
                 power -= 0.1;
+                power = Math.round(power * 10.0) / 10.0;
+                blocked = true;
+            }
+            if(!gamepad1.y && !gamepad1.a)
+                blocked = false;
+            if(gamepad1.b)
+                HardwareMap.track.resetEncoders();
 
             if(power < 0.1)
                 power = 0.1;
@@ -68,11 +79,12 @@ public class TestWheels extends LinearOpMode {
             telemetry.addData("TrackingTime:",HardwareMap.track.getElapsedTime().get(0) + ", " +
                     HardwareMap.track.getElapsedTime().get(1));
 
+            telemetry.addData("","-------------------");
             telemetry.addData("Formula", HardwareMap.track.getEncoderDebug().get(0));
             telemetry.addData("LeftDebug", HardwareMap.track.getEncoderDebug().get(1));
             telemetry.addData("RightDebug", HardwareMap.track.getEncoderDebug().get(2));
             telemetry.addData("SidewaysDebug", HardwareMap.track.getEncoderDebug().get(3));
-            
+
             telemetry.update();
         }
     }

@@ -48,9 +48,6 @@ public class HardwareMap {
     //--------------------------------==================\/\/Track Encoders\/\/==================---------------------------------
 
     public static class track extends Thread {  //Encoders: Min = 0.0, Max = 3.3
-        static double numOfLeftLoops = 0;
-        static double numOfRightLoops = 0;
-        static double numOfSideLoops = 0;
         static double totalLeft = 0;
         static double totalRight = 0;
         static double totalSide = 0;
@@ -59,124 +56,15 @@ public class HardwareMap {
         static double elapsedTime = -1;
         static int delay = 25;
         static int readDelay = 15;
+        static double leftDelta = 0;
+        static double rightDelta = 0;
+        static double sideDelta = 0;
 
-        /*private static void beginTracking() {        //Left & Side--Encoders: Forward = 3 - 2 - 1 - 0 - 3 - 2..., Backward = 0 - 1 - 2 - 3 - 0 - 1...
-            Thread left = new Thread() {      //Right--Encoders: Forward = 0 - 1 - 2 - 3 - 0 - 1..., Backward = 3 - 2 - 1 - 0 - 3 - 2...
+        private static void beginTracking() {        //Right, Left, and Side--Encoders: Forward = 0 - 1 - 2 - 3 - 0 - 1..., Backward = 3 - 2 - 1 - 0 - 3 - 2...
+            Thread update = new Thread() {
                 public void run() {
                     if (tracking && startTime == -1)
-                        startTime = System.nanoTime();
-                    while (tracking) {
-                        double left = leftForward.getVoltage();
-
-                        if (left < 1) {
-                            try {
-                                Thread.sleep(readDelay);
-                            } catch (Exception e) {
-                            }
-
-                            double leftDelta = Math.abs(left - leftForward.getVoltage());
-
-                            if (leftDelta >= 2.7)
-                                numOfLeftLoops += 1;
-                        } else if (left > 2.3) {
-                            try {
-                                Thread.sleep(readDelay);
-                            } catch (Exception e) {
-                            }
-
-                            double leftDelta = Math.abs(left - leftForward.getVoltage());
-
-                            if (leftDelta >= 2.7)
-                                numOfLeftLoops -= 1;
-                        }
-
-                        try {
-                            Thread.sleep(delay);
-                        } catch (Exception e) {
-                        }
-                    }
-                    elapsedTime = System.nanoTime() - startTime;
-                }
-            };
-
-            Thread right = new Thread() {      //Right--Encoders: Forward = 0 - 1 - 2 - 3 - 0 - 1..., Backward = 3 - 2 - 1 - 0 - 3 - 2...
-                public void run() {
-                    while (tracking) {
-                        double right = rightForward.getVoltage();
-
-                        if (right > 1) {
-                            try {
-                                Thread.sleep(readDelay);
-                            } catch (Exception e) {
-                            }
-
-                            double rightDelta = Math.abs(right - rightForward.getVoltage());
-
-                            if (rightDelta >= 2.3)
-                                numOfRightLoops -= 1;
-                        } else if (right < 0.5) {
-                            try {
-                                Thread.sleep(readDelay);
-                            } catch (Exception e) {
-                            }
-
-                            double rightDelta = Math.abs(right - rightForward.getVoltage());
-
-                            if (rightDelta >= 2.7)
-                                numOfRightLoops += 1;
-                        }
-
-                        try {
-                            Thread.sleep(delay);
-                        } catch (Exception e) {
-                        }
-                    }
-                }
-            };
-
-            Thread side = new Thread() {      //Right--Encoders: Forward = 0 - 1 - 2 - 3 - 0 - 1..., Backward = 3 - 2 - 1 - 0 - 3 - 2...
-                public void run() {
-                    while (tracking) {
-                        double side = sideways.getVoltage();
-
-                        if (side < 1) {
-                            try {
-                                Thread.sleep(readDelay);
-                            } catch (Exception e) {
-                            }
-
-                            double sideDelta = Math.abs(side - sideways.getVoltage());
-
-                            if (sideDelta >= 2.7)
-                                numOfSideLoops += 1;
-                        } else if (side > 2.3) {
-                            try {
-                                Thread.sleep(readDelay);
-                            } catch (Exception e) {
-                            }
-
-                            double sideDelta = Math.abs(side - sideways.getVoltage());
-
-                            if (sideDelta >= 2.7)
-                                numOfSideLoops -= 1;
-                        }
-
-                        try {
-                            Thread.sleep(delay);
-                        } catch (Exception e) {
-                        }
-                    }
-                }
-            };
-            left.start();
-            right.start();
-            side.start();
-        }*/
-        private static void beginTracking() {        //Left & Side--Encoders: Forward = 3 - 2 - 1 - 0 - 3 - 2..., Backward = 0 - 1 - 2 - 3 - 0 - 1...
-            Thread update = new Thread() {      //Right--Encoders: Forward = 0 - 1 - 2 - 3 - 0 - 1..., Backward = 3 - 2 - 1 - 0 - 3 - 2...
-                public void run() {
-                    if (tracking && startTime == -1)
-                        startTime = System.nanoTime();
+                        startTime = System.currentTimeMillis();
                     while (tracking) {
                         double leftInit = leftForward.getVoltage();
                         double rightInit = rightForward.getVoltage();
@@ -191,29 +79,29 @@ public class HardwareMap {
                         double rightFinal = rightForward.getVoltage();
                         double sideFinal = sideways.getVoltage();
 
-                        double leftDelta = leftFinal - leftInit;
-                        double rightDelta = rightFinal - rightInit;
-                        double sideDelta = sideFinal - sideInit;
+                        leftDelta = leftFinal - leftInit;
+                        rightDelta = rightFinal - rightInit;
+                        sideDelta = sideFinal - sideInit;
 
-                        if(leftDelta >= 2.7){
-                            totalLeft += leftInit + (3.3 - leftFinal);
-                        } else if(leftDelta <= -2.7){
-                            totalLeft -= (3.3 - leftInit) + leftFinal;
+                        if (leftDelta >= 2.3) {
+                            totalLeft -= leftInit + (3.3 - leftFinal);
+                        } else if (leftDelta <= -2.3) {
+                            totalLeft += (3.3 - leftInit) + leftFinal;
                         } else {
                             totalLeft += leftDelta;
                         }
 
-                        if(rightDelta >= 2.7){
-                            totalRight -= (3.3 - rightInit) + rightFinal;
-                        } else if(rightDelta <= -2.7){
-                            totalRight += rightInit + (3.3 - rightFinal);
+                        if (rightDelta >= 2.3) {
+                            totalRight -= rightInit + (3.3 - rightFinal);
+                        } else if (rightDelta <= -2.3) {
+                            totalRight += (3.3 - rightInit) + rightFinal;
                         } else {
                             totalRight += rightDelta;
                         }
 
-                        if(sideDelta >= 2.7){
+                        if (sideDelta >= 2.3) {
                             totalSide += sideInit + (3.3 - sideFinal);
-                        } else if(sideDelta <= -2.7){
+                        } else if (sideDelta <= -2.3) {
                             totalSide -= (3.3 - sideInit) + sideFinal;
                         } else {
                             totalSide += sideDelta;
@@ -224,7 +112,7 @@ public class HardwareMap {
                         } catch (Exception e) {
                         }
                     }
-                    elapsedTime = System.nanoTime() - startTime;
+                    elapsedTime = System.currentTimeMillis() - startTime;
                 }
             };
             update.start();
@@ -232,106 +120,46 @@ public class HardwareMap {
 
         public static ArrayList<Double> getEncoderTicks() {  //Returns ArrayList [leftTicks, rightTicks, sideTicks] in cm
             ArrayList<Double> totalTicks = new ArrayList<>();
-            double addLeftVal = 3.3;
-            double addRightVal = 3.3;
-            double addSideVal = 3.3;
-            double lVal = numOfLeftLoops;
-            double rVal = numOfRightLoops;
-            double sVal = numOfSideLoops;
 
-            if (numOfLeftLoops < 0) {
-                addLeftVal = 0;
-                lVal += 1;
-            }
-            if (numOfRightLoops < 0) {
-                addRightVal = 0;
-                rVal += 1;
-            }
-            if (numOfSideLoops < 0) {
-                addSideVal = 0;
-                sVal += 1;
-            }
-
-            //totalTicks.add((addLeftVal - leftForward.getVoltage() + 3.3 * lVal) /*/
-            //        DriveConstant.ENCODER_COUNTS_PER_REVOLUTION * DriveConstant.LEFT_GEAR_RATIO *
-            //       (2 * Math.PI * DriveConstant.ODOMETRY_RAD) * (DriveConstant.ODOMETRY_RAD / DriveConstant.MECANUM_RAD)*/);
-            //totalTicks.add((addRightVal - rightForward.getVoltage() + 3.3 * rVal) /*/
-            //        DriveConstant.ENCODER_COUNTS_PER_REVOLUTION * DriveConstant.RIGHT_GEAR_RATIO *
-            //        (2 * Math.PI * DriveConstant.ODOMETRY_RAD) * (DriveConstant.ODOMETRY_RAD / DriveConstant.MECANUM_RAD)*/);
-            //totalTicks.add((addSideVal - sideways.getVoltage() + 3.3 * sVal) /*/
-            //        DriveConstant.ENCODER_COUNTS_PER_REVOLUTION * DriveConstant.SIDE_GEAR_RATIO *
-             //       (2 * Math.PI * DriveConstant.ODOMETRY_RAD) * (DriveConstant.ODOMETRY_RAD / DriveConstant.MECANUM_RAD)*/);
-            totalTicks.add(totalLeft /*/
-                    DriveConstant.ENCODER_COUNTS_PER_REVOLUTION * DriveConstant.LEFT_GEAR_RATIO *
-                    (2 * Math.PI * DriveConstant.ODOMETRY_RAD) * (DriveConstant.ODOMETRY_RAD / DriveConstant.MECANUM_RAD)*/);
-            totalTicks.add(totalRight /*/
-                    DriveConstant.ENCODER_COUNTS_PER_REVOLUTION * DriveConstant.RIGHT_GEAR_RATIO *
-                    (2 * Math.PI * DriveConstant.ODOMETRY_RAD) * (DriveConstant.ODOMETRY_RAD / DriveConstant.MECANUM_RAD)*/);
-            totalTicks.add(totalSide /*/
-                    DriveConstant.ENCODER_COUNTS_PER_REVOLUTION * DriveConstant.SIDE_GEAR_RATIO *
-                    (2 * Math.PI * DriveConstant.ODOMETRY_RAD) * (DriveConstant.ODOMETRY_RAD / DriveConstant.MECANUM_RAD)*/);
+            totalTicks.add(totalLeft /
+                    DriveConstant.ENCODER_COUNTS_PER_REVOLUTION * DriveConstant.LEFT_GEAR_RATIO /**
+                    (2 * Math.PI * DriveConstant.ODOMETRY_RAD)*/ * (DriveConstant.ODOMETRY_RAD / DriveConstant.MECANUM_RAD));
+            totalTicks.add(totalRight /
+                    DriveConstant.ENCODER_COUNTS_PER_REVOLUTION * DriveConstant.RIGHT_GEAR_RATIO /**
+                    (2 * Math.PI * DriveConstant.ODOMETRY_RAD)*/ * (DriveConstant.ODOMETRY_RAD / DriveConstant.MECANUM_RAD));
+            totalTicks.add(totalSide /
+                    DriveConstant.ENCODER_COUNTS_PER_REVOLUTION * DriveConstant.SIDE_GEAR_RATIO /**
+                    (2 * Math.PI * DriveConstant.ODOMETRY_RAD)*/ * (DriveConstant.ODOMETRY_RAD / DriveConstant.MECANUM_RAD));
             return totalTicks;
         }
 
         public static ArrayList<String> getEncoderDebug() {  //Debugs the entire formula for calculating encoder ticks
             ArrayList<String> debug = new ArrayList<>();
-            double addLeftVal = 3.3;
-            double addRightVal = 3.3;
-            double addSideVal = 3.3;
-
-            double lVal = numOfLeftLoops;
-            double rVal = numOfRightLoops;
-            double sVal = numOfSideLoops;
-
-            if (numOfLeftLoops + 1 < 0) {
-                addLeftVal = 0;
-                lVal += 1;
-            }
-            if (numOfRightLoops + 1 < 0) {
-                addRightVal = 0;
-                rVal += 1;
-            }
-            if (numOfSideLoops + 1 < 0) {
-                addSideVal = 0;
-                sVal += 1;
-            }
 
             debug.add(/*"(ignoreLoopsAdditionalValue - getVoltage + 3.3 * numOfLoops)*/ "totalLeft / VOLTS_PER_REVOLUTION * GEAR_RATIO * " +
                     "(2 * PI * ODOMETRY_RADIUS) * (ODOMETRY_RADIUS / MECANUM_RADIUS)");
-            debug.add("" + totalLeft /*+ " / " +
-                    DriveConstant.ENCODER_COUNTS_PER_REVOLUTION + " * " + DriveConstant.LEFT_GEAR_RATIO + " * " +
-                    "(" + 2 + " * " + Math.PI + " * " + DriveConstant.ODOMETRY_RAD + ")" + " * " +
-                    "(" + DriveConstant.ODOMETRY_RAD + " / " + DriveConstant.MECANUM_RAD + ")"*/);
-            debug.add("" + totalRight /*+ " / " +
-                    DriveConstant.ENCODER_COUNTS_PER_REVOLUTION + " * " + DriveConstant.RIGHT_GEAR_RATIO + " * " +
-                    "(" + 2 + " * " + Math.PI + " * " + DriveConstant.ODOMETRY_RAD + ")" + " * " +
-                    "(" + DriveConstant.ODOMETRY_RAD + " / " + DriveConstant.MECANUM_RAD + ")"*/);
-            debug.add("" + totalSide /*+ " / " +
-                    DriveConstant.ENCODER_COUNTS_PER_REVOLUTION + " * " + DriveConstant.SIDE_GEAR_RATIO + " * " +
-                    "(" + 2 + " * " + Math.PI + " * " + DriveConstant.ODOMETRY_RAD + ")" + " * " +
-                    "(" + DriveConstant.ODOMETRY_RAD + " / " + DriveConstant.MECANUM_RAD + ")"*/);
-            //debug.add("(" + addLeftVal + " - " + leftForward.getVoltage() + " + " + 3.3 + " * " + lVal + ")" /*+ " / " +
-            //        DriveConstant.ENCODER_COUNTS_PER_REVOLUTION + " * " + DriveConstant.LEFT_GEAR_RATIO + " * " +
-            //        "(" + 2 + " * " + Math.PI + " * " + DriveConstant.ODOMETRY_RAD + ")" + " * " +
-            //        "(" + DriveConstant.ODOMETRY_RAD + " / " + DriveConstant.MECANUM_RAD + ")"*/);
-            //debug.add("(" + addRightVal + " - " + rightForward.getVoltage() + " + " + 3.3 + " * " + rVal + ")" /*+ " / " +
-            //        DriveConstant.ENCODER_COUNTS_PER_REVOLUTION + " * " + DriveConstant.RIGHT_GEAR_RATIO + " * " +
-            //        "(" + 2 + " * " + Math.PI + " * " + DriveConstant.ODOMETRY_RAD + ")" + " * " +
-            //        "(" + DriveConstant.ODOMETRY_RAD + " / " + DriveConstant.MECANUM_RAD + ")"*/);
-            //debug.add("(" + addSideVal + " - " + sideways.getVoltage() + " + " + 3.3 + " * " + sVal + ")" /*+ " / " +
-            //        DriveConstant.ENCODER_COUNTS_PER_REVOLUTION + " * " + DriveConstant.SIDE_GEAR_RATIO + " * " +
-            //        "(" + 2 + " * " + Math.PI + " * " + DriveConstant.ODOMETRY_RAD + ")" + " * " +
-            //        "(" + DriveConstant.ODOMETRY_RAD + " / " + DriveConstant.MECANUM_RAD + ")"*/);
+            debug.add("" + totalLeft + " / " +
+                    DriveConstant.ENCODER_COUNTS_PER_REVOLUTION + " * " + DriveConstant.LEFT_GEAR_RATIO /*+ " * " +
+                    "(" + 2 + " * " + Math.PI + " * " + DriveConstant.ODOMETRY_RAD + ")"*/ + " * " +
+                    "(" + DriveConstant.ODOMETRY_RAD + " / " + DriveConstant.MECANUM_RAD + ")");
+            debug.add("" + totalRight + " / " +
+                    DriveConstant.ENCODER_COUNTS_PER_REVOLUTION + " * " + DriveConstant.RIGHT_GEAR_RATIO /*+ " * " +
+                    "(" + 2 + " * " + Math.PI + " * " + DriveConstant.ODOMETRY_RAD + ")"*/ + " * " +
+                    "(" + DriveConstant.ODOMETRY_RAD + " / " + DriveConstant.MECANUM_RAD + ")");
+            debug.add("" + totalSide + " / " +
+                    DriveConstant.ENCODER_COUNTS_PER_REVOLUTION + " * " + DriveConstant.SIDE_GEAR_RATIO /*+ " * " +
+                    "(" + 2 + " * " + Math.PI + " * " + DriveConstant.ODOMETRY_RAD + ")"*/ + " * " +
+                    "(" + DriveConstant.ODOMETRY_RAD + " / " + DriveConstant.MECANUM_RAD + ")");
             return debug;
         }
 
         public static ArrayList<String> getElapsedTime() {   //Returns [elapsedTime, CurrentlyTracking]
             ArrayList<String> time = new ArrayList<>();
             if (tracking) {
-                time.add(String.valueOf(System.nanoTime() - startTime));
+                time.add(Math.round((System.currentTimeMillis() - startTime) / 1000.0 * 100.0) / 100.0 + "s");
                 time.add("Currently Tracking: YES");
             } else {
-                time.add(String.valueOf(elapsedTime));
+                time.add(Math.round(elapsedTime / 1000.0 * 100.0) / 100.0 + "s");
                 time.add("Currently Tracking: NO");
             }
             return time;
@@ -341,9 +169,9 @@ public class HardwareMap {
             leftForward.resetDeviceConfigurationForOpMode();
             rightForward.resetDeviceConfigurationForOpMode();
             sideways.resetDeviceConfigurationForOpMode();
-            numOfLeftLoops = 0;
-            numOfRightLoops = 0;
-            numOfSideLoops = 0;
+            totalLeft = 0;
+            totalSide = 0;
+            totalRight = 0;
             startTime = -1;
         }
 
@@ -355,17 +183,10 @@ public class HardwareMap {
             else
                 readDelay = 15;
 
-            //if (readingDelay >= 0 && readingDelay < 5)
-            //    readDelay = 5;
-
-
             if (loopDelay >= 0)
                 delay = loopDelay;
             else
                 delay = 25;
-
-            //if (loopDelay >= 0 && loopDelay < 5)
-            //    delay = 5;
 
             if (track)
                 beginTracking();

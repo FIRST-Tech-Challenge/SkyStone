@@ -67,7 +67,7 @@ public class ExpansionHub extends LynxController {
             channel = LynxGetADCCommand.Channel.MOTOR3_CURRENT;
         }
         if (channel == null) {
-
+            throw new IllegalArgumentException("No motor on port " + port + " exists on this hub.");
         }
         LynxGetADCCommand command = new LynxGetADCCommand(lynxModule, channel, LynxGetADCCommand.Mode.ENGINEERING);
         try {

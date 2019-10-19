@@ -49,7 +49,7 @@ public class onlyopencv extends LinearOpMode {
     public static double valLeft = -1;
     public static double valRight = -1;
 
-    public static float[] midPos = {1f/2f, 5f/8f};
+    public static float[] midPos = {1f/2f, 5f/8f};//0 = col, 1 = row
     public static float[] leftPos = {1f/4f, 5f/8f};
     public static float[] rightPos = {3f/4f, 5f/8f};
 
@@ -165,9 +165,7 @@ public class onlyopencv extends LinearOpMode {
         {
 
             //telemetry.addData("Num contours found", stageSwitchingPipeline.getNumContoursFound());
-            telemetry.addData("Middle", valMid);
-            telemetry.addData("Left", valLeft);
-            telemetry.addData("Right", valRight);
+            telemetry.addData("Values", valLeft+";"+valMid+";"+valRight);
             telemetry.addData("Rows", rows);
             telemetry.addData("Cols", cols);
 
@@ -178,28 +176,24 @@ public class onlyopencv extends LinearOpMode {
 //            moveDistance(0.4, 700);
 
         }
-
-
     }
 
-    //detection, get pipeline data to opmode
+    //detection pipeline
     static class StageSwitchingPipeline extends OpenCvPipeline
     {
         Mat yCbCrChan2Mat = new Mat();
         Mat thresholdMat = new Mat();
         Mat all = new Mat();
         List<MatOfPoint> contoursList = new ArrayList<>();
-        int numContoursFound;
 
         enum Stage
-        {
-            YCbCr_CHAN2,//color difference. greyscale
-            THRESHOLD,//b&w
+        {//color difference. greyscale
             detection,//includes outlines
+            THRESHOLD,//b&w
             RAW_IMAGE,//displays raw view
         }
 
-        private Stage stageToRenderToViewport = Stage.YCbCr_CHAN2;
+        private Stage stageToRenderToViewport = Stage.RAW_IMAGE;
         private Stage[] stages = Stage.values();
 
         @Override
@@ -245,20 +239,20 @@ public class onlyopencv extends LinearOpMode {
 
             //outline/contour
             Imgproc.findContours(thresholdMat, contoursList, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
-            numContoursFound = contoursList.size();//sets size according to number of contours/outlines
             yCbCrChan2Mat.copyTo(all);//copies mat object
             //Imgproc.drawContours(all, contoursList, -1, new Scalar(255, 0, 0), 3, 8);//draws blue contours
 
 
             //get values from frame
-            double[] pixMid = thresholdMat.get((int)(input.rows()* midPos[0]), (int)(input.cols()* midPos[1]));//gets value at circle
+            double[] pixMid = thresholdMat.get((int)(input.rows()* midPos[1]), (int)(input.cols()* midPos[0]));//gets value at circle
             valMid = pixMid[0];
 
-            double[] pixLeft = thresholdMat.get((int)(input.rows()* leftPos[0]), (int)(input.cols()* leftPos[1]));//gets value at circle
+            double[] pixLeft = thresholdMat.get((int)(input.rows()* leftPos[1]), (int)(input.cols()* leftPos[0]));//gets value at circle
             valLeft = pixLeft[0];
 
-            double[] pixRight = thresholdMat.get((int)(input.rows()* rightPos[0]), (int)(input.cols()* rightPos[1]));//gets value at circle
+            double[] pixRight = thresholdMat.get((int)(input.rows()* rightPos[1]), (int)(input.cols()* rightPos[0]));//gets value at circle
             valRight = pixRight[0];
+
 
 
             //create three points
@@ -287,6 +281,8 @@ public class onlyopencv extends LinearOpMode {
                 // Get bounding rect of contour
                 Rect rect = Imgproc.boundingRect(points);
 
+
+                //if the contour is in specified location AND one of the three points' value = 0, 0 means skystone
                 if((rect.contains(point1) || rect.contains(point2) || rect.contains(point3)) && (valMid == 0 || valLeft == 0 || valRight == 0)) {
                     Imgproc.rectangle(all,
                             new Point(rect.x, rect.y),
@@ -297,7 +293,8 @@ public class onlyopencv extends LinearOpMode {
 
             }
 
-            Imgproc.rectangle(
+            //draw 3 rectangles
+            Imgproc.rectangle(//1-3
                     all,
                     new Point(
                             input.cols()/8,
@@ -306,7 +303,7 @@ public class onlyopencv extends LinearOpMode {
                             input.cols()*(2.9f/8f),
                             input.rows()*(5.5f/8f)),
                     new Scalar(0, 255, 0), 3);
-            Imgproc.rectangle(
+            Imgproc.rectangle(//3-5
                     all,
                     new Point(
                             input.cols()*(3.1/8),
@@ -315,7 +312,7 @@ public class onlyopencv extends LinearOpMode {
                             input.cols()*(4.9f/8f),
                             input.rows()*(5.5f/8f)),
                     new Scalar(0, 255, 0), 3);
-            Imgproc.rectangle(
+            Imgproc.rectangle(//5-7
                     all,
                     new Point(
                             input.cols()*(5.1/8),
@@ -327,11 +324,6 @@ public class onlyopencv extends LinearOpMode {
 
             switch (stageToRenderToViewport)
             {
-                case YCbCr_CHAN2:
-                {
-                    return yCbCrChan2Mat;
-                }
-
                 case THRESHOLD:
                 {
                     return thresholdMat;
@@ -354,9 +346,5 @@ public class onlyopencv extends LinearOpMode {
             }
         }
 
-        public int getNumContoursFound()
-        {
-            return numContoursFound;
-        }
     }
 }

@@ -219,6 +219,7 @@ public class TeleOpMecanum extends OpMode {
 
             //Outtake
             outtake.outTake_TeleOp();
+
             telemetry.update();
     }
 }

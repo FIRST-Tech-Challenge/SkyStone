@@ -37,8 +37,12 @@ public class MM_BuildingZone extends LinearOpMode {
         // strafe out from behind the foundation
         robot.strafeTime(-0.25, 3000);
 
+        // drive forward to turn and park under the skybridge
+        robot.driveForwardDistance(12.0, speed, this);
+
+        // if parking close to center, move forward more
         if (parkingPosition == ParkingPosition.Close {
-            
+            robot.driveForwardDistance(12.0, speed, this);
         }
     }
 }

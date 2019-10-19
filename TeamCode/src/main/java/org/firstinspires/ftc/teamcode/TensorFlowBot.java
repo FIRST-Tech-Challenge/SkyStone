@@ -156,12 +156,17 @@ public class TensorFlowBot extends FourWheelsDriveBot {
         rightFront.setPower(0);
         leftRear.setPower(0);
         rightRear.setPower(0);
-        opMode.sleep(30000);
+        //opMode.sleep(30000);
         print(String.format("Arrive @ leftFront: %7d, rightFront:%7d, leftRear:%7d, rightRear:%7d",
                 leftFront.getCurrentPosition(),
                 rightFront.getCurrentPosition(),
                 leftRear.getCurrentPosition(),
                 rightRear.getCurrentPosition()));
+    }
+
+    @Override
+    public void print(String message) {
+
     }
 
     protected Boolean isSkystoneDetected(){
@@ -204,7 +209,17 @@ public class TensorFlowBot extends FourWheelsDriveBot {
                 opMode.telemetry.update();
                 return found;
             }
+            else{
+                opMode.telemetry.addData("Tfod", "No objects found");
+                opMode.telemetry.update();
+                return false;
+            }
         }
-        return true;
+        else{
+            opMode.telemetry.addData("Tfod", "not ready");
+            opMode.telemetry.update();
+            return true;
+
+        }
     }
 }

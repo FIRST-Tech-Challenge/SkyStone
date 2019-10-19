@@ -45,20 +45,18 @@ public class onlyopencv1 extends LinearOpMode {
 //    private Servo   servo        = null;
     private final int encoderTicks = 1120;
     private final double wheelDiameter = 3.85827;//in inches
-    public static double valMid = -1;
-    public static double valLeft = -1;
-    public static double valRight = -1;
+    public static int valMid = -1;
+    public static int valLeft = -1;
+    public static int valRight = -1;
 
     public static float[] midPos = {1f/2f, 5f/8f};//0 = col, 1 = row
     public static float[] leftPos = {1f/4f, 5f/8f};
     public static float[] rightPos = {3f/4f, 5f/8f};
 
-    public static double rows = 0;
-    public static double cols = 0;
-
+    public final int rows = 640;
+    public final int cols = 480;
 
     OpenCvCamera phoneCam;
-    StageSwitchingPipeline stageSwitchingPipeline;
 
     //x, y = distance in x,y direction, angle = angle for rotation, power = motor power/speed
     //x must equal y if both are nonzero.
@@ -157,7 +155,9 @@ public class onlyopencv1 extends LinearOpMode {
         phoneCam.openCameraDevice();//open camera
         //phoneCam.setPipeline(new SamplePipeline());//add rectangle
         phoneCam.setPipeline(new StageSwitchingPipeline());//different stages
-        phoneCam.startStreaming(640, 480, OpenCvCameraRotation.UPRIGHT);//display on RC
+        phoneCam.startStreaming(rows, cols, OpenCvCameraRotation.UPRIGHT);//display on RC
+        //width, height
+        //width = height in this case, because camera is in portrait mode.
 
         waitForStart();
         runtime.reset();
@@ -166,8 +166,8 @@ public class onlyopencv1 extends LinearOpMode {
 
             //telemetry.addData("Num contours found", stageSwitchingPipeline.getNumContoursFound());
             telemetry.addData("Values", valLeft+";"+valMid+";"+valRight);
-            telemetry.addData("Rows", rows);
-            telemetry.addData("Cols", cols);
+            telemetry.addData("Height", rows);
+            telemetry.addData("Width", cols);
 
             telemetry.update();
             sleep(100);
@@ -220,9 +220,6 @@ public class onlyopencv1 extends LinearOpMode {
         public Mat processFrame(Mat input)
         {
             contoursList.clear();
-            rows = input.rows();
-            cols = input.cols();
-
             /*
              * This pipeline finds the contours of yellow blobs such as the Gold Mineral
              * from the Rover Ruckus game.
@@ -245,13 +242,13 @@ public class onlyopencv1 extends LinearOpMode {
 
             //get values from frame
             double[] pixMid = thresholdMat.get((int)(input.rows()* midPos[1]), (int)(input.cols()* midPos[0]));//gets value at circle
-            valMid = pixMid[0];
+            valMid = (int)pixMid[0];
 
             double[] pixLeft = thresholdMat.get((int)(input.rows()* leftPos[1]), (int)(input.cols()* leftPos[0]));//gets value at circle
-            valLeft = pixLeft[0];
+            valLeft = (int)pixLeft[0];
 
             double[] pixRight = thresholdMat.get((int)(input.rows()* rightPos[1]), (int)(input.cols()* rightPos[0]));//gets value at circle
-            valRight = pixRight[0];
+            valRight = (int)pixRight[0];
 
 
 

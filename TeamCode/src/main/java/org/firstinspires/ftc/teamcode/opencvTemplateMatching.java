@@ -33,9 +33,9 @@ import java.util.List;
  * monitor: 640 x 480
  *
  */
-@Autonomous(name= "onlyopencv2", group="Sky autonomous")
+@Autonomous(name= "opencvTemplateMatching", group="Sky autonomous")
 //@Disabled
-public class onlyopencv2 extends LinearOpMode {
+public class opencvTemplateMatching extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     //    private DcMotor backLeft     = null; //rear left
@@ -165,8 +165,6 @@ public class onlyopencv2 extends LinearOpMode {
         while (opModeIsActive())
         {
 
-            //telemetry.addData("Num contours found", stageSwitchingPipeline.getNumContoursFound());
-            telemetry.addData("Values", valLeft+";"+valMid+";"+valRight);
             telemetry.addData("Rows", rows);
             telemetry.addData("Cols", cols);
 
@@ -182,11 +180,6 @@ public class onlyopencv2 extends LinearOpMode {
     //detection pipeline
     static class StageSwitchingPipeline extends OpenCvPipeline
     {
-        Mat yCbCrChan2Mat = new Mat();
-        Mat thresholdMat = new Mat();
-        Mat all = new Mat();
-        List<MatOfPoint> contoursList = new ArrayList<>();
-
         enum Stage
         {//color difference. greyscale
             RAW_IMAGE,//displays raw view
@@ -195,6 +188,8 @@ public class onlyopencv2 extends LinearOpMode {
 
         private Stage stageToRenderToViewport = Stage.RAW_IMAGE;
         private Stage[] stages = Stage.values();
+
+
 
         @Override
         public void onViewportTapped()
@@ -219,7 +214,6 @@ public class onlyopencv2 extends LinearOpMode {
         @Override
         public Mat processFrame(Mat input)
         {
-            contoursList.clear();
             rows = input.rows();
             cols = input.cols();
 
@@ -231,29 +225,28 @@ public class onlyopencv2 extends LinearOpMode {
             //color diff cb.
             //lower cb = more blue = skystone = white
             //higher cb = less blue = yellow stone = grey
-            Imgproc.cvtColor(input, yCbCrChan2Mat, Imgproc.COLOR_RGB2YCrCb);//converts rgb to ycrcb
 
 
             System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
             Mat template;
-            String filePath="C:\\Users\\mesutpiskin\\Desktop\\Object Detection\\Template Matching\\Sample Image\\";
+            String filePath="\"/Internal Storage/FIRST/\"";
+
             //Load image file
-            template=Imgcodecs.imread(filePath+"pic.png");
+            template=Imgcodecs.imread(filePath+"skystone.png");
 
-            Mat outputImage=new Mat();
-            int machMethod=Imgproc.TM_CCOEFF;
-            //Template matching method
-            Imgproc.matchTemplate(input, template, outputImage, machMethod);
-
-
-            Core.MinMaxLocResult mmr = Core.minMaxLoc(outputImage);
-            Point matchLoc=mmr.maxLoc;
-            //Draw rectangle on result image
-            Imgproc.rectangle(input, matchLoc, new Point(matchLoc.x + template.cols(),
-                    matchLoc.y + template.rows()), new Scalar(255, 255, 255));
-
-            Imgcodecs.imwrite(filePath+"pic.png", input);
-            System.out.println("Complated.");
+//            Mat outputImage=new Mat();
+//            int machMethod=Imgproc.TM_CCOEFF;
+//            //Template matching method
+//            Imgproc.matchTemplate(input, template, outputImage, machMethod);
+//
+//
+//            Core.MinMaxLocResult mmr = Core.minMaxLoc(outputImage);
+//            Point matchLoc=mmr.maxLoc;
+//            //Draw rectangle on result image
+//            Imgproc.rectangle(input, matchLoc, new Point(matchLoc.x + template.cols(),
+//                    matchLoc.y + template.rows()), new Scalar(255, 255, 255));
+//
+//            Imgcodecs.imwrite(filePath+"pic.png", input);
 
 
 
@@ -262,7 +255,7 @@ public class onlyopencv2 extends LinearOpMode {
 
                 case PROCESSED:
                 {
-                    return all;
+                    return template;
                 }
 
                 case RAW_IMAGE:

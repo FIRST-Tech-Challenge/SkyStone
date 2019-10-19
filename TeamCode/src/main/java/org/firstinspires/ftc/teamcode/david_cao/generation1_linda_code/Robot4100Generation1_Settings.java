@@ -5,8 +5,13 @@ import org.darbots.darbotsftclib.libcore.motortypes.AndyMark3637;
 import org.darbots.darbotsftclib.libcore.templates.motor_related.MotorType;
 
 public class Robot4100Generation1_Settings {
+    //------------Autonomous Settings------------
+    public static final double AUTONOMOUS_MINIMUM_CONFIDENCE = 0.5;
+    public static final double AUTONOMOUS_LENGTH_FOR_EACH_STONE = 20;
+    //------------End of Autonomous Settings------------
+
     //------------TeleOp Settings------------
-    public static final double TELEOP_MAXSPEED = 1.0;
+    public static final double TELEOP_MAXSPEED = 0.6;
     public static final double TELEOP_LINEARSLIDESPEED = 0.5;
     //------------End of TeleOp Settings------------
     //------------Configuration Settings------------
@@ -24,7 +29,7 @@ public class Robot4100Generation1_Settings {
     public static final double LINEARSLIDE_GRAB = 0.88843;
     public static final double LINEARSLIDE_START = 0;
 
-    public static final double INTAKEMOTOR_SPEED = 1.0;
+    public static final double INTAKEMOTOR_SPEED = 0.8;
 
 
     public static final boolean CHASSIS_TIMEOUTENABLE = false;

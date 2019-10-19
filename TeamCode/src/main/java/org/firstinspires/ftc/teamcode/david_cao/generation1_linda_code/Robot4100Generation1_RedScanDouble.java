@@ -1,20 +1,20 @@
 package org.firstinspires.ftc.teamcode.david_cao.generation1_linda_code;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.darbots.darbotsftclib.libcore.OpModes.DarbotsBasicOpMode;
 import org.darbots.darbotsftclib.libcore.calculations.dimentionalcalculation.XYPlaneCalculations;
 import org.darbots.darbotsftclib.libcore.sensors.cameras.RobotOnPhoneCamera;
 import org.darbots.darbotsftclib.libcore.tasks.chassis_tasks.GyroGuidedTurn;
-import org.darbots.darbotsftclib.libcore.templates.RobotCore;
 import org.darbots.darbotsftclib.libcore.templates.other_sensors.RobotCamera;
 import org.darbots.darbotsftclib.season_specific.skystone.tfod_detection.SkyStoneStoneDifferentiation;
 import org.firstinspires.ftc.teamcode.robot_common.Robot4100Common;
 
 import java.util.ArrayList;
 
-@Autonomous(name = "4100Gen1Auto-BlueScanComplex",group="4100")
-public class Robot4100Generation1_BlueScanComplex extends DarbotsBasicOpMode {
+@Autonomous(name = "4100Gen1Auto-RedScanDouble",group="4100")
+public class Robot4100Generation1_RedScanDouble extends DarbotsBasicOpMode {
     private SkyStoneStoneDifferentiation m_SkyStoneDetection;
     private Robot4100Generation1_LindaCore m_RobotCore;
     private float m_OldAng;
@@ -30,7 +30,7 @@ public class Robot4100Generation1_BlueScanComplex extends DarbotsBasicOpMode {
     public void hardwareInitialize() {
         this.m_RobotCore = new Robot4100Generation1_LindaCore(this.hardwareMap);
         RobotCamera Camera = new RobotOnPhoneCamera(this,false, RobotOnPhoneCamera.PhoneCameraDirection.Back, Robot4100Common.VUFORIA_LICENSE);
-        this.m_SkyStoneDetection = new SkyStoneStoneDifferentiation(Camera,this.hardwareMap,true, 0.6);
+        this.m_SkyStoneDetection = new SkyStoneStoneDifferentiation(Camera,this.hardwareMap,true, Robot4100Generation1_Settings.AUTONOMOUS_MINIMUM_CONFIDENCE);
         this.m_SkyStoneDetection.setActivated(true);
     }
 
@@ -71,6 +71,25 @@ public class Robot4100Generation1_BlueScanComplex extends DarbotsBasicOpMode {
         while(this.opModeIsActive() && this.getRobotCore().getChassis().isBusy()){
             this.m_RobotCore.updateStatus();
         }
+        __tryRecognizeStoneOnce();
+        return this.opModeIsActive();
+    }
+
+    public void __tryRecognizeStoneOnce(){
+        if(m_OnRecognition) {
+            ArrayList<SkyStoneStoneDifferentiation.RecognitionResult> recognitionResults = this.m_SkyStoneDetection.getUpdatedRecognitions();
+            if (recognitionResults != null && (!recognitionResults.isEmpty())) {
+                for (SkyStoneStoneDifferentiation.RecognitionResult RRI : recognitionResults) {
+                    if (RRI.getStoneType() == SkyStoneStoneDifferentiation.StoneType.SKYSTONE && (RRI.getTop() < RRI.getImageHeight() / 2) && (RRI.getBottom() > RRI.getImageHeight() / 2)){
+                        m_LastDriveSkyStone = true;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    public void __secondTimeRecognizeStoneOnce(){
         if(m_OnRecognition) {
             ArrayList<SkyStoneStoneDifferentiation.RecognitionResult> recognitionResults = this.m_SkyStoneDetection.getUpdatedRecognitions();
             if (recognitionResults != null && (!recognitionResults.isEmpty())) {
@@ -82,7 +101,6 @@ public class Robot4100Generation1_BlueScanComplex extends DarbotsBasicOpMode {
                 }
             }
         }
-        return this.opModeIsActive();
     }
 
     public void waitForGamepadX(){
@@ -107,7 +125,7 @@ public class Robot4100Generation1_BlueScanComplex extends DarbotsBasicOpMode {
         //Distance between Camera & AutoGrabber = 4.8 cm
         //wall to the surface of the stone 75 cm
 
-        double LENGTH_OF_EACH_STONE = 22;
+        double LENGTH_OF_EACH_STONE = Robot4100Generation1_Settings.AUTONOMOUS_LENGTH_FOR_EACH_STONE;
 
         m_LastDriveSkyStone = false;
         m_OnRecognition = true;
@@ -141,8 +159,8 @@ public class Robot4100Generation1_BlueScanComplex extends DarbotsBasicOpMode {
             firstStepExtraForwardDistance += LENGTH_OF_EACH_STONE;
             this.getRobotCore().getChassis().replaceTask(
                     this.getRobotCore().getChassis().getFixedZDistanceTask(
-                            -LENGTH_OF_EACH_STONE,
-                            0.1
+                            LENGTH_OF_EACH_STONE,
+                            0.2
                     )
             );
 
@@ -150,6 +168,7 @@ public class Robot4100Generation1_BlueScanComplex extends DarbotsBasicOpMode {
                 return;
             }
             m_OnRecognition = true;
+
             if(i==0) {
                 this.getRobotCore().getChassis().replaceTask(
                         this.getRobotCore().getChassis().getFixedXDistanceTask(
@@ -167,6 +186,7 @@ public class Robot4100Generation1_BlueScanComplex extends DarbotsBasicOpMode {
                     return;
                 }
             }
+
             telemetry.update();
             waitForGamepadX();
         }
@@ -176,10 +196,6 @@ public class Robot4100Generation1_BlueScanComplex extends DarbotsBasicOpMode {
         //Grab Stone;
         this.m_SkyStoneDetection.setActivated(false);
         this.m_OnRecognition = false;
-
-        if(!fixAng()){
-            return;
-        }
 
         if(true){
             this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedZDistanceTask(
@@ -219,81 +235,138 @@ public class Robot4100Generation1_BlueScanComplex extends DarbotsBasicOpMode {
         }
 
         this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedZDistanceTask(
-                130 + firstStepExtraForwardDistance,
+                -(105 + firstStepExtraForwardDistance),
+                0.6
+        ));
+        if(!waitForDrive()){
+            return;
+        }
+
+        waitForGamepadX();
+
+        ElapsedTime dragServoTime = new ElapsedTime(ElapsedTime.Resolution.SECONDS);
+        this.getRobotCore().setAutonomousDragStoneServoToDrag(false);
+        dragServoTime.reset();
+        if(!fixAng()){
+            return;
+        }
+        while(dragServoTime.seconds() < 0.300 && this.opModeIsActive()){
+
+        }
+
+        waitForGamepadX();
+
+
+        if(recognitionResult != 3) {
+
+            this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedZDistanceTask(
+                    (105 + ((2+3) *LENGTH_OF_EACH_STONE)),
+                    0.6
+            ));
+            if (!waitForDrive()) {
+                return;
+            }
+
+
+            this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedZDistanceTask(
+                    40,
+                    0.3
+            ));
+            if (!waitForDrive()) {
+                return;
+            }
+            waitForGamepadX();
+            if (!fixAng()) {
+                return;
+            }
+
+            this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedZDistanceTask(
+                    -15,
+                    0.3
+            ));
+            if (!waitForDrive()) {
+                return;
+            }
+            waitForGamepadX();
+
+            double secondStepExtraDistance = 10;
+            if(recognitionResult == 1){
+                secondStepExtraDistance = 0;
+                this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedZDistanceTask(
+                        LENGTH_OF_EACH_STONE,
+                        0.2
+                ));
+                if (!waitForDrive()) {
+                    return;
+                }
+                waitForGamepadX();
+            }else { //recognitionResult == 2){
+                secondStepExtraDistance += LENGTH_OF_EACH_STONE;
+            }
+
+            if(!fixAng()){
+                return;
+            }
+
+            this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedXDistanceTask(
+                    50,
+                    0.2
+            ));
+            if (!waitForDrive()) {
+                return;
+            }
+            waitForGamepadX();
+
+            this.getRobotCore().setAutonomousDragStoneServoToDrag(true);
+            sleep(400);
+            waitForGamepadX();
+
+            this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedXDistanceTask(
+                    -110,
+                    0.2
+            ));
+            if(!waitForDrive()){
+                return;
+            }
+            waitForGamepadX();
+
+            this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedXDistanceTask(
+                    10,
+                    0.2
+            ));
+            if(!waitForDrive()){
+                return;
+            }
+            waitForGamepadX();
+
+            this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedZDistanceTask(
+                    -(100 + ((1+3)*LENGTH_OF_EACH_STONE) + secondStepExtraDistance),
+                    0.6
+            ));
+            if(!waitForDrive()){
+                return;
+            }
+
+            waitForGamepadX();
+
+
+            this.getRobotCore().setAutonomousDragStoneServoToDrag(false);
+            sleep(300);
+            waitForGamepadX();
+        }
+
+        if(!fixAng()){
+            return;
+        }
+
+        this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedZDistanceTask(
+                40,
                 0.5
         ));
         if(!waitForDrive()){
             return;
         }
 
-        waitForGamepadX();
-
-
-        this.getRobotCore().setAutonomousDragStoneServoToDrag(false);
-        sleep(300);
-        waitForGamepadX();
-
-
-        this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedTurnTask(
-                180,
-                0.3
-        ));
-        if(!waitForDrive()){
-            return;
-        }
-        waitForGamepadX();
-
-        m_OldAng += 180;
-        m_OldAng = XYPlaneCalculations.normalizeDeg(m_OldAng);
-
-        if(!fixAng()){
-            return;
-        }
-
-        this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedXDistanceTask(
-                -60,
-                0.2
-        ));
-        if(!waitForDrive()){
-            return;
-        }
-        waitForGamepadX();
-
-        this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedZDistanceTask(
-                -20,
-                0.2
-        ));
-        if(!waitForDrive()){
-            return;
-        }
-        waitForGamepadX();
-
-        this.getRobotCore().setDragServoToDrag(true);
-        sleep(300);
-
-        this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedTurnTask(
-                45,
-                0.2
-        ));
-        if(!waitForDrive()){
-            return;
-        }
-        waitForGamepadX();
-
-        m_OldAng += 45;
-        m_OldAng = XYPlaneCalculations.normalizeDeg(m_OldAng);
-
-        if(!fixAng()){
-            return;
-        }
-
-        this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedZDistanceTask(
-                -50,
-                0.2
-        ));
-        if(!waitForDrive()){
-            return;
-        }
         waitForGamepadX();
     }
 }

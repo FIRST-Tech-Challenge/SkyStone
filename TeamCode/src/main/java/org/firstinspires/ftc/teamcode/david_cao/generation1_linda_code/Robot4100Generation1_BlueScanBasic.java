@@ -29,7 +29,7 @@ public class Robot4100Generation1_BlueScanBasic extends DarbotsBasicOpMode {
     public void hardwareInitialize() {
         this.m_RobotCore = new Robot4100Generation1_LindaCore(this.hardwareMap);
         RobotCamera Camera = new RobotOnPhoneCamera(this,false, RobotOnPhoneCamera.PhoneCameraDirection.Back, Robot4100Common.VUFORIA_LICENSE);
-        this.m_SkyStoneDetection = new SkyStoneStoneDifferentiation(Camera,this.hardwareMap,true, 0.6);
+        this.m_SkyStoneDetection = new SkyStoneStoneDifferentiation(Camera,this.hardwareMap,true, Robot4100Generation1_Settings.AUTONOMOUS_MINIMUM_CONFIDENCE);
         this.m_SkyStoneDetection.setActivated(true);
     }
 
@@ -70,18 +70,22 @@ public class Robot4100Generation1_BlueScanBasic extends DarbotsBasicOpMode {
         while(this.opModeIsActive() && this.getRobotCore().getChassis().isBusy()){
             this.m_RobotCore.updateStatus();
         }
+        __tryRecognizeStoneOnce();
+        return this.opModeIsActive();
+    }
+
+    public void __tryRecognizeStoneOnce(){
         if(m_OnRecognition) {
             ArrayList<SkyStoneStoneDifferentiation.RecognitionResult> recognitionResults = this.m_SkyStoneDetection.getUpdatedRecognitions();
             if (recognitionResults != null && (!recognitionResults.isEmpty())) {
                 for (SkyStoneStoneDifferentiation.RecognitionResult RRI : recognitionResults) {
-                    if (RRI.getStoneType() == SkyStoneStoneDifferentiation.StoneType.SKYSTONE){
+                    if (RRI.getStoneType() == SkyStoneStoneDifferentiation.StoneType.SKYSTONE && (RRI.getTop() < RRI.getImageHeight() / 2) && (RRI.getBottom() > RRI.getImageHeight() / 2)){
                         m_LastDriveSkyStone = true;
                         break;
                     }
                 }
             }
         }
-        return this.opModeIsActive();
     }
 
     public void waitForGamepadX(){
@@ -106,7 +110,7 @@ public class Robot4100Generation1_BlueScanBasic extends DarbotsBasicOpMode {
         //Distance between Camera & AutoGrabber = 4.8 cm
         //wall to the surface of the stone 75 cm
 
-        double LENGTH_OF_EACH_STONE = 22;
+        double LENGTH_OF_EACH_STONE = Robot4100Generation1_Settings.AUTONOMOUS_LENGTH_FOR_EACH_STONE;
 
         m_LastDriveSkyStone = false;
         m_OnRecognition = true;

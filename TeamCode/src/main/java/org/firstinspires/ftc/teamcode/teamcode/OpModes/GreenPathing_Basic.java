@@ -24,6 +24,8 @@ public class GreenPathing_Basic extends LinearOpMode {
     Outtake outtake = new Outtake();
     Vuforia vuf = new Vuforia();
 
+    int placeHolder;
+
     @Override
     public void runOpMode() {
 
@@ -32,8 +34,8 @@ public class GreenPathing_Basic extends LinearOpMode {
         waitForStart();
 
         drive.encoderDrive(this,.7, 24, 24, 3);
-        switch (1) {
-            case 1:
+
+        if (vuf.VuBrowse()[3] == 1) {
                 drive.encoderDrive(this, .7, 24, 24, 3);
 
                 drive.encoderDrive(this, .6, -24, -24,3);
@@ -65,18 +67,9 @@ public class GreenPathing_Basic extends LinearOpMode {
                 drive.encoderDrive(this,.5, -24, -24, 3);
 
                 drive.turnPID(this,90, false, .01, .01, .01, 2000);
-                //rest of code for EVERYTHING
-                break;
-            case 2:
-
-                //rest of code for EVERYTHING
-
-                break;
-            case 3:
-                //rest of code for EVERYTHING
-
-                break;
         }
+
+         //drive.encoderStrafe(this,true, .6, 48, 48, 4);
 
 
         sleep(1000);

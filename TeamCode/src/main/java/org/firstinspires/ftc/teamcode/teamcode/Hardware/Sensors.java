@@ -42,9 +42,15 @@ public class Sensors {
         return uSonic.getDistance(DistanceUnit.INCH);
     }
 
-    public double getGyroYaw() {
+    public double MRConvert (double angle) {
+        if (angle <= 0) {
+            angle += 360;
+        }
+        return angle;
+    }
 
-        return angles.firstAngle;
+    public double getGyroYaw() {
+        return MRConvert(angles.firstAngle);
     }
 
     public double round(double value, int places) {
@@ -56,12 +62,10 @@ public class Sensors {
     }
 
     public double getGyroPitch() {
-
-        return angles.secondAngle;
+        return MRConvert(angles.secondAngle);
     }
 
     public double getGyroRoll() {
-
-        return angles.thirdAngle;
+        return MRConvert(angles.thirdAngle);
     }
 }

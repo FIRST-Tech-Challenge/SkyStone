@@ -21,6 +21,15 @@ public class DriveTrain {
     double brAcc = 0.0;
     double blAcc = 0.0;
 
+    double gyre;
+    double bOffset;
+    double cOffset;
+    double primeSin;
+    double alpha;
+
+    boolean pastB = false;
+    int quadrant;
+
     public ElapsedTime runtime = new ElapsedTime();
     private LinearOpMode opMode;
     private Sensors sensors;
@@ -434,6 +443,36 @@ public class DriveTrain {
         opMode.sleep(50);
     }
 
+    public double[] hermite (double[] lStick) {
+        gyre = sensors.getGyroYaw();
+        while (gyre > 90) {
+            gyre -= 90;
+            quadrant++;
+        }
+
+        primeSin = (Math.sin(gyre / 2) * 2);
+        alpha = Math.acos(primeSin);
+        bOffset = primeSin * Math.cos(alpha);
+        bOffset = 1 - bOffset;
+        cOffset = primeSin * Math.sin(alpha);
+
+                switch (quadrant) {
+                    case 1:
+                        lStick[0] += cOffset;
+                        lStick[1] += bOffset;
+                    case 2:
+                        lStick[0] += cOffset;
+                        lStick[1] -= bOffset;
+                    case 3:
+                        lStick[0] -= cOffset;
+                        lStick[1] -= bOffset;
+                    case 4:
+                        lStick[0] -= cOffset;
+                        lStick[1] += bOffset;
+        }
+
+        return lStick;
+    }
 
     public void encoderMove(LinearOpMode opMode, double target, double timeout, double power) {
 

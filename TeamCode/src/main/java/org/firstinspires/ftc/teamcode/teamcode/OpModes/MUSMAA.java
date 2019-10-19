@@ -36,7 +36,7 @@ public class MUSMAA extends LinearOpMode {
             dubSet[angleCount] = 1;
         }
         if (dubSet[angleCount] == 1) {
-            drive.encoderDrive(this, driveSpeed, 24, -24, 4);
+            drive.encoderDrive(this, driveSpeed, 24, 24, 4);
             location = sensors.getGyroYaw();
             sleep(5);
             while (sensors.getGyroYaw() != location) {
@@ -62,7 +62,6 @@ public class MUSMAA extends LinearOpMode {
 
                 }
             }
-
         }
     }
 }

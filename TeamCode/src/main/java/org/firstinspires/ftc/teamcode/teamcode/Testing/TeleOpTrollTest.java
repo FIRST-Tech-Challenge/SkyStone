@@ -7,12 +7,13 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.DriveTrain;
-
+import org.firstinspires.ftc.teamcode.teamcode.Hardware.Sensors;
 
 @TeleOp(name="TrollMac", group= "Troll")
 public class TeleOpTrollTest extends OpMode {
 
     DriveTrain drive = new DriveTrain();
+    Sensors sensors = new Sensors();
 
 
     //Instantiate Variables
@@ -35,6 +36,15 @@ public class TeleOpTrollTest extends OpMode {
     double frMod = 0;
     double frHolo = 0;
     double flHolo = 0;
+
+    double gyre;
+    double bOffset;
+    double cOffset;
+    double primeSin;
+    double alpha;
+
+    boolean pastB = false;
+    int quadrant;
 
     //  Variables for Cruise Foundation Moving (CFM)
     /*
@@ -100,6 +110,10 @@ public class TeleOpTrollTest extends OpMode {
     //Main Loop
     @Override
     public void loop() {
+
+        double[] zeroRift;
+        zeroRift = new double[2];
+
         speed = gamepad1.right_stick_x;
 
         telemetry.addData("Status", "Run Time: " + drive.runtime.toString());
@@ -134,9 +148,12 @@ public class TeleOpTrollTest extends OpMode {
 
         telemetry.addData("Speed : ", speed);
 
-        velocity = leftStickY;
+        //Might be returning arrays wrong
+        drive.hermite(zeroRift);
+
+        velocity = zeroRift[1];
                 //Math.hypot(leftStickX, leftStickY);
-        direction = leftStickX;
+        direction = zeroRift[0];
                 //Math.atan2(leftStickY, leftStickX) - Math.PI / 4;
         speed = gamepad1.right_stick_x;
 

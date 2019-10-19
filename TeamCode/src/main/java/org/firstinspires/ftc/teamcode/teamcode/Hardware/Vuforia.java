@@ -22,14 +22,13 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 
-@TeleOp(name="SKSTONE Vu", group ="Vision")
 public class Vuforia extends LinearOpMode {
 
     private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
     private static final boolean PHONE_IS_PORTRAIT = false  ;
 
     private static final String VUFORIA_KEY =
-                "AdzMYbL/////AAABmflzIV+frU0RltL/ML+2uAZXgJiI" +
+                    "AdzMYbL/////AAABmflzIV+frU0RltL/ML+2uAZXgJiI" +
                     "Werfe92N/AeH7QsWCOQqyKa2G+tUDcgvg8uE8QjHeBZPcpf5hAwlC5qCfvg76eBoaa2b" +
                     "MMZ73hmTiHmr9fj3XmF4LWWZtDC6pWTFrzRAUguhlvgnck6Y4jjM16Px5TqgWYuWnpcxNM" +
                     "HMyOXdnHLlyysyE64PVzoN7hgMXgbi2K8+pmTXvpV2OeLCag8fAj1Tgdm/kKGr0TX86aQsC2" +
@@ -60,11 +59,26 @@ public class Vuforia extends LinearOpMode {
     private float phoneYRotate    = 0;
     private float phoneZRotate    = 0;
 
-    @Override public void runOpMode() {
+    private void setClimate(VuforiaTrackable track, float dx, float dy,
+                            float dz, float firstAng, float secondAng, float thirdAng) {
+        track.setLocation(OpenGLMatrix
+                .translation(dx, dy, dz)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ,
+                        DEGREES, firstAng, secondAng, thirdAng)));
+    }
 
+    public double[] VuBrowse() {
+
+        double[] zeroPoint;
+        zeroPoint = new double[4];
+        zeroPoint[3] = 0;
+
+        //Add webCheck
         webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
 
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        int cameraMonitorViewId =
+                hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId",
+                        "id", hardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
@@ -105,58 +119,31 @@ public class Vuforia extends LinearOpMode {
         List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
         allTrackables.addAll(targetsSkyStone);
 
-        stoneTarget.setLocation(OpenGLMatrix
-                .translation(0, 0, stoneZ)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
+        setClimate(stoneTarget, 0, 0, stoneZ, 90, 0, -90);
 
-        blueFrontBridge.setLocation(OpenGLMatrix
-                .translation(-bridgeX, bridgeY, bridgeZ)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 0, bridgeRotY, bridgeRotZ)));
+        setClimate(blueFrontBridge, -bridgeX, bridgeY, bridgeZ, 0, bridgeRotY, bridgeRotZ);
 
-        blueRearBridge.setLocation(OpenGLMatrix
-                .translation(-bridgeX, bridgeY, bridgeZ)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 0, -bridgeRotY, bridgeRotZ)));
+        setClimate(blueRearBridge, -bridgeX, bridgeY, bridgeZ, 0, -bridgeRotY, bridgeRotZ);
 
-        redFrontBridge.setLocation(OpenGLMatrix
-                .translation(-bridgeX, -bridgeY, bridgeZ)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 0, -bridgeRotY, 0)));
+        setClimate(redFrontBridge, -bridgeX, -bridgeY, bridgeZ, 0, -bridgeRotY, 0);
 
-        redRearBridge.setLocation(OpenGLMatrix
-                .translation(bridgeX, -bridgeY, bridgeZ)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 0, bridgeRotY, 0)));
+        setClimate(redRearBridge, bridgeX, -bridgeY, bridgeZ, 0, bridgeRotY, 0);
 
-        //Set the position of the perimeter targets with relation to origin (center of field)
-        red1.setLocation(OpenGLMatrix
-                .translation(quadField, -halfField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 180)));
+        setClimate(red1, quadField, -halfField, mmTargetHeight, 90, 0, 180);
 
-        red2.setLocation(OpenGLMatrix
-                .translation(-quadField, -halfField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 180)));
+        setClimate(red2, -quadField, -halfField, mmTargetHeight, 90, 0, 180);
 
-        front1.setLocation(OpenGLMatrix
-                .translation(-halfField, -quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , 90)));
+        setClimate(front1, -halfField, -quadField, mmTargetHeight, 90, 0, 90);
 
-        front2.setLocation(OpenGLMatrix
-                .translation(-halfField, quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 90)));
+        setClimate(front2, -halfField, quadField, mmTargetHeight, 90, 0, 90);
 
-        blue1.setLocation(OpenGLMatrix
-                .translation(-quadField, halfField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 0)));
+        setClimate(blue1, -quadField, halfField, mmTargetHeight, 90, 0, 0);
 
-        blue2.setLocation(OpenGLMatrix
-                .translation(quadField, halfField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 0)));
+        setClimate(blue2, quadField, halfField, mmTargetHeight, 90, 0, 0);
 
-        rear1.setLocation(OpenGLMatrix
-                .translation(halfField, quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , -90)));
+        setClimate(rear1, halfField, quadField, mmTargetHeight, 90, 0, -90);
 
-        rear2.setLocation(OpenGLMatrix
-                .translation(halfField, -quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
+        setClimate(rear2, halfField, -quadField, mmTargetHeight, 90, 0, -90);
 
         if (CAMERA_CHOICE == BACK) {
             phoneYRotate = -90;
@@ -174,10 +161,12 @@ public class Vuforia extends LinearOpMode {
 
         OpenGLMatrix robotFromCamera = OpenGLMatrix
                 .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX,
+                        DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
 
         for (VuforiaTrackable trackable : allTrackables) {
-            ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
+            ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera,
+                    parameters.cameraDirection);
         }
 
         targetsSkyStone.activate();
@@ -189,7 +178,8 @@ public class Vuforia extends LinearOpMode {
                     telemetry.addData("Visible Target", trackable.getName());
                     targetVisible = true;
 
-                    OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
+                    OpenGLMatrix robotLocationTransform =
+                            ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
                     if (robotLocationTransform != null) {
                         lastLocation = robotLocationTransform;
                     }
@@ -200,17 +190,32 @@ public class Vuforia extends LinearOpMode {
             if (targetVisible) {
                 VectorF translation = lastLocation.getTranslation();
                 telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
-                        translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
+                        translation.get(0) / mmPerInch, translation.get(1) / mmPerInch,
+                        translation.get(2) / mmPerInch);
+                zeroPoint[0] = translation.get(0) / mmPerInch;
+                zeroPoint[1] = translation.get(1) / mmPerInch;
+                zeroPoint[2] = translation.get(2) / mmPerInch;
 
                 Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
-                telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
+                telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} =" +
+                        " %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
+                zeroPoint[3] = 1;
             }
+
             else {
                 telemetry.addData("Visible Target", "none");
             }
+
             telemetry.update();
         }
 
         targetsSkyStone.deactivate();
+        zeroPoint[0] = 0;
+        zeroPoint[1] = 0;
+        zeroPoint[2] = 0;
+        return zeroPoint;
     }
+
+    @Override
+    public void runOpMode() throws InterruptedException {}
 }

@@ -42,16 +42,16 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ExpansionHub extends LynxController {
 
     // utility method
-    public static double getMotorCurrentDraw(HardwareMap hardwareMap, DcMotorEx motor, CurrentDrawUnits units) {
+    public double getMotorCurrentDraw(DcMotorEx motor, CurrentDrawUnits units) {
         int port = motor.getPortNumber();
         LynxGetADCCommand.Channel channel = null;
         if (port == 0) {
@@ -66,17 +66,8 @@ public class ExpansionHub extends LynxController {
         else if (port == 3) {
             channel = LynxGetADCCommand.Channel.MOTOR3_CURRENT;
         }
-        LynxModule lynxModule = null;
-        ExpansionHub chosenHub = null;
-        for (ExpansionHub hub : getAvailableHubs(hardwareMap)) {
-            if (hub.lynxModule.getModuleAddress() == getModuleAddress(motor)) {
-                chosenHub = hub;
-                lynxModule = hub.lynxModule;
-                break;
-            }
-        }
-        if (lynxModule == null) {
-            throw new IllegalArgumentException("Motor " + motor.getDeviceName() + " is not on any found Expansion Hub.");
+        if (channel == null) {
+
         }
         LynxGetADCCommand command = new LynxGetADCCommand(lynxModule, channel, LynxGetADCCommand.Mode.ENGINEERING);
         try {
@@ -89,77 +80,48 @@ public class ExpansionHub extends LynxController {
                 return ma / 1000.0;
             }
         } catch (InterruptedException | RuntimeException | LynxNackException e) {
-            chosenHub.handleException(e);
+            handleException(e);
         }
         return -1;
     }
 
-    private static HashMap<DcMotorEx, Integer> motorAddresses = new HashMap<>();
-
-    private static synchronized int getModuleAddress(DcMotorEx motor) {
-        if (motorAddresses.containsKey(motor)) {
-            return motorAddresses.get(motor);
-        }
-        try {
-            LynxModule module = controllerToModule((LynxController) motor.getController());
-            int address = module.getModuleAddress();
-            motorAddresses.put(motor, address);
-            return address;
-        } catch (IllegalArgumentException | ClassCastException ex) {
-            throw new IllegalArgumentException("Motor " + motor.getDeviceName() + " is not on any found Expansion Hub.");
-        }
-    }
-
     /**
      * Not guaranteed behavior, merely asks if the motor "has lost counts" and returns the opposite
-     * @param hardwareMap
-     * @param motor
+     * @param motor th motor to check
      * @return
      */
-    public static boolean encoderWorks(HardwareMap hardwareMap, DcMotorEx motor) {
+    public boolean encoderWorks(DcMotorEx motor) {
         int port = motor.getPortNumber();
-        LynxModule lynxModule = null;
-        ExpansionHub chosenHub = null;
-        for (ExpansionHub hub : getAvailableHubs(hardwareMap)) {
-            if (hub.lynxModule.getModuleAddress() == getModuleAddress(motor)) {
-                chosenHub = hub;
-                lynxModule = hub.lynxModule;
-                break;
-            }
-        }
-        if (lynxModule == null) {
-            throw new IllegalArgumentException("Motor " + motor.getDeviceName() + " is not on any found Expansion Hub.");
-        }
         LynxGetModuleStatusCommand command = new LynxGetModuleStatusCommand(lynxModule);
         try {
             LynxGetModuleStatusResponse response = command.sendReceive();
             return !response.hasMotorLostCounts(port);
         } catch (Exception e) {
-            chosenHub.handleException(e);
+            handleException(e);
         }
         return false;
     }
 
-    private static List<ExpansionHub> availableHubs = null;
+    private static HashMap<String, ExpansionHub> availableHubs = new HashMap<>();
     private static HardwareMap hardwareMap = null;
 
     private final LynxModule lynxModule;
 
-    public static synchronized List<ExpansionHub> getAvailableHubs(HardwareMap hardwareMap) {
-        return hardwareMap.equals(ExpansionHub.hardwareMap) ? availableHubs : (availableHubs = findHubs(hardwareMap));
+    public static synchronized HashMap<String, ExpansionHub> getAvailableHubs(HardwareMap hardwareMap) {
+        return hardwareMap.equals(ExpansionHub.hardwareMap) ? availableHubs : (availableHubs = findHubs(ExpansionHub.hardwareMap = hardwareMap));
     }
 
-    private static List<ExpansionHub> findHubs(HardwareMap hardwareMap) {
+    private static HashMap<String, ExpansionHub> findHubs(HardwareMap hardwareMap) {
         List<LynxDcMotorController> map = hardwareMap.getAll(LynxDcMotorController.class);
-        List<ExpansionHub> out = new ArrayList<>();
+        HashMap<String, ExpansionHub> out = new HashMap<>();
         for (LynxDcMotorController motorController : map) {
             LynxModule module;
-            try {
-                module = controllerToModule(motorController);
-            } catch (IllegalArgumentException ex) {
-                continue;
+            module = controllerToModule(motorController);
+            Set<String> names = hardwareMap.getNamesOf(motorController);
+            if (names.size() > 1) {
+                throw new IllegalArgumentException("A hub in the hardware map exists with multiple names.");
             }
-            out.add(new ExpansionHub(hardwareMap.appContext, module));
+            out.put(names.iterator().next(), new ExpansionHub(hardwareMap.appContext, module));
         }
         return out;
     }

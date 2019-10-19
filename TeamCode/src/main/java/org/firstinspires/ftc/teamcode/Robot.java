@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.subsystems.*;
 
-import java.util.List;
+import java.util.HashMap;
 
 public class Robot implements AutoCloseable {
 
@@ -17,7 +17,7 @@ public class Robot implements AutoCloseable {
     public final StoneManipulator stoneManipulator; // includes capstone
     public final Camera camera;
     public final Phone phone;
-    public List<ExpansionHub> expansionHubs;
+    public HashMap<String, ExpansionHub> expansionHubs;
 
     private static Robot instance = null;
 

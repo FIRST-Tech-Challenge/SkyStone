@@ -92,6 +92,10 @@ public class Phone {
         return integratedGyroZ;
     }
 
+    public boolean hasGyro() {
+        return gyro.isAvailable();
+    }
+
     public void toast(String str, int time) {
         if (time != 0) {
             AppUtil.getInstance().showToast(UILocation.BOTH, str, time);

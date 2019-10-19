@@ -22,7 +22,7 @@ public class HardwareMapper {
         RobotConfigFile file = new RobotConfigFile(robotConfigFileManager, "generated");
         try {
             File res = AppUtil.getDefContext().getDir("raw", Context.MODE_PRIVATE);
-            Scanner scanner = new Scanner(new File(res, "Hardware.xml"));
+            Scanner scanner = new Scanner(new File(res, "hardware.xml"));
             String data = "";
             while (scanner.hasNextLine()) {
                 data += scanner.nextLine() + "\n";

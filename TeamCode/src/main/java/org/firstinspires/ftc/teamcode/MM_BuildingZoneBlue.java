@@ -35,7 +35,7 @@ public class MM_BuildingZoneBlue extends LinearOpMode {
         robot.waffleMover.setPower(0);
 
         // strafe out from behind the foundation
-        robot.strafeTime(-0.25, 3000);
+        robot.strafeTime(0.25, 3000);
 
         // drive forward to turn and park under the skybridge
         robot.driveForwardDistance(12.0, speed, this);

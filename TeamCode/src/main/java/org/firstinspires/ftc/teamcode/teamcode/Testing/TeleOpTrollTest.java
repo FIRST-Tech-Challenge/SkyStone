@@ -148,7 +148,6 @@ public class TeleOpTrollTest extends OpMode {
 
         telemetry.addData("Speed : ", speed);
 
-        //Might be returning arrays wrong
         drive.hermite(zeroRift);
 
         velocity = zeroRift[1];

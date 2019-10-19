@@ -24,7 +24,14 @@ public class GreenPathing_Basic extends LinearOpMode {
     Outtake outtake = new Outtake();
     Vuforia vuf = new Vuforia();
 
-    int placeHolder;
+    double robotLength;
+    double focusLine = 48 - robotLength;
+    double clutchBuffer = 3.5;
+    double thetaBit = (Math.atan(12/focusLine)) / 2;
+    double trueHypo = (focusLine - clutchBuffer) / Math.cos(thetaBit);
+    double falseHypo = focusLine - clutchBuffer;
+
+    int shufflePos;
 
     @Override
     public void runOpMode() {
@@ -33,49 +40,55 @@ public class GreenPathing_Basic extends LinearOpMode {
 
         waitForStart();
 
-        drive.encoderDrive(this,.7, 24, 24, 3);
-
+        //!!!ADD INTAKE!!!
         if (vuf.VuBrowse()[3] == 1) {
-                drive.encoderDrive(this, .7, 24, 24, 3);
+            if (shufflePos == 3) {
+                drive.encoderMove(this, trueHypo, 2, 1, thetaBit);
 
-                drive.encoderDrive(this, .6, -24, -24,3);
+                drive.encoderMove(this, -trueHypo, 2, 1, 180 + thetaBit);
+            }
+            else if (shufflePos == 1) {
+                drive.encoderMove(this, trueHypo, 2, 1, 360 - thetaBit);
 
-                // drive.encoderStrafe(this, false, .6, 72, 72, 4);
+                drive.encoderMove(this, -trueHypo, 2, 1, 180 - thetaBit);
+            }
+            else {
+                drive.encoderMove(this, falseHypo, 2, 1, 0);
 
-                drive.turnPID(this,180, true, .01, .01, .01, 2000);
-
-                drive.encoderDrive(this,.5, -24, -24, 3);
-
-                drive.turnPID(this,90, false, .01, .01, .01, 2000);
-
-                drive.encoderDrive(this, .5, -10, -10, 3);
-
-                // drive.encoderStrafe(this,true, .6, 48, 48, 4);
-
-                drive.encoderDrive(this,1, 96, 96, 4);
-
-                drive.turnPID(this,90, false, .01, .01, .01, 2000);
-
-                drive.encoderDrive(this,.7, 24, 24, 3);
-
-                drive.encoderDrive(this,.6, -24, -24,3);
-
-                //  drive.encoderStrafe(this,false, .75, 96, 96, 4);
-
-                drive.turnPID(this,180, true, .01, .01, .01, 2000);
-
-                drive.encoderDrive(this,.5, -24, -24, 3);
-
-                drive.turnPID(this,90, false, .01, .01, .01, 2000);
+                drive.encoderMove(this, -falseHypo, 2, -1, 180);
+            }
         }
 
-         //drive.encoderStrafe(this,true, .6, 48, 48, 4);
+            drive.encoderDrive(this, .7, 24, 24, 3);
 
+            drive.encoderDrive(this, .6, -24, -24,3);
 
-        sleep(1000);
+            drive.turnPID(this,180, true, .01, .01, .01, 2000);
 
-        telemetry.addData("Path", "Complete");
-        telemetry.update();
+            drive.encoderDrive(this,.5, -24, -24, 3);
+
+            drive.turnPID(this,90, false, .01, .01, .01, 2000);
+
+            drive.encoderDrive(this, .5, -10, -10, 3);
+
+            drive.encoderDrive(this,1, 96, 96, 4);
+
+            drive.turnPID(this,90, false, .01, .01, .01, 2000);
+
+            drive.encoderDrive(this,.7, 24, 24, 3);
+
+            drive.encoderDrive(this,.6, -24, -24,3);
+
+            drive.turnPID(this,180, true, .01, .01, .01, 2000);
+
+            drive.encoderDrive(this,.5, -24, -24, 3);
+
+            drive.turnPID(this,90, false, .01, .01, .01, 2000);
+
+            sleep(1000);
+
+            telemetry.addData("Path", "Complete");
+            telemetry.update();
+        }
     }
 
-}

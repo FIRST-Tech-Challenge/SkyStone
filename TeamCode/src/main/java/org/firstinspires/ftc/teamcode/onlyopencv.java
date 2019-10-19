@@ -28,6 +28,9 @@ import java.util.List;
  * 60 1680
  * 40 1120
  * 20 560
+ *
+ * monitor: 640 x 480
+ *
  */
 @Autonomous(name= "opencvtest1", group="Sky autonomous")
 //@Disabled
@@ -46,11 +49,12 @@ public class onlyopencv extends LinearOpMode {
     public static double valLeft = -1;
     public static double valRight = -1;
 
-    public static double[] midPos = {1f/2f, 6f/8f};
-    public static double[] leftPos = {1f/4f, 6f/8f};
-    public static double[] rightPos = {3f/4f, 6f/8f};
+    public static float[] midPos = {1f/2f, 5f/8f};
+    public static float[] leftPos = {1f/4f, 5f/8f};
+    public static float[] rightPos = {3f/4f, 5f/8f};
 
-
+    public static double rows = 0;
+    public static double cols = 0;
 
 
     OpenCvCamera phoneCam;
@@ -162,9 +166,10 @@ public class onlyopencv extends LinearOpMode {
 
             //telemetry.addData("Num contours found", stageSwitchingPipeline.getNumContoursFound());
             telemetry.addData("Middle", valMid);
-            telemetry.addData("Left", valRight);
-            telemetry.addData("Right", valLeft);
-
+            telemetry.addData("Left", valLeft);
+            telemetry.addData("Right", valRight);
+            telemetry.addData("Rows", rows);
+            telemetry.addData("Cols", cols);
 
             telemetry.update();
             sleep(100);
@@ -221,6 +226,8 @@ public class onlyopencv extends LinearOpMode {
         public Mat processFrame(Mat input)
         {
             contoursList.clear();
+            rows = input.rows();
+            cols = input.cols();
 
             /*
              * This pipeline finds the contours of yellow blobs such as the Gold Mineral
@@ -242,6 +249,29 @@ public class onlyopencv extends LinearOpMode {
             yCbCrChan2Mat.copyTo(all);//copies mat object
             //Imgproc.drawContours(all, contoursList, -1, new Scalar(255, 0, 0), 3, 8);//draws blue contours
 
+
+            //get values from frame
+            double[] pixMid = thresholdMat.get((int)(input.rows()* midPos[0]), (int)(input.cols()* midPos[1]));//gets value at circle
+            valMid = pixMid[0];
+
+            double[] pixLeft = thresholdMat.get((int)(input.rows()* leftPos[0]), (int)(input.cols()* leftPos[1]));//gets value at circle
+            valLeft = pixLeft[0];
+
+            double[] pixRight = thresholdMat.get((int)(input.rows()* rightPos[0]), (int)(input.cols()* rightPos[1]));//gets value at circle
+            valRight = pixRight[0];
+
+
+            //create three points
+            Point point1 = new Point((int)(input.cols()* midPos[0]), (int)(input.rows()* midPos[1]));
+            Point point2 = new Point((int)(input.cols()* leftPos[0]), (int)(input.rows()* leftPos[1]));
+            Point point3 = new Point((int)(input.cols()* rightPos[0]), (int)(input.rows()* rightPos[1]));
+
+            //draw circles on those points
+            Imgproc.circle(all, point1,5, new Scalar( 255, 0, 0 ),1 );//draws circle
+            Imgproc.circle(all, point2,5, new Scalar( 255, 0, 0 ),1 );//draws circle
+            Imgproc.circle(all, point3,5, new Scalar( 255, 0, 0 ),1 );//draws circle
+
+
             MatOfPoint2f approxCurve = new MatOfPoint2f();
             //For each contour found
             for (int i=0; i<contoursList.size(); i++)
@@ -256,23 +286,6 @@ public class onlyopencv extends LinearOpMode {
                 MatOfPoint points = new MatOfPoint(approxCurve.toArray() );
                 // Get bounding rect of contour
                 Rect rect = Imgproc.boundingRect(points);
-
-                double[] pixMid = thresholdMat.get((int)(input.rows()* midPos[0]), (int)(input.cols()* midPos[1]));//gets value at circle
-                valMid = pixMid[0];
-
-                double[] pixLeft = thresholdMat.get((int)(input.rows()* leftPos[0]), (int)(input.cols()* leftPos[1]));//gets value at circle
-                valLeft = pixLeft[0];
-
-                double[] pixRight = thresholdMat.get((int)(input.rows()* rightPos[0]), (int)(input.cols()* rightPos[1]));//gets value at circle
-                valRight = pixRight[0];
-
-                Point point1 = new Point((int)(input.rows()* midPos[0]), (int)(input.cols()* midPos[1]));
-                Point point2 = new Point((int)(input.rows()* leftPos[0]), (int)(input.cols()* leftPos[1]));
-                Point point3 = new Point((int)(input.rows()* rightPos[0]), (int)(input.cols()* rightPos[1]));
-
-                Imgproc.circle(all, point1,10, new Scalar( 255, 0, 0 ),1 );//draws circle
-                Imgproc.circle(all, point2,10, new Scalar( 255, 0, 0 ),1 );//draws circle
-                Imgproc.circle(all, point3,10, new Scalar( 255, 0, 0 ),1 );//draws circle
 
                 if((rect.contains(point1) || rect.contains(point2) || rect.contains(point3)) && (valMid == 0 || valLeft == 0 || valRight == 0)) {
                     Imgproc.rectangle(all,
@@ -292,7 +305,7 @@ public class onlyopencv extends LinearOpMode {
                     new Point(
                             input.cols()*(2.9f/8f),
                             input.rows()*(5.5f/8f)),
-                    new Scalar(0, 255, 0), 4);
+                    new Scalar(0, 255, 0), 3);
             Imgproc.rectangle(
                     all,
                     new Point(
@@ -301,7 +314,7 @@ public class onlyopencv extends LinearOpMode {
                     new Point(
                             input.cols()*(4.9f/8f),
                             input.rows()*(5.5f/8f)),
-                    new Scalar(0, 255, 0), 4);
+                    new Scalar(0, 255, 0), 3);
             Imgproc.rectangle(
                     all,
                     new Point(
@@ -310,7 +323,7 @@ public class onlyopencv extends LinearOpMode {
                     new Point(
                             input.cols()*(7f/8f),
                             input.rows()*(5.5f/8f)),
-                    new Scalar(0, 255, 0), 4);
+                    new Scalar(0, 255, 0), 3);
 
             switch (stageToRenderToViewport)
             {

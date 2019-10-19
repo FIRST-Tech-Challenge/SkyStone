@@ -8,7 +8,8 @@ public class MM_BuildingZone extends LinearOpMode {
 
     Robot robot = new Robot();
     enum ParkingPosition {Far, Close}// far or close to center
-    double speed = .4;
+    ParkingPosition parkingPosition = ParkingPosition.Close;
+    double speed = 0.4;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -16,11 +17,28 @@ public class MM_BuildingZone extends LinearOpMode {
 
         waitForStart();
 
-        robot.driveForwardDistance(47.0 - robot.ROBOT_RETRACT_LENGTH, speed, this);
+        robot.driveForwardDistance(47.0 - robot.ROBOT_RETRACTED_LENGTH, speed, this);
 
+        // extend the waffle mover
         wait(500);
-        robot.waffleMover.setpower()
+        robot.waffleMover.setPower(0.5);
+        wait(1000);
+        robot.waffleMover.setPower(0);
 
+        // drive backwards
+        robot.driveForwardDistance(47.0 - robot.ROBOT_RETRACTED_LENGTH, -speed, this);
 
+        // retract the waffle mover
+        wait(500);
+        robot.waffleMover.setPower(-0.5);
+        wait(1000);
+        robot.waffleMover.setPower(0);
+
+        // strafe out from behind the foundation
+        robot.strafeTime(-0.25, 3000);
+
+        if (parkingPosition == ParkingPosition.Close {
+            
+        }
     }
 }

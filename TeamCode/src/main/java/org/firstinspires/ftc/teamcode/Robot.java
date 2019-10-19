@@ -15,12 +15,15 @@ public class Robot {
     public DcMotor rearRight;
     public DcMotor frontLeft;
     public DcMotor frontRight;
+    public DcMotor waffleMover;
 
     // Constants
     public double ANDYMARK_TICKS_PER_REV = 537.6; // ticks / rev
     public double WHEEL_DIAMETER = 4;
     public double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI; // in / rev
     public double TICKS_PER_INCH = ANDYMARK_TICKS_PER_REV / WHEEL_CIRCUMFERENCE; // ticks / in
+    public double ROBOT_EXTENDED_LENGTH = 36.0; // in
+    public double ROBOT_RETRACTED_LENGTH = 18.0; // in
 
     HardwareMap hwMap = null;
 
@@ -45,8 +48,13 @@ public class Robot {
         this.rearRight.setDirection(DcMotor.Direction.REVERSE);
         this.frontRight.setDirection(DcMotor.Direction.REVERSE);
 
+        // waffle mover instantiation and direction
+        this.waffleMover = hwMap.dcMotor.get("waffleMover");
+        this.waffleMover.setDirection(DcMotor.Direction.FORWARD);
+
         // set motor powers to 0 so they don't cause problems
         this.stopDrive();
+        this.waffleMover.setPower(0);
     }
 
     public void setDrivePower(double power) {

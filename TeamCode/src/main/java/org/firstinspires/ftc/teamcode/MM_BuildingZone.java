@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 public class MM_BuildingZone extends LinearOpMode {
 
     Robot robot = new Robot();
-    enum ParkinPosition {Far, Close}// far or close to center
+    enum ParkingPosition {Far, Close}// far or close to center
     double speed = .4;
 
     @Override
@@ -16,7 +16,7 @@ public class MM_BuildingZone extends LinearOpMode {
 
         waitForStart();
 
-        robot.driveFoward;
+        robot.driveForwardDistance();
 
     }
 }

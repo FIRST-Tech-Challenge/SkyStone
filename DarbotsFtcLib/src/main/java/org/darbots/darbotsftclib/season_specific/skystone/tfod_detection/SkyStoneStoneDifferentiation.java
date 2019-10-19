@@ -177,7 +177,7 @@ public class SkyStoneStoneDifferentiation {
         int tfodMonitorViewId = 0;
         TFObjectDetector.Parameters tfodParameters = null;
         if(m_Preview) {
-            m_HardwareMap.appContext.getResources().getIdentifier(
+            tfodMonitorViewId = m_HardwareMap.appContext.getResources().getIdentifier(
                     "tfodMonitorViewId", "id", m_HardwareMap.appContext.getPackageName());
             tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
         }else{

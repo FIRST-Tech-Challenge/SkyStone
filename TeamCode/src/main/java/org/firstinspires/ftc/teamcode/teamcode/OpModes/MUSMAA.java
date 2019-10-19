@@ -18,7 +18,7 @@ public class MUSMAA extends LinearOpMode {
 
     private double driveSpeed = 0.6;
     int constantBufferTime = 5;
-    double location;
+    private double heading;
     int angleCount = 360000;
 
     //Add marginal if
@@ -37,9 +37,9 @@ public class MUSMAA extends LinearOpMode {
         }
         if (dubSet[angleCount] == 1) {
             drive.encoderDrive(this, driveSpeed, 24, -24, 4);
-            location = sensors.getGyroYaw();
+            heading = sensors.getGyroYaw();
             sleep(5);
-            while (sensors.getGyroYaw() != location) {
+            while (sensors.getGyroYaw() != heading) {
                 for (int i = 1; i == angleCount; i++) {
                     dubSet[i - 1] = sensors.getDist();
                 }

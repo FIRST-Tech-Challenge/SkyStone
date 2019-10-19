@@ -16,7 +16,11 @@ public class MM_BuildingZone extends LinearOpMode {
 
         waitForStart();
 
-        robot.driveForwardDistance();
+        robot.driveForwardDistance(47.0 - robot.ROBOT_RETRACT_LENGTH, speed, this);
+
+        wait(500);
+        robot.waffleMover.setpower()
+
 
     }
 }

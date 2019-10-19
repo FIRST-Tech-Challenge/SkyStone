@@ -29,9 +29,11 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
@@ -48,7 +50,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Autonomous1", group="Linear Opmode")
+@Autonomous(name="Autonomous1", group="Linear Opmode")
 //Disabled
 public class Autonomous1 extends LinearOpMode {
 
@@ -60,6 +62,9 @@ public class Autonomous1 extends LinearOpMode {
     private DcMotor rightback = null;
 
     private double drivepower = 0.0;
+    private double right = 0.0;
+    private double left = 0.0;
+
 
     private void lateralmovement() {
         leftfront.setPower(drivepower);
@@ -68,28 +73,40 @@ public class Autonomous1 extends LinearOpMode {
         leftback.setPower(drivepower);
     }
 
+    private void lateralright() {
+        leftfront.setPower(-right);
+        rightfront.setPower(right);
+        rightback.setPower(-right);
+        leftback.setPower(right);
+    }
 
-    static final double INCREMENT   = 0.01;     // amount to slew servo each CYCLE_MS cycle
-    static final int    CYCLE_MS    =   50;     // period of each cycle
-    static final double MAX_POS     =  1.0;     // Maximum rotational position
-    static final double MIN_POS     =  -1.0;     // Minimum rotational position
-
-    // Define class members
-    //Servo boxmotor;
-    // double boxmotorposition = -1;
+    private void lateralleft() {
+        leftfront.setPower(-left);
+        rightfront.setPower(left);
+        rightback.setPower(-left);
+        leftback.setPower(left);
+    }
 
 
-    @Override
+    //Define class members
+    Servo   servo;
+    double  servoPosition = 0.4; // Start at halfway position
+    boolean rampUp = true;
+
+
+
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
+
+        servo = hardwareMap.servo.get("servo");
+        servo.setPosition(servoPosition);
 
         // Initialize the hardware variables. Note that the strings used here as parameters
         leftfront  = hardwareMap.get(DcMotor.class, "leftfront");
         rightfront = hardwareMap.get(DcMotor.class, "rightfront");
         rightback = hardwareMap.get(DcMotor.class, "rightback");
         leftback = hardwareMap.get(DcMotor.class, "leftback");
-        // Arm  = hardwareMap.get(DcMotor.class, "Arm");
         // boxmotor = hardwareMap.get(Servo.class, "boxmotor");
 
         // Most robots need the motor on one side to be reversed to drive forward
@@ -103,34 +120,18 @@ public class Autonomous1 extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        // run until the end of the match (driver presses STOP)
-        // Arm.setPower(1);
-        //sleep(2500);
-        //Arm.setPower(0);
-
-
-        //drive forward for 2 seconds
-        drivepower = 0.5;
-        lateralmovement();
-        telemetry.addData("Status", "Moving Forward");
+        right = 1;
+        lateralright();
+        telemetry.addData("Status", "Stop Program");
         telemetry.update();
         sleep(2000);
 
-        //stop motors
-        drivepower = 0.0;
-        lateralmovement();
-        telemetry.addData("Status", "Stopping");
-        telemetry.update();
-
-        //drive backwards for 2 seconds
         drivepower = -0.5;
         lateralmovement();
         telemetry.addData("Status", "Moving Backwards");
         telemetry.update();
-        sleep(2000);
+        sleep(200);
 
-        drivepower = 0.0;
-        lateralmovement();
         telemetry.addData("Status", "Stop Program");
         telemetry.update();
     }

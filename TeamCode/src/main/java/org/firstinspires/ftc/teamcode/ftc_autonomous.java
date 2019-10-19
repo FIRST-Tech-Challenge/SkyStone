@@ -90,7 +90,7 @@ public class ftc_autonomous extends LinearOpMode {
 
     //Define class members
     Servo   servo;
-    private double  position = -0.4; // Start at halfway position
+    double  servoPosition = 0.4; // Start at halfway position
     boolean rampUp = true;
 
 
@@ -98,6 +98,9 @@ public class ftc_autonomous extends LinearOpMode {
         public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
+
+        servo = hardwareMap.servo.get("servo");
+        servo.setPosition(servoPosition);
 
         // Initialize the hardware variables. Note that the strings used here as parameters
         leftfront  = hardwareMap.get(DcMotor.class, "leftfront");
@@ -129,7 +132,7 @@ public class ftc_autonomous extends LinearOpMode {
         lateralmovement();
         telemetry.addData("Status", "Moving Backword");
         telemetry.update();
-        sleep(1650);
+        sleep(1760);
 
         //stop motors
         drivepower = 0.0;
@@ -138,17 +141,29 @@ public class ftc_autonomous extends LinearOpMode {
         telemetry.update();
 
         // servomotors
-
-
+        servoPosition = 0.95;
+        servo.setPosition(servoPosition);
+        sleep(900);
 
         //drive backwards for 2 seconds
-        drivepower = -0.5;
+        drivepower = 0.5;
         lateralmovement();
         telemetry.addData("Status", "Moving Backwards");
         telemetry.update();
-        sleep(2000);
+        sleep(2300);
 
         drivepower = 0.0;
+        lateralmovement();
+        telemetry.addData("Status", "Stop Program");
+        telemetry.update();
+
+        servoPosition = 0.4;
+        servo.setPosition(servoPosition);
+        sleep(500);
+        drivepower = 0.0;
+
+
+
         lateralmovement();
         telemetry.addData("Status", "Stop Program");
         telemetry.update();

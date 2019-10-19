@@ -87,6 +87,13 @@ public class Hardware15203 {
         return unscaledPowers;
     }
 
+    void threadSleep(long milliseconds) {
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException e) {
+        }
+    }
+
     /*
                 VARIOUS FUNCTIONS EVEREST WROTE FOR AUTONOMOUS ROUTINES:
      - allDrive: sets all motors to a given power, condensing code needed to drive.
@@ -103,10 +110,9 @@ public class Hardware15203 {
         leftBackMotor.setPower(power);
         rightFrontMotor.setPower(power);
         rightBackMotor.setPower(power);
-        try {
-            Thread.sleep(milliseconds);
-        } catch (InterruptedException e) {
-        }
+
+        threadSleep(milliseconds);
+
         leftFrontMotor.setPower(0);
         leftBackMotor.setPower(0);
         rightFrontMotor.setPower(0);
@@ -120,10 +126,9 @@ public class Hardware15203 {
         //Back motors
         leftBackMotor.setPower(-power);
         rightBackMotor.setPower(power);
-        try {
-            Thread.sleep(milliseconds);
-        } catch (InterruptedException e) {
-        }
+
+        threadSleep(milliseconds);
+
         leftFrontMotor.setPower(0);
         leftBackMotor.setPower(0);
         rightFrontMotor.setPower(0);
@@ -136,10 +141,9 @@ public class Hardware15203 {
         //Back motors
         leftBackMotor.setPower(power);
         rightBackMotor.setPower(power);
-        try {
-            Thread.sleep(milliseconds);
-        } catch (InterruptedException e) {
-        }
+
+        threadSleep(milliseconds);
+
         leftFrontMotor.setPower(0);
         rightFrontMotor.setPower(0);
         //Back motors
@@ -150,9 +154,9 @@ public class Hardware15203 {
     public void garageLift (long milliseconds) {
         garageLeftServo.setPower(-1.0);
         garageRightServo.setPower(-1.0);
-        try {
-            Thread.sleep(milliseconds);
-        } catch (InterruptedException e) {}
+
+        threadSleep(milliseconds);
+
         garageLeftServo.setPower(0.0);
         garageRightServo.setPower(0.0);
     }
@@ -160,9 +164,9 @@ public class Hardware15203 {
     public void garagePlace (long milliseconds) {
         garageLeftServo.setPower(1.0);
         garageRightServo.setPower(1.0);
-        try {
-            Thread.sleep(milliseconds);
-        } catch (InterruptedException e) {}
+
+        threadSleep(milliseconds);
+
         garageLeftServo.setPower(0.0);
         garageRightServo.setPower(0.0);
     }

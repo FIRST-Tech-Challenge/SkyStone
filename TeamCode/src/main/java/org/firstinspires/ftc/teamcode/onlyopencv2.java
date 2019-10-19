@@ -11,6 +11,7 @@ import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
+import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -32,9 +33,9 @@ import java.util.List;
  * monitor: 640 x 480
  *
  */
-@Autonomous(name= "opencvtest1", group="Sky autonomous")
+@Autonomous(name= "onlyopencv2", group="Sky autonomous")
 //@Disabled
-public class onlyopencv extends LinearOpMode {
+public class onlyopencv2 extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     //    private DcMotor backLeft     = null; //rear left
@@ -188,9 +189,8 @@ public class onlyopencv extends LinearOpMode {
 
         enum Stage
         {//color difference. greyscale
-            detection,//includes outlines
-            THRESHOLD,//b&w
             RAW_IMAGE,//displays raw view
+            PROCESSED,
         }
 
         private Stage stageToRenderToViewport = Stage.RAW_IMAGE;
@@ -232,104 +232,35 @@ public class onlyopencv extends LinearOpMode {
             //lower cb = more blue = skystone = white
             //higher cb = less blue = yellow stone = grey
             Imgproc.cvtColor(input, yCbCrChan2Mat, Imgproc.COLOR_RGB2YCrCb);//converts rgb to ycrcb
-            Core.extractChannel(yCbCrChan2Mat, yCbCrChan2Mat, 2);//takes cb difference and stores
-
-            //b&w
-            Imgproc.threshold(yCbCrChan2Mat, thresholdMat, 102, 255, Imgproc.THRESH_BINARY_INV);
-
-            //outline/contour
-            Imgproc.findContours(thresholdMat, contoursList, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
-            yCbCrChan2Mat.copyTo(all);//copies mat object
-            //Imgproc.drawContours(all, contoursList, -1, new Scalar(255, 0, 0), 3, 8);//draws blue contours
 
 
-            //get values from frame
-            double[] pixMid = thresholdMat.get((int)(input.rows()* midPos[1]), (int)(input.cols()* midPos[0]));//gets value at circle
-            valMid = pixMid[0];
+            System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+            Mat template;
+            String filePath="C:\\Users\\mesutpiskin\\Desktop\\Object Detection\\Template Matching\\Sample Image\\";
+            //Load image file
+            template=Imgcodecs.imread(filePath+"pic.png");
 
-            double[] pixLeft = thresholdMat.get((int)(input.rows()* leftPos[1]), (int)(input.cols()* leftPos[0]));//gets value at circle
-            valLeft = pixLeft[0];
-
-            double[] pixRight = thresholdMat.get((int)(input.rows()* rightPos[1]), (int)(input.cols()* rightPos[0]));//gets value at circle
-            valRight = pixRight[0];
-
-
-
-            //create three points
-            Point point1 = new Point((int)(input.cols()* midPos[0]), (int)(input.rows()* midPos[1]));
-            Point point2 = new Point((int)(input.cols()* leftPos[0]), (int)(input.rows()* leftPos[1]));
-            Point point3 = new Point((int)(input.cols()* rightPos[0]), (int)(input.rows()* rightPos[1]));
-
-            //draw circles on those points
-            Imgproc.circle(all, point1,5, new Scalar( 255, 0, 0 ),1 );//draws circle
-            Imgproc.circle(all, point2,5, new Scalar( 255, 0, 0 ),1 );//draws circle
-            Imgproc.circle(all, point3,5, new Scalar( 255, 0, 0 ),1 );//draws circle
+            Mat outputImage=new Mat();
+            int machMethod=Imgproc.TM_CCOEFF;
+            //Template matching method
+            Imgproc.matchTemplate(input, template, outputImage, machMethod);
 
 
-            MatOfPoint2f approxCurve = new MatOfPoint2f();
-            //For each contour found
-            for (int i=0; i<contoursList.size(); i++)
-            {
-                //Convert contours(i) from MatOfPoint to MatOfPoint2f
-                MatOfPoint2f contour2f = new MatOfPoint2f( contoursList.get(i).toArray() );
-                //Processing on mMOP2f1 which is in type MatOfPoint2f
-                double approxDistance = Imgproc.arcLength(contour2f, true)*0.02;
-                Imgproc.approxPolyDP(contour2f, approxCurve, approxDistance, true);
+            Core.MinMaxLocResult mmr = Core.minMaxLoc(outputImage);
+            Point matchLoc=mmr.maxLoc;
+            //Draw rectangle on result image
+            Imgproc.rectangle(input, matchLoc, new Point(matchLoc.x + template.cols(),
+                    matchLoc.y + template.rows()), new Scalar(255, 255, 255));
 
-                //Convert back to MatOfPoint
-                MatOfPoint points = new MatOfPoint(approxCurve.toArray() );
-                // Get bounding rect of contour
-                Rect rect = Imgproc.boundingRect(points);
+            Imgcodecs.imwrite(filePath+"pic.png", input);
+            System.out.println("Complated.");
 
 
-                //if the contour is in specified location AND one of the three points' value = 0, 0 means skystone
-                if((rect.contains(point1) || rect.contains(point2) || rect.contains(point3)) && (valMid == 0 || valLeft == 0 || valRight == 0)) {
-                    Imgproc.rectangle(all,
-                            new Point(rect.x, rect.y),
-                            new Point(rect.x + rect.width, rect.y + rect.height),
-                            new Scalar(255, 0, 0, 255), 3);
-                    break;
-                }
-
-            }
-
-            //draw 3 rectangles
-            Imgproc.rectangle(//1-3
-                    all,
-                    new Point(
-                            input.cols()/8,
-                            input.rows()*4.5/8),
-                    new Point(
-                            input.cols()*(2.9f/8f),
-                            input.rows()*(5.5f/8f)),
-                    new Scalar(0, 255, 0), 3);
-            Imgproc.rectangle(//3-5
-                    all,
-                    new Point(
-                            input.cols()*(3.1/8),
-                            input.rows()*4.5/8),
-                    new Point(
-                            input.cols()*(4.9f/8f),
-                            input.rows()*(5.5f/8f)),
-                    new Scalar(0, 255, 0), 3);
-            Imgproc.rectangle(//5-7
-                    all,
-                    new Point(
-                            input.cols()*(5.1/8),
-                            input.rows()*4.5/8),
-                    new Point(
-                            input.cols()*(7f/8f),
-                            input.rows()*(5.5f/8f)),
-                    new Scalar(0, 255, 0), 3);
 
             switch (stageToRenderToViewport)
             {
-                case THRESHOLD:
-                {
-                    return thresholdMat;
-                }
 
-                case detection:
+                case PROCESSED:
                 {
                     return all;
                 }

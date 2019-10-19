@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.lib.TestableGyro;
 import org.westtorrancerobotics.lib.Location;
 import org.westtorrancerobotics.lib.MecanumController;
 import org.westtorrancerobotics.lib.MecanumDrive;
@@ -33,10 +32,10 @@ public class DriveTrain {
     private DriveTrain() {}
 
     public void init(HardwareMap hardwareMap) {
-        leftFront  = hardwareMap.get(DcMotorEx.class, "left_front");
-        leftBack  = hardwareMap.get(DcMotorEx.class, "left_back");
-        rightFront = hardwareMap.get(DcMotorEx.class, "right_front");
-        rightBack = hardwareMap.get(DcMotorEx.class, "right_back");
+        leftFront  = hardwareMap.get(DcMotorEx.class, "leftFront");
+        leftBack  = hardwareMap.get(DcMotorEx.class, "leftBack");
+        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
+        rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
 
         leftFront.setDirection(DcMotor.Direction.FORWARD);
         leftBack.setDirection(DcMotor.Direction.FORWARD);
@@ -50,9 +49,9 @@ public class DriveTrain {
 
         gyro = hardwareMap.get(ModernRoboticsI2cGyro.class, "gyro");
 
-        lineSpotter = hardwareMap.get(ColorSensor.class, "line_color");
+        lineSpotter = hardwareMap.get(ColorSensor.class, "driveColor");
 
-        MecanumDrive wheels = new MecanumDriveImpl(leftFront, leftBack, rightFront, rightBack, TestableGyro.generate(gyro));
+        MecanumDrive wheels = new MecanumDriveImpl(leftFront, leftBack, rightFront, rightBack, gyro);
         mecanumController = new MecanumController(wheels);
     }
 

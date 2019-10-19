@@ -73,6 +73,17 @@ public class Robot4100Generation1_BlueBuildSiteBasic extends DarbotsBasicOpMode<
         if(!waitForDrive()){
             return;
         }
+
+        this.m_RobotCore.getChassis().replaceTask(
+                this.m_RobotCore.getChassis().getFixedXDistanceTask(
+                        30,
+                        0.4
+                )
+        );
+        if(!waitForDrive()){
+            return;
+        }
+
         if(!fixAng()){
             return;
         }

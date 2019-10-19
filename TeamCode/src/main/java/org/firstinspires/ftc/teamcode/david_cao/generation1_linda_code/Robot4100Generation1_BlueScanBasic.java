@@ -30,7 +30,6 @@ public class Robot4100Generation1_BlueScanBasic extends DarbotsBasicOpMode {
         this.m_RobotCore = new Robot4100Generation1_LindaCore(this.hardwareMap);
         RobotCamera Camera = new RobotOnPhoneCamera(this,false, RobotOnPhoneCamera.PhoneCameraDirection.Back, Robot4100Common.VUFORIA_LICENSE);
         this.m_SkyStoneDetection = new SkyStoneStoneDifferentiation(Camera,this.hardwareMap,Robot4100Generation1_Settings.AUTONOMOUS_TENSORFLOW_PREVIEW, Robot4100Generation1_Settings.AUTONOMOUS_MINIMUM_CONFIDENCE);
-        this.m_SkyStoneDetection.setActivated(true);
     }
 
     @Override
@@ -123,6 +122,23 @@ public class Robot4100Generation1_BlueScanBasic extends DarbotsBasicOpMode {
             return;
         }
         waitForGamepadX();
+
+        this.m_SkyStoneDetection.setActivated(true);
+        this.getRobotCore().getChassis().replaceTask(
+                this.getRobotCore().getChassis().getFixedXDistanceTask(
+                        -5,
+                        0.1
+                )
+        );
+        this.getRobotCore().getChassis().addTask(
+                this.getRobotCore().getChassis().getFixedXDistanceTask(
+                        5,
+                        0.1
+                )
+        );
+        if (!waitForDrive()) {
+            return;
+        }
 
         if(!fixAng()){
             return;

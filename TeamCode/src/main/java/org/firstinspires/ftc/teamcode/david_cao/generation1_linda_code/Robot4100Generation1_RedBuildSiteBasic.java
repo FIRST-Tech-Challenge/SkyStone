@@ -71,9 +71,25 @@ public class Robot4100Generation1_RedBuildSiteBasic extends DarbotsBasicOpMode<R
         if(!waitForDrive()){
             return;
         }
+
         if(!fixAng()){
             return;
         }
+
+        this.m_RobotCore.getChassis().replaceTask(
+                this.m_RobotCore.getChassis().getFixedXDistanceTask(
+                        -30,
+                        0.4
+                )
+        );
+        if(!waitForDrive()){
+            return;
+        }
+
+        if(!fixAng()){
+            return;
+        }
+
         this.m_RobotCore.getChassis().replaceTask(
                 this.m_RobotCore.getChassis().getFixedZDistanceTask(
                         -35,
@@ -123,7 +139,7 @@ public class Robot4100Generation1_RedBuildSiteBasic extends DarbotsBasicOpMode<R
 
         this.m_RobotCore.getChassis().replaceTask(
                 this.m_RobotCore.getChassis().getFixedXDistanceTask(
-                        -35,
+                        -45,
                         0.2
                 )
         );

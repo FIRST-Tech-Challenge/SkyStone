@@ -31,7 +31,6 @@ public class Robot4100Generation1_RedScanDouble extends DarbotsBasicOpMode {
         this.m_RobotCore = new Robot4100Generation1_LindaCore(this.hardwareMap);
         RobotCamera Camera = new RobotOnPhoneCamera(this,false, RobotOnPhoneCamera.PhoneCameraDirection.Back, Robot4100Common.VUFORIA_LICENSE);
         this.m_SkyStoneDetection = new SkyStoneStoneDifferentiation(Camera,this.hardwareMap,Robot4100Generation1_Settings.AUTONOMOUS_TENSORFLOW_PREVIEW, Robot4100Generation1_Settings.AUTONOMOUS_MINIMUM_CONFIDENCE);
-        this.m_SkyStoneDetection.setActivated(true);
     }
 
     @Override
@@ -138,6 +137,23 @@ public class Robot4100Generation1_RedScanDouble extends DarbotsBasicOpMode {
             return;
         }
         waitForGamepadX();
+
+        this.m_SkyStoneDetection.setActivated(true);
+        this.getRobotCore().getChassis().replaceTask(
+                this.getRobotCore().getChassis().getFixedXDistanceTask(
+                        -5,
+                        0.1
+                )
+        );
+        this.getRobotCore().getChassis().addTask(
+                this.getRobotCore().getChassis().getFixedXDistanceTask(
+                        5,
+                        0.1
+                )
+        );
+        if (!waitForDrive()) {
+            return;
+        }
 
         if(!fixAng()){
             return;
@@ -258,6 +274,9 @@ public class Robot4100Generation1_RedScanDouble extends DarbotsBasicOpMode {
 
 
         if(recognitionResult != 3) {
+            if(!fixAng()){
+                return;
+            }
 
             this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedZDistanceTask(
                     (105 + ((2+3) *LENGTH_OF_EACH_STONE)),
@@ -269,31 +288,33 @@ public class Robot4100Generation1_RedScanDouble extends DarbotsBasicOpMode {
 
 
             this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedZDistanceTask(
-                    40,
+                    60,
                     0.3
             ));
             if (!waitForDrive()) {
                 return;
             }
             waitForGamepadX();
-            if (!fixAng()) {
-                return;
-            }
+
 
             this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedZDistanceTask(
-                    -15,
+                    -10,
                     0.3
             ));
             if (!waitForDrive()) {
                 return;
             }
             waitForGamepadX();
+
+            if(!fixAng()){
+                return;
+            }
 
             double secondStepExtraDistance = 10;
             if(recognitionResult == 1){
                 secondStepExtraDistance = 0;
                 this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedZDistanceTask(
-                        LENGTH_OF_EACH_STONE,
+                        -LENGTH_OF_EACH_STONE,
                         0.2
                 ));
                 if (!waitForDrive()) {
@@ -353,10 +374,6 @@ public class Robot4100Generation1_RedScanDouble extends DarbotsBasicOpMode {
             this.getRobotCore().setAutonomousDragStoneServoToDrag(false);
             sleep(300);
             waitForGamepadX();
-        }
-
-        if(!fixAng()){
-            return;
         }
 
         this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedZDistanceTask(

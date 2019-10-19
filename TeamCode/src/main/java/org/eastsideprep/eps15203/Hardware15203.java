@@ -69,9 +69,15 @@ public class Hardware15203 {
 
         }
 
+         for (CRServo c : allCRServos) {
+             c.setPower(0.0);
+         }
 
 
     }
+
+
+
     public double[] getDrivePowersFromAngle(double angle) {
         double[] unscaledPowers = new double[4];
         unscaledPowers[0] = Math.sin(angle + Math.PI / 4);
@@ -80,6 +86,17 @@ public class Hardware15203 {
         unscaledPowers[3] = unscaledPowers[0];
         return unscaledPowers;
     }
+
+    /*
+                VARIOUS FUNCTIONS EVEREST WROTE FOR AUTONOMOUS ROUTINES:
+     - allDrive: sets all motors to a given power, condensing code needed to drive.
+     - turn: turns in place at a given power for a given number of
+        milliseconds. There is no way to input degrees.
+     - spinTurn: a project of Ben's that is still in progress. When finished, it will
+        allow the robot to turn on a pivot instead of in place.
+     - garageLift and garagePlace: turns the CR servos on the garage mechanism in
+        the directions needed to lift or release a block for a given number of milliseconds.
+     */
 
     public void allDrive(double power, int milliseconds){
         leftFrontMotor.setPower(power);
@@ -129,6 +146,28 @@ public class Hardware15203 {
         leftBackMotor.setPower(0);
         rightBackMotor.setPower(0);
     }
+
+    public void garageLift (long milliseconds) {
+        garageLeftServo.setPower(-1.0);
+        garageRightServo.setPower(-1.0);
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException e) {}
+        garageLeftServo.setPower(0.0);
+        garageRightServo.setPower(0.0);
+    }
+
+    public void garagePlace (long milliseconds) {
+        garageLeftServo.setPower(1.0);
+        garageRightServo.setPower(1.0);
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException e) {}
+        garageLeftServo.setPower(0.0);
+        garageRightServo.setPower(0.0);
+    }
+
+
 
 }
 

@@ -758,8 +758,9 @@ public class Robot {
 
                 }
             }
+
         }
-        return "NONE";
+        return "center";
     }
 
 }

@@ -36,7 +36,8 @@ public class TestVuforia extends AutoBase {
         // start odometry
         Position2D position2D = new Position2D(robot);
         position2D.startOdometry();
-
+        robot.resetEncoders();
+        robot.changeRunModeToUsingEncoder();
         telemetry.addLine("Got into runopmode");
 
         robot.moveToPoint(12 ,0,1,1,Math.toRadians(0));
@@ -49,8 +50,8 @@ public class TestVuforia extends AutoBase {
         telemetry.addLine("go to point");
         int position = 0;
         String str1ng = robot.detectTensorflow();
-        robot.intakeRight.setPower(1);
-        robot.intakeLeft.setPower(1);
+        robot.intakeRight.setPower(0.8);
+        robot.intakeLeft.setPower(0.8);
 
         if (str1ng.equals("right")) {
             robot.moveToPoint(39, 9, 0.45, 0.5, Math.toRadians(0));

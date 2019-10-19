@@ -8,6 +8,7 @@ public class Robot4100Generation1_Settings {
     //------------Autonomous Settings------------
     public static final double AUTONOMOUS_MINIMUM_CONFIDENCE = 0.5;
     public static final double AUTONOMOUS_LENGTH_FOR_EACH_STONE = 20;
+    public static final boolean AUTONOMOUS_TENSORFLOW_PREVIEW = true;
     //------------End of Autonomous Settings------------
 
     //------------TeleOp Settings------------

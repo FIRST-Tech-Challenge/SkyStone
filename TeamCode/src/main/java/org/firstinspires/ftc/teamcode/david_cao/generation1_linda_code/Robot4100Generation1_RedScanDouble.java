@@ -30,7 +30,7 @@ public class Robot4100Generation1_RedScanDouble extends DarbotsBasicOpMode {
     public void hardwareInitialize() {
         this.m_RobotCore = new Robot4100Generation1_LindaCore(this.hardwareMap);
         RobotCamera Camera = new RobotOnPhoneCamera(this,false, RobotOnPhoneCamera.PhoneCameraDirection.Back, Robot4100Common.VUFORIA_LICENSE);
-        this.m_SkyStoneDetection = new SkyStoneStoneDifferentiation(Camera,this.hardwareMap,true, Robot4100Generation1_Settings.AUTONOMOUS_MINIMUM_CONFIDENCE);
+        this.m_SkyStoneDetection = new SkyStoneStoneDifferentiation(Camera,this.hardwareMap,Robot4100Generation1_Settings.AUTONOMOUS_TENSORFLOW_PREVIEW, Robot4100Generation1_Settings.AUTONOMOUS_MINIMUM_CONFIDENCE);
         this.m_SkyStoneDetection.setActivated(true);
     }
 

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.david_cao.generation1_linda_code;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.darbots.darbotsftclib.libcore.OpModes.DarbotsBasicOpMode;
@@ -7,6 +8,7 @@ import org.darbots.darbotsftclib.libcore.tasks.servo_tasks.motor_powered_servo_t
 import org.darbots.darbotsftclib.libcore.templates.RobotCore;
 
 @TeleOp(name = "4100Gen1-Tester-dcao",group="4100")
+@Disabled
 public class Robot4100Generation1_CompetitionReset extends DarbotsBasicOpMode {
     private Robot4100Generation1_LindaCore m_RobotCore;
     @Override

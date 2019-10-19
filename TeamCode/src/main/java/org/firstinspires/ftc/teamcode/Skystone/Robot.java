@@ -184,7 +184,7 @@ public class Robot {
 
         while (linearOpMode.opModeIsActive()){
             turnMovement = 0.77 * (targetHeadingRadians - anglePos) / (Math.abs(targetHeadingRadians - startHeading));
-            if (Math.abs(targetHeadingRadians - anglePos) < Math.toRadians(1)){
+            if (Math.abs(angleWrap(targetHeadingRadians - anglePos)) < Math.toRadians(1)){
                 brakeRobot();
                 break;
             }
@@ -618,7 +618,7 @@ public class Robot {
             yMovement = yPower * moveSpeed;
             turnMovement = Range.clip(relativeTurnAngle / Math.toRadians(30), -1, 1) * turnSpeed;
 
-            double decelerationScaleFactor = Range.clip(distanceToTarget/15,-1,1);
+            double decelerationScaleFactor = Range.clip(distanceToTarget/8,-1,1);
 
             applyMove(decelerationScaleFactor);
         }
@@ -707,7 +707,7 @@ public class Robot {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minimumConfidence = 0.5;
+        tfodParameters.minimumConfidence = 0.50;
         TFObjectDetector tfod;
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
@@ -719,43 +719,39 @@ public class Robot {
         TFObjectDetector tfod;
         tfod = initTfod(vuforia);
         tfod.activate();
-        while (linearOpMode.opModeIsActive()){
-            if (tfod != null) {
-                // getUpdatedRecognitions() will return null if no new information is available since
-                // the last time that call was made.
-                List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-                if (updatedRecognitions != null) {
-                    telemetry.addData("# Object Detected", updatedRecognitions.size());
-                    telemetry.update();
-                    // step through the list of recognitions and display boundary info.
-                    int i = 0;
+        long startTime = SystemClock.elapsedRealtime();
 
-                    for (Recognition recognition : updatedRecognitions) {
-                        float value = (recognition.getTop()+recognition.getBottom())/2;
+        while (linearOpMode.opModeIsActive() && SystemClock.elapsedRealtime()-startTime<5000){
+
+            List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+            if (updatedRecognitions != null) {
+                telemetry.addData("# Object Detected", updatedRecognitions.size());
+                telemetry.update();
+
+                for (Recognition recognition : updatedRecognitions) {
+                    float value = (recognition.getTop()+recognition.getBottom())/2;
+                    telemetry.addLine(Float.toString(value));
+                    telemetry.update();
+
+                    if(value <600){
+                        telemetry.addLine("right");
                         telemetry.addLine(Float.toString(value));
                         telemetry.update();
-
-                        if(value <475){
-                            telemetry.addLine("right");
-                            telemetry.addLine(Float.toString(value));
-                            telemetry.update();
-                            linearOpMode.sleep(2000);
-                            return "right";
-                        }else if(value <800){
-                            telemetry.addLine("center");
-                            telemetry.addLine(Float.toString(value));
-                            telemetry.update();
-                            linearOpMode.sleep(2000);
-                            return "center";
-                        }else{
-                            telemetry.addLine("left");
-                            telemetry.addLine(Float.toString(value));
-                            telemetry.update();
-                            linearOpMode.sleep(2000);
-                            return "left";
-                        }
+                        linearOpMode.sleep(2000);
+                        return "right";
+                    }else if(value <800){
+                        telemetry.addLine("center");
+                        telemetry.addLine(Float.toString(value));
+                        telemetry.update();
+                        linearOpMode.sleep(2000);
+                        return "center";
+                    }else{
+                        telemetry.addLine("left");
+                        telemetry.addLine(Float.toString(value));
+                        telemetry.update();
+                        linearOpMode.sleep(2000);
+                        return "left";
                     }
-
                 }
             }
 

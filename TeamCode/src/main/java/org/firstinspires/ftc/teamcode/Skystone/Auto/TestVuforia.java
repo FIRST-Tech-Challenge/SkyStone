@@ -40,7 +40,7 @@ public class TestVuforia extends AutoBase {
         robot.changeRunModeToUsingEncoder();
         telemetry.addLine("Got into runopmode");
 
-        robot.moveToPoint(12 ,0,1,1,Math.toRadians(0));
+        robot.moveToPoint(11 ,0,0.6,1,Math.toRadians(0));
         robot.absoluteTurn(0, 0.7);
         robot.absoluteTurn(Math.toRadians(0),0.5);
 
@@ -50,23 +50,30 @@ public class TestVuforia extends AutoBase {
         telemetry.addLine("go to point");
         int position = 0;
         String str1ng = robot.detectTensorflow();
-        robot.intakeRight.setPower(0.8);
-        robot.intakeLeft.setPower(0.8);
+        robot.intakeRight.setPower(1);
+        robot.intakeLeft.setPower(1);
 
         if (str1ng.equals("right")) {
-            robot.moveToPoint(39, 9, 0.45, 0.5, Math.toRadians(0));
+            robot.moveToPoint(39, 9, 0.55, 0.5, Math.toRadians(0));
         } else if (str1ng.equals("left")){
-            robot.moveToPoint(39, -9, 0.45, 0.5, Math.toRadians(0));
+            robot.moveToPoint(39, -9, 0.55, 0.5, Math.toRadians(0));
         } else {
-            robot.moveToPoint(39, 0, 0.45, 0.5, Math.toRadians(0));
+            robot.moveToPoint(39, 0, 0.55, 0.5, Math.toRadians(0));
         }
+        telemetry.addLine("Done with detect");
+        telemetry.update();
+        robot.intakeLeft.setPower(0);
+        robot.intakeRight.setPower(0);
 
+        robot.moveToPoint(15 ,0,0.6,1,Math.toRadians(180));
+        robot.moveToPoint(20, 35, 1, 1, Math.toRadians(90));
+        telemetry.addLine("Done with move");
+        telemetry.update();
 //        telemetry.addData("Position: -1:Left, 0:Center, 1:Right", position);
 //        telemetry.update();
 //        telemetry.addLine("go back");
 //        robot.moveToPoint(7,0,0.5,0.5, Math.toRadians(180));
-//        robot.finalTurn(Math.toRadians(90));
-
+//        robot.finalTurn(Math.toRadians(90))
 //        telemetry.addLine("go under lander");
 //        PathPoints goUnderLander = new PathPoints(underLander, 9);
 //        robot.moveFollowCurve(goUnderLander.targetPoints);

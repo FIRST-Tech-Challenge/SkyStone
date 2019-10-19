@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-@Autonomous(name = "Building Zone Red")
+@Autonomous(name = "Loading Zone Red")
 public class MM_BuildingZone extends LinearOpMode {
 
     Robot robot = new Robot();

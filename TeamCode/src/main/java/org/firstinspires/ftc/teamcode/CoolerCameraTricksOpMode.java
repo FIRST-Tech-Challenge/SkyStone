@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 public class CoolerCameraTricksOpMode extends LinearOpMode {
 
-    FourWheelsDriveBot robot = new FourWheelsDriveBot(this);
+    TensorFlowBot robot = new TensorFlowBot(this);
 
     @Override
     public void runOpMode() {
@@ -22,7 +22,7 @@ public class CoolerCameraTricksOpMode extends LinearOpMode {
 
         robot.driveStraightByDistance( robot.DIRECTION_RIGHT, 500);
 
-        robot.driveUntilSeeSkystone(robot.DIRECTION_FORWARD, -0.3);
+        robot.driveUntilSeeSkystone(robot.DIRECTION_FORWARD, -0.2);
     }
 
 }

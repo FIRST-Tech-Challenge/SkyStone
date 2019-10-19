@@ -106,6 +106,8 @@ public class Simple15203 extends LinearOpMode {
                 robot.garageLeftServo.setPower(0.0);
                 robot.garageRightServo.setPower(0.0);
             }
+
+
             // Send telemetry message to signify robot running;
             telemetry.addLine()
                     .addData("Status", "Robot is running", 0);

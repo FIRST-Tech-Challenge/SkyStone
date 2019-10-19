@@ -69,11 +69,12 @@ public class Hardware15203 {
 
         }
 
+         /* UNCOMMENT THIS WHEN GARAGE IS ATTATCHED
          for (CRServo c : allCRServos) {
              c.setPower(0.0);
          }
 
-
+        */
     }
 
 

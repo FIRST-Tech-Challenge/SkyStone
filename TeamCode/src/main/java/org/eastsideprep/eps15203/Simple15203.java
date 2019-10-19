@@ -96,6 +96,7 @@ public class Simple15203 extends LinearOpMode {
                     robot.allMotors[i].setPower(0.0);
             }
 
+
             if(gamepad1.y){
                 robot.garageRightServo.setPower(-1.0);
                 robot.garageLeftServo.setPower(-1.0);
@@ -108,9 +109,15 @@ public class Simple15203 extends LinearOpMode {
             }
 
 
+            if(gamepad1.x) {
+                robot.turn(0.5, 785);
+            } else if (gamepad1.b) {
+                robot.turn(-0.5, 785);
+            }
+
+
+
             // Send telemetry message to signify robot running;
-            telemetry.addLine()
-                    .addData("Status", "Robot is running", 0);
 
             telemetry.addLine();
             telemetry.update();

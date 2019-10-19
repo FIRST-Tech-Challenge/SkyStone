@@ -109,12 +109,13 @@ public class Simple15203 extends LinearOpMode {
             }
 
 
+            /*
             if(gamepad1.x) {
                 robot.turn(0.5, 785);
             } else if (gamepad1.b) {
                 robot.turn(-0.5, 785);
             }
-
+            */
 
 
             // Send telemetry message to signify robot running;

@@ -43,10 +43,10 @@ public class Robot {
         this.frontRight = hwMap.dcMotor.get("frontRight");
 
         // Drive Motor Direction
-        this.rearLeft.setDirection(DcMotor.Direction.FORWARD);
-        this.frontLeft.setDirection(DcMotor.Direction.FORWARD);
-        this.rearRight.setDirection(DcMotor.Direction.REVERSE);
-        this.frontRight.setDirection(DcMotor.Direction.REVERSE);
+        this.rearLeft.setDirection(DcMotor.Direction.REVERSE);
+        this.frontLeft.setDirection(DcMotor.Direction.REVERSE);
+        this.rearRight.setDirection(DcMotor.Direction.FORWARD);
+        this.frontRight.setDirection(DcMotor.Direction.FORWARD);
 
         // waffle mover instantiation and direction
         this.waffleMover = hwMap.dcMotor.get("waffleMover");

@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import static java.lang.Thread.*;
+
 @Autonomous(name = "Building Zone Red")
 public class MM_BuildingZoneRed_1 extends LinearOpMode {
 
@@ -17,39 +19,38 @@ public class MM_BuildingZoneRed_1 extends LinearOpMode {
 
         waitForStart();
 
-        robot.driveForwardDistance(47.0 - robot.ROBOT_RETRACTED_LENGTH, speed, this);
-
-        // extend the waffle mover
-        wait(500);
-        robot.waffleMover.setPower(0.5);
-        wait(1000);
-        robot.waffleMover.setPower(0);
-
-        // drive backwards
         robot.driveForwardDistance(47.0 - robot.ROBOT_RETRACTED_LENGTH, -speed, this);
 
+        // extend the waffle mover
+        Thread.sleep(500);
+        robot.waffleMover.setPower(0.5);
+        Thread.sleep(500);
+
+        // drive backwards
+        robot.driveForwardDistance(50.0, 0.75, this);
+
         // retract the waffle mover
-        wait(500);
+        Thread.sleep(500);
         robot.waffleMover.setPower(-0.5);
-        wait(1000);
+        Thread.sleep(1000);
         robot.waffleMover.setPower(0);
 
         // strafe out from behind the foundation
-        robot.strafeTime(-0.25, 3000);
+        robot.strafeTime(0.5, 5000);
 
         // drive forward to turn and park under the skybridge
-        robot.driveForwardDistance(12.0, speed, this);
+        robot.driveForwardDistance(10.0, -speed, this);
 
         // if parking close to center, move forward more
         if (parkingPosition == ParkingPosition.Close) {
-            robot.driveForwardDistance(12.0, speed, this);
+            robot.driveForwardDistance(10.0, -speed, this);
         }
 
         // turn towards skybridge
-        robot.turnRight(-speed, 1475);
+        robot.turnRight(speed, 600);
 
         // park under skybridge
-        robot.driveForwardDistance(45.0, speed, this);
+        robot.driveForwardDistance(10.0, -speed, this);
     }
 }
 

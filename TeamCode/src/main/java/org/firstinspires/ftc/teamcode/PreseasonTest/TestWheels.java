@@ -6,8 +6,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 import org.firstinspires.ftc.teamcode.All.HardwareMap;
 
-@Autonomous(name="Test Config", group="Test")       //Dashboard: https://192.168.49.1:8080/dash
+@Autonomous(name="Test Encoders", group="Test")       //Dashboard: https://192.168.49.1:8080/dash
 public class TestWheels extends LinearOpMode {
+    private static double power = 0.5;
+
     @Override
     public void runOpMode(){
         HardwareMap map = new HardwareMap(hardwareMap);
@@ -20,19 +22,41 @@ public class TestWheels extends LinearOpMode {
 
         waitForStart();
 
-        map.frontLeft.setPower(.5);
-        map.frontRight.setPower(-.5);
-        map.backLeft.setPower(.5);
-        map.backRight.setPower(-.5);
-
-        sleep(500);
-
-        map.frontLeft.setPower(0);
-        map.frontRight.setPower(0);
-        map.backLeft.setPower(0);
-        map.backRight.setPower(0);
-
         while(opModeIsActive()){
+            if(gamepad1.y && power < 1)
+                power += 0.1;
+            if(gamepad1.a && power > 0.1)
+                power -= 0.1;
+
+            if(power < 0.1)
+                power = 0.1;
+            else if(power > 1)
+                power = 1;
+
+            if(gamepad1.left_stick_y == 1){
+                map.frontLeft.setPower(power);
+                map.backLeft.setPower(power);
+            } else if(gamepad1.left_stick_y == -1){
+                map.frontLeft.setPower(-power);
+                map.backLeft.setPower(-power);
+            } else {
+                map.frontLeft.setPower(0);
+                map.backLeft.setPower(0);
+            }
+
+            if(gamepad1.right_stick_y == 1){
+                map.frontRight.setPower(-power);
+                map.backRight.setPower(-power);
+            } else if(gamepad1.right_stick_y == -1){
+                map.frontRight.setPower(power);
+                map.backRight.setPower(power);
+            } else {
+                map.frontRight.setPower(0);
+                map.backRight.setPower(0);
+            }
+
+            telemetry.addData("Wheel Power", power);
+            telemetry.addData("","-------------------");
             telemetry.addData("LeftForward", map.leftForward.getVoltage());
             telemetry.addData("RightForward", map.rightForward.getVoltage());
             telemetry.addData("Sideways", map.sideways.getVoltage());
@@ -48,6 +72,7 @@ public class TestWheels extends LinearOpMode {
             telemetry.addData("LeftDebug", HardwareMap.track.getEncoderDebug().get(1));
             telemetry.addData("RightDebug", HardwareMap.track.getEncoderDebug().get(2));
             telemetry.addData("SidewaysDebug", HardwareMap.track.getEncoderDebug().get(3));
+            
             telemetry.update();
         }
     }

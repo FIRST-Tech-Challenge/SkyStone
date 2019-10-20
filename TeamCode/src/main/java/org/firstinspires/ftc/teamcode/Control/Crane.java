@@ -62,11 +62,6 @@ public class Crane {
                 case claw:
                     setupClaw();
                     break;
-                case bSystem:
-                    setupRack();
-                    setupLinearSlides();
-                    setupClaw();
-                    break;
             }
 
             i.append(type.name()).append(" ");
@@ -173,8 +168,7 @@ public class Crane {
     public void setupClaw() throws InterruptedException {
         rack = motor(racks, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.FLOAT);
         linear = motor(linears, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.BRAKE);
-
-        motorDriveMode(EncoderMode.ON, rack, linear);
+        encoder(EncoderMode.ON, rack, linear);
     }
 
     //-----------------------HARDWARE SETUP FUNCTIONS---------------------------------------
@@ -562,7 +556,7 @@ public class Crane {
         ON, OFF;
     }
     public enum setupType{
-        autonomous, teleop, endgame, drive, camera, claw, bSystem;
+        autonomous, teleop, endgame, drive, camera, claw;
     }
 
     //-------------------SET FUNCTIONS--------------------------------

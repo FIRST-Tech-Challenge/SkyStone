@@ -40,11 +40,11 @@ public class Robot implements AutoCloseable {
 
     public void init(HardwareMap hardwareMap) {
         driveTrain.init(hardwareMap);
-//        foundationGrabber.init(hardwareMap);
-//        lift.init(hardwareMap);
-//        stoneManipulator.init(hardwareMap);
+        foundationGrabber.init(hardwareMap);
+        lift.init(hardwareMap);
+        stoneManipulator.init(hardwareMap);
         camera.init(hardwareMap);
-        phone.init(hardwareMap);
+//        phone.init(hardwareMap);
         expansionHubs = ExpansionHub.getAvailableHubs(hardwareMap);
     }
 

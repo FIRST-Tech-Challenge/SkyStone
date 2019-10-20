@@ -41,6 +41,8 @@ import com.qualcomm.hardware.lynx.commands.standard.LynxSetModuleLEDColorCommand
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;

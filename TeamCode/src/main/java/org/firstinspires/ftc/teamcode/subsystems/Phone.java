@@ -81,11 +81,15 @@ public class Phone {
     }
 
     public void stopGyro() {
-        gyro.stopListening();
+        if (gyro != null) {
+            gyro.stopListening();
+        }
     }
 
     public void stopTextToSpeech() {
-        wordSpeaker.shutdown();
+        if (wordSpeaker != null) {
+            wordSpeaker.shutdown();
+        }
     }
 
     public double getGyroAngle() {
@@ -93,7 +97,7 @@ public class Phone {
     }
 
     public boolean hasGyro() {
-        return gyro.isAvailable();
+        return gyro != null && gyro.isAvailable();
     }
 
     public void toast(String str, int time) {
@@ -107,7 +111,7 @@ public class Phone {
     public void queueSoundFile(String fileName) {
         sounds++;
         SoundPlayer.getInstance().startPlaying(context,
-                context.getResources().getIdentifier("ss_laser_burst", "raw", context.getPackageName()), soundParams,
+                context.getResources().getIdentifier(fileName, "raw", context.getPackageName()), soundParams,
                 null,() -> sounds--
         );
     }
@@ -126,11 +130,15 @@ public class Phone {
     }
 
     public void setBackgroundColor(int r, int g, int b) {
-        relativeLayout.setBackgroundColor(Color.rgb(r, g, b));
+        relativeLayout.post(() -> {
+            relativeLayout.setBackgroundColor(Color.rgb(r, g, b));
+        });
     }
 
     public void resetBackgroundColor() {
-        relativeLayout.setBackgroundColor(Color.TRANSPARENT);
+        relativeLayout.post(() -> {
+            relativeLayout.setBackgroundColor(Color.TRANSPARENT);
+        });
     }
 
 }

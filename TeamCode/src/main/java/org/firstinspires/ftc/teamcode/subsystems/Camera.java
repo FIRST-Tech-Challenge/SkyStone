@@ -235,9 +235,13 @@ public class Camera {
     }
 
     public void stop() {
-        targetsSkyStone.deactivate();
-        tfod.deactivate();
-        tfod.shutdown();
+        if (targetsSkyStone != null) {
+            targetsSkyStone.deactivate();
+        }
+        if (tfod != null) {
+            tfod.deactivate();
+            tfod.shutdown();
+        }
     }
 
     public void process() {

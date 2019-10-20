@@ -111,9 +111,9 @@ public class Simple15203 extends LinearOpMode {
 
             /*
             if(gamepad1.x) {
-                robot.turn(0.5, 785);
+                robot.turn(0.5, 792);
             } else if (gamepad1.b) {
-                robot.turn(-0.5, 785);
+                robot.turn(-0.5, 792);
             }
             */
 

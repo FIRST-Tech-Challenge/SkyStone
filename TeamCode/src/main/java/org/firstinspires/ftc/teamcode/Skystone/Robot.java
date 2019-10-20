@@ -54,11 +54,26 @@ public class Robot {
     // Outtake Motors
     public DcMotor outtakeSpool;
 
-
     // Outtake Servos
     public Servo slideSwinger;
     public Servo clamp;
     public Servo pivotClamp;
+
+    // Outtake Actuator Positions
+    final double OUTTAKE_ACTUATOR_EXTENDED = .82;
+    final double OUTTAKE_ACTUATOR_RETRACTED = .17;
+
+    // Outtake Servos
+    public Servo clawServo;
+    public Servo outtakePivotServo;
+
+    // Outtake Servo Positions
+    final double CLAW_SERVO_CLAMPED = 1;
+    final double CLAW_SERVO_RELEASED = -1;
+
+    // Outtake Pivot Positions
+    final double OUTTAKE_PIVOT_EXTENDED = 1;
+    final double OUTTAKE_PIVOT_RETRACTED = -1;
 
     double i = 1;
 
@@ -123,7 +138,6 @@ public class Robot {
 
         slideSwinger = hardwareMap.servo.get("slideSwinger");
         clamp = hardwareMap.servo.get("clamp");
-
     }
 
     public void intializeIMU() {

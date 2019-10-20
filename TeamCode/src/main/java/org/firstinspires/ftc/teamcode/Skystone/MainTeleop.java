@@ -38,9 +38,7 @@ public class MainTeleop extends LinearOpMode {
         while (opModeIsActive()) {
             slowDriveLogic();
             driveLogic();
-//            telemetry.addData("X Value: ", robot.robotPos.x);
-//            telemetry.addData("Y Value: ", robot.robotPos.y);
-//            telemetry.update();
+            outtakeLogic();
             intakeLogic();
             if(gamepad2.dpad_up){
                 robot.outtakeSpool.setPower(1);
@@ -139,11 +137,21 @@ public class MainTeleop extends LinearOpMode {
             robot.pivotClamp.setPosition(0.9);
         } else if (gamepad2.b) { // Deposit and Reset
             outtakeExecutionTime = SystemClock.elapsedRealtime();
-
+            robot.slideSwinger.setPosition(0);
+            robot.clamp.setPosition(0);
         } else if (gamepad2.x) { // Clamp
 
         } else if (gamepad2.y) { // Extend
 
+            outtakeExecutionTime = SystemClock.elapsedRealtime();
+
+            robot.clawServo.setPosition(robot.CLAW_SERVO_CLAMPED);
+
+            outtakePivotExecutePosition = robot.OUTTAKE_PIVOT_EXTENDED;
+        }
+
+        if (SystemClock.elapsedRealtime() == outtakeExecutionTime + 200) {
+            robot.outtakePivotServo.setPosition(outtakePivotExecutePosition);
         }
 
         if (gamepad2.dpad_up) {

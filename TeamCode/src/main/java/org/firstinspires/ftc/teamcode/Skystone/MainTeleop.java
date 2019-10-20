@@ -133,36 +133,17 @@ public class MainTeleop extends LinearOpMode {
 
     private void outtakeLogic() {
         if (gamepad2.a) { // Clamp and Extend
-            outtakeExecutionTime = SystemClock.elapsedRealtime();
+            robot.slideSwinger.setPosition(0.9);
+            robot.clamp.setPosition(0.9);
 
-            robot.clawServo.setPosition(robot.CLAW_SERVO_CLAMPED);
-
-            robot.leftOuttakeActuatorServo.setPosition(robot.OUTTAKE_ACTUATOR_EXTENDED);
-            robot.rightOuttakeActuatorServo.setPosition(robot.OUTTAKE_ACTUATOR_EXTENDED);
-
-            outtakePivotExecutePosition = robot.OUTTAKE_PIVOT_EXTENDED;
+            robot.pivotClamp.setPosition(0.9);
         } else if (gamepad2.b) { // Deposit and Reset
             outtakeExecutionTime = SystemClock.elapsedRealtime();
 
-            robot.clawServo.setPosition(robot.CLAW_SERVO_RELEASED);
-
-            robot.leftOuttakeActuatorServo.setPosition(robot.OUTTAKE_ACTUATOR_RETRACTED);
-            robot.rightOuttakeActuatorServo.setPosition(robot.OUTTAKE_ACTUATOR_RETRACTED);
-
-            outtakePivotExecutePosition = robot.OUTTAKE_PIVOT_RETRACTED;
         } else if (gamepad2.x) { // Clamp
-            robot.clawServo.setPosition(robot.CLAW_SERVO_CLAMPED);
+
         } else if (gamepad2.y) { // Extend
-            outtakeExecutionTime = SystemClock.elapsedRealtime();
 
-            robot.leftOuttakeActuatorServo.setPosition(robot.OUTTAKE_ACTUATOR_EXTENDED);
-            robot.rightOuttakeActuatorServo.setPosition(robot.OUTTAKE_ACTUATOR_EXTENDED);
-
-            outtakePivotExecutePosition = robot.OUTTAKE_PIVOT_EXTENDED;
-        }
-
-        if (SystemClock.elapsedRealtime() == outtakeExecutionTime + 200) {
-            robot.outtakePivotServo.setPosition(outtakePivotExecutePosition);
         }
 
         if (gamepad2.dpad_up) {

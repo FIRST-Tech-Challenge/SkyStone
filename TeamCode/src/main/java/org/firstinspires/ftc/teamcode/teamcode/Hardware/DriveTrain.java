@@ -555,8 +555,9 @@ public class DriveTrain {
 
         if (Math.abs(y2) < Math.abs(y1)) {
             refab = true;
-            aOffset = (-y1) / Math.log(0);
-            b2Offset = Math.exp((y2 * Math.log(0)) / (-y1));
+
+            aOffset = (- y1) / Math.log(1 / (x1 + 1));
+            b2Offset = - Math.log(x1 + 1) / (- y1);
             c2Offset = 0;
 
             a2Offset = (y1 - y2) / Math.log(x1/x2);

@@ -58,6 +58,7 @@ public class onlyopencv1 extends LinearOpMode {
 
     OpenCvCamera phoneCam;
 
+    //the commented code is STILL UNDER DEVELOPMENT
     //x, y = distance in x,y direction, angle = angle for rotation, power = motor power/speed
     //x must equal y if both are nonzero.
 //    public void move(double x, double y, double angle, double power) {
@@ -153,7 +154,6 @@ public class onlyopencv1 extends LinearOpMode {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         phoneCam = new OpenCvInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
         phoneCam.openCameraDevice();//open camera
-        //phoneCam.setPipeline(new SamplePipeline());//add rectangle
         phoneCam.setPipeline(new StageSwitchingPipeline());//different stages
         phoneCam.startStreaming(rows, cols, OpenCvCameraRotation.UPRIGHT);//display on RC
         //width, height
@@ -164,7 +164,6 @@ public class onlyopencv1 extends LinearOpMode {
         while (opModeIsActive())
         {
 
-            //telemetry.addData("Num contours found", stageSwitchingPipeline.getNumContoursFound());
             telemetry.addData("Values", valLeft+";"+valMid+";"+valRight);
             telemetry.addData("Height", rows);
             telemetry.addData("Width", cols);
@@ -187,13 +186,13 @@ public class onlyopencv1 extends LinearOpMode {
         List<MatOfPoint> contoursList = new ArrayList<>();
 
         enum Stage
-        {//color difference. greyscale
-            detection,//includes outlines
+        {
+            detection,
             THRESHOLD,//b&w
             RAW_IMAGE,//displays raw view
         }
 
-        private Stage stageToRenderToViewport = Stage.RAW_IMAGE;
+        private Stage stageToRenderToViewport = Stage.detection;
         private Stage[] stages = Stage.values();
 
         @Override
@@ -251,7 +250,6 @@ public class onlyopencv1 extends LinearOpMode {
             valRight = (int)pixRight[0];
 
 
-
             //create three points
             Point point1 = new Point((int)(input.cols()* midPos[0]), (int)(input.rows()* midPos[1]));
             Point point2 = new Point((int)(input.cols()* leftPos[0]), (int)(input.rows()* leftPos[1]));
@@ -261,7 +259,6 @@ public class onlyopencv1 extends LinearOpMode {
             Imgproc.circle(all, point1,5, new Scalar( 255, 0, 0 ),1 );//draws circle
             Imgproc.circle(all, point2,5, new Scalar( 255, 0, 0 ),1 );//draws circle
             Imgproc.circle(all, point3,5, new Scalar( 255, 0, 0 ),1 );//draws circle
-
 
 
             MatOfPoint2f approxCurve = new MatOfPoint2f();
@@ -294,7 +291,6 @@ public class onlyopencv1 extends LinearOpMode {
                             new Scalar(255, 0, 0, 255), 3);
                     break;
                 }
-
             }
 
             //draw 3 rectangles

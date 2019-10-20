@@ -62,6 +62,11 @@ public class Crane {
                 case claw:
                     setupClaw();
                     break;
+                case bSystem:
+                    setupRack();
+                    setupLinearSlides();
+                    setupClaw();
+                    break;
             }
 
             i.append(type.name()).append(" ");
@@ -558,7 +563,7 @@ public class Crane {
         ON, OFF;
     }
     public enum setupType{
-        autonomous, teleop, endgame, drive, camera, claw;
+        autonomous, teleop, endgame, drive, camera, claw, bSystem;
     }
 
     //-------------------SET FUNCTIONS--------------------------------

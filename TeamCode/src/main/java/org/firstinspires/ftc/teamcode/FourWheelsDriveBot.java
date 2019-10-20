@@ -200,14 +200,15 @@ public class FourWheelsDriveBot
                 rightRear.getCurrentPosition()));
     }
     public void pickupSkyStone(){
-        print("pickupSkyStone()");
+        opMode.telemetry.log().add("pickupSkyStone()");
         int i = 1;
-        while (this.opMode.opModeIsActive() && i > 1) {
-            print(String.format("pickupSkystone loop %d", i));
+        while (this.opMode.opModeIsActive() && i < 2) {
+            opMode.telemetry.log().add(String.format("pickupSkystone loop %d, %.2f, %.2f", i, servoArm.getPosition(), servoPinch.getPosition()));
 
-            servoArm.setPosition(90);
-            servoPinch.setPosition(30);
+            servoArm.setPosition(servoArm.getPosition() - 0.5);
+            servoPinch.setPosition(servoPinch.getPosition() - 0.3);
             opMode.sleep(CYCLE_MS);
+            opMode.telemetry.log().add(String.format("pickupSkystone end %d, %.2f, %.2f", i, servoArm.getPosition(), servoPinch.getPosition()));
             opMode.idle();
             i++;
         }

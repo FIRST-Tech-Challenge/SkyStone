@@ -53,18 +53,18 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class CleopatraHardware
 {
     /* Public OpMode members. */
-    private DcMotor intakeMotorLeft=null;
-    private DcMotor intakeMotorRight=null;
-    private DcMotor backMotorLeft=null;
-    private DcMotor backMotorRight=null;
-    private DcMotor frontMotorLeft=null;
-    private DcMotor frontMotorRight=null;
-    private DcMotor armElbow=null;
-    private DcMotor armWrist=null;
-    private Servo intakeServoRight=null;
-    private Servo intakeServoLeft=null;
-    private Servo claw=null;
-    private Servo rotator=null;
+    public DcMotor intakeMotorLeft=null;
+    public DcMotor intakeMotorRight=null;
+    public DcMotor backMotorLeft=null;
+    public DcMotor backMotorRight=null;
+    public DcMotor frontMotorLeft=null;
+    public DcMotor frontMotorRight=null;
+    public DcMotor armElbow=null;
+    public DcMotor armWrist=null;
+    public Servo intakeServoRight=null;
+    public Servo intakeServoLeft=null;
+    public Servo claw=null;
+    public Servo rotator=null;
 
     public static final double MID_SERVO       =  0.5 ;
     public static final double ARM_UP_POWER    =  0.45 ;

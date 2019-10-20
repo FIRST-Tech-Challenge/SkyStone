@@ -8,7 +8,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     private double course = 0;
     private double targetPosition = 0;
 
-    private double[] wheelTargetPositions = new double[4];
+    public double[] wheelTargetPositions = new double[4];
     private DcMotor.RunMode[] runModes = new DcMotor.RunMode[4];
     private final double[] wheelAngles;
 

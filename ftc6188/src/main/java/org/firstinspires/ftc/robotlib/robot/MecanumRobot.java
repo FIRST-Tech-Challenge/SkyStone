@@ -22,7 +22,8 @@ public class MecanumRobot
     public MecanumDrivetrain drivetrain;
     public DcMotor[] motorList;
 
-    public final double wheelRadius = 4; //inches
+    public final double wheelRadius = 2; //inches
+    public final double gearRatio = (1.0/2.0);
 
     public MecanumRobot(HardwareMap hwMap)
     {
@@ -41,10 +42,10 @@ public class MecanumRobot
         driveRearRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         driveRearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        driveFrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        driveFrontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        driveRearRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        driveRearLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        driveFrontRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        driveFrontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        driveRearRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        driveRearLeft.setDirection(DcMotorSimple.Direction.FORWARD);
 
         /**
         armParallelLift = hwMap.get(DcMotor.class, "armParallelLift");
@@ -53,13 +54,11 @@ public class MecanumRobot
         armParallelLift.setDirection(DcMotorSimple.Direction.FORWARD);
          **/
 
-        /**
-        servoBuildClawLeft = hwMap.get(Servo.class, "servoBuildClawLeft");
-        servoBuildClawRight = hwMap.get(Servo.class, "servoBuildClawRight");
+        servoBuildClawLeft = hwMap.get(Servo.class, "servoClawLeft");
+        servoBuildClawRight = hwMap.get(Servo.class, "servoClawRight");
 
         servoBuildClawLeft.setDirection(Servo.Direction.FORWARD);
         servoBuildClawRight.setDirection(Servo.Direction.FORWARD);
-         **/
 
         motorList = new DcMotor[]{driveFrontLeft, driveFrontRight, driveRearLeft, driveRearRight};
         drivetrain = new MecanumDrivetrain(motorList);

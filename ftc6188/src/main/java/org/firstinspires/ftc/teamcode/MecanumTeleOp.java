@@ -46,7 +46,6 @@ public class MecanumTeleOp extends OpMode
 
         //robot.armParallelLift.setPower(gamepad2.left_stick_y);
 
-        /**
         if (gamepad1.dpad_down)
         {
             robot.servoBuildClawLeft.setPosition(120);
@@ -58,7 +57,6 @@ public class MecanumTeleOp extends OpMode
             robot.servoBuildClawLeft.setPosition(0);
             robot.servoBuildClawRight.setPosition(0);
         }
-         **/
 
         telemetry.addData("Status", "Loop: " + elapsedTime.toString());
         telemetry.addData("Course", course);

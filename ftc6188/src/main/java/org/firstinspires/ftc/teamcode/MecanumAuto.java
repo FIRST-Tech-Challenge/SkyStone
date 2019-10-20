@@ -7,11 +7,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotlib.drivetrain.MecanumDrivetrain;
 import org.firstinspires.ftc.robotlib.robot.MecanumRobot;
 
-@Autonomous(name="Mecanum Auto", group="Auto")
+@Autonomous(name="Mecanum Auto VTest", group="Auto")
 public class MecanumAuto extends LinearOpMode
 {
     private MecanumRobot robot;
-    private MecanumDrivetrain robotDrivetrain;
     private ElapsedTime elapsedTime;
 
     private double ticksPerUnit; //DcMotor.getMotorType().getTicksPerRev() returns ticks per revolution so multiply by Pi*r
@@ -20,25 +19,39 @@ public class MecanumAuto extends LinearOpMode
     public void runOpMode() throws InterruptedException
     {
         robot = new MecanumRobot(this.hardwareMap);
-        robotDrivetrain = new MecanumDrivetrain(robot.motorList);
         elapsedTime = new ElapsedTime();
-        ticksPerUnit = robotDrivetrain.getTicksPerUnit()*Math.PI* robot.wheelRadius;
+        ticksPerUnit = robot.drivetrain.getTicksPerUnit()*Math.PI*robot.wheelRadius*(1/robot.gearRatio);
 
+        update();
         waitForStart();
 
-        robotMove(0, 1, 0, 12 * ticksPerUnit);
-        sleep(1000);
-        robotMove(90, 1, 0, 12 * ticksPerUnit);
-        sleep(1000);
-        robotMove(180, 100, 0, 12 * ticksPerUnit);
+        robotMove(0, 0.5, 0, 1);
+        // Latch Servos
+//        robotMove(180, 0.75, 0 ,2);
+//        // Unlatch Servos
+//        robotMove(90, 0.75, 0, 1);
+//        robotMove(0,0.75,0,2);
+//        robotMove(270,0.75,0,3);
+//        robotMove(180,0.75,0,2);
+//        robotMove(90,0.75,0,48);
     }
 
     private void robotMove(double course, double velocity, double rotation, double distance)
     {
-        robotDrivetrain.setRotation(rotation);
-        robotDrivetrain.setCourse(course);
-        robotDrivetrain.setVelocity(velocity);
-        robotDrivetrain.setTargetPosition(distance);
-        robotDrivetrain.position();
+        robot.drivetrain.setRotation(rotation);
+        robot.drivetrain.setCourse(course * Math.PI/180);
+        robot.drivetrain.setVelocity(velocity);
+        robot.drivetrain.setTargetPosition(distance * ticksPerUnit);
+        update();
+        robot.drivetrain.position();
+        sleep(1000);
+    }
+
+    private void update()
+    {
+        telemetry.addData("TPU", ticksPerUnit);
+        telemetry.addData("WheelTarget", robot.drivetrain.wheelTargetPositions[0]);
+        telemetry.addData("Motor TPU", robot.drivetrain.motorList[0].getMotorType().getTicksPerRev());
+        telemetry.update();
     }
 }

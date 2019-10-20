@@ -11,7 +11,7 @@ public class MecanumTeleOp extends OpMode
 {
     private MecanumHardwareMap robotHardware;
     private ElapsedTime elapsedTime;
-    private boolean rightMotion = false;
+    private boolean rightMotion = true;
 
     @Override
     public void init()
@@ -60,6 +60,7 @@ public class MecanumTeleOp extends OpMode
         telemetry.addData("Course", course);
         telemetry.addData("Velocity", velocity);
         telemetry.addData("Rotation", rotation);
+        telemetry.addData("Driving Mode", rightMotion ? "RIGHT" : "LEFT");
         telemetry.update();
     }
 

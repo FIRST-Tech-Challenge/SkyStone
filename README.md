@@ -12,11 +12,11 @@ To use this code, download / clone the entire project to your local computer.
 |Team Number|Current Status|Is playing|
 |-|-|-|
 |5100|Not playing this year|No|
-|4100|First Match Oct. 18|Yes|
+|4100|Second Match Nov. 9|Yes|
 
 ## Library Status
 
-Current version: 4.0.2 Dev   
+Current version: 4.1.0   
 This library is currently the 4th iteration, and the documentations can be found in [DarBots-Shared-Doc](https://github.com/DarlingtonProgramming/DarBots-Shared-Doc) Repository of this organization    
 
 ## Questions

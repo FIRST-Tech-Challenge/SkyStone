@@ -1,23 +1,20 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.GyroSensor;
-import com.qualcomm.robotcore.hardware.IntegratingGyroscope;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
 
 import static java.lang.Thread.sleep;
 
-@TeleOp(name = "GyroGemini", group = "GyroGemini")
-public class GyroGemini extends OpMode {
+@TeleOp(name = "REDWOOD", group = "REDWOOD")
+public class carterGyroTest extends OpMode {
     ElapsedTime runtime = new ElapsedTime();
     public DcMotor armRaiser;
     public DcMotor armExtended;
     GyroSensor gyro;
-   // public GyroSensor gyro;
-    //public ModernRoboticsI2cGyro gyro;
 
     public DcMotor TL;
     public DcMotor TR;
@@ -33,8 +30,8 @@ public class GyroGemini extends OpMode {
         armRaiser = hardwareMap.get(DcMotor.class, "armRaiser");
         armExtended = hardwareMap.get(DcMotor.class, "armExtender");
         gyro = hardwareMap.gyroSensor.get("gyro");
-        //gyro=hardwareMap.get(GyroSensor.class,"gyro");
-
+        gyro=hardwareMap.get(GyroSensor.class,"gyro");
+        gyro.resetZAxisIntegrator();
         runtime.reset();
 /*        do {
             gyro.calibrate();
@@ -42,6 +39,13 @@ public class GyroGemini extends OpMode {
         while (gyro.isCalibrating());*/
         gyro.calibrate();
     }
+    int armLevel = 0;
+    double[] armAngles = {0,};
+    double[] armDistance = {16, 22, };
+
+    double rawz = 0;
+    double rawx = 0;
+    double rawy = 0;
 
     @Override
     public void loop() {
@@ -51,12 +55,38 @@ public class GyroGemini extends OpMode {
         BR = hardwareMap.get(DcMotor.class, "BR");*/
         armRaiser = hardwareMap.get(DcMotor.class, "armRaiser");
         armExtended = hardwareMap.get(DcMotor.class, "armExtender");
-        gyro = hardwareMap.gyroSensor.get("gyro");
+
 
         armRaiser.setPower(-gamepad1.right_stick_y);
+        armExtended.setPower(-gamepad1.left_stick_y);
         extension(armExtended.getCurrentPosition(), 700);
 
-        telemetry.addData("Process", e());
+        if (gamepad1.dpad_up) {
+            armLevel++;
+        }
+        if (gamepad1.dpad_down) {
+            armLevel--;
+        }
+
+        if (gamepad1.b) {
+            rawz = gyro.getHeading();
+        }
+        telemetry.addData("Head", rawz);
+        telemetry.addData("Encoder Ext", armExtended.getCurrentPosition());
+        telemetry.addData("Encoder Raise", armRaiser.getCurrentPosition());
+        telemetry.addData("Arm Level:", armLevel + 1);
+        if (gamepad1.right_bumper) {
+            armExtended.setPower(1);
+            try
+            {
+                Thread.sleep(1000);
+            }
+            catch(InterruptedException ex)
+            {
+                Thread.currentThread().interrupt();
+            }
+            armExtended.setPower(0);
+        }
         telemetry.update();
 
     }
@@ -66,12 +96,13 @@ public class GyroGemini extends OpMode {
         super.stop();
     }
 
-    public int e() {
+    public double e() {
         double Range = 0.6096;
         double conversionFactor = 0.0163624617; //meters over encoder
         double angle = (gyro.getHeading())*(3.14/180);
         double extension = (Range/(Math.cos(angle)));
-        return (int)((extension* (1/conversionFactor)));
+        //return (int)((extension* (1/conversionFactor)));
+        return (angle);
     }
 
     public void extension(int currentPos, int encoder) {
@@ -79,5 +110,10 @@ public class GyroGemini extends OpMode {
             armExtended.setPower(0.2);
         }
     }
+
+    public void arm(int armLevel) {
+
+    }
+
 }
 

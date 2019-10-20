@@ -88,9 +88,17 @@ public class HCleopatra12820TeleOp extends LinearOpMode {
             double numFr = Range.clip((+Speed - Turn + Strafe), -1, +1);
             double numBr = Range.clip((+Speed - Turn - Strafe), -1, 1);
             double armElbowPower = Range.clip(0.5*gamepad2.left_stick_y, -1, 1);
-            double armWristPower = Range.clip(gamepad2.right_stick_y, -1, 1);
-            //double srvPower=Range.clip(gamepad2.right_stick_x, 0,1);
-            robot.armWrist.setPower(armWristPower);
+            //double armWristPower = Range.clip(gamepad2.right_stick_y, -1, 1);
+            if(gamepad2.right_stick_y>0)
+
+            robot.armWrist.setPower(robot.ARM_UP_POWER);
+
+            else if (gamepad2.right_stick_x>0)
+                robot.armWrist.setPower(robot.ARM_DOWN_POWER);
+            else
+                robot.armWrist.setPower(0.0);
+
+            //Continue here with armElbow!
             robot.armElbow.setPower(armElbowPower);
 
 
@@ -121,14 +129,16 @@ public class HCleopatra12820TeleOp extends LinearOpMode {
                 robot.intakeServoLeft.setPosition(0);
 
             }
-            if(gamepad2.a){
+            //Use gamepad2 left & right Bumpers to open and close the claw
+            if(gamepad2.right_bumper)
+                clawOffset += CLAW_SPEED;
 
-                robot.claw.setPosition(1);
-            }
-            if(gamepad2.b) {
+            else if(gamepad2.left_bumper)
                 robot.claw.setPosition(0);
-            }
-
+                clawOffset -= CLAW_SPEED;
+            // Move both servos to new position.  Assume servos are mirror image of each other.
+            clawOffset = Range.clip(clawOffset, -0.5, 0.5);
+            robot.claw.setPosition(robot.MID_SERVO + clawOffset);
 
             // Send telemetry message to signify robot running;
             telemetry.addData("claw",  "Offset = %.2f", clawOffset);

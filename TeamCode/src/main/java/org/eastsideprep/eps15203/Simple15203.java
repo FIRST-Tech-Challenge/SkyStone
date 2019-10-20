@@ -58,7 +58,7 @@ public class Simple15203 extends LinearOpMode {
         robot.init(hardwareMap);
 
         // Send telemetry message to signify robot waiting;
-        telemetry.addData("Say", "Hello Peter");
+        telemetry.addData("Say", "ready");
         telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)

@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.Skystone.Odometry.Position2D;
 
+import java.security.Policy;
+
 @TeleOp(name="MainTeleOpSky", group="Linear Opmode")
 public class MainTeleop extends LinearOpMode {
     Robot robot;
@@ -23,7 +25,15 @@ public class MainTeleop extends LinearOpMode {
     char outtakeButton;
 
     long outtakeExecutionTime;
+
+    long currentTime;
+
     double outtakePivotExecutePosition;
+    double outtakePivotWaitTime;
+    double outtakeExtenderExecutePosition;
+    double outtakeExtenderWaitTime;
+    double outtakeClampExecutePosition;
+    double outtakeClampWaitTime;
 
     boolean onSlowDrive, changedSlowDrive = false;
 
@@ -130,30 +140,58 @@ public class MainTeleop extends LinearOpMode {
     }
 
     private void outtakeLogic() {
+        currentTime = SystemClock.elapsedRealtime();
+
+        // Logic to control outtake; with a delay on the pivot so that the slides can extend before pivot rotation
         if (gamepad2.a) { // Clamp and Extend
-            robot.slideSwinger.setPosition(0.9);
-            robot.clamp.setPosition(0.9);
+            outtakeExecutionTime = currentTime;
 
-            robot.pivotClamp.setPosition(0.9);
-        } else if (gamepad2.b) { // Deposit and Reset
-            outtakeExecutionTime = SystemClock.elapsedRealtime();
-            robot.slideSwinger.setPosition(0);
-            robot.clamp.setPosition(0);
-        } else if (gamepad2.x) { // Clamp
+            outtakeClampExecutePosition = robot.CLAW_SERVO_CLAMPED;
+            outtakeClampWaitTime = 0;
 
-        } else if (gamepad2.y) { // Extend
-
-            outtakeExecutionTime = SystemClock.elapsedRealtime();
-
-            robot.clawServo.setPosition(robot.CLAW_SERVO_CLAMPED);
+            outtakeExtenderExecutePosition = robot.OUTTAKE_PIVOT_EXTENDED;
+            outtakeExtenderWaitTime = 1000;
 
             outtakePivotExecutePosition = robot.OUTTAKE_PIVOT_EXTENDED;
+            outtakePivotWaitTime = 2000;
+        } else if (gamepad2.b) { // Deposit and Reset
+            outtakeExecutionTime = currentTime;
+
+            outtakeClampExecutePosition = robot.CLAW_SERVO_RELEASED;
+            outtakeClampWaitTime = 0;
+
+            // No need for delay in pivot because slides are already extended
+            outtakePivotExecutePosition = robot.OUTTAKE_PIVOT_RETRACTED;
+            outtakePivotWaitTime = 0;
+
+            outtakeExtenderExecutePosition = robot.OUTTAKE_SLIDE_RETRACTED;
+            outtakeExtenderWaitTime = 2000;
+        } else if (gamepad2.x) { // Clamp
+            robot.clamp.setPosition(robot.CLAW_SERVO_CLAMPED);
+        } else if (gamepad2.y) { // Extend
+            outtakeExecutionTime = currentTime;
+
+            outtakeExtenderExecutePosition = robot.OUTTAKE_PIVOT_EXTENDED;
+            outtakeExtenderWaitTime = 0;
+
+            outtakePivotExecutePosition = robot.OUTTAKE_PIVOT_EXTENDED;
+            outtakePivotWaitTime = 1000;
         }
 
-        if (SystemClock.elapsedRealtime() == outtakeExecutionTime + 200) {
-            robot.outtakePivotServo.setPosition(outtakePivotExecutePosition);
+        // Execute pivot rotation after wait time
+        if (SystemClock.elapsedRealtime() == outtakeExecutionTime + outtakeClampWaitTime) {
+            robot.clamp.setPosition(outtakeClampExecutePosition);
         }
 
+        if (SystemClock.elapsedRealtime() == outtakeExecutionTime + outtakePivotWaitTime) {
+            robot.clampPivot.setPosition(outtakePivotExecutePosition);
+        }
+
+        if (SystemClock.elapsedRealtime() == outtakeExecutionTime + outtakeExtenderWaitTime) {
+            robot.outtakeExtender.setPosition(outtakeExtenderExecutePosition);
+        }
+
+        // Spool controls
         if (gamepad2.dpad_up) {
             robot.outtakeSpool.setPower(.5);
         } else if (gamepad2.dpad_down) {

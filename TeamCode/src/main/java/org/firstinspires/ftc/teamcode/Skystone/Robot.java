@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
-import com.vuforia.Vuforia;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -35,7 +34,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Vector;
 
-import static org.firstinspires.ftc.robotcore.external.tfod.TfodRoverRuckus.TFOD_MODEL_ASSET;
 import static org.firstinspires.ftc.teamcode.RoverRuckus.RR2.Auto.TensorFlowMineralDetection.VUFORIA_KEY;
 import static org.firstinspires.ftc.teamcode.Skystone.MathFunctions.angleWrap;
 import static org.firstinspires.ftc.teamcode.Skystone.MathFunctions.lineCircleIntersection;
@@ -55,25 +53,21 @@ public class Robot {
     public DcMotor outtakeSpool;
 
     // Outtake Servos
-    public Servo slideSwinger;
+    public Servo outtakeExtender;
     public Servo clamp;
-    public Servo pivotClamp;
+    public Servo clampPivot;
 
-    // Outtake Actuator Positions
-    final double OUTTAKE_ACTUATOR_EXTENDED = .82;
-    final double OUTTAKE_ACTUATOR_RETRACTED = .17;
-
-    // Outtake Servos
-    public Servo clawServo;
-    public Servo outtakePivotServo;
+    // Outtake Slide Positions
+    final double OUTTAKE_SLIDE_EXTENDED = .26;
+    final double OUTTAKE_SLIDE_RETRACTED = .75;
 
     // Outtake Servo Positions
-    final double CLAW_SERVO_CLAMPED = 1;
-    final double CLAW_SERVO_RELEASED = -1;
+    final double CLAW_SERVO_CLAMPED = .51;
+    final double CLAW_SERVO_RELEASED = .3;
 
     // Outtake Pivot Positions
-    final double OUTTAKE_PIVOT_EXTENDED = 1;
-    final double OUTTAKE_PIVOT_RETRACTED = -1;
+    final double OUTTAKE_PIVOT_EXTENDED = .271;
+    final double OUTTAKE_PIVOT_RETRACTED = .994;
 
     double i = 1;
 
@@ -136,8 +130,9 @@ public class Robot {
         // Map outtake motors
         outtakeSpool = hardwareMap.dcMotor.get("outtakeSpool");
 
-        slideSwinger = hardwareMap.servo.get("slideSwinger");
+        outtakeExtender = hardwareMap.servo.get("outtakeExtender");
         clamp = hardwareMap.servo.get("clamp");
+        clampPivot = hardwareMap.servo.get("clampPivot");
     }
 
     public void intializeIMU() {

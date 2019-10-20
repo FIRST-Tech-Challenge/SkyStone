@@ -29,6 +29,8 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.CurvePoint;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Vector;
 
@@ -178,18 +180,27 @@ public class Robot {
 
     public void absoluteTurn (double targetHeadingRadians, double turnSpeed){
         targetHeadingRadians = angleWrap(targetHeadingRadians);
-        this.setMotorMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         this.setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        double startHeading = anglePos;
+        double startHeading = angleWrap(anglePos);
 
         while (linearOpMode.opModeIsActive()){
-            turnMovement = 0.77 * (targetHeadingRadians - anglePos) / (Math.abs(targetHeadingRadians - startHeading));
-            if (Math.abs(angleWrap(targetHeadingRadians - anglePos)) < Math.toRadians(1)){
-                brakeRobot();
+
+            double currentAngle = anglePos;
+
+            turnMovement = 0.77 * turnSpeed * (targetHeadingRadians - currentAngle) / (Math.abs(targetHeadingRadians - startHeading));
+
+            telemetry.addLine("turnMovement" + turnMovement);
+            telemetry.update();
+
+            if (Math.abs(targetHeadingRadians - currentAngle) <= Math.toRadians(1)){
+
+                telemetry.addLine("1 degree off, finish turn");
+                telemetry.update();
                 break;
             }
             applyMove(1);
         }
+
         brakeRobot();
         linearOpMode.sleep(100);
         turnMovement = 0;
@@ -554,8 +565,6 @@ public class Robot {
 
     private void applyMove(double decelerationScaleFactor) {
 
-        this.setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
         // convert movements to motor powers
         double fLeftPower = (yMovement * 1.414 + turnMovement + xMovement);
         double fRightPower = (-yMovement * 1.414 - turnMovement + xMovement);
@@ -593,6 +602,9 @@ public class Robot {
 
 
     public void moveToPoint(double x, double y, double moveSpeed, double turnSpeed, double optimalAngle) {
+
+        this.setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         while (linearOpMode.opModeIsActive()) {
             double xPos = robotPos.x;
             double yPos = robotPos.y;
@@ -707,7 +719,7 @@ public class Robot {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minimumConfidence = 0.50;
+        tfodParameters.minimumConfidence = 0.68;
         TFObjectDetector tfod;
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
@@ -722,30 +734,42 @@ public class Robot {
         long startTime = SystemClock.elapsedRealtime();
 
         while (linearOpMode.opModeIsActive() && SystemClock.elapsedRealtime()-startTime<5000){
-
             List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-            if (updatedRecognitions != null) {
+            if (updatedRecognitions != null && updatedRecognitions.size()>0) {
                 telemetry.addData("# Object Detected", updatedRecognitions.size());
                 telemetry.update();
+                Collections.sort(updatedRecognitions, new Comparator<Recognition>() {
+                    @Override
+                    public int compare(Recognition recognition, Recognition t1) {
+                        return (int)(recognition.getConfidence()-t1.getConfidence());
+                    }
+                });
 
-                for (Recognition recognition : updatedRecognitions) {
-                    float value = (recognition.getTop()+recognition.getBottom())/2;
-                    telemetry.addLine(Float.toString(value));
-                    telemetry.update();
+                Recognition recognition = updatedRecognitions.get(updatedRecognitions.size()-1);
 
-                    if(value <600){
+                float value = (recognition.getTop()+recognition.getBottom())/2;
+                telemetry.addLine(Float.toString(value));
+                telemetry.update();
+                if(recognition.getBottom() - recognition.getTop() > 200) {
+                    if (value < 600) {
+                        telemetry.addLine(Float.toString(updatedRecognitions.get(0).getConfidence()));
+                        telemetry.addLine("Top: " + recognition.getTop() + " Bottom: " + recognition.getBottom());
                         telemetry.addLine("right");
                         telemetry.addLine(Float.toString(value));
                         telemetry.update();
                         linearOpMode.sleep(2000);
                         return "right";
-                    }else if(value <800){
+                    } else if (value < 800) {
+                        telemetry.addLine(Float.toString(updatedRecognitions.get(0).getConfidence()));
+                        telemetry.addLine("Top: " + recognition.getTop() + " Bottom: " + recognition.getBottom());
                         telemetry.addLine("center");
                         telemetry.addLine(Float.toString(value));
                         telemetry.update();
                         linearOpMode.sleep(2000);
                         return "center";
-                    }else{
+                    } else {
+                        telemetry.addLine(Float.toString(updatedRecognitions.get(0).getConfidence()));
+                        telemetry.addLine("Top: " + recognition.getTop() + " Bottom: " + recognition.getBottom());
                         telemetry.addLine("left");
                         telemetry.addLine(Float.toString(value));
                         telemetry.update();
@@ -753,6 +777,7 @@ public class Robot {
                         return "left";
                     }
                 }
+
             }
 
         }

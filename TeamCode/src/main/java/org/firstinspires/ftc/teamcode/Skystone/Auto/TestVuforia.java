@@ -36,13 +36,14 @@ public class TestVuforia extends AutoBase {
         // start odometry
         Position2D position2D = new Position2D(robot);
         position2D.startOdometry();
+
         robot.resetEncoders();
+
         robot.changeRunModeToUsingEncoder();
         telemetry.addLine("Got into runopmode");
 
-        robot.moveToPoint(11 ,0,0.6,1,Math.toRadians(0));
-        robot.absoluteTurn(0, 0.7);
-        robot.absoluteTurn(Math.toRadians(0),0.5);
+        robot.moveToPoint(11.5 ,0,0.4,1,Math.toRadians(0));
+        robot.absoluteTurn(0, 1);
 
         telemetry.addLine("done with move");
         telemetry.update();
@@ -62,12 +63,16 @@ public class TestVuforia extends AutoBase {
         }
         telemetry.addLine("Done with detect");
         telemetry.update();
+        sleep(1000);
         robot.intakeLeft.setPower(0);
         robot.intakeRight.setPower(0);
 
-        robot.moveToPoint(15 ,0,0.6,1,Math.toRadians(180));
-        robot.moveToPoint(20, 35, 1, 1, Math.toRadians(90));
+        //robot.absoluteTurn(Math.toRadians(179),1);
+
+        //robot.moveToPoint(15,0,0.6,0.5,Math.toRadians(0));
         telemetry.addLine("Done with move");
+
+        //robot.absoluteTurn(Math.toRadians(90),1);
         telemetry.update();
 //        telemetry.addData("Position: -1:Left, 0:Center, 1:Right", position);
 //        telemetry.update();

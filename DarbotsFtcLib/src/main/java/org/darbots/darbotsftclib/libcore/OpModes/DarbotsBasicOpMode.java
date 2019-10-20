@@ -34,6 +34,10 @@ public abstract class DarbotsBasicOpMode<CoreType extends RobotCore> extends Lin
             telemetry.addData("status", "Initialized, waiting for start command...");
             telemetry.update();
         }
+        if(opModeIsActive()){
+            telemetry.addData("status","Started");
+            telemetry.update();
+        }
     }
 
     public void waitForStart_NoDisplay(){

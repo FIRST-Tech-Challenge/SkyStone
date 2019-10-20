@@ -30,12 +30,11 @@ public class Robot4100Generation1_LindaCore extends RobotCore {
     private Servo m_StoneOrientServo;
     private RobotServoUsingMotor m_linearSlide;
     private DcMotor m_IntakeLeft, m_IntakeRight;
-    private BNO055Gyro m_Gyro;
     private Servo m_AutoDragStoneServo;
     private Servo m_CapStoneServo;
 
     public Robot4100Generation1_LindaCore(HardwareMap hardwares) {
-        super("4100Generation1_LindaCore.log");
+        super("4100Generation1_LindaCore.log",hardwares);
         RobotMotor
                 LFMotor = new RobotMotorWithEncoder(hardwares.dcMotor.get("LF"),Robot4100Generation1_Settings.motorType),
                 RFMotor = new RobotMotorWithEncoder(hardwares.dcMotor.get("RF"),Robot4100Generation1_Settings.motorType),
@@ -70,7 +69,6 @@ public class Robot4100Generation1_LindaCore extends RobotCore {
         this.m_StoneOrientServo = hardwares.servo.get("servoStoneOrient");
         this.m_AutoDragStoneServo = hardwares.servo.get("servoAutoDragStone");
         this.m_CapStoneServo = hardwares.servo.get("servoCapStone");
-        m_Gyro = new BNO055Gyro(hardwares,"imu");
 
         this.setCapStoneServoToDeposit(false);
         this.setOrientServoToOrient(false);
@@ -161,10 +159,6 @@ public class Robot4100Generation1_LindaCore extends RobotCore {
         }else{
             return IntakeSystemStatus.STOP;
         }
-    }
-
-    public RobotGyro getGyro(){
-        return this.m_Gyro;
     }
 
     @Override

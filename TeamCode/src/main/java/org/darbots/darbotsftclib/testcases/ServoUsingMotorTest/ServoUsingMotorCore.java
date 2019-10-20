@@ -23,7 +23,7 @@ public class ServoUsingMotorCore extends RobotCore {
     private RobotServoUsingMotor m_ServoUsingMotor;
 
     public ServoUsingMotorCore(HardwareMap Hardware) {
-        super("ServoUsingMotorTest.log");
+        super("ServoUsingMotorTest.log",Hardware);
         DcMotor ServoUsingMotor_DC = Hardware.dcMotor.get("MotorServo");
         RobotMotorController ServoUsingMotorController = new RobotMotorController(
                 new RobotMotorWithEncoder(ServoUsingMotor_DC,SERVO_MOTOR_TYPE),

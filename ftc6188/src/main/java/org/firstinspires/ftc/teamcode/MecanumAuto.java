@@ -4,7 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotlib.drivetrain.MecanumDrivetrain;
 import org.firstinspires.ftc.robotlib.robot.MecanumRobot;
 
 @Autonomous(name="Mecanum Auto VTest", group="Auto")
@@ -13,14 +12,14 @@ public class MecanumAuto extends LinearOpMode
     private MecanumRobot robot;
     private ElapsedTime elapsedTime;
 
-    private double ticksPerUnit; //DcMotor.getMotorType().getTicksPerRev() returns ticks per revolution so multiply by Pi*r
+    private double motorRotations; //DcMotor.getMotorType().getTicksPerRev() returns ticks per revolution so multiply by Pi*r
 
     @Override
     public void runOpMode() throws InterruptedException
     {
         robot = new MecanumRobot(this.hardwareMap);
         elapsedTime = new ElapsedTime();
-        ticksPerUnit = robot.drivetrain.getTicksPerUnit()*Math.PI*robot.wheelRadius*(1/robot.gearRatio);
+        motorRotations = (1.0/(Math.PI*robot.gearRatio*robot.wheelRadius*2)); //maybe need to add ticks
 
         update();
         waitForStart();
@@ -41,7 +40,7 @@ public class MecanumAuto extends LinearOpMode
         robot.drivetrain.setRotation(rotation);
         robot.drivetrain.setCourse(course * Math.PI/180);
         robot.drivetrain.setVelocity(velocity);
-        robot.drivetrain.setTargetPosition(distance * ticksPerUnit);
+        robot.drivetrain.setTargetPosition(distance * motorRotations);
         update();
         robot.drivetrain.position();
         sleep(1000);
@@ -49,7 +48,7 @@ public class MecanumAuto extends LinearOpMode
 
     private void update()
     {
-        telemetry.addData("TPU", ticksPerUnit);
+        telemetry.addData("TPU", motorRotations);
         telemetry.addData("WheelTarget", robot.drivetrain.wheelTargetPositions[0]);
         telemetry.addData("Motor TPU", robot.drivetrain.motorList[0].getMotorType().getTicksPerRev());
         telemetry.update();

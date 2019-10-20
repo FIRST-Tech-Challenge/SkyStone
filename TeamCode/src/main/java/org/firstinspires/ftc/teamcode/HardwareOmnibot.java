@@ -411,7 +411,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 			    break;
 			case RAISING_TO_ROTATE:
 			    // It has gotten high enough
-			    if(lifter.getCurrentPosition() > LiftPosition.ROTATE.getEncoderCount()) {
+			    if(lifter.getCurrentPosition() >= LiftPosition.ROTATE.getEncoderCount()) {
 					stowState = StowActivity.ROTATING;
 					clawdricopter.setPosition(CLAWDRICOPTER_FRONT);
 					stateTimer.reset();

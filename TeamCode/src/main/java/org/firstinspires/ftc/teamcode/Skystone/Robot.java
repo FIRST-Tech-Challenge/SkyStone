@@ -29,6 +29,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.CurvePoint;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -719,21 +720,36 @@ public class Robot {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minimumConfidence = 0.68;
+        tfodParameters.minimumConfidence = 0.50;
         TFObjectDetector tfod;
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
         return tfod;
     }
 
-    public String detectTensorflow(){
+
+    public int detectTensorflow(){
+
+        /**
+         * food for thought logic
+         * if it sees something/object detected : get the confidence
+         * if confidence is greater than 0.7 : find its position and return that
+         * if confidence is less than 0.7 : get the position it thinks, go through the code again, if is the same, then return that
+         */
+
+
         VuforiaLocalizer vuforia = initVuforia();
         TFObjectDetector tfod;
         tfod = initTfod(vuforia);
         tfod.activate();
         long startTime = SystemClock.elapsedRealtime();
 
+
+        // 2 is right, 1 is center, 0 is left
+        ArrayList<Integer> retVals = new ArrayList<>();
+
         while (linearOpMode.opModeIsActive() && SystemClock.elapsedRealtime()-startTime<5000){
+
             List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
             if (updatedRecognitions != null && updatedRecognitions.size()>0) {
                 telemetry.addData("# Object Detected", updatedRecognitions.size());
@@ -750,38 +766,69 @@ public class Robot {
                 float value = (recognition.getTop()+recognition.getBottom())/2;
                 telemetry.addLine(Float.toString(value));
                 telemetry.update();
-                if(recognition.getBottom() - recognition.getTop() > 200) {
-                    if (value < 600) {
-                        telemetry.addLine(Float.toString(updatedRecognitions.get(0).getConfidence()));
-                        telemetry.addLine("Top: " + recognition.getTop() + " Bottom: " + recognition.getBottom());
-                        telemetry.addLine("right");
-                        telemetry.addLine(Float.toString(value));
-                        telemetry.update();
-                        linearOpMode.sleep(2000);
-                        return "right";
-                    } else if (value < 800) {
-                        telemetry.addLine(Float.toString(updatedRecognitions.get(0).getConfidence()));
-                        telemetry.addLine("Top: " + recognition.getTop() + " Bottom: " + recognition.getBottom());
-                        telemetry.addLine("center");
-                        telemetry.addLine(Float.toString(value));
-                        telemetry.update();
-                        linearOpMode.sleep(2000);
-                        return "center";
+
+                if ((double)updatedRecognitions.get(0).getConfidence() > 0.9){
+                    if (value < 600){
+                        return 2;
+                    } else if (value < 800){
+                        retVals.add(1);
+                        return 1;
                     } else {
-                        telemetry.addLine(Float.toString(updatedRecognitions.get(0).getConfidence()));
-                        telemetry.addLine("Top: " + recognition.getTop() + " Bottom: " + recognition.getBottom());
-                        telemetry.addLine("left");
-                        telemetry.addLine(Float.toString(value));
-                        telemetry.update();
-                        linearOpMode.sleep(2000);
-                        return "left";
+                        return 0;
+                    }
+                } else {
+                    if (value < 600){
+                        retVals.add(2);
+                    } else if (value < 800) {
+                        retVals.add(1);
+                    } else {
+                        retVals.add(0);
                     }
                 }
+
+//                if(recognition.getBottom() - recognition.getTop() > 200) {
+//                    if (value < 600) {
+//                        telemetry.addLine(Float.toString(updatedRecognitions.get(0).getConfidence()));
+//                        telemetry.addLine("Top: " + recognition.getTop() + " Bottom: " + recognition.getBottom());
+//                        telemetry.addLine("right");
+//                        telemetry.addLine(Float.toString(value));
+//                        telemetry.update();
+//                        return "right";
+//                    } else if (value < 800) {
+//                        telemetry.addLine(Float.toString(updatedRecognitions.get(0).getConfidence()));
+//                        telemetry.addLine("Top: " + recognition.getTop() + " Bottom: " + recognition.getBottom());
+//                        telemetry.addLine("center");
+//                        telemetry.addLine(Float.toString(value));
+//                        telemetry.update();
+//                        return "center";
+//                    } else {
+//                        telemetry.addLine(Float.toString(updatedRecognitions.get(0).getConfidence()));
+//                        telemetry.addLine("Top: " + recognition.getTop() + " Bottom: " + recognition.getBottom());
+//                        telemetry.addLine("left");
+//                        telemetry.addLine(Float.toString(value));
+//                        telemetry.update();
+//                        return "left";
+//                    }
+//                }
 
             }
 
         }
-        return "center";
+
+        double retVal = 0;
+        for (int i = 0; i < retVals.size(); i++){
+            retVal += retVals.get(i);
+        }
+        retVal /= retVals.size();
+
+//        return (int)(retVal + 0.5);
+
+        telemetry.addLine("retVal" + retVal);
+        telemetry.update();
+
+        linearOpMode.sleep(2000);
+
+        return (int)Math.round(retVal);
     }
 
 }

@@ -43,22 +43,24 @@ public class TestVuforia extends AutoBase {
         telemetry.addLine("Got into runopmode");
 
         robot.moveToPoint(11.5 ,0,0.4,1,Math.toRadians(0));
-        robot.absoluteTurn(0, 1);
-
         telemetry.addLine("done with move");
         telemetry.update();
 
         telemetry.addLine("go to point");
         int position = 0;
-        String str1ng = robot.detectTensorflow();
+        int vuforiaPosition = robot.detectTensorflow();
         robot.intakeRight.setPower(1);
+
         robot.intakeLeft.setPower(1);
 
-        if (str1ng.equals("right")) {
+        if (vuforiaPosition == 2) {
+            telemetry.addLine("left");
             robot.moveToPoint(39, 9, 0.55, 0.5, Math.toRadians(0));
-        } else if (str1ng.equals("left")){
+        } else if (vuforiaPosition == 0){
+            telemetry.addLine("right");
             robot.moveToPoint(39, -9, 0.55, 0.5, Math.toRadians(0));
         } else {
+            telemetry.addLine("center");
             robot.moveToPoint(39, 0, 0.55, 0.5, Math.toRadians(0));
         }
         telemetry.addLine("Done with detect");

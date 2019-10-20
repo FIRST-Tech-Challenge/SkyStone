@@ -11,7 +11,7 @@ public class MecanumTeleOp extends OpMode
 {
     private MecanumHardwareMap robotHardware;
     private ElapsedTime elapsedTime;
-    private boolean rightMotion = false;
+    private boolean rightMotion = true;
 
     @Override
     public void init()

@@ -68,6 +68,7 @@ public class Phone {
     }
 
     // Based on code in Android Docs
+    @Deprecated // doesnt make sense on control hub
     public double batteryPct() {
 
         IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
@@ -100,6 +101,7 @@ public class Phone {
         return gyro != null && gyro.isAvailable();
     }
 
+    @Deprecated // doesnt make sense on control hub
     public void toast(String str, int time) {
         if (time != 0) {
             AppUtil.getInstance().showToast(UILocation.BOTH, str, time);
@@ -129,12 +131,14 @@ public class Phone {
         return sounds > 0 || wordSpeaker.isSpeaking();
     }
 
+    @Deprecated // doesnt make sense on control hub
     public void setBackgroundColor(int r, int g, int b) {
         relativeLayout.post(() -> {
             relativeLayout.setBackgroundColor(Color.rgb(r, g, b));
         });
     }
 
+    @Deprecated // doesnt make sense on control hub
     public void resetBackgroundColor() {
         relativeLayout.post(() -> {
             relativeLayout.setBackgroundColor(Color.TRANSPARENT);

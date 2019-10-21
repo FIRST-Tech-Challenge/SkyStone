@@ -17,7 +17,8 @@ public class Robot implements AutoCloseable {
     public final StoneManipulator stoneManipulator; // includes capstone
     public final Camera camera;
     public final Phone phone;
-    public HashMap<String, ExpansionHub> expansionHubs;
+    public ExpansionHub controlHub;
+    public ExpansionHub secondHub;
 
     private static Robot instance = null;
 
@@ -45,7 +46,8 @@ public class Robot implements AutoCloseable {
         stoneManipulator.init(hardwareMap);
         camera.init(hardwareMap);
         phone.init(hardwareMap);
-        expansionHubs = ExpansionHub.getAvailableHubs(hardwareMap);
+        controlHub = ExpansionHub.getAvailableHubs(hardwareMap).get("Control Hub");
+        secondHub = ExpansionHub.getAvailableHubs(hardwareMap).get("Expansion Hub");
     }
 
     @Override

@@ -15,7 +15,6 @@ import org.firstinspires.ftc.teamcode.subsystems.ExpansionHub;
 public class ExperimentalStuff extends OpMode {
 
     private Robot bot;
-    private int lastSpake;
     private BNO055IMU backupGyro1;
 
     @Override
@@ -23,31 +22,19 @@ public class ExperimentalStuff extends OpMode {
         bot = Robot.getInstance();
         bot.init(hardwareMap);
 
-        double volts = bot.expansionHubs.get("Expansion Hub 2").voltageBattery(ExpansionHub.VoltageUnits.VOLTS);
+        double volts = bot.secondHub.voltageBattery(ExpansionHub.VoltageUnits.VOLTS);
 //        telemetry.addData("Battery Voltage", volts);
         double phoneVolts = bot.phone.batteryPct();
         RobotLog.v("Phone Battery is " + phoneVolts + " percent.");
         telemetry.addData("Phone Battery", phoneVolts);
         telemetry.update();
 
-//        if (volts < 11) {
-//            bot.phone.setBackgroundColor(0xFF, 0x00, 0x00);
-//        } else if (volts < 12) {
-//            bot.phone.setBackgroundColor(0xFF, 0x80, 0x00);
-//        } else if (volts < 12.5) {
-//            bot.phone.setBackgroundColor(0xFF, 0xFF, 0x00);
-//        } else {
-//            bot.phone.resetBackgroundColor();
-//        }
-//
-//        bot.phone.toast("Program Initialized.", 2000);
-
-        backupGyro1 = hardwareMap.get(BNO055IMU.class, "imu");
+        backupGyro1 = hardwareMap.get(BNO055IMU.class, "imu1");
     }
 
     @Override
     public void init_loop() {
-        double volts = bot.expansionHubs.get("Expansion Hub 2").voltageBattery(ExpansionHub.VoltageUnits.VOLTS);
+        double volts = bot.secondHub.voltageBattery(ExpansionHub.VoltageUnits.VOLTS);
         telemetry.addData("Battery Voltage", volts);
         telemetry.update();
     }
@@ -56,10 +43,9 @@ public class ExperimentalStuff extends OpMode {
     public void start() {
         bot.phone.resetBackgroundColor();
         bot.phone.toast("Program started.", 0);
-        bot.expansionHubs.get("Expansion Hub 2").setStatusLedColor(0xff,0x00,0x7f);
-        bot.expansionHubs.get("Expansion Hub 2").setPhoneChargeEnabled(true);
+        bot.secondHub.setStatusLedColor(0xff,0x00,0x7f);
+        bot.secondHub.setPhoneChargeEnabled(true);
         bot.runtime.reset();
-        lastSpake = 30;
     }
 
     @Override
@@ -68,18 +54,10 @@ public class ExperimentalStuff extends OpMode {
 
         bot.driveTrain.spinDrive(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
 
-//        if (30 - bot.runtime.seconds() < lastSpake && lastSpake >= 0) {
-//            bot.phone.queueWordSpeak(String.valueOf(lastSpake));
-//            lastSpake--;
-//        }
         telemetry.addData("Speaking", bot.phone.hasQueuedSound());
 
         telemetry.addData("Rev Gyro", rev);
         telemetry.addData("Phone Gyro", bot.phone.getGyroAngle());
-
-        if (gamepad1.b && bot.runtime.seconds() > 30 && !bot.phone.hasQueuedSound()) {
-            bot.phone.queueSoundFile("space_odyssey");
-        }
 
         telemetry.update();
     }

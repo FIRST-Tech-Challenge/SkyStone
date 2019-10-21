@@ -38,7 +38,7 @@ public class TTAutoBlue extends TTOpMode {
         skystonePos = scanStones();
         setArmStartPos();
         grabBlock4();
-}
+    }
 
     @Override
     protected void onStop() {
@@ -67,59 +67,33 @@ public class TTAutoBlue extends TTOpMode {
     }
 
     public void grabBlock4() {
-        grabSkyStone(4);
-        moveToFoundation(4);
-        sleep(250);
-        arm.lower(0.5);
-        driveSystem.turn(90, 0.25);
-        driveSystem.lateral(-25, 0.25);
-        driveSystem.vertical(4, 0.25);
-        arm.openClaw();
-        sleep(250);
-        arm.timedLift(1, 0.5);
-        driveSystem.vertical(-10, 0.5);
-    }
-
-    public void grabBlock5() {
-        sleep(250);
-        arm.lower(0.5);
-        driveSystem.turn(90, 0.25);
-        driveSystem.lateral(-25, 0.25);
-        driveSystem.vertical(4, 0.25);
-        arm.openClaw();
-        sleep(250);
-        arm.timedLift(1, 0.5);
-        driveSystem.vertical(-10, 0.5);
-    }
-
-    //Opens the claw and lowers the arm for starting pos
-    private void setArmStartPos(){
-        arm.openClaw();
-        arm.lower(0.5);
-    }
-
-    /*Starts from the starting pos and moves grab the block
-      at that specific block pos then faces the foundation
-     */
-    private void grabSkyStone(int stoneNum){
-        driveSystem.lateral(42 - stoneNum * 8, 0.25);
+        driveSystem.lateral(10, 0.25);
         driveSystem.vertical(31.5, 0.25);
         arm.closeClaw();
+        sleep(250);
+        arm.timedLift(0.75, 0.5);
+        sleep(250);
         driveSystem.vertical(-10, 0.25);
         driveSystem.turn(-90, 0.25);
-    }
-
-    //Moves towards the foundation and turns to face it
-    private void moveToFoundation(int stoneNum){
-        driveSystem.vertical(115.5 - stoneNum * 8, 0.5);
+        driveSystem.vertical(83.5, 0.5);
         arm.timedLift(1, 0.5);
         sleep(250);
         driveSystem.turn(90, 0.25);
         driveSystem.vertical(15.75, 0.25);
+        sleep(250);
+        arm.lower(0.5);
+        driveSystem.turn(90, 0.25);
+        driveSystem.lateral(-25, 0.25);
+        driveSystem.vertical(4, 0.25);
+        arm.openClaw();
+        sleep(250);
+        arm.timedLift(1, 0.5);
+        driveSystem.vertical(-10, 0.5);
+
     }
-
-    private void pullFoundation(){
-
+    private void setArmStartPos(){
+        arm.openClaw();
+        arm.lower(0.5);
     }
 
 }

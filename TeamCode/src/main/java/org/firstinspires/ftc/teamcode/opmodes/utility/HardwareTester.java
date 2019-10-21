@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IntegratingGyroscope;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 
@@ -20,6 +21,7 @@ public class HardwareTester extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+        waitForStart();
         List<HardwareMap.DeviceMapping<? extends HardwareDevice>> deviceMappings = hardwareMap.allDeviceMappings;
         for (HardwareMap.DeviceMapping deviceMapping : deviceMappings) {
             for (Object objEntry : deviceMapping.entrySet()) {
@@ -67,6 +69,11 @@ public class HardwareTester extends LinearOpMode {
                     telemetry.addData("Blue", color.blue());
                     telemetry.update();
                     sleep(1000);
+                } else if (device instanceof VoltageSensor) {
+                    VoltageSensor voltage = (VoltageSensor) device;
+                    telemetry.addData("Volts", voltage.getVoltage());
+                    telemetry.update();
+                    sleep(2000);
                 }
                 else {
                     telemetry.addLine("No tests performed, unregistered device type.");

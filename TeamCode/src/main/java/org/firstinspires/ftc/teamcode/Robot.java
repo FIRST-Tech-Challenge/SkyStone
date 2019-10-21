@@ -44,7 +44,7 @@ public class Robot implements AutoCloseable {
         lift.init(hardwareMap);
         stoneManipulator.init(hardwareMap);
         camera.init(hardwareMap);
-//        phone.init(hardwareMap);
+        phone.init(hardwareMap);
         expansionHubs = ExpansionHub.getAvailableHubs(hardwareMap);
     }
 

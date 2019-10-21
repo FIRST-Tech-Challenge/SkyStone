@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotlib.drivetrain.MecanumDrivetrain;
+import org.firstinspires.ftc.robotlib.servo.LinkedServo;
 
 public class MecanumRobot
 {
@@ -14,16 +15,17 @@ public class MecanumRobot
     private DcMotor driveRearRight;
     private DcMotor driveRearLeft;
 
-    public DcMotor armParallelLift;
-
-    public Servo servoBuildClawLeft;
-    public Servo servoBuildClawRight;
+    private Servo servoBuildClawLeft;
+    private Servo servoBuildClawRight;
 
     public MecanumDrivetrain drivetrain;
+    public LinkedServo platformServos;
+
     public DcMotor[] motorList;
 
     public final double wheelRadius = 2; //inches
-    public final double gearRatio = (1.0/2.0);
+    public final double motorToWheelRatio = (1.0/2.0);
+    public final double motorTicksPerIn = (1.0/((wheelRadius*2*Math.PI) * motorToWheelRatio));
 
     public MecanumRobot(HardwareMap hwMap)
     {
@@ -47,20 +49,14 @@ public class MecanumRobot
         driveRearRight.setDirection(DcMotorSimple.Direction.FORWARD);
         driveRearLeft.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        /**
-        armParallelLift = hwMap.get(DcMotor.class, "armParallelLift");
-        armParallelLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        armParallelLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        armParallelLift.setDirection(DcMotorSimple.Direction.FORWARD);
-         **/
-
         servoBuildClawLeft = hwMap.get(Servo.class, "servoClawLeft");
         servoBuildClawRight = hwMap.get(Servo.class, "servoClawRight");
 
         servoBuildClawLeft.setDirection(Servo.Direction.FORWARD);
-        servoBuildClawRight.setDirection(Servo.Direction.FORWARD);
+        servoBuildClawRight.setDirection(Servo.Direction.REVERSE);
 
         motorList = new DcMotor[]{driveFrontLeft, driveFrontRight, driveRearLeft, driveRearRight};
         drivetrain = new MecanumDrivetrain(motorList);
+        platformServos = new LinkedServo(servoBuildClawLeft, servoBuildClawRight);
     }
 }

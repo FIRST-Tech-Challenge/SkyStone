@@ -5,7 +5,7 @@ import org.firstinspires.ftc.robotlib.sensor.Sensor;
 
 public class IntegratedController implements Controller, Targetable
 {
-    public Sensor sensor;
+    private Sensor sensor;
     public ControlAlgorithm algorithm;
 
     private double target;

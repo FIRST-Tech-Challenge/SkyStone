@@ -96,10 +96,7 @@ public class HeadingableMecanumDrivetrain extends MecanumDrivetrain implements H
     }
 
     @Override
-    public void finishRotating()
-    {
-
-    }
+    public void finishRotating() { }
 
     @Override
     public boolean getExtrinsic()

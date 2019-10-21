@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -7,6 +8,7 @@ import org.firstinspires.ftc.robotlib.controller.PIDController;
 import org.firstinspires.ftc.robotlib.robot.HeadingableMecanumRobot;
 import org.firstinspires.ftc.robotlib.util.PIDTuner;
 
+@Disabled
 @TeleOp (name="Headingable Mecanum PIDTuner", group="Headingable")
 public class HeadingableMecanumPIDTuner extends OpMode
 {

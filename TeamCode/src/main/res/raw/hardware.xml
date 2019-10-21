@@ -4,26 +4,26 @@
         <LynxModule name="Control Hub" port="1">
             <!-- Motors -->
             <RevRobotics20HdHexMotor name="leftFront" port="0" />
-            <RevRobotics20HdHexMotor name="rightBack" port="1" />
-            <RevRobotics20HdHexMotor name="rightFront" port="2" />
+*            <RevRobotics20HdHexMotor name="rightBack" port="1" />
+*            <RevRobotics20HdHexMotor name="rightFront" port="2" />
             <RevRobotics20HdHexMotor name="leftBack" port="3" />
             <!-- Servos -->
             <Servo name="extender" port="0" />
             <Servo name="nub_grabber" port="1" />
             <Servo name="foundation_hook_left" port="2" />
-            <Servo name="foundation_hook_right" port="3" />
+*            <Servo name="foundation_hook_right" port="3" />
             <!-- Digital Devices -->
             <RevTouchSensor name="foundation_touch_front" port="0" />
             <RevTouchSensor name="foundation_touch_side" port="1" />
             <RevTouchSensor name="auto_block_touch_left" port="2" />
-            <RevTouchSensor name="auto_block_touch_right" port="3" />
+*            <RevTouchSensor name="auto_block_touch_right" port="3" />
             <!-- PWM Devices -->
             <!-- Analog Input Devices -->
             <!-- I2C Bus 0 -->
             <LynxEmbeddedIMU name="imu1" port="0" bus="0" />
             <RevColorSensorV3 name="ss_color_left" port="1" bus="0" />
             <!-- I2C Bus 1 -->
-            <RevColorSensorV3 name="ss_color_right" port="0" bus="1" />
+*            <RevColorSensorV3 name="ss_color_right" port="0" bus="1" />
             <!-- I2C Bus 2 -->
             <RevColorSensorV3 name="line_color" port="0" bus="2" />
             <!-- I2C Bus 3 -->
@@ -32,17 +32,17 @@
         <LynxModule name="Expansion Hub" port="2">
             <!-- Motors -->
             <Motor name="lift_left/odometer_x_right" port="0" />
-            <Motor name="lift_right" port="1" />
+*            <Motor name="lift_right" port="1" />
             <RevRobotics20HdHexMotor name="intake_left/odometer_x_left" port="2" />
-            <RevRobotics20HdHexMotor name="intake_right/odometer_y" port="3" />
+*            <RevRobotics20HdHexMotor name="intake_right/odometer_y" port="3" />
             <!-- Servos -->
             <!-- Digital Devices -->
             <RevTouchSensor name="lift_limit_switch" port="0" />
             <!-- PWM Devices -->
             <!-- Analog Input Devices -->
             <!-- I2C Bus 0 -->
-            <LynxEmbeddedIMU name="imu2" port="0" bus="0" />
-            <Gyro name="gyro" port="1" bus="0" />
+*            <LynxEmbeddedIMU name="imu2" port="0" bus="0" />
+*            <Gyro name="gyro" port="1" bus="0" />
             <!-- I2C Bus 1 -->
             <!-- I2C Bus 2 -->
             <!-- I2C Bus 3 -->

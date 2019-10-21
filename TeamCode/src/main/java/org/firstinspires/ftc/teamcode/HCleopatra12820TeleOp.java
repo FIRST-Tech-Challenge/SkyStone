@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
@@ -50,8 +51,28 @@ public class HCleopatra12820TeleOp extends LinearOpMode {
 
     /* Declare OpMode members. */
     CleopatraHardware robot           = new CleopatraHardware();   // It uses Cleopatra's hardware
-    double          clawOffset      = 0;                       // Servo mid position
-    final double    CLAW_SPEED      = 0.02 ;                   // sets rate to move servo
+    double          clawOffset;                       // Servo mid position
+    final double    CLAW_SPEED; // sets rate to move claw servo
+    final double INCREMENT;     // amount to slew servo each CYCLE_MS cycle
+    static final int    CYCLE_MS;     // period of each cycle
+    //static final double MAX_POS;     // Maximum rotational position
+    //static final double MIN_POS; // Minimum rotational position
+
+    static {
+        CYCLE_MS = 50;
+        //MAX_POS = 1.0;
+        //MIN_POS = 0.0;
+    }
+
+    public HCleopatra12820TeleOp() {
+        INCREMENT = 0.01;
+        CLAW_SPEED = 0.02;
+        clawOffset = 0;
+    }
+    // Define class members
+    //Servo servo;
+    double  position = robot.MID_SERVO;// Start at halfway position
+    //boolean rampUp = true;
 
     @Override
     public void runOpMode() {
@@ -87,27 +108,8 @@ public class HCleopatra12820TeleOp extends LinearOpMode {
             double numBl = Range.clip((+Speed + Turn + Strafe), -1, 1);
             double numFr = Range.clip((+Speed - Turn + Strafe), -1, +1);
             double numBr = Range.clip((+Speed - Turn - Strafe), -1, 1);
-            double armElbowPower = Range.clip(0.5*gamepad2.left_stick_y, -1, 1);
+            //double armElbowPower = Range.clip(0.5*gamepad2.left_stick_y, -1, 1);
 
-            if(gamepad2.a)
-
-            robot.armWrist.setPower(robot.ARM_UP_POWER);
-
-            else if (gamepad2.b)
-                robot.armWrist.setPower(robot.ARM_DOWN_POWER);
-            else
-                robot.armWrist.setPower(0.0);
-
-            //Continue here with armElbow!
-            robot.armElbow.setPower(armElbowPower);
-
-
-            if(gamepad2.left_trigger>0 ){
-                intakeLeftPower    = Range.clip(gamepad2.left_trigger, -1.0, 1.0) ;
-                intakeRightPower   = Range.clip(gamepad2.left_trigger, -1.0, 1.0) ;}
-            else{
-                intakeLeftPower    = Range.clip(-gamepad2.right_trigger, -1.0, 1.0) ;
-                intakeRightPower   = Range.clip(-gamepad2.right_trigger, -1.0, 1.0) ;}
             robot.frontMotorLeft.setPower(numFl -MAX_SPEED +MAX_SPEED);
             if (robot.backMotorLeft!= null) {
                 robot.backMotorLeft.setPower(numBl -MAX_SPEED +MAX_SPEED);
@@ -116,9 +118,45 @@ public class HCleopatra12820TeleOp extends LinearOpMode {
             if (robot.backMotorRight != null) {
                 robot.backMotorRight.setPower(numBr -MAX_SPEED +MAX_SPEED);
             }
+            //Rotator.
+            if(gamepad1.a)
+                position += INCREMENT ;
+            if(gamepad1.b)
+                position-=INCREMENT;
+            robot.rotator.setPosition(position);
+            sleep(CYCLE_MS);
+            idle();
+
+            //Arm wrist
+            if(gamepad2.a)
+            robot.armWrist.setPower(robot.ARM_UP_POWER);
+
+            else if (gamepad2.b)
+                robot.armWrist.setPower(robot.ARM_DOWN_POWER);
+
+            else
+                robot.armWrist.setPower(0.0);
+
+            //Arm Elbow
+            if(gamepad2.dpad_up)
+                robot.armElbow.setPower(robot.ELBOW_UP_POWER);
+
+            else if (gamepad2.dpad_down)
+                robot.armElbow.setPower(robot.ELBOW_DOWN_POWER);
+            else
+                robot.armElbow.setPower(0.0);
+
+            //Intake
+            if(gamepad2.left_trigger>0 ){
+                intakeLeftPower    = Range.clip(gamepad2.left_trigger, -1.0, 1.0) ;
+                intakeRightPower   = Range.clip(gamepad2.left_trigger, -1.0, 1.0) ;}
+            else{
+                intakeLeftPower    = Range.clip(-gamepad2.right_trigger, -1.0, 1.0) ;
+                intakeRightPower   = Range.clip(-gamepad2.right_trigger, -1.0, 1.0) ;}
             robot.intakeMotorLeft.setPower(intakeLeftPower);
             robot.intakeMotorRight.setPower(intakeRightPower);
 
+            //Intake Servos
             if (gamepad2.x){
                 //intakeServoRight.setPosition(srvPower);
                 robot.intakeServoRight.setPosition(1);
@@ -136,7 +174,7 @@ public class HCleopatra12820TeleOp extends LinearOpMode {
             else if(gamepad2.left_bumper)
                 robot.claw.setPosition(0);
                 clawOffset -= CLAW_SPEED;
-            // Move both servos to new position.  Assume servos are mirror image of each other.
+
             clawOffset = Range.clip(clawOffset, -0.5, 0.5);
             robot.claw.setPosition(robot.MID_SERVO + clawOffset);
 

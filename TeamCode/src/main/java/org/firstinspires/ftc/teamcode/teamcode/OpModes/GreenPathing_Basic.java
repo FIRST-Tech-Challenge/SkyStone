@@ -52,7 +52,7 @@ public class GreenPathing_Basic extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        drive.initDriveTrain(this);
+        drive.initDriveTrain();
 
         if (robotWidth >= robotLength) {
             greatLength = robotWidth;

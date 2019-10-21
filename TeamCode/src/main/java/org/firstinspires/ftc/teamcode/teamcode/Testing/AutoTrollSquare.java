@@ -21,18 +21,13 @@ public class AutoTrollSquare extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        drive.initDriveTrain(this);
+        drive.initDriveTrain();
         waitForStart();
 
-        drive.encoderMove(this,5, 10, .5);
-        sleep(1000);
-        drive.strafeMove(this, 5, 10, -1);
-        sleep(1000);
-        drive.encoderMove(this, 5, 10, -.5);
-        sleep(1000);
-        drive.strafeMove(this, 5, 10, 1);
-        sleep(1000);
-       // drive.partyMode();
+        drive.strafeMove(this, 24, 5, 1);
+        drive.strafeMove(this, 24, 5, -1);
+
+        //drive.partyMode();
 
 
        /* drive.initDriveTrain(this);

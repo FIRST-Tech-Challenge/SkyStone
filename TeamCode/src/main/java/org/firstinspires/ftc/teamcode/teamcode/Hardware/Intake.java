@@ -16,8 +16,8 @@ public class Intake {
     */
 
     //intake planetary motors
-    DcMotor rightSide;
-    DcMotor leftSide;
+    public DcMotor rightSide;
+    public DcMotor leftSide;
 
     ElapsedTime time = new ElapsedTime();
 
@@ -31,24 +31,20 @@ public class Intake {
         this.opMode = (LinearOpMode) opMode;
         time.reset();
 
-        try
-        {
-            rightSide = opMode.hardwareMap.dcMotor.get("RIn");
-            leftSide = opMode.hardwareMap.dcMotor.get("LIn");
+        rightSide = opMode.hardwareMap.dcMotor.get("RIn");
+        leftSide = opMode.hardwareMap.dcMotor.get("LIn");
 
-            rightSide.setDirection(DcMotor.Direction.REVERSE);
-            leftSide.setDirection(DcMotor.Direction.FORWARD);
-
-        } catch (Exception e)
-        {
-            opMode.telemetry.addData("Failed", "Failed to Map Motors");
-            opMode.telemetry.update();
-
-            return false;
-        }
+        rightSide.setDirection(DcMotor.Direction.REVERSE);
+        leftSide.setDirection(DcMotor.Direction.FORWARD);
 
         rightSide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         leftSide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
+        rightSide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftSide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        rightSide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftSide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         return true;
     }

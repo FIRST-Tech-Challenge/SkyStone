@@ -114,9 +114,9 @@ public class DriveTrain {
     private double modPower = 0.0;
 
 
-    public void initDriveTrain(LinearOpMode opMode) {
+    public void initDriveTrain() {
 
-        this.opMode = opMode;
+       // this.opMode = opMode;
         sensors = new Sensors();
 
         //Sets Hardware Map
@@ -141,7 +141,7 @@ public class DriveTrain {
         modPower = 0.0;
 
         resetEncoders();
-        runEncoders();
+        //runEncoders();
     }
 
 
@@ -303,7 +303,7 @@ public class DriveTrain {
         while(Math.abs(averageStrafe) < target * inchCounts && runtime.seconds() < timeout)
         {
 
-            strafeEqualizer();
+           // strafeEqualizer();
             averageStrafe = getStrafeEncoderAverage(power);
 
             opMode.telemetry.addData("Target : ", target * inchCounts);

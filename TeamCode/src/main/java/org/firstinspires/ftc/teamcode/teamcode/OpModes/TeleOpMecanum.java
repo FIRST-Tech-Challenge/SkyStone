@@ -16,8 +16,8 @@ public class TeleOpMecanum extends OpMode {
 
     //Instantiate Variables
     DriveTrain drive = new DriveTrain();
-    Intake intake = new Intake();
-    Outtake outtake = new Outtake();
+    //Intake intake = new Intake();
+    //Outtake outtake = new Outtake();
     //Variables for Arcade Drive
     int motorPos = 0;
     double leftStickY;
@@ -59,8 +59,8 @@ public class TeleOpMecanum extends OpMode {
         drive.resetEncoders();
         drive.runtime.reset();
 
-        intake.initIntake(this);
-        outtake.initOuttake(this);
+        //intake.initIntake(this);
+        //outtake.initOuttake(this);
 
         numberStackedBlocks = 0;
         cfmToggle = false;
@@ -215,10 +215,10 @@ public class TeleOpMecanum extends OpMode {
              */
 
             //Intake
-            intake.compliantIntake_TeleOp();
+          //  intake.compliantIntake_TeleOp();
 
             //Outtake
-            outtake.outTake_TeleOp();
+        //   outtake.outTake_TeleOp();
 
             telemetry.update();
     }

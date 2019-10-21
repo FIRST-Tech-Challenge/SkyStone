@@ -37,6 +37,9 @@ public class MainTeleop extends LinearOpMode {
 
     boolean onSlowDrive, changedSlowDrive = false;
 
+    boolean isRetract = false;
+    boolean isExtend = false;
+
     public static double powerScaleFactor = 0.9;
 
     @Override
@@ -48,7 +51,7 @@ public class MainTeleop extends LinearOpMode {
         while (opModeIsActive()) {
             slowDriveLogic();
             driveLogic();
-            outtakeLogic();
+            outtakeLogic2();
             intakeLogic();
             if(gamepad2.dpad_up){
                 robot.outtakeSpool.setPower(1);
@@ -154,6 +157,7 @@ public class MainTeleop extends LinearOpMode {
 
             outtakePivotExecutePosition = robot.OUTTAKE_PIVOT_EXTENDED;
             outtakePivotWaitTime = 2000;
+
         } else if (gamepad2.b) { // Deposit and Reset
             outtakeExecutionTime = currentTime;
 
@@ -193,9 +197,58 @@ public class MainTeleop extends LinearOpMode {
 
         // Spool controls
         if (gamepad2.dpad_up) {
-            robot.outtakeSpool.setPower(.5);
+            robot.outtakeSpool.setPower(1);
         } else if (gamepad2.dpad_down) {
-            robot.outtakeSpool.setPower(-.5);
+            robot.outtakeSpool.setPower(-1);
+        } else {
+            robot.outtakeSpool.setPower(0);
+        }
+    }
+
+    private void outtakeLogic2() {
+        currentTime = SystemClock.elapsedRealtime();
+
+        // Logic to control outtake; with a delay on the pivot so that the slides can extend before pivot rotation
+        if (gamepad2.a) { // Clamp and Extend
+            robot.intakePusher.setPosition(0.7);
+            sleep(500);
+            isExtend = true;
+            outtakeExecutionTime = currentTime;
+            robot.clamp.setPosition(robot.CLAW_SERVO_CLAMPED);
+        } else if (gamepad2.b) { // Deposit and Reset
+            robot.intakePusher.setPosition(0.45);
+            isRetract = true;
+            outtakeExecutionTime = currentTime;
+            robot.clamp.setPosition(robot.CLAW_SERVO_RELEASED);
+        }
+
+        //extend
+        if(currentTime-outtakeExecutionTime >= 100 && isExtend){
+            robot.outtakeExtender.setPosition(robot.OUTTAKE_SLIDE_EXTENDED);
+        }
+
+        if(currentTime-outtakeExecutionTime >= 1500 && isExtend){
+            robot.clampPivot.setPosition(robot.OUTTAKE_PIVOT_EXTENDED);
+            isExtend = false;
+        }
+
+
+        //retract
+        if(currentTime-outtakeExecutionTime >= 250 && isRetract){
+            robot.clampPivot.setPosition(robot.OUTTAKE_PIVOT_RETRACTED);
+        }
+
+        if(currentTime-outtakeExecutionTime >= 750 && isRetract){
+            robot.outtakeExtender.setPosition(robot.OUTTAKE_SLIDE_RETRACTED);
+            isRetract = false;
+        }
+
+
+        // Spool controls
+        if (gamepad2.dpad_up) {
+            robot.outtakeSpool.setPower(1);
+        } else if (gamepad2.dpad_down) {
+            robot.outtakeSpool.setPower(-1);
         } else {
             robot.outtakeSpool.setPower(0);
         }

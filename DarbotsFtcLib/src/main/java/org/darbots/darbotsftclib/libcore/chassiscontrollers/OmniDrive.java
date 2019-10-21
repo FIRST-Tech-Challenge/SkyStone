@@ -48,6 +48,9 @@ public class OmniDrive extends RobotMotionSystem {
             }
 
             double AbsSpeed = Math.abs(getSpeed());
+            if(m_Drive.isSteadySpeedUp()){
+                AbsSpeed = 0;
+            }
             double LTSpeed = this.m_CountsToMove > 0 ? -AbsSpeed : AbsSpeed;
             double RTSpeed = this.m_CountsToMove > 0 ? -AbsSpeed : AbsSpeed;
             double LBSpeed = this.m_CountsToMove > 0 ? AbsSpeed : -AbsSpeed;
@@ -96,28 +99,16 @@ public class OmniDrive extends RobotMotionSystem {
             m_Drive.m_LeftBottomMotor.getMotorController().getMotor().updateStatus();
             m_Drive.m_RightBottomMotor.getMotorController().getMotor().updateStatus();
             //Left / Right Speed Control
-            if(this.isBusy() && GlobalUtil.getGyro() != null && m_Drive.isGyroGuidedDriveEnabled()){
-                GlobalUtil.getGyro().updateStatus();
-                double currentAng = GlobalUtil.getGyro().getHeading();
-                double deltaAng = XYPlaneCalculations.normalizeDeg(currentAng - m_StartDeg);
-                if(GlobalUtil.getGyro().getHeadingRotationPositiveOrientation() == RobotGyro.HeadingRotationPositiveOrientation.Clockwise){
-                    deltaAng = -deltaAng;
-                }
-
+            if(this.isBusy()){
                 double AbsSpeed = Math.abs(getSpeed());
 
-                double deltaSpeedEachSide = 0;
-                if(Math.abs(deltaAng) >= 5){
-                    deltaSpeedEachSide = Range.clip(0.5 * AbsSpeed,0,0.25);
-                }else if(Math.abs(deltaAng) >= 3){
-                    deltaSpeedEachSide = Range.clip(0.25 * AbsSpeed,0,0.2);
-                }else if(Math.abs(deltaAng) >= 1){
-                    deltaSpeedEachSide = Range.clip(0.1 * AbsSpeed, 0, 0.1);
-                }else if(Math.abs(deltaAng) >= 0.5){
-                    deltaSpeedEachSide = Range.clip(0.05 * AbsSpeed,0,0.05);
-                }
-                if(deltaSpeedEachSide < 0.025 && deltaSpeedEachSide != 0){
-                    deltaSpeedEachSide = 0.025;
+                if(m_Drive.isSteadySpeedUp()){
+                    double jobPercentile = Math.abs((m_Drive.m_LeftTopMotor.getMotorController().getMotor().getCurrentCount() - m_LTStartCount) / m_CountsToMove);
+                    if(jobPercentile < 0.25){
+                        AbsSpeed *= jobPercentile / 0.25;
+                    }else if(jobPercentile > 0.75){
+                        AbsSpeed *= (1.0 - jobPercentile) / 0.25;
+                    }
                 }
 
                 double LTSpeed = this.m_CountsToMove > 0 ? -AbsSpeed : AbsSpeed;
@@ -125,16 +116,41 @@ public class OmniDrive extends RobotMotionSystem {
                 double LBSpeed = this.m_CountsToMove > 0 ? AbsSpeed : -AbsSpeed;
                 double RBSpeed = this.m_CountsToMove > 0 ? AbsSpeed : -AbsSpeed;
 
-                if(deltaAng > 0){
-                    LTSpeed -= deltaSpeedEachSide;
-                    RTSpeed -= deltaSpeedEachSide;
-                    LBSpeed -= deltaSpeedEachSide;
-                    RBSpeed -= deltaSpeedEachSide;
-                }else if(deltaAng < 0){
-                    LTSpeed += deltaSpeedEachSide;
-                    RTSpeed += deltaSpeedEachSide;
-                    LBSpeed += deltaSpeedEachSide;
-                    RBSpeed += deltaSpeedEachSide;
+                if(GlobalUtil.getGyro() != null && m_Drive.isGyroGuidedDriveEnabled()) {
+                    GlobalUtil.getGyro().updateStatus();
+                    double currentAng = GlobalUtil.getGyro().getHeading();
+                    double deltaAng = XYPlaneCalculations.normalizeDeg(currentAng - m_StartDeg);
+                    if (GlobalUtil.getGyro().getHeadingRotationPositiveOrientation() == RobotGyro.HeadingRotationPositiveOrientation.Clockwise) {
+                        deltaAng = -deltaAng;
+                    }
+
+
+                    double deltaSpeedEachSide = 0;
+                    if (Math.abs(deltaAng) >= 5) {
+                        deltaSpeedEachSide = Range.clip(0.5 * AbsSpeed, 0, 0.25);
+                    } else if (Math.abs(deltaAng) >= 3) {
+                        deltaSpeedEachSide = Range.clip(0.25 * AbsSpeed, 0, 0.2);
+                    } else if (Math.abs(deltaAng) >= 1) {
+                        deltaSpeedEachSide = Range.clip(0.1 * AbsSpeed, 0, 0.1);
+                    } else if (Math.abs(deltaAng) >= 0.5) {
+                        deltaSpeedEachSide = Range.clip(0.05 * AbsSpeed, 0, 0.05);
+                    }
+                    if (deltaSpeedEachSide < 0.025 && deltaSpeedEachSide != 0) {
+                        deltaSpeedEachSide = 0.025;
+                    }
+
+
+                    if (deltaAng > 0) {
+                        LTSpeed -= deltaSpeedEachSide;
+                        RTSpeed -= deltaSpeedEachSide;
+                        LBSpeed -= deltaSpeedEachSide;
+                        RBSpeed -= deltaSpeedEachSide;
+                    } else if (deltaAng < 0) {
+                        LTSpeed += deltaSpeedEachSide;
+                        RTSpeed += deltaSpeedEachSide;
+                        LBSpeed += deltaSpeedEachSide;
+                        RBSpeed += deltaSpeedEachSide;
+                    }
                 }
                 m_Drive.m_LeftTopMotor.getMotorController().getMotor().setPower(LTSpeed);
                 m_Drive.m_RightTopMotor.getMotorController().getMotor().setPower(RTSpeed);
@@ -197,6 +213,9 @@ public class OmniDrive extends RobotMotionSystem {
             }
 
             double AbsSpeed = Math.abs(getSpeed());
+            if(m_Drive.isSteadySpeedUp()){
+                AbsSpeed = 0;
+            }
             double LTSpeed = this.m_CountsToMove > 0 ? -AbsSpeed : AbsSpeed;
             double RTSpeed = this.m_CountsToMove > 0 ? AbsSpeed : -AbsSpeed;
             double LBSpeed = this.m_CountsToMove > 0 ? -AbsSpeed : AbsSpeed;
@@ -246,46 +265,58 @@ public class OmniDrive extends RobotMotionSystem {
             m_Drive.m_RightBottomMotor.getMotorController().getMotor().updateStatus();
 
             //Left / Right Speed Control
-            if(this.isBusy() && GlobalUtil.getGyro() != null && m_Drive.isGyroGuidedDriveEnabled()){
-                GlobalUtil.getGyro().updateStatus();
-                double currentAng = GlobalUtil.getGyro().getHeading();
-                double deltaAng = XYPlaneCalculations.normalizeDeg(currentAng - m_StartDeg);
-                if(GlobalUtil.getGyro().getHeadingRotationPositiveOrientation() == RobotGyro.HeadingRotationPositiveOrientation.Clockwise){
-                    deltaAng = -deltaAng;
-                }
-
+            if(this.isBusy()){
                 double AbsSpeed = Math.abs(getSpeed());
 
-                double deltaSpeedEachSide = 0;
-                if(Math.abs(deltaAng) >= 5){
-                    deltaSpeedEachSide = Range.clip(0.5 * AbsSpeed,0,0.25);
-                }else if(Math.abs(deltaAng) >= 3){
-                    deltaSpeedEachSide = Range.clip(0.25 * AbsSpeed,0,0.2);
-                }else if(Math.abs(deltaAng) >= 1){
-                    deltaSpeedEachSide = Range.clip(0.1 * AbsSpeed, 0, 0.1);
-                }else if(Math.abs(deltaAng) >= 0.5){
-                    deltaSpeedEachSide = Range.clip(0.05 * AbsSpeed,0,0.05);
+                if(m_Drive.isSteadySpeedUp()){
+                    double jobPercentile = Math.abs((m_Drive.m_LeftTopMotor.getMotorController().getMotor().getCurrentCount() - m_LTStartCount) / m_CountsToMove);
+                    if(jobPercentile < 0.25){
+                        AbsSpeed *= jobPercentile / 0.25;
+                    }else if(jobPercentile > 0.75){
+                        AbsSpeed *= (1.0 - jobPercentile) / 0.25;
+                    }
                 }
-                if(deltaSpeedEachSide < 0.025 && deltaSpeedEachSide != 0){
-                    deltaSpeedEachSide = 0.025;
-                }
-
 
                 double LTSpeed = this.m_CountsToMove > 0 ? -AbsSpeed : AbsSpeed;
                 double RTSpeed = this.m_CountsToMove > 0 ? AbsSpeed : -AbsSpeed;
                 double LBSpeed = this.m_CountsToMove > 0 ? -AbsSpeed : AbsSpeed;
                 double RBSpeed = this.m_CountsToMove > 0 ? AbsSpeed : -AbsSpeed;
 
-                if(deltaAng > 0){
-                    LTSpeed -= deltaSpeedEachSide;
-                    RTSpeed -= deltaSpeedEachSide;
-                    LBSpeed -= deltaSpeedEachSide;
-                    RBSpeed -= deltaSpeedEachSide;
-                }else if(deltaAng < 0){
-                    LTSpeed += deltaSpeedEachSide;
-                    RTSpeed += deltaSpeedEachSide;
-                    LBSpeed += deltaSpeedEachSide;
-                    RBSpeed += deltaSpeedEachSide;
+                if(GlobalUtil.getGyro() != null && m_Drive.isGyroGuidedDriveEnabled()) {
+                    GlobalUtil.getGyro().updateStatus();
+                    double currentAng = GlobalUtil.getGyro().getHeading();
+                    double deltaAng = XYPlaneCalculations.normalizeDeg(currentAng - m_StartDeg);
+                    if (GlobalUtil.getGyro().getHeadingRotationPositiveOrientation() == RobotGyro.HeadingRotationPositiveOrientation.Clockwise) {
+                        deltaAng = -deltaAng;
+                    }
+
+
+                    double deltaSpeedEachSide = 0;
+                    if (Math.abs(deltaAng) >= 5) {
+                        deltaSpeedEachSide = Range.clip(0.5 * AbsSpeed, 0, 0.25);
+                    } else if (Math.abs(deltaAng) >= 3) {
+                        deltaSpeedEachSide = Range.clip(0.25 * AbsSpeed, 0, 0.2);
+                    } else if (Math.abs(deltaAng) >= 1) {
+                        deltaSpeedEachSide = Range.clip(0.1 * AbsSpeed, 0, 0.1);
+                    } else if (Math.abs(deltaAng) >= 0.5) {
+                        deltaSpeedEachSide = Range.clip(0.05 * AbsSpeed, 0, 0.05);
+                    }
+                    if (deltaSpeedEachSide < 0.025 && deltaSpeedEachSide != 0) {
+                        deltaSpeedEachSide = 0.025;
+                    }
+
+
+                    if (deltaAng > 0) {
+                        LTSpeed -= deltaSpeedEachSide;
+                        RTSpeed -= deltaSpeedEachSide;
+                        LBSpeed -= deltaSpeedEachSide;
+                        RBSpeed -= deltaSpeedEachSide;
+                    } else if (deltaAng < 0) {
+                        LTSpeed += deltaSpeedEachSide;
+                        RTSpeed += deltaSpeedEachSide;
+                        LBSpeed += deltaSpeedEachSide;
+                        RBSpeed += deltaSpeedEachSide;
+                    }
                 }
                 m_Drive.m_LeftTopMotor.getMotorController().getMotor().setPower(LTSpeed);
                 m_Drive.m_RightTopMotor.getMotorController().getMotor().setPower(RTSpeed);

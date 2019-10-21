@@ -4,14 +4,15 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.GyroSensor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
 
 import static java.lang.Thread.sleep;
 
 @TeleOp(name = "REDWOOD", group = "REDWOOD")
 public class carterGyroTest extends OpMode {
     ElapsedTime runtime = new ElapsedTime();
+
     public DcMotor armRaiser;
     public DcMotor armExtended;
     GyroSensor gyro;
@@ -21,52 +22,83 @@ public class carterGyroTest extends OpMode {
     public DcMotor BL;
     public DcMotor BR;
 
+    public Servo grab;
+    public Servo grabRot;
     @Override
     public void init() {
-       /* TL = hardwareMap.get(DcMotor.class, "TL");
+        TL = hardwareMap.get(DcMotor.class, "TL");
         BL = hardwareMap.get(DcMotor.class, "BL");
         TR = hardwareMap.get(DcMotor.class, "TR");
-        BR = hardwareMap.get(DcMotor.class, "BR");*/
+        BR = hardwareMap.get(DcMotor.class, "BR");
+
         armRaiser = hardwareMap.get(DcMotor.class, "armRaiser");
         armExtended = hardwareMap.get(DcMotor.class, "armExtender");
+
+        grab = hardwareMap.get(Servo.class, "grab");
+        grabRot = hardwareMap.get(Servo.class, "grabRot");
+
+
         gyro = hardwareMap.gyroSensor.get("gyro");
         gyro=hardwareMap.get(GyroSensor.class,"gyro");
         gyro.resetZAxisIntegrator();
+
         runtime.reset();
-/*        do {
-            gyro.calibrate();
-        }
-        while (gyro.isCalibrating());*/
         gyro.calibrate();
+
+        grabRot.setPosition(0.3);
+
     }
+
+
     int armLevel = 0;
     double[] armAngles = {0,};
     double[] armDistance = {16, 22, };
+    int rawz = 0;
 
-    double rawz = 0;
-    double rawx = 0;
-    double rawy = 0;
+    double grabPos = 0;
+    double grabRotPos = 0;
+
+    public boolean armLevelUp = false;
+    public boolean armLevelDown = false;
 
     @Override
     public void loop() {
-        /*TL = hardwareMap.get(DcMotor.class, "TL");
+        TL = hardwareMap.get(DcMotor.class, "TL");
         BL = hardwareMap.get(DcMotor.class, "BL");
         TR = hardwareMap.get(DcMotor.class, "TR");
-        BR = hardwareMap.get(DcMotor.class, "BR");*/
+        BR = hardwareMap.get(DcMotor.class, "BR");
         armRaiser = hardwareMap.get(DcMotor.class, "armRaiser");
         armExtended = hardwareMap.get(DcMotor.class, "armExtender");
 
+        TL.setPower(gamepad1.left_stick_y);
+        BL.setPower(gamepad1.left_stick_y);
+        TR.setPower(gamepad1.right_stick_y);
+        BR.setPower(gamepad1.right_stick_y);
 
-        armRaiser.setPower(-gamepad1.right_stick_y);
-        armExtended.setPower(-gamepad1.left_stick_y);
-        extension(armExtended.getCurrentPosition(), 700);
+        //Arm Raise and Extend Manual Control
+        armRaiser.setPower(-gamepad2.right_stick_y);
+        armExtended.setPower(-gamepad2.left_stick_y);
 
-        if (gamepad1.dpad_up) {
-            armLevel++;
+        //Building Level Control
+        armLevel();
+        armLevelUp = false;
+        armLevelDown = false;
+
+        //Grabber Rotation Function
+        grabberRotation();
+
+        //Grabber Claw actual grabbing Action
+        if (gamepad1.x) {
+            grabPos = grabPos + 0.01;
         }
-        if (gamepad1.dpad_down) {
-            armLevel--;
+        if (gamepad1.y) {
+            grabPos = grabPos - 0.01;
         }
+        grab.setPosition(grabPos);
+
+
+        telemetry.addData("Servo1", grabRot.getPosition());
+        telemetry.addData("Servo2", grab.getPosition());
 
         if (gamepad1.b) {
             rawz = gyro.getHeading();
@@ -75,18 +107,6 @@ public class carterGyroTest extends OpMode {
         telemetry.addData("Encoder Ext", armExtended.getCurrentPosition());
         telemetry.addData("Encoder Raise", armRaiser.getCurrentPosition());
         telemetry.addData("Arm Level:", armLevel + 1);
-        if (gamepad1.right_bumper) {
-            armExtended.setPower(1);
-            try
-            {
-                Thread.sleep(1000);
-            }
-            catch(InterruptedException ex)
-            {
-                Thread.currentThread().interrupt();
-            }
-            armExtended.setPower(0);
-        }
         telemetry.update();
 
     }
@@ -96,24 +116,48 @@ public class carterGyroTest extends OpMode {
         super.stop();
     }
 
-    public double e() {
-        double Range = 0.6096;
-        double conversionFactor = 0.0163624617; //meters over encoder
-        double angle = (gyro.getHeading())*(3.14/180);
-        double extension = (Range/(Math.cos(angle)));
-        //return (int)((extension* (1/conversionFactor)));
-        return (angle);
-    }
-
-    public void extension(int currentPos, int encoder) {
-        while(((currentPos<(encoder-10)) ||  (currentPos>(encoder+10))) && gamepad1.a) {
-            armExtended.setPower(0.2);
+    public void armLevel() {
+        if (gamepad1.dpad_up) {
+            armLevelUp = true;
+        }
+        if (armLevelUp) {
+            armLevel++;
+        }
+        if (gamepad1.dpad_down) {
+            armLevelDown = true;
+        }
+        if (armLevelDown) {
+            armLevel--;
         }
     }
 
-    public void arm(int armLevel) {
-
+    public void grabberRotation() {
+        if (gamepad1.left_bumper) {
+            grabRot.setPosition(0.3);
+        }
+        if (gamepad1.right_bumper) {
+            grabRot.setPosition(0.8);
+        }
     }
 
+/*    public int getGyroHeading(int[] a) {
+        int count = 1, tempCount;
+        int common = a[0];
+        int temp = 0;
+        for (int i = 0; i < (a.length - 1); i++) {
+            temp = a[i];
+            tempCount = 0;
+            for (int j = 1; j < a.length; j++) {
+                if (temp == a[j]) {
+                    tempCount++;
+                }
+                if (tempCount > count) {
+                    common = temp;
+                    count = tempCount;
+                }
+            }
+        }
+        return common;
+    }*/
 }
 

@@ -145,6 +145,7 @@ public class VuforiaAutoNav {
     private ArrayList<Stone> Stones = new ArrayList<>();
     private HardwareMap hardwareMap;
     List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
+    private int[] skyStonePositions = {-1, -1};
 
 
     /*
@@ -242,14 +243,42 @@ public class VuforiaAutoNav {
         this.getStones().add(stone);
     }
 
+    public void addStone(Stone stone) {
+        this.getStones().add(stone);
+    }
+
     public void clearStones() {
         this.getStones().clear();
     }
 
+    public int[] getSkyStonePositions() {
+        return skyStonePositions;
+    }
+
+    public void setSkyStonePositions(int[] skyStonePositions) {
+        this.skyStonePositions = skyStonePositions;
+    }
+
+    public int getSkyStonePosition(int index) {
+        return skyStonePositions[index];
+    }
+
+    public void setSkyStonePosition(int index, int skyStonePosition) {
+        this.skyStonePositions[index] = skyStonePosition;
+    }
+
+    /**
+     * Because this class is not an opmode, the opmode using it needs to feed in its hardware map.
+     *
+     * @param hardwareMap
+     */
     public VuforiaAutoNav(HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
     }
 
+    /**
+     * This method initializes the webcam and navigation system and should always be used first.
+     */
     public void initView() {
         /*
          * Retrieve the camera we are to use.
@@ -280,8 +309,10 @@ public class VuforiaAutoNav {
         // sets are stored in the 'assets' part of our application.
         VuforiaTrackables targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
 
-        VuforiaTrackable stoneTarget = targetsSkyStone.get(0);
-        stoneTarget.setName("Stone Target");
+        // skystones have a variable position, so we can't use them.
+
+//        VuforiaTrackable stoneTarget = targetsSkyStone.get(0);
+//        stoneTarget.setName("Stone Target");
         VuforiaTrackable blueRearBridge = targetsSkyStone.get(1);
         blueRearBridge.setName("Blue Rear Bridge");
         VuforiaTrackable redRearBridge = targetsSkyStone.get(2);
@@ -331,9 +362,9 @@ public class VuforiaAutoNav {
         // Set the position of the Stone Target.  Since it's not fixed in position, assume it's at the field origin.
         // Rotated it to to face forward, and raised it to sit on the ground correctly.
         // This can be used for generic target-centric approach algorithms
-        stoneTarget.setLocation(OpenGLMatrix
-                .translation(0, 0, stoneZ)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
+//        stoneTarget.setLocation(OpenGLMatrix
+//                .translation(0, 0, stoneZ)
+//                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
 
         //Set the position of the bridge support targets with relation to origin (center of field)
         blueFrontBridge.setLocation(OpenGLMatrix
@@ -387,9 +418,6 @@ public class VuforiaAutoNav {
 
         //
         // Create a transformation matrix describing where the phone is on the robot.
-        //
-        // NOTE !!!!  It's very important that you turn OFF your phone's Auto-Screen-Rotation option.
-        // Lock it into Portrait for these numbers to work.
         //
         // Info:  The coordinate frame for the robot looks the same as the field.
         // The robot's "forward" direction is facing out along X axis, with the LEFT side facing out along the Y axis.
@@ -455,6 +483,9 @@ public class VuforiaAutoNav {
 
     }
 
+    /**
+     * This method updates the robot's position, angle, and field of view.
+     */
     public void updateView() {
         // check all the trackable targets to see which one (if any) is visible.
         targetVisible = false;
@@ -488,17 +519,43 @@ public class VuforiaAutoNav {
             // the last time that call was made.
             List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
             if (updatedRecognitions != null) {
+                ArrayList<Stone> stoneView = new ArrayList<>();
                 // step through the list of recognitions and display boundary info.
                 this.clearStones();
-                int i = 0;
                 for (Recognition recognition : updatedRecognitions) {
                     int kind = 0;
                     if (recognition.getLabel().equals("Skystone")) {
                         kind = 1;
                     }
-                    this.addStone(kind, recognition.getTop(), recognition.getBottom(), recognition.getLeft(), recognition.getRight());
+                    Stone newStone = new Stone(kind, recognition.getTop(), recognition.getBottom(), recognition.getLeft(), recognition.getRight());
+                    stoneView.add(newStone);
+                }
+                for (int i = 0; i < updatedRecognitions.size(); i++) {
+                    float currentPosition = stoneView.get(0).getCenterX();
+                    int currentStone = 0;
+                    for (int j = 1; j < updatedRecognitions.size() - i - 1; j++) {
+                        if (stoneView.get(j).getCenterX() < currentPosition) {
+                            currentPosition = stoneView.get(j).getCenterX();
+                            currentStone = j;
+                        }
+                    }
+                    this.addStone(stoneView.get(currentStone));
+                    stoneView.remove(currentStone);
+                }
+
+                if (updatedRecognitions.size() == 6 && (this.getSkyStonePosition(0) == -1 || this.getSkyStonePosition(1) == -1)) {
+                    for (int i = 0; i < 6; i++) {
+                        if (this.getStone(i).getKind() == 1) {
+                            if (this.getSkyStonePosition(0) == -1) {
+                                this.setSkyStonePosition(0, i);
+                            } else {
+                                this.setSkyStonePosition(1, i);
+                            }
+                        }
+                    }
                 }
             }
+
         }
     }
 

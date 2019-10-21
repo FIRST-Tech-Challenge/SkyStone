@@ -68,6 +68,13 @@ public class Stone {
     public void setRight(float right) {
         this.right = right;
     }
+    public float getCenterX(){
+        return (this.getRight() + this.getLeft())/2;
+    }
+
+    public float getCenterY(){
+        return (this.getTop() + this.getBottom())/2;
+    }
 
     public Stone(int kind, float top, float bottom, float left, float right) {
         this.kind = kind;

@@ -88,12 +88,12 @@ public class HCleopatra12820TeleOp extends LinearOpMode {
             double numFr = Range.clip((+Speed - Turn + Strafe), -1, +1);
             double numBr = Range.clip((+Speed - Turn - Strafe), -1, 1);
             double armElbowPower = Range.clip(0.5*gamepad2.left_stick_y, -1, 1);
-            //double armWristPower = Range.clip(gamepad2.right_stick_y, -1, 1);
-            if(gamepad2.right_stick_y>0)
+
+            if(gamepad2.a)
 
             robot.armWrist.setPower(robot.ARM_UP_POWER);
 
-            else if (gamepad2.right_stick_x>0)
+            else if (gamepad2.b)
                 robot.armWrist.setPower(robot.ARM_DOWN_POWER);
             else
                 robot.armWrist.setPower(0.0);

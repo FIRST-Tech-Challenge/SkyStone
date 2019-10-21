@@ -28,14 +28,16 @@ public class TTAutoBlue extends TTOpMode {
     @Override
     protected void onInitialize() {
         driveSystem = new TTDriveSystem(hardwareMap);
+        arm = new League1TTArm(hardwareMap);
         vision = new TTVision(hardwareMap);
         vision.enable();
     }
 
     @Override
     protected void onStart() {
-//        skystonePos = scanStones();
-  //      grabBlock4();
+        skystonePos = scanStones();
+        setArmStartPos();
+        grabBlock4();
     }
 
     @Override
@@ -66,10 +68,32 @@ public class TTAutoBlue extends TTOpMode {
 
     public void grabBlock4() {
         driveSystem.lateral(10, 0.25);
-        driveSystem.vertical(32.5, 0.25);
+        driveSystem.vertical(31.5, 0.25);
+        arm.closeClaw();
+        sleep(250);
+        arm.timedLift(0.75, 0.5);
+        sleep(250);
         driveSystem.vertical(-10, 0.25);
         driveSystem.turn(-90, 0.25);
-        driveSystem.vertical(78, 0.5);
+        driveSystem.vertical(83.5, 0.5);
+        arm.timedLift(1, 0.5);
+        sleep(250);
+        driveSystem.turn(90, 0.25);
+        driveSystem.vertical(15.75, 0.25);
+        sleep(250);
+        arm.lower(0.5);
+        driveSystem.turn(90, 0.25);
+        driveSystem.lateral(-25, 0.25);
+        driveSystem.vertical(4, 0.25);
+        arm.openClaw();
+        sleep(250);
+        arm.timedLift(1, 0.5);
+        driveSystem.vertical(-10, 0.5);
+
+    }
+    private void setArmStartPos(){
+        arm.openClaw();
+        arm.lower(0.5);
     }
 
 }

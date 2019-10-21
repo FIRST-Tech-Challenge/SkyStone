@@ -8,11 +8,13 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class League1TTArm {
 
     private static final double CLAW_OPEN_POS = 1.0;
     private static final double CLAW_CLOSE_POS = 0.0;
-
     private final CRServo lift;
     private final ColorSensor liftSensor;
     private final Servo claw;
@@ -31,27 +33,28 @@ public class League1TTArm {
         telemetry.addData("blue", blue);
         LiftColor color = getColor();
         telemetry.addData("color detected", color);
-        telemetry.addData("lift power",lift.getPower());
+        telemetry.addData("lift power", lift.getPower());
         telemetry.update();
     }
 
     public void raise(double power) {
         power = Math.abs(power);
         Telemetry telemetry = TTOpMode.currentOpMode().telemetry;
-        while (getColor() != LiftColor.RED) {
+        while (getColor() != LiftColor.RED && TTOpMode.currentOpMode().opModeIsActive()) {
             testColorSensor(telemetry);
             lift.setPower(power);
+            stopLift(2);
         }
         lift.setPower(0.0);
         testColorSensor(telemetry);
     }
-
     public void lower(double power) {
         power = Math.abs(power);
         Telemetry telemetry = TTOpMode.currentOpMode().telemetry;
-        while (getColor() != LiftColor.BLUE) {
+        while (getColor() != LiftColor.BLUE && TTOpMode.currentOpMode().opModeIsActive()) {
             testColorSensor(telemetry);
             lift.setPower(-power);
+            stopLift(2);
         }
         lift.setPower(0.0);
         testColorSensor(telemetry);
@@ -88,6 +91,21 @@ public class League1TTArm {
 
     private enum LiftColor {
         RED, BLUE, NONE
+    }
+    private void stopLift(double time) {
+        Timer timer = TTOpMode.currentOpMode().getTimer();
+        TimerTask stopMotor = new TimerTask() {
+            @Override
+            public void run() {
+                lift.setPower(0.0);
+            }
+        };
+        timer.schedule(stopMotor, (int) time * 1000);
+    }
+
+    public void timedLift(double seconds, double power){
+        lift.setPower(power);
+        stopLift(seconds);
     }
 
 }

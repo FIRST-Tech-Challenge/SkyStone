@@ -19,6 +19,7 @@ public class extensionController extends LinearOpMode {
         waitForStart();
         while(opModeIsActive()) {
             whileLoopController(700);
+            extController(700);
 
         }
     }

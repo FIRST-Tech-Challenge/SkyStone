@@ -46,7 +46,7 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
  */
 
 @TeleOp(name="Hardware Cleopatra Tele_Op", group="Tele_Op")
-@Disabled
+//Disabled
 public class HCleopatra12820TeleOp extends LinearOpMode {
 
     /* Declare OpMode members. */

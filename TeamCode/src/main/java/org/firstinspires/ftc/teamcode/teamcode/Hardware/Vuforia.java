@@ -24,10 +24,10 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
 
 public class Vuforia extends LinearOpMode {
 
-    private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
-    private static final boolean PHONE_IS_PORTRAIT = false  ;
+    private static final VuforiaLocalizer.CameraDirection cameraChoice = BACK;
+    private static final boolean portrait = false  ;
 
-    private static final String VUFORIA_KEY =
+    private static final String vuKey =
                     "AdzMYbL/////AAABmflzIV+frU0RltL/ML+2uAZXgJiI" +
                     "Werfe92N/AeH7QsWCOQqyKa2G+tUDcgvg8uE8QjHeBZPcpf5hAwlC5qCfvg76eBoaa2b" +
                     "MMZ73hmTiHmr9fj3XmF4LWWZtDC6pWTFrzRAUguhlvgnck6Y4jjM16Px5TqgWYuWnpcxNM" +
@@ -59,6 +59,10 @@ public class Vuforia extends LinearOpMode {
     private float phoneYRotate    = 0;
     private float phoneZRotate    = 0;
 
+    final float forwardDisp  = 4.0f * mmPerInch;
+    final float verticalDisp = 8.0f * mmPerInch;
+    final float leftDisp     = 0;
+
     private void setClimate(VuforiaTrackable track, float dx, float dy,
                             float dz, float firstAng, float secondAng, float thirdAng) {
         track.setLocation(OpenGLMatrix
@@ -81,7 +85,7 @@ public class Vuforia extends LinearOpMode {
                         "id", hardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
-        parameters.vuforiaLicenseKey = VUFORIA_KEY;
+        parameters.vuforiaLicenseKey = vuKey;
 
         parameters.cameraName = webcamName;
 
@@ -91,80 +95,28 @@ public class Vuforia extends LinearOpMode {
 
         VuforiaTrackable stoneTarget = targetsSkyStone.get(0);
         stoneTarget.setName("Stone Target");
-        VuforiaTrackable blueRearBridge = targetsSkyStone.get(1);
-        blueRearBridge.setName("Blue Rear Bridge");
-        VuforiaTrackable redRearBridge = targetsSkyStone.get(2);
-        redRearBridge.setName("Red Rear Bridge");
-        VuforiaTrackable redFrontBridge = targetsSkyStone.get(3);
-        redFrontBridge.setName("Red Front Bridge");
-        VuforiaTrackable blueFrontBridge = targetsSkyStone.get(4);
-        blueFrontBridge.setName("Blue Front Bridge");
-        VuforiaTrackable red1 = targetsSkyStone.get(5);
-        red1.setName("Red Perimeter 1");
-        VuforiaTrackable red2 = targetsSkyStone.get(6);
-        red2.setName("Red Perimeter 2");
-        VuforiaTrackable front1 = targetsSkyStone.get(7);
-        front1.setName("Front Perimeter 1");
-        VuforiaTrackable front2 = targetsSkyStone.get(8);
-        front2.setName("Front Perimeter 2");
-        VuforiaTrackable blue1 = targetsSkyStone.get(9);
-        blue1.setName("Blue Perimeter 1");
-        VuforiaTrackable blue2 = targetsSkyStone.get(10);
-        blue2.setName("Blue Perimeter 2");
-        VuforiaTrackable rear1 = targetsSkyStone.get(11);
-        rear1.setName("Rear Perimeter 1");
-        VuforiaTrackable rear2 = targetsSkyStone.get(12);
-        rear2.setName("Rear Perimeter 2");
 
-        List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
-        allTrackables.addAll(targetsSkyStone);
+        List<VuforiaTrackable> skyTrack = new ArrayList<VuforiaTrackable>();
+        skyTrack.addAll(targetsSkyStone);
 
         setClimate(stoneTarget, 0, 0, stoneZ, 90, 0, -90);
 
-        setClimate(blueFrontBridge, -bridgeX, bridgeY, bridgeZ, 0, bridgeRotY, bridgeRotZ);
-
-        setClimate(blueRearBridge, -bridgeX, bridgeY, bridgeZ, 0, -bridgeRotY, bridgeRotZ);
-
-        setClimate(redFrontBridge, -bridgeX, -bridgeY, bridgeZ, 0, -bridgeRotY, 0);
-
-        setClimate(redRearBridge, bridgeX, -bridgeY, bridgeZ, 0, bridgeRotY, 0);
-
-        setClimate(red1, quadField, -halfField, mmTargetHeight, 90, 0, 180);
-
-        setClimate(red2, -quadField, -halfField, mmTargetHeight, 90, 0, 180);
-
-        setClimate(front1, -halfField, -quadField, mmTargetHeight, 90, 0, 90);
-
-        setClimate(front2, -halfField, quadField, mmTargetHeight, 90, 0, 90);
-
-        setClimate(blue1, -quadField, halfField, mmTargetHeight, 90, 0, 0);
-
-        setClimate(blue2, quadField, halfField, mmTargetHeight, 90, 0, 0);
-
-        setClimate(rear1, halfField, quadField, mmTargetHeight, 90, 0, -90);
-
-        setClimate(rear2, halfField, -quadField, mmTargetHeight, 90, 0, -90);
-
-        if (CAMERA_CHOICE == BACK) {
+        if (cameraChoice == BACK) {
             phoneYRotate = -90;
         } else {
             phoneYRotate = 90;
         }
 
-        if (PHONE_IS_PORTRAIT) {
+        if (portrait) {
             phoneXRotate = 90 ;
         }
 
-        final float CAMERA_FORWARD_DISPLACEMENT  = 4.0f * mmPerInch;
-        final float CAMERA_VERTICAL_DISPLACEMENT = 8.0f * mmPerInch;
-        final float CAMERA_LEFT_DISPLACEMENT     = 0;
-
         OpenGLMatrix robotFromCamera = OpenGLMatrix
-                .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
+                .translation(forwardDisp, leftDisp, verticalDisp)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX,
                         DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
 
-        for (VuforiaTrackable trackable : allTrackables) {
+        for (VuforiaTrackable trackable : skyTrack) {
             ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera,
                     parameters.cameraDirection);
         }
@@ -173,7 +125,7 @@ public class Vuforia extends LinearOpMode {
         while (!isStopRequested()) {
 
             targetVisible = false;
-            for (VuforiaTrackable trackable : allTrackables) {
+            for (VuforiaTrackable trackable : skyTrack) {
                 if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
                     telemetry.addData("Visible Target", trackable.getName());
                     targetVisible = true;

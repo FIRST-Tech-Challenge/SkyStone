@@ -755,7 +755,7 @@ public class DriveTrain {
 
     }
 
-    public void encoderMove(LinearOpMode opMode, double target, double timeout, double power, double radiax) {
+    public void encoderMove(LinearOpMode opMode, double target, double timeout, double radiax) {
 
         this.opMode = opMode;
         runtime.reset();
@@ -789,7 +789,8 @@ public class DriveTrain {
 
     //PID Turns for Macanum Wheels
     //Proportional Integral Derivative Turn
-    public void turnPID (LinearOpMode opMode, double goal, boolean isRight, double kP, double kI, double kD, double timeOutMS) {
+    public void turnPID (LinearOpMode opMode, double goal, boolean isRight, double kP, double kI,
+                         double kD, double timeOutMS) {
 
         runtime.reset();
         sensors.angles = sensors.gyro.getAngularOrientation();

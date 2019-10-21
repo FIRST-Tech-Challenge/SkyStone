@@ -36,8 +36,8 @@ public class Intake {
             rightSide = opMode.hardwareMap.dcMotor.get("RIn");
             leftSide = opMode.hardwareMap.dcMotor.get("LIn");
 
-            opMode.telemetry.addData("Success", "Intake Initialized");
-            opMode.telemetry.update();
+            rightSide.setDirection(DcMotor.Direction.REVERSE);
+            leftSide.setDirection(DcMotor.Direction.FORWARD);
 
         } catch (Exception e)
         {
@@ -54,30 +54,19 @@ public class Intake {
     }
 
     //is to be called in OpMode
-    public void compliantIntake_Auto(DriveTrain drive, double runTime, boolean block)
+    public void autoIntake(DriveTrain drive, double runTime, boolean block)
     {
         time.reset();
 
-        opMode.telemetry.addData("Active", "Intake Running");
-        opMode.telemetry.update();
-
-   //     drive.encoderDrive(opMode,.5, 10,  10);
-        //move to block?
         rightSide.setPower(PICKUP);
         leftSide.setPower(PICKUP);
 
-        while(time.seconds() < runTime && block){ //runtime is time it takes for intake to run and pass through
+        while(time.seconds() < runTime && block){
 
         }
 
-        //move toward block
-     //   drive.encoderDrive(opMode,.5, -10,  10);
-
         rightSide.setPower(IDLE);
         leftSide.setPower(IDLE);
-
-        opMode.telemetry.addData("Inactive", "Intake Off");
-        opMode.telemetry.update();
 
     }
 

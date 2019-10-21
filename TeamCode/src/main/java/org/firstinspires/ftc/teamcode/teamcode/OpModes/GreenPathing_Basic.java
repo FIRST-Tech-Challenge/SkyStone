@@ -16,6 +16,7 @@ import org.firstinspires.ftc.teamcode.teamcode.Hardware.Vuforia;
 public class GreenPathing_Basic extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
+    private ElapsedTime trueTime = new ElapsedTime();
     private double driveSpeed = 0.6;
 
     DriveTrain drive = new DriveTrain();
@@ -24,13 +25,28 @@ public class GreenPathing_Basic extends LinearOpMode {
     Outtake outtake = new Outtake();
     Vuforia vuf = new Vuforia();
 
+    double zeroOffset = 5.75;
+    double kI;
+    double kP;
+    double kD;
+
+    double valuationMeasure;
+    double safetyBuffer;
+
     double robotLength;
+    double robotWidth;
+    double greatLength;
+    double dicot = Math.sqrt((robotLength * robotLength) +
+            (robotWidth * robotWidth));
+    double clearance;
+
     double focusLine = 48 - robotLength;
     double clutchBuffer = 3.5;
     double thetaBit = (Math.atan(12/focusLine)) / 2;
     double trueHypo = (focusLine - clutchBuffer) / Math.cos(thetaBit);
     double falseHypo = focusLine - clutchBuffer;
 
+    //Shuffle Position in Vu
     int shufflePos;
 
     @Override
@@ -38,52 +54,130 @@ public class GreenPathing_Basic extends LinearOpMode {
 
         drive.initDriveTrain(this);
 
+        if (robotWidth >= robotLength) {
+            greatLength = robotWidth;
+        }
+        else {
+            greatLength = robotLength;
+        }
+
+        clearance = (dicot - greatLength) / 2;
+
         waitForStart();
 
-        //!!!ADD INTAKE!!!
+        trueTime.reset();
+
         if (vuf.VuBrowse()[3] == 1) {
             if (shufflePos == 3) {
-                drive.encoderMove(this, trueHypo, 2, 1, thetaBit);
+                drive.encoderMove(this, zeroOffset, 2,  90);
 
-                drive.encoderMove(this, -trueHypo, 2, 1, 180 + thetaBit);
+                drive.encoderMove(this, trueHypo, 2,  thetaBit);
+
+                //Intake
+
+                drive.encoderMove(this, -trueHypo, 2,  180 + thetaBit);
             }
             else if (shufflePos == 1) {
-                drive.encoderMove(this, trueHypo, 2, 1, 360 - thetaBit);
+                drive.encoderMove(this, zeroOffset, 2,  90);
 
-                drive.encoderMove(this, -trueHypo, 2, 1, 180 - thetaBit);
+                drive.encoderMove(this, trueHypo, 2,  360 - thetaBit);
+
+                //Intake
+
+                drive.encoderMove(this, -trueHypo, 2, 180 - thetaBit);
             }
             else {
-                drive.encoderMove(this, falseHypo, 2, 1, 0);
+                drive.encoderMove(this, zeroOffset, 2,  90);
 
-                drive.encoderMove(this, -falseHypo, 2, -1, 180);
+                drive.encoderMove(this, falseHypo, 2,  0);
+
+                //Intake
+
+                drive.encoderMove(this, -falseHypo, 2,  180);
             }
         }
 
-            drive.encoderDrive(this, .7, 24, 24, 3);
+        else {
+            drive.encoderMove(this, zeroOffset, 2,  90);
 
-            drive.encoderDrive(this, .6, -24, -24,3);
+            drive.encoderMove(this, falseHypo, 2,  0);
 
-            drive.turnPID(this,180, true, .01, .01, .01, 2000);
+            //Intake
 
-            drive.encoderDrive(this,.5, -24, -24, 3);
+            drive.encoderMove(this, -falseHypo, 2,  180);
+        }
 
-            drive.turnPID(this,90, false, .01, .01, .01, 2000);
+            runtime.reset();
 
-            drive.encoderDrive(this, .5, -10, -10, 3);
+            drive.encoderMove (this, 24, 2, 270);
 
-            drive.encoderDrive(this,1, 96, 96, 4);
+            valuationMeasure += runtime.milliseconds();
 
-            drive.turnPID(this,90, false, .01, .01, .01, 2000);
+            drive.encoderMove (this, 24 - robotLength, 2, 0);
 
-            drive.encoderDrive(this,.7, 24, 24, 3);
+            drive.turnPID(this,90, false, kP, kI, kD, 2000);
 
-            drive.encoderDrive(this,.6, -24, -24,3);
+            //outtake.outTake_Auto(drive);
 
-            drive.turnPID(this,180, true, .01, .01, .01, 2000);
+            outtake.hookAuto(drive);
 
-            drive.encoderDrive(this,.5, -24, -24, 3);
+            runtime.reset();
 
-            drive.turnPID(this,90, false, .01, .01, .01, 2000);
+            drive.encoderMove (this, 24, 2, 270);
+
+            drive.encoderMove (this, 12, 2, 180);
+
+            drive.turnPID(this,90, true, kP, kI, kD, 2000);
+
+            valuationMeasure += runtime.milliseconds() + safetyBuffer;
+
+            if (trueTime.milliseconds() < 30 - valuationMeasure) {
+                drive.encoderMove(this, 24, 2, 90);
+
+                if (vuf.VuBrowse()[3] == 1) {
+                    if (shufflePos == 3) {
+                        drive.encoderMove(this, zeroOffset, 2,  90);
+
+                        drive.encoderMove(this, trueHypo, 2,  thetaBit);
+
+                        //Intake
+
+                        drive.encoderMove(this, -trueHypo, 2,  180 + thetaBit);
+                    }
+                    else if (shufflePos == 1) {
+                        drive.encoderMove(this, zeroOffset, 2,  90);
+
+                        drive.encoderMove(this, trueHypo, 2,  360 - thetaBit);
+
+                        //Intake
+
+                        drive.encoderMove(this, -trueHypo, 2, 180 - thetaBit);
+                    }
+                    else {
+                        drive.encoderMove(this, zeroOffset, 2,  90);
+
+                        drive.encoderMove(this, falseHypo, 2,  0);
+
+                        drive.encoderMove(this, -falseHypo, 2,  180);
+                    }
+                }
+
+                else {
+                    drive.encoderMove(this, zeroOffset, 2,  90);
+
+                    drive.encoderMove(this, falseHypo, 2,  0);
+
+                    drive.encoderMove(this, -falseHypo, 2,  180);
+                }
+
+                drive.encoderMove(this, 72, 3, 270);
+
+                drive.turnPID(this,90, false, kP, kI, kD, 2000);
+
+                //outtake.outTake_Auto(drive);
+
+                drive.encoderMove(this, 24, 2, 180);
+            }
 
             sleep(1000);
 

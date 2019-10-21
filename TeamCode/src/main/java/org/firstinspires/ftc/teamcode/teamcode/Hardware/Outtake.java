@@ -112,7 +112,7 @@ public class Outtake{
         raiseLift();
         openBasket();
 
-        drive.strafeMove(opMode, DISTANCE_TO_BUILD_ZONE, 5, -1);
+        drive.encoderMove(opMode, DISTANCE_TO_BUILD_ZONE, 5, 270);
 
         //possible add a test case to make sure robot has foundation
 

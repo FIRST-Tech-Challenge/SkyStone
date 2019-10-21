@@ -33,8 +33,8 @@ public class GreenPathing_Basic extends LinearOpMode {
     double valuationMeasure;
     double safetyBuffer;
 
-    double robotLength;
-    double robotWidth;
+    double robotLength = 17.1;
+    double robotWidth = 18.1;
     double greatLength;
     double dicot = Math.sqrt((robotLength * robotLength) +
             (robotWidth * robotWidth));

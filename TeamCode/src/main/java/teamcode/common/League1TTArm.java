@@ -39,25 +39,49 @@ public class League1TTArm {
 
     public void raise(double power) {
         power = Math.abs(power);
+        final boolean[] stopLift = new boolean[1];
+        scheduleStopLiftFlag(stopLift, 2);
         Telemetry telemetry = TTOpMode.currentOpMode().telemetry;
-        while (getColor() != LiftColor.RED && TTOpMode.currentOpMode().opModeIsActive()) {
+        while (getColor() != LiftColor.RED && !stopLift[0] && TTOpMode.currentOpMode().opModeIsActive()) {
             testColorSensor(telemetry);
             lift.setPower(power);
-            stopLift(2);
         }
         lift.setPower(0.0);
         testColorSensor(telemetry);
     }
+
     public void lower(double power) {
         power = Math.abs(power);
+        final boolean[] stopLift = new boolean[1];
+        scheduleStopLiftFlag(stopLift, 2);
         Telemetry telemetry = TTOpMode.currentOpMode().telemetry;
-        while (getColor() != LiftColor.BLUE && TTOpMode.currentOpMode().opModeIsActive()) {
+        while (getColor() != LiftColor.BLUE && !stopLift[0] && TTOpMode.currentOpMode().opModeIsActive()) {
             testColorSensor(telemetry);
             lift.setPower(-power);
-            stopLift(2);
         }
         lift.setPower(0.0);
         testColorSensor(telemetry);
+    }
+
+    public void liftTimed(double seconds, double power) {
+        lift.setPower(power);
+        boolean[] stopLift = new boolean[1];
+        scheduleStopLiftFlag(stopLift, seconds);
+        while (!stopLift[0] && TTOpMode.currentOpMode().opModeIsActive()) ;
+        lift.setPower(0.0);
+    }
+
+    /**
+     * Assigns true to the first element of the array once the timeout period has passed.
+     */
+    private void scheduleStopLiftFlag(final boolean[] stopLiftFlag, double seconds) {
+        TimerTask stop = new TimerTask() {
+            @Override
+            public void run() {
+                stopLiftFlag[0] = true;
+            }
+        };
+        TTOpMode.currentOpMode().getTimer().schedule(stop, (long) (seconds * 1000));
     }
 
     private LiftColor getColor() {
@@ -91,21 +115,6 @@ public class League1TTArm {
 
     private enum LiftColor {
         RED, BLUE, NONE
-    }
-    private void stopLift(double time) {
-        Timer timer = TTOpMode.currentOpMode().getTimer();
-        TimerTask stopMotor = new TimerTask() {
-            @Override
-            public void run() {
-                lift.setPower(0.0);
-            }
-        };
-        timer.schedule(stopMotor, (int) time * 1000);
-    }
-
-    public void timedLift(double seconds, double power){
-        lift.setPower(power);
-        stopLift(seconds);
     }
 
 }

@@ -71,12 +71,10 @@ public class TTAutoBlue extends TTOpMode {
         driveSystem.vertical(31.5, 0.25);
         arm.closeClaw();
         sleep(250);
-        arm.timedLift(0.75, 0.5);
-        sleep(250);
         driveSystem.vertical(-10, 0.25);
         driveSystem.turn(-90, 0.25);
         driveSystem.vertical(83.5, 0.5);
-        arm.timedLift(1, 0.5);
+        arm.liftTimed(1, 0.5);
         sleep(250);
         driveSystem.turn(90, 0.25);
         driveSystem.vertical(15.75, 0.25);
@@ -87,11 +85,12 @@ public class TTAutoBlue extends TTOpMode {
         driveSystem.vertical(4, 0.25);
         arm.openClaw();
         sleep(250);
-        arm.timedLift(1, 0.5);
+        arm.liftTimed(1, 0.5);
         driveSystem.vertical(-10, 0.5);
 
     }
-    private void setArmStartPos(){
+
+    private void setArmStartPos() {
         arm.openClaw();
         arm.lower(0.5);
     }

@@ -45,13 +45,18 @@ public class onlyopencv1 extends LinearOpMode {
 //    private Servo   servo        = null;
     private final int encoderTicks = 1120;
     private final double wheelDiameter = 3.85827;//in inches
+
+    //0 means skystone, 1 means yellow stone
+    //-1 for debug, but we can keep it like this because if it works, it should change to either 0 or 255
     public static int valMid = -1;
     public static int valLeft = -1;
     public static int valRight = -1;
 
-    public static float[] midPos = {1f/2f, 5f/8f};//0 = col, 1 = row
-    public static float[] leftPos = {1f/4f, 5f/8f};
-    public static float[] rightPos = {3f/4f, 5f/8f};
+    public static float[] midPos = {1f/2f, 5.5f/8f};//0 = col, 1 = row
+    public static float[] leftPos = {1f/4f, 5.5f/8f};
+    public static float[] rightPos = {3f/4f, 5.5f/8f};
+
+    public static float threeRectXOffset = 1f;//moves all rectangles right or left by amount. units are in ratio to monitor
 
     public final int rows = 640;
     public final int cols = 480;
@@ -264,66 +269,66 @@ public class onlyopencv1 extends LinearOpMode {
 
 
 
-            MatOfPoint2f approxCurve = new MatOfPoint2f();
-            //For each contour found
-            for (int i=0; i<contoursList.size(); i++)
-            {
-                boolean skyFound = false;
-                //Convert contours(i) from MatOfPoint to MatOfPoint2f
-                MatOfPoint2f contour2f = new MatOfPoint2f( contoursList.get(i).toArray() );
-                //Processing on mMOP2f1 which is in type MatOfPoint2f
-                double approxDistance = Imgproc.arcLength(contour2f, true)*0.02;
-                Imgproc.approxPolyDP(contour2f, approxCurve, approxDistance, true);
-
-                //Convert back to MatOfPoint
-                MatOfPoint points = new MatOfPoint(approxCurve.toArray() );
-                // Get bounding rect of contour
-                Rect rect = Imgproc.boundingRect(points);
-
-
-                //if the contour is in specified location AND one of the three points' value = 0, 0 means skystone
-                if(valMid == 0 || valLeft == 0 || valRight == 0)
-                    skyFound = true;
-                else
-                    skyFound = false;
-
-                if((rect.contains(point1) || rect.contains(point2) || rect.contains(point3))) {
-                    Imgproc.rectangle(all,
-                            new Point(rect.x, rect.y),
-                            new Point(rect.x + rect.width, rect.y + rect.height),
-                            new Scalar(255, 0, 0, 255), 3);
-                    break;
-                }
-
-            }
+//            MatOfPoint2f approxCurve = new MatOfPoint2f();
+//            //For each contour found
+//            for (int i=0; i<contoursList.size(); i++)
+//            {
+//                boolean skyFound = false;
+//                //Convert contours(i) from MatOfPoint to MatOfPoint2f
+//                MatOfPoint2f contour2f = new MatOfPoint2f( contoursList.get(i).toArray() );
+//                //Processing on mMOP2f1 which is in type MatOfPoint2f
+//                double approxDistance = Imgproc.arcLength(contour2f, true)*0.02;
+//                Imgproc.approxPolyDP(contour2f, approxCurve, approxDistance, true);
+//
+//                //Convert back to MatOfPoint
+//                MatOfPoint points = new MatOfPoint(approxCurve.toArray() );
+//                // Get bounding rect of contour
+//                Rect rect = Imgproc.boundingRect(points);
+//
+//                //if the contour is in specified location AND one of the three points' value = 0, 0 means skystone
+//                //this is extra security in case detected color is not a skystone
+//                if(valMid == 0 || valLeft == 0 || valRight == 0)
+//                    skyFound = true;
+//                else
+//                    skyFound = false;
+//
+//                if((rect.contains(point1) || rect.contains(point2) || rect.contains(point3))) {
+//                    Imgproc.rectangle(all,
+//                            new Point(rect.x, rect.y),
+//                            new Point(rect.x + rect.width, rect.y + rect.height),
+//                            new Scalar(255, 0, 0, 255), 3);
+//                    break;
+//                }
+//
+//            }
 
             //draw 3 rectangles
             Imgproc.rectangle(//1-3
                     all,
                     new Point(
-                            input.cols()/8,
-                            input.rows()*4.5/8),
+                            input.cols()/8+threeRectXOffset,
+                            input.rows()*(leftPos[1]-1)),
                     new Point(
-                            input.cols()*(2.9f/8f),
-                            input.rows()*(5.5f/8f)),
+                            input.cols()*(2.9f/8f)+threeRectXOffset,
+                            input.rows()*(leftPos[1]+1)),
                     new Scalar(0, 255, 0), 3);
             Imgproc.rectangle(//3-5
                     all,
                     new Point(
-                            input.cols()*(3.1/8),
-                            input.rows()*4.5/8),
+                            input.cols()*(3.1/8)+threeRectXOffset,
+                            input.rows()*(midPos[1]-1)),
                     new Point(
-                            input.cols()*(4.9f/8f),
-                            input.rows()*(5.5f/8f)),
+                            input.cols()*(4.9f/8f)+threeRectXOffset,
+                            input.rows()*(midPos[1]+1)),
                     new Scalar(0, 255, 0), 3);
             Imgproc.rectangle(//5-7
                     all,
                     new Point(
-                            input.cols()*(5.1/8),
-                            input.rows()*4.5/8),
+                            input.cols()*(5.1/8)+threeRectXOffset,
+                            input.rows()*(rightPos[1]-1)),
                     new Point(
-                            input.cols()*(7f/8f),
-                            input.rows()*(5.5f/8f)),
+                            input.cols()*(7f/8f)+threeRectXOffset,
+                            input.rows()*(rightPos[1]+1)),
                     new Scalar(0, 255, 0), 3);
 
             switch (stageToRenderToViewport)

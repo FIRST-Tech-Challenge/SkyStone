@@ -48,9 +48,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Template_OpMode_Linear", group="Linear Opmode")
+@TeleOp(name="nuuuuuuUu UwU adsa OwO", group="Linear Opmode")
 @Disabled
-public class Template_OpMode_Linear extends LinearOpMode {
+public class NerdPIDCalculator extends LinearOpMode {
 
     //one-time run stage.
     //Declare your unchanging variables here.

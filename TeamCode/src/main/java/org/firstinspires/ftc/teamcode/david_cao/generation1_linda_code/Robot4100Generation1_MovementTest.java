@@ -47,13 +47,13 @@ public class Robot4100Generation1_MovementTest extends DarbotsBasicOpMode<Robot4
             this.m_ChassisStatus = "Not Busy";
             if(this.gamepad1.left_stick_y < -0.1){
                 //Forward
-                this.m_RobotCore.getChassis().replaceTask(this.m_RobotCore.getChassis().getFixedZDistanceTask(50,0.5));
+                this.m_RobotCore.getChassis().replaceTask(this.m_RobotCore.getChassis().getFixedZDistanceTask(50,0.8));
             }else if(this.gamepad1.left_stick_y > 0.1){
-                this.m_RobotCore.getChassis().replaceTask(this.m_RobotCore.getChassis().getFixedZDistanceTask(-50,0.5));
+                this.m_RobotCore.getChassis().replaceTask(this.m_RobotCore.getChassis().getFixedZDistanceTask(-50,0.8));
             }else if(this.gamepad1.left_stick_x < -0.1){
-                this.m_RobotCore.getChassis().replaceTask(this.m_RobotCore.getChassis().getFixedXDistanceTask(-50,0.5));
+                this.m_RobotCore.getChassis().replaceTask(this.m_RobotCore.getChassis().getFixedXDistanceTask(-20,0.8));
             }else if(this.gamepad1.left_stick_x > 0.1){
-                this.m_RobotCore.getChassis().replaceTask(this.m_RobotCore.getChassis().getFixedXDistanceTask(50,0.5));
+                this.m_RobotCore.getChassis().replaceTask(this.m_RobotCore.getChassis().getFixedXDistanceTask(20,0.8));
             }else if(this.gamepad1.right_stick_x < -0.1){
                 this.m_RobotCore.getChassis().replaceTask(this.m_RobotCore.getChassis().getFixedTurnTask(90,0.2));
             }else if(this.gamepad1.right_stick_x > 0.1){

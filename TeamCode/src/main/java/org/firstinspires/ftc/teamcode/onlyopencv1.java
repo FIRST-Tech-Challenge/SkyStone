@@ -52,11 +52,14 @@ public class onlyopencv1 extends LinearOpMode {
     public static int valLeft = -1;
     public static int valRight = -1;
 
-    public static float[] midPos = {1f/2f, 5.5f/8f};//0 = col, 1 = row
-    public static float[] leftPos = {1f/4f, 5.5f/8f};
-    public static float[] rightPos = {3f/4f, 5.5f/8f};
+    public static float offsetX = 1.65f;//changing this moves the three rects and the three circles left or right, range : (-2, 2) not inclusive
+    public static float offsetY = 1.5f;//
 
-    public static float threeRectXOffset = 1f;//moves all rectangles right or left by amount. units are in ratio to monitor
+    public static float[] midPos = {(4f+offsetX)/8f, (4f+offsetY)/8f};//0 = col, 1 = row
+    public static float[] leftPos = {(2f+offsetX)/8f, (4f+offsetY)/8f};
+    public static float[] rightPos = {(6f+offsetX)/8f, (4f+offsetY)/8f};
+
+    public static float threeRectXOffset = offsetX/8f;//moves all rectangles right or left by amount. units are in ratio to monitor
 
     public final int rows = 640;
     public final int cols = 480;
@@ -170,7 +173,7 @@ public class onlyopencv1 extends LinearOpMode {
         {
 
             //telemetry.addData("Num contours found", stageSwitchingPipeline.getNumContoursFound());
-            telemetry.addData("Values", valLeft+";"+valMid+";"+valRight);
+            telemetry.addData("Values", valLeft+"   "+valMid+"   "+valRight);
             telemetry.addData("Height", rows);
             telemetry.addData("Width", cols);
 
@@ -258,14 +261,14 @@ public class onlyopencv1 extends LinearOpMode {
 
 
             //create three points
-            Point point1 = new Point((int)(input.cols()* midPos[0]), (int)(input.rows()* midPos[1]));
-            Point point2 = new Point((int)(input.cols()* leftPos[0]), (int)(input.rows()* leftPos[1]));
-            Point point3 = new Point((int)(input.cols()* rightPos[0]), (int)(input.rows()* rightPos[1]));
+            Point pointMid = new Point((int)(input.cols()* midPos[0]), (int)(input.rows()* midPos[1]));
+            Point pointLeft = new Point((int)(input.cols()* leftPos[0]+input.cols()*(0.2f/8f)), (int)(input.rows()* leftPos[1]));
+            Point pointRight = new Point((int)(input.cols()* rightPos[0]-input.cols()*(0.2f/8f)), (int)(input.rows()* rightPos[1]));
 
             //draw circles on those points
-            Imgproc.circle(all, point1,5, new Scalar( 255, 0, 0 ),1 );//draws circle
-            Imgproc.circle(all, point2,5, new Scalar( 255, 0, 0 ),1 );//draws circle
-            Imgproc.circle(all, point3,5, new Scalar( 255, 0, 0 ),1 );//draws circle
+            Imgproc.circle(all, pointMid,5, new Scalar( 255, 0, 0 ),1 );//draws circle
+            Imgproc.circle(all, pointLeft,5, new Scalar( 255, 0, 0 ),1 );//draws circle
+            Imgproc.circle(all, pointRight,5, new Scalar( 255, 0, 0 ),1 );//draws circle
 
 
 
@@ -292,7 +295,7 @@ public class onlyopencv1 extends LinearOpMode {
 //                else
 //                    skyFound = false;
 //
-//                if((rect.contains(point1) || rect.contains(point2) || rect.contains(point3))) {
+//                if((rect.contains(pointMid) || rect.contains(pointLeft) || rect.contains(pointRight))) {
 //                    Imgproc.rectangle(all,
 //                            new Point(rect.x, rect.y),
 //                            new Point(rect.x + rect.width, rect.y + rect.height),
@@ -306,29 +309,29 @@ public class onlyopencv1 extends LinearOpMode {
             Imgproc.rectangle(//1-3
                     all,
                     new Point(
-                            input.cols()/8+threeRectXOffset,
-                            input.rows()*(leftPos[1]-1)),
+                            input.cols()*(1.4f/8f)+input.cols()*threeRectXOffset,
+                            input.rows()*(leftPos[1]-.3f/8f)),
                     new Point(
-                            input.cols()*(2.9f/8f)+threeRectXOffset,
-                            input.rows()*(leftPos[1]+1)),
+                            input.cols()*(2.9f/8f)+input.cols()*threeRectXOffset,
+                            input.rows()*(leftPos[1]+.3f/8f)),
                     new Scalar(0, 255, 0), 3);
             Imgproc.rectangle(//3-5
                     all,
                     new Point(
-                            input.cols()*(3.1/8)+threeRectXOffset,
-                            input.rows()*(midPos[1]-1)),
+                            input.cols()*(3.3/8)+input.cols()*threeRectXOffset,
+                            input.rows()*(midPos[1]-.3f/8f)),
                     new Point(
-                            input.cols()*(4.9f/8f)+threeRectXOffset,
-                            input.rows()*(midPos[1]+1)),
+                            input.cols()*(4.7f/8f)+input.cols()*threeRectXOffset,
+                            input.rows()*(midPos[1]+.3f/8f)),
                     new Scalar(0, 255, 0), 3);
             Imgproc.rectangle(//5-7
                     all,
                     new Point(
-                            input.cols()*(5.1/8)+threeRectXOffset,
-                            input.rows()*(rightPos[1]-1)),
+                            input.cols()*(5.1/8)+input.cols()*threeRectXOffset,
+                            input.rows()*(rightPos[1]-.3f/8f)),
                     new Point(
-                            input.cols()*(7f/8f)+threeRectXOffset,
-                            input.rows()*(rightPos[1]+1)),
+                            input.cols()*(6.6f/8f)+input.cols()*threeRectXOffset,
+                            input.rows()*(rightPos[1]+.3f/8f)),
                     new Scalar(0, 255, 0), 3);
 
             switch (stageToRenderToViewport)

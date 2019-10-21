@@ -56,6 +56,7 @@ public class Robot {
     public Servo outtakeExtender;
     public Servo clamp;
     public Servo clampPivot;
+    public Servo intakePusher;
 
     // Outtake Slide Positions
     final double OUTTAKE_SLIDE_EXTENDED = .26;
@@ -133,6 +134,7 @@ public class Robot {
         outtakeExtender = hardwareMap.servo.get("outtakeExtender");
         clamp = hardwareMap.servo.get("clamp");
         clampPivot = hardwareMap.servo.get("clampPivot");
+        intakePusher = hardwareMap.servo.get("intakePusher");
     }
 
     public void intializeIMU() {

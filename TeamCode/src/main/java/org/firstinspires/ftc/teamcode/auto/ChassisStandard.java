@@ -327,8 +327,12 @@ public abstract class ChassisStandard extends OpMode {
     protected float getGyroscopeAngle() {
         if (useGyroScope && bosch != null) {
             Orientation exangles = bosch.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
-            float gyroAngle = exangles.thirdAngle + 50;
-            return CrazyAngle.normalizeAngle(CrazyAngle.reverseAngle(gyroAngle));
+            float gyroAngle = exangles.thirdAngle;
+            //exangles.
+            telemetry.addData("angle", "angle: " + exangles.thirdAngle);
+            float calculated = CrazyAngle.normalizeAngle(CrazyAngle.reverseAngle(gyroAngle));
+            telemetry.addData("angle2","calculated:" + calculated);
+            return calculated;
         } else {
             return 0.0f;
         }
@@ -377,6 +381,8 @@ public abstract class ChassisStandard extends OpMode {
             telemetry.addData("turnLeft2", "current = %.0f, destination = %.0f, moved=%.0f, need=%.0f", currentAngle, destinationAngle, justMoved, stillNeed);
             telemetry.update();
         }
+
+        sleep(2000);
     }
 
     /**

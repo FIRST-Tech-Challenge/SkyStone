@@ -107,4 +107,11 @@ public class GyroGuidedTurn extends RobotMotionSystemTask {
             this.stopTask();
         }
     }
+    @Override
+    public void stopTask(){
+        if(this.getMotionSystem().isGyroGuidedDriveEnabled() && this.getMotionSystem().isGyroGuidedDrivePublicStartingAngleEnabled()){
+            this.getMotionSystem().setGyroGuidedDrivePublicStartingAngle(XYPlaneCalculations.normalizeDeg(this.getMotionSystem().getGyroGuidedDrivePublicStartingAngle() + ((float) this.getTurnDeg())));
+        }
+        super.stopTask();
+    }
 }

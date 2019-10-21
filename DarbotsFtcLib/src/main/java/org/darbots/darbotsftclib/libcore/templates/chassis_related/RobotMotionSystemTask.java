@@ -35,6 +35,8 @@ import org.darbots.darbotsftclib.libcore.templates.RobotNonBlockingDevice;
 public abstract class RobotMotionSystemTask implements RobotNonBlockingDevice {
     private RobotMotionSystem m_MotionSystem;
     private boolean m_IsWorking;
+    private boolean m_UpdatePublicStartingAngleAfter = false;
+
     public RobotMotionSystemTask(){
         this.m_IsWorking = false;
     }
@@ -66,7 +68,16 @@ public abstract class RobotMotionSystemTask implements RobotNonBlockingDevice {
         GlobalUtil.addLog("RobotMotionSystemTask","AfterTask","Task ends", RobotLogger.LogLevel.DEBUG);
         this.m_IsWorking = false;
         this.__taskFinished();
+        if(m_UpdatePublicStartingAngleAfter){
+            this.getMotionSystem().updateGyroGuidedPublicStartingAngle();
+        }
         this.m_MotionSystem.__checkTasks();
+    }
+    public boolean isUpdatePublicStartingAngleAfter(){
+        return this.m_UpdatePublicStartingAngleAfter;
+    }
+    public void setUpdatePublicStartingAngleAfterEnabled(boolean Enabled){
+        this.m_UpdatePublicStartingAngleAfter = Enabled;
     }
     @Override
     public boolean isBusy(){

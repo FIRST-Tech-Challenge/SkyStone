@@ -44,7 +44,7 @@ public class OmniDrive extends RobotMotionSystem {
 
             if(GlobalUtil.getGyro() != null){
                 GlobalUtil.getGyro().updateStatus();
-                m_StartDeg = XYPlaneCalculations.normalizeDeg(GlobalUtil.getGyro().getHeading());
+                m_StartDeg = m_Drive.isGyroGuidedDrivePublicStartingAngleEnabled() ? m_Drive.getGyroGuidedDrivePublicStartingAngle() : XYPlaneCalculations.normalizeDeg(GlobalUtil.getGyro().getHeading());
             }
 
             double AbsSpeed = Math.abs(getSpeed());
@@ -96,25 +96,30 @@ public class OmniDrive extends RobotMotionSystem {
             m_Drive.m_LeftBottomMotor.getMotorController().getMotor().updateStatus();
             m_Drive.m_RightBottomMotor.getMotorController().getMotor().updateStatus();
             //Left / Right Speed Control
-            if(this.isBusy() && GlobalUtil.getGyro() != null){
+            if(this.isBusy() && GlobalUtil.getGyro() != null && m_Drive.isGyroGuidedDriveEnabled()){
                 GlobalUtil.getGyro().updateStatus();
                 double currentAng = GlobalUtil.getGyro().getHeading();
                 double deltaAng = XYPlaneCalculations.normalizeDeg(currentAng - m_StartDeg);
                 if(GlobalUtil.getGyro().getHeadingRotationPositiveOrientation() == RobotGyro.HeadingRotationPositiveOrientation.Clockwise){
                     deltaAng = -deltaAng;
                 }
-                double deltaSpeedEachSide = 0;
-                if(Math.abs(deltaAng) >= 5){
-                    deltaSpeedEachSide = 0.1;
-                }else if(Math.abs(deltaAng) >= 3){
-                    deltaSpeedEachSide = 0.05;
-                }else if(Math.abs(deltaAng) >= 1){
-                    deltaSpeedEachSide = 0.025;
-                }else if(Math.abs(deltaAng) >= 0.5){
-                    deltaSpeedEachSide = 0.01;
-                }
 
                 double AbsSpeed = Math.abs(getSpeed());
+
+                double deltaSpeedEachSide = 0;
+                if(Math.abs(deltaAng) >= 5){
+                    deltaSpeedEachSide = Range.clip(0.5 * AbsSpeed,0,0.25);
+                }else if(Math.abs(deltaAng) >= 3){
+                    deltaSpeedEachSide = Range.clip(0.25 * AbsSpeed,0,0.2);
+                }else if(Math.abs(deltaAng) >= 1){
+                    deltaSpeedEachSide = Range.clip(0.1 * AbsSpeed, 0, 0.1);
+                }else if(Math.abs(deltaAng) >= 0.5){
+                    deltaSpeedEachSide = Range.clip(0.05 * AbsSpeed,0,0.05);
+                }
+                if(deltaSpeedEachSide < 0.025 && deltaSpeedEachSide != 0){
+                    deltaSpeedEachSide = 0.025;
+                }
+
                 double LTSpeed = this.m_CountsToMove > 0 ? -AbsSpeed : AbsSpeed;
                 double RTSpeed = this.m_CountsToMove > 0 ? -AbsSpeed : AbsSpeed;
                 double LBSpeed = this.m_CountsToMove > 0 ? AbsSpeed : -AbsSpeed;
@@ -188,7 +193,7 @@ public class OmniDrive extends RobotMotionSystem {
 
             if(GlobalUtil.getGyro() != null){
                 GlobalUtil.getGyro().updateStatus();
-                m_StartDeg = XYPlaneCalculations.normalizeDeg(GlobalUtil.getGyro().getHeading());
+                m_StartDeg = m_Drive.isGyroGuidedDrivePublicStartingAngleEnabled() ? m_Drive.getGyroGuidedDrivePublicStartingAngle() : XYPlaneCalculations.normalizeDeg(GlobalUtil.getGyro().getHeading());
             }
 
             double AbsSpeed = Math.abs(getSpeed());
@@ -241,28 +246,34 @@ public class OmniDrive extends RobotMotionSystem {
             m_Drive.m_RightBottomMotor.getMotorController().getMotor().updateStatus();
 
             //Left / Right Speed Control
-            if(this.isBusy() && GlobalUtil.getGyro() != null){
+            if(this.isBusy() && GlobalUtil.getGyro() != null && m_Drive.isGyroGuidedDriveEnabled()){
                 GlobalUtil.getGyro().updateStatus();
                 double currentAng = GlobalUtil.getGyro().getHeading();
                 double deltaAng = XYPlaneCalculations.normalizeDeg(currentAng - m_StartDeg);
                 if(GlobalUtil.getGyro().getHeadingRotationPositiveOrientation() == RobotGyro.HeadingRotationPositiveOrientation.Clockwise){
                     deltaAng = -deltaAng;
                 }
-                double deltaSpeedEachSide = 0;
-                if(Math.abs(deltaAng) >= 5){
-                    deltaSpeedEachSide = 0.2;
-                }else if(Math.abs(deltaAng) >= 3){
-                    deltaSpeedEachSide = 0.05;
-                }else if(Math.abs(deltaAng) >= 1){
-                    deltaSpeedEachSide = 0.025;
-                }else if(Math.abs(deltaAng) >= 0.5){
-                    deltaSpeedEachSide = 0.01;
-                }
 
                 double AbsSpeed = Math.abs(getSpeed());
+
+                double deltaSpeedEachSide = 0;
+                if(Math.abs(deltaAng) >= 5){
+                    deltaSpeedEachSide = Range.clip(0.5 * AbsSpeed,0,0.25);
+                }else if(Math.abs(deltaAng) >= 3){
+                    deltaSpeedEachSide = Range.clip(0.25 * AbsSpeed,0,0.2);
+                }else if(Math.abs(deltaAng) >= 1){
+                    deltaSpeedEachSide = Range.clip(0.1 * AbsSpeed, 0, 0.1);
+                }else if(Math.abs(deltaAng) >= 0.5){
+                    deltaSpeedEachSide = Range.clip(0.05 * AbsSpeed,0,0.05);
+                }
+                if(deltaSpeedEachSide < 0.025 && deltaSpeedEachSide != 0){
+                    deltaSpeedEachSide = 0.025;
+                }
+
+
                 double LTSpeed = this.m_CountsToMove > 0 ? -AbsSpeed : AbsSpeed;
-                double RTSpeed = this.m_CountsToMove > 0 ? -AbsSpeed : AbsSpeed;
-                double LBSpeed = this.m_CountsToMove > 0 ? AbsSpeed : -AbsSpeed;
+                double RTSpeed = this.m_CountsToMove > 0 ? AbsSpeed : -AbsSpeed;
+                double LBSpeed = this.m_CountsToMove > 0 ? -AbsSpeed : AbsSpeed;
                 double RBSpeed = this.m_CountsToMove > 0 ? AbsSpeed : -AbsSpeed;
 
                 if(deltaAng > 0){
@@ -443,6 +454,10 @@ public class OmniDrive extends RobotMotionSystem {
 
     @Override
     protected void __stopMotion() {
+        this.m_LeftTopMotor.getMotorController().getMotor().setPower(0);
+        this.m_RightTopMotor.getMotorController().getMotor().setPower(0);
+        this.m_LeftBottomMotor.getMotorController().getMotor().setPower(0);
+        this.m_RightBottomMotor.getMotorController().getMotor().setPower(0);
         this.m_LeftTopMotor.getMotorController().deleteAllTasks();
         this.m_RightTopMotor.getMotorController().deleteAllTasks();
         this.m_LeftBottomMotor.getMotorController().deleteAllTasks();

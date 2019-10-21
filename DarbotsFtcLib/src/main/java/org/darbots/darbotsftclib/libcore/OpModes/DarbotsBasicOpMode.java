@@ -22,7 +22,10 @@ public abstract class DarbotsBasicOpMode<CoreType extends RobotCore> extends Lin
             RunThisOpMode();
         }
         GlobalUtil.addLog("DarbotsBasicOpMode","Status","OpMode stopping", RobotLogger.LogLevel.DEBUG);
-        this.getRobotCore().stop();
+
+        if(this.getRobotCore() != null)
+            this.getRobotCore().stop();
+
         GlobalUtil.addLog("DarbotsBasicOpMode","Status","OpMode finished", RobotLogger.LogLevel.DEBUG);
         this.getRobotCore().getLogger().saveLogsToFile();
         this.hardwareDestroy();

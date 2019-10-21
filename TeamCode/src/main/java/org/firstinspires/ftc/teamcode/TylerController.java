@@ -20,11 +20,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 @TeleOp(name="Tyler TeleOp", group="AAA")
 public class TylerController extends OpMode {
 
-
-
     //is sound playing?
     boolean soundPlaying = false;
-
     int bruhSoundID = -1;
     int oofSoundID = -1;
 
@@ -35,9 +32,7 @@ public class TylerController extends OpMode {
     private DcMotor motorFrontRight;
 
     private Servo crab;
-
     private DigitalChannel digitalTouch;  // Hardware Device Object
-
 
     // Hack stuff.
     private boolean useMotors = true;
@@ -79,17 +74,44 @@ public class TylerController extends OpMode {
 
         // Initialize the motors.
         if (useMotors) {
-            motorBackLeft = hardwareMap.get(DcMotor.class, "motor0");
-            motorBackRight = hardwareMap.get(DcMotor.class, "motor1");
-            motorFrontLeft = hardwareMap.get(DcMotor.class, "motor2");
-            motorFrontRight = hardwareMap.get(DcMotor.class, "motor3");
+            try {
 
-            // Most robots need the motor on one side to be reversed to drive forward
-            // Reverse the motor that runs backwards when connected directly to the battery
-            motorBackLeft.setDirection(DcMotor.Direction.FORWARD);
-            motorBackRight.setDirection(DcMotor.Direction.REVERSE);
-            motorFrontLeft.setDirection(DcMotor.Direction.FORWARD);
-            motorFrontRight.setDirection(DcMotor.Direction.REVERSE);
+                motorBackLeft = hardwareMap.get(DcMotor.class, "motor0");
+                motorBackRight = hardwareMap.get(DcMotor.class, "motor1");
+                motorFrontLeft = hardwareMap.get(DcMotor.class, "motor2");
+                motorFrontRight = hardwareMap.get(DcMotor.class, "motor3");
+
+                // Most robots need the motor on one side to be reversed to drive forward
+                // Reverse the motor that runs backwards when connected directly to the battery
+                motorBackLeft.setDirection(DcMotor.Direction.FORWARD);
+                motorBackRight.setDirection(DcMotor.Direction.REVERSE);
+                motorFrontLeft.setDirection(DcMotor.Direction.FORWARD);
+                motorFrontRight.setDirection(DcMotor.Direction.REVERSE);
+            } catch (Exception e) {
+                telemetry.addData("Motor", "exception on init: " + e.toString());
+                motorBackLeft = null;
+                motorBackRight = null;
+                motorFrontLeft = null;
+                motorFrontRight = null;
+
+            }
+
+            if (motorBackLeft == null){
+                telemetry.addData("Motor", "You forgot to set up the back left motor, set up the motors:" );
+                useMotors = false;
+            }
+            if (motorBackRight == null){
+                telemetry.addData("Motor", "You forgot to set up the back right motor, set up the motors:" );
+                useMotors = false;
+            }
+            if (motorFrontLeft == null){
+                telemetry.addData("Motor", "You forgot to set up the front left motors, set up the motors:" );
+                useMotors = false;
+            }
+            if (motorFrontRight == null){
+                telemetry.addData("Motor", "You forgot to set up the front right motors, set up the motors:" );
+                useMotors = false;
+            }
 
             if (useEncoders) {
                 motorBackLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -105,7 +127,12 @@ public class TylerController extends OpMode {
         }
 
         if (useCrab) {
-            crab = hardwareMap.get(Servo.class, "servoCrab");
+            try {
+                crab = hardwareMap.get(Servo.class, "servoCrab");
+            } catch (Exception e) {
+                telemetry.addData( "Crab", "exception on init: " + e.toString());
+                crab = null;
+            }
 
             if (crab == null){
                 telemetry.addData("Crab", "You forgot to set up crab, set up servoCrab");
@@ -130,11 +157,36 @@ public class TylerController extends OpMode {
         }
           
         if (useRange) {
-            //initialize the four lidar sensors
-            rangeFront = hardwareMap.get(DistanceSensor.class, "range_front");
-            rangeBack = hardwareMap.get(DistanceSensor.class, "range_back");
-            rangeLeft = hardwareMap.get(DistanceSensor.class, "range_left");
-            rangeRight = hardwareMap.get(DistanceSensor.class, "range_right");
+            try {
+                //initialize the four lidar sensors
+                rangeFront = hardwareMap.get(DistanceSensor.class, "range_front");
+                rangeBack = hardwareMap.get(DistanceSensor.class, "range_back");
+                rangeLeft = hardwareMap.get(DistanceSensor.class, "range_left");
+                rangeRight = hardwareMap.get(DistanceSensor.class, "range_right");
+            } catch (Exception e){
+                telemetry.addData ("Range", "exception on init: " + e.toString());
+                rangeFront = null;
+                rangeBack = null;
+                rangeLeft = null;
+                rangeRight = null;
+
+            }
+            if (rangeFront == null){
+                telemetry.addData("Range", "You forgot to set up rangeFront, set it up ");
+                useRange = false;
+            }
+            if (rangeBack == null){
+                telemetry.addData("Range", "You forgot to set up rangeBack, set it up ");
+                useRange = false;
+            }
+            if (rangeLeft == null){
+                telemetry.addData("Range", "You forgot to set up rangeLeft, set it up ");
+                useRange = false;
+            }
+            if (rangeRight == null){
+                telemetry.addData("Range", "You forgot to set up rangeRight, set it up ");
+                useRange = false;
+            }
 
             Context myApp = hardwareMap.appContext;
 

@@ -15,7 +15,7 @@ public class SoundTestTeleOp extends OpMode
     @Override
     public void init()
     {
-        basicSound = new BasicSound("policeSiren", this.hardwareMap);
+        basicSound = new BasicSound("police_siren", this.hardwareMap);
         playSound = new ToggleBoolean();
     }
 

@@ -17,7 +17,7 @@ public class HeadingableMecanumPIDTuner extends OpMode
     @Override
     public void init()
     {
-        HeadingableMecanumRobot robot = new HeadingableMecanumRobot(this.hardwareMap);
+        HeadingableMecanumRobot robot = new HeadingableMecanumRobot(this.hardwareMap, false);
         tuner = new PIDTuner(robot.drivetrain, (PIDController) robot.controller.algorithm, this.gamepad1, this.telemetry);
     }
 

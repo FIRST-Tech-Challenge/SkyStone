@@ -10,12 +10,15 @@ abstract public class Drivetrain
 
     private ToggleBoolean halfPower;
 
+    private boolean isAutoMode;
+
     public DcMotor[] motorList;
     private double[] motorPowers;
 
-    public Drivetrain(DcMotor[] motorList)
+    public Drivetrain(DcMotor[] motorList, boolean isAutoMode)
     {
         this.motorList = motorList;
+        this.isAutoMode = isAutoMode;
         halfPower = new ToggleBoolean(false);
     }
 
@@ -30,9 +33,12 @@ abstract public class Drivetrain
     protected void updateMotorPowers()
     {
         motorPowers = calculateMotorPowers();
-        for (int motorIndex = 0; motorIndex < motorPowers.length; motorIndex++)
+        if (!isAutoMode())
         {
-            motorList[motorIndex].setPower(motorPowers[motorIndex] * (halfPower.output() ? 0.5 : 1));
+            for (int motorIndex = 0; motorIndex < motorPowers.length; motorIndex++)
+            {
+                motorList[motorIndex].setPower(motorPowers[motorIndex] * (halfPower.output() ? 0.5 : 1));
+            }
         }
     }
 
@@ -42,4 +48,14 @@ abstract public class Drivetrain
     }
 
     abstract protected double[] calculateMotorPowers();
+
+    public boolean isAutoMode()
+    {
+        return isAutoMode;
+    }
+
+    public void setAutoMode(boolean isAutoMode)
+    {
+        this.isAutoMode = isAutoMode;
+    }
 }

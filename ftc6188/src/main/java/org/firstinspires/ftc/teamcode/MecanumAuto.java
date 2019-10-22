@@ -15,7 +15,7 @@ public class MecanumAuto extends LinearOpMode
     @Override
     public void runOpMode() throws InterruptedException
     {
-        robot = new MecanumRobot(this.hardwareMap);
+        robot = new MecanumRobot(this.hardwareMap, true);
         update();
 
         waitForStart();
@@ -34,7 +34,8 @@ public class MecanumAuto extends LinearOpMode
         telemetry.addData("Step", "Test stop to counter end rotation");
         robotMove(0, 0, 0, 0);
 
-        /* Move commands
+        /*
+        // Move commands
         robotMove(0, 0.5, 0, 1);
         // Latch Servos
         robotMove(180, 0.75, 0 ,2);
@@ -49,20 +50,22 @@ public class MecanumAuto extends LinearOpMode
 
     private void robotMove(double course, double velocity, double rotation, double distance)
     {
-        robot.drivetrain.setRotation(rotation);
         robot.drivetrain.setCourse(course * Math.PI/180);
         robot.drivetrain.setVelocity(velocity);
+        robot.drivetrain.setRotation(rotation);
         robot.drivetrain.setTargetPosition(distance * robot.motorTicksPerIn);
         update();
         robot.drivetrain.position();
-        sleep(1000);
     }
 
     private void update()
     {
         telemetry.addData("Target Motor Ticks", robot.motorTicksPerIn);
         telemetry.addData("Target Motor Rotations", robot.motorTicksPerIn/robot.drivetrain.getTicksPerUnit());
-        telemetry.addData("WheelTarget", robot.drivetrain.wheelTargetPositions[0]);
+        telemetry.addData("WheelTarget FL", robot.drivetrain.wheelTargetPositions[0]);
+        telemetry.addData("WheelTarget FR", robot.drivetrain.wheelTargetPositions[1]);
+        telemetry.addData("WheelTarget RL", robot.drivetrain.wheelTargetPositions[2]);
+        telemetry.addData("WheelTarget RR", robot.drivetrain.wheelTargetPositions[3]);
         telemetry.addData("Course", robot.drivetrain.getCourse());
         telemetry.addData("Velocity", robot.drivetrain.getVelocity());
         telemetry.addData("Rotation", robot.drivetrain.getRotation());

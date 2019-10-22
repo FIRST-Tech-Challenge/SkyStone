@@ -6,8 +6,8 @@
             <RevRobotics40HDHexMotor name="driveRearLeft" port="1" />
             <RevRobotics40HDHexMotor name="driveFrontRight" port="2" />
             <RevRobotics40HDHexMotor name="driveFrontLeft" port="3" />
-            <Servo name="servoClawLeft" port="0" />
-            <Servo name="servoClawRight" port="1" />
+            <Servo name="servoClawRight" port="0" />
+            <Servo name="servoClawLeft" port="1" />
         </LynxModule>
     </LynxUsbDevice>
 </Robot>

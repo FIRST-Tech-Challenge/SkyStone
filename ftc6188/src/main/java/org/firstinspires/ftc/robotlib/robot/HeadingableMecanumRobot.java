@@ -18,9 +18,9 @@ public class HeadingableMecanumRobot extends MecanumRobot
     public FinishableIntegratedController controller;
     public HeadingableMecanumDrivetrain drivetrain;
 
-    public HeadingableMecanumRobot(HardwareMap hwMap)
+    public HeadingableMecanumRobot(HardwareMap hwMap, boolean isAutoMode)
     {
-        super(hwMap);
+        super(hwMap, isAutoMode);
 
         imu = hwMap.get(BNO055IMUImpl.class, "imu");
         BNO055IMU.Parameters paramaters = new BNO055IMU.Parameters();
@@ -36,6 +36,6 @@ public class HeadingableMecanumRobot extends MecanumRobot
         pid.setMaxErrorForIntegral(0.002);
 
         controller = new FinishableIntegratedController(new IntegratingGyroscopeSensor(imu), pid, new ErrorTimeThresholdFinishingAlgorithim(Math.PI/50, 1));
-        drivetrain = new HeadingableMecanumDrivetrain(motorList, controller);
+        drivetrain = new HeadingableMecanumDrivetrain(motorList, controller, isAutoMode);
     }
 }

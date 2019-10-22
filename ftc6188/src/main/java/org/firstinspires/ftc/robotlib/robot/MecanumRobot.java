@@ -25,9 +25,9 @@ public class MecanumRobot
 
     public final double wheelRadius = 2; //inches
     public final double motorToWheelRatio = (1.0/2.0);
-    public final double motorTicksPerIn = (1.0/((wheelRadius*2*Math.PI) * motorToWheelRatio));
+    public double motorTicksPerIn = (1.0/((wheelRadius*2*Math.PI) * motorToWheelRatio));
 
-    public MecanumRobot(HardwareMap hwMap)
+    public MecanumRobot(HardwareMap hwMap, boolean isAutoMode)
     {
         driveFrontLeft = hwMap.get(DcMotor.class, "driveFrontLeft");
         driveFrontRight = hwMap.get(DcMotor.class, "driveFrontRight");
@@ -56,7 +56,9 @@ public class MecanumRobot
         servoBuildClawRight.setDirection(Servo.Direction.REVERSE);
 
         motorList = new DcMotor[]{driveFrontLeft, driveFrontRight, driveRearLeft, driveRearRight};
-        drivetrain = new MecanumDrivetrain(motorList);
+        drivetrain = new MecanumDrivetrain(motorList, isAutoMode);
         platformServos = new LinkedServo(servoBuildClawLeft, servoBuildClawRight);
+
+        motorTicksPerIn *= drivetrain.motorList[0].getMotorType().getTicksPerRev();
     }
 }

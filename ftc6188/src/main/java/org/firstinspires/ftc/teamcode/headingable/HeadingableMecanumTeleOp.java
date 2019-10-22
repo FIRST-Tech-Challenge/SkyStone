@@ -21,7 +21,7 @@ public class HeadingableMecanumTeleOp extends OpMode
     @Override
     public void init()
     {
-        robot = new HeadingableMecanumRobot(this.hardwareMap);
+        robot = new HeadingableMecanumRobot(this.hardwareMap, false);
         rotationTimer = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
         elapsedTime = new ElapsedTime();
     }

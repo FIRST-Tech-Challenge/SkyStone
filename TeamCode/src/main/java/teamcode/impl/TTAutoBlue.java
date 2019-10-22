@@ -36,7 +36,7 @@ public class TTAutoBlue extends TTOpMode {
 
     @Override
     protected void onStart() {
-        setArmStartPos();
+        setStartPos();
         grabSkyStone(3);
 //        skystonePos = scanStones();
 //        telemetry = TTOpMode.currentOpMode().telemetry;
@@ -77,10 +77,12 @@ public class TTAutoBlue extends TTOpMode {
         return 1; // assume left position if image recognition fails.
     }
 
-    //Opens the claw and lowers the arm for starting pos
-    private void setArmStartPos(){
+    //Opens the claw and lowers the arm for starting pos, moves into position for scanning
+    private void setStartPos(){
         arm.openClaw();
         arm.lower(0.5);
+        driveSystem.vertical(6, 0.5);
+        driveSystem.lateral(2, 0.25);
     }
 
     /*Starts from the starting pos and moves grab the block

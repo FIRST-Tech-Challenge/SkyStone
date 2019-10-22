@@ -36,8 +36,8 @@ public class TTAutoRed extends TTOpMode {
 
     @Override
     protected void onStart() {
-        setStartPos();
-        grabSkyStone(3);
+        setArmStartPos();
+        grabSkyStone(5);
 //        skystonePos = scanStones();
 //        telemetry = TTOpMode.currentOpMode().telemetry;
 //        telemetry.addData("Stone Found", skystonePos + 3);
@@ -77,12 +77,10 @@ public class TTAutoRed extends TTOpMode {
         return 1; // assume left position if image recognition fails.
     }
 
-    //Opens the claw and lowers the arm for starting pos, moves into pos for scanning
-    private void setStartPos() {
+    //Opens the claw and lowers the arm for starting pos
+    private void setArmStartPos() {
         arm.openClaw();
         arm.lower(0.5);
-        driveSystem.vertical(6, 0.5);
-        driveSystem.lateral(-2, 0.25);
     }
 
     /*Starts from the starting pos and moves grab the block
@@ -90,10 +88,10 @@ public class TTAutoRed extends TTOpMode {
      */
     private void grabSkyStone(int stoneNum) {
         driveSystem.lateral(-(41.5 - stoneNum * 8), 0.3);
-        driveSystem.vertical(25.5, 0.5);
+        driveSystem.vertical(31.5, 0.5);
         arm.closeClaw();
         sleep(500);
-        driveSystem.vertical(-20, 0.5);
+        driveSystem.vertical(-15, 0.5);
         driveSystem.turn(90, 0.5);
         moveToFoundation(stoneNum);
         pullFoundation();
@@ -101,12 +99,12 @@ public class TTAutoRed extends TTOpMode {
 
     //Moves towards the foundation and turns to face it
     private void moveToFoundation(int stoneNum) {
-        driveSystem.vertical(122 - stoneNum * 8, 0.5);
+        driveSystem.vertical(120 - stoneNum * 8, 0.5);
         sleep(250);
         driveSystem.turn(-90, 0.5);
         arm.liftTimed(1, 0.5);
         sleep(250);
-        driveSystem.vertical(25, 0.5);
+        driveSystem.vertical(20, 0.5);
         sleep(500);
         arm.openClaw();
     }

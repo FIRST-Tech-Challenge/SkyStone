@@ -62,4 +62,9 @@ public final class Vector2 {
         return Math.atan2(y, x);
     }
 
+    @Override
+    public String toString() {
+        return String.format("x = %.1f, y = %.1f", x, y);
+    }
+
 }

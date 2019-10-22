@@ -45,4 +45,9 @@ public class BoundingBox2D {
         return x1 <= x && x <= x2 && y1 <= y && y <= y2;
     }
 
+    @Override
+    public String toString() {
+        return String.format("x1 = %.1f, y1 = %.1f, x2 = %.1f, y2 = %.1f", x1, y1, x2, y2);
+    }
+
 }

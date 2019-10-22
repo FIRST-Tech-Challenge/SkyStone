@@ -26,9 +26,12 @@ public class RobotTelop extends LinearOpMode {
 
 
             telemetry.addData("We be counting",  "Counter = %7d", counter);
+            telemetry.update();
 
             // Pace this loop so servo speed is reasonable.
             sleep(1000);
+
+            counter += 1;
 
         }
     }

@@ -29,7 +29,6 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -48,8 +47,8 @@ public class Cleopatra12820TeleOp extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor intakeMotorLeft=null;
     private DcMotor intakeMotorRight=null;
+    private DcMotor intakeMotorLeft=null;
     private DcMotor backMotorLeft=null;
     private DcMotor backMotorRight=null;
     private DcMotor frontMotorLeft=null;
@@ -59,6 +58,8 @@ public class Cleopatra12820TeleOp extends LinearOpMode {
     private Servo intakeServoRight=null;
     private Servo intakeServoLeft=null;
     private Servo claw=null;
+    private Servo rotator=null;
+
 
 
     @Override
@@ -69,7 +70,7 @@ public class Cleopatra12820TeleOp extends LinearOpMode {
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        intakeMotorLeft  = hardwareMap.get(DcMotor.class, "intakeMotorLeft");
+        intakeMotorLeft = hardwareMap.get(DcMotor.class, "intakeMotorLeft");
         intakeMotorRight  = hardwareMap.get(DcMotor.class, "intakeMotorRight");
         backMotorLeft = hardwareMap.get(DcMotor.class, "backMotorLeft");
         backMotorRight = hardwareMap.get(DcMotor.class, "backMotorRight");
@@ -80,6 +81,7 @@ public class Cleopatra12820TeleOp extends LinearOpMode {
         intakeServoRight = hardwareMap.get(Servo.class, "intakeServoRight");
         intakeServoLeft = hardwareMap.get(Servo.class, "intakeServoLeft");
         claw = hardwareMap.get(Servo.class, "claw");
+        rotator=hardwareMap.get(Servo.class, "rotator");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -91,9 +93,10 @@ public class Cleopatra12820TeleOp extends LinearOpMode {
         backMotorRight.setDirection(DcMotor.Direction.REVERSE);
         frontMotorLeft.setDirection(DcMotor.Direction.FORWARD);
         frontMotorRight.setDirection(DcMotor.Direction.REVERSE);
-        claw.setDirection(Servo.Direction.FORWARD);
         intakeServoLeft.setDirection(Servo.Direction.REVERSE);
-
+        intakeServoRight.setDirection(Servo.Direction.FORWARD);
+        claw.setDirection(Servo.Direction.FORWARD);
+        rotator.setDirection(Servo.Direction.FORWARD);
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
@@ -127,38 +130,40 @@ public class Cleopatra12820TeleOp extends LinearOpMode {
             if(gamepad2.left_trigger>0 ){
                 intakeLeftPower    = Range.clip(gamepad2.left_trigger, -1.0, 1.0) ;
                 intakeRightPower   = Range.clip(gamepad2.left_trigger, -1.0, 1.0) ;}
-            else{
+            else {
                 intakeLeftPower    = Range.clip(-gamepad2.right_trigger, -1.0, 1.0) ;
                 intakeRightPower   = Range.clip(-gamepad2.right_trigger, -1.0, 1.0) ;}
             frontMotorLeft.setPower(numFl -MAX_SPEED +MAX_SPEED);
-            if (backMotorLeft!= null) {
+            if (backMotorLeft!= null)
                 backMotorLeft.setPower(numBl -MAX_SPEED +MAX_SPEED);
-            }
+
             frontMotorRight.setPower(numFr -MAX_SPEED +MAX_SPEED);
-            if (backMotorRight != null) {
+            if (backMotorRight != null)
                 backMotorRight.setPower(numBr -MAX_SPEED +MAX_SPEED);
-            }
+
             intakeMotorLeft.setPower(intakeLeftPower);
             intakeMotorRight.setPower(intakeRightPower);
 
-            if (gamepad2.x){
+            if (gamepad2.x)
                 //intakeServoRight.setPosition(srvPower);
                 intakeServoRight.setPosition(1);
                 intakeServoLeft.setPosition(1);
-            }
-            if(gamepad2.y){
+
+            if(gamepad2.y)
                 intakeServoRight.setPosition(0);
                 intakeServoLeft.setPosition(0);
 
-            }
-            if(gamepad2.a){
 
+            if(gamepad2.a)
                 claw.setPosition(1);
-            }
-            if(gamepad2.b) {
-                claw.setPosition(0);
-            }
 
+            if(gamepad2.b)
+                claw.setPosition(0);
+
+            if (gamepad2.dpad_up)
+                rotator.setPosition(1);
+            if(gamepad2.dpad_down)
+                rotator.setPosition(0);
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Motors", "left (%.2f), right (%.2f)", intakeLeftPower, intakeRightPower);

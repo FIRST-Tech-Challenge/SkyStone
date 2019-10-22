@@ -454,7 +454,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         // Have to make sure it is trying to extend fully.
         extendIntake(ExtendPosition.EXTENDED);
         int extenderCurrentPosition = extender.getCurrentPosition();
-        if(extenderCurrentPosition >= (ExtendPosition.EXTENDED.getEncoderCount() - extendZero)) {
+        if(extenderCurrentPosition >= (ExtendPosition.EXTENDED.getEncoderCount() + extendZero)) {
             extenderStrike1 = 0;
             extenderStrike2 = 0;
             extenderStrike3 = 0;
@@ -503,12 +503,13 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 
     public void extendIntake(ExtendPosition targetExtension) {
 		if((targetExtension != extenderPosition) || (extendZeroUpdated)) {
+			extendZeroUpdate = false;
 		    int targetPosition = targetExtension.getEncoderCount();
 		    // Make sure the intake isn't spinning if we retract too far.
-		    if(targetPosition < ExtendPosition.SPINMIN.getEncoderCount()) {
+		    if(targetPosition < (ExtendPosition.SPINMIN.getEncoderCount()) {
 		        stopIntake();
             }
-		    targetPosition -= extendZero;
+		    targetPosition += extendZero;
             extender.setTargetPosition(targetPosition);
             extender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             extender.setPower(EXTEND_SPEED);

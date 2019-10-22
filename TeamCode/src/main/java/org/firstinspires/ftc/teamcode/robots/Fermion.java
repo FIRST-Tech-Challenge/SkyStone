@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.robots;
 
-import android.support.annotation.IntDef;
+//import android.support.annotation.IntDef;
 import android.util.Log;
 
 import com.qualcomm.hardware.adafruit.AdafruitBNO055IMU;
@@ -54,10 +54,10 @@ public class Fermion {
     /*
     State Definitions
      */
-    @IntDef({Robot.LEFT, Robot.RIGHT})
+    //@IntDef({Robot.LEFT, Robot.RIGHT})
     public @interface LightSensors{}
 
-    @IntDef({Robot.IN, Robot.OUT, Robot.STOP})
+   // @IntDef({Robot.IN, Robot.OUT, Robot.STOP})
     public @interface CollectorStates{};
 
     /*

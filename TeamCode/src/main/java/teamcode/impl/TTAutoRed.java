@@ -16,14 +16,13 @@ import teamcode.common.Vector2;
 @Autonomous(name = "TT Auto Red")
 public class TTAutoRed extends TTOpMode {
 
-    private static final BoundingBox2D SKYSTONE_POS_1 = new BoundingBox2D(0, 0, 0, 0);
-    private static final BoundingBox2D SKYSTONE_POS_2 = new BoundingBox2D(0, 0, 0, 0);
-    private static final BoundingBox2D SKYSTONE_POS_3 = new BoundingBox2D(0, 0, 0, 0);
+    // 5 inches forward, 2 inch left
+    private static final BoundingBox2D SKYSTONE_POS_5 = new BoundingBox2D(550, 400, 650, 600);
+    private static final BoundingBox2D SKYSTONE_POS_6 = new BoundingBox2D(0, 400, 250, 600);
 
     private TTDriveSystem driveSystem;
     private League1TTArm arm;
     private TTVision vision;
-    private int skystonePos;
 
     @Override
     protected void onInitialize() {
@@ -36,9 +35,11 @@ public class TTAutoRed extends TTOpMode {
 
     @Override
     protected void onStart() {
-        setArmStartPos();
-        grabSkyStone(5);
-//        skystonePos = scanStones();
+        // setArmStartPos();
+        int skystonePos = scanStones();
+        telemetry.addData("pos", skystonePos);
+        telemetry.update();
+        //  grabSkyStone(5);
 //        telemetry = TTOpMode.currentOpMode().telemetry;
 //        telemetry.addData("Stone Found", skystonePos + 3);
 //        telemetry.update();
@@ -65,16 +66,14 @@ public class TTAutoRed extends TTOpMode {
         for (Recognition recognition : recognitions) {
             if (recognition.getLabel().equals(TTVision.LABEL_SKYSTONE)) {
                 Vector2 center = TTVision.getCenter(recognition);
-                if (SKYSTONE_POS_1.contains(center)) {
-                    return 3;
-                } else if (SKYSTONE_POS_2.contains(center)) {
-                    return 2;
-                } else if (SKYSTONE_POS_3.contains(center)) {
-                    return 1;
+                if (SKYSTONE_POS_5.contains(center)) {
+                    return 5;
+                } else if (SKYSTONE_POS_6.contains(center)) {
+                    return 6;
                 }
             }
         }
-        return 1; // assume left position if image recognition fails.
+        return 4; // assume left position if no other stone is detected (the fourth stone is not visible to the camera).
     }
 
     //Opens the claw and lowers the arm for starting pos

@@ -41,6 +41,8 @@ public abstract class BaseOpMode extends OpMode {
             spinnyMap.put(name,hardwareMap.get(DcMotor.class, name.toString()));
         }
         spinnySystem = new SpinnySystem(spinnyMap);
+
+        latchSystem = new LatchSystem(hardwareMap.get(Servo.class, "latch"));
         DistanceSensor distanceSensor2;
         DistanceSensor distanceSensor3;
         ColorSensor colorSensor;

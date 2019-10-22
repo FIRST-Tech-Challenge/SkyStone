@@ -31,13 +31,24 @@ public class TTAutoBlue extends TTOpMode {
         arm = new League1TTArm(hardwareMap);
         vision = new TTVision(hardwareMap);
         vision.enable();
+
     }
 
     @Override
     protected void onStart() {
-        skystonePos = scanStones();
         setArmStartPos();
-        grabBlock4();
+        grabSkyStone(3);
+//        skystonePos = scanStones();
+//        telemetry = TTOpMode.currentOpMode().telemetry;
+//        telemetry.addData("Stone Found", skystonePos + 3);
+//        telemetry.update();
+//        if(skystonePos == 1){
+//            grabSkyStone(4);
+//        } else if(skystonePos == 2){
+//            grabSkyStone(5);
+//        } else if (skystonePos == 3){
+//            grabSkyStone(6);
+//        }
     }
 
     @Override
@@ -66,34 +77,48 @@ public class TTAutoBlue extends TTOpMode {
         return 1; // assume left position if image recognition fails.
     }
 
-    public void grabBlock4() {
-        driveSystem.lateral(10, 0.25);
-        driveSystem.vertical(31.5, 0.25);
-        arm.closeClaw();
-        sleep(250);
-        arm.timedLift(0.75, 0.5);
-        sleep(250);
-        driveSystem.vertical(-10, 0.25);
-        driveSystem.turn(-90, 0.25);
-        driveSystem.vertical(83.5, 0.5);
-        arm.timedLift(1, 0.5);
-        sleep(250);
-        driveSystem.turn(90, 0.25);
-        driveSystem.vertical(15.75, 0.25);
-        sleep(250);
-        arm.lower(0.5);
-        driveSystem.turn(90, 0.25);
-        driveSystem.lateral(-25, 0.25);
-        driveSystem.vertical(4, 0.25);
-        arm.openClaw();
-        sleep(250);
-        arm.timedLift(1, 0.5);
-        driveSystem.vertical(-10, 0.5);
-
-    }
+    //Opens the claw and lowers the arm for starting pos
     private void setArmStartPos(){
         arm.openClaw();
         arm.lower(0.5);
     }
 
+    /*Starts from the starting pos and moves grab the block
+      at that specific block pos then faces the foundation
+     */
+    private void grabSkyStone(int stoneNum){
+        driveSystem.lateral(41.5 - stoneNum * 8, 0.3);
+        driveSystem.vertical(31.5, 0.5);
+        arm.closeClaw();
+        sleep(500);
+        driveSystem.vertical(-15, 0.5);
+        driveSystem.turn(-90, 0.5);
+        moveToFoundation(stoneNum);
+        pullFoundation();
+    }
+
+    //Moves towards the foundation and turns to face it
+    private void moveToFoundation(int stoneNum){
+        driveSystem.vertical(120 - stoneNum * 8, 0.5);
+        sleep(250);
+        driveSystem.turn(90, 0.5);
+        arm.liftTimed(1, 0.5);
+        sleep(250);
+        driveSystem.vertical(20, 0.5);
+        sleep(500);
+        arm.openClaw();
+    }
+
+    private void pullFoundation(){
+        driveSystem.lateral(-4, 0.5);
+        driveSystem.vertical(2, 0.5);
+        arm.lower(0.5);
+        sleep(500);
+        driveSystem.vertical(-45, 0.5);
+        arm.liftTimed(1, 0.5);
+        driveSystem.lateral(44, 0.5);
+
+    }
+
 }
+

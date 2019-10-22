@@ -13,12 +13,12 @@ public class Outtake{
     private static final double MAXLEVEL = 14;
     private static final double DISTANCE_TO_BUILD_ZONE = 1; // what ever distance is from foundation to build zone
     public Servo pushBlock;
-    Servo hookRight;
-    Servo hookLeft;
-    CRServo rightSideY;
-    CRServo leftSideY;
-    DcMotor liftRight;
-    DcMotor liftLeft;
+    public Servo hookRight;
+    public Servo hookLeft;
+    public CRServo rightSideY;
+    public CRServo leftSideY;
+    public DcMotor liftRight;
+    public DcMotor liftLeft;
 
     LinearOpMode opMode;
     ElapsedTime time = new ElapsedTime();
@@ -44,7 +44,7 @@ public class Outtake{
     double blockHeight = 5.0; //Block Height In Inches
     private boolean toggled = false;
 
-    public boolean initOuttake(OpMode opMode)
+    public void initOuttake(OpMode opMode)
     {
         this.opMode = (LinearOpMode) opMode;
         time.reset();
@@ -57,43 +57,34 @@ public class Outtake{
         level = 1.0;
         blockCount = 0.0;
 
-        try
-        {
-            pushBlock = opMode.hardwareMap.servo.get("Push Block");
-            rightSideY = opMode.hardwareMap.crservo.get("Right Outtake");
-            leftSideY = opMode.hardwareMap.crservo.get("Left Outtake");
-            liftLeft = opMode.hardwareMap.dcMotor.get("Left Lift");
-            liftRight = opMode.hardwareMap.dcMotor.get("Right Lift");
-            hookLeft = opMode.hardwareMap.servo.get("Left Hook");
-            hookRight = opMode.hardwareMap.servo.get("Right Hook");
 
-            liftLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        pushBlock = opMode.hardwareMap.servo.get("PB");
+        rightSideY = opMode.hardwareMap.crservo.get("ROut");
+        leftSideY = opMode.hardwareMap.crservo.get("LOut");
+        liftLeft = opMode.hardwareMap.dcMotor.get("LLift");
+        liftRight = opMode.hardwareMap.dcMotor.get("RLift");
+        hookLeft = opMode.hardwareMap.servo.get("LHook");
+        hookRight = opMode.hardwareMap.servo.get("RHook");
 
-            liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        liftLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
-            liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            ((LinearOpMode) opMode).idle();
-            liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            ((LinearOpMode) opMode).idle();
-            liftLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            ((LinearOpMode) opMode).idle();
-            liftRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            ((LinearOpMode) opMode).idle();
+        liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-            opMode.telemetry.addData("Success", "Outtake Initialized");
-            opMode.telemetry.update();
+        liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        ((LinearOpMode) opMode).idle();
+        liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        ((LinearOpMode) opMode).idle();
+        liftLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        ((LinearOpMode) opMode).idle();
+        liftRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        ((LinearOpMode) opMode).idle();
 
-        } catch (Exception e)
-        {
-            opMode.telemetry.addData("Failed", "Failed to Map");
-            opMode.telemetry.update();
+        opMode.telemetry.addData("Success", "Outtake Initialized");
+        opMode.telemetry.update();
 
-            return false;
-        }
 
-        resetOuttake(); // Might Give Some Errors
-        return true;
+       // resetOuttake();  Might Give Some Errors
     }
 
 
@@ -147,26 +138,26 @@ public class Outtake{
     public void outTake_Auto(DriveTrain drive)
     {
 
-            raiseLift();
+        raiseLift();
 
-            if(blockCount % 2 == 1)
-            {
-                openBasket();
-            }
-            else if(blockCount % 2 == 0)
-            {
-                //  Strafe Right
-                drive.strafeMove(opMode,  .25, 5, 1);
+        if(blockCount % 2 == 1)
+        {
+            openBasket();
+        }
+        else if(blockCount % 2 == 0)
+        {
+            //  Strafe Right
+            drive.strafeMove(opMode,  .25, 5, 1);
 
-                openBasket();
+            openBasket();
 
-                //  Strafe Left
-                drive.strafeMove(opMode,  .25, 5, -1);
+            //  Strafe Left
+            drive.strafeMove(opMode,  .25, 5, -1);
 
-                level++;
-            }
+            level++;
+        }
 
-            resetOuttake();
+        resetOuttake();
     }
 
     //moves lift up and down by increments
@@ -177,8 +168,8 @@ public class Outtake{
         {
             // move lift up
 
-            liftRight.setPower(LIFTPOWER * k);
-            liftLeft.setPower(LIFTPOWER * k);
+            liftRight.setPower(.1);
+            liftLeft.setPower(.1);
 
 
 
@@ -307,22 +298,22 @@ public class Outtake{
 
     public void hookToggle()
     {
-       if(!toggled && opMode.gamepad2.y)
-       {
-           toggled = true;
+        if(!toggled && opMode.gamepad2.y)
+        {
+            toggled = true;
 
-           //set hook position to what ever the angle is, I assume servo is at (1) = 180,
-           // and moves to (0) = 0 degrees
+            //set hook position to what ever the angle is, I assume servo is at (1) = 180,
+            // and moves to (0) = 0 degrees
 
-           hookLeft.setPosition(HOOKDOWN);
-           hookRight.setPosition(HOOKDOWN);
-       }
-       else if(toggled && opMode.gamepad2.y)
-       {
-           toggled = false;
+            hookLeft.setPosition(HOOKDOWN);
+            hookRight.setPosition(HOOKDOWN);
+        }
+        else if(toggled && opMode.gamepad2.y)
+        {
+            toggled = false;
 
-           hookLeft.setPosition(HOOKUP);
-           hookRight.setPosition(HOOKUP);
-       }
+            hookLeft.setPosition(HOOKUP);
+            hookRight.setPosition(HOOKUP);
+        }
     }
 }

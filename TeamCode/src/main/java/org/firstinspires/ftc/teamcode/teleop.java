@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.SubAssembly.DriveTrain.DriveControl;
+import org.firstinspires.ftc.teamcode.SubAssembly.Grabber.GrabberControl;
 import org.firstinspires.ftc.teamcode.Utilities.GamepadWrapper;
 
 /* Sub Assembly Test OpMode
@@ -30,7 +31,9 @@ public class teleop extends LinearOpMode {
 
         // create and initialize sub-assemblies
         DriveControl Drive = new DriveControl();
+        GrabberControl Grabber = new GrabberControl();
         Drive.init(this);
+        Grabber.init(this);
 
         // wait for PLAY button to be pressed on driver station
         telemetry.addLine(">> Press PLAY to start");
@@ -44,6 +47,8 @@ public class teleop extends LinearOpMode {
             // update extended gamepads
             egamepad1.updateEdge();
             egamepad2.updateEdge();
+
+            //ready player 1-----------------------------------------------
 
             // check speed input
             if (egamepad1.right_bumper.pressed)
@@ -76,6 +81,14 @@ public class teleop extends LinearOpMode {
                 BR = (Y1 + X1 - X2) * speed;
 
                 Drive.moveMotors(FL, FR, BL, BR);
+            }
+
+            //go player 2-----------------------------------------------
+
+            if (egamepad2.a.released) {
+                Grabber.open();
+            } else if (egamepad2.b.released) {
+                Grabber.close();
             }
 
             telemetry.addLine("Speed: " + speed);

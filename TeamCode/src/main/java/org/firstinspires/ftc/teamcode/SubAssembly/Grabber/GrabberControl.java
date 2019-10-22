@@ -12,7 +12,7 @@ public class GrabberControl {
 
     //initializing motors
     private Servo grabberS;
-    private Servo wristS;
+   // private Servo wristS;
 
     /* Subassembly constructor */
     public GrabberControl() {
@@ -30,23 +30,23 @@ public class GrabberControl {
 
         /* Map hardware devices */
         grabberS = hwMap.servo.get("grabberS");
-        wristS = hwMap.servo.get("wristS");
+        //wristS = hwMap.servo.get("wristS");
 
-        grabberS.setPosition(0);
-        wristS.setPosition(0);
+        grabberS.setPosition(1);
+        //wristS.setPosition(0);
 
     }
 
     public void open() {
-        grabberS.setPosition(0.92);
+        grabberS.setPosition(0.96);
     }
 
     public void close() {
-        grabberS.setPosition(0);
+        grabberS.setPosition(0.13);
     }
 
-    public void wrist(int position) {
+   /* public void wrist(int position) {
         wristS.setPosition(position);
-    }
+    }*/
 
 }

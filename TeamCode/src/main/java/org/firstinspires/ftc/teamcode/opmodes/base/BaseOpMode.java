@@ -11,6 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.teamcode.components.DriveSystem;
 import org.firstinspires.ftc.teamcode.components.IMUSystem;
 import org.firstinspires.ftc.teamcode.components.SpinnySystem;
+import org.firstinspires.ftc.teamcode.components.LatchSystem;
 import org.firstinspires.ftc.teamcode.components.Vuforia;
 import org.firstinspires.ftc.teamcode.components.Vuforia.CameraChoice;
 
@@ -19,6 +20,7 @@ import java.util.EnumMap;
 public abstract class BaseOpMode extends OpMode {
 
     protected DriveSystem driveSystem;
+    protected LatchSystem latchSystem;
     protected SpinnySystem spinnySystem;
     protected Vuforia vuforia;
     protected VuforiaTrackable skystone;
@@ -35,6 +37,8 @@ public abstract class BaseOpMode extends OpMode {
         }
         driveSystem = new DriveSystem(driveMap, hardwareMap.get(BNO055IMU.class, "imu"));
 
+        latchSystem = new LatchSystem(hardwareMap.get(Servo.class, "latch"));
+
 
         EnumMap<SpinnySystem.MotorNames, DcMotor> spinnyMap = new EnumMap<>(SpinnySystem.MotorNames.class);
         for(SpinnySystem.MotorNames name : SpinnySystem.MotorNames.values()){
@@ -48,8 +52,11 @@ public abstract class BaseOpMode extends OpMode {
     }
 
     protected void setCamera(CameraChoice cameraChoice){
+
         vuforia = new Vuforia(hardwareMap, cameraChoice);
         skystone = vuforia.targetsSkyStone.get(0);
+
+
     }
 
     public final boolean isStopRequested() {

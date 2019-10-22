@@ -34,10 +34,14 @@ public class ArmSystem {
     // Use these so we can change it easily if the motor is put on backwards
     private final DcMotor.Direction FORWARD = DcMotor.Direction.FORWARD;
     private final DcMotor.Direction REVERSE = DcMotor.Direction.REVERSE;
-
-    private int[] positions = {0, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000};
     protected Position QueuedPosition;
+    protected int QueuedHeight;
 
+    // This can actually be more, like 5000, but we're not going to stack that high
+    // for the first comp and the servo wires aren't long enough yet
+    public final int MAX_HEIGHT = 3000;
+    public final int INCREMENT_HEIGHT = 564; // how much the ticks increase when a block is added
+    public final int START_HEIGHT = 366;
     public enum Position {
         POSITION_HOME, POSITION_WEST, POSITION_SOUTH, POSITION_EAST, POSITION_NORTH
     }
@@ -45,6 +49,7 @@ public class ArmSystem {
     public enum ServoNames {
         GRIPPER, WRIST, ELBOW, PIVOT
     }
+
 
     /*
      If the robot is at the bottom of the screen, and X is the block:
@@ -70,6 +75,9 @@ public class ArmSystem {
         this.elbow = servos.get(ServoNames.ELBOW);
         this.pivot = servos.get(ServoNames.PIVOT);
         this.slider = slider;
+
+        // Initialize slider - THIS WILL MOVE
+        this.calibrate();
 
     }
 
@@ -175,7 +183,7 @@ public class ArmSystem {
         }
     }
 
-    public void setQueuedPosition(Position position) {
+    public void setQueuedPosition(Position position, int height) {
         this.QueuedPosition = position;
     }
 
@@ -184,7 +192,8 @@ public class ArmSystem {
     }
 
     // Moves the slider down until it hits the limit switch. Used to callibrate the encoder.
-    public void callibrate() {
+    private void calibrate() {
+        slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slider.setDirection(REVERSE);
         while (!limitSwitch.getState()) {
             slider.setPower(0.1);
@@ -199,24 +208,18 @@ public class ArmSystem {
     }
 
     // Pos should be the # of blocks high it should be
-    // IMPORTANT - MUST BE SET EVERY LOOP OF AN OPMODE
     public void setSliderHeight(int pos) {
-        if (pos > 8) throw new IllegalArgumentException();
-        targetHeight = pos;
+        if (calculateHeight(pos) > MAX_HEIGHT) throw new IllegalArgumentException();
+        targetHeight = calculateHeight(pos);
     }
 
+    // Little helper method for setSliderHeight
+    private int calculateHeight(int pos) {
+        return START_HEIGHT + pos * INCREMENT_HEIGHT;
+    }
+
+    // Should be called every loop
     public void updateHeight() {
-        /*
-        if (slider.getCurrentPosition() > targetHeight) {
-            slider.setDirection(REVERSE);
-            slider.setPower((slider.getCurrentPosition() - targetHeight) / );
-        } else {
-            slider.setDirection(FORWARD);
-        }
-
-        slider.setPower(0.1);
-
-         */
         slider.setPower(1);
         slider.setTargetPosition(targetHeight);
     }

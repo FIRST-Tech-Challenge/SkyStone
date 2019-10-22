@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotlib.robot.MecanumRobot;
 import org.jetbrains.annotations.NotNull;
 
-@Autonomous(name="Mecanum Auto V-Test", group="Auto")
+@Autonomous(name="Mecanum Auto", group="Auto")
 public class MecanumAuto extends LinearOpMode
 {
     private MecanumRobot robot;
@@ -16,8 +16,8 @@ public class MecanumAuto extends LinearOpMode
     public void runOpMode() throws InterruptedException
     {
         robot = new MecanumRobot(this.hardwareMap);
-
         update();
+
         waitForStart();
 
         telemetry.addData("Step", "Forward 12 in");
@@ -34,7 +34,7 @@ public class MecanumAuto extends LinearOpMode
         telemetry.addData("Step", "Test stop to counter end rotation");
         robotMove(0, 0, 0, 0);
 
-        /** Move commands
+        /* Move commands
         robotMove(0, 0.5, 0, 1);
         // Latch Servos
         robotMove(180, 0.75, 0 ,2);
@@ -44,7 +44,7 @@ public class MecanumAuto extends LinearOpMode
         robotMove(270,0.75,0,3);
         robotMove(180,0.75,0,2);
         robotMove(90,0.75,0,48);
-         **/
+         */
     }
 
     private void robotMove(double course, double velocity, double rotation, double distance)

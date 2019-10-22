@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotlib.robot.MecanumRobot;
 import org.firstinspires.ftc.robotlib.state.ToggleBoolean;
 
-@TeleOp(name="Mecanum TeleOp V-Test", group="TeleOp")
+@TeleOp(name="Mecanum TeleOp V-Test", group="Tele")
 public class MecanumTeleOp extends OpMode
 {
     private MecanumRobot robot;

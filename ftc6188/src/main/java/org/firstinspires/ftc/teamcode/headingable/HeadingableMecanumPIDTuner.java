@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.headingable;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -9,7 +9,7 @@ import org.firstinspires.ftc.robotlib.robot.HeadingableMecanumRobot;
 import org.firstinspires.ftc.robotlib.util.PIDTuner;
 
 @Disabled
-@TeleOp (name="Headingable Mecanum PIDTuner", group="Headingable")
+@TeleOp (name="Headingable Mecanum PIDTuner", group="TeleHead")
 public class HeadingableMecanumPIDTuner extends OpMode
 {
     private PIDTuner tuner;

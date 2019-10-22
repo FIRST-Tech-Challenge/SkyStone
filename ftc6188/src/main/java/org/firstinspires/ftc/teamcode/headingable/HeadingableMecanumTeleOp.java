@@ -1,12 +1,14 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.headingable;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotlib.robot.HeadingableMecanumRobot;
 
-@TeleOp (name="Headingable Mecanum TeleOp V-Test", group="Headingable")
+@Disabled
+@TeleOp (name="Headingable Mecanum TeleOp V-Test", group="TeleHead")
 public class HeadingableMecanumTeleOp extends OpMode
 {
     private static final double HEADING_COEFF = 0.05;

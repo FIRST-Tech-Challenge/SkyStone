@@ -16,6 +16,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public enum LiftActivity {
         IDLE,
         GRABBING_STONE,
+        CLEARING_LIFT,
         LIFTING_TO_ROTATE,
         ROTATING,
         LIFTING_TO_STONE,
@@ -33,6 +34,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         IDLE,
         RAISING_TO_ROTATE,
         ROTATING,
+        CLEARING_LIFT,
         LOWERING_TO_STOW,
         STOPPING
     }
@@ -42,7 +44,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 		CAPSTONE(450),
 		SPINMIN(1081),
 		EJECT(1418),
-		EXTENDED(1700);
+		EXTENDED(1715);
 		// Runtime Max
 //        EXTENDED(1719);
         private final int encoderCount;
@@ -164,6 +166,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     }
 
     /* Public OpMode members. */
+    public static double INTAKE_SPEED = 1.0;
 	public static double LIFT_SPEED = 1.0;
 	public static double LOWER_SPEED = 0.2;
 	public static double EXTEND_SPEED = 1.0;
@@ -179,6 +182,8 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public static int CLAW_CLOSE_TIME = 1000;
     public static int CLAW_ROTATE_BACK_TIME = 1000;
     public static int CLAW_ROTATE_FRONT_TIME = 1000;
+    public static int MAX_EXTENSION = 1715;
+    public static int MAX_LIFT = 2854;
 
     public LiftPosition liftTargetHeight = LiftPosition.STONE1;
 	private LiftPosition liftStateTargetHeight;
@@ -220,11 +225,15 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     private boolean fingersUp = true;
     private boolean clawPinched = false;
     private boolean clawdricopterBack = false;
-    private boolean intakeForward = false;
-    private boolean intakeReverse = false;
     // These are the heights of the stone levels to auto set the lift to
     protected LiftPosition lastLiftHeight = LiftPosition.STOWED;
     protected int liftZero = 0;
+    protected int extendZero = 0;
+    protected double intakePower = 0.0;
+    protected int extenderStrike1 = 0;
+    protected int extenderStrike2 = 0;
+    protected int extenderStrike3 = 0;
+    protected boolean extendZeroUpdated = false;
 
     /* Constructor */
     public HardwareOmnibot(){
@@ -310,17 +319,23 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 					stateTimer.reset();
 				}
 			    break;
+            case CLEARING_LIFT:
+                if(performMaxExtension()) {
+                    liftState = LiftActivity.LIFTING_TO_ROTATE;
+                    // If our target height is less than rotation height, we have to
+                    // stop at rotation height first.
+                    if(liftTargetHeight.getEncoderCount() <= LiftPosition.ROTATE.getEncoderCount()) {
+                        runLift(LiftPosition.ROTATE);
+                    } else {
+                        runLift(liftTargetHeight);
+                    }
+                }
+                break;
 		    case GRABBING_STONE:
                 if(stateTimer.milliseconds() >= CLAW_CLOSE_TIME)
                 {
-                    liftState = LiftActivity.LIFTING_TO_ROTATE;
-					// If our target height is less than rotation height, we have to
-					// stop at rotation height first.
-					if(liftTargetHeight.getEncoderCount() <= LiftPosition.ROTATE.getEncoderCount()) {
-						runLift(LiftPosition.ROTATE);
-					} else {
-						runLift(liftTargetHeight);
-					}
+                    liftState = LiftActivity.CLEARING_LIFT;
+                    extendIntake(ExtendPosition.EXTENDED);
                 }
 			    break;
 			case STOPPING:
@@ -403,10 +418,16 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 					startIntake(false);
 				}
 				break;
+            case CLEARING_LIFT:
+                if(performMaxExtension()) {
+                    stowState = StowActivity.LOWERING_TO_STOW;
+                    runLift(LiftPosition.STOWED);
+                }
+                break;
 			case ROTATING:
 			    if(stateTimer.milliseconds() >= CLAW_ROTATE_FRONT_TIME) {
-					stowState = StowActivity.LOWERING_TO_STOW;
-					runLift(LiftPosition.STOWED);
+					stowState = StowActivity.CLEARING_LIFT;
+                    extendIntake(ExtendPosition.EXTENDED);
 				}
 			    break;
 			case RAISING_TO_ROTATE:
@@ -428,6 +449,50 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         }
     }
 
+    public boolean performMaxExtension() {
+        boolean maxExtended = false;
+        // Have to make sure it is trying to extend fully.
+        extendIntake(ExtendPosition.EXTENDED);
+        int extenderCurrentPosition = extender.getCurrentPosition();
+        if(extenderCurrentPosition >= (ExtendPosition.EXTENDED.getEncoderCount() - extendZero)) {
+            extenderStrike1 = 0;
+            extenderStrike2 = 0;
+            extenderStrike3 = 0;
+            maxExtended = true;
+        } else {
+            // Check if the last three encoder reads have been within 5
+            // encoder ticks.  If so, lets reset the zero position and
+            // keep the extender from running forever.
+            if(Math.abs(extenderCurrentPosition - extenderStrike1) < 5) {
+                if(Math.abs(extenderCurrentPosition - extenderStrike2) < 5) {
+                    if(Math.abs(extenderCurrentPosition - extenderStrike3) < 5) {
+                        if(Math.abs(extenderStrike3 - extenderStrike1) < 5) {
+                            // Make extended equal 5 less than current position
+                            // and set 0 to that value minus MAX_EXTEND
+                            extenderStrike1 = 0;
+                            extenderStrike2 = 0;
+                            extenderStrike3 = 0;
+                            int newZero = extenderCurrentPosition - 5 - MAX_EXTENSION;
+                            setExtendZero(newZero);
+                            extendIntake(ExtendPosition.EXTENDED);
+                        } else {
+                            extenderStrike1 = extenderStrike2;
+                            extenderStrike2 = extenderStrike3;
+                            extenderStrike3 = extenderCurrentPosition;
+                        }
+                    } else {
+                        extenderStrike3 = extenderCurrentPosition;
+                    }
+                } else {
+                    extenderStrike2 = extenderCurrentPosition;
+                }
+            } else {
+                extenderStrike1 = extenderCurrentPosition;
+            }
+        }
+        return maxExtended;
+    }
+
     public void addStone() {
         liftTargetHeight = LiftPosition.addStone(liftTargetHeight);
     }
@@ -437,12 +502,13 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     }
 
     public void extendIntake(ExtendPosition targetExtension) {
-		if(targetExtension != extenderPosition) {
+		if((targetExtension != extenderPosition) || (extendZeroUpdated)) {
 		    int targetPosition = targetExtension.getEncoderCount();
 		    // Make sure the intake isn't spinning if we retract too far.
 		    if(targetPosition < ExtendPosition.SPINMIN.getEncoderCount()) {
 		        stopIntake();
             }
+		    targetPosition -= extendZero;
             extender.setTargetPosition(targetPosition);
             extender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             extender.setPower(EXTEND_SPEED);
@@ -470,34 +536,38 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         // Prevent the intake from starting if it isn't extended far enough.
         if(extenderPosition.getEncoderCount() >= ExtendPosition.SPINMIN.getEncoderCount()) {
             if (reverse) {
-                if (intakeForward) {
+                if(intakePower != -INTAKE_SPEED) {
                     stopIntake();
+                    intakePower = -INTAKE_SPEED;
+                    leftIntake.setPower(intakePower);
+                    rightIntake.setPower(intakePower);
                 }
-                leftIntake.setPower(-1.0);
-                rightIntake.setPower(-1.0);
-                intakeReverse = true;
             } else {
-                if (intakeReverse) {
+                if(intakePower != INTAKE_SPEED) {
                     stopIntake();
+                    intakePower = INTAKE_SPEED;
+                    leftIntake.setPower(intakePower);
+                    rightIntake.setPower(intakePower);
                 }
-                leftIntake.setPower(1.0);
-                rightIntake.setPower(1.0);
-                intakeForward = true;
             }
         }
     }
 
     public void stopIntake() {
-        if(intakeForward || intakeReverse) {
-            intakeForward = false;
-            intakeReverse = false;
-            leftIntake.setPower(0.0);
-            rightIntake.setPower(0.0);
+        if(intakePower != 0.0) {
+            intakePower = 0.0;
+            leftIntake.setPower(intakePower);
+            rightIntake.setPower(intakePower);
         }
     }
 
     public void setLiftZero(int value) {
         liftZero = value;
+    }
+
+    public void setExtendZero(int value) {
+        extendZeroUpdated = true;
+        extendZero = value;
     }
 
     /* Initialize standard Hardware interfaces */

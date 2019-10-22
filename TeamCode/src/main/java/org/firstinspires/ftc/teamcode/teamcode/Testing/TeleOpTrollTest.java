@@ -148,7 +148,7 @@ public class TeleOpTrollTest extends OpMode {
 
         telemetry.addData("Speed : ", speed);
 
-        drive.hermite(zeroRift);
+        //drive.hermite(zeroRift);
 
         velocity = zeroRift[1];
                 //Math.hypot(leftStickX, leftStickY);

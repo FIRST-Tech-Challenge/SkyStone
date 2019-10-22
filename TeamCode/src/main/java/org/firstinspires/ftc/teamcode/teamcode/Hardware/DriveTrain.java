@@ -681,47 +681,17 @@ public class DriveTrain {
     }
 
     public void RDXVector (double radiax) {
-        RDXquadrant = 1;
-
         while (radiax >= 360) {
             radiax -= 360;
         }
 
-        while (radiax > 90) {
-            radiax -= 90;
-            RDXquadrant++;
-        }
+        RDx = Math.sin(radiax);
+        RDy = Math.cos(radiax);
 
-        double[] RDXarr1;
-        RDXarr1 = new double[2];
-
-        lifeblood(RDXarr1, radiax);
-
-        RDx = RDXarr1[0];
-        RDy = RDXarr1[1];
-
-            switch (RDXquadrant) {
-                case 1:
-                    fl.setPower(RDy - RDx);
-                    fr.setPower(RDy + RDx);
-                    bl.setPower(RDy + RDx);
-                    br.setPower(RDy - RDx);
-                case 2:
-                    fl.setPower(-RDy - RDx);
-                    fr.setPower(-RDy + RDx);
-                    bl.setPower(-RDy + RDx);
-                    br.setPower(-RDy - RDx);
-                case 3:
-                    fl.setPower(-RDy + RDx);
-                    fr.setPower(-RDy - RDx);
-                    bl.setPower(-RDy - RDx);
-                    br.setPower(-RDy + RDx);
-                case 4:
-                    fl.setPower(RDy + RDx);
-                    fr.setPower(RDy - RDx);
-                    bl.setPower(RDy - RDx);
-                    br.setPower(RDy + RDx);
-            }
+        fl.setPower(RDy - RDx);
+        fr.setPower(RDy + RDx);
+        bl.setPower(RDy + RDx);
+        br.setPower(RDy - RDx);
     }
 
     public void encoderMove(LinearOpMode opMode, double target, double timeout, double radiax) {

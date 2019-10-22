@@ -1,12 +1,14 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.headingable;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotlib.controller.PIDController;
 import org.firstinspires.ftc.robotlib.robot.HeadingableMecanumRobot;
 
-@Autonomous (name="Headingable Mecanum Auto", group="Headingable")
+@Disabled
+@Autonomous (name="Headingable Mecanum Auto", group="TeleHead")
 public class HeadingableMecanumAuto extends LinearOpMode
 {
     private HeadingableMecanumRobot robot;

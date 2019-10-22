@@ -8,7 +8,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     private double course = 0;
     private double targetPosition = 0;
 
-    private double[] wheelTargetPositions = new double[4];
+    public double[] wheelTargetPositions = new double[4];
     private DcMotor.RunMode[] runModes = new DcMotor.RunMode[4];
     private final double[] wheelAngles;
 
@@ -94,10 +94,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     }
 
     @Override
-    public void updatePosition()
-    {
-
-    }
+    public void updatePosition() { }
 
     @Override
     public boolean isPositioning()
@@ -115,7 +112,11 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     @Override
     public void finishPositioning()
     {
-        for (DcMotor motor : this.motorList) motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        for (DcMotor motor : this.motorList)
+        {
+            motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            motor.setTargetPosition(motor.getCurrentPosition()); //possible fix to the continued rotation at the end of a command string
+        }
         for (int motorIndex = 0; motorIndex < this.motorList.length; motorIndex++) this.motorList[motorIndex].setMode(runModes[motorIndex]);
     }
 

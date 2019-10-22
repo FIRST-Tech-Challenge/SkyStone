@@ -5,17 +5,21 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotlib.robot.MecanumRobot;
+import org.firstinspires.ftc.robotlib.state.ToggleBoolean;
 
-@TeleOp(name="Mecanum TeleOp", group="TeleOp")
+@TeleOp(name="Mecanum TeleOp V-Test", group="Tele")
 public class MecanumTeleOp extends OpMode
 {
     private MecanumRobot robot;
     private ElapsedTime elapsedTime;
 
+    private ToggleBoolean driverTwoBrakes;
+
     @Override
     public void init()
     {
         robot = new MecanumRobot(this.hardwareMap);
+        driverTwoBrakes = new ToggleBoolean();
         elapsedTime = new ElapsedTime();
     }
 
@@ -35,35 +39,29 @@ public class MecanumTeleOp extends OpMode
     @Override
     public void loop()
     {
+        //DRIVER ONE
         double course = Math.atan2(-gamepad1.right_stick_y, gamepad1.right_stick_x) - Math.PI/2;
-        double velocity = Math.hypot(gamepad1.right_stick_x, gamepad1.right_stick_y);
+        double velocity = Math.hypot(gamepad1.right_stick_x, -gamepad1.right_stick_y);
 
         robot.drivetrain.halfPowerInput(gamepad1.right_stick_button);
 
         robot.drivetrain.setCourse(course);
-        robot.drivetrain.setVelocity(velocity);
+        robot.drivetrain.setVelocity(velocity * (driverTwoBrakes.output() ? 0 : 1));
         robot.drivetrain.setRotation(-gamepad1.left_stick_x);
 
-        //robot.armParallelLift.setPower(gamepad2.left_stick_y);
+        if (gamepad1.dpad_down) {robot.platformServos.setPosition(120);}
+        else if (gamepad1.dpad_up) {robot.platformServos.setPosition(0);}
 
-        /**
-        if (gamepad1.dpad_down)
-        {
-            robot.servoBuildClawLeft.setPosition(120);
-            robot.servoBuildClawRight.setPosition(120);
-        }
+        //DRIVER TWO
+        //arm movement
+        driverTwoBrakes.input(gamepad2.left_bumper); //freezes robot in place for stacking, prevents stick bumping from driver one
 
-        if (gamepad1.dpad_up)
-        {
-            robot.servoBuildClawLeft.setPosition(0);
-            robot.servoBuildClawRight.setPosition(0);
-        }
-         **/
-
+        //TELEMETRY
         telemetry.addData("Status", "Loop: " + elapsedTime.toString());
         telemetry.addData("Course", course);
         telemetry.addData("Velocity", velocity);
         telemetry.addData("Rotation", -gamepad1.left_stick_x);
+        telemetry.addData("Servo Position", robot.platformServos.getPosition());
         telemetry.update();
     }
 

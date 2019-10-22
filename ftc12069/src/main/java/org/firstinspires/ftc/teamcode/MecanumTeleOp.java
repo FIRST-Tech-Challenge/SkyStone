@@ -40,13 +40,13 @@ public class MecanumTeleOp extends OpMode
         double velocity;
         double rotation;
         if (rightMotion) {
-            course = Math.atan2(-gamepad1.right_stick_y, gamepad1.right_stick_x) - Math.PI/2;
+            course = Math.atan2(gamepad1.right_stick_y, -gamepad1.right_stick_x) - Math.PI/2;
             velocity = Math.hypot(gamepad1.right_stick_x, gamepad1.right_stick_y);
-            rotation = -gamepad1.left_stick_x;
+            rotation = gamepad1.left_stick_x;
         } else {
-            course = Math.atan2(-gamepad1.right_stick_x, gamepad1.right_stick_y) - Math.PI/2;
-            velocity = Math.hypot(gamepad1.right_stick_y, gamepad1.right_stick_x);
-            rotation = -gamepad1.right_stick_x;
+            course = Math.atan2(gamepad1.left_stick_y, -gamepad1.left_stick_x) - Math.PI/2;
+            velocity = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
+            rotation = gamepad1.right_stick_x;
         }
 
         robotHardware.drivetrain.setCourse(course);

@@ -4,7 +4,7 @@ import org.firstinspires.ftc.robotlib.sensor.Sensor;
 
 public class FinishableIntegratedController extends IntegratedController
 {
-    FinishingAlgorithm finisher;
+    private FinishingAlgorithm finisher;
 
     public FinishableIntegratedController(Sensor sensor, ControlAlgorithm algorithm, FinishingAlgorithm finisher)
     {

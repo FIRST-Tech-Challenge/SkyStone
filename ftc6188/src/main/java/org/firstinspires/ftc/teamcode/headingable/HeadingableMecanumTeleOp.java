@@ -1,15 +1,17 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.headingable;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotlib.robot.HeadingableMecanumRobot;
 
-@TeleOp (name="Headingable Mecanum TeleOp", group="Headingable")
+@Disabled
+@TeleOp (name="Headingable Mecanum TeleOp V-Test", group="TeleHead")
 public class HeadingableMecanumTeleOp extends OpMode
 {
-    private static final double HEADING_COEFF = 0.01;
+    private static final double HEADING_COEFF = 0.05;
     private HeadingableMecanumRobot robot;
 
     private double desiredHeading = 0;
@@ -34,11 +36,11 @@ public class HeadingableMecanumTeleOp extends OpMode
     public void loop()
     {
         double course = Math.atan2(-gamepad1.right_stick_y, gamepad1.right_stick_x) - Math.PI/2;
-        double velocity = Math.hypot(gamepad1.right_stick_x, gamepad1.right_stick_y);
+        double velocity = Math.hypot(gamepad1.right_stick_x, -gamepad1.right_stick_y);
 
         robot.drivetrain.halfPowerInput(gamepad1.right_stick_button);
 
-        desiredHeading += -gamepad1.left_stick_x*rotationTimer.time()*HEADING_COEFF;
+        //desiredHeading += -gamepad1.left_stick_x*rotationTimer.time()*HEADING_COEFF; resets heading but also was rotating robot, now only keys rotate robot
         rotationTimer.reset();
 
         if (gamepad1.left_bumper)
@@ -62,6 +64,7 @@ public class HeadingableMecanumTeleOp extends OpMode
 
         robot.drivetrain.setCourse(course);
         robot.drivetrain.setVelocity(velocity);
+        robot.drivetrain.setRotation(-gamepad1.left_stick_x);
         robot.drivetrain.setTargetHeading(desiredHeading);
         robot.drivetrain.updateHeading();
 

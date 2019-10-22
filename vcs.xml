@@ -10,6 +10,10 @@
           <option name="url" value="https://github.com/FIXIT3491/ftc_app_3491_v3.git" />
           <option name="userName" value="" />
         </UrlAndUserName>
+        <UrlAndUserName>
+          <option name="url" value="https://github.com/FIXIT3491/SkyStone3491.git" />
+          <option name="userName" value="" />
+        </UrlAndUserName>
       </list>
     </option>
     <option name="cloneParentDir" value="C:\Users\rayka\StudioProjects" />

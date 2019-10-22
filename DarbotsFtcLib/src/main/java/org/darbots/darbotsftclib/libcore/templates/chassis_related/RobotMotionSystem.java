@@ -43,6 +43,7 @@ public abstract class RobotMotionSystem implements RobotNonBlockingDevice {
     private boolean m_GyroGuidedDrivePublicStartingAngleEnabled = false;
     private float m_GyroGuidedDrivePublicStartingAngle = -360;
     private boolean m_SteadySpeedUp = true;
+    private double m_SteadySpeedUpThreshold = 0.25;
     public RobotMotionSystem(Robot2DPositionTracker PositionTracker){
         this.m_TaskLists = new ArrayList();
         this.m_PosTracker = PositionTracker;
@@ -208,6 +209,14 @@ public abstract class RobotMotionSystem implements RobotNonBlockingDevice {
 
     public void setSteadySpeedUp(boolean Enabled){
         this.m_SteadySpeedUp = Enabled;
+    }
+
+    public double getSteadySpeedUpThreshold(){
+        return this.m_SteadySpeedUpThreshold;
+    }
+
+    public void setSteadySpeedUpThreshold(double Threshold){
+        this.m_SteadySpeedUpThreshold = Threshold;
     }
 
     public abstract RobotMotionSystemFixedXDistanceTask getFixedXDistanceTask(double XDistance, double Speed);

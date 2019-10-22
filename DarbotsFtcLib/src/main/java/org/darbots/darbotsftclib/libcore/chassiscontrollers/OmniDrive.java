@@ -48,7 +48,7 @@ public class OmniDrive extends RobotMotionSystem {
             }
 
             double AbsSpeed = Math.abs(getSpeed());
-            if(m_Drive.isSteadySpeedUp()){
+            if(m_Drive.isSteadySpeedUp() && AbsSpeed > this.getMotionSystem().getSteadySpeedUpThreshold()){
                 AbsSpeed = 0;
             }
             double LTSpeed = this.m_CountsToMove > 0 ? -AbsSpeed : AbsSpeed;
@@ -102,12 +102,18 @@ public class OmniDrive extends RobotMotionSystem {
             if(this.isBusy()){
                 double AbsSpeed = Math.abs(getSpeed());
 
-                if(m_Drive.isSteadySpeedUp()){
-                    double jobPercentile = Math.abs((m_Drive.m_LeftTopMotor.getMotorController().getMotor().getCurrentCount() - m_LTStartCount) / m_CountsToMove);
-                    if(jobPercentile < 0.25){
-                        AbsSpeed *= jobPercentile / 0.25;
-                    }else if(jobPercentile > 0.75){
-                        AbsSpeed *= (1.0 - jobPercentile) / 0.25;
+
+                if(this.getMotionSystem().isSteadySpeedUp() && AbsSpeed > this.getMotionSystem().getSteadySpeedUpThreshold()){
+                    double ExtraSpeed = AbsSpeed - this.getMotionSystem().getSteadySpeedUpThreshold();
+
+                    int CountsMoved = this.m_Drive.m_LeftTopMotor.getMotorController().getMotor().getCurrentCount() - this.m_LTStartCount;
+
+                    double jobPercentile = Math.abs( ((double) CountsMoved) / m_CountsToMove);
+
+                    if(jobPercentile < 0.30){
+                        AbsSpeed = this.getMotionSystem().getSteadySpeedUpThreshold() + (jobPercentile / 0.30) * ExtraSpeed;
+                    }else if(jobPercentile > 0.70){
+                        AbsSpeed = this.getMotionSystem().getSteadySpeedUpThreshold() + ((1.0 - jobPercentile) / 0.30) * ExtraSpeed;
                     }
                 }
 
@@ -213,7 +219,7 @@ public class OmniDrive extends RobotMotionSystem {
             }
 
             double AbsSpeed = Math.abs(getSpeed());
-            if(m_Drive.isSteadySpeedUp()){
+            if(m_Drive.isSteadySpeedUp() && AbsSpeed > this.getMotionSystem().getSteadySpeedUpThreshold()){
                 AbsSpeed = 0;
             }
             double LTSpeed = this.m_CountsToMove > 0 ? -AbsSpeed : AbsSpeed;
@@ -268,12 +274,17 @@ public class OmniDrive extends RobotMotionSystem {
             if(this.isBusy()){
                 double AbsSpeed = Math.abs(getSpeed());
 
-                if(m_Drive.isSteadySpeedUp()){
-                    double jobPercentile = Math.abs((m_Drive.m_LeftTopMotor.getMotorController().getMotor().getCurrentCount() - m_LTStartCount) / m_CountsToMove);
-                    if(jobPercentile < 0.25){
-                        AbsSpeed *= jobPercentile / 0.25;
-                    }else if(jobPercentile > 0.75){
-                        AbsSpeed *= (1.0 - jobPercentile) / 0.25;
+                if(this.getMotionSystem().isSteadySpeedUp() && AbsSpeed > this.getMotionSystem().getSteadySpeedUpThreshold()){
+                    double ExtraSpeed = AbsSpeed - this.getMotionSystem().getSteadySpeedUpThreshold();
+
+                    int CountsMoved = this.m_Drive.m_LeftTopMotor.getMotorController().getMotor().getCurrentCount() - this.m_LTStartCount;
+
+                    double jobPercentile = Math.abs( ((double) CountsMoved) / m_CountsToMove);
+
+                    if(jobPercentile < 0.30){
+                        AbsSpeed = this.getMotionSystem().getSteadySpeedUpThreshold() + (jobPercentile / 0.30) * ExtraSpeed;
+                    }else if(jobPercentile > 0.70){
+                        AbsSpeed = this.getMotionSystem().getSteadySpeedUpThreshold() + ((1.0 - jobPercentile) / 0.30) * ExtraSpeed;
                     }
                 }
 

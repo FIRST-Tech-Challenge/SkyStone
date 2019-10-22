@@ -44,25 +44,25 @@ public class Robot4100Generation1_AutoMovementSquare extends DarbotsBasicOpMode<
         }
         while(this.opModeIsActive()){
             this.m_RobotCore.getChassis().replaceTask(this.m_RobotCore.getChassis().getFixedZDistanceTask(
-                    20,
+                    30,
                     0.5
             ));
             if(!waitForDrive())
                 return;
             this.m_RobotCore.getChassis().replaceTask(this.m_RobotCore.getChassis().getFixedXDistanceTask(
-                    20,
+                    30,
                     0.5
             ));
             if(!waitForDrive())
                 return;
             this.m_RobotCore.getChassis().replaceTask(this.m_RobotCore.getChassis().getFixedZDistanceTask(
-                    -20,
+                    -30,
                     0.5
             ));
             if(!waitForDrive())
                 return;
             this.m_RobotCore.getChassis().replaceTask(this.m_RobotCore.getChassis().getFixedXDistanceTask(
-                    -20,
+                    -30,
                     0.5
             ));
             if(!waitForDrive())

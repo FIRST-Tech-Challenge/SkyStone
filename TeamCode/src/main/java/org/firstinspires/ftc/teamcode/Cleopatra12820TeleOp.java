@@ -47,18 +47,18 @@ public class Cleopatra12820TeleOp extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor intakeMotorRight=null;
-    private DcMotor intakeMotorLeft=null;
-    private DcMotor backMotorLeft=null;
-    private DcMotor backMotorRight=null;
-    private DcMotor frontMotorLeft=null;
-    private DcMotor frontMotorRight=null;
-    private DcMotor armElbow=null;
-    private DcMotor armWrist=null;
-    private Servo intakeServoRight=null;
-    private Servo intakeServoLeft=null;
-    private Servo claw=null;
-    private Servo rotator=null;
+     DcMotor intakeMotorRight=null;
+     DcMotor intakeMotorLeft=null;
+     DcMotor backMotorLeft=null;
+     DcMotor backMotorRight=null;
+     DcMotor frontMotorLeft=null;
+     DcMotor frontMotorRight=null;
+     DcMotor armElbow=null;
+     DcMotor armWrist=null;
+     Servo intakeServoRight=null;
+     Servo intakeServoLeft=null;
+     Servo claw=null;
+     Servo rotator=null;
 
 
 

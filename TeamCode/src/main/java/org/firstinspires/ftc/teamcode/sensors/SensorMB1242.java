@@ -65,9 +65,12 @@ public class SensorMB1242 extends I2cDeviceSynchDevice<I2cDeviceSynch> implement
 
     public void changeI2cAddress(int i2cAddress) {
 
-        deviceClient.write8(0, i2cAddress, I2cWaitControl.ATOMIC);
+        deviceClient.write8(0, 0xaa, I2cWaitControl.ATOMIC);
+        deviceClient.write8(0, 0xaa, I2cWaitControl.ATOMIC);
         deviceClient.write8(0, 0xaa, I2cWaitControl.ATOMIC);
         deviceClient.write8(0, 0xa5, I2cWaitControl.ATOMIC);
+
+        deviceClient.write8(0, i2cAddress, I2cWaitControl.ATOMIC);
 
         /*
 

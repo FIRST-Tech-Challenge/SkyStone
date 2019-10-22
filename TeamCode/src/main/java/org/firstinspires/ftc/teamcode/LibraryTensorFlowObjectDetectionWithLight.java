@@ -1,4 +1,4 @@
-/* Copyright (c) 2018 FIRST. All rights reserved.
+/* Copyright (c) 2019 FIRST. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted (subject to the limitations in the disclaimer below) provided that
@@ -35,8 +35,8 @@ import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
-import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -66,11 +66,11 @@ public class LibraryTensorFlowObjectDetectionWithLight {
      * @param newHardwareBeep A new variable for Hardware Beep
      * @param newTelemetry    A call to use telemetry
      */
-    public LibraryTensorFlowObjectDetectionWithLight(HardwareBeep newHardwareBeep, Telemetry newTelemetry) {
+    public LibraryTensorFlowObjectDetectionWithLight(HardwareBeep newHardwareBeep, Telemetry
+            newTelemetry) {
 
         robot = newHardwareBeep;
         telemetry = newTelemetry;
-
     }
 
     /**
@@ -79,6 +79,7 @@ public class LibraryTensorFlowObjectDetectionWithLight {
      * @return This return function sends back the skystone position
      */
     public String findSkystone() {
+
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
         initVuforia();
@@ -103,8 +104,9 @@ public class LibraryTensorFlowObjectDetectionWithLight {
         // sets start time to read in milliseconds
         startTime = System.currentTimeMillis();
 
-        // sets the TensorFlow to read the stone for at least 3 seconds to verify that it is the skystone
-        while (System.currentTimeMillis() < (startTime + 3000)) { /**DEBUG CHANGED TO 30000*/
+        // sets the TensorFlow to read the mineral for at least 3 seconds to verify that it is the
+        // correct mineral
+        while (System.currentTimeMillis() < (startTime + 5000)) { /**DEBUG CHANGED TO 30000*/
 
             // sets skystone position values to the read skystone function
             SkystonePosition = readSkystone();
@@ -133,7 +135,7 @@ public class LibraryTensorFlowObjectDetectionWithLight {
         telemetry.addData("Skystone Position: ", SkystonePosition);
         telemetry.update();
         // sets it to keep the phone light off
-        phoneLight(false);
+        phoneLight(true);
         return SkystonePosition;
     }
 
@@ -143,9 +145,10 @@ public class LibraryTensorFlowObjectDetectionWithLight {
         ElapsedTime timer = new ElapsedTime();
         timer.reset();
 
-        // while skystone position is not found and the timer counts 6 seconds
-        while (currentPos == "" && timer.seconds() < 3) { /**DEBUG CHANGED TO 600 */
+        // while mineral position is not found and the timer counts 6 seconds
+        while (currentPos == "" && timer.seconds() < 5) { /**DEBUG CHANGED TO 600 */
             // getUpdatedRecognitions() will return null if no new information is available since
+
             if (tfod != null) {
                 // the last time that call was made.
                 List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
@@ -216,21 +219,21 @@ public class LibraryTensorFlowObjectDetectionWithLight {
                         // if it reads two stones than it sets the current skystone position as
                         // LEFT
                         if (Skystone1X == -1 && stone1X != -1 && stone2X != -1) {
-                            telemetry.addData("Skystone Position", "Left");
-                            currentPos = "LEFT";
+                            telemetry.addData("Skystone Position", "right");
+                            currentPos = "Pos 3";
                         }
                         // if it reads a skystone and a stone than it goes into this function
                         if (Skystone1X != -1 && stone1X != -1) {
                             // if it reads the skystone as greater than the stone than
                             // it sets the current skystone position as RIGHT
                             if (Skystone1X > stone1X) {
-                                telemetry.addData("Skystone Position", "Right");
-                                currentPos = "RIGHT";
+                                telemetry.addData("Skystone Position", "middle");
+                                currentPos = "Pos 1";
                                 //if the skystone is not greater than the stone than
                                 // it sets the current skystone position as CENTER
                             } else {
-                                telemetry.addData("Skystone Position", "Center");
-                                currentPos = "CENTER";
+                                telemetry.addData("Skystone Position", "left");
+                                currentPos = "Pos 2";
                             }
                         }
                     }
@@ -276,8 +279,8 @@ public class LibraryTensorFlowObjectDetectionWithLight {
         int tfodMonitorViewId = robot.hwMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", robot.hwMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
+        tfodParameters.minimumConfidence = 0.5;
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
-        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_SECOND_ELEMENT, LABEL_FIRST_ELEMENT);
+        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
     }
-
 }

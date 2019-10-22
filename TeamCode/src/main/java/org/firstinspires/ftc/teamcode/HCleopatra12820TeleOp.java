@@ -55,13 +55,11 @@ public class HCleopatra12820TeleOp extends LinearOpMode {
     final double    CLAW_SPEED; // sets rate to move claw servo
     final double INCREMENT;     // amount to slew servo each CYCLE_MS cycle
     static final int    CYCLE_MS;     // period of each cycle
-    //static final double MAX_POS;     // Maximum rotational position
-    //static final double MIN_POS; // Minimum rotational position
+
 
     static {
         CYCLE_MS = 50;
-        //MAX_POS = 1.0;
-        //MIN_POS = 0.0;
+
     }
 
     public HCleopatra12820TeleOp() {

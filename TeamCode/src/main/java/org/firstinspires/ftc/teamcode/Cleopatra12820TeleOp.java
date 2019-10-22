@@ -44,9 +44,18 @@ import com.qualcomm.robotcore.util.Range;
 @TeleOp(name="Basic: Linear OpMode for 1019-2020 Season", group="Linear Opmode")
 //@Disabled
 public class Cleopatra12820TeleOp extends LinearOpMode {
-
+    double          clawOffset=0;                       // Servo mid position
+    public static final double    CLAW_SPEED=0.02; // sets rate to move claw servo
+    public static final double INCREMENT=0.01;     // amount to slew servo each CYCLE_MS cycle
+    public static final int    CYCLE_MS=50;     // period of each cycle
+    public static final double MID_SERVO       =  0.5 ;
+    public static final double ARM_UP_POWER    =  0.45 ;
+    public static final double ARM_DOWN_POWER  = -0.45 ;
+    public static final double ELBOW_UP_POWER    =  0.45 ;
+    public static final double ELBOW_DOWN_POWER  = -0.45 ;
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
+    double  position = MID_SERVO;// Start at halfway position
      DcMotor intakeMotorRight=null;
      DcMotor intakeMotorLeft=null;
      DcMotor backMotorLeft=null;
@@ -121,11 +130,36 @@ public class Cleopatra12820TeleOp extends LinearOpMode {
             double numBl = Range.clip((+Speed + Turn + Strafe), -1, 1);
             double numFr = Range.clip((+Speed - Turn + Strafe), -1, +1);
             double numBr = Range.clip((+Speed - Turn - Strafe), -1, 1);
-            double armElbowPower = Range.clip(0.5*gamepad2.left_stick_y, -1, 1);
+            /*double armElbowPower = Range.clip(0.5*gamepad2.left_stick_y, -1, 1);
             double armWristPower = Range.clip(gamepad2.right_stick_y, -1, 1);
-            //double srvPower=Range.clip(gamepad2.right_stick_x, 0,1);
+            double srvPower=Range.clip(gamepad2.right_stick_x, 0,1);
             armWrist.setPower(armWristPower);
-            armElbow.setPower(armElbowPower);
+            armElbow.setPower(armElbowPower);*/
+            //Arm wrist
+            if(gamepad2.a)
+                armWrist.setPower(ARM_UP_POWER);
+
+            else if (gamepad2.b)
+                armWrist.setPower(ARM_DOWN_POWER);
+
+            else
+                armWrist.setPower(0.0);
+
+            //Arm Elbow
+            if(gamepad2.dpad_up)
+                armElbow.setPower(ELBOW_UP_POWER);
+
+            else if (gamepad2.dpad_down)
+                armElbow.setPower(ELBOW_DOWN_POWER);
+            else
+                armElbow.setPower(0.0);
+
+
+
+            intakeServoRight.setPosition(0);
+            intakeServoLeft.setPosition(0);
+            claw.setPosition(0);
+            rotator.setPosition(0);
 
             if(gamepad2.left_trigger>0 ){
                 intakeLeftPower    = Range.clip(gamepad2.left_trigger, -1.0, 1.0) ;
@@ -144,6 +178,7 @@ public class Cleopatra12820TeleOp extends LinearOpMode {
             intakeMotorLeft.setPower(intakeLeftPower);
             intakeMotorRight.setPower(intakeRightPower);
 
+            //Intake Servos
             if (gamepad2.x)
                 //intakeServoRight.setPosition(srvPower);
                 intakeServoRight.setPosition(1);
@@ -154,16 +189,26 @@ public class Cleopatra12820TeleOp extends LinearOpMode {
                 intakeServoLeft.setPosition(0);
 
 
-            if(gamepad2.a)
-                claw.setPosition(1);
+            //Use gamepad2 left & right Bumpers to open and close the claw
+            if(gamepad2.right_bumper)
+                clawOffset += CLAW_SPEED;
 
-            if(gamepad2.b)
+            else if(gamepad2.left_bumper)
                 claw.setPosition(0);
+            clawOffset -= CLAW_SPEED;
 
-            if (gamepad2.dpad_up)
-                rotator.setPosition(1);
+            clawOffset = Range.clip(clawOffset, -0.5, 0.5);
+            claw.setPosition(MID_SERVO + clawOffset);
+
+            //Rotator.
+            if(gamepad2.dpad_up)
+                position += INCREMENT ;
             if(gamepad2.dpad_down)
-                rotator.setPosition(0);
+                position-=INCREMENT;
+            rotator.setPosition(position);
+            sleep(CYCLE_MS);
+            idle();
+
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Motors", "left (%.2f), right (%.2f)", intakeLeftPower, intakeRightPower);

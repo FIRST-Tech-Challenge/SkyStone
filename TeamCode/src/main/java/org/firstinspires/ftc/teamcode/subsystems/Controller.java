@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-public class Controller {
+public class Controller extends Gamepad {
     Gamepad controller;
     double leftStickXMod = 1;
     double leftStickYMod = -1;
@@ -37,6 +37,14 @@ public class Controller {
         return controller.right_stick_y * rightStickYMod;
     }
 
+    public double getRightTrigger() {
+        return controller.right_trigger * rightTriggerMod;
+    }
+
+    public double getLeftTrigger() {
+        return controller.left_trigger * leftTriggerMod;
+    }
+
     public boolean getA() {
         return aMod ? controller.a : !controller.a;
     }
@@ -61,11 +69,4 @@ public class Controller {
         return aMod ? controller.a : !controller.a;
     }
 
-    public double getRightTrigger() {
-        return controller.right_trigger * rightTriggerMod;
-    }
-
-    public double getLeftTrigger() {
-        return controller.left_trigger * leftTriggerMod;
-    }
 }

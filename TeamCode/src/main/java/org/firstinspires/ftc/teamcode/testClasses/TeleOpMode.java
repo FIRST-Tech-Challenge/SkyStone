@@ -52,8 +52,6 @@ public class TeleOpMode extends LinearOpMode {
 
     public void runArm(Arm arm, Controller controller) {
         if(controller.getX()){
-            HashMap<ArmServo, Double> positions = new HashMap<>();
-            HashMap<ArmMotor, Double> power = new HashMap<>();
             if(controller.getX()){
                 positions.put(ArmServo.INTAKE, .01);
             }else if(controller.getY()){

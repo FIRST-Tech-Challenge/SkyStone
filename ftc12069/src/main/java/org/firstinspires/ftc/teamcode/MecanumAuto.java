@@ -26,11 +26,11 @@ public class MecanumAuto extends LinearOpMode
 
         waitForStart();
 
-        robotMove(0, 1, 0, 12 * ticksPerUnit);
+        robotMove(0, 1, 0, 12);
         sleep(1000);
-        robotMove(90, 1, 0, 12 * ticksPerUnit);
+        robotMove(90, 1, 0, 12);
         sleep(1000);
-        robotMove(180, 100, 0, 12 * ticksPerUnit);
+        robotMove(180, 100, 0, 12);
     }
 
     private void robotMove(double course, double velocity, double rotation, double distance)
@@ -38,7 +38,7 @@ public class MecanumAuto extends LinearOpMode
         robotDrivetrain.setRotation(rotation);
         robotDrivetrain.setCourse(course);
         robotDrivetrain.setVelocity(velocity);
-        robotDrivetrain.setTargetPosition(distance);
+        robotDrivetrain.setTargetPosition(distance * ticksPerUnit);
         robotDrivetrain.position();
     }
 }

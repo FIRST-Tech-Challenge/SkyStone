@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -39,12 +40,13 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         STOPPING
     }
 
+    public static int MAX_EXTENSION = 1715;
     public enum ExtendPosition {
-        RETRACTED(30),
+        RETRACTED(5),
 		CAPSTONE(450),
 		SPINMIN(1081),
 		EJECT(1418),
-		EXTENDED(1715);
+		EXTENDED(MAX_EXTENSION);
 		// Runtime Max
 //        EXTENDED(1719);
         private final int encoderCount;
@@ -60,11 +62,12 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 		}
 	}
 
+    public static int MAX_LIFT = 2850;
     public enum LiftPosition {
         STOWED(30),
         STONE1(149),
-        ROTATE(372),
         STONE2(412),
+        ROTATE(500),
         STONE3(660),
         STONE4(908),
         STONE5(1156),
@@ -74,7 +77,8 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         STONE9(2147),
         STONE10(2395),
         STONE11(2643),
-        STONE12(2830);
+        STONE12(2830),
+        LIFTMAX(MAX_LIFT);
 		// Runtime Max
 //		STONE12(2854);
 
@@ -98,10 +102,10 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 					return STONE1;
 				case STONE1:
 					return STONE2;
-				case ROTATE:
-					return STONE2;
 				case STONE2:
 					return STONE3;
+                case ROTATE:
+                    return STONE3;
 				case STONE3:
 					return STONE4;
 				case STONE4:
@@ -135,10 +139,10 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 					return STONE1;
 				case STONE1:
 					return STONE1;
-				case ROTATE:
-					return STONE1;
 				case STONE2:
 					return STONE1;
+                case ROTATE:
+                    return STONE2;
 				case STONE3:
 					return STONE2;
 				case STONE4:
@@ -182,8 +186,6 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public static int CLAW_CLOSE_TIME = 1000;
     public static int CLAW_ROTATE_BACK_TIME = 1000;
     public static int CLAW_ROTATE_FRONT_TIME = 1000;
-    public static int MAX_EXTENSION = 1715;
-    public static int MAX_LIFT = 2854;
 
     public LiftPosition liftTargetHeight = LiftPosition.STONE1;
 	private LiftPosition liftStateTargetHeight;
@@ -208,7 +210,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     protected DcMotor leftIntake = null;
     protected DcMotor rightIntake = null;
     protected DcMotor lifter = null;
-    protected DcMotor extender = null;
+    protected DcMotorEx extender = null;
 
     /* LEDs: Use this line if you drive the LEDs using an I2C/SPI bridge. */
     private DotStarBridgedLED leds;
@@ -453,43 +455,27 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         boolean maxExtended = false;
         // Have to make sure it is trying to extend fully.
         extendIntake(ExtendPosition.EXTENDED);
+        double extenderCurrentVelocity = extender.getVelocity();
         int extenderCurrentPosition = extender.getCurrentPosition();
-        if(extenderCurrentPosition >= (ExtendPosition.EXTENDED.getEncoderCount() - extendZero)) {
-            extenderStrike1 = 0;
-            extenderStrike2 = 0;
-            extenderStrike3 = 0;
-            maxExtended = true;
-        } else {
-            // Check if the last three encoder reads have been within 5
-            // encoder ticks.  If so, lets reset the zero position and
-            // keep the extender from running forever.
-            if(Math.abs(extenderCurrentPosition - extenderStrike1) < 5) {
-                if(Math.abs(extenderCurrentPosition - extenderStrike2) < 5) {
-                    if(Math.abs(extenderCurrentPosition - extenderStrike3) < 5) {
-                        if(Math.abs(extenderStrike3 - extenderStrike1) < 5) {
-                            // Make extended equal 5 less than current position
-                            // and set 0 to that value minus MAX_EXTEND
-                            extenderStrike1 = 0;
-                            extenderStrike2 = 0;
-                            extenderStrike3 = 0;
-                            int newZero = extenderCurrentPosition - 5 - MAX_EXTENSION;
-                            setExtendZero(newZero);
-                            extendIntake(ExtendPosition.EXTENDED);
-                        } else {
-                            extenderStrike1 = extenderStrike2;
-                            extenderStrike2 = extenderStrike3;
-                            extenderStrike3 = extenderCurrentPosition;
-                        }
-                    } else {
-                        extenderStrike3 = extenderCurrentPosition;
-                    }
-                } else {
-                    extenderStrike2 = extenderCurrentPosition;
-                }
+
+        // The motor is stalled or we have finished
+        if(extenderCurrentVelocity < 250) {
+            int newZero = extenderCurrentPosition + extendZero - MAX_EXTENSION;
+            // We have reached target
+            if(Math.abs(newZero) <= 5) {
+                maxExtended = true;
             } else {
-                extenderStrike1 = extenderCurrentPosition;
+                // We missed our target
+                maxExtended = false;
+                setExtendZero(newZero);
+                extendIntake(ExtendPosition.EXTENDED);
             }
+
+        } else {
+            // We are still running to position
+            maxExtended = false;
         }
+
         return maxExtended;
     }
 
@@ -508,7 +494,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 		    if(targetPosition < ExtendPosition.SPINMIN.getEncoderCount()) {
 		        stopIntake();
             }
-		    targetPosition -= extendZero;
+		    targetPosition += extendZero;
             extender.setTargetPosition(targetPosition);
             extender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             extender.setPower(EXTEND_SPEED);
@@ -583,7 +569,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         leftIntake = hwMap.get(DcMotor.class, LEFT_INTAKE);
         rightIntake = hwMap.get(DcMotor.class, RIGHT_INTAKE);
         lifter = hwMap.get(DcMotor.class, LIFTER);
-        extender = hwMap.get(DcMotor.class, EXTENDER);
+        extender = hwMap.get(DcMotorEx.class, EXTENDER);
 
         // Set motor rotation
         // This makes lift go up with positive encoder values and power

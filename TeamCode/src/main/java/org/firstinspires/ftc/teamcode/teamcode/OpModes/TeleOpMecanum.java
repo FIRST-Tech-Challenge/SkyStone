@@ -56,7 +56,7 @@ public class TeleOpMecanum extends OpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        drive.resetEncoders();
+        drive.initDriveTrain();
         drive.runtime.reset();
 
         //intake.initIntake(this);

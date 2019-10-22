@@ -23,11 +23,6 @@ public class Robot4100Generation1_MovementTest extends DarbotsBasicOpMode<Robot4
     @Override
     public void hardwareInitialize() {
         this.m_RobotCore = new Robot4100Generation1_LindaCore(this.hardwareMap);
-        if(GlobalUtil.getGyro() != null) {
-            this.m_RobotCore.getChassis().setGyroGuidedDriveEnabled(true);
-            this.m_RobotCore.getChassis().setGyroGuidedDrivePublicStartingAngleEnabled(true);
-            this.m_RobotCore.getChassis().updateGyroGuidedPublicStartingAngle();
-        }
     }
 
     @Override
@@ -37,7 +32,17 @@ public class Robot4100Generation1_MovementTest extends DarbotsBasicOpMode<Robot4
 
     @Override
     public void RunThisOpMode() {
+        waitForStart();
+        if(!opModeIsActive()){
+            return;
+        }
         telemetry.addData("ChassisStatus",this.getChassisStatus());
+        if(GlobalUtil.getGyro() != null) {
+            this.m_RobotCore.getChassis().setGyroGuidedDriveEnabled(true);
+            this.m_RobotCore.getChassis().setGyroGuidedDrivePublicStartingAngleEnabled(true);
+            this.m_RobotCore.getChassis().updateGyroGuidedPublicStartingAngle();
+        }
+        
         while(this.opModeIsActive()){
             this.m_RobotCore.updateStatus();
             if(this.m_RobotCore.getChassis().isBusy()){

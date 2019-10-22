@@ -29,6 +29,7 @@ public class OmniTeleOpDarbots extends DarbotsBasicOpMode<OmniCore> {
     @Override
     public void RunThisOpMode() {
         OmniDrive.TeleOpControlTask TeleOpTask = (OmniDrive.TeleOpControlTask) m_RobotCore.getChassis().getCurrentTask();
+        waitForStart();
         while(this.opModeIsActive()){
             TeleOpTask.setDriveRotationSpeed(-gamepad1.right_stick_x);
             TeleOpTask.setDriveXSpeed(gamepad1.left_stick_x);

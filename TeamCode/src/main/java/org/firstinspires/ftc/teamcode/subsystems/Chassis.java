@@ -3,10 +3,6 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.firstinspires.ftc.teamcode.subsystems.RobotMap.ChassisMotor;
 
 public class Chassis extends Subsystem {
     //Vars

@@ -9,7 +9,6 @@ import org.firstinspires.ftc.teamcode.subsystems.Chassis;
 import org.firstinspires.ftc.teamcode.subsystems.Controller;
 import org.firstinspires.ftc.teamcode.subsystems.Hook;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
-import org.firstinspires.ftc.teamcode.subsystems.RobotMap.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -25,19 +24,7 @@ public class IntegrationTest extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        Chassis chassis = new Chassis(hardwareMap, new HashMap<ChassisMotor, String>() {{
-            put(ChassisMotor.FRONT_LEFT, "front_left_drive");
-            put(ChassisMotor.FRONT_RIGHT, "front_right_drive");
-            put(ChassisMotor.BACK_LEFT, "back_left_drive");
-            put(ChassisMotor.BACK_RIGHT, "back_right_drive");
-        }});
-        Hook hook = new Hook(hardwareMap, new HashMap<HookServo, String>() {{
-            put(HookServo.MAIN, "hook");
-        }});
-        Intake intake = new Intake(hardwareMap, new HashMap<IntakeMotor, String>() {{
-            put(IntakeMotor.LEFT, "left_intake");
-            put(IntakeMotor.RIGHT, "right_intake");
-        }});
+        Chassis chassis = new Chassis(hardwareMap);
         telemetry.setMsTransmissionInterval(1);
         telemetry.addLine("Init | v1.0");
         Iterator<DcMotor> motorIterator = hardwareMap.dcMotor.iterator();

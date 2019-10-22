@@ -8,7 +8,7 @@ import static java.lang.Math.random;
 
 @Autonomous
 
-public class MecanumAuto_Stupid extends MecanumAutoCentral {
+public class MecanumAuto_RedLeft extends MecanumAutoCentral {
     private final double POWER = 0.5;
 
     public void runOpMode() {

@@ -8,7 +8,7 @@ import org.firstinspires.ftc.robotcore.internal.opmode.OpModeManagerImpl;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.SubAssembly.Claimer.GrabberControl;
+import org.firstinspires.ftc.teamcode.SubAssembly.Grabber.GrabberControl;
 import org.firstinspires.ftc.teamcode.SubAssembly.DriveTrain.DriveControl;
 import org.firstinspires.ftc.teamcode.Utilities.UserControl;
 
@@ -31,7 +31,13 @@ public class autonomous extends LinearOpMode {
         DrivetoQuarry,
         GrabSkystone,
         MovetoLine,
-        Stop
+        ScoreStone,
+        BackupToQuarry,
+        GrabSkystone2,
+        MovetoLine2,
+        ScoreStone2,
+        Stop,
+        test
     }
 
     private State mCurrentState = State.Initial;
@@ -90,14 +96,14 @@ public class autonomous extends LinearOpMode {
                 case DrivetoQuarry:
                     telemetry.addLine("Drive to Quarry");
                     telemetry.update();
-                    Drive.moveForwardDistance(0.5,71.2);
+                    Drive.moveForwardDistance(0.75,71.2);
                     newState(State.GrabSkystone);
                     break;
                 case GrabSkystone:
                     telemetry.addLine("Grab Skystone");
                     telemetry.update();
                     Grabber.open();
-                    Drive.moveForwardDistance(0.5,5);
+                    //Drive.moveForwardDistance(0.5,5);
                     Grabber.close();
                     newState(State.MovetoLine);
                     break;
@@ -105,16 +111,65 @@ public class autonomous extends LinearOpMode {
                     telemetry.addLine("MovetoLine");
                     telemetry.update();
                     Drive.moveBackwardDistance(0.5,10.16);
-                    if (AllianceColor = true) {
-                        Drive.turnRightDistance(0.5,50);
-                    if (AllianceColor = false){
+                    if (AllianceColor == true) {
+                        Drive.turnRightDistance(0.5, 50);
+                    }
+                    else {
                         Drive.turnLeftDistance(0.5,50);
                     }
-                    Drive.moveForwardDistance(0.5, 76.2);
+                    Drive.moveForwardDistance(0.75, 76.2);
                     //Drive until sees red or blue line
+                    newState(State.ScoreStone);
+                    break;
+
+                case ScoreStone:
+                    Drive.moveForwardDistance(0.75,91.44);
+                    Grabber.open();
+                    Drive.moveBackwardDistance(0.75,91.44);
+                    newState(State.BackupToQuarry);
+                    break;
+
+                case BackupToQuarry:
+                    telemetry.addLine("Backup to quarry");
+                    telemetry.update();
+                    Drive.moveBackwardDistance(0.5,95.2);
+                    if (AllianceColor == true){
+                        Drive.turnLeftDistance(0.5,50);
+                    }
+                    else {
+                        Drive.turnRightDistance(0.75,50);
+                    }
+                    newState(State.GrabSkystone2);
+                    break;
+
+                case GrabSkystone2:
+                    telemetry.addLine("Grab the second skystone");
+                    telemetry.update();
+                    Grabber.open();
+                    Grabber.close();
+                    newState(State.MovetoLine2);
+                    break;
+
+                case MovetoLine2:
+                    telemetry.addLine("Move to line");
+                    telemetry.update();
+                    Drive.moveBackwardDistance(0.5,10.16);
+                    if (AllianceColor == true)
+                        Drive.turnRightDistance(0.5,50);
+                    else{
+                        Drive.turnLeftDistance(0.5,50);
+                    }
+                    Drive.moveForwardDistance(0.75, 95.2);
+                    //Drive until sees red or blue line
+                    newState(State.ScoreStone2);
+                    break;
+
+                case ScoreStone2:
+                    Drive.moveForwardDistance(0.75,91.44);
+                    Grabber.open();
+                    Drive.moveBackwardDistance(0.75,91.44);
                     newState(State.Stop);
                     break;
-                    }
                 case Stop:
                     telemetry.addLine("Stop");
                     telemetry.update();

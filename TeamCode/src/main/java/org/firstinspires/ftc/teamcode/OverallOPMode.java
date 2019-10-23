@@ -13,11 +13,16 @@ public class OverallOPMode extends LinearOpMode {
     private DcMotor motorDriveFrontLeft;
     private DcMotor motorDriveFrontRight;
     private DcMotor motorDriveLifter;
-    private Servo gripServo;
+    private Servo GripServo;
     private Servo trayDragServo;
 
     @Override
     public void runOpMode () {
-        motorDriveBackLeft = hardwareMap.dcMotor.get("motorDriveBackLeft")
+        motorDriveBackLeft = hardwareMap.dcMotor.get("motorDriveBackLeft");
+        motorDriveBackRight = hardwareMap.dcMotor.get("motorDriveBackRight");
+        motorDriveFrontLeft = hardwareMap.dcMotor.get("motorDriveFrontLeft");
+        motorDriveFrontRight = hardwareMap.dcMotor.get("motorDriveFrontRight");
+        motorDriveLifter = hardwareMap.dcMotor.get("motorDriveLifter");
+        GripServo = hardwareMap.servo.get("GripServo")
     }
 }

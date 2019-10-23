@@ -16,9 +16,9 @@ import teamcode.common.Vector2;
 @Autonomous(name = "TT Auto Blue")
 public class TTAutoBlue extends TTOpMode {
 
-    private static final BoundingBox2D SKYSTONE_POS_1 = new BoundingBox2D(0, 0, 0, 0);
-    private static final BoundingBox2D SKYSTONE_POS_2 = new BoundingBox2D(0, 0, 0, 0);
-    private static final BoundingBox2D SKYSTONE_POS_3 = new BoundingBox2D(0, 0, 0, 0);
+    // 6 inches forward, 4 inches left
+    private static final BoundingBox2D SKYSTONE_POS_5 = new BoundingBox2D(0, 0, 0, 0);
+    private static final BoundingBox2D SKYSTONE_POS_6 = new BoundingBox2D(0, 0, 0, 0);
 
     private TTDriveSystem driveSystem;
     private League1TTArm arm;
@@ -65,16 +65,14 @@ public class TTAutoBlue extends TTOpMode {
         for (Recognition recognition : recognitions) {
             if (recognition.getLabel().equals(TTVision.LABEL_SKYSTONE)) {
                 Vector2 center = TTVision.getCenter(recognition);
-                if (SKYSTONE_POS_1.contains(center)) {
-                    return 1;
-                } else if (SKYSTONE_POS_2.contains(center)) {
-                    return 2;
-                } else if (SKYSTONE_POS_3.contains(center)) {
-                    return 3;
+                if (SKYSTONE_POS_5.contains(center)) {
+                    return 5;
+                } else if (SKYSTONE_POS_6.contains(center)) {
+                    return 6;
                 }
             }
         }
-        return 1; // assume left position if image recognition fails.
+        return 4; // assume left position if image recognition fails.
     }
 
     //Opens the claw and lowers the arm for starting pos, moves into position for scanning

@@ -110,9 +110,15 @@ public class autonomous extends LinearOpMode {
                     if (AllianceColor = false){
                         Drive.turnLeftDistance(0.5,50);
                     }
+                    Drive.moveForwardDistance(0.5, 76.2);
                     //Drive until sees red or blue line
+                    newState(State.Stop);
                     break;
                     }
+                case Stop:
+                    telemetry.addLine("Stop");
+                    telemetry.update();
+                    break;
             }
         }
     }

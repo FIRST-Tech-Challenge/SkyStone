@@ -7,15 +7,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class Intake {
 
-    /*
-    Compliant Wheel Intake
-    Includes Pass Through System
-    -------------------------------------------
-    Detects a block using vision - in OpClass
-    Activates Intake Motors after block found - to save power
-    */
-
-    //intake planetary motors
     public DcMotor rightSide;
     public DcMotor leftSide;
 
@@ -54,11 +45,9 @@ public class Intake {
     {
         time.reset();
 
-        rightSide.setPower(PICKUP);
-        leftSide.setPower(PICKUP);
-
         while(time.seconds() < runTime && block){
-
+            rightSide.setPower(PICKUP);
+            leftSide.setPower(PICKUP);
         }
 
         rightSide.setPower(IDLE);

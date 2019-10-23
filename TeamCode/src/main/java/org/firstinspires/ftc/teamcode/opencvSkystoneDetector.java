@@ -64,8 +64,6 @@ public class opencvSkystoneDetector extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        telemetry.addData("Status", "Running");
-        telemetry.update();
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         phoneCam = new OpenCvInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
@@ -77,10 +75,7 @@ public class opencvSkystoneDetector extends LinearOpMode {
 
         waitForStart();
         runtime.reset();
-        while (opModeIsActive())
-        {
-
-            //telemetry.addData("Num contours found", stageSwitchingPipeline.getNumContoursFound());
+        while (opModeIsActive()) {
             telemetry.addData("Values", valLeft+"   "+valMid+"   "+valRight);
             telemetry.addData("Height", rows);
             telemetry.addData("Width", cols);
@@ -109,7 +104,7 @@ public class opencvSkystoneDetector extends LinearOpMode {
             RAW_IMAGE,//displays raw view
         }
 
-        private Stage stageToRenderToViewport = Stage.RAW_IMAGE;
+        private Stage stageToRenderToViewport = Stage.detection;
         private Stage[] stages = Stage.values();
 
         @Override

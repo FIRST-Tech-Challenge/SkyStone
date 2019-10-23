@@ -49,13 +49,6 @@ public class Holonomic extends LinearOpMode {
         backRight.setDirection(DcMotorSimple.Direction.FORWARD);
         frontRight.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        //Zero Power Behavior -> use only for autonomous for precious movement
-
-        //backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        //frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        //backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        //frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
         //Running with/without Encoders
         backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -79,7 +72,7 @@ public class Holonomic extends LinearOpMode {
 
             speedSet =  Range.clip(speedSet, 1, 10);//makes sure speed is limited at 10.
 
-            if(!gamepad1.right_bumper && !gamepad1.left_bumper)//makes sure speed does not round every refresh. otherwise, speed is "pulled back" by the round
+            if(!gamepad1.right_bumper && !gamepad1.left_bumper)//makes sure speed does not round every refresh. otherwise, speed won't be able to change
                 speedSet = Math.round(speedSet);
 
             if(gamepad1.a)

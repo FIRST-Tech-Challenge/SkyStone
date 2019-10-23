@@ -24,6 +24,7 @@ public class AutoTransitioner extends Thread {
     private String transitionTo;
     private OpModeManagerImpl opModeManager;
 
+
     private AutoTransitioner() {
         this.start(); //Start the watcher thread
     }

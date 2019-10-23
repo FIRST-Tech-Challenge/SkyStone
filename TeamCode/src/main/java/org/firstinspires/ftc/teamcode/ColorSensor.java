@@ -34,7 +34,7 @@ import org.firstinspires.ftc.robotcore.external.JavaUtil;
             motorDriveRight.setPower(1);
             while (opModeIsActive()) {
                 CurrentColor = Color.rgb(Color.red(), Color.green(), Color.blue());
-                if (JavaUtil.colorToSaturation(CurrentColor) >= 0.3 && JavaUtil.colorToHue(CurrentColor) > 200 && JavaUtil.colorToHue(CurrentColor) < 285) {
+                if ((JavaUtil.colorToSaturation(CurrentColor) >= 0.3) && (JavaUtil.colorToHue(CurrentColor) > 200) && (JavaUtil.colorToHue(CurrentColor) < 285)) {
                     motorDriveLeft.setPower(0);
                     motorDriveRight.setPower(0);
                 }

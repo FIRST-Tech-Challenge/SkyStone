@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.SubAssembly.Claimer;
+package org.firstinspires.ftc.teamcode.SubAssembly.Grabber;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -44,14 +44,14 @@ public class GrabberTest extends LinearOpMode {
                 Grabber.close();
             }
 
-            if (egamepad1.x.released) {
+           /* if (egamepad1.x.released) {
 
                 for (int p = 0; p < 180; p++) {
                     Grabber.wrist(p);
                     wait(25);
                 }
 
-            }
+            }*/
 
 
             //SubAssembly.test();

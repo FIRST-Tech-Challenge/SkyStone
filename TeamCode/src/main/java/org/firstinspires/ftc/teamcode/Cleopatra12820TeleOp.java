@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -115,7 +116,7 @@ public class Cleopatra12820TeleOp extends LinearOpMode {
         backMotorLeft.setDirection(DcMotor.Direction.FORWARD);
         backMotorRight.setDirection(DcMotor.Direction.REVERSE);
         frontMotorLeft.setDirection(DcMotor.Direction.FORWARD);
-        frontMotorRight.setDirection(DcMotor.Direction.REVERSE);
+        frontMotorRight.setDirection(DcMotor.Direction.FORWARD);   //THIS IS THE ONE I CHANGED
         intakeServoLeft.setDirection(Servo.Direction.REVERSE);
         intakeServoRight.setDirection(Servo.Direction.FORWARD);
         claw.setDirection(Servo.Direction.FORWARD);

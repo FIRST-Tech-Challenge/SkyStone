@@ -22,7 +22,9 @@ public class SliderComponentTest extends OpMode {
         servos.put(ArmSystem.ServoNames.PIVOT, hardwareMap.get(Servo.class, "pivot"));
         servos.put(ArmSystem.ServoNames.WRIST, hardwareMap.get(Servo.class, "wrist"));
         servos.put(ArmSystem.ServoNames.ELBOW, hardwareMap.get(Servo.class, "elbow"));
-        armSystem = new ArmSystem(servos, hardwareMap.get(DcMotor.class, "slider_motor"), hardwareMap.get(DigitalChannel.class, "slider_switch"));
+        armSystem = new ArmSystem(servos,
+                hardwareMap.get(DcMotor.class, "slider_motor"),
+                hardwareMap.get(DigitalChannel.class, "slider_switch"));
     }
 
     public void loop() {

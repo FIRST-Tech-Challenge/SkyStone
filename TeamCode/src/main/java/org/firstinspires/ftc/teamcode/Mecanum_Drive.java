@@ -18,24 +18,33 @@ public class Mecanum_Drive extends LinearOpMode {
 
     public final static double deadzone = 0.2;          // Deadzone for bot movement
     public final static double claw_speed = 0.01;       // Claw movement rate
-    public final static double grabber_speed = 0.01;    // Grabber rotation rate
-    public final static double arm_up_power = 0.45;    // Grabber rotation rate
-    public final static double arm_down_power = -0.45;    // Grabber rotation rate
+    public final static double grabber_speed = 0.003;    // Grabber rotation rate
+    public final static double arm_up_power = 0.7;    // Grabber rotation rate
+    public final static double arm_down_power = -0.7;    // Grabber rotation rate
+    public final static int arm_up_step = 10;           // Arm up movement position step
+    public final static int arm_down_step = 10;           // Arm up movement position step
 
     @Override
     public void runOpMode() {
         // Mecanum wheels
-        frontLeft = hardwareMap.get(DcMotor.class, "front_left");
-        frontRight = hardwareMap.get(DcMotor.class, "front_right");
-        backLeft = hardwareMap.get(DcMotor.class, "back_left");
-        backRight = hardwareMap.get(DcMotor.class, "back_right");
+//        frontLeft = hardwareMap.get(DcMotor.class, "front_left");
+//        frontRight = hardwareMap.get(DcMotor.class, "front_right");
+//        backLeft = hardwareMap.get(DcMotor.class, "back_left");
+//        backRight = hardwareMap.get(DcMotor.class, "back_right");
 
-        frontRight.setDirection(DcMotor.Direction.REVERSE);
-        backRight.setDirection(DcMotor.Direction.REVERSE);
+//        frontRight.setDirection(DcMotor.Direction.REVERSE);
+//        backRight.setDirection(DcMotor.Direction.REVERSE);
 
         // Arm motors
 //        upperArm = hardwareMap.get(DcMotor.class, "upper_arm");
-//        lowerArm = hardwareMap.get(DcMotor.class, "lower_arm");
+        lowerArm = hardwareMap.get(DcMotor.class, "lower_arm");
+
+//        upperArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        upperArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        upperArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        lowerArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        lowerArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        lowerArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Claw servos
         leftClaw = hardwareMap.get(Servo.class, "left_claw");
@@ -55,28 +64,34 @@ public class Mecanum_Drive extends LinearOpMode {
             // Bot movement with Mecanum wheels
             power = fwd; //this can be tweaked for exponential power increase
 
-            frontLeft.setPower(Range.clip(power + side - turn, -1, 1));
+/*            frontLeft.setPower(Range.clip(power + side - turn, -1, 1));
             frontRight.setPower(Range.clip(power - side + turn, -1, 1));
             backLeft.setPower(Range.clip(power - side - turn, -1, 1));
             backRight.setPower(Range.clip(power + side + turn, -1, 1));
-
+*/
 
             // Arm movements
-            /*
-            if (dpad_up)
+/*            if (dpad_up) {
+                upperArm.setTargetPosition(upperArm.getCurrentPosition() + arm_up_step);
                 upperArm.setPower(arm_up_power);
-            else if (dpad_down)
+                upperArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            } else if (dpad_down) {
+                upperArm.setTargetPosition(upperArm.getCurrentPosition() - arm_down_step);
                 upperArm.setPower(arm_down_power);
-            else
+                upperArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            } else
                 upperArm.setPower(0.0);
-
-            if (btn_y)
+*/
+            if (btn_y) {
+                lowerArm.setTargetPosition(lowerArm.getCurrentPosition() + arm_up_step);
                 lowerArm.setPower(arm_up_power);
-            else if (dpad_down)
+                lowerArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            } else if (btn_a) {
+                lowerArm.setTargetPosition(lowerArm.getCurrentPosition() - arm_down_step);
                 lowerArm.setPower(arm_down_power);
-            else
+                lowerArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            } else
                 lowerArm.setPower(0.0);
-             */
 
 
             // Use gamepad left & right Bumpers to open and close the claw
@@ -109,7 +124,7 @@ public class Mecanum_Drive extends LinearOpMode {
             telemetry.addData("DPad UP = ", dpad_up );
             telemetry.addData("DPad DOWN = ", dpad_up );
             telemetry.addData("Y = ", btn_y );
-            telemetry.addData("A = ", btn_x );
+            telemetry.addData("A = ", btn_a );
             telemetry.update();
         }
     }

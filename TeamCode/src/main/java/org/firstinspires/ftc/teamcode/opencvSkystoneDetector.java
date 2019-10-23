@@ -32,9 +32,9 @@ import java.util.List;
  * monitor: 640 x 480
  *
  */
-@Autonomous(name= "onlyopencv1", group="Sky autonomous")
+@Autonomous(name= "opencvSkystoneDetector", group="Sky autonomous")
 //@Disabled
-public class onlyopencv1 extends LinearOpMode {
+public class opencvSkystoneDetector extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     private final int encoderTicks = 1120;

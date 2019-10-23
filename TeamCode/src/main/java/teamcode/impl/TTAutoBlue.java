@@ -29,7 +29,8 @@ public class TTAutoBlue extends TTOpMode {
         vision = new TTVision(hardwareMap);
         vision.enable();
     }
-
+    //init all your stuff
+    //waitForStart();
     @Override
     protected void onStart() {
         skystonePos = scanStones();

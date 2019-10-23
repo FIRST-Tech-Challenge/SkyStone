@@ -17,6 +17,8 @@ public class MM_LoadingZoneRed extends LinearOpMode {
         robot.init(hardwareMap);
 
         waitForStart();
+        // detect sky stone with camera
+
         // Drive to quarry
         robot.driveForwardDistance(47.0 - robot.ROBOT_EXTENDED_LENGTH, speed, this);
         Thread.sleep(500);

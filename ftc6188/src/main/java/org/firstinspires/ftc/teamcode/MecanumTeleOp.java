@@ -49,8 +49,8 @@ public class MecanumTeleOp extends OpMode
         robot.drivetrain.setVelocity(velocity * (driverTwoBrakes.output() ? 0 : 1));
         robot.drivetrain.setRotation(-gamepad1.left_stick_x);
 
-        if (gamepad1.dpad_down) {robot.platformServos.setPosition(120);}
-        else if (gamepad1.dpad_up) {robot.platformServos.setPosition(0);}
+        if (gamepad1.dpad_down) {robot.platformServos.setPosition(robot.platformServos.getPosition() + 10);}
+        else if (gamepad1.dpad_up) {robot.platformServos.setPosition(robot.platformServos.getPosition() - 10);}
 
         //DRIVER TWO
         //arm movement
@@ -62,6 +62,7 @@ public class MecanumTeleOp extends OpMode
         telemetry.addData("Velocity", velocity);
         telemetry.addData("Rotation", -gamepad1.left_stick_x);
         telemetry.addData("Servo Position", robot.platformServos.getPosition());
+        telemetry.addData("Servo Actual", robot.platformServos.getActual());
 		telemetry.addData("Half Power", robot.drivetrain.isHalfPower());
         telemetry.update();
     }

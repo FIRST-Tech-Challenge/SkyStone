@@ -50,7 +50,7 @@ abstract public class Drivetrain
 	{
 		return halfPower.output();
 	}
-	7
+
     abstract protected double[] calculateMotorPowers();
 
     public boolean isTeleOpMode() { return teleOpMode; }

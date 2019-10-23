@@ -28,9 +28,14 @@ public class LinkedServo
 
     public double getPosition() { return position; }
 
+    public String getActual()
+    {
+        return ("One: " + servoOne.getPosition() + " Two: " + servoTwo.getPosition());
+    }
+
     private void updateServoPosition()
     {
         servoOne.setPosition(position);
-        servoTwo.setPosition(position);
+        servoTwo.setPosition(oppositeFace ? -position : position);
     }
 }

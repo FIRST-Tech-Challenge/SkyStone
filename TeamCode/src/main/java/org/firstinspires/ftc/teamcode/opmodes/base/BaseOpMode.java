@@ -30,14 +30,11 @@ public abstract class BaseOpMode extends OpMode {
         DistanceSensor distanceSensor2;
         DistanceSensor distanceSensor3;
         ColorSensor colorSensor;
-
+        this.msStuckDetectInit = 25000;
     }
 
     protected void setCamera(CameraChoice cameraChoice){
-
         vuforia = new Vuforia(hardwareMap, cameraChoice);
         skystone = vuforia.targetsSkyStone.get(0);
-
-
     }
 }

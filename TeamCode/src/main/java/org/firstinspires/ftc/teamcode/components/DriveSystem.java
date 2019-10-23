@@ -30,7 +30,7 @@ public class DriveSystem {
 
     private int mTargetTicks;
 
-    private final int TICKS_IN_MM = 69;
+    private final double TICKS_IN_MM = 2.716535433;
 
     /**
      * Handles the data for the abstract creation of a drive system with four wheels
@@ -180,7 +180,7 @@ public class DriveSystem {
      * @return
      */
     public int millimetersToTicks(int millimeters) {
-        return (int) millimeters * TICKS_IN_MM;
+        return (int) Math.round(millimeters * TICKS_IN_MM);
     }
 
     /**

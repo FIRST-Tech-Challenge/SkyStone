@@ -13,7 +13,10 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 class SSTeleOp : OpMode() {
     //using robot class for motors, servos etc
     val robot = SSRobot()
+    val zero = 0.0.toFloat()
     var slowDown = 1//default
+    var touched = true
+    var linSlidePow:Float = 0.00.toFloat()
 
     override fun init() {
         telemetry.addData("Status: ", "TeleOp Initialized")
@@ -36,6 +39,25 @@ class SSTeleOp : OpMode() {
 
         robot.leftDrive?.power = leftPower.toDouble() / slowDown
         robot.rightDrive?.power = rightPower.toDouble() / slowDown
+        if(!robot.touch!!.state) {
+            touched = true
+            telemetry.addData("Touch sensor:", "pressed in if")
+            telemetry.update()
+        }
+        else if(robot.touch!!.state)
+        {
+            touched = false
+        }
+
+        if(!touched) {
+            linSlidePow = when {
+                gamepad1.left_trigger != zero -> (-1 * gamepad1.left_trigger)
+                else -> if (gamepad1.right_trigger != zero) (gamepad1.right_trigger)
+                else (zero)
+            }
+        }
+
+        robot.liftSlideY(linSlidePow)
 
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower)
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower)

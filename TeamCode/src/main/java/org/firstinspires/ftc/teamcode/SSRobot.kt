@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode
 
+import com.qualcomm.hardware.motors.RevRoboticsCoreHexMotor
 import com.qualcomm.hardware.rev.RevTouchSensor
 import com.qualcomm.robotcore.hardware.*
 
@@ -11,6 +12,8 @@ class SSRobot {
     var hwdMap: HardwareMap? = null
     var leftDrive: DcMotor? = null
     var rightDrive: DcMotor? = null
+    var linSlideY: DcMotor? = null
+    var touch: DigitalChannel? = null
 
 
     var motF = DcMotorSimple.Direction.FORWARD
@@ -28,11 +31,14 @@ class SSRobot {
         hwdMap = ahwdMap
         leftDrive = ahwdMap.dcMotor.get("leftDrive")
         rightDrive = ahwdMap.dcMotor.get("rightDrive")
+        linSlideY = ahwdMap.dcMotor.get("linSlideY")
+        touch = ahwdMap.digitalChannel.get("touch")
 
 
         //Setting direction
         leftDrive?.direction = motF
         rightDrive?.direction = motR
+        linSlideY?.direction = motR
 
 
         leftDrive?.power = 0.0
@@ -56,6 +62,10 @@ class SSRobot {
 
     fun brake() {
         this.drive(0.0)
+    }
+
+    fun liftSlideY(pow: Float) {
+        linSlideY?.power = pow.toDouble()
     }
 }
 

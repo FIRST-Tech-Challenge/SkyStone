@@ -35,21 +35,17 @@ public class TTAutoRed extends TTOpMode {
 
     @Override
     protected void onStart() {
-        // setArmStartPos();
+        setStartPos();
         int skystonePos = scanStones();
         telemetry.addData("pos", skystonePos);
         telemetry.update();
-        //  grabSkyStone(5);
-//        telemetry = TTOpMode.currentOpMode().telemetry;
-//        telemetry.addData("Stone Found", skystonePos + 3);
-//        telemetry.update();
-//        if(skystonePos == 1){
-//            grabSkyStone(4);
-//        } else if(skystonePos == 2){
-//            grabSkyStone(5);
-//        } else if (skystonePos == 3){
-//            grabSkyStone(6);
-//        }
+        if(skystonePos == 4){
+            grabSkyStone(4);
+        } else if(skystonePos == 5){
+            grabSkyStone(5);
+        } else if (skystonePos == 6){
+            grabSkyStone(6);
+        }
     }
 
     @Override
@@ -57,8 +53,8 @@ public class TTAutoRed extends TTOpMode {
     }
 
     /**
-     * Returns the position of the skystones. Returns 1 if the stones are in the first and fourth
-     * slots. Returns 2 if the stones are in the second and fifth slots. Returns 3 if the stones
+     * Returns the position of the skystones. Returns 4 if the stones are in the first and fourth
+     * slots. Returns 5 if the stones are in the second and fifth slots. Returns 6 if the stones
      * are in the third and sixth slots.
      */
     private int scanStones() {
@@ -76,10 +72,12 @@ public class TTAutoRed extends TTOpMode {
         return 4; // assume left position if no other stone is detected (the fourth stone is not visible to the camera).
     }
 
-    //Opens the claw and lowers the arm for starting pos
-    private void setArmStartPos() {
+    //Opens the claw and lowers the arm for starting pos, moves into pos for scanning
+    private void setStartPos() {
         arm.openClaw();
         arm.lower(0.5);
+        driveSystem.vertical(6, 0.5);
+        driveSystem.lateral(-2, 0.25);
     }
 
     /*Starts from the starting pos and moves grab the block
@@ -87,10 +85,10 @@ public class TTAutoRed extends TTOpMode {
      */
     private void grabSkyStone(int stoneNum) {
         driveSystem.lateral(-(41.5 - stoneNum * 8), 0.3);
-        driveSystem.vertical(31.5, 0.5);
+        driveSystem.vertical(25.5, 0.5);
         arm.closeClaw();
         sleep(500);
-        driveSystem.vertical(-15, 0.5);
+        driveSystem.vertical(-20, 0.5);
         driveSystem.turn(90, 0.5);
         moveToFoundation(stoneNum);
         pullFoundation();
@@ -98,12 +96,12 @@ public class TTAutoRed extends TTOpMode {
 
     //Moves towards the foundation and turns to face it
     private void moveToFoundation(int stoneNum) {
-        driveSystem.vertical(120 - stoneNum * 8, 0.5);
+        driveSystem.vertical(122 - stoneNum * 8, 0.5);
         sleep(250);
         driveSystem.turn(-90, 0.5);
         arm.liftTimed(1, 0.5);
         sleep(250);
-        driveSystem.vertical(20, 0.5);
+        driveSystem.vertical(25, 0.5);
         sleep(500);
         arm.openClaw();
     }

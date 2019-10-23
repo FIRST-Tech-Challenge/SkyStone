@@ -89,6 +89,7 @@ public class SkyStoneNavigation implements RobotNonBlockingDevice {
         // Load the data sets for the trackable objects. These particular data
         // sets are stored in the 'assets' part of our application.
         m_TargetsSkyStone = vuforia.loadTrackablesFromAsset("Skystone");
+
         //m_TargetsSkyStone.remove(0);
 
         VuforiaTrackable stoneTarget = m_TargetsSkyStone.get(0);
@@ -143,9 +144,11 @@ public class SkyStoneNavigation implements RobotNonBlockingDevice {
         // Set the position of the Stone Target.  Since it's not fixed in position, assume it's at the field origin.
         // Rotated it to to face forward, and raised it to sit on the ground correctly.
         // This can be used for generic target-centric approach algorithms
+        /*
         stoneTarget.setLocation(OpenGLMatrix
                 .translation(0, 0, stoneZ)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
+        */
 
         //Set the position of the bridge support targets with relation to origin (center of field)
         blueFrontBridge.setLocation(OpenGLMatrix
@@ -298,7 +301,7 @@ public class SkyStoneNavigation implements RobotNonBlockingDevice {
     public Robot3DPositionIndicator getDarbotsRobotAxisStonePosition(){
         Robot3DPositionIndicator FTCRobotAxis = this.__getFTCRobotAxisStonePosition();
         if(FTCRobotAxis != null){
-            return this.__getFTCRobotAxisStonePosition().fromFTCRobotAxisToDarbotsRobotAxis();
+            return FTCRobotAxis.fromFTCRobotAxisToDarbotsRobotAxis();
         }
         return null;
     }

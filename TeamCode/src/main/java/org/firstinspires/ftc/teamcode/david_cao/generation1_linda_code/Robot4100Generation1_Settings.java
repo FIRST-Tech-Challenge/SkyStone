@@ -13,7 +13,7 @@ public class Robot4100Generation1_Settings {
     public static final double AUTONOMOUS_DISTANCE_BETWEEN_PHONE_AND_STONEGRABBER = 4.0;
     public static final Robot3DPositionIndicator AUTONOMOUS_CAMERAPOSONPHONE = new Robot3DPositionIndicator(
             0,
-            10,
+            13.2,
             0,
             -90,
             90,

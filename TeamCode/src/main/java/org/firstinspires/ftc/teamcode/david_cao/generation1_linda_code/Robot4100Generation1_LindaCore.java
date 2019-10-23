@@ -40,6 +40,10 @@ public class Robot4100Generation1_LindaCore extends RobotCore {
                 RFMotor = new RobotMotorWithEncoder(hardwares.dcMotor.get("RF"),Robot4100Generation1_Settings.motorType),
                 LBMotor = new RobotMotorWithEncoder(hardwares.dcMotor.get("LB"),Robot4100Generation1_Settings.motorType),
                 RBMotor = new RobotMotorWithEncoder(hardwares.dcMotor.get("RB"),Robot4100Generation1_Settings.motorType);
+        LFMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        RFMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        LBMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        RBMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         RobotWheel
                 LFWheel = new RobotWheel(new Robot2DPositionIndicator(-Robot4100Generation1_Settings.wheelPosition[0],Robot4100Generation1_Settings.wheelPosition[1],45),Robot4100Generation1_Settings.wheelRadius),
                 RFWheel = new RobotWheel(new Robot2DPositionIndicator(Robot4100Generation1_Settings.wheelPosition[0],Robot4100Generation1_Settings.wheelPosition[1],-45),Robot4100Generation1_Settings.wheelRadius),

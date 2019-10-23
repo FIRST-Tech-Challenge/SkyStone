@@ -21,6 +21,7 @@ package com.hfrobots.tnt.season1920;
 
 import com.hfrobots.tnt.corelib.control.NinjaGamePad;
 import com.hfrobots.tnt.corelib.drive.mecanum.RoadRunnerMecanumDriveREV;
+import com.hfrobots.tnt.corelib.metrics.StatsDMetricSampler;
 import com.hfrobots.tnt.corelib.util.RealSimplerHardwareMap;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -38,6 +39,8 @@ public class SkystoneTeleop extends OpMode {
 
     private DeliveryMechanism deliveryMechanism;
 
+    private StatsDMetricSampler metricSampler;
+
     // Go look at com.hfrobots.tnt.season1920.OpenLoopDriveBaseControlTest and see what
     // class members you need to begin to make the drivebase move using the drivers' controller
 
@@ -47,14 +50,20 @@ public class SkystoneTeleop extends OpMode {
         driveBase = new RoadRunnerMecanumDriveREV(simplerHardwareMap);
         kinematics = new OpenLoopMecanumKinematics(driveBase);
 
-        driverControls = DriverControls.builder().driversGamepad(new NinjaGamePad(gamepad1))
+        NinjaGamePad driversGamepad = new NinjaGamePad(gamepad1);
+
+        driverControls = DriverControls.builder().driversGamepad(driversGamepad)
                 .kinematics(kinematics)
                 .build();
         deliveryMechanism = new DeliveryMechanism(simplerHardwareMap);
 
-        operatorControls = OperatorControls.builder().operatorsGamepad(new NinjaGamePad(gamepad2))
+        NinjaGamePad operatorsGamepad = new NinjaGamePad(gamepad2);
+
+        operatorControls = OperatorControls.builder().operatorsGamepad(operatorsGamepad)
                 .deliveryMechanism(deliveryMechanism)
                 .build();
+
+        metricSampler = new StatsDMetricSampler(hardwareMap, driversGamepad, operatorsGamepad);
     }
 
     @Override
@@ -71,5 +80,6 @@ public class SkystoneTeleop extends OpMode {
     public void loop() {
         driverControls.periodicTask();
         operatorControls.periodicTask();
+        metricSampler.doSamples();
     }
 }

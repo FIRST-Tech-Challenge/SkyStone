@@ -63,11 +63,20 @@ public class TTVision {
         if (!enabled) {
             throw new IllegalStateException("Vision must be enabled first");
         }
+
         List<Recognition> recognitions = null;
         while (recognitions == null) {
             recognitions = tfod.getUpdatedRecognitions();
         }
         return recognitions;
+
+    }
+
+    public static Vector2 getCenter(Recognition recognition) {
+        float x = (recognition.getLeft() + recognition.getRight()) / 2;
+        float y = (recognition.getBottom() + recognition.getTop()) / 2;
+        return new Vector2(x, y);
+
     }
 
 }

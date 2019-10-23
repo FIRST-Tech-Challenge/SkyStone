@@ -22,6 +22,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 
+@TeleOp(name="VuTest", group= "Vision")
 public class Vuforia extends LinearOpMode {
 
     private static final VuforiaLocalizer.CameraDirection cameraChoice = BACK;
@@ -71,10 +72,11 @@ public class Vuforia extends LinearOpMode {
                         DEGREES, firstAng, secondAng, thirdAng)));
     }
 
-    public double[] VuBrowse() {
+    @Override
+    public void runOpMode() {
 
         double[] zeroPoint;
-        zeroPoint = new double[4];
+        zeroPoint = new double[5];
         zeroPoint[3] = 0;
 
         //Add webCheck
@@ -148,26 +150,28 @@ public class Vuforia extends LinearOpMode {
                 zeroPoint[1] = translation.get(1) / mmPerInch;
                 zeroPoint[2] = translation.get(2) / mmPerInch;
 
-                Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
+                //if (zeroPoint[0] )
+
+                Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ,
+                        DEGREES);
                 telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} =" +
-                        " %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
+                        " %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle,
+                        rotation.thirdAngle);
                 zeroPoint[3] = 1;
             }
 
             else {
                 telemetry.addData("Visible Target", "none");
+                zeroPoint[0] = 0;
+                zeroPoint[1] = 0;
+                zeroPoint[2] = 0;
+                zeroPoint[3] = 0;
             }
 
             telemetry.update();
         }
 
         targetsSkyStone.deactivate();
-        zeroPoint[0] = 0;
-        zeroPoint[1] = 0;
-        zeroPoint[2] = 0;
-        return zeroPoint;
+        //return zeroPoint;
     }
-
-    @Override
-    public void runOpMode() throws InterruptedException {}
 }

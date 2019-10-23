@@ -24,10 +24,6 @@ public class DriveTrain {
     double prevFoc;
     double newFoc;
 
-    boolean procRun1 = false;
-    boolean procRun2 = false;
-    boolean procRun3 = false;
-
     double flAcc = 0.0;
     double frAcc = 0.0;
     double brAcc = 0.0;
@@ -638,7 +634,7 @@ public class DriveTrain {
                 RDXalpha = Math.asin(i / RDXdiag);
                 prevEncode = getEncoderAverage();
                 prevFoc = getEncoderAverage();
-                RDXVector(RDXalpha, false);
+                RDXVector(RDXalpha);
                 lifeblood(RDXarr2, RDXalpha);
 
                 newFoc = getEncoderAverage();
@@ -661,7 +657,7 @@ public class DriveTrain {
                     RDXalpha = Math.asin(i / RDXdiag);
                     prevEncode = getEncoderAverage();
                     prevFoc = getEncoderAverage();
-                    RDXVector(RDXalpha, false);
+                    RDXVector(RDXalpha);
                     lifeblood(RDXarr2, RDXalpha);
 
                     newFoc = getEncoderAverage();
@@ -678,81 +674,24 @@ public class DriveTrain {
     }
 
     public double[] lifeblood (double[] RDXlifeblood, double radiax) {
-        RDXc = Math.sqrt(2 * (1 - Math.cos(radiax)));
-        RDXtheta = 90 - (radiax/2);
-        RDx = RDXc * Math.sin(RDXtheta);
-        RDXlifeblood[0] = RDx;
-        Rb = RDXc * Math.cos(RDXtheta);
-        RDy = 1 - Rb;
-        RDXlifeblood[1] = RDy;
+        RDXlifeblood[0] = Math.sin(radiax);
+        RDXlifeblood[1] = Math.cos(radiax);
 
         return RDXlifeblood;
     }
 
-    public void RDXVector (double radiax, boolean strafe) {
-        RDXquadrant = 1;
-
-        while (radiax > 90) {
-            radiax -= 90;
-            RDXquadrant++;
+    public void RDXVector (double radiax) {
+        while (radiax >= 360) {
+            radiax -= 360;
         }
 
-        double[] RDXarr1;
-        RDXarr1 = new double[2];
+        RDx = Math.sin(radiax);
+        RDy = Math.cos(radiax);
 
-        lifeblood(RDXarr1, radiax);
-
-        //Turn Spline
-        if (strafe) {
-            switch (RDXquadrant) {
-                case 1:
-                    fl.setPower(RDy - RDx);
-                    fr.setPower(RDy + RDx);
-                    bl.setPower(RDy + RDx);
-                    br.setPower(RDy - RDx);
-                case 2:
-                    fl.setPower(-RDy - RDx);
-                    fr.setPower(-RDy + RDx);
-                    bl.setPower(-RDy + RDx);
-                    br.setPower(-RDy - RDx);
-                case 3:
-                    fl.setPower(-RDy + RDx);
-                    fr.setPower(-RDy - RDx);
-                    bl.setPower(-RDy - RDx);
-                    br.setPower(-RDy + RDx);
-                case 4:
-                    fl.setPower(RDy + RDx);
-                    fr.setPower(RDy - RDx);
-                    bl.setPower(RDy - RDx);
-                    br.setPower(RDy + RDx);
-            }
-        }
-
-        else {
-            switch (RDXquadrant) {
-                case 1:
-                    fl.setPower(RDy - RDx);
-                    fr.setPower(RDy + RDx);
-                    bl.setPower(RDy - RDx);
-                    br.setPower(RDy + RDx);
-                case 2:
-                    fl.setPower(-RDy - RDx);
-                    fr.setPower(-RDy + RDx);
-                    bl.setPower(-RDy - RDx);
-                    br.setPower(-RDy + RDx);
-                case 3:
-                    fl.setPower(-RDy + RDx);
-                    fr.setPower(-RDy - RDx);
-                    bl.setPower(-RDy + RDx);
-                    br.setPower(-RDy - RDx);
-                case 4:
-                    fl.setPower(RDy + RDx);
-                    fr.setPower(RDy - RDx);
-                    bl.setPower(RDy + RDx);
-                    br.setPower(RDy - RDx);
-            }
-        }
-
+        fl.setPower(RDy - RDx);
+        fr.setPower(RDy + RDx);
+        bl.setPower(RDy + RDx);
+        br.setPower(RDy - RDx);
     }
 
     public void encoderMove(LinearOpMode opMode, double target, double timeout, double radiax) {
@@ -768,7 +707,7 @@ public class DriveTrain {
         {
 
             average = getEncoderAverage();
-            RDXVector(radiax, false);
+            RDXVector(radiax);
 
             opMode.telemetry.addData("Current Positions: ", "fl %7d : fr %7d : bl %7d : br %7d",
                     fl.getCurrentPosition(), fr.getCurrentPosition(), bl.getCurrentPosition(), br.getCurrentPosition());

@@ -146,13 +146,11 @@ public class Outtake{
         }
         else if(blockCount % 2 == 0)
         {
-            //  Strafe Right
-            drive.strafeMove(opMode,  .25, 5, 1);
+            drive.encoderMove(opMode,  4, 3, 90);
 
             openBasket();
 
-            //  Strafe Left
-            drive.strafeMove(opMode,  .25, 5, -1);
+            drive.encoderMove(opMode,  4, 3, 270);
 
             level++;
         }
@@ -246,9 +244,9 @@ public class Outtake{
         leftSideY.setPower(1);
 
         //8.78 inches extends out
-        while(time.milliseconds() < liftExtensionTime)
-        {
-        }
+       // while((rightSideY.getCurrentPosition() + leftSideY) / 2 < 8.78 * 1440)
+        //{
+        //}
 
         rightSideY.setPower(0);
         leftSideY.setPower(0);

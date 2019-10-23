@@ -33,8 +33,8 @@ public class GreenPathing_Basic extends LinearOpMode {
     double valuationMeasure;
     double safetyBuffer;
 
-    double robotLength;
-    double robotWidth;
+    double robotLength = 17.1;
+    double robotWidth = 18.1;
     double greatLength;
     double dicot = Math.sqrt((robotLength * robotLength) +
             (robotWidth * robotWidth));
@@ -67,7 +67,7 @@ public class GreenPathing_Basic extends LinearOpMode {
 
         trueTime.reset();
 
-        if (vuf.VuBrowse()[3] == 1) {
+        //if (vuf.VuBrowse()[3] == 1) {
             if (shufflePos == 3) {
                 drive.encoderMove(this, zeroOffset, 2,  90);
 
@@ -95,9 +95,9 @@ public class GreenPathing_Basic extends LinearOpMode {
 
                 drive.encoderMove(this, -falseHypo, 2,  180);
             }
-        }
+        //}
 
-        else {
+       // else {
             drive.encoderMove(this, zeroOffset, 2,  90);
 
             drive.encoderMove(this, falseHypo, 2,  0);
@@ -105,7 +105,7 @@ public class GreenPathing_Basic extends LinearOpMode {
             //Intake
 
             drive.encoderMove(this, -falseHypo, 2,  180);
-        }
+        //}
 
             runtime.reset();
 
@@ -127,6 +127,8 @@ public class GreenPathing_Basic extends LinearOpMode {
 
             drive.encoderMove (this, 12, 2, 180);
 
+            drive.encoderMove (this, clearance, 2, 90);
+
             drive.turnPID(this,90, true, kP, kI, kD, 2000);
 
             valuationMeasure += runtime.milliseconds() + safetyBuffer;
@@ -134,40 +136,29 @@ public class GreenPathing_Basic extends LinearOpMode {
             if (trueTime.milliseconds() < 30 - valuationMeasure) {
                 drive.encoderMove(this, 24, 2, 90);
 
-                if (vuf.VuBrowse()[3] == 1) {
-                    if (shufflePos == 3) {
-                        drive.encoderMove(this, zeroOffset, 2,  90);
+                //if (vuf.VuBrowse()[3] == 1) {
+                if (shufflePos == 3) {
+                    drive.encoderMove(this, zeroOffset, 2, 90);
 
-                        drive.encoderMove(this, trueHypo, 2,  thetaBit);
+                    drive.encoderMove(this, trueHypo, 2, thetaBit);
 
-                        //Intake
+                    //Intake
 
-                        drive.encoderMove(this, -trueHypo, 2,  180 + thetaBit);
-                    }
-                    else if (shufflePos == 1) {
-                        drive.encoderMove(this, zeroOffset, 2,  90);
+                    drive.encoderMove(this, -trueHypo, 2, 180 + thetaBit);
+                } else if (shufflePos == 1) {
+                    drive.encoderMove(this, zeroOffset, 2, 90);
 
-                        drive.encoderMove(this, trueHypo, 2,  360 - thetaBit);
+                    drive.encoderMove(this, trueHypo, 2, 360 - thetaBit);
 
-                        //Intake
+                    //Intake
 
-                        drive.encoderMove(this, -trueHypo, 2, 180 - thetaBit);
-                    }
-                    else {
-                        drive.encoderMove(this, zeroOffset, 2,  90);
+                    drive.encoderMove(this, -trueHypo, 2, 180 - thetaBit);
+                } else {
+                    drive.encoderMove(this, zeroOffset, 2, 90);
 
-                        drive.encoderMove(this, falseHypo, 2,  0);
+                    drive.encoderMove(this, falseHypo, 2, 0);
 
-                        drive.encoderMove(this, -falseHypo, 2,  180);
-                    }
-                }
-
-                else {
-                    drive.encoderMove(this, zeroOffset, 2,  90);
-
-                    drive.encoderMove(this, falseHypo, 2,  0);
-
-                    drive.encoderMove(this, -falseHypo, 2,  180);
+                    drive.encoderMove(this, -falseHypo, 2, 180);
                 }
 
                 drive.encoderMove(this, 72, 3, 270);
@@ -177,6 +168,7 @@ public class GreenPathing_Basic extends LinearOpMode {
                 //outtake.outTake_Auto(drive);
 
                 drive.encoderMove(this, 24, 2, 180);
+
             }
 
             sleep(1000);

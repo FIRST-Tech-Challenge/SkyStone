@@ -4,9 +4,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 public class MecanumDrivetrain extends HolonomicFourWheelDrivetrain
 {
-    public MecanumDrivetrain(DcMotor[] motorList, boolean isAutoMode)
+    public MecanumDrivetrain(DcMotor[] motorList, boolean teleOpMode)
     {
-        super(motorList, new double[] {-3*Math.PI/4, 3*Math.PI/4, -Math.PI/4, Math.PI/4}, isAutoMode);
+        super(motorList, new double[] {-3*Math.PI/4, 3*Math.PI/4, -Math.PI/4, Math.PI/4}, teleOpMode);
     }
 
     @Override

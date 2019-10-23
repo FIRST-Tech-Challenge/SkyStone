@@ -15,7 +15,7 @@ public class MecanumAuto extends LinearOpMode
     @Override
     public void runOpMode() throws InterruptedException
     {
-        robot = new MecanumRobot(this.hardwareMap, true);
+        robot = new MecanumRobot(this.hardwareMap, false);
         update();
 
         waitForStart();
@@ -55,17 +55,18 @@ public class MecanumAuto extends LinearOpMode
         robot.drivetrain.setRotation(rotation);
         robot.drivetrain.setTargetPosition(distance * robot.motorTicksPerIn);
         update();
-        robot.drivetrain.position();
+        //robot.drivetrain.position();
+        sleep(1000);
     }
 
     private void update()
     {
         telemetry.addData("Target Motor Ticks", robot.motorTicksPerIn);
         telemetry.addData("Target Motor Rotations", robot.motorTicksPerIn/robot.drivetrain.getTicksPerUnit());
-        telemetry.addData("WheelTarget FL", robot.drivetrain.wheelTargetPositions[0]);
-        telemetry.addData("WheelTarget FR", robot.drivetrain.wheelTargetPositions[1]);
-        telemetry.addData("WheelTarget RL", robot.drivetrain.wheelTargetPositions[2]);
-        telemetry.addData("WheelTarget RR", robot.drivetrain.wheelTargetPositions[3]);
+        telemetry.addData("WheelTarget FL", robot.drivetrain.motorList[0].getTargetPosition());
+        telemetry.addData("WheelTarget FR", robot.drivetrain.motorList[1].getTargetPosition());
+        telemetry.addData("WheelTarget RL", robot.drivetrain.motorList[2].getTargetPosition());
+        telemetry.addData("WheelTarget RR", robot.drivetrain.motorList[3].getTargetPosition());
         telemetry.addData("Course", robot.drivetrain.getCourse());
         telemetry.addData("Velocity", robot.drivetrain.getVelocity());
         telemetry.addData("Rotation", robot.drivetrain.getRotation());

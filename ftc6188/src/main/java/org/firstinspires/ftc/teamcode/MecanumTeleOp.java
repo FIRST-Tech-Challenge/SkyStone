@@ -18,7 +18,7 @@ public class MecanumTeleOp extends OpMode
     @Override
     public void init()
     {
-        robot = new MecanumRobot(this.hardwareMap, false);
+        robot = new MecanumRobot(this.hardwareMap, true);
         driverTwoBrakes = new ToggleBoolean();
         elapsedTime = new ElapsedTime();
     }

@@ -16,9 +16,9 @@ public class HeadingableMecanumDrivetrain extends MecanumDrivetrain implements H
 
     private boolean extrinsic;
 
-    public HeadingableMecanumDrivetrain(DcMotor[] motorList, FinishableIntegratedController controller, boolean isAutoMode)
+    public HeadingableMecanumDrivetrain(DcMotor[] motorList, FinishableIntegratedController controller, boolean teleOpMode)
     {
-        super(motorList, isAutoMode);
+        super(motorList, teleOpMode);
         this.controller = controller;
     }
 

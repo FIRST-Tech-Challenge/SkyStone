@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import org.firstinspires.ftc.teamcode.HardwareOmnibot.ExtendPosition;
 
 import static java.lang.Math.atan2;
 import static java.lang.Math.toDegrees;
@@ -38,6 +39,7 @@ public class OmniTeleTest extends OpMode {
     private boolean downHeld = false;
     private boolean rightHeld = false;
     private boolean leftHeld = false;
+    private boolean rightBumperHeld = false;
     private boolean a2Held = false;
     private boolean b2Held = false;
     private boolean y2Held = false;
@@ -52,6 +54,7 @@ public class OmniTeleTest extends OpMode {
     private boolean downPressed;
     private boolean rightPressed;
     private boolean leftPressed;
+    private boolean rightBumperPressed;
     private boolean a2Pressed;
     private boolean b2Pressed;
     private boolean y2Pressed;
@@ -68,6 +71,9 @@ public class OmniTeleTest extends OpMode {
     private boolean reverse = false;
     private boolean spinning = false;
     private HardwareOmnibot.ExtendPosition extendPosition = HardwareOmnibot.ExtendPosition.RETRACTED;
+    private boolean doneExtending = true;
+    private boolean clawOpen = true;
+    private boolean clawFront = true;
 
     @Override
     public void start()
@@ -91,12 +97,45 @@ public class OmniTeleTest extends OpMode {
         downPressed = gamepad1.dpad_down;
         rightPressed = gamepad1.dpad_right;
         leftPressed = gamepad1.dpad_left;
+        rightBumperPressed = gamepad1.right_bumper;
         a2Pressed = gamepad2.a;
         b2Pressed = gamepad2.b;
         y2Pressed = gamepad2.y;
         x2Pressed = gamepad2.x;
         up2Pressed = gamepad2.dpad_up;
         down2Pressed = gamepad2.dpad_down;
+
+        if(!xHeld && xPressed)
+        {
+            xHeld = true;
+            if(!clawFront) {
+                clawFront = true;
+                robot.clawdricopter.setPosition(robot.CLAWDRICOPTER_FRONT);
+            } else {
+                clawFront = false;
+                robot.clawdricopter.setPosition(robot.CLAWDRICOPTER_BACK);
+            }
+        } else if(!xPressed) {
+            xHeld = false;
+        }
+
+        if(!rightBumperHeld && rightBumperPressed)
+        {
+            rightBumperHeld = true;
+            if(!clawOpen) {
+                clawOpen = true;
+                robot.claw.setPosition(robot.CLAW_OPEN);
+            } else {
+                clawOpen = false;
+                robot.claw.setPosition(robot.CLAW_PINCHED);
+            }
+        } else if(!rightBumperPressed) {
+            rightBumperHeld = false;
+        }
+
+//        if(!doneExtending) {
+//            doneExtending = robot.performMaxExtension();
+//        }
 
         if(!aHeld && aPressed)
         {
@@ -290,6 +329,9 @@ public class OmniTeleTest extends OpMode {
         telemetry.addData("Rear Right Encoder: ", robot.rearRight.getCurrentPosition());
         telemetry.addData("Lifter Encoder: ", robot.lifter.getCurrentPosition());
         telemetry.addData("Extender Encoder: ", robot.extender.getCurrentPosition());
+        telemetry.addData("Extend Zero: ", robot.extendZero);
+        telemetry.addData("Claw Front: ", clawFront);
+        telemetry.addData("Claw Open: ", clawOpen);
         updateTelemetry(telemetry);
     }
 

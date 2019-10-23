@@ -40,7 +40,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         STOPPING
     }
 
-    public static int MAX_EXTENSION = 1715;
+    public static int MAX_EXTENSION = 1710;
     public enum ExtendPosition {
         RETRACTED(5),
 		CAPSTONE(450),
@@ -64,7 +64,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 
     public static int MAX_LIFT = 2850;
     public enum LiftPosition {
-        STOWED(30),
+        STOWED(5),
         STONE1(149),
         STONE2(412),
         ROTATE(500),
@@ -172,16 +172,16 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     /* Public OpMode members. */
     public static double INTAKE_SPEED = 1.0;
 	public static double LIFT_SPEED = 1.0;
-	public static double LOWER_SPEED = 0.2;
+	public static double LOWER_SPEED = 0.1;
 	public static double EXTEND_SPEED = 1.0;
     public static double RIGHT_FINGER_DOWN = 0.32;
     public static double LEFT_FINGER_DOWN = 0.82;
     public static double RIGHT_FINGER_UP = 0.89;
     public static double LEFT_FINGER_UP = 0.25;
-    public static double CLAW_OPEN = 0.0;
-    public static double CLAW_PINCHED = 1.0;
-    public static double CLAWDRICOPTER_FRONT = 0.0;
-    public static double CLAWDRICOPTER_BACK = 1.0;
+    public static double CLAW_OPEN = 0.2;
+    public static double CLAW_PINCHED = 0.80;
+    public static double CLAWDRICOPTER_FRONT = 0.86;
+    public static double CLAWDRICOPTER_BACK = 0.09;
     public static int CLAW_OPEN_TIME = 1000;
     public static int CLAW_CLOSE_TIME = 1000;
     public static int CLAW_ROTATE_BACK_TIME = 1000;
@@ -322,7 +322,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 				}
 			    break;
             case CLEARING_LIFT:
-                if(performMaxExtension()) {
+//                if(performMaxExtension()) {
                     liftState = LiftActivity.LIFTING_TO_ROTATE;
                     // If our target height is less than rotation height, we have to
                     // stop at rotation height first.
@@ -331,7 +331,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                     } else {
                         runLift(liftTargetHeight);
                     }
-                }
+//                }
                 break;
 		    case GRABBING_STONE:
                 if(stateTimer.milliseconds() >= CLAW_CLOSE_TIME)
@@ -421,10 +421,10 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 				}
 				break;
             case CLEARING_LIFT:
-                if(performMaxExtension()) {
+//                if(performMaxExtension()) {
                     stowState = StowActivity.LOWERING_TO_STOW;
                     runLift(LiftPosition.STOWED);
-                }
+//                }
                 break;
 			case ROTATING:
 			    if(stateTimer.milliseconds() >= CLAW_ROTATE_FRONT_TIME) {
@@ -504,15 +504,15 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 
     public void runLift(LiftPosition targetHeight) {
         if(extenderPosition.getEncoderCount() >= ExtendPosition.CAPSTONE.getEncoderCount()) {
-            int liftPosition = lifter.getCurrentPosition();
-            int targetPosition = targetHeight.getEncoderCount() + liftZero;
+            int liftPosition = lifter.getCurrentPosition() + liftZero;
+            int targetPosition = targetHeight.getEncoderCount();
             double lifterSpeed;
             if (liftPosition < targetPosition) {
                 lifterSpeed = LIFT_SPEED;
             } else {
                 lifterSpeed = LOWER_SPEED;
             }
-            lifter.setTargetPosition(targetPosition);
+            lifter.setTargetPosition(targetPosition + liftZero);
             lifter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             lifter.setPower(lifterSpeed);
         }

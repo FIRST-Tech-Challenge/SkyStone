@@ -183,6 +183,7 @@ public class OmniTeleOp extends OpMode {
         telemetry.addData("Rear Right Encoder: ", robot.rearRight.getCurrentPosition());
         telemetry.addData("Lifter Encoder: ", robot.lifter.getCurrentPosition());
         telemetry.addData("Extender Encoder: ", robot.extender.getCurrentPosition());
+        telemetry.addData("Extender Zero: ", robot.extendZero);
         updateTelemetry(telemetry);
     }
 

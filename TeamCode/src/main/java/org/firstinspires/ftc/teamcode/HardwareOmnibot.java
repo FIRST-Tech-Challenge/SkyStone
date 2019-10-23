@@ -38,6 +38,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         ROTATING,
         CLEARING_LIFT,
         LOWERING_TO_STOW,
+		OPENNING_CLAW,
         STOPPING
     }
 
@@ -318,6 +319,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 		    case ROTATING:
 			    if(stateTimer.milliseconds() >= CLAW_ROTATE_BACK_TIME) {
 					liftState = LiftActivity.LIFTING_TO_STONE;
+					clawdricopterBack = true;
 					liftStateTargetHeight = liftTargetHeight;
 					runLift(liftStateTargetHeight);
 				}
@@ -343,8 +345,9 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 				}
                 break;
 		    case GRABBING_STONE:
-                if(stateTimer.milliseconds() >= CLAW_CLOSE_TIME)
+                if((stateTimer.milliseconds() >= CLAW_CLOSE_TIME) || clawPinched)
                 {
+					clawPinched = true;
                     liftState = LiftActivity.CLEARING_LIFT;
                     extendIntake(ExtendPosition.EXTENDED);
                 }
@@ -391,8 +394,9 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                 stateTimer.reset();
                 break;
             case RELEASE_STONE:
-                if(stateTimer.milliseconds() >= CLAW_OPEN_TIME)
+                if((stateTimer.milliseconds() >= CLAW_OPEN_TIME) || !clawPinched)
                 {
+					clawPinched = false;
                     releaseState = ReleaseActivity.IDLE;
 					// Add to our tower height for next lift.
 					addStone();
@@ -439,29 +443,33 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 				}
 				break;
             case CLEARING_LIFT:
-//                if(performMaxExtension()) {
+			    if(extenderAtPosition(ExtendPosition.EXTENDED)) {
                     stowState = StowActivity.LOWERING_TO_STOW;
                     runLift(LiftPosition.STOWED);
-//                }
+                }
                 break;
-			case ROTATING:
-			    if(stateTimer.milliseconds() >= CLAW_ROTATE_FRONT_TIME) {
+			case OPENNING_CLAW:
+			    if((stateTimer.milliseconds() >= CLAW_OPEN_TIME) || !clawPinched) {
 					stowState = StowActivity.CLEARING_LIFT;
-                    extendIntake(ExtendPosition.EXTENDED);
+					clawPinched = false;
+				break;
+			case ROTATING:
+			    if((stateTimer.milliseconds() >= CLAW_ROTATE_FRONT_TIME) || !clawdricopterBack) {
+					stowState = StowActivity.OPENNING_CLAW;
+					clawdricopterBack = false;
 				}
 			    break;
 			case RAISING_TO_ROTATE:
 			    // It has gotten high enough
 			    if(lifterAtPosition(LiftPosition.ROTATE)) {
 					stowState = StowActivity.ROTATING;
+                    extendIntake(ExtendPosition.EXTENDED);
 					clawdricopter.setPosition(CLAWDRICOPTER_FRONT);
+					claw.setPosition(CLAW_OPEN);
 					stateTimer.reset();
 				}
 			    break;
             case STOPPING:
-                // I don't think we can do anything here. The servo going
-                // either way is about the same.  Maybe when we implement
-                // the ALIGN_TO_FOUNDATION
                 stowState = StowActivity.IDLE;
             case IDLE:
 		    default:

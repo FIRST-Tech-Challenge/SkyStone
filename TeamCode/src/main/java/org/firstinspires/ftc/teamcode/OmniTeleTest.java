@@ -149,7 +149,7 @@ public class OmniTeleTest extends OpMode {
         if(!bHeld && bPressed)
         {
             bHeld = true;
-            robot.extendIntake(extendPosition);
+            robot.runIntake(extendPosition);
         } else if(!bPressed) {
             bHeld = false;
         }

@@ -1,14 +1,38 @@
+/*
+ Copyright (c) 2019 HF Robotics (http://www.hfrobots.com)
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Software.
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
+*/
+
 package com.hfrobots.tnt.corelib.metrics;
 
+import android.util.Log;
+
+import com.hfrobots.tnt.corelib.Constants;
 import com.hfrobots.tnt.corelib.control.NinjaGamePad;
 import com.hfrobots.tnt.corelib.control.OnOffButton;
 import com.hfrobots.tnt.corelib.control.RangeInput;
 import com.hfrobots.tnt.corelib.metrics.sources.DcMotorCurrentMetricSource;
 import com.hfrobots.tnt.corelib.metrics.sources.DcMotorPowerMetricSource;
+import com.hfrobots.tnt.corelib.metrics.sources.MotorVelocityMetricSource;
 import com.hfrobots.tnt.corelib.metrics.sources.OnOffButtonMetricSource;
 import com.hfrobots.tnt.corelib.metrics.sources.RangeInputMetricSource;
 import com.hfrobots.tnt.corelib.metrics.sources.Voltage12VMetricSource;
 import com.hfrobots.tnt.corelib.metrics.sources.Voltage5VMetricSource;
+import com.hfrobots.tnt.util.NamedDeviceMap;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.timgroup.statsd.NonBlockingStatsDClient;
@@ -28,10 +52,13 @@ public class StatsDMetricSampler implements MetricsSampler {
 
     private final HardwareMap hardwareMap;
 
+    private final NamedDeviceMap namedDeviceMap;
+
     private final List<ExpansionHubEx> expansionHubExes;
 
     public StatsDMetricSampler(HardwareMap hardwareMap, NinjaGamePad driverControls, NinjaGamePad operatorControls) {
         this.hardwareMap = hardwareMap;
+        this.namedDeviceMap = new NamedDeviceMap(hardwareMap);
 
         expansionHubExes = hardwareMap.getAll(ExpansionHubEx.class);
 
@@ -52,15 +79,24 @@ public class StatsDMetricSampler implements MetricsSampler {
 
     @Override
     public void doSamples() {
-        long beginSamplingTimeMs = System.currentTimeMillis();
+        try {
+            long beginSamplingTimeMs = System.currentTimeMillis();
 
-        for (GaugeMetricSource gaugeSource : gaugeSources) {
-            statsDClient.gauge(gaugeSource.getSampleName(), gaugeSource.getValue());
+            for (GaugeMetricSource gaugeSource : gaugeSources) {
+                final double value = gaugeSource.getValue();
+
+                if (value != NO_REPORT_VALUE) {
+                    statsDClient.gauge(gaugeSource.getSampleName(), value);
+                }
+            }
+
+            long endSamplingTimeMs = System.currentTimeMillis();
+
+            statsDClient.gauge("metric_sample_time_ms", (endSamplingTimeMs - beginSamplingTimeMs));
+        } catch (Throwable t) {
+            // metrics should do no harm
+            Log.e(Constants.LOG_TAG, "Caught exception while sampling for metrics", t);
         }
-
-        long endSamplingTimeMs = System.currentTimeMillis();
-
-        statsDClient.gauge("metric_sample_time_ms", (endSamplingTimeMs - beginSamplingTimeMs));
     }
 
     @Override
@@ -76,54 +112,54 @@ public class StatsDMetricSampler implements MetricsSampler {
 
     @Override
     public void addGamepad(@NonNull String name, @NonNull NinjaGamePad gamepad) {
-        // FIXME: Add all of the range inputs, buttons from the gamepad as metric sources
-
         RangeInput leftStickX = gamepad.getLeftStickX();
-        addSource(new RangeInputMetricSource (leftStickX, name, "l_x"));
+        addSource(toInterestingValues(new RangeInputMetricSource (leftStickX, name, "l_x")));
         RangeInput leftStickY = gamepad.getLeftStickY();
-        addSource(new RangeInputMetricSource (leftStickY, name, "l_y"));
+        addSource(toInterestingValues(new RangeInputMetricSource (leftStickY, name, "l_y")));
 
         RangeInput rightStickX = gamepad.getRightStickX();
-        addSource(new RangeInputMetricSource (rightStickX, name, "r_x"));
-        RangeInput rightStickY = gamepad.getLeftStickY();
-        addSource(new RangeInputMetricSource (rightStickY, name, "r_y"));
+        addSource(toInterestingValues(new RangeInputMetricSource (rightStickX, name, "r_x")));
+        RangeInput rightStickY = gamepad.getRightStickY();
+        addSource(toInterestingValues(new RangeInputMetricSource (rightStickY, name, "r_y")));
 
         RangeInput leftTrigger = gamepad.getLeftTrigger();
-        addSource(new RangeInputMetricSource (leftTrigger, name, "l_trigger"));
+        addSource(toInterestingValues(new RangeInputMetricSource (leftTrigger, name, "l_trigger")));
         RangeInput rightTrigger = gamepad.getRightTrigger();
-        addSource(new RangeInputMetricSource (rightTrigger, name, "r_trigger"));
+        addSource(toInterestingValues(new RangeInputMetricSource (rightTrigger, name, "r_trigger")));
 
         OnOffButton leftBumper = gamepad.getLeftBumper();
-        addSource(new OnOffButtonMetricSource (leftBumper, name, "l_bumper"));
+        addSource(toInterestingValues(new OnOffButtonMetricSource (leftBumper, name, "l_bumper")));
         OnOffButton rightBumper = gamepad.getRightBumper();
-        addSource(new OnOffButtonMetricSource (rightBumper, name, "r_bumper"));
+        addSource(toInterestingValues(new OnOffButtonMetricSource (rightBumper, name, "r_bumper")));
 
         OnOffButton aButton = gamepad.getAButton();
-        addSource(new OnOffButtonMetricSource (aButton , name, "a_btn"));
+        addSource(toInterestingValues(new OnOffButtonMetricSource (aButton , name, "a_btn")));
         OnOffButton bButton = gamepad.getBButton();
-        addSource(new OnOffButtonMetricSource (bButton, name, "b_btn"));
+        addSource(toInterestingValues(new OnOffButtonMetricSource (bButton, name, "b_btn")));
         OnOffButton xButton = gamepad.getXButton();
-        addSource(new OnOffButtonMetricSource (xButton , name, "x_btn"));
+        addSource(toInterestingValues(new OnOffButtonMetricSource (xButton , name, "x_btn")));
         OnOffButton yButton = gamepad.getYButton();
-        addSource(new OnOffButtonMetricSource (yButton, name, "y_btn"));
+        addSource(toInterestingValues(new OnOffButtonMetricSource (yButton, name, "y_btn")));
 
         OnOffButton dpadUp = gamepad.getDpadUp();
-        addSource(new OnOffButtonMetricSource (dpadUp , name, "dpad_up"));
+        addSource(toInterestingValues(new OnOffButtonMetricSource (dpadUp , name, "dpad_up")));
         OnOffButton dpadDown = gamepad.getDpadDown();
-        addSource(new OnOffButtonMetricSource (dpadDown , name, "dpad_down"));
+        addSource(toInterestingValues(new OnOffButtonMetricSource (dpadDown , name, "dpad_down")));
         OnOffButton dpadLeft = gamepad.getDpadLeft();
-        addSource(new OnOffButtonMetricSource (dpadLeft , name, "dpad_left"));
+        addSource(toInterestingValues(new OnOffButtonMetricSource (dpadLeft , name, "dpad_left")));
         OnOffButton dpadRight = gamepad.getDpadRight();
-        addSource(new OnOffButtonMetricSource (dpadRight , name, "dpad_right"));
+        addSource(toInterestingValues(new OnOffButtonMetricSource (dpadRight , name, "dpad_right")));
     }
 
     private void addDcMotors() {
-        List<DcMotor> allMotors = hardwareMap.getAll(DcMotor.class);
+        List<NamedDeviceMap.NamedDevice<DcMotor>> allMotors = namedDeviceMap.getAll(DcMotor.class);
 
-        // FIXME how to deal with 2 expansion hubs, 01234, 01234
-        for (DcMotor motor : allMotors) {
-            GaugeMetricSource metricSource = new DcMotorPowerMetricSource(motor);
-            addSource(metricSource);
+        for (NamedDeviceMap.NamedDevice<DcMotor> namedMotor : allMotors) {
+            GaugeMetricSource metricSource = new DcMotorPowerMetricSource(namedMotor);
+            addSource(toInterestingValues(metricSource));
+
+            metricSource = new MotorVelocityMetricSource(namedMotor);
+            addSource(toInterestingValues(metricSource));
         }
     }
 
@@ -131,7 +167,7 @@ public class StatsDMetricSampler implements MetricsSampler {
         for (ExpansionHubEx hub : expansionHubExes) {
             for (int port = 0; port < 4; port++) {
                 GaugeMetricSource metricSource = new DcMotorCurrentMetricSource(hub, port);
-                addSource(metricSource);
+                addSource(toInterestingValues(metricSource));
             }
         }
     }
@@ -142,7 +178,11 @@ public class StatsDMetricSampler implements MetricsSampler {
             addSource(metricSource);
 
             metricSource = new Voltage12VMetricSource(hub);
-            addSource(metricSource);
+            addSource(toInterestingValues(metricSource));
         }
+    }
+
+    private GaugeMetricSource toInterestingValues(GaugeMetricSource originalSource) {
+        return new InterestingValueMetricSource(originalSource, 5, 10, 0.001);
     }
 }

@@ -17,36 +17,42 @@
  SOFTWARE.
 */
 
-package com.hfrobots.tnt.corelib.metrics.sources;
+package com.hfrobots.tnt.corelib.metrics;
 
-import com.hfrobots.tnt.corelib.control.OnOffButton;
-import com.hfrobots.tnt.corelib.control.RangeInput;
-import com.hfrobots.tnt.corelib.metrics.GaugeMetricSource;
+/**
+ * An adapter for GaugeMetricSources that reads the real value every "n"th time.
+ */
 
-import lombok.EqualsAndHashCode;
+public class SamplingMetricSource implements GaugeMetricSource {
+    private final GaugeMetricSource realSource;
 
-@EqualsAndHashCode
-public class OnOffButtonMetricSource implements GaugeMetricSource {
-    private final OnOffButton onOffButton;
+    private final int sampleFrequency;
 
-    private final String name;
+    private long sampleCount;
 
-    public OnOffButtonMetricSource(OnOffButton onOffButton, String gamepadName, String name) {
-        this.onOffButton = onOffButton;
-        this.name = gamepadName + "_" + name;
+    public SamplingMetricSource(GaugeMetricSource realSource, int sampleFrequency) {
+        this.realSource = realSource;
+        this.sampleFrequency = sampleFrequency;
     }
 
     @Override
     public String getSampleName() {
-        return name;
+        return realSource.getSampleName();
     }
 
     @Override
     public double getValue() {
-        if(onOffButton.isPressed()){
-            return 1;
+        sampleCount++;
+
+        // Always report the first value
+        if (sampleCount == 1) {
+            return realSource.getValue();
         }
 
-        return 0;
+        if (sampleCount % sampleFrequency == 0) {
+            return realSource.getValue();
+        }
+
+        return MetricsSampler.NO_REPORT_VALUE;
     }
 }

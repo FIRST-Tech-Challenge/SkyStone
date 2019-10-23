@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public interface MetricsSampler {
 
+    double NO_REPORT_VALUE = Double.MIN_VALUE;
+
     void doSamples();
 
     void addSource(GaugeMetricSource metricSource);

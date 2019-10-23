@@ -107,6 +107,10 @@ public class TeleOpMecanum extends OpMode {
             drive.br.setPower((velocity - direction) + speed);
         }
 
+        else if (gamepad1.b) {
+            drive.RDXVector(45);
+        }
+
         else {
             drive.snowWhite();
         }

@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@Autonomous
+@Autonomous(name = "Vuforia Tester")
 public class VuforiaTester extends LinearOpMode {
 
     DcMotor motorFL;
@@ -26,13 +26,20 @@ public class VuforiaTester extends LinearOpMode {
     final double DRIVE_GEAR_REDUCTION = 2.0;     // This is < 1.0 if geared UP
     final double WHEEL_DIAMETER_INCHES = 4.0;     // For figuring circumference
     final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415);
-    final double DRIVE_SPEED = 0.6;
+    final double DRIVE_SPEED = 0.7;
     final double TURN_SPEED = 0.4;
 
     private final String[] actions = {"forward", "backward", "left", "right", "rotate"};
 
+    private enum Action {
+        FORWARD,
+        BACKWARD,
+        LEFT,
+        RIGHT,
+        ROTATE
+    }
 
-    VuforiaSensor vSensor = new VuforiaSensor(telemetry, hardwareMap);
+    VuforiaSensorSkystone vSensor;
 
     public VuforiaTester() {
         super();
@@ -40,17 +47,42 @@ public class VuforiaTester extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        vSensor = new VuforiaSensorSkystone(telemetry, hardwareMap);
+        vSensor.setUpVuforia();
         vSensor.activate();
         initMotors();
 
-
         waitForStart();
 
-        doAction("forward", 6);
+        //move up to the bricks
+        doAction(Action.FORWARD, 4.0);
 
-//        while(!vSensor.listenerSkystone.isVisible() && ) {
-//            straifLeftRaw(0.4);
-//        }
+        //find a skystone
+        int brickCount = 0;
+        while (brickCount < 7 || !vSensor.listenerSkystone.isVisible() || Math.abs(vSensor.getTransX(vSensor.lastKnownLocationSkystone)) > 15.0) {
+            vSensor.loop();
+            straifLeftRaw(0.4);
+            sleep(100);
+            brickCount++;
+            telemetry.update();
+        }
+
+        //grab the skystone
+        /*
+        missing code for grabbing mechanism
+         */
+
+        //move to the building zone side of the field.
+        doAction(Action.BACKWARD, 1.0);
+        doAction(Action.RIGHT, 7.0 + (0.5 * brickCount));
+
+        //release stone
+        doAction(Action.LEFT, 7.0 + (0.5 * brickCount));
+        doAction(Action.FORWARD, 1.0);
+
+
+
+
 
 
         stop();
@@ -72,33 +104,27 @@ public class VuforiaTester extends LinearOpMode {
     }
 
     public void straifLeftRaw(double power) {
-        motorFL.setPower(calibFL * -power);
-        motorFR.setPower(calibFR * -power);
-        motorBL.setPower(calibBR * power);
-        motorBR.setPower(calibBR * power);
+        motorFL.setPower(calibFL * power);
+        motorFR.setPower(calibFR * power);
+        motorBL.setPower(calibBR * -power);
+        motorBR.setPower(calibBR * -power);
     }
 
-    public void doAction(String action, double distance) {
-        int actionInt = -1;
-        for (int i = 0; i < 5; i++) {
-            if (action.equals(actions[i]))
-                actionInt = i;
-        }
-
-        switch (actionInt) {
-            case 0:
+    public void doAction(Action action, double distance) {
+        switch (action) {
+            case FORWARD:
                 moveForward(distance);
                 break;
-            case 1:
+            case BACKWARD:
                 moveForward(-distance);
                 break;
-            case 2:
+            case LEFT:
                 straifLeft(distance);
                 break;
-            case 3:
+            case RIGHT:
                 straifLeft(-distance);
                 break;
-            case 4:
+            case ROTATE:
                 rotateLeft(distance);
                 break;
         }

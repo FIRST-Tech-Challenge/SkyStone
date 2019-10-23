@@ -72,16 +72,14 @@ public class TestAutonomous extends LinearOpMode {
         doAction("forward", 7.0);
         doAction("left", 5.0);
 
-//        while(opModeIsActive())
-//        {
-//            updateTensorflow();
-//
-//        }
+//        while(!())
 
-        doAction("backward", 5.0);
-        doAction("rotate", 10.0); // almost 360
-        doAction("left", 5.0);
-        doAction("right", 5.0);
+
+//        doAction("forward", 5.0);
+//        doAction("backward", 5.0);
+//        doAction("rotate", 10.0); // almost 360
+//        doAction("left", 5.0);
+//        doAction("right", 5.0);
 
         sleep(1000);
 

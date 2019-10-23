@@ -40,9 +40,16 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         STOPPING
     }
 
+    public enum EjectActivity {
+        IDLE,
+        EJECT,
+        RESET,
+        STOPPING,
+    }
+
     public static int MAX_EXTENSION = 1715;
     public enum ExtendPosition {
-        RETRACTED(5),
+    RETRACTED(5),
 		CAPSTONE(450),
 		SPINMIN(1081),
 		EJECT(1418),
@@ -224,6 +231,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public LiftActivity liftState = LiftActivity.IDLE;
     public ReleaseActivity releaseState = ReleaseActivity.IDLE;
     public StowActivity stowState = StowActivity.IDLE;
+    public EjectActivity ejectState = EjectActivity.IDLE;
     private boolean fingersUp = true;
     private boolean clawPinched = false;
     private boolean clawdricopterBack = false;
@@ -448,6 +456,43 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
             case IDLE:
 		    default:
 			    break;
+        }
+    }
+
+    public void startEjecting() {
+        if (ejectState == EjectActivity.IDLE) {
+            if (liftState != LiftActivity.IDLE) {
+                liftState = LiftActivity.STOPPING;
+            }
+            if (stowState != StowActivity.IDLE) {
+                stowState = StowActivity.STOPPING;
+            }
+            ejectState = EjectActivity.EJECT;
+            startIntake(true);
+            extendIntake(ExtendPosition.EJECT);
+        }
+    }
+
+    public void performEjecting() {
+        switch(ejectState)
+        {
+            case EJECT:
+                if(Math.abs(extender.getCurrentPosition() - ExtendPosition.EJECT.getEncoderCount()) < 10) {
+                    ejectState = EjectActivity.RESET;
+                    startIntake(false);
+                    extendIntake(ExtendPosition.EXTENDED);
+                }
+            case RESET:
+                if (Math.abs(extender.getCurrentPosition() - ExtendPosition.EXTENDED.getEncoderCount()) < 10 ) {
+                    ejectState = EjectActivity.IDLE;
+                }
+                 break;
+            case STOPPING:
+                 ejectState = EjectActivity.IDLE;
+
+            case IDLE:
+                  default:
+                        break;
         }
     }
 

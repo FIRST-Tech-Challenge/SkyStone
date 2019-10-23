@@ -30,7 +30,6 @@ import java.util.List;
  * 20 560
  *
  * monitor: 640 x 480
- *
  */
 @Autonomous(name= "onlyopencv1", group="Sky autonomous")
 //@Disabled

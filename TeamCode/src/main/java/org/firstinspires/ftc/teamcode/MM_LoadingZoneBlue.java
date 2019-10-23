@@ -17,9 +17,10 @@ public class MM_LoadingZoneBlue extends LinearOpMode {
         robot.init(hardwareMap);
 
         waitForStart();
+        // Detect skystone with camera
+
         // Drive to quarry
         robot.driveForwardDistance(47.0 - robot.ROBOT_EXTENDED_LENGTH, speed, this);
-        Thread.sleep(500);
         switch (skystonePos) {
             case LEFT:
                 distanceToBuildZone = 32 - robot.ROBOT_EXTENDED_LENGTH;
@@ -34,13 +35,14 @@ public class MM_LoadingZoneBlue extends LinearOpMode {
                 // strafe to block
                 robot.strafeTime(speed, 2000);
                 break;
+
+                // Pick up block with arm
         }
 
-        Thread.sleep(500);
         // back up
         robot.driveForwardDistance(6, -speed, this);
         // turn towards skybridge
-        robot.turnRight(speed, 650);
+        robot.turnRight(-speed, 1475);
         // drive to skybridge
         robot.driveForwardDistance(distanceToBuildZone + 6, speed, this);
         // park

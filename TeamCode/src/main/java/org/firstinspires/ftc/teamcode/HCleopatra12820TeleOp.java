@@ -46,7 +46,7 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
  */
 
 @TeleOp(name="Hardware Cleopatra Tele_Op", group="Tele_Op")
-//Disabled
+//@Disabled
 public class HCleopatra12820TeleOp extends LinearOpMode {
 
     /* Declare OpMode members. */
@@ -68,7 +68,7 @@ public class HCleopatra12820TeleOp extends LinearOpMode {
         clawOffset = 0;
     }
     // Define class members
-    //Servo servo;
+    Servo servo;
     double  position = robot.MID_SERVO;// Start at halfway position
     //boolean rampUp = true;
 

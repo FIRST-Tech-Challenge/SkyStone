@@ -46,13 +46,13 @@ import com.qualcomm.robotcore.util.Range;
 public class Cleopatra12820TeleOp extends LinearOpMode {
     double          clawOffset=0;                       // Servo mid position
     public static final double    CLAW_SPEED=0.02; // sets rate to move claw servo
-    public static final double INCREMENT=0.01;     // amount to slew servo each CYCLE_MS cycle
+   // public static final double INCREMENT=0.01;     // amount to slew servo each CYCLE_MS cycle
     public static final int    CYCLE_MS=50;     // period of each cycle
     public static final double MID_SERVO       =  0.5 ;
-    public static final double ARM_UP_POWER    =  0.45 ;
+   /* public static final double ARM_UP_POWER    =  0.45 ;
     public static final double ARM_DOWN_POWER  = -0.45 ;
     public static final double ELBOW_UP_POWER    =  0.45 ;
-    public static final double ELBOW_DOWN_POWER  = -0.45 ;
+    public static final double ELBOW_DOWN_POWER  = -0.45 ;*/
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
     double  position = MID_SERVO;// Start at halfway position
@@ -70,15 +70,27 @@ public class Cleopatra12820TeleOp extends LinearOpMode {
      Servo rotator=null;
 
 
+    public void setIntakeServoLeft(Servo intakeServoLeft) {
+        intakeServoLeft.setPosition(MID_SERVO);
+    }
+    public void setIntakeServoRightt(Servo intakeServoRight) {
+        intakeServoRight.setPosition(MID_SERVO);
+    }
 
     @Override
-    public void runOpMode() {
+    public void runOpMode(){
+        setIntakeServoLeft(intakeServoLeft);
+        setIntakeServoRightt(intakeServoRight);
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        // Initialize the hardware variables. Note that the strings used here as parameters
-        // to 'get' must correspond to the names assigned during the robot configuration
-        // step (using the FTC Robot Controller app on the phone).
+
+
+        /*  Initialize the hardware variables. Note that the strings used here as parameters
+            to 'get' must correspond to the names assigned during the robot configuration
+            step (using the FTC Robot Controller app on the phone).*/
+
+
         intakeMotorLeft = hardwareMap.get(DcMotor.class, "intakeMotorLeft");
         intakeMotorRight  = hardwareMap.get(DcMotor.class, "intakeMotorRight");
         backMotorLeft = hardwareMap.get(DcMotor.class, "backMotorLeft");
@@ -106,6 +118,8 @@ public class Cleopatra12820TeleOp extends LinearOpMode {
         intakeServoRight.setDirection(Servo.Direction.FORWARD);
         claw.setDirection(Servo.Direction.FORWARD);
         rotator.setDirection(Servo.Direction.FORWARD);
+        intakeServoRight.setPosition(0);
+        intakeServoLeft.setPosition(0);
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
@@ -119,8 +133,10 @@ public class Cleopatra12820TeleOp extends LinearOpMode {
             double Speed = -gamepad1.left_stick_y;
             double Turn = gamepad1.left_stick_x;
             double Strafe = gamepad1.right_stick_x;
-            double MAX_SPEED = 1.0;
+            //double MAX_SPEED = 1.0;
 
+            telemetry.addData("Right Servo position", intakeServoRight.getPosition());
+            telemetry.update();
 
 /*
       Front Left= +Speed + Turn - Strafe      Front Right= +Speed - Turn + Strafe
@@ -130,88 +146,68 @@ public class Cleopatra12820TeleOp extends LinearOpMode {
             double numBl = Range.clip((+Speed + Turn + Strafe), -1, 1);
             double numFr = Range.clip((+Speed - Turn + Strafe), -1, +1);
             double numBr = Range.clip((+Speed - Turn - Strafe), -1, 1);
-            /*double armElbowPower = Range.clip(0.5*gamepad2.left_stick_y, -1, 1);
+            double armElbowPower = Range.clip(0.5*gamepad2.left_stick_y, -1, 1);
             double armWristPower = Range.clip(gamepad2.right_stick_y, -1, 1);
-            double srvPower=Range.clip(gamepad2.right_stick_x, 0,1);
+
             armWrist.setPower(armWristPower);
-            armElbow.setPower(armElbowPower);*/
-            //Arm wrist
-            if(gamepad2.a)
-                armWrist.setPower(ARM_UP_POWER);
-
-            else if (gamepad2.b)
-                armWrist.setPower(ARM_DOWN_POWER);
-
-            else
-                armWrist.setPower(0.0);
-
-            //Arm Elbow
-            if(gamepad2.dpad_up)
-                armElbow.setPower(ELBOW_UP_POWER);
-
-            else if (gamepad2.dpad_down)
-                armElbow.setPower(ELBOW_DOWN_POWER);
-            else
-                armElbow.setPower(0.0);
+            armElbow.setPower(armElbowPower);
 
 
 
-            intakeServoRight.setPosition(0);
-            intakeServoLeft.setPosition(0);
-            claw.setPosition(0);
-            rotator.setPosition(0);
+            /*Sets the servo positions to their "home" position when the Teleop stage begins
+            intakeServoRight.setPosition(0.5);
+            intakeServoLeft.setPosition(0.5);
+            claw.setPosition(0.5);
+            rotator.setPosition(0.5);*/
 
             if(gamepad2.left_trigger>0 ){
-                intakeLeftPower    = Range.clip(gamepad2.left_trigger, -1.0, 1.0) ;
+                intakeLeftPower    = Range.clip(gamepad2.left_trigger, -1.0, 1.0) ; //swaps between the two programed "extremes" on the servo
                 intakeRightPower   = Range.clip(gamepad2.left_trigger, -1.0, 1.0) ;}
             else {
                 intakeLeftPower    = Range.clip(-gamepad2.right_trigger, -1.0, 1.0) ;
                 intakeRightPower   = Range.clip(-gamepad2.right_trigger, -1.0, 1.0) ;}
-            frontMotorLeft.setPower(numFl -MAX_SPEED +MAX_SPEED);
+            frontMotorLeft.setPower(numFl);
             if (backMotorLeft!= null)
-                backMotorLeft.setPower(numBl -MAX_SPEED +MAX_SPEED);
+                backMotorLeft.setPower(numBl);
 
-            frontMotorRight.setPower(numFr -MAX_SPEED +MAX_SPEED);
+            frontMotorRight.setPower(numFr);
             if (backMotorRight != null)
-                backMotorRight.setPower(numBr -MAX_SPEED +MAX_SPEED);
+                backMotorRight.setPower(numBr);
 
             intakeMotorLeft.setPower(intakeLeftPower);
             intakeMotorRight.setPower(intakeRightPower);
 
             //Intake Servos
-            if (gamepad2.x)
+            if (gamepad2.x){
                 //intakeServoRight.setPosition(srvPower);
                 intakeServoRight.setPosition(1);
-                intakeServoLeft.setPosition(1);
+                intakeServoLeft.setPosition(1);}
 
-            if(gamepad2.y)
+            //intakeServoRight.getPosition()
+            if(gamepad2.y){
                 intakeServoRight.setPosition(0);
-                intakeServoLeft.setPosition(0);
+                intakeServoLeft.setPosition(0);}
 
 
             //Use gamepad2 left & right Bumpers to open and close the claw
-            if(gamepad2.right_bumper)
-                clawOffset += CLAW_SPEED;
-
-            else if(gamepad2.left_bumper)
-                claw.setPosition(0);
-            clawOffset -= CLAW_SPEED;
-
+            if(gamepad2.right_bumper){
+                clawOffset += CLAW_SPEED;}
+            else if(gamepad2.left_bumper){
+                clawOffset -= CLAW_SPEED;}
             clawOffset = Range.clip(clawOffset, -0.5, 0.5);
             claw.setPosition(MID_SERVO + clawOffset);
 
             //Rotator.
-            if(gamepad2.dpad_up)
-                position += INCREMENT ;
-            if(gamepad2.dpad_down)
-                position-=INCREMENT;
-            rotator.setPosition(position);
+            if(gamepad1.dpad_left){
+                rotator.setPosition(1);  }
+            if(gamepad2.dpad_right) {
+            rotator.setPosition(-1);}
             sleep(CYCLE_MS);
             idle();
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Motors", "left (%.2f), right (%.2f)", intakeLeftPower, intakeRightPower);
+            //telemetry.addData("Motors", "left (%.2f), right (%.2f)", intakeLeftPower, intakeRightPower);
             telemetry.update();
         }
     }

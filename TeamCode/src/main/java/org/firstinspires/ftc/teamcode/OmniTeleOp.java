@@ -35,6 +35,7 @@ public class OmniTeleOp extends OpMode {
     private boolean a2Held = false;
     private boolean b2Held = false;
     private boolean y2Held = false;
+    private boolean x2Held = false;
     private boolean up2Held = false;
     private boolean down2Held = false;
     private boolean aPressed;
@@ -43,6 +44,7 @@ public class OmniTeleOp extends OpMode {
     private boolean a2Pressed;
     private boolean b2Pressed;
     private boolean y2Pressed;
+    private boolean x2Pressed;
     private boolean up2Pressed;
     private boolean down2Pressed;
     private boolean fingersUp = true;
@@ -74,6 +76,7 @@ public class OmniTeleOp extends OpMode {
         a2Pressed = gamepad2.a;
         b2Pressed = gamepad2.b;
         y2Pressed = gamepad2.y;
+        x2Pressed = gamepad2.x;
         up2Pressed = gamepad2.dpad_up;
         down2Pressed = gamepad2.dpad_down;
 
@@ -145,6 +148,14 @@ public class OmniTeleOp extends OpMode {
             y2Held = false;
         }
 
+        if(!x2Held && x2Pressed)
+        {
+            x2Held = true;
+            robot.startEjecting();
+        } else if(!x2Pressed) {
+            x2Held = false;
+        }
+
         if(!up2Held && up2Pressed)
         {
             up2Held = true;
@@ -165,6 +176,7 @@ public class OmniTeleOp extends OpMode {
         robot.performLifting();
         robot.performReleasing();
         robot.performStowing();
+        robot.performEjecting();
 
         robot.drive(speedMultiplier * xPower, speedMultiplier * yPower, spinMultiplier * spin, driverAngle);
 
@@ -177,6 +189,7 @@ public class OmniTeleOp extends OpMode {
         telemetry.addData("Lift State: ", robot.liftState);
         telemetry.addData("Release State: ", robot.releaseState);
         telemetry.addData("Stow State: ", robot.stowState);
+        telemetry.addData("Eject State: ", robot.ejectState);
         telemetry.addData("Front Left Encoder: ", robot.frontLeft.getCurrentPosition());
         telemetry.addData("Front Right Encoder: ", robot.frontRight.getCurrentPosition());
         telemetry.addData("Rear Left Encoder: ", robot.rearLeft.getCurrentPosition());

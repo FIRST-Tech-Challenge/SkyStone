@@ -294,14 +294,14 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                 stowState = StowActivity.STOPPING;
             }
 			// Extend the intake to make sure it isn't in the way.
-			runIntake(ExtendPosition.EXTENDED);
+			moveIntake(ExtendPosition.EXTENDED);
 
 			// We don't want the intake spinning while we are trying to lift the stone.
 			stopIntake();
 
 			// Lower the claw to grab it better
 			liftState = LiftActivity.LOWERING_TO_GRAB;
-			runLift(LiftPosition.GRABBING);
+			moveLift(LiftPosition.GRABBING);
         }
     }
 
@@ -317,7 +317,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 					liftState = LiftActivity.LIFTING_TO_STONE;
 					clawdricopterBack = true;
 					liftStateTargetHeight = liftTargetHeight;
-					runLift(liftStateTargetHeight);
+					moveLift(liftStateTargetHeight);
 				}
 			    break;
 		    case LIFTING_TO_ROTATE:
@@ -334,9 +334,9 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                     // If our target height is less than rotation height, we have to
                     // stop at rotation height first.
                     if(getLifterPosition() <= LiftPosition.ROTATE.getEncoderCount()) {
-                        runLift(LiftPosition.ROTATE);
+                        moveLift(LiftPosition.ROTATE);
                     } else {
-                        runLift(liftTargetHeight);
+                        moveLift(liftTargetHeight);
                     }
 				}
                 break;
@@ -345,7 +345,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                 {
 					clawPinched = true;
                     liftState = LiftActivity.CLEARING_LIFT;
-                    runIntake(ExtendPosition.EXTENDED);
+                    moveIntake(ExtendPosition.EXTENDED);
                 }
 			    break;
 		    case LOWERING_TO_GRAB:
@@ -418,7 +418,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                 releaseState = ReleaseActivity.STOPPING;
             }
 			// Extend the intake to make sure it isn't in the way.
-			runIntake(ExtendPosition.EXTENDED);
+			moveIntake(ExtendPosition.EXTENDED);
 
 			// We don't want the intake spinning while we are trying to stow the
 			// lift.
@@ -426,7 +426,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 
 			// Start rotating back to the front.
             stowState = StowActivity.RAISING_TO_ROTATE;
-			runLift(LiftPosition.ROTATE);
+			moveLift(LiftPosition.ROTATE);
         }
     }
 
@@ -441,7 +441,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
             case CLEARING_LIFT:
 			    if(extenderAtPosition(ExtendPosition.EXTENDED)) {
                     stowState = StowActivity.LOWERING_TO_STOW;
-                    runLift(LiftPosition.STOWED);
+                    moveLift(LiftPosition.STOWED);
                 }
                 break;
 			case OPENING_CLAW:
@@ -460,7 +460,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 			    // It has gotten high enough
 			    if(lifterAtPosition(LiftPosition.ROTATE)) {
 					stowState = StowActivity.ROTATING;
-                    runIntake(ExtendPosition.EXTENDED);
+                    moveIntake(ExtendPosition.EXTENDED);
 					clawdricopter.setPosition(CLAWDRICOPTER_FRONT);
 					claw.setPosition(CLAW_OPEN);
 					stateTimer.reset();
@@ -478,7 +478,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public boolean maxExtensionSetZero() {
         boolean maxExtended = false;
         // Have to make sure it is trying to extend fully.
-        runIntake(ExtendPosition.EXTENDED);
+        moveIntake(ExtendPosition.EXTENDED);
         double extenderCurrentVelocity = extender.getVelocity();
         int extenderCurrentPosition = getExtenderPosition();
 
@@ -492,7 +492,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                 // We missed our target
                 maxExtended = false;
                 setExtendZero(newZero);
-                runIntake(ExtendPosition.EXTENDED);
+                moveIntake(ExtendPosition.EXTENDED);
             }
 
         } else {
@@ -513,7 +513,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
             }
             ejectState = EjectActivity.EJECT;
             startIntake(true);
-            runIntake(ExtendPosition.EJECT);
+            moveIntake(ExtendPosition.EJECT);
         }
     }
 
@@ -524,8 +524,9 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                 if(extenderAtPosition(ExtendPosition.EJECT)) {
                     ejectState = EjectActivity.RESET;
                     startIntake(false);
-                    runIntake(ExtendPosition.EXTENDED);
+                    moveIntake(ExtendPosition.EXTENDED);
                 }
+                break;
             case RESET:
                 if(extenderAtPosition(ExtendPosition.EXTENDED)) {
                     ejectState = EjectActivity.IDLE;
@@ -547,7 +548,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         liftTargetHeight = LiftPosition.removeStone(liftTargetHeight);
     }
 
-    public void runIntake(ExtendPosition targetExtension) {
+    public void moveIntake(ExtendPosition targetExtension) {
 		if((targetExtension != extenderPosition) || (extendZeroUpdated)) {
 		    int targetPosition = targetExtension.getEncoderCount();
 		    // Make sure the intake isn't spinning if we retract too far.
@@ -561,7 +562,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 		}
     }
 
-    public void runLift(LiftPosition targetHeight) {
+    public void moveLift(LiftPosition targetHeight) {
         if(getExtenderPosition() >= ExtendPosition.CAPSTONE.getEncoderCount()) {
             int liftPosition = getLifterPosition();
             int targetPosition = targetHeight.getEncoderCount();

@@ -140,7 +140,7 @@ public class OmniTeleTest extends OpMode {
         if(!aHeld && aPressed)
         {
             aHeld = true;
-            robot.runLift(robot.liftTargetHeight);
+            robot.moveLift(robot.liftTargetHeight);
 //            robot.startLifting();
         } else if(!aPressed) {
             aHeld = false;
@@ -149,7 +149,7 @@ public class OmniTeleTest extends OpMode {
         if(!bHeld && bPressed)
         {
             bHeld = true;
-            robot.runIntake(extendPosition);
+            robot.moveIntake(extendPosition);
         } else if(!bPressed) {
             bHeld = false;
         }

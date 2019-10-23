@@ -62,6 +62,7 @@ public class MecanumTeleOp extends OpMode
         telemetry.addData("Velocity", velocity);
         telemetry.addData("Rotation", -gamepad1.left_stick_x);
         telemetry.addData("Servo Position", robot.platformServos.getPosition());
+		telemetry.addData("Half Power", robot.drivetrain.isHalfPower());
         telemetry.update();
     }
 

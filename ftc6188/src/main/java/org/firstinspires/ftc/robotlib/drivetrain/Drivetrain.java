@@ -45,7 +45,12 @@ abstract public class Drivetrain
     {
         halfPower.input(currentlyPressed);
     }
-
+	
+	public boolean isHalfPower()
+	{
+		return halfPower.output();
+	}
+	7
     abstract protected double[] calculateMotorPowers();
 
     public boolean isTeleOpMode() { return teleOpMode; }

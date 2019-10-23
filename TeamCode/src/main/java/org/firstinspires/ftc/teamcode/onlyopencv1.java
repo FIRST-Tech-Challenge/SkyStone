@@ -37,12 +37,6 @@ import java.util.List;
 public class onlyopencv1 extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
-    //    private DcMotor backLeft     = null; //rear left
-//    private DcMotor backRight    = null; //rear right
-//    private DcMotor frontLeft    = null; //front left
-//    private DcMotor frontRight   = null; //front right
-//
-//    private Servo   servo        = null;
     private final int encoderTicks = 1120;
     private final double wheelDiameter = 3.85827;//in inches
 
@@ -68,102 +62,14 @@ public class onlyopencv1 extends LinearOpMode {
 
     OpenCvCamera phoneCam;
 
-    //x, y = distance in x,y direction, angle = angle for rotation, power = motor power/speed
-    //x must equal y if both are nonzero.
-//    public void move(double x, double y, double angle, double power) {
-//        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//
-//        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//
-//
-//          if(x == y){
-//              double h = Math.sqrt(x*x+y*y);
-//              x=h;
-//              y=h;
-//          }
-
-//        //y
-//        double distancePerRotationY = 3.1415 * wheelDiameter; //pi * diameter (inches)
-//        double rotationsY = y/distancePerRotationY; //distance / circumference (inches)
-//        int encoderTargetY = (int)(rotationsY*encoderTicks);
-//
-//        //x
-//        double distancePerRotationX = 13.5; //distance per rotations is different than circumference when strafing (inches)
-//        double rotationsX = x/distancePerRotationX; //distance / circumference (inches)
-//        int encoderTargetX = (int)(rotationsX*encoderTicks);
-//
-//        //angle
-//        double ticksPerRotation = 0;//measure how many ticks for a 360 rotation
-//        double rotationsA = angle/360;
-//        int encoderTargetA = (int)(rotationsA*ticksPerRotation);
-//
-//        if(opModeIsActive()) {
-    // if(x==y)
-    //
-    //
-//            backLeft.setTargetPosition(encoderTargetY-encoderTargetX+encoderTargetA);
-//            backRight.setTargetPosition(encoderTargetY+encoderTargetX-encoderTargetA);
-//            frontLeft.setTargetPosition(encoderTargetY+encoderTargetX+encoderTargetA);
-//            frontRight.setTargetPosition(encoderTargetY-encoderTargetX-encoderTargetA);
-//
-//            backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//            frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//            backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//            frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//
-//            backLeft.setPower(Math.abs(power));//childproof. must have always positive power
-//            backRight.setPower(Math.abs(power));
-//            frontLeft.setPower(Math.abs(power));
-//            frontRight.setPower(Math.abs(power));
-//
-//            while(backLeft.isBusy() || backRight.isBusy() || frontLeft.isBusy() || frontRight.isBusy()) {
-//                //wait till motor finishes working
-//                telemetry.addData("Path", "Driving "+distance+" inches");
-//                telemetry.update();
-//            }
-//
-//            backLeft.setPower(0);
-//            backRight.setPower(0);
-//            frontLeft.setPower(0);
-//            frontRight.setPower(0);
-//
-//            telemetry.addData("Path", "Complete");
-//            telemetry.update();
-//
-//            backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//            frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//            backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//            frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        }
-//    }
-
-
     @Override
     public void runOpMode() throws InterruptedException {
         telemetry.addData("Status", "Running");
         telemetry.update();
 
-//        backLeft        = hardwareMap.dcMotor.get("left_drive");
-//        backRight       = hardwareMap.dcMotor.get("right_drive");
-//        frontLeft       = hardwareMap.dcMotor.get("front_left");
-//        frontRight      = hardwareMap.dcMotor.get("front_right");
-//        servo           = hardwareMap.servo.get("servo");
-
-//        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-//        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-//        backRight.setDirection(DcMotorSimple.Direction.FORWARD);
-//        frontRight.setDirection(DcMotorSimple.Direction.FORWARD);
-
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         phoneCam = new OpenCvInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
         phoneCam.openCameraDevice();//open camera
-        //phoneCam.setPipeline(new SamplePipeline());//add rectangle
         phoneCam.setPipeline(new StageSwitchingPipeline());//different stages
         phoneCam.startStreaming(rows, cols, OpenCvCameraRotation.UPRIGHT);//display on RC
         //width, height

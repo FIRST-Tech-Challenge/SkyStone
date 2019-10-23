@@ -133,21 +133,6 @@ public class Robot4100Generation1_BlueScanComplex extends DarbotsBasicOpMode {
 
         //Finish BlueScanBasic, Adjusting Position to Go BlueBuildSiteBasic
 
-        /*
-        this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedXDistanceTask(
-                50,
-                0.6
-        ));
-        this.getRobotCore().getChassis().addTask(this.getRobotCore().getChassis().getFixedXDistanceTask(
-                -50,
-                0.3
-        ));
-         */
-
-        if(!this.waitForDrive()){
-            return;
-        }
-
         this.getRobotCore().getChassis().addTask(this.getRobotCore().getChassis().getFixedZDistanceTask(
                 30,
                 0.6

@@ -65,6 +65,8 @@ public class OmniTeleTest extends OpMode {
     private double liftPower;
     private double extendPower;
     private double collectPower;
+    private boolean reverse = false;
+    private boolean spinning = false;
     private HardwareOmnibot.ExtendPosition extendPosition = HardwareOmnibot.ExtendPosition.RETRACTED;
 
     @Override
@@ -105,21 +107,28 @@ public class OmniTeleTest extends OpMode {
             aHeld = false;
         }
 
-//        if(!bHeld && bPressed)
-//        {
-//            bHeld = true;
-//            robot.startReleasing();
-//        } else if(!bPressed) {
-//            bHeld = false;
-//        }
+        if(!bHeld && bPressed)
+        {
+            bHeld = true;
+            robot.extendIntake(extendPosition);
+        } else if(!bPressed) {
+            bHeld = false;
+        }
 
-//        if(!yHeld && yPressed)
-//        {
-//            yHeld = true;
-//            robot.startStowing();
-//        } else if(!yPressed) {
-//            yHeld = false;
-//        }
+        if(!yHeld && yPressed)
+        {
+            yHeld = true;
+            if(spinning) {
+                spinning = false;
+                robot.stopIntake();
+            } else {
+                robot.startIntake(reverse);
+                spinning = true;
+                reverse = !reverse;
+            }
+        } else if(!yPressed) {
+            yHeld = false;
+        }
 
         if(!upHeld && upPressed) {
             upHeld = true;
@@ -135,47 +144,47 @@ public class OmniTeleTest extends OpMode {
             downHeld = false;
         }
 
-//        if(!rightHeld && rightPressed) {
-//            rightHeld = true;
-//            switch(extendPosition)
-//            {
-//                case RETRACTED:
-//                    extendPosition = HardwareOmnibot.ExtendPosition.CAPSTONE;
-//                    break;
-//                case CAPSTONE:
-//                    extendPosition = HardwareOmnibot.ExtendPosition.SPINMIN;
-//                    break;
-//                case SPINMIN:
-//                    extendPosition = HardwareOmnibot.ExtendPosition.EJECT;
-//                    break;
-//                case EJECT:
-//                    extendPosition = HardwareOmnibot.ExtendPosition.EXTENDED;
-//                    break;
-//            }
-//        } else if(!rightPressed) {
-//            rightHeld = false;
-//        }
+        if(!rightHeld && rightPressed) {
+            rightHeld = true;
+            switch(extendPosition)
+            {
+                case RETRACTED:
+                    extendPosition = HardwareOmnibot.ExtendPosition.CAPSTONE;
+                    break;
+                case CAPSTONE:
+                    extendPosition = HardwareOmnibot.ExtendPosition.SPINMIN;
+                    break;
+                case SPINMIN:
+                    extendPosition = HardwareOmnibot.ExtendPosition.EJECT;
+                    break;
+                case EJECT:
+                    extendPosition = HardwareOmnibot.ExtendPosition.EXTENDED;
+                    break;
+            }
+        } else if(!rightPressed) {
+            rightHeld = false;
+        }
 
-//        if(!leftHeld && leftPressed) {
-//            leftHeld = true;
-//            switch(extendPosition)
-//            {
-//                case CAPSTONE:
-//                    extendPosition = HardwareOmnibot.ExtendPosition.RETRACTED;
-//                    break;
-//                case SPINMIN:
-//                    extendPosition = HardwareOmnibot.ExtendPosition.CAPSTONE;
-//                    break;
-//                case EJECT:
-//                    extendPosition = HardwareOmnibot.ExtendPosition.SPINMIN;
-//                    break;
-//                case EXTENDED:
-//                    extendPosition = HardwareOmnibot.ExtendPosition.EJECT;
-//                    break;
-//            }
-//        } else if(!leftPressed) {
-//            leftHeld = false;
-//        }
+        if(!leftHeld && leftPressed) {
+            leftHeld = true;
+            switch(extendPosition)
+            {
+                case CAPSTONE:
+                    extendPosition = HardwareOmnibot.ExtendPosition.RETRACTED;
+                    break;
+                case SPINMIN:
+                    extendPosition = HardwareOmnibot.ExtendPosition.CAPSTONE;
+                    break;
+                case EJECT:
+                    extendPosition = HardwareOmnibot.ExtendPosition.SPINMIN;
+                    break;
+                case EXTENDED:
+                    extendPosition = HardwareOmnibot.ExtendPosition.EJECT;
+                    break;
+            }
+        } else if(!leftPressed) {
+            leftHeld = false;
+        }
 
 //        if(!xHeld && xPressed)
 //        {

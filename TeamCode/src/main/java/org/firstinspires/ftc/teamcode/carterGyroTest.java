@@ -72,8 +72,8 @@ public class carterGyroTest extends OpMode {
 
         TL.setPower(gamepad1.left_stick_y);
         BL.setPower(gamepad1.left_stick_y);
-        TR.setPower(gamepad1.right_stick_y);
-        BR.setPower(gamepad1.right_stick_y);
+        TR.setPower(-gamepad1.right_stick_y);
+        BR.setPower(-gamepad1.right_stick_y);
 
         //Arm Raise and Extend Manual Control
         armRaiser.setPower(-gamepad2.right_stick_y);

@@ -13,6 +13,8 @@ import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
 public class TestDrive extends BaseOpMode {
     public enum State {
         STATE_INITIAL,
+        STATE_ROTATE_RIGHT,
+        STATE_ROTATE_LEFT,
         STATE_RIGHT,
         STATE_LEFT,
         STATE_FORWARD,

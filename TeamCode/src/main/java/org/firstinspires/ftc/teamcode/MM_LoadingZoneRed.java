@@ -36,6 +36,8 @@ public class MM_LoadingZoneRed extends LinearOpMode {
                 // strafe to block
                 robot.strafeTime(speed, 2000);
                 break;
+
+                // Pick Block up with arm
         }
         Thread.sleep(500);
         // back up

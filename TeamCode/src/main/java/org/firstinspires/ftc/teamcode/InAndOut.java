@@ -108,10 +108,14 @@ public class InAndOut extends LinearOpMode {
 
             if ( forward == true ) {
                 InAndOut.setDirection(DcMotor.Direction.FORWARD);
-                InAndOut.setPower(1);
+                InAndOut.setPower(.5);
+                sleep(500);
+                InAndOut.setPower(0);
             } else if (reverse == true ) {
                 InAndOut.setDirection(DcMotor.Direction.REVERSE);
-                InAndOut.setPower(1);
+                InAndOut.setPower(.5);
+                sleep(500);
+                InAndOut.setPower(0);
             }
 
             // Show the elapsed game time and wheel power.

@@ -10,35 +10,38 @@ public class DriveHalo extends OpMode {
 
     Robot robot = new Robot();
 
+    // init variables
     enum TeleOpMode {STRAFE, DRIVE, WAFFLE_MOVER}
-
     TeleOpMode driveMode;
+    double speedControl = 0.5; // to make the robot go slower since we use Orbital 20s
+    double compensation = 0.2; // compensation so the robot can move forward AND turn while both joysticks are used
+    float deadZone = 0.1f; // joystick deadzone
+    boolean buttonPressed = false;
 
     @Override
     public void init() {
         robot.init(hardwareMap);
+
         telemetry.addData("Initialized", "Ready to start");
     }
 
     @Override
     public void loop() {
-        double speedControl = 0.5; // to make the robot go slower since we use Orbital 20s
+        buttonPressed = gamepad1.a;
         boolean slowMode = gamepad1.left_stick_button && gamepad1.right_stick_button; // activate slowMode if both joysticks are pushed down
         boolean strafeMode = !gamepad1.left_stick_button && gamepad1.right_stick_button;
-        double compensation = 0.2; // compensation so the robot can move forward AND turn while both joysticks are used
-        double wafflePower = 0; // power on the waffle motor
-        float deadZone = 0.1f; // joystick deadzone
 
         if (slowMode) {
             speedControl = 0.25;
         }
 
-
         gamepad1.setJoystickDeadzone(deadZone);
+
         if (strafeMode) {
             driveMode = TeleOpMode.STRAFE;
-        } else if (gamepad1.a) {
+        } else if (gamepad1.a && !buttonPressed) {
             driveMode = TeleOpMode.WAFFLE_MOVER;
+            buttonPressed = true;
         } else {
             driveMode = TeleOpMode.DRIVE;
         }

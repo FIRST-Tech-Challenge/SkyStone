@@ -29,12 +29,10 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
 
 /**
@@ -52,7 +50,7 @@ import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name="In And Out", group="Linear Opmode")
 //@Disabled
-public class InAndOut extends LinearOpMode {
+public class ROneArm extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -108,12 +106,12 @@ public class InAndOut extends LinearOpMode {
 
             if ( forward == true ) {
                 InAndOut.setDirection(DcMotor.Direction.FORWARD);
-                InAndOut.setPower(.1);
+                InAndOut.setPower(.2);
                 sleep(500);
                 InAndOut.setPower(0);
             } else if (reverse == true ) {
                 InAndOut.setDirection(DcMotor.Direction.REVERSE);
-                InAndOut.setPower(.1);
+                InAndOut.setPower(.2);
                 sleep(500);
                 InAndOut.setPower(0);
             }

@@ -9,47 +9,34 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp (name = "Telemetry")
 public class Telemetry extends OpMode {
-    DcMotor lf, rf, lb, rb;
+    DcMotor lf, rf, lb, rb, ls; //Define Motors In Code
     public Gamepad g1, g2;
     Servo clawL, clawR;
     private ElapsedTime runtime = new ElapsedTime();
-    //Encoder Setup
-    static final double COUNTS_PER_MOTOR_REV = 1440;    // eg: TETRIX Motor Encoder
-    static final double DRIVE_GEAR_REDUCTION = 2.0;     // This is < 1.0 if geared UP
-    static final double GEAR_DIAMETER_INCHES = 1.5;     // For figuring circumference
-    static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
-            (GEAR_DIAMETER_INCHES * 3.1415926535897932384626433);
-
 
     @Override
     public void init() {
         telemetry.addData("Status", "Initialized");
 
 
-        //Motor Define
+        //Motor Define In Phone
         lf = hardwareMap.dcMotor.get("lf");
         rf = hardwareMap.dcMotor.get("rf");
         lb = hardwareMap.dcMotor.get("lb");
         rb = hardwareMap.dcMotor.get("rb");
+        ls = hardwareMap.dcMotor.get("ls");
         //Servo Define
         clawL = hardwareMap.servo.get("clawL");
         clawR = hardwareMap.servo.get("clawR");
 
-        rf.setDirection(DcMotor.Direction.REVERSE);
-        rb.setDirection(DcMotor.Direction.REVERSE);
+        lf.setDirection(DcMotor.Direction.REVERSE);
+        lb.setDirection(DcMotor.Direction.REVERSE);
 
-        //Encoder Stuff
-        lf.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        lf.setMode(DcMotor.RunMode.RUN_USING_ENCODER); //Runs based on speed instead of voltage; makes run more consistently
+
         rf.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         lb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        lf.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rf.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        lb.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rb.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-
 
 
 
@@ -57,16 +44,19 @@ public class Telemetry extends OpMode {
 
     @Override
     public void loop() {
+        //lf.setPower(0);
+        //rf.setPower((0));
+        //rb.setPower((0));
+        //lb.setPower((0));
 
-
-        /* //Trig
+       /*Trig
         double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
         //returns hypotonuse (C value in triangle)
 
-        double robotAngle = Math.atan2(gamepad1.left_stick_y, -gamepad1.left_stick_x) - Math.PI / 4;
+        double robotAngle = Math.atan2(gamepad1.left_stick_y, -gamepad1.left_stick_x) + Math.PI / 4;
         //return angle x (next to center of circle)
 
-        double rightX = -gamepad1.right_stick_x;
+        double rightX = gamepad1.right_stick_x; //reverses rotation
         //rotiation
 
         final double lfPow = r * Math.cos(robotAngle) - rightX;
@@ -75,18 +65,20 @@ public class Telemetry extends OpMode {
         final double rbPow = r * Math.cos(robotAngle) + rightX;
         //determines wheel power
 
+
         rf.setPower(rfPow);
         rb.setPower(rbPow);
         lf.setPower(lfPow);
         lb.setPower(lbPow);
+        //*/
         //gives wheels wheel power
 
-        telemetry.addData("GamepadRx", gamepad1.right_stick_x);
+        /*telemetry.addData("GamepadRx", gamepad1.right_stick_x);
         telemetry.addData("GamepadRy", gamepad1.right_stick_y);
-        telemetry.addData("GamepadLy", gamepad1.left_stick_y);
+        telemetry.addData("GamepadLy", gamepad1.left_stick_y);*/
 
-        telemetry.update(); */
         //No Trig
+        /*
         double drive;
         double strafe;
         double rotate;
@@ -97,7 +89,7 @@ public class Telemetry extends OpMode {
 
         drive = -gamepad1.left_stick_y;
 
-        strafe = gamepad1.left_stick_x;
+        //strafe = gamepad1.left_stick_x; //add negative
         rotate = gamepad1.right_stick_x * 0.5;
 
         lfPow = drive + strafe + rotate;
@@ -111,31 +103,95 @@ public class Telemetry extends OpMode {
         rb.setPower((rbPow));
         lb.setPower((lbPow));
 
-        /*telemetry.addData("GamepadRx", gamepad1.right_stick_x);
+
+       telemetry.addData("GamepadRx", gamepad1.right_stick_x);
         telemetry.addData("GamepadRy", gamepad1.right_stick_y);
         telemetry.addData("GamepadLy", gamepad1.left_stick_y);
 
         telemetry.addData("rb", lbPow);
         telemetry.addData("rf", rbPow);
         telemetry.addData("lf", lfPow);
-        telemetry.addData("lb", lbPow);*/
+        telemetry.addData("lb", lbPow);
+        telemetry.update();//*/
+
+        double leftPower;
+        double rightPower;
+
+
+        //Create dead zones
+        leftPower = Math.abs(gamepad1.left_stick_y) > 0.05? gamepad1.left_stick_y : 0;
+        rightPower = Math.abs(gamepad1.right_stick_y) > 0.05? gamepad1.right_stick_y : 0;
+
+
+
+        if(gamepad1.right_bumper){
+            lf.setPower(-1);
+            lb.setPower(1);
+            rb.setPower(-1);
+            rf.setPower(1);
+        } else if(gamepad1.left_bumper){
+            lf.setPower(1);
+            lb.setPower(-1);
+            rb.setPower(1);
+            rf.setPower(-1);
+        } else {
+            lf.setPower(leftPower);
+            lb.setPower(leftPower);
+            rb.setPower(rightPower);
+            rf.setPower(rightPower);
+        }
 
         //Move Depot Hooks
         if (gamepad2.a) {
             clawR.setPosition(1);
-            clawL.setPosition(0);
+            clawL.setPosition(1);
         }
         if (gamepad2.b) {
             clawR.setPosition(0);
-            clawL.setPosition(1);
+            clawL.setPosition(0);
         }
 
-        telemetry.addData("LB: ", lb.getCurrentPosition());
-        telemetry.addData("LF: ", lf.getCurrentPosition());
-        telemetry.addData("RB: ", rb.getCurrentPosition());
-        telemetry.addData("RF: ", rf.getCurrentPosition());
+        //Linear Slide
+        ls.setPower(gamepad2.left_stick_y);
 
+        telemetry.addData("rb", rb.getCurrentPosition());
+        telemetry.addData("rf", rf.getCurrentPosition());
+        telemetry.addData("lf", lf.getCurrentPosition());
+        telemetry.addData("lb", lb.getCurrentPosition());
         telemetry.update();
 
     }
+
+
+
+  /*  public class JoystickCalc
+    {
+        private OpMode opmode;
+
+        double leftStickY;
+        double leftStickX;
+        double rightStickX;
+        double rightStickY;
+        boolean xButton;
+        boolean yButton;
+        boolean aButton;
+        boolean bButton;
+
+        public JoystickCalc(OpMode opmode)
+        {
+            this.opmode = opmode;
+        }
+
+        public void calculate ()
+        {
+            leftStickY = opmode.gamepad1.left_stick_y;
+            leftStickX = opmode.gamepad1.left_stick_x;
+            rightStickX = opmode.gamepad1.right_stick_x;
+            rightStickY = opmode.gamepad1.right_stick_y;
+            xButton = opmode.gamepad1.x;
+            yButton = opmode.gamepad1.y;
+            bButton = opmode.gamepad1.b;
+            aButton = opmode.gamepad1.a;
+        }*/
 }
+

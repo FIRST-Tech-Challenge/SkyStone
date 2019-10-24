@@ -29,6 +29,12 @@ public class Button_Drive extends OpMode{
         rf.setDirection(DcMotor.Direction.REVERSE);
         rb.setDirection(DcMotor.Direction.REVERSE);
 
+       lf.setMode(DcMotor.RunMode.RUN_USING_ENCODER); //Runs based on speed instead of voltage; makes run more consistently
+       rf.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+       lb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+       rb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+       
     }
 
     @Override
@@ -54,6 +60,27 @@ public class Button_Drive extends OpMode{
        }else{
            lb.setPower(0);
        }
+        telemetry.addData("rb", rb.getCurrentPosition());
+        telemetry.addData("rf", rf.getCurrentPosition());
+        telemetry.addData("lf", lf.getCurrentPosition());
+        telemetry.addData("lb", lb.getCurrentPosition());
+        telemetry.update();
+        if (gamepad1.right_bumper){
+            lf.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            rf.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            lb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            rb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            lf.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rf.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            lb.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rb.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+            lf.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            rf.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            lb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            rb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
 
     }
 

@@ -21,12 +21,12 @@ public class Chassis extends Subsystem {
     }
 
     //Methods
-
-    public void runChassis(final double angle, final double turn, final double power) {
-        frontLeft.setPower(power * Math.cos(angle) + turn);
-        frontRight.setPower(power * Math.sin(angle) - turn);
-        backLeft.setPower(power * Math.sin(angle) + turn);
-        backRight.setPower(power * Math.cos(angle) - turn);
+    public void runChassis(final double targetAngle, final double turn, final double power) {
+        final double turnAngle = targetAngle - Math.PI / 4;
+        frontLeft.setPower(power * Math.cos(turnAngle) + turn);
+        frontRight.setPower(power * Math.sin(turnAngle) - turn);
+        backLeft.setPower(power * Math.sin(turnAngle) + turn);
+        backRight.setPower(power * Math.cos(turnAngle) - turn);
     }
 
 

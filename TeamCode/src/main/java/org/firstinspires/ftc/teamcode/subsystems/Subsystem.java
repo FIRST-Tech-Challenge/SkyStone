@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import java.util.HashMap;
+
 
 public class Subsystem {
     DcMotor[] motors;
@@ -21,6 +23,14 @@ public class Subsystem {
         for (DcMotor motor : motors) {
             motor.setPower(power);
         }
+    }
+
+    public HashMap<String, Integer> getMotorPositions(){
+        HashMap<String, Integer> positions= new HashMap<>();
+        for(DcMotor motor : motors){
+            positions.put(motor.getDeviceName(), motor.getCurrentPosition());
+        }
+        return positions;
     }
 
     public void reverseMotors(DcMotor[] reverseMotors) {

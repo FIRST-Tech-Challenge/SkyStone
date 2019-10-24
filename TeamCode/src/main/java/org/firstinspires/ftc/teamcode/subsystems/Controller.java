@@ -3,7 +3,9 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 public class Controller extends Gamepad {
+    //This is the gamepad passed in from init in a teleop mode
     Gamepad controller;
+    //These are modifiers to the valaues the gamepad gives us
     double leftStickXMod = 1;
     double leftStickYMod = -1;
     double rightStickXMod = 1;
@@ -17,10 +19,12 @@ public class Controller extends Gamepad {
     double rightTriggerMod = 1.0;
     double leftTriggerMod = 1.0;
 
+    //Use given controller in teleop mode
     public Controller(Gamepad controller) {
         this.controller = controller;
     }
 
+    //these return the value given times the modifier
     public double getLeftStickX() {
         return controller.left_stick_x * leftStickXMod;
     }
@@ -45,6 +49,7 @@ public class Controller extends Gamepad {
         return controller.left_trigger * leftTriggerMod;
     }
 
+    //These methods return the oppisite of the button if the modifier is false and the same if it is true
     public boolean getA() {
         return aMod ? controller.a : !controller.a;
     }
@@ -67,6 +72,11 @@ public class Controller extends Gamepad {
 
     public boolean getRightBumper() {
         return aMod ? controller.a : !controller.a;
+    }
+
+    //method is used to convert linear map from contorller input to power into a cubic map
+    public double limitStick(double stickInput){
+        return stickInput * stickInput * stickInput;
     }
 
 }

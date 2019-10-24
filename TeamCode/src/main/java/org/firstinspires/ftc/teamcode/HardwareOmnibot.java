@@ -49,14 +49,14 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         STOPPING
     }
 
-    public static int MAX_EXTENSION = 1700;
+    public static int MAX_EXTENSION = 2390;
     public enum ExtendPosition {
-        RETRACTED(5),
-		CAPSTONE(450),
-		SPINMIN(1081),
-		EJECT(1418),
+        RETRACTED(7),
+		CAPSTONE(630),
+		SPINMIN(1520),
+		EJECT(1990),
 		EXTENDED(MAX_EXTENSION);
-		// Runtime Max
+		// Runtime Max 1620RPM motor
 //        EXTENDED(1719);
         private final int encoderCount;
 
@@ -189,7 +189,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public static double LEFT_FINGER_UP = 0.25;
     public static double CLAW_OPEN = 0.2;
     public static double CLAW_PINCHED = 0.81;
-    public static double CLAWDRICOPTER_FRONT = 0.86;
+    public static double CLAWDRICOPTER_FRONT = 0.85;
     public static double CLAWDRICOPTER_BACK = 0.09;
     public static int CLAW_OPEN_TIME = 1000;
     public static int CLAW_CLOSE_TIME = 1000;
@@ -298,10 +298,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 
 			// We don't want the intake spinning while we are trying to lift the stone.
 			stopIntake();
-
-			// Lower the claw to grab it better
-			liftState = LiftActivity.LOWERING_TO_GRAB;
-			moveLift(LiftPosition.GRABBING);
+			liftState = LiftActivity.CLEARING_LIFT;
         }
     }
 
@@ -328,8 +325,10 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 					stateTimer.reset();
 				}
 			    break;
-            case CLEARING_LIFT:
-			    if(extenderAtPosition(ExtendPosition.EXTENDED)) {
+		    case GRABBING_STONE:
+                if((stateTimer.milliseconds() >= CLAW_CLOSE_TIME) || clawPinched)
+                {
+					clawPinched = true;
                     liftState = LiftActivity.LIFTING_TO_ROTATE;
                     // If our target height is less than rotation height, we have to
                     // stop at rotation height first.
@@ -338,14 +337,6 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                     } else {
                         moveLift(liftTargetHeight);
                     }
-				}
-                break;
-		    case GRABBING_STONE:
-                if((stateTimer.milliseconds() >= CLAW_CLOSE_TIME) || clawPinched)
-                {
-					clawPinched = true;
-                    liftState = LiftActivity.CLEARING_LIFT;
-                    moveIntake(ExtendPosition.EXTENDED);
                 }
 			    break;
 		    case LOWERING_TO_GRAB:
@@ -357,6 +348,12 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 					stateTimer.reset();
 				}
 			    break;
+            case CLEARING_LIFT:
+			    if(extenderAtPosition(ExtendPosition.EXTENDED)) {
+                    liftState = LiftActivity.LOWERING_TO_GRAB;
+					moveLift(LiftPosition.GRABBING);
+				}
+                break;
 			case STOPPING:
 			    liftState = LiftActivity.IDLE;
 		    case IDLE:
@@ -425,8 +422,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 			stopIntake();
 
 			// Start rotating back to the front.
-            stowState = StowActivity.RAISING_TO_ROTATE;
-			moveLift(LiftPosition.ROTATE);
+            stowState = StowActivity.CLEARING_LIFT;
         }
     }
 
@@ -438,12 +434,6 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 					startIntake(false);
 				}
 				break;
-            case CLEARING_LIFT:
-			    if(extenderAtPosition(ExtendPosition.EXTENDED)) {
-                    stowState = StowActivity.LOWERING_TO_STOW;
-                    moveLift(LiftPosition.STOWED);
-                }
-                break;
 			case OPENING_CLAW:
 			    if((stateTimer.milliseconds() >= CLAW_OPEN_TIME) || !clawPinched) {
                     stowState = StowActivity.CLEARING_LIFT;
@@ -453,19 +443,33 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 			case ROTATING:
 			    if((stateTimer.milliseconds() >= CLAW_ROTATE_FRONT_TIME) || !clawdricopterBack) {
 					stowState = StowActivity.OPENING_CLAW;
+					moveLift(LiftPosition.STOWED);
 					clawdricopterBack = false;
 				}
 			    break;
 			case RAISING_TO_ROTATE:
 			    // It has gotten high enough
-			    if(lifterAtPosition(LiftPosition.ROTATE)) {
+				if(clawdricopterBack) {
+					if(lifterAtPosition(LiftPosition.ROTATE)) {
+						stowState = StowActivity.ROTATING;
+						clawdricopter.setPosition(CLAWDRICOPTER_FRONT);
+						claw.setPosition(CLAW_OPEN);
+						stateTimer.reset();
+					}
+				} else {
 					stowState = StowActivity.ROTATING;
-                    moveIntake(ExtendPosition.EXTENDED);
-					clawdricopter.setPosition(CLAWDRICOPTER_FRONT);
 					claw.setPosition(CLAW_OPEN);
 					stateTimer.reset();
 				}
 			    break;
+            case CLEARING_LIFT:
+			    if(extenderAtPosition(ExtendPosition.EXTENDED)) {
+                    stowState = StowActivity.RAISING_TO_ROTATE;
+					if(clawdricopterBack) {
+						moveLift(LiftPosition.ROTATE);
+					}
+                }
+                break;
             case STOPPING:
                 stowState = StowActivity.IDLE;
             case IDLE:

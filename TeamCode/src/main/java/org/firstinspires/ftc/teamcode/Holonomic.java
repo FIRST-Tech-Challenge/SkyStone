@@ -46,10 +46,10 @@ public class Holonomic extends LinearOpMode {
         //Set the direction of the motors
         //Reversed motors on one side to ensure forward movement.
         //invert all of them to change the robot's front/back
-        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        backRight.setDirection(DcMotorSimple.Direction.FORWARD);
-        frontRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        backLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        frontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //Running with/without Encoders
         backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -61,7 +61,7 @@ public class Holonomic extends LinearOpMode {
 
         waitForStart();
         runtime.reset();
-        double speedSet = 7;//robot starts with 7 speed due to 40 ratio motors being op
+        double speedSet = 5;//robot starts with 7 speed due to 40 ratio motors being op
         double reduction = 10;//fine rotation for precise stacking. higher value = slower rotation using triggers
 
         while (opModeIsActive()) {
@@ -77,18 +77,29 @@ public class Holonomic extends LinearOpMode {
             if(!gamepad1.right_bumper && !gamepad1.left_bumper)//makes sure speed does not round every refresh. otherwise, speed won't be able to change
                 speedSet = Math.round(speedSet);
 
-//            if(gamepad1.a)
-//                servo.setPosition(0.5);
+            if(gamepad1.a) {
+                servoLeft.setPosition(0.5);
+                servoRight.setPosition(0.5);
+            }
+            else {
+                servoLeft.setPosition(1);
+                servoRight.setPosition(0);
+            }
+
+
+
+//            if(gamepad1.b)
+//                servoLeft.setPosition(0.5);
 //            else
-//                servo.setPosition(0);
+//                servoLeft.setPosition(1);
 
             //directional
             //using range.clip makes sure you can use all sticks and directions at the same time without conflicts. power stays limited at 1
             if((Math.abs(gamepad1.left_stick_x) > deadZone) || (Math.abs(gamepad1.left_stick_y) > deadZone) || (Math.abs(gamepad1.right_stick_x) > deadZone)) {
-                frontLeft.setPower(Range.clip((gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x) * (speedSet / 10), -1, 1));
-                frontRight.setPower(Range.clip((gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x) * (speedSet / 10), -1, 1));
-                backRight.setPower(Range.clip((gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x) * (speedSet / 10), -1, 1));
-                backLeft.setPower(Range.clip((gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x) * (speedSet / 10), -1, 1));
+                frontLeft.setPower(Range.clip((gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x) * (speedSet / 10), -1, 1));
+                frontRight.setPower(Range.clip((gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x) * (speedSet / 10), -1, 1));
+                backRight.setPower(Range.clip((gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x) * (speedSet / 10), -1, 1));
+                backLeft.setPower(Range.clip((gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x) * (speedSet / 10), -1, 1));
             } else if(gamepad1.left_trigger > deadZone || gamepad1.left_trigger > deadZone){
                 frontLeft.setPower((-gamepad1.left_trigger + gamepad1.right_trigger)/reduction);
                 frontRight.setPower((gamepad1.left_trigger - gamepad1.right_trigger)/reduction);

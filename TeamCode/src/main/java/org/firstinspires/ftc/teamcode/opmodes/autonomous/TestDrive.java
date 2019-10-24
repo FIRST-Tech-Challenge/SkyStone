@@ -13,6 +13,8 @@ import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
 public class TestDrive extends BaseOpMode {
     public enum State {
         STATE_INITIAL,
+        STATE_ROTATE_RIGHT,
+        STATE_ROTATE_LEFT,
         STATE_RIGHT,
         STATE_LEFT,
         STATE_FORWARD,
@@ -39,9 +41,18 @@ public class TestDrive extends BaseOpMode {
         switch (mCurrentState) {
             case STATE_INITIAL:
                 // Initialize
-                newState(State.STATE_FORWARD);
+                newState(State.STATE_ROTATE_RIGHT);
                 break;
-
+            case STATE_ROTATE_RIGHT:
+                    if(driveSystem.turn(90,1)){
+                        newState(State.STATE_ROTATE_LEFT);
+                    }
+                break;
+            case STATE_ROTATE_LEFT:
+                if(driveSystem.turn(-90,1)){
+                    newState(State.STATE_FINISHED);
+                }
+                break;
             case STATE_FORWARD:
                 if(driveSystem.driveToPosition(100, DriveSystem.Direction.FORWARD, .5)){
                     newState(State.STATE_BACKWARD);

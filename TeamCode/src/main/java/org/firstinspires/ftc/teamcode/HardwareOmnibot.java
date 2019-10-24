@@ -77,7 +77,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         STOWED(15),
         STONE1(149),
         STONE2(412),
-        ROTATE(500),
+        ROTATE(600),
         STONE3(660),
         STONE4(908),
         STONE5(1156),
@@ -188,7 +188,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public static double RIGHT_FINGER_UP = 0.89;
     public static double LEFT_FINGER_UP = 0.25;
     public static double CLAW_OPEN = 0.2;
-    public static double CLAW_PINCHED = 0.80;
+    public static double CLAW_PINCHED = 0.81;
     public static double CLAWDRICOPTER_FRONT = 0.86;
     public static double CLAWDRICOPTER_BACK = 0.09;
     public static int CLAW_OPEN_TIME = 1000;

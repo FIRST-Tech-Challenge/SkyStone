@@ -16,9 +16,10 @@ import teamcode.common.Vector2;
 @Autonomous(name = "TT Auto Red")
 public class TTAutoRed extends TTOpMode {
 
-    // 5 inches forward, 2 inch left
-    private static final BoundingBox2D SKYSTONE_POS_5 = new BoundingBox2D(550, 400, 650, 600);
-    private static final BoundingBox2D SKYSTONE_POS_6 = new BoundingBox2D(0, 400, 250, 600);
+    /**
+     * A bounding box which is used to see if a skystone is in the center of the camera's view.
+     */
+    private static final BoundingBox2D SKYSTONE_BOUNDING_BOX = new BoundingBox2D(0, 0, 720, 1280);
 
     private TTDriveSystem driveSystem;
     private League1TTArm arm;
@@ -30,15 +31,14 @@ public class TTAutoRed extends TTOpMode {
         arm = new League1TTArm(hardwareMap);
         vision = new TTVision(hardwareMap);
         vision.enable();
-
     }
 
     @Override
     protected void onStart() {
-        // setArmStartPos();
-        int skystonePos = scanStones();
-        telemetry.addData("pos", skystonePos);
-        telemetry.update();
+        initArm();
+        int skystonePos = locateSkystone();
+//        telemetry.addData("pos", skystonePos);
+//        telemetry.update();
         //  grabSkyStone(5);
 //        telemetry = TTOpMode.currentOpMode().telemetry;
 //        telemetry.addData("Stone Found", skystonePos + 3);
@@ -57,27 +57,44 @@ public class TTAutoRed extends TTOpMode {
     }
 
     /**
-     * Returns the position of the skystones. Returns 1 if the stones are in the first and fourth
-     * slots. Returns 2 if the stones are in the second and fifth slots. Returns 3 if the stones
+     * Approaches the skystone and records its position. Returns 4 if the skystones are in the first and fourth
+     * slots. Returns 5 if the skystones are in the second and fifth slots. Returns 6 if the skystones
      * are in the third and sixth slots.
      */
-    private int scanStones() {
+    private int locateSkystone() {
+        driveSystem.vertical(18, 0.3);
+        if (seesSkystone()) {
+            return 6;
+        }
+        driveSystem.lateral(-8, 0.1);
+        sleep(1000);
+        if (seesSkystone()) {
+            return 5;
+        }
+        driveSystem.lateral(-8, 0.25);
+        return 4;
+    }
+
+    /**
+     * Returns true if the skystone is in the center of the camera's field of view.
+     */
+    private boolean seesSkystone() {
         List<Recognition> recognitions = vision.getRecognitions();
         for (Recognition recognition : recognitions) {
             if (recognition.getLabel().equals(TTVision.LABEL_SKYSTONE)) {
                 Vector2 center = TTVision.getCenter(recognition);
-                if (SKYSTONE_POS_5.contains(center)) {
-                    return 5;
-                } else if (SKYSTONE_POS_6.contains(center)) {
-                    return 6;
+                if (SKYSTONE_BOUNDING_BOX.contains(center)) {
+                    return true;
                 }
             }
         }
-        return 4; // assume left position if no other stone is detected (the fourth stone is not visible to the camera).
+        return false;
     }
 
-    //Opens the claw and lowers the arm for starting pos
-    private void setArmStartPos() {
+    /**
+     * Opens the claw and lowers the arm for starting position.
+     */
+    private void initArm() {
         arm.openClaw();
         arm.lower(0.5);
     }

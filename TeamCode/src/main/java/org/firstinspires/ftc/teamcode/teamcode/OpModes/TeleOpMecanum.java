@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.teamcode.Hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.Intake;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.Outtake;
 
-@TeleOp(name="TeleOpFinal", group= "Arcade")
+@TeleOp(name="Arcade", group= "Tele Op")
 public class TeleOpMecanum extends OpMode {
 
     DriveTrain drive = new DriveTrain();
@@ -113,8 +113,9 @@ public class TeleOpMecanum extends OpMode {
             drive.snowWhite();
         }
 
-        intake.compliantIntake_TeleOp(this);
-        outtake.outTake_TeleOp(this);
+        intake.compliantIntake_TeleOp();
+        outtake.outTake_TeleOp();
+
         telemetry.addData("Halfing Speed : ", pastX);
         telemetry.addData("Encoded Acceleration : ", drive.getEncodedAccel());
 

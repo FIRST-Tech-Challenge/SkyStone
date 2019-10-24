@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 public class Intake {
 
     public DcMotor rightSide;
@@ -13,15 +15,16 @@ public class Intake {
 
     ElapsedTime time = new ElapsedTime();
 
-    private LinearOpMode opMode;
+    private OpMode opMode;
 
     private static final double PICKUP = 1.0;
     private static final double IDLE = 0;
 
+
     public void initIntake(OpMode opMode)
     {
         time.reset();
-
+        this.opMode = opMode;
         rightSide = opMode.hardwareMap.dcMotor.get("RIn");
         leftSide = opMode.hardwareMap.dcMotor.get("LIn");
 
@@ -39,7 +42,7 @@ public class Intake {
     }
 
     //is to be called in OpMode
-    public void autoIntake(DriveTrain drive, double runTime, boolean block)
+    public void autoIntake (double runTime, boolean block)
     {
         time.reset();
 
@@ -53,7 +56,7 @@ public class Intake {
 
     }
 
-    public void compliantIntake_TeleOp(OpMode opMode)
+    public void compliantIntake_TeleOp()
     {
         if(opMode.gamepad2.right_bumper) //set game pad button to x, could change, survey people
         {

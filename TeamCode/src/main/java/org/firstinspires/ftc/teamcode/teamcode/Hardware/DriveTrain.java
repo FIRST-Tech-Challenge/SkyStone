@@ -110,6 +110,13 @@ public class DriveTrain {
     private double blVel;
     private double modPower = 0.0;
 
+    public void RunAsFloat()
+    {
+        fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+    }
 
     public void initDriveTrain(LinearOpMode opMode) {
         this.opMode = opMode;
@@ -835,8 +842,7 @@ public class DriveTrain {
         }
     }
 
-    public double getVelocity(DcMotor motor)
-    {
+    public double getVelocity(DcMotor motor) {
         runtime.reset();
 
         prevPosition = motor.getCurrentPosition();
@@ -866,19 +872,16 @@ public class DriveTrain {
         return masterAccel;
     }
 
-    public void equalize()
-    {
+    public void equalize() {
         flAcc = getHolon(fl);
         frAcc = getHolon(fr);
         brAcc = getHolon(br);
         blAcc = getHolon(bl);
 
-        if(Math.abs(flAcc - brAcc) >= .25)
-        {
+        if(Math.abs(flAcc - brAcc) >= .25) {
             fl.setPower(fl.getPower() - (flAcc - brAcc));
         }
-        if(Math.abs(frAcc - blAcc) >= .25)
-        {
+        if(Math.abs(frAcc - blAcc) >= .25) {
             fr.setPower(fr.getPower() - (frAcc - blAcc));
         }
 

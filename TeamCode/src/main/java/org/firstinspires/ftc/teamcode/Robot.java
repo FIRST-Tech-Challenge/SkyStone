@@ -25,6 +25,10 @@ public class Robot {
     public double ROBOT_EXTENDED_LENGTH = 36.0; // in
     public double ROBOT_RETRACTED_LENGTH = 18.0; // in
 
+    // motor info
+    public int wafflePosition = 0; // 1 = Up, -1 = Down
+    private double wafflePower = 0.5;
+
     HardwareMap hwMap = null;
 
     public Robot () {
@@ -162,5 +166,20 @@ public class Robot {
         this.frontRight.setPower(-power);
         Thread.sleep(milliseconds);
         this.stopDrive();
+    }
+
+    public void moveWaffleMover(char floatOrHold) throws InterruptedException {
+        if (floatOrHold != 'f' && floatOrHold != 'h') {
+            return;
+        }
+        this.wafflePosition *= -1;
+        this.waffleMover.setPower(this.wafflePower * this.wafflePosition);
+
+        Thread.sleep(1000);
+
+        if (floatOrHold == 'f') {
+            this.waffleMover.setPower(0);
+        }
+        Thread.sleep(500); // buffer time to let the motor to completely stop
     }
 }

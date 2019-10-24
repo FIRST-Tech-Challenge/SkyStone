@@ -53,7 +53,33 @@ public class MM_LoadingZoneRed extends LinearOpMode {
 
         }
         // Pick Block up with arm
+        // slew the servo, according to the rampUp (direction) variable.
+        if (rampUp) {
+            // Keep stepping up until we hit the max value.
+            position += INCREMENT ;
+            if (position >= MAX_POS ) {
+                position = MAX_POS;
+                rampUp = !rampUp;   // Switch ramp direction
+            }
+        }
+        else {
+            // Keep stepping down until we hit the min value.
+            position -= INCREMENT ;
+            if (position <= MIN_POS ) {
+                position = MIN_POS;
+                rampUp = !rampUp;  // Switch ramp direction
+            }
+        }
 
+        // Display the current value
+        telemetry.addData("Servo Position", "%5.2f", position);
+        telemetry.addData(">", "Press Stop to end test." );
+        telemetry.update();
+
+        // Set the servo to the new position and pause;
+        servo.setPosition(position);
+        sleep(CYCLE_MS);
+        idle();
 
         Thread.sleep(500);
         // back up

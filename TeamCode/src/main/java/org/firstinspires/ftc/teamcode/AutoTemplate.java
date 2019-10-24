@@ -2,6 +2,9 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.opencv.core.Core;
@@ -31,9 +34,9 @@ import java.util.List;
  *
  * monitor: 640 x 480
  */
-@Autonomous(name= "onlyopencv1", group="Sky autonomous")
+@Autonomous(name= "AutoTemplate", group="Sky autonomous")
 //@Disabled
-public class onlyopencv1 extends LinearOpMode {
+public class AutoTemplate extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     private DcMotor backLeft     = null; //rear left
@@ -41,7 +44,9 @@ public class onlyopencv1 extends LinearOpMode {
     private DcMotor frontLeft    = null; //front left
     private DcMotor frontRight   = null; //front right
 
-    private Servo   servo        = null;
+    private Servo servoRight        = null;
+    private Servo servoLeft         = null;
+
     private final int encoderTicks = 1120;
     private final double wheelDiameter = 3.85827;//in inches
 
@@ -139,7 +144,8 @@ public class onlyopencv1 extends LinearOpMode {
        backRight       = hardwareMap.dcMotor.get("right_drive");
        frontLeft       = hardwareMap.dcMotor.get("front_left");
        frontRight      = hardwareMap.dcMotor.get("front_right");
-       servo           = hardwareMap.servo.get("servo");
+       servoLeft       = hardwareMap.servo.get("servoLeft");
+       servoRight      = hardwareMap.servo.get("servoRight");
 
        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);

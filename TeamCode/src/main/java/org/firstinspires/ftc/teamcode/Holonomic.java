@@ -24,7 +24,8 @@ public class Holonomic extends LinearOpMode {
     private DcMotor backRight    = null; //rear right
     private DcMotor frontLeft    = null; //front left
     private DcMotor frontRight   = null; //front right
-    private Servo servo = null;
+    private Servo servoLeft      = null;
+    private Servo servoRight     = null;
 
     public static final double deadZone = 0.10;
     public static final boolean earthIsFlat = true;
@@ -39,7 +40,8 @@ public class Holonomic extends LinearOpMode {
         frontLeft = hardwareMap.get(DcMotor.class, "front_left");
         frontRight = hardwareMap.get(DcMotor.class, "front_right");
 
-        servo = hardwareMap.get(Servo.class, "servo");
+        servoLeft = hardwareMap.get(Servo.class, "servoLeft");
+        servoRight = hardwareMap.get(Servo.class, "servoRight");
 
         //Set the direction of the motors
         //Reversed motors on one side to ensure forward movement.
@@ -55,7 +57,7 @@ public class Holonomic extends LinearOpMode {
         backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        servo.setPosition(0);
+        //servo.setPosition(0);
 
         waitForStart();
         runtime.reset();
@@ -75,10 +77,10 @@ public class Holonomic extends LinearOpMode {
             if(!gamepad1.right_bumper && !gamepad1.left_bumper)//makes sure speed does not round every refresh. otherwise, speed won't be able to change
                 speedSet = Math.round(speedSet);
 
-            if(gamepad1.a)
-                servo.setPosition(0.5);
-            else
-                servo.setPosition(0);
+//            if(gamepad1.a)
+//                servo.setPosition(0.5);
+//            else
+//                servo.setPosition(0);
 
             //directional
             //using range.clip makes sure you can use all sticks and directions at the same time without conflicts. power stays limited at 1
@@ -100,11 +102,10 @@ public class Holonomic extends LinearOpMode {
             }
 
             telemetry.addData("Drive", "Holonomic");
+            telemetry.addData("Left", servoLeft.getPosition());
+            telemetry.addData("Right", servoRight.getPosition());
             telemetry.addData("speedSet", "%.2f", speedSet);
             telemetry.update();
-
         }
-
-
     }
 }

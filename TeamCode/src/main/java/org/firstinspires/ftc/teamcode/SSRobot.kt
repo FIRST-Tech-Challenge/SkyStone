@@ -13,6 +13,7 @@ class SSRobot {
     var leftDrive: DcMotor? = null
     var rightDrive: DcMotor? = null
     var linSlideY: DcMotor? = null
+    var claw: Servo? = null
 
 
     var motF = DcMotorSimple.Direction.FORWARD
@@ -52,6 +53,7 @@ class SSRobot {
         leftDrive = ahwdMap.dcMotor.get("leftDrive")
         rightDrive = ahwdMap.dcMotor.get("rightDrive")
         linSlideY = ahwdMap.dcMotor.get("linSlideY")
+        claw = ahwdMap.servo.get("claw")
 
 
         //Setting direction

@@ -6,4 +6,9 @@ dependencies {
     implementation (name: 'WirelessP2p-release', ext:'aar')
     implementation (name: 'tfod-release', ext:'aar')
     implementation (name: 'tensorflow-lite-0.0.0-nightly', ext:'aar')
+
+    implementation('com.google.firebase:firebase-core:17.0.0')
+    implementation('com.google.firebase:firebase-database:19.1.0')
+    implementation ('com.google.firebase:firebase-storage:19.0.1')
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.2'
 }

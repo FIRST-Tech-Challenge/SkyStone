@@ -32,14 +32,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              xmlns:style="http://schemas.android.com/apk/res-auto"
-              tools:context="org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity"
-              android:focusable="true"
-              android:id="@+id/entire_screen"
-              android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/entire_screen"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:orientation="vertical"
+    tools:context="org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity">
 
   <!-- black bar on top -->
   <RelativeLayout
@@ -111,13 +110,20 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       android:visibility="invisible"
       android:text="" />
 
+      <TextView
+          android:id="@+id/textStreamingStatus"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_below="@+id/textRobotStatus"
+          android:text="T265 Connected: False"
+          android:visibility="visible" />
     <TextView
-      android:id="@+id/textOpMode"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_below="@+id/textRobotStatus"
-      android:visibility="invisible"
-      android:text="" />
+        android:id="@+id/textOpMode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textStreamingStatus"
+        android:text=""
+        android:visibility="invisible" />
 
     <FrameLayout
       android:layout_width="match_parent"

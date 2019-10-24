@@ -38,7 +38,7 @@ android {
 
     defaultConfig {
         applicationId 'com.qualcomm.ftcrobotcontroller'
-        minSdkVersion 19
+        minSdkVersion 23
         targetSdkVersion 26
 
         /**
@@ -50,10 +50,8 @@ android {
          * We accomplish this with the help of a funky little Groovy script that maintains that
          * correspondence automatically.
          *
-         * @see <a href="http://developer.android.com/tools/building/configuring-gradle.html">Configure Your Build</a>
-         * @see <a href="http://developer.android.com/tools/publishing/versioning.html">Versioning Your App</a>
          */
-        def manifestFile = project(':FtcRobotController').file('src/main/AndroidManifest.xml');
+        def manifestFile = project(':FtcRobotController').file('src/main/AndroidManifest.xml')
         def manifestText = manifestFile.getText()
         //
         def vCodePattern = Pattern.compile("versionCode=\"(\\d+(\\.\\d+)*)\"")
@@ -62,7 +60,7 @@ android {
         def vCode = Integer.parseInt(matcher.group(1))
         //
         def vNamePattern = Pattern.compile("versionName=\"(.*)\"")
-        matcher = vNamePattern.matcher(manifestText);
+        matcher = vNamePattern.matcher(manifestText)
         matcher.find()
         def vName = matcher.group(1)
         //
@@ -89,7 +87,17 @@ android {
             }
         }
     }
+    flavorDimensions "toCodeOrNotToCode"
+    productFlavors {
+        noTeamCode {
+            dimension "toCodeOrNotToCode"
+        }
+        onlyTeamCode {
 
+            dimension "toCodeOrNotToCode"
+        }
+
+    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
@@ -107,3 +115,4 @@ repositories {
     }
 }
 apply from: 'build.release.gradle'
+apply plugin: 'com.google.gms.google-services'

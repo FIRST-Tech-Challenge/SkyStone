@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "68731720775",
+    "firebase_url": "https://ftc-variables.firebaseio.com",
+    "project_id": "ftc-variables",
+    "storage_bucket": "ftc-variables.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:68731720775:android:a3832482d3d61b42",
+        "android_client_info": {
+          "package_name": "com.qualcomm.ftcrobotcontroller"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "68731720775-7v0rmmvsfap9tod2pthttg9ocvrg5uk9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAyR09kLCXKCuwxGFrp1gNbrFPkU-aib5g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "68731720775-7v0rmmvsfap9tod2pthttg9ocvrg5uk9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

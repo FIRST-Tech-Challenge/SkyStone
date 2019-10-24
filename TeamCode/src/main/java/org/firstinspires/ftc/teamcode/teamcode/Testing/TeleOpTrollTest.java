@@ -174,11 +174,6 @@ public class TeleOpTrollTest extends OpMode {
             drive.snowWhite();
         }
 
-                //drive.fl.setPower((velocity * Math.cos(direction) - speed) * speedProp);
-                //drive.fr.setPower((velocity * Math.sin(direction) + speed) * speedProp);
-                //drive.bl.setPower((velocity * Math.sin(direction) - speed) * speedProp);
-                //drive.br.setPower((velocity * Math.cos(direction) + speed) * speedProp);
-
 
 
             telemetry.addData("Halfing Speed : ", pastX);

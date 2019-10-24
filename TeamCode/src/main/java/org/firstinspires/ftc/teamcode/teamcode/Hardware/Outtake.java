@@ -32,7 +32,7 @@ public class Outtake{
     static final double distanceBetweenBlocks = 4.0; // In Inches
     static final double liftExtensionTime = 1000; // Time it takes for lift to extend out = length of lift / speed of motors
 
-    static final double encoderLevelCount = (1440 / Math.PI) ;
+    static final double encoderLevelCount = (360 / Math.PI) ;
 
     static double LIFTPOWER = 1.0;
     static double HOOKDOWN = -1.0;
@@ -138,13 +138,13 @@ public class Outtake{
 
         if(blockCount % 2 == 1)
         {
-            //openBasket();
+            openBasket();
         }
         else if(blockCount % 2 == 0)
         {
             drive.strafeMove(opMode, 4, 3, 1);
 
-            //openBasket();
+            openBasket();
 
             drive.strafeMove(opMode,  4, 3, -1);
 
@@ -158,6 +158,9 @@ public class Outtake{
 
     public void outTake_TeleOp(OpMode opMode)
     {
+
+        horizontalLiftTele();
+
         if (Math.abs(opMode.gamepad2.left_stick_y) > .05) {
             liftRight.setPower(opMode.gamepad2.left_stick_y);
             liftLeft.setPower(opMode.gamepad2.left_stick_y);
@@ -170,8 +173,8 @@ public class Outtake{
         {
             // move lift up
 
-            liftRight.setPower(.1);
-            liftLeft.setPower(.1);
+            liftRight.setPower(1);
+            liftLeft.setPower(1);
 
 
 
@@ -180,6 +183,8 @@ public class Outtake{
             }
 
             level += 1;
+            liftLeft.setPower(0);
+            liftRight.setPower(0);
 
         }
         else if(opMode.gamepad2.dpad_down && level > 1)
@@ -240,7 +245,7 @@ public class Outtake{
     public void openBasket()
     {
         // pushes front servo in while as rotating CRServos to open basket
-        time.reset();
+
 
         blockCount++;
 
@@ -248,9 +253,10 @@ public class Outtake{
         leftVex.setPower(1);
 
         //8.78 inches extends out
-       // while((rightSideY.getCurrentPosition() + leftSideY) / 2 < 8.78 * 1440)
-        //{
-        //}
+        time.reset();
+        while(time.milliseconds() < 5000)
+        {
+        }
 
         rightVex.setPower(0);
         leftVex.setPower(0);
@@ -320,7 +326,7 @@ public class Outtake{
         }
     }
 
-    public void horizontalLiftTele(OpMode opMode) {
+    public void horizontalLiftTele() {
         if (Math.abs(opMode.gamepad2.right_stick_y) > .05) {
             rightVex.setPower(opMode.gamepad2.right_stick_y);
             leftVex.setPower(opMode.gamepad2.right_stick_y);

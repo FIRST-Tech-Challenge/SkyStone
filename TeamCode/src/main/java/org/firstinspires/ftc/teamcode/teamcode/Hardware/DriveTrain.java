@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.teamcode.Hardware;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -8,7 +9,7 @@ import java.text.DecimalFormat;
 
 public class DriveTrain {
 
-    private static double motorCounts = 1440;
+    private static double motorCounts = 360;
     private static double gearUp = 1;
     public static double wheelDiam = 4;
     public static double noLoadSpeed = 31.4 ; // Max Angular Velocity in radians/second for 20 : 1 motor
@@ -111,7 +112,6 @@ public class DriveTrain {
 
 
     public void initDriveTrain(LinearOpMode opMode) {
-
         this.opMode = opMode;
         sensors = new Sensors();
 

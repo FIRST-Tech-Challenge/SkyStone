@@ -15,9 +15,9 @@ public class MM_LoadingZoneBlue extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         robot.init(hardwareMap);
-
-        waitForStart();
         // Detect skystone with camera
+        
+        waitForStart();
 
         // Drive to quarry
         robot.driveForwardDistance(47.0 - robot.ROBOT_EXTENDED_LENGTH, speed, this);

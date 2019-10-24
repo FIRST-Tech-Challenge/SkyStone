@@ -14,12 +14,12 @@ public class TTDriveSystem {
     private static final double INCHES_TO_TICKS_VERTICAL = -42.64;
     private static final double INCHES_TO_TICKS_LATERAL = 47.06;
     private static final double INCHES_TO_TICKS_DIAGONAL = -64.29;
-    private static final double DEGREES_TO_TICKS = -8.884755566;
+    private static final double DEGREES_TO_TICKS = -8.888755566;
     /**
      * Maximum number of ticks a motor's current position must be away from it's target for it to
      * be considered near its target.
      */
-    private static final double TICK_ERROR = 25.0;
+    private static final double TICK_ERROR_TOLERANCE = 25.0;
     /**
      * Proportional.
      */
@@ -31,7 +31,7 @@ public class TTDriveSystem {
     /**
      * Derivative.
      */
-    private static final double D = 0.2;
+    private static final double D = 0.0;
 
     private final DcMotor frontLeft, frontRight, backLeft, backRight;
     private final DcMotor[] motors;
@@ -63,23 +63,21 @@ public class TTDriveSystem {
     }
 
     public void continuous(Vector2 velocity, double turnSpeed) {
-        velocity = new Vector2(velocity.getY(), velocity.getX()); // A VERY JANKY SOLUTION, FIX IN FUTURE
-
         setRunMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         double direction = velocity.getDirection();
-        double power = velocity.magnitude();
+
+        double maxPow = Math.sin(Math.PI / 4);
+        double power = velocity.magnitude() / maxPow;
 
         double angle = direction - Math.PI / 4;
         double sin = Math.sin(angle);
         double cos = Math.cos(angle);
 
-        double maxPow = Math.sin(Math.PI / 4);
-
-        double frontLeftPow = (power * cos - turnSpeed) / maxPow;
-        double frontRightPow = (power * sin + turnSpeed) / maxPow;
-        double backLeftPow = (power * sin - turnSpeed) / maxPow;
-        double backRightPow = (power * cos + turnSpeed) / maxPow;
+        double frontLeftPow = power * sin - turnSpeed;
+        double frontRightPow = power * cos + turnSpeed;
+        double backLeftPow = power * cos - turnSpeed;
+        double backRightPow = power * sin + turnSpeed;
 
         frontLeft.setPower(frontLeftPow);
         frontRight.setPower(frontRightPow);
@@ -194,7 +192,6 @@ public class TTDriveSystem {
     public void turn(double degrees, double speed) {
         setRunMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         int ticks = (int) (degrees * DEGREES_TO_TICKS);
-
         frontLeft.setTargetPosition(ticks);
         frontRight.setTargetPosition(-ticks);
         backLeft.setTargetPosition(ticks);
@@ -221,7 +218,7 @@ public class TTDriveSystem {
             int targetPosition = motor.getTargetPosition();
             int currentPosition = motor.getCurrentPosition();
             double ticksFromTarget = Math.abs(targetPosition - currentPosition);
-            if (ticksFromTarget > TICK_ERROR) {
+            if (ticksFromTarget >= TICK_ERROR_TOLERANCE) {
                 return false;
             }
         }

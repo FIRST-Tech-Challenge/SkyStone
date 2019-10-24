@@ -1,17 +1,17 @@
 package teamcode.common;
 
 /**
- * An immutable bounding box.
+ * An immutable 2-dimensional bounding box.
  */
-public class BoundingBox {
+public class BoundingBox2D {
 
     private final double x1, y1, x2, y2;
 
-    public BoundingBox(Vector2 topLeft, Vector2 bottomRight) {
+    public BoundingBox2D(Vector2 topLeft, Vector2 bottomRight) {
         this(topLeft.getX(), topLeft.getY(), bottomRight.getX(), bottomRight.getY());
     }
 
-    public BoundingBox(double x1, double y1, double x2, double y2) {
+    public BoundingBox2D(double x1, double y1, double x2, double y2) {
         this.x1 = x1;
         this.y1 = y1;
         this.x2 = x2;

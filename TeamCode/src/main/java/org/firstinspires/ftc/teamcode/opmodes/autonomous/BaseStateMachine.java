@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 import android.util.Log;
 
 import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -33,6 +34,7 @@ public abstract class BaseStateMachine extends BaseOpMode {
         RED, BLUE
     }
 
+        private final static String TAG = "BaseStateMachine";
         protected State mCurrentState;    // Current State Machine State.
         protected ColorSensor colorSensor;
         protected ElapsedTime mStateTime = new ElapsedTime();  // Time into current state
@@ -41,6 +43,7 @@ public abstract class BaseStateMachine extends BaseOpMode {
 
         public void init(Team team) {
                 super.init();
+                msStuckDetectInit = 25000;
 //                super.setCamera(team == Team.RED ? CameraChoice.WEBCAM1 : CameraChoice.WEBCAM2);
                 super.setCamera(CameraChoice.PHONE_BACK);
                 rearPerimeter = vuforia.targetsSkyStone.get(team == Team.RED ? 12 : 11);
@@ -71,38 +74,40 @@ public abstract class BaseStateMachine extends BaseOpMode {
                                 driveSystem.driveToPosition(600, DriveSystem.Direction.FORWARD, 0.8);
 //                                driveSystem.turnAbsolute(0, 0.8);
                                 newState(State.STATE_FIND_SKYSTONE);
+
                                 mStateTime.reset();
                                 break;
 
-                    // Drive up to the skystone
-                    double distance = distanceFront.getDistance(DistanceUnit.MM);
-                    distance -= 10;
-                    direction = currentTeam == Team.RED ? DriveSystem.Direction.RIGHT : DriveSystem.Direction.LEFT;
-                    while (!driveSystem.driveToPosition((int) distance, direction, 0.8) && !isStopRequested()) {};
-                    // Offset from skystone
-                    while (!driveSystem.driveToPosition(900, DriveSystem.Direction.BACKWARD, 0.5) && !isStopRequested()) {}
-                    // Shove into the other stones
-                    direction = currentTeam == Team.RED ? DriveSystem.Direction.RIGHT : DriveSystem.Direction.LEFT;
-                    while (!driveSystem.driveToPosition(1500, direction, 0.5) && !isStopRequested()) {}
-                    // Drive into skystone
-                    while (!driveSystem.driveToPosition(500, DriveSystem.Direction.FORWARD, 0.5) && !isStopRequested()) {}
-
+                        case STATE_FIND_SKYSTONE:
+                                // Strafe towards line
+                                // Identify SkyStone
+                                telemetry.addData("State", "STATE_FIND_SKYSTONE");
+                                if (mStateTime.seconds() > 8) {
+                                        // TODO: Unable to detect stone after 10 seconds. Use dead reckoning
+                                        // TODO: Make new state for this. Currently just set to log
+                                        newState(State.LOGGING);
+                                        break;
+                                }
+                                Log.d(TAG, mCurrentState.toString());
                                 if (vuforia.isTargetVisible(skystone)) {
-                                        Log.d("ROBOT", "Got here");
+                                        Log.d(TAG, "Got here");
                                         newState(State.STATE_GRAB_STONE);
                                         break;
                                 }
                                 telemetry.update();
                                 break;
                         case STATE_GRAB_STONE:
+                                Log.d(TAG, mCurrentState.toString());
                                 // Grab the stone and slurp it into the machine
                                 telemetry.addData("State", "STATE_GRAB_STONE");
                                 telemetry.update();
 
                                 Orientation rotation = vuforia.getRobotHeading();
-                                driveSystem.turn(rotation.thirdAngle - 90, 0.5);
+                                if(!driveSystem.turn(rotation.thirdAngle - 90, 0.5)){
+                                        break;
+                                }
                                 if (vuforia.isTargetVisible(skystone)) {
-                                        Log.d("ROBOT", "inside grab stone loop");
+                                        Log.d(TAG, "inside grab stone loop");
                                         VectorF translation = vuforia.getRobotPosition();
                                         // Align with skystone
                                         driveSystem.driveToPosition((int) translation.get(1), DriveSystem.Direction.RIGHT, 0.25);

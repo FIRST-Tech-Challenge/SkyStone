@@ -13,7 +13,7 @@ public class MM_LoadingZoneRed extends LinearOpMode {
     double distanceToBuildZone = 0.0; // distance to skybridge from close edge of block
     double speed = 0.4;
 
-    //Gripper Test
+    // Gripper Test
     static final double INCREMENT   = 0.01;     // amount to slew servo each CYCLE_MS cycle
     static final int    CYCLE_MS    =   50;     // period of each cycle
     static final double MAX_POS     =  1.0;     // Maximum rotational position
@@ -52,7 +52,7 @@ public class MM_LoadingZoneRed extends LinearOpMode {
                 break;
 
         }
-        // Pick Block up with arm
+        /* Pick Block up with arm */
         // slew the servo, according to the rampUp (direction) variable.
         if (rampUp) {
             // Keep stepping up until we hit the max value.

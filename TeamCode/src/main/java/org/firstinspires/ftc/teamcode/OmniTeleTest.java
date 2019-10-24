@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import org.firstinspires.ftc.teamcode.HardwareOmnibot.ExtendPosition;
 
 import static java.lang.Math.atan2;
 import static java.lang.Math.toDegrees;
@@ -70,7 +69,7 @@ public class OmniTeleTest extends OpMode {
     private double collectPower;
     private boolean reverse = false;
     private boolean spinning = false;
-    private HardwareOmnibot.ExtendPosition extendPosition = HardwareOmnibot.ExtendPosition.RETRACTED;
+    private HardwareOmnibot.IntakePosition intakePosition = HardwareOmnibot.IntakePosition.RETRACTED;
     private boolean doneExtending = true;
     private boolean clawOpen = true;
     private boolean clawFront = true;
@@ -104,6 +103,9 @@ public class OmniTeleTest extends OpMode {
         x2Pressed = gamepad2.x;
         up2Pressed = gamepad2.dpad_up;
         down2Pressed = gamepad2.dpad_down;
+
+		// Allow the robot to read encoders again
+		robot.resetEncoderReads();
 
         if(!xHeld && xPressed)
         {
@@ -149,7 +151,7 @@ public class OmniTeleTest extends OpMode {
         if(!bHeld && bPressed)
         {
             bHeld = true;
-            robot.moveIntake(extendPosition);
+            robot.moveIntake(robot.intakeTargetPosition);
         } else if(!bPressed) {
             bHeld = false;
         }
@@ -185,42 +187,14 @@ public class OmniTeleTest extends OpMode {
 
         if(!rightHeld && rightPressed) {
             rightHeld = true;
-            switch(extendPosition)
-            {
-                case RETRACTED:
-                    extendPosition = HardwareOmnibot.ExtendPosition.CAPSTONE;
-                    break;
-                case CAPSTONE:
-                    extendPosition = HardwareOmnibot.ExtendPosition.SPINMIN;
-                    break;
-                case SPINMIN:
-                    extendPosition = HardwareOmnibot.ExtendPosition.EJECT;
-                    break;
-                case EJECT:
-                    extendPosition = HardwareOmnibot.ExtendPosition.EXTENDED;
-                    break;
-            }
+			robot.intakeOut();
         } else if(!rightPressed) {
             rightHeld = false;
         }
 
         if(!leftHeld && leftPressed) {
             leftHeld = true;
-            switch(extendPosition)
-            {
-                case CAPSTONE:
-                    extendPosition = HardwareOmnibot.ExtendPosition.RETRACTED;
-                    break;
-                case SPINMIN:
-                    extendPosition = HardwareOmnibot.ExtendPosition.CAPSTONE;
-                    break;
-                case EJECT:
-                    extendPosition = HardwareOmnibot.ExtendPosition.SPINMIN;
-                    break;
-                case EXTENDED:
-                    extendPosition = HardwareOmnibot.ExtendPosition.EJECT;
-                    break;
-            }
+			robot.intakeIn();
         } else if(!leftPressed) {
             leftHeld = false;
         }
@@ -311,7 +285,7 @@ public class OmniTeleTest extends OpMode {
 
 
 		telemetry.addData("Lift Target Height: ", robot.liftTargetHeight.toString());
-        telemetry.addData("Extend Target: ", extendPosition.toString());
+        telemetry.addData("Intake Target: ", robot.intakeTargetPosition.toString());
         telemetry.addData("Lift State: ", robot.liftState);
         telemetry.addData("Release State: ", robot.releaseState);
         telemetry.addData("Stow State: ", robot.stowState);
@@ -329,7 +303,7 @@ public class OmniTeleTest extends OpMode {
         telemetry.addData("Rear Right Encoder: ", robot.rearRight.getCurrentPosition());
         telemetry.addData("Lifter Encoder: ", robot.lifter.getCurrentPosition());
         telemetry.addData("Extender Encoder: ", robot.extender.getCurrentPosition());
-        telemetry.addData("Extend Zero: ", robot.extendZero);
+        telemetry.addData("Intake Zero: ", robot.intakeZero);
         telemetry.addData("Claw Front: ", clawFront);
         telemetry.addData("Claw Open: ", clawOpen);
         updateTelemetry(telemetry);

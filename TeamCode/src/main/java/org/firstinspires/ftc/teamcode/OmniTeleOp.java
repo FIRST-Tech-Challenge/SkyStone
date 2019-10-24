@@ -27,6 +27,8 @@ public class OmniTeleOp extends OpMode {
     private double driverAngle = 0.0;
     private final double MAX_SPEED = 1.0;
     private final double MAX_SPIN = 1.0;
+    private final double FOUNDATION_SPEED = 0.30;
+    private final double FOUNDATION_SPIN = 0.30;
     private double speedMultiplier = MAX_SPEED;
     private double spinMultiplier = MAX_SPIN;
     private boolean aHeld = false;
@@ -38,6 +40,9 @@ public class OmniTeleOp extends OpMode {
     private boolean x2Held = false;
     private boolean up2Held = false;
     private boolean down2Held = false;
+    private boolean rightHeld = false;
+    private boolean leftHeld = false;
+	private boolean leftBumperHeld = false;
     private boolean aPressed;
     private boolean bPressed;
     private boolean yPressed;
@@ -47,6 +52,9 @@ public class OmniTeleOp extends OpMode {
     private boolean x2Pressed;
     private boolean up2Pressed;
     private boolean down2Pressed;
+    private boolean rightPressed;
+    private boolean leftPressed;
+	private boolean leftBumperPressed;
     private boolean fingersUp = true;
     private double yPower;
     private double xPower;
@@ -55,6 +63,7 @@ public class OmniTeleOp extends OpMode {
     private double liftPower;
     private double extendPower;
     private double collectPower;
+
 
     @Override
     public void start()
@@ -73,12 +82,18 @@ public class OmniTeleOp extends OpMode {
         aPressed = gamepad1.a;
         bPressed = gamepad1.b;
         yPressed = gamepad1.y;
+		rightPressed = gamepad1.dpad_right;
+		leftPressed = gamepad1.dpad_left;
+		leftBumperPressed = gamepad1.left_bumper;
         a2Pressed = gamepad2.a;
         b2Pressed = gamepad2.b;
         y2Pressed = gamepad2.y;
         x2Pressed = gamepad2.x;
         up2Pressed = gamepad2.dpad_up;
         down2Pressed = gamepad2.dpad_down;
+
+		// Allow the robot to read encoders again
+		robot.resetEncoderReads();
 
         if (gamepad1.x) {
             // The driver presses X, then uses the left joystick to say what angle the robot
@@ -94,24 +109,13 @@ public class OmniTeleOp extends OpMode {
             spin = 0.0;
         }
 
-        if(!aHeld && aPressed)
-        {
-            aHeld = true;
-            if(fingersUp) {
-                robot.fingersDown();
-                fingersUp = false;
-            } else {
-                robot.fingersUp();
-                fingersUp = true;
-            }
-        } else if(!aPressed) {
-            aHeld = false;
-        }
-
+		// ********************************************************************
+		// DRIVER JOYSTICK
+		// ********************************************************************
         if(!bHeld && bPressed)
         {
             bHeld = true;
-            robot.startIntake(false);
+            robot.startReleasing();
         } else if(!bPressed) {
             bHeld = false;
         }
@@ -119,15 +123,77 @@ public class OmniTeleOp extends OpMode {
         if(!yHeld && yPressed)
         {
             yHeld = true;
-            robot.startIntake(true);
+            robot.startEjecting();
         } else if(!yPressed) {
             yHeld = false;
+        }
+
+        if(!aHeld && aPressed)
+        {
+            aHeld = true;
+			if(robot.intakePower != 0.0) {
+				robot.stopIntake();
+			} else {
+				robot.startIntake(false);
+			}
+        } else if(!aPressed) {
+            aHeld = false;
+        }
+
+        if(!rightHeld && rightPressed)
+        {
+            rightHeld = true;
+			robot.intakeOut();
+			robot.moveIntake(robot.intakeTargetPosition);
+        } else if(!rightPressed) {
+            rightHeld = false;
+        }
+
+        if(!leftHeld && leftPressed)
+        {
+            leftHeld = true;
+			robot.intakeIn();
+			robot.moveIntake(robot.intakeTargetPosition);
+        } else if(!leftPressed) {
+            leftHeld = false;
+        }
+
+        if(!leftBumperHeld && leftBumperPressed)
+        {
+			if(speedMultiplier == MAX_SPEED) {
+				speedMultiplier = FOUNDATION_SPEED;
+				spinMultiplier = FOUNDATION_SPIN;
+			} else {
+				speedMultiplier = MAX_SPEED;
+				spinMultiplier = MAX_SPIN;
+			}
+            leftBumperHeld = true;
+        } else if(!leftBumperPressed) {
+            leftBumperHeld = false;
+        }
+
+		// ********************************************************************
+		// OPERATOR JOYSTICK
+		// ********************************************************************
+		// This was unassigned (fingers up/down)
+        if(!x2Held && x2Pressed)
+        {
+            x2Held = true;
+            if(fingersUp) {
+                robot.fingersDown();
+                fingersUp = false;
+            } else {
+                robot.fingersUp();
+                fingersUp = true;
+            }
+        } else if(!x2Pressed) {
+            x2Held = false;
         }
 
         if(!a2Held && a2Pressed)
         {
             a2Held = true;
-            robot.startStowing();
+            robot.startLifting();
         } else if(!a2Pressed) {
             a2Held = false;
         }
@@ -135,25 +201,17 @@ public class OmniTeleOp extends OpMode {
         if(!b2Held && b2Pressed)
         {
             b2Held = true;
-            robot.startLifting();
+            robot.startStowing();
         } else if(!b2Pressed) {
             b2Held = false;
         }
 
+		// Unassigned
         if(!y2Held && y2Pressed)
         {
             y2Held = true;
-            robot.startReleasing();
         } else if(!y2Pressed) {
             y2Held = false;
-        }
-
-        if(!x2Held && x2Pressed)
-        {
-            x2Held = true;
-            robot.startEjecting();
-        } else if(!x2Pressed) {
-            x2Held = false;
         }
 
         if(!up2Held && up2Pressed)
@@ -181,6 +239,7 @@ public class OmniTeleOp extends OpMode {
         robot.drive(speedMultiplier * xPower, speedMultiplier * yPower, spinMultiplier * spin, driverAngle);
 
 		telemetry.addData("Lift Target Height: ", robot.liftTargetHeight.toString());
+        telemetry.addData("Intake Target: ", robot.intakeTargetPosition.toString());
         telemetry.addData("Y Power: ", yPower);
         telemetry.addData("X Power: ", xPower);
         telemetry.addData("Spin: ", spin);
@@ -194,9 +253,9 @@ public class OmniTeleOp extends OpMode {
         telemetry.addData("Front Right Encoder: ", robot.frontRight.getCurrentPosition());
         telemetry.addData("Rear Left Encoder: ", robot.rearLeft.getCurrentPosition());
         telemetry.addData("Rear Right Encoder: ", robot.rearRight.getCurrentPosition());
-        telemetry.addData("Lifter Encoder: ", robot.lifter.getCurrentPosition());
-        telemetry.addData("Extender Encoder: ", robot.extender.getCurrentPosition());
-        telemetry.addData("Extender Zero: ", robot.extendZero);
+        telemetry.addData("Lifter Encoder: ", robot.getLifterPosition());
+        telemetry.addData("Intake Encoder: ", robot.getIntakePosition());
+        telemetry.addData("Intake Zero: ", robot.intakeZero);
         updateTelemetry(telemetry);
     }
 

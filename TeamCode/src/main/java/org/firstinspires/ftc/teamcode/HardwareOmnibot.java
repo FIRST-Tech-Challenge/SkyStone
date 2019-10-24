@@ -50,7 +50,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     }
 
     public static int MAX_EXTENSION = 2390;
-    public enum ExtendPosition {
+    public enum IntakePosition {
         RETRACTED(7),
 		CAPSTONE(630),
 		SPINMIN(1520),
@@ -60,7 +60,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 //        EXTENDED(1719);
         private final int encoderCount;
 
-        ExtendPosition(int encoderCount)
+        IntakePosition(int encoderCount)
 		{
 			this.encoderCount = encoderCount;
 		}
@@ -68,6 +68,42 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         public int getEncoderCount()
 		{
 			return encoderCount;
+		}
+
+		public static IntakePosition moveIn(IntakePosition currentPosition)
+		{
+			switch(currentPosition)
+			{
+				case RETRACTED:
+				case CAPSTONE:
+					return RETRACTED;
+				case SPINMIN:
+					return CAPSTONE;
+				case EJECT:
+					return SPINMIN;
+				case EXTENDED:
+					return EJECT;
+				default:
+					return currentPosition;
+			}
+		}
+
+		public static IntakePosition moveOut(IntakePosition currentPosition)
+		{
+			switch(currentPosition)
+			{
+				case RETRACTED:
+					return CAPSTONE;
+				case CAPSTONE:
+					return SPINMIN;
+				case SPINMIN:
+					return EJECT;
+				case EJECT:
+				case EXTENDED:
+					return EXTENDED;
+				default:
+					return currentPosition;
+			}
 		}
 	}
 
@@ -199,7 +235,8 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 
     public LiftPosition liftTargetHeight = LiftPosition.STONE1;
 	private LiftPosition liftStateTargetHeight;
-	private ExtendPosition extenderPosition = ExtendPosition.RETRACTED;
+	public IntakePosition intakePosition = IntakePosition.RETRACTED;
+	public IntakePosition intakeTargetPosition = IntakePosition.RETRACTED;
 
     // Robot Controller Config Strings
     public final static String RIGHT_FINGER = "RightFinger";
@@ -240,14 +277,25 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     // These are the heights of the stone levels to auto set the lift to
     protected LiftPosition lastLiftHeight = LiftPosition.STOWED;
     protected int liftZero = 0;
-    protected int extendZero = 0;
-    protected double intakePower = 0.0;
-    protected boolean extendZeroUpdated = false;
+    protected int intakeZero = 0;
+    public double intakePower = 0.0;
+    protected boolean intakeZeroUpdated = false;
+
+	// Variables so we only read encoders once per loop
+	protected boolean lifterEncoderRead = false;
+	protected boolean extenderEncoderRead = false;
+	protected int lifterEncoderValue = 0;
+	protected int extenderEncoderValue = 0;
 
     /* Constructor */
     public HardwareOmnibot(){
         super();
     }
+
+	public void resetEncoderReads() {
+		lifterEncoderRead = false;
+		extenderEncoderRead = false;
+	}
 
     public void initGroundEffects()
     {
@@ -294,7 +342,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                 stowState = StowActivity.STOPPING;
             }
 			// Extend the intake to make sure it isn't in the way.
-			moveIntake(ExtendPosition.EXTENDED);
+			moveIntake(IntakePosition.EXTENDED);
 
 			// We don't want the intake spinning while we are trying to lift the stone.
 			stopIntake();
@@ -349,7 +397,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 				}
 			    break;
             case CLEARING_LIFT:
-			    if(extenderAtPosition(ExtendPosition.EXTENDED)) {
+			    if(intakeAtPosition(IntakePosition.EXTENDED)) {
                     liftState = LiftActivity.LOWERING_TO_GRAB;
 					moveLift(LiftPosition.GRABBING);
 				}
@@ -415,7 +463,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                 releaseState = ReleaseActivity.STOPPING;
             }
 			// Extend the intake to make sure it isn't in the way.
-			moveIntake(ExtendPosition.EXTENDED);
+			moveIntake(IntakePosition.EXTENDED);
 
 			// We don't want the intake spinning while we are trying to stow the
 			// lift.
@@ -463,7 +511,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 				}
 			    break;
             case CLEARING_LIFT:
-			    if(extenderAtPosition(ExtendPosition.EXTENDED)) {
+			    if(intakeAtPosition(IntakePosition.EXTENDED)) {
                     stowState = StowActivity.RAISING_TO_ROTATE;
 					if(clawdricopterBack) {
 						moveLift(LiftPosition.ROTATE);
@@ -482,21 +530,21 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public boolean maxExtensionSetZero() {
         boolean maxExtended = false;
         // Have to make sure it is trying to extend fully.
-        moveIntake(ExtendPosition.EXTENDED);
+        moveIntake(IntakePosition.EXTENDED);
         double extenderCurrentVelocity = extender.getVelocity();
-        int extenderCurrentPosition = getExtenderPosition();
+        int intakeCurrentPosition = getIntakePosition();
 
         // The motor is stalled or we have finished
         if(extenderCurrentVelocity < 250) {
-            int newZero = extenderCurrentPosition - MAX_EXTENSION;
+            int newZero = intakeCurrentPosition - MAX_EXTENSION;
             // We have reached target
             if(Math.abs(newZero) <= ENCODER_ERROR) {
                 maxExtended = true;
             } else {
                 // We missed our target
                 maxExtended = false;
-                setExtendZero(newZero);
-                moveIntake(ExtendPosition.EXTENDED);
+                setIntakeZero(newZero);
+                moveIntake(IntakePosition.EXTENDED);
             }
 
         } else {
@@ -517,7 +565,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
             }
             ejectState = EjectActivity.EJECT;
             startIntake(true);
-            moveIntake(ExtendPosition.EJECT);
+            moveIntake(IntakePosition.EJECT);
         }
     }
 
@@ -525,14 +573,14 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         switch(ejectState)
         {
             case EJECT:
-                if(extenderAtPosition(ExtendPosition.EJECT)) {
+                if(intakeAtPosition(IntakePosition.EJECT)) {
                     ejectState = EjectActivity.RESET;
                     startIntake(false);
-                    moveIntake(ExtendPosition.EXTENDED);
+                    moveIntake(IntakePosition.EXTENDED);
                 }
                 break;
             case RESET:
-                if(extenderAtPosition(ExtendPosition.EXTENDED)) {
+                if(intakeAtPosition(IntakePosition.EXTENDED)) {
                     ejectState = EjectActivity.IDLE;
                 }
                 break;
@@ -552,22 +600,30 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         liftTargetHeight = LiftPosition.removeStone(liftTargetHeight);
     }
 
-    public void moveIntake(ExtendPosition targetExtension) {
-		if((targetExtension != extenderPosition) || (extendZeroUpdated)) {
-		    int targetPosition = targetExtension.getEncoderCount();
+    public void intakeOut() {
+        intakeTargetPosition = IntakePosition.moveOut(intakeTargetPosition);
+    }
+
+    public void intakeIn() {
+        intakeTargetPosition = IntakePosition.moveIn(intakeTargetPosition);
+    }
+
+    public void moveIntake(IntakePosition targetIntakePosition) {
+		if((targetIntakePosition != intakePosition) || (intakeZeroUpdated)) {
+		    int targetPosition = targetIntakePosition.getEncoderCount();
 		    // Make sure the intake isn't spinning if we retract too far.
-		    if(targetPosition < ExtendPosition.SPINMIN.getEncoderCount()) {
+		    if(targetPosition < IntakePosition.SPINMIN.getEncoderCount()) {
 		        stopIntake();
             }
-            setExtenderPosition(targetPosition);
+            setIntakePosition(targetPosition);
             extender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             extender.setPower(EXTEND_SPEED);
-			extenderPosition = targetExtension;
+			intakePosition = targetIntakePosition;
 		}
     }
 
     public void moveLift(LiftPosition targetHeight) {
-        if(getExtenderPosition() >= ExtendPosition.CAPSTONE.getEncoderCount()) {
+        if(getIntakePosition() >= IntakePosition.CAPSTONE.getEncoderCount()) {
             int liftPosition = getLifterPosition();
             int targetPosition = targetHeight.getEncoderCount();
             double lifterSpeed;
@@ -584,7 +640,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 
     public void startIntake(boolean reverse) {
         // Prevent the intake from starting if it isn't extended far enough.
-        if(getExtenderPosition() >= ExtendPosition.SPINMIN.getEncoderCount()) {
+        if(getIntakePosition() >= IntakePosition.SPINMIN.getEncoderCount()) {
             if (reverse) {
                 if(intakePower != -INTAKE_SPEED) {
                     stopIntake();
@@ -620,28 +676,37 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     }
 
     public int getLifterPosition() {
-        return lifter.getCurrentPosition() - liftZero;
+		if(!lifterEncoderRead) {
+			lifterEncoderValue = lifter.getCurrentPosition();
+			lifterEncoderRead = true;
+		}
+
+        return lifterEncoderValue - liftZero;
     }
 
     public void setLifterPosition(int targetPosition) {
         lifter.setTargetPosition(targetPosition + liftZero);
     }
 
-	public boolean extenderAtPosition(ExtendPosition targetPosition) {
-		return Math.abs(getExtenderPosition() - targetPosition.getEncoderCount()) < ENCODER_ERROR;
+	public boolean intakeAtPosition(IntakePosition targetPosition) {
+		return Math.abs(getIntakePosition() - targetPosition.getEncoderCount()) < ENCODER_ERROR;
 	}
 
-    public void setExtendZero(int value) {
-        extendZeroUpdated = true;
-        extendZero = value;
+    public void setIntakeZero(int value) {
+        intakeZeroUpdated = true;
+        intakeZero = value;
     }
 
-    public int getExtenderPosition() {
-        return extender.getCurrentPosition() - extendZero;
+    public int getIntakePosition() {
+		if(!extenderEncoderRead) {
+			extenderEncoderValue = extender.getCurrentPosition();
+			extenderEncoderRead = true;
+		}
+        return extenderEncoderValue - intakeZero;
     }
 
-    public void setExtenderPosition(int targetPosition) {
-		extender.setTargetPosition(targetPosition + extendZero);
+    public void setIntakePosition(int targetPosition) {
+		extender.setTargetPosition(targetPosition + intakeZero);
     }
 
     /* Initialize standard Hardware interfaces */

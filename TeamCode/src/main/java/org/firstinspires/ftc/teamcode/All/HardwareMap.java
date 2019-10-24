@@ -10,7 +10,8 @@ import com.qualcomm.robotcore.hardware.IntegratingGyroscope;
 import java.util.ArrayList;
 
 public class HardwareMap {
-    public DcMotorEx backLeft, backRight, frontLeft, frontRight, firstJoint, secondJoint, intakeJoint;
+    public DcMotorEx backLeft, backRight, frontLeft, frontRight, firstJoint, secondJoint, intakeJoint, leftIntake, rightIntake,
+    liftOne, liftTwo;
     public CRServo intake;
     public BNO055IMU gyro;
     public IntegratingGyroscope imu;
@@ -25,12 +26,20 @@ public class HardwareMap {
         frontLeft = (DcMotorEx) hwMap.get(DcMotor.class, "frontLeft");
         frontRight = (DcMotorEx) hwMap.get(DcMotor.class, "frontRight");
 
+        //------------------------===Intake & Lift Motors===------------------------
+
+        leftIntake = (DcMotorEx) hwMap.get(DcMotor.class, "leftIntake");
+        rightIntake = (DcMotorEx) hwMap.get(DcMotor.class, "rightIntake");
+        liftOne = (DcMotorEx) hwMap.get(DcMotor.class, "liftOne");
+        liftTwo = (DcMotorEx) hwMap.get(DcMotor.class, "liftTwo");
+
+        //---------------------------------------------------------------------------
+
         leftForward = hwMap.get(AnalogInput.class, "leftForward");
         rightForward = hwMap.get(AnalogInput.class, "rightForward");
         sideways = hwMap.get(AnalogInput.class, "sideways");
         gyro = hwMap.get(BNO055IMU.class, "imu");
         imu = (IntegratingGyroscope) gyro;
-
 
         //firstJointVirtualServo = new MotorServo(firstJoint, MotorServo.MotorConfiguration.firstJoint);
         //secondJointVirtualServo = new MotorServo(secondJoint, MotorServo.MotorConfiguration.secondJoint);

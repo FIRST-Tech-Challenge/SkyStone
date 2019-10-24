@@ -47,7 +47,7 @@ class SSRobot {
     }
     fun init(ahwdMap: HardwareMap, diff: Boolean)
     {
-        //hardware maping motors, servos, and sensors
+        //hardware mapping motors, servos, and sensors
         hwdMap = ahwdMap
         leftDrive = ahwdMap.dcMotor.get("leftDrive")
         rightDrive = ahwdMap.dcMotor.get("rightDrive")

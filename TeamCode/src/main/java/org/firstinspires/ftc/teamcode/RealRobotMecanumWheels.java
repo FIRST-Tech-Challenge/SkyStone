@@ -51,9 +51,6 @@ public class RealRobotMecanumWheels extends LinearOpMode {
     private DcMotor leftBack = null;
     private DcMotor rightBack = null;
 
-        waitForStart();
-        runtime.reset();
-
     @Override
     public void runOpMode() {
         telemetry.addData("status", "Initialized");
@@ -73,6 +70,8 @@ public class RealRobotMecanumWheels extends LinearOpMode {
         double tank = gamepad1.right_stick_x;
         double slide = gamepad1.left_stick_x;
 
+        waitForStart();
+        runtime.reset();
 
         while (opModeIsActive()) {
 

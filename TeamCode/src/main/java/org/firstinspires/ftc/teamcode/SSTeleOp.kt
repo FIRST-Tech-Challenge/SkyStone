@@ -32,7 +32,7 @@ class SSTeleOp : OpMode() {
 
     }
 
-    override fun init_loop(){
+    override fun start(){
         robot.linSlideY?.mode=DcMotor.RunMode.RUN_USING_ENCODER
     }
 
@@ -68,7 +68,6 @@ class SSTeleOp : OpMode() {
 
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower)
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower)
-        telemetry.addData("Arm Motor", " (%.2f)", -gamepad2.left_stick_y)
         telemetry.addData("Linear Slide ", "Position: (%.2f)", rot.toFloat())
     }
 

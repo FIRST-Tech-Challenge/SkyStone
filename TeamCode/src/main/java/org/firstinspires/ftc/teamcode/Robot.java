@@ -168,21 +168,18 @@ public class Robot {
         this.stopDrive();
     }
 
-    public void moveWaffleMover(char floatOrHold) {
+    public void moveWaffleMover(char floatOrHold) throws InterruptedException {
         if (floatOrHold != 'f' && floatOrHold != 'h') {
             return;
         }
         this.wafflePosition *= -1;
         this.waffleMover.setPower(this.wafflePower * this.wafflePosition);
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            return;
-        }
+
+        Thread.sleep(1000);
 
         if (floatOrHold == 'f') {
             this.waffleMover.setPower(0);
         }
-
+        Thread.sleep(500); // buffer time to let the motor to completely stop
     }
 }

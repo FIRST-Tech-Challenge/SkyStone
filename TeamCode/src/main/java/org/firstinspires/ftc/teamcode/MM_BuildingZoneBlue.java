@@ -20,6 +20,7 @@ public class MM_BuildingZoneBlue extends LinearOpMode {
         robot.driveForwardDistance(47.0 - robot.ROBOT_RETRACTED_LENGTH, -speed, this);
 
         // extend the waffle mover
+        Thread.sleep(500);
         robot.moveWaffleMover('h');
 
         // drive backwards
@@ -35,6 +36,9 @@ public class MM_BuildingZoneBlue extends LinearOpMode {
         // drive forward to turn and park under the skybridge
         robot.driveForwardDistance(10.0, -speed, this);
 
+        // turn towards skybridge
+        robot.turnRight(-speed, 600);
+
         // if parking close to center, move forward more
         switch (parkingPosition) {
             case CLOSE:
@@ -43,8 +47,6 @@ public class MM_BuildingZoneBlue extends LinearOpMode {
             case FAR:
                 break;
         }
-        // turn towards skybridge
-        robot.turnRight(-speed, 600);
 
         // park under skybridge
         robot.driveForwardDistance(10.0, -speed, this);

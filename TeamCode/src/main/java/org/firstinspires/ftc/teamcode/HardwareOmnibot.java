@@ -77,8 +77,8 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         STOWED(15),
         STONE1(149),
         STONE2(412),
-        ROTATE(600),
         STONE3(660),
+        ROTATE(850),
         STONE4(908),
         STONE5(1156),
         STONE6(1403),
@@ -115,10 +115,10 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 					return STONE2;
 				case STONE2:
 					return STONE3;
-                case ROTATE:
-                    return STONE3;
 				case STONE3:
 					return STONE4;
+                case ROTATE:
+                    return STONE4;
 				case STONE4:
 					return STONE5;
 				case STONE5:
@@ -150,10 +150,10 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 				case STONE1:
 				case STONE2:
 					return STONE1;
-                case ROTATE:
-                    return STONE2;
 				case STONE3:
 					return STONE2;
+                case ROTATE:
+                    return STONE3;
 				case STONE4:
 					return STONE3;
 				case STONE5:

@@ -25,6 +25,8 @@ public class DriveSystem {
     public int counter = 0;
 
     public static final String TAG = "DriveSystem";
+    public static final double P_TURN_COEFF = 0.1;     // Larger is more responsive, but also less stable
+    public static final double HEADING_THRESHOLD = 1 ;      // As tight as we can make it with an integer gyro
 
     public EnumMap<MotorNames, DcMotor> motors;
 
@@ -201,6 +203,7 @@ public class DriveSystem {
      * @param degrees The degrees to turn the robot by
      * @param maxPower The maximum power of the motors
      */
+    // TODO
     public void turnAbsolute(double degrees, double maxPower) {
         turn(imuSystem.getHeading() + degrees, maxPower);
     }
@@ -211,39 +214,84 @@ public class DriveSystem {
      * @param maxPower The maximum power of the motors
      */
     public boolean turn(double degrees, double maxPower) {
-
         double heading = imuSystem.getHeading();
         Log.d(TAG,"Current Heading: " + heading);
-        if(mTargetHeading == 0){
-
-              mTargetHeading = (heading + degrees) % 360;
-            Log.d(TAG,"Setting Heading -- Target: " + mTargetHeading);
+        if(mTargetHeading == 0) {
+            mTargetHeading = (heading + degrees) % 360;
+            Log.d(TAG, "Setting Heading -- Target: " + mTargetHeading);
 
             Log.d(TAG, "Degrees: " + degrees);
-//            if (targetHeading < 0) {
-//                targetHeading = targetHeading + 360;
-//            }
-//            mTargetHeading = targetHeading;
         }
-
-
-
-//        double difference = computeDegreesDiff(mTargetHeading, heading);
         double difference = mTargetHeading - heading;
         Log.d(TAG,"Difference: " + difference);
 
-        if (Math.abs(difference) < 1.0) {
-            setMotorPower(0);
+        return onHeading(maxPower, degrees, P_TURN_COEFF);
+
+    }
+
+    /**
+     * Perform one cycle of closed loop heading control.
+     * @param speed     Desired speed of turn.
+     * @param angle     Absolute Angle (in Degrees) relative to last gyro reset.
+     *                  0 = fwd. + is CCW from fwd, - is CW from forward.
+     *                  If a relative angle is required, add/subtract from current heading.
+     * @param PCoeff    Proportional Gain coefficient
+     */
+    public boolean onHeading(double speed, double angle, double PCoeff) {
+        double steer;
+        boolean onTarget = false;
+        double leftSpeed;
+        double rightSpeed;
+
+        // determine turn power based on +/- error
+        double error = getError(angle);
+
+        if (Math.abs(error) <= HEADING_THRESHOLD) {
+            steer = 0.0;
+            leftSpeed  = 0.0;
+            rightSpeed = 0.0;
+            onTarget = true;
             mTargetHeading = 0;
-            return true;
+        }
+        else {
+            steer = getSteer(error, PCoeff);
+            rightSpeed  = speed * steer;
+            leftSpeed   = -rightSpeed;
         }
 
-        double power = getTurnPower(difference, maxPower);
-        Log.d(TAG,"Turn Power: " + power);
-        tankDrive(power, -power);
+        // Send desired speeds to motors.
+        tankDrive(leftSpeed, rightSpeed);
 
-        return false;
+        return onTarget;
+    }
 
+    /**
+     * getError determines the error between the target angle and the robot's current heading
+     * @param   targetAngle  Desired angle (relative to global reference established at last Gyro Reset).
+     * @return  error angle: Degrees in the range +/- 180. Centered on the robot's frame of reference
+     *          +ve error means the robot should turn LEFT (CCW) to reduce error.
+     */
+    public double getError(double targetAngle) {
+        // calculate error in -179 to +180 range  (
+        double robotError = targetAngle - imuSystem.getHeading();
+        while (robotError > 180) {
+            robotError -= 360;
+        }
+        while (robotError <= -180) {
+            robotError += 360;
+        }
+        return robotError;
+    }
+
+    /**
+     * returns desired steering force.  +/- 1 range.  +ve = steer left
+     * @param error   Error angle in robot relative degrees
+     * @param PCoeff  Proportional Gain Coefficient
+     * @return
+     */
+    // TODO
+    public double getSteer(double error, double PCoeff) {
+        return Range.clip(error * PCoeff, -1, 1);
     }
 
     /**

@@ -5,11 +5,15 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.DriveTrain;
+import org.firstinspires.ftc.teamcode.teamcode.Hardware.Intake;
+import org.firstinspires.ftc.teamcode.teamcode.Hardware.Outtake;
 
-@TeleOp(name="TeleOpFinal", group= "Arcade")
+@TeleOp(name="Arcade", group= "Tele Op")
 public class TeleOpMecanum extends OpMode {
 
     DriveTrain drive = new DriveTrain();
+    Intake intake = new Intake();
+    Outtake outtake = new Outtake();
 
     double leftStickY;
     double leftStickX;
@@ -32,10 +36,13 @@ public class TeleOpMecanum extends OpMode {
         drive.bl.setDirection(DcMotor.Direction.FORWARD);
         drive.br.setDirection(DcMotor.Direction.REVERSE);
 
-        drive.fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        drive.fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        drive.bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        drive.br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        drive.fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        drive.fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        drive.bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        drive.br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        intake.initIntake(this);
+        outtake.initOuttake(this);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -47,9 +54,6 @@ public class TeleOpMecanum extends OpMode {
     //Main Loop
     @Override
     public void loop() {
-
-        double[] zeroRift;
-        zeroRift = new double[2];
 
         speed = gamepad1.right_stick_x;
 
@@ -85,11 +89,9 @@ public class TeleOpMecanum extends OpMode {
 
         telemetry.addData("Speed : ", speed);
 
-        drive.hermite(zeroRift);
+        velocity = gamepad1.left_stick_y;
 
-        velocity = zeroRift[1];
-
-        direction = zeroRift[0];
+        direction = gamepad1.left_stick_x;
 
         speed = gamepad1.right_stick_x;
 
@@ -115,6 +117,9 @@ public class TeleOpMecanum extends OpMode {
             drive.snowWhite();
         }
 
+        intake.compliantIntake_TeleOp();
+        outtake.outTake_TeleOp();
+
         telemetry.addData("Halfing Speed : ", pastX);
         telemetry.addData("Encoded Acceleration : ", drive.getEncodedAccel());
 
@@ -123,6 +128,7 @@ public class TeleOpMecanum extends OpMode {
                         "BL : " + drive.getHolon(drive.bl) +
                         "BR : " + drive.getHolon(drive.br));
         telemetry.update();
+
 
 
     }

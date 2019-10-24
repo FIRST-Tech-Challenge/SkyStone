@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.teamcode.Hardware;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -8,7 +9,7 @@ import java.text.DecimalFormat;
 
 public class DriveTrain {
 
-    private static double motorCounts = 1440;
+    private static double motorCounts = 360;
     private static double gearUp = 1;
     public static double wheelDiam = 4;
     public static double noLoadSpeed = 31.4 ; // Max Angular Velocity in radians/second for 20 : 1 motor
@@ -109,10 +110,16 @@ public class DriveTrain {
     private double blVel;
     private double modPower = 0.0;
 
+    public void RunAsFloat()
+    {
+        fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+    }
 
-    public void initDriveTrain() {
-
-       // this.opMode = opMode;
+    public void initDriveTrain(LinearOpMode opMode) {
+        this.opMode = opMode;
         sensors = new Sensors();
 
         //Sets Hardware Map
@@ -136,6 +143,7 @@ public class DriveTrain {
         count = 4.0;
         modPower = 0.0;
 
+        runtime.reset();
         resetEncoders();
         //runEncoders();
     }
@@ -694,7 +702,26 @@ public class DriveTrain {
         br.setPower(RDy - RDx);
     }
 
-    public void encoderMove(LinearOpMode opMode, double target, double timeout, double radiax) {
+    public void encoderMove(LinearOpMode opMode, double target, double timeout, double power) {
+
+        this.opMode = opMode;
+        runtime.reset();
+        resetEncoders();
+
+        double average = 0.0;
+
+        setMotorsPower(power);
+        while (Math.abs(average) < target * inchCounts && runtime.seconds() < timeout)
+        {
+
+            average = getEncoderAverage();
+
+        }
+        snowWhite();
+    }
+
+
+    public void encoderMoveRad(LinearOpMode opMode, double target, double timeout, double radiax) {
 
         this.opMode = opMode;
         runtime.reset();
@@ -815,8 +842,7 @@ public class DriveTrain {
         }
     }
 
-    public double getVelocity(DcMotor motor)
-    {
+    public double getVelocity(DcMotor motor) {
         runtime.reset();
 
         prevPosition = motor.getCurrentPosition();
@@ -846,19 +872,16 @@ public class DriveTrain {
         return masterAccel;
     }
 
-    public void equalize()
-    {
+    public void equalize() {
         flAcc = getHolon(fl);
         frAcc = getHolon(fr);
         brAcc = getHolon(br);
         blAcc = getHolon(bl);
 
-        if(Math.abs(flAcc - brAcc) >= .25)
-        {
+        if(Math.abs(flAcc - brAcc) >= .25) {
             fl.setPower(fl.getPower() - (flAcc - brAcc));
         }
-        if(Math.abs(frAcc - blAcc) >= .25)
-        {
+        if(Math.abs(frAcc - blAcc) >= .25) {
             fr.setPower(fr.getPower() - (frAcc - blAcc));
         }
 

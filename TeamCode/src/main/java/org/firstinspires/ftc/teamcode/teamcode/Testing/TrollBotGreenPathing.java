@@ -19,7 +19,7 @@ public class TrollBotGreenPathing extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        drive.initDriveTrain();
+        drive.initDriveTrain(this);
         drive.resetEncoders();
 
         waitForStart();

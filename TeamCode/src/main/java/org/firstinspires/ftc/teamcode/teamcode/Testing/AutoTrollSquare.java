@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.DriveTrain;
+import org.firstinspires.ftc.teamcode.teamcode.Hardware.Intake;
 
 @Autonomous(name ="Troll Auto Square", group="Auto Basic")
 public class AutoTrollSquare extends LinearOpMode {
@@ -17,16 +18,50 @@ public class AutoTrollSquare extends LinearOpMode {
     private boolean left = false;
 
     DriveTrain drive = new DriveTrain();
+    Intake intake = new Intake();
 
     @Override
     public void runOpMode() {
 
-        drive.initDriveTrain();
+        drive.initDriveTrain(this);
+        intake.initIntake(this);
+        //drive.RunAsFloat();
         waitForStart();
 
-        drive.encoderMove(this, 24, 5, 45);
-        drive.encoderMove(this, 24, 5, 225);
+        intake.autoIntake(10, true);
+        drive.encoderMove(this, 24, 5, .5);
+        sleep(1000);
+        drive.strafeMove(this, 24, 5, -1);
+        sleep(1000);
+        drive.encoderMove(this, 24, 5, -.5);
+        sleep(1000);
+        drive.strafeMove(this, 24, 5, 1);
+        sleep(1000);
 
+        //drive.partyMode();
+
+
+       /* drive.initDriveTrain(this);
+        waitForStart();
+
+        drive.encoderDrive(this, 1, 24, 24, 3 );
+        drive.snowWhite();
+        sleep(1000);
+        telemetry.addData("1st method ", runtime);
+        telemetry.update();
+
+        //drive.encoderDrive(this,  1, 24, 24, 2);
+        sleep(1000);
+        telemetry.addData("2nd method ", runtime);
+        telemetry.update();
+
+        drive.encoderDrive(this, 1, -24, -24, 3);
+        drive.snowWhite();
+        sleep(1000);
+        telemetry.addData("3rd method ", runtime);
+        telemetry.update();
+
+        drive.encoderDrive(this, -1, 24, 24, 2);*/
        drive.snowWhite();
     }
 

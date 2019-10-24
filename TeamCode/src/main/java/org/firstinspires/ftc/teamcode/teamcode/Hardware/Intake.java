@@ -3,7 +3,10 @@ package org.firstinspires.ftc.teamcode.teamcode.Hardware;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class Intake {
 
@@ -12,21 +15,21 @@ public class Intake {
 
     ElapsedTime time = new ElapsedTime();
 
-    private LinearOpMode opMode;
+    private OpMode opMode;
 
-    private static final double PICKUP = .6;
+    private static final double PICKUP = 1.0;
     private static final double IDLE = 0;
 
-    public boolean initIntake(OpMode opMode)
-    {
-        this.opMode = (LinearOpMode) opMode;
-        time.reset();
 
+    public void initIntake(OpMode opMode)
+    {
+        time.reset();
+        this.opMode = opMode;
         rightSide = opMode.hardwareMap.dcMotor.get("RIn");
         leftSide = opMode.hardwareMap.dcMotor.get("LIn");
 
-        rightSide.setDirection(DcMotor.Direction.REVERSE);
-        leftSide.setDirection(DcMotor.Direction.FORWARD);
+        rightSide.setDirection(DcMotor.Direction.FORWARD);
+        leftSide.setDirection(DcMotor.Direction.REVERSE);
 
         rightSide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         leftSide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
@@ -36,12 +39,10 @@ public class Intake {
 
         rightSide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         leftSide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        return true;
     }
 
     //is to be called in OpMode
-    public void autoIntake(DriveTrain drive, double runTime, boolean block)
+    public void autoIntake (double runTime, boolean block)
     {
         time.reset();
 
@@ -57,14 +58,18 @@ public class Intake {
 
     public void compliantIntake_TeleOp()
     {
-        if(opMode.gamepad2.x) //set game pad button to x, could change, survey people
+        if(opMode.gamepad2.right_bumper) //set game pad button to x, could change, survey people
         {
             rightSide.setPower(PICKUP);
             leftSide.setPower(PICKUP);
 
             opMode.telemetry.addData("Active", "Intake Running");
             opMode.telemetry.update();
-        }else
+        }else if (opMode.gamepad2.left_bumper) {
+            rightSide.setPower(-PICKUP);
+            leftSide.setPower(-PICKUP);
+        }
+        else
         {
             rightSide.setPower(IDLE);
             leftSide.setPower(IDLE);

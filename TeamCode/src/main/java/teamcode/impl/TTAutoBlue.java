@@ -99,8 +99,8 @@ public class TTAutoBlue extends TTOpMode {
     /*Starts from the starting pos and moves grab the block
       at that specific block pos then faces the foundation
      */
-    private void grabSkyStone(int stoneNum) {
-        driveSystem.lateral(41.5 - stoneNum * 8, 0.3);
+    private void grabSkyStone(int stoneNum){
+        driveSystem.lateral(52 - stoneNum * 8, 0.3);
         driveSystem.vertical(31.5, 0.5);
         arm.closeClaw();
         sleep(500);
@@ -111,7 +111,7 @@ public class TTAutoBlue extends TTOpMode {
     }
 
     //Moves towards the foundation and turns to face it
-    private void moveToFoundation(int stoneNum) {
+    private void moveToFoundation(int stoneNum){
         driveSystem.vertical(120 - stoneNum * 8, 0.5);
         sleep(250);
         driveSystem.turn(90, 0.5);
@@ -122,7 +122,7 @@ public class TTAutoBlue extends TTOpMode {
         arm.openClaw();
     }
 
-    private void pullFoundation() {
+    private void pullFoundation(){
         driveSystem.lateral(-4, 0.5);
         driveSystem.vertical(2, 0.5);
         arm.lower(0.5);
@@ -136,4 +136,7 @@ public class TTAutoBlue extends TTOpMode {
     protected void onStop() {
     }
 
+
+
 }
+

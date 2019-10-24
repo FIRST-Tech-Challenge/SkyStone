@@ -103,6 +103,7 @@ public class TTAutoRed extends TTOpMode {
       at that specific block pos then faces the foundation
      */
     private void grabSkyStone(int stoneNum) {
+        driveSystem.vertical(-6, 0.5);
         driveSystem.lateral(-(41.5 - stoneNum * 8), 0.3);
         driveSystem.vertical(31.5, 0.5);
         arm.closeClaw();

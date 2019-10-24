@@ -43,6 +43,7 @@ public class MM_BuildingZoneBlue extends LinearOpMode {
         switch (parkingPosition) {
             case CLOSE:
                 robot.driveForwardDistance(10.0, -speed, this);
+                Thread.sleep(500);
                 break;
             case FAR:
                 break;

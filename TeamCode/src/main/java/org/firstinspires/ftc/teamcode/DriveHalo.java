@@ -61,12 +61,12 @@ public class DriveHalo extends OpMode {
                 break;
 
             case WAFFLE_MOVER:
-                wafflePower = 0.5 - wafflePower;
-                robot.waffleMover.setPower(wafflePower);
                 try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {}
-                break;
+                    robot.moveWaffleMover('f');
+                } catch (InterruptedException e) {
+                    telemetry.addData("Error", "Thread.sleep in moveWaffleMover failed");
+                    telemetry.update();
+                }
         }
     }
 }

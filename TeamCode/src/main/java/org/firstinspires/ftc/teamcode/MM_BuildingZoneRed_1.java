@@ -9,8 +9,8 @@ import static java.lang.Thread.*;
 public class MM_BuildingZoneRed_1 extends LinearOpMode {
 
     Robot robot = new Robot();
-    enum ParkingPosition {Far, Close}// far or close to center
-    ParkingPosition parkingPosition = ParkingPosition.Close;
+    enum ParkingPosition {FAR, CLOSE}// far or close to center
+    ParkingPosition parkingPosition = ParkingPosition.CLOSE;
     double speed = 0.4;
 
     @Override
@@ -23,17 +23,14 @@ public class MM_BuildingZoneRed_1 extends LinearOpMode {
 
         // extend the waffle mover
         Thread.sleep(500);
-        robot.waffleMover.setPower(0.5);
-        Thread.sleep(500);
+        robot.moveWaffleMover('h');
 
         // drive backwards
         robot.driveForwardDistance(50.0, 0.75, this);
 
         // retract the waffle mover
         Thread.sleep(500);
-        robot.waffleMover.setPower(-0.5);
-        Thread.sleep(1000);
-        robot.waffleMover.setPower(0);
+        robot.moveWaffleMover('f');
 
         // strafe out from behind the foundation
         robot.strafeTime(0.5, 5000);
@@ -42,8 +39,13 @@ public class MM_BuildingZoneRed_1 extends LinearOpMode {
         robot.driveForwardDistance(10.0, -speed, this);
 
         // if parking close to center, move forward more
-        if (parkingPosition == ParkingPosition.Close) {
-            robot.driveForwardDistance(10.0, -speed, this);
+        switch (parkingPosition) {
+            case CLOSE:
+                robot.driveForwardDistance(10.0, -speed, this);
+                Thread.sleep(500);
+                break;
+            case FAR:
+                break;
         }
 
         // turn towards skybridge

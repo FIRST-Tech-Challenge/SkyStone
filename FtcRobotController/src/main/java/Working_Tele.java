@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp (name = "Working_Tele")
 public class Working_Tele extends OpMode{
-    DcMotor lf, rf, lb, rb;
+    DcMotor lf, rf, lb, rb, ls; //Define Motors In Code
     public Gamepad g1, g2;
     Servo clawL, clawR;
     private ElapsedTime runtime = new ElapsedTime();
@@ -19,11 +19,12 @@ public class Working_Tele extends OpMode{
         telemetry.addData("Status", "Initialized");
 
 
-        //Motor Define
+        //Motor Define In Phone
         lf = hardwareMap.dcMotor.get("lf");
         rf = hardwareMap.dcMotor.get("rf");
         lb = hardwareMap.dcMotor.get("lb");
         rb = hardwareMap.dcMotor.get("rb");
+        ls = hardwareMap.dcMotor.get("ls");
         //Servo Define
         clawL = hardwareMap.servo.get("clawL");
         clawR = hardwareMap.servo.get("clawR");
@@ -73,7 +74,7 @@ public class Working_Tele extends OpMode{
 
         drive = -gamepad1.left_stick_y;
 
-        strafe = gamepad1.left_stick_x;
+        strafe = gamepad1.left_stick_x; //add negative
         rotate = gamepad1.right_stick_x * 0.5;
 
         lfPow = drive + strafe + rotate;
@@ -87,9 +88,9 @@ public class Working_Tele extends OpMode{
         rb.setPower((rbPow));
         lb.setPower((lbPow));
 
-        telemetry.addData("GamepadRx", gamepad1.right_stick_x);
+       /* telemetry.addData("GamepadRx", gamepad1.right_stick_x);
         telemetry.addData("GamepadRy", gamepad1.right_stick_y);
-        telemetry.addData("GamepadLy", gamepad1.left_stick_y);
+        telemetry.addData("GamepadLy", gamepad1.left_stick_y); */
 
         telemetry.addData("rb", lbPow);
         telemetry.addData("rf", rbPow);
@@ -105,6 +106,9 @@ public class Working_Tele extends OpMode{
             clawR.setPosition(0);
             clawL.setPosition(1);
         }
+
+        //Linear Slide
+        ls.setPower(gamepad2.left_stick_y);
 
 
     }

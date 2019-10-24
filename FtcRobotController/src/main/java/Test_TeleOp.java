@@ -29,21 +29,33 @@ public class Test_TeleOp extends OpMode{
         clawL = hardwareMap.servo.get("clawL");
         clawR = hardwareMap.servo.get("clawR");
 
-        rf.setDirection(DcMotor.Direction.REVERSE);
-        rb.setDirection(DcMotor.Direction.REVERSE);
+        lf.setDirection(DcMotor.Direction.REVERSE);
+        lb.setDirection(DcMotor.Direction.REVERSE);
+
+        lf.setMode(DcMotor.RunMode.RUN_USING_ENCODER); //Runs based on speed instead of voltage; makes run more consistantly
+        rf.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        lb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+
 
     }
 
     @Override
     public void loop() {
-       /* //Trig
+        //lf.setPower(0);
+        //rf.setPower((0));
+        //rb.setPower((0));
+        //lb.setPower((0));
+
+       /*Trig
         double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
         //returns hypotonuse (C value in triangle)
 
-        double robotAngle = Math.atan2(gamepad1.left_stick_y, -gamepad1.left_stick_x) - Math.PI / 4;
+        double robotAngle = Math.atan2(gamepad1.left_stick_y, -gamepad1.left_stick_x) + Math.PI / 4;
         //return angle x (next to center of circle)
 
-        double rightX = -gamepad1.right_stick_x;
+        double rightX = gamepad1.right_stick_x; //reverses rotation
         //rotiation
 
         final double lfPow = r * Math.cos(robotAngle) - rightX;
@@ -52,18 +64,20 @@ public class Test_TeleOp extends OpMode{
         final double rbPow = r * Math.cos(robotAngle) + rightX;
         //determines wheel power
 
+
         rf.setPower(rfPow);
         rb.setPower(rbPow);
         lf.setPower(lfPow);
         lb.setPower(lbPow);
+        //*/
         //gives wheels wheel power
 
-        telemetry.addData("GamepadRx", gamepad1.right_stick_x);
+        /*telemetry.addData("GamepadRx", gamepad1.right_stick_x);
         telemetry.addData("GamepadRy", gamepad1.right_stick_y);
-        telemetry.addData("GamepadLy", gamepad1.left_stick_y);
+        telemetry.addData("GamepadLy", gamepad1.left_stick_y);*/
 
-        telemetry.update(); */
         //No Trig
+        /*
         double drive;
         double strafe;
         double rotate;
@@ -74,7 +88,7 @@ public class Test_TeleOp extends OpMode{
 
         drive = -gamepad1.left_stick_y;
 
-        strafe = gamepad1.left_stick_x; //add negative
+        //strafe = gamepad1.left_stick_x; //add negative
         rotate = gamepad1.right_stick_x * 0.5;
 
         lfPow = drive + strafe + rotate;
@@ -88,22 +102,49 @@ public class Test_TeleOp extends OpMode{
         rb.setPower((rbPow));
         lb.setPower((lbPow));
 
-       /* telemetry.addData("GamepadRx", gamepad1.right_stick_x);
+
+       telemetry.addData("GamepadRx", gamepad1.right_stick_x);
         telemetry.addData("GamepadRy", gamepad1.right_stick_y);
-        telemetry.addData("GamepadLy", gamepad1.left_stick_y); */
+        telemetry.addData("GamepadLy", gamepad1.left_stick_y);
 
         telemetry.addData("rb", lbPow);
         telemetry.addData("rf", rbPow);
         telemetry.addData("lf", lfPow);
         telemetry.addData("lb", lbPow);
+        telemetry.update();//*/
+
+        double leftPower;
+        double rightPower;
+
+        leftPower = Math.abs(gamepad1.left_stick_y) > 0.05? gamepad1.left_stick_y : 0;
+        rightPower = Math.abs(gamepad1.right_stick_y) > 0.05? gamepad1.right_stick_y : 0;
+
+
+
+        if(gamepad1.right_bumper){
+            lf.setPower(-1);
+            lb.setPower(1);
+            rb.setPower(-1);
+            rf.setPower(1);
+        } else if(gamepad1.left_bumper){
+            lf.setPower(1);
+            lb.setPower(-1);
+            rb.setPower(1);
+            rf.setPower(-1);
+        } else {
+            lf.setPower(leftPower);
+            lb.setPower(leftPower);
+            rb.setPower(rightPower);
+            rf.setPower(rightPower);
+        }
 
         //Move Depot Hooks
         if (gamepad2.a) {
             clawR.setPosition(1);
-            clawL.setPosition(0);
+            clawL.setPosition(1);
         }
         if (gamepad2.b) {
-            clawR.setPosition(0);
+            clawR.setPosition(1);
             clawL.setPosition(1);
         }
 

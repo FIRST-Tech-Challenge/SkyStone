@@ -49,7 +49,7 @@ public class Test_Auto_Foundation extends LinearOpMode {
 
 
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void runOpMode(){
 
 
         //Motor Define
@@ -75,13 +75,39 @@ public class Test_Auto_Foundation extends LinearOpMode {
         lb.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rb.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+        lf.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rf.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        lb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         //----------------------------------------------------------------------------------------------------------------//
+        //Foundation Only
         //Move 120 Inches
+        waitForStart();
+        telemetry.addData("Waiting", "...");
+        telemetry.update();
+        //sleep(5000);
         drive(30.25, FORWARD);
         hook(DOWN);
+        //sleep(3000);
         drive(29,BACKWARDS);
+        //sleep(3000);
         hook(UP);
         drive(31,STRAFE_LEFT);
+        //sleep(3000);
+
+        //Skystone & Foundation Theory
+        /*Create 2 autonomouses: 1 for left skystone and one for right skystone
+        * Need Color Sensonr
+        * Left skystone: Start from left and scan until hit block that isn't yellow
+        * Right skystone: Start from right and scan until hit block that isn't yellow
+        *
+        * Take one skystone to foundation, let other team take other one
+        * One team does foundation, one does not
+        * Park
+        * */
+
+
 
 
 
@@ -102,10 +128,13 @@ public class Test_Auto_Foundation extends LinearOpMode {
         lb.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rb.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        lf.setTargetPosition((int) (COUNTS_PER_INCH * distance)); //distance needs to be in inches
-        rf.setTargetPosition((int) (COUNTS_PER_INCH * distance));
-        lb.setTargetPosition((int) (COUNTS_PER_INCH * distance));
-        rb.setTargetPosition((int) (COUNTS_PER_INCH * distance));
+        lf.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rf.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        lb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+
+
 
 
 
@@ -117,24 +146,43 @@ public class Test_Auto_Foundation extends LinearOpMode {
 
         switch(direction){
             case FORWARD:
+                lf.setTargetPosition((int) (COUNTS_PER_INCH * distance)); //distance needs to be in inches
+                rf.setTargetPosition((int) (COUNTS_PER_INCH * distance));
+                lb.setTargetPosition((int) (COUNTS_PER_INCH * distance));
+                rb.setTargetPosition((int) (COUNTS_PER_INCH * distance));
+
                 lfPower = power;
                 rfPower = power;
                 lbPower = power;
                 rbPower = power;
                 break;
             case BACKWARDS:
+                lf.setTargetPosition((int) (COUNTS_PER_INCH * -distance)); //distance needs to be in inches
+                rf.setTargetPosition((int) (COUNTS_PER_INCH * -distance));
+                lb.setTargetPosition((int) (COUNTS_PER_INCH * -distance));
+                rb.setTargetPosition((int) (COUNTS_PER_INCH * -distance));
                 lfPower = -power;
                 rfPower = -power;
                 lbPower = -power;
                 rbPower = -power;
                 break;
             case STRAFE_RIGHT:
+                lf.setTargetPosition((int) (COUNTS_PER_INCH * distance)); //distance needs to be in inches
+                rf.setTargetPosition((int) (COUNTS_PER_INCH * -distance));
+                lb.setTargetPosition((int) (COUNTS_PER_INCH * -distance));
+                rb.setTargetPosition((int) (COUNTS_PER_INCH * distance));
+
                 lfPower = power;
                 rfPower = -power;
                 lbPower = -power;
                 rbPower = power;
                 break;
             case STRAFE_LEFT:
+                lf.setTargetPosition((int) (COUNTS_PER_INCH * -distance)); //distance needs to be in inches
+                rf.setTargetPosition((int) (COUNTS_PER_INCH * distance));
+                lb.setTargetPosition((int) (COUNTS_PER_INCH * distance));
+                rb.setTargetPosition((int) (COUNTS_PER_INCH * -distance));
+
                 lfPower = -power;
                 rfPower = power;
                 lbPower = power;
@@ -153,6 +201,18 @@ public class Test_Auto_Foundation extends LinearOpMode {
         rf.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         lb.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rb.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        while (opModeIsActive()&& (lf.isBusy() || lb.isBusy() || rb.isBusy() || rf.isBusy())) {
+            idle();
+        }
+        lf.setPower(0);
+        rf.setPower(0);
+        lb.setPower(0);
+        rb.setPower(0);
+
+        lf.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rf.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        lb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     public void freeform(int distance, int angle){ //angle in radians
@@ -217,6 +277,9 @@ public class Test_Auto_Foundation extends LinearOpMode {
                 break;
 
         }
+
+
+
     }
 
 }

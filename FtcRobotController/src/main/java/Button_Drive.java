@@ -26,8 +26,8 @@ public class Button_Drive extends OpMode{
         lb = hardwareMap.dcMotor.get("lb");
         rb = hardwareMap.dcMotor.get("rb");
 
-        lf.setDirection(DcMotor.Direction.REVERSE);
-        lb.setDirection(DcMotor.Direction.REVERSE);
+        rf.setDirection(DcMotor.Direction.REVERSE);
+        rb.setDirection(DcMotor.Direction.REVERSE);
 
     }
 

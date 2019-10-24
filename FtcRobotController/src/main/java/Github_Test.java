@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 public class Github_Test extends OpMode {
     @Override
     public void init() {
-        //Heewwo
+        //Hewwo
     }
 
     @Override

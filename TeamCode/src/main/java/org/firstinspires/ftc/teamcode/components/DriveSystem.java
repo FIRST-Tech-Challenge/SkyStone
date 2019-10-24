@@ -215,52 +215,41 @@ public class DriveSystem {
      * @param maxPower The maximum power of the motors
      */
     public boolean turn(double degrees, double maxPower) {
-        // Since controller hub is vertical, use pitch instead of heading
+
         double heading = imuSystem.getHeading();
-        // if controller hub is flat: double heading = imuSystem.getHeading();
         Log.d(TAG,"Current Heading: " + heading);
-        if(mTargetHeading == 0) {
-            mTargetHeading = (heading + degrees) % 360;
-            Log.d(TAG, "Setting Heading -- Target: " + mTargetHeading);
+        if(mTargetHeading == 0){
+
+              mTargetHeading = (heading + degrees) % 360;
+            Log.d(TAG,"Setting Heading -- Target: " + mTargetHeading);
 
             Log.d(TAG, "Degrees: " + degrees);
+//            if (targetHeading < 0) {
+//                targetHeading = targetHeading + 360;
+//            }
+//            mTargetHeading = targetHeading;
         }
         double difference = mTargetHeading - heading;
         Log.d(TAG,"Difference: " + difference);
 
-        return onHeading(maxPower, heading);
 
-    }
 
-    /**
-     * Perform one cycle of closed loop heading control.
-     * @param speed     Desired speed of turn
-     */
-    public boolean onHeading(double speed, double heading) {
-        double steer;
-        double leftSpeed;
-        double rightSpeed;
+//        double difference = computeDegreesDiff(mTargetHeading, heading);
+        double difference = mTargetHeading - heading;
+        Log.d(TAG,"Difference: " + difference);
 
-        // determine turn power based on +/- error
-        double error = getError(heading);
-
-        if (Math.abs(error) <= HEADING_THRESHOLD) {
-            mTargetHeading = 0;
+        if (Math.abs(difference) < 1.0) {
             setMotorPower(0);
+            mTargetHeading = 0;
             return true;
         }
 
-        steer = getSteer(error);
-        leftSpeed  = speed * steer;
-        rightSpeed   = -leftSpeed;
-
-
-        Log.d(TAG,"Left Speed:" + leftSpeed);
-        Log.d(TAG, "Right Speed:" + rightSpeed);
-        // Send desired speeds to motors.
-        tankDrive(leftSpeed, rightSpeed);
+        double power = getTurnPower(difference, maxPower);
+        Log.d(TAG,"Turn Power: " + power);
+        tankDrive(power, -power);
 
         return false;
+
     }
 
     /**
@@ -318,7 +307,7 @@ public class DriveSystem {
      * @return motor power from 0 - 0.8
      */
     private double getTurnPower(double degrees, double maxPower) {
-        // double power = Math.abs(degrees / 100.0);
+       // double power = Math.abs(degrees / 100.0);
         return Range.clip(degrees / 100.0, -maxPower, maxPower);
     }
 

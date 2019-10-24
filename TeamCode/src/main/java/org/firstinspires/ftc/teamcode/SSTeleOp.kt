@@ -61,10 +61,8 @@ class SSTeleOp : OpMode() {
         robot.liftSlideY(linSlidePow)
         rot = robot.linSlideY!!.currentPosition
 
-        if(!(rot < max))
-            tooHigh = true
-        else if(!(rot>0))
-            tooLow = true
+        tooHigh = !(rot < max)
+        tooLow = (rot < 0)
 
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower)
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower)

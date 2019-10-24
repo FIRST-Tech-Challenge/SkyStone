@@ -265,7 +265,7 @@ public class SkyStoneNavigation implements RobotNonBlockingDevice {
 
                 // getUpdatedRobotLocation() will return null if no new information is available since
                 // the last time that call was made, or if the trackable is not currently visible.
-                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
+                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getFtcFieldFromRobot();
 
                 if (robotLocationTransform != null) {
                     lastLocation = robotLocationTransform;
@@ -291,7 +291,7 @@ public class SkyStoneNavigation implements RobotNonBlockingDevice {
     protected Robot3DPositionIndicator __getFTCRobotAxisStonePosition(){
         VuforiaTrackableDefaultListener trackable = (VuforiaTrackableDefaultListener) m_AllTrackables.get(0).getListener();
         if(trackable.isVisible()){
-            OpenGLMatrix stonePosition = trackable.getPosePhone();
+            OpenGLMatrix stonePosition = trackable.getFtcCameraFromTarget();
             VectorF translation = stonePosition.getTranslation();
             Orientation rotation = Orientation.getOrientation(stonePosition,EXTRINSIC,XYZ,DEGREES);
             return new Robot3DPositionIndicator(translation.get(0) / 10, translation.get(1) / 10, translation.get(2) / 10, rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);

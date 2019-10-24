@@ -79,15 +79,14 @@ public class TTAutoBlue extends TTOpMode {
     private void setStartPos(){
         arm.openClaw();
         arm.lower(0.5);
-        driveSystem.vertical(6, 0.5);
-        driveSystem.lateral(2, 0.25);
+        driveSystem.vertical(18, 0.5);
     }
 
     /*Starts from the starting pos and moves grab the block
       at that specific block pos then faces the foundation
      */
     private void grabSkyStone(int stoneNum){
-        driveSystem.lateral(41.5 - stoneNum * 8, 0.3);
+        driveSystem.lateral(52 - stoneNum * 8, 0.3);
         driveSystem.vertical(31.5, 0.5);
         arm.closeClaw();
         sleep(500);

@@ -31,10 +31,9 @@ public class DemoTeleOp extends TTOpMode {
     }
 
     private void driveUpdate() {
-        double verticalLeft = gamepad1.left_stick_y;
-        double verticalRigt = gamepad1.right_stick_y;
-        driveSystem.leftContinuous(verticalLeft);
-        driveSystem.rightContinuous(verticalRigt);
+        double vertical = gamepad1.left_stick_y;
+        double turn = gamepad1.right_stick_x;
+        driveSystem.continuous(vertical, turn);
     }
 
     private void armUpdate(){

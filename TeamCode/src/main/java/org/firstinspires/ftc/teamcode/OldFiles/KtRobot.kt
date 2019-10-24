@@ -50,8 +50,9 @@ class KtRobot
         rightDrive?.power = 0.0
         leftDrive?.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         rightDrive?.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
-
     }
+
+
 
     //METHODS
 

@@ -25,6 +25,7 @@ class SSAutoOp : LinearOpMode()
 
         waitForStart()
         //CODE GOES HERE
+        //https://www.reddit.com/r/FTC/comments/78l5o0/how_to_program_encoders/
         telemetry.addData("Status: ", "Autonomous Terminated")
         telemetry.update()
     }

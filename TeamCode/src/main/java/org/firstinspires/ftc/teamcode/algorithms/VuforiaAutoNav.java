@@ -86,17 +86,18 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  */
 
 public class VuforiaAutoNav {
+
+    /**
+     * TODO: add automatic alliance detection
+     */
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
 
-    // IMPORTANT: If you are using a USB WebCam, you must select CAMERA_CHOICE = BACK; and PHONE_IS_PORTRAIT = false;
     private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
     private static final boolean PHONE_IS_PORTRAIT = false;
 
     /*
-     * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
-     * 'parameters.vuforiaLicenseKey' is initialized is for illustration only, and will not function.
      * A Vuforia 'Development' license key, can be obtained free of charge from the Vuforia developer
      * web site at https://developer.vuforia.com/license-manager.
      *
@@ -113,7 +114,7 @@ public class VuforiaAutoNav {
     private static final float mmPerInch = 25.4f;
     private static final float mmTargetHeight = (6) * mmPerInch;          // the height of the center of the target image above the floor
 
-    // Constant for Stone Target
+    // Constant for Stone Target (currently unused)
     private static final float stoneZ = 2.00f * mmPerInch;
 
     // Constants for the center support targets
@@ -142,6 +143,7 @@ public class VuforiaAutoNav {
     private float phoneXRotate = 0;
     private float phoneYRotate = 0;
     private float phoneZRotate = 0;
+    //TODO: check if the phone has a z rotation, and, if it does, update this value
     private ArrayList<Stone> Stones = new ArrayList<>();
     private HardwareMap hardwareMap;
     List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
@@ -163,18 +165,34 @@ public class VuforiaAutoNav {
     private float robotZ = 0;
     private float robotAngle = 0;
 
+    /**
+     * gets the hardware map
+     * @return hardware map
+     */
     public HardwareMap getHardwareMap() {
         return hardwareMap;
     }
 
+    /**
+     * sets the hardware map
+     * @param hardwareMap hardware map
+     */
     public void setHardwareMap(HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
     }
 
+    /**
+     * list of vuforia trackables
+     * @return vuforia trackables
+     */
     public List<VuforiaTrackable> getAllTrackables() {
         return allTrackables;
     }
 
+    /**
+     * sets vuforia trackables
+     * @param allTrackables vuforia trackables
+     */
     public void setAllTrackables(List<VuforiaTrackable> allTrackables) {
         this.allTrackables = allTrackables;
     }
@@ -259,12 +277,87 @@ public class VuforiaAutoNav {
         this.skyStonePositions = skyStonePositions;
     }
 
+    /**
+     * Gets the relative position of one of the sky stones
+     *
+     * @param index the stone to return (0 for left one, 1 for right one)
+     * @return the sky stone position (they are indexed from 0 to 5 from left to right when looking away from the field wall)
+     */
     public int getSkyStonePosition(int index) {
         return skyStonePositions[index];
     }
 
     public void setSkyStonePosition(int index, int skyStonePosition) {
         this.skyStonePositions[index] = skyStonePosition;
+    }
+
+    /**
+     * gets the X coordinate of the center of a stone
+     *
+     * @param stoneNum Indicates stone number (they are indexed from 0 to 5 from left to right when looking away from the field wall)
+     * @param alliance Indicates alliance (0 is blue, 1 is red)
+     * @return
+     */
+    public float getStoneCenterX(int stoneNum, int alliance) {
+        if (stoneNum < 0 || stoneNum > 5) {
+            return 0;
+        } else {
+            if (alliance == 0) {
+                return 28 + 8 * stoneNum;
+            } else {
+                return 28 + 8 * (5 - stoneNum);
+            }
+        }
+    }
+
+    /**
+     * gets the Y coordinate of the center a stone
+     *
+     * @param stoneNum Indicates stone number (they are indexed from 0 to 5 from left to right when looking away from the field wall)
+     * @param alliance Indicates alliance (0 is blue, 1 is red)
+     * @return
+     */
+    public float getStoneCenterY(int stoneNum, int alliance) {
+        if (alliance == 0) {
+            return 22;
+        } else {
+            return -22;
+        }
+    }
+
+    /**
+     * gets the X coordinate of the center of a sky stone stone
+     *
+     * @param index    Indicates sky stone number
+     * @param alliance Indicates alliance (0 is blue, 1 is red)
+     * @return
+     */
+    public float getSkyStoneCenterX(int index, int alliance) {
+        int stoneNum = this.getSkyStonePosition(index);
+        if (stoneNum < 0 || stoneNum > 5) {
+            return 0;
+        } else {
+            if (alliance == 0) {
+                return 28 + 8 * stoneNum;
+            } else {
+                return 28 + 8 * (5 - stoneNum);
+            }
+        }
+    }
+
+    /**
+     * gets the Y coordinate of the center a stone
+     *
+     * @param index    Indicates sky stone number
+     * @param alliance Indicates alliance (0 is blue, 1 is red)
+     * @return
+     */
+    public float getSkyStoneCenterY(int index, int alliance) {
+        if (alliance == 0) {
+            return 22;
+        } else {
+            return -22;
+        }
     }
 
     /**

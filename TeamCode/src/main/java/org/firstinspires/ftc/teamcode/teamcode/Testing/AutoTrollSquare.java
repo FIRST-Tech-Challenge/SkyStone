@@ -21,12 +21,42 @@ public class AutoTrollSquare extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        drive.initDriveTrain();
+        drive.initDriveTrain(this);
         waitForStart();
 
-        drive.encoderMove(this, 24, 5, 45);
-        drive.encoderMove(this, 24, 5, 225);
+        drive.encoderMove(this, 24, 5, 1);
+        sleep(1000);
+        drive.strafeMove(this, 24, 5, -1);
+        sleep(1000);
+        drive.encoderMove(this, 24, 5, -1);
+        sleep(1000);
+        drive.strafeMove(this, 24, 5, 1);
+        sleep(1000);
 
+        //drive.partyMode();
+
+
+       /* drive.initDriveTrain(this);
+        waitForStart();
+
+        drive.encoderDrive(this, 1, 24, 24, 3 );
+        drive.snowWhite();
+        sleep(1000);
+        telemetry.addData("1st method ", runtime);
+        telemetry.update();
+
+        //drive.encoderDrive(this,  1, 24, 24, 2);
+        sleep(1000);
+        telemetry.addData("2nd method ", runtime);
+        telemetry.update();
+
+        drive.encoderDrive(this, 1, -24, -24, 3);
+        drive.snowWhite();
+        sleep(1000);
+        telemetry.addData("3rd method ", runtime);
+        telemetry.update();
+
+        drive.encoderDrive(this, -1, 24, 24, 2);*/
        drive.snowWhite();
     }
 

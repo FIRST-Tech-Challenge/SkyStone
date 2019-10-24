@@ -110,9 +110,9 @@ public class DriveTrain {
     private double modPower = 0.0;
 
 
-    public void initDriveTrain() {
+    public void initDriveTrain(LinearOpMode opMode) {
 
-       // this.opMode = opMode;
+        this.opMode = opMode;
         sensors = new Sensors();
 
         //Sets Hardware Map
@@ -136,6 +136,7 @@ public class DriveTrain {
         count = 4.0;
         modPower = 0.0;
 
+        runtime.reset();
         resetEncoders();
         //runEncoders();
     }
@@ -694,7 +695,26 @@ public class DriveTrain {
         br.setPower(RDy - RDx);
     }
 
-    public void encoderMove(LinearOpMode opMode, double target, double timeout, double radiax) {
+    public void encoderMove(LinearOpMode opMode, double target, double timeout, double power) {
+
+        this.opMode = opMode;
+        runtime.reset();
+        resetEncoders();
+
+        double average = 0.0;
+
+        setMotorsPower(power);
+        while (Math.abs(average) < target * inchCounts && runtime.seconds() < timeout)
+        {
+
+            average = getEncoderAverage();
+
+        }
+        snowWhite();
+    }
+
+
+    public void encoderMoveRad(LinearOpMode opMode, double target, double timeout, double radiax) {
 
         this.opMode = opMode;
         runtime.reset();

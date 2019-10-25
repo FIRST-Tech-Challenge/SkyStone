@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.teamcode.components.DriveSystem;
 import org.firstinspires.ftc.teamcode.components.IMUSystem;
+import org.firstinspires.ftc.teamcode.components.SpinnySystem;
 import org.firstinspires.ftc.teamcode.components.Vuforia;
 import org.firstinspires.ftc.teamcode.components.Vuforia.CameraChoice;
 
@@ -17,6 +18,7 @@ import java.util.EnumMap;
 public abstract class BaseOpMode extends OpMode {
 
     protected DriveSystem driveSystem;
+    protected SpinnySystem spinnySystem;
     protected Vuforia vuforia;
     protected VuforiaTrackable skystone;
     protected VuforiaTrackable rearPerimeter;
@@ -27,17 +29,16 @@ public abstract class BaseOpMode extends OpMode {
             driveMap.put(name,hardwareMap.get(DcMotor.class, name.toString()));
         }
         driveSystem = new DriveSystem(driveMap, hardwareMap.get(BNO055IMU.class, "imu"));
-        DistanceSensor distanceSensor2;
-        DistanceSensor distanceSensor3;
-        ColorSensor colorSensor;
 
+        EnumMap<SpinnySystem.MotorNames, DcMotor> spinnyMap = new EnumMap<>(SpinnySystem.MotorNames.class);
+        for(SpinnySystem.MotorNames name : SpinnySystem.MotorNames.values()){
+            spinnyMap.put(name,hardwareMap.get(DcMotor.class, name.toString()));
+        }
+        spinnySystem = new SpinnySystem(spinnyMap);
     }
 
     protected void setCamera(CameraChoice cameraChoice){
-
         vuforia = new Vuforia(hardwareMap, cameraChoice);
         skystone = vuforia.targetsSkyStone.get(0);
-
-
     }
 }

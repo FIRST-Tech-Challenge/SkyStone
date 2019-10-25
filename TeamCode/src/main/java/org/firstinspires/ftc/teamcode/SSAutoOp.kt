@@ -21,7 +21,7 @@ class SSAutoOp : LinearOpMode()
         telemetry.addData("Status: ", "Autonomous Initialized")
         telemetry.update()
 
-        robot.init(hardwareMap)
+        robot.init(hardwareMap, true)
 
         waitForStart()
         //CODE GOES HERE

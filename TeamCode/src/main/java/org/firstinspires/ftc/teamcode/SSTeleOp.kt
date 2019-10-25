@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotor
  * Created by KasaiYuki on 9/20/2018.
  */
 
-@TeleOp(name="SSTeleOp", group="TeleOp")
+@TeleOp(name = "SSTeleOp", group = "TeleOp")
 //@Disabled
 class SSTeleOp : OpMode() {
     //using robot class for motors, servos etc
@@ -17,7 +17,7 @@ class SSTeleOp : OpMode() {
     var slowDown = 1//default
     var tooHigh = true
     var tooLow = true
-    var linSlidePow:Float = 0.00.toFloat()
+    var linSlidePow: Float = 0.00.toFloat()
     var rot = 0
     val max = 1780
 
@@ -27,13 +27,13 @@ class SSTeleOp : OpMode() {
         telemetry.update()
         //initializes all parts
         robot.init(hardwareMap, true)
-        robot.linSlideY?.mode=DcMotor.RunMode.STOP_AND_RESET_ENCODER
+        robot.linSlideY?.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
         rot = robot.linSlideY!!.currentPosition
 
     }
 
-    override fun start(){
-        robot.linSlideY?.mode=DcMotor.RunMode.RUN_USING_ENCODER
+    override fun start() { //runs once when play button is pushed
+        robot.linSlideY?.mode = DcMotor.RunMode.RUN_USING_ENCODER
     }
 
     override fun loop() {
@@ -46,31 +46,27 @@ class SSTeleOp : OpMode() {
         robot.leftDrive?.power = leftPower.toDouble() / slowDown
         robot.rightDrive?.power = rightPower.toDouble() / slowDown
 
-        if(true) {
-            if ((gamepad1.left_trigger != zero) and !tooLow)
-                linSlidePow = -1 * gamepad1.left_trigger
-            else if ((gamepad1.right_trigger != zero) and !tooHigh)
-                linSlidePow = gamepad1.right_trigger
-            else
-                linSlidePow = zero
+        linSlidePow = when {
+            (gamepad1.left_trigger != zero) and !tooLow -> -1 * gamepad1.left_trigger
+            (gamepad1.right_trigger != zero) and !tooHigh -> gamepad1.right_trigger
+            else -> zero
         }
-        else
-            telemetry.addData("Linear Slide ", "MAX/MIN HEIGHT REACHED")
 
-
+        robot.pinch(gamepad1)
         robot.liftSlideY(linSlidePow)
         rot = robot.linSlideY!!.currentPosition
 
-        tooHigh = !(rot < max)
-        tooLow = (rot < 0)
+        tooHigh = rot >= max
+        tooLow = rot < 0
+
+        if (tooHigh or tooLow) telemetry.addData("Linear Slide ", "MAX/MIN HEIGHT REACHED")
 
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower)
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower)
         telemetry.addData("Linear Slide ", "Position: (%.2f)", rot.toFloat())
     }
 
-    override fun stop()
-    {
+    override fun stop() {
         telemetry.addData("Status: ", "TeleOp Terminated")
         telemetry.update()
     }

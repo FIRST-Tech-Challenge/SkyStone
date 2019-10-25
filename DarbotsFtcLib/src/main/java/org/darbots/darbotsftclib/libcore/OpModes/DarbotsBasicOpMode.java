@@ -1,6 +1,7 @@
 package org.darbots.darbotsftclib.libcore.OpModes;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.darbots.darbotsftclib.libcore.integratedfunctions.RobotLogger;
 import org.darbots.darbotsftclib.libcore.runtime.GlobalRegister;
@@ -50,6 +51,15 @@ public abstract class DarbotsBasicOpMode<CoreType extends RobotCore> extends Lin
     public boolean waitForDrive(){
         while(this.opModeIsActive() && this.getRobotCore().getChassis().isBusy()){
             this.getRobotCore().updateStatus();
+        }
+        return this.opModeIsActive();
+    }
+
+    public boolean delay(double seconds){
+        ElapsedTime m_Time = new ElapsedTime(ElapsedTime.Resolution.SECONDS);
+        m_Time.reset();
+        while(this.opModeIsActive() && m_Time.seconds() < seconds){
+            sleep(20);
         }
         return this.opModeIsActive();
     }

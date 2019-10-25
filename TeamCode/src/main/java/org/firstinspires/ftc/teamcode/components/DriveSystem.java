@@ -25,7 +25,7 @@ public class DriveSystem {
     public int counter = 0;
 
     public static final String TAG = "DriveSystem";
-    public static final double P_TURN_COEFF = 0.1;     // Larger is more responsive, but also less stable
+    public static final double P_TURN_COEFF = 0.05;     // Larger is more responsive, but also less stable
     public static final double HEADING_THRESHOLD = 1 ;      // As tight as we can make it with an integer gyro
 
     public EnumMap<MotorNames, DcMotor> motors;
@@ -215,7 +215,7 @@ public class DriveSystem {
      * @param maxPower The maximum power of the motors
      */
     public boolean turn(double degrees, double maxPower) {
-        double heading = - imuSystem.getHeading();
+        double heading = imuSystem.getHeading();
         Log.d(TAG,"Current Heading: " + heading);
         if(mTargetHeading == 0) {
             mTargetHeading = (heading + degrees) % 360;
@@ -226,7 +226,7 @@ public class DriveSystem {
         double difference = mTargetHeading - heading;
         Log.d(TAG,"Difference: " + difference);
 
-        return onHeading(maxPower, heading, P_TURN_COEFF);
+        return onHeading(maxPower, heading);
 
     }
 
@@ -235,9 +235,8 @@ public class DriveSystem {
      * @param speed     Desired speed of turn
      * @param PCoeff    Proportional Gain coefficient
      */
-    public boolean onHeading(double speed, double heading, double PCoeff) {
+    public boolean onHeading(double speed, double heading) {
         double steer;
-        boolean onTarget = false;
         double leftSpeed;
         double rightSpeed;
 
@@ -245,22 +244,22 @@ public class DriveSystem {
         double error = getError(heading);
 
         if (Math.abs(error) <= HEADING_THRESHOLD) {
-            steer = 0.0;
-            leftSpeed  = 0.0;
-            rightSpeed = 0.0;
-            onTarget = true;
             mTargetHeading = 0;
-        }
-        else {
-            steer = getSteer(error, PCoeff);
-            rightSpeed  = speed * steer;
-            leftSpeed   = -rightSpeed;
+            setMotorPower(0);
+            return true;
         }
 
+        steer = getSteer(error);
+        leftSpeed  = speed * steer;
+        rightSpeed   = -leftSpeed;
+
+
+        Log.d(TAG,"Left Speed:" + leftSpeed);
+        Log.d(TAG, "Right Speed:" + rightSpeed);
         // Send desired speeds to motors.
         tankDrive(leftSpeed, rightSpeed);
 
-        return onTarget;
+        return false;
     }
 
     /**
@@ -269,9 +268,10 @@ public class DriveSystem {
      * @return  error angle: Degrees in the range +/- 180. Centered on the robot's frame of reference
      *          +ve error means the robot should turn LEFT (CCW) to reduce error.
      */
-    public double getError(double targetAngle) {
+    public double getError(double heading) {
         // calculate error in -179 to +180 range  (
-        double robotError = targetAngle + imuSystem.getHeading();
+        double robotError = mTargetHeading - heading;
+        Log.d(TAG,"Robot Error: " + robotError);
         while (robotError > 180) {
             robotError -= 360;
         }
@@ -288,8 +288,8 @@ public class DriveSystem {
      * @return
      */
     // TODO
-    public double getSteer(double error, double PCoeff) {
-        return Range.clip(error * PCoeff, -1, 1);
+    public double getSteer(double error) {
+        return Range.clip(error *  P_TURN_COEFF, -1, 1);
     }
 
     /**

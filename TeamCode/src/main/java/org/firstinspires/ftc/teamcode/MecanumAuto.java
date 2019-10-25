@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -18,6 +19,7 @@ public class MecanumAuto extends LinearOpMode {
     private DcMotor right1;
     // defining back left wheel
     private DcMotor right2;
+    private ColorSensor color;
 
     @Override
     public void runOpMode() {
@@ -28,6 +30,7 @@ public class MecanumAuto extends LinearOpMode {
         left2 = hardwareMap.dcMotor.get("left2");
         right1 = hardwareMap.dcMotor.get("right1");
         right2 = hardwareMap.dcMotor.get("right2");
+        color = hardwareMap.colorSensor.get("color");
 
         right1.setDirection(DcMotorSimple.Direction.REVERSE);
         right2.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -35,17 +38,20 @@ public class MecanumAuto extends LinearOpMode {
         waitForStart();
 
         moveFront(1500);
-        moveBack(1500);
-        breakTime(2000);
-        moveLeft(1500);
-        moveRight(1500);
-        breakTime(2000);
-        northEast(1500);
-        southWest(1500);
-        breakTime(2000);
-        northWest(1500);
-        southEast(1500);
-        breakTime(2000);
+         
+
+
+//        moveBack(1500);
+//        breakTime(2000);
+//        moveLeft(1500);
+//        moveRight(1500);
+//        breakTime(2000);
+//        northEast(1500);
+//        southWest(1500);
+//        breakTime(2000);
+//        northWest(1500);
+//        southEast(1500);
+//        breakTime(2000);
     }
 
         void moveFront(int sec) {

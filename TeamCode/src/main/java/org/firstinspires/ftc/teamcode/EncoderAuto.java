@@ -30,9 +30,8 @@ public class EncoderAuto extends LinearOpMode {
         right1.setDirection(DcMotorSimple.Direction.REVERSE);
         right2.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        left2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        left2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        right1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        right1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         waitForStart();
         left2.setPower(1);

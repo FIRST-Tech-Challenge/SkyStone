@@ -250,11 +250,6 @@ public class DriveSystem {
             setMotorPower(0);
             return true;
         }
-        else {
-            steer = getSteer(error, PCoeff);
-            rightSpeed  = speed * steer;
-            leftSpeed   = -rightSpeed;
-        }
 
         steer = getSteer(error);
         leftSpeed  = speed * steer;

@@ -46,8 +46,9 @@ public class IMUSystem {
      * @return Returns the yaw in degrees
      */
     public double getHeading() {
-        Orientation orientation = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
-        return orientation.firstAngle;
+        return -imu.getAngularOrientation().firstAngle;
+//        Orientation orientation = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
+//        return orientation.firstAngle;
     }
 
     /**
@@ -107,4 +108,3 @@ public class IMUSystem {
         return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(degrees));
     }
 }
-

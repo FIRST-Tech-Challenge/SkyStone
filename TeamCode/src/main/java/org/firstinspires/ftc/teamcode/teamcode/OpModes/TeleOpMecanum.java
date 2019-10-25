@@ -15,13 +15,16 @@ public class TeleOpMecanum extends OpMode {
     Intake intake = new Intake();
     Outtake outtake = new Outtake();
 
-    double leftStickY;
-    double leftStickX;
     double direction;
     double velocity;
     double speed;
     double speedProp = 1.0;
     boolean pastX = false;
+
+    //  Game pad Control Stick Variables
+    double right_stick_x;
+    double left_stick_x;
+    double left_stick_y;
 
     @Override
     public void init() {
@@ -55,24 +58,28 @@ public class TeleOpMecanum extends OpMode {
     @Override
     public void loop() {
 
-        speed = gamepad1.right_stick_x;
+        //  Set Join Sticks for Arcade Drive
 
-        telemetry.addData("Status", "Run Time: " + drive.runtime.toString());
-        telemetry.addData("Motor Position", "Motor Rotation", +speed);
-
-        if (Math.abs(gamepad1.left_stick_y) > .05) {
-            leftStickY = gamepad1.left_stick_y;
+        if (Math.abs(left_stick_y) > .05) {
+            left_stick_y = gamepad1.left_stick_y;
         } else {
-            leftStickY = 0;
+            left_stick_y = 0;
         }
 
-        if (Math.abs(gamepad1.left_stick_x) > .05) {
-            leftStickX = gamepad1.left_stick_x;
+        if (Math.abs(left_stick_x) > .05) {
+            left_stick_x = gamepad1.left_stick_x;
         } else {
-            leftStickX = 0;
+            left_stick_x = 0;
         }
 
-        if (gamepad1.x != pastX) {
+        if(Math.abs((right_stick_x)) > .05)
+        {
+            right_stick_x = gamepad1.right_stick_x;
+        } else {
+            right_stick_x = 0;
+        }
+
+        /*if (gamepad1.x != pastX) {
             pastX = gamepad1.x;
             if (gamepad1.x) {
                 if (speedProp == 1) {
@@ -81,51 +88,34 @@ public class TeleOpMecanum extends OpMode {
                     speedProp = 1;
                 }
             }
+        }*/
+
+        if(gamepad1.x)
+        {
+            while(gamepad1.x){ }
+            if(speedProp == 1)
+            {
+                speedProp = .5;
+            }
+            else {
+                speedProp = 1;
+            }
         }
 
-        telemetry.addData("Velocity : ", velocity);
+        if (Math.abs(left_stick_x) > 0.075 ||
+                Math.abs(left_stick_y) > 0.075 ||
+                Math.abs(gamepad1.right_stick_x) > 0.075) {
 
-        telemetry.addData("Direction : ", direction);
-
-        telemetry.addData("Speed : ", speed);
-
-        velocity = gamepad1.left_stick_y;
-
-        direction = gamepad1.left_stick_x;
-
-        speed = gamepad1.right_stick_x;
-
-        if (Math.abs(gamepad1.right_stick_x) < 0.075 ) {
-            speed = 0;
+            drive.fl.setPower(speedProp * ((left_stick_y - left_stick_x) - right_stick_x));
+            drive.fr.setPower(speedProp * ((left_stick_y + left_stick_x) + right_stick_x));
+            drive.bl.setPower(speedProp * (left_stick_y + left_stick_x) - right_stick_x);
+            drive.br.setPower(speedProp * (left_stick_y - left_stick_x) + right_stick_x);
         }
-
-        if (Math.abs(gamepad1.left_stick_x) > 0.075 ||
-                Math.abs(gamepad1.left_stick_y) >
-                        0.075 || Math.abs(gamepad1.right_stick_x)
-                > 0.075) {
-            drive.fl.setPower((velocity - direction) - speed);
-            drive.fr.setPower((velocity + direction) + speed);
-            drive.bl.setPower((velocity + direction) - speed);
-            drive.br.setPower((velocity - direction) + speed);
-        }
-
         else {
             drive.snowWhite();
         }
 
-        intake.compliantIntake_TeleOp();
+        intake.Intake_TeleOp();
         outtake.outTake_TeleOp();
-
-        telemetry.addData("Halfing Speed : ", pastX);
-        telemetry.addData("Encoded Acceleration : ", drive.getEncodedAccel());
-
-        telemetry.addData("Get Holon : ",
-                "FR :" + drive.getHolon(drive.fr) +
-                        "BL : " + drive.getHolon(drive.bl) +
-                        "BR : " + drive.getHolon(drive.br));
-        telemetry.update();
-
-
-
     }
 }

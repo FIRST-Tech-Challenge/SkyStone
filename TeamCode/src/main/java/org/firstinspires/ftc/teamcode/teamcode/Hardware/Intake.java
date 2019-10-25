@@ -56,7 +56,7 @@ public class Intake {
 
     }
 
-    public void compliantIntake_TeleOp()
+    public void Intake_TeleOp()
     {
         if(opMode.gamepad2.right_bumper) //set game pad button to x, could change, survey people
         {

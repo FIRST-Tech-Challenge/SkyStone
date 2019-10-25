@@ -9,7 +9,7 @@ import java.text.DecimalFormat;
 
 public class DriveTrain {
 
-    private static double motorCounts = 360;
+    private static double motorCounts = 288;
     private static double gearUp = 1;
     public static double wheelDiam = 4;
     public static double noLoadSpeed = 31.4 ; // Max Angular Velocity in radians/second for 20 : 1 motor

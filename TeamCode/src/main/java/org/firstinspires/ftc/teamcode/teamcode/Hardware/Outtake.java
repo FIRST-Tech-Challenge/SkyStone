@@ -15,6 +15,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class Outtake{
 
     private static final double MAXLEVEL = 14;
+    private static final double MAXHEIGHT = 47; // Inches
     private static final double DISTANCE_TO_BUILD_ZONE = 1; // what ever distance is from foundation to build zone
     public Servo pushBlock;
     public Servo hookRight;
@@ -37,10 +38,10 @@ public class Outtake{
     static final double DISTANCE_BETWEEN_BLOCKS = 4.0; // In Inches
     static final double liftExtensionTime = 1000; // Time it takes for lift to extend out = length of lift / speed of motors
 
-    static final double encoderLevelCount = (360 /  Math.PI) ;
+    static final double encoderLevelCount = (288 /  (Math.PI * .53)) ;
 
     static double LIFTPOWER = 1.0;
-    static double HOOKDOWN = -1.0;
+    static double HOOKDOWN = 0;
     static double HOOKUP = 1.0;
 
     double k = 1.0;
@@ -71,6 +72,8 @@ public class Outtake{
         hookLeft = opMode.hardwareMap.servo.get("LHook");
         hookRight = opMode.hardwareMap.servo.get("RHook");
 
+
+        hookLeft.setDirection(Servo.Direction.REVERSE);
         liftLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
         liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -84,12 +87,14 @@ public class Outtake{
         opMode.telemetry.addData("Success", "Outtake Initialized");
         opMode.telemetry.update();
 
-        if(!liftReset) {
-            resetOuttake();
-            liftReset = true;
-        }
     }
-
+    public void resetLiftEncoders()
+    {
+        liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        liftRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
 
     // once coordinates placed into method robot auto aligns the whole output system to
     // drop the block off on at the right spot
@@ -122,6 +127,7 @@ public class Outtake{
 
     public void raiseLift()
     {
+        resetLiftEncoders();
         liftRight.setPower(LIFTPOWER);
         liftLeft.setPower(LIFTPOWER);
 
@@ -137,7 +143,6 @@ public class Outtake{
     {
 
         raiseLift();
-
         if(blockCount % 2 == 1)
         {
             openBasket();
@@ -162,24 +167,39 @@ public class Outtake{
     {
 
         horizontalLiftTele();
+        resetLiftEncoders();
+        if(Math.abs(opMode.gamepad2.left_trigger) > .5)
+        {
+            pushBlock.setPosition(1);
+        }
+        else if(Math.abs(opMode.gamepad2.right_trigger) > .5)
+        {
+            pushBlock.setPosition(0);
+        }
 
-        if (Math.abs(opMode.gamepad2.left_stick_y) > .05) {
+        if (Math.abs(opMode.gamepad2.left_stick_y) > .05 && averageLiftPosition() < MAXHEIGHT * encoderLevelCount) {
             liftRight.setPower(opMode.gamepad2.left_stick_y);
             liftLeft.setPower(opMode.gamepad2.left_stick_y);
         }
+        else if(Math.abs(opMode.gamepad2.left_stick_y) > .05)
+        {
+            liftRight.setPower(-.5);
+            liftLeft.setPower(-.5);
+        }
 
         //  Extend Outtake out, and activate servo to push block forward
+        else if(opMode.gamepad2.a && pushBlock.getPosition() == 0) {
+            //  openBasket();
+            //  Push block onto field
 
-        else if(opMode.gamepad2.a && pushBlock.getPosition() == .5)
-        {
-            openBasket();
         }
-        else if(opMode.gamepad2.a && pushBlock.getPosition() != .5)
-        {
-            pushBlock.setPosition(.5);
+        else if(opMode.gamepad2.a && pushBlock.getPosition() != 0) {
+
+            //  Reset Push block hook to normal position
+            //  pushBlock.setPosition(.5);
         }
-        else if(opMode.gamepad2.b)
-        {
+        else if(opMode.gamepad2.b) {
+            while (opMode.gamepad2.b){};
             resetOuttake();
         }
         else {
@@ -234,8 +254,10 @@ public class Outtake{
     public void resetOuttake()
     {
 
+        resetLiftEncoders();
+        if(liftReset) return;
 
-        pushBlock.setPosition(.5); // moves servo to open position what ever angle that is
+        pushBlock.setPosition(0); // moves servo to open position what ever angle that is
 
         rightVex.setPower(-1);
         leftVex.setPower(1);
@@ -272,6 +294,7 @@ public class Outtake{
     {
         if(!toggled && opMode.gamepad2.y)
         {
+            while(opMode.gamepad2.y){};
             toggled = true;
 
             //set hook position to what ever the angle is, I assume servo is at (1) = 180,
@@ -282,6 +305,7 @@ public class Outtake{
         }
         else if(toggled && opMode.gamepad2.y)
         {
+            while(opMode.gamepad2.y){};
             toggled = false;
 
             hookLeft.setPosition(HOOKUP);
@@ -290,9 +314,9 @@ public class Outtake{
     }
 
     public void horizontalLiftTele() {
-        if (Math.abs(opMode.gamepad2.right_stick_y) >=.075) {
-            rightVex.setPower(opMode.gamepad2.right_stick_y);
-            leftVex.setPower(-opMode.gamepad2.right_stick_y);
+        if (Math.abs(opMode.gamepad2.right_stick_y) >= .075) {
+            rightVex.setPower(opMode.gamepad2.right_stick_y / 2);
+            leftVex.setPower(-opMode.gamepad2.right_stick_y / 2);
         }
         else {
             rightVex.setPower(0);

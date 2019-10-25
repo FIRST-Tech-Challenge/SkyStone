@@ -24,8 +24,10 @@ public class Holonomic extends LinearOpMode {
     private DcMotor backRight    = null; //rear right
     private DcMotor frontLeft    = null; //front left
     private DcMotor frontRight   = null; //front right
-    private Servo servoLeft      = null;
-    private Servo servoRight     = null;
+
+    private Servo   servoLeft    = null;
+    private Servo   servoRight   = null;
+    //private Servo   servoClaw    = null;
 
     public static final double deadZone = 0.10;
     public static final boolean earthIsFlat = true;
@@ -42,6 +44,7 @@ public class Holonomic extends LinearOpMode {
 
         servoLeft = hardwareMap.get(Servo.class, "servoLeft");
         servoRight = hardwareMap.get(Servo.class, "servoRight");
+        //servoClaw = hardwareMap.get(Servo.class, "servoClaw");
 
         //Set the direction of the motors
         //Reversed motors on one side to ensure forward movement.
@@ -57,12 +60,12 @@ public class Holonomic extends LinearOpMode {
         backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        //servo.setPosition(0);
 
         waitForStart();
         runtime.reset();
-        double speedSet = 5;//robot starts with 7 speed due to 40 ratio motors being op
-        double reduction = 10;//fine rotation for precise stacking. higher value = slower rotation using triggers
+
+        double speedSet = 5;//robot starts with speed 5 due to 40 ratio motors being op
+        double reduction = 7.5;//fine rotation for precise stacking. higher value = slower rotation using triggers
 
         while (opModeIsActive()) {
 
@@ -100,7 +103,7 @@ public class Holonomic extends LinearOpMode {
                 frontRight.setPower(Range.clip((gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x) * (speedSet / 10), -1, 1));
                 backRight.setPower(Range.clip((gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x) * (speedSet / 10), -1, 1));
                 backLeft.setPower(Range.clip((gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x) * (speedSet / 10), -1, 1));
-            } else if(gamepad1.left_trigger > deadZone || gamepad1.left_trigger > deadZone){
+            } else if(gamepad1.left_trigger > deadZone || gamepad1.left_trigger > deadZone){//we don't have to worry about Range.clip here because the abs values will never exceed 1
                 frontLeft.setPower((-gamepad1.left_trigger + gamepad1.right_trigger)/reduction);
                 frontRight.setPower((gamepad1.left_trigger - gamepad1.right_trigger)/reduction);
                 backRight.setPower((gamepad1.left_trigger - gamepad1.right_trigger)/reduction);
@@ -111,7 +114,7 @@ public class Holonomic extends LinearOpMode {
                 backRight.setPower(0);
                 backLeft.setPower(0);
             }
-
+ 
             telemetry.addData("Drive", "Holonomic");
             telemetry.addData("Left", servoLeft.getPosition());
             telemetry.addData("Right", servoRight.getPosition());

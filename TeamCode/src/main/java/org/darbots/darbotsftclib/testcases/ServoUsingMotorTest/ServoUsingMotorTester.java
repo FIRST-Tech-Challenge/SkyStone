@@ -33,6 +33,8 @@ public class ServoUsingMotorTester extends DarbotsBasicOpMode<ServoUsingMotorCor
     @Override
     public void RunThisOpMode() {
         while(this.opModeIsActive()){
+            telemetry.addData("CurrentPosition",this.m_RobotCore.getServoUsingMotor().getCurrentPosition());
+            telemetry.update();
             this.m_RobotCore.updateStatus();
             if(this.m_RobotCore.isBusy()){
                 continue;

@@ -82,7 +82,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  */
 
 
-@TeleOp(name="SKYSTONE Vuforia Nav", group ="Concept")
+@TeleOp(name="NERDBOTS_VuforiaNav_V1", group ="Concept")
 //@Disabled
 public class ConceptVuforiaSkyStoneNavigation extends LinearOpMode {
 
@@ -93,9 +93,9 @@ public class ConceptVuforiaSkyStoneNavigation extends LinearOpMode {
     // NOTE: If you are running on a CONTROL HUB, with only one USB WebCam, you must select CAMERA_CHOICE = BACK; and PHONE_IS_PORTRAIT = false;
     //
     private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
-    private static final boolean PHONE_IS_PORTRAIT = false  ;
+    private static final boolean PHONE_IS_PORTRAIT = true  ;
 
-    /*
+    /*  `
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
      * 'parameters.vuforiaLicenseKey' is initialized is for illustration only, and will not function.
      * A Vuforia 'Development' license key, can be obtained free of charge from the Vuforia developer
@@ -137,6 +137,7 @@ public class ConceptVuforiaSkyStoneNavigation extends LinearOpMode {
     private float phoneYRotate    = 0;
     private float phoneZRotate    = 0;
 
+    int [] arr;
     @Override public void runOpMode() {
         /*
          * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.

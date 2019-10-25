@@ -33,6 +33,7 @@ public class Robot4100Generation1_BlueScanComplex extends DarbotsBasicOpMode {
     @Override
     public void hardwareDestroy() {
         this.m_Navigation.setActivated(false);
+        this.m_RobotCore.terminate();
     }
 
     @Override
@@ -179,8 +180,8 @@ public class Robot4100Generation1_BlueScanComplex extends DarbotsBasicOpMode {
 
         this.m_RobotCore.getChassis().replaceTask(
                 this.m_RobotCore.getChassis().getFixedZDistanceTask(
-                        -40,
-                        0.5
+                        -45,
+                        0.3
                 )
         );
         if(!waitForDrive()){

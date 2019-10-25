@@ -75,6 +75,14 @@ public class Hardware15203 {
          }
 
         */
+
+        try {
+            for (CRServo c : allCRServos) {
+                c.setPower(0.0);
+            }
+        } catch (Exception e) {
+            //Do nothing.
+        }
     }
 
 

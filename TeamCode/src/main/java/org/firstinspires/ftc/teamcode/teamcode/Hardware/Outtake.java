@@ -167,7 +167,6 @@ public class Outtake{
     {
 
         horizontalLiftTele();
-        resetLiftEncoders();
         if(Math.abs(opMode.gamepad2.left_trigger) > .5)
         {
             pushBlock.setPosition(1);
@@ -199,7 +198,7 @@ public class Outtake{
             //  pushBlock.setPosition(.5);
         }
         else if(opMode.gamepad2.b) {
-            while (opMode.gamepad2.b){};
+            while (opMode.gamepad2.b){}
             resetOuttake();
         }
         else {

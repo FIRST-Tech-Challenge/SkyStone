@@ -35,7 +35,21 @@ public class LinkedServo
 
     private void updateServoPosition()
     {
+        double position2 = position;
+        if (oppositeFace)
+        {
+            position2 = -position;
+            if (servoTwo.getPosition() - position < 0)
+            {
+                position2 += 360;
+            }
+            else if (servoTwo.getPosition() - position > 360)
+            {
+                position2 -= 360;
+            }
+        }
+
+        servoTwo.setPosition(position2);
         servoOne.setPosition(position);
-        servoTwo.setPosition(oppositeFace ? -position : position);
     }
 }

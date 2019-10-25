@@ -49,9 +49,9 @@ public class Robot4100Generation1_Settings {
     public static final double DRAGSERVO_RESTPOS_R = 1.0;
     public static final double DRAGSERVO_DRAGPOS_L = 1.0;
     public static final double DRAGSERVO_DRAGPOS_R = 0;
-    public static final double GRABBERSERVO_RESTPOS = 1.0;
-    public static final double GRABBERSERVO_GRABPOS = 0.3;
-    public static final double GRABBERROTSERVO_INSIDEPOS = 1.0;
+    public static final double GRABBERSERVO_RESTPOS = 0.4;
+    public static final double GRABBERSERVO_GRABPOS = 0.2;
+    public static final double GRABBERROTSERVO_INSIDEPOS = 0.97;
     public static final double GRABBERROTSERVO_OUTSIDEPOS = 0.05;
 
     public static final double STONEORIENTSERVO_ZEROPOS = 0;

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.alek_wang;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -23,7 +24,7 @@ public class Robot4100Core_Alek extends RobotCore {
     private OmniDrive m_OmniDrive;
 
     public Robot4100Core_Alek(HardwareMap Hardware) {
-        super("ServoUsingMotorTest.log");
+        super("Robot4100Core_Alek.log",Hardware);
         DcMotor ServoUsingMotor_DC = Hardware.dcMotor.get("MotorServo");
         RobotMotorController ServoUsingMotorController = new RobotMotorController(
                 new RobotMotorWithEncoder(ServoUsingMotor_DC,SERVO_MOTOR_TYPE),
@@ -45,6 +46,11 @@ public class Robot4100Core_Alek extends RobotCore {
     @Override
     public void stop() {
         this.m_ServoUsingMotor.deleteAllTasks();
+    }
+
+    @Override
+    public void terminate() {
+
     }
 
     @Override

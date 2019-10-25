@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.libraries;
 
-import com.qualcomm.hardware.rev.RevTouchSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -10,6 +9,7 @@ import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_BACK_LEFT
 import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_BACK_RIGHT_WHEEL;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_FRONT_LEFT_WHEEL;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_FRONT_RIGHT_WHEEL;
+//import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_ARM;
 //import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_INTAKE;
 //import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_INTAKE_SLIDE;
 //import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_LATCHER;
@@ -37,6 +37,7 @@ public class Robot {
 
     // Motors
     private DcMotor[] dcMotors = new DcMotor[4];
+    private Servo[] servos = new Servo[1];
 
     // Servos
 //    private Servo[] servos = new Servo[4];
@@ -69,6 +70,8 @@ public class Robot {
 
 
 //    private void initServos() {
+//        servos[SERVO_ARM] = opMode.hardwareMap.get(Servo.class, "ServoArm");
+//    }
 //        servos[SERVO_LATCHER] = opMode.hardwareMap.get(Servo.class, "servoLatcher");
 //        servos[SERVO_INTAKE_ANGLE] = opMode.hardwareMap.get(Servo.class, "servoIntakeAngle");
 //        servos[SERVO_SCORING] = opMode.hardwareMap.get(Servo.class, "servoScoring");
@@ -100,6 +103,17 @@ public class Robot {
     boolean isMotorBusy(int index) {
         return dcMotors[index].isBusy();
     }
+
+    public void setServoPosition(int servoArm, float servoArmPosGrab) {
+    }
+
+    public float getServoPosition(int servoArm) {
+        return 0;
+    }
+
+    public void setDeltaServoPosition(int servoArm, float f) {
+    }
+
 
     // Servo methods
 //    void setServoPosition(int index, float position) {

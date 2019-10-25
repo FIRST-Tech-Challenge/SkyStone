@@ -30,7 +30,7 @@ public class Constants {
 //    static final int SERVO_INTAKE_ANGLE = 1;
 //    static final int SERVO_SCORING = 2;
 //    static final int SERVO_INTAKE_HOLDER = 3;
-    static final int SERVO_ARM = 4;
+//    static final int SERVO_ARM = 0;
 
     //********** Servo Positions **********//
 //    static final float SERVO_LATCHER_POS_LATCHED = .64f;
@@ -43,8 +43,8 @@ public class Constants {
 //    static final float SERVO_INTAKE_HOLDER_POS_DEPOSIT = .17f;
 //    static final float SERVO_SCORING_POS_MARKER_DEP = .87f;
 //    static final float SERVO_SCORING_POS_RETRACT_MARKER = .65f;
-    static final float SERVO_ARM_POS_GRAB = .35f;
-    static final float SERVO_ARM_POS_REST = .75f;
+//    static final float SERVO_ARM_POS_GRAB = .35f;
+//    static final float SERVO_ARM_POS_REST = .75f;
 
     //********** Touch Sensor Indexes **********//
 //    static final int TOUCH_LATCHER_TOP = 0;

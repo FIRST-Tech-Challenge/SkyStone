@@ -139,7 +139,7 @@ public class BubbleBot extends LinearOpMode {
             telemetry.addData("CA", CA);
             telemetry.addData("RSA", RSA);
             telemetry.addData("RA", getAngle());
-            
+
             LMP = -gamepad1.left_stick_x + FX;
             RMP = -gamepad1.left_stick_x + -FX;
             FMP = -gamepad1.left_stick_x + FY;

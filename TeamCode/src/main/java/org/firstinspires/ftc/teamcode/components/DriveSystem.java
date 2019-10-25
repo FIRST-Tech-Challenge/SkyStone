@@ -214,7 +214,7 @@ public class DriveSystem {
      * @param maxPower The maximum power of the motors
      */
     public boolean turn(double degrees, double maxPower) {
-        double heading = imuSystem.getHeading();
+        double heading = - imuSystem.getHeading();
         Log.d(TAG,"Current Heading: " + heading);
         if(mTargetHeading == 0) {
             mTargetHeading = (heading + degrees) % 360;
@@ -225,7 +225,7 @@ public class DriveSystem {
         double difference = mTargetHeading - heading;
         Log.d(TAG,"Difference: " + difference);
 
-        return onHeading(maxPower, degrees, P_TURN_COEFF);
+        return onHeading(maxPower, mTargetHeading, P_TURN_COEFF);
 
     }
 
@@ -273,7 +273,7 @@ public class DriveSystem {
      */
     public double getError(double targetAngle) {
         // calculate error in -179 to +180 range  (
-        double robotError = targetAngle - imuSystem.getHeading();
+        double robotError = targetAngle + mTargetHeading;
         while (robotError > 180) {
             robotError -= 360;
         }

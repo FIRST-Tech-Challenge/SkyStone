@@ -225,26 +225,23 @@ public class DriveSystem {
         double difference = mTargetHeading - heading;
         Log.d(TAG,"Difference: " + difference);
 
-        return onHeading(maxPower, mTargetHeading, P_TURN_COEFF);
+        return onHeading(maxPower, heading, P_TURN_COEFF);
 
     }
 
     /**
      * Perform one cycle of closed loop heading control.
-     * @param speed     Desired speed of turn.
-     * @param angle     Absolute Angle (in Degrees) relative to last gyro reset.
-     *                  0 = fwd. + is CCW from fwd, - is CW from forward.
-     *                  If a relative angle is required, add/subtract from current heading.
+     * @param speed     Desired speed of turn
      * @param PCoeff    Proportional Gain coefficient
      */
-    public boolean onHeading(double speed, double angle, double PCoeff) {
+    public boolean onHeading(double speed, double heading, double PCoeff) {
         double steer;
         boolean onTarget = false;
         double leftSpeed;
         double rightSpeed;
 
         // determine turn power based on +/- error
-        double error = getError(angle);
+        double error = getError(heading);
 
         if (Math.abs(error) <= HEADING_THRESHOLD) {
             steer = 0.0;
@@ -273,7 +270,7 @@ public class DriveSystem {
      */
     public double getError(double targetAngle) {
         // calculate error in -179 to +180 range  (
-        double robotError = targetAngle + mTargetHeading;
+        double robotError = targetAngle + imuSystem.getHeading();
         while (robotError > 180) {
             robotError -= 360;
         }

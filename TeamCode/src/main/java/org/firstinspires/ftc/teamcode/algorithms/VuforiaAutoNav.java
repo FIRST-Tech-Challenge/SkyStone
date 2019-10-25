@@ -164,9 +164,29 @@ public class VuforiaAutoNav {
     private float robotY = 0;
     private float robotZ = 0;
     private float robotAngle = 0;
+    private int alliance = 0;
+
+    /**
+     * gets the alliance
+     *
+     * @return alliance (1 is blue, -1 is red)
+     */
+    public int getAlliance() {
+        return alliance;
+    }
+
+    /**
+     * sets the alliance
+     *
+     * @param alliance Indicates alliance (1 is blue, -1 is red)
+     */
+    public void setAlliance(int alliance) {
+        this.alliance = alliance;
+    }
 
     /**
      * gets the hardware map
+     *
      * @return hardware map
      */
     public HardwareMap getHardwareMap() {
@@ -175,6 +195,7 @@ public class VuforiaAutoNav {
 
     /**
      * sets the hardware map
+     *
      * @param hardwareMap hardware map
      */
     public void setHardwareMap(HardwareMap hardwareMap) {
@@ -183,6 +204,7 @@ public class VuforiaAutoNav {
 
     /**
      * list of vuforia trackables
+     *
      * @return vuforia trackables
      */
     public List<VuforiaTrackable> getAllTrackables() {
@@ -191,6 +213,7 @@ public class VuforiaAutoNav {
 
     /**
      * sets vuforia trackables
+     *
      * @param allTrackables vuforia trackables
      */
     public void setAllTrackables(List<VuforiaTrackable> allTrackables) {
@@ -295,33 +318,37 @@ public class VuforiaAutoNav {
      * gets the X coordinate of the center of a stone
      *
      * @param stoneNum Indicates stone number (they are indexed from 0 to 5 from left to right when looking away from the field wall)
-     * @param alliance Indicates alliance (0 is blue, 1 is red)
-     * @return
+     * @param alliance Indicates alliance (1 is blue, -1 is red)
+     * @return stone center x
      */
     public float getStoneCenterX(int stoneNum, int alliance) {
         if (stoneNum < 0 || stoneNum > 5) {
             return 0;
         } else {
-            if (alliance == 0) {
+            if (alliance == 1) {
                 return 28 + 8 * stoneNum;
-            } else {
+            } else if (alliance == -1) {
                 return 28 + 8 * (5 - stoneNum);
+            } else {
+                return 0;
             }
         }
     }
 
     /**
-     * gets the Y coordinate of the center a stone
+     * gets the Y coordinate of the center of a stone
      *
      * @param stoneNum Indicates stone number (they are indexed from 0 to 5 from left to right when looking away from the field wall)
-     * @param alliance Indicates alliance (0 is blue, 1 is red)
-     * @return
+     * @param alliance Indicates alliance (1 is blue, -1 is red)
+     * @return stone center y
      */
     public float getStoneCenterY(int stoneNum, int alliance) {
-        if (alliance == 0) {
+        if (alliance == 1) {
             return 22;
-        } else {
+        } else if (alliance == -1) {
             return -22;
+        } else {
+            return 0;
         }
     }
 
@@ -329,35 +356,79 @@ public class VuforiaAutoNav {
      * gets the X coordinate of the center of a sky stone stone
      *
      * @param index    Indicates sky stone number
-     * @param alliance Indicates alliance (0 is blue, 1 is red)
-     * @return
+     * @param alliance Indicates alliance (1 is blue, -1 is red)
+     * @return stone center x
      */
     public float getSkyStoneCenterX(int index, int alliance) {
         int stoneNum = this.getSkyStonePosition(index);
         if (stoneNum < 0 || stoneNum > 5) {
             return 0;
         } else {
-            if (alliance == 0) {
+            if (alliance == 1) {
                 return 28 + 8 * stoneNum;
-            } else {
+            } else if (alliance == -1) {
                 return 28 + 8 * (5 - stoneNum);
+            } else {
+                return 0;
             }
         }
     }
 
     /**
-     * gets the Y coordinate of the center a stone
+     * gets the Y coordinate of the center of a sky stone
      *
      * @param index    Indicates sky stone number
-     * @param alliance Indicates alliance (0 is blue, 1 is red)
-     * @return
+     * @param alliance Indicates alliance (1 is blue, -1 is red)
+     * @return stone center y
      */
     public float getSkyStoneCenterY(int index, int alliance) {
-        if (alliance == 0) {
+        if (alliance == 1) {
             return 22;
-        } else {
+        } else if (alliance == -1) {
             return -22;
+        } else {
+            return 0;
         }
+    }
+
+    /**
+     * gets the X coordinate of the center of a stone
+     *
+     * @param stoneNum Indicates stone number (they are indexed from 0 to 5 from left to right when looking away from the field wall)
+     * @return stone center x
+     */
+    public float getStoneCenterX(int stoneNum) {
+        return this.getStoneCenterX(stoneNum, this.getAlliance());
+    }
+
+    /**
+     * gets the Y coordinate of the center of a stone
+     *
+     * @param stoneNum Indicates stone number (they are indexed from 0 to 5 from left to right when looking away from the field wall)
+     * @return stone center y
+     */
+    public float getStoneCenterY(int stoneNum) {
+        return this.getStoneCenterY(stoneNum, this.getAlliance());
+    }
+
+    /**
+     * gets the X coordinate of the center of a sky stone stone
+     *
+     * @param index Indicates sky stone number
+     * @return stone center x
+     */
+    public float getSkyStoneCenterX(int index) {
+        return this.getSkyStoneCenterX(index, this.getAlliance());
+    }
+
+    /**
+     * gets the Y coordinate of the center of a sky stone
+     *
+     * @param index Indicates sky stone number
+     * @return stone center y
+     */
+    public float getSkyStoneCenterY(int index) {
+        return this.getSkyStoneCenterX(index, this.getAlliance());
     }
 
     /**

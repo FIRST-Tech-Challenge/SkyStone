@@ -10,6 +10,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 public abstract class Robot {
+    //TODO: add getters and setters
 
     OpMode opMode;
 
@@ -25,6 +26,26 @@ public abstract class Robot {
     // State used for updating telemetry
     public Orientation angles;
     public Acceleration gravity;
+
+    // Direction of motion
+    public double forwardPower = 0;
+    public double leftPower = 0;
+
+    public double getForwardPower() {
+        return forwardPower;
+    }
+
+    public void setForwardPower(double forwardPower) {
+        this.forwardPower = forwardPower;
+    }
+
+    public double getLeftPower() {
+        return leftPower;
+    }
+
+    public void setLeftPower(double leftPower) {
+        this.leftPower = leftPower;
+    }
 
     public Robot() {
 
@@ -58,17 +79,18 @@ public abstract class Robot {
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
 //        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
-        parameters.loggingEnabled      = true;
-        parameters.loggingTag          = "IMU";
+        parameters.loggingEnabled = true;
+        parameters.loggingTag = "IMU";
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
     }
 
     /**
      * Turns all the wheels in the same direction to move uniformly forwards or backwards in a straight line
-     * @param power                 percentage of full power given to each motor
+     *
+     * @param power percentage of full power given to each motor
      */
     public void driveStraight(double power) {
         power = Range.clip(power, -1.0, 1.0);
@@ -77,11 +99,14 @@ public abstract class Robot {
         frontRight.setPower(power);
         backLeft.setPower(power);
         backRight.setPower(power);
+        this.setForwardPower(power);
+        this.setLeftPower(0);
     }
 
     /**
      * Strafes left
-     * @param power                 percentage of full power given to each motor
+     *
+     * @param power percentage of full power given to each motor
      */
     public void strafeLeft(double power) {
         //@TODO: figure out if there should be a minimum power at 0, since if power < 0, robot will move right
@@ -91,19 +116,35 @@ public abstract class Robot {
         frontRight.setPower(power);
         backLeft.setPower(power);
         backRight.setPower(-power);
+        this.setForwardPower(0);
+        this.setLeftPower(power);
     }
 
     /**
      * Strafes right
-     * @param power                 percentage of full power given to each motor
+     *
+     * @param power percentage of full power given to each motor
      */
     public void strafeRight(double power) {
         strafeLeft(-power);
     }
 
     /**
+     * Stops the wheels
+     */
+    public void stopDriving() {
+        frontLeft.setPower(0);
+        frontRight.setPower(0);
+        backLeft.setPower(0);
+        backRight.setPower(0);
+        this.setForwardPower(0);
+        this.setLeftPower(0);
+    }
+
+    /**
      * Rotates clockwise
-     * @param power                 percentage of full power given to each motor
+     *
+     * @param power percentage of full power given to each motor
      */
     public void rotateClockwise(double power) {
         power = Range.clip(power, -1.0, 1.0);
@@ -112,11 +153,14 @@ public abstract class Robot {
         frontRight.setPower(-power);
         backLeft.setPower(power);
         backRight.setPower(-power);
+        this.setForwardPower(0);
+        this.setLeftPower(0);
     }
 
     /**
      * Rotates counterclockwise
-     * @param power                 percentage of full power given to each motor
+     *
+     * @param power percentage of full power given to each motor
      */
     public void rotateCounter(double power) {
         rotateClockwise(-power);

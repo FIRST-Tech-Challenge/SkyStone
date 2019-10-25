@@ -10,14 +10,14 @@ public class TeleBot extends Robot {
     public double dead = .13;
 
     //stores the value of sin(45°), or sin(pi/4)
-    public double sin45 = Math.sqrt(2)/2;
+    public double sin45 = Math.sqrt(2) / 2;
 
     public TeleBot(OpMode opMode) {
         this.opMode = opMode;
     }
 
     public double[] getPowers() {
-        return new double[] {frontLeft.getPower(), frontRight.getPower(), backRight.getPower(), backLeft.getPower()};
+        return new double[]{frontLeft.getPower(), frontRight.getPower(), backRight.getPower(), backLeft.getPower()};
     }
 
     /**
@@ -44,7 +44,7 @@ public class TeleBot extends Robot {
         //stores the power given to each motor clockwise from front left
         double[] powerValues;
 
-        if ((Math.abs(leftX)> dead) || (Math.abs(leftY) > dead) || Math.abs(rightX) > dead) {
+        if ((Math.abs(leftX) > dead) || (Math.abs(leftY) > dead) || Math.abs(rightX) > dead) {
             //if the left stick is being used
             strafeLeftPow = sin45 * ((leftX - leftY));
             strafeRightPow = sin45 * ((leftX + leftY));
@@ -53,7 +53,7 @@ public class TeleBot extends Robot {
             rotPow = (rightX > 0) ? (1) : (-1);
 
             //sets each motor's power to combination of strafe and rotate
-            powerValues = new double[] {strafeLeftPow + rotPow, strafeRightPow - rotPow,
+            powerValues = new double[]{strafeLeftPow + rotPow, strafeRightPow - rotPow,
                     strafeLeftPow - rotPow, strafeRightPow + rotPow};
 
             //from Davis's code: rescale values out of the highest power in the array
@@ -67,7 +67,7 @@ public class TeleBot extends Robot {
 
             if (maximumPower != 0) {
                 for (int i = 0; i < powerValues.length; i++) {
-                    powerValues[i] = powerValues[i]/Math.abs(maximumPower);
+                    powerValues[i] = powerValues[i] / Math.abs(maximumPower);
                 }
             }
 

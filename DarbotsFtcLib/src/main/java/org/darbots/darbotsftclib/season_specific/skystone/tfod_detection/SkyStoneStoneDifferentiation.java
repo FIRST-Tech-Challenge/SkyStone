@@ -118,23 +118,31 @@ public class SkyStoneStoneDifferentiation {
     private TFObjectDetector m_TFOD;
     private HardwareMap m_HardwareMap;
     private boolean m_Preview;
-    public SkyStoneStoneDifferentiation(RobotCamera Camera, HardwareMap HardwareList, boolean Preview) throws Exception {
+    private boolean m_Activated = false;
+    private double m_MinimumConfidence = 0.7;
+    public SkyStoneStoneDifferentiation(RobotCamera Camera, HardwareMap HardwareList, boolean Preview, double MinimumConfidence) {
         this.m_Camera = Camera;
         this.m_HardwareMap = HardwareList;
         this.m_Preview = Preview;
+        this.m_MinimumConfidence = MinimumConfidence;
 
         if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
             __initTfod();
         } else {
-            throw new Exception("Your device cannot create TFOD instances");
+            m_TFOD = null;
         }
     }
 
     public void terminate(){
-        m_TFOD.shutdown();
+        if(m_TFOD != null){
+            m_TFOD.shutdown();
+        }
     }
 
     public ArrayList<RecognitionResult> getUpdatedRecognitions(){
+        if(m_TFOD == null){
+            return null;
+        }
         List<Recognition> updatedRecognitions = m_TFOD.getUpdatedRecognitions();
         if (updatedRecognitions != null) {
             ArrayList<RecognitionResult> ResultArray = new ArrayList<RecognitionResult>();
@@ -148,6 +156,11 @@ public class SkyStoneStoneDifferentiation {
             return null;
         }
     }
+
+    public double getMinimumConfidence(){
+        return this.m_MinimumConfidence;
+    }
+
 
     public RobotCamera getCamera(){
         return this.m_Camera;
@@ -164,22 +177,36 @@ public class SkyStoneStoneDifferentiation {
         int tfodMonitorViewId = 0;
         TFObjectDetector.Parameters tfodParameters = null;
         if(m_Preview) {
-            m_HardwareMap.appContext.getResources().getIdentifier(
+            tfodMonitorViewId = m_HardwareMap.appContext.getResources().getIdentifier(
                     "tfodMonitorViewId", "id", m_HardwareMap.appContext.getPackageName());
             tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
         }else{
             tfodParameters = new TFObjectDetector.Parameters();
         }
-        tfodParameters.minimumConfidence = 0.8;
+        tfodParameters.minimumConfidence = this.m_MinimumConfidence;
         m_TFOD = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, this.m_Camera.getVuforia());
         m_TFOD.loadModelFromAsset("Skystone.tflite", "Stone", "Skystone");
     }
 
     public void setActivated(boolean enabled){
+        if(m_TFOD == null){
+            return;
+        }
         if(enabled){
             this.m_TFOD.activate();
+            this.m_Activated = true;
         }else{
             this.m_TFOD.deactivate();
+            this.m_Activated = false;
         }
     }
+
+    public boolean isActivated(){
+        if(this.m_TFOD == null){
+            return false;
+        }else{
+            return this.m_Activated;
+        }
+    }
+
 }

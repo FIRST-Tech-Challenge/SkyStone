@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.mason_wu;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="TeleOp 4100", group="Linear Opmode")
+@TeleOp(name="TeleOp 4100-mwu", group="Linear Opmode")
+@Disabled
 public class TeleOp4100 extends LinearOpMode{
 
     private DcMotor FL = null;

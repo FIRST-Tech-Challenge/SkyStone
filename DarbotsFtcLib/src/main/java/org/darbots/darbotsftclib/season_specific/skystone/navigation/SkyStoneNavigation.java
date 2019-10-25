@@ -89,6 +89,7 @@ public class SkyStoneNavigation implements RobotNonBlockingDevice {
         // Load the data sets for the trackable objects. These particular data
         // sets are stored in the 'assets' part of our application.
         m_TargetsSkyStone = vuforia.loadTrackablesFromAsset("Skystone");
+
         //m_TargetsSkyStone.remove(0);
 
         VuforiaTrackable stoneTarget = m_TargetsSkyStone.get(0);
@@ -143,9 +144,11 @@ public class SkyStoneNavigation implements RobotNonBlockingDevice {
         // Set the position of the Stone Target.  Since it's not fixed in position, assume it's at the field origin.
         // Rotated it to to face forward, and raised it to sit on the ground correctly.
         // This can be used for generic target-centric approach algorithms
+        /*
         stoneTarget.setLocation(OpenGLMatrix
                 .translation(0, 0, stoneZ)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
+        */
 
         //Set the position of the bridge support targets with relation to origin (center of field)
         blueFrontBridge.setLocation(OpenGLMatrix
@@ -262,7 +265,8 @@ public class SkyStoneNavigation implements RobotNonBlockingDevice {
 
                 // getUpdatedRobotLocation() will return null if no new information is available since
                 // the last time that call was made, or if the trackable is not currently visible.
-                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
+                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getFtcFieldFromRobot();
+
                 if (robotLocationTransform != null) {
                     lastLocation = robotLocationTransform;
                 }
@@ -282,6 +286,24 @@ public class SkyStoneNavigation implements RobotNonBlockingDevice {
         else {
             return null;
         }
+    }
+
+    protected Robot3DPositionIndicator __getFTCRobotAxisStonePosition(){
+        VuforiaTrackableDefaultListener trackable = (VuforiaTrackableDefaultListener) m_AllTrackables.get(0).getListener();
+        if(trackable.isVisible()){
+            OpenGLMatrix stonePosition = trackable.getFtcCameraFromTarget();
+            VectorF translation = stonePosition.getTranslation();
+            Orientation rotation = Orientation.getOrientation(stonePosition,EXTRINSIC,XYZ,DEGREES);
+            return new Robot3DPositionIndicator(translation.get(0) / 10, translation.get(1) / 10, translation.get(2) / 10, rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
+        }
+        return null;
+    }
+    public Robot3DPositionIndicator getDarbotsRobotAxisStonePosition(){
+        Robot3DPositionIndicator FTCRobotAxis = this.__getFTCRobotAxisStonePosition();
+        if(FTCRobotAxis != null){
+            return FTCRobotAxis.fromFTCRobotAxisToDarbotsRobotAxis();
+        }
+        return null;
     }
 
     @Override

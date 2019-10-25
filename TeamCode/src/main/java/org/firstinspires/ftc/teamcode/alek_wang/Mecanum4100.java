@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode.alek_wang;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="4100Test", group="LuvRZ")
+@TeleOp(name="4100Test-alwang", group="4100")
+@Disabled
 public class Mecanum4100 extends LinearOpMode {
     private DcMotor lf,lb = null;
     private DcMotor rf,rb = null;

@@ -1,5 +1,9 @@
 package org.darbots.darbotsftclib.libcore.templates.chassis_related;
 
+import org.darbots.darbotsftclib.libcore.calculations.dimentionalcalculation.XYPlaneCalculations;
+import org.darbots.darbotsftclib.libcore.integratedfunctions.RobotLogger;
+import org.darbots.darbotsftclib.libcore.runtime.GlobalUtil;
+
 public abstract class RobotMotionSystemFixedTurnTask extends RobotMotionSystemTask{
     private double m_TurnDeg;
     private double m_Speed;
@@ -31,5 +35,12 @@ public abstract class RobotMotionSystemFixedTurnTask extends RobotMotionSystemTa
         result += "Speed: " + this.getSpeed() + ", ";
         result += "TurnDeg: " + this.getTurnDeg();
         return result;
+    }
+    @Override
+    public void stopTask(){
+        if(this.isBusy() && this.getMotionSystem().isGyroGuidedDriveEnabled() && this.getMotionSystem().isGyroGuidedDrivePublicStartingAngleEnabled()){
+            this.getMotionSystem().setGyroGuidedDrivePublicStartingAngle(XYPlaneCalculations.normalizeDeg(this.getMotionSystem().getGyroGuidedDrivePublicStartingAngle() + ((float) this.getTurnDeg())));
+        }
+        super.stopTask();
     }
 }

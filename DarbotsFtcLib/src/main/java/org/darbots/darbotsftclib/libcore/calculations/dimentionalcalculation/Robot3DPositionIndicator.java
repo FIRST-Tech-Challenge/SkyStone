@@ -99,4 +99,24 @@ public class Robot3DPositionIndicator {
     public void setRotationZ(double RotationZ){
         this.m_RotationZ = XYPlaneCalculations.normalizeDeg(RotationZ);
     }
+    public Robot3DPositionIndicator fromFTCRobotAxisToDarbotsRobotAxis(){
+        return new Robot3DPositionIndicator(
+                -this.getY(),
+                this.getZ(),
+                this.getX(),
+                -this.getRotationY(),
+                this.getRotationZ() + 90,
+                this.getRotationX()
+        );
+    }
+    public Robot3DPositionIndicator fromDarbotsRobotAxisToFTCRobotAxis(){
+        return new Robot3DPositionIndicator(
+                this.getZ(),
+                -this.getX(),
+                this.getY(),
+                this.getRotationZ(),
+                -this.getRotationX(),
+                this.getRotationY() - 90
+        );
+    }
 }

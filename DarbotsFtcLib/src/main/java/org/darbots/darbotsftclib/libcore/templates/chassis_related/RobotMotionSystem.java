@@ -28,6 +28,8 @@ package org.darbots.darbotsftclib.libcore.templates.chassis_related;
 import android.support.annotation.NonNull;
 
 import org.darbots.darbotsftclib.libcore.calculations.dimentionalcalculation.Robot2DPositionTracker;
+import org.darbots.darbotsftclib.libcore.calculations.dimentionalcalculation.XYPlaneCalculations;
+import org.darbots.darbotsftclib.libcore.runtime.GlobalUtil;
 import org.darbots.darbotsftclib.libcore.templates.RobotNonBlockingDevice;
 
 import java.util.ArrayList;
@@ -37,6 +39,11 @@ public abstract class RobotMotionSystem implements RobotNonBlockingDevice {
     private Robot2DPositionTracker m_PosTracker;
     private double m_LinearMotionDistanceFactor;
     private double m_RotationalMotionDistanceFactor;
+    private boolean m_FixedDistanceGyroGuidedDrive = false;
+    private boolean m_GyroGuidedDrivePublicStartingAngleEnabled = false;
+    private float m_GyroGuidedDrivePublicStartingAngle = -360;
+    private boolean m_SteadySpeedUp = true;
+    private double m_SteadySpeedUpThreshold = 0.25;
     public RobotMotionSystem(Robot2DPositionTracker PositionTracker){
         this.m_TaskLists = new ArrayList();
         this.m_PosTracker = PositionTracker;
@@ -156,6 +163,60 @@ public abstract class RobotMotionSystem implements RobotNonBlockingDevice {
         while(this.isBusy()){
             this.updateStatus();
         }
+    }
+
+
+    public boolean isGyroGuidedDriveEnabled(){
+        return this.m_FixedDistanceGyroGuidedDrive;
+    }
+
+    public void setGyroGuidedDriveEnabled(boolean Enabled){
+        this.m_FixedDistanceGyroGuidedDrive = Enabled;
+    }
+
+    public boolean isGyroGuidedDrivePublicStartingAngleEnabled(){
+        return this.m_GyroGuidedDrivePublicStartingAngleEnabled;
+    }
+
+    public void setGyroGuidedDrivePublicStartingAngleEnabled(boolean Enabled){
+        this.m_GyroGuidedDrivePublicStartingAngleEnabled = Enabled;
+        if(Enabled && GlobalUtil.getGyro() != null && this.m_GyroGuidedDrivePublicStartingAngle == -360){
+            updateGyroGuidedPublicStartingAngle();
+        }
+    }
+
+    public void updateGyroGuidedPublicStartingAngle(){
+        if(GlobalUtil.getGyro() != null){
+            GlobalUtil.getGyro().updateStatus();
+            this.m_GyroGuidedDrivePublicStartingAngle = GlobalUtil.getGyro().getHeading();
+        }
+    }
+
+    public float getGyroGuidedDrivePublicStartingAngle(){
+        if(this.m_GyroGuidedDrivePublicStartingAngle == -360){
+            return 0;
+        }
+        return this.m_GyroGuidedDrivePublicStartingAngle;
+    }
+
+    public void setGyroGuidedDrivePublicStartingAngle(float Ang){
+        this.m_GyroGuidedDrivePublicStartingAngle = XYPlaneCalculations.normalizeDeg(Ang);
+    }
+
+    public boolean isSteadySpeedUp(){
+        return this.m_SteadySpeedUp;
+    }
+
+    public void setSteadySpeedUp(boolean Enabled){
+        this.m_SteadySpeedUp = Enabled;
+    }
+
+    public double getSteadySpeedUpThreshold(){
+        return this.m_SteadySpeedUpThreshold;
+    }
+
+    public void setSteadySpeedUpThreshold(double Threshold){
+        this.m_SteadySpeedUpThreshold = Threshold;
     }
 
     public abstract RobotMotionSystemFixedXDistanceTask getFixedXDistanceTask(double XDistance, double Speed);

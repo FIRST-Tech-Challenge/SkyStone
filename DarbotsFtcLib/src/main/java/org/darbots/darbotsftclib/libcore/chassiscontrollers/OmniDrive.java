@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.darbots.darbotsftclib.libcore.calculations.dimentionalcalculation.Robot2DPositionIndicator;
 import org.darbots.darbotsftclib.libcore.calculations.dimentionalcalculation.Robot2DPositionTracker;
+import org.darbots.darbotsftclib.libcore.calculations.dimentionalcalculation.XYPlaneCalculations;
+import org.darbots.darbotsftclib.libcore.runtime.GlobalUtil;
 import org.darbots.darbotsftclib.libcore.sensors.motion_related.RobotMotion;
 import org.darbots.darbotsftclib.libcore.sensors.motors.RobotMotorController;
 import org.darbots.darbotsftclib.libcore.tasks.motor_tasks.RobotFixCountSpeedCtlTask;
@@ -13,11 +15,19 @@ import org.darbots.darbotsftclib.libcore.templates.chassis_related.RobotMotionSy
 import org.darbots.darbotsftclib.libcore.templates.chassis_related.RobotMotionSystemFixedXDistanceTask;
 import org.darbots.darbotsftclib.libcore.templates.chassis_related.RobotMotionSystemFixedZDistanceTask;
 import org.darbots.darbotsftclib.libcore.templates.chassis_related.RobotMotionSystemTeleOpControlTask;
+import org.darbots.darbotsftclib.libcore.templates.motor_related.RobotMotor;
 import org.darbots.darbotsftclib.libcore.templates.motor_related.RobotMotorTaskCallBack;
+import org.darbots.darbotsftclib.libcore.templates.other_sensors.RobotGyro;
 
 public class OmniDrive extends RobotMotionSystem {
     public static class FixedXDistanceTask extends RobotMotionSystemFixedXDistanceTask{
         private OmniDrive m_Drive;
+        private int m_CountsToMove = 0;
+        private int m_LTStartCount = 0;
+        private int m_RTStartCount = 0;
+        private int m_LBStartCount = 0;
+        private int m_RBStartCount = 0;
+        private float m_StartDeg = 0;
         public FixedXDistanceTask(OmniDrive ODrive, double XDistance, double Speed) {
             super(XDistance, Speed);
             this.m_Drive = ODrive;
@@ -30,44 +40,165 @@ public class OmniDrive extends RobotMotionSystem {
 
         @Override
         protected void __startTask() {
+            __recalculateCounts();
+
+            if(GlobalUtil.getGyro() != null){
+                GlobalUtil.getGyro().updateStatus();
+                m_StartDeg = m_Drive.isGyroGuidedDrivePublicStartingAngleEnabled() ? m_Drive.getGyroGuidedDrivePublicStartingAngle() : XYPlaneCalculations.normalizeDeg(GlobalUtil.getGyro().getHeading());
+            }
+
+            double AbsSpeed = Math.abs(getSpeed());
+            if(m_Drive.isSteadySpeedUp() && AbsSpeed > this.getMotionSystem().getSteadySpeedUpThreshold()){
+                AbsSpeed = 0;
+            }
+            double LTSpeed = this.m_CountsToMove > 0 ? -AbsSpeed : AbsSpeed;
+            double RTSpeed = this.m_CountsToMove > 0 ? -AbsSpeed : AbsSpeed;
+            double LBSpeed = this.m_CountsToMove > 0 ? AbsSpeed : -AbsSpeed;
+            double RBSpeed = this.m_CountsToMove > 0 ? AbsSpeed : -AbsSpeed;
+
+            m_LTStartCount = m_Drive.m_LeftTopMotor.getMotorController().getMotor().getCurrentCount();
+            m_RTStartCount = m_Drive.m_RightTopMotor.getMotorController().getMotor().getCurrentCount();
+            m_LBStartCount = m_Drive.m_LeftBottomMotor.getMotorController().getMotor().getCurrentCount();
+            m_RBStartCount = m_Drive.m_RightBottomMotor.getMotorController().getMotor().getCurrentCount();
+
+
+            m_Drive.m_LeftTopMotor.getMotorController().getMotor().setPower(LTSpeed);
+            m_Drive.m_RightTopMotor.getMotorController().getMotor().setPower(RTSpeed);
+            m_Drive.m_LeftBottomMotor.getMotorController().getMotor().setPower(LBSpeed);
+            m_Drive.m_RightBottomMotor.getMotorController().getMotor().setPower(RBSpeed);
+
+            m_Drive.m_LeftTopMotor.getMotorController().getMotor().setCurrentMovingType(RobotMotor.MovingType.withSpeed);
+            m_Drive.m_RightTopMotor.getMotorController().getMotor().setCurrentMovingType(RobotMotor.MovingType.withSpeed);
+            m_Drive.m_LeftBottomMotor.getMotorController().getMotor().setCurrentMovingType(RobotMotor.MovingType.withSpeed);
+            m_Drive.m_RightBottomMotor.getMotorController().getMotor().setCurrentMovingType(RobotMotor.MovingType.withSpeed);
+        }
+
+        private void __recalculateCounts(){
             int CountToMove = (int) Math.round(this.getXDistance() / m_Drive.m_LeftTopMotor.getRobotWheel().getXPerCounterClockwiseDistance() / m_Drive.m_LeftTopMotor.getRobotWheel().getCircumference() * m_Drive.m_LeftTopMotor.getMotorController().getMotor().getMotorType().getCountsPerRev() * m_Drive.getLinearMotionDistanceFactor());
             CountToMove = Math.abs(CountToMove);
             int CountToMoveRight = (this.getXDistance() >= 0 ? CountToMove : -CountToMove);
-            RobotMotorTaskCallBack FLCB = (this.getMotionSystem().getPositionTracker() == null ? null :
-                new RobotMotorTaskCallBack() {
-                    @Override
-                    public void finishRunning(RobotMotorController Controller, boolean timeOut, double timeUsedInSec, int CountsMoved) {
-                        double DistanceMoved = CountsMoved / m_Drive.m_LeftTopMotor.getMotorController().getMotor().getMotorType().getCountsPerRev() * m_Drive.m_LeftTopMotor.getRobotWheel().getCircumference() * m_Drive.m_LeftTopMotor.getRobotWheel().getXPerCounterClockwiseDistance() / m_Drive.getLinearMotionDistanceFactor();
-                        getMotionSystem().getPositionTracker().drive_MoveThroughRobotAngle(
-                                -90,
-                                DistanceMoved
-                                );
-                    }
-                });
-            m_Drive.m_LeftTopMotor.getMotorController().replaceTask(new RobotFixCountSpeedCtlTask(-CountToMoveRight, this.getSpeed(), FLCB , true));
-            m_Drive.m_RightTopMotor.getMotorController().replaceTask(new RobotFixCountSpeedCtlTask(-CountToMoveRight,this.getSpeed(),null,true));
-            m_Drive.m_LeftBottomMotor.getMotorController().replaceTask(new RobotFixCountSpeedCtlTask(CountToMoveRight,this.getSpeed(),null,true));
-            m_Drive.m_RightBottomMotor.getMotorController().replaceTask(new RobotFixCountSpeedCtlTask(CountToMoveRight,this.getSpeed(),null,true));
+            this.m_CountsToMove = CountToMoveRight;
         }
 
         @Override
         protected void __taskFinished() {
-
+            if(this.m_Drive.getPositionTracker() != null) {
+                int CountsMoved = this.m_Drive.m_LeftTopMotor.getMotorController().getMotor().getCurrentCount() - this.m_LTStartCount;
+                double DistanceMoved = CountsMoved / m_Drive.m_LeftTopMotor.getMotorController().getMotor().getMotorType().getCountsPerRev() * m_Drive.m_LeftTopMotor.getRobotWheel().getCircumference() * m_Drive.m_LeftTopMotor.getRobotWheel().getXPerCounterClockwiseDistance() / m_Drive.getLinearMotionDistanceFactor();
+                getMotionSystem().getPositionTracker().drive_MoveThroughRobotAngle(
+                        -90,
+                        DistanceMoved
+                );
+            }
         }
 
         @Override
         public void updateStatus() {
-            m_Drive.m_LeftTopMotor.getMotorController().updateStatus();
-            m_Drive.m_RightTopMotor.getMotorController().updateStatus();
-            m_Drive.m_LeftBottomMotor.getMotorController().updateStatus();
-            m_Drive.m_RightBottomMotor.getMotorController().updateStatus();
-            if(!(m_Drive.m_LeftTopMotor.getMotorController().isBusy() || m_Drive.m_LeftBottomMotor.getMotorController().isBusy() || m_Drive.m_RightTopMotor.getMotorController().isBusy() || m_Drive.m_RightBottomMotor.getMotorController().isBusy())){
-                this.stopTask();
+            m_Drive.m_LeftTopMotor.getMotorController().getMotor().updateStatus();
+            m_Drive.m_RightTopMotor.getMotorController().getMotor().updateStatus();
+            m_Drive.m_LeftBottomMotor.getMotorController().getMotor().updateStatus();
+            m_Drive.m_RightBottomMotor.getMotorController().getMotor().updateStatus();
+            //Left / Right Speed Control
+            if(this.isBusy()){
+                double AbsSpeed = Math.abs(getSpeed());
+
+
+                if(this.getMotionSystem().isSteadySpeedUp() && AbsSpeed > this.getMotionSystem().getSteadySpeedUpThreshold()){
+                    double ExtraSpeed = AbsSpeed - this.getMotionSystem().getSteadySpeedUpThreshold();
+
+                    int CountsMoved = this.m_Drive.m_LeftTopMotor.getMotorController().getMotor().getCurrentCount() - this.m_LTStartCount;
+
+                    double jobPercentile = Math.abs( ((double) CountsMoved) / m_CountsToMove);
+
+                    if(jobPercentile < 0.30){
+                        AbsSpeed = this.getMotionSystem().getSteadySpeedUpThreshold() + (jobPercentile / 0.30) * ExtraSpeed;
+                    }else if(jobPercentile > 0.70){
+                        AbsSpeed = this.getMotionSystem().getSteadySpeedUpThreshold() + ((1.0 - jobPercentile) / 0.30) * ExtraSpeed;
+                    }
+                }
+
+                double LTSpeed = this.m_CountsToMove > 0 ? -AbsSpeed : AbsSpeed;
+                double RTSpeed = this.m_CountsToMove > 0 ? -AbsSpeed : AbsSpeed;
+                double LBSpeed = this.m_CountsToMove > 0 ? AbsSpeed : -AbsSpeed;
+                double RBSpeed = this.m_CountsToMove > 0 ? AbsSpeed : -AbsSpeed;
+
+                if(GlobalUtil.getGyro() != null && m_Drive.isGyroGuidedDriveEnabled()) {
+                    GlobalUtil.getGyro().updateStatus();
+                    double currentAng = GlobalUtil.getGyro().getHeading();
+                    double deltaAng = XYPlaneCalculations.normalizeDeg(currentAng - m_StartDeg);
+                    if (GlobalUtil.getGyro().getHeadingRotationPositiveOrientation() == RobotGyro.HeadingRotationPositiveOrientation.Clockwise) {
+                        deltaAng = -deltaAng;
+                    }
+
+
+                    double deltaSpeedEachSide = 0;
+                    if (Math.abs(deltaAng) >= 5) {
+                        deltaSpeedEachSide = Range.clip(0.5 * AbsSpeed, 0, 0.25);
+                    } else if (Math.abs(deltaAng) >= 3) {
+                        deltaSpeedEachSide = Range.clip(0.25 * AbsSpeed, 0, 0.2);
+                    } else if (Math.abs(deltaAng) >= 1) {
+                        deltaSpeedEachSide = Range.clip(0.1 * AbsSpeed, 0, 0.1);
+                    } else if (Math.abs(deltaAng) >= 0.5) {
+                        deltaSpeedEachSide = Range.clip(0.05 * AbsSpeed, 0, 0.05);
+                    }
+                    if (deltaSpeedEachSide < 0.025 && deltaSpeedEachSide != 0) {
+                        deltaSpeedEachSide = 0.025;
+                    }
+
+
+                    if (deltaAng > 0) {
+                        LTSpeed -= deltaSpeedEachSide;
+                        RTSpeed -= deltaSpeedEachSide;
+                        LBSpeed -= deltaSpeedEachSide;
+                        RBSpeed -= deltaSpeedEachSide;
+                    } else if (deltaAng < 0) {
+                        LTSpeed += deltaSpeedEachSide;
+                        RTSpeed += deltaSpeedEachSide;
+                        LBSpeed += deltaSpeedEachSide;
+                        RBSpeed += deltaSpeedEachSide;
+                    }
+                }
+                m_Drive.m_LeftTopMotor.getMotorController().getMotor().setPower(LTSpeed);
+                m_Drive.m_RightTopMotor.getMotorController().getMotor().setPower(RTSpeed);
+                m_Drive.m_LeftBottomMotor.getMotorController().getMotor().setPower(LBSpeed);
+                m_Drive.m_RightBottomMotor.getMotorController().getMotor().setPower(RBSpeed);
             }
+
+            //Distance / Count Control
+            if(this.isBusy()) {
+                if (this.m_CountsToMove > 0) {
+                    if (
+                            m_Drive.m_LeftTopMotor.getMotorController().getMotor().getCurrentCount() <= m_LTStartCount - m_CountsToMove ||
+                                    m_Drive.m_RightTopMotor.getMotorController().getMotor().getCurrentCount() <= m_RTStartCount - m_CountsToMove ||
+                                    m_Drive.m_LeftBottomMotor.getMotorController().getMotor().getCurrentCount() >= m_LBStartCount + m_CountsToMove ||
+                                    m_Drive.m_RightBottomMotor.getMotorController().getMotor().getCurrentCount() >= m_RBStartCount + m_CountsToMove
+                    ) {
+                        this.stopTask();
+                    }
+                } else if (this.m_CountsToMove < 0) {
+                    if (
+                            m_Drive.m_LeftTopMotor.getMotorController().getMotor().getCurrentCount() >= m_LTStartCount - m_CountsToMove ||
+                                    m_Drive.m_RightTopMotor.getMotorController().getMotor().getCurrentCount() >= m_RTStartCount - m_CountsToMove ||
+                                    m_Drive.m_LeftBottomMotor.getMotorController().getMotor().getCurrentCount() <= m_LBStartCount + m_CountsToMove ||
+                                    m_Drive.m_RightBottomMotor.getMotorController().getMotor().getCurrentCount() <= m_RBStartCount + m_CountsToMove
+                    ) {
+                        this.stopTask();
+                    }
+                } else {
+                    this.stopTask();
+                }
+            }
+
         }
     }
     public static class FixedZDistanceTask extends RobotMotionSystemFixedZDistanceTask{
         private OmniDrive m_Drive;
+        private int m_CountsToMove = 0;
+        private int m_LTStartCount = 0;
+        private int m_RTStartCount = 0;
+        private int m_LBStartCount = 0;
+        private int m_RBStartCount = 0;
+        private float m_StartDeg = 0;
         public FixedZDistanceTask(OmniDrive ODrive, double ZDistance, double Speed) {
             super(ZDistance, Speed);
             this.m_Drive = ODrive;
@@ -80,40 +211,154 @@ public class OmniDrive extends RobotMotionSystem {
 
         @Override
         protected void __startTask() {
-            int CountToMove = (int) Math.round(this.getZDistance() / this.m_Drive.m_LeftTopMotor.getRobotWheel().getZPerCounterClockwiseDistance() / this.m_Drive.m_LeftTopMotor.getRobotWheel().getCircumference() * this.m_Drive.m_LeftTopMotor.getMotorController().getMotor().getMotorType().getCountsPerRev() * m_Drive.getLinearMotionDistanceFactor());
+            __recalculateCounts();
+
+            if(GlobalUtil.getGyro() != null){
+                GlobalUtil.getGyro().updateStatus();
+                m_StartDeg = m_Drive.isGyroGuidedDrivePublicStartingAngleEnabled() ? m_Drive.getGyroGuidedDrivePublicStartingAngle() : XYPlaneCalculations.normalizeDeg(GlobalUtil.getGyro().getHeading());
+            }
+
+            double AbsSpeed = Math.abs(getSpeed());
+            if(m_Drive.isSteadySpeedUp() && AbsSpeed > this.getMotionSystem().getSteadySpeedUpThreshold()){
+                AbsSpeed = 0;
+            }
+            double LTSpeed = this.m_CountsToMove > 0 ? -AbsSpeed : AbsSpeed;
+            double RTSpeed = this.m_CountsToMove > 0 ? AbsSpeed : -AbsSpeed;
+            double LBSpeed = this.m_CountsToMove > 0 ? -AbsSpeed : AbsSpeed;
+            double RBSpeed = this.m_CountsToMove > 0 ? AbsSpeed : -AbsSpeed;
+
+            m_LTStartCount = m_Drive.m_LeftTopMotor.getMotorController().getMotor().getCurrentCount();
+            m_RTStartCount = m_Drive.m_RightTopMotor.getMotorController().getMotor().getCurrentCount();
+            m_LBStartCount = m_Drive.m_LeftBottomMotor.getMotorController().getMotor().getCurrentCount();
+            m_RBStartCount = m_Drive.m_RightBottomMotor.getMotorController().getMotor().getCurrentCount();
+
+
+            m_Drive.m_LeftTopMotor.getMotorController().getMotor().setPower(LTSpeed);
+            m_Drive.m_RightTopMotor.getMotorController().getMotor().setPower(RTSpeed);
+            m_Drive.m_LeftBottomMotor.getMotorController().getMotor().setPower(LBSpeed);
+            m_Drive.m_RightBottomMotor.getMotorController().getMotor().setPower(RBSpeed);
+
+            m_Drive.m_LeftTopMotor.getMotorController().getMotor().setCurrentMovingType(RobotMotor.MovingType.withSpeed);
+            m_Drive.m_RightTopMotor.getMotorController().getMotor().setCurrentMovingType(RobotMotor.MovingType.withSpeed);
+            m_Drive.m_LeftBottomMotor.getMotorController().getMotor().setCurrentMovingType(RobotMotor.MovingType.withSpeed);
+            m_Drive.m_RightBottomMotor.getMotorController().getMotor().setCurrentMovingType(RobotMotor.MovingType.withSpeed);
+        }
+
+        private void __recalculateCounts(){
+            int CountToMove = (int) Math.round(this.getZDistance() / m_Drive.m_LeftTopMotor.getRobotWheel().getZPerCounterClockwiseDistance() / m_Drive.m_LeftTopMotor.getRobotWheel().getCircumference() * m_Drive.m_LeftTopMotor.getMotorController().getMotor().getMotorType().getCountsPerRev() * m_Drive.getLinearMotionDistanceFactor());
             CountToMove = Math.abs(CountToMove);
             int CountToMoveForward = (this.getZDistance() >= 0 ? CountToMove : -CountToMove);
-            RobotMotorTaskCallBack FLCB = (this.getMotionSystem().getPositionTracker() == null ? null :
-                    new RobotMotorTaskCallBack() {
-                        @Override
-                        public void finishRunning(RobotMotorController Controller, boolean timeOut, double timeUsedInSec, int CountsMoved) {
-                            double DistanceMoved = CountsMoved / m_Drive.m_LeftTopMotor.getMotorController().getMotor().getMotorType().getCountsPerRev() * m_Drive.m_LeftTopMotor.getRobotWheel().getCircumference() * m_Drive.m_LeftTopMotor.getRobotWheel().getZPerCounterClockwiseDistance() / m_Drive.getLinearMotionDistanceFactor();
-                            getMotionSystem().getPositionTracker().drive_MoveThroughRobotAngle(
-                                    0,
-                                    DistanceMoved
-                            );
-                        }
-                    });
-            m_Drive.m_LeftTopMotor.getMotorController().replaceTask(new RobotFixCountSpeedCtlTask(-CountToMoveForward,this.getSpeed(),FLCB,true));
-            m_Drive.m_RightTopMotor.getMotorController().replaceTask(new RobotFixCountSpeedCtlTask(CountToMoveForward,this.getSpeed(),null,true));
-            m_Drive.m_LeftBottomMotor.getMotorController().replaceTask(new RobotFixCountSpeedCtlTask(-CountToMoveForward,this.getSpeed(),null,true));
-            m_Drive.m_RightBottomMotor.getMotorController().replaceTask(new RobotFixCountSpeedCtlTask(CountToMoveForward,this.getSpeed(),null,true));
+            this.m_CountsToMove = CountToMoveForward;
         }
 
         @Override
         protected void __taskFinished() {
-
+            if(this.m_Drive.getPositionTracker() != null) {
+                int CountsMoved = this.m_Drive.m_LeftTopMotor.getMotorController().getMotor().getCurrentCount() - this.m_LTStartCount;
+                double DistanceMoved = CountsMoved / m_Drive.m_LeftTopMotor.getMotorController().getMotor().getMotorType().getCountsPerRev() * m_Drive.m_LeftTopMotor.getRobotWheel().getCircumference() * m_Drive.m_LeftTopMotor.getRobotWheel().getZPerCounterClockwiseDistance() / m_Drive.getLinearMotionDistanceFactor();
+                getMotionSystem().getPositionTracker().drive_MoveThroughRobotAngle(
+                        0,
+                        DistanceMoved
+                );
+            }
         }
 
         @Override
         public void updateStatus() {
-            m_Drive.m_LeftTopMotor.getMotorController().updateStatus();
-            m_Drive.m_RightTopMotor.getMotorController().updateStatus();
-            m_Drive.m_LeftBottomMotor.getMotorController().updateStatus();
-            m_Drive.m_RightBottomMotor.getMotorController().updateStatus();
-            if(!(m_Drive.m_LeftTopMotor.getMotorController().isBusy() || m_Drive.m_LeftBottomMotor.getMotorController().isBusy() || m_Drive.m_RightTopMotor.getMotorController().isBusy() || m_Drive.m_RightBottomMotor.getMotorController().isBusy())){
+            m_Drive.m_LeftTopMotor.getMotorController().getMotor().updateStatus();
+            m_Drive.m_RightTopMotor.getMotorController().getMotor().updateStatus();
+            m_Drive.m_LeftBottomMotor.getMotorController().getMotor().updateStatus();
+            m_Drive.m_RightBottomMotor.getMotorController().getMotor().updateStatus();
+
+            //Left / Right Speed Control
+            if(this.isBusy()){
+                double AbsSpeed = Math.abs(getSpeed());
+
+                if(this.getMotionSystem().isSteadySpeedUp() && AbsSpeed > this.getMotionSystem().getSteadySpeedUpThreshold()){
+                    double ExtraSpeed = AbsSpeed - this.getMotionSystem().getSteadySpeedUpThreshold();
+
+                    int CountsMoved = this.m_Drive.m_LeftTopMotor.getMotorController().getMotor().getCurrentCount() - this.m_LTStartCount;
+
+                    double jobPercentile = Math.abs( ((double) CountsMoved) / m_CountsToMove);
+
+                    if(jobPercentile < 0.30){
+                        AbsSpeed = this.getMotionSystem().getSteadySpeedUpThreshold() + (jobPercentile / 0.30) * ExtraSpeed;
+                    }else if(jobPercentile > 0.70){
+                        AbsSpeed = this.getMotionSystem().getSteadySpeedUpThreshold() + ((1.0 - jobPercentile) / 0.30) * ExtraSpeed;
+                    }
+                }
+
+                double LTSpeed = this.m_CountsToMove > 0 ? -AbsSpeed : AbsSpeed;
+                double RTSpeed = this.m_CountsToMove > 0 ? AbsSpeed : -AbsSpeed;
+                double LBSpeed = this.m_CountsToMove > 0 ? -AbsSpeed : AbsSpeed;
+                double RBSpeed = this.m_CountsToMove > 0 ? AbsSpeed : -AbsSpeed;
+
+                if(GlobalUtil.getGyro() != null && m_Drive.isGyroGuidedDriveEnabled()) {
+                    GlobalUtil.getGyro().updateStatus();
+                    double currentAng = GlobalUtil.getGyro().getHeading();
+                    double deltaAng = XYPlaneCalculations.normalizeDeg(currentAng - m_StartDeg);
+                    if (GlobalUtil.getGyro().getHeadingRotationPositiveOrientation() == RobotGyro.HeadingRotationPositiveOrientation.Clockwise) {
+                        deltaAng = -deltaAng;
+                    }
+
+
+                    double deltaSpeedEachSide = 0;
+                    if (Math.abs(deltaAng) >= 5) {
+                        deltaSpeedEachSide = Range.clip(0.5 * AbsSpeed, 0, 0.25);
+                    } else if (Math.abs(deltaAng) >= 3) {
+                        deltaSpeedEachSide = Range.clip(0.25 * AbsSpeed, 0, 0.2);
+                    } else if (Math.abs(deltaAng) >= 1) {
+                        deltaSpeedEachSide = Range.clip(0.1 * AbsSpeed, 0, 0.1);
+                    } else if (Math.abs(deltaAng) >= 0.5) {
+                        deltaSpeedEachSide = Range.clip(0.05 * AbsSpeed, 0, 0.05);
+                    }
+                    if (deltaSpeedEachSide < 0.025 && deltaSpeedEachSide != 0) {
+                        deltaSpeedEachSide = 0.025;
+                    }
+
+
+                    if (deltaAng > 0) {
+                        LTSpeed -= deltaSpeedEachSide;
+                        RTSpeed -= deltaSpeedEachSide;
+                        LBSpeed -= deltaSpeedEachSide;
+                        RBSpeed -= deltaSpeedEachSide;
+                    } else if (deltaAng < 0) {
+                        LTSpeed += deltaSpeedEachSide;
+                        RTSpeed += deltaSpeedEachSide;
+                        LBSpeed += deltaSpeedEachSide;
+                        RBSpeed += deltaSpeedEachSide;
+                    }
+                }
+                m_Drive.m_LeftTopMotor.getMotorController().getMotor().setPower(LTSpeed);
+                m_Drive.m_RightTopMotor.getMotorController().getMotor().setPower(RTSpeed);
+                m_Drive.m_LeftBottomMotor.getMotorController().getMotor().setPower(LBSpeed);
+                m_Drive.m_RightBottomMotor.getMotorController().getMotor().setPower(RBSpeed);
+            }
+
+            //Distance / Count Control
+            if(this.isBusy()){
+            if (this.m_CountsToMove > 0) {
+                if (
+                        m_Drive.m_LeftTopMotor.getMotorController().getMotor().getCurrentCount() <= m_LTStartCount - m_CountsToMove ||
+                                m_Drive.m_RightTopMotor.getMotorController().getMotor().getCurrentCount() >= m_RTStartCount + m_CountsToMove ||
+                                m_Drive.m_LeftBottomMotor.getMotorController().getMotor().getCurrentCount() <= m_LBStartCount - m_CountsToMove ||
+                                m_Drive.m_RightBottomMotor.getMotorController().getMotor().getCurrentCount() >= m_RBStartCount + m_CountsToMove
+                ) {
+                    this.stopTask();
+                }
+            } else if (this.m_CountsToMove < 0) {
+                if (
+                        m_Drive.m_LeftTopMotor.getMotorController().getMotor().getCurrentCount() >= m_LTStartCount - m_CountsToMove ||
+                                m_Drive.m_RightTopMotor.getMotorController().getMotor().getCurrentCount() <= m_RTStartCount + m_CountsToMove ||
+                                m_Drive.m_LeftBottomMotor.getMotorController().getMotor().getCurrentCount() >= m_LBStartCount - m_CountsToMove ||
+                                m_Drive.m_RightBottomMotor.getMotorController().getMotor().getCurrentCount() <= m_RBStartCount + m_CountsToMove
+                ) {
+                    this.stopTask();
+                }
+            } else {
                 this.stopTask();
             }
+        }
         }
     }
     public static class FixedTurnTask extends RobotMotionSystemFixedTurnTask{
@@ -145,10 +390,15 @@ public class OmniDrive extends RobotMotionSystem {
                             );
                         }
                     });
-            m_Drive.m_LeftTopMotor.getMotorController().replaceTask(new RobotFixCountSpeedCtlTask(CountToMoveCounterClockwise,this.getSpeed(),FLCB,true));
-            m_Drive.m_RightTopMotor.getMotorController().replaceTask(new RobotFixCountSpeedCtlTask(CountToMoveCounterClockwise,this.getSpeed(),null,true));
-            m_Drive.m_LeftBottomMotor.getMotorController().replaceTask(new RobotFixCountSpeedCtlTask(CountToMoveCounterClockwise,this.getSpeed(),null,true));
-            m_Drive.m_RightBottomMotor.getMotorController().replaceTask(new RobotFixCountSpeedCtlTask(CountToMoveCounterClockwise,this.getSpeed(),null,true));
+
+            RobotFixCountSpeedCtlTask LTTask = new RobotFixCountSpeedCtlTask(CountToMoveCounterClockwise,this.getSpeed(),FLCB,true);
+            RobotFixCountSpeedCtlTask RTTask = new RobotFixCountSpeedCtlTask(CountToMoveCounterClockwise,this.getSpeed(),null,true);
+            RobotFixCountSpeedCtlTask LBTask = new RobotFixCountSpeedCtlTask(CountToMoveCounterClockwise,this.getSpeed(),null,true);
+            RobotFixCountSpeedCtlTask RBTask = new RobotFixCountSpeedCtlTask(CountToMoveCounterClockwise,this.getSpeed(),null,true);
+            m_Drive.m_LeftTopMotor.getMotorController().replaceTask(LTTask);
+            m_Drive.m_RightTopMotor.getMotorController().replaceTask(RTTask);
+            m_Drive.m_LeftBottomMotor.getMotorController().replaceTask(LBTask);
+            m_Drive.m_RightBottomMotor.getMotorController().replaceTask(RBTask);
         }
 
         @Override
@@ -246,6 +496,10 @@ public class OmniDrive extends RobotMotionSystem {
 
     @Override
     protected void __stopMotion() {
+        this.m_LeftTopMotor.getMotorController().getMotor().setPower(0);
+        this.m_RightTopMotor.getMotorController().getMotor().setPower(0);
+        this.m_LeftBottomMotor.getMotorController().getMotor().setPower(0);
+        this.m_RightBottomMotor.getMotorController().getMotor().setPower(0);
         this.m_LeftTopMotor.getMotorController().deleteAllTasks();
         this.m_RightTopMotor.getMotorController().deleteAllTasks();
         this.m_LeftBottomMotor.getMotorController().deleteAllTasks();

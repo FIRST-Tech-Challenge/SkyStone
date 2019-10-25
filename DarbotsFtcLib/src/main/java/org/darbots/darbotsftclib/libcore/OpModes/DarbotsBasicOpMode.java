@@ -1,6 +1,7 @@
 package org.darbots.darbotsftclib.libcore.OpModes;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.darbots.darbotsftclib.libcore.integratedfunctions.RobotLogger;
 import org.darbots.darbotsftclib.libcore.runtime.GlobalRegister;
@@ -22,7 +23,10 @@ public abstract class DarbotsBasicOpMode<CoreType extends RobotCore> extends Lin
             RunThisOpMode();
         }
         GlobalUtil.addLog("DarbotsBasicOpMode","Status","OpMode stopping", RobotLogger.LogLevel.DEBUG);
-        this.getRobotCore().stop();
+
+        if(this.getRobotCore() != null)
+            this.getRobotCore().stop();
+
         GlobalUtil.addLog("DarbotsBasicOpMode","Status","OpMode finished", RobotLogger.LogLevel.DEBUG);
         this.getRobotCore().getLogger().saveLogsToFile();
         this.hardwareDestroy();
@@ -30,8 +34,12 @@ public abstract class DarbotsBasicOpMode<CoreType extends RobotCore> extends Lin
     }
     @Override
     public void waitForStart(){
-        while (!opModeIsActive() && !isStopRequested()) {
+        while ((!opModeIsActive()) && (!isStopRequested())) {
             telemetry.addData("status", "Initialized, waiting for start command...");
+            telemetry.update();
+        }
+        if(opModeIsActive()){
+            telemetry.addData("status","Started");
             telemetry.update();
         }
     }
@@ -43,6 +51,15 @@ public abstract class DarbotsBasicOpMode<CoreType extends RobotCore> extends Lin
     public boolean waitForDrive(){
         while(this.opModeIsActive() && this.getRobotCore().getChassis().isBusy()){
             this.getRobotCore().updateStatus();
+        }
+        return this.opModeIsActive();
+    }
+
+    public boolean delay(double seconds){
+        ElapsedTime m_Time = new ElapsedTime(ElapsedTime.Resolution.SECONDS);
+        m_Time.reset();
+        while(this.opModeIsActive() && m_Time.seconds() < seconds){
+            sleep(20);
         }
         return this.opModeIsActive();
     }

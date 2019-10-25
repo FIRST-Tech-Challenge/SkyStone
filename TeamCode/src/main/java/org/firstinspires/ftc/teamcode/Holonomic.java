@@ -114,7 +114,7 @@ public class Holonomic extends LinearOpMode {
                 backRight.setPower(0);
                 backLeft.setPower(0);
             }
- 
+
             telemetry.addData("Drive", "Holonomic");
             telemetry.addData("Left", servoLeft.getPosition());
             telemetry.addData("Right", servoRight.getPosition());

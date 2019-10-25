@@ -26,28 +26,45 @@ public class BaseAuto extends LinearOpMode {
      */
     public int stageNum = 0;
 
-    public float targetX;
-    public float targetY;
+    public float targetX; // x position of the target
+    public float targetY; // y position of the target
     public float stoneXTolerance = 3; // how close (x-wise) (left/right) the robot needs to be in order to pick up a stone
     public float stoneYTolerance = 2; // how close (y-wise) the edge of the robot needs to be to the edge of a stone in order to pick up a stone
     public float safeDistance = 9; // how far the robot needs to go back before strafing back
     public float dropPosition = 12; // what x position the robot can drop the sky stone at
 
+    /**
+     * get the safe distance
+     * @return safe distance
+     */
     public float getSafeDistance() {
         return safeDistance;
     }
 
+    /**
+     * set the safe distance
+     * @param safeDistance
+     */
     public void setSafeDistance(float safeDistance) {
         this.safeDistance = safeDistance;
     }
 
+    /**
+     * get the drop position
+     * @return drop position
+     */
     public float getDropPosition() {
         return dropPosition;
     }
 
+    /**
+     * set the drop position
+     * @param dropPosition
+     */
     public void setDropPosition(float dropPosition) {
         this.dropPosition = dropPosition;
     }
+
 
     public float getStoneXTolerance() {
         return stoneXTolerance;

@@ -6,11 +6,11 @@ import org.firstinspires.ftc.teamcode.auto.ChassisConfig;
 /**
  * This just runs from the position closest to the crater, into the crater.
  */
-public abstract class OniChan extends ChassisStandard {
+public abstract class FivePoints2 extends ChassisStandard {
 
     private boolean madeTheRun = false;
 
-    public OniChan(ChassisConfig config) {
+    public FivePoints2(ChassisConfig config) {
         super(config);
     }
 
@@ -59,12 +59,10 @@ public abstract class OniChan extends ChassisStandard {
 
         if (madeTheRun == false) {
 
-           // encoderDrive(24);
+            encoderDrive(27);
 
-            turnRight(180);
-
-            turnLeft(180);
-
+            turnLeft(90);
+            encoderDrive(13);
             madeTheRun = true;
         }
 

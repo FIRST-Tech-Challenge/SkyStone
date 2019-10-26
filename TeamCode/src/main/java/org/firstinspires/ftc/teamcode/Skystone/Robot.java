@@ -27,6 +27,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.CurvePoint;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
+import org.firstinspires.ftc.teamcode.Skystone.Odometry.Position2D;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,6 +35,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Vector;
 
+import static java.lang.Thread.sleep;
 import static org.firstinspires.ftc.teamcode.RoverRuckus.RR2.Auto.TensorFlowMineralDetection.VUFORIA_KEY;
 import static org.firstinspires.ftc.teamcode.Skystone.MathFunctions.angleWrap;
 import static org.firstinspires.ftc.teamcode.Skystone.MathFunctions.lineCircleIntersection;
@@ -796,6 +798,55 @@ public class Robot {
 
         // return rounded int average
         return (int)Math.round(retVal);
+    }
+
+    public void GoToVuforia(){
+
+        final String VUFORIA_KEY = "AbSCRq//////AAAAGYEdTZut2U7TuZCfZGlOu7ZgOzsOlUVdiuQjgLBC9B3dNvrPE1x/REDktOALxt5jBEJJBAX4gM9ofcwMjCzaJKoZQBBlXXxrOscekzvrWkhqs/g+AtWJLkpCOOWKDLSixgH0bF7HByYv4h3fXECqRNGUUCHELf4Uoqea6tCtiGJvee+5K+5yqNfGduJBHcA1juE3kxGMdkqkbfSjfrNgWuolkjXR5z39tRChoOUN24HethAX8LiECiLhlKrJeC4BpdRCRazgJXGLvvI74Tmih9nhCz6zyVurHAHttlrXV17nYLyt6qQB1LtVEuSCkpfLJS8lZWS9ztfC1UEfrQ8m5zA6cYGQXjDMeRumdq9ugMkS";
+
+         while (linearOpMode.opModeIsActive()){
+
+            changeRunModeToUsingEncoder();
+            Robot robot = new Robot(this.hardwareMap, this.telemetry, this.linearOpMode);
+            // start odometry
+            Position2D position2D = new Position2D(robot);
+            position2D.startOdometry();
+
+            robot.resetEncoders();
+
+            robot.changeRunModeToUsingEncoder();
+            telemetry.addLine("Got into runopmode");
+
+            robot.moveToPoint(11.5 ,0,0.4,1,Math.toRadians(0));
+            telemetry.addLine("done with move");
+            telemetry.update();
+
+            telemetry.addLine("go to point");
+            int position = 0;
+            int vuforiaPosition = robot.detectTensorflow();
+            robot.intakeRight.setPower(1);
+
+            robot.intakeLeft.setPower(1);
+
+            if (vuforiaPosition == 2) {
+                telemetry.addLine("left");
+                robot.moveToPoint(39, 9, 0.55, 0.5, Math.toRadians(0));
+            } else if (vuforiaPosition == 0){
+                telemetry.addLine("right");
+                robot.moveToPoint(39, -9, 0.55, 0.5, Math.toRadians(0));
+            } else {
+                telemetry.addLine("center");
+                robot.moveToPoint(39, 0, 0.55, 0.5, Math.toRadians(0));
+            }
+            telemetry.addLine("Done with detect");
+            telemetry.update();
+            robot.intakeLeft.setPower(0);
+            robot.intakeRight.setPower(0);
+
+            telemetry.addLine("Done with move");
+            telemetry.update();
+
+        }
     }
 
 }

@@ -16,12 +16,7 @@ public class SliderComponentTest extends OpMode {
     private ArmSystem armSystem;
 
     public void init() {
-        EnumMap<ArmSystem.ServoNames, Servo> servos = new EnumMap<ArmSystem.ServoNames, Servo>(ArmSystem.ServoNames.class);
-        servos.put(ArmSystem.ServoNames.GRIPPER, hardwareMap.get(Servo.class, "gripper"));
-        servos.put(ArmSystem.ServoNames.PIVOT, hardwareMap.get(Servo.class, "pivot"));
-        servos.put(ArmSystem.ServoNames.WRIST, hardwareMap.get(Servo.class, "wrist"));
-        servos.put(ArmSystem.ServoNames.ELBOW, hardwareMap.get(Servo.class, "elbow"));
-        armSystem = new ArmSystem(servos,
+        armSystem = new ArmSystem(
                 hardwareMap.get(DcMotor.class, "slider_motor"),
                 hardwareMap.get(DigitalChannel.class, "slider_switch"));
     }

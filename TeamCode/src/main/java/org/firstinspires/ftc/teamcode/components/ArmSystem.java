@@ -38,6 +38,9 @@ public class ArmSystem {
     protected Position QueuedPosition;
     protected int QueuedHeight;
 
+    // These fields are used only for calibration. Don't touch them outside of that method.
+    protected
+
     // This can actually be more, like 5000, but we're not going to stack that high
     // for the first comp and the servo wires aren't long enough yet
     public final int MAX_HEIGHT = 3000;
@@ -97,6 +100,12 @@ public class ArmSystem {
         // Initialize slider - THIS WILL MOVE
         this.calibrate();
 
+    }
+
+    // Create an ArmSystem object without servos, used for testing just the slider
+    public ArmSystem(DcMotor slider, DigitalChannel limitSwitch) {
+        this.slider = slider;
+        this.limitSwitch = limitSwitch;
         // Initialize slider - THIS WILL MOVE
         this.calibrate();
 
@@ -222,18 +231,20 @@ public class ArmSystem {
     }
 
     // Moves the slider down until it hits the limit switch. Used to callibrate the encoder.
-    private void calibrate() {
-        slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    // Must be called every iteration of init_loop.
+    public void calibrate() {
+        if (limitSwitch.getState())
+        slider.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         slider.setDirection(REVERSE);
+        slider.setPower(0.1);
+        while (limitSwitch.getState()) {}
+        Log.d(tag, "out of while loop");
+        slider.setPower(0);
+        slider.setDirection(FORWARD);
         while (!limitSwitch.getState()) {
             slider.setPower(0.1);
         }
         slider.setPower(0);
-        slider.setDirection(FORWARD);
-        // move up slightly to fix tension on the string
-        while (limitSwitch.getState()) {
-            slider.setPower(0.1);
-        }
         this.origin = slider.getCurrentPosition();
     }
 
@@ -251,6 +262,7 @@ public class ArmSystem {
     // Should be called every loop
     public void updateHeight() {
         slider.setPower(1);
+        slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slider.setTargetPosition(targetHeight);
     }
 

@@ -115,7 +115,9 @@ public class WebcamTest extends LinearOpMode {
                                     goRight();
                                     break;
                             }
-                            //telemetry.update();
+                            // Display the results
+                            telemetry.addData("Skystone Position", position.toUpperCase());
+                            telemetry.update();
                         }
                     }
                 }

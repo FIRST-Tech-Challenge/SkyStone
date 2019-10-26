@@ -22,6 +22,11 @@ public class SliderComponentTest extends OpMode {
                 hardwareMap.get(DigitalChannel.class, "slider_switch"));
     }
 
+    public void init_loop() {
+        if (!armSystem.isCalibrated()) {
+            armSystem.calibrate();
+        }
+    }
 
     public void loop() {
         telemetry.addData("", armSystem.getSwitchState());

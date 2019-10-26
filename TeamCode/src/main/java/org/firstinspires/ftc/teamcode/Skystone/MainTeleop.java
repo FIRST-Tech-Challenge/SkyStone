@@ -45,6 +45,7 @@ public class MainTeleop extends LinearOpMode {
     @Override
     public void runOpMode() {
         resetRobot();
+        initServos();
         waitForStart();
         Position2D position2D = new Position2D(robot);
         position2D.startOdometry();
@@ -53,13 +54,6 @@ public class MainTeleop extends LinearOpMode {
             driveLogic();
             outtakeLogic2();
             intakeLogic();
-            if(gamepad2.dpad_up){
-                robot.outtakeSpool.setPower(1);
-            }else if(gamepad2.dpad_down){
-                robot.outtakeSpool.setPower(-1);
-            }else{
-                robot.outtakeSpool.setPower(0);
-            }
 //            outtakeLogic();
         }
     }
@@ -74,6 +68,13 @@ public class MainTeleop extends LinearOpMode {
 
 //        robot.outtakeArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 //        robot.outtakeArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    private void initServos() {
+        robot.clampPivot.setPosition(robot.OUTTAKE_PIVOT_RETRACTED);
+        robot.intakePusher.setPosition(0.7);
+        robot.outtakeExtender.setPosition(robot.OUTTAKE_SLIDE_RETRACTED);
+        robot.clamp.setPosition(robot.CLAW_SERVO_CLAMPED);
     }
 
     //teleop methods
@@ -210,28 +211,36 @@ public class MainTeleop extends LinearOpMode {
 
         // Logic to control outtake; with a delay on the pivot so that the slides can extend before pivot rotation
         if (gamepad2.a) { // Clamp and Extend
-            robot.intakePusher.setPosition(0.7);
-            sleep(500);
+            robot.intakePusher.setPosition(0.7); // Push block all the way to clamp
+
             isExtend = true;
+            isRetract = false;
+
             outtakeExecutionTime = currentTime;
-            robot.clamp.setPosition(robot.CLAW_SERVO_CLAMPED);
         } else if (gamepad2.b) { // Deposit and Reset
-            robot.intakePusher.setPosition(0.45);
+            robot.intakePusher.setPosition(0.45); // Reset intake pusher
+
             isRetract = true;
+            isExtend = false;
+
             outtakeExecutionTime = currentTime;
-            robot.clamp.setPosition(robot.CLAW_SERVO_RELEASED);
+
+            robot.clamp.setPosition(robot.CLAW_SERVO_RELEASED); // Release clamp
         }
 
         //extend
-        if(currentTime-outtakeExecutionTime >= 100 && isExtend){
+        if (currentTime - outtakeExecutionTime >= 200 && isExtend) {
+            robot.clamp.setPosition(robot.CLAW_SERVO_CLAMPED);
+        }
+
+        if(currentTime-outtakeExecutionTime >= 300 && isExtend){
             robot.outtakeExtender.setPosition(robot.OUTTAKE_SLIDE_EXTENDED);
         }
 
-        if(currentTime-outtakeExecutionTime >= 1500 && isExtend){
+        if(currentTime-outtakeExecutionTime >= 1200 && isExtend){
             robot.clampPivot.setPosition(robot.OUTTAKE_PIVOT_EXTENDED);
             isExtend = false;
         }
-
 
         //retract
         if(currentTime-outtakeExecutionTime >= 250 && isRetract){
@@ -243,7 +252,6 @@ public class MainTeleop extends LinearOpMode {
             isRetract = false;
         }
 
-
         // Spool controls
         if (gamepad2.dpad_up) {
             robot.outtakeSpool.setPower(1);
@@ -254,5 +262,3 @@ public class MainTeleop extends LinearOpMode {
         }
     }
 }
-
-

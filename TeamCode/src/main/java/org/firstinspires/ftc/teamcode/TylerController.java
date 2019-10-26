@@ -381,10 +381,10 @@ public class TylerController extends OpMode {
 
         if (useCrab) {
             if (gamepad1.b) {
-                dropLock();
+                dropCrab();
             }
             if (gamepad1.a) {
-                raiseLock();
+                raiseCrab();
             }
         }
 
@@ -469,18 +469,20 @@ public class TylerController extends OpMode {
         }
     }
 
-    public void dropLock() {
+    public void dropCrab() {
             if (useCrab) {
                 angleHand = 0.0;
+                crab.setPosition(angleHand);
+
             }
-            crab.setPosition(angleHand);
     }
 
-    public void raiseLock() {
+    public void raiseCrab() {
         if (useCrab) {
             angleHand = 1.0;
+            crab.setPosition(angleHand);
+
         }
-        crab.setPosition(angleHand);
     }
 
     /*

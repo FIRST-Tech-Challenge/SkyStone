@@ -722,27 +722,20 @@ public class Robot {
 
 
     public int detectTensorflow(){
-
         /**
          * food for thought logic
          * if it sees something/object detected : get the confidence
          * if confidence is greater than 0.7 : find its position and return that
          * if confidence is less than 0.7 : get the position it thinks, go through the code again, if is the same, then return that
          */
-
-
         VuforiaLocalizer vuforia = initVuforia();
         TFObjectDetector tfod;
         tfod = initTfod(vuforia);
         tfod.activate();
         long startTime = SystemClock.elapsedRealtime();
-
-
         // 2 is right, 1 is center, 0 is left
         ArrayList<Integer> retVals = new ArrayList<>();
-
         while (linearOpMode.opModeIsActive() && SystemClock.elapsedRealtime()-startTime<5000){
-
             List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
             if (updatedRecognitions != null && updatedRecognitions.size()>0) {
                 telemetry.addData("# Object Detected", updatedRecognitions.size());
@@ -753,32 +746,29 @@ public class Robot {
                         return (int)(recognition.getConfidence()-t1.getConfidence());
                     }
                 });
-
                 Recognition recognition = updatedRecognitions.get(updatedRecognitions.size()-1);
-
-                float value = (recognition.getTop()+recognition.getBottom())/2;
-                telemetry.addLine(Float.toString(value));
                 telemetry.update();
-
-                if ((double)updatedRecognitions.get(0).getConfidence() > 0.9){
-                    if (value < 600){
-                        return 2;
-                    } else if (value < 800){
-                        retVals.add(1);
-                        return 1;
-                    } else {
-                        return 0;
-                    }
-                } else {
-                    if (value < 600){
-                        retVals.add(2);
-                    } else if (value < 800) {
-                        retVals.add(1);
-                    } else {
-                        retVals.add(0);
+                for (int i = 0; i < updatedRecognitions.size(); i++){
+                    float value = (updatedRecognitions.get(i).getTop()+updatedRecognitions.get(i).getBottom())/2;
+                    if ((double)updatedRecognitions.get(i).getConfidence() > 0.9){
+                        if (value < 600){
+                            return 2;
+                        } else if (value < 800){
+                            retVals.add(1);
+                            return 1;
+                        } else {
+                            return 0;
+                        }
+                    } else if ((double)updatedRecognitions.get(i).getConfidence() > 0.5) {
+                        if (value < 600){
+                            retVals.add(2);
+                        } else if (value < 800) {
+                            retVals.add(1);
+                        } else {
+                            retVals.add(0);
+                        }
                     }
                 }
-
 //                if(recognition.getBottom() - recognition.getTop() > 200) {
 //                    if (value < 600) {
 //                        telemetry.addLine(Float.toString(updatedRecognitions.get(0).getConfidence()));
@@ -803,24 +793,17 @@ public class Robot {
 //                        return "left";
 //                    }
 //                }
-
             }
-
         }
-
         double retVal = 0;
         for (int i = 0; i < retVals.size(); i++){
             retVal += retVals.get(i);
         }
         retVal /= retVals.size();
-
 //        return (int)(retVal + 0.5);
-
         telemetry.addLine("retVal" + retVal);
         telemetry.update();
-
         linearOpMode.sleep(2000);
-
         return (int)Math.round(retVal);
     }
 

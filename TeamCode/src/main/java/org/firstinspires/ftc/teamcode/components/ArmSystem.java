@@ -22,7 +22,7 @@ public class ArmSystem {
     private Servo elbow;
     private Servo pivot;
     private DcMotor slider;
-    private DigitalChannel limitSwitch; // DigitalChannel is just fancy talk for a switch
+    private DigitalChannel limitSwitch; // true is unpressed, false is pressed
     private final double WRIST_HOME = 0;
     private final double ELBOW_HOME = 0;
     private final double PIVOT_HOME = 0;
@@ -33,13 +33,14 @@ public class ArmSystem {
     private final int distanceConstant = 1000; // used for calculating motor speed
 
     // Use these so we can change it easily if the motor is put on backwards
-    private final DcMotor.Direction FORWARD = DcMotor.Direction.FORWARD;
-    private final DcMotor.Direction REVERSE = DcMotor.Direction.REVERSE;
+    private final DcMotor.Direction UP = DcMotor.Direction.FORWARD;
+    private final DcMotor.Direction DOWN = DcMotor.Direction.REVERSE;
     protected Position QueuedPosition;
     protected int QueuedHeight;
 
     // These fields are used only for calibration. Don't touch them outside of that method.
-    protected
+    private boolean calibrated = false;
+    private boolean direction = true; // true is up, false is down
 
     // This can actually be more, like 5000, but we're not going to stack that high
     // for the first comp and the servo wires aren't long enough yet
@@ -230,22 +231,22 @@ public class ArmSystem {
         this.movePresetPosition(queuedPosition);
     }
 
-    // Moves the slider down until it hits the limit switch. Used to callibrate the encoder.
+    // Moves the slider down until it hits the limit switch. Used to calibrate the encoder.
     // Must be called every iteration of init_loop.
     public void calibrate() {
-        if (limitSwitch.getState())
         slider.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        slider.setDirection(REVERSE);
+        slider.setDirection(direction? UP : DOWN);
         slider.setPower(0.1);
-        while (limitSwitch.getState()) {}
-        Log.d(tag, "out of while loop");
-        slider.setPower(0);
-        slider.setDirection(FORWARD);
-        while (!limitSwitch.getState()) {
-            slider.setPower(0.1);
+
+        // If we're going down and we hit the switch, then we're done
+        if (!direction && !limitSwitch.getState()) {
+            slider.setPower(0);
+            calibrated = false;
         }
-        slider.setPower(0);
-        this.origin = slider.getCurrentPosition();
+    }
+
+    public boolean isCalibrated() {
+        return calibrated;
     }
 
     // Pos should be the # of blocks high it should be

@@ -101,28 +101,28 @@ public class NerdSampleOpMode extends LinearOpMode {
 
         //UNITS ARE IN INCHES
         RobotLog.d("NerdSampleOpMode - Starting nerdPidDrive yDistance = 25");
-        myNerdBOT.nerdPidDrive( speed, 0.0, 20.0, 0.0);
-        sleep(1000);
+        //myNerdBOT.nerdPidDrive( speed, 0.0, 20.0, 0.0);
+        //sleep(1000);
         RobotLog.d("NerdSampleOpMode -  Angle After nerdPidDrive : %f", myNerdBOT.getZAngleValue());
 
         RobotLog.d("NerdSampleOpMode - Starting nerdPidDrive xDistance = 25");
         myNerdBOT.nerdPidDrive( speed, 20.0, 0.0, 0.0);
-        sleep(1000);
+        //sleep(1000);
         RobotLog.d("NerdSampleOpMode -  Angle After nerdPidDrive : %f", myNerdBOT.getZAngleValue());
 
         RobotLog.d("NerdSampleOpMode - Starting nerdPidDrive yDistance = -25");
-        myNerdBOT.nerdPidDrive(speed, 0.0, -20.0, 0.0);
-        sleep(1000);
+        //myNerdBOT.nerdPidDrive(speed, 0.0, -20.0, 0.0);
+        //sleep(1000);
         RobotLog.d("NerdSampleOpMode -  Angle After nerdPidDrive : %f", myNerdBOT.getZAngleValue());
 
         RobotLog.d("NerdSampleOpMode - Starting nerdPidDrive xDistance = -20.0, yDistance = 20.0 ");
-        myNerdBOT.nerdPidDrive( speed, -20.0, 20.0, 0.0);
-        sleep(1000);
+        //myNerdBOT.nerdPidDrive( speed, -20.0, 20.0, 0.0);
+        //sleep(1000);
         RobotLog.d("NerdSampleOpMode - Angle After nerdPidDrive : %f", myNerdBOT.getZAngleValue());
 
         RobotLog.d("NerdSampleOpMode - Starting nerdPidTurn targetAngle = 90.0");
-        myNerdBOT.nerdPidTurn(0.2, 90.0, false);
-        sleep(1000);
+        //myNerdBOT.nerdPidTurn(0.2, 90.0, false);
+        //sleep(1000);
         RobotLog.d("NerdSampleOpMode - FinalAngle After nerdPidTurn : %f", myNerdBOT.getZAngleValue());
 
         RobotLog.d("NerdSampleOpMode - Completed");

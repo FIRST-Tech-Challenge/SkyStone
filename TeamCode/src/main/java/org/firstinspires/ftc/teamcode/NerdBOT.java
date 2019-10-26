@@ -253,7 +253,7 @@ public class NerdBOT{
     public int inchesToTicksForQuadStraightDrive(double wheelDiameter, double straightDistance, double wheelMountAngle){
         int ticks;
         double circum = wheelDiameter * 3.14;
-        double wheelDistanceToTravel = straightDistance/ Math.cos(Math.toRadians(wheelMountAngle));
+        double wheelDistanceToTravel = straightDistance * Math.cos(Math.toRadians(wheelMountAngle));
         RobotLog.d("NerdBOT - inchesToTicksForQuadStraightDrive - wheelDistanceToTravel - %f, straightDistance - %f",wheelDistanceToTravel,straightDistance );
         double numberOfWheelRotations = wheelDistanceToTravel/circum;
 

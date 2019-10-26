@@ -93,7 +93,7 @@ public class TTAutoBlue extends TTOpMode {
         driveSystem.vertical(12.5, 0.7);
         arm.closeClaw();
         sleep(500);
-        driveSystem.vertical(-16, 0.7);
+        driveSystem.vertical(-19, 0.7);
         driveSystem.turn(-90, 0.25);
         moveToFoundation(stoneNum);
         pullFoundation();
@@ -104,8 +104,8 @@ public class TTAutoBlue extends TTOpMode {
         driveSystem.vertical(120.5 - stoneNum * 8, 0.7);
         driveSystem.turn(90, 0.7);
         arm.liftTimed(1, 0.5);
-        driveSystem.vertical(10 + stoneNum * 3, 0.6);
-        sleep(500);
+        driveSystem.vertical(13 + stoneNum * 3, 0.6);
+        sleep(250);
         arm.openClaw();
     }
 
@@ -114,7 +114,7 @@ public class TTAutoBlue extends TTOpMode {
         driveSystem.vertical(2, 0.7);
         arm.lower(0.5);
         sleep(250);
-        driveSystem.vertical(-50, 0.5);
+        driveSystem.vertical(-53, 0.5);
         arm.liftTimed(1, 0.5);
         driveSystem.lateral(46.5, 0.7);
         arm.lower(0.5);

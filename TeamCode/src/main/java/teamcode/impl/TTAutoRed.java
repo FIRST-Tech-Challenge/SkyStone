@@ -113,7 +113,7 @@ public class TTAutoRed extends TTOpMode {
         driveSystem.turn(-90, 0.4);
         arm.liftTimed(1, 0.5);
         driveSystem.vertical(29 + 10 / stoneNum, 0.6);
-        sleep(500);
+        sleep(250);
         arm.openClaw();
     }
 

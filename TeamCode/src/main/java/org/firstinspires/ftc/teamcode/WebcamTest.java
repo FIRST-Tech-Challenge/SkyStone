@@ -43,7 +43,7 @@ public class WebcamTest extends LinearOpMode {
 
     int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
     VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-    
+
     /*
      * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
      * localization engine.
@@ -197,7 +197,6 @@ public class WebcamTest extends LinearOpMode {
         /*
          * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
          */
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
         parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");

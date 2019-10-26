@@ -99,19 +99,19 @@ public class NerdSampleOpMode extends LinearOpMode {
 
         waitForStart();
 
-
+        //UNITS ARE IN INCHES
         RobotLog.d("NerdSampleOpMode - Starting nerdPidDrive yDistance = 25");
-        myNerdBOT.nerdPidDrive( speed, 0.0, 25, 0.0);
+        myNerdBOT.nerdPidDrive( speed, 0.0, 20.0, 0.0);
         sleep(1000);
         RobotLog.d("NerdSampleOpMode -  Angle After nerdPidDrive : %f", myNerdBOT.getZAngleValue());
 
         RobotLog.d("NerdSampleOpMode - Starting nerdPidDrive xDistance = 25");
-        myNerdBOT.nerdPidDrive( speed, 25.0, 0.0, 0.0);
+        myNerdBOT.nerdPidDrive( speed, 20.0, 0.0, 0.0);
         sleep(1000);
         RobotLog.d("NerdSampleOpMode -  Angle After nerdPidDrive : %f", myNerdBOT.getZAngleValue());
 
         RobotLog.d("NerdSampleOpMode - Starting nerdPidDrive yDistance = -25");
-        myNerdBOT.nerdPidDrive(speed, 0.0, -25, 0.0);
+        myNerdBOT.nerdPidDrive(speed, 0.0, -20.0, 0.0);
         sleep(1000);
         RobotLog.d("NerdSampleOpMode -  Angle After nerdPidDrive : %f", myNerdBOT.getZAngleValue());
 

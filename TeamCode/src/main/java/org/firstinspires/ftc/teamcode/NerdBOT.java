@@ -78,7 +78,7 @@ public class NerdBOT{
     private double maxSpeed = 0.6;
 
     private double ticksPerRotation = 560.0;
-    private double wheelDiameter = 4.0;
+    private double wheelDiameter = 3.54331;
 
 
     private NerdPIDCalculator zPIDCalculator ;
@@ -89,6 +89,8 @@ public class NerdBOT{
     private HardwareMap hardwareMap;
 
     static final double HEADING_THRESHOLD = 1;
+    static final double DISTANCE_THRESHOLD = 25;
+
     static  final int GYRO = 1;
     static final int ENCODERS = 2;
 
@@ -144,13 +146,13 @@ public class NerdBOT{
 
         //Set PID targets for X, Y and Z
 
-        xPIDCalculator.setTarget(xTicks,false,0.0);
+        xPIDCalculator.setTarget(xTicks,false,findXDisplacement());
         yPIDCalculator.setTarget(yTicks,false,findYDisplacement());
-        zPIDCalculator.setTarget(zAngleToMaintain,false,0.0);
+        zPIDCalculator.setTarget(zAngleToMaintain,false,getZAngleValue());
 
         //Perform PID Loop until we reach the targets
 
-        while ( this.opmode.opModeIsActive() && (( !distanceTargetReached(xTicks,yTicks) ))){ //&& !onTarget(getZAngleValue())) {
+        while ( this.opmode.opModeIsActive() && (( !distanceTargetReached(xTicks,yTicks) ))){
         //while (opModeIsActive() && runtime.seconds() < 3 ) {
 
             //Feed the input device readings to corresponding PID calculators:
@@ -207,11 +209,11 @@ public class NerdBOT{
 
         runtime.reset();
 
-        turnPIDCalculator.setTarget(targetAngle, isRelativeAngle, 0.0);
+        turnPIDCalculator.setTarget(targetAngle, isRelativeAngle, getZAngleValue());
 
         motorsSetMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-          while (this.opmode.opModeIsActive() && (!onTarget(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle))) {
+          while (this.opmode.opModeIsActive() && (!onTarget(getZAngleValue()))) {
           // while (opModeIsActive() && runtime.seconds() < 5 ) {
                 angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
                 pidvalue = turnPIDCalculator.getOutput(angles.firstAngle, 1);
@@ -426,26 +428,40 @@ public class NerdBOT{
 
     boolean distanceTargetReached( int xTicks, int yTicks){
 
+        boolean onDistanceTarget = false;
+        boolean onFinalTarget = false;
         if(xTicks == 0 && yTicks != 0){
-            if(Math.abs(yTicks) - Math.abs(findYDisplacement()) <= 25){
+            if(Math.abs(yTicks) - Math.abs(findYDisplacement()) <= DISTANCE_THRESHOLD){
 
-                return true;
+                onDistanceTarget = true;
 
             }
         }else if(yTicks == 0 && xTicks != 0 ){
-            if(Math.abs(xTicks) - Math.abs(findXDisplacement()) <= 25){
+            if(Math.abs(xTicks) - Math.abs(findXDisplacement()) <= DISTANCE_THRESHOLD){
 
-                return true;
+                onDistanceTarget = true;
             }
 
         }else{
-            if((Math.abs(yTicks) - Math.abs(findYDisplacement()) <= 25) && (Math.abs(xTicks) - Math.abs(findYDisplacement()) <= 25)){
+            if((Math.abs(yTicks) - Math.abs(findYDisplacement()) <= DISTANCE_THRESHOLD) && (Math.abs(xTicks) - Math.abs(findYDisplacement()) <= DISTANCE_THRESHOLD)){
 
-                return true;
+                onDistanceTarget = true;
             }
 
         }
-        return  false;
+
+        if(onDistanceTarget){
+
+           if(!onTarget(getZAngleValue())){
+                onFinalTarget = false;
+            }
+            else{
+                onFinalTarget = true;
+            }
+
+        }
+
+        return  onFinalTarget;
     }
 
     public void initializeZPIDCalculator(double kP, double kI, double kD){

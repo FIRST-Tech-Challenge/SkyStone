@@ -113,7 +113,7 @@ public class NerdPIDCalculator{
     }
 
     //function to calculate error
-    //Device type 1 = GYRO, anything else is X Y etc
+    //Device type 1 = GYRO, anything else is like Encoders etc
     public double getError(double deviceInput, int deviceType) {
         double robotError;
 
@@ -135,7 +135,7 @@ public class NerdPIDCalculator{
         final String funcName = "getOutput";
 
 
-         double prevError = currentError;
+        double prevError = currentError;
 
         double currTime = elapsedTime.seconds();
         double deltaTime = currTime - previousTime;

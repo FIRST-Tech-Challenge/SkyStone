@@ -723,7 +723,6 @@ public class Robot {
 
     public int detectTensorflow(){
         /**
-         * food for thought logic
          * if it sees something/object detected : get the confidence
          * if confidence is greater than 0.7 : find its position and return that
          * if confidence is less than 0.7 : get the position it thinks, go through the code again, if is the same, then return that
@@ -733,23 +732,34 @@ public class Robot {
         tfod = initTfod(vuforia);
         tfod.activate();
         long startTime = SystemClock.elapsedRealtime();
+
         // 2 is right, 1 is center, 0 is left
         ArrayList<Integer> retVals = new ArrayList<>();
+
+        // scan for 5 seconds
         while (linearOpMode.opModeIsActive() && SystemClock.elapsedRealtime()-startTime<5000){
+
+            // get all the detections
             List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+
+            // if there is a detection run the logic
             if (updatedRecognitions != null && updatedRecognitions.size()>0) {
-                telemetry.addData("# Object Detected", updatedRecognitions.size());
-                telemetry.update();
+
+                // sorts based on confidence levels
                 Collections.sort(updatedRecognitions, new Comparator<Recognition>() {
                     @Override
                     public int compare(Recognition recognition, Recognition t1) {
                         return (int)(recognition.getConfidence()-t1.getConfidence());
                     }
                 });
-                Recognition recognition = updatedRecognitions.get(updatedRecognitions.size()-1);
-                telemetry.update();
+
+                // iterate through each recognition
                 for (int i = 0; i < updatedRecognitions.size(); i++){
+
+                    // value is the center of the detection
                     float value = (updatedRecognitions.get(i).getTop()+updatedRecognitions.get(i).getBottom())/2;
+
+                    // if the confidence is greater than 0.9, then return that
                     if ((double)updatedRecognitions.get(i).getConfidence() > 0.9){
                         if (value < 600){
                             return 2;
@@ -759,7 +769,9 @@ public class Robot {
                         } else {
                             return 0;
                         }
-                    } else if ((double)updatedRecognitions.get(i).getConfidence() > 0.5) {
+                    }
+                    // if the confidence is greater than 0.5, add it to the arraylist
+                    else if ((double)updatedRecognitions.get(i).getConfidence() > 0.5) {
                         if (value < 600){
                             retVals.add(2);
                         } else if (value < 800) {
@@ -769,41 +781,20 @@ public class Robot {
                         }
                     }
                 }
-//                if(recognition.getBottom() - recognition.getTop() > 200) {
-//                    if (value < 600) {
-//                        telemetry.addLine(Float.toString(updatedRecognitions.get(0).getConfidence()));
-//                        telemetry.addLine("Top: " + recognition.getTop() + " Bottom: " + recognition.getBottom());
-//                        telemetry.addLine("right");
-//                        telemetry.addLine(Float.toString(value));
-//                        telemetry.update();
-//                        return "right";
-//                    } else if (value < 800) {
-//                        telemetry.addLine(Float.toString(updatedRecognitions.get(0).getConfidence()));
-//                        telemetry.addLine("Top: " + recognition.getTop() + " Bottom: " + recognition.getBottom());
-//                        telemetry.addLine("center");
-//                        telemetry.addLine(Float.toString(value));
-//                        telemetry.update();
-//                        return "center";
-//                    } else {
-//                        telemetry.addLine(Float.toString(updatedRecognitions.get(0).getConfidence()));
-//                        telemetry.addLine("Top: " + recognition.getTop() + " Bottom: " + recognition.getBottom());
-//                        telemetry.addLine("left");
-//                        telemetry.addLine(Float.toString(value));
-//                        telemetry.update();
-//                        return "left";
-//                    }
-//                }
             }
         }
+
+        // find the average of everything in the arraylist
         double retVal = 0;
         for (int i = 0; i < retVals.size(); i++){
             retVal += retVals.get(i);
         }
         retVal /= retVals.size();
-//        return (int)(retVal + 0.5);
+
         telemetry.addLine("retVal" + retVal);
         telemetry.update();
-        linearOpMode.sleep(2000);
+
+        // return rounded int average
         return (int)Math.round(retVal);
     }
 

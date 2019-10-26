@@ -25,33 +25,29 @@ import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 //@Disabled
 public class SensorBNO055IMU extends LinearOpMode
 {
-    DcMotor                 leftMotor, rightMotor;
-    TouchSensor             touch;
     BNO055IMU               imu;
     Orientation             lastAngles = new Orientation();
     double                  globalAngle, power = .30, correction;
-    boolean                 aButton, bButton, touched;
 
     // called when init button is  pressed.
     @Override
     public void runOpMode() throws InterruptedException
     {
-        leftMotor = hardwareMap.dcMotor.get("left_motor");
-        rightMotor = hardwareMap.dcMotor.get("right_motor");
-
-        leftMotor.setDirection(DcMotor.Direction.REVERSE);
-
-        leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        leftMotor = hardwareMap.dcMotor.get("left_motor");
+//        rightMotor = hardwareMap.dcMotor.get("right_motor");
+//
+//        leftMotor.setDirection(DcMotor.Direction.REVERSE);
+//
+//        leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // get a reference to touch sensor.
-        touch = hardwareMap.touchSensor.get("touch_sensor");
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
         parameters.mode                = BNO055IMU.SensorMode.IMU;
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+//        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.loggingEnabled      = false;
 
         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
@@ -92,44 +88,47 @@ public class SensorBNO055IMU extends LinearOpMode
             correction = checkDirection();
 
             telemetry.addData("1 imu heading", lastAngles.firstAngle);
+            telemetry.addData("2 imu heading", lastAngles.secondAngle);
+            telemetry.addData("3 imu heading", lastAngles.thirdAngle);
+
             telemetry.addData("2 global heading", globalAngle);
             telemetry.addData("3 correction", correction);
             telemetry.update();
 
-            leftMotor.setPower(power - correction);
-            rightMotor.setPower(power + correction);
+//            leftMotor.setPower(power - correction);
+//            rightMotor.setPower(power + correction);
 
             // We record the sensor values because we will test them in more than
             // one place with time passing between those places. See the lesson on
             // Timing Considerations to know why.
 
-            aButton = gamepad1.a;
-            bButton = gamepad1.b;
-            touched = touch.isPressed();
+//            aButton = gamepad1.a;
+//            bButton = gamepad1.b;
+//            touched = touch.isPressed();
 
-            if (touched || aButton || bButton)
-            {
-                // backup.
-                leftMotor.setPower(power);
-                rightMotor.setPower(power);
-
-                sleep(500);
-
-                // stop.
-                leftMotor.setPower(0);
-                rightMotor.setPower(0);
-
-                // turn 90 degrees right.
-                if (touched || aButton) rotate(-90, power);
-
-                // turn 90 degrees left.
-                if (bButton) rotate(90, power);
-            }
+//            if (touched || aButton || bButton)
+//            {
+//                // backup.
+//                leftMotor.setPower(power);
+//                rightMotor.setPower(power);
+//
+//                sleep(500);
+//
+//                // stop.
+//                leftMotor.setPower(0);
+//                rightMotor.setPower(0);
+//
+//                // turn 90 degrees right.
+//                if (touched || aButton) rotate(-90, power);
+//
+//                // turn 90 degrees left.
+//                if (bButton) rotate(90, power);
+//            }
         }
 
         // turn the motors off.
-        rightMotor.setPower(0);
-        leftMotor.setPower(0);
+//        rightMotor.setPower(0);
+//        leftMotor.setPower(0);
     }
 
     /**
@@ -196,51 +195,51 @@ public class SensorBNO055IMU extends LinearOpMode
      * Rotate left or right the number of degrees. Does not support turning more than 180 degrees.
      * @param degrees Degrees to turn, + is left - is right
      */
-    private void rotate(int degrees, double power)
-    {
-        double  leftPower, rightPower;
-
-        // restart imu movement tracking.
-        resetAngle();
-
-        // getAngle() returns + when rotating counter clockwise (left) and - when rotating
-        // clockwise (right).
-
-        if (degrees < 0)
-        {   // turn right.
-            leftPower = power;
-            rightPower = -power;
-        }
-        else if (degrees > 0)
-        {   // turn left.
-            leftPower = -power;
-            rightPower = power;
-        }
-        else return;
-
-        // set power to rotate.
-        leftMotor.setPower(leftPower);
-        rightMotor.setPower(rightPower);
-
-        // rotate until turn is completed.
-        if (degrees < 0)
-        {
-            // On right turn we have to get off zero first.
-            while (opModeIsActive() && getAngle() == 0) {}
-
-            while (opModeIsActive() && getAngle() > degrees) {}
-        }
-        else    // left turn.
-            while (opModeIsActive() && getAngle() < degrees) {}
-
-        // turn the motors off.
-        rightMotor.setPower(0);
-        leftMotor.setPower(0);
-
-        // wait for rotation to stop.
-        sleep(1000);
-
-        // reset angle tracking on new heading.
-        resetAngle();
-    }
+//    private void rotate(int degrees, double power)
+//    {
+//        double  leftPower, rightPower;
+//
+//        // restart imu movement tracking.
+//        resetAngle();
+//
+//        // getAngle() returns + when rotating counter clockwise (left) and - when rotating
+//        // clockwise (right).
+//
+//        if (degrees < 0)
+//        {   // turn right.
+//            leftPower = power;
+//            rightPower = -power;
+//        }
+//        else if (degrees > 0)
+//        {   // turn left.
+//            leftPower = -power;
+//            rightPower = power;
+//        }
+//        else return;
+//
+//        // set power to rotate.
+//        leftMotor.setPower(leftPower);
+//        rightMotor.setPower(rightPower);
+//
+//        // rotate until turn is completed.
+//        if (degrees < 0)
+//        {
+//            // On right turn we have to get off zero first.
+//            while (opModeIsActive() && getAngle() == 0) {}
+//
+//            while (opModeIsActive() && getAngle() > degrees) {}
+//        }
+//        else    // left turn.
+//            while (opModeIsActive() && getAngle() < degrees) {}
+//
+//        // turn the motors off.
+//        rightMotor.setPower(0);
+//        leftMotor.setPower(0);
+//
+//        // wait for rotation to stop.
+//        sleep(1000);
+//
+//        // reset angle tracking on new heading.
+//        resetAngle();
+//    }
 }

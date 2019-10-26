@@ -54,8 +54,7 @@ import java.io.File;
  * For sound files to be used as a compiled-in resource, they need to be located in a folder called "raw" under your "res" (resources) folder.
  * You can create your own "raw" folder from scratch, or you can copy the one from the FtcRobotController module.
  *
- *     Android Studio coders will ultimately need a folder in your path as follows:
- *       <project root>/TeamCode/src/main/res/raw
+m *       <project root>/TeamCode/src/main/res/raw
  *
  *     Copy any .wav files you want to play into this folder.
  *     Make sure that your files ONLY use lower-case characters, and have no spaces or special characters other than underscore.

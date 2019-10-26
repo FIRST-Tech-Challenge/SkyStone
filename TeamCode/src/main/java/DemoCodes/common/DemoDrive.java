@@ -43,12 +43,9 @@ public class DemoDrive {
     public void continuous(double vertical, double turn) {
         leftDrive.setPower(vertical);
         rightDrive.setPower(vertical);
-        if (turn > 0) {
-            leftDrive.setPower(turn);
-            rightDrive.setPower(-turn);
-        } else if (turn < 0){
-            leftDrive.setPower(turn);
-            rightDrive.setPower(-turn);
+        if (turn != 0) {
+            leftDrive.setPower(-turn);
+            rightDrive.setPower(turn);
         }
     }
     private void setPID() {

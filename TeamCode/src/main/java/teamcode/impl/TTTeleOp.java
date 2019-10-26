@@ -65,7 +65,7 @@ public class TTTeleOp extends TTOpMode {
             } else if (gamepad1.a) {
                 arm.lower(0.5);
             } else if (gamepad1.b) {
-                arm.liftTimed(1.0, 0.5);
+                arm.liftTimed(0.75, 0.5);
             }
             if (gamepad1.dpad_up) {
                 arm.liftContinuous(0.5);

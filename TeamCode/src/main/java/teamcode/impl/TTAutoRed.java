@@ -37,19 +37,13 @@ public class TTAutoRed extends TTOpMode {
     protected void onStart() {
         initArm();
         int skystonePos = locateSkystone();
-//        telemetry.addData("pos", skystonePos);
-//        telemetry.update();
-        //  grabSkyStone(5);
-//        telemetry = TTOpMode.currentOpMode().telemetry;
-//        telemetry.addData("Stone Found", skystonePos + 3);
-//        telemetry.update();
-//        if(skystonePos == 1){
-//            grabSkyStone(4);
-//        } else if(skystonePos == 2){
-//            grabSkyStone(5);
-//        } else if (skystonePos == 3){
-//            grabSkyStone(6);
-//        }
+        if(skystonePos == 6) {
+            grabSkyStone(6);
+        } else if(skystonePos == 5){
+            grabSkyStone(5);
+        } else {
+            grabSkyStone(4);
+        }
     }
 
     @Override
@@ -62,16 +56,17 @@ public class TTAutoRed extends TTOpMode {
      * are in the third and sixth slots.
      */
     private int locateSkystone() {
-        driveSystem.vertical(18, 0.3);
+        driveSystem.vertical(22.5, 0.3);
+        driveSystem.lateral(-2, 0.3);
         if (seesSkystone()) {
             return 6;
         }
-        driveSystem.lateral(-8, 0.1);
+        driveSystem.lateral(-6.5, 0.3);
         sleep(1000);
         if (seesSkystone()) {
             return 5;
         }
-        driveSystem.lateral(-8, 0.25);
+        driveSystem.lateral(-8, 0.3);
         return 4;
     }
 
@@ -103,37 +98,33 @@ public class TTAutoRed extends TTOpMode {
       at that specific block pos then faces the foundation
      */
     private void grabSkyStone(int stoneNum) {
-        driveSystem.vertical(-6, 0.5);
-        driveSystem.lateral(-(41.5 - stoneNum * 8), 0.3);
-        driveSystem.vertical(31.5, 0.5);
+        driveSystem.vertical(12, 0.7);
         arm.closeClaw();
         sleep(500);
-        driveSystem.vertical(-15, 0.5);
-        driveSystem.turn(90, 0.5);
+        driveSystem.vertical(-19.5, 0.7);
+        driveSystem.turn(90, 0.2);
         moveToFoundation(stoneNum);
         pullFoundation();
     }
 
     //Moves towards the foundation and turns to face it
     private void moveToFoundation(int stoneNum) {
-        driveSystem.vertical(120 - stoneNum * 8, 0.5);
-        sleep(250);
-        driveSystem.turn(-90, 0.5);
+        driveSystem.vertical(119.5 - stoneNum * 8, 0.5);
+        driveSystem.turn(-90, 0.4);
         arm.liftTimed(1, 0.5);
-        sleep(250);
-        driveSystem.vertical(20, 0.5);
+        driveSystem.vertical(29 + 10 / stoneNum, 0.6);
         sleep(500);
         arm.openClaw();
     }
 
     private void pullFoundation() {
-        driveSystem.lateral(4, 0.5);
-        driveSystem.vertical(2, 0.5);
+        driveSystem.lateral(8.5, 0.7);
+        driveSystem.vertical(2, 0.7);
         arm.lower(0.5);
-        sleep(500);
-        driveSystem.vertical(-45, 0.5);
+        sleep(250);
+        driveSystem.vertical(-48, 0.5);
         arm.liftTimed(1, 0.5);
-        driveSystem.lateral(-44, 0.5);
-
+        driveSystem.lateral(-48.5, 0.7);
+        arm.lower(0.5);
     }
 }

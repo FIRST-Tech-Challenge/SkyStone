@@ -35,6 +35,9 @@ public abstract class ChassisStandard extends OpMode {
     private DcMotor extender;
     private DcMotor shoulder;
 
+    //Crab
+    protected Servo crab;
+
     // Team Marker Servo
     private Servo flagHolder;
     private Servo bull;
@@ -61,6 +64,7 @@ public abstract class ChassisStandard extends OpMode {
     protected boolean hackTimeouts = true;
     protected boolean useArm = false;
     protected boolean useEve = false;
+    protected boolean useCrab = true;
 
     protected ChassisStandard(ChassisConfig config) {
         this.config = config;
@@ -103,11 +107,6 @@ public abstract class ChassisStandard extends OpMode {
             }
         }
 
-        // Team marker servo
-        if (useTeamMarker) {
-            flagHolder = hardwareMap.get(Servo.class, "servo1");
-            resetFlag();
-        }
 
         // init the lifter arm,
         if (config.getHasWalle()) {
@@ -125,6 +124,13 @@ public abstract class ChassisStandard extends OpMode {
         }
     }
 
+    protected void initCrab(){
+        if(useCrab){
+            crab = hardwareMap.get(Servo.class, "servoCrab");
+        }
+    }
+
+
     protected void initTimeouts() {
         // This code prevents the OpMode from freaking out if you go to sleep for more than a second.
         if (hackTimeouts) {
@@ -133,22 +139,6 @@ public abstract class ChassisStandard extends OpMode {
             this.msStuckDetectStart = 30000;
             this.msStuckDetectLoop = 30000;
             this.msStuckDetectStop = 30000;
-        }
-    }
-
-    protected void initBulldDozer() {
-        if (useBulldozer) {
-            bull = hardwareMap.get(Servo.class, "servo3");
-            dozer = hardwareMap.get(Servo.class, "servo2");
-        }
-    }
-
-
-    protected void bullDozerUp() {
-        if (useBulldozer) {
-            //control Bulldozer
-            bull.setPosition(0);
-            dozer.setPosition(1.0);
         }
     }
 
@@ -179,21 +169,19 @@ public abstract class ChassisStandard extends OpMode {
     }
 
 
-    public void dropFlag() {
-        if (useTeamMarker) {
-            if (config.isTeamMarkerReversed()) {
-                angleHand = 1.0;
-            } else {
-                angleHand = 0.0;
-            }
-            flagHolder.setPosition(angleHand);
+
+    public void dropCrab() {
+        if (useCrab) {
+            angleHand = 0.0;
+            crab.setPosition(angleHand);
+
         }
     }
 
-    public void resetFlag() {
-        if (useTeamMarker) {
-            angleHand = 0.5;
-            flagHolder.setPosition(angleHand);
+    public void raiseCrab() {
+        if (useCrab) {
+            angleHand = 1.0;
+            crab.setPosition(angleHand);
         }
     }
 
@@ -619,6 +607,8 @@ public abstract class ChassisStandard extends OpMode {
             turnRight(25);
         }
     }
+
+
 
    /* protected void lyftDownWalle(int howManySpins) {
         double speed = 0.5f;

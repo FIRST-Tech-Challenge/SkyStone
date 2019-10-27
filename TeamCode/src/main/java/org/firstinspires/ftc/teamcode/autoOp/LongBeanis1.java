@@ -6,11 +6,11 @@ import org.firstinspires.ftc.teamcode.auto.ChassisConfig;
 /**
  * This just runs from the position closest to the crater, into the crater.
  */
-public abstract class FivePoints2 extends ChassisStandard {
+public abstract class LongBeanis1 extends ChassisStandard {
 
     private boolean madeTheRun = false;
 
-    public FivePoints2(ChassisConfig config) {
+    public LongBeanis1(ChassisConfig config) {
         super(config);
     }
 

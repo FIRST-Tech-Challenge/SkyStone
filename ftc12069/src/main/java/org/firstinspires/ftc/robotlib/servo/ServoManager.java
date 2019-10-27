@@ -16,6 +16,6 @@ public class ServoManager {
     }
 
     public void reset() {
-        this.setPosition(0.0);
+        this.setPosition(1.0);
     }
 }

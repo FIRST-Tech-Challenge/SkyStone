@@ -17,7 +17,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 /**
  *
  */
-@TeleOp(name="Tyler TeleOp", group="AAA")
+@TeleOp(name="Tyler TeleOp", group="a")
 public class TylerController extends OpMode {
 
     //is sound playing?

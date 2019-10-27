@@ -6,11 +6,11 @@ import org.firstinspires.ftc.teamcode.auto.ChassisConfig;
 /**
  * This just runs from the position closest to the crater, into the crater.
  */
-public abstract class FivePoints extends ChassisStandard {
+public abstract class ShortBeanis2 extends ChassisStandard {
 
     private boolean madeTheRun = false;
 
-    public FivePoints(ChassisConfig config) {
+    public ShortBeanis2(ChassisConfig config) {
         super(config);
     }
 
@@ -63,7 +63,7 @@ public abstract class FivePoints extends ChassisStandard {
 
             turnLeft(90);
 
-            encoderDrive(13);
+            encoderDrive(27);
             madeTheRun = true;
         }
 

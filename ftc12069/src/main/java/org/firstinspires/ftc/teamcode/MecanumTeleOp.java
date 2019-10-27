@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotlib.robot.MecanumHardwareMap;
+import org.firstinspires.ftc.robotlib.state.ServoState;
 
 @TeleOp(name="Basic Mecanum (12069)", group="Linear Opmode")
 public class MecanumTeleOp extends OpMode
@@ -12,7 +13,7 @@ public class MecanumTeleOp extends OpMode
     private MecanumHardwareMap robotHardware;
     private ElapsedTime elapsedTime;
     private boolean rightMotion = true;
-    private boolean servoUp = true;
+    private ServoState servoState = ServoState.STOWED;
 
     @Override
     public void init()
@@ -56,23 +57,30 @@ public class MecanumTeleOp extends OpMode
         robotHardware.drivetrain.setVelocity(velocity);
         robotHardware.drivetrain.setRotation(rotation);
 
-        if (servoUp) {
-            robotHardware.servoManager.setPosition(1.0);
-        } else {
-            robotHardware.servoManager.setPosition(0.6);
+        switch (servoState) {
+            case STOWED:
+                robotHardware.servoManager.setPosition(1.0);
+            case UP:
+                robotHardware.servoManager.setPosition(0.9);
+            case DOWN:
+                robotHardware.servoManager.setPosition(0.6);
         }
 
         if (gamepad1.a) rightMotion = false;
         if (gamepad1.b) rightMotion = true;
-        if (gamepad1.dpad_up) servoUp = true;
-        if (gamepad1.dpad_down) servoUp = false;
+        if (gamepad1.dpad_up) {
+            servoState = ServoState.getServoStateFromInt(servoState.getLevel() + 1);
+        }
+        if (gamepad1.dpad_down) {
+            servoState = ServoState.getServoStateFromInt(servoState.getLevel() - 1);
+        }
 
         telemetry.addData("Status", "Loop: " + elapsedTime.toString());
         telemetry.addData("Course", course);
         telemetry.addData("Velocity", velocity);
         telemetry.addData("Rotation", rotation);
         telemetry.addData("Driving Mode", rightMotion ? "RIGHT" : "LEFT");
-        telemetry.addData("Servo Pos", servoUp ? "UP (1)" : "DOWN (0)");
+        telemetry.addData("Servo Pos", servoState.toString() + " (" + servoState.getLevel() + ")");
         telemetry.update();
     }
 

@@ -8,15 +8,23 @@ import com.qualcomm.robotcore.hardware.DcMotor;
  */
 abstract class Movement extends LinearOpMode
 {
-    private final DcMotor leftfront;
-    private final DcMotor rightfront;
-    private final DcMotor leftback;
-    private final DcMotor rightback;
+    protected DcMotor leftfront;
+    protected DcMotor rightfront;
+    protected DcMotor leftback;
+    protected DcMotor rightback;
 
-    public Movement () {
+    public void runOpMode() {
+        setupDriveMotors();
+        runOpModeImpl();
+    }
 
-        // Initialiaze the motor references for all the wheels
+    public abstract void runOpModeImpl();
+
+    protected void setupDriveMotors() {
+        // Initialize the motor references for all the wheels
         // Initialize the hardware variables. Note that the strings used here as parameters
+
+        updateTelemetry("Initializing Motors");
         leftfront  = hardwareMap.get(DcMotor.class, "leftfront");
         rightfront = hardwareMap.get(DcMotor.class, "rightfront");
         rightback = hardwareMap.get(DcMotor.class, "rightback");
@@ -28,6 +36,8 @@ abstract class Movement extends LinearOpMode
         rightfront.setDirection(DcMotor.Direction.REVERSE);
         leftback.setDirection(DcMotor.Direction.FORWARD);
         rightback.setDirection(DcMotor.Direction.REVERSE);
+
+        updateTelemetry("Initialized Motors");
     }
 
     public void stop(final String message) {

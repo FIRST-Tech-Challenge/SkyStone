@@ -12,6 +12,7 @@ public class MecanumTeleOp extends OpMode
     private MecanumHardwareMap robotHardware;
     private ElapsedTime elapsedTime;
     private boolean rightMotion = true;
+    private boolean servoUp = true;
 
     @Override
     public void init()
@@ -53,8 +54,16 @@ public class MecanumTeleOp extends OpMode
         robotHardware.drivetrain.setVelocity(velocity);
         robotHardware.drivetrain.setRotation(rotation);
 
+        if (servoUp) {
+            robotHardware.servoManager.setPosition(1.0);
+        } else {
+            robotHardware.servoManager.setPosition(0.0);
+        }
+
         if (gamepad1.a) rightMotion = false;
         if (gamepad1.b) rightMotion = true;
+        if (gamepad1.dpad_up) servoUp = true;
+        if (gamepad1.dpad_down) servoUp = false;
 
         telemetry.addData("Status", "Loop: " + elapsedTime.toString());
         telemetry.addData("Course", course);

@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotlib.drivetrain.MecanumDrivetrain;
+import org.firstinspires.ftc.robotlib.servo.ServoManager;
 
 public class MecanumHardwareMap
 {
@@ -14,10 +15,10 @@ public class MecanumHardwareMap
     private DcMotor driveRearRight;
     private DcMotor driveRearLeft;
 
-    public Servo servoBuildClawLeft;
-    public Servo servoBuildClawRight;
+    private Servo servoClaw;
 
     public MecanumDrivetrain drivetrain;
+    public ServoManager servoManager;
 
     public final double wheelRadius = 4; //inches
 
@@ -47,14 +48,10 @@ public class MecanumHardwareMap
         driveRearRight.setDirection(DcMotorSimple.Direction.FORWARD);
         driveRearLeft.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        /**
-        servoBuildClawLeft = hwMap.get(Servo.class, "servoBuildClawLeft");
-        servoBuildClawRight = hwMap.get(Servo.class, "servoBuildClawRight");
-
-        servoBuildClawLeft.setDirection(Servo.Direction.FORWARD);
-        servoBuildClawRight.setDirection(Servo.Direction.FORWARD);
-         **/
+        servoClaw = hwMap.get(Servo.class, "servoClaw");
+        servoClaw.setDirection(Servo.Direction.FORWARD);
 
         drivetrain = new MecanumDrivetrain(motorList);
+        servoManager = new ServoManager(new Servo[]{servoClaw});
     }
 }

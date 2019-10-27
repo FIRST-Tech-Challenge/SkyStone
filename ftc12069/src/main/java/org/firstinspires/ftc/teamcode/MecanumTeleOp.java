@@ -72,6 +72,7 @@ public class MecanumTeleOp extends OpMode
         telemetry.addData("Velocity", velocity);
         telemetry.addData("Rotation", rotation);
         telemetry.addData("Driving Mode", rightMotion ? "RIGHT" : "LEFT");
+        telemetry.addData("Servo Pos", servoUp ? "UP (1)" : "DOWN (0)");
         telemetry.update();
     }
 

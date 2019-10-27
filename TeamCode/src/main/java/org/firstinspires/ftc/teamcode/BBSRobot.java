@@ -319,7 +319,7 @@ public class BBSRobot {
 
         double circum = wheelbase * 3.14;
 
-        double centimeters = circum / deg;
+        double centimeters = circum / Math.abs(deg);
 
         int newTarget = encoder.getCurrentPosition() + (int)(centimeters * PULSES_PER_CENTIMETRE);
 

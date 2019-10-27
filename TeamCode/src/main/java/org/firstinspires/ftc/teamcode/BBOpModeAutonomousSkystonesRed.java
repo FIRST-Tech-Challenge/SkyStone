@@ -50,8 +50,8 @@ public class BBOpModeAutonomousSkystonesRed extends LinearOpMode
         //look for the skystones for a period of time.
         List<Recognition> targets =  _vision.visionFeedback(telemetry);
 
-        while(foundStone == false || runtime.seconds() > 10) {
-            if (targets != null) {
+        while(foundStone == false || runtime.seconds() < 10) {
+            if (targets != null && targets.size() > 0) {
                 //we found something!
                 foundStone = true;
 
@@ -61,7 +61,10 @@ public class BBOpModeAutonomousSkystonesRed extends LinearOpMode
                 //TODO: //strafe until we see a stone
                 robot.strafe(0.3, 0.25);
             }
+            targets =  _vision.visionFeedback(telemetry);
         }
+
+        _vision.cleanUp();
 
         if(foundStone){
             //TODO: turn on intake?
@@ -113,6 +116,9 @@ public class BBOpModeAutonomousSkystonesRed extends LinearOpMode
             intake.Start();
             sleep(2000);
             intake.Stop();
+        }else{
+            //TODO: no stones found - park on line
+
         }
 
 

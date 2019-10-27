@@ -42,23 +42,23 @@ import static org.firstinspires.ftc.teamcode.Skystone.MathFunctions.lineCircleIn
 
 public class Robot {
     //Drive Motors
-    public DcMotor fLeft;
-    public DcMotor fRight;
-    public DcMotor bLeft;
-    public DcMotor bRight;
+    private DcMotor fLeft;
+    private DcMotor fRight;
+    private DcMotor bLeft;
+    private DcMotor bRight;
 
     // Intake Motors
-    public DcMotor intakeLeft;
-    public DcMotor intakeRight;
+    private DcMotor intakeLeft;
+    private DcMotor intakeRight;
 
     // Outtake Motors
-    public DcMotor outtakeSpool;
+    private DcMotor outtakeSpool;
 
     // Outtake Servos
-    public Servo outtakeExtender;
-    public Servo clamp;
-    public Servo clampPivot;
-    public Servo intakePusher;
+    private Servo outtakeExtender;
+    private Servo clamp;
+    private Servo clampPivot;
+    private Servo intakePusher;
 
     // Outtake Slide Positions
     final double OUTTAKE_SLIDE_EXTENDED = .26;
@@ -75,34 +75,34 @@ public class Robot {
     double i = 1;
 
     //robots position
-    public Point robotPos = new Point();
-    public double anglePos;
+    private Point robotPos = new Point();
+    private double anglePos;
 
     //imu
-    public BNO055IMU imu;
-    public Orientation angles;
-    public Position position;
+    private BNO055IMU imu;
+    private Orientation angles;
+    private Position position;
 
     //Inherited classes from Op Mode
-    public Telemetry telemetry;
-    public HardwareMap hardwareMap;
-    public LinearOpMode linearOpMode;
+    private Telemetry telemetry;
+    private HardwareMap hardwareMap;
+    private LinearOpMode linearOpMode;
 
     //dimensions
-    public double wheelRadius = 2;
-    public final double wheelCircumference = 4 * Math.PI;
-    public final double encoderPerRevolution = 806.4;
-    public final double l = 7;
-    public final double w = 6.5;
+    private double wheelRadius = 2;
+    private final double wheelCircumference = 4 * Math.PI;
+    private final double encoderPerRevolution = 806.4;
+    private final double l = 7;
+    private final double w = 6.5;
 
     //PID (concept only)
-    public double xMovement;
-    public double yMovement;
-    public double turnMovement;
+    private double xMovement;
+    private double yMovement;
+    private double turnMovement;
 
-    public double pathDistance;
+    private double pathDistance;
 
-    public double distanceToEnd;
+    private double distanceToEnd;
 
     public Robot(HardwareMap hardwareMap, Telemetry telemetry, LinearOpMode linearOpMode) {
         this.telemetry = telemetry;
@@ -800,7 +800,7 @@ public class Robot {
         return (int)Math.round(retVal);
     }
 
-    public void GoToVuforia(){
+    public void goToVuforia(){
 
         final String VUFORIA_KEY = "AbSCRq//////AAAAGYEdTZut2U7TuZCfZGlOu7ZgOzsOlUVdiuQjgLBC9B3dNvrPE1x/REDktOALxt5jBEJJBAX4gM9ofcwMjCzaJKoZQBBlXXxrOscekzvrWkhqs/g+AtWJLkpCOOWKDLSixgH0bF7HByYv4h3fXECqRNGUUCHELf4Uoqea6tCtiGJvee+5K+5yqNfGduJBHcA1juE3kxGMdkqkbfSjfrNgWuolkjXR5z39tRChoOUN24HethAX8LiECiLhlKrJeC4BpdRCRazgJXGLvvI74Tmih9nhCz6zyVurHAHttlrXV17nYLyt6qQB1LtVEuSCkpfLJS8lZWS9ztfC1UEfrQ8m5zA6cYGQXjDMeRumdq9ugMkS";
 
@@ -849,4 +849,251 @@ public class Robot {
         }
     }
 
+    public DcMotor getfLeft() {
+        return fLeft;
+    }
+
+    public void setfLeft(DcMotor fLeft) {
+        this.fLeft = fLeft;
+    }
+
+    public DcMotor getfRight() {
+        return fRight;
+    }
+
+    public void setfRight(DcMotor fRight) {
+        this.fRight = fRight;
+    }
+
+    public DcMotor getbLeft() {
+        return bLeft;
+    }
+
+    public void setbLeft(DcMotor bLeft) {
+        this.bLeft = bLeft;
+    }
+
+    public DcMotor getbRight() {
+        return bRight;
+    }
+
+    public void setbRight(DcMotor bRight) {
+        this.bRight = bRight;
+    }
+
+    public DcMotor getIntakeLeft() {
+        return intakeLeft;
+    }
+
+    public void setIntakeLeft(DcMotor intakeLeft) {
+        this.intakeLeft = intakeLeft;
+    }
+
+    public DcMotor getIntakeRight() {
+        return intakeRight;
+    }
+
+    public void setIntakeRight(DcMotor intakeRight) {
+        this.intakeRight = intakeRight;
+    }
+
+    public DcMotor getOuttakeSpool() {
+        return outtakeSpool;
+    }
+
+    public void setOuttakeSpool(DcMotor outtakeSpool) {
+        this.outtakeSpool = outtakeSpool;
+    }
+
+    public Servo getOuttakeExtender() {
+        return outtakeExtender;
+    }
+
+    public void setOuttakeExtender(Servo outtakeExtender) {
+        this.outtakeExtender = outtakeExtender;
+    }
+
+    public Servo getClamp() {
+        return clamp;
+    }
+
+    public void setClamp(Servo clamp) {
+        this.clamp = clamp;
+    }
+
+    public Servo getClampPivot() {
+        return clampPivot;
+    }
+
+    public void setClampPivot(Servo clampPivot) {
+        this.clampPivot = clampPivot;
+    }
+
+    public Servo getIntakePusher() {
+        return intakePusher;
+    }
+
+    public void setIntakePusher(Servo intakePusher) {
+        this.intakePusher = intakePusher;
+    }
+
+    public double getOUTTAKE_SLIDE_EXTENDED() {
+        return OUTTAKE_SLIDE_EXTENDED;
+    }
+
+    public double getOUTTAKE_SLIDE_RETRACTED() {
+        return OUTTAKE_SLIDE_RETRACTED;
+    }
+
+    public double getCLAW_SERVO_CLAMPED() {
+        return CLAW_SERVO_CLAMPED;
+    }
+
+    public double getCLAW_SERVO_RELEASED() {
+        return CLAW_SERVO_RELEASED;
+    }
+
+    public double getOUTTAKE_PIVOT_EXTENDED() {
+        return OUTTAKE_PIVOT_EXTENDED;
+    }
+
+    public double getOUTTAKE_PIVOT_RETRACTED() {
+        return OUTTAKE_PIVOT_RETRACTED;
+    }
+
+    public double getI() {
+        return i;
+    }
+
+    public void setI(double i) {
+        this.i = i;
+    }
+
+    public Point getRobotPos() {
+        return robotPos;
+    }
+
+    public void setRobotPos(Point robotPos) {
+        this.robotPos = robotPos;
+    }
+
+    public double getAnglePos() {
+        return anglePos;
+    }
+
+    public void setAnglePos(double anglePos) {
+        this.anglePos = anglePos;
+    }
+
+    public BNO055IMU getImu() {
+        return imu;
+    }
+
+    public void setImu(BNO055IMU imu) {
+        this.imu = imu;
+    }
+
+    public Orientation getAngles() {
+        return angles;
+    }
+
+    public void setAngles(Orientation angles) {
+        this.angles = angles;
+    }
+
+    public Position getPosition() {
+        return position;
+    }
+
+    public void setPosition(Position position) {
+        this.position = position;
+    }
+
+    public Telemetry getTelemetry() {
+        return telemetry;
+    }
+
+    public void setTelemetry(Telemetry telemetry) {
+        this.telemetry = telemetry;
+    }
+
+    public HardwareMap getHardwareMap() {
+        return hardwareMap;
+    }
+
+    public void setHardwareMap(HardwareMap hardwareMap) {
+        this.hardwareMap = hardwareMap;
+    }
+
+    public LinearOpMode getLinearOpMode() {
+        return linearOpMode;
+    }
+
+    public void setLinearOpMode(LinearOpMode linearOpMode) {
+        this.linearOpMode = linearOpMode;
+    }
+
+    public double getWheelRadius() {
+        return wheelRadius;
+    }
+
+    public void setWheelRadius(double wheelRadius) {
+        this.wheelRadius = wheelRadius;
+    }
+
+    public double getWheelCircumference() {
+        return wheelCircumference;
+    }
+
+    public double getEncoderPerRevolution() {
+        return encoderPerRevolution;
+    }
+
+    public double getL() {
+        return l;
+    }
+
+    public double getW() {
+        return w;
+    }
+
+    public double getxMovement() {
+        return xMovement;
+    }
+
+    public void setxMovement(double xMovement) {
+        this.xMovement = xMovement;
+    }
+
+    public double getyMovement() {
+        return yMovement;
+    }
+
+    public void setyMovement(double yMovement) {
+        this.yMovement = yMovement;
+    }
+
+    public double getTurnMovement() {
+        return turnMovement;
+    }
+
+    public void setTurnMovement(double turnMovement) {
+        this.turnMovement = turnMovement;
+    }
+
+    public double getPathDistance() {
+        return pathDistance;
+    }
+
+    public void setPathDistance(double pathDistance) {
+        this.pathDistance = pathDistance;
+    }
+
+    public double getDistanceToEnd() {
+        return distanceToEnd;
+    }
+
+    public void setDistanceToEnd(double distanceToEnd) {
+        this.distanceToEnd = distanceToEnd;
+    }
 }

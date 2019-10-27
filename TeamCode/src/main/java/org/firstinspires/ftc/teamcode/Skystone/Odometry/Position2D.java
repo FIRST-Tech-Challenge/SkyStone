@@ -32,23 +32,23 @@ class NewThread extends AsyncTask<Void, Boolean, Boolean> {
 
     @Override
     protected Boolean doInBackground(Void... params) {
-        while(robot.linearOpMode.opModeIsActive()) {
+        while(robot.getLinearOpMode().opModeIsActive()) {
             //o.constantVelocityOdometry();
             o.circularOdometry();
 //            robot.robotPos.x = o.xPosGlobal;
 //            robot.robotPos.y = o.yPosGlobal;
 //            robot.anglePos = o.angleGlobal;
-            robot.robotPos.x = o.worldX;
-            robot.robotPos.y = o.worldY;
-            robot.anglePos = o.worldAngle;
+            robot.getRobotPos().x = o.worldX;
+            robot.getRobotPos().y = o.worldY;
+            robot.setAnglePos(o.worldAngle);
         }
         return true;
     }
 
     protected void onPostExecute(Boolean result) {
         if(result) {
-            robot.telemetry.addLine("DONE");
-            robot.telemetry.update();
+            robot.getTelemetry().addLine("DONE");
+            robot.getTelemetry().update();
         }
     }
 
@@ -89,9 +89,9 @@ class Odometry{
     }
 
     public void circularOdometry () {
-        double leftPodNew = -1 * robot.fLeft.getCurrentPosition(); // fix this for new odo config
-        double rightPodNew = -1 * robot.fRight.getCurrentPosition(); //fix this for new odo config
-        double mecanumPodNew = -1 * robot.bLeft.getCurrentPosition(); // fix this for new odo config
+        double leftPodNew = -1 * robot.getfLeft().getCurrentPosition(); // fix this for new odo config
+        double rightPodNew = -1 * robot.getfRight().getCurrentPosition(); //fix this for new odo config
+        double mecanumPodNew = -1 * robot.getbLeft().getCurrentPosition(); // fix this for new odo config
 
         double leftIncrement = (leftPodNew-leftPodOld) * moveScaleFactor;
         double rightIncrement = (rightPodNew - rightPodOld) * moveScaleFactor;
@@ -131,20 +131,20 @@ class Odometry{
 
     public void constantVelocityOdometry() {
 
-        double fLeftNEW = robot.fLeft.getCurrentPosition();
-        double fRightNEW = robot.fRight.getCurrentPosition();
-        double bLeftNEW = robot.bLeft.getCurrentPosition();
-        double bRightNEW = robot.bRight.getCurrentPosition();
+        double fLeftNEW = robot.getfLeft().getCurrentPosition();
+        double fRightNEW = robot.getfRight().getCurrentPosition();
+        double bLeftNEW = robot.getbLeft().getCurrentPosition();
+        double bRightNEW = robot.getbRight().getCurrentPosition();
 
         // find robot position
-        double fl = 2 * Math.PI * (fLeftNEW - fLeftOLD) / robot.encoderPerRevolution;
-        double fr = 2 * Math.PI * (fRightNEW - fRightOLD) / robot.encoderPerRevolution;
-        double bl = 2 * Math.PI * (bLeftNEW - bLeftOLD) / robot.encoderPerRevolution;
-        double br = 2 * Math.PI * (bRightNEW - bRightOLD) / robot.encoderPerRevolution;
+        double fl = 2 * Math.PI * (fLeftNEW - fLeftOLD) / robot.getEncoderPerRevolution();
+        double fr = 2 * Math.PI * (fRightNEW - fRightOLD) / robot.getEncoderPerRevolution();
+        double bl = 2 * Math.PI * (bLeftNEW - bLeftOLD) / robot.getEncoderPerRevolution();
+        double br = 2 * Math.PI * (bRightNEW - bRightOLD) / robot.getEncoderPerRevolution();
 
-        double xDeltaRobot = robot.wheelRadius/4 * (fl + bl + br + fr);
-        double yDeltaRobot = robot.wheelRadius/4 * (-fl + bl - br + fr);
-        double angleDeltaRobot = robot.wheelRadius/4 *(-fl/(robot.l+robot.w) - bl/(robot.l+robot.w) + br/(robot.l+robot.w) + fr/(robot.l+robot.w));
+        double xDeltaRobot = robot.getWheelRadius()/4 * (fl + bl + br + fr);
+        double yDeltaRobot = robot.getWheelRadius()/4 * (-fl + bl - br + fr);
+        double angleDeltaRobot = robot.getWheelRadius()/4 *(-fl/(robot.getL()+robot.getW()) - bl/(robot.getL()+robot.getW()) + br/(robot.getL()+robot.getW()) + fr/(robot.getL()+robot.getW()));
 
         //converting to global frame
         if (angleDeltaRobot == 0){
@@ -155,16 +155,16 @@ class Odometry{
             yPosGlobal += ((Math.cos(angleDeltaRobot) - 1) * Math.sin(angleGlobal) + (Math.cos(angleGlobal)) * Math.sin(angleDeltaRobot)) * yDeltaRobot / angleDeltaRobot + (Math.cos(angleGlobal) * (Math.cos(angleDeltaRobot) - 1) + Math.sin(angleGlobal) * Math.sin(angleDeltaRobot)) * xDeltaRobot / angleDeltaRobot;
         }
 
-        angleGlobal = angleWrap((robot.wheelCircumference * (fLeftNEW)/robot.encoderPerRevolution - robot.wheelCircumference * (fRightNEW)/robot.encoderPerRevolution) / 14 * 0.51428571428);
+        angleGlobal = angleWrap((robot.getWheelCircumference() * (fLeftNEW)/robot.getEncoderPerRevolution() - robot.getWheelCircumference() * (fRightNEW)/robot.getEncoderPerRevolution()) / 14 * 0.51428571428);
 
         fLeftOLD = fLeftNEW;
         fRightOLD = fRightNEW;
         bLeftOLD = bLeftNEW;
         bRightOLD = bRightNEW;
 
-        robot.telemetry.addLine("XPOS: " + xPosGlobal);
-        robot.telemetry.addLine("YPOS: " + yPosGlobal);
-        robot.telemetry.addLine("ANGPOS: " + Math.toDegrees(Math.toDegrees(angleGlobal)));
-        robot.telemetry.update();
+        robot.getTelemetry().addLine("XPOS: " + xPosGlobal);
+        robot.getTelemetry().addLine("YPOS: " + yPosGlobal);
+        robot.getTelemetry().addLine("ANGPOS: " + Math.toDegrees(Math.toDegrees(angleGlobal)));
+        robot.getTelemetry().update();
     }
 }

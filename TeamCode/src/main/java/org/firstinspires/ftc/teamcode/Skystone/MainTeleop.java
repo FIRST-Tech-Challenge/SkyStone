@@ -54,11 +54,11 @@ public class MainTeleop extends LinearOpMode {
             outtakeLogic2();
             intakeLogic();
             if(gamepad2.dpad_up){
-                robot.outtakeSpool.setPower(1);
+                robot.getOuttakeSpool().setPower(1);
             }else if(gamepad2.dpad_down){
-                robot.outtakeSpool.setPower(-1);
+                robot.getOuttakeSpool().setPower(-1);
             }else{
-                robot.outtakeSpool.setPower(0);
+                robot.getOuttakeSpool().setPower(0);
             }
 //            outtakeLogic();
         }
@@ -70,7 +70,7 @@ public class MainTeleop extends LinearOpMode {
 
         robot.setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        robot.outtakeSpool.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        robot.getOuttakeSpool().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 //        robot.outtakeArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 //        robot.outtakeArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -138,8 +138,8 @@ public class MainTeleop extends LinearOpMode {
     }
 
     private void intakeLogic() {
-        robot.intakeLeft.setPower(gamepad2.left_stick_y);
-        robot.intakeRight.setPower(gamepad2.right_stick_y);
+        robot.getIntakeLeft().setPower(gamepad2.left_stick_y);
+        robot.getIntakeRight().setPower(gamepad2.right_stick_y);
     }
 
     private void outtakeLogic() {
@@ -171,7 +171,7 @@ public class MainTeleop extends LinearOpMode {
             outtakeExtenderExecutePosition = robot.OUTTAKE_SLIDE_RETRACTED;
             outtakeExtenderWaitTime = 2000;
         } else if (gamepad2.x) { // Clamp
-            robot.clamp.setPosition(robot.CLAW_SERVO_CLAMPED);
+            robot.getClamp().setPosition(robot.CLAW_SERVO_CLAMPED);
         } else if (gamepad2.y) { // Extend
             outtakeExecutionTime = currentTime;
 
@@ -184,24 +184,24 @@ public class MainTeleop extends LinearOpMode {
 
         // Execute pivot rotation after wait time
         if (SystemClock.elapsedRealtime() == outtakeExecutionTime + outtakeClampWaitTime) {
-            robot.clamp.setPosition(outtakeClampExecutePosition);
+            robot.getClamp().setPosition(outtakeClampExecutePosition);
         }
 
         if (SystemClock.elapsedRealtime() == outtakeExecutionTime + outtakePivotWaitTime) {
-            robot.clampPivot.setPosition(outtakePivotExecutePosition);
+            robot.getClampPivot().setPosition(outtakePivotExecutePosition);
         }
 
         if (SystemClock.elapsedRealtime() == outtakeExecutionTime + outtakeExtenderWaitTime) {
-            robot.outtakeExtender.setPosition(outtakeExtenderExecutePosition);
+            robot.getOuttakeExtender().setPosition(outtakeExtenderExecutePosition);
         }
 
         // Spool controls
         if (gamepad2.dpad_up) {
-            robot.outtakeSpool.setPower(1);
+            robot.getOuttakeSpool().setPower(1);
         } else if (gamepad2.dpad_down) {
-            robot.outtakeSpool.setPower(-1);
+            robot.getOuttakeSpool().setPower(-1);
         } else {
-            robot.outtakeSpool.setPower(0);
+            robot.getOuttakeSpool().setPower(0);
         }
     }
 
@@ -210,47 +210,47 @@ public class MainTeleop extends LinearOpMode {
 
         // Logic to control outtake; with a delay on the pivot so that the slides can extend before pivot rotation
         if (gamepad2.a) { // Clamp and Extend
-            robot.intakePusher.setPosition(0.7);
+            robot.getIntakePusher().setPosition(0.7);
             sleep(500);
             isExtend = true;
             outtakeExecutionTime = currentTime;
-            robot.clamp.setPosition(robot.CLAW_SERVO_CLAMPED);
+            robot.getClamp().setPosition(robot.CLAW_SERVO_CLAMPED);
         } else if (gamepad2.b) { // Deposit and Reset
-            robot.intakePusher.setPosition(0.45);
+            robot.getIntakePusher().setPosition(0.45);
             isRetract = true;
             outtakeExecutionTime = currentTime;
-            robot.clamp.setPosition(robot.CLAW_SERVO_RELEASED);
+            robot.getClamp().setPosition(robot.CLAW_SERVO_RELEASED);
         }
 
         //extend
         if(currentTime-outtakeExecutionTime >= 100 && isExtend){
-            robot.outtakeExtender.setPosition(robot.OUTTAKE_SLIDE_EXTENDED);
+            robot.getOuttakeExtender().setPosition(robot.OUTTAKE_SLIDE_EXTENDED);
         }
 
         if(currentTime-outtakeExecutionTime >= 1500 && isExtend){
-            robot.clampPivot.setPosition(robot.OUTTAKE_PIVOT_EXTENDED);
+            robot.getClampPivot().setPosition(robot.OUTTAKE_PIVOT_EXTENDED);
             isExtend = false;
         }
 
 
         //retract
         if(currentTime-outtakeExecutionTime >= 250 && isRetract){
-            robot.clampPivot.setPosition(robot.OUTTAKE_PIVOT_RETRACTED);
+            robot.getClampPivot().setPosition(robot.OUTTAKE_PIVOT_RETRACTED);
         }
 
         if(currentTime-outtakeExecutionTime >= 750 && isRetract){
-            robot.outtakeExtender.setPosition(robot.OUTTAKE_SLIDE_RETRACTED);
+            robot.getOuttakeExtender().setPosition(robot.OUTTAKE_SLIDE_RETRACTED);
             isRetract = false;
         }
 
 
         // Spool controls
         if (gamepad2.dpad_up) {
-            robot.outtakeSpool.setPower(1);
+            robot.getOuttakeSpool().setPower(1);
         } else if (gamepad2.dpad_down) {
-            robot.outtakeSpool.setPower(-1);
+            robot.getOuttakeSpool().setPower(-1);
         } else {
-            robot.outtakeSpool.setPower(0);
+            robot.getOuttakeSpool().setPower(0);
         }
     }
 }

@@ -59,7 +59,7 @@ public class MecanumTeleOp extends OpMode
         if (servoUp) {
             robotHardware.servoManager.setPosition(1.0);
         } else {
-            robotHardware.servoManager.setPosition(0.0);
+            robotHardware.servoManager.setPosition(0.6);
         }
 
         if (gamepad1.a) rightMotion = false;

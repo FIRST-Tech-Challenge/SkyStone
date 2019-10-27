@@ -26,6 +26,8 @@ public class Outtake{
     public DcMotor liftLeft;
 
     OpMode opMode;
+    LinearOpMode opMode1;
+    DriveTrain drive = new DriveTrain();
     ElapsedTime time = new ElapsedTime();
 
     //1.055 Inches Base, Foundation is 2.25 inches
@@ -102,12 +104,12 @@ public class Outtake{
     // Process : Robot Aligns, Lift Extends Up, CRServos move forward while hook connected to servo
     // is in contact with block, when block needs to be released hook from servo extended out
 
-    public void hookAuto(DriveTrain drive)
+    public void hookAuto(LinearOpMode opmode1)
     {
         hookRight.setPosition(HOOKDOWN);
         hookLeft.setPosition(HOOKDOWN);
 
-        drive.encoderMove((LinearOpMode)opMode, DISTANCE_TO_BUILD_ZONE, 5, 1);
+        drive.encoderMove(opMode1, DISTANCE_TO_BUILD_ZONE, 5, 1);
 
         //possible add a test case to make sure robot has foundation
 
@@ -320,6 +322,7 @@ public class Outtake{
         else {
             rightVex.setPower(0);
             leftVex.setPower(0);
+
         }
     }
 }

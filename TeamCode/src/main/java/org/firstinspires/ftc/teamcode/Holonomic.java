@@ -20,14 +20,10 @@ public class Holonomic extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     //Declaration of the motors and servos goes here
-    private DcMotor backLeft     = null; //rear left
-    private DcMotor backRight    = null; //rear right
-    private DcMotor frontLeft    = null; //front left
-    private DcMotor frontRight   = null; //front right
+    private DcMotor RL, RR, FL, FR;
+    private Servo   servoLeft, servoRight;
 
-    private Servo   servoLeft    = null;
-    private Servo   servoRight   = null;
-    //private Servo   servoClaw    = null;
+    private double FLpower, FRpower, RLpower, RRpower;
 
     public static final double deadZone = 0.10;
     public static final boolean earthIsFlat = true;
@@ -37,10 +33,10 @@ public class Holonomic extends LinearOpMode {
 
         //Naming, Initialization of the hardware, use this deviceName in the robot controller phone
         //use the name of the object in the code
-        backLeft = hardwareMap.get(DcMotor.class, "left_drive");
-        backRight = hardwareMap.get(DcMotor.class, "right_drive");
-        frontLeft = hardwareMap.get(DcMotor.class, "front_left");
-        frontRight = hardwareMap.get(DcMotor.class, "front_right");
+        RL = hardwareMap.get(DcMotor.class, "left_drive");
+        RR = hardwareMap.get(DcMotor.class, "right_drive");
+        FL = hardwareMap.get(DcMotor.class, "front_left");
+        FR = hardwareMap.get(DcMotor.class, "front_right");
 
         servoLeft = hardwareMap.get(Servo.class, "servoLeft");
         servoRight = hardwareMap.get(Servo.class, "servoRight");
@@ -49,16 +45,16 @@ public class Holonomic extends LinearOpMode {
         //Set the direction of the motors
         //Reversed motors on one side to ensure forward movement.
         //invert all of them to change the robot's front/back
-        backLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        frontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        RL.setDirection(DcMotorSimple.Direction.FORWARD);
+        FL.setDirection(DcMotorSimple.Direction.FORWARD);
+        RR.setDirection(DcMotorSimple.Direction.REVERSE);
+        FR.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //Running with/without Encoders
-        backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        RL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        FL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        RR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        FR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
         waitForStart();
@@ -66,6 +62,7 @@ public class Holonomic extends LinearOpMode {
 
         double speedSet = 5;//robot starts with speed 5 due to 40 ratio motors being op
         double reduction = 7.5;//fine rotation for precise stacking. higher value = slower rotation using triggers
+        double maxPower = 0;
 
         while (opModeIsActive()) {
 
@@ -84,36 +81,44 @@ public class Holonomic extends LinearOpMode {
                 servoLeft.setPosition(0.5);
                 servoRight.setPosition(0.5);
             }
-            else {
+            else if(earthIsFlat) {
                 servoLeft.setPosition(1);
                 servoRight.setPosition(0);
             }
 
-
-
-//            if(gamepad1.b)
-//                servoLeft.setPosition(0.5);
-//            else
-//                servoLeft.setPosition(1);
-
-            //directional
-            //using range.clip makes sure you can use all sticks and directions at the same time without conflicts. power stays limited at 1
+            //Holonomic Vector Math
             if((Math.abs(gamepad1.left_stick_x) > deadZone) || (Math.abs(gamepad1.left_stick_y) > deadZone) || (Math.abs(gamepad1.right_stick_x) > deadZone)) {
-                frontLeft.setPower(Range.clip((gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x) * (speedSet / 10), -1, 1));
-                frontRight.setPower(Range.clip((gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x) * (speedSet / 10), -1, 1));
-                backRight.setPower(Range.clip((gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x) * (speedSet / 10), -1, 1));
-                backLeft.setPower(Range.clip((gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x) * (speedSet / 10), -1, 1));
+                FLpower = gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x;
+                FRpower = gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x;
+                RRpower = gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x;
+                RLpower = gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x;
             } else if(gamepad1.left_trigger > deadZone || gamepad1.left_trigger > deadZone){//we don't have to worry about Range.clip here because the abs values will never exceed 1
-                frontLeft.setPower((-gamepad1.left_trigger + gamepad1.right_trigger)/reduction);
-                frontRight.setPower((gamepad1.left_trigger - gamepad1.right_trigger)/reduction);
-                backRight.setPower((gamepad1.left_trigger - gamepad1.right_trigger)/reduction);
-                backLeft.setPower((-gamepad1.left_trigger + gamepad1.right_trigger)/reduction);
+                FLpower = (-gamepad1.left_trigger + gamepad1.right_trigger)/reduction;
+                FRpower = (gamepad1.left_trigger - gamepad1.right_trigger)/reduction;
+                RRpower = (gamepad1.left_trigger - gamepad1.right_trigger)/reduction;
+                RLpower = (-gamepad1.left_trigger + gamepad1.right_trigger)/reduction;
             } else if (earthIsFlat) {//stop robot
-                frontLeft.setPower(0);
-                frontRight.setPower(0);
-                backRight.setPower(0);
-                backLeft.setPower(0);
+                FLpower = 0;
+                FRpower = 0;
+                RLpower = 0;
+                RRpower = 0;
             }
+
+            //get max power out of all 4 powers
+            maxPower = Math.max(1.0, Math.max(Math.max(Math.abs(FLpower), Math.abs(RLpower)), Math.max(Math.abs(FRpower), Math.abs(RRpower))));
+
+            //if any of them is greater than 1, it will slow down all by the same ratio
+            if(maxPower > 1.0) {
+                FLpower /= maxPower;
+                FRpower /= maxPower;
+                RLpower /= maxPower;
+                RRpower /= maxPower;
+            }
+
+            FL.setPower(FLpower*speedSet/10);
+            FR.setPower(FRpower*speedSet/10);
+            RL.setPower(RLpower*speedSet/10);
+            RR.setPower(RRpower*speedSet/10);
 
             telemetry.addData("Drive", "Holonomic");
             telemetry.addData("Left", servoLeft.getPosition());

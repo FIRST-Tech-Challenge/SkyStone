@@ -25,13 +25,13 @@ import pkg3939.skystoneDetectorClass;
 public class opencvInstanceTest extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
-    OpenCvCamera phoneCam;
+
     skystoneDetectorClass detector = new skystoneDetectorClass(1f/8f, 3f/8f);
 
     @Override
     public void runOpMode() throws InterruptedException {
 
-        camSetup();
+        detector.camSetup(hardwareMap);
         int[] vals = detector.getVals();
         waitForStart();
         runtime.reset();
@@ -44,11 +44,5 @@ public class opencvInstanceTest extends LinearOpMode {
         }
     }
 
-    public void camSetup () {
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        phoneCam = new OpenCvInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
-        phoneCam.openCameraDevice();//open camera
-        phoneCam.setPipeline(detector.getPipeline());//different stages
-        phoneCam.startStreaming(detector.getRows(), detector.getCols(), OpenCvCameraRotation.UPRIGHT);//display on RC
-    }
+
 }

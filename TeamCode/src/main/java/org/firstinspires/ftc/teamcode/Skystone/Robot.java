@@ -5,6 +5,7 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
@@ -61,7 +62,7 @@ public class Robot {
     private Servo intakePusher;
 
     // Outtake Slide Positions
-    final double OUTTAKE_SLIDE_EXTENDED = .26;
+    final double OUTTAKE_SLIDE_EXTENDED = .1;
     final double OUTTAKE_SLIDE_RETRACTED = .75;
 
     // Outtake Servo Positions
@@ -71,6 +72,10 @@ public class Robot {
     // Outtake Pivot Positions
     final double OUTTAKE_PIVOT_EXTENDED = .271;
     final double OUTTAKE_PIVOT_RETRACTED = .994;
+
+    // Outtake Pusher Positions
+    final double PUSHER_PUSHED = .7;
+    final double PUSHER_RETRACTED = .452;
 
     double i = 1;
 
@@ -132,6 +137,8 @@ public class Robot {
 
         // Map outtake motors
         outtakeSpool = hardwareMap.dcMotor.get("outtakeSpool");
+
+        outtakeSpool.setDirection(DcMotor.Direction.REVERSE);
 
         outtakeExtender = hardwareMap.servo.get("outtakeExtender");
         clamp = hardwareMap.servo.get("clamp");

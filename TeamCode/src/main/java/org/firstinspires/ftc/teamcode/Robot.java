@@ -4,6 +4,8 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
+
 import java.lang.Thread;
 
 // THIS IS NOT AN OPMODE - IT IS A DEFINING CLASS
@@ -16,52 +18,75 @@ public class Robot {
     public DcMotor frontLeft;
     public DcMotor frontRight;
     public DcMotor waffleMover;
+    public DcMotor gripperRotate;
+
+    // Servos
+    private Servo gripperRotateServo1;
+    private Servo gripperRotateServo2;
+    private Servo grabServo;
 
     // Constants
-    public double ANDYMARK_TICKS_PER_REV = 537.6; // ticks / rev
-    public double WHEEL_DIAMETER = 4;
-    public double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI; // in / rev
-    public double TICKS_PER_INCH = ANDYMARK_TICKS_PER_REV / WHEEL_CIRCUMFERENCE; // ticks / in
-    public double ROBOT_EXTENDED_LENGTH = 36.0; // in
-    public double ROBOT_RETRACTED_LENGTH = 18.0; // in
+    private int CORE_HEX_TICKS_PER_REV = 288; // ticks / rev
+    private int ANGLE_OF_GRIPPER_WHEN_GRABBING = 60; // in degrees
+    private double ANDYMARK_TICKS_PER_REV = 537.6; // ticks / rev
+    private double WHEEL_DIAMETER = 4;
+    private double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI; // in / rev
+    private double TICKS_PER_INCH = ANDYMARK_TICKS_PER_REV / WHEEL_CIRCUMFERENCE; // ticks / in
+    double ROBOT_EXTENDED_LENGTH = 36.0; // in
+    double ROBOT_RETRACTED_LENGTH = 18.0; // in
 
-    // motor info
-    public int wafflePosition = 0; // 1 = Up, -1 = Down
+    // info
+    private int wafflePosition = 0; // 1 = Up, -1 = Down
     private double wafflePower = 0.5;
 
-    HardwareMap hwMap = null;
+    private enum gripperPosition {REST, ACTIVE}
+    private gripperPosition gripperPos = gripperPosition.REST;
+
+    private HardwareMap hwMap = null;
 
     public Robot () {
         // Constructor
     }
 
-    public void init (HardwareMap ahwMap) {
+    void init (HardwareMap ahwMap) {
         /* Initializes the robot */
 
         hwMap = ahwMap;
 
-        // Drive Motor instantiation
+        // Motor mapping
         this.rearLeft = hwMap.dcMotor.get("rearLeft");
         this.frontLeft = hwMap.dcMotor.get("frontLeft");
         this.rearRight = hwMap.dcMotor.get("rearRight");
         this.frontRight = hwMap.dcMotor.get("frontRight");
+        this.waffleMover = hwMap.dcMotor.get("waffleMover");
+        this.gripperRotate = hwMap.dcMotor.get("gripperRotate");
 
         // Drive Motor Direction
         this.rearLeft.setDirection(DcMotor.Direction.REVERSE);
         this.frontLeft.setDirection(DcMotor.Direction.REVERSE);
         this.rearRight.setDirection(DcMotor.Direction.FORWARD);
         this.frontRight.setDirection(DcMotor.Direction.FORWARD);
-
-        // waffle mover instantiation and direction
-        this.waffleMover = hwMap.dcMotor.get("waffleMover");
         this.waffleMover.setDirection(DcMotor.Direction.FORWARD);
+        this.gripperRotate.setDirection(DcMotor.Direction.FORWARD); // positive makes arm go forward
 
         // set motor powers to 0 so they don't cause problems
         this.stopDrive();
         this.waffleMover.setPower(0);
+        this.gripperRotate.setPower(0);
+
+        // Servo mapping
+        this.gripperRotateServo1 = hwMap.get(Servo.class, "gripperRotateServo1");
+        this.gripperRotateServo2 = hwMap.get(Servo.class, "gripperRotateServo2");
+        this.grabServo = hwMap.get(Servo.class, "grabServo");
+
+        // Servo direction
+        this.gripperRotateServo1.setDirection(Servo.Direction.FORWARD);
+        this.gripperRotateServo2.setDirection(Servo.Direction.FORWARD);
+        this.grabServo.setDirection(Servo.Direction.REVERSE);
+
     }
 
-    public void setDrivePower(double power) {
+    void setDrivePower(double power) {
         /* sets all drive motors to a certain power */
         this.rearLeft.setPower(power);
         this.frontLeft.setPower(power);
@@ -69,7 +94,7 @@ public class Robot {
         this.frontRight.setPower(power);
     }
 
-    public void setDriveMode(DcMotor.RunMode runMode) {
+    void setDriveMode(DcMotor.RunMode runMode) {
         /* sets all drive motors to a certain mode */
         this.rearLeft.setMode(runMode);
         this.frontLeft.setMode(runMode);
@@ -77,21 +102,13 @@ public class Robot {
         this.frontRight.setMode(runMode);
     }
 
-    public void setDriveTargetPos(int targetPosition) {
-        /* sets all drive motors to a target position */
-        this.rearLeft.setTargetPosition(targetPosition);
-        this.frontLeft.setTargetPosition(targetPosition);
-        this.rearRight.setTargetPosition(targetPosition);
-        this.frontRight.setTargetPosition(targetPosition);
-    }
-
-    public void stopDrive() {
+    void stopDrive() {
         /* stops all the drive motors */
         this.setDrivePower(0);
     }
 
 
-    public void driveForwardDistance(double distance, double power, LinearOpMode opmode) {
+    void driveForwardDistance(double distance, double power, LinearOpMode opmode) {
         /* drives forward a certain distance(in) using encoders */
 
         // calculate ticks
@@ -103,27 +120,11 @@ public class Robot {
 
         // set mode
         this.setDriveMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//        // set target position
-//        this.setDriveTargetPos(NUM_TICKS);
-//
-//        // Set to RUN_TO_POSITION mode
-//        this.setDriveMode(DcMotor.RunMode.RUN_TO_POSITION);
-//
-//        // set drive power
-//        this.setDrivePower(power);
-//
-//        while (opmode.opModeIsActive() && this.rearLeft.isBusy() && this.frontLeft.isBusy() && this.rearRight.isBusy() && this.frontRight.isBusy()) {
-//            // wait until target position is reached
-//            opmode.telemetry.addData("Target Position", NUM_TICKS);
-//            opmode.telemetry.addData("Rear Left", this.rearLeft.getCurrentPosition());
-//            opmode.telemetry.addData("Rear Right", this.rearRight.getCurrentPosition());
-//            opmode.telemetry.addData("Front Left", this.frontLeft.getCurrentPosition());
-//            opmode.telemetry.addData("Front Right", this.frontRight.getCurrentPosition());
-//            opmode.telemetry.update();
-//            opmode.idle();
-//        }
 
+        // set power
         this.setDrivePower(power);
+
+        // drive
         while (opmode.opModeIsActive() && Math.abs(this.rearLeft.getCurrentPosition()) < NUM_TICKS && Math.abs(this.frontLeft.getCurrentPosition()) < NUM_TICKS
         && Math.abs(this.rearRight.getCurrentPosition()) < NUM_TICKS && Math.abs(this.frontRight.getCurrentPosition()) < NUM_TICKS) {
             // wait until target position is reached
@@ -140,7 +141,7 @@ public class Robot {
 
     }
 
-    public void setStrafe(double power) {
+    void setStrafe(double power) {
         /* strafes at certain power
         positive power goes to the right
         negative power goes to the left */
@@ -151,14 +152,14 @@ public class Robot {
         this.rearRight.setPower(power);
     }
 
-    public void strafeTime(double power, long milliseconds) throws InterruptedException {
+    void strafeTime(double power, long milliseconds) throws InterruptedException {
         /* strafes for a certain amount of milliseconds */
         this.setStrafe(power);
         Thread.sleep(milliseconds);
         this.stopDrive();
     }
 
-    public void turnRight(double power, long milliseconds) throws InterruptedException {
+    void turnRight(double power, long milliseconds) throws InterruptedException {
         this.rearLeft.setPower(power);
         this.frontLeft.setPower(power);
 
@@ -168,7 +169,7 @@ public class Robot {
         this.stopDrive();
     }
 
-    public void moveWaffleMover(char floatOrHold) throws InterruptedException {
+    void moveWaffleMover(char floatOrHold) throws InterruptedException {
         if (floatOrHold != 'f' && floatOrHold != 'h') {
             return;
         }
@@ -181,5 +182,58 @@ public class Robot {
             this.waffleMover.setPower(0);
         }
         Thread.sleep(500); // buffer time to let the motor to completely stop
+    }
+    void moveGripperRotate(int targetPosition, LinearOpMode opmode) {
+        // reset encoders
+        gripperRotate.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        // set target position and power
+        gripperRotate.setTargetPosition(targetPosition);
+        gripperRotate.setPower(0.5);
+
+        // change the mode
+        gripperRotate.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        // wait for gripperRotate to finish
+        while (gripperRotate.isBusy() && opmode.opModeIsActive()) {
+            opmode.telemetry.addData("Gripper", gripperRotate.getCurrentPosition());
+            opmode.telemetry.update();
+        }
+
+        // stop the gripperRotate motor
+        gripperRotate.setPower(0);
+    }
+
+    void rotateGripper(double angle) {
+        this.gripperRotateServo1.setPosition(angle / 360);
+        this.gripperRotateServo2.setPosition(angle / 360);
+    }
+
+    void bringArmDown(LinearOpMode opmode) throws InterruptedException {
+        if (gripperPos == gripperPosition.REST) {
+            moveGripperRotate(CORE_HEX_TICKS_PER_REV * (180 + this.ANGLE_OF_GRIPPER_WHEN_GRABBING) / 360, opmode);
+            Thread.sleep(500);
+            rotateGripper(90 - this.ANGLE_OF_GRIPPER_WHEN_GRABBING);
+        } else {
+            return;
+        }
+    }
+
+    void foldArmBack(LinearOpMode opmode) throws InterruptedException {
+        if (gripperPos == gripperPosition.ACTIVE) {
+            moveGripperRotate(-CORE_HEX_TICKS_PER_REV * (180 + this.ANGLE_OF_GRIPPER_WHEN_GRABBING) / 360, opmode);
+            Thread.sleep(500);
+            rotateGripper(this.ANGLE_OF_GRIPPER_WHEN_GRABBING - 90);
+        } else {
+            return;
+        }
+    }
+
+    void gripBlock() {
+        grabServo.setPosition(1);
+    }
+
+    void releaseBlock() {
+        grabServo.setPosition(0);
     }
 }

@@ -11,7 +11,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 
 import java.util.List;
 
-@Autonomous(name="Auto-Skystones", group="BB")
+@Autonomous(name="Auto-Skystones-Red", group="BB")
 //@Disabled
 public class BBOpModeAutonomousSkystonesRed extends LinearOpMode
 {

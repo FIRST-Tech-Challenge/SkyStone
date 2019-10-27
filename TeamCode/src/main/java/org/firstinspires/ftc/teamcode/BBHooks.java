@@ -20,7 +20,7 @@ public class BBHooks {
 
         public void Latched(){
 
-            _leftHookMotor.setPosition(1);
+            _leftHookMotor.setPosition(0);
             _rightHookMotor.setPosition(1);
             _hookState = true;
 
@@ -28,7 +28,7 @@ public class BBHooks {
 
         public void UnLatched() {
 
-            _leftHookMotor.setPosition(0);
+            _leftHookMotor.setPosition(1);
             _rightHookMotor.setPosition(0);
             _hookState = false;
         }

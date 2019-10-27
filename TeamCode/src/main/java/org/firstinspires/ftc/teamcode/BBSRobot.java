@@ -37,6 +37,7 @@ public class BBSRobot {
     private DcMotor centreDrive = null;
 
     private DcMotor encoder = null;
+    private DcMotor rightEncoder = null;
 
     boolean oN = false;
 
@@ -57,6 +58,12 @@ public class BBSRobot {
 
     private static double TURN_P = 0.005;
 
+    static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder
+    static final double     DRIVE_GEAR_REDUCTION    = 2.0 ;     // This is < 1.0 if geared UP
+    static final double     WHEEL_DIAMETER_CM   = 9.0 ;     // For figuring circumference
+    static final double     COUNTS_PER_CM         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+            (WHEEL_DIAMETER_CM * 3.1415);
+
     public void init(HardwareMap hwmap, Telemetry tele, LinearOpMode mode)
     {
 
@@ -73,16 +80,68 @@ public class BBSRobot {
         centreDrive  = hwmap.get(DcMotor.class, "centre_drive");
 
         encoder = hwmap.get(DcMotor.class, "encoder");
+        rightEncoder = hwmap.get(DcMotor.class, "spool");
 
         leftDrive.setDirection(DcMotor.Direction.FORWARD);
         rightDrive.setDirection(DcMotor.Direction.REVERSE);
         centreDrive.setDirection(DcMotor.Direction.FORWARD);
         encoder.setDirection(DcMotor.Direction.FORWARD);
+        rightEncoder.setDirection(DcMotor.Direction.FORWARD);
 
         leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         centreDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         encoder.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightEncoder.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        // Set up the parameters with which we will use our IMU. Note that integration
+        // algorithm here just reports accelerations to the logcat log; it doesn't actually
+        // provide positional information.
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingEnabled      = true;
+        parameters.loggingTag          = "IMU";
+        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+
+        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
+        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
+        // and named "imu".
+        imu = hwmap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
+
+        runtime.reset();
+    }
+
+    public void autoInit(HardwareMap hwmap, Telemetry tele, LinearOpMode mode)
+    {
+
+        telemetry = tele;
+
+        _hooks.init(hwmap);
+        _mode = mode;
+
+
+
+        leftDrive  = hwmap.get(DcMotor.class, "left_drive");
+        rightDrive = hwmap.get(DcMotor.class, "right_drive");
+        centreDrive  = hwmap.get(DcMotor.class, "centre_drive");
+
+        encoder = hwmap.get(DcMotor.class, "encoder");
+        rightEncoder = hwmap.get(DcMotor.class, "spool");
+
+        leftDrive.setDirection(DcMotor.Direction.FORWARD);
+        rightDrive.setDirection(DcMotor.Direction.REVERSE);
+        centreDrive.setDirection(DcMotor.Direction.FORWARD);
+        encoder.setDirection(DcMotor.Direction.FORWARD);
+        rightEncoder.setDirection(DcMotor.Direction.FORWARD);
+
+        leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        centreDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        encoder.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightEncoder.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Set up the parameters with which we will use our IMU. Note that integration
         // algorithm here just reports accelerations to the logcat log; it doesn't actually
@@ -295,11 +354,13 @@ public class BBSRobot {
 
     public void turnLeft(double degrees, double speed){
 
-        encoderTurn(-degrees, speed);
+        leftEncoderTurn(degrees, speed);
     }
 
     public void turnRight(double degrees, double speed){
-        encoderTurn(degrees, speed);
+
+        rightEncoderTurn(degrees, speed);
+
     }
 
 
@@ -307,36 +368,33 @@ public class BBSRobot {
         return imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
     }
 
-    //TODO: we also need an encoder turn. needs testing
-    private void encoderTurn(double deg, double speed){
+
+    private void leftEncoderTurn(double deg, double speed){
+
+        int wheelbase = 20;
+
+        double circum = (wheelbase * 3.14) * 2;
+
+        double centimetersPerDegree = circum / 360;
+
+        double centimetres = deg * centimetersPerDegree;
 
         encoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         encoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         telemetry.addData("Enc",  "Setting %7d ", encoder.getCurrentPosition());
 
-        int wheelbase = 22;
+        int newTarget = encoder.getCurrentPosition() + (int)(centimetres * PULSES_PER_CENTIMETRE);
 
-        double circum = wheelbase * 3.14;
-
-        double centimeters = circum / Math.abs(deg);
-
-        int newTarget = encoder.getCurrentPosition() + (int)(centimeters * PULSES_PER_CENTIMETRE);
-
-        telemetry.addData("Turn",  "Running to %7d ", newTarget);
+        telemetry.addData("Path1",  "Running to %7d ", newTarget);
 
         telemetry.update();
 
         encoder.setTargetPosition(newTarget);
 
-        if(deg > 0) {
-            leftDrive.setPower(speed);
-            rightDrive.setPower(-speed);
-        }
-        else{
-            rightDrive.setPower(speed);
-            leftDrive.setPower(-speed);
-        }
+
+        leftDrive.setPower(speed);
+        rightDrive.setPower(-speed);
 
 
         while (encoder.getCurrentPosition() < newTarget && _mode.opModeIsActive()) {
@@ -345,6 +403,52 @@ public class BBSRobot {
 
             telemetry.update();
         }
+
+        leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        leftDrive.setPower(0.0);
+        rightDrive.setPower(0.0);
+    }
+
+    private void rightEncoderTurn(double deg, double speed){
+
+        int wheelbase = 20;
+
+        double circum = (wheelbase * 3.14) * 2;
+
+        double centimetersPerDegree = circum / 360;
+
+        double centimetres = deg * centimetersPerDegree;
+
+        encoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        encoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        telemetry.addData("Enc",  "Setting %7d ", encoder.getCurrentPosition());
+
+        int newTarget = encoder.getCurrentPosition() + (int)(centimetres * PULSES_PER_CENTIMETRE);
+
+        telemetry.addData("Path1",  "Running to %7d ", newTarget);
+
+        telemetry.update();
+
+        encoder.setTargetPosition(newTarget);
+
+
+        leftDrive.setPower(-speed);
+        rightDrive.setPower(speed);
+
+
+        while (Math.abs( encoder.getCurrentPosition()) < Math.abs( newTarget) && _mode.opModeIsActive()) {
+            // Display it for the driver.
+            telemetry.addData("Path1",  "Running to %7d ", newTarget);
+            telemetry.addData("Current",  "Running to %7d ", encoder.getCurrentPosition());
+
+            telemetry.update();
+        }
+
+        leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         leftDrive.setPower(0.0);
         rightDrive.setPower(0.0);

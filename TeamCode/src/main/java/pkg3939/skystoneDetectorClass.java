@@ -19,27 +19,26 @@ import java.util.List;
 
 
 public class skystoneDetectorClass  {
-    private static int valMid = -1;
-    private static int valLeft = -1;
-    private static int valRight = -1;
+    private int valMid = -1;
+    private int valLeft = -1;
+    private int valRight = -1;
 
-    private static int[] vals = {valMid, valLeft, valRight};
+    private int[] vals = {valMid, valLeft, valRight};
 
     private static float rectHeight = .6f/8f;
     private static float rectWidth = 1.5f/8f;
 
-    private static float offsetX = 0f/8f;//changing this moves the three rects and the three circles left or right, range : (-2, 2) not inclusive
-    private static float offsetY = 0f/8f;//changing this moves the three rects and circles up or down, range: (-4, 4) not inclusive
+    private float offsetX = 0f/8f;//changing this moves the three rects and the three circles left or right, range : (-2, 2) not inclusive
+    private float offsetY = 0f/8f;//changing this moves the three rects and circles up or down, range: (-4, 4) not inclusive
 
-    private static float[] midPos = {4f/8f+offsetX, 4f/8f+offsetY};//0 = col, 1 = row
-    private static float[] leftPos = {2f/8f+offsetX, 4f/8f+offsetY};
-    private static float[] rightPos = {6f/8f+offsetX, 4f/8f+offsetY};
+    private float[] midPos = {4f/8f+offsetX, 4f/8f+offsetY};//0 = col, 1 = row
+    private float[] leftPos = {2f/8f+offsetX, 4f/8f+offsetY};
+    private float[] rightPos = {6f/8f+offsetX, 4f/8f+offsetY};
     //moves all rectangles right or left by amount. units are in ratio to monitor
 
     private final int rows = 640;
     private final int cols = 480;
 
-    StageSwitchingPipeline detector;
 
     OpenCvCamera phoneCam;
 
@@ -53,78 +52,44 @@ public class skystoneDetectorClass  {
         this.offsetY = offsetY;
     }
 
+ //   StageSwitchingPipeline detector;
+//    public void setOffset(float x, float y) {
+//        offsetX = x;
+//        offsetY = y;
+//    }
+
     public void camSetup (HardwareMap hwMap) {
         int cameraMonitorViewId = hwMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hwMap.appContext.getPackageName());
         phoneCam = new OpenCvInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
         phoneCam.openCameraDevice();//open camera
-        phoneCam.setPipeline(detector);//different stages
+        phoneCam.setPipeline(new StageSwitchingPipeline());//different stages
         phoneCam.startStreaming(rows, cols, OpenCvCameraRotation.UPRIGHT);//display on RC
     }
 
-    public StageSwitchingPipeline getPipeline() {
-        return detector;
-    }
 
     public int[] getVals() {
+
         return vals;
     }
 
-    public int getRows() {
-        return rows;
+    public void updateVals() {
+        vals[0] = valMid;
+        vals[1] = valLeft;
+        vals[2] = valRight;
+
     }
 
-    public int getCols() {
-        return cols;
-    }
 
     //detection pipeline
-    public static class StageSwitchingPipeline extends OpenCvPipeline
+    public class StageSwitchingPipeline extends OpenCvPipeline
     {
-        public StageSwitchingPipeline() {}
-
-        public StageSwitchingPipeline(int k) {
-
-
-        }
         Mat yCbCrChan2Mat = new Mat();
         Mat thresholdMat = new Mat();
         Mat all = new Mat();
-        List<MatOfPoint> contoursList = new ArrayList<>();
-
-        enum Stage
-        {//color difference. greyscale
-            detection,//includes outlines
-            THRESHOLD,//b&w
-            RAW_IMAGE,//displays raw view
-        }
-
-        private Stage stageToRenderToViewport = Stage.detection;
-        private Stage[] stages = Stage.values();
-
-        @Override
-        public void onViewportTapped()
-        {
-            /*
-             * Note that this method is invoked from the UI thread
-             * so whatever we do here, we must do quickly.
-             */
-
-            int currentStageNum = stageToRenderToViewport.ordinal();
-
-            int nextStageNum = currentStageNum + 1;
-
-            if(nextStageNum >= stages.length)
-            {
-                nextStageNum = 0;
-            }
-
-            stageToRenderToViewport = stages[nextStageNum];
-        }
 
         @Override
         public Mat processFrame(Mat input)
         {
-            contoursList.clear();
 
             //color diff cb.
             //lower cb = more blue = skystone = white
@@ -135,8 +100,6 @@ public class skystoneDetectorClass  {
             //b&w
             Imgproc.threshold(yCbCrChan2Mat, thresholdMat, 102, 255, Imgproc.THRESH_BINARY_INV);
 
-            //outline/contour
-            Imgproc.findContours(thresholdMat, contoursList, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
             yCbCrChan2Mat.copyTo(all);//copies mat object
 
             updateVals(input);
@@ -180,28 +143,7 @@ public class skystoneDetectorClass  {
                             input.rows()*(rightPos[1]+rectHeight/2)),
                     new Scalar(0, 255, 0), 3);
 
-            switch (stageToRenderToViewport)
-            {
-                case THRESHOLD:
-                {
-                    return thresholdMat;
-                }
-
-                case detection:
-                {
-                    return all;
-                }
-
-                case RAW_IMAGE:
-                {
-                    return input;
-                }
-
-                default:
-                {
-                    return input;
-                }
-            }
+            return all;
         }
 
         public void updateVals(Mat input) {
@@ -214,6 +156,7 @@ public class skystoneDetectorClass  {
 
             double[] pixRight = thresholdMat.get((int)(input.rows()* rightPos[1]), (int)(input.cols()* rightPos[0]));//gets value at circle
             valRight = (int)pixRight[0];
+
         }
 
     }

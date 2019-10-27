@@ -43,6 +43,7 @@ public class TylerController extends OpMode {
     private boolean useDropper = true;
     private boolean useTouch = true;
     private boolean useRange = true;
+    private boolean useStrafe = false;
 
     //Movement State
     private int armState;

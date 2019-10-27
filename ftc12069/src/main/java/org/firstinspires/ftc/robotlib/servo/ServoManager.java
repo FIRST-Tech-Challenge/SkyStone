@@ -14,4 +14,8 @@ public class ServoManager {
             servo.setPosition(position);
         }
     }
+
+    public void reset() {
+        this.setPosition(0.0);
+    }
 }

@@ -19,6 +19,8 @@ public class MecanumTeleOp extends OpMode
     {
         robotHardware = new MecanumHardwareMap(this.hardwareMap);
         elapsedTime = new ElapsedTime();
+
+        robotHardware.servoManager.reset();
     }
 
     @Override

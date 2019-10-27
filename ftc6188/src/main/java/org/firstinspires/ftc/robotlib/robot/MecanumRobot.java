@@ -14,17 +14,17 @@ public class MecanumRobot
     private DcMotor driveFrontRight;
     private DcMotor driveRearRight;
     private DcMotor driveRearLeft;
+    DcMotor[] motorList = new DcMotor[]{driveFrontLeft, driveFrontRight, driveRearLeft, driveRearRight};
 
-    private Servo servoBuildClawLeft;
-    private Servo servoBuildClawRight;
+    private Servo servoClawLeft;
+    private Servo servoClawRight;
+
+    private static final double wheelRadius = 2; //inches
+    private static final double motorToWheelRatio = (1.0/2.0);
 
     public MecanumDrivetrain drivetrain;
     public LinkedServo platformServos;
 
-    public DcMotor[] motorList;
-
-    private static final double wheelRadius = 2; //inches
-    private static final double motorToWheelRatio = (1.0/2.0);
     public final double motorTicksPerIn;
 
     public MecanumRobot(HardwareMap hwMap, boolean teleOpMode)
@@ -49,15 +49,15 @@ public class MecanumRobot
         driveRearRight.setDirection(DcMotorSimple.Direction.FORWARD);
         driveRearLeft.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        servoBuildClawLeft = hwMap.get(Servo.class, "servoClawLeft");
-        servoBuildClawRight = hwMap.get(Servo.class, "servoClawRight");
+        servoClawLeft = hwMap.get(Servo.class, "servoClawLeft");
+        servoClawRight = hwMap.get(Servo.class, "servoClawRight");
 
-        servoBuildClawLeft.setDirection(Servo.Direction.FORWARD);
-        servoBuildClawRight.setDirection(Servo.Direction.REVERSE);
+        servoClawLeft.setDirection(Servo.Direction.FORWARD);
+        servoClawRight.setDirection(Servo.Direction.REVERSE);
 
-        motorList = new DcMotor[]{driveFrontLeft, driveFrontRight, driveRearLeft, driveRearRight};
         drivetrain = new MecanumDrivetrain(motorList, teleOpMode);
-        platformServos = new LinkedServo(servoBuildClawLeft, servoBuildClawRight);
-        motorTicksPerIn = (1.0/((wheelRadius*2*Math.PI) * motorToWheelRatio)) * drivetrain.motorList[0].getMotorType().getTicksPerRev();
+        platformServos = new LinkedServo(servoClawLeft, servoClawRight);
+
+        motorTicksPerIn = drivetrain.getTicksPerIn(wheelRadius, motorToWheelRatio);
     }
 }

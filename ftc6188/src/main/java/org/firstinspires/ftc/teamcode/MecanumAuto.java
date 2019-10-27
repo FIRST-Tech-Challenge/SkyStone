@@ -2,10 +2,8 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotlib.robot.MecanumRobot;
-import org.jetbrains.annotations.NotNull;
 
 @Autonomous(name="Mecanum Auto", group="Auto")
 public class MecanumAuto extends LinearOpMode
@@ -62,7 +60,7 @@ public class MecanumAuto extends LinearOpMode
     private void update()
     {
         telemetry.addData("Target Motor Ticks", robot.motorTicksPerIn);
-        telemetry.addData("Target Motor Rotations", robot.motorTicksPerIn/robot.drivetrain.getTicksPerUnit());
+        telemetry.addData("Target Motor Rotations", robot.motorTicksPerIn/robot.drivetrain.getTicksPerRev());
         telemetry.addData("WheelTarget FL", robot.drivetrain.motorList[0].getTargetPosition());
         telemetry.addData("WheelTarget FR", robot.drivetrain.motorList[1].getTargetPosition());
         telemetry.addData("WheelTarget RL", robot.drivetrain.motorList[2].getTargetPosition());

@@ -9,5 +9,6 @@ public interface Positionable
     boolean isPositioning();
     void finishPositioning();
     void position();
-    double getTicksPerUnit();
+    double getTicksPerRev();
+    double getTicksPerIn(double wheelRadius, double motorToWheelRatio);
 }

@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotlib.robot.MecanumRobot;
+import org.firstinspires.ftc.robotlib.state.Button;
 import org.firstinspires.ftc.robotlib.state.ToggleBoolean;
 
 @TeleOp(name="Mecanum TeleOp V-Test", group="Tele")
@@ -14,12 +15,16 @@ public class MecanumTeleOp extends OpMode
     private ElapsedTime elapsedTime;
 
     private ToggleBoolean driverTwoBrakes;
+    private Button servosUp;
+    private Button servosDown;
 
     @Override
     public void init()
     {
         robot = new MecanumRobot(this.hardwareMap, true);
         driverTwoBrakes = new ToggleBoolean();
+        servosUp = new Button();
+        servosDown = new Button();
         elapsedTime = new ElapsedTime();
     }
 
@@ -44,13 +49,21 @@ public class MecanumTeleOp extends OpMode
         double velocity = Math.hypot(gamepad1.right_stick_x, -gamepad1.right_stick_y);
 
         robot.drivetrain.halfPowerInput(gamepad1.right_stick_button);
+        servosUp.input(gamepad1.dpad_up);
+        servosDown.input(gamepad1.dpad_down);
 
         robot.drivetrain.setCourse(course);
         robot.drivetrain.setVelocity(velocity * (driverTwoBrakes.output() ? 0 : 1));
         robot.drivetrain.setRotation(-gamepad1.left_stick_x);
 
-        if (gamepad1.dpad_down) {robot.platformServos.setPosition(robot.platformServos.getPosition() + 10);}
-        else if (gamepad1.dpad_up) {robot.platformServos.setPosition(robot.platformServos.getPosition() - 10);}
+        if (servosUp.onPress())
+        {
+            robot.platformServos.setPosition(robot.platformServos.getPosition() + 10);
+        }
+        else if (servosDown.onPress())
+        {
+            robot.platformServos.setPosition(robot.platformServos.getPosition() - 10);
+        }
 
         //DRIVER TWO
         //arm movement

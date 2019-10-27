@@ -136,11 +136,17 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     }
 
     @Override
-    public double getTicksPerUnit()
+    public double getTicksPerRev()
     {
         double ticksPerUnit = 0;
         for (DcMotor motor : this.motorList) ticksPerUnit += motor.getMotorType().getTicksPerRev();
         ticksPerUnit /= this.motorList.length;
         return ticksPerUnit;
+    }
+
+    @Override
+    public double getTicksPerIn(double wheelRadius, double motorToWheelRatio)
+    {
+        return (getTicksPerRev()/(wheelRadius * motorToWheelRatio * 2 * Math.PI));
     }
 }

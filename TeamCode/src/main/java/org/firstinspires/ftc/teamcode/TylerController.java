@@ -28,7 +28,7 @@ import org.openftc.easyopencv.OpenCvPipeline;
 /**
  *
  */
-@TeleOp(name="Tyler TeleOp", group="AAA")
+@TeleOp(name="Tyler TeleOp", group="a")
 public class TylerController extends OpMode {
 
     //is sound playing?

@@ -5,7 +5,7 @@ import org.firstinspires.ftc.teamcode.autoOp.SafetyPatrol;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name="Turn", group="AAAAAAAAAAAAAAAAAAAAAA")
+@Autonomous(name="Turn", group="z")
 public class TylerOniChan extends OniChan {
     public TylerOniChan() {
         super(ChassisConfig.forTileRunner());

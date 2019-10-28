@@ -64,6 +64,7 @@ public class OdometerTest extends MecanumTeleop {
             double tw = relativeLocation.direction.getValue(Angle.AngleUnit.RADIANS, Angle.AngleOrientation.UNIT_CIRCLE);
             double deltaEnc = encoder.getCurrentPosition() - lastEnc;
             lastEnc += deltaEnc;
+            deltaEnc *= (2 * Math.PI) / 4096;
             return new WheelEquation(-Math.sin(tw), Math.cos(tw), xw*Math.sin(tw)-yw*Math.cos(tw), deltaEnc);
         }
     }

@@ -32,7 +32,11 @@ public class Subsystem {
         }
         return positions;
     }
-
+public void setZeroBehavior(DcMotor.ZeroPowerBehavior zeroPowerBehavior){
+    for (DcMotor motor : motors) {
+        motor.setZeroPowerBehavior(zeroPowerBehavior);
+    }
+}
     public void reverseMotors(DcMotor[] reverseMotors) {
         for (DcMotor reverseMotor : reverseMotors) {
             reverseMotor.setDirection(DcMotor.Direction.REVERSE);

@@ -15,17 +15,15 @@ import java.util.HashMap;
 @TeleOp(name = "TeleOpMode", group = "Teleop")
 public class TeleOpMode extends LinearOpMode {
     public void runOpMode() {
-        //Chassis chassis = new Chassis(hardwareMap);
+        Chassis chassis = new Chassis(hardwareMap);
         Arm arm = new Arm(hardwareMap);
-        arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        arm.reset();
         DcMotor armMotor = hardwareMap.dcMotor.get("arm");
         telemetry.addData("Init", "v:1.0");
         waitForStart();
 
         while (opModeIsActive()) {
             Controller controller = new Controller(gamepad1);
-            //runChassis(chassis, controller);
+            runChassis(chassis, controller);
             runArm(arm, controller);
             /*
             HashMap<String, Integer> chassisMotorPositions = chassis.getMotorPositions();

@@ -17,9 +17,18 @@ public class Arm extends Subsystem {
     public Arm(HardwareMap hardwareMap) {
         main = hardwareMap.dcMotor.get("arm");
         initMotors(new DcMotor[]{main});
+        initArm();
     }
-    public DcMotor getMain(){
+
+    public DcMotor getMain() {
         return main;
+    }
+
+    public void initArm() {
+        reset();
+        setZeroBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //This sets it's mode to use a PID loop and input is velocity instead of power
+        setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     public void setArm(Chassis chassis, int level) {
@@ -29,7 +38,8 @@ public class Arm extends Subsystem {
         armAngle = Math.acos((double) heightDif / (double) armLength);
         distance = Math.sqrt((armLength * armLength) - (heightDif * heightDif)) + robotLength;
     }
-    public void runArm(int power){
+
+    public void runArm(int power) {
 
     }
 

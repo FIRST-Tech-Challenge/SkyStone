@@ -18,10 +18,17 @@ public class Chassis extends Subsystem {
         backLeft = hardwareMap.dcMotor.get("back_left_drive");
         backRight = hardwareMap.dcMotor.get("back_right_drive");
         initMotors(new DcMotor[]{frontLeft, frontRight, backLeft, backRight});
+        initChassis();
+    }
+
+    public void initChassis(){
+        reset();
+        setZeroBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     //Methods
-    public void runChassis(final double targetAngle, final double turn, final double power) {
+    public void runChassis(double targetAngle, double turn, double power) {
         final double turnAngle = targetAngle - Math.PI / 4;
         frontLeft.setPower(power * Math.cos(turnAngle) + turn);
         frontRight.setPower(power * Math.sin(turnAngle) - turn);
@@ -29,5 +36,11 @@ public class Chassis extends Subsystem {
         backRight.setPower(power * Math.cos(turnAngle) - turn);
     }
 
-
+    public void runDistance(double distance, double targetAngle, double turn, double power){
+        final double turnAngle = targetAngle - Math.PI / 4;
+        frontLeft.setPower(power * Math.cos(turnAngle) + turn);
+        frontRight.setPower(power * Math.sin(turnAngle) - turn);
+        backLeft.setPower(power * Math.sin(turnAngle) + turn);
+        backRight.setPower(power * Math.cos(turnAngle) - turn);
+    }
 }

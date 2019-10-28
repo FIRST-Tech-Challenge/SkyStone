@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 //Beanis = Square
 //Hagrids = Slash
 
-@Autonomous(name="JustParkItMiddle", group="a")
+@Autonomous(name="Short Blue Beanis 1", group="a")
 public class TylerShortBeanis1 extends ShortBeanis1 {
     public TylerShortBeanis1() {
         super(ChassisConfig.forTileRunner());

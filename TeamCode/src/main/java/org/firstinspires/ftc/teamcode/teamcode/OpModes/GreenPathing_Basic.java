@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.teamcode.Hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.Intake;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.Outtake;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.Sensors;
-import org.firstinspires.ftc.teamcode.teamcode.Hardware.Vuforia;
+import org.firstinspires.ftc.teamcode.teamcode.Hardware.ZeroMap;
 
 @Autonomous(name ="Basic Blue Green Path", group="Auto Basic")
 public class GreenPathing_Basic extends LinearOpMode {
@@ -23,7 +23,7 @@ public class GreenPathing_Basic extends LinearOpMode {
     Sensors sensors = new Sensors();
     Intake intake = new Intake();
     Outtake outtake = new Outtake();
-    Vuforia vuf = new Vuforia();
+    ZeroMap vuf = new ZeroMap();
 
     double zeroOffset = 5.75;
     double kI;
@@ -52,7 +52,7 @@ public class GreenPathing_Basic extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        drive.initDriveTrain(this);
+        drive.initDriveTrain();
 
         if (robotWidth >= robotLength) {
             greatLength = robotWidth;

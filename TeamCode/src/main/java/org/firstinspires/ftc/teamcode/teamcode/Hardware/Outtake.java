@@ -9,10 +9,16 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class Outtake{
+
+    double vexDirection;
+    double axleCircumference = Math.PI * 2;
+
+    double servoDirection;
 
     private static final double MAXLEVEL = 14;
     private static final double DISTANCE_TO_BUILD_ZONE = 1; // what ever distance is from foundation to build zone
@@ -24,6 +30,14 @@ public class Outtake{
     public DcMotor liftRight;
     public DcMotor liftLeft;
 
+    int servoEncoder;
+
+    double curentServoVal;
+
+
+    boolean hookClosed;
+
+    LinearOpMode linOpMode;
     OpMode opMode;
     ElapsedTime time = new ElapsedTime();
 
@@ -49,6 +63,17 @@ public class Outtake{
     double blockHeight = 5.0; //Block Height In Inches
     private boolean toggled = false;
 
+    public double getAbsoluteVex() {
+        vexDirection += ((rightVex.getPower() +
+                leftVex.getPower()) / 2) * axleCircumference;
+        return vexDirection;
+    }
+
+    public double getACE (Servo servo, Servo servoACE, double servax) {
+        servoDirection += ((servo.getPosition() +
+                servoACE.getPosition()) / 2) * ((2 * Math.PI) * (servax / 2));
+        return servoDirection;
+    }
 
     public void initOuttake(OpMode opMode)
     {
@@ -84,10 +109,6 @@ public class Outtake{
         opMode.telemetry.addData("Success", "Outtake Initialized");
         opMode.telemetry.update();
 
-        if(!liftReset) {
-            resetOuttake();
-            liftReset = true;
-        }
     }
 
 
@@ -156,49 +177,52 @@ public class Outtake{
         resetOuttake();
     }
 
-    //moves lift up and down by increments
+    public void outTake_TeleOp() {
 
-    public void outTake_TeleOp()
-    {
+        while (linOpMode.opModeIsActive()) {
 
-        horizontalLiftTele();
+            getAbsoluteVex();
 
-        if (Math.abs(opMode.gamepad2.left_stick_y) > .05) {
-            liftRight.setPower(opMode.gamepad2.left_stick_y);
-            liftLeft.setPower(opMode.gamepad2.left_stick_y);
+            horizontalLiftTele();
+
+            if (Math.abs(opMode.gamepad2.left_stick_y) > .05) {
+                liftRight.setPower(opMode.gamepad2.left_stick_y);
+                liftLeft.setPower(opMode.gamepad2.left_stick_y);
+            }
+
+            //  Extend Outtake out, and activate servo to push block forward
+
+            else if (opMode.gamepad2.a && pushBlock.getPosition() == .5) {
+                openBasket();
+            } else if (opMode.gamepad2.a && pushBlock.getPosition() != .5) {
+                pushBlock.setPosition(.5);
+            } else if (opMode.gamepad2.b) {
+                resetOuttake();
+            } else {
+                liftRight.setPower(0);
+                liftLeft.setPower(0);
+            }
+            // lift proportional changing, for precision placement
+
+            if (opMode.gamepad2.x) {
+                if (hookClosed) {
+                    pushBlock.setPosition(1);
+                    hookClosed = !hookClosed;
+                } else if (!hookClosed) {
+                    pushBlock.setPosition(.5);
+                    hookClosed = !hookClosed;
+                }
+            }
+
+
+            if (opMode.gamepad2.dpad_left) {
+                k -= .1;
+            } else if (opMode.gamepad2.dpad_right) {
+                k += .1;
+            }
+
+            hookToggle();
         }
-
-        //  Extend Outtake out, and activate servo to push block forward
-
-        else if(opMode.gamepad2.a && pushBlock.getPosition() == .5)
-        {
-            openBasket();
-        }
-        else if(opMode.gamepad2.a && pushBlock.getPosition() != .5)
-        {
-            pushBlock.setPosition(.5);
-        }
-        else if(opMode.gamepad2.b)
-        {
-            resetOuttake();
-        }
-        else {
-            liftRight.setPower(0);
-            liftLeft.setPower(0);
-        }
-        // lift proportional changing, for precision placement
-
-
-        if(opMode.gamepad2.dpad_left)
-        {
-            k -= .1;
-        }
-        else if(opMode.gamepad2.dpad_right)
-        {
-            k += .1;
-        }
-
-        hookToggle();
 
     }
 
@@ -222,28 +246,17 @@ public class Outtake{
         rightVex.setPower(0);
         leftVex.setPower(0);
 
-        pushBlock.setPosition(1); //set position direction on angle - ask  trevor
-
-        // should push block out at that point
-
-        pushBlock.setPosition(.5); // back to open position
-
     }
 
-    //  resets all variables and sets lift back to initial position
     public void resetOuttake()
     {
+        pushBlock.setPosition(.5);
 
-
-        pushBlock.setPosition(.5); // moves servo to open position what ever angle that is
-
-        rightVex.setPower(-1);
-        leftVex.setPower(1);
+        rightVex.setPower(0.5);
+        leftVex.setPower(-0.5);
         time.reset();
-        while(2000 > time.milliseconds())
-        {
 
-        }
+        linOpMode.sleep(2000);
 
         rightVex.setPower(0);
         leftVex.setPower(0);
@@ -253,9 +266,8 @@ public class Outtake{
         liftLeft.setPower(-LIFTPOWER);
         liftRight.setPower(-LIFTPOWER);
 
-        while(averageLiftPosition() > 1 * encoderLevelCount && time.milliseconds() < 2000) // once lift registers to bottom then bottom will equal to true
-        {
-        }
+        while(averageLiftPosition() > 1 * encoderLevelCount && time.milliseconds() < 2000) { }
+
         opMode.telemetry.addData("Lift : ", averageLiftPosition());
         top = false;
         bottom = true;
@@ -265,11 +277,9 @@ public class Outtake{
             hookRight.setPosition(1);
             hookLeft.setPosition(1);
         }
-
     }
 
-    public void hookToggle()
-    {
+    public void hookToggle() {
         if(!toggled && opMode.gamepad2.y)
         {
             toggled = true;
@@ -291,8 +301,9 @@ public class Outtake{
 
     public void horizontalLiftTele() {
         if (Math.abs(opMode.gamepad2.right_stick_y) >=.075) {
-            rightVex.setPower(opMode.gamepad2.right_stick_y);
-            leftVex.setPower(-opMode.gamepad2.right_stick_y);
+            rightVex.setPower(opMode.gamepad2.right_stick_y / 2);
+            leftVex.setPower(-opMode.gamepad2.right_stick_y / 2);
+            getAbsoluteVex();
         }
         else {
             rightVex.setPower(0);

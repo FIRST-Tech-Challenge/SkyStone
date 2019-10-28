@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.Intake;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.Outtake;
+import org.firstinspires.ftc.teamcode.teamcode.Hardware.ZerOuttake;
+import org.firstinspires.ftc.teamcode.teamcode.Hardware.ZeroMap;
 
 @TeleOp(name="Arcade", group= "Tele Op")
 public class TeleOpMecanum extends OpMode {
@@ -14,6 +16,8 @@ public class TeleOpMecanum extends OpMode {
     DriveTrain drive = new DriveTrain();
     Intake intake = new Intake();
     Outtake outtake = new Outtake();
+    ZeroMap zero = new ZeroMap();
+    ZerOuttake zerO = new ZerOuttake();
 
     double leftStickY;
     double leftStickX;
@@ -22,6 +26,7 @@ public class TeleOpMecanum extends OpMode {
     double speed;
     double speedProp = 1.0;
     boolean pastX = false;
+    boolean pastZero = false;
 
     @Override
     public void init() {
@@ -42,7 +47,7 @@ public class TeleOpMecanum extends OpMode {
         drive.br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         intake.initIntake(this);
-        outtake.initOuttake(this);
+        zerO.initOuttake(this);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -117,8 +122,16 @@ public class TeleOpMecanum extends OpMode {
             drive.snowWhite();
         }
 
+        if (gamepad1.a) {
+            pastZero = zero.zeroBrowse();
+            telemetry.addData("Zero Status : ", pastZero);
+        }
+
         intake.compliantIntake_TeleOp();
-        outtake.outTake_TeleOp();
+        zerO.zeroTeleOut();
+
+        telemetry.addData("Left Encoder : ", zerO.liftLeft.getCurrentPosition());
+        telemetry.addData("Right Encoder : ", zerO.liftRight.getCurrentPosition());
 
         telemetry.addData("Halfing Speed : ", pastX);
         telemetry.addData("Encoded Acceleration : ", drive.getEncodedAccel());

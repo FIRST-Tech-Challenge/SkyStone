@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.teamcode.Hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.Intake;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.Outtake;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.Sensors;
-import org.firstinspires.ftc.teamcode.teamcode.Hardware.Vuforia;
+import org.firstinspires.ftc.teamcode.teamcode.Hardware.ZeroMap;
 
 @Autonomous(name = "MUSMAA", group= "Phase Infinity")
 public class MUSMAA extends LinearOpMode {
@@ -28,7 +28,7 @@ public class MUSMAA extends LinearOpMode {
     Sensors sensors = new Sensors();
     Intake intake = new Intake();
     Outtake outtake = new Outtake();
-    Vuforia vuf = new Vuforia();
+    ZeroMap vuf = new ZeroMap();
 
     public double[] miasmat (double[] dubSet) {
         if (vortex.seconds() >= 10) {

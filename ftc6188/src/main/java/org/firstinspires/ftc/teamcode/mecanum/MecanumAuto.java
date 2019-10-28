@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.mecanum;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -14,53 +14,37 @@ public class MecanumAuto extends LinearOpMode
     public void runOpMode() throws InterruptedException
     {
         robot = new MecanumRobot(this.hardwareMap, false);
+        robot.platformServos.setPosition(1); //init servos to up position
         update();
 
         waitForStart();
 
-        telemetry.addData("Step", "Forward 12 in");
-        robotMove(0, 1, 0, 12);
-        telemetry.addData("Step", "Backwards 12 in");
-        robotMove(180, 1, 0, 12);
-        telemetry.addData("Step", "Right 12 in");
-        robotMove(90, 1, 0, 12);
-        telemetry.addData("Step", "Left 12 in");
-        robotMove(270, 1, 0, 12);
-        telemetry.addData("Step", "Rotate 360");
-        robotMove(0, 0.75, 360, 0);
-
-        telemetry.addData("Step", "Test stop to counter end rotation");
-        robotMove(0, 0, 0, 0);
-
-        /*
         // Move commands
-        robotMove(0, 0.5, 0, 1);
-        // Latch Servos
-        robotMove(180, 0.75, 0 ,2);
-        // Unlatch Servos
-        robotMove(90, 0.75, 0, 1);
-        robotMove(0,0.75,0,2);
-        robotMove(270,0.75,0,3);
-        robotMove(180,0.75,0,2);
-        robotMove(90,0.75,0,48);
-         */
+        robotMove(0, 1, 0, 12);
+        robot.platformServos.setPosition(0);
+        robotMove(180, 1, 0 ,24);
+        robot.platformServos.setPosition(1);
+        robotMove(90, 1, 0, 12);
+        robotMove(0,1,0,24);
+        robotMove(270,1,0,36);
+        robotMove(180,1,0,24);
+        robotMove(90,1,0,48);
     }
 
+    // Handles the drivetrain functions to set the 4 essential variables for movement
     private void robotMove(double course, double velocity, double rotation, double distance)
     {
-        robot.drivetrain.setCourse(course * Math.PI/180);
-        robot.drivetrain.setVelocity(velocity);
+        robot.drivetrain.setCourse(course * Math.PI/180); //converts a degree input into radians
+        robot.drivetrain.setVelocity(velocity * 0.25); //quarters the velocity since a high velocity causes massive drift following a move command
         robot.drivetrain.setRotation(rotation);
-        robot.drivetrain.setTargetPosition(distance * robot.motorTicksPerIn);
+        robot.drivetrain.setTargetPosition(distance * robot.motorTicksPerIN); // adjust a distance in inches to the appropriate amount of motor ticks
         update();
-        //robot.drivetrain.position();
         sleep(1000);
     }
 
     private void update()
     {
-        telemetry.addData("Target Motor Ticks", robot.motorTicksPerIn);
-        telemetry.addData("Target Motor Rotations", robot.motorTicksPerIn/robot.drivetrain.getTicksPerRev());
+        telemetry.addData("Ticks Per IN", robot.motorTicksPerIN);
         telemetry.addData("WheelTarget FL", robot.drivetrain.motorList[0].getTargetPosition());
         telemetry.addData("WheelTarget FR", robot.drivetrain.motorList[1].getTargetPosition());
         telemetry.addData("WheelTarget RL", robot.drivetrain.motorList[2].getTargetPosition());
@@ -69,6 +53,8 @@ public class MecanumAuto extends LinearOpMode
         telemetry.addData("Velocity", robot.drivetrain.getVelocity());
         telemetry.addData("Rotation", robot.drivetrain.getRotation());
         telemetry.addData("Distance", robot.drivetrain.getTargetPosition());
+        telemetry.addData("Servo Pos", robot.platformServos.getActual());
+        telemetry.addData("Linked Pos", robot.platformServos.getPosition());
         telemetry.update();
     }
 }

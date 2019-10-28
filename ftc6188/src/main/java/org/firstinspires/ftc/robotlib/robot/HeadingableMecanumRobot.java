@@ -23,14 +23,14 @@ public class HeadingableMecanumRobot extends MecanumRobot
         super(hwMap, teleOpMode);
 
         imu = hwMap.get(BNO055IMUImpl.class, "imu");
-        BNO055IMU.Parameters paramaters = new BNO055IMU.Parameters();
-        paramaters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
-        paramaters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
 
-        paramaters.loggingEnabled = true;
-        paramaters.loggingTag = "IMU";
-        paramaters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-        imu.initialize(paramaters);
+        parameters.loggingEnabled = true;
+        parameters.loggingTag = "IMU";
+        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+        imu.initialize(parameters);
 
         PIDController pid = new PIDController(1.5, 0.05, 0);
         pid.setMaxErrorForIntegral(0.002);

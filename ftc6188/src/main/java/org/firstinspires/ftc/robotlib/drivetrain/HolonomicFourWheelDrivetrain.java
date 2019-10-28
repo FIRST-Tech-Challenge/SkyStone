@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.robotlib.drivetrain;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-
+/*
+Frame work for a mecanum/omni drive train, the implemented interfaces provide the additional variables and functions to make movement possible
+ */
 abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements Holonomic, Rotatable, Positionable
 {
-    private double rotation = 0;
-    private double course = 0;
-    private double targetPosition = 0;
+    private double rotation = 0; //the robots rotation about its own z axis
+    private double course = 0; //the angle the robot is going to move at relative to its heading
+    private double targetPosition = 0; //distance the robot has to move
 
     public double[] wheelTargetPositions = new double[4];
     private DcMotor.RunMode[] runModes = new DcMotor.RunMode[4];
@@ -44,6 +46,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
         }
     }
 
+    // passes the motor powers as calculated under the calculateWheelPower function back to the update motor powers function defined in Drivetrain
     protected double[] calculateMotorPowers()
     {
         double[] motorPowers = new double[this.motorList.length];
@@ -54,13 +57,16 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
         return motorPowers;
     }
 
+    // this is a multiplier since all mec wheels exert a certain amount of force on the robot being at an "angle"
     abstract double calculateWheelCoefficient(double course, double wheelAngle);
 
+    // returns the power for each wheel based on the wheel coefficient and multiplying that by the velocity with the rotation
     private double calculateWheelPower(double course, double velocity, double rotationPower, double wheelAngle)
     {
         return calculateWheelCoefficient(course, wheelAngle)*velocity+rotationPower;
     }
 
+    // takes in all the variables defined at the top of the class to set each motors target position then starts the movement process
     @Override
     public void setTargetPosition(double targetPosition)
     {
@@ -81,6 +87,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
         updateMotorPowers();
     }
 
+    // returns not the robots actual position on the field but the distance moved based on the current movement goal
     @Override
     public double getCurrentPosition()
     {
@@ -114,6 +121,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
         return false;
     }
 
+    // returns the motors to their prior state after resetting the encoders back to 0
     @Override
     public void finishPositioning()
     {
@@ -125,6 +133,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
         for (int motorIndex = 0; motorIndex < this.motorList.length; motorIndex++) this.motorList[motorIndex].setMode(runModes[motorIndex]);
     }
 
+    // executes the position functions
     @Override
     public void position()
     {
@@ -135,6 +144,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
         finishPositioning();
     }
 
+    // returns each motors ticks per full revolution
     @Override
     public double getTicksPerRev()
     {
@@ -144,6 +154,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
         return ticksPerUnit;
     }
 
+    // returns each motors ticks per in (its not actually ticks per in its really closer to ticks per ft for some reason this is fixed later in the mecanum robot class)
     @Override
     public double getTicksPerIn(double wheelRadius, double motorToWheelRatio)
     {

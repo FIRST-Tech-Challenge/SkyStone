@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.mecanum;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -47,6 +47,7 @@ public class MecanumTeleOp extends OpMode
         //DRIVER ONE
         double course = Math.atan2(-gamepad1.right_stick_y, gamepad1.right_stick_x) - Math.PI/2;
         double velocity = Math.hypot(gamepad1.right_stick_x, -gamepad1.right_stick_y);
+        // both convert sticks into vectors and take two different readings from the resulting vector
 
         robot.drivetrain.halfPowerInput(gamepad1.right_stick_button);
         servosUp.input(gamepad1.dpad_up);
@@ -58,15 +59,15 @@ public class MecanumTeleOp extends OpMode
 
         if (servosUp.onPress())
         {
-            robot.platformServos.setPosition(robot.platformServos.getPosition() + 10);
+            robot.platformServos.setPosition(1);
         }
         else if (servosDown.onPress())
         {
-            robot.platformServos.setPosition(robot.platformServos.getPosition() - 10);
+            robot.platformServos.setPosition(0);
         }
 
         //DRIVER TWO
-        //arm movement
+        //arm movement to be added later
         driverTwoBrakes.input(gamepad2.left_bumper); //freezes robot in place for stacking, prevents stick bumping from driver one
 
         //TELEMETRY

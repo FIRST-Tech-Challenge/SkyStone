@@ -47,7 +47,6 @@ public class Outtake{
     double prevEncoderPos = 0;
     private boolean toggled = false;
 
-
     public void initOuttake(OpMode opMode)
     {
 

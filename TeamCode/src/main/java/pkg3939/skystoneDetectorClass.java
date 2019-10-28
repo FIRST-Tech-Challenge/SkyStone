@@ -28,12 +28,10 @@ public class skystoneDetectorClass  {
     private static float rectHeight = .6f/8f;
     private static float rectWidth = 1.5f/8f;
 
-    private float offsetX = 0f/8f;//changing this moves the three rects and the three circles left or right, range : (-2, 2) not inclusive
-    private float offsetY = 0f/8f;//changing this moves the three rects and circles up or down, range: (-4, 4) not inclusive
 
-    private float[] midPos = {4f/8f+offsetX, 4f/8f+offsetY};//0 = col, 1 = row
-    private float[] leftPos = {2f/8f+offsetX, 4f/8f+offsetY};
-    private float[] rightPos = {6f/8f+offsetX, 4f/8f+offsetY};
+    private float[] midPos = {4f/8f, 4f/8f};//0 = col, 1 = row
+    private float[] leftPos = {2f/8f, 4f/8f};
+    private float[] rightPos = {6f/8f, 4f/8f};
     //moves all rectangles right or left by amount. units are in ratio to monitor
 
     private final int rows = 640;
@@ -47,16 +45,24 @@ public class skystoneDetectorClass  {
 
     }
 
-    public skystoneDetectorClass(float offsetX, float offsetY) {
-        this.offsetX = offsetX;
-        this.offsetY = offsetY;
-    }
-
- //   StageSwitchingPipeline detector;
-//    public void setOffset(float x, float y) {
-//        offsetX = x;
-//        offsetY = y;
+//    public skystoneDetectorClass(float offsetX, float offsetY) {
+//        midPos[0] += offsetX;
+//        midPos[1] += offsetY;
+//        leftPos[0] += offsetX;
+//        leftPos[1] += offsetY;
+//        rightPos[0] += offsetX;
+//        rightPos[1] += offsetY;
 //    }
+
+//   StageSwitchingPipeline detector;
+    public void setOffset(float offsetX, float offsetY) {
+        midPos[0] += offsetX;
+        midPos[1] += offsetY;
+        leftPos[0] += offsetX;
+        leftPos[1] += offsetY;
+        rightPos[0] += offsetX;
+        rightPos[1] += offsetY;
+   }
 
     public void camSetup (HardwareMap hwMap) {
         int cameraMonitorViewId = hwMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hwMap.appContext.getPackageName());

@@ -25,13 +25,14 @@ import pkg3939.skystoneDetectorClass;
 public class opencvInstanceTest extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
-    skystoneDetectorClass detector = new skystoneDetectorClass(1f/8f, 3f/8f);
+    skystoneDetectorClass detector = new skystoneDetectorClass(
+    );
 
     int[] vals;
 
     @Override
     public void runOpMode() throws InterruptedException {
-//        detector.setOffset(1f/8f, 3f/8f);
+        detector.setOffset(-1f/8f, 3f/8f);
         detector.camSetup(hardwareMap);
 
         waitForStart();

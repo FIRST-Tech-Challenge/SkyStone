@@ -218,7 +218,6 @@ public class ZeroMap {
         }
 
         return zeroLock;
-
     }
 
     public void zeroOut() {

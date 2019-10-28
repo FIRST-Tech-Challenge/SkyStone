@@ -206,7 +206,7 @@ public class DriveSystem {
     // TODO
     public void turnAbsolute(double degrees, double maxPower) {
         // Since it is vertical, use pitch instead of heading
-        turn(imuSystem.getPitch() + degrees, maxPower);
+        turn(imuSystem.getHeading() + degrees, maxPower);
     }
 
     /**
@@ -216,7 +216,7 @@ public class DriveSystem {
      */
     public boolean turn(double degrees, double maxPower) {
         // Since controller hub is vertical, use pitch instead of heading
-        double heading = imuSystem.getPitch();
+        double heading = imuSystem.getHeading();
         // if controller hub is flat: double heading = imuSystem.getHeading();
         Log.d(TAG,"Current Heading: " + heading);
         if(mTargetHeading == 0) {

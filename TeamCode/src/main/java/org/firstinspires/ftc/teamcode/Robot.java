@@ -210,22 +210,22 @@ public class Robot {
     }
 
     void bringArmDown(LinearOpMode opmode) throws InterruptedException {
-        if (gripperPos == gripperPosition.REST) {
+        if (gripperPos == gripperPosition.REST) { // we only bring the arm down if the arm is resting
+            // we rotate the arm 180 + ANGLE_OF_GRIPPER_WHEN_GRABBING degrees
             moveGripperRotate(CORE_HEX_TICKS_PER_REV * (180 + this.ANGLE_OF_GRIPPER_WHEN_GRABBING) / 360, opmode);
             Thread.sleep(500);
+            // we rotate the gripper so it is parallel to the ground
             rotateGripper(90 - this.ANGLE_OF_GRIPPER_WHEN_GRABBING);
-        } else {
-            return;
         }
     }
 
     void foldArmBack(LinearOpMode opmode) throws InterruptedException {
-        if (gripperPos == gripperPosition.ACTIVE) {
+        if (gripperPos == gripperPosition.ACTIVE) { // we only do something if the arm is active
+            // we rotate the arm 180 + ANGLE_OF_GRIPPER_WHEN_GRABBING degrees
             moveGripperRotate(-CORE_HEX_TICKS_PER_REV * (180 + this.ANGLE_OF_GRIPPER_WHEN_GRABBING) / 360, opmode);
             Thread.sleep(500);
+            // we rotate the gripper so it is perpendicular to the ground
             rotateGripper(this.ANGLE_OF_GRIPPER_WHEN_GRABBING - 90);
-        } else {
-            return;
         }
     }
 
@@ -235,5 +235,22 @@ public class Robot {
 
     void releaseBlock() {
         grabServo.setPosition(0);
+    }
+
+    void pickUpBlock(LinearOpMode opmode) throws InterruptedException {
+        this.bringArmDown(opmode); // bring arm down
+        this.gripBlock(); // grab the block
+    }
+
+    void dropBlock(LinearOpMode opmode, boolean foldBack) throws InterruptedException {
+        this.releaseBlock(); // let go of the block
+        if (foldBack) {
+            this.foldArmBack(opmode); // fold the arm back
+        }
+    }
+
+    int detectSkystone(LinearOpMode opmode) {
+        WebcamTest detector = new WebcamTest();
+        return detector.detectSkystonePosition(opmode);
     }
 }

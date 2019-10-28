@@ -8,15 +8,25 @@ public class MM_LoadingZoneBlue extends LinearOpMode {
 
     Robot robot = new Robot();
     enum Skystone {LEFT, CENTER, RIGHT}
-    Skystone skystonePos = Skystone.LEFT;
+    Skystone skystonePos = Skystone.CENTER; // default is center if the camera doesn't work
     double distanceToBuildZone = 0.0; // distance to skybridge from close edge of block
     double speed = 0.4;
 
     @Override
     public void runOpMode() throws InterruptedException {
         robot.init(hardwareMap);
-        // Detect skystone with camera
 
+        // Detect skystone with camera
+        int position = robot.detectSkystone(this);
+        if (position == -1) {
+            skystonePos = Skystone.LEFT;
+        } else if (position == 0) {
+            skystonePos = Skystone.CENTER;
+        } else {
+            skystonePos = Skystone.RIGHT;
+        }
+
+        // wait for start
         waitForStart();
 
         // Drive to quarry

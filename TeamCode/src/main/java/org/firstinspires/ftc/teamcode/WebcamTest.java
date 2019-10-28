@@ -105,22 +105,25 @@ public class WebcamTest extends LinearOpMode {
                                 left_vals[i] = recognition.getLeft();
                                 i++; // Bug Fix - Counter Increment
                             }
-                            String position;
+                            int position;
                             position = getSkystonePosition(label_vals, left_vals);
                             switch (position) {
-                                case "left":
-                                    goLeft();
+                                case -1:
+                                    // Display the results
+                                    telemetry.addData("Skystone Position", "LEFT");
+                                    telemetry.update();
                                     break;
-                                case "center":
-                                    goCenter();
+                                case 0:
+                                    // Display the results
+                                    telemetry.addData("Skystone Position", "CENTER");
+                                    telemetry.update();
                                     break;
-                                case "right":
-                                    goRight();
+                                case 1:
+                                    // Display the results
+                                    telemetry.addData("Skystone Position", "RIGHT");
+                                    telemetry.update();
                                     break;
                             }
-                            // Display the results
-                            telemetry.addData("Skystone Position", position.toUpperCase());
-                            telemetry.update();
                         }
                     }
                 }
@@ -150,9 +153,9 @@ public class WebcamTest extends LinearOpMode {
         }
     }
 
-    private String getSkystonePosition(String[] labels, float[] vals) {
+    public int getSkystonePosition(String[] labels, float[] vals) { // 1=right, 0=center, -1=left
         float skystoneVal = 0;
-        String pos = "";
+        int pos = 0; // if something goes wrong, default is center
 
         for (int i = 0; i < 3; i++) {
             String object = labels[i];
@@ -168,11 +171,11 @@ public class WebcamTest extends LinearOpMode {
         float val3 = vals[2];
         /* Find the placement of the skystone once values have been sorted */
         if (skystoneVal == val1) { // Left side
-            pos = "left";
+            pos = -1;
         } else if (skystoneVal == val2) { // Center
-            pos = "center";
+            pos = 0;
         } else if (skystoneVal == val3) { // Right
-            pos = "right";
+            pos = 1;
         }
         return pos;
     }
@@ -218,4 +221,71 @@ public class WebcamTest extends LinearOpMode {
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
     }
+
+    public int detectSkystonePosition(LinearOpMode opmode) {
+        // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
+        // first.
+        initVuforia();
+
+        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
+            initTfod();
+        } else {
+            return 0; // default is center
+        }
+
+        /*
+         * Activate TensorFlow Object Detection before we wait for the start command.
+         * Do it here so that the Camera Stream window will have the TensorFlow annotations visible.
+         */
+        if (tfod != null) {
+            tfod.activate();
+            // getUpdatedRecognitions() will return null if no new information is available since
+            // the last time that call was made.
+            List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+            if (updatedRecognitions != null) {
+                if (updatedRecognitions.size() == NUM_BLOCKS) { // Camera detected a certain number of blocks
+                    //telemetry.addData("# Object Detected", updatedRecognitions.size());
+                    // step through the list of recognitions and display boundary info.
+                    int i = 0;
+                    for (Recognition recognition : updatedRecognitions) {
+                        /*
+                        telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
+                        telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
+                                recognition.getLeft(), recognition.getTop());
+                        telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
+                                recognition.getRight(), recognition.getBottom());
+                                */
+                        label_vals[i] = recognition.getLabel();
+                        left_vals[i] = recognition.getLeft();
+                        i++; // Bug Fix - Counter Increment
+                    }
+                    int position;
+                    position = getSkystonePosition(label_vals, left_vals);
+                    switch (position) {
+                        case -1:
+                            // Display the results
+                            opmode.telemetry.addData("Skystone Position", "LEFT");
+                            opmode.telemetry.update();
+                            break;
+                        case 0:
+                            // Display the results
+                            opmode.telemetry.addData("Skystone Position", "CENTER");
+                            opmode.telemetry.update();
+                            break;
+                        case 1:
+                            // Display the results
+                            opmode.telemetry.addData("Skystone Position", "RIGHT");
+                            opmode.telemetry.update();
+                            break;
+                    }
+                    tfod.shutdown();
+                    return position;
+                }
+            }
+        }
+        return 0; // if something goes wrong default is center
+    }
 }
+
+
+

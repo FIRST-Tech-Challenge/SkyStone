@@ -58,6 +58,7 @@ public class TylerController extends OpMode {
     private boolean useRange = true;
     private boolean useStoneDetector = true;
     private boolean useOpenCvDisplay = true;
+    private boolean useStrafe = false;
 
     //Movement State
     private int armState;

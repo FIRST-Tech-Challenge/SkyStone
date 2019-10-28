@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.teamcode.OpModes;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.Intake;
@@ -14,6 +15,7 @@ public class TeleOpMecanum extends OpMode {
     DriveTrain drive = new DriveTrain();
     Intake intake = new Intake();
     Outtake outtake = new Outtake();
+    ElapsedTime time = new ElapsedTime();
 
     double direction;
     double velocity;
@@ -47,11 +49,9 @@ public class TeleOpMecanum extends OpMode {
         intake.initIntake(this);
         outtake.initOuttake(this);
 
-        telemetry.addData("Status", "Initialized");
-        telemetry.update();
 
         drive.runtime.reset();
-
+        time.reset();
     }
 
     //Main Loop
@@ -92,7 +92,8 @@ public class TeleOpMecanum extends OpMode {
 
         if(gamepad1.x)
         {
-            while(gamepad1.x){ }
+            time.reset();
+            while(time.milliseconds() < 50){ }
             if(speedProp == 1)
             {
                 speedProp = .5;
@@ -116,6 +117,10 @@ public class TeleOpMecanum extends OpMode {
         }
 
         intake.Intake_TeleOp();
+
         outtake.outTake_TeleOp();
+        outtake.Output_Telemtry();
+
+        telemetry.update();
     }
 }

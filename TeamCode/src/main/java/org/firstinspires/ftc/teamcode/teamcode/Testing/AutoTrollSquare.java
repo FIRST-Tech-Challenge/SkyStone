@@ -28,7 +28,7 @@ public class AutoTrollSquare extends LinearOpMode {
         //drive.RunAsFloat();
         waitForStart();
 
-        intake.autoIntake(10, true);
+        intake.autoIntake(10);
         drive.encoderMove(this, 24, 5, .5);
         sleep(1000);
         drive.strafeMove(this, 24, 5, -1);

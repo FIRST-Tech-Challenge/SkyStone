@@ -63,8 +63,7 @@ public class Intake {
             rightSide.setPower(PICKUP);
             leftSide.setPower(PICKUP);
 
-            opMode.telemetry.addData("Active", "Intake Running");
-            opMode.telemetry.update();
+
         }else if (opMode.gamepad2.left_bumper) {
             rightSide.setPower(-PICKUP);
             leftSide.setPower(-PICKUP);

@@ -119,7 +119,7 @@ public class GreenPathing_Basic extends LinearOpMode {
 
             //outtake.outTake_Auto(drive);
 
-            outtake.hookAuto(drive);
+            outtake.hookAuto(this);
 
             runtime.reset();
 

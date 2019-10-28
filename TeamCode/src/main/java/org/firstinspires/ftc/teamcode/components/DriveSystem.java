@@ -205,7 +205,8 @@ public class DriveSystem {
      */
     // TODO
     public void turnAbsolute(double degrees, double maxPower) {
-        turn(imuSystem.getHeading() + degrees, maxPower);
+        // Since it is vertical, use pitch instead of heading
+        turn(imuSystem.getPitch() + degrees, maxPower);
     }
 
     /**
@@ -214,7 +215,9 @@ public class DriveSystem {
      * @param maxPower The maximum power of the motors
      */
     public boolean turn(double degrees, double maxPower) {
-        double heading = imuSystem.getHeading();
+        // Since controller hub is vertical, use pitch instead of heading
+        double heading = imuSystem.getPitch();
+        // if controller hub is flat: double heading = imuSystem.getHeading();
         Log.d(TAG,"Current Heading: " + heading);
         if(mTargetHeading == 0) {
             mTargetHeading = (heading + degrees) % 360;
@@ -232,7 +235,6 @@ public class DriveSystem {
     /**
      * Perform one cycle of closed loop heading control.
      * @param speed     Desired speed of turn
-     * @param PCoeff    Proportional Gain coefficient
      */
     public boolean onHeading(double speed, double heading) {
         double steer;
@@ -263,7 +265,7 @@ public class DriveSystem {
 
     /**
      * getError determines the error between the target angle and the robot's current heading
-     * @param   targetAngle  Desired angle (relative to global reference established at last Gyro Reset).
+     * @param   heading  Desired angle (relative to global reference established at last Gyro Reset).
      * @return  error angle: Degrees in the range +/- 180. Centered on the robot's frame of reference
      *          +ve error means the robot should turn LEFT (CCW) to reduce error.
      */
@@ -283,7 +285,6 @@ public class DriveSystem {
     /**
      * returns desired steering force.  +/- 1 range.  +ve = steer left
      * @param error   Error angle in robot relative degrees
-     * @param PCoeff  Proportional Gain Coefficient
      * @return
      */
     // TODO

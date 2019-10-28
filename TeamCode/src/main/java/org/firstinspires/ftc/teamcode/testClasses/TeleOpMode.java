@@ -37,9 +37,9 @@ public class TeleOpMode extends LinearOpMode {
     }
 
     public void runArm(Arm arm, Controller controller) {
-        if(controller.getA())
+        if (controller.getA())
             arm.reset();
-        if(controller.getY())
+        if (controller.getY())
             arm.getMain().setPower(.1);
         else
             arm.getMain().setPower(0);

@@ -75,7 +75,7 @@ public class Controller extends Gamepad {
     }
 
     //method is used to convert linear map from contorller input to power into a cubic map
-    public double limitStick(double stickInput){
+    public double limitStick(double stickInput) {
         return stickInput * stickInput * stickInput;
     }
 

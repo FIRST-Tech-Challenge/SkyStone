@@ -25,18 +25,20 @@ public class Subsystem {
         }
     }
 
-    public HashMap<String, Integer> getMotorPositions(){
-        HashMap<String, Integer> positions= new HashMap<>();
-        for(DcMotor motor : motors){
+    public HashMap<String, Integer> getMotorPositions() {
+        HashMap<String, Integer> positions = new HashMap<>();
+        for (DcMotor motor : motors) {
             positions.put(motor.getDeviceName(), motor.getCurrentPosition());
         }
         return positions;
     }
-public void setZeroBehavior(DcMotor.ZeroPowerBehavior zeroPowerBehavior){
-    for (DcMotor motor : motors) {
-        motor.setZeroPowerBehavior(zeroPowerBehavior);
+
+    public void setZeroBehavior(DcMotor.ZeroPowerBehavior zeroPowerBehavior) {
+        for (DcMotor motor : motors) {
+            motor.setZeroPowerBehavior(zeroPowerBehavior);
+        }
     }
-}
+
     public void reverseMotors(DcMotor[] reverseMotors) {
         for (DcMotor reverseMotor : reverseMotors) {
             reverseMotor.setDirection(DcMotor.Direction.REVERSE);

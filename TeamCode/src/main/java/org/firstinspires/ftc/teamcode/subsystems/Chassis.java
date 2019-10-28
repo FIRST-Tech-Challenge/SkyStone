@@ -21,7 +21,7 @@ public class Chassis extends Subsystem {
         initChassis();
     }
 
-    public void initChassis(){
+    public void initChassis() {
         reset();
         setZeroBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -36,7 +36,7 @@ public class Chassis extends Subsystem {
         backRight.setPower(power * Math.cos(turnAngle) - turn);
     }
 
-    public void runDistance(double distance, double targetAngle, double turn, double power){
+    public void runDistance(double distance, double targetAngle, double turn, double power) {
         final double turnAngle = targetAngle - Math.PI / 4;
         frontLeft.setPower(power * Math.cos(turnAngle) + turn);
         frontRight.setPower(power * Math.sin(turnAngle) - turn);

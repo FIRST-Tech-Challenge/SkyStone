@@ -6,10 +6,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
-import android.os.Handler;
+/*import android.os.Handler;
 import android.os.SystemClock;
 import android.util.Log;
-import android.view.ViewParent;
+import android.view.ViewParent;*/
 
 /*
 
@@ -64,20 +64,30 @@ public class JoystickTest extends OpMode {
         pwr = y; //this can be tweaked for exponential power increase
 
 
-        frontright.setPower(Range.clip(pwr - x+z, -1, 1));
-        backleft.setPower(Range.clip(pwr + x-z, -1, 1));
-        frontleft.setPower(Range.clip(pwr + x-z, -1, 1));
-        backright.setPower(Range.clip(pwr - x+z, -1, 1));
+        // frontright.setPower(Range.clip(pwr - x+z, -1, 1));
+        // backleft.setPower(Range.clip(pwr + x-z, -1, 1));
+        // frontleft.setPower(Range.clip(pwr + x-z, -1, 1));
+        // backright.setPower(Range.clip(pwr - x+z, -1, 1));
 
-       if(gamepad1.a){ frontright.setPower(1); } else{ frontright.setPower(0); }
-       if(gamepad1.b){ frontleft.setPower(1); } else{ frontleft.setPower(0); }
-       if(gamepad1.x){ backright.setPower(1); } else{ backright.setPower(0); }
-       if(gamepad1.y){ backleft.setPower(1); } else{ backleft.setPower(0); }
+//       if(gamepad1.a){ frontright.setPower(1); } else{ frontright.setPower(0); }
+//       if(gamepad1.b){ frontleft.setPower(1); } else{ frontleft.setPower(0); }
+//       if(gamepad1.x){ backright.setPower(1); } else{ backright.setPower(0); }
+//       if(gamepad1.y){ backleft.setPower(1); } else{ backleft.setPower(0); }
+//
+//       if(gamepad1.dpad_up){ frontright.setPower(-1); } else{ frontright.setPower(0); }
+//       if(gamepad1.dpad_left){ frontleft.setPower(-1); } else{ frontleft.setPower(0); }
+//       if(gamepad1.dpad_down){ backright.setPower(-1); } else{ backright.setPower(0); }
+//       if(gamepad1.dpad_right){ backleft.setPower(-1); } else{ backleft.setPower(0); }
 
-       if(gamepad1.dpad_up){ frontright.setPower(-1); } else{ frontright.setPower(0); }
-       if(gamepad1.dpad_left){ frontleft.setPower(-1); } else{ frontleft.setPower(0); }
-       if(gamepad1.dpad_down){ backright.setPower(-1); } else{ backright.setPower(0); }
-       if(gamepad1.dpad_right){ backleft.setPower(-1); } else{ backleft.setPower(0); }
+        double fl = gamepad1.left_stick_y - gamepad1.left_stick_x + -gamepad1.right_stick_y;
+        double fr = gamepad1.left_stick_y + gamepad1.left_stick_x - -gamepad1.right_stick_y;
+        double bl = gamepad1.left_stick_y + gamepad1.left_stick_x + -gamepad1.right_stick_y;
+        double br = gamepad1.left_stick_y - gamepad1.left_stick_x - -gamepad1.right_stick_y;
+
+        frontleft.setPower(fl);
+        frontright.setPower(fr);
+        backleft.setPower(bl);
+        backright.setPower(br);
 
     }
 

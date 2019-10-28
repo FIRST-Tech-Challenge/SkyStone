@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.autoOp;
 
-        import org.firstinspires.ftc.teamcode.auto.ChassisStandard;
-        import org.firstinspires.ftc.teamcode.auto.ChassisConfig;
+import org.firstinspires.ftc.teamcode.auto.ChassisStandard;
+import org.firstinspires.ftc.teamcode.auto.ChassisConfig;
 
 /**
  * This just runs from the position closest to the crater, into the crater.

@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.components;
 
+import android.util.Log;
+
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -23,14 +25,17 @@ public class DriveSystem {
     public int counter = 0;
 
     public static final String TAG = "DriveSystem";
+    public static final double P_TURN_COEFF = 0.05;     // Larger is more responsive, but also less stable
+    public static final double HEADING_THRESHOLD = 1 ;      // As tight as we can make it with an integer gyro
 
     public EnumMap<MotorNames, DcMotor> motors;
 
     public IMUSystem imuSystem;
 
     private int mTargetTicks;
+    private double mTargetHeading;
 
-    private final int TICKS_IN_MM = 69;
+    private final double TICKS_IN_MM = 2.716535433;
 
     /**
      * Handles the data for the abstract creation of a drive system with four wheels
@@ -56,7 +61,7 @@ public class DriveSystem {
 
         motors.forEach((name, motor) -> {
             motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             switch(name) {
                 case FRONTLEFT:
                 case BACKLEFT:
@@ -134,20 +139,30 @@ public class DriveSystem {
                 } else {
                     motor.setTargetPosition(mTargetTicks);
                 }
+                motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                motor.setPower(maxPower);
             });
-            setRunMode(DcMotor.RunMode.RUN_TO_POSITION);
-            setMotorPower(maxPower);
         }
 
         for (DcMotor motor : motors.values()) {
             int offset = Math.abs(motor.getCurrentPosition() - mTargetTicks);
             if(offset <= 0){
+
+                // Shut down motors
                 setMotorPower(0);
+
+                // Reset motors to default run mode
+                setRunMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+                // Reset target
                 mTargetTicks = 0;
+
+                // Motor has reached target
                 return true;
             }
         }
 
+        // Motor has not reached target
         return false;
 
     }
@@ -180,7 +195,7 @@ public class DriveSystem {
      * @return
      */
     public int millimetersToTicks(int millimeters) {
-        return (int) millimeters * TICKS_IN_MM;
+        return (int) Math.round(millimeters * TICKS_IN_MM);
     }
 
     /**
@@ -188,32 +203,93 @@ public class DriveSystem {
      * @param degrees The degrees to turn the robot by
      * @param maxPower The maximum power of the motors
      */
+    // TODO
     public void turnAbsolute(double degrees, double maxPower) {
+        // Since it is vertical, use pitch instead of heading
         turn(imuSystem.getHeading() + degrees, maxPower);
     }
 
     /**
-     * Turns the robot by a given amount of degrees
+     * Turns the robot by a given number of degrees
      * @param degrees The degrees to turn the robot by
      * @param maxPower The maximum power of the motors
      */
-    public void turn(double degrees, double maxPower) {
-        double targetHeading = degrees + -imuSystem.getHeading();
-        targetHeading = targetHeading % 360;
+    public boolean turn(double degrees, double maxPower) {
+        // Since controller hub is vertical, use pitch instead of heading
+        double heading = imuSystem.getHeading();
+        // if controller hub is flat: double heading = imuSystem.getHeading();
+        Log.d(TAG,"Current Heading: " + heading);
+        if(mTargetHeading == 0) {
+            mTargetHeading = (heading + degrees) % 360;
+            Log.d(TAG, "Setting Heading -- Target: " + mTargetHeading);
 
-        if (targetHeading < 0) {
-            targetHeading = targetHeading + 360;
+            Log.d(TAG, "Degrees: " + degrees);
+        }
+        double difference = mTargetHeading - heading;
+        Log.d(TAG,"Difference: " + difference);
+
+        return onHeading(maxPower, heading);
+
+    }
+
+    /**
+     * Perform one cycle of closed loop heading control.
+     * @param speed     Desired speed of turn
+     */
+    public boolean onHeading(double speed, double heading) {
+        double steer;
+        double leftSpeed;
+        double rightSpeed;
+
+        // determine turn power based on +/- error
+        double error = getError(heading);
+
+        if (Math.abs(error) <= HEADING_THRESHOLD) {
+            mTargetHeading = 0;
+            setMotorPower(0);
+            return true;
         }
 
-        double heading = -imuSystem.getHeading();
-        double difference = computeDegreesDiff(targetHeading, heading);
-        while (Math.abs(difference) > 1.0) {
-            difference = computeDegreesDiff(targetHeading, heading);
-            double power = getTurnPower(difference, maxPower);
-            tankDrive(-power * Math.signum(difference), power * Math.signum(difference));
-            heading = -imuSystem.getHeading();
+        steer = getSteer(error);
+        leftSpeed  = speed * steer;
+        rightSpeed   = -leftSpeed;
+
+
+        Log.d(TAG,"Left Speed:" + leftSpeed);
+        Log.d(TAG, "Right Speed:" + rightSpeed);
+        // Send desired speeds to motors.
+        tankDrive(leftSpeed, rightSpeed);
+
+        return false;
+    }
+
+    /**
+     * getError determines the error between the target angle and the robot's current heading
+     * @param   heading  Desired angle (relative to global reference established at last Gyro Reset).
+     * @return  error angle: Degrees in the range +/- 180. Centered on the robot's frame of reference
+     *          +ve error means the robot should turn LEFT (CCW) to reduce error.
+     */
+    public double getError(double heading) {
+        // calculate error in -179 to +180 range  (
+        double robotError = mTargetHeading - heading;
+        Log.d(TAG,"Robot Error: " + robotError);
+        while (robotError > 180) {
+            robotError -= 360;
         }
-        this.setMotorPower(0);
+        while (robotError <= -180) {
+            robotError += 360;
+        }
+        return robotError;
+    }
+
+    /**
+     * returns desired steering force.  +/- 1 range.  +ve = steer left
+     * @param error   Error angle in robot relative degrees
+     * @return
+     */
+    // TODO
+    public double getSteer(double error) {
+        return Range.clip(error *  P_TURN_COEFF, -1, 1);
     }
 
     /**
@@ -242,8 +318,8 @@ public class DriveSystem {
      * @return motor power from 0 - 0.8
      */
     private double getTurnPower(double degrees, double maxPower) {
-        double power = Math.abs(degrees / 100.0);
-        return Range.clip(power + 0.065, 0.0, maxPower);
+        // double power = Math.abs(degrees / 100.0);
+        return Range.clip(degrees / 100.0, -maxPower, maxPower);
     }
 
     private double computeDegreesDiff(double targetHeading, double heading) {

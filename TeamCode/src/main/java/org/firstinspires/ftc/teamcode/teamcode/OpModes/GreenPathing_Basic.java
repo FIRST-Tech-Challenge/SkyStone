@@ -23,7 +23,7 @@ public class GreenPathing_Basic extends LinearOpMode {
     Sensors sensors = new Sensors();
     Intake intake = new Intake();
     Outtake outtake = new Outtake();
-    ZeroMap vuf = new ZeroMap();
+    ZeroMap zero = new ZeroMap();
 
     double zeroOffset = 5.75;
     double kI;
@@ -42,7 +42,7 @@ public class GreenPathing_Basic extends LinearOpMode {
 
     double focusLine = 48 - robotLength;
     double clutchBuffer = 3.5;
-    double thetaBit = (Math.atan(12/focusLine)) / 2;
+    double thetaBit = (Math.atan(12 / focusLine)) / 2;
     double trueHypo = (focusLine - clutchBuffer) / Math.cos(thetaBit);
     double falseHypo = focusLine - clutchBuffer;
 
@@ -52,7 +52,11 @@ public class GreenPathing_Basic extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        drive.initDriveTrain();
+        zero.zeroInit(this);
+        while (opModeIsActive()) { zero.zeroBrowse(this); }
+        zero.zeroOut();
+
+        /*drive.initDriveTrain();
 
         if (robotWidth >= robotLength) {
             greatLength = robotWidth;
@@ -119,7 +123,7 @@ public class GreenPathing_Basic extends LinearOpMode {
 
             //outtake.outTake_Auto(drive);
 
-            outtake.hookAuto(drive);
+            //outtake.hookAuto(drive);
 
             runtime.reset();
 
@@ -176,5 +180,7 @@ public class GreenPathing_Basic extends LinearOpMode {
             telemetry.addData("Path", "Complete");
             telemetry.update();
         }
+        */
     }
+}
 

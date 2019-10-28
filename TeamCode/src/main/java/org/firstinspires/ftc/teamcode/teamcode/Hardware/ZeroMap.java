@@ -39,6 +39,9 @@ public class ZeroMap {
     private static final float mmPerInch        = 25.4f;
     private static final float mmTargetHeight   = (6) * mmPerInch;
 
+    VuforiaTrackables targetsSkyStone;
+    List<VuforiaTrackable> skyTrack;
+
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
@@ -50,7 +53,7 @@ public class ZeroMap {
     private OpenGLMatrix lastLocation = null;
     private VuforiaLocalizer vuforia = null;
 
-    public boolean zeroLock = false;
+    public int zeroLock;
 
     WebcamName webcamName = null;
 
@@ -63,8 +66,6 @@ public class ZeroMap {
     final float verticalDisp = 8.0f * mmPerInch;
     final float leftDisp     = 0;
 
-    private LinearOpMode opMode;
-
     private double[] zeroPoint = new double[5];
 
     private void setClimate(VuforiaTrackable track, float dx, float dy,
@@ -75,7 +76,9 @@ public class ZeroMap {
                         DEGREES, firstAng, secondAng, thirdAng)));
     }
 
-    public void zeroInit() {
+    public void zeroInit(LinearOpMode opMode) {
+
+        //-6, -4, -1
 
         zeroPoint[3] = 0;
 
@@ -92,12 +95,12 @@ public class ZeroMap {
 
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
 
-        VuforiaTrackables targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
+        targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
 
         VuforiaTrackable stoneTarget = targetsSkyStone.get(0);
         stoneTarget.setName("Stone Target");
 
-        List<VuforiaTrackable> skyTrack = new ArrayList<VuforiaTrackable>();
+        skyTrack = new ArrayList<VuforiaTrackable>();
         skyTrack.addAll(targetsSkyStone);
 
         setClimate(stoneTarget, 0, 0, stoneZ, 90, 0, -90);
@@ -125,7 +128,7 @@ public class ZeroMap {
         targetsSkyStone.activate();
 
         if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
-            initTfod();
+            initTfod(opMode);
         }
 
         if (tfod != null) {
@@ -133,7 +136,7 @@ public class ZeroMap {
         }
     }
 
-    public boolean zeroBrowse() {
+    public int zeroBrowse(LinearOpMode opMode) {
         while (!opMode.isStopRequested()) {
 
             targetVisible = false;
@@ -150,8 +153,6 @@ public class ZeroMap {
                     break;
                 }
             }
-
-            if (opMode.opModeIsActive()) {
                     if (tfod != null) {
                         List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                         if (updatedRecognitions != null) {
@@ -175,7 +176,6 @@ public class ZeroMap {
                             opMode.telemetry.update();
                         }
                     }
-            }
 
             if (targetVisible) {
                 VectorF translation = lastLocation.getTranslation();
@@ -202,26 +202,34 @@ public class ZeroMap {
                 zeroPoint[3] = 0;
             }
 
-            if (tfod != null && targetVisible) {
-                opMode.telemetry.addData("Target :", "ZeroLocked");
-                zeroLock = true;
+            List<Recognition> recon = tfod.getUpdatedRecognitions();
+            if (recon != null && targetVisible) {
+                zeroLock = 4;
             }
 
-            else { zeroLock = false; }
+            else if (recon != null) {
+                zeroLock = 3;
+            }
+
+            else { zeroLock = 1; }
             opMode.telemetry.update();
-        }
 
-        targetsSkyStone.deactivate();
-
-        if (tfod != null) {
-            tfod.shutdown();
+            opMode.telemetry.addData("Target :", zeroLock);
         }
 
         return zeroLock;
 
     }
 
-    private void initTfod() {
+    public void zeroOut() {
+        targetsSkyStone.deactivate();
+
+        if (tfod != null) {
+            tfod.shutdown();
+        }
+    }
+
+    private void initTfod(LinearOpMode opMode) {
         int tfodMonitorViewId = opMode.hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", opMode.hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);

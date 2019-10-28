@@ -46,6 +46,7 @@ public class TeleOpMecanum extends OpMode {
         drive.bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         drive.br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        //zero.zeroInit(this);
         intake.initIntake(this);
         zerO.initOuttake(this);
 
@@ -123,8 +124,8 @@ public class TeleOpMecanum extends OpMode {
         }
 
         if (gamepad1.a) {
-            pastZero = zero.zeroBrowse();
-            telemetry.addData("Zero Status : ", pastZero);
+            //pastZero = zero.zeroBrowse();
+            //telemetry.addData("Zero Status : ", pastZero);
         }
 
         intake.compliantIntake_TeleOp();

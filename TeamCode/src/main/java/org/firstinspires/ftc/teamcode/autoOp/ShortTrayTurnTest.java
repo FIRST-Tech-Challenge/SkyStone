@@ -1,14 +1,15 @@
 package org.firstinspires.ftc.teamcode.autoOp;
 
-import org.firstinspires.ftc.teamcode.auto.ChassisStandard;
 import org.firstinspires.ftc.teamcode.auto.ChassisConfig;
+import org.firstinspires.ftc.teamcode.auto.ChassisStandard;
 
 /**
  * This just runs from the position closest to the crater, into the crater.
  */
-public abstract class SafetyPatrol extends ChassisStandard {
+public abstract class ShortTrayTurnTest extends ChassisStandard {
 
-    public SafetyPatrol(ChassisConfig config) {
+
+    public ShortTrayTurnTest(ChassisConfig config) {
         super(config);
     }
 
@@ -20,7 +21,11 @@ public abstract class SafetyPatrol extends ChassisStandard {
 
         if (madeTheRun == false) {
 
-            encoderDrive(36);
+            encoderDrive(-8);
+            turnRight(50);
+            encoderDrive(10);
+
+            //raiseCrab();
 
             madeTheRun = true;
         }

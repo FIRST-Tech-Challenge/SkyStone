@@ -42,11 +42,11 @@ public class Intake {
     }
 
     //is to be called in OpMode
-    public void autoIntake (double runTime, boolean block)
+    public void autoIntake (double runTime)
     {
         time.reset();
 
-        while(time.seconds() < runTime && block){
+        while(time.seconds() < runTime){
             rightSide.setPower(PICKUP);
             leftSide.setPower(PICKUP);
         }

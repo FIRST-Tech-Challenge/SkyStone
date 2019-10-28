@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.DriveTrain;
+import org.firstinspires.ftc.teamcode.teamcode.Hardware.Intake;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.Sensors;
 
 @TeleOp(name="TrollMac", group= "Troll")
@@ -14,6 +15,7 @@ public class TeleOpTrollTest extends OpMode {
 
     DriveTrain drive = new DriveTrain();
     Sensors sensors = new Sensors();
+    Intake intake = new Intake();
 
 
     //Instantiate Variables
@@ -98,6 +100,7 @@ public class TeleOpTrollTest extends OpMode {
         drive.bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         drive.br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
+        intake.initIntake(this);
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 

@@ -87,7 +87,7 @@ class SSRobot {
     fun pinch(gp: Gamepad) {
         this.claw?.position = when {
             gp.a -> 0.1
-            else -> 0.25
+            else -> 0.25 //can be explicit
         }
     }
 }

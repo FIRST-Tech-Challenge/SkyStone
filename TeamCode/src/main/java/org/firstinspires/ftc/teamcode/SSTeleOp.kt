@@ -18,7 +18,7 @@ class SSTeleOp : OpMode() {
     var tooHigh = true
     var tooLow = true
     var linSlidePow: Float = 0.00.toFloat()
-    var rot = 0
+    var curPos = 0
     val max = 1780
 
 
@@ -28,7 +28,7 @@ class SSTeleOp : OpMode() {
         //initializes all parts
         robot.init(hardwareMap, true)
         robot.linSlideY?.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-        rot = robot.linSlideY!!.currentPosition
+        curPos = robot.linSlideY!!.currentPosition
 
     }
 
@@ -47,23 +47,23 @@ class SSTeleOp : OpMode() {
         robot.rightDrive?.power = rightPower.toDouble() / slowDown
 
         linSlidePow = when {
-            (gamepad1.left_trigger != zero) and !tooLow -> -1 * gamepad1.left_trigger
-            (gamepad1.right_trigger != zero) and !tooHigh -> gamepad1.right_trigger
+            (gamepad1.left_trigger != zero) and !tooLow -> -1 * gamepad1.left_trigger // Goes Down because of Negative
+            (gamepad1.right_trigger != zero) and !tooHigh -> gamepad1.right_trigger // Goes Up
             else -> zero
         }
 
         robot.pinch(gamepad1)
         robot.liftSlideY(linSlidePow)
-        rot = robot.linSlideY!!.currentPosition
+        curPos = robot.linSlideY!!.currentPosition
 
-        tooHigh = rot >= max
-        tooLow = rot < 0
+        tooHigh = curPos >= max
+        tooLow = curPos < 0
 
         if (tooHigh or tooLow) telemetry.addData("Linear Slide ", "MAX/MIN HEIGHT REACHED")
 
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower)
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower)
-        telemetry.addData("Linear Slide ", "Position: (%.2f)", rot.toFloat())
+        telemetry.addData("Linear Slide ", "Position: (%.2f)", curPos.toFloat())
     }
 
     override fun stop() {

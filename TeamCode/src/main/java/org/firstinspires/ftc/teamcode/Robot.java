@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -19,6 +20,7 @@ public class Robot {
     public DcMotor frontRight;
     public DcMotor waffleMover;
     public DcMotor gripperRotate;
+    public DcMotor liftMotor;
 
     // Servos
     private Servo gripperRotateServo1;
@@ -60,6 +62,7 @@ public class Robot {
         this.frontRight = hwMap.dcMotor.get("frontRight");
         this.waffleMover = hwMap.dcMotor.get("waffleMover");
         this.gripperRotate = hwMap.dcMotor.get("gripperRotate");
+        this.liftMotor = hwMap.dcMotor.get("liftMotor");
 
         // Drive Motor Direction
         this.rearLeft.setDirection(DcMotor.Direction.REVERSE);
@@ -68,6 +71,7 @@ public class Robot {
         this.frontRight.setDirection(DcMotor.Direction.FORWARD);
         this.waffleMover.setDirection(DcMotor.Direction.FORWARD);
         this.gripperRotate.setDirection(DcMotor.Direction.FORWARD); // positive makes arm go forward
+        this.liftMotor.setDirection(DcMotor.Direction.FORWARD);
 
         // set motor powers to 0 so they don't cause problems
         this.stopDrive();
@@ -178,12 +182,12 @@ public class Robot {
 
         Thread.sleep(1000);
 
-        if (floatOrHold == 'f') {
+        if (floatOrHold == 'f' || this.wafflePosition == 1) {
             this.waffleMover.setPower(0);
+            Thread.sleep(500); // buffer time to let the motor completely stop
         }
-        Thread.sleep(500); // buffer time to let the motor to completely stop
     }
-    void moveGripperRotate(int targetPosition, LinearOpMode opmode) {
+    private void moveGripperRotate(int targetPosition, OpMode opmode) {
         // reset encoders
         gripperRotate.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
@@ -195,7 +199,7 @@ public class Robot {
         gripperRotate.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         // wait for gripperRotate to finish
-        while (gripperRotate.isBusy() && opmode.opModeIsActive()) {
+        while (gripperRotate.isBusy()) {
             opmode.telemetry.addData("Gripper", gripperRotate.getCurrentPosition());
             opmode.telemetry.update();
         }
@@ -204,28 +208,30 @@ public class Robot {
         gripperRotate.setPower(0);
     }
 
-    void rotateGripper(double angle) {
+    private void rotateGripper(double angle) {
         this.gripperRotateServo1.setPosition(angle / 360);
         this.gripperRotateServo2.setPosition(angle / 360);
     }
 
-    void bringArmDown(LinearOpMode opmode) throws InterruptedException {
+    void bringArmDown(OpMode opmode) throws InterruptedException {
         if (gripperPos == gripperPosition.REST) { // we only bring the arm down if the arm is resting
             // we rotate the arm 180 + ANGLE_OF_GRIPPER_WHEN_GRABBING degrees
             moveGripperRotate(CORE_HEX_TICKS_PER_REV * (180 + this.ANGLE_OF_GRIPPER_WHEN_GRABBING) / 360, opmode);
             Thread.sleep(500);
             // we rotate the gripper so it is parallel to the ground
             rotateGripper(90 - this.ANGLE_OF_GRIPPER_WHEN_GRABBING);
+            gripperPos = gripperPosition.ACTIVE;
         }
     }
 
-    void foldArmBack(LinearOpMode opmode) throws InterruptedException {
+    void foldArmBack(OpMode opmode) throws InterruptedException {
         if (gripperPos == gripperPosition.ACTIVE) { // we only do something if the arm is active
             // we rotate the arm 180 + ANGLE_OF_GRIPPER_WHEN_GRABBING degrees
             moveGripperRotate(-CORE_HEX_TICKS_PER_REV * (180 + this.ANGLE_OF_GRIPPER_WHEN_GRABBING) / 360, opmode);
             Thread.sleep(500);
             // we rotate the gripper so it is perpendicular to the ground
             rotateGripper(this.ANGLE_OF_GRIPPER_WHEN_GRABBING - 90);
+            gripperPos = gripperPosition.REST;
         }
     }
 
@@ -233,22 +239,29 @@ public class Robot {
         grabServo.setPosition(1);
     }
 
-    void releaseBlock() {
+    void releaseBlock(OpMode opmode, boolean foldBack) throws InterruptedException {
         grabServo.setPosition(0);
-    }
-
-    void pickUpBlock(LinearOpMode opmode) throws InterruptedException {
-        this.bringArmDown(opmode); // bring arm down
-        this.gripBlock(); // grab the block
-    }
-
-    void dropBlock(LinearOpMode opmode, boolean foldBack) throws InterruptedException {
-        this.releaseBlock(); // let go of the block
         if (foldBack) {
             this.foldArmBack(opmode); // fold the arm back
         }
     }
 
+    void pickUpBlock(OpMode opmode) throws InterruptedException {
+        this.bringArmDown(opmode); // bring arm down
+        this.gripBlock(); // grab the block
+    }
+
+    void gripperUp() {
+        this.liftMotor.setPower(0.5);
+    }
+
+    void gripperDown() {
+        this.liftMotor.setPower(-0.5);
+    }
+
+    void stopLift() {
+        this.liftMotor.setPower(0);
+    }
     int detectSkystone(LinearOpMode opmode) {
         WebcamTest detector = new WebcamTest();
         return detector.detectSkystonePosition(opmode);

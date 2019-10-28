@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 @TeleOp (name = "Tank Drive")
 public class DriveTank extends OpMode {
 
-    Robot robot = new Robot();
+    private Robot robot = new Robot();
 
     @Override
     public void init() {

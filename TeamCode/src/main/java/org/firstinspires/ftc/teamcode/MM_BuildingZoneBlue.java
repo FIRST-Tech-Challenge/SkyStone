@@ -6,10 +6,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 @Autonomous(name = "Building Zone Blue")
 public class MM_BuildingZoneBlue extends LinearOpMode {
 
-    Robot robot = new Robot();
-    enum ParkingPosition {FAR, CLOSE}// far or close to center
-    ParkingPosition parkingPosition = ParkingPosition.CLOSE;
-    double speed = 0.4;
+    private Robot robot = new Robot();
+    private enum ParkingPosition {FAR, CLOSE}// far or close to center
+    private ParkingPosition parkingPosition = ParkingPosition.CLOSE;
+    private double speed = 0.4;
 
     @Override
     public void runOpMode() throws InterruptedException {

@@ -6,11 +6,11 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 @Autonomous(name = "Loading Zone Blue")
 public class MM_LoadingZoneBlue extends LinearOpMode {
 
-    Robot robot = new Robot();
+    private Robot robot = new Robot();
     enum Skystone {LEFT, CENTER, RIGHT}
-    Skystone skystonePos = Skystone.CENTER; // default is center if the camera doesn't work
-    double distanceToBuildZone = 0.0; // distance to skybridge from close edge of block
-    double speed = 0.4;
+    private Skystone skystonePos = Skystone.CENTER; // default is center if the camera doesn't work
+    private double distanceToBuildZone = 0.0; // distance to skybridge from close edge of block
+    private double speed = 0.4;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -48,15 +48,18 @@ public class MM_LoadingZoneBlue extends LinearOpMode {
 
         }
         // Pick up skystone
-
+        robot.pickUpBlock(this);
+        Thread.sleep(500);
         // back up
         robot.driveForwardDistance(6, -speed, this);
         // turn towards skybridge
         robot.turnRight(-speed, 1475);
         // drive to skybridge
-        robot.driveForwardDistance(distanceToBuildZone + 6, speed, this);
+        robot.driveForwardDistance(distanceToBuildZone + 12, speed, this);
+        // release block
+        robot.releaseBlock(this, true);
         // park
-        robot.driveForwardDistance(6, -speed, this);
+        robot.driveForwardDistance(12, -speed, this);
 
 
 

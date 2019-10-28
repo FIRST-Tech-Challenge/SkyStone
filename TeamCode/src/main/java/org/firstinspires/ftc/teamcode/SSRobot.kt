@@ -41,7 +41,7 @@ class SSRobot {
         rightDrive?.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
     }
 
-    fun init(ahwdMap: HardwareMap, encoder: Boolean) = if (encoder) {
+    fun init(ahwdMap: HardwareMap, encoder: Boolean) = if (encoder) { //used when enabling encoders on motors
             //hardware mapping motors, servos, and sensors
             hwdMap = ahwdMap
             leftDrive = ahwdMap.dcMotor.get("leftDrive")

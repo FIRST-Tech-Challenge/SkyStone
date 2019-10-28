@@ -46,9 +46,9 @@ class SSTeleOp : OpMode() {
         robot.leftDrive?.power = leftPower.toDouble() / slowDown
         robot.rightDrive?.power = rightPower.toDouble() / slowDown
 
-        linSlidePow = when {
-            (gamepad1.left_trigger != zero) and !tooLow -> -1 * gamepad1.left_trigger // Goes Down because of Negative
-            (gamepad1.right_trigger != zero) and !tooHigh -> gamepad1.right_trigger // Goes Up
+        linSlidePow = when { //when left trigger pressed, if too low is false, slide can move; same for right trigger and too high
+            (gamepad1.left_trigger != zero) and !tooLow -> -1 * gamepad1.left_trigger //goes down b/c negative
+            (gamepad1.right_trigger != zero) and !tooHigh -> gamepad1.right_trigger //goes up
             else -> zero
         }
 

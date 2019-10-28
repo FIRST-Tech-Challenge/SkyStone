@@ -382,7 +382,13 @@ public abstract class ChassisStandard extends OpMode {
             telemetry.update();
         }
 
-        sleep(2000);
+        // turn off motor.
+        motorBackLeft.setPower(0);
+        motorBackRight.setPower(0);
+        if (config.getUseFourWheelDrive()) {
+            motorFrontLeft.setPower(0);
+            motorFrontRight.setPower(0);
+        }
     }
 
     /**
@@ -420,6 +426,7 @@ public abstract class ChassisStandard extends OpMode {
 
             float oldAngle = currentAngle;
             nudgeRight();
+
             currentAngle = getGyroscopeAngle();
 
             float justMoved = currentAngle - oldAngle;
@@ -427,6 +434,16 @@ public abstract class ChassisStandard extends OpMode {
             telemetry.addData("turnRight2", "current = %.0f, destination = %.0f, moved=%.0f, need=%.0f", currentAngle, destinationAngle, justMoved, stillNeed);
             telemetry.update();
         }
+
+        //turn off the motor
+        motorBackLeft.setPower(0);
+        motorBackRight.setPower(0);
+        if (config.getUseFourWheelDrive()) {
+            motorFrontLeft.setPower(0);
+            motorFrontRight.setPower(0);
+
+        }
+
     }
 
     // This nudges over about 2 degrees.
@@ -439,14 +456,7 @@ public abstract class ChassisStandard extends OpMode {
             motorFrontLeft.setPower(power);
             motorFrontRight.setPower(-power);
         }
-        sleep(2);
-
-        motorBackLeft.setPower(0);
-        motorBackRight.setPower(0);
-        if (config.getUseFourWheelDrive()) {
-            motorFrontLeft.setPower(0);
-            motorFrontRight.setPower(0);
-        }
+        sleep(5);
     }
 
     // This nudges over about 2 degrees.
@@ -459,14 +469,7 @@ public abstract class ChassisStandard extends OpMode {
             motorFrontLeft.setPower(-power);
             motorFrontRight.setPower(power);
         }
-        sleep(2);
-
-        motorBackLeft.setPower(0);
-        motorBackRight.setPower(0);
-        if (config.getUseFourWheelDrive()) {
-            motorFrontLeft.setPower(0);
-            motorFrontRight.setPower(0);
-        }
+        sleep(5);
     }
 
 

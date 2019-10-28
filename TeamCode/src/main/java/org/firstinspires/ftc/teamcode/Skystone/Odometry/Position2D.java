@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 
 import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
 import org.firstinspires.ftc.teamcode.Skystone.MathFunctions;
+import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
 import org.firstinspires.ftc.teamcode.Skystone.Robot;
 
 import static org.firstinspires.ftc.teamcode.Skystone.MathFunctions.angleWrap;
@@ -33,13 +34,8 @@ class NewThread extends AsyncTask<Void, Boolean, Boolean> {
     @Override
     protected Boolean doInBackground(Void... params) {
         while(robot.getLinearOpMode().opModeIsActive()) {
-            //o.constantVelocityOdometry();
             o.circularOdometry();
-//            robot.robotPos.x = o.xPosGlobal;
-//            robot.robotPos.y = o.yPosGlobal;
-//            robot.anglePos = o.angleGlobal;
-            robot.getRobotPos().x = o.worldX;
-            robot.getRobotPos().y = o.worldY;
+            robot.setRobotPos(new Point(o.worldX, o.worldY));
             robot.setAnglePos(o.worldAngle);
         }
         return true;

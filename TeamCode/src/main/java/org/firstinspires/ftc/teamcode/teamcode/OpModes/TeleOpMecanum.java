@@ -3,12 +3,11 @@ package org.firstinspires.ftc.teamcode.teamcode.OpModes;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.Intake;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.Outtake;
-import org.firstinspires.ftc.teamcode.teamcode.Hardware.ZerOuttake;
-import org.firstinspires.ftc.teamcode.teamcode.Hardware.ZeroMap;
 
 @TeleOp(name="Arcade", group= "Tele Op")
 public class TeleOpMecanum extends OpMode {
@@ -16,17 +15,18 @@ public class TeleOpMecanum extends OpMode {
     DriveTrain drive = new DriveTrain();
     Intake intake = new Intake();
     Outtake outtake = new Outtake();
-    ZeroMap zero = new ZeroMap();
-    ZerOuttake zerO = new ZerOuttake();
+    ElapsedTime time = new ElapsedTime();
 
-    double leftStickY;
-    double leftStickX;
     double direction;
     double velocity;
     double speed;
     double speedProp = 1.0;
     boolean pastX = false;
-    boolean pastZero = false;
+
+    //  Game pad Control Stick Variables
+    double right_stick_x;
+    double left_stick_x;
+    double left_stick_y;
 
     @Override
     public void init() {
@@ -46,39 +46,40 @@ public class TeleOpMecanum extends OpMode {
         drive.bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         drive.br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        //zero.zeroInit(this);
         intake.initIntake(this);
-        zerO.initOuttake(this);
+        outtake.initOuttake(this);
 
-        telemetry.addData("Status", "Initialized");
-        telemetry.update();
 
         drive.runtime.reset();
-
+        time.reset();
     }
 
     //Main Loop
     @Override
     public void loop() {
 
-        speed = gamepad1.right_stick_x;
+        //  Set Join Sticks for Arcade Drive
 
-        telemetry.addData("Status", "Run Time: " + drive.runtime.toString());
-        telemetry.addData("Motor Position", "Motor Rotation", +speed);
-
-        if (Math.abs(gamepad1.left_stick_y) > .05) {
-            leftStickY = gamepad1.left_stick_y;
+        if (Math.abs(left_stick_y) > .05) {
+            left_stick_y = gamepad1.left_stick_y;
         } else {
-            leftStickY = 0;
+            left_stick_y = 0;
         }
 
-        if (Math.abs(gamepad1.left_stick_x) > .05) {
-            leftStickX = gamepad1.left_stick_x;
+        if (Math.abs(left_stick_x) > .05) {
+            left_stick_x = gamepad1.left_stick_x;
         } else {
-            leftStickX = 0;
+            left_stick_x = 0;
         }
 
-        if (gamepad1.x != pastX) {
+        if(Math.abs((right_stick_x)) > .05)
+        {
+            right_stick_x = gamepad1.right_stick_x;
+        } else {
+            right_stick_x = 0;
+        }
+
+        /*if (gamepad1.x != pastX) {
             pastX = gamepad1.x;
             if (gamepad1.x) {
                 if (speedProp == 1) {
@@ -87,63 +88,39 @@ public class TeleOpMecanum extends OpMode {
                     speedProp = 1;
                 }
             }
+        }*/
+
+        if(gamepad1.x)
+        {
+            time.reset();
+            while(time.milliseconds() < 50){ }
+            if(speedProp == 1)
+            {
+                speedProp = .5;
+            }
+            else {
+                speedProp = 1;
+            }
         }
 
-        telemetry.addData("Velocity : ", velocity);
+        if (Math.abs(left_stick_x) > 0.075 ||
+                Math.abs(left_stick_y) > 0.075 ||
+                Math.abs(gamepad1.right_stick_x) > 0.075) {
 
-        telemetry.addData("Direction : ", direction);
-
-        telemetry.addData("Speed : ", speed);
-
-        velocity = gamepad1.left_stick_y;
-
-        direction = gamepad1.left_stick_x;
-
-        speed = gamepad1.right_stick_x;
-
-        if (Math.abs(gamepad1.right_stick_x) < 0.075 ) {
-            speed = 0;
+            drive.fl.setPower(speedProp * ((left_stick_y - left_stick_x) - right_stick_x));
+            drive.fr.setPower(speedProp * ((left_stick_y + left_stick_x) + right_stick_x));
+            drive.bl.setPower(speedProp * (left_stick_y + left_stick_x) - right_stick_x);
+            drive.br.setPower(speedProp * (left_stick_y - left_stick_x) + right_stick_x);
         }
-
-        if (Math.abs(gamepad1.left_stick_x) > 0.075 ||
-                Math.abs(gamepad1.left_stick_y) >
-                        0.075 || Math.abs(gamepad1.right_stick_x)
-                > 0.075) {
-            drive.fl.setPower((velocity - direction) - speed);
-            drive.fr.setPower((velocity + direction) + speed);
-            drive.bl.setPower((velocity + direction) - speed);
-            drive.br.setPower((velocity - direction) + speed);
-        }
-
-        else if (gamepad1.b) {
-            drive.RDXVector(45);
-        }
-
         else {
             drive.snowWhite();
         }
 
-        if (gamepad1.a) {
-            //pastZero = zero.zeroBrowse();
-            //telemetry.addData("Zero Status : ", pastZero);
-        }
+        intake.Intake_TeleOp();
 
-        intake.compliantIntake_TeleOp();
-        zerO.zeroTeleOut();
+        outtake.outTake_TeleOp();
+        outtake.Output_Telemtry();
 
-        telemetry.addData("Left Encoder : ", zerO.liftLeft.getCurrentPosition());
-        telemetry.addData("Right Encoder : ", zerO.liftRight.getCurrentPosition());
-
-        telemetry.addData("Halfing Speed : ", pastX);
-        telemetry.addData("Encoded Acceleration : ", drive.getEncodedAccel());
-
-        telemetry.addData("Get Holon : ",
-                "FR :" + drive.getHolon(drive.fr) +
-                        "BL : " + drive.getHolon(drive.bl) +
-                        "BR : " + drive.getHolon(drive.br));
         telemetry.update();
-
-
-
     }
 }

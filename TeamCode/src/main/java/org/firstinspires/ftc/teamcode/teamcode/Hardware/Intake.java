@@ -56,15 +56,14 @@ public class Intake {
 
     }
 
-    public void compliantIntake_TeleOp()
+    public void Intake_TeleOp()
     {
         if(opMode.gamepad2.right_bumper) //set game pad button to x, could change, survey people
         {
             rightSide.setPower(PICKUP);
             leftSide.setPower(PICKUP);
 
-            opMode.telemetry.addData("Active", "Intake Running");
-            opMode.telemetry.update();
+
         }else if (opMode.gamepad2.left_bumper) {
             rightSide.setPower(-PICKUP);
             leftSide.setPower(-PICKUP);

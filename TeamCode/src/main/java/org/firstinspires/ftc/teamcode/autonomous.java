@@ -126,7 +126,7 @@ public class autonomous extends LinearOpMode {
                     Drive.moveForwardDistance(0.75,91.44);
                     Grabber.open();
                     Drive.moveBackwardDistance(0.75,91.44);
-                    newState(State.BackupToQuarry);
+                    newState(State.Stop);
                     break;
 
                 case BackupToQuarry:

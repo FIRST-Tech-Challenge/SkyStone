@@ -70,15 +70,16 @@ public class TimedAutoForPark extends LinearOpMode {
         runtime.reset();
         int DST_CONST = 46;
         servoTest.setPosition(0);
-//        secs * spedConst; 0.9 sec/30 inch
         //driveTrain.translate(0.2, 0.75, MecanumDrive.TranslationMethod.CONSTANT_SPEED);
-        sleep((long) 27*DST_CONST);
-        //need to fix so that its around ~2 cm away from blocks
         while (opModeIsActive()) {
             double avg = 0;
+            double redToBlueAvg;
+            double greenToBlueAvg;
             for (int i = 0; i < 10; i++){
                 double initial = Math.pow((color.rawOptical()-cParam)/aParam, -binvParam);
                 avg = avg + initial;
+                redToBlueAvg += (color.red()/color.blue())
+                greenToBlueAvg += (color.green()/color.blue())
             }
             double actualAvg = avg/10;
 
@@ -86,30 +87,26 @@ public class TimedAutoForPark extends LinearOpMode {
                     (int) (color.green() * SCALE_FACTOR),
                     (int) (color.blue() * SCALE_FACTOR),
                     hsvValues);
-
+            if (runtime.seconds() < 2) {
+                redToBlueAvg /= 10;
+                greenToBlueAvg /=10;
+            }
             telemetry.addData("R", color.red());
             telemetry.addData("G", color.green());
             telemetry.addData("B", color.blue());
             telemetry.addData("InputData", actualAvg);
-
-            //telemetry.addData("Distance", color.getDistance(DistanceUnit.CM));
             telemetry.update();
             sleep(500);
             //Reads color values and sends them to driver station
-            if (color.red() > 2 * color.blue() && color.green() > 3 * color.blue()) {
+            if (actualAvg < maxDist && (color.red() / color.blue()) > redToBlueAvg && (color.green()/color.blue()) > greenToBlueAvg) {
                 servoTest.setPosition(1);
                 driveTrain.translate(0, 0, MecanumDrive.TranslationMethod.CONSTANT_SPEED);
-                //telemetry.addData("This detects yellow block", 5);
                 telemetry.update();
 //                telemetry.addData("R", color.red());
 //                telemetry.addData("G", color.green());
 //                telemetry.addData("B", color.blue());
                 sleep(2000);
             }
-//            else {
-//                telemetry.addData("Detects it's too close", "true");
-//                telemetry.update();
-//            }
 
             //The if statement above allows the robot to detect yellow to find a block and move the servo accordingly
         }

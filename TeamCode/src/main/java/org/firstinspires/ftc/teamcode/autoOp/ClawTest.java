@@ -1,11 +1,10 @@
 package org.firstinspires.ftc.teamcode.autoOp;
 
-import org.firstinspires.ftc.teamcode.TylerController;
 import org.firstinspires.ftc.teamcode.auto.ChassisConfig;
 import org.firstinspires.ftc.teamcode.auto.ChassisStandard;
 
 /**
- * This just runs from the position closest to the crater, into the crater.
+ *
  */
 public abstract class ClawTest extends ChassisStandard {
 

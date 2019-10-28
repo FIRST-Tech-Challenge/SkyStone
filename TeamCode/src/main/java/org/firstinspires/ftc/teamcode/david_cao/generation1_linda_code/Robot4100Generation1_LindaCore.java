@@ -130,15 +130,16 @@ public class Robot4100Generation1_LindaCore extends RobotCore {
         }
     }
 
-    public void setIntakeSystemStatus(IntakeSystemStatus status){
+    public void setIntakeSystemStatus(IntakeSystemStatus status, double Speed){
+        Speed = Math.abs(Speed);
         switch(status){
             case SUCK:
-                this.m_IntakeLeft.setPower(Robot4100Generation1_Settings.INTAKEMOTOR_SPEED);
-                this.m_IntakeRight.setPower(-Robot4100Generation1_Settings.INTAKEMOTOR_SPEED);
+                this.m_IntakeLeft.setPower(Speed);
+                this.m_IntakeRight.setPower(-Speed);
                 break;
             case VOMIT:
-                this.m_IntakeLeft.setPower(-Robot4100Generation1_Settings.INTAKEMOTOR_SPEED);
-                this.m_IntakeRight.setPower(Robot4100Generation1_Settings.INTAKEMOTOR_SPEED);
+                this.m_IntakeLeft.setPower(-Speed);
+                this.m_IntakeRight.setPower(Speed);
                 break;
             case STOP:
                 this.m_IntakeLeft.setPower(0);
@@ -156,9 +157,9 @@ public class Robot4100Generation1_LindaCore extends RobotCore {
     }
 
     public IntakeSystemStatus getIntakeSystemStatus(){
-        if(this.m_IntakeLeft.getPower() == Robot4100Generation1_Settings.INTAKEMOTOR_SPEED) {
+        if(this.m_IntakeLeft.getPower() > 0) {
             return IntakeSystemStatus.SUCK;
-        }else if(this.m_IntakeLeft.getPower() == -Robot4100Generation1_Settings.INTAKEMOTOR_SPEED){
+        }else if(this.m_IntakeLeft.getPower() < 0){
             return IntakeSystemStatus.VOMIT;
         }else{
             return IntakeSystemStatus.STOP;

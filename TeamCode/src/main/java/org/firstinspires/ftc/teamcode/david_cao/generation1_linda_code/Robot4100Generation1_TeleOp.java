@@ -80,11 +80,11 @@ public class Robot4100Generation1_TeleOp extends DarbotsBasicOpMode<Robot4100Gen
 
             //Gamepad1 Intake System Control
             if(gamepad1.right_trigger > 0.2){//gamepad1.b){
-                this.m_RobotCore.setIntakeSystemStatus(Robot4100Generation1_LindaCore.IntakeSystemStatus.SUCK);
+                this.m_RobotCore.setIntakeSystemStatus(Robot4100Generation1_LindaCore.IntakeSystemStatus.SUCK,gamepad1.right_trigger * Robot4100Generation1_Settings.INTAKEMOTOR_SPEED);
             }else if(gamepad1.left_trigger > 0.2){ //gamepad1.y){
-                this.m_RobotCore.setIntakeSystemStatus(Robot4100Generation1_LindaCore.IntakeSystemStatus.VOMIT);
+                this.m_RobotCore.setIntakeSystemStatus(Robot4100Generation1_LindaCore.IntakeSystemStatus.VOMIT, gamepad1.left_trigger * Robot4100Generation1_Settings.INTAKEMOTOR_SPEED);
             }else{
-                this.m_RobotCore.setIntakeSystemStatus(Robot4100Generation1_LindaCore.IntakeSystemStatus.STOP);
+                this.m_RobotCore.setIntakeSystemStatus(Robot4100Generation1_LindaCore.IntakeSystemStatus.STOP,0);
             }
 
             if(gamepad2.right_bumper){

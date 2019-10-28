@@ -76,13 +76,27 @@ public class TTTeleOp extends TTOpMode {
 
 
 
-            private void driveUpdate () {
-                double vertical = gamepad1.right_stick_y;
-                double horizontal = gamepad1.right_stick_x;
-                double turn = gamepad1.left_stick_x * TURN_SPEED_MODIFIER;
-                Vector2 velocity = new Vector2(horizontal, vertical);
-                if (!gamepad1.right_bumper) {
-                    velocity = velocity.multiply(REDUCED_DRIVE_SPEED);
+        private void armUpdate() {
+            if (gamepad1.y) {
+                arm.raise(0.5);
+            } else if (gamepad1.a) {
+                arm.lower(0.5);
+            } else if (gamepad1.b) {
+                arm.liftTimed(0.75, 0.5);
+            }
+            if (gamepad1.dpad_up) {
+                arm.liftContinuous(0.5);
+            }
+            if (gamepad1.dpad_down) {
+                arm.liftContinuous(-0.5);
+            } else {
+                arm.liftContinuous(0.0);
+            }
+            if (gamepad1.x && canUseClaw) {
+                if (arm.clawIsOpen()) {
+                    arm.closeClaw();
+                } else {
+                    arm.openClaw();
                 }
                 driveSystem.continuous(velocity, turn);
             }
@@ -136,4 +150,3 @@ public class TTTeleOp extends TTOpMode {
             }
 
         }
-

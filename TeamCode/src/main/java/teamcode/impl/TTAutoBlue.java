@@ -16,9 +16,10 @@ import teamcode.common.Vector2;
 @Autonomous(name = "TT Auto Blue")
 public class TTAutoBlue extends TTOpMode {
 
-    private static final BoundingBox2D SKYSTONE_POS_1 = new BoundingBox2D(0, 0, 0, 0);
-    private static final BoundingBox2D SKYSTONE_POS_2 = new BoundingBox2D(0, 0, 0, 0);
-    private static final BoundingBox2D SKYSTONE_POS_3 = new BoundingBox2D(0, 0, 0, 0);
+    /**
+     * A bounding box which is used to see if a skystone is in the center of the camera's view.
+     */
+    private static final BoundingBox2D SKYSTONE_BOUNDING_BOX = new BoundingBox2D(0, 0, 720, 1280);
 
     private TTDriveSystem driveSystem;
     private League1TTArm arm;
@@ -37,92 +38,93 @@ public class TTAutoBlue extends TTOpMode {
     //waitForStart();
     @Override
     protected void onStart() {
-        setStartPos();
-        grabSkyStone(3);
-//        skystonePos = scanStones();
-//        telemetry = TTOpMode.currentOpMode().telemetry;
-//        telemetry.addData("Stone Found", skystonePos + 3);
-//        telemetry.update();
-//        if(skystonePos == 1){
-//            grabSkyStone(4);
-//        } else if(skystonePos == 2){
-//            grabSkyStone(5);
-//        } else if (skystonePos == 3){
-//            grabSkyStone(6);
-//        }
+        initArm();
+        locateSkystone();
     }
 
-    @Override
-    protected void onStop() {
+
+    /**
+     * Opens the claw and lowers the arm for starting position.
+     */
+    private void initArm() {
+        arm.openClaw();
+        arm.lower(0.5);
     }
 
     /**
-     * Returns the position of the skystones. Returns 1 if the stones are in the first and fourth
-     * slots. Returns 2 if the stones are in the second and fifth slots. Returns 3 if the stones
+     * Approaches the skystone and records its position. Returns 4 if the skystones are in the first and fourth
+     * slots. Returns 5 if the skystones are in the second and fifth slots. Returns 6 if the skystones
      * are in the third and sixth slots.
      */
-    private int scanStones() {
+    private void locateSkystone() {
+        driveSystem.lateral(3.5, 0.5);
+        driveSystem.vertical(20, 0.5);
+        if (seesSkystone()) {
+            grabSkyStone(6);
+        }
+        driveSystem.lateral(7, 0.3);
+        sleep(1000);
+        if (seesSkystone()) {
+            grabSkyStone(5);
+        }
+        driveSystem.lateral(8, 0.3);
+        grabSkyStone(4);
+    }
+
+    /**
+     * Returns true if the skystone is in the center of the camera's field of view.
+     */
+    private boolean seesSkystone() {
         List<Recognition> recognitions = vision.getRecognitions();
         for (Recognition recognition : recognitions) {
             if (recognition.getLabel().equals(TTVision.LABEL_SKYSTONE)) {
                 Vector2 center = TTVision.getCenter(recognition);
-                if (SKYSTONE_POS_1.contains(center)) {
-                    return 1;
-                } else if (SKYSTONE_POS_2.contains(center)) {
-                    return 2;
-                } else if (SKYSTONE_POS_3.contains(center)) {
-                    return 3;
+                if (SKYSTONE_BOUNDING_BOX.contains(center)) {
+                    return true;
                 }
             }
         }
-        return 1; // assume left position if image recognition fails.
-    }
-
-    //Opens the claw and lowers the arm for starting pos, moves into position for scanning
-    private void setStartPos(){
-        arm.openClaw();
-        arm.lower(0.5);
-        driveSystem.vertical(6, 0.5);
-        driveSystem.lateral(2, 0.25);
+        return false;
     }
 
     /*Starts from the starting pos and moves grab the block
       at that specific block pos then faces the foundation
      */
-    private void grabSkyStone(int stoneNum){
-        driveSystem.lateral(41.5 - stoneNum * 8, 0.3);
-        driveSystem.vertical(31.5, 0.5);
+    private void grabSkyStone(int stoneNum) {
+        driveSystem.vertical(12.5, 0.7);
         arm.closeClaw();
         sleep(500);
-        driveSystem.vertical(-15, 0.5);
-        driveSystem.turn(-90, 0.5);
+        driveSystem.vertical(-19, 0.7);
+        driveSystem.turn(-90, 0.25);
         moveToFoundation(stoneNum);
         pullFoundation();
     }
 
     //Moves towards the foundation and turns to face it
-    private void moveToFoundation(int stoneNum){
-        driveSystem.vertical(120 - stoneNum * 8, 0.5);
-        sleep(250);
-        driveSystem.turn(90, 0.5);
+    private void moveToFoundation(int stoneNum) {
+        driveSystem.vertical(120.5 - stoneNum * 8, 0.7);
+        driveSystem.turn(90, 0.7);
         arm.liftTimed(1, 0.5);
+        driveSystem.vertical(13 + stoneNum * 3, 0.6);
         sleep(250);
-        driveSystem.vertical(20, 0.5);
-        sleep(500);
         arm.openClaw();
     }
 
-    private void pullFoundation(){
-        driveSystem.lateral(-4, 0.5);
-        driveSystem.vertical(2, 0.5);
+    private void pullFoundation() {
+        driveSystem.lateral(-6.5, 0.7);
+        driveSystem.vertical(2, 0.7);
         arm.lower(0.5);
-        sleep(500);
-        driveSystem.vertical(-45, 0.5);
+        sleep(250);
+        driveSystem.vertical(-53, 0.5);
         arm.liftTimed(1, 0.5);
-        driveSystem.lateral(44, 0.5);
+        driveSystem.lateral(46.5, 0.7);
+        arm.lower(0.5);
 
     }
 
+    @Override
+    protected void onStop() {
+    }
 
 
 }

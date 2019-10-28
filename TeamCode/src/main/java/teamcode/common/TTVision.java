@@ -16,7 +16,7 @@ public class TTVision {
     public static final String LABEL_STONE = "Boring Boy";
     public static final String LABEL_SKYSTONE = "Extra Scory Point Boi";
     public static final String[] LABELS = {LABEL_STONE, LABEL_SKYSTONE};
-    private static final double MINIMUM_CONFIDENCE = 0.75;
+    private static final double MINIMUM_CONFIDENCE = 0.7;
 
     private HardwareMap hardwareMap;
     private TFObjectDetector tfod;
@@ -77,6 +77,14 @@ public class TTVision {
         float y = (recognition.getBottom() + recognition.getTop()) / 2;
         return new Vector2(x, y);
 
+    }
+
+    public static BoundingBox2D getBoundingBox(Recognition recognition) {
+        double x1 = recognition.getLeft();
+        double y1 = recognition.getTop();
+        double x2 = recognition.getRight();
+        double y2 = recognition.getBottom();
+        return new BoundingBox2D(x1, y1, x2, y2);
     }
 
 }

@@ -87,7 +87,7 @@ public class League1TTArm {
     private LiftColor getColor() {
         int r = liftSensor.red();
         int b = liftSensor.blue();
-        if (r < 800 && b < 800) {
+        if (r < 800 && b < 800 && r > 250 && b > 250) {
             if (r > b) {
                 return LiftColor.RED;
             } else if (b > r) {

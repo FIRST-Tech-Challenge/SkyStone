@@ -54,21 +54,20 @@ public class MainTeleop extends LinearOpMode {
             driveLogic();
             outtakeLogic2();
             intakeLogic();
-<<<<<<< HEAD
-            if(gamepad2.dpad_up){
+
+            if (gamepad2.dpad_up) {
                 robot.getOuttakeSpool().setPower(1);
-            }else if(gamepad2.dpad_down){
+            } else if (gamepad2.dpad_down) {
                 robot.getOuttakeSpool().setPower(-1);
-            }else{
+            } else {
                 robot.getOuttakeSpool().setPower(0);
             }
-=======
->>>>>>> 2d1e44a226847225a5676b214fdb2ca78433b02e
+
 //            outtakeLogic();
         }
     }
 
-    private void resetRobot(){
+    private void resetRobot() {
         robot = new Robot(hardwareMap, telemetry, this);
         robot.setMotorMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
@@ -81,58 +80,60 @@ public class MainTeleop extends LinearOpMode {
     }
 
     private void initServos() {
-        robot.clampPivot.setPosition(robot.OUTTAKE_PIVOT_RETRACTED);
-        robot.intakePusher.setPosition(0.7);
-        robot.outtakeExtender.setPosition(robot.OUTTAKE_SLIDE_RETRACTED);
-        robot.clamp.setPosition(robot.CLAW_SERVO_CLAMPED);
+        robot.getClampPivot().setPosition(robot.OUTTAKE_PIVOT_RETRACTED);
+        robot.getIntakePusher().setPosition(0.7);
+        robot.getOuttakeExtender().setPosition(robot.OUTTAKE_SLIDE_RETRACTED);
+        robot.getClamp().setPosition(robot.CLAW_SERVO_CLAMPED);
     }
 
     //teleop methods
-    private void driveLogic(){
-        //tank drive
-        fLPower = (-gamepad1.left_stick_y + gamepad1.right_stick_x + gamepad1.left_stick_x)*powerScaleFactor;
-        fRPower = (-gamepad1.left_stick_y - gamepad1.right_stick_x - gamepad1.left_stick_x)*powerScaleFactor;
-        bLPower = (-gamepad1.left_stick_y + gamepad1.right_stick_x - gamepad1.left_stick_x)*powerScaleFactor;
-        bRPower = (-gamepad1.left_stick_y - gamepad1.right_stick_x + gamepad1.left_stick_x)*powerScaleFactor;
+    private void driveLogic() {
 
-        if(gamepad1.right_trigger!=0){
-            fLPower = (gamepad1.right_trigger)*powerScaleFactor;
-            fRPower = (-gamepad1.right_trigger)*powerScaleFactor;
-            bLPower = (-gamepad1.right_trigger)*powerScaleFactor;
-            bRPower = (gamepad1.right_trigger)*powerScaleFactor;
-        }else if(gamepad1.left_trigger!=0){
-            fLPower = (-gamepad1.left_trigger)*powerScaleFactor;
-            fRPower = (gamepad1.left_trigger)*powerScaleFactor;
-            bLPower = (gamepad1.left_trigger)*powerScaleFactor;
-            bRPower = (-gamepad1.left_trigger)*powerScaleFactor;
+// TODO: change all of this stuff to x, y, and turn movements
+        //tank drive
+        fLPower = (-gamepad1.left_stick_y + gamepad1.right_stick_x + gamepad1.left_stick_x) * powerScaleFactor;
+        fRPower = (-gamepad1.left_stick_y - gamepad1.right_stick_x - gamepad1.left_stick_x) * powerScaleFactor;
+        bLPower = (-gamepad1.left_stick_y + gamepad1.right_stick_x - gamepad1.left_stick_x) * powerScaleFactor;
+        bRPower = (-gamepad1.left_stick_y - gamepad1.right_stick_x + gamepad1.left_stick_x) * powerScaleFactor;
+
+        if (gamepad1.right_trigger != 0) {
+            fLPower = (gamepad1.right_trigger) * powerScaleFactor;
+            fRPower = (-gamepad1.right_trigger) * powerScaleFactor;
+            bLPower = (-gamepad1.right_trigger) * powerScaleFactor;
+            bRPower = (gamepad1.right_trigger) * powerScaleFactor;
+        } else if (gamepad1.left_trigger != 0) {
+            fLPower = (-gamepad1.left_trigger) * powerScaleFactor;
+            fRPower = (gamepad1.left_trigger) * powerScaleFactor;
+            bLPower = (gamepad1.left_trigger) * powerScaleFactor;
+            bRPower = (-gamepad1.left_trigger) * powerScaleFactor;
         }
         //Straight D-Pad move
         if (gamepad1.dpad_up) {
-            fLPower = (gamepad1.left_stick_y)+powerScaleFactor;
-            bLPower = (gamepad1.left_stick_y)+powerScaleFactor;
-            fRPower = (gamepad1.right_stick_y+powerScaleFactor);
-            bRPower = (gamepad1.right_stick_y+powerScaleFactor);
+            fLPower = (gamepad1.left_stick_y) + powerScaleFactor;
+            bLPower = (gamepad1.left_stick_y) + powerScaleFactor;
+            fRPower = (gamepad1.right_stick_y + powerScaleFactor);
+            bRPower = (gamepad1.right_stick_y + powerScaleFactor);
         } else if (gamepad1.dpad_down) {
-            fLPower = (gamepad1.left_stick_y)-powerScaleFactor;
-            bLPower = (gamepad1.left_stick_y)-powerScaleFactor;
-            fRPower = (gamepad1.right_stick_y-powerScaleFactor);
-            bRPower = (gamepad1.right_stick_y)-powerScaleFactor;
+            fLPower = (gamepad1.left_stick_y) - powerScaleFactor;
+            bLPower = (gamepad1.left_stick_y) - powerScaleFactor;
+            fRPower = (gamepad1.right_stick_y - powerScaleFactor);
+            bRPower = (gamepad1.right_stick_y) - powerScaleFactor;
         } else if (gamepad1.dpad_right) {
-            fLPower = (gamepad1.right_stick_y)+powerScaleFactor;
-            bLPower = (gamepad1.right_stick_y)+powerScaleFactor;
-            fRPower = (gamepad1.left_stick_y)-powerScaleFactor;
-            bRPower = (gamepad1.left_stick_y)-powerScaleFactor;
+            fLPower = (gamepad1.right_stick_y) + powerScaleFactor;
+            bLPower = (gamepad1.right_stick_y) + powerScaleFactor;
+            fRPower = (gamepad1.left_stick_y) - powerScaleFactor;
+            bRPower = (gamepad1.left_stick_y) - powerScaleFactor;
         } else if (gamepad1.dpad_left) {
-            fRPower = (gamepad1.right_stick_y)+powerScaleFactor;
-            bRPower = (gamepad1.right_stick_y)+powerScaleFactor;
-            fLPower = (gamepad1.left_stick_y)-powerScaleFactor;
-            bLPower = (gamepad1.left_stick_y)-powerScaleFactor;
+            fRPower = (gamepad1.right_stick_y) + powerScaleFactor;
+            bRPower = (gamepad1.right_stick_y) + powerScaleFactor;
+            fLPower = (gamepad1.left_stick_y) - powerScaleFactor;
+            bLPower = (gamepad1.left_stick_y) - powerScaleFactor;
         }
 
         robot.allWheelDrive(fLPower, fRPower, bLPower, bRPower);
     }
 
-    private void slowDriveLogic(){
+    private void slowDriveLogic() {
         //toggle driving speed
         if (powerScaleFactor == 0.3) {
 //            telemetry.addData("Driving Mode","Slow");
@@ -143,23 +144,21 @@ public class MainTeleop extends LinearOpMode {
             powerScaleFactor = (onSlowDrive) ? 0.9 : 0.3;
             onSlowDrive = !onSlowDrive;
             changedSlowDrive = true;
-        } else if(!gamepad1.left_bumper) {
+        } else if (!gamepad1.left_bumper) {
             changedSlowDrive = false;
         }
     }
 
     private void intakeLogic() {
-<<<<<<< HEAD
         robot.getIntakeLeft().setPower(gamepad2.left_stick_y);
         robot.getIntakeRight().setPower(gamepad2.right_stick_y);
-=======
-        robot.intakeLeft.setPower(gamepad2.left_stick_y);
-        robot.intakeRight.setPower(gamepad2.right_stick_y);
+
+        robot.getIntakeLeft().setPower(gamepad2.left_stick_y);
+        robot.getIntakeRight().setPower(gamepad2.right_stick_y);
 
         if (gamepad2.left_stick_y > 0 && gamepad2.right_stick_y > 0) {
-            robot.intakePusher.setPosition(robot.PUSHER_RETRACTED);
+            robot.getIntakePusher().setPosition(robot.PUSHER_RETRACTED);
         }
->>>>>>> 2d1e44a226847225a5676b214fdb2ca78433b02e
     }
 
     private void outtakeLogic2() {
@@ -167,19 +166,18 @@ public class MainTeleop extends LinearOpMode {
 
         // Logic to control outtake; with a delay on the pivot so that the slides can extend before pivot rotation
         if (gamepad2.a) { // Clamp and Extend
-            robot.intakePusher.setPosition(robot.PUSHER_PUSHED); // Push block all the way to clamp
+            robot.getIntakePusher().setPosition(robot.PUSHER_PUSHED); // Push block all the way to clamp
 
             isExtend = true;
             isRetract = false;
 
             outtakeExecutionTime = currentTime;
         } else if (gamepad2.b) { // Deposit and Reset
-            robot.intakePusher.setPosition(robot.PUSHER_RETRACTED); // Reset intake pusher
+            robot.getIntakePusher().setPosition(robot.PUSHER_RETRACTED); // Reset intake pusher
 
             isRetract = true;
             isExtend = false;
 
-<<<<<<< HEAD
             outtakeExtenderExecutePosition = robot.OUTTAKE_SLIDE_RETRACTED;
             outtakeExtenderWaitTime = 2000;
         } else if (gamepad2.x) { // Clamp
@@ -214,14 +212,12 @@ public class MainTeleop extends LinearOpMode {
             robot.getOuttakeSpool().setPower(-1);
         } else {
             robot.getOuttakeSpool().setPower(0);
-=======
+
             outtakeExecutionTime = currentTime;
 
-            robot.clamp.setPosition(robot.CLAW_SERVO_RELEASED); // Release clamp
->>>>>>> 2d1e44a226847225a5676b214fdb2ca78433b02e
-        }
+            robot.getClamp().setPosition(robot.CLAW_SERVO_RELEASED); // Release clamp
 
-<<<<<<< HEAD
+        }
         // Logic to control outtake; with a delay on the pivot so that the slides can extend before pivot rotation
         if (gamepad2.a) { // Clamp and Extend
             robot.getIntakePusher().setPosition(0.7);
@@ -237,49 +233,46 @@ public class MainTeleop extends LinearOpMode {
         }
 
         //extend
-        if(currentTime-outtakeExecutionTime >= 100 && isExtend){
+        if (currentTime - outtakeExecutionTime >= 100 && isExtend) {
             robot.getOuttakeExtender().setPosition(robot.OUTTAKE_SLIDE_EXTENDED);
         }
 
-        if(currentTime-outtakeExecutionTime >= 1500 && isExtend){
+        if (currentTime - outtakeExecutionTime >= 1500 && isExtend) {
             robot.getClampPivot().setPosition(robot.OUTTAKE_PIVOT_EXTENDED);
-=======
-        //extend
-        if (currentTime - outtakeExecutionTime >= 200 && isExtend) {
-            robot.clamp.setPosition(robot.CLAW_SERVO_CLAMPED);
-        }
 
-        if(currentTime-outtakeExecutionTime >= 300 && isExtend){
-            robot.outtakeExtender.setPosition(robot.OUTTAKE_SLIDE_EXTENDED);
-        }
+            //extend
+            if (currentTime - outtakeExecutionTime >= 200 && isExtend) {
+                robot.getClamp().setPosition(robot.CLAW_SERVO_CLAMPED);
+            }
 
-        if(currentTime-outtakeExecutionTime >= 1200 && isExtend){
-            robot.clampPivot.setPosition(robot.OUTTAKE_PIVOT_EXTENDED);
->>>>>>> 2d1e44a226847225a5676b214fdb2ca78433b02e
-            isExtend = false;
-        }
+            if (currentTime - outtakeExecutionTime >= 300 && isExtend) {
+                robot.getOuttakeExtender().setPosition(robot.OUTTAKE_SLIDE_EXTENDED);
+            }
 
-        //retract
-        if(currentTime-outtakeExecutionTime >= 250 && isRetract){
-            robot.getClampPivot().setPosition(robot.OUTTAKE_PIVOT_RETRACTED);
-        }
+            if (currentTime - outtakeExecutionTime >= 1200 && isExtend) {
+                robot.getClampPivot().setPosition(robot.OUTTAKE_PIVOT_EXTENDED);
+                isExtend = false;
+            }
 
-        if(currentTime-outtakeExecutionTime >= 750 && isRetract){
-            robot.getOuttakeExtender().setPosition(robot.OUTTAKE_SLIDE_RETRACTED);
-            isRetract = false;
-        }
+            //retract
+            if (currentTime - outtakeExecutionTime >= 250 && isRetract) {
+                robot.getClampPivot().setPosition(robot.OUTTAKE_PIVOT_RETRACTED);
+            }
 
-        // Spool controls
-        if (gamepad2.dpad_up) {
-            robot.getOuttakeSpool().setPower(1);
-        } else if (gamepad2.dpad_down) {
-<<<<<<< HEAD
-            robot.getOuttakeSpool().setPower(-1);
-=======
-            robot.outtakeSpool.setPower(-.1);
->>>>>>> 2d1e44a226847225a5676b214fdb2ca78433b02e
-        } else {
-            robot.getOuttakeSpool().setPower(0);
+            if (currentTime - outtakeExecutionTime >= 750 && isRetract) {
+                robot.getOuttakeExtender().setPosition(robot.OUTTAKE_SLIDE_RETRACTED);
+                isRetract = false;
+            }
+
+            // Spool controls
+            if (gamepad2.dpad_up) {
+                robot.getOuttakeSpool().setPower(1);
+            } else if (gamepad2.dpad_down) {
+                robot.getOuttakeSpool().setPower(-1);
+                robot.getOuttakeSpool().setPower(-.1);
+            } else {
+                robot.getOuttakeSpool().setPower(0);
+            }
         }
     }
 }

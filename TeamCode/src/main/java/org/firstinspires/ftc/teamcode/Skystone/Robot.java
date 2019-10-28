@@ -1008,14 +1008,6 @@ public class Robot {
         this.angles = angles;
     }
 
-    public Position getPosition() {
-        return position;
-    }
-
-    public void setPosition(Position position) {
-        this.position = position;
-    }
-
     public Telemetry getTelemetry() {
         return telemetry;
     }

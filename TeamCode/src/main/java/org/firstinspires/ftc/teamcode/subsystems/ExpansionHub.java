@@ -34,14 +34,16 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.lynx.LynxNackException;
 import com.qualcomm.hardware.lynx.commands.core.LynxGetADCCommand;
 import com.qualcomm.hardware.lynx.commands.core.LynxGetADCResponse;
+import com.qualcomm.hardware.lynx.commands.core.LynxGetMotorConstantPowerCommand;
+import com.qualcomm.hardware.lynx.commands.core.LynxGetMotorConstantPowerResponse;
 import com.qualcomm.hardware.lynx.commands.core.LynxPhoneChargeControlCommand;
+import com.qualcomm.hardware.lynx.commands.core.LynxSetMotorConstantPowerCommand;
 import com.qualcomm.hardware.lynx.commands.standard.LynxGetModuleStatusCommand;
 import com.qualcomm.hardware.lynx.commands.standard.LynxGetModuleStatusResponse;
 import com.qualcomm.hardware.lynx.commands.standard.LynxSetModuleLEDColorCommand;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
+import com.qualcomm.robotcore.util.Range;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -50,9 +52,11 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.qualcomm.hardware.lynx.LynxDcMotorController.apiPowerFirst;
+import static com.qualcomm.hardware.lynx.LynxDcMotorController.apiPowerLast;
+
 public class ExpansionHub extends LynxController {
 
-    // utility method
     public double getMotorCurrentDraw(DcMotorEx motor, CurrentDrawUnits units) {
         int port = motor.getPortNumber();
         LynxGetADCCommand.Channel channel = null;
@@ -85,6 +89,22 @@ public class ExpansionHub extends LynxController {
             handleException(e);
         }
         return -1;
+    }
+
+    public double getMotorVoltagePercent(DcMotorEx motor) {
+        int port = motor.getPortNumber();
+        LynxGetMotorConstantPowerCommand command = new LynxGetMotorConstantPowerCommand(this.getModule(), port);
+        double result = 0;
+        try {
+            LynxGetMotorConstantPowerResponse response = command.sendReceive();
+            int iPower = response.getPower();
+            result = Range.scale(iPower,
+                    LynxSetMotorConstantPowerCommand.apiPowerFirst, LynxSetMotorConstantPowerCommand.apiPowerLast,
+                    apiPowerFirst, apiPowerLast);
+        } catch (InterruptedException | RuntimeException | LynxNackException e) {
+            handleException(e);
+        }
+        return result;
     }
 
     /**
@@ -188,6 +208,7 @@ public class ExpansionHub extends LynxController {
         return -1;
     }
 
+    @Deprecated  // doesnt make sense on control hub, broken in rev firmware
     public synchronized void setPhoneChargeEnabled(boolean chargeEnabled) {
         LynxPhoneChargeControlCommand controlCommand = new LynxPhoneChargeControlCommand(lynxModule, chargeEnabled);
         try {

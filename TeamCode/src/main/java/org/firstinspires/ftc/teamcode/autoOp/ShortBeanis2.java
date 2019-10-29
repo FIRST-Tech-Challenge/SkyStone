@@ -59,11 +59,15 @@ public abstract class ShortBeanis2 extends ChassisStandard {
 
         if (madeTheRun == false) {
 
-            encoderDrive(4);
+            /*encoderDrive(4);
 
             turnLeft(90);
 
             encoderDrive(27);
+            */
+            turnLeft(90);
+            sleep(1000);
+            turnRight(90);
             madeTheRun = true;
         }
 

@@ -206,7 +206,7 @@ public class DriveSystem {
     // TODO
     public void turnAbsolute(double degrees, double maxPower) {
         // Since it is vertical, use pitch instead of heading
-        turn(imuSystem.getHeading() + degrees, maxPower);
+        turn(diffFromAbs(degrees), maxPower);
     }
 
     /**
@@ -272,6 +272,20 @@ public class DriveSystem {
     public double getError(double heading) {
         // calculate error in -179 to +180 range  (
         double robotError = mTargetHeading - heading;
+        Log.d(TAG,"Robot Error: " + robotError);
+        while (robotError > 180) {
+            robotError -= 360;
+        }
+        while (robotError <= -180) {
+            robotError += 360;
+        }
+        return robotError;
+    }
+
+    public double diffFromAbs(double heading) {
+        // calculate error in -179 to +180 range
+        // When vertical use pitch instead of heading
+        double robotError = heading - imuSystem.getHeading();
         Log.d(TAG,"Robot Error: " + robotError);
         while (robotError > 180) {
             robotError -= 360;

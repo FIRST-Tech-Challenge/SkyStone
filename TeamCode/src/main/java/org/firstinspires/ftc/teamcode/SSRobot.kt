@@ -44,11 +44,6 @@ class SSRobot {
         rightDrive?.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
     }
 
-    fun init(ahwdMap: HardwareMap, encoder: Boolean) = if (encoder) { //used when enabling encoders on motors
-        this.init(ahwdMap)
-        vSlide?.mode = DcMotor.RunMode.RUN_USING_ENCODER //Use encoders for linear slide motor
-    } else this.init(ahwdMap)
-
     //METHODS
 
     fun drive(leftM: Double, rightM: Double) {
@@ -69,14 +64,13 @@ class SSRobot {
         vSlide?.power = pow.toDouble()
     }
 
-
     fun pinch(gp: Gamepad) {
         var close = false
         if(gp.a) close = !close
-        
         this.claw?.position = when {
             close -> 0.0 //close
             !close -> 1.0 //open
+            else -> 1.0
         }
     }
 }

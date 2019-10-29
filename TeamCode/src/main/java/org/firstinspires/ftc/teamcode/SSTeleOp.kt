@@ -27,14 +27,14 @@ class SSTeleOp : OpMode() {
         telemetry.addData("Status: ", "TeleOp Initialized")
         telemetry.update()
         //initializes all parts
-        robot.init(hardwareMap, true)
-        robot.vSlide?.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+        robot.init(hardwareMap)
+        robot.vSlide?.mode = DcMotor.RunMode.RUN_USING_ENCODER //Use encoders for linear slide motor
         curPos = robot.vSlide!!.currentPosition
 
     }
 
     override fun start() { //runs once when play button is pushed
-        robot.vSlide?.mode = DcMotor.RunMode.RUN_USING_ENCODER
+        robot.vSlide?.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
         robot.hSlide?.position = 0.7
     }
 
@@ -60,16 +60,12 @@ class SSTeleOp : OpMode() {
                 (gamepad2.right_trigger != zero) and !tooHigh -> gamepad2.right_trigger //goes up
                 else -> zero
             }
-        } catch (e: Exception) {
-            telemetry.addData("Linear Slide Y Calculation Error:", println(e))
-        }
+        } catch (e: Exception) { telemetry.addData("Linear Slide Y Calculation Error:", println(e)) }
 
         try {
             tooHigh = curPos >= max
             tooLow = curPos < 0
-        } catch (e: Exception) {
-            telemetry.addData("tooHigh/tooLow Error:", println(e))
-        }
+        } catch (e: Exception) { telemetry.addData("tooHigh/tooLow Error:", println(e)) }
 
         if (tooHigh) telemetry.addData("Linear Slide Y Error:", "MAX HEIGHT REACHED")
         if (tooLow) telemetry.addData("Linear Slide Y Error:", "MIN HEIGHT REACHED")
@@ -80,16 +76,13 @@ class SSTeleOp : OpMode() {
             robot.pinch(gamepad2) //operates claw
             robot.liftSlideY(linSlidePow)//controls vertical slide
             curPos = robot.vSlide!!.currentPosition
-        } catch (e: Exception) {
-            telemetry.addData("Movement Error:", println(e))
-        }
+        } catch (e: Exception) { telemetry.addData("Movement Error:", println(e)) }
 
-
-        telemetry.addData("Servo:", "HSlide(%.2f), Claw(%.2f)", robot.hSlide?.position?.toFloat(),
-                robot.claw?.position?.toFloat())
-        telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower)
-        telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower)
-        telemetry.addData("Linear Slide ", "Position: (%.2f)", curPos.toFloat())
+        telemetry.addLine()
+                .addData("Servo:", "HSlide(%.2f), Claw(%.2f)", robot.hSlide?.position?.toFloat(),
+                        robot.claw?.position?.toFloat())
+                .addData("Motors: left = $leftPower, right = $rightPower", 0) //kotlin string templates
+                .addData("Linear Slide Position: ${curPos.toFloat()}", 0)
     }
 
     override fun stop() {

@@ -5,6 +5,7 @@ package org.firstinspires.ftc.teamcode
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+import com.qualcomm.robotcore.hardware.DcMotor
 
 
 /**
@@ -21,7 +22,9 @@ class SSAutoOp : LinearOpMode()
         telemetry.addData("Status: ", "Autonomous Initialized")
         telemetry.update()
 
-        robot.init(hardwareMap, true)
+        robot.init(hardwareMap)
+        robot.vSlide?.mode = DcMotor.RunMode.RUN_USING_ENCODER
+        robot.vSlide?.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
 
         waitForStart()
         //CODE GOES HERE

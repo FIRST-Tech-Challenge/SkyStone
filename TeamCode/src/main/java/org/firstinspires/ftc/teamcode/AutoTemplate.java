@@ -29,20 +29,22 @@ public class AutoTemplate extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        robot.init(hardwareMap);
-        detector.setOffset(-1f/8f, 3f/8f);
+        robot.initMotors(hardwareMap);//motors
+        robot.initServos(hardwareMap);//servo
+        robot.initIMU(hardwareMap);//gyro
+
+        detector.setOffset(0, 0);//
         detector.camSetup(hardwareMap);
 
         telemetry.addData("Mode", "calibrating...");
+        telemetry.update();
         while (!isStopRequested() && !robot.imu.isGyroCalibrated())
         {
             sleep(50);
             idle();
         }
-
         telemetry.addData("Mode", "waiting for start");
         telemetry.addData("imu calib status", robot.imu.getCalibrationStatus().toString());
-        telemetry.update();
         telemetry.update();
 
         waitForStart();
@@ -53,11 +55,10 @@ public class AutoTemplate extends LinearOpMode {
             vals = detector.getVals();
             telemetry.addData("Values", vals[1]+"   "+vals[0]+"   "+vals[2]);
 
-            telemetry.addData("2 global heading", robot.getAngle());
+            telemetry.addData("Global heading", robot.getAngle());
             telemetry.update();
             telemetry.update();
             sleep(100);
-
         }
     }
 }

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -21,7 +22,7 @@ import pkg3939.skystoneDetectorClass;
  * monitor: 640 x 480
  */
 @Autonomous(name= "opencvInstanceTest", group="Sky autonomous")
-//@Disabled
+@Disabled
 public class opencvInstanceTest extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 

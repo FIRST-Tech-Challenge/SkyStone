@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -15,7 +16,7 @@ import static java.lang.Math.abs;
  */
 
 @TeleOp(name="cameron", group="Iterative Opmode")
-
+@Disabled
 public class cameron extends OpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor backLeft    = null; //rear left
@@ -59,8 +60,8 @@ public class cameron extends OpMode {
 
     @Override //run loop after start code finishes
     public void loop(){
-        double leftPower = 0.0;
-        double rightPower = 0.0;
+        double leftPower;
+        double rightPower;
 
         leftPower   = gamepad1.left_stick_y;
         rightPower = gamepad1.right_stick_y;

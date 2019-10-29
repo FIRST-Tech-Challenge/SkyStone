@@ -45,27 +45,27 @@ class SSRobot {
     }
 
     fun init(ahwdMap: HardwareMap, encoder: Boolean) = if (encoder) { //used when enabling encoders on motors
-            //hardware mapping motors, servos, and sensors
-            hwdMap = ahwdMap
-            leftDrive = ahwdMap.dcMotor.get("leftDrive")
-            rightDrive = ahwdMap.dcMotor.get("rightDrive")
-            linSlideY = ahwdMap.dcMotor.get("linSlideY")
-            claw = ahwdMap.servo.get("claw")
+        //hardware mapping motors, servos, and sensors
+        hwdMap = ahwdMap
+        leftDrive = ahwdMap.dcMotor.get("leftDrive")
+        rightDrive = ahwdMap.dcMotor.get("rightDrive")
+        linSlideY = ahwdMap.dcMotor.get("linSlideY")
+        claw = ahwdMap.servo.get("claw")
 
 
-            //Setting direction
-            leftDrive?.direction = motF
-            rightDrive?.direction = motR
-            linSlideY?.direction = motR
-            claw?.direction = serF
+        //Setting direction
+        leftDrive?.direction = motF
+        rightDrive?.direction = motR
+        linSlideY?.direction = motR
+        claw?.direction = serF
 
 
-            leftDrive?.power = 0.0
-            rightDrive?.power = 0.0
-            leftDrive?.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
-            rightDrive?.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
-            linSlideY?.mode = DcMotor.RunMode.RUN_USING_ENCODER //Use encoders for linear slide motor
-        } else this.init(ahwdMap)
+        leftDrive?.power = 0.0
+        rightDrive?.power = 0.0
+        leftDrive?.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+        rightDrive?.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+        linSlideY?.mode = DcMotor.RunMode.RUN_USING_ENCODER //Use encoders for linear slide motor
+    } else this.init(ahwdMap)
 
     //METHODS
 

@@ -73,9 +73,9 @@ class SSTeleOp : OpMode() {
         if (tooLow) telemetry.addData("Linear Slide Y Error:", "MIN HEIGHT REACHED")
 
         try {
-            robot.linSlideX?.power = gamepad2.left_stick_y.toDouble() //controlls horizontal slide with the left stick of gp2
-            robot.pinch(gamepad2)
-            robot.liftSlideY(linSlidePow)
+            robot.linSlideX?.power = gamepad2.left_stick_y.toDouble() //controls horizontal slide with the left stick of gp2
+            robot.pinch(gamepad2) //operates claw
+            robot.liftSlideY(linSlidePow)//controls vertical slide
             curPos = robot.linSlideY!!.currentPosition
         } catch (e: Exception) {
             telemetry.addData("Movement Error:", println(e))

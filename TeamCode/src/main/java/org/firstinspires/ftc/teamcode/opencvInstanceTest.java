@@ -25,8 +25,7 @@ import pkg3939.skystoneDetectorClass;
 public class opencvInstanceTest extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
-    skystoneDetectorClass detector = new skystoneDetectorClass(
-    );
+    skystoneDetectorClass detector = new skystoneDetectorClass();
 
     int[] vals;
 

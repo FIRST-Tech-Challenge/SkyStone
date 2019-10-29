@@ -150,31 +150,13 @@ public class AutoVision extends TTOpMode
     }
 
 <<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 =======
-=======
->>>>>>> parent of f3b0a47... double skystone auto progress
-=======
->>>>>>> parent of f3b0a47... double skystone auto progress
-=======
->>>>>>> parent of f3b0a47... double skystone auto progress
     @Override
     protected void onStop() {
 
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 >>>>>>> parent of b7b2993... Revert "Merge branch 'develop' of https://github.com/PrimeTactic/SkyStone into develop"
-=======
->>>>>>> parent of f3b0a47... double skystone auto progress
-=======
->>>>>>> parent of f3b0a47... double skystone auto progress
-=======
->>>>>>> parent of f3b0a47... double skystone auto progress
     private void initVuforia()
     {
         /*

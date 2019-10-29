@@ -41,58 +41,31 @@ public class TTAutoBlueGrabAndGrab extends TTOpMode {
         skystonePos = locateSkystone456();
         if(skystonePos == 6) {
 <<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
             telemetry.addData("stone number", 6);
             telemetry.update();
 =======
 >>>>>>> parent of b7b2993... Revert "Merge branch 'develop' of https://github.com/PrimeTactic/SkyStone into develop"
-=======
->>>>>>> parent of f3b0a47... double skystone auto progress
-=======
->>>>>>> parent of f3b0a47... double skystone auto progress
-=======
->>>>>>> parent of f3b0a47... double skystone auto progress
             grabSkyStone(6);
             moveAndGrabStone(3);
             arm.openClaw();
             driveSystem.lateral(-10, 0.6);
         } else if(skystonePos == 5){
 <<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
             telemetry.addData("stone number", 5);
             telemetry.update();
 =======
 >>>>>>> parent of b7b2993... Revert "Merge branch 'develop' of https://github.com/PrimeTactic/SkyStone into develop"
-=======
->>>>>>> parent of f3b0a47... double skystone auto progress
-=======
->>>>>>> parent of f3b0a47... double skystone auto progress
-=======
->>>>>>> parent of f3b0a47... double skystone auto progress
             grabSkyStone(5);
             moveAndGrabStone(2);
             arm.openClaw();
             driveSystem.lateral(-10, 0.6);
         } else {
 <<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
             telemetry.addData("sotne number", 4);
             telemetry.update();
             /*
 =======
 >>>>>>> parent of b7b2993... Revert "Merge branch 'develop' of https://github.com/PrimeTactic/SkyStone into develop"
-=======
->>>>>>> parent of f3b0a47... double skystone auto progress
-=======
->>>>>>> parent of f3b0a47... double skystone auto progress
-=======
->>>>>>> parent of f3b0a47... double skystone auto progress
             driveSystem.vertical(13.5, 0.7);
             grabSkyStone(5);
             arm.openClaw();
@@ -103,9 +76,6 @@ public class TTAutoBlueGrabAndGrab extends TTOpMode {
             driveSystem.turn(5, 0.3);
             driveSystem.lateral(-4, 0.5);
             moveAndGrabStone(6);
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 <<<<<<< HEAD
             */
 
@@ -119,12 +89,6 @@ public class TTAutoBlueGrabAndGrab extends TTOpMode {
             driveSystem.vertical(-30, 0.5);
 =======
 >>>>>>> parent of b7b2993... Revert "Merge branch 'develop' of https://github.com/PrimeTactic/SkyStone into develop"
-=======
->>>>>>> parent of f3b0a47... double skystone auto progress
-=======
->>>>>>> parent of f3b0a47... double skystone auto progress
-=======
->>>>>>> parent of f3b0a47... double skystone auto progress
         }
     }
 
@@ -188,9 +152,6 @@ public class TTAutoBlueGrabAndGrab extends TTOpMode {
         driveSystem.lateral(-80 + stoneNum * 8, 0.5);
     }
 <<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
     private void placeSkystoneInScoredFoundation(int stoneNum){
         arm.closeClaw();
         sleep(750);
@@ -207,12 +168,6 @@ public class TTAutoBlueGrabAndGrab extends TTOpMode {
     }
 =======
 >>>>>>> parent of b7b2993... Revert "Merge branch 'develop' of https://github.com/PrimeTactic/SkyStone into develop"
-=======
->>>>>>> parent of f3b0a47... double skystone auto progress
-=======
->>>>>>> parent of f3b0a47... double skystone auto progress
-=======
->>>>>>> parent of f3b0a47... double skystone auto progress
 
     private void moveAndGrabStone(int stoneNum){
         driveSystem.lateral(-stoneNum * 8 + 80, 0.5);

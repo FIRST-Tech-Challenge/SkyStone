@@ -48,9 +48,6 @@ public class TTTeleOp extends TTOpMode {
 
     private void update() {
 <<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
         driveUpdate();
         armUpdate();
     }
@@ -66,14 +63,6 @@ public class TTTeleOp extends TTOpMode {
         //driveUpdate();
         armUpdate();
     }
-=======
-        //driveUpdate();
-        armUpdate();
-    }
-=======
-        //driveUpdate();
-        armUpdate();
-    }
 
 //    private void driveUpdate() {
 //        double vertical = gamepad1.right_stick_y;
@@ -85,37 +74,6 @@ public class TTTeleOp extends TTOpMode {
 //        }
 //        driveSystem.continuous(velocity, turn);
 //    }
->>>>>>> parent of f3b0a47... double skystone auto progress
-
-//    private void driveUpdate() {
-//        double vertical = gamepad1.right_stick_y;
-//        double horizontal = gamepad1.right_stick_x;
-//        double turn = gamepad1.left_stick_x * TURN_SPEED_MODIFIER;
-//        Vector2 velocity = new Vector2(vertical, horizontal);
-//        if (!gamepad1.right_bumper) {
-//            velocity = velocity.multiply(REDUCED_DRIVE_SPEED);
-//        }
-//        driveSystem.continuous(velocity, turn);
-//    }
->>>>>>> parent of f3b0a47... double skystone auto progress
-
-=======
-        //driveUpdate();
-        armUpdate();
-    }
-
->>>>>>> parent of f3b0a47... double skystone auto progress
-//    private void driveUpdate() {
-//        double vertical = gamepad1.right_stick_y;
-//        double horizontal = gamepad1.right_stick_x;
-//        double turn = gamepad1.left_stick_x * TURN_SPEED_MODIFIER;
-//        Vector2 velocity = new Vector2(vertical, horizontal);
-//        if (!gamepad1.right_bumper) {
-//            velocity = velocity.multiply(REDUCED_DRIVE_SPEED);
-//        }
-//        driveSystem.continuous(velocity, turn);
-//    }
-<<<<<<< HEAD
 
     private void armUpdate() {
         if (gamepad2.y) {
@@ -126,43 +84,40 @@ public class TTTeleOp extends TTOpMode {
             telemetry.update();
         } else if (gamepad2.a) {
             arm.lower(1);
-<<<<<<< HEAD
-<<<<<<< HEAD
 >>>>>>> parent of b7b2993... Revert "Merge branch 'develop' of https://github.com/PrimeTactic/SkyStone into develop"
         }
     }
-=======
->>>>>>> parent of f3b0a47... double skystone auto progress
 
 <<<<<<< HEAD
     private void armUpdate() {
-        if (gamepad2.y) {
-            telemetry.addData("status", "reached armLift");
-            telemetry.update();
-            arm.liftContinuous(1);
-            telemetry.addData("status", "cleared armLift");
-            telemetry.update();
-        } else if (gamepad2.a) {
-            arm.lower(1);
+        if (gamepad1.y) {
+            arm.raise(0.5);
+        } else if (gamepad1.a) {
+            arm.lower(0.5);
+        } else if (gamepad1.b) {
+            arm.liftTimed(0.75, 0.5);
+        }
+        if (gamepad1.dpad_up) {
+            arm.liftContinuous(0.5);
+        }
+        if (gamepad1.dpad_down) {
+            arm.liftContinuous(-0.5);
+        } else {
+            arm.liftContinuous(0.0);
+        }
+        if (gamepad1.x && canUseClaw) {
+            if (arm.clawIsOpen()) {
+                arm.closeClaw();
+            } else {
+                arm.openClaw();
+            }
+            driveSystem.continuous(velocity, turn);
         }
     }
 
-<<<<<<< HEAD
     public class ArmInputListener extends Thread {
 =======
 >>>>>>> parent of b7b2993... Revert "Merge branch 'develop' of https://github.com/PrimeTactic/SkyStone into develop"
-=======
->>>>>>> parent of f3b0a47... double skystone auto progress
-=======
-        }
-    }
-
->>>>>>> parent of f3b0a47... double skystone auto progress
-=======
-        }
-    }
-
->>>>>>> parent of f3b0a47... double skystone auto progress
 
 
         private void armUpdate() {
@@ -171,7 +126,7 @@ public class TTTeleOp extends TTOpMode {
             } else if (gamepad1.a) {
                 arm.lower(0.5);
             } else if (gamepad1.b) {
-                arm.liftTimed(0.75, 0.5);
+                arm.liftTimed(1.0, 0.5);
             }
             if (gamepad1.dpad_up) {
                 arm.liftContinuous(0.5);
@@ -224,9 +179,6 @@ public class TTTeleOp extends TTOpMode {
                         clawCooldown();
                     }
                 }
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 
                 private void clawCooldown() {
                     canUseClaw = false;
@@ -241,32 +193,4 @@ public class TTTeleOp extends TTOpMode {
 
             }
 
-=======
-
-=======
-
->>>>>>> parent of f3b0a47... double skystone auto progress
-=======
-
->>>>>>> parent of f3b0a47... double skystone auto progress
-                private void clawCooldown() {
-                    canUseClaw = false;
-                    TimerTask enableClaw = new TimerTask() {
-                        @Override
-                        public void run() {
-                            canUseClaw = true;
-                        }
-                    };
-                    getTimer().schedule(enableClaw, (long) (CLAW_COOLDOWN_SECONDS * 1000));
-                }
-
-            }
-
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> parent of f3b0a47... double skystone auto progress
-=======
->>>>>>> parent of f3b0a47... double skystone auto progress
-=======
->>>>>>> parent of f3b0a47... double skystone auto progress
         }

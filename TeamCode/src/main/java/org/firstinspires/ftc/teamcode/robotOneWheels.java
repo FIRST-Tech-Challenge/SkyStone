@@ -31,9 +31,10 @@ package org.firstinspires.ftc.teamcode;
 
 //import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
+import com.qualcomm.hardware.motors.RevRoboticsCoreHexMotor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
+//import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 //import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -45,16 +46,16 @@ public class robotOneWheels extends LinearOpMode {
 
 
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftDrive = null;
-    private DcMotor rightDrive = null;
+    private RevRoboticsCoreHexMotor leftDrive = null;
+    private RevRoboticsCoreHexMotor rightDrive = null;
 
     @Override
     public void runOpMode() {
         telemetry.addData("status", "Initialized");
         telemetry.update();
 
-        leftDrive = hardwareMap.get(DcMotor.class, "leftDrive");
-        rightDrive = hardwareMap.get(DcMotor.class, "rightDrive");
+        leftDrive = hardwareMap.get(RevRoboticsCoreHexMotor.class, "leftDrive");
+        rightDrive = hardwareMap.get(RevRoboticsCoreHexMotor.class, "rightDrive");
 
         //leftFront.setDirection(DcMotor.Direction.FORWARD);
         //leftBack.setDirection(DcMotor.Direction.FORWARD);
@@ -71,8 +72,8 @@ public class robotOneWheels extends LinearOpMode {
         while (opModeIsActive()) {
 
             if ( move >= -1 && move < 0 ) {
-                leftDrive.setDirection(DcMotor.Direction.REVERSE);
-                rightDrive.setDirection(DcMotor.Direction.FORWARD);
+                leftDrive.setDirection(RevRoboticsCoreHexMotor.Direction.REVERSE);
+                rightDrive.setDirection(RevRoboticsCoreHexMotor.Direction.FORWARD);
                 leftDrive.setPower(move);
                 rightDrive.setPower(move);
 

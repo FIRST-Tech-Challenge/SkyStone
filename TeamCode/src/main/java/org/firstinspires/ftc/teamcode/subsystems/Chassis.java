@@ -42,9 +42,5 @@ public class Chassis extends Subsystem {
     public void runDistance(double distance, double targetAngle, double turn, double power) {
         final double turnAngle = targetAngle - Math.PI / 4;
 
-        frontLeft.setTargetPosition();
-        frontRight.setTargetPosition(power * Math.sin(turnAngle) - turn);
-        backLeft.setTargetPosition(power * Math.sin(turnAngle) + turn);
-        backRight.setTargetPosition(power * Math.cos(turnAngle) - turn);
     }
 }

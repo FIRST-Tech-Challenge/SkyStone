@@ -51,6 +51,7 @@ public abstract class BaseStateMachine extends BaseOpMode {
 //                distanceLeft = hardwareMap.get(DistanceSensor.class, "distanceRight");
         distanceFront = hardwareMap.get(DistanceSensor.class, "distanceFront");
         this.msStuckDetectInit = 20000;
+        this.msStuckDetectLoop = 30000;
         newState(State.STATE_INITIAL);
         skystone = vuforia.targetsSkyStone.get(0);
     }
@@ -70,10 +71,8 @@ public abstract class BaseStateMachine extends BaseOpMode {
             case STATE_INITIAL:
                 // Initialize
                 // Drive 0.5m (1 tile) to the left
-                driveSystem.driveToPosition(600, DriveSystem.Direction.FORWARD, 0.8);
-//                                driveSystem.turnAbsolute(0, 0.8);
+                while (!driveSystem.driveToPosition(600, DriveSystem.Direction.FORWARD, 0.8)) {}
                 newState(State.STATE_FIND_SKYSTONE);
-
                 mStateTime.reset();
                 break;
 
@@ -102,28 +101,33 @@ public abstract class BaseStateMachine extends BaseOpMode {
                 telemetry.update();
 
                 Orientation rotation = vuforia.getRobotHeading();
-                if(!driveSystem.turn(rotation.thirdAngle - 90, 0.5)){
-                    break;
-                }
+//                if (!driveSystem.turn(rotation.thirdAngle - 90, 0.5)) {
+//                    break;
+//                }
                 if (vuforia.isTargetVisible(skystone)) {
                     Log.d(TAG, "inside grab stone loop");
                     VectorF translation = vuforia.getRobotPosition();
-                    // Align with skystone
-                    driveSystem.driveToPosition((int) translation.get(1), DriveSystem.Direction.RIGHT, 0.25);
-                    // Move to the left and actually knock the stones out of the way
-                    // inch value: 56
-                    driveSystem.driveToPosition((int) distanceFront.getDistance(DistanceUnit.MM), DriveSystem.Direction.LEFT, 0.8);
-                    driveSystem.turnAbsolute(0, 0.8);
-                    // TODO: Grab the stone
+                    // Strafe to align with skystone
+                    while (!driveSystem.driveToPosition((int) translation.get(1), DriveSystem.Direction.RIGHT, 0.25)) {}
+                    // Turn to face the skystone exactly
+                    double heading = driveSystem.imuSystem.getHeading();
+                    while (!driveSystem.turn(heading, 0.2)) {};
+                    // Drive up to the skystone
+                    double distance = distanceFront.getDistance(DistanceUnit.MM);
+                    // - 1.5 inches
+                    distance -= 38.1;
+                    while (!driveSystem.driveToPosition((int) distance, DriveSystem.Direction.FORWARD, 0.8)) {};
+                    try {
+                        Thread.sleep(1250);
+                    } catch (Exception e) {
 
-                    // TODO: Stone is grabbed drop it into the robot
-
+                    }
                     // Back up
-                    driveSystem.driveToPosition(500, DriveSystem.Direction.BACKWARD, 0.8);
-
-
+                    while (!driveSystem.driveToPosition(500, DriveSystem.Direction.BACKWARD, 0.8)) {};
                     // Face same direction as the audience
-                    driveSystem.turnAbsolute(90, 0.8);
+                    heading = driveSystem.imuSystem.getHeading() + 90;
+                    Log.d(TAG, "Target: " + heading);
+                    while (!driveSystem.turn(heading, 0.2)) {};
                 }
                 telemetry.update();
                 newState(State.STATE_DELIVER_STONE);
@@ -132,7 +136,7 @@ public abstract class BaseStateMachine extends BaseOpMode {
             case STATE_DELIVER_STONE:
                 telemetry.addData("State", "STATE_DELIVER_STONE");
                 // TODO: Use distance sensor to detect distance from wall
-                if (distanceLeft.getDistance(DistanceUnit.INCH) > 20) {
+                if (distanceFront.getDistance(DistanceUnit.INCH) > 20) {
                     driveSystem.drive((float) (driveSystem.imuSystem.getHeading() / 50.0), 0.0f, -0.5f);
                 } else {
                     driveSystem.setMotorPower(0.0);

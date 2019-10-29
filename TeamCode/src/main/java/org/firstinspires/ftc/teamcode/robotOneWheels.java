@@ -61,8 +61,8 @@ public class robotOneWheels extends LinearOpMode {
         //rightFront.setDirection(DcMotor.Direction.REVERSE);
         //rightBack.setDirection(DcMotor.Direction.REVERSE);
 
-        double move = gamepad1.left_stick_y;
-        double turn = gamepad1.left_stick_x;
+        double move = gamepad1.right_stick_y;
+        double turn = gamepad1.right_stick_x;
 
 
         waitForStart();

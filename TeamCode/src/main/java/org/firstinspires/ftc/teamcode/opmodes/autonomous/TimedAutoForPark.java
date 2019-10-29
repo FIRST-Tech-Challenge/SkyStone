@@ -25,13 +25,10 @@ public class TimedAutoForPark extends LinearOpMode {
     double cParam = 169.7;
     double maxDist = 6.0; // inchesrev control hub
 
-    float hsvValues[] = {0F, 0F, 0F};
-    final double SCALE_FACTOR = 255;
-
     @Override
     public void runOpMode() throws InterruptedException {
 
-        DcMotorEx leftFront = hardwareMap.get(DcMotorEx.class, "left1");
+        //DcMotorEx leftFront = hardwareMap.get(DcMotorEx.class, "left1");
         /*DcMotorEx leftBack = hardwareMap.get(DcMotorEx.class, "left2");
         DcMotorEx rightFront = hardwareMap.get(DcMotorEx.class, "right1");
         DcMotorEx rightBack = hardwareMap.get(DcMotorEx.class, "right2");
@@ -48,13 +45,10 @@ public class TimedAutoForPark extends LinearOpMode {
 
         MecanumDrive train = new MecanumDriveImpl(leftFront, leftBack, rightFront, rightBack, null);
         driveTrain = new MecanumController(train);
-
 */
 
         Servo servoTest = hardwareMap.get(Servo.class, "armTune");
-
-//        RevColorSensorV3 color = hardwareMap.get(RevColorSensorV3.class, "sensor_color_distance");
-        RevColorSensorV3 color = new RevColorSensorV3(
+        RevColorSensorV3 rightColor = new RevColorSensorV3(
                 hardwareMap.get(RevColorSensorV3.class, "color").getDeviceClient()) {
             @Override
             protected double inFromOptical(int rawOptical) {
@@ -62,6 +56,14 @@ public class TimedAutoForPark extends LinearOpMode {
             }
         };
 
+        //will return an error because 2nd color sensor hasn't been hardware mapped yet
+        RevColorSensorV3 leftColor = new RevColorSensorV3(
+                hardwareMap.get(RevColorSensorV3.class, "color").getDeviceClient()) {
+            @Override
+            protected double inFromOptical(int rawOptical) {
+                return Math.pow((rawOptical - cParam)/aParam, -binvParam);
+            }
+        };
         color.rawOptical();
 
         ElapsedTime runtime = new ElapsedTime();
@@ -75,38 +77,50 @@ public class TimedAutoForPark extends LinearOpMode {
             double avg = 0;
             double redToBlueAvg;
             double greenToBlueAvg;
+            double redBlueRatioLeft;
+            double redBlueRatioRight;
+            double greenBlueRatioRight;
+            double greenBlueRatioLeft;
             for (int i = 0; i < 10; i++){
-                double initial = Math.pow((color.rawOptical()-cParam)/aParam, -binvParam);
+                double initial = Math.pow((rightColor.rawOptical()-cParam)/aParam, -binvParam);
                 avg = avg + initial;
-                redToBlueAvg += (color.red()/color.blue())
-                greenToBlueAvg += (color.green()/color.blue())
+                redToBlueAvg += (rightColor.red()/rightColor.blue())
+                greenToBlueAvg += (rightColor.green()/rightColor.blue())
             }
             double actualAvg = avg/10;
-
-            Color.RGBToHSV((int) (color.red() * SCALE_FACTOR),
-                    (int) (color.green() * SCALE_FACTOR),
-                    (int) (color.blue() * SCALE_FACTOR),
-                    hsvValues);
             if (runtime.seconds() < 2) {
                 redToBlueAvg /= 10;
                 greenToBlueAvg /=10;
             }
-            telemetry.addData("R", color.red());
-            telemetry.addData("G", color.green());
-            telemetry.addData("B", color.blue());
+
+            telemetry.addData("R", rightColor.red());
+            telemetry.addData("G", rightColor.green());
+            telemetry.addData("B", rightColor.blue());
             telemetry.addData("InputData", actualAvg);
             telemetry.update();
-            sleep(500);
+            sleep(250);
             //Reads color values and sends them to driver station
-            if (actualAvg < maxDist && (color.red() / color.blue()) > redToBlueAvg && (color.green()/color.blue()) > greenToBlueAvg) {
-                servoTest.setPosition(1);
-                driveTrain.translate(0, 0, MecanumDrive.TranslationMethod.CONSTANT_SPEED);
+            redBlueRatioRight = (rightColor.red()/rightColor.blue());
+            redBlueRatioLeft =  (leftColor.red()/leftColor.blue());
+            greenBlueRatioLeft = (rightColor.green()/rightColor.blue());
+            greenBlueRatioRight (leftColor.green()/leftColor.blue())
+            //should test logic when two sensors are implemented
+            //also implemented time limit so that servos won't run randomly
+            if (actualAvg < maxDist && runtime.seconds() < 15 {
+                if ((redBlueRatioRight) > redToBlueAvg && (greenBlueRatioRight) > greenToBlueAvg && (redBlueRatioLeft) > redToBlueAvg && (greenBlueRatioLeft) > greenToBlueAvg) {
+                    telemetry.addData("Middle Block Skystone", true);
+                    //moves right and sets left servo power to 1
+                } else if ((redBlueRatioRight) > redToBlueAvg && (greenBlueRatioRight) > greenToBlueAvg && (redBlueRatioLeft - redToBlueAvg) < 1 && (greenBlueRatioLeft - greenToBlueAvg) < 1 {
+                    telemetry.addData("Left Block Skystone", true);
+                    //sets left servo to 1
+                } else {
+                    //maybe other if logic here if necessary? Don't think its needed
+                    telemetry.addData("Right Block Skystone", true);
+                    //sets right servo to 1
+                }
                 telemetry.update();
-//                telemetry.addData("R", color.red());
-//                telemetry.addData("G", color.green());
-//                telemetry.addData("B", color.blue());
-                sleep(2000);
             }
+
 
             //The if statement above allows the robot to detect yellow to find a block and move the servo accordingly
         }

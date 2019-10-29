@@ -112,7 +112,7 @@ public class DriveTrain {
 
     public void initDriveTrain() {
 
-       // this.opMode = opMode;
+        this.opMode = opMode;
         sensors = new Sensors();
 
         //Sets Hardware Map

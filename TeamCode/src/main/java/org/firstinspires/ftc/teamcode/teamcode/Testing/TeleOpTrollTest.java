@@ -100,7 +100,7 @@ public class TeleOpTrollTest extends OpMode {
         drive.bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         drive.br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
-        intake.initIntake(this);
+        intake.initIntakeTele(this);
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 

@@ -85,6 +85,40 @@ public class Outtake{
 
 
     }
+
+    public void initOuttakeAuto(LinearOpMode opMode)
+    {
+
+        time.reset();
+        this.opMode = opMode;
+        top = false;
+        bottom = false;
+
+        k = 1.0;
+        level = 1.0;
+        blockCount = 0.0;
+
+
+        pushBlock = opMode.hardwareMap.servo.get("PB");
+        rightVex = opMode.hardwareMap.crservo.get("ROut");
+        leftVex = opMode.hardwareMap.crservo.get("LOut");
+        liftLeft = opMode.hardwareMap.dcMotor.get("LLift");
+        liftRight = opMode.hardwareMap.dcMotor.get("RLift");
+        hookLeft = opMode.hardwareMap.servo.get("LHook");
+        hookRight = opMode.hardwareMap.servo.get("RHook");
+
+
+        hookLeft.setDirection(Servo.Direction.REVERSE);
+        liftLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        prevEncoderPos = averageLiftPosition();
+
+        resetLiftEncoders();
+
+    }
     private void resetLiftEncoders()
     {
         liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -137,26 +171,13 @@ public class Outtake{
         top = true;
     }
 
-    public void outTake_Auto(DriveTrain drive)
+    public void outTake_Auto(LinearOpMode opMode)
     {
-
+        pushBlock.setPosition(1);
         raiseLift();
-        if(blockCount % 2 == 1)
-        {
-            openBasket();
-        }
-        else if(blockCount % 2 == 0)
-        {
-            drive.strafeMove((LinearOpMode)opMode, DISTANCE_BETWEEN_BLOCKS, 3, 1);
+        openBasket();
 
-            openBasket();
 
-            drive.strafeMove((LinearOpMode)opMode,  DISTANCE_BETWEEN_BLOCKS, 3, -1);
-
-            level++;
-        }
-
-        resetOuttake();
     }
 
     //moves lift up and down by increments

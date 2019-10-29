@@ -33,21 +33,10 @@ public class SensorBNO055IMU extends LinearOpMode
     @Override
     public void runOpMode() throws InterruptedException
     {
-//        leftMotor = hardwareMap.dcMotor.get("left_motor");
-//        rightMotor = hardwareMap.dcMotor.get("right_motor");
-//
-//        leftMotor.setDirection(DcMotor.Direction.REVERSE);
-//
-//        leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        // get a reference to touch sensor.
-
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
         parameters.mode                = BNO055IMU.SensorMode.IMU;
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-//        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.loggingEnabled      = false;
 
         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
@@ -95,40 +84,7 @@ public class SensorBNO055IMU extends LinearOpMode
             telemetry.addData("3 correction", correction);
             telemetry.update();
 
-//            leftMotor.setPower(power - correction);
-//            rightMotor.setPower(power + correction);
-
-            // We record the sensor values because we will test them in more than
-            // one place with time passing between those places. See the lesson on
-            // Timing Considerations to know why.
-
-//            aButton = gamepad1.a;
-//            bButton = gamepad1.b;
-//            touched = touch.isPressed();
-
-//            if (touched || aButton || bButton)
-//            {
-//                // backup.
-//                leftMotor.setPower(power);
-//                rightMotor.setPower(power);
-//
-//                sleep(500);
-//
-//                // stop.
-//                leftMotor.setPower(0);
-//                rightMotor.setPower(0);
-//
-//                // turn 90 degrees right.
-//                if (touched || aButton) rotate(-90, power);
-//
-//                // turn 90 degrees left.
-//                if (bButton) rotate(90, power);
-//            }
         }
-
-        // turn the motors off.
-//        rightMotor.setPower(0);
-//        leftMotor.setPower(0);
     }
 
     /**

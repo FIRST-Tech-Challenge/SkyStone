@@ -41,7 +41,7 @@ public abstract class ClawTest extends ChassisStandard {
                      }
             }*/
 
-            encoderDrive(-24);
+            encoderDrive(24);
 
             madeTheRun = true;
         }

@@ -20,6 +20,8 @@ class SSTeleOp : OpMode() {
     var slideP = 0.5
     var linSlidePow: Float = 0.00.toFloat()
     var curPos = 0
+    var leftPower: Float = 0.0.toFloat()
+    var rightPower: Float = 0.0.toFloat()
     val max = 1880
 
 
@@ -47,8 +49,8 @@ class SSTeleOp : OpMode() {
         //slowDown = if(gamepad1.left_bumper) 2.0 else 1.25 //condensed if else
         //Tank Drive-sets power equal to numerical value of joystick positions
 
-        var leftPower: Float = -gamepad1.left_stick_y
-        var rightPower: Float = -gamepad1.right_stick_y
+        leftPower = -gamepad1.left_stick_y
+        rightPower = -gamepad1.right_stick_y
 
         robot.leftDrive?.power = leftPower.toDouble() / slowDown
         robot.rightDrive?.power = rightPower.toDouble() / slowDown

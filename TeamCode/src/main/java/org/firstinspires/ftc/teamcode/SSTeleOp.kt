@@ -75,6 +75,8 @@ class SSTeleOp : OpMode() {
         if (tooLow) telemetry.addData("Linear Slide Y Error:", "MIN HEIGHT REACHED")
 
         try {
+            slideP = (gamepad2.left_stick_y.toDouble() / 2) + 0.5
+            robot.hSlide?.position = slideP //controls horizontal slide with the left stick of gp2
             robot.pinch(gamepad2) //operates claw
             robot.liftSlideY(linSlidePow)//controls vertical slide
             curPos = robot.vSlide!!.currentPosition
@@ -82,12 +84,9 @@ class SSTeleOp : OpMode() {
             telemetry.addData("Movement Error:", println(e))
         }
 
-        slideP = (gamepad2.left_stick_y.toDouble() / 2) + 0.5/*
-            robot.hSlide?.position = slideP //controls horizontal slide with the left stick of gp2*/
 
         telemetry.addData("Servo:", "HSlide(%.2f), Claw(%.2f)", robot.hSlide?.position?.toFloat(),
                 robot.claw?.position?.toFloat())
-        telemetry.addData("GP2 LSY:", gamepad2.left_stick_y)
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower)
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower)
         telemetry.addData("Linear Slide ", "Position: (%.2f)", curPos.toFloat())

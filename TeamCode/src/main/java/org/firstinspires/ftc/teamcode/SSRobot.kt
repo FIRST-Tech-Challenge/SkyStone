@@ -71,11 +71,13 @@ class SSRobot {
 
 
     fun pinch(gp: Gamepad) {
+        var close = false
+        if(gp.a) close = !close
+        
         this.claw?.position = when {
-            gp.a -> 0.0
-            else -> 1.0 //can be explicit
+            close -> 0.0 //close
+            !close -> 1.0 //open
         }
-        this.hSlide?.position = 0.8
     }
 }
 

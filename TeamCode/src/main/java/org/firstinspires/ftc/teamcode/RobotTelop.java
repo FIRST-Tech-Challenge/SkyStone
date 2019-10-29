@@ -15,7 +15,35 @@ public class RobotTelop extends LinearOpMode {
     public void runOpMode() {
 
         robot.init(hardwareMap);
-        telemetry.addData("Say", "Hi Steve");    //
+        if (! robot.hasLeftDrive) {
+            telemetry.addData("Warning", "Motor: left_drive not plugged in");    //
+        } else {
+            telemetry.addData("Status", "Motor: left_drive identified");    //
+        }
+
+        if (! robot.hasRightDrive) {
+            telemetry.addData("Warning", "Motor: right_drive not plugged in");    //
+        } else {
+            telemetry.addData("Status", "Motor: right_drive identified");    //
+        }
+
+        if (! robot.hasLeverArm) {
+            telemetry.addData("Warning", "Motor: lever_arm not plugged in");    //
+        } else {
+            telemetry.addData("Status", "Motor: lever_arm identified");    //
+        }
+
+        if (! robot.hasClampRotator) {
+            telemetry.addData("Warning", "Servo: clamp_rotator not plugged in");    //
+        } else {
+            telemetry.addData("Status", "Servo: clamp_rotator identified");    //
+        }
+
+        if (! robot.hasClamp) {
+            telemetry.addData("Warning", "Servo: clamp not plugged in");    //
+        } else {
+            telemetry.addData("Status", "Servo: clamp identified");    //
+        }
         telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)

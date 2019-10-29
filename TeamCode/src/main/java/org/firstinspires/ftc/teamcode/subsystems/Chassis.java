@@ -41,6 +41,11 @@ public class Chassis extends Subsystem {
 
     public void runDistance(double distance, double targetAngle, double turn, double power) {
         final double turnAngle = targetAngle - Math.PI / 4;
-
+        final double wheelDistance = (Math.sqrt(2)/wheelRadius) * distance;
+        final double robotTurn = robotRadius * turn;
+        frontLeft.setTargetPosition((int)(wheelDistance * Math.cos(turnAngle) + robotTurn));
+        frontRight.setTargetPosition((int)(wheelDistance * Math.sin(turnAngle) - robotTurn));
+        backLeft.setTargetPosition((int)(wheelDistance * Math.sin(turnAngle) + robotTurn));
+        backRight.setTargetPosition((int)(wheelDistance * Math.cos(turnAngle) - robotTurn));
     }
 }

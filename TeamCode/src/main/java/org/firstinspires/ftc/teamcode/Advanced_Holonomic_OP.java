@@ -128,9 +128,9 @@ public class Advanced_Holonomic_OP extends OpMode {
         if (gamepad1.dpad_up || gamepad1.dpad_down) {
             int magnitude = (gamepad1.dpad_up ? 1 : 0) + (gamepad1.dpad_down ? -1 : 0);
             frontLeftPower = magnitude * Math.sin(angle);
-            frontRightPower = magnitude* Math.sin(angle+90);;
+            frontRightPower = magnitude* Math.sin(angle+90);
             backLeftPower = magnitude* Math.sin(angle+90);
-            backRightPower = magnitude* Math.sin(angle);;
+            backRightPower = magnitude* Math.sin(angle);
         }
         if (gamepad1.dpad_left || gamepad1.dpad_right) {
             int magnitude = (gamepad1.dpad_left ? 1 : 0) + (gamepad1.dpad_right ? -1 : 0);
@@ -140,6 +140,26 @@ public class Advanced_Holonomic_OP extends OpMode {
             backRightPower = -magnitude* Math.sin(angle+90);
         }
 
+        if ( gamepad1.left_bumper){
+            frontLeftPower += -1;
+            frontRightPower += 1;
+            backLeftPower += -1;
+            backRightPower += 1;
+        }
+        if ( gamepad1.right_bumper){
+            frontLeftPower += 1;
+            frontRightPower += -1;
+            backLeftPower += 1;
+            backRightPower += -1;
+        }
+
+
+        double max = findMax(frontLeftPower,frontRightPower,backLeftPower,backRightPower);
+        frontLeftPower = frontLeftPower / max;
+        frontRightPower = frontRightPower / max;
+        backLeftPower = backLeftPower / max;
+        backRightPower = backRightPower / max;
+
         frontLeftDrive.setPower(frontLeftPower);
         frontRightDrive.setPower(frontRightPower);
         backLeftDrive.setPower(backLeftPower);
@@ -148,6 +168,10 @@ public class Advanced_Holonomic_OP extends OpMode {
 
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
+        telemetry.addData("Front Motor", " left:(%.f) right:(%.f)", frontLeftPower, frontRightPower);
+        telemetry.addData("Back Motor", " left:(%.f) right:(%.f)", backLeftPower, backRightPower);
+        telemetry.addData("maxPower", "(%.f)", max);
+        telemetry.update();
         //telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
     }
 
@@ -156,6 +180,16 @@ public class Advanced_Holonomic_OP extends OpMode {
      */
     @Override
     public void stop() {
+    }
+
+    private double findMax(double... vals) {
+        double max = Double.NEGATIVE_INFINITY;
+
+        for (double d : vals) {
+            if (d > max) max = d;
+        }
+
+        return max;
     }
 
 }

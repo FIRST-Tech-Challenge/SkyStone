@@ -15,31 +15,31 @@ public class RobotTelop extends LinearOpMode {
     public void runOpMode() {
 
         robot.init(hardwareMap);
-        if (! robot.hasLeftDrive) {
+        if (robot.leftDrive == null) {
             telemetry.addData("Warning", "Motor: left_drive not plugged in");    //
         } else {
             telemetry.addData("Status", "Motor: left_drive identified");    //
         }
 
-        if (! robot.hasRightDrive) {
+        if (robot.rightDrive == null) {
             telemetry.addData("Warning", "Motor: right_drive not plugged in");    //
         } else {
             telemetry.addData("Status", "Motor: right_drive identified");    //
         }
 
-        if (! robot.hasLeverArm) {
+        if (robot.leverArm == null) {
             telemetry.addData("Warning", "Motor: lever_arm not plugged in");    //
         } else {
             telemetry.addData("Status", "Motor: lever_arm identified");    //
         }
 
-        if (! robot.hasClampRotator) {
+        if (robot.clampRotator == null) {
             telemetry.addData("Warning", "Servo: clamp_rotator not plugged in");    //
         } else {
             telemetry.addData("Status", "Servo: clamp_rotator identified");    //
         }
 
-        if (! robot.hasClamp) {
+        if (robot.clamp == null) {
             telemetry.addData("Warning", "Servo: clamp not plugged in");    //
         } else {
             telemetry.addData("Status", "Servo: clamp identified");    //

@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package TeamCode.src.main.java.org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -78,7 +78,7 @@ public class BasicOpMode_ArcadeTest extends OpMode
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
-        bottomleftDrive.setDirection(DcMotor.Direction.REVERSE);
+        bottomleftDrive.setDirection(DcMotor.Direction.FORWARD);
         bottomrightDrive.setDirection(DcMotor.Direction.FORWARD);
         topleftDrive.setDirection(DcMotor.Direction.FORWARD);
         toprightDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -119,13 +119,13 @@ public class BasicOpMode_ArcadeTest extends OpMode
         if(gamepad1.left_stick_x < 0 && -1.0*gamepad1.left_stick_y < 0){ //3rd Quadrant
             angle = Math.atan((-1.0*gamepad1.left_stick_y)/(gamepad1.left_stick_x))+Math.PI;
         }
-        else if(-1*gamepad1.left_stick_y == 0 && gamepad1.left_stick_x < 0){angle = Math.PI;}
+        else if(gamepad1.left_stick_y == 0 && gamepad1.left_stick_x < 0){angle = Math.PI;}
         else if(-1*gamepad1.left_stick_y > 0 && gamepad1.left_stick_x < 0){
             angle = Math.atan((-1.0*gamepad1.left_stick_y)/(gamepad1.left_stick_x))+Math.PI;
         }
-        else if(gamepad1.left_stick_x == 0 && -1.0*gamepad1.left_stick_y > 0){angle = 1.5*Math.PI;}
-        else if(-1.0*gamepad1.left_stick_y > 0 && gamepad1.left_stick_x > 0){angle += 2.0*Math.PI;}
-
+        else if(gamepad1.left_stick_x == 0 && -1.0*gamepad1.left_stick_y > 0){angle = 0.5*Math.PI;}
+        else if(gamepad1.left_stick_x == 0 && -1.0*gamepad1.left_stick_y < 0){angle = 3*Math.PI/2;}
+        else if(gamepad1.left_stick_x > 0 && -1.0*gamepad1.left_stick_y < 0){angle += 2*Math.PI;}
         angle = Math.toDegrees(angle); //Changes angle from radians to degrees
 
         // Not Tank Mode uses two sticks to control.
@@ -133,7 +133,7 @@ public class BasicOpMode_ArcadeTest extends OpMode
         double[] arr = new double[4];
 
         if(angle == 0){arr = new double[]{1, -1, -1, 1};}
-        else if(angle > 0 && Math.toDegrees(angle) < 90){arr = new double[]{1, angle/(Math.PI/4)-1, angle/(Math.PI/4)-1, 1};}
+        else if(angle > 0 && angle < 90){arr = new double[]{1, angle/45-1, angle/45-1, 1};}
         else if(angle == 90){arr = new double[]{1, 1, 1, 1};}
         else if(angle > 90 && angle < 180){arr = new double[]{3-angle/45, 1, 1, 3-angle/45};}
         else if(angle == 180){arr = new double[]{-1, 1, 1, -1};}
@@ -155,7 +155,7 @@ public class BasicOpMode_ArcadeTest extends OpMode
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Motors", "tleft (%.2f), tright (%.2f), bleft (%.2f), bright (%.2f), ANGLE (%.2f), X (%.2f), Y (%.2f)",
-                topleftPower, toprightPower, bottomleftPower, bottomrightPower, angle,-1.0*gamepad1.left_stick_x, -1.0*gamepad1.left_stick_y);
+                topleftPower, toprightPower, bottomleftPower, bottomrightPower, angle,gamepad1.left_stick_x, -1.0*gamepad1.left_stick_y);
 
     }
 

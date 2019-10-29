@@ -285,15 +285,15 @@ public class DriveSystem {
     public double diffFromAbs(double heading) {
         // calculate error in -179 to +180 range
         // When vertical use pitch instead of heading
-        double robotError = heading - imuSystem.getHeading();
-        Log.d(TAG,"Robot Error: " + robotError);
-        while (robotError > 180) {
-            robotError -= 360;
+        double robotDiff = heading - imuSystem.getHeading();
+        Log.d(TAG,"Difference from initial: " + robotDiff);
+        while (robotDiff > 180) {
+            robotDiff -= 360;
         }
-        while (robotError <= -180) {
-            robotError += 360;
+        while (robotDiff <= -180) {
+            robotDiff += 360;
         }
-        return robotError;
+        return robotDiff;
     }
 
     /**

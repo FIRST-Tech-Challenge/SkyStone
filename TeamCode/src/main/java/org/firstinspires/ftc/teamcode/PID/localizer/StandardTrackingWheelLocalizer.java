@@ -44,8 +44,8 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
         ));
 
         leftEncoder = hardwareMap.dcMotor.get("leftForward");
-        //rightEncoder = hardwareMap.dcMotor.get("rightForward");
-        //frontEncoder = hardwareMap.dcMotor.get("sideways");
+        rightEncoder = hardwareMap.dcMotor.get("rightForward");
+        frontEncoder = hardwareMap.dcMotor.get("sideways");
     }
 
     public static double encoderTicksToInches(int ticks) {

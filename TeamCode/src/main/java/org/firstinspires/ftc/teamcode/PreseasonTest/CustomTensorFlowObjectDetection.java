@@ -55,20 +55,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This 2019-2020 OpMode illustrates the basics of using the TensorFlow Object Detection API to
- * determine the position of the Skystone game elements.
- * <p>
- * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list.
- * <p>
- * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
- * is explained below.
+ * There are currently 2 available models:
+ *  -"skystoneTFOD_v1_[50-15].tflite"
+ *  -"skystoneTFOD_v2_[105-15].tflite"
  */
-@TeleOp(name = "CustomObjectDetection", group = "Linear Opmode")
+@TeleOp(name = "RetrainedSkystoneDetection", group = "Linear Opmode")
 public class CustomTensorFlowObjectDetection extends LinearOpMode {
-    private static final String TFOD_MODEL_ASSET = "foundation.tflite";
-    private static final String LABEL_FIRST_ELEMENT = "Foundation";
-    private static final String LABEL_SECOND_ELEMENT = "Not Foundation";
+    private static final String TFOD_MODEL_ASSET = "skystoneTFOD_v2_[105-15].tflite";    //Skystone file name format: "skystoneTFOD_vVersion#_[# of training images-# of testing images].tflite
+    private static final String LABEL_FIRST_ELEMENT = "skystone";
+    private static final String LABEL_SECOND_ELEMENT = "stone";
 
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
@@ -181,7 +176,7 @@ public class CustomTensorFlowObjectDetection extends LinearOpMode {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minimumConfidence = 0.1;
+        tfodParameters.minimumConfidence = 0.85;
 
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);

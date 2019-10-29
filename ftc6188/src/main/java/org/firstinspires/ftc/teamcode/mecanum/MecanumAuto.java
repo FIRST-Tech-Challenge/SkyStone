@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotlib.robot.MecanumRobot;
 
-@Autonomous(name="Mecanum Auto", group="Auto")
+@Autonomous(name="Mecanum Auto V-Final", group="Auto")
 public class MecanumAuto extends LinearOpMode
 {
     private MecanumRobot robot;

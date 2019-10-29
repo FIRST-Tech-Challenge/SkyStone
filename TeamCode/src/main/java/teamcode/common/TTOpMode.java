@@ -47,7 +47,6 @@ public abstract class TTOpMode extends LinearOpMode {
 
 
     public Timer getTimer() {
-
         return timer;
     }
 

@@ -35,10 +35,11 @@ public class TylerController extends OpMode {
     // Hack stuff.
     private boolean useMotors = true;
     private boolean useEncoders = true;
-    private boolean useArm = true; // HACK
-    private boolean useLifter = true; // HACL
+    private boolean useArm = true;
+    private boolean useLifter = true;
     private boolean useDropper = true;
     private boolean useRange = true;
+    private boolean useStrafing = false;
 
     //Movement State
     private int armState;
@@ -66,8 +67,6 @@ public class TylerController extends OpMode {
      */
     @Override
     public void init() {
-
-
 
         // Initialize the motors.
         if (useMotors) {
@@ -202,9 +201,12 @@ public class TylerController extends OpMode {
             if (Math.abs(driveNormal) < 0.1)
                 driveNormal = 0.0; // Prevent the output from saying "-0. 0".
 
-            double driveStrafe = -gamepad1.left_stick_x;
-            if (Math.abs(driveStrafe) < 0.1)
-                driveStrafe = 0.0; // Prevent the output from saying "-0.0".
+            double driveStrafe = 0.0;
+            if (useStrafing) {
+                driveStrafe = -gamepad1.left_stick_x;
+                if (Math.abs(driveStrafe) < 0.1)
+                    driveStrafe = 0.0; // Prevent the output from saying "-0.0".
+            }
 
             double turn = gamepad1.right_stick_x;
 

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.OldFiles
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 
@@ -8,7 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp
  */
 
 @TeleOp(name="KtTeleOp", group="TeleOp")
-//@Disabled
+@Disabled
 class KtTeleOp : OpMode()
 {
     //using robot class for motors, servos etc

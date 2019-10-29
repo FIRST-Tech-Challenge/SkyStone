@@ -17,9 +17,10 @@ class SSTeleOp : OpMode() {
     var slowDown = 1//default
     var tooHigh = true
     var tooLow = true
+    var slideP = 0.5
     var linSlidePow: Float = 0.00.toFloat()
     var curPos = 0
-    val max = 1780
+    val max = 1880
 
 
     override fun init() {
@@ -27,13 +28,14 @@ class SSTeleOp : OpMode() {
         telemetry.update()
         //initializes all parts
         robot.init(hardwareMap, true)
-        robot.linSlideY?.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-        curPos = robot.linSlideY!!.currentPosition
+        robot.vSlide?.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+        curPos = robot.vSlide!!.currentPosition
 
     }
 
     override fun start() { //runs once when play button is pushed
-        robot.linSlideY?.mode = DcMotor.RunMode.RUN_USING_ENCODER
+        robot.vSlide?.mode = DcMotor.RunMode.RUN_USING_ENCODER
+        robot.hSlide?.position = 0.7
     }
 
     override fun loop() {
@@ -73,14 +75,19 @@ class SSTeleOp : OpMode() {
         if (tooLow) telemetry.addData("Linear Slide Y Error:", "MIN HEIGHT REACHED")
 
         try {
-            robot.linSlideX?.power = gamepad2.left_stick_y.toDouble() //controls horizontal slide with the left stick of gp2
             robot.pinch(gamepad2) //operates claw
             robot.liftSlideY(linSlidePow)//controls vertical slide
-            curPos = robot.linSlideY!!.currentPosition
+            curPos = robot.vSlide!!.currentPosition
         } catch (e: Exception) {
             telemetry.addData("Movement Error:", println(e))
         }
 
+        slideP = (gamepad2.left_stick_y.toDouble() / 2) + 0.5/*
+            robot.hSlide?.position = slideP //controls horizontal slide with the left stick of gp2*/
+
+        telemetry.addData("Servo:", "HSlide(%.2f), Claw(%.2f)", robot.hSlide?.position?.toFloat(),
+                robot.claw?.position?.toFloat())
+        telemetry.addData("GP2 LSY:", gamepad2.left_stick_y)
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower)
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower)
         telemetry.addData("Linear Slide ", "Position: (%.2f)", curPos.toFloat())
@@ -88,7 +95,6 @@ class SSTeleOp : OpMode() {
 
     override fun stop() {
         robot.brake()
-        robot.linSlideX?.power = 0.00
         telemetry.addData("Status: ", "TeleOp Terminated")
         telemetry.update()
     }

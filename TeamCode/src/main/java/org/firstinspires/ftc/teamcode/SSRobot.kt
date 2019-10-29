@@ -10,8 +10,8 @@ class SSRobot {
     var hwdMap: HardwareMap? = null
     var leftDrive: DcMotor? = null
     var rightDrive: DcMotor? = null
-    var linSlideY: DcMotor? = null
-    var linSlideX: CRServo? = null
+    var vSlide: DcMotor? = null
+    var hSlide: Servo? = null
     var claw: Servo? = null
 
 
@@ -25,16 +25,15 @@ class SSRobot {
         hwdMap = ahwdMap
         leftDrive = ahwdMap.dcMotor.get("leftDrive")
         rightDrive = ahwdMap.dcMotor.get("rightDrive")
-        linSlideY = ahwdMap.dcMotor.get("linSlideY")
-        linSlideX = ahwdMap.crservo.get("linSlideX")
+        vSlide = ahwdMap.dcMotor.get("vSlide")
+        hSlide = ahwdMap.servo.get("hSlide")
         claw = ahwdMap.servo.get("claw")
 
 
         //Setting direction
         leftDrive?.direction = motF
         rightDrive?.direction = motR
-        linSlideY?.direction = motR
-        linSlideX?.direction = motF
+        vSlide?.direction = motR
         claw?.direction = serF
 
 
@@ -49,14 +48,14 @@ class SSRobot {
         hwdMap = ahwdMap
         leftDrive = ahwdMap.dcMotor.get("leftDrive")
         rightDrive = ahwdMap.dcMotor.get("rightDrive")
-        linSlideY = ahwdMap.dcMotor.get("linSlideY")
+        vSlide = ahwdMap.dcMotor.get("vSlide")
         claw = ahwdMap.servo.get("claw")
 
 
         //Setting direction
         leftDrive?.direction = motF
         rightDrive?.direction = motR
-        linSlideY?.direction = motR
+        vSlide?.direction = motR
         claw?.direction = serF
 
 
@@ -64,7 +63,7 @@ class SSRobot {
         rightDrive?.power = 0.0
         leftDrive?.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         rightDrive?.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
-        linSlideY?.mode = DcMotor.RunMode.RUN_USING_ENCODER //Use encoders for linear slide motor
+        vSlide?.mode = DcMotor.RunMode.RUN_USING_ENCODER //Use encoders for linear slide motor
     } else this.init(ahwdMap)
 
     //METHODS
@@ -84,15 +83,16 @@ class SSRobot {
     }
 
     fun liftSlideY(pow: Float) {
-        linSlideY?.power = pow.toDouble()
+        vSlide?.power = pow.toDouble()
     }
 
 
     fun pinch(gp: Gamepad) {
         this.claw?.position = when {
-            gp.a -> 0.1
-            else -> 0.25 //can be explicit
+            gp.a -> 0.0
+            else -> 1.0 //can be explicit
         }
+        this.hSlide?.position = 0.8
     }
 }
 

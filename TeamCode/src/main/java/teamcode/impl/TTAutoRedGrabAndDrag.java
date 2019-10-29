@@ -13,6 +13,7 @@ import teamcode.common.TTOpMode;
 import teamcode.common.TTVision;
 import teamcode.common.Vector2;
 
+
 @Autonomous(name = "TT Auto Red")
 public class TTAutoRedGrabAndDrag extends TTOpMode {
 
@@ -50,6 +51,8 @@ public class TTAutoRedGrabAndDrag extends TTOpMode {
     @Override
     protected void onStop() {
     }
+
+
 
     /**
      * Approaches the skystone and records its position. Returns 4 if the skystones are in the first and fourth

@@ -34,7 +34,8 @@ public class TTAutoBlueGrabAndDrag extends TTOpMode {
         vision.enable();
 
     }
-
+    //init all your stuff
+    //waitForStart();
     @Override
     protected void onStart() {
         initArm();

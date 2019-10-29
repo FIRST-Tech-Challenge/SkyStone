@@ -22,6 +22,8 @@ public abstract class ChassisStandard extends OpMode {
     int bruhSoundID = -1;
 
     protected ChassisConfig config;
+    protected boolean madeTheRun = false;
+
 
     // Elapsed time since the opmode started.
     protected ElapsedTime runtime = new ElapsedTime();
@@ -34,6 +36,9 @@ public abstract class ChassisStandard extends OpMode {
     private DcMotor motorFrontRight;
     private DcMotor extender;
     private DcMotor shoulder;
+
+    //Crab
+    protected Servo crab;
 
     // Team Marker Servo
     private Servo flagHolder;
@@ -61,11 +66,56 @@ public abstract class ChassisStandard extends OpMode {
     protected boolean hackTimeouts = true;
     protected boolean useArm = false;
     protected boolean useEve = false;
+    protected boolean useCrab = true;
+
 
     protected ChassisStandard(ChassisConfig config) {
         this.config = config;
     }
 
+     /*
+        Robot Controller Callbacks
+     */
+
+    @Override
+    public void start () {
+        // Reset the game timer.
+        runtime.reset();
+
+    }
+
+    @Override
+    public void stop (){
+
+    }
+
+    @Override
+    public void init() {
+        initMotors();
+        initTimeouts();
+        initGyroscope();
+        initCrab();
+    }
+
+    /**
+     * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
+     */
+    @Override
+    public void init_loop () {
+       printStatus();
+    }
+
+    protected void printStatus() {
+        if(useGyroScope) {
+            telemetry.addData("Gyro", "angle: " + this.getGyroscopeAngle());
+        }
+        if(useCrab) {
+            telemetry.addData("Crab", "Angle =%f", crab.getPosition());
+        }
+        telemetry.addData("Status", "time: " + runtime.toString());
+        telemetry.addData("Status", "madeTheRun=%b", madeTheRun);
+
+    }
 
     /*
         MOTOR SUBSYTEM
@@ -103,11 +153,6 @@ public abstract class ChassisStandard extends OpMode {
             }
         }
 
-        // Team marker servo
-        if (useTeamMarker) {
-            flagHolder = hardwareMap.get(Servo.class, "servo1");
-            resetFlag();
-        }
 
         // init the lifter arm,
         if (config.getHasWalle()) {
@@ -125,6 +170,18 @@ public abstract class ChassisStandard extends OpMode {
         }
     }
 
+    protected void initCrab(){
+        if(useCrab){
+            try {
+                crab = hardwareMap.get(Servo.class, "servoCrab");
+            } catch (Exception e) {
+                telemetry.addData("crab", "exception on init: " + e.toString());
+                useCrab = false;
+            }
+        }
+    }
+
+
     protected void initTimeouts() {
         // This code prevents the OpMode from freaking out if you go to sleep for more than a second.
         if (hackTimeouts) {
@@ -133,22 +190,6 @@ public abstract class ChassisStandard extends OpMode {
             this.msStuckDetectStart = 30000;
             this.msStuckDetectLoop = 30000;
             this.msStuckDetectStop = 30000;
-        }
-    }
-
-    protected void initBulldDozer() {
-        if (useBulldozer) {
-            bull = hardwareMap.get(Servo.class, "servo3");
-            dozer = hardwareMap.get(Servo.class, "servo2");
-        }
-    }
-
-
-    protected void bullDozerUp() {
-        if (useBulldozer) {
-            //control Bulldozer
-            bull.setPosition(0);
-            dozer.setPosition(1.0);
         }
     }
 
@@ -179,21 +220,19 @@ public abstract class ChassisStandard extends OpMode {
     }
 
 
-    public void dropFlag() {
-        if (useTeamMarker) {
-            if (config.isTeamMarkerReversed()) {
-                angleHand = 1.0;
-            } else {
-                angleHand = 0.0;
-            }
-            flagHolder.setPosition(angleHand);
+
+    public void dropCrab() {
+        if (useCrab) {
+            angleHand = 0.0;
+            crab.setPosition(angleHand);
+
         }
     }
 
-    public void resetFlag() {
-        if (useTeamMarker) {
-            angleHand = 0.5;
-            flagHolder.setPosition(angleHand);
+    public void raiseCrab() {
+        if (useCrab) {
+            angleHand = 1.0;
+            crab.setPosition(angleHand);
         }
     }
 
@@ -622,6 +661,8 @@ public abstract class ChassisStandard extends OpMode {
             turnRight(25);
         }
     }
+
+
 
    /* protected void lyftDownWalle(int howManySpins) {
         double speed = 0.5f;

@@ -149,6 +149,14 @@ public class AutoVision extends TTOpMode
         telemetry.update();
     }
 
+<<<<<<< HEAD
+=======
+    @Override
+    protected void onStop() {
+
+    }
+
+>>>>>>> parent of b7b2993... Revert "Merge branch 'develop' of https://github.com/PrimeTactic/SkyStone into develop"
     private void initVuforia()
     {
         /*

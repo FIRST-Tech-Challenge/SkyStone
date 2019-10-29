@@ -13,8 +13,8 @@ import teamcode.common.TTOpMode;
 import teamcode.common.TTVision;
 import teamcode.common.Vector2;
 
-@Autonomous(name = "TT Auto Blue")
-public class TTAutoBlue extends TTOpMode {
+@Autonomous(name = "TT Auto Blue Grab And Drag")
+public class TTAutoBlueGrabAndDrag extends TTOpMode {
 
     /**
      * A bounding box which is used to see if a skystone is in the center of the camera's view.
@@ -34,11 +34,20 @@ public class TTAutoBlue extends TTOpMode {
         vision.enable();
 
     }
-
+    //init all your stuff
+    //waitForStart();
     @Override
     protected void onStart() {
         initArm();
-        locateSkystone();
+        skystonePos = locateSkystone();
+        if(skystonePos == 6) {
+            grabSkyStone(6);
+        } else if(skystonePos == 5){
+            grabSkyStone(5);
+        } else {
+            grabSkyStone(4);
+        }
+        driveSystem.brake();
     }
 
 
@@ -55,19 +64,21 @@ public class TTAutoBlue extends TTOpMode {
      * slots. Returns 5 if the skystones are in the second and fifth slots. Returns 6 if the skystones
      * are in the third and sixth slots.
      */
-    private void locateSkystone() {
-        driveSystem.lateral(3.5, 0.5);
+    private int locateSkystone() {
         driveSystem.vertical(20, 0.5);
+        driveSystem.lateral(2, 0.5);
         if (seesSkystone()) {
-            grabSkyStone(6);
-        }
-        driveSystem.lateral(7, 0.3);
-        sleep(1000);
-        if (seesSkystone()) {
-            grabSkyStone(5);
+            driveSystem.lateral(2, 0.5);
+            return 6;
         }
         driveSystem.lateral(8, 0.3);
-        grabSkyStone(4);
+        sleep(1000);
+        if (seesSkystone()) {
+            driveSystem.lateral(1.5, 0.5);
+            return 5;
+        }
+        driveSystem.lateral(9.5, 0.3);
+        return 4;
     }
 
     /**
@@ -90,33 +101,38 @@ public class TTAutoBlue extends TTOpMode {
       at that specific block pos then faces the foundation
      */
     private void grabSkyStone(int stoneNum) {
-        driveSystem.vertical(12.5, 0.7);
+        driveSystem.vertical(14.5, 0.7);
         arm.closeClaw();
+        sleep(750);
+        arm.liftTimed(0.25, 0.5);
         sleep(500);
-        driveSystem.vertical(-19, 0.7);
-        driveSystem.turn(-90, 0.25);
+        driveSystem.vertical(-27.5, 0.7);
+        driveSystem.turn(-88, 0.25);
         moveToFoundation(stoneNum);
         pullFoundation();
+        driveSystem.brake();
     }
 
     //Moves towards the foundation and turns to face it
     private void moveToFoundation(int stoneNum) {
         driveSystem.vertical(120.5 - stoneNum * 8, 0.7);
-        driveSystem.turn(90, 0.7);
+        driveSystem.turn(88, 0.7);
         arm.liftTimed(1, 0.5);
-        driveSystem.vertical(13 + stoneNum * 3, 0.6);
+        driveSystem.vertical(32, 0.6);
         sleep(250);
         arm.openClaw();
     }
 
     private void pullFoundation() {
-        driveSystem.lateral(-6.5, 0.7);
+        driveSystem.lateral(-4.5, 0.7);
         driveSystem.vertical(2, 0.7);
         arm.lower(0.5);
         sleep(250);
-        driveSystem.vertical(-53, 0.5);
+        driveSystem.vertical(-60.5, 0.5);
         arm.liftTimed(1, 0.5);
-        driveSystem.lateral(46.5, 0.7);
+        sleep(250);
+        arm.closeClaw();
+        driveSystem.lateral(41.5, 0.7);
         arm.lower(0.5);
     }
 

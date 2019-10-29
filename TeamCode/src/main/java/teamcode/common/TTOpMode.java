@@ -20,7 +20,6 @@ public abstract class TTOpMode extends LinearOpMode {
 
     @Override
     public final void runOpMode() {
-        opMode = this;
         timer = new Timer();
         robot = new TTRobot(hardwareMap);
         onInitialize();

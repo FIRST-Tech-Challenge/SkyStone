@@ -13,9 +13,8 @@ import teamcode.common.TTOpMode;
 import teamcode.common.TTVision;
 import teamcode.common.Vector2;
 
-
 @Autonomous(name = "TT Auto Red")
-public class TTAutoRedGrabAndDrag extends TTOpMode {
+public class TTAutoRed extends TTOpMode {
 
     /**
      * A bounding box which is used to see if a skystone is in the center of the camera's view.
@@ -45,14 +44,11 @@ public class TTAutoRedGrabAndDrag extends TTOpMode {
         } else {
             grabSkyStone(4);
         }
-        driveSystem.brake();
     }
 
     @Override
     protected void onStop() {
     }
-
-
 
     /**
      * Approaches the skystone and records its position. Returns 4 if the skystones are in the first and fourth
@@ -102,38 +98,33 @@ public class TTAutoRedGrabAndDrag extends TTOpMode {
       at that specific block pos then faces the foundation
      */
     private void grabSkyStone(int stoneNum) {
-        driveSystem.vertical(14.5, 0.7);
+        driveSystem.vertical(12, 0.7);
         arm.closeClaw();
-        sleep(750);
-        arm.liftTimed(0.25, 0.5);
         sleep(500);
-        driveSystem.vertical(-27.5, 0.7);
-        driveSystem.turn(88, 0.25);
+        driveSystem.vertical(-15.5, 0.7);
+        driveSystem.turn(90, 0.2);
         moveToFoundation(stoneNum);
         pullFoundation();
-        driveSystem.brake();
     }
 
     //Moves towards the foundation and turns to face it
     private void moveToFoundation(int stoneNum) {
-        driveSystem.vertical(120.5 - stoneNum * 8, 0.5);
-        driveSystem.turn(-88, 0.4);
+        driveSystem.vertical(119.5 - stoneNum * 8, 0.5);
+        driveSystem.turn(-90, 0.4);
         arm.liftTimed(1, 0.5);
-        driveSystem.vertical(32, 0.6);
+        driveSystem.vertical(29 + 10 / stoneNum, 0.6);
         sleep(250);
         arm.openClaw();
     }
 
     private void pullFoundation() {
-        driveSystem.lateral(4.5, 0.7);
+        driveSystem.lateral(8.5, 0.7);
         driveSystem.vertical(2, 0.7);
         arm.lower(0.5);
         sleep(250);
-        driveSystem.vertical(-60.5, 0.5);
+        driveSystem.vertical(-48, 0.5);
         arm.liftTimed(1, 0.5);
-        sleep(250);
-        arm.closeClaw();
-        driveSystem.lateral(-41.5, 0.7);
+        driveSystem.lateral(-48.5, 0.7);
         arm.lower(0.5);
     }
 }

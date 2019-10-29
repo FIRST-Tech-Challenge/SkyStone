@@ -1,8 +1,6 @@
 package org.firstinspires.ftc.teamcode.components;
-import android.util.Log;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import  com.qualcomm.robotcore.hardware.Servo;
 import java.util.EnumMap;
@@ -36,8 +34,11 @@ public class ArmSystem {
     // Use these so we can change it easily if the motor is put on backwards
     private final DcMotor.Direction UP = DcMotor.Direction.FORWARD;
     private final DcMotor.Direction DOWN = DcMotor.Direction.REVERSE;
-    protected Position QueuedPosition;
-    protected int QueuedHeight;
+
+    // I know in terms of style points these should be private and just have getters and setters but
+    // I want to make them easily incrementable
+    public Position queuedPosition;
+    public int queuedHeight;
 
     // These fields are used only for calibration. Don't touch them outside of that method.
     private boolean calibrated = false;
@@ -199,12 +200,9 @@ public class ArmSystem {
         }
     }
 
-    public void setQueuedPosition(Position position, int height) {
-        this.QueuedPosition = position;
-    }
 
     public void go() {
-        this.movePresetPosition(QueuedPosition);
+        this.movePresetPosition(queuedPosition);
     }
 
     // Moves the slider down until it hits the limit switch. Used to calibrate the encoder.

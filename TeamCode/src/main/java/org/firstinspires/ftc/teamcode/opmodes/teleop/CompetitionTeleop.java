@@ -32,7 +32,11 @@ public class CompetitionTeleop extends BaseOpMode {
 
     }
 
-    public void loop(){
+    public void init_loop() {
+        armSystem.calibrate();
+    }
+
+    public void loop() {
 
         // Put every joystick value to the 3rd power for greater control over the robot
         // 1^3 = 1, so we don't even need to trim the values or anything
@@ -40,18 +44,32 @@ public class CompetitionTeleop extends BaseOpMode {
         float lx = (float) Math.pow(gamepad1.left_stick_x, 3);
         float ly = (float) Math.pow(gamepad1.left_stick_y, 3);
 
-        if (gamepad1.a) {
-            driveSystem.driveToPosition(1000, Direction.RIGHT, 0.5);
+        // I wish there was a better way
+        if (gamepad1.dpad_left) {
+            armSystem.queuedPosition = ArmSystem.Position.POSITION_WEST;
+        } else if (gamepad1.dpad_up) {
+            armSystem.queuedPosition = ArmSystem.Position.POSITION_NORTH;
+        } else if (gamepad1.dpad_down){
+            armSystem.queuedPosition = ArmSystem.Position.POSITION_SOUTH;
+        } else if (gamepad1.dpad_right) {
+            armSystem.queuedPosition = ArmSystem.Position.POSITION_EAST;
         }
-        if (gamepad1.b) {
-            driveSystem.driveToPosition(1000, Direction.LEFT, 0.5);
+
+        if (gamepad1.right_bumper) {
+            armSystem.queuedHeight ++;
+        } else if (gamepad1.left_bumper) {
+            armSystem.queuedHeight --;
         }
-        if (gamepad1.x) {
-            driveSystem.driveToPosition(1000, Direction.FORWARD, 0.5);
+
+        // Display queued positions on telemetry data so that the captain can call them out to the
+        // driver
+        telemetry.addData("", "Queued position: " + armSystem.queuedPosition.toString());
+        telemetry.addData("", "Queued height: " + armSystem.queuedHeight);
+
+        if (gamepad1.y) { // "yeet" it as Brian would say
+            armSystem.go();
         }
-        if (gamepad1.y) {
-            driveSystem.driveToPosition(1000, Direction.BACKWARD, 0.5);
-        }
+
         driveSystem.drive(rx, lx, ly);
     }
 }

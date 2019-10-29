@@ -1,5 +1,4 @@
 package org.firstinspires.ftc.teamcode.components;
-
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
@@ -72,6 +71,8 @@ public class ArmSystem {
     public enum ServoNames {
         GRIPPER, WRIST, ELBOW, PIVOT
     }
+
+    public static final String tag = "arm"; // for debugging
 
     /*
      If the robot is at the bottom of the screen, and X is the block:
@@ -223,7 +224,7 @@ public class ArmSystem {
         }
     }
 
-    public void setQueuedPosition(Position position) {
+    public void setQueuedPosition(Position position, int height) {
         this.QueuedPosition = position;
     }
 

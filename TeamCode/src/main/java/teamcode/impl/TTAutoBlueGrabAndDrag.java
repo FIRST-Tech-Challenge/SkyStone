@@ -13,8 +13,8 @@ import teamcode.common.TTOpMode;
 import teamcode.common.TTVision;
 import teamcode.common.Vector2;
 
-@Autonomous(name = "TT Auto Red")
-public class TTAutoRed extends TTOpMode {
+@Autonomous(name = "TT Auto Blue Grab And Drag")
+public class TTAutoBlueGrabAndDrag extends TTOpMode {
 
     /**
      * A bounding box which is used to see if a skystone is in the center of the camera's view.
@@ -24,6 +24,7 @@ public class TTAutoRed extends TTOpMode {
     private TTDriveSystem driveSystem;
     private League1TTArm arm;
     private TTVision vision;
+    private int skystonePos;
 
     @Override
     protected void onInitialize() {
@@ -31,12 +32,14 @@ public class TTAutoRed extends TTOpMode {
         arm = new League1TTArm(hardwareMap);
         vision = new TTVision(hardwareMap);
         vision.enable();
-    }
 
+    }
+    //init all your stuff
+    //waitForStart();
     @Override
     protected void onStart() {
         initArm();
-        int skystonePos = locateSkystone();
+        skystonePos = locateSkystone();
         if(skystonePos == 6) {
             grabSkyStone(6);
         } else if(skystonePos == 5){
@@ -44,10 +47,16 @@ public class TTAutoRed extends TTOpMode {
         } else {
             grabSkyStone(4);
         }
+        driveSystem.brake();
     }
 
-    @Override
-    protected void onStop() {
+
+    /**
+     * Opens the claw and lowers the arm for starting position.
+     */
+    private void initArm() {
+        arm.openClaw();
+        arm.lower(0.5);
     }
 
     /**
@@ -56,17 +65,19 @@ public class TTAutoRed extends TTOpMode {
      * are in the third and sixth slots.
      */
     private int locateSkystone() {
-        driveSystem.vertical(22.5, 0.3);
-        driveSystem.lateral(-2, 0.3);
+        driveSystem.vertical(20, 0.5);
+        driveSystem.lateral(2, 0.5);
         if (seesSkystone()) {
+            driveSystem.lateral(2, 0.5);
             return 6;
         }
-        driveSystem.lateral(-6.5, 0.3);
+        driveSystem.lateral(8, 0.3);
         sleep(1000);
         if (seesSkystone()) {
+            driveSystem.lateral(1.5, 0.5);
             return 5;
         }
-        driveSystem.lateral(-8, 0.3);
+        driveSystem.lateral(9.5, 0.3);
         return 4;
     }
 
@@ -86,45 +97,49 @@ public class TTAutoRed extends TTOpMode {
         return false;
     }
 
-    /**
-     * Opens the claw and lowers the arm for starting position.
-     */
-    private void initArm() {
-        arm.openClaw();
-        arm.lower(0.5);
-    }
-
     /*Starts from the starting pos and moves grab the block
       at that specific block pos then faces the foundation
      */
     private void grabSkyStone(int stoneNum) {
-        driveSystem.vertical(12, 0.7);
+        driveSystem.vertical(14.5, 0.7);
         arm.closeClaw();
+        sleep(750);
+        arm.liftTimed(0.25, 0.5);
         sleep(500);
-        driveSystem.vertical(-15.5, 0.7);
-        driveSystem.turn(90, 0.2);
+        driveSystem.vertical(-27.5, 0.7);
+        driveSystem.turn(-88, 0.25);
         moveToFoundation(stoneNum);
         pullFoundation();
+        driveSystem.brake();
     }
 
     //Moves towards the foundation and turns to face it
     private void moveToFoundation(int stoneNum) {
-        driveSystem.vertical(119.5 - stoneNum * 8, 0.5);
-        driveSystem.turn(-90, 0.4);
+        driveSystem.vertical(120.5 - stoneNum * 8, 0.7);
+        driveSystem.turn(88, 0.7);
         arm.liftTimed(1, 0.5);
-        driveSystem.vertical(29 + 10 / stoneNum, 0.6);
+        driveSystem.vertical(32, 0.6);
         sleep(250);
         arm.openClaw();
     }
 
     private void pullFoundation() {
-        driveSystem.lateral(8.5, 0.7);
+        driveSystem.lateral(-4.5, 0.7);
         driveSystem.vertical(2, 0.7);
         arm.lower(0.5);
         sleep(250);
-        driveSystem.vertical(-48, 0.5);
+        driveSystem.vertical(-60.5, 0.5);
         arm.liftTimed(1, 0.5);
-        driveSystem.lateral(-48.5, 0.7);
+        sleep(250);
+        arm.closeClaw();
+        driveSystem.lateral(41.5, 0.7);
         arm.lower(0.5);
     }
+
+    @Override
+    protected void onStop() {
+    }
+
+
 }
+

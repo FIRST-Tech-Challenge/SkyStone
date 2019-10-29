@@ -7,7 +7,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
-import java.util.Collections;
 import java.util.List;
 
 public class TTVision {
@@ -38,10 +37,8 @@ public class TTVision {
     }
 
     public void disable() {
-        if (enabled) {
-            tfod.shutdown();
-            enabled = false;
-        }
+        tfod.shutdown();
+        enabled = false;
     }
 
     private VuforiaLocalizer createVuforia() {
@@ -67,13 +64,19 @@ public class TTVision {
             throw new IllegalStateException("Vision must be enabled first");
         }
 
-        return tfod.getRecognitions();
+        List<Recognition> recognitions = null;
+        while (recognitions == null) {
+            recognitions = tfod.getUpdatedRecognitions();
+        }
+        return recognitions;
+
     }
 
     public static Vector2 getCenter(Recognition recognition) {
         float x = (recognition.getLeft() + recognition.getRight()) / 2;
         float y = (recognition.getBottom() + recognition.getTop()) / 2;
         return new Vector2(x, y);
+
     }
 
     public static BoundingBox2D getBoundingBox(Recognition recognition) {

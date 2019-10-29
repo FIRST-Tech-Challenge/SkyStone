@@ -13,7 +13,7 @@ import java.util.TimerTask;
 
 public class League1TTArm {
 
-    private static final double CLAW_OPEN_POS = 1.0;
+    private static final double CLAW_OPEN_POS = 0.5;
     private static final double CLAW_CLOSE_POS = 0.0;
     private final CRServo lift;
     private final ColorSensor liftSensor;

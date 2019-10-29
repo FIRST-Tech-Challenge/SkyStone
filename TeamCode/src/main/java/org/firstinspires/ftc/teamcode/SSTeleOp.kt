@@ -37,6 +37,7 @@ class SSTeleOp : OpMode() {
 
     override fun start() { //runs once when play button is pushed
         robot.vSlide?.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+        //robot.vSlide?.mode = DcMotor.RunMode.RUN_USING_ENCODER
         robot.hSlide?.position = 0.7
     }
 
@@ -47,8 +48,8 @@ class SSTeleOp : OpMode() {
          */
 
         //slowDown = if(gamepad1.left_bumper) 2.0 else 1.25 //condensed if else
-        //Tank Drive-sets power equal to numerical value of joystick positions
 
+        //Tank Drive-sets power equal to numerical value of joystick positions
         leftPower = -gamepad1.left_stick_y
         rightPower = -gamepad1.right_stick_y
 

@@ -40,16 +40,23 @@ public class TTAutoBlueGrabAndGrab extends TTOpMode {
         initArm();
         skystonePos = locateSkystone456();
         if(skystonePos == 6) {
+            telemetry.addData("stone number", 6);
+            telemetry.update();
             grabSkyStone(6);
             moveAndGrabStone(3);
             arm.openClaw();
             driveSystem.lateral(-10, 0.6);
         } else if(skystonePos == 5){
+            telemetry.addData("stone number", 5);
+            telemetry.update();
             grabSkyStone(5);
             moveAndGrabStone(2);
             arm.openClaw();
             driveSystem.lateral(-10, 0.6);
         } else {
+            telemetry.addData("sotne number", 4);
+            telemetry.update();
+            /*
             driveSystem.vertical(13.5, 0.7);
             grabSkyStone(5);
             arm.openClaw();
@@ -60,6 +67,16 @@ public class TTAutoBlueGrabAndGrab extends TTOpMode {
             driveSystem.turn(5, 0.3);
             driveSystem.lateral(-4, 0.5);
             moveAndGrabStone(6);
+            */
+
+            //Brian's version of the code
+            driveSystem.vertical(13.5, 0.7);
+            placeSkystoneInScoredFoundation(5);
+            driveSystem.vertical(-68, 0.5);
+            driveSystem.turn(90, 0.5);
+            driveSystem.lateral(8, 0.5);
+            placeSkystoneInScoredFoundation(4);
+            driveSystem.vertical(-30, 0.5);
         }
     }
 
@@ -121,6 +138,20 @@ public class TTAutoBlueGrabAndGrab extends TTOpMode {
         sleep(500);
         driveSystem.vertical(-10 + stoneNum, 0.7);
         driveSystem.lateral(-80 + stoneNum * 8, 0.5);
+    }
+    private void placeSkystoneInScoredFoundation(int stoneNum){
+        arm.closeClaw();
+        sleep(750);
+        arm.liftTimed(0.25, 0.5);
+        sleep(500);
+        driveSystem.vertical(-12, 0.5);
+        driveSystem.turn(-90, 0.5);
+        driveSystem.vertical(100 - stoneNum * 8 , 0.5);
+        arm.liftTimed(1, 0.5);
+        arm.openClaw();
+        //6, 60
+        //5, 68
+        //4, 76
     }
 
     private void moveAndGrabStone(int stoneNum){

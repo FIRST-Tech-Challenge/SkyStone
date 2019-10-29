@@ -45,16 +45,16 @@ public class robotOneWheels extends LinearOpMode {
 
 
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor left = null;
-    private DcMotor right = null;
+    private DcMotor leftDrive = null;
+    private DcMotor rightDrive = null;
 
     @Override
     public void runOpMode() {
         telemetry.addData("status", "Initialized");
         telemetry.update();
 
-        left = hardwareMap.get(DcMotor.class, "left");
-        right = hardwareMap.get(DcMotor.class, "right");
+        leftDrive = hardwareMap.get(DcMotor.class, "left");
+        rightDrive = hardwareMap.get(DcMotor.class, "right");
 
         //leftFront.setDirection(DcMotor.Direction.FORWARD);
         //leftBack.setDirection(DcMotor.Direction.FORWARD);
@@ -71,26 +71,26 @@ public class robotOneWheels extends LinearOpMode {
         while (opModeIsActive()) {
 
             if ( move >= -1 && move < 0 ) {
-                left.setDirection(DcMotor.Direction.REVERSE);
-                right.setDirection(DcMotor.Direction.FORWARD);
-                left.setPower(move);
-                right.setPower(move);
+                leftDrive.setDirection(DcMotor.Direction.REVERSE);
+                rightDrive.setDirection(DcMotor.Direction.FORWARD);
+                leftDrive.setPower(move);
+                rightDrive.setPower(move);
 
             } else if ( move >0 && move <= 1) {
-                left.setDirection(DcMotor.Direction.FORWARD);
-                right.setDirection(DcMotor.Direction.REVERSE);
-                left.setPower(move);
-                right.setPower(move);
+                leftDrive.setDirection(DcMotor.Direction.FORWARD);
+                rightDrive.setDirection(DcMotor.Direction.REVERSE);
+                leftDrive.setPower(move);
+                rightDrive.setPower(move);
             } else if ( turn <= 1 && turn > 0) {
-                left.setDirection(DcMotor.Direction.REVERSE);
-                right.setDirection(DcMotor.Direction.REVERSE);
-                left.setPower(turn);
-                right.setPower(turn);
+                leftDrive.setDirection(DcMotor.Direction.REVERSE);
+                rightDrive.setDirection(DcMotor.Direction.REVERSE);
+                leftDrive.setPower(turn);
+                rightDrive.setPower(turn);
             } else if ( turn < 0 && turn >= -1 ) {
-                left.setDirection(DcMotor.Direction.FORWARD);
-                right.setDirection(DcMotor.Direction.FORWARD);
-                left.setPower(turn);
-                right.setPower(turn);
+                leftDrive.setDirection(DcMotor.Direction.FORWARD);
+                rightDrive.setDirection(DcMotor.Direction.FORWARD);
+                leftDrive.setPower(turn);
+                rightDrive.setPower(turn);
             }
 
             // Show the elapsed game time and wheel power.

@@ -9,9 +9,10 @@
             <RevRobotics20HdHexMotor name="leftBack" port="3" />
             <!-- Servos -->
             <Servo name="extender" port="0" />
-            <Servo name="nub_grabber" port="1" />
-            <Servo name="foundation_hook_left" port="2" />
-*            <Servo name="foundation_hook_right" port="3" />
+|            <Servo name="nub_grabber_intake" port="1" />
+|            <Servo name="nub_grabber_outtake" port="2" />
+            <Servo name="foundation_hook_left" port="3" />
+*            <Servo name="foundation_hook_right" port="4" />
             <!-- Digital Devices -->
             <RevTouchSensor name="foundation_touch_front" port="0" />
             <RevTouchSensor name="foundation_touch_side" port="1" />

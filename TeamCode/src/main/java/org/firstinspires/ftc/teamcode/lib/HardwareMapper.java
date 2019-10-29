@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.qualcomm.ftccommon.configuration.RobotConfigFile;
 import com.qualcomm.ftccommon.configuration.RobotConfigFileManager;
-import com.qualcomm.robotcore.eventloop.opmode.OpModeRegistrar;
 import com.qualcomm.robotcore.exception.RobotCoreException;
 import com.qualcomm.robotcore.util.RobotLog;
 
@@ -16,7 +15,6 @@ import java.util.Scanner;
 
 public class HardwareMapper {
 
-//    @OpModeRegistrar
     public static boolean writeHardwareMap() {
         RobotConfigFileManager robotConfigFileManager = new RobotConfigFileManager();
         RobotConfigFile file = new RobotConfigFile(robotConfigFileManager, "generated");

@@ -9,15 +9,7 @@ public class Lift {
     private DcMotorEx motor;
     private int level;
     private int LEVEL_HEIGHT = 300; // ticks per lift level
-    private int heightOffset;
-    private int MIN_OFFSET = 0;
-    private int MAX_OFFSET = 299;
     private final int MAX_LEVEL = 4;
-
-    private final double P = 1;
-    private final double I = 0;
-    private final double D = 0.1;
-    private final double F = 0.1;
 
     private static Lift instance = null;
 
@@ -33,13 +25,12 @@ public class Lift {
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         level = 0;
-        heightOffset = 0;
-//        motor.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDFCoefficients(P, I, D, F));
+        // set pid
     }
 
     public void idle() {
         motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motor.setPower(F);
+        motor.setPower(0.1);
     }
 
     public void zero() {
@@ -76,17 +67,7 @@ public class Lift {
         }
     }
 
-    public void setHeightOffset(int offset) {
-        if (offset >= MIN_OFFSET && offset <= MAX_OFFSET) {
-            heightOffset = offset;
-        }
-    }
-
-    public int getHeightOffset() {
-        return heightOffset;
-    }
-
     public void updatePosition() {
-        motor.setTargetPosition(level * LEVEL_HEIGHT + heightOffset);
+        motor.setTargetPosition(level * LEVEL_HEIGHT);
     }
 }

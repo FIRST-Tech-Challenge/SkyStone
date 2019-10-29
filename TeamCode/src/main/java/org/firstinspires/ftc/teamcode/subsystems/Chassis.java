@@ -10,8 +10,8 @@ public class Chassis extends Subsystem {
     DcMotor frontRight;
     DcMotor backLeft;
     DcMotor backRight;
-    Double wheelRadius;
-    Double robotRadius;
+    final Double wheelRadius = 24.0;
+    final Double robotRadius = 5.08;
 
 
     //Constructors
@@ -47,5 +47,10 @@ public class Chassis extends Subsystem {
         frontRight.setTargetPosition((int)(wheelDistance * Math.sin(turnAngle) - robotTurn));
         backLeft.setTargetPosition((int)(wheelDistance * Math.sin(turnAngle) + robotTurn));
         backRight.setTargetPosition((int)(wheelDistance * Math.cos(turnAngle) - robotTurn));
+        setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+    //Returns true if the moving is done
+    public boolean runDistanceCheck(int targetError){
+        return targetError > getAverageMotorError();
     }
 }

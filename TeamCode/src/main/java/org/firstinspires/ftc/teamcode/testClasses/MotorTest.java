@@ -1,21 +1,19 @@
 package org.firstinspires.ftc.teamcode.testClasses;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-@TeleOp
+import org.firstinspires.ftc.teamcode.subsystems.Chassis;
+
+@Autonomous
 public class MotorTest extends LinearOpMode {
-    DcMotor motor;
     @Override
     public void runOpMode() {
-
-
-        telemetry.setMsTransmissionInterval(1);
-        telemetry.addLine("Init | v1.0");
-        waitForStart();
+        Chassis chassis = new Chassis(hardwareMap);
         while (opModeIsActive()) {
-            //Other unit test code if you want
+            chassis.runDistance(10,0,2,1);
+            while(chassis.runDistanceCheck(10))
             telemetry.update();
         }
     }

@@ -11,6 +11,7 @@ class SSRobot {
     var leftDrive: DcMotor? = null
     var rightDrive: DcMotor? = null
     var linSlideY: DcMotor? = null
+    var linSlideX: CRServo? = null
     var claw: Servo? = null
 
 
@@ -25,6 +26,7 @@ class SSRobot {
         leftDrive = ahwdMap.dcMotor.get("leftDrive")
         rightDrive = ahwdMap.dcMotor.get("rightDrive")
         linSlideY = ahwdMap.dcMotor.get("linSlideY")
+        linSlideX = ahwdMap.crservo.get("linSlideX")
         claw = ahwdMap.servo.get("claw")
 
 
@@ -32,6 +34,7 @@ class SSRobot {
         leftDrive?.direction = motF
         rightDrive?.direction = motR
         linSlideY?.direction = motR
+        linSlideX?.direction = motF
         claw?.direction = serF
 
 
@@ -83,6 +86,7 @@ class SSRobot {
     fun liftSlideY(pow: Float) {
         linSlideY?.power = pow.toDouble()
     }
+
 
     fun pinch(gp: Gamepad) {
         this.claw?.position = when {

@@ -46,7 +46,7 @@ public class TeleOpMecanum extends OpMode {
         drive.bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         drive.br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        intake.initIntake(this);
+        intake.initIntakeTele(this);
         outtake.initOuttake(this);
 
 

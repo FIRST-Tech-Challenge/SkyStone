@@ -17,11 +17,32 @@ public class Intake {
 
     private OpMode opMode;
 
+
     private static final double PICKUP = 1.0;
     private static final double IDLE = 0;
 
 
-    public void initIntake(OpMode opMode)
+    public void initIntakeTele(OpMode opMode)
+    {
+        time.reset();
+        this.opMode = opMode;
+        rightSide = opMode.hardwareMap.dcMotor.get("RIn");
+        leftSide = opMode.hardwareMap.dcMotor.get("LIn");
+
+        rightSide.setDirection(DcMotor.Direction.FORWARD);
+        leftSide.setDirection(DcMotor.Direction.REVERSE);
+
+        rightSide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        leftSide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
+        rightSide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftSide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        rightSide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftSide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+
+    public void initIntakeAuto(LinearOpMode opMode)
     {
         time.reset();
         this.opMode = opMode;

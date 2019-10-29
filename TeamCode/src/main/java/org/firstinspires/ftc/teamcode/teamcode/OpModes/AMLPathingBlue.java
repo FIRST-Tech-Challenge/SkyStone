@@ -9,9 +9,9 @@ import org.firstinspires.ftc.teamcode.teamcode.Hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.Intake;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.Outtake;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.Sensors;
-import org.firstinspires.ftc.teamcode.teamcode.Hardware.Vuforia;
+import org.firstinspires.ftc.teamcode.teamcode.Hardware.ZeroMap;
 
-@Autonomous(name ="Basic Blue Green Path", group="Auto Basic")
+@Autonomous(name ="AML Blue Green Path", group="Auto Basic")
 public class AMLPathingBlue extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
@@ -22,7 +22,7 @@ public class AMLPathingBlue extends LinearOpMode {
     Sensors sensors = new Sensors();
     Intake intake = new Intake();
     Outtake outtake = new Outtake();
-    Vuforia vuf = new Vuforia();
+    ZeroMap vuf = new ZeroMap();
 
     double zeroOffset = 5.75;
     double kI;
@@ -51,7 +51,10 @@ public class AMLPathingBlue extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        drive.initDriveTrain(this);
+        drive.initDriveTrain();
+        intake.initIntakeAuto(this);
+        outtake.initOuttakeAuto(this);
+        vuf.zeroInit(this);
 
         if (robotWidth >= robotLength) {
             greatLength = robotWidth;
@@ -66,39 +69,43 @@ public class AMLPathingBlue extends LinearOpMode {
 
         trueTime.reset();
 
-        //Sense Vuforia
+        vuf.zeroOut();
 
-        switch (1) {
+        switch (vuf.zeroBrowse(this)) {
 
-            case 1:
+            case -6:
                 drive.turnPID(this, 90, true, .01, .01, .01, 3000);
+                drive.encoderDrive(this, -1, 24, 24, 2);
                 drive.strafeMove(this, 48, 2, 1); //hopefully right
                 intake.autoIntake(1);
                 drive.strafeMove(this, 24, 2, -1); //hopefully left
+                drive.encoderDrive(this, 1, 24, 24, 2);
+
                 break;
 
 
-            case 2:
+            case -4:
                 drive.turnPID(this, 90, true, .01, .01, .01, 3000);
-                drive.encoderMove(this, 8, 1, .7);
                 drive.strafeMove(this, 48, 2, 1); //hopefully right
                 intake.autoIntake(1);
-                drive.strafeMove(this, 24, 2, -1); //hopefully left
-                drive.encoderMove(this, 8, 1, -.7);
+                drive.strafeMove(this, 8, 1, -.7);
 
-            case 3:
+            case -1:
                 drive.turnPID(this, 90, true, .01, .01, .01, 3000);
-                drive.encoderMove(this, 16, 1, .7);
+                drive.encoderDrive(this, 1, 16, 16, 2);
                 drive.strafeMove(this, 48, 2, 1); //hopefully right
                 intake.autoIntake(1);
                 drive.strafeMove(this, 24, 2, -1); //hopefully left
-                drive.encoderMove(this, 16, 1, -.7);
+                drive.encoderDrive(this, -1, 16, 16, 2);
                 break;
         }
 
         drive.encoderMove(this, 72, 3, -1);
         drive.strafeMove(this, 24, 2, -1); //hopefully left
         outtake.hookAuto(this);
+        outtake.outTake_Auto(this);
+        drive.encoderMove(this, 24, 2, 1);
+
 
     }
 }

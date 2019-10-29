@@ -20,15 +20,8 @@ public class MecanumAuto extends LinearOpMode
         waitForStart();
 
         // Move commands
-        robotMove(0, 1, 0, 12);
-        robot.platformServos.setPosition(0);
-        robotMove(180, 1, 0 ,24);
-        robot.platformServos.setPosition(1);
-        robotMove(90, 1, 0, 12);
-        robotMove(0,1,0,24);
-        robotMove(270,1,0,36);
-        robotMove(180,1,0,24);
-        robotMove(90,1,0,48);
+        telemetry.addData("Status", "Move to bridge - left 1 ft");
+        robotMove(270, 1, 0, 12);
     }
 
     // Handles the drivetrain functions to set the 4 essential variables for movement

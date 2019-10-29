@@ -17,6 +17,7 @@ public class MecanumTeleOp extends OpMode
     private ToggleBoolean driverTwoBrakes;
     private Button servosUp;
     private Button servosDown;
+    private Button servosMid;
 
     @Override
     public void init()
@@ -25,6 +26,7 @@ public class MecanumTeleOp extends OpMode
         driverTwoBrakes = new ToggleBoolean();
         servosUp = new Button();
         servosDown = new Button();
+        servosMid = new Button();
         elapsedTime = new ElapsedTime();
     }
 
@@ -52,19 +54,15 @@ public class MecanumTeleOp extends OpMode
         robot.drivetrain.halfPowerInput(gamepad1.right_stick_button);
         servosUp.input(gamepad1.dpad_up);
         servosDown.input(gamepad1.dpad_down);
+        servosMid.input(gamepad1.dpad_left || gamepad1.dpad_right);
 
         robot.drivetrain.setCourse(course);
         robot.drivetrain.setVelocity(velocity * (driverTwoBrakes.output() ? 0 : 1));
         robot.drivetrain.setRotation(-gamepad1.left_stick_x);
 
-        if (servosUp.onPress())
-        {
-            robot.platformServos.setPosition(1);
-        }
-        else if (servosDown.onPress())
-        {
-            robot.platformServos.setPosition(0);
-        }
+        if (servosUp.onPress()){robot.platformServos.setPosition(1); }
+        else if (servosDown.onPress()){robot.platformServos.setPosition(0);}
+        else if (servosMid.onPress()){robot.platformServos.setPosition(0.6);}
 
         //DRIVER TWO
         //arm movement to be added later

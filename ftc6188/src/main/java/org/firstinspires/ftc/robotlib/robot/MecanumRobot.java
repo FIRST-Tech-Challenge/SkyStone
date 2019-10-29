@@ -20,7 +20,7 @@ public class MecanumRobot
     private Servo servoClawRight;
 
     private static final double wheelRadius = 2; //inches
-    private static final double motorToWheelRatio = (1.0/2.0);
+    private static final double wheelToMotorRatio = 2.0/1.0;
 
     public MecanumDrivetrain drivetrain;
     public LinkedServo platformServos;
@@ -60,6 +60,6 @@ public class MecanumRobot
         drivetrain = new MecanumDrivetrain(motorList, teleOpMode);
         platformServos = new LinkedServo(servoClawLeft, servoClawRight);
 
-        motorTicksPerIN = drivetrain.getTicksPerIn(wheelRadius, motorToWheelRatio) * 0.75;
+        motorTicksPerIN = drivetrain.getTicksPerIn(wheelRadius, wheelToMotorRatio);
     }
 }

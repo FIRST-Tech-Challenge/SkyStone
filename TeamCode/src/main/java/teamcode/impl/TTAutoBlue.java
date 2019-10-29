@@ -118,7 +118,6 @@ public class TTAutoBlue extends TTOpMode {
         arm.liftTimed(1, 0.5);
         driveSystem.lateral(46.5, 0.7);
         arm.lower(0.5);
-
     }
 
     @Override

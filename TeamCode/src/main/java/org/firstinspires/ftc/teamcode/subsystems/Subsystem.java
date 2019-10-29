@@ -8,8 +8,8 @@ import java.util.HashMap;
 
 public class Subsystem {
     DcMotor[] motors;
-    Servo[] servos;
 
+    Servo[] servos;
     public void initMotors(DcMotor[] motors) {
         this.motors = motors;
     }

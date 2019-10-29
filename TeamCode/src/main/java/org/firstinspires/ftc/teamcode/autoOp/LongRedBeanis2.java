@@ -14,43 +14,6 @@ public abstract class LongRedBeanis2 extends ChassisStandard {
         super(config);
     }
 
-    /**
-     * Code to run ONCE when the driver hits INIT
-     */
-    @Override
-    public void init() {
-        initMotors();
-        initTimeouts();
-        initGyroscope();
-    }
-
-
-    /**
-     * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
-     */
-    @Override
-    public void init_loop () {
-        telemetry.addData("Gyro", "angle: " + this.getGyroscopeAngle());
-    }
-
-    /**
-     * Code to run ONCE when the driver hits PLAY
-     */
-    @Override
-    public void start () {
-        // Reset the game timer.
-        runtime.reset();
-    }
-
-    /**
-     * Code to run ONCE after the driver hits STOP
-     */
-    @Override
-    public void stop (){
-
-    }
-
-
     /**a
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */

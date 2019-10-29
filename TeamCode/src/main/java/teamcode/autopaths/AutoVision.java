@@ -149,6 +149,11 @@ public class AutoVision extends TTOpMode
         telemetry.update();
     }
 
+    @Override
+    protected void onStop() {
+
+    }
+
     private void initVuforia()
     {
         /*

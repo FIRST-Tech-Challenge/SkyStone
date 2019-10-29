@@ -53,8 +53,8 @@ public class robotOneWheels extends LinearOpMode {
         telemetry.addData("status", "Initialized");
         telemetry.update();
 
-        leftDrive = hardwareMap.get(DcMotor.class, "left");
-        rightDrive = hardwareMap.get(DcMotor.class, "right");
+        leftDrive = hardwareMap.get(DcMotor.class, "leftDrive");
+        rightDrive = hardwareMap.get(DcMotor.class, "rightDrive");
 
         //leftFront.setDirection(DcMotor.Direction.FORWARD);
         //leftBack.setDirection(DcMotor.Direction.FORWARD);

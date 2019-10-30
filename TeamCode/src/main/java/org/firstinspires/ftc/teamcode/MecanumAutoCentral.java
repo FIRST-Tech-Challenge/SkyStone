@@ -5,6 +5,7 @@ import static java.lang.Math.sqrt;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 
 abstract class MecanumAutoCentral extends LinearOpMode {
 
@@ -25,6 +26,11 @@ abstract class MecanumAutoCentral extends LinearOpMode {
     DcMotor fR = null;
     DcMotor bL = null;
     DcMotor bR = null;
+
+    DcMotor ir = null;
+    DcMotor il = null;
+
+    Servo clamp = null;
 
     void drive(double power, double distance) {
         int ticks = distanceToTicks(distance * DRIVE_ADJUST);

@@ -14,21 +14,23 @@ import static java.lang.Math.sqrt;
 @TeleOp
 public class MecanumTeleOp extends LinearOpMode {
     public void runOpMode() {
-        DcMotor l = hardwareMap.dcMotor.get("0");
+        DcMotor l = hardwareMap.dcMotor.get("fL");
         l.setDirection(DcMotor.Direction.REVERSE);
         l.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        DcMotor r = hardwareMap.dcMotor.get("2");
+        DcMotor r = hardwareMap.dcMotor.get("fR");
         r.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        DcMotor l1 = hardwareMap.dcMotor.get("1");
+        DcMotor l1 = hardwareMap.dcMotor.get("bL");
         l1.setDirection(DcMotor.Direction.REVERSE);
         l1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        DcMotor r1 = hardwareMap.dcMotor.get("3");
+        DcMotor r1 = hardwareMap.dcMotor.get("bR");
         r1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        DcMotor il = hardwareMap.dcMotor.get("4");
-        l.setDirection(DcMotor.Direction.REVERSE);
-        l.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        DcMotor ir = hardwareMap.dcMotor.get("5");
-        r.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        DcMotor il = hardwareMap.dcMotor.get("il");
+        il.setDirection(DcMotor.Direction.REVERSE);
+        il.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        DcMotor ir = hardwareMap.dcMotor.get("ir");
+        ir.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         double s = 0.65;
         waitForStart();
         while (opModeIsActive()) {
@@ -47,15 +49,15 @@ public class MecanumTeleOp extends LinearOpMode {
             r.setPower(-(v7 * v4 / f) * s);
             r1.setPower(-(v7 * v5 / f) * s);
             while (gamepad1.a) {
-                l.setPower(0.5);
-                r.setPower(0.5);
+                il.setPower(0.5);
+                ir.setPower(0.5);
             }
             while (gamepad1.b) {
-                l.setPower(-0.5);
-                r.setPower(-0.5);
+                il.setPower(-0.5);
+                ir.setPower(-0.5);
             }
-            l.setPower(0);
-            r.setPower(0);
+            il.setPower(0);
+            ir.setPower(0);
             idle();
         }
     }

@@ -1,22 +1,21 @@
 package org.firstinspires.ftc.teamcode;
 
+import static java.lang.Math.abs;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import static java.lang.Math.abs;
-import static java.lang.Math.random;
-
 @Autonomous
 
-public class MecanumAuto_RedLeft extends MecanumAutoCentral {
+public class MecanumAuto_BlueUpper extends MecanumAutoCentral {
     private final double POWER = 0.5;
 
     public void runOpMode() {
 
-        fL = hardwareMap.dcMotor.get("0");
-        fR = hardwareMap.dcMotor.get("2");
-        bL = hardwareMap.dcMotor.get("1");
-        bR = hardwareMap.dcMotor.get("3");
+        fL = hardwareMap.dcMotor.get("fL");
+        fR = hardwareMap.dcMotor.get("fR");
+        bL = hardwareMap.dcMotor.get("bL");
+        bR = hardwareMap.dcMotor.get("bR");
         fL.setDirection(DcMotor.Direction.REVERSE);
         fL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         fR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -24,12 +23,20 @@ public class MecanumAuto_RedLeft extends MecanumAutoCentral {
         bL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         bR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        il = hardwareMap.dcMotor.get("il");
+        il.setDirection(DcMotor.Direction.REVERSE);
+        il.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        ir = hardwareMap.dcMotor.get("ir");
+        ir.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        /*
         int skystone1 = (int) (6 * random());
         int skystone2 = skystone1;
 
         while (skystone1 == skystone2) {
             skystone2 = (int) (6 * random());
         }
+         */
 
         double gameField = 12 * 12;
         double quarryLength = 48.5;
@@ -46,12 +53,11 @@ public class MecanumAuto_RedLeft extends MecanumAutoCentral {
 
         waitForStart();
 
-        strafeLeft(POWER, 10);
-        drive(POWER, 48 - chassisLength);
+        drive(0.1, -(47.25 - chassisLength));
+        strafeLeft(POWER, chassisWidth - 8);
         //Grab please
-        drive(POWER, -(46 - chassisLength));
+        drive(0.3, 47.25 - chassisLength);
         //Release please
-        strafeLeft(POWER, -28);
-
+        strafeLeft(POWER, -(34.5 + (chassisWidth - 8) + 24));
     }
 }

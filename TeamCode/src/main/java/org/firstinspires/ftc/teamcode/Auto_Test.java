@@ -4,16 +4,18 @@ import static java.lang.Math.sqrt;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 
 @Autonomous
 
 public class Auto_Test extends MecanumAutoCentral {
 
-    private final double power = 0.6;
+    private final double POWER = 0.5;
 
     public void runOpMode(){
-        while (opModeIsActive()){
+        clamp = hardwareMap.servo.get("clamp");
 
-        }
+        clamp.setPosition(1);
+        clamp.setPosition(0.4);
     }
 }

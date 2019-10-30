@@ -13,6 +13,7 @@ class SSRobot {
     var vSlide: DcMotor? = null
     var hSlide: Servo? = null
     var claw: Servo? = null
+    var touch: DigitalChannel? = null
 
 
     var motF = DcMotorSimple.Direction.FORWARD
@@ -28,7 +29,7 @@ class SSRobot {
         vSlide = ahwdMap.dcMotor.get("vSlide")
         hSlide = ahwdMap.servo.get("hSlide")
         claw = ahwdMap.servo.get("claw")
-
+        touch = ahwdMap.digitalChannel.get("touch")
 
         //Setting direction
         leftDrive?.direction = motF
@@ -42,6 +43,8 @@ class SSRobot {
         rightDrive?.power = 0.0
         leftDrive?.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         rightDrive?.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+        vSlide?.mode = DcMotor.RunMode.RUN_USING_ENCODER //Use encoders for linear slide motor
+
     }
 
     //METHODS
@@ -66,11 +69,10 @@ class SSRobot {
 
     fun pinch(gp: Gamepad) {
         var close = false
-        if(gp.a) close = !close
-        this.claw?.position = when {
-            close -> 0.0 //close
-            !close -> 1.0 //open
-            else -> 1.0
+        if(gp.left_bumper) close = !close
+        when {
+            close -> this.claw?.position = 0.0 //close
+            !close -> this.claw?.position = 1.0 //open-default
         }
     }
 }

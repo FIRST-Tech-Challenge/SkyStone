@@ -72,7 +72,7 @@ public class ArmSystem {
      XO  <--- Position west
 
      OO
-     XX  <--- Position south
+     XX  <--- Position south 
 
      OX
      OX  <--- Position east
@@ -82,7 +82,6 @@ public class ArmSystem {
 
      Probably should be controlled by the D pad or something.
      */
-
     public ArmSystem(EnumMap<ServoNames, Servo> servos, DcMotor slider, DigitalChannel limitSwitch) {
         this.gripper = servos.get(ServoNames.GRIPPER);
         this.wrist = servos.get(ServoNames.WRIST);
@@ -90,8 +89,6 @@ public class ArmSystem {
         this.pivot = servos.get(ServoNames.PIVOT);
         this.slider = slider;
         this.limitSwitch = limitSwitch;
-        // Initialize slider - THIS WILL MOVE
-        this.calibrate();
 
     }
 
@@ -99,9 +96,6 @@ public class ArmSystem {
     public ArmSystem(DcMotor slider, DigitalChannel limitSwitch) {
         this.slider = slider;
         this.limitSwitch = limitSwitch;
-        // Initialize slider - THIS WILL MOVE
-        this.calibrate();
-
     }
 
     public void moveGripper(double pos) {
@@ -214,23 +208,34 @@ public class ArmSystem {
         this.movePresetPosition(queuedPosition);
     }
 
-    // Moves the slider down until it hits the limit switch. Used to calibrate the encoder.
-    // Must be called every iteration of init_loop.
+    /*
+    Takes in the slack in the linear slide. Used to calibrate the encoder.
+    Must be called every iteration of init_loop.
+     */
     public void calibrate() {
         slider.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        slider.setDirection(direction? UP : DOWN);
+        slider.setDirection(direction? DOWN : UP);
         slider.setPower(0.1);
+
+        if (limitSwitch.getState()) { // If the limit switch isn't pressed
+            direction = false;
+        }
 
         // If we're going down and we hit the switch, then we're done
         if (!direction && !limitSwitch.getState()) {
             slider.setPower(0);
-            calibrated = false;
+            calibrated = true;
             calibrationDistance = slider.getCurrentPosition();
+            targetHeight = calibrationDistance;
         }
     }
 
     public boolean isCalibrated() {
         return calibrated;
+    }
+
+    public void stop() {
+        slider.setPower(0);
     }
 
     // Pos should be the # of blocks high it should be

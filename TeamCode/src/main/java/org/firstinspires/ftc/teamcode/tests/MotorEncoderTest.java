@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.teamcode.opmodes.BaseOpMode;
+import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
 @TeleOp(name = "MotorEncoderTest", group = "Test")
 public class MotorEncoderTest extends OpMode {
     private DcMotor motor;

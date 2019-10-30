@@ -24,6 +24,8 @@ public class SliderComponentTest extends OpMode {
     public void init_loop() {
         if (!armSystem.isCalibrated()) {
             armSystem.calibrate();
+        } else {
+            ;
         }
     }
 

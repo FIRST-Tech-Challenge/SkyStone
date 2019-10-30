@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.robotlib.state;
 
 public enum ServoState {
+    UNKNOWN(-1),
     STOWED(0),
     UP(1),
     DOWN(2);
@@ -17,13 +18,13 @@ public enum ServoState {
 
     // This auto corrects if the value is too high or low
     public static ServoState getServoStateFromInt(int level) {
-        if (level > ServoState.values().length - 1) return getServoStateFromInt(ServoState.values().length - 1);
+        if (level > values().length - 1) return getServoStateFromInt(values().length - 1);
         if (level < 0) return getServoStateFromInt(0);
 
         for (ServoState servoState : values()) {
             if (servoState.getLevel() == level) return servoState;
         }
 
-        return STOWED;
+        return UNKNOWN;
     }
 }

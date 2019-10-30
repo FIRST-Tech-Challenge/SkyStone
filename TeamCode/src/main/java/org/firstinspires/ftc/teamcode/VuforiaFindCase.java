@@ -65,9 +65,9 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="AV4VA", group="MoveBot")
+//@Autonomous(name="AV4VA", group="MoveBot")
 // @Disabled
-public class Nerd_Auton_SkyStone_VMIHI {
+public class VuforiaFindCase {
 
     // IMPORTANT:  For Phone Camera, set 1) the camera source and 2) the orientation, based on how your phone is mounted:
     // 1) Camera Source.  Valid choices are:  BACK (behind screen) or FRONT (selfie side)
@@ -98,7 +98,6 @@ public class Nerd_Auton_SkyStone_VMIHI {
 
 
     private LinearOpMode opmode;
-
 
     private float phoneZRotate = 0;
     private static final float mmPerInch = 25.4f;
@@ -143,13 +142,15 @@ public class Nerd_Auton_SkyStone_VMIHI {
     static final double P_DRIVE_COEFF = 0.0135;     // Larger is more responsive, but also less stable
     static final double I_DRIVE_COEFF = 0.0015;       // Larger is more responsive, but also less stable
     static final double I_TURN_COEFF = 0.2;       // Larger is more responsive, but also less stable
+    public int positionCase = 1;
 
+
+    public  VuforiaFindCase(LinearOpMode opmode){
+        this.opmode = opmode;
+        //this.hardwareMap = opmode.hardwareMap;
+    }
 
     public int vuforia() {
-
-
-        int positionCase = 1;
-
 
         int cameraMonitorViewId = opmode.hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", this.opmode.hardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
@@ -256,11 +257,17 @@ public class Nerd_Auton_SkyStone_VMIHI {
                 if ((translation.get(0) <= -2)) {
 
                     positionCase = 1;
+                    this.opmode.telemetry.addData("Position Case", "1");
+                    this.opmode.telemetry.update();
                 } else if ((translation.get(0)) > 3){
 
                     positionCase = 3;
+                    this.opmode.telemetry.addData("Position Case", "3");
+                    this.opmode.telemetry.update();
                 } else {
                     positionCase = 2;
+                    this.opmode.telemetry.addData("Position Case", "2");
+                    this.opmode.telemetry.update();
                 }
 
 
@@ -280,6 +287,7 @@ public class Nerd_Auton_SkyStone_VMIHI {
             this.opmode.telemetry.update();
         }
 
+        return positionCase;
     }
 
 }

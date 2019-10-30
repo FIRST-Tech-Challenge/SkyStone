@@ -22,15 +22,13 @@ public abstract class BaseOpMode extends OpMode {
     protected VuforiaTrackable rearPerimeter;
 
     public void init(){
+        this.msStuckDetectInit = 20000;
+        this.msStuckDetectInitLoop = 20000;
         EnumMap<DriveSystem.MotorNames, DcMotor> driveMap = new EnumMap<>(DriveSystem.MotorNames.class);
         for(DriveSystem.MotorNames name : DriveSystem.MotorNames.values()){
             driveMap.put(name,hardwareMap.get(DcMotor.class, name.toString()));
         }
         driveSystem = new DriveSystem(driveMap, hardwareMap.get(BNO055IMU.class, "imu"));
-        DistanceSensor distanceSensor2;
-        DistanceSensor distanceSensor3;
-        ColorSensor colorSensor;
-
     }
 
     protected void setCamera(CameraChoice cameraChoice){

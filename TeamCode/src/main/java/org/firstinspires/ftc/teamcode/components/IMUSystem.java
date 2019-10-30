@@ -108,4 +108,3 @@ public class IMUSystem {
         return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(degrees));
     }
 }
-

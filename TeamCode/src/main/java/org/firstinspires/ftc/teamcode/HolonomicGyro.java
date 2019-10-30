@@ -72,7 +72,7 @@ public class HolonomicGyro extends LinearOpMode {
             }
 
             //Holonomic Vector Math
-            robot.drive(LX, LY, rotate, gamepad1.left_trigger, gamepad1.right_trigger);
+            robot.drive(LX, LY, rotate);
 
             telemetry.addData("Drive", "Holonomic");
 

@@ -18,7 +18,8 @@ import pkg3939.Robot3939;
 
 @TeleOp(name="Holonomic", group="Iterative Opmode")
 //@Disabled
-public class Holonomic extends LinearOpMode {
+public class
+Holonomic extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     //Declaration of the motors and servos goes here
@@ -41,7 +42,7 @@ public class Holonomic extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        double speedSet = 0.5;//robot starts with speed 5 due to 40 ratio motors being op
+        double speedSet = 5;//robot starts with speed 5 due to 40 ratio motors being op
         boolean forks = false;
 
         while (opModeIsActive()) {
@@ -72,12 +73,11 @@ public class Holonomic extends LinearOpMode {
             }
 
             //robot drive
+            speedSet /= 10;
 
             robot.drive(gamepad1.left_stick_x*speedSet,
                         gamepad1.left_stick_y*speedSet,
-                        gamepad1.right_stick_x*speedSet,
-                        gamepad1.left_trigger,
-                        gamepad1.right_trigger);
+                        gamepad1.right_stick_x*speedSet);
 
             telemetry.addData("Drive", "Holonomic");
             telemetry.addData("Global Heading", robot.getAngle());

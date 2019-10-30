@@ -129,7 +129,7 @@ public class Robot3939 {
         setAllGivenPower(0);
     }
 
-    public void drive(double LX, double LY, double rotate, double LT, double RT) {
+    public void drive(double LX, double LY, double rotate) {
         if((Math.abs(LX) > deadZone) || (Math.abs(LY) > deadZone) || (Math.abs(rotate) > deadZone)) {
             FLpower = LY - LX + rotate;
             FRpower = LY + LX - rotate;
@@ -148,7 +148,10 @@ public class Robot3939 {
             RLpower /= maxPower;
             RRpower /= maxPower;
         }
-        setAllpower();
+        setFLPower(FLpower);
+        setFRPower(FRpower);
+        setRLPower(RLpower);
+        setRRPower(RRpower);
     }
 
     //for autonomous, use only one axis at a time for now. still under development

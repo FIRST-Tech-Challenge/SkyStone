@@ -14,7 +14,8 @@ public class AutoBuildZoneRed extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         Robot bot = Robot.getInstance();
         bot.init(hardwareMap);
-        bot.foundationGrabber.setGrabbed(false);
+        bot.foundationGrabber.setGrabbedLeft(false);
+        bot.foundationGrabber.setGrabbedRight(false);
         bot.lift.idle();
 //        bot.stoneManipulator.stow();
         sleep(4000);
@@ -37,13 +38,15 @@ public class AutoBuildZoneRed extends LinearOpMode {
             bot.driveTrain.updateLocation();
             sleep(1);
         }
-        bot.foundationGrabber.setGrabbed(true);
+        bot.foundationGrabber.setGrabbedLeft(true);
+        bot.foundationGrabber.setGrabbedRight(true);
         bot.driveTrain.spinDrive(0, -1, 0);
         while (bot.runtime.seconds() < 0.25) {
             bot.driveTrain.updateLocation();
             sleep(1);
         }
-        bot.foundationGrabber.setGrabbed(false);
+        bot.foundationGrabber.setGrabbedLeft(false);
+        bot.foundationGrabber.setGrabbedRight(false);
         bot.driveTrain.spinDrive(-1, 0, 0);
         while (bot.driveTrain.getLocation().x > 0 && !bot.driveTrain.onBlueLine() && bot.runtime.seconds() < 5) {
             bot.driveTrain.updateLocation();

@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode.opmodes.utility;
 
+import com.qualcomm.ftccommon.ViewLogsActivity;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.westtorrancerobotics.lib.Angle;
 import org.westtorrancerobotics.lib.Location;
@@ -18,9 +20,13 @@ public class OdometerTest extends MecanumTeleop {
     public void init() {
         super.init();
         myLocation = new Location(0, 0, new Angle(0, Angle.AngleUnit.DEGREES, Angle.AngleOrientation.COMPASS_HEADING));
-        leftY = new Wheel();
-        rightY = new Wheel();
-        x = new Wheel();
+        leftY = new Wheel(new Location(0,0,
+                new Angle(0, Angle.AngleUnit.DEGREES, Angle.AngleOrientation.COMPASS_HEADING)),"");
+        rightY = new Wheel(new Location(0,0,
+                new Angle(0, Angle.AngleUnit.DEGREES, Angle.AngleOrientation.COMPASS_HEADING)),"");
+        x = new Wheel(new Location(0,0,
+                new Angle(0, Angle.AngleUnit.DEGREES, Angle.AngleOrientation.COMPASS_HEADING)),
+                "");
     }
 
     @Override

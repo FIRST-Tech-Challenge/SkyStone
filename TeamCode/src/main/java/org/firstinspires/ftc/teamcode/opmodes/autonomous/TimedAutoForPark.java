@@ -48,15 +48,31 @@ public class TimedAutoForPark extends LinearOpMode {
         Servo Test = hardwareMap.get(Servo.class, "armTune");
 
 //        RevColorSensorV3 color = hardwareMap.get(RevColorSensorV3.class, "sensor_color_distance");
-        RevColorSensorV3 color = new RevColorSensorV3(
-                hardwareMap.get(RevColorSensorV3.class, "color").getDeviceClient()) {
+        RevColorSensorV3 color1 = new RevColorSensorV3(
+                hardwareMap.get(RevColorSensorV3.class, "color1").getDeviceClient()) {
             @Override
             protected double inFromOptical(int rawOptical) {
-                return Math.pow((rawOptical - cParam)/aParam, -binvParam);
+                return Math.pow((rawOptical - cParam) / aParam, -binvParam);
+            }
+        };
+        RevColorSensorV3 color2 = new RevColorSensorV3(
+                hardwareMap.get(RevColorSensorV3.class, "color2").getDeviceClient()) {
+            @Override
+            protected double inFromOptical(int rawOptical) {
+                return Math.pow((rawOptical - cParam) / aParam, -binvParam);
+            }
+        };
+        RevColorSensorV3 color3 = new RevColorSensorV3(
+                hardwareMap.get(RevColorSensorV3.class, "color3").getDeviceClient()) {
+            @Override
+            protected double inFromOptical(int rawOptical) {
+                return Math.pow((rawOptical - cParam) / aParam, -binvParam);
             }
         };
 
-        color.rawOptical();
+        color1.rawOptical();
+        color2.rawOptical();
+        color3.rawOptical();
 
         ElapsedTime runtime = new ElapsedTime();
 
@@ -65,31 +81,33 @@ public class TimedAutoForPark extends LinearOpMode {
         int DST_CONST = 46;
         Test.setPosition(0);
         //driveTrain.translate(0.2, 0.75, MecanumDrive.TranslationMethod.CONSTANT_SPEED);
-        sleep((long) 27*DST_CONST);
+        sleep((long) 27 * DST_CONST);
         //need to fix so that its around ~2 cm away from blocks
+
         while (opModeIsActive()) {
             double avg = 0;
             double redToBlueAvg = 0;
             double greenToBlueAvg = 0;
-            for (int i = 0; i < 10; i++){
-                double initial = Math.pow((color.rawOptical()-cParam)/aParam, -binvParam);
+            for (int i = 0; i < 10; i++) {
+                double initial = Math.pow((color1.rawOptical() - cParam) / aParam, -binvParam);
                 avg = avg + initial;
-                redToBlueAvg += (color.red()/color.blue());
-                greenToBlueAvg += (color.green()/color.blue());
+                redToBlueAvg += (color1.red() / color1.blue());
+                greenToBlueAvg += (color1.green() / color1.blue());
             }
-            double actualAvg = avg/10;
+            double actualAvg = avg / 10;
             if (runtime.seconds() < 2) {
                 redToBlueAvg /= 10;
-                greenToBlueAvg /=10;
+                greenToBlueAvg /= 10;
             }
-            telemetry.addData("R", color.red());
-            telemetry.addData("G", color.green());
-            telemetry.addData("B", color.blue());
+
+            telemetry.addData("R", color1.red());
+            telemetry.addData("G", color1.green());
+            telemetry.addData("B", color1.blue());
             telemetry.addData("InputData", actualAvg);
             telemetry.update();
             sleep(500);
             //Reads color values and sends them to driver station
-            if (actualAvg < maxDist && (color.red() / color.blue()) > redToBlueAvg && (color.green()/color.blue()) > greenToBlueAvg) {
+            if (actualAvg < maxDist && (color1.red() / color1.blue()) > redToBlueAvg && (color1.green() / color1.blue()) > greenToBlueAvg) {
                 driveTrain.translate(0, 0, MecanumDrive.TranslationMethod.CONSTANT_SPEED);
                 telemetry.update();
 //                telemetry.addData("R", color.red());
@@ -105,6 +123,14 @@ public class TimedAutoForPark extends LinearOpMode {
             //The if statement above allows the robot to detect yellow to find a block and move the servo accordingly
             sleep(1);
         }
+        private boolean readsYellow (RevColorSensorV3 color){
+            if (actualAvg < maxDist && (color.red() / color.blue()) > redToBlueAvg && (color.green() / color.blue()) > greenToBlueAvg) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
 
 //        driveTrain.translate(0,0, MecanumDrive.TranslationMethod.CONSTANT_SPEED);
         //driveTrain.translate(-0.2, -0.5, MecanumDrive.TranslationMethod.CONSTANT_SPEED);
@@ -124,5 +150,4 @@ public class TimedAutoForPark extends LinearOpMode {
 //        sleep((long) (21*(DST_CONST)));
 //        driveTrain.translate(0,0, MecanumDrive.TranslationMethod.CONSTANT_SPEED);
     }
-
 }

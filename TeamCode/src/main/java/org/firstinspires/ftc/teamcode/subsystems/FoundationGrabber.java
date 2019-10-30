@@ -8,6 +8,8 @@ public class FoundationGrabber {
 
     private Servo leftHook;
     private RevTouchSensor leftBlock;
+    private Servo rightHook;
+    private RevTouchSensor rightBlock;
 
     private static FoundationGrabber instance = null;
 
@@ -22,11 +24,22 @@ public class FoundationGrabber {
         leftHook = hardwareMap.get(Servo.class, "foundation_hook_left");
         leftHook.scaleRange(0.4, 0.9);
         leftHook.setDirection(Servo.Direction.FORWARD);
+
+        rightBlock = hardwareMap.get(RevTouchSensor.class, "auto_block_touch_left");
+        rightHook = hardwareMap.get(Servo.class, "foundation_hook_left");
+        rightHook.scaleRange(0.4, 0.9);
+        rightHook.setDirection(Servo.Direction.FORWARD);
     }
 
-    public void setGrabbed(boolean grabbed) {
+    public void setGrabbedLeft(boolean grabbed) {
         leftHook.setPosition(grabbed ? 1 : 0);
     }
+
+    public void setGrabbedRight(boolean grabbed) {
+        rightHook.setPosition(grabbed ? 1 : 0);
+    }
+
+
 
     public boolean isGrabbed() {
         return leftBlock.isPressed();

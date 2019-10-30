@@ -135,8 +135,12 @@ public class Robot3939 {
             FRpower = LY + LX - rotate;
             RRpower = LY - LX - rotate;
             RLpower = LY + LX + rotate;
-        } else if (earthIsFlat) //stop robot
-            stopMotors();
+        } else if (earthIsFlat) { //stop robot
+            FLpower = 0;
+            FRpower = 0;
+            RRpower = 0;
+            RLpower = 0;
+        }
 
         //get max power out of all 4 powers
         double maxPower = Math.max(1.0, Math.max(Math.max(Math.abs(FLpower), Math.abs(RLpower)), Math.max(Math.abs(FRpower), Math.abs(RRpower))));
@@ -148,10 +152,10 @@ public class Robot3939 {
             RLpower /= maxPower;
             RRpower /= maxPower;
         }
-        setFLPower(FLpower);
-        setFRPower(FRpower);
-        setRLPower(RLpower);
-        setRRPower(RRpower);
+        FL.setPower(FLpower);
+        FR.setPower(FRpower);
+        RL.setPower(RLpower);
+        RR.setPower(RRpower);
     }
 
     //for autonomous, use only one axis at a time for now. still under development

@@ -29,6 +29,9 @@ Holonomic extends LinearOpMode {
 
     public static final boolean DOWN = true, UP = false;
 
+    private boolean bPressed;
+    private boolean bHeld = false;
+
     @Override //when init is pressed
     public void runOpMode(){
 
@@ -46,8 +49,21 @@ Holonomic extends LinearOpMode {
         boolean forks = false;
 
         while (opModeIsActive()) {
-
+            bPressed = gamepad1.b;
             //bumpers set speed of robot
+            if(!bHeld && bPressed)
+
+            {
+
+                bHeld = true;
+                forks = !forks;
+
+            } else if(!bPressed) {
+
+                bHeld = false;
+
+            }
+
             if(gamepad1.right_bumper)
                 speedSet += 0.0005;
             else if(gamepad1.left_bumper)
@@ -60,24 +76,23 @@ Holonomic extends LinearOpMode {
 
             //foundation moving forks
 
-            if(gamepad1.a) {
-                forks = !forks;
-                sleep(50);
-            }
-
-            if(forks) {
-                robot.setForks(DOWN);
-            }
-            else if(earthIsFlat) {
-                robot.setForks(UP);
-            }
+//            if(gamepad1.a) {
+//                forks = !forks;
+//                sleep(50);
+//            }
+//
+//            if(forks) {
+//                robot.setForks(DOWN);
+//            }
+//            else if(earthIsFlat) {
+//                robot.setForks(UP);
+//            }
 
             //robot drive
-            speedSet /= 10;
 
-            robot.drive(gamepad1.left_stick_x*speedSet,
-                        gamepad1.left_stick_y*speedSet,
-                        gamepad1.right_stick_x*speedSet);
+            robot.drive(gamepad1.left_stick_x*speedSet/10,
+                        gamepad1.left_stick_y*speedSet/10,
+                        gamepad1.right_stick_x*speedSet/10);
 
             telemetry.addData("Drive", "Holonomic");
             telemetry.addData("Global Heading", robot.getAngle());

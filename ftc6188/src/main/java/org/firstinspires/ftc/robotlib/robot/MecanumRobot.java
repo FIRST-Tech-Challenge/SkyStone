@@ -14,18 +14,18 @@ public class MecanumRobot
     private DcMotor driveFrontRight;
     private DcMotor driveRearRight;
     private DcMotor driveRearLeft;
-    DcMotor[] motorList = new DcMotor[]{driveFrontLeft, driveFrontRight, driveRearLeft, driveRearRight};
+    DcMotor[] motorList;
 
     private Servo servoClawLeft;
     private Servo servoClawRight;
 
     private static final double wheelRadius = 2; //inches
-    private static final double motorToWheelRatio = (1.0/2.0);
+    private static final double wheelToMotorRatio = 2.0/1.0;
 
     public MecanumDrivetrain drivetrain;
     public LinkedServo platformServos;
 
-    public final double motorTicksPerIn;
+    public final double motorTicksPerIN;
 
     public MecanumRobot(HardwareMap hwMap, boolean teleOpMode)
     {
@@ -55,9 +55,11 @@ public class MecanumRobot
         servoClawLeft.setDirection(Servo.Direction.FORWARD);
         servoClawRight.setDirection(Servo.Direction.REVERSE);
 
+        motorList = new DcMotor[]{driveFrontLeft, driveFrontRight, driveRearLeft, driveRearRight};
+
         drivetrain = new MecanumDrivetrain(motorList, teleOpMode);
         platformServos = new LinkedServo(servoClawLeft, servoClawRight);
 
-        motorTicksPerIn = drivetrain.getTicksPerIn(wheelRadius, motorToWheelRatio);
+        motorTicksPerIN = drivetrain.getTicksPerIn(wheelRadius, wheelToMotorRatio);
     }
 }

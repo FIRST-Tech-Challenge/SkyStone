@@ -1,7 +1,10 @@
 package org.firstinspires.ftc.robotlib.servo;
 
 import com.qualcomm.robotcore.hardware.Servo;
-
+/*
+This class defines two servos who are intended to operate as one
+it really just simplifies the programming later since we then only have to set one position instead of two
+ */
 public class LinkedServo
 {
     private Servo servoOne;
@@ -20,21 +23,10 @@ public class LinkedServo
 
     public LinkedServo(Servo servoOne, Servo servoTwo) { this(servoOne, servoTwo, (servoOne.getDirection() == servoTwo.getDirection()), 0); }
 
+    // Operates just like the servo.setPosition function but does it for both, handles the weird math defining two servos
     public void setPosition(double position)
     {
         this.position = position;
-        updateServoPosition();
-    }
-
-    public double getPosition() { return position; }
-
-    public String getActual()
-    {
-        return ("One: " + servoOne.getPosition() + " Two: " + servoTwo.getPosition());
-    }
-
-    private void updateServoPosition()
-    {
         double position2 = position;
         if (oppositeFace)
         {
@@ -51,5 +43,14 @@ public class LinkedServo
 
         servoTwo.setPosition(position2);
         servoOne.setPosition(position);
+        // 0 is the down position while 1 is up, for some reason
+    }
+
+    public double getPosition() { return position; }
+
+    // Only for telemetry purposes
+    public String getActual()
+    {
+        return ("One: " + servoOne.getPosition() + " Two: " + servoTwo.getPosition());
     }
 }

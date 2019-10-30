@@ -54,7 +54,6 @@ Holonomic extends LinearOpMode {
             if(!bHeld && bPressed)
 
             {
-
                 bHeld = true;
                 forks = !forks;
 

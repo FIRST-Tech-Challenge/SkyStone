@@ -27,11 +27,6 @@ Holonomic extends LinearOpMode {
 
     public static final boolean earthIsFlat = true;
 
-    public static final boolean DOWN = true, UP = false;
-
-    private boolean bPressed;
-    private boolean bHeld = false;
-
     @Override //when init is pressed
     public void runOpMode(){
 
@@ -46,23 +41,12 @@ Holonomic extends LinearOpMode {
         runtime.reset();
 
         double speedSet = 5;//robot starts with speed 5 due to 40 ratio motors being op
-        boolean forks = false;
 
         while (opModeIsActive()) {
-            bPressed = gamepad1.b;
+            //forks
+             robot.setForks(gamepad1.a);
+
             //bumpers set speed of robot
-            if(!bHeld && bPressed)
-
-            {
-                bHeld = true;
-                forks = !forks;
-
-            } else if(!bPressed) {
-
-                bHeld = false;
-
-            }
-
             if(gamepad1.right_bumper)
                 speedSet += 0.0005;
             else if(gamepad1.left_bumper)
@@ -72,20 +56,6 @@ Holonomic extends LinearOpMode {
 
             if(!gamepad1.right_bumper && !gamepad1.left_bumper)//makes sure speed does not round every refresh. otherwise, speed won't be able to change
                 speedSet = Math.round(speedSet);
-
-            //foundation moving forks
-
-//            if(gamepad1.a) {
-//                forks = !forks;
-//                sleep(50);
-//            }
-//
-//            if(forks) {
-//                robot.setForks(DOWN);
-//            }
-//            else if(earthIsFlat) {
-//                robot.setForks(UP);
-//            }
 
             //robot drive
 

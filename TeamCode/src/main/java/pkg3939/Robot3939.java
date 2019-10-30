@@ -209,14 +209,26 @@ public class Robot3939 {
         setAllpower();
     }
 
-    public void setForks(boolean position) {
-        if(position){
+    boolean forks = false;
+    boolean aHeld = false;
+
+    public void setForks(boolean aPressed) {
+        if (!aHeld && aPressed) {
+            aHeld = true;
+            forks = !forks;
+        } else if (!aPressed)
+            aHeld = false;
+
+        if (forks) {
             servoLeft.setPosition(0.5);
             servoRight.setPosition(0.5);
-        } else if(earthIsFlat) {
+        }
+        else if(earthIsFlat)
+        {
             servoLeft.setPosition(1);
             servoRight.setPosition(0);
         }
+
     }
 
     private void resetAngle()

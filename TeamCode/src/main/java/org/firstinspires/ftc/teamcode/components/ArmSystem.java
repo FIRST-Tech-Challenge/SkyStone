@@ -41,6 +41,9 @@ public class ArmSystem {
     private boolean calibrated = false;
     private boolean direction = true; // true is up, false is down
 
+    // Don't change this unless in calibrate(), is read in the calculateHeight method
+    private int calibrationDistance = 0;
+
     // This can actually be more, like 5000, but we're not going to stack that high
     // for the first comp and the servo wires aren't long enough yet
     public final int MAX_HEIGHT = 3000;
@@ -222,6 +225,7 @@ public class ArmSystem {
         if (!direction && !limitSwitch.getState()) {
             slider.setPower(0);
             calibrated = false;
+            calibrationDistance = slider.getCurrentPosition();
         }
     }
 
@@ -237,7 +241,7 @@ public class ArmSystem {
 
     // Little helper method for setSliderHeight
     private int calculateHeight(int pos) {
-        return START_HEIGHT + pos * INCREMENT_HEIGHT;
+        return START_HEIGHT + pos * INCREMENT_HEIGHT + calibrationDistance;
     }
 
     // Should be called every loop

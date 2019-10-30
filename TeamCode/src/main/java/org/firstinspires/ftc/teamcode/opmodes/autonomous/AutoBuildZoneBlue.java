@@ -32,12 +32,19 @@ public class AutoBuildZoneBlue extends LinearOpMode {
         bot.runtime.reset();
 
         bot.camera.start();
-        bot.driveTrain.spinDrive(1, 1, 0);
+        bot.driveTrain.spinDrive(0, 1, 0);
         while (bot.runtime.seconds() < 0.25) {
             bot.driveTrain.updateLocation();
             sleep(1);
         }
-        bot.driveTrain.spinDrive(0.5, 0, 0);
+        bot.foundationGrabber.setGrabbed(true);
+        bot.driveTrain.spinDrive(0, -1, 0);
+        while (bot.runtime.seconds() < 0.25) {
+            bot.driveTrain.updateLocation();
+            sleep(1);
+        }
+        bot.foundationGrabber.setGrabbed(false);
+        bot.driveTrain.spinDrive(1, 0, 0);
         while (bot.driveTrain.getLocation().x > 0 && !bot.driveTrain.onBlueLine() && bot.runtime.seconds() < 5) {
             bot.driveTrain.updateLocation();
             sleep(1);

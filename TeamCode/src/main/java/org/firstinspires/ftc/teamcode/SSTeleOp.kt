@@ -14,7 +14,7 @@ class SSTeleOp : OpMode() {
     //using robot class for motors, servos etc
     val robot = SSRobot()
     val zero = 0.0.toFloat()
-    var slowDown = 1.75//default
+    var slowDown = 1.85//default
     var tooHigh = true
     var tooLow = true
     var touched = false
@@ -48,7 +48,7 @@ class SSTeleOp : OpMode() {
          */
 
         touched = !robot.touch!!.state //true if not pressed
-        slowDown = if(gamepad1.left_bumper) 2.25 else 1.75 //condensed if else
+        slowDown = if(gamepad1.left_bumper) 2.45 else 1.85 //condensed if else
 
         //Tank Drive-sets power equal to numerical value of joystick positions
         leftPower = -gamepad1.left_stick_y
@@ -69,6 +69,7 @@ class SSTeleOp : OpMode() {
         tooLow = curPos < 0
 
         try {
+            //if (curPos > 1500) linSlidePow /= 1.2.toFloat() //slow slide if greater than value
             robot.vSlide?.power = -linSlidePow.toDouble()//controls vertical slide
             slideP = (gamepad2.left_stick_y.toDouble() / 2) + 0.5
             if(touched){ //controls horizontal slide with the left stick of gp2

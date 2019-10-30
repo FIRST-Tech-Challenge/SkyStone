@@ -110,9 +110,8 @@ public class DriveTrain {
     private double modPower = 0.0;
 
 
-    public void initDriveTrain() {
+    public void initDriveTrain(LinearOpMode opMode) {
 
-        this.opMode = opMode;
         sensors = new Sensors();
 
         //Sets Hardware Map
@@ -733,11 +732,11 @@ public class DriveTrain {
                          double kD, double timeOutMS) {
 
         runtime.reset();
-        sensors.angles = sensors.gyro.getAngularOrientation();
+        //sensors.angles = sensors.gyro.getAngularOrientation();
 
         while (opMode.opModeIsActive() && runtime.milliseconds() <= timeOutMS && goal - sensors.getGyroYaw() > 1 ) {
 
-            sensors.angles = sensors.gyro.getAngularOrientation();
+          //  sensors.angles = sensors.gyro.getAngularOrientation();
 
             error = goal - sensors.getGyroYaw();
             proportional = error * kP;

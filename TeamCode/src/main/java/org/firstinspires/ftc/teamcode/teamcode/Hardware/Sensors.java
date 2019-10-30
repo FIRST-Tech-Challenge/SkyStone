@@ -18,14 +18,15 @@ public class Sensors {
     private TeleOpTrollTest opMode;
     public BNO055IMU gyro;
     public Orientation angles;
-    public BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
-    ModernRoboticsI2cRangeSensor uSonic;
+  ModernRoboticsI2cRangeSensor uSonic;
 
-    public void initSensors(TeleOpTrollTest opMode) {
+    public void initSensors(LinearOpMode opMode) {
 
-        this.opMode = opMode;
+        gyro = opMode.hardwareMap.get(BNO055IMU.class, "imu");
 
+        BNO055IMU gyro;
+        Orientation angles;
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
@@ -34,10 +35,10 @@ public class Sensors {
         parameters.loggingTag = "IMU";
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
 
-        gyro = this.opMode.hardwareMap.get(BNO055IMU.class, "imu");
+        gyro = opMode.hardwareMap.get(BNO055IMU.class, "imu");
         gyro.initialize(parameters);
 
-        uSonic = this.opMode.hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "Ultrasonic");
+        //uSonic = opMode.hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "Ultrasonic");
     }
 
     public double getDist () {
@@ -52,6 +53,7 @@ public class Sensors {
     }
 
     public double getGyroYaw() {
+
         return MRConvert(angles.firstAngle);
     }
 

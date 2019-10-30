@@ -60,24 +60,16 @@ public class TeleOpMecanum extends OpMode {
 
         //  Set Join Sticks for Arcade Drive
 
-        if (Math.abs(left_stick_y) > .05) {
+
             left_stick_y = gamepad1.left_stick_y;
-        } else {
-            left_stick_y = 0;
-        }
 
-        if (Math.abs(left_stick_x) > .05) {
+
+
             left_stick_x = gamepad1.left_stick_x;
-        } else {
-            left_stick_x = 0;
-        }
 
-        if(Math.abs((right_stick_x)) > .05)
-        {
+
             right_stick_x = gamepad1.right_stick_x;
-        } else {
-            right_stick_x = 0;
-        }
+
 
         /*if (gamepad1.x != pastX) {
             pastX = gamepad1.x;
@@ -105,8 +97,9 @@ public class TeleOpMecanum extends OpMode {
 
         if (Math.abs(left_stick_x) > 0.075 ||
                 Math.abs(left_stick_y) > 0.075 ||
-                Math.abs(gamepad1.right_stick_x) > 0.075) {
+                Math.abs(right_stick_x) > 0.075) {
 
+            telemetry.addData("motors running", drive.fl.getCurrentPosition());
             drive.fl.setPower(speedProp * ((left_stick_y - left_stick_x) - right_stick_x));
             drive.fr.setPower(speedProp * ((left_stick_y + left_stick_x) + right_stick_x));
             drive.bl.setPower(speedProp * (left_stick_y + left_stick_x) - right_stick_x);

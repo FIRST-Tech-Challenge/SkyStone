@@ -59,7 +59,7 @@ public class BBOpModeAutonomousSkystonesRed extends LinearOpMode
 
                 //strafe left
                 //TODO: //strafe until we see a stone
-                robot.strafe(0.3, 0.25);
+                robot.strafe(0.3);
             }
             targets =  _vision.visionFeedback(telemetry);
         }

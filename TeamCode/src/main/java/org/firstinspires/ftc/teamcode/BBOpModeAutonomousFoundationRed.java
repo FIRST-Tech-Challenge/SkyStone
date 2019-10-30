@@ -36,10 +36,10 @@ public class BBOpModeAutonomousFoundationRed extends LinearOpMode
         waitForStart();
         runtime.reset();
 
-        hooks.UnLatched();
+        //hooks.UnLatched();
         sleep(1000);
         //work out how far forward we need to move
-        robot.moveForward(100, 0.40);
+        robot.moveForward(150, 0.55);
         sleep(1000);
 
         //put down the hooks into the foundation
@@ -47,16 +47,23 @@ public class BBOpModeAutonomousFoundationRed extends LinearOpMode
         sleep(2000);
 
         //work out how far backwards we need to move
-        robot.moveBackwards(100, 0.40);
+        robot.twoPowerBackwards(135, 0.8, 0.4);
+        //robot.moveBackwards(130, 0.60);
         sleep(500);
 
         hooks.UnLatched();
         sleep(2000);
 
+
         //we need to move out onto the line.
-        robot.turnLeft(90, 0.4);
+        robot.turnLeft(110, 0.70);
         sleep(1000);
-        robot.moveForward(100, 0.4);
+        robot.moveForward(170, 0.60);
+        //robot.strafe(0.7);
+
+        sleep(2000);
+        //robot.moveForward(0, 0);
+
 
 
     }

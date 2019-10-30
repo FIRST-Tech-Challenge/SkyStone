@@ -16,10 +16,15 @@ public class BBLinearSlide
     private Servo _grabber;
     private Servo _leveller;
 
+    private int spoolStartingPos = 0;
 
+    private int SPOOL_EXTENSION = 2400;
+
+    private Telemetry _tele;
 
     public void init(HardwareMap hwmap, Telemetry telemetry){
 
+        _tele = telemetry;
         _armMotor = hwmap.get(DcMotor.class, "arm_motor");
         _armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -30,37 +35,65 @@ public class BBLinearSlide
         _grabber = hwmap.get(Servo.class, "grabber");
         _leveller = hwmap.get(Servo.class, "leveller");
 
+
         //TODO: We want the slide in and out to use the encoder so that we don't travel too far
         //record the value of the starting encoder positon
         //then we will have a function that returns the motor to that position on the slide in.
+
+        spoolStartingPos = Math.abs(_spool.getCurrentPosition());
     }
 
     public void MoveUp()
     {
         //TODO: Arm speed ?
         _armMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        _armMotor.setPower(0.25);
+        _armMotor.setPower(0.75);
     }
 
     public void MoveDown()
     {
         //TODO: Arm speed ?
         _armMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        _armMotor.setPower(0.25);
+        _armMotor.setPower(0.75);
     }
 
     public void SlideIn()
     {
-        //TODO: use the stored starting encoder position, use this to slide the motor back to this point
+        _tele.addLine("Slide In");
+        _tele.addData("Pos:", Math.abs(_spool.getCurrentPosition()));
+        _tele.addData("Top Target:", (spoolStartingPos));
+
+        _spool.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        //use the stored starting encoder position, use this to slide the motor back to this point
         //This means that a single touch will return the motor to the start.
-        _spool.setDirection(DcMotorSimple.Direction.REVERSE);
-        _spool.setPower(1);
+        if(Math.abs(_spool.getCurrentPosition()) >= spoolStartingPos ) {
+
+            _spool.setPower(1);
+        }else{
+            _spool.setPower(0);
+           _tele.addLine("IN-STOP");
+        }
+        _tele.update();
+
     }
 
     public void SlideOut()
     {
-        _spool.setDirection(DcMotorSimple.Direction.FORWARD);
-        _spool.setPower(1);
+        _tele.addLine("Slide Out");
+        _tele.addData("Pos:", Math.abs(_spool.getCurrentPosition()));
+        _tele.addData("Top Target:", (spoolStartingPos));
+
+        _spool.setDirection(DcMotorSimple.Direction.REVERSE);
+        if(Math.abs(_spool.getCurrentPosition()) <= (spoolStartingPos + SPOOL_EXTENSION)) {
+
+            _spool.setPower(1);
+
+        }else{
+            _tele.addLine("OUT-STOP");
+            _spool.setPower(0);
+        }
+        _tele.update();
     }
 
 

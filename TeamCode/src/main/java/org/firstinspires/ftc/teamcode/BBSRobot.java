@@ -64,6 +64,8 @@ public class BBSRobot {
     static final double     COUNTS_PER_CM         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_CM * 3.1415);
 
+
+
     public void init(HardwareMap hwmap, Telemetry tele, LinearOpMode mode)
     {
 
@@ -114,54 +116,7 @@ public class BBSRobot {
         runtime.reset();
     }
 
-    public void autoInit(HardwareMap hwmap, Telemetry tele, LinearOpMode mode)
-    {
 
-        telemetry = tele;
-
-        _hooks.init(hwmap);
-        _mode = mode;
-
-
-
-        leftDrive  = hwmap.get(DcMotor.class, "left_drive");
-        rightDrive = hwmap.get(DcMotor.class, "right_drive");
-        centreDrive  = hwmap.get(DcMotor.class, "centre_drive");
-
-        encoder = hwmap.get(DcMotor.class, "encoder");
-        rightEncoder = hwmap.get(DcMotor.class, "spool");
-
-        leftDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightDrive.setDirection(DcMotor.Direction.REVERSE);
-        centreDrive.setDirection(DcMotor.Direction.FORWARD);
-        encoder.setDirection(DcMotor.Direction.FORWARD);
-        rightEncoder.setDirection(DcMotor.Direction.FORWARD);
-
-        leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        centreDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        encoder.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightEncoder.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        // Set up the parameters with which we will use our IMU. Note that integration
-        // algorithm here just reports accelerations to the logcat log; it doesn't actually
-        // provide positional information.
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
-        parameters.loggingEnabled      = true;
-        parameters.loggingTag          = "IMU";
-        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-
-        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
-        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
-        // and named "imu".
-        imu = hwmap.get(BNO055IMU.class, "imu");
-        imu.initialize(parameters);
-
-        runtime.reset();
-    }
 
     public void Move(Gamepad gp1, Gamepad gp2){
 
@@ -306,6 +261,39 @@ public class BBSRobot {
         rightDrive.setPower(speed);
 
         while (encoder.getCurrentPosition() < newTarget && _mode.opModeIsActive()) {
+            // Display it for the driver.
+            telemetry.addData("Path1",  "Running to %7d ", newTarget);
+
+            telemetry.update();
+        }
+
+        leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        leftDrive.setPower(0.0);
+        rightDrive.setPower(0.0);
+    }
+
+    public void twoPowerBackwards(int centimetres, double leftSpeed, double rightSpeed){
+
+        encoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        encoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        telemetry.addData("Enc",  "Setting %7d ", encoder.getCurrentPosition());
+
+        int newTarget = encoder.getCurrentPosition() - (int)(centimetres * PULSES_PER_CENTIMETRE);
+
+        telemetry.addData("Path1",  "Running to %7d ", newTarget);
+
+        telemetry.update();
+
+        encoder.setTargetPosition(newTarget);
+
+
+        leftDrive.setPower(-leftSpeed);
+        rightDrive.setPower(-rightSpeed);
+
+        while (encoder.getCurrentPosition() > newTarget && _mode.opModeIsActive()) {
             // Display it for the driver.
             telemetry.addData("Path1",  "Running to %7d ", newTarget);
 
@@ -484,11 +472,11 @@ public class BBSRobot {
     }
 
 
-    public void strafe( double speed, double time){
+    public void strafe( double speed){
 
         centreDrive.setPower(speed);
 
-        centreDrive.setPower(0.0);
+
     }
 
     public void startAutoIntake(){

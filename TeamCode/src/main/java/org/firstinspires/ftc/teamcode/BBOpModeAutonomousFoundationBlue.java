@@ -19,7 +19,7 @@ public class BBOpModeAutonomousFoundationBlue extends LinearOpMode
          * Initialize the drive system variables.
          * The init() method of the hardware class does all the work here
          */
-        robot.autoInit(hardwareMap, telemetry, this);
+        robot.init(hardwareMap, telemetry, this);
         hooks.init(hardwareMap);
 
 

@@ -17,7 +17,7 @@ abstract class MecanumAutoPlayground extends LinearOpMode {
             DRIVE_TRAIN_WIDTH * DRIVE_TRAIN_WIDTH + DRIVE_TRAIN_LENGTH * DRIVE_TRAIN_LENGTH);
     private static final int ENCODER_TICKS = 1120;
 
-    private static final double GEAR_RATIO = (double) 5/2;
+    private static final double GEAR_RATIO = (double) 2/1;
 
     private static final double DRIVE_ADJUST = 1.1776595745;
     private static final double STRAFE_ADJUST = 1.4545454525;

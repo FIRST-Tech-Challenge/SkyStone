@@ -110,26 +110,13 @@ public class TimedAutoForPark extends LinearOpMode {
             if (actualAvg < maxDist && (color1.red() / color1.blue()) > redToBlueAvg && (color1.green() / color1.blue()) > greenToBlueAvg) {
                 driveTrain.translate(0, 0, MecanumDrive.TranslationMethod.CONSTANT_SPEED);
                 telemetry.update();
-//                telemetry.addData("R", color.red());
-//                telemetry.addData("G", color.green());
-//                telemetry.addData("B", color.blue());
                 sleep(2000);
             }
-//            else {
-//                telemetry.addData("Detects it's too close", "true");
-//                telemetry.update();
-//            }
 
             //The if statement above allows the robot to detect yellow to find a block and move the servo accordingly
             sleep(1);
         }
-        private boolean readsYellow (RevColorSensorV3 color){
-            if (actualAvg < maxDist && (color.red() / color.blue()) > redToBlueAvg && (color.green() / color.blue()) > greenToBlueAvg) {
-                return true;
-            } else {
-                return false;
-            }
-        }
+
 
 
 //        driveTrain.translate(0,0, MecanumDrive.TranslationMethod.CONSTANT_SPEED);
@@ -149,5 +136,13 @@ public class TimedAutoForPark extends LinearOpMode {
 //        driveTrain.translate(-1,0, MecanumDrive.TranslationMethod.CONSTANT_SPEED);
 //        sleep((long) (21*(DST_CONST)));
 //        driveTrain.translate(0,0, MecanumDrive.TranslationMethod.CONSTANT_SPEED);
+    }
+
+    private static boolean readsYellow (RevColorSensorV3 color){
+        if (actualAvg < maxDist && (color.red() / color.blue()) > redToBlueAvg && (color.green() / color.blue()) > greenToBlueAvg) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

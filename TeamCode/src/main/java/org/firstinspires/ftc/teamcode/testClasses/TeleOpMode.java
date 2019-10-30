@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.testClasses;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
@@ -20,8 +21,6 @@ public class TeleOpMode extends LinearOpMode {
         DcMotor armMotor = hardwareMap.dcMotor.get("arm");
         telemetry.addData("Init", "v:1.0");
         waitForStart();
-
-        while (opModeIsActive()) {
             Controller controller = new Controller(gamepad1);
             runChassis(chassis, controller);
             runArm(arm, controller);
@@ -34,7 +33,6 @@ public class TeleOpMode extends LinearOpMode {
             telemetry.addData("arm motor: ", armMotor.getCurrentPosition());
             telemetry.update();
         }
-    }
 
     public void runArm(Arm arm, Controller controller) {
             if (controller.getA())

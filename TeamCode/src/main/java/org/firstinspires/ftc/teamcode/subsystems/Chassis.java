@@ -6,14 +6,12 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Chassis extends Subsystem {
     //Vars
-    DcMotor frontLeft;
-    DcMotor frontRight;
-    DcMotor backLeft;
-    DcMotor backRight;
-    Double wheelRadius;
-    Double robotRadius;
-
-
+    DcMotor frontLeft = null;
+    DcMotor frontRight = null;
+    DcMotor backLeft = null;
+    DcMotor backRight = null;
+    final double wheelRadius = 24.0;
+    final double robotRadius = 5.08;
     //Constructors
     public Chassis(HardwareMap hardwareMap) {
         frontLeft = hardwareMap.dcMotor.get("front_left_drive");
@@ -41,11 +39,17 @@ public class Chassis extends Subsystem {
 
     public void runDistance(double distance, double targetAngle, double turn, double power) {
         final double turnAngle = targetAngle - Math.PI / 4;
-        final double wheelDistance = (Math.sqrt(2)/wheelRadius) * distance;
+        final double wheelDistance = (Math.sqrt(2) / wheelRadius) * distance;
         final double robotTurn = robotRadius * turn;
-        frontLeft.setTargetPosition((int)(wheelDistance * Math.cos(turnAngle) + robotTurn));
-        frontRight.setTargetPosition((int)(wheelDistance * Math.sin(turnAngle) - robotTurn));
-        backLeft.setTargetPosition((int)(wheelDistance * Math.sin(turnAngle) + robotTurn));
-        backRight.setTargetPosition((int)(wheelDistance * Math.cos(turnAngle) - robotTurn));
+        frontLeft.setTargetPosition((int) (wheelDistance * Math.cos(turnAngle) + robotTurn));
+        frontRight.setTargetPosition((int) (wheelDistance * Math.sin(turnAngle) - robotTurn));
+        backLeft.setTargetPosition((int) (wheelDistance * Math.sin(turnAngle) + robotTurn));
+        backRight.setTargetPosition((int) (wheelDistance * Math.cos(turnAngle) - robotTurn));
+        setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
+    //Returns true if the moving is done
+    public boolean runDistanceCheck(int targetError) {
+        return targetError > getAverageMotorError();
     }
 }

@@ -42,7 +42,7 @@ import java.util.List;
  * callback to switch which stage of a pipeline is rendered to the viewport for debugging
  * purposes. We also show how to get data from the pipeline to your OpMode.
  */
-@TeleOp(name="OpenCV: PipeSwitchExample", group ="TeleOp")
+//@TeleOp(name="OpenCV: PipeSwitchExample", group ="TeleOp")
 public class PipelineStageSwitchingExample extends LinearOpMode
 {
     OpenCvCamera phoneCam;

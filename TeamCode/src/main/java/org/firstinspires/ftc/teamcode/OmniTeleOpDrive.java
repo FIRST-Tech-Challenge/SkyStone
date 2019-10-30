@@ -15,7 +15,7 @@ import static java.lang.Math.toDegrees;
  * Created by Ethan on 12/2/2016.
  */
 
-@TeleOp(name="Omni: TeleOpDrive", group ="TeleOp")
+//@TeleOp(name="Omni: TeleOpDrive", group ="TeleOp")
 public class OmniTeleOpDrive extends OpMode {
 
     public HardwareOmnibotDrive robot = new HardwareOmnibotDrive();

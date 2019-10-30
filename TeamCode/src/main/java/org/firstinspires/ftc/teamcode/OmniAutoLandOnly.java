@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
  * Created by Robotics on 9/24/2017.
  */
 
-@Autonomous(name="Omni: AutoLandOnly", group ="Competition")
+//@Autonomous(name="Omni: AutoLandOnly", group ="Competition")
 public class OmniAutoLandOnly extends OmniAutoClass {
     @Override
     public void runOpMode() throws InterruptedException {
@@ -19,7 +19,6 @@ public class OmniAutoLandOnly extends OmniAutoClass {
         //blue back
         waitForStart();
 
-        Land();
 
         endAuto();
     }

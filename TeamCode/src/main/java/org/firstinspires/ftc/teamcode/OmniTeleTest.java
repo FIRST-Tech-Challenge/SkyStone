@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import static java.lang.Math.atan2;
 import static java.lang.Math.toDegrees;
@@ -10,7 +11,7 @@ import static java.lang.Math.toDegrees;
  * Created by Ethan on 12/2/2016.
  */
 
-@TeleOp(name="Omni: TeleOpTest", group ="TeleOp")
+//@TeleOp(name="Omni: TeleOpTest", group ="TeleOp")
 public class OmniTeleTest extends OpMode {
 
     public HardwareOmnibot robot = new HardwareOmnibot();
@@ -23,7 +24,13 @@ public class OmniTeleTest extends OpMode {
         robot.setInputShaping(true);
         telemetry.addLine("Ready");
         updateTelemetry(telemetry);
+        robot.lifter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.extender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
+
+
+
+
 
     private double driverAngle = 0.0;
     private final double MAX_SPEED = 1.0;
@@ -135,6 +142,7 @@ public class OmniTeleTest extends OpMode {
             rightBumperHeld = false;
         }
 
+
 //        if(!doneExtending) {
 //            doneExtending = robot.performMaxExtension();
 //        }
@@ -199,6 +207,17 @@ public class OmniTeleTest extends OpMode {
             leftHeld = false;
         }
 
+        if(Math.abs(yPower)> 0.1) {
+            robot.lifter.setPower(yPower);
+        } else {
+            robot.lifter.setPower(0);
+        }
+
+        if(Math.abs(spin) > 0.1) {
+            robot.extender.setPower(spin);
+        } else {
+            robot.extender.setPower(0);
+        }
 //        if(!xHeld && xPressed)
 //        {
 //            xHeld = true;

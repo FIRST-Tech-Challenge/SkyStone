@@ -23,6 +23,11 @@ public class OverallOPMode extends LinearOpMode {
         motorDriveFrontLeft = hardwareMap.dcMotor.get("motorDriveFrontLeft");
         motorDriveFrontRight = hardwareMap.dcMotor.get("motorDriveFrontRight");
         motorDriveLifter = hardwareMap.dcMotor.get("motorDriveLifter");
-        GripServo = hardwareMap.servo.get("GripServo")
+        GripServo = hardwareMap.servo.get("GripServo");
+        trayDragServo = hardwareMap.servo.get("trayDragServo");
+        waitForStart();
+        if (opModeIsActive()) {
+            runOpMode(new TrueWorkingOpMode());
+        }
     }
 }

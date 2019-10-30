@@ -35,7 +35,8 @@ public class DriveSystem {
     private int mTargetTicks;
     private double mTargetHeading;
 
-    private final double TICKS_IN_MM = 2.716535433;
+    // 4 inches
+    private final double TICKS_IN_MM = 1.358267716;
 
     /**
      * Handles the data for the abstract creation of a drive system with four wheels

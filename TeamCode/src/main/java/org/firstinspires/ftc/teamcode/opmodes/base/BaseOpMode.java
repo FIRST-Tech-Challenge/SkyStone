@@ -25,17 +25,13 @@ public abstract class BaseOpMode extends OpMode {
     protected VuforiaTrackable rearPerimeter;
 
     public void init(){
+        this.msStuckDetectInit = 20000;
+        this.msStuckDetectInitLoop = 20000;
         EnumMap<DriveSystem.MotorNames, DcMotor> driveMap = new EnumMap<>(DriveSystem.MotorNames.class);
         for(DriveSystem.MotorNames name : DriveSystem.MotorNames.values()){
             driveMap.put(name,hardwareMap.get(DcMotor.class, name.toString()));
         }
         driveSystem = new DriveSystem(driveMap, hardwareMap.get(BNO055IMU.class, "imu"));
-
-        EnumMap<SpinnySystem.MotorNames, DcMotor> spinnyMap = new EnumMap<>(SpinnySystem.MotorNames.class);
-        for(SpinnySystem.MotorNames name : SpinnySystem.MotorNames.values()){
-            spinnyMap.put(name,hardwareMap.get(DcMotor.class, name.toString()));
-        }
-        spinnySystem = new SpinnySystem(spinnyMap);
     }
 
     protected void setCamera(CameraChoice cameraChoice){

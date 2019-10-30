@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.util.Range;
 //This class will include all of the action functions such as Movement
 @TeleOp(name = "Control Mode", group = "Jun")
 public class ControlMode extends OpMode {
-    DcMotor motorFL, motorFR, motorBL, motorBR, motorArm1, motorArm2, motorArm3;
+    DcMotor motorFL, motorFR, motorBL, motorBR; //, motorArm1, motorArm2, motorArm3;
 
     public ControlMode() {
         super();
@@ -24,9 +24,9 @@ public class ControlMode extends OpMode {
         motorBL = hardwareMap.dcMotor.get("BL");
         motorBR = hardwareMap.dcMotor.get("BR");
 
-        motorArm1 = hardwareMap.dcMotor.get("A1");
-        motorArm2 = hardwareMap.dcMotor.get("A2");
-        motorArm3 = hardwareMap.dcMotor.get("A3");
+//        motorArm1 = hardwareMap.dcMotor.get("A1");
+//        motorArm2 = hardwareMap.dcMotor.get("A2");
+//        motorArm3 = hardwareMap.dcMotor.get("A3");
 
         // This code is used set the directions of the motors.
         motorFL.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -34,9 +34,9 @@ public class ControlMode extends OpMode {
         motorBL.setDirection(DcMotorSimple.Direction.FORWARD);
         motorBR.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        motorArm1.setDirection(DcMotorSimple.Direction.FORWARD);
-        motorArm2.setDirection(DcMotorSimple.Direction.FORWARD);
-        motorArm3.setDirection(DcMotorSimple.Direction.FORWARD);
+//        motorArm1.setDirection(DcMotorSimple.Direction.FORWARD);
+//        motorArm2.setDirection(DcMotorSimple.Direction.FORWARD);
+//        motorArm3.setDirection(DcMotorSimple.Direction.FORWARD);
     }
 
     @Override
@@ -50,9 +50,9 @@ public class ControlMode extends OpMode {
         //left joystick of the first controller will control the movement of the robot.
         if (gamepad1.left_stick_y != 0 || gamepad1.left_stick_x != 0) {
             if (Math.abs(gamepad1.left_stick_x) > Math.abs(gamepad1.left_stick_y))
-                rotate((double) -gamepad1.left_stick_x);
+                rotate((double) gamepad1.left_stick_x * 0.5);
             else if (Math.abs(gamepad1.left_stick_x) < Math.abs(gamepad1.left_stick_y))
-                moveForward((double) -gamepad1.left_stick_y);
+                moveForward((double) gamepad1.left_stick_y);
         } else {
             moveForward(0.0);
         }
@@ -91,26 +91,26 @@ public class ControlMode extends OpMode {
 //        if (gamepad1.left_stick_y == 0 && gamepad1.left_stick_x == 0)
 //            moveForward((0));
 
-        if (gamepad1.dpad_up)
-            motorArm1.setPower(0.5);
-        else if (gamepad1.dpad_down)
-            motorArm1.setPower(-0.5);
-        else
-            motorArm1.setPower(0);
-
-        if (gamepad1.dpad_left)
-            motorArm3.setPower(0.5);
-        else if (gamepad1.dpad_right)
-            motorArm3.setPower(-0.5);
-        else
-            motorArm3.setPower(0);
-
-        if (gamepad1.b)
-            motorArm2.setPower(0.25);
-        else if (gamepad1.a)
-            motorArm2.setPower(-0.25);
-        else
-            motorArm2.setPower(0.0);
+//        if (gamepad1.dpad_up)
+//            motorArm1.setPower(0.5);
+//        else if (gamepad1.dpad_down)
+//            motorArm1.setPower(-0.5);
+//        else
+//            motorArm1.setPower(0);
+//
+//        if (gamepad1.dpad_left)
+//            motorArm3.setPower(0.5);
+//        else if (gamepad1.dpad_right)
+//            motorArm3.setPower(-0.5);
+//        else
+//            motorArm3.setPower(0);
+//
+//        if (gamepad1.b)
+//            motorArm2.setPower(0.25);
+//        else if (gamepad1.a)
+//            motorArm2.setPower(-0.25);
+//        else
+//            motorArm2.setPower(0.0);
     }
 
     //helper method to report data to controller phone.
@@ -127,9 +127,9 @@ public class ControlMode extends OpMode {
         telemetry.addData("motorBL", motorBL.getPower());
         telemetry.addData("motorBR", motorBR.getPower());
 
-        telemetry.addData("A1", motorArm1.getPower());
-        telemetry.addData("A2", motorArm2.getPower());
-        telemetry.addData("A3", motorArm3.getPower());
+//        telemetry.addData("A1", motorArm1.getPower());
+//        telemetry.addData("A2", motorArm2.getPower());
+//        telemetry.addData("A3", motorArm3.getPower());
         //update the data screen.
         telemetry.update();
     }

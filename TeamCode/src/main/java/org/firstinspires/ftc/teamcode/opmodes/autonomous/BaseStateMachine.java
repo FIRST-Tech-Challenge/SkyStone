@@ -35,27 +35,25 @@ public abstract class BaseStateMachine extends BaseOpMode {
 
     private final static String TAG = "BaseStateMachine";
     protected State mCurrentState;    // Current State Machine State.
-    protected ColorSensor colorSensor;
     protected ElapsedTime mStateTime = new ElapsedTime();  // Time into current state
-    protected DistanceSensor distanceLeft, distanceRight, distanceFront;
+    protected DistanceSensor distanceFront;
+    private Team currentTeam;
     VuforiaTrackable skystone;
 
     public void init(Team team) {
         super.init();
-        msStuckDetectInit = 25000;
-//                super.setCamera(team == Team.RED ? CameraChoice.WEBCAM1 : CameraChoice.WEBCAM2);
+        this.msStuckDetectInit = 20000;
+        this.msStuckDetectInitLoop = 20000;
         super.setCamera(CameraChoice.PHONE_BACK);
         rearPerimeter = vuforia.targetsSkyStone.get(team == Team.RED ? 12 : 11);
-
-//                distanceLeft = hardwareMap.get(DistanceSensor.class, "distanceLeft");
-//                distanceLeft = hardwareMap.get(DistanceSensor.class, "distanceRight");
         distanceFront = hardwareMap.get(DistanceSensor.class, "distanceFront");
-        this.msStuckDetectInit = 20000;
         this.msStuckDetectLoop = 30000;
         newState(State.STATE_INITIAL);
         skystone = vuforia.targetsSkyStone.get(0);
+        currentTeam = team;
     }
 
+    private DriveSystem.Direction direction;
     @Override
     public void loop() {
         switch (mCurrentState) {
@@ -71,7 +69,8 @@ public abstract class BaseStateMachine extends BaseOpMode {
             case STATE_INITIAL:
                 // Initialize
                 // Drive 0.5m (1 tile) to the left
-                while (!driveSystem.driveToPosition(600, DriveSystem.Direction.FORWARD, 0.8)) {}
+                direction = currentTeam == Team.RED ? DriveSystem.Direction.RIGHT : DriveSystem.Direction.LEFT;
+                while (!driveSystem.driveToPosition(400, direction, 0.8)) {}
                 newState(State.STATE_FIND_SKYSTONE);
                 mStateTime.reset();
                 break;
@@ -80,7 +79,7 @@ public abstract class BaseStateMachine extends BaseOpMode {
                 // Strafe towards line
                 // Identify SkyStone
                 telemetry.addData("State", "STATE_FIND_SKYSTONE");
-                if (mStateTime.seconds() > 8) {
+                if (mStateTime.seconds() > 5) {
                     // TODO: Unable to detect stone after 10 seconds. Use dead reckoning
                     // TODO: Make new state for this. Currently just set to log
                     newState(State.LOGGING);
@@ -100,34 +99,36 @@ public abstract class BaseStateMachine extends BaseOpMode {
                 telemetry.addData("State", "STATE_GRAB_STONE");
                 telemetry.update();
 
-                Orientation rotation = vuforia.getRobotHeading();
-//                if (!driveSystem.turn(rotation.thirdAngle - 90, 0.5)) {
-//                    break;
-//                }
                 if (vuforia.isTargetVisible(skystone)) {
                     Log.d(TAG, "inside grab stone loop");
                     VectorF translation = vuforia.getRobotPosition();
                     // Strafe to align with skystone
-                    while (!driveSystem.driveToPosition((int) translation.get(1), DriveSystem.Direction.RIGHT, 0.25)) {}
-                    // Turn to face the skystone exactly
-                    double heading = driveSystem.imuSystem.getHeading();
-                    while (!driveSystem.turn(heading, 0.2)) {};
+                    direction = currentTeam == Team.RED ? DriveSystem.Direction.FORWARD : DriveSystem.Direction.BACKWARD;
+                    while (!driveSystem.driveToPosition((int) translation.get(1), direction, 0.5)) {}
+
                     // Drive up to the skystone
                     double distance = distanceFront.getDistance(DistanceUnit.MM);
-                    // - 1.5 inches
-                    distance -= 38.1;
-                    while (!driveSystem.driveToPosition((int) distance, DriveSystem.Direction.FORWARD, 0.8)) {};
-                    try {
-                        Thread.sleep(1250);
-                    } catch (Exception e) {
+                    distance -= 10;
+                    direction = currentTeam == Team.RED ? DriveSystem.Direction.RIGHT : DriveSystem.Direction.LEFT;
+                    while (!driveSystem.driveToPosition((int) distance, direction, 0.8)) {};
 
-                    }
-                    // Back up
-                    while (!driveSystem.driveToPosition(500, DriveSystem.Direction.BACKWARD, 0.8)) {};
-                    // Face same direction as the audience
-                    heading = driveSystem.imuSystem.getHeading() + 90;
-                    Log.d(TAG, "Target: " + heading);
-                    while (!driveSystem.turn(heading, 0.2)) {};
+                    // Offset from skystone
+                    direction = currentTeam == Team.RED ? DriveSystem.Direction.FORWARD : DriveSystem.Direction.BACKWARD;
+                    while (!driveSystem.driveToPosition(900, direction, 0.5)) {}
+                    // Shove into the other stones
+                    direction = currentTeam == Team.RED ? DriveSystem.Direction.RIGHT : DriveSystem.Direction.LEFT;
+                    while (!driveSystem.driveToPosition(1400, direction, 0.5)) {}
+                    // Drive into skystone
+                    direction = currentTeam == Team.RED ? DriveSystem.Direction.BACKWARD : DriveSystem.Direction.FORWARD;
+                    while (!driveSystem.driveToPosition(500, direction, 0.5)) {}
+
+                    // Move away with skystone (prepare for next state)
+                    direction = currentTeam == Team.RED ? DriveSystem.Direction.LEFT : DriveSystem.Direction.RIGHT;
+                    while (!driveSystem.driveToPosition(1400, DriveSystem.Direction.RIGHT, 0.8)) {};
+                    double heading = driveSystem.imuSystem.getHeading();
+                    // I think it is getting stuck here. The purpose is to align the robot with the
+                    // audience such it moves straight
+                    while (!driveSystem.turn(-heading, 0.5)) {};
                 }
                 telemetry.update();
                 newState(State.STATE_DELIVER_STONE);
@@ -136,12 +137,8 @@ public abstract class BaseStateMachine extends BaseOpMode {
             case STATE_DELIVER_STONE:
                 telemetry.addData("State", "STATE_DELIVER_STONE");
                 // TODO: Use distance sensor to detect distance from wall
-                if (distanceFront.getDistance(DistanceUnit.INCH) > 20) {
-                    driveSystem.drive((float) (driveSystem.imuSystem.getHeading() / 50.0), 0.0f, -0.5f);
-                } else {
-                    driveSystem.setMotorPower(0.0);
-//                        newState(State.STATE_DEPOSIT_STONE);
-                }
+                while (!driveSystem.driveToPosition(4000, DriveSystem.Direction.BACKWARD, 1.0));
+                newState(State.LOGGING);
                 telemetry.update();
                 break;
 

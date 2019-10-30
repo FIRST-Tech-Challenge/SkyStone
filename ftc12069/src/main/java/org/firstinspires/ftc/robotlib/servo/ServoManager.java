@@ -9,7 +9,7 @@ public class ServoManager {
     private ServoState servoState = ServoState.STOWED;
     private Servo[] servos;
     private boolean leftBumperToggled = false;
-    private boolean rightBumpberToggled = false;
+    private boolean rightBumperToggled = false;
 
     public ServoManager(Servo[] servos) {
         this.servos = servos;
@@ -29,11 +29,11 @@ public class ServoManager {
             }
         } else leftBumperToggled = false;
         if (gamepad.right_bumper) {
-            if (!rightBumpberToggled) {
+            if (!rightBumperToggled) {
                 servoState = ServoState.getServoStateFromInt(servoState.getLevel() - 1);
-                rightBumpberToggled = true;
+                rightBumperToggled = true;
             }
-        } else rightBumpberToggled = false;
+        } else rightBumperToggled = false;
     }
 
     public void updateServos() {

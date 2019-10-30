@@ -25,8 +25,10 @@ public class MechTeleOp extends OpMode {
     final double calibBL = 1.00f;
     final double calibBR = 1.00f;
 
-    CRServo leftServo;
-    CRServo rightServo;
+    DcMotor armOne;
+    DcMotor armTwo;
+    DcMotor armThree;
+
 
     double[][] motorPowers = {
         {0.0, 0.0},
@@ -143,8 +145,20 @@ public class MechTeleOp extends OpMode {
         motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        leftServo = hardwareMap.get(CRServo.class, "leftServo");
-        rightServo = hardwareMap.get(CRServo.class, "rightServo");
+        armOne = hardwareMap.get(DcMotor.class, "armOne");
+        armTwo = hardwareMap.get(DcMotor.class, "armTwo");
+        armThree = hardwareMap.get(DcMotor.class, "armThree");
+
+        armOne.setDirection(DcMotorSimple.Direction.FORWARD);
+        armTwo.setDirection(DcMotorSimple.Direction.FORWARD);
+        armThree.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        armOne.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        armTwo.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        armThree.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+//        leftServo = hardwareMap.get(CRServo.class, "leftServo");
+//        rightServo = hardwareMap.get(CRServo.class, "rightServo");
     }
 
     public void driveRobot() {
@@ -244,21 +258,47 @@ public class MechTeleOp extends OpMode {
         //         rotateLeft(getRX());
         // }
 
-        if (gamepad1.dpad_up) {
-            leftServo.setPower(1.0);
-        } else if (gamepad1.dpad_down) {
-            leftServo.setPower(-1.0);
-        } else {
-            leftServo.setPower(0.0);
-        }
+//        if (gamepad1.dpad_up) {
+//            leftServo.setPower(1.0);
+//        } else if (gamepad1.dpad_down) {
+//            leftServo.setPower(-1.0);
+//        } else {
+//            leftServo.setPower(0.0);
+//        }
+//
+//        if (gamepad1.y) {
+//            rightServo.setPower(1.0);
+//        } else if (gamepad1.a) {
+//            rightServo.setPower(-1.0);
+//        } else {
+//            rightServo.setPower(0.0);
+//        }
 
-        if (gamepad1.y) {
-            rightServo.setPower(1.0);
-        } else if (gamepad1.a) {
-            rightServo.setPower(-1.0);
-        } else {
-            rightServo.setPower(0.0);
-        }
+        //arm base (closer to the base of the robot) up and down
+        if (gamepad1.dpad_up)
+            armOne.setPower(0.5);
+        else if (gamepad1.dpad_down)
+            armOne.setPower(-0.5);
+        else
+            armOne.setPower(0.0);
+
+        //arm base (closer to the hand) up and down
+        if (gamepad1.dpad_left)
+            armTwo.setPower(0.5);
+        else if (gamepad1.dpad_right)
+            armTwo.setPower(-0.5);
+        else
+            armTwo.setPower(0.0);
+
+        //hand open close
+        if (gamepad1.a)
+            armThree.setPower(0.3);
+        else if (gamepad1.y)
+            armThree.setPower(-0.3);
+        else
+            armThree.setPower(0.0);
+
+
     }
 
     public float getLX() {

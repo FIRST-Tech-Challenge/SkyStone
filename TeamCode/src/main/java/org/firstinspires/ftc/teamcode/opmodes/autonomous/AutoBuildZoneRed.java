@@ -8,8 +8,8 @@ import org.firstinspires.ftc.teamcode.Robot;
 import org.westtorrancerobotics.lib.Angle;
 import org.westtorrancerobotics.lib.Location;
 
-@Autonomous(name = "Blue Build Zone", group = "none")
-public class AutoBuildZoneBlue extends LinearOpMode {
+@Autonomous(name = "Red Build Zone", group = "none")
+public class AutoBuildZoneRed extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         Robot bot = Robot.getInstance();
@@ -47,7 +47,7 @@ public class AutoBuildZoneBlue extends LinearOpMode {
         }
         bot.foundationGrabber.setGrabbedLeft(false);
         bot.foundationGrabber.setGrabbedRight(false);
-        bot.driveTrain.spinDrive(1, 0, 0);
+        bot.driveTrain.spinDrive(-1, 0, 0);
         while (bot.driveTrain.getLocation().x > 0 && !bot.driveTrain.onBlueLine() && bot.runtime.seconds() < 5) {
             bot.driveTrain.updateLocation();
             sleep(1);

@@ -39,9 +39,13 @@ public class FoundationGrabber {
         rightHook.setPosition(grabbed ? 1 : 0);
     }
 
-
-
     public boolean isGrabbed() {
         return leftBlock.isPressed();
+    }
+
+    public enum BlockState {
+        SKYSTONE,
+        STONE,
+        NO_BLOCK
     }
 }

@@ -123,6 +123,8 @@ public class TimedAutoForPark extends LinearOpMode {
             //The if statement above allows the robot to detect yellow to find a block and move the servo accordingly
             sleep(1);
         }
+    }
+
         private boolean readsYellow (RevColorSensorV3 color){
             if (actualAvg < maxDist && (color.red() / color.blue()) > redToBlueAvg && (color.green() / color.blue()) > greenToBlueAvg) {
                 return true;
@@ -130,24 +132,4 @@ public class TimedAutoForPark extends LinearOpMode {
                 return false;
             }
         }
-
-
-//        driveTrain.translate(0,0, MecanumDrive.TranslationMethod.CONSTANT_SPEED);
-        //driveTrain.translate(-0.2, -0.5, MecanumDrive.TranslationMethod.CONSTANT_SPEED);
-//        sleep((long) (15*(DST_CONST)));
-        //The code above moves the bot back to starting position
-//        driveTrain.translate(0,0, MecanumDrive.TranslationMethod.CONSTANT_SPEED);
-//        servoTest.setPosition(1);
-//        sleep(1000);
-//        driveTrain.translate(0,-1, MecanumDrive.TranslationMethod.CONSTANT_SPEED);
-//        sleep((long) (15*(DST_CONST)));
-//        driveTrain.translate(1,0, MecanumDrive.TranslationMethod.CONSTANT_SPEED);
-//        sleep((long) (65*(DST_CONST)));
-//        driveTrain.translate(0,0, MecanumDrive.TranslationMethod.CONSTANT_SPEED);
-//        servoTest.setPosition(0);
-//        sleep(1000);
-//        driveTrain.translate(-1,0, MecanumDrive.TranslationMethod.CONSTANT_SPEED);
-//        sleep((long) (21*(DST_CONST)));
-//        driveTrain.translate(0,0, MecanumDrive.TranslationMethod.CONSTANT_SPEED);
-    }
 }

@@ -14,6 +14,8 @@ public class OdometerTest extends MecanumTeleop {
     private Wheel rightY;
     private Wheel x;
 
+    private final double TICKS_TO_INCHES = (2 * Math.PI) / 4096;
+
     @Override
     public void init() {
         super.init();
@@ -26,6 +28,14 @@ public class OdometerTest extends MecanumTeleop {
     @Override
     public void loop() {
         super.loop();
+        if ((leftY.encoder.getCurrentPosition() - leftY.lastEnc) == (rightY.encoder.getCurrentPosition() - rightY.lastEnc)) {
+            long dy = (leftY.encoder.getCurrentPosition() - leftY.lastEnc);
+            long dx = (x.encoder.getCurrentPosition() - x.lastEnc);
+            leftY.lastEnc += dy;
+            rightY.lastEnc += dy;
+            x.lastEnc += dx;
+            myLocation.translate(dx * TICKS_TO_INCHES, dy * TICKS_TO_INCHES);
+        }
         Solution solved = solve(leftY.getABCD(), rightY.getABCD(), x.getABCD());
         double rotCenterRelX = solved.xc;
         double rotCenterRelY = solved.yc;
@@ -64,7 +74,7 @@ public class OdometerTest extends MecanumTeleop {
             double tw = relativeLocation.direction.getValue(Angle.AngleUnit.RADIANS, Angle.AngleOrientation.UNIT_CIRCLE);
             double deltaEnc = encoder.getCurrentPosition() - lastEnc;
             lastEnc += deltaEnc;
-            deltaEnc *= (2 * Math.PI) / 4096;
+            deltaEnc *= TICKS_TO_INCHES;
             return new WheelEquation(-Math.sin(tw), Math.cos(tw), xw*Math.sin(tw)-yw*Math.cos(tw), deltaEnc);
         }
     }

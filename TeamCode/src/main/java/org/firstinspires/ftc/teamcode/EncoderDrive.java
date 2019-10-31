@@ -16,7 +16,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
  *     the amount the stick has been pushed (push harder, go faster).
  *   - The left stick rotates the bot around its center point (staying in place).
  */
-@TeleOp(name="Mecanum", group="Drive Systems")
+@TeleOp(name="EncoderO", group="Drive Systems")
 public class EncoderDrive extends OpMode {
 
     private DcMotor front_left, front_right, back_left, back_right;
@@ -31,11 +31,11 @@ public class EncoderDrive extends OpMode {
 
     @Override
     public void init() {
-        telemetry.addData("Initializing Mecanum Drive", "Initializing motor controllers");
-        front_left = hardwareMap.get(DcMotor.class, "left front");
-        front_right = hardwareMap.get(DcMotor.class, "right front");
-        back_left = hardwareMap.get(DcMotor.class, "left rear");
-        back_right = hardwareMap.get(DcMotor.class, "right rear");
+        telemetry.addData("Initializing EncoderO Drive", "Initializing motor controllers");
+        front_left = hardwareMap.get(DcMotor.class, "front_left");
+        front_right = hardwareMap.get(DcMotor.class, "front_right");
+        back_left = hardwareMap.get(DcMotor.class, "back_left");
+        back_right = hardwareMap.get(DcMotor.class, "back_right");
 
         front_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         front_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

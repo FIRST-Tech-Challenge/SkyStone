@@ -17,9 +17,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
  *   - The left stick rotates the bot around its center point (staying in place).
  */
 @TeleOp(name="Mecanum", group="Drive Systems")
-public class MecanumDriveE extends OpMode {
+public class EncoderDrive extends OpMode {
 
-    private DcMotor leftFront, rightFront, leftRear, rightRear;
+    private DcMotor front_left, front_right, back_left, back_right;
 
     /**
      * It may have beena wiring figment on our end, but we noticed that the rear motors were running
@@ -32,15 +32,15 @@ public class MecanumDriveE extends OpMode {
     @Override
     public void init() {
         telemetry.addData("Initializing Mecanum Drive", "Initializing motor controllers");
-        leftFront = hardwareMap.get(DcMotor.class, "left front");
-        rightFront = hardwareMap.get(DcMotor.class, "right front");
-        leftRear = hardwareMap.get(DcMotor.class, "left rear");
-        rightRear = hardwareMap.get(DcMotor.class, "right rear");
+        front_left = hardwareMap.get(DcMotor.class, "left front");
+        front_right = hardwareMap.get(DcMotor.class, "right front");
+        back_left = hardwareMap.get(DcMotor.class, "left rear");
+        back_right = hardwareMap.get(DcMotor.class, "right rear");
 
-        leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        front_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        front_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        back_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        back_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // TODO: PID Tuning
         // (Talk to Nate)
@@ -82,9 +82,9 @@ public class MecanumDriveE extends OpMode {
         /*
          * Adjust motor power to move at speed in heading with desired rotation
          */
-        leftFront.setPower(speed * headingY_adjusted + r);
-        rightFront.setPower(speed * headingX_adjusted - r);
-        leftRear.setPower(INVERT_REAR_MOTORS * (speed * headingX_adjusted + r));
-        rightRear.setPower(INVERT_REAR_MOTORS * (speed * headingY_adjusted - r));
+        front_left.setPower(speed * headingY_adjusted + r);
+        front_right.setPower(speed * headingX_adjusted - r);
+        back_left.setPower(INVERT_REAR_MOTORS * (speed * headingX_adjusted + r));
+        back_right.setPower(INVERT_REAR_MOTORS * (speed * headingY_adjusted - r));
     }
 }

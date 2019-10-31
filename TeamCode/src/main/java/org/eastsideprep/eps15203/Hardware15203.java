@@ -73,7 +73,6 @@ public class Hardware15203 {
          for (CRServo c : allCRServos) {
              c.setPower(0.0);
          }
-
         */
 
         try {

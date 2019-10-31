@@ -33,7 +33,9 @@ public class CompetitionTeleop extends BaseOpMode {
     }
 
     public void init_loop() {
-        armSystem.calibrate();
+        if (!armSystem.isCalibrated()) {
+            armSystem.calibrate();
+        }
     }
 
     public void loop() {
@@ -63,7 +65,10 @@ public class CompetitionTeleop extends BaseOpMode {
 
         // Display queued positions on telemetry data so that the captain can call them out to the
         // driver
-        telemetry.addData("", "Queued position: " + armSystem.queuedPosition.toString());
+        if (!(armSystem.queuedPosition == null)) {
+            telemetry.addData("", "Queued position: " + armSystem.queuedPosition.toString());
+        }
+
         telemetry.addData("", "Queued height: " + armSystem.queuedHeight);
 
         if (gamepad1.y) { // "yeet" it as Brian would say

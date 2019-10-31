@@ -34,8 +34,8 @@ public class ArmSystem {
     private final int distanceConstant = 1000; // used for calculating motor speed
 
     // Use these so we can change it easily if the motor is put on backwards
-    private final DcMotor.Direction UP = DcMotor.Direction.FORWARD;
-    private final DcMotor.Direction DOWN = DcMotor.Direction.REVERSE;
+    private final DcMotor.Direction UP = DcMotor.Direction.REVERSE;
+    private final DcMotor.Direction DOWN = DcMotor.Direction.FORWARD;
     protected Position QueuedPosition;
     protected int QueuedHeight;
 
@@ -50,7 +50,7 @@ public class ArmSystem {
     // for the first comp and the servo wires aren't long enough yet
     public final int MAX_HEIGHT = 3000;
     public final int INCREMENT_HEIGHT = 564; // how much the ticks increase when a block is added
-    public final int START_HEIGHT = 366;
+    public final int START_HEIGHT = 366; // Height of the foundation
 
     // I know in terms of style points these should be private and just have getters and setters but
     // I want to make them easily incrementable
@@ -216,7 +216,7 @@ public class ArmSystem {
      */
     public void calibrate() {
         slider.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        slider.setDirection(direction? DOWN : UP);
+        slider.setDirection(direction? UP : DOWN);
         slider.setPower(0.1);
 
         if (limitSwitch.getState()) { // If the limit switch isn't pressed
@@ -228,6 +228,7 @@ public class ArmSystem {
             slider.setPower(0);
             calibrated = true;
             calibrationDistance = slider.getCurrentPosition();
+            slider.setDirection(UP);
             setSliderHeight(0);
         }
     }
@@ -244,24 +245,25 @@ public class ArmSystem {
     public void setSliderHeight(int pos) {
         if (calculateHeight(pos) > MAX_HEIGHT) throw new IllegalArgumentException();
         targetHeight = calculateHeight(pos);
+        slider.setTargetPosition(targetHeight);
         slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         Log.d("ArmSystem", "Set target height to" + calculateHeight(pos));
     }
 
     // Little helper method for setSliderHeight
     private int calculateHeight(int pos) {
-        return START_HEIGHT + pos * INCREMENT_HEIGHT + calibrationDistance;
+        return START_HEIGHT + calibrationDistance + (pos * INCREMENT_HEIGHT);
     }
 
     // Should be called every loop
     public void updateHeight() {
         slider.setPower(1);
-        slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slider.setTargetPosition(targetHeight);
     }
 
-    // Use for debugging
+    // Use these for debugging
     public boolean getSwitchState() {
         return limitSwitch.getState();
     }
+    public int getSliderPos() { return slider.getCurrentPosition(); }
 }

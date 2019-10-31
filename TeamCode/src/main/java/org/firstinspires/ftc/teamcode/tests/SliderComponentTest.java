@@ -25,12 +25,15 @@ public class SliderComponentTest extends OpMode {
         if (!armSystem.isCalibrated()) {
             armSystem.calibrate();
         } else {
-            ;
+            telemetry.addData("", "Calibrated!");
         }
+        telemetry.addData("", armSystem.getSwitchState());
+        telemetry.update();
     }
 
     public void loop() {
         telemetry.addData("", armSystem.getSwitchState());
+        telemetry.addData("", armSystem.getSliderPos());
 
         if (gamepad1.a) {
             armSystem.setSliderHeight(0);
@@ -42,7 +45,6 @@ public class SliderComponentTest extends OpMode {
             armSystem.setSliderHeight(3);
         }
         armSystem.updateHeight();
-
 
     }
 

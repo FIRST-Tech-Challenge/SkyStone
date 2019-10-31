@@ -226,7 +226,7 @@ public class ArmSystem {
             slider.setPower(0);
             calibrated = true;
             calibrationDistance = slider.getCurrentPosition();
-            targetHeight = calibrationDistance;
+            setSliderHeight(0);
         }
     }
 
@@ -242,6 +242,7 @@ public class ArmSystem {
     public void setSliderHeight(int pos) {
         if (calculateHeight(pos) > MAX_HEIGHT) throw new IllegalArgumentException();
         targetHeight = calculateHeight(pos);
+        slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     // Little helper method for setSliderHeight

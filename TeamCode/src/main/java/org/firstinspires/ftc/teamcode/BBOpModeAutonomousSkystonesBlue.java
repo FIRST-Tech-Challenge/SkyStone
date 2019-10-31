@@ -15,6 +15,8 @@ public class BBOpModeAutonomousSkystonesBlue extends LinearOpMode
 {
     private ElapsedTime runtime = new ElapsedTime();
     private BBSRobot robot = new BBSRobot();
+    private BBLinearSlide slide = new BBLinearSlide();
+    private BBIntake intake = new BBIntake();
     private BBVision _vision = new BBVision();
 
     @Override
@@ -26,7 +28,9 @@ public class BBOpModeAutonomousSkystonesBlue extends LinearOpMode
          * The init() method of the hardware class does all the work here
          */
         robot.init(hardwareMap, telemetry, this);
-        _vision.setUp(telemetry,hardwareMap);
+        slide.init(hardwareMap, telemetry);
+        intake.init(hardwareMap);
+        _vision.setUp(telemetry, hardwareMap);
 
 
         // Send telemetry message to signify robot waiting;
@@ -37,42 +41,85 @@ public class BBOpModeAutonomousSkystonesBlue extends LinearOpMode
         waitForStart();
         runtime.reset();
 
-//        boolean foundStone = false;
-//
-//        //look for the skystones for a period of time.
-//        List<Recognition> targets =  _vision.visionFeedback(telemetry);
-//
-//
-//
-//        while(foundStone == false || runtime.seconds() < 10) {
-//            if (targets != null && targets.size() > 0) {
-//                //we found something!
-//                foundStone = true;
-//
-//            } else {
-//
-//                //strafe left
-//                //TODO: //strafe until we see a stone
-//                robot.strafe(0.3, 0.25);
-//            }
-//            targets =  _vision.visionFeedback(telemetry);
-//        }
-//
-//        _vision.cleanUp();
-//
-//        if(foundStone){
-//
-//            //TODO: turn on intake?
-//            //TODO: we need to pick up stone - turn on intake? move arm?
-//
-//            //TODO: turn towards left or right?
-//
-//            //TODO: move robot and skystone into foundation area
-//        }
+        robot.moveForward(100,0.6);
 
-        robot.moveForward(100, 0.6);
-        robot.turnRight(120, 0.6);
-        robot.moveForward(150,0.6);
+        boolean foundStone = false;
+
+        //look for the skystones for a period of time.
+        List<Recognition> targets =  _vision.visionFeedback(telemetry);
+        runtime.reset();
+
+        while(runtime.seconds() < 5) {
+            if (targets != null && targets.size() > 0) {
+                //we found something!
+                telemetry.addLine("FOUND SOMETHING");
+                telemetry.update();
+                for(int count = 0; count < targets.size(); count++){
+                    telemetry.addLine(targets.get(count).getLabel());
+                    if(targets.get(count).getLabel() == "Skystone"){
+                        telemetry.addLine("SKYSTONE FOUND");
+                        telemetry.update();
+                        foundStone = true;
+                        robot.strafeForTime(0, 0);
+                        break;
+                    }
+                }
+                if(foundStone){
+                    break;
+                }
+
+                robot.strafeForTime(-0.5, 200);
+
+            } else {
+                telemetry.addLine("NOPE");
+                telemetry.update();
+                //strafe left
+                robot.strafeForTime(-0.5, 200);
+            }
+            targets =  _vision.visionFeedback(telemetry);
+        }
+
+        _vision.cleanUp();
+        robot.strafeForTime(0, 0);
+        if(foundStone){
+
+
+
+            slide.MoveUp();
+
+            sleep(500);
+            slide.StopArm();
+
+            slide.SlideOut();
+            sleep(3000);
+            slide.StopSlide();
+
+
+            slide.RotateReset();
+            sleep(250);
+            slide.ReLevel(1);
+            sleep(2400);
+            slide.LevelStop();
+            sleep(300);
+
+
+            sleep(300);
+            slide.MoveDown(0.1);
+            sleep(1500);
+            slide.StopArm();
+            slide.Level(1);
+            sleep(1500);
+            slide.Grab();
+            sleep(500);
+
+            robot.turnLeft(105,0.6);
+            robot.moveForward(140, 0.6);
+
+        }else{
+
+            robot.turnLeft(110, 0.70);
+            robot.moveForward(150,0.6);
+        }
 
 
     }

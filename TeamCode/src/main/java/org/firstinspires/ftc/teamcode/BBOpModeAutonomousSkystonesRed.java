@@ -49,76 +49,78 @@ public class BBOpModeAutonomousSkystonesRed extends LinearOpMode
 
         //look for the skystones for a period of time.
         List<Recognition> targets =  _vision.visionFeedback(telemetry);
+        runtime.reset();
 
-        while(foundStone == false || runtime.seconds() < 10) {
+        while(runtime.seconds() < 5) {
             if (targets != null && targets.size() > 0) {
                 //we found something!
-                foundStone = true;
+                telemetry.addLine("FOUND SOMETHING");
+                telemetry.update();
+                for(int count = 0; count < targets.size(); count++){
+                    telemetry.addLine(targets.get(count).getLabel());
+                    if(targets.get(count).getLabel() == "Skystone"){
+                        telemetry.addLine("SKYSTONE FOUND");
+                        telemetry.update();
+                        foundStone = true;
+                        robot.strafeForTime(0, 0);
+                        break;
+                    }
+                }
+                if(foundStone){
+                    break;
+                }
+
+                robot.strafeForTime(0.5, 200);
 
             } else {
-
+                telemetry.addLine("NOPE");
+                telemetry.update();
                 //strafe left
-                //TODO: //strafe until we see a stone
-                robot.strafe(0.3);
+                robot.strafeForTime(0.5, 200);
             }
             targets =  _vision.visionFeedback(telemetry);
         }
 
         _vision.cleanUp();
-
+        robot.strafeForTime(0, 0);
         if(foundStone){
-            //TODO: turn on intake?
-            //TODO: we need to pick up stone - turn on intake? move arm?
-            //TODO: turn towards left or right?
-            //TODO: move robot and skystone into foundation area
 
-            // extend arm
+
+
             slide.MoveUp();
-            sleep(500);
-            slide.StopArm();
-            sleep(500);
-            slide.SlideOut();
-            sleep(500);
-            slide.StopSlide();
-            sleep(500);
 
-            // grab skystone
-            slide.Rotate();
-            sleep(500);
-            slide.MoveDown();
             sleep(500);
             slide.StopArm();
-            sleep(500);
+
+            slide.SlideOut();
+            sleep(3000);
+            slide.StopSlide();
+
+
+            slide.RotateReset();
+            sleep(250);
+            slide.ReLevel(1);
+            sleep(2400);
+            slide.LevelStop();
+            sleep(300);
+
+
+            sleep(300);
+            slide.MoveDown(0.1);
+            sleep(1500);
+            slide.StopArm();
+            slide.Level(1);
+            sleep(1500);
             slide.Grab();
             sleep(500);
 
-            // move skystone towards robot and turn for intake
-            slide.SlideIn();
-            sleep(250);
-            slide.StopSlide();
-            sleep(500);
-            slide.RotateReset();
-            sleep(500);
-            slide.Release();
-            sleep(500);
+            robot.turnRight(105,0.6);
+            robot.moveForward(140, 0.6);
 
-            // draw back slide
-            slide.MoveUp();
-            sleep(500);
-            slide.StopArm();
-            sleep(500);
-            slide.SlideIn();
-            sleep(250);
-            slide.StopSlide();
-            sleep(500);
-
-            // intake the skystone
-            intake.Start();
-            sleep(2000);
-            intake.Stop();
         }else{
-            //TODO: no stones found - park on line
 
+            robot.turnRight(110, 0.70);
+            robot.moveForward(150,0.6);
         }
 
 

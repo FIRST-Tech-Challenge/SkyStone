@@ -141,6 +141,10 @@ public class BBSRobot {
 
         //drivers don't want toggle.
 
+        if(gp2.right_stick_button){
+            _slide.SetArmAutoPosAndHold();
+        }
+
         if(gp1.right_bumper || gp2.right_bumper){
             _intakeMotor.Start();
         }
@@ -205,11 +209,11 @@ public class BBSRobot {
         }
 
         if(gp1.x || gp2.x){
-            _slide.GripperBackward();
-        }
-
-        if(gp1.y || gp2.y){
-            _slide.GripperForward();
+            _slide.Level(0.2);
+        }else if(gp1.y || gp2.y){
+            _slide.ReLevel(0.2);
+        }else{
+            _slide.LevelStop();
         }
 
         if(gp2.left_trigger > 0){
@@ -478,6 +482,21 @@ public class BBSRobot {
 
 
     }
+
+    public void strafeForTime( double speed, int timeMS){
+
+        if(speed < 0){
+            centreDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        }
+        else{
+            centreDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        }
+        centreDrive.setPower(Math.abs(speed));
+        _mode.sleep(timeMS);
+        centreDrive.setPower(0);
+
+    }
+
 
     public void startAutoIntake(){
         _intakeMotor.Start();

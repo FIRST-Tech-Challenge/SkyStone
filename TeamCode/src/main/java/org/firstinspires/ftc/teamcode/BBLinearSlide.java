@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -14,7 +15,11 @@ public class BBLinearSlide
 
     private Servo _rotater;
     private Servo _grabber;
-    private Servo _leveller;
+    private CRServo _leveller;
+
+    //private CRServo _spoolServo;
+
+
 
     private int spoolStartingPos = 0;
 
@@ -33,14 +38,12 @@ public class BBLinearSlide
 
         _rotater = hwmap.get(Servo.class, "rotater");
         _grabber = hwmap.get(Servo.class, "grabber");
-        _leveller = hwmap.get(Servo.class, "leveller");
+        _leveller = hwmap.get(CRServo.class, "leveller");
+
+        //_spoolServo = hwmap.get(CRServo.class, "spoolservo");
 
 
-        //TODO: We want the slide in and out to use the encoder so that we don't travel too far
-        //record the value of the starting encoder positon
-        //then we will have a function that returns the motor to that position on the slide in.
 
-        spoolStartingPos = Math.abs(_spool.getCurrentPosition());
     }
 
     public void MoveUp()
@@ -57,43 +60,33 @@ public class BBLinearSlide
         _armMotor.setPower(0.75);
     }
 
+    public void MoveDown(double speed)
+    {
+
+        _armMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        _armMotor.setPower(speed);
+    }
+
     public void SlideIn()
     {
         _tele.addLine("Slide In");
-        _tele.addData("Pos:", Math.abs(_spool.getCurrentPosition()));
-        _tele.addData("Top Target:", (spoolStartingPos));
 
-        _spool.setDirection(DcMotorSimple.Direction.FORWARD);
-
-        //use the stored starting encoder position, use this to slide the motor back to this point
-        //This means that a single touch will return the motor to the start.
-        if(Math.abs(_spool.getCurrentPosition()) >= spoolStartingPos ) {
-
-            _spool.setPower(1);
-        }else{
-            _spool.setPower(0);
-           _tele.addLine("IN-STOP");
-        }
         _tele.update();
-
+        //_spoolServo.setDirection(DcMotorSimple.Direction.FORWARD);
+       // _spoolServo.setPower(1);
+        _spool.setDirection(DcMotorSimple.Direction.REVERSE);
+        _spool.setPower(1);
     }
 
     public void SlideOut()
     {
         _tele.addLine("Slide Out");
-        _tele.addData("Pos:", Math.abs(_spool.getCurrentPosition()));
-        _tele.addData("Top Target:", (spoolStartingPos));
 
-        _spool.setDirection(DcMotorSimple.Direction.REVERSE);
-        if(Math.abs(_spool.getCurrentPosition()) <= (spoolStartingPos + SPOOL_EXTENSION)) {
-
-            _spool.setPower(1);
-
-        }else{
-            _tele.addLine("OUT-STOP");
-            _spool.setPower(0);
-        }
         _tele.update();
+        //_spoolServo.setDirection(DcMotorSimple.Direction.REVERSE);
+        //_spoolServo.setPower(1);
+        _spool.setDirection(DcMotorSimple.Direction.FORWARD);
+        _spool.setPower(1);
     }
 
 
@@ -103,29 +96,53 @@ public class BBLinearSlide
         _armMotor.setPower(0);
     }
 
-    public void StopSlide(){
+    public void SetArmAutoPosAndHold()
+    {
+        //move the arm to the correct position for the auto phase. hold it using the encoders
+
+        _armMotor.setTargetPosition(_armMotor.getCurrentPosition() - 600);
+        _armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        _armMotor.setPower(0.4);
+    }
+
+    public void StopSlide()
+    {
+        //_spoolServo.setPower(0);
         _spool.setPower(0);
     }
 
-    public void RotateReset() { _rotater.setPosition(0); }
+    public void RotateReset()
+    {
+        _rotater.setPosition(0);
+    }
 
     public void Rotate() {
         _rotater.setPosition(1);
     }
 
-    public void Grab() {
-        _grabber.setPosition(1);
+    public void Level(double speed) {
+        _leveller.setDirection(DcMotorSimple.Direction.FORWARD);
+        _leveller.setPower(speed);
     }
 
-    public void Release() {
+    public void ReLevel(double speed) {
+        _tele.addLine("RELEVEL");
+        _tele.update();
+        _leveller.setDirection(DcMotorSimple.Direction.REVERSE);
+        _leveller.setPower(speed);
+    }
+
+    public void LevelStop(){
+        _leveller.setPower(0);
+    }
+
+    public void Grab() {
         _grabber.setPosition(0);
     }
 
-    public void GripperForward() {
-        _leveller.setPosition(_leveller.getPosition() + 0.1);
+    public void Release() {
+        _grabber.setPosition(1);
     }
 
-    public void GripperBackward() {
-        _leveller.setPosition(_leveller.getPosition() - 0.1);
-    }
+
 }

@@ -68,34 +68,42 @@ public class Simple15203 extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            float x = gamepad1.left_stick_x;
-            float y = -gamepad1.left_stick_y; // Negate to get +y forward.
-            float rotation = -gamepad1.right_stick_x;
-            float speedControl = 0.5f * (1.0f + gamepad1.left_trigger);
-            double biggestControl = Math.sqrt(x * x + y * y);
-            double biggestWithRotation = Math.sqrt(x * x + y * y + rotation * rotation);
+            double left_stick_x = gamepad1.left_stick_x;
+            double right_stick_x = gamepad1.right_stick_x;
+            double right_stick_y = gamepad1.right_stick_y;
+            double right_trigger = gamepad1.right_trigger;
+            //double orientation = (((double) robot.gyro.getIntegratedZValue()) / 360) * Math.PI * 2;
 
-            double angle = Math.atan2(y, -x) - Math.PI / 2.0;
+// wheel commands have two components: drive/strafe and rotation. They have to be weighted.
 
-            double[] powers = robot.getDrivePowersFromAngle(angle);
-            double pow2 = 0.0;
-            for (int i = 0; i < robot.allMotors.length; i++) {
-                double pow = powers[i] * biggestControl + rotation * robot.rotationArray[i];
-                powers[i] = pow;
-                pow2 += pow * pow;
+            double dsAngle = Math.atan2(right_stick_x, right_stick_y);
+            double dsWeight = Math.sqrt(right_stick_x * right_stick_x + right_stick_y * right_stick_y);
+            double rotPower = left_stick_x;
+            double rotWeight = Math.abs(left_stick_x);
+// correct for the orientation
+            //dsAngle -= robot.state.orientation;
+            //robot.state.heading = dsAngle;
+// rotate more slowly if left bumper pressed
+            if (gamepad1.left_bumper) {
+                rotPower *= 0.05;
+            }
+// drive / strafe more slowly if right bumper pressed
+            if (gamepad1.right_bumper) {
+                dsWeight *= 0.05;
             }
 
-            if (biggestWithRotation != 0.0) {
-                double scale = Math.sqrt(pow2);
-                for (int i = 0; i < robot.allMotors.length; i++) {
-                    robot.allMotors[i].setPower(
-                            powers[i] / scale * biggestWithRotation * speedControl);
-                }
-            } else {
-                for (int i = 0; i < robot.allMotors.length; i++)
-                    robot.allMotors[i].setPower(0.0);
-            }
+// make sure values are not greater than 1
 
+            if (dsWeight + rotWeight > 1.0) {
+                dsWeight /= dsWeight + rotWeight;
+                rotPower /= dsWeight + rotWeight;
+            }
+// finally, do a little math and put them into the motors
+
+            robot.leftFrontMotor.setPower(Math.cos(dsAngle + Math.PI / 4) * dsWeight - rotPower * rotWeight);
+            robot.rightBackMotor.setPower(Math.cos(dsAngle + Math.PI / 4) * dsWeight + rotPower * rotWeight);
+            robot.rightFrontMotor.setPower(Math.cos(dsAngle - Math.PI / 4) * dsWeight + rotPower * rotWeight);
+            robot.leftBackMotor.setPower(Math.cos(dsAngle - Math.PI / 4) * dsWeight - rotPower * rotWeight);
 
             if(gamepad1.y){
                 robot.garageRightServo.setPower(-1.0);
@@ -118,9 +126,11 @@ public class Simple15203 extends LinearOpMode {
 
 
             // Send telemetry message to signify robot running;
+            telemetry.addData("LF", robot.leftFrontMotor.getPower());
+            telemetry.addData("LB", robot.leftBackMotor.getPower());
+            telemetry.addData("RF", robot.rightFrontMotor.getPower());
+            telemetry.addData("RB", robot.rightBackMotor.getPower());
 
-            telemetry.addLine();
-            telemetry.update();
 
 
             // Pause for 40 mS each cycle = update 25 times a second.

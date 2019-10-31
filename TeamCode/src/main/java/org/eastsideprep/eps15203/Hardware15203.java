@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
+import com.qualcomm.robotcore.hardware.Gyroscope;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -25,6 +26,8 @@ public class Hardware15203 {
     public CRServo garageLeftServo = null;
     public CRServo garageRightServo = null;
     public CRServo [] allCRServos;
+    public Gyroscope gyro = null;
+
     double [] rotationArray;
 
 

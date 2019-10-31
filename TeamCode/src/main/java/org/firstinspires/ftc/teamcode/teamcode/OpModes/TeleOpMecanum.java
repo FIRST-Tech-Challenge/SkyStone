@@ -23,6 +23,23 @@ public class TeleOpMecanum extends OpMode {
     double speedProp = 1.0;
     boolean pastX = false;
 
+    // CFM variables
+
+    private static final double  massFoundation = 1.905; // Mass in kg
+    private static final double massStone = .1882;
+    static final double muBlocks = .78;
+    static final double muMat = .535;
+    double fix = 1.0;
+    double tolerance = .05;
+    double mass = 0.0;
+    double foundationFriction = 0.0;
+    double maxCFM_Velocity = 0.0;
+    double CFM_AungularVelocity = 0.0;
+    double cfm_power = 0.0;
+
+    int numberStackedBlocks = 0;
+
+
     //  Game pad Control Stick Variables
     double right_stick_x;
     double left_stick_x;
@@ -62,13 +79,10 @@ public class TeleOpMecanum extends OpMode {
 
 
             left_stick_y = gamepad1.left_stick_y;
-
-
-
             left_stick_x = gamepad1.left_stick_x;
-
-
             right_stick_x = gamepad1.right_stick_x;
+
+
 
 
         /*if (gamepad1.x != pastX) {
@@ -81,6 +95,34 @@ public class TeleOpMecanum extends OpMode {
                 }
             }
         }*/
+
+
+        /*
+            //Foundation Moving Toggle
+            //Toggle sets speed such that the robot can move the fastest
+            //while moving the foundation and not dropping any blocks
+            //Takes into account the mass of the foundation and block stack
+            //and the friction of the floor
+
+
+            numberStackedBlocks = outtake.getNumberOfBlocks();
+            //  Mass of Whole Object
+            mass = massFoundation + numberStackedBlocks * massStone;
+
+            //  Max CFM velocity, calculated
+            maxCFM_Velocity = fix * Math.sqrt((2 * tolerance * 9.81 * massStone * numberStackedBlocks * muBlocks)
+                    / mass);
+
+            //  CFM velocity to Aungular Velocity
+            CFM_AungularVelocity = maxCFM_Velocity / (DriveTrain.wheelDiam / 2);
+
+            //  Power to set motors to follow CFM velocity.
+            cfm_power = (-1) * (DriveTrain.stallTorque / DriveTrain.noLoadSpeed) * CFM_AungularVelocity
+                    + DriveTrain.stallTorque * CFM_AungularVelocity;
+
+            telemetry.addData("Number of Blocks : ", numberStackedBlocks);
+
+        */
 
         if(gamepad1.x)
         {
@@ -95,11 +137,18 @@ public class TeleOpMecanum extends OpMode {
             }
         }
 
-        if (Math.abs(left_stick_x) > 0.075 ||
-                Math.abs(left_stick_y) > 0.075 ||
-                Math.abs(right_stick_x) > 0.075) {
+        if(gamepad1.dpad_left)
+        {
+            drive.setStrafePower(-1);
+        }
+        else if(gamepad1.dpad_right)
+        {
+            drive.setStrafePower(1);
+        }
+        else if (Math.abs(left_stick_x) > 0.05 ||
+                Math.abs(left_stick_y) > 0.05 ||
+                Math.abs(right_stick_x) > 0.05) {
 
-            telemetry.addData("motors running", drive.fl.getCurrentPosition());
             drive.fl.setPower(speedProp * ((left_stick_y - left_stick_x) - right_stick_x));
             drive.fr.setPower(speedProp * ((left_stick_y + left_stick_x) + right_stick_x));
             drive.bl.setPower(speedProp * (left_stick_y + left_stick_x) - right_stick_x);

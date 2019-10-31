@@ -41,7 +41,18 @@ public class ArmSystem {
 
     // These fields are used only for calibration. Don't touch them outside of that method.
     private boolean calibrated = false;
-    private boolean direction = true; // true is up, false is down
+    public enum Direction {
+        UP, DOWN;
+        private static Direction reverse(Direction direction){
+            return direction == UP ? DOWN : UP;
+        }
+
+        private static DcMotorSimple.Direction motorDirection(Direction direction){
+            return direction == UP ? DcMotorSimple.Direction.FORWARD : DcMotorSimple.Direction.REVERSE;
+        }
+    };
+
+    private Direction direction;
 
     // Don't change this unless in calibrate(), is read in the calculateHeight method
     private int calibrationDistance = 0;
@@ -65,7 +76,7 @@ public class ArmSystem {
         GRIPPER, WRIST, ELBOW, PIVOT
     }
 
-    public static final String tag = "arm"; // for debugging
+    public static final String TAG = "ArmSystem"; // for debugging
 
     /*
      If the robot is at the bottom of the screen, and X is the block:
@@ -91,7 +102,8 @@ public class ArmSystem {
         this.pivot = servos.get(ServoNames.PIVOT);
         this.slider = slider;
         this.limitSwitch = limitSwitch;
-
+        this.direction = Direction.UP;
+        this.slider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     // Create an ArmSystem object without servos, used for testing just the slider
@@ -213,18 +225,26 @@ public class ArmSystem {
     /*
     Takes in the slack in the linear slide. Used to calibrate the encoder.
     Must be called every iteration of init_loop.
+    Initially, the slider will be resting on the switch, resulting in
+    limit.Switch.getState() == false
      */
     public void calibrate() {
         slider.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        slider.setDirection(direction? UP : DOWN);
+        slider.setDirection(Direction.motorDirection(direction));
         slider.setPower(0.1);
 
-        if (limitSwitch.getState()) { // If the limit switch isn't pressed
-            direction = false;
+        // At rest, pre-int, this will be false, i.e. the limit switch IS pressed.
+        if (limitSwitch.getState()) {
+            // Limit switch has been released, cord is under tension.
+            // With cord under tension, lower until switch is depressed.
+            direction = Direction.UP;
         }
 
+        Log.d(TAG,"Calibrating");
+        Log.d(TAG, "Direction: " + direction);
+        Log.d(TAG, "Switch State: " + limitSwitch.getState());
         // If we're going down and we hit the switch, then we're done
-        if (!direction && !limitSwitch.getState()) {
+        if (direction == Direction.UP && !limitSwitch.getState()) {
             slider.setPower(0);
             calibrated = true;
             calibrationDistance = slider.getCurrentPosition();
@@ -243,11 +263,11 @@ public class ArmSystem {
 
     // Pos should be the # of blocks high it should be
     public void setSliderHeight(int pos) {
-        if (calculateHeight(pos) > MAX_HEIGHT) throw new IllegalArgumentException();
         targetHeight = calculateHeight(pos);
+        if (targetHeight > MAX_HEIGHT) throw new IllegalArgumentException();
         slider.setTargetPosition(targetHeight);
         slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        Log.d("ArmSystem", "Set target height to" + calculateHeight(pos));
+        Log.d(TAG, "Set target height to" + calculateHeight(pos));
     }
 
     // Little helper method for setSliderHeight

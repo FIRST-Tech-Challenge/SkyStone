@@ -4,14 +4,17 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IntegratingGyroscope;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import java.util.List;
 import java.util.Map;
@@ -22,6 +25,7 @@ public class HardwareTester extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         waitForStart();
+        telemetry.setMsTransmissionInterval(1);
         List<HardwareMap.DeviceMapping<? extends HardwareDevice>> deviceMappings = hardwareMap.allDeviceMappings;
         for (HardwareMap.DeviceMapping deviceMapping : deviceMappings) {
             for (Object objEntry : deviceMapping.entrySet()) {
@@ -53,27 +57,55 @@ public class HardwareTester extends LinearOpMode {
                     telemetry.update();
                     servo.setPosition(1);
                     sleep(500);
+                    telemetry.addLine("Pausing...");
+                    telemetry.update();
+                    sleep(250);
                     telemetry.addLine("Turning Servo Backward...");
                     telemetry.update();
                     servo.setPosition(0);
                     sleep(500);
                 } else if (device instanceof GyroSensor) {
                     GyroSensor gyro = (GyroSensor) device;
-                    telemetry.addData("Integrated Z heading", gyro.getHeading());
-                    telemetry.update();
-                    sleep(1000);
+                    double start = getRuntime();
+                    while (getRuntime() < start + 2) {
+                        telemetry.addData("Integrated Z heading", gyro.getHeading());
+                        telemetry.update();
+                        sleep(1);
+                    }
                 } else if (device instanceof ColorSensor) {
                     ColorSensor color = (ColorSensor) device;
-                    telemetry.addData("Red", color.red());
-                    telemetry.addData("Green", color.green());
-                    telemetry.addData("Blue", color.blue());
-                    telemetry.update();
-                    sleep(1000);
+                    double start = getRuntime();
+                    while (getRuntime() < start + 2) {
+                        telemetry.addData("Red", color.red());
+                        telemetry.addData("Green", color.green());
+                        telemetry.addData("Blue", color.blue());
+                        telemetry.update();
+                        sleep(1);
+                    }
                 } else if (device instanceof VoltageSensor) {
                     VoltageSensor voltage = (VoltageSensor) device;
-                    telemetry.addData("Volts", voltage.getVoltage());
-                    telemetry.update();
-                    sleep(2000);
+                    double start = getRuntime();
+                    while (getRuntime() < start + 2) {
+                        telemetry.addData("Volts", voltage.getVoltage());
+                        telemetry.update();
+                        sleep(1);
+                    }
+                } else if (device instanceof DistanceSensor) {
+                    DistanceSensor distance = (DistanceSensor) device;
+                    double start = getRuntime();
+                    while (getRuntime() < start + 2) {
+                        telemetry.addData("Inches Distance", distance.getDistance(DistanceUnit.INCH));
+                        telemetry.update();
+                        sleep(1);
+                    }
+                } else if (device instanceof TouchSensor) {
+                    TouchSensor touch = (TouchSensor) device;
+                    double start = getRuntime();
+                    while (getRuntime() < start + 2) {
+                        telemetry.addData("Is Pressed?", touch.isPressed());
+                        telemetry.update();
+                        sleep(1);
+                    }
                 }
                 else {
                     telemetry.addLine("No tests performed, unregistered device type.");

@@ -67,4 +67,16 @@ public interface TestableGyro {
         };
     }
 
+    TestableGyro NULL = new TestableGyro() {
+        @Override
+        public Angle getHeading() {
+            return new Angle(0, Angle.AngleUnit.DEGREES, Angle.AngleOrientation.COMPASS_HEADING);
+        }
+
+        @Override
+        public boolean isWorking() {
+            return false;
+        }
+    };
+
 }

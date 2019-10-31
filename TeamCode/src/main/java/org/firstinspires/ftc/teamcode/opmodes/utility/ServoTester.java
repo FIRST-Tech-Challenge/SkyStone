@@ -14,18 +14,20 @@ public class ServoTester extends OpMode {
     private Object[] servos;
     private int index;
     private int pressed;
-    private double position;
+    private double[] positions;
 
     @Override
     public void init() {
         servos = hardwareMap.servo.entrySet().toArray();
         telemetry.addData("Number of servos found", servos.length);
+        telemetry.addLine("Start to move forward, back to move in reverse.");
+        telemetry.addLine("Dpad up and down to switch servos.");
         telemetry.update();
         if (servos.length == 0) {
             throw new IllegalArgumentException("Needs at least one servo plugged in");
         }
         index = 0;
-        position = 0;
+        positions = new double[servos.length];
         pressed = 0;
     }
 
@@ -33,15 +35,15 @@ public class ServoTester extends OpMode {
     public void loop() {
         arm = (Servo) ((Map.Entry) servos[index]).getValue();
         name = (String) ((Map.Entry) servos[index]).getKey();
-        if (gamepad1.start && !gamepad1.back && position < 1) {
-            position = position + 0.001;
+        if (gamepad1.start && !gamepad1.back && positions[index] < 1) {
+            positions[index] += 0.001;
         }
-        if (gamepad1.back && !gamepad1.start && position > 0) {
-            position = position - 0.001;
+        if (gamepad1.back && !gamepad1.start && positions[index] > 0) {
+            positions[index] -= 0.001;
         }
-        arm.setPosition(position);
+        arm.setPosition(positions[index]);
         telemetry.addData("Servo", name);
-        telemetry.addData("Position", position);
+        telemetry.addData("Position", positions[index]);
         telemetry.update();
         if (gamepad1.dpad_up && !gamepad1.dpad_down && pressed != 1) {
             pressed = 1;

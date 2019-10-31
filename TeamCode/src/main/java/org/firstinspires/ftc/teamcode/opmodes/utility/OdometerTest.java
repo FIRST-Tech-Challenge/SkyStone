@@ -1,9 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.utility;
 
-import com.qualcomm.ftccommon.ViewLogsActivity;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.westtorrancerobotics.lib.Angle;
 import org.westtorrancerobotics.lib.Location;
@@ -16,22 +14,31 @@ public class OdometerTest extends MecanumTeleop {
     private Wheel rightY;
     private Wheel x;
 
+    private final double TICKS_TO_INCHES = (2 * Math.PI) / 4096;
+
     @Override
     public void init() {
         super.init();
         myLocation = new Location(0, 0, new Angle(0, Angle.AngleUnit.DEGREES, Angle.AngleOrientation.COMPASS_HEADING));
-        leftY = new Wheel(new Location(0,0,
+        leftY = new Wheel(new Location(-6.815,1.645,
+                new Angle(180, Angle.AngleUnit.DEGREES, Angle.AngleOrientation.COMPASS_HEADING)),"");
+        rightY = new Wheel(new Location(6.815,1.645,
                 new Angle(0, Angle.AngleUnit.DEGREES, Angle.AngleOrientation.COMPASS_HEADING)),"");
-        rightY = new Wheel(new Location(0,0,
-                new Angle(0, Angle.AngleUnit.DEGREES, Angle.AngleOrientation.COMPASS_HEADING)),"");
-        x = new Wheel(new Location(0,0,
-                new Angle(0, Angle.AngleUnit.DEGREES, Angle.AngleOrientation.COMPASS_HEADING)),
-                "");
+        x = new Wheel(new Location(7.087,-1.980,
+                new Angle(-90, Angle.AngleUnit.DEGREES, Angle.AngleOrientation.COMPASS_HEADING)),"");
     }
 
     @Override
     public void loop() {
         super.loop();
+        if ((leftY.encoder.getCurrentPosition() - leftY.lastEnc) == (rightY.encoder.getCurrentPosition() - rightY.lastEnc)) {
+            long dy = (leftY.encoder.getCurrentPosition() - leftY.lastEnc);
+            long dx = (x.encoder.getCurrentPosition() - x.lastEnc);
+            leftY.lastEnc += dy;
+            rightY.lastEnc += dy;
+            x.lastEnc += dx;
+            myLocation.translate(dx * TICKS_TO_INCHES, dy * TICKS_TO_INCHES);
+        }
         Solution solved = solve(leftY.getABCD(), rightY.getABCD(), x.getABCD());
         double rotCenterRelX = solved.xc;
         double rotCenterRelY = solved.yc;
@@ -58,26 +65,26 @@ public class OdometerTest extends MecanumTeleop {
         private final DcMotor encoder;
         private long lastEnc;
 
-        public Wheel (Location relativeLocation, String hwMapName) {
+        private Wheel (Location relativeLocation, String hwMapName) {
             this.relativeLocation = relativeLocation;
             this.encoder = hardwareMap.get(DcMotor.class, hwMapName);
             lastEnc = encoder.getCurrentPosition();
         }
 
-        public WheelEquation getABCD() {
+        private WheelEquation getABCD() {
             double xw = relativeLocation.x;
             double yw = relativeLocation.y;
             double tw = relativeLocation.direction.getValue(Angle.AngleUnit.RADIANS, Angle.AngleOrientation.UNIT_CIRCLE);
             double deltaEnc = encoder.getCurrentPosition() - lastEnc;
             lastEnc += deltaEnc;
-            deltaEnc *= (2 * Math.PI) / 4096;
+            deltaEnc *= TICKS_TO_INCHES;
             return new WheelEquation(-Math.sin(tw), Math.cos(tw), xw*Math.sin(tw)-yw*Math.cos(tw), deltaEnc);
         }
     }
 
     private class WheelEquation {
         private final double a, b, c, d;
-        public WheelEquation(double a, double b, double negD, double negC) {
+        private WheelEquation(double a, double b, double negD, double negC) {
             this.a = a;
             this.b = b;
             this.c = -negC;
@@ -85,11 +92,11 @@ public class OdometerTest extends MecanumTeleop {
         }
     }
 
-    public Solution solve(WheelEquation one, WheelEquation two, WheelEquation three) {
+    private Solution solve(WheelEquation one, WheelEquation two, WheelEquation three) {
         double [][] augmentedMatrix = new double[][]{
                 {one.a, one.b, one.c, one.d},
-                {one.a, one.b, one.c, one.d},
-                {one.a, one.b, one.c, one.d}
+                {two.a, two.b, two.c, two.d},
+                {three.a, three.b, three.c, three.d}
         };
         int numWheels = 3;
         for (int i = 0; i < numWheels; i++) {
@@ -135,7 +142,7 @@ public class OdometerTest extends MecanumTeleop {
 
     private class Solution {
         private final double xc, yc, tr;
-        public Solution(double xc, double yc, double invtr) {
+        private Solution(double xc, double yc, double invtr) {
             this.xc = xc;
             this.yc = yc;
             this.tr = 1 / invtr;

@@ -57,7 +57,7 @@ import static com.qualcomm.hardware.lynx.LynxDcMotorController.apiPowerLast;
 
 public class ExpansionHub extends LynxController {
 
-    public double getMotorCurrentDraw(DcMotorEx motor, CurrentDrawUnits units) {
+    public synchronized double getMotorCurrentDraw(DcMotorEx motor, CurrentDrawUnits units) {
         int port = motor.getPortNumber();
         LynxGetADCCommand.Channel channel = null;
         if (port == 0) {
@@ -91,7 +91,7 @@ public class ExpansionHub extends LynxController {
         return -1;
     }
 
-    public double getMotorVoltagePercent(DcMotorEx motor) {
+    public synchronized double getMotorVoltagePercent(DcMotorEx motor) {
         int port = motor.getPortNumber();
         LynxGetMotorConstantPowerCommand command = new LynxGetMotorConstantPowerCommand(this.getModule(), port);
         double result = 0;
@@ -112,7 +112,7 @@ public class ExpansionHub extends LynxController {
      * @param motor th motor to check
      * @return
      */
-    public boolean encoderWorks(DcMotorEx motor) {
+    public synchronized boolean encoderWorks(DcMotorEx motor) {
         int port = motor.getPortNumber();
         LynxGetModuleStatusCommand command = new LynxGetModuleStatusCommand(lynxModule);
         try {
@@ -174,13 +174,6 @@ public class ExpansionHub extends LynxController {
         return lynxModule.getDeviceName();
     }
 
-    public void setStatusLedColor(int r, int g, int b) {
-        if(r > 255 || g > 255 || b > 255) {
-            throw new IllegalArgumentException();
-        }
-        setStatusLedColor((byte)r, (byte)g, (byte)b);
-    }
-
     public synchronized void setStatusLedColor(byte r, byte g, byte b) {
         LynxSetModuleLEDColorCommand colorCommand = new LynxSetModuleLEDColorCommand(lynxModule, r, g, b);
         try {
@@ -206,16 +199,6 @@ public class ExpansionHub extends LynxController {
             handleException(e);
         }
         return -1;
-    }
-
-    @Deprecated  // doesnt make sense on control hub, broken in rev firmware
-    public synchronized void setPhoneChargeEnabled(boolean chargeEnabled) {
-        LynxPhoneChargeControlCommand controlCommand = new LynxPhoneChargeControlCommand(lynxModule, chargeEnabled);
-        try {
-            controlCommand.send();
-        } catch (InterruptedException | LynxNackException e) {
-            handleException(e);
-        }
     }
 
     public synchronized double voltage5vPorts(VoltageUnits units) {

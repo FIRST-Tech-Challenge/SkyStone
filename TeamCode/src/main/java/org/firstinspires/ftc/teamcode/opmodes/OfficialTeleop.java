@@ -34,7 +34,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Supplier;
 import org.firstinspires.ftc.teamcode.Robot;
-import org.westtorrancerobotics.lib.MecanumDrive;
 
 @TeleOp(name="Two Drivers", group="none")
 //@Disabled
@@ -63,8 +62,6 @@ public class OfficialTeleop extends OpMode {
             lastDebTime[i] = Long.MIN_VALUE;
         }
 
-        robot.driveTrain.calibrateGyro();
-
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
@@ -76,13 +73,9 @@ public class OfficialTeleop extends OpMode {
     @Override
     public void init_loop() {
 
-        if (robot.driveTrain.isCalibratingGyro()) {
-            return;
-        }
-
         robot.lift.idle();
 
-        robot.foundationGrabber.setGrabbed(false);
+        robot.foundationGrabber.setGrabbed(Hook.BOTH, false);
 
         telemetry.addData("Status", "Idling Lift Motor...");
         telemetry.update();
@@ -117,12 +110,23 @@ public class OfficialTeleop extends OpMode {
         double x = deadZone(deadZone(gamepad1.left_stick_x) + deadZone(gamepad1.right_stick_x)) / 2;
         robot.driveTrain.spinDrive(x, y, turn);
 
-        whenPressedDebounce(() -> gamepad2.dpad_up,   () -> robot.lift.moveUp(),   0);
-        whenPressedDebounce(() -> gamepad2.dpad_down, () -> robot.lift.moveDown(), 1);
-
+        if (robot.stoneManipulator.getState() != State.RETRACTED) {
+            whenPressedDebounce(() -> gamepad2.dpad_up, () -> robot.lift.moveUp(), 0);
+            whenPressedDebounce(() -> gamepad2.dpad_down, () -> robot.lift.moveDown(), 1);
+        }
         robot.lift.updatePosition();
+        if (robot.lift.getLevel() == 0 && robot.stoneManipulator.getState() == State.RETRACTED) {
+            whenPressedDebounce(() -> gamepad2.right_bumper, () -> robot.stoneManipulator.setIntake(1), 2);
+        }
+        whenReleasedDebounce(() -> gamepad2.right_bumper, () -> robot.stoneManipulator.setIntake(0), 3);
+        if (robot.stoneManipulator.getState() == State.RETRACTED) {
+            whenPressedDebounce(() -> gamepad2.left_bumper, () -> robot.stoneManipulator.outtake(), 4);
+        }
+        if (robot.stoneManipulator.getState() == State.EXTENDED) {
+            whenReleasedDebounce(() -> gamepad2.left_bumper, () -> robot.stoneManipulator.retract(), 5);
+        }
 
-        robot.foundationGrabber.setGrabbed(gamepad2.a);
+        robot.foundationGrabber.setGrabbed(Hook.BOTH, gamepad2.b);
 
         robot.driveTrain.updateLocation();
 

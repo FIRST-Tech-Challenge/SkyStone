@@ -15,7 +15,11 @@ import java.util.EnumMap;
 public class CompetitionTeleop extends BaseOpMode {
 
     ArmSystem armSystem;
-    
+
+    // Use the following variables to detect if their respective bumpers have been pressed the
+    // previous loop. Otherwise, hitting a bumper will increase the queued height by a like 30.
+    boolean m_right = false;
+    boolean m_left = false;
 
     public void init() {
         // Not sure if I'm doing EnumMaps 100% right so please lmk if I'm not so I can change it
@@ -33,6 +37,7 @@ public class CompetitionTeleop extends BaseOpMode {
     }
 
     public void init_loop() {
+        super.init();
         if (!armSystem.isCalibrated()) {
             armSystem.calibrate();
         }
@@ -57,12 +62,19 @@ public class CompetitionTeleop extends BaseOpMode {
             armSystem.queuedPosition = ArmSystem.Position.POSITION_EAST;
         }
 
-        if (gamepad1.right_bumper) {
+        if (gamepad1.right_bumper && !m_right) {
             armSystem.queuedHeight ++;
-        } else if (gamepad1.left_bumper) {
-            armSystem.queuedHeight --;
+            m_right = true;
+        } else if (!gamepad1.right_bumper){
+            m_right = false;
         }
 
+        if (gamepad1.left_bumper && !m_left) {
+            armSystem.queuedHeight --;
+            m_left = true;
+        } else if (!gamepad1.left_bumper){
+            m_left = false;
+        }
         // Display queued positions on telemetry data so that the captain can call them out to the
         // driver
         if (!(armSystem.queuedPosition == null)) {

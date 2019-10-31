@@ -1,4 +1,6 @@
 package org.firstinspires.ftc.teamcode.components;
+import android.util.Log;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
@@ -243,6 +245,7 @@ public class ArmSystem {
         if (calculateHeight(pos) > MAX_HEIGHT) throw new IllegalArgumentException();
         targetHeight = calculateHeight(pos);
         slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        Log.d("ArmSystem", "Set target height to" + calculateHeight(pos));
     }
 
     // Little helper method for setSliderHeight

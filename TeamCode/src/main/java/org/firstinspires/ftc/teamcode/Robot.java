@@ -262,6 +262,7 @@ public class Robot {
     void stopLift() {
         this.liftMotor.setPower(0);
     }
+
     int detectSkystone(LinearOpMode opmode) {
         WebcamTest detector = new WebcamTest();
         return detector.detectSkystonePosition(opmode);

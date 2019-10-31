@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.teamcode.components.DriveSystem;
 import org.firstinspires.ftc.teamcode.components.DriveSystem.Direction;
@@ -15,20 +17,56 @@ public class DriveTeleop extends BaseOpMode {
         float lx = gamepad1.left_stick_x;
         float ly = gamepad1.left_stick_y;
 
-        if (gamepad1.a) {
-            driveSystem.driveToPosition(1000, DriveSystem.Direction.RIGHT, 0.5);
-        }
-        if (gamepad1.b) {
-            driveSystem.driveToPosition(1000, DriveSystem.Direction.LEFT, 0.5);
-        }
-        if (gamepad1.x) {
-            driveSystem.driveToPosition(1000, DriveSystem.Direction.FORWARD, 0.5);
-        }
-        if (gamepad1.y) {
-            driveSystem.driveToPosition(1000, DriveSystem.Direction.BACKWARD, 0.5);
-        }
-        driveSystem.drive(rx, lx, ly);
-
-        spinnySystem.spin(gamepad1.left_bumper, gamepad1.right_bumper);
+            if (gamepad1.a) {
+                driveSystem.motors.forEach((name, motor) -> {
+                    switch(name) {
+                        case FRONTLEFT:
+                            motor.setPower(0.5);
+                        case BACKLEFT:
+                        case FRONTRIGHT:
+                        case BACKRIGHT:
+                            break;
+                    }
+                });
+            }
+            if (gamepad1.b) {
+                driveSystem.motors.forEach((name, motor) -> {
+                    switch(name) {
+                        case FRONTLEFT:
+                            break;
+                        case BACKLEFT:
+                            motor.setPower(0.5);
+                        case FRONTRIGHT:
+                        case BACKRIGHT:
+                            break;
+                    }
+                });
+            }
+            if (gamepad1.x) {
+                driveSystem.motors.forEach((name, motor) -> {
+                    switch(name) {
+                        case FRONTLEFT:
+                        case BACKLEFT:
+                            break;
+                        case FRONTRIGHT:
+                            motor.setPower(0.5);
+                        case BACKRIGHT:
+                            break;
+                    }
+                });
+            }
+            if (gamepad1.y) {
+                driveSystem.motors.forEach((name, motor) -> {
+                    switch(name) {
+                        case FRONTLEFT:
+                        case BACKLEFT:
+                        case FRONTRIGHT:
+                            break;
+                        case BACKRIGHT:
+                            motor.setPower(0.5);
+                    }
+                });
+            }
+            driveSystem.drive(rx, lx, ly);
     }
 }

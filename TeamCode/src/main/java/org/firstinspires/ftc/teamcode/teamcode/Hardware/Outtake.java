@@ -32,8 +32,8 @@ public class Outtake {
     boolean bottom;
 
     static final double DISTANCE_BETWEEN_BLOCKS = 4.0; // In Inches
-    static final double HORIZONTALEXTENSIONTIME = 5900; // Time it takes for lift to extend out = length of lift / speed of motors
-    static final double INITIAL_HORIZONTALEXTENSIONTIME = 5500;
+    static final double HORIZONTALEXTENSIONTIME = 3000; // Time it takes for lift to extend out = length of lift / speed of motors
+    static final double INITIAL_HORIZONTALEXTENSIONTIME = 3000;
     static final double encoderLevelCount = (288 / (Math.PI * .53));
 
     static double LIFTPOWER = 1;
@@ -43,6 +43,8 @@ public class Outtake {
 
     double left_stick_y;
     double right_stick_y;
+
+    double height;
 
     double k = 1.0;
     double level = 0;
@@ -220,11 +222,14 @@ public class Outtake {
     }
 
     public void raiseLiftMacro() {
-        if (opMode.gamepad2.dpad_up) {
+
+        height = encoderLevelCount * blockCount * level + .5 * encoderLevelCount;
+
+        if (opMode.gamepad2.dpad_up && averageLiftPosition() < height) {
             liftRight.setPower(LIFTPOWER);
             liftLeft.setPower(LIFTPOWER);
 
-            while (encoderLevelCount * blockHeight * level + .5 * encoderLevelCount > averageLiftPosition()) { }
+            while (height + .5 * encoderLevelCount > averageLiftPosition()) { }
 
             liftLeft.setPower(0);
             liftRight.setPower(0);
@@ -239,7 +244,7 @@ public class Outtake {
         leftVex.setPower(-.5);
 
         time.reset();
-        while(time.milliseconds() < INITIAL_HORIZONTALEXTENSIONTIME)
+        while(time.milliseconds() < 0)
         {
             if(opMode.gamepad2.right_stick_button)
             {

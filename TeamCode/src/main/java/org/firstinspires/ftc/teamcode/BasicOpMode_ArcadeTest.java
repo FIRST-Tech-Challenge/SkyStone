@@ -128,8 +128,6 @@ public class BasicOpMode_ArcadeTest extends OpMode
         else if(gamepad1.left_stick_x > 0 && -1.0*gamepad1.left_stick_y < 0){angle += 2*Math.PI;}
         angle = Math.toDegrees(angle); //Changes angle from radians to degrees
 
-        // Not Tank Mode uses two sticks to control.
-        // - This requires no math (bet).
         double[] arr = new double[4];
 
         if(angle == 0){arr = new double[]{1, -1, -1, 1};}

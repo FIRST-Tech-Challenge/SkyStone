@@ -20,14 +20,17 @@ import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_BACK_LEFT
 import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_BACK_RIGHT_WHEEL;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_FRONT_LEFT_WHEEL;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_FRONT_RIGHT_WHEEL;
+import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_LEFT_INTAKE;
+import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_RIGHT_INTAKE;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.NEVEREST_40_REVOLUTION_ENCODER_COUNT;
-//import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_ARM;
-//import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_ARM_POS_GRAB;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.TENSOR_READING_TIME;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.TRACK_DISTANCE;
-//import static org.firstinspires.ftc.teamcode.libraries.Constants.VUFORIA_KEY;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.WHEEL_DIAMETER;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.WHEEL_GEAR_RATIO;
+
+//import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_ARM;
+//import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_ARM_POS_GRAB;
+//import static org.firstinspires.ftc.teamcode.libraries.Constants.VUFORIA_KEY;
 
 //import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_INTAKE;
 //import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_INTAKE_SLIDE;
@@ -64,7 +67,7 @@ public class AutoLib {
         robot = new Robot(opMode);
         this.opMode = opMode;
 
-       // initTfod();
+        // initTfod();
     }
 
 
@@ -101,6 +104,41 @@ public class AutoLib {
         setBaseMotorPowers(0);
     }
 
+    public void calcMoveIntake(float centimeters, float power, Constants.Direction direction) {
+        // Calculates target encoder position
+        final int targetPosition = (int) ((((centimeters / (Math.PI * WHEEL_DIAMETER)) *
+                NEVEREST_40_REVOLUTION_ENCODER_COUNT)) * WHEEL_GEAR_RATIO);
+
+        robot.setDcMotorPower(MOTOR_RIGHT_INTAKE, -.5f);
+        robot.setDcMotorPower(MOTOR_LEFT_INTAKE, .5f);
+        switch (direction) {
+            case BACKWARD:
+                prepMotorsForCalcMove(targetPosition, targetPosition, targetPosition, targetPosition);
+                break;
+            case FORWARD:
+                prepMotorsForCalcMove(-targetPosition, -targetPosition, -targetPosition, -targetPosition);
+                break;
+            case LEFT:
+                prepMotorsForCalcMove(-targetPosition, targetPosition, targetPosition, -targetPosition);
+                break;
+            case RIGHT:
+                prepMotorsForCalcMove(targetPosition, -targetPosition, -targetPosition, targetPosition);
+        }
+
+        setBaseMotorPowers(power);
+
+        while (areBaseMotorsBusy()) {
+//            opMode.telemetry.addData("Left", robot.getDcMotorPosition(LEFT_WHEEL));
+//            opMode.telemetry.addData("Right", robot.getDcMotorPosition(RIGHT_WHEEL));
+//            opMode.telemetry.update();
+            opMode.idle();
+        }
+
+        setBaseMotorPowers(0);
+        robot.setDcMotorPower(MOTOR_RIGHT_INTAKE, 0);
+        robot.setDcMotorPower(MOTOR_LEFT_INTAKE, 0);
+
+    }
     public void calcTurn(int degrees, float power) {
         // Calculates target encoder position
         int targetPosition = (int) (2 * ((TRACK_DISTANCE) * degrees
@@ -169,6 +207,16 @@ public class AutoLib {
     private boolean areBaseMotorsBusy() {
         return robot.isMotorBusy(MOTOR_FRONT_LEFT_WHEEL) || robot.isMotorBusy(MOTOR_FRONT_RIGHT_WHEEL) ||
                 robot.isMotorBusy(MOTOR_BACK_LEFT_WHEEL) || robot.isMotorBusy(MOTOR_BACK_RIGHT_WHEEL);
+    }
+
+    public void intakeStone() {
+        ElapsedTime time = new ElapsedTime();
+
+        robot.setDcMotorPower(MOTOR_RIGHT_INTAKE, -.5f);
+        robot.setDcMotorPower(MOTOR_LEFT_INTAKE, .5f);
+        while (time.seconds() <= 5) {
+            opMode.idle();
+        }
     }
 
 //    public void moveArm() {
@@ -255,7 +303,7 @@ public class AutoLib {
          */
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
-       // parameters.vuforiaLicenseKey = VUFORIA_KEY;
+        // parameters.vuforiaLicenseKey = VUFORIA_KEY;
         parameters.cameraName = opMode.hardwareMap.get(WebcamName.class, "Webcam");
 
         //  Instantiate the Vuforia engine

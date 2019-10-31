@@ -9,6 +9,8 @@ import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_BACK_LEFT
 import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_BACK_RIGHT_WHEEL;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_FRONT_LEFT_WHEEL;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_FRONT_RIGHT_WHEEL;
+import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_LEFT_INTAKE;
+import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_RIGHT_INTAKE;
 //import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_ARM;
 //import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_INTAKE;
 //import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_INTAKE_SLIDE;
@@ -36,7 +38,7 @@ public class Robot {
     private LinearOpMode opMode;
 
     // Motors
-    private DcMotor[] dcMotors = new DcMotor[4];
+    private DcMotor[] dcMotors = new DcMotor[6];
     private Servo[] servos = new Servo[1];
 
     // Servos
@@ -59,6 +61,8 @@ public class Robot {
         dcMotors[MOTOR_FRONT_RIGHT_WHEEL] = opMode.hardwareMap.get(DcMotor.class, "frontRightWheel");
         dcMotors[MOTOR_BACK_LEFT_WHEEL] = opMode.hardwareMap.get(DcMotor.class, "backLeftWheel");
         dcMotors[MOTOR_BACK_RIGHT_WHEEL] = opMode.hardwareMap.get(DcMotor.class, "backRightWheel");
+        dcMotors[MOTOR_RIGHT_INTAKE] = opMode.hardwareMap.get(DcMotor.class,"rightIntake");
+        dcMotors[MOTOR_LEFT_INTAKE] = opMode.hardwareMap.get(DcMotor.class,"leftIntake");
 //        dcMotors[MOTOR_LATCHER] = opMode.hardwareMap.get(DcMotor.class, "latcher");
 //        dcMotors[MOTOR_SCORING_SLIDE] = opMode.hardwareMap.get(DcMotor.class, "scoring");
 //        dcMotors[MOTOR_INTAKE_SLIDE] = opMode.hardwareMap.get(DcMotor.class, "intakeSlide");
@@ -107,9 +111,9 @@ public class Robot {
     public void setServoPosition(int servoArm, float servoArmPosGrab) {
     }
 
-    public float getServoPosition(int servoArm) {
-        return 0;
-    }
+//    public float getServoPosition(int servoArm) {
+//        return 0;
+//    }
 
     public void setDeltaServoPosition(int servoArm, float f) {
     }

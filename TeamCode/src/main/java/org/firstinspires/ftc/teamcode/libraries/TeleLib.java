@@ -8,6 +8,8 @@ import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_BACK_LEFT
 import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_BACK_RIGHT_WHEEL;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_FRONT_LEFT_WHEEL;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_FRONT_RIGHT_WHEEL;
+import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_LEFT_INTAKE;
+import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_RIGHT_INTAKE;
 //import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_ARM;
 //import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_ARM_POS_GRAB;
 //import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_ARM_POS_REST;
@@ -87,6 +89,16 @@ public class TeleLib {
 //        } else {
 //            robot.setDcMotorPower(MOTOR_LATCHER, 0);
 //    }
+
+    public void processIntakeMinerals() {
+        if (opMode.gamepad2.right_bumper) {
+            robot.setDcMotorPower(MOTOR_RIGHT_INTAKE, -.5f);
+            robot.setDcMotorPower(MOTOR_LEFT_INTAKE, .5f);
+        } else if (opMode.gamepad2.y) {
+            robot.setDcMotorPower(MOTOR_RIGHT_INTAKE, 0);
+            robot.setDcMotorPower(MOTOR_LEFT_INTAKE, 0);
+        }
+    }
 
     //}
 //    public void processServoArm() {

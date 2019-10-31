@@ -20,6 +20,8 @@ public class Constants {
     static final int MOTOR_FRONT_RIGHT_WHEEL = 1;
     static final int MOTOR_BACK_LEFT_WHEEL = 2;
     static final int MOTOR_BACK_RIGHT_WHEEL = 3;
+    static final int MOTOR_RIGHT_INTAKE = 4;
+    static final int MOTOR_LEFT_INTAKE = 5;
 //    static final int MOTOR_LATCHER = 4;
 //    static final int MOTOR_SCORING_SLIDE = 5;
 //    static final int MOTOR_INTAKE_SLIDE = 6;

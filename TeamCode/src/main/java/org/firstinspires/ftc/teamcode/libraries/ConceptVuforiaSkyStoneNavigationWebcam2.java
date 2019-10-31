@@ -56,7 +56,7 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
     String positionSkystone = "";
     double yPosition = 0;
     double xPosition = 0;
-    boolean startIdentify =true;
+    boolean startIdentify = true;
     // Class Members
     private OpenGLMatrix lastLocation = null;
     private VuforiaLocalizer vuforia = null;
@@ -225,8 +225,8 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
         }
 
         targetsSkyStone.activate();
-        if(startIdentify) {
-            autoLib.calcMove(43, .5f, Constants.Direction.FORWARD                                                                                );
+        if (startIdentify) {
+            autoLib.calcMove(43, .8f, Constants.Direction.FORWARD);
             while (!isStopRequested() && startIdentify) {
 
                 // check all the trackable targets to see which one (if any) is visible.
@@ -265,7 +265,7 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
                     } else if (yPosition <= 0) {
                         positionSkystone = "Center";
                         if (xPosition <= -10) {
-                            sleep(3000);
+                            sleep(1000);
                             yPosition = translation.get(1);
                             xPosition = translation.get(0);
                             finalMove(xPosition, yPosition);
@@ -296,27 +296,29 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
         // Disable Tracking when we are done
         targetsSkyStone.deactivate();
     }
-private void finalMove(double xPosition, double yPosition)
-{
-    telemetry.addData("Final Position Reached", "none");
-    telemetry.addData("X Position ", xPosition);
-    telemetry.addData("Y Position ", yPosition);
-    telemetry.update();
-    //xPosition =10;
-   // yPosition =5;
-    autoLib.calcMove((float) -xPosition/10, .8f, Constants.Direction.FORWARD);
-    autoLib.calcMove((float) yPosition/10, .8f, Constants.Direction.RIGHT);
-    autoLib.calcMove(10,.5f, Constants.Direction.LEFT);
-    autoLib.calcMove(20,.5f, Constants.Direction.FORWARD);
-    autoLib.calcMove(60,.5f, Constants.Direction.BACKWARD);
-    autoLib.calcMove(225,.5f, Constants.Direction.RIGHT);
-    autoLib.calcMove(200,.5f, Constants.Direction.FORWARD);
-    autoLib.calcMove(115,.5f,Constants.Direction.RIGHT);
-    autoLib.calcMove(215,.5f, Constants.Direction.BACKWARD);
-    autoLib.calcMove(200,.5f, Constants.Direction.LEFT);
-    startIdentify =false;
 
-}
+    private void finalMove(double xPosition, double yPosition) {
+        telemetry.addData("Final Position Reached", "none");
+        telemetry.addData("X Position ", xPosition);
+        telemetry.addData("Y Position ", yPosition);
+        telemetry.update();
+
+        autoLib.calcMove((float) -xPosition / 10, .8f, Constants.Direction.FORWARD);
+        autoLib.calcMove((float) yPosition / 10, .8f, Constants.Direction.RIGHT);
+
+        //Stop intake
+        autoLib.calcMove(10, .5f, Constants.Direction.LEFT);
+        autoLib.calcMoveIntake(30, .5f, Constants.Direction.FORWARD);
+        autoLib.calcMove(70, .5f, Constants.Direction.BACKWARD);
+        autoLib.calcMove(225, .5f, Constants.Direction.RIGHT);
+        autoLib.calcMove(200, .5f, Constants.Direction.FORWARD);
+        autoLib.calcMove(115, .5f, Constants.Direction.RIGHT);
+        autoLib.calcMove(215, .5f, Constants.Direction.BACKWARD);
+        autoLib.calcMove(200, .5f, Constants.Direction.LEFT);
+        startIdentify = false;
+
+    }
+
     private void initialize() {
         telemetry.addData("Status", "Initializing...");
         telemetry.update();

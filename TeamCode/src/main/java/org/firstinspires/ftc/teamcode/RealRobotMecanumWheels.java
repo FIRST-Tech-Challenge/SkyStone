@@ -130,6 +130,10 @@ public class RealRobotMecanumWheels extends LinearOpMode {
                 rightFront.setPower(slide);
                 rightBack.setPower(slide);
             }
+            // Show the elapsed game time and wheel power.
+            telemetry.addData("Status", "Run Time: " + runtime.toString());
+            //telemetry.addData("Motors", "left (%.2f), right (%.2f)", InAndOut);
+            telemetry.update();
 //            double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x)
 //            double
 //            double rightx

@@ -1,14 +1,25 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.qualcomm.hardware.rev.RevColorSensorV3;
+import com.qualcomm.hardware.rev.RevTouchSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.Robot;
 
 public class Lift {
 
-    private DcMotorEx motor;
+    private DcMotorEx leftMotor;
+    private DcMotorEx rightMotor;
+    private RevColorSensorV3 blockDetector;
+    private final double MAX_NO_BLOCK_DIST_IN = 1;
+    private boolean hadBlock;
+    private RevTouchSensor bottomLimit;
     private int level;
-    private int LEVEL_HEIGHT = 300; // ticks per lift level
+    private final int LEVEL_HEIGHT = 300; // ticks per lift level
     private final int MAX_LEVEL = 4;
 
     private static Lift instance = null;
@@ -20,23 +31,52 @@ public class Lift {
     private Lift() {}
 
     public void init(HardwareMap hardwareMap) {
-        motor = hardwareMap.get(DcMotorEx.class, "lift_right");
-        motor.setDirection(DcMotor.Direction.FORWARD);
-        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        rightMotor = hardwareMap.get(DcMotorEx.class, "liftRight/odometerX");
+        rightMotor.setDirection(DcMotor.Direction.FORWARD);
+        rightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftMotor = hardwareMap.get(DcMotorEx.class, "liftLeft");
+        leftMotor.setDirection(DcMotor.Direction.REVERSE);
+        leftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        blockDetector = new RevColorSensorV3(
+                hardwareMap.get(RevColorSensorV3.class, "liftBlockColor").getDeviceClient()
+        ) {
+            @Override
+            protected double inFromOptical(int rawOptical) {
+                double aParam = 315;
+                double bInvParam = 0.605;
+                double cParam = 169.7;
+                return Math.pow((rawOptical - cParam) / aParam, -bInvParam);
+            }
+        };
+
+        bottomLimit = hardwareMap.get(RevTouchSensor.class, "liftLimitSwitch");
+
         level = 0;
-        // set pid
+
+        hadBlock = false;
+        setNoBlockPid();
+        updatePid();
     }
 
     public void idle() {
-        motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motor.setPower(0.1);
+        if (bottomLimit.isPressed()) {
+            leftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            leftMotor.setPower(0.1);
+            rightMotor.setPower(0.1);
+        } else {
+            leftMotor.setPower(0);
+            rightMotor.setPower(0);
+        }
     }
 
     public void zero() {
-        motor.setPower(0);
-        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftMotor.setPower(0);
+        rightMotor.setPower(0);
+        leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     public void setLevel(int level) {
@@ -68,6 +108,40 @@ public class Lift {
     }
 
     public void updatePosition() {
-        motor.setTargetPosition(level * LEVEL_HEIGHT);
+        updatePid();
+        leftMotor.setTargetPosition(level * LEVEL_HEIGHT);
+        rightMotor.setPower(Robot.getInstance().controlHub.getMotorVoltagePercent(leftMotor));
+    }
+
+    private void setNoBlockPid() {
+        PIDFCoefficients pidfVelocity = leftMotor.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
+        PIDFCoefficients pidfPosition = leftMotor.getPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION);
+        pidfVelocity.f = 0.1;
+        leftMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfVelocity);
+        leftMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, pidfPosition);
+    }
+
+    private void setBlockPid() {
+        PIDFCoefficients pidfVelocity = leftMotor.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
+        PIDFCoefficients pidfPosition = leftMotor.getPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION);
+        pidfVelocity.f = 0.1;
+        leftMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfVelocity);
+        leftMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, pidfPosition);
+    }
+
+    public boolean hasBlock() {
+        return blockDetector.getDistance(DistanceUnit.INCH) < MAX_NO_BLOCK_DIST_IN;
+    }
+
+    private void updatePid() {
+        boolean hasBlock = hasBlock();
+        if (hadBlock && !hasBlock) {
+            setNoBlockPid();
+            hadBlock = false;
+        }
+        if (!hadBlock && hasBlock) {
+            setBlockPid();
+            hadBlock = true;
+        }
     }
 }

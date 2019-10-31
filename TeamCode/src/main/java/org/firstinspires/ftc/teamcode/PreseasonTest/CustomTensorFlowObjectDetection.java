@@ -1,5 +1,3 @@
-
-
 package org.firstinspires.ftc.teamcode.PreseasonTest;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -18,7 +16,8 @@ import java.util.List;
  *  -"Skystone.tflite" --Original Model
  *  -"skystoneTFOD_v1_[50-15].tflite" --Basic retrained detection Model
  *  -"skystoneTFOD_v2_[105-15].tflite" --Training set better optimized for different light conditions
- *  -"skystoneTFOD_v3_[150-30].tflite" --Training set better optimized for detection at longer distances
+ *  -"skystoneTFOD_v3_[150-30].tflite" **Not recommended, please use "skystoneTFOD_v4_[160-30].tflite"
+ *  -"skystoneTFOD_v4_[160-30].tflite" --Training set better optimized for detection at longer distances
  *
  *  Skystone file name format: "skystoneTFOD_vVersion#_[# of training images-# of testing images].tflite
  *  NOTE: Covering a wider variety of light conditions sacrifices some accuracy
@@ -26,7 +25,7 @@ import java.util.List;
 
 @TeleOp(name = "RetrainedSkystoneDetection", group = "Linear Opmode")
 public class CustomTensorFlowObjectDetection extends LinearOpMode {
-    private static final String TFOD_MODEL_ASSET = "skystoneTFOD_v3_[150-30].tflite";    //Set model (see above for file names)
+    private static final String TFOD_MODEL_ASSET = "skystoneTFOD_v4_[160-30].tflite";    //Set model (see above for file names)
     private static final String LABEL_FIRST_ELEMENT = "skystone";
     private static final String LABEL_SECOND_ELEMENT = "stone";
     private static final String VUFORIA_KEY =

@@ -204,9 +204,9 @@ public class DriveSystem {
      * @param maxPower The maximum power of the motors
      */
     // TODO
-    public void turnAbsolute(double degrees, double maxPower) {
+    public boolean turnAbsolute(double degrees, double maxPower) {
         // Since it is vertical, use pitch instead of heading
-        turn(diffFromAbs(degrees), maxPower);
+        return turn(diffFromAbs(degrees), maxPower);
     }
 
     /**

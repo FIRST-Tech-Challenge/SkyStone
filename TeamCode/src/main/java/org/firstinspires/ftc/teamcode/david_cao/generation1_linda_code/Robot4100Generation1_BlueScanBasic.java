@@ -104,7 +104,7 @@ public class Robot4100Generation1_BlueScanBasic extends DarbotsBasicOpMode<Robot
             return;
         }
         this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedXDistanceTask(
-                75-50+10,
+                75-50+15,
                 0.2
         ));
         if(!waitForDrive()){
@@ -115,7 +115,7 @@ public class Robot4100Generation1_BlueScanBasic extends DarbotsBasicOpMode<Robot
         sleep(400);
 
         this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedXDistanceTask(
-                -50,
+                -30,
                 0.5
         ));
         if(!waitForDrive()){
@@ -123,7 +123,7 @@ public class Robot4100Generation1_BlueScanBasic extends DarbotsBasicOpMode<Robot
         }
 
         this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedZDistanceTask(
-                130 + firstScanExtraDistance,
+                120 + firstScanExtraDistance,
                 1.0
         ));
         if(!waitForDrive()){

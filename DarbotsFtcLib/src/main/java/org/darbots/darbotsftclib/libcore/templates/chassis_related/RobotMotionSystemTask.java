@@ -27,8 +27,7 @@ package org.darbots.darbotsftclib.libcore.templates.chassis_related;
 
 import android.support.annotation.NonNull;
 
-import org.darbots.darbotsftclib.libcore.integratedfunctions.RobotLogger;
-import org.darbots.darbotsftclib.libcore.runtime.GlobalRegister;
+import org.darbots.darbotsftclib.libcore.integratedfunctions.logger.RobotLogger;
 import org.darbots.darbotsftclib.libcore.runtime.GlobalUtil;
 import org.darbots.darbotsftclib.libcore.templates.RobotNonBlockingDevice;
 

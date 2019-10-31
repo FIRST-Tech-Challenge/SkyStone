@@ -3,7 +3,7 @@ package org.darbots.darbotsftclib.libcore.OpModes;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.darbots.darbotsftclib.libcore.integratedfunctions.RobotLogger;
+import org.darbots.darbotsftclib.libcore.integratedfunctions.logger.RobotLogger;
 import org.darbots.darbotsftclib.libcore.runtime.GlobalRegister;
 import org.darbots.darbotsftclib.libcore.runtime.GlobalUtil;
 import org.darbots.darbotsftclib.libcore.templates.RobotCore;

@@ -1,13 +1,8 @@
 package org.darbots.darbotsftclib.libcore.calculations.dimentionalcalculation;
 
 
-import android.provider.Settings;
-
-import org.darbots.darbotsftclib.libcore.integratedfunctions.RobotLogger;
-import org.darbots.darbotsftclib.libcore.runtime.GlobalRegister;
+import org.darbots.darbotsftclib.libcore.integratedfunctions.logger.RobotLogger;
 import org.darbots.darbotsftclib.libcore.runtime.GlobalUtil;
-
-import java.lang.reflect.Field;
 
 public class Robot2DPositionTracker {
 

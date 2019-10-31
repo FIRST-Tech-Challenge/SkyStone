@@ -1,5 +1,6 @@
-package org.darbots.darbotsftclib.libcore.integratedfunctions;
+package org.darbots.darbotsftclib.libcore.integratedfunctions.logger;
 
+import org.darbots.darbotsftclib.libcore.integratedfunctions.FTCFileIO;
 import org.darbots.darbotsftclib.libcore.runtime.GlobalRegister;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;

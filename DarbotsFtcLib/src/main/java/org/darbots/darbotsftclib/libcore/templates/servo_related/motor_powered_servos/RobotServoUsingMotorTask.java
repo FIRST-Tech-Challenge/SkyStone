@@ -1,12 +1,10 @@
 package org.darbots.darbotsftclib.libcore.templates.servo_related.motor_powered_servos;
 
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.darbots.darbotsftclib.libcore.integratedfunctions.RobotLogger;
-import org.darbots.darbotsftclib.libcore.runtime.GlobalRegister;
+import org.darbots.darbotsftclib.libcore.integratedfunctions.logger.RobotLogger;
 import org.darbots.darbotsftclib.libcore.runtime.GlobalUtil;
 import org.darbots.darbotsftclib.libcore.sensors.servos.motor_powered_servos.RobotServoUsingMotor;
 import org.darbots.darbotsftclib.libcore.templates.RobotNonBlockingDevice;

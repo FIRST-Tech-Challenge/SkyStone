@@ -1,8 +1,6 @@
 package org.darbots.darbotsftclib.libcore.runtime;
 
-import android.provider.Settings;
-
-import org.darbots.darbotsftclib.libcore.integratedfunctions.RobotLogger;
+import org.darbots.darbotsftclib.libcore.integratedfunctions.logger.RobotLogger;
 import org.darbots.darbotsftclib.libcore.templates.other_sensors.RobotGyro;
 
 public class GlobalUtil {

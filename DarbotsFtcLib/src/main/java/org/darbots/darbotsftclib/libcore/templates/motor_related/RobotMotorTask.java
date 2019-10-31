@@ -26,13 +26,11 @@ SOFTWARE.
 package org.darbots.darbotsftclib.libcore.templates.motor_related;
 
 
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.darbots.darbotsftclib.libcore.integratedfunctions.RobotLogger;
-import org.darbots.darbotsftclib.libcore.runtime.GlobalRegister;
+import org.darbots.darbotsftclib.libcore.integratedfunctions.logger.RobotLogger;
 import org.darbots.darbotsftclib.libcore.runtime.GlobalUtil;
 import org.darbots.darbotsftclib.libcore.sensors.motors.RobotMotorController;
 import org.darbots.darbotsftclib.libcore.templates.RobotNonBlockingDevice;

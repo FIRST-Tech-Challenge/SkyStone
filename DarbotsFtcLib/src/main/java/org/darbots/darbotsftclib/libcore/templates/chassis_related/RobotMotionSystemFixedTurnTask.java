@@ -1,8 +1,6 @@
 package org.darbots.darbotsftclib.libcore.templates.chassis_related;
 
 import org.darbots.darbotsftclib.libcore.calculations.dimentionalcalculation.XYPlaneCalculations;
-import org.darbots.darbotsftclib.libcore.integratedfunctions.RobotLogger;
-import org.darbots.darbotsftclib.libcore.runtime.GlobalUtil;
 
 public abstract class RobotMotionSystemFixedTurnTask extends RobotMotionSystemTask{
     private double m_TurnDeg;

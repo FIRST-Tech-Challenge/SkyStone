@@ -2,7 +2,7 @@ package org.darbots.darbotsftclib.libcore.templates;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.darbots.darbotsftclib.libcore.integratedfunctions.RobotLogger;
+import org.darbots.darbotsftclib.libcore.integratedfunctions.logger.RobotLogger;
 import org.darbots.darbotsftclib.libcore.sensors.gyros.BNO055Gyro;
 import org.darbots.darbotsftclib.libcore.templates.chassis_related.RobotMotionSystem;
 import org.darbots.darbotsftclib.libcore.templates.other_sensors.RobotGyro;

@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.teamcode.components.DriveSystem;
@@ -30,11 +31,15 @@ public abstract class BaseOpMode extends OpMode {
         }
         driveSystem = new DriveSystem(driveMap, hardwareMap.get(BNO055IMU.class, "imu"));
 
+
         EnumMap<SpinnySystem.MotorNames, DcMotor> spinnyMap = new EnumMap<>(SpinnySystem.MotorNames.class);
         for(SpinnySystem.MotorNames name : SpinnySystem.MotorNames.values()){
             spinnyMap.put(name,hardwareMap.get(DcMotor.class, name.toString()));
         }
         spinnySystem = new SpinnySystem(spinnyMap);
+        DistanceSensor distanceSensor2;
+        DistanceSensor distanceSensor3;
+        ColorSensor colorSensor;
     }
 
     protected void setCamera(CameraChoice cameraChoice){

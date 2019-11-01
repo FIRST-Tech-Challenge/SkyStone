@@ -6,7 +6,7 @@ public class BlueLeft extends AutoBase {
     @Override
     public void runOpMode() {
         initLogic();
-        robot.goToVuforia();
+        robot.goToSkystone();
         robot.moveToPoint(0, 30, 1, 1, 180);
     }
 =======

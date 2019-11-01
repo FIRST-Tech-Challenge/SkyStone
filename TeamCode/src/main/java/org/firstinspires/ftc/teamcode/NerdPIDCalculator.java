@@ -26,7 +26,10 @@ public class NerdPIDCalculator{
     private double iOutput;
     private double dOutput;
 
-    private boolean isRelativeTarget = false;
+    private double prevDeviceInput = 0.0;
+
+
+    private boolean debugFlag = false;
 
     private ElapsedTime elapsedTime = new ElapsedTime();
 
@@ -43,7 +46,8 @@ public class NerdPIDCalculator{
         this.kI = Math.abs(kI);
         this.kD = Math.abs(kD);
         //Send info to console
-        RobotLog.d("NerdPIDCalculator - Gains : %s -  %f | %f | %f ", this.instanceName, this.kP, this.kI, this.kD);
+        if (debugFlag)
+            RobotLog.d("NerdPIDCalculator - Gains : %s -  %f | %f | %f ", this.instanceName, this.kP, this.kI, this.kD);
     }
 
     public void setPIDGains(double kP, double kI, double kD)
@@ -53,49 +57,29 @@ public class NerdPIDCalculator{
         this.kP = kP;
         this.kI = kI;
         this.kD = kD;
+
+        if (debugFlag)
+            RobotLog.d("NerdPIDCalculator - Gains : %s -  %f | %f | %f ", this.instanceName, this.kP, this.kI, this.kD);
     }
 
-    public void setTarget(double target, boolean isRelativeTarget, double currentDeviceInput)
+    public void setTarget(double target, double currentDeviceInput)
     {
         final String funcName = "setTarget";
 
-        this.isRelativeTarget=isRelativeTarget;
 
-        if (isRelativeTarget)
-        {
-            //
-            // Target is relative, add target to current input to get absolute set point.
-            //
-            this.pidTarget = currentDeviceInput + target;
-            this.currentError = target;
-        }
-        else
-        {
             //
             // Target is absolute, use as is.
             //
             this.pidTarget = target;
             this.currentError = this.pidTarget - currentDeviceInput;
-        }
-        //
-        // If there is a valid target range, limit the set point to this range.
-        //
-        if (maxTarget > minTarget)
-        {
-            if (this.pidTarget > maxTarget)
-            {
-                this.pidTarget = maxTarget;
-            }
-            else if (pidTarget < minTarget)
-            {
-                this.pidTarget = minTarget;
-            }
-        }
 
-        totalError = 0.0;
-        previousTime = elapsedTime.seconds();
 
-        RobotLog.d("NerdPIDCalculator - %s, %s : Target %f, currentError %f ", this.instanceName, funcName,this.pidTarget, this.currentError);
+            totalError = 0.0;
+            previousTime = elapsedTime.seconds();
+            prevDeviceInput = currentDeviceInput;
+
+            if (debugFlag)
+                RobotLog.d("NerdPIDCalculator - %s, %s : Target %f, currentError %f ", this.instanceName, funcName,this.pidTarget, this.currentError);
 
     }
 
@@ -109,7 +93,7 @@ public class NerdPIDCalculator{
         totalError = 0.0;
         pidTarget = 0.0;
         output = 0.0;
-        isRelativeTarget=false;
+
     }
 
     //function to calculate error
@@ -133,8 +117,6 @@ public class NerdPIDCalculator{
     {
 
         final String funcName = "getOutput";
-
-
         double prevError = currentError;
 
         double currTime = elapsedTime.seconds();
@@ -145,18 +127,26 @@ public class NerdPIDCalculator{
         totalError += (currentError * deltaTime);
         pOutput = kP*currentError;
         iOutput = kI*totalError;
-        dOutput = deltaTime > 0.0? kD*(currentError - prevError)/(deltaTime * 1000): 0.0;
+       // dOutput = deltaTime > 0.0? kD*(currentError - prevError)/(deltaTime * 1000): 0.0;
+        dOutput = deltaTime > 0.0? kD*(deviceInput - prevDeviceInput)/(deltaTime * 1000): 0.0;
+        prevDeviceInput = deviceInput;
 
         output = pOutput + iOutput + dOutput;
 
-        RobotLog.d("NerdPIDCalculator - %s - %s : prevError |  currentError | totalError | currTime | deltaTime | pOutput | iOutput |dOutput |output",
+        if (debugFlag)
+            RobotLog.d("NerdPIDCalculator - %s - %s : prevError |  currentError | totalError | currTime | deltaTime | pOutput | iOutput |dOutput |output",
                 this.instanceName, funcName);
 
-        RobotLog.d("NerdPIDCalculator - %s - %s : %f | %f | %f | %f | %f | %f | %f | %f | %f ",
+        if (debugFlag)
+            RobotLog.d("NerdPIDCalculator - %s - %s : %f | %f | %f | %f | %f | %f | %f | %f | %f ",
                 this.instanceName, funcName,prevError, currentError, totalError, currTime, deltaTime, pOutput, iOutput,dOutput,output);
 
 
         return output;
+    }
+
+    public void setDebug(boolean debugFlag){
+        this.debugFlag=debugFlag;
     }
 
 }

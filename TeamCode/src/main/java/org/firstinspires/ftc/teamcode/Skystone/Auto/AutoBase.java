@@ -31,7 +31,7 @@ public class AutoBase extends LinearOpMode {
     }
 
     @Override
-    public void runOpMode() {};
+    public void runOpMode() {}
 }
 
 

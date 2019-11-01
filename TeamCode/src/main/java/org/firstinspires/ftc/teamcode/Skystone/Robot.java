@@ -94,20 +94,12 @@ public class Robot {
     private LinearOpMode linearOpMode;
 
     //dimensions
-    private double wheelRadius = 2;
-    private final double wheelCircumference = 4 * Math.PI;
     private final double encoderPerRevolution = 806.4;
-    private final double l = 7;
-    private final double w = 6.5;
 
     //PID (concept only)
     private double xMovement;
     private double yMovement;
     private double turnMovement;
-
-    private double pathDistance;
-
-    private double distanceToEnd;
 
     public Robot(HardwareMap hardwareMap, Telemetry telemetry, LinearOpMode linearOpMode) {
         this.telemetry = telemetry;
@@ -181,6 +173,7 @@ public class Robot {
         bRight.setMode(runMode);
     }
 
+    // TODO: make this actually turn
     public void absoluteTurn (double targetHeadingRadians, double turnSpeed){
         targetHeadingRadians = angleWrap(targetHeadingRadians);
         this.setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -201,7 +194,7 @@ public class Robot {
                 telemetry.update();
                 break;
             }
-            applyMove(1);
+            applyMove();
         }
 
         brakeRobot();
@@ -424,7 +417,7 @@ public class Robot {
 
         pathExtended.set(pathExtended.size() - 1, extendLine(allPoints.get(allPoints.size() - 2), allPoints.get(allPoints.size() - 1), allPoints.get(allPoints.size() - 1).pointLength * 1.5));
 
-        distanceToEnd = Math.hypot(distanceAlongPath.x - allPoints.get(allPoints.size() - 1).x, distanceAlongPath.y - allPoints.get(allPoints.size() - 1).y);
+        double distanceToEnd = Math.hypot(distanceAlongPath.x - allPoints.get(allPoints.size() - 1).x, distanceAlongPath.y - allPoints.get(allPoints.size() - 1).y);
 
         if (distanceToEnd <= followMe.followDistance + 15 || Math.hypot(robotPos.x - allPoints.get(allPoints.size() - 1).x, robotPos.y - allPoints.get(allPoints.size() - 1).y) < followMe.followDistance + 15) {
             followMe.setPoint(allPoints.get(allPoints.size() - 1).toPoint());
@@ -435,14 +428,13 @@ public class Robot {
         if ((distanceToEnd < 0.25)) {
             return false;
         }
-
-        double decelerationScaleFactor = Range.clip(distanceToEnd/5,-1,1);
-        applyMove(decelerationScaleFactor);
+        
+        applyMove();
         return true;
     }
 
     public void moveFollowCurve(Vector<CurvePoint> points) {
-        pathDistance = Math.hypot(points.get(points.size() - 1).x, points.get(points.size() - 1).y);
+        //pathDistance = Math.hypot(points.get(points.size() - 1).x, points.get(points.size() - 1).y);
         while (linearOpMode.opModeIsActive()) {
 
             // if followCurve returns false then it is ready to stop
@@ -561,12 +553,14 @@ public class Robot {
         double xPower = relativeXToPoint / (Math.abs(relativeXToPoint) + Math.abs(relativeYToPoint));
         double yPower = relativeYToPoint / (Math.abs(relativeYToPoint) + Math.abs(relativeXToPoint));
 
-        xMovement = xPower * moveSpeed;
-        yMovement = yPower * moveSpeed;
-        turnMovement = Range.clip(relativeTurnAngle / Math.toRadians(30), -1, 1) * turnSpeed;
+        double decelerationScaleFactor = Range.clip(distanceToTarget/5,-1,1);
+
+        xMovement = xPower * moveSpeed * decelerationScaleFactor;
+        yMovement = yPower * moveSpeed * decelerationScaleFactor;
+        turnMovement = Range.clip(relativeTurnAngle / Math.toRadians(30), -1, 1) * turnSpeed * decelerationScaleFactor;
     }
 
-    private void applyMove(double decelerationScaleFactor) {
+    private void applyMove() {
 
         // convert movements to motor powers
         double fLeftPower = (yMovement * 1.414 + turnMovement + xMovement);
@@ -595,12 +589,9 @@ public class Robot {
         bRightPower *= scaleDownAmount;
 
         // apply movement with decelerationScaleFactor
-        fLeft.setPower(fLeftPower * decelerationScaleFactor);
-        fRight.setPower(fRightPower * decelerationScaleFactor);
-        bLeft.setPower(bLeftPower * decelerationScaleFactor);
-        bRight.setPower(bRightPower * decelerationScaleFactor);
-
-        telemetry.addLine("deceleration: " + decelerationScaleFactor);
+        fLeft.setPower(fLeftPower);
+        fRight.setPower(fRightPower);
+        bLeft.setPower(bLeftPower);
     }
 
 
@@ -629,13 +620,13 @@ public class Robot {
             double xPower = relativeXToPoint / (Math.abs(relativeXToPoint) + Math.abs(relativeYToPoint));
             double yPower = relativeYToPoint / (Math.abs(relativeYToPoint) + Math.abs(relativeXToPoint));
 
-            xMovement = xPower * moveSpeed;
-            yMovement = yPower * moveSpeed;
-            turnMovement = Range.clip(relativeTurnAngle / Math.toRadians(30), -1, 1) * turnSpeed;
-
             double decelerationScaleFactor = Range.clip(distanceToTarget/8,-1,1);
 
-            applyMove(decelerationScaleFactor);
+            xMovement = xPower * moveSpeed * decelerationScaleFactor;
+            yMovement = yPower * moveSpeed * decelerationScaleFactor;
+            turnMovement = Range.clip(relativeTurnAngle / Math.toRadians(30), -1, 1) * turnSpeed * decelerationScaleFactor;
+
+            applyMove();
         }
     }
 
@@ -1032,28 +1023,8 @@ public class Robot {
         this.linearOpMode = linearOpMode;
     }
 
-    public double getWheelRadius() {
-        return wheelRadius;
-    }
-
-    public void setWheelRadius(double wheelRadius) {
-        this.wheelRadius = wheelRadius;
-    }
-
-    public double getWheelCircumference() {
-        return wheelCircumference;
-    }
-
     public double getEncoderPerRevolution() {
         return encoderPerRevolution;
-    }
-
-    public double getL() {
-        return l;
-    }
-
-    public double getW() {
-        return w;
     }
 
     public double getxMovement() {
@@ -1080,19 +1051,11 @@ public class Robot {
         this.turnMovement = turnMovement;
     }
 
-    public double getPathDistance() {
-        return pathDistance;
+    public Position getPosition() {
+        return position;
     }
 
-    public void setPathDistance(double pathDistance) {
-        this.pathDistance = pathDistance;
-    }
-
-    public double getDistanceToEnd() {
-        return distanceToEnd;
-    }
-
-    public void setDistanceToEnd(double distanceToEnd) {
-        this.distanceToEnd = distanceToEnd;
+    public void setPosition(Position position) {
+        this.position = position;
     }
 }

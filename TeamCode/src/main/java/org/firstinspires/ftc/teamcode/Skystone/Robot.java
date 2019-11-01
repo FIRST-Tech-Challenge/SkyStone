@@ -77,8 +77,6 @@ public class Robot {
     final double PUSHER_PUSHED = .7;
     final double PUSHER_RETRACTED = .452;
 
-    double i = 1;
-
     //robots position
     private Point robotPos = new Point();
     private double anglePos;
@@ -957,14 +955,6 @@ public class Robot {
 
     public double getOUTTAKE_PIVOT_RETRACTED() {
         return OUTTAKE_PIVOT_RETRACTED;
-    }
-
-    public double getI() {
-        return i;
-    }
-
-    public void setI(double i) {
-        this.i = i;
     }
 
     public Point getRobotPos() {

@@ -98,16 +98,10 @@ public class NerdBOT{
     // For Ramp Up/Down
 
     double rampUpConstant = 0.2;
-    double increments = 0.0;
-    double increment = 0.1;
-    double numincrements = 0.0;
-
-    double decrement = 0.1;
-    double decrements = 0.0;
     double rampDownConstant = 0.2;
-    double numdecrements = 0.0;
-    double maxincrements=10.0;
-    double maxdecrements=10.0;
+
+    double  maxAccelerationAttempts = 10;
+    double  maxDecelerationAttempts = 10;
 
     // For Ramp Up/Down
 
@@ -672,6 +666,8 @@ public class NerdBOT{
          boolean rampUpDownX = false;
          boolean rampUpDownY = false;
 
+         int accelerateCount = 1, decelerationCount=1;
+
         runtime.reset();
 
         xPIDCalculator.reset();
@@ -735,8 +731,8 @@ public class NerdBOT{
             }
             //Normalize the Motor Speeds for Min and Max Values
 
-            if(rampUpDownY) motorPowers = normalizeSpeedsForMinMaxValuesWithRampUpDown(leftSpeed,rightSpeed,rightSpeedB,leftSpeedB,findYDisplacement(),rampUpDownTicks);
-            else  motorPowers = normalizeSpeedsForMinMaxValuesWithRampUpDown(leftSpeed,rightSpeed,rightSpeedB,leftSpeedB,findXDisplacement(),rampUpDownTicks);
+            if(rampUpDownY) motorPowers = normalizeSpeedsForMinMaxValuesWithRampUpDown(leftSpeed,rightSpeed,rightSpeedB,leftSpeedB,findYDisplacement(),rampUpDownTicks,accelerateCount, decelerationCount);
+            else  motorPowers = normalizeSpeedsForMinMaxValuesWithRampUpDown(leftSpeed,rightSpeed,rightSpeedB,leftSpeedB,findXDisplacement(),rampUpDownTicks, accelerateCount,decelerationCount);
             // Set Powers to corresponding Motors
 
             leftMotor.setPower(motorPowers[0]);
@@ -758,32 +754,24 @@ public class NerdBOT{
 
     }
 
-    public double[] normalizeSpeedsForMinMaxValuesWithRampUpDown(double leftSpeed, double rightSpeed, double rightSpeedB, double leftSpeedB, double currentTicks, double rampUpDownTicks){
+    public double[] normalizeSpeedsForMinMaxValuesWithRampUpDown(double leftSpeed, double rightSpeed, double rightSpeedB, double leftSpeedB, double currentTicks, double rampUpDownTicks, int accelerateCount, int decelerationCount){
 
+            double normalizedMaxSpeed=this.maxSpeed;
         double max = Math.max(Math.max(Math.abs(leftSpeed), Math.abs(rightSpeed)), Math.max(Math.abs(leftSpeedB), Math.abs(rightSpeedB)));
-        if (max > maxSpeed) {
-            if((currentTicks <= rampUpConstant* rampUpDownTicks) && ( (maxSpeed  > increments) && numincrements < maxincrements ))
-            {
 
-                if(currentTicks >= (numincrements/maxincrements) * (rampUpConstant* rampUpDownTicks)) {
-                    maxSpeed -= (maxSpeed - maxSpeed*increments);
-                    increments += increment;
-                    numincrements++;
-                }
-            }
-            if((currentTicks >= (rampUpDownTicks - rampDownConstant * rampUpDownTicks) && ( (maxSpeed  >  decrements) && numdecrements < maxdecrements))) {
-                if(currentTicks >= (numdecrements/maxincrements) * (rampDownConstant * rampUpDownTicks) ) {
-                    maxSpeed -= decrements;
-                    decrements += decrement;
-                    numdecrements++;
-                }
-            }
-
-            leftSpeed = (leftSpeed * this.maxSpeed)/max;
-            rightSpeed =(rightSpeed * this.maxSpeed)/ max;
-            leftSpeedB = (leftSpeedB * this.maxSpeed)/max;
-            rightSpeedB = (rightSpeedB * this.maxSpeed)/max;
+        if(currentTicks <= rampUpConstant* rampUpDownTicks && accelerateCount <= maxAccelerationAttempts) {
+            normalizedMaxSpeed = accelerate(leftSpeed, rightSpeed, rightSpeedB, leftSpeedB, accelerateCount);
+        }else if(currentTicks >= rampUpDownTicks - (rampDownConstant * rampUpDownTicks) && decelerationCount <= maxDecelerationAttempts && max > this.maxSpeed ){
+            normalizedMaxSpeed = decelerate (leftSpeed, rightSpeed, rightSpeedB, leftSpeedB,decelerationCount);
         }
+        else{
+            normalizedMaxSpeed = this.maxSpeed;
+        }
+
+            leftSpeed = (leftSpeed * normalizedMaxSpeed)/max;
+            rightSpeed =(rightSpeed * normalizedMaxSpeed)/ max;
+            leftSpeedB = (leftSpeedB * normalizedMaxSpeed)/max;
+            rightSpeedB = (rightSpeedB * normalizedMaxSpeed)/max;
 
 
         // Preserve the sign of each speed for each motor
@@ -805,6 +793,27 @@ public class NerdBOT{
         return  normalizedSpeeds;
     }
 
+    public double accelerate(double leftSpeed, double rightSpeed, double rightSpeedB, double leftSpeedB, int accelerateCount){
+
+        double maxSpeedForAcceleration = this.maxSpeed;
+        if (accelerateCount <= this.maxAccelerationAttempts){
+            maxSpeedForAcceleration = maxSpeedForAcceleration * (accelerateCount/maxAccelerationAttempts);
+            accelerateCount++;
+        }
+
+        return maxSpeedForAcceleration;
+    }
+
+    public double decelerate(double leftSpeed, double rightSpeed, double rightSpeedB, double leftSpeedB, int decelerateCount){
+
+        double maxSpeedForDeceleration = this.maxSpeed;
+        if (decelerateCount <= this.maxDecelerationAttempts){
+            maxSpeedForDeceleration = maxSpeedForDeceleration - (maxSpeedForDeceleration * (decelerateCount/maxDecelerationAttempts));
+            decelerateCount++;
+        }
+
+        return maxSpeedForDeceleration;
+    }
 
 
 

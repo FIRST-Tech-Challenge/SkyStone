@@ -113,12 +113,13 @@ public class DriveTrain {
     public void initDriveTrain(LinearOpMode opMode) {
 
         sensors = new Sensors();
+        sensors.initSensors(opMode);
 
         //Sets Hardware Map
-        fl = this.opMode.hardwareMap.dcMotor.get("fl");
-        fr = this.opMode.hardwareMap.dcMotor.get("fr");
-        bl = this.opMode.hardwareMap.dcMotor.get("bl");
-        br = this.opMode.hardwareMap.dcMotor.get("br");
+        fl = opMode.hardwareMap.dcMotor.get("fl");
+        fr = opMode.hardwareMap.dcMotor.get("fr");
+        bl = opMode.hardwareMap.dcMotor.get("bl");
+        br = opMode.hardwareMap.dcMotor.get("br");
 
         //Sets Motor Directions
         fl.setDirection(DcMotor.Direction.FORWARD);
@@ -188,21 +189,14 @@ public class DriveTrain {
         opMode.telemetry.update();
 */
         fl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        opMode.idle();
         fr.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        opMode.idle();
         bl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        opMode.idle();
         br.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        opMode.idle();
+
         fl.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        opMode.idle();
         fr.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        opMode.idle();
         bl.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        opMode.idle();
         br.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        opMode.idle();
 
         /*opMode.telemetry.addData("Path0", "Starting at %7d : %7d",
                 bl.getCurrentPosition(),
@@ -423,6 +417,7 @@ public class DriveTrain {
                              double leftInches, double rightInches,
                              double timeoutS) {
         runtime.reset();
+        resetEncoders();
         count = 0;
 
         newLeftTarget = fl.getCurrentPosition() + (int) (leftInches * inchCounts);
@@ -430,10 +425,10 @@ public class DriveTrain {
         newLeftBlarget = bl.getCurrentPosition() + (int) (leftInches * inchCounts);
         newRightBlarget = br.getCurrentPosition() + (int) (rightInches * inchCounts);
 
-            fl.setTargetPosition(newLeftTarget);
-            fr.setTargetPosition(newRightTarget);
-            bl.setTargetPosition(newLeftBlarget);
-            br.setTargetPosition(newRightBlarget);
+            fl.setTargetPosition(-newLeftTarget);
+            fr.setTargetPosition(-newRightTarget);
+            bl.setTargetPosition(-newLeftBlarget);
+            br.setTargetPosition(-newRightBlarget);
 
 
 
@@ -444,10 +439,10 @@ public class DriveTrain {
             bl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             br.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-            fl.setPower(speed);
-            fr.setPower(speed);
-            bl.setPower(speed);
-            br.setPower(speed);
+            fl.setPower(-speed);
+            fr.setPower(-speed);
+            bl.setPower(-speed);
+            br.setPower(-speed);
 
             opMode.telemetry.addData("Targets: ", "fl %7d : fr %7d : bl %7d : br %7d",
                     newLeftTarget, newRightTarget, newLeftBlarget, newRightBlarget);
@@ -753,6 +748,19 @@ public class DriveTrain {
 
         }
     }
+    public void gyroTurn(LinearOpMode opMode, double goal, boolean isRight, double timeOutMS) {
+
+        runtime.reset();
+        //sensors.angles = sensors.gyro.getAngularOrientation();
+
+        while (opMode.opModeIsActive() && runtime.milliseconds() <= timeOutMS && Math.abs(goal - sensors.getGyroYaw()) > 5 ) {
+
+            //  sensors.angles = sensors.gyro.getAngularOrientation();
+            turn(.5, isRight);
+
+        }
+    }
+
 
     public void align()
     {

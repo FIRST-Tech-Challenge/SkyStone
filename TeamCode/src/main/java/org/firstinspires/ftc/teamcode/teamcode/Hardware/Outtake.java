@@ -22,7 +22,6 @@ public class Outtake {
     public DcMotor liftLeft;
 
     OpMode opMode;
-    LinearOpMode opMode1;
     DriveTrain drive = new DriveTrain();
     ElapsedTime time = new ElapsedTime();
 
@@ -169,7 +168,7 @@ public class Outtake {
         pushBlock.setPosition(1);
         raiseLiftAuto();
         openBasketAuto();
-        resetOuttake();
+        //resetOuttake();
 
         if(blockCount == 2)
         {
@@ -199,11 +198,11 @@ public class Outtake {
     // Process : Robot Aligns, Lift Extends Up, CRServos move forward while hook connected to servo
     // is in contact with block, when block needs to be released hook from servo extended out
 
-    public void hookAuto(LinearOpMode opmode1) {
+    public void hookAuto(LinearOpMode opMode1) {
         hookRight.setPosition(HOOKDOWN);
         hookLeft.setPosition(HOOKDOWN);
 
-        drive.encoderMove(opMode1, DISTANCE_TO_BUILD_ZONE, 5, 1);
+        drive.strafeMove(opMode1, DISTANCE_TO_BUILD_ZONE, 2, .5);
 
         //possible add a test case to make sure robot has foundation
 
@@ -315,12 +314,12 @@ public class Outtake {
         }
 
 
-        if (opMode.gamepad2.b && !bottom && averageLiftPosition() > 4 * encoderLevelCount)
+        /*if (opMode.gamepad2.b && !bottom && averageLiftPosition() > 4 * encoderLevelCount)
         {
             time.reset();
             while (time.milliseconds() < 100) { }
             resetOuttake();
-        }
+        }*/
     }
 
     public void encoderCalibrate()

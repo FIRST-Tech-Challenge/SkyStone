@@ -92,15 +92,17 @@ public class AMLPathingBlue extends LinearOpMode {
                 outtake.liftRight.setPower(0);*/
                 drive.gyroTurn(this, 180, true, 2000);
                 drive.snowWhite();
-                drive.encoderDrive(this, -.5, 36, 36, 2);
+                drive.encoderDrive(this, -.5, -36, -36, 2);
                 /*outtake.liftLeft.setPower(-.5);
                 outtake.liftRight.setPower(-.5);
                 sleep(1000);
                 outtake.liftLeft.setPower(0);
                 outtake.liftRight.setPower(0);*/
                 drive.encoderDrive(this, -.5, -15, -15, 2);
-                drive.gyroTurn(this, 90, false, 2000);
-                drive.encoderDrive(this, -.5, 72, 72, 2);
+                drive.gyroTurn(this, 90, false, 1000);
+                drive.encoderDrive(this, -.5, -72, -72, 2);
+                drive.strafeMove(this, 24, 2, .5);
+
                 drive.strafeMove(this, 24, 2, .5);
                 drive.encoderDrive(this, .5, 88, 88, 2);
                 drive.gyroTurn(this, 90, true, 2000);
@@ -109,7 +111,7 @@ public class AMLPathingBlue extends LinearOpMode {
                 sleep(1000);
                 outtake.liftLeft.setPower(0);
                 outtake.liftRight.setPower(0);*/
-                drive.encoderDrive(this, -.5, 39, 39, 2);
+                drive.encoderDrive(this, -.5, -39, -39, 2);
                 /*outtake.liftLeft.setPower(-.5);
                 outtake.liftRight.setPower(-.5);
                 sleep(1000);
@@ -117,7 +119,7 @@ public class AMLPathingBlue extends LinearOpMode {
                 outtake.liftRight.setPower(0);*/
                 drive.encoderDrive(this, .5, 15, 15, 2);
                 drive.gyroTurn(this, 90, false, 2000);
-                drive.encoderDrive(this, -.5, 90, 90, 2);
+                drive.encoderDrive(this, -.5, -90, -90, 2);
 
 
                 break;

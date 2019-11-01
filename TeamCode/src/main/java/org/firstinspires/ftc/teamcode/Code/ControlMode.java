@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.util.Range;
 //This class will include all of the action functions such as Movement
 @TeleOp(name = "Control Mode", group = "Jun")
 public class ControlMode extends OpMode {
-    DcMotor motorFL, motorFR, motorBL, motorBR; //, motorArm1, motorArm2, motorArm3;
+    DcMotor motorFL, motorFR, motorBL, motorBR, motorAL, motorAR; //, motorArm1, motorArm2, motorArm3;
 
     public ControlMode() {
         super();
@@ -24,6 +24,9 @@ public class ControlMode extends OpMode {
         motorBL = hardwareMap.dcMotor.get("BL");
         motorBR = hardwareMap.dcMotor.get("BR");
 
+        motorAL = hardwareMap.dcMotor.get("AL");
+        motorAR = hardwareMap.dcMotor.get("AR");
+
 //        motorArm1 = hardwareMap.dcMotor.get("A1");
 //        motorArm2 = hardwareMap.dcMotor.get("A2");
 //        motorArm3 = hardwareMap.dcMotor.get("A3");
@@ -33,6 +36,9 @@ public class ControlMode extends OpMode {
         motorFR.setDirection(DcMotorSimple.Direction.REVERSE);
         motorBL.setDirection(DcMotorSimple.Direction.FORWARD);
         motorBR.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        motorAL.setDirection(DcMotorSimple.Direction.REVERSE);
+        motorAR.setDirection(DcMotorSimple.Direction.FORWARD);
 
 //        motorArm1.setDirection(DcMotorSimple.Direction.FORWARD);
 //        motorArm2.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -57,6 +63,13 @@ public class ControlMode extends OpMode {
             moveForward(0.0);
         }
 
+        if (gamepad1.dpad_down) {
+            motorAL.setPower(0.5);
+            motorAR.setPower(0.5);
+        } else {
+            motorAL.setPower(0);
+            motorAR.setPower(0);
+        }
 
         /*else if (gamepad1.right_stick_y != 0 || gamepad1.right_stick_x != 0 ) {
             double power = Math.abs(gamepad1.right_stick_x);

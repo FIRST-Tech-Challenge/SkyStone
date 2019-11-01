@@ -291,7 +291,6 @@ public class DriveTrain {
     {
         runtime.reset();
         resetEncoders();
-        this.opMode = opMode;
 
         double averageStrafe = 0.0;
 

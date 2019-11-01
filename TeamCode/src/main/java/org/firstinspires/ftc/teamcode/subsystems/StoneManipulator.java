@@ -3,8 +3,12 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
+
 public class StoneManipulator {
     private static StoneManipulator instance = null;
+    private TouchSensor extenderForwardLimit;
+    private TouchSensor extenderReverseLimit;
     private CRServo outtakeRight;
     private CRServo outtakeLeft;
     private Servo stoneGrabBig;
@@ -15,11 +19,15 @@ public class StoneManipulator {
     private final double FORWARD_GRABBER_UNCLASPED_POSITION = .9;
     private final double BACKWARD_GRABBER_CLASPED_POSITION = .4;
     private final double BACKWARD_GRABBER_UNCLASPED_POSITION = .9;
+    private final double EXTEND_POWER = 1;
     private State currentState;
+    private boolean grab;
     public static synchronized StoneManipulator getInstance() {
         return instance != null ? instance : (instance = new StoneManipulator());
     }
     public void init(HardwareMap hardwareMap) {
+        extenderForwardLimit = hardwareMap.get(TouchSensor.class, "extenderForwardLimit");
+        extenderReverseLimit = hardwareMap.get(TouchSensor.class, "extenderReverseLimit");
         rightIntake = hardwareMap.get(DcMotor.class, "nubGrabberIntakeRight");
         leftIntake = hardwareMap.get(DcMotor.class, "nubGrabberIntakeLeft");
         stoneGrabBig = hardwareMap.get(Servo.class, "nubGrabBig");
@@ -30,27 +38,37 @@ public class StoneManipulator {
         stoneGrabLittle.scaleRange(BACKWARD_GRABBER_CLASPED_POSITION,BACKWARD_GRABBER_UNCLASPED_POSITION);
         stoneGrabBig.setPosition(0);
         stoneGrabLittle.setPosition(0);
-        leftIntake.setDirection(DcMotor.Direction.REVERSE);
-    }
+        leftIntake.setDirection(DcMotor.Direction.REVERSE); }
     public State setIntake (double power) {
         power = (currentState==State.CLASPING) ? 0 : power;
         leftIntake.setPower(power);
         rightIntake.setPower(power);
-        currentState = (power>0 || power<0) ? State.INTAKEMOVING : (power==0) ? State.INTAKESTOPPED : State.INTAKESTOPPED;
+        currentState = (power != 0) ? State.INTAKEMOVING : (power==0) ? State.INTAKESTOPPED : State.INTAKESTOPPED;
         return currentState;
-    } public State setOuttake (double power) {
-        power = (currentState==State.UNCLASPED) ? 0 : power;
+    } public State setExtended (boolean extended) {
+        double power = EXTEND_POWER;
+        power = (extended = false) ? -power : (currentState==State.UNCLASPED) ? 0 : power;
         outtakeRight.setPower(power);
         outtakeLeft.setPower(power);
-        currentState = (power>0 || power<0) ? State.SLIDEMOVING : (power == 0) ? State.SLIDESTOPPED: State.SLIDESTOPPED;
+        while (power != 0) {
+            outtakeRight.setPower (extenderForwardLimit.isPressed() ? 0 : extenderReverseLimit.isPressed() ? 0 : power);
+            outtakeLeft.setPower (extenderForwardLimit.isPressed() ? 0 : extenderReverseLimit.isPressed() ? 0 : power);
+        }
+        currentState = (extended = false) ? State.SLIDEMOVING : State.SLIDESTOPPED;
         return currentState;
-    } public State setStoneGrabber (double position) {
-        stoneGrabBig.setPosition(position);
-        stoneGrabLittle.setPosition(position);
-        currentState = (stoneGrabLittle.getPosition()< position && stoneGrabBig.getPosition()< position) ? State.CLASPING : State.UNCLASPED;
+    } public State setGrabbed (boolean grabbed) {
+        double positionArmBig = (grabbed = true) ? FORWARD_GRABBER_CLASPED_POSITION : FORWARD_GRABBER_UNCLASPED_POSITION;
+        double positionArmLittle = (grabbed = true) ? BACKWARD_GRABBER_CLASPED_POSITION : BACKWARD_GRABBER_UNCLASPED_POSITION;
+        if (grabbed == true) { grab = true;}
+        stoneGrabBig.setPosition(positionArmBig);
+        stoneGrabLittle.setPosition(positionArmLittle);
+        currentState = (grabbed = true) ? State.CLASPING : State.UNCLASPED;
         return currentState;
     } public State getState() {
         return currentState;
+    } public boolean isGrabbed () {
+        return (grab = true) ? true : false;
+
     }
     public enum State {
         INTAKEMOVING,
@@ -59,5 +77,8 @@ public class StoneManipulator {
         SLIDESTOPPED,
         CLASPING,
         UNCLASPED,
+        RESTING,
+        EXTENDED,
+        INTAKING,
     }
 }

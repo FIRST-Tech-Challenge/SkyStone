@@ -63,9 +63,6 @@ class SSRobot {
         this.drive(0.0)
     }
 
-    fun liftSlideY(pow: Float) {
-        vSlide?.power = pow.toDouble()
-    }
 
     fun pinch(gp: Gamepad) {
         var close = false

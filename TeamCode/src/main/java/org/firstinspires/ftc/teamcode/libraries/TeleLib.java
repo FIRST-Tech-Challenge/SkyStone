@@ -4,12 +4,18 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import static org.firstinspires.ftc.teamcode.libraries.Constants.GAMEPAD_JOYSTICK_TOLERANCE;
+import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_ARM;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_BACK_LEFT_WHEEL;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_BACK_RIGHT_WHEEL;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_FRONT_LEFT_WHEEL;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_FRONT_RIGHT_WHEEL;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_LEFT_INTAKE;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_RIGHT_INTAKE;
+import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_ARM;
+import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_ARM_POS_GRAB;
+import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_ARM_POS_REST;
+import static org.firstinspires.ftc.teamcode.libraries.Constants.TOUCH_ARM_BOTTOM;
+import static org.firstinspires.ftc.teamcode.libraries.Constants.TOUCH_ARM_TOP;
 //import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_ARM;
 //import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_ARM_POS_GRAB;
 //import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_ARM_POS_REST;
@@ -37,7 +43,7 @@ import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_RIGHT_INT
  * Title: TeleLib
  * Date Created: 10/14/2018
  * Date Modified: 2/27/2019
- * Author: Rahul, Sarvesh, Sachin, Shivani
+ * Author: Poorvi, Sachin
  * Type: Library
  * Description: This will contain the methods for TeleOp, and other TeleOp-related programs.
  */
@@ -62,7 +68,6 @@ public class TeleLib {
         latcherServoInputDelay = new ElapsedTime();
         scoringServoInputDelay = new ElapsedTime();
         intakeAngleServoInputDelay = new ElapsedTime();
-
     }
 
     public void processDrive() {
@@ -91,31 +96,44 @@ public class TeleLib {
 //    }
 
     public void processIntakeMinerals() {
-        if (opMode.gamepad2.right_bumper) {
+        if (opMode.gamepad1.x) {
             robot.setDcMotorPower(MOTOR_RIGHT_INTAKE, -.5f);
             robot.setDcMotorPower(MOTOR_LEFT_INTAKE, .5f);
-        } else if (opMode.gamepad2.y) {
+        } else if (opMode.gamepad1.y) {
             robot.setDcMotorPower(MOTOR_RIGHT_INTAKE, 0);
             robot.setDcMotorPower(MOTOR_LEFT_INTAKE, 0);
         }
     }
 
+    public void processMoveArmUp() {
+        if (opMode.gamepad1.right_bumper && !robot.isTouchSensorPressed(TOUCH_ARM_BOTTOM)) {
+            // Extend
+            robot.setDcMotorPower(MOTOR_ARM, .4f);
+        } else if (opMode.gamepad1.left_bumper && !robot.isTouchSensorPressed(TOUCH_ARM_TOP)) {
+            // Retract
+            robot.setDcMotorPower(MOTOR_ARM, -.4f);
+        } else {
+            robot.setDcMotorPower(MOTOR_ARM, 0);
+        }
+    }
+
     //}
-//    public void processServoArm() {
-//        if (opMode.gamepad2.x && servoArmInputDelay.seconds() > .25)
-//            if (robot.getServoPosition(SERVO_ARM) == SERVO_ARM_POS_REST) {
-//                robot.setServoPosition(SERVO_ARM, SERVO_ARM_POS_GRAB);
-//            } else {
-//                robot.setServoPosition(SERVO_ARM, SERVO_ARM_POS_REST);
-//            }
-//        latcherServoInputDelay.reset();
-//        if (opMode.gamepad1.dpad_up && scoringServoInputDelay.seconds() > .2f) {
-//            robot.setDeltaServoPosition(SERVO_ARM, .02f);
-//            scoringServoInputDelay.reset();
-//        } else if (opMode.gamepad1.dpad_down && scoringServoInputDelay.seconds() > .2f) {
-//            robot.setDeltaServoPosition(SERVO_ARM, -.02f);
-//            scoringServoInputDelay.reset();
-//        }
-//    }
+    public void processServoArm() {
+        if (opMode.gamepad2.x && servoArmInputDelay.seconds() > .25)
+            if (robot.getServoPosition(SERVO_ARM) == SERVO_ARM_POS_REST) {
+                robot.setServoPosition(SERVO_ARM, SERVO_ARM_POS_GRAB);
+            } else {
+                robot.setServoPosition(SERVO_ARM, SERVO_ARM_POS_REST);
+            }
+        latcherServoInputDelay.reset();
+        if (opMode.gamepad1.dpad_up && scoringServoInputDelay.seconds() > .2f) {
+            robot.setDeltaServoPosition(SERVO_ARM, .02f);
+            scoringServoInputDelay.reset();
+        } else if (opMode.gamepad1.dpad_down && scoringServoInputDelay.seconds() > .2f) {
+            robot.setDeltaServoPosition(SERVO_ARM, -.02f);
+            scoringServoInputDelay.reset();
+        }
+    }
 }
+
 

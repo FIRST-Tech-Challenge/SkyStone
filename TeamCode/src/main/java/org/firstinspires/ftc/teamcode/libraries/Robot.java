@@ -1,16 +1,21 @@
 package org.firstinspires.ftc.teamcode.libraries;
 
+import com.qualcomm.hardware.rev.RevTouchSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.Range;
 
+import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_ARM;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_BACK_LEFT_WHEEL;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_BACK_RIGHT_WHEEL;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_FRONT_LEFT_WHEEL;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_FRONT_RIGHT_WHEEL;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_LEFT_INTAKE;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_RIGHT_INTAKE;
+import static org.firstinspires.ftc.teamcode.libraries.Constants.TOUCH_ARM_BOTTOM;
+import static org.firstinspires.ftc.teamcode.libraries.Constants.TOUCH_ARM_TOP;
 //import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_ARM;
 //import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_INTAKE;
 //import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_INTAKE_SLIDE;
@@ -27,7 +32,7 @@ import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_RIGHT_INT
  * Title: Robot
  * Date Created: 10/14/2018
  * Date Modified: 2/27/2019
- * Author: Rahul, Poorvi, Varnika, Sarvesh, Sachin, Shivani
+ * Author: Poorvi, Sachin
  * Type: Library
  * Description: This is the base library for any main op to be based off. It will contain all the
  *              motors, servos, and sensors.
@@ -39,20 +44,19 @@ public class Robot {
 
     // Motors
     private DcMotor[] dcMotors = new DcMotor[6];
+
+    //Servos
     private Servo[] servos = new Servo[1];
 
-    // Servos
-//    private Servo[] servos = new Servo[4];
-
     // Sensors
-//    private RevTouchSensor[] touchSensors = new RevTouchSensor[6];
+    private RevTouchSensor[] touchSensors = new RevTouchSensor[2];
 
     Robot(LinearOpMode opMode) {
         this.opMode = opMode;
 
         initDcMotors();
 //        initServos();
-//        initSensors();
+        initSensors();
     }
 
     private void initDcMotors() {
@@ -61,8 +65,10 @@ public class Robot {
         dcMotors[MOTOR_FRONT_RIGHT_WHEEL] = opMode.hardwareMap.get(DcMotor.class, "frontRightWheel");
         dcMotors[MOTOR_BACK_LEFT_WHEEL] = opMode.hardwareMap.get(DcMotor.class, "backLeftWheel");
         dcMotors[MOTOR_BACK_RIGHT_WHEEL] = opMode.hardwareMap.get(DcMotor.class, "backRightWheel");
-        dcMotors[MOTOR_RIGHT_INTAKE] = opMode.hardwareMap.get(DcMotor.class,"rightIntake");
-        dcMotors[MOTOR_LEFT_INTAKE] = opMode.hardwareMap.get(DcMotor.class,"leftIntake");
+        dcMotors[MOTOR_RIGHT_INTAKE] = opMode.hardwareMap.get(DcMotor.class, "rightIntake");
+        dcMotors[MOTOR_LEFT_INTAKE] = opMode.hardwareMap.get(DcMotor.class, "leftIntake");
+        dcMotors[MOTOR_ARM] = opMode.hardwareMap.get(DcMotor.class, "motorArm");
+
 //        dcMotors[MOTOR_LATCHER] = opMode.hardwareMap.get(DcMotor.class, "latcher");
 //        dcMotors[MOTOR_SCORING_SLIDE] = opMode.hardwareMap.get(DcMotor.class, "scoring");
 //        dcMotors[MOTOR_INTAKE_SLIDE] = opMode.hardwareMap.get(DcMotor.class, "intakeSlide");
@@ -73,7 +79,7 @@ public class Robot {
     }
 
 
-//    private void initServos() {
+    //    private void initServos() {
 //        servos[SERVO_ARM] = opMode.hardwareMap.get(Servo.class, "ServoArm");
 //    }
 //        servos[SERVO_LATCHER] = opMode.hardwareMap.get(Servo.class, "servoLatcher");
@@ -82,10 +88,12 @@ public class Robot {
 //        servos[SERVO_INTAKE_HOLDER] = opMode.hardwareMap.get(Servo.class, "servoIntakeHolder");
 //    }
 //
-//    private void initSensors() {
+    private void initSensors() {
+        touchSensors[TOUCH_ARM_TOP] = opMode.hardwareMap.get(RevTouchSensor.class, "touchArmTop");
+        touchSensors[TOUCH_ARM_BOTTOM] = opMode.hardwareMap.get(RevTouchSensor.class, "touchArmBottom");
 //        touchSensors[TOUCH_LATCHER_TOP] = opMode.hardwareMap.get(RevTouchSensor.class, "touchLatcherTop");
 //        touchSensors[TOUCH_LATCHER_BOTTOM] = opMode.hardwareMap.get(RevTouchSensor.class, "touchLatcherBottom");
-//    }
+    }
 
     // Motor methods
     void setDcMotorPower(int index, float power) {
@@ -108,42 +116,22 @@ public class Robot {
         return dcMotors[index].isBusy();
     }
 
-    public void setServoPosition(int servoArm, float servoArmPosGrab) {
-    }
-
-//    public float getServoPosition(int servoArm) {
-//        return 0;
-//    }
-
-    public void setDeltaServoPosition(int servoArm, float f) {
-    }
-
-
     // Servo methods
-//    void setServoPosition(int index, float position) {
-//        servos[index].setPosition(position);
-//    }
-//
-//    void setDeltaServoPosition(int index, float delta) {
-//        servos[index].setPosition(
-//                // This makes sure the servo positions are between 0 and 1
-//                Range.clip(servos[index].getPosition() + delta, 0, 1));
-//    }
-//    public void setServoPosition(int servoArm, float servoArmPosGrab) {
-//    }
-//
-//    public float getServoPosition(int servoArm) {
-//        return 0;
-//    }
-//
-//    public void setDeltaServoPosition(int servoArm, float f) {
-//    }
+    void setServoPosition(int index, float position) {
+        servos[index].setPosition(position);
+    }
 
-//    float getServoPosition(int index) {
-//        return (float) servos[index].getPosition();
-//    }
-//
-//    boolean isTouchSensorPressed(int index) {
-//        return touchSensors[index].isPressed();
-//    }
+    void setDeltaServoPosition(int index, float delta) {
+        servos[index].setPosition(
+                // This makes sure the servo positions are between 0 and 1
+                Range.clip(servos[index].getPosition() + delta, 0, 1));
+    }
+
+    float getServoPosition(int index) {
+        return (float) servos[index].getPosition();
+    }
+
+    boolean isTouchSensorPressed(int index) {
+        return touchSensors[index].isPressed();
+    }
 }

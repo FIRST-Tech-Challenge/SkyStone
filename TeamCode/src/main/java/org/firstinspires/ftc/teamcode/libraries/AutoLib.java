@@ -128,9 +128,6 @@ public class AutoLib {
         setBaseMotorPowers(power);
 
         while (areBaseMotorsBusy()) {
-//            opMode.telemetry.addData("Left", robot.getDcMotorPosition(LEFT_WHEEL));
-//            opMode.telemetry.addData("Right", robot.getDcMotorPosition(RIGHT_WHEEL));
-//            opMode.telemetry.update();
             opMode.idle();
         }
 
@@ -151,9 +148,6 @@ public class AutoLib {
         setBaseMotorPowers(power);
 
         while (areBaseMotorsBusy()) {
-//            opMode.telemetry.addData("Left", robot.getDcMotorPosition(LEFT_WHEEL));
-//            opMode.telemetry.addData("Right", robot.getDcMotorPosition(RIGHT_WHEEL));
-//            opMode.telemetry.update();
             opMode.idle();
         }
 

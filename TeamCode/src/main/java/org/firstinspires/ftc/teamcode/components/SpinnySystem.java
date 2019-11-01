@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import java.util.EnumMap;
 
 public class SpinnySystem {
-    private final String TAG = "SpinnySystem";
 
     public enum MotorNames {
         RIGHTINTAKE, LEFTINTAKE, BOTTOMINTAKE
@@ -21,11 +20,15 @@ public class SpinnySystem {
     }
 
     public void initMotors() {
-        Log.d(TAG, "setting motor values");
-        for (DcMotor motor : motors.values()) {
+        motors.forEach((name, motor) -> {
             motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            motor.setDirection(DcMotorSimple.Direction.FORWARD);
-        }
+            if (name == MotorNames.BOTTOMINTAKE) {
+                motor.setDirection(DcMotorSimple.Direction.REVERSE);
+            } else {
+                motor.setDirection(DcMotorSimple.Direction.FORWARD);
+            }
+
+        });
         setMotorPower(0);
     }
 
@@ -37,15 +40,14 @@ public class SpinnySystem {
 
     public void spin(boolean leftBumper, boolean rightBumper) {
         if (leftBumper) {
-            Log.d(TAG, "left bumper --> spin in");
             for (DcMotor motor : motors.values()) {
-                motor.setPower(0.4);
+                motor.setPower(1.0);
             }
         } else if (rightBumper) {
-            Log.d(TAG, "left bumper --> spin out");
             for (DcMotor motor : motors.values()) {
-                motor.setPower(-0.4);
+                motor.setPower(-1.0);
             }
         }
+        setMotorPower(0);
     }
 }

@@ -11,6 +11,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
+import static java.lang.Math.*;
+
 public class Robot3939 {
 
     public DcMotor RL, RR, FL, FR;
@@ -128,6 +130,34 @@ public class Robot3939 {
     public void stopMotors() {
         setAllGivenPower(0);
     }
+
+    public double CompToHypotenuse(double x, double y) {
+        return sqrt(x*x+y*y);
+    }
+
+    public double CompToDegrees(double x, double y) {
+        double angle = toDegrees(atan2(y, x));
+        if(angle<0)
+            angle += 360;
+        return angle;
+    }
+
+    public double[] toComp(double angle, double power) {
+        double[] comps = {0, 0};
+
+        comps[0] = power*cos(angle);
+        comps[1] = power*sin(angle);
+
+        return comps;
+    }
+
+    public void driveAngle(double angle, double power, double rotate) {
+        double[] comps = toComp(angle, power);
+        double x = comps[0], y = comps[1];
+
+        drive(x, y, rotate);
+    }
+
 
     public void drive(double LX, double LY, double rotate) {
         if((Math.abs(LX) > deadZone) || (Math.abs(LY) > deadZone) || (Math.abs(rotate) > deadZone)) {

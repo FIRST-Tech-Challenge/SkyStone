@@ -34,6 +34,7 @@ public class HolonomicGyro extends LinearOpMode {
         //use the name of the object in the code
         robot.initMotors(hardwareMap);
         robot.initServos(hardwareMap);
+        robot.initIMU(hardwareMap);
         robot.useEncoders(false);
 
         waitForStart();
@@ -41,12 +42,11 @@ public class HolonomicGyro extends LinearOpMode {
 
         double speedSet = 5;//robot starts with speed 5 due to 40 ratio motors being op
         double reduction = 7.5;//fine rotation for precise stacking. higher value = slower rotation using triggers
-        double maxPower = 0;
-
-        boolean forks = false;
 
         while (opModeIsActive()) {
-            double LX = gamepad1.left_stick_x, LY = gamepad1.left_stick_y, rotate = gamepad1.right_stick_x;
+            double LX = -gamepad1.left_stick_x, LY = gamepad1.left_stick_y, rotate = gamepad1.right_stick_x;
+
+            robot.setForks(gamepad1.a);
 
             //bumpers set speed of robot
             if(gamepad1.right_bumper)
@@ -59,27 +59,13 @@ public class HolonomicGyro extends LinearOpMode {
             if(!gamepad1.right_bumper && !gamepad1.left_bumper)//makes sure speed does not round every refresh. otherwise, speed won't be able to change
                 speedSet = Math.round(speedSet);
 
-            if(gamepad1.a) {
-                forks = !forks;
-                sleep(50);
-            }
-
-            if(forks) {
-                robot.setForks(DOWN);
-            }
-            else if(earthIsFlat) {
-                robot.setForks(UP);
-            }
-
             //Holonomic Vector Math
-            robot.drive(LX, LY, rotate);
+            double driveAngle = robot.CompToDegrees(LX, LY);
+            double correctedAngle = driveAngle - robot.getAngle();
+            double power = robot.CompToHypotenuse(LX, LY);
+            robot.driveAngle(correctedAngle, power, rotate);
 
             telemetry.addData("Drive", "Holonomic");
-
-            if(forks)
-                telemetry.addData("Forks", "DOWN");
-            else
-                telemetry.addData("Forks", "UP");
 
             telemetry.addData("speedSet", "%.2f", speedSet);
             telemetry.update();

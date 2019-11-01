@@ -41,7 +41,7 @@ public class MUSMAA extends LinearOpMode {
             sleep(5);
             while (sensors.getGyroYaw() != location) {
                 for (int i = 1; i == angleCount; i++) {
-                    dubSet[i - 1] = sensors.getDist();
+                    //dubSet[i - 1] = sensors.getDist();
                 }
             }
             dubSet[angleCount] = 0;

@@ -21,7 +21,6 @@ public class Intake {
     private static final double PICKUP = 1.0;
     private static final double IDLE = 0;
 
-
     public void initIntakeTele(OpMode opMode)
     {
         time.reset();

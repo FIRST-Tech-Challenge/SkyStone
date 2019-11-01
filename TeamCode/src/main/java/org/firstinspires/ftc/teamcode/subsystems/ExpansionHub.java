@@ -129,6 +129,15 @@ public class ExpansionHub extends LynxController {
 
     private final LynxModule lynxModule;
 
+    public LynxModule getModule() {
+        return lynxModule;
+    }
+
+    @Override
+    public boolean handleException(Exception e) {
+        return super.handleException(e);
+    }
+
     public static synchronized HashMap<String, ExpansionHub> getAvailableHubs(HardwareMap hardwareMap) {
         return hardwareMap.equals(ExpansionHub.hardwareMap) ? availableHubs : (availableHubs = findHubs(ExpansionHub.hardwareMap = hardwareMap));
     }

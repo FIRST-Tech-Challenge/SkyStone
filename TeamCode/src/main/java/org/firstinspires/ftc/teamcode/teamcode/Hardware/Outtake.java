@@ -196,7 +196,7 @@ public class Outtake {
 
         //8.78 inches extends out
         time.reset();
-        while(time.milliseconds() < 4000)
+        while(time.milliseconds() < 9000)
         {
         }
         //set position direction on angle - ask  trevor
@@ -204,7 +204,9 @@ public class Outtake {
         rightVex.setPower(0);
         leftVex.setPower(0);
 
+        //lower lift
 
+        lowerLiftAuto();
 
         rightVex.setPower(-.5);
         leftVex.setPower(.5);
@@ -212,7 +214,7 @@ public class Outtake {
         //8.78 inches extends out
         time.reset();
 
-        while(time.milliseconds() < 1000)
+        while(time.milliseconds() < 4000)
         {
         }
 
@@ -321,7 +323,7 @@ public class Outtake {
         liftRight.setPower(LIFTPOWER);
         liftLeft.setPower(LIFTPOWER);
 
-        while (encoderLevelCount * blockHeight * level + 3 * encoderLevelCount > averageLiftPosition()) {
+        while (encoderLevelCount * blockHeight * 2 > averageLiftPosition()) {
 
             if(top && averageLiftPosition() > MAXHEIGHT * encoderLevelCount)
             {

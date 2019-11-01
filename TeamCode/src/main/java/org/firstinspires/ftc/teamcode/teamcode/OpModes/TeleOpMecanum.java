@@ -34,7 +34,7 @@ public class TeleOpMecanum extends OpMode {
     double mass = 0.0;
     double foundationFriction = 0.0;
     double maxCFM_Velocity = 0.0;
-    double CFM_AungularVelocity = 0.0;
+    double CFM_AngularVelocity = 0.0;
     double cfm_power = 0.0;
 
     int numberStackedBlocks = 0;
@@ -97,7 +97,7 @@ public class TeleOpMecanum extends OpMode {
         }*/
 
 
-        /*
+
             //Foundation Moving Toggle
             //Toggle sets speed such that the robot can move the fastest
             //while moving the foundation and not dropping any blocks
@@ -113,16 +113,16 @@ public class TeleOpMecanum extends OpMode {
             maxCFM_Velocity = fix * Math.sqrt((2 * tolerance * 9.81 * massStone * numberStackedBlocks * muBlocks)
                     / mass);
 
-            //  CFM velocity to Aungular Velocity
-            CFM_AungularVelocity = maxCFM_Velocity / (DriveTrain.wheelDiam / 2);
+            //  CFM velocity to Angular Velocity
+            CFM_AngularVelocity = maxCFM_Velocity / (DriveTrain.wheelDiam / 2);
 
             //  Power to set motors to follow CFM velocity.
-            cfm_power = (-1) * (DriveTrain.stallTorque / DriveTrain.noLoadSpeed) * CFM_AungularVelocity
-                    + DriveTrain.stallTorque * CFM_AungularVelocity;
+            cfm_power = (-1) * (DriveTrain.stallTorque / DriveTrain.noLoadSpeed) * CFM_AngularVelocity
+                    + DriveTrain.stallTorque * CFM_AngularVelocity;
 
             telemetry.addData("Number of Blocks : ", numberStackedBlocks);
 
-        */
+
 
         if(gamepad1.x)
         {

@@ -125,42 +125,42 @@ class Odometry{
 //        robot.telemetry.update();
     }
 
-    public void constantVelocityOdometry() {
-
-        double fLeftNEW = robot.getfLeft().getCurrentPosition();
-        double fRightNEW = robot.getfRight().getCurrentPosition();
-        double bLeftNEW = robot.getbLeft().getCurrentPosition();
-        double bRightNEW = robot.getbRight().getCurrentPosition();
-
-        // find robot position
-        double fl = 2 * Math.PI * (fLeftNEW - fLeftOLD) / robot.getEncoderPerRevolution();
-        double fr = 2 * Math.PI * (fRightNEW - fRightOLD) / robot.getEncoderPerRevolution();
-        double bl = 2 * Math.PI * (bLeftNEW - bLeftOLD) / robot.getEncoderPerRevolution();
-        double br = 2 * Math.PI * (bRightNEW - bRightOLD) / robot.getEncoderPerRevolution();
-
-        double xDeltaRobot = robot.getWheelRadius()/4 * (fl + bl + br + fr);
-        double yDeltaRobot = robot.getWheelRadius()/4 * (-fl + bl - br + fr);
-        double angleDeltaRobot = robot.getWheelRadius()/4 *(-fl/(robot.getL()+robot.getW()) - bl/(robot.getL()+robot.getW()) + br/(robot.getL()+robot.getW()) + fr/(robot.getL()+robot.getW()));
-
-        //converting to global frame
-        if (angleDeltaRobot == 0){
-            xPosGlobal += xDeltaRobot * Math.cos(angleGlobal) - yDeltaRobot * Math.sin(angleGlobal);
-            yPosGlobal += xDeltaRobot * Math.sin(angleGlobal) + yDeltaRobot * Math.cos(angleGlobal);
-        } else {
-            xPosGlobal += (Math.cos(angleGlobal) * Math.sin(angleDeltaRobot) - (Math.cos(angleDeltaRobot) - 1) * Math.sin(angleGlobal)) * xDeltaRobot / angleDeltaRobot + (Math.cos(angleGlobal) * (Math.cos(angleDeltaRobot) - 1) - Math.sin(angleGlobal) * Math.sin(angleDeltaRobot)) * yDeltaRobot / angleDeltaRobot;
-            yPosGlobal += ((Math.cos(angleDeltaRobot) - 1) * Math.sin(angleGlobal) + (Math.cos(angleGlobal)) * Math.sin(angleDeltaRobot)) * yDeltaRobot / angleDeltaRobot + (Math.cos(angleGlobal) * (Math.cos(angleDeltaRobot) - 1) + Math.sin(angleGlobal) * Math.sin(angleDeltaRobot)) * xDeltaRobot / angleDeltaRobot;
-        }
-
-        angleGlobal = angleWrap((robot.getWheelCircumference() * (fLeftNEW)/robot.getEncoderPerRevolution() - robot.getWheelCircumference() * (fRightNEW)/robot.getEncoderPerRevolution()) / 14 * 0.51428571428);
-
-        fLeftOLD = fLeftNEW;
-        fRightOLD = fRightNEW;
-        bLeftOLD = bLeftNEW;
-        bRightOLD = bRightNEW;
-
-        robot.getTelemetry().addLine("XPOS: " + xPosGlobal);
-        robot.getTelemetry().addLine("YPOS: " + yPosGlobal);
-        robot.getTelemetry().addLine("ANGPOS: " + Math.toDegrees(Math.toDegrees(angleGlobal)));
-        robot.getTelemetry().update();
-    }
+//    public void constantVelocityOdometry() {
+//
+//        double fLeftNEW = robot.getfLeft().getCurrentPosition();
+//        double fRightNEW = robot.getfRight().getCurrentPosition();
+//        double bLeftNEW = robot.getbLeft().getCurrentPosition();
+//        double bRightNEW = robot.getbRight().getCurrentPosition();
+//
+//        // find robot position
+//        double fl = 2 * Math.PI * (fLeftNEW - fLeftOLD) / robot.getEncoderPerRevolution();
+//        double fr = 2 * Math.PI * (fRightNEW - fRightOLD) / robot.getEncoderPerRevolution();
+//        double bl = 2 * Math.PI * (bLeftNEW - bLeftOLD) / robot.getEncoderPerRevolution();
+//        double br = 2 * Math.PI * (bRightNEW - bRightOLD) / robot.getEncoderPerRevolution();
+//
+//        double xDeltaRobot = robot.getWheelRadius()/4 * (fl + bl + br + fr);
+//        double yDeltaRobot = robot.getWheelRadius()/4 * (-fl + bl - br + fr);
+//        double angleDeltaRobot = robot.getWheelRadius()/4 *(-fl/(robot.getL()+robot.getW()) - bl/(robot.getL()+robot.getW()) + br/(robot.getL()+robot.getW()) + fr/(robot.getL()+robot.getW()));
+//
+//        //converting to global frame
+//        if (angleDeltaRobot == 0){
+//            xPosGlobal += xDeltaRobot * Math.cos(angleGlobal) - yDeltaRobot * Math.sin(angleGlobal);
+//            yPosGlobal += xDeltaRobot * Math.sin(angleGlobal) + yDeltaRobot * Math.cos(angleGlobal);
+//        } else {
+//            xPosGlobal += (Math.cos(angleGlobal) * Math.sin(angleDeltaRobot) - (Math.cos(angleDeltaRobot) - 1) * Math.sin(angleGlobal)) * xDeltaRobot / angleDeltaRobot + (Math.cos(angleGlobal) * (Math.cos(angleDeltaRobot) - 1) - Math.sin(angleGlobal) * Math.sin(angleDeltaRobot)) * yDeltaRobot / angleDeltaRobot;
+//            yPosGlobal += ((Math.cos(angleDeltaRobot) - 1) * Math.sin(angleGlobal) + (Math.cos(angleGlobal)) * Math.sin(angleDeltaRobot)) * yDeltaRobot / angleDeltaRobot + (Math.cos(angleGlobal) * (Math.cos(angleDeltaRobot) - 1) + Math.sin(angleGlobal) * Math.sin(angleDeltaRobot)) * xDeltaRobot / angleDeltaRobot;
+//        }
+//
+//        angleGlobal = angleWrap((robot.getWheelCircumference() * (fLeftNEW)/robot.getEncoderPerRevolution() - robot.getWheelCircumference() * (fRightNEW)/robot.getEncoderPerRevolution()) / 14 * 0.51428571428);
+//
+//        fLeftOLD = fLeftNEW;
+//        fRightOLD = fRightNEW;
+//        bLeftOLD = bLeftNEW;
+//        bRightOLD = bRightNEW;
+//
+//        robot.getTelemetry().addLine("XPOS: " + xPosGlobal);
+//        robot.getTelemetry().addLine("YPOS: " + yPosGlobal);
+//        robot.getTelemetry().addLine("ANGPOS: " + Math.toDegrees(Math.toDegrees(angleGlobal)));
+//        robot.getTelemetry().update();
+//    }
 }

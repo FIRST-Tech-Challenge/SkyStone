@@ -3,11 +3,18 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name="Permeet's First TeleOp", group="Permeet")
-public class PermeetTeleop extends LinearOpMode{
+@TeleOp(name="GerritTelop")
+public class GerritTelop extends LinearOpMode {
 
     @Override
-    public void runOpMode(){
+    public void runOpMode() {
 
+        waitForStart();
+
+        while (opModeIsActive()) {
+
+        }
     }
 }
+
+

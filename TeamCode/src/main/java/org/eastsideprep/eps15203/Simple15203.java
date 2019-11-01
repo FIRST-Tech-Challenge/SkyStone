@@ -42,16 +42,6 @@ public class Simple15203 extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-       /* double left;
-        double right;*/
-        boolean armU;
-        boolean armD;
-        boolean hoist;
-        boolean release;
-
-
-
-
         /* Initialize the hardware variables.
          * The init() method of the hardware class does all the work here
          */
@@ -80,6 +70,9 @@ public class Simple15203 extends LinearOpMode {
             double dsWeight = Math.sqrt(right_stick_x * right_stick_x + right_stick_y * right_stick_y);
             double rotPower = left_stick_x;
             double rotWeight = Math.abs(left_stick_x);
+
+            rotPower = rotPower * 0.6;
+
 // correct for the orientation
             //dsAngle -= robot.state.orientation;
             //robot.state.heading = dsAngle;
@@ -104,6 +97,11 @@ public class Simple15203 extends LinearOpMode {
             robot.rightBackMotor.setPower(Math.cos(dsAngle + Math.PI / 4) * dsWeight + rotPower * rotWeight);
             robot.rightFrontMotor.setPower(Math.cos(dsAngle - Math.PI / 4) * dsWeight + rotPower * rotWeight);
             robot.leftBackMotor.setPower(Math.cos(dsAngle - Math.PI / 4) * dsWeight - rotPower * rotWeight);
+
+            if(right_stick_x == 0 && right_stick_y == 0 && left_stick_x == 0){
+                robot.allDrive(0.0, 0);
+            }
+
 
             if(gamepad1.y){
                 robot.garageRightServo.setPower(-1.0);

@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.lib.ButtonAndEncoderData;
 
 public class Lift {
 
@@ -37,17 +38,15 @@ public class Lift {
         rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftMotor = hardwareMap.get(DcMotorEx.class, "liftLeft");
         leftMotor.setDirection(DcMotor.Direction.REVERSE);
-        leftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        double aParam = 315;
+        double bInvParam = 0.605;
+        double cParam = 169.7;
         blockDetector = new RevColorSensorV3(
                 hardwareMap.get(RevColorSensorV3.class, "liftBlockColor").getDeviceClient()
         ) {
             @Override
             protected double inFromOptical(int rawOptical) {
-                double aParam = 315;
-                double bInvParam = 0.605;
-                double cParam = 169.7;
                 return Math.pow((rawOptical - cParam) / aParam, -bInvParam);
             }
         };
@@ -59,16 +58,28 @@ public class Lift {
         hadBlock = false;
         setNoBlockPid();
         updatePid();
+        wasIdling = false;
+        wasStill = true;
     }
 
+    private boolean wasIdling;
+    private boolean wasStill;
+
     public void idle() {
-        if (bottomLimit.isPressed()) {
-            leftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            leftMotor.setPower(0.1);
-            rightMotor.setPower(0.1);
+        if (ButtonAndEncoderData.getLatest().isPressed(bottomLimit)) {
+            if (!wasIdling) {
+                leftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                leftMotor.setPower(0.1);
+                rightMotor.setPower(0.1);
+                leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+                wasIdling = true;
+            }
         } else {
-            leftMotor.setPower(0);
-            rightMotor.setPower(0);
+            if (!wasStill) {
+                leftMotor.setPower(0);
+                rightMotor.setPower(0);
+                wasStill = true;
+            }
         }
     }
 
@@ -77,6 +88,7 @@ public class Lift {
         rightMotor.setPower(0);
         leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     public void setLevel(int level) {
@@ -108,9 +120,21 @@ public class Lift {
     }
 
     public void updatePosition() {
-        updatePid();
+        if (level != 0) {
+            wasStill = false;
+        }
+        wasIdling = false;
         leftMotor.setTargetPosition(level * LEVEL_HEIGHT);
-        rightMotor.setPower(Robot.getInstance().controlHub.getMotorVoltagePercent(leftMotor));
+    }
+
+    public void updateRightMotor() {
+        if (level != 0) {
+            rightMotor.setPower(Robot.getInstance().controlHub.getMotorVoltagePercent(leftMotor));
+            wasStill = false;
+        } else if (!wasStill) {
+            rightMotor.setPower(0);
+            wasStill = true;
+        }
     }
 
     private void setNoBlockPid() {

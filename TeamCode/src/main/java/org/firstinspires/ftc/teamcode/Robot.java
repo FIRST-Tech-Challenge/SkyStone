@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.lib.ButtonAndEncoderData;
 import org.firstinspires.ftc.teamcode.subsystems.*;
 
 import java.util.HashMap;
@@ -40,19 +41,25 @@ public class Robot implements AutoCloseable {
     }
 
     public void init(HardwareMap hardwareMap) {
+        controlHub = ExpansionHub.getAvailableHubs(hardwareMap).get("Control Hub");
+        secondHub = ExpansionHub.getAvailableHubs(hardwareMap).get("Expansion Hub");
+
+        ButtonAndEncoderData data = ButtonAndEncoderData.getLatest();
+        data.clear();
+        data.addHubData(controlHub);
+        data.addHubData(secondHub);
+
         driveTrain.init(hardwareMap);
         foundationGrabber.init(hardwareMap);
         lift.init(hardwareMap);
         stoneManipulator.init(hardwareMap);
-        camera.init(hardwareMap);
+//        camera.init(hardwareMap);
         phone.init(hardwareMap);
-        controlHub = ExpansionHub.getAvailableHubs(hardwareMap).get("Control Hub");
-        secondHub = ExpansionHub.getAvailableHubs(hardwareMap).get("Expansion Hub");
     }
 
     @Override
     public void close() {
-        camera.stop();
+//        camera.stop();
         phone.stopGyro();
         phone.stopTextToSpeech();
     }

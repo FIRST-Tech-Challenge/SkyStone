@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.lib.ButtonAndEncoderData;
 import org.firstinspires.ftc.teamcode.lib.MecanumDriveImpl;
 import org.westtorrancerobotics.lib.Angle;
 import org.westtorrancerobotics.lib.Location;
@@ -120,23 +121,25 @@ public class DriveTrain {
             myLocation = new Location(0, 0, new Angle(0, Angle.AngleUnit.DEGREES, Angle.AngleOrientation.COMPASS_HEADING));
             leftY = new Wheel(new Location(-6.815,1.645,
                     new Angle(180, Angle.AngleUnit.DEGREES, Angle.AngleOrientation.COMPASS_HEADING)),
-                    hardwareMap.get(DcMotor.class, "intakeLeft/odometerLeftY"));
+                    hardwareMap.get(DcMotorEx.class, "intakeLeft/odometerLeftY"));
             rightY = new Wheel(new Location(6.815,1.645,
                     new Angle(0, Angle.AngleUnit.DEGREES, Angle.AngleOrientation.COMPASS_HEADING)),
-                    hardwareMap.get(DcMotor.class, "intakeRight/odometerRightY"));
+                    hardwareMap.get(DcMotorEx.class, "intakeRight/odometerRightY"));
             x = new Wheel(new Location(7.087,-1.980,
                     new Angle(-90, Angle.AngleUnit.DEGREES, Angle.AngleOrientation.COMPASS_HEADING)),
-                    hardwareMap.get(DcMotor.class, "liftRight/odometerX"));
+                    hardwareMap.get(DcMotorEx.class, "liftRight/odometerX"));
         }
 
         public void update() {
-            if ((leftY.encoder.getCurrentPosition() - leftY.lastEnc) == (rightY.encoder.getCurrentPosition() - rightY.lastEnc)) {
-                long dy = (leftY.encoder.getCurrentPosition() - leftY.lastEnc);
-                long dx = (x.encoder.getCurrentPosition() - x.lastEnc);
+            if ((ButtonAndEncoderData.getLatest().getCurrentPosition(leftY.encoder) - leftY.lastEnc) ==
+                    (ButtonAndEncoderData.getLatest().getCurrentPosition(rightY.encoder) - rightY.lastEnc)) {
+                long dy = (ButtonAndEncoderData.getLatest().getCurrentPosition(leftY.encoder) - leftY.lastEnc);
+                long dx = (ButtonAndEncoderData.getLatest().getCurrentPosition(x.encoder) - x.lastEnc);
                 leftY.lastEnc += dy;
                 rightY.lastEnc += dy;
                 x.lastEnc += dx;
                 myLocation.translate(dx * TICKS_TO_INCHES, dy * TICKS_TO_INCHES);
+                return;
             }
             Solution solved = solve(leftY.getABCD(), rightY.getABCD(), x.getABCD());
             double rotCenterRelX = solved.xc;
@@ -160,20 +163,20 @@ public class DriveTrain {
 
         private class Wheel {
             private final Location relativeLocation;
-            private final DcMotor encoder;
+            private final DcMotorEx encoder;
             private long lastEnc;
 
-            private Wheel (Location relativeLocation, DcMotor encoder) {
+            private Wheel (Location relativeLocation, DcMotorEx encoder) {
                 this.relativeLocation = relativeLocation;
                 this.encoder = encoder;
-                lastEnc = encoder.getCurrentPosition();
+                lastEnc = ButtonAndEncoderData.getLatest().getCurrentPosition(encoder);
             }
 
             private WheelEquation getABCD() {
                 double xw = relativeLocation.x;
                 double yw = relativeLocation.y;
                 double tw = relativeLocation.direction.getValue(Angle.AngleUnit.RADIANS, Angle.AngleOrientation.UNIT_CIRCLE);
-                double deltaEnc = encoder.getCurrentPosition() - lastEnc;
+                double deltaEnc = ButtonAndEncoderData.getLatest().getCurrentPosition(encoder) - lastEnc;
                 lastEnc += deltaEnc;
                 deltaEnc *= TICKS_TO_INCHES;
                 return new WheelEquation(-Math.sin(tw), Math.cos(tw), xw*Math.sin(tw)-yw*Math.cos(tw), deltaEnc);

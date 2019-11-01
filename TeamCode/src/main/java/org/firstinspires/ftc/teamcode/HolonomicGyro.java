@@ -41,12 +41,13 @@ public class HolonomicGyro extends LinearOpMode {
         runtime.reset();
 
         double speedSet = 5;//robot starts with speed 5 due to 40 ratio motors being op
-        double reduction = 7.5;//fine rotation for precise stacking. higher value = slower rotation using triggers
+        double reduction = 7.5;//fine rotation for precise  stacking. higher value = slower rotation using triggers
 
         while (opModeIsActive()) {
             double LX = -gamepad1.left_stick_x, LY = gamepad1.left_stick_y, rotate = gamepad1.right_stick_x;
 
             robot.setForks(gamepad1.a);
+        //    robot.setClaw(gamepad1.b);
 
             //bumpers set speed of robot
             if(gamepad1.right_bumper)

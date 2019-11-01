@@ -15,14 +15,14 @@ import static java.lang.Math.*;
 
 public class Robot3939 {
 
-    public DcMotor RL, RR, FL, FR;
-    public Servo servoRight, servoLeft;
+    public DcMotor RL, RR, FL, FR;//motors
+    public Servo servoRight, servoLeft, claw;//servo
 
-    public BNO055IMU imu;
-    private Orientation lastAngles = new Orientation();
-    double  globalAngle;
+    public BNO055IMU imu;//gyro
+    private Orientation lastAngles = new Orientation();//saves angles
+    double  globalAngle;//robot angle
 
-    public double FLpower, FRpower, RLpower, RRpower;
+    public double FLpower, FRpower, RLpower, RRpower;//power of the motors
 
     private static final double deadZone = 0.10;
     public static final boolean earthIsFlat = true;
@@ -37,15 +37,16 @@ public class Robot3939 {
         FL       = hwmap.dcMotor.get("front_left");
         FR      = hwmap.dcMotor.get("front_right");
 
-        RL.setDirection(DcMotorSimple.Direction.FORWARD);
-        FL.setDirection(DcMotorSimple.Direction.FORWARD);
-        RR.setDirection(DcMotorSimple.Direction.REVERSE);
-        FR.setDirection(DcMotorSimple.Direction.REVERSE);
+        RL.setDirection(DcMotorSimple.Direction.REVERSE);
+        FL.setDirection(DcMotorSimple.Direction.REVERSE);
+        RR.setDirection(DcMotorSimple.Direction.FORWARD);
+        FR.setDirection(DcMotorSimple.Direction.FORWARD);
     }
 
     public void initServos(HardwareMap hwmap) {
         servoRight = hwmap.servo.get("servoRight");
         servoLeft = hwmap.servo.get("servoLeft");
+        claw = hwmap.servo.get("claw");
     }
 
     public void initIMU(HardwareMap hwmap) {
@@ -240,7 +241,9 @@ public class Robot3939 {
     }
 
     boolean forks = false;
+    boolean clawDown = false;
     boolean aHeld = false;
+    boolean bHeld = false;
 
     public void setForks(boolean aPressed) {
         if (!aHeld && aPressed) {
@@ -249,16 +252,32 @@ public class Robot3939 {
         } else if (!aPressed)
             aHeld = false;
 
-        if (forks) {
-            servoLeft.setPosition(0.5);
-            servoRight.setPosition(0.5);
-        }
-        else if(earthIsFlat)
-        {
+        if (forks) {//down
             servoLeft.setPosition(1);
             servoRight.setPosition(0);
         }
+        else if(earthIsFlat)//up
+        {
+            servoLeft.setPosition(0.5);
+            servoRight.setPosition(0.5);
+        }
 
+    }
+
+    public void setClaw(boolean bPressed) {
+        if (!bHeld && bPressed) {
+            bHeld = true;
+            clawDown = !clawDown;
+        } else if (!bPressed)
+            bHeld = false;
+
+        if (clawDown) {//if true, set pos to down
+            claw.setPosition(1);
+        }
+        else if(earthIsFlat)//else, up
+        {
+            claw.setPosition(0.5);
+        }
     }
 
     private void resetAngle()

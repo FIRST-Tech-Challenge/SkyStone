@@ -45,6 +45,7 @@ Holonomic extends LinearOpMode {
         while (opModeIsActive()) {
             //forks
              robot.setForks(gamepad1.a);
+             robot.setClaw(gamepad1.b);
 
             //bumpers set speed of robot
             if(gamepad1.right_bumper)
@@ -61,7 +62,7 @@ Holonomic extends LinearOpMode {
 
             robot.drive(gamepad1.left_stick_x*speedSet/10,
                         gamepad1.left_stick_y*speedSet/10,
-                        gamepad1.right_stick_x*speedSet/10);
+                        -gamepad1.right_stick_x*speedSet/10);
 
             telemetry.addData("Drive", "Holonomic");
             telemetry.addData("Global Heading", robot.getAngle());

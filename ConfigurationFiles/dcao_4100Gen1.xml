@@ -18,7 +18,8 @@
             <NeveRest20Gearmotor name="RF" port="1" />
             <NeveRest20Gearmotor name="LB" port="2" />
             <NeveRest20Gearmotor name="RB" port="3" />
-            <Servo name="servoAutoDragStone" port="0" />
+            <Servo name="servoAutoDragStoneRight" port="0" />
+            <Servo name="servoAutoDragStoneLeft" port="1" />
             <LynxEmbeddedIMU name="imu 1" port="0" bus="0" />
         </LynxModule>
     </LynxUsbDevice>

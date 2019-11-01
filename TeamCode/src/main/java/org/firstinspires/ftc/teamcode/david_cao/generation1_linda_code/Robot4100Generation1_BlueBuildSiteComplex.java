@@ -256,7 +256,7 @@ public class Robot4100Generation1_BlueBuildSiteComplex extends DarbotsBasicOpMod
             return;
         }
 
-        this.getRobotCore().setAutonomousDragStoneServoToDrag(true);
+        this.getRobotCore().setAutonomousDragStoneServoRightToDrag(true);
         sleep(400);
 
         this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedXDistanceTask(
@@ -275,7 +275,7 @@ public class Robot4100Generation1_BlueBuildSiteComplex extends DarbotsBasicOpMod
             return;
         }
 
-        this.getRobotCore().setAutonomousDragStoneServoToDrag(false);
+        this.getRobotCore().setAutonomousDragStoneServoRightToDrag(false);
         sleep(400);
 
         this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedZDistanceTask(

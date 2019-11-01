@@ -55,19 +55,21 @@ public class Robot4100Generation1_BlueScanBasic extends DarbotsBasicOpMode<Robot
         double firstScanExtraDistance = 0;
         int[] stepResult = {1,2,3};
         for(int i=0; i<3; i++){
+
             //if(i<2){ //0 or 1
             this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedXDistanceTask(
                     -5,
-                    0.1
+                    0.2
             ));
             this.getRobotCore().getChassis().addTask(this.getRobotCore().getChassis().getFixedXDistanceTask(
                     5,
-                    0.1
+                    0.2
             ));
             if(!waitForDrive()){
                 return;
             }
             //}
+
 
             boolean foundStone = false;
             if(this.m_Navigation.getDarbotsRobotAxisStonePosition() != null || i == 2){
@@ -111,29 +113,38 @@ public class Robot4100Generation1_BlueScanBasic extends DarbotsBasicOpMode<Robot
             return;
         }
 
-        this.getRobotCore().setAutonomousDragStoneServoToDrag(true);
+        this.getRobotCore().setAutonomousDragStoneServoRightToDrag(true);
         sleep(400);
 
         this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedXDistanceTask(
-                -30,
+                -10,
                 0.5
         ));
         if(!waitForDrive()){
             return;
         }
 
-        this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedZDistanceTask(
-                120 + firstScanExtraDistance,
+        this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedTurnTask(
+                90,
+                0.5
+        ));
+
+        if(!waitForDrive()){
+            return;
+        }
+
+        this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedXDistanceTask(
+                145 + firstScanExtraDistance,
                 1.0
         ));
         if(!waitForDrive()){
             return;
         }
 
-        this.getRobotCore().setAutonomousDragStoneServoToDrag(false);
+        this.getRobotCore().setAutonomousDragStoneServoRightToDrag(false);
         sleep(400);
 
-        this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedZDistanceTask(
+        this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedXDistanceTask(
                 -50,
                 0.6
         ));

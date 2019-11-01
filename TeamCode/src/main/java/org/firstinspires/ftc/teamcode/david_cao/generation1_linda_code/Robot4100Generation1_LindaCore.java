@@ -30,7 +30,7 @@ public class Robot4100Generation1_LindaCore extends RobotCore {
     private Servo m_StoneOrientServo;
     private RobotServoUsingMotor m_linearSlide;
     private DcMotor m_IntakeLeft, m_IntakeRight;
-    private Servo m_AutoDragStoneServo;
+    private Servo m_AutoDragStoneServoLeft, m_AutoDragStoneServoRight;
     private Servo m_CapStoneServo;
 
     public Robot4100Generation1_LindaCore(HardwareMap hardwares) {
@@ -71,21 +71,32 @@ public class Robot4100Generation1_LindaCore extends RobotCore {
         this.m_IntakeRight = hardwares.dcMotor.get("motorIntakeRight");
 
         this.m_StoneOrientServo = hardwares.servo.get("servoStoneOrient");
-        this.m_AutoDragStoneServo = hardwares.servo.get("servoAutoDragStone");
+
+        this.m_AutoDragStoneServoLeft = hardwares.servo.get("servoAutoDragStoneLeft");
+        this.m_AutoDragStoneServoRight = hardwares.servo.get("servoAutoDragStoneRight");
+
         this.m_CapStoneServo = hardwares.servo.get("servoCapStone");
 
         this.setCapStoneServoToDeposit(false);
         this.setOrientServoToOrient(false);
         this.setDragServoToDrag(false);
-        this.setAutonomousDragStoneServoToDrag(false);
+        this.setAutonomousDragStoneServoLeftToDrag(false);
+        this.setAutonomousDragStoneServoRightToDrag(false);
     }
 
 
-    public void setAutonomousDragStoneServoToDrag(boolean toDrag){
+    public void setAutonomousDragStoneServoLeftToDrag(boolean toDrag){
         if(toDrag){
-            this.m_AutoDragStoneServo.setPosition(Robot4100Generation1_Settings.AUTONOMOUSDRAGSTONESERVO_OUTPOS);
+            this.m_AutoDragStoneServoLeft.setPosition(Robot4100Generation1_Settings.AUTONOMOUSDRAGSTONESERVO_LEFT_OUTPOS);
         }else{
-            this.m_AutoDragStoneServo.setPosition(Robot4100Generation1_Settings.AUTONOMOUSDRAGSTONESERVO_INPOS);
+            this.m_AutoDragStoneServoLeft.setPosition(Robot4100Generation1_Settings.AUTONOMOUSDRAGSTONESERVO_LEFT_INPOS);
+        }
+    }
+    public void setAutonomousDragStoneServoRightToDrag(boolean toDrag){
+        if(toDrag){
+            this.m_AutoDragStoneServoRight.setPosition(Robot4100Generation1_Settings.AUTONOMOUSDRAGSTONESERVO_RIGHT_OUTPOS);
+        }else{
+            this.m_AutoDragStoneServoRight.setPosition(Robot4100Generation1_Settings.AUTONOMOUSDRAGSTONESERVO_RIGHT_IN);
         }
     }
 

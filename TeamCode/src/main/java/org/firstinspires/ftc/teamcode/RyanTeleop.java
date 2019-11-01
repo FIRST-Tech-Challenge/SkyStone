@@ -1,4 +1,13 @@
 package org.firstinspires.ftc.teamcode;
 
-public class RyanTeleop {
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+@TeleOp(name="Ryan's Zeroeth TeleOp")
+public class RyanTeleop extends LinearOpMode {
+
+    @Override
+    public void runOpMode() throws InterruptedException {
+
+    }
 }

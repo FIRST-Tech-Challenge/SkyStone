@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.lib.TestableGyro;
-import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveImpl;
+import org.firstinspires.ftc.teamcode.lib.MecanumDriveImpl;
 import org.westtorrancerobotics.lib.Angle;
 import org.westtorrancerobotics.lib.Location;
 import org.westtorrancerobotics.lib.MecanumController;
@@ -34,17 +34,13 @@ public class MecanumTeleop extends OpMode {
         rightFront.setDirection(DcMotorEx.Direction.REVERSE);
         rightBack.setDirection(DcMotorEx.Direction.REVERSE);
 
-        leftFront.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        leftBack.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        rightFront.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        rightBack.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        leftFront.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        leftBack.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        rightFront.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        rightBack.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
-        ModernRoboticsI2cGyro gyro = hardwareMap.get(ModernRoboticsI2cGyro.class, "gyro");
-        gyro.calibrate();
-
-        MecanumDrive train = new MecanumDriveImpl(leftFront, leftBack, rightFront, rightBack, TestableGyro.generate(gyro));
+        MecanumDrive train = new MecanumDriveImpl(leftFront, leftBack, rightFront, rightBack, TestableGyro.NULL);
         driveTrain = new MecanumController(train);
-        driveTrain.setLocation(new Location(0, 0, new Angle(0, Angle.AngleUnit.DEGREES, Angle.AngleOrientation.COMPASS_HEADING)));
 
         runtime = new ElapsedTime();
 
@@ -64,13 +60,6 @@ public class MecanumTeleop extends OpMode {
         double x = deadZone(gamepad1.left_stick_x);
         driveTrain.spinDrive(x, y, turn, MecanumDrive.TranslTurnMethod.EQUAL_SPEED_RATIOS);
 
-        telemetry.addData("Left Front Enc", driveTrain.getFrontLeftEncoder());
-        telemetry.addData("Left Back Enc", driveTrain.getBackLeftEncoder());
-        telemetry.addData("Right Front Enc", driveTrain.getFrontRightEncoder());
-        telemetry.addData("Right Back Enc", driveTrain.getFrontRightEncoder());
-        telemetry.addData("Gyro Heading", driveTrain.getGyro().getValue(Angle.AngleUnit.DEGREES, Angle.AngleOrientation.COMPASS_HEADING));
-        driveTrain.updateLocation();
-        telemetry.addData("Position", driveTrain.getLocation());
         telemetry.addData("Time elapsed", runtime.seconds());
         telemetry.update();
     }

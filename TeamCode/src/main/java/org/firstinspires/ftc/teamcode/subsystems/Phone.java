@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.hardware.SensorEvent;
 import android.os.BatteryManager;
 import android.speech.tts.TextToSpeech;
@@ -16,7 +15,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.android.AndroidGyroscope;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
-import org.firstinspires.ftc.robotcore.internal.ui.UILocation;
 
 public class Phone {
 
@@ -27,7 +25,6 @@ public class Phone {
     private TextToSpeech wordSpeaker;
     private SoundPlayer.PlaySoundParams soundParams;
     private int sounds;
-    private View relativeLayout;
 
     private static Phone instance = null;
 
@@ -62,9 +59,6 @@ public class Phone {
         soundParams.loopControl = 0;
         soundParams.waitForNonLoopingSoundsToFinish = true;
         sounds = 0;
-        int relativeLayoutId = hardwareMap.appContext.getResources()
-                .getIdentifier("RelativeLayout", "id", hardwareMap.appContext.getPackageName());
-        relativeLayout = ((Activity) hardwareMap.appContext).findViewById(relativeLayoutId);
     }
 
     // Based on code in Android Docs
@@ -78,7 +72,6 @@ public class Phone {
         double scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
 
         return  100.0 * level / scale;
-
     }
 
     public void stopGyro() {
@@ -101,15 +94,6 @@ public class Phone {
         return gyro != null && gyro.isAvailable();
     }
 
-    @Deprecated // doesnt make sense on control hub
-    public void toast(String str, int time) {
-        if (time != 0) {
-            AppUtil.getInstance().showToast(UILocation.BOTH, str, time);
-        } else {
-            AppUtil.getInstance().showToast(UILocation.BOTH, str);
-        }
-    }
-
     public void queueSoundFile(String fileName) {
         sounds++;
         SoundPlayer.getInstance().startPlaying(context,
@@ -129,20 +113,6 @@ public class Phone {
 
     public boolean hasQueuedSound() {
         return sounds > 0 || wordSpeaker.isSpeaking();
-    }
-
-    @Deprecated // doesnt make sense on control hub
-    public void setBackgroundColor(int r, int g, int b) {
-        relativeLayout.post(() -> {
-            relativeLayout.setBackgroundColor(Color.rgb(r, g, b));
-        });
-    }
-
-    @Deprecated // doesnt make sense on control hub
-    public void resetBackgroundColor() {
-        relativeLayout.post(() -> {
-            relativeLayout.setBackgroundColor(Color.TRANSPARENT);
-        });
     }
 
 }

@@ -34,14 +34,16 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.lynx.LynxNackException;
 import com.qualcomm.hardware.lynx.commands.core.LynxGetADCCommand;
 import com.qualcomm.hardware.lynx.commands.core.LynxGetADCResponse;
+import com.qualcomm.hardware.lynx.commands.core.LynxGetMotorConstantPowerCommand;
+import com.qualcomm.hardware.lynx.commands.core.LynxGetMotorConstantPowerResponse;
 import com.qualcomm.hardware.lynx.commands.core.LynxPhoneChargeControlCommand;
+import com.qualcomm.hardware.lynx.commands.core.LynxSetMotorConstantPowerCommand;
 import com.qualcomm.hardware.lynx.commands.standard.LynxGetModuleStatusCommand;
 import com.qualcomm.hardware.lynx.commands.standard.LynxGetModuleStatusResponse;
 import com.qualcomm.hardware.lynx.commands.standard.LynxSetModuleLEDColorCommand;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
+import com.qualcomm.robotcore.util.Range;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -50,10 +52,12 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.qualcomm.hardware.lynx.LynxDcMotorController.apiPowerFirst;
+import static com.qualcomm.hardware.lynx.LynxDcMotorController.apiPowerLast;
+
 public class ExpansionHub extends LynxController {
 
-    // utility method
-    public double getMotorCurrentDraw(DcMotorEx motor, CurrentDrawUnits units) {
+    public synchronized double getMotorCurrentDraw(DcMotorEx motor, CurrentDrawUnits units) {
         int port = motor.getPortNumber();
         LynxGetADCCommand.Channel channel = null;
         if (port == 0) {
@@ -87,12 +91,28 @@ public class ExpansionHub extends LynxController {
         return -1;
     }
 
+    public synchronized double getMotorVoltagePercent(DcMotorEx motor) {
+        int port = motor.getPortNumber();
+        LynxGetMotorConstantPowerCommand command = new LynxGetMotorConstantPowerCommand(this.getModule(), port);
+        double result = 0;
+        try {
+            LynxGetMotorConstantPowerResponse response = command.sendReceive();
+            int iPower = response.getPower();
+            result = Range.scale(iPower,
+                    LynxSetMotorConstantPowerCommand.apiPowerFirst, LynxSetMotorConstantPowerCommand.apiPowerLast,
+                    apiPowerFirst, apiPowerLast);
+        } catch (InterruptedException | RuntimeException | LynxNackException e) {
+            handleException(e);
+        }
+        return result;
+    }
+
     /**
      * Not guaranteed behavior, merely asks if the motor "has lost counts" and returns the opposite
      * @param motor th motor to check
      * @return
      */
-    public boolean encoderWorks(DcMotorEx motor) {
+    public synchronized boolean encoderWorks(DcMotorEx motor) {
         int port = motor.getPortNumber();
         LynxGetModuleStatusCommand command = new LynxGetModuleStatusCommand(lynxModule);
         try {
@@ -154,13 +174,6 @@ public class ExpansionHub extends LynxController {
         return lynxModule.getDeviceName();
     }
 
-    public void setStatusLedColor(int r, int g, int b) {
-        if(r > 255 || g > 255 || b > 255) {
-            throw new IllegalArgumentException();
-        }
-        setStatusLedColor((byte)r, (byte)g, (byte)b);
-    }
-
     public synchronized void setStatusLedColor(byte r, byte g, byte b) {
         LynxSetModuleLEDColorCommand colorCommand = new LynxSetModuleLEDColorCommand(lynxModule, r, g, b);
         try {
@@ -186,15 +199,6 @@ public class ExpansionHub extends LynxController {
             handleException(e);
         }
         return -1;
-    }
-
-    public synchronized void setPhoneChargeEnabled(boolean chargeEnabled) {
-        LynxPhoneChargeControlCommand controlCommand = new LynxPhoneChargeControlCommand(lynxModule, chargeEnabled);
-        try {
-            controlCommand.send();
-        } catch (InterruptedException | LynxNackException e) {
-            handleException(e);
-        }
     }
 
     public synchronized double voltage5vPorts(VoltageUnits units) {

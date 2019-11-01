@@ -6,6 +6,6 @@ public class TestVuforia extends AutoBase {
 
     @Override
     public void runOpMode() {
-        robot.goToVuforia();
+        robot.goToSkystone();
     }
 }

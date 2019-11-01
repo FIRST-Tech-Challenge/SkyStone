@@ -20,7 +20,6 @@ public class DriveHalo extends OpMode {
     @Override
     public void init() {
         robot.init(hardwareMap);
-        
 
         telemetry.addData("Initialized", "Ready to start");
     }

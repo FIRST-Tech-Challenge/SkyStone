@@ -21,6 +21,7 @@ public class StoneManipulator {
     private final double BACKWARD_GRABBER_UNCLASPED_POSITION = .9;
     private final double EXTEND_POWER = 1;
     private State currentState;
+    private boolean grab;
     public static synchronized StoneManipulator getInstance() {
         return instance != null ? instance : (instance = new StoneManipulator());
     }
@@ -55,15 +56,19 @@ public class StoneManipulator {
         }
         currentState = (extended = false) ? State.SLIDEMOVING : State.SLIDESTOPPED;
         return currentState;
-    } public State setGrabbed (boolean isGrabbed) {
-        double positionArmBig = (isGrabbed = true) ? FORWARD_GRABBER_CLASPED_POSITION : FORWARD_GRABBER_UNCLASPED_POSITION;
-        double positionArmLittle = (isGrabbed = true) ? BACKWARD_GRABBER_CLASPED_POSITION : BACKWARD_GRABBER_UNCLASPED_POSITION;
+    } public State setGrabbed (boolean grabbed) {
+        double positionArmBig = (grabbed = true) ? FORWARD_GRABBER_CLASPED_POSITION : FORWARD_GRABBER_UNCLASPED_POSITION;
+        double positionArmLittle = (grabbed = true) ? BACKWARD_GRABBER_CLASPED_POSITION : BACKWARD_GRABBER_UNCLASPED_POSITION;
+        if (grabbed == true) { grab = true;}
         stoneGrabBig.setPosition(positionArmBig);
         stoneGrabLittle.setPosition(positionArmLittle);
-        currentState = (isGrabbed = true) ? State.CLASPING : State.UNCLASPED;
+        currentState = (grabbed = true) ? State.CLASPING : State.UNCLASPED;
         return currentState;
     } public State getState() {
         return currentState;
+    } public boolean isGrabbed () {
+        return (grab = true) ? true : false;
+
     }
     public enum State {
         INTAKEMOVING,
@@ -75,7 +80,5 @@ public class StoneManipulator {
         RESTING,
         EXTENDED,
         INTAKING,
-
-
     }
 }

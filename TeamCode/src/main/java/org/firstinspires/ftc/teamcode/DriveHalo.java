@@ -72,14 +72,6 @@ public class DriveHalo extends OpMode {
                 }
             }
 
-            if (gamepad2.dpad_down) { // lift logic
-                robot.gripperDown();
-            } else if (gamepad2.dpad_up) {
-                robot.gripperUp();
-            } else {
-                robot.stopLift();
-            }
-
             if (gamepad2.a) {
                 if (armClosed) {
                     try { // release the block
@@ -93,6 +85,14 @@ public class DriveHalo extends OpMode {
                 armClosed = !armClosed;
             }
             buttonPressed = !buttonPressed;
+        }
+
+        if (gamepad2.dpad_down) { // lift logic
+            robot.gripperDown();
+        } else if (gamepad2.dpad_up) {
+            robot.gripperUp();
+        } else {
+            robot.stopLift();
         }
     }
 }

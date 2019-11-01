@@ -84,7 +84,7 @@ public class Robot {
         this.grabServo = hwMap.get(Servo.class, "grabServo");
 
         // Servo direction
-        this.gripperRotateServo1.setDirection(Servo.Direction.FORWARD);
+        this.gripperRotateServo1.setDirection(Servo.Direction.REVERSE);
         this.gripperRotateServo2.setDirection(Servo.Direction.FORWARD);
         this.grabServo.setDirection(Servo.Direction.REVERSE);
 

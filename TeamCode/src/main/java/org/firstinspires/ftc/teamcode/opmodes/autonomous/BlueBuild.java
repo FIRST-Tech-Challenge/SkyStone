@@ -13,6 +13,9 @@ import org.firstinspires.ftc.teamcode.opmodes.autonomous.BaseStateMachine;
 
 @Autonomous(name = "BlueBuild", group="Autonomous")
 public class BlueBuild extends BaseStateMachine {
+    private final String STATE_TAG = "BlueBuild-State";
+    private final String CLASS_TAG = "BlueBuild";
+
     public enum State {
         STATE_INITIAL,
         STATE_FIND_SKYSTONE,
@@ -46,6 +49,7 @@ public class BlueBuild extends BaseStateMachine {
 
     @Override
     public void loop() {
+        telemetry.addData(STATE_TAG, mCurrentState);
         switch (mCurrentState) {
             case STATE_INITIAL:
                 // Initialize
@@ -55,22 +59,19 @@ public class BlueBuild extends BaseStateMachine {
             case STATE_FIND_SKYSTONE:
                 // Strafe towards line
                 // Identify SkyStone
-                // If we can't see it after 3 feet, start driving  until we do
-                telemetry.addData("State", "STATE_FIND_SKYSTONE");
-
+                // If we can't see it after 3 feet, start driving  until we do\
                 if (!vuforia.isTargetVisible(skystone)) {
+                    telemetry.addData(CLASS_TAG, "skystone not seen");
                     driveSystem.setMotorPower(0.2);
                 } else {
                     driveSystem.setMotorPower(0);
                     newState(State.STATE_GRAB_STONE);
                 }
-                telemetry.update();
 
                 break;
 
             case STATE_GRAB_STONE:
                 // Grab the stone and slurp it into the machine
-                telemetry.addData("State", "STATE_GRAB_STONE");
 
                 Orientation rotation = vuforia.getRobotHeading();
                 driveSystem.turn(rotation.thirdAngle - 90, 0.8);
@@ -80,17 +81,13 @@ public class BlueBuild extends BaseStateMachine {
                 }
                 driveSystem.turn(-90, 1.0);
               //  driveSystem.driveToPositionInches(24, DriveSystem.Direction.FORWARD, 1.0);
-                telemetry.update();
 
                 newState(State.STATE_DELIVER_STONE);
                 break;
 
             case STATE_DELIVER_STONE:
-                telemetry.addData("State", "STATE_DELIVER_STONE");
-
                 // Drive with stone to the foundation
                 // Go under bridge
-                telemetry.update();
 //                    newState(State.STATE_DEPOSIT_STONE);
                 break;
 
@@ -119,6 +116,7 @@ public class BlueBuild extends BaseStateMachine {
                 newState(State.STATE_FIND_SKYSTONE);
                 break;
         }
+        telemetry.update();
     }
 
     // Stop

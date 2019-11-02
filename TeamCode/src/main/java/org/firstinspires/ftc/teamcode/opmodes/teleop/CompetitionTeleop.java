@@ -20,8 +20,10 @@ public class CompetitionTeleop extends BaseOpMode {
     // previous loop. Otherwise, hitting a bumper will increase the queued height by a like 30.
     boolean m_right = false;
     boolean m_left = false;
+    boolean m_gripper = false; // Gripper button`
 
     public void init() {
+        super.init();
         // Not sure if I'm doing EnumMaps 100% right so please lmk if I'm not so I can change it
         EnumMap<ArmSystem.ServoNames, Servo> servoEnumMap = new EnumMap<ArmSystem.ServoNames, Servo>(ArmSystem.ServoNames.class);
         servoEnumMap.put(ArmSystem.ServoNames.GRIPPER, hardwareMap.get(Servo.class, "gripper"));
@@ -33,11 +35,9 @@ public class CompetitionTeleop extends BaseOpMode {
                 hardwareMap.get(DcMotor.class, "slider_motor"),
                 hardwareMap.get(DigitalChannel.class, "slider_switch"));
 
-
     }
 
     public void init_loop() {
-        super.init();
         if (!armSystem.isCalibrated()) {
             armSystem.calibrate();
         }
@@ -75,10 +75,18 @@ public class CompetitionTeleop extends BaseOpMode {
         } else if (!gamepad1.left_bumper){
             m_left = false;
         }
+
+        if (gamepad1.a && !m_gripper) { // This doesn't fit the spec on the google doc and should be changed later
+            armSystem.toggleGripper();
+            m_gripper = true;
+        } else if (!gamepad1.a) {
+            m_gripper = false;
+        }
         // Display queued positions on telemetry data so that the captain can call them out to the
         // driver
         if (!(armSystem.queuedPosition == null)) {
-            telemetry.addData("", "Queued position: " + armSystem.queuedPosition.toString());
+            telemetry.addData("",
+                    "Queued position: " + armSystem.queuedPosition.toString());
         }
 
         telemetry.addData("", "Queued height: " + armSystem.queuedHeight);

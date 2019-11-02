@@ -102,8 +102,8 @@ public class ArmSystem {
         this.pivot = servos.get(ServoNames.PIVOT);
         this.slider = slider;
         this.limitSwitch = limitSwitch;
-        this.direction = Direction.UP;
-        this.slider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        // this.direction = Direction.UP;
+        // this.slider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     // Create an ArmSystem object without servos, used for testing just the slider
@@ -184,6 +184,16 @@ public class ArmSystem {
         moveGripper(GRIPPER_CLOSE);
     }
 
+    public void toggleGripper() {
+        if (Math.abs(gripper.getPosition() - GRIPPER_CLOSE)
+                < Math.abs(gripper.getPosition() - GRIPPER_OPEN)) {
+            // If we're in here, the gripper is closer to it's closed position
+            openGripper();
+        } else {
+            closeGripper();
+        }
+    }
+
     public void movePresetPosition(Position pos) {
         switch(pos) {
             case POSITION_HOME:
@@ -218,9 +228,12 @@ public class ArmSystem {
         this.QueuedPosition = position;
     }
 
+    // Still requires updateHeight() to be called, just like the setSliderHeight method.
     public void go() {
         this.movePresetPosition(queuedPosition);
+        this.targetHeight = queuedHeight;
     }
+
 
     /*
     Takes in the slack in the linear slide. Used to calibrate the encoder.

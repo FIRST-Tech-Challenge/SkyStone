@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 
-@Autonomous(name="Autonomous Template 15203", group="15203")
+@Autonomous(name="Ben_s Scary Source Code 15203", group="15203")
 
 public class Auto15203BensScarySourceCode extends LinearOpMode {
 

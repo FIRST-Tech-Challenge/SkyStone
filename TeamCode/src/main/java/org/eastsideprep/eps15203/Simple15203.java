@@ -60,17 +60,17 @@ public class Simple15203 extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             double left_stick_x = gamepad1.left_stick_x;
+            double left_stick_y = gamepad1.left_stick_x;
             double right_stick_x = gamepad1.right_stick_x;
             double right_stick_y = gamepad1.right_stick_y;
-            double right_trigger = gamepad1.right_trigger;
             //double orientation = (((double) robot.gyro.getIntegratedZValue()) / 360) * Math.PI * 2;
 
 // wheel commands have two components: drive/strafe and rotation. They have to be weighted.
 
-            double dsAngle = Math.atan2(right_stick_x, right_stick_y);
-            double dsWeight = Math.sqrt(right_stick_x * right_stick_x + right_stick_y * right_stick_y);
-            double rotPower = left_stick_x;
-            double rotWeight = Math.abs(left_stick_x);
+            double dsAngle = Math.atan2(left_stick_x, left_stick_y);
+            double dsWeight = Math.sqrt(left_stick_x * left_stick_x + left_stick_y * left_stick_y);
+            double rotPower = right_stick_x;
+            double rotWeight = Math.abs(right_stick_x);
 
             rotPower = rotPower * 0.6;
 
@@ -78,13 +78,15 @@ public class Simple15203 extends LinearOpMode {
             //dsAngle -= robot.state.orientation;
             //robot.state.heading = dsAngle;
 // rotate more slowly if left bumper pressed
-            if (gamepad1.left_bumper) {
+            if (gamepad1.right_bumper) {
                 rotPower *= 0.05;
             }
 // drive / strafe more slowly if right bumper pressed
-            if (gamepad1.right_bumper) {
+            if (gamepad1.left_bumper) {
                 dsWeight *= 0.05;
             }
+
+
 
 // make sure values are not greater than 1
 

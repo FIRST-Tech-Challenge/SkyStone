@@ -42,6 +42,11 @@ public class TylerController extends OpMode {
     private DcMotor motorFrontLeft;
     private DcMotor motorFrontRight;
 
+    //Arm
+    private DcMotor crane;
+    private DcMotor extender;
+    private Servo gripper;
+
     // Crab state.
     private Servo crab;
     private DigitalChannel digitalTouch;  // Hardware Device Object
@@ -50,15 +55,14 @@ public class TylerController extends OpMode {
     // Hack stuff.
     private boolean useMotors = true;
     private boolean useEncoders = true;
-    private boolean useArm = true; // HACK
+    private boolean useArm = false; // HACK
     private boolean useCrab = true;
     private boolean useLifter = true; // HACL
     private boolean useDropper = true;
     private boolean useTouch = true;
     private boolean useRange = true;
-    private boolean useStoneDetector = true;
-    private boolean useOpenCvDisplay = true;
-    private boolean useStrafe = false;
+    private boolean useStoneDetector = false;
+    private boolean useOpenCvDisplay = false;
 
     //Movement State
     private int armState;
@@ -111,20 +115,20 @@ public class TylerController extends OpMode {
                 motorFrontRight = null;
             }
 
-            if (motorBackLeft == null){
-                telemetry.addData("Motor", "You forgot to set up the back left motor, set up the motors:" );
+            if (motorBackLeft == null) {
+                telemetry.addData("Motor", "You forgot to set up the back left motor, set up the motors:");
                 useMotors = false;
             }
-            if (motorBackRight == null){
-                telemetry.addData("Motor", "You forgot to set up the back right motor, set up the motors:" );
+            if (motorBackRight == null) {
+                telemetry.addData("Motor", "You forgot to set up the back right motor, set up the motors:");
                 useMotors = false;
             }
-            if (motorFrontLeft == null){
-                telemetry.addData("Motor", "You forgot to set up the front left motors, set up the motors:" );
+            if (motorFrontLeft == null) {
+                telemetry.addData("Motor", "You forgot to set up the front left motors, set up the motors:");
                 useMotors = false;
             }
-            if (motorFrontRight == null){
-                telemetry.addData("Motor", "You forgot to set up the front right motors, set up the motors:" );
+            if (motorFrontRight == null) {
+                telemetry.addData("Motor", "You forgot to set up the front right motors, set up the motors:");
                 useMotors = false;
             }
 
@@ -141,15 +145,42 @@ public class TylerController extends OpMode {
             }
         }
 
+        if (useArm) {
+            try {
+                crane = hardwareMap.get(DcMotor.class, "motorCrane");
+                gripper = hardwareMap.get(Servo.class, "servoGripper");
+                extender = hardwareMap.get(DcMotor.class, "motorExtend");
+
+            } catch (Exception e) {
+                telemetry.addData("Arm", "exception on init: " + e.toString());
+                crane = null;
+                gripper = null;
+                extender = null;
+            }
+            if (crane == null) {
+                telemetry.addData("Arm", "You forgot to set up crab, set up Crane");
+                useArm = false;
+            }
+            if (gripper == null) {
+                telemetry.addData("Arm", "You forgot to set up crab, set up the gripper");
+                useArm = false;
+            }
+            if (extender == null) {
+                telemetry.addData("Arm", "You forgot to set up crab, set up the extender");
+                useArm = false;
+            }
+        }
+
+
         if (useCrab) {
             try {
                 crab = hardwareMap.get(Servo.class, "servoCrab");
             } catch (Exception e) {
-                telemetry.addData( "Crab", "exception on init: " + e.toString());
+                telemetry.addData("Crab", "exception on init: " + e.toString());
                 crab = null;
             }
 
-            if (crab == null){
+            if (crab == null) {
                 telemetry.addData("Crab", "You forgot to set up crab, set up servoCrab");
                 useCrab = false;
             }
@@ -170,7 +201,7 @@ public class TylerController extends OpMode {
                 digitalTouch.setMode(DigitalChannel.Mode.INPUT);
             }
         }
-          
+
         if (useRange) {
             try {
                 //initialize the four lidar sensors
@@ -178,26 +209,26 @@ public class TylerController extends OpMode {
                 rangeBack = hardwareMap.get(DistanceSensor.class, "range_back");
                 rangeLeft = hardwareMap.get(DistanceSensor.class, "range_left");
                 rangeRight = hardwareMap.get(DistanceSensor.class, "range_right");
-            } catch (Exception e){
-                telemetry.addData ("Range", "exception on init: " + e.toString());
+            } catch (Exception e) {
+                telemetry.addData("Range", "exception on init: " + e.toString());
                 rangeFront = null;
                 rangeBack = null;
                 rangeLeft = null;
                 rangeRight = null;
             }
-            if (rangeFront == null){
+            if (rangeFront == null) {
                 telemetry.addData("Range", "You forgot to set up rangeFront, set it up ");
                 useRange = false;
             }
-            if (rangeBack == null){
+            if (rangeBack == null) {
                 telemetry.addData("Range", "You forgot to set up rangeBack, set it up ");
                 useRange = false;
             }
-            if (rangeLeft == null){
+            if (rangeLeft == null) {
                 telemetry.addData("Range", "You forgot to set up rangeLeft, set it up ");
                 useRange = false;
             }
-            if (rangeRight == null){
+            if (rangeRight == null) {
                 telemetry.addData("Range", "You forgot to set up rangeRight, set it up ");
                 useRange = false;
             }
@@ -214,7 +245,7 @@ public class TylerController extends OpMode {
             if (useOpenCvDisplay) {
                 int cameraMonitorViewId =
                         hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id",
-                            hardwareMap.appContext.getPackageName());
+                                hardwareMap.appContext.getPackageName());
                 phoneCam = new OpenCvInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
                 phoneCam.openCameraDevice();
                 phoneCam.setPipeline(new SamplePipeline());
@@ -245,7 +276,6 @@ public class TylerController extends OpMode {
     }
 
 
-
     /**
      * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
      */
@@ -268,7 +298,7 @@ public class TylerController extends OpMode {
     public void stop() {
         if (useStoneDetector) {
             // TODO
-           // this.detector.disable();
+            // this.detector.disable();
         }
     }
 
@@ -326,7 +356,7 @@ public class TylerController extends OpMode {
 
         if (useMotors) {
             // Switch the directions for driving!
-            if (gamepad1.b) {
+            if (gamepad1.x) {
                 switchFront = !switchFront;
                 sleep(500);
             }
@@ -380,6 +410,75 @@ public class TylerController extends OpMode {
             }
         }
 
+        if (useArm) {
+            // shoulder MANUAL CONTROL
+           /* boolean pullUpOne = gamepad1.dpad_up;
+            boolean pullOutOne = gamepad1.dpad_down;
+            boolean pullUpTwo = gamepad2.dpad_up;
+            boolean pullOutTwo = gamepad2.dpad_down;
+            double pullPower = 0.0;
+            if (pullUpOne||pullUpTwo) {
+                pullPower = -0.8;
+            } else if (pullOutOne || pullOutTwo) {
+                pullPower = 0.8;
+            }else if(pullUpOne && pullOutTwo) {
+                pullPower = 0.8;
+            }else if(pullOutOne && pullUpTwo){
+                pullPower = -0.8;
+            }
+            shoulder.setPower(pullPower);
+
+            if (pullPower != 0.0 || armState == 0) {
+                // if anyone uses manual reset presets and turn everything off
+                if (armState != 0) {
+                    armState = 0;
+                    extenderTarget = 0;
+                    extender.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    extender.setPower(0);
+                    shoulderTarget = 0;
+                    shoulder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                }
+                shoulder.setPower(pullPower);
+            }*/
+
+            // Control the extender: MANUAL CONTROL
+            boolean extendOut = gamepad1.a;
+            boolean extendIn = gamepad1.y;
+            double extendManualPower = 0.0;
+            if (extendOut) {
+                extendManualPower = -0.5;
+            }
+            if (extendIn) {
+                extendManualPower = 0.5;
+            }
+            if (extendManualPower != 0.0 || armState == 0) {
+                if (armState != 0) {
+                    // if anyone uses manual reset presets and turn everything off
+                    armState = 0;
+                    extenderTarget = 0;
+                    extender.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    shoulderTarget = 0;
+                    //shoulder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    //shoulder.setPower(0);
+                }
+                extender.setPower(extendManualPower);
+            }
+
+            // Control the crane.
+            float suckOut = gamepad1.right_trigger;
+            float suckIn = gamepad1.left_trigger;
+            if (suckOut != 0) {
+                crane.setPower(-suckOut);
+            } else if (suckIn != 0) {
+                crane.setPower(suckIn);
+            } else {
+                crane.setPower(0);
+            }
+
+            telemetry.addData("Extender", "start: %d, curr: %d, target: %d, armState: %d", extenderStartPostion, extender.getCurrentPosition(), extenderTarget, armState);
+        }
+
+
         if (useCrab) {
             if (gamepad1.b) {
                 dropCrab();
@@ -412,8 +511,7 @@ public class TylerController extends OpMode {
              * when it will be automatically stopped for you) *IS* supported. The "if" statement
              * below will stop streaming from the camera when the "A" button on gamepad 1 is pressed.
              */
-            if(gamepad1.a)
-            {
+            if (gamepad1.a) {
                 /*
                  * IMPORTANT NOTE: calling stopStreaming() will indeed stop the stream of images
                  * from the camera (and, by extension, stop calling your vision pipeline). HOWEVER,
@@ -449,19 +547,16 @@ public class TylerController extends OpMode {
              * The "if" statements below will pause the viewport if the "X" button on gamepad1 is pressed,
              * and resume the viewport if the "Y" button on gamepad1 is pressed.
              */
-            else if(gamepad1.x)
-            {
+            else if (gamepad1.x) {
                 phoneCam.pauseViewport();
-            }
-            else if(gamepad1.y)
-            {
+            } else if (gamepad1.y) {
                 phoneCam.resumeViewport();
             }
         }
-      
+
         telemetry.update();
     }
-            
+
     protected void sleep(long milliseconds) {
         try {
             Thread.sleep(milliseconds);
@@ -471,11 +566,11 @@ public class TylerController extends OpMode {
     }
 
     public void dropCrab() {
-            if (useCrab) {
-                angleHand = 0.0;
-                crab.setPosition(angleHand);
+        if (useCrab) {
+            angleHand = 0.0;
+            crab.setPosition(angleHand);
 
-            }
+        }
     }
 
     public void raiseCrab() {
@@ -501,8 +596,7 @@ public class TylerController extends OpMode {
      * if you're doing something weird where you do need it synchronized with your OpMode thread,
      * then you will need to account for that accordingly.
      */
-    class SamplePipeline extends OpenCvPipeline
-    {
+    class SamplePipeline extends OpenCvPipeline {
         /*
          * NOTE: if you wish to use additional Mat objects in your processing pipeline, it is
          * highly recommended to declare them here as instance variables and re-use them for
@@ -513,8 +607,7 @@ public class TylerController extends OpMode {
          */
 
         @Override
-        public Mat processFrame(Mat input)
-        {
+        public Mat processFrame(Mat input) {
             /*
              * IMPORTANT NOTE: the input Mat that is passed in as a parameter to this method
              * will only dereference to the same image for the duration of this particular
@@ -529,11 +622,11 @@ public class TylerController extends OpMode {
             Imgproc.rectangle(
                     input,
                     new Point(
-                            input.cols()/4,
-                            input.rows()/4),
+                            input.cols() / 4,
+                            input.rows() / 4),
                     new Point(
-                            input.cols()*(3f/4f),
-                            input.rows()*(3f/4f)),
+                            input.cols() * (3f / 4f),
+                            input.rows() * (3f / 4f)),
                     new Scalar(0, 255, 0), 4);
 
             /**
@@ -545,3 +638,4 @@ public class TylerController extends OpMode {
         }
     }
 }
+

@@ -8,8 +8,6 @@ import org.firstinspires.ftc.teamcode.auto.ChassisConfig;
  */
 public abstract class ShortHagrids1 extends ChassisStandard {
 
-    private boolean madeTheRun = false;
-
     public ShortHagrids1(ChassisConfig config) {
         super(config);
     }
@@ -29,11 +27,6 @@ public abstract class ShortHagrids1 extends ChassisStandard {
             encoderDrive(13);
             madeTheRun = true;
         }
-
-        // Show the elapsed game time and wheel power.
-        telemetry.addData("Status", "time: " + runtime.toString());
-        telemetry.addData("Gyro", "angle: " + this.getGyroscopeAngle());
-        telemetry.addData("Status", "madeTheRun=%b", madeTheRun);
     }
 }
 

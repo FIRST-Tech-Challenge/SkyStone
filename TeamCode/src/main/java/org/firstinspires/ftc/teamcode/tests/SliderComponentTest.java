@@ -88,9 +88,11 @@ public class SliderComponentTest extends OpMode {
         }
 
         telemetry.addData("", "Queued height: " + armSystem.queuedHeight);
-
+        telemetry.addData("", armSystem.targetHeight);
+        telemetry.update();
         if (gamepad1.y) { // "yeet" it as Brian would say
             armSystem.go();
         }
+        armSystem.updateHeight();
     }
 }

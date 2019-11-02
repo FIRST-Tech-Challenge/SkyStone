@@ -30,7 +30,7 @@ public class ArmSystem {
     private final double GRIPPER_OPEN = 0.47;
     private final double GRIPPER_CLOSE = 0;
     private int origin;
-    private int targetHeight;
+    public int targetHeight;
     private final int distanceConstant = 1000; // used for calculating motor speed
 
     // Use these so we can change it easily if the motor is put on backwards
@@ -231,7 +231,7 @@ public class ArmSystem {
     // Still requires updateHeight() to be called, just like the setSliderHeight method.
     public void go() {
         this.movePresetPosition(queuedPosition);
-        this.targetHeight = queuedHeight;
+        setSliderHeight(queuedHeight);
     }
 
 

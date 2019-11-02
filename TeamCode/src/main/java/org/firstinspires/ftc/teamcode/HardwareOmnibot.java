@@ -333,6 +333,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     }
 
 	public void resetReads() {
+        super.resetReads();
 		lifterEncoderRead = false;
 		extenderEncoderRead = false;
 		leftTofRead = false;
@@ -954,9 +955,10 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 
     public double readBackTof() {
         double backLeftTof = readBackLeftTof();
-        double backRightTof = readBackRightTof();
+//        double backRightTof = readBackRightTof();
 
-        return (backLeftTof + backRightTof) / 2.0;
+//        return (backLeftTof + backRightTof) / 2.0;
+        return backLeftTof;
     }
 
     /* Initialize standard Hardware interfaces */
@@ -976,7 +978,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 
         rightTof = (Rev2mDistanceSensor)hwMap.get(DistanceSensor.class, RIGHT_RANGE);
         leftTof = (Rev2mDistanceSensor)hwMap.get(DistanceSensor.class, LEFT_RANGE);
-        backRightTof = (Rev2mDistanceSensor)hwMap.get(DistanceSensor.class, BACK_RIGHT_RANGE);
+//        backRightTof = (Rev2mDistanceSensor)hwMap.get(DistanceSensor.class, BACK_RIGHT_RANGE);
         backLeftTof = (Rev2mDistanceSensor)hwMap.get(DistanceSensor.class, BACK_LEFT_RANGE);
 
         // Set motor rotation

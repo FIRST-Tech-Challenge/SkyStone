@@ -50,6 +50,8 @@ public class HardwareOmnibotDrive
     protected double frontRightMotorPower = 0.0;
     protected double rearRightMotorPower = 0.0;
     private boolean inputShaping = true;
+    protected boolean imuRead = false;
+    protected double imuValue = 0.0;
 
     public double xAngle, yAngle, zAngle;
     /* local OpMode members. */
@@ -78,16 +80,25 @@ public class HardwareOmnibotDrive
         imu.initialize(parameters);
     }
 
+    public void resetReads() {
+        imuRead = false;
+    }
+
     public double readIMU()
     {
-        // Read IMU Code
-        //double heading = (double)gyro.getHeading();
-        Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        //heading = abs(heading - 360.0);
-        zAngle = (double)angles.firstAngle;
-        yAngle = (double)angles.secondAngle;
-        xAngle = (double)angles.thirdAngle;
-        return (double)angles.firstAngle;
+        if(!imuRead) {
+            // Read IMU Code
+            //double heading = (double)gyro.getHeading();
+            Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+            //heading = abs(heading - 360.0);
+            zAngle = (double) angles.firstAngle;
+            yAngle = (double) angles.secondAngle;
+            xAngle = (double) angles.thirdAngle;
+            imuValue = (double)angles.firstAngle;
+            imuRead = true;
+        }
+
+        return imuValue;
     }
 
     public void setFrontLeftMotorPower(double power)

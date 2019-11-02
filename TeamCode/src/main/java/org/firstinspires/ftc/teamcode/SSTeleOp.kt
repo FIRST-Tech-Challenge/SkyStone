@@ -47,7 +47,7 @@ class SSTeleOp : OpMode() {
          */
 
         touched = !robot.touch!!.state //true if not pressed
-        slowDown = if(gamepad1.left_bumper) 2.35 else 1.75 //condensed if else
+        slowDown = if(gamepad1.left_bumper) 2.35 else 1.00 //condensed if else
 
         //Tank Drive-sets power equal to numerical value of joystick positions
         leftPower = -gamepad1.left_stick_y

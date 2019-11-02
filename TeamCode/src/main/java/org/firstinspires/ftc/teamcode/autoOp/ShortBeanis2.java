@@ -22,12 +22,12 @@ public abstract class ShortBeanis2 extends ChassisStandard {
 
         if (madeTheRun == false) {
 
-            /*encoderDrive(4);
+            encoderDrive(4);
 
             turnLeft(90);
 
             encoderDrive(27);
-            */
+
 
             madeTheRun = true;
         }

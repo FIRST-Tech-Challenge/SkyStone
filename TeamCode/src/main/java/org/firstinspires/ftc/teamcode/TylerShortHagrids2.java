@@ -5,7 +5,7 @@ import org.firstinspires.ftc.teamcode.autoOp.ShortHagrids2;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name="ShOrT HaGriDs 2", group="AAAAAAAAAAAAAAAAAAAAAA")
+@Autonomous(name="Short Blue Hagrids 2", group="bluehagrids")
 public class TylerShortHagrids2 extends ShortHagrids2 {
     public TylerShortHagrids2() {
         super(ChassisConfig.forTileRunner());

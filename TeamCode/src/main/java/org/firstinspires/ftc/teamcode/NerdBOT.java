@@ -82,7 +82,7 @@ public class NerdBOT{
 
     private final double ticksPerRotation = 560.0;
     private final double wheelDiameter = 3.54331;
-    private final double GEAR_RATIO = 20.0/15.0;
+    private final double GEAR_RATIO = 1.0;
 
 
     private NerdPIDCalculator zPIDCalculator ;
@@ -95,15 +95,6 @@ public class NerdBOT{
     static final double HEADING_THRESHOLD = 2;
     static final double DISTANCE_THRESHOLD = 25;
 
-    // For Ramp Up/Down
-
-    double rampUpConstant = 0.2;
-    double rampDownConstant = 0.2;
-
-    double  maxAccelerationAttempts = 10;
-    double  maxDecelerationAttempts = 10;
-
-    // For Ramp Up/Down
 
     static  final int GYRO = 1;
     static final int ENCODERS = 2;
@@ -168,13 +159,14 @@ public class NerdBOT{
 
 
         if (debugFlag)
-            RobotLog.d ("NerdBOT - opModeIsActive = %b, distanceTargetReached = %b",  this.opmode.opModeIsActive(), distanceTargetReached(xTicks,yTicks));
+            RobotLog.d ("NerdBOT - opModeIsActive NOTCHECKED = %b, distanceTargetReached = %b",  this.opmode.opModeIsActive(), distanceTargetReached(xTicks,yTicks));
 
         //Perform PID Loop until we reach the targets
-
-        while ( this.opmode.opModeIsActive() &&  (( !distanceTargetReached(xTicks,yTicks) ))){
+//
+        while ( this.opmode.opModeIsActive() && (( !distanceTargetReached(xTicks,yTicks) ))){
             //runtime.seconds() < 3){//
         //while (opModeIsActive() && runtime.seconds() < 3 ) {
+            RobotLog.d ("NerdBOT - opModeIsActive  Inside While Loop = %b, distanceTargetReached = %b",  this.opmode.opModeIsActive(), distanceTargetReached(xTicks,yTicks));
 
             //Feed the input device readings to corresponding PID calculators:
 
@@ -238,9 +230,11 @@ public class NerdBOT{
 
         motorsSetMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-          while (this.opmode.opModeIsActive() && (!onTarget(getZAngleValue()))) {
+          //while (this.opmode.opModeIsActive() && (!onTarget(getZAngleValue()))) {
           // while (opModeIsActive() && runtime.seconds() < 5 ) {
-                angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        while (this.opmode.opModeIsActive() && (!onTarget(getZAngleValue()))) {
+
+        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
                 pidvalue = turnPIDCalculator.getOutput(angles.firstAngle, 1);
 
 
@@ -483,7 +477,7 @@ public class NerdBOT{
             }
 
         }else{
-            if((Math.abs(yTicks) - Math.abs(findYDisplacement()) <= DISTANCE_THRESHOLD) && (Math.abs(xTicks) - Math.abs(findYDisplacement()) <= DISTANCE_THRESHOLD)){
+            if((Math.abs(yTicks) - Math.abs(findYDisplacement()) <= DISTANCE_THRESHOLD) && (Math.abs(xTicks) - Math.abs(findXDisplacement()) <= DISTANCE_THRESHOLD)){
 
                 onDistanceTarget = true;
             }
@@ -543,277 +537,6 @@ public class NerdBOT{
         this.debugFlag=debugFlag;
     }
 
-    public void nerdPidDriveAndArmAction(double xDistance, double yDistance, double zAngleToMaintain, NerdBOTArm.ArmAction action) {
-
-        final String funcName = "nerdPidDrive";
-
-
-        double leftSpeed;
-        double rightSpeed;
-        double rightSpeedB;
-        double leftSpeedB;
-
-        int xTicks,yTicks;
-
-        double zpid, xpid, ypid;
-        double [] motorPowers;
-
-        NerdBOTArm nerdBOTArm = new NerdBOTArm(this.opmode);
-
-        runtime.reset();
-
-        xPIDCalculator.reset();
-        yPIDCalculator.reset();
-        zPIDCalculator.reset();
-
-        motorsResetAndRunUsingEncoders();
-
-        //Convert X and Y distances to corresponding encoder ticks.
-
-        xTicks = xDistance != 0.0 ? (int)inchesToTicksForQuadStraightDrive(wheelDiameter,xDistance, 45.0): 0;
-        yTicks = yDistance != 0.0 ? (int)inchesToTicksForQuadStraightDrive(wheelDiameter, yDistance, 45.0): 0;
-
-        if (debugFlag)
-            RobotLog.d ("NerdBOT - xTicks = %d, yTicks = %d , Angle %f", xTicks, yTicks, zAngleToMaintain);
-
-        //Set PID targets for X, Y and Z
-
-        xPIDCalculator.setTarget(xTicks,findXDisplacement());
-        yPIDCalculator.setTarget(yTicks,findYDisplacement());
-        zPIDCalculator.setTarget(zAngleToMaintain,getZAngleValue());
-
-        nerdBOTArm.setUpArmAction(NerdBOTArm.ArmAction.PICKUP);
-
-        if (debugFlag)
-            RobotLog.d ("NerdBOT - opModeIsActive = %b, distanceTargetReached = %b",  this.opmode.opModeIsActive(), distanceTargetReached(xTicks,yTicks));
-
-        //Perform PID Loop until we reach the targets
-
-        while ( this.opmode.opModeIsActive() &&  (( !distanceTargetReached(xTicks,yTicks) ))){
-            //runtime.seconds() < 3){//
-            //while (opModeIsActive() && runtime.seconds() < 3 ) {
-
-            //Feed the input device readings to corresponding PID calculators:
-
-            zpid = zPIDCalculator.getOutput(getZAngleValue(),GYRO);
-            xpid = xPIDCalculator.getOutput(findXDisplacement(),ENCODERS);
-            ypid = yPIDCalculator.getOutput(findYDisplacement(),ENCODERS);
-
-            if (debugFlag)
-                RobotLog.d("NerdBOT XPID - %f, YPID - %f , ZPID - %f", xpid, ypid, zpid);
-
-            //Calculate Speeds based on Inverse Kinematics
-
-            leftSpeed = ypid - zpid + xpid;
-            rightSpeed = ypid + zpid - xpid;
-            leftSpeedB = ypid - zpid - xpid;
-            rightSpeedB = ypid + zpid + xpid;
-
-            if (debugFlag) {
-                RobotLog.d("NerdBOT  - Speeds before Normalizing : %s |leftSpeed | rightSpeed | leftSpeedB | rightSpeedB ", funcName);
-                RobotLog.d("NerdBOT  - Speeds before Normalizing : %s |%f|%f|%f|%f ", funcName, leftSpeed, rightSpeed, leftSpeedB, rightSpeedB);
-            }
-
-            if(nerdBOTArm.rearMotor.getCurrentPosition() <= nerdBOTArm.REV) {
-                nerdBOTArm.nerdPIDArmPerformTask(nerdBOTArm.rearMotor.getCurrentPosition(), nerdBOTArm.REV, nerdBOTArm.RkP, nerdBOTArm.RkI, nerdBOTArm.RkD, true);
-
-            }
-            if(nerdBOTArm.frontMotor.getCurrentPosition() <= nerdBOTArm.FEV) {
-                nerdBOTArm.nerdPIDArmPerformTask(nerdBOTArm.frontMotor.getCurrentPosition(), nerdBOTArm.FEV, nerdBOTArm.FkP, nerdBOTArm.FkI, nerdBOTArm.FkD, false);
-            }
-            if((nerdBOTArm.rearMotor.getCurrentPosition() <= nerdBOTArm.REV) || (nerdBOTArm.frontMotor.getCurrentPosition() <= nerdBOTArm.FEV))
-                nerdBOTArm.nerdBOTArmSetMotorPowers();
-
-            //Normalize the Motor Speeds for Min and Max Values
-
-            motorPowers = normalizeSpeedsForMinMaxValues(leftSpeed,rightSpeed,rightSpeedB,leftSpeedB);
-
-            // Set Powers to corresponding Motors
-
-            leftMotor.setPower(motorPowers[0]);
-            rightMotor.setPower(motorPowers[1]);
-            rightMotorB.setPower(motorPowers[2]);
-            leftMotorB.setPower(motorPowers[3]);
-
-
-            if (debugFlag) {
-                RobotLog.d("NerdBOT  - Speeds after Normalizing : %s |leftSpeed | rightSpeed | leftSpeedB | rightSpeedB ", funcName);
-                RobotLog.d("NerdBOT  - Speeds after Normalizing : %s |%f|%f|%f|%f ", funcName, motorPowers[0], motorPowers[1], motorPowers[2], motorPowers[3]);
-            }
-
-        }
-
-        //Brake once the PID loop is complete
-
-        brakeMotorsAndStop();
-
-    }
-
-    public void nerdPidDriveWithRampUpDown(double speed, double xDistance,double yDistance, double zAngleToMaintain) {
-
-        final String funcName = "nerdPidDrive";
-
-
-        double leftSpeed;
-        double rightSpeed;
-        double rightSpeedB;
-        double leftSpeedB;
-
-        int xTicks,yTicks, rampUpDownTicks;
-
-        double zpid, xpid, ypid;
-        double [] motorPowers;
-         boolean rampUpDownX = false;
-         boolean rampUpDownY = false;
-
-         int accelerateCount = 1, decelerationCount=1;
-
-        runtime.reset();
-
-        xPIDCalculator.reset();
-        yPIDCalculator.reset();
-        zPIDCalculator.reset();
-
-        motorsResetAndRunUsingEncoders();
-
-        //Convert X and Y distances to corresponding encoder ticks.
-
-        xTicks = xDistance != 0.0 ? (int)inchesToTicksForQuadStraightDrive(wheelDiameter,xDistance, 45.0): 0;
-        yTicks = yDistance != 0.0 ? (int)inchesToTicksForQuadStraightDrive(wheelDiameter, yDistance, 45.0): 0;
-
-        if (debugFlag)
-            RobotLog.d ("NerdBOT - xTicks = %d, yTicks = %d , Angle %f", xTicks, yTicks, zAngleToMaintain);
-
-        //Set PID targets for X, Y and Z
-
-        xPIDCalculator.setTarget(xTicks,findXDisplacement());
-        yPIDCalculator.setTarget(yTicks,findYDisplacement());
-        zPIDCalculator.setTarget(zAngleToMaintain,getZAngleValue());
-
-
-        double maxTicks = Math.max(Math.abs(xTicks), Math.abs(yTicks));
-        if((Math.abs(xTicks) > Math.abs(yTicks))){
-            rampUpDownTicks = xTicks;
-            rampUpDownX = true;
-        }else{
-            rampUpDownTicks = yTicks;
-            rampUpDownY = true;
-        }
-
-        if (debugFlag)
-            RobotLog.d ("NerdBOT - opModeIsActive = %b, distanceTargetReached = %b",  this.opmode.opModeIsActive(), distanceTargetReached(xTicks,yTicks));
-
-        //Perform PID Loop until we reach the targets
-
-        while ( this.opmode.opModeIsActive() &&  (( !distanceTargetReached(xTicks,yTicks) ))){
-            //runtime.seconds() < 3){//
-            //while (opModeIsActive() && runtime.seconds() < 3 ) {
-
-            //Feed the input device readings to corresponding PID calculators:
-
-            zpid = zPIDCalculator.getOutput(getZAngleValue(),GYRO);
-            xpid = xPIDCalculator.getOutput(findXDisplacement(),ENCODERS);
-            ypid = yPIDCalculator.getOutput(findYDisplacement(),ENCODERS);
-
-            if (debugFlag)
-                RobotLog.d("NerdBOT XPID - %f, YPID - %f , ZPID - %f", xpid, ypid, zpid);
-
-            //Calculate Speeds based on Inverse Kinematics
-
-            leftSpeed = ypid - zpid + xpid;
-            rightSpeed = ypid + zpid - xpid;
-            leftSpeedB = ypid - zpid - xpid;
-            rightSpeedB = ypid + zpid + xpid;
-
-            if (debugFlag) {
-                RobotLog.d("NerdBOT  - Speeds before Normalizing : %s |leftSpeed | rightSpeed | leftSpeedB | rightSpeedB ", funcName);
-                RobotLog.d("NerdBOT  - Speeds before Normalizing : %s |%f|%f|%f|%f ", funcName, leftSpeed, rightSpeed, leftSpeedB, rightSpeedB);
-            }
-            //Normalize the Motor Speeds for Min and Max Values
-
-            if(rampUpDownY) motorPowers = normalizeSpeedsForMinMaxValuesWithRampUpDown(leftSpeed,rightSpeed,rightSpeedB,leftSpeedB,findYDisplacement(),rampUpDownTicks,accelerateCount, decelerationCount);
-            else  motorPowers = normalizeSpeedsForMinMaxValuesWithRampUpDown(leftSpeed,rightSpeed,rightSpeedB,leftSpeedB,findXDisplacement(),rampUpDownTicks, accelerateCount,decelerationCount);
-            // Set Powers to corresponding Motors
-
-            leftMotor.setPower(motorPowers[0]);
-            rightMotor.setPower(motorPowers[1]);
-            rightMotorB.setPower(motorPowers[2]);
-            leftMotorB.setPower(motorPowers[3]);
-
-
-            if (debugFlag) {
-                RobotLog.d("NerdBOT  - Speeds after Normalizing : %s |leftSpeed | rightSpeed | leftSpeedB | rightSpeedB ", funcName);
-                RobotLog.d("NerdBOT  - Speeds after Normalizing : %s |%f|%f|%f|%f ", funcName, motorPowers[0], motorPowers[1], motorPowers[2], motorPowers[3]);
-            }
-
-        }
-
-        //Brake once the PID loop is complete
-
-        brakeMotorsAndStop();
-
-    }
-
-    public double[] normalizeSpeedsForMinMaxValuesWithRampUpDown(double leftSpeed, double rightSpeed, double rightSpeedB, double leftSpeedB, double currentTicks, double rampUpDownTicks, int accelerateCount, int decelerationCount){
-
-            double normalizedMaxSpeed=this.maxSpeed;
-        double max = Math.max(Math.max(Math.abs(leftSpeed), Math.abs(rightSpeed)), Math.max(Math.abs(leftSpeedB), Math.abs(rightSpeedB)));
-
-        if(currentTicks <= rampUpConstant* rampUpDownTicks && accelerateCount <= maxAccelerationAttempts) {
-            normalizedMaxSpeed = accelerate(leftSpeed, rightSpeed, rightSpeedB, leftSpeedB, accelerateCount);
-        }else if(currentTicks >= rampUpDownTicks - (rampDownConstant * rampUpDownTicks) && decelerationCount <= maxDecelerationAttempts && max > this.maxSpeed ){
-            normalizedMaxSpeed = decelerate (leftSpeed, rightSpeed, rightSpeedB, leftSpeedB,decelerationCount);
-        }
-        else{
-            normalizedMaxSpeed = this.maxSpeed;
-        }
-
-            leftSpeed = (leftSpeed * normalizedMaxSpeed)/max;
-            rightSpeed =(rightSpeed * normalizedMaxSpeed)/ max;
-            leftSpeedB = (leftSpeedB * normalizedMaxSpeed)/max;
-            rightSpeedB = (rightSpeedB * normalizedMaxSpeed)/max;
-
-
-        // Preserve the sign of each speed for each motor
-        int leftSign, rightSign, leftSignB, rightSignB;
-
-        leftSign = (int)Math.signum(leftSpeed);
-        rightSign = (int)Math.signum(rightSpeed);
-        leftSignB =(int) Math.signum(leftSpeedB);
-        rightSignB = (int)Math.signum(rightSpeedB);
-
-        // Assign min speed with correct sign
-
-        if (Math.abs(leftSpeed) < this.minSpeed) leftSpeed = this.minSpeed*leftSign;
-        if (Math.abs(rightSpeed) < this.minSpeed) rightSpeed = this.minSpeed*rightSign;
-        if (Math.abs(leftSpeedB) < this.minSpeed) leftSpeedB = this.minSpeed*leftSignB;
-        if (Math.abs(rightSpeedB) < this.minSpeed) rightSpeedB = this.minSpeed*rightSignB;
-
-        double [] normalizedSpeeds = {leftSpeed, rightSpeed,rightSpeedB,leftSpeedB};
-        return  normalizedSpeeds;
-    }
-
-    public double accelerate(double leftSpeed, double rightSpeed, double rightSpeedB, double leftSpeedB, int accelerateCount){
-
-        double maxSpeedForAcceleration = this.maxSpeed;
-        if (accelerateCount <= this.maxAccelerationAttempts){
-            maxSpeedForAcceleration = maxSpeedForAcceleration * (accelerateCount/maxAccelerationAttempts);
-            accelerateCount++;
-        }
-
-        return maxSpeedForAcceleration;
-    }
-
-    public double decelerate(double leftSpeed, double rightSpeed, double rightSpeedB, double leftSpeedB, int decelerateCount){
-
-        double maxSpeedForDeceleration = this.maxSpeed;
-        if (decelerateCount <= this.maxDecelerationAttempts){
-            maxSpeedForDeceleration = maxSpeedForDeceleration - (maxSpeedForDeceleration * (decelerateCount/maxDecelerationAttempts));
-            decelerateCount++;
-        }
-
-        return maxSpeedForDeceleration;
-    }
 
 
 

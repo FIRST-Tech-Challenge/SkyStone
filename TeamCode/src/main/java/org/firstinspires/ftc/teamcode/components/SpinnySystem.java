@@ -30,7 +30,7 @@ public class SpinnySystem {
     private void initMotors() {
         motors.forEach((name, motor) -> {
             motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            if (name == MotorNames.BOTTOMINTAKE) {
+            if (name == MotorNames.RIGHTINTAKE) {
                 motor.setDirection(DcMotorSimple.Direction.REVERSE);
             } else {
                 motor.setDirection(DcMotorSimple.Direction.FORWARD);

@@ -25,27 +25,21 @@ public class OdometryAuto extends LinearOpMode {
 
 //    private ColorSensor color;
 //    // only for encoder use
-//
-//    private DcMotor leftOdo;
-//    // only for encoder use
-//    private DcMotor rightOdo;
-//    // only for encoder use
-//    private DcMotor alignOdo;
-//    // only for encoder alignment
-//
-//    private DcMotor intakeLeft;
-//    // only for motor intake left motor
-//    private DcMotor intakeRight;
+
+    private DcMotor intakeLeft;
+    // only for motor intake left motor
+    private DcMotor intakeRight;
+
 //    // only for motor outtake right motor
 //    private Servo outtakeLeft;
 //    // only for motor outtake left
 //    private Servo outtakeRight;
 //    // only for motor outtake right
 //
-//    private DcMotor elevatorRight;
-//    // only for elevator right motor
-//    private DcMotor elevatorLeft;
-//    // only for elevator left motor
+    private DcMotor liftRight;
+    // only for elevator right motor
+    private DcMotor liftLeft;
+    // only for elevator left motor
 //
 //    private Servo grabRight;
 //    // only for grabber right
@@ -68,19 +62,14 @@ public class OdometryAuto extends LinearOpMode {
         right1 = hardwareMap.dcMotor.get("rightFront");
         right2 = hardwareMap.dcMotor.get("rightBack");
 
-//        color = hardwareMap.colorSensor.get("color");
-//
-//        leftOdo = hardwareMap.dcMotor.get("leftOdo");
-//        rightOdo = hardwareMap.dcMotor.get("rightOdo");
-//        alignOdo = hardwareMap.dcMotor.get("alignOdo");
-//
-//        intakeLeft = hardwareMap.dcMotor.get("intakeLeft");
-//        intakeRight = hardwareMap.dcMotor.get("intakeRight");
+        intakeLeft = hardwareMap.dcMotor.get("intakeLeft/odometerLeftY");
+        intakeRight = hardwareMap.dcMotor.get("intakeRight/odometerRightY");
+
 //        outtakeLeft = hardwareMap.servo.get("outtakeLeft");
 //        outtakeRight = hardwareMap.servo.get("outtakeRight");
 //
-//        elevatorLeft = hardwareMap.dcMotor.get("elevatorLeft");
-//        elevatorRight = hardwareMap.dcMotor.get("elevatorRight");
+        liftLeft = hardwareMap.dcMotor.get("liftLeft");
+        liftRight = hardwareMap.dcMotor.get("liftRight/odometerX");
 //
 //        grabRight = hardwareMap.servo.get("grabRight");
 //        grabLeft = hardwareMap.servo.get("grabLeft");
@@ -104,66 +93,64 @@ public class OdometryAuto extends LinearOpMode {
         telemetry.update();
 
 
-//        straightMovement(12, 1, 1, 1, 1);
-//        sideToSide(12, 1, -1, -1, 1);
+        straightMovement(15, 1, 1, 1, 1);
+        //sideToSide(6, 1, -1, -1, 1);
     }
-//
-//    int numOfTicks = 4096;
-//    double pi = 3.14159265358979323;
-//    int wheelDiameter = 2;
-//    double conversion = numOfTicks / (wheelDiameter * pi);
-//
-//    void straightMovement(int inches, int L1, int L2, int R1, int R2) {
-//
-//        int currentPosLeft = leftOdo.getCurrentPosition();
-//        // insert name of left odometry wheel
-//        int currentPosRight = rightOdo.getCurrentPosition();
-//        // insert name of the right odometry wheel
-//        int currentAlignment = alignOdo.getCurrentPosition();
-//
-//        double ticksMovement = conversion * inches;
-//
-//        double targetPosLeft = currentPosLeft + ticksMovement;
-//        double targetPosRight = currentPosRight + ticksMovement;
-//
-//        if (currentPosLeft != targetPosLeft && currentPosRight != targetPosRight) {
-//            left1.setPower(L1);
-//            left2.setPower(L2);
-//            right1.setPower(R1);
-//            right2.setPower(R2);
-//        } else {
-//            left1.setPower(0);
-//            left2.setPower(0);
-//            right1.setPower(0);
-//            right2.setPower(0);
-//        }
-//        alignOdo.setTargetPosition(currentAlignment);
-//    }
-//
-//    void sideToSide(int inches, int L1, int L2, int R1, int R2) {
-//
-//        int currentPosLeft = leftOdo.getCurrentPosition();
-//        // insert name of left odometry wheel
-//        int currentPosRight = rightOdo.getCurrentPosition();
-//        // insert name of the right odometry wheel
-//        int currentAlignment = alignOdo.getCurrentPosition();
-//
-//        double ticksMovement = conversion * inches;
-//
-//        double targetAlignPos = currentAlignment + ticksMovement;
-//
-//        if (currentAlignment != targetAlignPos) {
-//            left1.setPower(L1);
-//            left2.setPower(L2);
-//            right1.setPower(R1);
-//            right2.setPower(R2);
-//        } else {
-//            left1.setPower(0);
-//            left2.setPower(0);
-//            right1.setPower(0);
-//            right2.setPower(0);
-//        }
-//        leftOdo.setTargetPosition(currentPosLeft);
-//        rightOdo.setTargetPosition(currentPosRight);
-//    }
+
+    int numOfTicks = 4096;
+    double pi = 3.14159265358979323;
+    int wheelDiameter = 2;
+    double conversion = numOfTicks / (wheelDiameter * pi);
+
+    void straightMovement(int inches, int L1, int L2, int R1, int R2) {
+
+        int currentPosLeft =  intakeLeft.getCurrentPosition();
+        // insert name of left odometry wheel
+        int currentPosRight = intakeRight.getCurrentPosition();
+        // insert name of the right odometry wheel
+
+        double ticksMovement = conversion * inches;
+
+        double targetPosLeft = currentPosLeft + ticksMovement;
+        double targetPosRight = currentPosRight + ticksMovement;
+
+        if (currentPosLeft != targetPosLeft && currentPosRight != targetPosRight) {
+            left1.setPower(L1);
+            left2.setPower(L2);
+            right1.setPower(R1);
+            right2.setPower(R2);
+        } else {
+            left1.setPower(0);
+            left2.setPower(0);
+            right1.setPower(0);
+            right2.setPower(0);
+        }
+    }
+
+    void sideToSide(int inches, int L1, int L2, int R1, int R2) {
+
+        int currentPosLeft = intakeLeft.getCurrentPosition();
+        // insert name of left odometry wheel
+        int currentPosRight = intakeRight.getCurrentPosition();
+        // insert name of the right odometry wheel
+        int currentAlignment = liftRight.getCurrentPosition();
+
+        double ticksMovement = conversion * inches;
+
+        double targetAlignPos = currentAlignment + ticksMovement;
+
+        if (currentAlignment != targetAlignPos) {
+            left1.setPower(L1);
+            left2.setPower(L2);
+            right1.setPower(R1);
+            right2.setPower(R2);
+        }
+        else {
+            left1.setPower(0);
+            left2.setPower(0);
+            right1.setPower(0);
+            right2.setPower(0);
+        }
+
+    }
 }

@@ -39,7 +39,6 @@ public class PositionTrackingAuto extends LinearOpMode {
         right1 = hardwareMap.dcMotor.get("right1");
         right2 = hardwareMap.dcMotor.get("right2");
 
-
         int leftOdo = left1.getCurrentPosition();
         int rightOdo = left2.getCurrentPosition();
         int alignOdo = right1.getCurrentPosition();
@@ -59,6 +58,76 @@ public class PositionTrackingAuto extends LinearOpMode {
         telemetry.addData("rightodo", rightOdo);
         telemetry.addData("alignodo", alignOdo);
         telemetry.update();
+    }
+
+    int numOfTicks = 4096;
+    double pi = 3.14159265358979323;
+    int wheelDiameter = 2;
+    double conversion = numOfTicks / (wheelDiameter * pi);
+
+    void odomTutorial (int x, int y){
+        int initialX = 0;
+        int initialY = 0;
+        int initialTheta = 0;
+
+        double diagonalMovement = sqrt((x * x) + (y * y));
+        double ticksMovement = diagonalMovement * conversion;
+
+        int currentLeftPos = leftOdo.getCurrentPosition();
+        int currentRightPos = rightOdo.getCurrentPosition();
+        int currentAlignPos = alignOdo.getCurrentPosition();
+
+        double targetLeftPos = ticksMovement + currentLeftPos;
+        double targetRightPos = ticksMovement + currentRightPos;
+
+        if (leftOdo.getCurrentPosition() != targetLeftPos && rightOdo.getCurrentPosition() != targetRightPos) {
+            left2.setPower(1);
+            right1.setPower(1);
+        }
+        else {
+            left2.setPower(0);
+            right1.setPower(0);
         }
 
+
     }
+
+//    void moveToPosition(int x, int y, int angle, int turn) {
+//        double diagonalMovement = sqrt((x * x) + (y * y));
+//        double ticksMovement = diagonalMovement * conversion;
+//
+//        int currentLeftPos = leftOdo.getCurrentPosition();
+//        int currentRightPos = rightOdo.getCurrentPosition();
+//        int curentAlignPos = alignOdo.getCurrentPosition();
+//
+//        double targetLeftPos = ticksMovement + currentLeftPos;
+//        double targetRightPos = ticksMovement + currentRightPos;
+//
+//
+//
+//        if (angle < 90 && angle > 0) {
+//            while (currentLeftPos != leftOdo.getCurrentPosition()) {
+//                left1.setPower(1);
+//                right2.setPower(1);
+//            }
+//        }
+//        if (angle < 180 && angle > 90) {
+//            while (currentLeftPos != leftOdo.getCurrentPosition()) {
+//                left2.setPower(1);
+//                right1.setPower(1);
+//            }
+//        }
+//        if (angle < 0 && angle > -90) {
+//            while (currentLeftPos != leftOdo.getCurrentPosition()) {
+//                left2.setPower(-1);
+//                right1.setPower(-1);
+//            }
+//        }
+//        if (angle < -90 && angle > -180) {
+//            while (currentLeftPos != leftOdo.getCurrentPosition()) {
+//                left1.setPower(-1);
+//                right2.setPower(-1);
+//            }
+//        }
+//    }
+}

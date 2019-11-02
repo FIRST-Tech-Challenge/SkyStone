@@ -54,8 +54,7 @@ import java.lang.Math;
  */
 
 @TeleOp(name="Basic: Arcade OpMode", group="Iterative Opmode")
-public class BasicOpMode_ArcadeTest extends OpMode
-{
+public class BasicOpMode_ArcadeTest extends OpMode {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -66,9 +65,16 @@ public class BasicOpMode_ArcadeTest extends OpMode
 
     private DcMotor elevatorMotor = null;
 
-    private Servo flipperServo = null;
+    private Servo flipperServo1 = null;
+    private Servo flipperServo2 = null;
 
-    int servoPosition = 0;
+    private DcMotor vacuumMotor = null;
+
+    int servoPosition1 = 0;
+    int servoPosition2 = 0;
+
+    int vacuumPower = 0;
+
     /*
     3 * Code to run ONCE when the driver hits INIT
      */
@@ -79,15 +85,17 @@ public class BasicOpMode_ArcadeTest extends OpMode
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        bottomleftDrive  = hardwareMap.get(DcMotor.class, "bottom_left_drive");
+        bottomleftDrive = hardwareMap.get(DcMotor.class, "bottom_left_drive");
         bottomrightDrive = hardwareMap.get(DcMotor.class, "bottom_right_drive");
         topleftDrive = hardwareMap.get(DcMotor.class, "top_left_drive");
         toprightDrive = hardwareMap.get(DcMotor.class, "top_right_drive");
 
         elevatorMotor = hardwareMap.get(DcMotor.class, "elevator_motor");
 
-        flipperServo = hardwareMap.get (Servo.class, "flipper_Motor");
+        flipperServo1 = hardwareMap.get(Servo.class, "flipper_servo1");
+        flipperServo2 = hardwareMap.get(Servo.class, "flipper_servo2");
 
+        vacuumMotor = hardwareMap.get(DcMotor.class, "vacuum_motor");
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
         bottomleftDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -97,7 +105,10 @@ public class BasicOpMode_ArcadeTest extends OpMode
 
         elevatorMotor.setDirection(DcMotor.Direction.FORWARD);
 
-        flipperServo.setDirection (Servo.Direction.FORWARD);
+        flipperServo1.setDirection(Servo.Direction.FORWARD);
+        flipperServo2.setDirection(Servo.Direction.REVERSE);
+
+        vacuumMotor.setDirection(DcMotor.Direction.FORWARD);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -126,7 +137,6 @@ public class BasicOpMode_ArcadeTest extends OpMode
 
         // Setup a variable for each drive wheel to save power level for telemetry
         double bottomleftpower, bottomrightpower, topleftpower, toprightpower;
-
         double leftStickY = -1 * gamepad1.left_stick_y;
         double leftStickX = gamepad1.left_stick_x;
 
@@ -185,45 +195,69 @@ public class BasicOpMode_ArcadeTest extends OpMode
 
 
         if (gamepad2.x) {
-            servoPosition += 15;
-
-        } else if (gamepad2.b){
-            if (servoPosition>14){
-                servoPosition-=15;
-            }else{
-                servoPosition=0;
+            if (servoPosition1 < 166) {
+                servoPosition1 += 15;
+            } else {
+                servoPosition1 = 180;
             }
+        } else if (gamepad2.b) {
+            if (servoPosition1 > 14) {
+                servoPosition1 -= 15;
+            } else {
+                servoPosition1 = 0;
+            }
+
+            if (gamepad2.x) {
+                if (servoPosition2 < 166) {
+                    servoPosition2 += 15;
+                } else {
+                    servoPosition2 = 180;
+                }
+            } else if (gamepad2.b) {
+                if (servoPosition2 > 14) {
+                    servoPosition2 -= 15;
+                } else {
+                    servoPosition2 = 0;
+                }
+
+                if (gamepad1.left_trigger > .5) {
+                    vacuumMotor.setPower(1);
+                } else {
+                    vacuumMotor.setPower(0);
+                }
+            }
+
+
+            // Send calculated power to wheels
+            bottomleftDrive.setPower(bottomleftPower);
+            bottomrightDrive.setPower(bottomrightPower);
+            topleftDrive.setPower(topleftPower);
+            toprightDrive.setPower(toprightPower);
+            flipperServo1.setPosition(servoPosition1);
+            flipperServo1.setPosition(servoPosition2);
+            vacuumMotor.setPower(vacuumPower);
+
+
+            // Show the elapsed game time and wheel power.
+            telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addData("Motors", "tleft (%.2f), tright (%.2f), bleft (%.2f), bright (%.2f), ANGLE (%.2f), X (%.2f), Y (%.2f)",
+                    topleftPower, toprightPower, bottomleftPower, bottomrightPower, angle, leftStickX, leftStickY);
+
+            telemetry.addData("left Motor Position", topleftDrive.getCurrentPosition());
+
+            telemetry.addData("elevator motor power", elevatorMotor.getPower());
+
+            telemetry.addData("vacuumPower", vacuumMotor.getPower());
         }
 
+        /*
+         * Code to run ONCE after the driver hits STOP
+         */
 
-
-
-
-        // Send calculated power to wheels
-        bottomleftDrive.setPower(bottomleftPower);
-        bottomrightDrive.setPower(bottomrightPower);
-        topleftDrive.setPower(topleftPower);
-        toprightDrive.setPower(toprightPower);
-        flipperServo.setPosition(servoPosition);
-
-
-        // Show the elapsed game time and wheel power.
-        telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Motors", "tleft (%.2f), tright (%.2f), bleft (%.2f), bright (%.2f), ANGLE (%.2f), X (%.2f), Y (%.2f)",
-                topleftPower, toprightPower, bottomleftPower, bottomrightPower, angle,leftStickX, leftStickY);
-
-        telemetry.addData("left Motor Position", topleftDrive.getCurrentPosition());
-
-        telemetry.addData("elevator motor power", elevatorMotor.getPower());
     }
-
-    /*
-     * Code to run ONCE after the driver hits STOP
-     */
-    @Override
-    public void stop() {
+    public void stop(){
+        
     }
-
 }
 
 

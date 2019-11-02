@@ -2,7 +2,6 @@
 package org.firstinspires.ftc.teamcode.teamcode.OpModes;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -14,8 +13,8 @@ import org.firstinspires.ftc.teamcode.teamcode.Hardware.Outtake;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.Sensors;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.ZeroMap;
 
-@Autonomous(name ="AML blue Green Path", group="Auto Basic")
-public class AMLPathingBlue extends LinearOpMode {
+@Autonomous(name ="AML red Green Path", group="Auto Basic")
+public class AMLPathingRed extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
     private double driveSpeed = 0.6;
@@ -83,7 +82,7 @@ public class AMLPathingBlue extends LinearOpMode {
 
                 drive.gyroTurn(this, 180, true, 2000);
                 drive.snowWhite();
-                drive.encoderDrive(this, -.5, -36, -36, 2);
+                drive.encoderDrive(this, -.5, -24, -24, 2);
                 outtake.Auto_Outtake(this);
                 drive.encoderDrive(this, .5, 15, 15, 2);
                 drive.gyroTurn(this, 90, false, 1000);
@@ -92,7 +91,7 @@ public class AMLPathingBlue extends LinearOpMode {
 
                 drive.strafeMove(this, 24, 2, .5);
                 drive.encoderDrive(this, .5, 88, 88, 2);
-                drive.gyroTurn(this, 90, true, 2000);
+                drive.gyroTurn(this, 90, false, 2000);
                 /*outtake.liftLeft.setPower(.5);
                 outtake.liftRight.setPower(.5);
                 sleep(1000);
@@ -105,7 +104,7 @@ public class AMLPathingBlue extends LinearOpMode {
                 outtake.liftLeft.setPower(0);
                 outtake.liftRight.setPower(0);*/
                 drive.encoderDrive(this, .5, 15, 15, 2);
-                drive.gyroTurn(this, 90, false, 2000);
+                drive.gyroTurn(this, 90, true, 2000);
                 drive.encoderDrive(this, -.5, -90, -90, 2);
 
 

@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.Intake;
+import org.firstinspires.ftc.teamcode.teamcode.Hardware.Outtake;
 
 @Autonomous(name ="Troll Auto Square", group="Auto Basic")
 public class AutoTrollSquare extends LinearOpMode {
@@ -19,16 +20,18 @@ public class AutoTrollSquare extends LinearOpMode {
 
     DriveTrain drive = new DriveTrain();
     Intake intake = new Intake();
+    Outtake outtake = new Outtake();
 
     @Override
     public void runOpMode() {
 
-        drive.initDriveTrain(this);
-        intake.initIntakeTele(this);
+        outtake.initOuttakeAuto(this);
+
         //drive.RunAsFloat();
         waitForStart();
 
-        drive.gyroTurn(this, 90, true, 1000);
+        outtake.Auto_Outtake(this);
+
                 //drive.partyMode();
 
 
@@ -53,7 +56,7 @@ public class AutoTrollSquare extends LinearOpMode {
         telemetry.update();
 
         drive.encoderDrive(this, -1, 24, 24, 2);*/
-       drive.snowWhite();
+       //drive.snowWhite();
     }
 
 }

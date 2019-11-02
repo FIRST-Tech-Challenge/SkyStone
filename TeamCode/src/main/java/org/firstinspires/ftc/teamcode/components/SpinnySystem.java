@@ -35,9 +35,8 @@ public class SpinnySystem {
             } else {
                 motor.setDirection(DcMotorSimple.Direction.FORWARD);
             }
-
+            motor.setPower(0.0);
         });
-        setMotorsPower(0);
     }
 
     private void setMotorsPower(double power) {

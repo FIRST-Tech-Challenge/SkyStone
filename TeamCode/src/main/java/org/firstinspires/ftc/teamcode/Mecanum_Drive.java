@@ -16,30 +16,41 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 @TeleOp
 public class Mecanum_Drive extends LinearOpMode {
     private DcMotor frontLeft, frontRight, backLeft, backRight;
-    private DcMotor upperArm, lowerArm;
-    private Servo leftClaw, rightClaw, grabber, grabber2;
-    private DigitalChannel upper_sensor, lower_sensor;
+    private DcMotor lowerArm;
+    private Servo leftClaw, rightClaw, linear, grabber;
+    private DigitalChannel lower_sensor;
     private float fwd, side, turn, power, lower_arm_stick, grabber_stick;
     private double clawOffset = 0.5;
+    private double linearOffset = 0.0;
     private double grabberOffset = 0.0;
-    private double grabberOffset2 = 0.0;
-    private boolean dpad_up, dpad_down, btn_y, btn_a, btn_x, btn_b, left_bumper, right_bumper;
+    private boolean btn_y, btn_a, left_bumper, right_bumper, btn_x1, btn_b1, btn_x2, btn_b2;
+    private boolean clawExpanded = false;
+    private boolean turning = false;
+    private boolean gyro_assist = true;
+
 
     // Gyro related initialization
     private BNO055IMU imu;
     private Orientation lastAngles = new Orientation();
     private double globalAngle, correction;
 
-    public final static double deadzone = 0.2;          // Deadzone for bot movement
-    public final static double claw_speed = 0.01;       // Claw movement rate
-    public final static double grabber_speed = 0.005;    // Grabber rotation rate
-    public final static double grabber_lower = 0.3;    // Grabber lower limit
-    public final static double grabber_upper = 0.615;      // Grabber upper limit
-    public final static double grabber_initial = grabber_lower;
-    public final static double arm_up_power = 1.0;    // Grabber rotation rate
-    public final static double arm_down_power = -1.0;    // Grabber rotation rate
-    public final static int arm_up_step = 30;           // Arm up movement position step
-    public final static int arm_down_step = 30;           // Arm up movement position step
+    // Variables
+    public final static double deadzone = 0.2;              // Deadzone for bot movement
+    public final static double claw_speed = 0.01;           // Claw movement rate
+    public final static double claw_left_initial = 0.07;    // Left claw initial position
+    public final static double claw_right_initial = 0.55;   // Right claw initial position
+    public final static double claw_mid_position = 0.65;    // Claw mid point position
+    public final static double claw_move_span = 0.35;       // Claw movement span
+    public final static double linear_speed = 0.005;        // Linear servo rotation rate
+    public final static double linear_lower = 0.3;          // Linear servo lower limit
+    public final static double linear_upper = 0.615;        // Linear servo upper limit
+    public final static double linear_initial = linear_lower;
+    public final static double linear_offset_max = 0.02;    // Max offset allowed to move linear servo
+    public final static double grabber_speed = 0.005;       // Grabber servo rotation rate
+    public final static double arm_up_power = 1.0;          // Arm up movement rate
+    public final static double arm_down_power = -1.0;       // Arm down movement rate
+    public final static int arm_up_step = 30;               // Arm up movement position step
+    public final static int arm_down_step = 30;             // Arm up movement position step
 
     @Override
     public void runOpMode() {
@@ -78,61 +89,30 @@ public class Mecanum_Drive extends LinearOpMode {
         frontRight.setDirection(DcMotor.Direction.REVERSE);
         backRight.setDirection(DcMotor.Direction.REVERSE);
 
-        // Arm motors
-//        upperArm = hardwareMap.get(DcMotor.class, "upper_arm");
+        // Arm motor
         lowerArm = hardwareMap.get(DcMotor.class, "lower_arm");
-
-//        upperArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        upperArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        upperArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         lowerArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        lowerArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        lowerArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        lowerArm.setDirection(DcMotor.Direction.REVERSE);
 
         // Claw servos
         leftClaw = hardwareMap.get(Servo.class, "left_claw");
         rightClaw = hardwareMap.get(Servo.class, "right_claw");
-        grabber = hardwareMap.get(Servo.class, "linear");
-        grabber2 = hardwareMap.get(Servo.class,"grabber");
+        linear = hardwareMap.get(Servo.class, "linear");
+        grabber = hardwareMap.get(Servo.class,"grabber");
 
-        leftClaw.setPosition(0.07);
-        rightClaw.setPosition(0.55);
-        grabber2.setPosition(grabberOffset2);
-        boolean clawExpanded = false;
-
-        telemetry.addData("LClaw= ", leftClaw.getPosition());
-        telemetry.addData("RClaw= ", rightClaw.getPosition());
-        telemetry.addData("Grabber2= ", grabber2.getPosition());
-        telemetry.update();
-
-        sleep(2000);
-        grabber.setPosition(grabber_initial);
-
-        // Touch sensors
-        /*
-        upper_sensor = hardwareMap.get(DigitalChannel.class, "arm_upper_sensor");
-        upper_sensor.setMode(DigitalChannel.Mode.INPUT);
-        */
+        // Sensor for lower arm
         lower_sensor = hardwareMap.get(DigitalChannel.class, "arm_lower_sensor");
         lower_sensor.setMode(DigitalChannel.Mode.INPUT);
 
-        // Initialize lower arm
-        while (lower_sensor.getState()) {
-            lowerArm.setTargetPosition(lowerArm.getCurrentPosition() - arm_down_step);
-            lowerArm.setPower(arm_down_power);
-        }
-        lowerArm.setPower(0);
-        lowerArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        lowerArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        // Setting initial positions for claw, grabber, linear servo and arm
+        initializePositions();
+
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
-
-        boolean turning = false;
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -159,8 +139,10 @@ public class Mecanum_Drive extends LinearOpMode {
                 }
 
                 // Moving in straight line (forward, backward or sideway) without turning; Add gyro assistance
-//                correction = checkDirection();
-                correction = 0;
+                if (gyro_assist)
+                    correction = checkDirection();
+                else
+                    correction = 0;
 
                 frontLeft.setPower(Range.clip(power + side + correction, -1, 1));
                 frontRight.setPower(Range.clip(power - side - correction, -1, 1));
@@ -171,25 +153,12 @@ public class Mecanum_Drive extends LinearOpMode {
 
 
             // Arm movements
-/*            if (dpad_up) {
-                upperArm.setTargetPosition(upperArm.getCurrentPosition() + arm_up_step);
-                upperArm.setPower(arm_up_power);
-                upperArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            } else if (dpad_down) {
-                upperArm.setTargetPosition(upperArm.getCurrentPosition() - arm_down_step);
-                upperArm.setPower(arm_down_power);
-                upperArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            } else
-                upperArm.setPower(0.0);
-*/
             if (lower_arm_stick < 0 && lowerArm.getCurrentPosition() < 3000) {
                 lowerArm.setTargetPosition(lowerArm.getCurrentPosition() + arm_up_step);
                 lowerArm.setPower(arm_up_power);
-  //              lowerArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             } else if (lower_arm_stick > 0 && lower_sensor.getState()) {
                 lowerArm.setTargetPosition(lowerArm.getCurrentPosition() - arm_down_step);
                 lowerArm.setPower(arm_down_power);
-  //              lowerArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             } else
                 lowerArm.setPower(0.0);
 
@@ -203,80 +172,83 @@ public class Mecanum_Drive extends LinearOpMode {
                 clawExpanded = true;
             }
 
-            // Move both servos to new position.  Assume servos are mirror image of each other.
+            // Move both claw servos to new position.  Assume servos are mirror image of each other.
             if ( clawExpanded ) {
-                clawOffset = Range.clip(clawOffset, -0.35, 0.35);
-                leftClaw.setPosition(0.65 + clawOffset);
-                rightClaw.setPosition(0.65 - clawOffset);
+                clawOffset = Range.clip(clawOffset, -claw_move_span, claw_move_span);
+                leftClaw.setPosition(claw_mid_position + clawOffset);
+                rightClaw.setPosition(claw_mid_position - clawOffset);
             }
 
 
-            // Use gamepad X & right B buttons to rotate the grabber
-            if (/* grabber_stick < 0*/ btn_y)
+            // Use gamepad Y & right A buttons to rotate the linear servo
+            if (btn_y)
+                linearOffset += linear_speed;
+            else if (btn_a)
+                linearOffset -= linear_speed;
+
+            // Move linear servo to the desired position.
+            linearOffset = Range.clip(linearOffset, -linear_offset_max, linear_offset_max);       // At most move certain limit amount for linear servo
+
+            // Only set position when linear action buttons are not pressed OR linearOffset is at max allowed value
+            if (( !btn_y && !btn_a ) || Math.abs(linearOffset) == linear_offset_max ) {
+                double target = linear.getPosition() + linearOffset;
+                if (target < linear_lower)
+                    target = linear_lower;
+                if (target > linear_upper)
+                    target = linear_upper;
+                linear.setPosition(target);
+                linearOffset = 0.0;
+            }
+
+
+            // Grabber movement
+            if ( grabber_stick < 0 )
                 grabberOffset += grabber_speed;
-            else if (/*grabber_stick > 0*/ btn_a)
+            else if ( grabber_stick > 0 )
                 grabberOffset -= grabber_speed;
 
             // Move grabber servo to the desired position.
-            grabberOffset = Range.clip(grabberOffset, -0.02, 0.02);
+            grabberOffset = Range.clip(grabberOffset, 0.0, 1.0);
+            grabber.setPosition(grabberOffset);
 
-            // Only set position when grabber stick is not pushed OR grabberOffset is 0.05
-            if (( !btn_y && !btn_a )|| Math.abs(grabberOffset) == 0.02 ) {
-                double target = grabber.getPosition() + grabberOffset;
-                if (target < grabber_lower)
-                    target = grabber_lower;
-                if (target > grabber_upper)
-                    target = grabber_upper;
-                grabber.setPosition(target);
-                grabberOffset = 0.0;
-            }
 
-            if ( grabber_stick < 0 )
-                grabberOffset2 += grabber_speed * 5;
-            else if ( grabber_stick > 0 )
-                grabberOffset2 -= grabber_speed * 5;
+            // Check gyro support toggle
+            if ( btn_x1 && btn_b1 )
+                gyro_assist = !gyro_assist;
 
-            // Move grabber servo to the desired position.
-            grabberOffset2 = Range.clip(grabberOffset2, 0.0, 1.0);
+            // Check request for initialize positions
+            if ( btn_x2 && btn_b2 )
+                initializePositions();
 
-            // Only set position when grabber stick is not pushed OR grabberOffset is 0.05
-            grabber2.setPosition(grabberOffset2);
-
-//            telemetry.addData("Motor Power FL ", frontLeft.getPower());
-//            telemetry.addData("Motor Power FR", frontRight.getPower());
-//            telemetry.addData("Motor Power BL", backLeft.getPower());
-//            telemetry.addData("Motor Power BR", backRight.getPower());
-//            telemetry.addData("Status", "Running");
+            // Output Telemetry information
             telemetry.addData("LClaw= ", leftClaw.getPosition());
             telemetry.addData("RClaw= ", rightClaw.getPosition());
-            telemetry.addData("CLOFF= ", clawOffset);
-            telemetry.addData("BR= ", backRight.getCurrentPosition());
-            telemetry.addData("ARM=", lowerArm.getCurrentPosition());
+            telemetry.addData("Grabber= ", grabber.getPosition());
+            telemetry.addData("Linear= ", linear.getPosition());
+            telemetry.addData("Arm= ", lowerArm.getCurrentPosition());
+            telemetry.addData("Gyro= ", gyro_assist);
             telemetry.update();
         }
     }
 
     void getGamePadValues() {
-        fwd = gamepad1.left_stick_y;
-        side = gamepad1.left_stick_x;
-        turn = gamepad1.right_stick_x;
+        fwd = gamepad1.left_stick_y;                // For mecanum drive forward and backward
+        side = gamepad1.left_stick_x;               // For mecanum drive sideway
+        turn = gamepad1.right_stick_x;              // For bot turns
 
-        lower_arm_stick = gamepad2.left_stick_y;
-        grabber_stick = gamepad2.right_stick_y;
-/*
-        dpad_up = gamepad1.dpad_up;
-        dpad_down = gamepad1.dpad_down;
-*/
-        btn_y = gamepad2.y;
-        btn_a = gamepad2.a;
+        btn_x1 = gamepad1.x;                        // For toggle of gyro assistance
+        btn_b1 = gamepad1.b;                        // For toggle of gyro assistance
 
-/*
-        btn_x = gamepad1.x;
-        btn_b = gamepad1.b;
-*/
+        lower_arm_stick = gamepad2.left_stick_y;    // For lower arm movement
+        grabber_stick = gamepad2.right_stick_y;     // For grabber
 
-        left_bumper = gamepad2.left_bumper;
-        right_bumper = gamepad2.right_bumper;
+        btn_y = gamepad2.y;                         // For linear servo - up
+        btn_a = gamepad2.a;                         // For linear servo - down
+        btn_x2 = gamepad2.x;                        // For initialize positions
+        btn_b2 = gamepad2.b;                        // For initialize positions
+
+        left_bumper = gamepad2.left_bumper;         // For claw release
+        right_bumper = gamepad2.right_bumper;       // For claw grip
 
         //updates joystick values
         if( Math.abs(fwd) < deadzone ) fwd = 0;
@@ -285,6 +257,26 @@ public class Mecanum_Drive extends LinearOpMode {
         if( Math.abs(lower_arm_stick) < deadzone ) lower_arm_stick = 0;
         if( Math.abs(grabber_stick) < deadzone ) grabber_stick = 0;
         //checks deadzones
+    }
+
+    void initializePositions() {
+        // Init claw and grabber positions
+        leftClaw.setPosition(claw_left_initial);
+        rightClaw.setPosition(claw_right_initial);
+        grabber.setPosition(grabberOffset);
+        sleep(2000);
+
+        // Init linear servo position
+        linear.setPosition(linear_initial);
+
+        // Initialize lower arm position
+        while (lower_sensor.getState()) {
+            lowerArm.setTargetPosition(lowerArm.getCurrentPosition() - arm_down_step);
+            lowerArm.setPower(arm_down_power);
+        }
+        lowerArm.setPower(0);
+        lowerArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        lowerArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     /**
@@ -347,3 +339,4 @@ public class Mecanum_Drive extends LinearOpMode {
         return correction;
     }
 }
+

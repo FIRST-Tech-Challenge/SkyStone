@@ -23,31 +23,33 @@ class SSAutoOp : LinearOpMode()
         telemetry.update()
 
         robot.init(hardwareMap)
-        robot.vSlide?.mode = DcMotor.RunMode.RUN_USING_ENCODER
+        robot.vSlide?.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         robot.vSlide?.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
 
         waitForStart()
-        robot.vSlide!!.targetPosition = robot.vSlide!!.currentPosition //sets initial positon to target later
-        robot.vSlide?.power = 0.25 //raise vertical slide
-        robot.hSlide?.position = 0.05 //extend h slide
+        //robot.vSlide!!.targetPosition = robot.vSlide!!.currentPosition //sets initial positon to target later
+        robot.vPow(0.5)
+        sleep(3000)//raise vertical slide
+        robot.hSlide?.position = 0.5 //extend h slide
         sleep(500)
-        robot.vSlide?.power = 0.0
-        robot.hSlide?.position = 0.5 //Sets hSlide to no power
+        //robot.vSlide?.power = 0.0
+        //robot.hSlide?.position = 0.5 //Sets hSlide to no power
         robot.drive(0.5) //drive up to foundation
-        sleep(2000)
+        sleep(3500)
         robot.brake()
-        /*robot.vSlide?.power = -0.25 //lower vertical slide
-        sleep(500)
-        robot.vSlide?.power = 0.0*/
-        robot.vSlide?.mode = DcMotor.RunMode.RUN_TO_POSITION //runs back to initial position
-        sleep(500)
-        robot.vSlide?.mode = DcMotor.RunMode.RUN_USING_ENCODER //runs back to initial position
+        robot.vSlide?.power = -0.75 //lower vertical slide
+        sleep(3000)
         robot.vSlide?.power = 0.0
+        robot.rightDrive?.power = 0.5
+        //robot.vSlide?.mode = DcMotor.RunMode.RUN_TO_POSITION //runs back to initial position
+        //sleep(500)
+        //robot.vSlide?.mode = DcMotor.RunMode.RUN_USING_ENCODER //runs back to initial position
+        //robot.vSlide?.power = 0.0
         robot.drive(-0.25) //drive backward
-        sleep(3500)w
+        sleep(3500)
         robot.brake()
-        robot.rightDrive?.power = -0.25 //NEEDS TO BE 90 DEGREES OR SLIGHTLY MORE
-        sleep(550)
+        robot.leftDrive?.power = -0.25 //NEEDS TO BE 90 DEGREES OR SLIGHTLY MORE
+        sleep(1000)
         robot.brake()
         robot.drive(0.2) //goes towards the wall
         sleep(5000)

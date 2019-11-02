@@ -59,6 +59,11 @@ class SSRobot {
         drive(pow, pow)
     }
 
+    fun vPow (vrPow: Double)
+    {
+        vSlide?.power = vrPow
+    }
+
     fun brake() {
         this.drive(0.0)
     }

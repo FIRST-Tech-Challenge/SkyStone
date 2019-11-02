@@ -79,14 +79,17 @@ public class Simple15203 extends LinearOpMode {
             //robot.state.heading = dsAngle;
 // rotate more slowly if left bumper pressed
             if (gamepad1.right_bumper) {
-                rotPower *= 0.05;
+                rotPower *= 0.25;
             }
 // drive / strafe more slowly if right bumper pressed
             if (gamepad1.left_bumper) {
-                dsWeight *= 0.05;
+                dsWeight *= 0.25;
             }
 
-
+//always drive slower and then go faster when left trigger pressed
+            if (gamepad1.left_trigger == 0) {
+                dsWeight *= 0.6;
+            }
 
 // make sure values are not greater than 1
 

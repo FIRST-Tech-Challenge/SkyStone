@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import org.firstinspires.ftc.teamcode.HardwareOmnibot.ExtendPosition;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import static java.lang.Math.atan2;
 import static java.lang.Math.toDegrees;
@@ -11,7 +11,7 @@ import static java.lang.Math.toDegrees;
  * Created by Ethan on 12/2/2016.
  */
 
-@TeleOp(name="Omni: TeleOpTest", group ="TeleOp")
+//@TeleOp(name="Omni: TeleOpTest", group ="TeleOp")
 public class OmniTeleTest extends OpMode {
 
     public HardwareOmnibot robot = new HardwareOmnibot();
@@ -24,7 +24,13 @@ public class OmniTeleTest extends OpMode {
         robot.setInputShaping(true);
         telemetry.addLine("Ready");
         updateTelemetry(telemetry);
+        robot.lifter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.extender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
+
+
+
+
 
     private double driverAngle = 0.0;
     private final double MAX_SPEED = 1.0;
@@ -70,7 +76,7 @@ public class OmniTeleTest extends OpMode {
     private double collectPower;
     private boolean reverse = false;
     private boolean spinning = false;
-    private HardwareOmnibot.ExtendPosition extendPosition = HardwareOmnibot.ExtendPosition.RETRACTED;
+    private HardwareOmnibot.IntakePosition intakePosition = HardwareOmnibot.IntakePosition.RETRACTED;
     private boolean doneExtending = true;
     private boolean clawOpen = true;
     private boolean clawFront = true;
@@ -105,6 +111,9 @@ public class OmniTeleTest extends OpMode {
         up2Pressed = gamepad2.dpad_up;
         down2Pressed = gamepad2.dpad_down;
 
+		// Allow the robot to read encoders again
+		robot.resetEncoderReads();
+
         if(!xHeld && xPressed)
         {
             xHeld = true;
@@ -133,6 +142,7 @@ public class OmniTeleTest extends OpMode {
             rightBumperHeld = false;
         }
 
+
 //        if(!doneExtending) {
 //            doneExtending = robot.performMaxExtension();
 //        }
@@ -140,7 +150,7 @@ public class OmniTeleTest extends OpMode {
         if(!aHeld && aPressed)
         {
             aHeld = true;
-            robot.runLift(robot.liftTargetHeight);
+            robot.moveLift(robot.liftTargetHeight);
 //            robot.startLifting();
         } else if(!aPressed) {
             aHeld = false;
@@ -149,7 +159,7 @@ public class OmniTeleTest extends OpMode {
         if(!bHeld && bPressed)
         {
             bHeld = true;
-            robot.runIntake(extendPosition);
+            robot.moveIntake(robot.intakeTargetPosition);
         } else if(!bPressed) {
             bHeld = false;
         }
@@ -185,46 +195,29 @@ public class OmniTeleTest extends OpMode {
 
         if(!rightHeld && rightPressed) {
             rightHeld = true;
-            switch(extendPosition)
-            {
-                case RETRACTED:
-                    extendPosition = HardwareOmnibot.ExtendPosition.CAPSTONE;
-                    break;
-                case CAPSTONE:
-                    extendPosition = HardwareOmnibot.ExtendPosition.SPINMIN;
-                    break;
-                case SPINMIN:
-                    extendPosition = HardwareOmnibot.ExtendPosition.EJECT;
-                    break;
-                case EJECT:
-                    extendPosition = HardwareOmnibot.ExtendPosition.EXTENDED;
-                    break;
-            }
+			robot.intakeOut();
         } else if(!rightPressed) {
             rightHeld = false;
         }
 
         if(!leftHeld && leftPressed) {
             leftHeld = true;
-            switch(extendPosition)
-            {
-                case CAPSTONE:
-                    extendPosition = HardwareOmnibot.ExtendPosition.RETRACTED;
-                    break;
-                case SPINMIN:
-                    extendPosition = HardwareOmnibot.ExtendPosition.CAPSTONE;
-                    break;
-                case EJECT:
-                    extendPosition = HardwareOmnibot.ExtendPosition.SPINMIN;
-                    break;
-                case EXTENDED:
-                    extendPosition = HardwareOmnibot.ExtendPosition.EJECT;
-                    break;
-            }
+			robot.intakeIn();
         } else if(!leftPressed) {
             leftHeld = false;
         }
 
+        if(Math.abs(yPower)> 0.1) {
+            robot.lifter.setPower(yPower);
+        } else {
+            robot.lifter.setPower(0);
+        }
+
+        if(Math.abs(spin) > 0.1) {
+            robot.extender.setPower(spin);
+        } else {
+            robot.extender.setPower(0);
+        }
 //        if(!xHeld && xPressed)
 //        {
 //            xHeld = true;
@@ -311,7 +304,7 @@ public class OmniTeleTest extends OpMode {
 
 
 		telemetry.addData("Lift Target Height: ", robot.liftTargetHeight.toString());
-        telemetry.addData("Extend Target: ", extendPosition.toString());
+        telemetry.addData("Intake Target: ", robot.intakeTargetPosition.toString());
         telemetry.addData("Lift State: ", robot.liftState);
         telemetry.addData("Release State: ", robot.releaseState);
         telemetry.addData("Stow State: ", robot.stowState);
@@ -329,7 +322,7 @@ public class OmniTeleTest extends OpMode {
         telemetry.addData("Rear Right Encoder: ", robot.rearRight.getCurrentPosition());
         telemetry.addData("Lifter Encoder: ", robot.lifter.getCurrentPosition());
         telemetry.addData("Extender Encoder: ", robot.extender.getCurrentPosition());
-        telemetry.addData("Extend Zero: ", robot.extendZero);
+        telemetry.addData("Intake Zero: ", robot.intakeZero);
         telemetry.addData("Claw Front: ", clawFront);
         telemetry.addData("Claw Open: ", clawOpen);
         updateTelemetry(telemetry);

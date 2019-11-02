@@ -1,10 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,18 +53,46 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         STOPPING
     }
 
-    public static int MAX_EXTENSION = 1700;
-    public enum ExtendPosition {
-        RETRACTED(5),
-		CAPSTONE(450),
-		SPINMIN(1081),
-		EJECT(1418),
+    public enum CapstoneAlignActivity {
+        IDLE,
+        LOWERING_TO_ALIGN,
+        OPENING_CLAW,
+        ROTATING,
+        LIFTING_TO_ROTATE,
+        CLEARING_LIFT,
+        STOPPING
+    }
+
+    public enum CapstoneGrabActivity {
+        IDLE,
+        LOWERING_TO_GRAB,
+        GRABBING_CAPSTONE,
+        LIFTING_TO_RUN,
+        STOPPING
+    }
+
+    public enum CapstoneLiftActivity {
+        IDLE,
+        LIFTING_TO_STONE,
+        STOPPING
+    }
+
+    public enum CapstoneReleaseActivity {
+        IDLE,
+        RELEASE_STONE,
+        STOPPING
+    }
+
+    public static int MAX_EXTENSION = 2375;
+    public enum IntakePosition {
+        RETRACTED(7),
+		CAPSTONE(425),
+		SPINMIN(1670),
+		EJECT(2161),
 		EXTENDED(MAX_EXTENSION);
-		// Runtime Max
-//        EXTENDED(1719);
         private final int encoderCount;
 
-        ExtendPosition(int encoderCount)
+        IntakePosition(int encoderCount)
 		{
 			this.encoderCount = encoderCount;
 		}
@@ -69,28 +101,62 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 		{
 			return encoderCount;
 		}
+
+		public static IntakePosition moveIn(IntakePosition currentPosition)
+		{
+			switch(currentPosition)
+			{
+				case RETRACTED:
+				case CAPSTONE:
+					return RETRACTED;
+				case SPINMIN:
+					return CAPSTONE;
+				case EJECT:
+					return SPINMIN;
+				case EXTENDED:
+					return EJECT;
+				default:
+					return currentPosition;
+			}
+		}
+
+		public static IntakePosition moveOut(IntakePosition currentPosition)
+		{
+			switch(currentPosition)
+			{
+				case RETRACTED:
+					return CAPSTONE;
+				case CAPSTONE:
+					return SPINMIN;
+				case SPINMIN:
+					return EJECT;
+				case EJECT:
+				case EXTENDED:
+					return EXTENDED;
+				default:
+					return currentPosition;
+			}
+		}
 	}
 
-    public static int MAX_LIFT = 2850;
+    public static int MAX_LIFT = 2800;
     public enum LiftPosition {
 		GRABBING(0),
-        STOWED(15),
-        STONE1(149),
-        STONE2(412),
-        ROTATE(500),
-        STONE3(660),
-        STONE4(908),
-        STONE5(1156),
-        STONE6(1403),
-        STONE7(1651),
-        STONE8(1899),
-        STONE9(2147),
-        STONE10(2395),
-        STONE11(2643),
-        STONE12(2830),
+        STOWED(25),
+        STONE1(176),
+        STONE2(474),
+        STONE3(672),
+        ROTATE(850),
+        STONE4(907),
+        STONE5(1131),
+        STONE6(1357),
+        STONE7(1593),
+        STONE8(1810),
+        STONE9(2030),
+        STONE10(2251),
+        STONE11(2475),
+        STONE12(2680),
         LIFTMAX(MAX_LIFT);
-		// Runtime Max
-//		STONE12(2854);
 
         private final int encoderCount;
 
@@ -108,15 +174,10 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 		{
 			switch(currentStone)
 			{
-				case GRABBING:
-				case STOWED:
-					return STONE1;
 				case STONE1:
 					return STONE2;
 				case STONE2:
 					return STONE3;
-                case ROTATE:
-                    return STONE3;
 				case STONE3:
 					return STONE4;
 				case STONE4:
@@ -134,7 +195,6 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 				case STONE10:
 					return STONE11;
 				case STONE11:
-				case STONE12:
 					return STONE12;
 				default:
 					return currentStone;
@@ -145,13 +205,8 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 		{
 			switch(currentStone)
 			{
-				case GRABBING:
-				case STOWED:
-				case STONE1:
 				case STONE2:
 					return STONE1;
-                case ROTATE:
-                    return STONE2;
 				case STONE3:
 					return STONE2;
 				case STONE4:
@@ -188,8 +243,8 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public static double RIGHT_FINGER_UP = 0.89;
     public static double LEFT_FINGER_UP = 0.25;
     public static double CLAW_OPEN = 0.2;
-    public static double CLAW_PINCHED = 0.80;
-    public static double CLAWDRICOPTER_FRONT = 0.86;
+    public static double CLAW_PINCHED = 0.9;
+    public static double CLAWDRICOPTER_FRONT = 0.85;
     public static double CLAWDRICOPTER_BACK = 0.09;
     public static int CLAW_OPEN_TIME = 1000;
     public static int CLAW_CLOSE_TIME = 1000;
@@ -198,8 +253,9 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 	private static int ENCODER_ERROR = 10;
 
     public LiftPosition liftTargetHeight = LiftPosition.STONE1;
-	private LiftPosition liftStateTargetHeight;
-	private ExtendPosition extenderPosition = ExtendPosition.RETRACTED;
+	private LiftPosition liftStateTargetHeight = LiftPosition.STONE1;
+	public IntakePosition intakePosition = IntakePosition.RETRACTED;
+	public IntakePosition intakeTargetPosition = IntakePosition.RETRACTED;
 
     // Robot Controller Config Strings
     public final static String RIGHT_FINGER = "RightFinger";
@@ -210,6 +266,10 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public final static String RIGHT_INTAKE = "RightIntake";
     public final static String LIFTER = "Lifter";
     public final static String EXTENDER = "Extender";
+    public final static String RIGHT_RANGE = "RightTof";
+    public final static String LEFT_RANGE = "LeftTof";
+    public final static String BACK_RIGHT_RANGE = "BackRightTof";
+    public final static String BACK_LEFT_RANGE = "BackLeftTof";
 
     // Hardware objects
     protected Servo rightFinger = null;
@@ -220,6 +280,11 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     protected DcMotor rightIntake = null;
     protected DcMotor lifter = null;
     protected DcMotorEx extender = null;
+    protected Rev2mDistanceSensor rightTof = null;
+    protected Rev2mDistanceSensor leftTof = null;
+    protected Rev2mDistanceSensor backRightTof = null;
+    protected Rev2mDistanceSensor backLeftTof = null;
+
 
     /* LEDs: Use this line if you drive the LEDs using an I2C/SPI bridge. */
     private DotStarBridgedLED leds;
@@ -234,20 +299,47 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public ReleaseActivity releaseState = ReleaseActivity.IDLE;
     public StowActivity stowState = StowActivity.IDLE;
     public EjectActivity ejectState = EjectActivity.IDLE;
+    public CapstoneAlignActivity capstoneAlignState = CapstoneAlignActivity.IDLE;
+    public CapstoneGrabActivity capstoneGrabState = CapstoneGrabActivity.IDLE;
+    public CapstoneLiftActivity capstoneLiftState = CapstoneLiftActivity.IDLE;
+    public CapstoneReleaseActivity capstoneReleaseState = CapstoneReleaseActivity.IDLE;
     private boolean fingersUp = true;
     private boolean clawPinched = false;
     private boolean clawdricopterBack = false;
     // These are the heights of the stone levels to auto set the lift to
     protected LiftPosition lastLiftHeight = LiftPosition.STOWED;
     protected int liftZero = 0;
-    protected int extendZero = 0;
-    protected double intakePower = 0.0;
-    protected boolean extendZeroUpdated = false;
+    protected int intakeZero = 0;
+    public double intakePower = 0.0;
+    protected boolean intakeZeroUpdated = false;
+
+	// Variables so we only read encoders once per loop
+	protected boolean lifterEncoderRead = false;
+	protected boolean extenderEncoderRead = false;
+	protected boolean leftTofRead = false;
+	protected boolean rightTofRead = false;
+	protected boolean backRightTofRead = false;
+	protected boolean backLeftTofRead = false;
+	protected int lifterEncoderValue = 0;
+	protected int extenderEncoderValue = 0;
+	protected double leftTofValue = 0.0;
+	protected double rightTofValue = 0.0;
+	protected double backRightTofValue = 0.0;
+	protected double backLeftTofValue = 0.0;
 
     /* Constructor */
     public HardwareOmnibot(){
         super();
     }
+
+	public void resetReads() {
+		lifterEncoderRead = false;
+		extenderEncoderRead = false;
+		leftTofRead = false;
+		rightTofRead = false;
+		backRightTofRead = false;
+		backLeftTofRead = false;
+	}
 
     public void initGroundEffects()
     {
@@ -294,14 +386,11 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                 stowState = StowActivity.STOPPING;
             }
 			// Extend the intake to make sure it isn't in the way.
-			runIntake(ExtendPosition.EXTENDED);
+			moveIntake(IntakePosition.EXTENDED);
 
 			// We don't want the intake spinning while we are trying to lift the stone.
 			stopIntake();
-
-			// Lower the claw to grab it better
-			liftState = LiftActivity.LOWERING_TO_GRAB;
-			runLift(LiftPosition.GRABBING);
+			liftState = LiftActivity.CLEARING_LIFT;
         }
     }
 
@@ -317,35 +406,29 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 					liftState = LiftActivity.LIFTING_TO_STONE;
 					clawdricopterBack = true;
 					liftStateTargetHeight = liftTargetHeight;
-					runLift(liftStateTargetHeight);
+					moveLift(liftStateTargetHeight);
 				}
 			    break;
 		    case LIFTING_TO_ROTATE:
 			    // It has gotten high enough
-			    if(lifterAtPosition(LiftPosition.ROTATE)) {
+			    if(getLifterPosition() >= LiftPosition.ROTATE.getEncoderCount()) {
 					liftState = LiftActivity.ROTATING;
 					clawdricopter.setPosition(CLAWDRICOPTER_BACK);
 					stateTimer.reset();
 				}
 			    break;
-            case CLEARING_LIFT:
-			    if(extenderAtPosition(ExtendPosition.EXTENDED)) {
-                    liftState = LiftActivity.LIFTING_TO_ROTATE;
-                    // If our target height is less than rotation height, we have to
-                    // stop at rotation height first.
-                    if(getLifterPosition() <= LiftPosition.ROTATE.getEncoderCount()) {
-                        runLift(LiftPosition.ROTATE);
-                    } else {
-                        runLift(liftTargetHeight);
-                    }
-				}
-                break;
 		    case GRABBING_STONE:
                 if((stateTimer.milliseconds() >= CLAW_CLOSE_TIME) || clawPinched)
                 {
 					clawPinched = true;
-                    liftState = LiftActivity.CLEARING_LIFT;
-                    runIntake(ExtendPosition.EXTENDED);
+                    liftState = LiftActivity.LIFTING_TO_ROTATE;
+                    // If our target height is less than rotation height, we have to
+                    // stop at rotation height first.
+                    if(liftTargetHeight.getEncoderCount() <= LiftPosition.ROTATE.getEncoderCount()) {
+                        moveLift(LiftPosition.ROTATE);
+                    } else {
+                        moveLift(liftTargetHeight);
+                    }
                 }
 			    break;
 		    case LOWERING_TO_GRAB:
@@ -357,6 +440,12 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 					stateTimer.reset();
 				}
 			    break;
+            case CLEARING_LIFT:
+			    if(intakeAtPosition(IntakePosition.EXTENDED)) {
+                    liftState = LiftActivity.LOWERING_TO_GRAB;
+					moveLift(LiftPosition.GRABBING);
+				}
+                break;
 			case STOPPING:
 			    liftState = LiftActivity.IDLE;
 		    case IDLE:
@@ -418,15 +507,14 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                 releaseState = ReleaseActivity.STOPPING;
             }
 			// Extend the intake to make sure it isn't in the way.
-			runIntake(ExtendPosition.EXTENDED);
+			moveIntake(IntakePosition.EXTENDED);
 
 			// We don't want the intake spinning while we are trying to stow the
 			// lift.
 			stopIntake();
 
 			// Start rotating back to the front.
-            stowState = StowActivity.RAISING_TO_ROTATE;
-			runLift(LiftPosition.ROTATE);
+            stowState = StowActivity.CLEARING_LIFT;
         }
     }
 
@@ -438,34 +526,42 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 					startIntake(false);
 				}
 				break;
-            case CLEARING_LIFT:
-			    if(extenderAtPosition(ExtendPosition.EXTENDED)) {
-                    stowState = StowActivity.LOWERING_TO_STOW;
-                    runLift(LiftPosition.STOWED);
-                }
-                break;
 			case OPENING_CLAW:
 			    if((stateTimer.milliseconds() >= CLAW_OPEN_TIME) || !clawPinched) {
-                    stowState = StowActivity.CLEARING_LIFT;
+                    stowState = StowActivity.LOWERING_TO_STOW;
                     clawPinched = false;
                 }
 				break;
 			case ROTATING:
 			    if((stateTimer.milliseconds() >= CLAW_ROTATE_FRONT_TIME) || !clawdricopterBack) {
 					stowState = StowActivity.OPENING_CLAW;
+					moveLift(LiftPosition.STOWED);
 					clawdricopterBack = false;
 				}
 			    break;
 			case RAISING_TO_ROTATE:
 			    // It has gotten high enough
-			    if(lifterAtPosition(LiftPosition.ROTATE)) {
+				if(clawdricopterBack) {
+					if(lifterAtPosition(LiftPosition.ROTATE)) {
+						stowState = StowActivity.ROTATING;
+						clawdricopter.setPosition(CLAWDRICOPTER_FRONT);
+						claw.setPosition(CLAW_OPEN);
+						stateTimer.reset();
+					}
+				} else {
 					stowState = StowActivity.ROTATING;
-                    runIntake(ExtendPosition.EXTENDED);
-					clawdricopter.setPosition(CLAWDRICOPTER_FRONT);
 					claw.setPosition(CLAW_OPEN);
 					stateTimer.reset();
 				}
 			    break;
+            case CLEARING_LIFT:
+			    if(intakeAtPosition(IntakePosition.EXTENDED)) {
+                    stowState = StowActivity.RAISING_TO_ROTATE;
+					if(clawdricopterBack) {
+						moveLift(LiftPosition.ROTATE);
+					}
+                }
+                break;
             case STOPPING:
                 stowState = StowActivity.IDLE;
             case IDLE:
@@ -474,25 +570,188 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         }
     }
 
-	// Maybe we will eventually get this virtual limit switch working.
+    public void startAligningCapstone() {
+        if(capstoneGrabState == CapstoneGrabActivity.IDLE) {
+            if(releaseState != ReleaseActivity.IDLE) {
+                releaseState = ReleaseActivity.STOPPING;
+            }
+            if(stowState != StowActivity.IDLE) {
+                stowState = StowActivity.STOPPING;
+            }
+            // Extend the intake to make sure it isn't in the way.
+            moveIntake(IntakePosition.EXTENDED);
+
+            // We don't want the intake spinning while we are trying to lift the stone.
+            stopIntake();
+            capstoneAlignState = CapstoneAlignActivity.CLEARING_LIFT;
+        }
+    }
+
+    public void performAligningCapstone() {
+        switch(capstoneAlignState) {
+            case LOWERING_TO_ALIGN:
+                // Has it gotten low enough
+                if(lifterAtPosition(LiftPosition.STOWED)) {
+                    // Start grabbing the stone.  updateLifting will take over.
+                    capstoneAlignState = CapstoneAlignActivity.IDLE;
+                }
+                break;
+            case OPENING_CLAW:
+                if((stateTimer.milliseconds() >= CLAW_OPEN_TIME) || !clawPinched) {
+                    capstoneAlignState = CapstoneAlignActivity.LOWERING_TO_ALIGN;
+                    clawPinched = false;
+                }
+                break;
+            case ROTATING:
+                if((stateTimer.milliseconds() >= CLAW_ROTATE_BACK_TIME) || clawdricopterBack) {
+                    capstoneAlignState = CapstoneAlignActivity.LOWERING_TO_ALIGN;
+                    clawdricopterBack = true;
+                    moveLift(LiftPosition.STOWED);
+                }
+                break;
+            case LIFTING_TO_ROTATE:
+                // It has gotten high enough
+                if(getLifterPosition() >= LiftPosition.ROTATE.getEncoderCount()) {
+                    capstoneAlignState = CapstoneAlignActivity.ROTATING;
+                    clawdricopter.setPosition(CLAWDRICOPTER_BACK);
+                    claw.setPosition(CLAW_OPEN);
+                    stateTimer.reset();
+                }
+                break;
+            case CLEARING_LIFT:
+                if(intakeAtPosition(IntakePosition.EXTENDED)) {
+                    capstoneAlignState = CapstoneAlignActivity.LIFTING_TO_ROTATE;
+                    moveLift(LiftPosition.ROTATE);
+                }
+                break;
+            case STOPPING:
+                capstoneAlignState = CapstoneAlignActivity.IDLE;
+            case IDLE:
+            default:
+                break;
+        }
+    }
+
+    public void startGrabbingCapstone() {
+        if(capstoneGrabState == CapstoneGrabActivity.IDLE) {
+            if(releaseState != ReleaseActivity.IDLE) {
+                releaseState = ReleaseActivity.STOPPING;
+            }
+            if(stowState != StowActivity.IDLE) {
+                stowState = StowActivity.STOPPING;
+            }
+            moveLift(LiftPosition.GRABBING);
+            capstoneGrabState = CapstoneGrabActivity.LOWERING_TO_GRAB;
+        }
+    }
+
+    public void performGrabbingCapstone() {
+        switch(capstoneGrabState) {
+            case LIFTING_TO_RUN:
+                if(lifterAtPosition(LiftPosition.STONE1)) {
+                    capstoneGrabState = CapstoneGrabActivity.IDLE;
+                }
+                break;
+            case GRABBING_CAPSTONE:
+                if((stateTimer.milliseconds() >= CLAW_CLOSE_TIME) || clawPinched) {
+                    capstoneGrabState = CapstoneGrabActivity.LIFTING_TO_RUN;
+                    clawPinched = true;
+                    moveLift(LiftPosition.STONE1);
+                }
+                break;
+            case LOWERING_TO_GRAB:
+                // It has gotten high enough
+                if(lifterAtPosition(LiftPosition.GRABBING)) {
+                    capstoneGrabState = CapstoneGrabActivity.GRABBING_CAPSTONE;
+                    claw.setPosition(CLAW_PINCHED);
+                    stateTimer.reset();
+                }
+                break;
+            case STOPPING:
+                capstoneGrabState = CapstoneGrabActivity.IDLE;
+            case IDLE:
+            default:
+                break;
+        }
+    }
+
+    public void startLiftingCapstone() {
+        if(capstoneLiftState == CapstoneLiftActivity.IDLE) {
+            if(releaseState != ReleaseActivity.IDLE) {
+                releaseState = ReleaseActivity.STOPPING;
+            }
+            if(stowState != StowActivity.IDLE) {
+                stowState = StowActivity.STOPPING;
+            }
+            moveLift(liftTargetHeight);
+            capstoneLiftState = CapstoneLiftActivity.LIFTING_TO_STONE;
+        }
+    }
+
+    public void performLiftingCapstone() {
+        switch(capstoneLiftState) {
+            case LIFTING_TO_STONE:
+                if(lifterAtPosition(liftTargetHeight)) {
+                    capstoneLiftState = CapstoneLiftActivity.IDLE;
+                }
+                break;
+            case STOPPING:
+                capstoneGrabState = CapstoneGrabActivity.IDLE;
+            case IDLE:
+            default:
+                break;
+        }
+    }
+
+    public void startReleasingCapstone() {
+        if(capstoneReleaseState == CapstoneReleaseActivity.IDLE) {
+            if(releaseState != ReleaseActivity.IDLE) {
+                releaseState = ReleaseActivity.STOPPING;
+            }
+            if(stowState != StowActivity.IDLE) {
+                stowState = StowActivity.STOPPING;
+            }
+            claw.setPosition(CLAW_OPEN);
+            capstoneReleaseState = CapstoneReleaseActivity.RELEASE_STONE;
+            stateTimer.reset();
+        }
+    }
+
+    public void performReleasingCapstone() {
+        switch(capstoneReleaseState) {
+            case RELEASE_STONE:
+                if((stateTimer.milliseconds() >= CLAW_OPEN_TIME) || !clawPinched) {
+                    capstoneReleaseState = CapstoneReleaseActivity.IDLE;
+                    clawPinched = false;
+                }
+                break;
+            case STOPPING:
+                capstoneReleaseState = CapstoneReleaseActivity.IDLE;
+            case IDLE:
+            default:
+                break;
+        }
+    }
+
+    // Maybe we will eventually get this virtual limit switch working.
     public boolean maxExtensionSetZero() {
         boolean maxExtended = false;
         // Have to make sure it is trying to extend fully.
-        runIntake(ExtendPosition.EXTENDED);
+        moveIntake(IntakePosition.EXTENDED);
         double extenderCurrentVelocity = extender.getVelocity();
-        int extenderCurrentPosition = getExtenderPosition();
+        int intakeCurrentPosition = getIntakePosition();
 
         // The motor is stalled or we have finished
         if(extenderCurrentVelocity < 250) {
-            int newZero = extenderCurrentPosition - MAX_EXTENSION;
+            int newZero = intakeCurrentPosition - MAX_EXTENSION;
             // We have reached target
             if(Math.abs(newZero) <= ENCODER_ERROR) {
                 maxExtended = true;
             } else {
                 // We missed our target
                 maxExtended = false;
-                setExtendZero(newZero);
-                runIntake(ExtendPosition.EXTENDED);
+                setIntakeZero(newZero);
+                moveIntake(IntakePosition.EXTENDED);
             }
 
         } else {
@@ -513,7 +772,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
             }
             ejectState = EjectActivity.EJECT;
             startIntake(true);
-            runIntake(ExtendPosition.EJECT);
+            moveIntake(IntakePosition.EJECT);
         }
     }
 
@@ -521,13 +780,14 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         switch(ejectState)
         {
             case EJECT:
-                if(extenderAtPosition(ExtendPosition.EJECT)) {
+                if(intakeAtPosition(IntakePosition.EJECT)) {
                     ejectState = EjectActivity.RESET;
                     startIntake(false);
-                    runIntake(ExtendPosition.EXTENDED);
+                    moveIntake(IntakePosition.EXTENDED);
                 }
+                break;
             case RESET:
-                if(extenderAtPosition(ExtendPosition.EXTENDED)) {
+                if(intakeAtPosition(IntakePosition.EXTENDED)) {
                     ejectState = EjectActivity.IDLE;
                 }
                 break;
@@ -547,22 +807,30 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         liftTargetHeight = LiftPosition.removeStone(liftTargetHeight);
     }
 
-    public void runIntake(ExtendPosition targetExtension) {
-		if((targetExtension != extenderPosition) || (extendZeroUpdated)) {
-		    int targetPosition = targetExtension.getEncoderCount();
+    public void intakeOut() {
+        intakeTargetPosition = IntakePosition.moveOut(intakeTargetPosition);
+    }
+
+    public void intakeIn() {
+        intakeTargetPosition = IntakePosition.moveIn(intakeTargetPosition);
+    }
+
+    public void moveIntake(IntakePosition targetIntakePosition) {
+		if((targetIntakePosition != intakePosition) || (intakeZeroUpdated)) {
+		    int targetPosition = targetIntakePosition.getEncoderCount();
 		    // Make sure the intake isn't spinning if we retract too far.
-		    if(targetPosition < ExtendPosition.SPINMIN.getEncoderCount()) {
+		    if(targetPosition < IntakePosition.SPINMIN.getEncoderCount()) {
 		        stopIntake();
             }
-            setExtenderPosition(targetPosition);
+            setIntakePosition(targetPosition);
             extender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             extender.setPower(EXTEND_SPEED);
-			extenderPosition = targetExtension;
+			intakePosition = targetIntakePosition;
 		}
     }
 
-    public void runLift(LiftPosition targetHeight) {
-        if(getExtenderPosition() >= ExtendPosition.CAPSTONE.getEncoderCount()) {
+    public void moveLift(LiftPosition targetHeight) {
+        if(getIntakePosition() >= IntakePosition.CAPSTONE.getEncoderCount()) {
             int liftPosition = getLifterPosition();
             int targetPosition = targetHeight.getEncoderCount();
             double lifterSpeed;
@@ -579,7 +847,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 
     public void startIntake(boolean reverse) {
         // Prevent the intake from starting if it isn't extended far enough.
-        if(getExtenderPosition() >= ExtendPosition.SPINMIN.getEncoderCount()) {
+        if(getIntakePosition() >= IntakePosition.SPINMIN.getEncoderCount()) {
             if (reverse) {
                 if(intakePower != -INTAKE_SPEED) {
                     stopIntake();
@@ -615,28 +883,80 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     }
 
     public int getLifterPosition() {
-        return lifter.getCurrentPosition() - liftZero;
+		if(!lifterEncoderRead) {
+			lifterEncoderValue = lifter.getCurrentPosition();
+			lifterEncoderRead = true;
+		}
+
+        return lifterEncoderValue - liftZero;
     }
 
     public void setLifterPosition(int targetPosition) {
         lifter.setTargetPosition(targetPosition + liftZero);
     }
 
-	public boolean extenderAtPosition(ExtendPosition targetPosition) {
-		return Math.abs(getExtenderPosition() - targetPosition.getEncoderCount()) < ENCODER_ERROR;
+	public boolean intakeAtPosition(IntakePosition targetPosition) {
+		return Math.abs(getIntakePosition() - targetPosition.getEncoderCount()) < ENCODER_ERROR;
 	}
 
-    public void setExtendZero(int value) {
-        extendZeroUpdated = true;
-        extendZero = value;
+    public void setIntakeZero(int value) {
+        intakeZeroUpdated = true;
+        intakeZero = value;
     }
 
-    public int getExtenderPosition() {
-        return extender.getCurrentPosition() - extendZero;
+    public int getIntakePosition() {
+		if(!extenderEncoderRead) {
+			extenderEncoderValue = extender.getCurrentPosition();
+			extenderEncoderRead = true;
+		}
+        return extenderEncoderValue - intakeZero;
     }
 
-    public void setExtenderPosition(int targetPosition) {
-		extender.setTargetPosition(targetPosition + extendZero);
+    public void setIntakePosition(int targetPosition) {
+		extender.setTargetPosition(targetPosition + intakeZero);
+    }
+
+    public double readLeftTof() {
+        if(!leftTofRead) {
+            leftTofRead = true;
+            leftTofValue = leftTof.getDistance(DistanceUnit.CM);
+        }
+
+        return leftTofValue;
+    }
+
+    public double readRightTof() {
+        if(!rightTofRead) {
+            rightTofRead = true;
+            rightTofValue = rightTof.getDistance(DistanceUnit.CM);
+        }
+
+        return rightTofValue;
+    }
+
+    public double readBackLeftTof() {
+        if(!backLeftTofRead) {
+            backLeftTofRead = true;
+            backLeftTofValue = backLeftTof.getDistance(DistanceUnit.CM);
+        }
+
+        return backLeftTofValue;
+    }
+
+    public double readBackRightTof() {
+        if(!backRightTofRead) {
+            backRightTofRead = true;
+            backRightTofValue = backRightTof.getDistance(DistanceUnit.CM);
+        }
+
+        return backRightTofValue;
+    }
+
+    public double readBackTof() {
+        double backLeftTof = readBackLeftTof();
+        double backRightTof = readBackRightTof();
+
+        return (backLeftTof + backRightTof) / 2.0;
     }
 
     /* Initialize standard Hardware interfaces */
@@ -653,6 +973,11 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         rightIntake = hwMap.get(DcMotor.class, RIGHT_INTAKE);
         lifter = hwMap.get(DcMotor.class, LIFTER);
         extender = hwMap.get(DcMotorEx.class, EXTENDER);
+
+        rightTof = (Rev2mDistanceSensor)hwMap.get(DistanceSensor.class, RIGHT_RANGE);
+        leftTof = (Rev2mDistanceSensor)hwMap.get(DistanceSensor.class, LEFT_RANGE);
+        backRightTof = (Rev2mDistanceSensor)hwMap.get(DistanceSensor.class, BACK_RIGHT_RANGE);
+        backLeftTof = (Rev2mDistanceSensor)hwMap.get(DistanceSensor.class, BACK_LEFT_RANGE);
 
         // Set motor rotation
         // This makes lift go up with positive encoder values and power

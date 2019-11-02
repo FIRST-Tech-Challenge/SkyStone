@@ -17,7 +17,7 @@ To use this code, download / clone the entire project to your local computer.
 ## Library Status
 
 Current version: 4.1.1   
-This library is currently the 4th iteration, and the documentations can be found in [DarBots-Shared-Doc](https://github.com/DarlingtonProgramming/DarBots-Shared-Doc) Repository of this organization    
+This library is currently the 4th iteration, and the documentations can be found in [docs.darbots.org](https://docs.darbots.org/) Repository of this organization    
 
 ## Questions
 

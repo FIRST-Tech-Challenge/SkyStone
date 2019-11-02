@@ -70,7 +70,7 @@ public class Robot {
         this.rearRight.setDirection(DcMotor.Direction.FORWARD);
         this.frontRight.setDirection(DcMotor.Direction.FORWARD);
         this.waffleMover.setDirection(DcMotor.Direction.FORWARD);
-        this.gripperRotate.setDirection(DcMotor.Direction.FORWARD); // positive makes arm go forward
+        this.gripperRotate.setDirection(DcMotor.Direction.REVERSE); // positive makes arm go forward
         this.liftMotor.setDirection(DcMotor.Direction.FORWARD);
 
         // set motor powers to 0 so they don't cause problems
@@ -177,15 +177,15 @@ public class Robot {
         if (floatOrHold != 'f' && floatOrHold != 'h') {
             return;
         }
-        this.wafflePosition *= -1;
-        this.waffleMover.setPower(this.wafflePower * this.wafflePosition);
 
+        this.waffleMover.setPower(this.wafflePower * this.wafflePosition);
         Thread.sleep(1000);
 
         if (floatOrHold == 'f' || this.wafflePosition == 1) {
             this.waffleMover.setPower(0);
             Thread.sleep(500); // buffer time to let the motor completely stop
         }
+        this.wafflePosition *= -1;
     }
     private void moveGripperRotate(int targetPosition, double power, OpMode opmode) {
         // reset encoders
@@ -216,7 +216,7 @@ public class Robot {
         if (gripperPos == gripperPosition.REST) { // we only bring the arm down if the arm is resting
             // we rotate the arm 180 + ANGLE_OF_GRIPPER_WHEN_GRABBING degrees
             //moveGripperRotate(CORE_HEX_TICKS_PER_REV * (180 + this.ANGLE_OF_GRIPPER_WHEN_GRABBING) / 360, 0.5, opmode);
-            moveGripperRotate(CORE_HEX_TICKS_PER_REV * (45) / 360, 0.5, opmode);
+            moveGripperRotate(CORE_HEX_TICKS_PER_REV * (180 + this.ANGLE_OF_GRIPPER_WHEN_GRABBING) / 360, 0.5, opmode);
             Thread.sleep(500);
             // we rotate the gripper so it is parallel to the ground
             rotateGripper(90 - this.ANGLE_OF_GRIPPER_WHEN_GRABBING);

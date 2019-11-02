@@ -77,6 +77,13 @@ public class GyroGuidedTurn extends RobotMotionSystemTask {
     }
 
     @Override
+    public double getTaskProgressRatio() {
+        double deltaAng = this.getGyro().getHeading() - m_StartDeg;
+        double gyroTurnAng =  (this.getGyro().getHeadingRotationPositiveOrientation() == RobotGyro.HeadingRotationPositiveOrientation.CounterClockwise ? m_TurnDeg : -m_TurnDeg);
+        return deltaAng / gyroTurnAng;
+    }
+
+    @Override
     public void updateStatus() {
         this.getGyro().updateStatus();
         boolean GyroReversed = this.getGyro().getHeadingRotationPositiveOrientation() == RobotGyro.HeadingRotationPositiveOrientation.CounterClockwise ? false : true;

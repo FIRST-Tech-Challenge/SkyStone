@@ -44,6 +44,7 @@ public abstract class RobotMotionSystem implements RobotNonBlockingDevice {
     private float m_GyroGuidedDrivePublicStartingAngle = -360;
     private boolean m_SteadySpeedUp = true;
     private double m_SteadySpeedUpThreshold = 0.25;
+    private double m_SteadySpeedUpZoneRatio = 0.3;
     public RobotMotionSystem(Robot2DPositionTracker PositionTracker){
         this.m_TaskLists = new ArrayList();
         this.m_PosTracker = PositionTracker;
@@ -55,6 +56,12 @@ public abstract class RobotMotionSystem implements RobotNonBlockingDevice {
         this.m_PosTracker = MotionSystem.m_PosTracker;
         this.m_LinearMotionDistanceFactor = MotionSystem.m_LinearMotionDistanceFactor;
         this.m_RotationalMotionDistanceFactor = MotionSystem.m_RotationalMotionDistanceFactor;
+        this.m_FixedDistanceGyroGuidedDrive = MotionSystem.m_FixedDistanceGyroGuidedDrive;
+        this.m_GyroGuidedDrivePublicStartingAngleEnabled = MotionSystem.m_GyroGuidedDrivePublicStartingAngleEnabled;
+        this.m_GyroGuidedDrivePublicStartingAngle = MotionSystem.m_GyroGuidedDrivePublicStartingAngle;
+        this.m_SteadySpeedUp = MotionSystem.m_SteadySpeedUp;
+        this.m_SteadySpeedUpThreshold = MotionSystem.m_SteadySpeedUpThreshold;
+        this.m_SteadySpeedUpZoneRatio = MotionSystem.m_SteadySpeedUpZoneRatio;
     }
 
     public double getLinearMotionDistanceFactor(){
@@ -216,7 +223,15 @@ public abstract class RobotMotionSystem implements RobotNonBlockingDevice {
     }
 
     public void setSteadySpeedUpThreshold(double Threshold){
-        this.m_SteadySpeedUpThreshold = Threshold;
+        this.m_SteadySpeedUpThreshold = Math.abs(Threshold);
+    }
+
+    public double getSteadySpeedUpZoneRatio(){
+        return this.m_SteadySpeedUpZoneRatio;
+    }
+
+    public void setSteadySpeedUpZoneRatio(double Ratio){
+        this.m_SteadySpeedUpZoneRatio = Math.abs(Ratio);
     }
 
     public abstract RobotMotionSystemFixedXDistanceTask getFixedXDistanceTask(double XDistance, double Speed);

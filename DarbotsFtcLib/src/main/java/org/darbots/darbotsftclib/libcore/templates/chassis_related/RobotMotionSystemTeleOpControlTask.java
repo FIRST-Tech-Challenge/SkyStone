@@ -92,4 +92,9 @@ public abstract class RobotMotionSystemTeleOpControlTask extends RobotMotionSyst
         result += "TurnSpeed: " + this.getDriveRotationSpeed();
         return result;
     }
+
+    @Override
+    public double getTaskProgressRatio(){
+        return 0;
+    }
 }

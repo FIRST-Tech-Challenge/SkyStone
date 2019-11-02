@@ -53,6 +53,7 @@ public class Simple15203 extends LinearOpMode {
 
         // Wait for the game to start (driver presses PLAY)
         //robot.armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         waitForStart();
 
 
@@ -103,25 +104,16 @@ public class Simple15203 extends LinearOpMode {
             }
 
 
-            if(gamepad1.y){
+            if(gamepad1.y || gamepad2.y){
                 robot.garageRightServo.setPower(-1.0);
                 robot.garageLeftServo.setPower(-1.0);
-            }else if(gamepad1.a){
+            }else if(gamepad1.a || gamepad2.a){
                 robot.garageLeftServo.setPower(1.0);
                 robot.garageRightServo.setPower(1.0);
             }else{
                 robot.garageLeftServo.setPower(0.0);
                 robot.garageRightServo.setPower(0.0);
             }
-
-
-            if(gamepad1.x) {
-                robot.turn(0.5, 792);
-            } else if (gamepad1.b) {
-                robot.turn(-0.5, 792);
-            }
-
-
 
             // Send telemetry message to signify robot running;
             telemetry.addData("LF", robot.leftFrontMotor.getPower());

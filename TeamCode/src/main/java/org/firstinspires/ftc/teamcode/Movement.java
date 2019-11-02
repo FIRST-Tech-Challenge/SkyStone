@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 
 /**
  This is an abstrcat class that handles 4 drive train motors.
@@ -12,6 +13,11 @@ abstract class Movement extends LinearOpMode
     protected DcMotor rightfront;
     protected DcMotor leftback;
     protected DcMotor rightback;
+
+    protected DcMotor arm;
+
+    protected Servo frontServo;
+    protected Servo backServo;
 
     public void runOpMode() {
         setupDriveMotors();
@@ -24,7 +30,7 @@ abstract class Movement extends LinearOpMode
         // Initialize the motor references for all the wheels
         // Initialize the hardware variables. Note that the strings used here as parameters
 
-        updateTelemetry("Initializing Motors");
+        updateTelemetryMessage("Initializing Motors");
         leftfront  = hardwareMap.get(DcMotor.class, "leftfront");
         rightfront = hardwareMap.get(DcMotor.class, "rightfront");
         rightback = hardwareMap.get(DcMotor.class, "rightback");
@@ -37,7 +43,15 @@ abstract class Movement extends LinearOpMode
         leftback.setDirection(DcMotor.Direction.FORWARD);
         rightback.setDirection(DcMotor.Direction.REVERSE);
 
-        updateTelemetry("Initialized Motors");
+        updateTelemetryMessage("Initialized Motors");
+
+        arm = hardwareMap.get(DcMotor.class, "Arm");
+        arm.setDirection(DcMotor.Direction.FORWARD);
+
+        // TODO: Set up front servo motor
+        //frontServo = hardwareMap.servo.get("");
+
+        backServo =  hardwareMap.servo.get("servo");
     }
 
     public void stop(final String message) {
@@ -46,7 +60,7 @@ abstract class Movement extends LinearOpMode
         rightback.setPower(0.0);
         leftback.setPower(0.0);
 
-        updateTelemetry(message);
+        updateTelemetryMessage(message);
     }
 
     public void goForward(final double power, final int duration, final String message) {
@@ -56,18 +70,12 @@ abstract class Movement extends LinearOpMode
         leftback.setPower(power);
         sleep(duration);
 
-        updateTelemetry(message);
+        updateTelemetryMessage(message);
     }
 
+    // Backward is same as forward with reverse power
     public void goBackward(final double power, final int duration, final String message) {
-
-        leftfront.setPower(-power);
-        rightfront.setPower(-power);
-        rightback.setPower(-power);
-        leftback.setPower(-power);
-        sleep(duration);
-
-        updateTelemetry(message);
+        goForward(-power, duration, message);
     }
 
     public void goLeft(final double power, final int duration, final String message) {
@@ -78,7 +86,7 @@ abstract class Movement extends LinearOpMode
         leftback.setPower(power);
         sleep(duration);
 
-        updateTelemetry(message);
+        updateTelemetryMessage(message);
     }
 
     public void goRight(final double power, final int duration, final String message) {
@@ -88,11 +96,16 @@ abstract class Movement extends LinearOpMode
         leftback.setPower(-power);
         sleep(duration);
 
-        updateTelemetry(message);
+        updateTelemetryMessage(message);
     }
 
-    private void updateTelemetry(String message) {
+    protected void updateTelemetryMessage(String message) {
+        updateTelemetryMessage("Status", message);
+    }
+
+    protected void updateTelemetryMessage(String caption, String message) {
         telemetry.addData("Status", message);
         telemetry.update();
     }
+
 }

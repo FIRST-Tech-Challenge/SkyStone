@@ -65,8 +65,9 @@ public class ftc_autonomous extends LinearOpMode {
 
     private double armpower = 0.0;
     private double drivepower = 0.0;
-    private double right = 0.0;
-    private double left = 0.0;
+
+    //Define class members
+    private boolean rampUp = true;
 
 
     private void lateralmovement() {
@@ -77,6 +78,7 @@ public class ftc_autonomous extends LinearOpMode {
     }
 
     private void lateralright() {
+        double right = 0.0;
         leftfront.setPower(right);
         rightfront.setPower(-right);
         rightback.setPower(right);
@@ -84,23 +86,19 @@ public class ftc_autonomous extends LinearOpMode {
     }
 
     private void lateralleft() {
+        double left = 0.0;
         leftfront.setPower(-left);
         rightfront.setPower(left);
         rightback.setPower(-left);
         leftback.setPower(left);
     }
 
-
-    //Define class members
-    Servo   servo;
-    double  servoPosition = 0.4; // Start at halfway position
-    boolean rampUp = true;
-
-
-
-        public void runOpMode() {
+    public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
+
+        Servo   servo;
+        double  servoPosition = 0.4; // Start at halfway position
 
         servo = hardwareMap.servo.get("servo");
         servo.setPosition(servoPosition);
@@ -164,14 +162,6 @@ public class ftc_autonomous extends LinearOpMode {
         servo.setPosition(servoPosition);
         sleep(500);
         drivepower = 0.0;
-
-
-        private void lateralleft() {
-            leftfront.setPower(-left);
-            rightfront.setPower(left);
-            rightback.setPower(-left);
-            leftback.setPower(left);
-            }
     }
 }
 

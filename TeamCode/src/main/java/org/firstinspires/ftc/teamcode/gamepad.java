@@ -53,7 +53,7 @@ import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name="finalteleop", group="Linear Opmode")
 //@Disabled
-public class finalteleop extends LinearOpMode {
+public class gamepad extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();

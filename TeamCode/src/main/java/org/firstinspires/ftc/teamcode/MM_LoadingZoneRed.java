@@ -60,7 +60,9 @@ public class MM_LoadingZoneRed extends LinearOpMode {
         robot.driveForwardDistance(distanceToBuildZone + 12, speed, this);
         Thread.sleep(500);
         // drop block
-        robot.releaseBlock(this, true);
+        robot.releaseBlock(this);
+        // fold arm back
+        robot.foldArmBack(this);
         Thread.sleep(500);
         // park
         robot.driveForwardDistance(12, -speed, this);

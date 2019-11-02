@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.Range;
 
+import java.util.List;
+
 @TeleOp (name = "Halo Drive")
 public class DriveHalo extends OpMode {
 
@@ -16,27 +18,90 @@ public class DriveHalo extends OpMode {
     private float deadZone = 0.1f; // joystick deadzone
     private boolean buttonPressed = false;
     private boolean armClosed = false;
+    boolean slowMode = false; // activate slowMode if both joysticks are pushed down
+    boolean strafeMode = false;
+    Boolean[] buttons = new Boolean[6];
 
     @Override
     public void init() {
         robot.init(hardwareMap);
-
+        gamepad1.setJoystickDeadzone(deadZone);
+        for (int i = 0; i < 6; i++) {
+            buttons[i] = false;
+        }
         telemetry.addData("Initialized", "Ready to start");
     }
 
     @Override
     public void loop() {
-        buttonPressed = gamepad1.y || gamepad1.dpad_down || gamepad1.dpad_up || gamepad2.dpad_down || gamepad2.dpad_up || gamepad2.a;
-        boolean slowMode = gamepad1.left_stick_button && gamepad1.right_stick_button; // activate slowMode if both joysticks are pushed down
-        boolean strafeMode = !gamepad1.left_stick_button && gamepad1.right_stick_button;
+        driveController();
+        armController();
+        gripperController();
+        liftController();
+        waffleController();
+    }
 
-        if (slowMode) {
+    void liftController() {
+        if (gamepad2.dpad_down) { // lift logic
+            robot.gripperDown();
+        } else if (gamepad2.dpad_up) {
+            robot.gripperUp();
+        } else {
+            robot.stopLift();
+        }
+    }
+
+    void waffleController() {
+        if (gamepad1.y && !buttons[0]) {
+            try {
+                robot.moveWaffleMover('h');
+            } catch (InterruptedException e) {
+                telemetry.addData("Error", "Thread.sleep in moveWaffleMover failed");
+                telemetry.update();
+            }
+        }
+        buttons[0] = gamepad1.y;
+    }
+
+    void armController() {
+        if (gamepad1.dpad_down && !buttons[1]) {
+            try {
+                robot.bringArmDown(this);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        } else if (gamepad1.dpad_up && !buttons[2]) {
+            try {
+                robot.foldArmBack(this);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        buttons[1] = gamepad1.dpad_down;
+        buttons[2] = gamepad1.dpad_up;
+    }
+
+    void gripperController() {
+        if (gamepad2.a && !buttons[5]) {
+            if (armClosed) {
+                robot.releaseBlock(this); // release the block
+            } else {
+                robot.gripBlock(); // grab the block
+            }
+            armClosed = !armClosed;
+        }
+        buttons[5] = gamepad2.a;
+    }
+
+    void driveController() {
+        this.slowMode = gamepad1.left_stick_button && gamepad1.right_stick_button;
+        this.strafeMode = !gamepad1.left_stick_button && gamepad1.right_stick_button;
+
+        if (this.slowMode) {
             speedControl = 0.25;
         }
 
-        gamepad1.setJoystickDeadzone(deadZone);
-
-        if (strafeMode) {
+        if (this.strafeMode) {
             robot.setStrafe(speedControl * gamepad1.right_stick_x);
         } else {
             double drive = speedControl * -gamepad1.left_stick_y; // forward
@@ -47,52 +112,6 @@ public class DriveHalo extends OpMode {
             robot.frontLeft.setPower(leftPower);
             robot.rearRight.setPower(rightPower);
             robot.frontRight.setPower(rightPower);
-        }
-        if (!buttonPressed) { // button mapping
-            if (gamepad1.y) {
-                try {
-                    robot.moveWaffleMover('h');
-                } catch (InterruptedException e) {
-                    telemetry.addData("Error", "Thread.sleep in moveWaffleMover failed");
-                    telemetry.update();
-                }
-            }
-
-            if (gamepad1.dpad_down) {
-                try {
-                    robot.bringArmDown(this);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            } else if (gamepad1.dpad_up) {
-                try {
-                    robot.foldArmBack(this);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if (gamepad2.a) {
-                if (armClosed) {
-                    try { // release the block
-                        robot.releaseBlock(this, false);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    robot.gripBlock(); // grab the block
-                }
-                armClosed = !armClosed;
-            }
-            buttonPressed = !buttonPressed;
-        }
-
-        if (gamepad2.dpad_down) { // lift logic
-            robot.gripperDown();
-        } else if (gamepad2.dpad_up) {
-            robot.gripperUp();
-        } else {
-            robot.stopLift();
         }
     }
 }

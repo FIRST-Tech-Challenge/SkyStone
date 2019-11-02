@@ -187,19 +187,18 @@ public class Robot {
             Thread.sleep(500); // buffer time to let the motor completely stop
         }
     }
-    private void moveGripperRotate(int targetPosition, OpMode opmode) {
+    private void moveGripperRotate(int targetPosition, double power, OpMode opmode) {
         // reset encoders
         gripperRotate.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        // set target position and power
-        gripperRotate.setTargetPosition(targetPosition);
-        gripperRotate.setPower(0.5);
+        // set mode
+        gripperRotate.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        // change the mode
-        gripperRotate.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        // set power
+        gripperRotate.setPower(power);
 
-        // wait for gripperRotate to finish
-        while (gripperRotate.isBusy()) {
+        // wait for gripperRotate to reach the position
+        while (Math.abs(this.gripperRotate.getCurrentPosition()) < targetPosition) {
             opmode.telemetry.addData("Gripper", gripperRotate.getCurrentPosition());
             opmode.telemetry.update();
         }
@@ -216,7 +215,8 @@ public class Robot {
     void bringArmDown(OpMode opmode) throws InterruptedException {
         if (gripperPos == gripperPosition.REST) { // we only bring the arm down if the arm is resting
             // we rotate the arm 180 + ANGLE_OF_GRIPPER_WHEN_GRABBING degrees
-            moveGripperRotate(CORE_HEX_TICKS_PER_REV * (180 + this.ANGLE_OF_GRIPPER_WHEN_GRABBING) / 360, opmode);
+            //moveGripperRotate(CORE_HEX_TICKS_PER_REV * (180 + this.ANGLE_OF_GRIPPER_WHEN_GRABBING) / 360, 0.5, opmode);
+            moveGripperRotate(CORE_HEX_TICKS_PER_REV * (45) / 360, 0.5, opmode);
             Thread.sleep(500);
             // we rotate the gripper so it is parallel to the ground
             rotateGripper(90 - this.ANGLE_OF_GRIPPER_WHEN_GRABBING);
@@ -227,7 +227,7 @@ public class Robot {
     void foldArmBack(OpMode opmode) throws InterruptedException {
         if (gripperPos == gripperPosition.ACTIVE) { // we only do something if the arm is active
             // we rotate the arm 180 + ANGLE_OF_GRIPPER_WHEN_GRABBING degrees
-            moveGripperRotate(-CORE_HEX_TICKS_PER_REV * (180 + this.ANGLE_OF_GRIPPER_WHEN_GRABBING) / 360, opmode);
+            moveGripperRotate(CORE_HEX_TICKS_PER_REV * (180 + this.ANGLE_OF_GRIPPER_WHEN_GRABBING) / 360, -0.5, opmode);
             Thread.sleep(500);
             // we rotate the gripper so it is perpendicular to the ground
             rotateGripper(this.ANGLE_OF_GRIPPER_WHEN_GRABBING - 90);
@@ -239,11 +239,8 @@ public class Robot {
         grabServo.setPosition(1);
     }
 
-    void releaseBlock(OpMode opmode, boolean foldBack) throws InterruptedException {
+    void releaseBlock(OpMode opmode) {
         grabServo.setPosition(0);
-        if (foldBack) {
-            this.foldArmBack(opmode); // fold the arm back
-        }
     }
 
     void pickUpBlock(OpMode opmode) throws InterruptedException {

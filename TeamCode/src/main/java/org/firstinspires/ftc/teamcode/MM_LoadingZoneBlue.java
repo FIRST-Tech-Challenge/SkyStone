@@ -57,7 +57,9 @@ public class MM_LoadingZoneBlue extends LinearOpMode {
         // drive to skybridge
         robot.driveForwardDistance(distanceToBuildZone + 12, speed, this);
         // release block
-        robot.releaseBlock(this, true);
+        robot.releaseBlock(this);
+        // fold arm back
+        robot.foldArmBack(this);
         // park
         robot.driveForwardDistance(12, -speed, this);
 

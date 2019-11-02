@@ -8,9 +8,7 @@
  * of conditions and the following disclaimer.
  *
  * Redistributions in binary form must reproduce the above copyright notice, this
- * list of conditions and the following disclaimer in the documentation and/or\
- * \
- * \\\\\\\\\
+ * list of conditions and the following disclaimer in the documentation and/or
  * other materials provided with the distribution.
  *
  * Neither the name of FIRST nor the names of its contributors may be used to endorse or
@@ -31,12 +29,13 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 
 /**
@@ -52,10 +51,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="ftc_autonomous", group="Linear Opmode")
-//Disabled
-public class ftc_autonomous extends LinearOpMode {
+@TeleOp(name="finalteleop", group="Linear Opmode")
+//@Disabled
+public class finalteleop extends LinearOpMode {
 
+    // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftfront = null;
     private DcMotor rightfront = null;
@@ -68,112 +68,92 @@ public class ftc_autonomous extends LinearOpMode {
     private double right = 0.0;
     private double left = 0.0;
 
-
-    private void lateralmovement() {
-        leftfront.setPower(drivepower);
-        rightfront.setPower(drivepower);
-        rightback.setPower(drivepower);
-        leftback.setPower(drivepower);
-    }
+    double rightteleop;
+    double leftteleop;
 
     private void lateralright() {
-        leftfront.setPower(right);
-        rightfront.setPower(-right);
-        rightback.setPower(right);
-        leftback.setPower(-right);
+        leftfront.setPower(rightteleop);
+        rightfront.setPower(-rightteleop);
+        rightback.setPower(rightteleop);
+        leftback.setPower(-rightteleop);
     }
 
     private void lateralleft() {
-        leftfront.setPower(-left);
-        rightfront.setPower(left);
-        rightback.setPower(-left);
-        leftback.setPower(left);
+        leftfront.setPower(-leftteleop);
+        rightfront.setPower(leftteleop);
+        rightback.setPower(-leftteleop);
+        leftback.setPower(leftteleop);
     }
-
-
-    //Define class members
-    Servo   servo;
+    Servo servo;
     double  servoPosition = 0.4; // Start at halfway position
     boolean rampUp = true;
 
+    Servo   servo2;
+    double  servo2Position = 0.4; // Start at halfway position
+    boolean rampUp2 = true;
 
 
-        public void runOpMode() {
+    @Override
+    public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        servo = hardwareMap.servo.get("servo");
-        servo.setPosition(servoPosition);
-
         // Initialize the hardware variables. Note that the strings used here as parameters
+        // to 'get' must correspond to the names assigned during the robot configuration
+        // step (using the FTC Robot Controller app on the phone).
         leftfront  = hardwareMap.get(DcMotor.class, "leftfront");
         rightfront = hardwareMap.get(DcMotor.class, "rightfront");
         rightback = hardwareMap.get(DcMotor.class, "rightback");
         leftback = hardwareMap.get(DcMotor.class, "leftback");
-        // Arm  = hardwareMap.get(DcMotor.class, "Arm");
-        // boxmotor = hardwareMap.get(Servo.class, "boxmotor");
+        Arm  = hardwareMap.get(DcMotor.class, "Arm");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
+
         leftfront.setDirection(DcMotor.Direction.FORWARD);
         rightfront.setDirection(DcMotor.Direction.REVERSE);
         leftback.setDirection(DcMotor.Direction.FORWARD);
-        //Arm.setDirection(DcMotor.Direction.FORWARD);
         rightback.setDirection(DcMotor.Direction.REVERSE);
+        Arm.setDirection(DcMotor.Direction.FORWARD);
 
+        // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
 
         // run until the end of the match (driver presses STOP)
-        // Arm.setPower(1);
-        //sleep(2500);
-        //Arm.setPower(0);
+        while (opModeIsActive()) {
+
+            while(1<2) {
+
+                rightteleop = -gamepad1.right_trigger;
+                leftteleop = -gamepad1.left_trigger;
+                lateralleft();
+                lateralright();
+
+                // Setup a variable for each drive wheel to save power level for telemetry
+                double leftPower;
+                double rightPower;
+
+                double drive = -gamepad1.left_stick_y;
+                double turn  = -gamepad1.right_stick_x;
+                leftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
+                rightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
+
+                double armteleop = -gamepad2.left_stick_x;
 
 
-        //drive forward for 2 seconds
-        drivepower = -0.5;
-        lateralmovement();
-        telemetry.addData("Status", "Moving Backword");
-        telemetry.update();
-        sleep(1760);
+                // Send calculated power to wheels
+                leftfront.setPower(leftPower);
+                rightfront.setPower(rightPower);
+                leftback.setPower(leftPower);
+                rightback.setPower(rightPower);
+                Arm.setPower(armteleop);
 
-        //stop motors
-        drivepower = 0.0;
-        lateralmovement();
-        telemetry.addData("Status", "Stopping");
-        telemetry.update();
-
-        // servomotors
-        servoPosition = 0.95;
-        servo.setPosition(servoPosition);
-        sleep(900);
-
-        //drive backwards for 2 seconds
-        drivepower = 0.59;
-        lateralmovement();
-        telemetry.addData("Status", "Moving Backwards");
-        telemetry.update();
-        sleep(2250);
-
-        drivepower = 0.0;
-        lateralmovement();
-        telemetry.addData("Status", "Stop Program");
-        telemetry.update();
-
-        servoPosition = 0.4;
-        servo.setPosition(servoPosition);
-        sleep(500);
-        drivepower = 0.0;
-
-
-        private void lateralleft() {
-            leftfront.setPower(-left);
-            rightfront.setPower(left);
-            rightback.setPower(-left);
-            leftback.setPower(left);
+                telemetry.addData("Status", "Run Time: " + runtime.toString());
+                telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+                telemetry.update();
             }
+        }
     }
 }
-
-
 

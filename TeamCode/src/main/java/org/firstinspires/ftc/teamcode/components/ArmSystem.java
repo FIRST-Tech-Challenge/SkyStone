@@ -27,8 +27,8 @@ public class ArmSystem {
     private final double WRIST_HOME = 0;
     private final double ELBOW_HOME = 0;
     private final double PIVOT_HOME = 0;
-    private final double GRIPPER_OPEN = 0.47;
-    private final double GRIPPER_CLOSE = 0;
+    private final double GRIPPER_OPEN = 0.5;
+    private final double GRIPPER_CLOSE = 0.8;
     private int origin;
     public int targetHeight;
     private final int distanceConstant = 1000; // used for calculating motor speed
@@ -102,6 +102,7 @@ public class ArmSystem {
         this.pivot = servos.get(ServoNames.PIVOT);
         this.slider = slider;
         this.limitSwitch = limitSwitch;
+        this.queuedPosition = Position.POSITION_HOME;
         // this.direction = Direction.UP;
         // this.slider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
@@ -168,12 +169,15 @@ public class ArmSystem {
     }
 
     // Moves the arm to the "home state" - the grabber is open, right above the block in the intake.
+    // It requires the slider to be attached, so it can go over the latch.
     // The values of the servos in the home state can be set by editing the final variables.
     public void goHome() {
         openGripper();
+        setSliderHeight(1);
         moveWrist(WRIST_HOME);
         moveElbow(ELBOW_HOME);
         movePivot(PIVOT_HOME);
+        setSliderHeight(0);
     }
 
     public void openGripper() {
@@ -197,9 +201,7 @@ public class ArmSystem {
     public void movePresetPosition(Position pos) {
         switch(pos) {
             case POSITION_HOME:
-                moveWrist(0);
-                moveElbow(0.35);
-                movePivot(0.86);
+                goHome();
                 break;
             case POSITION_NORTH:
                 moveWrist(0.88);

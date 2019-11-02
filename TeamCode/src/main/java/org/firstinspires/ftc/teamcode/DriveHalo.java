@@ -5,8 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.Range;
 
-import java.util.List;
-
 @TeleOp (name = "Halo Drive")
 public class DriveHalo extends OpMode {
 
@@ -42,10 +40,10 @@ public class DriveHalo extends OpMode {
     }
 
     void liftController() {
-        if (gamepad2.dpad_down) { // lift logic
-            robot.gripperDown();
-        } else if (gamepad2.dpad_up) {
-            robot.gripperUp();
+        if (gamepad1.dpad_down) { // lift logic
+            robot.liftDown();
+        } else if (gamepad1.dpad_up) {
+            robot.liftUp();
         } else {
             robot.stopLift();
         }
@@ -64,21 +62,21 @@ public class DriveHalo extends OpMode {
     }
 
     void armController() {
-        if (gamepad1.dpad_down && !buttons[1]) {
+        if (gamepad2.dpad_down && !buttons[1]) {
             try {
                 robot.bringArmDown(this);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        } else if (gamepad1.dpad_up && !buttons[2]) {
+        } else if (gamepad2.dpad_up && !buttons[2]) {
             try {
                 robot.foldArmBack(this);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        buttons[1] = gamepad1.dpad_down;
-        buttons[2] = gamepad1.dpad_up;
+        buttons[1] = gamepad2.dpad_down;
+        buttons[2] = gamepad2.dpad_up;
     }
 
     void gripperController() {

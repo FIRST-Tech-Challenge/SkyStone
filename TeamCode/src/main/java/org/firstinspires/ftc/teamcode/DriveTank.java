@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 
-// @Disabled
+@Disabled
 @TeleOp (name = "Tank Drive")
 public class DriveTank extends OpMode {
 

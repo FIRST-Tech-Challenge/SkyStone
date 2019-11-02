@@ -19,7 +19,7 @@ public class Robot {
     public DcMotor frontLeft;
     public DcMotor frontRight;
     public DcMotor waffleMover;
-    public DcMotor gripperRotate;
+    public DcMotor armRotate;
     public DcMotor liftMotor;
 
     // Servos
@@ -41,8 +41,8 @@ public class Robot {
     private int wafflePosition = 0; // 1 = Up, -1 = Down
     private double wafflePower = 0.5;
 
-    private enum gripperPosition {REST, ACTIVE}
-    private gripperPosition gripperPos = gripperPosition.REST;
+    private enum armPosition {REST, ACTIVE}
+    private armPosition armPos = armPosition.REST;
 
     private HardwareMap hwMap = null;
 
@@ -61,7 +61,7 @@ public class Robot {
         this.rearRight = hwMap.dcMotor.get("rearRight");
         this.frontRight = hwMap.dcMotor.get("frontRight");
         this.waffleMover = hwMap.dcMotor.get("waffleMover");
-        this.gripperRotate = hwMap.dcMotor.get("gripperRotate");
+        this.armRotate = hwMap.dcMotor.get("armRotate");
         this.liftMotor = hwMap.dcMotor.get("liftMotor");
 
         // Drive Motor Direction
@@ -69,14 +69,14 @@ public class Robot {
         this.frontLeft.setDirection(DcMotor.Direction.REVERSE);
         this.rearRight.setDirection(DcMotor.Direction.FORWARD);
         this.frontRight.setDirection(DcMotor.Direction.FORWARD);
-        this.waffleMover.setDirection(DcMotor.Direction.FORWARD);
-        this.gripperRotate.setDirection(DcMotor.Direction.REVERSE); // positive makes arm go forward
+        this.waffleMover.setDirection(DcMotor.Direction.REVERSE);
+        this.armRotate.setDirection(DcMotor.Direction.REVERSE); // positive makes arm go forward
         this.liftMotor.setDirection(DcMotor.Direction.FORWARD);
 
         // set motor powers to 0 so they don't cause problems
         this.stopDrive();
         this.waffleMover.setPower(0);
-        this.gripperRotate.setPower(0);
+        this.armRotate.setPower(0);
 
         // Servo mapping
         this.gripperRotateServo1 = hwMap.get(Servo.class, "gripperRotateServo1");
@@ -174,7 +174,7 @@ public class Robot {
     }
 
     void moveWaffleMover(char floatOrHold) throws InterruptedException {
-        if (floatOrHold != 'f' && floatOrHold != 'h') {
+        if (floatOrHold != 'f' && floatOrHold != 'h') { // make sure floatOrHold is 'f' or 'h'
             return;
         }
 
@@ -187,24 +187,24 @@ public class Robot {
         }
         this.wafflePosition *= -1;
     }
-    private void moveGripperRotate(int targetPosition, double power, OpMode opmode) {
+    private void moveArmRotate(int targetPosition, double power, OpMode opmode) {
         // reset encoders
-        gripperRotate.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armRotate.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         // set mode
-        gripperRotate.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        armRotate.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // set power
-        gripperRotate.setPower(power);
+        armRotate.setPower(power);
 
-        // wait for gripperRotate to reach the position
-        while (Math.abs(this.gripperRotate.getCurrentPosition()) < targetPosition) {
-            opmode.telemetry.addData("Gripper", gripperRotate.getCurrentPosition());
+        // wait for armRotate to reach the position
+        while (Math.abs(this.armRotate.getCurrentPosition()) < targetPosition) {
+            opmode.telemetry.addData("Gripper", armRotate.getCurrentPosition());
             opmode.telemetry.update();
         }
 
-        // stop the gripperRotate motor
-        gripperRotate.setPower(0);
+        // stop the armRotate motor
+        armRotate.setPower(0);
     }
 
     private void rotateGripper(double angle) {
@@ -213,25 +213,25 @@ public class Robot {
     }
 
     void bringArmDown(OpMode opmode) throws InterruptedException {
-        if (gripperPos == gripperPosition.REST) { // we only bring the arm down if the arm is resting
+        if (armPos == armPosition.REST) { // we only bring the arm down if the arm is resting
             // we rotate the arm 180 + ANGLE_OF_GRIPPER_WHEN_GRABBING degrees
-            //moveGripperRotate(CORE_HEX_TICKS_PER_REV * (180 + this.ANGLE_OF_GRIPPER_WHEN_GRABBING) / 360, 0.5, opmode);
-            moveGripperRotate(CORE_HEX_TICKS_PER_REV * (180 + this.ANGLE_OF_GRIPPER_WHEN_GRABBING) / 360, 0.5, opmode);
+            //moveArmRotate(CORE_HEX_TICKS_PER_REV * (180 + this.ANGLE_OF_GRIPPER_WHEN_GRABBING) / 360, 0.5, opmode);
+            moveArmRotate(CORE_HEX_TICKS_PER_REV * (180 + this.ANGLE_OF_GRIPPER_WHEN_GRABBING) / 360, 0.5, opmode);
             Thread.sleep(500);
             // we rotate the gripper so it is parallel to the ground
             rotateGripper(90 - this.ANGLE_OF_GRIPPER_WHEN_GRABBING);
-            gripperPos = gripperPosition.ACTIVE;
+            armPos = armPosition.ACTIVE;
         }
     }
 
     void foldArmBack(OpMode opmode) throws InterruptedException {
-        if (gripperPos == gripperPosition.ACTIVE) { // we only do something if the arm is active
+        if (armPos == armPosition.ACTIVE) { // we only do something if the arm is active
             // we rotate the arm 180 + ANGLE_OF_GRIPPER_WHEN_GRABBING degrees
-            moveGripperRotate(CORE_HEX_TICKS_PER_REV * (180 + this.ANGLE_OF_GRIPPER_WHEN_GRABBING) / 360, -0.5, opmode);
+            moveArmRotate(CORE_HEX_TICKS_PER_REV * (180 + this.ANGLE_OF_GRIPPER_WHEN_GRABBING) / 360, -0.5, opmode);
             Thread.sleep(500);
             // we rotate the gripper so it is perpendicular to the ground
             rotateGripper(this.ANGLE_OF_GRIPPER_WHEN_GRABBING - 90);
-            gripperPos = gripperPosition.REST;
+            armPos = armPosition.REST;
         }
     }
 
@@ -248,11 +248,11 @@ public class Robot {
         this.gripBlock(); // grab the block
     }
 
-    void gripperUp() {
+    void liftUp() {
         this.liftMotor.setPower(0.5);
     }
 
-    void gripperDown() {
+    void liftDown() {
         this.liftMotor.setPower(-0.5);
     }
 

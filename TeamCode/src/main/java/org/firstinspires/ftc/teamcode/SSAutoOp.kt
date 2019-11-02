@@ -83,6 +83,7 @@ class SSAutoOp : LinearOpMode()
         /* Steps
         1. Raises Linear Slide and horizontal Slide
         2. Drives forawrd to the foundation
+        3.
          */
 
         //https://www.reddit.com/r/FTC/comments/78l5o0/how_to_program_encoders/

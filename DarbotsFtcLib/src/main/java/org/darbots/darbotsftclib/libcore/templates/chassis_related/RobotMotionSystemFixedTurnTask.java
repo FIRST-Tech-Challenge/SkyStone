@@ -19,7 +19,7 @@ public abstract class RobotMotionSystemFixedTurnTask extends RobotMotionSystemTa
         return this.m_Speed;
     }
     public void setSpeed(double Speed){
-        this.m_Speed = Speed;
+        this.m_Speed = Math.abs(Speed);
     }
     public double getTurnDeg(){
         return this.m_TurnDeg;

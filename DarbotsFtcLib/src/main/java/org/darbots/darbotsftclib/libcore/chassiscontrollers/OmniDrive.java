@@ -42,7 +42,7 @@ public class OmniDrive extends RobotMotionSystem {
         protected void __startTask() {
             __recalculateCounts();
 
-            double AbsSpeed = Math.abs(getSpeed());
+            double AbsSpeed = getSpeed();
             AbsSpeed = super.__getSupposedSteadilySpeedUpAbsSpeed(AbsSpeed);
             double LTSpeed = this.m_CountsToMove > 0 ? -AbsSpeed : AbsSpeed;
             double RTSpeed = this.m_CountsToMove > 0 ? -AbsSpeed : AbsSpeed;
@@ -100,7 +100,7 @@ public class OmniDrive extends RobotMotionSystem {
             m_Drive.m_RightBottomMotor.getMotorController().getMotor().updateStatus();
             //Left / Right Speed Control
             if(this.isBusy()){
-                double AbsSpeed = Math.abs(getSpeed());
+                double AbsSpeed = getSpeed();
                 AbsSpeed = super.__getSupposedSteadilySpeedUpAbsSpeed(AbsSpeed);
 
                 double LTSpeed = this.m_CountsToMove > 0 ? -AbsSpeed : AbsSpeed;
@@ -168,7 +168,7 @@ public class OmniDrive extends RobotMotionSystem {
             __recalculateCounts();
 
 
-            double AbsSpeed = Math.abs(getSpeed());
+            double AbsSpeed = getSpeed();
             AbsSpeed = super.__getSupposedSteadilySpeedUpAbsSpeed(AbsSpeed);
             double LTSpeed = this.m_CountsToMove > 0 ? -AbsSpeed : AbsSpeed;
             double RTSpeed = this.m_CountsToMove > 0 ? AbsSpeed : -AbsSpeed;
@@ -227,7 +227,7 @@ public class OmniDrive extends RobotMotionSystem {
 
             //Left / Right Speed Control
             if(this.isBusy()){
-                double AbsSpeed = Math.abs(getSpeed());
+                double AbsSpeed = getSpeed();
 
                 AbsSpeed = super.__getSupposedSteadilySpeedUpAbsSpeed(AbsSpeed);
 
@@ -295,7 +295,7 @@ public class OmniDrive extends RobotMotionSystem {
         protected void __startTask() {
             __recalculateCounts();
 
-            double AbsSpeed = Math.abs(getSpeed());
+            double AbsSpeed = getSpeed();
             AbsSpeed = super.__getSupposedSteadilySpeedUpAbsSpeed(AbsSpeed);
             double LTSpeed = this.m_CountsToMove > 0 ? AbsSpeed : -AbsSpeed;
             double RTSpeed = this.m_CountsToMove > 0 ? AbsSpeed : -AbsSpeed;
@@ -354,7 +354,7 @@ public class OmniDrive extends RobotMotionSystem {
 
             //Left / Right Speed Control
             if(this.isBusy()){
-                double AbsSpeed = Math.abs(getSpeed());
+                double AbsSpeed = getSpeed();
 
                 AbsSpeed = super.__getSupposedSteadilySpeedUpAbsSpeed(AbsSpeed);
 

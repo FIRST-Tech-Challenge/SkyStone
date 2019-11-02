@@ -17,7 +17,7 @@ public abstract class RobotMotionSystemFixedXDistanceTask extends RobotMotionSys
         return this.m_Speed;
     }
     public void setSpeed(double Speed){
-        this.m_Speed = Speed;
+        this.m_Speed = Math.abs(Speed);
     }
     public double getXDistance(){
         return this.m_XDistance;

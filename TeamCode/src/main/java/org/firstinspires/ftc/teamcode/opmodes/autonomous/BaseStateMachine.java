@@ -52,7 +52,7 @@ public abstract class BaseStateMachine extends BaseOpMode {
         distanceFront = hardwareMap.get(DistanceSensor.class, "distanceFront");
         colorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
         this.msStuckDetectLoop = 30000;
-        newState(State.LOGGING);
+        newState(State.STATE_INITIAL);
         skystone = vuforia.targetsSkyStone.get(0);
         currentTeam = team;
     }
@@ -83,8 +83,8 @@ public abstract class BaseStateMachine extends BaseOpMode {
                 // Strafe towards line
                 // Identify SkyStone
                 telemetry.addData("State", "STATE_FIND_SKYSTONE");
-                if (mStateTime.seconds() > 5) {
-                    // TODO: Unable to detect stone after 10 seconds. Use dead reckoning
+                if (mStateTime.seconds() > 2) {
+                    // TODO: Unable to detect stone after 2 seconds. Use dead reckoning
                     // TODO: Make new state for this. Currently just set to log
                     newState(State.GRAB_STONE_DEAD_RECKONING);
                     break;
@@ -107,36 +107,32 @@ public abstract class BaseStateMachine extends BaseOpMode {
                     Log.d(TAG, "inside grab stone loop");
                     VectorF translation = vuforia.getRobotPosition();
                     // Strafe to align with skystone
-                    direction = currentTeam == Team.RED ? DriveSystem.Direction.FORWARD : DriveSystem.Direction.BACKWARD;
-                    while (!driveSystem.driveToPosition((int) translation.get(1), direction, 0.5) && !isStopRequested()) {}
+                    while (!driveSystem.driveToPosition((int) translation.get(1), DriveSystem.Direction.BACKWARD, 0.5) && !isStopRequested()) {}
 
                     // Drive up to the skystone
                     double distance = distanceFront.getDistance(DistanceUnit.MM);
                     distance -= 10;
                     direction = currentTeam == Team.RED ? DriveSystem.Direction.RIGHT : DriveSystem.Direction.LEFT;
                     while (!driveSystem.driveToPosition((int) distance, direction, 0.8) && !isStopRequested()) {};
-
                     // Offset from skystone
-                    direction = currentTeam == Team.RED ? DriveSystem.Direction.FORWARD : DriveSystem.Direction.BACKWARD;
-                    while (!driveSystem.driveToPosition(900, direction, 0.5) && !isStopRequested()) {}
+                    while (!driveSystem.driveToPosition(900, DriveSystem.Direction.BACKWARD, 0.5) && !isStopRequested()) {}
                     // Shove into the other stones
                     direction = currentTeam == Team.RED ? DriveSystem.Direction.RIGHT : DriveSystem.Direction.LEFT;
-                    while (!driveSystem.driveToPosition(1400, direction, 0.5) && !isStopRequested()) {}
+                    while (!driveSystem.driveToPosition(1500, direction, 0.5) && !isStopRequested()) {}
                     // Drive into skystone
-                    direction = currentTeam == Team.RED ? DriveSystem.Direction.BACKWARD : DriveSystem.Direction.FORWARD;
-                    while (!driveSystem.driveToPosition(500, direction, 0.5) && !isStopRequested()) {}
+                    while (!driveSystem.driveToPosition(500, DriveSystem.Direction.FORWARD, 0.5) && !isStopRequested()) {}
 
                     // Move away with skystone (prepare for next state)
                     direction = currentTeam == Team.RED ? DriveSystem.Direction.LEFT : DriveSystem.Direction.RIGHT;
-                    while (!driveSystem.driveToPosition(1400, DriveSystem.Direction.RIGHT, 0.8) && !isStopRequested()) {};
+                    while (!driveSystem.driveToPosition(1200, direction, 0.8) && !isStopRequested()) {};
                     double heading = driveSystem.imuSystem.getHeading();
                     // I think it is getting stuck here. The purpose is to align the robot with the
                     // audience such it moves straight
-                    while (!driveSystem.turn(-heading, 0.5) && !isStopRequested()) {};
+                    while (!driveSystem.turn(-heading + 155, 0.8) && !isStopRequested()) {};
                 }
 
                 telemetry.update();
-                newState(State.STATE_PARK_AT_LINE);
+                newState(State.STATE_DELIVER_STONE);
                 break;
             case GRAB_STONE_DEAD_RECKONING:
                 telemetry.addData("State", "GRAB_STONE_DEAD_RECKONING");
@@ -146,33 +142,30 @@ public abstract class BaseStateMachine extends BaseOpMode {
                 distance -= 10;
                 direction = currentTeam == Team.RED ? DriveSystem.Direction.RIGHT : DriveSystem.Direction.LEFT;
                 while (!driveSystem.driveToPosition((int) distance, direction, 0.8) && !isStopRequested()) {};
-
                 // Offset from skystone
-                direction = currentTeam == Team.RED ? DriveSystem.Direction.FORWARD : DriveSystem.Direction.BACKWARD;
-                while (!driveSystem.driveToPosition(900, direction, 0.5) && !isStopRequested()) {}
+                while (!driveSystem.driveToPosition(900, DriveSystem.Direction.BACKWARD, 0.5) && !isStopRequested()) {}
                 // Shove into the other stones
                 direction = currentTeam == Team.RED ? DriveSystem.Direction.RIGHT : DriveSystem.Direction.LEFT;
-                while (!driveSystem.driveToPosition(1400, direction, 0.5) && !isStopRequested()) {}
+                while (!driveSystem.driveToPosition(1500, direction, 0.5) && !isStopRequested()) {}
                 // Drive into skystone
-                direction = currentTeam == Team.RED ? DriveSystem.Direction.BACKWARD : DriveSystem.Direction.FORWARD;
-                while (!driveSystem.driveToPosition(500, direction, 0.5) && !isStopRequested()) {}
+                while (!driveSystem.driveToPosition(500, DriveSystem.Direction.FORWARD, 0.5) && !isStopRequested()) {}
 
                 // Move away with skystone (prepare for next state)
                 direction = currentTeam == Team.RED ? DriveSystem.Direction.LEFT : DriveSystem.Direction.RIGHT;
-                while (!driveSystem.driveToPosition(1400, DriveSystem.Direction.RIGHT, 0.8) && !isStopRequested()) {};
+                while (!driveSystem.driveToPosition(1200, direction, 0.8) && !isStopRequested()) {};
                 double heading = driveSystem.imuSystem.getHeading();
                 // I think it is getting stuck here. The purpose is to align the robot with the
                 // audience such it moves straight
-                while (!driveSystem.turn(-heading, 0.5) && !isStopRequested()) {};
+                while (!driveSystem.turn(-heading + 160, 0.8) && !isStopRequested()) {};
                 telemetry.update();
-                newState(State.STATE_PARK_AT_LINE);
+                newState(State.STATE_DELIVER_STONE);
                 break;
 
             case STATE_DELIVER_STONE:
                 telemetry.addData("State", "STATE_DELIVER_STONE");
-                // TODO: Use distance sensor to detect distance from wall
-                while (!driveSystem.driveToPosition(4000, DriveSystem.Direction.BACKWARD, 1.0)  && !isStopRequested()) {};
-                newState(State.LOGGING);
+                while (!driveSystem.driveToPosition(2200, DriveSystem.Direction.FORWARD, 1.0)  && !isStopRequested()) {};
+                // TODO: Eject from robot
+                newState(State.STATE_PARK_AT_LINE);
                 telemetry.update();
                 break;
 
@@ -183,7 +176,20 @@ public abstract class BaseStateMachine extends BaseOpMode {
 
             case STATE_PARK_AT_LINE:
                 // Find the line
-                // Park
+                if (currentTeam == Team.BLUE) {
+                    if (colorSensor.blue() > colorSensor.red() * 1.5) {
+                        driveSystem.setMotorPower(0.0);
+                        newState(State.LOGGING);
+                        break;
+                    }
+                } else if (currentTeam == Team.RED) {
+                    if (colorSensor.red() > colorSensor.blue() * 1.5) {
+                        driveSystem.setMotorPower(0.0);
+                        newState(State.LOGGING);
+                        break;
+                    }
+                }
+                driveSystem.drive(0.0f, 0.0f, 0.2f);
                 break;
 
             case STATE_DEPOSIT_STONE:

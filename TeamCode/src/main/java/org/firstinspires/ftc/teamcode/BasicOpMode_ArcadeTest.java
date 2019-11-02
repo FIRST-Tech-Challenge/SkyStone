@@ -33,6 +33,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import java.lang.Math;
@@ -56,13 +58,19 @@ public class BasicOpMode_ArcadeTest extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor bottomleftDrive = null;
-    DcMotor bottomrightDrive = null;
-    private DcMotor topleftDrive = null;
-    DcMotor toprightDrive = null;
 
+    private DcMotor bottomleftDrive = null;
+    private DcMotor bottomrightDrive = null;
+    private DcMotor topleftDrive = null;
+    private DcMotor toprightDrive = null;
+
+    private DcMotor elevatorMotor = null;
+
+    private Servo flipperServo = null;
+
+    int servoPosition = 0;
     /*
-     * Code to run ONCE when the driver hits INIT
+    3 * Code to run ONCE when the driver hits INIT
      */
     @Override
     public void init() {
@@ -76,12 +84,20 @@ public class BasicOpMode_ArcadeTest extends OpMode
         topleftDrive = hardwareMap.get(DcMotor.class, "top_left_drive");
         toprightDrive = hardwareMap.get(DcMotor.class, "top_right_drive");
 
+        elevatorMotor = hardwareMap.get(DcMotor.class, "elevator_motor");
+
+        flipperServo = hardwareMap.get (Servo.class, "flipper_Motor");
+
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
         bottomleftDrive.setDirection(DcMotor.Direction.FORWARD);
-        bottomrightDrive.setDirection(DcMotor.Direction.FORWARD);
+        bottomrightDrive.setDirection(DcMotor.Direction.REVERSE);
         topleftDrive.setDirection(DcMotor.Direction.FORWARD);
         toprightDrive.setDirection(DcMotor.Direction.FORWARD);
+
+        elevatorMotor.setDirection(DcMotor.Direction.FORWARD);
+
+        flipperServo.setDirection (Servo.Direction.FORWARD);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -107,54 +123,98 @@ public class BasicOpMode_ArcadeTest extends OpMode
      */
     @Override
     public void loop() {
+
         // Setup a variable for each drive wheel to save power level for telemetry
         double bottomleftpower, bottomrightpower, topleftpower, toprightpower;
 
+        double leftStickY = -1 * gamepad1.left_stick_y;
+        double leftStickX = gamepad1.left_stick_x;
 
-        double angle = Math.atan((-1.0*gamepad1.left_stick_y)/(gamepad1.left_stick_x));
+        double angle = Math.atan((leftStickY) / (leftStickX));
 
         //Tangent Inverse only goes from -pi/2 to pi/2, so I have to add some test cases to make sure
         //the angle is correct
 
-        if(gamepad1.left_stick_x < 0 && -1.0*gamepad1.left_stick_y < 0){ //3rd Quadrant
-            angle = Math.atan((-1.0*gamepad1.left_stick_y)/(gamepad1.left_stick_x))+Math.PI;
+        if (leftStickX < 0 && leftStickY < 0) { //3rd Quadrant
+            angle = Math.atan((leftStickY) / (leftStickX)) + Math.PI;
+        } else if (leftStickX == 0 && leftStickX < 0) {
+            angle = Math.PI;
+        } else if (leftStickY > 0 && leftStickX < 0) {
+            angle = Math.atan((leftStickY) / (leftStickX)) + Math.PI;
+        } else if (leftStickX == 0 && leftStickY > 0) {
+            angle = 0.5 * Math.PI;
+        } else if (leftStickX == 0 && leftStickY < 0) {
+            angle = 3 * Math.PI / 2;
+        } else if (leftStickX > 0 && leftStickY < 0) {
+            angle += 2 * Math.PI;
         }
-        else if(gamepad1.left_stick_y == 0 && gamepad1.left_stick_x < 0){angle = Math.PI;}
-        else if(-1*gamepad1.left_stick_y > 0 && gamepad1.left_stick_x < 0){
-            angle = Math.atan((-1.0*gamepad1.left_stick_y)/(gamepad1.left_stick_x))+Math.PI;
-        }
-        else if(gamepad1.left_stick_x == 0 && -1.0*gamepad1.left_stick_y > 0){angle = 0.5*Math.PI;}
-        else if(gamepad1.left_stick_x == 0 && -1.0*gamepad1.left_stick_y < 0){angle = 3*Math.PI/2;}
-        else if(gamepad1.left_stick_x > 0 && -1.0*gamepad1.left_stick_y < 0){angle += 2*Math.PI;}
         angle = Math.toDegrees(angle); //Changes angle from radians to degrees
 
         double[] arr = new double[4];
 
-        if(angle == 0){arr = new double[]{1, -1, -1, 1};}
-        else if(angle > 0 && angle < 90){arr = new double[]{1, angle/45-1, angle/45-1, 1};}
-        else if(angle == 90){arr = new double[]{1, 1, 1, 1};}
-        else if(angle > 90 && angle < 180){arr = new double[]{3-angle/45, 1, 1, 3-angle/45};}
-        else if(angle == 180){arr = new double[]{-1, 1, 1, -1};}
-        else if(angle > 180 && angle < 270){arr = new double[]{-1, 5-angle/45, 5-angle/45, -1};}
-        else if(angle == 270){arr = new double[]{-1, -1, -1, -1};}
-        else if(angle > 270 &&  gamepad1.left_stick_y> 300){arr = new double[]{7-angle/45, -1, -1, 7-angle/45};}
+        if (angle == 0) {
+            arr = new double[]{1, -1, -1, 1};
+        } else if (angle > 0 && angle < 90) {
+            arr = new double[]{1, angle / 45 - 1, angle / 45 - 1, 1};
+        } else if (angle == 90) {
+            arr = new double[]{1, 1, 1, 1};
+        } else if (angle > 90 && angle < 180) {
+            arr = new double[]{3 - angle / 45, 1, 1, 3 - angle / 45};
+        } else if (angle == 180) {
+            arr = new double[]{-1, 1, 1, -1};
+        } else if (angle > 180 && angle < 270) {
+            arr = new double[]{-1, 5 - angle / 45, 5 - angle / 45, -1};
+        } else if (angle == 270) {
+            arr = new double[]{-1, -1, -1, -1};
+        } else if (angle > 270 && leftStickY > 300) {
+            arr = new double[]{7 - angle / 45, -1, -1, 7 - angle / 45};
+        }
         //
-        double bottomleftPower  = arr[2];
+        double bottomleftPower = arr[2];
         double bottomrightPower = arr[3];
         double topleftPower = arr[0];
         double toprightPower = arr[1];
+
+        if (gamepad2.y == true) {
+            elevatorMotor.setPower(0.5);
+        } else if (gamepad2.a == true) {
+            elevatorMotor.setPower(-0.5);
+        } else {
+            elevatorMotor.setPower(0);
+        }
+
+
+        if (gamepad2.x) {
+            servoPosition += 15;
+
+        } else if (gamepad2.b){
+            if (servoPosition>14){
+                servoPosition-=15;
+            }else{
+                servoPosition=0;
+            }
+        }
+
+
+
+
 
         // Send calculated power to wheels
         bottomleftDrive.setPower(bottomleftPower);
         bottomrightDrive.setPower(bottomrightPower);
         topleftDrive.setPower(topleftPower);
         toprightDrive.setPower(toprightPower);
+        flipperServo.setPosition(servoPosition);
+
 
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Motors", "tleft (%.2f), tright (%.2f), bleft (%.2f), bright (%.2f), ANGLE (%.2f), X (%.2f), Y (%.2f)",
-                topleftPower, toprightPower, bottomleftPower, bottomrightPower, angle,gamepad1.left_stick_x, -1.0*gamepad1.left_stick_y);
+                topleftPower, toprightPower, bottomleftPower, bottomrightPower, angle,leftStickX, leftStickY);
 
+        telemetry.addData("left Motor Position", topleftDrive.getCurrentPosition());
+
+        telemetry.addData("elevator motor power", elevatorMotor.getPower());
     }
 
     /*
@@ -165,3 +225,5 @@ public class BasicOpMode_ArcadeTest extends OpMode
     }
 
 }
+
+

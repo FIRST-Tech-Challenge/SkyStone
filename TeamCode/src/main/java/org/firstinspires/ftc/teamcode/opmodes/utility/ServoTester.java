@@ -20,7 +20,7 @@ public class ServoTester extends OpMode {
     public void init() {
         servos = hardwareMap.servo.entrySet().toArray();
         telemetry.addData("Number of servos found", servos.length);
-        telemetry.addLine("Start to move forward, back to move in reverse.");
+        telemetry.addLine("Dpad right to move forward, left to move in reverse.");
         telemetry.addLine("Dpad up and down to switch servos.");
         telemetry.update();
         if (servos.length == 0) {
@@ -35,10 +35,10 @@ public class ServoTester extends OpMode {
     public void loop() {
         arm = (Servo) ((Map.Entry) servos[index]).getValue();
         name = (String) ((Map.Entry) servos[index]).getKey();
-        if (gamepad1.start && !gamepad1.back && positions[index] < 1) {
+        if (gamepad1.dpad_right && !gamepad1.dpad_left && positions[index] < 1.0) {
             positions[index] += 0.001;
         }
-        if (gamepad1.back && !gamepad1.start && positions[index] > 0) {
+        if (gamepad1.dpad_left && !gamepad1.dpad_right && positions[index] > 0.0) {
             positions[index] -= 0.001;
         }
         arm.setPosition(positions[index]);

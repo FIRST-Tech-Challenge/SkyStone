@@ -21,10 +21,10 @@ public class FoundationGrabber {
     private RevTouchSensor frontTouch;
     private RevTouchSensor sideTouch;
 
-    private final double LEFT_GRABBED_POSITION = 0.8;
-    private final double LEFT_UNGRABBED_POSITION = 0.2;
-    private final double RIGHT_GRABBED_POSITION = 0.8;
-    private final double RIGHT_UNGRABBED_POSITION = 0.2;
+    private final double LEFT_GRABBED_POSITION = 0.159;
+    private final double LEFT_UNGRABBED_POSITION = 0.666;
+    private final double RIGHT_GRABBED_POSITION = 0.703;
+    private final double RIGHT_UNGRABBED_POSITION = 0.220;
 
     private final double RED_TO_BLUE_THRESHOLD = 1.5;
     private final double GREEN_TO_BLUE_THRESHOLD = 2.25;
@@ -40,9 +40,6 @@ public class FoundationGrabber {
 
     public void init(HardwareMap hardwareMap) {
         leftHook = hardwareMap.get(Servo.class, "foundationHookLeft");
-        leftHook.scaleRange(LEFT_UNGRABBED_POSITION, LEFT_GRABBED_POSITION);
-        leftHook.setDirection(Servo.Direction.FORWARD);
-
         leftBlock = hardwareMap.get(RevTouchSensor.class, "autoBlockTouchLeft");
 
         double aParam = 315;
@@ -58,9 +55,6 @@ public class FoundationGrabber {
         };
 
         rightHook = hardwareMap.get(Servo.class, "foundationHookRight");
-        rightHook.scaleRange(RIGHT_UNGRABBED_POSITION, RIGHT_GRABBED_POSITION);
-        rightHook.setDirection(Servo.Direction.FORWARD);
-
         rightBlock = hardwareMap.get(RevTouchSensor.class, "autoBlockTouchRight");
 
         rightEye = new RevColorSensorV3(
@@ -79,14 +73,14 @@ public class FoundationGrabber {
     public void setGrabbed(Hook hook, boolean grabbed) {
         switch (hook) {
             case LEFT:
-                leftHook.setPosition(1);
+                leftHook.setPosition(grabbed ? LEFT_GRABBED_POSITION : LEFT_UNGRABBED_POSITION);
                 break;
             case RIGHT:
-                rightHook.setPosition(1);
+                rightHook.setPosition(grabbed ? RIGHT_GRABBED_POSITION : RIGHT_UNGRABBED_POSITION);
                 break;
             case BOTH:
-                leftHook.setPosition(1);
-                rightHook.setPosition(1);
+                leftHook.setPosition(grabbed ? LEFT_GRABBED_POSITION : LEFT_UNGRABBED_POSITION);
+                rightHook.setPosition(grabbed ? RIGHT_GRABBED_POSITION : RIGHT_UNGRABBED_POSITION);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown or invalid hook " + hook + " provided.");

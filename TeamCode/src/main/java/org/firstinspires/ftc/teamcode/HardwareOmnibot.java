@@ -952,6 +952,13 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         return backRightTofValue;
     }
 
+    public double readBackTof() {
+        double backLeftTof = readBackLeftTof();
+        double backRightTof = readBackRightTof();
+
+        return (backLeftTof + backRightTof) / 2.0;
+    }
+
     /* Initialize standard Hardware interfaces */
     public void init(HardwareMap ahwMap) {
         // Save reference to Hardware map

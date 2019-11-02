@@ -1,24 +1,19 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-
-import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
-import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
-import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
-import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 
 /**
  * Created by Ethan on 10/23/2016.
  */
 public abstract class OmniAutoClass extends LinearOpMode {
 
-    // ========== VUFORIA TRACKING VARIABLES  ==========
+    public enum TofDirection {
+        LEFT,
+        RIGHT,
+        BACK
+    }
+
     private ElapsedTime timer;
 
     public static float mmPerInch = OmniAutoClass.MM_PER_INCH;
@@ -374,47 +369,43 @@ public abstract class OmniAutoClass extends LinearOpMode {
         return result;
     }
 
-    // Speed is absolute value, will shift to positive or negative to get nearer
-    // or farther from the wall to achieve distance (in CM) or until the maxTime
-    // is exceeded.
-    public void driveDistanceFromLeftTof(double speed, double distance, int maxTime) {
-        double endTime = timer.milliseconds() + maxTime;
-        double delta =  distance - robot.readLeftTof();
-        double driveSpeed = speed;
-        double driveSign = 1.0;
-
-        while(Math.abs(delta) > 4 && timer.milliseconds() < endTime && opModeIsActive()) {
-            if(delta < 0) {
-                driveSign = -1.0;
-            } else {
-                driveSign = 1.0;
-            }
-
-            if(Math.abs(delta) < 10) {
-                driveSpeed = 0.05 * driveSign;
-            }
-            else if(Math.abs(delta) < 35) {
-                driveSpeed = 0.1 * driveSign;
-            } else {
-                driveSpeed = speed * driveSign;
-            }
-
-            driveAtHeading(speed, 0, 180, 0);
-            robot.resetReads();
-            delta =  distance - robot.readLeftTof();
+    protected double readSpecifiedTof(TofDirection tofDirection) {
+        double tofDistance = 0.0;
+        switch(tofDirection) {
+            case LEFT:
+                tofDistance = robot.readLeftTof();
+                break;
+            case RIGHT:
+                tofDistance = robot.readRightTof();
+                break;
+            case BACK:
+                tofDistance = robot.readBackTof();
+                break;
         }
 
-        robot.setAllDriveZero();
+        return tofDistance;
     }
 
     // Speed is absolute value, will shift to positive or negative to get nearer
     // or farther from the wall to achieve distance (in CM) or until the maxTime
     // is exceeded.
-    public void driveDistanceFromRightTof(double speed, double distance, int maxTime) {
+    public void driveDistanceFromTof(double speed, double distance, int maxTime, TofDirection tofDirection) {
         double endTime = timer.milliseconds() + maxTime;
-        double delta =  distance - robot.readRightTof();
+        double delta =  distance - readSpecifiedTof(tofDirection);
         double driveSpeed = speed;
         double driveSign = 1.0;
+        double driveAngle = 0.0;
+        switch(tofDirection) {
+            case LEFT:
+                driveAngle = 180.0;
+                break;
+            case RIGHT:
+                driveAngle = 0.0;
+                break;
+            case BACK:
+                driveAngle = 90.0;
+                break;
+        }
 
         while(Math.abs(delta) > 4 && timer.milliseconds() < endTime && opModeIsActive()) {
             if(delta < 0) {
@@ -432,9 +423,9 @@ public abstract class OmniAutoClass extends LinearOpMode {
                 driveSpeed = speed * driveSign;
             }
 
-            driveAtHeading(speed, 0, 0, 0);
+            driveAtHeading(driveSpeed, 0, driveAngle, 0);
             robot.resetReads();
-            delta =  distance - robot.readRightTof();
+            delta =  distance - readSpecifiedTof(tofDirection);
         }
 
         robot.setAllDriveZero();

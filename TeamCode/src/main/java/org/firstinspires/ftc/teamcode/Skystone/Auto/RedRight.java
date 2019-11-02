@@ -4,5 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 @Autonomous(name="RedLeft", group ="Concept")
 public class RedRight extends AutoBase{
-    // move foundation into building zone
+    // transport two skystones and other stones if time permits
+
+    // park in building zone (even if other team is in corner)
 }

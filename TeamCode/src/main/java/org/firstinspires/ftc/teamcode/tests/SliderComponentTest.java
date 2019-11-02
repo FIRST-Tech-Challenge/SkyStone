@@ -42,6 +42,10 @@ public class SliderComponentTest extends OpMode {
         telemetry.update();
     }
 
+    public void start() {
+        armSystem.setSliderHeight(0);
+    }
+
     public void loop() {
         // Put every joystick value to the 3rd power for greater control over the robot
         // 1^3 = 1, so we don't even need to trim the values or anything

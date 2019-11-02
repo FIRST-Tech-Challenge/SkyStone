@@ -60,7 +60,7 @@ public class Simple15203 extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             double left_stick_x = gamepad1.left_stick_x;
-            double left_stick_y = gamepad1.left_stick_x;
+            double left_stick_y = gamepad1.left_stick_y;
             double right_stick_x = gamepad1.right_stick_x;
             double right_stick_y = gamepad1.right_stick_y;
             //double orientation = (((double) robot.gyro.getIntegratedZValue()) / 360) * Math.PI * 2;
@@ -101,7 +101,7 @@ public class Simple15203 extends LinearOpMode {
             robot.rightFrontMotor.setPower(Math.cos(dsAngle - Math.PI / 4) * dsWeight + rotPower * rotWeight);
             robot.leftBackMotor.setPower(Math.cos(dsAngle - Math.PI / 4) * dsWeight - rotPower * rotWeight);
 
-            if(right_stick_x == 0 && right_stick_y == 0 && left_stick_x == 0){
+            if(right_stick_x == 0 && right_stick_y == 0 && left_stick_x == 0 && left_stick_y == 0){
                 robot.allDrive(0.0, 0);
             }
 
@@ -118,10 +118,12 @@ public class Simple15203 extends LinearOpMode {
             }
 
             // Send telemetry message to signify robot running;
-            telemetry.addData("LF", robot.leftFrontMotor.getPower());
-            telemetry.addData("LB", robot.leftBackMotor.getPower());
-            telemetry.addData("RF", robot.rightFrontMotor.getPower());
-            telemetry.addData("RB", robot.rightBackMotor.getPower());
+            telemetry.addData("LeftX", left_stick_x);
+            telemetry.addData("LeftY", left_stick_y);
+            telemetry.addData("RightX", right_stick_x);
+            telemetry.addData("RightY", right_stick_y);
+            telemetry.update();
+
 
 
 

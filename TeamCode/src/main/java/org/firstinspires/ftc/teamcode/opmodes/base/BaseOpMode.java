@@ -26,6 +26,7 @@ public abstract class BaseOpMode extends OpMode {
     private boolean stopRequested;
 
     public void init(){
+        stopRequested = false;
         this.msStuckDetectInit = 20000;
         this.msStuckDetectInitLoop = 20000;
         EnumMap<DriveSystem.MotorNames, DcMotor> driveMap = new EnumMap<>(DriveSystem.MotorNames.class);

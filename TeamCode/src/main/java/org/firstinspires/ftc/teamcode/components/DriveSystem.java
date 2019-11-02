@@ -204,9 +204,9 @@ public class DriveSystem {
      * @param maxPower The maximum power of the motors
      */
     // TODO
-    public void turnAbsolute(double degrees, double maxPower) {
+    public boolean turnAbsolute(double degrees, double maxPower) {
         // Since it is vertical, use pitch instead of heading
-        turn(imuSystem.getHeading() + degrees, maxPower);
+        return turn(diffFromAbs(degrees), maxPower);
     }
 
     /**
@@ -280,6 +280,20 @@ public class DriveSystem {
             robotError += 360;
         }
         return robotError;
+    }
+
+    public double diffFromAbs(double heading) {
+        // calculate error in -179 to +180 range
+        // When vertical use pitch instead of heading
+        double robotDiff = heading - imuSystem.getHeading();
+        Log.d(TAG,"Difference from initial: " + robotDiff);
+        while (robotDiff > 180) {
+            robotDiff -= 360;
+        }
+        while (robotDiff <= -180) {
+            robotDiff += 360;
+        }
+        return robotDiff;
     }
 
     /**

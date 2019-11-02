@@ -18,6 +18,8 @@ public class TestDrive extends BaseOpMode {
         STATE_FORWARD,
         STATE_BACKWARD,
         STATE_FINISHED,
+        STATE_TURN_90,
+        STATE_TURN_BACK,
     }
 
     public static final String TAG = "Test Drive";
@@ -39,9 +41,21 @@ public class TestDrive extends BaseOpMode {
         switch (mCurrentState) {
             case STATE_INITIAL:
                 // Initialize
-                newState(State.STATE_FORWARD);
+                newState(State.STATE_TURN_90);
                 break;
 
+            case STATE_TURN_90:
+                // Initialize
+                if (driveSystem.turn(90, 0.5)) {
+                    newState(State.STATE_TURN_BACK);
+                }
+                break;
+            case STATE_TURN_BACK:
+                // Initialize
+                if (driveSystem.turnAbsolute(0, 0.5)) {
+                    newState(State.STATE_FINISHED);
+                }
+                break;
             case STATE_FORWARD:
                 if(driveSystem.driveToPosition(100, DriveSystem.Direction.FORWARD, .5)){
                     newState(State.STATE_BACKWARD);

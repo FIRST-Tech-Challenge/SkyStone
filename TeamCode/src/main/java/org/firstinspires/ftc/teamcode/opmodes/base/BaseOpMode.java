@@ -23,8 +23,10 @@ public abstract class BaseOpMode extends OpMode {
     protected Vuforia vuforia;
     protected VuforiaTrackable skystone;
     protected VuforiaTrackable rearPerimeter;
+    private boolean stopRequested;
 
     public void init(){
+        stopRequested = false;
         this.msStuckDetectInit = 20000;
         this.msStuckDetectInitLoop = 20000;
         EnumMap<DriveSystem.MotorNames, DcMotor> driveMap = new EnumMap<>(DriveSystem.MotorNames.class);
@@ -48,5 +50,15 @@ public abstract class BaseOpMode extends OpMode {
     protected void setCamera(CameraChoice cameraChoice){
         vuforia = new Vuforia(hardwareMap, cameraChoice);
         skystone = vuforia.targetsSkyStone.get(0);
+    }
+
+    public final boolean isStopRequested() {
+        return this.stopRequested || Thread.currentThread().isInterrupted();
+    }
+
+    @Override
+    public void stop() {
+        stopRequested = true;
+        super.stop();
     }
 }

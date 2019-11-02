@@ -21,7 +21,7 @@ public class Mecanum_Drive extends LinearOpMode {
     private DigitalChannel upper_sensor, lower_sensor;
     private float fwd, side, turn, power, lower_arm_stick, grabber_stick;
     private double clawOffset = 0.0;
-    private double grabberOffset = 0.5;
+    private double grabberOffset = 0.0;
     private boolean dpad_up, dpad_down, btn_y, btn_a, btn_x, btn_b, left_bumper, right_bumper;
 
     // Gyro related initialization
@@ -31,7 +31,10 @@ public class Mecanum_Drive extends LinearOpMode {
 
     public final static double deadzone = 0.2;          // Deadzone for bot movement
     public final static double claw_speed = 0.01;       // Claw movement rate
-    public final static double grabber_speed = 0.003;    // Grabber rotation rate
+    public final static double grabber_speed = 0.005;    // Grabber rotation rate
+    public final static double grabber_lower = 0.45;    // Grabber lower limit
+    public final static double grabber_upper = 0.7;      // Grabber upper limit
+    public final static double grabber_initial = grabber_lower;
     public final static double arm_up_power = 1.0;    // Grabber rotation rate
     public final static double arm_down_power = -1.0;    // Grabber rotation rate
     public final static int arm_up_step = 30;           // Arm up movement position step
@@ -80,15 +83,19 @@ public class Mecanum_Drive extends LinearOpMode {
         lowerArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         lowerArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         lowerArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        lowerArm.setDirection(DcMotor.Direction.REVERSE);
 
         // Claw servos
         leftClaw = hardwareMap.get(Servo.class, "left_claw");
         rightClaw = hardwareMap.get(Servo.class, "right_claw");
         grabber = hardwareMap.get(Servo.class, "grabber");
+        grabber.setPosition(grabber_initial);
 
         // Touch sensors
+        /*
         upper_sensor = hardwareMap.get(DigitalChannel.class, "arm_upper_sensor");
         upper_sensor.setMode(DigitalChannel.Mode.INPUT);
+        */
         lower_sensor = hardwareMap.get(DigitalChannel.class, "arm_lower_sensor");
         lower_sensor.setMode(DigitalChannel.Mode.INPUT);
 
@@ -97,6 +104,8 @@ public class Mecanum_Drive extends LinearOpMode {
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
+
+        boolean turning = false;
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -107,20 +116,29 @@ public class Mecanum_Drive extends LinearOpMode {
 
             if ( turn != 0 ) {
                 // We are turing
-                frontLeft.setPower(Range.clip(power + side - turn, -1, 1));
-                frontRight.setPower(Range.clip(power - side + turn, -1, 1));
-                backLeft.setPower(Range.clip(power - side - turn, -1, 1));
-                backRight.setPower(Range.clip(power + side + turn, -1, 1));
+                turning = true;
 
-                resetAngle();
+                frontLeft.setPower(Range.clip(power + side - turn, -0.2, 0.25));
+                frontRight.setPower(Range.clip(power - side + turn, -0.2, 0.25));
+                backLeft.setPower(Range.clip(power - side - turn, -0.2, 0.25));
+                backRight.setPower(Range.clip(power + side + turn, -0.2, 0.25));
             } else {
+                // Just finished turning and let it settled down
+                if ( turning ) {
+                    sleep(500);
+
+                    resetAngle();
+                    turning = false;
+                }
+
                 // Moving in straight line (forward, backward or sideway) without turning; Add gyro assistance
                 correction = checkDirection();
+//                correction = 0;
 
-                frontLeft.setPower(Range.clip(power + side - correction, -1, 1));
-                frontRight.setPower(Range.clip(power - side + correction, -1, 1));
-                backLeft.setPower(Range.clip(power - side - correction, -1, 1));
-                backRight.setPower(Range.clip(power + side + correction, -1, 1));
+                frontLeft.setPower(Range.clip(power + side + correction, -1, 1));
+                frontRight.setPower(Range.clip(power - side - correction, -1, 1));
+                backLeft.setPower(Range.clip(power - side + correction, -1, 1));
+                backRight.setPower(Range.clip(power + side - correction, -1, 1));
 
             }
 
@@ -137,11 +155,11 @@ public class Mecanum_Drive extends LinearOpMode {
             } else
                 upperArm.setPower(0.0);
 */
-            if (lower_arm_stick > 0 && upper_sensor.getState()) {
+            if (lower_arm_stick < 0 /* && upper_sensor.getState() */) {
                 lowerArm.setTargetPosition(lowerArm.getCurrentPosition() + arm_up_step);
                 lowerArm.setPower(arm_up_power);
                 lowerArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            } else if (lower_arm_stick < 0 && lower_sensor.getState()) {
+            } else if (lower_arm_stick > 0 && lower_sensor.getState()) {
                 lowerArm.setTargetPosition(lowerArm.getCurrentPosition() - arm_down_step);
                 lowerArm.setPower(arm_down_power);
                 lowerArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -162,24 +180,34 @@ public class Mecanum_Drive extends LinearOpMode {
 
 
             // Use gamepad X & right B buttons to rotate the grabber
-            if (grabber_stick < 0)
+            if (/* grabber_stick < 0*/ btn_y)
                 grabberOffset += grabber_speed;
-            else if (grabber_stick > 0)
+            else if (/*grabber_stick > 0*/ btn_a)
                 grabberOffset -= grabber_speed;
 
             // Move grabber servo to the desired position.
-            grabberOffset = Range.clip(grabberOffset, -0.5, 0.5);
-            grabber.setPosition(0.5 + grabberOffset);
+            grabberOffset = Range.clip(grabberOffset, -0.02, 0.02);
+
+            // Only set position when grabber stick is not pushed OR grabberOffset is 0.05
+            if (( !btn_y && !btn_a )|| Math.abs(grabberOffset) == 0.02 ) {
+                double target = grabber.getPosition() + grabberOffset;
+                if (target < grabber_lower)
+                    target = grabber_lower;
+                if (target > grabber_upper)
+                    target = grabber_upper;
+                grabber.setPosition(target);
+                grabberOffset = 0.0;
+            }
 
 //            telemetry.addData("Motor Power FL ", frontLeft.getPower());
 //            telemetry.addData("Motor Power FR", frontRight.getPower());
 //            telemetry.addData("Motor Power BL", backLeft.getPower());
 //            telemetry.addData("Motor Power BR", backRight.getPower());
 //            telemetry.addData("Status", "Running");
-            telemetry.addData("DPad UP = ", dpad_up );
-            telemetry.addData("DPad DOWN = ", dpad_up );
-            telemetry.addData("Y = ", btn_y );
-            telemetry.addData("A = ", btn_a );
+            telemetry.addData("Angle= ", getAngle());
+            telemetry.addData("Correction= ", correction );
+            telemetry.addData("Arm= ", lowerArm.getCurrentPosition());
+            telemetry.addData("Target= ", lowerArm.getTargetPosition());
             telemetry.update();
         }
     }
@@ -194,9 +222,11 @@ public class Mecanum_Drive extends LinearOpMode {
 /*
         dpad_up = gamepad1.dpad_up;
         dpad_down = gamepad1.dpad_down;
-        btn_y = gamepad1.y;
-        btn_a = gamepad1.a;
+*/
+        btn_y = gamepad2.y;
+        btn_a = gamepad2.a;
 
+/*
         btn_x = gamepad1.x;
         btn_b = gamepad1.b;
 */
@@ -259,11 +289,11 @@ public class Mecanum_Drive extends LinearOpMode {
         // The gain value determines how sensitive the correction is to direction changes.
         // You will have to experiment with your robot to get small smooth direction changes
         // to stay on a straight line.
-        double correction, angle, gain = 0.30;
+        double correction, angle, gain = 0.03;
 
         angle = getAngle();
 
-        if (angle == 0)
+        if (angle < 5 && angle > -5)
             correction = 0;             // no adjustment.
         else
             correction = -angle;        // reverse sign of angle for correction.

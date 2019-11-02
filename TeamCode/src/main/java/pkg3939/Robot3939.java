@@ -43,6 +43,13 @@ public class Robot3939 {
         FR.setDirection(DcMotorSimple.Direction.FORWARD);
     }
 
+    public void setFront(HardwareMap hwmap) {
+        RL.setDirection(DcMotorSimple.Direction.FORWARD);
+        FL.setDirection(DcMotorSimple.Direction.FORWARD);
+        RR.setDirection(DcMotorSimple.Direction.REVERSE);
+        FR.setDirection(DcMotorSimple.Direction.REVERSE);
+    }
+
     public void initServos(HardwareMap hwmap) {
         servoRight = hwmap.servo.get("servoRight");
         servoLeft = hwmap.servo.get("servoLeft");
@@ -80,53 +87,32 @@ public class Robot3939 {
 
     public void setFLPower(double power)
     {
-        if(power != FLpower)
-        {
-            FLpower = power;
-            FL.setPower(power);
-        }
+        FL.setPower(power);
     }
 
     public void setRLPower(double power)
     {
-        if(power != RLpower)
-        {
-            RLpower = power;
-            RL.setPower(power);
-        }
+        RL.setPower(power);
     }
 
     public void setFRPower(double power)
     {
-        if(power != FRpower)
-        {
-            FRpower = power;
-            FR.setPower(power);
-        }
+        FR.setPower(power);
     }
 
     public void setRRPower(double power)
     {
-        if(power != RRpower)
-        {
-            RRpower = power;
-            RR.setPower(power);
-        }
+        RR.setPower(power);
     }
 
     public void setAllGivenPower(double power) {
-        setFLPower(power);
-        setFRPower(power);
-        setRRPower(power);
-        setRLPower(power);
+        FL.setPower(power);
+        RL.setPower(power);
+        FR.setPower(power);
+        RR.setPower(power);
     }
 
-    public void setAllpower() {
-        setFLPower(FLpower);
-        setFRPower(FRpower);
-        setRRPower(RRpower);
-        setRLPower(RLpower);
-    }
+
 
     public void stopMotors() {
         setAllGivenPower(0);
@@ -230,15 +216,15 @@ public class Robot3939 {
         useEncoders(true);
     }
 
-    public void fineTurn(double LT, double RT) {
-        if(LT > deadZone || RT > deadZone){//we don't have to worry about Range.clip here because the abs values will never exceed 1
-            FLpower = (-LT + RT)/reduction;
-            FRpower = (LT - RT)/reduction;
-            RRpower = (LT - RT)/reduction;
-            RLpower = (-LT + RT)/reduction;
-        }
-        setAllpower();
-    }
+//    public void fineTurn(double LT, double RT) {
+//        if(LT > deadZone || RT > deadZone){//we don't have to worry about Range.clip here because the abs values will never exceed 1
+//            FLpower = (-LT + RT)/reduction;
+//            FRpower = (LT - RT)/reduction;
+//            RRpower = (LT - RT)/reduction;
+//            RLpower = (-LT + RT)/reduction;
+//        }
+//        setAllpower();
+//    }
 
     boolean forks = false;
     boolean clawDown = false;
@@ -341,6 +327,8 @@ public class Robot3939 {
      * Rotate left or right the number of degrees. Does not support turning more than 180 degrees.
      * @param degrees Degrees to turn, + is left - is right
      */
+
+
     private void rotate(int degrees, double power)
     {
         // restart imu movement tracking.
@@ -367,7 +355,7 @@ public class Robot3939 {
             return;
 
         // set power to rotate.
-        setAllpower();
+      //  setAllpower();
 
         // rotate until turn is completed.
         if (degrees < 0)

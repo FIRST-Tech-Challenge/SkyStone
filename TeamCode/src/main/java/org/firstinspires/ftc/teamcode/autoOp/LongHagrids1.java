@@ -8,8 +8,6 @@ import org.firstinspires.ftc.teamcode.auto.ChassisConfig;
  */
 public abstract class LongHagrids1 extends ChassisStandard {
 
-    private boolean madeTheRun = false;
-
     public LongHagrids1 (ChassisConfig config) {
         super(config);
     }

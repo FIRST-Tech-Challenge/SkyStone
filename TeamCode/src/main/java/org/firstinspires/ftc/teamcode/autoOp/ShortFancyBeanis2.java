@@ -8,8 +8,6 @@ import org.firstinspires.ftc.teamcode.auto.ChassisConfig;
  */
 public abstract class ShortFancyBeanis2 extends ChassisStandard {
 
-    private boolean madeTheRun = false;
-
     public ShortFancyBeanis2(ChassisConfig config) {
         super(config);
     }
@@ -17,7 +15,7 @@ public abstract class ShortFancyBeanis2 extends ChassisStandard {
     /**a
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
-    @Override
+
     public void loop () {
 
         if (madeTheRun == false) {
@@ -41,10 +39,7 @@ public abstract class ShortFancyBeanis2 extends ChassisStandard {
             madeTheRun = true;
         }
 
-        // Show the elapsed game time and wheel power.
-        telemetry.addData("Status", "time: " + runtime.toString());
-        telemetry.addData("Gyro", "angle: " + this.getGyroscopeAngle());
-        telemetry.addData("Status", "madeTheRun=%b", madeTheRun);
+
     }
 }
 

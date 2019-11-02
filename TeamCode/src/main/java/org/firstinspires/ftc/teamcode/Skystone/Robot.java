@@ -118,22 +118,22 @@ public class Robot {
         bRight.setDirection(DcMotor.Direction.REVERSE);
 
         // Map intake motors
-        intakeLeft = hardwareMap.dcMotor.get("intakeLeft");
-        intakeRight = hardwareMap.dcMotor.get("intakeRight");
-
-        // Set direction of intake motors
-        intakeLeft.setDirection(DcMotor.Direction.FORWARD);
-        intakeRight.setDirection(DcMotor.Direction.REVERSE);
-
-        // Map outtake motors
-        outtakeSpool = hardwareMap.dcMotor.get("outtakeSpool");
-
-        outtakeSpool.setDirection(DcMotor.Direction.REVERSE);
-
-        outtakeExtender = hardwareMap.servo.get("outtakeExtender");
-        clamp = hardwareMap.servo.get("clamp");
-        clampPivot = hardwareMap.servo.get("clampPivot");
-        intakePusher = hardwareMap.servo.get("intakePusher");
+//        intakeLeft = hardwareMap.dcMotor.get("intakeLeft");
+//        intakeRight = hardwareMap.dcMotor.get("intakeRight");
+//
+//        // Set direction of intake motors
+//        intakeLeft.setDirection(DcMotor.Direction.FORWARD);
+//        intakeRight.setDirection(DcMotor.Direction.REVERSE);
+//
+//        // Map outtake motors
+//        outtakeSpool = hardwareMap.dcMotor.get("outtakeSpool");
+//
+//        outtakeSpool.setDirection(DcMotor.Direction.REVERSE);
+//
+//        outtakeExtender = hardwareMap.servo.get("outtakeExtender");
+//        clamp = hardwareMap.servo.get("clamp");
+//        clampPivot = hardwareMap.servo.get("clampPivot");
+//        intakePusher = hardwareMap.servo.get("intakePusher");
     }
 
     public void intializeIMU() {
@@ -426,7 +426,7 @@ public class Robot {
         if ((distanceToEnd < 0.25)) {
             return false;
         }
-        
+
         applyMove();
         return true;
     }
@@ -590,21 +590,24 @@ public class Robot {
         fLeft.setPower(fLeftPower);
         fRight.setPower(fRightPower);
         bLeft.setPower(bLeftPower);
+        bRight.setPower(bRightPower);
     }
 
 
     public void moveToPoint(double x, double y, double moveSpeed, double turnSpeed, double optimalAngle) {
+        double totalDistanceToTarget = Math.hypot(x - robotPos.x, y - robotPos.y);
 
         this.setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         while (linearOpMode.opModeIsActive()) {
+
             double xPos = robotPos.x;
             double yPos = robotPos.y;
             double anglePos = this.anglePos;
 
             double distanceToTarget = Math.hypot(x - xPos, y - yPos);
 
-            if (distanceToTarget < 2) {
+            if (distanceToTarget < 0.5) {
                 brakeRobot();
                 break;
             }
@@ -618,7 +621,7 @@ public class Robot {
             double xPower = relativeXToPoint / (Math.abs(relativeXToPoint) + Math.abs(relativeYToPoint));
             double yPower = relativeYToPoint / (Math.abs(relativeYToPoint) + Math.abs(relativeXToPoint));
 
-            double decelerationScaleFactor = Range.clip(distanceToTarget/8,-1,1);
+            double decelerationScaleFactor = Math.sqrt(Math.pow(totalDistanceToTarget-distanceToTarget,2) - Math.pow(distanceToTarget,2)) / totalDistanceToTarget;
 
             xMovement = xPower * moveSpeed * decelerationScaleFactor;
             yMovement = yPower * moveSpeed * decelerationScaleFactor;
@@ -800,7 +803,7 @@ public class Robot {
 
         final String VUFORIA_KEY = "AbSCRq//////AAAAGYEdTZut2U7TuZCfZGlOu7ZgOzsOlUVdiuQjgLBC9B3dNvrPE1x/REDktOALxt5jBEJJBAX4gM9ofcwMjCzaJKoZQBBlXXxrOscekzvrWkhqs/g+AtWJLkpCOOWKDLSixgH0bF7HByYv4h3fXECqRNGUUCHELf4Uoqea6tCtiGJvee+5K+5yqNfGduJBHcA1juE3kxGMdkqkbfSjfrNgWuolkjXR5z39tRChoOUN24HethAX8LiECiLhlKrJeC4BpdRCRazgJXGLvvI74Tmih9nhCz6zyVurHAHttlrXV17nYLyt6qQB1LtVEuSCkpfLJS8lZWS9ztfC1UEfrQ8m5zA6cYGQXjDMeRumdq9ugMkS";
 
-         while (linearOpMode.opModeIsActive()){
+        while (linearOpMode.opModeIsActive()){
 
             changeRunModeToUsingEncoder();
             Robot robot = new Robot(this.hardwareMap, this.telemetry, this.linearOpMode);

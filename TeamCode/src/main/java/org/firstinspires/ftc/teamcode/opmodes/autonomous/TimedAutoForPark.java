@@ -135,10 +135,11 @@ public class TimedAutoForPark extends LinearOpMode {
     }
 
     private static boolean readsYellow (RevColorSensorV3 color){
-        if (actualAvg < maxDist && (color.red() / color.blue()) > redToBlueAvg && (color.green() / color.blue()) > greenToBlueAvg) {
-            return true;
-        } else {
-            return false;
-        }
+        //if (actualAvg < maxDist && (color.red() / color.blue()) > redToBlueAvg && (color.green() / color.blue()) > greenToBlueAvg) {
+        //    return true;
+//        } else {
+//            return false;
+//        }
+        return true;
     }
 }

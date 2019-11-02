@@ -29,26 +29,11 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.util.RobotLog;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.Position;
-import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
-
-
-
-//import lines go here. This is just for the program and not for the robot.
 
 /**
  * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
@@ -70,62 +55,74 @@ public class NerdSampleOpMode extends LinearOpMode {
    private NerdBOT myNerdBOT ;
    private  double speed = 0.4;
 
+   boolean debugFlag = false;
+
+
     @Override
     public void runOpMode() {
 
-        //Initialize Hardware
+
+
+        //Create a NerdBOT object
 
         myNerdBOT = new NerdBOT(this);
 
+        myNerdBOT.setDebug(debugFlag);
+        //Initialize Hardware
+
         myNerdBOT.initializeHardware();
+
 
         //Initialize the PID Calculators
 
-        // Use these for Competition Robot
-//        myNerdBOT.initializeXPIDCalculator(0.002,0.0,1.1);
-//        myNerdBOT.initializeYPIDCalculator(0.002,0.0,1.1);
-//        myNerdBOT.initializeZPIDCalculator(0.008,0.0,1.6);
-//        myNerdBOT.initializeTurnPIDCalculator(0.009,0.0,0.9);
+        myNerdBOT.initializeXPIDCalculator(0.0025, 0.0, 0.0, debugFlag);
+        myNerdBOT.initializeYPIDCalculator(0.0025, 0.0, 0.0,debugFlag);
+        myNerdBOT.initializeZPIDCalculator(0.015, 0.000, 0.0,debugFlag);
+        myNerdBOT.initializeTurnPIDCalculator(0.024, 0.000, 1.85,debugFlag);
 
-        //Use these for Quad Bot
-        myNerdBOT.initializeXPIDCalculator(0.0005, 0.005, 0.5);
-        myNerdBOT.initializeYPIDCalculator(0.0005, 0.005, 0.5);
-        myNerdBOT.initializeZPIDCalculator(0.036, 0.08, 0.0);
-        myNerdBOT.initializeTurnPIDCalculator(0.024, 0.000, 1.85);
 
         //Set Min and Max Speed - Optional (default min=0.1, max=0.6 if not changed below)
 
-        myNerdBOT.setMinMaxSpeeds(0.1,0.6);
+        myNerdBOT.setMinMaxSpeeds(0.0,0.5);
 
         waitForStart();
 
         //UNITS ARE IN INCHES
-        RobotLog.d("NerdSampleOpMode - Starting nerdPidDrive yDistance = 25");
-        //myNerdBOT.nerdPidDrive( speed, 0.0, 20.0, 0.0);
-        //sleep(1000);
-        RobotLog.d("NerdSampleOpMode -  Angle After nerdPidDrive : %f", myNerdBOT.getZAngleValue());
 
-        RobotLog.d("NerdSampleOpMode - Starting nerdPidDrive xDistance = 25");
-        myNerdBOT.nerdPidDrive( speed, 20.0, 0.0, 0.0);
-        //sleep(1000);
-        RobotLog.d("NerdSampleOpMode -  Angle After nerdPidDrive : %f", myNerdBOT.getZAngleValue());
 
-        RobotLog.d("NerdSampleOpMode - Starting nerdPidDrive yDistance = -25");
-        //myNerdBOT.nerdPidDrive(speed, 0.0, -20.0, 0.0);
-        //sleep(1000);
-        RobotLog.d("NerdSampleOpMode -  Angle After nerdPidDrive : %f", myNerdBOT.getZAngleValue());
+       if (debugFlag)
+           RobotLog.d("NerdSampleOpMode - Run1");
 
-        RobotLog.d("NerdSampleOpMode - Starting nerdPidDrive xDistance = -20.0, yDistance = 20.0 ");
-        //myNerdBOT.nerdPidDrive( speed, -20.0, 20.0, 0.0);
-        //sleep(1000);
-        RobotLog.d("NerdSampleOpMode - Angle After nerdPidDrive : %f", myNerdBOT.getZAngleValue());
+        myNerdBOT.nerdPidDrive( speed, 0.0, 10.0, 0.0);
 
-        RobotLog.d("NerdSampleOpMode - Starting nerdPidTurn targetAngle = 90.0");
-        //myNerdBOT.nerdPidTurn(0.2, 90.0, false);
-        //sleep(1000);
-        RobotLog.d("NerdSampleOpMode - FinalAngle After nerdPidTurn : %f", myNerdBOT.getZAngleValue());
+        if (debugFlag)
+            RobotLog.d("NerdSampleOpMode - Run2");
 
-        RobotLog.d("NerdSampleOpMode - Completed");
+        myNerdBOT.nerdPidDrive( speed, 11.0, 19.0, 0.0);
+
+        if (debugFlag)
+            RobotLog.d("NerdSampleOpMode - Run3");
+
+        myNerdBOT.setMinMaxSpeeds(0.0,0.7); // Go faster when going longer distance.
+
+        myNerdBOT.nerdPidDrive( speed, -96.0, -10.0, 0.0);
+
+        myNerdBOT.setMinMaxSpeeds(0.0,0.5);
+
+        if (debugFlag)
+            RobotLog.d("NerdSampleOpMode - Run4");
+        myNerdBOT.nerdPidDrive( speed, 0.0, 15.0, 0.0);
+
+        //For testing arm and drive together
+
+        myNerdBOT.nerdPidDriveAndArmAction(24.0,24.0,0.0, NerdBOTArm.ArmAction.PICKUP);
+
+        //For testing Ramp UP and Down of Speed in PID drive
+
+        myNerdBOT.nerdPidDriveWithRampUpDown(0.5, 0.0,24.0,0.0);
+
+        if (debugFlag)
+            RobotLog.d("NerdSampleOpMode - Completed");
 
 
     }

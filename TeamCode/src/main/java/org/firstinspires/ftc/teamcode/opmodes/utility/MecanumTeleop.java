@@ -61,7 +61,7 @@ public class MecanumTeleop extends OpMode {
         driveTrain.spinDrive(x, y, turn, MecanumDrive.TranslTurnMethod.EQUAL_SPEED_RATIOS);
 
         telemetry.addData("Time elapsed", runtime.seconds());
-        telemetry.update();
+//        telemetry.update();
     }
 
     private double deadZone(double original) {

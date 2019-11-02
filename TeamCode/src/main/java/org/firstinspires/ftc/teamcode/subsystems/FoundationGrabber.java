@@ -21,10 +21,10 @@ public class FoundationGrabber {
     private RevTouchSensor frontTouch;
     private RevTouchSensor sideTouch;
 
-    private final double LEFT_GRABBED_POSITION = 0.2;
-    private final double LEFT_UNGRABBED_POSITION = 0.8;
-    private final double RIGHT_GRABBED_POSITION = 0.2;
-    private final double RIGHT_UNGRABBED_POSITION = 0.8;
+    private final double LEFT_GRABBED_POSITION = 0.8;
+    private final double LEFT_UNGRABBED_POSITION = 0.2;
+    private final double RIGHT_GRABBED_POSITION = 0.8;
+    private final double RIGHT_UNGRABBED_POSITION = 0.2;
 
     private final double RED_TO_BLUE_THRESHOLD = 1.5;
     private final double GREEN_TO_BLUE_THRESHOLD = 2.25;

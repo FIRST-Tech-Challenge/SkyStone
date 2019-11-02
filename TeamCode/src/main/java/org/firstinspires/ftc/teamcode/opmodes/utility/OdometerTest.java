@@ -21,11 +21,14 @@ public class OdometerTest extends MecanumTeleop {
         super.init();
         myLocation = new Location(0, 0, new Angle(0, Angle.AngleUnit.DEGREES, Angle.AngleOrientation.COMPASS_HEADING));
         leftY = new Wheel(new Location(-6.815,1.645,
-                new Angle(180, Angle.AngleUnit.DEGREES, Angle.AngleOrientation.COMPASS_HEADING)),"");
+                new Angle(180, Angle.AngleUnit.DEGREES, Angle.AngleOrientation.COMPASS_HEADING)),
+                "intakeLeft/odometerLeftY");
         rightY = new Wheel(new Location(6.815,1.645,
-                new Angle(0, Angle.AngleUnit.DEGREES, Angle.AngleOrientation.COMPASS_HEADING)),"");
+                new Angle(0, Angle.AngleUnit.DEGREES, Angle.AngleOrientation.COMPASS_HEADING)),
+                "intakeRight/odometerRightY");
         x = new Wheel(new Location(7.087,-1.980,
-                new Angle(-90, Angle.AngleUnit.DEGREES, Angle.AngleOrientation.COMPASS_HEADING)),"");
+                new Angle(-90, Angle.AngleUnit.DEGREES, Angle.AngleOrientation.COMPASS_HEADING)),
+                "liftRight/odometerX");
     }
 
     @Override
@@ -58,6 +61,9 @@ public class OdometerTest extends MecanumTeleop {
         double ndiffy = radius * Math.sin(atan);
         myLocation.translate(ndiffx - diffx, ndiffy - diffy);
         telemetry.addData("Odometer Value", myLocation);
+        telemetry.addData("leftY", leftY.lastEnc);
+        telemetry.addData("rightY", rightY.lastEnc);
+        telemetry.addData("x", x.lastEnc);
     }
 
     private class Wheel {

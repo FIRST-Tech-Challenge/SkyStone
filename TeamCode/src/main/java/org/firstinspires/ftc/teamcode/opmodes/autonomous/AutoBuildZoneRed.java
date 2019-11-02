@@ -14,16 +14,16 @@ public class AutoBuildZoneRed extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         Robot bot = Robot.getInstance();
         bot.init(hardwareMap);
-        bot.foundationGrabber.setGrabbedLeft(false);
-        bot.foundationGrabber.setGrabbedRight(false);
+//        bot.foundationGrabber.setGrabbedLeft(false);
+//        bot.foundationGrabber.setGrabbedRight(false);
         bot.lift.idle();
 //        bot.stoneManipulator.stow();
         sleep(4000);
         bot.lift.zero();
-        bot.driveTrain.calibrateGyro();
-        while (bot.driveTrain.isCalibratingGyro()) {
-            sleep(1);
-        }
+//        bot.driveTrain.calibrateGyro();
+//        while (bot.driveTrain.isCalibratingGyro()) {
+//            sleep(1);
+//        }
         bot.driveTrain.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         bot.driveTrain.setLocation(new Location(24 * 3 - 9, 24 * 3 - 9,
                 new Angle(180, Angle.AngleUnit.DEGREES, Angle.AngleOrientation.COMPASS_HEADING)));
@@ -38,15 +38,15 @@ public class AutoBuildZoneRed extends LinearOpMode {
             bot.driveTrain.updateLocation();
             sleep(1);
         }
-        bot.foundationGrabber.setGrabbedLeft(true);
-        bot.foundationGrabber.setGrabbedRight(true);
+//        bot.foundationGrabber.setGrabbedLeft(true);
+//        bot.foundationGrabber.setGrabbedRight(true);
         bot.driveTrain.spinDrive(0, -1, 0);
         while (bot.runtime.seconds() < 0.25) {
             bot.driveTrain.updateLocation();
             sleep(1);
         }
-        bot.foundationGrabber.setGrabbedLeft(false);
-        bot.foundationGrabber.setGrabbedRight(false);
+//        bot.foundationGrabber.setGrabbedLeft(false);
+//        bot.foundationGrabber.setGrabbedRight(false);
         bot.driveTrain.spinDrive(-1, 0, 0);
         while (bot.driveTrain.getLocation().x > 0 && !bot.driveTrain.onBlueLine() && bot.runtime.seconds() < 5) {
             bot.driveTrain.updateLocation();

@@ -12,7 +12,7 @@ import org.westtorrancerobotics.lib.Location;
 import static org.firstinspires.ftc.teamcode.subsystems.FoundationGrabber.Hook.LEFT;
 import static org.firstinspires.ftc.teamcode.subsystems.FoundationGrabber.Hook.RIGHT;
 
-@Autonomous(name = "Blue Build Zone", group = "none")
+@Autonomous(name = "Test", group = "none")
 public class Test extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
@@ -23,12 +23,12 @@ public class Test extends LinearOpMode {
         bot.foundationGrabber.setGrabbed(RIGHT,false);
         bot.lift.idle();
 //        bot.stoneManipulator.stow();
-        sleep(4000);
+        sleep(1000);
         bot.lift.zero();
 
 
 
-        bot.driveTrain.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        bot.driveTrain.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         bot.driveTrain.setLocation(new Location(24 * 3 - 9, 24 * 3 - 9,
                 new Angle(180, Angle.AngleUnit.DEGREES, Angle.AngleOrientation.COMPASS_HEADING)));
         // start pushed into the corner, in the blue build site, facing toward the opponent driver station

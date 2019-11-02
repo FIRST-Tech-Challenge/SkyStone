@@ -189,14 +189,6 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
 
 
-        // Create a transformation matrix describing where the phone is on the robot.
-        // Info:  The coordinate frame for the robot looks the same as the field.
-        // The robot's "forward" direction is facing out along X axis, with the LEFT side facing out along the Y axis.
-        // Z is UP on the robot.  This equates to a bearing angle of Zero degrees.
-        //
-        // The phone starts out lying flat, with the screen facing Up and with the physical top of the phone
-        // pointing to the LEFT side of the Robot.
-
         // We need to rotate the camera around it's long axis to bring the correct camera forward.
         if (CAMERA_CHOICE == BACK) {
             phoneYRotate = -90;
@@ -270,8 +262,6 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
                             xPosition = translation.get(0);
                             finalMove(xPosition, yPosition);
                             break;
-//                        autoLib.calcMove((float) -xPosition, .2f, Constants.Direction.FORWARD);
-//                        autoLib.calcMove((float) yPosition, .2f, Constants.Direction.RIGHT);
                         } else {
                             telemetry.addData("Final Position Reached", "none");
                         }

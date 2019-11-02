@@ -23,6 +23,10 @@ import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_FRONT_RIG
 import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_LEFT_INTAKE;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_RIGHT_INTAKE;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.NEVEREST_40_REVOLUTION_ENCODER_COUNT;
+import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_ARM;
+import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_ARM_POS_RECIEVE;
+import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_GRABBER;
+import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_GRABBER_GRAB;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.TENSOR_READING_TIME;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.TRACK_DISTANCE;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.WHEEL_DIAMETER;
@@ -213,9 +217,13 @@ public class AutoLib {
         }
     }
 
-//    public void moveArm() {
-//        robot.setServoPosition(SERVO_ARM, SERVO_ARM_POS_GRAB);
-//    }
+    public void moveServoArm() {
+        robot.setServoPosition(SERVO_ARM, SERVO_ARM_POS_RECIEVE);
+    }
+
+    public void grabServo () {
+        robot.setServoPosition(SERVO_GRABBER, SERVO_GRABBER_GRAB);
+    }
 
 //    public void intakeMinerals() {
 //        ElapsedTime time = new ElapsedTime();

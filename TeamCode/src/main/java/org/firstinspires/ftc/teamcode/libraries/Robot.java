@@ -14,19 +14,12 @@ import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_FRONT_LEF
 import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_FRONT_RIGHT_WHEEL;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_LEFT_INTAKE;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_RIGHT_INTAKE;
+import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_ARM;
+import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_FOUNDATION1;
+import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_FOUNDATION2;
+import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_GRABBER;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.TOUCH_ARM_BOTTOM;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.TOUCH_ARM_TOP;
-//import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_ARM;
-//import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_INTAKE;
-//import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_INTAKE_SLIDE;
-//import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_LATCHER;
-//import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_SCORING_SLIDE;
-//import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_INTAKE_ANGLE;
-//import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_INTAKE_HOLDER;
-//import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_LATCHER;
-//import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_SCORING;
-//import static org.firstinspires.ftc.teamcode.libraries.Constants.TOUCH_LATCHER_BOTTOM;
-//import static org.firstinspires.ftc.teamcode.libraries.Constants.TOUCH_LATCHER_TOP;
 
 /*
  * Title: Robot
@@ -43,10 +36,10 @@ public class Robot {
     private LinearOpMode opMode;
 
     // Motors
-    private DcMotor[] dcMotors = new DcMotor[6];
+    private DcMotor[] dcMotors = new DcMotor[7];
 
     //Servos
-    private Servo[] servos = new Servo[1];
+    private Servo[] servos = new Servo[4];
 
     // Sensors
     private RevTouchSensor[] touchSensors = new RevTouchSensor[2];
@@ -55,7 +48,7 @@ public class Robot {
         this.opMode = opMode;
 
         initDcMotors();
-//        initServos();
+        initServos();
         initSensors();
     }
 
@@ -79,10 +72,15 @@ public class Robot {
     }
 
 
-    //    private void initServos() {
-//        servos[SERVO_ARM] = opMode.hardwareMap.get(Servo.class, "ServoArm");
-//    }
-//        servos[SERVO_LATCHER] = opMode.hardwareMap.get(Servo.class, "servoLatcher");
+    private void initServos() {
+        servos[SERVO_ARM] = opMode.hardwareMap.get(Servo.class, "servoArm");
+        servos[SERVO_FOUNDATION1] = opMode.hardwareMap.get(Servo.class, "servoFoundation1");
+        servos[SERVO_FOUNDATION2] = opMode.hardwareMap.get(Servo.class, "servoFoundation2");
+        servos[SERVO_GRABBER] = opMode.hardwareMap.get(Servo.class, "servoGrabber");
+
+    }
+
+    //        servos[SERVO_LATCHER] = opMode.hardwareMap.get(Servo.class, "servoLatcher");
 //        servos[SERVO_INTAKE_ANGLE] = opMode.hardwareMap.get(Servo.class, "servoIntakeAngle");
 //        servos[SERVO_SCORING] = opMode.hardwareMap.get(Servo.class, "servoScoring");
 //        servos[SERVO_INTAKE_HOLDER] = opMode.hardwareMap.get(Servo.class, "servoIntakeHolder");

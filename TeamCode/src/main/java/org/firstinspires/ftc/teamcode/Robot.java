@@ -19,7 +19,8 @@ public class Robot {
     public DcMotor frontLeft;
     public DcMotor frontRight;
     public DcMotor waffleMover;
-    public DcMotor armRotate;
+    public DcMotor armRotate1;
+    public DcMotor armRotate2;
     public DcMotor liftMotor;
 
     // Servos
@@ -61,7 +62,8 @@ public class Robot {
         this.rearRight = hwMap.dcMotor.get("rearRight");
         this.frontRight = hwMap.dcMotor.get("frontRight");
         this.waffleMover = hwMap.dcMotor.get("waffleMover");
-        this.armRotate = hwMap.dcMotor.get("armRotate");
+        this.armRotate1 = hwMap.dcMotor.get("armRotate1");
+        this.armRotate2 = hwMap.dcMotor.get("armRotate2");
         this.liftMotor = hwMap.dcMotor.get("liftMotor");
 
         // Drive Motor Direction
@@ -70,13 +72,16 @@ public class Robot {
         this.rearRight.setDirection(DcMotor.Direction.FORWARD);
         this.frontRight.setDirection(DcMotor.Direction.FORWARD);
         this.waffleMover.setDirection(DcMotor.Direction.REVERSE);
-        this.armRotate.setDirection(DcMotor.Direction.REVERSE); // positive makes arm go forward
+        this.armRotate1.setDirection(DcMotor.Direction.REVERSE); // positive makes arm go forward
+        this.armRotate2.setDirection(DcMotor.Direction.REVERSE);
         this.liftMotor.setDirection(DcMotor.Direction.FORWARD);
 
         // set motor powers to 0 so they don't cause problems
         this.stopDrive();
         this.waffleMover.setPower(0);
-        this.armRotate.setPower(0);
+        this.armRotate1.setPower(0);
+        this.armRotate2.setPower(0);
+        this.liftMotor.setPower(0);
 
         // Servo mapping
         this.gripperRotateServo1 = hwMap.get(Servo.class, "gripperRotateServo1");
@@ -174,7 +179,7 @@ public class Robot {
     }
 
     void moveWaffleMover(char floatOrHold) throws InterruptedException {
-        if (floatOrHold != 'f' && floatOrHold != 'h') { // make sure floatOrHold is 'f' or 'h'
+        if (floatOrHold != 'f' && floatOrHold != 'h') { // make sure floatOrHold is 'f' or 'h' or else the cookie monster will come for you :)
             return;
         }
 
@@ -183,28 +188,33 @@ public class Robot {
 
         if (floatOrHold == 'f' || this.wafflePosition == 1) {
             this.waffleMover.setPower(0);
-            Thread.sleep(500); // buffer time to let the motor completely stop
+            Thread.sleep(500); // buffer time to let the motor completely stop. THIS IS VERY VERY IMPORTANT!!
         }
         this.wafflePosition *= -1;
     }
     private void moveArmRotate(int targetPosition, double power, OpMode opmode) {
         // reset encoders
-        armRotate.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armRotate1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armRotate2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         // set mode
-        armRotate.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        armRotate1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        armRotate2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // set power
-        armRotate.setPower(power);
+        armRotate1.setPower(power);
+        armRotate2.setPower(power);
 
-        // wait for armRotate to reach the position
-        while (Math.abs(this.armRotate.getCurrentPosition()) < targetPosition) {
-            opmode.telemetry.addData("Gripper", armRotate.getCurrentPosition());
+        // wait for the armRotate motors to reach the position or else things go bad bad
+        while (Math.abs(this.armRotate1.getCurrentPosition()) <  targetPosition &&
+                Math.abs(this.armRotate2.getCurrentPosition()) < targetPosition) {
+            opmode.telemetry.addData("Gripper", "#1: " + armRotate1.getCurrentPosition() + " #2: " + armRotate2.getCurrentPosition());
             opmode.telemetry.update();
         }
 
-        // stop the armRotate motor
-        armRotate.setPower(0);
+        // stop the armRotate motors
+        armRotate1.setPower(0);
+        armRotate2.setPower(0);
     }
 
     private void rotateGripper(double angle) {

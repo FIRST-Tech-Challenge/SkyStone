@@ -374,56 +374,67 @@ public abstract class OmniAutoClass extends LinearOpMode {
         return result;
     }
 
+    // Speed is absolute value, will shift to positive or negative to get nearer
+    // or farther from the wall to achieve distance (in CM) or until the maxTime
+    // is exceeded.
+    public void driveDistanceFromLeftTof(double speed, double distance, int maxTime) {
+        double endTime = timer.milliseconds() + maxTime;
+        double delta =  distance - robot.readLeftTof();
+        double driveSpeed = speed;
+        double driveSign = 1.0;
 
-    // The value of speed should be signed such that it drives AWAY from the wall.
-    // The function will reverse the sign to drrive TOWARDS the wall if it determines
-    // it needs to.
-    public void driveDistanceFromWall(double speed, double distance, int maxTime, boolean reverseEncoders, boolean forwards, boolean blue) {
-        int elaspedTime = 0;
-//        double rangeValue = robot.readRangeSensor();
-        double rangeValue = 0;
-        double delta =  distance - rangeValue;
-        double addedAngle = 0;
-        double driveSign;
+        while(Math.abs(delta) > 4 && timer.milliseconds() < endTime && opModeIsActive()) {
+            if(delta < 0) {
+                driveSign = -1.0;
+            } else {
+                driveSign = 1.0;
+            }
 
-        // This will reverse the speed if we are going towards the wall
-        if(speed > 0) {
-            driveSign = 1.0;
-        }
-        else {
-            driveSign = -1.0;
-        }
-
-        if (forwards) {
-            addedAngle = 90;
-        }
-
-        while(Math.abs(delta) > 1 && elaspedTime < maxTime && opModeIsActive()) {
             if(Math.abs(delta) < 10) {
-                if(delta < 0) {
-                    // Drive towards the wall
-                    speed = driveSign * 0.05 * -1.0;
-                }
-                else {
-                    speed = driveSign * 0.05;
-                }
+                driveSpeed = 0.05 * driveSign;
             }
             else if(Math.abs(delta) < 35) {
-                if(delta < 0) {
-                    // Drive towards the wall
-                    speed = driveSign * 0.1 * -1.0;
-                }
-                else {
-                    speed = driveSign * 0.1;
-                }
+                driveSpeed = 0.1 * driveSign;
+            } else {
+                driveSpeed = speed * driveSign;
             }
-            driveAtHeading(speed, 0, 180 + addedAngle, 0);
-            sleep(50);
-            elaspedTime += 50;
 
-//            rangeValue = robot.readRangeSensor();
-            rangeValue = 0.0;
-            delta =  distance - rangeValue;
+            driveAtHeading(speed, 0, 180, 0);
+            robot.resetReads();
+            delta =  distance - robot.readLeftTof();
+        }
+
+        robot.setAllDriveZero();
+    }
+
+    // Speed is absolute value, will shift to positive or negative to get nearer
+    // or farther from the wall to achieve distance (in CM) or until the maxTime
+    // is exceeded.
+    public void driveDistanceFromRightTof(double speed, double distance, int maxTime) {
+        double endTime = timer.milliseconds() + maxTime;
+        double delta =  distance - robot.readRightTof();
+        double driveSpeed = speed;
+        double driveSign = 1.0;
+
+        while(Math.abs(delta) > 4 && timer.milliseconds() < endTime && opModeIsActive()) {
+            if(delta < 0) {
+                driveSign = -1.0;
+            } else {
+                driveSign = 1.0;
+            }
+
+            if(Math.abs(delta) < 10) {
+                driveSpeed = 0.05 * driveSign;
+            }
+            else if(Math.abs(delta) < 35) {
+                driveSpeed = 0.1 * driveSign;
+            } else {
+                driveSpeed = speed * driveSign;
+            }
+
+            driveAtHeading(speed, 0, 0, 0);
+            robot.resetReads();
+            delta =  distance - robot.readRightTof();
         }
 
         robot.setAllDriveZero();
@@ -447,7 +458,6 @@ public abstract class OmniAutoClass extends LinearOpMode {
         double currentAngle = 0.0;
         double lastAngle = currentAngle;
         double angleTraveled = 0.0;
-        int elapsedTime = 0;
         double spinRate = 0.0;
         final double SAME_ANGLE = 1.0;
         final int DELTA_SLEEP = 10;

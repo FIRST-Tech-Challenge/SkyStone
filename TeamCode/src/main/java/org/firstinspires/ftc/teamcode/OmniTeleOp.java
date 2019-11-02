@@ -120,8 +120,8 @@ public class OmniTeleOp extends OpMode {
         leftBumper2Pressed = gamepad2.left_bumper;
         rightBumper2Pressed = gamepad2.right_bumper;
 
-		// Allow the robot to read encoders again
-		robot.resetEncoderReads();
+		// Allow the robot to read sensors again
+		robot.resetReads();
 
         if (gamepad1.x) {
             // The driver presses X, then uses the left joystick to say what angle the robot

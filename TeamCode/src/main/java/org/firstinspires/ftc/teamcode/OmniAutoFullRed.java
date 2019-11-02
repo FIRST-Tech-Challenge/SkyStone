@@ -109,7 +109,7 @@ public class OmniAutoFullRed extends OmniAutoClass
                 // Make sure the intake is out.
                 timeout = 0;
                 while(!robot.intakeAtPosition(HardwareOmnibot.IntakePosition.EXTENDED) && timeout < 100) {
-                    robot.resetEncoderReads();
+                    robot.resetReads();
                     timeout++;
                     sleep(20);
                 }
@@ -161,7 +161,7 @@ public class OmniAutoFullRed extends OmniAutoClass
                 // Make sure the intake is out.
                 timeout = 0;
                 while(!robot.intakeAtPosition(HardwareOmnibot.IntakePosition.EXTENDED) && timeout < 100) {
-                    robot.resetEncoderReads();
+                    robot.resetReads();
                     timeout++;
                     sleep(20);
                 }
@@ -214,7 +214,7 @@ public class OmniAutoFullRed extends OmniAutoClass
                 // Make sure the intake is out.
                 timeout = 0;
                 while(!robot.intakeAtPosition(HardwareOmnibot.IntakePosition.EXTENDED) && timeout < 100) {
-                    robot.resetEncoderReads();
+                    robot.resetReads();
                     timeout++;
                     sleep(20);
                 }

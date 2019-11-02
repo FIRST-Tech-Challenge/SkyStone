@@ -1,10 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -262,6 +266,10 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public final static String RIGHT_INTAKE = "RightIntake";
     public final static String LIFTER = "Lifter";
     public final static String EXTENDER = "Extender";
+    public final static String RIGHT_RANGE = "RightTof";
+    public final static String LEFT_RANGE = "LeftTof";
+    public final static String BACK_RIGHT_RANGE = "BackRightTof";
+    public final static String BACK_LEFT_RANGE = "BackLeftTof";
 
     // Hardware objects
     protected Servo rightFinger = null;
@@ -272,6 +280,11 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     protected DcMotor rightIntake = null;
     protected DcMotor lifter = null;
     protected DcMotorEx extender = null;
+    protected Rev2mDistanceSensor rightTof = null;
+    protected Rev2mDistanceSensor leftTof = null;
+    protected Rev2mDistanceSensor backRightTof = null;
+    protected Rev2mDistanceSensor backLeftTof = null;
+
 
     /* LEDs: Use this line if you drive the LEDs using an I2C/SPI bridge. */
     private DotStarBridgedLED leds;
@@ -303,17 +316,29 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 	// Variables so we only read encoders once per loop
 	protected boolean lifterEncoderRead = false;
 	protected boolean extenderEncoderRead = false;
+	protected boolean leftTofRead = false;
+	protected boolean rightTofRead = false;
+	protected boolean backRightTofRead = false;
+	protected boolean backLeftTofRead = false;
 	protected int lifterEncoderValue = 0;
 	protected int extenderEncoderValue = 0;
+	protected double leftTofValue = 0.0;
+	protected double rightTofValue = 0.0;
+	protected double backRightTofValue = 0.0;
+	protected double backLeftTofValue = 0.0;
 
     /* Constructor */
     public HardwareOmnibot(){
         super();
     }
 
-	public void resetEncoderReads() {
+	public void resetReads() {
 		lifterEncoderRead = false;
 		extenderEncoderRead = false;
+		leftTofRead = false;
+		rightTofRead = false;
+		backRightTofRead = false;
+		backLeftTofRead = false;
 	}
 
     public void initGroundEffects()
@@ -891,6 +916,42 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 		extender.setTargetPosition(targetPosition + intakeZero);
     }
 
+    public double readLeftTof() {
+        if(!leftTofRead) {
+            leftTofRead = true;
+            leftTofValue = leftTof.getDistance(DistanceUnit.CM);
+        }
+
+        return leftTofValue;
+    }
+
+    public double readRightTof() {
+        if(!rightTofRead) {
+            rightTofRead = true;
+            rightTofValue = rightTof.getDistance(DistanceUnit.CM);
+        }
+
+        return rightTofValue;
+    }
+
+    public double readBackLeftTof() {
+        if(!backLeftTofRead) {
+            backLeftTofRead = true;
+            backLeftTofValue = backLeftTof.getDistance(DistanceUnit.CM);
+        }
+
+        return backLeftTofValue;
+    }
+
+    public double readBackRightTof() {
+        if(!backRightTofRead) {
+            backRightTofRead = true;
+            backRightTofValue = backRightTof.getDistance(DistanceUnit.CM);
+        }
+
+        return backRightTofValue;
+    }
+
     /* Initialize standard Hardware interfaces */
     public void init(HardwareMap ahwMap) {
         // Save reference to Hardware map
@@ -905,6 +966,11 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         rightIntake = hwMap.get(DcMotor.class, RIGHT_INTAKE);
         lifter = hwMap.get(DcMotor.class, LIFTER);
         extender = hwMap.get(DcMotorEx.class, EXTENDER);
+
+        rightTof = (Rev2mDistanceSensor)hwMap.get(DistanceSensor.class, RIGHT_RANGE);
+        leftTof = (Rev2mDistanceSensor)hwMap.get(DistanceSensor.class, LEFT_RANGE);
+        backRightTof = (Rev2mDistanceSensor)hwMap.get(DistanceSensor.class, BACK_RIGHT_RANGE);
+        backLeftTof = (Rev2mDistanceSensor)hwMap.get(DistanceSensor.class, BACK_LEFT_RANGE);
 
         // Set motor rotation
         // This makes lift go up with positive encoder values and power

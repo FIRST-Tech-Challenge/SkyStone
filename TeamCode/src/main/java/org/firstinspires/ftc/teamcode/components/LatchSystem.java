@@ -4,12 +4,11 @@ import android.util.Log;
 
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class LatchSystem {
     private Servo servo;
-    private final double LATCH_POSITION = 0.1;
-    private final double UNLATCH_POSITION = 0.9;
+    private final double DOWN_POSITION = 0.3;
+    private final double UP_POSITION = 0.7;
 
     public final String TAG = "LatchSystem";
 
@@ -20,7 +19,7 @@ public class LatchSystem {
 
     public void init() {
         Log.d(TAG, "in init");
-        servo.setPosition(UNLATCH_POSITION);
+        servo.setPosition(UP_POSITION);
     }
 
     public void run(boolean up, boolean down) {
@@ -38,13 +37,13 @@ public class LatchSystem {
 
     public void latch() {
         Log.d(TAG,"in latch");
-        servo.setPosition(LATCH_POSITION);
+        servo.setPosition(DOWN_POSITION);
         servo.close();
     }
 
     public void unlatch() {
         Log.d(TAG, "unlatch");
-        servo.setPosition(UNLATCH_POSITION);
+        servo.setPosition(UP_POSITION);
         servo.close();
     }
 }

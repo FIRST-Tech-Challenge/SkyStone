@@ -48,9 +48,7 @@ abstract class Movement extends LinearOpMode
         arm = hardwareMap.get(DcMotor.class, "Arm");
         arm.setDirection(DcMotor.Direction.FORWARD);
 
-        // TODO: Set up front servo motor
-        //frontServo = hardwareMap.servo.get("");
-
+        frontServo = hardwareMap.servo.get("frontServo");
         backServo =  hardwareMap.servo.get("servo");
     }
 

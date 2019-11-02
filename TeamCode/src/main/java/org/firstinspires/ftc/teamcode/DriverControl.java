@@ -46,40 +46,40 @@ public class DriverControl extends Movement {
                 // Left stick y - to move arm up or down
                 arm.setPower(-gamepad2.left_stick_y);
 
-                // x - to open claw (front servo)
+                // left bumper - to open claw (front servo)
+                if (gamepad2.left_bumper) {
+                    // TODO: setpower / duration / name frontServo from hw config
+
+                    frontServo.setPosition(0.4);
+                    sleep(100);
+                    frontServo.setPosition(0.5);
+                }
+
+                // right bumper - to close claw (front servo)
+                if (gamepad2.right_bumper) {
+                    // TODO: setpower / duration / name frontServo from hw config
+
+                    frontServo.setPosition(0.0);
+                    sleep(100);
+                    frontServo.setPosition(0.6);
+                }
+
+                // x - to move back servo down
                 if (gamepad2.x) {
-                    // TODO: setpower / duration / name frontServo from hw config
-                    /*
-                    frontServo.setPower();
-                    sleep();
-                    backServo.setPower(0); */
+                    // TODO: setpower / duration
+
+                    backServo.setPosition(0.4);
+                    sleep(100);
+                    backServo.setPosition(0.8);
                 }
 
-                // y - to close claw (front servo)
+                // y - to move back servo up
                 if (gamepad2.y) {
-                    // TODO: setpower / duration / name frontServo from hw config
-                    /*
-                    frontServo.setPower();
-                    sleep();
-                    frontServo.setPower(0); */
-                }
-
-                // a - to move back servo down
-                if (gamepad2.a) {
                     // TODO: setpower / duration
-                    /*
-                    backServo.setPower();
-                    sleep();
-                    backServo.setPower(0); */
-                }
 
-                // b - to move back servo up
-                if (gamepad2.b) {
-                    // TODO: setpower / duration
-                    /*
-                    backServo.setPower();
-                    sleep();
-                    backServo.setPower(0); */
+                    backServo.setPosition(0.0);
+                    sleep(100);
+                    backServo.setPosition(0.8);
                 }
 
                 telemetry.addData("Status", "Run Time: " + runtime.toString());

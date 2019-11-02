@@ -128,7 +128,9 @@ public abstract class BaseStateMachine extends BaseOpMode {
                     double heading = driveSystem.imuSystem.getHeading();
                     // I think it is getting stuck here. The purpose is to align the robot with the
                     // audience such it moves straight
-                    while (!driveSystem.turn(-heading + 155, 0.8) && !isStopRequested()) {};
+                    while (!driveSystem.turn(-heading + 160, 0.8) && !isStopRequested()) {};
+                    telemetry.update();
+                    newState(State.STATE_DELIVER_STONE);
                 }
 
                 telemetry.update();

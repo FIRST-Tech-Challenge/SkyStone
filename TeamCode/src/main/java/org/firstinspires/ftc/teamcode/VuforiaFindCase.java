@@ -259,15 +259,15 @@ public class VuforiaFindCase {
 
                 //this.opmode.telemetry.update();
 
-                this.opmode.telemetry.addData("get0", translation.get(0));
+                this.opmode.telemetry.addData("get0", translation.get(1) / mmPerInch);
                 //this.opmode.telemetry.update();
 
                 // if loop to assign cases
-                if ((translation.get(0) <= -2)) {
+                if ((translation.get(1) / mmPerInch <= -2)) {
 
                     positionCase = 1;
 
-                } else if ((translation.get(0)) > 3){
+                } else if ((translation.get(1)/ mmPerInch) > 3){
 
                     positionCase = 3;
 
@@ -284,13 +284,13 @@ public class VuforiaFindCase {
 
                 this.opmode.telemetry.addData("Position Case", positionCase);
 
-                //this.opmode.telemetry.update();
+                this.opmode.telemetry.update();
 
-               //this.opmode.sleep(40000);
+               this.opmode.sleep(40000);
 
             } else {
                 this.opmode.telemetry.addData("Visible Target", "none");
-                //this.opmode.telemetry.update();
+                this.opmode.telemetry.update();
             }
 
         }

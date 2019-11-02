@@ -98,7 +98,7 @@ public class TeleOpMecanum extends OpMode {
 
 
 
-            //Foundation Moving Toggle
+            /*//Foundation Moving Toggle
             //Toggle sets speed such that the robot can move the fastest
             //while moving the foundation and not dropping any blocks
             //Takes into account the mass of the foundation and block stack
@@ -120,7 +120,7 @@ public class TeleOpMecanum extends OpMode {
             cfm_power = (-1) * (DriveTrain.stallTorque / DriveTrain.noLoadSpeed) * CFM_AngularVelocity
                     + DriveTrain.stallTorque * CFM_AngularVelocity;
 
-            telemetry.addData("Number of Blocks : ", numberStackedBlocks);
+            telemetry.addData("Number of Blocks : ", numberStackedBlocks);*/
 
 
 
@@ -161,6 +161,7 @@ public class TeleOpMecanum extends OpMode {
         intake.Intake_TeleOp();
 
         outtake.outTake_TeleOp();
+
         outtake.Output_Telemetry();
 
         telemetry.update();

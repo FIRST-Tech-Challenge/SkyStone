@@ -170,11 +170,13 @@ public class Outtake {
 
     public void lowerLiftAuto()
     {
+        top = false;
+        bottom = true;
         liftRight.setPower(-LIFTPOWER);
         liftLeft.setPower(-LIFTPOWER);
 
         time.reset();
-        while(averageLiftPosition() >= 1 * encoderLevelCount && time.milliseconds() < 1000)
+        while(averageLiftPosition() >= 1 * encoderLevelCount && time.milliseconds() < 2000)
         {
 
         }
@@ -183,7 +185,7 @@ public class Outtake {
         liftRight.setPower(0);
     }
 
-    public void Shitty_Auto_Outtake(LinearOpMode opMode)
+    public void Comprimised_Auto_Outtake(LinearOpMode opMode)
     {
         //Assumes aligned with block
         //And Horizontal Lift completely retracted
@@ -196,7 +198,7 @@ public class Outtake {
 
         //8.78 inches extends out
         time.reset();
-        while(time.milliseconds() < 9000)
+        while(time.milliseconds() < 5700)
         {
         }
         //set position direction on angle - ask  trevor
@@ -214,7 +216,7 @@ public class Outtake {
         //8.78 inches extends out
         time.reset();
 
-        while(time.milliseconds() < 4000)
+        while(time.milliseconds() < 2000)
         {
         }
 
@@ -224,8 +226,50 @@ public class Outtake {
 
     }
 
+    public void Reset_CAO()
+    {
+        rightVex.setPower(.5);
+        leftVex.setPower(-.5);
+
+        //8.78 inches extends out
+        time.reset();
+        while(time.milliseconds() < 1000)
+        {
+        }
+
+        rightVex.setPower(0);
+        leftVex.setPower(0);
+
+        raiseLiftAuto();
+
+        rightVex.setPower(-.5);
+        leftVex.setPower(.5);
+
+        //8.78 inches extends out
+        time.reset();
+
+        while(time.milliseconds() < 4800)
+        {
+        }
+
+        rightVex.setPower(0);
+        leftVex.setPower(0);
+
+        liftLeft.setPower(-LIFTPOWER/2);
+        liftRight.setPower(-LIFTPOWER/2);
+
+        while(averageLiftPosition() > 0){}
+        top = false;
+        bottom = true;
+
+        liftRight.setPower(0);
+        liftLeft.setPower(0);
+
+
+    }
+
     public void outTake_Auto(LinearOpMode opMode) {
-       // initHorizontalExtension();
+       /*// initHorizontalExtension();
         pushBlock.setPosition(1);
         raiseLiftAuto();
         openBasketAuto();
@@ -236,7 +280,7 @@ public class Outtake {
             level++;
             blockCount = 0;
         }
-
+*/
 
 
     }
@@ -323,12 +367,13 @@ public class Outtake {
         liftRight.setPower(LIFTPOWER);
         liftLeft.setPower(LIFTPOWER);
 
-        while (encoderLevelCount * blockHeight * 2 > averageLiftPosition()) {
+        while (encoderLevelCount * blockHeight * 2 >= averageLiftPosition()) {
 
             if(top && averageLiftPosition() > MAXHEIGHT * encoderLevelCount)
             {
                 liftLeft.setPower(0);
                 liftRight.setPower(0);
+                top = true;
                 return;
             }
         }
@@ -499,7 +544,7 @@ public class Outtake {
         opMode.telemetry.update();
 
 
-        pushBlock.setPosition(1);
+        if(pushBlock.getPosition() != 1) pushBlock.setPosition(1);
 
         rightVex.setPower(-.5);
         leftVex.setPower(.5);
@@ -521,7 +566,7 @@ public class Outtake {
         liftRight.setPower(-LIFTPOWER);
 
         time.reset();
-        while(averageLiftPosition() >= 0 * encoderLevelCount && time.milliseconds() < 5000) {
+        while(averageLiftPosition() >= 0 && time.milliseconds() < 5000 ) {
 
             if(averageLiftPosition() <= 5 * encoderLevelCount)
             {
@@ -562,7 +607,7 @@ public class Outtake {
 
             }
 
-            hookLeft.setPosition(1);
+            hookLeft.setPosition(0);
             hookRight.setPosition(1);
         }
         else if(toggled && opMode.gamepad2.y)

@@ -130,27 +130,27 @@ public class OfficialTeleop extends OpMode {
         double x = deadZone(deadZone(gamepad1.left_stick_x) + deadZone(gamepad1.right_stick_x)) / 2;
         robot.driveTrain.spinDrive(x, y, turn);
 
-        if (robot.stoneManipulator.getState() == State.RESTING) {
-            whenPressedDebounce(() -> gamepad2.dpad_up, () -> robot.lift.moveUp(), 0);
-            whenPressedDebounce(() -> gamepad2.dpad_down, () -> robot.lift.moveDown(), 1);
-        }
-        robot.lift.updatePosition();
-        robot.lift.updateRightMotor();
-
-        if (robot.lift.getLevel() == 0 && robot.stoneManipulator.getState() == State.RESTING && !robot.stoneManipulator.isGrabbed()) {
-            whenPressedDebounce(() -> gamepad2.right_bumper, () -> robot.stoneManipulator.setIntake(1), 2);
-        }
-        whenReleasedDebounce(() -> gamepad2.right_bumper, () -> robot.stoneManipulator.setIntake(0), 2);
-        if (robot.stoneManipulator.getState() == State.RESTING && robot.stoneManipulator.isGrabbed()) {
-            whenPressedDebounce(() -> gamepad2.left_bumper, () -> robot.stoneManipulator.setExtended(true), 3);
-        }
-        if (robot.stoneManipulator.getState() == State.EXTENDED) {
-            whenReleasedDebounce(() -> gamepad2.left_bumper, () -> robot.stoneManipulator.setExtended(false), 3);
-        }
-
-        if (robot.stoneManipulator.getState() != State.INTAKING) {
-            whenPressedDebounce(() -> gamepad2.a, () -> robot.stoneManipulator.setGrabbed(!robot.stoneManipulator.isGrabbed()), 4);
-        }
+//        if (robot.stoneManipulator.getState() == State.RESTING) {
+//            whenPressedDebounce(() -> gamepad2.dpad_up, () -> robot.lift.moveUp(), 0);
+//            whenPressedDebounce(() -> gamepad2.dpad_down, () -> robot.lift.moveDown(), 1);
+//        }
+//        robot.lift.updatePosition();
+//        robot.lift.updateRightMotor();
+//
+//        if (robot.lift.getLevel() == 0 && robot.stoneManipulator.getState() == State.RESTING && !robot.stoneManipulator.isGrabbed()) {
+//            whenPressedDebounce(() -> gamepad2.right_bumper, () -> robot.stoneManipulator.setIntake(1), 2);
+//        }
+//        whenReleasedDebounce(() -> gamepad2.right_bumper, () -> robot.stoneManipulator.setIntake(0), 2);
+//        if (robot.stoneManipulator.getState() == State.RESTING && robot.stoneManipulator.isGrabbed()) {
+//            whenPressedDebounce(() -> gamepad2.left_bumper, () -> robot.stoneManipulator.setExtended(true), 3);
+//        }
+//        if (robot.stoneManipulator.getState() == State.EXTENDED) {
+//            whenReleasedDebounce(() -> gamepad2.left_bumper, () -> robot.stoneManipulator.setExtended(false), 3);
+//        }
+//
+//        if (robot.stoneManipulator.getState() != State.INTAKING) {
+//            whenPressedDebounce(() -> gamepad2.a, () -> robot.stoneManipulator.setGrabbed(!robot.stoneManipulator.isGrabbed()), 4);
+//        }
 
         whenPressedDebounce(() -> gamepad2.b, () ->
                 robot.foundationGrabber.setGrabbed(FoundationGrabber.Hook.BOTH, true), 5);

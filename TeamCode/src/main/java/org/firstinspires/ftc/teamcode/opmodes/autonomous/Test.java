@@ -12,7 +12,7 @@ import org.westtorrancerobotics.lib.Location;
 import static org.firstinspires.ftc.teamcode.subsystems.FoundationGrabber.Hook.LEFT;
 import static org.firstinspires.ftc.teamcode.subsystems.FoundationGrabber.Hook.RIGHT;
 
-@Autonomous(name = "Blue Build Zone", group = "none")
+@Autonomous(name = "Test", group = "none")
 public class Test extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {

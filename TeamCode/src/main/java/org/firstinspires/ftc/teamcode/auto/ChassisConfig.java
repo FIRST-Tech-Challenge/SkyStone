@@ -65,11 +65,11 @@ public class ChassisConfig {
                 4.0f,
                 true,
                 COUNTS_PER_MOTOR_REV_HDHEX_40,
+                -0.8f,
                 0.8f,
-                0.8f,
-                false,
                 true,
                 false,
+                                false,
                 true,
                 true,
                 false);

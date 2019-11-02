@@ -6,11 +6,11 @@ import org.firstinspires.ftc.teamcode.auto.ChassisStandard;
 /**
  * This just runs from the position closest to the crater, into the crater.
  */
-public abstract class ShortRedBeanis2 extends ChassisStandard {
+public abstract class ShortRedHagrids2 extends ChassisStandard {
 
     private boolean madeTheRun = false;
 
-    public ShortRedBeanis2(ChassisConfig config) {
+    public ShortRedHagrids2(ChassisConfig config) {
         super(config);
     }
 
@@ -59,12 +59,10 @@ public abstract class ShortRedBeanis2 extends ChassisStandard {
 
         if (madeTheRun == false) {
 
-            encoderDrive(4);
+            encoderDrive(5);
 
-            turnRight(82);
-
-            encoderDrive(37
-            );
+            turnLeft(80);
+            encoderDrive(35);
             madeTheRun = true;
         }
 

@@ -56,8 +56,8 @@ public class TylerController extends OpMode {
     private boolean useMotors = true;
     private boolean useEncoders = true;
     private boolean useArm = true; // HACK
+    private boolean useLifter = true;
     private boolean useCrab = true;
-    private boolean useLifter = true; // HACL
     private boolean useDropper = true;
     private boolean useTouch = true;
     private boolean useRange = true;

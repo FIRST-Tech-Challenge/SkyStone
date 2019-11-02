@@ -1,15 +1,16 @@
 package org.firstinspires.ftc.teamcode;
 import org.firstinspires.ftc.teamcode.auto.ChassisConfig;
 import org.firstinspires.ftc.teamcode.autoOp.LongBeanis1;
+import org.firstinspires.ftc.teamcode.autoOp.TurnTest;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 //Beanis = Square
 //Hagrids = Slash
 
-@Autonomous(name="Long Blue Beanis 1", group="bluebeanis")
-public class TylerLongBeanis1 extends LongBeanis1 {
-    public TylerLongBeanis1() {
+@Autonomous(name="Turn Test (small and slow)", group="turntest")
+public class TurnoTesto extends TurnTest {
+    public TurnoTesto() {
         super(ChassisConfig.forTileRunner());
     }
 }

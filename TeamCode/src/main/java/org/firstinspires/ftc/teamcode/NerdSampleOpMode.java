@@ -55,13 +55,11 @@ public class NerdSampleOpMode extends LinearOpMode {
    private NerdBOT myNerdBOT ;
    private  double speed = 0.4;
 
-   boolean debugFlag = false;
+   boolean debugFlag = true;
 
 
     @Override
     public void runOpMode() {
-
-
 
         //Create a NerdBOT object
 
@@ -93,7 +91,7 @@ public class NerdSampleOpMode extends LinearOpMode {
        if (debugFlag)
            RobotLog.d("NerdSampleOpMode - Run1");
 
-        myNerdBOT.nerdPidDrive( speed, 0.0, 10.0, 0.0);
+       myNerdBOT.nerdPidDrive( speed, 0.0, 10.0, 0.0);
 
         if (debugFlag)
             RobotLog.d("NerdSampleOpMode - Run2");
@@ -105,21 +103,13 @@ public class NerdSampleOpMode extends LinearOpMode {
 
         myNerdBOT.setMinMaxSpeeds(0.0,0.7); // Go faster when going longer distance.
 
-        myNerdBOT.nerdPidDrive( speed, -96.0, -10.0, 0.0);
+        myNerdBOT.nerdPidDrive( speed, -100.0, -10.0, 0.0);
 
         myNerdBOT.setMinMaxSpeeds(0.0,0.5);
 
         if (debugFlag)
             RobotLog.d("NerdSampleOpMode - Run4");
         myNerdBOT.nerdPidDrive( speed, 0.0, 15.0, 0.0);
-
-        //For testing arm and drive together
-
-        myNerdBOT.nerdPidDriveAndArmAction(24.0,24.0,0.0, NerdBOTArm.ArmAction.PICKUP);
-
-        //For testing Ramp UP and Down of Speed in PID drive
-
-        myNerdBOT.nerdPidDriveWithRampUpDown(0.5, 0.0,24.0,0.0);
 
         if (debugFlag)
             RobotLog.d("NerdSampleOpMode - Completed");
@@ -130,7 +120,3 @@ public class NerdSampleOpMode extends LinearOpMode {
 
 
 }
-
-
-
-

@@ -65,9 +65,9 @@ public class ArmSystem {
 
     public final double SERVO_SPEED = 0.005;
     public final double SERVO_TOLERANCE = 0.02;
-    private double pivotTarget = 0.1;
-    private double elbowTarget = 0.05;
-    private double wristTarget = 0.88;
+    private double pivotTarget = 0.93;
+    private double elbowTarget = 0.72;
+    private double wristTarget = 0.05;
 
     // I know in terms of style points these should be private and just have getters and setters but
     // I want to make them easily incrementable

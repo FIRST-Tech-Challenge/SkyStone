@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
 import java.util.EnumMap;
 
 @TeleOp(name = "RealTeleop", group="TeleOp")
-
+public class DriveTeleop extends BaseOpMode {
     private boolean slowDrive;
 
     // We need to have arm code in this OpMode because we don't want to calibrate the arm
@@ -45,12 +45,11 @@ import java.util.EnumMap;
 
     public void loop(){
 
-        driveSystem.drive(gamepad1.right_stick_x, gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.x);
         spinnySystem.spin(gamepad1.left_bumper, gamepad1.right_bumper);
         latchSystem.run(gamepad1.dpad_up, gamepad1.dpad_down);
         driveSystem.drive((float)Math.pow(gamepad1.right_stick_x, 3),
                     (float)Math.pow(gamepad1.left_stick_x, 3),
-                    (float)Math.pow(-gamepad1.left_stick_y, 3));
+                    (float)Math.pow(-gamepad1.left_stick_y, 3), gamepad1.x);
         spinnySystem.spin(gamepad2.left_trigger > 0.3, gamepad2.right_trigger > 0.3);
         latchSystem.run(gamepad2.x, gamepad2.y);
 

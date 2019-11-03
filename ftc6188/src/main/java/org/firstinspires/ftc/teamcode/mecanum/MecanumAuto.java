@@ -15,7 +15,7 @@ public class MecanumAuto extends LinearOpMode
     {
         robot = new MecanumRobot(this.hardwareMap, false);
         robot.platformServos.setPosition(1); //init servos to up position
-        update();
+        informationUpdate();
 
         waitForStart();
 
@@ -32,11 +32,10 @@ public class MecanumAuto extends LinearOpMode
         robot.drivetrain.setVelocity(velocity * 0.25); //quarters the velocity since a high velocity causes massive drift following a move command
         robot.drivetrain.setRotation(rotation);
         robot.drivetrain.setTargetPosition(distance * robot.motorTicksPerIN); // adjust a distance in inches to the appropriate amount of motor ticks
-        update();
-        sleep(1000);
+        informationUpdate();
     }
 
-    private void update()
+    private void informationUpdate()
     {
         telemetry.addData("Ticks Per IN", robot.motorTicksPerIN);
         telemetry.addData("WheelTarget FL", robot.drivetrain.motorList[0].getTargetPosition());

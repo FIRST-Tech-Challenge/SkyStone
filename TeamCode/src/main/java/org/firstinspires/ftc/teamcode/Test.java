@@ -55,25 +55,11 @@ public class Test extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor frontleft = null;
-    private DcMotor frontright = null;
-    private DcMotor backright = null;
-    private DcMotor backleft = null;
+    private Maccabot robot = new Maccabot(this);
 
     public void runOpMode() {
-        telemetry.addData("Status", "Initialized");
-        telemetry.update();
 
-        // Initialize the hardware variables. Note that the strings used here as parameters
-        // to 'get' must correspond to the names assigned during the robot configuration
-        // step (using the FTC Robot Controller app on the phone).
-        frontleft = hardwareMap.dcMotor.get("front_left");
-        frontright = hardwareMap.dcMotor.get("front_right");
-        backleft = hardwareMap.dcMotor.get("back_left");
-        backright = hardwareMap.dcMotor.get("back_right");
-
-        backleft.setDirection(DcMotor.Direction.REVERSE);
-        frontleft.setDirection(DcMotor.Direction.REVERSE);
+        robot.initializeRobot();
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -102,10 +88,7 @@ public class Test extends LinearOpMode {
             // rightPower = -gamepad1.right_stick_y ;
 
             // Send calculated power to wheels
-            frontleft.setPower(leftPower);
-            backleft.setPower(leftPower);
-            frontright.setPower(rightPower);
-            backright.setPower(rightPower);
+            robot.drive(leftPower, rightPower, leftPower, rightPower);
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());

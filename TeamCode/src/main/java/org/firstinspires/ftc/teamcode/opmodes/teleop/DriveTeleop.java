@@ -10,9 +10,8 @@ import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
 
 import java.util.EnumMap;
 
-@TeleOp(name = "RealTeleop", group="TeleOp")
+@TeleOp(name = "Real Teleop", group="TeleOp")
 public class DriveTeleop extends BaseOpMode {
-    private boolean slowDrive;
 
     // We need to have arm code in this OpMode because we don't want to calibrate the arm
     // in BaseOpMode
@@ -26,7 +25,6 @@ public class DriveTeleop extends BaseOpMode {
 
     public void init() {
         super.init();
-        slowDrive = false;
         EnumMap<ArmSystem.ServoNames, Servo> servoEnumMap = new EnumMap<ArmSystem.ServoNames, Servo>(ArmSystem.ServoNames.class);
         servoEnumMap.put(ArmSystem.ServoNames.GRIPPER, hardwareMap.get(Servo.class, "gripper"));
         servoEnumMap.put(ArmSystem.ServoNames.ELBOW, hardwareMap.get(Servo.class, "elbow"));
@@ -41,57 +39,53 @@ public class DriveTeleop extends BaseOpMode {
 
     public void start() {
         armSystem.setSliderHeight(1);
+        armSystem.movePresetPosition(ArmSystem.Position.POSITION_HOME);
     }
 
     public void loop(){
-
+        float rx = (float) Math.pow(gamepad1.right_stick_x, 3);
+        float lx = (float) Math.pow(gamepad1.left_stick_x, 3);
+        float ly = (float) Math.pow(gamepad1.left_stick_y, 3);
+        driveSystem.drive(rx, lx, -ly, gamepad1.x);
         spinnySystem.spin(gamepad1.left_bumper, gamepad1.right_bumper);
-        latchSystem.run(gamepad1.dpad_up, gamepad1.dpad_down);
-        driveSystem.drive((float)Math.pow(gamepad1.right_stick_x, 3),
-                    (float)Math.pow(gamepad1.left_stick_x, 3),
-                    (float)Math.pow(-gamepad1.left_stick_y, 3), gamepad1.x);
-        spinnySystem.spin(gamepad2.left_trigger > 0.3, gamepad2.right_trigger > 0.3);
         latchSystem.run(gamepad2.x, gamepad2.y);
 
         // Arm code (THIS NEEDS TO BE CLEANED UP LATER)
         // Put every joystick value to the 3rd power for greater control over the robot
         // 1^3 = 1, so we don't even need to trim the values or anything
-        float rx = (float) Math.pow(gamepad1.right_stick_x, 3);
-        float lx = (float) Math.pow(gamepad1.left_stick_x, 3);
-        float ly = (float) Math.pow(gamepad1.left_stick_y, 3);
 
-        if (gamepad2.dpad_left) {
-            armSystem.movePresetPosition(ArmSystem.Position.POSITION_WEST);
-        } else if (gamepad2.dpad_up) {
-            armSystem.movePresetPosition(ArmSystem.Position.POSITION_HOME);
-        } else if (gamepad2.dpad_down) {
-            armSystem.movePresetPosition(ArmSystem.Position.POSITION_SOUTH);
-        } else if (gamepad2.dpad_right) {
-            armSystem.movePresetPosition(ArmSystem.Position.POSITION_EAST);
-        }
+            if (gamepad2.dpad_left) {
+                armSystem.movePresetPosition(ArmSystem.Position.POSITION_WEST);
+            } else if (gamepad2.dpad_up) {
+                armSystem.movePresetPosition(ArmSystem.Position.POSITION_HOME);
+            } else if (gamepad2.dpad_down) {
+                armSystem.movePresetPosition(ArmSystem.Position.POSITION_SOUTH);
+            } else if (gamepad2.dpad_right) {
+                armSystem.movePresetPosition(ArmSystem.Position.POSITION_EAST);
+            }
 
-        if (gamepad2.right_bumper && !m_right) {
-            armSystem.queuedHeight++;
-            armSystem.go();
-            m_right = true;
-        } else if (!gamepad2.right_bumper) {
-            m_right = false;
-        }
+            if (gamepad2.right_bumper && !m_right) {
+                armSystem.queuedHeight++;
+                armSystem.go();
+                m_right = true;
+            } else if (!gamepad2.right_bumper) {
+                m_right = false;
+            }
 
-        if (gamepad2.left_bumper && !m_left) {
-            armSystem.queuedHeight--;
-            armSystem.go();
-            m_left = true;
-        } else if (!gamepad2.left_bumper) {
-            m_left = false;
-        }
+            if (gamepad2.left_bumper && !m_left) {
+                armSystem.queuedHeight--;
+                armSystem.go();
+                m_left = true;
+            } else if (!gamepad2.left_bumper) {
+                m_left = false;
+            }
 
-        if (gamepad2.a && !m_gripper) { // This doesn't fit the spec on the google doc and should be changed later
-            armSystem.toggleGripper();
-            m_gripper = true;
-        } else if (!gamepad2.a) {
-            m_gripper = false;
-        }
-        armSystem.updateHeight();
+            if (gamepad2.a && !m_gripper) { // This doesn't fit the spec on the google doc and should be changed later
+                armSystem.toggleGripper();
+                m_gripper = true;
+            } else if (!gamepad2.a) {
+                m_gripper = false;
+            }
+            armSystem.updateHeight();
     }
 }

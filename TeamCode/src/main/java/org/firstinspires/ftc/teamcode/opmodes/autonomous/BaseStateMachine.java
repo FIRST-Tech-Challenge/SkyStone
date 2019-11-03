@@ -119,7 +119,7 @@ public abstract class BaseStateMachine extends BaseOpMode {
                     direction = currentTeam == Team.RED ? DriveSystem.Direction.RIGHT : DriveSystem.Direction.LEFT;
                     while (!driveSystem.driveToPosition((int) distance, direction, 0.8) && !isStopRequested()) {};
                     // Offset from skystone
-                    while (!driveSystem.driveToPosition(750, DriveSystem.Direction.FORWARD, 0.5) && !isStopRequested()) {}
+                    while (!driveSystem.driveToPosition(700, DriveSystem.Direction.FORWARD, 0.5) && !isStopRequested()) {}
                     // Shove into the other stones
                     direction = currentTeam == Team.RED ? DriveSystem.Direction.RIGHT : DriveSystem.Direction.LEFT;
                     while (!driveSystem.driveToPosition(1525, direction, 0.5) && !isStopRequested()) {}
@@ -151,7 +151,7 @@ public abstract class BaseStateMachine extends BaseOpMode {
                 direction = currentTeam == Team.RED ? DriveSystem.Direction.RIGHT : DriveSystem.Direction.LEFT;
                 while (!driveSystem.driveToPosition((int) distance, direction, 0.8) && !isStopRequested()) {};
                 // Offset from skystone
-                while (!driveSystem.driveToPosition(750, DriveSystem.Direction.FORWARD, 0.5) && !isStopRequested()) {}
+                while (!driveSystem.driveToPosition(700, DriveSystem.Direction.FORWARD, 0.5) && !isStopRequested()) {}
                 // Shove into the other stones
                 direction = currentTeam == Team.RED ? DriveSystem.Direction.RIGHT : DriveSystem.Direction.LEFT;
                 while (!driveSystem.driveToPosition(1525, direction, 0.5) && !isStopRequested()) {}

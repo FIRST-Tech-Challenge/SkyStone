@@ -12,7 +12,7 @@ public class DriveHalo extends OpMode {
 
     // init variables
     private double speedControl = 0.5; // to make the robot go slower since we use Orbital 20s
-    private double compensation = 0.2; // compensation so the robot can move forward AND turn while both joysticks are used
+    private double compensation = 1; // compensation so the robot can move forward AND turn while both joysticks are used
     private float deadZone = 0.1f; // joystick deadzone
     private boolean buttonPressed = false;
     private boolean armClosed = false;
@@ -37,6 +37,8 @@ public class DriveHalo extends OpMode {
         gripperController();
         liftController();
         waffleController();
+        telemetry.addData("Robot Info: ", robot.getInfo());
+        telemetry.update();
     }
 
     void liftController() {

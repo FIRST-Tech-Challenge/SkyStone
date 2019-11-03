@@ -274,4 +274,14 @@ public class Robot {
         WebcamTest detector = new WebcamTest();
         return detector.detectSkystonePosition(opmode);
     }
+
+    String getInfo() {
+        String output = "Arm Position: " + this.armPos + "Waffle Position: ";
+        if (this.wafflePosition == -1) {
+            output += "Down";
+        } else {
+            output += "Up";
+        }
+        return output;
+    }
 }

@@ -173,7 +173,6 @@ public class DriveTrain {
                     Angle.AngleUnit.RADIANS,
                     Angle.AngleOrientation.COMPASS_HEADING
             );
-            myLocation.direction.getValue(Angle.AngleUnit.DEGREES, Angle.AngleOrientation.COMPASS_HEADING);
             double oldX = myLocation.x;
             double oldY = myLocation.y;
             double r = Math.hypot(rotCenterRelX, rotCenterRelY);
@@ -208,46 +207,66 @@ public class DriveTrain {
         }
 
         private double[] solve(double[][] augmentedMatrix) {
-            int numWheels = 3;
-            for (int i = 0; i < numWheels; i++) {
-                double pivot = augmentedMatrix[i][i];
-                for (int j = i + 1; j < numWheels; j++) {
-                    double scalar = -pivot/augmentedMatrix[j][i];
-                    if (scalar == 0 || augmentedMatrix[j][i] == 0) {
+            double[][] matrix = new double[augmentedMatrix.length][augmentedMatrix.length + 1];
+            for (int i = 0; i < matrix.length; i++) {
+                System.arraycopy(augmentedMatrix[i], 0, matrix[i], 0, matrix[i].length);
+            }
+            for (int i = 0; i < matrix.length; i++) {
+                for (int j = i; j < matrix.length; j++) {
+                    if (!isZero(matrix[j][i])) {
+                        swapRows(matrix, i, j);
                         break;
                     }
-                    for (int k = 0; k <= numWheels; k++) {
-                        augmentedMatrix[j][k] *= scalar;
-                    }
-                    for (int k = 0; k <= numWheels; k++) {
-                        augmentedMatrix[j][k] += augmentedMatrix[i][k];
-                    }
-                    augmentedMatrix[j][i] = 0;
                 }
-                if (pivot == 0) {
-                    continue;
-                }
-                for (int k = 0; k <= numWheels; k++) {
-                    augmentedMatrix[i][k] /= pivot;
+                scale(matrix, i, 1 / matrix[i][i]);
+                matrix[i][i] = 1;
+                for (int j = i + 1; j < matrix.length; j++) {
+                    if (isZero(matrix[j][i])) {
+                        continue;
+                    }
+                    scale(matrix, j, -1 / matrix[j][i]);
+                    addRow(matrix, i, j);
+                    matrix[j][i] = 0;
                 }
             }
-            for (int i = numWheels - 1; i >= 0; i--) {
-                for (int j = 0; j < i; j++) {
-                    double[] newRow = new double[numWheels + 1];
-                    for (int k = 0; k <= numWheels; k++) {
-                        newRow[k] = augmentedMatrix[j][i]*augmentedMatrix[i][k];
+            for (int i = matrix.length - 1; i >= 0; i--) {
+                for (int j = i - 1; j >= 0; j--) {
+                    if (isZero(matrix[j][i])) {
+                        continue;
                     }
-                    for (int k = 0; k <= numWheels; k++) {
-                        augmentedMatrix[j][k] -= newRow[k];
-                    }
-                    augmentedMatrix[j][i] = 0;
+                    double sc = -matrix[j][i];
+                    scale(matrix, i, sc);
+                    addRow(matrix, i, j);
+                    scale(matrix, i, 1/sc);
                 }
             }
-            double[] solutions = new double[numWheels];
-            for (int k = 0; k < numWheels; k++) {
-                solutions[k] = augmentedMatrix[k][numWheels];
+            double[] solutions = new double[matrix.length];
+            for (int k = 0; k < matrix.length; k++) {
+                solutions[k] = matrix[k][matrix.length];
             }
             return solutions;
+        }
+
+        private boolean isZero(double number) {
+            return Math.abs(number) < 1e-15;
+        }
+
+        private void swapRows(double[][] matrix, int row1, int row2) {
+            double[] rowa = matrix[row2];
+            matrix[row2] = matrix[row1];
+            matrix[row1] = rowa;
+        }
+
+        private void scale(double[][] matrix, int row, double constant) {
+            for (int i = 0; i < matrix[row].length; i++) {
+                matrix[row][i] *= constant;
+            }
+        }
+
+        private void addRow(double[][] matrix, int addend, int rowChanged) {
+            for (int i = 0; i < matrix[rowChanged].length; i++) {
+                matrix[rowChanged][i] += matrix[addend][i];
+            }
         }
     }
 }

@@ -21,6 +21,7 @@ public class MecanumAuto extends LinearOpMode
 
         // Move commands
         telemetry.addData("Status", "Move to bridge - left 1 ft");
+        robotMove(0, 1, 0, 4);
         robotMove(270, 1, 0, 12);
     }
 

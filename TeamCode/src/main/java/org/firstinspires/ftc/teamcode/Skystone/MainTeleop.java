@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.Skystone.Odometry.Position2D;
 
 @TeleOp(name="MainTeleOpSky", group="Linear Opmode")
-
 public class MainTeleop extends LinearOpMode {
 
     Robot robot;
@@ -19,8 +18,10 @@ public class MainTeleop extends LinearOpMode {
     double intakeLeftPower;
     double intakeRightPower;
     char outtakeButton;
+
     long outtakeExecutionTime;
     long currentTime;
+
     double outtakePivotExecutePosition;
     double outtakePivotWaitTime;
     double outtakeExtenderExecutePosition;
@@ -36,7 +37,6 @@ public class MainTeleop extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-
         resetRobot();
         initServos();
         waitForStart();
@@ -46,15 +46,13 @@ public class MainTeleop extends LinearOpMode {
         while (opModeIsActive()) {
             slowDriveLogic();
             driveLogic();
-            outtakeLogic();
+//            outtakeLogic();
             intakeLogic();
             spoolLogic();
-//            outtakeLogic();
+            outtakeLogic();
         }
     }
-
     private void spoolLogic(){
-
         if (gamepad2.dpad_up && robot.getOuttakeSpool().getCurrentPosition()<=6600) {
             robot.getOuttakeSpool().setPower(1);
         }else if(gamepad2.dpad_down && robot.getOuttakeSpool().getCurrentPosition()>=0 ){
@@ -62,34 +60,29 @@ public class MainTeleop extends LinearOpMode {
         }else{
             robot.getOuttakeSpool().setPower(0);
         }
-
         telemetry.addLine("Spool Position " + robot.getOuttakeSpool().getCurrentPosition());
         telemetry.update();
     }
-
     private void resetRobot() {
         robot = new Robot(hardwareMap, telemetry, this);
         robot.setMotorMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         robot.getOuttakeSpool().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.getOuttakeSpool().setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         robot.getOuttakeSpool().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        robot.getOuttakeSpool().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.getIntakeLeft().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         robot.getIntakeRight().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //        robot.outtakeArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 //        robot.outtakeArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
-
     private void initServos() {
         robot.getClampPivot().setPosition(robot.OUTTAKE_PIVOT_RETRACTED);
         robot.getIntakePusher().setPosition(robot.PUSHER_RETRACTED);
         robot.getOuttakeExtender().setPosition(robot.OUTTAKE_SLIDE_RETRACTED);
         robot.getClamp().setPosition(robot.CLAW_SERVO_RELEASED);
     }
-
     //teleop methods
     private void driveLogic() {
-
         // TODO: change all of this stuff to x, y, and turn movements
         //tank drive
         fLPower = (-gamepad1.left_stick_y + gamepad1.right_stick_x + gamepad1.left_stick_x) * powerScaleFactor;
@@ -107,7 +100,6 @@ public class MainTeleop extends LinearOpMode {
             bLPower = (gamepad1.left_trigger) * powerScaleFactor;
             bRPower = (-gamepad1.left_trigger) * powerScaleFactor;
         }
-
         //Straight D-Pad move
         if (gamepad1.dpad_up) {
             fLPower = (gamepad1.left_stick_y) + powerScaleFactor;
@@ -132,9 +124,7 @@ public class MainTeleop extends LinearOpMode {
         }
         robot.allWheelDrive(fLPower, fRPower, bLPower, bRPower);
     }
-
     private void slowDriveLogic() {
-
         //toggle driving speed
         if (powerScaleFactor == 0.3) {
 //            telemetry.addData("Driving Mode","Slow");
@@ -149,21 +139,17 @@ public class MainTeleop extends LinearOpMode {
             changedSlowDrive = false;
         }
     }
-
     private void intakeLogic() {
         robot.getIntakeLeft().setPower(gamepad2.left_stick_y);
         robot.getIntakeRight().setPower(gamepad2.right_stick_y);
         robot.getIntakeLeft().setPower(gamepad2.left_stick_y);
         robot.getIntakeRight().setPower(gamepad2.right_stick_y);
-
         if (gamepad2.left_stick_y > 0 && gamepad2.right_stick_y > 0) {
             robot.getIntakePusher().setPosition(robot.PUSHER_RETRACTED);
         }
     }
-
     private void outtakeLogic() {
         currentTime = SystemClock.elapsedRealtime();
-
         // Logic to control outtake; with a delay on the pivot so that the slides can extend before pivot rotation
         if (gamepad2.a) { // Clamp and Extend
             robot.getIntakePusher().setPosition(robot.PUSHER_PUSHED); // Push block all the way to clamp
@@ -177,7 +163,6 @@ public class MainTeleop extends LinearOpMode {
             outtakeExecutionTime = currentTime;
             robot.getClamp().setPosition(robot.CLAW_SERVO_RELEASED); // Release clamp
         }
-
         //extend
         if (currentTime - outtakeExecutionTime >= 200 && isExtend) {
             robot.getClamp().setPosition(robot.CLAW_SERVO_CLAMPED);
@@ -185,11 +170,10 @@ public class MainTeleop extends LinearOpMode {
         if(currentTime-outtakeExecutionTime >= 300 && isExtend){
             robot.getOuttakeExtender().setPosition(robot.OUTTAKE_SLIDE_EXTENDED);
         }
-        if(currentTime-outtakeExecutionTime >= 1200 && isExtend){
+        if(currentTime-outtakeExecutionTime >= 1700 && isExtend){
             robot.getClampPivot().setPosition(robot.OUTTAKE_PIVOT_EXTENDED);
             isExtend = false;
         }
-
         //retract
         if(currentTime-outtakeExecutionTime >= 250 && isRetract){
             robot.getClampPivot().setPosition(robot.OUTTAKE_PIVOT_RETRACTED);
@@ -199,18 +183,17 @@ public class MainTeleop extends LinearOpMode {
         }
         if(currentTime-outtakeExecutionTime >=1000 && isRetract){
             isRetract = false;
-            robot.getOuttakeSpool().setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.getOuttakeSpool().setPower(-1);
+            robot.getOuttakeSpool().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.getOuttakeSpool().setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.getOuttakeSpool().setTargetPosition(0);
-
             while(robot.getOuttakeSpool().getCurrentPosition() >= 50){
                 slowDriveLogic();
                 driveLogic();
                 intakeLogic();
             }
-
             robot.getOuttakeSpool().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            robot.getOuttakeSpool().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.getOuttakeSpool().setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             robot.getOuttakeSpool().setPower(0);
         }
     }

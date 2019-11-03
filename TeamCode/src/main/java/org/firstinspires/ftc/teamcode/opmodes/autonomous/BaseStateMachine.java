@@ -119,10 +119,10 @@ public abstract class BaseStateMachine extends BaseOpMode {
                     direction = currentTeam == Team.RED ? DriveSystem.Direction.RIGHT : DriveSystem.Direction.LEFT;
                     while (!driveSystem.driveToPosition((int) distance, direction, 0.8) && !isStopRequested()) {};
                     // Offset from skystone
-                    while (!driveSystem.driveToPosition(900, DriveSystem.Direction.FORWARD, 0.5) && !isStopRequested()) {}
+                    while (!driveSystem.driveToPosition(750, DriveSystem.Direction.FORWARD, 0.5) && !isStopRequested()) {}
                     // Shove into the other stones
                     direction = currentTeam == Team.RED ? DriveSystem.Direction.RIGHT : DriveSystem.Direction.LEFT;
-                    while (!driveSystem.driveToPosition(1500, direction, 0.5) && !isStopRequested()) {}
+                    while (!driveSystem.driveToPosition(1525, direction, 0.5) && !isStopRequested()) {}
                     // Drive into skystone
                     while (!driveSystem.driveToPosition(500, DriveSystem.Direction.BACKWARD, 0.3) && !isStopRequested()) {
                         spinnySystem.spin(true, false);
@@ -134,7 +134,7 @@ public abstract class BaseStateMachine extends BaseOpMode {
                     double heading = driveSystem.imuSystem.getHeading();
                     // I think it is getting stuck here. The purpose is to align the robot with the
                     // audience such it moves straight
-                    while (!driveSystem.turn(-heading + 160, 0.8) && !isStopRequested()) {};
+                    while (!driveSystem.turn(-heading + 190, 0.9) && !isStopRequested()) {};
                     telemetry.update();
                     newState(State.STATE_DELIVER_STONE);
                 }

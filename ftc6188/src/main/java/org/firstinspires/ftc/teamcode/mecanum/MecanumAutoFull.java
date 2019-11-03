@@ -24,9 +24,9 @@ public class MecanumAutoFull extends LinearOpMode
         // Move commands
         //TODO: fill out move commands for a full possible auto
 
-        robot.robotMove(0, 1, 0, 29.5);
+        robot.autoPosition(0, 1, 0, 29.5);
         robot.platformServos.setPosition(1);
-        robot.robotMove(180, 1, 0, 29);
+        robot.autoPosition(180, 1, 0, 29);
         robot.platformServos.setPosition(0);
 
     }

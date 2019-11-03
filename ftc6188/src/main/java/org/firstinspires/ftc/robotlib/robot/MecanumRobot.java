@@ -68,55 +68,59 @@ public class MecanumRobot
         motorTicksPerIN = drivetrain.getTicksPerIn(wheelRadius, wheelToMotorRatio);
     }
 
-    public void robotMove(double course, double velocity, double rotation, double distance)
+    public void autoPosition(double course, double velocity, double rotation, double distance) // distance in inches
     {
-        boolean override = false;
         drivetrain.setCourse(course * Math.PI/180); //converts a degree input into radians
-        drivetrain.setVelocity(velocity * 0.5); //quarters the velocity since a high velocity causes massive drift following a move command
+        drivetrain.setMovementVelocity(velocity);
         drivetrain.setRotation(rotation);
         drivetrain.setTargetPosition(distance * motorTicksPerIN); // adjust a distance in inches to the appropriate amount of motor ticks
 
-        while (drivetrain.isPositioning() && !override)
+        while (drivetrain.isPositioning())
         {
             telemetry.addData("Auto Status", "In Pos Loop");
+            drivetrain.updatePosition();
             informationUpdate();
-
-            if (isWithin(drivetrain.getTargetPosition(), drivetrain.getCurrentPosition(), 10))
-            {
-                override = true;
-            }
         }
+
         telemetry.addData("Auto Status", "In Fin");
         drivetrain.finishPositioning();
     }
 
     public void informationUpdate()
     {
+        telemetry.addData(">", "-----");
+
         telemetry.addData("Ticks Per IN", motorTicksPerIN);
+        telemetry.addData(">", "-----");
+
         telemetry.addData("WheelTarget FL", drivetrain.motorList[0].getTargetPosition());
         telemetry.addData("WheelTarget FR", drivetrain.motorList[1].getTargetPosition());
         telemetry.addData("WheelTarget RL", drivetrain.motorList[2].getTargetPosition());
         telemetry.addData("WheelTarget RR", drivetrain.motorList[3].getTargetPosition());
+        telemetry.addData(">", "-----");
+
         telemetry.addData("WheelPos FL", drivetrain.motorList[0].getCurrentPosition());
         telemetry.addData("WheelPos FR", drivetrain.motorList[1].getCurrentPosition());
         telemetry.addData("WheelPos RL", drivetrain.motorList[2].getCurrentPosition());
         telemetry.addData("WheelPos RR", drivetrain.motorList[3].getCurrentPosition());
         telemetry.addData("Current Pos", drivetrain.getCurrentPosition());
+        telemetry.addData(">", "-----");
+
         telemetry.addData("WheelPower FL", drivetrain.motorList[0].getPower());
         telemetry.addData("WheelPower FR", drivetrain.motorList[1].getPower());
         telemetry.addData("WheelPower RL", drivetrain.motorList[2].getPower());
         telemetry.addData("WheelPower RR", drivetrain.motorList[3].getPower());
+        telemetry.addData(">", "-----");
+
         telemetry.addData("Course Target", drivetrain.getCourse());
+        telemetry.addData("Movement Velocity", drivetrain.getMovementVelocity());
         telemetry.addData("Velocity Target", drivetrain.getVelocity());
         telemetry.addData("Rotation Target", drivetrain.getRotation());
         telemetry.addData("Distance Target", drivetrain.getTargetPosition());
+        telemetry.addData(">", "-----");
+
         telemetry.addData("Servo Pos", platformServos.getActual());
         telemetry.addData("Linked Pos", platformServos.getPosition());
         telemetry.update();
-    }
-
-    private boolean isWithin (double numberOne, double numberTwo, double range)
-    {
-        return Math.abs(numberOne) - Math.abs(numberTwo) < range;
     }
 }

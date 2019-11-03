@@ -122,10 +122,10 @@ public class Vuforia {
                 parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
                 break;
             case WEBCAM1:
-                parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam1");
+                parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
                 break;
             case WEBCAM2:
-                parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam2");
+                parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 2");
                 break;
         }
         vuforia = new VuforiaLocalizer(parameters);

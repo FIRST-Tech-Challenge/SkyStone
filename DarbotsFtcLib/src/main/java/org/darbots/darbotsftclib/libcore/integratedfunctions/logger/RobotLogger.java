@@ -1,5 +1,7 @@
 package org.darbots.darbotsftclib.libcore.integratedfunctions.logger;
 
+import android.util.ArrayMap;
+
 import org.darbots.darbotsftclib.libcore.integratedfunctions.FTCFileIO;
 import org.darbots.darbotsftclib.libcore.runtime.GlobalRegister;
 import org.json.simple.JSONArray;
@@ -9,6 +11,7 @@ import org.json.simple.parser.ParseException;
 
 import java.io.File;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -48,8 +51,8 @@ public class RobotLogger {
         }
     }
     private JSONArray m_Array;
-    private JSONObject m_CurrentLog;
-    private JSONArray m_Logs;
+    private ArrayMap<String, Object> m_CurrentLog;
+    private ArrayList<Object> m_Logs;
     private String m_FileName;
     private boolean m_DebugOn;
     private LogLevel m_LowestLogLevel;
@@ -73,8 +76,8 @@ public class RobotLogger {
         this.m_DebugOn = onDebug;
     }
     protected void __setupCurrentLog(){
-        m_CurrentLog = new JSONObject();
-        m_Logs = new JSONArray();
+        m_CurrentLog = new ArrayMap<String,Object>();
+        m_Logs = new ArrayList<Object>();
         Calendar currentTime = Calendar.getInstance();
         long currentTimeLong = currentTime.getTime().getTime();
         m_CurrentLog.put("startTime", currentTimeLong);
@@ -150,6 +153,8 @@ public class RobotLogger {
         if(!isDebugOn()){
             return;
         }
+        int processPriority = Thread.currentThread().getPriority();
+        m_CurrentLog.put("priority",new Integer(processPriority));
         File logFile = FTCFileIO.getLogFolderFile(m_FileName);
         String logFileContent = this.m_Array.toJSONString();
         FTCFileIO.writeFile(logFile,logFileContent);

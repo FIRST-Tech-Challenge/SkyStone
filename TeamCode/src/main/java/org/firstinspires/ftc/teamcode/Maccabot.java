@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Maccabot {
@@ -23,15 +24,27 @@ public class Maccabot {
 
     public void initializeRobot(){
         parentOpMode.telemetry.addLine("Initializing Drive");
-        front_left = hardwareMap.dcMotor.get("front_left");
-        front_right = hardwareMap.dcMotor.get("front_right");
-        back_left = hardwareMap.dcMotor.get("back_left");
-        back_right = hardwareMap.dcMotor.get("back_right");
+        // Get drive motors
+        front_left = hardwareMap.dcMotor.get("front_left"); // Port 0
+        front_right = hardwareMap.dcMotor.get("front_right"); // Port 1
+        back_left = hardwareMap.dcMotor.get("back_left"); // Port 2
+        back_right = hardwareMap.dcMotor.get("back_right"); // Port 3
 
-        front_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        front_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        back_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        back_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        // Reverse Right Side
+        front_right.setDirection(DcMotorSimple.Direction.REVERSE);
+        back_right.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        // TODO PID!!!
+        front_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        front_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        back_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        back_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        // Drive Motors Shouldn't Drive
+        front_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        front_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        back_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        back_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     public void drive(double flPower, double frPower, double blPower, double brPower){
@@ -39,6 +52,11 @@ public class Maccabot {
         front_right.setPower(frPower);
         back_left.setPower(blPower);
         back_right.setPower(brPower);
+        // print encoder values
+        parentOpMode.telemetry.addLine(Integer.toString(front_left.getCurrentPosition()));
+        parentOpMode.telemetry.addLine(Integer.toString(front_right.getCurrentPosition()));
+        parentOpMode.telemetry.addLine(Integer.toString(back_left.getCurrentPosition()));
+        parentOpMode.telemetry.addLine(Integer.toString(back_right.getCurrentPosition()));
     }
 
 }

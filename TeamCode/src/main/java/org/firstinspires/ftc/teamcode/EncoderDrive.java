@@ -51,7 +51,7 @@ public class EncoderDrive extends OpMode {
         mecanumDrive(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
     }
 
-    private void mecanumDrive(double x, double y, double r) {
+    private void mecanumDrive(float x, float y, float r) {
         double
                 /*
                  * Calculate desired speed based on the amount the right gamepad stick has been
@@ -76,8 +76,8 @@ public class EncoderDrive extends OpMode {
                  * they pass _through_ the wheels, rather than through the front and side bumpers
                  * of the bot.
                  */
-                headingX_adjusted = Math.cos(heading + Math.PI / 4.0),
-                headingY_adjusted = Math.sin(heading + Math.PI / 4.0);
+                headingX_adjusted = Math.cos(heading + Math.PI / 4),
+                headingY_adjusted = Math.sin(heading + Math.PI / 4);
 
         /*
          * Adjust motor power to move at speed in heading with desired rotation

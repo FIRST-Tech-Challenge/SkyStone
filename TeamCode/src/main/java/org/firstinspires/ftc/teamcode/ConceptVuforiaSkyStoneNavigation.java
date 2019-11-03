@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.robotcontroller.external.samples;
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -84,7 +84,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
 
 
 @TeleOp(name="SKYSTONE Vuforia Nav", group ="Concept")
-@Disabled
+
 public class ConceptVuforiaSkyStoneNavigation extends LinearOpMode {
 
     // IMPORTANT:  For Phone Camera, set 1) the camera source and 2) the orientation, based on how your phone is mounted:
@@ -109,7 +109,7 @@ public class ConceptVuforiaSkyStoneNavigation extends LinearOpMode {
      * and paste it in to your code on the next line, between the double quotes.
      */
     private static final String VUFORIA_KEY =
-            " -- YOUR NEW VUFORIA KEY GOES HERE  --- ";
+            "ARu5ZM3/////AAABmcGiY9yUyEAsnf3dcn+gux+E9X/ji5wR1QEra3aJBAbIFoL8BPmzx+eUt8sZ7bEwE4IRvwNm32oB/EDVFrGwZtkyOiSR+GKIbM+0G5VYQGwoFNxxGwuUrvpKDS3ktLAuUWmZ0/p/f7ZGwr9di1s4JkzDwr9Hq2B1g16a5F2jf7te3PhLDYaeauXee+WNxv0hp2w64Q91mYwiI+dI9JKsvyruF/FVKVV5Dnf0IGn9mFDGhqSGfkXTOGNpBnjZes5rxndN0PVhvJD+nf1ohsL37m8ORe9zXJqAUJ+vBCaJn7tCtsBJpKgBXYLpWrm05PVXex5cGQsgNc++80BpymExMMCpi6woERNjR86v/cyL+gqg";
 
     // Since ImageTarget trackables use mm to specifiy their dimensions, we must use mm for all the physical dimension.
     // We will define some constants and conversions here

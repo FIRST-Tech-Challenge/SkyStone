@@ -35,10 +35,10 @@ public class Constants {
     static final float SERVO_ARM_POS_SCORE = .26f;
     static final float SERVO_GRABBER_GRAB = .09f;
     static final float SERVO_GRABBER_REST = .44f;
-    static final float SERVO_FOUNDATION_GRAB1 = .76f;
-    static final float SERVO_FOUNDATION_REST1 = .74f;
-    static final float SERVO_FOUNDATION_GRAB2 =0f;
-    static final float SERVO_FOUNDATION_REST2 = .74f;
+    static final float SERVO_FOUNDATION_GRAB1 = .96f;
+    static final float SERVO_FOUNDATION_REST1 = .33f;
+    static final float SERVO_FOUNDATION_GRAB2 =.91f;
+    static final float SERVO_FOUNDATION_REST2 = .65f;
 
 
     //********** Touch Sensor Indexes **********//

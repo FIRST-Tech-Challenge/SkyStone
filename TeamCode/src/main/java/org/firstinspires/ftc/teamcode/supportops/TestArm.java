@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.libraries.Constants;
  */
 
 @Autonomous(group = "Support")
-public class TestCalcMove extends LinearOpMode {
+public class TestArm extends LinearOpMode {
     private AutoLib autoLib;
 
 
@@ -29,12 +29,7 @@ public class TestCalcMove extends LinearOpMode {
         telemetry.update();
         Thread.sleep(2000);
 
-        autoLib.grabServo();
-        autoLib.scoreServoArm();
-
-        autoLib.scoreServo();
-        autoLib.grabServo();
-        autoLib.recieveServoArm();
+        autoLib.moveArmSeconds();
 
         telemetry.addData("Just moved","finished moving");
         telemetry.update();

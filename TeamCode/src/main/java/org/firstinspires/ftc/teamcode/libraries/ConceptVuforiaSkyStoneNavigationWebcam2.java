@@ -218,7 +218,7 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
 
         targetsSkyStone.activate();
         if (startIdentify) {
-            autoLib.calcMove(43, .8f, Constants.Direction.FORWARD);
+            autoLib.calcMove(43, .8f, Constants.Direction.BACKWARD);
             while (!isStopRequested() && startIdentify) {
 
                 // check all the trackable targets to see which one (if any) is visible.
@@ -252,7 +252,7 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
                     xPosition = translation.get(0);
                     if (yPosition > 4.6) {
                         positionSkystone = "Left";
-                        autoLib.calcMove(5, .5f, Constants.Direction.LEFT);
+                        autoLib.calcMove(5, .5f, Constants.Direction.RIGHT);
                         //  sleep(3000);
                     } else if (yPosition <= 0) {
                         positionSkystone = "Center";
@@ -274,7 +274,7 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
                     positionSkystone = "Left";
                     telemetry.addData("Visible Target", "none");
 
-                    autoLib.calcMove(5, .5f, Constants.Direction.LEFT);
+                    autoLib.calcMove(5, .5f, Constants.Direction.RIGHT);
 
                 }
                 telemetry.addData("Skystone Position", positionSkystone);
@@ -293,18 +293,23 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
         telemetry.addData("Y Position ", yPosition);
         telemetry.update();
 
-        autoLib.calcMove((float) -xPosition / 10, .8f, Constants.Direction.FORWARD);
-        autoLib.calcMove((float) yPosition / 10, .8f, Constants.Direction.RIGHT);
+        autoLib.calcMove((float) -xPosition / 10, .8f, Constants.Direction.BACKWARD);   //changed
+        autoLib.calcMove((float) yPosition / 10, .8f, Constants.Direction.LEFT);        //changed
 
         //Stop intake
-        autoLib.calcMove(10, .5f, Constants.Direction.LEFT);
-        autoLib.calcMoveIntake(30, .5f, Constants.Direction.FORWARD);
-        autoLib.calcMove(70, .5f, Constants.Direction.BACKWARD);
-        autoLib.calcMove(225, .5f, Constants.Direction.RIGHT);
-        autoLib.calcMove(200, .5f, Constants.Direction.FORWARD);
-        autoLib.calcMove(115, .5f, Constants.Direction.RIGHT);
-        autoLib.calcMove(215, .5f, Constants.Direction.BACKWARD);
-        autoLib.calcMove(200, .5f, Constants.Direction.LEFT);
+        autoLib.calcMove(10, .5f, Constants.Direction.RIGHT);
+        autoLib.calcMoveIntake(30, .5f, Constants.Direction.BACKWARD);
+        autoLib.moveArmSeconds();
+        autoLib.scoreServoArm();
+        autoLib.grabServo();
+        autoLib.calcMove(70, .5f, Constants.Direction.FORWARD);
+        autoLib.calcMove(225, .5f, Constants.Direction.LEFT);
+        autoLib.calcMove(200, .5f, Constants.Direction.BACKWARD);
+        autoLib.calcMove(115, .5f, Constants.Direction.LEFT);
+        autoLib.calcMove(5,.3f, Constants.Direction.FORWARD);
+        autoLib.latchServoFoundation();
+        autoLib.calcMove(210, .5f, Constants.Direction.FORWARD);
+        autoLib.calcMove(200, .5f, Constants.Direction.RIGHT);
         startIdentify = false;
 
     }

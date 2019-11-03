@@ -22,11 +22,11 @@ public class Maccabot {
     }
 
     public void initializeRobot(){
-        parentOpMode.telemetry.addData("Initializing EncoderO Drive", "Initializing motor controllers");
-        front_left = hardwareMap.get(DcMotor.class, "front_left");
-        front_right = hardwareMap.get(DcMotor.class, "front_right");
-        back_left = hardwareMap.get(DcMotor.class, "back_left");
-        back_right = hardwareMap.get(DcMotor.class, "back_right");
+        parentOpMode.telemetry.addLine("Initializing Drive");
+        front_left = hardwareMap.dcMotor.get("front_left");
+        front_right = hardwareMap.dcMotor.get("front_right");
+        back_left = hardwareMap.dcMotor.get("back_left");
+        back_right = hardwareMap.dcMotor.get("back_right");
 
         front_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         front_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

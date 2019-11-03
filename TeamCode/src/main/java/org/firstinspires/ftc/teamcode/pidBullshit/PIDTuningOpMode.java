@@ -2,10 +2,11 @@ package org.firstinspires.ftc.teamcode.pidBullshit;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Maccabot;
 
-@Autonomous(name="Why da hecc does i do this")
+@TeleOp(name="Why da hecc does i do this")
 //@Disabled
 public class PIDTuningOpMode extends OpMode {
 

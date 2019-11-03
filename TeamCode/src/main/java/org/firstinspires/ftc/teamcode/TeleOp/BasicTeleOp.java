@@ -19,43 +19,61 @@ public class BasicTeleOp extends TeleOpControl {
         setup(runtime, Crane.setupType.drive, Crane.setupType.claw);
 
         while (opModeIsActive()){
+            standardGamepadData();
+
+/*
             if (gamepad1.y) {
-                rob.servo.setPosition(1);
+                rob.rightServo.setPosition(1);
+                rob.leftServo.setPosition(1);
             } else if (gamepad1.a) {
-                rob.servo.setPosition(0);
+                rob.rightServo.setPosition(0);
+                rob.leftServo.setPosition(0);
             }
 
-            if(gamepad1.right_stick_y > 0.1){
+            if(gamepad1.b){
+                rob.rotationservo.setPosition(0);
+            }else if (gamepad1.x) {
+                rob.rotationservo.setPosition(1);
+            }
+
+ */
+
+            if(g(0)){
                 rob.driveTrainMovement(0.8, Crane.movements.forward);
-            }else if(gamepad1.right_stick_y > -0.1){
+            }else if(g(2)){
                 rob.driveTrainMovement(0.8, Crane.movements.backward);
-            }else{
-                rob.stopDrivetrain();
-            }
-
-            if(gamepad1.right_stick_x > 0.1){
+            }else if(g(3)){
                 rob.driveTrainMovement(0.8, Crane.movements.right);
-            }else if(gamepad1.right_stick_x > -0.1){
+            }else if(g(1)) {
                 rob.driveTrainMovement(0.8, Crane.movements.left);
+            }else if(g(8)){
+                    rob.driveTrainMovement(0.8, Crane.movements.ccw);
+            }else if(g(9)){
+                rob.driveTrainMovement(0.8, Crane.movements.cw);
             }else{
                 rob.stopDrivetrain();
             }
 
             if(gamepad1.dpad_left){
-                rob.rack.setPower(-0.1);
-            }else if(gamepad1.dpad_right){
-                rob.rack.setPower(0.1);
+                if(!rob.flimit.getState()) {
+                    rob.rack.setPower(0.2);
+                }
+            }else if(gamepad1.dpad_right) {
+                if (!rob.blimit.getState()){
+                    rob.rack.setPower(-0.2);
+                }
             }else{
                 rob.rack.setPower(0);
             }
 
             if(gamepad1.dpad_up){
-                rob.linear.setPower(0.1);
+                rob.linear.setPower(0.6);
             }else if(gamepad1.dpad_down){
-                rob.linear.setPower(0.1);
-            }else{
+                rob.linear.setPower(-0.6);
+            }else {
                 rob.linear.setPower(0);
             }
+
         }
     }
 }

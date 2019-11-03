@@ -16,7 +16,7 @@ public class TeleOpTest extends TeleOpControl {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        setup(runtime, Crane.setupType.drive, Crane.setupType.bSystem);
+        setup(runtime, Crane.setupType.drive, Crane.setupType.claw);
 
         while (opModeIsActive()){
             standardGamepadData();

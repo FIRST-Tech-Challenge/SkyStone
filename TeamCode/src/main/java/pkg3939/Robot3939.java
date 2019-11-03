@@ -239,15 +239,14 @@ public class Robot3939 {
             aHeld = false;
 
         if (forks) {//down
-            servoLeft.setPosition(1);
-            servoRight.setPosition(0);
-        }
-        else if(earthIsFlat)//up
-        {
             servoLeft.setPosition(0.5);
             servoRight.setPosition(0.5);
         }
-
+        else if(earthIsFlat)//up
+        {
+            servoLeft.setPosition(0);
+            servoRight.setPosition(1);
+        }
     }
 
     public void setClaw(boolean bPressed) {

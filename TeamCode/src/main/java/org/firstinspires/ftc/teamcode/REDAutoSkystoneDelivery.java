@@ -30,12 +30,9 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 
 import pkg3939.Robot3939;
 import pkg3939.skystoneDetectorClass;
@@ -61,9 +58,9 @@ import pkg3939.skystoneDetectorClass;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="AutoTemplate2", group="Pushbot")
+@Autonomous(name="REDAutoSkystoneDelivery", group="Pushbot")
 //@Disabled
-public class AutoTemplate2 extends LinearOpMode {
+public class REDAutoSkystoneDelivery extends LinearOpMode {
 
     /* Declare OpMode members. */
     Robot3939 robot = new Robot3939();   // Use a Pushbot's hardware
@@ -71,6 +68,8 @@ public class AutoTemplate2 extends LinearOpMode {
     skystoneDetectorClass detector = new skystoneDetectorClass();
     int[] vals;
     private ElapsedTime     runtime = new ElapsedTime();
+
+    private double UP = 0.5;
 
     @Override
     public void runOpMode() {
@@ -102,31 +101,49 @@ public class AutoTemplate2 extends LinearOpMode {
         telemetry.addData("Status", "Ready to run");
         telemetry.update();
 
-        robot.claw.setPosition(0.5);
+
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         while(opModeIsActive()) {
-
+            robot.claw.setPosition(UP);
             detector.updateVals();
             vals = detector.getVals();
             telemetry.addData("Values", vals[1] + "   " + vals[0] + "   " + vals[2]);
             telemetry.update();
 
             if(vals[0] == 0){//middle
-                moveDistance(0.4, 1.4);
+                moveDistance(0.4, 1.5);//first forward
+                robot.claw.setPosition(1);
+                mySleep(0.5);
+                moveDistance(-0.4, 0.45);//back
+                robot.claw.setPosition(UP);
+                strafe(-0.4, 1.9);
+                moveDistance(0.4, 0.5);//second forward
+                robot.claw.setPosition(1);
+                mySleep(0.5);
+                moveDistance(-0.4, 0.45);//second back
+            } else if(vals[1] == 0) {//left
+                strafe(-0.4, 0.6);
+                moveDistance(0.4, 1.5);
                 robot.claw.setPosition(1);
                 mySleep(0.5);
                 moveDistance(-0.4, 0.45);
-            } else if(vals[1] == 0) {//left
-                strafe(-0.4, 0.6);
-                moveDistance(0.4, 1.4);
+                robot.claw.setPosition(UP);
+                strafe(-0.4, 1.9);
+                moveDistance(0.4, 0.5);
                 robot.claw.setPosition(1);
                 mySleep(0.5);
                 moveDistance(-0.4, 0.45);
             } else {//right
                 strafe(0.4, 0.6);
-                moveDistance(0.4, 1.4);
+                moveDistance(0.4, 1.5);
+                robot.claw.setPosition(1);
+                mySleep(0.5);
+                moveDistance(-0.4, 0.45);
+                robot.claw.setPosition(UP);
+                strafe(-0.4, 1.9);
+                moveDistance(0.4, 0.5);
                 robot.claw.setPosition(1);
                 mySleep(0.5);
                 moveDistance(-0.4, 0.45);
@@ -136,6 +153,7 @@ public class AutoTemplate2 extends LinearOpMode {
             break;
         }
     }
+
     public void rotate(double power, double time) {
         robot.FL.setPower(power);
         robot.FR.setPower(-power);

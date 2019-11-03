@@ -105,27 +105,10 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
         return targetPosition;
     }
 
-    //TODO: I believe this is the best place to implement a PID or acceleration curve for the motors
     @Override
     public void updatePosition()
     {
-        /*
-        Concept:
-        constantly check the work done function to get a percentage of the distance traveled
-        change the motor power such that at the ends ie furthers from 50% motor power is lowest
-        motor power represents a percentage of the current velocity set by the functions
-
-        either set the motor powers here directly or if the update motor powers function is running continuously (i dont think it is)
-        update the velocity variable constantly (i don't think that is how it works though)
-
-        upon further inspection that isn't how it works however we should be doing by updating the velocity function constantly
-        save the passed velocity as target velocity somewhere possibly add to the list of variables defined in the upper levels
-
-        the equation y = -((X - 0.5) * 2)^2 + 1.5 goes between 0.5 and 0.5 peaking at 1 in the middle for x [0, 1]
-        for this instance x is the percentageTraveled and y is the velocity multiplier
-
-        only activates when in auto mode
-         */
+        updateMotorPowers();
     }
 
     @Override
@@ -147,7 +130,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     {
         for (int motorIndex = 0; motorIndex < this.motorList.length; motorIndex++)
         {
-            //this.motorList[motorIndex].setPower(0); //Hopefully stops the drift at the end of move commands
+            this.motorList[motorIndex].setPower(0); //Hopefully stops the drift at the end of move commands
             this.motorList[motorIndex].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             this.motorList[motorIndex].setMode(runModes[motorIndex]);
         }
@@ -157,7 +140,6 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     @Override
     public void position()
     {
-        //setMovementVelocity(getVelocity());
         while (isPositioning())
         {
             updatePosition();

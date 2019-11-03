@@ -97,21 +97,25 @@ public class MecanumRobot
         telemetry.addData("WheelTarget FR", drivetrain.motorList[1].getTargetPosition());
         telemetry.addData("WheelTarget RL", drivetrain.motorList[2].getTargetPosition());
         telemetry.addData("WheelTarget RR", drivetrain.motorList[3].getTargetPosition());
-        telemetry.addData("Wheel FL", drivetrain.motorList[0].getCurrentPosition());
-        telemetry.addData("Wheel FR", drivetrain.motorList[1].getCurrentPosition());
-        telemetry.addData("Wheel RL", drivetrain.motorList[2].getCurrentPosition());
-        telemetry.addData("Wheel RR", drivetrain.motorList[3].getCurrentPosition());
+        telemetry.addData("WheelPos FL", drivetrain.motorList[0].getCurrentPosition());
+        telemetry.addData("WheelPos FR", drivetrain.motorList[1].getCurrentPosition());
+        telemetry.addData("WheelPos RL", drivetrain.motorList[2].getCurrentPosition());
+        telemetry.addData("WheelPos RR", drivetrain.motorList[3].getCurrentPosition());
         telemetry.addData("Current Pos", drivetrain.getCurrentPosition());
-        telemetry.addData("Course", drivetrain.getCourse());
-        telemetry.addData("Velocity", drivetrain.getVelocity());
-        telemetry.addData("Rotation", drivetrain.getRotation());
-        telemetry.addData("Distance", drivetrain.getTargetPosition());
+        telemetry.addData("WheelPower FL", drivetrain.motorList[0].getPower());
+        telemetry.addData("WheelPower FR", drivetrain.motorList[1].getPower());
+        telemetry.addData("WheelPower RL", drivetrain.motorList[2].getPower());
+        telemetry.addData("WheelPower RR", drivetrain.motorList[3].getPower());
+        telemetry.addData("Course Target", drivetrain.getCourse());
+        telemetry.addData("Velocity Target", drivetrain.getVelocity());
+        telemetry.addData("Rotation Target", drivetrain.getRotation());
+        telemetry.addData("Distance Target", drivetrain.getTargetPosition());
         telemetry.addData("Servo Pos", platformServos.getActual());
         telemetry.addData("Linked Pos", platformServos.getPosition());
         telemetry.update();
     }
 
-    public boolean isWithin (double numberOne, double numberTwo, double range)
+    private boolean isWithin (double numberOne, double numberTwo, double range)
     {
         return Math.abs(numberOne) - Math.abs(numberTwo) < range;
     }

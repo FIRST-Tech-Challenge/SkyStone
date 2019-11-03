@@ -70,7 +70,8 @@ public class MecanumTeleOp extends OpMode
 
         //TELEMETRY
         telemetry.addData("Status", "Loop: " + elapsedTime.toString());
-        telemetry.addData("Course", course);
+        telemetry.addData("Course Rad", course);
+        telemetry.addData("Course Deg", course * 180/Math.PI);
         telemetry.addData("Velocity", velocity);
         telemetry.addData("Rotation", -gamepad1.left_stick_x);
         telemetry.addData("Servo Position", robot.platformServos.getPosition());

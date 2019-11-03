@@ -28,7 +28,7 @@ public class ArmSystem {
     private final double ELBOW_HOME = 0;
     private final double PIVOT_HOME = 0;
     private final double GRIPPER_OPEN = 0.5;
-    private final double GRIPPER_CLOSE = 0.05;
+    private final double GRIPPER_CLOSE = 0.03;
     private int origin;
     public int targetHeight;
     private final int distanceConstant = 500; // used for calculating motor speed
@@ -62,6 +62,12 @@ public class ArmSystem {
     public final int MAX_HEIGHT = 3000;
     public final int INCREMENT_HEIGHT = 564; // how much the ticks increase when a block is added
     public final int START_HEIGHT = 366; // Height of the foundation
+
+    public final double SERVO_SPEED = 0.005;
+    public final double SERVO_TOLERANCE = 0.02;
+    private double pivotTarget = 0.1;
+    private double elbowTarget = 0.94;
+    private double wristTarget = 0.88;
 
     // I know in terms of style points these should be private and just have getters and setters but
     // I want to make them easily incrementable
@@ -118,15 +124,17 @@ public class ArmSystem {
     }
 
     public void moveWrist(double pos) {
-        wrist.setPosition(pos);
+        wristTarget = pos;
     }
 
     public void moveElbow(double pos) {
-        elbow.setPosition(pos);
+
+        elbowTarget = pos;
     }
 
     public void movePivot(double pos) {
-        pivot.setPosition(pos);
+
+        pivotTarget = pos;
     }
 
     public void increaseGripper(double pos) {
@@ -337,6 +345,19 @@ public class ArmSystem {
     public void updateHeight() {
         slider.setPower(0.5);
         slider.setTargetPosition(targetHeight);
+        updateServo(elbow, elbowTarget);
+        updateServo(pivot, pivotTarget);
+        updateServo(wrist, wristTarget);
+    }
+
+    private void updateServo(Servo servo, double pos) {
+        if (servo.getPosition() - pos > SERVO_TOLERANCE) {
+            servo.setPosition(servo.getPosition() - SERVO_SPEED);
+        } else if (servo.getPosition() - pos < -SERVO_TOLERANCE) {
+            servo.setPosition(servo.getPosition() + SERVO_SPEED);
+        } else if (servo.getPosition() != pos) {
+            servo.setPosition(pos);
+        }
     }
 
     // Use these for debugging

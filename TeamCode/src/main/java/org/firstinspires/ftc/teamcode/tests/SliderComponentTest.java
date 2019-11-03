@@ -40,10 +40,15 @@ public class SliderComponentTest extends OpMode {
         }
         telemetry.addData("", armSystem.getSwitchState());
         telemetry.update();
+        try {
+            Thread.sleep(2);
+        } catch (Exception e) {
+
+        }
     }
 
     public void start() {
-        armSystem.setSliderHeight(0);
+        armSystem.setSliderHeight(1);
     }
 
     public void loop() {
@@ -56,7 +61,7 @@ public class SliderComponentTest extends OpMode {
         if (gamepad1.dpad_left) {
             armSystem.queuedPosition = ArmSystem.Position.POSITION_WEST;
         } else if (gamepad1.dpad_up) {
-            armSystem.queuedPosition = ArmSystem.Position.POSITION_NORTH;
+            armSystem.queuedPosition = ArmSystem.Position.POSITION_HOME;
         } else if (gamepad1.dpad_down) {
             armSystem.queuedPosition = ArmSystem.Position.POSITION_SOUTH;
         } else if (gamepad1.dpad_right) {

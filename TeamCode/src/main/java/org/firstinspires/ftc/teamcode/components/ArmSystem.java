@@ -28,7 +28,7 @@ public class ArmSystem {
     private final double ELBOW_HOME = 0;
     private final double PIVOT_HOME = 0;
     private final double GRIPPER_OPEN = 0.5;
-    private final double GRIPPER_CLOSE = 0.8;
+    private final double GRIPPER_CLOSE = 0.08;
     private int origin;
     public int targetHeight;
     private final int distanceConstant = 1000; // used for calculating motor speed
@@ -48,7 +48,7 @@ public class ArmSystem {
         }
 
         private static DcMotorSimple.Direction motorDirection(Direction direction){
-            return direction == UP ? DcMotorSimple.Direction.FORWARD : DcMotorSimple.Direction.REVERSE;
+            return direction == UP ? DcMotorSimple.Direction.REVERSE : DcMotorSimple.Direction.FORWARD;
         }
     };
 
@@ -249,24 +249,60 @@ public class ArmSystem {
         slider.setDirection(Direction.motorDirection(direction));
         slider.setPower(0.1);
 
+        // going up
+        for( int i = 0; i < 1111; i++) {
+            // go up
+            slider.setDirection(Direction.motorDirection(Direction.UP));
+            slider.setPower(0.2);
+            if(limitSwitch.getState()) {
+                break;
+            }
+            try {
+                Thread.sleep(2);
+            } catch (Exception e) {
+
+            }
+
+        }
+        slider.setPower(0);
+        //going down
+        for( int i = 0; i < 1111; i++) {
+            // go up
+            slider.setDirection(Direction.motorDirection(Direction.DOWN));
+            slider.setPower(0.2);
+            if(!limitSwitch.getState()) {
+                break;
+            }
+            try {
+                Thread.sleep(2);
+            } catch (Exception e) {
+
+            }
+        }
+        calibrated = true;
+        this.calibrationDistance = slider.getCurrentPosition();
+        slider.setPower(0);
+        /*
         // At rest, pre-int, this will be false, i.e. the limit switch IS pressed.
         if (limitSwitch.getState()) {
             // Limit switch has been released, cord is under tension.
             // With cord under tension, lower until switch is depressed.
-            direction = Direction.UP;
+            direction = Direction.DOWN;
         }
 
         Log.d(TAG,"Calibrating");
         Log.d(TAG, "Direction: " + direction);
         Log.d(TAG, "Switch State: " + limitSwitch.getState());
         // If we're going down and we hit the switch, then we're done
-        if (direction == Direction.UP && !limitSwitch.getState()) {
+        if (direction == Direction.DOWN && !limitSwitch.getState()) {
             slider.setPower(0);
             calibrated = true;
             calibrationDistance = slider.getCurrentPosition();
-            slider.setDirection(UP);
+            slider.setDirection(Direction.motorDirection(Direction.UP));
             setSliderHeight(0);
         }
+
+         */
     }
 
     public boolean isCalibrated() {
@@ -282,6 +318,7 @@ public class ArmSystem {
         targetHeight = calculateHeight(pos);
         if (targetHeight > MAX_HEIGHT) throw new IllegalArgumentException();
         slider.setTargetPosition(targetHeight);
+        slider.setDirection(Direction.motorDirection(Direction.UP));
         slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         Log.d(TAG, "Set target height to" + calculateHeight(pos));
     }

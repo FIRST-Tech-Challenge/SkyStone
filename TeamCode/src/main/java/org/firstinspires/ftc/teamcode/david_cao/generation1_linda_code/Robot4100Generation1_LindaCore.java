@@ -55,8 +55,8 @@ public class Robot4100Generation1_LindaCore extends RobotCore {
                 LBMotion = new RobotMotion(new RobotMotorController(LBMotor,Robot4100Generation1_Settings.CHASSIS_TIMEOUTENABLE,Robot4100Generation1_Settings.CHASSIS_TIMEOUTFACTOR),LBWheel),
                 RBMotion = new RobotMotion(new RobotMotorController(RBMotor,Robot4100Generation1_Settings.CHASSIS_TIMEOUTENABLE,Robot4100Generation1_Settings.CHASSIS_TIMEOUTFACTOR),RBWheel);
         m_Chassis = new OmniDrive(LFMotion,RFMotion,LBMotion,RBMotion,null);
-        m_Chassis.setLinearMotionDistanceFactor(0.6);
-        m_Chassis.setRotationalMotionDistanceFactor(1.3);
+        m_Chassis.setLinearMotionDistanceFactor(0.678);
+        m_Chassis.setRotationalMotionDistanceFactor(1.4);
 
         this.m_DragServoL = hardwares.servo.get("servoDragLeft");
         this.m_DragServoR = hardwares.servo.get("servoDragRight");

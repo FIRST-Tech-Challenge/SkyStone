@@ -39,7 +39,7 @@ public class Robot {
     double ROBOT_RETRACTED_LENGTH = 18.0; // in
 
     // info
-    private int wafflePosition = 0; // 1 = Up, -1 = Down
+    private int wafflePosition = -1; // 1 = Up, -1 = Down Waffle mover starts down
     private double wafflePower = 0.5;
 
     private enum armPosition {REST, ACTIVE}
@@ -226,7 +226,7 @@ public class Robot {
         if (armPos == armPosition.REST) { // we only bring the arm down if the arm is resting
             // we rotate the arm 180 + ANGLE_OF_GRIPPER_WHEN_GRABBING degrees
             //moveArmRotate(CORE_HEX_TICKS_PER_REV * (180 + this.ANGLE_OF_GRIPPER_WHEN_GRABBING) / 360, 0.5, opmode);
-            moveArmRotate(CORE_HEX_TICKS_PER_REV * (180 + this.ANGLE_OF_GRIPPER_WHEN_GRABBING) / 360, 0.5, opmode);
+            moveArmRotate(CORE_HEX_TICKS_PER_REV * (180 + this.ANGLE_OF_GRIPPER_WHEN_GRABBING) / 360, 0.1, opmode);
             Thread.sleep(500);
             // we rotate the gripper so it is parallel to the ground
             rotateGripper(90 - this.ANGLE_OF_GRIPPER_WHEN_GRABBING);
@@ -237,7 +237,7 @@ public class Robot {
     void foldArmBack(OpMode opmode) throws InterruptedException {
         if (armPos == armPosition.ACTIVE) { // we only do something if the arm is active
             // we rotate the arm 180 + ANGLE_OF_GRIPPER_WHEN_GRABBING degrees
-            moveArmRotate(CORE_HEX_TICKS_PER_REV * (180 + this.ANGLE_OF_GRIPPER_WHEN_GRABBING) / 360, -0.5, opmode);
+            moveArmRotate(CORE_HEX_TICKS_PER_REV * (180 + this.ANGLE_OF_GRIPPER_WHEN_GRABBING) / 360, -0.1, opmode);
             Thread.sleep(500);
             // we rotate the gripper so it is perpendicular to the ground
             rotateGripper(this.ANGLE_OF_GRIPPER_WHEN_GRABBING - 90);

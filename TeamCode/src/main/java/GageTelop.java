@@ -1,3 +1,2 @@
 public class GageTelop {
 }
-w

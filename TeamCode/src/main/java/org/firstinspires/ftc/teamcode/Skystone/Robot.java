@@ -48,66 +48,85 @@ public class Robot {
     private DcMotor fRight;
     private DcMotor bLeft;
     private DcMotor bRight;
+
     // Intake Motors
     private DcMotor intakeLeft;
     private DcMotor intakeRight;
+
     // Outtake Motors
     private DcMotor outtakeSpool;
+
     // Outtake Servos
     private Servo outtakeExtender;
     private Servo clamp;
     private Servo clampPivot;
     private Servo intakePusher;
+
     // Outtake Slide Positions
     final double OUTTAKE_SLIDE_EXTENDED = .1;
     final double OUTTAKE_SLIDE_RETRACTED = .75;
+
     // Outtake Servo Positions
     final double CLAW_SERVO_CLAMPED = .51;
     final double CLAW_SERVO_RELEASED = .3;
+
     // Outtake Pivot Positions
     final double OUTTAKE_PIVOT_EXTENDED = .271;
     final double OUTTAKE_PIVOT_RETRACTED = .994;
+
     // Outtake Pusher Positions
     final double PUSHER_PUSHED = .7;
     final double PUSHER_RETRACTED = .475;
+
     //robots position
     private Point robotPos = new Point();
     private double anglePos;
+
     //imu
     private BNO055IMU imu;
     private Orientation angles;
     private Position position;
+
     //Inherited classes from Op Mode
     private Telemetry telemetry;
     private HardwareMap hardwareMap;
     private LinearOpMode linearOpMode;
+
     //dimensions
     private final double encoderPerRevolution = 806.4;
-    //PID (concept only)
+
     private double xMovement;
     private double yMovement;
     private double turnMovement;
+
     public Robot(HardwareMap hardwareMap, Telemetry telemetry, LinearOpMode linearOpMode) {
+
         this.telemetry = telemetry;
         this.hardwareMap = hardwareMap;
         this.linearOpMode = linearOpMode;
+
         //config names need to match configs on the phone
+
         //Map drive motors
         fLeft = hardwareMap.dcMotor.get("fLeft");
         fRight = hardwareMap.dcMotor.get("fRight");
         bLeft = hardwareMap.dcMotor.get("bLeft");
         bRight = hardwareMap.dcMotor.get("bRight");
+
         //Set direction of drive motors
         fLeft.setDirection(DcMotor.Direction.FORWARD);
         fRight.setDirection(DcMotor.Direction.REVERSE);
         bLeft.setDirection(DcMotor.Direction.FORWARD);
         bRight.setDirection(DcMotor.Direction.REVERSE);
+
         // Map intake motors
         intakeLeft = hardwareMap.dcMotor.get("intakeLeft");
         intakeRight = hardwareMap.dcMotor.get("intakeRight");
+
         // Set direction of intake motors
         intakeLeft.setDirection(DcMotor.Direction.FORWARD);
         intakeRight.setDirection(DcMotor.Direction.REVERSE);
+
         // Map outtake motors
         outtakeSpool = hardwareMap.dcMotor.get("outtakeSpool");
         outtakeSpool.setDirection(DcMotor.Direction.FORWARD);

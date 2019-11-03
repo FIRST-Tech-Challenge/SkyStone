@@ -31,7 +31,7 @@ public class ArmSystem {
     private final double GRIPPER_CLOSE = 0.05;
     private int origin;
     public int targetHeight;
-    private final int distanceConstant = 1000; // used for calculating motor speed
+    private final int distanceConstant = 500; // used for calculating motor speed
 
     // Use these so we can change it easily if the motor is put on backwards
     private final DcMotor.Direction UP = DcMotor.Direction.REVERSE;

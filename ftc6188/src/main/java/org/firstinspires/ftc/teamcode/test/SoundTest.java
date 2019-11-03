@@ -9,7 +9,7 @@ import org.firstinspires.ftc.robotlib.state.ToggleBoolean;
 
 @Disabled
 @TeleOp(name="Sound Test", group="Test")
-public class SoundTestTeleOp extends OpMode
+public class SoundTest extends OpMode
 {
     private BasicSound basicSound;
     private ToggleBoolean playSound;

@@ -63,11 +63,11 @@ public class Robot {
     private Servo intakePusher;
 
     // Outtake Slide Positions
-    final double OUTTAKE_SLIDE_EXTENDED = .1;
+    final double OUTTAKE_SLIDE_EXTENDED = .25;
     final double OUTTAKE_SLIDE_RETRACTED = .75;
 
     // Outtake Servo Positions
-    final double CLAW_SERVO_CLAMPED = .51;
+    final double CLAW_SERVO_CLAMPED = .61;
     final double CLAW_SERVO_RELEASED = .3;
 
     // Outtake Pivot Positions
@@ -94,7 +94,6 @@ public class Robot {
 
     //dimensions
     private final double encoderPerRevolution = 806.4;
-
     private double xMovement;
     private double yMovement;
     private double turnMovement;

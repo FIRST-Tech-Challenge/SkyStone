@@ -59,4 +59,13 @@ public class Maccabot {
         parentOpMode.telemetry.addLine(Integer.toString(back_right.getCurrentPosition()));
     }
 
+    public void mecanumDrive(double vtX, double vtY, double vR){
+        double flValue = vtY + vtX - vR;
+        double frValue = vtY - vtX + vR;
+        double blValue = vtY - vtX - vR;
+        double brValue = vtY + vtX + vR;
+
+        drive(flValue, frValue, blValue, brValue);
+    }
+
 }

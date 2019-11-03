@@ -20,12 +20,6 @@ public class PIDTuningOpMode extends OpMode {
 
     @Override
     public void loop() {
-        robot.drive(1, 1, 1, 1);
-        try {
-            wait(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        robot.drive(0,0,0,0);
+        robot.drive(gamepad1.left_stick_y, gamepad1.right_stick_y, gamepad1.left_stick_y, gamepad1.right_stick_y);
     }
 }

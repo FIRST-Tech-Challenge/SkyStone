@@ -198,33 +198,36 @@ public class ArmSystem {
         }
     }
 
+    final double offsetPivot = 0.05;
+    final double offsetElbow = 0.04;
+    final double offsetWrist = 0;
     public void movePresetPosition(Position pos) {
         switch(pos) {
             case POSITION_HOME:
-                moveWrist(0.06);
-                moveElbow(0.68);
-                movePivot(0.83);
+                moveWrist(0.06 + offsetWrist);
+                moveElbow(0.68 + offsetElbow);
+                movePivot(0.93 + offsetPivot);
                 break;
             case POSITION_NORTH:
                 // TODO: Find north pos with new motor
-                moveWrist(0.88);
-                moveElbow(0.9);
-                movePivot(0.1);
+                moveWrist(0.88 + offsetWrist);
+                moveElbow(0.9 + offsetElbow);
+                movePivot(0.05 + offsetPivot);
                 break;
             case POSITION_EAST:
-                moveWrist(0.62);
-                moveElbow(0.12);
-                movePivot(0.1);
+                moveWrist(0.62 + offsetWrist);
+                moveElbow(0.05 + offsetElbow);
+                movePivot(0.04 + offsetPivot);
                 break;
             case POSITION_WEST:
-                moveWrist(0.17);
-                moveElbow(0.6);
-                movePivot(0.1);
+                moveWrist(0.1 + offsetWrist);
+                moveElbow(0.6 + offsetElbow);
+                movePivot(0.05 + offsetPivot);
                 break;
             case POSITION_SOUTH:
-                moveWrist(0.62);
-                moveElbow(0.6);
-                movePivot(0.1);
+                moveWrist(0.62 + offsetWrist);
+                moveElbow(0.6 + offsetElbow);
+                movePivot(0.05 + offsetPivot);
                 break;
         }
     }
@@ -235,7 +238,7 @@ public class ArmSystem {
 
     // Still requires updateHeight() to be called, just like the setSliderHeight method.
     public void go() {
-        this.movePresetPosition(queuedPosition);
+        //this.movePresetPosition(queuedPosition);
         setSliderHeight(queuedHeight);
     }
 

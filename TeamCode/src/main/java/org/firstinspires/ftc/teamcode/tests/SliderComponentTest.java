@@ -53,7 +53,6 @@ public class SliderComponentTest extends OpMode {
         float lx = (float) Math.pow(gamepad1.left_stick_x, 3);
         float ly = (float) Math.pow(gamepad1.left_stick_y, 3);
 
-        // I wish there was a better way
         if (gamepad1.dpad_left) {
             armSystem.queuedPosition = ArmSystem.Position.POSITION_WEST;
         } else if (gamepad1.dpad_up) {

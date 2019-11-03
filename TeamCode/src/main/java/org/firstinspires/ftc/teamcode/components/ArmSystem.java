@@ -174,9 +174,9 @@ public class ArmSystem {
     public void goHome() {
         openGripper();
         setSliderHeight(1);
-        moveWrist(WRIST_HOME);
-        moveElbow(ELBOW_HOME);
-        movePivot(PIVOT_HOME);
+        moveWrist(0.06);
+        moveElbow(0.68);
+        movePivot(0.83);
         setSliderHeight(0);
     }
 
@@ -204,23 +204,24 @@ public class ArmSystem {
                 goHome();
                 break;
             case POSITION_NORTH:
+                // TODO: Find north pos with new motor
                 moveWrist(0.88);
                 moveElbow(0.9);
                 movePivot(0.1);
                 break;
             case POSITION_EAST:
-                moveWrist(0.55);
-                moveElbow(0.9);
+                moveWrist(0.62);
+                moveElbow(0.12);
                 movePivot(0.1);
                 break;
             case POSITION_WEST:
-                moveWrist(0.1);
-                moveElbow(0.45);
+                moveWrist(0.17);
+                moveElbow(0.6);
                 movePivot(0.1);
                 break;
             case POSITION_SOUTH:
-                moveWrist(0.55);
-                moveElbow(0.45);
+                moveWrist(0.62);
+                moveElbow(0.6);
                 movePivot(0.1);
                 break;
         }

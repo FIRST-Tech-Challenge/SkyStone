@@ -141,10 +141,33 @@ public class DriveTrain {
                 myLocation.translate(dx * TICKS_TO_INCHES, dy * TICKS_TO_INCHES);
                 return;
             }
-            Solution solved = solve(leftY.getABCD(), rightY.getABCD(), x.getABCD());
-            double rotCenterRelX = solved.xc;
-            double rotCenterRelY = solved.yc;
-            double rotRadCcw = solved.tr;
+            double[] solved = solve(new double[][]{
+                    {
+                            Math.cos(leftY.fetchDirection()),
+                            -Math.sin(leftY.fetchDirection()),
+                            -leftY.getMovedInches(),
+                            Math.cos(leftY.fetchDirection()) * leftY.relativeLocation.x
+                                    - Math.sin(leftY.fetchDirection()) * leftY.relativeLocation.y
+                    },
+                    {
+                            Math.cos(rightY.fetchDirection()),
+                            -Math.sin(rightY.fetchDirection()),
+                            -rightY.getMovedInches(),
+                            Math.cos(rightY.fetchDirection()) * rightY.relativeLocation.x
+                                    - Math.sin(rightY.fetchDirection()) * rightY.relativeLocation.y
+                    },
+                    {
+                            Math.cos(x.fetchDirection()),
+                            -Math.sin(x.fetchDirection()),
+                            -x.getMovedInches(),
+                            Math.cos(x.fetchDirection()) * x.relativeLocation.x
+                                    - Math.sin(x.fetchDirection()) * x.relativeLocation.y
+                    },
+                }
+            );
+            double rotCenterRelX = solved[0];
+            double rotCenterRelY = solved[1];
+            double rotRadCcw = 1 / solved[2];
             myLocation.direction = new Angle(
                     myLocation.direction.getValue(Angle.AngleUnit.RADIANS, Angle.AngleOrientation.COMPASS_HEADING) - rotRadCcw,
                     Angle.AngleUnit.RADIANS,
@@ -163,6 +186,7 @@ public class DriveTrain {
 
         private class Wheel {
             private final Location relativeLocation;
+            private final double direction;
             private final DcMotorEx encoder;
             private long lastEnc;
 
@@ -170,35 +194,21 @@ public class DriveTrain {
                 this.relativeLocation = relativeLocation;
                 this.encoder = encoder;
                 lastEnc = ButtonAndEncoderData.getLatest().getCurrentPosition(encoder);
+                direction = relativeLocation.direction.getValue(Angle.AngleUnit.RADIANS, Angle.AngleOrientation.COMPASS_HEADING);
             }
 
-            private WheelEquation getABCD() {
-                double xw = relativeLocation.x;
-                double yw = relativeLocation.y;
-                double tw = relativeLocation.direction.getValue(Angle.AngleUnit.RADIANS, Angle.AngleOrientation.UNIT_CIRCLE);
-                double deltaEnc = ButtonAndEncoderData.getLatest().getCurrentPosition(encoder) - lastEnc;
-                lastEnc += deltaEnc;
-                deltaEnc *= TICKS_TO_INCHES;
-                return new WheelEquation(-Math.sin(tw), Math.cos(tw), xw*Math.sin(tw)-yw*Math.cos(tw), deltaEnc);
+            double getMovedInches() {
+                long dx = ButtonAndEncoderData.getLatest().getCurrentPosition(encoder) - lastEnc;
+                lastEnc += dx;
+                return dx * TICKS_TO_INCHES;
             }
-        }
 
-        private class WheelEquation {
-            private final double a, b, c, d;
-            private WheelEquation(double a, double b, double negD, double negC) {
-                this.a = a;
-                this.b = b;
-                this.c = -negC;
-                this.d = -negD;
+            double fetchDirection() {
+                return direction;
             }
         }
 
-        private Solution solve(WheelEquation one, WheelEquation two, WheelEquation three) {
-            double [][] augmentedMatrix = new double[][]{
-                    {one.a, one.b, one.c, one.d},
-                    {two.a, two.b, two.c, two.d},
-                    {three.a, three.b, three.c, three.d}
-            };
+        private double[] solve(double[][] augmentedMatrix) {
             int numWheels = 3;
             for (int i = 0; i < numWheels; i++) {
                 double pivot = augmentedMatrix[i][i];
@@ -238,16 +248,7 @@ public class DriveTrain {
             for (int k = 0; k < numWheels; k++) {
                 solutions[k] = augmentedMatrix[k][numWheels];
             }
-            return new Solution(solutions[0], solutions[1], solutions[2]);
-        }
-
-        private class Solution {
-            private final double xc, yc, tr;
-            private Solution(double xc, double yc, double invtr) {
-                this.xc = xc;
-                this.yc = yc;
-                this.tr = 1 / invtr;
-            }
+            return solutions;
         }
     }
 }

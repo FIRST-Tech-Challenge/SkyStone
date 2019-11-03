@@ -147,7 +147,7 @@ public abstract class RobotMotionSystem implements RobotNonBlockingDevice {
                 this.m_TaskLists.get(0).setMotionSystem(this);
                 this.m_TaskLists.get(0).startTask();
             }
-        }else if(this.m_TaskLists.isEmpty()){
+        }else{
             this.__stopMotion();
         }
     }

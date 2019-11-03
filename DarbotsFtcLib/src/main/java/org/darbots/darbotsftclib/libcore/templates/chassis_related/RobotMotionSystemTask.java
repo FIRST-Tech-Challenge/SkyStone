@@ -174,15 +174,14 @@ public abstract class RobotMotionSystemTask implements RobotNonBlockingDevice {
         }
         return AbsSpeed;
     }
-    protected double __getGyroGuidedSpeed(double motorPower){
+    protected double __getGyroGuidedDeltaSpeed(double AbsSpeed){
         if(!this.isBusy()){
-            return motorPower;
+            return 0;
         }
         if(GlobalUtil.getGyro() == null || (!this.getMotionSystem().isGyroGuidedDriveEnabled())){
-            return motorPower;
+            return 0;
         }
 
-        double AbsSpeed = Math.abs(motorPower);
         GlobalUtil.getGyro().updateStatus();
         double currentAng = GlobalUtil.getGyro().getHeading();
         double deltaAng = XYPlaneCalculations.normalizeDeg(currentAng - m_GyroStartAng);
@@ -191,9 +190,9 @@ public abstract class RobotMotionSystemTask implements RobotNonBlockingDevice {
         }
         double deltaSpeedEachSide = 0;
         if (Math.abs(deltaAng) >= 5) {
-            deltaSpeedEachSide = Range.clip(0.5 * AbsSpeed, 0, 0.25);
+            deltaSpeedEachSide = Range.clip(0.4 * AbsSpeed, 0, 0.3);
         } else if (Math.abs(deltaAng) >= 3) {
-            deltaSpeedEachSide = Range.clip(0.25 * AbsSpeed, 0, 0.2);
+            deltaSpeedEachSide = Range.clip(0.2 * AbsSpeed, 0, 0.2);
         } else if (Math.abs(deltaAng) >= 1) {
             deltaSpeedEachSide = Range.clip(0.1 * AbsSpeed, 0, 0.1);
         } else if (Math.abs(deltaAng) >= 0.5) {
@@ -203,10 +202,10 @@ public abstract class RobotMotionSystemTask implements RobotNonBlockingDevice {
             deltaSpeedEachSide = 0.025;
         }
         if (deltaAng > 0) {
-            motorPower -= deltaSpeedEachSide;
+            return -deltaSpeedEachSide;
         } else if (deltaAng < 0) {
-            motorPower += deltaSpeedEachSide;
+            return deltaSpeedEachSide;
         }
-        return motorPower;
+        return 0;
     }
 }

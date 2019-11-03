@@ -42,17 +42,17 @@ public class OmniDrive extends RobotMotionSystem {
         protected void __startTask() {
             __recalculateCounts();
 
+            m_LTStartCount = m_Drive.m_LeftTopMotor.getMotorController().getMotor().getCurrentCount();
+            m_RTStartCount = m_Drive.m_RightTopMotor.getMotorController().getMotor().getCurrentCount();
+            m_LBStartCount = m_Drive.m_LeftBottomMotor.getMotorController().getMotor().getCurrentCount();
+            m_RBStartCount = m_Drive.m_RightBottomMotor.getMotorController().getMotor().getCurrentCount();
+
             double AbsSpeed = getSpeed();
             AbsSpeed = super.__getSupposedSteadilySpeedUpAbsSpeed(AbsSpeed);
             double LTSpeed = this.m_CountsToMove > 0 ? -AbsSpeed : AbsSpeed;
             double RTSpeed = this.m_CountsToMove > 0 ? -AbsSpeed : AbsSpeed;
             double LBSpeed = this.m_CountsToMove > 0 ? AbsSpeed : -AbsSpeed;
             double RBSpeed = this.m_CountsToMove > 0 ? AbsSpeed : -AbsSpeed;
-
-            m_LTStartCount = m_Drive.m_LeftTopMotor.getMotorController().getMotor().getCurrentCount();
-            m_RTStartCount = m_Drive.m_RightTopMotor.getMotorController().getMotor().getCurrentCount();
-            m_LBStartCount = m_Drive.m_LeftBottomMotor.getMotorController().getMotor().getCurrentCount();
-            m_RBStartCount = m_Drive.m_RightBottomMotor.getMotorController().getMotor().getCurrentCount();
 
 
             m_Drive.m_LeftTopMotor.getMotorController().getMotor().setPower(LTSpeed);
@@ -88,7 +88,7 @@ public class OmniDrive extends RobotMotionSystem {
         @Override
         public double getTaskProgressRatio() {
             int CountsMoved = this.m_Drive.m_LeftTopMotor.getMotorController().getMotor().getCurrentCount() - this.m_LTStartCount;
-            double jobPercentile = Math.abs( ((double) CountsMoved) / m_CountsToMove);
+            double jobPercentile = ((double) -CountsMoved) / m_CountsToMove;
             return jobPercentile;
         }
 
@@ -108,10 +108,12 @@ public class OmniDrive extends RobotMotionSystem {
                 double LBSpeed = this.m_CountsToMove > 0 ? AbsSpeed : -AbsSpeed;
                 double RBSpeed = this.m_CountsToMove > 0 ? AbsSpeed : -AbsSpeed;
 
-                LTSpeed = super.__getGyroGuidedSpeed(LTSpeed);
-                RTSpeed = super.__getGyroGuidedSpeed(RTSpeed);
-                LBSpeed = super.__getGyroGuidedSpeed(LBSpeed);
-                RBSpeed = super.__getGyroGuidedSpeed(RBSpeed);
+                double GyroDelta = super.__getGyroGuidedDeltaSpeed(AbsSpeed);
+
+                LTSpeed += GyroDelta;
+                RTSpeed += GyroDelta;
+                LBSpeed += GyroDelta;
+                RBSpeed += GyroDelta;
 
                 m_Drive.m_LeftTopMotor.getMotorController().getMotor().setPower(LTSpeed);
                 m_Drive.m_RightTopMotor.getMotorController().getMotor().setPower(RTSpeed);
@@ -167,6 +169,10 @@ public class OmniDrive extends RobotMotionSystem {
         protected void __startTask() {
             __recalculateCounts();
 
+            m_LTStartCount = m_Drive.m_LeftTopMotor.getMotorController().getMotor().getCurrentCount();
+            m_RTStartCount = m_Drive.m_RightTopMotor.getMotorController().getMotor().getCurrentCount();
+            m_LBStartCount = m_Drive.m_LeftBottomMotor.getMotorController().getMotor().getCurrentCount();
+            m_RBStartCount = m_Drive.m_RightBottomMotor.getMotorController().getMotor().getCurrentCount();
 
             double AbsSpeed = getSpeed();
             AbsSpeed = super.__getSupposedSteadilySpeedUpAbsSpeed(AbsSpeed);
@@ -174,12 +180,6 @@ public class OmniDrive extends RobotMotionSystem {
             double RTSpeed = this.m_CountsToMove > 0 ? AbsSpeed : -AbsSpeed;
             double LBSpeed = this.m_CountsToMove > 0 ? -AbsSpeed : AbsSpeed;
             double RBSpeed = this.m_CountsToMove > 0 ? AbsSpeed : -AbsSpeed;
-
-            m_LTStartCount = m_Drive.m_LeftTopMotor.getMotorController().getMotor().getCurrentCount();
-            m_RTStartCount = m_Drive.m_RightTopMotor.getMotorController().getMotor().getCurrentCount();
-            m_LBStartCount = m_Drive.m_LeftBottomMotor.getMotorController().getMotor().getCurrentCount();
-            m_RBStartCount = m_Drive.m_RightBottomMotor.getMotorController().getMotor().getCurrentCount();
-
 
             m_Drive.m_LeftTopMotor.getMotorController().getMotor().setPower(LTSpeed);
             m_Drive.m_RightTopMotor.getMotorController().getMotor().setPower(RTSpeed);
@@ -214,7 +214,7 @@ public class OmniDrive extends RobotMotionSystem {
         @Override
         public double getTaskProgressRatio() {
             int CountsMoved = this.m_Drive.m_LeftTopMotor.getMotorController().getMotor().getCurrentCount() - this.m_LTStartCount;
-            double jobPercentile = Math.abs( ((double) CountsMoved) / m_CountsToMove);
+            double jobPercentile = ((double) -CountsMoved) / m_CountsToMove;
             return jobPercentile;
         }
 
@@ -236,10 +236,12 @@ public class OmniDrive extends RobotMotionSystem {
                 double LBSpeed = this.m_CountsToMove > 0 ? -AbsSpeed : AbsSpeed;
                 double RBSpeed = this.m_CountsToMove > 0 ? AbsSpeed : -AbsSpeed;
 
-                LTSpeed = super.__getGyroGuidedSpeed(LTSpeed);
-                RTSpeed = super.__getGyroGuidedSpeed(RTSpeed);
-                LBSpeed = super.__getGyroGuidedSpeed(LBSpeed);
-                RBSpeed = super.__getGyroGuidedSpeed(RBSpeed);
+                double GyroDelta = super.__getGyroGuidedDeltaSpeed(AbsSpeed);
+
+                LTSpeed += GyroDelta;
+                RTSpeed += GyroDelta;
+                LBSpeed += GyroDelta;
+                RBSpeed += GyroDelta;
 
                 m_Drive.m_LeftTopMotor.getMotorController().getMotor().setPower(LTSpeed);
                 m_Drive.m_RightTopMotor.getMotorController().getMotor().setPower(RTSpeed);
@@ -295,17 +297,17 @@ public class OmniDrive extends RobotMotionSystem {
         protected void __startTask() {
             __recalculateCounts();
 
+            m_LTStartCount = m_Drive.m_LeftTopMotor.getMotorController().getMotor().getCurrentCount();
+            m_RTStartCount = m_Drive.m_RightTopMotor.getMotorController().getMotor().getCurrentCount();
+            m_LBStartCount = m_Drive.m_LeftBottomMotor.getMotorController().getMotor().getCurrentCount();
+            m_RBStartCount = m_Drive.m_RightBottomMotor.getMotorController().getMotor().getCurrentCount();
+
             double AbsSpeed = getSpeed();
             AbsSpeed = super.__getSupposedSteadilySpeedUpAbsSpeed(AbsSpeed);
             double LTSpeed = this.m_CountsToMove > 0 ? AbsSpeed : -AbsSpeed;
             double RTSpeed = this.m_CountsToMove > 0 ? AbsSpeed : -AbsSpeed;
             double LBSpeed = this.m_CountsToMove > 0 ? AbsSpeed : -AbsSpeed;
             double RBSpeed = this.m_CountsToMove > 0 ? AbsSpeed : -AbsSpeed;
-
-            m_LTStartCount = m_Drive.m_LeftTopMotor.getMotorController().getMotor().getCurrentCount();
-            m_RTStartCount = m_Drive.m_RightTopMotor.getMotorController().getMotor().getCurrentCount();
-            m_LBStartCount = m_Drive.m_LeftBottomMotor.getMotorController().getMotor().getCurrentCount();
-            m_RBStartCount = m_Drive.m_RightBottomMotor.getMotorController().getMotor().getCurrentCount();
 
             m_Drive.m_LeftTopMotor.getMotorController().getMotor().setPower(LTSpeed);
             m_Drive.m_RightTopMotor.getMotorController().getMotor().setPower(RTSpeed);
@@ -358,15 +360,10 @@ public class OmniDrive extends RobotMotionSystem {
 
                 AbsSpeed = super.__getSupposedSteadilySpeedUpAbsSpeed(AbsSpeed);
 
-                double LTSpeed = this.m_CountsToMove > 0 ? AbsSpeed : AbsSpeed;
-                double RTSpeed = this.m_CountsToMove > 0 ? AbsSpeed : AbsSpeed;
-                double LBSpeed = this.m_CountsToMove > 0 ? AbsSpeed : AbsSpeed;
-                double RBSpeed = this.m_CountsToMove > 0 ? AbsSpeed : AbsSpeed;
-
-                LTSpeed = super.__getGyroGuidedSpeed(LTSpeed);
-                RTSpeed = super.__getGyroGuidedSpeed(RTSpeed);
-                LBSpeed = super.__getGyroGuidedSpeed(LBSpeed);
-                RBSpeed = super.__getGyroGuidedSpeed(RBSpeed);
+                double LTSpeed = this.m_CountsToMove > 0 ? AbsSpeed : -AbsSpeed;
+                double RTSpeed = this.m_CountsToMove > 0 ? AbsSpeed : -AbsSpeed;
+                double LBSpeed = this.m_CountsToMove > 0 ? AbsSpeed : -AbsSpeed;
+                double RBSpeed = this.m_CountsToMove > 0 ? AbsSpeed : -AbsSpeed;
 
                 m_Drive.m_LeftTopMotor.getMotorController().getMotor().setPower(LTSpeed);
                 m_Drive.m_RightTopMotor.getMotorController().getMotor().setPower(RTSpeed);

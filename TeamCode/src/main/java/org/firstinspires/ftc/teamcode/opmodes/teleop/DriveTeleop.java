@@ -42,8 +42,8 @@ public class DriveTeleop extends BaseOpMode {
     }
 
     public void loop(){
-            driveSystem.drive((float)Math.pow(-gamepad1.right_stick_x, 3),
-                    (float)Math.pow(-gamepad1.left_stick_x, 3),
+            driveSystem.drive((float)Math.pow(gamepad1.right_stick_x, 3),
+                    (float)Math.pow(gamepad1.left_stick_x, 3),
                     (float)Math.pow(-gamepad1.left_stick_y, 3));
             spinnySystem.spin(gamepad2.left_trigger > 0.3, gamepad2.right_trigger > 0.3);
             latchSystem.run(gamepad2.x, gamepad2.y);

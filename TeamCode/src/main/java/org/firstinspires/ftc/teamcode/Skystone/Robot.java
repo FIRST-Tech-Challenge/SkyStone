@@ -67,15 +67,15 @@ public class Robot {
     final double OUTTAKE_SLIDE_RETRACTED = .75;
 
     // Outtake Servo Positions
-    final double CLAW_SERVO_CLAMPED = .61;
-    final double CLAW_SERVO_RELEASED = .3;
+    final double CLAW_SERVO_CLAMPED = .59;
+    final double CLAW_SERVO_RELEASED = .375;
 
     // Outtake Pivot Positions
     final double OUTTAKE_PIVOT_EXTENDED = .271;
     final double OUTTAKE_PIVOT_RETRACTED = .994;
 
     // Outtake Pusher Positions
-    final double PUSHER_PUSHED = .7;
+    final double PUSHER_PUSHED = .75;
     final double PUSHER_RETRACTED = .475;
 
     //robots position

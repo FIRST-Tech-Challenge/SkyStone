@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotlib.robot.HeadingableMecanumRobot;
 
 @Disabled
-@TeleOp (name="Headingable Mecanum TeleOp V-Test", group="TeleHead")
+@TeleOp (name="Headingable Mecanum TeleOp V-Test", group="Head")
 public class HeadingableMecanumTeleOp extends OpMode
 {
     private static final double HEADING_COEFF = 0.05;
@@ -40,7 +40,7 @@ public class HeadingableMecanumTeleOp extends OpMode
 
         robot.drivetrain.halfPowerInput(gamepad1.right_stick_button);
 
-        //desiredHeading += -gamepad1.left_stick_x*rotationTimer.time()*HEADING_COEFF; resets heading but also was rotating robot, now only keys rotate robot
+        //desiredHeading += -gamepad1.left_stick_x*rotationTimer.time()*HEADING_COEFF; //resets heading but also was rotating robot, now only keys rotate robot
         rotationTimer.reset();
 
         if (gamepad1.left_bumper)

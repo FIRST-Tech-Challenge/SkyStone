@@ -9,7 +9,7 @@ import org.firstinspires.ftc.robotlib.robot.HeadingableMecanumRobot;
 import org.firstinspires.ftc.robotlib.util.PIDTuner;
 
 @Disabled
-@TeleOp (name="Headingable Mecanum PIDTuner", group="TeleHead")
+@TeleOp (name="Headingable Mecanum PIDTuner", group="Head")
 public class HeadingableMecanumPIDTuner extends OpMode
 {
     private PIDTuner tuner;

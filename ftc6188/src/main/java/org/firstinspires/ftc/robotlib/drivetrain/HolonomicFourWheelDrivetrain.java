@@ -10,7 +10,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     private double course = 0; //the angle the robot is going to move at relative to its heading
     private double targetPosition = 0; //distance the robot has to move
 
-    public double[] wheelTargetPositions = new double[4];
+    private double[] wheelTargetPositions = new double[4];
     private DcMotor.RunMode[] runModes = new DcMotor.RunMode[4];
     private final double[] wheelAngles;
 
@@ -116,9 +116,9 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
         motor power represents a percentage of the current velocity set by the functions
 
         either set the motor powers here directly or if the update motor powers function is running continuously (i dont think it is)
-        update the velocity variable constantly (i dont think that is how it works though)
+        update the velocity variable constantly (i don't think that is how it works though)
 
-        upon further inspection that isnt how it works however we should be doing by updating the velocity function constantly
+        upon further inspection that isn't how it works however we should be doing by updating the velocity function constantly
         save the passed velocity as target velocity somewhere possibly add to the list of variables defined in the upper levels
 
         the equation y = -((X - 0.5) * 2)^2 + 1.5 goes between 0.5 and 0.5 peaking at 1 in the middle for x [0, 1]
@@ -126,22 +126,6 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
 
         only activates when in auto mode
          */
-
-        if (!isTeleOpMode())
-        {
-            double percentageTraveled = getCurrentPosition()/getTargetPosition();
-            double velocityMultiplier = -Math.pow((percentageTraveled - 0.5) * 2, 2) + 1.5;
-            setVelocity(getMovementVelocity() * velocityMultiplier);
-
-            if (getTelemetry() != null)
-            { //To be removed after testing is conclusive
-                getTelemetry().addData("Percent Traveled", percentageTraveled);
-                getTelemetry().addData("Velocity Multiplier", velocityMultiplier);
-                getTelemetry().addData("Current Velocity", getVelocity());
-                getTelemetry().addData("Movement Velocity", getMovementVelocity());
-                getTelemetry().update();
-            }
-        }
     }
 
     @Override
@@ -163,9 +147,8 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     {
         for (int motorIndex = 0; motorIndex < this.motorList.length; motorIndex++)
         {
-            this.motorList[motorIndex].setPower(0); //Hopefully stops the drift at the end of move commands
+            //this.motorList[motorIndex].setPower(0); //Hopefully stops the drift at the end of move commands
             this.motorList[motorIndex].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            this.motorList[motorIndex].setTargetPosition(0);
             this.motorList[motorIndex].setMode(runModes[motorIndex]);
         }
     }
@@ -174,7 +157,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     @Override
     public void position()
     {
-        setMovementVelocity(getVelocity());
+        //setMovementVelocity(getVelocity());
         while (isPositioning())
         {
             updatePosition();

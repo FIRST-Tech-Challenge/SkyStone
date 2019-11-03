@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.mecanum;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotlib.robot.MecanumRobot;
 
-@Autonomous(name="Mecanum Auto V-Park", group="Auto")
+@Disabled
+@Autonomous(name="Mecanum Auto V-Full", group="Auto")
 public class MecanumAutoFull extends LinearOpMode
 {
     private MecanumRobot robot;
@@ -14,12 +16,18 @@ public class MecanumAutoFull extends LinearOpMode
     public void runOpMode() throws InterruptedException
     {
         robot = new MecanumRobot(this.hardwareMap, this.telemetry, false);
-        robot.platformServos.setPosition(1); //init servos to up position
+        robot.platformServos.setPosition(0); //init servos to up position
         robot.informationUpdate();
 
         waitForStart();
 
         // Move commands
         //TODO: fill out move commands for a full possible auto
+
+        robot.robotMove(0, 1, 0, 29.5);
+        robot.platformServos.setPosition(1);
+        robot.robotMove(180, 1, 0, 29);
+        robot.platformServos.setPosition(0);
+
     }
 }

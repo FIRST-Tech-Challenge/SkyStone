@@ -87,8 +87,9 @@ public class DriveSystem {
      * @param leftY Left Y joystick value in case you couldn't tell from the others
      */
     // TODO
-    public void drive(float rightX, float leftX, float leftY, boolean slowDrive) {
-        this.slowDrive = slowDrive;
+    public void drive(float rightX, float leftX, float leftY, boolean  xButton) {
+
+        this.slowDrive = xButton;
         Log.d(TAG, "slow drive -- " + slowDrive);
         if (slowDrive) {
             power = SLOW_DRIVE_POWER;
@@ -127,6 +128,7 @@ public class DriveSystem {
                     break;
             }
         });
+        slowDrive = false;
     }
 
     public boolean driveToPositionTicks(int ticks, Direction direction, double maxPower) {

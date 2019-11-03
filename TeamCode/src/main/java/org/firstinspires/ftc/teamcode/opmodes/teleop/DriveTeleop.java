@@ -14,19 +14,12 @@ public class DriveTeleop extends BaseOpMode {
 
     @Override
     public void init() {
+        super.init();
         slowDrive = false;
     }
 
     public void loop(){
-        if(gamepad1.left_stick_button) {
-            if (slowDrive) {
-                slowDrive = false;
-            } else {
-                slowDrive = true;
-            }
-        }
-        Log.d(TAG, "slow drive -- " + slowDrive);
-        driveSystem.drive(gamepad1.right_stick_x, gamepad1.left_stick_x, gamepad1.left_stick_y, slowDrive);
+        driveSystem.drive(gamepad1.right_stick_x, gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.x);
         spinnySystem.spin(gamepad1.left_bumper, gamepad1.right_bumper);
         latchSystem.run(gamepad1.dpad_up, gamepad1.dpad_down);
     }

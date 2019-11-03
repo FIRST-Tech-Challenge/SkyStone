@@ -204,9 +204,9 @@ public class ArmSystem {
     public void movePresetPosition(Position pos) {
         switch(pos) {
             case POSITION_HOME:
-                moveWrist(0.06 + offsetWrist);
-                moveElbow(0.68 + offsetElbow);
-                movePivot(0.93 + offsetPivot);
+                moveWrist(0.05 + offsetWrist);
+                moveElbow(0.67 + offsetElbow);
+                movePivot(0.88 + offsetPivot);
                 break;
             case POSITION_NORTH:
                 // TODO: Find north pos with new motor

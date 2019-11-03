@@ -18,13 +18,13 @@ public class DriveHalo extends OpMode {
     private boolean armClosed = false;
     boolean slowMode = false; // activate slowMode if both joysticks are pushed down
     boolean strafeMode = false;
-    Boolean[] buttons = new Boolean[6];
+    Boolean[] buttons = new Boolean[7];
 
     @Override
     public void init() {
         robot.init(hardwareMap);
         gamepad1.setJoystickDeadzone(deadZone);
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < buttons.length; i++) {
             buttons[i] = false;
         }
         telemetry.addData("Initialized", "Ready to start");
@@ -32,11 +32,12 @@ public class DriveHalo extends OpMode {
 
     @Override
     public void loop() {
-        driveController();
-        armController();
-        gripperController();
-        liftController();
-        waffleController();
+        this.driveController();
+        this.armController();
+        this.gripperRotateController();
+        this.gripperController();
+        this.liftController();
+        this.waffleController();
         telemetry.addData("Robot Info: ", robot.getInfo());
         telemetry.update();
     }
@@ -81,6 +82,12 @@ public class DriveHalo extends OpMode {
         buttons[2] = gamepad2.dpad_up;
     }
 
+    void gripperRotateController() {
+        if (gamepad2.b && !buttons[6]) {
+            robot.toggleArmRotate();
+        }
+    }
+
     void gripperController() {
         if (gamepad2.a && !buttons[5]) {
             if (armClosed) {
@@ -99,6 +106,8 @@ public class DriveHalo extends OpMode {
 
         if (this.slowMode) {
             speedControl = 0.25;
+        } else {
+            speedControl = 0.5;
         }
 
         if (this.strafeMode) {

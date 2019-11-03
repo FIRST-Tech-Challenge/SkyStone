@@ -30,7 +30,7 @@ public class Robot {
 
     // Constants
     private int CORE_HEX_TICKS_PER_REV = 288; // ticks / rev
-    private int ANGLE_OF_GRIPPER_WHEN_GRABBING = 60; // in degrees
+    private int ANGLE_OF_GRIPPER_WHEN_GRABBING = 45; // in degrees
     private double ANDYMARK_TICKS_PER_REV = 537.6; // ticks / rev
     private double WHEEL_DIAMETER = 4;
     private double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI; // in / rev
@@ -41,6 +41,11 @@ public class Robot {
     // info
     private int wafflePosition = -1; // 1 = Up, -1 = Down Waffle mover starts down
     private double wafflePower = 0.5;
+
+    private int gripperRotatePosition = 1; // 1 = at a 90 degree angle, -1 = whatever angle it will be
+
+    private enum gripperPosition {OPEN, CLOSED}
+    private gripperPosition gripperPos = gripperPosition.OPEN;
 
     private enum armPosition {REST, ACTIVE}
     private armPosition armPos = armPosition.REST;
@@ -67,11 +72,11 @@ public class Robot {
         this.liftMotor = hwMap.dcMotor.get("liftMotor");
 
         // Drive Motor Direction
-        this.rearLeft.setDirection(DcMotor.Direction.REVERSE);
-        this.frontLeft.setDirection(DcMotor.Direction.REVERSE);
-        this.rearRight.setDirection(DcMotor.Direction.FORWARD);
-        this.frontRight.setDirection(DcMotor.Direction.FORWARD);
-        this.waffleMover.setDirection(DcMotor.Direction.REVERSE);
+        this.rearLeft.setDirection(DcMotor.Direction.FORWARD);
+        this.frontLeft.setDirection(DcMotor.Direction.FORWARD);
+        this.rearRight.setDirection(DcMotor.Direction.REVERSE);
+        this.frontRight.setDirection(DcMotor.Direction.REVERSE);
+        this.waffleMover.setDirection(DcMotor.Direction.FORWARD);
         this.armRotate1.setDirection(DcMotor.Direction.REVERSE); // positive makes arm go forward
         this.armRotate2.setDirection(DcMotor.Direction.REVERSE);
         this.liftMotor.setDirection(DcMotor.Direction.FORWARD);
@@ -83,6 +88,10 @@ public class Robot {
         this.armRotate2.setPower(0);
         this.liftMotor.setPower(0);
 
+        // Zero power behavior
+        this.armRotate1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.armRotate2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         // Servo mapping
         this.gripperRotateServo1 = hwMap.get(Servo.class, "gripperRotateServo1");
         this.gripperRotateServo2 = hwMap.get(Servo.class, "gripperRotateServo2");
@@ -91,7 +100,7 @@ public class Robot {
         // Servo direction
         this.gripperRotateServo1.setDirection(Servo.Direction.REVERSE);
         this.gripperRotateServo2.setDirection(Servo.Direction.FORWARD);
-        this.grabServo.setDirection(Servo.Direction.REVERSE);
+        this.grabServo.setDirection(Servo.Direction.FORWARD);
 
     }
 
@@ -181,43 +190,44 @@ public class Robot {
     void moveWaffleMover(char floatOrHold) throws InterruptedException {
         if (floatOrHold != 'f' && floatOrHold != 'h') { // make sure floatOrHold is 'f' or 'h' or else the cookie monster will come for you :)
             return;
+        } else if (floatOrHold == 'h') {
+            this.waffleMover.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        } else {
+            this.waffleMover.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         }
 
         this.waffleMover.setPower(this.wafflePower * this.wafflePosition);
-        Thread.sleep(1000);
+        Thread.sleep(250);
+        this.waffleMover.setPower(0);
 
-        if (floatOrHold == 'f' || this.wafflePosition == 1) {
-            this.waffleMover.setPower(0);
-            Thread.sleep(500); // buffer time to let the motor completely stop. THIS IS VERY VERY IMPORTANT!!
-        }
         this.wafflePosition *= -1;
     }
+
     private void moveArmRotate(int targetPosition, double power, OpMode opmode) {
         // reset encoders
-        armRotate1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        armRotate2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.armRotate1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.armRotate2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         // set mode
-        armRotate1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        armRotate2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        this.armRotate1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        this.armRotate2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // set power
-        armRotate1.setPower(power);
-        armRotate2.setPower(power);
+        this.setArmRotatePower(power);
 
         // wait for the armRotate motors to reach the position or else things go bad bad
         while (Math.abs(this.armRotate1.getCurrentPosition()) <  targetPosition &&
                 Math.abs(this.armRotate2.getCurrentPosition()) < targetPosition) {
-            opmode.telemetry.addData("Gripper", "#1: " + armRotate1.getCurrentPosition() + " #2: " + armRotate2.getCurrentPosition());
+            this.setArmRotatePower(power * Math.pow(1 - (Math.abs(this.armRotate1.getCurrentPosition()) / targetPosition), 2));
+            opmode.telemetry.addData("Gripper", "#1: " + this.armRotate1.getCurrentPosition() + " #2: " + this.armRotate2.getCurrentPosition());
             opmode.telemetry.update();
         }
 
         // stop the armRotate motors
-        armRotate1.setPower(0);
-        armRotate2.setPower(0);
+        this.stopArmRotate();
     }
 
-    private void rotateGripper(double angle) {
+    void rotateGripper(double angle) {
         this.gripperRotateServo1.setPosition(angle / 360);
         this.gripperRotateServo2.setPosition(angle / 360);
     }
@@ -225,63 +235,85 @@ public class Robot {
     void bringArmDown(OpMode opmode) throws InterruptedException {
         if (armPos == armPosition.REST) { // we only bring the arm down if the arm is resting
             // we rotate the arm 180 + ANGLE_OF_GRIPPER_WHEN_GRABBING degrees
-            //moveArmRotate(CORE_HEX_TICKS_PER_REV * (180 + this.ANGLE_OF_GRIPPER_WHEN_GRABBING) / 360, 0.5, opmode);
-            moveArmRotate(CORE_HEX_TICKS_PER_REV * (180 + this.ANGLE_OF_GRIPPER_WHEN_GRABBING) / 360, 0.1, opmode);
-            Thread.sleep(500);
-            // we rotate the gripper so it is parallel to the ground
-            rotateGripper(90 - this.ANGLE_OF_GRIPPER_WHEN_GRABBING);
-            armPos = armPosition.ACTIVE;
+            this.moveArmRotate(CORE_HEX_TICKS_PER_REV * (150) / 360, 0.7, opmode);
+            this.setArmRotatePower(-0.4); // since gravity is pushing on the arm, we fight it so the arm gradually goes down
+            this.armPos = armPosition.ACTIVE;
         }
     }
 
     void foldArmBack(OpMode opmode) throws InterruptedException {
-        if (armPos == armPosition.ACTIVE) { // we only do something if the arm is active
-            // we rotate the arm 180 + ANGLE_OF_GRIPPER_WHEN_GRABBING degrees
-            moveArmRotate(CORE_HEX_TICKS_PER_REV * (180 + this.ANGLE_OF_GRIPPER_WHEN_GRABBING) / 360, -0.1, opmode);
+        if (this.armPos == armPosition.ACTIVE) { // we only do something if the arm is active
+            if (this.gripperRotatePosition == -1) {
+                // we rotate the gripper so it is perpendicular to the ground
+                this.rotateGripper(this.ANGLE_OF_GRIPPER_WHEN_GRABBING - 90);
+            }
+
+            // we rotate the arm 110 degrees
+            this.moveArmRotate(this.CORE_HEX_TICKS_PER_REV * (150) / 360, -0.7, opmode);
+            this.setArmRotatePower(-0.4); // since gravity is pushing on the arm, we fight it so the arm gradually goes down
             Thread.sleep(500);
-            // we rotate the gripper so it is perpendicular to the ground
-            rotateGripper(this.ANGLE_OF_GRIPPER_WHEN_GRABBING - 90);
-            armPos = armPosition.REST;
+            this.stopArmRotate();
+            this.armPos = armPosition.REST;
         }
     }
 
     void gripBlock() {
-        grabServo.setPosition(1);
+        this.grabServo.setPosition(0.25);
+        this.gripperPos = gripperPosition.CLOSED;
     }
 
     void releaseBlock(OpMode opmode) {
-        grabServo.setPosition(0);
+        this.grabServo.setPosition(0);
+        this.gripperPos = gripperPosition.OPEN;
     }
 
-    void pickUpBlock(OpMode opmode) throws InterruptedException {
+    void pickUpBlock(OpMode opmode) throws InterruptedException { // for autonomous
         this.bringArmDown(opmode); // bring arm down
+        Thread.sleep(500);
+        // we rotate the gripper so it is parallel to the ground
+        this.rotateGripper(90 - this.ANGLE_OF_GRIPPER_WHEN_GRABBING);
         this.gripBlock(); // grab the block
     }
 
-    void liftUp() {
-        this.liftMotor.setPower(0.5);
-    }
+    void liftUp() { this.liftMotor.setPower(0.5); }
 
-    void liftDown() {
-        this.liftMotor.setPower(-0.5);
-    }
+    void liftDown() { this.liftMotor.setPower(-0.5); }
 
-    void stopLift() {
-        this.liftMotor.setPower(0);
-    }
+    void stopLift() { this.liftMotor.setPower(0); }
 
     int detectSkystone(LinearOpMode opmode) {
         WebcamTest detector = new WebcamTest();
         return detector.detectSkystonePosition(opmode);
     }
 
+    void setArmRotatePower(double power) {
+        this.armRotate1.setPower(power);
+        this.armRotate2.setPower(power);
+    }
+
+    void stopArmRotate() { this.setArmRotatePower(0); }
+
     String getInfo() {
-        String output = "Arm Position: " + this.armPos + "Waffle Position: ";
+        String output = "Arm Position: " + this.armPos + ", Waffle Position: ";
         if (this.wafflePosition == -1) {
-            output += "Down";
+            output += "Down. Wrist Position: ";
         } else {
-            output += "Up";
+            output += "Up, Wrist Position: ";
         }
+
+        if (this.gripperRotatePosition == 1) {
+            output += "Up, Gripper Position: ";
+        } else {
+            output += "Down, Gripper Position: ";
+        }
+
+        output += this.gripperPos;
+
         return output;
+    }
+
+    void toggleArmRotate() {
+        this.rotateGripper(this.gripperRotatePosition * (90 - this.ANGLE_OF_GRIPPER_WHEN_GRABBING));
+        this.gripperRotatePosition *= -1;
     }
 }

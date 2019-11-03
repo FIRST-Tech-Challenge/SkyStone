@@ -3,13 +3,11 @@ package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 import android.util.Log;
 
 import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.teamcode.components.DriveSystem;
 import org.firstinspires.ftc.teamcode.components.Vuforia.CameraChoice;
@@ -27,6 +25,7 @@ public abstract class BaseStateMachine extends BaseOpMode {
         STATE_DRAG_FOUNDATION,
         STATE_RETURN,
         GRAB_STONE_DEAD_RECKONING,
+        EJECT_STONE,
         LOGGING
     }
 
@@ -38,20 +37,26 @@ public abstract class BaseStateMachine extends BaseOpMode {
     private ColorSensor colorSensor;
     protected State mCurrentState;    // Current State Machine State.
     protected ElapsedTime mStateTime = new ElapsedTime();  // Time into current state
-    protected DistanceSensor distanceFront;
+    protected DistanceSensor distanceSide;
     private Team currentTeam;
     VuforiaTrackable skystone;
 
     public void init(Team team) {
         super.init();
-        this.msStuckDetectInit = 20000;
-        this.msStuckDetectInitLoop = 20000;
+        this.msStuckDetectInit = 15000;
+        this.msStuckDetectInitLoop = 15000;
         // TODO: Get webcame choice for competition
         super.setCamera(CameraChoice.PHONE_BACK);
 //        rearPerimeter = vuforia.targetsSkyStone.get(team == Team.RED ? 12 : 11);
-        distanceFront = hardwareMap.get(DistanceSensor.class, "distanceFront");
+        if (currentTeam == Team.RED) {
+            distanceSide = hardwareMap.get(DistanceSensor.class, "distanceRight");
+            super.setCamera(CameraChoice.WEBCAM1);
+        } else {
+            distanceSide = hardwareMap.get(DistanceSensor.class, "distanceRight");
+            super.setCamera(CameraChoice.WEBCAM2);
+        }
         colorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
-        this.msStuckDetectLoop = 30000;
+        this.msStuckDetectLoop = 20000;
         newState(State.STATE_INITIAL);
         skystone = vuforia.targetsSkyStone.get(0);
         currentTeam = team;
@@ -62,7 +67,7 @@ public abstract class BaseStateMachine extends BaseOpMode {
     public void loop() {
         switch (mCurrentState) {
             case LOGGING:
-                telemetry.addData("DistanceFront", distanceFront.getDistance(DistanceUnit.INCH));
+                telemetry.addData("DistanceFront", distanceSide.getDistance(DistanceUnit.INCH));
                 telemetry.addData("Color Blue", colorSensor.blue());
                 telemetry.addData("Color Red", colorSensor.red());
                 telemetry.addData("Color Green", colorSensor.green());
@@ -110,7 +115,7 @@ public abstract class BaseStateMachine extends BaseOpMode {
                     while (!driveSystem.driveToPosition((int) translation.get(1), DriveSystem.Direction.BACKWARD, 0.5) && !isStopRequested()) {}
 
                     // Drive up to the skystone
-                    double distance = distanceFront.getDistance(DistanceUnit.MM);
+                    double distance = distanceSide.getDistance(DistanceUnit.MM);
                     distance -= 10;
                     direction = currentTeam == Team.RED ? DriveSystem.Direction.RIGHT : DriveSystem.Direction.LEFT;
                     while (!driveSystem.driveToPosition((int) distance, direction, 0.8) && !isStopRequested()) {};
@@ -120,8 +125,10 @@ public abstract class BaseStateMachine extends BaseOpMode {
                     direction = currentTeam == Team.RED ? DriveSystem.Direction.RIGHT : DriveSystem.Direction.LEFT;
                     while (!driveSystem.driveToPosition(1500, direction, 0.5) && !isStopRequested()) {}
                     // Drive into skystone
-                    while (!driveSystem.driveToPosition(500, DriveSystem.Direction.FORWARD, 0.5) && !isStopRequested()) {}
-
+                    while (!driveSystem.driveToPosition(500, DriveSystem.Direction.FORWARD, 0.3) && !isStopRequested()) {
+                        spinnySystem.spin(true, false);
+                    }
+                    spinnySystem.spin(false, false);
                     // Move away with skystone (prepare for next state)
                     direction = currentTeam == Team.RED ? DriveSystem.Direction.LEFT : DriveSystem.Direction.RIGHT;
                     while (!driveSystem.driveToPosition(1200, direction, 0.8) && !isStopRequested()) {};
@@ -140,7 +147,7 @@ public abstract class BaseStateMachine extends BaseOpMode {
                 telemetry.addData("State", "GRAB_STONE_DEAD_RECKONING");
 
                 // Drive up to the skystone
-                double distance = distanceFront.getDistance(DistanceUnit.MM);
+                double distance = distanceSide.getDistance(DistanceUnit.MM);
                 distance -= 10;
                 direction = currentTeam == Team.RED ? DriveSystem.Direction.RIGHT : DriveSystem.Direction.LEFT;
                 while (!driveSystem.driveToPosition((int) distance, direction, 0.8) && !isStopRequested()) {};
@@ -150,8 +157,10 @@ public abstract class BaseStateMachine extends BaseOpMode {
                 direction = currentTeam == Team.RED ? DriveSystem.Direction.RIGHT : DriveSystem.Direction.LEFT;
                 while (!driveSystem.driveToPosition(1500, direction, 0.5) && !isStopRequested()) {}
                 // Drive into skystone
-                while (!driveSystem.driveToPosition(500, DriveSystem.Direction.FORWARD, 0.5) && !isStopRequested()) {}
-
+                while (!driveSystem.driveToPosition(500, DriveSystem.Direction.FORWARD, 0.3) && !isStopRequested()) {
+                    spinnySystem.spin(true, false);
+                }
+                spinnySystem.spin(false, false);
                 // Move away with skystone (prepare for next state)
                 direction = currentTeam == Team.RED ? DriveSystem.Direction.LEFT : DriveSystem.Direction.RIGHT;
                 while (!driveSystem.driveToPosition(1200, direction, 0.8) && !isStopRequested()) {};
@@ -166,9 +175,18 @@ public abstract class BaseStateMachine extends BaseOpMode {
             case STATE_DELIVER_STONE:
                 telemetry.addData("State", "STATE_DELIVER_STONE");
                 while (!driveSystem.driveToPosition(2200, DriveSystem.Direction.FORWARD, 1.0)  && !isStopRequested()) {};
-                // TODO: Eject from robot
-                newState(State.STATE_PARK_AT_LINE);
+                spinnySystem.spin(false, true);
+                newState(State.EJECT_STONE);
                 telemetry.update();
+                break;
+
+            case EJECT_STONE:
+                if (mStateTime.milliseconds() >= 1000) {
+                    spinnySystem.spin(false, false);
+                    newState(State.STATE_PARK_AT_LINE);
+                } else {
+                    spinnySystem.spin(false, true);
+                }
                 break;
 
             case STATE_FIND_STONE:

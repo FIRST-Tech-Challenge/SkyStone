@@ -59,17 +59,18 @@ public class SliderComponentTest extends OpMode {
         float ly = (float) Math.pow(gamepad1.left_stick_y, 3);
 
         if (gamepad1.dpad_left) {
-            armSystem.queuedPosition = ArmSystem.Position.POSITION_WEST;
+            armSystem.movePresetPosition(ArmSystem.Position.POSITION_WEST);
         } else if (gamepad1.dpad_up) {
-            armSystem.queuedPosition = ArmSystem.Position.POSITION_HOME;
+            armSystem.movePresetPosition(ArmSystem.Position.POSITION_HOME);
         } else if (gamepad1.dpad_down) {
-            armSystem.queuedPosition = ArmSystem.Position.POSITION_SOUTH;
+            armSystem.movePresetPosition(ArmSystem.Position.POSITION_SOUTH);
         } else if (gamepad1.dpad_right) {
-            armSystem.queuedPosition = ArmSystem.Position.POSITION_EAST;
+            armSystem.movePresetPosition(ArmSystem.Position.POSITION_EAST);
         }
 
         if (gamepad1.right_bumper && !m_right) {
             armSystem.queuedHeight++;
+            armSystem.go();
             m_right = true;
         } else if (!gamepad1.right_bumper) {
             m_right = false;
@@ -77,6 +78,7 @@ public class SliderComponentTest extends OpMode {
 
         if (gamepad1.left_bumper && !m_left) {
             armSystem.queuedHeight--;
+            armSystem.go();
             m_left = true;
         } else if (!gamepad1.left_bumper) {
             m_left = false;
@@ -88,6 +90,7 @@ public class SliderComponentTest extends OpMode {
         } else if (!gamepad1.a) {
             m_gripper = false;
         }
+        /*
         // Display queued positions on telemetry data so that the captain can call them out to the
         // driver
         if (!(armSystem.queuedPosition == null)) {
@@ -97,6 +100,8 @@ public class SliderComponentTest extends OpMode {
 
         telemetry.addData("", "Queued height: " + armSystem.queuedHeight);
         telemetry.addData("", armSystem.targetHeight);
+
+         */
         telemetry.update();
         if (gamepad1.y) { // "yeet" it as Brian would say
             armSystem.go();

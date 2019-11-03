@@ -28,7 +28,7 @@ public class ArmSystem {
     private final double ELBOW_HOME = 0;
     private final double PIVOT_HOME = 0;
     private final double GRIPPER_OPEN = 0.5;
-    private final double GRIPPER_CLOSE = 0.08;
+    private final double GRIPPER_CLOSE = 0.05;
     private int origin;
     public int targetHeight;
     private final int distanceConstant = 1000; // used for calculating motor speed
@@ -201,7 +201,9 @@ public class ArmSystem {
     public void movePresetPosition(Position pos) {
         switch(pos) {
             case POSITION_HOME:
-                goHome();
+                moveWrist(0.06);
+                moveElbow(0.68);
+                movePivot(0.83);
                 break;
             case POSITION_NORTH:
                 // TODO: Find north pos with new motor
@@ -330,7 +332,7 @@ public class ArmSystem {
 
     // Should be called every loop
     public void updateHeight() {
-        slider.setPower(1);
+        slider.setPower(0.5);
         slider.setTargetPosition(targetHeight);
     }
 

@@ -21,6 +21,7 @@ public class CompetitionTeleop extends BaseOpMode {
     boolean m_right = false;
     boolean m_left = false;
     boolean m_gripper = false; // Gripper button`
+    boolean slowDrive;
 
     public void init() {
         super.init();
@@ -95,6 +96,13 @@ public class CompetitionTeleop extends BaseOpMode {
             armSystem.go();
         }
 
-        driveSystem.drive(rx, lx, ly);
+        if(gamepad1.left_stick_button) {
+            if (slowDrive) {
+                slowDrive = false;
+            } else {
+                slowDrive = true;
+            }
+        }
+        driveSystem.drive(rx, lx, ly, slowDrive);
     }
 }

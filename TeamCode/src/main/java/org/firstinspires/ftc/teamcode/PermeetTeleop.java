@@ -8,6 +8,7 @@ public class PermeetTeleop extends LinearOpMode{
 
     @Override
     public void runOpMode(){
-
+        telemetry.addData( "Hi there ", "Permeet" );
+        telemetry.update();
     }
 }

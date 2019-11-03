@@ -74,10 +74,11 @@ public class TeleLib {
     }
 
     public void processIntakeMinerals() {
-        if (opMode.gamepad1.right_bumper) {
-            robot.setDcMotorPower(MOTOR_RIGHT_INTAKE, -.3f);
-            robot.setDcMotorPower(MOTOR_LEFT_INTAKE, .3f);
-        } else if (opMode.gamepad1.left_bumper) {
+//        if (opMode.gamepad1.right_bumper) {
+//            robot.setDcMotorPower(MOTOR_RIGHT_INTAKE, -.3f);
+//            robot.setDcMotorPower(MOTOR_LEFT_INTAKE, .3f);
+        //   }
+        if (opMode.gamepad1.left_bumper) {
             robot.setDcMotorPower(MOTOR_RIGHT_INTAKE, 0.5f);
             robot.setDcMotorPower(MOTOR_LEFT_INTAKE, -0.5f);
         }
@@ -102,15 +103,24 @@ public class TeleLib {
         }
     }
 
-    public void processIntakeGrab() {
-        if (opMode.gamepad1.x) {
+    public void processIntakeGrab() throws InterruptedException {
+        if (opMode.gamepad1.left_bumper) {
             robot.setDcMotorPower(MOTOR_RIGHT_INTAKE, -.3f);
             robot.setDcMotorPower(MOTOR_LEFT_INTAKE, .3f);
 
             robot.setServoPosition(SERVO_ARM, SERVO_ARM_POS_RECIEVE);
 
             robot.setServoPosition(SERVO_GRABBER, SERVO_GRABBER_REST);
+            Thread.sleep(1000);
             robot.setServoPosition(SERVO_GRABBER, SERVO_GRABBER_GRAB);
+
+            if (opMode.gamepad2.right_bumper && !robot.isTouchSensorPressed(TOUCH_ARM_BOTTOM)) {
+                // Extend
+                robot.setDcMotorPower(MOTOR_ARM, .5f);
+            }
+
+            robot.setServoPosition(SERVO_ARM, SERVO_ARM_POS_SCORE);
+
         }
     }
 
@@ -142,13 +152,28 @@ public class TeleLib {
         }
     }
 
-    //}
-    public void processServoArm() {
+    public void processScoreStone() throws InterruptedException {
         if (opMode.gamepad2.x) {
+            robot.setServoPosition(SERVO_GRABBER, SERVO_GRABBER_REST);
+            Thread.sleep(1500);
             robot.setServoPosition(SERVO_ARM, SERVO_ARM_POS_RECIEVE);
-        } else if (opMode.gamepad2.y) {
-            robot.setServoPosition(SERVO_ARM, SERVO_ARM_POS_SCORE);
         }
+    }
+
+    public void processServoGrab() {
+        if (opMode.gamepad2.a) {
+            robot.setServoPosition(SERVO_GRABBER, SERVO_GRABBER_GRAB);
+        } else if (opMode.gamepad2.b) {
+            robot.setServoPosition(SERVO_GRABBER, SERVO_GRABBER_REST);
+        }
+    }
+
+//    public void processServoArm() {
+//        if (opMode.gamepad2.x) {
+//            robot.setServoPosition(SERVO_ARM, SERVO_ARM_POS_RECIEVE);
+//        } else if (opMode.gamepad2.y) {
+//            robot.setServoPosition(SERVO_ARM, SERVO_ARM_POS_SCORE);
+//        }
 //        if (opMode.gamepad1.right_bumper && servoArmInputDelay.seconds() > .25)
 //            if (robot.getServoPosition(SERVO_ARM) == SERVO_ARM_POS_RECIEVE) {
 //                robot.setServoPosition(SERVO_ARM, SERVO_ARM_POS_RECIEVE);
@@ -163,16 +188,7 @@ public class TeleLib {
 //            robot.setDeltaServoPosition(SERVO_ARM, -.02f);
 //            scoringServoInputDelay.reset();
 //        }
-    }
-
-    public void processServoGrab() {
-        if (opMode.gamepad2.a) {
-            robot.setServoPosition(SERVO_GRABBER, SERVO_GRABBER_GRAB);
-        } else if (opMode.gamepad2.b) {
-            robot.setServoPosition(SERVO_GRABBER, SERVO_GRABBER_REST);
-        }
-    }
-
+//    }
 
 //        if (opMode.gamepad2.dpad_up && intakeAngleServoInputDelay.seconds() > .2f) {
 //            robot.setDeltaServoPosition(SERVO_FOUNDATION1, .02f);

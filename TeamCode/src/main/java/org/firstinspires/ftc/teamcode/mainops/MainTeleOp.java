@@ -30,10 +30,11 @@ public class MainTeleOp extends LinearOpMode {
             teleLib.processMoveArmUp();
             teleLib.processStopIntake();
             teleLib.processIntakeGrab();
+            teleLib.processScoreStone();
 
             // Gamepad 2
             teleLib.processFoundation();
-            teleLib.processServoArm();
+//            teleLib.processServoArm();
             teleLib.processServoGrab();
             teleLib.processDrive2();
             idle();

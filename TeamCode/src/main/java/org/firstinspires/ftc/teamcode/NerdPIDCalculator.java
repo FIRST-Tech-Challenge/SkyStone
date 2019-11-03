@@ -2,7 +2,11 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
-import com.qualcomm.robotcore.util.Range;
+
+/**
+ * This file contains the class for generic PID calculator we will be using to calculate PIDs.
+ * As of now, it supports 2 kinds of input devices. Gyro and Motor Encoders.
+ */
 
 public class NerdPIDCalculator{
 //Declare some variables that will be used later
@@ -10,9 +14,6 @@ public class NerdPIDCalculator{
     private double kP;
     private double kI;
     private double kD;
-
-    private double minTarget = 0.0;
-    private double maxTarget = 0.0;
 
 
     private double previousTime = 0.0;
@@ -33,6 +34,8 @@ public class NerdPIDCalculator{
 
     private ElapsedTime elapsedTime = new ElapsedTime();
 
+    //Constructor to create new NerdPIDCalculator object.
+
     public NerdPIDCalculator(
             final String instanceName,
             double       kP,
@@ -50,6 +53,8 @@ public class NerdPIDCalculator{
             RobotLog.d("NerdPIDCalculator - Gains : %s -  %f | %f | %f ", this.instanceName, this.kP, this.kI, this.kD);
     }
 
+    // Function to set the gains.
+
     public void setPIDGains(double kP, double kI, double kD)
     {
         final String funcName = "setPIDGains";
@@ -61,6 +66,8 @@ public class NerdPIDCalculator{
         if (debugFlag)
             RobotLog.d("NerdPIDCalculator - Gains : %s -  %f | %f | %f ", this.instanceName, this.kP, this.kI, this.kD);
     }
+
+    //Function to set the targets for PID
 
     public void setTarget(double target, double currentDeviceInput)
     {
@@ -83,6 +90,8 @@ public class NerdPIDCalculator{
 
     }
 
+    //Function to reset the calculator, so that it can be used again.
+
     public void reset()
     {
         final String funcName = "reset";
@@ -97,7 +106,8 @@ public class NerdPIDCalculator{
     }
 
     //function to calculate error
-    //Device type 1 = GYRO, anything else is like Encoders etc
+    //Device type 1 = GYRO, anything else is like Encoders etc.
+
     public double getError(double deviceInput, int deviceType) {
         double robotError;
 
@@ -117,20 +127,28 @@ public class NerdPIDCalculator{
     {
 
         final String funcName = "getOutput";
-        double prevError = currentError;
 
+        //Before we get the error for this cycle, store the error from previous cycle in previous error.
+        double prevError = currentError;
+        //Store the current time. Will use this for calculating time between 2 cycles - delta time.
         double currTime = elapsedTime.seconds();
+        //Find delta time, difference between time in this cycle and the previous.
         double deltaTime = currTime - previousTime;
+        //Store the current time into previous time for using in next cycle.
          previousTime = currTime;
+         //Call function to get the error based ont he set target and device input
          currentError = getError(deviceInput, deviceType);
 
+         //Total error for finding I component is summ of errors in each cycle multiplied by delta time.
         totalError += (currentError * deltaTime);
+        //Calculate P, I and D outputs.
         pOutput = kP*currentError;
         iOutput = kI*totalError;
-       // dOutput = deltaTime > 0.0? kD*(currentError - prevError)/(deltaTime * 1000): 0.0;
+        // dOutput = deltaTime > 0.0? kD*(currentError - prevError)/(deltaTime * 1000): 0.0;
         dOutput = deltaTime > 0.0? kD*(deviceInput - prevDeviceInput)/(deltaTime * 1000): 0.0;
         prevDeviceInput = deviceInput;
 
+        //Total PID output
         output = pOutput + iOutput + dOutput;
 
         if (debugFlag)
@@ -141,7 +159,7 @@ public class NerdPIDCalculator{
             RobotLog.d("NerdPIDCalculator - %s - %s : %f | %f | %f | %f | %f | %f | %f | %f | %f ",
                 this.instanceName, funcName,prevError, currentError, totalError, currTime, deltaTime, pOutput, iOutput,dOutput,output);
 
-
+        //Return the output to the caller.
         return output;
     }
 

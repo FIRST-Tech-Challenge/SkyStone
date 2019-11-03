@@ -48,31 +48,29 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 
 
-//import lines go here. This is just for the program and not for the robot.
-
 /**
- * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
- * the autonomous or the teleop period of an FTC match. The names of OpModes appear on the menu
- * of the FTC Driver Station. When an selection is made from the menu, the corresponding OpMode
- * class is instantiated on the Robot Controller and executed.
- *
- * This particular OpMode just executes a basic Tank Drive Teleop for a two wheeled robot
- * It includes all the skeletal structure that all linear OpModes contain.
- *
- * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
- */
+ * This file contains definition of class for creating NerdBOT class.
+ * This is represenging our robot for this years FTC competition.
+ * This class has functions to drive using inverse kinematics using X, Y and Z inputs.
+ * X, and Y will be the distance in X and Y direction in inches and Z will be angle to hold.
+ **/
 
 public class NerdBOT{
 
     private boolean debugFlag=false;
 
-    private DcMotor leftMotor;
+    // Robot has 4 motors
+
+   private DcMotor leftMotor;
    private DcMotor rightMotor;
    private DcMotor leftMotorB;
    private DcMotor rightMotorB;
+
    private ElapsedTime runtime = new ElapsedTime();
    private BNO055IMU imu = null;   // Gyro device
+
+    //We need an opmode to get the hardware map etc.
+
     LinearOpMode opmode;
 
 
@@ -80,15 +78,15 @@ public class NerdBOT{
     private double minSpeed = 0.1;
     private double maxSpeed = 1.0;
 
-    private final double ticksPerRotation = 560.0;
-    private final double wheelDiameter = 3.54331;
-    private final double GEAR_RATIO = 1.0;
+    private final double ticksPerRotation = 560.0; //For omni wheels we are using
+    private final double wheelDiameter = 3.54331; // For omni wheels we are using
+    private final double GEAR_RATIO = 20.0/15.0;  // Gear ratio
 
 
-    private NerdPIDCalculator zPIDCalculator ;
-    private NerdPIDCalculator turnPIDCalculator ;
-    private  NerdPIDCalculator xPIDCalculator ;
-    private NerdPIDCalculator yPIDCalculator ;
+    private NerdPIDCalculator zPIDCalculator ; // Variable to hold PID calculator for Z while driving
+    private NerdPIDCalculator turnPIDCalculator ; //Variable to hold PID calculator for Turning to an angle
+    private  NerdPIDCalculator xPIDCalculator ; //Variable to hold PID calculator for X while driving
+    private NerdPIDCalculator yPIDCalculator ; //Variable to hold PID calculator for Y while driving
 
     private HardwareMap hardwareMap;
 
@@ -103,7 +101,7 @@ public class NerdBOT{
      *
      * Creates a new NerdBOT object and assigns the hardwareMap provided by caller
      * @param   opmode  Hardware Map provided by the calling OpMode.
-     *
+     *                  NerdBOT takes an opmode object so that it can get the hardwareMap.     *
      */
 
     public  NerdBOT(LinearOpMode opmode){
@@ -124,22 +122,34 @@ public class NerdBOT{
 
         final String funcName = "nerdPidDrive";
 
+        //Speeds for assigning to 4 motors.
 
         double leftSpeed;
         double rightSpeed;
         double rightSpeedB;
         double leftSpeedB;
 
+        //To hold the motor encoder ticks in each direction.
+
         int xTicks,yTicks;
 
+        //Hold the PID values for X,Y and Z.
         double zpid, xpid, ypid;
+
+        //Holds final motor powers to be sent to motors.
+
         double [] motorPowers;
 
+        //Reset the timer
         runtime.reset();
+
+        //Reset the Calculators
 
         xPIDCalculator.reset();
         yPIDCalculator.reset();
         zPIDCalculator.reset();
+
+        //Reset the motors so that the encoders are set to 0.
 
         motorsResetAndRunUsingEncoders();
 
@@ -164,9 +174,9 @@ public class NerdBOT{
         //Perform PID Loop until we reach the targets
 //
         while ( this.opmode.opModeIsActive() && (( !distanceTargetReached(xTicks,yTicks) ))){
-            //runtime.seconds() < 3){//
-        //while (opModeIsActive() && runtime.seconds() < 3 ) {
-            RobotLog.d ("NerdBOT - opModeIsActive  Inside While Loop = %b, distanceTargetReached = %b",  this.opmode.opModeIsActive(), distanceTargetReached(xTicks,yTicks));
+
+           if(debugFlag)
+               RobotLog.d ("NerdBOT - opModeIsActive  Inside While Loop = %b, distanceTargetReached = %b",  this.opmode.opModeIsActive(), distanceTargetReached(xTicks,yTicks));
 
             //Feed the input device readings to corresponding PID calculators:
 
@@ -188,6 +198,7 @@ public class NerdBOT{
                 RobotLog.d("NerdBOT  - Speeds before Normalizing : %s |leftSpeed | rightSpeed | leftSpeedB | rightSpeedB ", funcName);
                 RobotLog.d("NerdBOT  - Speeds before Normalizing : %s |%f|%f|%f|%f ", funcName, leftSpeed, rightSpeed, leftSpeedB, rightSpeedB);
             }
+
             //Normalize the Motor Speeds for Min and Max Values
 
            motorPowers = normalizeSpeedsForMinMaxValues(leftSpeed,rightSpeed,rightSpeedB,leftSpeedB);
@@ -230,8 +241,6 @@ public class NerdBOT{
 
         motorsSetMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-          //while (this.opmode.opModeIsActive() && (!onTarget(getZAngleValue()))) {
-          // while (opModeIsActive() && runtime.seconds() < 5 ) {
         while (this.opmode.opModeIsActive() && (!onTarget(getZAngleValue()))) {
 
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
@@ -266,10 +275,6 @@ public class NerdBOT{
                   RobotLog.d("NerdBOT - Speeds after Normalizing : %s |leftSpeed | rightSpeed | leftSpeedB | rightSpeedB ", funcName);
                   RobotLog.d("NerdBOT - Speeds after Normalizing : %s |%f|%f|%f|%f ", funcName,motorPowers[0],motorPowers[1],motorPowers[2],motorPowers[3]);
               }
-
-
-
-
             }
 
             brakeMotorsAndStop();
@@ -278,21 +283,31 @@ public class NerdBOT{
 
     public int inchesToTicksForQuadStraightDrive(double wheelDiameter, double straightDistance, double wheelMountAngle){
         int ticks;
+
+        //circumference of the wheel
+
         double circum = wheelDiameter * 3.14;
+
+        //Since the wheels are mounted at an angle, do the math for wheel distance to travel
         double wheelDistanceToTravel = (straightDistance * Math.cos(Math.toRadians(wheelMountAngle))) * GEAR_RATIO ;
         if (debugFlag)
             RobotLog.d("NerdBOT - inchesToTicksForQuadStraightDrive - wheelDistanceToTravel - %f, straightDistance - %f",wheelDistanceToTravel,straightDistance );
+
+       //Find the number of rotations for wheel distance to travel.
         double numberOfWheelRotations = wheelDistanceToTravel/circum;
 
         if (debugFlag)
             RobotLog.d("NerdBOT -inchesToTicksForQuadStraightDrive - numberOfWheelRotations - %f",numberOfWheelRotations );
 
+        //Convert number of rotation into motor encoder ticks
         ticks =  (int)(Math.round(ticksPerRotation * numberOfWheelRotations));
         if (debugFlag)
             RobotLog.d("NerdBOT - inchesToTicksForQuadStraightDrive - ticks - %d",ticks );
 
         return ticks;
     }
+
+    //Function to find if the robot is within desired tolerance for Z angle.
 
     boolean onTarget(double angle) {
         double error;
@@ -310,6 +325,8 @@ public class NerdBOT{
         return onTarget;
     }
 
+    //Function to find out the Motor travel distance in X direction.
+
     double findXDisplacement(){
 
             return (leftMotor.getCurrentPosition() - rightMotor.getCurrentPosition()
@@ -317,12 +334,18 @@ public class NerdBOT{
 
     }
 
+    //Function to find out the Motor travel distance in Y direction.
+
+
     double findYDisplacement(){
 
         return (this.leftMotor.getCurrentPosition() + this.rightMotor.getCurrentPosition()
                 + this.leftMotorB.getCurrentPosition() + this.rightMotorB.getCurrentPosition())/4.0;
 
     }
+
+    //Function to initialize hardware components.
+
 
     public void initializeHardware(){
 
@@ -405,16 +428,6 @@ public class NerdBOT{
 
     public void brakeMotorsAndStop(){
 
-//        this.leftMotor.setTargetPosition(this.leftMotor.getCurrentPosition());
-//        this.rightMotor.setTargetPosition(this.rightMotor.getCurrentPosition());
-//        this.leftMotorB.setTargetPosition(this.leftMotorB.getCurrentPosition());
-//        this.rightMotorB.setTargetPosition(this.rightMotorB.getCurrentPosition());
-//
-//        this.leftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        this.rightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        this.leftMotorB.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        this.rightMotorB.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
         this.leftMotor.setPower(0.0);
         this.rightMotor.setPower(0.0);
         this.leftMotorB.setPower(0.0);
@@ -430,6 +443,9 @@ public class NerdBOT{
             this.leftMotorB.setMode(runMode);
     }
 
+    //Function to reduce the speed in case of the PID values are greater than max speed.
+    //A minimum speed also can be assigned if minimum speed is more than 0.
+
     public double[] normalizeSpeedsForMinMaxValues(double leftSpeed, double rightSpeed, double rightSpeedB, double leftSpeedB){
 
         double max = Math.max(Math.max(Math.abs(leftSpeed), Math.abs(rightSpeed)), Math.max(Math.abs(leftSpeedB), Math.abs(rightSpeedB)));
@@ -440,7 +456,7 @@ public class NerdBOT{
             rightSpeedB = (rightSpeedB * this.maxSpeed)/max;
         }
 
-
+        //If there is min speed other than 0.
         // Preserve the sign of each speed for each motor
         int leftSign, rightSign, leftSignB, rightSignB;
 
@@ -459,6 +475,9 @@ public class NerdBOT{
         double [] normalizedSpeeds = {leftSpeed, rightSpeed,rightSpeedB,leftSpeedB};
         return  normalizedSpeeds;
     }
+
+    //Function to find if the robot reached the desired target distance.
+    //If desired distance is reached, it also checks if it is withing z angle tolerance.
 
     boolean distanceTargetReached( int xTicks, int yTicks){
 

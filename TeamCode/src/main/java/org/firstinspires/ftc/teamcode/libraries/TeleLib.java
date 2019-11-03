@@ -103,24 +103,14 @@ public class TeleLib {
         }
     }
 
-    public void processIntakeGrab() throws InterruptedException {
-        if (opMode.gamepad1.left_bumper) {
+    public void processIntakeGrab() {
+        if (opMode.gamepad1.right_bumper) {
             robot.setDcMotorPower(MOTOR_RIGHT_INTAKE, -.3f);
             robot.setDcMotorPower(MOTOR_LEFT_INTAKE, .3f);
 
             robot.setServoPosition(SERVO_ARM, SERVO_ARM_POS_RECIEVE);
 
             robot.setServoPosition(SERVO_GRABBER, SERVO_GRABBER_REST);
-            Thread.sleep(1000);
-            robot.setServoPosition(SERVO_GRABBER, SERVO_GRABBER_GRAB);
-
-            if (opMode.gamepad2.right_bumper && !robot.isTouchSensorPressed(TOUCH_ARM_BOTTOM)) {
-                // Extend
-                robot.setDcMotorPower(MOTOR_ARM, .5f);
-            }
-
-            robot.setServoPosition(SERVO_ARM, SERVO_ARM_POS_SCORE);
-
         }
     }
 
@@ -143,10 +133,10 @@ public class TeleLib {
     public void processMoveArmUp() {
         if (opMode.gamepad2.right_bumper && !robot.isTouchSensorPressed(TOUCH_ARM_BOTTOM)) {
             // Extend
-            robot.setDcMotorPower(MOTOR_ARM, .5f);
+            robot.setDcMotorPower(MOTOR_ARM, .75f);
         } else if (opMode.gamepad2.left_bumper && !robot.isTouchSensorPressed(TOUCH_ARM_TOP)) {
             // Retract
-            robot.setDcMotorPower(MOTOR_ARM, -.5f);
+            robot.setDcMotorPower(MOTOR_ARM, -.75f);
         } else {
             robot.setDcMotorPower(MOTOR_ARM, 0);
         }
@@ -168,12 +158,10 @@ public class TeleLib {
         }
     }
 
-//    public void processServoArm() {
-//        if (opMode.gamepad2.x) {
-//            robot.setServoPosition(SERVO_ARM, SERVO_ARM_POS_RECIEVE);
-//        } else if (opMode.gamepad2.y) {
-//            robot.setServoPosition(SERVO_ARM, SERVO_ARM_POS_SCORE);
-//        }
+    public void processServoArm() {
+        if (opMode.gamepad2.y) {
+            robot.setServoPosition(SERVO_ARM, SERVO_ARM_POS_SCORE);
+        }
 //        if (opMode.gamepad1.right_bumper && servoArmInputDelay.seconds() > .25)
 //            if (robot.getServoPosition(SERVO_ARM) == SERVO_ARM_POS_RECIEVE) {
 //                robot.setServoPosition(SERVO_ARM, SERVO_ARM_POS_RECIEVE);
@@ -206,6 +194,7 @@ public class TeleLib {
 //            robot.setDeltaServoPosition(SERVO_GRABBER, -.02f);
 //            intakeAngleServoInputDelay.reset();
 //        }
+    }
 }
 
 

@@ -27,6 +27,9 @@ public class DriveSystem {
     public static final String TAG = "DriveSystem";
     public static final double P_TURN_COEFF = 0.07;     // Larger is more responsive, but also less stable
     public static final double HEADING_THRESHOLD = 1 ;      // As tight as we can make it with an integer gyro
+    public static final double SLOW_DRIVE_POWER = 0.2;
+    public static final double MAX_DRIVE_POWER = 1.0;
+    public double power;
 
     public EnumMap<MotorNames, DcMotor> motors;
 
@@ -34,6 +37,7 @@ public class DriveSystem {
 
     private int mTargetTicks;
     private double mTargetHeading;
+    private boolean slowDrive;
 
     // 4 inches
     private final double TICKS_IN_MM = 1.358267716;
@@ -59,7 +63,6 @@ public class DriveSystem {
     }
 
     public void initMotors() {
-
         motors.forEach((name, motor) -> {
             motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -74,7 +77,6 @@ public class DriveSystem {
                     break;
             }
         });
-
         setMotorPower(0);
     }
 
@@ -84,9 +86,16 @@ public class DriveSystem {
      * @param leftX Left X joystick value
      * @param leftY Left Y joystick value in case you couldn't tell from the others
      */
-
     // TODO
-    public void drive(float rightX, float leftX, float leftY) {
+    public void drive(float rightX, float leftX, float leftY, boolean  xButton) {
+
+        this.slowDrive = xButton;
+        Log.d(TAG, "slow drive -- " + slowDrive);
+        if (slowDrive) {
+            power = SLOW_DRIVE_POWER;
+        } else {
+            power = MAX_DRIVE_POWER;
+        }
         // Prevent small values from causing the robot to drift
         if (Math.abs(rightX) < 0.01) {
             rightX = 0.0f;
@@ -106,19 +115,20 @@ public class DriveSystem {
         motors.forEach((name, motor) -> {
             switch(name) {
                 case FRONTRIGHT:
-                    motor.setPower(Range.clip(frontRightPower, -1, 1));
+                    motor.setPower(Range.clip(frontRightPower, -power, power));
                     break;
                 case BACKLEFT:
-                    motor.setPower(Range.clip(backLeftPower, -1, 1));
+                    motor.setPower(Range.clip(backLeftPower, -power, power));
                     break;
                 case FRONTLEFT:
-                    motor.setPower(Range.clip(frontLeftPower, -1, 1));
+                    motor.setPower(Range.clip(frontLeftPower, -power, power));
                     break;
                 case BACKRIGHT:
-                    motor.setPower(Range.clip(backRightPower, -1, 1));
+                    motor.setPower(Range.clip(backRightPower, -power, power));
                     break;
             }
         });
+        slowDrive = false;
     }
 
     public boolean driveToPositionTicks(int ticks, Direction direction, double maxPower) {

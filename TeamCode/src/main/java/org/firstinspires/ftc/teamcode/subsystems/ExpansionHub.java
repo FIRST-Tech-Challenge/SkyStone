@@ -36,10 +36,7 @@ import com.qualcomm.hardware.lynx.commands.core.LynxGetADCCommand;
 import com.qualcomm.hardware.lynx.commands.core.LynxGetADCResponse;
 import com.qualcomm.hardware.lynx.commands.core.LynxGetMotorConstantPowerCommand;
 import com.qualcomm.hardware.lynx.commands.core.LynxGetMotorConstantPowerResponse;
-import com.qualcomm.hardware.lynx.commands.core.LynxPhoneChargeControlCommand;
 import com.qualcomm.hardware.lynx.commands.core.LynxSetMotorConstantPowerCommand;
-import com.qualcomm.hardware.lynx.commands.standard.LynxGetModuleStatusCommand;
-import com.qualcomm.hardware.lynx.commands.standard.LynxGetModuleStatusResponse;
 import com.qualcomm.hardware.lynx.commands.standard.LynxSetModuleLEDColorCommand;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -88,13 +85,13 @@ public class ExpansionHub extends LynxController {
         } catch (InterruptedException | RuntimeException | LynxNackException e) {
             handleException(e);
         }
-        return -1;
+        return Double.NaN;
     }
 
     public synchronized double getMotorVoltagePercent(DcMotorEx motor) {
         int port = motor.getPortNumber();
         LynxGetMotorConstantPowerCommand command = new LynxGetMotorConstantPowerCommand(this.getModule(), port);
-        double result = 0;
+        double result = Double.NaN;
         try {
             LynxGetMotorConstantPowerResponse response = command.sendReceive();
             int iPower = response.getPower();
@@ -105,23 +102,6 @@ public class ExpansionHub extends LynxController {
             handleException(e);
         }
         return result;
-    }
-
-    /**
-     * Not guaranteed behavior, merely asks if the motor "has lost counts" and returns the opposite
-     * @param motor th motor to check
-     * @return
-     */
-    public synchronized boolean encoderWorks(DcMotorEx motor) {
-        int port = motor.getPortNumber();
-        LynxGetModuleStatusCommand command = new LynxGetModuleStatusCommand(lynxModule);
-        try {
-            LynxGetModuleStatusResponse response = command.sendReceive();
-            return !response.hasMotorLostCounts(port);
-        } catch (Exception e) {
-            handleException(e);
-        }
-        return false;
     }
 
     private static HashMap<String, ExpansionHub> availableHubs = new HashMap<>();

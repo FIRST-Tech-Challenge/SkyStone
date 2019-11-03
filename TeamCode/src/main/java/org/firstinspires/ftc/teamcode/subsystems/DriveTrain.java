@@ -142,28 +142,50 @@ public class DriveTrain {
                 myLocation.translate(dx * TICKS_TO_INCHES, dy * TICKS_TO_INCHES);
                 return;
             }
-            Solution solved = solve(leftY.getABCD(), rightY.getABCD(), x.getABCD());
-            double rotCenterRelX = solved.xc;
-            double rotCenterRelY = solved.yc;
-            double rotRadCcw = solved.tr;
+            double[] solved = solve(new double[][]{
+                    {
+                            Math.cos(leftY.fetchDirection()),
+                            -Math.sin(leftY.fetchDirection()),
+                            -leftY.getMovedInches(),
+                            Math.cos(leftY.fetchDirection()) * leftY.relativeLocation.x
+                                    - Math.sin(leftY.fetchDirection()) * leftY.relativeLocation.y
+                    },
+                    {
+                            Math.cos(rightY.fetchDirection()),
+                            -Math.sin(rightY.fetchDirection()),
+                            -rightY.getMovedInches(),
+                            Math.cos(rightY.fetchDirection()) * rightY.relativeLocation.x
+                                    - Math.sin(rightY.fetchDirection()) * rightY.relativeLocation.y
+                    },
+                    {
+                            Math.cos(x.fetchDirection()),
+                            -Math.sin(x.fetchDirection()),
+                            -x.getMovedInches(),
+                            Math.cos(x.fetchDirection()) * x.relativeLocation.x
+                                    - Math.sin(x.fetchDirection()) * x.relativeLocation.y
+                    },
+                }
+            );
+            double rotCenterRelX = solved[0];
+            double rotCenterRelY = solved[1];
+            double rotRadCw = 1 / solved[2];
             myLocation.direction = new Angle(
-                    myLocation.direction.getValue(Angle.AngleUnit.RADIANS, Angle.AngleOrientation.COMPASS_HEADING) - rotRadCcw,
+                    myLocation.direction.getValue(Angle.AngleUnit.RADIANS, Angle.AngleOrientation.COMPASS_HEADING) + rotRadCw,
                     Angle.AngleUnit.RADIANS,
                     Angle.AngleOrientation.COMPASS_HEADING
             );
-            myLocation.direction.getValue(Angle.AngleUnit.DEGREES, Angle.AngleOrientation.COMPASS_HEADING);
-            double diffx = -rotCenterRelX;
-            double diffy = -rotCenterRelY;
-            double atan = Math.atan2(diffy, diffx);
-            atan += rotRadCcw;
-            double radius = Math.hypot(diffx, diffy);
-            double ndiffx = radius * Math.cos(atan);
-            double ndiffy = radius * Math.sin(atan);
-            myLocation.translate(ndiffx - diffx, ndiffy - diffy);
+            double oldX = myLocation.x;
+            double oldY = myLocation.y;
+            double r = Math.hypot(rotCenterRelX, rotCenterRelY);
+            double hr = rotCenterRelX + oldX;
+            double kr = rotCenterRelY + oldY;
+            double theta = -rotRadCw + Math.atan2(-rotCenterRelY, -rotCenterRelX);
+            myLocation.setLocation(hr + r * Math.cos(theta), kr + r * Math.sin(theta));
         }
 
         private class Wheel {
             private final Location relativeLocation;
+            private final double direction;
             private final DcMotorEx encoder;
             private long lastEnc;
 
@@ -171,83 +193,80 @@ public class DriveTrain {
                 this.relativeLocation = relativeLocation;
                 this.encoder = encoder;
                 lastEnc = ButtonAndEncoderData.getLatest().getCurrentPosition(encoder);
+                direction = relativeLocation.direction.getValue(Angle.AngleUnit.RADIANS, Angle.AngleOrientation.COMPASS_HEADING);
             }
 
-            private WheelEquation getABCD() {
-                double xw = relativeLocation.x;
-                double yw = relativeLocation.y;
-                double tw = relativeLocation.direction.getValue(Angle.AngleUnit.RADIANS, Angle.AngleOrientation.UNIT_CIRCLE);
-                double deltaEnc = ButtonAndEncoderData.getLatest().getCurrentPosition(encoder) - lastEnc;
-                lastEnc += deltaEnc;
-                deltaEnc *= TICKS_TO_INCHES;
-                return new WheelEquation(-Math.sin(tw), Math.cos(tw), xw*Math.sin(tw)-yw*Math.cos(tw), deltaEnc);
+            double getMovedInches() {
+                long dx = ButtonAndEncoderData.getLatest().getCurrentPosition(encoder) - lastEnc;
+                lastEnc += dx;
+                return dx * TICKS_TO_INCHES;
             }
-        }
 
-        private class WheelEquation {
-            private final double a, b, c, d;
-            private WheelEquation(double a, double b, double negD, double negC) {
-                this.a = a;
-                this.b = b;
-                this.c = -negC;
-                this.d = -negD;
+            double fetchDirection() {
+                return direction;
             }
         }
 
-        private Solution solve(WheelEquation one, WheelEquation two, WheelEquation three) {
-            double [][] augmentedMatrix = new double[][]{
-                    {one.a, one.b, one.c, one.d},
-                    {two.a, two.b, two.c, two.d},
-                    {three.a, three.b, three.c, three.d}
-            };
-            int numWheels = 3;
-            for (int i = 0; i < numWheels; i++) {
-                double pivot = augmentedMatrix[i][i];
-                for (int j = i + 1; j < numWheels; j++) {
-                    double scalar = -pivot/augmentedMatrix[j][i];
-                    if (scalar == 0 || augmentedMatrix[j][i] == 0) {
+        private double[] solve(double[][] augmentedMatrix) {
+            double[][] matrix = new double[augmentedMatrix.length][augmentedMatrix.length + 1];
+            for (int i = 0; i < matrix.length; i++) {
+                System.arraycopy(augmentedMatrix[i], 0, matrix[i], 0, matrix[i].length);
+            }
+            for (int i = 0; i < matrix.length; i++) {
+                for (int j = i; j < matrix.length; j++) {
+                    if (!isZero(matrix[j][i])) {
+                        swapRows(matrix, i, j);
                         break;
                     }
-                    for (int k = 0; k <= numWheels; k++) {
-                        augmentedMatrix[j][k] *= scalar;
-                    }
-                    for (int k = 0; k <= numWheels; k++) {
-                        augmentedMatrix[j][k] += augmentedMatrix[i][k];
-                    }
-                    augmentedMatrix[j][i] = 0;
                 }
-                if (pivot == 0) {
-                    continue;
-                }
-                for (int k = 0; k <= numWheels; k++) {
-                    augmentedMatrix[i][k] /= pivot;
+                scale(matrix, i, 1 / matrix[i][i]);
+                matrix[i][i] = 1;
+                for (int j = i + 1; j < matrix.length; j++) {
+                    if (isZero(matrix[j][i])) {
+                        continue;
+                    }
+                    scale(matrix, j, -1 / matrix[j][i]);
+                    addRow(matrix, i, j);
+                    matrix[j][i] = 0;
                 }
             }
-            for (int i = numWheels - 1; i >= 0; i--) {
-                for (int j = 0; j < i; j++) {
-                    double[] newRow = new double[numWheels + 1];
-                    for (int k = 0; k <= numWheels; k++) {
-                        newRow[k] = augmentedMatrix[j][i]*augmentedMatrix[i][k];
+            for (int i = matrix.length - 1; i >= 0; i--) {
+                for (int j = i - 1; j >= 0; j--) {
+                    if (isZero(matrix[j][i])) {
+                        continue;
                     }
-                    for (int k = 0; k <= numWheels; k++) {
-                        augmentedMatrix[j][k] -= newRow[k];
-                    }
-                    augmentedMatrix[j][i] = 0;
+                    double sc = -matrix[j][i];
+                    scale(matrix, i, sc);
+                    addRow(matrix, i, j);
+                    scale(matrix, i, 1/sc);
                 }
             }
-            double[] solutions = new double[numWheels];
-            for (int k = 0; k < numWheels; k++) {
-                solutions[k] = augmentedMatrix[k][numWheels];
+            double[] solutions = new double[matrix.length];
+            for (int k = 0; k < matrix.length; k++) {
+                solutions[k] = matrix[k][matrix.length];
             }
-            return new Solution(solutions[0], solutions[1], solutions[2]);
+            return solutions;
         }
 
-        private class Solution {
-            private final double xc, yc, tr;
-            private Solution(double xc, double yc, double invtr) {
-                this.xc = xc;
-                this.yc = yc;
-                this.tr = 1 / invtr;
+        private boolean isZero(double number) {
+            return Math.abs(number) < 1e-15;
+        }
+
+        private void swapRows(double[][] matrix, int row1, int row2) {
+            double[] rowa = matrix[row2];
+            matrix[row2] = matrix[row1];
+            matrix[row1] = rowa;
+        }
+
+        private void scale(double[][] matrix, int row, double constant) {
+            for (int i = 0; i < matrix[row].length; i++) {
+                matrix[row][i] *= constant;
+            }
+        }
+
+        private void addRow(double[][] matrix, int addend, int rowChanged) {
+            for (int i = 0; i < matrix[rowChanged].length; i++) {
+                matrix[rowChanged][i] += matrix[addend][i];
             }
         }
     }

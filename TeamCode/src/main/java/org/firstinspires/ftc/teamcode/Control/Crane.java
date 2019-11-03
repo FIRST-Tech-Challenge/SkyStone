@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -30,12 +31,17 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 import static org.firstinspires.ftc.teamcode.Control.Constants.COUNTS_PER_INCH;
 import static org.firstinspires.ftc.teamcode.Control.Constants.COUNTS_PER_MOTOR_REV;
+import static org.firstinspires.ftc.teamcode.Control.Constants.blimits;
+import static org.firstinspires.ftc.teamcode.Control.Constants.flimits;
+import static org.firstinspires.ftc.teamcode.Control.Constants.leftServos;
 import static org.firstinspires.ftc.teamcode.Control.Constants.linears;
 import static org.firstinspires.ftc.teamcode.Control.Constants.motorBLS;
 import static org.firstinspires.ftc.teamcode.Control.Constants.motorBRS;
 import static org.firstinspires.ftc.teamcode.Control.Constants.motorFLS;
 import static org.firstinspires.ftc.teamcode.Control.Constants.motorFRS;
 import static org.firstinspires.ftc.teamcode.Control.Constants.racks;
+import static org.firstinspires.ftc.teamcode.Control.Constants.rightServos;
+import static org.firstinspires.ftc.teamcode.Control.Constants.rotationservos;
 import static org.firstinspires.ftc.teamcode.Control.Constants.servos;
 
 public class Crane {
@@ -60,6 +66,11 @@ public class Crane {
                     setupCamera();
                     break;
                 case claw:
+                    setupClaw();
+                    break;
+                case bSystem:
+                    //setupRack();
+                    //setupLinearSlides();
                     setupClaw();
                     break;
             }
@@ -126,6 +137,11 @@ public class Crane {
 
     public Servo servo;
 
+    public Servo rotationservo, rightServo, leftServo;
+
+    public DigitalChannel flimit;
+    public DigitalChannel blimit;
+
     public double StrafetoTotalPower = 2.0/3.0;
 
     //----       IMU        ----
@@ -157,8 +173,8 @@ public class Crane {
     }
     */
     public void setupDrivetrain() throws InterruptedException {
-        motorFR = motor(motorFRS, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.FLOAT);
-        motorFL = motor(motorFLS, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.FLOAT);
+        motorFR = motor(motorFRS, DcMotorSimple.Direction.REVERSE, DcMotor.ZeroPowerBehavior.FLOAT);
+        motorFL = motor(motorFLS, DcMotorSimple.Direction.REVERSE, DcMotor.ZeroPowerBehavior.FLOAT);
         motorBR = motor(motorBRS, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.FLOAT);
         motorBL = motor(motorBLS, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.FLOAT);
 
@@ -168,6 +184,15 @@ public class Crane {
     public void setupClaw() throws InterruptedException {
         rack = motor(racks, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.FLOAT);
         linear = motor(linears, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.BRAKE);
+
+        flimit = hardwareMap.digitalChannel.get(flimits);
+        blimit = hardwareMap.digitalChannel.get(blimits);
+
+        rotationservo = servo(rotationservos, Servo.Direction.FORWARD,0,1,0.5);
+        rightServo = servo(rightServos, Servo.Direction.FORWARD,0,1,0.5);
+        leftServo = servo(leftServos, Servo.Direction.FORWARD,0,1,0.5);
+
+
         encoder(EncoderMode.ON, rack, linear);
     }
 
@@ -556,7 +581,7 @@ public class Crane {
         ON, OFF;
     }
     public enum setupType{
-        autonomous, teleop, endgame, drive, camera, claw;
+        autonomous, teleop, endgame, drive, camera, claw, bSystem;
     }
 
     //-------------------SET FUNCTIONS--------------------------------

@@ -5,12 +5,10 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
-import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.teamcode.components.DriveSystem;
 import org.firstinspires.ftc.teamcode.components.IMUSystem;
-import org.firstinspires.ftc.teamcode.components.SpinnySystem;
 import org.firstinspires.ftc.teamcode.components.Vuforia;
 import org.firstinspires.ftc.teamcode.components.Vuforia.CameraChoice;
 
@@ -19,6 +17,7 @@ import java.util.EnumMap;
 public abstract class BaseOpMode extends OpMode {
 
     protected DriveSystem driveSystem;
+    protected LatchSystem latchSystem;
     protected SpinnySystem spinnySystem;
     protected Vuforia vuforia;
     protected VuforiaTrackable skystone;
@@ -31,19 +30,27 @@ public abstract class BaseOpMode extends OpMode {
         }
         driveSystem = new DriveSystem(driveMap, hardwareMap.get(BNO055IMU.class, "imu"));
 
+        latchSystem = new LatchSystem(hardwareMap.get(Servo.class, "latch"));
+
 
         EnumMap<SpinnySystem.MotorNames, DcMotor> spinnyMap = new EnumMap<>(SpinnySystem.MotorNames.class);
         for(SpinnySystem.MotorNames name : SpinnySystem.MotorNames.values()){
             spinnyMap.put(name,hardwareMap.get(DcMotor.class, name.toString()));
         }
         spinnySystem = new SpinnySystem(spinnyMap);
+
+        latchSystem = new LatchSystem(hardwareMap.get(Servo.class, "latch"));
         DistanceSensor distanceSensor2;
         DistanceSensor distanceSensor3;
         ColorSensor colorSensor;
+
     }
 
     protected void setCamera(CameraChoice cameraChoice){
+
         vuforia = new Vuforia(hardwareMap, cameraChoice);
         skystone = vuforia.targetsSkyStone.get(0);
+
+
     }
 }

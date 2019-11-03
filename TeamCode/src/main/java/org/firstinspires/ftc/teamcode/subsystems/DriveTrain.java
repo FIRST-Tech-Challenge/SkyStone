@@ -167,21 +167,20 @@ public class DriveTrain {
             );
             double rotCenterRelX = solved[0];
             double rotCenterRelY = solved[1];
-            double rotRadCcw = 1 / solved[2];
+            double rotRadCw = 1 / solved[2];
             myLocation.direction = new Angle(
-                    myLocation.direction.getValue(Angle.AngleUnit.RADIANS, Angle.AngleOrientation.COMPASS_HEADING) - rotRadCcw,
+                    myLocation.direction.getValue(Angle.AngleUnit.RADIANS, Angle.AngleOrientation.COMPASS_HEADING) + rotRadCw,
                     Angle.AngleUnit.RADIANS,
                     Angle.AngleOrientation.COMPASS_HEADING
             );
             myLocation.direction.getValue(Angle.AngleUnit.DEGREES, Angle.AngleOrientation.COMPASS_HEADING);
-            double diffx = -rotCenterRelX;
-            double diffy = -rotCenterRelY;
-            double atan = Math.atan2(diffy, diffx);
-            atan += rotRadCcw;
-            double radius = Math.hypot(diffx, diffy);
-            double ndiffx = radius * Math.cos(atan);
-            double ndiffy = radius * Math.sin(atan);
-            myLocation.translate(ndiffx - diffx, ndiffy - diffy);
+            double oldX = myLocation.x;
+            double oldY = myLocation.y;
+            double r = Math.hypot(rotCenterRelX, rotCenterRelY);
+            double hr = rotCenterRelX + oldX;
+            double kr = rotCenterRelY + oldY;
+            double theta = -rotRadCw + Math.atan2(-rotCenterRelY, -rotCenterRelX);
+            myLocation.setLocation(hr + r * Math.cos(theta), kr + r * Math.sin(theta));
         }
 
         private class Wheel {

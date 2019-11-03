@@ -16,7 +16,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
  *     the amount the stick has been pushed (push harder, go faster).
  *   - The left stick rotates the bot around its center point (staying in place).
  */
-@TeleOp(name="Mecanum", group="Drive Systems")
+@TeleOp(name="Mecanum System", group="Drive Systems")
 public class MecanumDrive extends OpMode {
 
     private DcMotor leftFront, rightFront, leftRear, rightRear;

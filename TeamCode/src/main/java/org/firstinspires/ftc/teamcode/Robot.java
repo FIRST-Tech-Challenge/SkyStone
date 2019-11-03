@@ -15,9 +15,8 @@ public class Robot implements AutoCloseable {
     public final DriveTrain driveTrain;
     public final FoundationGrabber foundationGrabber;
     public final Lift lift;
-    public final StoneManipulator stoneManipulator; // includes capstone
+    public final StoneManipulator stoneManipulator;
     public final Camera camera;
-    public final Phone phone;
     public ExpansionHub controlHub;
     public ExpansionHub secondHub;
 
@@ -36,7 +35,6 @@ public class Robot implements AutoCloseable {
         lift = Lift.getInstance();
         stoneManipulator = StoneManipulator.getInstance();
         camera = Camera.getInstance();
-        phone = Phone.getInstance();
 
     }
 
@@ -54,13 +52,10 @@ public class Robot implements AutoCloseable {
         lift.init(hardwareMap);
         stoneManipulator.init(hardwareMap);
 //        camera.init(hardwareMap);
-        phone.init(hardwareMap);
     }
 
     @Override
     public void close() {
 //        camera.stop();
-        phone.stopGyro();
-        phone.stopTextToSpeech();
     }
 }

@@ -36,38 +36,24 @@ public class ExperimentalStuff extends OpMode {
         telemetry.addData("Battery Voltage", volts);
         telemetry.addData("Firmware Version Control", bot.controlHub.getFirmwareVersion());
         telemetry.addData("Firmware Version Second", bot.secondHub.getFirmwareVersion());
-        telemetry.addData("Phone Gyro Exists", bot.phone.hasGyro());
         telemetry.update();
     }
 
     @Override
     public void start() {
-//        bot.phone.resetBackgroundColor();
-//        bot.phone.toast("Program started.", 0);
         bot.secondHub.setStatusLedColor((byte) 0xff,(byte) 0x00,(byte) 0x7f);
-//        bot.secondHub.setPhoneChargeEnabled(true);
         bot.runtime.reset();
-        bot.phone.queueWordSpeak("Hello World!");
     }
 
     @Override
     public void loop() {
-        double rev = backupGyro1.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.YZX, AngleUnit.DEGREES).firstAngle;
+        double rev = backupGyro1.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
 
         bot.driveTrain.spinDrive(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
 
-        telemetry.addData("Speaking", bot.phone.hasQueuedSound());
-
         telemetry.addData("Rev Gyro", rev);
-        telemetry.addData("Phone Gyro", bot.phone.getGyroAngle());
         telemetry.addData("Motor Current", bot.controlHub.getMotorCurrentDraw(motorTest, ExpansionHub.CurrentDrawUnits.AMPS));
         telemetry.addData("Motor voltage", bot.controlHub.getMotorVoltagePercent(motorTest));
-        telemetry.addData("Motor has lost counts", bot.controlHub.encoderWorks(motorTest));
-
-        telemetry.addData("Total Current Draw (amps)",
-                bot.controlHub.getTotalCurrentDraw(ExpansionHub.CurrentDrawUnits.AMPS) +
-                        bot.secondHub.getTotalCurrentDraw(ExpansionHub.CurrentDrawUnits.AMPS));
-        telemetry.addData("5v Voltage", bot.controlHub.voltage5vPorts(ExpansionHub.VoltageUnits.VOLTS));
 
         telemetry.update();
     }

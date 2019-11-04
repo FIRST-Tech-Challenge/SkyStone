@@ -10,7 +10,9 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     private double course = 0; //the angle the robot is going to move at relative to its heading
     private double targetPosition = 0; //distance the robot has to move
 
-    public double[] wheelTargetPositions = new double[4];
+    private double movementVelocity = 0;
+
+    private double[] wheelTargetPositions = new double[4];
     private DcMotor.RunMode[] runModes = new DcMotor.RunMode[4];
     private final double[] wheelAngles;
 
@@ -105,9 +107,19 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
         return targetPosition;
     }
 
-    @Override
-    public void updatePosition() { }
 
+    // auto function to implement an acceleration curve
+    @Override
+    public void updatePosition()
+    {
+        double percentageTraveled = getCurrentPosition()/getTargetPosition();
+        double velocityMultiplier = -Math.pow((percentageTraveled - 0.5) * 2, 2) + 1.5;
+        setVelocity(getMovementVelocity() * velocityMultiplier);
+
+        updateMotorPowers();
+    }
+
+    // auto function to check if robot is still executing a movement command
     @Override
     public boolean isPositioning()
     {
@@ -125,15 +137,15 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     @Override
     public void finishPositioning()
     {
-        for (DcMotor motor : this.motorList)
+        for (int motorIndex = 0; motorIndex < this.motorList.length; motorIndex++)
         {
-            motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            motor.setTargetPosition(0);
+            this.motorList[motorIndex].setPower(0); //Hopefully stops the drift at the end of move commands
+            this.motorList[motorIndex].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            this.motorList[motorIndex].setMode(runModes[motorIndex]);
         }
-        for (int motorIndex = 0; motorIndex < this.motorList.length; motorIndex++) this.motorList[motorIndex].setMode(runModes[motorIndex]);
     }
 
-    // executes the position functions
+    // auto function to initiate the positioning of the robot, dont use instead recreate loop in robotmove function
     @Override
     public void position()
     {

@@ -16,9 +16,14 @@ public class HeadingableMecanumAuto extends LinearOpMode
     @Override
     public void runOpMode() throws InterruptedException
     {
-        robot = new HeadingableMecanumRobot(this.hardwareMap, false);
+        robot = new HeadingableMecanumRobot(this.hardwareMap, this.telemetry, false);
 
-        while (!robot.imu.isGyroCalibrated());
+        while (!robot.imu.isGyroCalibrated())
+        {
+            telemetry.addData("Status", "Calibrating");
+            telemetry.update();
+        }
+
         waitForStart();
 
         robot.drivetrain.setTargetHeading(Math.PI/2);

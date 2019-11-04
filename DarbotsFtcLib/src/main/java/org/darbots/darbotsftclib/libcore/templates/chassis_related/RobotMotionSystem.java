@@ -37,7 +37,8 @@ import java.util.ArrayList;
 public abstract class RobotMotionSystem implements RobotNonBlockingDevice {
     private ArrayList<RobotMotionSystemTask> m_TaskLists;
     private Robot2DPositionTracker m_PosTracker;
-    private double m_LinearMotionDistanceFactor;
+    private double m_LinearZMotionDistanceFactor;
+    private double m_LinearXMotionDistanceFactor;
     private double m_RotationalMotionDistanceFactor;
     private boolean m_FixedDistanceGyroGuidedDrive = false;
     private boolean m_GyroGuidedDrivePublicStartingAngleEnabled = false;
@@ -48,13 +49,14 @@ public abstract class RobotMotionSystem implements RobotNonBlockingDevice {
     public RobotMotionSystem(Robot2DPositionTracker PositionTracker){
         this.m_TaskLists = new ArrayList();
         this.m_PosTracker = PositionTracker;
-        this.m_LinearMotionDistanceFactor = 1;
+        this.setLinearMotionDistanceFactor(1);
         this.m_RotationalMotionDistanceFactor = 1;
     }
     public RobotMotionSystem(RobotMotionSystem MotionSystem){
         this.m_TaskLists = new ArrayList();
         this.m_PosTracker = MotionSystem.m_PosTracker;
-        this.m_LinearMotionDistanceFactor = MotionSystem.m_LinearMotionDistanceFactor;
+        this.m_LinearZMotionDistanceFactor = MotionSystem.m_LinearZMotionDistanceFactor;
+        this.m_LinearXMotionDistanceFactor = MotionSystem.m_LinearXMotionDistanceFactor;
         this.m_RotationalMotionDistanceFactor = MotionSystem.m_RotationalMotionDistanceFactor;
         this.m_FixedDistanceGyroGuidedDrive = MotionSystem.m_FixedDistanceGyroGuidedDrive;
         this.m_GyroGuidedDrivePublicStartingAngleEnabled = MotionSystem.m_GyroGuidedDrivePublicStartingAngleEnabled;
@@ -64,12 +66,22 @@ public abstract class RobotMotionSystem implements RobotNonBlockingDevice {
         this.m_SteadySpeedUpZoneRatio = MotionSystem.m_SteadySpeedUpZoneRatio;
     }
 
-    public double getLinearMotionDistanceFactor(){
-        return this.m_LinearMotionDistanceFactor;
+    public double getLinearZMotionDistanceFactor(){
+        return this.m_LinearZMotionDistanceFactor;
+    }
+    public void setLinearZMotionDistanceFactor(double Factor){
+        this.m_LinearZMotionDistanceFactor = Factor;
     }
 
+    public double getLinearXMotionDistanceFactor(){
+        return this.m_LinearXMotionDistanceFactor;
+    }
+    public void setLinearXMotionDistanceFactor(double Factor){
+        this.m_LinearXMotionDistanceFactor = Factor;
+    }
     public void setLinearMotionDistanceFactor(double Factor){
-        this.m_LinearMotionDistanceFactor = Factor;
+        this.setLinearZMotionDistanceFactor(Factor);
+        this.setLinearXMotionDistanceFactor(Factor);
     }
 
     public double getRotationalMotionDistanceFactor(){

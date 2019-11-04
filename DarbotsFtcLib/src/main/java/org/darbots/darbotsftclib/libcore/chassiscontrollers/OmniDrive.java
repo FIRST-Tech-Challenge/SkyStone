@@ -67,7 +67,7 @@ public class OmniDrive extends RobotMotionSystem {
         }
 
         private void __recalculateCounts(){
-            int CountToMove = (int) Math.round(this.getXDistance() / m_Drive.m_LeftTopMotor.getRobotWheel().getXPerCounterClockwiseDistance() / m_Drive.m_LeftTopMotor.getRobotWheel().getCircumference() * m_Drive.m_LeftTopMotor.getMotorController().getMotor().getMotorType().getCountsPerRev() * m_Drive.getLinearMotionDistanceFactor());
+            int CountToMove = (int) Math.round(this.getXDistance() / m_Drive.m_LeftTopMotor.getRobotWheel().getXPerCounterClockwiseDistance() / m_Drive.m_LeftTopMotor.getRobotWheel().getCircumference() * m_Drive.m_LeftTopMotor.getMotorController().getMotor().getMotorType().getCountsPerRev() * m_Drive.getLinearXMotionDistanceFactor());
             CountToMove = Math.abs(CountToMove);
             int CountToMoveRight = (this.getXDistance() >= 0 ? CountToMove : -CountToMove);
             this.m_CountsToMove = CountToMoveRight;
@@ -77,7 +77,7 @@ public class OmniDrive extends RobotMotionSystem {
         protected void __taskFinished() {
             if(this.m_Drive.getPositionTracker() != null) {
                 int CountsMoved = this.m_Drive.m_LeftTopMotor.getMotorController().getMotor().getCurrentCount() - this.m_LTStartCount;
-                double DistanceMoved = CountsMoved / m_Drive.m_LeftTopMotor.getMotorController().getMotor().getMotorType().getCountsPerRev() * m_Drive.m_LeftTopMotor.getRobotWheel().getCircumference() * m_Drive.m_LeftTopMotor.getRobotWheel().getXPerCounterClockwiseDistance() / m_Drive.getLinearMotionDistanceFactor();
+                double DistanceMoved = CountsMoved / m_Drive.m_LeftTopMotor.getMotorController().getMotor().getMotorType().getCountsPerRev() * m_Drive.m_LeftTopMotor.getRobotWheel().getCircumference() * m_Drive.m_LeftTopMotor.getRobotWheel().getXPerCounterClockwiseDistance() / m_Drive.getLinearXMotionDistanceFactor();
                 getMotionSystem().getPositionTracker().drive_MoveThroughRobotAngle(
                         -90,
                         DistanceMoved
@@ -193,7 +193,7 @@ public class OmniDrive extends RobotMotionSystem {
         }
 
         private void __recalculateCounts(){
-            int CountToMove = (int) Math.round(this.getZDistance() / m_Drive.m_LeftTopMotor.getRobotWheel().getZPerCounterClockwiseDistance() / m_Drive.m_LeftTopMotor.getRobotWheel().getCircumference() * m_Drive.m_LeftTopMotor.getMotorController().getMotor().getMotorType().getCountsPerRev() * m_Drive.getLinearMotionDistanceFactor());
+            int CountToMove = (int) Math.round(this.getZDistance() / m_Drive.m_LeftTopMotor.getRobotWheel().getZPerCounterClockwiseDistance() / m_Drive.m_LeftTopMotor.getRobotWheel().getCircumference() * m_Drive.m_LeftTopMotor.getMotorController().getMotor().getMotorType().getCountsPerRev() * m_Drive.getLinearZMotionDistanceFactor());
             CountToMove = Math.abs(CountToMove);
             int CountToMoveForward = (this.getZDistance() >= 0 ? CountToMove : -CountToMove);
             this.m_CountsToMove = CountToMoveForward;
@@ -203,7 +203,7 @@ public class OmniDrive extends RobotMotionSystem {
         protected void __taskFinished() {
             if(this.m_Drive.getPositionTracker() != null) {
                 int CountsMoved = this.m_Drive.m_LeftTopMotor.getMotorController().getMotor().getCurrentCount() - this.m_LTStartCount;
-                double DistanceMoved = CountsMoved / m_Drive.m_LeftTopMotor.getMotorController().getMotor().getMotorType().getCountsPerRev() * m_Drive.m_LeftTopMotor.getRobotWheel().getCircumference() * m_Drive.m_LeftTopMotor.getRobotWheel().getZPerCounterClockwiseDistance() / m_Drive.getLinearMotionDistanceFactor();
+                double DistanceMoved = CountsMoved / m_Drive.m_LeftTopMotor.getMotorController().getMotor().getMotorType().getCountsPerRev() * m_Drive.m_LeftTopMotor.getRobotWheel().getCircumference() * m_Drive.m_LeftTopMotor.getRobotWheel().getZPerCounterClockwiseDistance() / m_Drive.getLinearZMotionDistanceFactor();
                 getMotionSystem().getPositionTracker().drive_MoveThroughRobotAngle(
                         0,
                         DistanceMoved

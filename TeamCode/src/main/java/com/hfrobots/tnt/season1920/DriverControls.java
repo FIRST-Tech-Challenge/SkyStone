@@ -184,9 +184,9 @@ public class DriverControls {
     }
 
     public void periodicTask() {
-        double x = - driveStrafe.getPosition(); // positive robot x axis is negative joystick axis
+        double x = driveStrafe.getPosition();
         double y = - driveForwardReverse.getPosition();
-        double rot = - driveRotate.getPosition(); // positive robot z rotation (human-normal) is negative joystick x axis
+        double rot = driveRotate.getPosition(); // positive robot z rotation (human-normal) is negative joystick x axis
         boolean useEncoders = true;
 
         // do this first, it will be cancelled out by bump-strafe

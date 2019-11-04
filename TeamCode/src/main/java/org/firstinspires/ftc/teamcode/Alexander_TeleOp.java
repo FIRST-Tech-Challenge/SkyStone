@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -58,7 +59,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="AlexTeleOp", group="Linear OpMode")
+@TeleOp(name="Alexander_TeleOp", group="Linear OpMode")
 //@Disabled
 public class Alexander_TeleOp extends LinearOpMode {
 
@@ -193,13 +194,13 @@ public class Alexander_TeleOp extends LinearOpMode {
         backRight = getNewMotor("backRight");
 
         if(frontLeft != null)
-            frontLeft.setDirection(DcMotor.Direction.REVERSE);
-        if(frontRight != null)
-            frontRight.setDirection(DcMotor.Direction.FORWARD);
+            frontLeft.setDirection(DcMotor.Direction.FORWARD);           // This makes the front of the robot the side with the block intake!!!!!
+        if(frontRight != null)                                          // This makes the front of the robot the side with the block intake!!!!!
+            frontRight.setDirection(DcMotor.Direction.REVERSE);
         if(backLeft != null)
-            backLeft.setDirection(DcMotor.Direction.REVERSE);
+            backLeft.setDirection(DcMotor.Direction.FORWARD);
         if(backRight != null)
-            backRight.setDirection(DcMotor.Direction.FORWARD);
+            backRight.setDirection(DcMotor.Direction.REVERSE);
 
 
         // Wait for the game to start (driver presses PLAY)

@@ -52,6 +52,8 @@ public class Advanced_Holonomic_OP extends OpMode {
     private DcMotor backLeftDrive = null;
     private DcMotor backRightDrive = null;
     private BNO055IMU imu;
+
+    public float expectedAngle = 0;
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -128,6 +130,14 @@ public class Advanced_Holonomic_OP extends OpMode {
         double sin = Math.sin(angle);
         double cos = Math.cos(angle);
 
+        float x = gamepad1.left_stick_x;
+        float y = -gamepad1.left_stick_y;
+
+        frontLeftPower = y + -x;
+        frontRightPower = y + x;
+        backLeftPower = y + x;
+        backRightPower = y + -x;
+
         if (gamepad1.dpad_up || gamepad1.dpad_down) {
             int magnitude = (gamepad1.dpad_up ? 1 : 0) + (gamepad1.dpad_down ? -1 : 0);
             frontLeftPower = magnitude * sin;
@@ -149,11 +159,14 @@ public class Advanced_Holonomic_OP extends OpMode {
             backLeftPower += -1;
             backRightPower += 1;
         }
-        if ( gamepad1.right_bumper){
+        else if ( gamepad1.right_bumper) {
             frontLeftPower += 1;
             frontRightPower += -1;
             backLeftPower += 1;
             backRightPower += -1;
+        }
+        else{
+         expectedAngle = angle;
         }
 
 

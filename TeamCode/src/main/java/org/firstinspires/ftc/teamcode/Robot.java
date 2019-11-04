@@ -24,13 +24,13 @@ public class Robot {
     public DcMotor liftMotor;
 
     // Servos
-    private Servo gripperRotateServo1;
-    private Servo gripperRotateServo2;
+    Servo gripperRotateServo1;
+    Servo gripperRotateServo2;
     private Servo grabServo;
 
     // Constants
     private int CORE_HEX_TICKS_PER_REV = 288; // ticks / rev
-    private int ANGLE_OF_GRIPPER_WHEN_GRABBING = 45; // in degrees
+    private int ANGLE_OF_GRIPPER_WHEN_GRABBING = 30; // in degrees
     private double ANDYMARK_TICKS_PER_REV = 537.6; // ticks / rev
     private double WHEEL_DIAMETER = 4;
     private double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI; // in / rev
@@ -228,8 +228,8 @@ public class Robot {
     }
 
     void rotateGripper(double angle) {
-        this.gripperRotateServo1.setPosition(angle / 360);
-        this.gripperRotateServo2.setPosition(angle / 360);
+        this.gripperRotateServo1.setPosition(angle / 270);
+        this.gripperRotateServo2.setPosition(angle / 270);
     }
 
     void bringArmDown(OpMode opmode) throws InterruptedException {

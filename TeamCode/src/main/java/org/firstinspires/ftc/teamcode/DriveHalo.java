@@ -16,6 +16,7 @@ public class DriveHalo extends OpMode {
     private float deadZone = 0.1f; // joystick deadzone
     private boolean buttonPressed = false;
     private boolean armClosed = false;
+    private double wristPosition = 0;
     boolean slowMode = false; // activate slowMode if both joysticks are pushed down
     boolean strafeMode = false;
     Boolean[] buttons = new Boolean[7];

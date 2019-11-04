@@ -239,8 +239,8 @@ public class Robot3939 {
             aHeld = false;
 
         if (forks) {//down
-            servoLeft.setPosition(0.5);
-            servoRight.setPosition(0.5);
+            servoLeft.setPosition(0.6);
+            servoRight.setPosition(0.4);
         }
         else if(earthIsFlat)//up
         {

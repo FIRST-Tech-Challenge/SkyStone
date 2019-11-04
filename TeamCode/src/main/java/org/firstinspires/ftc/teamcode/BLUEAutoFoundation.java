@@ -58,15 +58,15 @@ import pkg3939.skystoneDetectorClass;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="REDAutoFoundation", group="Pushbot")
+@Autonomous(name="BLUEAutoFoundation", group="Pushbot")
 //@Disabled
 public class BLUEAutoFoundation extends LinearOpMode {
 
     /* Declare OpMode members. */
     Robot3939 robot = new Robot3939();   // Use a Pushbot's hardware
 
-    skystoneDetectorClass detector = new skystoneDetectorClass();
-    int[] vals;
+    //skystoneDetectorClass detector = new skystoneDetectorClass();
+    //int[] vals;
     private ElapsedTime     runtime = new ElapsedTime();
 
     private double UP = 0.5;
@@ -83,10 +83,10 @@ public class BLUEAutoFoundation extends LinearOpMode {
         robot.setFront(hardwareMap);
     //    robot.initIMU(hardwareMap);//gyro
 
-        detector.setOffset(1.7f/8f, 1.2f/8f);
-        detector.camSetup(hardwareMap);
+//        detector.setOffset(1.7f/8f, 1.2f/8f);
+//        detector.camSetup(hardwareMap);
 
-        robot.useEncoders(false);
+        //robot.useEncoders(false);
 
 //        telemetry.addData("Mode", "calibrating...");
 //        telemetry.update();
@@ -106,19 +106,26 @@ public class BLUEAutoFoundation extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         while(opModeIsActive()) {
-            robot.servoLeft.setPosition(0);
-            robot.servoRight.setPosition(1);
+            robot.servoLeft.setPosition(0);//raises up
+            robot.servoRight.setPosition(1);//raises up
             robot.claw.setPosition(UP);
-            detector.updateVals();
-            vals = detector.getVals();
-            telemetry.addData("Values", vals[1] + "   " + vals[0] + "   " + vals[2]);
-            telemetry.update();
+            //detector.updateVals();
+            //vals = detector.getVals();
+            //telemetry.addData("Values", vals[1] + "   " + vals[0] + "   " + vals[2]);
+            //telemetry.update();
             //code here:
-            moveDistance(0.4, 1.5);
-            robot.servoLeft.setPosition(0.5);
-            robot.servoRight.setPosition(0.5);
-            mySleep(300);
-            moveDistance(0.4, -1);
+            strafe(-0.4, 0.85);
+            mySleep(0);//delay for partner
+            moveDistance(0.4, 1.4);
+            robot.servoLeft.setPosition(0.6);
+            robot.servoRight.setPosition(0.4);
+            mySleep(0.5);
+            moveDistance(-0.4, 2.4);
+
+            robot.servoLeft.setPosition(0);//raises up
+            robot.servoRight.setPosition(1);//raises up
+            mySleep(0.5);
+            strafe(0.4, 3.7);
 
             telemetry.addData("Path", "Complete");
             telemetry.update();

@@ -113,40 +113,66 @@ public class REDAutoSkystoneDelivery extends LinearOpMode {
             telemetry.update();
 
             if(vals[0] == 0){//middle
-                moveDistance(0.4, 1.5);//first forward
-                robot.claw.setPosition(1);
+                moveDistance(0.4, 1.6);//first forward
+                robot.claw.setPosition(1);//grab skystone
+                robot.servoLeft.setPosition(0.5);
+                robot.servoRight.setPosition(0.5);
                 mySleep(0.5);
-                moveDistance(-0.4, 0.45);//back
-                robot.claw.setPosition(UP);
-                strafe(-0.4, 1.9);
-                moveDistance(0.4, 0.5);//second forward
-                robot.claw.setPosition(1);
+                moveDistance(-0.3, 0.75);//back
+                strafe(0.4, 4.2 );
+                robot.claw.setPosition(UP);//let go of skystone
+
+                robot.servoLeft.setPosition(0);//raises up
+                robot.servoRight.setPosition(1);//raises up
                 mySleep(0.5);
-                moveDistance(-0.4, 0.45);//second back
+                strafe(-0.4, 1.2);//go back to park
+//                moveDistance(0.4, 0.5);//second forward
+//                robot.claw.setPosition(1);
+//                mySleep(0.5);
+//                moveDistance(-0.4, 0.45);//second back
             } else if(vals[1] == 0) {//left
-                strafe(-0.4, 0.6);
-                moveDistance(0.4, 1.5);
+                strafe(-0.4, 0.7);
+                moveDistance(0.4, 1.6);//first forward
                 robot.claw.setPosition(1);
+                robot.servoLeft.setPosition(0.5);
+                robot.servoRight.setPosition(0.5);
                 mySleep(0.5);
-                moveDistance(-0.4, 0.45);
-                robot.claw.setPosition(UP);
-                strafe(-0.4, 1.9);
-                moveDistance(0.4, 0.5);
-                robot.claw.setPosition(1);
+                moveDistance(-0.3, 0.75);//back
+                strafe(0.4, 4.8);
+                robot.claw.setPosition(UP);//let go of skystone
+
+                robot.servoLeft.setPosition(0);//raises up
+                robot.servoRight.setPosition(1);//raises up
                 mySleep(0.5);
-                moveDistance(-0.4, 0.45);
+                strafe(-0.4, 1.2);//go back to park
+//                robot.claw.setPosition(UP);
+//                strafe(-0.4, 1.9);
+//                moveDistance(0.4, 0.5);
+//                robot.claw.setPosition(1);
+//                mySleep(0.5);
+//                moveDistance(-0.4, 0.45);
             } else {//right
-                strafe(0.4, 0.6);
-                moveDistance(0.4, 1.5);
+                strafe(0.4, 0.7);
+
+                moveDistance(0.4, 1.6);//first forward
                 robot.claw.setPosition(1);
+                robot.servoLeft.setPosition(0.5);
+                robot.servoRight.setPosition(0.5);
                 mySleep(0.5);
-                moveDistance(-0.4, 0.45);
-                robot.claw.setPosition(UP);
-                strafe(-0.4, 1.9);
-                moveDistance(0.4, 0.5);
-                robot.claw.setPosition(1);
+                moveDistance(-0.3, 0.75);//back
+                strafe(0.4, 3.7);//1.65
+                robot.claw.setPosition(UP);//let go of skystone
+
+                robot.servoLeft.setPosition(0);//raises up
+                robot.servoRight.setPosition(1);//raises up
                 mySleep(0.5);
-                moveDistance(-0.4, 0.45);
+                strafe(-0.4, 1.2);//go back to park
+//                robot.claw.setPosition(UP);
+//                strafe(-0.4, 1.9);
+//                moveDistance(0.4, 0.5);
+//                robot.claw.setPosition(1);
+//                mySleep(0.5);
+//                moveDistance(-0.4, 0.45);
             }
             telemetry.addData("Path", "Complete");
             telemetry.update();

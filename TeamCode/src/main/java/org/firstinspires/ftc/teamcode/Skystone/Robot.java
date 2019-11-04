@@ -63,20 +63,20 @@ public class Robot {
     private Servo intakePusher;
 
     // Outtake Slide Positions
-    final double OUTTAKE_SLIDE_EXTENDED = .25;
-    final double OUTTAKE_SLIDE_RETRACTED = .75;
+    public final double OUTTAKE_SLIDE_EXTENDED = .25;
+    public final double OUTTAKE_SLIDE_RETRACTED = .75;
 
     // Outtake Servo Positions
-    final double CLAW_SERVO_CLAMPED = .59;
-    final double CLAW_SERVO_RELEASED = .375;
+    public final double CLAW_SERVO_CLAMPED = .59;
+    public final double CLAW_SERVO_RELEASED = .375;
 
     // Outtake Pivot Positions
-    final double OUTTAKE_PIVOT_EXTENDED = .271;
-    final double OUTTAKE_PIVOT_RETRACTED = .994;
+    public final double OUTTAKE_PIVOT_EXTENDED = .271;
+    public final double OUTTAKE_PIVOT_RETRACTED = .994;
 
     // Outtake Pusher Positions
-    final double PUSHER_PUSHED = .75;
-    final double PUSHER_RETRACTED = .475;
+    public final double PUSHER_PUSHED = .75;
+    public final double PUSHER_RETRACTED = .475;
 
     //robots position
     private Point robotPos = new Point();
@@ -560,10 +560,10 @@ public class Robot {
     private void applyMove() {
 
         // convert movements to motor powers
-        double fLeftPower = (yMovement * 1.414 + turnMovement + xMovement);
-        double fRightPower = (-yMovement * 1.414 - turnMovement + xMovement);
-        double bLeftPower = (-yMovement * 1.414 + turnMovement + xMovement);
-        double bRightPower = (yMovement * 1.414 - turnMovement + xMovement);
+        double fLeftPower = (-yMovement * 1.414 + turnMovement + xMovement);
+        double fRightPower = (yMovement * 1.414 - turnMovement + xMovement);
+        double bLeftPower = (yMovement * 1.414 + turnMovement + xMovement);
+        double bRightPower = (-yMovement * 1.414 - turnMovement + xMovement);
 
         //scale all powers to below 1
         double maxPower = Math.abs(fLeftPower);
@@ -606,9 +606,9 @@ public class Robot {
 
             double distanceToTarget = Math.hypot(x - xPos, y - yPos);
 
-            if (distanceToTarget < 0.5) {
+            if (distanceToTarget < 1) {
                 brakeRobot();
-                break;
+                return;
             }
 
             double absoluteAngleToTarget = Math.atan2(y - yPos, x - xPos);

@@ -88,37 +88,34 @@ public class MecanumRobot
 
     public void informationUpdate()
     {
-        telemetry.addData(">", "-----");
-
-        telemetry.addData("Ticks Per IN", motorTicksPerIN);
-        telemetry.addData(">", "-----");
-
+        telemetry.addData("> Target Positions", "-----");
         telemetry.addData("WheelTarget FL", drivetrain.motorList[0].getTargetPosition());
         telemetry.addData("WheelTarget FR", drivetrain.motorList[1].getTargetPosition());
         telemetry.addData("WheelTarget RL", drivetrain.motorList[2].getTargetPosition());
         telemetry.addData("WheelTarget RR", drivetrain.motorList[3].getTargetPosition());
-        telemetry.addData(">", "-----");
+        telemetry.addData("Distance Target", drivetrain.getTargetPosition());
 
+        telemetry.addData("> Wheel Positions", "-----");
         telemetry.addData("WheelPos FL", drivetrain.motorList[0].getCurrentPosition());
         telemetry.addData("WheelPos FR", drivetrain.motorList[1].getCurrentPosition());
         telemetry.addData("WheelPos RL", drivetrain.motorList[2].getCurrentPosition());
         telemetry.addData("WheelPos RR", drivetrain.motorList[3].getCurrentPosition());
         telemetry.addData("Current Pos", drivetrain.getCurrentPosition());
-        telemetry.addData(">", "-----");
 
+        telemetry.addData("> Wheel Powers", "-----");
         telemetry.addData("WheelPower FL", drivetrain.motorList[0].getPower());
         telemetry.addData("WheelPower FR", drivetrain.motorList[1].getPower());
         telemetry.addData("WheelPower RL", drivetrain.motorList[2].getPower());
         telemetry.addData("WheelPower RR", drivetrain.motorList[3].getPower());
-        telemetry.addData(">", "-----");
 
-        telemetry.addData("Course Target", drivetrain.getCourse());
-        telemetry.addData("Movement Velocity", drivetrain.getMovementVelocity());
-        telemetry.addData("Velocity Target", drivetrain.getVelocity());
+        telemetry.addData("> Drivetrain Info", "-----");
+        telemetry.addData("Course Radians", drivetrain.getCourse());
+        telemetry.addData("Course Degrees", drivetrain.getCourse() * Math.PI/180);
         telemetry.addData("Rotation Target", drivetrain.getRotation());
-        telemetry.addData("Distance Target", drivetrain.getTargetPosition());
-        telemetry.addData(">", "-----");
+        telemetry.addData("Velocity Target", drivetrain.getVelocity());
+        telemetry.addData("Movement Velocity", drivetrain.getMovementVelocity());
 
+        telemetry.addData("> Servo Info", "-----");
         telemetry.addData("Servo Pos", platformServos.getActual());
         telemetry.addData("Linked Pos", platformServos.getPosition());
         telemetry.update();

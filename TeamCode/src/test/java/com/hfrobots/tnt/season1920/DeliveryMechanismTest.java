@@ -115,7 +115,8 @@ public class DeliveryMechanismTest {
         FakeRangeInput liftThrottle = (FakeRangeInput) gamepad.getRightStickY();
         FakeOnOffButton stowButton = (FakeOnOffButton) gamepad.getBButton();
 
-        Assert.assertEquals("Loading State", deliveryMechanism.getCurrentStateName());
+        Assert.assertEquals(DeliveryMechanism.LoadingState.class.getSimpleName(),
+                deliveryMechanism.getCurrentStateName());
 
         // -----------------------------------------------------------
         // Test transition to gripped
@@ -129,7 +130,8 @@ public class DeliveryMechanismTest {
             deliveryMechanism.periodicTask();
 
             // In correct state machine state
-            Assert.assertEquals("Low grip state", deliveryMechanism.getCurrentStateName());
+            Assert.assertEquals(DeliveryMechanism.LowGripState.class.getSimpleName(),
+                    deliveryMechanism.getCurrentStateName());
 
             // Finger is gripped
             Assert.assertEquals(DeliveryMechanism.FINGER_GRIP, fingerServo.getPosition(), 0.001);
@@ -147,7 +149,8 @@ public class DeliveryMechanismTest {
             deliveryMechanism.periodicTask();
 
             // In correct state machine state
-            Assert.assertEquals("Loading State", deliveryMechanism.getCurrentStateName());
+            Assert.assertEquals(DeliveryMechanism.LoadingState.class.getSimpleName(),
+                    deliveryMechanism.getCurrentStateName());
 
             // Finger is un-gripped
             Assert.assertEquals(DeliveryMechanism.FINGER_UNGRIP, fingerServo.getPosition(), 0.001);
@@ -160,7 +163,8 @@ public class DeliveryMechanismTest {
             deliveryMechanism.periodicTask();
 
             // In correct state machine state
-            Assert.assertEquals("Low grip state", deliveryMechanism.getCurrentStateName());
+            Assert.assertEquals(DeliveryMechanism.LowGripState.class.getSimpleName(),
+                    deliveryMechanism.getCurrentStateName());
 
             // Finger is gripped
             Assert.assertEquals(DeliveryMechanism.FINGER_GRIP, fingerServo.getPosition(), 0.001);
@@ -178,7 +182,8 @@ public class DeliveryMechanismTest {
             deliveryMechanism.periodicTask();
 
             // Because operator commanded "up", we should be in the "Move clear state" now
-            Assert.assertEquals("Move clear state", deliveryMechanism.getCurrentStateName());
+            Assert.assertEquals(DeliveryMechanism.MoveClearState.class.getSimpleName(),
+                    deliveryMechanism.getCurrentStateName());
 
             deliveryMechanism.periodicTask();
 
@@ -187,14 +192,16 @@ public class DeliveryMechanismTest {
             // Finger is (still) gripped
             Assert.assertEquals(DeliveryMechanism.FINGER_GRIP, fingerServo.getPosition(), 0.001);
 
-            Assert.assertEquals("Move clear state", deliveryMechanism.getCurrentStateName());
+            Assert.assertEquals(DeliveryMechanism.MoveClearState.class.getSimpleName(),
+                    deliveryMechanism.getCurrentStateName());
 
             // pretend the motor is running
             liftMotor.setCurrentPosistion(liftMotor.getCurrentPosition() + DeliveryMechanism.LIFT_CLEAR_SUPERSTRUCTURE_POS + 1);
 
             deliveryMechanism.periodicTask();
 
-            Assert.assertEquals("Arm Moving state", deliveryMechanism.getCurrentStateName());
+            Assert.assertEquals(DeliveryMechanism.ArmMovingState.class.getSimpleName(),
+                    deliveryMechanism.getCurrentStateName());
 
             // FIXME: Attempt to place while moving, un-grip, stow, etc...
         }
@@ -206,7 +213,8 @@ public class DeliveryMechanismTest {
         {
             deliveryMechanism.periodicTask();
 
-            Assert.assertEquals("Arm Moving state", deliveryMechanism.getCurrentStateName());
+            Assert.assertEquals(DeliveryMechanism.ArmMovingState.class.getSimpleName(),
+                    deliveryMechanism.getCurrentStateName());
 
             // Lift is still moving upwards
             Assert.assertTrue(liftMotor.getPower() > 0);
@@ -240,7 +248,8 @@ public class DeliveryMechanismTest {
             deliveryMechanism.periodicTask(); // one to transition
             deliveryMechanism.periodicTask(); // the other to actually do what the state does
 
-            Assert.assertEquals("Arm Moving state", deliveryMechanism.getCurrentStateName());
+            Assert.assertEquals(DeliveryMechanism.ArmMovingState.class.getSimpleName(),
+                    deliveryMechanism.getCurrentStateName());
 
             // Lift is still moving upwards
             Assert.assertTrue(liftMotor.getPower() > 0);
@@ -250,15 +259,18 @@ public class DeliveryMechanismTest {
             deliveryMechanism.periodicTask();
             deliveryMechanism.periodicTask();
 
-            Assert.assertEquals("at max state", deliveryMechanism.getCurrentStateName());
+            Assert.assertEquals(DeliveryMechanism.AtMaxState.class.getSimpleName(),
+                    deliveryMechanism.getCurrentStateName());
             Assert.assertEquals( deliveryMechanism.LIFT_HOLD_FEED_FORWARD, liftMotor.getPower(), .0001);
 
+            // Try and keep moving upwards, even though at max height
             liftThrottle.setCurrentPosition(-1);
 
             deliveryMechanism.periodicTask();
             deliveryMechanism.periodicTask();
 
-            Assert.assertEquals("at max state", deliveryMechanism.getCurrentStateName());
+            Assert.assertEquals(DeliveryMechanism.AtMaxState.class.getSimpleName(),
+                    deliveryMechanism.getCurrentStateName());
             Assert.assertEquals( deliveryMechanism.LIFT_HOLD_FEED_FORWARD, liftMotor.getPower(), .0001);
 
         }
@@ -269,7 +281,8 @@ public class DeliveryMechanismTest {
 
         {
             gamepad.reset(); // "let go" of the lift throttle
-            Assert.assertEquals("at max state", deliveryMechanism.getCurrentStateName());
+            Assert.assertEquals(DeliveryMechanism.AtMaxState.class.getSimpleName(),
+                    deliveryMechanism.getCurrentStateName());
 
             liftThrottle.setCurrentPosition(1);
 
@@ -284,7 +297,8 @@ public class DeliveryMechanismTest {
             deliveryMechanism.periodicTask();
             deliveryMechanism.periodicTask();
 
-            Assert.assertEquals("At Min", deliveryMechanism.getCurrentStateName());
+            Assert.assertEquals(DeliveryMechanism.AtMinState.class.getSimpleName(),
+                    deliveryMechanism.getCurrentStateName());
             Assert.assertEquals( deliveryMechanism.LIFT_HOLD_FEED_FORWARD, liftMotor.getPower(), .0001);
 
             liftThrottle.setCurrentPosition(1);
@@ -292,7 +306,8 @@ public class DeliveryMechanismTest {
             deliveryMechanism.periodicTask();
             deliveryMechanism.periodicTask();
 
-            Assert.assertEquals("At Min", deliveryMechanism.getCurrentStateName());
+            Assert.assertEquals(DeliveryMechanism.AtMinState.class.getSimpleName(),
+                    deliveryMechanism.getCurrentStateName());
             Assert.assertEquals( deliveryMechanism.LIFT_HOLD_FEED_FORWARD, liftMotor.getPower(), .0001);
 
         }
@@ -303,7 +318,8 @@ public class DeliveryMechanismTest {
 
         {
             gamepad.reset(); // "let go" of the lift throttle
-            Assert.assertEquals("At Min", deliveryMechanism.getCurrentStateName());
+            Assert.assertEquals(DeliveryMechanism.AtMinState.class.getSimpleName(),
+                    deliveryMechanism.getCurrentStateName());
 
             liftThrottle.setCurrentPosition(-1);
 
@@ -312,7 +328,8 @@ public class DeliveryMechanismTest {
 
             // Lift is still moving upwards
             Assert.assertTrue(liftMotor.getPower() > 0);
-            Assert.assertEquals("Arm Moving state", deliveryMechanism.getCurrentStateName());
+            Assert.assertEquals(DeliveryMechanism.ArmMovingState.class.getSimpleName(),
+                    deliveryMechanism.getCurrentStateName());
         }
 
         // -----------------------------------------------------------
@@ -344,8 +361,8 @@ public class DeliveryMechanismTest {
             deliveryMechanism.periodicTask();
             deliveryMechanism.periodicTask();
 
-            // FIXME: Wrong assertion!!!
-            Assert.assertEquals("Arm Moving state", deliveryMechanism.getCurrentStateName());
+            Assert.assertEquals(DeliveryMechanism.ArmMovingState.class.getSimpleName(),
+                    deliveryMechanism.getCurrentStateName());
         }
 
         // -----------------------------------------------------------
@@ -367,7 +384,8 @@ public class DeliveryMechanismTest {
 
             gamepad.reset();
 
-            Assert.assertEquals("stow return state", deliveryMechanism.getCurrentStateName());
+            Assert.assertEquals(DeliveryMechanism.StowReturnState.class.getSimpleName(),
+                    deliveryMechanism.getCurrentStateName());
 
             // Can't "see inside" the stow state machine right now
             for (int i = 0; i < 1000000; i++) {
@@ -406,7 +424,8 @@ public class DeliveryMechanismTest {
             deliveryMechanism.periodicTask();
             Assert.assertEquals(0, liftMotor.getPower(), 0.001);
 
-            Assert.assertEquals("Loading State", deliveryMechanism.getCurrentStateName());
+            Assert.assertEquals(DeliveryMechanism.LoadingState.class.getSimpleName(),
+                    deliveryMechanism.getCurrentStateName());
         }
 
         // FIXME: Transitions left to test
@@ -417,7 +436,8 @@ public class DeliveryMechanismTest {
     }
 
     private void assertPlaceStateCommon() {
-        Assert.assertEquals("place state", deliveryMechanism.getCurrentStateName());
+        Assert.assertEquals(DeliveryMechanism.PlaceState.class.getSimpleName(),
+                deliveryMechanism.getCurrentStateName());
 
         // Lift is held with feed forward upwards
         Assert.assertEquals(DeliveryMechanism.LIFT_HOLD_FEED_FORWARD, liftMotor.getPower(), .001);

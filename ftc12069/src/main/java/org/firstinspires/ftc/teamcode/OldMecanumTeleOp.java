@@ -13,7 +13,7 @@ public class OldMecanumTeleOp extends OpMode
     private ElapsedTime elapsedTime;
     private boolean rightMotion = true;
     private boolean servoUp = true;
-    private boolean resetServo = true;
+    //private boolean resetServo = true;
 
     @Override
     public void init()
@@ -21,7 +21,8 @@ public class OldMecanumTeleOp extends OpMode
         robotHardware = new MecanumHardwareMap(this.hardwareMap);
         elapsedTime = new ElapsedTime();
 
-        robotHardware.servoManager.reset();
+        robotHardware.servoManager.setPosition(1.0);
+        //robotHardware.servoManager.reset();
     }
 
     @Override
@@ -57,17 +58,17 @@ public class OldMecanumTeleOp extends OpMode
         robotHardware.drivetrain.setVelocity(velocity);
         robotHardware.drivetrain.setRotation(rotation);
 
-        if (resetServo) {
-            robotHardware.servoManager.setPosition(1.0);
-        } else if (servoUp) {
-            robotHardware.servoManager.setPosition(0.7);
+        //if (resetServo) {
+            //robotHardware.servoManager.setPosition(1.0);
+        if (servoUp) {
+            robotHardware.servoManager.setPosition(1.0); //0.7
         } else {
-            robotHardware.servoManager.setPosition(0.6);
+            robotHardware.servoManager.setPosition(0.5);
         }
 
         if (gamepad1.a) rightMotion = false;
         if (gamepad1.b) rightMotion = true;
-        if (gamepad1.y) resetServo = true;
+        //if (gamepad1.y) resetServo = true;
         if (gamepad1.dpad_up) servoUp = true;
         if (gamepad1.dpad_down) servoUp = false;
 

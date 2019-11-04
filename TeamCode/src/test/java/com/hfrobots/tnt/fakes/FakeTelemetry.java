@@ -4,13 +4,29 @@ import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class FakeTelemetry implements Telemetry {
+    private boolean outputTelemetry = false;
+
+    public void setOutputTelemetry(boolean flag) {
+        outputTelemetry = flag;
+    }
+
     @Override
     public Item addData(String caption, String format, Object... args) {
+        if (outputTelemetry) {
+            String telemetryLine = (caption != null ? caption : "") + " " + String.format(format, args);
+            System.out.println("Telemetry: " + telemetryLine);
+        }
+
         return null;
     }
 
     @Override
     public Item addData(String caption, Object value) {
+        if (outputTelemetry) {
+            String telemetryLine = (caption != null ? caption : "") + " " + value != null ? value.toString() : "";
+            System.out.println("Telemetry: " + telemetryLine);
+        }
+
         return null;
     }
 

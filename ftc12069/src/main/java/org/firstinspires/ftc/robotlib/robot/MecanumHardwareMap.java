@@ -21,8 +21,11 @@ public class MecanumHardwareMap
     public ServoManager servoManager;
 
     public final double wheelRadius = 4; //inches
+    private static final double wheelToMotorRatio = 2.0/1.0;
 
     public DcMotor[] motorList;
+
+    public final double motorTicksPerIn;
 
     public MecanumHardwareMap(HardwareMap hwMap)
     {
@@ -53,5 +56,6 @@ public class MecanumHardwareMap
 
         drivetrain = new MecanumDrivetrain(motorList);
         servoManager = new ServoManager(new Servo[]{servoClaw});
+        motorTicksPerIn = drivetrain.getTicksPerIn(wheelRadius, wheelToMotorRatio);
     }
 }

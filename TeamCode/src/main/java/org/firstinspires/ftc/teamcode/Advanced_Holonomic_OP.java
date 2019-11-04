@@ -43,7 +43,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
-@TeleOp(name = "Basic: Holonomic drive OpMode", group = "Iterative Opmode")
+@TeleOp(name = "Advanced Holonomic OP", group = "Iterative Opmode")
 public class Advanced_Holonomic_OP extends OpMode {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -124,20 +124,23 @@ public class Advanced_Holonomic_OP extends OpMode {
         rightPower = Range.clip(drive - turn, -1.0, 1.0);
         */
         Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS);
-        float angle = Math.abs(angles.firstAngle);
+        float angle = (angles.firstAngle);
+        double sin = Math.sin(angle);
+        double cos = Math.cos(angle);
+
         if (gamepad1.dpad_up || gamepad1.dpad_down) {
             int magnitude = (gamepad1.dpad_up ? 1 : 0) + (gamepad1.dpad_down ? -1 : 0);
-            frontLeftPower = magnitude * Math.sin(angle);
-            frontRightPower = magnitude* Math.sin(angle+90);
-            backLeftPower = magnitude* Math.sin(angle+90);
-            backRightPower = magnitude* Math.sin(angle);
+            frontLeftPower = magnitude * sin;
+            frontRightPower = magnitude* cos;
+            backLeftPower = magnitude* cos;
+            backRightPower = magnitude* sin;
         }
         if (gamepad1.dpad_left || gamepad1.dpad_right) {
             int magnitude = (gamepad1.dpad_left ? 1 : 0) + (gamepad1.dpad_right ? -1 : 0);
-            frontLeftPower = -magnitude * Math.sin(angle+90);
-            frontRightPower = magnitude* Math.sin(angle);
-            backLeftPower = magnitude* Math.sin(angle);
-            backRightPower = -magnitude* Math.sin(angle+90);
+            frontLeftPower = -magnitude * cos;
+            frontRightPower = magnitude* sin;
+            backLeftPower = magnitude* sin;
+            backRightPower = -magnitude* cos;
         }
 
         if ( gamepad1.left_bumper){
@@ -154,11 +157,13 @@ public class Advanced_Holonomic_OP extends OpMode {
         }
 
 
-        double max = findMax(frontLeftPower,frontRightPower,backLeftPower,backRightPower);
-        frontLeftPower = frontLeftPower / max;
-        frontRightPower = frontRightPower / max;
-        backLeftPower = backLeftPower / max;
-        backRightPower = backRightPower / max;
+        double max = Math.abs(findMax(frontLeftPower,frontRightPower,backLeftPower,backRightPower));
+        if (max != 0) {
+            frontLeftPower = frontLeftPower / max;
+            frontRightPower = frontRightPower / max;
+            backLeftPower = backLeftPower / max;
+            backRightPower = backRightPower / max;
+        }
 
         frontLeftDrive.setPower(frontLeftPower);
         frontRightDrive.setPower(frontRightPower);
@@ -168,9 +173,10 @@ public class Advanced_Holonomic_OP extends OpMode {
 
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Front Motor", " left:(%.f) right:(%.f)", frontLeftPower, frontRightPower);
-        telemetry.addData("Back Motor", " left:(%.f) right:(%.f)", backLeftPower, backRightPower);
-        telemetry.addData("maxPower", "(%.f)", max);
+        telemetry.addData("Front Motor", " left:(%.2f) right:(%.2f)", frontLeftPower, frontRightPower);
+        telemetry.addData("Back Motor", " left:(%.2f) right:(%.2f)", backLeftPower, backRightPower);
+        telemetry.addData("Angle", "(%.2f)", angle);
+        telemetry.addData("maxPower", "(%.2f)", max);
         telemetry.update();
         //telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
     }

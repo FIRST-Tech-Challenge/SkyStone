@@ -30,7 +30,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 
 
-@Autonomous(name="VufoFuncTest_V1", group ="Concept")
+@Autonomous(name="VufoFuncTest_V2", group ="Concept")
 //@Disabled
 
 
@@ -40,10 +40,15 @@ public class VuforiaCaseTest extends LinearOpMode {
 
     public void runOpMode() {
 
-        VFC = new VuforiaFindCase(this);
+        //waitForStart();
 
-        telemetry.addData("Position Case", VFC.vuforia());
-        telemetry.update();
+        //while (opModeIsActive()) {
+
+            VFC = new VuforiaFindCase(this);
+
+            telemetry.addData("Position Case", VFC.vuforia());
+
+            telemetry.update();
+        }
     }
 
-}

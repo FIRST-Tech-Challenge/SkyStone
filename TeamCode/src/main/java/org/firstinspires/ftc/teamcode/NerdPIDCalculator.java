@@ -2,7 +2,11 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
-import com.qualcomm.robotcore.util.Range;
+
+/**
+ * This file contains the class for generic PID calculator we will be using to calculate PIDs.
+ * As of now, it supports 2 kinds of input devices. Gyro and Motor Encoders.
+ */
 
 public class NerdPIDCalculator{
 //Declare some variables that will be used later
@@ -10,9 +14,6 @@ public class NerdPIDCalculator{
     private double kP;
     private double kI;
     private double kD;
-
-    private double minTarget = 0.0;
-    private double maxTarget = 0.0;
 
 
     private double previousTime = 0.0;
@@ -26,9 +27,14 @@ public class NerdPIDCalculator{
     private double iOutput;
     private double dOutput;
 
-    private boolean isRelativeTarget = false;
+    private double prevDeviceInput = 0.0;
+
+
+    private boolean debugFlag = false;
 
     private ElapsedTime elapsedTime = new ElapsedTime();
+
+    //Constructor to create new NerdPIDCalculator object.
 
     public NerdPIDCalculator(
             final String instanceName,
@@ -43,8 +49,11 @@ public class NerdPIDCalculator{
         this.kI = Math.abs(kI);
         this.kD = Math.abs(kD);
         //Send info to console
-        RobotLog.d("NerdPIDCalculator - Gains : %s -  %f | %f | %f ", this.instanceName, this.kP, this.kI, this.kD);
+        if (debugFlag)
+            RobotLog.d("NerdPIDCalculator - Gains : %s -  %f | %f | %f ", this.instanceName, this.kP, this.kI, this.kD);
     }
+
+    // Function to set the gains.
 
     public void setPIDGains(double kP, double kI, double kD)
     {
@@ -53,51 +62,35 @@ public class NerdPIDCalculator{
         this.kP = kP;
         this.kI = kI;
         this.kD = kD;
+
+        if (debugFlag)
+            RobotLog.d("NerdPIDCalculator - Gains : %s -  %f | %f | %f ", this.instanceName, this.kP, this.kI, this.kD);
     }
 
-    public void setTarget(double target, boolean isRelativeTarget, double currentDeviceInput)
+    //Function to set the targets for PID
+
+    public void setTarget(double target, double currentDeviceInput)
     {
         final String funcName = "setTarget";
 
-        this.isRelativeTarget=isRelativeTarget;
 
-        if (isRelativeTarget)
-        {
-            //
-            // Target is relative, add target to current input to get absolute set point.
-            //
-            this.pidTarget = currentDeviceInput + target;
-            this.currentError = target;
-        }
-        else
-        {
             //
             // Target is absolute, use as is.
             //
             this.pidTarget = target;
             this.currentError = this.pidTarget - currentDeviceInput;
-        }
-        //
-        // If there is a valid target range, limit the set point to this range.
-        //
-        if (maxTarget > minTarget)
-        {
-            if (this.pidTarget > maxTarget)
-            {
-                this.pidTarget = maxTarget;
-            }
-            else if (pidTarget < minTarget)
-            {
-                this.pidTarget = minTarget;
-            }
-        }
 
-        totalError = 0.0;
-        previousTime = elapsedTime.seconds();
 
-        RobotLog.d("NerdPIDCalculator - %s, %s : Target %f, currentError %f ", this.instanceName, funcName,this.pidTarget, this.currentError);
+            totalError = 0.0;
+            previousTime = elapsedTime.seconds();
+            prevDeviceInput = currentDeviceInput;
+
+            if (debugFlag)
+                RobotLog.d("NerdPIDCalculator - %s, %s : Target %f, currentError %f ", this.instanceName, funcName,this.pidTarget, this.currentError);
 
     }
+
+    //Function to reset the calculator, so that it can be used again.
 
     public void reset()
     {
@@ -109,11 +102,12 @@ public class NerdPIDCalculator{
         totalError = 0.0;
         pidTarget = 0.0;
         output = 0.0;
-        isRelativeTarget=false;
+
     }
 
     //function to calculate error
-    //Device type 1 = GYRO, anything else is like Encoders etc
+    //Device type 1 = GYRO, anything else is like Encoders etc.
+
     public double getError(double deviceInput, int deviceType) {
         double robotError;
 
@@ -134,29 +128,43 @@ public class NerdPIDCalculator{
 
         final String funcName = "getOutput";
 
-
+        //Before we get the error for this cycle, store the error from previous cycle in previous error.
         double prevError = currentError;
-
+        //Store the current time. Will use this for calculating time between 2 cycles - delta time.
         double currTime = elapsedTime.seconds();
+        //Find delta time, difference between time in this cycle and the previous.
         double deltaTime = currTime - previousTime;
+        //Store the current time into previous time for using in next cycle.
          previousTime = currTime;
+         //Call function to get the error based ont he set target and device input
          currentError = getError(deviceInput, deviceType);
 
+         //Total error for finding I component is summ of errors in each cycle multiplied by delta time.
         totalError += (currentError * deltaTime);
+        //Calculate P, I and D outputs.
         pOutput = kP*currentError;
         iOutput = kI*totalError;
-        dOutput = deltaTime > 0.0? kD*(currentError - prevError)/(deltaTime * 1000): 0.0;
+        // dOutput = deltaTime > 0.0? kD*(currentError - prevError)/(deltaTime * 1000): 0.0;
+        dOutput = deltaTime > 0.0? kD*(deviceInput - prevDeviceInput)/(deltaTime * 1000): 0.0;
+        prevDeviceInput = deviceInput;
 
+        //Total PID output
         output = pOutput + iOutput + dOutput;
 
-        RobotLog.d("NerdPIDCalculator - %s - %s : prevError |  currentError | totalError | currTime | deltaTime | pOutput | iOutput |dOutput |output",
+        if (debugFlag)
+            RobotLog.d("NerdPIDCalculator - %s - %s : prevError |  currentError | totalError | currTime | deltaTime | pOutput | iOutput |dOutput |output",
                 this.instanceName, funcName);
 
-        RobotLog.d("NerdPIDCalculator - %s - %s : %f | %f | %f | %f | %f | %f | %f | %f | %f ",
+        if (debugFlag)
+            RobotLog.d("NerdPIDCalculator - %s - %s : %f | %f | %f | %f | %f | %f | %f | %f | %f ",
                 this.instanceName, funcName,prevError, currentError, totalError, currTime, deltaTime, pOutput, iOutput,dOutput,output);
 
-
+        //Return the output to the caller.
         return output;
+    }
+
+    public void setDebug(boolean debugFlag){
+        this.debugFlag=debugFlag;
     }
 
 }

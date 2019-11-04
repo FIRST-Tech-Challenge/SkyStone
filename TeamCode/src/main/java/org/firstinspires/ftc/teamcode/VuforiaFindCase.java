@@ -142,7 +142,7 @@ public class VuforiaFindCase {
     static final double P_DRIVE_COEFF = 0.0135;     // Larger is more responsive, but also less stable
     static final double I_DRIVE_COEFF = 0.0015;       // Larger is more responsive, but also less stable
     static final double I_TURN_COEFF = 0.2;       // Larger is more responsive, but also less stable
-    public int positionCase = 1;
+    public int positionCase = 3;
 
 
     public  VuforiaFindCase(LinearOpMode opmode){
@@ -205,7 +205,7 @@ public class VuforiaFindCase {
 
 
         this.opmode.telemetry.addData(">", "Robot Ready.");    //
-        this.opmode.telemetry.update();
+        //this.opmode.telemetry.update();
 
 
 
@@ -222,9 +222,8 @@ public class VuforiaFindCase {
 
         boolean targetVisible = false;
 
-        targetVisible = false;
-
         targetsSkyStone.activate();
+
         while (!targetVisible) {
 
             // check all the trackable targets to see which one (if any) is visible.
@@ -253,21 +252,28 @@ public class VuforiaFindCase {
                 // express the rotation of the robot in degrees.
                 Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
 
+                this.opmode.telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
+
+                this.opmode.telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
+                        translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
+
+                //this.opmode.telemetry.update();
+
+                this.opmode.telemetry.addData("get0", translation.get(1) / mmPerInch);
+                //this.opmode.telemetry.update();
+
                 // if loop to assign cases
-                if ((translation.get(0) <= -2)) {
+                if ((translation.get(1) / mmPerInch <= -2)) {
 
                     positionCase = 1;
-                    this.opmode.telemetry.addData("Position Case", "1");
-                    this.opmode.telemetry.update();
-                } else if ((translation.get(0)) > 3){
+
+                } else if ((translation.get(1)/ mmPerInch) > 3){
 
                     positionCase = 3;
-                    this.opmode.telemetry.addData("Position Case", "3");
-                    this.opmode.telemetry.update();
+
                 } else {
                     positionCase = 2;
-                    this.opmode.telemetry.addData("Position Case", "2");
-                    this.opmode.telemetry.update();
+
                 }
 
 
@@ -276,15 +282,20 @@ public class VuforiaFindCase {
                 this.opmode.telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
                         translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
 
+                this.opmode.telemetry.addData("Position Case", positionCase);
+
                 this.opmode.telemetry.update();
 
-                this.opmode.sleep(40000);
+               this.opmode.sleep(40000);
 
             } else {
+                // When none of the skystone is visible, position case will be 4
+
                 this.opmode.telemetry.addData("Visible Target", "none");
+                this.opmode.telemetry.update();
+                positionCase = 4;
             }
-            this.opmode.telemetry.addData("Visible Target", "none");
-            this.opmode.telemetry.update();
+
         }
 
         return positionCase;

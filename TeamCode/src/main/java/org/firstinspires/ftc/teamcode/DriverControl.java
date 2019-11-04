@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+@TeleOp(name="DriverControl", group="Linear Opmode")
 public class DriverControl extends Movement {
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -44,7 +46,7 @@ public class DriverControl extends Movement {
                 // Gamepad 2 Controls
 
                 // Left stick y - to move arm up or down
-                arm.setPower(-gamepad2.left_stick_y);
+                arm.setPower(-gamepad2.left_stick_y * 0.5);
 
                 // left bumper - to open claw (front servo)
                 if (gamepad2.left_bumper) {

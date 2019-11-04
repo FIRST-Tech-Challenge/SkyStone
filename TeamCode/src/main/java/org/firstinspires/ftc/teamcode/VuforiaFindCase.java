@@ -286,7 +286,7 @@ public class VuforiaFindCase {
 
                 this.opmode.telemetry.update();
 
-               this.opmode.sleep(40000);
+               //this.opmode.sleep(4000);
 
             } else {
                 // When none of the skystone is visible, position case will be 4

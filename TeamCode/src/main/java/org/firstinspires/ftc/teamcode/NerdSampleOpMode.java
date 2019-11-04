@@ -81,7 +81,16 @@ public class NerdSampleOpMode extends LinearOpMode {
         telemetry.update();
         if (debugFlag)
             RobotLog.d("NerdSampleOpMode - Run2");
-        Arm.ArmLoop(-70,7);
+
+        telemetry.addData("before", "arm");
+        telemetry.update();
+
+        Arm.ArmLoop(-135,7);
+
+        telemetry.addData("after", "arm");
+        telemetry.update();
+
+
         if (Skystone_Position == 3) {
             myNerdBOT.nerdPidDrive(speed, 8.0, 13.5, 0.0);
             offset_x_run3 = 8.0;
@@ -100,18 +109,26 @@ public class NerdSampleOpMode extends LinearOpMode {
         else
         {
         }
-        Arm.ArmLoop(-115,7);
-        //  sleep(500);
-        //   Arm.ArmLoop(-10,25);
+
+
+
+          Arm.ArmLoop(-135,140);
+          sleep(500);
+           Arm.ArmLoop(-10,7);
         if (debugFlag)
             RobotLog.d("NerdSampleOpMode - Run3");
         myNerdBOT.setMinMaxSpeeds(0.0,0.7); // Go faster when going longer distance.
         run3_x = (position_run3_x+offset_x_run3);
-        myNerdBOT.nerdPidDrive( speed, run3_x, -5.0, 0.0);
+        myNerdBOT.nerdPidDrive( speed, -run3_x, -5.0, 0.0);
         myNerdBOT.setMinMaxSpeeds(0.0,0.5);
         if (debugFlag)
             RobotLog.d("NerdSampleOpMode - Run4");
         myNerdBOT.nerdPidDrive( speed, 0.0, 15.0, 0.0);
+
+        Arm.ArmLoop(-60,135);
+        Arm.ArmLoop(-125,143);
+        Arm.ArmLoop(-135,7);
+
         if (debugFlag)
             RobotLog.d("NerdSampleOpMode - Completed");
     }

@@ -160,12 +160,15 @@ public class Robot4100Generation1_BlueBuildSiteComplex extends DarbotsBasicOpMod
         }
         Camera.setFlashlightEnabled(false);
         double firstScanZOffset = 0;
+        double firstScanXOffset = 0;
         Robot3DPositionIndicator firstScanStonePosition = this.m_Navigation.getDarbotsRobotAxisStonePosition();
         if(firstScanStonePosition != null){
             firstScanZOffset = -firstScanStonePosition.getZ();
+            firstScanXOffset = firstScanStonePosition.getX();
         }
         firstScanExtraDistance -= Robot4100Generation1_Settings.AUTONOMOUS_DISTANCE_BETWEEN_PHONE_AND_STONEGRABBER;
         telemetry.addData("ZOffset",firstScanZOffset);
+        telemetry.addData("XOffset",firstScanXOffset);
         telemetry.addData("distanceToMove",firstScanZOffset + Robot4100Generation1_Settings.AUTONOMOUS_DISTANCE_BETWEEN_PHONE_AND_STONEGRABBER);
         telemetry.update();
         this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedZDistanceTask(
@@ -176,7 +179,7 @@ public class Robot4100Generation1_BlueBuildSiteComplex extends DarbotsBasicOpMod
             return;
         }
         this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedXDistanceTask(
-                25,
+                25,//firstScanXOffset + 10,
                 0.2
         ));
         if(!waitForDrive()){

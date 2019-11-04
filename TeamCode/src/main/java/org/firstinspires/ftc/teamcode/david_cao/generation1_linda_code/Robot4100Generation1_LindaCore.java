@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.darbots.darbotsftclib.libcore.calculations.dimentionalcalculation.Robot2DPositionIndicator;
 import org.darbots.darbotsftclib.libcore.chassiscontrollers.OmniDrive;
+import org.darbots.darbotsftclib.libcore.common_robotcores.OmniChassisRobotCore;
 import org.darbots.darbotsftclib.libcore.sensors.gyros.BNO055Gyro;
 import org.darbots.darbotsftclib.libcore.sensors.motion_related.RobotMotion;
 import org.darbots.darbotsftclib.libcore.sensors.motion_related.RobotWheel;
@@ -18,13 +19,12 @@ import org.darbots.darbotsftclib.libcore.templates.chassis_related.RobotMotionSy
 import org.darbots.darbotsftclib.libcore.templates.motor_related.RobotMotor;
 import org.darbots.darbotsftclib.libcore.templates.other_sensors.RobotGyro;
 
-public class Robot4100Generation1_LindaCore extends RobotCore {
+public class Robot4100Generation1_LindaCore extends OmniChassisRobotCore {
     public enum IntakeSystemStatus{
         SUCK,
         VOMIT,
         STOP
     }
-    private OmniDrive m_Chassis;
     private Servo m_DragServoL, m_DragServoR;
     private Servo m_Grabber, m_GrabberRot;
     private Servo m_StoneOrientServo;
@@ -34,29 +34,9 @@ public class Robot4100Generation1_LindaCore extends RobotCore {
     private Servo m_CapStoneServo;
 
     public Robot4100Generation1_LindaCore(HardwareMap hardwares) {
-        super("4100Generation1_LindaCore.log",hardwares);
-        RobotMotor
-                LFMotor = new RobotMotorWithEncoder(hardwares.dcMotor.get("LF"),Robot4100Generation1_Settings.motorType),
-                RFMotor = new RobotMotorWithEncoder(hardwares.dcMotor.get("RF"),Robot4100Generation1_Settings.motorType),
-                LBMotor = new RobotMotorWithEncoder(hardwares.dcMotor.get("LB"),Robot4100Generation1_Settings.motorType),
-                RBMotor = new RobotMotorWithEncoder(hardwares.dcMotor.get("RB"),Robot4100Generation1_Settings.motorType);
-        LFMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        RFMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        LBMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        RBMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        RobotWheel
-                LFWheel = new RobotWheel(new Robot2DPositionIndicator(-Robot4100Generation1_Settings.wheelPosition[0],Robot4100Generation1_Settings.wheelPosition[1],45),Robot4100Generation1_Settings.wheelRadius),
-                RFWheel = new RobotWheel(new Robot2DPositionIndicator(Robot4100Generation1_Settings.wheelPosition[0],Robot4100Generation1_Settings.wheelPosition[1],-45),Robot4100Generation1_Settings.wheelRadius),
-                LBWheel = new RobotWheel(new Robot2DPositionIndicator(-Robot4100Generation1_Settings.wheelPosition[0],-Robot4100Generation1_Settings.wheelPosition[1],135),Robot4100Generation1_Settings.wheelRadius),
-                RBWheel = new RobotWheel(new Robot2DPositionIndicator(Robot4100Generation1_Settings.wheelPosition[0],-Robot4100Generation1_Settings.wheelPosition[1],-135),Robot4100Generation1_Settings.wheelRadius);
-        RobotMotion
-                LFMotion = new RobotMotion(new RobotMotorController(LFMotor,Robot4100Generation1_Settings.CHASSIS_TIMEOUTENABLE,Robot4100Generation1_Settings.CHASSIS_TIMEOUTFACTOR),LFWheel),
-                RFMotion = new RobotMotion(new RobotMotorController(RFMotor,Robot4100Generation1_Settings.CHASSIS_TIMEOUTENABLE,Robot4100Generation1_Settings.CHASSIS_TIMEOUTFACTOR),RFWheel),
-                LBMotion = new RobotMotion(new RobotMotorController(LBMotor,Robot4100Generation1_Settings.CHASSIS_TIMEOUTENABLE,Robot4100Generation1_Settings.CHASSIS_TIMEOUTFACTOR),LBWheel),
-                RBMotion = new RobotMotion(new RobotMotorController(RBMotor,Robot4100Generation1_Settings.CHASSIS_TIMEOUTENABLE,Robot4100Generation1_Settings.CHASSIS_TIMEOUTFACTOR),RBWheel);
-        m_Chassis = new OmniDrive(LFMotion,RFMotion,LBMotion,RBMotion,null);
-        m_Chassis.setLinearMotionDistanceFactor(0.678);
-        m_Chassis.setRotationalMotionDistanceFactor(1.4);
+        super("4100Generation1_LindaCore.log",hardwares, Robot4100Generation1_Settings.wheelPosition,Robot4100Generation1_Settings.wheelRadius,"LF","LB","RF","RB",Robot4100Generation1_Settings.motorType,Robot4100Generation1_Settings.CHASSIS_TIMEOUTENABLE,Robot4100Generation1_Settings.CHASSIS_TIMEOUTFACTOR);
+        this.getChassis().setLinearMotionDistanceFactor(0.678);
+        this.getChassis().setRotationalMotionDistanceFactor(1.4);
 
         this.m_DragServoL = hardwares.servo.get("servoDragLeft");
         this.m_DragServoR = hardwares.servo.get("servoDragRight");
@@ -179,27 +159,23 @@ public class Robot4100Generation1_LindaCore extends RobotCore {
 
     @Override
     public void stop() {
-        this.m_Chassis.deleteAllTasks();
+        super.stop();
+        this.getLinearSlide().deleteAllTasks();
     }
 
     @Override
     public void terminate() {
-        return;
-    }
-
-    @Override
-    public RobotMotionSystem getChassis() {
-        return this.m_Chassis;
+        super.terminate();
     }
 
     @Override
     public boolean isBusy() {
-        return this.m_linearSlide.isBusy();
+        return this.m_linearSlide.isBusy() || super.isBusy();
     }
 
     @Override
     public void updateStatus() {
-        this.m_Chassis.updateStatus();
+        super.updateStatus();
         this.m_linearSlide.updateStatus();
     }
 }

@@ -52,6 +52,8 @@ public class Advanced_Holonomic_OP extends OpMode {
     private DcMotor backLeftDrive = null;
     private DcMotor backRightDrive = null;
     private BNO055IMU imu;
+    private float turnSpeed = 0.5f;
+
 
     public float expectedAngle = 0;
     /*
@@ -130,7 +132,7 @@ public class Advanced_Holonomic_OP extends OpMode {
         double sin = Math.sin(angle);
         double cos = Math.cos(angle);
 
-        float x = gamepad1.left_stick_x;
+        float x = -gamepad1.left_stick_x;
         float y = -gamepad1.left_stick_y;
 
         frontLeftPower = y + -x;
@@ -154,23 +156,24 @@ public class Advanced_Holonomic_OP extends OpMode {
         }
 
         if ( gamepad1.left_bumper){
-            frontLeftPower += -1;
-            frontRightPower += 1;
-            backLeftPower += -1;
-            backRightPower += 1;
+            frontLeftPower += -turnSpeed;
+            frontRightPower += turnSpeed;
+            backLeftPower += -turnSpeed;
+            backRightPower += turnSpeed;
         }
         else if ( gamepad1.right_bumper) {
-            frontLeftPower += 1;
-            frontRightPower += -1;
-            backLeftPower += 1;
-            backRightPower += -1;
+            frontLeftPower += turnSpeed;
+            frontRightPower += -turnSpeed;
+            backLeftPower += turnSpeed;
+            backRightPower += -turnSpeed;
         }
         else{
          expectedAngle = angle;
         }
 
 
-        double max = Math.abs(findMax(frontLeftPower,frontRightPower,backLeftPower,backRightPower));
+        //double max = Math.abs(findMax(frontLeftPower,frontRightPower,backLeftPower,backRightPower));
+        double max = 3.5;
         if (max != 0) {
             frontLeftPower = frontLeftPower / max;
             frontRightPower = frontRightPower / max;

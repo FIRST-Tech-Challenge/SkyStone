@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 //import com.qualcomm.robotcore.hardware.ColorSensor;
-//import com.qualcomm.robotcore.hardware.GyroSensor;
 
 @TeleOp(name="Mecanum TeleOp", group="Linear Opmode")
 //@Disabled
@@ -17,42 +16,28 @@ public class MecanumTeleOp extends LinearOpMode {
 
     // Declare OpMode members
     private ElapsedTime runtime = new ElapsedTime();
-    // defining back right wheel
+
     private DcMotor left1;
-    // defining back left wheel
     private DcMotor left2;
-    // defining front right wheel
     private DcMotor right1;
-    // defining back left wheel
     private DcMotor right2;
 
     private ColorSensor color;
-    // only for encoder use
 
     private DcMotor intakeLeft;
-    // only for motor intake left motor
     private DcMotor intakeRight;
-    // only for motor outtake right motor
     private Servo outtakeLeft;
-    // only for motor outtake left
     private Servo outtakeRight;
-    // only for motor outtake right
 
     private DcMotor liftRight;
-    // only for elevator right motor
     private DcMotor liftLeft;
-    // only for elevator left motor
 
     private Servo grabRight;
-    // only for grabber right
     private Servo grabLeft;
-    // only for grabber left
 
     private Servo nubGrabRight;
-    // only for the nub grabber right
-    private Servo nubGrabLeft;
-    // only for the nub grabber left
 
+    private Servo nubGrabLeft;
 
     @Override
     public void runOpMode() {
@@ -79,11 +64,21 @@ public class MecanumTeleOp extends LinearOpMode {
         left1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         left1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        left2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        left2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         right1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         right1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         right2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         right2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        intakeRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        intakeRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        intakeRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        intakeLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        intakeLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        intakeLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         telemetry.addData("right", grabRight.getPosition());
         telemetry.addData("left", grabRight.getPosition());
@@ -100,11 +95,6 @@ public class MecanumTeleOp extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            telemetry.addData("leftOdo", left1.getCurrentPosition());
-            telemetry.addData("rightOdo", right1.getCurrentPosition());
-            telemetry.addData("alignOdo", right2.getCurrentPosition());
-            telemetry.addData("rightGrab", grabRight.getPosition());
-            telemetry.addData("leftGrab", grabLeft.getPosition());
             telemetry.update();
 
             float vertical = -(gamepad1.left_stick_y);
@@ -122,7 +112,7 @@ public class MecanumTeleOp extends LinearOpMode {
             right2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
             if (gamepad2.right_bumper) {
-                intakeLeft.setPower(-1);
+                intakeLeft.setPower(1);
                 intakeRight.setPower(1);
                 telemetry.addData("intakeLeft", intakeLeft);
                 telemetry.addData("intakeRight", intakeRight);
@@ -132,7 +122,7 @@ public class MecanumTeleOp extends LinearOpMode {
             }
 
             if (gamepad2.left_bumper) {
-                intakeLeft.setPower(1);
+                intakeLeft.setPower(-1);
                 intakeRight.setPower(-1);
                 telemetry.addData("intakeLeft", intakeLeft);
                 telemetry.addData("intakeRight", intakeRight);
@@ -140,6 +130,7 @@ public class MecanumTeleOp extends LinearOpMode {
                 intakeRight.setPower(0);
                 intakeLeft.setPower(0);
             }
+
             telemetry.addData("right", grabRight.getPosition());
             telemetry.addData("left", grabRight.getPosition());
             telemetry.update();

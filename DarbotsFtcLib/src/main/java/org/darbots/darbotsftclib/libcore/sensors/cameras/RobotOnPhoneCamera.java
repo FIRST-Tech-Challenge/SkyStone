@@ -84,7 +84,7 @@ public class RobotOnPhoneCamera implements RobotCamera {
         this.m_Vuforia = ClassFactory.getInstance().createVuforia(parameters);
     }
 
-    public void setFlashlightEnabled(boolean enabled)
+    public static void setFlashlightEnabled(boolean enabled)
     {
         CameraDevice.getInstance().setFlashTorchMode(enabled);
     }

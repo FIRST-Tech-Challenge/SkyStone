@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.robotlib.drivetrain;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotlib.state.ToggleBoolean;
 /*
 Drivetrain is the base class for all other drivetrains, each contain instructions on how the robot should move the wheels based on specific variables
@@ -8,6 +10,7 @@ Drivetrain is the base class for all other drivetrains, each contain instruction
 abstract public class Drivetrain
 {
     private double velocity = 0;
+    private double movementVelocity = 0;
 
     // Toggles the half power drive mode for precision control
     private ToggleBoolean halfPower;
@@ -33,6 +36,14 @@ abstract public class Drivetrain
         {
             updateMotorPowers();
         }
+    }
+
+    public double getMovementVelocity() { return movementVelocity; }
+
+    public void setMovementVelocity(double movementVelocity)
+    {
+        this.movementVelocity = movementVelocity;
+        setVelocity(movementVelocity);
     }
 
     // This function iterates through the list of motors and sets each power to the power calculated in the calculateMotorPowers function

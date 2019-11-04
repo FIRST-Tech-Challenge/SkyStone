@@ -22,7 +22,7 @@ public class MecanumTeleOp extends OpMode
     @Override
     public void init()
     {
-        robot = new MecanumRobot(this.hardwareMap, true);
+        robot = new MecanumRobot(this.hardwareMap, this.telemetry, true);
         driverTwoBrakes = new ToggleBoolean();
         servosUp = new Button();
         servosDown = new Button();
@@ -69,14 +69,7 @@ public class MecanumTeleOp extends OpMode
         driverTwoBrakes.input(gamepad2.left_bumper); //freezes robot in place for stacking, prevents stick bumping from driver one
 
         //TELEMETRY
-        telemetry.addData("Status", "Loop: " + elapsedTime.toString());
-        telemetry.addData("Course", course);
-        telemetry.addData("Velocity", velocity);
-        telemetry.addData("Rotation", -gamepad1.left_stick_x);
-        telemetry.addData("Servo Position", robot.platformServos.getPosition());
-        telemetry.addData("Servo Actual", robot.platformServos.getActual());
-		telemetry.addData("Half Power", robot.drivetrain.isHalfPower());
-        telemetry.update();
+        robot.informationUpdate();
     }
 
     @Override

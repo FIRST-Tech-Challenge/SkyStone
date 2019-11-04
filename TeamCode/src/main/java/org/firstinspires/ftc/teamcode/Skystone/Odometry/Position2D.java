@@ -116,13 +116,13 @@ class Odometry{
         rightPodOld = rightPodNew;
         mecanumPodOld = mecanumPodNew;
 
-//        robot.telemetry.addLine("left x odo " + leftPodNew);
-//        robot.telemetry.addLine("right x odo " + rightPodNew);
-//        robot.telemetry.addLine("mecanum odo " + mecanumPodNew);
-//        robot.telemetry.addLine("XPOS: " + robot.robotPos.x);
-//        robot.telemetry.addLine("YPOS: " + robot.robotPos.y);
-//        robot.telemetry.addLine("ANGPOS: " + Math.toDegrees(robot.anglePos));
-//        robot.telemetry.update();
+        robot.getTelemetry().addLine("left x odo " + leftPodNew);
+        robot.getTelemetry().addLine("right x odo " + rightPodNew);
+        robot.getTelemetry().addLine("mecanum odo " + mecanumPodNew);
+        robot.getTelemetry().addLine("XPOS: " + robot.getRobotPos().x);
+        robot.getTelemetry().addLine("YPOS: " + robot.getRobotPos().y);
+        robot.getTelemetry().addLine("ANGPOS: " + Math.toDegrees(robot.getAnglePos()));
+        robot.getTelemetry().update();
     }
 
 //    public void constantVelocityOdometry() {

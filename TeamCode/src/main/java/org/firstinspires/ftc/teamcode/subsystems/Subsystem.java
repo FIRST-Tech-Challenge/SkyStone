@@ -10,6 +10,7 @@ public class Subsystem {
     DcMotor[] motors;
 
     Servo[] servos;
+
     public void initMotors(DcMotor[] motors) {
         this.motors = motors;
     }
@@ -62,20 +63,22 @@ public class Subsystem {
             motor.setMode(runMode);
         }
     }
-    public int[] getMotorError(){
+
+    public int[] getMotorError() {
         int[] errors = new int[motors.length];
-        for(int i=0;i<errors.length;i++){
+        for (int i = 0; i < errors.length; i++) {
             DcMotor motor = motors[i];
             errors[i] = Math.abs(motor.getTargetPosition() - motor.getCurrentPosition());
         }
         return errors;
     }
-    public double getAverageMotorError(){
-        int [] motorErrors=getMotorError();
-        double sum=0;
-        for(int motorError : motorErrors){
-            sum+=motorError;
+
+    public double getAverageMotorError() {
+        int[] motorErrors = getMotorError();
+        double sum = 0;
+        for (int motorError : motorErrors) {
+            sum += motorError;
         }
-        return sum/motorErrors.length;
+        return sum / motorErrors.length;
     }
 }

@@ -7,9 +7,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.subsystems.Controller;
 import org.firstinspires.ftc.teamcode.subsystems.Robot;
 
-
-import java.util.HashMap;
-
 @TeleOp(name = "TeleOpMode", group = "Teleop")
 public class TeleOpMode extends LinearOpMode {
     public void runOpMode() {

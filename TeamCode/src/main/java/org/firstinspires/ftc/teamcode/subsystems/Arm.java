@@ -31,12 +31,12 @@ public class Arm extends Subsystem {
         setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    public void setArm(Chassis chassis, int level) {
+    public double setArm(Chassis chassis, int level) {
         double armAngle;
         double distance;
         int heightDif = Math.abs(robotHeight - (blockHeight * level + foundationHeight));
         armAngle = Math.acos((double) heightDif / (double) armLength);
-         distance = Math.sqrt((armLength * armLength) - (heightDif * heightDif)) + robotLength;
+        return distance = Math.sqrt((armLength * armLength) - (heightDif * heightDif)) + robotLength;
     }
 
     public void runArm(int power) {

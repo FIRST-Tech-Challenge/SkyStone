@@ -32,11 +32,11 @@ public class Arm extends Subsystem {
     }
 
     public void setArm(Chassis chassis, int level) {
-        double distance;
         double armAngle;
+        double distance;
         int heightDif = Math.abs(robotHeight - (blockHeight * level + foundationHeight));
         armAngle = Math.acos((double) heightDif / (double) armLength);
-        distance = Math.sqrt((armLength * armLength) - (heightDif * heightDif)) + robotLength;
+         distance = Math.sqrt((armLength * armLength) - (heightDif * heightDif)) + robotLength;
     }
 
     public void runArm(int power) {

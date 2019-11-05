@@ -15,6 +15,12 @@ public class Robot {
         hook = new Hook(hardwareMap);
         chassis = new Chassis(hardwareMap);
         intake = new Intake(hardwareMap);
-
+    }
+    public void run(Controller controller){
+        //Put in all run methods
+        //arm.run();
+        hook.run();
+        //chassis.run();
+        intake.run();
     }
 }

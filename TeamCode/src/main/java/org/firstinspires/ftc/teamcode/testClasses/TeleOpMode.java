@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Arm;
 import org.firstinspires.ftc.teamcode.subsystems.Chassis;
 import org.firstinspires.ftc.teamcode.subsystems.Controller;
 import org.firstinspires.ftc.teamcode.subsystems.Hook;
+import org.firstinspires.ftc.teamcode.subsystems.Robot;
 
 
 import java.util.HashMap;
@@ -16,14 +17,12 @@ import java.util.HashMap;
 @TeleOp(name = "TeleOpMode", group = "Teleop")
 public class TeleOpMode extends LinearOpMode {
     public void runOpMode() {
-        Chassis chassis = new Chassis(hardwareMap);
-        Arm arm = new Arm(hardwareMap);
+        Robot robot = new Robot(hardwareMap);
         DcMotor armMotor = hardwareMap.dcMotor.get("arm");
         telemetry.addData("Init", "v:1.0");
         waitForStart();
             Controller controller = new Controller(gamepad1);
-            runChassis(chassis, controller);
-            runArm(arm, controller);
+            robot.run(controller);
             /*
             HashMap<String, Integer> chassisMotorPositions = chassis.getMotorPositions();
             for(HashMap.Entry<String, Integer> chassisMotorPosition : chassisMotorPositions.entrySet()){
@@ -55,6 +54,6 @@ public class TeleOpMode extends LinearOpMode {
         final double power = Math.hypot(leftStickX, leftStickY);
         final double angle = Math.atan2(leftStickY, leftStickX);
         final double turn = rightStickX;
-        chassis.runChassis(angle, turn, power);
+        //chassis.runChassis(angle, turn, power);
     }
 }  

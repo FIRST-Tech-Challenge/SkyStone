@@ -7,6 +7,8 @@ public class Hook {
     public Hook(HardwareMap hardwareMap) {
 
     }
+public void run(){
 
+}
 
 }

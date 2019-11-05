@@ -30,7 +30,7 @@ public class Chassis extends Subsystem {
     }
 
     //Methods
-    public void runChassis(double targetAngle, double turn, double power) {
+    public void run(double targetAngle, double turn, double power) {
         final double turnAngle = targetAngle - Math.PI / 4;
         frontLeft.setPower(power * Math.cos(turnAngle) + turn);
         frontRight.setPower(power * Math.sin(turnAngle) - turn);

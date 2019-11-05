@@ -57,7 +57,7 @@ public class Intake extends Subsystem {
         main.setPosition(mainLowPosition);
     }
 
+public void run(){
+        
 }
-
-
-    
+}

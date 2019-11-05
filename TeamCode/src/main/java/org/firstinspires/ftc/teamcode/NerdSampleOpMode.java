@@ -72,7 +72,7 @@ public class NerdSampleOpMode extends LinearOpMode {
         myNerdBOT.initializeXPIDCalculator(0.0025, 0.0, 0.0, debugFlag);
         myNerdBOT.initializeYPIDCalculator(0.0025, 0.0, 0.0,debugFlag);
         myNerdBOT.initializeZPIDCalculator(0.015, 0.000, 0.0,debugFlag);
-        myNerdBOT.initializeTurnPIDCalculator(0.015, 0.000, 0.02535,debugFlag);
+        myNerdBOT.initializeTurnPIDCalculator(0.015, 0.000, 0.0,debugFlag);
         //Set Min and Max Speed - Optional (default min=0.1, max=0.6 if not changed below)
         myNerdBOT.setMinMaxSpeeds(0.0,0.5);
 
@@ -83,7 +83,7 @@ public class NerdSampleOpMode extends LinearOpMode {
 
         waitForStart();
 
-
+/*
 
         //UNITS ARE IN INCHES
         if (debugFlag)
@@ -174,14 +174,14 @@ public class NerdSampleOpMode extends LinearOpMode {
         Arm.ArmLoop(-10,7, 0.6, 0.2);
 
         myNerdBOT.nerdPidDrive(speed, -57, 0.0, 0);
-
+*/
         myNerdBOT.nerdPidTurn(speed, 90);
 
-        myNerdBOT.nerdPidDrive(speed, 0, 15, 90);
+ //       myNerdBOT.nerdPidDrive(speed, 0, 15, 90);
 
-        Arm.ArmLoop(-135,100, 0.8, 0.6); // half-drop
+//        Arm.ArmLoop(-135,100, 0.8, 0.6); // half-drop
 
-        myNerdBOT.nerdPidDrive(speed, 0, -12, 90);
+  //      myNerdBOT.nerdPidDrive(speed, 0, -12, 90);
 
 
         if (debugFlag)

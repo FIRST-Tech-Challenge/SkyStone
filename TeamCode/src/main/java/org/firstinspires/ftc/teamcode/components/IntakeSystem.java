@@ -4,15 +4,15 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import java.util.EnumMap;
 
-public class SpinnySystem {
+public class IntakeSystem {
 
     public enum MotorNames {
-        RIGHTINTAKE, LEFTINTAKE, BOTTOMINTAKE
+        RIGHT_INTAKE, LEFT_INTAKE, BOTTOM_INTAKE
     }
 
-    private EnumMap<SpinnySystem.MotorNames, DcMotor> motors;
+    private EnumMap<IntakeSystem.MotorNames, DcMotor> motors;
 
-    public SpinnySystem(EnumMap<SpinnySystem.MotorNames, DcMotor> motors) {
+    public IntakeSystem(EnumMap<IntakeSystem.MotorNames, DcMotor> motors) {
         this.motors = motors;
         initMotors();
     }
@@ -27,10 +27,22 @@ public class SpinnySystem {
         }
     }
 
+    public void suck() {
+        spin(true, false);
+    }
+
+    public void unsuck() {
+        spin(false, true);
+    }
+
+    public void stopIntake() {
+        spin(false, false);
+    }
+
     private void initMotors() {
         motors.forEach((name, motor) -> {
             motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            if (name == MotorNames.RIGHTINTAKE) {
+            if (name == MotorNames.RIGHT_INTAKE) {
                 motor.setDirection(DcMotorSimple.Direction.REVERSE);
             } else {
                 motor.setDirection(DcMotorSimple.Direction.FORWARD);

@@ -125,9 +125,9 @@ public abstract class BaseStateMachine extends BaseOpMode {
                     while (!driveSystem.driveToPosition(1525, direction, 0.5) && !isStopRequested()) {}
                     // Drive into skystone
                     while (!driveSystem.driveToPosition(500, DriveSystem.Direction.BACKWARD, 0.3) && !isStopRequested()) {
-                        spinnySystem.spin(true, false);
+                        intakeSystem.suck();
                     }
-                    spinnySystem.spin(false, false);
+                    intakeSystem.spin(false, false);
                     // Move away with skystone (prepare for next state)
                     direction = currentTeam == Team.RED ? DriveSystem.Direction.LEFT : DriveSystem.Direction.RIGHT;
                     while (!driveSystem.driveToPosition(1200, direction, 0.8) && !isStopRequested()) {};
@@ -157,9 +157,9 @@ public abstract class BaseStateMachine extends BaseOpMode {
                 while (!driveSystem.driveToPosition(1525, direction, 0.5) && !isStopRequested()) {}
                 // Drive into skystone
                 while (!driveSystem.driveToPosition(500, DriveSystem.Direction.BACKWARD, 0.3) && !isStopRequested()) {
-                    spinnySystem.spin(true, false);
+                    intakeSystem.suck();
                 }
-                spinnySystem.spin(false, false);
+                intakeSystem.stopIntake();
                 // Move away with skystone (prepare for next state)
                 direction = currentTeam == Team.RED ? DriveSystem.Direction.LEFT : DriveSystem.Direction.RIGHT;
                 while (!driveSystem.driveToPosition(1200, direction, 0.8) && !isStopRequested()) {};
@@ -174,17 +174,17 @@ public abstract class BaseStateMachine extends BaseOpMode {
             case STATE_DELIVER_STONE:
                 telemetry.addData("State", "STATE_DELIVER_STONE");
                 while (!driveSystem.driveToPosition(2200, DriveSystem.Direction.BACKWARD, 1.0)  && !isStopRequested()) {};
-                spinnySystem.spin(false, true);
+                intakeSystem.unsuck();
                 newState(State.EJECT_STONE);
                 telemetry.update();
                 break;
 
             case EJECT_STONE:
                 if (mStateTime.milliseconds() >= 1000) {
-                    spinnySystem.spin(false, false);
+                    intakeSystem.stopIntake();
                     newState(State.STATE_PARK_AT_LINE);
                 } else {
-                    spinnySystem.spin(false, true);
+                    intakeSystem.unsuck();
                 }
                 break;
 

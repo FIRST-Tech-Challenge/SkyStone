@@ -3,6 +3,7 @@ package org.darbots.darbotsftclib.libcore.templates;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.darbots.darbotsftclib.libcore.integratedfunctions.logger.RobotLogger;
+import org.darbots.darbotsftclib.libcore.runtime.GlobalRegister;
 import org.darbots.darbotsftclib.libcore.sensors.gyros.BNO055Gyro;
 import org.darbots.darbotsftclib.libcore.templates.chassis_related.RobotMotionSystem;
 import org.darbots.darbotsftclib.libcore.templates.other_sensors.RobotGyro;
@@ -32,6 +33,11 @@ public abstract class RobotCore implements RobotNonBlockingDevice {
     @Override
     public void waitUntilFinish(){
         while(this.isBusy()){
+            if(GlobalRegister.runningOpMode != null){
+                if(GlobalRegister.runningOpMode.isStarted() && (!GlobalRegister.runningOpMode.opModeIsActive())){
+                    return;
+                }
+            }
             this.updateStatus();
         }
     }

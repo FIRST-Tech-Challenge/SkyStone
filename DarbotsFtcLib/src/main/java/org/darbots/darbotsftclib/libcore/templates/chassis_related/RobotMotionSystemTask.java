@@ -31,6 +31,7 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.darbots.darbotsftclib.libcore.calculations.dimentionalcalculation.XYPlaneCalculations;
 import org.darbots.darbotsftclib.libcore.integratedfunctions.logger.RobotLogger;
+import org.darbots.darbotsftclib.libcore.runtime.GlobalRegister;
 import org.darbots.darbotsftclib.libcore.runtime.GlobalUtil;
 import org.darbots.darbotsftclib.libcore.templates.RobotNonBlockingDevice;
 import org.darbots.darbotsftclib.libcore.templates.other_sensors.RobotGyro;
@@ -107,6 +108,11 @@ public abstract class RobotMotionSystemTask implements RobotNonBlockingDevice {
     @Override
     public void waitUntilFinish(){
         while(this.isBusy()){
+            if(GlobalRegister.runningOpMode != null){
+                if(GlobalRegister.runningOpMode.isStarted() && (!GlobalRegister.runningOpMode.opModeIsActive())){
+                    return;
+                }
+            }
             this.updateStatus();
         }
     }

@@ -2,6 +2,7 @@ package org.darbots.darbotsftclib.libcore.sensors.servos.motor_powered_servos;
 
 import android.support.annotation.NonNull;
 
+import org.darbots.darbotsftclib.libcore.runtime.GlobalRegister;
 import org.darbots.darbotsftclib.libcore.sensors.motors.RobotMotorController;
 import org.darbots.darbotsftclib.libcore.templates.RobotNonBlockingDevice;
 import org.darbots.darbotsftclib.libcore.templates.motor_related.MotorType;
@@ -153,6 +154,11 @@ public class RobotServoUsingMotor implements RobotNonBlockingDevice {
     @Override
     public void waitUntilFinish() {
         while(this.isBusy()){
+            if(GlobalRegister.runningOpMode != null){
+                if(GlobalRegister.runningOpMode.isStarted() && (!GlobalRegister.runningOpMode.opModeIsActive())){
+                    return;
+                }
+            }
             this.updateStatus();
         }
     }

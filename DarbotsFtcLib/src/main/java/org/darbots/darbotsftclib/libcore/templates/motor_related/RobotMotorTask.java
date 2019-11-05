@@ -31,6 +31,7 @@ import android.support.annotation.NonNull;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.darbots.darbotsftclib.libcore.integratedfunctions.logger.RobotLogger;
+import org.darbots.darbotsftclib.libcore.runtime.GlobalRegister;
 import org.darbots.darbotsftclib.libcore.runtime.GlobalUtil;
 import org.darbots.darbotsftclib.libcore.sensors.motors.RobotMotorController;
 import org.darbots.darbotsftclib.libcore.templates.RobotNonBlockingDevice;
@@ -129,6 +130,11 @@ public abstract class RobotMotorTask implements RobotNonBlockingDevice {
     @Override
     public void waitUntilFinish(){
         while(this.isBusy()){
+            if(GlobalRegister.runningOpMode != null){
+                if(GlobalRegister.runningOpMode.isStarted() && (!GlobalRegister.runningOpMode.opModeIsActive())){
+                    return;
+                }
+            }
             this.updateStatus();
         }
     }

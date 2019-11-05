@@ -56,8 +56,8 @@ public class RobotOneHardware
     public DcMotor  leftDrive   = null;
     public DcMotor  rightDrive  = null;
     public DcMotor  InAndOut     = null;
-    //public Servo    leftClaw    = null;
-    //public Servo    rightClaw   = null;
+    public Servo    leftServo    = null;
+    public Servo    rightServo   = null;
 
     public static final double MID_SERVO       =  0.5 ;
     public static final double ARM_UP_POWER    =  0.45 ;
@@ -78,6 +78,8 @@ public class RobotOneHardware
         hwMap = ahwMap;
 
         // Define and Initialize Motors
+        leftServo = hwMap.get(Servo.class,"leftServo");
+        rightServo = hwMap.get(Servo.class,":rightServo");
         leftDrive  = hwMap.get(DcMotor.class, "leftDrive");
         rightDrive = hwMap.get(DcMotor.class, "rightDrive");
         InAndOut    = hwMap.get(DcMotor.class, "InAndOut");

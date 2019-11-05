@@ -236,7 +236,7 @@ public class Outtake {
         rightVex.setPower(0);
         leftVex.setPower(0);
 
-        raiseLiftAuto();
+        //raiseLiftAuto(opMode);
 
         liftLeft.setPower(-LIFTPOWER/2);
         liftRight.setPower(-LIFTPOWER/2);
@@ -444,7 +444,6 @@ public class Outtake {
         opMode.telemetry.addData("Left Hook", hookLeft.getPosition());
         opMode.telemetry.addData("Right Hook", hookRight.getPosition());
     }
-
 
     public void openBasketAuto()
     {

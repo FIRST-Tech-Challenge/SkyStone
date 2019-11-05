@@ -53,8 +53,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class ROneArm extends LinearOpMode {
 
     // Declare OpMode members.
-    private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor InAndOut = null;
+    public ElapsedTime runtime = new ElapsedTime();
+    public DcMotor InAndOut = null;
     //private DcMotor rightDrive = null;
 
     @Override
@@ -106,12 +106,12 @@ public class ROneArm extends LinearOpMode {
 
             if ( forward == true ) {
                 InAndOut.setDirection(DcMotor.Direction.FORWARD);
-                InAndOut.setPower(.2);
+                InAndOut.setPower(.5);
                 sleep(500);
                 InAndOut.setPower(0);
             } else if (reverse == true ) {
                 InAndOut.setDirection(DcMotor.Direction.REVERSE);
-                InAndOut.setPower(.2);
+                InAndOut.setPower(.5);
                 sleep(500);
                 InAndOut.setPower(0);
             }

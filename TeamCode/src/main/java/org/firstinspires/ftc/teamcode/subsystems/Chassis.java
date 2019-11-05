@@ -12,6 +12,7 @@ public class Chassis extends Subsystem {
     DcMotor backRight = null;
     final double wheelRadius = 24.0;
     final double robotRadius = 5.08;
+
     //Constructors
     public Chassis(HardwareMap hardwareMap) {
         frontLeft = hardwareMap.dcMotor.get("front_left_drive");
@@ -20,7 +21,7 @@ public class Chassis extends Subsystem {
         backRight = hardwareMap.dcMotor.get("back_right_drive");
         initMotors(new DcMotor[]{frontLeft, frontRight, backLeft, backRight});
         initChassis();
-    }
+}
 
     public void initChassis() {
         reset();

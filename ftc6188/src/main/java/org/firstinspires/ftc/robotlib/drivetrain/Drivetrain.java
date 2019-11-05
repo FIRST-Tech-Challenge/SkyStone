@@ -2,7 +2,6 @@ package org.firstinspires.ftc.robotlib.drivetrain;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotlib.state.ToggleBoolean;
 /*
 Drivetrain is the base class for all other drivetrains, each contain instructions on how the robot should move the wheels based on specific variables
@@ -10,7 +9,7 @@ Drivetrain is the base class for all other drivetrains, each contain instruction
 abstract public class Drivetrain
 {
     private double velocity = 0;
-    private double movementVelocity = 0;
+    private double autoVelocity = 0; // velocity used by autonomous acceleration curves as peak value
 
     // Toggles the half power drive mode for precision control
     private ToggleBoolean halfPower;
@@ -20,7 +19,7 @@ abstract public class Drivetrain
 
     public DcMotor[] motorList;
 
-    public Drivetrain(DcMotor[] motorList, boolean teleOpMode)
+    Drivetrain(DcMotor[] motorList, boolean teleOpMode)
     {
         this.motorList = motorList;
         this.teleOpMode = teleOpMode;
@@ -38,12 +37,12 @@ abstract public class Drivetrain
         }
     }
 
-    public double getMovementVelocity() { return movementVelocity; }
+    public double getAutoVelocity() { return autoVelocity; }
 
-    public void setMovementVelocity(double movementVelocity)
+    public void setAutoVelocity(double autoVelocity)
     {
-        this.movementVelocity = movementVelocity;
-        setVelocity(movementVelocity);
+        this.autoVelocity = autoVelocity;
+        setVelocity(autoVelocity);
     }
 
     // This function iterates through the list of motors and sets each power to the power calculated in the calculateMotorPowers function
@@ -52,7 +51,7 @@ abstract public class Drivetrain
         double[] motorPowers = calculateMotorPowers();
         for (int motorIndex = 0; motorIndex < motorPowers.length; motorIndex++)
         {
-            motorList[motorIndex].setPower(motorPowers[motorIndex] * (halfPower.output() ? 0.5 : 1));
+            motorList[motorIndex].setPower(motorPowers[motorIndex] * (isHalfPower() ? 0.5 : 1));
         }
     }
 

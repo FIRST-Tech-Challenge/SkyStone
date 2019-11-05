@@ -10,7 +10,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     private double course = 0; //the angle the robot is going to move at relative to its heading
     private double targetPosition = 0; //distance the robot has to move
 
-    private double movementVelocity = 0;
+    private double ticksPerIn = 0;
 
     private double[] wheelTargetPositions = new double[4];
     private DcMotor.RunMode[] runModes = new DcMotor.RunMode[4];
@@ -86,7 +86,6 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
             wheelTargetPositions[motorIndex] = targetPosition*calculateWheelCoefficient(course, wheelAngles[motorIndex]);
             this.motorList[motorIndex].setTargetPosition((int)(wheelTargetPositions[motorIndex]+0.5));
         }
-        updateMotorPowers();
     }
 
     // returns not the robots actual position on the field but the distance moved based on the current movement goal
@@ -107,6 +106,25 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
         return targetPosition;
     }
 
+    // auto function to initiate the positioning of the robot, dont use instead recreate loop in robotmove function
+    @Override
+    public void position()
+    {
+        updateMotorPowers();
+        while (isPositioning())
+        {
+            updatePosition();
+        }
+        finishPositioning();
+    }
+
+    // auto function to check if robot is still executing a movement command
+    @Override
+    public boolean isPositioning()
+    {
+        for (DcMotor motor : this.motorList) { if (motor.isBusy()) { return true; } }
+        return false;
+    }
 
     // auto function to implement an acceleration curve
     @Override
@@ -114,23 +132,9 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     {
         double percentageTraveled = getCurrentPosition()/getTargetPosition();
         double velocityMultiplier = -Math.pow((percentageTraveled - 0.5) * 2, 2) + 1.5;
-        setVelocity(getMovementVelocity() * velocityMultiplier);
+        setVelocity(getAutoVelocity() * velocityMultiplier);
 
         updateMotorPowers();
-    }
-
-    // auto function to check if robot is still executing a movement command
-    @Override
-    public boolean isPositioning()
-    {
-        for (DcMotor motor : this.motorList)
-        {
-            if (motor.isBusy())
-            {
-                return true;
-            }
-        }
-        return false;
     }
 
     // returns the motors to their prior state after resetting the encoders back to 0
@@ -143,17 +147,13 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
             this.motorList[motorIndex].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             this.motorList[motorIndex].setMode(runModes[motorIndex]);
         }
-    }
 
-    // auto function to initiate the positioning of the robot, dont use instead recreate loop in robotmove function
-    @Override
-    public void position()
-    {
-        while (isPositioning())
-        {
-            updatePosition();
-        }
-        finishPositioning();
+        // reset the drivetrain to a pre-movement state
+        setCourse(0);
+        setAutoVelocity(0);
+        setRotation(0);
+        setTargetPosition(0);
+        updateMotorPowers();
     }
 
     // returns each motors ticks per full revolution
@@ -168,8 +168,14 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
 
     // returns each motors ticks per in (its not actually ticks per in its really closer to ticks per ft for some reason this is fixed later in the mecanum robot class)
     @Override
-    public double getTicksPerIn(double wheelRadius, double motorToWheelRatio)
+    public void setTicksPerIn(double wheelRadius, double motorToWheelRatio)
     {
-        return (getTicksPerRev()/(wheelRadius * motorToWheelRatio * 2 * Math.PI));
+        this.ticksPerIn = (getTicksPerRev()/(wheelRadius * motorToWheelRatio * 2 * Math.PI));
+    }
+
+    @Override
+    public double getTicksPerIn()
+    {
+        return ticksPerIn;
     }
 }

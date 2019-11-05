@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.robotlib.util;
+package org.firstinspires.ftc.robotlib.vuforia;
 
 public class VuforiaConstants
 {

@@ -25,9 +25,9 @@ public class DriveCommand implements ICommand {
 
     public boolean runCommand() {
         if (!hasSetDistance) {
-            chassis.runDistance(distance, targetAngle, turn, power);
-            hasSetDistance = true;
-        }
-        return chassis.runDistanceCheck(error);
+        chassis.runDistance(distance, targetAngle, turn, power);
+        hasSetDistance = true;
     }
+        return chassis.runDistanceCheck(error);
+}
 }

@@ -8,7 +8,6 @@ import java.util.HashMap;
 
 public class Subsystem {
     DcMotor[] motors;
-
     Servo[] servos;
 
     public void initMotors(DcMotor[] motors) {
@@ -81,4 +80,6 @@ public class Subsystem {
         }
         return sum / motorErrors.length;
     }
+
+
 }

@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode.subsystems;
+
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -10,8 +11,6 @@ public class Intake extends Subsystem {
     double wristLowPosition;
     double mainHighPosition;
     double mainLowPosition;
-
-
 
 
     public Intake(HardwareMap hardwareMap) {
@@ -46,7 +45,8 @@ public class Intake extends Subsystem {
     public void setWristToLowPosition() {
         wrist.setPosition(wristLowPosition);
     }
-// values need to be tested
+
+    // values need to be tested
     public void setMainToHighPosition() {
         main.setPosition(mainHighPosition);
     }
@@ -57,7 +57,7 @@ public class Intake extends Subsystem {
         main.setPosition(mainLowPosition);
     }
 
-public void run(){
-        
-}
+    public void run() {
+
+    }
 }

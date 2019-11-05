@@ -116,12 +116,12 @@ public class AMLPathingRed extends LinearOpMode {
         //tighten
         outtake.rightVex.setPower(-.5);
         outtake.leftVex.setPower(.5);
-        sleep(2000);
+        sleep(2500);
         outtake.leftVex.setPower(0);
         outtake.rightVex.setPower(0);
 
         //drive back
-        drive.encoderDrive(this, .6, 12, 12, 5);
+        drive.encoderDrive(this, .6, 14, 14, 5);
         //sleep(1000);
 
         //strafe across bridge
@@ -138,7 +138,7 @@ public class AMLPathingRed extends LinearOpMode {
         //lift up
         outtake.raiseLiftAuto(this);
 
-        drive.gyroTurn(this, 360, false, 4000);
+        drive.gyroTurn(this, 0, true, 4000);
 
 
         //drive out of way
@@ -153,17 +153,18 @@ public class AMLPathingRed extends LinearOpMode {
         drive.strafeMove(this, 144 - offset, 10, -.8);
         //drive.gyroTurn(this, 0, false, 4000);
 
-
+        //drive.gyroTurn(this, 360, false , 300);
 
         //lift up
         outtake.raiseLiftAuto(this);
 
         sleep(500);
         //drive to stone
-        drive.encoderDrive(this, -.7, -37, -37, 5);
+        drive.encoderDrive(this, -.7, -40, -40, 5);
 
         //lift down
         outtake.lowerLiftAuto(this);
+
 
         //tighten
         outtake.rightVex.setPower(-.5);

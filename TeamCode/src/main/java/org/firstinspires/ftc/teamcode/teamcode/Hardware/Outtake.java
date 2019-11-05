@@ -586,13 +586,13 @@ public class Outtake {
             toggled = true;
 
             time.reset();
-            while(time.milliseconds() < 100)
+            while(time.milliseconds() < 300)
             {
 
             }
 
             hookLeft.setPosition(1);
-            hookRight.setPosition(1);
+            hookRight.setPosition(0);
         }
         else if(toggled && opMode.gamepad2.y)
         {
@@ -600,12 +600,12 @@ public class Outtake {
 
 
             time.reset();
-            while (time.milliseconds() < 100)
+            while (time.milliseconds() < 300)
             {
 
             }
             hookLeft.setPosition(0);
-            hookRight.setPosition(0);
+            hookRight.setPosition(1);
         }
     }
 

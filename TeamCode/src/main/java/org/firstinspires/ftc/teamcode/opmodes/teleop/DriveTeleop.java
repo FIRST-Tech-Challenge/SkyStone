@@ -49,7 +49,7 @@ public class DriveTeleop extends BaseOpMode {
         driveSystem.drive(rx, lx, -ly, gamepad1.x);
         spinnySystem.spin(gamepad1.left_bumper, gamepad1.right_bumper);
         latchSystem.run(gamepad2.x, gamepad2.y);
-        armSystem.run(gamepad2.x, gamepad2.dpad_left, gamepad2.dpad_right, gamepad2.dpad_up,
+        armSystem.run(gamepad2.b, gamepad2.dpad_left, gamepad2.dpad_right, gamepad2.dpad_up,
                 gamepad2.dpad_down, gamepad2.right_bumper, gamepad2.left_bumper, gamepad2.a,
                 true,1, 0.005);
     }

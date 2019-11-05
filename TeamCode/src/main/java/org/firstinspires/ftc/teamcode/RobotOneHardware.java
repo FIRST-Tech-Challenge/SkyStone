@@ -90,13 +90,16 @@ public class RobotOneHardware
         leftDrive.setPower(0);
         rightDrive.setPower(0);
         InAndOut.setPower(0);
-        
+        leftServo.setPosition(1.0);
+        rightServo.setPosition(0.0);
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
         leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         InAndOut.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftServo
+        rightServo.
 
         // Define and initialize ALL installed servos.
         /*leftClaw  = hwMap.get(Servo.class, "left_hand");

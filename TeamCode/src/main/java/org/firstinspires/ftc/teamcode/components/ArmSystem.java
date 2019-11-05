@@ -30,7 +30,9 @@ public class ArmSystem {
     private final double GRIPPER_OPEN = 0.5;
     private final double GRIPPER_CLOSE = 0.03;
     private int origin;
-    public int targetHeight;
+
+    // This is in block positions, not ticks
+    private int targetHeight;
     private final int distanceConstant = 500; // used for calculating motor speed
 
     // Use these so we can change it easily if the motor is put on backwards
@@ -63,7 +65,7 @@ public class ArmSystem {
     public final int INCREMENT_HEIGHT = 564; // how much the ticks increase when a block is added
     public final int START_HEIGHT = 366; // Height of the foundation
 
-    public final double SERVO_SPEED = 0.005;
+    public double SERVO_SPEED;
     public final double SERVO_TOLERANCE = 0.02;
     private double pivotTarget = 0.93;
     private double elbowTarget = 0.72;
@@ -101,7 +103,8 @@ public class ArmSystem {
 
      Probably should be controlled by the D pad or something.
      */
-    public ArmSystem(EnumMap<ServoNames, Servo> servos, DcMotor slider, DigitalChannel limitSwitch) {
+    public ArmSystem(EnumMap<ServoNames, Servo> servos, DcMotor slider, DigitalChannel limitSwitch,
+                     boolean calibrate) {
         this.gripper = servos.get(ServoNames.GRIPPER);
         this.wrist = servos.get(ServoNames.WRIST);
         this.elbow = servos.get(ServoNames.ELBOW);
@@ -109,14 +112,74 @@ public class ArmSystem {
         this.slider = slider;
         this.limitSwitch = limitSwitch;
         this.queuedPosition = Position.POSITION_HOME;
+        if (calibrate) {
+            calibrate();
+        }
         // this.direction = Direction.UP;
         // this.slider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
-    // Create an ArmSystem object without servos, used for testing just the slider
-    public ArmSystem(DcMotor slider, DigitalChannel limitSwitch) {
-        this.slider = slider;
-        this.limitSwitch = limitSwitch;
+    /*
+        Use this method in teleop.
+        Set assist to true if you want to use driver assist.
+        Each of these values should just be the raw button data (including gripper, which is
+        a toggle.)
+        If queuing is true, it'll use the cool yet controversial queuing system.
+        The method variables are for keeping track of the buttons, so our driver class can just give
+        the button input.
+     */
+    boolean m_gripper, m_up, m_down = false;
+
+    public String run(boolean home, boolean west, boolean east, boolean north, boolean south,
+                      boolean up, boolean down, boolean gripper, boolean assist, boolean queuing,
+                      double sliderSpeed, double armSpeed) {
+
+        this.SERVO_SPEED = sliderSpeed;
+
+        if (west) {
+            movePresetPosition(Position.POSITION_WEST);
+        } else if (east) {
+            movePresetPosition(Position.POSITION_EAST);
+        } else if (south) {
+            movePresetPosition(Position.POSITION_SOUTH);
+        } else if (north) {    // Sets the target height to the exact encoder.
+            // Nope!
+        } else if (home) {
+            goHome();
+        }
+
+        if (assist) {
+            if (up && !m_up) {
+                setSliderHeight(++targetHeight);
+                m_up = true;
+            } else if (!up) {
+                m_up = false;
+            }
+
+            if (down) {
+                setSliderHeight(--targetHeight);
+                m_down = true;
+            } else if (!down) {
+                m_down = false;
+            }
+            updateHeight(sliderSpeed);
+        } else {
+            slider.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            if (up) {
+                slider.setDirection(Direction.motorDirection(Direction.UP));
+            } else if (down) {
+                slider.setDirection(Direction.motorDirection(Direction.DOWN));
+            }
+            slider.setPower(sliderSpeed);
+        }
+
+        if (gripper && !m_gripper) {
+            toggleGripper();
+            m_gripper = true;
+        } else if (!gripper) {
+            m_gripper = false;
+        }
+        return "";
     }
 
     public void moveGripper(double pos) {
@@ -328,12 +391,11 @@ public class ArmSystem {
 
     // Pos should be the # of blocks high it should be
     public void setSliderHeight(int pos) {
-        targetHeight = calculateHeight(pos);
-        if (targetHeight > MAX_HEIGHT) throw new IllegalArgumentException();
-        slider.setTargetPosition(targetHeight);
+        targetHeight = pos;
+        slider.setTargetPosition(calculateHeight(targetHeight));
         slider.setDirection(Direction.motorDirection(Direction.UP));
         slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        Log.d(TAG, "Set target height to" + calculateHeight(pos));
+        Log.d(TAG, "Set target height to" + calculateHeight(targetHeight));
     }
 
     // Little helper method for setSliderHeight
@@ -342,8 +404,8 @@ public class ArmSystem {
     }
 
     // Should be called every loop
-    public void updateHeight() {
-        slider.setPower(0.5);
+    public void updateHeight(double speed) {
+        slider.setPower(speed);
         slider.setTargetPosition(targetHeight);
         updateServo(elbow, elbowTarget);
         updateServo(pivot, pivotTarget);

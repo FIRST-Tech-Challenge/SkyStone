@@ -139,8 +139,8 @@ public class Outtake {
 
         horizontalLiftTele();
         raiseLiftMacro();
-        //hookToggle();
-        //openBasket();
+        hookToggle();
+        openBasket();
         lift();
         encoderCalibrate();
 
@@ -183,6 +183,7 @@ public class Outtake {
         liftRight.setPower(0);
     }
 
+
     public void Auto_Outtake(LinearOpMode opMode)
     {
         //Assumes aligned with block
@@ -221,7 +222,34 @@ public class Outtake {
 
 
     }
+    public void Reset_AutoOuttake()
+    {
+        rightVex.setPower(.5);
+        leftVex.setPower(-.5);
 
+        //8.78 inches extends out
+        time.reset();
+        while(time.milliseconds() < 1000)
+        {
+        }
+
+        rightVex.setPower(0);
+        leftVex.setPower(0);
+
+        raiseLiftAuto();
+
+        liftLeft.setPower(-LIFTPOWER/2);
+        liftRight.setPower(-LIFTPOWER/2);
+
+        while(averageLiftPosition() > 0 * encoderLevelCount){}
+        top = false;
+        bottom = true;
+
+        liftRight.setPower(0);
+        liftLeft.setPower(0);
+
+
+    }
     /*public void outTake_Auto(LinearOpMode opMode) {
        // initHorizontalExtension();
         pushBlock.setPosition(1);
@@ -343,7 +371,7 @@ public class Outtake {
         left_stick_y = opMode.gamepad2.left_stick_y;
 
 
-        if (averageLiftPosition() <= 0) {
+        if (averageLiftPosition() < 0) {
             bottom = true;
             resetLiftEncoders();
         }
@@ -363,16 +391,15 @@ public class Outtake {
             top = false;
             bottom = false;
         }
-        if(top && -left_stick_y > 0)
-        {
+
+        if (top && -left_stick_y > 0) {
             liftRight.setPower(0);
             liftLeft.setPower(0);
         }
         else if (bottom && -left_stick_y < 0) {
             liftRight.setPower(0);
             liftLeft.setPower(0);
-        }
-        else if (Math.abs(left_stick_y) > .05) {
+        }else if (Math.abs(left_stick_y) > .05) {
             liftRight.setPower(-left_stick_y);
             liftLeft.setPower(-left_stick_y);
         }
@@ -382,12 +409,12 @@ public class Outtake {
         }
 
 
-        /*if (opMode.gamepad2.dpad_down && !bottom && averageLiftPosition() > 4 * encoderLevelCount)
+        if (opMode.gamepad2.dpad_down && !bottom && averageLiftPosition() > 4 * encoderLevelCount)
         {
             time.reset();
             while (time.milliseconds() < 100) { }
             resetOuttake();
-        }*/
+        }
     }
 
     public void encoderCalibrate()

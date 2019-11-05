@@ -10,7 +10,7 @@ public abstract class DarbotsComboKey implements RobotNonBlockingDevice {
         this.m_Busy = false;
     }
     public DarbotsComboKey(DarbotsComboKey combo){
-        this.m_Busy = combo.m_Busy;
+        this.m_Busy = false;
     }
 
     public void startCombo(){

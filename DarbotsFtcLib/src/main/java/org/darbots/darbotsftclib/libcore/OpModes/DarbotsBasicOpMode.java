@@ -9,6 +9,8 @@ import org.darbots.darbotsftclib.libcore.runtime.GlobalUtil;
 import org.darbots.darbotsftclib.libcore.templates.RobotCore;
 
 public abstract class DarbotsBasicOpMode<CoreType extends RobotCore> extends LinearOpMode {
+    private ElapsedTime m_TimerSinceStart = null;
+    private ElapsedTime m_TimerSinceInit = null;
     public abstract CoreType getRobotCore();
     public abstract void hardwareInitialize();
     public abstract void hardwareDestroy();
@@ -16,10 +18,13 @@ public abstract class DarbotsBasicOpMode<CoreType extends RobotCore> extends Lin
     @Override
     public void runOpMode() throws InterruptedException {
         GlobalRegister.runningOpMode = this;
+        this.m_TimerSinceStart = null;
+        this.m_TimerSinceInit = new ElapsedTime(ElapsedTime.Resolution.SECONDS);
         this.hardwareInitialize();
         GlobalUtil.addLog("DarbotsBasicOpMode","Status","OpMode initialized", RobotLogger.LogLevel.DEBUG);
         this.waitForStart();
         if(this.opModeIsActive()){
+            this.m_TimerSinceStart = new ElapsedTime(ElapsedTime.Resolution.SECONDS);
             RunThisOpMode();
         }
         GlobalUtil.addLog("DarbotsBasicOpMode","Status","OpMode stopping", RobotLogger.LogLevel.DEBUG);
@@ -31,6 +36,8 @@ public abstract class DarbotsBasicOpMode<CoreType extends RobotCore> extends Lin
         this.getRobotCore().getLogger().saveLogsToFile();
         this.hardwareDestroy();
         GlobalRegister.runningOpMode = null;
+        this.m_TimerSinceStart = null;
+        this.m_TimerSinceInit = null;
     }
     @Override
     public void waitForStart(){
@@ -62,5 +69,19 @@ public abstract class DarbotsBasicOpMode<CoreType extends RobotCore> extends Lin
             sleep(20);
         }
         return this.opModeIsActive();
+    }
+    public double getSecondsSinceOpModeStarted(){
+        if(this.m_TimerSinceStart == null){
+            return 0;
+        }else{
+            return this.m_TimerSinceStart.seconds();
+        }
+    }
+    public double getSecondsSinceOpModeInited(){
+        if(this.m_TimerSinceInit == null){
+            return 0;
+        }else{
+            return this.m_TimerSinceInit.seconds();
+        }
     }
 }

@@ -90,6 +90,7 @@ public class RobotOneHardware
         leftDrive.setPower(0);
         rightDrive.setPower(0);
         InAndOut.setPower(0);
+        
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.

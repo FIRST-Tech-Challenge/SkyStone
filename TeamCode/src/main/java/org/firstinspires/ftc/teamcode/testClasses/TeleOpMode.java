@@ -33,27 +33,13 @@ public class TeleOpMode extends LinearOpMode {
             telemetry.update();
         }
 
-    public void runArm(Arm arm, Controller controller) {
-            if (controller.getA())
-                arm.reset();
-        if (controller.getY())
-            arm.getMain().setPower(.1);
-        else
-            arm.getMain().setPower(0);
-        telemetry.addData("Arm: ", arm.getMain().getCurrentPosition());
-    }
 
     public void runHook(Hook hook, Controller controller) {
 
     }
 
     public void runChassis(Chassis chassis, Controller controller) {
-        final double leftStickX = controller.limitStick(controller.getLeftStickX());
-        final double leftStickY = controller.limitStick(controller.getLeftStickY());
-        final double rightStickX = controller.limitStick(controller.getRightStickX());
-        final double power = Math.hypot(leftStickX, leftStickY);
-        final double angle = Math.atan2(leftStickY, leftStickX);
-        final double turn = rightStickX;
+
         //chassis.runChassis(angle, turn, power);
     }
 }  

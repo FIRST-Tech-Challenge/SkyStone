@@ -38,11 +38,15 @@ public class Robot {
     double ROBOT_EXTENDED_LENGTH = 36.0; // in
     double ROBOT_RETRACTED_LENGTH = 18.0; // in
 
+    // PID Controller
+    PIDController PIDWrist1 = new PIDController(0.75, 0.25, 0.0);
+    PIDController PIDWrist2 = new PIDController(0.75, 0.25, 0.0);
+
     // info
     private int wafflePosition = -1; // 1 = Up, -1 = Down Waffle mover starts down
     private double wafflePower = 0.5;
 
-    private int gripperRotatePosition = 1; // 1 = at a 90 degree angle, -1 = whatever angle it will be
+    private double gripperRotatePosition = 0.2; // 0.2 = at a 90 degree angle, 0.6 = parallel to ground
 
     private enum gripperPosition {OPEN, CLOSED}
     private gripperPosition gripperPos = gripperPosition.OPEN;
@@ -98,8 +102,8 @@ public class Robot {
         this.grabServo = hwMap.get(Servo.class, "grabServo");
 
         // Servo direction
-        this.gripperRotateServo1.setDirection(Servo.Direction.REVERSE);
-        this.gripperRotateServo2.setDirection(Servo.Direction.FORWARD);
+        this.gripperRotateServo1.setDirection(Servo.Direction.FORWARD);
+        this.gripperRotateServo2.setDirection(Servo.Direction.REVERSE);
         this.grabServo.setDirection(Servo.Direction.FORWARD);
 
     }
@@ -197,7 +201,7 @@ public class Robot {
         }
 
         this.waffleMover.setPower(this.wafflePower * this.wafflePosition);
-        Thread.sleep(250);
+        Thread.sleep(500);
         this.waffleMover.setPower(0);
 
         this.wafflePosition *= -1;
@@ -215,28 +219,46 @@ public class Robot {
         // set power
         this.setArmRotatePower(power);
 
+        // PID parameters
+        PIDWrist1.setSetpoint(targetPosition);
+        PIDWrist1.setOutputRange(-1, 1);
+        PIDWrist1.setInputRange(0, 500);
+        PIDWrist1.enable();
+
+        PIDWrist2.setSetpoint(targetPosition);
+        PIDWrist2.setOutputRange(-1, 1);
+        PIDWrist2.setInputRange(0, 500);
+        PIDWrist2.enable();
+
         // wait for the armRotate motors to reach the position or else things go bad bad
         while (Math.abs(this.armRotate1.getCurrentPosition()) <  targetPosition &&
                 Math.abs(this.armRotate2.getCurrentPosition()) < targetPosition) {
-            this.setArmRotatePower(power * Math.pow(1 - (Math.abs(this.armRotate1.getCurrentPosition()) / targetPosition), 2));
-            opmode.telemetry.addData("Gripper", "#1: " + this.armRotate1.getCurrentPosition() + " #2: " + this.armRotate2.getCurrentPosition());
+            double correction1 = PIDWrist1.performPID(Math.abs(this.armRotate1.getCurrentPosition()));
+            double correction2 = PIDWrist2.performPID(Math.abs(this.armRotate1.getCurrentPosition()));
+
+            this.armRotate1.setPower(this.armRotate1.getPower() + correction1);
+            this.armRotate2.setPower(this.armRotate2.getPower() + correction2);
+            opmode.telemetry.addData("Gripper", "#1: " + correction1 + " #2: " + correction2);
             opmode.telemetry.update();
         }
+
+        PIDWrist1.reset();
+        PIDWrist2.reset();
 
         // stop the armRotate motors
         this.stopArmRotate();
     }
 
-    void rotateGripper(double angle) {
-        this.gripperRotateServo1.setPosition(angle / 270);
-        this.gripperRotateServo2.setPosition(angle / 270);
+    void rotateGripper(double position) {
+        this.gripperRotateServo1.setPosition(position);
+        //this.gripperRotateServo2.setPosition(position);
     }
 
-    void bringArmDown(OpMode opmode) throws InterruptedException {
+    void bringArmDown(OpMode opmode) {
         if (armPos == armPosition.REST) { // we only bring the arm down if the arm is resting
             // we rotate the arm 180 + ANGLE_OF_GRIPPER_WHEN_GRABBING degrees
-            this.moveArmRotate(CORE_HEX_TICKS_PER_REV * (150) / 360, 0.7, opmode);
-            this.setArmRotatePower(-0.4); // since gravity is pushing on the arm, we fight it so the arm gradually goes down
+            this.moveArmRotate(CORE_HEX_TICKS_PER_REV * (135) / 360, 0.6, opmode);
+            this.setArmRotatePower(-0.2); // since gravity is pushing on the arm, we fight it so the arm gradually goes down
             this.armPos = armPosition.ACTIVE;
         }
     }
@@ -258,12 +280,12 @@ public class Robot {
     }
 
     void gripBlock() {
-        this.grabServo.setPosition(0.25);
+        this.grabServo.setPosition(0);
         this.gripperPos = gripperPosition.CLOSED;
     }
 
     void releaseBlock(OpMode opmode) {
-        this.grabServo.setPosition(0);
+        this.grabServo.setPosition(1);
         this.gripperPos = gripperPosition.OPEN;
     }
 
@@ -313,7 +335,7 @@ public class Robot {
     }
 
     void toggleArmRotate() {
-        this.rotateGripper(this.gripperRotatePosition * (90 - this.ANGLE_OF_GRIPPER_WHEN_GRABBING));
-        this.gripperRotatePosition *= -1;
+        this.rotateGripper(this.gripperRotatePosition);
+        this.gripperRotatePosition = 0.8 - this.gripperRotatePosition;
     }
 }

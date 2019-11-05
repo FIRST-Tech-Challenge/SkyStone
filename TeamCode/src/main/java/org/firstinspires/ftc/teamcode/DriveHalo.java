@@ -21,6 +21,7 @@ public class DriveHalo extends OpMode {
     boolean strafeMode = false;
     Boolean[] buttons = new Boolean[7];
 
+
     @Override
     public void init() {
         robot.init(hardwareMap);
@@ -35,7 +36,7 @@ public class DriveHalo extends OpMode {
     public void loop() {
         this.driveController();
         this.armController();
-        this.gripperRotateController();
+        this.wristController();
         this.gripperController();
         this.liftController();
         this.waffleController();
@@ -67,11 +68,7 @@ public class DriveHalo extends OpMode {
 
     void armController() {
         if (gamepad2.dpad_down && !buttons[1]) {
-            try {
-                robot.bringArmDown(this);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            robot.bringArmDown(this);
         } else if (gamepad2.dpad_up && !buttons[2]) {
             try {
                 robot.foldArmBack(this);
@@ -83,10 +80,11 @@ public class DriveHalo extends OpMode {
         buttons[2] = gamepad2.dpad_up;
     }
 
-    void gripperRotateController() {
+    void wristController() {
         if (gamepad2.b && !buttons[6]) {
             robot.toggleArmRotate();
         }
+        buttons[6] = gamepad2.b;
     }
 
     void gripperController() {
@@ -115,7 +113,7 @@ public class DriveHalo extends OpMode {
             robot.setStrafe(speedControl * gamepad1.right_stick_x);
         } else {
             double drive = speedControl * -gamepad1.left_stick_y; // forward
-            double turn = speedControl * gamepad1.right_stick_x; // turn
+            double turn = 0.5 * speedControl * gamepad1.right_stick_x; // turn
             double leftPower = Range.clip(drive + turn + compensation * turn, -1, 1);
             double rightPower = Range.clip(drive - turn - compensation * turn, -1, 1);
             robot.rearLeft.setPower(leftPower);

@@ -99,11 +99,11 @@ public class RobotOneAll extends LinearOpMode {
             }
             else if (gamepad1.y) {
                 robotOne.InAndOut.setPower(-.3);
-                sleep(1000);
+                sleep(1300);
                 robotOne.InAndOut.setPower(-.2);
-                sleep(1500);
+                sleep(800);
                 robotOne.InAndOut.setPower(-.1);
-                sleep(25);
+                sleep(1000);
                 robotOne.InAndOut.setPower(1);
                 sleep(200);
                 robotOne.InAndOut.setPower(0);

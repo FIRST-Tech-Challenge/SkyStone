@@ -83,7 +83,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  */
 
 @TeleOp(name="SKYSTONEWebcam", group ="Concept")
-@Disabled
+//@Disabled
 public class SkystoneNavWebCam extends LinearOpMode {
 
     // IMPORTANT: If you are using a USB WebCam, you must select CAMERA_CHOICE = BACK; and PHONE_IS_PORTRAIT = false;
@@ -103,7 +103,7 @@ public class SkystoneNavWebCam extends LinearOpMode {
      * and paste it in to your code on the next line, between the double quotes.
      */
     private static final String VUFORIA_KEY =
-            " --- YOUR NEW VUFORIA KEY GOES HERE  --- ";
+            "AfSbRRH/////AAABmdZp/meEF0rrnF8x1B4RWA4U4MtiR4e9F4vLUBpFtxRVxfYp7Zn6hqj3zxh3oPeqmJLbXBaQx/bYT2lxN5uViFpcOzCfRx6FRSV3saH8TyKN/IGgOpP5nP0HgYt+zbWlfpo+efBy5YBNjQz0C25jgtKEWVQ/O6ibyOuRL+IZJfLz8dniv1n6lAwa9lLMIrWPOb31OrrcnIzumkoSbr6/0B6mNhzS2YJzkL8gwDNylOuZIcyzuTOCtknO5RpBC86Lfq96P8JKVeQ9h7bkJ9ZXnDm+dLfH+TWsh5wQBRq2rS0PE2Ji9FPn1lfOqk+MjIOHGGaig2jgB75DGhxcF07SHcKYtClXstRrM4L3Cqo3PSZ8";
 
     // Since ImageTarget trackables use mm to specifiy their dimensions, we must use mm for all the physical dimension.
     // We will define some constants and conversions here

@@ -31,6 +31,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.darbots.darbotsftclib.libcore.runtime.GlobalRegister;
 import org.darbots.darbotsftclib.libcore.templates.motor_related.MotorType;
 import org.darbots.darbotsftclib.libcore.templates.motor_related.RobotMotor;
 
@@ -217,7 +218,12 @@ public class RobotMotorWithoutEncoder implements RobotMotor {
     public void waitUntilFinish() {
         if(this.getCurrentMovingType() == MovingType.toCount){
             while(this.isBusy()){
-                updateCount();
+                if(GlobalRegister.runningOpMode != null){
+                    if(GlobalRegister.runningOpMode.isStarted() && (!GlobalRegister.runningOpMode.opModeIsActive())){
+                        return;
+                    }
+                }
+                this.updateStatus();
             }
         }
     }

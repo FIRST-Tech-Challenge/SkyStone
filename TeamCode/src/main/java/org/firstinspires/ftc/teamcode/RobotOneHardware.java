@@ -98,8 +98,8 @@ public class RobotOneHardware
         leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         InAndOut.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftServo
-        rightServo.
+        leftServo.setPosition(Servo.MIN_POSITION);
+        rightServo.setPosition(Servo.MAX_POSITION);
 
         // Define and initialize ALL installed servos.
         /*leftClaw  = hwMap.get(Servo.class, "left_hand");

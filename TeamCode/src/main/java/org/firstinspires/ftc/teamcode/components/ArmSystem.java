@@ -71,9 +71,13 @@ public class ArmSystem {
     private double elbowTarget = 0.72;
     private double wristTarget = 0.05;
 
+    // Set to true when we're in the process of going home
+    private boolean homing = false;
+
     // I know in terms of style points these should be private and just have getters and setters but
     // I want to make them easily incrementable
     public Position queuedPosition;
+
     public int queuedHeight;
 
     public enum Position {
@@ -124,16 +128,19 @@ public class ArmSystem {
         Set assist to true if you want to use driver assist.
         Each of these values should just be the raw button data (including gripper, which is
         a toggle.)
-        If queuing is true, it'll use the cool yet controversial queuing system.
         The method variables are for keeping track of the buttons, so our driver class can just give
         the button input.
      */
     boolean m_gripper, m_up, m_down = false;
 
-    public String run(boolean home, boolean west, boolean east, boolean north, boolean south,
-                      boolean up, boolean down, boolean gripper, boolean assist, boolean queuing,
+    public void run(boolean home, boolean west, boolean east, boolean north, boolean south,
+                      boolean up, boolean down, boolean gripper, boolean assist,
                       double sliderSpeed, double armSpeed) {
-
+        if (homing) {
+            goHome();
+            // We don't want Teddy to screw with the arm while it's going home and have it break
+            return;
+        }
         this.SERVO_SPEED = sliderSpeed;
 
         if (west) {
@@ -145,7 +152,7 @@ public class ArmSystem {
         } else if (north) {    // Sets the target height to the exact encoder.
             // Nope!
         } else if (home) {
-            goHome();
+            homing = true;
         }
 
         if (assist) {
@@ -179,7 +186,6 @@ public class ArmSystem {
         } else if (!gripper) {
             m_gripper = false;
         }
-        return "";
     }
 
     public void moveGripper(double pos) {
@@ -239,16 +245,31 @@ public class ArmSystem {
         return 0;
     }
 
-    // Moves the arm to the "home state" - the grabber is open, right above the block in the intake.
-    // It requires the slider to be attached, so it can go over the latch.
-    // The values of the servos in the home state can be set by editing the final variables.
-    public void goHome() {
-        openGripper();
-        setSliderHeight(1);
-        moveWrist(0.06);
-        moveElbow(0.68);
-        movePivot(0.83);
-        setSliderHeight(0);
+    // Moves the slider up to one block high, moves the gripper to the home position, and then moves
+    // back down so we can fit under the bridge.
+    private Direction m_homeDirection = Direction.UP;
+    private void goHome() {
+        if (m_homeDirection == Direction.UP) {
+            setSliderHeight(1);
+            if (getSliderPos() == calculateHeight(1)) {
+                moveWrist(0.06);
+                moveElbow(0.68);
+                movePivot(0.83);
+                openGripper();
+                m_homeDirection = Direction.DOWN;
+            }
+        } else {
+            // This should bring it to the lowest possible state, although it might get weird
+            // with the reversing directions so we should figure this out. If we just move the
+            // slider down, which way even is down when the motors reverse all the time?
+            // Should we even have the reversing direction?
+            setSliderHeight(-1);
+            if (getSliderPos() == calculateHeight(-1)) {
+                homing = false; // We're done!
+            }
+        }
+        updateHeight(1);
+
     }
 
     public void openGripper() {
@@ -321,6 +342,14 @@ public class ArmSystem {
     limit.Switch.getState() == false
      */
     public void calibrate() {
+
+        // The following code has a high chance of causing a timeout in init.
+        // The commented code doesn't timeout but it also doesn't work.
+        // The coaches seem to agree that we don't really need calibration anyway so it should be
+        // fine, just don't run this code. I'm keeping it here because we might want it later,
+        // although calling it in init() or start() will take more time in the round which might
+        // cause problems.
+        // TODO: Make this use init_loop so it doesn't timeout.
         slider.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         slider.setDirection(Direction.motorDirection(direction));
         slider.setPower(0.1);

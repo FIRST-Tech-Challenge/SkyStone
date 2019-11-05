@@ -140,7 +140,7 @@ public class Outtake {
         horizontalLiftTele();
         raiseLiftMacro();
         hookToggle();
-        openBasket();
+        //openBasket();
         lift();
         encoderCalibrate();
 
@@ -371,7 +371,7 @@ public class Outtake {
         left_stick_y = opMode.gamepad2.left_stick_y;
 
 
-        if (averageLiftPosition() < 0) {
+        if (averageLiftPosition() <= 0) {
             bottom = true;
             resetLiftEncoders();
         }
@@ -409,12 +409,12 @@ public class Outtake {
         }
 
 
-        if (opMode.gamepad2.dpad_down && !bottom && averageLiftPosition() > 4 * encoderLevelCount)
+        /*if (opMode.gamepad2.dpad_down && !bottom && averageLiftPosition() > 4 * encoderLevelCount)
         {
             time.reset();
             while (time.milliseconds() < 100) { }
             resetOuttake();
-        }
+        }*/
     }
 
     public void encoderCalibrate()
@@ -474,6 +474,9 @@ public class Outtake {
     {
         // pushes front servo in while as rotating CRServos to open basket
         if(opMode.gamepad2.a) {
+
+            time.reset();
+            while(time.milliseconds() < 100){}
             blockCount++;
 
             if(pushBlock.getPosition() != 1) pushBlock.setPosition(1);
@@ -501,6 +504,7 @@ public class Outtake {
             // should push block out at that point
 
             // back to open position
+            if(pushBlock.getPosition() != .6) pushBlock.setPosition(.6);
         }
     }
 

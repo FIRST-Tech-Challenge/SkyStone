@@ -119,8 +119,8 @@ public class ArmSystem {
         if (calibrate) {
             calibrate();
         }
-        // this.direction = Direction.UP;
-        // this.slider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.direction = Direction.UP;
+        this.slider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     /*
@@ -130,16 +130,18 @@ public class ArmSystem {
         a toggle.)
         The method variables are for keeping track of the buttons, so our driver class can just give
         the button input.
+        It's a string so we can debug to telemetry, and use queuing if we implement it.
      */
     boolean m_gripper, m_up, m_down = false;
 
-    public void run(boolean home, boolean west, boolean east, boolean north, boolean south,
+    public String run(boolean home, boolean west, boolean east, boolean north, boolean south,
                       boolean up, boolean down, boolean gripper, boolean assist,
                       double sliderSpeed, double armSpeed) {
+
         if (homing) {
             goHome();
             // We don't want Teddy to screw with the arm while it's going home and have it break
-            return;
+            return "";
         }
         this.SERVO_SPEED = sliderSpeed;
 
@@ -186,6 +188,7 @@ public class ArmSystem {
         } else if (!gripper) {
             m_gripper = false;
         }
+        return Integer.toString(getSliderPos()) + "\n" + Integer.toString(calculateHeight(targetHeight));
     }
 
     public void moveGripper(double pos) {
@@ -435,7 +438,7 @@ public class ArmSystem {
     // Should be called every loop
     public void updateHeight(double speed) {
         slider.setPower(speed);
-        slider.setTargetPosition(targetHeight);
+        slider.setTargetPosition(calculateHeight(targetHeight));
         updateServo(elbow, elbowTarget);
         updateServo(pivot, pivotTarget);
         updateServo(wrist, wristTarget);

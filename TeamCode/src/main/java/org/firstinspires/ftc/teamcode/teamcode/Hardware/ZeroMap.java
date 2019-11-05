@@ -215,6 +215,7 @@ public class ZeroMap {
             opMode.telemetry.update();
 
             opMode.telemetry.addData("Target :", zeroLock);
+            opMode.telemetry.update();
         }
 
         return zeroLock;

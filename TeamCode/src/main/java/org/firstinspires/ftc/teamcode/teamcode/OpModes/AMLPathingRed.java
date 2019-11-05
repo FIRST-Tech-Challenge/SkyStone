@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.teamcode.Hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.Intake;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.Outtake;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.Sensors;
+import org.firstinspires.ftc.teamcode.teamcode.Hardware.VisionWebcam;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.ZeroMap;
 
 @Autonomous(name ="AML red Green Path", group="Auto Basic")
@@ -23,7 +24,7 @@ public class AMLPathingRed extends LinearOpMode {
     Sensors sensors = new Sensors();
     Intake intake = new Intake();
     Outtake outtake = new Outtake();
-    ZeroMap vuf = new ZeroMap();
+    VisionWebcam vuf = new VisionWebcam();
 
     public BNO055IMU gyro;
     public Orientation angles;
@@ -48,12 +49,13 @@ public class AMLPathingRed extends LinearOpMode {
     double thetaBit = (Math.atan(12/focusLine)) / 2;
     double trueHypo = (focusLine - clutchBuffer) / Math.cos(thetaBit);
     double falseHypo = focusLine - clutchBuffer;
+    double offset = 0;
 
     //Shuffle Position in Vu
     int shufflePos;
 
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
 
 
         sensors.initSensors(this);
@@ -61,7 +63,7 @@ public class AMLPathingRed extends LinearOpMode {
         drive.initDriveTrain(this);
         intake.initIntakeAuto(this);
         outtake.initOuttakeAuto(this);
-       // vuf.zeroInit(this);
+        //vuf.initVision(this);
 
         if (robotWidth >= robotLength) {
             greatLength = robotWidth;
@@ -72,60 +74,129 @@ public class AMLPathingRed extends LinearOpMode {
 
         clearance = (dicot - greatLength) / 2;
 
+        /*if(vuf.sense(this) == "left")
+            offset = -16;
+        else if(vuf.sense(this) == "right")
+            offset = 16;
+        else
+            offset = 0;
+*/
+
         waitForStart();
 
+        waitForStart();
+        /*if(vuf.senseBlue(this) == "left")
+            offset = 20;
+        else if(vuf.senseBlue(this) == "right")
+            offset = -20;
+        else
+            offset = 0;
+*/
+        offset = 0;
 
-        switch (3) {
+        //lift up
+        outtake.raiseLiftAuto(this);
 
-            case 3:
-                drive.encoderDrive(this, .5, 24, 24, 2);
+        //lift out
+        outtake.rightVex.setPower(.5);
+        outtake.leftVex.setPower(-.5);
+        sleep(5500);
+        outtake.leftVex.setPower(0);
+        outtake.rightVex.setPower(0);
 
-                drive.gyroTurn(this, 180, true, 2000);
-                drive.snowWhite();
-                drive.encoderDrive(this, -.5, -24, -24, 2);
-                outtake.Auto_Outtake(this);
-                drive.encoderDrive(this, .5, 15, 15, 2);
-                drive.gyroTurn(this, 90, false, 1000);
-                drive.encoderDrive(this, -.5, -72, -72, 2);
-                drive.strafeMove(this, 24, 2, .5);
+        drive.strafeMove(this, offset, 5, .7);
 
-                drive.strafeMove(this, 24, 2, .5);
-                drive.encoderDrive(this, .5, 88, 88, 2);
-                drive.gyroTurn(this, 90, false, 2000);
-                /*outtake.liftLeft.setPower(.5);
-                outtake.liftRight.setPower(.5);
-                sleep(1000);
-                outtake.liftLeft.setPower(0);
-                outtake.liftRight.setPower(0);*/
-                drive.encoderDrive(this, -.5, -39, -39, 2);
-                /*outtake.liftLeft.setPower(-.5);
-                outtake.liftRight.setPower(-.5);
-                sleep(1000);
-                outtake.liftLeft.setPower(0);
-                outtake.liftRight.setPower(0);*/
-                drive.encoderDrive(this, .5, 15, 15, 2);
-                drive.gyroTurn(this, 90, true, 2000);
-                drive.encoderDrive(this, -.5, -90, -90, 2);
+        //drive to block
+        drive.encoderDrive(this, -.7, -50.5, -50.5, 5);
+        //sleep(1000);
+
+        //lift down
+        outtake.lowerLiftAuto(this);
+
+        //tighten
+        outtake.rightVex.setPower(-.5);
+        outtake.leftVex.setPower(.5);
+        sleep(2000);
+        outtake.leftVex.setPower(0);
+        outtake.rightVex.setPower(0);
+
+        //drive back
+        drive.encoderDrive(this, .6, 12, 12, 5);
+        //sleep(1000);
+
+        //strafe across bridge
+        drive.strafeMove(this, 100 - offset, 10, 1);
+//        sleep(1000);
+
+        //loosen
+        outtake.rightVex.setPower(.5);
+        outtake.leftVex.setPower(-.5);
+        sleep(1500);
+        outtake.leftVex.setPower(0);
+        outtake.rightVex.setPower(0);
+
+        //lift up
+        outtake.raiseLiftAuto(this);
+
+        drive.gyroTurn(this, 360, false, 4000);
 
 
-                break;
+        //drive out of way
+        drive.encoderDrive(this, .7, 12, 12, 5);
+        //      sleep(1000);
 
 
-            case 2:
-                drive.turnPID(this, 90, true, .01, .01, .01, 3000);
-                drive.strafeMove(this, 48, 2, .5); //hopefully right
-                intake.autoIntake(1);
-                drive.strafeMove(this, 8, 1, -.5);
+        //lift down
+        outtake.lowerLiftAuto(this);
 
-            case 1:
-                drive.turnPID(this, 90, true, .01, .01, .01, 3000);
-                drive.encoderDrive(this, .5, 16, 16, 2);
-                drive.strafeMove(this, 48, 2, .5); //hopefully right
-                intake.autoIntake(1);
-                drive.strafeMove(this, 24, 2, -.5); //hopefully left
-                drive.encoderDrive(this, -.5, 16, 16, 2);
-                break;
-        }
+        //strafe to stone 2
+        drive.strafeMove(this, 144 - offset, 10, -.8);
+        //drive.gyroTurn(this, 0, false, 4000);
+
+
+
+        //lift up
+        outtake.raiseLiftAuto(this);
+
+        sleep(500);
+        //drive to stone
+        drive.encoderDrive(this, -.7, -37, -37, 5);
+
+        //lift down
+        outtake.lowerLiftAuto(this);
+
+        //tighten
+        outtake.rightVex.setPower(-.5);
+        outtake.leftVex.setPower(.5);
+        sleep(1000);
+        outtake.leftVex.setPower(0);
+        outtake.rightVex.setPower(0);
+
+        //drive back
+        drive.encoderDrive(this, .7, 20, 20, 5);
+        //sleep(1000);
+
+        //strafe across bridge
+        drive.strafeMove(this, 146 - offset, 10, 1);
+
+        //raise lift
+        outtake.raiseLiftAuto(this);
+
+        drive.strafeMove(this, 5 - offset, 10, -1);
+
+        /*//move back
+        drive.encoderDrive(this, .5, 12, 12, 5);
+    //    sleep(1000);
+
+        //lower lift
+        outtake.lowerLiftAuto();
+
+        //park
+        drive.strafeMove(this, -24, 2, 5);
+
+*/
+
+
 
         /*drive.encoderDrive(this, -.5, 24, 24, 2);
         drive.strafeMove(this, 24, 2, -.5); //hopefully left

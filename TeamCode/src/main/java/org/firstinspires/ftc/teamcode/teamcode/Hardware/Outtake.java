@@ -139,8 +139,8 @@ public class Outtake {
 
         horizontalLiftTele();
         raiseLiftMacro();
-        hookToggle();
-        openBasket();
+        //hookToggle();
+        //openBasket();
         lift();
         encoderCalibrate();
 
@@ -168,13 +168,13 @@ public class Outtake {
 
     }
 
-    public void lowerLiftAuto()
+    public void lowerLiftAuto(LinearOpMode opMode)
     {
         liftRight.setPower(-1);
         liftLeft.setPower(-1);
 
         time.reset();
-        while(averageLiftPosition() >= 0 && time.milliseconds() < 1000)
+        while(averageLiftPosition() >= 0 && time.milliseconds() < 1000 && opMode.opModeIsActive())
         {
 
         }
@@ -185,39 +185,39 @@ public class Outtake {
 
     public void Auto_Outtake(LinearOpMode opMode)
     {
-            //Assumes aligned with block
-            //And Horizontal Lift completely retracted
-            //And Lift at bottom
+        //Assumes aligned with block
+        //And Horizontal Lift completely retracted
+        //And Lift at bottom
 
-            raiseLiftAuto();
+        raiseLiftAuto(opMode);
 
-            rightVex.setPower(.5);
-            leftVex.setPower(-.5);
+        rightVex.setPower(.5);
+        leftVex.setPower(-.5);
 
-            //8.78 inches extends out
-            time.reset();
-            while (time.milliseconds() < 5000) {
-            }
-            //set position direction on angle - ask  trevor
+        //8.78 inches extends out
+        time.reset();
+        while (time.milliseconds() < 6000) {
+        }
+        //set position direction on angle - ask  trevor
 
-            rightVex.setPower(0);
-            leftVex.setPower(0);
+        rightVex.setPower(0);
+        leftVex.setPower(0);
 
-            //lower lift
+        //lower lift
 
-            lowerLiftAuto();
+        lowerLiftAuto(opMode);
 
-            rightVex.setPower(-.5);
-            leftVex.setPower(.5);
+        rightVex.setPower(-.5);
+        leftVex.setPower(.5);
 
-            //8.78 inches extends out
-            time.reset();
+        //8.78 inches extends out
+        time.reset();
 
-            while (time.milliseconds() < 2000) {
-            }
+        while (time.milliseconds() < 4000) {
+        }
 
-            rightVex.setPower(0);
-            leftVex.setPower(0);
+        rightVex.setPower(0);
+        leftVex.setPower(0);
 
 
     }
@@ -317,11 +317,11 @@ public class Outtake {
 
     }
 
-    private void raiseLiftAuto() {
+    public void raiseLiftAuto(LinearOpMode opMode) {
         liftRight.setPower(LIFTPOWER);
         liftLeft.setPower(LIFTPOWER);
 
-        while (encoderLevelCount * blockHeight * 2 > averageLiftPosition()) {
+        while (encoderLevelCount * blockHeight * 1.5 > averageLiftPosition() && opMode.opModeIsActive()) {
 
             if(top && averageLiftPosition() > MAXHEIGHT * encoderLevelCount)
             {
@@ -363,15 +363,16 @@ public class Outtake {
             top = false;
             bottom = false;
         }
-
-        if (top && -left_stick_y > 0) {
+        if(top && -left_stick_y > 0)
+        {
             liftRight.setPower(0);
             liftLeft.setPower(0);
-
-        /*else if (bottom && -left_stick_y < 0) {
+        }
+        else if (bottom && -left_stick_y < 0) {
             liftRight.setPower(0);
-            liftLeft.setPower(0);*/
-        }else if (Math.abs(left_stick_y) > .05) {
+            liftLeft.setPower(0);
+        }
+        else if (Math.abs(left_stick_y) > .05) {
             liftRight.setPower(-left_stick_y);
             liftLeft.setPower(-left_stick_y);
         }
@@ -381,12 +382,12 @@ public class Outtake {
         }
 
 
-        if (opMode.gamepad2.dpad_down && !bottom && averageLiftPosition() > 4 * encoderLevelCount)
+        /*if (opMode.gamepad2.dpad_down && !bottom && averageLiftPosition() > 4 * encoderLevelCount)
         {
             time.reset();
             while (time.milliseconds() < 100) { }
             resetOuttake();
-        }
+        }*/
     }
 
     public void encoderCalibrate()
@@ -497,7 +498,7 @@ public class Outtake {
         opMode.telemetry.update();
 
 
-        pushBlock.setPosition(1);
+        if(pushBlock.getPosition() != 1) pushBlock.setPosition(1);
 
         rightVex.setPower(-.5);
         leftVex.setPower(.5);

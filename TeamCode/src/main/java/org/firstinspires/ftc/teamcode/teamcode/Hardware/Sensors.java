@@ -34,6 +34,8 @@ public class Sensors {
 
         gyro.initialize(parameters);
         angles = gyro.getAngularOrientation();
+        opMode.telemetry.addLine("gyro calibrated");
+        opMode.telemetry.update();
 
         //uSonic = opMode.hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "Ultrasonic");
     }

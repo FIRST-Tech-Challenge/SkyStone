@@ -160,9 +160,7 @@ public class TeleOpMecanum extends OpMode {
 
         intake.Intake_TeleOp();
 
-        outtake.outTake_TeleOp();
-
-        outtake.Output_Telemetry();
+        outtake.outTake_TeleOp(this);
 
         telemetry.update();
     }

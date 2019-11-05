@@ -17,7 +17,11 @@ public class GripperTests extends OpMode {
     @Override
     public void loop() {
         if (gamepad1.dpad_down) {
-            robot.bringArmDown(this);
+            try {
+                robot.bringArmDown(this);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

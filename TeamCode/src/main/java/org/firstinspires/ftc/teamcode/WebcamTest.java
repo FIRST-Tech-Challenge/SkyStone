@@ -7,6 +7,8 @@ import android.annotation.SuppressLint;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+
 import java.util.List;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -14,15 +16,14 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 
-@Disabled
-@TeleOp(name = "WebcamTest")
-public class WebcamTest extends LinearOpMode {
+public class WebcamTest {
     /* Constants */
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
     private static final double MIN_CONFIDENCE = 0.8;
     private static final int NUM_BLOCKS = 3;
+    int cameraMonitorViewId;
 
     /* Arrays for skystone position detection */
     private static float[] left_vals = {0, 0, 0};
@@ -43,13 +44,12 @@ public class WebcamTest extends LinearOpMode {
     private static final String VUFORIA_KEY =
             "AWkYdzb/////AAABmWsW4urs2EjOmK3aBEWJEFxEbGHh6an3+HFdzPIUoFs9oQJRm34hA528YQTZohbGdiZH5Gyot22SPfkQyhOgQMXlgfiQ0aTeNMSlD/FwWJ9kAjP1vIfFYnhEs9TjmpmPxKQD9OsxeA7hoKWgQWrOlNu0yG21oEWsr3FEh0rbAazVcNW27TFw5X1rK9mRdZT1/acPcntsbM74Sr/iy/nrp9y/rufNfwpzhnzkgFSJ6k5+6u6VEpE5Rg6M8kM6kfp+SCVNtqeYuiMV3RvKHoKuG4k+IOxd4uteb33+w8VNbIzoCMhuEP0iyb5hX+t5b6Tg6syLzkD5q9znjePjCxWx0MTFNtNe87Yvh2NBCYEwuOEo";
 
-    int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-    VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-
     /*
      * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
      * localization engine.
      */
+
+    VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
     private VuforiaLocalizer vuforia;
 
     /*
@@ -58,83 +58,86 @@ public class WebcamTest extends LinearOpMode {
      */
     private TFObjectDetector tfod;
 
-    @SuppressLint("DefaultLocale")
-    @Override
-    public void runOpMode() {
-        // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
-        // first.
-        initVuforia();
-
-        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
-            initTfod();
-        } else {
-            telemetry.addData("Sorry!", "This device is not compatible with TFOD");
-        }
-
-        /*
-         * Activate TensorFlow Object Detection before we wait for the start command.
-         * Do it here so that the Camera Stream window will have the TensorFlow annotations visible.
-         */
-        if (tfod != null) {
-            tfod.activate();
-        }
-
-        /* Wait for the game to begin */
-        telemetry.addData(">", "Press Play to start op mode");
-        telemetry.update();
-        waitForStart();
-
-        if (opModeIsActive()) {
-            while (opModeIsActive()) {
-                if (tfod != null) {
-                    // getUpdatedRecognitions() will return null if no new information is available since
-                    // the last time that call was made.
-                    List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-                    if (updatedRecognitions != null) {
-                        if (updatedRecognitions.size() == NUM_BLOCKS) { // Camera detected a certain number of blocks
-                            //telemetry.addData("# Object Detected", updatedRecognitions.size());
-                            // step through the list of recognitions and display boundary info.
-                            int i = 0;
-                            for (Recognition recognition : updatedRecognitions) {
-                                /*
-                                telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
-                                telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
-                                        recognition.getLeft(), recognition.getTop());
-                                telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
-                                        recognition.getRight(), recognition.getBottom());
-                                        */
-                                label_vals[i] = recognition.getLabel();
-                                left_vals[i] = recognition.getLeft();
-                                i++; // Bug Fix - Counter Increment
-                            }
-                            int position;
-                            position = getSkystonePosition(label_vals, left_vals);
-                            switch (position) {
-                                case -1:
-                                    // Display the results
-                                    telemetry.addData("Skystone Position", "LEFT");
-                                    telemetry.update();
-                                    break;
-                                case 0:
-                                    // Display the results
-                                    telemetry.addData("Skystone Position", "CENTER");
-                                    telemetry.update();
-                                    break;
-                                case 1:
-                                    // Display the results
-                                    telemetry.addData("Skystone Position", "RIGHT");
-                                    telemetry.update();
-                                    break;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        if (tfod != null) {
-            tfod.shutdown();
-        }
+//    public void runOpMode() {
+//        // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
+//        // first.
+//        initVuforia();
+//
+//        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
+//            initTfod();
+//        } else {
+//            telemetry.addData("Sorry!", "This device is not compatible with TFOD");
+//        }
+//
+//        /*
+//         * Activate TensorFlow Object Detection before we wait for the start command.
+//         * Do it here so that the Camera Stream window will have the TensorFlow annotations visible.
+//         */
+//        if (tfod != null) {
+//            tfod.activate();
+//        }
+//
+//        /* Wait for the game to begin */
+//        telemetry.addData(">", "Press Play to start op mode");
+//        telemetry.update();
+//        waitForStart();
+//
+//        if (opModeIsActive()) {
+//            while (opModeIsActive()) {
+//                if (tfod != null) {
+//                    // getUpdatedRecognitions() will return null if no new information is available since
+//                    // the last time that call was made.
+//                    List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+//                    if (updatedRecognitions != null) {
+//                        if (updatedRecognitions.size() == NUM_BLOCKS) { // Camera detected a certain number of blocks
+//                            //telemetry.addData("# Object Detected", updatedRecognitions.size());
+//                            // step through the list of recognitions and display boundary info.
+//                            int i = 0;
+//                            for (Recognition recognition : updatedRecognitions) {
+//                                /*
+//                                telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
+//                                telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
+//                                        recognition.getLeft(), recognition.getTop());
+//                                telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
+//                                        recognition.getRight(), recognition.getBottom());
+//                                        */
+//                                label_vals[i] = recognition.getLabel();
+//                                left_vals[i] = recognition.getLeft();
+//                                i++; // Bug Fix - Counter Increment
+//                            }
+//                            int position;
+//                            position = getSkystonePosition(label_vals, left_vals);
+//                            switch (position) {
+//                                case -1:
+//                                    // Display the results
+//                                    telemetry.addData("Skystone Position", "LEFT");
+//                                    telemetry.update();
+//                                    break;
+//                                case 0:
+//                                    // Display the results
+//                                    telemetry.addData("Skystone Position", "CENTER");
+//                                    telemetry.update();
+//                                    break;
+//                                case 1:
+//                                    // Display the results
+//                                    telemetry.addData("Skystone Position", "RIGHT");
+//                                    telemetry.update();
+//                                    break;
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//
+//        if (tfod != null) {
+//            tfod.shutdown();
+//        }
+//    }
+//*/
+    public void init(HardwareMap ahwmap) {
+        HardwareMap hwMap = ahwmap;
+        this.cameraMonitorViewId = hwMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hwMap.appContext.getPackageName());
     }
 
     private void InsertionSort(float[] arr)
@@ -198,13 +201,14 @@ public class WebcamTest extends LinearOpMode {
     /*
      * Initialize the Vuforia localization engine.
      */
-    private void initVuforia() {
+    private void initVuforia(HardwareMap ahwmap) {
+        HardwareMap hwMap = ahwmap;
         /*
          * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
          */
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
+        parameters.cameraName = hwMap.get(WebcamName.class, "Webcam 1");
 
         //  Instantiate the Vuforia engine
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
@@ -215,9 +219,9 @@ public class WebcamTest extends LinearOpMode {
     /*
      * Initialize the TensorFlow Object Detection engine.
      */
-    private void initTfod() {
-        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
-                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+    private void initTfod(HardwareMap ahwmap) {
+        int tfodMonitorViewId = ahwmap.appContext.getResources().getIdentifier(
+                "tfodMonitorViewId", "id", ahwmap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
         tfodParameters.minimumConfidence = MIN_CONFIDENCE;
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
@@ -227,10 +231,10 @@ public class WebcamTest extends LinearOpMode {
     public int detectSkystonePosition(LinearOpMode opmode) {
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
-        initVuforia();
+        initVuforia(opmode.hardwareMap);
 
         if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
-            initTfod();
+            initTfod(opmode.hardwareMap);
         } else {
             return 0; // default is center
         }
@@ -285,6 +289,8 @@ public class WebcamTest extends LinearOpMode {
                 }
             }
         }
+        opmode.telemetry.addData("Skystone Position", "CENTER");
+        opmode.telemetry.update();
         return 0; // if something goes wrong default is center
     }
 }

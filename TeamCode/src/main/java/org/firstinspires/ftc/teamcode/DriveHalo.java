@@ -21,7 +21,6 @@ public class DriveHalo extends OpMode {
     boolean strafeMode = false;
     Boolean[] buttons = new Boolean[7];
 
-
     @Override
     public void init() {
         robot.init(hardwareMap);
@@ -68,7 +67,11 @@ public class DriveHalo extends OpMode {
 
     void armController() {
         if (gamepad2.dpad_down && !buttons[1]) {
-            robot.bringArmDown(this);
+            try {
+                robot.bringArmDown(this);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         } else if (gamepad2.dpad_up && !buttons[2]) {
             try {
                 robot.foldArmBack(this);

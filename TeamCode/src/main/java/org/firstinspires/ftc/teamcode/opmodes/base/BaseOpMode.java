@@ -4,10 +4,12 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.teamcode.components.ArmSystem;
 import org.firstinspires.ftc.teamcode.components.DriveSystem;
 import org.firstinspires.ftc.teamcode.components.IMUSystem;
 import org.firstinspires.ftc.teamcode.components.LatchSystem;
@@ -25,6 +27,7 @@ public abstract class BaseOpMode extends OpMode {
     protected Vuforia vuforia;
     protected VuforiaTrackable skystone;
     protected VuforiaTrackable rearPerimeter;
+    protected ArmSystem armSystem;
     private boolean stopRequested;
 
     public void init(){
@@ -48,6 +51,16 @@ public abstract class BaseOpMode extends OpMode {
         DistanceSensor distanceSensor2;
         DistanceSensor distanceSensor3;
         ColorSensor colorSensor;
+
+        EnumMap<ArmSystem.ServoNames, Servo> servoEnumMap = new EnumMap<ArmSystem.ServoNames, Servo>(ArmSystem.ServoNames.class);
+        servoEnumMap.put(ArmSystem.ServoNames.GRIPPER, hardwareMap.get(Servo.class, "gripper"));
+        servoEnumMap.put(ArmSystem.ServoNames.ELBOW, hardwareMap.get(Servo.class, "elbow"));
+        servoEnumMap.put(ArmSystem.ServoNames.WRIST, hardwareMap.get(Servo.class, "wrist"));
+        servoEnumMap.put(ArmSystem.ServoNames.PIVOT, hardwareMap.get(Servo.class, "pivot"));
+        armSystem = new ArmSystem(
+                servoEnumMap,
+                hardwareMap.get(DcMotor.class, "slider_motor"),
+                hardwareMap.get(DigitalChannel.class, "slider_switch"), false);
 
     }
 

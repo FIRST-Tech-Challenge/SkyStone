@@ -30,18 +30,22 @@ public class ArmSystem {
     private final double GRIPPER_OPEN = 0.5;
     private final double GRIPPER_CLOSE = 0.03;
     private int origin;
-    public int targetHeight;
+
+    // This is in block positions, not ticks
+    private int targetHeight;
     private final int distanceConstant = 500; // used for calculating motor speed
 
     // Use these so we can change it easily if the motor is put on backwards
     private final DcMotor.Direction UP = DcMotor.Direction.REVERSE;
     private final DcMotor.Direction DOWN = DcMotor.Direction.FORWARD;
-    protected Position QueuedPosition;
-    protected int QueuedHeight;
+
+    // For the queueing system, which we need to figure out how the drivers feel about it
+    private Position QueuedPosition;
+    private int QueuedHeight;
 
     // These fields are used only for calibration. Don't touch them outside of that method.
     private boolean calibrated = false;
-    public enum Direction {
+    private enum Direction {
         UP, DOWN;
         private static Direction reverse(Direction direction){
             return direction == UP ? DOWN : UP;
@@ -59,19 +63,24 @@ public class ArmSystem {
 
     // This can actually be more, like 5000, but we're not going to stack that high
     // for the first comp and the servo wires aren't long enough yet
-    public final int MAX_HEIGHT = 3000;
-    public final int INCREMENT_HEIGHT = 564; // how much the ticks increase when a block is added
-    public final int START_HEIGHT = 366; // Height of the foundation
+    private final int MAX_HEIGHT = 3000;
+    private final int INCREMENT_HEIGHT = 564; // how much the ticks increase when a block is added
+    private final int START_HEIGHT = 366; // Height of the foundation
 
-    public final double SERVO_SPEED = 0.005;
-    public final double SERVO_TOLERANCE = 0.02;
-    private double pivotTarget = 0.93;
-    private double elbowTarget = 0.72;
-    private double wristTarget = 0.05;
+    private double SERVO_SPEED;
+    private final double SERVO_TOLERANCE = 0.02;
+    private double pivotTarget = 0.09;
+    private double elbowTarget = 0.09;
+    private double wristTarget = 0.62;
+
+
+    // Set to true when we're in the process of going home
+    private boolean homing = false;
 
     // I know in terms of style points these should be private and just have getters and setters but
     // I want to make them easily incrementable
     public Position queuedPosition;
+
     public int queuedHeight;
 
     public enum Position {
@@ -101,65 +110,109 @@ public class ArmSystem {
 
      Probably should be controlled by the D pad or something.
      */
-    public ArmSystem(EnumMap<ServoNames, Servo> servos, DcMotor slider, DigitalChannel limitSwitch) {
+    public ArmSystem(EnumMap<ServoNames, Servo> servos, DcMotor slider, DigitalChannel limitSwitch,
+                     boolean calibrate) {
         this.gripper = servos.get(ServoNames.GRIPPER);
         this.wrist = servos.get(ServoNames.WRIST);
         this.elbow = servos.get(ServoNames.ELBOW);
         this.pivot = servos.get(ServoNames.PIVOT);
         this.slider = slider;
         this.limitSwitch = limitSwitch;
-        this.queuedPosition = Position.POSITION_HOME;
-        // this.direction = Direction.UP;
-        // this.slider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        if (calibrate) {
+            calibrate();
+        }
+        this.direction = Direction.UP;
+        this.slider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
-    // Create an ArmSystem object without servos, used for testing just the slider
-    public ArmSystem(DcMotor slider, DigitalChannel limitSwitch) {
-        this.slider = slider;
-        this.limitSwitch = limitSwitch;
+    /*
+        Use this method in teleop.
+        Set assist to true if you want to use driver assist.
+        Each of these values should just be the raw button data (including gripper, which is
+        a toggle.)
+        The method variables are for keeping track of the buttons, so our driver class can just give
+        the button input.
+        It's a string so we can debug to telemetry, and use queuing if we implement it.
+     */
+    private boolean m_gripper, m_up, m_down = false;
+    public String run(boolean home, boolean west, boolean east, boolean north, boolean south,
+                      boolean up, boolean down, boolean gripperButton, boolean assist,
+                      double sliderSpeed, double armSpeed) {
+
+        if (homing) {
+            goHome();
+            // We don't want Teddy to screw with the arm while it's going home and have it break
+            return "";
+        }
+        this.SERVO_SPEED = sliderSpeed;
+
+        if (west) {
+            movePresetPosition(Position.POSITION_WEST);
+        } else if (east) {
+            movePresetPosition(Position.POSITION_EAST);
+        } else if (south) {
+            movePresetPosition(Position.POSITION_SOUTH);
+        } else if (north) {
+            // Nope!
+        } else if (home) {
+            homing = true;
+        }
+
+
+        if (assist) {
+            if (up && !m_up) {
+                setSliderHeight(++targetHeight);
+                m_up = true;
+            } else if (!up) {
+                m_up = false;
+            }
+
+            if (down) {
+                setSliderHeight(--targetHeight);
+                m_down = true;
+            } else if (!down) {
+                m_down = false;
+            }
+            updateHeight(sliderSpeed);
+        } else {
+            slider.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            if (up) {
+                slider.setDirection(Direction.motorDirection(Direction.UP));
+            } else if (down) {
+                slider.setDirection(Direction.motorDirection(Direction.DOWN));
+            }
+            slider.setPower(sliderSpeed);
+        }
+
+        if (gripperButton && !m_gripper) {
+            toggleGripper();
+            m_gripper = true;
+        } else if (!gripperButton) {
+            m_gripper = false;
+        }
+        return Integer.toString(getSliderPos()) + "\n" + Integer.toString(calculateHeight(targetHeight));
     }
 
-    public void moveGripper(double pos) {
+    private void moveGripper(double pos) {
         gripper.setPosition(pos);
     }
 
-    public void moveWrist(double pos) {
+    private void moveWrist(double pos) {
+        //wrist.setPosition(pos);
         wristTarget = pos;
     }
 
-    public void moveElbow(double pos) {
-
+    private void moveElbow(double pos) {
+        //elbow.setPosition(pos);
         elbowTarget = pos;
     }
 
-    public void movePivot(double pos) {
-
+    private void movePivot(double pos) {
+        //pivot.setPosition(pos);
         pivotTarget = pos;
     }
 
-    public void increaseGripper(double pos) {
-        if (gripper.getPosition() + pos <= 1 && gripper.getPosition() + pos >= 0) {
-            gripper.setPosition(gripper.getPosition());
-        }
-    }
-
-    public void increaseWrist(double pos) {
-        if (wrist.getPosition() + pos <= 1 && wrist.getPosition() + pos >= 0) {
-            wrist.setPosition(wrist.getPosition());
-        }
-    }
-
-    public void increaseElbow(double pos) {
-        if (elbow.getPosition() + pos <= 1 && elbow.getPosition() + pos >= 0) {
-            elbow.setPosition(elbow.getPosition());
-        }
-    }
-
-    public void increasePivot(double pos) {
-        if (pivot.getPosition() + pos <= 1 && pivot.getPosition() + pos >= 0) {
-            gripper.setPosition(gripper.getPosition());
-        }
-    }
+    // These are public for debugging purposes
     public double getGripper() {
         return gripper.getPosition();
     }
@@ -176,16 +229,31 @@ public class ArmSystem {
         return 0;
     }
 
-    // Moves the arm to the "home state" - the grabber is open, right above the block in the intake.
-    // It requires the slider to be attached, so it can go over the latch.
-    // The values of the servos in the home state can be set by editing the final variables.
-    public void goHome() {
-        openGripper();
-        setSliderHeight(1);
-        moveWrist(0.06);
-        moveElbow(0.68);
-        movePivot(0.83);
-        setSliderHeight(0);
+    // Moves the slider up to one block high, moves the gripper to the home position, and then moves
+    // back down so we can fit under the bridge.
+    private Direction m_homeDirection = Direction.UP;
+    private void goHome() {
+        if (m_homeDirection == Direction.UP) {
+            setSliderHeight(1);
+            if (getSliderPos() == calculateHeight(1)) {
+                moveWrist(0.06);
+                moveElbow(0.68);
+                movePivot(0.83);
+                openGripper();
+                m_homeDirection = Direction.DOWN;
+            }
+        } else {
+            // This should bring it to the lowest possible state, although it might get weird
+            // with the reversing directions so we should figure this out. If we just move the
+            // slider down, which way even is down when the motors reverse all the time?
+            // Should we even have the reversing direction?
+            setSliderHeight(-1);
+            if (getSliderPos() == calculateHeight(-1)) {
+                homing = false; // We're done!
+            }
+        }
+        updateHeight(1);
+
     }
 
     public void openGripper() {
@@ -206,46 +274,38 @@ public class ArmSystem {
         }
     }
 
-    final double offsetPivot = 0.05;
-    final double offsetElbow = 0.04;
-    final double offsetWrist = 0;
-    public void movePresetPosition(Position pos) {
+    private void movePresetPosition(Position pos) {
         switch(pos) {
-            case POSITION_HOME:
-                moveWrist(0.05 + offsetWrist);
-                moveElbow(0.67 + offsetElbow);
-                movePivot(0.88 + offsetPivot);
-                break;
             case POSITION_NORTH:
                 // TODO: Find north pos with new motor
-                moveWrist(0.88 + offsetWrist);
-                moveElbow(0.9 + offsetElbow);
-                movePivot(0.05 + offsetPivot);
+                moveWrist(0.88);
+                moveElbow(0.94);
+                movePivot(0.09);
                 break;
             case POSITION_EAST:
-                moveWrist(0.62 + offsetWrist);
-                moveElbow(0.05 + offsetElbow);
-                movePivot(0.04 + offsetPivot);
+                moveWrist(0.62);
+                moveElbow(0.09);
+                movePivot(0.09);
                 break;
             case POSITION_WEST:
-                moveWrist(0.1 + offsetWrist);
-                moveElbow(0.6 + offsetElbow);
-                movePivot(0.05 + offsetPivot);
+                moveWrist(0.1);
+                moveElbow(0.64);
+                movePivot(0.09);
                 break;
             case POSITION_SOUTH:
-                moveWrist(0.62 + offsetWrist);
-                moveElbow(0.6 + offsetElbow);
-                movePivot(0.05 + offsetPivot);
+                moveWrist(0.62);
+                moveElbow(0.64);
+                movePivot(0.09);
                 break;
         }
     }
 
-    public void setQueuedPosition(Position position, int height) {
+    private void setQueuedPosition(Position position, int height) {
         this.QueuedPosition = position;
     }
 
     // Still requires updateHeight() to be called, just like the setSliderHeight method.
-    public void go() {
+    private void go() {
         //this.movePresetPosition(queuedPosition);
         setSliderHeight(queuedHeight);
     }
@@ -257,7 +317,15 @@ public class ArmSystem {
     Initially, the slider will be resting on the switch, resulting in
     limit.Switch.getState() == false
      */
-    public void calibrate() {
+    private void calibrate() {
+
+        // The following code has a high chance of causing a timeout in init.
+        // The commented code doesn't timeout but it also doesn't work.
+        // The coaches seem to agree that we don't really need calibration anyway so it should be
+        // fine, just don't run this code. I'm keeping it here because we might want it later,
+        // although calling it in init() or start() will take more time in the round which might
+        // cause problems.
+        // TODO: Make this use init_loop so it doesn't timeout.
         slider.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         slider.setDirection(Direction.motorDirection(direction));
         slider.setPower(0.1);
@@ -318,22 +386,17 @@ public class ArmSystem {
          */
     }
 
-    public boolean isCalibrated() {
-        return calibrated;
-    }
-
-    public void stop() {
+    private void stop() {
         slider.setPower(0);
     }
 
     // Pos should be the # of blocks high it should be
-    public void setSliderHeight(int pos) {
-        targetHeight = calculateHeight(pos);
-        if (targetHeight > MAX_HEIGHT) throw new IllegalArgumentException();
-        slider.setTargetPosition(targetHeight);
+    private void setSliderHeight(int pos) {
+        targetHeight = pos;
+        slider.setTargetPosition(calculateHeight(targetHeight));
         slider.setDirection(Direction.motorDirection(Direction.UP));
         slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        Log.d(TAG, "Set target height to" + calculateHeight(pos));
+        Log.d(TAG, "Set target height to" + calculateHeight(targetHeight));
     }
 
     // Little helper method for setSliderHeight
@@ -342,9 +405,9 @@ public class ArmSystem {
     }
 
     // Should be called every loop
-    public void updateHeight() {
-        slider.setPower(0.5);
-        slider.setTargetPosition(targetHeight);
+    private void updateHeight(double speed) {
+        slider.setPower(speed);
+        slider.setTargetPosition(calculateHeight(targetHeight));
         updateServo(elbow, elbowTarget);
         updateServo(pivot, pivotTarget);
         updateServo(wrist, wristTarget);

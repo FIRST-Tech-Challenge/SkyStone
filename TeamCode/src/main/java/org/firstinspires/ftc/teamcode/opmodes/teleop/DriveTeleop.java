@@ -15,6 +15,7 @@ public class DriveTeleop extends BaseOpMode {
 
     public void init() {
         super.init();
+        armSystem.movePresetPosition(ArmSystem.Position.POSITION_WEST);
     }
 
 

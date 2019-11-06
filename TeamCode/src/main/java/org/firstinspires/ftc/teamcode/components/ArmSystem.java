@@ -115,7 +115,6 @@ public class ArmSystem {
         this.pivot = servos.get(ServoNames.PIVOT);
         this.slider = slider;
         this.limitSwitch = limitSwitch;
-        this.queuedPosition = Position.POSITION_HOME;
         if (calibrate) {
             calibrate();
         }
@@ -135,7 +134,7 @@ public class ArmSystem {
     boolean m_gripper, m_up, m_down = false;
 
     public String run(boolean home, boolean west, boolean east, boolean north, boolean south,
-                      boolean up, boolean down, boolean gripper, boolean assist,
+                      boolean up, boolean down, boolean gripperButton, boolean assist,
                       double sliderSpeed, double armSpeed) {
 
         if (homing) {
@@ -151,11 +150,12 @@ public class ArmSystem {
             movePresetPosition(Position.POSITION_EAST);
         } else if (south) {
             movePresetPosition(Position.POSITION_SOUTH);
-        } else if (north) {    // Sets the target height to the exact encoder.
+        } else if (north) {
             // Nope!
         } else if (home) {
             homing = true;
         }
+
 
         if (assist) {
             if (up && !m_up) {
@@ -182,10 +182,10 @@ public class ArmSystem {
             slider.setPower(sliderSpeed);
         }
 
-        if (gripper && !m_gripper) {
+        if (gripperButton && !m_gripper) {
             toggleGripper();
             m_gripper = true;
-        } else if (!gripper) {
+        } else if (!gripperButton) {
             m_gripper = false;
         }
         return Integer.toString(getSliderPos()) + "\n" + Integer.toString(calculateHeight(targetHeight));
@@ -196,16 +196,17 @@ public class ArmSystem {
     }
 
     public void moveWrist(double pos) {
+        wrist.setPosition(pos);
         wristTarget = pos;
     }
 
     public void moveElbow(double pos) {
-
+        elbow.setPosition(pos);
         elbowTarget = pos;
     }
 
     public void movePivot(double pos) {
-
+        pivot.setPosition(pos);
         pivotTarget = pos;
     }
 
@@ -298,31 +299,26 @@ public class ArmSystem {
     final double offsetWrist = 0;
     public void movePresetPosition(Position pos) {
         switch(pos) {
-            case POSITION_HOME:
-                moveWrist(0.05 + offsetWrist);
-                moveElbow(0.67 + offsetElbow);
-                movePivot(0.88 + offsetPivot);
-                break;
             case POSITION_NORTH:
                 // TODO: Find north pos with new motor
-                moveWrist(0.88 + offsetWrist);
-                moveElbow(0.9 + offsetElbow);
-                movePivot(0.05 + offsetPivot);
+                moveWrist(0.88);
+                moveElbow(0.94);
+                movePivot(0.09);
                 break;
             case POSITION_EAST:
-                moveWrist(0.62 + offsetWrist);
-                moveElbow(0.05 + offsetElbow);
-                movePivot(0.04 + offsetPivot);
+                moveWrist(0.62);
+                moveElbow(0.09);
+                movePivot(0.09);
                 break;
             case POSITION_WEST:
-                moveWrist(0.1 + offsetWrist);
-                moveElbow(0.6 + offsetElbow);
-                movePivot(0.05 + offsetPivot);
+                moveWrist(0.1);
+                moveElbow(0.64);
+                movePivot(0.09);
                 break;
             case POSITION_SOUTH:
-                moveWrist(0.62 + offsetWrist);
-                moveElbow(0.6 + offsetElbow);
-                movePivot(0.05 + offsetPivot);
+                moveWrist(0.62);
+                moveElbow(0.64);
+                movePivot(0.09);
                 break;
         }
     }
@@ -439,9 +435,12 @@ public class ArmSystem {
     public void updateHeight(double speed) {
         slider.setPower(speed);
         slider.setTargetPosition(calculateHeight(targetHeight));
+        /*
         updateServo(elbow, elbowTarget);
         updateServo(pivot, pivotTarget);
         updateServo(wrist, wristTarget);
+
+         */
     }
 
     private void updateServo(Servo servo, double pos) {

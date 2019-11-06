@@ -25,8 +25,10 @@ public class Mecanum_Drive extends LinearOpMode {
     private double grabberOffset = 0.0;
     private boolean btn_y, btn_a, left_bumper, right_bumper, btn_x1, btn_b1, btn_x2, btn_b2;
     private boolean clawExpanded = false;
+    private boolean clawOpen = true;
     private boolean turning = false;
-    private boolean gyro_assist = true;
+    private boolean gyro_assist = false;
+    private double target_grabber = 0.0;
 
 
     // Gyro related initialization
@@ -36,16 +38,20 @@ public class Mecanum_Drive extends LinearOpMode {
 
     // Variables
     public final static double deadzone = 0.2;              // Deadzone for bot movement
+    public final static double deadzone_hi = 0.9;           // Deadzone for straight movement
+    public final static double turn_speed_max = 0.15;       // Max turn speed
     public final static double claw_speed = 0.01;           // Claw movement rate
-    public final static double claw_left_initial = 0.07;    // Left claw initial position
-    public final static double claw_right_initial = 0.55;   // Right claw initial position
+    public final static double claw_left_initial = 0.0;    // Left claw initial position
+    public final static double claw_right_initial = 0.0;   // Right claw initial position
     public final static double claw_mid_position = 0.65;    // Claw mid point position
     public final static double claw_move_span = 0.35;       // Claw movement span
+    public final static double claw_grip_offset = 0.35;     // Grip offset for claws
+    public final static double claw_release_offset = -0.05; // Release offset for claws
     public final static double linear_speed = 0.005;        // Linear servo rotation rate
-    public final static double linear_lower = 0.3;          // Linear servo lower limit
+    public final static double linear_lower = 0.32;         // Linear servo lower limit
     public final static double linear_upper = 0.615;        // Linear servo upper limit
     public final static double linear_initial = linear_lower;
-    public final static double linear_offset_max = 0.02;    // Max offset allowed to move linear servo
+    public final static double linear_offset_max = 0.01;    // Max offset allowed to move linear servo
     public final static double grabber_speed = 0.005;       // Grabber servo rotation rate
     public final static double arm_up_power = 1.0;          // Arm up movement rate
     public final static double arm_down_power = -1.0;       // Arm down movement rate
@@ -125,13 +131,17 @@ public class Mecanum_Drive extends LinearOpMode {
                 // We are turing
                 turning = true;
 
-                frontLeft.setPower(Range.clip(power + side - turn, -0.2, 0.2));
-                frontRight.setPower(Range.clip(power - side + turn, -0.2, 0.2));
-                backLeft.setPower(Range.clip(power - side - turn, -0.2, 0.2));
-                backRight.setPower(Range.clip(power + side + turn, -0.2, 0.2));
+                frontLeft.setPower(Range.clip(power + side - turn, -turn_speed_max, turn_speed_max));
+                frontRight.setPower(Range.clip(power - side + turn, -turn_speed_max, turn_speed_max));
+                backLeft.setPower(Range.clip(power - side - turn, -turn_speed_max, turn_speed_max));
+                backRight.setPower(Range.clip(power + side + turn, -turn_speed_max, turn_speed_max));
             } else {
                 // Just finished turning and let it settled down
                 if ( turning ) {
+                    frontLeft.setPower(0);
+                    frontRight.setPower(0);
+                    backLeft.setPower(0);
+                    backRight.setPower(0);
                     sleep(500);
 
                     resetAngle();
@@ -143,6 +153,7 @@ public class Mecanum_Drive extends LinearOpMode {
                     correction = checkDirection();
                 else
                     correction = 0;
+
 
                 frontLeft.setPower(Range.clip(power + side + correction, -1, 1));
                 frontRight.setPower(Range.clip(power - side - correction, -1, 1));
@@ -166,17 +177,28 @@ public class Mecanum_Drive extends LinearOpMode {
             // Use gamepad left & right Bumpers to open and close the claw
             if (left_bumper) {
                 clawOffset += claw_speed;
+//                clawOffset = claw_grip_offset;
+                clawOpen = true;
                 clawExpanded = true;
             } else if (right_bumper) {
                 clawOffset -= claw_speed;
+//                clawOffset = claw_release_offset;
+                clawOpen = false;
                 clawExpanded = true;
             }
 
             // Move both claw servos to new position.  Assume servos are mirror image of each other.
             if ( clawExpanded ) {
-                clawOffset = Range.clip(clawOffset, -claw_move_span, claw_move_span);
-                leftClaw.setPosition(claw_mid_position + clawOffset);
-                rightClaw.setPosition(claw_mid_position - clawOffset);
+//                clawOffset = Range.clip(clawOffset, -claw_move_span, claw_move_span);
+//                leftClaw.setPosition(claw_mid_position + clawOffset);
+//                rightClaw.setPosition(claw_mid_position - clawOffset);
+                if (clawOpen) {
+                    leftClaw.setPosition(0.6);
+                    rightClaw.setPosition(0.1);
+                } else {
+                    leftClaw.setPosition(0.2);
+                    rightClaw.setPosition(0.4);
+                }
             }
 
 
@@ -197,6 +219,12 @@ public class Mecanum_Drive extends LinearOpMode {
                 if (target > linear_upper)
                     target = linear_upper;
                 linear.setPosition(target);
+
+                if ( grabber.getPosition() > 0.5 ) {
+                    target_grabber = 0.77 + (target - linear_lower) / (linear_upper - linear_lower) * (1.0 - 0.77);
+                    grabberOffset = target_grabber;
+                }
+
                 linearOffset = 0.0;
             }
 
@@ -213,17 +241,23 @@ public class Mecanum_Drive extends LinearOpMode {
 
 
             // Check gyro support toggle
-            if ( btn_x1 && btn_b1 )
+            if ( btn_x1 && btn_b1 ) {
                 gyro_assist = !gyro_assist;
+                resetAngle();
+            }
 
             // Check request for initialize positions
             if ( btn_x2 && btn_b2 )
                 initializePositions();
 
             // Output Telemetry information
-            telemetry.addData("LClaw= ", leftClaw.getPosition());
-            telemetry.addData("RClaw= ", rightClaw.getPosition());
-            telemetry.addData("Grabber= ", grabber.getPosition());
+//            telemetry.addData("FWD=", fwd);
+//            telemetry.addData("SIDE=", side);
+//            telemetry.addData("TURN=", turn);
+            telemetry.addData("RCLAW=", rightClaw.getPosition());
+            telemetry.addData("LCLAW", leftClaw.getPosition());
+            telemetry.addData("GRAB=", grabber.getPosition());
+            telemetry.addData("TGRAB=", target_grabber );
             telemetry.addData("Linear= ", linear.getPosition());
             telemetry.addData("Arm= ", lowerArm.getCurrentPosition());
             telemetry.addData("Gyro= ", gyro_assist);
@@ -251,8 +285,8 @@ public class Mecanum_Drive extends LinearOpMode {
         right_bumper = gamepad2.right_bumper;       // For claw grip
 
         //updates joystick values
-        if( Math.abs(fwd) < deadzone ) fwd = 0;
-        if( Math.abs(side) < deadzone ) side = 0;
+        if( Math.abs(fwd) < deadzone_hi ) fwd = 0;
+        if( Math.abs(side) < deadzone_hi ) side = 0;
         if( Math.abs(turn) < deadzone ) turn = 0;
         if( Math.abs(lower_arm_stick) < deadzone ) lower_arm_stick = 0;
         if( Math.abs(grabber_stick) < deadzone ) grabber_stick = 0;
@@ -263,7 +297,10 @@ public class Mecanum_Drive extends LinearOpMode {
         // Init claw and grabber positions
         leftClaw.setPosition(claw_left_initial);
         rightClaw.setPosition(claw_right_initial);
-        grabber.setPosition(grabberOffset);
+        clawExpanded = false;
+        grabber.setPosition(0.0);
+        grabberOffset = 0.0;
+        clawOffset = 0.0;
         sleep(2000);
 
         // Init linear servo position
@@ -325,7 +362,7 @@ public class Mecanum_Drive extends LinearOpMode {
         // The gain value determines how sensitive the correction is to direction changes.
         // You will have to experiment with your robot to get small smooth direction changes
         // to stay on a straight line.
-        double correction, angle, gain = 0.03;
+        double correction, angle, gain = 0.02;
 
         angle = getAngle();
 

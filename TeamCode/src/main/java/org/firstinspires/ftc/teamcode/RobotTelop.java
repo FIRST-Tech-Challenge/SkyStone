@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 
-@TeleOp(name="Robot: Teleop", group="Steve")
+@TeleOp(name="Steve Robot Test", group="Steve")
 public class RobotTelop extends LinearOpMode {
 
     /* Declare OpMode members. */
@@ -22,19 +22,21 @@ public class RobotTelop extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            robot.clamp.setPosition(1.0);
+            robot.clamp.setPosition(.5);
             sleep(1000);
 
-            robot.clamp.setPosition(1.0);
+            robot.clamp.setPosition(-0.5);
             sleep(1000);
 
             telemetry.addData("We be counting",  "Counter = %7d", counter);
             telemetry.update();
 
-            // Pace this loop so servo speed is reasonable.
-            sleep(1000);
 
             counter += 1;
+
+            if (counter == 5) {
+                break;
+            }
 
         }
     }

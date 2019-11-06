@@ -74,8 +74,9 @@ public abstract class RobotMotionSystemTask implements RobotNonBlockingDevice {
         GlobalUtil.addLog("RobotMotionSystemTask","BeforeTask","", RobotLogger.LogLevel.DEBUG);
         GlobalUtil.addLog("RobotMotionSystemTask","TaskInfo",this.getTaskDetailString(), RobotLogger.LogLevel.DEBUG);
         if((!this.getMotionSystem().isGyroGuidedDrivePublicStartingAngleEnabled()) && GlobalUtil.getGyro() != null){
-            GlobalUtil.getGyro().updateStatus();
-            this.m_GyroStartAng = GlobalUtil.getGyro().getHeading();
+            RobotGyro globalGyro = GlobalUtil.getGyro();
+            globalGyro.updateStatus();
+            this.m_GyroStartAng = globalGyro.getHeading();
         } else if(this.getMotionSystem().isGyroGuidedDrivePublicStartingAngleEnabled()){
             this.m_GyroStartAng = this.getMotionSystem().getGyroGuidedDrivePublicStartingAngle();
         }
@@ -161,10 +162,21 @@ public abstract class RobotMotionSystemTask implements RobotNonBlockingDevice {
             return AbsSpeed;
         }
 
-        double steadySpeedUpStartingSpeed = this.isCustomSteadilySpeedUpEnabled() ? this.getCustomSteadilySpeedUpStartingSpeed() : this.getMotionSystem().getSteadySpeedUpThreshold();
-        double steadySpeedUpEndingSpeed = this.isCustomSteadilySpeedUpEnabled() ? this.getCustomSteadilySpeedUpEndingSpeed() : this.getMotionSystem().getSteadySpeedUpThreshold();
-        double steadySpeedUpStartingZone = this.isCustomSteadilySpeedUpEnabled() ? this.getCustomSteadilySpeedUpStartingZoneRatio() : this.getMotionSystem().getSteadySpeedUpZoneRatio();
-        double steadySpeedUpEndingZone = this.isCustomSteadilySpeedUpEnabled() ? this.getCustomSteadilySpeedUpEndingZoneRatio() : this.getMotionSystem().getSteadySpeedUpZoneRatio();
+        double steadySpeedUpStartingSpeed = 0;
+        double steadySpeedUpEndingSpeed = 0;
+        double steadySpeedUpStartingZone = 0;
+        double steadySpeedUpEndingZone = 0;
+        if(this.isCustomSteadilySpeedUpEnabled()) {
+            steadySpeedUpStartingSpeed = this.getCustomSteadilySpeedUpStartingSpeed();
+            steadySpeedUpEndingSpeed = this.getCustomSteadilySpeedUpEndingSpeed();
+            steadySpeedUpStartingZone = this.getCustomSteadilySpeedUpStartingZoneRatio();
+            steadySpeedUpEndingZone = this.getCustomSteadilySpeedUpEndingZoneRatio();
+        }else{
+            steadySpeedUpStartingSpeed = this.getMotionSystem().getSteadySpeedUpThreshold();
+            steadySpeedUpEndingSpeed = this.getMotionSystem().getSteadySpeedUpThreshold();
+            steadySpeedUpStartingZone = this.getMotionSystem().getSteadySpeedUpZoneRatio();
+            steadySpeedUpEndingZone = this.getMotionSystem().getSteadySpeedUpZoneRatio();
+        }
         if(this.isCustomSteadilySpeedUpEnabled() || (this.getMotionSystem().isSteadySpeedUp() && AbsSpeed > this.getMotionSystem().getSteadySpeedUpThreshold())){
             double ExtraSpeed = 0;
 
@@ -187,25 +199,24 @@ public abstract class RobotMotionSystemTask implements RobotNonBlockingDevice {
         if(GlobalUtil.getGyro() == null || (!this.getMotionSystem().isGyroGuidedDriveEnabled())){
             return 0;
         }
-
-        GlobalUtil.getGyro().updateStatus();
-        double currentAng = GlobalUtil.getGyro().getHeading();
+        RobotGyro globalGyro = GlobalUtil.getGyro();
+        globalGyro.updateStatus();
+        double currentAng = globalGyro.getHeading();
         double deltaAng = XYPlaneCalculations.normalizeDeg(currentAng - m_GyroStartAng);
-        if (GlobalUtil.getGyro().getHeadingRotationPositiveOrientation() == RobotGyro.HeadingRotationPositiveOrientation.Clockwise) {
+        if (globalGyro.getHeadingRotationPositiveOrientation() == RobotGyro.HeadingRotationPositiveOrientation.Clockwise) {
             deltaAng = -deltaAng;
         }
+        double absDeltaAng = Math.abs(deltaAng);
         double deltaSpeedEachSide = 0;
-        if (Math.abs(deltaAng) >= 5) {
-            deltaSpeedEachSide = Range.clip(0.4 * AbsSpeed, 0, 0.3);
-        } else if (Math.abs(deltaAng) >= 3) {
-            deltaSpeedEachSide = Range.clip(0.2 * AbsSpeed, 0, 0.2);
-        } else if (Math.abs(deltaAng) >= 1) {
+        if (absDeltaAng >= 5) {
+            deltaSpeedEachSide = Range.clip(0.4 * AbsSpeed, 0, 0.2);
+        } else if (absDeltaAng >= 1.5) {
+            deltaSpeedEachSide = Range.clip(0.2 * AbsSpeed, 0, 0.15);
+        } else if (absDeltaAng >= 0.5) {
             deltaSpeedEachSide = Range.clip(0.1 * AbsSpeed, 0, 0.1);
-        } else if (Math.abs(deltaAng) >= 0.5) {
-            deltaSpeedEachSide = Range.clip(0.05 * AbsSpeed, 0, 0.05);
         }
-        if (deltaSpeedEachSide < 0.025 && deltaSpeedEachSide != 0) {
-            deltaSpeedEachSide = 0.025;
+        if (deltaSpeedEachSide < 0.02 && deltaSpeedEachSide != 0) {
+            deltaSpeedEachSide = 0.02;
         }
         if (deltaAng > 0) {
             return -deltaSpeedEachSide;

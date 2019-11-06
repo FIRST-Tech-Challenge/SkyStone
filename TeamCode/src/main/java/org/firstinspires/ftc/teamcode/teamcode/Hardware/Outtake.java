@@ -153,14 +153,14 @@ public class Outtake {
         {
             time.reset();
             while (time.milliseconds() < 300) { }
-            resetOuttake(opMode);
+            // resetOuttake(opMode);
         }
 
         if(opMode.gamepad2.a)
         {
             time.reset();
             while(time.milliseconds() < 300){ }
-            openBasket(opMode);
+            // openBasket(opMode);
 
         }
 

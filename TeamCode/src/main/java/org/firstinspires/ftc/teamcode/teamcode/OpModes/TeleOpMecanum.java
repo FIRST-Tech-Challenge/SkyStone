@@ -127,7 +127,7 @@ public class TeleOpMecanum extends OpMode {
         if(gamepad1.x)
         {
             time.reset();
-            while(time.milliseconds() < 50){ }
+            while(time.milliseconds() < 300){ }
             if(speedProp == 1)
             {
                 speedProp = .5;

@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.teamcode.Hardware.Sensors;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.VisionWebcam;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.ZeroMap;
 
-@Autonomous(name ="AML blue Green Path", group="Auto Basic")
+@Autonomous(name ="AML Blue Green Path", group="Auto Basic")
 public class AMLPathingBlue extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();

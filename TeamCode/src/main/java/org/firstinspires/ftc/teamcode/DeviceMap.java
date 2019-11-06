@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.robot.Robot;
+import com.qualcomm.robotcore.util.Hardware;
 import com.qualcomm.robotcore.util.RobotLog;
 import com.vuforia.PIXEL_FORMAT;
 import com.vuforia.Vuforia;
@@ -15,6 +16,7 @@ import com.vuforia.Vuforia;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.drive.Direction;
 
 //import java.util.concurrent.CompletableFuture;
@@ -23,6 +25,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public final class DeviceMap {
+    private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
+    private static final String LABEL_STONE = "Stone";
+    private static final String LABEL_SKYSTONE = "Skystone";
+
     private static DeviceMap INSTANCE;
     private static Telemetry telemetry;
 
@@ -34,26 +40,29 @@ public final class DeviceMap {
 
     private BNO055IMUImpl imu;
     private VuforiaLocalizer vuforia;
+    private TFObjectDetector tfod;
 
     public DeviceMap(final HardwareMap map) {
         //for later
 
         INSTANCE = this;
         //CompletableFuture.allOf(
-            setUpMotors(map);
-            //setUpImu(map);
-            //setUpVuforia(map);
         //).thenRunAsync(() -> {
             telemetry.addLine("Finished setting up all of the components");
             telemetry.update();
         //}, service);
     }
+    public void setupAll(HardwareMap map) {
+        setUpMotors(map);
+        setUpImu(map);
+        setUpVuforia(map);
 
+    }
     /**
      * This will just set up all the driveMotors
      * @param map
      */
-    private /*CompletableFuture<Void>*/void setUpMotors(HardwareMap map) {
+    public  /*CompletableFuture<Void>*/void setUpMotors(HardwareMap map) {
         //return CompletableFuture.runAsync(() -> {
             telemetry.addLine("Setting up driveMotors");
             telemetry.update();
@@ -92,7 +101,7 @@ public final class DeviceMap {
 
     }
 
-    private /*CompletableFuture<Void>*/void setUpImu(HardwareMap map) {
+    public /*CompletableFuture<Void>*/void setUpImu(HardwareMap map) {
         //return CompletableFuture.runAsync(() -> {
             telemetry.addLine("Setting up imu");
             telemetry.update();
@@ -111,16 +120,35 @@ public final class DeviceMap {
         //}, service);
     }
 
-    private void setUpVuforia(HardwareMap map) {
+    public void setUpVuforia(HardwareMap map) {
         Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true);
         Context appContext = map.appContext;
         int cameraMonitorViewId = appContext.getResources().getIdentifier("cameraMonitorViewId", "id", appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
-        parameters.vuforiaLicenseKey = KEY.V;
+        parameters.vuforiaLicenseKey = "awefafwefwa";
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
 
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
+    }
+
+    public void initTfod(HardwareMap hardwareMap) {
+        if(vuforia == null) {
+            telemetry.addLine("vuforia is null!");
+            telemetry.update();
+            return;
+        }else if(!ClassFactory.getInstance().canCreateTFObjectDetector()) {
+            telemetry.addLine("TFLOW not supported");
+            telemetry.update();
+            return;
+        }
+        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
+                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
+        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_STONE, LABEL_SKYSTONE);
+
+
 
     }
 
@@ -177,5 +205,9 @@ public final class DeviceMap {
     }
     public static void setTelemetry(Telemetry ttelemetry) {
         telemetry = ttelemetry;
+    }
+
+    public TFObjectDetector getTfod() {
+        return tfod;
     }
 }

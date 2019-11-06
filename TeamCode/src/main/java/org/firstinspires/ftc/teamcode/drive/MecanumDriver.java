@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.monitor.MonitorIMU;
 public final class MecanumDriver implements IDriver {
     private static final float TURN_OFFSET = 1.5F;
 
+    private boolean test;
     private DeviceMap map;
     private Telemetry telemetry;
     private DcMotor[] motors;
@@ -23,6 +24,7 @@ public final class MecanumDriver implements IDriver {
     public MecanumDriver() {
         this.map = DeviceMap.getInstance();
         this.motors = map.getDriveMotors();
+        this.test = true;
     }
 
     /**
@@ -32,7 +34,7 @@ public final class MecanumDriver implements IDriver {
      */
     @Override
     public void move(Direction direction, double power) {
-        telemetry.addData("MOVING: ", direction.name());
+        addData("MOVING: ", direction.name());
         map.getLeftTop().setPower(direction.getLeftTop() * power);
         map.getRightBottom().setPower(direction.getRightBottom() * power);
         map.getRightTop().setPower(direction.getRightTop() * power);
@@ -126,10 +128,10 @@ public final class MecanumDriver implements IDriver {
         float currentAngle = MonitorIMU.getAngleThird();
             while ((currentAngle < min || currentAngle > max)) {
 
-                telemetry.addData("Direction: ", direction);
-                telemetry.addData("Min: ", min);
-                telemetry.addData("Max: ", max);
-                telemetry.addData("zAngle: ", currentAngle);
+                addData("Direction: ", direction);
+                addData("Min: ", min);
+                addData("Max: ", max);
+                addData("zAngle: ", currentAngle);
                 telemetry.update();
                 currentAngle = MonitorIMU.getAngleThird();
             }
@@ -170,5 +172,20 @@ public final class MecanumDriver implements IDriver {
     }
     public DcMotor[] getMotors() {
         return motors;
+    }
+
+    public boolean isTest() {
+        return test;
+    }
+
+    public void setTest(boolean test) {
+        this.test = test;
+    }
+    
+    public void addData(String header, Object value) {
+        if(test) telemetry.addData(header, value);
+    }
+    public void updateTelemetry() {
+        if(test) telemetry.update();
     }
 }

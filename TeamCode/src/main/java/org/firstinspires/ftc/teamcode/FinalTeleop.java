@@ -54,7 +54,7 @@ import java.util.Locale;
  */
 @TeleOp
 //@Disabled
-@Autonomous(name="Final_Auton", group="Linear Opmode")
+(name="Final_TeleOp", group="Linear Opmode")
 public class FinalTeleop extends LinearOpMode {
     private BNO055IMU imu;
     private DcMotor frontRightMotor;

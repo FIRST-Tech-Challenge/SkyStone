@@ -136,10 +136,10 @@ public class NerdPIDCalculator{
         double deltaTime = currTime - previousTime;
         //Store the current time into previous time for using in next cycle.
          previousTime = currTime;
-         //Call function to get the error based ont he set target and device input
+         //Call function to get the error based ont the set target and device input
          currentError = getError(deviceInput, deviceType);
 
-         //Total error for finding I component is summ of errors in each cycle multiplied by delta time.
+         //Total error for finding I component is sum of errors in each cycle multiplied by delta time.
         totalError += (currentError * deltaTime);
         //Calculate P, I and D outputs.
         pOutput = kP*currentError;

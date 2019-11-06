@@ -325,7 +325,7 @@ public class NerdBOT{
         return onTarget;
     }
 
-    //Function to find out the Motor travel distance in X direction.
+    //Function to find out the Robot travel distance in X direction.
 
     double findXDisplacement(){
 
@@ -334,7 +334,7 @@ public class NerdBOT{
 
     }
 
-    //Function to find out the Motor travel distance in Y direction.
+    //Function to find out the Robot travel distance in Y direction.
 
 
     double findYDisplacement(){

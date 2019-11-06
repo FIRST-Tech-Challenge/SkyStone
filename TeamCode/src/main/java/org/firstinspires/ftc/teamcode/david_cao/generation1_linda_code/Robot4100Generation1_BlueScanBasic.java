@@ -28,12 +28,10 @@ public class Robot4100Generation1_BlueScanBasic extends DarbotsBasicOpMode<Robot
         Camera = new RobotOnPhoneCamera(this,Robot4100Generation1_Settings.AUTONOMOUS_TENSORFLOW_PREVIEW, RobotOnPhoneCamera.PhoneCameraDirection.Back, Robot4100Common.VUFORIA_LICENSE);
         Robot3DPositionIndicator CameraPosition = new Robot3DPositionIndicator(Robot4100Generation1_Settings.AUTONOMOUS_CAMERAPOSONPHONE);
         this.m_Navigation = new SkyStoneNavigation(CameraPosition,Camera);
-        this.m_Navigation.setActivated(true);
     }
 
     @Override
     public void hardwareDestroy() {
-        this.m_Navigation.setActivated(false);
         this.m_RobotCore.terminate();
     }
 
@@ -43,6 +41,7 @@ public class Robot4100Generation1_BlueScanBasic extends DarbotsBasicOpMode<Robot
         this.getRobotCore().getChassis().setGyroGuidedDrivePublicStartingAngleEnabled(true);
         this.getRobotCore().getChassis().updateGyroGuidedPublicStartingAngle();
 
+        this.m_Navigation.setActivated(true);
         Camera.setFlashlightEnabled(true);
         this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedXDistanceTask(
                 50,
@@ -89,6 +88,7 @@ public class Robot4100Generation1_BlueScanBasic extends DarbotsBasicOpMode<Robot
             }
         }
         Camera.setFlashlightEnabled(false);
+        this.m_Navigation.setActivated(false);
         double firstScanZOffset = 0;
         double firstScanXOffset = 0;
         Robot3DPositionIndicator firstScanStonePosition = this.m_Navigation.getDarbotsRobotAxisStonePosition();

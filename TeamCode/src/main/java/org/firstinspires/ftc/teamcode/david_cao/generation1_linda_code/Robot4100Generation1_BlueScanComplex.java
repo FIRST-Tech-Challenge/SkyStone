@@ -10,7 +10,7 @@ import org.darbots.darbotsftclib.season_specific.skystone.navigation.SkyStoneNav
 import org.firstinspires.ftc.teamcode.robot_common.Robot4100Common;
 
 @Autonomous(group = "4100", name = "4100Gen1Auto-BlueScanComplex")
-public class Robot4100Generation1_BlueScanComplex extends DarbotsBasicOpMode {
+public class Robot4100Generation1_BlueScanComplex extends DarbotsBasicOpMode<Robot4100Generation1_LindaCore> {
     private Robot4100Generation1_LindaCore m_RobotCore;
     private SkyStoneNavigation m_Navigation;
     private int ScanResult = 0;
@@ -27,12 +27,10 @@ public class Robot4100Generation1_BlueScanComplex extends DarbotsBasicOpMode {
         Camera = new RobotOnPhoneCamera(this,Robot4100Generation1_Settings.AUTONOMOUS_TENSORFLOW_PREVIEW, RobotOnPhoneCamera.PhoneCameraDirection.Back, Robot4100Common.VUFORIA_LICENSE);
         Robot3DPositionIndicator CameraPosition = new Robot3DPositionIndicator(Robot4100Generation1_Settings.AUTONOMOUS_CAMERAPOSONPHONE);
         this.m_Navigation = new SkyStoneNavigation(CameraPosition,Camera);
-        this.m_Navigation.setActivated(true);
     }
 
     @Override
     public void hardwareDestroy() {
-        this.m_Navigation.setActivated(false);
         this.m_RobotCore.terminate();
     }
 
@@ -43,6 +41,7 @@ public class Robot4100Generation1_BlueScanComplex extends DarbotsBasicOpMode {
         this.getRobotCore().getChassis().updateGyroGuidedPublicStartingAngle();
 
         Camera.setFlashlightEnabled(true);
+        this.m_Navigation.setActivated(true);
         this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedXDistanceTask(
                 50,
                 0.6
@@ -88,6 +87,7 @@ public class Robot4100Generation1_BlueScanComplex extends DarbotsBasicOpMode {
             }
         }
         Camera.setFlashlightEnabled(false);
+        this.m_Navigation.setActivated(false);
         double firstScanZOffset = 0;
         double firstScanXOffset = 0;
         Robot3DPositionIndicator firstScanStonePosition = this.m_Navigation.getDarbotsRobotAxisStonePosition();
@@ -223,11 +223,28 @@ public class Robot4100Generation1_BlueScanComplex extends DarbotsBasicOpMode {
             return;
         }
 
+        this.m_RobotCore.getChassis().replaceTask(
+                this.m_RobotCore.getChassis().getFixedXDistanceTask(
+                        30,
+                        0.4
+                )
+        );
+
+        this.m_RobotCore.getChassis().addTask(
+                this.m_RobotCore.getChassis().getFixedXDistanceTask(
+                        -20,
+                        0.3
+                )
+        );
+        if(!waitForDrive()){
+            return;
+        }
+
 
 
         this.m_RobotCore.getChassis().replaceTask(
                 this.m_RobotCore.getChassis().getFixedXDistanceTask(
-                        -50,
+                        -60,
                         0.3
                 )
         );

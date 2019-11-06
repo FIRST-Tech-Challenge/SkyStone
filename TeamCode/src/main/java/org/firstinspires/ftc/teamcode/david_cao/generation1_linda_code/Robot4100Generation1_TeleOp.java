@@ -63,11 +63,11 @@ public class Robot4100Generation1_TeleOp extends DarbotsBasicOpMode<Robot4100Gen
 
             if(gamepad2.left_stick_y < -0.1){
                 if((!this.m_RobotCore.getLinearSlide().isBusy())) {
-                    this.m_RobotCore.getLinearSlide().replaceTask(new TargetPosTask(null, this.m_RobotCore.getLinearSlide().getMaxPos(), Robot4100Generation1_Settings.TELEOP_LINEARSLIDESPEED * -gamepad2.left_stick_y));
+                    this.m_RobotCore.getLinearSlide().replaceTask(new TargetPosTask(null, this.m_RobotCore.getLinearSlide().getMaxPos(), Robot4100Generation1_Settings.TELEOP_LINEARSLIDESPEED));
                 }
             }else if(gamepad2.left_stick_y > 0.1){
                 if((!this.m_RobotCore.getLinearSlide().isBusy())) {
-                    this.m_RobotCore.getLinearSlide().replaceTask(new TargetPosTask(null, this.m_RobotCore.getLinearSlide().getMinPos(), Robot4100Generation1_Settings.TELEOP_LINEARSLIDESPEED * gamepad2.left_stick_y));
+                    this.m_RobotCore.getLinearSlide().replaceTask(new TargetPosTask(null, this.m_RobotCore.getLinearSlide().getMinPos(), Robot4100Generation1_Settings.TELEOP_LINEARSLIDESPEED));
                 }
             }else{
                 this.m_RobotCore.getLinearSlide().deleteAllTasks();

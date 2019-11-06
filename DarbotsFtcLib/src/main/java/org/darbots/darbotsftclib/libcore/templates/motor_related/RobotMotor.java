@@ -6,14 +6,14 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.darbots.darbotsftclib.libcore.templates.RobotNonBlockingDevice;
 
-public interface RobotMotor extends RobotNonBlockingDevice {
+public interface RobotMotor<E extends MotorType> extends RobotNonBlockingDevice {
     enum MovingType{
         toCount,
         withSpeed,
         reset
     }
-    MotorType getMotorType();
-    void setMotorType(@NonNull MotorType MotorType);
+    E getMotorType();
+    void setMotorType(@NonNull E MotorType);
     int getCurrentCount();
     int getTargetCount();
     void setTargetCount(int Count);

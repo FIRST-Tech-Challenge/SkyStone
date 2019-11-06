@@ -89,8 +89,9 @@ public class RobotFixedSpeedTask extends RobotMotorTask {
 
     @Override
     public void updateStatus() {
-        if(this.getSecondsSinceStart() >= this.m_TimeInSeconds && this.m_TimeInSeconds > 0){
+        if (this.getSecondsSinceStart() >= this.m_TimeInSeconds && this.m_TimeInSeconds > 0) {
             this.endTask(true);
         }
     }
+
 }

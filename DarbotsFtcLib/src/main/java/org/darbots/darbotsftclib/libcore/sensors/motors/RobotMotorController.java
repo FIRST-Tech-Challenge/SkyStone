@@ -77,6 +77,7 @@ public class RobotMotorController implements RobotNonBlockingDevice {
             if(this.m_TaskLists.get(0).isBusy())
                 this.m_TaskLists.get(0).updateStatus();
         }
+        this.getMotor().updateStatus();
     }
 
     @Override

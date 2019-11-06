@@ -1,32 +1,8 @@
-/*
-MIT License
-
-Copyright (c) 2018 DarBots Collaborators
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-*/
-
 package org.darbots.darbotsftclib.libcore.sensors.motors;
 
 import android.support.annotation.NonNull;
 
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -34,26 +10,26 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.darbots.darbotsftclib.libcore.runtime.GlobalRegister;
 import org.darbots.darbotsftclib.libcore.templates.motor_related.MotorType;
 import org.darbots.darbotsftclib.libcore.templates.motor_related.RobotMotor;
+import org.darbots.darbotsftclib.libcore.templates.servo_related.ContinuousRotationServoType;
 
-
-public class RobotMotorWithoutEncoder implements RobotMotor {
-    protected DcMotor m_Motor;
-    protected MotorType m_MotorType;
+public class RobotContinuousRotationServoMotor implements RobotMotor<ContinuousRotationServoType> {
+    protected CRServo m_Motor;
+    protected ContinuousRotationServoType m_MotorType;
     protected ElapsedTime m_ElapsedTime;
     protected int m_CurrentCount;
     protected int m_TargetCount;
     protected MovingType m_MovingType;
 
-    public RobotMotorWithoutEncoder(@NonNull DcMotor Motor, @NonNull MotorType MotorType){
-        this.setDcMotor(Motor);
-        this.m_MotorType = MotorType;
+    public RobotContinuousRotationServoMotor(@NonNull CRServo CRServo, @NonNull ContinuousRotationServoType CRServoType){
+        this.setCRServo(CRServo);
+        this.m_MotorType = CRServoType;
         this.m_ElapsedTime = new ElapsedTime(ElapsedTime.Resolution.SECONDS);
         this.m_CurrentCount = 0;
         this.m_TargetCount = 0;
         this.m_MovingType = MovingType.withSpeed;
     }
 
-    public RobotMotorWithoutEncoder(RobotMotorWithoutEncoder motor){
+    public RobotContinuousRotationServoMotor(RobotContinuousRotationServoMotor motor){
         this.m_Motor = motor.m_Motor;
         this.m_MotorType = motor.m_MotorType;
         this.m_CurrentCount = motor.m_CurrentCount;
@@ -63,23 +39,22 @@ public class RobotMotorWithoutEncoder implements RobotMotor {
         this.m_MovingType = motor.m_MovingType;
     }
 
-    public DcMotor getDcMotor() {
+    public CRServo getCRServo() {
         return this.m_Motor;
     }
 
-    public void setDcMotor(@NonNull DcMotor Motor) {
-        this.m_Motor = Motor;
-        this.m_Motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    public void setCRServo(@NonNull CRServo CRServo) {
+        this.m_Motor = CRServo;
         this.m_Motor.setPower(0);
     }
 
     @Override
-    public MotorType getMotorType() {
+    public ContinuousRotationServoType getMotorType() {
         return this.m_MotorType;
     }
 
     @Override
-    public void setMotorType(@NonNull MotorType MotorType) {
+    public void setMotorType(@NonNull ContinuousRotationServoType MotorType) {
         this.updateCount();
         this.m_MotorType = MotorType;
     }
@@ -133,12 +108,12 @@ public class RobotMotorWithoutEncoder implements RobotMotor {
 
     @Override
     public DcMotor.ZeroPowerBehavior getZeroPowerBehavior() {
-        return m_Motor.getZeroPowerBehavior();
+        return DcMotor.ZeroPowerBehavior.BRAKE;
     }
 
     @Override
     public void setZeroPowerBehavior(DcMotor.ZeroPowerBehavior ZeroPwrBehavior) {
-        m_Motor.setZeroPowerBehavior(ZeroPwrBehavior);
+        return;
     }
 
     @Override
@@ -157,7 +132,6 @@ public class RobotMotorWithoutEncoder implements RobotMotor {
         if(movingType == MovingType.toCount){
             this.setToPosition();
         }else if(movingType == MovingType.withSpeed){
-            m_Motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             this.m_MovingType = MovingType.withSpeed;
         }else{ // if(movingType == MovingType.reset){
             this.resetEncoder();
@@ -229,8 +203,8 @@ public class RobotMotorWithoutEncoder implements RobotMotor {
     }
     @Override
     public String getMotorStatusString(){
-        String result = "DeviceType: RobotMotorWithoutEncoder, ";
-        result += "DeviceName: " + this.getDcMotor().getDeviceName() + ", ";
+        String result = "DeviceType: RobotContinuousRotationServoMotor, ";
+        result += "DeviceName: " + this.getCRServo().getDeviceName() + ", ";
         result += "RunningState: " + this.getCurrentMovingType().name() + ", ";
         result += "CurrentCount: " + this.getCurrentCount() + ", ";
         result += "TargetCount: " + this.getTargetCount() + ", ";

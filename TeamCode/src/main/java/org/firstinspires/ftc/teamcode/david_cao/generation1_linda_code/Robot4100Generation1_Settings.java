@@ -10,7 +10,7 @@ import org.darbots.darbotsftclib.libcore.templates.servo_related.ServoType;
 public class Robot4100Generation1_Settings {
     //------------Autonomous Settings------------
     public static final double AUTONOMOUS_MINIMUM_CONFIDENCE = 0.5;
-    public static final double AUTONOMOUS_LENGTH_FOR_EACH_STONE = 22;
+    public static final double AUTONOMOUS_LENGTH_FOR_EACH_STONE = 20;
     public static final boolean AUTONOMOUS_TENSORFLOW_PREVIEW = true;
     public static final double AUTONOMOUS_DISTANCE_BETWEEN_PHONE_AND_STONEGRABBER = -10.5;
     public static final Robot3DPositionIndicator AUTONOMOUS_CAMERAPOSONPHONE = new Robot3DPositionIndicator(

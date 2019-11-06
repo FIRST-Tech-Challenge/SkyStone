@@ -241,7 +241,7 @@ public class NerdBOT{
 
         motorsSetMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        while (this.opmode.opModeIsActive() && (!onTarget(getZAngleValue()))) {
+        while (this.opmode.opModeIsActive() &&  runtime.seconds() <= 1) {
 
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
                 pidvalue = turnPIDCalculator.getOutput(angles.firstAngle, 1);

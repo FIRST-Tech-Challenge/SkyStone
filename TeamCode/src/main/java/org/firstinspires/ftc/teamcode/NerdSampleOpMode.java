@@ -52,6 +52,7 @@ public class NerdSampleOpMode extends LinearOpMode {
     private double position_run3_x = 85.0;
     private double offset_x_run3 = 0;
     private  double run3_x = 0;
+    private  double drop_2_offset = 0;
     boolean debugFlag = true;
     static private VuforiaFindCase2 VFC;
     private double x_offset_2 = 0;
@@ -72,7 +73,7 @@ public class NerdSampleOpMode extends LinearOpMode {
         myNerdBOT.initializeXPIDCalculator(0.0025, 0.0, 0.0, debugFlag);
         myNerdBOT.initializeYPIDCalculator(0.0025, 0.0, 0.0,debugFlag);
         myNerdBOT.initializeZPIDCalculator(0.015, 0.000, 0.0,debugFlag);
-        myNerdBOT.initializeTurnPIDCalculator(0.015, 0.000, 0.0,debugFlag);
+        myNerdBOT.initializeTurnPIDCalculator(0.01, 0.000, 0.0,debugFlag);
         //Set Min and Max Speed - Optional (default min=0.1, max=0.6 if not changed below)
         myNerdBOT.setMinMaxSpeeds(0.0,0.5);
 
@@ -83,7 +84,7 @@ public class NerdSampleOpMode extends LinearOpMode {
 
         waitForStart();
 
-/*
+
 
         //UNITS ARE IN INCHES
         if (debugFlag)
@@ -103,16 +104,19 @@ public class NerdSampleOpMode extends LinearOpMode {
         if (Skystone_Position == 3) {
             myNerdBOT.nerdPidDrive(speed, 8.0, 13.5, 0.0);
             offset_x_run3 = 8.0;
+            drop_2_offset = 0.0;
             //sleep(2000);
         }
         else if (Skystone_Position == 2 || Skystone_Position == 4) {
             myNerdBOT.nerdPidDrive(speed, 0.0, 13.5, 0.0);
             offset_x_run3 = 0.0;
+            drop_2_offset = 0.0;
             //sleep(2000);
         }
         else if (Skystone_Position == 1) {
             myNerdBOT.nerdPidDrive(speed, -7.0, 13.5, 0.0);
             offset_x_run3 = -7.0;
+            drop_2_offset = -8.0;
             //sleep(2000);
         }
         else
@@ -138,7 +142,13 @@ public class NerdSampleOpMode extends LinearOpMode {
         if (debugFlag)
             RobotLog.d("NerdSampleOpMode - Run4");
 
+        myNerdBOT.setMinMaxSpeeds(0.0,0.4);
+
+
         myNerdBOT.nerdPidDrive( speed, 0.0, 7.0, 0.0);
+
+        myNerdBOT.setMinMaxSpeeds(0.0,0.4);
+
 
         Arm.ArmLoop(-60,135, 0.2, 0.6); // half-drop
         Arm.ArmLoop(-125,143, 0.5, 0.8);// put down the block
@@ -152,7 +162,7 @@ public class NerdSampleOpMode extends LinearOpMode {
 
        // sleep(500);
 
-        myNerdBOT.nerdPidDrive(speed, 0.0, -36.0, 0);
+        myNerdBOT.nerdPidDrive(speed, 0.0, -34.0, 0);
 
         Arm.ArmLoop(-10,7, 0.5, 0.5);
 
@@ -160,28 +170,36 @@ public class NerdSampleOpMode extends LinearOpMode {
 
         myNerdBOT.setMinMaxSpeeds(0.0,0.7);
 
-        myNerdBOT.nerdPidDrive(speed, 30.0, 0.0, 0);
+        myNerdBOT.nerdPidDrive(speed, 24.0, 0.0, 0);
         myNerdBOT.nerdPidDrive(speed, 19.0, 17.0, 0);
 
 
-        myNerdBOT.nerdPidDrive(speed, 53, 0.0, 0);
+        myNerdBOT.nerdPidDrive(speed, 63 + drop_2_offset, 0.0, 0);
 
         Arm.ArmLoop(-135,7,0.5,0.5);
 
-        myNerdBOT.nerdPidDrive(speed, 0.0, 5.0, 0);
+        myNerdBOT.setMinMaxSpeeds(0.0,0.4);
+
+        myNerdBOT.nerdPidDrive(speed, 0.0, 6.0, 0);
+
+        myNerdBOT.setMinMaxSpeeds(0.0,0.5);
 
         Arm.ArmLoop(-135,140, 0.5, 0.5);
         Arm.ArmLoop(-10,7, 0.6, 0.2);
 
-        myNerdBOT.nerdPidDrive(speed, -57, 0.0, 0);
-*/
+
+
+        myNerdBOT.setMinMaxSpeeds(0.0,0.7);
+        myNerdBOT.nerdPidDrive(speed, -57, -3.0, 0);
+        //myNerdBOT.setMinMaxSpeeds(0.0,0.7);
+
         myNerdBOT.nerdPidTurn(speed, 90);
 
- //       myNerdBOT.nerdPidDrive(speed, 0, 15, 90);
+        myNerdBOT.nerdPidDrive(speed, 0, 26, 90); //
 
-//        Arm.ArmLoop(-135,100, 0.8, 0.6); // half-drop
+        Arm.ArmLoop(-135,100, 0.8, 0.6); // half-drop
 
-  //      myNerdBOT.nerdPidDrive(speed, 0, -12, 90);
+        myNerdBOT.nerdPidDrive(speed, 5, -26, 90); //park
 
 
         if (debugFlag)

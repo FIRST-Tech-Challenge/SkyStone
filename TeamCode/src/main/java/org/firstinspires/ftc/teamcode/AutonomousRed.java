@@ -14,18 +14,26 @@ public class AutonomousRed extends Movement
         waitForStart();
 
         // Move Forward
-        goBackward(0.5, 1760, "Going back");
+        goBackward(0.5, 1700, "Going back");
         stop("Pausing");
 
-        backServo.setPosition(0.95);
+        backServo.setPosition(1);
         sleep(900);
 
-        goForward(0.59, 2250, "Going forward");
+        goForward(0.35, 2550, "Going forward");
         stop("Stopping");
 
         // Reset Servo
         backServo.setPosition(SERVO_INITIAL_POS);
         sleep(500);
+
+        goLeft(0.8,2000, "Going left");
+        stop("Stopping");
+
+        goForward(0.8, 200, "Going left");
+        stop("Stopping");
+
+
     }
 
 }

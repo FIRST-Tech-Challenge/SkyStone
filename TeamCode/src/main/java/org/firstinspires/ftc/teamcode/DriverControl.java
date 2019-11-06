@@ -78,7 +78,6 @@ public class DriverControl extends Movement {
 
                 // y - to move back servo up
                 if (gamepad2.y) {
-=
                     backServo.setPosition(0.95);
                 }
 

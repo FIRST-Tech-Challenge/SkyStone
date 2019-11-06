@@ -47,6 +47,7 @@ public class RobotOneAll extends LinearOpMode {
         double drive;
         double turn;
         double max;
+        double grab;
 
         robotOne.init(hardwareMap);
 
@@ -63,6 +64,7 @@ public class RobotOneAll extends LinearOpMode {
             // This way it's also easy to just drive straight, or just turn.
             drive = gamepad1.left_stick_y;
             turn  = -gamepad1.left_stick_x;
+            //grab = gamepad1.left_bumper;
 
             // Combine drive and turn for blended motion.
             left  = drive + turn;
@@ -79,7 +81,10 @@ public class RobotOneAll extends LinearOpMode {
             // Output the safe vales to the motor drives.
             robotOne.leftDrive.setPower(left);
             robotOne.rightDrive.setPower(right);
-
+//            if (grab == 1) {
+//                robotOne.leftServo.setPosition(0.5);
+//                robotOne.rightServo.setPosition(0.5);
+//            }
             // Use gamepad left & right Bumpers to open and close the claw
             /*if (gamepad1.right_bumper)
                 clawOffset += CLAW_SPEED;

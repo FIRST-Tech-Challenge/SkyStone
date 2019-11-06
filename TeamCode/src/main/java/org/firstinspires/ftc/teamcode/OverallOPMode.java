@@ -17,7 +17,7 @@ public class OverallOPMode extends LinearOpMode {
     private Servo trayDragServo;
 
     @Override
-    public void runOpMode () {
+    public void runOpMode() {
         motorDriveBackLeft = hardwareMap.dcMotor.get("motorDriveBackLeft");
         motorDriveBackRight = hardwareMap.dcMotor.get("motorDriveBackRight");
         motorDriveFrontLeft = hardwareMap.dcMotor.get("motorDriveFrontLeft");
@@ -27,7 +27,8 @@ public class OverallOPMode extends LinearOpMode {
         trayDragServo = hardwareMap.servo.get("trayDragServo");
         waitForStart();
         if (opModeIsActive()) {
-            runOpMode(new TrueWorkingOpMode());
+            runOpMode(TrueWorkingOpMode);
         }
     }
 }
+

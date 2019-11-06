@@ -33,14 +33,11 @@ import org.firstinspires.ftc.robotcore.external.JavaUtil;
             motorDriveLeft.setPower(.714285);
             motorDriveRight.setPower(1);
             while (opModeIsActive()) {
-                CurrentColor = Color.rgb(Color.red(), Color.green(), Color.blue());
-                if ((JavaUtil.colorToSaturation(CurrentColor) >= 0.3) && (JavaUtil.colorToHue(CurrentColor) > 200) && (JavaUtil.colorToHue(CurrentColor) < 285)) {
-                    motorDriveLeft.setPower(0);
-                    motorDriveRight.setPower(0);
+                //CurrentColor = Color.rgb(Color.red(), Color.green(), Color.blue());
+               // if ((JavaUtil.colorToSaturation(CurrentColor) >= 0.3) && (JavaUtil.colorToHue(CurrentColor) > 200) && (JavaUtil.colorToHue(CurrentColor) < 285)) {
+                   // motorDriveLeft.setPower(0);
+                   // motorDriveRight.setPower(0);
                 }
                 telemetry.update();
             }
         }
-    }
-
-

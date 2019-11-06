@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import static java.lang.Thread.*;
+
 @Autonomous(name = "Building Zone Blue")
 public class MM_BuildingZoneBlue extends LinearOpMode {
 
@@ -17,37 +19,47 @@ public class MM_BuildingZoneBlue extends LinearOpMode {
 
         waitForStart();
 
-        robot.driveForwardDistance(47.0 - robot.ROBOT_RETRACTED_LENGTH, -speed, this);
-
         // extend the waffle mover
         Thread.sleep(500);
         robot.moveWaffleMover('h');
 
-        // drive backwards
-        robot.driveForwardDistance(50.0, 0.75, this);
+        robot.driveForwardDistance(50.0 - robot.ROBOT_RETRACTED_LENGTH, -speed, this);
 
         // retract the waffle mover
+        Thread.sleep(500);
+        robot.moveWaffleMover('h');
+
+        // turn 180 degrees
+        robot.turnRight(speed, 1200);
+
+        // drive backwards
+        robot.driveForwardDistance(50.0, -0.25, this);
+
+        // extend the waffle mover
         Thread.sleep(500);
         robot.moveWaffleMover('f');
 
         // strafe out from behind the foundation
-        robot.strafeTime(-0.5, 5000);
+        robot.strafeTime(-0.5, 1000);
 
         // drive forward to turn and park under the skybridge
-        robot.driveForwardDistance(10.0, -speed, this);
-
-        // turn towards skybridge
-        robot.turnRight(-speed, 600);
+        robot.driveForwardDistance(5.0, -speed, this);
 
         // if parking close to center, move forward more
         switch (parkingPosition) {
             case CLOSE:
-                robot.driveForwardDistance(10.0, -speed, this);
+                robot.driveForwardDistance(15.0, -speed, this);
                 Thread.sleep(500);
                 break;
             case FAR:
                 break;
         }
+
+        // turn towards skybridge
+        robot.turnRight(-speed, 600);
+
+        // extend arm so we are under 14 inches
+        robot.toggleArmRotate();
 
         // park under skybridge
         robot.driveForwardDistance(10.0, -speed, this);

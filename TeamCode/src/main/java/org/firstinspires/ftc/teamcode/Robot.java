@@ -54,8 +54,8 @@ public class Robot {
     private enum gripperPosition {OPEN, CLOSED}
     private gripperPosition gripperPos = gripperPosition.OPEN;
 
-    private enum armPosition {REST, ACTIVE}
-    private armPosition armPos = armPosition.REST;
+    public enum armPosition {REST, ACTIVE}
+    public armPosition armPos = armPosition.REST; // will change back to REST later
 
     private HardwareMap hwMap = null;
 
@@ -133,7 +133,7 @@ public class Robot {
     }
 
 
-    void driveForwardDistance(double distance, double power, LinearOpMode opmode) {
+    void driveForwardDistance(double distance, double power, LinearOpMode opmode) { // make power negative to go backwards
         /* drives forward a certain distance(in) using encoders */
 
         // calculate ticks
@@ -269,7 +269,7 @@ public class Robot {
     void bringArmDown(OpMode opmode) throws InterruptedException {
         if (armPos == armPosition.REST) { // we only bring the arm down if the arm is resting
             // we rotate the arm 180 + ANGLE_OF_GRIPPER_WHEN_GRABBING degrees
-            this.moveArmRotate(CORE_HEX_TICKS_PER_REV * (110) / 360, 0.3, opmode);
+            this.moveArmRotate(CORE_HEX_TICKS_PER_REV * (160) / 360, 0.6, opmode);
             // since gravity is pushing on the arm, we fight it so the arm gradually goes down and holds its position
             this.setArmRotatePower(-0.5);
             Thread.sleep(500);

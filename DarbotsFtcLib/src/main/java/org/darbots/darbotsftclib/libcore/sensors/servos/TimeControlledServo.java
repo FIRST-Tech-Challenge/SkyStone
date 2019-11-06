@@ -139,6 +139,7 @@ public class TimeControlledServo implements RobotNonBlockingDevice {
         if(this.isBusy()){
             double taskProgress = this.getTaskProgressRatio();
             if(taskProgress >= 1){
+                this.m_Servo.setPosition(m_TargetPosition);
                 this.m_LastPosition = this.m_TargetPosition;
                 this.m_ToPositionEnabled = false;
                 this.m_Speed = 0;

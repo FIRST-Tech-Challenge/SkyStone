@@ -22,6 +22,12 @@ public class OmniTeleOp extends OpMode {
         RELEASE
     }
 
+    public enum CompleteActivities {
+        ALIGN,
+        LIFT,
+        RELEASE,
+        STOW
+    }
 
     @Override
     public void init() {
@@ -34,6 +40,7 @@ public class OmniTeleOp extends OpMode {
     }
 
     private CapstoneState capstoneState = CapstoneState.ALIGN;
+    private CompleteActivities completeActivities = CompleteActivities.STOW;
     private double driverAngle = 0.0;
     private final double MAX_SPEED = 1.0;
     private final double MAX_SPIN = 1.0;
@@ -227,7 +234,27 @@ public class OmniTeleOp extends OpMode {
         if(!a2Held && a2Pressed)
         {
             a2Held = true;
-            robot.startLifting();
+            switch(completeActivities) {
+                /*case ALIGN:
+                    robot.startAligningCapstone();
+                    completeActivities = CompleteActivities.LIFT;
+                    break; */
+                case LIFT:
+                    if(robot.startLifting()) {
+                        completeActivities = CompleteActivities.RELEASE;
+                    }
+                    break;
+                case RELEASE:
+                    if (robot.startReleasing() ) {
+                        completeActivities = CompleteActivities.STOW;
+                    }
+                    break;
+                case STOW:
+                    if (robot.startStowing() ) {
+                        completeActivities = CompleteActivities.LIFT;
+                    }
+                    break;
+            }
         } else if(!a2Pressed) {
             a2Held = false;
         }

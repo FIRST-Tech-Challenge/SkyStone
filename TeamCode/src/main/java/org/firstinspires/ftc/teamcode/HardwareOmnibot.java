@@ -377,22 +377,29 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         leftFinger.setPosition(LEFT_FINGER_UP);
     }
 
-    public void startLifting() {
-        if(liftState == LiftActivity.IDLE) {
-            if(releaseState != ReleaseActivity.IDLE) {
-                releaseState = ReleaseActivity.STOPPING;
-            }
-            if(stowState != StowActivity.IDLE) {
-                stowState = StowActivity.STOPPING;
-            }
-			// Extend the intake to make sure it isn't in the way.
-			moveIntake(IntakePosition.EXTENDED);
 
-			// We don't want the intake spinning while we are trying to lift the stone.
-			stopIntake();
-			liftState = LiftActivity.CLEARING_LIFT;
+
+    public boolean startLifting() {
+        boolean isLifting;
+         if(liftState == LiftActivity.IDLE) {
+            if((releaseState != ReleaseActivity.IDLE) || (stowState != StowActivity.IDLE)) {
+                isLifting = false;
+            } else {
+                isLifting = true;
+                // Extend the intake to make sure it isn't in the way.
+                moveIntake(IntakePosition.EXTENDED);
+
+                // We don't want the intake spinning while we are trying to lift the stone.
+                stopIntake();
+                liftState = LiftActivity.CLEARING_LIFT;
+            }
+        } else {
+            isLifting = true;
         }
+
+        return isLifting;
     }
+
 
     public void performLifting() {
 		switch(liftState) {
@@ -454,18 +461,27 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 		}
     }
 
-    public void startReleasing() {
+    public boolean startReleasing() {
+        boolean isReleasing;
         if(releaseState == ReleaseActivity.IDLE) {
-            if(liftState != LiftActivity.IDLE) {
-                liftState = LiftActivity.STOPPING;
+            if (liftState != LiftActivity.IDLE) {
+                isReleasing = false;
             }
-            if(stowState != StowActivity.IDLE) {
-                stowState = StowActivity.STOPPING;
+            if (stowState != StowActivity.IDLE) {
+                isReleasing = false;
+            } else {
+                isReleasing = true;
+
+                releaseState = ReleaseActivity.RELEASE_STONE;
+                claw.setPosition(CLAW_OPEN);
+                stateTimer.reset();
             }
-            releaseState = ReleaseActivity.RELEASE_STONE;
-            claw.setPosition(CLAW_OPEN);
-            stateTimer.reset();
         }
+        else {
+            isReleasing = true;
+        }
+
+        return isReleasing;
     }
 
     public void performReleasing() {
@@ -498,24 +514,32 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         }
     }
 
-    public void startStowing() {
+    public boolean startStowing() {
+        boolean isStowing;
         if(stowState == StowActivity.IDLE) {
-            if(liftState != LiftActivity.IDLE) {
-                liftState = LiftActivity.STOPPING;
+            if (liftState != LiftActivity.IDLE) {
+                isStowing = false;
             }
-            if(releaseState != ReleaseActivity.IDLE) {
-                releaseState = ReleaseActivity.STOPPING;
+            if (releaseState != ReleaseActivity.IDLE) {
+                isStowing = false;
+            } else {
+                isStowing = true;
+
+                // Extend the intake to make sure it isn't in the way.
+                moveIntake(IntakePosition.EXTENDED);
+
+                // We don't want the intake spinning while we are trying to stow the
+                // lift.
+                stopIntake();
             }
-			// Extend the intake to make sure it isn't in the way.
-			moveIntake(IntakePosition.EXTENDED);
-
-			// We don't want the intake spinning while we are trying to stow the
-			// lift.
-			stopIntake();
-
-			// Start rotating back to the front.
+            // Start rotating back to the front.
             stowState = StowActivity.CLEARING_LIFT;
         }
+        else {
+                isStowing = true;
+
+        }
+        return isStowing;
     }
 
     public void performStowing() {

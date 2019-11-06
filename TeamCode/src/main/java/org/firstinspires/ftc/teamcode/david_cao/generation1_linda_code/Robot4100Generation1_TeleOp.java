@@ -15,7 +15,6 @@ public class Robot4100Generation1_TeleOp extends DarbotsBasicOpMode<Robot4100Gen
     private Robot4100Generation1_LindaCore m_RobotCore;
     private LoopableTimer m_TimerStoneOrient = null;
     private LoopableTimer m_TimerCapStoneDelivery = null;
-    private boolean m_IsToPreprareGrab = false;
 
     @Override
     public Robot4100Generation1_LindaCore getRobotCore() {
@@ -27,7 +26,6 @@ public class Robot4100Generation1_TeleOp extends DarbotsBasicOpMode<Robot4100Gen
         this.m_RobotCore = new Robot4100Generation1_LindaCore(this.hardwareMap);
         this.m_RobotCore.getChassis().replaceTask(this.m_RobotCore.getChassis().getTeleOpTask());
         this.m_RobotCore.getLinearSlide().adjustCurrentPosition(Robot4100Generation1_Settings.LINEARSLIDE_GRAB);
-        m_IsToPreprareGrab = false;
     }
 
     @Override
@@ -64,18 +62,15 @@ public class Robot4100Generation1_TeleOp extends DarbotsBasicOpMode<Robot4100Gen
             teleOpTask.setDriveRotationSpeed(Turn);
 
             if(gamepad2.left_stick_y < -0.1){
-                if((!this.m_RobotCore.getLinearSlide().isBusy()) || m_IsToPreprareGrab) {
-                    m_IsToPreprareGrab = false;
-                    this.m_RobotCore.getLinearSlide().replaceTask(new TargetPosTask(null, this.m_RobotCore.getLinearSlide().getMaxPos(), Robot4100Generation1_Settings.TELEOP_LINEARSLIDESPEED));
+                if((!this.m_RobotCore.getLinearSlide().isBusy())) {
+                    this.m_RobotCore.getLinearSlide().replaceTask(new TargetPosTask(null, this.m_RobotCore.getLinearSlide().getMaxPos(), Robot4100Generation1_Settings.TELEOP_LINEARSLIDESPEED * -gamepad2.left_stick_y));
                 }
             }else if(gamepad2.left_stick_y > 0.1){
-                if((!this.m_RobotCore.getLinearSlide().isBusy()) || m_IsToPreprareGrab) {
-                    m_IsToPreprareGrab = false;
-                    this.m_RobotCore.getLinearSlide().replaceTask(new TargetPosTask(null, this.m_RobotCore.getLinearSlide().getMinPos(), Robot4100Generation1_Settings.TELEOP_LINEARSLIDESPEED));
+                if((!this.m_RobotCore.getLinearSlide().isBusy())) {
+                    this.m_RobotCore.getLinearSlide().replaceTask(new TargetPosTask(null, this.m_RobotCore.getLinearSlide().getMinPos(), Robot4100Generation1_Settings.TELEOP_LINEARSLIDESPEED * gamepad2.left_stick_y));
                 }
             }else{
-                if(!m_IsToPreprareGrab)
-                    this.m_RobotCore.getLinearSlide().deleteAllTasks();
+                this.m_RobotCore.getLinearSlide().deleteAllTasks();
             }
 
             //Gamepad1 Intake System Control
@@ -93,9 +88,9 @@ public class Robot4100Generation1_TeleOp extends DarbotsBasicOpMode<Robot4100Gen
                 this.m_RobotCore.setGrabberServoToGrab(true);
             }
             if(gamepad2.right_trigger > 0){
-                this.m_RobotCore.setGrabberRotServoToOutside(true);
+                this.m_RobotCore.setGrabberRotServoToOutside(true,Robot4100Generation1_Settings.TELEOP_GRABBERROT_OUT_SPEED);
             }else if(gamepad2.left_trigger > 0){
-                this.m_RobotCore.setGrabberRotServoToOutside(false);
+                this.m_RobotCore.setGrabberRotServoToOutside(false,Robot4100Generation1_Settings.TELEOP_GRABBERROT_IN_SPEED);
             }
 
             if(gamepad2.a){
@@ -130,23 +125,6 @@ public class Robot4100Generation1_TeleOp extends DarbotsBasicOpMode<Robot4100Gen
                 this.m_RobotCore.setDragServoToDrag(true);
             }else if(gamepad2.dpad_up){
                 this.m_RobotCore.setDragServoToDrag(false);
-            }
-
-            if(gamepad2.y){
-                if(!m_IsToPreprareGrab && !this.getRobotCore().getLinearSlide().isBusy()) {
-                    this.m_IsToPreprareGrab = true;
-                    this.m_RobotCore.setGrabberRotServoToOutside(false);
-                    this.m_RobotCore.getLinearSlide().replaceTask(new TargetPosSpeedCtlTask(
-                            new RobotServoUsingMotorCallBack() {
-                                @Override
-                                public void JobFinished(boolean timeOut, RobotServoUsingMotorTask Task, double OriginalPos, double timeSpent) {
-                                    m_IsToPreprareGrab = false;
-                                }
-                            },
-                            Robot4100Generation1_Settings.LINEARSLIDE_GRAB,
-                            Robot4100Generation1_Settings.TELEOP_LINEARSLIDESPEED
-                            ));
-                }
             }
 
             this.m_RobotCore.updateStatus();

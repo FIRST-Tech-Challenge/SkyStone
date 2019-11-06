@@ -4,6 +4,7 @@ import org.darbots.darbotsftclib.libcore.calculations.dimentionalcalculation.Rob
 import org.darbots.darbotsftclib.libcore.motortypes.AndyMark2964;
 import org.darbots.darbotsftclib.libcore.motortypes.AndyMark3637;
 import org.darbots.darbotsftclib.libcore.templates.motor_related.MotorType;
+import org.darbots.darbotsftclib.libcore.templates.servo_related.ServoType;
 
 public class Robot4100Generation1_Settings {
     //------------Autonomous Settings------------
@@ -23,7 +24,10 @@ public class Robot4100Generation1_Settings {
 
     //------------TeleOp Settings------------
     public static final double TELEOP_MAXSPEED = 0.6;
-    public static final double TELEOP_LINEARSLIDESPEED = 0.5;
+    public static final double TELEOP_LINEARSLIDESPEED = 1.0;
+    public static final double TELEOP_GRABBERROT_IN_SPEED = 1.0;
+    public static final double TELEOP_GRABBERROT_OUT_SPEED = 0.5;
+
     //------------End of TeleOp Settings------------
     //------------Configuration Settings------------
     public static final double[] wheelPosition = {18.415,14};
@@ -53,6 +57,7 @@ public class Robot4100Generation1_Settings {
     public static final double GRABBERSERVO_GRABPOS = 0.1;
     public static final double GRABBERROTSERVO_INSIDEPOS = 1.0;
     public static final double GRABBERROTSERVO_OUTSIDEPOS = 0.025;
+    public static final ServoType GRABBERROTSERVO_TYPE = null;
 
     public static final double STONEORIENTSERVO_ZEROPOS = 0;
     public static final double STONEORIENTSERVO_ORIENTPOS = 0.5;

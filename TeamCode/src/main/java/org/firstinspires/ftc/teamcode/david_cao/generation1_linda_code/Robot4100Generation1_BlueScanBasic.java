@@ -94,7 +94,7 @@ public class Robot4100Generation1_BlueScanBasic extends DarbotsBasicOpMode<Robot
         Robot3DPositionIndicator firstScanStonePosition = this.m_Navigation.getDarbotsRobotAxisStonePosition();
         if(firstScanStonePosition != null){
             firstScanZOffset = -firstScanStonePosition.getZ();
-            firstScanXOffset = firstScanStonePosition.getX();
+            firstScanXOffset = -firstScanStonePosition.getX();
         }
         firstScanExtraDistance -= Robot4100Generation1_Settings.AUTONOMOUS_DISTANCE_BETWEEN_PHONE_AND_STONEGRABBER;
         telemetry.addData("ZOffset",firstScanZOffset);

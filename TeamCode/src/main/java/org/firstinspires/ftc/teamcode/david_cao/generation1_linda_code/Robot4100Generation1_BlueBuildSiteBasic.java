@@ -70,7 +70,7 @@ public class Robot4100Generation1_BlueBuildSiteBasic extends DarbotsBasicOpMode<
 
         this.m_RobotCore.getChassis().replaceTask(
                 this.m_RobotCore.getChassis().getFixedXDistanceTask(
-                        -80,
+                        -85,
                         0.5
                 )
         );
@@ -92,7 +92,7 @@ public class Robot4100Generation1_BlueBuildSiteBasic extends DarbotsBasicOpMode<
 
         this.m_RobotCore.getChassis().replaceTask(
                 this.m_RobotCore.getChassis().getFixedXDistanceTask(
-                        -55,
+                        -50,
                         0.3
                 )
         );

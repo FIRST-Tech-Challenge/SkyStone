@@ -77,7 +77,7 @@ public class Robot4100Generation1_BlueBuildSiteComplex extends DarbotsBasicOpMod
 
         this.m_RobotCore.getChassis().replaceTask(
                 this.m_RobotCore.getChassis().getFixedXDistanceTask(
-                        -80,
+                        -85,
                         0.5
                 )
         );
@@ -108,7 +108,7 @@ public class Robot4100Generation1_BlueBuildSiteComplex extends DarbotsBasicOpMod
 
         this.m_RobotCore.getChassis().replaceTask(
                 this.m_RobotCore.getChassis().getFixedZDistanceTask(
-                        -120,
+                        -115,
                         0.4
                 )
         );
@@ -152,7 +152,7 @@ public class Robot4100Generation1_BlueBuildSiteComplex extends DarbotsBasicOpMod
             firstScanExtraDistance += Robot4100Generation1_Settings.AUTONOMOUS_LENGTH_FOR_EACH_STONE;
             this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedZDistanceTask(
                     -Robot4100Generation1_Settings.AUTONOMOUS_LENGTH_FOR_EACH_STONE,
-                    0.1
+                    0.25
             ));
             if(!waitForDrive()){
                 return;
@@ -164,7 +164,7 @@ public class Robot4100Generation1_BlueBuildSiteComplex extends DarbotsBasicOpMod
         Robot3DPositionIndicator firstScanStonePosition = this.m_Navigation.getDarbotsRobotAxisStonePosition();
         if(firstScanStonePosition != null){
             firstScanZOffset = -firstScanStonePosition.getZ();
-            firstScanXOffset = firstScanStonePosition.getX();
+            firstScanXOffset = -firstScanStonePosition.getX();
         }
         firstScanExtraDistance -= Robot4100Generation1_Settings.AUTONOMOUS_DISTANCE_BETWEEN_PHONE_AND_STONEGRABBER;
         telemetry.addData("ZOffset",firstScanZOffset);
@@ -179,7 +179,7 @@ public class Robot4100Generation1_BlueBuildSiteComplex extends DarbotsBasicOpMod
             return;
         }
         this.getRobotCore().getChassis().replaceTask(this.getRobotCore().getChassis().getFixedXDistanceTask(
-                25,//firstScanXOffset + 10,
+                35,//firstScanXOffset + 10,
                 0.2
         ));
         if(!waitForDrive()){

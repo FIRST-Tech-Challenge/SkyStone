@@ -20,19 +20,40 @@ public class XYPlaneCalculations {
         return result;
     }
     public static Robot3DPositionIndicator getFTCRobotPosition(Robot3DPositionIndicator DarbotsRobotPosition){
-        return new Robot3DPositionIndicator(DarbotsRobotPosition.getZ(),-DarbotsRobotPosition.getX(),DarbotsRobotPosition.getY(),DarbotsRobotPosition.getRotationZ(),-DarbotsRobotPosition.getRotationX(),DarbotsRobotPosition.getRotationY() - 90);
+        return new Robot3DPositionIndicator(
+                DarbotsRobotPosition.getZ(),
+                -DarbotsRobotPosition.getX(),
+                DarbotsRobotPosition.getY(),
+                DarbotsRobotPosition.getRotationZ(),
+                -DarbotsRobotPosition.getRotationX(),
+                DarbotsRobotPosition.getRotationY() - 90
+        );
     }
 
-    public static Robot3DPositionIndicator getDarbotsPosition(Robot3DPositionIndicator FTCRobotPosition){
-        return new Robot3DPositionIndicator(-FTCRobotPosition.getY(),FTCRobotPosition.getZ(),FTCRobotPosition.getX(),-FTCRobotPosition.getRotationY(),FTCRobotPosition.getRotationZ() + 90,FTCRobotPosition.getRotationX());
+    public static Robot3DPositionIndicator getDarbotsRobotPosition(Robot3DPositionIndicator FTCRobotPosition){
+        return new Robot3DPositionIndicator(
+                -FTCRobotPosition.getY(),
+                FTCRobotPosition.getZ(),
+                FTCRobotPosition.getX(),
+                -FTCRobotPosition.getRotationY(),
+                FTCRobotPosition.getRotationZ() + 90,
+                FTCRobotPosition.getRotationX());
     }
 
     public static Robot2DPositionIndicator getFTCRobotPosition(Robot2DPositionIndicator DarbotsRobotPosition){
-        return new Robot2DPositionIndicator(DarbotsRobotPosition.getZ(),-DarbotsRobotPosition.getX(),DarbotsRobotPosition.getRotationY() - 90);
+        return new Robot2DPositionIndicator(
+                DarbotsRobotPosition.getZ(),
+                -DarbotsRobotPosition.getX(),
+                DarbotsRobotPosition.getRotationY() - 90
+        );
     }
 
-    public static Robot2DPositionIndicator getDarbotsPosition(Robot2DPositionIndicator FTCRobotPosition){
-        return new Robot2DPositionIndicator(-FTCRobotPosition.getZ(),FTCRobotPosition.getX(),FTCRobotPosition.getRotationY()+90);
+    public static Robot2DPositionIndicator getDarbotsRobotPosition(Robot2DPositionIndicator FTCRobotPosition){
+        return new Robot2DPositionIndicator(
+                -FTCRobotPosition.getZ(),
+                FTCRobotPosition.getX(),
+                FTCRobotPosition.getRotationY()+90
+        );
     }
 
     public static double chooseAngleFromRange(double[] angleList, double angleSmallestRange, double angleBiggestRange) {

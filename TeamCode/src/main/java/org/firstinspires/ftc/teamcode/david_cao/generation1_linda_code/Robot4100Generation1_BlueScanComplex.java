@@ -93,7 +93,7 @@ public class Robot4100Generation1_BlueScanComplex extends DarbotsBasicOpMode {
         Robot3DPositionIndicator firstScanStonePosition = this.m_Navigation.getDarbotsRobotAxisStonePosition();
         if(firstScanStonePosition != null){
             firstScanZOffset = -firstScanStonePosition.getZ();
-            firstScanXOffset = firstScanStonePosition.getX();
+            firstScanXOffset = -firstScanStonePosition.getX();
         }
         firstScanExtraDistance -= Robot4100Generation1_Settings.AUTONOMOUS_DISTANCE_BETWEEN_PHONE_AND_STONEGRABBER;
         telemetry.addData("ZOffset",firstScanZOffset);
@@ -176,7 +176,7 @@ public class Robot4100Generation1_BlueScanComplex extends DarbotsBasicOpMode {
                 0.5
         ));
         this.getRobotCore().getChassis().addTask(this.getRobotCore().getChassis().getFixedZDistanceTask(
-                -60,
+                -40,
                 0.3
         ));
 
@@ -201,7 +201,7 @@ public class Robot4100Generation1_BlueScanComplex extends DarbotsBasicOpMode {
 
         this.m_RobotCore.getChassis().replaceTask(
                 this.m_RobotCore.getChassis().getFixedXDistanceTask(
-                        -80,
+                        -85,
                         0.5
                 )
         );
@@ -211,7 +211,7 @@ public class Robot4100Generation1_BlueScanComplex extends DarbotsBasicOpMode {
 
         this.m_RobotCore.getChassis().replaceTask(
                 this.m_RobotCore.getChassis().getFixedZDistanceTask(
-                        -50,
+                        -45,
                         0.5
                 )
         );
@@ -227,18 +227,12 @@ public class Robot4100Generation1_BlueScanComplex extends DarbotsBasicOpMode {
 
         this.m_RobotCore.getChassis().replaceTask(
                 this.m_RobotCore.getChassis().getFixedXDistanceTask(
-                        -55,
+                        -50,
                         0.3
                 )
         );
         if(!waitForDrive()){
             return;
         }
-
-
-
-
-
-
     }
 }

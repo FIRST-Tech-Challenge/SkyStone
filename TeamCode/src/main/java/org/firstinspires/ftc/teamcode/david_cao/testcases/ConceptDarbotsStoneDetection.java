@@ -27,16 +27,18 @@ public class ConceptDarbotsStoneDetection extends DarbotsBasicOpMode {
                 0,
                 0,
                 0,
-                -90,
+                0,
                 90,
-                0
+                -90
         );
         m_Nav = new SkyStoneNavigation(CameraPosition,mCamera);
         m_Nav.setActivated(true);
+        RobotOnPhoneCamera.setFlashlightEnabled(true);
     }
 
     @Override
     public void hardwareDestroy() {
+        RobotOnPhoneCamera.setFlashlightEnabled(false);
         m_Nav.setActivated(false);
     }
 

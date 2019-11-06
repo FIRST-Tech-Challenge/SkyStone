@@ -238,7 +238,7 @@ public class SkyStoneNavigation implements RobotNonBlockingDevice {
 
         // Next, translate the camera lens to where it is on the robot.
         // In this example, it is centered (left to right), but forward of the middle of the robot, and above ground level.
-        Robot3DPositionIndicator FTCRobotPos = XYPlaneCalculations.getFTCRobotPosition(m_CameraPos);
+        Robot3DPositionIndicator FTCRobotPos = m_CameraPos.fromDarbotsRobotAxisToFTCRobotAxis();
         float CAMERA_X_DISPLACEMENT  = (float) (FTCRobotPos.getX() * 10.0);
         float CAMERA_Y_DISPLACEMENT = (float) (FTCRobotPos.getY() * 10.0);
         float CAMERA_Z_DISPLACEMENT = (float) (FTCRobotPos.getZ() * 10.0);

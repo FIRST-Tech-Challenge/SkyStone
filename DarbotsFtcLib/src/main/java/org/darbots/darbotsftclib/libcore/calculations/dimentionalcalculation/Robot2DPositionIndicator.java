@@ -60,4 +60,10 @@ public class Robot2DPositionIndicator {
     public void setRotationY(double RotationY){
         this.m_RotationY = XYPlaneCalculations.normalizeDeg(RotationY);
     }
+    public Robot2DPositionIndicator fromFTCRobotAxisToDarbotsRobotAxis(){
+        return XYPlaneCalculations.getDarbotsRobotPosition(this);
+    }
+    public Robot2DPositionIndicator fromDarbotsRobotAxisToFTCRobotAxis(){
+        return XYPlaneCalculations.getFTCRobotPosition(this);
+    }
 }

@@ -113,24 +113,8 @@ public class AutoTemplate2 extends LinearOpMode {
             telemetry.addData("Values", vals[1] + "   " + vals[0] + "   " + vals[2]);
             telemetry.update();
 
-            if(vals[0] == 0){//middle
-                moveDistance(0.4, 1.4);
-                robot.claw.setPosition(1);
-                mySleep(0.5);
-                moveDistance(-0.4, 0.45);
-            } else if(vals[1] == 0) {//left
-                strafe(-0.4, 0.6);
-                moveDistance(0.4, 1.4);
-                robot.claw.setPosition(1);
-                mySleep(0.5);
-                moveDistance(-0.4, 0.45);
-            } else {//right
-                strafe(0.4, 0.6);
-                moveDistance(0.4, 1.4);
-                robot.claw.setPosition(1);
-                mySleep(0.5);
-                moveDistance(-0.4, 0.45);
-            }
+            moveDistanceEnc(0.4, 12);
+
             telemetry.addData("Path", "Complete");
             telemetry.update();
             break;
@@ -205,14 +189,14 @@ public class AutoTemplate2 extends LinearOpMode {
 
     public void moveDistanceEnc(double power, double distance) {
         robot.RL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.FL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        robot.FL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.RR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.FR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        robot.FR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         robot.RL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.FL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        robot.FL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.RR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.FR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        robot.FR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         double distancePerRotation = 3.1415 * 4; //pi * diameter (inches)
         double rotations = -distance/distancePerRotation; //distance / circumference (inches)
@@ -221,22 +205,22 @@ public class AutoTemplate2 extends LinearOpMode {
         if(opModeIsActive()) {
             robot.RL.setTargetPosition(encoderDrivingTarget);
             robot.RR.setTargetPosition(encoderDrivingTarget);
-            robot.FL.setTargetPosition(encoderDrivingTarget);
-            robot.FR.setTargetPosition(encoderDrivingTarget);
+//            robot.FL.setTargetPosition(encoderDrivingTarget);
+//            robot.FR.setTargetPosition(encoderDrivingTarget);
 
             robot.RL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.FL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            robot.FL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.RR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.FR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            robot.FR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             robot.RL.setPower(power);
             robot.RR.setPower(power);
-            robot.FL.setPower(power);
-            robot.FR.setPower(power);
+//            robot.FL.setPower(power);
+//            robot.FR.setPower(power);
 
 
-
-            while(robot.RL.isBusy() || robot.RR.isBusy() || robot.FL.isBusy() || robot.FR.isBusy()) {
+// || robot.FL.isBusy() || robot.FR.isBusy()
+            while(robot.RL.isBusy() || robot.RR.isBusy()) {
                 //wait till motor finishes working
                 telemetry.addData("Path", "Driving "+distance+" inches");
                 telemetry.update();
@@ -244,16 +228,16 @@ public class AutoTemplate2 extends LinearOpMode {
 
             robot.RL.setPower(0);
             robot.RR.setPower(0);
-            robot.FR.setPower(0);
-            robot.FL.setPower(0);
+//            robot.FR.setPower(0);
+//            robot.FL.setPower(0);
 
             telemetry.addData("Path", "Complete");
             telemetry.update();
 
             robot.RL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.FL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            robot.FL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.RR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.FR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            robot.FR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
     }
 }

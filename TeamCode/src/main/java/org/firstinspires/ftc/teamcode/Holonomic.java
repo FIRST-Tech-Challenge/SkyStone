@@ -34,7 +34,7 @@ Holonomic extends LinearOpMode {
         //use the name of the object in the code
         robot.initMotors(hardwareMap);
         robot.initServos(hardwareMap);
-        robot.initIMU(hardwareMap);
+        //robot.initIMU(hardwareMap);
         robot.useEncoders(false);
 
         waitForStart();

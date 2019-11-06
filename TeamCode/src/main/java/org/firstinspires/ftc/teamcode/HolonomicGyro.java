@@ -23,9 +23,7 @@ public class HolonomicGyro extends LinearOpMode {
 
     Robot3939 robot = new Robot3939();
 
-    public static final double deadZone = 0.10;
     public static final boolean earthIsFlat = true;
-    public static final boolean DOWN = true, UP = false;
 
     @Override //when init is pressed
     public void runOpMode(){
@@ -47,7 +45,7 @@ public class HolonomicGyro extends LinearOpMode {
             double LX = -gamepad1.left_stick_x, LY = gamepad1.left_stick_y, rotate = gamepad1.right_stick_x;
 
             robot.setForks(gamepad1.a);
-        //    robot.setClaw(gamepad1.b);
+            robot.setClaw(gamepad1.b);
 
             //bumpers set speed of robot
             if(gamepad1.right_bumper)

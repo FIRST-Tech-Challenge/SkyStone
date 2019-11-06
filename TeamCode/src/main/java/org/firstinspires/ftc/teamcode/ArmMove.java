@@ -61,7 +61,7 @@ public class ArmMove {
     private double MaxSpeedR = 0.8;
     private double MaxSpeedF = 0.5;
 
-    private long MaxTimeOut = 1;
+    private double MaxTimeOut = 0.5;
     
     private boolean EndConditionArmF = false;
     private boolean EndConditionArmR = false;

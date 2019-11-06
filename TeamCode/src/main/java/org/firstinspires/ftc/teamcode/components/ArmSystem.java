@@ -38,12 +38,14 @@ public class ArmSystem {
     // Use these so we can change it easily if the motor is put on backwards
     private final DcMotor.Direction UP = DcMotor.Direction.REVERSE;
     private final DcMotor.Direction DOWN = DcMotor.Direction.FORWARD;
-    protected Position QueuedPosition;
-    protected int QueuedHeight;
+
+    // For the queueing system, which we need to figure out how the drivers feel about it
+    private Position QueuedPosition;
+    private int QueuedHeight;
 
     // These fields are used only for calibration. Don't touch them outside of that method.
     private boolean calibrated = false;
-    public enum Direction {
+    private enum Direction {
         UP, DOWN;
         private static Direction reverse(Direction direction){
             return direction == UP ? DOWN : UP;
@@ -61,15 +63,16 @@ public class ArmSystem {
 
     // This can actually be more, like 5000, but we're not going to stack that high
     // for the first comp and the servo wires aren't long enough yet
-    public final int MAX_HEIGHT = 3000;
-    public final int INCREMENT_HEIGHT = 564; // how much the ticks increase when a block is added
-    public final int START_HEIGHT = 366; // Height of the foundation
+    private final int MAX_HEIGHT = 3000;
+    private final int INCREMENT_HEIGHT = 564; // how much the ticks increase when a block is added
+    private final int START_HEIGHT = 366; // Height of the foundation
 
-    public double SERVO_SPEED;
-    public final double SERVO_TOLERANCE = 0.02;
-    private double pivotTarget = 0.93;
-    private double elbowTarget = 0.72;
-    private double wristTarget = 0.05;
+    private double SERVO_SPEED;
+    private final double SERVO_TOLERANCE = 0.02;
+    private double pivotTarget = 0.09;
+    private double elbowTarget = 0.09;
+    private double wristTarget = 0.62;
+
 
     // Set to true when we're in the process of going home
     private boolean homing = false;
@@ -131,8 +134,7 @@ public class ArmSystem {
         the button input.
         It's a string so we can debug to telemetry, and use queuing if we implement it.
      */
-    boolean m_gripper, m_up, m_down = false;
-
+    private boolean m_gripper, m_up, m_down = false;
     public String run(boolean home, boolean west, boolean east, boolean north, boolean south,
                       boolean up, boolean down, boolean gripperButton, boolean assist,
                       double sliderSpeed, double armSpeed) {
@@ -191,48 +193,26 @@ public class ArmSystem {
         return Integer.toString(getSliderPos()) + "\n" + Integer.toString(calculateHeight(targetHeight));
     }
 
-    public void moveGripper(double pos) {
+    private void moveGripper(double pos) {
         gripper.setPosition(pos);
     }
 
-    public void moveWrist(double pos) {
-        wrist.setPosition(pos);
+    private void moveWrist(double pos) {
+        //wrist.setPosition(pos);
         wristTarget = pos;
     }
 
-    public void moveElbow(double pos) {
-        elbow.setPosition(pos);
+    private void moveElbow(double pos) {
+        //elbow.setPosition(pos);
         elbowTarget = pos;
     }
 
-    public void movePivot(double pos) {
-        pivot.setPosition(pos);
+    private void movePivot(double pos) {
+        //pivot.setPosition(pos);
         pivotTarget = pos;
     }
 
-    public void increaseGripper(double pos) {
-        if (gripper.getPosition() + pos <= 1 && gripper.getPosition() + pos >= 0) {
-            gripper.setPosition(gripper.getPosition());
-        }
-    }
-
-    public void increaseWrist(double pos) {
-        if (wrist.getPosition() + pos <= 1 && wrist.getPosition() + pos >= 0) {
-            wrist.setPosition(wrist.getPosition());
-        }
-    }
-
-    public void increaseElbow(double pos) {
-        if (elbow.getPosition() + pos <= 1 && elbow.getPosition() + pos >= 0) {
-            elbow.setPosition(elbow.getPosition());
-        }
-    }
-
-    public void increasePivot(double pos) {
-        if (pivot.getPosition() + pos <= 1 && pivot.getPosition() + pos >= 0) {
-            gripper.setPosition(gripper.getPosition());
-        }
-    }
+    // These are public for debugging purposes
     public double getGripper() {
         return gripper.getPosition();
     }
@@ -294,10 +274,7 @@ public class ArmSystem {
         }
     }
 
-    final double offsetPivot = 0.05;
-    final double offsetElbow = 0.04;
-    final double offsetWrist = 0;
-    public void movePresetPosition(Position pos) {
+    private void movePresetPosition(Position pos) {
         switch(pos) {
             case POSITION_NORTH:
                 // TODO: Find north pos with new motor
@@ -323,12 +300,12 @@ public class ArmSystem {
         }
     }
 
-    public void setQueuedPosition(Position position, int height) {
+    private void setQueuedPosition(Position position, int height) {
         this.QueuedPosition = position;
     }
 
     // Still requires updateHeight() to be called, just like the setSliderHeight method.
-    public void go() {
+    private void go() {
         //this.movePresetPosition(queuedPosition);
         setSliderHeight(queuedHeight);
     }
@@ -340,7 +317,7 @@ public class ArmSystem {
     Initially, the slider will be resting on the switch, resulting in
     limit.Switch.getState() == false
      */
-    public void calibrate() {
+    private void calibrate() {
 
         // The following code has a high chance of causing a timeout in init.
         // The commented code doesn't timeout but it also doesn't work.
@@ -409,16 +386,12 @@ public class ArmSystem {
          */
     }
 
-    public boolean isCalibrated() {
-        return calibrated;
-    }
-
-    public void stop() {
+    private void stop() {
         slider.setPower(0);
     }
 
     // Pos should be the # of blocks high it should be
-    public void setSliderHeight(int pos) {
+    private void setSliderHeight(int pos) {
         targetHeight = pos;
         slider.setTargetPosition(calculateHeight(targetHeight));
         slider.setDirection(Direction.motorDirection(Direction.UP));
@@ -432,15 +405,12 @@ public class ArmSystem {
     }
 
     // Should be called every loop
-    public void updateHeight(double speed) {
+    private void updateHeight(double speed) {
         slider.setPower(speed);
         slider.setTargetPosition(calculateHeight(targetHeight));
-        /*
         updateServo(elbow, elbowTarget);
         updateServo(pivot, pivotTarget);
         updateServo(wrist, wristTarget);
-
-         */
     }
 
     private void updateServo(Servo servo, double pos) {

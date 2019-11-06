@@ -12,13 +12,7 @@ import java.util.EnumMap;
 
 @TeleOp(name = "Real Teleop", group="TeleOp")
 public class DriveTeleop extends BaseOpMode {
-
-    public void init() {
-        super.init();
-        armSystem.movePresetPosition(ArmSystem.Position.POSITION_WEST);
-    }
-
-
+    
     public void loop(){
         float rx = (float) Math.pow(gamepad1.right_stick_x, 3);
         float lx = (float) Math.pow(gamepad1.left_stick_x, 3);

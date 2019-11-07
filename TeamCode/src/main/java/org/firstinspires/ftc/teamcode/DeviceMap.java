@@ -7,9 +7,6 @@ import com.qualcomm.hardware.bosch.BNO055IMUImpl;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.robot.Robot;
-import com.qualcomm.robotcore.util.Hardware;
-import com.qualcomm.robotcore.util.RobotLog;
 import com.vuforia.PIXEL_FORMAT;
 import com.vuforia.Vuforia;
 
@@ -17,15 +14,10 @@ import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-import org.firstinspires.ftc.robotcore.internal.system.ClassFactoryImpl;
-import org.firstinspires.ftc.robotcore.internal.vuforia.VuforiaLocalizerImpl;
-import org.firstinspires.ftc.teamcode.drive.Direction;
-import org.firstinspires.ftc.teamcode.listener.UltroVuforia;
+import org.firstinspires.ftc.robotcontroller.ultro.listener.UltroVuforia;
 
 //import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+
 
 public final class DeviceMap {
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";

@@ -58,9 +58,9 @@ public class UltroActivity extends FtcRobotControllerActivity implements CameraB
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "On create!");
+        Log.d(TAG, "On create");
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-            //camera = (JavaCameraView) findViewById(R.id.cameraMonitorViewId);
+            camera = findViewById(R.id.java_camera_view);
 
             Log.d(TAG, "Found camera! " + camera);
             camera.setVisibility(View.VISIBLE);

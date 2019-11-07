@@ -19,7 +19,11 @@
 
 package com.hfrobots.tnt.corelib.drive.mecanum;
 
+import android.util.Log;
+
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
+import com.acmerobotics.roadrunner.quickstart.util.AxesSigns;
+import com.acmerobotics.roadrunner.quickstart.util.BNO055IMUUtil;
 import com.hfrobots.tnt.corelib.util.LynxModuleUtil;
 import com.hfrobots.tnt.corelib.util.SimplerHardwareMap;
 import com.qualcomm.hardware.bosch.BNO055IMU;
@@ -28,6 +32,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -35,6 +41,7 @@ import java.util.List;
 import lombok.NonNull;
 
 import static com.acmerobotics.roadrunner.quickstart.drive.DriveConstants.encoderTicksToInches;
+import static com.hfrobots.tnt.corelib.Constants.LOG_TAG;
 
 /*
  * Simple mecanum drive hardware implementation for REV hardware. If your hardware configuration
@@ -49,20 +56,22 @@ public class RoadRunnerMecanumDriveREV extends RoadRunnerMecanumDriveBase {
 
     private boolean encodersEnabled = false;
 
-    public RoadRunnerMecanumDriveREV(SimplerHardwareMap hardwareMap) {
+    public RoadRunnerMecanumDriveREV(SimplerHardwareMap hardwareMap, boolean needImu) {
         super();
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
-        // TODO: adjust the names of the following hardware devices to match your configuration
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
-        imu.initialize(parameters);
+        if (needImu) {
+            // TODO: adjust the names of the following hardware devices to match your configuration
+            imu = hardwareMap.get(BNO055IMU.class, "imu");
+            BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+            parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+            imu.initialize(parameters);
 
-        // TODO: if your hub is mounted vertically, remap the IMU axes so that the z-axis points
-        // upward (normal to the floor) using a command like the following:
-        // BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
+            // TODO: if your hub is mounted vertically, remap the IMU axes so that the z-axis points
+            // upward (normal to the floor) using a command like the following:
+            BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
+        }
 
         leftFront = hardwareMap.get(DcMotorEx.class, "leftFrontDriveMotor");
         leftRear = hardwareMap.get(DcMotorEx.class, "leftRearDriveMotor");
@@ -127,10 +136,16 @@ public class RoadRunnerMecanumDriveREV extends RoadRunnerMecanumDriveBase {
 
     @Override
     public double getRawExternalHeading() {
-        return imu.getAngularOrientation().firstAngle;
+        if (imu != null) {
+            return imu.getAngularOrientation().firstAngle;
+        }
+
+        return 0;
     }
 
     public void enableEncoders() {
+        Log.d(LOG_TAG, "Enabling encoders for the drivebase");
+
         if (encodersEnabled) {
             return; // don't do it again if not needed
         }
@@ -144,6 +159,8 @@ public class RoadRunnerMecanumDriveREV extends RoadRunnerMecanumDriveBase {
     }
 
     public void disableEncoders() {
+        Log.d(LOG_TAG, "Disabling encoders for the drivebase");
+
         if (!encodersEnabled) {
             return; // don't do it again if not needed
         }

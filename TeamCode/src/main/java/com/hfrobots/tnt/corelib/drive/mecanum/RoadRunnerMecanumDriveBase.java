@@ -41,11 +41,13 @@ import com.acmerobotics.roadrunner.trajectory.constraints.MecanumConstraints;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import static com.acmerobotics.roadrunner.quickstart.drive.DriveConstants.BASE_CONSTRAINTS;
-import static com.acmerobotics.roadrunner.quickstart.drive.DriveConstants.TRACK_WIDTH;
-import static com.acmerobotics.roadrunner.quickstart.drive.DriveConstants.kA;
-import static com.acmerobotics.roadrunner.quickstart.drive.DriveConstants.kStatic;
-import static com.acmerobotics.roadrunner.quickstart.drive.DriveConstants.kV;
+import lombok.Getter;
+
+import static com.hfrobots.tnt.corelib.drive.mecanum.DriveConstants.BASE_CONSTRAINTS;
+import static com.hfrobots.tnt.corelib.drive.mecanum.DriveConstants.TRACK_WIDTH;
+import static com.hfrobots.tnt.corelib.drive.mecanum.DriveConstants.kA;
+import static com.hfrobots.tnt.corelib.drive.mecanum.DriveConstants.kStatic;
+import static com.hfrobots.tnt.corelib.drive.mecanum.DriveConstants.kV;
 
 /*
  * Base class with shared functionality for sample mecanum drives. All hardware-specific details are
@@ -72,6 +74,7 @@ public abstract class RoadRunnerMecanumDriveBase extends MecanumDrive {
     private MotionProfile turnProfile;
     private double turnStart;
 
+    @Getter
     private DriveConstraints constraints;
     private TrajectoryFollower follower;
 
@@ -184,6 +187,7 @@ public abstract class RoadRunnerMecanumDriveBase extends MecanumDrive {
 
                 Trajectory trajectory = follower.getTrajectory();
 
+
                 fieldOverlay.setStrokeWidth(1);
                 fieldOverlay.setStroke("4CAF50");
                 DashboardUtil.drawSampledPath(fieldOverlay, trajectory.getPath());
@@ -204,7 +208,9 @@ public abstract class RoadRunnerMecanumDriveBase extends MecanumDrive {
             }
         }
 
-        dashboard.sendTelemetryPacket(packet);
+        if (false) { // TODO - eventually change this to be configurable
+            dashboard.sendTelemetryPacket(packet);
+        }
     }
 
     public void waitForIdle() {

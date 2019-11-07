@@ -48,8 +48,8 @@ public class OrientationTools {
     public void setAllMotors(double SpeedFrontLeft, double SpeedBackLeft, double SpeedBackRight,double SpeedFrontRight){
         hwchss.motor_front_left.setPower(SpeedFrontLeft);
         hwchss.motor_front_right.setPower(SpeedFrontRight);
-        hwchss.motor_back_left.setPower(SpeedBackLeft);
-        hwchss.motor_back_right.setPower(SpeedBackRight);
+        hwchss.motor_rear_left.setPower(SpeedBackLeft);
+        hwchss.motor_rear_right.setPower(SpeedBackRight);
     }
 
     /**

@@ -10,7 +10,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-import org.firstinspires.ftc.teamcode.ControlledDriveTest;
 import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareOmniTest;
 import org.firstinspires.ftc.teamcode.Library.OmniWheel;
 
@@ -90,13 +89,13 @@ public class ControlledDrive {
     }
 
     // driveCondition(1,1, () -> button.getState() == false);
-    public void driveCondition(double speedForward, double speedSideways, Supplier<Boolean> condition) {
+    public void driveConditionally(double speedForward, double speedSideways, Supplier<Boolean> condition) {
         while (condition.get()) {
             //drive
         }
     }
 
-    public void rotate(double degree) {
+    public void rotate(double degree, double speed, int timeout) {
 
     }
 }

@@ -1,69 +1,81 @@
-/* This abstract class is used to create an abstract for all Chassis since this season there will be more than one.
-*  Here all general settings for the (yet only) motors which are used by all other inherited basis classes are set.
-*  created by coolPseudonym & dreadjack
- */
-
 package org.firstinspires.ftc.teamcode.HardwareMaps;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 
-public abstract class HardwareChassis {
-    //declare all 4 motors as DcMotor to be used furthermore
+import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+
+public class HardwareChassis {
+    //declare all motors as DcMotor to be used furthermore
     public DcMotor motor_front_right = null;
     public DcMotor motor_front_left = null;
-    public DcMotor motor_back_right = null;
-    public DcMotor motor_back_left = null;
+    public DcMotor motor_rear_right = null;
+    public DcMotor motor_rear_left = null;
+    public DcMotor motor_lift_left = null;
+    public DcMotor motor_lift_right = null;
+    public DcMotor motor_clamp = null;
 
-    //declare a variable to get easier use of the right Hardwaremap
-    private HardwareMap hwmap = null;
+    // declare sensors
+    public ColorSensor color_left = null;
+    public ColorSensor color_right = null;
+    public DigitalChannel touch_left = null;
+    public DigitalChannel touch_right = null;
 
-    /**
-     * Initializes the class with a correct hardware map
-     * @param ahwMap hardware map object
-     */
-    public HardwareChassis(HardwareMap ahwMap) {
-        //run init hands over hardwaremap of right layout
-        init(ahwMap);
-        setDirections();
+    // State used for updating telemetry
+    private HardwareMap hwMap           =  null;
+
+    /* Constructor */
+    public HardwareChassis(HardwareMap hwMap){
+        //super(hwMap);
+        init(hwMap);
     }
 
-    /**
-     * Should be run instantly when the hardware map is received,
-     * eg when the constructor is accessed.
-     * Inits all motors and sets them.
-     * @param hwMap The hardware map from the calling op mode
-     */
     public void init(HardwareMap hwMap) {
+        //// MOTORS
+
         //initialize motors with directs to Expansion Hub
-        motor_front_right = hwMap.get(DcMotor.class, "motor_front_right");
-        motor_front_left = hwMap.get(DcMotor.class, "motor_front_left");
-        motor_back_right = hwMap.get(DcMotor.class, "motor_back_right");
-        motor_back_left = hwMap.get(DcMotor.class, "motor_back_left");
+        this.motor_front_left =  hwMap.get(DcMotor.class, "h1_m0");
+        this.motor_rear_right =  hwMap.get(DcMotor.class, "h1_m1");
+        this.motor_front_right = hwMap.get(DcMotor.class, "h1_m2");
+        this.motor_rear_left =   hwMap.get(DcMotor.class, "h1_m3");
+        this.motor_lift_left =   hwMap.get(DcMotor.class, "h2_m0");
+        this.motor_lift_right =  hwMap.get(DcMotor.class, "h2_m1");
+        this.motor_clamp =       hwMap.get(DcMotor.class, "h2_m2");
 
         //set all motors to 0 to stop possible errors caused by not doing this.
-        motor_front_right.setPower(0);
-        motor_front_left.setPower(0);
-        motor_back_right.setPower(0);
-        motor_back_left.setPower(0);
+        this.motor_front_right.setPower(0);
+        this.motor_front_left.setPower(0);
+        this.motor_rear_right.setPower(0);
+        this.motor_rear_left.setPower(0);
+        this.motor_lift_left.setPower(0);
+        this.motor_lift_right.setPower(0);
+        this.motor_clamp.setPower(0);
 
-        //set all motors to run without Encoder because we had a lot of issues with them e.g. stuttering MAY BE REMOVED SOON SINCE I WILL TEST THEM ONCE AGAIN
-        motor_front_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motor_front_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motor_back_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motor_back_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        //motor_arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //set all motors to run with Encoders
+        this.motor_front_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        this.motor_front_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        this.motor_rear_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        this.motor_rear_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        this.motor_lift_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        this.motor_lift_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        this.motor_clamp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         //set all motors to brake if they`re set to no power especially because we got a extending arm which needs do stay in place MAY BE REMOVED IF UNKNOWN PROBLEMS POP UP
-        motor_front_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motor_front_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motor_back_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motor_back_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        //motor_arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.motor_front_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.motor_front_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.motor_rear_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.motor_rear_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.motor_lift_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.motor_lift_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.motor_clamp.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        //// SENSORS
+        this.color_left =    hwMap.get(ColorSensor.class, "h1_s0");
+        this.color_right =   hwMap.get(ColorSensor.class, "h2_s0");
+
+        this.touch_left =    hwMap.get(DigitalChannel.class, "h2_s2");
+        this.touch_right =   hwMap.get(DigitalChannel.class, "h2_s2");
 
     }
-
-    //force a method to set the right directions per wheel-layout
-    abstract protected void setDirections();
 }

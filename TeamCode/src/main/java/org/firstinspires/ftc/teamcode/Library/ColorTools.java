@@ -73,7 +73,7 @@ public class ColorTools {
      * @return true or false
      */
 
-    public boolean colorChange (ColorSensor colorSenseChange, Queue<Integer> colorList) {
+    public boolean colorChange(ColorSensor colorSenseChange, Queue<Integer> colorList) {
 
         averageList = new LinkedList<>();
         hsvNow = showHSV(colorSenseChange);

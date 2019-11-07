@@ -86,6 +86,8 @@ public abstract class AutoOpMode extends LinearOpMode implements IActive {
     public void afterStop() {
         MonitorManager.stopAll();
         DeviceMap.getInstance().deactivateTfod();
+        DeviceMap.getInstance().deactivateOpenCV();
+        DeviceMap.getInstance().deactivateVuforia();
 
     }
 

@@ -8,18 +8,12 @@ import android.util.Log;
 import android.view.View;
 
 import com.qualcomm.ftcrobotcontroller.R;
+public class UltroActivity {
 
-import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
-import org.opencv.android.BaseLoaderCallback;
-import org.opencv.android.CameraBridgeViewBase;
-import org.opencv.android.JavaCameraView;
-import org.opencv.android.LoaderCallbackInterface;
-import org.opencv.android.OpenCVLoader;
-import org.opencv.core.Mat;
-
+}
 /**
  * This will never be used!
- */
+
 public class UltroActivity extends FtcRobotControllerActivity implements CameraBridgeViewBase.CvCameraViewListener2 {
     private static final String TAG = "ULTROTAG";
     private JavaCameraView camera;
@@ -97,3 +91,5 @@ public class UltroActivity extends FtcRobotControllerActivity implements CameraB
             camera.disableView();
     }
 }
+ */
+

@@ -15,6 +15,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.robotcontroller.ultro.listener.UltroVuforia;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvInternalCamera;
 
 //import java.util.concurrent.CompletableFuture;
 
@@ -34,8 +36,9 @@ public final class DeviceMap {
     private DcMotor[] allMotors;
 
     private BNO055IMUImpl imu;
-    private VuforiaLocalizer vuforia;
+    private UltroVuforia vuforia;
     private TFObjectDetector tfod;
+    private OpenCvCamera camera;
 
     public DeviceMap(final HardwareMap map) {
         //for later
@@ -116,6 +119,13 @@ public final class DeviceMap {
         //}, service);
     }
 
+    public void initOpenCV(HardwareMap map) {
+        Context appContext = map.appContext;
+        int cameraMonitorViewId = appContext.getResources().getIdentifier("cameraMonitorViewId", "id", appContext.getPackageName());
+        camera = new OpenCvInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
+        camera.openCameraDevice();
+
+    }
     public void setUpVuforia(HardwareMap map) {
         Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true);
         Context appContext = map.appContext;
@@ -145,6 +155,16 @@ public final class DeviceMap {
         tfod.activate();
     }
 
+    public void deactivateOpenCV() {
+        if(camera != null) {
+            camera.stopStreaming();
+            camera.closeCameraDevice();
+        }
+    }
+    public void deactivateVuforia() {
+        if(vuforia != null)
+            vuforia.close();
+    }
     public void deactivateTfod() {
         if(tfod != null)
             tfod.deactivate();
@@ -212,5 +232,9 @@ public final class DeviceMap {
 
     public TFObjectDetector getTfod() {
         return tfod;
+    }
+
+    public OpenCvCamera getCamera() {
+        return camera;
     }
 }

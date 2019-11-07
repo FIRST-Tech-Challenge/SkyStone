@@ -20,16 +20,13 @@ import org.firstinspires.ftc.robotcore.internal.vuforia.VuforiaTrackableContaine
 import org.firstinspires.ftc.robotcore.internal.vuforia.VuforiaTrackableImpl;
 import org.firstinspires.ftc.robotcore.internal.vuforia.VuforiaTrackableNotify;
 import org.firstinspires.ftc.robotcore.internal.vuforia.VuforiaTrackablesImpl;
-import org.opencv.android.Utils;
-import org.opencv.core.CvType;
-import org.opencv.core.Mat;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 public class UltroVuforia extends VuforiaLocalizerImpl {
+    boolean closed = false;
     private static final List<CameraListener> listeners = new ArrayList<>();
 
     public static void addListener(CameraListener listener) {
@@ -37,6 +34,13 @@ public class UltroVuforia extends VuforiaLocalizerImpl {
         listener.setup();
         listeners.add(listener);
     }
+
+    @Override
+    public void close() {
+        if (!closed) super.close();
+        closed = true;
+    }
+
     public UltroVuforia(Parameters parameters) {
         super(parameters);
         stopAR();
@@ -144,7 +148,7 @@ public class UltroVuforia extends VuforiaLocalizerImpl {
             Image image = frame.getImage(i);
             if (image.getFormat() == PIXEL_FORMAT.RGB565) {
                 try {
-                    convertMat(image);
+                    //convertMat(image);
                 }catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -153,7 +157,7 @@ public class UltroVuforia extends VuforiaLocalizerImpl {
         }
     }
 
-
+/*
     private void convertMat(Image image)  {
         Bitmap bm = Bitmap.createBitmap(image.getWidth(), image.getHeight(), Bitmap.Config.RGB_565);
 
@@ -168,4 +172,6 @@ public class UltroVuforia extends VuforiaLocalizerImpl {
 
         for(CameraListener listener : listeners) listener.process(image, mat);
     }
+
+ */
 }

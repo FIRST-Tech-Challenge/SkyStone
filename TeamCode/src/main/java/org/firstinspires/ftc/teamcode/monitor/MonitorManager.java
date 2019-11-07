@@ -17,6 +17,7 @@ public final class MonitorManager {
     }
 
     public static void stopAll() {
+        if(monitors == null) return;
         for(IMonitor monitor : monitors)
             monitor.stop();
         monitors.clear();

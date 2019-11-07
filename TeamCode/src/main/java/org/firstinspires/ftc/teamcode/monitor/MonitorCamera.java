@@ -123,7 +123,7 @@ public class MonitorCamera implements IMonitor {
             telemetry.addData("listeners: ", listeners.size());
             telemetry.update();
             for (CameraListener cameraListener : listeners) {
-                cameraListener.process(image, mat);
+                cameraListener.process(image);
             }
             throw new Exception("aawfawfaw");
         }catch (Exception e) {

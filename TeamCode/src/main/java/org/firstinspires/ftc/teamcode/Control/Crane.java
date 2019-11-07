@@ -120,9 +120,9 @@ public class Crane {
     public final float halfField = 72 * mmPerInch;
     public final float quadField  = 36 * mmPerInch;
 
-    OpenGLMatrix lastLocation = null;
-    VuforiaLocalizer vuforia = null;
-    WebcamName webcamName = null;
+    public OpenGLMatrix lastLocation = null;
+    public VuforiaLocalizer vuforia = null;
+    public WebcamName webcamName = null;
 
     //----------------CONFIGURATION FIELDS--------------------
     public DcMotor[] drivetrain;   //set in motorDriveMode() for drivetrain movement functions
@@ -134,6 +134,13 @@ public class Crane {
 
     public DcMotor linear;
     public DcMotor rack;
+
+    public  List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
+    public VuforiaTrackables targetsSkyStone;
+    public boolean targetVisible = false;
+    public OpenGLMatrix robotFromCamera;
+    public int cameraMonitorViewId;
+    public VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
     public Servo servo;
 
@@ -147,7 +154,7 @@ public class Crane {
     //----       IMU        ----
 
     public BNO055IMUImpl imu;
-    public BNO055IMUImpl.Parameters parameters = new BNO055IMUImpl.Parameters();
+    public BNO055IMUImpl.Parameters parameters1 = new BNO055IMUImpl.Parameters();
     public Orientation current;
     public static boolean isnotstopped;
 
@@ -188,9 +195,9 @@ public class Crane {
         flimit = hardwareMap.digitalChannel.get(flimits);
         blimit = hardwareMap.digitalChannel.get(blimits);
 
-        rotationservo = servo(rotationservos, Servo.Direction.FORWARD,0,1,0.5);
-        rightServo = servo(rightServos, Servo.Direction.FORWARD,0,1,0.5);
-        leftServo = servo(leftServos, Servo.Direction.FORWARD,0,1,0.5);
+        //rotationservo = servo(rotationservos, Servo.Direction.FORWARD,0,1,0.5);
+        //rightServo = servo(rightServos, Servo.Direction.FORWARD,0,1,0.5);
+        //leftServo = servo(leftServos, Servo.Direction.FORWARD,0,1,0.5);
 
 
         encoder(EncoderMode.ON, rack, linear);
@@ -438,15 +445,13 @@ public class Crane {
     }
     public void setupCamera() throws InterruptedException{
 
-        boolean targetVisible = false;
         float phoneXRotate    = 0;
         float phoneYRotate    = 0;
         float phoneZRotate    = 0;
 
         webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
 
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+        cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
 
@@ -455,9 +460,10 @@ public class Crane {
         //  Instantiate the Vuforia engine
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
 
+        targetsSkyStone  = this.vuforia.loadTrackablesFromAsset("Skystone");
+
         // Load the data sets for the trackable objects. These particular data
         // sets are stored in the 'assets' part of our application.
-        VuforiaTrackables targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
 
         VuforiaTrackable stoneTarget = targetsSkyStone.get(0);
         stoneTarget.setName("Stone Target");
@@ -486,7 +492,7 @@ public class Crane {
         VuforiaTrackable rear2 = targetsSkyStone.get(12);
         rear2.setName("Rear Perimeter 2");
 
-        List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
+
         allTrackables.addAll(targetsSkyStone);
 
         stoneTarget.setLocation(OpenGLMatrix
@@ -555,15 +561,9 @@ public class Crane {
         final float CAMERA_VERTICAL_DISPLACEMENT = 8.0f * mmPerInch;   // eg: Camera is 8 Inches above ground
         final float CAMERA_LEFT_DISPLACEMENT     = 0;     // eg: Camera is ON the robot's center line
 
-        OpenGLMatrix robotFromCamera = OpenGLMatrix
+        robotFromCamera = OpenGLMatrix
                 .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
-
-        for (VuforiaTrackable trackable : allTrackables) {
-            ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
-        }
-
-        targetsSkyStone.activate();
     }
 
     public void powerMotors(double speed, long time, DcMotor... motors) {

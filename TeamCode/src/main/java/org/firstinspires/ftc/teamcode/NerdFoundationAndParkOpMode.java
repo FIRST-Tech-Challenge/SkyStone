@@ -97,13 +97,13 @@ public class NerdFoundationAndParkOpMode extends LinearOpMode {
             RobotLog.d("NerdSampleOpMode - Run1");
 
 
-        myNerdBOT.nerdPidDrive( speed, X_DISTANCE_TO_FOUNDATION, Y_DISTANCE_TO_FOUNDATION, Z_ANGLE_FOUNDATION);
-        myNerdBOT.nerdPidDrive( speed, 0.0, Y_DISTANCE_UP_TO_FOUNDATION, 0.0);
+        myNerdBOT.nerdPidDrive( speed, X_DISTANCE_TO_FOUNDATION, Y_DISTANCE_TO_FOUNDATION, Z_ANGLE_FOUNDATION, true, false);
+        myNerdBOT.nerdPidDrive( speed, 0.0, Y_DISTANCE_UP_TO_FOUNDATION, 0.0, true, false);
         Arm.UseTheForce();
-        myNerdBOT.nerdPidDrive(speed, 0.0, -36.0, 0);
+        myNerdBOT.nerdPidDrive(speed, 0.0, -36.0, 0, true, false);
         Arm.ArmLoop(-10,7, 0.5, 0.5);
-        myNerdBOT.nerdPidDrive(speed, X_DISTANCE_TO_PARKING, Y_DISTANCE_TO_PARKING, Z_ANGLE_PARKING);
-        myNerdBOT.nerdPidDrive(speed, 0.0, FORWARD_ON_PARKING_LINE, 0);
+        myNerdBOT.nerdPidDrive(speed, X_DISTANCE_TO_PARKING, Y_DISTANCE_TO_PARKING, Z_ANGLE_PARKING, true, false);
+        myNerdBOT.nerdPidDrive(speed, 0.0, FORWARD_ON_PARKING_LINE, 0, true, false);
 
 
 

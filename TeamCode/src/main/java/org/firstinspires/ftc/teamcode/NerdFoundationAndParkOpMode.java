@@ -50,7 +50,7 @@ public class NerdFoundationAndParkOpMode extends LinearOpMode {
 
     private  double speed = 0.4;
     boolean debugFlag = true;
-    private ArmMove Arm;
+    private NerdArmMove Arm;
 
     //Things to be changed depending on dominant alliance partner (for parking and distance to foundation)
     private final long SLEEP_TIME = 0;
@@ -68,7 +68,7 @@ public class NerdFoundationAndParkOpMode extends LinearOpMode {
     public void runOpMode() {
         //Create a NerdBOT object
         myNerdBOT = new NerdBOT(this);
-        Arm = new ArmMove(this);
+        Arm = new NerdArmMove(this);
 
         myNerdBOT.setDebug(debugFlag);
 
@@ -95,6 +95,8 @@ public class NerdFoundationAndParkOpMode extends LinearOpMode {
         //UNITS ARE IN INCHES
         if (debugFlag)
             RobotLog.d("NerdSampleOpMode - Run1");
+
+
         myNerdBOT.nerdPidDrive( speed, X_DISTANCE_TO_FOUNDATION, Y_DISTANCE_TO_FOUNDATION, Z_ANGLE_FOUNDATION);
         myNerdBOT.nerdPidDrive( speed, 0.0, Y_DISTANCE_UP_TO_FOUNDATION, 0.0);
         Arm.UseTheForce();

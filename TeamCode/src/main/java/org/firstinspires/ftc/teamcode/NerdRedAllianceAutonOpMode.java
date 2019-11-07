@@ -42,7 +42,7 @@ import com.qualcomm.robotcore.util.RobotLog;
  * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
-@Autonomous(name="Final_Auton", group="Linear Opmode")
+@Autonomous(name="Nerd_Final_Auton", group="Linear Opmode")
 //@Disabled
 public class NerdRedAllianceAutonOpMode extends LinearOpMode {
     private NerdBOT myNerdBOT ;
@@ -91,7 +91,7 @@ public class NerdRedAllianceAutonOpMode extends LinearOpMode {
         //UNITS ARE IN INCHES
         if (debugFlag)
             RobotLog.d("NerdSampleOpMode - Run1");
-        myNerdBOT.nerdPidDrive( speed, 0.0, 10.0, 0.0);
+        myNerdBOT.nerdPidDrive( speed, X_DIRECTION*0.0, 10.0, 0.0);
         Skystone_Position = VFC.vuforia();
         telemetry.addData("Position Case",Skystone_Position );
         telemetry.update();
@@ -139,7 +139,6 @@ public class NerdRedAllianceAutonOpMode extends LinearOpMode {
         myNerdBOT.setMinMaxSpeeds(0.0,0.85); // Go faster when going longer distance.
         run3_x = (position_run3_x +offset_x_run3);
         myNerdBOT.nerdPidDrive( speed, X_DIRECTION*-run3_x, 0.0, 0.0);
-        myNerdBOT.setMinMaxSpeeds(0.0,0.5);
 
         if (debugFlag)
             RobotLog.d("NerdSampleOpMode - Run4");
@@ -197,11 +196,11 @@ public class NerdRedAllianceAutonOpMode extends LinearOpMode {
 
         myNerdBOT.nerdPidTurn(speed, 90);
 
-        myNerdBOT.nerdPidDrive(speed, X_DIRECTION*0, 26, 90); //
+        myNerdBOT.nerdPidDrive(speed, X_DIRECTION*0, 15, 90); //
 
         Arm.ArmLoop(-135,100, 0.8, 0.6); // half-drop
 
-        myNerdBOT.nerdPidDrive(speed, X_DIRECTION*5, -26, 90); //park
+        myNerdBOT.nerdPidDrive(speed, X_DIRECTION*3, -26, 90); //park
 
 
         if (debugFlag)

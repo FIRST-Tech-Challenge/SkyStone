@@ -76,6 +76,18 @@ public class Intake {
 
     }
 
+    public void intake_on()
+    {
+        rightSide.setPower(PICKUP);
+        leftSide.setPower(PICKUP);
+    }
+
+    public void intake_off()
+    {
+        rightSide.setPower(IDLE);
+        leftSide.setPower(IDLE);
+    }
+
     public void Intake_TeleOp()
     {
         if(opMode.gamepad2.right_bumper) //set game pad button to x, could change, survey people

@@ -41,7 +41,7 @@ public class Outtake {
     static final double DISTANCE_BETWEEN_BLOCKS = 4.0; // In Inches
     static final double HORIZONTALEXTENSIONTIME = 5000 ; // Time it takes for lift to extend out = length of lift / speed of motors
     static final double INITIAL_HORIZONTALEXTENSIONTIME = 4500;
-    static final double encoderLevelCount = (360 / (Math.PI * .53));
+    static final double encoderLevelCount = (288 / (Math.PI * .53));
 
     static double LIFTPOWER = 1;
     static double HOOKDOWN = .60;
@@ -595,6 +595,7 @@ public class Outtake {
 
             }
 
+            //Hook Down
             hookLeft.setPosition(1);
             hookRight.setPosition(0);
         }

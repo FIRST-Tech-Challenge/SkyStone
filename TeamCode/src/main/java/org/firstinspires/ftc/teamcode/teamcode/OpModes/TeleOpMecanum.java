@@ -137,6 +137,8 @@ public class TeleOpMecanum extends OpMode {
             }
         }
 
+        telemetry.addData("Speed", speedProp);
+
         if(gamepad1.dpad_left)
         {
             drive.setStrafePower(-1);

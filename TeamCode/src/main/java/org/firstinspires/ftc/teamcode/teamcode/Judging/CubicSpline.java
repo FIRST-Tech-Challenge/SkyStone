@@ -14,8 +14,8 @@ public class CubicSpline {
 
 
         p.add(new Point(0, 0, 0));
-        p.add(new Point(.5, 1, 1));
-        p.add(new Point(1, 2, 0));
+        p.add(new Point(5, 10, 10));
+        p.add(new Point(10, 20, 0));
 
         int number_of_equations = p.size() - 2;
 

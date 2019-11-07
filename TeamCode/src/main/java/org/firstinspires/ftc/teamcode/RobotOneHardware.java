@@ -56,8 +56,8 @@ public class RobotOneHardware
     public DcMotor  leftDrive   = null;
     public DcMotor  rightDrive  = null;
     public DcMotor  InAndOut     = null;
-    //public Servo    leftClaw    = null;
-    //public Servo    rightClaw   = null;
+    public Servo    leftServo    = null;
+    public Servo    rightServo   = null;
 
     public static final double MID_SERVO       =  0.5 ;
     public static final double ARM_UP_POWER    =  0.45 ;
@@ -78,6 +78,8 @@ public class RobotOneHardware
         hwMap = ahwMap;
 
         // Define and Initialize Motors
+        leftServo = hwMap.get(Servo.class,"leftServo");
+        rightServo = hwMap.get(Servo.class,":rightServo");
         leftDrive  = hwMap.get(DcMotor.class, "leftDrive");
         rightDrive = hwMap.get(DcMotor.class, "rightDrive");
         InAndOut    = hwMap.get(DcMotor.class, "InAndOut");
@@ -88,12 +90,16 @@ public class RobotOneHardware
         leftDrive.setPower(0);
         rightDrive.setPower(0);
         InAndOut.setPower(0);
+        leftServo.setPosition(1.0);
+        rightServo.setPosition(0.0);
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
         leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         InAndOut.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        leftServo.setPosition(Servo.MAX_POSITION);
+//        rightServo.setPosition(Servo.MIN_POSITION);
 
         // Define and initialize ALL installed servos.
         /*leftClaw  = hwMap.get(Servo.class, "left_hand");

@@ -265,7 +265,7 @@ public class FinalTeleop extends LinearOpMode {
             } else if(gamepad2.x) { //home
                 REV = -10;
                 FEV = 10;
-                MaxSpeedR = 0.6; // 0.6
+                MaxSpeedR = 0.8; // 0.6
                 MaxSpeedF = 0.2; // 0.2
             } else if(gamepad2.right_bumper) { //drop 2
                 REV = -50;

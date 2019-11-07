@@ -130,24 +130,22 @@ public class NerdSampleOpMode extends LinearOpMode {
 
           Arm.ArmLoop(-135,140, 0.5, 0.5);
           //sleep(500);
-           Arm.ArmLoop(-10,7, 0.6, 0.2);
+           Arm.ArmLoop(-10,7, 0.8, 0.2);
         if (debugFlag)
             RobotLog.d("NerdSampleOpMode - Run3");
 
         myNerdBOT.setMinMaxSpeeds(0.0,0.85); // Go faster when going longer distance.
         run3_x = (position_run3_x + offset_x_run3);
         myNerdBOT.nerdPidDrive( speed, -run3_x, 0.0, 0.0);
-        myNerdBOT.setMinMaxSpeeds(0.0,0.5);
+        myNerdBOT.setMinMaxSpeeds(0.0,0.4);
 
         if (debugFlag)
             RobotLog.d("NerdSampleOpMode - Run4");
 
-        myNerdBOT.setMinMaxSpeeds(0.0,0.4);
 
 
         myNerdBOT.nerdPidDrive( speed, 0.0, 7.0, 0.0);
 
-        myNerdBOT.setMinMaxSpeeds(0.0,0.4);
 
 
         Arm.ArmLoop(-60,135, 0.2, 0.6); // half-drop
@@ -195,11 +193,11 @@ public class NerdSampleOpMode extends LinearOpMode {
 
         myNerdBOT.nerdPidTurn(speed, 90);
 
-        myNerdBOT.nerdPidDrive(speed, 0, 26, 90); //
+        myNerdBOT.nerdPidDrive(speed, 0, 20, 90); //
 
-        Arm.ArmLoop(-135,100, 0.8, 0.6); // half-drop
+        Arm.ArmLoop(-135,100, 0.8, 0.6); // throw
 
-        myNerdBOT.nerdPidDrive(speed, 5, -26, 90); //park
+        myNerdBOT.nerdPidDrive(speed, 5, -26, 90); // park
 
 
         if (debugFlag)

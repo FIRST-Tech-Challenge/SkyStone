@@ -27,6 +27,11 @@ SOFTWARE.
             <Motor name="rightFrontDriveMotor" port="1" />
             <Motor name="leftRearDriveMotor"  port="2" />
             <Motor name="rightRearDriveMotor"  port="3" />
+
+            <LynxColorSensor name="colorSensor" port="0" bus="0" />
+            <REV_VL53L0X_RANGE_SENSOR name="tof" port="0" bus="1" />
+            <AnalogInput name="analog_0" port="0" />
+            <AnalogInput name="analog_1" port="1" />
         </LynxModule>
     </LynxUsbDevice>
 </Robot>

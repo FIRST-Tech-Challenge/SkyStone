@@ -38,7 +38,7 @@ import static com.hfrobots.tnt.corelib.Constants.LOG_TAG;
  * Provide a basic manual operational mode that controls the holonomic drive.
  */
 @TeleOp(name="SkittleBot Teleop")
-//@Disabled
+@Disabled
 public class SkittleBotTeleop extends SkittleBotTelemetry
 
 {

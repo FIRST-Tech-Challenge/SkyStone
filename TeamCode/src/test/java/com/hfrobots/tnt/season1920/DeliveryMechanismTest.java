@@ -23,6 +23,7 @@ import com.hfrobots.tnt.corelib.control.FakeOnOffButton;
 import com.hfrobots.tnt.corelib.control.FakeRangeInput;
 import com.hfrobots.tnt.corelib.drive.FakeExtendedDcMotor;
 import com.hfrobots.tnt.corelib.drive.FakeServo;
+import com.hfrobots.tnt.corelib.sensors.FakeDigitalChannel;
 import com.hfrobots.tnt.fakes.FakeHardwareMap;
 import com.hfrobots.tnt.fakes.FakeNinjaGamePad;
 import com.hfrobots.tnt.fakes.FakeTelemetry;
@@ -48,6 +49,8 @@ public class DeliveryMechanismTest {
 
     private FakeServo shoulderServo;
 
+    private FakeDigitalChannel deliveryMechLowLimitSwitch;
+
     private OperatorControls controls;
 
     private FakeNinjaGamePad gamepad;
@@ -67,6 +70,8 @@ public class DeliveryMechanismTest {
         elbowServo = new FakeServo();
         shoulderServo = new FakeServo();
 
+        deliveryMechLowLimitSwitch = new FakeDigitalChannel();
+
         hardwareMap.addDevice("liftMotor", liftMotor);
         hardwareMap.addDevice("leftIntakeMotor", leftIntakeMotor);
         hardwareMap.addDevice("rightIntakeMotor", rightIntakeMotor);
@@ -75,6 +80,8 @@ public class DeliveryMechanismTest {
         hardwareMap.addDevice("wristServo", wristServo);
         hardwareMap.addDevice("elbowServo", elbowServo);
         hardwareMap.addDevice("shoulderServo", shoulderServo);
+
+        hardwareMap.addDevice("deliveryMechLowLimitSwitch", deliveryMechLowLimitSwitch);
 
         FakeTelemetry telemetry = new FakeTelemetry();
 
@@ -114,6 +121,13 @@ public class DeliveryMechanismTest {
         FakeOnOffButton ungripButton = (FakeOnOffButton) gamepad.getAButton();
         FakeRangeInput liftThrottle = (FakeRangeInput) gamepad.getRightStickY();
         FakeOnOffButton stowButton = (FakeOnOffButton) gamepad.getBButton();
+
+        Assert.assertEquals(DeliveryMechanism.HomingState.class.getSimpleName(),
+                deliveryMechanism.getCurrentStateName());
+
+        deliveryMechLowLimitSwitch.setState(false);
+
+        deliveryMechanism.periodicTask();
 
         Assert.assertEquals(DeliveryMechanism.LoadingState.class.getSimpleName(),
                 deliveryMechanism.getCurrentStateName());
@@ -424,6 +438,15 @@ public class DeliveryMechanismTest {
             deliveryMechanism.periodicTask();
             Assert.assertEquals(0, liftMotor.getPower(), 0.001);
 
+            // don't trust PID, try to home
+            Assert.assertEquals(DeliveryMechanism.HomingState.class.getSimpleName(),
+                    deliveryMechanism.getCurrentStateName());
+
+            deliveryMechLowLimitSwitch.setState(false);
+
+            deliveryMechanism.periodicTask();
+
+            // Now go back to loading
             Assert.assertEquals(DeliveryMechanism.LoadingState.class.getSimpleName(),
                     deliveryMechanism.getCurrentStateName());
         }

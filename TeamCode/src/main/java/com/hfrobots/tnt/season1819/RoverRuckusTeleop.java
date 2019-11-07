@@ -22,6 +22,7 @@ package com.hfrobots.tnt.season1819;
 
 import android.util.Log;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
@@ -32,6 +33,7 @@ import static com.hfrobots.tnt.corelib.Constants.LOG_TAG;
  * Provide a basic manual operational mode that controls the tank drive.
  */
 @TeleOp(name="RoverRuckus Teleop")
+@Disabled
 public class RoverRuckusTeleop extends RoverRuckusTelemetry
 
 {

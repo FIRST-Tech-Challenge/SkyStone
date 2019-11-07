@@ -79,6 +79,8 @@ public class OperatorControls {
 
     protected DebouncedButton stow; // <<stow>> also broken at the moment
 
+    protected OnOffButton unsafe;
+
     private NinjaGamePad operatorsGamepad;
 
     private DeliveryMechanism deliveryMechanism;
@@ -136,12 +138,18 @@ public class OperatorControls {
         setupCurvesAndFilters();
 
         this.deliveryMechanism = deliveryMechanism;
+        this.deliveryMechanism.setArmInPostion(armInPostion);
+        this.deliveryMechanism.setArmOutPostion(armOutPostion);
+        this.deliveryMechanism.setGrip(grip);
+        this.deliveryMechanism.setUngrip(ungrip);
+        this.deliveryMechanism.setLiftThrottle(liftThrottle);
+        this.deliveryMechanism.setRotateWrist(rotateWrist);
+        this.deliveryMechanism.setStow(stow);
+        this.deliveryMechanism.setUnsafe(unsafe);
     }
 
     private void setupCurvesAndFilters() {
-        intakeThrottle = new ParametricScaledRangeInput(
-                new LowPassFilteredRangeInput(leftStickY, lowPassFilterFactor),
-                throttleDeadband, throttleGain, throttleExponent);
+        intakeThrottle = leftStickY;
     }
 
     private void setupFromGamepad() {
@@ -173,38 +181,17 @@ public class OperatorControls {
         stow = bRedButton;
         grip = yYellowButton;
         ungrip = aGreenButton;
-
+        unsafe = new RangeInputButton(
+                operatorsGamepad.getRightTrigger(), 0.65f);
     }
 
     public void periodicTask() {
-        if (rotateWrist.getRise()) {
-            deliveryMechanism.rotateToPos();
-        }
-        else if (armOutPostion.getRise()) {
-            deliveryMechanism.turnFar();
-            deliveryMechanism.rotateToPos();
-        }
-       /* else if (armInPostion.getRise()) {
-            deliveryMechanism.turnClose();
-            deliveryMechanism.rotateToPos();
-        }*/
-        else if (stow.getRise()){
-            deliveryMechanism.stow();
-        }
-        else if (grip.getRise()){
-            deliveryMechanism.gripBlock();
-        }
-        else if (ungrip.getRise()){
-            deliveryMechanism.ungripblock();
-        }
-        else if (rightStickY.getPosition() >= 0){
-            deliveryMechanism.liftToMax();
-        }
-        else if (rightStickY.getPosition() <= 0){
-            deliveryMechanism.liftToMin();
-        }
+        // Run the lift/place state machine
+        deliveryMechanism.periodicTask();
 
-        deliveryMechanism.setIntakeVelocity(intakeThrottle.getPosition());
+        float requestedIntakeVelocity = intakeThrottle.getPosition() / 2;
+
+        deliveryMechanism.setIntakeVelocity(requestedIntakeVelocity);
     }
 
 }

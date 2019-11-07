@@ -187,7 +187,7 @@ public class DriverControls {
         double x = driveStrafe.getPosition();
         double y = - driveForwardReverse.getPosition();
         double rot = driveRotate.getPosition(); // positive robot z rotation (human-normal) is negative joystick x axis
-        boolean useEncoders = true;
+        boolean useEncoders = false;
 
         // do this first, it will be cancelled out by bump-strafe
         if (!driveFastButton.isPressed()) {

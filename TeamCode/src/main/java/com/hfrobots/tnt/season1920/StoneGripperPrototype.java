@@ -22,6 +22,7 @@ package com.hfrobots.tnt.season1920;
 import com.hfrobots.tnt.corelib.control.DebouncedButton;
 import com.hfrobots.tnt.corelib.control.NinjaGamePad;
 import com.hfrobots.tnt.util.NamedDeviceMap;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -40,6 +41,7 @@ import java.util.List;
  *
  */
 @TeleOp(name="Stone Gripper Prototype", group="Utilities")
+@Disabled
 @SuppressWarnings("unused")
 public class StoneGripperPrototype extends OpMode {
     private double leftOpenPos = 0.655;

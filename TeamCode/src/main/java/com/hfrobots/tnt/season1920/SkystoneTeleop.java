@@ -41,13 +41,10 @@ public class SkystoneTeleop extends OpMode {
 
     private StatsDMetricSampler metricSampler;
 
-    // Go look at com.hfrobots.tnt.season1920.OpenLoopDriveBaseControlTest and see what
-    // class members you need to begin to make the drivebase move using the drivers' controller
-
     @Override
     public void init() {
         RealSimplerHardwareMap simplerHardwareMap = new RealSimplerHardwareMap(this.hardwareMap);
-        driveBase = new RoadRunnerMecanumDriveREV(simplerHardwareMap);
+        driveBase = new RoadRunnerMecanumDriveREV(simplerHardwareMap, false);
         kinematics = new OpenLoopMecanumKinematics(driveBase);
 
         NinjaGamePad driversGamepad = new NinjaGamePad(gamepad1);
@@ -55,7 +52,7 @@ public class SkystoneTeleop extends OpMode {
         driverControls = DriverControls.builder().driversGamepad(driversGamepad)
                 .kinematics(kinematics)
                 .build();
-        deliveryMechanism = new DeliveryMechanism(simplerHardwareMap);
+        deliveryMechanism = new DeliveryMechanism(simplerHardwareMap, telemetry);
 
         NinjaGamePad operatorsGamepad = new NinjaGamePad(gamepad2);
 
@@ -63,7 +60,7 @@ public class SkystoneTeleop extends OpMode {
                 .deliveryMechanism(deliveryMechanism)
                 .build();
 
-        metricSampler = new StatsDMetricSampler(hardwareMap, driversGamepad, operatorsGamepad);
+        //metricSampler = new StatsDMetricSampler(hardwareMap, driversGamepad, operatorsGamepad);
     }
 
     @Override
@@ -80,6 +77,9 @@ public class SkystoneTeleop extends OpMode {
     public void loop() {
         driverControls.periodicTask();
         operatorControls.periodicTask();
-        metricSampler.doSamples();
+
+        if (metricSampler != null) {
+            metricSampler.doSamples();
+        }
     }
 }

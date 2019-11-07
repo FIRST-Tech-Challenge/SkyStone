@@ -33,6 +33,7 @@ import com.hfrobots.tnt.corelib.state.ServoPositionState;
 import com.hfrobots.tnt.corelib.state.State;
 import com.hfrobots.tnt.corelib.state.TimeoutSafetyState;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -45,6 +46,7 @@ import java.util.concurrent.TimeUnit;
 import static com.hfrobots.tnt.corelib.Constants.LOG_TAG;
 
 @Autonomous(name="00 RoverRuckus Auto")
+@Disabled
 @SuppressWarnings("unused")
 public class NewRoverRuckusAutonomous extends RoverRuckusHardware {
 

@@ -60,7 +60,7 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
-import com.acmerobotics.dashboard.FtcDashboard;
+//import com.acmerobotics.dashboard.FtcDashboard;
 import com.google.blocks.ftcrobotcontroller.BlocksActivity;
 import com.google.blocks.ftcrobotcontroller.ProgrammingModeActivity;
 import com.google.blocks.ftcrobotcontroller.ProgrammingModeControllerImpl;
@@ -390,7 +390,8 @@ public class FtcRobotControllerActivity extends Activity
       initWifiMute(true);
     }
 
-    FtcDashboard.start();
+    // Roadrunner - uncomment for tuning
+    //FtcDashboard.start();
   }
 
   protected UpdateUI createUpdateUI() {
@@ -473,7 +474,8 @@ public class FtcRobotControllerActivity extends Activity
     if (wifiLock != null) wifiLock.release();
     if (preferencesHelper != null) preferencesHelper.getSharedPreferences().unregisterOnSharedPreferenceChangeListener(sharedPreferencesListener);
 
-    FtcDashboard.stop();
+    // RoadRunner - uncomment for tuning
+    //FtcDashboard.stop();
 
     RobotLog.cancelWriteLogcatToDisk();
   }
@@ -686,7 +688,8 @@ public class FtcRobotControllerActivity extends Activity
   public void onServiceBind(final FtcRobotControllerService service) {
     RobotLog.vv(FtcRobotControllerService.TAG, "%s.controllerService=bound", TAG);
 
-    FtcDashboard.attachWebServer(service.getWebServer());
+    // RoadRunner - uncomment for tuning
+    // FtcDashboard.attachWebServer(service.getWebServer());
 
     controllerService = service;
     updateUI.setControllerService(controllerService);

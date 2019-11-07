@@ -21,6 +21,7 @@ package com.hfrobots.tnt.util;
 
 import com.hfrobots.tnt.corelib.control.DebouncedButton;
 import com.hfrobots.tnt.corelib.control.NinjaGamePad;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -39,6 +40,7 @@ import java.util.List;
  * 'servo2'.
  */
 @TeleOp(name="Dual Servo Tester", group="Utilities")
+@Disabled
 @SuppressWarnings("unused")
 public class DualServoTester extends OpMode {
     private DebouncedButton stopButton;

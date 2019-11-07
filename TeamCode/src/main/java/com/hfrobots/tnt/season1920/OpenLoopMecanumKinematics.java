@@ -134,6 +134,11 @@ public class OpenLoopMecanumKinematics {
         wheelSpeeds.normalize();
         wheelSpeeds.clipToMaxOutput();
 
+//        leftFront.setPower(v);
+//        leftRear.setPower(v1);
+//        rightRear.setPower(v2);
+//        rightFront.setPower(v3);
+
         mecanumDrive.setMotorPowers(wheelSpeeds.leftFront,
                 wheelSpeeds.leftRear,
                 wheelSpeeds.rightRear,

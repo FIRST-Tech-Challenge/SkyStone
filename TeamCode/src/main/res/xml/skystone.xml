@@ -27,6 +27,8 @@ SOFTWARE.
             <Motor name="rightFrontDriveMotor" port="1" /> <!-- orange -->
             <Motor name="leftRearDriveMotor"  port="2" /> <!-- green -->
             <Motor name="rightRearDriveMotor"  port="3" /> <!-- purple -->
+
+            <DigitalDevice name="deliveryMechLowLimitSwitch" port="7"/>
         </LynxModule>
 
         <LynxModule name="Secondary Hub" port="3">

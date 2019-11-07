@@ -75,9 +75,9 @@ public class NerdRedAllianceAutonOpMode extends LinearOpMode {
         myNerdBOT.initializeXPIDCalculator(0.0025, 0.0, 0.0, debugFlag);
         myNerdBOT.initializeYPIDCalculator(0.0025, 0.0, 0.0,debugFlag);
         myNerdBOT.initializeZPIDCalculator(0.015, 0.000, 0.0,debugFlag);
-        myNerdBOT.initializeTurnPIDCalculator(0.01, 0.000, 0.0,debugFlag);
+        myNerdBOT.initializeTurnPIDCalculator(0.0075, 0.000, 0.0,debugFlag);
         //Set Min and Max Speed - Optional (default min=0.1, max=0.6 if not changed below)
-        myNerdBOT.setMinMaxSpeeds(0.0,0.5);
+        myNerdBOT.setMinMaxSpeeds(0.0,0.4);
 
 
         telemetry.addData("Init", "Completed");
@@ -179,7 +179,7 @@ public class NerdRedAllianceAutonOpMode extends LinearOpMode {
 
         Arm.ArmLoop(-135,7,0.5,0.5);
 
-        myNerdBOT.setMinMaxSpeeds(0.0,0.4);
+        myNerdBOT.setMinMaxSpeeds(0.0,0.3);
 
         myNerdBOT.nerdPidDrive(speed, X_DIRECTION*0.0, 6.0, 0);
 
@@ -199,6 +199,8 @@ public class NerdRedAllianceAutonOpMode extends LinearOpMode {
         myNerdBOT.nerdPidDrive(speed, X_DIRECTION*0, 15, 90); //
 
         Arm.ArmLoop(-135,100, 0.8, 0.6); // half-drop
+
+        Arm.ArmLoop(-10,7, 0.5, 0.5);
 
         myNerdBOT.nerdPidDrive(speed, X_DIRECTION*3, -26, 90); //park
 

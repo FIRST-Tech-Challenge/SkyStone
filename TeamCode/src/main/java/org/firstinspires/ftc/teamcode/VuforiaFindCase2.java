@@ -78,37 +78,15 @@ public class VuforiaFindCase2 {
     private LinearOpMode opmode;
     private float phoneZRotate = 0;
     private static final float mmPerInch = 25.4f;
-    private static final float mmTargetHeight = (6) * mmPerInch;          // the height of the center of the target image above the floor
     // Constant for Stone Target
     private static final float stoneZ = 2.00f * mmPerInch;
     // Constants for the center support targets
-    private static final float bridgeZ = 6.42f * mmPerInch;
-    private static final float bridgeY = 23 * mmPerInch;
-    private static final float bridgeX = 5.18f * mmPerInch;
-    private static final float bridgeRotY = 59;                                 // Units are degrees
-    private static final float bridgeRotZ = 180;
-    // Constants for perimeter targets
-    private static final float halfField = 72 * mmPerInch;
-    private static final float quadField = 36 * mmPerInch;
+
     // Class Members
     private OpenGLMatrix lastLocation = null;
     private VuforiaLocalizer vuforia = null;
     private float phoneXRotate = 0;
     private float phoneYRotate = 0;
-    static final double COUNTS_PER_MOTOR_REV = 560;    // eg: REV 20:1 CORE HEX Motor Encoder
-    static final double DRIVE_GEAR_REDUCTION = 0.75;     // This is < 1.0 if geared UP: Motor Gear/Wheel Gear
-    static final double WHEEL_DIAMETER_INCHES = 3.5;     // For figuring circumference
-    static final double COUNTS_PER_INCH = ((COUNTS_PER_MOTOR_REV / 1.414427) * DRIVE_GEAR_REDUCTION) /
-            (WHEEL_DIAMETER_INCHES * 3.1415);
-    // These constants define the desired driving/control characteristics
-    // The can/should be tweaked to suite the specific robot drive train.
-    static final double DRIVE_SPEED = 0.25;     // Nominal speed for better accuracy.
-    static final double TURN_SPEED = 0.5;     // Nominal half speed for better accuracy.
-    static final double HEADING_THRESHOLD = 1;      // As tight as we can make it with an integer imu
-    static final double P_TURN_COEFF = 0.1;     // Larger is more responsive, but also less stable
-    static final double P_DRIVE_COEFF = 0.0135;     // Larger is more responsive, but also less stable
-    static final double I_DRIVE_COEFF = 0.0015;       // Larger is more responsive, but also less stable
-    static final double I_TURN_COEFF = 0.2;       // Larger is more responsive, but also less stable
     public int positionCase = 3;
     List<VuforiaTrackable> allTrackables;
     VuforiaTrackable stoneTarget;

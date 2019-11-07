@@ -14,14 +14,14 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-public class ArmMove {
+public class NerdArmMove {
     
     private DcMotor rearMotor;
     private DcMotor frontMotor;
     
     private HardwareMap hardwareMap;
     LinearOpMode opmode;
-    public ArmMove(LinearOpMode opmode) {
+    public NerdArmMove(LinearOpMode opmode) {
     this.opmode = opmode;
     this.hardwareMap = opmode.hardwareMap;
     } 

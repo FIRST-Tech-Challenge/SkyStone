@@ -30,6 +30,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.RobotLog;
+
 /**
  * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
  * the autonomous or the teleop period of an FTC match. The names of OpModes appear on the menu
@@ -42,11 +43,11 @@ import com.qualcomm.robotcore.util.RobotLog;
  * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
-@Autonomous(name="Final_Auton", group="Linear Opmode")
+@Autonomous(name="Blue_Final_Auton", group="Linear Opmode")
 //@Disabled
-public class NerdSampleOpMode extends LinearOpMode {
+public class NerdBlueAllianceAutonOpMode extends LinearOpMode {
     private NerdBOT myNerdBOT ;
-    private ArmMove Arm;
+    private NerdArmMove Arm;
     private  double speed = 0.4;
     private double Skystone_Position = 0;
     private double position_run3_x = 85.0;
@@ -60,7 +61,7 @@ public class NerdSampleOpMode extends LinearOpMode {
     public void runOpMode() {
         //Create a NerdBOT object
         myNerdBOT = new NerdBOT(this);
-        Arm = new ArmMove(this);
+        Arm = new NerdArmMove(this);
         myNerdBOT.setDebug(debugFlag);
         VFC = new VuforiaFindCase2(this);
 

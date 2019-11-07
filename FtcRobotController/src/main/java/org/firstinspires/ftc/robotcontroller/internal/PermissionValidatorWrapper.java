@@ -55,7 +55,7 @@ public class PermissionValidatorWrapper extends PermissionValidatorActivity {
         add(Manifest.permission.ACCESS_COARSE_LOCATION);
     }};
 
-    private final static Class startApplication = UltroActivity.class;
+    private final static Class startApplication = FtcRobotControllerActivity.class;
 
     public String mapPermissionToExplanation(final String permission) {
         if (permission.equals(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {

@@ -29,7 +29,6 @@ public class MonitorIMU implements IMonitor {
         this.executor = Executors.newSingleThreadScheduledExecutor();
 
         this.started = false;
-        this.start();
     }
 
     @Override

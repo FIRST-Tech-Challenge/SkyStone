@@ -9,10 +9,11 @@ public final class MonitorManager {
     private static List<IMonitor> monitors;
     public static void startAll(DeviceMap map) {
         monitors = new ArrayList<>();
-
         if(map.getImu() != null) monitors.add(new MonitorIMU(map.getImu()));
         if(map.getVuforia() != null) monitors.add(new MonitorCamera(map));
 
+        for(IMonitor mon : monitors)
+            mon.start();
     }
 
     public static void stopAll() {

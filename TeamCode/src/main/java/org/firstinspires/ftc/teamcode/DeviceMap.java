@@ -17,7 +17,10 @@ import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.robotcore.internal.system.ClassFactoryImpl;
+import org.firstinspires.ftc.robotcore.internal.vuforia.VuforiaLocalizerImpl;
 import org.firstinspires.ftc.teamcode.drive.Direction;
+import org.firstinspires.ftc.teamcode.listener.UltroVuforia;
 
 //import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
@@ -56,6 +59,7 @@ public final class DeviceMap {
         setUpMotors(map);
         setUpImu(map);
         setUpVuforia(map);
+        initTfod(map);
 
     }
     /**
@@ -125,11 +129,10 @@ public final class DeviceMap {
         Context appContext = map.appContext;
         int cameraMonitorViewId = appContext.getResources().getIdentifier("cameraMonitorViewId", "id", appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-
-        parameters.vuforiaLicenseKey = "awefafwefwa";
+        parameters.vuforiaLicenseKey = "AXOOSnD/////AAAAGQJxEkkI+EqdsPLGvMTzmRoBoW5g1d+xB7S06ymDvyNs48WqxFYMIeVVTSdkgHLwjsFVHBgVACzNkxwNXQ5zO9ED9CS11B+/cDS7CAbFLYzTlbDsyeX/NaEIOBm9v4ErL7uM6xtTXoKFKyJiFJiRe3ux4A6MXRHrvnkGqaJ9fBle9B2OTuyOe62gv5PFuTvil1DSvBosIXQmTiHosTW39OBcR81+ykeJXeiUA8vwBp1ueAP+9eYTP0U6VWDwRm0dUJ+CbvVIriauyP6pWj7dnCufomc58E7GiJbsLEN+Uj3H7J1uJG3K6O8azwEc+8BKw8tTsEdg+lJ47CbsYR6fFFfHVwA3K193cnC5U/RmRnX0";
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
 
-        vuforia = ClassFactory.getInstance().createVuforia(parameters);
+        vuforia = new UltroVuforia(parameters);
     }
 
     public void initTfod(HardwareMap hardwareMap) {
@@ -147,9 +150,12 @@ public final class DeviceMap {
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_STONE, LABEL_SKYSTONE);
+        tfod.activate();
+    }
 
-
-
+    public void deactivateTfod() {
+        if(tfod != null)
+            tfod.deactivate();
     }
 
     //The methods below get all the driveMotors
@@ -203,6 +209,11 @@ public final class DeviceMap {
         if(INSTANCE == null && map != null) INSTANCE = new DeviceMap(map);
         return INSTANCE;
     }
+
+    public static Telemetry getTelemetry() {
+        return telemetry;
+    }
+
     public static void setTelemetry(Telemetry ttelemetry) {
         telemetry = ttelemetry;
     }

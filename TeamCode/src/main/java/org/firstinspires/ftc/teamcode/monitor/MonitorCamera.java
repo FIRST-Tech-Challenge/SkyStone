@@ -7,6 +7,7 @@ import com.vuforia.Frame;
 import com.vuforia.Image;
 import com.vuforia.PIXEL_FORMAT;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.teamcode.DeviceMap;
 import org.firstinspires.ftc.teamcode.listener.CameraListener;
@@ -16,34 +17,47 @@ import org.opencv.core.Mat;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class MonitorCamera implements IMonitor {
-    private static final List<CameraListener> listeners = new ArrayList<>();
-    private final ScheduledExecutorService executor;
+    private final List<CameraListener> listeners = new ArrayList<>();
+    private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
     private final VuforiaLocalizer vuforia;
-
+    private Telemetry telemetry;
     private static Image currentImage;
     private boolean started = false;
 
     public MonitorCamera(DeviceMap map) {
         this.vuforia = map.getVuforia();
-        this.executor = Executors.newScheduledThreadPool(4);
+        this.telemetry = DeviceMap.getTelemetry();
+        if(vuforia == null) throw new RuntimeException("Error!");
+        this.started = false;
+
+
     }
 
     public void addListener(CameraListener listener) {
         listener.setup();
         listeners.add(listener);
+        telemetry.addLine(listeners.size() + "LI SIZE");
     }
 
     @Override
     public void start() {
-        if(started) throw new RuntimeException("This method cannot be called twice! MonitorIMU:26");
+        if(started) return;//throw new RuntimeException("This method cannot be called twice! Camera:26");
         started = true;
 
-        this.executor.schedule(this, 25, TimeUnit.MILLISECONDS);
+        new Thread(() -> {
+            while(started) {
+                this.run();
+            }
+        }).start();
+        //executor.run
+        //this.executor.scheduleAtFixedRate(this, 0, 10, TimeUnit.MILLISECONDS);
     }
 
     @Override
@@ -58,12 +72,15 @@ public class MonitorCamera implements IMonitor {
 
     @Override
     public void run() {
+        RobotLog.d("UltroTag", "run monitor");
+        telemetry.addLine(Math.random() + "");
+        telemetry.addLine("-10");
         VuforiaLocalizer.CloseableFrame frame = null;
         try {
             frame = vuforia.getFrameQueue().take();
-            if(frame != null)
-                updateImage(frame);
-        }catch (InterruptedException|NullPointerException e) {
+            telemetry.addLine("-9");
+            updateImage(frame);
+        }catch (Exception e) {
             RobotLog.d(e.getMessage());
             e.printStackTrace();
         }finally {
@@ -72,14 +89,17 @@ public class MonitorCamera implements IMonitor {
         }
     }
 
-    private static void updateImage(VuforiaLocalizer.CloseableFrame frame) {
+    private void updateImage(VuforiaLocalizer.CloseableFrame frame) {
         long numImages = frame.getNumImages();
         for (int i = 0; i < numImages; i++) {
+            telemetry.addLine("-8");
             Image image = frame.getImage(i);
-            if(image == null) continue;
             if (image.getFormat() == PIXEL_FORMAT.RGB565) {
+                telemetry.addLine("-7");
                 currentImage = image;
                 convertMat(image);
+                telemetry.addLine("-6");
+                telemetry.update();
                 frame.close();
                 return;
             }
@@ -91,16 +111,26 @@ public class MonitorCamera implements IMonitor {
      * Thanks https://gist.github.com/zylom/7d7efa6ff44e9e69e12d8309476627f7
      * @param image
      */
-    private static void convertMat(Image image) {
-        Bitmap bm = Bitmap.createBitmap(image.getWidth(), image.getHeight(), Bitmap.Config.RGB_565);
-        bm.copyPixelsFromBuffer(image.getPixels());
+    private void convertMat(Image image)  {
+        try {
+            telemetry.addLine("0");
+            telemetry.addLine("1");
+            Bitmap bm = Bitmap.createBitmap(image.getWidth(), image.getHeight(), Bitmap.Config.RGB_565);
+            bm.copyPixelsFromBuffer(image.getPixels());
 
-        // construct an OpenCV mat from the bitmap using Utils.bitmapToMat()
-        Mat mat = new Mat(bm.getWidth(), bm.getHeight(), CvType.CV_8UC4);
-        Utils.bitmapToMat(bm, mat);
+            telemetry.addLine("1");
+            // construct an OpenCV mat from the bitmap using Utils.bitmapToMat()
+            Mat mat = new Mat(bm.getWidth(), bm.getHeight(), CvType.CV_8UC4);
+            Utils.bitmapToMat(bm, mat);
 
-        for(CameraListener cameraListener : listeners) {
-            cameraListener.process(image, mat);
+            telemetry.addData("listeners: ", listeners.size());
+            telemetry.update();
+            for (CameraListener cameraListener : listeners) {
+                cameraListener.process(image, mat);
+            }
+            throw new Exception("aawfawfaw");
+        }catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

@@ -61,6 +61,7 @@ import java.util.Locale;
  */
 
 public abstract class AutoOpMode extends LinearOpMode implements IActive {
+    protected final String TAG = "UltroTag";
     protected MecanumDriver driver;
 
     // Declare OpMode members.
@@ -77,7 +78,6 @@ public abstract class AutoOpMode extends LinearOpMode implements IActive {
 
         DeviceMap mapper = DeviceMap.getInstance(hardwareMap);
         setup(mapper);
-        MonitorManager.startAll(mapper);
         driver = new MecanumDriver();
         driver.setTelemetry(telemetry);
         telemetry.update();
@@ -85,6 +85,7 @@ public abstract class AutoOpMode extends LinearOpMode implements IActive {
 
     public void afterStop() {
         MonitorManager.stopAll();
+        DeviceMap.getInstance().deactivateTfod();
 
     }
 
@@ -94,6 +95,7 @@ public abstract class AutoOpMode extends LinearOpMode implements IActive {
      */
     public void setup(DeviceMap map) {
         map.setupAll(hardwareMap);
+        MonitorManager.startAll(map);
     }
 
     @Override

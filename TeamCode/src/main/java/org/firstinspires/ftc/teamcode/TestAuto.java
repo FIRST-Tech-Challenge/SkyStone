@@ -14,7 +14,7 @@ public class TestAuto extends AutoOpMode {
     public void preInit() {
         super.preInit();
         //if you're pro, do this
-        driver.setTest(false);
+        //driver.setTest(false);
     }
 
     @Override

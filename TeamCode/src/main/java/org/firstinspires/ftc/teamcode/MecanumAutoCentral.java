@@ -65,10 +65,6 @@ abstract class MecanumAutoCentral extends LinearOpMode {
 
         //Stop and return to normal mode
         setPower(0);
-        fL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        fR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        bL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        bR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     private void setPower(double power) {

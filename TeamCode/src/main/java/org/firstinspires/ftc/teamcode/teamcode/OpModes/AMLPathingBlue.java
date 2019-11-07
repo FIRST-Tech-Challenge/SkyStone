@@ -76,13 +76,7 @@ public class AMLPathingBlue extends LinearOpMode {
 
         clearance = (dicot - greatLength) / 2;
 
-        /*if(vuf.sense(this) == "left")
-            offset = -16;
-        else if(vuf.sense(this) == "right")
-            offset = 16;
-        else
-            offset = 0;
-*/
+
 
         waitForStart();
         if(vuf.senseBlue(this) == "left")
@@ -99,14 +93,23 @@ public class AMLPathingBlue extends LinearOpMode {
         //lift out
         outtake.rightVex.setPower(.5);
         outtake.leftVex.setPower(-.5);
-        sleep(5500);
+        sleep(5000);
         outtake.leftVex.setPower(0);
         outtake.rightVex.setPower(0);
 
-        drive.strafeMove(this, offset, 5, -.7);
+        drive.encoderDrive(this, -.7, -10, -10, 5);
+
+
+        if(offset == -20) {
+            drive.strafeMove(this, 20, 5, .5);
+        }
+        else if(offset == 20) {
+            drive.strafeMove(this, 20, 5, -.5);
+        }
+
 
         //drive to block
-        drive.encoderDrive(this, -.7, -50, -50, 5);
+        drive.encoderDrive(this, -.7, -40, -40, 5);
         //sleep(1000);
 
         //lift down
@@ -149,12 +152,12 @@ public class AMLPathingBlue extends LinearOpMode {
         outtake.lowerLiftAuto(this);
 
         //strafe to stone 2
-        drive.strafeMove(this, 144 - offset, 10, .8);
+        drive.strafeMove(this, 40, 10, .5);
         //drive.gyroTurn(this, 0, false, 4000);
 
 
 
-        //lift up
+       /* //lift up
         outtake.raiseLiftAuto(this);
 
         sleep(500);
@@ -183,7 +186,7 @@ public class AMLPathingBlue extends LinearOpMode {
 
         drive.strafeMove(this, 7 - offset, 10, 1);
 
-        /*//move back
+        *//*//*/ /*
         drive.encoderDrive(this, .5, 12, 12, 5);
     //    sleep(1000);
 
@@ -193,9 +196,9 @@ public class AMLPathingBlue extends LinearOpMode {
         //park
         drive.strafeMove(this, -24, 2, 5);
 
+
+
 */
-
-
 
         /*drive.encoderDrive(this, -.5, 24, 24, 2);
         drive.strafeMove(this, 24, 2, -.5); //hopefully left

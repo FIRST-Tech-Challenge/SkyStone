@@ -173,7 +173,7 @@ public class VisionWebcam {
 
 
             // scan 3 columns
-            for (int colNum = bitmap.getWidth() / 2; colNum > 0; colNum--) {
+            for (int colNum = bitmap.getWidth() / 2; colNum < bitmap.getWidth() ; colNum++) {
 
                 for (int rowNum = bitmap.getHeight()/2; rowNum < bitmap.getHeight(); rowNum++){
                     int pixel = bitmap.getPixel(colNum, rowNum);
@@ -183,13 +183,13 @@ public class VisionWebcam {
                     int greenPixel = green(pixel);
                     int bluePixel = blue(pixel);
 
-                    /*opMode.telemetry.addData("Red", redPixel);
+                   /* opMode.telemetry.addData("Red", redPixel);
                     opMode.telemetry.addData("Green", greenPixel);
                     opMode.telemetry.addData("Blue", bluePixel);
                     opMode.telemetry.update();*/
                     // only add x-coordinates of black pixels to list
 
-                    if (redPixel < 50 && greenPixel < 500 && bluePixel < 50) {
+                    if (bluePixel < 50) {
                         StoneX.add(colNum);
                     }
 

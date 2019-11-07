@@ -26,6 +26,17 @@ public class Pos1BluDepSd extends MecanumAutoCentral {
         waitForStart();
 
         drive(POWER, 61);
-        strafeLeft();
+        strafeRight(POWER, 11);
+        drive(POWER, -23);
+        strafeRight(POWER, 9);
+        drive(POWER, -11);
+        strafeLeft(POWER, 50);
+        strafeRight(POWER, 51);
+        drive(POWER, 17);
+        strafeRight(POWER, 8);
+        drive(POWER, -6);
+        strafeRight(POWER, 16);
+        drive(POWER, -12);
+        strafeLeft(POWER, 75);
     }
 }

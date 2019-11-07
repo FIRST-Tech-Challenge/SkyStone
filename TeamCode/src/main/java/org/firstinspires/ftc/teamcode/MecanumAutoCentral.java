@@ -37,7 +37,7 @@ abstract class MecanumAutoCentral extends LinearOpMode {
 
     void strafeRight(double power, double distance) {
         int ticks = distanceToTicks(distance * STRAFE_ADJUST);
-        driveTrain(power, -ticks, ticks, ticks, -ticks);
+        driveTrain(power, ticks, -ticks, -ticks, ticks);
     }
 
     void rotate(double power, double degree) {

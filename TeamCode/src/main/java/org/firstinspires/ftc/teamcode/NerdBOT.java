@@ -33,8 +33,10 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
@@ -66,8 +68,11 @@ public class NerdBOT{
    private DcMotor rightMotor;
    private DcMotor leftMotorB;
    private DcMotor rightMotorB;
+
    private TouchSensor touchLeft;
    private TouchSensor touchRight;
+
+
 
 
    private ElapsedTime runtime = new ElapsedTime();
@@ -145,6 +150,10 @@ public class NerdBOT{
 
         double [] motorPowers;
 
+        boolean touchEnabled = false;
+        boolean colorEnabled = false;
+
+
         //Reset the timer
         runtime.reset();
 
@@ -175,104 +184,65 @@ public class NerdBOT{
 
         if (debugFlag)
             RobotLog.d ("NerdBOT - opModeIsActive NOTCHECKED = %b, distanceTargetReached = %b",  this.opmode.opModeIsActive(), distanceTargetReached(xTicks,yTicks));
+        if(touchEnabledStop){
 
+             touchEnabled = true;
+        }else if(armColorSensorEnabledStop){
+            colorEnabled=true;
 
-        if(touchEnabledStop) {
-            //Perform PID Loop until we reach the targets
-//
-            while (this.opmode.opModeIsActive() && ((!distanceTargetReached(xTicks, yTicks) || (this.touchLeft.isPressed() && this.touchRight.isPressed())))) {
-
-                if (debugFlag)
-                    RobotLog.d("NerdBOT - opModeIsActive  Inside While Loop = %b, distanceTargetReached = %b", this.opmode.opModeIsActive(), distanceTargetReached(xTicks, yTicks));
-
-                //Feed the input device readings to corresponding PID calculators:
-
-                zpid = zPIDCalculator.getOutput(getZAngleValue(), GYRO);
-                xpid = xPIDCalculator.getOutput(findXDisplacement(), ENCODERS);
-                ypid = yPIDCalculator.getOutput(findYDisplacement(), ENCODERS);
-
-                if (debugFlag)
-                    RobotLog.d("NerdBOT XPID - %f, YPID - %f , ZPID - %f", xpid, ypid, zpid);
-
-                //Calculate Speeds based on Inverse Kinematics
-
-                leftSpeed = ypid - zpid + xpid;
-                rightSpeed = ypid + zpid - xpid;
-                leftSpeedB = ypid - zpid - xpid;
-                rightSpeedB = ypid + zpid + xpid;
-
-                if (debugFlag) {
-                    RobotLog.d("NerdBOT  - Speeds before Normalizing : %s |leftSpeed | rightSpeed | leftSpeedB | rightSpeedB ", funcName);
-                    RobotLog.d("NerdBOT  - Speeds before Normalizing : %s |%f|%f|%f|%f ", funcName, leftSpeed, rightSpeed, leftSpeedB, rightSpeedB);
-                }
-
-                //Normalize the Motor Speeds for Min and Max Values
-
-                motorPowers = normalizeSpeedsForMinMaxValues(leftSpeed, rightSpeed, rightSpeedB, leftSpeedB);
-
-                // Set Powers to corresponding Motors
-
-                leftMotor.setPower(motorPowers[0]);
-                rightMotor.setPower(motorPowers[1]);
-                rightMotorB.setPower(motorPowers[2]);
-                leftMotorB.setPower(motorPowers[3]);
-
-
-                if (debugFlag) {
-                    RobotLog.d("NerdBOT  - Speeds after Normalizing : %s |leftSpeed | rightSpeed | leftSpeedB | rightSpeedB ", funcName);
-                    RobotLog.d("NerdBOT  - Speeds after Normalizing : %s |%f|%f|%f|%f ", funcName, motorPowers[0], motorPowers[1], motorPowers[2], motorPowers[3]);
-                }
-
-            }
-        } else {
-            while (this.opmode.opModeIsActive() && ((!distanceTargetReached(xTicks, yTicks)))) {
-
-                if (debugFlag)
-                    RobotLog.d("NerdBOT - opModeIsActive  Inside While Loop = %b, distanceTargetReached = %b", this.opmode.opModeIsActive(), distanceTargetReached(xTicks, yTicks));
-
-                //Feed the input device readings to corresponding PID calculators:
-
-                zpid = zPIDCalculator.getOutput(getZAngleValue(), GYRO);
-                xpid = xPIDCalculator.getOutput(findXDisplacement(), ENCODERS);
-                ypid = yPIDCalculator.getOutput(findYDisplacement(), ENCODERS);
-
-                if (debugFlag)
-                    RobotLog.d("NerdBOT XPID - %f, YPID - %f , ZPID - %f", xpid, ypid, zpid);
-
-                //Calculate Speeds based on Inverse Kinematics
-
-                leftSpeed = ypid - zpid + xpid;
-                rightSpeed = ypid + zpid - xpid;
-                leftSpeedB = ypid - zpid - xpid;
-                rightSpeedB = ypid + zpid + xpid;
-
-                if (debugFlag) {
-                    RobotLog.d("NerdBOT  - Speeds before Normalizing : %s |leftSpeed | rightSpeed | leftSpeedB | rightSpeedB ", funcName);
-                    RobotLog.d("NerdBOT  - Speeds before Normalizing : %s |%f|%f|%f|%f ", funcName, leftSpeed, rightSpeed, leftSpeedB, rightSpeedB);
-                }
-
-                //Normalize the Motor Speeds for Min and Max Values
-
-                motorPowers = normalizeSpeedsForMinMaxValues(leftSpeed, rightSpeed, rightSpeedB, leftSpeedB);
-
-                // Set Powers to corresponding Motors
-
-                leftMotor.setPower(motorPowers[0]);
-                rightMotor.setPower(motorPowers[1]);
-                rightMotorB.setPower(motorPowers[2]);
-                leftMotorB.setPower(motorPowers[3]);
-
-
-                if (debugFlag) {
-                    RobotLog.d("NerdBOT  - Speeds after Normalizing : %s |leftSpeed | rightSpeed | leftSpeedB | rightSpeedB ", funcName);
-                    RobotLog.d("NerdBOT  - Speeds after Normalizing : %s |%f|%f|%f|%f ", funcName, motorPowers[0], motorPowers[1], motorPowers[2], motorPowers[3]);
-                }
-
-            }
-
+        }else if(touchEnabled && colorEnabled){
+            touchEnabled=false;
+            colorEnabled=true;
         }
 
-        //Brake once the PID loop is complete
+               //Perform PID Loop until we reach the targets
+//
+ //           while (this.opmode.opModeIsActive() && ((!distanceTargetReached(xTicks, yTicks) && (!this.touchLeft.isPressed() || !this.touchRight.isPressed())))) {
+            while (this.opmode.opModeIsActive() && ((!distanceTargetReached(xTicks, yTicks) && (!stopRequestedByTouchOrColorSensors(touchEnabled, colorEnabled))))) {
+
+                if (debugFlag)
+                    RobotLog.d("NerdBOT - opModeIsActive  Inside While Loop = %b, distanceTargetReached = %b", this.opmode.opModeIsActive(), distanceTargetReached(xTicks, yTicks));
+
+                //Feed the input device readings to corresponding PID calculators:
+
+                zpid = zPIDCalculator.getOutput(getZAngleValue(), GYRO);
+                xpid = xPIDCalculator.getOutput(findXDisplacement(), ENCODERS);
+                ypid = yPIDCalculator.getOutput(findYDisplacement(), ENCODERS);
+
+                if (debugFlag)
+                    RobotLog.d("NerdBOT XPID - %f, YPID - %f , ZPID - %f", xpid, ypid, zpid);
+
+                //Calculate Speeds based on Inverse Kinematics
+
+                leftSpeed = ypid - zpid + xpid;
+                rightSpeed = ypid + zpid - xpid;
+                leftSpeedB = ypid - zpid - xpid;
+                rightSpeedB = ypid + zpid + xpid;
+
+                if (debugFlag) {
+                    RobotLog.d("NerdBOT  - Speeds before Normalizing : %s |leftSpeed | rightSpeed | leftSpeedB | rightSpeedB ", funcName);
+                    RobotLog.d("NerdBOT  - Speeds before Normalizing : %s |%f|%f|%f|%f ", funcName, leftSpeed, rightSpeed, leftSpeedB, rightSpeedB);
+                }
+
+                //Normalize the Motor Speeds for Min and Max Values
+
+                motorPowers = normalizeSpeedsForMinMaxValues(leftSpeed, rightSpeed, rightSpeedB, leftSpeedB);
+
+                // Set Powers to corresponding Motors
+
+                leftMotor.setPower(motorPowers[0]);
+                rightMotor.setPower(motorPowers[1]);
+                rightMotorB.setPower(motorPowers[2]);
+                leftMotorB.setPower(motorPowers[3]);
+
+
+                if (debugFlag) {
+                    RobotLog.d("NerdBOT  - Speeds after Normalizing : %s |leftSpeed | rightSpeed | leftSpeedB | rightSpeedB ", funcName);
+                    RobotLog.d("NerdBOT  - Speeds after Normalizing : %s |%f|%f|%f|%f ", funcName, motorPowers[0], motorPowers[1], motorPowers[2], motorPowers[3]);
+                }
+
+            }
+       //Brake once the PID loop is complete
 
        brakeMotorsAndStop();
 
@@ -436,6 +406,8 @@ public class NerdBOT{
 
         this.touchLeft = this.hardwareMap.touchSensor.get("touchL");
         this.touchRight = this.hardwareMap.touchSensor.get("touchR");
+
+
 
 
     }
@@ -615,10 +587,29 @@ public class NerdBOT{
         this.debugFlag=debugFlag;
     }
 
+    public boolean stopRequestedByTouchOrColorSensors(boolean touchEnabled, boolean colorEnabled){
+        boolean sensorStopRequested = false;
+        if(touchEnabled){
+            sensorStopRequested = (this.touchLeft.isPressed() || this.touchRight.isPressed());
+
+        }
+
+        if(colorEnabled){
+
+        }
+
+        return sensorStopRequested;
+
+    }
+
+    public void nerdPidDrive(double speed, double xDistance,double yDistance, double zAngleToMaintain) {
+
+        nerdPidDrive(speed,xDistance,yDistance,zAngleToMaintain,false, false);
+
+    }
 
 
-
-}
+    }
 
 
 

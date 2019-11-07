@@ -91,7 +91,7 @@ public class NerdRedAllianceAutonOpMode extends LinearOpMode {
         //UNITS ARE IN INCHES
         if (debugFlag)
             RobotLog.d("NerdSampleOpMode - Run1");
-        myNerdBOT.nerdPidDrive( speed, X_DIRECTION*0.0, 10.0, 0.0, true, false);
+        myNerdBOT.nerdPidDrive( speed, X_DIRECTION*0.0, 10.0, 0.0);
         Skystone_Position = VFC.vuforia();
         telemetry.addData("Position Case",Skystone_Position );
         telemetry.update();
@@ -104,26 +104,26 @@ public class NerdRedAllianceAutonOpMode extends LinearOpMode {
 
 
         if (Skystone_Position == 3) {
-            myNerdBOT.nerdPidDrive(speed, X_DIRECTION*8.0, 13.5, 0.0, true, false);
+            myNerdBOT.nerdPidDrive(speed, X_DIRECTION*8.0, 13.5, 0.0, false, true);
             offset_x_run3 = 8.0;
             drop_2_offset = 0.0;
             //sleep(2000);
         }
         else if (Skystone_Position == 2 || Skystone_Position == 4) {
-            myNerdBOT.nerdPidDrive(speed, X_DIRECTION*0.0, 13.5, 0.0, true, false);
+            myNerdBOT.nerdPidDrive(speed, X_DIRECTION*0.0, 13.5, 0.0, false, true);
             offset_x_run3 = 0.0;
             drop_2_offset = 0.0;
             //sleep(2000);
         }
         else if (Skystone_Position == 1) {
-            myNerdBOT.nerdPidDrive(speed, X_DIRECTION*-7.0, 13.5, 0.0, true, false);
+            myNerdBOT.nerdPidDrive(speed, X_DIRECTION*-7.0, 13.5, 0.0, false, true);
             offset_x_run3 = -7.0;
             drop_2_offset = -8.0;
             //sleep(2000);
         }
         else
         {
-            myNerdBOT.nerdPidDrive(speed, X_DIRECTION*0.0, 13.5, 0.0, true, false);
+            myNerdBOT.nerdPidDrive(speed, X_DIRECTION*0.0, 13.5, 0.0, false, true);
             offset_x_run3 = 0.0;
 
         }
@@ -157,13 +157,13 @@ public class NerdRedAllianceAutonOpMode extends LinearOpMode {
 
 
 
-        myNerdBOT.nerdPidDrive(speed, X_DIRECTION*0.0, -2, 0, true, false);
+        myNerdBOT.nerdPidDrive(speed, X_DIRECTION*0.0, -2, 0);
 
         Arm.UseTheForce();
 
        // sleep(500);
 
-        myNerdBOT.nerdPidDrive(speed, X_DIRECTION*0.0, -34.0, 0, true, false);
+        myNerdBOT.nerdPidDrive(speed, X_DIRECTION*0.0, -34.0, 0);
 
         Arm.ArmLoop(-10,7, 0.5, 0.5);
 
@@ -171,17 +171,17 @@ public class NerdRedAllianceAutonOpMode extends LinearOpMode {
 
         myNerdBOT.setMinMaxSpeeds(0.0,0.7);
 
-        myNerdBOT.nerdPidDrive(speed, X_DIRECTION*24.0, 0.0, 0, true, false);
-        myNerdBOT.nerdPidDrive(speed, X_DIRECTION*19.0, 17.0, 0, true, false);
+        myNerdBOT.nerdPidDrive(speed, X_DIRECTION*24.0, 0.0, 0);
+        myNerdBOT.nerdPidDrive(speed, X_DIRECTION*19.0, 17.0, 0);
 
 
-        myNerdBOT.nerdPidDrive(speed, X_DIRECTION*63 + X_DIRECTION*drop_2_offset, 0.0, 0, true, false);
+        myNerdBOT.nerdPidDrive(speed, X_DIRECTION*63 + X_DIRECTION*drop_2_offset, 0.0, 0);
 
         Arm.ArmLoop(-135,7,0.5,0.5);
 
         myNerdBOT.setMinMaxSpeeds(0.0,0.3);
 
-        myNerdBOT.nerdPidDrive(speed, X_DIRECTION*0.0, 6.0, 0, true, false);
+        myNerdBOT.nerdPidDrive(speed, X_DIRECTION*0.0, 6.0, 0);
 
         myNerdBOT.setMinMaxSpeeds(0.0,0.5);
 
@@ -191,7 +191,7 @@ public class NerdRedAllianceAutonOpMode extends LinearOpMode {
 
 
         myNerdBOT.setMinMaxSpeeds(0.0,0.7);
-        myNerdBOT.nerdPidDrive(speed, X_DIRECTION*-57, -3.0, 0, true, false);
+        myNerdBOT.nerdPidDrive(speed, X_DIRECTION*-57, -3.0, 0);
         //myNerdBOT.setMinMaxSpeeds(0.0,0.7);
 
         myNerdBOT.nerdPidTurn(speed, 90);
@@ -202,7 +202,7 @@ public class NerdRedAllianceAutonOpMode extends LinearOpMode {
 
         Arm.ArmLoop(-10,7, 0.5, 0.5);
 
-        myNerdBOT.nerdPidDrive(speed, X_DIRECTION*3, -26, 90, true, false); //park
+        myNerdBOT.nerdPidDrive(speed, X_DIRECTION*3, -26, 90); //park
 
 
         if (debugFlag)

@@ -7,78 +7,94 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-abstract class MecanumAutoCentral extends LinearOpMode {
+public class MecanumAutoCentral {
 
     private static final double WHEEL_DIAMETER = (double) 4;
+
     private static final double DRIVE_TRAIN_LENGTH = 11.5;
     private static final double DRIVE_TRAIN_WIDTH = 15.5;
     private static final double DRIVE_TRAIN_DIAGONAL = sqrt(
             DRIVE_TRAIN_WIDTH * DRIVE_TRAIN_WIDTH + DRIVE_TRAIN_LENGTH * DRIVE_TRAIN_LENGTH);
+
     private static final int ENCODER_TICKS = 1120;
+
     private static final double GEAR_RATIO = (double) 2 / 1;
+
     private static final double DRIVE_ADJUST = 1.1776595745;
     private static final double STRAFE_ADJUST = 1.4545454525;
     private static final double ROTATE_ADJUST = 1.75;
-    double POWER = 0.7;
-    DcMotor fL = null;
-    DcMotor fR = null;
-    DcMotor bL = null;
-    DcMotor bR = null;
 
-    void drive(double power, double distance) {
+    public static double POWER = 0.7;
+
+    public static DcMotor fL = null;
+    public static DcMotor fR = null;
+    public static DcMotor bL = null;
+    public static DcMotor bR = null;
+
+    public static void forward(double power, double distance) {
         int ticks = distanceToTicks(distance * DRIVE_ADJUST);
         driveTrain(power, ticks, ticks, ticks, ticks);
     }
 
-    void strafeLeft(double power, double distance) {
+    public static void backward(double power, double distance) {
+        int ticks = distanceToTicks(distance * DRIVE_ADJUST);
+        driveTrain(power, -ticks, -ticks, -ticks, -ticks);
+    }
+
+    public static void strafeLeft(double power, double distance) {
         int ticks = distanceToTicks(distance * STRAFE_ADJUST);
         driveTrain(power, -ticks, ticks, ticks, -ticks);
     }
 
-    void strafeRight(double power, double distance) {
+    public static void strafeRight(double power, double distance) {
         int ticks = distanceToTicks(distance * STRAFE_ADJUST);
         driveTrain(power, ticks, -ticks, -ticks, ticks);
     }
 
-    void rotate(double power, double degree) {
+    public static void rotateLeft(double power, double degree) {
         int ticks = distanceToTicks((degree / 360) * (DRIVE_TRAIN_DIAGONAL * PI) * ROTATE_ADJUST);
         driveTrain(power, -ticks, ticks, -ticks, ticks);
     }
 
-    private void driveTrain(double power, int fLTicks, int fRTicks, int bLTicks, int bRTicks) {
+    public static void rotateRight(double power, double degree) {
+        int ticks = distanceToTicks((degree / 360) * (DRIVE_TRAIN_DIAGONAL * PI) * ROTATE_ADJUST);
+        driveTrain(power, ticks, -ticks, ticks, -ticks);
+    }
 
-        fL.setTargetPosition(fL.getCurrentPosition() + fLTicks);
-        fR.setTargetPosition(fR.getCurrentPosition() + fRTicks);
-        bL.setTargetPosition(bL.getCurrentPosition() + bLTicks);
-        bR.setTargetPosition(bR.getCurrentPosition() + bRTicks);
+    private static void driveTrain(double power, int fLTicks, int fRTicks, int bLTicks, int bRTicks) {
+
+        fL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        fR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        bL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        bR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         fL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         fR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         bL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         bR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+        fL.setTargetPosition(fLTicks);
+        fR.setTargetPosition(fRTicks);
+        bL.setTargetPosition(bLTicks);
+        bR.setTargetPosition(bRTicks);
+
         //Sign of power does not matter with RunToPosition
-        setPower(power);
+        fL.setPower(power);
+        fR.setPower(power);
+        bL.setPower(power);
+        bR.setPower(power);
 
         while (fL.isBusy() && fR.isBusy() && bL.isBusy() && bR.isBusy()) {
         }
 
         //Stop and return to normal mode
-        setPower(0);
-        fL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        fR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        bL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        bR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        fL.setPower(0);
+        fR.setPower(0);
+        bL.setPower(0);
+        bR.setPower(0);
     }
 
-    private void setPower(double power) {
-        fL.setPower(power);
-        fR.setPower(power);
-        bL.setPower(power);
-        bR.setPower(power);
-    }
-
-    private int distanceToTicks(double distance) {
+    public static int distanceToTicks(double distance) {
         return (int) ((distance / (WHEEL_DIAMETER * Math.PI) * ENCODER_TICKS) / GEAR_RATIO + 0.5);
     }
 

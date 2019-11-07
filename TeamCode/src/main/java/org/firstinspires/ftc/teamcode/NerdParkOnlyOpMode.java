@@ -86,7 +86,7 @@ public class NerdParkOnlyOpMode extends LinearOpMode {
         //UNITS ARE IN INCHES
         if (debugFlag)
             RobotLog.d("NerdSampleOpMode - Run1");
-        myNerdBOT.nerdPidDrive( speed, X_DISTANCE, Y_DISTANCE, Z_ANGLE);
+        myNerdBOT.nerdPidDrive( speed, X_DISTANCE, Y_DISTANCE, Z_ANGLE, true, false);
 
 
 

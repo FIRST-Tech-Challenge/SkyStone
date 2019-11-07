@@ -90,7 +90,7 @@ public class NerdBlueAllianceAutonOpMode extends LinearOpMode {
         //UNITS ARE IN INCHES
         if (debugFlag)
             RobotLog.d("NerdSampleOpMode - Run1");
-        myNerdBOT.nerdPidDrive( speed, 0.0, 10.0, 0.0);
+        myNerdBOT.nerdPidDrive( speed, 0.0, 10.0, 0.0, true, false);
         Skystone_Position = VFC.vuforia();
         telemetry.addData("Position Case",Skystone_Position );
         telemetry.update();
@@ -103,26 +103,26 @@ public class NerdBlueAllianceAutonOpMode extends LinearOpMode {
 
 
         if (Skystone_Position == 3) {
-            myNerdBOT.nerdPidDrive(speed, 8.0, 13.5, 0.0);
+            myNerdBOT.nerdPidDrive(speed, 8.0, 13.5, 0.0, true, false);
             offset_x_run3 = 8.0;
             drop_2_offset = 0.0;
             //sleep(2000);
         }
         else if (Skystone_Position == 2 || Skystone_Position == 4) {
-            myNerdBOT.nerdPidDrive(speed, 0.0, 13.5, 0.0);
+            myNerdBOT.nerdPidDrive(speed, 0.0, 13.5, 0.0, true, false);
             offset_x_run3 = 0.0;
             drop_2_offset = 0.0;
             //sleep(2000);
         }
         else if (Skystone_Position == 1) {
-            myNerdBOT.nerdPidDrive(speed, -7.0, 13.5, 0.0);
+            myNerdBOT.nerdPidDrive(speed, -7.0, 13.5, 0.0, true, false);
             offset_x_run3 = -7.0;
             drop_2_offset = -8.0;
             //sleep(2000);
         }
         else
         {
-            myNerdBOT.nerdPidDrive(speed, 0.0, 13.5, 0.0);
+            myNerdBOT.nerdPidDrive(speed, 0.0, 13.5, 0.0, true, false);
             offset_x_run3 = 0.0;
 
         }
@@ -137,7 +137,7 @@ public class NerdBlueAllianceAutonOpMode extends LinearOpMode {
 
         myNerdBOT.setMinMaxSpeeds(0.0,0.85); // Go faster when going longer distance.
         run3_x = (position_run3_x + offset_x_run3);
-        myNerdBOT.nerdPidDrive( speed, -run3_x, 0.0, 0.0);
+        myNerdBOT.nerdPidDrive( speed, -run3_x, 0.0, 0.0, true, false);
         myNerdBOT.setMinMaxSpeeds(0.0,0.5);
 
         if (debugFlag)
@@ -146,7 +146,7 @@ public class NerdBlueAllianceAutonOpMode extends LinearOpMode {
         myNerdBOT.setMinMaxSpeeds(0.0,0.4);
 
 
-        myNerdBOT.nerdPidDrive( speed, 0.0, 7.0, 0.0);
+        myNerdBOT.nerdPidDrive( speed, 0.0, 7.0, 0.0, true, false);
 
         myNerdBOT.setMinMaxSpeeds(0.0,0.4);
 
@@ -157,13 +157,13 @@ public class NerdBlueAllianceAutonOpMode extends LinearOpMode {
 
 
 
-        myNerdBOT.nerdPidDrive(speed, 0.0, -2, 0);
+        myNerdBOT.nerdPidDrive(speed, 0.0, -2, 0, true, false);
 
         Arm.UseTheForce();
 
        // sleep(500);
 
-        myNerdBOT.nerdPidDrive(speed, 0.0, -34.0, 0);
+        myNerdBOT.nerdPidDrive(speed, 0.0, -34.0, 0, true, false);
 
         Arm.ArmLoop(-10,7, 0.5, 0.5);
 
@@ -171,17 +171,17 @@ public class NerdBlueAllianceAutonOpMode extends LinearOpMode {
 
         myNerdBOT.setMinMaxSpeeds(0.0,0.7);
 
-        myNerdBOT.nerdPidDrive(speed, 24.0, 0.0, 0);
-        myNerdBOT.nerdPidDrive(speed, 19.0, 17.0, 0);
+        myNerdBOT.nerdPidDrive(speed, 24.0, 0.0, 0, true, false);
+        myNerdBOT.nerdPidDrive(speed, 19.0, 17.0, 0, true, false);
 
 
-        myNerdBOT.nerdPidDrive(speed, 63 + drop_2_offset, 0.0, 0);
+        myNerdBOT.nerdPidDrive(speed, 63 + drop_2_offset, 0.0, 0, true, false);
 
         Arm.ArmLoop(-135,7,0.5,0.5);
 
         myNerdBOT.setMinMaxSpeeds(0.0,0.4);
 
-        myNerdBOT.nerdPidDrive(speed, 0.0, 6.0, 0);
+        myNerdBOT.nerdPidDrive(speed, 0.0, 6.0, 0, true, false);
 
         myNerdBOT.setMinMaxSpeeds(0.0,0.5);
 
@@ -191,16 +191,16 @@ public class NerdBlueAllianceAutonOpMode extends LinearOpMode {
 
 
         myNerdBOT.setMinMaxSpeeds(0.0,0.7);
-        myNerdBOT.nerdPidDrive(speed, -57, -3.0, 0);
+        myNerdBOT.nerdPidDrive(speed, -57, -3.0, 0, true, false);
         //myNerdBOT.setMinMaxSpeeds(0.0,0.7);
 
         myNerdBOT.nerdPidTurn(speed, 90);
 
-        myNerdBOT.nerdPidDrive(speed, 0, 26, 90); //
+        myNerdBOT.nerdPidDrive(speed, 0, 26, 90, true, false); //
 
         Arm.ArmLoop(-135,100, 0.8, 0.6); // half-drop
 
-        myNerdBOT.nerdPidDrive(speed, 5, -26, 90); //park
+        myNerdBOT.nerdPidDrive(speed, 5, -26, 90, true, false); //park
 
 
         if (debugFlag)

@@ -22,8 +22,10 @@ public class Logger {
 
     public static void init() {
         try {
-            String timestamp = new SimpleDateFormat("MMMdd_HHmm", Locale.US).format(new Date());
+//            String timestamp = new SimpleDateFormat("MMMdd_HHmm", Locale.US).format(new Date());
+            String timestamp = new SimpleDateFormat("yyyyMMdd", Locale.US).format(new Date());
             File file = new File(Environment.getExternalStorageDirectory().getPath() + "/FIRST/driver_" + timestamp + ".txt");
+            //File file = new File("c:/Users/NBTeam/Desktop/profile.json");
 
             pw = new PrintWriter(new BufferedWriter(new FileWriter(file)));
         } catch(IOException e) {
@@ -43,9 +45,9 @@ public class Logger {
         }
     }
 
-    public static void flushToFile(BufferedWriter bw) throws IOException {
+    public static void flushToFile() {
         try {
-            bw.flush();
+            pw.flush();
         } catch(Exception e) {
             throw new RuntimeException("cannot flush");
         }

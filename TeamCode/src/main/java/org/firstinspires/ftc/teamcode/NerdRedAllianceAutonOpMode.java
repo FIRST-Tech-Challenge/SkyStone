@@ -126,7 +126,7 @@ public class NerdRedAllianceAutonOpMode extends LinearOpMode {
         {
             myNerdBOT.nerdPidDrive(speed, X_DIRECTION*0.0, 13.5, 0.0, false, false);
             offset_x_run3 = 0.0;
-
+            drop_2_offset = 2.0;
         }
 
 
@@ -189,9 +189,11 @@ public class NerdRedAllianceAutonOpMode extends LinearOpMode {
 
         myNerdBOT.setMinMaxSpeeds(0.0,0.5);
 
-        Arm.ArmLoop(-125,143, 0.5, 0.8);// put down the block
-        Arm.ArmLoop(-10,7, 0.8, 0.2);  // squeeze foundation and return front arm up
+//        Arm.ArmLoop(-125,143, 0.5, 0.8);// put down the block
+//        Arm.ArmLoop(-10,7, 0.8, 0.2);  // squeeze foundation and return front arm up
 
+        Arm.ArmLoop(-135,140, 0.5, 0.5);// put down the block
+        Arm.ArmLoop(-10,7, 0.6, 0.2);  // squeeze foundation and return front arm up
 
 
         myNerdBOT.setMinMaxSpeeds(0.0,0.7); //

@@ -30,7 +30,6 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.RobotLog;
-
 /**
  * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
  * the autonomous or the teleop period of an FTC match. The names of OpModes appear on the menu
@@ -127,14 +126,14 @@ public class NerdBlueAllianceAutonOpMode extends LinearOpMode {
         {
             myNerdBOT.nerdPidDrive(speed, X_DIRECTION*0.0, 13.5, 0.0, false, false);
             offset_x_run3 = 0.0;
-
+            drop_2_offset = 2.0;
         }
 
 
 
-          Arm.ArmLoop(-135,140, 0.5, 0.5); // grab 1
-          //sleep(500);
-           Arm.ArmLoop(-10,7, 0.6, 0.2); // home
+        Arm.ArmLoop(-135,140, 0.5, 0.5); // grab 1
+        //sleep(500);
+        Arm.ArmLoop(-10,7, 0.6, 0.2); // home
         if (debugFlag)
             RobotLog.d("NerdSampleOpMode - Run3");
 
@@ -166,7 +165,7 @@ public class NerdBlueAllianceAutonOpMode extends LinearOpMode {
 
         Arm.UseTheForce(); // put arm down at half force
 
-       // sleep(500);
+        // sleep(500);
 
         myNerdBOT.nerdPidDrive(speed, X_DIRECTION*0.0, -34.0, 0); // pull foundation
 
@@ -190,9 +189,11 @@ public class NerdBlueAllianceAutonOpMode extends LinearOpMode {
 
         myNerdBOT.setMinMaxSpeeds(0.0,0.5);
 
-        Arm.ArmLoop(-125,143, 0.5, 0.8);// put down the block
-        Arm.ArmLoop(-10,7, 0.8, 0.2);  // squeeze foundation and return front arm up
+//        Arm.ArmLoop(-125,143, 0.5, 0.8);// put down the block
+//        Arm.ArmLoop(-10,7, 0.8, 0.2);  // squeeze foundation and return front arm up
 
+        Arm.ArmLoop(-135,140, 0.5, 0.5);// put down the block
+        Arm.ArmLoop(-10,7, 0.6, 0.2);  // squeeze foundation and return front arm up
 
 
         myNerdBOT.setMinMaxSpeeds(0.0,0.7); //

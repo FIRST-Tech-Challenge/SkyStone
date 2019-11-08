@@ -39,7 +39,6 @@ import org.darbots.darbotsftclib.libcore.templates.other_sensors.RobotGyro;
 public abstract class RobotMotionSystemTask implements RobotNonBlockingDevice {
     private RobotMotionSystem m_MotionSystem;
     private boolean m_IsWorking;
-    private boolean m_UpdatePublicStartingAngleAfter = false;
     private boolean m_CustomSteadilySpeedUpEnabled = false;
     private double m_CustomSteadilySpeedUpStartingSpeed = 0.25;
     private double m_CustomSteadilySpeedUpEndingSpeed = 0.25;
@@ -53,7 +52,6 @@ public abstract class RobotMotionSystemTask implements RobotNonBlockingDevice {
     public RobotMotionSystemTask(@NonNull RobotMotionSystemTask Task){
         this.m_MotionSystem = Task.m_MotionSystem;
         this.m_IsWorking = false;
-        this.m_UpdatePublicStartingAngleAfter = Task.m_UpdatePublicStartingAngleAfter;
         this.m_CustomSteadilySpeedUpEnabled = Task.m_CustomSteadilySpeedUpEnabled;
         this.m_CustomSteadilySpeedUpStartingSpeed = Task.m_CustomSteadilySpeedUpStartingSpeed;
         this.m_CustomSteadilySpeedUpEndingSpeed = Task.m_CustomSteadilySpeedUpEndingSpeed;
@@ -73,11 +71,11 @@ public abstract class RobotMotionSystemTask implements RobotNonBlockingDevice {
         this.m_IsWorking = true;
         GlobalUtil.addLog("RobotMotionSystemTask","BeforeTask","", RobotLogger.LogLevel.DEBUG);
         GlobalUtil.addLog("RobotMotionSystemTask","TaskInfo",this.getTaskDetailString(), RobotLogger.LogLevel.DEBUG);
-        if((!this.getMotionSystem().isGyroGuidedDrivePublicStartingAngleEnabled()) && GlobalUtil.getGyro() != null){
+        if((!this.getMotionSystem().isGyroGuidedDriveEnabled()) && GlobalUtil.getGyro() != null){
             RobotGyro globalGyro = GlobalUtil.getGyro();
             globalGyro.updateStatus();
             this.m_GyroStartAng = globalGyro.getHeading();
-        } else if(this.getMotionSystem().isGyroGuidedDrivePublicStartingAngleEnabled()){
+        } else if(this.getMotionSystem().isGyroGuidedDriveEnabled()){
             this.m_GyroStartAng = this.getMotionSystem().getGyroGuidedDrivePublicStartingAngle();
         }
         this.__startTask();
@@ -91,16 +89,7 @@ public abstract class RobotMotionSystemTask implements RobotNonBlockingDevice {
         GlobalUtil.addLog("RobotMotionSystemTask","AfterTask","Task ends", RobotLogger.LogLevel.DEBUG);
         this.m_IsWorking = false;
         this.__taskFinished();
-        if(m_UpdatePublicStartingAngleAfter){
-            this.getMotionSystem().updateGyroGuidedPublicStartingAngle();
-        }
         this.m_MotionSystem.__checkTasks();
-    }
-    public boolean isUpdatePublicStartingAngleAfter(){
-        return this.m_UpdatePublicStartingAngleAfter;
-    }
-    public void setUpdatePublicStartingAngleAfterEnabled(boolean Enabled){
-        this.m_UpdatePublicStartingAngleAfter = Enabled;
     }
     @Override
     public boolean isBusy(){

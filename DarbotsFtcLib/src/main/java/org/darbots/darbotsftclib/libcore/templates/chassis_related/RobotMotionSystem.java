@@ -27,11 +27,11 @@ package org.darbots.darbotsftclib.libcore.templates.chassis_related;
 
 import android.support.annotation.NonNull;
 
-import org.darbots.darbotsftclib.libcore.calculations.dimentionalcalculation.Robot2DPositionTracker;
 import org.darbots.darbotsftclib.libcore.calculations.dimentionalcalculation.XYPlaneCalculations;
 import org.darbots.darbotsftclib.libcore.runtime.GlobalRegister;
 import org.darbots.darbotsftclib.libcore.runtime.GlobalUtil;
 import org.darbots.darbotsftclib.libcore.templates.RobotNonBlockingDevice;
+import org.darbots.darbotsftclib.libcore.templates.odometry.Robot2DPositionTracker;
 
 import java.util.ArrayList;
 
@@ -42,7 +42,6 @@ public abstract class RobotMotionSystem implements RobotNonBlockingDevice {
     private double m_LinearXMotionDistanceFactor;
     private double m_RotationalMotionDistanceFactor;
     private boolean m_FixedDistanceGyroGuidedDrive = false;
-    private boolean m_GyroGuidedDrivePublicStartingAngleEnabled = false;
     private float m_GyroGuidedDrivePublicStartingAngle = -360;
     private boolean m_SteadySpeedUp = true;
     private double m_SteadySpeedUpThreshold = 0.25;
@@ -60,7 +59,6 @@ public abstract class RobotMotionSystem implements RobotNonBlockingDevice {
         this.m_LinearXMotionDistanceFactor = MotionSystem.m_LinearXMotionDistanceFactor;
         this.m_RotationalMotionDistanceFactor = MotionSystem.m_RotationalMotionDistanceFactor;
         this.m_FixedDistanceGyroGuidedDrive = MotionSystem.m_FixedDistanceGyroGuidedDrive;
-        this.m_GyroGuidedDrivePublicStartingAngleEnabled = MotionSystem.m_GyroGuidedDrivePublicStartingAngleEnabled;
         this.m_GyroGuidedDrivePublicStartingAngle = MotionSystem.m_GyroGuidedDrivePublicStartingAngle;
         this.m_SteadySpeedUp = MotionSystem.m_SteadySpeedUp;
         this.m_SteadySpeedUpThreshold = MotionSystem.m_SteadySpeedUpThreshold;
@@ -197,14 +195,6 @@ public abstract class RobotMotionSystem implements RobotNonBlockingDevice {
 
     public void setGyroGuidedDriveEnabled(boolean Enabled){
         this.m_FixedDistanceGyroGuidedDrive = Enabled;
-    }
-
-    public boolean isGyroGuidedDrivePublicStartingAngleEnabled(){
-        return this.m_GyroGuidedDrivePublicStartingAngleEnabled;
-    }
-
-    public void setGyroGuidedDrivePublicStartingAngleEnabled(boolean Enabled){
-        this.m_GyroGuidedDrivePublicStartingAngleEnabled = Enabled;
         if(Enabled && GlobalUtil.getGyro() != null && this.m_GyroGuidedDrivePublicStartingAngle == -360){
             updateGyroGuidedPublicStartingAngle();
         }

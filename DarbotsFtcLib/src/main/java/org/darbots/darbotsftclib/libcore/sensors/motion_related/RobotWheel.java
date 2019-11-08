@@ -27,7 +27,6 @@ package org.darbots.darbotsftclib.libcore.sensors.motion_related;
 
 
 import org.darbots.darbotsftclib.libcore.calculations.dimentionalcalculation.Robot2DPositionIndicator;
-import org.darbots.darbotsftclib.libcore.calculations.dimentionalcalculation.Robot2DPositionTracker;
 
 public class RobotWheel {
     private double m_Radius;

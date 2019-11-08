@@ -30,7 +30,6 @@ public class Robot4100Generation1_BlueBuildSiteBasic extends DarbotsBasicOpMode<
     @Override
     public void RunThisOpMode() {
         this.getRobotCore().getChassis().setGyroGuidedDriveEnabled(true);
-        this.getRobotCore().getChassis().setGyroGuidedDrivePublicStartingAngleEnabled(true);
         this.getRobotCore().getChassis().updateGyroGuidedPublicStartingAngle();
 
         this.m_RobotCore.getChassis().replaceTask(

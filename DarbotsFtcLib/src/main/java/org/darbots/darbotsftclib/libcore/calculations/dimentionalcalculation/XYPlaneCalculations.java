@@ -6,16 +6,20 @@ public class XYPlaneCalculations {
     public static double[] rotatePointAroundFixedPoint_Deg(double[] point, double[] fixedPoint, double counterClockwiseAng) {
         double relativeY = point[1] - fixedPoint[1], relativeX = point[0] - fixedPoint[0];
         double deltaAng = Math.toRadians(counterClockwiseAng);
-        double newX = relativeX * Math.cos(deltaAng) - relativeY * Math.sin(deltaAng);
-        double newY = relativeX * Math.sin(deltaAng) + relativeY * Math.cos(deltaAng);
+        double sinDeltaAng = Math.sin(deltaAng);
+        double cosDeltaAng = Math.cos(deltaAng);
+        double newX = relativeX * cosDeltaAng - relativeY * sinDeltaAng;
+        double newY = relativeX * sinDeltaAng + relativeY * cosDeltaAng;
         double[] result = {newX + fixedPoint[0], newY + fixedPoint[1]};
         return result;
     }
     public static double[] rotatePointAroundFixedPoint_Rad(double[] point, double[] fixedPoint, double counterClockwiseAng){
         double relativeY = point[1] - fixedPoint[1], relativeX = point[0] - fixedPoint[0];
         double deltaAng = counterClockwiseAng;
-        double newX = relativeX * Math.cos(deltaAng) - relativeY * Math.sin(deltaAng);
-        double newY = relativeX * Math.sin(deltaAng) + relativeY * Math.cos(deltaAng);
+        double sinDeltaAng = Math.sin(deltaAng);
+        double cosDeltaAng = Math.cos(deltaAng);
+        double newX = relativeX * cosDeltaAng - relativeY * sinDeltaAng;
+        double newY = relativeX * sinDeltaAng + relativeY * cosDeltaAng;
         double[] result = {newX + fixedPoint[0], newY + fixedPoint[1]};
         return result;
     }
@@ -54,6 +58,32 @@ public class XYPlaneCalculations {
                 FTCRobotPosition.getX(),
                 FTCRobotPosition.getRotationY()+90
         );
+    }
+
+    public static Robot2DPositionIndicator getRelativePosition(Robot2DPositionIndicator PerspectiveOrigin, Robot2DPositionIndicator Target){
+        //First step - move the Perspective Origin to the Origin of the Axis.
+        double[] targetPoint = {Target.getX() - PerspectiveOrigin.getX(),Target.getZ() - PerspectiveOrigin.getZ()};
+        //Second step - rotate the targetPoint so that the coordinate system (X and Z scalars) of the Perspective Origin overlaps with the Field Coordinate.
+        //We are basically rotating field coordinate here.
+        double[] origin = {0,0};
+        double[] rotatedTargetPoint = rotatePointAroundFixedPoint_Deg(targetPoint,origin,-PerspectiveOrigin.getRotationY());
+        //Third step - calculate relative delta Rotation Y;
+        double deltaRotY = normalizeDeg(Target.getRotationY() - PerspectiveOrigin.getRotationY());
+
+        return new Robot2DPositionIndicator(rotatedTargetPoint[0],rotatedTargetPoint[1],deltaRotY);
+    }
+
+    public static Robot2DPositionIndicator getAbsolutePosition(Robot2DPositionIndicator PerspectiveOrigin, Robot2DPositionIndicator RelativePosition){
+        //First Step - calculate absolute Rotation Y.
+        double absRotY = normalizeDeg(RelativePosition.getRotationY() + PerspectiveOrigin.getRotationY());
+        //Second Step - rotate the coordinates back.
+        double[] origin = {0,0};
+        double[] relativeTargetPoint = {RelativePosition.getX(),RelativePosition.getZ()};
+        double[] rotatedTargetPoint = rotatePointAroundFixedPoint_Deg(relativeTargetPoint,origin,PerspectiveOrigin.getRotationY());
+        //Third Step - move the PerspectiveOrigin back to the Absolute Point on the Field.
+        double[] movedTargetPoint = {rotatedTargetPoint[0] + PerspectiveOrigin.getX(),rotatedTargetPoint[1] + PerspectiveOrigin.getZ()};
+
+        return new Robot2DPositionIndicator(movedTargetPoint[0],movedTargetPoint[1],absRotY);
     }
 
     public static double chooseAngleFromRange(double[] angleList, double angleSmallestRange, double angleBiggestRange) {

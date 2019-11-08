@@ -39,7 +39,6 @@ public class Robot4100Generation1_MovementTest extends DarbotsBasicOpMode<Robot4
         telemetry.addData("ChassisStatus",this.getChassisStatus());
         if(GlobalUtil.getGyro() != null) {
             this.m_RobotCore.getChassis().setGyroGuidedDriveEnabled(true);
-            this.m_RobotCore.getChassis().setGyroGuidedDrivePublicStartingAngleEnabled(true);
             this.m_RobotCore.getChassis().updateGyroGuidedPublicStartingAngle();
         }
         

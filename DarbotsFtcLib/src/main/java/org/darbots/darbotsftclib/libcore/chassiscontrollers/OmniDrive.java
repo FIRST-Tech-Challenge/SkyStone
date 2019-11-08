@@ -3,12 +3,7 @@ package org.darbots.darbotsftclib.libcore.chassiscontrollers;
 import com.qualcomm.robotcore.util.Range;
 
 import org.darbots.darbotsftclib.libcore.calculations.dimentionalcalculation.Robot2DPositionIndicator;
-import org.darbots.darbotsftclib.libcore.calculations.dimentionalcalculation.Robot2DPositionTracker;
-import org.darbots.darbotsftclib.libcore.calculations.dimentionalcalculation.XYPlaneCalculations;
-import org.darbots.darbotsftclib.libcore.runtime.GlobalUtil;
 import org.darbots.darbotsftclib.libcore.sensors.motion_related.RobotMotion;
-import org.darbots.darbotsftclib.libcore.sensors.motors.RobotMotorController;
-import org.darbots.darbotsftclib.libcore.tasks.motor_tasks.RobotFixCountSpeedCtlTask;
 import org.darbots.darbotsftclib.libcore.tasks.motor_tasks.RobotFixedSpeedTask;
 import org.darbots.darbotsftclib.libcore.templates.chassis_related.RobotMotionSystem;
 import org.darbots.darbotsftclib.libcore.templates.chassis_related.RobotMotionSystemFixedTurnTask;
@@ -16,8 +11,8 @@ import org.darbots.darbotsftclib.libcore.templates.chassis_related.RobotMotionSy
 import org.darbots.darbotsftclib.libcore.templates.chassis_related.RobotMotionSystemFixedZDistanceTask;
 import org.darbots.darbotsftclib.libcore.templates.chassis_related.RobotMotionSystemTeleOpControlTask;
 import org.darbots.darbotsftclib.libcore.templates.motor_related.RobotMotor;
-import org.darbots.darbotsftclib.libcore.templates.motor_related.RobotMotorTaskCallBack;
-import org.darbots.darbotsftclib.libcore.templates.other_sensors.RobotGyro;
+import org.darbots.darbotsftclib.libcore.templates.odometry.Robot2DPositionSoftwareTracker;
+import org.darbots.darbotsftclib.libcore.templates.odometry.Robot2DPositionTracker;
 
 public class OmniDrive extends RobotMotionSystem {
     public static class FixedXDistanceTask extends RobotMotionSystemFixedXDistanceTask{
@@ -78,12 +73,15 @@ public class OmniDrive extends RobotMotionSystem {
         @Override
         protected void __taskFinished() {
             if(this.m_Drive.getPositionTracker() != null) {
-                int CountsMoved = this.m_Drive.m_LeftTopMotor.getMotorController().getMotor().getCurrentCount() - this.m_LTStartCount;
-                double DistanceMoved = CountsMoved / m_Drive.m_LeftTopMotor.getMotorController().getMotor().getMotorType().getCountsPerRev() * m_Drive.m_LeftTopMotor.getRobotWheel().getCircumference() * m_Drive.m_LeftTopMotor.getRobotWheel().getXPerCounterClockwiseDistance() / m_Drive.getLinearXMotionDistanceFactor();
-                getMotionSystem().getPositionTracker().drive_MoveThroughRobotAngle(
-                        -90,
-                        DistanceMoved
-                );
+                if(this.m_Drive.getPositionTracker() instanceof Robot2DPositionSoftwareTracker) {
+                    Robot2DPositionSoftwareTracker softwareTracker = (Robot2DPositionSoftwareTracker) this.m_Drive.getPositionTracker();
+                    int CountsMoved = this.m_Drive.m_LeftTopMotor.getMotorController().getMotor().getCurrentCount() - this.m_LTStartCount;
+                    double DistanceMoved = CountsMoved / m_Drive.m_LeftTopMotor.getMotorController().getMotor().getMotorType().getCountsPerRev() * m_Drive.m_LeftTopMotor.getRobotWheel().getCircumference() * m_Drive.m_LeftTopMotor.getRobotWheel().getXPerCounterClockwiseDistance() / m_Drive.getLinearXMotionDistanceFactor();
+                    softwareTracker.drive_MoveThroughRobotAngle(
+                            -90,
+                            DistanceMoved
+                    );
+                }
             }
         }
 
@@ -207,12 +205,15 @@ public class OmniDrive extends RobotMotionSystem {
         @Override
         protected void __taskFinished() {
             if(this.m_Drive.getPositionTracker() != null) {
-                int CountsMoved = this.m_Drive.m_LeftTopMotor.getMotorController().getMotor().getCurrentCount() - this.m_LTStartCount;
-                double DistanceMoved = CountsMoved / m_Drive.m_LeftTopMotor.getMotorController().getMotor().getMotorType().getCountsPerRev() * m_Drive.m_LeftTopMotor.getRobotWheel().getCircumference() * m_Drive.m_LeftTopMotor.getRobotWheel().getZPerCounterClockwiseDistance() / m_Drive.getLinearZMotionDistanceFactor();
-                getMotionSystem().getPositionTracker().drive_MoveThroughRobotAngle(
-                        0,
-                        DistanceMoved
-                );
+                if(this.m_Drive.getPositionTracker() instanceof Robot2DPositionSoftwareTracker) {
+                    Robot2DPositionSoftwareTracker softwareTracker = (Robot2DPositionSoftwareTracker) this.m_Drive.getPositionTracker();
+                    int CountsMoved = this.m_Drive.m_LeftTopMotor.getMotorController().getMotor().getCurrentCount() - this.m_LTStartCount;
+                    double DistanceMoved = CountsMoved / m_Drive.m_LeftTopMotor.getMotorController().getMotor().getMotorType().getCountsPerRev() * m_Drive.m_LeftTopMotor.getRobotWheel().getCircumference() * m_Drive.m_LeftTopMotor.getRobotWheel().getZPerCounterClockwiseDistance() / m_Drive.getLinearZMotionDistanceFactor();
+                    softwareTracker.drive_MoveThroughRobotAngle(
+                            0,
+                            DistanceMoved
+                    );
+                }
             }
         }
 
@@ -337,13 +338,15 @@ public class OmniDrive extends RobotMotionSystem {
         @Override
         protected void __taskFinished() {
             if(this.m_Drive.getPositionTracker() != null) {
-                int CountsMoved = this.m_Drive.m_LeftTopMotor.getMotorController().getMotor().getCurrentCount() - this.m_LTStartCount;
-                double DistanceMoved = CountsMoved / m_Drive.m_LeftTopMotor.getMotorController().getMotor().getMotorType().getCountsPerRev() * m_Drive.m_LeftTopMotor.getRobotWheel().getCircumference() / m_Drive.getRotationalMotionDistanceFactor();
-                getMotionSystem().getPositionTracker().drive_RotateAroundRobotPointWithRadiusAndPowerPoint(
-                        new Robot2DPositionIndicator(0,0,0),
-                        m_Drive.m_LeftTopMotor.getRobotWheel().getDistanceFromCenterOfRobot(),
-                        DistanceMoved
-                );
+                if(this.m_Drive.getPositionTracker() instanceof Robot2DPositionSoftwareTracker) {
+                    Robot2DPositionSoftwareTracker softwareTracker = (Robot2DPositionSoftwareTracker) this.m_Drive.getPositionTracker();
+                    int CountsMoved = this.m_Drive.m_LeftTopMotor.getMotorController().getMotor().getCurrentCount() - this.m_LTStartCount;
+                    double DistanceMoved = CountsMoved / m_Drive.m_LeftTopMotor.getMotorController().getMotor().getMotorType().getCountsPerRev() * m_Drive.m_LeftTopMotor.getRobotWheel().getCircumference() / m_Drive.getRotationalMotionDistanceFactor();
+                    softwareTracker.drive_RotateAroundRobotOriginWithRadius(
+                            m_Drive.m_LeftTopMotor.getRobotWheel().getDistanceFromCenterOfRobot(),
+                            DistanceMoved
+                    );
+                }
             }
         }
 

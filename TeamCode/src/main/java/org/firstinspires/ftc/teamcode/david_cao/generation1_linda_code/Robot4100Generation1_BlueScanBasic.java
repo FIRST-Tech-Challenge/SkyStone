@@ -38,7 +38,6 @@ public class Robot4100Generation1_BlueScanBasic extends DarbotsBasicOpMode<Robot
     @Override
     public void RunThisOpMode() {
         this.getRobotCore().getChassis().setGyroGuidedDriveEnabled(true);
-        this.getRobotCore().getChassis().setGyroGuidedDrivePublicStartingAngleEnabled(true);
         this.getRobotCore().getChassis().updateGyroGuidedPublicStartingAngle();
 
         this.m_Navigation.setActivated(true);

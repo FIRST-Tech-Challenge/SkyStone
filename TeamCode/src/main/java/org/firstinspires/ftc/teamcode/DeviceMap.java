@@ -39,6 +39,7 @@ public final class DeviceMap {
     private DcMotor[] allMotors;
 
     private Servo leftAuto, rightAuto, leftBat, rightBat;
+    private Servo[] servos;
 
     private BNO055IMUImpl imu;
     private UltroVuforia vuforia;
@@ -46,7 +47,10 @@ public final class DeviceMap {
     private OpenCvCamera camera;
 
     private ColorSensor sensorColorLeft, sensorColorRight;
+    private ColorSensor[] colorSensors;
+
     private DistanceSensor sensorDistanceLeft, sensorDistanceRight;
+    private DistanceSensor[] distanceSensors;
 
     public DeviceMap(final HardwareMap map) {
         //for later
@@ -118,6 +122,10 @@ public final class DeviceMap {
         rightAuto = map.get(Servo.class, "RightAuto");
         leftBat = map.get(Servo.class, "LeftBat");
         rightBat = map.get(Servo.class, "RightBat");
+
+        this.servos =  new Servo[]{
+                leftAuto, rightAuto, leftBat, rightBat
+        };
     }
 
     public void sensorInit(HardwareMap map){
@@ -128,6 +136,14 @@ public final class DeviceMap {
         sensorColorRight = map.get(ColorSensor.class, "ColorRight");
         sensorDistanceLeft = map.get(DistanceSensor.class, "DistanceLeft");
         sensorDistanceRight = map.get(DistanceSensor.class, "DistanceRight");
+
+        this.colorSensors = new ColorSensor[] {
+                sensorColorLeft, sensorColorRight
+        };
+
+        this.distanceSensors = new DistanceSensor[] {
+                sensorDistanceLeft, sensorDistanceRight
+        };
 
     }
     public /*CompletableFuture<Void>*/void setUpImu(HardwareMap map) {
@@ -231,33 +247,40 @@ public final class DeviceMap {
     public Servo getLeftAuto(){
         return leftAuto;
     }
-
     public Servo getRightAuto(){
         return rightAuto;
     }
-
     public Servo getLeftBat(){
         return leftBat;
     }
-
     public Servo getRightBat(){
         return rightBat;
+    }
+
+    public Servo[] getServos() {
+        return servos;
     }
 
     public ColorSensor getSensorColorLeft(){
         return sensorColorLeft;
     }
-
     public ColorSensor getSensorColorRight(){
         return sensorColorRight;
+    }
+
+    public ColorSensor[] getColorSensors() {
+        return colorSensors;
     }
 
     public DistanceSensor getSensorDistanceLeft(){
         return sensorDistanceLeft;
     }
-
     public DistanceSensor getSensorDistanceRight(){
         return sensorDistanceRight;
+    }
+
+    public DistanceSensor[] getDistanceSensors() {
+        return distanceSensors;
     }
 
     public DcMotor[] getIntakeMotors() {

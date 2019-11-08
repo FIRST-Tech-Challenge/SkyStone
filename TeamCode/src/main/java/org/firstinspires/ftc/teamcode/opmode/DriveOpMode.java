@@ -34,6 +34,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -68,6 +69,9 @@ public abstract class DriveOpMode extends OpMode {
         DeviceMap.setTelemetry(telemetry);
         DeviceMap mapper = DeviceMap.getInstance(hardwareMap);
         mapper.setUpMotors(hardwareMap);
+        mapper.servoInit(hardwareMap);
+
+
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
@@ -111,11 +115,28 @@ public abstract class DriveOpMode extends OpMode {
         driver.move(x, y, right_stick_x);
 
         driver.intake(gamepad2.left_stick_y, gamepad2.right_stick_y);
-        driver.conveyer(gamepad2.right_trigger);
+        driver.conveyer(-gamepad2.right_trigger);
+
+        Servo left = map.getLeftAuto();
+        if(gamepad1.a) {
+            left.setPosition(left.getPosition() + 0.1);
+        }
+        if(gamepad1.x) {
+            left.setPosition(left.getPosition() - 0.1);
+        }
+
+        Servo right = map.getRightAuto();
+        if(gamepad1.b) {
+            right.setPosition(right.getPosition() + 0.1);
+        }
+
+        if(gamepad1.y) {
+            right.setPosition(right.getPosition() - 0.1);
+        }
 
         if(gamepad1.dpad_left){
             driver.autoArm(0, 1);
-        } else {
+        } else if(gamepad1.dpad_right){
             driver.autoArm(0.5, 0.5);
         }
 

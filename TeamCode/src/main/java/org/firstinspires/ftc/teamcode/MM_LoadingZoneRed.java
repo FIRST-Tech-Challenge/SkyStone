@@ -17,14 +17,16 @@ public class MM_LoadingZoneRed extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         robot.init(hardwareMap);
 
-        // Detect skystone with camera
-        int position = robot.detectSkystone(this);
-        if (position == -1) {
-            skystonePos = Skystone.LEFT;
-        } else if (position == 0) {
-            skystonePos = Skystone.CENTER;
-        } else {
-            skystonePos = Skystone.RIGHT;
+        for (int i = 0; i < 100; i++) {
+            // Detect skystone with camera
+            int position = robot.detectSkystone(this);
+            if (position == -1) {
+                skystonePos = Skystone.LEFT;
+            } else if (position == 0) {
+                skystonePos = Skystone.CENTER;
+            } else {
+                skystonePos = Skystone.RIGHT;
+            }
         }
 
         // wait for start

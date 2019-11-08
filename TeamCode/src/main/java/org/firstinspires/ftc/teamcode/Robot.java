@@ -7,8 +7,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import java.lang.Thread;
-
 // THIS IS NOT AN OPMODE - IT IS A DEFINING CLASS
 
 public class Robot {
@@ -204,7 +202,7 @@ public class Robot {
         }
 
         this.waffleMover.setPower(this.wafflePower * this.wafflePosition);
-        Thread.sleep(750);
+        Thread.sleep(600);
         this.waffleMover.setPower(0);
 
         this.wafflePosition *= -1;

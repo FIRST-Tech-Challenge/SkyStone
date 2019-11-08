@@ -21,7 +21,7 @@ public class WebcamTest {
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
-    private static final double MIN_CONFIDENCE = 0.8;
+    private static final double MIN_CONFIDENCE = 0.6;
     private static final int NUM_BLOCKS = 3;
     int cameraMonitorViewId;
 
@@ -138,6 +138,13 @@ public class WebcamTest {
     public void init(HardwareMap ahwmap) {
         HardwareMap hwMap = ahwmap;
         this.cameraMonitorViewId = hwMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hwMap.appContext.getPackageName());
+        // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
+        // first.
+        initVuforia(hwMap);
+
+        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
+            initTfod(hwMap);
+        } else { }
     }
 
     private void InsertionSort(float[] arr)
@@ -185,19 +192,6 @@ public class WebcamTest {
         return pos;
     }
 
-    /* Functions for robot driving stuff*/
-    private void goLeft() {
-        // Stuff to do if skystone is on left side
-    }
-
-    private void goCenter() {
-        // Stuff to do if skystone is in the center
-    }
-
-    private void goRight() {
-        // Stuff to do if skystone is on right side
-    }
-
     /*
      * Initialize the Vuforia localization engine.
      */
@@ -229,20 +223,14 @@ public class WebcamTest {
     }
 
     public int detectSkystonePosition(LinearOpMode opmode) {
-        // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
-        // first.
-        initVuforia(opmode.hardwareMap);
 
-        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
-            initTfod(opmode.hardwareMap);
-        } else {
-            return 0; // default is center
-        }
+        this.init(opmode.hardwareMap);
 
         /*
          * Activate TensorFlow Object Detection before we wait for the start command.
          * Do it here so that the Camera Stream window will have the TensorFlow annotations visible.
          */
+
         if (tfod != null) {
             tfod.activate();
             // getUpdatedRecognitions() will return null if no new information is available since

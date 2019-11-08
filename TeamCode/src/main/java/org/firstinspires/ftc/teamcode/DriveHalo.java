@@ -14,9 +14,7 @@ public class DriveHalo extends OpMode {
     private double speedControl = 0.5; // to make the robot go slower since we use Orbital 20s
     private double compensation = 1; // compensation so the robot can move forward AND turn while both joysticks are used
     private float deadZone = 0.1f; // joystick deadzone
-    private boolean buttonPressed = false;
     private boolean armClosed = false;
-    private double wristPosition = 0;
     boolean slowMode = false; // activate slowMode if both joysticks are pushed down
     boolean strafeMode = false;
     Boolean[] buttons = new Boolean[7];
@@ -80,11 +78,11 @@ public class DriveHalo extends OpMode {
             }
         } if (robot.armPos == Robot.armPosition.ACTIVE) {
             if (gamepad2.left_stick_y < 0) {
-                robot.setArmRotatePower(-0.45);
+                robot.setArmRotatePower(1);
             } else if (gamepad2.left_stick_y > 0) {
-                robot.setArmRotatePower(-0.35);
+                robot.setArmRotatePower(-1);
             } else if (gamepad2.left_stick_y == 0) {
-                robot.setArmRotatePower(-0.4);
+                robot.setArmRotatePower(0);
             }
         }
 
@@ -128,7 +126,7 @@ public class DriveHalo extends OpMode {
             double turn = 0.5 * speedControl * gamepad1.right_stick_x; // turn
             double leftPower = Range.clip(drive + turn + compensation * turn, -1, 1);
             double rightPower = Range.clip(drive - turn - compensation * turn, -1, 1);
-            robot.rearLeft.setPower(leftPower);
+            robot.rearLeft.setPower(leftPower); // assign powers to motors
             robot.frontLeft.setPower(leftPower);
             robot.rearRight.setPower(rightPower);
             robot.frontRight.setPower(rightPower);

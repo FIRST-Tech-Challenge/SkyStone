@@ -71,6 +71,7 @@ public class NerdBOT{
 
    private TouchSensor touchLeft;
    private TouchSensor touchRight;
+   private TouchSensor touchBack;
 
 
 
@@ -406,7 +407,7 @@ public class NerdBOT{
 
         this.touchLeft = this.hardwareMap.touchSensor.get("touchL");
         this.touchRight = this.hardwareMap.touchSensor.get("touchR");
-
+        this.touchBack = this.hardwareMap.touchSensor.get("touchB");
 
 
 
@@ -590,7 +591,7 @@ public class NerdBOT{
     public boolean stopRequestedByTouchOrColorSensors(boolean touchEnabled, boolean colorEnabled){
         boolean sensorStopRequested = false;
         if(touchEnabled){
-            sensorStopRequested = (this.touchLeft.isPressed() || this.touchRight.isPressed());
+            sensorStopRequested = (this.touchLeft.isPressed() || this.touchRight.isPressed() || this.touchBack.isPressed());
 
         }
 
@@ -610,6 +611,26 @@ public class NerdBOT{
 
 
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

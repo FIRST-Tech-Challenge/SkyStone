@@ -52,10 +52,10 @@ public class Cleopatra12820TeleOp extends LinearOpMode {
     // public static final double INCREMENT=0.01;     // amount to slew servo each CYCLE_MS cycle
     public static final int CYCLE_MS = 50;     // period of each cycle
     public static final double MID_SERVO = 0.5;
-    /* public static final double ARM_UP_POWER    =  0.45 ;
+    public static final double ARM_UP_POWER    =  0.45 ;
      public static final double ARM_DOWN_POWER  = -0.45 ;
      public static final double ELBOW_UP_POWER    =  0.45 ;
-     public static final double ELBOW_DOWN_POWER  = -0.45 ;*/
+     public static final double ELBOW_DOWN_POWER  = -0.45 ;
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
     double position = MID_SERVO;// Start at halfway position
@@ -150,8 +150,8 @@ public class Cleopatra12820TeleOp extends LinearOpMode {
             double numBl = Range.clip((+Speed + Turn + Strafe), -1, 1);
             double numFr = Range.clip((+Speed - Turn + Strafe), -1, +1);
             double numBr = Range.clip((+Speed - Turn - Strafe), -1, 1);
-            double armElbowPower = Range.clip(0.5 * gamepad2.left_stick_y, -1, 1);
-            double armWristPower = Range.clip(gamepad2.right_stick_y, -1, 1);
+            double armElbowPower = Range.clip(0.5*gamepad2.left_stick_y, -1, 1);
+            double armWristPower = Range.clip(2 *gamepad2.right_stick_y, -1, 1);
 
             armWrist.setPower(armWristPower);
             armElbow.setPower(armElbowPower);

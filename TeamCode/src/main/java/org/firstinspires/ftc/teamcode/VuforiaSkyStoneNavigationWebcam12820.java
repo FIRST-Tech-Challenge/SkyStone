@@ -82,8 +82,8 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  * is explained below.
  */
 
-@TeleOp(name="SKYSTONE Vuforia Nav Webcam", group ="Concept")
-@Disabled
+@TeleOp(name="Vuforia Nav", group ="Concept")
+// @Disabled
 public class VuforiaSkyStoneNavigationWebcam12820 extends LinearOpMode {
 
     // IMPORTANT: If you are using a USB WebCam, you must select CAMERA_CHOICE = BACK; and PHONE_IS_PORTRAIT = false;
@@ -103,7 +103,7 @@ public class VuforiaSkyStoneNavigationWebcam12820 extends LinearOpMode {
      * and paste it in to your code on the next line, between the double quotes.
      */
     private static final String VUFORIA_KEY =
-            " AZ7AcNj/////AAABmdKSAUs6jUbsp930wtIqmTIRxjvnBoJicMSGMSRBRbhQXiAWgOguLnfnmd4VY/dCrYjng3gsv1I5Ay+eqb/l35mf6A2IuMtk67j2418iymTvTLGolY0+WhbIGrOwoF8GEjnqqn0fGDSZQGJbrpIKvNvDyj87SiV7cqDvtpyKzU8IqmlPzxSq8S5+opn6ai7Rl3w6P/uDSIThMYNi9Eb/BelfNf/OjToOO5JXqx4muxjz8wJbGSIC++GYHjoPPn+oPSEvHEKaLMIy43JsTMC1lilc8XK2JBnUjQf+b7rmphbz8kMwI6Kr6rv/ubUkvwIor2lBKw7SPeGIawSWBoVdVncDgyUylbWBmh5RHIx1g2nX ";
+            " Abhg0uD/////AAABmY26d2nlY0Hmptt0cQ/Ros4OL3zWSe0yB6zr8WuTqEvE/K9IgpgHArL+IxI5hb23LlUKkh5sx6XPbxX+Z6yg/jAIlHKYPrLqVgM8efHoio7dx5E8EfTyNmNaa83pY4beZ4MySDc3lB7CXjoScgP1+pVEujlo1nGp3nx61E3oVegAymgyZdfAtIjJgs8/OmeXKDXxOaYZcSN/ww99IkGFwSIA02mX8pdIUXr0DtCVKLsqq5v4sNoRsc4udSDr+Y+3eyDuMGCQDlHoiN5yPHyPiIBG1Urko8/Pnq1fl9VmBVg6l/pRJ2H6KfyNmFnt2ceoFIAFopWuV8Tc8VaSKC5n95PjYda6pOpbH8jQjMr/sEns";
 
     // Since ImageTarget trackables use mm to specifiy their dimensions, we must use mm for all the physical dimension.
     // We will define some constants and conversions here
@@ -143,7 +143,7 @@ public class VuforiaSkyStoneNavigationWebcam12820 extends LinearOpMode {
         /*
          * Retrieve the camera we are to use.
          */
-        webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
+        webcamName = hardwareMap.get(WebcamName.class, "Webcam");
 
         /*
          * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.

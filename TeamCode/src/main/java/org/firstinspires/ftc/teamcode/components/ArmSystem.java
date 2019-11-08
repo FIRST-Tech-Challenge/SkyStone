@@ -91,6 +91,7 @@ public class ArmSystem {
         GRIPPER, WRIST, ELBOW, PIVOT
     }
 
+    public static String toReturn = "";
     public static final String TAG = "ArmSystem"; // for debugging
 
     /*
@@ -144,7 +145,7 @@ public class ArmSystem {
             // We don't want Teddy to screw with the arm while it's going home and have it break
             return "";
         }
-        this.SERVO_SPEED = sliderSpeed;
+        this.SERVO_SPEED = armSpeed;
 
         if (west) {
             movePresetPosition(Position.POSITION_WEST);
@@ -167,7 +168,7 @@ public class ArmSystem {
                 m_up = false;
             }
 
-            if (down) {
+            if (down && m_down) {
                 setSliderHeight(--targetHeight);
                 m_down = true;
             } else if (!down) {
@@ -190,8 +191,29 @@ public class ArmSystem {
         } else if (!gripperButton) {
             m_gripper = false;
         }
-        return Integer.toString(getSliderPos()) + "\n" + Integer.toString(calculateHeight(targetHeight));
+        String temp = toReturn;
+        toReturn = "";
+        return temp;
     }
+
+    /*
+    // You can thank me later Adrian
+    // Returns true when done, although this should probably be changed because idrk how state
+    // machines work
+    private enum autoState {
+        GO_HOME, CLOSE_GRIPPER, GO_UP, GO_DOWN, DROP
+    }
+    private autoState m_currState = autoState.CLOSE_GRIPPER;
+    public boolean runAuto(Position position) {
+        switch(m_currState) {
+            case GO_HOME:
+                m_currState = autoState.OPEN_GRIPPER;
+                break;
+            case OPEN_GRIPPER:
+                m_currState = autoState.GO_UP
+        }
+    }
+*/
 
     private void moveGripper(double pos) {
         gripper.setPosition(pos);
@@ -256,15 +278,15 @@ public class ArmSystem {
 
     }
 
-    public void openGripper() {
+    private void openGripper() {
         moveGripper(GRIPPER_OPEN);
     }
 
-    public void closeGripper() {
+    private void closeGripper() {
         moveGripper(GRIPPER_CLOSE);
     }
 
-    public void toggleGripper() {
+    private void toggleGripper() {
         if (Math.abs(gripper.getPosition() - GRIPPER_CLOSE)
                 < Math.abs(gripper.getPosition() - GRIPPER_OPEN)) {
             // If we're in here, the gripper is closer to it's closed position
@@ -409,8 +431,11 @@ public class ArmSystem {
         slider.setPower(speed);
         slider.setTargetPosition(calculateHeight(targetHeight));
         updateServo(elbow, elbowTarget);
+        toReturn += elbowTarget +"\n";
         updateServo(pivot, pivotTarget);
+        toReturn += pivotTarget + "\n";
         updateServo(wrist, wristTarget);
+        toReturn += wristTarget + "\n";
     }
 
     private void updateServo(Servo servo, double pos) {

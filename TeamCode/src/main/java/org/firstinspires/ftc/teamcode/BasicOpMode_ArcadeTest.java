@@ -53,7 +53,7 @@ import java.lang.Math;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Basic: Arcade OpMode", group="Iterative Opmode")
+@TeleOp(name="Basic: Arcade Mecanum OpMode", group="Iterative Opmode")
 public class BasicOpMode_ArcadeTest extends OpMode {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -74,6 +74,10 @@ public class BasicOpMode_ArcadeTest extends OpMode {
     int servoPosition2 = 0;
 
     int vacuumPower = 0;
+
+    boolean vStart = false;
+    boolean vPressed = false;
+    boolean vPause = false;
 
     /*
     3 * Code to run ONCE when the driver hits INIT
@@ -142,6 +146,22 @@ public class BasicOpMode_ArcadeTest extends OpMode {
 
         double angle = Math.atan((leftStickY) / (leftStickX));
 
+        /*if(vPause == false){
+            if(gamepad2.x && vStart == false && vPressed == false){
+                vStart = true;
+                vPressed = true;
+            }
+            else if(!gamepad2.x && vStart == true){
+                vPressed = false;
+                //vacuumMotor.setPower(1); //DECOMMENT THIS IF YOU WANT TO MOTOR TO WORK
+            }
+            else if(gamepad2.x && vStart == true && vPressed == false){
+                vStart = false;
+                vPause = true;
+            }
+        }
+
+        if(!gamepad2.x){vPause = false;}*/
         //Tangent Inverse only goes from -pi/2 to pi/2, so I have to add some test cases to make sure
         //the angle is correct
 
@@ -242,6 +262,8 @@ public class BasicOpMode_ArcadeTest extends OpMode {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Motors", "tleft (%.2f), tright (%.2f), bleft (%.2f), bright (%.2f), ANGLE (%.2f), X (%.2f), Y (%.2f)",
                     topleftPower, toprightPower, bottomleftPower, bottomrightPower, angle, leftStickX, leftStickY);
+            //telemetry.addData("VACUUM", "VStart (%2.f), VPressed (%2.f), VPause (%.2f)",
+                    //vStart ? 1.5 : 0, vPressed ? 1.5 : 0, vPause ? 1.5 : 0);
 
             telemetry.addData("left Motor Position", topleftDrive.getCurrentPosition());
 

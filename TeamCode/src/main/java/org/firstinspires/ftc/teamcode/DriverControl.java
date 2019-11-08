@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior;
@@ -49,41 +50,37 @@ public class DriverControl extends Movement {
                 // Left stick y - to move arm up or down
                 arm.setPower(-gamepad2.left_stick_y * 0.35);
 
-                // left bumper - to open claw (front servo)
+                // left bumper - to close claw (front servo)
                 if (gamepad2.left_bumper) {
-                    // TODO: setpower / duration / name frontServo from hw config
 
                     //frontServo.setPosition(0.4);
                     //sleep(100);
                     frontServo.setPosition(0.4);
                 }
 
-                // right bumper - to close claw (front servo)
+                // right bumper - to open claw (front servo)
                 if (gamepad2.right_bumper) {
-                    // TODO: setpower / duration / name frontServo from hw config
 
-                    //frontServo.setPosition(0.8);
-                    //sleep(100);
-                    frontServo.setPosition(0.04);
+                    frontServo.setPosition(0.0);
                 }
 
-                if (gamepad2.a)  {
+                // a - arm target position
+
+                if (gamepad2.a) {
                     arm.setTargetPosition(1);
-                    arm.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
+                    arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                     arm.setPower(0);
                     sleep(100);
-
                 }
 
                 // x - to move back servo down
                 if (gamepad2.x) {
-                    // TODO: setpower / duration
+
                     backServo.setPosition(0.4);
                 }
 
                 // y - to move back servo up
                 if (gamepad2.y) {
-                    // TODO: setpower / duration
                     backServo.setPosition(0.95);
                 }
 

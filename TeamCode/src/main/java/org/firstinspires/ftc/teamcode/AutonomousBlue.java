@@ -3,8 +3,8 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Autonomous(name="Autonomous-Red", group="Linear Opmode")
-public class AutonomousRed extends Movement
+@Autonomous(name="Autonomous-Blue", group="Linear Opmode")
+public class AutonomousBlue extends Movement
 {
     protected final Double SERVO_INITIAL_POS = 0.4;
 
@@ -22,27 +22,25 @@ public class AutonomousRed extends Movement
         backServo.setPosition(1);
         sleep(900);
 
-        //Move forward at angle towards the right
+        //Move forward at angle towards the left
 
-        leftfront.setPower(0.3);
-        leftback.setPower(0.3);
-        rightfront.setPower(0.35);
-        rightback.setPower(0.35);
+        leftfront.setPower(0.37);
+        leftback.setPower(0.37);
+        rightfront.setPower(0.34);
+        rightback.setPower(0.34);
         sleep(2950);
 
-        updateTelemetryMessage("Going forward at angle towards right");
+        updateTelemetryMessage("Going forward at angle towards left");
         stop("Stopping");
 
         // Servo up
         backServo.setPosition(SERVO_INITIAL_POS);
         sleep(500);
 
-        //Move left
+        //Move right
 
-        goLeft(0.8,2150, "Going left");
+        goRight(0.8, 2250, "Going right");
         stop("Stopping");
 
 
-    }
-
-}
+    }}

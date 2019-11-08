@@ -104,10 +104,12 @@ public final class MecanumDriver implements IDriver {
         double RF = Range.clip(left_stick_y - left_stick_x - right_stick_x, -1, 1);
         double LB = Range.clip(left_stick_y - left_stick_x + right_stick_x, -1, 1);
         double RB = Range.clip(left_stick_y + left_stick_x - right_stick_x, -1, 1);
-        map.getLeftBottom().setPower(LB);
+
         map.getLeftTop().setPower(LF);
-        map.getRightBottom().setPower(RB);
         map.getRightTop().setPower(RF);
+        map.getLeftBottom().setPower(LB);
+        map.getRightBottom().setPower(RB);
+
     }
 
     @Override
@@ -153,6 +155,12 @@ public final class MecanumDriver implements IDriver {
         if(motor.getPower() == power) return;
         map.getConveyer().setPower(power);
     }
+
+    public void autoArm(double posLeft, double posRight){
+        map.getLeftAuto().setPosition(posLeft);
+        map.getRightAuto().setPosition(posRight);
+    }
+
 
     @Override
     public void stop() {

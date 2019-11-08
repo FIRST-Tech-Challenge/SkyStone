@@ -104,13 +104,33 @@ public abstract class DriveOpMode extends OpMode {
      */
     @Override
     public void loop() {
+        DeviceMap map = DeviceMap.getInstance();
         double x = gamepad1.left_stick_x;
         double y = -gamepad1.left_stick_y;
-        double right_stick_x = gamepad1.right_stick_x;
-        driver.move(x, y, -right_stick_x);
+        double right_stick_x = -gamepad1.right_stick_x;
+        driver.move(x, y, right_stick_x);
 
         driver.intake(gamepad2.left_stick_y, gamepad2.right_stick_y);
         driver.conveyer(gamepad2.right_trigger);
+
+        if(gamepad1.dpad_left){
+            driver.autoArm(0, 1);
+        } else {
+            driver.autoArm(0.5, 0.5);
+        }
+
+        if(gamepad2.left_bumper){
+            map.getLeftBat().setPosition(0);
+        } else {
+            map.getLeftBat().setPosition(0.5);
+        }
+
+        if(gamepad2.right_bumper){
+            map.getRightBat().setPosition(1);
+        } else {
+            map.getRightBat().setPosition(0.5);
+        }
+
     }
 
     /*

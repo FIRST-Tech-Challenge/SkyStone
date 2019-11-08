@@ -6,6 +6,7 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.BNO055IMUImpl;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.vuforia.PIXEL_FORMAT;
 import com.vuforia.Vuforia;
@@ -18,6 +19,8 @@ import org.firstinspires.ftc.robotcontroller.ultro.listener.UltroVuforia;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 
+import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 //import java.util.concurrent.CompletableFuture;
 
 
@@ -35,10 +38,15 @@ public final class DeviceMap {
     private DcMotor[] intakeMotors;
     private DcMotor[] allMotors;
 
+    private Servo leftAuto, rightAuto, leftBat, rightBat;
+
     private BNO055IMUImpl imu;
     private UltroVuforia vuforia;
     private TFObjectDetector tfod;
     private OpenCvCamera camera;
+
+    private ColorSensor sensorColorLeft, sensorColorRight;
+    private DistanceSensor sensorDistanceLeft, sensorDistanceRight;
 
     public DeviceMap(final HardwareMap map) {
         //for later
@@ -55,8 +63,10 @@ public final class DeviceMap {
         setUpImu(map);
         setUpVuforia(map);
         initTfod(map);
-
+        servoInit(map);
+        sensorInit(map);
     }
+
     /**
      * This will just set up all the driveMotors
      * @param map
@@ -100,6 +110,26 @@ public final class DeviceMap {
 
     }
 
+    public void servoInit(HardwareMap map){
+        telemetry.addLine("Setting up servos");
+        telemetry.update();
+
+        leftAuto = map.get(Servo.class, "LeftAuto");
+        rightAuto = map.get(Servo.class, "RightAuto");
+        leftBat = map.get(Servo.class, "LeftBat");
+        rightBat = map.get(Servo.class, "RightBat");
+    }
+
+    public void sensorInit(HardwareMap map){
+        telemetry.addLine("Setting up sensors");
+        telemetry.addLine();
+
+        sensorColorLeft = map.get(ColorSensor.class, "ColorLeft");
+        sensorColorRight = map.get(ColorSensor.class, "ColorRight");
+        sensorDistanceLeft = map.get(DistanceSensor.class, "DistanceLeft");
+        sensorDistanceRight = map.get(DistanceSensor.class, "DistanceRight");
+
+    }
     public /*CompletableFuture<Void>*/void setUpImu(HardwareMap map) {
         //return CompletableFuture.runAsync(() -> {
             telemetry.addLine("Setting up imu");
@@ -196,6 +226,38 @@ public final class DeviceMap {
 
     public DcMotor getConveyer() {
         return conveyer;
+    }
+
+    public Servo getLeftAuto(){
+        return leftAuto;
+    }
+
+    public Servo getRightAuto(){
+        return rightAuto;
+    }
+
+    public Servo getLeftBat(){
+        return leftBat;
+    }
+
+    public Servo getRightBat(){
+        return rightBat;
+    }
+
+    public ColorSensor getSensorColorLeft(){
+        return sensorColorLeft;
+    }
+
+    public ColorSensor getSensorColorRight(){
+        return sensorColorRight;
+    }
+
+    public DistanceSensor getSensorDistanceLeft(){
+        return sensorDistanceLeft;
+    }
+
+    public DistanceSensor getSensorDistanceRight(){
+        return sensorDistanceRight;
     }
 
     public DcMotor[] getIntakeMotors() {

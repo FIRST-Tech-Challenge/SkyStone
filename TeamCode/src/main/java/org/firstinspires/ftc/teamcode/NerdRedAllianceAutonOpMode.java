@@ -42,14 +42,14 @@ import com.qualcomm.robotcore.util.RobotLog;
  * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
-@Autonomous(name="Nerd_Final_Auton", group="Linear Opmode")
+@Autonomous(name="Nerd_Final_Auton_Red", group="Linear Opmode")
 //@Disabled
 public class NerdRedAllianceAutonOpMode extends LinearOpMode {
     private NerdBOT myNerdBOT ;
     private NerdArmMove Arm;
     private  double speed = 0.4;
     private double Skystone_Position = 0;
-    private double position_run3_x = 85.0;
+    private double position_run3_x = 82.0;
     private double offset_x_run3 = 0;
     private  double run3_x = 0;
     private  double drop_2_offset = 0;
@@ -77,7 +77,7 @@ public class NerdRedAllianceAutonOpMode extends LinearOpMode {
         myNerdBOT.initializeZPIDCalculator(0.015, 0.000, 0.0,debugFlag);
         myNerdBOT.initializeTurnPIDCalculator(0.0075, 0.000, 0.0,debugFlag);
         //Set Min and Max Speed - Optional (default min=0.1, max=0.6 if not changed below)
-        myNerdBOT.setMinMaxSpeeds(0.0,0.4);
+        myNerdBOT.setMinMaxSpeeds(0.0,0.5);
 
 
         telemetry.addData("Init", "Completed");
@@ -91,7 +91,7 @@ public class NerdRedAllianceAutonOpMode extends LinearOpMode {
         //UNITS ARE IN INCHES
         if (debugFlag)
             RobotLog.d("NerdSampleOpMode - Run1");
-        myNerdBOT.nerdPidDrive( speed, X_DIRECTION*0.0, 10.0, 0.0, true, false);
+        myNerdBOT.nerdPidDrive( speed, X_DIRECTION*0.0, 11.5, 0.0);
         Skystone_Position = VFC.vuforia();
         telemetry.addData("Position Case",Skystone_Position );
         telemetry.update();
@@ -101,108 +101,115 @@ public class NerdRedAllianceAutonOpMode extends LinearOpMode {
 
         Arm.ArmLoop(-135,7, 0.5, 0.5);
 
+        myNerdBOT.setMinMaxSpeeds(0.0,0.3);
 
 
         if (Skystone_Position == 3) {
-            myNerdBOT.nerdPidDrive(speed, X_DIRECTION*8.0, 13.5, 0.0, true, false);
+            myNerdBOT.nerdPidDrive(speed, X_DIRECTION*8.0, 13.5, 0.0, false, false);
             offset_x_run3 = 8.0;
             drop_2_offset = 0.0;
             //sleep(2000);
         }
         else if (Skystone_Position == 2 || Skystone_Position == 4) {
-            myNerdBOT.nerdPidDrive(speed, X_DIRECTION*0.0, 13.5, 0.0, true, false);
-            offset_x_run3 = 0.0;
-            drop_2_offset = 0.0;
+            myNerdBOT.nerdPidDrive(speed, X_DIRECTION*0.0, 13.5, 0.0, false, false);
+            offset_x_run3 = 0.0; // 0
+            drop_2_offset = 2.0;
             //sleep(2000);
         }
         else if (Skystone_Position == 1) {
-            myNerdBOT.nerdPidDrive(speed, X_DIRECTION*-7.0, 13.5, 0.0, true, false);
+            myNerdBOT.nerdPidDrive(speed, X_DIRECTION*-7.0, 13.5, 0.0, false, false);
             offset_x_run3 = -7.0;
-            drop_2_offset = -8.0;
+            drop_2_offset = -9.0;
             //sleep(2000);
         }
         else
         {
-            myNerdBOT.nerdPidDrive(speed, X_DIRECTION*0.0, 13.5, 0.0, true, false);
+            myNerdBOT.nerdPidDrive(speed, X_DIRECTION*0.0, 13.5, 0.0, false, false);
             offset_x_run3 = 0.0;
-
+            drop_2_offset = 2.0;
         }
 
 
 
-          Arm.ArmLoop(-135,140, 0.5, 0.5);
+          Arm.ArmLoop(-135,140, 0.5, 0.5); // grab 1
           //sleep(500);
-           Arm.ArmLoop(-10,7, 0.6, 0.2);
+           Arm.ArmLoop(-10,7, 0.6, 0.2); // home
         if (debugFlag)
             RobotLog.d("NerdSampleOpMode - Run3");
 
+
+        myNerdBOT.nerdPidDrive(speed, 0.0, -4.0, 0); // move ack to miss bridge
+
         myNerdBOT.setMinMaxSpeeds(0.0,0.85); // Go faster when going longer distance.
         run3_x = (position_run3_x +offset_x_run3);
-        myNerdBOT.nerdPidDrive( speed, X_DIRECTION*-run3_x, 0.0, 0.0, true, false);
+        myNerdBOT.nerdPidDrive( speed, X_DIRECTION*-run3_x, 0.0, 0.0, true, false); // go to foundation
 
         if (debugFlag)
             RobotLog.d("NerdSampleOpMode - Run4");
 
-        myNerdBOT.setMinMaxSpeeds(0.0,0.4);
+        myNerdBOT.setMinMaxSpeeds(0.0,0.3);// go slower for more precise tasks
 
 
-        myNerdBOT.nerdPidDrive( speed, X_DIRECTION*0.0, 7.0, 0.0, true, false);
+        myNerdBOT.nerdPidDrive( speed, X_DIRECTION*0.0, 9.0, 0.0, true, false); // approach foundation
 
         myNerdBOT.setMinMaxSpeeds(0.0,0.4);
 
 
         Arm.ArmLoop(-60,135, 0.2, 0.6); // half-drop
         Arm.ArmLoop(-125,143, 0.5, 0.8);// put down the block
-        Arm.ArmLoop(-125,7, 0.5, 0.5);  // squeeze foundation and return front arm up
+        Arm.ArmLoop(-125,7, 0.5, 0.5);  // home front arm
 
 
 
-        myNerdBOT.nerdPidDrive(speed, X_DIRECTION*0.0, -2, 0, true, false);
+        myNerdBOT.nerdPidDrive(speed, X_DIRECTION*0.0, -2, 0); // back up to miss nub
 
-        Arm.UseTheForce();
+        Arm.UseTheForce(); // put arm down at half force
 
        // sleep(500);
 
-        myNerdBOT.nerdPidDrive(speed, X_DIRECTION*0.0, -34.0, 0, true, false);
+        myNerdBOT.nerdPidDrive(speed, X_DIRECTION*0.0, -34.0, 0); // pull foundation
 
-        Arm.ArmLoop(-10,7, 0.5, 0.5);
-
-
-
-        myNerdBOT.setMinMaxSpeeds(0.0,0.7);
-
-        myNerdBOT.nerdPidDrive(speed, X_DIRECTION*24.0, 0.0, 0, true, false);
-        myNerdBOT.nerdPidDrive(speed, X_DIRECTION*19.0, 17.0, 0, true, false);
+        Arm.ArmLoop(-10,7, 0.5, 0.5); // home arms
 
 
-        myNerdBOT.nerdPidDrive(speed, X_DIRECTION*63 + X_DIRECTION*drop_2_offset, 0.0, 0, true, false);
 
-        Arm.ArmLoop(-135,7,0.5,0.5);
+        myNerdBOT.setMinMaxSpeeds(0.0,0.7); // go at faster speed for long distances
 
-        myNerdBOT.setMinMaxSpeeds(0.0,0.3);
+        myNerdBOT.nerdPidDrive(speed, X_DIRECTION*24.0, 0.0, 0); // move to get away from the foundation
+        myNerdBOT.nerdPidDrive(speed, X_DIRECTION*19.0, 17.0, 0); // strafe to miss [parked] opponent
 
-        myNerdBOT.nerdPidDrive(speed, X_DIRECTION*0.0, 6.0, 0, true, false);
+
+        myNerdBOT.nerdPidDrive(speed, X_DIRECTION*61 + X_DIRECTION*drop_2_offset, 0.0, 0); // go to other side of the field
+
+        Arm.ArmLoop(-135,7,0.5,0.5); // drop one arm
+
+        myNerdBOT.setMinMaxSpeeds(0.0,0.3); // go slower for more precise tasks
+
+        myNerdBOT.nerdPidDrive(speed, X_DIRECTION*0.0, 8.5, 0); //
 
         myNerdBOT.setMinMaxSpeeds(0.0,0.5);
 
-        Arm.ArmLoop(-135,140, 0.5, 0.5);
-        Arm.ArmLoop(-10,7, 0.6, 0.2);
+//        Arm.ArmLoop(-125,143, 0.5, 0.8);// put down the block
+//        Arm.ArmLoop(-10,7, 0.8, 0.2);  // squeeze foundation and return front arm up
+
+        Arm.ArmLoop(-135,140, 0.5, 0.5);// put down the block
+        Arm.ArmLoop(-10,7, 0.6, 0.2);  // squeeze foundation and return front arm up
 
 
-
-        myNerdBOT.setMinMaxSpeeds(0.0,0.7);
-        myNerdBOT.nerdPidDrive(speed, X_DIRECTION*-57, -3.0, 0, true, false);
+        myNerdBOT.setMinMaxSpeeds(0.0,0.7); //
+        myNerdBOT.nerdPidDrive(speed, X_DIRECTION*-57, -4.5, 0);
         //myNerdBOT.setMinMaxSpeeds(0.0,0.7);
 
-        myNerdBOT.nerdPidTurn(speed, 90);
+        myNerdBOT.nerdPidTurn(speed, X_DIRECTION*90);
 
-        myNerdBOT.nerdPidDrive(speed, X_DIRECTION*0, 15, 90, true, false); //
+        myNerdBOT.nerdPidDrive(speed, X_DIRECTION*0, 19, X_DIRECTION*90, true, false); //
 
-        Arm.ArmLoop(-135,100, 0.8, 0.6); // half-drop
+        Arm.ArmLoop(-60,135, 0.2, 0.6); // half-drop
+        Arm.ArmLoop(-125,143, 0.5, 0.8);// put down the block
+        Arm.ArmLoop(-125,7, 0.5, 0.5);  // squeeze foundation and return front arm up
+        Arm.ArmLoop(-10,7, 0.5, 0.5);  // squeeze foundation and return front arm up
 
-        Arm.ArmLoop(-10,7, 0.5, 0.5);
-
-        myNerdBOT.nerdPidDrive(speed, X_DIRECTION*3, -26, 90, true, false); //park
+        myNerdBOT.nerdPidDrive(speed, X_DIRECTION*1, -22, X_DIRECTION*90); //park
 
 
         if (debugFlag)

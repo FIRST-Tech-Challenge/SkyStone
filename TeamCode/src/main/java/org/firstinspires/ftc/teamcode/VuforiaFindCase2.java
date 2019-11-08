@@ -132,7 +132,7 @@ public class VuforiaFindCase2 {
                 // if loop to assign cases
                 if ((translation.get(1) / mmPerInch <= -2)) {
                     positionCase = 1;
-                } else if ((translation.get(1)/ mmPerInch) > 3){
+                } else if ((translation.get(1) / mmPerInch) > 3) {
                     positionCase = 3;
                 } else {
                     positionCase = 2;
@@ -142,7 +142,7 @@ public class VuforiaFindCase2 {
                         translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
                 this.opmode.telemetry.addData("Position Case", positionCase);
                 this.opmode.telemetry.update();
-               //this.opmode.sleep(40000);
+
             } else {
                 // When none of the skystone is visible, position case will be 4
                 this.opmode.telemetry.addData("Visible Target", "none");
@@ -192,6 +192,6 @@ public class VuforiaFindCase2 {
             ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
         }
         this.opmode.telemetry.addData(">", "Robot Ready.");    //
-        //this.opmode.telemetry.update();
+        this.opmode.telemetry.update();
     }
 }

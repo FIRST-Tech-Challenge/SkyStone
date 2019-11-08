@@ -21,7 +21,7 @@ public class DriveHalo extends OpMode {
 
     @Override
     public void init() {
-        robot.init(hardwareMap);
+        robot.init(this);
         gamepad1.setJoystickDeadzone(deadZone);
         for (int i = 0; i < buttons.length; i++) {
             buttons[i] = false;

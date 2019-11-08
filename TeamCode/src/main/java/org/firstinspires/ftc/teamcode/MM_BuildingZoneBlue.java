@@ -3,8 +3,6 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import static java.lang.Thread.*;
-
 @Autonomous(name = "Building Zone Blue")
 public class MM_BuildingZoneBlue extends LinearOpMode {
 
@@ -15,7 +13,7 @@ public class MM_BuildingZoneBlue extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        robot.init(hardwareMap);
+        robot.init(this);
 
         waitForStart();
 

@@ -11,7 +11,11 @@ public class GripperTests extends OpMode {
 
     @Override
     public void init() {
-        robot.init(hardwareMap);
+        try {
+            robot.init(this);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

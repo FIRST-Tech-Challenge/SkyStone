@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 @Autonomous(name = "Loading Zone Blue")
 public class MM_LoadingZoneBlue extends LinearOpMode {
@@ -14,7 +13,7 @@ public class MM_LoadingZoneBlue extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        robot.init(hardwareMap);
+        robot.init(this);
 
         // Detect skystone with camera
         int position = robot.detectSkystone(this);

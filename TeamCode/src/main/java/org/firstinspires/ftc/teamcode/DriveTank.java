@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 
 @Disabled
@@ -14,7 +13,11 @@ public class DriveTank extends OpMode {
 
     @Override
     public void init() {
-        robot.init(hardwareMap);
+        try {
+            robot.init(this);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         telemetry.addData("Initialized", "Ready to start");
 
     }

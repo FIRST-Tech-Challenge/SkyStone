@@ -1,11 +1,18 @@
 package org.firstinspires.ftc.teamcode;
 
 
+import com.qualcomm.hardware.kauailabs.NavxMicroNavigationSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 // THIS IS NOT AN OPMODE - IT IS A DEFINING CLASS
 
@@ -25,6 +32,9 @@ public class Robot {
     Servo gripperRotateServo1;
     Servo gripperRotateServo2;
     private Servo grabServo;
+
+    // Sensors
+    NavxMicroNavigationSensor navxMicro;
 
     // Constants
     private int CORE_HEX_TICKS_PER_REV = 288; // ticks / rev
@@ -61,10 +71,10 @@ public class Robot {
         // Constructor
     }
 
-    void init (HardwareMap ahwMap) {
+    void init (OpMode opmode) throws InterruptedException {
         /* Initializes the robot */
 
-        hwMap = ahwMap;
+        hwMap = opmode.hardwareMap;
 
         // Motor mapping
         this.rearLeft = hwMap.dcMotor.get("rearLeft");
@@ -106,6 +116,9 @@ public class Robot {
         this.gripperRotateServo1.setDirection(Servo.Direction.FORWARD);
         this.gripperRotateServo2.setDirection(Servo.Direction.REVERSE);
         this.grabServo.setDirection(Servo.Direction.FORWARD);
+
+        // NavX Gyro Init
+        this.initNavXGyro(opmode);
 
     }
 
@@ -350,5 +363,32 @@ public class Robot {
     void toggleArmRotate() {
         this.rotateGripper(this.gripperRotatePosition);
         this.gripperRotatePosition = 1 - this.gripperRotatePosition;
+    }
+
+    void initNavXGyro(OpMode opmode) throws InterruptedException {
+        // A timer helps provide feedback while calibration is taking place
+        ElapsedTime timer = new ElapsedTime();
+
+        navxMicro = opmode.hardwareMap.get(NavxMicroNavigationSensor.class, "navx");
+        // If you're only interested in the IntegratingGyroscope interface, the following will suffice.
+        // gyro = hardwareMap.get(IntegratingGyroscope.class, "navx");
+
+        // The gyro automatically starts calibrating. This takes a few seconds.
+        opmode.telemetry.log().add("Gyro Calibrating. DO NOT MOVE or else the Cookie Monster will come for your soul!");
+
+        // Wait until the gyro calibration is complete
+        timer.reset();
+        while (navxMicro.isCalibrating())  {
+            opmode.telemetry.addData("calibrating", "%s", Math.round(timer.seconds())%2==0 ? "|.." : "..|");
+            opmode.telemetry.update();
+            Thread.sleep(50);
+        }
+        opmode.telemetry.log().clear(); opmode.telemetry.log().add("Gyro Calibrated. Press Start.");
+        opmode.telemetry.clear(); opmode.telemetry.update();
+    }
+
+    double getAngle() {
+        Orientation angles = navxMicro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        return angles.firstAngle;
     }
 }

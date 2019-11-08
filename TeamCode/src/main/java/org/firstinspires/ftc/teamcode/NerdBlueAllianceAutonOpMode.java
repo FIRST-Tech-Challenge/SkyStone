@@ -208,7 +208,7 @@ public class NerdBlueAllianceAutonOpMode extends LinearOpMode {
         Arm.ArmLoop(-125,7, 0.5, 0.5);  // squeeze foundation and return front arm up
         Arm.ArmLoop(-10,7, 0.5, 0.5);  // squeeze foundation and return front arm up
 
-        myNerdBOT.nerdPidDrive(speed, X_DIRECTION*1, -22, 90); //park
+        myNerdBOT.nerdPidDrive(speed, X_DIRECTION*1, -22, X_DIRECTION*90); //park
 
 
         if (debugFlag)

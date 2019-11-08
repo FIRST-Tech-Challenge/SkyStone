@@ -25,9 +25,9 @@ public class MechTeleOp extends OpMode {
     final double calibBL = 1.00f;
     final double calibBR = 1.00f;
 
-    DcMotor armOne;
-    DcMotor armTwo;
-    DcMotor armThree;
+    DcMotor liftBottom;
+    DcMotor liftTop;
+    DcMotor claw;
 
 
     double[][] motorPowers = {
@@ -145,17 +145,17 @@ public class MechTeleOp extends OpMode {
         motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        armOne = hardwareMap.get(DcMotor.class, "armOne");
-        armTwo = hardwareMap.get(DcMotor.class, "armTwo");
-        armThree = hardwareMap.get(DcMotor.class, "armThree");
+        liftBottom = hardwareMap.get(DcMotor.class, "liftBottom");
+        liftTop = hardwareMap.get(DcMotor.class, "liftTop");
+        claw = hardwareMap.get(DcMotor.class, "claw");
 
-        armOne.setDirection(DcMotorSimple.Direction.FORWARD);
-        armTwo.setDirection(DcMotorSimple.Direction.FORWARD);
-        armThree.setDirection(DcMotorSimple.Direction.FORWARD);
+        liftBottom.setDirection(DcMotorSimple.Direction.FORWARD);
+        liftTop.setDirection(DcMotorSimple.Direction.FORWARD);
+        claw.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        armOne.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        armTwo.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        armThree.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        liftBottom.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        liftTop.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        claw.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 //        leftServo = hardwareMap.get(CRServo.class, "leftServo");
 //        rightServo = hardwareMap.get(CRServo.class, "rightServo");
@@ -276,27 +276,27 @@ public class MechTeleOp extends OpMode {
 
         //arm base (closer to the base of the robot) up and down
         if (gamepad1.dpad_up)
-            armOne.setPower(0.5);
+            liftBottom.setPower(0.5);
         else if (gamepad1.dpad_down)
-            armOne.setPower(-0.5);
+            liftBottom.setPower(-0.5);
         else
-            armOne.setPower(0.0);
+            liftBottom.setPower(0.0);
 
         //arm base (closer to the hand) up and down
         if (gamepad1.dpad_left)
-            armTwo.setPower(0.5);
+            liftTop.setPower(0.5);
         else if (gamepad1.dpad_right)
-            armTwo.setPower(-0.5);
+            liftTop.setPower(-0.5);
         else
-            armTwo.setPower(0.0);
+            liftTop.setPower(0.0);
 
         //hand open close
         if (gamepad1.a)
-            armThree.setPower(0.3);
+            claw.setPower(0.3);
         else if (gamepad1.y)
-            armThree.setPower(-0.3);
+            claw.setPower(-0.3);
         else
-            armThree.setPower(0.0);
+            claw.setPower(0.0);
 
 
     }

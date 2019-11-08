@@ -61,6 +61,11 @@ abstract class Movement extends LinearOpMode
         updateTelemetryMessage(message);
     }
 
+    public void stopWithSleep(final String message, final long duration) {
+        stop(message);
+        sleep(duration);
+    }
+
     public void goForward(final double power, final int duration, final String message) {
         leftfront.setPower(power);
         rightfront.setPower(power);

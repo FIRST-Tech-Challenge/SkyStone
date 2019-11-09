@@ -20,11 +20,11 @@ public abstract class LongBeanis2 extends ChassisStandard {
 
         if (madeTheRun == false) {
 
-            encoderDrive(4);
+            encoderDrive(27);
 
             turnLeft(90);
 
-            encoderDrive(13);
+            encoderDrive(27);
             madeTheRun = true;
         }
     }

@@ -8,8 +8,6 @@ import org.firstinspires.ftc.teamcode.auto.ChassisConfig;
  */
 public abstract class ShortBeanis2 extends ChassisStandard {
 
-    private boolean madeTheRun = false;
-
     public ShortBeanis2(ChassisConfig config) {
         super(config);
     }
@@ -22,20 +20,15 @@ public abstract class ShortBeanis2 extends ChassisStandard {
 
         if (madeTheRun == false) {
 
-            /*encoderDrive(4);
+            encoderDrive(4);
 
             turnLeft(90);
 
             encoderDrive(27);
-            */
+
 
             madeTheRun = true;
         }
-
-        // Show the elapsed game time and wheel power.
-        telemetry.addData("Status", "time: " + runtime.toString());
-        telemetry.addData("Gyro", "angle: " + this.getGyroscopeAngle());
-        telemetry.addData("Status", "madeTheRun=%b", madeTheRun);
     }
 }
 

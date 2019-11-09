@@ -230,6 +230,14 @@ public class HardwareOmnibotDrive
         return valueOut;
     }
 
+    public void disableDriveEncoders()
+    {
+        frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rearLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rearRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+
     public void resetDriveEncoders()
     {
         int sleepTime = 0;

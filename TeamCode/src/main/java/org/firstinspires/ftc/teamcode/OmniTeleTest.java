@@ -139,7 +139,7 @@ public class OmniTeleTest extends OmniAutoClass {
 
             if (!xHeld && xPressed) {
                 xHeld = true;
-                driveDistanceFromTof(0.2, sideDistanceTarget, 10000, OmniAutoClass.TofDirection.LEFT);
+                driveDistanceFromTof(1.0, sideDistanceTarget, 10000, OmniAutoClass.TofDirection.LEFT);
             } else if (!xPressed) {
                 xHeld = false;
             }
@@ -151,7 +151,7 @@ public class OmniTeleTest extends OmniAutoClass {
             }
 
             if (!aHeld && aPressed) {
-                driveDistanceFromTof(0.2, backDistanceTarget, 10000, OmniAutoClass.TofDirection.BACK);
+                driveDistanceFromTof(1.0, backDistanceTarget, 10000, OmniAutoClass.TofDirection.BACK);
                 aHeld = true;
 
             } else if (!aPressed) {
@@ -160,7 +160,7 @@ public class OmniTeleTest extends OmniAutoClass {
 
             if (!bHeld && bPressed) {
                 bHeld = true;
-                driveDistanceFromTof(0.2, sideDistanceTarget, 10000, OmniAutoClass.TofDirection.RIGHT);
+                driveDistanceFromTof(1.0, sideDistanceTarget, 10000, OmniAutoClass.TofDirection.RIGHT);
             } else if (!bPressed) {
                 bHeld = false;
             }

@@ -23,7 +23,6 @@ public class OmniTeleOp extends OpMode {
     }
 
     public enum CompleteActivities {
-        ALIGN,
         LIFT,
         RELEASE,
         STOW
@@ -34,6 +33,7 @@ public class OmniTeleOp extends OpMode {
         telemetry.addLine("Calling robot.init");
         updateTelemetry(telemetry);
         robot.init(hardwareMap);
+        robot.disableDriveEncoders();
         robot.setInputShaping(true);
         telemetry.addLine("Ready");
         updateTelemetry(telemetry);
@@ -270,24 +270,6 @@ public class OmniTeleOp extends OpMode {
         if(!y2Held && y2Pressed)
         {
             y2Held = true;
-            switch(capstoneState) {
-                case ALIGN:
-                    robot.startAligningCapstone();
-                    capstoneState = CapstoneState.GRAB;
-                    break;
-                case GRAB:
-                    robot.startGrabbingCapstone();
-                    capstoneState = CapstoneState.LIFT;
-                    break;
-                case LIFT:
-                    robot.startLiftingCapstone();
-                    capstoneState = CapstoneState.RELEASE;
-                    break;
-                case RELEASE:
-                    robot.startReleasingCapstone();
-                    capstoneState = CapstoneState.ALIGN;
-                    break;
-            }
         } else if(!y2Pressed) {
             y2Held = false;
         }
@@ -353,13 +335,6 @@ public class OmniTeleOp extends OpMode {
         telemetry.addData("Stow State: ", robot.stowState);
         telemetry.addData("Eject State: ", robot.ejectState);
         telemetry.addData("Capstone State: ", robot.capstoneLiftState);
-        telemetry.addData("Front Left Encoder: ", robot.frontLeft.getCurrentPosition());
-        telemetry.addData("Front Right Encoder: ", robot.frontRight.getCurrentPosition());
-        telemetry.addData("Rear Left Encoder: ", robot.rearLeft.getCurrentPosition());
-        telemetry.addData("Rear Right Encoder: ", robot.rearRight.getCurrentPosition());
-        telemetry.addData("Lifter Encoder: ", robot.getLifterPosition());
-        telemetry.addData("Intake Encoder: ", robot.getIntakePosition());
-        telemetry.addData("Intake Zero: ", robot.intakeZero);
         telemetry.addData("Y Power: ", yPower);
         telemetry.addData("X Power: ", xPower);
         telemetry.addData("Spin: ", spin);

@@ -24,16 +24,15 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         GRABBING_STONE,
         CLEARING_LIFT,
         LIFTING_TO_ROTATE,
-        ROTATING,
         LIFTING_TO_STONE,
-        STOPPING
+        ROTATING,
+        LOWERING_TO_STONE
     }
 
     public enum ReleaseActivity {
         IDLE,
-        ALIGN_TO_FOUNDATION,
-        RELEASE_STONE,
-        STOPPING
+        LOWER_TO_RELEASE,
+        RELEASE_STONE
     }
 
     public enum StowActivity {
@@ -42,8 +41,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         ROTATING,
         CLEARING_LIFT,
         LOWERING_TO_STOW,
-		OPENING_CLAW,
-        STOPPING
+		OPENING_CLAW
     }
 
     public enum EjectActivity {
@@ -143,18 +141,30 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public enum LiftPosition {
 		GRABBING(0),
         STOWED(25),
+        STONE1_RELEASE(146),
         STONE1(176),
+        STONE2_RELEASE(444),
         STONE2(474),
+        STONE3_RELEASE(642),
         STONE3(672),
         ROTATE(850),
+        STONE4_RELEASE(867),
         STONE4(907),
+        STONE5_RELEASE(1091),
         STONE5(1131),
+        STONE6_RELEASE(1317),
         STONE6(1357),
+        STONE7_RELEASE(1553),
         STONE7(1593),
+        STONE8_RELEASE(1770),
         STONE8(1810),
+        STONE9_RELEASE(1990),
         STONE9(2030),
+        STONE10_RELEASE(2211),
         STONE10(2251),
+        STONE11_RELEASE(2435),
         STONE11(2475),
+        STONE12_RELEASE(2640),
         STONE12(2680),
         LIFTMAX(MAX_LIFT);
 
@@ -169,6 +179,39 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 		{
 			return encoderCount;
 		}
+
+		public static LiftPosition releasePosition(LiftPosition currentStone)
+        {
+            switch(currentStone)
+            {
+                case STONE1:
+                    return STONE1_RELEASE;
+                case STONE2:
+                    return STONE2_RELEASE;
+                case STONE3:
+                    return STONE3_RELEASE;
+                case STONE4:
+                    return STONE4_RELEASE;
+                case STONE5:
+                    return STONE5_RELEASE;
+                case STONE6:
+                    return STONE6_RELEASE;
+                case STONE7:
+                    return STONE7_RELEASE;
+                case STONE8:
+                    return STONE8_RELEASE;
+                case STONE9:
+                    return STONE9_RELEASE;
+                case STONE10:
+                    return STONE10_RELEASE;
+                case STONE11:
+                    return STONE11_RELEASE;
+                case STONE12:
+                    return STONE12_RELEASE;
+                default:
+                    return currentStone;
+            }
+        }
 
 		public static LiftPosition addStone(LiftPosition currentStone)
 		{
@@ -404,19 +447,30 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 
     public void performLifting() {
 		switch(liftState) {
-			case LIFTING_TO_STONE:
-			    if(lifterAtPosition(liftStateTargetHeight)) {
-					liftState = LiftActivity.IDLE;
-				}
-			    break;
+            case LOWERING_TO_STONE:
+                if(lifterAtPosition(liftStateTargetHeight)) {
+                    liftState = LiftActivity.IDLE;
+                }
+                break;
 		    case ROTATING:
 			    if(stateTimer.milliseconds() >= CLAW_ROTATE_BACK_TIME) {
-					liftState = LiftActivity.LIFTING_TO_STONE;
+                    if (liftTargetHeight.getEncoderCount() <= LiftPosition.ROTATE.getEncoderCount()) {
+                        liftState = LiftActivity.LOWERING_TO_STONE;
+                        moveLift(liftStateTargetHeight);
+                    } else {
+                        liftState = LiftActivity.IDLE;
+                    }
 					clawdricopterBack = true;
 					liftStateTargetHeight = liftTargetHeight;
-					moveLift(liftStateTargetHeight);
 				}
 			    break;
+            case LIFTING_TO_STONE:
+                if(lifterAtPosition(liftStateTargetHeight)) {
+                    liftState = LiftActivity.ROTATING;
+                    clawdricopter.setPosition(CLAWDRICOPTER_BACK);
+                    stateTimer.reset();
+                }
+                break;
 		    case LIFTING_TO_ROTATE:
 			    // It has gotten high enough
 			    if(getLifterPosition() >= LiftPosition.ROTATE.getEncoderCount()) {
@@ -429,12 +483,13 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                 if((stateTimer.milliseconds() >= CLAW_CLOSE_TIME) || clawPinched)
                 {
 					clawPinched = true;
-                    liftState = LiftActivity.LIFTING_TO_ROTATE;
                     // If our target height is less than rotation height, we have to
                     // stop at rotation height first.
                     if(liftTargetHeight.getEncoderCount() <= LiftPosition.ROTATE.getEncoderCount()) {
+                        liftState = LiftActivity.LIFTING_TO_ROTATE;
                         moveLift(LiftPosition.ROTATE);
                     } else {
+                        liftState = LiftActivity.LIFTING_TO_STONE;
                         moveLift(liftTargetHeight);
                     }
                 }
@@ -454,8 +509,6 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 					moveLift(LiftPosition.GRABBING);
 				}
                 break;
-			case STOPPING:
-			    liftState = LiftActivity.IDLE;
 		    case IDLE:
 			default:
 				break;
@@ -467,15 +520,13 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         if(releaseState == ReleaseActivity.IDLE) {
             if (liftState != LiftActivity.IDLE) {
                 isReleasing = false;
-            }
-            if (stowState != StowActivity.IDLE) {
+            } else if (stowState != StowActivity.IDLE) {
                 isReleasing = false;
             } else {
                 isReleasing = true;
 
-                releaseState = ReleaseActivity.RELEASE_STONE;
-                claw.setPosition(CLAW_OPEN);
-                stateTimer.reset();
+                moveLift(LiftPosition.releasePosition(liftTargetHeight));
+                releaseState = ReleaseActivity.LOWER_TO_RELEASE;
             }
         }
         else {
@@ -488,13 +539,6 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public void performReleasing() {
         switch(releaseState)
         {
-            case ALIGN_TO_FOUNDATION:
-                // In the future this should use distance sensors to line
-                // up to the foundation.
-                releaseState = ReleaseActivity.RELEASE_STONE;
-                claw.setPosition(CLAW_OPEN);
-                stateTimer.reset();
-                break;
             case RELEASE_STONE:
                 if((stateTimer.milliseconds() >= CLAW_OPEN_TIME) || !clawPinched)
                 {
@@ -504,11 +548,13 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 					addStone();
                 }
                 break;
-            case STOPPING:
-                // I don't think we can do anything here. The servo going
-                // either way is about the same.  Maybe when we implement
-                // the ALIGN_TO_FOUNDATION
-                releaseState = ReleaseActivity.IDLE;
+            case LOWER_TO_RELEASE:
+                if(lifterAtPosition(LiftPosition.releasePosition(liftTargetHeight))) {
+                    releaseState = ReleaseActivity.RELEASE_STONE;
+                    claw.setPosition(CLAW_OPEN);
+                    stateTimer.reset();
+                }
+                break;
             case IDLE:
 		    default:
 			    break;
@@ -587,8 +633,6 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 					}
                 }
                 break;
-            case STOPPING:
-                stowState = StowActivity.IDLE;
             case IDLE:
 		    default:
 			    break;
@@ -598,10 +642,10 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public void startAligningCapstone() {
         if(capstoneGrabState == CapstoneGrabActivity.IDLE) {
             if(releaseState != ReleaseActivity.IDLE) {
-                releaseState = ReleaseActivity.STOPPING;
+ //               releaseState = ReleaseActivity.STOPPING;
             }
             if(stowState != StowActivity.IDLE) {
-                stowState = StowActivity.STOPPING;
+ //               stowState = StowActivity.STOPPING;
             }
             // Extend the intake to make sure it isn't in the way.
             moveIntake(IntakePosition.EXTENDED);
@@ -660,10 +704,10 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public void startGrabbingCapstone() {
         if(capstoneGrabState == CapstoneGrabActivity.IDLE) {
             if(releaseState != ReleaseActivity.IDLE) {
-                releaseState = ReleaseActivity.STOPPING;
+//                releaseState = ReleaseActivity.STOPPING;
             }
             if(stowState != StowActivity.IDLE) {
-                stowState = StowActivity.STOPPING;
+//                stowState = StowActivity.STOPPING;
             }
             moveLift(LiftPosition.GRABBING);
             capstoneGrabState = CapstoneGrabActivity.LOWERING_TO_GRAB;
@@ -703,10 +747,10 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public void startLiftingCapstone() {
         if(capstoneLiftState == CapstoneLiftActivity.IDLE) {
             if(releaseState != ReleaseActivity.IDLE) {
-                releaseState = ReleaseActivity.STOPPING;
+//                releaseState = ReleaseActivity.STOPPING;
             }
             if(stowState != StowActivity.IDLE) {
-                stowState = StowActivity.STOPPING;
+//                stowState = StowActivity.STOPPING;
             }
             moveLift(liftTargetHeight);
             capstoneLiftState = CapstoneLiftActivity.LIFTING_TO_STONE;
@@ -731,10 +775,10 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public void startReleasingCapstone() {
         if(capstoneReleaseState == CapstoneReleaseActivity.IDLE) {
             if(releaseState != ReleaseActivity.IDLE) {
-                releaseState = ReleaseActivity.STOPPING;
+//                releaseState = ReleaseActivity.STOPPING;
             }
             if(stowState != StowActivity.IDLE) {
-                stowState = StowActivity.STOPPING;
+//                stowState = StowActivity.STOPPING;
             }
             claw.setPosition(CLAW_OPEN);
             capstoneReleaseState = CapstoneReleaseActivity.RELEASE_STONE;
@@ -790,10 +834,10 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public void startEjecting() {
         if (ejectState == EjectActivity.IDLE) {
             if (liftState != LiftActivity.IDLE) {
-                liftState = LiftActivity.STOPPING;
+//                liftState = LiftActivity.STOPPING;
             }
             if (stowState != StowActivity.IDLE) {
-                stowState = StowActivity.STOPPING;
+//                stowState = StowActivity.STOPPING;
             }
             ejectState = EjectActivity.EJECT;
             startIntake(true);

@@ -13,15 +13,9 @@ public class MotorTest extends LinearOpMode {
         telemetry.addLine("Init | v1.0");
         DcMotor arm = hardwareMap.dcMotor.get("arm");
         arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         waitForStart();
         while (opModeIsActive()) {
-            telemetry.addData("arm pos: ", arm.getCurrentPosition());
-            if(gamepad1.a){
-                arm.setTargetPosition(arm.getTargetPosition()+1);
-                arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                while(gamepad1.a);
-            }
-            telemetry.addData("arm set pos: ", arm.getTargetPosition());
             telemetry.addData("arm cur pos: ", arm.getCurrentPosition());
             //Other unit test code if you want
             telemetry.update();

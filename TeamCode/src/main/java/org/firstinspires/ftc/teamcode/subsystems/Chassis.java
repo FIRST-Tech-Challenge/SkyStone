@@ -24,6 +24,7 @@ public class Chassis extends Subsystem {
 
     public void initChassis() {
         reset();
+        reverseMotors(new DcMotor[]{frontRight, backRight});
         setZeroBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }

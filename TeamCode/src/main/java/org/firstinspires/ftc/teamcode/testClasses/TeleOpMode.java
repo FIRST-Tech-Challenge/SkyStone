@@ -23,6 +23,11 @@ public class TeleOpMode extends LinearOpMode {
 
         while (opModeIsActive()) {
             robot.run(controller);
+            telemetry.addData("test1: ", gamepad1.b);
+            telemetry.addData("test: :", controller.b);
+            telemetry.addData("test3: :", controller.getB());
+            telemetry.addData("arm level: ", robot.level);
+            telemetry.addData("arm pos: ", robot.arm.main.getTargetPosition());
             telemetry.update();
         }
     }

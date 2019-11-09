@@ -15,43 +15,43 @@ public class Robot {
 
     public Robot(HardwareMap hardwareMap) {
         //constructors
-        //arm = new Arm(hardwareMap);
+        arm = new Arm(hardwareMap);
         //hook = new Hook(hardwareMap);
         chassis = new Chassis(hardwareMap);
         //intake = new Intake(hardwareMap);
     }
 
     public void run(Controller controller) {
+        //Chassis get
         final double leftStickX = controller.limitStick(controller.getLeftStickX());
         final double leftStickY = controller.limitStick(controller.getLeftStickY());
         final double rightStickX = controller.limitStick(controller.getRightStickX());
         final double power = Math.hypot(leftStickX, leftStickY);
         final double targetAngle = Math.atan2(leftStickY, leftStickX);
         final double turn = rightStickX;
-        chassis.run(targetAngle, turn, power);
-        //Arm check
-        if (controller.getRightBumper() != controller.rightBumperLast) {
-            if (controller.getRightBumper()) {
-                level++;
-                controller.rightBumperLast = true;
-            } else {
-                controller.rightBumperLast = false;
-            }
+        if (controller.getA()) {
+            level = 0;
         }
-        if (controller.getLeftBumper() != controller.leftBumperLast) {
-            if (controller.getLeftBumper()) {
-                level--;
-                controller.leftBumperLast = true;
-            } else {
-                controller.leftBumperLast = false;
-            }
+        if (controller.getB()) {
+            level = 1;
         }
-        arm.run(level);
-        //
-        while(setLevel(level));
+        if (controller.getX()) {
+            level = 2;
+        }
+        if (controller.getY()) {
+            level = 3;
+        }
+        if (controller.getLeftBumper()) {
+            level = 4;
+        }
+        if (controller.getRightBumper()) {
+            level = 5;
+        }
+        //Arm get
         //Put in all run methods
+        arm.run(level);
+        chassis.run(targetAngle, turn, power);
         //hook.run();
-        //
         //intake.run();
     }
 
@@ -66,15 +66,21 @@ public class Robot {
         //arm.run();
         //hook.run();
         //
-        chassis.run(targetAngle, turn, power);
         //intake.run();
     }
-    public void checkCommands(){
+
+    public void checkCommands() {
 
     }
 
-    public boolean setLevel(int level){
-        //init command list here
-        return true;
+    public void setLevel(Controller controller) {
+        if (controller.right_bumper) {
+            level++;
+            while (controller.right_bumper) ;
+        }
+        if (controller.left_bumper) {
+            level--;
+            while (controller.left_bumper) ;
+        }
     }
 }

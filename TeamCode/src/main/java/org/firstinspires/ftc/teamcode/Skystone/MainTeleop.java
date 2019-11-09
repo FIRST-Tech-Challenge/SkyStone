@@ -26,6 +26,7 @@ public class MainTeleop extends LinearOpMode {
     boolean isRetract = false;
     boolean isExtend = false;
     boolean isClamp = false;
+    boolean outtakeExtended = false;
     public static double powerScaleFactor = 0.9;
     @Override
     public void runOpMode() {
@@ -69,10 +70,20 @@ public class MainTeleop extends LinearOpMode {
 //        robot.outtakeArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
     private void initServos() {
-        robot.getClampPivot().setPosition(robot.OUTTAKE_PIVOT_RETRACTED);
-        robot.getIntakePusher().setPosition(robot.PUSHER_RETRACTED);
-        robot.getOuttakeExtender().setPosition(robot.OUTTAKE_SLIDE_RETRACTED);
+        isRetract = true;
+        currentTime = SystemClock.elapsedRealtime();
+
         robot.getClamp().setPosition(robot.CLAW_SERVO_RELEASED);
+
+        while (isRetract) {
+            if (currentTime - outtakeExecutionTime >= 250 && isRetract) {
+                robot.getClampPivot().setPosition(robot.OUTTAKE_PIVOT_RETRACTED);
+            }
+            if (currentTime - outtakeExecutionTime >= 950 && isRetract) {
+                robot.getOuttakeExtender().setPosition(robot.OUTTAKE_SLIDE_RETRACTED);
+                isRetract = false;
+            }
+        }
     }
     //teleop methods
     private void driveLogic() {
@@ -133,13 +144,17 @@ public class MainTeleop extends LinearOpMode {
         }
     }
     private void intakeLogic() {
-        robot.getIntakeLeft().setPower(gamepad2.left_stick_y);
-        robot.getIntakeRight().setPower(gamepad2.right_stick_y);
-        robot.getIntakeLeft().setPower(gamepad2.left_stick_y);
-        robot.getIntakeRight().setPower(gamepad2.right_stick_y);
+        if (!outtakeExtended) {
+            robot.getIntakeLeft().setPower(gamepad2.left_stick_y);
+            robot.getIntakeRight().setPower(gamepad2.right_stick_y);
+        } else {
+            robot.getIntakeLeft().setPower(0);
+            robot.getIntakeRight().setPower(0);
+        }
+
         if (gamepad2.left_stick_y != 0 || gamepad2.right_stick_y != 0) {
             robot.getIntakePusher().setPosition(robot.PUSHER_RETRACTED);
-            robot.getClamp().setPosition(0.3);
+            robot.getClamp().setPosition(0.32);
         }
     }
     private void outtakeLogic() {
@@ -171,6 +186,7 @@ public class MainTeleop extends LinearOpMode {
         }
         if(currentTime-outtakeExecutionTime >= 400 && isExtend){
             robot.getOuttakeExtender().setPosition(robot.OUTTAKE_SLIDE_EXTENDED);
+            outtakeExtended = true;
         }
         if(currentTime-outtakeExecutionTime >= 1400 && isExtend){
             robot.getClampPivot().setPosition(robot.OUTTAKE_PIVOT_EXTENDED);
@@ -180,8 +196,9 @@ public class MainTeleop extends LinearOpMode {
         if(currentTime-outtakeExecutionTime >= 250 && isRetract){
             robot.getClampPivot().setPosition(robot.OUTTAKE_PIVOT_RETRACTED);
         }
-        if(currentTime-outtakeExecutionTime >= 750 && isRetract){
+        if(currentTime-outtakeExecutionTime >= 950 && isRetract){
             robot.getOuttakeExtender().setPosition(robot.OUTTAKE_SLIDE_RETRACTED);
+            outtakeExtended = false;
             isRetract = false;
         }
         //clamp only

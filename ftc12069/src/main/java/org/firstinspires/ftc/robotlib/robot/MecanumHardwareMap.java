@@ -10,11 +10,15 @@ import org.firstinspires.ftc.robotlib.servo.ServoManager;
 
 public class MecanumHardwareMap
 {
+    public HardwareMap internalHardwareMap;
+
+    // Motors in Mecanum robot
     private DcMotor driveFrontLeft;
     private DcMotor driveFrontRight;
     private DcMotor driveRearRight;
     private DcMotor driveRearLeft;
 
+    // Servos in Mecanum Robot
     private Servo servoClaw;
 
     public MecanumDrivetrain drivetrain;
@@ -25,10 +29,16 @@ public class MecanumHardwareMap
 
     public DcMotor[] motorList;
 
-    public final double motorTicksPerIn;
+    public final double motorTicksPerInch;
 
+    /**
+     * Creates a mecanum hardware map from the FTC given hardware map
+     * @param hwMap FTC hardware map
+     */
     public MecanumHardwareMap(HardwareMap hwMap)
     {
+        this.internalHardwareMap = hwMap;
+
         driveFrontLeft = hwMap.get(DcMotor.class, "driveFrontLeft");
         driveFrontRight = hwMap.get(DcMotor.class, "driveFrontRight");
         driveRearRight = hwMap.get(DcMotor.class, "driveRearRight");
@@ -56,6 +66,6 @@ public class MecanumHardwareMap
 
         drivetrain = new MecanumDrivetrain(motorList);
         servoManager = new ServoManager(new Servo[]{servoClaw});
-        motorTicksPerIn = drivetrain.getTicksPerIn(wheelRadius, wheelToMotorRatio);
+        motorTicksPerInch = drivetrain.getTicksPerInch(wheelRadius, wheelToMotorRatio);
     }
 }

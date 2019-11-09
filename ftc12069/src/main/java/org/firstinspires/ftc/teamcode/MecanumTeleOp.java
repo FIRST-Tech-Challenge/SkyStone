@@ -8,7 +8,7 @@ import org.firstinspires.ftc.robotlib.robot.MecanumHardwareMap;
 import org.firstinspires.ftc.robotlib.servo.ServoManager;
 import org.firstinspires.ftc.robotlib.state.ServoState;
 
-@TeleOp(name="Experimental Mecanum (12069)", group="Linear Opmode")
+@TeleOp(name="Experimental Mecanum TELEOP (12069)", group="Linear Opmode")
 public class MecanumTeleOp extends OpMode
 {
     private MecanumHardwareMap robotHardware;

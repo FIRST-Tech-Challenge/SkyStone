@@ -1,13 +1,12 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.obsolete;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotlib.robot.MecanumHardwareMap;
 
-@Autonomous(name="Autonomous Basic Build Zone", group="Auto")
-public class AutonomousBasicBuildZone extends LinearOpMode
+//@Autonomous(name="Autonomous Basic Depot", group="Auto")
+public class AutonomousBasicDepot extends LinearOpMode
 {
     private MecanumHardwareMap robotHardware;
     private ElapsedTime elapsedTime;
@@ -26,7 +25,7 @@ public class AutonomousBasicBuildZone extends LinearOpMode
         telemetry.addData("Status", "Moving Forward");
         robotMove(0, 1, 0, 20);
         robotHardware.servoManager.setPosition(0.0);
-        robotMove(45, 1, 0, 120);
+        robotMove(270, 1, 0, 120);
     }
 
     // Handles the drivetrain functions to set the 4 essential variables for movement
@@ -35,7 +34,7 @@ public class AutonomousBasicBuildZone extends LinearOpMode
         robotHardware.drivetrain.setCourse(course * Math.PI/180); //converts a degree input into radians
         robotHardware.drivetrain.setVelocity(velocity); //quarters the velocity since a high velocity causes massive drift following a move command
         robotHardware.drivetrain.setRotation(rotation);
-        robotHardware.drivetrain.setTargetPosition(distance * robotHardware.motorTicksPerIn); // adjust a distance in inches to the appropriate amount of motor ticks
+        robotHardware.drivetrain.setTargetPosition(distance * robotHardware.motorTicksPerInch); // adjust a distance in inches to the appropriate amount of motor ticks
         update();
         sleep(1000);
     }

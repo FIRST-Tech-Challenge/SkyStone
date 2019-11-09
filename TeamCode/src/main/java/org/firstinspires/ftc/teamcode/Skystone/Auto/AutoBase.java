@@ -17,6 +17,7 @@ public class AutoBase extends LinearOpMode {
         robot = new Robot(hardwareMap,telemetry,this);
 
         robot.driveMotorsBreakZeroBehavior();
+        robot.resetEncoders();
 
         robot.setMotorMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);

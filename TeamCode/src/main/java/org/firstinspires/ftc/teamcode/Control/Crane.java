@@ -33,13 +33,15 @@ import static org.firstinspires.ftc.teamcode.Control.Constants.COUNTS_PER_INCH;
 import static org.firstinspires.ftc.teamcode.Control.Constants.COUNTS_PER_MOTOR_REV;
 import static org.firstinspires.ftc.teamcode.Control.Constants.blimits;
 import static org.firstinspires.ftc.teamcode.Control.Constants.flimits;
+import static org.firstinspires.ftc.teamcode.Control.Constants.foundationServos;
+import static org.firstinspires.ftc.teamcode.Control.Constants.leftLinears;
 import static org.firstinspires.ftc.teamcode.Control.Constants.leftServos;
-import static org.firstinspires.ftc.teamcode.Control.Constants.linears;
 import static org.firstinspires.ftc.teamcode.Control.Constants.motorBLS;
 import static org.firstinspires.ftc.teamcode.Control.Constants.motorBRS;
 import static org.firstinspires.ftc.teamcode.Control.Constants.motorFLS;
 import static org.firstinspires.ftc.teamcode.Control.Constants.motorFRS;
 import static org.firstinspires.ftc.teamcode.Control.Constants.racks;
+import static org.firstinspires.ftc.teamcode.Control.Constants.rightLinears;
 import static org.firstinspires.ftc.teamcode.Control.Constants.rightServos;
 import static org.firstinspires.ftc.teamcode.Control.Constants.rotationservos;
 import static org.firstinspires.ftc.teamcode.Control.Constants.servos;
@@ -67,6 +69,9 @@ public class Crane {
                     break;
                 case claw:
                     setupClaw();
+                    break;
+                case foundation:
+                    setupFoundation();
                     break;
                 case bSystem:
                     //setupRack();
@@ -132,7 +137,8 @@ public class Crane {
     public DcMotor motorBR;
     public DcMotor motorBL;
 
-    public DcMotor linear;
+    public DcMotor rightLinear;
+    public DcMotor leftLinear;
     public DcMotor rack;
 
     public  List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
@@ -144,7 +150,7 @@ public class Crane {
 
     public Servo servo;
 
-    public Servo rotationservo, rightServo, leftServo;
+    public Servo rotationservo, rightServo, leftServo, foundationServo;
 
     public DigitalChannel flimit;
     public DigitalChannel blimit;
@@ -190,17 +196,22 @@ public class Crane {
 
     public void setupClaw() throws InterruptedException {
         rack = motor(racks, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.FLOAT);
-        linear = motor(linears, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.BRAKE);
+        leftLinear = motor(leftLinears, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.BRAKE);
+        rightLinear = motor(rightLinears, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.BRAKE);
 
         flimit = hardwareMap.digitalChannel.get(flimits);
         blimit = hardwareMap.digitalChannel.get(blimits);
 
-        //rotationservo = servo(rotationservos, Servo.Direction.FORWARD,0,1,0.5);
-        //rightServo = servo(rightServos, Servo.Direction.FORWARD,0,1,0.5);
-        //leftServo = servo(leftServos, Servo.Direction.FORWARD,0,1,0.5);
+        rotationservo = servo(rotationservos, Servo.Direction.FORWARD,0,1,0.5);
+        rightServo = servo(rightServos, Servo.Direction.FORWARD,0,1,0.5);
+        leftServo = servo(leftServos, Servo.Direction.REVERSE,0,1,0.5);
 
 
-        encoder(EncoderMode.ON, rack, linear);
+        encoder(EncoderMode.ON, rack, leftLinear, rightLinear);
+    }
+
+    public void setupFoundation() throws InterruptedException{
+        foundationServo = servo(foundationServos, Servo.Direction.FORWARD,0,1,0.6);
     }
 
     //-----------------------HARDWARE SETUP FUNCTIONS---------------------------------------
@@ -581,7 +592,7 @@ public class Crane {
         ON, OFF;
     }
     public enum setupType{
-        autonomous, teleop, endgame, drive, camera, claw, bSystem;
+        autonomous, teleop, endgame, drive, camera, claw, bSystem, foundation;
     }
 
     //-------------------SET FUNCTIONS--------------------------------

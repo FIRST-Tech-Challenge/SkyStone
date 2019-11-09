@@ -48,7 +48,8 @@ public class Constants {
     public static final String motorFLS = "motorFL";
     public static final String motorBRS = "motorBR";
     public static final String motorBLS = "motorBL";
-    public static final String linears = "linear";
+    public static final String leftLinears = "leftlinear";
+    public static final String rightLinears = "rightlinear";
     public static final String racks = "rack";
     public static final String servos = "servo";
     public static final String rotationservos = "rotservo";
@@ -56,6 +57,8 @@ public class Constants {
     public static final String leftServos = "leftservo";
     public static final String flimits = "flimit";
     public static final String blimits = "blimit";
+    public static final String foundationServos = "foundationservo";
+
 
 
 

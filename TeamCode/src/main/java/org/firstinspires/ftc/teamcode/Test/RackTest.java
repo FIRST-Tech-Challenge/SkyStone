@@ -27,7 +27,7 @@ public class RackTest extends TeleOpControl {
             }else{
                 rob.rack.setPower(0);
             }
-
+/*
             if(gamepad1.y){
                 rob.linear.setPower(-0.5);
             }else if(gamepad1.a){
@@ -35,6 +35,8 @@ public class RackTest extends TeleOpControl {
             }else{
                 rob.linear.setPower(0);
             }
+
+ */
 /*
             if(gamepad1.dpad_up){
                 rob.driveTrainMovement(0.5, Crane.movements.forward);

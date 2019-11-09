@@ -28,8 +28,6 @@ public class MecanumRobot
     public MecanumDrivetrain drivetrain;
     public LinkedServo platformServos;
 
-    public final double motorTicksPerIN;
-
     public MecanumRobot(HardwareMap hwMap, Telemetry telemetry, boolean teleOpMode)
     {
         this.telemetry = telemetry;
@@ -60,20 +58,17 @@ public class MecanumRobot
         servoClawLeft.setDirection(Servo.Direction.FORWARD);
         servoClawRight.setDirection(Servo.Direction.REVERSE);
 
-        motorList = new DcMotor[]{driveFrontLeft, driveFrontRight, driveRearLeft, driveRearRight};
-
-        drivetrain = new MecanumDrivetrain(motorList, teleOpMode);
+        drivetrain = new MecanumDrivetrain(new DcMotor[]{driveFrontLeft, driveFrontRight, driveRearLeft, driveRearRight},
+                teleOpMode, wheelRadius, wheelToMotorRatio);
         platformServos = new LinkedServo(servoClawLeft, servoClawRight);
-
-        motorTicksPerIN = drivetrain.getTicksPerIn(wheelRadius, wheelToMotorRatio);
     }
 
     public void autoPosition(double course, double velocity, double rotation, double distance) // distance in inches
     {
         drivetrain.setCourse(course * Math.PI/180); //converts a degree input into radians
-        drivetrain.setMovementVelocity(velocity);
+        drivetrain.setAutoVelocity(velocity);
         drivetrain.setRotation(rotation);
-        drivetrain.setTargetPosition(distance * motorTicksPerIN); // adjust a distance in inches to the appropriate amount of motor ticks
+        drivetrain.setTargetPosition(distance * drivetrain.getTicksPerIn()); // adjust a distance in inches to the appropriate amount of motor ticks
 
         while (drivetrain.isPositioning())
         {
@@ -113,7 +108,7 @@ public class MecanumRobot
         telemetry.addData("Course Degrees", drivetrain.getCourse() * Math.PI/180);
         telemetry.addData("Rotation Target", drivetrain.getRotation());
         telemetry.addData("Velocity Target", drivetrain.getVelocity());
-        telemetry.addData("Movement Velocity", drivetrain.getMovementVelocity());
+        telemetry.addData("Movement Velocity", drivetrain.getAutoVelocity());
 
         telemetry.addData("> Servo Info", "-----");
         telemetry.addData("Servo Pos", platformServos.getActual());

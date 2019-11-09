@@ -1,12 +1,14 @@
-package org.firstinspires.ftc.teamcode.mecanum;
+package org.firstinspires.ftc.teamcode.mecanum.autocode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotlib.robot.MecanumRobot;
 
-@Autonomous(name="Mecanum Auto V-Park", group="Auto")
-public class MecanumAutoPark extends LinearOpMode
+@Disabled
+@Autonomous(name="Mecanum Auto V-Full", group="Auto")
+public class MecanumAutoFull extends LinearOpMode
 {
     private MecanumRobot robot;
 
@@ -20,10 +22,11 @@ public class MecanumAutoPark extends LinearOpMode
         waitForStart();
 
         // Move commands
-        telemetry.addData("Status", "Move to bridge - forward 4 in + left 1 ft");
-        robot.autoPosition(0, 1, 0, 27);
-        robot.autoPosition(90, 1, 0, 12);
-    }
+        //TODO: fill out move commands for a full possible auto
 
-    // robot move command moved to the robot map
+        robot.autoPosition(0, 1, 0, 29.5);
+        robot.platformServos.setPosition(1);
+        robot.autoPosition(180, 1, 0, 29);
+        robot.platformServos.setPosition(0);
+    }
 }

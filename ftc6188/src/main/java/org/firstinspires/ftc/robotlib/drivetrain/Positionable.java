@@ -10,5 +10,6 @@ public interface Positionable
     void finishPositioning();
     void position();
     double getTicksPerRev();
-    double getTicksPerIn(double wheelRadius, double motorToWheelRatio);
+    void setTicksPerIn(double wheelRadius, double motorToWheelRatio);
+    double getTicksPerIn();
 }

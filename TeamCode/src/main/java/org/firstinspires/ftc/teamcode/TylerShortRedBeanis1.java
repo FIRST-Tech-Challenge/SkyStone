@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.autoOp.ShortRedBeanis1;
 //Beanis = Square
 //Hagrids = Slash
 
-@Autonomous(name="Short Red Beanis 1", group="redbean")
+@Autonomous(name="Short Blue Beanis 1", group="redbean")
 public class TylerShortRedBeanis1 extends ShortRedBeanis1 {
     public TylerShortRedBeanis1() {
         super(ChassisConfig.forTileRunner());

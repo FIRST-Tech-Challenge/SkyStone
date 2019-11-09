@@ -12,14 +12,7 @@ public class BlueLeft extends AutoBase {
     // park in building zone (even if other team is in corner)
     @Override
     public void runOpMode() {
-        Robot robot = new Robot(hardwareMap,telemetry,this);
-        robot.driveMotorsBreakZeroBehavior();
-        robot.resetEncoders();
-        waitForStart();
-        robot.intializeIMU();
-        robot.changeRunModeToUsingEncoder();
-        Position2D position2D = new Position2D(robot);
-        position2D.startOdometry();
+        initLogic();
 
 //        robot.goToSkystone();
         robot.moveToPoint(0, -30, 1, 0, Math.toRadians(20));

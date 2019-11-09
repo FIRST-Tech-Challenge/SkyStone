@@ -19,6 +19,14 @@ public class Controller extends Gamepad {
     double rightTriggerMod = 1.0;
     double leftTriggerMod = 1.0;
 
+    //Records last button press to deal with single button presses doing a certain methods
+    boolean aLast = false;
+    boolean bLast = false;
+    boolean xLast = false;
+    boolean yLast = false;
+    boolean rightBumperLast = false;
+    boolean leftBumperLast = false;
+
     //Use given controller in teleop mode
     public Controller(Gamepad controller) {
         this.controller = controller;

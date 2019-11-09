@@ -7,12 +7,13 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class Arm extends Subsystem {
     DcMotor main;
 
-    int robotHeight;
-    int robotLength;
-    int blockHeight;
-    int foundationHeight;
-    int armLength;
+    double robotHeight;
+    double robotLength;
+    double blockHeight;
+    double foundationHeight;
+    double armLength;
     final int armMax = 250;
+    int[] levelAngles;
 
     public Arm(HardwareMap hardwareMap) {
         main = hardwareMap.dcMotor.get("arm");
@@ -27,21 +28,30 @@ public class Arm extends Subsystem {
     public void initArm() {
         reset();
         setZeroBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        //This sets it's mode to use a PID loop and input is velocity instead of power
         setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+
+    public void setArm(int level) {
+        double heightDif = getHeightDiffrence(level);
+        double armAngle = Math.acos((double) heightDif / (double) armLength);
+        main.setTargetPosition(Math.max((int) armAngle * 1440, armMax));
+        //main.setTargetPosition(levelAngles[level]);
     }
 
-    public void setArm(Chassis chassis, int level) {
-        double distance;
-        double armAngle;
-        int heightDif = Math.abs(robotHeight - (blockHeight * level + foundationHeight));
-        armAngle = Math.acos((double) heightDif / (double) armLength);
-        distance = Math.sqrt((armLength * armLength) - (heightDif * heightDif)) + robotLength;
-    }
-
-    public void runArm(int power) {
+    public void setArmCheck(double error){
 
     }
 
+    public void run(int level) {
+        setArm(level);
+        main.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
 
+    public double getDistanceForLevel(int level) {
+        double heightDif = getHeightDiffrence(level);
+        return Math.sqrt((armLength * armLength) - (heightDif * heightDif)) + robotLength;
+    }
+    public double getHeightDiffrence(int level){
+        return Math.abs(robotHeight - (blockHeight * level + foundationHeight));
+    }
 }

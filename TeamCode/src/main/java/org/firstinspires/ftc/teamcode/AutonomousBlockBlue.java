@@ -10,6 +10,9 @@ public class AutonomousBlockBlue extends Movement {
     public void runOpModeImpl() {
 
         waitForStart();
+        arm.setPower(-0.3);
+        sleep(200);
+        arm.setPower(0.0);
 
         //Servo goes up
         frontServo.setPosition(0.4);
@@ -22,14 +25,15 @@ public class AutonomousBlockBlue extends Movement {
     private void moveThreeBlocks() {
 
        // While returning we come faster so rightDuration will be smaller
-        moveBlock(1, 0.5, 1750, 1250,
-                2900, 0.0, 3500, 0.0);
+        moveBlock(1, 0.5, 1750, 1200,
+                2725, 0.0, 3400, 0.0);
 
-        moveBlock(2, 0.5, 1375, 1100,
-                2750, 0.2, 3900, 0.0);
+        moveBlock(2, 0.5, 1300,   1100,
+                2725
+                , 0.2, 3850, -0.2);
 
-        moveBlock(3, 0.5, 1500, 1250,
-                0, 0.0, 4200, 0.0);
+        moveBlock(3, 0.5, 1250, 1250,
+                0, -0.2, 4200, 0.0);
     }
 
 
@@ -44,9 +48,7 @@ public class AutonomousBlockBlue extends Movement {
                            final double calibrationPower2) {
         // Move Forward towards the blocks
 
-        arm.setPower(-0.3);
-        sleep(200);
-        arm.setPower(0.0);
+
         goForward(wheelPower, forwardDuration, "Going forward");
         stop("Pausing");
         sleep(50);

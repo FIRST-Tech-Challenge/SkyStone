@@ -90,6 +90,12 @@ public class teleop extends LinearOpMode {
             } else if (egamepad2.b.released) {
                 Grabber.close();
             }
+            
+            if (egamepad2.x.released) {
+                Grabber.up();
+            } else if (egamepad2.y.released) {
+                Grabber.down();
+            }
 
             telemetry.addLine("Speed: " + speed);
             telemetry.update();

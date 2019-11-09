@@ -4,11 +4,12 @@ import org.firstinspires.ftc.teamcode.autoOp.LongFancyBeanis2;
 import org.firstinspires.ftc.teamcode.autoOp.ShortFancyBeanis2;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 //Beanis = Square
 //Hagrids = Slash
 
-@Autonomous(name="ShortFancyBeanis", group="fancy")
+@Disabled(/*name="ShortFancyBeanis", group="fancy"*/)
 public class TylerShortFancyBeanis2 extends ShortFancyBeanis2 {
     public TylerShortFancyBeanis2() {
         super(ChassisConfig.forTileRunner());

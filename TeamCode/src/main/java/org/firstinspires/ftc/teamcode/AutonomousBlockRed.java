@@ -29,121 +29,69 @@ public class AutonomousBlockRed extends Movement {
         frontServo.setPosition(0.4);
         sleep(200);
 
-        moveBlocksOld();
+        // moveBlocksOld();
 
         // TODO: New refactored code needs testing. If working start using this code and remove moveBlocksOld()
-        // moveBlocksNew();
+        moveThreeBlocks();
     }
 
-    private void moveBlocksOld() {
-        // Move Forward towards the blocks
-        goForward(0.5, 1650, "Going forward");
-        stop("Pausing");
+    private void moveThreeBlocks() {
 
-        //Servo goes down
-        frontServo.setPosition(0.0);
+        // While returning we come faster so rightDuration will be smaller
+        moveBlock(1, 0.5, 1900, 1200,
+                3400, 2700, 0.5);
 
-        //robot moves backward
-        goBackward(0.5, 1050, "Going backward");
-        stop("Pausing");
+        moveBlock(2, 0.5, 1700, 1200,
+                3860, 3160, 0.5);
 
-        //move left
-        goLeft(0.5,3100, "Going left");
-        stopWithSleep("Pausing", 300);
-
-        //servo up
-        frontServo.setPosition(0.4);
-        stop("Pausing");
-
-        //move right - towards the depot
-        goRight(0.5,3700,"Going right");
-        stopWithSleep("Pausing", 300);
-
-        leftfront.setPower(0);
-        leftback.setPower(0);
-        rightfront.setPower(0.4);
-        rightback.setPower(0.4);
-        sleep(300);
-
-        // 2. Stone #2
-
-        // Move Forward towards the blocks
-
-        goForward(0.4, 1550, "Going forward");
-        stop("Pausing");
-
-        //Servo goes down
-        frontServo.setPosition(0.0);
-
-
-        //robot moves backward
-        goBackward(0.5, 1050, "Going backward");
-        stop("Pausing");
-
-        //move left
-        goLeft(0.5,3700, "Going right");
-        stopWithSleep("Pausing", 300);
-
-        //servo up
-        frontServo.setPosition(0.4);
-
-        //move right - towards the depot
-        goRight(0.5,4300,"Going right");
-        stopWithSleep("Pausing", 300);
-
-        // 3. Stone #3
-
-        // Move Forward towards the blocks
-        leftfront.setPower(0);
-        leftback.setPower(0);
-        rightfront.setPower(0.4);
-        rightback.setPower(0.4);
-        sleep(300);
-
-        goForward(0.4, 1550, "Going forward");
-        stop("Pausing");
-
-        //Servo goes down
-        frontServo.setPosition(0.0);
-
-
-        //robot moves backward
-        goBackward(0.5, 1050, "Going backward");
-        stop("Pausing");
-
-        //move left
-        goLeft(0.5,4300, "Going right");
-
-        //servo up
-        frontServo.setPosition(0.4);
-
-        //move right - towards the depot
-        goRight(0.5,4900,"Going right");
+        moveBlock(3, 0.5, 1700, 1200,
+                4320, 3620, 0.5);
     }
 
     private void moveBlocksNew() {
-        int leftDuration = 3100; // How much to move left to carry the block
-        final int blockIncrement = 600; // When we return back we have to move right extra to pick next block
+        int leftDuration = 3400; // How much to move left to carry the block
+        final int blockIncrement = 460; // When we return back we have to move right extra to pick next block
+        final int blockDecrement = -550; // Decrement because on return we are moving at double speed
 
-        for (int block = 1; block <= 6 ; block++) {
+        for (int block = 1; block <= 3 ; block++) {
             // When we return back we have to move right extra to pick next block
-            int rightDuration = leftDuration + blockIncrement;
-            int forwardDuration = block == 1 ? 1650: 1550; // Move extra for 1st block
-            moveBlock(0.5, forwardDuration, 1050, leftDuration, rightDuration);
+            int rightDuration = leftDuration  + blockDecrement;
+            int forwardDuration = block == 1 ? 1900: 1700; // Move extra for 1st block
+            double wheelPower = block == 3 ? 1 : 0.5;
+            moveBlock(block, wheelPower, forwardDuration, 1200, leftDuration, rightDuration, 0.5);
 
             // When we move next block we need to move left as much as we have come right
-            leftDuration = rightDuration;
+            leftDuration += blockIncrement;
         }
     }
 
-    private void moveBlock(final double wheelPower,
+
+//    private void moveBlocksNewFaster() {
+//        int leftDuration = 1900; // How much to move left to carry the block
+//        final int blockIncrement = 375; // When we return back we have to move right extra to pick next block
+//
+//        for (int block = 1; block <= 5 ; block++) {
+//            // When we return back we have to move right extra to pick next block
+//            int rightDuration = leftDuration + blockIncrement;
+//            int forwardDuration = block == 1 ? 1400: 1300; // Move extra for 1st block
+//            moveBlock(block, 1, forwardDuration, 950, leftDuration, rightDuration, 0.4);
+//
+//            // When we move next block we need to move left as much as we have come right
+//            leftDuration = rightDuration;
+//        }
+//    }
+
+    private void moveBlock(final int blockNumber,
+                           final double wheelPower,
                            final int forwardDuration,
                            final int backwardDuration,
                            final int leftDuration,
-                           final int rightDuration) {
+                           final int rightDuration,
+                           final double calibrationPower) {
         // Move Forward towards the blocks
         goForward(wheelPower - 0.1, forwardDuration, "Going forward");
         stop("Pausing");
+        sleep(50);
 
         //Servo goes down, to grab the block
         frontServo.setPosition(0.0);
@@ -152,7 +100,9 @@ public class AutonomousBlockRed extends Movement {
         goBackward(wheelPower, backwardDuration, "Going backward");
         stop("Pausing");
 
-        // calibrateDirection(0.4, 300);
+        if (blockNumber == 3) {
+            calibrateDirection(0.4, 300);
+        }
 
         //move left
         goLeft(wheelPower, leftDuration, "Going left");
@@ -163,10 +113,10 @@ public class AutonomousBlockRed extends Movement {
         stop("Pausing");
 
         //move right - towards the depot
-        goRight(wheelPower, rightDuration,"Going right");
+        goRight(1.0, rightDuration,"Going right");
         stopWithSleep("Pausing", 300);
 
-        calibrateDirection(0.4, 300);
+        calibrateDirection(calibrationPower, 300);
     }
 
     private void calibrateDirection(final double rightWheelPower, final int duration) {

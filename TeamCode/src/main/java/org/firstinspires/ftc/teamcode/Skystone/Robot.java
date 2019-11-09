@@ -594,34 +594,51 @@ public class Robot {
 
 
     public void moveToPoint(double x, double y, double moveSpeed, double turnSpeed, double optimalAngle) {
+
+        // find the total distance from the start point to the end point
         double totalDistanceToTarget = Math.hypot(x - robotPos.x, y - robotPos.y);
 
+        // so deceleration works
         this.setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        // keep on running this
         while (linearOpMode.opModeIsActive()) {
 
+            // store your current position in variables
             double xPos = robotPos.x;
             double yPos = robotPos.y;
             double anglePos = this.anglePos;
 
+            // find your current distance to target
             double distanceToTarget = Math.hypot(x - xPos, y - yPos);
 
+            // only way to break the loop, if the distance to target is less than 1
             if (distanceToTarget < 1) {
                 brakeRobot();
                 return;
             }
 
+            // find the absolute angle to target
             double absoluteAngleToTarget = Math.atan2(y - yPos, x - xPos);
+            // find the relative angle of the target to the robot
             double relativeAngleToPoint = MathFunctions.angleWrap(absoluteAngleToTarget - anglePos);
+            // x distance for the robot to its target
             double relativeXToPoint = Math.cos(relativeAngleToPoint) * distanceToTarget;
+            // y distance for the robot to its target
             double relativeYToPoint = Math.sin(relativeAngleToPoint) * distanceToTarget;
+            // adds optimal angle
             double relativeTurnAngle = relativeAngleToPoint + optimalAngle;
 
+            // converting the relativeX and relativeY to xPower and yPower
             double xPower = relativeXToPoint / (Math.abs(relativeXToPoint) + Math.abs(relativeYToPoint));
             double yPower = relativeYToPoint / (Math.abs(relativeYToPoint) + Math.abs(relativeXToPoint));
 
+            // find the deceleration
             double decelerationScaleFactor = Math.sqrt(Math.pow(totalDistanceToTarget,2) - Math.pow(totalDistanceToTarget - distanceToTarget,2)) / totalDistanceToTarget;
 
+            // get everything into x, y, and turn movements for applyMove
+            // the robot can be viewed as something that moves on a coordinate plane
+            // that moves in a x and y direction but also has a heading, where it is pointing
             xMovement = xPower * moveSpeed * decelerationScaleFactor;
             yMovement = yPower * moveSpeed * decelerationScaleFactor;
             turnMovement = Range.clip(relativeTurnAngle / Math.toRadians(30), -1, 1) * turnSpeed * decelerationScaleFactor;

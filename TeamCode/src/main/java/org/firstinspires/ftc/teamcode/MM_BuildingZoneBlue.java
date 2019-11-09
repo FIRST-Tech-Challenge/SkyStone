@@ -26,49 +26,45 @@ public class MM_BuildingZoneBlue extends LinearOpMode {
         robot.strafeTime(0.5, 1000);
         Thread.sleep(500);
 
-        robot.driveForwardDistance(22, -0.25, this);
+        robot.driveForwardDistance(30, -speed, this);
 
         // retract the waffle mover
         Thread.sleep(500);
         robot.moveWaffleMover('h');
-        Thread.sleep(500);
 
-        // before turning, back up a little so we don't run into the other team's robot
+        // move backwards a little before turning
         robot.driveForwardDistance(12, 0.25, this);
 
         // turn 180 degrees
-        robot.turnRight(0.6, 3200);
-    
-        // drive backwards
-        robot.driveForwardDistance(30.0, -0.6, this);
+        robot.turnRight(speed, 2500);
+
+        // drive forwards
+        robot.driveForwardDistance(36.0, -speed, this);
 
         // extend the waffle mover
         Thread.sleep(500);
         robot.moveWaffleMover('f');
 
-        // back up from the foundation
-        robot.driveForwardDistance(6, speed, this);
+        // back up so we have room to turn
+        robot.driveForwardDistance(8, 0.25, this);
 
         // turn towards skybridge
-        robot.turnRight(speed, 1250);
+        robot.turnRight(speed, 600);
 
-        // drive forward to turn and park under the skybridge
-        robot.driveForwardDistance(8, speed, this);
+        // bring arm down
+        robot.bringArmDown(this);
 
+        // drive out from foundation
+        robot.driveForwardDistance(22, speed, this);
         // if parking close to center, move forward more
         switch (parkingPosition) {
             case CLOSE:
                 break;
             case FAR:
-                robot.strafeTime(speed, 1500);
+                // strafe to the far side
+                robot.strafeTime(speed, 1000);
                 break;
         }
-
-        // extend arm so we are under 14 inches
-        //robot.toggleArmRotate();
-
-        // park under skybridge
-        robot.driveForwardDistance(15.0, speed, this);
     }
 }
 

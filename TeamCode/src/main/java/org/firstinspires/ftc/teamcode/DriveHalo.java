@@ -80,7 +80,7 @@ public class DriveHalo extends OpMode {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        } if (robot.armPos == Robot.armPosition.ACTIVE) {
+        } //if (robot.armPos == Robot.armPosition.ACTIVE) {
             if (gamepad2.left_stick_y < 0) {
                 robot.setArmRotatePower(1);
             } else if (gamepad2.left_stick_y > 0) {
@@ -88,7 +88,7 @@ public class DriveHalo extends OpMode {
             } else if (gamepad2.left_stick_y == 0) {
                 robot.setArmRotatePower(0);
             }
-        }
+        //}
 
         buttons[1] = gamepad2.dpad_down;
         buttons[2] = gamepad2.dpad_up;

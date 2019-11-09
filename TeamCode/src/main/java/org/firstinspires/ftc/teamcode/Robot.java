@@ -24,8 +24,7 @@ public class Robot {
     public DcMotor frontLeft;
     public DcMotor frontRight;
     public DcMotor waffleMover;
-    public DcMotor armRotate1;
-    public DcMotor armRotate2;
+    public DcMotor armRotate;
     public DcMotor liftMotor;
 
     // Servos
@@ -37,12 +36,12 @@ public class Robot {
     NavxMicroNavigationSensor navxMicro;
 
     // Constants
-    private int CORE_HEX_TICKS_PER_REV = 288; // ticks / rev
+    private int TORQUENADO60TICKS_PER_REV = 1440; // ticks / rev
     private int ANGLE_OF_GRIPPER_WHEN_GRABBING = 30; // in degrees
-    private double ANDYMARK_TICKS_PER_REV = 537.6; // ticks / rev
+    private double TORQUENADO20_TICKS_PER_REV = 480; // ticks / rev
     private double WHEEL_DIAMETER = 4;
     private double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI; // in / rev
-    private double TICKS_PER_INCH = ANDYMARK_TICKS_PER_REV / WHEEL_CIRCUMFERENCE; // ticks / in
+    private double TICKS_PER_INCH = TORQUENADO20_TICKS_PER_REV / WHEEL_CIRCUMFERENCE; // ticks / in
     double ROBOT_EXTENDED_LENGTH = 36.0; // in
     double ROBOT_RETRACTED_LENGTH = 18.0; // in
 
@@ -82,8 +81,7 @@ public class Robot {
         this.rearRight = hwMap.dcMotor.get("rearRight");
         this.frontRight = hwMap.dcMotor.get("frontRight");
         this.waffleMover = hwMap.dcMotor.get("waffleMover");
-        this.armRotate1 = hwMap.dcMotor.get("armRotate1");
-        this.armRotate2 = hwMap.dcMotor.get("armRotate2");
+        this.armRotate = hwMap.dcMotor.get("armRotate");
         this.liftMotor = hwMap.dcMotor.get("liftMotor");
 
         // Drive Motor Direction
@@ -92,20 +90,14 @@ public class Robot {
         this.rearRight.setDirection(DcMotor.Direction.REVERSE);
         this.frontRight.setDirection(DcMotor.Direction.REVERSE);
         this.waffleMover.setDirection(DcMotor.Direction.FORWARD);
-        this.armRotate1.setDirection(DcMotor.Direction.REVERSE); // positive makes arm go forward
-        this.armRotate2.setDirection(DcMotor.Direction.REVERSE);
+        this.armRotate.setDirection(DcMotor.Direction.REVERSE); // positive makes arm go forward
         this.liftMotor.setDirection(DcMotor.Direction.FORWARD);
 
         // set motor powers to 0 so they don't cause problems
         this.stopDrive();
         this.waffleMover.setPower(0);
-        this.armRotate1.setPower(0);
-        this.armRotate2.setPower(0);
+        this.armRotate.setPower(0);
         this.liftMotor.setPower(0);
-
-        // Zero power behavior
-        this.armRotate1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        this.armRotate2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Servo mapping
         this.gripperRotateServo1 = hwMap.get(Servo.class, "gripperRotateServo1");
@@ -223,12 +215,10 @@ public class Robot {
 
     private void moveArmRotate(int targetPosition, double power, OpMode opmode) {
         // reset encoders
-        this.armRotate1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        this.armRotate2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.armRotate.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         // set mode
-        this.armRotate1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        this.armRotate2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        this.armRotate.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // set power
         this.setArmRotatePower(power);
@@ -246,8 +236,7 @@ public class Robot {
 
         long timestart = System.nanoTime();
         // wait for the armRotate motors to reach the position or else things go bad bad
-        while (Math.abs(this.armRotate1.getCurrentPosition()) <  targetPosition &&
-                Math.abs(this.armRotate2.getCurrentPosition()) < targetPosition) {
+        while (Math.abs(this.armRotate.getCurrentPosition()) <  targetPosition) {
 
             // if it takes more than 2 seconds, something is wrong so we exit the loop
             if (System.nanoTime() - timestart > 2000000000) {
@@ -256,11 +245,10 @@ public class Robot {
                 break;
             }
 
-            double correction1 = PIDWrist1.performPID(Math.abs(this.armRotate1.getCurrentPosition()));
-            double correction2 = PIDWrist2.performPID(Math.abs(this.armRotate1.getCurrentPosition()));
+            double correction1 = PIDWrist1.performPID(Math.abs(this.armRotate.getCurrentPosition()));
+            double correction2 = PIDWrist2.performPID(Math.abs(this.armRotate.getCurrentPosition()));
 
-            this.armRotate1.setPower(this.armRotate1.getPower() + correction1);
-            this.armRotate2.setPower(this.armRotate2.getPower() + correction2);
+            this.armRotate.setPower(this.armRotate.getPower() + correction1);
             opmode.telemetry.addData("Gripper", "#1: " + correction1 + " #2: " + correction2);
             opmode.telemetry.update();
         }
@@ -280,7 +268,7 @@ public class Robot {
     void bringArmDown(OpMode opmode) throws InterruptedException {
         if (armPos == armPosition.REST) { // we only bring the arm down if the arm is resting
             // we rotate the arm 180 + ANGLE_OF_GRIPPER_WHEN_GRABBING degrees
-            this.moveArmRotate(CORE_HEX_TICKS_PER_REV * (160) / 360, 0.6, opmode);
+            this.moveArmRotate(TORQUENADO60TICKS_PER_REV * (160) / 360, 0.6, opmode);
             // since gravity is pushing on the arm, we fight it so the arm gradually goes down and holds its position
             this.setArmRotatePower(-0.5);
             Thread.sleep(500);
@@ -297,7 +285,7 @@ public class Robot {
             }
 
             // we rotate the arm 110 degrees
-            this.moveArmRotate(this.CORE_HEX_TICKS_PER_REV * (150) / 360, -0.7, opmode);
+            this.moveArmRotate(this.TORQUENADO60TICKS_PER_REV * (150) / 360, -0.7, opmode);
             this.setArmRotatePower(-0.4); // since gravity is pushing on the arm, we fight it so the arm gradually goes down
             Thread.sleep(500);
             this.stopArmRotate();
@@ -335,24 +323,23 @@ public class Robot {
     }
 
     void setArmRotatePower(double power) {
-        this.armRotate1.setPower(power);
-        this.armRotate2.setPower(power);
+        this.armRotate.setPower(power);
     }
 
     void stopArmRotate() { this.setArmRotatePower(0); }
 
     String getInfo() {
-        String output = "Arm Position: " + this.armPos + ", Waffle Position: ";
+        String output = "Arm Position: " + this.armPos + "\nWaffle Position: ";
         if (this.wafflePosition == -1) {
-            output += "Down. Wrist Position: ";
+            output += "Down\nWrist Position: ";
         } else {
-            output += "Up, Wrist Position: ";
+            output += "Up\nWrist Position: ";
         }
 
         if (this.gripperRotatePosition == 1) {
-            output += "Up, Gripper Position: ";
+            output += "Up\nGripper Position: ";
         } else {
-            output += "Down, Gripper Position: ";
+            output += "Down\nGripper Position: ";
         }
 
         output += this.gripperPos;

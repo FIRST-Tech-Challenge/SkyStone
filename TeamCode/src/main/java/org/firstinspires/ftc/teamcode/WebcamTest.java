@@ -2,19 +2,16 @@
 // Modified by Aidan Sun on 24 October 2019
 package org.firstinspires.ftc.teamcode;
 
-import android.annotation.SuppressLint;
-
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import java.util.List;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+
+import java.util.List;
 
 public class WebcamTest {
     /* Constants */
@@ -224,12 +221,11 @@ public class WebcamTest {
 
     public int detectSkystonePosition(LinearOpMode opmode) {
 
-        this.init(opmode.hardwareMap);
-
-        /*
+        /**
          * Activate TensorFlow Object Detection before we wait for the start command.
          * Do it here so that the Camera Stream window will have the TensorFlow annotations visible.
-         */
+         **/
+        this.init(opmode.hardwareMap);
 
         if (tfod != null) {
             tfod.activate();
@@ -277,7 +273,7 @@ public class WebcamTest {
                 }
             }
         }
-        opmode.telemetry.addData("Skystone Position", "CENTER");
+        opmode.telemetry.addData("Skystone Position", "Error occurred");
         opmode.telemetry.update();
         return 0; // if something goes wrong default is center
     }

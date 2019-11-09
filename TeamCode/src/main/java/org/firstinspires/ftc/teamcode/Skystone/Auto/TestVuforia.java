@@ -10,6 +10,6 @@ public class TestVuforia extends AutoBase {
 
         waitForStart();
         int tfodPosition = robot.detectTensorflow();
-        robot.goToSkystone(tfodPosition);
+        goToSkystone(tfodPosition,0);
     }
 }

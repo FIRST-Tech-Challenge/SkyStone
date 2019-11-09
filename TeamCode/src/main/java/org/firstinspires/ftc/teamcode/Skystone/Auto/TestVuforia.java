@@ -6,6 +6,10 @@ public class TestVuforia extends AutoBase {
 
     @Override
     public void runOpMode() {
-        robot.goToSkystone();
+        initLogic();
+
+        waitForStart();
+        int tfodPosition = robot.detectTensorflow();
+        robot.goToSkystone(tfodPosition);
     }
 }

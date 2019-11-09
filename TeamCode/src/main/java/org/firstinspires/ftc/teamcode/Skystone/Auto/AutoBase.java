@@ -25,6 +25,10 @@ public class AutoBase extends LinearOpMode {
 
         Position2D position2D = new Position2D(robot);
         position2D.startOdometry();
+
+        robot.resetEncoders();
+        robot.intializeIMU();
+        robot.changeRunModeToUsingEncoder();
     }
 
     @Override

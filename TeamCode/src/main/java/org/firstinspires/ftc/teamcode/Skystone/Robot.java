@@ -815,7 +815,7 @@ public class Robot {
         return (int)Math.round(retVal);
     }
 
-    public void goToSkystone(){
+    public void goToSkystone(int vuforiaPosition){
 
         final String VUFORIA_KEY = "AbSCRq//////AAAAGYEdTZut2U7TuZCfZGlOu7ZgOzsOlUVdiuQjgLBC9B3dNvrPE1x/REDktOALxt5jBEJJBAX4gM9ofcwMjCzaJKoZQBBlXXxrOscekzvrWkhqs/g+AtWJLkpCOOWKDLSixgH0bF7HByYv4h3fXECqRNGUUCHELf4Uoqea6tCtiGJvee+5K+5yqNfGduJBHcA1juE3kxGMdkqkbfSjfrNgWuolkjXR5z39tRChoOUN24HethAX8LiECiLhlKrJeC4BpdRCRazgJXGLvvI74Tmih9nhCz6zyVurHAHttlrXV17nYLyt6qQB1LtVEuSCkpfLJS8lZWS9ztfC1UEfrQ8m5zA6cYGQXjDMeRumdq9ugMkS";
 
@@ -838,7 +838,7 @@ public class Robot {
 
             telemetry.addLine("go to point");
             int position = 0;
-            int vuforiaPosition = robot.detectTensorflow();
+            vuforiaPosition = robot.detectTensorflow();
             robot.intakeRight.setPower(1);
 
             robot.intakeLeft.setPower(1);

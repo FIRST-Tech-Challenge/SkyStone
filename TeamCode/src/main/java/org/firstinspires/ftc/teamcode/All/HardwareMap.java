@@ -6,13 +6,14 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.IntegratingGyroscope;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import java.util.ArrayList;
 
 public class HardwareMap {
     public DcMotorEx backLeft, backRight, frontLeft, frontRight, firstJoint, secondJoint, intakeJoint, leftIntake, rightIntake,
     liftOne, liftTwo;
-    public CRServo intake;
+    public Servo servo1, servo2, servo3;
     public BNO055IMU gyro;
     public IntegratingGyroscope imu;
     public static AnalogInput leftForward, rightForward, sideways;
@@ -32,6 +33,14 @@ public class HardwareMap {
         rightIntake = (DcMotorEx) hwMap.get(DcMotor.class, "rightIntake");
         liftOne = (DcMotorEx) hwMap.get(DcMotor.class, "liftOne");
         liftTwo = (DcMotorEx) hwMap.get(DcMotor.class, "liftTwo");
+
+        //---------------------------------------------------------------------------
+
+        //------------------------===Servos===------------------------
+
+        servo1 = hwMap.get(Servo.class, "clawServo1");
+        servo2 = hwMap.get(Servo.class, "clasServo2");
+        servo3 = hwMap.get(Servo.class, "servo3");
 
         //---------------------------------------------------------------------------
 

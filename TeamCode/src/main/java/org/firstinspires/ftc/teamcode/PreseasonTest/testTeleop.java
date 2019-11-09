@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.All.HardwareMap;
 import org.firstinspires.ftc.teamcode.TeleOp.teleopConstants;
 
-@TeleOp(name = "TeleOpTest", group = "LinearOpMode")
+/*@TeleOp(name = "TeleOpTest", group = "LinearOpMode")
 @Disabled
 public class testTeleop extends LinearOpMode {
     @Override
@@ -102,4 +102,4 @@ public class testTeleop extends LinearOpMode {
             }
         }
     }
-}
+}*/

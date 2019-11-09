@@ -11,6 +11,8 @@ import org.firstinspires.ftc.teamcode.All.HardwareMap;
  *  -Right Joystick controls Right Wheel
  *  -Left Bumper strafes left
  *  -Right Bumper strafes right
+ *  -Y & B controls servo1
+ *  -X & A controls servo2
  * -Gamepad B:
  *  -Y and A to intake and outake
  *  -Left joystick and Right joysticks to control the lift
@@ -118,5 +120,17 @@ public class TestIntakeLift extends LinearOpMode {
                 hwMap.backLeft.setPower(-teleopConstants.strafePower);
             }
         }
+
+        //------------------------------===Servos===------------------------------------------
+
+        if(gamepad1.y)  //Change servo positions in teleopConstants.java
+            hwMap.servo1.setPosition(teleopConstants.clawServo1Pos1);
+        else if(gamepad1.b)
+            hwMap.servo1.setPosition(teleopConstants.clawServo1Pos2);
+
+        if(gamepad1.x)
+            hwMap.servo2.setPosition(teleopConstants.clawServo2Pos1);
+        else if(gamepad1.a)
+            hwMap.servo2.setPosition(teleopConstants.clawServo2Pos2);
     }
 }

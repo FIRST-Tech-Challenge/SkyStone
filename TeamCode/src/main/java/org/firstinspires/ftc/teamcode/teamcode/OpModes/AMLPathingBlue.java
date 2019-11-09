@@ -123,7 +123,7 @@ public class AMLPathingBlue extends LinearOpMode {
         outtake.rightVex.setPower(0);
 
         //drive back
-        drive.encoderDrive(this, .6, 12, 12, 5);
+        drive.encoderDrive(this, .7, 20, 20, 5);
         //sleep(1000);
 
         //strafe across bridge
@@ -144,7 +144,7 @@ public class AMLPathingBlue extends LinearOpMode {
 
 
         //drive out of way
-        drive.encoderDrive(this, .7, 12, 12, 5);
+        drive.encoderDrive(this, .7, 20, 20, 5);
         //      sleep(1000);
 
 
@@ -154,6 +154,8 @@ public class AMLPathingBlue extends LinearOpMode {
         //strafe to stone 2
         drive.strafeMove(this, 40, 10, .5);
         //drive.gyroTurn(this, 0, false, 4000);
+
+        drive.encoderDrive(this, .4, -12, -12, 3);
 
 
 

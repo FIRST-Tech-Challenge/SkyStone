@@ -903,4 +903,48 @@ public class DriveTrain {
         return masterAccel;
     }
 
+    public double average (double first, double second) { return (first + second) / 2; }
+
+    public double getRadiaxVertical() {
+        return average(average(fr.getPower(), bl.getPower()),
+                average(fl.getPower(), br.getPower()));
+    }
+
+    public double getRadiaxHorizontal () {
+        double frSpeed = fr.getPower() - getRadiaxVertical();
+        double flSpeed = -(fl.getPower() - getRadiaxVertical());
+        double blSpeed = bl.getPower() - getRadiaxVertical();
+        double brSpeed = -(br.getPower() - getRadiaxVertical());
+        return average(average(brSpeed, frSpeed), average(flSpeed, blSpeed));
+    }
+
+    public double getRadiaxHypotenuse () {
+        return Math.sqrt((getRadiaxVertical() * getRadiaxVertical()) +
+                (getRadiaxHorizontal() * getRadiaxHorizontal()));
+    }
+
+    public boolean getRadiaxRefactor () {
+        if (getRadiaxHorizontal() < 0) return true;
+        else return false;
+    }
+
+    public double getAbsoluteRadiax (double value, double degree) {
+        double refact = value - degree;
+        return Math.abs(refact);
+    }
+
+    public double getRadiax () {
+        double radiax = ((Math.acos(getRadiaxVertical() /
+                getRadiaxHypotenuse())) / (2 * Math.PI)) * 360;
+        radiax = getAbsoluteRadiax(radiax, 180);
+        if (getRadiaxRefactor()) radiax = getAbsoluteRadiax(radiax, 360);
+        return radiax;
+    }
+
+    public double getVector () {
+        double vector = getRadiax() + sensors.getGyroYaw();
+        while (vector > 360) vector -= 360;
+        return vector;
+    }
+
 }

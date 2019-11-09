@@ -138,6 +138,12 @@ public class TeleOpMecanum extends OpMode {
         }
 
         telemetry.addData("Speed", speedProp);
+        telemetry.addData("Vertical", drive.getRadiaxVertical());
+        telemetry.addData("Hypotenuse", drive.getRadiaxHypotenuse());
+        telemetry.addData("Horizontal", drive.getRadiaxHorizontal());
+        telemetry.addData("Radiax", drive.getRadiax());
+        //telemetry.addData("Vector", drive.getVector());
+
 
         if(gamepad1.dpad_left)
         {
@@ -148,8 +154,8 @@ public class TeleOpMecanum extends OpMode {
             drive.setStrafePower(1);
         }
         else if (Math.abs(left_stick_x) > 0.05 ||
-                Math.abs(left_stick_y) > 0.05 ||
-                Math.abs(right_stick_x) > 0.05) {
+                 Math.abs(left_stick_y) > 0.05 ||
+                 Math.abs(right_stick_x) > 0.05) {
 
             drive.fl.setPower(speedProp * ((left_stick_y - left_stick_x) - right_stick_x));
             drive.fr.setPower(speedProp * ((left_stick_y + left_stick_x) + right_stick_x));

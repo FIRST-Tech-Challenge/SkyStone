@@ -20,10 +20,27 @@ public abstract class SafetyPatrol extends ChassisStandard {
 
         if (madeTheRun == false) {
 
-            encoderDrive(36);
+            /*encoderDrive(36); */
+
+            raiseCrab();
+            sleep(1000);
+            encoderDrive(34);
+            encoderDrive(4, 4, 0.5);
+            dropCrab();
+            sleep(2000);
+            encoderDrive(-15, -15, 1.0);
+            turnRight(50);
+            encoderDrive(24);
+            raiseCrab();
+            sleep(1000);
+            encoderDrive(-5);
+            turnLeft(55);
+            encoderDrive(-30);
 
             madeTheRun = true;
         }
+
+        printStatus();
     }
 }
 

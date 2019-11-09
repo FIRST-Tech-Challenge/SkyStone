@@ -36,6 +36,7 @@ public abstract class ChassisStandard extends OpMode {
     private DcMotor motorFrontRight;
     private DcMotor extender;
     private DcMotor shoulder;
+    private DcMotor crane;
 
     //Crab
     protected Servo crab;
@@ -45,6 +46,7 @@ public abstract class ChassisStandard extends OpMode {
     private Servo bull;
     private Servo dozer;
     private double angleHand;
+
 
     // Walle state management
     int wasteAllocationLoadLifterEarthBegin;
@@ -199,8 +201,9 @@ public abstract class ChassisStandard extends OpMode {
 
     protected void initArm() {
         if (useArm) {
-            shoulder = hardwareMap.get(DcMotor.class, "motor4");
-            extender = hardwareMap.get(DcMotor.class, "motor5");
+            //shoulder = hardwareMap.get(DcMotor.class, "motor4");
+            extender = hardwareMap.get(DcMotor.class, "motorExtender");
+            crane = hardwareMap.get(DcMotor.class, "motorCrane");
         }
     }
 
@@ -732,5 +735,11 @@ public abstract class ChassisStandard extends OpMode {
         extraterrestrialVegetationEvaluator.setPower(0);
 
         //sleep(5000);
+    }
+
+    protected void pushCrane() {
+        crane.setPower(1);
+        sleep(500);
+        crane.setPower(0);
     }
 }

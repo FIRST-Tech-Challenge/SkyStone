@@ -12,7 +12,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 public class ArmTestAutoOpMode extends LinearOpMode {
 
-    PinchArmBot robot = new PinchArmBot(this);
+//    PinchArmBot robot = new PinchArmBot(this);
+    ScoupArmBot robot = new ScoupArmBot(this);
 
     @Override
     public void runOpMode() {
@@ -20,7 +21,8 @@ public class ArmTestAutoOpMode extends LinearOpMode {
 
         waitForStart();
 
-        robot.pickupSkyStone();
+//        robot.pickupSkyStone();
+        robot.scoupStone();
     }
 
 }

@@ -85,7 +85,7 @@ public class AutoBase extends LinearOpMode {
         }
     }
 
-    public void goToSkystone(int vuforiaPosition, int robotPosition){
+    public void goToSkystone(int skyStonePosition, int robotPosition){
         final String VUFORIA_KEY = "AbSCRq//////AAAAGYEdTZut2U7TuZCfZGlOu7ZgOzsOlUVdiuQjgLBC9B3dNvrPE1x/REDktOALxt5jBEJJBAX4gM9ofcwMjCzaJKoZQBBlXXxrOscekzvrWkhqs/g+AtWJLkpCOOWKDLSixgH0bF7HByYv4h3fXECqRNGUUCHELf4Uoqea6tCtiGJvee+5K+5yqNfGduJBHcA1juE3kxGMdkqkbfSjfrNgWuolkjXR5z39tRChoOUN24HethAX8LiECiLhlKrJeC4BpdRCRazgJXGLvvI74Tmih9nhCz6zyVurHAHttlrXV17nYLyt6qQB1LtVEuSCkpfLJS8lZWS9ztfC1UEfrQ8m5zA6cYGQXjDMeRumdq9ugMkS";
 
         // For all moveToPoints (because they are relative to the starting position of the robot),
@@ -98,14 +98,14 @@ public class AutoBase extends LinearOpMode {
 
             telemetry.addLine("go to point");
             int position = 0;
-            vuforiaPosition = robot.detectTensorflow();
+            skyStonePosition = robot.detectTensorflow();
 
             intake(true);
 
-            if (vuforiaPosition == 2) {
+            if (skyStonePosition == 2) {
                 telemetry.addLine("left");
                 robot.moveToPoint(39, 9 + (robotPosition * 24), 0.55, 0.5, Math.toRadians(0));
-            } else if (vuforiaPosition == 0){
+            } else if (skyStonePosition == 0){
                 telemetry.addLine("right");
                 robot.moveToPoint(39, -9 + (robotPosition * 24), 0.55, 0.5, Math.toRadians(0));
             } else {

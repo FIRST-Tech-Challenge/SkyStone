@@ -104,9 +104,13 @@ public abstract class ChassisStandard extends OpMode {
      */
     @Override
     public void init_loop () {
-       printStatus();
+        printStatus();
     }
 
+
+    /**
+     *
+     */
     protected void printStatus() {
         if(useGyroScope) {
             telemetry.addData("Gyro", "angle: " + this.getGyroscopeAngle());
@@ -115,7 +119,7 @@ public abstract class ChassisStandard extends OpMode {
             telemetry.addData("Crab", "Angle =%f", crab.getPosition());
         }
         telemetry.addData("Status", "time: " + runtime.toString());
-        telemetry.addData("Status", "madeTheRun=%b", madeTheRun);
+        telemetry.addData("Run", "madeTheRun=%b", madeTheRun);
 
     }
 
@@ -245,6 +249,11 @@ public abstract class ChassisStandard extends OpMode {
 
     protected void encoderDrive(double leftInches, double rightInches) {
         double speed = config.getMoveSpeed();
+        encoderDrive(leftInches, rightInches, speed);
+    }
+
+    protected void encoderDrive(double leftInches, double rightInches, double speed) {
+
         double countsPerInch = config.getRearWheelSpeed() / (config.getRearWheelDiameter() * Math.PI);
 
         // Get the current position.

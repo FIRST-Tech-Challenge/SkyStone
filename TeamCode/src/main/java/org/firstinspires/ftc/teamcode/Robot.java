@@ -118,7 +118,7 @@ public class Robot {
         this.grabServo.setDirection(Servo.Direction.FORWARD);
 
         // NavX Gyro Init
-        this.initNavXGyro(opmode);
+        //this.initNavXGyro(opmode);
 
     }
 

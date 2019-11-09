@@ -26,46 +26,49 @@ public class MM_BuildingZoneBlue extends LinearOpMode {
         robot.strafeTime(0.5, 1000);
         Thread.sleep(500);
 
-        robot.driveForwardDistance(36, -speed, this);
+        robot.driveForwardDistance(22, -0.25, this);
 
         // retract the waffle mover
         Thread.sleep(500);
         robot.moveWaffleMover('h');
+        Thread.sleep(500);
+
+        // before turning, back up a little so we don't run into the other team's robot
+        robot.driveForwardDistance(12, 0.25, this);
 
         // turn 180 degrees
-        robot.turnRight(speed, 2500);
-
+        robot.turnRight(0.6, 3200);
+    
         // drive backwards
-        robot.driveForwardDistance(50.0, -0.25, this);
+        robot.driveForwardDistance(30.0, -0.6, this);
 
         // extend the waffle mover
         Thread.sleep(500);
         robot.moveWaffleMover('f');
 
-        // strafe out from behind the foundation
-        robot.strafeTime(0.5, 1000);
+        // back up from the foundation
+        robot.driveForwardDistance(6, speed, this);
+
+        // turn towards skybridge
+        robot.turnRight(speed, 1250);
 
         // drive forward to turn and park under the skybridge
-        robot.driveForwardDistance(5.0, -speed, this);
+        robot.driveForwardDistance(8, speed, this);
 
         // if parking close to center, move forward more
         switch (parkingPosition) {
             case CLOSE:
-                robot.driveForwardDistance(15.0, -speed, this);
-                Thread.sleep(500);
                 break;
             case FAR:
+                robot.strafeTime(speed, 1500);
                 break;
         }
-
-        // turn towards skybridge
-        robot.turnRight(-speed, 600);
 
         // extend arm so we are under 14 inches
         //robot.toggleArmRotate();
 
         // park under skybridge
-        robot.driveForwardDistance(10.0, -speed, this);
+        robot.driveForwardDistance(15.0, speed, this);
     }
 }
 

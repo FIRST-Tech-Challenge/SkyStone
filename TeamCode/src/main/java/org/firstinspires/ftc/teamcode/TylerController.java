@@ -55,7 +55,7 @@ public class TylerController extends OpMode {
     // Hack stuff.
     private boolean useMotors = true;
     private boolean useEncoders = true;
-    private boolean useArm = true;
+    private boolean useArm = true; // HACK
     private boolean useLifter = true;
     private boolean useCrab = true;
     private boolean useDropper = true;
@@ -368,12 +368,9 @@ public class TylerController extends OpMode {
             if (Math.abs(driveNormal) < 0.1)
                 driveNormal = 0.0; // Prevent the output from saying "-0. 0".
 
-            double driveStrafe = 0.0;
-            if (useStrafing) {
-                driveStrafe = -gamepad1.left_stick_x;
-                if (Math.abs(driveStrafe) < 0.1)
-                    driveStrafe = 0.0; // Prevent the output from saying "-0.0".
-            }
+            double driveStrafe = gamepad1.left_stick_x;
+            if (Math.abs(driveStrafe) < 0.1)
+                driveStrafe = 0.0; // Prevent the output from saying "-0.0".
 
             double turn = gamepad1.right_stick_x;
 
@@ -445,7 +442,7 @@ public class TylerController extends OpMode {
             }*/
 
             // Control the extender: MANUAL CONTROL
-            boolean extendOut = gamepad1.a;
+            /*boolean extendOut = gamepad1.a;
             boolean extendIn = gamepad1.y;
             double extendManualPower = 0.0;
             if (extendOut) {
@@ -465,7 +462,7 @@ public class TylerController extends OpMode {
                     //shoulder.setPower(0);
                 }
                 extender.setPower(extendManualPower);
-            }
+            }*/
 
             // Control the crane.
             float suckOut = gamepad1.right_trigger;
@@ -478,16 +475,28 @@ public class TylerController extends OpMode {
                 crane.setPower(0);
             }
 
+            /*if(gamepad1.right_trigger){
+                crane.setPower(1);
+            }else if (gamepad1.left_trigger){
+                crane.setPower(-1);
+            }else{
+                crane.setPower(0);
+            }*/
+
+            /*if(gamepad1.dpad_up){
+                gripper.
+            }*/
+
             telemetry.addData("Extender", "start: %d, curr: %d, target: %d, armState: %d", extenderStartPostion, extender.getCurrentPosition(), extenderTarget, armState);
         }
 
 
         if (useCrab) {
             if (gamepad1.b) {
-                dropCrab();
-            }
-            if (gamepad1.a) {
                 raiseCrab();
+            }
+            else{
+                dropCrab();
             }
         }
 

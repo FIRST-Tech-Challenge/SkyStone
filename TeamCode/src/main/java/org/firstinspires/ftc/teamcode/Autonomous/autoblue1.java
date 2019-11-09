@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Control.AutonomousControl;
 import org.firstinspires.ftc.teamcode.Control.Crane;
 
-@Autonomous(name="Basic Auton", group = "basic")
+@Autonomous(name="Basic Auton 1", group = "basic")
 public class autoblue1 extends AutonomousControl {
     private ElapsedTime runtime = new ElapsedTime();
 

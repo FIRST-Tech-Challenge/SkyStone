@@ -33,6 +33,7 @@ import org.firstinspires.ftc.teamcode.Skystone.Odometry.Position2D;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
@@ -751,7 +752,7 @@ public class Robot {
         long startTime = SystemClock.elapsedRealtime();
 
         // 2 is right, 1 is center, 0 is left
-        ArrayList<Integer> retVals = new ArrayList<>();
+        HashMap<Integer, Integer> recognitions = new HashMap<>();
 
         // scan for 5 seconds
         while (linearOpMode.opModeIsActive() && SystemClock.elapsedRealtime()-startTime<5000){
@@ -781,7 +782,6 @@ public class Robot {
                         if (value < 600){
                             return 2;
                         } else if (value < 800){
-                            retVals.add(1);
                             return 1;
                         } else {
                             return 0;
@@ -790,29 +790,42 @@ public class Robot {
                     // if the confidence is greater than 0.5, add it to the arraylist
                     else if ((double)updatedRecognitions.get(i).getConfidence() > 0.5) {
                         if (value < 600){
-                            retVals.add(2);
-                        } else if (value < 800) {
-                            retVals.add(1);
+                            incrementBy(recognitions, 2,1);
+                        } else if (value < 800){
+                            incrementBy(recognitions, 1,1);
+                            return 1;
                         } else {
-                            retVals.add(0);
+                            incrementBy(recognitions, 0,1);
                         }
                     }
                 }
             }
         }
 
-        // find the average of everything in the arraylist
-        double retVal = 0;
-        for (int i = 0; i < retVals.size(); i++){
-            retVal += retVals.get(i);
+        int mostOccuredKey = 0;
+        int countOfMostOccuredKey = recognitions.get(0);
+        for (int i = 0; i < recognitions.size(); i++){
+            if (recognitions.get(i) > countOfMostOccuredKey){
+                mostOccuredKey = i;
+                countOfMostOccuredKey = recognitions.get(i);
+            }
         }
-        retVal /= retVals.size();
 
-        telemetry.addLine("retVal" + retVal);
+        telemetry.addLine("found: " + mostOccuredKey);
         telemetry.update();
 
         // return rounded int average
-        return (int)Math.round(retVal);
+        return mostOccuredKey;
+    }
+
+    private void incrementBy(HashMap<Integer, Integer> recognitions, int key, int val){
+        Integer currentVal = recognitions.get(key);
+        if (currentVal == null){
+            recognitions.put(key, val);
+        } else {
+            currentVal += val;
+            recognitions.put(key, currentVal);
+        }
     }
 
 

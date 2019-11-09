@@ -1,29 +1,25 @@
 package org.eastsideprep.eps15203;
 
-import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Gyroscope;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 
 /**
- * Hardware definitions for 15203
+ * Hardware definitions for 15203 GARAGE VERSION
  */
-public class Hardware15203 {
+public class HardwareOld15203 { //GARAGE
     /* Public OpMode members. */
     public DcMotor leftFrontMotor = null;
     public DcMotor rightFrontMotor = null;
     public DcMotor leftBackMotor = null;
     public DcMotor rightBackMotor = null;
     public DcMotor [] allMotors;
-    //public revServo zArmMotor = null;
+    public CRServo garageLeftServo = null;
+    public CRServo garageRightServo = null;
+    public CRServo [] allCRServos;
     public Gyroscope gyro = null;
 
     double [] rotationArray;
@@ -34,7 +30,7 @@ public class Hardware15203 {
     private ElapsedTime period = new ElapsedTime();
 
     /* Constructor */
-    public Hardware15203() {
+    public HardwareOld15203() {
 
     }
 
@@ -49,6 +45,9 @@ public class Hardware15203 {
         rightFrontMotor = hwMap.dcMotor.get("RF");
         leftBackMotor = hwMap.dcMotor.get("LB");
         rightBackMotor = hwMap.dcMotor.get("RB");
+
+            garageLeftServo = hwMap.crservo.get("GL");
+            garageRightServo = hwMap.crservo.get("GR");
 
         allMotors = new DcMotor[]{ leftFrontMotor, rightFrontMotor, leftBackMotor, rightBackMotor};
         rotationArray= new double[]{-1.0, 1.0, -1.0, 1.0};
@@ -144,6 +143,25 @@ public class Hardware15203 {
         rightBackMotor.setPower(0);
     }
 
+    public void garageLift (long milliseconds) {
+        garageLeftServo.setPower(-1.0);
+        garageRightServo.setPower(-1.0);
+
+        threadSleep(milliseconds);
+
+        garageLeftServo.setPower(0.0);
+        garageRightServo.setPower(0.0);
+    }
+
+    public void garagePlace (long milliseconds) {
+        garageLeftServo.setPower(1.0);
+        garageRightServo.setPower(1.0);
+
+        threadSleep(milliseconds);
+
+        garageLeftServo.setPower(0.0);
+        garageRightServo.setPower(0.0);
+    }
 
 
 

@@ -32,12 +32,12 @@ package org.eastsideprep.eps15203;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name = "Teleop Simple 15203", group = "15203")
+@TeleOp(name = "Teleop Old (Garage) 15203", group = "15203")
 
-public class Simple15203 extends LinearOpMode {
+public class TeleopOld15203 extends LinearOpMode {
 
     /* Declare OpMode members. */
-    Hardware15203 robot = new Hardware15203();
+    HardwareOld15203 robot = new HardwareOld15203();
 
     @Override
     public void runOpMode() {
@@ -108,7 +108,16 @@ public class Simple15203 extends LinearOpMode {
             }
 
 
-
+            if(gamepad1.y || gamepad2.y){
+                robot.garageRightServo.setPower(-1.0);
+                robot.garageLeftServo.setPower(-1.0);
+            }else if(gamepad1.a || gamepad2.a){
+                robot.garageLeftServo.setPower(1.0);
+                robot.garageRightServo.setPower(1.0);
+            }else{
+                robot.garageLeftServo.setPower(0.0);
+                robot.garageRightServo.setPower(0.0);
+            }
 
             // Send telemetry message to signify robot running;
             telemetry.addData("LeftX", left_stick_x);

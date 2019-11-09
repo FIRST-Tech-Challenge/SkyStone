@@ -37,7 +37,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 public class TeleopOnlyServos15203 extends LinearOpMode {
 
     /* Declare OpMode members. */
-    Hardware15203 robot = new Hardware15203();
+    HardwareOld15203 robot = new HardwareOld15203();
 
     @Override
     public void runOpMode() {

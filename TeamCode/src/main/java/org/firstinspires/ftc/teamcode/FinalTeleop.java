@@ -18,27 +18,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 */
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.Gyroscope;
-import com.qualcomm.robotcore.hardware.Blinker;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.hardware.Blinker;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
+import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.Position;
-import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
-import org.firstinspires.ftc.robotcore.external.Func;
-import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
-import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
-import java.util.Locale;
 
 /**
  * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
@@ -53,7 +44,7 @@ import java.util.Locale;
  * or add a @Disabled annotation to prevent this OpMode from being added to the Driver Station
  */
 //@Disabled
-@TeleOp(name="Final_TeleOp", group="Linear Opmode")
+@TeleOp(name="Final_TeleOpCopy", group="Linear Opmode")
 public class FinalTeleop extends LinearOpMode {
     private BNO055IMU imu;
     private DcMotor frontRightMotor;
@@ -133,7 +124,12 @@ public class FinalTeleop extends LinearOpMode {
 
 
 
-        
+
+
+
+
+/*
+
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
         parameters.mode                = BNO055IMU.SensorMode.IMU;
@@ -146,7 +142,7 @@ public class FinalTeleop extends LinearOpMode {
         
         imu.initialize(parameters);
 
-        resetAngle();
+     //   resetAngle();
         
         
         
@@ -158,7 +154,7 @@ public class FinalTeleop extends LinearOpMode {
         rearMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        
+*/
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -248,12 +244,12 @@ public class FinalTeleop extends LinearOpMode {
             frontRightMotor.setPower(BMP * mult);
             
             if(gamepad2.a){ //pick up
-                REV = -135;
+                REV = -160;
                 FEV = 25;
                 MaxSpeedR = 0.8; //0.8
                 MaxSpeedF = 0.5; // 0.5
             } else if(gamepad2.b) { //grab
-                REV = -135;
+                REV = -160;
                 FEV = 143;
                 MaxSpeedR = 0.5; //0.5
                 MaxSpeedF = 0.5; //0.5

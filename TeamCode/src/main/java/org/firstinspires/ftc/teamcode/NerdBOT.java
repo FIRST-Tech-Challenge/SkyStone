@@ -199,7 +199,7 @@ public class NerdBOT{
                //Perform PID Loop until we reach the targets
 //
  //           while (this.opmode.opModeIsActive() && ((!distanceTargetReached(xTicks, yTicks) && (!this.touchLeft.isPressed() || !this.touchRight.isPressed())))) {
-            while (this.opmode.opModeIsActive() && ((!distanceTargetReached(xTicks, yTicks) && (!stopRequestedByTouchOrColorSensors(touchEnabled, colorEnabled))))) {
+            while (!this.opmode.isStopRequested() && ((!distanceTargetReached(xTicks, yTicks) && (!stopRequestedByTouchOrColorSensors(touchEnabled, colorEnabled))))) {
 
                 if (debugFlag)
                     RobotLog.d("NerdBOT - opModeIsActive  Inside While Loop = %b, distanceTargetReached = %b", this.opmode.opModeIsActive(), distanceTargetReached(xTicks, yTicks));
@@ -266,7 +266,7 @@ public class NerdBOT{
 
         motorsSetMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        while (this.opmode.opModeIsActive() &&  runtime.seconds() <= 1) {
+        while (!this.opmode.isStopRequested() &&  runtime.seconds() <= 1) {
 
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
                 pidvalue = turnPIDCalculator.getOutput(angles.firstAngle, 1);

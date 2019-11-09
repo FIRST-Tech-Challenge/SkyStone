@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 //import com.qualcomm.robotcore.hardware.DcMotor$RunMode;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -11,13 +12,16 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
+
 /**
  * This file illustrates the concept of driving a path based on imu heading and encoder counts.
  * It uses the common Pushbot hardware class to define the drive on the robot.
@@ -52,7 +56,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  */
 //@Autonomous(name="AV4VA", group="MoveBot")
 // @Disabled
-public class VuforiaFindCase2 {
+public class VuforiaFindCase2Blue {
     // IMPORTANT:  For Phone Camera, set 1) the camera source and 2) the orientation, based on how your phone is mounted:
     // 1) Camera Source.  Valid choices are:  BACK (behind screen) or FRONT (selfie side)
     // 2) Phone Orientation. Choices are: PHONE_IS_PORTRAIT = true (portrait) or PHONE_IS_PORTRAIT = false (landscape)
@@ -95,7 +99,7 @@ public class VuforiaFindCase2 {
     List<VuforiaTrackable> allTrackables;
     VuforiaTrackable stoneTarget;
     VuforiaTrackables targetsSkyStone;
-    public VuforiaFindCase2(LinearOpMode opmode){
+    public VuforiaFindCase2Blue(LinearOpMode opmode){
         this.opmode = opmode;
         //this.hardwareMap = opmode.hardwareMap;
     }
@@ -135,9 +139,9 @@ public class VuforiaFindCase2 {
                 this.opmode.telemetry.addData("get0", translation.get(1) / mmPerInch);
                 //this.opmode.telemetry.update();
                 // if loop to assign cases
-                if ((translation.get(1) / mmPerInch <= -2)) {
+                if ((translation.get(1) / mmPerInch <= -3)) { // this used to be -2
                     positionCase = 1;
-                } else if ((translation.get(1) / mmPerInch) > 3) {
+                } else if ((translation.get(1) / mmPerInch) > 2) { // this used to be 3
                     positionCase = 3;
                 } else {
                     positionCase = 2;

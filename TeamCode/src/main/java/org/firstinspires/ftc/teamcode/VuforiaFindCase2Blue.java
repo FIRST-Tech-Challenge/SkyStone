@@ -16,6 +16,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.os.SystemClock.sleep;
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
@@ -111,7 +112,7 @@ public class VuforiaFindCase2Blue {
         boolean targetVisible = false;
         targetsSkyStone.activate();
         runtime = new ElapsedTime();
-        while (!targetVisible && runtime.seconds() >= 2) {
+        while (!targetVisible && runtime.seconds() <= 1) {
             // check all the trackable targets to see which one (if any) is visible.
             for (VuforiaTrackable trackable : allTrackables) {
                 if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
@@ -137,7 +138,8 @@ public class VuforiaFindCase2Blue {
                         translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
                 //this.opmode.telemetry.update();
                 this.opmode.telemetry.addData("get0", translation.get(1) / mmPerInch);
-                //this.opmode.telemetry.update();
+                this.opmode.telemetry.update();
+//                sleep(40000);
                 // if loop to assign cases
                 if ((translation.get(1) / mmPerInch <= -3)) { // this used to be -2
                     positionCase = 1;
@@ -146,17 +148,19 @@ public class VuforiaFindCase2Blue {
                 } else {
                     positionCase = 2;
                 }
-                this.opmode.telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
-                this.opmode.telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
-                        translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
-                this.opmode.telemetry.addData("Position Case", positionCase);
-                this.opmode.telemetry.update();
+//                this.opmode.telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
+//                this.opmode.telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
+//                        translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
+//                this.opmode.telemetry.addData("Position Case", positionCase);
+//                this.opmode.telemetry.update();
+
 
             } else {
                 // When none of the skystone is visible, position case will be 4
                 this.opmode.telemetry.addData("Visible Target", "none");
                 this.opmode.telemetry.update();
                 positionCase = 4;
+
             }
         }
         return positionCase;

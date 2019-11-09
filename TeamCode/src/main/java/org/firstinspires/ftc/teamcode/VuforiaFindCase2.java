@@ -107,7 +107,7 @@ public class VuforiaFindCase2 {
         boolean targetVisible = false;
         targetsSkyStone.activate();
         runtime = new ElapsedTime();
-        while (!targetVisible && runtime.seconds() >= 2) {
+        while (!targetVisible && runtime.seconds() <= 1) {
             // check all the trackable targets to see which one (if any) is visible.
             for (VuforiaTrackable trackable : allTrackables) {
                 if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
@@ -196,9 +196,6 @@ public class VuforiaFindCase2 {
         for (VuforiaTrackable trackable : allTrackables) {
             ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
         }
-
-
-
 
         this.opmode.telemetry.addData(">", "Robot Ready.");    //
         this.opmode.telemetry.update();

@@ -14,8 +14,9 @@ public class BlueLeft extends AutoBase {
     public void runOpMode() {
         initLogic();
 
-//        robot.goToSkystone();
-        robot.moveToPoint(0, -30, 1, 0, Math.toRadians(20));
+        int vuforiaPosition = robot.detectTensorflow();
+        robot.goToSkystone(vuforiaPosition);
+        robot.moveToPoint(0, 47, 1, 0, Math.toRadians(20));
         telemetry.addLine("return");
         telemetry.update();
         telemetry.addLine("DONEEEEE");
@@ -23,5 +24,6 @@ public class BlueLeft extends AutoBase {
         extendOuttake(robot);
         retractOuttake(robot);
         robot.moveToPoint(0,0,1,1,Math.toRadians(0));
+        robot.goToSkystone(vuforiaPosition);
     }
 }

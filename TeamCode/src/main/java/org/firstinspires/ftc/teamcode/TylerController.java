@@ -483,9 +483,9 @@ public class TylerController extends OpMode {
                 crane.setPower(0);
             }*/
 
-            if(gamepad1.dpad_up){
+            /*if(gamepad1.dpad_up){
                 gripper.
-            }
+            }*/
 
             telemetry.addData("Extender", "start: %d, curr: %d, target: %d, armState: %d", extenderStartPostion, extender.getCurrentPosition(), extenderTarget, armState);
         }

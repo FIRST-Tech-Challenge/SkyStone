@@ -12,17 +12,11 @@ public class BlueLeft extends AutoBase {
     // park in building zone (even if other team is in corner)
     @Override
     public void runOpMode() {
-        Robot robot = new Robot(hardwareMap,telemetry,this);
-        robot.driveMotorsBreakZeroBehavior();
-        robot.resetEncoders();
+        initLogic();
         waitForStart();
-        robot.intializeIMU();
-        robot.changeRunModeToUsingEncoder();
-        Position2D position2D = new Position2D(robot);
-        position2D.startOdometry();
-
-//        robot.goToSkystone();
-        robot.moveToPoint(0, -30, 1, 0, Math.toRadians(20));
+        int vuforiaPosition = robot.detectTensorflow();
+        robot.goToSkystone(vuforiaPosition);
+        robot.moveToPoint(0, 47, 1, 0, Math.toRadians(20));
         telemetry.addLine("return");
         telemetry.update();
         telemetry.addLine("DONEEEEE");
@@ -30,5 +24,8 @@ public class BlueLeft extends AutoBase {
         extendOuttake(robot);
         retractOuttake(robot);
         robot.moveToPoint(0,0,1,1,Math.toRadians(0));
+        robot.goToSkystone(vuforiaPosition);
+
+
     }
 }

@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class ScoopArmBot extends FourWheelsDriveBot {
 
-    public Servo servoScoup = null;
+    public Servo servoScoop = null;
     double  position = 0.1; // Start at halfway position
 
     public ScoopArmBot(LinearOpMode opMode) {
@@ -17,26 +17,26 @@ public class ScoopArmBot extends FourWheelsDriveBot {
     public void init(HardwareMap ahwMap) {
         super.init(ahwMap);
 
-        servoScoup = hwMap.servo.get("servoScoup");
+        servoScoop = hwMap.servo.get("servoScoop");
 
-        servoScoup.setPosition(position);
-        opMode.telemetry.log().add(String.format("scoupArm init pos %.2f", servoScoup.getPosition()));
+        servoScoop.setPosition(position);
+        opMode.telemetry.log().add(String.format("scoopArm init pos %.2f", servoScoop.getPosition()));
     }
 
-    public void scoupStone(){
-        opMode.telemetry.log().add(String.format("scoupStone start pos : %.2f", servoScoup.getPosition()));
+    public void scoopStone(){
+        opMode.telemetry.log().add(String.format("scoopStone start pos : %.2f", servoScoop.getPosition()));
 
-        servoScoup.setPosition(0.4);
+        servoScoop.setPosition(0.4);
         opMode.sleep(2000);
-        opMode.telemetry.log().add(String.format("scoupStone %.2f", servoScoup.getPosition()));
+        opMode.telemetry.log().add(String.format("scoopStone %.2f", servoScoop.getPosition()));
 
-        servoScoup.setPosition(0.7);
+        servoScoop.setPosition(0.7);
         opMode.sleep(2000);
-        opMode.telemetry.log().add(String.format("scoupStone %.2f", servoScoup.getPosition()));
+        opMode.telemetry.log().add(String.format("scoopStone %.2f", servoScoop.getPosition()));
 
-        servoScoup.setPosition(1.0);
+        servoScoop.setPosition(1.0);
         opMode.sleep(2000);
-        opMode.telemetry.log().add(String.format("scoupStone %.2f", servoScoup.getPosition()));
+        opMode.telemetry.log().add(String.format("scoopStone %.2f", servoScoop.getPosition()));
     }
 
 }

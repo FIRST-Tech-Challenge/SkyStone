@@ -22,7 +22,7 @@ public class ArmTestAutoOpMode extends LinearOpMode {
         waitForStart();
 
 //        robot.pickupSkyStone();
-        robot.scoupStone();
+        robot.scoopStone();
     }
 
 }

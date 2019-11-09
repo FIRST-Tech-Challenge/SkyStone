@@ -642,7 +642,8 @@ public class Robot {
             // that moves in a x and y direction but also has a heading, where it is pointing
             xMovement = xPower * moveSpeed * decelerationScaleFactor;
             yMovement = yPower * moveSpeed * decelerationScaleFactor;
-            turnMovement = Range.clip(relativeTurnAngle / Math.toRadians(30), -1, 1) * turnSpeed * decelerationScaleFactor;
+            turnMovement = Range.clip(relativeTurnAngle / Math.toRadians(30),
+                    -1, 1) * turnSpeed * decelerationScaleFactor;
 
             applyMove();
         }

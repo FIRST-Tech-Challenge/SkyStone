@@ -235,10 +235,6 @@ public class OmniTeleOp extends OpMode {
         {
             a2Held = true;
             switch(completeActivities) {
-                /*case ALIGN:
-                    robot.startAligningCapstone();
-                    completeActivities = CompleteActivities.LIFT;
-                    break; */
                 case LIFT:
                     if(robot.startLifting()) {
                         completeActivities = CompleteActivities.RELEASE;
@@ -262,7 +258,6 @@ public class OmniTeleOp extends OpMode {
         if(!b2Held && b2Pressed)
         {
             b2Held = true;
-            robot.startStowing();
         } else if(!b2Pressed) {
             b2Held = false;
         }
@@ -320,10 +315,10 @@ public class OmniTeleOp extends OpMode {
         robot.performReleasing();
         robot.performStowing();
         robot.performEjecting();
-        robot.performAligningCapstone();
-        robot.performGrabbingCapstone();
-        robot.performLiftingCapstone();
-        robot.performReleasingCapstone();
+//        robot.performAligningCapstone();
+//        robot.performGrabbingCapstone();
+//        robot.performLiftingCapstone();
+//        robot.performReleasingCapstone();
 
         robot.drive(speedMultiplier * xPower, speedMultiplier * yPower, spinMultiplier * spin, driverAngle);
 

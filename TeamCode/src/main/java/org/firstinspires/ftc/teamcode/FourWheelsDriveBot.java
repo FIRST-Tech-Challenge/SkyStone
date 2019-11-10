@@ -5,28 +5,30 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 //@Autonomous(name="Drive Encoder2", group="Exercises")
 
 public class FourWheelsDriveBot
 {
-    // Gobilda 435 rpm DC motor : Encoder Countable Events Per Revolution (Output Shaft) : 383.6 * 2 (2:1 belev gear ratio)
+    // Gobilda 435 rpm DC motor : Encoder Countable Events Per Revolution (Output Shaft) : 383.6 * 2 (2:1 bevel gear ratio)
     static final double DRIVING_MOTOR_TICK_COUNT = 767;
     static final int DIRECTION_FORWARD = 1;
     static final int DIRECTION_BACKWARD = 2;
     static final int DIRECTION_LEFT = 3;
     static final int DIRECTION_RIGHT = 4;
+    static final int DIRECTION_RQUARTER = 5;
+    static final int DIRECTION_LQUARTER = 6;
 
     public DcMotor leftFront = null;
     public DcMotor rightFront = null;
     public DcMotor leftRear = null;
     public DcMotor rightRear = null;
+
+
+
 
 
     HardwareMap hwMap = null;
@@ -42,6 +44,7 @@ public class FourWheelsDriveBot
         this.opMode.telemetry.addData(caption, message);
         this.opMode.telemetry.update();
     }
+
 
     public void init(HardwareMap ahwMap) {
         hwMap = ahwMap;
@@ -78,6 +81,31 @@ public class FourWheelsDriveBot
                 rightRear.getCurrentPosition()));
 
     }
+
+    public void driveByVector(double vectorX, double vectorY){
+        leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        // the vector x positive value means right direction
+        // the vector y positive value means backward direction
+        //
+        // assume rightFront and leftRear runs at same speed as a
+        // assume leftFront and rightRear runs at same speed as b
+        // 4x = -2a + 2b
+        // -4y = 2a + 2b
+        // =====>
+        // a = -x - y
+        // b = x - y
+        double a = -vectorX - vectorY;
+        double b = vectorX - vectorY;
+        rightFront.setPower(a);
+        leftFront.setPower(b);
+        rightRear.setPower(b);
+        leftRear.setPower(a);
+        print(String.format("driveByVector(%.2f, %.2f) => leftFront|rightRear : %.2f, rightFront|leftRear : %.2f", vectorX, vectorY, b, a));
+    }
+
 
     public void testOneMotor(DcMotor motor, double speed, int direction){
         // reset the timeout time and start motion.
@@ -127,19 +155,31 @@ public class FourWheelsDriveBot
                 rightRear.setTargetPosition(rightRear.getCurrentPosition() - target);
                 break;
             case DIRECTION_LEFT:
-                leftFront.setTargetPosition(leftFront.getCurrentPosition() + target);
-                rightFront.setTargetPosition(rightFront.getCurrentPosition() - target);
-                leftRear.setTargetPosition(leftRear.getCurrentPosition() - target);
-                rightRear.setTargetPosition(rightRear.getCurrentPosition() + target);
-                break;
-            case DIRECTION_RIGHT:
                 leftFront.setTargetPosition(leftFront.getCurrentPosition() - target);
                 rightFront.setTargetPosition(rightFront.getCurrentPosition() + target);
                 leftRear.setTargetPosition(leftRear.getCurrentPosition() + target);
                 rightRear.setTargetPosition(rightRear.getCurrentPosition() - target);
                 break;
+            case DIRECTION_RIGHT:
+                leftFront.setTargetPosition(leftFront.getCurrentPosition() + target);
+                rightFront.setTargetPosition(rightFront.getCurrentPosition() - target);
+                leftRear.setTargetPosition(leftRear.getCurrentPosition() - target);
+                rightRear.setTargetPosition(rightRear.getCurrentPosition() + target);
+                break;
+            case DIRECTION_RQUARTER:
+                leftFront.setTargetPosition(leftFront.getCurrentPosition() + target);
+                rightFront.setTargetPosition(rightFront.getCurrentPosition() - target);
+                leftRear.setTargetPosition(leftRear.getCurrentPosition() + target);
+                rightRear.setTargetPosition(rightRear.getCurrentPosition() - target);
+                break;
+            case DIRECTION_LQUARTER:
+                leftFront.setTargetPosition(leftFront.getCurrentPosition() - target);
+                rightFront.setTargetPosition(rightFront.getCurrentPosition() + target);
+                leftRear.setTargetPosition(leftRear.getCurrentPosition() - target);
+                rightRear.setTargetPosition(rightRear.getCurrentPosition() + target);
+                break;
             default:
-                String msg = String.format("Unexcepted direction value (%d) for driveStraightByDistance()", direction);
+                String msg = String.format("Unaccepted direction value (%d) for driveStraightByDistance()", direction);
                 print(msg);
         }
 

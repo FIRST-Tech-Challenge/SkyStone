@@ -26,7 +26,7 @@ public class FourWheelsDriveBot
     public DcMotor rightFront = null;
     public DcMotor leftRear = null;
     public DcMotor rightRear = null;
-//    public DcMotor heavyDutyArm = null;
+
 
 
 
@@ -56,15 +56,11 @@ public class FourWheelsDriveBot
         rightRear.setDirection(DcMotor.Direction.REVERSE);
         rightFront.setDirection(DcMotor.Direction.REVERSE);
 
-
-//        heavyDutyArm = hwMap.get(DcMotor.class, "arm");
-
         leftFront.setPower(0);
         rightFront.setPower(0);
         leftRear.setPower(0);
         rightRear.setPower(0);
 
-//        heavyDutyArm.setPower(0);
         print("Resetting Encoders");
 
         leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -83,8 +79,6 @@ public class FourWheelsDriveBot
                 rightFront.getCurrentPosition(),
                 leftRear.getCurrentPosition(),
                 rightRear.getCurrentPosition()));
-
-//        heavyDutyArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
     }
 

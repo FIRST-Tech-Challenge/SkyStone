@@ -12,18 +12,12 @@ public class BlueLeft extends AutoBase {
     @Override
     public void runOpMode() {
         initLogic();
-        robot.finalTurn(90,1);
-        robot.finalTurn(0,1);
-        robot.finalTurn(-90,1);
-        robot.moveToPoint(20,0,1,1,Math.toRadians(45));
-        if(true){
-            return;
-        }
+
         robot.moveToPoint(11.5 ,0,1,1,Math.toRadians(0));
 
         robot.moveToPoint(48, 0, 1, 1, Math.toRadians(0));
 
-        double[][] points = {{48.0,0.0},{10.0,10.0},{9.0,35.0},{35.0,60.0},{48.0,80,0}};
+        double[][] points = {{48.0,0.0},{35.0,20.0},{30.0,40.0},{35.0,60.0},{45.0,80.0},{48.0,80,0}};
 
         double value = 11;
 //        while(opModeIsActive() && !gamepad1.a){

@@ -19,8 +19,8 @@ public class RedRight extends AutoBase{
         robot.moveToPoint(7, -47, 1,  1, Math.toRadians(90));
 
         // Deposit the Skystone and retract the outtake arm
-        depositStone(robot);
-        retractOuttake(robot);
+        depositStone();
+        retractOuttake();
 
         // Move back to the second set of Skystones to pick up the second Skystone
         robot.moveToPoint(0,24,1,1,Math.toRadians(0));
@@ -32,7 +32,7 @@ public class RedRight extends AutoBase{
         robot.moveToPoint(0, -47, 1,  1, Math.toRadians(90));
 
         // Deposit the Skystone and retract the outtake arm
-        depositStone(robot);
-        retractOuttake(robot);
+        depositStone();
+        retractOuttake();
     }
 }

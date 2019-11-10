@@ -23,7 +23,7 @@ import org.openftc.easyopencv.OpenCvPipeline;
  * Athena Z.
  */
 
-@TeleOp(name = "CVFindBrightPic", group = "Main")
+@TeleOp(name = "CVFindBrightPic", group = "Test")
 public class CVFindBrightPic extends LinearOpMode {
 
     RobotProfile robotProfile;

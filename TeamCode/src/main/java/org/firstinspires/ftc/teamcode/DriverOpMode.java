@@ -4,13 +4,13 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import java.io.File;
+import java.util.ArrayList;
 
 @TeleOp(name="SKYSTONE DriverOpMode", group="Main")
 //@Disabledxxs
 public class DriverOpMode extends OpMode {
     RobotHardware robotHardware;
     RobotNavigator navigator;
-    MecanumDrive mecanumDrive;
     boolean fieldMode;
     RobotProfile robotProfile;
 
@@ -20,6 +20,11 @@ public class DriverOpMode extends OpMode {
     double gyroCurrAngle;
     int liftEncoderCnt;
     int sliderEncoderCnt;
+    RobotControl currentTask = null;
+    boolean aAlreadyPressed = false;
+    boolean bAlreadyPressed = false;
+   SequentialComboTask homePositionTask;
+    SequentialComboTask deliveryPositionTask;
 
     @Override
     public void init() {
@@ -41,6 +46,9 @@ public class DriverOpMode extends OpMode {
 //        if(!robotHardware.imu1.isGyroCalibrated()){
 //
 //        }
+        setupCombos();
+        robotHardware.rotateGrabberForPickup();
+        robotHardware.setClampPosition(RobotHardware.ClampPosition.INITIAL);
     }
 
     @Override
@@ -73,6 +81,12 @@ public class DriverOpMode extends OpMode {
             robotHardware.setHookPosition(RobotHardware.HookPosition.HOOK_OFF);
         }
 
+        if(gamepad2.x){
+            robotHardware.rotateGrabberForPickup();
+        }else if(gamepad2.y){
+            robotHardware.rotateGrabberOriginPos();
+        }
+
         // Intake on/off
         // Driver 1: dpad up - spin, dpad down - stop spin
         if (gamepad1.dpad_up) {
@@ -88,11 +102,11 @@ public class DriverOpMode extends OpMode {
 
         // grabber ready position or initial position (this will never used)
         // Driver 1: dpad right - good, dpad left - why?!
-        if(gamepad2.dpad_right){
-            robotHardware.rotateGrabberForPickup();
-        }else if(gamepad2.dpad_left){
-            robotHardware.rotateGrabberOriginPos();
-        }
+//        if(gamepad2.dpad_right){
+//            robotHardware.rotateGrabberForPickup();
+//        }else if(gamepad2.dpad_left){
+//            robotHardware.rotateGrabberOriginPos();
+//        }
 
         // clamp open or close
         // Driver 2: a - open, b - close
@@ -100,6 +114,30 @@ public class DriverOpMode extends OpMode {
             robotHardware.setClampPosition(RobotHardware.ClampPosition.OPEN);
         }else if (gamepad2.b){
             robotHardware.setClampPosition(RobotHardware.ClampPosition.CLOSE);
+        }
+
+        if(!aAlreadyPressed) {
+            if(gamepad1.a && !gamepad1.start){
+                currentTask = deliveryPositionTask;
+                currentTask.prepare();
+                aAlreadyPressed = true;
+            }
+        }
+        if (!gamepad1.a)
+        {
+            aAlreadyPressed = false;
+        }
+
+        if(!bAlreadyPressed && !gamepad1.start) {
+            if(gamepad1.b) {
+                currentTask = homePositionTask;
+                currentTask.prepare();
+                bAlreadyPressed = true;
+            }
+        }
+        if (!gamepad1.b)
+        {
+            bAlreadyPressed = false;
         }
 
         // slide movement
@@ -114,6 +152,14 @@ public class DriverOpMode extends OpMode {
         // index move: keypad up/down
         handleLift();
 
+        if(currentTask != null) {
+            currentTask.execute();
+            if(currentTask.isDone()) {
+                currentTask.cleanUp();
+                currentTask = null;
+            }
+        }
+
         telemetry.addData("Field Mode", fieldMode);
         telemetry.addData("Gyro", gyroCurrAngle);
 
@@ -124,28 +170,41 @@ public class DriverOpMode extends OpMode {
    @Override
     public void stop() {
         // open the clamp to relief the grabber servo
-       robotHardware.setClampPosition(RobotHardware.ClampPosition.OPEN);
+       robotHardware.setClampPosition(RobotHardware.ClampPosition.INITIAL);
     }
 
    private void handleMovement() {
+        double turn = gamepad1.right_stick_x/2;
        double power = Math.hypot(gamepad1.left_stick_x, -gamepad1.left_stick_y);
        double moveAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI/4;
        if (fieldMode) {
            moveAngle += Math.toRadians(gyroCurrAngle - gyroAngleOffset);
        }
-       robotHardware.mecanumDrive(power, moveAngle, gamepad1.right_stick_x);
+       if (gamepad1.left_bumper) {
+           power = power/2;
+           turn = turn/2;
+       }
+       robotHardware.mecanumDrive(power, moveAngle, turn);
    }
 
    private void handleSlide() {
+        if (gamepad2.dpad_right) {
+            robotHardware.setSliderPosition(robotProfile.hardwareSpec.sliderOutPos);
+            return;
+        }
+        if (gamepad2.dpad_left) {
+            robotHardware.setSliderPosition(robotProfile.hardwareSpec.sliderOrigPos);
+            return;
+        }
        int currSliderPos = robotHardware.sliderMotor.getCurrentPosition();
        // use 1.0 * xxx to force into a double calculation, otherwise always return 0.0
        double percent = (1.0*currSliderPos - robotProfile.hardwareSpec.sliderOrigPos)/(robotProfile.hardwareSpec.sliderOutPos-robotProfile.hardwareSpec.sliderOrigPos);
        double newPercent;       // using percent calculation, we don't need to worry about if open is positive or negative
        // each time move 5 percent for now
-       if(gamepad2.right_stick_x > 0.5) {               //slide out position
+       if(gamepad2.left_stick_x > 0.5) {               //slide out position
            newPercent = Math.min(percent + 0.05, 1);
        }
-       else if (gamepad2.right_stick_x < -0.5) {
+       else if (gamepad2.left_stick_x < -0.5) {
            newPercent = Math.max(percent - 0.05, 0);
        }
        else {
@@ -176,5 +235,38 @@ public class DriverOpMode extends OpMode {
                    (numStone-1)* robotProfile.hardwareSpec.liftPerStone);
        }
 
+   }
+
+   void setupCombos() {
+       ArrayList<RobotControl> comboList = new ArrayList<RobotControl>();
+
+//       comboList.add(new RobotSleep(100));
+       comboList.add(new SetLiftPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.liftStoneBase +
+               robotProfile.hardwareSpec.liftPerStone + robotProfile.hardwareSpec.liftGrabExtra, 1000));
+//       comboList.add(new RobotSleep(100));
+       comboList.add(new ClampStraightAngleTask(robotHardware, robotProfile));
+//       comboList.add(new RobotSleep(100));
+       comboList.add(new SetSliderPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.sliderOrigPos, 1000));
+//       comboList.add(new RobotSleep(100));
+       comboList.add(new ClampOpenCloseTask(robotHardware, robotProfile, RobotHardware.ClampPosition.OPEN));
+       comboList.add(new SetLiftPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.liftStoneBase +
+               robotProfile.hardwareSpec.liftGrabExtra, 1000));
+
+       homePositionTask = new SequentialComboTask();
+
+       homePositionTask.setTaskList(comboList);
+
+       ArrayList<RobotControl> comboList2 = new ArrayList<RobotControl>();
+
+//       comboList2.add(new RobotSleep(100));
+       comboList.add(new SetLiftPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.liftStoneBase +
+               robotProfile.hardwareSpec.liftPerStone + robotProfile.hardwareSpec.liftGrabExtra, 1000));
+//       combo
+//      List2.add(new RobotSleep(100));
+       comboList2.add(new SetSliderPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.sliderOutPos, 1000));
+
+       deliveryPositionTask = new SequentialComboTask();
+
+       deliveryPositionTask.setTaskList(comboList2);
    }
 }

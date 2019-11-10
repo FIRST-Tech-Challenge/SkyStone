@@ -21,8 +21,8 @@ public class RobotNavigator {
     }
 
     //10/19/19 Danielle - create init method
-    public  void setInitPosition(double iY, double iX, double iAngle){
-        worldX = iY;
+    public  void setInitPosition(double iX, double iY, double iAngle){
+        worldX = iX;
         worldY = iY;
         heading= iAngle;
     }

@@ -47,26 +47,32 @@ public class MecanumTeleOp extends OpMode
     public void loop()
     {
         //DRIVER ONE
+        // both convert sticks into vectors and take two different readings from the resulting vector
         double course = Math.atan2(-gamepad1.right_stick_y, gamepad1.right_stick_x) - Math.PI/2;
         double velocity = Math.hypot(gamepad1.right_stick_x, -gamepad1.right_stick_y);
-        // both convert sticks into vectors and take two different readings from the resulting vector
 
+        // gamepad 1 inputs
         robot.drivetrain.halfPowerInput(gamepad1.right_stick_button);
-        servosUp.input(gamepad1.dpad_up);
         servosDown.input(gamepad1.dpad_down);
         servosMid.input(gamepad1.dpad_left || gamepad1.dpad_right);
 
+        // movement controls
         robot.drivetrain.setCourse(course);
         robot.drivetrain.setVelocity(velocity * (driverTwoBrakes.output() ? 0 : 1));
         robot.drivetrain.setRotation(-gamepad1.left_stick_x);
 
+
+        //DRIVER TWO
+        // gamepad 2 inputs
+        servosUp.input(gamepad1.dpad_up);
+
+        //arm movement to be added later
+        driverTwoBrakes.input(gamepad2.left_bumper); //freezes robot in place for stacking, prevents stick bumping from driver one
+
+        // servo controls
         if (servosUp.onPress()){robot.platformServos.setPosition(1); }
         else if (servosDown.onPress()){robot.platformServos.setPosition(0);}
         else if (servosMid.onPress()){robot.platformServos.setPosition(0.6);}
-
-        //DRIVER TWO
-        //arm movement to be added later
-        driverTwoBrakes.input(gamepad2.left_bumper); //freezes robot in place for stacking, prevents stick bumping from driver one
 
         //TELEMETRY
         robot.informationUpdate();

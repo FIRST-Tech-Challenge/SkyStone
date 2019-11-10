@@ -37,6 +37,6 @@ public class HeadingableMecanumRobot extends MecanumRobot
         pid.setMaxErrorForIntegral(0.002);
 
         controller = new FinishableIntegratedController(new IntegratingGyroscopeSensor(imu), pid, new ErrorTimeThresholdFinishingAlgorithim(Math.PI/50, 1));
-        drivetrain = new HeadingableMecanumDrivetrain(motorList, controller, teleOpMode);
+        drivetrain = new HeadingableMecanumDrivetrain(motorList, controller, teleOpMode, wheelRadius, wheelToMotorRatio);
     }
 }

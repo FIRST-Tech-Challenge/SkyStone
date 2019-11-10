@@ -20,8 +20,8 @@ public class MecanumRobot
     private Servo servoClawLeft;
     private Servo servoClawRight;
 
-    private static final double wheelRadius = 2; //inches
-    private static final double wheelToMotorRatio = 2.0/1.0;
+    static final double wheelRadius = 2; //inches
+    static final double wheelToMotorRatio = 2.0/1.0;
 
     private Telemetry telemetry;
 

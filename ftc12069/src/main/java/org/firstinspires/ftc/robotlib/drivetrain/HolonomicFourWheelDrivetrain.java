@@ -2,8 +2,6 @@ package org.firstinspires.ftc.robotlib.drivetrain;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import kotlin.NotImplementedError;
-
 abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements Holonomic, Rotatable, Positionable
 {
     private double rotation = 0;
@@ -26,7 +24,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     private final double[] wheelAngles;
 
     /**
-     * Constructor a generic holonomic four wheel drivetrain
+     * Constructor for a generic holonomic four wheel drivetrain
      * @param motorList The array of motors included in the drivetrain
      * @param wheelAngles A list of four angles corresponding to each wheel related to wheel and drivetrain geometry; these should be defined by the subclass and are passed to {@link #calculateWheelCoefficient} (which also must be defined by the subclass)
      */
@@ -162,7 +160,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     @Override
     public void updatePosition()
     {
-        throw new NotImplementedError("Position should be handled by the built-in controller");
+        throw new UnsupportedOperationException("Position should be handled by the built-in controller");
     }
 
     /**
@@ -224,6 +222,6 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
      */
     public double getTicksPerInch(double wheelRadius, double motorToWheelRatio)
     {
-        return (getTicksPerUnit()/(wheelRadius * motorToWheelRatio * 2 * Math.PI));
+        return (wheelRadius * motorToWheelRatio * 2 * Math.PI) / getTicksPerUnit();
     }
 }

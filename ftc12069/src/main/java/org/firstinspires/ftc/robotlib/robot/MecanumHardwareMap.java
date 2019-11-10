@@ -25,7 +25,7 @@ public class MecanumHardwareMap
     public ServoManager servoManager;
 
     public final double wheelRadius = 4; //inches
-    private static final double wheelToMotorRatio = 2.0/1.0;
+    private static final double wheelToMotorRatio = 1.0/1.0;
 
     public DcMotor[] motorList;
 

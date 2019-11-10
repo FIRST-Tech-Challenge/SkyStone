@@ -258,7 +258,7 @@ public class AutonomousRobot {
 
     // Shortcuts
     public void parkUnderBridge() {
-
+        throw new UnsupportedOperationException("Unable to park");
     }
 
     public void move(double course, double velocity, double rotation, double distance) {

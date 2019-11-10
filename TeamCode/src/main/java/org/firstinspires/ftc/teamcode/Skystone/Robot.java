@@ -254,7 +254,7 @@ public class Robot {
             double currentAngle = Math.toDegrees(anglePos);
             double scaleFactor = 0.9 * Math.abs((currentAngle - startAngle) / (startAngle - targetHeading));
             double absolutePower = 1 - scaleFactor;
-            if (absolutePower < 0.1) {
+            if (absolutePower < 0.15) {
                 brakeRobot();
                 return;
             }
@@ -262,10 +262,10 @@ public class Robot {
             if (scaleFactor > 1 || ((SystemClock.elapsedRealtime() - startTime) > timeInMilli)) {
                 break;
             }
-            fLeft.setPower(-power);
-            fRight.setPower(power);
-            bLeft.setPower(-power);
-            bRight.setPower(power);
+            fLeft.setPower(power);
+            fRight.setPower(-power);
+            bLeft.setPower(power);
+            bRight.setPower(-power);
         }
         brakeRobot();
         linearOpMode.sleep(100);

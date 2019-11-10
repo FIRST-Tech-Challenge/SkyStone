@@ -53,7 +53,7 @@ public class MainTeleop extends LinearOpMode {
         }else{
             robot.getOuttakeSpool().setPower(0);
         }
-        telemetry.addLine("Spool Position " + robot.getOuttakeSpool().getCurrentPosition());
+//        telemetry.addLine("Spool Position " + robot.getOuttakeSpool().getCurrentPosition());
         telemetry.update();
     }
     private void resetRobot() {

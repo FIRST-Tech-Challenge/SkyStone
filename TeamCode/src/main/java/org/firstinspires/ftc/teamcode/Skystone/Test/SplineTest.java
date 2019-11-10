@@ -225,7 +225,7 @@ public class SplineTest extends LinearOpMode
         robot.changeRunModeToUsingEncoder();
 
         while (opModeIsActive()){
-            robot.finalTurn(90);
+            robot.finalTurn(90,1);
             robot.splineMove(arc);
             sleep(500);
             break;

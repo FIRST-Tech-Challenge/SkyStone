@@ -17,10 +17,10 @@ public class AutoBase extends LinearOpMode {
         robot = new Robot(this.hardwareMap, this.telemetry, this);
 
         robot.driveMotorsBreakZeroBehavior();
-        robot.resetEncoders();
 
         robot.setMotorMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         //robot.intializeIMU();
 
         Position2D position2D = new Position2D(robot);
@@ -30,7 +30,7 @@ public class AutoBase extends LinearOpMode {
     @Override
     public void runOpMode() {}
 
-    protected void depositStone(Robot robot) {
+    protected void depositStone() {
         boolean isExtend = true;
         long outtakeExecutionTime = SystemClock.elapsedRealtime();
 
@@ -54,7 +54,7 @@ public class AutoBase extends LinearOpMode {
         }
     }
 
-    protected void retractOuttake(Robot robot) {
+    protected void retractOuttake() {
         boolean isRetract = true;
         long outtakeExecutionTime = SystemClock.elapsedRealtime();
 
@@ -85,41 +85,40 @@ public class AutoBase extends LinearOpMode {
         }
     }
 
-    public void goToSkystone(int skyStonePosition, int robotPosition){
+    public void goToSkystone(int skystone, int robotPosition){
         final String VUFORIA_KEY = "AbSCRq//////AAAAGYEdTZut2U7TuZCfZGlOu7ZgOzsOlUVdiuQjgLBC9B3dNvrPE1x/REDktOALxt5jBEJJBAX4gM9ofcwMjCzaJKoZQBBlXXxrOscekzvrWkhqs/g+AtWJLkpCOOWKDLSixgH0bF7HByYv4h3fXECqRNGUUCHELf4Uoqea6tCtiGJvee+5K+5yqNfGduJBHcA1juE3kxGMdkqkbfSjfrNgWuolkjXR5z39tRChoOUN24HethAX8LiECiLhlKrJeC4BpdRCRazgJXGLvvI74Tmih9nhCz6zyVurHAHttlrXV17nYLyt6qQB1LtVEuSCkpfLJS8lZWS9ztfC1UEfrQ8m5zA6cYGQXjDMeRumdq9ugMkS";
 
         // For all moveToPoints (because they are relative to the starting position of the robot),
         // robotPosition is used to identify whether to go for the skystone in the first set or the second set.
         // If robotPosition is negative, then the second set of stones is to the left of the original position of the robot.
-        while (robot.getLinearOpMode().opModeIsActive()){
-            robot.moveToPoint(11.5 ,robotPosition * 24,0.4,1,Math.toRadians(0));
-            telemetry.addLine("done with move");
-            telemetry.update();
 
-            telemetry.addLine("go to point");
-            int position = 0;
+        robot.moveToPoint(11.5 ,robotPosition * 24,0.4,1,Math.toRadians(0));
+        telemetry.addLine("done with move");
+        telemetry.update();
 
-            //intake(true);
+        telemetry.addLine("go to point");
+        int position = 0;
 
-            if (skyStonePosition == 2) {
-                telemetry.addLine("left");
-                robot.moveToPoint(10, 3 + (robotPosition * 24), 0.55, 0.5, Math.toRadians(0));
-            } else if (skyStonePosition == 0){
-                telemetry.addLine("right");
-                robot.moveToPoint(10, -3 + (robotPosition * 24), 0.55, 0.5, Math.toRadians(0));
-            } else {
-                telemetry.addLine("center");
-                robot.moveToPoint(10, robotPosition * 24, 0.55, 0.5, Math.toRadians(0));
-            }
-            telemetry.addLine("Done with detect");
-            telemetry.update();
+        //intake(true);
 
-            //intake(false);
-
-            telemetry.addLine("Done with move");
-            telemetry.update();
-
+        if (skystone == 2) {
+            telemetry.addLine("left");
+            robot.moveToPoint(10, 3 + (robotPosition * 24), 0.55, 0.5, Math.toRadians(0));
+        } else if (skystone == 0){
+            telemetry.addLine("right");
+            robot.moveToPoint(10, -3 + (robotPosition * 24), 0.55, 0.5, Math.toRadians(0));
+        } else {
+            telemetry.addLine("center");
+            robot.moveToPoint(10, robotPosition * 24, 0.55, 0.5, Math.toRadians(0));
         }
+        telemetry.addLine("Done with detect");
+        telemetry.update();
+
+        //intake(false);
+
+        telemetry.addLine("Done with move");
+        telemetry.update();
+
     }
 }
 

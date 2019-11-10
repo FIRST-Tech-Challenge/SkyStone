@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.IntegratingGyroscope;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -33,6 +34,7 @@ public class Robot {
     private Servo grabServo;
 
     // Sensors
+    IntegratingGyroscope gyro;
     NavxMicroNavigationSensor navxMicro;
 
     // Constants
@@ -268,10 +270,7 @@ public class Robot {
     void bringArmDown(OpMode opmode) throws InterruptedException {
         if (armPos == armPosition.REST) { // we only bring the arm down if the arm is resting
             // we rotate the arm 180 + ANGLE_OF_GRIPPER_WHEN_GRABBING degrees
-            this.moveArmRotate(TORQUENADO60TICKS_PER_REV * (160) / 360, 0.6, opmode);
-            // since gravity is pushing on the arm, we fight it so the arm gradually goes down and holds its position
-            this.setArmRotatePower(-0.5);
-            Thread.sleep(500);
+            this.moveArmRotate(TORQUENADO60TICKS_PER_REV * (225) / 360, 1, opmode);
             this.stopArmRotate();
             this.armPos = armPosition.ACTIVE;
         }
@@ -283,11 +282,8 @@ public class Robot {
                 // we rotate the gripper so it is perpendicular to the ground
                 this.rotateGripper(this.ANGLE_OF_GRIPPER_WHEN_GRABBING - 90);
             }
-
-            // we rotate the arm 110 degrees
-            this.moveArmRotate(this.TORQUENADO60TICKS_PER_REV * (150) / 360, -0.7, opmode);
-            this.setArmRotatePower(-0.4); // since gravity is pushing on the arm, we fight it so the arm gradually goes down
-            Thread.sleep(500);
+            // we rotate the arm 225 degrees
+            this.moveArmRotate(this.TORQUENADO60TICKS_PER_REV * (225) / 360, -1, opmode);
             this.stopArmRotate();
             this.armPos = armPosition.REST;
         }
@@ -356,12 +352,15 @@ public class Robot {
         // A timer helps provide feedback while calibration is taking place
         ElapsedTime timer = new ElapsedTime();
 
+        // Get a reference to a Modern Robotics GyroSensor object. We use several interfaces
+        // on this object to illustrate which interfaces support which functionality.
         navxMicro = opmode.hardwareMap.get(NavxMicroNavigationSensor.class, "navx");
-        // If you're only interested in the IntegratingGyroscope interface, the following will suffice.
+        gyro = (IntegratingGyroscope)navxMicro;
+        // If you're only interested int the IntegratingGyroscope interface, the following will suffice.
         // gyro = hardwareMap.get(IntegratingGyroscope.class, "navx");
 
         // The gyro automatically starts calibrating. This takes a few seconds.
-        opmode.telemetry.log().add("Gyro Calibrating. DO NOT MOVE or else the Cookie Monster will come for your soul!");
+        opmode.telemetry.log().add("Gyro Calibrating. DO NOT MOVE or else the Cookie Monster will eat your soul!");
 
         // Wait until the gyro calibration is complete
         timer.reset();
@@ -372,6 +371,7 @@ public class Robot {
         }
         opmode.telemetry.log().clear(); opmode.telemetry.log().add("Gyro Calibrated. Press Start.");
         opmode.telemetry.clear(); opmode.telemetry.update();
+
     }
 
     double getAngle() {

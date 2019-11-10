@@ -5,18 +5,15 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 //@Autonomous(name="Drive Encoder2", group="Exercises")
 
 public class FourWheelsDriveBot
 {
-    // Gobilda 435 rpm DC motor : Encoder Countable Events Per Revolution (Output Shaft) : 383.6 * 2 (2:1 belev gear ratio)
+    // Gobilda 435 rpm DC motor : Encoder Countable Events Per Revolution (Output Shaft) : 383.6 * 2 (2:1 bevel gear ratio)
     static final double DRIVING_MOTOR_TICK_COUNT = 767;
     static final int DIRECTION_FORWARD = 1;
     static final int DIRECTION_BACKWARD = 2;
@@ -31,9 +28,12 @@ public class FourWheelsDriveBot
     public DcMotor rightRear = null;
 //    public DcMotor heavyDutyArm = null;
 
+
+
+
     HardwareMap hwMap = null;
     private ElapsedTime runtime = new ElapsedTime();
-    private LinearOpMode opMode;
+    protected LinearOpMode opMode;
 
     public FourWheelsDriveBot(LinearOpMode opMode) {
         this.opMode = opMode;
@@ -44,6 +44,7 @@ public class FourWheelsDriveBot
         this.opMode.telemetry.addData(caption, message);
         this.opMode.telemetry.update();
     }
+
 
     public void init(HardwareMap ahwMap) {
         hwMap = ahwMap;
@@ -184,7 +185,7 @@ public class FourWheelsDriveBot
                 rightRear.setTargetPosition(rightRear.getCurrentPosition() + target);
                 break;
             default:
-                String msg = String.format("Unexcepted direction value (%d) for driveStraightByDistance()", direction);
+                String msg = String.format("Unaccepted direction value (%d) for driveStraightByDistance()", direction);
                 print(msg);
         }
 

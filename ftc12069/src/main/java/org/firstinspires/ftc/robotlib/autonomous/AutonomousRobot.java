@@ -58,11 +58,19 @@ public class AutonomousRobot {
     public List<VuforiaTrackable> trackablesList;
     public List<VuforiaTrackable> visibleTrackables;
 
+    /**
+     * Creates an instance of an autonomous robot manager
+     * @param hwMap FTC hardware map
+     * @param vuforiaKey Vuforia Key
+     */
     public AutonomousRobot(HardwareMap hwMap, String vuforiaKey) {
         this.hardware = new MecanumHardwareMap(hwMap);
         this.vuforiaKey = vuforiaKey;
     }
 
+    /**
+     * Initializes the robot (specifically Vuforia)
+     */
     public void init() {
         /* Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
          * We can pass Vuforia the handle to a camera preview resource (on the RC phone);
@@ -206,6 +214,11 @@ public class AutonomousRobot {
         }
     }
 
+    /**
+     * Scans the area for Vuforia trackables and saves them in a list
+     * If a trackable is found then the robot will update its position using the trackable
+     * Use this in the game loop to get the most up-to-date information from Vuforia
+     */
     public void scan() {
         targetVisible = false;
         for (VuforiaTrackable trackable : trackablesList) {
@@ -226,6 +239,10 @@ public class AutonomousRobot {
         }
     }
 
+    /**
+     * Retrieves the current position of the robot (only works if there is a visible trackable)
+     * @return current position on the FTC field
+     */
     public Point getPosition() {
         if (!targetVisible) return null;
         // express position (translation) of robot in inches.
@@ -233,10 +250,19 @@ public class AutonomousRobot {
         return new Point(translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
     }
 
+    /**
+     * Retrieves the rotation of the robot
+     * @return current rotation
+     */
     public Orientation getRotation() {
         return Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
     }
 
+    /**
+     * Checks if a trackable with a certain name is visible
+     * @param name trackable name identifier
+     * @return Trackable information if visible (else null)
+     */
     public VuforiaTrackable getVisibleTrackable(String name) {
         for (VuforiaTrackable trackable : trackablesList) {
             if (trackable.getName().equals(name)) return trackable;
@@ -244,6 +270,11 @@ public class AutonomousRobot {
         return null;
     }
 
+    /**
+     * Calculates the course for the robot to arrive a point
+     * @param object Point
+     * @return required course to arrive at a point
+     */
     public double getCourseFromRobot(Point object) {
         Point robotPosition = this.getPosition();
         double robotMagnitude = Math.sqrt(Math.pow(robotPosition.x, 2) + Math.pow(robotPosition.y, 2) + Math.pow(robotPosition.z, 2));
@@ -252,6 +283,11 @@ public class AutonomousRobot {
         return Math.acos(robotPosition.multiply(object)/(robotMagnitude - objectMagnitude));
     }
 
+    /**
+     * Calculates the distance between a point on the field and the robot
+     * @param object Point
+     * @return distance between point and robot center
+     */
     public double getDistanceFromRobot(Point object) {
         return this.getPosition().distance(object);
     }
@@ -261,6 +297,13 @@ public class AutonomousRobot {
         throw new UnsupportedOperationException("Unable to park");
     }
 
+    /**
+     * Moves the robot using a course, velocity, rotation, and distance
+     * @param course Angle (in degrees) of movement
+     * @param velocity new velocity
+     * @param rotation Integer (between -1 - 1) -1 - clockwise 0 - no rotation 1 - counterclockwise
+     * @param distance Distance (in inches) to execute this movement
+     */
     public void move(double course, double velocity, double rotation, double distance) {
         hardware.drivetrain.setCourse(course * Math.PI / 180);
         hardware.drivetrain.setRotation(rotation);

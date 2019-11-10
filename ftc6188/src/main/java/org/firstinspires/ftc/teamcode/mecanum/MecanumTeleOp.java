@@ -52,7 +52,7 @@ public class MecanumTeleOp extends OpMode
         double velocity = Math.hypot(gamepad1.right_stick_x, -gamepad1.right_stick_y);
 
         // gamepad 1 inputs
-        robot.drivetrain.halfPowerInput(gamepad1.right_stick_button);
+        robot.drivetrain.lowPowerInput(gamepad1.right_stick_button);
         servosDown.input(gamepad1.dpad_down);
         servosMid.input(gamepad1.dpad_left || gamepad1.dpad_right);
 

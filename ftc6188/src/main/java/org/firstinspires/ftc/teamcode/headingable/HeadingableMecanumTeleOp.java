@@ -38,7 +38,7 @@ public class HeadingableMecanumTeleOp extends OpMode
         double course = Math.atan2(-gamepad1.right_stick_y, gamepad1.right_stick_x) - Math.PI/2;
         double velocity = Math.hypot(gamepad1.right_stick_x, -gamepad1.right_stick_y);
 
-        robot.drivetrain.halfPowerInput(gamepad1.right_stick_button);
+        robot.drivetrain.lowPowerInput(gamepad1.right_stick_button);
 
         //desiredHeading += -gamepad1.left_stick_x*rotationTimer.time()*HEADING_COEFF; //resets heading but also was rotating robot, now only keys rotate robot
         rotationTimer.reset();

@@ -10,6 +10,7 @@ public class TestVuforia extends AutoBase {
         initLogic();
         waitForStart();
 
+
         while (opModeIsActive()){
 
             int tfodPosition = robot.detectTensorflow();

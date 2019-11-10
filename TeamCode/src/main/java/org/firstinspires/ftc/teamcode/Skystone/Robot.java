@@ -262,10 +262,10 @@ public class Robot {
             if (scaleFactor > 1 || ((SystemClock.elapsedRealtime() - startTime) > timeInMilli)) {
                 break;
             }
-            fLeft.setPower(power);
-            fRight.setPower(-power);
-            bLeft.setPower(power);
-            bRight.setPower(-power);
+            fLeft.setPower(power * turnSpeed);
+            fRight.setPower(-power * turnSpeed);
+            bLeft.setPower(power * turnSpeed);
+            bRight.setPower(-power * turnSpeed);
         }
         brakeRobot();
         linearOpMode.sleep(100);

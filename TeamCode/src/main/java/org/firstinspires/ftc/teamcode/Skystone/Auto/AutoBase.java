@@ -10,18 +10,18 @@ import org.firstinspires.ftc.teamcode.Skystone.Odometry.Position2D;
 import org.firstinspires.ftc.teamcode.Skystone.Robot;
 
 public class AutoBase extends LinearOpMode {
-    public Robot robot;
+    protected Robot robot;
     protected long currentTime;
     public void initLogic(){
         //Init's robot
-        robot = new Robot(hardwareMap,telemetry,this);
+        robot = new Robot(this.hardwareMap, this.telemetry, this);
 
         robot.driveMotorsBreakZeroBehavior();
         robot.resetEncoders();
 
         robot.setMotorMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.intializeIMU();
+        //robot.intializeIMU();
 
         Position2D position2D = new Position2D(robot);
         position2D.startOdometry();
@@ -85,7 +85,7 @@ public class AutoBase extends LinearOpMode {
         }
     }
 
-    public void goToSkystone(int vuforiaPosition, int robotPosition){
+    public void goToSkystone(int skyStonePosition, int robotPosition){
         final String VUFORIA_KEY = "AbSCRq//////AAAAGYEdTZut2U7TuZCfZGlOu7ZgOzsOlUVdiuQjgLBC9B3dNvrPE1x/REDktOALxt5jBEJJBAX4gM9ofcwMjCzaJKoZQBBlXXxrOscekzvrWkhqs/g+AtWJLkpCOOWKDLSixgH0bF7HByYv4h3fXECqRNGUUCHELf4Uoqea6tCtiGJvee+5K+5yqNfGduJBHcA1juE3kxGMdkqkbfSjfrNgWuolkjXR5z39tRChoOUN24HethAX8LiECiLhlKrJeC4BpdRCRazgJXGLvvI74Tmih9nhCz6zyVurHAHttlrXV17nYLyt6qQB1LtVEuSCkpfLJS8lZWS9ztfC1UEfrQ8m5zA6cYGQXjDMeRumdq9ugMkS";
 
         // For all moveToPoints (because they are relative to the starting position of the robot),
@@ -98,24 +98,23 @@ public class AutoBase extends LinearOpMode {
 
             telemetry.addLine("go to point");
             int position = 0;
-            vuforiaPosition = robot.detectTensorflow();
 
-            intake(true);
+            //intake(true);
 
-            if (vuforiaPosition == 2) {
+            if (skyStonePosition == 2) {
                 telemetry.addLine("left");
-                robot.moveToPoint(39, 9 + (robotPosition * 24), 0.55, 0.5, Math.toRadians(0));
-            } else if (vuforiaPosition == 0){
+                robot.moveToPoint(10, 3 + (robotPosition * 24), 0.55, 0.5, Math.toRadians(0));
+            } else if (skyStonePosition == 0){
                 telemetry.addLine("right");
-                robot.moveToPoint(39, -9 + (robotPosition * 24), 0.55, 0.5, Math.toRadians(0));
+                robot.moveToPoint(10, -3 + (robotPosition * 24), 0.55, 0.5, Math.toRadians(0));
             } else {
                 telemetry.addLine("center");
-                robot.moveToPoint(39, robotPosition * 24, 0.55, 0.5, Math.toRadians(0));
+                robot.moveToPoint(10, robotPosition * 24, 0.55, 0.5, Math.toRadians(0));
             }
             telemetry.addLine("Done with detect");
             telemetry.update();
 
-            intake(false);
+            //intake(false);
 
             telemetry.addLine("Done with move");
             telemetry.update();

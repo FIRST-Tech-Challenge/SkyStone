@@ -69,11 +69,12 @@ public class Robot {
 
     // Outtake Clamp Positions
     public final double CLAW_SERVO_CLAMPED = .45;
-    public final double CLAW_SERVO_RELEASED = .375;
+    public final double CLAW_SERVO_RELEASED = .335;
 
     // Outtake Pivot Positions
     public final double OUTTAKE_PIVOT_EXTENDED = .271;
     public final double OUTTAKE_PIVOT_RETRACTED = .994;
+    public final double OUTTAKE_PIVOT_90 = 0.6325;
 
     // Outtake Pusher Positions
     public final double PUSHER_PUSHED = .75;
@@ -129,7 +130,7 @@ public class Robot {
 
         // Map outtake motors
         outtakeSpool = hardwareMap.dcMotor.get("outtakeSpool");
-        outtakeSpool.setDirection(DcMotor.Direction.FORWARD);
+        outtakeSpool.setDirection(DcMotor.Direction.REVERSE);
         outtakeExtender = hardwareMap.servo.get("outtakeExtender");
         clamp = hardwareMap.servo.get("clamp");
         clampPivot = hardwareMap.servo.get("clampPivot");

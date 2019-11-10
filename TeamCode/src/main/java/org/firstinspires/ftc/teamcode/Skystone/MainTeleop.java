@@ -26,6 +26,7 @@ public class MainTeleop extends LinearOpMode {
     boolean isRetract = false;
     boolean isExtend = false;
     boolean isClamp = false;
+    boolean is90 = false;
     boolean outtakeExtended = false;
     public static double powerScaleFactor = 0.9;
     @Override
@@ -46,10 +47,8 @@ public class MainTeleop extends LinearOpMode {
     }
     private void spoolLogic(){
         if (gamepad2.dpad_up && robot.getOuttakeSpool().getCurrentPosition()<=6600) {
-            robot.getClamp().setPosition(robot.CLAW_SERVO_CLAMPED);
             robot.getOuttakeSpool().setPower(1);
         }else if(gamepad2.dpad_down && robot.getOuttakeSpool().getCurrentPosition()>=0 ){
-            robot.getClamp().setPosition(robot.CLAW_SERVO_CLAMPED);
             robot.getOuttakeSpool().setPower(-1);
         }else{
             robot.getOuttakeSpool().setPower(0);
@@ -166,20 +165,30 @@ public class MainTeleop extends LinearOpMode {
             isExtend = true;
             isRetract = false;
             isClamp = false;
+            is90 = false;
             outtakeExecutionTime = currentTime;
         } else if (gamepad2.b) { // Deposit and Reset
             robot.getIntakePusher().setPosition(robot.PUSHER_RETRACTED); // Reset intake pusher
             isRetract = true;
             isExtend = false;
             isClamp = false;
+            is90 = false;
             outtakeExecutionTime = currentTime;
             robot.getClamp().setPosition(robot.CLAW_SERVO_RELEASED); // Release clamp
         }else if(gamepad2.x){
             isClamp = true;
             isExtend = false;
             isRetract = false;
+            is90 = false;
             outtakeExecutionTime = currentTime;
             robot.getIntakePusher().setPosition(robot.PUSHER_PUSHED);
+        }else if(gamepad2.y){
+            robot.getIntakePusher().setPosition(robot.PUSHER_PUSHED); // Push block all the way to clamp
+            isExtend = true;
+            isRetract = false;
+            isClamp = false;
+            is90 = true;
+            outtakeExecutionTime = currentTime;
         }
         //extend
         if (currentTime - outtakeExecutionTime >= 250 && isExtend) {
@@ -190,21 +199,28 @@ public class MainTeleop extends LinearOpMode {
         }
         if(currentTime-outtakeExecutionTime >= 450 && isExtend){
             robot.getOuttakeExtender().setPosition(robot.OUTTAKE_SLIDE_EXTENDED);
-            outtakeExtended = true;
         }
-        if(currentTime-outtakeExecutionTime >= 1150 && isExtend){
+        if(currentTime-outtakeExecutionTime >= 1150 && isExtend && !is90){
             robot.getClampPivot().setPosition(robot.OUTTAKE_PIVOT_EXTENDED);
             isExtend = false;
         }
+
+        //pivot 90
+        if(currentTime-outtakeExecutionTime >= 1150 && isExtend && is90){
+            robot.getClampPivot().setPosition(robot.OUTTAKE_PIVOT_90);
+            isExtend = false;
+            is90 = false;
+        }
+
         //retract
-        if(currentTime-outtakeExecutionTime >= 250 && isRetract){
+        if(currentTime-outtakeExecutionTime >= 450 && isRetract){
             robot.getClampPivot().setPosition(robot.OUTTAKE_PIVOT_RETRACTED);
         }
-        if(currentTime-outtakeExecutionTime >= 950 && isRetract){
+        if(currentTime-outtakeExecutionTime >= 1150 && isRetract){
             robot.getOuttakeExtender().setPosition(robot.OUTTAKE_SLIDE_RETRACTED);
-            outtakeExtended = false;
             isRetract = false;
         }
+
         //clamp only
         if(currentTime-outtakeExecutionTime >= 300 && isClamp){
             robot.getClamp().setPosition(robot.CLAW_SERVO_CLAMPED);

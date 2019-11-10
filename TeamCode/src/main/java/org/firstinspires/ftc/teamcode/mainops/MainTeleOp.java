@@ -36,7 +36,6 @@ public class MainTeleOp extends LinearOpMode {
             teleLib.processFoundation();
             teleLib.processServoArm();
             teleLib.processServoGrab();
-            teleLib.processDrive2();
             idle();
         }
     }

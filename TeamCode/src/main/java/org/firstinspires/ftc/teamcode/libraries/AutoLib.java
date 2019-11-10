@@ -192,10 +192,13 @@ public class AutoLib {
         }
     }
 
-    public void moveArm() throws InterruptedException {
-        robot.setDcMotorPower(MOTOR_ARM, -0.2f);
-        // The motor will stop when it detects that it's on the ground
-        while (!robot.isTouchSensorPressed(TOUCH_ARM_TOP)) {
+    public void moveArmDownScoreServoArmGrab() throws InterruptedException {
+
+        robot.setServoPosition(SERVO_ARM, SERVO_ARM_POS_SCORE);
+
+        robot.setDcMotorPower(MOTOR_ARM, 0.2f);
+
+        while (!robot.isTouchSensorPressed(TOUCH_ARM_BOTTOM)) {
             opMode.idle();
             opMode.telemetry.addData("Status", robot.isTouchSensorPressed(TOUCH_ARM_BOTTOM));
             opMode.telemetry.update();
@@ -205,14 +208,27 @@ public class AutoLib {
 
         robot.setDcMotorPower(MOTOR_ARM, 0);
 
-        robot.setServoPosition(SERVO_ARM, SERVO_ARM_POS_SCORE);
+        Thread.sleep(1000);
+        robot.setServoPosition(SERVO_GRABBER, SERVO_GRABBER_GRAB);
     }
 
-    public void moveArmSeconds () {
-        ElapsedTime time = new ElapsedTime();
-        robot.setDcMotorPower(MOTOR_ARM, -.4f);
-        while (time.seconds() <= 4) {
+    public void moveArmUp() {
+        robot.setDcMotorPower(MOTOR_ARM, -0.2f);
+
+        while (!robot.isTouchSensorPressed(TOUCH_ARM_TOP)) {
             opMode.idle();
+            opMode.telemetry.addData("Status", robot.isTouchSensorPressed(TOUCH_ARM_BOTTOM));
+            opMode.telemetry.update();
+        }
+    }
+
+    public void moveArmDown() {
+        robot.setDcMotorPower(MOTOR_ARM, 0.2f);
+
+        while (!robot.isTouchSensorPressed(TOUCH_ARM_BOTTOM)) {
+            opMode.idle();
+            opMode.telemetry.addData("Status", robot.isTouchSensorPressed(TOUCH_ARM_BOTTOM));
+            opMode.telemetry.update();
         }
     }
 
@@ -235,7 +251,7 @@ public class AutoLib {
     }
 
     public void latchServoFoundation() {
-        robot.setServoPosition(SERVO_FOUNDATION1, SERVO_FOUNDATION_GRAB1);
+        robot.setServoPosition(SERVO_FOUNDATION1, -SERVO_FOUNDATION_GRAB1);
         robot.setServoPosition(SERVO_FOUNDATION2, SERVO_FOUNDATION_GRAB2);
     }
 

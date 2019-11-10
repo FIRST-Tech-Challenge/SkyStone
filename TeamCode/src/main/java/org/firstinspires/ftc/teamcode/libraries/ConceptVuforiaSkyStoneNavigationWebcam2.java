@@ -57,6 +57,8 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
     double yPosition = 0;
     double xPosition = 0;
     boolean startIdentify = true;
+    float distanceToDepot = 93;
+
     // Class Members
     private OpenGLMatrix lastLocation = null;
     private VuforiaLocalizer vuforia = null;
@@ -72,7 +74,7 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
 
 
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
         initialize();
         /*
          * Retrieve the camera we are to use.
@@ -218,7 +220,7 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
 
         targetsSkyStone.activate();
         if (startIdentify) {
-            autoLib.calcMove(43, .8f, Constants.Direction.BACKWARD);
+            autoLib.calcMove(46, .9f, Constants.Direction.BACKWARD);
             while (!isStopRequested() && startIdentify) {
 
                 // check all the trackable targets to see which one (if any) is visible.
@@ -250,21 +252,22 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
 
                     yPosition = translation.get(1);
                     xPosition = translation.get(0);
-                    if (yPosition > 4.6) {
-                        positionSkystone = "Left";
-                        autoLib.calcMove(5, .5f, Constants.Direction.RIGHT);
+                    if (yPosition < 0) {
+                        positionSkystone = "Right";
+                        autoLib.calcMove(3, .8f, Constants.Direction.LEFT);
+                        distanceToDepot = distanceToDepot + 10;
                         //  sleep(3000);
-                    } else if (yPosition <= 0) {
+                    } else {
                         positionSkystone = "Center";
-                        if (xPosition <= -10) {
-                            sleep(1000);
-                            yPosition = translation.get(1);
-                            xPosition = translation.get(0);
-                            finalMove(xPosition, yPosition);
-                            break;
-                        } else {
-                            telemetry.addData("Final Position Reached", "none");
-                        }
+                        //if (xPosition <= -25) {
+                        sleep(1000);
+                        yPosition = translation.get(1);
+                        xPosition = translation.get(0);
+                        finalMove(-xPosition, yPosition);
+                        break;
+//                        } else {
+//                            telemetry.addData("Final Position Reached", "none");
+//                        }
                     }
 
                     // express the rotation of the robot in degrees.
@@ -274,7 +277,9 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
                     positionSkystone = "Left";
                     telemetry.addData("Visible Target", "none");
 
-                    autoLib.calcMove(5, .5f, Constants.Direction.RIGHT);
+                    distanceToDepot = distanceToDepot - 10;
+
+                    autoLib.calcMove(5, .8f, Constants.Direction.RIGHT);
 
                 }
                 telemetry.addData("Skystone Position", positionSkystone);
@@ -287,29 +292,30 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
         targetsSkyStone.deactivate();
     }
 
-    private void finalMove(double xPosition, double yPosition) {
+    private void finalMove(double xPosition, double yPosition) throws InterruptedException {
         telemetry.addData("Final Position Reached", "none");
         telemetry.addData("X Position ", xPosition);
         telemetry.addData("Y Position ", yPosition);
         telemetry.update();
-
-        autoLib.calcMove((float) -xPosition / 10, .8f, Constants.Direction.BACKWARD);   //changed
-        autoLib.calcMove((float) yPosition / 10, .8f, Constants.Direction.LEFT);        //changed
-
-        //Stop intake
-        autoLib.calcMove(10, .5f, Constants.Direction.RIGHT);
-        autoLib.calcMoveIntake(30, .5f, Constants.Direction.BACKWARD);
-        autoLib.moveArmSeconds();
-        autoLib.scoreServoArm();
-        autoLib.grabServo();
-        autoLib.calcMove(70, .5f, Constants.Direction.FORWARD);
-        autoLib.calcMove(225, .5f, Constants.Direction.LEFT);
-        autoLib.calcMove(200, .5f, Constants.Direction.BACKWARD);
-        autoLib.calcMove(115, .5f, Constants.Direction.LEFT);
-        autoLib.calcMove(5,.3f, Constants.Direction.FORWARD);
+// go near skystone
+        autoLib.calcMove((float) (-xPosition / 10) + 43, .8f, Constants.Direction.FORWARD);   //changed
+        autoLib.calcMove((float) (yPosition / 10) + 33, .8f, Constants.Direction.RIGHT);
+        distanceToDepot = distanceToDepot + (float) yPosition;
+        Thread.sleep(500);
+        autoLib.moveArmDownScoreServoArmGrab();
+        Thread.sleep(1000);
+        autoLib.calcMove(17, .8f, Constants.Direction.FORWARD);
+        autoLib.calcMove(distanceToDepot, .8f, Constants.Direction.LEFT);
+        autoLib.moveArmUp();
+        autoLib.calcMove(47, .7f, Constants.Direction.BACKWARD);
+        autoLib.scoreServo();
         autoLib.latchServoFoundation();
-        autoLib.calcMove(210, .5f, Constants.Direction.FORWARD);
-        autoLib.calcMove(200, .5f, Constants.Direction.RIGHT);
+        Thread.sleep(1000);
+        autoLib.calcMove(70, 1f, Constants.Direction.FORWARD);
+        autoLib.moveArmDown();
+        autoLib.restServoFoundation();
+        autoLib.calcMove(distanceToDepot - 100, .8f, Constants.Direction.RIGHT);
+
         startIdentify = false;
 
     }

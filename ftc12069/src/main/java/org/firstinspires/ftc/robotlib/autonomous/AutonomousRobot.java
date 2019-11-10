@@ -271,11 +271,21 @@ public class AutonomousRobot {
     }
 
     /**
-     * Calculates the course for the robot to arrive a point
+     * Calculates the course for the robot to arrive a point in a 2D space
      * @param object Point
      * @return required course to arrive at a point
      */
     public double getCourseFromRobot(Point object) {
+        Point robotPosition = this.getPosition();
+        return Math.sqrt(Math.pow(robotPosition.x - object.x, 2) + Math.pow(robotPosition.y - object.y, 2));
+    }
+
+    /**
+     * Calculates the course for the robot to arrive a point in a 3D space
+     * @param object Point
+     * @return required course to arrive at a point
+     */
+    public double getCourseFromRobot3D(Point object) {
         Point robotPosition = this.getPosition();
         double robotMagnitude = Math.sqrt(Math.pow(robotPosition.x, 2) + Math.pow(robotPosition.y, 2) + Math.pow(robotPosition.z, 2));
         double objectMagnitude = Math.sqrt(Math.pow(object.x, 2) + Math.pow(object.y, 2) + Math.pow(object.z, 2));

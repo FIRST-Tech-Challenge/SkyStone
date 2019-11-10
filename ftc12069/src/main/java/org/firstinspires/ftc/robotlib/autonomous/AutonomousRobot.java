@@ -3,6 +3,7 @@ package org.firstinspires.ftc.robotlib.autonomous;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
@@ -78,6 +79,7 @@ public class AutonomousRobot {
          */
         int cameraMonitorViewId = hardware.internalHardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardware.internalHardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+        parameters.cameraName = hardware.webcamName;
         // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
         parameters.vuforiaLicenseKey = vuforiaKey;
@@ -271,11 +273,21 @@ public class AutonomousRobot {
     }
 
     /**
-     * Calculates the course for the robot to arrive a point
+     * Calculates the course for the robot to arrive a point in a 2D space
      * @param object Point
      * @return required course to arrive at a point
      */
     public double getCourseFromRobot(Point object) {
+        Point robotPosition = this.getPosition();
+        return Math.atan((robotPosition.y - object.y) / (robotPosition.x - object.y));
+    }
+
+    /**
+     * Calculates the course for the robot to arrive a point in a 3D space
+     * @param object Point
+     * @return required course to arrive at a point
+     */
+    public double getCourseFromRobot3D(Point object) {
         Point robotPosition = this.getPosition();
         double robotMagnitude = Math.sqrt(Math.pow(robotPosition.x, 2) + Math.pow(robotPosition.y, 2) + Math.pow(robotPosition.z, 2));
         double objectMagnitude = Math.sqrt(Math.pow(object.x, 2) + Math.pow(object.y, 2) + Math.pow(object.z, 2));
@@ -289,7 +301,7 @@ public class AutonomousRobot {
      * @return distance between point and robot center
      */
     public double getDistanceFromRobot(Point object) {
-        return this.getPosition().distance(object);
+        return this.getPosition().distance2D(object);
     }
 
     // Shortcuts

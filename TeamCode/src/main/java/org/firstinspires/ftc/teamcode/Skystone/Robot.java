@@ -108,34 +108,65 @@ public class Robot {
         //config names need to match configs on the phone
 
         //Map drive motors
-        fLeft = hardwareMap.dcMotor.get("fLeft");
-        fRight = hardwareMap.dcMotor.get("fRight");
-        bLeft = hardwareMap.dcMotor.get("bLeft");
-        bRight = hardwareMap.dcMotor.get("bRight");
+        fLeft = getDcMotor("fLeft");
+        if (fLeft != null){
+            fLeft.setDirection(DcMotor.Direction.FORWARD);
 
-        //Set direction of drive motors
-        fLeft.setDirection(DcMotor.Direction.FORWARD);
-        fRight.setDirection(DcMotor.Direction.REVERSE);
-        bLeft.setDirection(DcMotor.Direction.FORWARD);
-        bRight.setDirection(DcMotor.Direction.REVERSE);
+        }
+        fRight = getDcMotor("fRight");
+        if (fRight != null){
+            fRight.setDirection(DcMotor.Direction.REVERSE);
 
-        // Map intake motors
-        intakeLeft = hardwareMap.dcMotor.get("intakeLeft");
-        intakeRight = hardwareMap.dcMotor.get("intakeRight");
+        }
+        bLeft = getDcMotor("bLeft");
+        if (bLeft != null){
+            bLeft.setDirection(DcMotor.Direction.FORWARD);
+
+        }
+        bRight = getDcMotor("bRight");
+        if (bRight != null){
+            bRight.setDirection(DcMotor.Direction.REVERSE);
+
+        }
+
+        intakeLeft = getDcMotor("intakeLeft");
+        if (intakeLeft != null){
+            intakeLeft.setDirection(DcMotor.Direction.FORWARD);
+        }
 
         // Set direction of intake motors
-        intakeLeft.setDirection(DcMotor.Direction.FORWARD);
-        intakeRight.setDirection(DcMotor.Direction.REVERSE);
+        if (intakeRight != null){
+            intakeRight.setDirection(DcMotor.Direction.REVERSE);
 
+        }
+        outtakeSpool = getDcMotor("outtakeSpool");
+        if (outtakeSpool != null){
+            outtakeSpool.setDirection(DcMotor.Direction.REVERSE);
+        }
         // Map outtake motors
-        outtakeSpool = hardwareMap.dcMotor.get("outtakeSpool");
-        outtakeSpool.setDirection(DcMotor.Direction.FORWARD);
-        outtakeExtender = hardwareMap.servo.get("outtakeExtender");
-        clamp = hardwareMap.servo.get("clamp");
-        clampPivot = hardwareMap.servo.get("clampPivot");
-        intakePusher = hardwareMap.servo.get("intakePusher");
-    }
 
+        outtakeExtender = getServo("outtakeExtender");
+        clamp = getServo("clamp");
+        clampPivot = getServo("clampPivot");
+        intakePusher = getServo("intakePusher");
+
+    }
+    private DcMotor getDcMotor(String name){
+        try {
+            return hardwareMap.dcMotor.get(name);
+
+        } catch (IllegalArgumentException exception){
+            return null;
+        }
+    }
+    private Servo getServo(String name){
+        try {
+            return hardwareMap.servo.get(name);
+
+        } catch (IllegalArgumentException exception){
+            return null;
+        }
+    }
     public void intializeIMU() {
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
@@ -649,7 +680,7 @@ public class Robot {
         }
     }
 
-    public String detectVuforia(String VUFORIA_KEY) {
+    public int detectVuforia(String VUFORIA_KEY) {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 
         VuforiaLocalizer.Parameters paramaters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
@@ -685,27 +716,27 @@ public class Robot {
                     telemetry.addData("Position: ", "left");
                     telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
                             translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
-                    return "left";
+                    return 2;
 
                 } else if (translation.get(0) / mmPerInch < 7.5){
                     telemetry.addData("Position: ", "Center");
                     telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
                             translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
                     telemetry.update();
-                    return "center";
+                    return 1;
                 } else {
                     telemetry.addData("Position: ", "Right");
-                    return "Right";
+                    return 0;
                 }
             }
             if (SystemClock.elapsedRealtime() - startTime > 5000) {
                 telemetry.addLine("No detection");
                 telemetry.update();
-                return "none";
+                return 1;
             }
         }
 
-        return "none";
+        return 1;
     }
     private VuforiaLocalizer initVuforia() {
         /*
@@ -757,13 +788,17 @@ public class Robot {
 
         // scan for 5 seconds
         while (linearOpMode.opModeIsActive() && SystemClock.elapsedRealtime()-startTime<5000){
-
+            telemetry.addLine("got into loop");
+            telemetry.update();
             // get all the detections
             List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+            telemetry.addLine("made List");
+            telemetry.update();
 
             // if there is a detection run the logic
             if (updatedRecognitions != null && updatedRecognitions.size()>0) {
-
+                telemetry.addLine("got into if");
+                telemetry.update();
                 // sorts based on confidence levels
                 Collections.sort(updatedRecognitions, new Comparator<Recognition>() {
                     @Override
@@ -774,12 +809,15 @@ public class Robot {
 
                 // iterate through each recognition
                 for (int i = 0; i < updatedRecognitions.size(); i++){
-
+                    telemetry.addLine("Got into second for loop");
+                    telemetry.update();
                     // value is the center of the detection
                     float value = (updatedRecognitions.get(i).getTop()+updatedRecognitions.get(i).getBottom())/2;
 
                     // if the confidence is greater than 0.9, then return that
                     if ((double)updatedRecognitions.get(i).getConfidence() > 0.9){
+                        telemetry.addLine("0.9 confidence");
+                        telemetry.update();
                         if (value < 600){
                             return 2;
                         } else if (value < 800){
@@ -790,6 +828,8 @@ public class Robot {
                     }
                     // if the confidence is greater than 0.5, add it to the arraylist
                     else if ((double)updatedRecognitions.get(i).getConfidence() > 0.5) {
+                        telemetry.addLine("0.5 confidence");
+                        telemetry.update();
                         if (value < 600){
                             incrementBy(recognitions, 2,1);
                         } else if (value < 800){
@@ -801,15 +841,27 @@ public class Robot {
                     }
                 }
             }
+            telemetry.addLine("Bottom of loop");
+            telemetry.update();
         }
 
-        int mostOccuredKey = 0;
-        int countOfMostOccuredKey = recognitions.get(0);
-        for (int i = 0; i < recognitions.size(); i++){
-            if (recognitions.get(i) > countOfMostOccuredKey){
-                mostOccuredKey = i;
-                countOfMostOccuredKey = recognitions.get(i);
-            }
+        telemetry.addLine("Got to mostOccuredKey");
+        telemetry.update();
+        Integer mostOccuredKey = -1;
+        Integer countOfMostOccuredKey = -1;
+//        for (int i = 0; i < recognitions.size(); i++){
+//            if (recognitions.get(i) > countOfMostOccuredKey){
+//                mostOccuredKey = i;
+//                countOfMostOccuredKey = recognitions.get(i);
+//            }
+//        }
+
+
+
+        if (mostOccuredKey < 0){
+            telemetry.addLine("Vuforia NOT found. GOING FOR MIDDLE !!!!: ");
+            telemetry.update();
+            return 1;
         }
 
         telemetry.addLine("found: " + mostOccuredKey);

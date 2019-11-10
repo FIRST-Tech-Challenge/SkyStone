@@ -16,9 +16,20 @@ public class BlueLeft extends AutoBase {
 
         robot.moveToPoint(48, 0, 1, 1, Math.toRadians(0));
 
-        double[][] points = {{48.0,0.0},{15.0,0.0},{15.0,80.0},{48.0,80,0}};
+        double[][] points = {{48.0,0.0},{10.0,10.0},{9.0,35.0},{35.0,60.0},{48.0,80,0}};
 
-        PathPoints pathPoints = new PathPoints(points,15);
+        double value = 11;
+//        while(opModeIsActive() && !gamepad1.a){
+//            if(gamepad1.dpad_up){
+//                value+=0.0005;
+//            }else if(gamepad1.dpad_down){
+//                value-=0.0005;
+//            }
+//            telemetry.addLine("Value: "+ value);
+//            telemetry.update();
+//        }
+
+        PathPoints pathPoints = new PathPoints(points,value);
         robot.moveFollowCurve(pathPoints.targetPoints);
 
 //

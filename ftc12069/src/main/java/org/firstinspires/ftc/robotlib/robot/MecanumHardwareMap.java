@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotlib.drivetrain.MecanumDrivetrain;
 import org.firstinspires.ftc.robotlib.servo.ServoManager;
 
@@ -20,6 +21,9 @@ public class MecanumHardwareMap
 
     // Servos in Mecanum Robot
     private Servo servoClaw;
+
+    //Camera
+    public WebcamName webcamName;
 
     public MecanumDrivetrain drivetrain;
     public ServoManager servoManager;
@@ -63,6 +67,8 @@ public class MecanumHardwareMap
 
         servoClaw = hwMap.get(Servo.class, "servoClaw");
         servoClaw.setDirection(Servo.Direction.FORWARD);
+
+        webcamName = internalHardwareMap.get(WebcamName.class, "webcam");
 
         drivetrain = new MecanumDrivetrain(motorList);
         servoManager = new ServoManager(new Servo[]{servoClaw});

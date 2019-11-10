@@ -12,7 +12,7 @@ abstract public class Drivetrain
     private double autoVelocity = 0; // velocity used by autonomous acceleration curves as peak value
 
     // Toggles the half power drive mode for precision control
-    private ToggleBoolean halfPower;
+    private ToggleBoolean lowPower;
 
     // Since auto code messes up we have to tell the drivetrain if we are driving this manually or pre-programmed
     private final boolean teleOpMode;
@@ -23,7 +23,7 @@ abstract public class Drivetrain
     {
         this.motorList = motorList;
         this.teleOpMode = teleOpMode;
-        halfPower = new ToggleBoolean(false);
+        lowPower = new ToggleBoolean(false);
     }
 
     public double getVelocity() { return velocity; }
@@ -51,18 +51,18 @@ abstract public class Drivetrain
         double[] motorPowers = calculateMotorPowers();
         for (int motorIndex = 0; motorIndex < motorPowers.length; motorIndex++)
         {
-            motorList[motorIndex].setPower(motorPowers[motorIndex] * (isHalfPower() ? 0.5 : 1));
+            motorList[motorIndex].setPower(motorPowers[motorIndex] * (getLowPower() ? 0.75 : 1));
         }
     }
 
-    public void halfPowerInput(boolean currentlyPressed)
+    public void lowPowerInput(boolean currentlyPressed)
     {
-        halfPower.input(currentlyPressed);
+        lowPower.input(currentlyPressed);
     }
 	
-	public boolean isHalfPower()
+	public boolean getLowPower()
 	{
-		return halfPower.output();
+		return lowPower.output();
 	}
 
 	// Defined per drivetrain, does math related to the power of the motor based on stick inputs

@@ -68,11 +68,12 @@ public class MainTeleop extends LinearOpMode {
     }
     private void initServos() {
         isRetract = true;
-        currentTime = SystemClock.elapsedRealtime();
+        outtakeExecutionTime = SystemClock.elapsedRealtime();
 
         robot.getClamp().setPosition(robot.CLAW_SERVO_RELEASED);
 
         while (isRetract) {
+            currentTime = SystemClock.elapsedRealtime();
             if (currentTime - outtakeExecutionTime >= 250 && isRetract) {
                 robot.getClampPivot().setPosition(robot.OUTTAKE_PIVOT_RETRACTED);
             }
@@ -178,14 +179,17 @@ public class MainTeleop extends LinearOpMode {
             robot.getIntakePusher().setPosition(robot.PUSHER_PUSHED);
         }
         //extend
-        if (currentTime - outtakeExecutionTime >= 300 && isExtend) {
+        if (currentTime - outtakeExecutionTime >= 250 && isExtend) {
+            robot.getIntakePusher().setPosition(robot.PUSHER_RETRACTED);
+        }
+        if (currentTime - outtakeExecutionTime >= 350 && isExtend) {
             robot.getClamp().setPosition(robot.CLAW_SERVO_CLAMPED);
         }
-        if(currentTime-outtakeExecutionTime >= 400 && isExtend){
+        if(currentTime-outtakeExecutionTime >= 450 && isExtend){
             robot.getOuttakeExtender().setPosition(robot.OUTTAKE_SLIDE_EXTENDED);
             outtakeExtended = true;
         }
-        if(currentTime-outtakeExecutionTime >= 1400 && isExtend){
+        if(currentTime-outtakeExecutionTime >= 1150 && isExtend){
             robot.getClampPivot().setPosition(robot.OUTTAKE_PIVOT_EXTENDED);
             isExtend = false;
         }

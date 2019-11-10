@@ -68,7 +68,7 @@ public class Robot {
     public final double OUTTAKE_SLIDE_RETRACTED = .75;
 
     // Outtake Clamp Positions
-    public final double CLAW_SERVO_CLAMPED = .59;
+    public final double CLAW_SERVO_CLAMPED = .45;
     public final double CLAW_SERVO_RELEASED = .375;
 
     // Outtake Pivot Positions

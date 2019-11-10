@@ -60,8 +60,7 @@ public class MainTeleop extends LinearOpMode {
         robot = new Robot(hardwareMap, telemetry, this);
         robot.setMotorMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        robot.getOuttakeSpool().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.getOuttakeSpool().setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         robot.getOuttakeSpool().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         robot.getIntakeLeft().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         robot.getIntakeRight().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

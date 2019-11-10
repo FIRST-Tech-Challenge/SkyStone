@@ -46,10 +46,8 @@ public class MainTeleop extends LinearOpMode {
     }
     private void spoolLogic(){
         if (gamepad2.dpad_up && robot.getOuttakeSpool().getCurrentPosition()<=6600) {
-            robot.getClamp().setPosition(robot.CLAW_SERVO_CLAMPED);
             robot.getOuttakeSpool().setPower(1);
         }else if(gamepad2.dpad_down && robot.getOuttakeSpool().getCurrentPosition()>=0 ){
-            robot.getClamp().setPosition(robot.CLAW_SERVO_CLAMPED);
             robot.getOuttakeSpool().setPower(-1);
         }else{
             robot.getOuttakeSpool().setPower(0);
@@ -61,8 +59,7 @@ public class MainTeleop extends LinearOpMode {
         robot = new Robot(hardwareMap, telemetry, this);
         robot.setMotorMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        robot.getOuttakeSpool().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.getOuttakeSpool().setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         robot.getOuttakeSpool().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         robot.getIntakeLeft().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         robot.getIntakeRight().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

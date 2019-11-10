@@ -584,7 +584,7 @@ public class Robot {
 
         xMovement = xPower * moveSpeed * decelerationScaleFactor;
         yMovement = yPower * moveSpeed * decelerationScaleFactor;
-        turnMovement = Range.clip(relativeTurnAngle / Math.toRadians(30), -1, 1) * turnSpeed * decelerationScaleFactor;
+        turnMovement = Range.clip(relativeTurnAngle / Math.toRadians(180), -1, 1) * turnSpeed * decelerationScaleFactor;
     }
 
     private void applyMove() {

@@ -202,35 +202,6 @@ public class Robot {
         bRight.setMode(runMode);
     }
 
-    // TODO: make this actually turn
-    public void absoluteTurn (double targetHeadingRadians, double turnSpeed){
-        targetHeadingRadians = angleWrap(targetHeadingRadians);
-        this.setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        double startHeading = angleWrap(anglePos);
-
-        while (linearOpMode.opModeIsActive()){
-
-            double currentAngle = anglePos;
-
-            turnMovement = 0.77 * turnSpeed * (targetHeadingRadians - currentAngle) / (Math.abs(targetHeadingRadians - startHeading));
-
-            telemetry.addLine("turnMovement" + turnMovement);
-            telemetry.update();
-
-            if (Math.abs(targetHeadingRadians - currentAngle) <= Math.toRadians(1)){
-
-                telemetry.addLine("1 degree off, finish turn");
-                telemetry.update();
-                break;
-            }
-            applyMove();
-        }
-
-        brakeRobot();
-        linearOpMode.sleep(100);
-        turnMovement = 0;
-    }
-
     //normal use method default 2 second kill time
     public void finalTurn(double targetHeading, double turnSpeed) {
         finalTurn(targetHeading, turnSpeed, 2500);
@@ -252,7 +223,7 @@ public class Robot {
         }
         while (linearOpMode.opModeIsActive()) {
             double currentAngle = Math.toDegrees(anglePos);
-            double scaleFactor = 0.9 * Math.abs((currentAngle - startAngle) / (startAngle - targetHeading));
+            double scaleFactor = Math.abs((currentAngle - startAngle) / (startAngle - targetHeading));
             double absolutePower = 1 - scaleFactor;
             if (absolutePower < 0.15) {
                 brakeRobot();

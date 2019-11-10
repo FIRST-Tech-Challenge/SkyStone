@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -79,6 +80,8 @@ public class Alexander_TeleOp extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private double currentLoopTime = 0.0;
     private double lastLoopTime = 0.0;
+    private double direction = 1.0; //default forward
+
 
     //Driving Motors
     private DcMotor frontLeft = null; 
@@ -90,11 +93,15 @@ public class Alexander_TeleOp extends LinearOpMode {
     private DcMotor collectorLeft = null;
     private DcMotor collectorRight = null;
     private DcMotor linearSlide = null;
-    private DcMotor clamps = null;
+    private Servo clamps = null;
+    private Servo blockRotater = null;
+    private Servo hook = null;
 
 
     //other variables
     private static boolean tele = true; //show telemetry
+    double lastPosition = 0; // used for Block rotation
+
 
 
 
@@ -156,13 +163,41 @@ public class Alexander_TeleOp extends LinearOpMode {
     {
         if (dPadUp) {
             if (clamps != null) {
-                clamps.setPower(1.0);
+                clamps.setPosition(1.0);
             }
         }
         else if (dPadDown)
         {
             if (clamps != null) {
-                clamps.setPower(-1.0);
+                clamps.setPosition(-1.0);
+            }
+        }
+
+    }
+    private void MoveHook(boolean Up, boolean Down) {
+        if (Up) {
+            if (hook != null) {
+                hook.setPosition(1.0);
+            }
+        }
+        else if (Down) {
+            if (hook != null) {
+                hook.setPosition(-0);
+            }
+        }
+    }
+    private void RotateBlock(boolean rotateLeft, boolean rotateRight) {
+
+        if (rotateLeft) {
+            if (hook != null) {
+                hook.setPosition(lastPosition+0.1);
+                lastPosition = hook.getPosition();
+            }
+        }
+        else if (rotateRight) {
+            if (hook != null) {
+                hook.setPosition(lastPosition-0.1);
+                lastPosition = hook.getPosition();
             }
         }
     }
@@ -188,10 +223,17 @@ public class Alexander_TeleOp extends LinearOpMode {
         telemetry.update();
 
         //initialize required driving motors
-        frontLeft = getNewMotor("frontLeft");
-        frontRight = getNewMotor("frontRight");
-        backLeft = getNewMotor("backLeft");
-        backRight = getNewMotor("backRight");
+        frontLeft = getNewMotor("lf");
+        frontRight = getNewMotor("rf");
+        backLeft = getNewMotor("lb");
+        backRight = getNewMotor("rb");
+
+
+        //Init Accesory Motors
+        collectorLeft = getNewMotor("collectorLeft");
+        collectorLeft = getNewMotor("collectorRight");
+        linearSlide = getNewMotor("linearSlide");
+
 
         if(frontLeft != null)
             frontLeft.setDirection(DcMotor.Direction.FORWARD);           // This makes the front of the robot the side with the block intake!!!!!
@@ -201,6 +243,14 @@ public class Alexander_TeleOp extends LinearOpMode {
             backLeft.setDirection(DcMotor.Direction.FORWARD);
         if(backRight != null)
             backRight.setDirection(DcMotor.Direction.REVERSE);
+
+        if(collectorLeft != null)
+            collectorLeft.setDirection(DcMotor.Direction.FORWARD);
+        if(collectorRight != null)
+            collectorRight.setDirection(DcMotor.Direction.REVERSE);
+
+        if(linearSlide != null)
+            linearSlide.setDirection(DcMotor.Direction.FORWARD);
 
 
         // Wait for the game to start (driver presses PLAY)
@@ -218,6 +268,10 @@ public class Alexander_TeleOp extends LinearOpMode {
             double leftRight = gamepad1.left_stick_x;
             double Rotate = gamepad1.right_stick_x;
             boolean slowMode = (gamepad1.left_trigger > 0.2);
+            boolean reverseDirection = gamepad1.a;
+            boolean hookUp = gamepad1.dpad_up;
+            boolean hookkDown = gamepad1.dpad_down;
+
 
 
             //gamepad2
@@ -225,6 +279,10 @@ public class Alexander_TeleOp extends LinearOpMode {
             double StoneUpDown = gamepad2.right_stick_y;
             boolean clampsIn = gamepad2.dpad_up;
             boolean clampsOut = gamepad2.dpad_down;
+            boolean rotateLeft = gamepad2.x;
+            boolean rotateRight = gamepad2.b;
+
+
 
 
 
@@ -233,16 +291,24 @@ public class Alexander_TeleOp extends LinearOpMode {
             } else {
                 speedFactor = 1.0;
             }
+            if (reverseDirection) {
+                direction = -1;
+            } else {
+                direction = 1;
+            }
 
-            double leftStickY = forwardBack * speedFactor;
-            double leftStickX = leftRight * speedFactor;
-            double rightStickX = Rotate * speedFactor;
+                double leftStickY = forwardBack * speedFactor * direction;
+                double leftStickX = leftRight * speedFactor * direction;
+                double rightStickX = Rotate * speedFactor * direction;
+
 
             //Methods
             mecanumMove(leftStickX, leftStickY, rightStickX);
             Collector(collectorOn);
             SkystonePositioner(StoneUpDown);
             moveClamps(clampsIn, clampsOut);
+            RotateBlock(rotateLeft, rotateRight);
+            MoveHook(hookUp, hookkDown);
 
 
             //Telemetry

@@ -124,10 +124,11 @@ public class BlueAutonomous extends LinearOpMode {
         telemetry.update();
 
         //initialize required driving motors
-        frontLeft = getNewMotor("frontLeft");
-        frontRight = getNewMotor("frontRight");
-        backLeft = getNewMotor("backLeft");
-        backRight = getNewMotor("backRight");
+        frontLeft = getNewMotor("lf");
+        frontRight = getNewMotor("rf");
+        backLeft = getNewMotor("lb");
+        backRight = getNewMotor("rb");
+
 
         if (frontLeft != null)
             frontLeft.setDirection(DcMotor.Direction.REVERSE);

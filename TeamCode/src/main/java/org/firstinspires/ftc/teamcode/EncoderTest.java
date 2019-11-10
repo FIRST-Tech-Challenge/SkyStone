@@ -39,13 +39,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import android.app.Activity;
 import android.graphics.Color;
 import android.view.View;
-
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
-import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-
-import java.util.List;
 //import com.qualcomm.robotcore.util.*;
 //import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 //import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -71,9 +64,9 @@ import java.util.List;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="TensorFlowAuto", group="Linear OpMode")
+@Autonomous(name="EncoderTest", group="Linear OpMode")
 //@Disabled
-public class TensorFlowAuto extends LinearOpMode {
+public class EncoderTest extends LinearOpMode {
 
 
     private DcMotor getNewMotor(String motorName) { //these could be made generic using type notation
@@ -105,40 +98,10 @@ public class TensorFlowAuto extends LinearOpMode {
 
     // Other
     int skystonePosition; // Can equal 1, 2, or 3. This corresponds to the A, B and C patterns.
+    boolean Stone1isBlack; // Is the first stone black?
+    boolean Stone2isBlack; // Is the second stone black?
 
 
-
-    //Tensor Flow
-    private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
-    private static final String LABEL_FIRST_ELEMENT = "Stone";
-    private static final String LABEL_SECOND_ELEMENT = "Skystone";
-
-        /*
-         * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
-         * 'parameters.vuforiaLicenseKey' is initialized is for illustration only, and will not function.
-         * A Vuforia 'Development' license key, can be obtained free of charge from the Vuforia developer
-         * web site at https://developer.vuforia.com/license-manager.
-         *
-         * Vuforia license keys are always 380 characters long, and look as if they contain mostly
-         * random data. As an example, here is a example of a fragment of a valid key:
-         *      ... yIgIzTqZ4mWjk9wd3cZO9T1axEqzuhxoGlfOOI2dRzKS4T0hQ8kT ...
-         * Once you've obtained a license key, copy the string from the Vuforia web site
-         * and paste it in to your code on the next line, between the double quotes.
-         */
-        private static final String VUFORIA_KEY =
-                " -- YOUR NEW VUFORIA KEY GOES HERE  --- ";
-
-        /**
-         * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
-         * localization engine.
-         */
-        private VuforiaLocalizer vuforia;
-
-        /**
-         * {@link #tfod} is the variable we will use to store our instance of the TensorFlow Object
-         * Detection engine.
-         */
-        private TFObjectDetector tfod;
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -166,7 +129,6 @@ public class TensorFlowAuto extends LinearOpMode {
         backLeft = getNewMotor("lb");
         backRight = getNewMotor("rb");
 
-
         if (frontLeft != null)
             frontLeft.setDirection(DcMotor.Direction.REVERSE);
         if (frontRight != null)
@@ -180,46 +142,16 @@ public class TensorFlowAuto extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        DriveForward(1.0, -5000); // Back up to stones
-        SkytoneDetector(); // Determines the positions of the Skystone
-        if (skystonePosition == 1) // Pattern A
-        {
-            MoveHook(1.0, 500); // Hook skystone
-            DriveForward(1.0, 500); // Pull skystone out
-            MoveHook(1, -500);// Raise hook out of the way
-            //Collect block by moving forward while running collection device
-            DriveForward(1.0, 5000);  //Move into a path for the alliance bridge
-            TurnRight(1, 1500);
-        } else if (skystonePosition == 2) // Pattern B
-        {
-            StrafeRight(1, -1000); // Align with Skystone
-            MoveHook(1.0, 500); // Hook skystone
-            DriveForward(1.0, 500); // Pull skystone out
-            MoveHook(1, -500);// Raise hook out of the way
-            //Collect block by moving forward while running collection device
-            DriveForward(1.0, 5000);  //Move into a path for the alliance bridge
-            TurnRight(1, 1500);
-            DriveForward(1, 2500); //Meet up with other branches of code
-        } else if (skystonePosition == 3) // Pattern C
-        {
-            StrafeRight(1, -2000); // Align with Skystone
-            MoveHook(1.0, 500); // Hook skystone
-            DriveForward(1.0, 500); // Pull skystone out
-            MoveHook(1, -500);// Raise hook out of the way
-            //Collect block by moving forward while running collection device
-            DriveForward(1.0, 5000);  //Move into a path for the alliance bridge
-            TurnRight(1, 1500);
-            DriveForward(1, 5000); //Meet up with other branches of code
+        while(frontLeft.getCurrentPosition() != 5000) {
+
+            telemetry.addData("Front Left Motor Encoder Value", frontLeft.getCurrentPosition());
+            telemetry.addData("Back Left Motor Encoder Value", backLeft.getCurrentPosition());
+            telemetry.addData("Front Right Motor Encoder Value", frontRight.getCurrentPosition());
+            telemetry.addData("Back Right Motor Encoder Value", backRight.getCurrentPosition());
+
+            telemetry.update();
         }
 
-        DriveForward(1, 7500); // Drive to  just before Foundation
-        StrafeRight(1, 1500); // move right under foundation
-        TurnRight(1, 3000); // Do a 180
-        MoveHook(1, 500); // Hook foundation
-        StrafeRight(1, 5000); // move foundation into building depot
-        TurnRight(1, -3000); // Do a 180
-        // PLace block in foundation
-        DriveForward(1, 5000); // Park over tape
 
     }
 
@@ -377,109 +309,59 @@ public class TensorFlowAuto extends LinearOpMode {
         backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    private void SkytoneDetector()
-
-    {
-        // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
-        // first.
-        initVuforia();
-
-        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
-            initTfod();
+    public void DetectColorHSV(ColorSensor colorSensor, double SCALE_FACTOR, float hsvValues[]) {
+        Color.RGBToHSV(
+                (int) (blueColorSensor.red() * SCALE_FACTOR),
+                (int) (blueColorSensor.green() * SCALE_FACTOR),
+                (int) (blueColorSensor.blue() * SCALE_FACTOR),
+                hsvValues);
+        if (hsvValues[2] < 10) {
+            telemetry.addData("Block: ", "Stone");
         } else {
-            telemetry.addData("Sorry!", "This device is not compatible with TFOD");
+            telemetry.addData("Block: ", "SkyStone");
         }
 
-        /**
-         * Activate TensorFlow Object Detection before we wait for the start command.
-         * Do it here so that the Camera Stream window will have the TensorFlow annotations visible.
-         **/
-        if (tfod != null) {
-            tfod.activate();
-        }
-
-
-
-        if (opModeIsActive()) {
-            while (opModeIsActive()) {
-                if (tfod != null) {
-                    // getUpdatedRecognitions() will return null if no new information is available since
-                    // the last time that call was made.
-                    List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-                    if (updatedRecognitions != null) {
-                        telemetry.addData("# Object Detected", updatedRecognitions.size());
-
-                        // step through the list of recognitions and display boundary info.
-                        int i = 0;
-                        for (Recognition recognition : updatedRecognitions) {
-                            telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
-                            telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
-                                    recognition.getLeft(), recognition.getTop());
-                            telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
-                                    recognition.getRight(), recognition.getBottom());
-                            if (1 == 1)
-                            {
-                                skystonePosition = 1;
-                                telemetry.addData("Skystone Postion:", skystonePosition );
-                            }
-                            if (1 == 1)
-                            {
-                                skystonePosition = 2;
-                                telemetry.addData("Skystone Postion:", skystonePosition );
-                            }
-                            if (1 == 1)
-                            {
-                                skystonePosition = 3;
-                                telemetry.addData("Skystone Postion:", skystonePosition );
-                            }
-                            else // No conlsuive result, so go for defualt
-                            {
-                                skystonePosition = 2;
-                                telemetry.addData("Skystone Postion:", skystonePosition );
-                            }
-                            }
-                        }
-                        telemetry.update();
-                    }
-                }
-            }
-
-
-        if (tfod != null) {
-            tfod.shutdown();
-        }
     }
 
+    public void DetectColorRGB() {
+        int blueSensorColorValueRed = blueColorSensor.red(); // red value from 0-255 from the blue color sensor
+        int blueSensorColorValueBlue = blueColorSensor.blue(); // blue value from 0-255 from the blue color sensor
+        int blueSensorColorValueGreen = blueColorSensor.green(); // green value from 0-255 from the blue color sensor
 
-    /**
-     * Initialize the Vuforia localization engine.
-     */
-    private void initVuforia() {
-        /*
-         * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
-         */
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+        int redSensorColorValueRed = redColorSensor.red(); // red value from 0-255 from the red color sensor
+        int redSensorColorValueBlue = redColorSensor.blue(); // blue value from 0-255 from the red color sensor
+        int redSensorColorValueGreen = redColorSensor.green(); // green value from 0-255 from the red color sensor
 
-        parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
 
-        //  Instantiate the Vuforia engine
-        vuforia = ClassFactory.getInstance().createVuforia(parameters);
+        if (blueSensorColorValueRed == 0 && blueSensorColorValueBlue == 0 && blueSensorColorValueGreen == 0) {
+            skystonePosition = 1;
+            telemetry.addData("Block ", "SkyStone");
+            telemetry.addData("Pattern ", "A");
+            telemetry.update();
 
-        // Loading trackables is not necessary for the TensorFlow Object Detection engine.
-    }
+        } else {
+            Stone1isBlack = false;
+            telemetry.addData("Block: ", "Stone");
+            telemetry.update();
 
-    /**
-     * Initialize the TensorFlow Object Detection engine.
-     */
-    private void initTfod() {
-        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
-                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minimumConfidence = 0.8;
-        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
-        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
+        }
+        if (redSensorColorValueRed == 0 && redSensorColorValueBlue == 0 && redSensorColorValueGreen == 0) {
+            skystonePosition = 2;
+            telemetry.addData("Block: ", "SkyStone");
+            telemetry.addData("Position ", "B");
+            telemetry.update();
+        } else {
+            Stone2isBlack = false;
+            telemetry.addData("Block: ", "Stone");
+
+        }
+
+        if (!Stone1isBlack && !Stone2isBlack) {
+            skystonePosition = 3;
+            telemetry.addData("Pattern ", "C");
+            telemetry.update();
+        }
+
     }
 }
-
 

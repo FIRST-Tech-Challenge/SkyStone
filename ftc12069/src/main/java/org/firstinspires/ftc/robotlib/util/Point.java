@@ -54,4 +54,13 @@ public class Point {
     public double distance(Point point) {
         return Math.sqrt(Math.pow(this.x - point.x, 2) + Math.pow(this.y - point.y, 2) + Math.pow(this.z - point.y, 2));
     }
+
+    /**
+     * Calculates the distance between to 2-Dimensional points
+     * @param point other point
+     * @return Distance
+     */
+    public double distance2D(Point point) {
+        return Math.sqrt(Math.pow(this.x - point.x, 2) + Math.pow(this.y - point.y, 2));
+    }
 }

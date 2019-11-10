@@ -279,7 +279,7 @@ public class AutonomousRobot {
      */
     public double getCourseFromRobot(Point object) {
         Point robotPosition = this.getPosition();
-        return Math.sqrt(Math.pow(robotPosition.x - object.x, 2) + Math.pow(robotPosition.y - object.y, 2));
+        return Math.atan((robotPosition.y - object.y) / (robotPosition.x - object.y));
     }
 
     /**
@@ -301,7 +301,7 @@ public class AutonomousRobot {
      * @return distance between point and robot center
      */
     public double getDistanceFromRobot(Point object) {
-        return this.getPosition().distance(object);
+        return this.getPosition().distance2D(object);
     }
 
     // Shortcuts

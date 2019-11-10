@@ -39,4 +39,14 @@ public class ScoopArmBot extends FourWheelsDriveBot {
         opMode.telemetry.log().add(String.format("scoopStone %.2f", servoScoop.getPosition()));
     }
 
+    public void controlScoop(boolean buttonB, boolean buttonY, boolean buttonX) {
+        if (buttonB) {
+            servoScoop.setPosition(0.1);
+        } else if (buttonY) {
+            servoScoop.setPosition(0.4);
+        } else if (buttonX) {
+            servoScoop.setPosition(0.7);
+        }
+    }
+
 }

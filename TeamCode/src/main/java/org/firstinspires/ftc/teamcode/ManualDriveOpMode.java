@@ -4,13 +4,16 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+
 
 
 @TeleOp(name="Manual Driving OpMode", group="Linear Opmode")
 
 public class ManualDriveOpMode extends LinearOpMode {
 
-    FourWheelsDriveBot robot = new FourWheelsDriveBot(this);
+    ScoopArmBot robot = new ScoopArmBot(this);
 
     @Override
     public void runOpMode() {
@@ -22,6 +25,10 @@ public class ManualDriveOpMode extends LinearOpMode {
         while (opModeIsActive()) {
 
             robot.driveByVector(gamepad1.left_stick_x, gamepad1.left_stick_y);
+            robot.controlScoop(gamepad1.b, gamepad1.y, gamepad1.x);
+
+
+
         }
     }
 }

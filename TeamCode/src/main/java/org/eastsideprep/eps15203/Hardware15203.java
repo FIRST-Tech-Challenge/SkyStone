@@ -23,7 +23,7 @@ public class Hardware15203 {
     public DcMotor leftBackMotor = null;
     public DcMotor rightBackMotor = null;
     public DcMotor [] allMotors;
-    //public revServo zArmMotor = null;
+    public DcMotor zArmMotor = null;
     public Gyroscope gyro = null;
 
     double [] rotationArray;
@@ -49,6 +49,10 @@ public class Hardware15203 {
         rightFrontMotor = hwMap.dcMotor.get("RF");
         leftBackMotor = hwMap.dcMotor.get("LB");
         rightBackMotor = hwMap.dcMotor.get("RB");
+
+        zArmMotor = hwMap.dcMotor.get("ZM");
+        zArmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
 
         allMotors = new DcMotor[]{ leftFrontMotor, rightFrontMotor, leftBackMotor, rightBackMotor};
         rotationArray= new double[]{-1.0, 1.0, -1.0, 1.0};

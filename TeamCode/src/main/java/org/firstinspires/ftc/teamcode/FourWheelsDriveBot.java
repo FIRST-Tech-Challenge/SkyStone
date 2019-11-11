@@ -70,6 +70,7 @@ public class FourWheelsDriveBot
         return ret;
     }
 
+
 //    public void driveByHand(double _lf, double _lr, double _rf, double _rr) {
     public void driveByHand(double left_stick_x, double left_stick_y, double right_stick_x, boolean arcadeMode) {
 
@@ -90,6 +91,7 @@ public class FourWheelsDriveBot
         leftRear.setPower(lr / scale);
         rightFront.setPower(rf / scale);
         rightRear.setPower(rr / scale);
+
     }
 
 

@@ -25,36 +25,36 @@ public class BlueLeft extends AutoBase {
         double secondSkyStoneY = -24.0;
         if (position == 2){
             firstSkyStoneY = 3.0;
-            secondSkyStoneY = -21.0;
+            secondSkyStoneY = -12.0;
             robot.moveToPoint(55,firstSkyStoneY,0.6,0.5,0);
         } else if (position == 1){
             firstSkyStoneY = 0.0;
-            secondSkyStoneY = -24.0;
+            secondSkyStoneY = -15.0;
             robot.moveToPoint(55, firstSkyStoneY, 0.6, 0.5, Math.toRadians(0));
         } else {
             firstSkyStoneY = -3.0;
-            secondSkyStoneY = -27.0;
+            secondSkyStoneY = -18.0;
             robot.moveToPoint(55,firstSkyStoneY,0.6,0.5,0);
         }
         intake(false);
 
-        double[][] toFoundation = {{55.0,firstSkyStoneY},{6.0,5.0},{5.0,30.0},{30.0,80}};
-        PathPoints pathToFoundation = new PathPoints(toFoundation,20);
-        robot.moveFollowCurve(pathToFoundation.targetPoints,Math.toRadians(180),Math.toRadians(-180),15);
+        double[][] toFoundation = {{55.0,firstSkyStoneY},{20.0,5.0},{20.0,30.0},{30.0,80}};
+        PathPoints pathToFoundation = new PathPoints(toFoundation,25);
+        robot.moveFollowCurve(pathToFoundation.targetPoints,Math.toRadians(180));
 
         intake(true);
 
-        double [][] toSecondStone = {{48.0,80.0},{6.0,40.0},{6.0,30.0},{6.0,5.0},{30.0,secondSkyStoneY}};
-        PathPoints pathToSecondStone = new PathPoints(toSecondStone,12);
-        robot.moveFollowCurve(pathToSecondStone.targetPoints,Math.toRadians(0),Math.toRadians(-90),15);
+        double [][] toSecondStone = {{48.0,80.0},{20.0,40.0},{20.0,30.0},{20.0,5.0},{40.0,secondSkyStoneY}};
+        PathPoints pathToSecondStone = new PathPoints(toSecondStone,25);
+        robot.moveFollowCurve(pathToSecondStone.targetPoints,Math.toRadians(0));
 
         intake(false);
 
-        double[][] toDepositSecondStone = {{48.0,secondSkyStoneY},{6.0,5.0},{6.0,30.0},{15.0,80.0}};
-        PathPoints pathToDepositSecondStone = new PathPoints(toDepositSecondStone,20);
-        robot.moveFollowCurve(pathToDepositSecondStone.targetPoints, Math.toRadians(180),Math.toRadians(90), 15);
+        double[][] toDepositSecondStone = {{40.0,secondSkyStoneY},{13.0,5.0},{13.0,30.0},{15.0,80.0}};
+        PathPoints pathToDepositSecondStone = new PathPoints(toDepositSecondStone,25);
+        robot.moveFollowCurve(pathToDepositSecondStone.targetPoints, Math.toRadians(180));
 
-        robot.moveToPoint(15.0, 30.0,1,0,Math.toRadians(180));
+        robot.moveToPoint(15.0, 50.0,1,0,Math.toRadians(0));
 
 //
 //        // Determine position of SkyStone

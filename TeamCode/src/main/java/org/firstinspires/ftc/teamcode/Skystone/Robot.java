@@ -421,7 +421,7 @@ public class Robot {
             followMe.setPoint(allPoints.get(allPoints.size() - 1).toPoint());
         }
 
-        double decelerationScaleFactor = Range.clip(distanceToEnd/6,-1,1);
+        double decelerationScaleFactor = Range.clip(distanceToEnd/12,-1,1);
 
         if (distanceToEnd < angleLockDistance){
             if (Math.abs(angleLockRadians - anglePos) <= Math.toRadians(5)) {
@@ -430,6 +430,9 @@ public class Robot {
         }
 
         goToPoint(followMe.x, followMe.y, followMe.moveSpeed * decelerationScaleFactor, followMe.turnSpeed * decelerationScaleFactor, followAngle);
+
+        telemetry.addLine("foalu me x" + followMe.x);
+        telemetry.addLine("foolo me y: " + followMe.y);
 
         if ((distanceToEnd < 0.5)) {
             return false;
@@ -451,6 +454,51 @@ public class Robot {
             // else, it moves
 
             if (!followCurve(points, optimalAngle, angleLockRadians, angleLockDistance)) {
+                brakeRobot();
+                return;
+            }
+        }
+    }
+
+    public boolean followCurve(Vector<CurvePoint> allPoints, double followAngle) {
+        Vector<CurvePoint> pathExtended = (Vector<CurvePoint>) allPoints.clone();
+
+        pointWithIndex distanceAlongPath = distanceAlongPath(allPoints, robotPos);
+        int currFollowIndex = distanceAlongPath.index + 1;
+
+        CurvePoint followMe = getFollowPointPath(pathExtended, robotPos, allPoints.get(currFollowIndex).followDistance);
+
+        pathExtended.set(pathExtended.size() - 1, extendLine(allPoints.get(allPoints.size() - 2), allPoints.get(allPoints.size() - 1), allPoints.get(allPoints.size() - 1).pointLength * 1.5));
+
+        double distanceToEnd = Math.hypot(distanceAlongPath.x - allPoints.get(allPoints.size() - 1).x, distanceAlongPath.y - allPoints.get(allPoints.size() - 1).y);
+
+        if (distanceToEnd <= followMe.followDistance + 15 || Math.hypot(robotPos.x - allPoints.get(allPoints.size() - 1).x, robotPos.y - allPoints.get(allPoints.size() - 1).y) < followMe.followDistance + 15) {
+            followMe.setPoint(allPoints.get(allPoints.size() - 1).toPoint());
+        }
+
+        double decelerationScaleFactor = Range.clip(distanceToEnd/12,-1,1);
+
+        goToPoint(followMe.x, followMe.y, followMe.moveSpeed * decelerationScaleFactor, followMe.turnSpeed * decelerationScaleFactor, followAngle);
+
+        telemetry.addLine("foalu me x" + followMe.x);
+        telemetry.addLine("foolo me y: " + followMe.y);
+
+        if ((distanceToEnd < 0.5)) {
+            return false;
+        }
+
+        applyMove();
+        return true;
+    }
+
+    public void moveFollowCurve(Vector<CurvePoint> points, double optimalAngle) {
+        //pathDistance = Math.hypot(points.get(points.size() - 1).x, points.get(points.size() - 1).y);
+        while (linearOpMode.opModeIsActive()) {
+
+            // if followCurve returns false then it is ready to stop
+            // else, it moves
+
+            if (!followCurve(points, optimalAngle)) {
                 brakeRobot();
                 return;
             }
@@ -558,7 +606,7 @@ public class Robot {
         double relativeAngleToPoint = MathFunctions.angleWrap(absoluteAngleToTarget - anglePos);
         double relativeXToPoint = Math.cos(relativeAngleToPoint) * distanceToTarget;
         double relativeYToPoint = Math.sin(relativeAngleToPoint) * distanceToTarget;
-        double relativeTurnAngle = relativeAngleToPoint + optimalAngle;
+        double relativeTurnAngle = MathFunctions.angleWrap(relativeAngleToPoint - optimalAngle);
 
         double xPower = relativeXToPoint / (Math.abs(relativeXToPoint) + Math.abs(relativeYToPoint));
         double yPower = relativeYToPoint / (Math.abs(relativeYToPoint) + Math.abs(relativeXToPoint));
@@ -611,7 +659,7 @@ public class Robot {
         // find the total distance from the start point to the end point
         double totalDistanceToTarget = Math.hypot(x - robotPos.x, y - robotPos.y);
 
-        double totalTimeSeconds = totalDistanceToTarget/12;
+        double totalTimeSeconds = totalDistanceToTarget/16;
 
         // so deceleration works
         this.setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

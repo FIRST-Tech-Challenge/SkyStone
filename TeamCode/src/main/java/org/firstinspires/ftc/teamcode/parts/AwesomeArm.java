@@ -45,9 +45,9 @@ public class AwesomeArm {
     }
 
     public void moveActuator(double amnt) {
-        int movet = 20;
+        /*int movet = 20;
         actuatorPos += (int)(movet * amnt);
-        actuatorPos = Range.clip(actuatorPos,-13000,-200);
+        //actuatorPos = Range.clip(actuatorPos,-13000,-200);
 
         DcMotor i = actuator;
         if(i.getCurrentPosition() != actuatorPos) {
@@ -59,7 +59,9 @@ public class AwesomeArm {
         }
 
         SharedTelemetry.telemetry.addData("t1",i.getCurrentPosition());
-        SharedTelemetry.telemetry.addData("t2",actuatorPos);
+        SharedTelemetry.telemetry.addData("t2",actuatorPos);*/
+
+        actuator.setPower(amnt*0.75);
     }
 
     public void moveElbow(double amnt) {
@@ -76,8 +78,8 @@ public class AwesomeArm {
 
         grippersOpen = !grippersOpen;
         if(grippersOpen) {
-            lg.setPosition(0.2);
-            rg.setPosition(0.3);
+            lg.setPosition(0.3);
+            rg.setPosition(0.4);
         } else {
             lg.setPosition(0);
             rg.setPosition(0);

@@ -120,7 +120,7 @@ public class Robob extends OpMode
 
     private void wheelControl() {
         double strafe   = gamepad1.left_stick_x;
-        double vertical = -gamepad1.left_stick_y;
+        double vertical = gamepad1.left_stick_y;
         double rotate   = gamepad1.right_stick_x;
 
         wheels.setVelocityXYR(strafe,vertical,rotate);

@@ -423,10 +423,11 @@ public class Robot {
 
         double decelerationScaleFactor = 1;//Range.clip(distanceToEnd/12,-1,1);
 
-        goToPoint(followMe.x, followMe.y, followMe.moveSpeed * decelerationScaleFactor, followMe.turnSpeed * decelerationScaleFactor, followAngle);
+        if (distanceToEnd < angleLockDistance){
+            followAngle += angleLockRadians;
+        }
 
-        telemetry.addLine("foalu me x" + followMe.x);
-        telemetry.addLine("foolo me y: " + followMe.y);
+        goToPoint(followMe.x, followMe.y, followMe.moveSpeed * decelerationScaleFactor, followMe.turnSpeed * decelerationScaleFactor, followAngle);
 
         if ((distanceToEnd < 0.5)) {
             return false;
@@ -592,7 +593,7 @@ public class Robot {
         double relativeAngleToPoint = MathFunctions.angleWrap(absoluteAngleToTarget - anglePos);
         double relativeXToPoint = Math.cos(relativeAngleToPoint) * distanceToTarget;
         double relativeYToPoint = Math.sin(relativeAngleToPoint) * distanceToTarget;
-        double relativeTurnAngle = MathFunctions.angleWrap(relativeAngleToPoint - optimalAngle);
+        double relativeTurnAngle = relativeAngleToPoint + optimalAngle;
 
         double xPower = relativeXToPoint / (Math.abs(relativeXToPoint) + Math.abs(relativeYToPoint));
         double yPower = relativeYToPoint / (Math.abs(relativeYToPoint) + Math.abs(relativeXToPoint));
@@ -605,10 +606,10 @@ public class Robot {
     private void applyMove() {
 
         // convert movements to motor powers
-        double fLeftPower = (-yMovement * 1.414 + turnMovement + xMovement);
-        double fRightPower = (yMovement * 1.414 - turnMovement + xMovement);
-        double bLeftPower = (yMovement * 1.414 + turnMovement + xMovement);
-        double bRightPower = (-yMovement * 1.414 - turnMovement + xMovement);
+        double fLeftPower = (yMovement * 1.414 + turnMovement + xMovement);
+        double fRightPower = (-yMovement * 1.414 - turnMovement + xMovement);
+        double bLeftPower = (-yMovement * 1.414 + turnMovement + xMovement);
+        double bRightPower = (yMovement * 1.414 - turnMovement + xMovement);
 
         //scale all powers to below 1
         double maxPower = Math.abs(fLeftPower);
@@ -643,7 +644,7 @@ public class Robot {
         // find the total distance from the start point to the end point
         double totalDistanceToTarget = Math.hypot(x - robotPos.x, y - robotPos.y);
 
-        double totalTimeSeconds = totalDistanceToTarget/16;
+        double totalTimeSeconds = totalDistanceToTarget/20;
 
         // so deceleration works
         this.setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -683,7 +684,7 @@ public class Robot {
             double yPower = relativeYToPoint / (Math.abs(relativeYToPoint) + Math.abs(relativeXToPoint));
 
             // find the deceleration
-            double decelerationScaleFactor = Range.clip(distanceToTarget/5,-1,1) * Math.sqrt(Math.pow(totalDistanceToTarget,2) - Math.pow(totalDistanceToTarget - distanceToTarget,2)) / totalDistanceToTarget;
+            double decelerationScaleFactor = Range.clip(2 * Math.sqrt(Math.pow(totalDistanceToTarget,2) - Math.pow(totalDistanceToTarget - distanceToTarget,2)) / totalDistanceToTarget,-1,1);
 
             // get everything into x, y, and turn movements for applyMove
             // the robot can be viewed as something that moves on a coordinate plane

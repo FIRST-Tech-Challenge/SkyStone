@@ -405,7 +405,7 @@ public class Robot {
     }
 
 
-    public boolean followCurve(Vector<CurvePoint> allPoints, double followAngle) {
+    public boolean followCurve(Vector<CurvePoint> allPoints, double followAngle, double angleLockRadians, double angleLockDistance) {
         Vector<CurvePoint> pathExtended = (Vector<CurvePoint>) allPoints.clone();
 
         pointWithIndex distanceAlongPath = distanceAlongPath(allPoints, robotPos);
@@ -421,24 +421,36 @@ public class Robot {
             followMe.setPoint(allPoints.get(allPoints.size() - 1).toPoint());
         }
 
-        goToPoint(followMe.x, followMe.y, followMe.moveSpeed, followMe.turnSpeed, followAngle);
+        double decelerationScaleFactor = Range.clip(distanceToEnd/6,-1,1);
 
-        if ((distanceToEnd < 0.25)) {
+        if (distanceToEnd < angleLockDistance){
+            if (Math.abs(angleLockRadians - anglePos) <= Math.toRadians(5)) {
+                followMe.turnSpeed = 0;
+            }
+        }
+
+        goToPoint(followMe.x, followMe.y, followMe.moveSpeed * decelerationScaleFactor, followMe.turnSpeed * decelerationScaleFactor, followAngle);
+
+        if ((distanceToEnd < 0.5)) {
             return false;
+        }
+
+        if (distanceToEnd < angleLockDistance && Math.abs(angleLockRadians - anglePos) >= Math.toRadians(5)){
+            turnMovement = 0.5 * Math.abs((angleLockRadians - anglePos)/anglePos) * Math.abs(angleLockRadians - anglePos) / (angleLockRadians - anglePos);
         }
 
         applyMove();
         return true;
     }
 
-    public void moveFollowCurve(Vector<CurvePoint> points) {
+    public void moveFollowCurve(Vector<CurvePoint> points, double optimalAngle, double angleLockRadians, double angleLockDistance) {
         //pathDistance = Math.hypot(points.get(points.size() - 1).x, points.get(points.size() - 1).y);
         while (linearOpMode.opModeIsActive()) {
 
             // if followCurve returns false then it is ready to stop
             // else, it moves
 
-            if (!followCurve(points, Math.toRadians(0))) {
+            if (!followCurve(points, optimalAngle, angleLockRadians, angleLockDistance)) {
                 brakeRobot();
                 return;
             }
@@ -551,11 +563,11 @@ public class Robot {
         double xPower = relativeXToPoint / (Math.abs(relativeXToPoint) + Math.abs(relativeYToPoint));
         double yPower = relativeYToPoint / (Math.abs(relativeYToPoint) + Math.abs(relativeXToPoint));
 
-        double decelerationScaleFactor = Range.clip(distanceToTarget/5,-1,1);
+        double decelerationScaleFactor = 1; //Range.clip(distanceToTarget/3,-1,1);
 
         xMovement = xPower * moveSpeed * decelerationScaleFactor;
         yMovement = yPower * moveSpeed * decelerationScaleFactor;
-        turnMovement = Range.clip(relativeTurnAngle / Math.toRadians(180), -1, 1) * turnSpeed * decelerationScaleFactor;
+        turnMovement = Range.clip(relativeTurnAngle / Math.toRadians(270), -1, 1) * turnSpeed * decelerationScaleFactor;
     }
 
     private void applyMove() {
@@ -599,11 +611,16 @@ public class Robot {
         // find the total distance from the start point to the end point
         double totalDistanceToTarget = Math.hypot(x - robotPos.x, y - robotPos.y);
 
+        double totalTimeSeconds = totalDistanceToTarget/12;
+
         // so deceleration works
         this.setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        // start a timer
+        long startTime = SystemClock.elapsedRealtime();
+
         // keep on running this
-        while (linearOpMode.opModeIsActive()) {
+        while (linearOpMode.opModeIsActive() && SystemClock.elapsedRealtime() - startTime < totalTimeSeconds * 1000) {
 
             // store your current position in variables
             double xPos = robotPos.x;
@@ -615,8 +632,7 @@ public class Robot {
 
             // only way to break the loop, if the distance to target is less than 1
             if (distanceToTarget < 1) {
-                brakeRobot();
-                return;
+                break;
             }
 
             // find the absolute angle to target
@@ -647,6 +663,7 @@ public class Robot {
 
             applyMove();
         }
+        brakeRobot();
     }
 
     public int detectVuforia(String VUFORIA_KEY) {
@@ -741,106 +758,83 @@ public class Robot {
 
 
     public int detectTensorflow(){
-        /**
-         * if it sees something/object detected : get the confidence
-         * if confidence is greater than 0.7 : find its position and return that
-         * if confidence is less than 0.7 : get the position it thinks, go through the code again, if is the same, then return that
-         */
-        if(true){
-            return 1;
-        }else {
-            VuforiaLocalizer vuforia = initVuforia();
-            TFObjectDetector tfod;
-            tfod = initTfod(vuforia);
-            tfod.activate();
-            long startTime = SystemClock.elapsedRealtime();
 
-            // 2 is right, 1 is center, 0 is left
-            HashMap<Integer, Integer> recognitions = new HashMap<>();
+        VuforiaLocalizer vuforia = initVuforia();
+        TFObjectDetector tfod;
+        tfod = initTfod(vuforia);
+        tfod.activate();
+        long startTime = SystemClock.elapsedRealtime();
 
-            // scan for 5 seconds
-            while (linearOpMode.opModeIsActive() && SystemClock.elapsedRealtime() - startTime < 5000) {
-                telemetry.addLine("got into loop");
+        // 2 is right, 1 is center, 0 is left
+        ArrayList<Integer> recognitions = new ArrayList<>();
+
+        // scan for 5 seconds
+        while (linearOpMode.opModeIsActive() && SystemClock.elapsedRealtime() - startTime < 1000) {
+            telemetry.addLine("got into loop");
+            telemetry.update();
+            // get all the detections
+            List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+            telemetry.addLine("made List");
+            telemetry.update();
+
+            // if there is a detection run the logic
+            if (updatedRecognitions != null && updatedRecognitions.size() > 0) {
+                telemetry.addLine("got into if");
                 telemetry.update();
-                // get all the detections
-                List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-                telemetry.addLine("made List");
-                telemetry.update();
+                // sorts based on confidence levels
+                Collections.sort(updatedRecognitions, new Comparator<Recognition>() {
+                    @Override
+                    public int compare(Recognition recognition, Recognition t1) {
+                        return (int) (recognition.getConfidence() - t1.getConfidence());
+                    }
+                });
 
-                // if there is a detection run the logic
-                if (updatedRecognitions != null && updatedRecognitions.size() > 0) {
-                    telemetry.addLine("got into if");
+                // iterate through each recognition
+                for (int i = 0; i < updatedRecognitions.size(); i++) {
+                    telemetry.addLine("Got into second for loop");
                     telemetry.update();
-                    // sorts based on confidence levels
-                    Collections.sort(updatedRecognitions, new Comparator<Recognition>() {
-                        @Override
-                        public int compare(Recognition recognition, Recognition t1) {
-                            return (int) (recognition.getConfidence() - t1.getConfidence());
-                        }
-                    });
+                    // value is the center of the detection
+                    float value = (updatedRecognitions.get(i).getTop() + updatedRecognitions.get(i).getBottom()) / 2;
 
-                    // iterate through each recognition
-                    for (int i = 0; i < updatedRecognitions.size(); i++) {
-                        telemetry.addLine("Got into second for loop");
+                    // if the confidence is greater than 0.9, then return that
+                    if ((double) updatedRecognitions.get(i).getConfidence() > 0.9) {
+                        telemetry.addLine("0.9 confidence");
                         telemetry.update();
-                        // value is the center of the detection
-                        float value = (updatedRecognitions.get(i).getTop() + updatedRecognitions.get(i).getBottom()) / 2;
-
-                        // if the confidence is greater than 0.9, then return that
-                        if ((double) updatedRecognitions.get(i).getConfidence() > 0.9) {
-                            telemetry.addLine("0.9 confidence");
-                            telemetry.update();
-                            if (value < 600) {
-                                return 2;
-                            } else if (value < 800) {
-                                return 1;
-                            } else {
-                                return 0;
-                            }
+                        if (value < 600) {
+                            return 2;
+                        } else if (value < 800) {
+                            return 1;
+                        } else {
+                            return 0;
                         }
-                        // if the confidence is greater than 0.5, add it to the arraylist
-                        else if ((double) updatedRecognitions.get(i).getConfidence() > 0.5) {
-                            telemetry.addLine("0.5 confidence");
-                            telemetry.update();
-                            if (value < 600) {
-                                incrementBy(recognitions, 2, 1);
-                            } else if (value < 800) {
-                                incrementBy(recognitions, 1, 1);
-                                return 1;
-                            } else {
-                                incrementBy(recognitions, 0, 1);
-                            }
+                    }
+                    // if the confidence is greater than 0.5, add it to the arraylist
+                    else if ((double) updatedRecognitions.get(i).getConfidence() > 0.5) {
+                        telemetry.addLine("0.5 confidence");
+                        telemetry.update();
+                        if (value < 600) {
+                            recognitions.add(2);
+                        } else if (value < 800) {
+                            recognitions.add(1);
+                            return 1;
+                        } else {
+                            recognitions.add(0);
                         }
                     }
                 }
-                telemetry.addLine("Bottom of loop");
-                telemetry.update();
             }
-
-            telemetry.addLine("Got to mostOccuredKey");
+            telemetry.addLine("Bottom of loop");
             telemetry.update();
-            Integer mostOccuredKey = -1;
-            Integer countOfMostOccuredKey = -1;
-//        for (int i = 0; i < recognitions.size(); i++){
-//            if (recognitions.get(i) > countOfMostOccuredKey){
-//                mostOccuredKey = i;
-//                countOfMostOccuredKey = recognitions.get(i);
-//            }
-//        }
-
-
-            if (mostOccuredKey < 0) {
-                telemetry.addLine("Vuforia NOT found. GOING FOR MIDDLE !!!!: ");
-                telemetry.update();
-                return 1;
-            }
-
-            telemetry.addLine("found: " + mostOccuredKey);
-            telemetry.update();
-
-            // return rounded int average
-            return mostOccuredKey;
         }
+
+        double sum = 0;
+        for (int i = 0; i < recognitions.size(); i++){
+            sum += recognitions.get(i);
+        }
+
+        double retVal = sum / recognitions.size();
+
+        return (int)Math.round(retVal);
     }
 
     private void incrementBy(HashMap<Integer, Integer> recognitions, int key, int val){

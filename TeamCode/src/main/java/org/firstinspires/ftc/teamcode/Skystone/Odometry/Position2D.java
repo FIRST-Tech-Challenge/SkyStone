@@ -82,7 +82,7 @@ class Odometry{
     public void circularOdometry () {
         double leftPodNew = -1 * robot.getfLeft().getCurrentPosition(); // fix this for new odo config
         double rightPodNew = -1 * robot.getfRight().getCurrentPosition(); //fix this for new odo config
-        double mecanumPodNew = -1 * robot.getbLeft().getCurrentPosition(); // fix this for new odo config
+        double mecanumPodNew = robot.getbLeft().getCurrentPosition(); // fix this for new odo config
 
         double leftIncrement = (leftPodNew-leftPodOld) * moveScaleFactor;
         double rightIncrement = (rightPodNew - rightPodOld) * moveScaleFactor;

@@ -26,31 +26,37 @@ public class BlueLeft extends AutoBase {
         if (position == 2){
             firstSkyStoneY = 3.0;
             secondSkyStoneY = -12.0;
-            robot.moveToPoint(55,firstSkyStoneY,0.8,0.5,0);
+            robot.moveToPoint(55,firstSkyStoneY,0.5,0.5,0);
         } else if (position == 1){
             firstSkyStoneY = 0.0;
             secondSkyStoneY = -15.0;
-            robot.moveToPoint(55, firstSkyStoneY, 0.8, 0.5,0);
+            robot.moveToPoint(55, firstSkyStoneY, 0.5, 0.5,0);
         } else {
             firstSkyStoneY = -3.0;
-            secondSkyStoneY = -18.0;
-            robot.moveToPoint(55,firstSkyStoneY,0.8,0.5,0);
+            secondSkyStoneY = -35.0;
+            robot.moveToPoint(55,firstSkyStoneY,0.5,0.5,0);
         }
-        intake(false);
 
-        double[][] toFoundation = {{55.0,firstSkyStoneY},{10.0,10.0},{15.0,30.0},{30.0,80}};
+
+        double[][] toFoundation = {{55.0,firstSkyStoneY},{10.0,10.0},{15.0,30.0},{30.0,79.0}};
         PathPoints pathToFoundation = new PathPoints(toFoundation,20);
-        robot.moveFollowCurve(pathToFoundation.targetPoints,Math.toRadians(-179),Math.toRadians(-60),40);
+        robot.moveFollowCurve(pathToFoundation.targetPoints,Math.toRadians(-179),Math.toRadians(180),40);
+        intake(false);
+        depositStone();
+        retractOuttake();
 
         intake(true);
-        double [][] toSecondStone = {{48.0,80.0},{20.0,30.0},{30.0,5.0},{40.0,secondSkyStoneY}};
+        double [][] toSecondStone = {{-5.0,60.0},{20.0,30.0},{25.0,-22.0}};
         PathPoints pathToSecondStone = new PathPoints(toSecondStone,20);
         robot.moveFollowCurve(pathToSecondStone.targetPoints,Math.toRadians(0));
-        intake(false);
+        robot.moveToPoint(75.0,secondSkyStoneY,0.5,1,Math.toRadians(-23));
 
-        double[][] toDepositSecondStone = {{40.0,secondSkyStoneY},{10.0,10.0},{12.0,30.0},{5.0,80.0}};
+        double[][] toDepositSecondStone = {{40.0,secondSkyStoneY},{15.0,10.0},{15.0,30.0},{15.0,70.0}};
         PathPoints pathToDepositSecondStone = new PathPoints(toDepositSecondStone,20);
-        robot.moveFollowCurve(pathToDepositSecondStone.targetPoints, Math.toRadians(-179));
+        robot.moveFollowCurve(pathToDepositSecondStone.targetPoints, Math.toRadians(-179),Math.toRadians(-90),20);
+        intake(false);
+        depositStone();
+        retractOuttake();
 
         robot.moveToPoint(15.0, 30.0,1,1,Math.toRadians(0));
 

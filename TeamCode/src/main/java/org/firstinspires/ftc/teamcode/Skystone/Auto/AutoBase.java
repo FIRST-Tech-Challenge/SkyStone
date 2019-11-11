@@ -36,20 +36,25 @@ public class AutoBase extends LinearOpMode {
 
         robot.getIntakePusher().setPosition(robot.PUSHER_PUSHED); // Push block all the way to clamp
 
-        while(isExtend) {
+        while(isExtend && robot.getLinearOpMode().opModeIsActive()) {
             currentTime = SystemClock.elapsedRealtime();
             //extend
-            if (currentTime - outtakeExecutionTime >= 300) {
+            if (currentTime - outtakeExecutionTime >= 500 && isExtend) {
+                robot.getIntakePusher().setPosition(robot.PUSHER_RETRACTED);
+            }
+            if (currentTime - outtakeExecutionTime >= 850 && isExtend) {
                 robot.getClamp().setPosition(robot.CLAW_SERVO_CLAMPED);
             }
-            if(currentTime-outtakeExecutionTime >= 400){
+            if(currentTime-outtakeExecutionTime >= 1000 && isExtend){
                 robot.getOuttakeExtender().setPosition(robot.OUTTAKE_SLIDE_EXTENDED);
             }
-            if(currentTime-outtakeExecutionTime >= 1750){
-                robot.getClampPivot().setPosition(robot.OUTTAKE_PIVOT_EXTENDED);
+
+            if(currentTime-outtakeExecutionTime >= 1750 && isExtend){
+                robot.getClampPivot().setPosition(robot.OUTTAKE_PIVOT_90);
             }
-            if(currentTime-outtakeExecutionTime >= 2150) {
-                robot.getClamp().setPosition(robot.CLAW_SERVO_CLAMPED);
+
+            if(currentTime-outtakeExecutionTime >=2250){
+                isExtend = false;
             }
         }
     }
@@ -61,14 +66,13 @@ public class AutoBase extends LinearOpMode {
         robot.getIntakePusher().setPosition(robot.PUSHER_RETRACTED); // Push block all the way to clamp
         robot.getClamp().setPosition(robot.CLAW_SERVO_RELEASED); // Release clamp
 
-        while(isRetract) {
+        while(isRetract&& robot.getLinearOpMode().opModeIsActive()) {
             currentTime = SystemClock.elapsedRealtime();
 
-            //retract
-            if (currentTime - outtakeExecutionTime >= 250) {
+            if(currentTime-outtakeExecutionTime >= 450 && isRetract){
                 robot.getClampPivot().setPosition(robot.OUTTAKE_PIVOT_RETRACTED);
             }
-            if (currentTime - outtakeExecutionTime >= 750) {
+            if(currentTime-outtakeExecutionTime >= 1150 && isRetract){
                 robot.getOuttakeExtender().setPosition(robot.OUTTAKE_SLIDE_RETRACTED);
                 isRetract = false;
             }

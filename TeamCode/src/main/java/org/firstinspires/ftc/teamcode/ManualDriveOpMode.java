@@ -1,27 +1,52 @@
-
-
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-@TeleOp(name="Manual Driving OpMode", group="Linear Opmode")
-
-public class ManualDriveOpMode extends LinearOpMode {
-
-    FourWheelsDriveBot robot = new FourWheelsDriveBot(this);
+/**
+ * Mecanum teleop (with an optional arcade mode)
+ * * Left stick controls x/y translation.
+ * * Right stick controls rotation about the z axis
+ * * When arcade mode is enabled (press "a"), translation direction
+ * becomes relative to the field as opposed to the robot. You can
+ * reset the forward heading by pressing "x".
+ */
+@TeleOp(name = "Mecanum")
+public class ManualDriveOpMode extends OpMode {
+    private FourWheelsDriveBot robot;
+    private boolean arcadeMode = false;
+    private int gyroCalibratedCount = 0;
 
     @Override
-    public void runOpMode() {
-        robot.init(hardwareMap);
+    public void init() {
+    }
 
-        waitForStart();
+    @Override
+    public void init_loop() {
 
-        // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()) {
+    }
 
-            robot.driveByVector(gamepad1.left_stick_x, gamepad1.left_stick_y);
+    @Override
+    public void loop() {
+        if (gamepad1.x) {
+            robot.resetHeading();
+        }
+            final double x = Math.pow(gamepad1.left_stick_x, 3.0);
+            final double y = Math.pow(gamepad1.left_stick_y, 3.0);
+
+            final double rotation = Math.pow(gamepad1.right_stick_x, 3.0);
+            final double direction = Math.atan2(x, y) + (arcadeMode ? robot.getHeading() : 0.0);
+            final double speed = Math.min(1.0, Math.sqrt(x * x + y * y));
+
+            final double lf = speed * Math.sin(direction + Math.PI / 4.0) + rotation;
+            final double rf = speed * Math.cos(direction + Math.PI / 4.0) - rotation;
+            final double lr = speed * Math.cos(direction + Math.PI / 4.0) + rotation;
+            final double rr = speed * Math.sin(direction + Math.PI / 4.0) - rotation;
+
+            robot.setMotors(lf, lr, rf, rr);
         }
     }
-}
+

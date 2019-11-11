@@ -40,6 +40,7 @@ public class FourWheelsDriveBot
     HardwareMap hwMap = null;
     private ElapsedTime runtime = new ElapsedTime();
     private Orientation angles;
+    private boolean arcadeMode = false;
     private double headingOffset = 0.0;
     protected LinearOpMode opMode;
 
@@ -69,12 +70,28 @@ public class FourWheelsDriveBot
         return ret;
     }
 
-    public void setMotors(double _lf, double _lr, double _rf, double _rr) {
-        final double scale = maxAbs(1.0, _lf, _lr, _rf, _rr);
-        leftFront.setPower(_lf / scale);
-        leftRear.setPower(_lr / scale);
-        rightFront.setPower(_rf / scale);
-        rightRear.setPower(_rr / scale);
+
+//    public void driveByHand(double _lf, double _lr, double _rf, double _rr) {
+    public void driveByHand(double left_stick_x, double left_stick_y, double right_stick_x, boolean arcadeMode) {
+
+        final double x = Math.pow(left_stick_x, 3.0);
+        final double y = Math.pow(left_stick_y, 3.0);
+
+        final double rotation = Math.pow(right_stick_x, 3.0);
+        final double direction = Math.atan2(x, y) + (arcadeMode ? getHeading() : 0.0);
+        final double speed = Math.min(1.0, Math.sqrt(x * x + y * y));
+
+        final double lf = speed * Math.sin(direction + Math.PI / 4.0) + rotation;
+        final double rf = speed * Math.cos(direction + Math.PI / 4.0) - rotation;
+        final double lr = speed * Math.cos(direction + Math.PI / 4.0) + rotation;
+        final double rr = speed * Math.sin(direction + Math.PI / 4.0) - rotation;
+
+        final double scale = maxAbs(1.0, lf, lr, rf, rr);
+        leftFront.setPower(lf / scale);
+        leftRear.setPower(lr / scale);
+        rightFront.setPower(rf / scale);
+        rightRear.setPower(rr / scale);
+
     }
 
 

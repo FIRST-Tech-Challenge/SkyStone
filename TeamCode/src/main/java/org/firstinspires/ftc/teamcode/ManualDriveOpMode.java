@@ -35,19 +35,7 @@ public class ManualDriveOpMode extends OpMode {
         if (gamepad1.a) {
             robot.resetHeading();
         }
-            final double x = Math.pow(gamepad1.left_stick_x, 3.0);
-            final double y = Math.pow(gamepad1.left_stick_y, 3.0);
-
-            final double rotation = Math.pow(gamepad1.right_stick_x, 3.0);
-            final double direction = Math.atan2(x, y) + (arcadeMode ? robot.getHeading() : 0.0);
-            final double speed = Math.min(1.0, Math.sqrt(x * x + y * y));
-
-            final double lf = speed * Math.sin(direction + Math.PI / 4.0) + rotation;
-            final double rf = speed * Math.cos(direction + Math.PI / 4.0) - rotation;
-            final double lr = speed * Math.cos(direction + Math.PI / 4.0) + rotation;
-            final double rr = speed * Math.sin(direction + Math.PI / 4.0) - rotation;
-
-            robot.setMotors(lf, lr, rf, rr);
+            robot.driveByHand(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x, arcadeMode);
             robot.scoopSetPosition(gamepad1.b, gamepad1.y, gamepad1.x);
             robot.scoopFreeRun(gamepad1.right_bumper, gamepad1.left_bumper);
         }

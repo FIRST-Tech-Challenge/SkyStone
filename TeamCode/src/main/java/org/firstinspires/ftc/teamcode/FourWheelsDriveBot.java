@@ -5,18 +5,21 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 //@Autonomous(name="Drive Encoder2", group="Exercises")
 
 public class FourWheelsDriveBot
 {
-    // Gobilda 435 rpm DC motor : Encoder Countable Events Per Revolution (Output Shaft) : 383.6 * 2 (2:1 belev gear ratio)
+
+    // Gobilda 435 rpm DC motor : Encoder Countable Events Per Revolution (Output Shaft) : 383.6 * 2 (2:1 bevel gear ratio)
     static final double DRIVING_MOTOR_TICK_COUNT = 767;
     static final int DIRECTION_FORWARD = 1;
     static final int DIRECTION_BACKWARD = 2;
@@ -29,21 +32,73 @@ public class FourWheelsDriveBot
     public DcMotor rightFront = null;
     public DcMotor leftRear = null;
     public DcMotor rightRear = null;
-//    public DcMotor heavyDutyArm = null;
+
+
+
+
 
     HardwareMap hwMap = null;
     private ElapsedTime runtime = new ElapsedTime();
-    private LinearOpMode opMode;
+    private Orientation angles;
+    private boolean arcadeMode = false;
+    private double headingOffset = 0.0;
+    protected LinearOpMode opMode;
+
 
     public FourWheelsDriveBot(LinearOpMode opMode) {
         this.opMode = opMode;
     }
+// manual drive
+    private double getRawHeading() {
+        return angles.firstAngle;
+    }
+
+    public double getHeading() {
+        return (getRawHeading() - headingOffset) % (2.0 * Math.PI);
+    }
+    public void resetHeading() {
+        headingOffset = getRawHeading();
+    }
+
+    private static double maxAbs(double... xs) {
+        double ret = Double.MIN_VALUE;
+        for (double x : xs) {
+            if (Math.abs(x) > ret) {
+                ret = Math.abs(x);
+            }
+        }
+        return ret;
+    }
+
+//    public void driveByHand(double _lf, double _lr, double _rf, double _rr) {
+    public void driveByHand(double left_stick_x, double left_stick_y, double right_stick_x, boolean arcadeMode) {
+
+        final double x = Math.pow(left_stick_x, 3.0);
+        final double y = Math.pow(left_stick_y, 3.0);
+
+        final double rotation = Math.pow(right_stick_x, 3.0);
+        final double direction = Math.atan2(x, y) + (arcadeMode ? getHeading() : 0.0);
+        final double speed = Math.min(1.0, Math.sqrt(x * x + y * y));
+
+        final double lf = speed * Math.sin(direction + Math.PI / 4.0) + rotation;
+        final double rf = speed * Math.cos(direction + Math.PI / 4.0) - rotation;
+        final double lr = speed * Math.cos(direction + Math.PI / 4.0) + rotation;
+        final double rr = speed * Math.sin(direction + Math.PI / 4.0) - rotation;
+
+        final double scale = maxAbs(1.0, lf, lr, rf, rr);
+        leftFront.setPower(lf / scale);
+        leftRear.setPower(lr / scale);
+        rightFront.setPower(rf / scale);
+        rightRear.setPower(rr / scale);
+    }
+
 
     public void print(String message){
         String caption = "4WD";
         this.opMode.telemetry.addData(caption, message);
         this.opMode.telemetry.update();
     }
+
 
     public void init(HardwareMap ahwMap) {
         hwMap = ahwMap;
@@ -55,15 +110,11 @@ public class FourWheelsDriveBot
         rightRear.setDirection(DcMotor.Direction.REVERSE);
         rightFront.setDirection(DcMotor.Direction.REVERSE);
 
-
-//        heavyDutyArm = hwMap.get(DcMotor.class, "arm");
-
         leftFront.setPower(0);
         rightFront.setPower(0);
         leftRear.setPower(0);
         rightRear.setPower(0);
 
-//        heavyDutyArm.setPower(0);
         print("Resetting Encoders");
 
         leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -82,8 +133,6 @@ public class FourWheelsDriveBot
                 rightFront.getCurrentPosition(),
                 leftRear.getCurrentPosition(),
                 rightRear.getCurrentPosition()));
-
-//        heavyDutyArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
     }
 
@@ -184,7 +233,7 @@ public class FourWheelsDriveBot
                 rightRear.setTargetPosition(rightRear.getCurrentPosition() + target);
                 break;
             default:
-                String msg = String.format("Unexcepted direction value (%d) for driveStraightByDistance()", direction);
+                String msg = String.format("Unaccepted direction value (%d) for driveStraightByDistance()", direction);
                 print(msg);
         }
 

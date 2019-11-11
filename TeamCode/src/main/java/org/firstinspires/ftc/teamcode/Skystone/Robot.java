@@ -423,8 +423,9 @@ public class Robot {
 
         double decelerationScaleFactor = 1;//Range.clip(distanceToEnd/12,-1,1);
 
+
         if (distanceToEnd < angleLockDistance){
-            followAngle += angleLockRadians;
+            followAngle = (angleLockRadians + anglePos);
         }
 
         goToPoint(followMe.x, followMe.y, followMe.moveSpeed * decelerationScaleFactor, followMe.turnSpeed * decelerationScaleFactor, followAngle);

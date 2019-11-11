@@ -27,11 +27,12 @@ public class ManualDriveOpMode extends OpMode {
     @Override
     public void init_loop() {
 
+      ScoopArmBot robot = new ScoopArmBot(this);
     }
 
     @Override
     public void loop() {
-        if (gamepad1.x) {
+        if (gamepad1.a) {
             robot.resetHeading();
         }
             final double x = Math.pow(gamepad1.left_stick_x, 3.0);
@@ -47,6 +48,8 @@ public class ManualDriveOpMode extends OpMode {
             final double rr = speed * Math.sin(direction + Math.PI / 4.0) - rotation;
 
             robot.setMotors(lf, lr, rf, rr);
+            robot.scoopSetPosition(gamepad1.b, gamepad1.y, gamepad1.x);
+            robot.scoopFreeRun(gamepad1.right_bumper, gamepad1.left_bumper);
         }
     }
 

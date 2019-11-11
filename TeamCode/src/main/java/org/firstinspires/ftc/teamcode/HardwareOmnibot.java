@@ -355,7 +355,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     protected int intakeZero = 0;
     public double intakePower = 0.0;
     protected boolean intakeZeroUpdated = false;
-    protected boolean stackFromRightWall = false;
+    protected boolean stackFromRightTof = false;
     protected double stackDistance = 0.0;
 
 	// Variables so we only read encoders once per loop
@@ -637,6 +637,13 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                     releaseState = ReleaseActivity.IDLE;
 					// Add to our tower height for next lift.
 					addStone();
+					// Get the distance from the wall for alignment.
+					if(stackFromRightTof)
+                    {
+                        stackDistance = readRightTof();
+                    } else {
+					    stackDistance = readLeftTof();
+                    }
                 }
                 break;
             case LOWER_TO_RELEASE:
@@ -761,12 +768,12 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         return maxExtended;
     }
 
-    public boolean distanceFromWall(double distance, boolean rightWall, double driveSpeed) {
+    public boolean distanceFromWall(double distance, double driveSpeed) {
         boolean targetReached = false;
         double wallDistance;
         double delta;
         double drivePower;
-        if(rightWall) {
+        if(stackFromRightTof) {
             wallDistance = readRightTof();
             delta = wallDistance - distance;
             if(Math.abs(delta) > 1.0) {
@@ -852,9 +859,8 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         alignState = AlignActivity.STOPPING;
     }
 
-    public boolean startAligning(boolean rightWall) {
+    public boolean startAligning() {
         boolean aligning = false;
-        stackFromRightWall = rightWall;
         if (alignState == AlignActivity.IDLE) {
             aligning = true;
             alignState = AlignActivity.ALIGN_TO_FOUNDATION;
@@ -868,7 +874,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         switch(alignState)
         {
             case REFINE_WALL:
-                if(distanceFromWall(stackDistance, stackFromRightWall, 0.04)) {
+                if(distanceFromWall(stackDistance,0.04)) {
                     alignState = AlignActivity.IDLE;
                 }
                 break;
@@ -878,7 +884,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                 }
                 break;
             case ALIGN_TO_WALL:
-                if(distanceFromWall(stackDistance, stackFromRightWall, 0.07)) {
+                if(distanceFromWall(stackDistance,0.07)) {
                     alignState = AlignActivity.REFINE_FOUNDATION;
                 }
                 break;

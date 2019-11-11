@@ -156,7 +156,7 @@ public class OmniTeleOp extends OpMode {
             bHeld = true;
             if(robot.alignState == HardwareOmnibot.AlignActivity.IDLE) {
                 robot.stackDistance = 20;
-                robot.startAligning(true);
+                robot.startAligning();
             } else {
                 robot.stopAligning();
             }
@@ -277,6 +277,22 @@ public class OmniTeleOp extends OpMode {
             y2Held = true;
         } else if(!y2Pressed) {
             y2Held = false;
+        }
+
+        if(!left2Held && left2Pressed)
+        {
+            left2Held = true;
+            robot.stackFromRightTof = true;
+        } else if (!left2Pressed) {
+            left2Held = false;
+        }
+
+        if(!right2Held && right2Pressed)
+        {
+            right2Held = true;
+            robot.stackFromRightTof = false;
+        } else if (!right2Pressed) {
+            right2Held = false;
         }
 
         if(!up2Held && up2Pressed)

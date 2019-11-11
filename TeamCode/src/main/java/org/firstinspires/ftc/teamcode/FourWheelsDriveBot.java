@@ -8,11 +8,17 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 //@Autonomous(name="Drive Encoder2", group="Exercises")
 
 public class FourWheelsDriveBot
 {
+
     // Gobilda 435 rpm DC motor : Encoder Countable Events Per Revolution (Output Shaft) : 383.6 * 2 (2:1 bevel gear ratio)
     static final double DRIVING_MOTOR_TICK_COUNT = 767;
     static final int DIRECTION_FORWARD = 1;
@@ -33,11 +39,44 @@ public class FourWheelsDriveBot
 
     HardwareMap hwMap = null;
     private ElapsedTime runtime = new ElapsedTime();
+    private Orientation angles;
+    private double headingOffset = 0.0;
     protected LinearOpMode opMode;
+
 
     public FourWheelsDriveBot(LinearOpMode opMode) {
         this.opMode = opMode;
     }
+// manual drive
+    private double getRawHeading() {
+        return angles.firstAngle;
+    }
+
+    public double getHeading() {
+        return (getRawHeading() - headingOffset) % (2.0 * Math.PI);
+    }
+    public void resetHeading() {
+        headingOffset = getRawHeading();
+    }
+
+    private static double maxAbs(double... xs) {
+        double ret = Double.MIN_VALUE;
+        for (double x : xs) {
+            if (Math.abs(x) > ret) {
+                ret = Math.abs(x);
+            }
+        }
+        return ret;
+    }
+
+    public void setMotors(double _lf, double _lr, double _rf, double _rr) {
+        final double scale = maxAbs(1.0, _lf, _lr, _rf, _rr);
+        leftFront.setPower(_lf / scale);
+        leftRear.setPower(_lr / scale);
+        rightFront.setPower(_rf / scale);
+        rightRear.setPower(_rr / scale);
+    }
+
 
     public void print(String message){
         String caption = "4WD";

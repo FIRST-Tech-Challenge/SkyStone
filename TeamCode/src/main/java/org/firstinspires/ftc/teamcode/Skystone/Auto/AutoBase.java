@@ -97,7 +97,8 @@ public class AutoBase extends LinearOpMode {
         telemetry.update();
 
         telemetry.addLine("go to point");
-        int position = 0;
+
+        int position = robot.detectTensorflow();
 
         //intake(true);
 

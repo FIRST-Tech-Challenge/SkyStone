@@ -14,6 +14,10 @@ import static java.lang.Math.toDegrees;
 @TeleOp(name="Omni: TeleOpTest", group ="TeleOp")
 public class OmniTeleTest extends OmniAutoClass {
 
+    public OmniTeleTest() {
+        msStuckDetectInit = 10000;
+    }
+
     public HardwareOmnibot robot = new HardwareOmnibot();
 
 //    @Override

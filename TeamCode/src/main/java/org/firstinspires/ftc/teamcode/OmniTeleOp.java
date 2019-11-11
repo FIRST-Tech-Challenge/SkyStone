@@ -15,6 +15,10 @@ public class OmniTeleOp extends OpMode {
 
     public HardwareOmnibot robot = new HardwareOmnibot();
 
+    public OmniTeleOp() {
+        msStuckDetectInit = 10000;
+    }
+
     public enum CapstoneState {
         ALIGN,
         GRAB,
@@ -33,7 +37,7 @@ public class OmniTeleOp extends OpMode {
         telemetry.addLine("Calling robot.init");
         updateTelemetry(telemetry);
         robot.init(hardwareMap);
-        robot.disableDriveEncoders();
+//        robot.disableDriveEncoders();
         robot.setInputShaping(true);
         telemetry.addLine("Ready");
         updateTelemetry(telemetry);
@@ -150,7 +154,12 @@ public class OmniTeleOp extends OpMode {
         if(!bHeld && bPressed)
         {
             bHeld = true;
-            robot.startReleasing();
+            if(robot.alignState == HardwareOmnibot.AlignActivity.IDLE) {
+                robot.stackDistance = 20;
+                robot.startAligning(true);
+            } else {
+                robot.stopAligning();
+            }
         } else if(!bPressed) {
             bHeld = false;
         }
@@ -258,6 +267,7 @@ public class OmniTeleOp extends OpMode {
         if(!b2Held && b2Pressed)
         {
             b2Held = true;
+            robot.startCapstone();
         } else if(!b2Pressed) {
             b2Held = false;
         }
@@ -291,7 +301,7 @@ public class OmniTeleOp extends OpMode {
             newHeight += heightIncrement;
             robot.lifter.setTargetPosition(newHeight);
             robot.lifter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.lifter.setPower(1.0);
+            robot.lifter.setPower(robot.LIFT_SPEED);
             rightBumper2Held = true;
         } else if(!rightBumper2Pressed) {
             rightBumper2Held = false;
@@ -303,7 +313,7 @@ public class OmniTeleOp extends OpMode {
             newHeight -= heightIncrement;
             robot.lifter.setTargetPosition(newHeight);
             robot.lifter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.lifter.setPower(1.0);
+            robot.lifter.setPower(robot.LOWER_SPEED);
             leftBumper2Held = true;
         } else if(!leftBumper2Pressed) {
             leftBumper2Held = false;
@@ -315,21 +325,27 @@ public class OmniTeleOp extends OpMode {
         robot.performReleasing();
         robot.performStowing();
         robot.performEjecting();
-//        robot.performAligningCapstone();
-//        robot.performGrabbingCapstone();
-//        robot.performLiftingCapstone();
-//        robot.performReleasingCapstone();
+        robot.performAligning();
+        robot.performCapstone();
 
-        robot.drive(speedMultiplier * xPower, speedMultiplier * yPower, spinMultiplier * spin, driverAngle);
+        if(robot.alignState == HardwareOmnibot.AlignActivity.IDLE) {
+            robot.drive(speedMultiplier * xPower, speedMultiplier * yPower, spinMultiplier * spin, driverAngle);
+        }
 
 		telemetry.addData("Lift Target Height: ", robot.liftTargetHeight);
         telemetry.addData("Intake Target: ", robot.intakeTargetPosition);
         telemetry.addData("Offset Angle: ", driverAngle);
+        telemetry.addData("Align State:", robot.alignState);
+        telemetry.addData("Left Range: ", robot.leftTofValue);
+        telemetry.addData("Right Range: ", robot.rightTofValue);
+        telemetry.addData("Back Range: ", robot.backTofValue);
+        telemetry.addData("Back Left Range: ", robot.backLeftTofValue);
+        telemetry.addData("Back Right Range: ", robot.backRightTofValue);
         telemetry.addData("Lift State: ", robot.liftState);
         telemetry.addData("Release State: ", robot.releaseState);
         telemetry.addData("Stow State: ", robot.stowState);
         telemetry.addData("Eject State: ", robot.ejectState);
-        telemetry.addData("Capstone State: ", robot.capstoneLiftState);
+        telemetry.addData("Capstone State: ", robot.capstoneState);
         telemetry.addData("Y Power: ", yPower);
         telemetry.addData("X Power: ", xPower);
         telemetry.addData("Spin: ", spin);

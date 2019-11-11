@@ -17,6 +17,9 @@ import static java.lang.Math.toDegrees;
 
 //@TeleOp(name="Omni: TeleOpDrive", group ="TeleOp")
 public class OmniTeleOpDrive extends OpMode {
+    public OmniTeleOpDrive() {
+        msStuckDetectInit = 10000;
+    }
 
     public HardwareOmnibotDrive robot = new HardwareOmnibotDrive();
 

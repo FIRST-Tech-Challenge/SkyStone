@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import java.util.ArrayList;
@@ -18,6 +19,15 @@ import java.util.List;
  */
 public class HardwareOmnibot extends HardwareOmnibotDrive
 {
+    public enum AlignActivity {
+        IDLE,
+        ALIGN_TO_FOUNDATION,
+        ALIGN_TO_WALL,
+        REFINE_FOUNDATION,
+        REFINE_WALL,
+        STOPPING
+    }
+
     public enum LiftActivity {
         IDLE,
 		LOWERING_TO_GRAB,
@@ -51,34 +61,17 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         STOPPING
     }
 
-    public enum CapstoneAlignActivity {
+    public enum CapstoneActivity {
         IDLE,
-        LOWERING_TO_ALIGN,
-        OPENING_CLAW,
-        ROTATING,
-        LIFTING_TO_ROTATE,
         CLEARING_LIFT,
-        STOPPING
-    }
-
-    public enum CapstoneGrabActivity {
-        IDLE,
+        LIFTING_TO_GRAB,
+        ROTATING_TO_GRAB,
         LOWERING_TO_GRAB,
         GRABBING_CAPSTONE,
-        LIFTING_TO_RUN,
-        STOPPING
-    }
-
-    public enum CapstoneLiftActivity {
-        IDLE,
-        LIFTING_TO_STONE,
-        STOPPING
-    }
-
-    public enum CapstoneReleaseActivity {
-        IDLE,
-        RELEASE_STONE,
-        STOPPING
+        LIFTING_CAPSTONE,
+        ROTATING_TO_STONE,
+        LOWERING_TO_STONE,
+        RELEASING_CAPSTONE
     }
 
     public static int MAX_EXTENSION = 2375;
@@ -143,6 +136,8 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         STOWED(25),
         STONE1_RELEASE(146),
         STONE1(176),
+        CAPSTONE_GRAB(200),
+        CAPSTONE_ROTATE(300),
         STONE2_RELEASE(444),
         STONE2(474),
         STONE3_RELEASE(642),
@@ -288,15 +283,19 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public static double CLAW_OPEN = 0.2;
     public static double CLAW_PINCHED = 0.9;
     public static double CLAWDRICOPTER_FRONT = 0.85;
+    public static double CLAWDRICOPTER_CAPSTONE = 0.57;
     public static double CLAWDRICOPTER_BACK = 0.09;
-    public static int CLAW_OPEN_TIME = 1000;
-    public static int CLAW_CLOSE_TIME = 1000;
+    public static int CLAW_OPEN_TIME = 750;
+    public static int CLAW_CLOSE_TIME = 750;
     public static int CLAW_ROTATE_BACK_TIME = 1000;
+    public static int CLAW_ROTATE_CAPSTONE_TIME = 750;
     public static int CLAW_ROTATE_FRONT_TIME = 1000;
 	private static int ENCODER_ERROR = 10;
 
+	// The OpMode set target height for the lift to go.
     public LiftPosition liftTargetHeight = LiftPosition.STONE1;
-	private LiftPosition liftStateTargetHeight = LiftPosition.STONE1;
+    // The height the activity was activated to achieve
+	private LiftPosition liftActivityTargetHeight = LiftPosition.STONE1;
 	public IntakePosition intakePosition = IntakePosition.RETRACTED;
 	public IntakePosition intakeTargetPosition = IntakePosition.RETRACTED;
 
@@ -313,6 +312,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public final static String LEFT_RANGE = "LeftTof";
     public final static String BACK_RIGHT_RANGE = "BackRightTof";
     public final static String BACK_LEFT_RANGE = "BackLeftTof";
+    public final static String BACK_RANGE = "BackTof";
 
     // Hardware objects
     protected Servo rightFinger = null;
@@ -323,10 +323,12 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     protected DcMotor rightIntake = null;
     protected DcMotor lifter = null;
     protected DcMotorEx extender = null;
-    protected Rev2mDistanceSensor rightTof = null;
-    protected Rev2mDistanceSensor leftTof = null;
-    protected Rev2mDistanceSensor backRightTof = null;
-    protected Rev2mDistanceSensor backLeftTof = null;
+    protected Rev2mDistanceSensor test = null;
+    protected Rev2mTurbo rightTof = null;
+    protected Rev2mTurbo leftTof = null;
+    protected Rev2mTurbo backRightTof = null;
+    protected Rev2mTurbo backLeftTof = null;
+    protected Rev2mTurbo backTof = null;
 
 
     /* LEDs: Use this line if you drive the LEDs using an I2C/SPI bridge. */
@@ -342,10 +344,8 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public ReleaseActivity releaseState = ReleaseActivity.IDLE;
     public StowActivity stowState = StowActivity.IDLE;
     public EjectActivity ejectState = EjectActivity.IDLE;
-    public CapstoneAlignActivity capstoneAlignState = CapstoneAlignActivity.IDLE;
-    public CapstoneGrabActivity capstoneGrabState = CapstoneGrabActivity.IDLE;
-    public CapstoneLiftActivity capstoneLiftState = CapstoneLiftActivity.IDLE;
-    public CapstoneReleaseActivity capstoneReleaseState = CapstoneReleaseActivity.IDLE;
+    public AlignActivity alignState = AlignActivity.IDLE;
+    public CapstoneActivity capstoneState = CapstoneActivity.IDLE;
     private boolean fingersUp = true;
     private boolean clawPinched = false;
     private boolean clawdricopterBack = false;
@@ -355,6 +355,8 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     protected int intakeZero = 0;
     public double intakePower = 0.0;
     protected boolean intakeZeroUpdated = false;
+    protected boolean stackFromRightWall = false;
+    protected double stackDistance = 0.0;
 
 	// Variables so we only read encoders once per loop
 	protected boolean lifterEncoderRead = false;
@@ -363,12 +365,17 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 	protected boolean rightTofRead = false;
 	protected boolean backRightTofRead = false;
 	protected boolean backLeftTofRead = false;
+    protected boolean backTofRead = false;
 	protected int lifterEncoderValue = 0;
 	protected int extenderEncoderValue = 0;
 	protected double leftTofValue = 0.0;
 	protected double rightTofValue = 0.0;
 	protected double backRightTofValue = 0.0;
 	protected double backLeftTofValue = 0.0;
+	protected double backTofValue = 0.0;
+
+    // Keeps the sensor from initializing more than once.
+    public static boolean tofInitialized = false;
 
     /* Constructor */
     public HardwareOmnibot(){
@@ -383,6 +390,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 		rightTofRead = false;
 		backRightTofRead = false;
 		backLeftTofRead = false;
+		backTofRead = false;
 	}
 
     public void initGroundEffects()
@@ -421,10 +429,93 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         leftFinger.setPosition(LEFT_FINGER_UP);
     }
 
+    public boolean startCapstone() {
+        boolean isCapping;
+        if(capstoneState == CapstoneActivity.IDLE) {
+            isCapping = true;
+        } else {
+            isCapping = false;
+            // Extend the intake to make sure it isn't in the way.
+            moveIntake(IntakePosition.EXTENDED);
 
+            // We don't want the intake spinning while we are trying to lift the stone.
+            stopIntake();
+            capstoneState = CapstoneActivity.CLEARING_LIFT;
+        }
+
+        return isCapping;
+    }
+
+    public void performCapstone() {
+        switch(capstoneState) {
+            case RELEASING_CAPSTONE:
+                if(stateTimer.milliseconds() >= CLAW_OPEN_TIME) {
+                    capstoneState = CapstoneActivity.IDLE;
+                }
+                break;
+            case LOWERING_TO_STONE:
+                if(lifterAtPosition(LiftPosition.STOWED)) {
+                    capstoneState = CapstoneActivity.RELEASING_CAPSTONE;
+                    claw.setPosition(CLAW_OPEN);
+                    clawPinched = false;
+                    stateTimer.reset();
+                }
+                break;
+            case ROTATING_TO_STONE:
+                if(stateTimer.milliseconds() >= CLAW_ROTATE_CAPSTONE_TIME) {
+                    capstoneState = CapstoneActivity.LOWERING_TO_STONE;
+                    moveLift(LiftPosition.releasePosition(LiftPosition.STOWED));
+                }
+                break;
+            case LIFTING_CAPSTONE:
+                if(lifterAtPosition(LiftPosition.CAPSTONE_ROTATE)) {
+                    capstoneState = CapstoneActivity.ROTATING_TO_STONE;
+                    clawdricopter.setPosition(CLAWDRICOPTER_FRONT);
+                    stateTimer.reset();
+                }
+                break;
+            case GRABBING_CAPSTONE:
+                if(stateTimer.milliseconds() >= CLAW_CLOSE_TIME) {
+                    clawPinched = true;
+                    capstoneState = CapstoneActivity.LIFTING_CAPSTONE;
+                    moveLift(LiftPosition.releasePosition(LiftPosition.CAPSTONE_ROTATE));
+                }
+                break;
+            case LOWERING_TO_GRAB:
+                if(lifterAtPosition(LiftPosition.CAPSTONE_GRAB)) {
+                    capstoneState = CapstoneActivity.GRABBING_CAPSTONE;
+                    claw.setPosition(CLAW_PINCHED);
+                    stateTimer.reset();
+                }
+                break;
+            case ROTATING_TO_GRAB:
+                if(stateTimer.milliseconds() >= CLAW_ROTATE_CAPSTONE_TIME) {
+                    capstoneState = CapstoneActivity.LOWERING_TO_GRAB;
+                    moveLift(LiftPosition.releasePosition(LiftPosition.CAPSTONE_GRAB));
+                }
+                break;
+            case LIFTING_TO_GRAB:
+                if(lifterAtPosition(LiftPosition.CAPSTONE_ROTATE)) {
+                    capstoneState = CapstoneActivity.ROTATING_TO_GRAB;
+                    clawdricopter.setPosition(CLAWDRICOPTER_CAPSTONE);
+                    clawdricopterBack = false;
+                    stateTimer.reset();
+                }
+                break;
+            case CLEARING_LIFT:
+                if(intakeAtPosition(IntakePosition.EXTENDED)) {
+                    capstoneState = CapstoneActivity.LIFTING_TO_GRAB;
+                    moveLift(LiftPosition.CAPSTONE_ROTATE);
+                }
+                break;
+            case IDLE:
+            default:
+                break;
+        }
+    }
 
     public boolean startLifting() {
-        boolean isLifting;
+         boolean isLifting;
          if(liftState == LiftActivity.IDLE) {
             if((releaseState != ReleaseActivity.IDLE) || (stowState != StowActivity.IDLE)) {
                 isLifting = false;
@@ -448,24 +539,23 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public void performLifting() {
 		switch(liftState) {
             case LOWERING_TO_STONE:
-                if(lifterAtPosition(liftStateTargetHeight)) {
+                if(lifterAtPosition(liftActivityTargetHeight)) {
                     liftState = LiftActivity.IDLE;
                 }
                 break;
 		    case ROTATING:
 			    if(stateTimer.milliseconds() >= CLAW_ROTATE_BACK_TIME) {
-                    if (liftTargetHeight.getEncoderCount() <= LiftPosition.ROTATE.getEncoderCount()) {
+                    if (liftActivityTargetHeight.getEncoderCount() <= LiftPosition.ROTATE.getEncoderCount()) {
                         liftState = LiftActivity.LOWERING_TO_STONE;
-                        moveLift(liftStateTargetHeight);
+                        moveLift(liftActivityTargetHeight);
                     } else {
                         liftState = LiftActivity.IDLE;
                     }
 					clawdricopterBack = true;
-					liftStateTargetHeight = liftTargetHeight;
 				}
 			    break;
             case LIFTING_TO_STONE:
-                if(lifterAtPosition(liftStateTargetHeight)) {
+                if(lifterAtPosition(liftActivityTargetHeight)) {
                     liftState = LiftActivity.ROTATING;
                     clawdricopter.setPosition(CLAWDRICOPTER_BACK);
                     stateTimer.reset();
@@ -483,14 +573,15 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                 if((stateTimer.milliseconds() >= CLAW_CLOSE_TIME) || clawPinched)
                 {
 					clawPinched = true;
+					liftActivityTargetHeight = liftTargetHeight;
                     // If our target height is less than rotation height, we have to
                     // stop at rotation height first.
-                    if(liftTargetHeight.getEncoderCount() <= LiftPosition.ROTATE.getEncoderCount()) {
+                    if(liftActivityTargetHeight.getEncoderCount() <= LiftPosition.ROTATE.getEncoderCount()) {
                         liftState = LiftActivity.LIFTING_TO_ROTATE;
                         moveLift(LiftPosition.ROTATE);
                     } else {
                         liftState = LiftActivity.LIFTING_TO_STONE;
-                        moveLift(liftTargetHeight);
+                        moveLift(liftActivityTargetHeight);
                     }
                 }
 			    break;
@@ -525,7 +616,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
             } else {
                 isReleasing = true;
 
-                moveLift(LiftPosition.releasePosition(liftTargetHeight));
+                moveLift(LiftPosition.releasePosition(liftActivityTargetHeight));
                 releaseState = ReleaseActivity.LOWER_TO_RELEASE;
             }
         }
@@ -549,7 +640,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                 }
                 break;
             case LOWER_TO_RELEASE:
-                if(lifterAtPosition(LiftPosition.releasePosition(liftTargetHeight))) {
+                if(lifterAtPosition(LiftPosition.releasePosition(liftActivityTargetHeight))) {
                     releaseState = ReleaseActivity.RELEASE_STONE;
                     claw.setPosition(CLAW_OPEN);
                     stateTimer.reset();
@@ -617,11 +708,13 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 						stowState = StowActivity.ROTATING;
 						clawdricopter.setPosition(CLAWDRICOPTER_FRONT);
 						claw.setPosition(CLAW_OPEN);
+						clawPinched = false;
 						stateTimer.reset();
 					}
 				} else {
 					stowState = StowActivity.ROTATING;
 					claw.setPosition(CLAW_OPEN);
+					clawPinched = false;
 					stateTimer.reset();
 				}
 			    break;
@@ -636,169 +729,6 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
             case IDLE:
 		    default:
 			    break;
-        }
-    }
-
-    public void startAligningCapstone() {
-        if(capstoneGrabState == CapstoneGrabActivity.IDLE) {
-            if(releaseState != ReleaseActivity.IDLE) {
- //               releaseState = ReleaseActivity.STOPPING;
-            }
-            if(stowState != StowActivity.IDLE) {
- //               stowState = StowActivity.STOPPING;
-            }
-            // Extend the intake to make sure it isn't in the way.
-            moveIntake(IntakePosition.EXTENDED);
-
-            // We don't want the intake spinning while we are trying to lift the stone.
-            stopIntake();
-            capstoneAlignState = CapstoneAlignActivity.CLEARING_LIFT;
-        }
-    }
-
-    public void performAligningCapstone() {
-        switch(capstoneAlignState) {
-            case LOWERING_TO_ALIGN:
-                // Has it gotten low enough
-                if(lifterAtPosition(LiftPosition.STOWED)) {
-                    // Start grabbing the stone.  updateLifting will take over.
-                    capstoneAlignState = CapstoneAlignActivity.IDLE;
-                }
-                break;
-            case OPENING_CLAW:
-                if((stateTimer.milliseconds() >= CLAW_OPEN_TIME) || !clawPinched) {
-                    capstoneAlignState = CapstoneAlignActivity.LOWERING_TO_ALIGN;
-                    clawPinched = false;
-                }
-                break;
-            case ROTATING:
-                if((stateTimer.milliseconds() >= CLAW_ROTATE_BACK_TIME) || clawdricopterBack) {
-                    capstoneAlignState = CapstoneAlignActivity.LOWERING_TO_ALIGN;
-                    clawdricopterBack = true;
-                    moveLift(LiftPosition.STOWED);
-                }
-                break;
-            case LIFTING_TO_ROTATE:
-                // It has gotten high enough
-                if(getLifterPosition() >= LiftPosition.ROTATE.getEncoderCount()) {
-                    capstoneAlignState = CapstoneAlignActivity.ROTATING;
-                    clawdricopter.setPosition(CLAWDRICOPTER_BACK);
-                    claw.setPosition(CLAW_OPEN);
-                    stateTimer.reset();
-                }
-                break;
-            case CLEARING_LIFT:
-                if(intakeAtPosition(IntakePosition.EXTENDED)) {
-                    capstoneAlignState = CapstoneAlignActivity.LIFTING_TO_ROTATE;
-                    moveLift(LiftPosition.ROTATE);
-                }
-                break;
-            case STOPPING:
-                capstoneAlignState = CapstoneAlignActivity.IDLE;
-            case IDLE:
-            default:
-                break;
-        }
-    }
-
-    public void startGrabbingCapstone() {
-        if(capstoneGrabState == CapstoneGrabActivity.IDLE) {
-            if(releaseState != ReleaseActivity.IDLE) {
-//                releaseState = ReleaseActivity.STOPPING;
-            }
-            if(stowState != StowActivity.IDLE) {
-//                stowState = StowActivity.STOPPING;
-            }
-            moveLift(LiftPosition.GRABBING);
-            capstoneGrabState = CapstoneGrabActivity.LOWERING_TO_GRAB;
-        }
-    }
-
-    public void performGrabbingCapstone() {
-        switch(capstoneGrabState) {
-            case LIFTING_TO_RUN:
-                if(lifterAtPosition(LiftPosition.STONE1)) {
-                    capstoneGrabState = CapstoneGrabActivity.IDLE;
-                }
-                break;
-            case GRABBING_CAPSTONE:
-                if((stateTimer.milliseconds() >= CLAW_CLOSE_TIME) || clawPinched) {
-                    capstoneGrabState = CapstoneGrabActivity.LIFTING_TO_RUN;
-                    clawPinched = true;
-                    moveLift(LiftPosition.STONE1);
-                }
-                break;
-            case LOWERING_TO_GRAB:
-                // It has gotten high enough
-                if(lifterAtPosition(LiftPosition.GRABBING)) {
-                    capstoneGrabState = CapstoneGrabActivity.GRABBING_CAPSTONE;
-                    claw.setPosition(CLAW_PINCHED);
-                    stateTimer.reset();
-                }
-                break;
-            case STOPPING:
-                capstoneGrabState = CapstoneGrabActivity.IDLE;
-            case IDLE:
-            default:
-                break;
-        }
-    }
-
-    public void startLiftingCapstone() {
-        if(capstoneLiftState == CapstoneLiftActivity.IDLE) {
-            if(releaseState != ReleaseActivity.IDLE) {
-//                releaseState = ReleaseActivity.STOPPING;
-            }
-            if(stowState != StowActivity.IDLE) {
-//                stowState = StowActivity.STOPPING;
-            }
-            moveLift(liftTargetHeight);
-            capstoneLiftState = CapstoneLiftActivity.LIFTING_TO_STONE;
-        }
-    }
-
-    public void performLiftingCapstone() {
-        switch(capstoneLiftState) {
-            case LIFTING_TO_STONE:
-                if(lifterAtPosition(liftTargetHeight)) {
-                    capstoneLiftState = CapstoneLiftActivity.IDLE;
-                }
-                break;
-            case STOPPING:
-                capstoneGrabState = CapstoneGrabActivity.IDLE;
-            case IDLE:
-            default:
-                break;
-        }
-    }
-
-    public void startReleasingCapstone() {
-        if(capstoneReleaseState == CapstoneReleaseActivity.IDLE) {
-            if(releaseState != ReleaseActivity.IDLE) {
-//                releaseState = ReleaseActivity.STOPPING;
-            }
-            if(stowState != StowActivity.IDLE) {
-//                stowState = StowActivity.STOPPING;
-            }
-            claw.setPosition(CLAW_OPEN);
-            capstoneReleaseState = CapstoneReleaseActivity.RELEASE_STONE;
-            stateTimer.reset();
-        }
-    }
-
-    public void performReleasingCapstone() {
-        switch(capstoneReleaseState) {
-            case RELEASE_STONE:
-                if((stateTimer.milliseconds() >= CLAW_OPEN_TIME) || !clawPinched) {
-                    capstoneReleaseState = CapstoneReleaseActivity.IDLE;
-                    clawPinched = false;
-                }
-                break;
-            case STOPPING:
-                capstoneReleaseState = CapstoneReleaseActivity.IDLE;
-            case IDLE:
-            default:
-                break;
         }
     }
 
@@ -831,14 +761,143 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         return maxExtended;
     }
 
+    public boolean distanceFromWall(double distance, boolean rightWall, double driveSpeed) {
+        boolean targetReached = false;
+        double wallDistance;
+        double delta;
+        double drivePower;
+        if(rightWall) {
+            wallDistance = readRightTof();
+            delta = wallDistance - distance;
+            if(Math.abs(delta) > 1.0) {
+                // Need to drive left away from the wall.
+                if(delta < 0) {
+                    drivePower = -driveSpeed;
+                // Need to drive right towards the wall.
+                } else {
+                    drivePower = driveSpeed;
+                }
+                drive(drivePower, 0.0, 0.0, 0);
+            } else {
+                setAllDriveZero();
+                targetReached = true;
+            }
+        } else {
+            wallDistance = readLeftTof();
+            delta = wallDistance - distance;
+            if(Math.abs(delta) > 1.0) {
+                // Need to drive right away from the wall.
+                if(delta < 0) {
+                    drivePower = driveSpeed;
+                    // Need to drive left towards the wall.
+                } else {
+                    drivePower = -driveSpeed;
+                }
+                drive(drivePower, 0.0, 0.0, 0);
+            } else {
+                setAllDriveZero();
+                targetReached = true;
+            }
+        }
+
+        return targetReached;
+    }
+
+    public boolean parallelRearTarget(double distance, double driveSpeed, double spinSpeed) {
+        boolean parallel = false;
+        double leftDistance = readBackLeftTof();
+        double rightDistance = readBackRightTof();
+        double drivePower = 0.0;
+        double spinPower = 0.0;
+        if((Math.abs(distance - leftDistance) > 1.0) || (Math.abs(distance - rightDistance) > 1.0)) {
+            // Have to drive backwards towards the foundation
+            if(((distance - leftDistance) > 1.0) && ((distance - rightDistance) > 1.0)) {
+                drivePower = driveSpeed;
+                // Have to spin ccw
+                if(leftDistance > rightDistance) {
+                    spinPower = -spinSpeed;
+                // We have to spin cw
+                } else if(rightDistance > leftDistance) {
+                    spinPower = spinSpeed;
+                }
+            // Have to drive away from the foundation.
+            } else if(((distance - leftDistance) < -1.0) && ((distance - rightDistance) < -1.0)) {
+                drivePower = -driveSpeed;
+                if(leftDistance > rightDistance) {
+                    spinPower = -spinSpeed;
+                    // We have to spin cw
+                } else if(rightDistance > leftDistance) {
+                    spinPower = spinSpeed;
+                }
+            // We just need to spin
+            } else {
+                drivePower = 0.0;
+                if(leftDistance > rightDistance) {
+                    spinPower = -spinSpeed;
+                    // We have to spin cw
+                } else if(rightDistance > leftDistance) {
+                    spinPower = spinSpeed;
+                }
+            }
+            drive(0, drivePower, spinPower, 0.0);
+        } else {
+            setAllDriveZero();
+            parallel = true;
+        }
+
+        return parallel;
+    }
+
+    public void stopAligning() {
+        alignState = AlignActivity.STOPPING;
+    }
+
+    public boolean startAligning(boolean rightWall) {
+        boolean aligning = false;
+        stackFromRightWall = rightWall;
+        if (alignState == AlignActivity.IDLE) {
+            aligning = true;
+            alignState = AlignActivity.ALIGN_TO_FOUNDATION;
+            parallelRearTarget(10, 0.07, 0.07);
+        }
+
+        return aligning;
+    }
+
+    public void performAligning() {
+        switch(alignState)
+        {
+            case REFINE_WALL:
+                if(distanceFromWall(stackDistance, stackFromRightWall, 0.04)) {
+                    alignState = AlignActivity.IDLE;
+                }
+                break;
+            case REFINE_FOUNDATION:
+                if(parallelRearTarget(10, 0.04, 0.04)) {
+                    alignState = AlignActivity.REFINE_WALL;
+                }
+                break;
+            case ALIGN_TO_WALL:
+                if(distanceFromWall(stackDistance, stackFromRightWall, 0.07)) {
+                    alignState = AlignActivity.REFINE_FOUNDATION;
+                }
+                break;
+            case ALIGN_TO_FOUNDATION:
+                if(parallelRearTarget(10, 0.07, 0.07)) {
+                    alignState = AlignActivity.ALIGN_TO_WALL;
+                }
+                break;
+            case STOPPING:
+                setAllDriveZero();
+                alignState = AlignActivity.IDLE;
+            case IDLE:
+            default:
+                break;
+        }
+    }
+
     public void startEjecting() {
         if (ejectState == EjectActivity.IDLE) {
-            if (liftState != LiftActivity.IDLE) {
-//                liftState = LiftActivity.STOPPING;
-            }
-            if (stowState != StowActivity.IDLE) {
-//                stowState = StowActivity.STOPPING;
-            }
             ejectState = EjectActivity.EJECT;
             startIntake(true);
             moveIntake(IntakePosition.EJECT);
@@ -1022,11 +1081,12 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     }
 
     public double readBackTof() {
-        double backLeftTof = readBackLeftTof();
-//        double backRightTof = readBackRightTof();
+        if(!backTofRead) {
+            backTofRead = true;
+            backTofValue = backTof.getDistance(DistanceUnit.CM);
+        }
 
-//        return (backLeftTof + backRightTof) / 2.0;
-        return backLeftTof;
+        return backTofValue;
     }
 
     /* Initialize standard Hardware interfaces */
@@ -1044,10 +1104,19 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         lifter = hwMap.get(DcMotor.class, LIFTER);
         extender = hwMap.get(DcMotorEx.class, EXTENDER);
 
-        rightTof = (Rev2mDistanceSensor)hwMap.get(DistanceSensor.class, RIGHT_RANGE);
-        leftTof = (Rev2mDistanceSensor)hwMap.get(DistanceSensor.class, LEFT_RANGE);
-//        backRightTof = (Rev2mDistanceSensor)hwMap.get(DistanceSensor.class, BACK_RIGHT_RANGE);
-        backLeftTof = (Rev2mDistanceSensor)hwMap.get(DistanceSensor.class, BACK_LEFT_RANGE);
+        rightTof = (Rev2mTurbo)hwMap.get(DistanceSensor.class, RIGHT_RANGE);
+        leftTof = (Rev2mTurbo)hwMap.get(DistanceSensor.class, LEFT_RANGE);
+        backRightTof = (Rev2mTurbo)hwMap.get(DistanceSensor.class, BACK_RIGHT_RANGE);
+        backLeftTof = (Rev2mTurbo)hwMap.get(DistanceSensor.class, BACK_LEFT_RANGE);
+        backTof = (Rev2mTurbo)hwMap.get(DistanceSensor.class, BACK_RANGE);
+        if(!tofInitialized) {
+            rightTof.initVL53L0X(false);
+            leftTof.initVL53L0X(false);
+            backRightTof.initVL53L0X(false);
+            backLeftTof.initVL53L0X(false);
+            backTof.initVL53L0X(false);
+            tofInitialized = true;
+        }
 
         // Set motor rotation
         // This makes lift go up with positive encoder values and power

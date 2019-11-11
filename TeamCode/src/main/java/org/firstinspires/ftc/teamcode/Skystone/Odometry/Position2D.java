@@ -2,15 +2,10 @@ package org.firstinspires.ftc.teamcode.Skystone.Odometry;
 
 import android.os.AsyncTask;
 
-import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
-import org.firstinspires.ftc.teamcode.Skystone.MathFunctions;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
 import org.firstinspires.ftc.teamcode.Skystone.Robot;
 
-import static org.firstinspires.ftc.teamcode.Skystone.MathFunctions.angleWrap;
-
 public class Position2D{
-    FtcRobotControllerActivity activity;
     Robot robot;
     public Position2D(Robot robot) {
         this.robot = robot;

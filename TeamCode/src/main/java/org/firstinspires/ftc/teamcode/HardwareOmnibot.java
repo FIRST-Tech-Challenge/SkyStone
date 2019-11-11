@@ -784,7 +784,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                 } else {
                     drivePower = driveSpeed;
                 }
-                drive(drivePower, 0.0, 0.0, 0);
+                drive(drivePower, 0.0, 0.0, readIMU());
             } else {
                 setAllDriveZero();
                 targetReached = true;
@@ -800,7 +800,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                 } else {
                     drivePower = -driveSpeed;
                 }
-                drive(drivePower, 0.0, 0.0, 0);
+                drive(drivePower, 0.0, 0.0, readIMU());
             } else {
                 setAllDriveZero();
                 targetReached = true;
@@ -846,7 +846,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                     spinPower = spinSpeed;
                 }
             }
-            drive(0, drivePower, spinPower, 0.0);
+            drive(0, drivePower, spinPower, readIMU());
         } else {
             setAllDriveZero();
             parallel = true;

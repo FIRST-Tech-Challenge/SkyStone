@@ -136,8 +136,8 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         STOWED(25),
         STONE1_RELEASE(146),
         STONE1(176),
-        CAPSTONE_GRAB(200),
-        CAPSTONE_ROTATE(300),
+        CAPSTONE_GRAB(300),
+        CAPSTONE_ROTATE(400),
         STONE2_RELEASE(444),
         STONE2(474),
         STONE3_RELEASE(642),
@@ -432,15 +432,19 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public boolean startCapstone() {
         boolean isCapping;
         if(capstoneState == CapstoneActivity.IDLE) {
-            isCapping = true;
+            if((releaseState != ReleaseActivity.IDLE) || (stowState != StowActivity.IDLE) ||
+                    (liftState != LiftActivity.IDLE)) {
+                isCapping = false;
+            } else {
+                isCapping = true;
+                // Extend the intake to make sure it isn't in the way.
+                moveIntake(IntakePosition.EXTENDED);
+                // We don't want the intake spinning while we are trying to lift the stone.
+                // stopIntake();
+                capstoneState = CapstoneActivity.CLEARING_LIFT;
+            }
         } else {
-            isCapping = false;
-            // Extend the intake to make sure it isn't in the way.
-            moveIntake(IntakePosition.EXTENDED);
-
-            // We don't want the intake spinning while we are trying to lift the stone.
-            stopIntake();
-            capstoneState = CapstoneActivity.CLEARING_LIFT;
+            isCapping = true;
         }
 
         return isCapping;
@@ -784,7 +788,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                 } else {
                     drivePower = driveSpeed;
                 }
-                drive(drivePower, 0.0, 0.0, readIMU());
+                drive(drivePower, 0.0, 0.0, -readIMU());
             } else {
                 setAllDriveZero();
                 targetReached = true;
@@ -800,7 +804,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                 } else {
                     drivePower = -driveSpeed;
                 }
-                drive(drivePower, 0.0, 0.0, readIMU());
+                drive(drivePower, 0.0, 0.0, -readIMU());
             } else {
                 setAllDriveZero();
                 targetReached = true;
@@ -846,7 +850,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                     spinPower = spinSpeed;
                 }
             }
-            drive(0, drivePower, spinPower, readIMU());
+            drive(0, drivePower, spinPower, -readIMU());
         } else {
             setAllDriveZero();
             parallel = true;
@@ -874,12 +878,12 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         switch(alignState)
         {
             case REFINE_WALL:
-                if(distanceFromWall(stackDistance,0.04)) {
+                if(distanceFromWall(stackDistance,0.05)) {
                     alignState = AlignActivity.IDLE;
                 }
                 break;
             case REFINE_FOUNDATION:
-                if(parallelRearTarget(10, 0.04, 0.04)) {
+                if(parallelRearTarget(10, 0.05, 0.05)) {
                     alignState = AlignActivity.REFINE_WALL;
                 }
                 break;

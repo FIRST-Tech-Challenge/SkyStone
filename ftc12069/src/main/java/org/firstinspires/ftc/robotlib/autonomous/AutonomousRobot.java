@@ -279,7 +279,7 @@ public class AutonomousRobot {
      */
     public double getCourseFromRobot(Point object) {
         Point robotPosition = this.getPosition();
-        return Math.atan((robotPosition.y - object.y) / (robotPosition.x - object.y));
+        return Math.atan((robotPosition.y - object.y) / (robotPosition.x - object.x));
     }
 
     /**

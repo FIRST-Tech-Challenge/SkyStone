@@ -98,15 +98,15 @@ public class RobotOneAll extends LinearOpMode {
 
             // Use gamepad buttons to move arm up (Y) and down (A)
             if (gamepad1.a) {
-                robotOne.InAndOut.setPower(.3);
+                robotOne.InAndOut.setPower(.1);
                 sleep(1000);
                 robotOne.InAndOut.setPower(.1);
             }
             else if (gamepad1.y) {
-                robotOne.InAndOut.setPower(-.3);
-                sleep(1300);
-                robotOne.InAndOut.setPower(-.2);
-                sleep(800);
+                robotOne.InAndOut.setPower(-.05);
+                sleep(100);
+                //robotOne.InAndOut.setPower(-.2);
+                sleep(50);
                 robotOne.InAndOut.setPower(-.1);
                 sleep(1000);
                 robotOne.InAndOut.setPower(1);

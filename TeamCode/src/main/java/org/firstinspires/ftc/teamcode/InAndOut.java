@@ -62,8 +62,6 @@ public class InAndOut extends LinearOpMode {
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
-        telemetry.update();
-
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
@@ -109,12 +107,12 @@ public class InAndOut extends LinearOpMode {
             if ( forward == true ) {
                 InAndOut.setDirection(DcMotor.Direction.FORWARD);
                 InAndOut.setPower(.1);
-                sleep(500);
+                sleep(300);
                 InAndOut.setPower(0);
             } else if (reverse == true ) {
                 InAndOut.setDirection(DcMotor.Direction.REVERSE);
                 InAndOut.setPower(.1);
-                sleep(500);
+                sleep(300);
                 InAndOut.setPower(0);
             }
 

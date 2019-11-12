@@ -79,7 +79,7 @@ public class RobotOneHardware
 
         // Define and Initialize Motors
         leftServo = hwMap.get(Servo.class,"leftServo");
-        rightServo = hwMap.get(Servo.class,":rightServo");
+        rightServo = hwMap.get(Servo.class,"rightServo");
         leftDrive  = hwMap.get(DcMotor.class, "leftDrive");
         rightDrive = hwMap.get(DcMotor.class, "rightDrive");
         InAndOut    = hwMap.get(DcMotor.class, "InAndOut");

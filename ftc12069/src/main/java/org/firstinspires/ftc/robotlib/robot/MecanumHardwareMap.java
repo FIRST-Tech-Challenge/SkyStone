@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.robotlib.robot;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -22,8 +23,10 @@ public class MecanumHardwareMap
     // Servos in Mecanum Robot
     private Servo servoClaw;
 
-    //Camera
+    // Camera
     public WebcamName webcamName;
+
+    public BNO055IMU imu;
 
     public MecanumDrivetrain drivetrain;
     public ServoManager servoManager;
@@ -69,6 +72,16 @@ public class MecanumHardwareMap
         servoClaw.setDirection(Servo.Direction.FORWARD);
 
         webcamName = internalHardwareMap.get(WebcamName.class, "webcam");
+
+        imu = hwMap.get(BNO055IMU.class, "revIMU");
+        BNO055IMU.Parameters imuParamters = new BNO055IMU.Parameters();
+        imuParamters.mode = BNO055IMU.SensorMode.IMU;
+        imuParamters.useExternalCrystal = true;
+        imuParamters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+        imuParamters.pitchMode = BNO055IMU.PitchMode.WINDOWS;
+        imuParamters.loggingEnabled = true;
+        imuParamters.loggingTag = "IMU";
+        imu.initialize(imuParamters);
 
         drivetrain = new MecanumDrivetrain(motorList);
         servoManager = new ServoManager(new Servo[]{servoClaw});

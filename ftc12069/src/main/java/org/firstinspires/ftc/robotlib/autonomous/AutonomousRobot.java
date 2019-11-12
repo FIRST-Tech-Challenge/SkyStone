@@ -257,7 +257,16 @@ public class AutonomousRobot {
      * @return current rotation
      */
     public Orientation getRotation() {
+        // imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES)
         return Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
+    }
+
+    /**
+     * Rotates the robot by an angle (this is bad design, it overrides other motor commands)
+     * @param angle angle of rotation
+     */
+    public void rotate(double angle) {
+        throw new UnsupportedOperationException("Idk");
     }
 
     /**
@@ -279,7 +288,7 @@ public class AutonomousRobot {
      */
     public double getCourseFromRobot(Point object) {
         Point robotPosition = this.getPosition();
-        return Math.atan((robotPosition.y - object.y) / (robotPosition.x - object.x));
+        return Math.atan2(robotPosition.y - object.y, robotPosition.x - object.x);
     }
 
     /**

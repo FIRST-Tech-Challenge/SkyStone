@@ -22,9 +22,27 @@ public class AutoBase extends LinearOpMode {
         robot.setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         //robot.intializeIMU();
-
+        initServos();
         Position2D position2D = new Position2D(robot);
         position2D.startOdometry();
+    }
+
+    private void initServos() {
+        boolean isRetract = true;
+        long outtakeExecutionTime = 0;
+        long currentTime;
+        robot.getClamp().setPosition(robot.CLAW_SERVO_RELEASED);
+
+        while (isRetract && robot.getLinearOpMode().opModeIsActive()) {
+            currentTime = SystemClock.elapsedRealtime();
+            if (currentTime - outtakeExecutionTime >= 250 && isRetract) {
+                robot.getClampPivot().setPosition(robot.OUTTAKE_PIVOT_RETRACTED);
+            }
+            if (currentTime - outtakeExecutionTime >= 950 && isRetract) {
+                robot.getOuttakeExtender().setPosition(robot.OUTTAKE_SLIDE_RETRACTED);
+                isRetract = false;
+            }
+        }
     }
 
     @Override
@@ -38,6 +56,7 @@ public class AutoBase extends LinearOpMode {
 
         while(isExtend && robot.getLinearOpMode().opModeIsActive()) {
             currentTime = SystemClock.elapsedRealtime();
+            //extend
             //extend
             if (currentTime - outtakeExecutionTime >= 500 && isExtend) {
                 robot.getIntakePusher().setPosition(robot.PUSHER_RETRACTED);
@@ -79,6 +98,7 @@ public class AutoBase extends LinearOpMode {
         }
     }
 
+
     protected void intake(boolean intake) {
         if (intake) {
             robot.getIntakeLeft().setPower(1);
@@ -88,6 +108,7 @@ public class AutoBase extends LinearOpMode {
             robot.getIntakeRight().setPower(0);
         }
     }
+
 
     public void goToSkystone(int skystone, int robotPosition){
         final String VUFORIA_KEY = "AbSCRq//////AAAAGYEdTZut2U7TuZCfZGlOu7ZgOzsOlUVdiuQjgLBC9B3dNvrPE1x/REDktOALxt5jBEJJBAX4gM9ofcwMjCzaJKoZQBBlXXxrOscekzvrWkhqs/g+AtWJLkpCOOWKDLSixgH0bF7HByYv4h3fXECqRNGUUCHELf4Uoqea6tCtiGJvee+5K+5yqNfGduJBHcA1juE3kxGMdkqkbfSjfrNgWuolkjXR5z39tRChoOUN24HethAX8LiECiLhlKrJeC4BpdRCRazgJXGLvvI74Tmih9nhCz6zyVurHAHttlrXV17nYLyt6qQB1LtVEuSCkpfLJS8lZWS9ztfC1UEfrQ8m5zA6cYGQXjDMeRumdq9ugMkS";
@@ -101,8 +122,7 @@ public class AutoBase extends LinearOpMode {
         telemetry.update();
 
         telemetry.addLine("go to point");
-
-        int position = robot.detectTensorflow();
+        int position = 0;
 
         //intake(true);
 

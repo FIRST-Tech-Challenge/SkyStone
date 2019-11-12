@@ -6,11 +6,12 @@ import org.firstinspires.ftc.teamcode.auto.ChassisConfig;
 /**
  * This just runs from the position closest to the crater, into the crater.
  */
-public abstract class OniChan extends ChassisStandard {
+public abstract class LongFancyBeanis2 extends ChassisStandard {
 
-    public OniChan(ChassisConfig config) {
+    public LongFancyBeanis2(ChassisConfig config) {
         super(config);
     }
+
 
     /**a
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
@@ -20,14 +21,25 @@ public abstract class OniChan extends ChassisStandard {
 
         if (madeTheRun == false) {
 
-           // encoderDrive(24);
+            encoderDrive(27);
 
-            turnRight(180);
+            sleep(3000);
 
-            turnLeft(180);
+            turnLeft(82);
+
+            encoderDrive(85);
+
+            turnRight(84);
+
+            sleep(3000);
+
+            turnRight(80);
+
+            encoderDrive(45);
 
             madeTheRun = true;
         }
+
     }
 }
 

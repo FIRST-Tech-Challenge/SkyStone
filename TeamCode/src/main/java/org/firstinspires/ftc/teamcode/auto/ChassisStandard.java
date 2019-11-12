@@ -22,6 +22,8 @@ public abstract class ChassisStandard extends OpMode {
     int bruhSoundID = -1;
 
     protected ChassisConfig config;
+    protected boolean madeTheRun = false;
+
 
     // Elapsed time since the opmode started.
     protected ElapsedTime runtime = new ElapsedTime();
@@ -34,6 +36,7 @@ public abstract class ChassisStandard extends OpMode {
     private DcMotor motorFrontRight;
     private DcMotor extender;
     private DcMotor shoulder;
+    private DcMotor crane;
 
     //Crab
     protected Servo crab;
@@ -43,6 +46,7 @@ public abstract class ChassisStandard extends OpMode {
     private Servo bull;
     private Servo dozer;
     private double angleHand;
+
 
     // Walle state management
     int wasteAllocationLoadLifterEarthBegin;
@@ -66,10 +70,58 @@ public abstract class ChassisStandard extends OpMode {
     protected boolean useEve = false;
     protected boolean useCrab = true;
 
+
     protected ChassisStandard(ChassisConfig config) {
         this.config = config;
     }
 
+     /*
+        Robot Controller Callbacks
+     */
+
+    @Override
+    public void start () {
+        // Reset the game timer.
+        runtime.reset();
+
+    }
+
+    @Override
+    public void stop (){
+
+    }
+
+    @Override
+    public void init() {
+        initMotors();
+        initTimeouts();
+        initGyroscope();
+        initCrab();
+    }
+
+    /**
+     * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
+     */
+    @Override
+    public void init_loop () {
+        printStatus();
+    }
+
+
+    /**
+     *
+     */
+    protected void printStatus() {
+        if(useGyroScope) {
+            telemetry.addData("Gyro", "angle: " + this.getGyroscopeAngle());
+        }
+        if(useCrab) {
+            telemetry.addData("Crab", "Angle =%f", crab.getPosition());
+        }
+        telemetry.addData("Status", "time: " + runtime.toString());
+        telemetry.addData("Run", "madeTheRun=%b", madeTheRun);
+
+    }
 
     /*
         MOTOR SUBSYTEM
@@ -126,7 +178,12 @@ public abstract class ChassisStandard extends OpMode {
 
     protected void initCrab(){
         if(useCrab){
-            crab = hardwareMap.get(Servo.class, "servoCrab");
+            try {
+                crab = hardwareMap.get(Servo.class, "servoCrab");
+            } catch (Exception e) {
+                telemetry.addData("crab", "exception on init: " + e.toString());
+                useCrab = false;
+            }
         }
     }
 
@@ -144,8 +201,9 @@ public abstract class ChassisStandard extends OpMode {
 
     protected void initArm() {
         if (useArm) {
-            shoulder = hardwareMap.get(DcMotor.class, "motor4");
-            extender = hardwareMap.get(DcMotor.class, "motor5");
+            //shoulder = hardwareMap.get(DcMotor.class, "motor4");
+            extender = hardwareMap.get(DcMotor.class, "motorExtender");
+            crane = hardwareMap.get(DcMotor.class, "motorCrane");
         }
     }
 
@@ -191,6 +249,11 @@ public abstract class ChassisStandard extends OpMode {
 
     protected void encoderDrive(double leftInches, double rightInches) {
         double speed = config.getMoveSpeed();
+        encoderDrive(leftInches, rightInches, speed);
+    }
+
+    protected void encoderDrive(double leftInches, double rightInches, double speed) {
+
         double countsPerInch = config.getRearWheelSpeed() / (config.getRearWheelDiameter() * Math.PI);
 
         // Get the current position.
@@ -370,7 +433,13 @@ public abstract class ChassisStandard extends OpMode {
             telemetry.update();
         }
 
-        sleep(2000);
+        // turn off motor.
+        motorBackLeft.setPower(0);
+        motorBackRight.setPower(0);
+        if (config.getUseFourWheelDrive()) {
+            motorFrontLeft.setPower(0);
+            motorFrontRight.setPower(0);
+        }
     }
 
     /**
@@ -408,6 +477,7 @@ public abstract class ChassisStandard extends OpMode {
 
             float oldAngle = currentAngle;
             nudgeRight();
+
             currentAngle = getGyroscopeAngle();
 
             float justMoved = currentAngle - oldAngle;
@@ -415,6 +485,16 @@ public abstract class ChassisStandard extends OpMode {
             telemetry.addData("turnRight2", "current = %.0f, destination = %.0f, moved=%.0f, need=%.0f", currentAngle, destinationAngle, justMoved, stillNeed);
             telemetry.update();
         }
+
+        //turn off the motor
+        motorBackLeft.setPower(0);
+        motorBackRight.setPower(0);
+        if (config.getUseFourWheelDrive()) {
+            motorFrontLeft.setPower(0);
+            motorFrontRight.setPower(0);
+
+        }
+
     }
 
     // This nudges over about 2 degrees.
@@ -427,14 +507,7 @@ public abstract class ChassisStandard extends OpMode {
             motorFrontLeft.setPower(power);
             motorFrontRight.setPower(-power);
         }
-        sleep(2);
-
-        motorBackLeft.setPower(0);
-        motorBackRight.setPower(0);
-        if (config.getUseFourWheelDrive()) {
-            motorFrontLeft.setPower(0);
-            motorFrontRight.setPower(0);
-        }
+        sleep(5);
     }
 
     // This nudges over about 2 degrees.
@@ -447,14 +520,7 @@ public abstract class ChassisStandard extends OpMode {
             motorFrontLeft.setPower(-power);
             motorFrontRight.setPower(power);
         }
-        sleep(2);
-
-        motorBackLeft.setPower(0);
-        motorBackRight.setPower(0);
-        if (config.getUseFourWheelDrive()) {
-            motorFrontLeft.setPower(0);
-            motorFrontRight.setPower(0);
-        }
+        sleep(5);
     }
 
 
@@ -669,5 +735,11 @@ public abstract class ChassisStandard extends OpMode {
         extraterrestrialVegetationEvaluator.setPower(0);
 
         //sleep(5000);
+    }
+
+    protected void pushCrane() {
+        crane.setPower(1);
+        sleep(500);
+        crane.setPower(0);
     }
 }

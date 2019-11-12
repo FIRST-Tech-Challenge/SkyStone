@@ -1,14 +1,14 @@
 package org.firstinspires.ftc.teamcode.autoOp;
 
-import org.firstinspires.ftc.teamcode.auto.ChassisStandard;
 import org.firstinspires.ftc.teamcode.auto.ChassisConfig;
+import org.firstinspires.ftc.teamcode.auto.ChassisStandard;
 
 /**
  * This just runs from the position closest to the crater, into the crater.
  */
-public abstract class OniChan extends ChassisStandard {
+public abstract class ShortRedBeanis1 extends ChassisStandard {
 
-    public OniChan(ChassisConfig config) {
+    public ShortRedBeanis1(ChassisConfig config) {
         super(config);
     }
 
@@ -20,11 +20,12 @@ public abstract class OniChan extends ChassisStandard {
 
         if (madeTheRun == false) {
 
-           // encoderDrive(24);
+           encoderDrive(4);
 
-            turnRight(180);
+            turnRight(85);
 
-            turnLeft(180);
+            encoderDrive(13);
+
 
             madeTheRun = true;
         }

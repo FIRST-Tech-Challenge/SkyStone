@@ -1,16 +1,16 @@
 package org.firstinspires.ftc.teamcode.autoOp;
 
-import org.firstinspires.ftc.teamcode.auto.ChassisStandard;
 import org.firstinspires.ftc.teamcode.auto.ChassisConfig;
+import org.firstinspires.ftc.teamcode.auto.ChassisStandard;
 
 /**
  * This just runs from the position closest to the crater, into the crater.
  */
-public abstract class FivePoints2 extends ChassisStandard {
+public abstract class LongRedHagrids1 extends ChassisStandard {
 
     private boolean madeTheRun = false;
 
-    public FivePoints2(ChassisConfig config) {
+    public LongRedHagrids1(ChassisConfig config) {
         super(config);
     }
 
@@ -59,9 +59,9 @@ public abstract class FivePoints2 extends ChassisStandard {
 
         if (madeTheRun == false) {
 
-            encoderDrive(27);
+            encoderDrive(24);
 
-            turnLeft(90);
+            turnLeft(80);
             encoderDrive(13);
             madeTheRun = true;
         }

@@ -5,11 +5,13 @@ import com.qualcomm.robotcore.hardware.*
 /**
  * Created by KasaiYuki on 9/25/2018.
  */
-class SSRobot {
+class SSMechRobot {
 
     var hwdMap: HardwareMap? = null
-    var leftDrive: DcMotor? = null
-    var rightDrive: DcMotor? = null
+    var lBDrive: DcMotor? = null
+    var rBDrive: DcMotor? = null
+    var lFDrive: DcMotor? = null
+    var rFDrive: DcMotor? = null
     var vSlide: DcMotor? = null
     var hSlide: Servo? = null
     var claw: Servo? = null
@@ -24,34 +26,58 @@ class SSRobot {
     fun init(ahwdMap: HardwareMap) {
         //hardware maping motors, servos, and sensors
         hwdMap = ahwdMap
-        leftDrive = ahwdMap.dcMotor.get("lBDrive")
-        rightDrive = ahwdMap.dcMotor.get("rBDrive")
+        lBDrive = ahwdMap.dcMotor.get("lBDrive")
+        rBDrive = ahwdMap.dcMotor.get("rBDrive")
+        lFDrive = ahwdMap.dcMotor.get("lFDrive")
+        rFDrive = ahwdMap.dcMotor.get("rFDrive")
         vSlide = ahwdMap.dcMotor.get("vSlide")
         hSlide = ahwdMap.servo.get("hSlide")
         claw = ahwdMap.servo.get("claw")
         touch = ahwdMap.digitalChannel.get("touch")
 
         //Setting direction
-        leftDrive?.direction = motF
-        rightDrive?.direction = motR
+        lBDrive?.direction = motF
+        rBDrive?.direction = motR
+        lFDrive?.direction = motF
+        rFDrive?.direction = motR
         vSlide?.direction = motR
         hSlide?.direction = serR
         claw?.direction = serF
 
 
-        leftDrive?.power = 0.0
-        rightDrive?.power = 0.0
-        leftDrive?.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
-        rightDrive?.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+        lBDrive?.power = 0.0
+        rBDrive?.power = 0.0
+        lFDrive?.power = 0.0
+        rFDrive?.power = 0.0
+        lBDrive?.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+        rBDrive?.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         vSlide?.mode = DcMotor.RunMode.RUN_USING_ENCODER //Use encoders for linear slide motor
 
     }
 
     //METHODS
 
+    fun leftPow(pow: Double){
+        lBDrive?.power = pow
+        lFDrive?.power = pow
+    }
+
+    fun rightPow(pow: Double){
+        rBDrive?.power = pow
+        rFDrive?.power = pow
+    }
+
+    fun strafe(pow: Double)
+    {
+        lBDrive?.power = pow
+        lFDrive?.power = -pow
+        rBDrive?.power = pow
+        rFDrive?.power = -pow
+    }
+
     fun drive(leftM: Double, rightM: Double) {
-        leftDrive?.power = leftM
-        rightDrive?.power = rightM
+        leftPow(leftM)
+        rightPow(rightM)
     }
 
     fun drive(pow: Double)//OVERLOAD-both motors run at same velocity

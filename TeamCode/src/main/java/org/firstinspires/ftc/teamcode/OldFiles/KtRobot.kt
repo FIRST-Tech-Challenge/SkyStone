@@ -33,8 +33,8 @@ class KtRobot
     fun init(ahwdMap: HardwareMap)
     {
         hwdMap = ahwdMap
-        leftDrive = ahwdMap.dcMotor.get("leftDrive")
-        rightDrive = ahwdMap.dcMotor.get("rightDrive")
+        leftDrive = ahwdMap.dcMotor.get("lBDrive")
+        rightDrive = ahwdMap.dcMotor.get("rBDrive")
         flag = ahwdMap.servo.get("flag")
         lSlideArm = ahwdMap.dcMotor.get("lSlideArm")
         touch = ahwdMap.digitalChannel.get("touch")

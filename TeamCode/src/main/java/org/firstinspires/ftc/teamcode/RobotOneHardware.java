@@ -90,7 +90,7 @@ public class RobotOneHardware
         leftDrive.setPower(0);
         rightDrive.setPower(0);
         InAndOut.setPower(0);
-        leftServo.setPosition(0.65);
+        leftServo.setPosition(0.60);
         rightServo.setPosition(1.0);
 
         // Set all motors to run without encoders.

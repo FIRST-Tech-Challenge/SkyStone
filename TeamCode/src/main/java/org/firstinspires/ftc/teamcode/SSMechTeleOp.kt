@@ -48,14 +48,14 @@ class SSMechTeleOp : OpMode() {
 
         /**
          * Gamepad1: Tank Drive-Left Stick y=Left Motor; right stick y=Right Motor
-         * Gamepad2: Crane: Right Stick Y = Y Slide; Left Bumper = pinch claw; Left Stick Y= X Slide
+         * Gamepad2: Crane: Right Stick Y = Y Slide; Left Bumper = pinch claw; Left Stick Y= X Slide; a = hook
          */
 
         touched = !robot.touch!!.state //true if not pressed
-        slowDown = if(gamepad1.left_bumper) 2.35 else 1.00 //condensed if else
+        slowDown = if (gamepad1.left_bumper) 2.35 else 1.00 //condensed if else
 
-        if(gamepad1.a) tankMode()
-        else if(gamepad1.b) povMode()
+        if (gamepad1.a) tankMode()
+        else if (gamepad1.b) povMode()
         else tankMode()
 
         //Vertical Slide Power Calculation
@@ -68,18 +68,16 @@ class SSMechTeleOp : OpMode() {
         tooHigh = curPos >= max
         tooLow = curPos < 0
 
-        try {
-            //if (curPos > 1500) linSlidePow /= 1.2.toFloat() //slow slide if greater than value
-            robot.vSlide?.power = -linSlidePow.toDouble()//controls vertical slide, flips sign
-            slideP = (gamepad2.left_stick_y.toDouble() / 2) + 0.5 // horizontal slide
-            if(touched){ //controls horizontal slide with the left stick of gp2
-                if(slideP > 0.5) robot.hSlide?.position = slideP //1=back; 0=forward
-                else robot.hSlide?.position = 0.5
-            }
-            else robot.hSlide?.position = slideP
-            robot.pinch(gamepad2) //operates claw
-            curPos = robot.vSlide!!.currentPosition
-        } catch (e: Exception) { telemetry.addData("Movement Error:", println(e)) }
+        //if (curPos > 1500) linSlidePow /= 1.2.toFloat() //slow slide if greater than value
+        robot.vSlide?.power = -linSlidePow.toDouble()//controls vertical slide, flips sign
+        slideP = (gamepad2.left_stick_y.toDouble() / 2) + 0.5 // horizontal slide
+        if (touched) { //controls horizontal slide with the left stick of gp2
+            if (slideP > 0.5) robot.hSlide?.position = slideP //1=back; 0=forward
+            else robot.hSlide?.position = 0.5
+        } else robot.hSlide?.position = slideP
+        robot.pinch(gamepad2) //operates claw
+        curPos = robot.vSlide!!.currentPosition
+        robot.dropHook(gamepad2)
 
         if (touched) telemetry.addData("Touch Sensor:", "Activated")
         if (tooHigh) telemetry.addData("Linear Slide Y Error:", "MAX HEIGHT REACHED")
@@ -97,8 +95,7 @@ class SSMechTeleOp : OpMode() {
         telemetry.update()
     }
 
-    fun tankMode()
-    {
+    fun tankMode() {
         //Tank Drive-sets power equal to numerical value of joystick positions
         leftPower = -gamepad1.left_stick_y
         rightPower = -gamepad1.right_stick_y
@@ -112,11 +109,10 @@ class SSMechTeleOp : OpMode() {
         robot.strafe(strafePow)
     }
 
-    fun povMode()
-    {
+    fun povMode() {
         //POV Mode-left joystick=power(y power and strafing), right joystick=turning
         // Put powers in the range of -1 to 1 only if they aren't already (not
-    // checking would cause us to always drive at full speed)
+        // checking would cause us to always drive at full speed)
 
 
         var drive = (-gamepad1.left_stick_y).toDouble() // Remember, this is reversed!

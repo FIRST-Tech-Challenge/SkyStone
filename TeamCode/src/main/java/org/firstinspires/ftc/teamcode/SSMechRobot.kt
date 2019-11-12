@@ -15,6 +15,8 @@ class SSMechRobot {
     var vSlide: DcMotor? = null
     var hSlide: Servo? = null
     var claw: Servo? = null
+    var rightHook: Servo? = null
+    var leftHook: Servo? = null
     var touch: DigitalChannel? = null
 
 
@@ -33,6 +35,8 @@ class SSMechRobot {
         vSlide = ahwdMap.dcMotor.get("vSlide")
         hSlide = ahwdMap.servo.get("hSlide")
         claw = ahwdMap.servo.get("claw")
+        leftHook = ahwdMap.servo.get("leftHook")
+        rightHook = ahwdMap.servo.get("rightHook")
         touch = ahwdMap.digitalChannel.get("touch")
 
         //Setting direction
@@ -43,6 +47,8 @@ class SSMechRobot {
         vSlide?.direction = motR
         hSlide?.direction = serR
         claw?.direction = serF
+        rightHook?.direction = serR
+        leftHook?.direction = serF
 
 
         bLDrive?.power = 0.0
@@ -90,6 +96,26 @@ class SSMechRobot {
         this.drive(0.0)
     }
 
+    fun dropHook(gp: Gamepad)
+    {
+        var down = false
+        var changed = false
+
+        if(gp.a and !changed) {
+            if(!gp.a)  down = !down
+            changed = true
+        } else if(!gp.a) changed = false
+
+        if(down) { //up
+            this.leftHook?.position = 0.0
+            this.rightHook?.position = 0.0
+        }
+        else { //down
+            this.leftHook?.position = 0.7
+            this.rightHook?.position = 0.7
+        }
+    }
+
 
     fun pinch(gp: Gamepad) {
         var close = false
@@ -98,6 +124,7 @@ class SSMechRobot {
             if(!gp.left_bumper) close = !close
             changed = true
         } else if(!gp.left_bumper) changed = false
+
         when {
             close -> this.claw?.position = 0.0 //close
             !close -> this.claw?.position = 1.0 //open-default

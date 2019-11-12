@@ -280,15 +280,15 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public static double LEFT_FINGER_DOWN = 0.82;
     public static double RIGHT_FINGER_UP = 0.89;
     public static double LEFT_FINGER_UP = 0.25;
-    public static double CLAW_OPEN = 0.2;
+    public static double CLAW_OPEN = 0.4;
     public static double CLAW_PINCHED = 0.9;
     public static double CLAWDRICOPTER_FRONT = 0.85;
     public static double CLAWDRICOPTER_CAPSTONE = 0.57;
     public static double CLAWDRICOPTER_BACK = 0.09;
-    public static int CLAW_OPEN_TIME = 750;
-    public static int CLAW_CLOSE_TIME = 750;
+    public static int CLAW_OPEN_TIME = 500;
+    public static int CLAW_CLOSE_TIME = 500;
     public static int CLAW_ROTATE_BACK_TIME = 1000;
-    public static int CLAW_ROTATE_CAPSTONE_TIME = 750;
+    public static int CLAW_ROTATE_CAPSTONE_TIME = 500;
     public static int CLAW_ROTATE_FRONT_TIME = 1000;
 	private static int ENCODER_ERROR = 10;
 

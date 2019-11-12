@@ -6,28 +6,36 @@ import org.firstinspires.ftc.teamcode.subsystems.Chassis;
 
 public class DriveCommand implements ICommand {
     Chassis chassis;
-    double distance;
     double targetAngle;
-    int turn;
+    double turn;
+    int distance;
     double power;
-    int error;
-    boolean hasSetDistance;
+    int error=0;
+    boolean hasRun;
 
-    public DriveCommand(Chassis chassis, double distance, double targetAngle, int turn, double power, int error) {
+    public boolean hasRun() {
+        return hasRun;
+    }
+
+    public DriveCommand(Chassis chassis, double targetAngle, double turn, int distance, double power) {
         this.chassis = chassis;
+        this.targetAngle = targetAngle;
+        this.turn = turn;
         this.distance = distance;
         this.targetAngle = targetAngle;
         this.turn = turn;
         this.power = power;
         this.error = error;
-        hasSetDistance = false;
+        hasRun = false;
     }
 
-    public boolean runCommand() {
-        if (!hasSetDistance) {
+    public void run() {
         chassis.runDistance(distance, targetAngle, turn, power);
-        hasSetDistance = true;
+        hasRun= true;
     }
-        return chassis.runDistanceCheck(error);
-}
+
+    public boolean check() {
+        return chassis.motorErrorCheck(error);
+    }
+
 }

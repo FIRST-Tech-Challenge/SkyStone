@@ -81,5 +81,10 @@ public class Subsystem {
         return sum / motorErrors.length;
     }
 
+    //Returns true when done
+    public boolean motorErrorCheck(double targetError) {
+        return targetError > getAverageMotorError();
+    }
+
 
 }

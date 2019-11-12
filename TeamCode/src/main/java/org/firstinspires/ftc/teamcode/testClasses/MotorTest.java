@@ -11,11 +11,15 @@ import org.firstinspires.ftc.teamcode.subsystems.Chassis;
 public class MotorTest extends LinearOpMode {
     @Override
     public void runOpMode() {
-        Chassis chassis = new Chassis(hardwareMap);
-        DriveCommand driveCommand = new DriveCommand(chassis,10,15,90,1,150);
+
+        telemetry.addLine("Init | v1.0");
+        DcMotor arm = hardwareMap.dcMotor.get("arm");
+        arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         waitForStart();
         while (opModeIsActive()) {
-            while(driveCommand.runCommand());
+            telemetry.addData("arm cur pos: ", arm.getCurrentPosition());
+            //Other unit test code if you want
             telemetry.update();
         }
     }

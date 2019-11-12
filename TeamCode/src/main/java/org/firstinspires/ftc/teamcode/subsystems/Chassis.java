@@ -3,33 +3,33 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-
 public class Chassis extends Subsystem {
-    //Vars
-    DcMotor frontLeft = null;
-    DcMotor frontRight = null;
-    DcMotor backLeft = null;
-    DcMotor backRight = null;
-    final double wheelRadius = 24.0;
-    final double robotRadius = 5.08;
+    // Vars
+    DcMotor frontLeft;
+    DcMotor frontRight;
+    DcMotor backLeft;
+    DcMotor backRight;
+    Double wheelRadius;
+    Double robotRadius;
 
-    //Constructors
+    // Constructors
     public Chassis(HardwareMap hardwareMap) {
         frontLeft = hardwareMap.dcMotor.get("front_left_drive");
         frontRight = hardwareMap.dcMotor.get("front_right_drive");
         backLeft = hardwareMap.dcMotor.get("back_left_drive");
         backRight = hardwareMap.dcMotor.get("back_right_drive");
-        initMotors(new DcMotor[]{frontLeft, frontRight, backLeft, backRight});
+        initMotors(new DcMotor[] { frontLeft, frontRight, backLeft, backRight });
         initChassis();
-}
+    }
 
     public void initChassis() {
         reset();
+        reverseMotors(new DcMotor[]{frontRight, backRight});
         setZeroBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    //Methods
+    // Methods
     public void run(double targetAngle, double turn, double power) {
         final double turnAngle = targetAngle - Math.PI / 4;
         frontLeft.setPower(power * Math.cos(turnAngle) + turn);
@@ -50,8 +50,5 @@ public class Chassis extends Subsystem {
         setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
-    //Returns true if the moving is done
-    public boolean runDistanceCheck(int targetError) {
-        return targetError > getAverageMotorError();
-    }
+    // Returns true if the moving is done
 }

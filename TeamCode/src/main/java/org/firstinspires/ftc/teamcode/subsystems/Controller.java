@@ -19,6 +19,14 @@ public class Controller extends Gamepad {
     double rightTriggerMod = 1.0;
     double leftTriggerMod = 1.0;
 
+    //Records last button press to deal with single button presses doing a certain methods
+    boolean aLast = false;
+    boolean bLast = false;
+    boolean xLast = false;
+    boolean yLast = false;
+    boolean rightBumperLast = false;
+    boolean leftBumperLast = false;
+
     //Use given controller in teleop mode
     public Controller(Gamepad controller) {
         this.controller = controller;
@@ -67,16 +75,15 @@ public class Controller extends Gamepad {
     }
 
     public boolean getLeftBumper() {
-        return aMod ? controller.a : !controller.a;
+        return aMod ? controller.left_bumper : !controller.left_bumper;
     }
 
     public boolean getRightBumper() {
-        return aMod ? controller.a : !controller.a;
+        return aMod ? controller.right_bumper : !controller.right_bumper;
     }
 
     //method is used to convert linear map from contorller input to power into a cubic map
     public double limitStick(double stickInput) {
         return stickInput * stickInput * stickInput;
     }
-
 }

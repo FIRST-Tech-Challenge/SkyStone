@@ -115,11 +115,34 @@ class SSMechTeleOp : OpMode() {
     fun povMode()
     {
         //POV Mode-left joystick=power(y power and strafing), right joystick=turning
-        drive = (-gamepad1.left_stick_y).toDouble()
-        robot.strafe(-gamepad1.left_stick_x.toDouble())
-        turn = gamepad1.right_stick_x.toDouble()
-        leftPower = Range.clip(drive + turn, -1.0, 1.0).toFloat()
-        rightPower = Range.clip(drive - turn, -1.0, 1.0).toFloat()
+        // Put powers in the range of -1 to 1 only if they aren't already (not
+    // checking would cause us to always drive at full speed)
+
+
+        var drive = (-gamepad1.left_stick_y).toDouble() // Remember, this is reversed!
+        var turn = gamepad1.left_stick_x.toDouble() * 1.5
+        var strafe = gamepad1.right_stick_x.toDouble()
+
+        var frontLeftPower = (drive + turn + strafe)
+        var backLeftPower = (drive - turn + strafe)
+        var frontRightPower = (drive - turn - strafe)
+        var backRightPower = (drive + turn - strafe)
+
+        if (Math.abs(frontLeftPower) > 1 || Math.abs(backLeftPower) > 1 ||
+                Math.abs(frontRightPower) > 1 || Math.abs(backRightPower) > 1) {
+            // Find the largest power
+            var max = 0.0
+            max = Math.max(Math.abs(frontLeftPower), Math.abs(backLeftPower))
+            max = Math.max(Math.abs(frontRightPower), max)
+            max = Math.max(Math.abs(backRightPower), max)
+
+            // Divide everything by max (it's positive so we don't need to worry
+            // about signs)
+            robot.fLDrive?.power = frontLeftPower / max
+            robot.bLDrive?.power = backLeftPower / max
+            robot.fRDrive?.power = frontRightPower / max
+            robot.bRDrive?.power = backRightPower / max
+        }
 
     }
 }

@@ -24,8 +24,8 @@ class SSRobot {
     fun init(ahwdMap: HardwareMap) {
         //hardware maping motors, servos, and sensors
         hwdMap = ahwdMap
-        leftDrive = ahwdMap.dcMotor.get("lBDrive")
-        rightDrive = ahwdMap.dcMotor.get("rBDrive")
+        leftDrive = ahwdMap.dcMotor.get("bLDrive")
+        rightDrive = ahwdMap.dcMotor.get("bRDrive")
         vSlide = ahwdMap.dcMotor.get("vSlide")
         hSlide = ahwdMap.servo.get("hSlide")
         claw = ahwdMap.servo.get("claw")

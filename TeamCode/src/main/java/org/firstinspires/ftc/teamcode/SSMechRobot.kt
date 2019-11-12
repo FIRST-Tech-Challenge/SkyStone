@@ -8,10 +8,10 @@ import com.qualcomm.robotcore.hardware.*
 class SSMechRobot {
 
     var hwdMap: HardwareMap? = null
-    var lBDrive: DcMotor? = null
-    var rBDrive: DcMotor? = null
-    var lFDrive: DcMotor? = null
-    var rFDrive: DcMotor? = null
+    var bLDrive: DcMotor? = null
+    var bRDrive: DcMotor? = null
+    var fLDrive: DcMotor? = null
+    var fRDrive: DcMotor? = null
     var vSlide: DcMotor? = null
     var hSlide: Servo? = null
     var claw: Servo? = null
@@ -26,31 +26,31 @@ class SSMechRobot {
     fun init(ahwdMap: HardwareMap) {
         //hardware maping motors, servos, and sensors
         hwdMap = ahwdMap
-        lBDrive = ahwdMap.dcMotor.get("lBDrive")
-        rBDrive = ahwdMap.dcMotor.get("rBDrive")
-        lFDrive = ahwdMap.dcMotor.get("lFDrive")
-        rFDrive = ahwdMap.dcMotor.get("rFDrive")
+        bLDrive = ahwdMap.dcMotor.get("bLDrive")
+        bRDrive = ahwdMap.dcMotor.get("bRDrive")
+        fLDrive = ahwdMap.dcMotor.get("fLDrive")
+        fRDrive = ahwdMap.dcMotor.get("fRDrive")
         vSlide = ahwdMap.dcMotor.get("vSlide")
         hSlide = ahwdMap.servo.get("hSlide")
         claw = ahwdMap.servo.get("claw")
         touch = ahwdMap.digitalChannel.get("touch")
 
         //Setting direction
-        lBDrive?.direction = motF
-        rBDrive?.direction = motR
-        lFDrive?.direction = motF
-        rFDrive?.direction = motR
+        bLDrive?.direction = motF
+        bRDrive?.direction = motR
+        fLDrive?.direction = motF
+        fRDrive?.direction = motR
         vSlide?.direction = motR
         hSlide?.direction = serR
         claw?.direction = serF
 
 
-        lBDrive?.power = 0.0
-        rBDrive?.power = 0.0
-        lFDrive?.power = 0.0
-        rFDrive?.power = 0.0
-        lBDrive?.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
-        rBDrive?.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+        bLDrive?.power = 0.0
+        bRDrive?.power = 0.0
+        fLDrive?.power = 0.0
+        fRDrive?.power = 0.0
+        bLDrive?.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+        bRDrive?.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         vSlide?.mode = DcMotor.RunMode.RUN_USING_ENCODER //Use encoders for linear slide motor
 
     }
@@ -58,21 +58,21 @@ class SSMechRobot {
     //METHODS
 
     fun leftPow(pow: Double){
-        lBDrive?.power = pow
-        lFDrive?.power = pow
+        bLDrive?.power = pow
+        fLDrive?.power = pow
     }
 
     fun rightPow(pow: Double){
-        rBDrive?.power = pow
-        rFDrive?.power = pow
+        bRDrive?.power = pow
+        fRDrive?.power = pow
     }
 
     fun strafe(pow: Double)
     {
-        lBDrive?.power = pow
-        lFDrive?.power = -pow
-        rBDrive?.power = pow
-        rFDrive?.power = -pow
+        bLDrive?.power = pow
+        fLDrive?.power = -pow
+        bRDrive?.power = pow
+        fRDrive?.power = -pow
     }
 
     fun drive(leftM: Double, rightM: Double) {

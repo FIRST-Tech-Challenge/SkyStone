@@ -115,7 +115,7 @@ class SSMechTeleOp : OpMode() {
         // checking would cause us to always drive at full speed)
 
 
-        var drive = (-gamepad1.left_stick_y).toDouble() // Remember, this is reversed!
+        var drive = (-gamepad1.left_stick_y).toDouble()
         var turn = gamepad1.left_stick_x.toDouble() * 1.5
         var strafe = gamepad1.right_stick_x.toDouble()
 
@@ -125,7 +125,7 @@ class SSMechTeleOp : OpMode() {
         var backRightPower = (drive + turn - strafe)
 
         if (Math.abs(frontLeftPower) > 1 || Math.abs(backLeftPower) > 1 ||
-                Math.abs(frontRightPower) > 1 || Math.abs(backRightPower) > 1) {
+                Math.abs(frontRightPower) > 1 || Math.abs(backRightPower) > 1) { //normalizing values to [-1.0,1.0]
             // Find the largest power
             var max = 0.0
             max = Math.max(Math.abs(frontLeftPower), Math.abs(backLeftPower))

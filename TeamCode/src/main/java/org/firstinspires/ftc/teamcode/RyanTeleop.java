@@ -9,16 +9,29 @@ public class RyanTeleop extends LinearOpMode {
 
     RobotHardware robot = new RobotHardware();
 
+    //
+    public void moveClamp(double distance) {
+
+        double clamp_set = (.004 * gamepad2.right_stick_y);
+        robot.clamp.setPosition(robot.clamp.getPosition() + clamp_set);
+    }
+    // Ryan's logic
+
     @Override
     public void runOpMode() {
         robot.init(hardwareMap, telemetry);
 
         waitForStart();
-        telemetry.addData("Status:", "Started");
-        telemetry.update();
 
-        sleep(1000);
-        robot.clamp.setPosition(.8);
-        sleep(100000);
+        while (opModeIsActive()) {
+            telemetry.addData("Status:", "Started");
+            telemetry.update();
+
+            //
+            if (gamepad2.right_stick_y != 0) {
+                moveClamp(gamepad2.right_stick_y);
+            }
+            // Ryan's code (under "while opModeIsActive")
+        }
     }
 }

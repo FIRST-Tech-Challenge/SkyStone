@@ -225,8 +225,6 @@ public class WebcamTest {
          * Activate TensorFlow Object Detection before we wait for the start command.
          * Do it here so that the Camera Stream window will have the TensorFlow annotations visible.
          **/
-        this.init(opmode.hardwareMap);
-
         if (tfod != null) {
             tfod.activate();
             // getUpdatedRecognitions() will return null if no new information is available since
@@ -275,7 +273,7 @@ public class WebcamTest {
         }
         opmode.telemetry.addData("Skystone Position", "Error occurred");
         opmode.telemetry.update();
-        return 0; // if something goes wrong default is center
+        return 2; // if something goes wrong
     }
 }
 

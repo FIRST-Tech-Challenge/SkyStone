@@ -8,69 +8,249 @@ public class MM_LoadingZoneRed extends LinearOpMode {
     private Robot robot = new Robot();
     enum Skystone {LEFT, CENTER, RIGHT}
     private Skystone skystonePos = Skystone.LEFT;
-    private double distanceToBuildZone = 0.0; // distance to skybridge from close edge of block
+    private enum ParkingPosition {FAR, CLOSE}// far or close to center
+    private ParkingPosition parkingPosition = ParkingPosition.CLOSE;
+    private double distanceToBuildZone;
+    private double distanceToFoundation = 38; // distance to skybridge from close edge of block
     private double speed = 0.4;
+    private int stepNumber;
 
     @Override
     public void runOpMode() throws InterruptedException {
         robot.init(this);
-
-        for (int i = 0; i < 100; i++) {
-            // Detect skystone with camera
-            int position = robot.detectSkystone(this);
-            if (position == -1) {
+        robot.releaseBlock(this);
+        // timer
+        long startTime = System.nanoTime() / 1000000000;
+        // Detect skystone with camera
+        int position;
+        while (true) {
+            position = robot.detectSkystone(this);
+            if (System.nanoTime() / 1000000000 - startTime > 3) {
+                skystonePos = Skystone.CENTER;
+                break;
+            } else if (position == -1) {
                 skystonePos = Skystone.LEFT;
+                break;
             } else if (position == 0) {
                 skystonePos = Skystone.CENTER;
-            } else {
+                break;
+            } else if (position == 1) {
                 skystonePos = Skystone.RIGHT;
+                break;
             }
+            idle();
         }
 
         // wait for start
         waitForStart();
 
+        this.stepNumber = 1;
+        try {
+            while (opModeIsActive()) {
+                this.linearOpmodeSteps();
+                idle();
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } finally {
+            robot.stopEverything();
+        }
+/*
+        // put arm down
+        robot.bringArmDown(this);
+        robot.rotateGripper(1);
+
         // Drive to quarry
-        robot.driveForwardDistance(47.0 - robot.ROBOT_EXTENDED_LENGTH, speed, this);
+        robot.driveForwardDistance(17, speed, this);
         Thread.sleep(500);
         switch (skystonePos) {
             case LEFT:
-                distanceToBuildZone = 32 - robot.ROBOT_EXTENDED_LENGTH;
+                distanceToBuildZone = 48;
                 // strafe to block
-                robot.strafeTime(-speed, 2000);
+                robot.strafeTime(-speed, 1500);
+                // correct for the strafe
+                robot.turnRight(-0.25, 250);
                 break;
             case CENTER:
-                distanceToBuildZone = 28 - robot.ROBOT_EXTENDED_LENGTH;
+                distanceToBuildZone = 36;
+                robot.strafeTime(-speed, 250);
                 break;
             case RIGHT:
-                distanceToBuildZone = 24 - robot.ROBOT_EXTENDED_LENGTH;
+                distanceToBuildZone = 24;
                 // strafe to block
-                robot.strafeTime(speed, 2000);
+                robot.strafeTime(speed, 100);
                 break;
 
         }
-        /* Pick Block up with arm */
-        robot.pickUpBlock(this);
+
         Thread.sleep(500);
+        // grab block
+        robot.rotateGripper(0.5);
+        Thread.sleep(500);
+        robot.gripBlock();
+        Thread.sleep(500);
+        robot.rotateGripper(1);
+
         // back up
-        robot.driveForwardDistance(6, -speed, this);
+        robot.driveForwardDistance(8, -speed, this);
         // turn towards skybridge
-        robot.turnRight(speed, 650);
+        robot.turnRight(speed, 1075);
         // drive to skybridge
-        robot.driveForwardDistance(distanceToBuildZone + 12, speed, this);
+        robot.driveForwardDistance(distanceToFoundation + distanceToBuildZone, speed, this);
+
         Thread.sleep(500);
         // drop block
-        robot.releaseBlock(this);
-        // fold arm back
-        robot.foldArmBack(this);
+        robot.rotateGripper(0.5);
         Thread.sleep(500);
+        robot.releaseBlock(this);
+        Thread.sleep(500);
+        robot.rotateGripper(1.0);
+
+        Thread.sleep(500);
+        // drive to second Skystone
+        robot.driveForwardDistance(distanceToBuildZone + distanceToFoundation + 24, -speed, this);
+        // turn
+        robot.turnRight(-speed, 1075);
+
+        // go to block
+        Thread.sleep(500);
+        robot.rotateGripper(1);
+        robot.driveForwardDistance(10, speed, this);
+
+        // grab block
+        Thread.sleep(500);
+        robot.rotateGripper(0.5);
+        Thread.sleep(500);
+        robot.gripBlock();
+        Thread.sleep(500);
+        robot.rotateGripper(1);
+
+        // drive to foundation to drop the block off
+        Thread.sleep(500);
+        robot.driveForwardDistance(15, -speed, this);
+        robot.turnRight(speed, 1075);
+        robot.driveForwardDistance(distanceToBuildZone + distanceToFoundation + 24, speed, this);
+        robot.releaseBlock(this);
+
         // park
-        robot.driveForwardDistance(12, -speed, this);
+        Thread.sleep(500);
+        robot.driveForwardDistance(30, -speed, this);
+        if (parkingPosition == parkingPosition.CLOSE) {
+            robot.strafeTime(-speed, 2800);
+        }
 
 
-
+*/
     }
 
+    private void linearOpmodeSteps() throws InterruptedException {
+        switch (stepNumber) {
+            case 1:
+                // put arm down
+                robot.bringArmDown(this);
+                robot.rotateGripper(1);
+                this.stepNumber++;
+                break;
+            case 2:
+                // Drive to quarry
+                robot.driveForwardDistance(17, speed, this);
+                Thread.sleep(500);
+                switch (skystonePos) {
+                    case LEFT:
+                        distanceToBuildZone = 48;
+                        // strafe to block
+                        robot.strafeTime(-speed, 1500);
+                        // correct for the strafe
+                        robot.turnRight(-0.25, 250);
+                        break;
+                    case CENTER:
+                        distanceToBuildZone = 36;
+                        robot.strafeTime(-speed, 250);
+                        break;
+                    case RIGHT:
+                        distanceToBuildZone = 24;
+                        // strafe to block
+                        robot.strafeTime(speed, 1250);
+                        // correct for the strafe
+                        robot.turnRight(-0.25, 250);
+                        break;
 
+                }
+                this.stepNumber++;
+                break;
+            case 3:
+                Thread.sleep(500);
+                robot.grabBlockAuto();
+                this.stepNumber++;
+                break;
+            case 4:
+                // back up
+                robot.driveForwardDistance(8, -speed, this);
+                // turn towards skybridge
+                robot.turnRight(speed, 1075);
+                // drive to skybridge
+                robot.driveForwardDistance(distanceToFoundation + distanceToBuildZone, speed, this);
+                this.stepNumber++;
+                break;
+            case 5:
+                Thread.sleep(500);
+                // drop block
+                robot.rotateGripper(0.5);
+                Thread.sleep(500);
+                robot.releaseBlock(this);
+                Thread.sleep(500);
+                robot.rotateGripper(1.0);
+                this.stepNumber++;
+                break;
+            case 6:
+                Thread.sleep(500);
+                // drive to second Skystone
+                robot.driveForwardDistance(distanceToBuildZone + distanceToFoundation + 24, -speed, this);
+                // turn
+                robot.turnRight(-speed, 1075);
+                this.stepNumber++;
+                break;
+            case 7:
+                // go to block
+                Thread.sleep(500);
+                robot.rotateGripper(1);
+                robot.driveForwardDistance(10, speed, this);
+                this.stepNumber++;
+                break;
+            case 8:
+                // grab block
+                Thread.sleep(500);
+                robot.grabBlockAuto();
+                this.stepNumber++;
+                break;
+            case 9:
+                // drive to foundation to drop the block off
+                Thread.sleep(500);
+                robot.driveForwardDistance(15, -speed, this);
+                robot.turnRight(speed, 1075);
+                robot.driveForwardDistance(distanceToBuildZone + distanceToFoundation + 24, speed, this);
+                robot.releaseBlock(this);
+                this.stepNumber++;
+                break;
+            case 10:
+                // park
+                Thread.sleep(500);
+                robot.driveForwardDistance(30, -speed, this);
+                if (parkingPosition == parkingPosition.CLOSE) {
+                    robot.strafeTime(-speed, 2800);
+                }
+                this.stepNumber++;
+                break;
+            case 11: // everything is stopped
+                onRobotStopOrInterrupt();
+                break;
+        }
+    }
+
+    void onRobotStopOrInterrupt() {
+        robot.stopEverything();
+        telemetry.addData("Opmode", "Stopped or Interrupted");
+        telemetry.update();
+    }
 
 }

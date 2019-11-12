@@ -19,20 +19,20 @@ public class MM_BuildingZoneRed_1 extends LinearOpMode {
 
         // extend the waffle mover
         Thread.sleep(500);
-        robot.moveWaffleMover('f');
+        robot.moveWaffleMover();
 
         robot.driveForwardDistance(30.0, -speed, this);
 
         // retract the waffle mover
         Thread.sleep(500);
-        robot.moveWaffleMover('h');
+        robot.moveWaffleMover();
 
         // drive backwards
         robot.driveForwardDistance(50.0, 0.25, this);
 
         // extend the waffle mover
         Thread.sleep(500);
-        robot.moveWaffleMover('f');
+        robot.moveWaffleMover();
 
         // strafe out from behind the foundation
         robot.strafeTime(0.5, 5000);

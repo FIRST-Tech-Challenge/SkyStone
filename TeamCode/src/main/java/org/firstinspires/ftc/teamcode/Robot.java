@@ -37,6 +37,9 @@ public class Robot {
     IntegratingGyroscope gyro;
     NavxMicroNavigationSensor navxMicro;
 
+    // Vuforia
+    WebcamTest detector;
+
     // Constants
     private int TORQUENADO60TICKS_PER_REV = 1440; // ticks / rev
     private int ANGLE_OF_GRIPPER_WHEN_GRABBING = 30; // in degrees
@@ -44,21 +47,26 @@ public class Robot {
     private double WHEEL_DIAMETER = 4;
     private double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI; // in / rev
     private double TICKS_PER_INCH = TORQUENADO20_TICKS_PER_REV / WHEEL_CIRCUMFERENCE; // ticks / in
-    double ROBOT_EXTENDED_LENGTH = 36.0; // in
+    double ROBOT_EXTENDED_LENGTH = 30.0; // in
     double ROBOT_RETRACTED_LENGTH = 18.0; // in
 
-    // PID Controller
-    double p = 0.0;
-    double i = 0.0;
-    double d = 0.0;
-    PIDController PIDWrist1 = new PIDController(p, i, d);
-    PIDController PIDWrist2 = new PIDController(p, i, d);
+    // PID Wrist Controller
+    double pWrist = 0.0;
+    double iWrist = 0.0;
+    double dWrist = 0.0;
+    PIDController PIDWrist = new PIDController(pWrist, iWrist, dWrist);
+
+    // PID Drive Controller
+    double pDrive = 0.0;
+    double iDrive = 0.0;
+    double dDrive = 0.0;
+    PIDController PIDDrive = new PIDController(pDrive, iDrive, dDrive);
 
     // info
     private int wafflePosition = -1; // 1 = Up, -1 = Down Waffle mover starts down
     private double wafflePower = 0.5;
 
-    private double gripperRotatePosition = 0.4; // 0.4 = at a 90 degree angle, 0.6 = parallel to ground
+    private double gripperRotatePosition = 0.8; // 0.8 = at a 90 degree angle, 0.5 = parallel to ground
 
     private enum gripperPosition {OPEN, CLOSED}
     private gripperPosition gripperPos = gripperPosition.OPEN;
@@ -110,6 +118,10 @@ public class Robot {
         this.gripperRotateServo1.setDirection(Servo.Direction.FORWARD);
         this.gripperRotateServo2.setDirection(Servo.Direction.REVERSE);
         this.grabServo.setDirection(Servo.Direction.FORWARD);
+
+        // Vuforia init
+        detector = new WebcamTest();
+        detector.init(hwMap);
 
         // NavX Gyro Init
         //this.initNavXGyro(opmode);
@@ -199,19 +211,10 @@ public class Robot {
         this.stopDrive();
     }
 
-    void moveWaffleMover(char floatOrHold) throws InterruptedException {
-        if (floatOrHold != 'f' && floatOrHold != 'h') { // make sure floatOrHold is 'f' or 'h' or else the cookie monster will come for you :)
-            return;
-        } else if (floatOrHold == 'h') {
-            this.waffleMover.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        } else {
-            this.waffleMover.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        }
-
+    void moveWaffleMover() throws InterruptedException {
         this.waffleMover.setPower(this.wafflePower * this.wafflePosition);
         Thread.sleep(600);
         this.waffleMover.setPower(0);
-
         this.wafflePosition *= -1;
     }
 
@@ -226,37 +229,30 @@ public class Robot {
         this.setArmRotatePower(power);
 
         // PID parameters
-        PIDWrist1.setSetpoint(targetPosition);
-        PIDWrist1.setOutputRange(0, 0.5);
-        PIDWrist1.setInputRange(0, 500);
-        PIDWrist1.enable();
+        PIDWrist.setSetpoint(targetPosition);
+        PIDWrist.setOutputRange(0, 0.5);
+        PIDWrist.setInputRange(0, 500);
+        PIDWrist.enable();
 
-        PIDWrist2.setSetpoint(targetPosition);
-        PIDWrist2.setOutputRange(0, 0.5);
-        PIDWrist2.setInputRange(0, 500);
-        PIDWrist2.enable();
-
-        long timestart = System.nanoTime();
+        long timestart = System.nanoTime() / 1000000000;
         // wait for the armRotate motors to reach the position or else things go bad bad
         while (Math.abs(this.armRotate.getCurrentPosition()) <  targetPosition) {
 
             // if it takes more than 2 seconds, something is wrong so we exit the loop
-            if (System.nanoTime() - timestart > 2000000000) {
+            if (System.nanoTime() / 1000000000 - timestart > 10) {
                 opmode.telemetry.addData("Error", "Gripper movement took too long");
                 opmode.telemetry.update();
                 break;
             }
 
-            double correction1 = PIDWrist1.performPID(Math.abs(this.armRotate.getCurrentPosition()));
-            double correction2 = PIDWrist2.performPID(Math.abs(this.armRotate.getCurrentPosition()));
+            double correction1 = PIDWrist.performPID(Math.abs(this.armRotate.getCurrentPosition()));
 
             this.armRotate.setPower(this.armRotate.getPower() + correction1);
-            opmode.telemetry.addData("Gripper", "#1: " + correction1 + " #2: " + correction2);
+            opmode.telemetry.addData("Gripper Target", targetPosition);
             opmode.telemetry.update();
         }
 
-        PIDWrist1.reset();
-        PIDWrist2.reset();
+        PIDWrist.reset();
 
         // stop the armRotate motors
         this.stopArmRotate();
@@ -267,23 +263,23 @@ public class Robot {
         //this.gripperRotateServo2.setPosition(position);
     }
 
-    void bringArmDown(OpMode opmode) throws InterruptedException {
+    void bringArmDown(OpMode opmode) {
         if (armPos == armPosition.REST) { // we only bring the arm down if the arm is resting
             // we rotate the arm 180 + ANGLE_OF_GRIPPER_WHEN_GRABBING degrees
-            this.moveArmRotate(TORQUENADO60TICKS_PER_REV * (225) / 360, 1, opmode);
+            this.moveArmRotate(this.TORQUENADO60TICKS_PER_REV * 4 * (145) / 360, 0.7, opmode);
             this.stopArmRotate();
             this.armPos = armPosition.ACTIVE;
         }
     }
 
-    void foldArmBack(OpMode opmode) throws InterruptedException {
+    void foldArmBack(OpMode opmode) {
         if (this.armPos == armPosition.ACTIVE) { // we only do something if the arm is active
             if (this.gripperRotatePosition == -1) {
                 // we rotate the gripper so it is perpendicular to the ground
-                this.rotateGripper(this.ANGLE_OF_GRIPPER_WHEN_GRABBING - 90);
+                this.rotateGripper(0.5);
             }
             // we rotate the arm 225 degrees
-            this.moveArmRotate(this.TORQUENADO60TICKS_PER_REV * (225) / 360, -1, opmode);
+            this.moveArmRotate(this.TORQUENADO60TICKS_PER_REV * 4 * (145) / 360, -0.7, opmode);
             this.stopArmRotate();
             this.armPos = armPosition.REST;
         }
@@ -303,8 +299,11 @@ public class Robot {
         this.bringArmDown(opmode); // bring arm down
         Thread.sleep(500);
         // we rotate the gripper so it is parallel to the ground
-        this.rotateGripper(90 - this.ANGLE_OF_GRIPPER_WHEN_GRABBING);
+        this.rotateGripper(0.5);
         this.gripBlock(); // grab the block
+        Thread.sleep(500);
+        // we rotate the gripper back
+        this.rotateGripper(0.9);
     }
 
     void liftUp() { this.liftMotor.setPower(0.5); }
@@ -314,7 +313,6 @@ public class Robot {
     void stopLift() { this.liftMotor.setPower(0); }
 
     int detectSkystone(LinearOpMode opmode) {
-        WebcamTest detector = new WebcamTest();
         return detector.detectSkystonePosition(opmode);
     }
 
@@ -345,7 +343,7 @@ public class Robot {
 
     void toggleArmRotate() {
         this.rotateGripper(this.gripperRotatePosition);
-        this.gripperRotatePosition = 1 - this.gripperRotatePosition;
+        this.gripperRotatePosition = 1.3 - this.gripperRotatePosition;
     }
 
     void initNavXGyro(OpMode opmode) throws InterruptedException {
@@ -377,5 +375,20 @@ public class Robot {
     double getAngle() {
         Orientation angles = navxMicro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         return angles.firstAngle;
+    }
+
+    void grabBlockAuto() throws InterruptedException {
+        // grab block
+        this.rotateGripper(0.5);
+        Thread.sleep(500);
+        this.gripBlock();
+        Thread.sleep(500);
+        this.rotateGripper(1);
+    }
+
+    void stopEverything() {
+        this.stopDrive();
+        this.stopArmRotate();
+        this.stopLift();
     }
 }

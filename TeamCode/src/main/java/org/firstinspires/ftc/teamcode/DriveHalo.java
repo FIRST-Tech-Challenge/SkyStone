@@ -18,6 +18,7 @@ public class DriveHalo extends OpMode {
     boolean slowMode = false; // activate slowMode if both joysticks are pushed down
     boolean strafeMode = false;
     Boolean[] buttons = new Boolean[7];
+    double wristPosition = 0.5;
 
     @Override
     public void init() {
@@ -30,7 +31,10 @@ public class DriveHalo extends OpMode {
         for (int i = 0; i < buttons.length; i++) {
             buttons[i] = false;
         }
+        robot.rotateGripper(wristPosition);
+
         telemetry.addData("Initialized", "Ready to start");
+        telemetry.update();
     }
 
     @Override
@@ -58,7 +62,7 @@ public class DriveHalo extends OpMode {
     void waffleController() {
         if (gamepad1.y && !buttons[0]) {
             try {
-                robot.moveWaffleMover('h');
+                robot.moveWaffleMover();
             } catch (InterruptedException e) {
                 telemetry.addData("Error", "Thread.sleep in moveWaffleMover failed");
                 telemetry.update();
@@ -68,7 +72,7 @@ public class DriveHalo extends OpMode {
     }
 
     void armController() {
-        if (gamepad2.dpad_down && !buttons[1]) {
+        /*if (gamepad2.dpad_down && !buttons[1]) {
             try {
                 robot.bringArmDown(this);
             } catch (InterruptedException e) {
@@ -80,8 +84,8 @@ public class DriveHalo extends OpMode {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        } //if (robot.armPos == Robot.armPosition.ACTIVE) {
-            robot.setArmRotatePower(0.5 * -gamepad2.left_stick_y);
+        }*/ //if (robot.armPos == Robot.armPosition.ACTIVE) {
+            robot.setArmRotatePower(0.3 * gamepad2.left_stick_y);
         //}
 
         buttons[1] = gamepad2.dpad_down;
@@ -89,10 +93,13 @@ public class DriveHalo extends OpMode {
     }
 
     void wristController() {
-        if (gamepad2.b && !buttons[6]) {
+        /*if (gamepad2.b && !buttons[6]) {
             robot.toggleArmRotate();
         }
-        buttons[6] = gamepad2.b;
+        buttons[6] = gamepad2.b;*/
+        this.wristPosition -= 0.001 * gamepad2.right_stick_y;
+        robot.rotateGripper(this.wristPosition);
+
     }
 
     void gripperController() {
@@ -108,8 +115,8 @@ public class DriveHalo extends OpMode {
     }
 
     void driveController() {
-        this.slowMode = gamepad1.left_stick_button && gamepad1.right_stick_button;
-        this.strafeMode = !gamepad1.left_stick_button && gamepad1.right_stick_button;
+        this.slowMode = gamepad1.right_bumper;
+        this.strafeMode = gamepad1.left_bumper;
 
         if (this.slowMode) {
             speedControl = 0.25;

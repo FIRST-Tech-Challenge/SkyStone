@@ -6,10 +6,10 @@ import org.firstinspires.ftc.teamcode.auto.ChassisStandard;
 /**
  *
  */
-public abstract class ClawTest extends ChassisStandard {
+public abstract class MoveTest extends ChassisStandard {
 
 
-    public ClawTest(ChassisConfig config) {
+    public MoveTest(ChassisConfig config) {
         super(config);
     }
 
@@ -21,16 +21,10 @@ public abstract class ClawTest extends ChassisStandard {
 
         if (madeTheRun == false) {
 
-            raiseCrab();
-            sleep(2000);
-
-            dropCrab();
-            sleep(2000);
+            encoderDrive(24);
 
             madeTheRun = true;
         }
-
-        printStatus();
     }
 }
 

@@ -27,6 +27,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.CurvePoint;
+import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.PathPoints;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
 import org.firstinspires.ftc.teamcode.Skystone.Odometry.Position2D;
 
@@ -99,6 +100,12 @@ public class Robot {
     private double yMovement;
     private double turnMovement;
 
+    /**
+     * robot constructor, does the hardwareMaps
+     * @param hardwareMap
+     * @param telemetry
+     * @param linearOpMode
+     */
     public Robot(HardwareMap hardwareMap, Telemetry telemetry, LinearOpMode linearOpMode) {
 
         this.telemetry = telemetry;
@@ -149,8 +156,8 @@ public class Robot {
         clamp = hardwareMap.servo.get("clamp");
         clampPivot = hardwareMap.servo.get("clampPivot");
         intakePusher = hardwareMap.servo.get("intakePusher");
-
     }
+
     private DcMotor getDcMotor(String name){
         try {
             return hardwareMap.dcMotor.get(name);
@@ -159,6 +166,7 @@ public class Robot {
             return null;
         }
     }
+
     private Servo getServo(String name){
         try {
             return hardwareMap.servo.get(name);
@@ -167,6 +175,10 @@ public class Robot {
             return null;
         }
     }
+
+    /**
+     * call this when you want to use the imu in a program
+     */
     public void intializeIMU() {
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
@@ -181,6 +193,9 @@ public class Robot {
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.YXZ, AngleUnit.DEGREES);
     }
 
+    /**
+     * resets all the encoders back to 0
+     */
     public void resetEncoders() {
         fLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         fRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -188,6 +203,10 @@ public class Robot {
         bRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
+    /**
+     * make all the motors run using encoder
+     * do NOT use this if you want to set your own powers (e.x deceleration)
+     */
     public void changeRunModeToUsingEncoder() {
         fLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         fRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -195,6 +214,10 @@ public class Robot {
         bRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
+    /**
+     * sets drive motors mode to whatever
+     * @param runMode what to set all the motors to
+     */
     public void setMotorMode(DcMotor.RunMode runMode) {
         fLeft.setMode(runMode);
         fRight.setMode(runMode);
@@ -202,46 +225,107 @@ public class Robot {
         bRight.setMode(runMode);
     }
 
-    //normal use method default 2 second kill time
-    public void finalTurn(double targetHeading, double turnSpeed) {
-        finalTurn(targetHeading, turnSpeed, 2500);
-    }
+//    //normal use method default 2 second kill time
+//    public void finalTurn(double targetHeading, double turnSpeed) {
+//        finalTurn(targetHeading, turnSpeed, 2500);
+//    }
 
-    public void finalTurn(double targetHeading, double turnSpeed, long timeInMilli) {
-        targetHeading = Range.clip(targetHeading,-179,179);
-        long startTime = SystemClock.elapsedRealtime();
+    /**
+     * crappy finalTurn, random deceleration
+     * turns to the absolute heading using odometry
+     * @param targetHeadingRadians
+     */
+    public void finalTurn(double targetHeadingRadians){
+
+        targetHeadingRadians = angleWrap(targetHeadingRadians);
+
         this.setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        double startAngle = Math.toDegrees(anglePos);
-        int sign;
-        if (targetHeading > startAngle) {
-            sign = 1;
-        } else {
-            sign = -1;
-        }
-        if (startAngle == targetHeading) {
-            return;
-        }
-        while (linearOpMode.opModeIsActive()) {
-            double currentAngle = Math.toDegrees(anglePos);
-            double scaleFactor = Math.abs((currentAngle - startAngle) / (startAngle - targetHeading));
-            double absolutePower = 1 - scaleFactor;
-            if (absolutePower < 0.15) {
-                brakeRobot();
-                return;
+
+        double power = 1;
+
+        double direction = 0;
+
+        while (linearOpMode.opModeIsActive()){
+
+            // find which direction to turn
+            if (targetHeadingRadians > anglePos){
+                direction = 1;
+            } else if (targetHeadingRadians < anglePos){
+                direction = -1;
             }
-            double power = absolutePower * sign;
-            if (scaleFactor > 1 || ((SystemClock.elapsedRealtime() - startTime) > timeInMilli)) {
+
+            // lol deceleration
+            if (Math.abs(targetHeadingRadians - anglePos) < Math.toRadians(0.15)){
                 break;
+            } else if (Math.abs(targetHeadingRadians - anglePos) < Math.toRadians(5)){
+                power = 0.15;
+            } else if (Math.abs(targetHeadingRadians - anglePos) < Math.toRadians(30)){
+                power = 0.2;
+            } else if (Math.abs(targetHeadingRadians - anglePos) < Math.toRadians(45)){
+                power = 0.4;
             }
-            fLeft.setPower(power * turnSpeed);
-            fRight.setPower(-power * turnSpeed);
-            bLeft.setPower(power * turnSpeed);
-            bRight.setPower(-power * turnSpeed);
+
+            // sets the powers
+            fLeft.setPower(power * direction);
+            bLeft.setPower(power * direction);
+            fRight.setPower(-power * direction);
+            bRight.setPower(-power * direction);
         }
+
+        // upon "break"
         brakeRobot();
-        linearOpMode.sleep(100);
+
+//        targetHeading = Range.clip(targetHeading, -179, 179);
+//
+//        long startTime = SystemClock.elapsedRealtime();
+//
+//        this.setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//
+//        position = imu.getPosition();
+//        angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
+//        double startHeading = angles.firstAngle;
+//        double maxAngle = startHeading - targetHeading;
+//        maxAngle = Math.abs(maxAngle);
+//
+//        int sign = 0;
+//        if(targetHeading > startHeading){
+//            sign = 1;
+//        }else{
+//            sign = -1;
+//        }
+//        if(maxAngle == 0){
+//            return;
+//        }
+//        while(linearOpMode.opModeIsActive()){
+//            angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
+//            double currentDeltatAngle = Math.abs(angles.firstAngle - startHeading);
+//            double scaleFactor = currentDeltatAngle / maxAngle;
+//            double absolutePower = 1-scaleFactor;
+//
+//            if(absolutePower< 0.01){
+//                absolutePower = 0.01;
+//            }
+//            double power = absolutePower * sign;
+//            if(scaleFactor > 1 || ((SystemClock.elapsedRealtime() - startTime) > timeInMilli)){
+//                break;
+//            }
+//            fLeft.setPower(-power * turnSpeed);
+//            fRight.setPower(power * turnSpeed);
+//            bLeft.setPower(-power * turnSpeed);
+//            bRight.setPower(power * turnSpeed);
+//        }
+//        brakeRobot();
+//        linearOpMode.sleep(100);
+//        this.setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
+    /**
+     * sets all the motor speeds independently
+     * @param fLpower
+     * @param fRpower
+     * @param bLpower
+     * @param bRpower
+     */
     public void allWheelDrive(double fLpower, double fRpower, double bLpower, double bRpower) {
         fLeft.setPower(fLpower);
         fRight.setPower(fRpower);
@@ -249,6 +333,10 @@ public class Robot {
         bRight.setPower(bRpower);
     }
 
+    /**
+     * allows to toggle intake
+     * @param toggle if true, intake, if false, stop intake
+     */
     public void intake(boolean toggle) {
         if (toggle) {
             intakeLeft.setPower(1);
@@ -259,12 +347,21 @@ public class Robot {
         }
     }
 
+    /**
+     * idk
+     * @param motor the motor you want to reset
+     */
     public void resetMotor(DcMotor motor) {
         motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
+    /**
+     * move straight forwards or backwards
+     * @param speed speed to move, >0, <1
+     * @param targetDistance, target distance, -infinity to infinity
+     */
     public void finalMove(double speed, double targetDistance) {
         //move robot function
         //to move backwards make targetDistance negative
@@ -279,13 +376,18 @@ public class Robot {
         linearOpMode.sleep(100);
     }
 
-    public void moveRobot(double speed, int targetPostition) {
+    /**
+     * bare bones move function using encoders
+     * @param speed speed to move
+     * @param targetPosition target distance
+     */
+    public void moveRobot(double speed, int targetPosition) {
         //called by final move - bare bones move function
         this.setMotorMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         this.setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
         this.setMotorMode(DcMotor.RunMode.RUN_TO_POSITION);
         double newSpeed = speed;
-        if (targetPostition < 0) {
+        if (targetPosition < 0) {
             newSpeed = newSpeed * -1;
             fLeft.setPower(newSpeed);
             fRight.setPower(newSpeed);
@@ -297,10 +399,10 @@ public class Robot {
             bLeft.setPower(newSpeed);
             bRight.setPower(newSpeed);
         }
-        fLeft.setTargetPosition(targetPostition);
-        fRight.setTargetPosition(targetPostition);
-        bLeft.setTargetPosition(targetPostition);
-        bRight.setTargetPosition(targetPostition);
+        fLeft.setTargetPosition(targetPosition);
+        fRight.setTargetPosition(targetPosition);
+        bLeft.setTargetPosition(targetPosition);
+        bRight.setTargetPosition(targetPosition);
         while (fLeft.isBusy() && fRight.isBusy() && bLeft.isBusy() && bRight.isBusy()
                 && linearOpMode.opModeIsActive()) {
         }
@@ -310,6 +412,9 @@ public class Robot {
         this.setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
+    /**
+     * idk
+     */
     public void driveMotorsBreakZeroBehavior() {
         //sets drive motors to brake mode
         fLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -318,6 +423,9 @@ public class Robot {
         fLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
+    /**
+     * brakes all the motors
+     */
     public void brakeRobot() {
         //brakes robot
         driveMotorsBreakZeroBehavior();
@@ -328,6 +436,9 @@ public class Robot {
         linearOpMode.sleep(250);
     }
 
+    /**
+     * idk
+     */
     public void setBrakeModeDriveMotors() {
         fLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         fRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -335,6 +446,10 @@ public class Robot {
         bRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
+    /**
+     * moves along spline, hella bad bc scaling
+     * @param data
+     */
     public void splineMove(double[][] data) {
         resetEncoders();
         setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -405,7 +520,18 @@ public class Robot {
     }
 
 
-    public boolean followCurve(Vector<CurvePoint> allPoints, double followAngle, double angleLockRadians, double angleLockDistance) {
+
+    public boolean followCurve(double[][] points, double followAngle, double followDistance, double angleLockRadians, double angleLockDistance) {
+
+        PathPoints path = new PathPoints(points,followDistance);
+
+        Vector<CurvePoint> allPoints = path.targetPoints;
+
+        // for angle locking
+        Point secondToLastPoint = new Point(points[points.length-2][0],points[points.length-2][1]);
+        Point lastPoint = new Point(points[points.length-1][0],points[points.length-1][1]);
+        double lastAngle = Math.atan2(lastPoint.y - secondToLastPoint.y, lastPoint.x - secondToLastPoint.x);
+
         Vector<CurvePoint> pathExtended = (Vector<CurvePoint>) allPoints.clone();
 
         pointWithIndex distanceAlongPath = distanceAlongPath(allPoints, robotPos);
@@ -421,38 +547,141 @@ public class Robot {
             followMe.setPoint(allPoints.get(allPoints.size() - 1).toPoint());
         }
 
-        double decelerationScaleFactor = 1;//Range.clip(distanceToEnd/12,-1,1);
-
-
-        if (distanceToEnd < angleLockDistance){
-            followAngle = (angleLockRadians + anglePos);
-        }
-
-        goToPoint(followMe.x, followMe.y, followMe.moveSpeed * decelerationScaleFactor, followMe.turnSpeed * decelerationScaleFactor, followAngle);
-
+        // check if finished pp
         if ((distanceToEnd < 0.5)) {
             return false;
         }
 
+        // get the movements
+        goToPoint(followMe.x, followMe.y, followMe.moveSpeed, followMe.turnSpeed, followAngle);
+
+        // angle lock
+        if (distanceToEnd < angleLockDistance){
+            if (Math.abs(anglePos-angleLockRadians) < Math.toRadians(2)){
+                followAngle = 0;
+            } else {
+                turnMovement = (angleLockRadians - angleWrap(anglePos + 2*Math.PI))/1.25;
+            }
+        }
+
+        // get the motor powers
         applyMove();
         return true;
     }
 
-    public void moveFollowCurve(Vector<CurvePoint> points, double optimalAngle, double angleLockRadians, double angleLockDistance) {
+    public void moveFollowCurve(double [][] points, double followAngle, double followDistance, double angleLockRadians, double angleLockDistance) {
         //pathDistance = Math.hypot(points.get(points.size() - 1).x, points.get(points.size() - 1).y);
         while (linearOpMode.opModeIsActive()) {
 
             // if followCurve returns false then it is ready to stop
             // else, it moves
 
-            if (!followCurve(points, optimalAngle, angleLockRadians, angleLockDistance)) {
+            if (!followCurve(points, followAngle, followDistance,angleLockRadians, angleLockDistance)) {
                 brakeRobot();
                 return;
             }
         }
     }
 
-    public boolean followCurve(Vector<CurvePoint> allPoints, double followAngle) {
+    public void moveFollowCurveWithExtend(double [][] points, double followAngle, double followDistance, double angleLockRadians, double angleLockDistance, Point whereYouExtend) {
+
+        long outtakeExecutionTime = 0;
+        long currentTime;
+        boolean hasExtended = false;
+        boolean isExtend = false;
+        boolean isMoving = true;
+        while (linearOpMode.opModeIsActive()) {
+            currentTime = SystemClock.elapsedRealtime();
+
+            // if followCurve returns false then it is ready to stop
+            // else, it moves
+            if (isMoving && !followCurve(points, followAngle, followDistance,angleLockRadians, angleLockDistance)) {
+                brakeRobot();
+                isMoving = false;
+            }
+
+            if (Math.hypot(whereYouExtend.x - robotPos.x, whereYouExtend.y - robotPos.y) < 40 && !hasExtended){
+                hasExtended = true;
+                isExtend = true;
+                outtakeExecutionTime = SystemClock.elapsedRealtime();
+                intakePusher.setPosition(PUSHER_PUSHED); // Push block all the way to clamp
+            }
+
+            if (currentTime - outtakeExecutionTime >= 500 && isExtend) {
+                intakePusher.setPosition(PUSHER_RETRACTED);
+            }
+            if (currentTime - outtakeExecutionTime >= 850 && isExtend) {
+                clamp.setPosition(CLAW_SERVO_CLAMPED);
+            }
+            if(currentTime-outtakeExecutionTime >= 1000 && isExtend){
+                outtakeExtender.setPosition(OUTTAKE_SLIDE_EXTENDED);
+            }
+
+            if(currentTime-outtakeExecutionTime >= 2000 && isExtend){
+                clampPivot.setPosition(OUTTAKE_PIVOT_90);
+            }
+
+            if(currentTime-outtakeExecutionTime >=2250){
+                isExtend = false;
+            }
+
+            if(!isMoving && !isExtend){
+                return;
+            }
+        }
+    }
+
+    public void moveFollowCurveWithRetract(double [][] points, double followAngle, double followDistance, double angleLockRadians, double angleLockDistance, Point whereYouRetract) {
+
+        long outtakeExecutionTime = 0;
+        long currentTime;
+        boolean isRetract = false;
+        boolean isMoving = true;
+        boolean hasRetracted = false;
+        while (linearOpMode.opModeIsActive()) {
+            currentTime = SystemClock.elapsedRealtime();
+
+            // if followCurve returns false then it is ready to stop
+            // else, it moves
+            if (isMoving && !followCurve(points, followAngle, followDistance,angleLockRadians, angleLockDistance)) {
+                brakeRobot();
+                isMoving = false;
+            }
+
+            if (Math.hypot(whereYouRetract.x - robotPos.x, whereYouRetract.y - robotPos.y) < 40 && !hasRetracted){
+                outtakeExecutionTime = SystemClock.elapsedRealtime();
+                intakePusher.setPosition(PUSHER_PUSHED); // Push block all the way to clamp
+                hasRetracted = true;
+                telemetry.addLine("in range");
+                isRetract = true;
+            }
+
+            if(currentTime-outtakeExecutionTime >= 450 && isRetract){
+                clampPivot.setPosition(OUTTAKE_PIVOT_RETRACTED);
+                telemetry.addLine("pivot retracted");
+            }
+            if(currentTime-outtakeExecutionTime >= 1150 && isRetract){
+                outtakeExtender.setPosition(OUTTAKE_SLIDE_RETRACTED);
+                clamp.setPosition(CLAW_SERVO_RELEASED);
+                intakePusher.setPosition(PUSHER_RETRACTED);
+                telemetry.addLine("slide retracted");
+                isRetract = false;
+            }
+
+            if(!isMoving && !isRetract){
+                telemetry.addLine("done with movefollowcurve");
+                return;
+            }
+        }
+    }
+
+
+    public boolean followCurve(double[][] points, double followAngle, double followDistance) {
+
+        PathPoints path = new PathPoints(points,followDistance);
+
+        Vector<CurvePoint> allPoints = path.targetPoints;
+
         Vector<CurvePoint> pathExtended = (Vector<CurvePoint>) allPoints.clone();
 
         pointWithIndex distanceAlongPath = distanceAlongPath(allPoints, robotPos);
@@ -479,14 +708,14 @@ public class Robot {
         return true;
     }
 
-    public void moveFollowCurve(Vector<CurvePoint> points, double optimalAngle) {
+    public void moveFollowCurve(double [][] points, double followAngle, double followDistance) {
         //pathDistance = Math.hypot(points.get(points.size() - 1).x, points.get(points.size() - 1).y);
         while (linearOpMode.opModeIsActive()) {
 
             // if followCurve returns false then it is ready to stop
             // else, it moves
 
-            if (!followCurve(points, optimalAngle)) {
+            if (!followCurve(points, followAngle, followDistance)) {
                 brakeRobot();
                 return;
             }
@@ -638,7 +867,6 @@ public class Robot {
         bLeft.setPower(bLeftPower);
         bRight.setPower(bRightPower);
     }
-
 
     public void moveToPoint(double x, double y, double moveSpeed, double turnSpeed, double optimalAngle) {
 

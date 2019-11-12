@@ -41,6 +41,10 @@ public abstract class ChassisStandard extends OpMode {
     //Crab
     protected Servo crab;
 
+    //fingers
+    protected Servo fingerFront;
+    protected Servo fingerBack;
+
     // Team Marker Servo
     private Servo flagHolder;
     private Servo bull;
@@ -69,6 +73,8 @@ public abstract class ChassisStandard extends OpMode {
     protected boolean useArm = false;
     protected boolean useEve = false;
     protected boolean useCrab = true;
+    protected boolean useFingers = true;
+
 
 
     protected ChassisStandard(ChassisConfig config) {
@@ -97,6 +103,7 @@ public abstract class ChassisStandard extends OpMode {
         initTimeouts();
         initGyroscope();
         initCrab();
+        initFingers();
     }
 
     /**
@@ -187,6 +194,20 @@ public abstract class ChassisStandard extends OpMode {
         }
     }
 
+    protected void initFingers(){
+        if(useFingers){ 
+            try {
+                fingerFront = hardwareMap.get(Servo.class, "servoFrontFinger");
+                fingerFront.
+                fingerBack = hardwareMap.get(Servo.class, "servoBackFinger");
+
+            } catch (Exception e) {
+                telemetry.addData("finger", "exception on init: " + e.toString());
+                useFingers = false;
+            }
+        }
+    }
+
 
     protected void initTimeouts() {
         // This code prevents the OpMode from freaking out if you go to sleep for more than a second.
@@ -226,6 +247,36 @@ public abstract class ChassisStandard extends OpMode {
         }
     }
 
+
+    public void dropFrontFinger() {
+        if (useFingers) {
+            angleHand = 0.0;
+            fingerFront.setPosition(angleHand);
+
+        }
+    }
+
+    public void raiseFrontFinger() {
+        if (useFingers) {
+            angleHand = 1.0;
+            fingerFront.setPosition(angleHand);
+        }
+    }
+    
+    public void dropBackFinger() {
+        if (useFingers) {
+            angleHand = 0.0;
+            fingerBack.setPosition(angleHand);
+
+        }
+    }
+
+    public void raiseBackFinger() {
+        if (useFingers) {
+            angleHand = 1.0;
+            fingerBack.setPosition(angleHand);
+        }
+    }
 
 
     public void dropCrab() {

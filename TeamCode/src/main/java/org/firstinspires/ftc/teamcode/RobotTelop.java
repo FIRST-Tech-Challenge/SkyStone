@@ -4,12 +4,28 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 
-@TeleOp(name="Steve Robot Test", group="Steve")
+@TeleOp(name="Basic Example", group="Robot")
 public class RobotTelop extends LinearOpMode {
 
     /* Declare OpMode members. */
     RobotHardware robot      = new RobotHardware();   // Use a Pushbot's hardware
-    int counter       = 0;                     // Servo mid position
+
+    private void moveRobot(float x_direction, float y_direction) {
+        // Do something
+    }
+
+    private void moveLeverArm(float distance) {
+        // Do something
+    }
+
+    private void moveClampRotator(float distance) {
+        // Do something
+    }
+
+    private void setClamp(boolean open, boolean close) {
+        // Do something
+    }
+
 
     @Override
     public void runOpMode() {
@@ -22,20 +38,20 @@ public class RobotTelop extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            robot.clamp.setPosition(.5);
-            sleep(1000);
+            if (gamepad1.left_stick_x != 0 || gamepad1.left_stick_y != 0 ) {
+                moveRobot(gamepad1.left_stick_x, gamepad1.left_stick_y);
+            }
 
-            robot.clamp.setPosition(-0.5);
-            sleep(1000);
+            if (gamepad2.left_stick_y != 0 ) {
+                moveLeverArm(gamepad2.left_stick_y);
+            }
 
-            telemetry.addData("We be counting",  "Counter = %7d", counter);
-            telemetry.update();
+            if (gamepad2.right_stick_y != 0 ) {
+                moveClampRotator(gamepad2.right_stick_y);
+            }
 
-
-            counter += 1;
-
-            if (counter == 5) {
-                break;
+            if (gamepad2.left_bumper || gamepad1.right_bumper ) {
+                setClamp(gamepad2.left_bumper, gamepad2.right_bumper);
             }
 
         }

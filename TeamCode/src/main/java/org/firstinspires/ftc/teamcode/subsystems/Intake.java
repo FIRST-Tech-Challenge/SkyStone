@@ -9,8 +9,10 @@ public class Intake extends Subsystem {
     Servo main;
     double wristHighPosition;
     double wristLowPosition;
-    double mainHighPosition;
-    double mainLowPosition;
+    double mainHighPosition = .75;
+    double mainLowPosition = .25;
+
+
 
 
     public Intake(HardwareMap hardwareMap) {
@@ -57,7 +59,11 @@ public class Intake extends Subsystem {
         main.setPosition(mainLowPosition);
     }
 
-    public void run() {
-
+    public void run(boolean setHigh) {
+        if(setHigh){
+            setMainToHighPosition();
+        }else{
+            setMainToLowPosition();
+        }
     }
 }

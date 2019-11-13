@@ -16,9 +16,9 @@ public class Robot {
     public Robot(HardwareMap hardwareMap) {
         //constructors
         arm = new Arm(hardwareMap);
-        //hook = new Hook(hardwareMap);
+        hook = new Hook(hardwareMap);
         chassis = new Chassis(hardwareMap);
-        //intake = new Intake(hardwareMap);
+        intake = new Intake(hardwareMap);
     }
 
     public void run(Controller controller) {
@@ -29,24 +29,7 @@ public class Robot {
         final double power = Math.hypot(leftStickX, leftStickY);
         final double targetAngle = Math.atan2(leftStickY, leftStickX);
         final double turn = rightStickX;
-        if (controller.getA()) {
-            level = 0;
-        }
-        if (controller.getB()) {
-            level = 1;
-        }
-        if (controller.getX()) {
-            level = 2;
-        }
-        if (controller.getY()) {
-            level = 3;
-        }
-        if (controller.getLeftBumper()) {
-            level = 4;
-        }
-        if (controller.getRightBumper()) {
-            level = 5;
-        }
+
         //Arm get
         //Put in all run methods
         arm.run(level);
@@ -55,22 +38,20 @@ public class Robot {
         //intake.run();
     }
 
-    public void test(Controller controller, double powerFactor) {
-        final double leftStickX = controller.limitStick(controller.getLeftStickX());
-        final double leftStickY = controller.limitStick(controller.getLeftStickY());
-        final double rightStickX = controller.limitStick(controller.getRightStickX());
-        final double power = Math.hypot(leftStickX, leftStickY) * powerFactor;
-        final double targetAngle = Math.atan2(leftStickY, leftStickX);
-        final double turn = rightStickX;
-        //Put in all run methods
-        //arm.run();
-        //hook.run();
-        //
-        //intake.run();
+    public void setArm(Arm arm) {
+        this.arm = arm;
     }
 
-    public void checkCommands() {
+    public void setHook(Hook hook) {
+        this.hook = hook;
+    }
 
+    public void setChassis(Chassis chassis) {
+        this.chassis = chassis;
+    }
+
+    public void setIntake(Intake intake) {
+        this.intake = intake;
     }
 
     public void setLevel(Controller controller) {

@@ -5,12 +5,12 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Chassis extends Subsystem {
     // Vars
-    DcMotor frontLeft;
-    DcMotor frontRight;
-    DcMotor backLeft;
-    DcMotor backRight;
-    Double wheelRadius;
-    Double robotRadius;
+    public DcMotor frontLeft;
+    public DcMotor frontRight;
+    public DcMotor backLeft;
+    public DcMotor backRight;
+    public Double wheelRadius;
+    public Double robotRadius;
 
     // Constructors
     public Chassis(HardwareMap hardwareMap) {
@@ -18,13 +18,12 @@ public class Chassis extends Subsystem {
         frontRight = hardwareMap.dcMotor.get("front_right_drive");
         backLeft = hardwareMap.dcMotor.get("back_left_drive");
         backRight = hardwareMap.dcMotor.get("back_right_drive");
-        initMotors(new DcMotor[] { frontLeft, frontRight, backLeft, backRight });
+        initMotors(new DcMotor[]{frontLeft, frontRight, backLeft, backRight});
         initChassis();
     }
 
     public void initChassis() {
         reset();
-        reverseMotors(new DcMotor[]{frontRight, backRight});
         setZeroBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }

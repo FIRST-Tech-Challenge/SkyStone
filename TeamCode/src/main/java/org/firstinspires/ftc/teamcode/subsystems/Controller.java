@@ -82,6 +82,12 @@ public class Controller extends Gamepad {
         return aMod ? controller.right_bumper : !controller.right_bumper;
     }
 
+    public boolean getLeftBumperPress() {
+        boolean isPress = getLeftBumper() ^ leftBumperLast;
+        leftBumperLast = getLeftBumper();
+        return isPress;
+    }
+
     //method is used to convert linear map from contorller input to power into a cubic map
     public double limitStick(double stickInput) {
         return stickInput * stickInput * stickInput;

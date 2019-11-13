@@ -24,6 +24,8 @@ import android.util.Log;
 import com.acmerobotics.roadrunner.path.heading.ConstantInterpolator;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
+import com.google.common.base.Stopwatch;
+import com.google.common.base.Ticker;
 import com.hfrobots.tnt.corelib.Constants;
 import com.hfrobots.tnt.corelib.control.DebouncedButton;
 import com.hfrobots.tnt.corelib.control.DebouncedGamepadButtons;
@@ -45,6 +47,8 @@ import static com.hfrobots.tnt.corelib.Constants.LOG_TAG;
 @Autonomous(name="00 Skystone Auto")
 @SuppressWarnings("unused")
 public class SkystoneAuto extends OpMode {
+    private Ticker ticker;
+
     private RoadRunnerMecanumDriveREV driveBase;
 
     private StateMachine stateMachine;
@@ -52,9 +56,9 @@ public class SkystoneAuto extends OpMode {
     // The routes our robot knows how to do
     private enum Routes {
         PARK_LEFT_NEAR_POS("Park from left to near"),
-        PARK_RIGHT_NEAR_POS("Park from right to near"),
-        PARK_LEFT_FAR_POS("Park from left to far"),
-        PARK_RIGHT_FAR_POS("Park from right to far");
+        PARK_RIGHT_NEAR_POS("Park from right to near");
+        //PARK_LEFT_FAR_POS("Park from left to far"),
+        //PARK_RIGHT_FAR_POS("Park from right to far");
 
         final String description;
 
@@ -80,10 +84,12 @@ public class SkystoneAuto extends OpMode {
 
     @Override
     public void init() {
+        ticker = createAndroidTicker();
+
         setupDriverControls();
 
         RealSimplerHardwareMap simplerHardwareMap = new RealSimplerHardwareMap(this.hardwareMap);
-        driveBase = new RoadRunnerMecanumDriveREV(simplerHardwareMap, true);
+        driveBase = new RoadRunnerMecanumDriveREV(simplerHardwareMap, false);
 
         stateMachine = new StateMachine(telemetry);
     }
@@ -130,6 +136,14 @@ public class SkystoneAuto extends OpMode {
         telemetry.addData("03", "Delay %d sec", initialDelaySeconds);
 
         updateTelemetry(telemetry);
+    }
+
+    private Ticker createAndroidTicker() {
+        return new Ticker() {
+            public long read() {
+                return android.os.SystemClock.elapsedRealtimeNanos();
+            }
+        };
     }
 
     private void doAutoConfig() {
@@ -191,12 +205,12 @@ public class SkystoneAuto extends OpMode {
                     case PARK_RIGHT_NEAR_POS:
                         setupParkFromRightNear();
                         break;
-                    case PARK_LEFT_FAR_POS:
-                        setupParkFromLeftFar();
-                        break;
-                    case PARK_RIGHT_FAR_POS:
-                        setupParkFromRightFar();
-                        break;
+//                    case PARK_LEFT_FAR_POS:
+//                        setupParkFromLeftFar();
+//                        break;
+//                    case PARK_RIGHT_FAR_POS:
+//                        setupParkFromRightFar();
+//                        break;
                     default:
                         stateMachine.addSequential(newDoneState("Default done"));
                         break;
@@ -228,20 +242,20 @@ public class SkystoneAuto extends OpMode {
     }
 
     protected void setupParkFromLeftNear() {
-        setupParkCommon("Park from the left near", 18, 2);
+        setupParkCommon("Park from the left near", 20, 2);
     }
 
     protected void setupParkFromLeftFar() {
-        setupParkCommon("Park from the left far", 18, 25);
+        setupParkCommon("Park from the left far", 20, 20);
     }
 
     protected void setupParkFromRightNear() {
         // Robot starts against wall, to right of tape line
-        setupParkCommon("Park from the right near", -18, 2);
+        setupParkCommon("Park from the right near", -20, 2);
     }
 
     protected void setupParkFromRightFar() {
-        setupParkCommon("Park from the right far", -18, 25);
+        setupParkCommon("Park from the right far", -20, 20);
     }
 
     protected void setupParkCommon(String stateName, double strafeDistance, double forwardDistance) {

@@ -19,6 +19,8 @@
 
 package com.hfrobots.tnt.season1920;
 
+import com.google.common.base.Ticker;
+import com.google.common.testing.FakeTicker;
 import com.hfrobots.tnt.corelib.control.FakeOnOffButton;
 import com.hfrobots.tnt.corelib.control.FakeRangeInput;
 import com.hfrobots.tnt.corelib.drive.FakeExtendedDcMotor;
@@ -31,6 +33,8 @@ import com.hfrobots.tnt.fakes.FakeTelemetry;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.concurrent.TimeUnit;
 
 public class DeliveryMechanismTest {
     private FakeHardwareMap hardwareMap;
@@ -57,8 +61,13 @@ public class DeliveryMechanismTest {
 
     private DeliveryMechanism deliveryMechanism;
 
+    private FakeTicker ticker;
+
     @Before
     public void setUp() {
+        ticker = new FakeTicker();
+        ticker.setAutoIncrementStep(5, TimeUnit.SECONDS);
+
         hardwareMap = new FakeHardwareMap();
 
         liftMotor = new FakeExtendedDcMotor();
@@ -85,7 +94,7 @@ public class DeliveryMechanismTest {
 
         FakeTelemetry telemetry = new FakeTelemetry();
 
-        deliveryMechanism = new DeliveryMechanism(hardwareMap, telemetry);
+        deliveryMechanism = new DeliveryMechanism(hardwareMap, telemetry, ticker);
 
         gamepad = new FakeNinjaGamePad();
 

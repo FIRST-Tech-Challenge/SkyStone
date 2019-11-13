@@ -21,6 +21,7 @@ package com.hfrobots.tnt.season1920;
 
 import android.util.Log;
 
+import com.google.common.base.Ticker;
 import com.google.common.collect.Lists;
 import com.hfrobots.tnt.corelib.control.DebouncedButton;
 import com.hfrobots.tnt.corelib.control.DebouncedGamepadButtons;
@@ -31,6 +32,7 @@ import com.hfrobots.tnt.corelib.drive.NinjaMotor;
 import com.hfrobots.tnt.corelib.drive.PidController;
 import com.hfrobots.tnt.corelib.state.DelayState;
 import com.hfrobots.tnt.corelib.state.State;
+import com.hfrobots.tnt.corelib.state.StopwatchDelayState;
 import com.hfrobots.tnt.corelib.state.TimeoutSafetyState;
 import com.hfrobots.tnt.corelib.util.SimplerHardwareMap;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -88,6 +90,9 @@ public class DeliveryMechanism {
     @Setter
     protected OnOffButton unsafe;
 
+    @Setter
+    protected Ticker ticker;
+
     protected final Telemetry telemetry;
 
     public final static double SHOULDER_TURN_CLOSE = 1; // FIXME really really
@@ -118,8 +123,9 @@ public class DeliveryMechanism {
     double maxPos = 999999; //FIXME wrong
     double minPos = -999999; //FIXME wrong
 
-    public DeliveryMechanism(SimplerHardwareMap hardwareMap, Telemetry telemetry) {
+    public DeliveryMechanism(SimplerHardwareMap hardwareMap, Telemetry telemetry, Ticker ticker) {
         this.telemetry = telemetry;
+        this.ticker = ticker;
 
         shoulderServo = hardwareMap.get(Servo.class, "shoulderServo");
         elbowServo = hardwareMap.get(Servo.class, "elbowServo");
@@ -1090,23 +1096,23 @@ public class DeliveryMechanism {
     // FIXME! There's a lot of duplicated code in here that we could clean up...
 
     State createStowWristStates(final State lastState, Telemetry telemetry) {
-        DelayState waitForWristState = new DelayState("Wait for wrist", telemetry, 1, TimeUnit.SECONDS);
+        StopwatchDelayState waitForWristState = new StopwatchDelayState("Wait for wrist", telemetry, ticker, 1, TimeUnit.SECONDS);
 
         StowWristState stowWristState = new StowWristState(waitForWristState, telemetry, 60000);
 
-        DelayState waitForElbowState = new DelayState("Wait for elbow", telemetry, 1, TimeUnit.SECONDS);
+        StopwatchDelayState waitForElbowState = new StopwatchDelayState("Wait for elbow", telemetry, ticker,1, TimeUnit.SECONDS);
 
         StowElbowState stowElbowState = new StowElbowState(waitForElbowState, telemetry, 60000);
 
         waitForWristState.setNextState(stowElbowState);
 
-        DelayState waitForShoulderState = new DelayState("Wait for shoulder", telemetry, 1, TimeUnit.SECONDS);
+        StopwatchDelayState waitForShoulderState = new StopwatchDelayState("Wait for shoulder", telemetry, ticker,1, TimeUnit.SECONDS);
 
         StowShoulderState stowShoulderState = new StowShoulderState(waitForShoulderState, telemetry, 60000);
 
         waitForElbowState.setNextState(stowShoulderState);
 
-        DelayState waitForFingerState = new DelayState("Wait for finger", telemetry, 250, TimeUnit.MILLISECONDS);
+        StopwatchDelayState waitForFingerState = new StopwatchDelayState("Wait for finger", telemetry,  ticker, 250, TimeUnit.MILLISECONDS);
 
         FingerUngripState fingerUngripState = new FingerUngripState(waitForFingerState, telemetry, 60000);
 
@@ -1118,9 +1124,9 @@ public class DeliveryMechanism {
     }
 
     class StowWristState extends DeliveryMechanismState {
-        private DelayState waitForWristState;
+        private StopwatchDelayState waitForWristState;
 
-        public StowWristState(DelayState waitForWristState, Telemetry telemetry,
+        public StowWristState(StopwatchDelayState waitForWristState, Telemetry telemetry,
                               long safetyTimeoutMillis) {
             super("stow wrist", telemetry, safetyTimeoutMillis);
             this.waitForWristState = waitForWristState;
@@ -1146,9 +1152,9 @@ public class DeliveryMechanism {
     }
 
     class StowElbowState extends DeliveryMechanismState {
-        private DelayState waitForElbowState;
+        private StopwatchDelayState waitForElbowState;
 
-        public StowElbowState(DelayState waitForElbowState, Telemetry telemetry,
+        public StowElbowState(StopwatchDelayState waitForElbowState, Telemetry telemetry,
                               long safetyTimeoutMillis) {
             super("stow elbow", telemetry, safetyTimeoutMillis);
             this.waitForElbowState = waitForElbowState;
@@ -1174,9 +1180,9 @@ public class DeliveryMechanism {
     }
 
     class StowShoulderState extends DeliveryMechanismState {
-        private DelayState waitForShoulderState;
+        private StopwatchDelayState waitForShoulderState;
 
-        public StowShoulderState(DelayState waitForShoulderState, Telemetry telemetry,
+        public StowShoulderState(StopwatchDelayState waitForShoulderState, Telemetry telemetry,
                                  long safetyTimeoutMillis) {
             super("stow shoulder", telemetry, safetyTimeoutMillis);
             this.waitForShoulderState = waitForShoulderState;
@@ -1203,9 +1209,9 @@ public class DeliveryMechanism {
 
     class FingerUngripState extends DeliveryMechanismState {
 
-        private DelayState waitForFingerState;
+        private StopwatchDelayState waitForFingerState;
 
-        public FingerUngripState(DelayState waitForFingerState, Telemetry telemetry,
+        public FingerUngripState(StopwatchDelayState waitForFingerState, Telemetry telemetry,
                                  long safetyTimeoutMillis) {
             super("ungrip finger", telemetry, safetyTimeoutMillis);
             this.waitForFingerState = waitForFingerState;

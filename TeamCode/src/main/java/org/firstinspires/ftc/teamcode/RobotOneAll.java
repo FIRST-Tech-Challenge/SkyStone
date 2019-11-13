@@ -133,7 +133,7 @@ public class RobotOneAll extends LinearOpMode {
 
             if (gamepad1.left_bumper) {
                 robotOne.leftServo.setPosition(0.3);
-                robotOne.rightServo.setPosition(.95);
+                robotOne.rightServo.setPosition(1.05);
             }
 
             // Pace this loop so jaw action is reasonable speed.

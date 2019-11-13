@@ -257,7 +257,7 @@ public class AutonomousRobot {
      * @return current heading
      */
     public double getOrientation2D() {
-        return Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES).firstAngle;
+        return Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES).thirdAngle;
     }
 
     /**

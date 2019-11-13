@@ -47,8 +47,8 @@ public class BBOpModeAutonomousFoundationRed extends LinearOpMode
         sleep(2000);
 
         //work out how far backwards we need to move
-        robot.twoPowerBackwards(135, 0.8, 0.4);
-        //robot.moveBackwards(130, 0.60);
+        //robot.twoPowerBackwards(135, 0.8, 0.4);
+        robot.moveBackwards(130, 0.60);
         sleep(500);
 
         hooks.UnLatched();
@@ -56,7 +56,7 @@ public class BBOpModeAutonomousFoundationRed extends LinearOpMode
 
 
         //we need to move out onto the line.
-        robot.turnLeft(110, 0.70);
+        robot.turnLeft(95, 0.70);
         sleep(1000);
         robot.moveForward(170, 0.60);
         //robot.strafe(0.7);

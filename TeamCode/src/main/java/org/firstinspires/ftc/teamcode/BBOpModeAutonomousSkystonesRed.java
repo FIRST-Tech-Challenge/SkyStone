@@ -70,13 +70,13 @@ public class BBOpModeAutonomousSkystonesRed extends LinearOpMode
                     break;
                 }
 
-                robot.strafeForTime(0.5, 200);
+                robot.strafeForTime(0.5, 100);
 
             } else {
                 telemetry.addLine("NOPE");
                 telemetry.update();
                 //strafe left
-                robot.strafeForTime(0.5, 200);
+                robot.strafeForTime(0.5, 100);
             }
             targets =  _vision.visionFeedback(telemetry);
         }
@@ -115,12 +115,20 @@ public class BBOpModeAutonomousSkystonesRed extends LinearOpMode
             sleep(500);
 
             robot.turnRight(105,0.6);
-            robot.moveForward(140, 0.6);
+            if(runtime.seconds() > 20){
+                robot.moveForward(160, 0.6);
+            }else {
+                robot.moveForward(140, 0.6);
+            }
 
         }else{
 
             robot.turnRight(110, 0.70);
-            robot.moveForward(150,0.6);
+            if(runtime.seconds() > 10){
+                robot.moveForward(190, 0.6);
+            }else {
+                robot.moveForward(150, 0.6);
+            }
         }
 
 

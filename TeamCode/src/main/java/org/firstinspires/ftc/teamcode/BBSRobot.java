@@ -484,7 +484,7 @@ public class BBSRobot {
     }
 
     public void strafeForTime( double speed, int timeMS){
-
+        centreDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         if(speed < 0){
             centreDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         }

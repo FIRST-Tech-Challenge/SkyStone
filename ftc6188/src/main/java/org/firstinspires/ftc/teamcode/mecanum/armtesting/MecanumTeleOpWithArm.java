@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.mecanum.armTesting;
+package org.firstinspires.ftc.teamcode.mecanum.armtesting;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;

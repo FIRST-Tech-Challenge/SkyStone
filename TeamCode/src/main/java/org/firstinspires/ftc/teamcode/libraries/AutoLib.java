@@ -196,7 +196,9 @@ public class AutoLib {
 
         robot.setServoPosition(SERVO_ARM, SERVO_ARM_POS_SCORE);
 
-        robot.setDcMotorPower(MOTOR_ARM, 0.2f);
+        Thread.sleep(500);
+
+        robot.setDcMotorPower(MOTOR_ARM, 0.5f);
 
         while (!robot.isTouchSensorPressed(TOUCH_ARM_BOTTOM)) {
             opMode.idle();
@@ -213,23 +215,53 @@ public class AutoLib {
     }
 
     public void moveArmUp() {
-        robot.setDcMotorPower(MOTOR_ARM, -0.2f);
+        robot.setDcMotorPower(MOTOR_ARM, -0.5f);
 
         while (!robot.isTouchSensorPressed(TOUCH_ARM_TOP)) {
             opMode.idle();
-            opMode.telemetry.addData("Status", robot.isTouchSensorPressed(TOUCH_ARM_BOTTOM));
+            opMode.telemetry.addData("Status", robot.isTouchSensorPressed(TOUCH_ARM_TOP));
             opMode.telemetry.update();
         }
     }
 
+    public void distanceSensorMove() {
+        robot.setDcMotorPower(MOTOR_FRONT_LEFT_WHEEL, .4f);
+        robot.setDcMotorPower(MOTOR_FRONT_RIGHT_WHEEL, .4f);
+        robot.setDcMotorPower(MOTOR_BACK_LEFT_WHEEL, .4f);
+        robot.setDcMotorPower(MOTOR_BACK_RIGHT_WHEEL, .4f);
+
+        while (robot.getWallDistanceCenti() >= 45) {
+            opMode.idle();
+        }
+    }
+
     public void moveArmDown() {
-        robot.setDcMotorPower(MOTOR_ARM, 0.2f);
+        robot.setDcMotorPower(MOTOR_ARM, 0.7f);
 
         while (!robot.isTouchSensorPressed(TOUCH_ARM_BOTTOM)) {
             opMode.idle();
             opMode.telemetry.addData("Status", robot.isTouchSensorPressed(TOUCH_ARM_BOTTOM));
             opMode.telemetry.update();
         }
+    }
+
+    public void moveArmUpSeconds()  {
+        ElapsedTime time = new ElapsedTime();
+
+        robot.setDcMotorPower(MOTOR_ARM, -.8f);
+        while (time.seconds() <= 1.75) {
+            opMode.idle();
+        }
+        robot.setDcMotorPower(MOTOR_ARM, 0);
+    }
+    public void moveArmDownSeconds() throws InterruptedException {
+        ElapsedTime time = new ElapsedTime();
+
+        robot.setDcMotorPower(MOTOR_ARM, .7f);
+        while (time.seconds() <= 1.25) {
+            opMode.idle();
+        }
+        robot.setDcMotorPower(MOTOR_ARM, 0);
     }
 
     //********** Servo Methods **********//

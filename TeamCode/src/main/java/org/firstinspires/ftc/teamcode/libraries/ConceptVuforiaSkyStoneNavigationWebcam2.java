@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.libraries;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -23,7 +24,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 
 
-@TeleOp(name = "SKYSTONE Vuforia Nav Webcam2", group = "Concept")
+@Autonomous(name = "29 Point Main Autonomous", group = "Concept")
 
 public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
 
@@ -57,7 +58,7 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
     double yPosition = 0;
     double xPosition = 0;
     boolean startIdentify = true;
-    float distanceToDepot = 93;
+    float distanceToDepot = 275;
 
     // Class Members
     private OpenGLMatrix lastLocation = null;
@@ -255,7 +256,7 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
                     if (yPosition < 0) {
                         positionSkystone = "Right";
                         autoLib.calcMove(3, .8f, Constants.Direction.LEFT);
-                        distanceToDepot = distanceToDepot + 10;
+                        distanceToDepot = distanceToDepot + 20;
                         //  sleep(3000);
                     } else {
                         positionSkystone = "Center";
@@ -277,9 +278,9 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
                     positionSkystone = "Left";
                     telemetry.addData("Visible Target", "none");
 
-                    distanceToDepot = distanceToDepot - 10;
+                    distanceToDepot = distanceToDepot - 30;
 
-                    autoLib.calcMove(5, .8f, Constants.Direction.RIGHT);
+                    autoLib.calcMove(10, .8f, Constants.Direction.RIGHT);
 
                 }
                 telemetry.addData("Skystone Position", positionSkystone);
@@ -297,25 +298,28 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
         telemetry.addData("X Position ", xPosition);
         telemetry.addData("Y Position ", yPosition);
         telemetry.update();
-// go near skystone
-        autoLib.calcMove((float) (-xPosition / 10) + 43, .8f, Constants.Direction.FORWARD);   //changed
-        autoLib.calcMove((float) (yPosition / 10) + 33, .8f, Constants.Direction.RIGHT);
-        distanceToDepot = distanceToDepot + (float) yPosition;
+/// go near skystone
+        autoLib.calcMove((float) (-xPosition / 10) + 16f, .6f, Constants.Direction.FORWARD);   //when increased-moves back
+        autoLib.calcMove((float) (yPosition / 10) + 12.5f, .6f, Constants.Direction.RIGHT); //when decreased- moves to the left
+///        distanceToDepot = distanceToDepot + (float) yPosition + 5;
         Thread.sleep(500);
         autoLib.moveArmDownScoreServoArmGrab();
         Thread.sleep(1000);
-        autoLib.calcMove(17, .8f, Constants.Direction.FORWARD);
-        autoLib.calcMove(distanceToDepot, .8f, Constants.Direction.LEFT);
-        autoLib.moveArmUp();
-        autoLib.calcMove(47, .7f, Constants.Direction.BACKWARD);
+        autoLib.calcMove(14, .5f, Constants.Direction.FORWARD);
+        autoLib.calcTurn(-80, .5f);
+        autoLib.calcMove(distanceToDepot, .6f, Constants.Direction.BACKWARD);
+        autoLib.moveArmUpSeconds();
+        autoLib.calcTurn(82, .4f);
+        autoLib.calcMove(27, .4f, Constants.Direction.BACKWARD);
         autoLib.scoreServo();
+        Thread.sleep(250);
+        autoLib.calcMove(3,.3f, Constants.Direction.BACKWARD);
         autoLib.latchServoFoundation();
         Thread.sleep(1000);
-        autoLib.calcMove(70, 1f, Constants.Direction.FORWARD);
-        autoLib.moveArmDown();
+        autoLib.calcMove(78, .7f, Constants.Direction.FORWARD);
         autoLib.restServoFoundation();
-        autoLib.calcMove(distanceToDepot - 100, .8f, Constants.Direction.RIGHT);
-
+//        autoLib.moveArmDownSeconds();
+        autoLib.calcMove(120, .6f, Constants.Direction.RIGHT);
         startIdentify = false;
 
     }

@@ -9,13 +9,26 @@ public class RyanTeleop extends LinearOpMode {
 
     RobotHardware robot = new RobotHardware();
 
-    //// Takes a distance and adds/subtracts with the previous position
-    public void moveClamp(double distance) {
+    boolean clamp_open = true;
+    boolean open = gamepad2.left_bumper;
+    boolean close = gamepad2.right_bumper;
 
-        double clamp_set = (.004*distance);
-        robot.clamp.setPosition(robot.clamp.getPosition() + clamp_set);
+    private void setClamp(boolean open, boolean close) {
+
+        if (!clamp_open) {
+            if (gamepad2.left_bumper) {
+                robot.clamp.setPosition(robot.MID_SERVO);
+                clamp_open = true;
+            }
+        }
+
+        if (clamp_open) {
+            if (gamepad2.right_bumper) {
+                robot.clamp.setPosition(robot.CLAMP_CLOSE_DISTANCE);
+                clamp_open = false;
+            }
+        }
     }
-    //// Ryan's logic
 
     @Override
     public void runOpMode() {
@@ -24,16 +37,14 @@ public class RyanTeleop extends LinearOpMode {
         robot.init(hardwareMap, telemetry);
         waitForStart();
 
-        //// Begins while loop, updates telemetry
+        // Begins while loop, updates telemetry
         while (opModeIsActive()) {
             telemetry.addData("Status:", "Started");
             telemetry.update();
 
-            // inputs the stick's y value into moveClamp
-            if (gamepad2.right_stick_y != 0) {
-                moveClamp(gamepad2.right_stick_y);
+            if (gamepad2.left_bumper || gamepad1.right_bumper) {
+                setClamp(gamepad2.left_bumper, gamepad2.right_bumper);
             }
-            //// Ryan's code (under "while opModeIsActive")
         }
     }
 }

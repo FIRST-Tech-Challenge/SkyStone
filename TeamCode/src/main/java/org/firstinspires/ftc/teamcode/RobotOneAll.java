@@ -64,7 +64,7 @@ public class RobotOneAll extends LinearOpMode {
             // This way it's also easy to just drive straight, or just turn.
             drive = gamepad1.left_stick_y;
             turn  = -gamepad1.left_stick_x;
-            grab = gamepad1.left_bumper;
+            //grab = gamepad1.left_bumper;
 
             // Combine drive and turn for blended motion.
             left  = drive + turn;
@@ -131,9 +131,9 @@ public class RobotOneAll extends LinearOpMode {
 
 
 
-            if (grab) {
-                robotOne.leftServo.setPosition(0.60);
-                robotOne.rightServo.setPosition(1.0);
+            if (gamepad1.left_bumper) {
+                robotOne.leftServo.setPosition(0.3);
+                robotOne.rightServo.setPosition(.95);
             }
 
             // Pace this loop so jaw action is reasonable speed.

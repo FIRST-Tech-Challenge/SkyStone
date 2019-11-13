@@ -11,7 +11,7 @@ public class LimitedMotor
     private int lowerLimit;
     private ToggleBoolean limited;
 
-    LimitedMotor(DcMotor motor, int upperLimit, int lowerLimit)
+    public LimitedMotor(DcMotor motor, int lowerLimit, int upperLimit)
     {
         this.motor = motor;
         this.upperLimit = upperLimit;
@@ -48,10 +48,7 @@ public class LimitedMotor
         }
     }
 
-    public void setLimited(boolean input)
-    {
-        limited.input(input);
-    }
+    public void setLimited(boolean input) { limited.input(input); }
 
     public void setMode(DcMotor.RunMode runMode)
     {
@@ -59,18 +56,19 @@ public class LimitedMotor
         limited.input(runMode == DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    public DcMotor getMotor()
-    {
-        return motor;
-    }
+    public DcMotor getMotor() { return motor; }
 
-    public double getPower()
-    {
-        return motor.getPower();
-    }
+    public double getPower() { return motor.getPower(); }
 
-    public int getPosition()
-    {
-        return motor.getCurrentPosition();
-    }
+    public int getPosition() { return motor.getCurrentPosition(); }
+
+    public void setUpperLimit(int upperLimit) { this.upperLimit = upperLimit; }
+
+    public void setLowerLimit(int lowerLimit) { this.lowerLimit = lowerLimit; }
+
+    public int getUpperLimit() {return upperLimit;}
+
+    public int getLowerLimit() {return lowerLimit;}
+
+    public double getTicksPerRev() { return motor.getMotorType().getTicksPerRev(); }
 }

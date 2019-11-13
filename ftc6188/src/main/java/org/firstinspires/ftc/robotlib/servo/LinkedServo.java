@@ -46,6 +46,35 @@ public class LinkedServo
         // 0 is the down position while 1 is up, for some reason
     }
 
+    public void setPositionVariable(double position)
+    {
+        this.position = position;
+    }
+
+    public void updateServoOne()
+    {
+        servoOne.setPosition(position);
+    }
+
+    public void updateServoTwo()
+    {
+        double position2 = position;
+        if (oppositeFace)
+        {
+            position2 = -position;
+            if (servoTwo.getPosition() - position < 0)
+            {
+                position2 += 360;
+            }
+            else if (servoTwo.getPosition() - position > 360)
+            {
+                position2 -= 360;
+            }
+        }
+
+        servoTwo.setPosition(position2);
+    }
+
     public double getPosition() { return position; }
 
     // Only for telemetry purposes

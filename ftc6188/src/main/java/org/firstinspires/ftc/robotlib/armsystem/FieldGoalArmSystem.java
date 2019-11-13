@@ -9,10 +9,10 @@ public class FieldGoalArmSystem implements DualLinearSlideSystem
     private LimitedMotor armVerticalSlide; // motor one
     private LimitedMotor armHorizontalSlide; // motor two
 
-    public FieldGoalArmSystem(LimitedMotor verticalSlide, LimitedMotor horizontalSlide)
+    public FieldGoalArmSystem(LimitedMotor armVerticalSlide, LimitedMotor armHorizontalSlide)
     {
-        this.armVerticalSlide = verticalSlide;
-        this.armHorizontalSlide = horizontalSlide;
+        this.armVerticalSlide = armVerticalSlide;
+        this.armHorizontalSlide = armHorizontalSlide;
     }
 
     @Override

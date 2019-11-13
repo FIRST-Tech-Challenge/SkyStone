@@ -138,6 +138,14 @@ public class ConceptVuforiaSkyStoneNavigationWebcam extends LinearOpMode {
     private float phoneYRotate    = 0;
     private float phoneZRotate    = 0;
 
+    public enum positionSkystone {
+        LEFT,
+        CENTER,
+        RIGHT,
+    }
+
+    public positionSkystone PS = positionSkystone.CENTER;
+
     @Override public void runOpMode() {
         /*
          * Retrieve the camera we are to use.
@@ -346,14 +354,22 @@ public class ConceptVuforiaSkyStoneNavigationWebcam extends LinearOpMode {
                     break;
                 }
             }
-
+            //Y and x are reversed, y is side to side, x is up and down
             // Provide feedback as to where the robot is located (if we know).
             if (targetVisible) {
                 // express position (translation) of robot in inches.
                 VectorF translation = lastLocation.getTranslation();
                 telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
                         translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
-
+                double yPosition = translation.get(0);
+                //String positionSkystone = "";
+                if (yPosition<-10){
+                    PS = positionSkystone.LEFT;
+                }else if (-10<yPosition && yPosition<0){
+                    PS = positionSkystone.CENTER;
+                }else {
+                    PS = positionSkystone.RIGHT;
+                }
                 // express the rotation of the robot in degrees.
                 Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
                 telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
@@ -361,6 +377,7 @@ public class ConceptVuforiaSkyStoneNavigationWebcam extends LinearOpMode {
             else {
                 telemetry.addData("Visible Target", "none");
             }
+            telemetry.addData("Skystone Position", PS);
             telemetry.update();
         }
 

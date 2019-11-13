@@ -11,12 +11,16 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.SubAssembly.Grabber.GrabberControl;
 import org.firstinspires.ftc.teamcode.SubAssembly.DriveTrain.DriveControl;
 import org.firstinspires.ftc.teamcode.Utilities.UserControl;
+import org.firstinspires.ftc.teamcode.Utilities.ConceptVuforiaSkyStoneNavigationWebcam;
+
+import javax.crypto.spec.RC2ParameterSpec;
 
 @Autonomous(name = "Autonomous", group = "Auto")
 public class autonomous extends LinearOpMode {
 
     DriveControl Drive = new DriveControl();
     GrabberControl Grabber = new GrabberControl();
+    ConceptVuforiaSkyStoneNavigationWebcam Webcam = new ConceptVuforiaSkyStoneNavigationWebcam();
 
     //State setup
     private void newState(State newState) {
@@ -39,6 +43,17 @@ public class autonomous extends LinearOpMode {
         Stop,
         test
     }
+
+    private enum SkystonePosition {
+        R1,
+        R2,
+        R3,
+        B1,
+        B2,
+        B3,
+    }
+
+    private SkystonePosition Skystone = SkystonePosition.B1;
 
     private State mCurrentState = State.Initial;
 
@@ -65,6 +80,19 @@ public class autonomous extends LinearOpMode {
         bAnswer = User.getYesNo("Wait?");
         AllianceColor = User.getRedBlue("Alliance Color");
 
+        if (Webcam.PS == Webcam.PS.CENTER && AllianceColor == true){
+            Skystone = SkystonePosition.R2;
+        } else if (Webcam.PS == Webcam.PS.LEFT && AllianceColor == true){
+            Skystone = SkystonePosition.R3;
+        } else if (Webcam.PS == Webcam.PS.RIGHT && AllianceColor == true){
+            Skystone = SkystonePosition.R1;
+        } else if (Webcam.PS == Webcam.PS.CENTER && AllianceColor == false){
+            Skystone = SkystonePosition.B2;
+        } else if (Webcam.PS == Webcam.PS.LEFT && AllianceColor == false){
+            Skystone = SkystonePosition.B1;
+        } else {
+            Skystone = SkystonePosition.B3;
+        }
 
         // wait for PLAY button to be pressed on driver station
         telemetry.addLine(">> Press PLAY to start");

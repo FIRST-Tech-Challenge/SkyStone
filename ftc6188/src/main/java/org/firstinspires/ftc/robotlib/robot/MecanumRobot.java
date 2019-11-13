@@ -11,19 +11,23 @@ import org.firstinspires.ftc.robotlib.servo.LinkedServo;
 
 public class MecanumRobot
 {
+    // Drive motors
     private DcMotor driveFrontLeft;
     private DcMotor driveFrontRight;
     private DcMotor driveRearRight;
     private DcMotor driveRearLeft;
     DcMotor[] motorList;
 
+    // Platform servos
     private Servo servoClawLeft;
     private Servo servoClawRight;
 
+    // Drive constants
     static final double wheelRadius = 2; //inches
     static final double wheelToMotorRatio = 2.0/1.0;
 
-    private Telemetry telemetry;
+    // Temporary telemetry reference
+    Telemetry telemetry;
 
     public MecanumDrivetrain drivetrain;
     public LinkedServo platformServos;

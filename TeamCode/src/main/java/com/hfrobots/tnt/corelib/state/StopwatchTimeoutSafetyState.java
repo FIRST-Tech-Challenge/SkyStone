@@ -15,13 +15,12 @@
  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
-*/
+ */
 
 package com.hfrobots.tnt.corelib.state;
 
 import com.google.common.base.Stopwatch;
 import com.google.common.base.Ticker;
-import com.hfrobots.tnt.corelib.control.DebouncedGamepadButtons;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -30,50 +29,38 @@ import java.util.concurrent.TimeUnit;
 import lombok.NonNull;
 
 /**
- * A delay state that takes a stopwatch as the time source, to make it possible to advance the
- * elapsed time with a test ticker.
+ * Base class which can be used to build a State which has a safety timeout, uses a Ticker
+ * and Stopwatch to allow testing of timeouts without waiting for elapsed wall clock time.
+ *
+ * The first call to isTimedOut() will start the timer, further calls will
+ * return 'true' if the timeout specified in the constructor has expired
  */
-public class StopwatchDelayState extends State {
-    private long thresholdTimeMs;
 
+public abstract class StopwatchTimeoutSafetyState extends State {
+    protected final long safetyTimeoutMillis;
     private final Stopwatch stopwatch;
 
-    public StopwatchDelayState(@NonNull String name,
-                               @NonNull Telemetry telemetry,
-                               @NonNull Ticker ticker,
-                               long val,
-                               @NonNull TimeUnit unit) {
+    protected StopwatchTimeoutSafetyState(@NonNull String name,
+                                          @NonNull Telemetry telemetry,
+                                          @NonNull Ticker ticker,
+                                          long safetyTimeoutMillis) {
         super(name, telemetry);
-        thresholdTimeMs = unit.toMillis(val);
+        this.safetyTimeoutMillis = safetyTimeoutMillis;
         this.stopwatch = Stopwatch.createUnstarted(ticker);
+    }
+
+    protected boolean isTimedOut() {
+        if (!stopwatch.isRunning()) {
+            stopwatch.start();
+
+            return false;
+        }
+
+        return stopwatch.elapsed(TimeUnit.MILLISECONDS) >= safetyTimeoutMillis;
     }
 
     @Override
     public void resetToStart() {
         stopwatch.reset();
-    }
-
-    @Override
-    public void liveConfigure(DebouncedGamepadButtons buttons) {
-
-    }
-
-    @Override
-    public State doStuffAndGetNextState() {
-        if (!stopwatch.isRunning()) {
-            stopwatch.start();
-
-            return this;
-        }
-
-        long elapsedMs = stopwatch.elapsed(TimeUnit.MILLISECONDS);
-
-        if (elapsedMs > thresholdTimeMs) {
-            return nextState;
-        }
-
-        telemetry.addData("04", "Delay: %s %d of %d ms", name, elapsedMs, thresholdTimeMs);
-
-        return this;
     }
 }

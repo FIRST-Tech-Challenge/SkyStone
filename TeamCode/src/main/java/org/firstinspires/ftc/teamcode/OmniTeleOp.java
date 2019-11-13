@@ -106,6 +106,8 @@ public class OmniTeleOp extends OpMode {
 
     @Override
     public void loop() {
+        // Allow the robot to read sensors again
+        robot.resetReads();
         //left joystick is for moving
         //right joystick is for rotation
         gyroAngle = robot.readIMU();
@@ -130,9 +132,6 @@ public class OmniTeleOp extends OpMode {
         left2Pressed = gamepad2.dpad_left;
         leftBumper2Pressed = gamepad2.left_bumper;
         rightBumper2Pressed = gamepad2.right_bumper;
-
-		// Allow the robot to read sensors again
-		robot.resetReads();
 
         if (gamepad1.x) {
             // The driver presses X, then uses the left joystick to say what angle the robot
@@ -281,7 +280,7 @@ public class OmniTeleOp extends OpMode {
         if(!left2Held && left2Pressed)
         {
             left2Held = true;
-            robot.stackFromRightTof = true;
+            robot.stackFromRightTof = false;
         } else if (!left2Pressed) {
             left2Held = false;
         }
@@ -289,7 +288,7 @@ public class OmniTeleOp extends OpMode {
         if(!right2Held && right2Pressed)
         {
             right2Held = true;
-            robot.stackFromRightTof = false;
+            robot.stackFromRightTof = true;
         } else if (!right2Pressed) {
             right2Held = false;
         }

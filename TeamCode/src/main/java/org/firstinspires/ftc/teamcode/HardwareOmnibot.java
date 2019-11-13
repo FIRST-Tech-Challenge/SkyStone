@@ -283,7 +283,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public static double CLAW_OPEN = 0.4;
     public static double CLAW_PINCHED = 0.9;
     public static double CLAWDRICOPTER_FRONT = 0.85;
-    public static double CLAWDRICOPTER_CAPSTONE = 0.57;
+    public static double CLAWDRICOPTER_CAPSTONE = 0.67;
     public static double CLAWDRICOPTER_BACK = 0.09;
     public static int CLAW_OPEN_TIME = 500;
     public static int CLAW_CLOSE_TIME = 500;
@@ -355,8 +355,10 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     protected int intakeZero = 0;
     public double intakePower = 0.0;
     protected boolean intakeZeroUpdated = false;
-    protected boolean stackFromRightTof = false;
-    protected double stackDistance = 0.0;
+
+    protected double stackWallDistance = 0.0;
+    protected double stackBackRightFoundationDistance = 0.0;
+    protected double stackBackLeftFoundationDistance = 0.0;
 
 	// Variables so we only read encoders once per loop
 	protected boolean lifterEncoderRead = false;
@@ -376,6 +378,8 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 
     // Keeps the sensor from initializing more than once.
     public static boolean tofInitialized = false;
+    // We can set this in Auto
+    protected static boolean stackFromRightTof = false;
 
     /* Constructor */
     public HardwareOmnibot(){
@@ -644,10 +648,12 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 					// Get the distance from the wall for alignment.
 					if(stackFromRightTof)
                     {
-                        stackDistance = readRightTof();
+                        stackWallDistance = readRightTof();
                     } else {
-					    stackDistance = readLeftTof();
+					    stackWallDistance = readLeftTof();
                     }
+                    stackBackRightFoundationDistance = readBackRightTof();
+                    stackBackLeftFoundationDistance = readBackLeftTof();
                 }
                 break;
             case LOWER_TO_RELEASE:
@@ -814,15 +820,17 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         return targetReached;
     }
 
-    public boolean parallelRearTarget(double distance, double driveSpeed, double spinSpeed) {
+    public boolean parallelRearTarget(double driveSpeed, double spinSpeed, double error) {
         boolean parallel = false;
         double leftDistance = readBackLeftTof();
         double rightDistance = readBackRightTof();
         double drivePower = 0.0;
         double spinPower = 0.0;
-        if((Math.abs(distance - leftDistance) > 1.0) || (Math.abs(distance - rightDistance) > 1.0)) {
+        if((Math.abs(stackBackLeftFoundationDistance - leftDistance) > error) ||
+                (Math.abs(stackBackRightFoundationDistance - rightDistance) > error)) {
             // Have to drive backwards towards the foundation
-            if(((distance - leftDistance) > 1.0) && ((distance - rightDistance) > 1.0)) {
+            if(((stackBackLeftFoundationDistance - leftDistance) > error) &&
+                    ((stackBackRightFoundationDistance - rightDistance) > error)) {
                 drivePower = driveSpeed;
                 // Have to spin ccw
                 if(leftDistance > rightDistance) {
@@ -832,7 +840,8 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                     spinPower = spinSpeed;
                 }
             // Have to drive away from the foundation.
-            } else if(((distance - leftDistance) < -1.0) && ((distance - rightDistance) < -1.0)) {
+            } else if(((stackBackLeftFoundationDistance - leftDistance) < -error) &&
+                    ((stackBackRightFoundationDistance - rightDistance) < -error)) {
                 drivePower = -driveSpeed;
                 if(leftDistance > rightDistance) {
                     spinPower = -spinSpeed;
@@ -868,7 +877,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         if (alignState == AlignActivity.IDLE) {
             aligning = true;
             alignState = AlignActivity.ALIGN_TO_FOUNDATION;
-            parallelRearTarget(10, 0.07, 0.07);
+            parallelRearTarget(0.07, 0.07, 1.0);
         }
 
         return aligning;
@@ -878,22 +887,22 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         switch(alignState)
         {
             case REFINE_WALL:
-                if(distanceFromWall(stackDistance,0.05)) {
-                    alignState = AlignActivity.IDLE;
-                }
-                break;
-            case REFINE_FOUNDATION:
-                if(parallelRearTarget(10, 0.05, 0.05)) {
-                    alignState = AlignActivity.REFINE_WALL;
-                }
-                break;
-            case ALIGN_TO_WALL:
-                if(distanceFromWall(stackDistance,0.07)) {
+                if(distanceFromWall(stackWallDistance - 2,0.05)) {
                     alignState = AlignActivity.REFINE_FOUNDATION;
                 }
                 break;
+            case REFINE_FOUNDATION:
+                if(parallelRearTarget(0.05, 0.05, 0.5)) {
+                    alignState = AlignActivity.IDLE;
+                }
+                break;
+            case ALIGN_TO_WALL:
+                if(distanceFromWall(stackWallDistance - 2,0.07)) {
+                    alignState = AlignActivity.REFINE_WALL;
+                }
+                break;
             case ALIGN_TO_FOUNDATION:
-                if(parallelRearTarget(10, 0.07, 0.07)) {
+                if(parallelRearTarget(0.07, 0.07, 1.0)) {
                     alignState = AlignActivity.ALIGN_TO_WALL;
                 }
                 break;

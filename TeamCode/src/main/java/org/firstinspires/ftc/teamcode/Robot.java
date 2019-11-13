@@ -5,6 +5,7 @@ import com.qualcomm.hardware.kauailabs.NavxMicroNavigationSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IntegratingGyroscope;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -36,6 +37,8 @@ public class Robot {
     // Sensors
     IntegratingGyroscope gyro;
     NavxMicroNavigationSensor navxMicro;
+
+    DistanceSensor frontDistance;
 
     // Vuforia
     WebcamTest detector;
@@ -118,6 +121,9 @@ public class Robot {
         this.gripperRotateServo1.setDirection(Servo.Direction.FORWARD);
         this.gripperRotateServo2.setDirection(Servo.Direction.REVERSE);
         this.grabServo.setDirection(Servo.Direction.FORWARD);
+
+        // Sensor init
+        this.frontDistance = hwMap.get(DistanceSensor.class, "frontDistance");
 
         // Vuforia init
         detector = new WebcamTest();
@@ -354,7 +360,7 @@ public class Robot {
         // on this object to illustrate which interfaces support which functionality.
         navxMicro = opmode.hardwareMap.get(NavxMicroNavigationSensor.class, "navx");
         gyro = (IntegratingGyroscope)navxMicro;
-        // If you're only interested int the IntegratingGyroscope interface, the following will suffice.
+        // If you're only interested in the IntegratingGyroscope interface, the following will suffice.
         // gyro = hardwareMap.get(IntegratingGyroscope.class, "navx");
 
         // The gyro automatically starts calibrating. This takes a few seconds.
@@ -363,7 +369,7 @@ public class Robot {
         // Wait until the gyro calibration is complete
         timer.reset();
         while (navxMicro.isCalibrating())  {
-            opmode.telemetry.addData("calibrating", "%s", Math.round(timer.seconds())%2==0 ? "|.." : "..|");
+            opmode.telemetry.addData("calibrating", "%s", Math.round(timer.seconds())%2==0 ? "|" : "-");
             opmode.telemetry.update();
             Thread.sleep(50);
         }
@@ -373,7 +379,7 @@ public class Robot {
     }
 
     double getAngle() {
-        Orientation angles = navxMicro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        Orientation angles = gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         return angles.firstAngle;
     }
 

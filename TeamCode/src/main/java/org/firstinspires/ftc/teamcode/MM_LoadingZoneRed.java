@@ -1,6 +1,12 @@
 package org.firstinspires.ftc.teamcode;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
+import java.util.concurrent.TimeUnit;
 
 @Autonomous(name = "Loading Zone Red")
 public class MM_LoadingZoneRed extends LinearOpMode {
@@ -20,12 +26,13 @@ public class MM_LoadingZoneRed extends LinearOpMode {
         robot.init(this);
         robot.releaseBlock(this);
         // timer
-        long startTime = System.nanoTime() / 1000000000;
+        ElapsedTime timer = new ElapsedTime();
         // Detect skystone with camera
         int position;
+        timer.reset();
         while (true) {
             position = robot.detectSkystone(this);
-            if (System.nanoTime() / 1000000000 - startTime > 3) {
+            if (timer.time(TimeUnit.SECONDS) > 3) {
                 skystonePos = Skystone.CENTER;
                 break;
             } else if (position == -1) {
@@ -40,6 +47,9 @@ public class MM_LoadingZoneRed extends LinearOpMode {
             }
             idle();
         }
+
+        telemetry.addData("Distance", robot.frontDistance.getDistance(DistanceUnit.INCH));
+        telemetry.update();
 
         // wait for start
         waitForStart();
@@ -149,11 +159,21 @@ public class MM_LoadingZoneRed extends LinearOpMode {
                 // put arm down
                 robot.bringArmDown(this);
                 robot.rotateGripper(1);
+                Thread.sleep(250);
                 this.stepNumber++;
                 break;
             case 2:
                 // Drive to quarry
                 robot.driveForwardDistance(17, speed, this);
+                /*robot.setDrivePower(speed);
+                double distanceToBlock = robot.frontDistance.getDistance(DistanceUnit.INCH);
+                while (distanceToBlock > 11.5) {
+                    telemetry.addData("Distance", robot.frontDistance.getDistance(DistanceUnit.INCH));
+                    telemetry.update();
+                    distanceToBlock = robot.frontDistance.getDistance(DistanceUnit.INCH);
+                }
+                robot.stopDrive();
+                 */
                 Thread.sleep(500);
                 switch (skystonePos) {
                     case LEFT:
@@ -187,7 +207,7 @@ public class MM_LoadingZoneRed extends LinearOpMode {
                 // back up
                 robot.driveForwardDistance(8, -speed, this);
                 // turn towards skybridge
-                robot.turnRight(speed, 1075);
+                robot.turnRight(0.2, 2150);
                 // drive to skybridge
                 robot.driveForwardDistance(distanceToFoundation + distanceToBuildZone, speed, this);
                 this.stepNumber++;
@@ -207,7 +227,7 @@ public class MM_LoadingZoneRed extends LinearOpMode {
                 // drive to second Skystone
                 robot.driveForwardDistance(distanceToBuildZone + distanceToFoundation + 24, -speed, this);
                 // turn
-                robot.turnRight(-speed, 1075);
+                robot.turnRight(-0.2, 2150);
                 this.stepNumber++;
                 break;
             case 7:
@@ -227,7 +247,7 @@ public class MM_LoadingZoneRed extends LinearOpMode {
                 // drive to foundation to drop the block off
                 Thread.sleep(500);
                 robot.driveForwardDistance(15, -speed, this);
-                robot.turnRight(speed, 1075);
+                robot.turnRight(0.2, 2150);
                 robot.driveForwardDistance(distanceToBuildZone + distanceToFoundation + 24, speed, this);
                 robot.releaseBlock(this);
                 this.stepNumber++;

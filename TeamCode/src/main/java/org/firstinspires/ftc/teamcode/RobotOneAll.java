@@ -47,7 +47,7 @@ public class RobotOneAll extends LinearOpMode {
         double drive;
         double turn;
         double max;
-        double grab;
+        boolean grab;
 
         robotOne.init(hardwareMap);
 
@@ -129,9 +129,18 @@ public class RobotOneAll extends LinearOpMode {
             telemetry.addData("right", "%.2f", right);
             telemetry.update();
 
+
+
+            if (gamepad1.left_bumper) {
+                robotOne.leftServo.setPosition(0.3);
+                robotOne.rightServo.setPosition(1.05);
+            }
+
             // Pace this loop so jaw action is reasonable speed.
             sleep(50);
         }
+
+
 
         }
     }

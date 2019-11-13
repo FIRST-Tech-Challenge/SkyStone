@@ -22,14 +22,11 @@ package com.hfrobots.tnt.corelib.drive.mecanum;
 import android.util.Log;
 
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
-import com.acmerobotics.roadrunner.trajectory.constraints.MecanumConstraints;
+import com.google.common.base.Ticker;
 import com.hfrobots.tnt.corelib.Constants;
 import com.hfrobots.tnt.corelib.control.DebouncedGamepadButtons;
 import com.hfrobots.tnt.corelib.state.State;
-import com.hfrobots.tnt.corelib.state.TimeoutSafetyState;
-import com.hfrobots.tnt.season1819.RoadrunnerMecanumDriveAdapter;
-import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.hfrobots.tnt.corelib.state.StopwatchTimeoutSafetyState;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -39,7 +36,7 @@ import lombok.NonNull;
  * A TNT State Machine state that will follow a RoadRunner trajectory
  * using motion profiles for the given MecanumDrive.
  */
-public class TrajectoryFollowerState extends TimeoutSafetyState {
+public class TrajectoryFollowerState extends StopwatchTimeoutSafetyState {
     protected Trajectory trajectory;
 
     private boolean initialized;
@@ -47,11 +44,12 @@ public class TrajectoryFollowerState extends TimeoutSafetyState {
     private final RoadRunnerMecanumDriveBase driveBase;
 
     public TrajectoryFollowerState(@NonNull String name,
-                                      @NonNull Telemetry telemetry,
-                                      long safetyTimeoutMillis,
-                                      @NonNull RoadRunnerMecanumDriveBase driveBase,
-                                      @NonNull Trajectory trajectory) {
-        super(name, telemetry, safetyTimeoutMillis);
+                                   @NonNull Telemetry telemetry,
+                                   @NonNull RoadRunnerMecanumDriveBase driveBase,
+                                   @NonNull Trajectory trajectory,
+                                   @NonNull Ticker ticker,
+                                   long safetyTimeoutMillis) {
+        super(name, telemetry, ticker, safetyTimeoutMillis);
 
         this.driveBase = driveBase;
         this.trajectory = trajectory;

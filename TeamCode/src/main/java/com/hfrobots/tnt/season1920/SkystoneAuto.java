@@ -24,7 +24,6 @@ import android.util.Log;
 import com.acmerobotics.roadrunner.path.heading.ConstantInterpolator;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
-import com.google.common.base.Stopwatch;
 import com.google.common.base.Ticker;
 import com.hfrobots.tnt.corelib.Constants;
 import com.hfrobots.tnt.corelib.control.DebouncedButton;
@@ -268,7 +267,7 @@ public class SkystoneAuto extends OpMode {
                 .build();
 
         State parkTrajectoryState = new TrajectoryFollowerState(stateName,
-                telemetry, 20*1000, driveBase, parkLeftTrajectory);
+                telemetry, driveBase, parkLeftTrajectory, ticker, TimeUnit.SECONDS.toMillis(20 * 1000));
 
         stateMachine.addSequential(parkTrajectoryState);
         stateMachine.addSequential(newDoneState("Done!"));

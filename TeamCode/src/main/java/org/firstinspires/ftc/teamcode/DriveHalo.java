@@ -8,12 +8,12 @@ import com.qualcomm.robotcore.util.Range;
 @TeleOp (name = "Halo Drive")
 public class DriveHalo extends OpMode {
 
-    private Robot robot = new Robot();
+    Robot robot = new Robot();
 
     // init variables
-    private double speedControl = 0.5; // to make the robot go slower since we use Orbital 20s
+    double speedControl = 0.5; // to make the robot go slower since we use Orbital 20s
     private double compensation = 1; // compensation so the robot can move forward AND turn while both joysticks are used
-    private float deadZone = 0.1f; // joystick deadzone
+    private float deadZone = 0.2f; // joystick deadzone
     private boolean armClosed = false;
     boolean slowMode = false; // activate slowMode if both joysticks are pushed down
     boolean strafeMode = false;
@@ -93,12 +93,13 @@ public class DriveHalo extends OpMode {
     }
 
     void wristController() {
-        /*if (gamepad2.b && !buttons[6]) {
+        if (gamepad2.right_stick_y != 0) {
+            this.wristPosition -= 0.001 * gamepad2.right_stick_y;
+            robot.rotateGripper(this.wristPosition);
+        } else if (gamepad2.b && !buttons[6]) {
             robot.toggleArmRotate();
         }
-        buttons[6] = gamepad2.b;*/
-        this.wristPosition -= 0.001 * gamepad2.right_stick_y;
-        robot.rotateGripper(this.wristPosition);
+        buttons[6] = gamepad2.b;
 
     }
 

@@ -17,8 +17,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 // THIS IS NOT AN OPMODE - IT IS A DEFINING CLASS
-
 public class Robot {
+
+    // armRotate encoder count: -3650
 
     // Motors
     public DcMotor rearLeft;
@@ -98,10 +99,10 @@ public class Robot {
         this.liftMotor = hwMap.dcMotor.get("liftMotor");
 
         // Drive Motor Direction
-        this.rearLeft.setDirection(DcMotor.Direction.FORWARD);
-        this.frontLeft.setDirection(DcMotor.Direction.FORWARD);
-        this.rearRight.setDirection(DcMotor.Direction.REVERSE);
-        this.frontRight.setDirection(DcMotor.Direction.REVERSE);
+        this.rearLeft.setDirection(DcMotor.Direction.REVERSE);
+        this.frontLeft.setDirection(DcMotor.Direction.REVERSE);
+        this.rearRight.setDirection(DcMotor.Direction.FORWARD);
+        this.frontRight.setDirection(DcMotor.Direction.FORWARD);
         this.waffleMover.setDirection(DcMotor.Direction.FORWARD);
         this.armRotate.setDirection(DcMotor.Direction.REVERSE); // positive makes arm go forward
         this.liftMotor.setDirection(DcMotor.Direction.FORWARD);
@@ -329,7 +330,7 @@ public class Robot {
     void stopArmRotate() { this.setArmRotatePower(0); }
 
     String getInfo() {
-        String output = "Arm Position: " + this.armPos + "\nWaffle Position: ";
+        String output = "Arm Position: " + this.armRotate.getCurrentPosition() + "\nWaffle Position: ";
         if (this.wafflePosition == -1) {
             output += "Down\nWrist Position: ";
         } else {

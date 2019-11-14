@@ -18,27 +18,25 @@ public class GerritTelop extends LinearOpMode {
         telemetry.addData("position%.2d", position);
         telemetry.update();
         if (distance > .1) {
-            telemetry.addLine("Working11");
-            telemetry.update();
-            if (position <= robot.ARM_UP_DISTANCE) {
-                telemetry.addLine("Working12");
-                telemetry.update();
-                robot.leverArm.setPower(1);
-            }
             if (position >= robot.ARM_UP_DISTANCE) {
                 robot.leverArm.setPower(0);
             }
+            if (position >= 900) {
+                robot.leverArm.setPower(-.27);
+            }
+            if (position <= robot.ARM_UP_DISTANCE) {
+                robot.leverArm.setPower(.35);
+            }
         }
         if (distance < -.1) {
-            telemetry.addLine("Working21");
-            telemetry.update();
-            if (position <= 0) {
+            if (position <= 100) {
                 robot.leverArm.setPower(0);
             }
-            if (position >= 0) {
-                telemetry.addLine("Working22");
-                telemetry.update();
-                robot.leverArm.setPower(-1);
+            if (position <= 900) {
+                robot.leverArm.setPower(.27);
+            }
+            if (position >= 100) {
+                robot.leverArm.setPower(-.35);
             }
         }
     }
@@ -49,8 +47,8 @@ public class GerritTelop extends LinearOpMode {
         int counter = 0;
         while (opModeIsActive()) {
 
-            if (gamepad1.left_stick_y != 0) {
-                moveLeverArm(-gamepad1.left_stick_y);
+            if (gamepad2.left_stick_y != 0) {
+                moveLeverArm(-gamepad2.left_stick_y);
             }
             else {
                 robot.leverArm.setPower(0);

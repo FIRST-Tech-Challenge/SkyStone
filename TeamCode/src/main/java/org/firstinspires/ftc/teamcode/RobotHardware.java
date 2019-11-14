@@ -35,7 +35,7 @@ public class RobotHardware {
     public static final double MID_SERVO       =  0.5 ;
     public static final double ARM_UP_POWER    =  0.45 ;
     public static final double ARM_DOWN_POWER  = -0.45 ;
-    public static final double ARM_UP_DISTANCE  = 10000 ;
+    public static final double ARM_UP_DISTANCE  = 1600 ;
     public static final double CLAMP_CLOSE_DISTANCE = 0.75;
 
     /* local OpMode members. */

@@ -31,7 +31,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -51,7 +50,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name="ServoTest", group="Linear Opmode")
 //@Disabled
-public class ServoTest extends LinearOpMode
+public class ServoTest extends LinearOpMode {
+
     private ElapsedTime runtime = new ElapsedTime();
     private Servo Serv = null;
 
@@ -59,25 +59,31 @@ public class ServoTest extends LinearOpMode
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
 
+
         Serv = hardwareMap.get(Servo.class, "Servo");
 
         waitForStart();
         runtime.reset();
 
-        // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+
 
             boolean Ccwise = gamepad1.left_bumper;
             boolean CWise = gamepad1.right_bumper;
 
-            if ( Ccwise == true ) {
+            if ( Ccwise ) {
                 Serv.setPosition(1.0);
-            }
-            else if (CWise == true ) {
+
+            } else if (CWise ) {
                 Serv.setPosition(0.0);
+
+
+
             }
 
+            // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
+            //telemetry.addData("Motors", "left (%.2f), right (%.2f)", InAndOut);
             telemetry.update();
         }
     }

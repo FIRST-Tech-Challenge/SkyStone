@@ -91,6 +91,7 @@ public class RobotHardware {
         }
 
         try {
+
             clampRotator = hardwareMap.get(Servo.class, "clamp_rotator");
             clampRotator.setPosition(CLAMP_ROTATOR_BEGINNING_SERVO);
             telemetry.addData("Status", "Servo: clamp_rotator identified");    //

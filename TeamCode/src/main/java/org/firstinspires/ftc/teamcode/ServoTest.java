@@ -71,10 +71,10 @@ public class ServoTest extends LinearOpMode {
             boolean Ccwise = gamepad1.left_bumper;
             boolean CWise = gamepad1.right_bumper;
 
-            if ( Ccwise ) {
+            if ( Ccwise == true) {
                 Serv.setPosition(1.0);
 
-            } else if (CWise ) {
+            } else if (CWise == true ) {
                 Serv.setPosition(0.0);
 
 

@@ -26,6 +26,10 @@ public class RobotTelop extends LinearOpMode {
         // Do something
     }
 
+    private void moveKicker(float distance) {
+        // Do something
+    }
+
 
     @Override
     public void runOpMode() {
@@ -42,6 +46,10 @@ public class RobotTelop extends LinearOpMode {
                 moveRobot(gamepad1.left_stick_x, gamepad1.left_stick_y);
             }
 
+            if (gamepad1.right_trigger > 0 ) {
+                moveKicker(gamepad1.right_trigger);
+            }
+
             if (gamepad2.left_stick_y != 0 ) {
                 moveLeverArm(gamepad2.left_stick_y);
             }
@@ -53,6 +61,7 @@ public class RobotTelop extends LinearOpMode {
             if (gamepad2.left_bumper || gamepad2.right_bumper ) {
                 setClamp(gamepad2.left_bumper, gamepad2.right_bumper);
             }
+
 
         }
     }

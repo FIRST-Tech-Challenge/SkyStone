@@ -31,6 +31,7 @@ public class RobotHardware {
 
     public Servo    clampRotator;
     public Servo    clamp;
+    public Servo    kicker;
 
     public static final double MID_SERVO       =  0.5 ;
     public static final double ARM_UP_POWER    =  0.45 ;
@@ -103,6 +104,16 @@ public class RobotHardware {
             telemetry.addData("Warning", "Servo: clamp not plugged in");    //
             clamp = null;
         }
+
+        try {
+            kicker = hardwareMap.get(Servo.class, "kicker");
+            kicker.setPosition(MID_SERVO);
+            telemetry.addData("Status", "Servo: kicker identified");    //
+        } catch (IllegalArgumentException err) {
+            telemetry.addData("Warning", "Servo: kicker not plugged in");    //
+            kicker = null;
+        }
+
 
         telemetry.update();
 

@@ -34,7 +34,8 @@ public class RobotHardware {
     public Servo    clamp;
     public Servo    kicker;
 
-    public static final double MID_SERVO       =  0.6 ;
+    public static final double MID_SERVO = 0.5;
+    public static final double CLAMP_OPEN_DISTANCE       =  0.6 ;
     public static final double ARM_UP_POWER    =  0.45 ;
     public static final double ARM_DOWN_POWER  = -0.45 ;
     public static final double ARM_UP_DISTANCE  = 1600 ;
@@ -100,7 +101,7 @@ public class RobotHardware {
 
         try {
             clamp = hardwareMap.get(Servo.class, "clamp");
-            clamp.setPosition(MID_SERVO);
+            clamp.setPosition(CLAMP_OPEN_DISTANCE);
             telemetry.addData("Status", "Servo: clamp identified");    //
         } catch (IllegalArgumentException err) {
             telemetry.addData("Warning", "Servo: clamp not plugged in");    //

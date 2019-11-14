@@ -79,7 +79,7 @@ public class MecanumAutonomous extends LinearOpMode {
 
                 // express the orientation of the robot in degrees.
                 Orientation orientation = robot.getOrientation();
-                telemetry.addData("Orientation (deg)", "{Heading, Roll, Pitch} = %.0f, %.0f, %.0f", orientation.firstAngle, orientation.secondAngle, orientation.thirdAngle);
+                telemetry.addData("Orientation (deg)", "{Heading, Roll, Pitch} = %.0f, %.0f, %.0f", orientation.thirdAngle, orientation.firstAngle, orientation.secondAngle);
 
                 // move to stone if targeted
                 VuforiaTrackable trackedStone = robot.getVisibleTrackable("Stone Target");

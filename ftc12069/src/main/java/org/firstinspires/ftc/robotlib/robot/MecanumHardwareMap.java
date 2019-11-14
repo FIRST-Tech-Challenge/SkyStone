@@ -26,7 +26,7 @@ public class MecanumHardwareMap
     // Camera
     public WebcamName webcamName;
 
-    public BNO055IMU imu;
+    //public BNO055IMU imu;
 
     public MecanumDrivetrain drivetrain;
     public ServoManager servoManager;
@@ -73,7 +73,7 @@ public class MecanumHardwareMap
 
         webcamName = internalHardwareMap.get(WebcamName.class, "webcam");
 
-        imu = hwMap.get(BNO055IMU.class, "revIMU");
+        /*imu = hwMap.get(BNO055IMU.class, "revIMU");
         BNO055IMU.Parameters imuParamters = new BNO055IMU.Parameters();
         imuParamters.mode = BNO055IMU.SensorMode.IMU;
         imuParamters.useExternalCrystal = true;
@@ -81,7 +81,7 @@ public class MecanumHardwareMap
         imuParamters.pitchMode = BNO055IMU.PitchMode.WINDOWS;
         imuParamters.loggingEnabled = true;
         imuParamters.loggingTag = "IMU";
-        imu.initialize(imuParamters);
+        imu.initialize(imuParamters);*/
 
         drivetrain = new MecanumDrivetrain(motorList);
         servoManager = new ServoManager(new Servo[]{servoClaw});

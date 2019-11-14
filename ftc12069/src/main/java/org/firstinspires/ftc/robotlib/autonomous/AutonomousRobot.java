@@ -285,7 +285,7 @@ public class AutonomousRobot {
     /**
      * Calculates the course for the robot to arrive a point in a 3D space
      * @param object Point
-     * @return required course to arrive at a point
+     * @return required course to arrive at a 3D point
      */
     public double getCourseFromRobot3D(Point object) {
         Point robotPosition = this.getPosition();

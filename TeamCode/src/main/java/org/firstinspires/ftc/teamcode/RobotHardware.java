@@ -21,6 +21,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  * Motor channel:  Lever:                    "lever_arm"
  * Servo channel:  Clamp Rotator:            "clamp_rotator"
  * Servo channel:  Clamp:                    "clamp"
+ * Servo channel:  Kicker:                   "kicker"
  */
 
 public class RobotHardware {
@@ -31,10 +32,12 @@ public class RobotHardware {
 
     public Servo    clampRotator;
     public Servo    clamp;
+    public Servo    kicker;
 
     public static final double MID_SERVO       =  0.6 ;
     public static final double ARM_UP_POWER    =  0.45 ;
     public static final double ARM_DOWN_POWER  = -0.45 ;
+    public static final double ARM_UP_DISTANCE  = 1600 ;
     public static final double CLAMP_CLOSE_DISTANCE = 0.75;
     public static final double CLAMP_ROTATOR_BEGINNING_SERVO = 0;
 
@@ -103,6 +106,16 @@ public class RobotHardware {
             telemetry.addData("Warning", "Servo: clamp not plugged in");    //
             clamp = null;
         }
+
+        try {
+            kicker = hardwareMap.get(Servo.class, "kicker");
+            kicker.setPosition(MID_SERVO);
+            telemetry.addData("Status", "Servo: kicker identified");    //
+        } catch (IllegalArgumentException err) {
+            telemetry.addData("Warning", "Servo: kicker not plugged in");    //
+            kicker = null;
+        }
+
 
         telemetry.update();
 

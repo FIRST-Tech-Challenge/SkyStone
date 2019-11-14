@@ -2,16 +2,19 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
 @TeleOp(name="RyanTeleop")
 public class RyanTeleop extends LinearOpMode {
 
     RobotHardware robot = new RobotHardware();
 
-    boolean clamp_open = true;
+    boolean clamp_open = true;  // TODO UNUSED REMOVE ME
 
     private void setClamp(boolean open, boolean close) {
+        // Formatting matters..  We indent 4 spaces for a very good reason so it's legible.
+        // Those grey lines help you find the flow control through the code.
+        // Functionally this is great - We need to adjust MID_SERVO -  I would rename this as
+        // CLAMP_OPEN_POSITION
             if (open) {
                 robot.clamp.setPosition(robot.MID_SERVO);
             }
@@ -22,7 +25,6 @@ public class RyanTeleop extends LinearOpMode {
     }
 
     private void moveClampRotator(double clamp_rotator_set) {
-
         robot.clampRotator.setPosition((.0001*clamp_rotator_set) + robot.clampRotator.getPosition());
     }
 

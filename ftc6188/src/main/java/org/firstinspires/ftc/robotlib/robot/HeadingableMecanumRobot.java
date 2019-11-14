@@ -3,6 +3,7 @@ package org.firstinspires.ftc.robotlib.robot;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.BNO055IMUImpl;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -37,6 +38,6 @@ public class HeadingableMecanumRobot extends MecanumRobot
         pid.setMaxErrorForIntegral(0.002);
 
         controller = new FinishableIntegratedController(new IntegratingGyroscopeSensor(imu), pid, new ErrorTimeThresholdFinishingAlgorithim(Math.PI/50, 1));
-        drivetrain = new HeadingableMecanumDrivetrain(motorList, controller, teleOpMode, wheelRadius, wheelToMotorRatio);
+        this.drivetrain = new HeadingableMecanumDrivetrain(motorList, controller, teleOpMode, wheelRadius, wheelToMotorRatio);
     }
 }

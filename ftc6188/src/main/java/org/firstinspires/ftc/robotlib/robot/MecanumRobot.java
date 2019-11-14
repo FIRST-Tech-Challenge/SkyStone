@@ -16,7 +16,7 @@ public class MecanumRobot
     private DcMotor driveFrontRight;
     private DcMotor driveRearRight;
     private DcMotor driveRearLeft;
-    DcMotor[] motorList;
+    protected DcMotor[] motorList;
 
     // Platform servos
     private Servo servoClawLeft;
@@ -62,7 +62,8 @@ public class MecanumRobot
         servoClawLeft.setDirection(Servo.Direction.FORWARD);
         servoClawRight.setDirection(Servo.Direction.REVERSE);
 
-        drivetrain = new MecanumDrivetrain(new DcMotor[]{driveFrontLeft, driveFrontRight, driveRearLeft, driveRearRight},
+        motorList = new DcMotor[]{driveFrontLeft, driveFrontRight, driveRearLeft, driveRearRight};
+        drivetrain = new MecanumDrivetrain(motorList,
                 teleOpMode, wheelRadius, wheelToMotorRatio);
         platformServos = new LinkedServo(servoClawLeft, servoClawRight);
     }

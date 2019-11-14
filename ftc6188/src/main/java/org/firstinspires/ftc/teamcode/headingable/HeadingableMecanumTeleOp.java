@@ -40,7 +40,7 @@ public class HeadingableMecanumTeleOp extends OpMode
 
         robot.drivetrain.lowPowerInput(gamepad1.right_stick_button);
 
-        //desiredHeading += -gamepad1.left_stick_x*rotationTimer.time()*HEADING_COEFF; //resets heading but also was rotating robot, now only keys rotate robot
+        desiredHeading += -gamepad1.left_stick_x*rotationTimer.time()*HEADING_COEFF; //resets heading but also was rotating robot, now only keys rotate robot
         rotationTimer.reset();
 
         if (gamepad1.left_bumper)
@@ -51,16 +51,14 @@ public class HeadingableMecanumTeleOp extends OpMode
         {
             desiredHeading += Math.PI/4;
         }
+
         if (gamepad1.y)
         {
             robot.drivetrain.setExtrinsicOffset(desiredHeading);
         }
 
         //toggles the robots headingless ability maybe
-        if (gamepad1.left_stick_button)
-        {
-            robot.drivetrain.setExtrinsic(!robot.drivetrain.getExtrinsic());
-        }
+        if (gamepad1.left_stick_button) { robot.drivetrain.setExtrinsic(!robot.drivetrain.getExtrinsic()); }
 
         robot.drivetrain.setCourse(course);
         robot.drivetrain.setVelocity(velocity);

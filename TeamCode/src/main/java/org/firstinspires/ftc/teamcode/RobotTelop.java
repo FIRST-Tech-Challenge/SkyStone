@@ -38,7 +38,7 @@ public class RobotTelop extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            if (gamepad1.left_stick_x != 0 || gamepad1.left_stick_y != 0 ) {
+            if (gamepad1.left_stick_x > 0.05 || gamepad1.left_stick_y < 0.05 ) {
                 moveRobot(gamepad1.left_stick_x, gamepad1.left_stick_y);
             }
 

@@ -35,6 +35,7 @@ public class RobotHardware {
     public static final double MID_SERVO       =  0.5 ;
     public static final double ARM_UP_POWER    =  0.45 ;
     public static final double ARM_DOWN_POWER  = -0.45 ;
+    public static final double ARM_UP_DISTANCE    =  10000 ;
 
     /* local OpMode members. */
     HardwareMap hardwareMap     =  null;
@@ -73,10 +74,11 @@ public class RobotHardware {
             telemetry.addData("Warning", "Motor: right_drive not plugged in");    //
             leftDrive = null;
         }
-
         try {
             leverArm = hardwareMap.get(DcMotor.class, "lever_arm");
             leverArm.setPower(0);
+            leverArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            leverArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             telemetry.addData("Status", "Motor: lever_arm identified");    //
         } catch (IllegalArgumentException err) {
             telemetry.addData("Warning", "Motor: lever_arm not plugged in");    //

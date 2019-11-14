@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.motion.Clamp;
+import org.firstinspires.ftc.teamcode.motion.Kicker;
 import org.firstinspires.ftc.teamcode.motion.LeverArm;
 
 
@@ -14,6 +15,7 @@ public class RobotTelop extends LinearOpMode {
     RobotHardware robot      = new RobotHardware();   // Use a Pushbot's hardware
     LeverArm lever_arm = new LeverArm();
     Clamp clamp = new Clamp();
+    Kicker kicker = new Kicker();
 
     private void moveRobot(float x_direction, float y_direction) {
         // Do something
@@ -40,7 +42,10 @@ public class RobotTelop extends LinearOpMode {
             }
 
             if (gamepad1.right_trigger > 0 ) {
-                moveKicker(gamepad1.right_trigger);
+                kicker.moveKicker(robot,gamepad1.right_trigger);
+
+            } else {
+                robot.kicker.setPosition(robot.KICKER_START);
             }
 
             if (gamepad2.left_stick_y < .5 && gamepad2.left_stick_y > -.5) {

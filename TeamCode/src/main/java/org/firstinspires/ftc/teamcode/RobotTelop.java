@@ -50,7 +50,7 @@ public class RobotTelop extends LinearOpMode {
                 moveClampRotator(gamepad2.right_stick_y);
             }
 
-            if (gamepad2.left_bumper || gamepad1.right_bumper ) {
+            if (gamepad2.left_bumper || gamepad2.right_bumper ) {
                 setClamp(gamepad2.left_bumper, gamepad2.right_bumper);
             }
 

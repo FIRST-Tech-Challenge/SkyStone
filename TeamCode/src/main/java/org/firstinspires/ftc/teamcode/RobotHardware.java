@@ -21,6 +21,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  * Motor channel:  Lever:                    "lever_arm"
  * Servo channel:  Clamp Rotator:            "clamp_rotator"
  * Servo channel:  Clamp:                    "clamp"
+ * Servo channel:  Kicker:                   "kicker"
  */
 
 public class RobotHardware {

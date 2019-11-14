@@ -253,11 +253,38 @@ public class AutonomousRobot {
     }
 
     /**
-     * Retrieves the rotation of the robot
-     * @return current rotation
+     * Retrieves the orientation of the robot in 2D space (heading)
+     * @return current heading
      */
-    public Orientation getRotation() {
+    public double getOrientation2D() {
+        return Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES).thirdAngle;
+    }
+
+    /**
+     * Retrieves the orientation of the robot in 3D space
+     * @return current orientation
+     */
+    public Orientation getOrientation() {
+        // imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES)
         return Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
+    }
+
+    /**
+     * Turns the robot by an angle (this is bad design, it overrides other motor commands)
+     * This blocks the current thread
+     * @param angle angle to turn to
+     * @param velocity rotation speed (between 0 and 1)
+     */
+    public void turn(double angle, double velocity) {
+        double initialOrientation = this.getOrientation2D();
+        double frontLeft = velocity > 0 ? velocity : -velocity;
+        double frontRight = velocity > 0 ? -velocity : velocity;
+        double rearRight = velocity > 0 ? velocity : -velocity;
+        double rearLeft = velocity > 0 ? -velocity : velocity;
+
+        while (this.getOrientation2D() - initialOrientation < angle) {
+            hardware.drivetrain.setMotorPowers(frontLeft, frontRight, rearRight, rearLeft);
+        }
     }
 
     /**
@@ -279,13 +306,13 @@ public class AutonomousRobot {
      */
     public double getCourseFromRobot(Point object) {
         Point robotPosition = this.getPosition();
-        return Math.atan((robotPosition.y - object.y) / (robotPosition.x - object.x));
+        return Math.atan2(robotPosition.y - object.y, robotPosition.x - object.x);
     }
 
     /**
      * Calculates the course for the robot to arrive a point in a 3D space
      * @param object Point
-     * @return required course to arrive at a 3D point
+     * @return required course to arrive at a point
      */
     public double getCourseFromRobot3D(Point object) {
         Point robotPosition = this.getPosition();

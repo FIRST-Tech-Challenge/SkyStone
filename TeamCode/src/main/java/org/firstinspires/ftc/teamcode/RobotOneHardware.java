@@ -90,7 +90,7 @@ public class RobotOneHardware
         leftDrive.setPower(0);
         rightDrive.setPower(0);
         InAndOut.setPower(0);
-        leftServo.setPosition(0.1);
+        leftServo.setPosition(-0.9);
         rightServo.setPosition(0.1);
 //        leftServo.setPosition(0.60);
 //        rightServo.setPosition(1.0);

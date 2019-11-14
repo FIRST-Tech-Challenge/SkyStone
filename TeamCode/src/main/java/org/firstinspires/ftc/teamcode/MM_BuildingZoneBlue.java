@@ -21,14 +21,14 @@ public class MM_BuildingZoneBlue extends LinearOpMode {
         robot.moveWaffleMover();
         robot.strafeTime(speed, 3000);
         // correction for strafe
-        robot.turnRight(0.25, 300);
+        //robot.turnWithImu(0.25, -90, this);
         robot.driveForwardDistance(8, -0.25, this);
         robot.moveWaffleMover();
         robot.driveForwardDistance(34, 0.25, this);
         robot.moveWaffleMover();
         robot.strafeTime(-speed, 3500);
         robot.driveForwardDistance(6, -0.25, this);
-        robot.turnRight(-speed, 1500);
+        robot.turnWithImu(speed, 90, this);
         robot.driveForwardDistance(24, speed, this);
         if (parkingPosition == ParkingPosition.CLOSE) {
             robot.strafeTime(speed, 1000);

@@ -16,9 +16,9 @@ public class MM_LoadingZoneRed extends LinearOpMode {
     private Skystone skystonePos = Skystone.LEFT;
     private enum ParkingPosition {FAR, CLOSE}// far or close to center
     private ParkingPosition parkingPosition = ParkingPosition.CLOSE;
-    private double distanceToBuildZone;
-    private double distanceToFoundation = 38; // distance to skybridge from close edge of block
-    private double speed = 0.4;
+    private double distanceToBuildZone; // distance to bridge tape from close edge of block
+    private double distanceToFoundation = 33; // distance to skybridge from bridge tape
+    private double speed = 0.55;
     private int stepNumber;
 
     @Override
@@ -158,13 +158,13 @@ public class MM_LoadingZoneRed extends LinearOpMode {
             case 1:
                 // put arm down
                 robot.bringArmDown(this);
-                robot.rotateGripper(1);
+                robot.rotateGripper(0.8);
                 Thread.sleep(250);
                 this.stepNumber++;
                 break;
             case 2:
                 // Drive to quarry
-                robot.driveForwardDistance(17, speed, this);
+                robot.driveForwardDistance(17, 0.4, this);
                 /*robot.setDrivePower(speed);
                 double distanceToBlock = robot.frontDistance.getDistance(DistanceUnit.INCH);
                 while (distanceToBlock > 11.5) {
@@ -177,14 +177,14 @@ public class MM_LoadingZoneRed extends LinearOpMode {
                 Thread.sleep(500);
                 switch (skystonePos) {
                     case LEFT:
-                        distanceToBuildZone = 48;
+                        distanceToBuildZone = 36;
                         // strafe to block
                         robot.strafeTime(-speed, 1500);
                         // correct for the strafe
-                        robot.turnRight(-0.25, 250);
+                        //robot.turnRight(-0.25, 250);
                         break;
                     case CENTER:
-                        distanceToBuildZone = 36;
+                        distanceToBuildZone = 30;
                         robot.strafeTime(-speed, 250);
                         break;
                     case RIGHT:
@@ -192,7 +192,7 @@ public class MM_LoadingZoneRed extends LinearOpMode {
                         // strafe to block
                         robot.strafeTime(speed, 1250);
                         // correct for the strafe
-                        robot.turnRight(-0.25, 250);
+                        //robot.turnRight(-0.25, 250);
                         break;
 
                 }
@@ -207,8 +207,8 @@ public class MM_LoadingZoneRed extends LinearOpMode {
                 // back up
                 robot.driveForwardDistance(8, -speed, this);
                 // turn towards skybridge
-                robot.turnRight(0.2, 2150);
-                // drive to skybridge
+                robot.turnWithImu(0.3, -90, this);
+                // drive to foundation
                 robot.driveForwardDistance(distanceToFoundation + distanceToBuildZone, speed, this);
                 this.stepNumber++;
                 break;
@@ -224,17 +224,19 @@ public class MM_LoadingZoneRed extends LinearOpMode {
                 break;
             case 6:
                 Thread.sleep(500);
+                // correct position
+                robot.turnToGlobalPosition(0.25, -90, this);
                 // drive to second Skystone
                 robot.driveForwardDistance(distanceToBuildZone + distanceToFoundation + 24, -speed, this);
                 // turn
-                robot.turnRight(-0.2, 2150);
+                robot.turnToGlobalPosition(0.3, 0, this);
                 this.stepNumber++;
                 break;
             case 7:
                 // go to block
                 Thread.sleep(500);
-                robot.rotateGripper(1);
-                robot.driveForwardDistance(10, speed, this);
+                robot.rotateGripper(0.7);
+                robot.driveForwardDistance(10, 0.4, this);
                 this.stepNumber++;
                 break;
             case 8:
@@ -247,17 +249,22 @@ public class MM_LoadingZoneRed extends LinearOpMode {
                 // drive to foundation to drop the block off
                 Thread.sleep(500);
                 robot.driveForwardDistance(15, -speed, this);
-                robot.turnRight(0.2, 2150);
-                robot.driveForwardDistance(distanceToBuildZone + distanceToFoundation + 24, speed, this);
+                robot.turnWithImu(0.3, -90, this);
+                robot.driveForwardDistance(distanceToBuildZone + distanceToFoundation, speed, this);
                 robot.releaseBlock(this);
                 this.stepNumber++;
                 break;
             case 10:
                 // park
                 Thread.sleep(500);
-                robot.driveForwardDistance(30, -speed, this);
-                if (parkingPosition == parkingPosition.CLOSE) {
-                    robot.strafeTime(-speed, 2800);
+                robot.driveForwardDistance(6, -speed, this);
+                switch(parkingPosition) {
+                    case FAR:
+                        robot.strafeTime(speed, 2800);
+                        break;
+                    case CLOSE:
+                        robot.strafeTime(-speed, 1250);
+                        break;
                 }
                 this.stepNumber++;
                 break;

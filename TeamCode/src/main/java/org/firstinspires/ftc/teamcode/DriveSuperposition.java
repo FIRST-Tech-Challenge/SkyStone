@@ -5,8 +5,16 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 @TeleOp(name = "Superposition Drive")
 public class DriveSuperposition extends DriveHalo {
 
+    double lastCurrentPosition;
+    double currentPosition;
+    double error;
+
     @Override
     void driveController() {
+        currentPosition = robot.getHeading();
+        error = Math.tanh((currentPosition - lastCurrentPosition) / 20);
+        lastCurrentPosition = currentPosition;
+
         if (gamepad1.right_bumper) {
             speedControl = 0.15;
         } else {
@@ -23,9 +31,9 @@ public class DriveSuperposition extends DriveHalo {
         double r = Math.hypot(lx, ly);
         double theta = Math.atan2(ly, lx) - Math.PI / 4;
 
-        robot.frontLeft.setPower(speedControl * (r * Math.sin(theta) - rx));
-        robot.frontRight.setPower(speedControl * (r * Math.cos(theta) + rx));
-        robot.rearLeft.setPower(speedControl * (r * Math.cos(theta) - rx));
-        robot.rearRight.setPower(speedControl * (r * Math.sin(theta) + rx));
+        robot.frontLeft.setPower(-speedControl * (r * (Math.sin(theta) + error) - rx));
+        robot.frontRight.setPower(-speedControl * (r * (Math.cos(theta) - error) + rx));
+        robot.rearLeft.setPower(-speedControl * (r * (Math.cos(theta) + error) - rx));
+        robot.rearRight.setPower(-speedControl * (r * (Math.sin(theta) - error) + rx));
     }
 }

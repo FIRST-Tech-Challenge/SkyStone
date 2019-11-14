@@ -85,7 +85,7 @@ public class DriveHalo extends OpMode {
                 e.printStackTrace();
             }
         }*/ //if (robot.armPos == Robot.armPosition.ACTIVE) {
-            robot.setArmRotatePower(0.3 * gamepad2.left_stick_y);
+            robot.setArmRotatePower(0.4 * gamepad2.left_stick_y);
         //}
 
         buttons[1] = gamepad2.dpad_down;

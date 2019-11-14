@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.hardware.kauailabs.NavxMicroNavigationSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -15,6 +17,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+
+import java.util.concurrent.TimeUnit;
 
 // THIS IS NOT AN OPMODE - IT IS A DEFINING CLASS
 public class Robot {
@@ -38,6 +42,7 @@ public class Robot {
     // Sensors
     IntegratingGyroscope gyro;
     NavxMicroNavigationSensor navxMicro;
+    BNO055IMU imu;
 
     DistanceSensor frontDistance;
 
@@ -76,7 +81,10 @@ public class Robot {
     private gripperPosition gripperPos = gripperPosition.OPEN;
 
     public enum armPosition {REST, ACTIVE}
-    public armPosition armPos = armPosition.REST; // will change back to REST later
+    public armPosition armPos = armPosition.REST;
+    Orientation angles;
+
+
 
     private HardwareMap hwMap = null;
 
@@ -99,13 +107,17 @@ public class Robot {
         this.liftMotor = hwMap.dcMotor.get("liftMotor");
 
         // Drive Motor Direction
-        this.rearLeft.setDirection(DcMotor.Direction.REVERSE);
-        this.frontLeft.setDirection(DcMotor.Direction.REVERSE);
-        this.rearRight.setDirection(DcMotor.Direction.FORWARD);
-        this.frontRight.setDirection(DcMotor.Direction.FORWARD);
+        this.rearLeft.setDirection(DcMotor.Direction.FORWARD);
+        this.frontLeft.setDirection(DcMotor.Direction.FORWARD);
+        this.rearRight.setDirection(DcMotor.Direction.REVERSE);
+        this.frontRight.setDirection(DcMotor.Direction.REVERSE);
         this.waffleMover.setDirection(DcMotor.Direction.FORWARD);
         this.armRotate.setDirection(DcMotor.Direction.REVERSE); // positive makes arm go forward
         this.liftMotor.setDirection(DcMotor.Direction.FORWARD);
+
+        // Motor encoder reset
+        this.armRotate.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.armRotate.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // set motor powers to 0 so they don't cause problems
         this.stopDrive();
@@ -125,6 +137,7 @@ public class Robot {
 
         // Sensor init
         this.frontDistance = hwMap.get(DistanceSensor.class, "frontDistance");
+        this.initImu();
 
         // Vuforia init
         detector = new WebcamTest();
@@ -159,6 +172,7 @@ public class Robot {
 
     void driveForwardDistance(double distance, double power, LinearOpMode opmode) { // make power negative to go backwards
         /* drives forward a certain distance(in) using encoders */
+        double targetAngle = this.getHeading();
 
         // calculate ticks
         long NUM_TICKS_LONG = StrictMath.round(this.TICKS_PER_INCH * distance);
@@ -170,18 +184,16 @@ public class Robot {
         // set mode
         this.setDriveMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        // set power
-        this.setDrivePower(power);
-
         // drive
         while (opmode.opModeIsActive() && Math.abs(this.rearLeft.getCurrentPosition()) < NUM_TICKS && Math.abs(this.frontLeft.getCurrentPosition()) < NUM_TICKS
         && Math.abs(this.rearRight.getCurrentPosition()) < NUM_TICKS && Math.abs(this.frontRight.getCurrentPosition()) < NUM_TICKS) {
-            // wait until target position is reached
-            opmode.telemetry.addData("Target Position", NUM_TICKS);
-            opmode.telemetry.addData("Rear Left", this.rearLeft.getCurrentPosition());
-            opmode.telemetry.addData("Rear Right", this.rearRight.getCurrentPosition());
-            opmode.telemetry.addData("Front Left", this.frontLeft.getCurrentPosition());
-            opmode.telemetry.addData("Front Right", this.frontRight.getCurrentPosition());
+            double currentAngle = this.getHeading();
+            double error = Math.tanh((currentAngle - targetAngle) / 40);
+            this.frontLeft.setPower(power + error);
+            this.frontRight.setPower(power - error);
+            this.rearLeft.setPower(power + error);
+            this.rearRight.setPower(power - error);
+            opmode.telemetry.addData("Angle of Robot", currentAngle);
             opmode.telemetry.update();
         }
 
@@ -203,8 +215,17 @@ public class Robot {
 
     void strafeTime(double power, long milliseconds) throws InterruptedException {
         /* strafes for a certain amount of milliseconds */
-        this.setStrafe(power);
-        Thread.sleep(milliseconds);
+        double targetAngle = this.getHeading(); // you want to stay at this angle the whole time
+        ElapsedTime timer = new ElapsedTime();
+        timer.reset();
+        while (timer.time(TimeUnit.MILLISECONDS) < milliseconds) {
+            double currentAngle = this.getHeading();
+            double error = Math.tanh((currentAngle - targetAngle) / 20); // we have to constraing the error between -1 and 1
+            this.frontLeft.setPower(power + error);
+            this.frontRight.setPower(-power - error);
+            this.rearLeft.setPower(-power - error);
+            this.rearRight.setPower(power + error);
+        }
         this.stopDrive();
     }
 
@@ -218,6 +239,22 @@ public class Robot {
         this.stopDrive();
     }
 
+    void turnWithImu(double power, double angle, OpMode opmode) {
+        double currentAngle = this.getHeading();
+        double targetAngle = currentAngle + angle;
+        double sign = Math.signum(angle);
+        this.rearLeft.setPower(-power * sign);
+        this.frontLeft.setPower(-power * sign);
+        this.rearRight.setPower(power * sign);
+        this.frontRight.setPower(power * sign);
+        while (currentAngle * sign <= targetAngle * sign) {
+            currentAngle = this.getHeading();
+            opmode.telemetry.addData("Angle of Robot", currentAngle);
+            opmode.telemetry.update();
+        }
+        this.stopDrive();
+    }
+
     void moveWaffleMover() throws InterruptedException {
         this.waffleMover.setPower(this.wafflePower * this.wafflePosition);
         Thread.sleep(600);
@@ -226,6 +263,8 @@ public class Robot {
     }
 
     private void moveArmRotate(int targetPosition, double power, OpMode opmode) {
+        double sign = Math.signum(targetPosition);
+
         // reset encoders
         this.armRotate.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
@@ -235,16 +274,9 @@ public class Robot {
         // set power
         this.setArmRotatePower(power);
 
-        // PID parameters
-        PIDWrist.setSetpoint(targetPosition);
-        PIDWrist.setOutputRange(0, 0.5);
-        PIDWrist.setInputRange(0, 500);
-        PIDWrist.enable();
-
         long timestart = System.nanoTime() / 1000000000;
         // wait for the armRotate motors to reach the position or else things go bad bad
-        while (Math.abs(this.armRotate.getCurrentPosition()) <  targetPosition) {
-
+        while (this.armRotate.getCurrentPosition() * sign <  targetPosition * sign) {
             // if it takes more than 2 seconds, something is wrong so we exit the loop
             if (System.nanoTime() / 1000000000 - timestart > 10) {
                 opmode.telemetry.addData("Error", "Gripper movement took too long");
@@ -252,14 +284,9 @@ public class Robot {
                 break;
             }
 
-            double correction1 = PIDWrist.performPID(Math.abs(this.armRotate.getCurrentPosition()));
-
-            this.armRotate.setPower(this.armRotate.getPower() + correction1);
-            opmode.telemetry.addData("Gripper Target", targetPosition);
+            opmode.telemetry.addData("Gripper", targetPosition + " " + this.armRotate.getCurrentPosition());
             opmode.telemetry.update();
         }
-
-        PIDWrist.reset();
 
         // stop the armRotate motors
         this.stopArmRotate();
@@ -273,7 +300,7 @@ public class Robot {
     void bringArmDown(OpMode opmode) {
         if (armPos == armPosition.REST) { // we only bring the arm down if the arm is resting
             // we rotate the arm 180 + ANGLE_OF_GRIPPER_WHEN_GRABBING degrees
-            this.moveArmRotate(this.TORQUENADO60TICKS_PER_REV * 4 * (145) / 360, 0.7, opmode);
+            this.moveArmRotate(-2800, 0.6, opmode);
             this.stopArmRotate();
             this.armPos = armPosition.ACTIVE;
         }
@@ -286,8 +313,7 @@ public class Robot {
                 this.rotateGripper(0.5);
             }
             // we rotate the arm 225 degrees
-            this.moveArmRotate(this.TORQUENADO60TICKS_PER_REV * 4 * (145) / 360, -0.7, opmode);
-            this.stopArmRotate();
+            this.moveArmRotate(2800, -0.6, opmode);
             this.armPos = armPosition.REST;
         }
     }
@@ -390,7 +416,7 @@ public class Robot {
         Thread.sleep(500);
         this.gripBlock();
         Thread.sleep(500);
-        this.rotateGripper(1);
+        this.rotateGripper(0.7);
     }
 
     void stopEverything() {
@@ -398,4 +424,29 @@ public class Robot {
         this.stopArmRotate();
         this.stopLift();
     }
+
+    void initImu() {
+        // imu init
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingEnabled      = true;
+        parameters.loggingTag          = "IMU";
+        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+        this.imu = hwMap.get(BNO055IMU.class, "imu");
+        this.imu.initialize(parameters);
+    }
+
+    double getHeading() {
+        // get angles
+        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        return angles.firstAngle;
+    }
+
+    void turnToGlobalPosition(double power, double angle, OpMode opmode) {
+        double angleToTurn = angle - this.getHeading();
+        this.turnWithImu(power, angleToTurn, opmode);
+    }
 }
+

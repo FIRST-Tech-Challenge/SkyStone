@@ -24,6 +24,7 @@ public class GerritTelop extends LinearOpMode {
         }
     }
     public void leverArmStay2() throws InterruptedException {
+        position = robot.leverArm.getCurrentPosition();
             if (position > now) {
                 robot.leverArm.setPower(-.4);
             }

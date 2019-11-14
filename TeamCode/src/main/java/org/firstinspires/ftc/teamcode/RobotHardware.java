@@ -32,10 +32,11 @@ public class RobotHardware {
     public Servo    clampRotator;
     public Servo    clamp;
 
-    public static final double MID_SERVO       =  0.5 ;
+    public static final double MID_SERVO       =  0.6 ;
     public static final double ARM_UP_POWER    =  0.45 ;
     public static final double ARM_DOWN_POWER  = -0.45 ;
     public static final double CLAMP_CLOSE_DISTANCE = 0.75;
+    public static final double CLAMP_ROTATOR_BEGINNING_SERVO = 0;
 
     /* local OpMode members. */
     HardwareMap hardwareMap     =  null;
@@ -87,7 +88,7 @@ public class RobotHardware {
 
         try {
             clampRotator = hardwareMap.get(Servo.class, "clamp_rotator");
-            clampRotator.setPosition(MID_SERVO);
+            clampRotator.setPosition(CLAMP_ROTATOR_BEGINNING_SERVO);
             telemetry.addData("Status", "Servo: clamp_rotator identified");    //
         } catch (IllegalArgumentException err) {
             telemetry.addData("Warning", "Servo: clamp_rotator not plugged in");    //

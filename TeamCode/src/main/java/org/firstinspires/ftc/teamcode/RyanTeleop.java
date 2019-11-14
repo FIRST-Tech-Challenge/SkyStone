@@ -22,8 +22,12 @@ public class RyanTeleop extends LinearOpMode {
     }
 
     private void moveClampRotator(double clamp_rotator_set) {
+        if (clamp_rotator_set > 0 ){
+            robot.clampRotator.setPosition(.001 + robot.clampRotator.getPosition());
+        } else {
+            robot.clampRotator.setPosition(-.001 + robot.clampRotator.getPosition());
+        }
 
-        robot.clampRotator.setPosition((.0001*clamp_rotator_set) + robot.clampRotator.getPosition());
     }
 
     @Override

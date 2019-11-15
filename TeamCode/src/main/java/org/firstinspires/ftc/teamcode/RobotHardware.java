@@ -112,7 +112,7 @@ public class RobotHardware {
 
         try {
             kicker = hardwareMap.get(Servo.class, "kicker");
-            kicker.setPosition(MID_SERVO);
+            kicker.setPosition(KICKER_START);
             telemetry.addData("Status", "Servo: kicker identified");    //
         } catch (IllegalArgumentException err) {
             telemetry.addData("Warning", "Servo: kicker not plugged in");    //

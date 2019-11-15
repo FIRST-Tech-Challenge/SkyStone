@@ -11,10 +11,10 @@ public class LeverArm {
     public void leverArmStay(RobotHardware robot){
         position = robot.leverArm.getCurrentPosition();
         if (position > wanted) {
-            robot.leverArm.setPower(-.4);
+            robot.leverArm.setPower(-.35);
         }
-        if (position < wanted) {
-            robot.leverArm.setPower(.4);
+        else if (position < wanted) {
+            robot.leverArm.setPower(.35);
         }
     }
 

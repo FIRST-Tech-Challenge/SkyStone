@@ -15,7 +15,6 @@ public class BBOpModeAutonomousSkystonesBlue extends LinearOpMode
 {
     private ElapsedTime runtime = new ElapsedTime();
     private BBSRobot robot = new BBSRobot();
-    private BBLinearSlide slide = new BBLinearSlide();
     private BBIntake intake = new BBIntake();
     private BBVision _vision = new BBVision();
 
@@ -28,7 +27,7 @@ public class BBOpModeAutonomousSkystonesBlue extends LinearOpMode
          * The init() method of the hardware class does all the work here
          */
         robot.init(hardwareMap, telemetry, this);
-        slide.init(hardwareMap, telemetry);
+
         intake.init(hardwareMap);
         _vision.setUp(telemetry, hardwareMap);
 
@@ -60,7 +59,7 @@ public class BBOpModeAutonomousSkystonesBlue extends LinearOpMode
                         telemetry.addLine("SKYSTONE FOUND");
                         telemetry.update();
                         foundStone = true;
-                        robot.strafeForTime(0, 0);
+
                         break;
                     }
                 }
@@ -68,58 +67,22 @@ public class BBOpModeAutonomousSkystonesBlue extends LinearOpMode
                     break;
                 }
 
-                robot.strafeForTime(-0.5, 100);
-
 
             } else {
                 telemetry.addLine("NOPE");
                 telemetry.update();
                 //strafe left
-                robot.strafeForTime(-0.5, 100);
+
 
             }
             targets =  _vision.visionFeedback(telemetry);
         }
 
         _vision.cleanUp();
-        robot.strafeForTime(0, 0);
+
         if(foundStone){
 
 
-
-            slide.MoveUp();
-
-            sleep(500);
-            slide.StopArm();
-
-            slide.SlideOut();
-            sleep(3000);
-            slide.StopSlide();
-
-
-            slide.RotateReset();
-            sleep(250);
-            slide.ReLevel(1);
-            sleep(2400);
-            slide.LevelStop();
-            sleep(300);
-
-            slide.MoveDown(0.1);
-            sleep(1500);
-            slide.StopArm();
-            slide.Level(1);
-            sleep(1500);
-            slide.Grab();
-            sleep(300);
-            robot.moveBackwards(15, 0.4);
-            robot.turnLeft(105,0.6);
-            if(runtime.seconds() > 20){
-                robot.moveForward(180, 0.6);
-                robot.moveBackwards(15,0.6);
-            }else {
-                robot.moveForward(160, 0.6);
-                robot.moveBackwards(15,0.6);
-            }
 
         }else{
 

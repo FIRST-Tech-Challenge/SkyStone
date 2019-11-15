@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Control.AutonomousControl;
 import org.firstinspires.ftc.teamcode.Control.Crane;
 
-@Autonomous(name="Blue Auton", group = "basic")
-public class basicOp extends AutonomousControl {
+@Autonomous(name="Straight Auton", group = "basic")
+public class straight extends AutonomousControl {
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
@@ -18,10 +18,10 @@ public class basicOp extends AutonomousControl {
         telemetry.update();
 
         if (opModeIsActive()){
-            rob.driveTrainMovement(0.25, Crane.movements.right);
-            sleep(4000);
             rob.driveTrainMovement(0.5, Crane.movements.forward);
             sleep(2500);
+
+
 
         }
 

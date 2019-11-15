@@ -127,14 +127,12 @@ public class RobotOneAll extends LinearOpMode {
             telemetry.update();
 
         grab();
+        LetMehGo();
 
             // Pace this loop so jaw action is reasonable speed.
             sleep(50);
-            
+
         }
-
-
-
 
 
         }
@@ -144,6 +142,14 @@ public class RobotOneAll extends LinearOpMode {
             //left 1, right 0
             robotOne.leftServo.setPosition(0.75);
             robotOne.rightServo.setPosition(0.22);
+        }
+    }
+
+    public void LetMehGo() {
+        if (gamepad1.right_bumper == true) {
+            //left 1, right 0
+            robotOne.leftServo.setPosition(1.0);
+            robotOne.rightServo.setPosition(0.0);
         }
     }
 }

@@ -196,9 +196,9 @@ public class AutoLib {
 
         robot.setServoPosition(SERVO_ARM, SERVO_ARM_POS_SCORE);
 
-        Thread.sleep(500);
+        Thread.sleep(100);
 
-        robot.setDcMotorPower(MOTOR_ARM, 0.5f);
+        robot.setDcMotorPower(MOTOR_ARM, .9f);
 
         while (!robot.isTouchSensorPressed(TOUCH_ARM_BOTTOM)) {
             opMode.idle();
@@ -210,10 +210,16 @@ public class AutoLib {
 
         robot.setDcMotorPower(MOTOR_ARM, 0);
 
-        Thread.sleep(1000);
+//        Thread.sleep(1000);
+//        robot.setServoPosition(SERVO_GRABBER, SERVO_GRABBER_GRAB);
+    }
+    public void armGrab() throws InterruptedException {
+
+
+
+       // Thread.sleep(100);
         robot.setServoPosition(SERVO_GRABBER, SERVO_GRABBER_GRAB);
     }
-
     public void moveArmUp() {
         robot.setDcMotorPower(MOTOR_ARM, -0.5f);
 

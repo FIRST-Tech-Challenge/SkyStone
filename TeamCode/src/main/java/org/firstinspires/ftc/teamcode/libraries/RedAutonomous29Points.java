@@ -24,9 +24,9 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 
 
-@Autonomous(name = "Blue Autonomous 29 Points", group = "Concept")
+@Autonomous(name = "Red Autonomous 29 Points", group = "Concept")
 
-public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
+public class RedAutonomous29Points extends LinearOpMode {
 
     private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
     private static final boolean PHONE_IS_PORTRAIT = false;
@@ -58,7 +58,7 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
     double yPosition = 0;
     double xPosition = 0;
     boolean startIdentify = true;
-    float distanceToDepot = 165;    //268
+    float distanceToDepot = 165;
 
     // Class Members
     private OpenGLMatrix lastLocation = null;
@@ -72,10 +72,7 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
     private float phoneYRotate = 0;
     private float phoneZRotate = 0;
     private AutoLib autoLib;
-    private void ConceptVuforiaSkyStoneNavigationWebcam2()
-    {
 
-    }
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -83,15 +80,13 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
         /*
          * Retrieve the camera we are to use.
          */
-
         webcamName = hardwareMap.get(WebcamName.class, "Webcam1");
 
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
-//         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
-
+        // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
 
@@ -226,7 +221,7 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
 
         targetsSkyStone.activate();
         if (startIdentify) {
-            autoLib.calcMove(46, .8f, Constants.Direction.BACKWARD);
+            autoLib.calcMove(46, .7f, Constants.Direction.BACKWARD);
             while (!isStopRequested() && startIdentify) {
 
                 // check all the trackable targets to see which one (if any) is visible.
@@ -258,9 +253,9 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
 
                     yPosition = translation.get(1);
                     xPosition = translation.get(0);
-                    if (yPosition < 0) {
+                    if (yPosition >0 && yPosition <=10 ) {
                         positionSkystone = "Left"; //right
-                        autoLib.calcMove(3, .5f, Constants.Direction.LEFT);
+                        autoLib.calcMove(3, .5f, Constants.Direction.RIGHT);
 //                        distanceToDepot = distanceToDepot - 68.5f;
                         //  sleep(3000);
                     } else {
@@ -285,7 +280,7 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
 
                     distanceToDepot = distanceToDepot + 13.5f;
 
-                    autoLib.calcMove(10, .5f, Constants.Direction.RIGHT);
+                    autoLib.calcMove(10, .5f, Constants.Direction.LEFT);
 
                 }
                 telemetry.addData("Skystone Position", positionSkystone);
@@ -298,39 +293,39 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
         targetsSkyStone.deactivate();
     }
 
-
-
     private void finalMove(double xPosition, double yPosition) throws InterruptedException {
         telemetry.addData("Final Position Reached", "none");
         telemetry.addData("X Position ", xPosition);
         telemetry.addData("Y Position ", yPosition);
         telemetry.update();
-// go near skystone
-        autoLib.moveArmDownScoreServoArmGrab();
-
-        autoLib.calcMove((float) (-xPosition / 10) + 14.75f, .9f, Constants.Direction.FORWARD);   //when increased-moves back
-        autoLib.calcMove((float) (yPosition / 10) + 12f, .9f, Constants.Direction.RIGHT); //when decreased- moves to the left
-//        distanceToDepot = distanceToDepot + (float) yPosition + 5;
+        //lower arm
         Thread.sleep(500);
+        autoLib.moveArmDownScoreServoArmGrab();
+// go near skystone
+        autoLib.calcMove((float) (-xPosition / 10) + 14.75f, .9f, Constants.Direction.FORWARD);   //when increased-moves back
+        autoLib.calcMove((float) (yPosition / 10) + 12, .9f, Constants.Direction.RIGHT); //when decreased- moves to the left
+//        distanceToDepot = distanceToDepot + (float) yPosition + 5;
+        autoLib.calcMove(3, .3f, Constants.Direction.BACKWARD);
         autoLib.armGrab();
-        Thread.sleep(1000);
-        autoLib.calcMove(14, .8f, Constants.Direction.FORWARD);
-        autoLib.calcTurn(-83, .7f);
+        Thread.sleep(250);
+        autoLib.calcMove(25, .9f, Constants.Direction.FORWARD);
+//        autoLib.calcTurn(84, .6f);
         if(distanceToDepot >195)
         {
             distanceToDepot=205;
         }
-        autoLib.calcMove(distanceToDepot, 1f, Constants.Direction.BACKWARD);
+        autoLib.calcMove(distanceToDepot, 1f, Constants.Direction.RIGHT);
         autoLib.moveArmUpSeconds();
-        autoLib.calcTurn(82, .6f);
-        autoLib.calcMove(34.5f, .8f, Constants.Direction.BACKWARD);
+//        autoLib.calcTurn(-83, .6f);
+        autoLib.calcMove(42.5f, .9f, Constants.Direction.BACKWARD);     //34.5
         autoLib.scoreServo();
-        autoLib.calcMove(4,.4f, Constants.Direction.BACKWARD);
+        Thread.sleep(250);
+        autoLib.calcMove(4,.3f, Constants.Direction.BACKWARD);
         autoLib.latchServoFoundation();
         Thread.sleep(1000);
-        autoLib.calcMove(76, 1f, Constants.Direction.FORWARD);
+        autoLib.calcMove(76, .9f, Constants.Direction.FORWARD);
         autoLib.restServoFoundation();
-        autoLib.calcMove(120, 1f, Constants.Direction.RIGHT);
+        autoLib.calcMove(120, 1f, Constants.Direction.LEFT);
         startIdentify = false;
 
     }

@@ -3,26 +3,19 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.motion.Clamp;
+import org.firstinspires.ftc.teamcode.motion.LeverArm;
 
-@TeleOp(name="Basic Example", group="Robot")
+
+@TeleOp(name="RobotTeleop:)", group="Robot")
 public class RobotTelop extends LinearOpMode {
 
     /* Declare OpMode members. */
     RobotHardware robot      = new RobotHardware();   // Use a Pushbot's hardware
+    LeverArm lever_arm = new LeverArm();
+    Clamp clamp = new Clamp();
 
     private void moveRobot(float x_direction, float y_direction) {
-        // Do something
-    }
-
-    private void moveLeverArm(float distance) {
-        // Do something
-    }
-
-    private void moveClampRotator(float distance) {
-        // Do something
-    }
-
-    private void setClamp(boolean open, boolean close) {
         // Do something
     }
 
@@ -50,16 +43,19 @@ public class RobotTelop extends LinearOpMode {
                 moveKicker(gamepad1.right_trigger);
             }
 
-            if (gamepad2.left_stick_y != 0 ) {
-                moveLeverArm(gamepad2.left_stick_y);
+            if (gamepad2.left_stick_y < .5 && gamepad2.left_stick_y > -.5) {
+                lever_arm.leverArmStay(robot);
+            }
+            if (gamepad2.left_stick_y > .5 || gamepad2.left_stick_y < -.5) {
+                lever_arm.moveLeverArm(robot, telemetry, -gamepad2.left_stick_y);
             }
 
-            if (gamepad2.right_stick_y != 0 ) {
-                moveClampRotator(gamepad2.right_stick_y);
+            if (gamepad2.left_bumper || gamepad2.right_bumper) {
+                clamp.setClamp(robot, gamepad2.left_bumper, gamepad2.right_bumper);
             }
 
-            if (gamepad2.left_bumper || gamepad2.right_bumper ) {
-                setClamp(gamepad2.left_bumper, gamepad2.right_bumper);
+            if (gamepad2.right_stick_y != 0) {
+                clamp.moveClampRotator(robot, -gamepad2.right_stick_y);
             }
 
 

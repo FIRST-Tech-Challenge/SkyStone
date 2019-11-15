@@ -13,7 +13,7 @@ public class Tank extends LinearOpMode {
             robot.leftDrive.setPower(left / 2);
         }
         if (gamepad1.right_stick_y >= .1 || gamepad1.right_stick_y <= -.1) {
-            robot.rightDrive.setPower(left / 2);
+            robot.rightDrive.setPower(right / 2);
         }
         robot.leftDrive.setPower(0);
         robot.rightDrive.setPower(0);

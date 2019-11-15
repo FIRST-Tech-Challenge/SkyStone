@@ -3,29 +3,13 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.motion.Clamp;
+
 @TeleOp(name = "RyanTeleop")
 public class RyanTeleop extends LinearOpMode {
 
     RobotHardware robot = new RobotHardware();
-
-    private void setClamp(boolean open, boolean close) {
-        if (open) {
-            robot.clamp.setPosition(robot.CLAMP_OPEN_DISTANCE);
-        }
-
-        if (close) {
-            robot.clamp.setPosition(robot.CLAMP_CLOSE_DISTANCE);
-        }
-    }
-
-    private void moveClampRotator(double clamp_rotator_set) {
-        if (clamp_rotator_set > 0) {
-            robot.clampRotator.setPosition(.002 + robot.clampRotator.getPosition());
-        } else {
-            robot.clampRotator.setPosition(-.002 + robot.clampRotator.getPosition());
-        }
-
-    }
+    Clamp clamp = new Clamp();
 
     @Override
     public void runOpMode() {
@@ -40,11 +24,11 @@ public class RyanTeleop extends LinearOpMode {
             telemetry.update();
 
             if (gamepad2.left_bumper || gamepad2.right_bumper) {
-                setClamp(gamepad2.left_bumper, gamepad2.right_bumper);
+                clamp.setClamp(robot, gamepad2.left_bumper, gamepad2.right_bumper);
             }
 
             if (gamepad2.right_stick_y != 0) {
-                moveClampRotator(-gamepad2.right_stick_y);
+                clamp.moveClampRotator(robot, -gamepad2.right_stick_y);
             }
         }
     }

@@ -63,7 +63,7 @@ public class SensorBNO055IMU extends LinearOpMode
     //----------------------------------------------------------------------------------------------
 
     // The IMU sensor object
-    BNO055IMU imu;
+        BNO055IMU imu;
 
     // State used for updating telemetry
     Orientation angles;

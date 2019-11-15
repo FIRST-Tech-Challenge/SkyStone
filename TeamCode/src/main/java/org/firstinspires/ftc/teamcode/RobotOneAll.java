@@ -126,13 +126,14 @@ public class RobotOneAll extends LinearOpMode {
             telemetry.addData("right", "%.2f", right);
             telemetry.update();
 
-
+        grab();
 
             // Pace this loop so jaw action is reasonable speed.
             sleep(50);
+            
         }
 
-        grab();
+
 
 
 

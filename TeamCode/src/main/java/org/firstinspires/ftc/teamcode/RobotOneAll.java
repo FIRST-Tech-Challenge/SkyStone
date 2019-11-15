@@ -47,7 +47,7 @@ public class RobotOneAll extends LinearOpMode {
         double drive;
         double turn;
         double max;
-        boolean grab;
+       //oolean grab;
 
         robotOne.init(hardwareMap);
 
@@ -64,7 +64,7 @@ public class RobotOneAll extends LinearOpMode {
             // This way it's also easy to just drive straight, or just turn.
             drive = gamepad1.left_stick_y;
             turn  = -gamepad1.left_stick_x;
-            //grab = gamepad1.left_bumper;
+
 
             // Combine drive and turn for blended motion.
             left  = drive + turn;
@@ -81,10 +81,7 @@ public class RobotOneAll extends LinearOpMode {
             // Output the safe vales to the motor drives.
             robotOne.leftDrive.setPower(left);
             robotOne.rightDrive.setPower(right);
-//            if (grab == 1) {
-//                robotOne.leftServo.setPosition(0.5);
-//                robotOne.rightServo.setPosition(0.5);
-//            }
+//
             // Use gamepad left & right Bumpers to open and close the claw
             /*if (gamepad1.right_bumper)
                 clawOffset += CLAW_SPEED;
@@ -129,18 +126,30 @@ public class RobotOneAll extends LinearOpMode {
             telemetry.addData("right", "%.2f", right);
             telemetry.update();
 
-
-
-            if (gamepad1.left_bumper) {
-                robotOne.leftServo.setPosition(0.3);
-                robotOne.rightServo.setPosition(1.05);
-            }
+        grab();
+        LetMehGo();
 
             // Pace this loop so jaw action is reasonable speed.
             sleep(50);
+
         }
 
 
+        }
 
+    public void grab() {
+        if (gamepad1.left_bumper == true) {
+            //left 1, right 0
+            robotOne.leftServo.setPosition(0.75);
+            robotOne.rightServo.setPosition(0.22);
         }
     }
+
+    public void LetMehGo() {
+        if (gamepad1.right_bumper == true) {
+            //left 1, right 0
+            robotOne.leftServo.setPosition(1.0);
+            robotOne.rightServo.setPosition(0.0);
+        }
+    }
+}

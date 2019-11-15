@@ -2,6 +2,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.bosch.BNO055IMUImpl;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -17,6 +18,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.teamcode.common.math.Pose;
+import org.firstinspires.ftc.teamcode.common.math.TimePose;
+import org.openftc.revextensions2.ExpansionHubEx;
+import org.openftc.revextensions2.RevBulkData;
 
 import java.util.Locale;
 
@@ -31,6 +36,14 @@ public class BBSRobot {
     private DcMotor rightRear = null;
     private DcMotor leftRear = null;
 
+    private ExpansionHubEx chassisHub1;
+    private ExpansionHubEx chassisHub2;
+
+    public TwoWheelTrackingLocalizer localizer;
+    public RevBulkData lastChassis1Read;
+    public RevBulkData lastChassis2Read;
+    public double lastHeading;
+    private double headingOffset;
 
     private Telemetry telemetry;
 
@@ -39,21 +52,6 @@ public class BBSRobot {
     private ElapsedTime runtime = new ElapsedTime();
 
     BNO055IMU imu;
-
-    // State used for updating telemetry
-    Orientation angles;
-    Acceleration gravity;
-
-    static final int PULSES_PER_CENTIMETRE = 85;
-    static final int PULSES_PER_DEGREE = 51;
-
-    private static double TURN_P = 0.005;
-
-    static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder
-    static final double     DRIVE_GEAR_REDUCTION    = 2.0 ;     // This is < 1.0 if geared UP
-    static final double     WHEEL_DIAMETER_CM   = 9.0 ;     // For figuring circumference
-    static final double     COUNTS_PER_CM         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
-            (WHEEL_DIAMETER_CM * 3.1415);
 
 
 
@@ -91,21 +89,21 @@ public class BBSRobot {
         // Set up the parameters with which we will use our IMU. Note that integration
         // algorithm here just reports accelerations to the logcat log; it doesn't actually
         // provide positional information.
+        imu = hwmap.get(BNO055IMUImpl.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
-        parameters.loggingEnabled      = true;
-        parameters.loggingTag          = "IMU";
-        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-
-        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
-        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
-        // and named "imu".
-        imu = hwmap.get(BNO055IMU.class, "imu");
+        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         imu.initialize(parameters);
+        headingOffset = imu.getAngularOrientation().firstAngle;
+
 
         runtime.reset();
+        Pose start = new Pose(0,0,0);
+        TimePose startPose4D = new TimePose(start, System.currentTimeMillis());
+        localizer = new TwoWheelTrackingLocalizer(0, 1, startPose4D);
+        this.lastHeading = 0;
+
+        chassisHub1 = hwmap.get(ExpansionHubEx.class, "Expansion Hub 1");
+        chassisHub2 = hwmap.get(ExpansionHubEx.class, "Expansion Hub 2");
     }
 
 
@@ -118,6 +116,15 @@ public class BBSRobot {
         double rightPower;
 
 
+        this.lastChassis1Read = chassisHub1.getBulkInputData();
+        this.lastChassis2Read = chassisHub2.getBulkInputData();
+        this.lastHeading = imu.getAngularOrientation().firstAngle - headingOffset;
+        localizer.update(lastChassis1Read, lastChassis2Read, lastHeading);
+
+        telemetry.addData("X:", String.format("%.1f", localizer.x()));
+        telemetry.addData("Y:",String.format("%.1f", localizer.y()));
+        telemetry.addData("H:",String.format("%.1f", Math.toDegrees(localizer.h())));
+        telemetry.update();
 
         double slowScale = ((1 - gp1.left_trigger) * 0.7 + 0.3);
         double leftX = MecanumUtil.deadZone(gp1.left_stick_x, 0.05) * slowScale;
@@ -168,7 +175,9 @@ public class BBSRobot {
         }
 
 
-
+       /* telemetry.addData("1:", leftRear.getCurrentPosition()); //side
+        telemetry.addData("2", rightRear.getCurrentPosition()); //forward
+        telemetry.update();*/
 
     }
 
@@ -181,6 +190,8 @@ public class BBSRobot {
 
 
     }
+
+
 
      public void moveForward(int centimetres, double speed){
 

@@ -17,5 +17,7 @@ public class IterativeOpMode extends OpMode {
         double speed = gamepad1.left_stick_y;
         double strafe = gamepad1.left_stick_x;
         double turn = gamepad1.right_stick_x;
+
+
     }
 }

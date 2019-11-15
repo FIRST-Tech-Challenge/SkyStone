@@ -12,16 +12,16 @@ public class HansonTelep extends LinearOpMode {
     public void tankDrive(double leftStick, double rightStick) {
 
 
-        if (leftStick > .2 || leftStick < -.2) {
+        if (leftStick > .4 || leftStick < -.4) {
             robot.leftDrive.setPower(leftStick);
         }
-        if (rightStick > .2 || rightStick < -.2) {
+        if (rightStick > .4 || rightStick < -.4) {
             robot.rightDrive.setPower(rightStick);
         }
-        if (rightStick < .2 && rightStick > -.2) {
+        if (rightStick < .4 && rightStick > -.4) {
             robot.rightDrive.setPower(0);
         }
-        if (leftStick < .2 && leftStick > -.2) {
+        if (leftStick < .4 && leftStick > -.4) {
             robot.leftDrive.setPower(0);
         }
     }

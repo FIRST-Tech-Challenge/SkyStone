@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import org.firstinspires.ftc.teamcode.common.math.Pose;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -25,6 +27,11 @@ public class MecanumPowers {
         this.scale();
 
     }
+
+    public MecanumPowers(Pose p) {
+        this(p.x, p.y, p.heading);
+    }
+
 
 
     public List<Double> asList() {

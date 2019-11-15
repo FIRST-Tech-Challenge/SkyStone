@@ -1,6 +1,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.BNO055IMUImpl;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
@@ -18,8 +19,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.teamcode.common.math.MathUtil;
 import org.firstinspires.ftc.teamcode.common.math.Pose;
 import org.firstinspires.ftc.teamcode.common.math.TimePose;
+import org.firstinspires.ftc.teamcode.navigation.Waypoint;
 import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.RevBulkData;
 
@@ -72,6 +75,10 @@ public class BBSRobot {
         rightRear = hwmap.get(DcMotor.class, "right_rear");
         leftRear = hwmap.get(DcMotor.class, "left_rear");
 
+        rightRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         leftFront.setDirection(DcMotor.Direction.REVERSE);
         rightFront.setDirection(DcMotor.Direction.FORWARD);
@@ -106,14 +113,15 @@ public class BBSRobot {
         chassisHub2 = hwmap.get(ExpansionHubEx.class, "Expansion Hub 2");
     }
 
-
+    public void LocalizerUpdate(){
+        this.lastChassis1Read = chassisHub1.getBulkInputData();
+        this.lastChassis2Read = chassisHub2.getBulkInputData();
+        this.lastHeading = imu.getAngularOrientation().firstAngle - headingOffset;
+        localizer.update(lastChassis1Read, lastChassis2Read, lastHeading);
+    }
 
     public void Move(Gamepad gp1, Gamepad gp2){
 
-
-        // Setup a variable for each drive wheel to save power level for telemetry
-        double leftPower;
-        double rightPower;
 
 
         this.lastChassis1Read = chassisHub1.getBulkInputData();
@@ -123,15 +131,13 @@ public class BBSRobot {
 
         telemetry.addData("X:", String.format("%.1f", localizer.x()));
         telemetry.addData("Y:",String.format("%.1f", localizer.y()));
-        telemetry.addData("H:",String.format("%.1f", Math.toDegrees(localizer.h())));
+        telemetry.addData("H:",String.format("%.1f", MathUtil.angleWrap(Math.toDegrees(localizer.h()))));
         telemetry.update();
 
         double slowScale = ((1 - gp1.left_trigger) * 0.7 + 0.3);
         double leftX = MecanumUtil.deadZone(gp1.left_stick_x, 0.05) * slowScale;
         double leftY = MecanumUtil.deadZone(gp1.left_stick_y, 0.05) * slowScale;
         double angle = Math.atan2(leftY, leftX) + Math.PI / 2;
-
-        //rightRear.setPower(gp1.left_trigger + (-gp1.right_trigger));
 
         double driveScale = Math.sqrt(Math.pow(leftX, 2) + Math.pow(leftY, 2));
         driveScale = Range.clip(driveScale, 0, 1);
@@ -140,7 +146,6 @@ public class BBSRobot {
         double turn = Math.copySign(
                 Math.pow(MecanumUtil.deadZone(gp1.right_stick_x, 0.05), 2),
                 gp1.right_stick_x) * slowScale;
-
 
 
         MecanumPowers powers = MecanumUtil.powersFromAngle(angle, driveScale, turn);
@@ -192,15 +197,117 @@ public class BBSRobot {
     }
 
 
+    public static Pose SLIP_DISTANCES = new Pose(22, 5, Math.toRadians(30));
+    public static double MIN_TRANSLATION_POWERS = 0.2;
+    public static double CUTOFF_MOTOR_POWER = 0.05;
+    public static Pose GUNNING_REDUCTION_DISTANCES = new Pose(6, 6, Math.PI/2);
+    public static Pose FINE_REDUCTION_DISTANCES = new Pose(3, 3, Math.PI);
 
-     public void moveForward(int centimetres, double speed){
+     public void RobotMove(Waypoint target, double movementSpeed) {
+
+         telemetry.addData("X:", String.format("%.1f", localizer.x()));
+         telemetry.addData("Y:",String.format("%.1f", localizer.y()));
+         telemetry.addData("H:",String.format("%.1f", MathUtil.angleWrap(Math.toDegrees(localizer.h()))));
 
 
+        //we can use our localiser to move to the position that we want.
+         double distance = target.minus(localizer.pose()).radius();
+         double relAngle = localizer.pose().minus(target).atan() - localizer.pose().heading;
+         double relX = distance * Math.cos(relAngle);
+         double relY = distance * Math.sin(relAngle);
+
+         Pose translationPowers = new Pose(relX, relY, 0).scale(movementSpeed);
+
+         Pose reductionDistances = FINE_REDUCTION_DISTANCES;
+         translationPowers.x /= reductionDistances.x;
+         translationPowers.y /= reductionDistances.y;
+
+         // Ensure we're moving x/y a little unless we're stopped
+         if (translationPowers.radius() < MIN_TRANSLATION_POWERS) {
+             translationPowers.scale(MIN_TRANSLATION_POWERS / translationPowers.radius());
+         }
+
+         telemetry.addData("distance:", String.format("%.1f", distance));
+         telemetry.addData("relAngle:", String.format("%.1f", relAngle));
+
+         double forwardAngle = target.minus(localizer.pose()).atan();
+         double backwardAngle = forwardAngle + Math.PI;
+         double angleToForward = MathUtil.angleWrap(forwardAngle - localizer.pose().heading);
+         double angleToBackward = MathUtil.angleWrap(backwardAngle - localizer.pose().heading);
+         double autoAngle = Math.abs(angleToForward) < Math.abs(angleToBackward) ? forwardAngle : backwardAngle;
+         double desiredAngle = autoAngle;
+
+         // We'll do a quadratic decay to zero to only correct for really big heading errors
+         double angleToTarget = MathUtil.angleWrap(desiredAngle - localizer.pose().heading);
+         translationPowers.heading = angleToTarget / reductionDistances.heading;
+
+         telemetry.addData("angleToTarget:", String.format("%.1f", angleToTarget));
+
+         telemetry.addData("autoAngle:", String.format("%.1f", autoAngle));
+         telemetry.addData("t1x:", String.format("%.1f", translationPowers.x));
+         telemetry.addData("t1y:", String.format("%.1f", translationPowers.y));
+         telemetry.addData("t1h:", String.format("%.1f", translationPowers.heading));
+         //power the wheels
+         //setPowers(new MecanumPowers(translationPowers));
+
+         telemetry.update();
+    }
+
+    public void RobotMoveY(Waypoint target, double movementSpeed) {
+
+        telemetry.addData("X:", String.format("%.1f", localizer.x()));
+        telemetry.addData("Y:",String.format("%.1f", localizer.y()));
+        telemetry.addData("H:",String.format("%.1f", Math.toDegrees(localizer.h())));
+        telemetry.update();
+
+        while(_mode.opModeIsActive() && localizer.y() < target.y) {
+            LocalizerUpdate();
+            MecanumPowers powers = MecanumUtil.powersFromAngle(0, movementSpeed, 0);
+            setPowers(powers);
+            telemetry.addData("X:", String.format("%.1f", localizer.x()));
+            telemetry.addData("Y:",String.format("%.1f", localizer.y()));
+            telemetry.addData("H:",String.format("%.1f", MathUtil.angleWrap(Math.toDegrees(localizer.h()))));
+            telemetry.update();
+        }
+    }
+
+    public void RobotMoveX(Waypoint target, double movementSpeed) {
+
+        telemetry.addData("X:", String.format("%.1f", localizer.x()));
+        telemetry.addData("Y:",String.format("%.1f", localizer.y()));
+        telemetry.addData("H:",String.format("%.1f", Math.toDegrees(localizer.h())));
+        telemetry.update();
+
+        while(_mode.opModeIsActive() && localizer.x() < target.x) {
+            LocalizerUpdate();
+            double turn = Math.copySign(
+                    Math.pow(MecanumUtil.deadZone(1, 0.05), 2),
+                    1);
+            MecanumPowers powers = MecanumUtil.powersFromAngle(0, movementSpeed, turn);
+            setPowers(powers);
+            telemetry.addData("X:", String.format("%.1f", localizer.x()));
+            telemetry.addData("Y:",String.format("%.1f", localizer.y()));
+            telemetry.addData("H:",String.format("%.1f", MathUtil.angleWrap(Math.toDegrees(localizer.h()))));
+            telemetry.update();
+        }
+    }
+
+    public Pose pose(){
+         return localizer.pose();
+    }
+
+    public void Stop(){
+         setPowers(new MecanumPowers(0,0,0,0));
     }
 
     public void moveBackwards(int centimetres, double speed){
 
     }
+
+    public void moveForward(int centimetres, double speed){
+
+    }
+
 
     public void turnLeft(double degrees, double speed){
 

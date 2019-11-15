@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.navigation.Waypoint;
+
 @Autonomous(name="Auto-Foundation-Blue", group="BB")
 public class BBOpModeAutonomousFoundationBlue extends LinearOpMode
 {
@@ -30,34 +32,21 @@ public class BBOpModeAutonomousFoundationBlue extends LinearOpMode
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
+        robot.LocalizerUpdate();
+        Waypoint way1 = new Waypoint(0, 55.0, 0);
+        Waypoint way2 = new Waypoint(20, 0, 0);
 
-        //hooks.UnLatched();
-        sleep(1000);
-        //work out how far forward we need to move
-        robot.moveForward(150, 0.55);
-        sleep(1000);
+        //while(this.opModeIsActive()){
+            robot.RobotMoveY(way1, 0.2);
+            robot.RobotMoveX(way2, 0.2);
 
-        //put down the hooks into the foundation
-        hooks.Latched();
-        sleep(2000);
+          //  if (robot.pose().distance(way1) < way1.followDistance){
+               // robot.Stop();
+               // break;
+          //  }
+         //   robot.LocalizerUpdate();
+       // }
 
-        //work out how far backwards we need to move
-        //robot.twoPowerBackwards(135, 0.4, 0.8);
-        robot.moveBackwards(130, 0.60);
-        sleep(500);
-
-        hooks.UnLatched();
-        sleep(2000);
-
-
-        //we need to move out onto the line.
-        robot.turnRight(95, 0.70);
-        sleep(1000);
-        robot.moveForward(170, 0.60);
-        //robot.strafe(0.7);
-
-        sleep(2000);
-        //robot.moveForward(0, 0);
 
 
     }

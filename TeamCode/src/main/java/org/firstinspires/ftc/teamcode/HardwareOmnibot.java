@@ -826,36 +826,38 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         double rightDistance = readBackRightTof();
         double drivePower = 0.0;
         double spinPower = 0.0;
-        if((Math.abs(stackBackLeftFoundationDistance - leftDistance) > error) ||
-                (Math.abs(stackBackRightFoundationDistance - rightDistance) > error)) {
+        double leftError = stackBackLeftFoundationDistance - leftDistance;
+        double rightError = stackBackRightFoundationDistance - rightDistance;
+        if((Math.abs(stackBackLeftFoundationDistance) > error) ||
+                (Math.abs(rightError) > error)) {
             // Have to drive backwards towards the foundation
-            if(((stackBackLeftFoundationDistance - leftDistance) > error) &&
-                    ((stackBackRightFoundationDistance - rightDistance) > error)) {
+            if(((leftError) > error) &&
+                    ((rightError) > error)) {
                 drivePower = driveSpeed;
                 // Have to spin ccw
-                if(leftDistance > rightDistance) {
+                if(leftError > rightError) {
                     spinPower = -spinSpeed;
                 // We have to spin cw
-                } else if(rightDistance > leftDistance) {
+                } else if(rightError > leftError) {
                     spinPower = spinSpeed;
                 }
             // Have to drive away from the foundation.
-            } else if(((stackBackLeftFoundationDistance - leftDistance) < -error) &&
-                    ((stackBackRightFoundationDistance - rightDistance) < -error)) {
+            } else if(((leftError) < -error) &&
+                    ((rightError) < -error)) {
                 drivePower = -driveSpeed;
-                if(leftDistance > rightDistance) {
+                if(leftError > rightError) {
                     spinPower = -spinSpeed;
                     // We have to spin cw
-                } else if(rightDistance > leftDistance) {
+                } else if(rightError > leftError) {
                     spinPower = spinSpeed;
                 }
             // We just need to spin
             } else {
                 drivePower = 0.0;
-                if(leftDistance > rightDistance) {
+                if(leftError > rightError) {
                     spinPower = -spinSpeed;
                     // We have to spin cw
-                } else if(rightDistance > leftDistance) {
+                } else if(rightError > leftError) {
                     spinPower = spinSpeed;
                 }
             }
@@ -887,7 +889,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         switch(alignState)
         {
             case REFINE_WALL:
-                if(distanceFromWall(stackWallDistance - 2,0.05)) {
+                if(distanceFromWall(stackWallDistance,0.05)) {
                     alignState = AlignActivity.REFINE_FOUNDATION;
                 }
                 break;
@@ -897,7 +899,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                 }
                 break;
             case ALIGN_TO_WALL:
-                if(distanceFromWall(stackWallDistance - 2,0.07)) {
+                if(distanceFromWall(stackWallDistance,0.07)) {
                     alignState = AlignActivity.REFINE_WALL;
                 }
                 break;

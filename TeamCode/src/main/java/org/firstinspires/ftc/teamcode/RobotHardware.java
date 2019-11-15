@@ -41,6 +41,7 @@ public class RobotHardware {
     public static final double ARM_UP_DISTANCE  = 1600 ;
     public static final double CLAMP_CLOSE_DISTANCE = 0.75;
     public static final double CLAMP_ROTATOR_BEGINNING_SERVO = 0;
+    public static final double KICKER_START = 0;
 
     /* local OpMode members. */
     HardwareMap hardwareMap     =  null;

@@ -28,6 +28,7 @@ public class BasicSound implements Sound
 
     public void playSound()
     {
+        stopSound();
         soundPlaying = true;
         SoundPlayer.getInstance().startPlaying(hwMap.appContext, soundID, params, null, new Runnable()
         {

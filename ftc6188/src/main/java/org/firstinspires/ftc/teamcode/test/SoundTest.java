@@ -28,6 +28,7 @@ public class SoundTest extends OpMode
         if (playSound.output())
         {
             basicSound.playSound();
+            playSound.toggle();
         }
 
         telemetry.addData("PlaySound", playSound.output());

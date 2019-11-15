@@ -77,6 +77,7 @@ public class MecanumTeleOp extends OpMode
         if (playSound.output())
         {
             basicSound.playSound();
+            playSound.toggle();
         }
 
 

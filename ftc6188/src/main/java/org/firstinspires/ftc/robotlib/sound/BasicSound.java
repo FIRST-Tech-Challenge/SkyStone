@@ -39,6 +39,12 @@ public class BasicSound implements Sound
         });
     }
 
+    public void stopSound()
+    {
+        SoundPlayer.getInstance().stopPlayingAll();
+        SoundPlayer.getInstance().stopPlayingLoops();
+    }
+
     public void setSoundID(String identifier)
     {
         soundID = hwMap.appContext.getResources().getIdentifier(identifier, "raw", hwMap.appContext.getPackageName());

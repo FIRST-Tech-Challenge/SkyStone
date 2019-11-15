@@ -20,12 +20,12 @@ public class MecanumDrivetrain extends HolonomicFourWheelDrivetrain
         return (Math.cos(course)-Math.sin(course)/Math.tan(wheelAngle))*Math.signum(wheelAngle);
     }
 
-    public void autoPosition(double course, double distance, double velocity, double rotation)
+    public void autoPosition(double course, double distanceIN, double velocity, double rotation)
     {
         this.setCourse(course * Math.PI/180);
         this.setAutoVelocity(velocity);
         this.setRotation(rotation);
-        this.setTargetPosition(distance * getTicksPerIn());
+        this.setTargetPosition(distanceIN * getTicksPerIn());
         position();
     }
 }

@@ -68,24 +68,6 @@ public class MecanumRobot
         platformServos = new LinkedServo(servoClawLeft, servoClawRight);
     }
 
-    public void autoPosition(double course, double velocity, double rotation, double distance) // distance in inches
-    {
-        drivetrain.setCourse(course * Math.PI/180); //converts a degree input into radians
-        drivetrain.setAutoVelocity(velocity);
-        drivetrain.setRotation(rotation);
-        drivetrain.setTargetPosition(distance * drivetrain.getTicksPerIn()); // adjust a distance in inches to the appropriate amount of motor ticks
-
-        while (drivetrain.isPositioning())
-        {
-            telemetry.addData("Auto Status", "In Pos Loop");
-            drivetrain.updatePosition();
-            informationUpdate();
-        }
-
-        telemetry.addData("Auto Status", "In Fin");
-        drivetrain.finishPositioning();
-    }
-
     public void informationUpdate()
     {
         telemetry.addData("> Target Positions", "-----");

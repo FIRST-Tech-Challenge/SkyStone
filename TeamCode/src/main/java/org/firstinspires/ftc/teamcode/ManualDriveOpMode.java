@@ -14,9 +14,9 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  * becomes relative to the field as opposed to the robot. You can
  * reset the forward heading by pressing "x".
  */
-@TeleOp(name = "Mecanum")
+@TeleOp(name = "Manual Drive")
 public class ManualDriveOpMode extends LinearOpMode {
-    private ScoopArmBot robot;
+    private ScoopArmBot robot = new ScoopArmBot(this);
     private boolean arcadeMode = false;
     private int gyroCalibratedCount = 0;
 
@@ -24,7 +24,8 @@ public class ManualDriveOpMode extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        robot = new ScoopArmBot(this);
+        robot.init(hardwareMap);
+        waitForStart();
         while (opModeIsActive()) {
             if (gamepad1.a) {
                 robot.resetHeading();

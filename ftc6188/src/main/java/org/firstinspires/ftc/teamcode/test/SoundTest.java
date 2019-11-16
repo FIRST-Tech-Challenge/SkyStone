@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.robotlib.sound.BasicSound;
 import org.firstinspires.ftc.robotlib.state.ToggleBoolean;
 
-@Disabled
 @TeleOp(name="Sound Test", group="Test")
 public class SoundTest extends OpMode
 {
@@ -33,6 +32,7 @@ public class SoundTest extends OpMode
         }
 
         telemetry.addData("PlaySound", playSound.output());
+        telemetry.addData("Gamepad X", gamepad1.x);
         telemetry.update();
     }
 }

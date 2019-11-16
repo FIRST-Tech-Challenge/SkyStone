@@ -8,7 +8,7 @@ import org.firstinspires.ftc.robotlib.robot.MecanumRobotWithArm;
 import org.firstinspires.ftc.robotlib.state.Button;
 import org.firstinspires.ftc.robotlib.state.ToggleBoolean;
 
-@TeleOp(name="Mecanum TeleOp V-Arm", group="ArmTest")
+@TeleOp(name="Mecanum TeleOp V-Arm", group="Tele")
 public class MecanumTeleOpWithArm extends OpMode
 {
     private MecanumRobotWithArm robot;

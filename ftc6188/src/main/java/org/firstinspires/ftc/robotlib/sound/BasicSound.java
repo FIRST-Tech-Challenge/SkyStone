@@ -28,6 +28,7 @@ public class BasicSound implements Sound
 
     public void playSound()
     {
+        stopSound();
         soundPlaying = true;
         SoundPlayer.getInstance().startPlaying(hwMap.appContext, soundID, params, null, new Runnable()
         {
@@ -37,6 +38,12 @@ public class BasicSound implements Sound
                 soundPlaying = false;
             }
         });
+    }
+
+    public void stopSound()
+    {
+        SoundPlayer.getInstance().stopPlayingAll();
+        SoundPlayer.getInstance().stopPlayingLoops();
     }
 
     public void setSoundID(String identifier)

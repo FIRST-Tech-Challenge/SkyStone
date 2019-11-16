@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotlib.robot.MecanumRobot;
+import org.firstinspires.ftc.robotlib.sound.BasicSound;
 import org.firstinspires.ftc.robotlib.state.Button;
 import org.firstinspires.ftc.robotlib.state.ToggleBoolean;
 
@@ -19,14 +20,23 @@ public class MecanumTeleOp extends OpMode
     private Button servosDown;
     private Button servosMid;
 
+    private BasicSound basicSound;
+    private ToggleBoolean playSound;
+
     @Override
     public void init()
     {
         robot = new MecanumRobot(this.hardwareMap, this.telemetry, true);
-        driverTwoBrakes = new ToggleBoolean();
+
+        driverTwoBrakes = new ToggleBoolean(false);
+        playSound = new ToggleBoolean(false);
+
         servosUp = new Button();
         servosDown = new Button();
         servosMid = new Button();
+
+        basicSound = new BasicSound("police_siren", this.hardwareMap);
+
         elapsedTime = new ElapsedTime();
     }
 
@@ -61,6 +71,15 @@ public class MecanumTeleOp extends OpMode
         robot.drivetrain.setVelocity(velocity * (driverTwoBrakes.output() ? 0 : 1));
         robot.drivetrain.setRotation(-gamepad1.left_stick_x);
 
+        // sound
+        playSound.input(gamepad1.x);
+
+        if (playSound.output())
+        {
+            basicSound.playSound();
+            playSound.toggle();
+        }
+
 
         //DRIVER TWO
         // gamepad 2 inputs
@@ -81,6 +100,9 @@ public class MecanumTeleOp extends OpMode
     @Override
     public void stop()
     {
+        playSound.input(false);
+        basicSound.stopSound();
+
         telemetry.addData("Status", "Stop");
         telemetry.update();
     }

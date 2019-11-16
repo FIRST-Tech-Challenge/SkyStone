@@ -16,7 +16,7 @@ public class MecanumRobot
     private DcMotor driveFrontRight;
     private DcMotor driveRearRight;
     private DcMotor driveRearLeft;
-    DcMotor[] motorList;
+    protected DcMotor[] motorList;
 
     // Platform servos
     private Servo servoClawLeft;
@@ -62,27 +62,10 @@ public class MecanumRobot
         servoClawLeft.setDirection(Servo.Direction.FORWARD);
         servoClawRight.setDirection(Servo.Direction.REVERSE);
 
-        drivetrain = new MecanumDrivetrain(new DcMotor[]{driveFrontLeft, driveFrontRight, driveRearLeft, driveRearRight},
+        motorList = new DcMotor[]{driveFrontLeft, driveFrontRight, driveRearLeft, driveRearRight};
+        drivetrain = new MecanumDrivetrain(motorList,
                 teleOpMode, wheelRadius, wheelToMotorRatio);
         platformServos = new LinkedServo(servoClawLeft, servoClawRight);
-    }
-
-    public void autoPosition(double course, double velocity, double rotation, double distance) // distance in inches
-    {
-        drivetrain.setCourse(course * Math.PI/180); //converts a degree input into radians
-        drivetrain.setAutoVelocity(velocity);
-        drivetrain.setRotation(rotation);
-        drivetrain.setTargetPosition(distance * drivetrain.getTicksPerIn()); // adjust a distance in inches to the appropriate amount of motor ticks
-
-        while (drivetrain.isPositioning())
-        {
-            telemetry.addData("Auto Status", "In Pos Loop");
-            drivetrain.updatePosition();
-            informationUpdate();
-        }
-
-        telemetry.addData("Auto Status", "In Fin");
-        drivetrain.finishPositioning();
     }
 
     public void informationUpdate()

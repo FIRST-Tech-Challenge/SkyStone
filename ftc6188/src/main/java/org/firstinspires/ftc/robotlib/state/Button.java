@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.robotlib.state;
 
-//This class stores the states for buttons pressed on the controller
+//This class stores the states for buttons pressed on the controller and prevents continual activation due to the refresh rate of the phone
 public class Button
 {
     private boolean previouslyPressed = false;

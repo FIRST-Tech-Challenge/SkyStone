@@ -7,11 +7,16 @@ it really just simplifies the programming later since we then only have to set o
  */
 public class LinkedServo
 {
+    // Stores the reference to the servos defined in the hardware map
     private Servo servoOne;
     private Servo servoTwo;
 
+    // True if the servos are facing at each other or their rotation is opposite
     private boolean oppositeFace;
+
+    // The positions for servo one and two respectively
     private double position;
+    private double position2;
 
     public LinkedServo(Servo servoOne, Servo servoTwo, boolean oppositeFace, double position)
     {
@@ -27,7 +32,9 @@ public class LinkedServo
     public void setPosition(double position)
     {
         this.position = position;
-        double position2 = position;
+        position2 = position;
+
+        // inverts the position2 if the servos rotation is opposite (facing at each other)
         if (oppositeFace)
         {
             position2 = -position;
@@ -43,43 +50,13 @@ public class LinkedServo
 
         servoTwo.setPosition(position2);
         servoOne.setPosition(position);
-        // 0 is the down position while 1 is up, for some reason
-    }
-
-    public void setPositionVariable(double position)
-    {
-        this.position = position;
-    }
-
-    public void updateServoOne()
-    {
-        servoOne.setPosition(position);
-    }
-
-    public void updateServoTwo()
-    {
-        double position2 = position;
-        if (oppositeFace)
-        {
-            position2 = -position;
-            if (servoTwo.getPosition() - position < 0)
-            {
-                position2 += 360;
-            }
-            else if (servoTwo.getPosition() - position > 360)
-            {
-                position2 -= 360;
-            }
-        }
-
-        servoTwo.setPosition(position2);
     }
 
     public double getPosition() { return position; }
 
-    // Only for telemetry purposes
-    public String getActual()
-    {
-        return ("One: " + servoOne.getPosition() + " Two: " + servoTwo.getPosition());
-    }
+    public double getPosition2() { return position2; }
+
+    public Servo getServoOne() { return servoOne; }
+
+    public Servo getServoTwo() { return servoTwo; }
 }

@@ -16,7 +16,7 @@ public class MecanumRobot
     private DcMotor driveFrontRight;
     private DcMotor driveRearRight;
     private DcMotor driveRearLeft;
-    protected DcMotor[] motorList;
+    private DcMotor[] motorList;
 
     // Platform servos
     private Servo servoClawLeft;
@@ -26,12 +26,16 @@ public class MecanumRobot
     static final double wheelRadius = 2; //inches
     static final double wheelToMotorRatio = 2.0/1.0;
 
-    // Temporary telemetry reference
+    // Temporary telemetry reference will likely be removed later
     Telemetry telemetry;
 
+    // This robot operates on a mecanum drivetrain
     public MecanumDrivetrain drivetrain;
+
+    // The various LinkedServo or LimitedMotors used in place of regular items
     public LinkedServo platformServos;
 
+    // This general constructor style should be followed with all Robots
     public MecanumRobot(HardwareMap hwMap, Telemetry telemetry, boolean teleOpMode)
     {
         this.telemetry = telemetry;
@@ -68,6 +72,7 @@ public class MecanumRobot
         platformServos = new LinkedServo(servoClawLeft, servoClawRight);
     }
 
+    // Just a central place to store all the telemetry from the robot, will likely me removed later
     public void informationUpdate()
     {
         telemetry.addData("> Target Positions", "-----");
@@ -98,7 +103,7 @@ public class MecanumRobot
         telemetry.addData("Movement Velocity", drivetrain.getAutoVelocity());
 
         telemetry.addData("> Servo Info", "-----");
-        telemetry.addData("Servo Pos", platformServos.getActual());
+        telemetry.addData("Servo Pos", "One: " + platformServos.getServoOne().getPosition() + " Two: " + platformServos.getServoTwo().getPosition());
         telemetry.addData("Linked Pos", platformServos.getPosition());
         telemetry.update();
     }

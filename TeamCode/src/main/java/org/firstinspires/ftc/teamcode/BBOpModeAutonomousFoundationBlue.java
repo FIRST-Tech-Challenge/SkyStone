@@ -33,19 +33,13 @@ public class BBOpModeAutonomousFoundationBlue extends LinearOpMode
         waitForStart();
         runtime.reset();
         robot.LocalizerUpdate();
+
         Waypoint way1 = new Waypoint(0, 55.0, 0);
+         //while(this.opModeIsActive()){
+        robot.RobotMoveY(way1, 0.3);
+        robot.Stop();
         Waypoint way2 = new Waypoint(20, 0, 0);
-
-        //while(this.opModeIsActive()){
-            robot.RobotMoveY(way1, 0.2);
-            robot.RobotMoveX(way2, 0.2);
-
-          //  if (robot.pose().distance(way1) < way1.followDistance){
-               // robot.Stop();
-               // break;
-          //  }
-         //   robot.LocalizerUpdate();
-       // }
+        robot.RobotMoveX(way2, 0.3);
 
 
 

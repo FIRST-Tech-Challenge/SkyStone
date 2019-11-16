@@ -100,6 +100,7 @@ public class BBSRobot {
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         imu.initialize(parameters);
+        //remap axis
         headingOffset = imu.getAngularOrientation().firstAngle;
 
 
@@ -255,6 +256,12 @@ public class BBSRobot {
 
     public void RobotMoveY(Waypoint target, double movementSpeed) {
 
+        //TODO: Think about this -- we loose position on the field
+       /*rightRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);*/
+
         telemetry.addData("X:", String.format("%.1f", localizer.x()));
         telemetry.addData("Y:",String.format("%.1f", localizer.y()));
         telemetry.addData("H:",String.format("%.1f", Math.toDegrees(localizer.h())));
@@ -264,6 +271,7 @@ public class BBSRobot {
             LocalizerUpdate();
             MecanumPowers powers = MecanumUtil.powersFromAngle(0, movementSpeed, 0);
             setPowers(powers);
+            telemetry.addLine("Robot Y");
             telemetry.addData("X:", String.format("%.1f", localizer.x()));
             telemetry.addData("Y:",String.format("%.1f", localizer.y()));
             telemetry.addData("H:",String.format("%.1f", MathUtil.angleWrap(Math.toDegrees(localizer.h()))));
@@ -273,18 +281,36 @@ public class BBSRobot {
 
     public void RobotMoveX(Waypoint target, double movementSpeed) {
 
+         //TODO: Think about this
+        /*rightRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);*/
+
         telemetry.addData("X:", String.format("%.1f", localizer.x()));
         telemetry.addData("Y:",String.format("%.1f", localizer.y()));
         telemetry.addData("H:",String.format("%.1f", Math.toDegrees(localizer.h())));
         telemetry.update();
 
-        while(_mode.opModeIsActive() && localizer.x() < target.x) {
+        while(_mode.opModeIsActive() && Math.abs(localizer.x()) < Math.abs(target.x)) {
             LocalizerUpdate();
+
+            double slowScale = 0.3;
+
+            double direction = 1;
+
+            if(target.x  < 0){
+                direction = -1;
+            }
+
+            // Exponentiate our turn
             double turn = Math.copySign(
-                    Math.pow(MecanumUtil.deadZone(1, 0.05), 2),
-                    1);
-            MecanumPowers powers = MecanumUtil.powersFromAngle(0, movementSpeed, turn);
+                    Math.pow(MecanumUtil.deadZone(direction, 0.05), 2),
+                    direction) * slowScale;
+
+            MecanumPowers powers = MecanumUtil.powersFromAngle(0, 0, turn);
             setPowers(powers);
+            telemetry.addLine("Robot X");
             telemetry.addData("X:", String.format("%.1f", localizer.x()));
             telemetry.addData("Y:",String.format("%.1f", localizer.y()));
             telemetry.addData("H:",String.format("%.1f", MathUtil.angleWrap(Math.toDegrees(localizer.h()))));

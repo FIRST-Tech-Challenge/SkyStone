@@ -33,6 +33,9 @@ public class PinchArmBot extends FourWheelsDriveBot {
     }
 
     public void pickupSkyStone(){
+        opMode.sleep(3*1000);
+        return;
+
         opMode.telemetry.log().add("pickupSkyStone()");
         int i = 1;
         while (this.opMode.opModeIsActive() && i < 4) {
@@ -46,8 +49,16 @@ public class PinchArmBot extends FourWheelsDriveBot {
             i++;
         }
 
+    }
 
+    public void dropSkyStone(){
+        opMode.sleep(2*1000);
+        return;
+    }
 
+    public void resetArm(){
+        opMode.sleep(1*1000);
+        return;
     }
 
 }

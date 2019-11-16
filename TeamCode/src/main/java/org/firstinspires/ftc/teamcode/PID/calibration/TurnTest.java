@@ -21,8 +21,8 @@ public class TurnTest extends LinearOpMode {
         HardwareMap map = new HardwareMap(hardwareMap);
         SampleMecanumDriveBase drive = new SampleMecanumDriveREV(hardwareMap);
 
-        HardwareMap.track.resetEncoders();
-        HardwareMap.track.encoders(true);
+        //HardwareMap.track.resetEncoders();
+        //HardwareMap.track.encoders(true);
 
         waitForStart();
 
@@ -31,14 +31,14 @@ public class TurnTest extends LinearOpMode {
         drive.turnSync(Math.toRadians(ANGLE));
 
         while(opModeIsActive()){
-            telemetry.addData("LeftForward", map.leftForward.getVoltage());
+            /*telemetry.addData("LeftForward", map.leftForward.getVoltage());
             telemetry.addData("RightForward", map.rightForward.getVoltage());
             telemetry.addData("Sideways", map.sideways.getVoltage());
 
             telemetry.addData("LeftForward", HardwareMap.track.getEncoderTicks().get(0));
             telemetry.addData("RightForward", HardwareMap.track.getEncoderTicks().get(1));
             telemetry.addData("Sideways", HardwareMap.track.getEncoderTicks().get(2));
-            telemetry.update();
+            telemetry.update();*/
         }
     }
 }

@@ -27,8 +27,8 @@ public class StraightTest extends LinearOpMode {
                 .forward(DISTANCE)
                 .build();
 
-        HardwareMap.track.resetEncoders();
-        HardwareMap.track.encoders(true);
+        //HardwareMap.track.resetEncoders();
+        //HardwareMap.track.encoders(true);
 
         telemetry.addData("STATUS", "Ready for START!");
         telemetry.update();
@@ -40,11 +40,11 @@ public class StraightTest extends LinearOpMode {
         drive.followTrajectorySync(trajectory);
 
         while(opModeIsActive()){
-            telemetry.addData("LeftForward", map.leftForward.getVoltage());
-            telemetry.addData("RightForward", map.rightForward.getVoltage());
-            telemetry.addData("Sideways", map.sideways.getVoltage());
+            telemetry.addData("LeftForward", map.frontRight.getCurrentPosition());
+            telemetry.addData("RightForward", map.backLeft.getCurrentPosition());
+            telemetry.addData("Sideways", map.backRight.getCurrentPosition());
 
-            telemetry.addData("LeftForward", HardwareMap.track.getEncoderTicks().get(0));
+            /*telemetry.addData("LeftForward", HardwareMap.track.getEncoderTicks().get(0));
             telemetry.addData("RightForward", HardwareMap.track.getEncoderTicks().get(1));
             telemetry.addData("Sideways", HardwareMap.track.getEncoderTicks().get(2));
 
@@ -53,7 +53,7 @@ public class StraightTest extends LinearOpMode {
             telemetry.addData("RightDebug", HardwareMap.track.getEncoderDebug().get(2));
             telemetry.addData("SidewaysDebug", HardwareMap.track.getEncoderDebug().get(3));
 
-            telemetry.update();
+            telemetry.update();*/
         }
     }
 }

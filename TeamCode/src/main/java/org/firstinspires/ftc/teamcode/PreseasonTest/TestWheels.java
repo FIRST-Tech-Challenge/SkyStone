@@ -15,9 +15,6 @@ public class TestWheels extends LinearOpMode {
     public void runOpMode(){
         HardwareMap map = new HardwareMap(hardwareMap);
 
-        HardwareMap.track.resetEncoders();
-        HardwareMap.track.encoders(true,15,0);
-
         telemetry.addData("STATUS", "Ready for START!");
         telemetry.update();
 
@@ -36,8 +33,12 @@ public class TestWheels extends LinearOpMode {
             }
             if(!gamepad1.y && !gamepad1.a)
                 blocked = false;
-            if(gamepad1.b)
-                HardwareMap.track.resetEncoders();
+            if(gamepad1.b){
+                map.frontLeft.resetDeviceConfigurationForOpMode();
+                map.frontRight.resetDeviceConfigurationForOpMode();
+                map.backLeft.resetDeviceConfigurationForOpMode();
+            }
+
 
             if(power < 0.1)
                 power = 0.1;
@@ -68,11 +69,11 @@ public class TestWheels extends LinearOpMode {
 
             telemetry.addData("Wheel Power", power);
             telemetry.addData("","-------------------");
-            telemetry.addData("LeftForward", map.leftForward.getVoltage());
-            telemetry.addData("RightForward", map.rightForward.getVoltage());
-            telemetry.addData("Sideways", map.sideways.getVoltage());
+            telemetry.addData("LeftForward", map.backLeft.getCurrentPosition());
+            telemetry.addData("RightForward", map.frontRight.getCurrentPosition());
+            telemetry.addData("Sideways", map.frontLeft.getCurrentPosition());
 
-            telemetry.addData("LeftForward", HardwareMap.track.getEncoderTicks().get(0));
+            /*telemetry.addData("LeftForward", HardwareMap.track.getEncoderTicks().get(0));
             telemetry.addData("RightForward", HardwareMap.track.getEncoderTicks().get(1));
             telemetry.addData("Sideways", HardwareMap.track.getEncoderTicks().get(2));
 
@@ -83,7 +84,7 @@ public class TestWheels extends LinearOpMode {
             telemetry.addData("Formula", HardwareMap.track.getEncoderDebug().get(0));
             telemetry.addData("LeftDebug", HardwareMap.track.getEncoderDebug().get(1));
             telemetry.addData("RightDebug", HardwareMap.track.getEncoderDebug().get(2));
-            telemetry.addData("SidewaysDebug", HardwareMap.track.getEncoderDebug().get(3));
+            telemetry.addData("SidewaysDebug", HardwareMap.track.getEncoderDebug().get(3));*/
 
             telemetry.update();
         }

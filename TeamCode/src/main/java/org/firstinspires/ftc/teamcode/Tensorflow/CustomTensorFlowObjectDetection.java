@@ -90,14 +90,27 @@ public class CustomTensorFlowObjectDetection extends LinearOpMode {
                                     recognition.getLeft(), recognition.getTop());
                             telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
                                     recognition.getRight(), recognition.getBottom());
+
                             double objWidthpx = Math.abs(recognition.getTop() - recognition.getBottom());
                             double objHeightpx = Math.abs(recognition.getLeft() - recognition.getRight());
+
                             telemetry.addData("Height", objHeightpx);
                             telemetry.addData("Width", objWidthpx);
                             telemetry.addData("Distance to Object", TFODCalc.getDistanceToObj(127,
                                     imgHeight, objHeightpx));
-                            telemetry.addData("Estimated Angle", TFODCalc.getAngleOfObj(objWidthpx,
-                                    TFODCalc.getDistanceToObj(127, imgHeight, objHeightpx)));
+                            telemetry.addData("Estimated Angle", TFODCalc.getAngleOfStone(objWidthpx,
+                                    TFODCalc.getDistanceToObj(127, imgHeight, objHeightpx)).get(0));
+
+                            double min = TFODCalc.getAngleOfStone(objWidthpx,
+                                    TFODCalc.getDistanceToObj(127, imgHeight, objHeightpx)).get(1);
+                            double max = TFODCalc.getAngleOfStone(objWidthpx,
+                                    TFODCalc.getDistanceToObj(127, imgHeight, objHeightpx)).get(2);
+                            double zeroDegreeWidth = TFODCalc.getAngleOfStone(objWidthpx,
+                                    TFODCalc.getDistanceToObj(127, imgHeight, objHeightpx)).get(3);
+
+                            telemetry.addData("Angle Model Domain", "[" + min + ", " + max + "]");
+                            telemetry.addData("Predicted Zero Degree Width", zeroDegreeWidth);
+
                         }
                         telemetry.update();
                     }

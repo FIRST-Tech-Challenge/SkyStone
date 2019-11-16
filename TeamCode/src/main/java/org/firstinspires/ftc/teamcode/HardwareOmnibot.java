@@ -137,9 +137,9 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         STONE1_RELEASE(126),
         STONE1(176),
         CAPSTONE_GRAB(300),
-        CAPSTONE_ROTATE(400),
         STONE2_RELEASE(424),
         STONE2(474),
+        CAPSTONE_ROTATE(650),
         STONE3_RELEASE(622),
         STONE3(672),
         ROTATE(850),
@@ -283,7 +283,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public static double CLAW_OPEN = 0.4;
     public static double CLAW_PINCHED = 0.9;
     public static double CLAWDRICOPTER_FRONT = 0.85;
-    public static double CLAWDRICOPTER_CAPSTONE = 0.67;
+    public static double CLAWDRICOPTER_CAPSTONE = 0.69;
     public static double CLAWDRICOPTER_BACK = 0.09;
     public static int CLAW_OPEN_TIME = 500;
     public static int CLAW_CLOSE_TIME = 500;
@@ -820,6 +820,59 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         return targetReached;
     }
 
+    // This function goes to a set distance from the rear distance sensors
+    public boolean parallelRearTarget(double distance, double driveSpeed, double spinSpeed, double error) {
+        stackBackLeftFoundationDistance = distance;
+        stackBackRightFoundationDistance = distance;
+
+        return parallelRearTarget(driveSpeed, spinSpeed, error);
+//        boolean parallel = false;
+//        double leftDistance = readBackLeftTof();
+//        double rightDistance = readBackRightTof();
+//        double drivePower = 0.0;
+//        double spinPower = 0.0;
+//        double leftError = distance - leftDistance;
+//        double rightError = distance - rightDistance;
+//        if((Math.abs(leftError) > error) || (Math.abs(rightError) > error)) {
+//            // Have to drive backwards towards the foundation
+//            if(((leftError) > error) && ((rightError) > error)) {
+//                drivePower = driveSpeed;
+//                // Have to spin ccw
+//                if(leftDistance > rightDistance) {
+//                    spinPower = -spinSpeed;
+//                    // We have to spin cw
+//                } else if(rightDistance > leftDistance) {
+//                    spinPower = spinSpeed;
+//                }
+//                // Have to drive away from the foundation.
+//            } else if(((leftError) < -error) && ((rightError) < -error)) {
+//                drivePower = -driveSpeed;
+//                if(leftDistance > rightDistance) {
+//                    spinPower = -spinSpeed;
+//                    // We have to spin cw
+//                } else if(rightDistance > leftDistance) {
+//                    spinPower = spinSpeed;
+//                }
+//                // We just need to spin
+//            } else {
+//                drivePower = 0.0;
+//                if(leftDistance > rightDistance) {
+//                    spinPower = -spinSpeed;
+//                    // We have to spin cw
+//                } else if(rightDistance > leftDistance) {
+//                    spinPower = spinSpeed;
+//                }
+//            }
+//            drive(0, drivePower, spinPower, -readIMU());
+//        } else {
+//            setAllDriveZero();
+//            parallel = true;
+//        }
+//
+//        return parallel;
+    }
+
+    // This function goes to a distance of two range sensors to maintain angle from object
     public boolean parallelRearTarget(double driveSpeed, double spinSpeed, double error) {
         boolean parallel = false;
         double leftDistance = readBackLeftTof();
@@ -828,8 +881,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         double spinPower = 0.0;
         double leftError = stackBackLeftFoundationDistance - leftDistance;
         double rightError = stackBackRightFoundationDistance - rightDistance;
-        if((Math.abs(stackBackLeftFoundationDistance) > error) ||
-                (Math.abs(rightError) > error)) {
+        if((Math.abs(leftError) > error) || (Math.abs(rightError) > error)) {
             // Have to drive backwards towards the foundation
             if(((leftError) > error) &&
                     ((rightError) > error)) {

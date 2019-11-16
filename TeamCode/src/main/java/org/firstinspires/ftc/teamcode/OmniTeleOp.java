@@ -348,7 +348,7 @@ public class OmniTeleOp extends OpMode {
 
 		telemetry.addData("Lift Target Height: ", robot.liftTargetHeight);
         telemetry.addData("Intake Target: ", robot.intakeTargetPosition);
-        telemetry.addData("Stack Distance: ", robot.stackDistance);
+        telemetry.addData("Stack Distance: ", robot.stackWallDistance);
         telemetry.addData("Offset Angle: ", driverAngle);
         telemetry.addData("Align State:", robot.alignState);
         telemetry.addData("Left Range: ", robot.leftTofValue);

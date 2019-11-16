@@ -154,31 +154,31 @@ public class Haley_TeleOpRefactor extends LinearOpMode {
 
             //Player 1
 
+            UpdateClamps();
+
+            UpdateFeeder();
+
+            UpdateDriveTrain();
+
+            UpdateFeederServo();
+
+            UpdateLift();
+
+            UpdateCrane();
+
+            UpdateBlockPickUp();
+
+            UpdateCapstone();
+
+            UpdateEndServo();
+
+            UpdateBlockKickout();
+
+            UpdateReleaseServo();
 
         }
 
 
-        UpdateClamps();
-
-        UpdateFeeder();
-
-        UpdateDriveTrain();
-
-        UpdateFeederServo();
-
-        UpdateLift();
-
-        UpdateCrane();
-
-        UpdateBlockPickUp();
-
-        UpdateCapstone();
-
-        UpdateEndServo();
-
-        UpdateBlockKickout();
-
-        UpdateReleaseServo();
 
 
     }
@@ -329,10 +329,104 @@ public class Haley_TeleOpRefactor extends LinearOpMode {
         leftPower = Range.clip(drive + turn, -1.0, 1.0);
         rightPower = Range.clip(drive - turn, -1.0, 1.0);
 
-        front_left.setPower(leftPower);
-        rear_left.setPower(leftPower);
-        front_right.setPower(rightPower);
-        rear_right.setPower(rightPower);
+        if (leftPower != 0 || rightPower != 0) {
+            front_left.setPower(leftPower);
+            rear_left.setPower(leftPower);
+            front_right.setPower(rightPower);
+            rear_right.setPower(rightPower);
+        } else if (gamepad1.right_stick_x < -0.4 && gamepad1.right_stick_y < 0) {
+            telemetry.addData("Status", "Up and Left");
+            telemetry.update();
+            front_left.setPower(-0.25);
+            rear_left.setPower(0.5);
+            front_right.setPower(0.5);
+            rear_right.setPower(-0.25);
+
+        } else if (gamepad1.right_stick_x > 0.4 && gamepad1.right_stick_y < 0) {
+            telemetry.addData("Status", "Up and Right");
+            telemetry.update();
+            front_left.setPower(0.5);
+            rear_left.setPower(-0.25);
+            front_right.setPower(-0.25);
+            rear_right.setPower(0.5);
+
+        } else if (gamepad1.right_stick_x < -0.4 && gamepad1.right_stick_y > 0) {
+            telemetry.addData("Status", "Down and Left");
+            telemetry.update();
+            front_left.setPower(-0.5);
+            rear_left.setPower(0.25);
+            front_right.setPower(0.25);
+            rear_right.setPower(-0.5);
+
+        } else if (gamepad1.right_stick_x > 0.4 && gamepad1.right_stick_y > 0) {
+            telemetry.addData("Status", "Down and Right");
+            telemetry.update();
+            front_left.setPower(0.25);
+            rear_left.setPower(-0.5);
+            front_right.setPower(-0.5);
+            rear_right.setPower(0.25);
+
+        } else if (gamepad1.right_stick_y > 0) {
+            telemetry.addData("Status", "Moving Backwards");
+            telemetry.update();
+            front_left.setPower(-1);
+            rear_left.setPower(-1);
+            front_right.setPower(-1);
+            rear_right.setPower(-1);
+
+        } else if (gamepad1.right_stick_y < 0) {
+            telemetry.addData("Status", "Moving Forward");
+            telemetry.addData("front_left Encoder Position", front_left.getCurrentPosition());
+            telemetry.addData("rear_right Encoder Position", rear_left.getCurrentPosition());
+            telemetry.addData("front_left Encoder Position", front_right.getCurrentPosition());
+            telemetry.addData("rear_right Encoder Position", rear_right.getCurrentPosition());
+            telemetry.update();
+            front_left.setPower(1);
+            rear_left.setPower(1);
+            front_right.setPower(1);
+            rear_right.setPower(1);
+
+        } else if (gamepad1.right_stick_x > 0) {
+            telemetry.addData("Status", "Strafing Right");
+            telemetry.update();
+            front_left.setPower(-.9);
+            rear_left.setPower(1);
+            front_right.setPower(1);
+            rear_right.setPower(-1);
+
+        } else if (gamepad1.right_stick_x < 0) {
+            telemetry.addData("Status", "Strafing Left");
+            telemetry.update();
+            front_left.setPower(.9);
+            rear_left.setPower(-1);
+            front_right.setPower(-1);
+            rear_right.setPower(1);
+
+        }  else if (gamepad1.dpad_right) {
+            telemetry.addData("Status", "Strafing Right");
+            telemetry.update();
+            front_left.setPower(-.9);
+            rear_left.setPower(1);
+            front_right.setPower(.9);
+            rear_right.setPower(-1);
+
+        } else if (gamepad1.dpad_left) {
+            telemetry.addData("Status", "Strafing Left");
+            telemetry.update();
+            front_left.setPower(.9);
+            rear_left.setPower(-1);
+            front_right.setPower(-.9);
+            rear_right.setPower(1);
+
+        } else {
+            telemetry.addData("Status", "Not moving");
+            telemetry.update();
+            front_left.setPower(0);
+            rear_left.setPower(0);
+            front_right.setPower(0);
+            rear_right.setPower(0);
+        }
+
 
         //Strafing
 //        if (gamepad1.right_stick_x < -0.4 && gamepad1.right_stick_y < 0) {

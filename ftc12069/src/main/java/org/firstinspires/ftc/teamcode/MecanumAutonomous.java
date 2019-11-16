@@ -36,6 +36,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotlib.autonomous.AutonomousRobot;
+import org.firstinspires.ftc.robotlib.information.OrientationInfo;
 import org.firstinspires.ftc.robotlib.util.Point;
 
 
@@ -85,8 +86,9 @@ public class MecanumAutonomous extends LinearOpMode {
                 VuforiaTrackable trackedStone = robot.getVisibleTrackable("Stone Target");
                 if (trackedStone != null) {
                     Point stonePoint = new Point(trackedStone.getLocation());
-                    robot.move(robot.getCourseFromRobot(stonePoint), 1, 0, robot.getDistanceFromRobot(stonePoint));
+                    robot.simpleMove(robot.getCourseFromRobot(stonePoint), 1, 0, robot.getDistanceFromRobot(stonePoint));
                     robot.turn(90, 0.5);
+                    robot.move(robot.getCourseFromRobot(stonePoint), 1, new OrientationInfo(145, 0.3), robot.getDistanceFromRobot(stonePoint));
                 }
             } else {
                 telemetry.addData("Visible Target", "none");

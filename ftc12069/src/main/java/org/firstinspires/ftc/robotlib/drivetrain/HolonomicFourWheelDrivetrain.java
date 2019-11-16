@@ -134,7 +134,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     }
 
     /**
-     * Retrieves the current position of the robot relative to target
+     * Retrieves the current position of the robot relative to the target
      * @return the current position of the robot
      */
     @Override
@@ -160,7 +160,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     @Override
     public void updatePosition()
     {
-        throw new UnsupportedOperationException("Position should be handled by the built-in controller");
+        //throw new UnsupportedOperationException("Position should be handled by the built-in controller");
     }
 
     /**
@@ -223,5 +223,19 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     public double getTicksPerInch(double wheelRadius, double motorToWheelRatio)
     {
         return (wheelRadius * motorToWheelRatio * 2 * Math.PI) / getTicksPerUnit();
+    }
+
+    /**
+     * Provides the wheel rotation values for a velocity
+     * @param velocity rotation speed (between 0 and 1)
+     * @return Array of wheel rotation velocities
+     */
+    public double[] getWheelRotationValues(double velocity) {
+        return new double[] {
+                velocity > 0 ? velocity : -velocity, // Front Left
+                velocity > 0 ? -velocity : velocity, // Front Right
+                velocity > 0 ? velocity : -velocity, // Rear Right
+                velocity > 0 ? -velocity : velocity // Rear Left
+        };
     }
 }

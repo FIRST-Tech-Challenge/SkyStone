@@ -3,7 +3,6 @@ package org.firstinspires.ftc.robotlib.autonomous;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
@@ -11,6 +10,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
+import org.firstinspires.ftc.robotlib.information.OrientationInfo;
 import org.firstinspires.ftc.robotlib.robot.MecanumHardwareMap;
 import org.firstinspires.ftc.robotlib.util.Point;
 
@@ -270,20 +270,17 @@ public class AutonomousRobot {
     }
 
     /**
-     * Turns the robot by an angle (this is bad design, it overrides other motor commands)
+     * Turns the robot by an angle
      * This blocks the current thread
      * @param angle angle to turn to
      * @param velocity rotation speed (between 0 and 1)
      */
     public void turn(double angle, double velocity) {
         double initialOrientation = this.getOrientation2D();
-        double frontLeft = velocity > 0 ? velocity : -velocity;
-        double frontRight = velocity > 0 ? -velocity : velocity;
-        double rearRight = velocity > 0 ? velocity : -velocity;
-        double rearLeft = velocity > 0 ? -velocity : velocity;
+        double[] rotationValues = hardware.drivetrain.getWheelRotationValues(velocity);
 
         while (this.getOrientation2D() - initialOrientation < angle) {
-            hardware.drivetrain.setMotorPowers(frontLeft, frontRight, rearRight, rearLeft);
+            hardware.drivetrain.setMotorPowers(rotationValues[0], rotationValues[1], rotationValues[2], rotationValues[3]);
         }
     }
 
@@ -338,16 +335,40 @@ public class AutonomousRobot {
 
     /**
      * Moves the robot using a course, velocity, rotation, and distance
+     * This adjusts some values, not including rotation
      * @param course Angle (in degrees) of movement
-     * @param velocity new velocity
-     * @param rotation Integer (between -1 - 1) -1 - clockwise 0 - no rotation 1 - counterclockwise
+     * @param velocity New velocity (-1 to 1)
+     * @param rotation Double (between -1 and 1) -1 - clockwise 0 - no rotation 1 - counterclockwise
      * @param distance Distance (in inches) to execute this movement
      */
-    public void move(double course, double velocity, double rotation, double distance) {
+    public void simpleMove(double course, double velocity, double rotation, double distance) {
         hardware.drivetrain.setCourse(course * Math.PI / 180);
         hardware.drivetrain.setRotation(rotation);
         hardware.drivetrain.setVelocity(velocity);
         hardware.drivetrain.setTargetPosition(distance * hardware.motorTicksPerInch);
         hardware.drivetrain.position();
+    }
+
+    /**
+     * Moves the robot using a course, velocity, rotation, and distance
+     * @param course Angle (in degrees) of movement
+     * @param velocity New velocity (-1 to 1)
+     * @param orientationInfo Angle (in degrees) of orientation relative to current orientation
+     * @param distance Distance (in inches) to execute this movement
+     */
+    public void move(double course, double velocity, OrientationInfo orientationInfo, double distance) {
+        hardware.drivetrain.setCourse(course * Math.PI / 180);
+        hardware.drivetrain.setVelocity(velocity);
+        hardware.drivetrain.setTargetPosition(distance * hardware.motorTicksPerInch);
+
+        double initialOrientation = this.getOrientation2D();
+
+        while (hardware.drivetrain.isPositioning()) {
+            if (this.getOrientation2D() - initialOrientation < orientationInfo.angle) hardware.drivetrain.setRotation(orientationInfo.rotation);
+        }
+
+        // In case the robot did not finish turning by the time it reached its destination
+        if (this.getOrientation2D() - initialOrientation < orientationInfo.angle)
+            this.turn(orientationInfo.angle - (this.getOrientation2D() - initialOrientation), orientationInfo.rotation);
     }
 }

@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-public class ScoopArmBot extends FourWheelsDriveBot {
+public class ScoopArmBot extends PinchArmBot {
 
     public Servo servoScoop = null;
     double  position = 0.1; // Start at halfway position

@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-public class PinchArmBot extends FourWheelsDriveBot {
+public class PinchArmBot extends TensorFlowBot {
     static final double INCREMENT   = 0.01;     // amount to slew servo each CYCLE_MS cycle
     static final int    CYCLE_MS    =   500;     // period of each cycle
     static final double MAX_POS     =  1.0;     // Maximum rotational position
@@ -36,18 +36,18 @@ public class PinchArmBot extends FourWheelsDriveBot {
         opMode.sleep(3*1000);
         return;
 
-        opMode.telemetry.log().add("pickupSkyStone()");
-        int i = 1;
-        while (this.opMode.opModeIsActive() && i < 4) {
-            opMode.telemetry.log().add(String.format("pickupSkystone loop %d, %.2f, %.2f", i, servoArm.getPosition(), servoPinch.getPosition()));
-
-            servoArm.setPosition(servoArm.getPosition() - 0.5);
-            servoPinch.setPosition(servoPinch.getPosition() + 0.3);
-            opMode.sleep(2000);
-            opMode.telemetry.log().add(String.format("pickupSkystone end %d, %.2f, %.2f", i, servoArm.getPosition(), servoPinch.getPosition()));
-            opMode.idle();
-            i++;
-        }
+//        opMode.telemetry.log().add("pickupSkyStone()");
+//        int i = 1;
+//        while (this.opMode.opModeIsActive() && i < 4) {
+//            opMode.telemetry.log().add(String.format("pickupSkystone loop %d, %.2f, %.2f", i, servoArm.getPosition(), servoPinch.getPosition()));
+//
+//            servoArm.setPosition(servoArm.getPosition() - 0.5);
+//            servoPinch.setPosition(servoPinch.getPosition() + 0.3);
+//            opMode.sleep(2000);
+//            opMode.telemetry.log().add(String.format("pickupSkystone end %d, %.2f, %.2f", i, servoArm.getPosition(), servoPinch.getPosition()));
+//            opMode.idle();
+//            i++;
+//        }
 
     }
 

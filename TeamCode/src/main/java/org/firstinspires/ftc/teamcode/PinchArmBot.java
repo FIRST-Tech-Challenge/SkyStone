@@ -36,18 +36,18 @@ public class PinchArmBot extends TensorFlowBot {
         opMode.sleep(3*1000);
         return;
 
-        opMode.telemetry.log().add("pickupSkyStone()");
-        int i = 1;
-        while (this.opMode.opModeIsActive() && i < 4) {
-            opMode.telemetry.log().add(String.format("pickupSkystone loop %d, %.2f, %.2f", i, servoArm.getPosition(), servoPinch.getPosition()));
-
-            servoArm.setPosition(servoArm.getPosition() - 0.5);
-            servoPinch.setPosition(servoPinch.getPosition() + 0.3);
-            opMode.sleep(2000);
-            opMode.telemetry.log().add(String.format("pickupSkystone end %d, %.2f, %.2f", i, servoArm.getPosition(), servoPinch.getPosition()));
-            opMode.idle();
-            i++;
-        }
+//        opMode.telemetry.log().add("pickupSkyStone()");
+//        int i = 1;
+//        while (this.opMode.opModeIsActive() && i < 4) {
+//            opMode.telemetry.log().add(String.format("pickupSkystone loop %d, %.2f, %.2f", i, servoArm.getPosition(), servoPinch.getPosition()));
+//
+//            servoArm.setPosition(servoArm.getPosition() - 0.5);
+//            servoPinch.setPosition(servoPinch.getPosition() + 0.3);
+//            opMode.sleep(2000);
+//            opMode.telemetry.log().add(String.format("pickupSkystone end %d, %.2f, %.2f", i, servoArm.getPosition(), servoPinch.getPosition()));
+//            opMode.idle();
+//            i++;
+//        }
 
     }
 

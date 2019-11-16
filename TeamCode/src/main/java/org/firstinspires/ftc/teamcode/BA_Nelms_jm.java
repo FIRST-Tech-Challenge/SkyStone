@@ -36,6 +36,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 
 /**
@@ -74,9 +75,9 @@ public class BA_Nelms_jm extends LinearOpMode {
     private int front_right_position; //variable to hold encoder position
     private int rear_right_position; //variable to hold encoder position
     private int crane_state = 0;
-    private float front_left_modifier = -.1f;
-    private float rear_left_modifier = -.1f;
-    private float front_right_modifier = -.1f;
+    private float front_left_modifier = 0;
+    private float rear_left_modifier = 0;
+    private float front_right_modifier = 0;
     private float rear_right_modifier = 0;
 
 
@@ -161,299 +162,299 @@ public class BA_Nelms_jm extends LinearOpMode {
 
             //Player 1
 
-            //Strafing
-            if (gamepad1.right_stick_x < -0.4 && gamepad1.right_stick_y < 0) {
-                telemetry.addData("Status", "Up and Left");
-                telemetry.update();
-                front_left.setPower(-(0.5 + front_left_modifier));
-                rear_left.setPower((1 + rear_left_modifier));
-                front_right.setPower((1 + front_right_modifier));
-                rear_right.setPower(-(0.5 + rear_right_modifier));
+            UpdateClamps();
 
-            } else if (gamepad1.right_stick_x > 0.4 && gamepad1.right_stick_y < 0) {
-                telemetry.addData("Status", "Up and Right");
-                telemetry.update();
-                front_left.setPower((1 + front_left_modifier));
-                rear_left.setPower(-(.5 + rear_left_modifier));
-                front_right.setPower(-(.5 + front_right_modifier));
-                rear_right.setPower((1 + rear_right_modifier));
+            UpdateFeeder();
 
-            } else if (gamepad1.right_stick_x < -0.4 && gamepad1.right_stick_y > 0) {
-                telemetry.addData("Status", "Down and Left");
-                telemetry.update();
-                front_left.setPower(-(1 + front_left_modifier));
-                rear_left.setPower((0.5 + rear_left_modifier));
-                front_right.setPower((0.5 + front_right_modifier));
-                rear_right.setPower(-(1 + rear_right_modifier));
+            UpdateDriveTrain();
 
-            } else if (gamepad1.right_stick_x > 0.4 && gamepad1.right_stick_y > 0) {
-                telemetry.addData("Status", "Down and Right");
-                telemetry.update();
-                front_left.setPower((0.5 + front_left_modifier));
-                rear_left.setPower(-(1 + rear_left_modifier));
-                front_right.setPower(-(1 + front_right_modifier));
-                rear_right.setPower((0.5 + rear_right_modifier));
+            UpdateFeederServo();
 
-            } else if (gamepad1.right_stick_y > 0) {
-                telemetry.addData("Status", "Moving Backwards");
-                telemetry.update();
-                front_left.setPower(-(1 + front_left_modifier));
-                rear_left.setPower(-(1 + rear_left_modifier));
-                front_right.setPower(-(1 + front_right_modifier));
-                rear_right.setPower(-(1 + rear_right_modifier));
+            UpdateLift();
 
-            } else if (gamepad1.right_stick_y < 0) {
-                telemetry.addData("Status", "Moving Forward");
-                telemetry.addData("front_left Encoder Position",front_left.getCurrentPosition());
-                telemetry.addData("rear_right Encoder Position",rear_left.getCurrentPosition());
-                telemetry.addData("front_left Encoder Position",front_right.getCurrentPosition());
-                telemetry.addData("rear_right Encoder Position",rear_right.getCurrentPosition());
-                telemetry.update();
-                front_left.setPower((1 + front_left_modifier));
-                rear_left.setPower((1 + rear_left_modifier));
-                front_right.setPower((1 + front_right_modifier));
-                rear_right.setPower((1 + rear_right_modifier));
+            UpdateCrane();
 
-            } else if (gamepad1.right_stick_x > 0) {
-                telemetry.addData("Status", "Strafing Right");
-                telemetry.update();
-                front_left.setPower(-(1 + front_left_modifier));
-                rear_left.setPower((1 + rear_left_modifier));
-                front_right.setPower((1 + front_right_modifier));
-                rear_right.setPower(-(1 + rear_right_modifier));
+            UpdateBlockPickUp();
 
-            } else if (gamepad1.right_stick_x < 0) {
-                telemetry.addData("Status", "Strafing Left");
-                telemetry.update();
-                front_left.setPower((1 + front_left_modifier));
-                rear_left.setPower(-(1 + rear_left_modifier));
-                front_right.setPower(-(1 + front_right_modifier));
-                rear_right.setPower((1 + rear_right_modifier));
+            UpdateCapstone();
 
-            } else if (gamepad1.left_stick_x > 0) {
-                telemetry.addData("Status", "Turning Right");
-                telemetry.update();
-                front_left.setPower((1 + front_left_modifier));
-                rear_left.setPower((1 + rear_left_modifier));
-                front_right.setPower(-(1 + front_right_modifier));
-                rear_right.setPower(-(1 + rear_right_modifier));
+            UpdateEndServo();
 
-            } else if (gamepad1.left_stick_x < 0) {
-                telemetry.addData("Status", "Turning Left");
-                telemetry.update();
-                front_left.setPower(-(1 + front_left_modifier));
-                rear_left.setPower(-(1 + rear_left_modifier));
-                front_right.setPower((1 + front_right_modifier));
-                rear_right.setPower((1 + rear_right_modifier));
+            UpdateBlockKickout();
 
-            } else if (gamepad1.dpad_right) {
-                telemetry.addData("Status", "Strafing Right");
-                telemetry.update();
-                front_left.setPower(-(1 + front_left_modifier));
-                rear_left.setPower((1 + rear_left_modifier));
-                front_right.setPower((1 + front_right_modifier));
-                rear_right.setPower(-(1 + rear_right_modifier));
+            UpdateReleaseServo();
 
-            } else if (gamepad1.dpad_left) {
-                telemetry.addData("Status", "Strafing Left");
-                telemetry.update();
-                front_left.setPower((1 + front_left_modifier));
-                rear_left.setPower(-(1 + rear_left_modifier));
-                front_right.setPower(-(1 + front_right_modifier));
-                rear_right.setPower((1 + rear_right_modifier));
+            telemetry.update();
+        }
+    }
 
-            } else {
-                telemetry.addData("Status", "Not moving");
-                telemetry.update();
-                front_left.setPower(0);
-                rear_left.setPower(0);
-                front_right.setPower(0);
-                rear_right.setPower(0);
-            }
+    public void UpdateClamps() {
+        //Clamps
+        if (gamepad1.left_bumper) {
+            telemetry.addData("Clamps", "Clamp Down");
+            Clamp_Left.setPosition(0.73f);
+            Clamp_Right.setPosition(0.27f);
 
+        } else if (gamepad1.left_trigger > 0) {
+            telemetry.addData("Clamps", "Clamp Up");
+            Clamp_Left.setPosition(0.6f);
+            Clamp_Right.setPosition(0.5f);
 
-            //Clamps
-            if (gamepad1.left_bumper) {
-                telemetry.addData("Status", "Clamp Down");
-                telemetry.update();
-                Clamp_Left.setPosition(0.73f);
-                Clamp_Right.setPosition(0.27f);
+        } else {
+            telemetry.addData("Clamps", "Not Moving");
+        }
+    }
 
-            } else if (gamepad1.left_trigger > 0) {
-                telemetry.addData("Status", "Clamp Up");
-                telemetry.update();
-                Clamp_Left.setPosition(0.6f);
-                Clamp_Right.setPosition(0.5f);
+    public void UpdateFeeder() {
+        //Feeder in
+        if (gamepad1.x) {
+            telemetry.addData("Feeder", "feeder in on");
+            feeder_motor.setPower(1);
 
-            } else {
-                telemetry.addData("Status", "Not Moving");
-                telemetry.update();
-            }
+        } else if (gamepad1.a) {
+            telemetry.addData("Feeder", "Not moving");
+            feeder_motor.setPower(0);
 
+        } else {
 
-            //Feeder in
-            if (gamepad1.x) {
-                telemetry.addData("Status", "feeder in on");
-                telemetry.update();
-                feeder_motor.setPower(1);
+            telemetry.addData("Feeder", "Not moving");
+        }
 
-            } else if (gamepad1.a) {
-                telemetry.addData("Status", "Not moving");
-                telemetry.update();
-                feeder_motor.setPower(0);
+        //Feeder out
+        if (gamepad1.y) {
+            telemetry.addData("Feeder", "Not moving");
+            feeder_motor.setPower(-1);
 
-            } else {
+        } else if (gamepad1.b) {
+            telemetry.addData("Feeder", "Not moving");
+            feeder_motor.setPower(0);
 
-                telemetry.addData("Status", "Not moving");
-                telemetry.update();
-            }
+        } else {
+            telemetry.addData("Feeder", "Not moving");
+        }
+    }
 
-            //Feeder out
-            if (gamepad1.y) {
-                telemetry.addData("Status", "Not moving");
-                telemetry.update();
-                feeder_motor.setPower(-1);
+    public void UpdateFeederServo() {
+        //feeder Servo Open Close
+        if (gamepad1.right_trigger > 0 && feederServoPosition < 1) {
+            telemetry.addData("FeederServo", "Feeder Servo Close");
+            telemetry.addData("Angle", feederServoPosition);
 
-            } else if (gamepad1.b) {
-                telemetry.addData("Status", "Not moving");
-                telemetry.update();
-                feeder_motor.setPower(0);
+            Feeder_Servo.setPosition(feederServoPosition);
+            feederServoPosition = feederServoPosition + 0.01f;
 
-            } else {
-                telemetry.addData("Status", "Not moving");
-                telemetry.update();
-            }
+        } else if (gamepad1.right_bumper && feederServoPosition > 0) {
+            telemetry.addData("FeederServo", "Feeder Servo Open");
+            telemetry.addData("Angle", feederServoPosition);
+            Feeder_Servo.setPosition(feederServoPosition);
+            feederServoPosition = feederServoPosition - 0.01f;
 
+        }
+    }
 
-            //feeder Servo Open Close
-            if (gamepad1.right_trigger > 0 && feederServoPosition < 1) {
-                telemetry.addData("Status", "Feeder Servo Close");
-                telemetry.addData("Angle", feederServoPosition);
-                telemetry.update();
-                Feeder_Servo.setPosition(feederServoPosition);
-                feederServoPosition = feederServoPosition + 0.01f;
+    public void UpdateLift() {
+        //Player 2
 
-            } else if (gamepad1.right_bumper && feederServoPosition > 0) {
-                telemetry.addData("Status", "Feeder Servo Open");
-                telemetry.addData("Angle", feederServoPosition);
-                telemetry.update();
-                Feeder_Servo.setPosition(feederServoPosition);
-                feederServoPosition = feederServoPosition - 0.01f;
+        //lift
+        if (gamepad2.right_stick_y > 0 & bottom_touch.getState()) {
+            telemetry.addData("Lift", "Lift up");
+            lift_left.setPower(1);
+            lift_right.setPower(1);
 
-            }
+        } else if (gamepad2.right_stick_y < 0 && top_touch.getState()) {
+            telemetry.addData("Lift", "Lift down");
+            lift_left.setPower(-1);
+            lift_right.setPower(-1);
 
+        } else {
+            telemetry.addData("Lift", "Not moving");
+            lift_left.setPower(0);
+            lift_right.setPower(0);
+        }
+    }
 
-            //Player 2
-
-            //lift
-            if (gamepad2.right_stick_y > 0 & bottom_touch.getState()) {
-                telemetry.addData("Status", "Lift up");
-                telemetry.update();
-                lift_left.setPower(1);
-                lift_right.setPower(1);
-
-            } else if (gamepad2.right_stick_y < 0 && top_touch.getState()) {
-                telemetry.addData("Status", "Lift down");
-                telemetry.update();
-                lift_left.setPower(-1);
-                lift_right.setPower(-1);
-
-            } else {
-                telemetry.addData("Status", "Not moving");
-                telemetry.update();
-                lift_left.setPower(0);
-                lift_right.setPower(0);
-            }
-
-
-            //Crain
+    public void UpdateCrane() {
+//Crane
 //            if (gamepad2.dpad_left && Top_Sensor_Rear.getState()) {
-//                telemetry.addData("Status", "Crain is moving foward");
+//                telemetry.addData("Crane", "Crane is moving forward");
 //                top_motor.setPower(1);
 //
 //            } else if (gamepad2.dpad_right && Top_Sensor_Front.getState()) {
-//                telemetry.addData("Status", "Crain is moving backward");
+//                telemetry.addData("Crane", "Crane is moving backward");
 //                top_motor.setPower(-1);
 //
 //            } else {
-//                telemetry.addData("Status", "Not Moving");
+//                telemetry.addData("Crane", "Not Moving");
 //                top_motor.setPower(0);
 //            }
 //
-            if (gamepad2.dpad_left) {
-                crane_state = 1;
+        if (gamepad2.dpad_left) {
+            crane_state = 1;
 
-            }else if (gamepad2.dpad_right) {
-                crane_state = 2;
-            }
-
-
-
-            if (crane_state == 0) {
-                top_motor.setPower(0);
-
-            }else if (crane_state == 1 && Top_Sensor_Rear.getState()) {
-                top_motor.setPower(1);
-
-            }else if (crane_state == 2 && Top_Sensor_Front.getState()) {
-                top_motor.setPower(-1);
-
-            }else {
-                crane_state = 0;
-                top_motor.setPower(0);
-            }
+        } else if (gamepad2.dpad_right) {
+            crane_state = 2;
+        }
 
 
+        if (crane_state == 0) {
+            top_motor.setPower(0);
 
-            //Block pick up
-            if (gamepad2.right_bumper) {
-                telemetry.addData("Status", "Block pickup open ");
-                telemetry.update();
-                Block_Pickup.setPosition(0f);
+        } else if (crane_state == 1 && Top_Sensor_Rear.getState()) {
+            top_motor.setPower(1);
 
-            } else if (gamepad2.left_bumper) {
-                telemetry.addData("Status", "Block pickup closed");
-                telemetry.update();
-                Block_Pickup.setPosition(1f);
+        } else if (crane_state == 2 && Top_Sensor_Front.getState()) {
+            top_motor.setPower(-1);
 
-            } else {
-                telemetry.addData("Status", "Not moving");
-                telemetry.update();
-            }
+        } else {
+            crane_state = 0;
+            top_motor.setPower(0);
+        }
+    }
 
+    public void UpdateDriveTrain() {
 
-            //cap stone
-            if (gamepad2.a) {
-                telemetry.addData("Status", "Capstone");
-                telemetry.update();
-                Capstone.setPosition(0);
-            }
+        telemetry.addData("front_left Encoder Position",front_left.getCurrentPosition());
+        telemetry.addData("rear_right Encoder Position",rear_left.getCurrentPosition());
+        telemetry.addData("front_left Encoder Position",front_right.getCurrentPosition());
+        telemetry.addData("rear_right Encoder Position",rear_right.getCurrentPosition());
 
+        double leftPower;
+        double rightPower;
+        double drive = -gamepad1.left_stick_y;
+        double turn = gamepad1.left_stick_x;
+        leftPower = Range.clip(drive + turn, -1.0, 1.0);
+        rightPower = Range.clip(drive - turn, -1.0, 1.0);
 
-            //end servo
-            if (gamepad2.x) {
-                telemetry.addData("Status", "end servos");
-                telemetry.update();
-                End_Left.setPosition(.8);
-                End_Right.setPosition(.2);
-            }
+        if (leftPower != 0 || rightPower != 0) {
+            front_left.setPower(leftPower);
+            rear_left.setPower(leftPower);
+            front_right.setPower(rightPower);
+            rear_right.setPower(rightPower);
+        } else if (gamepad1.right_stick_x < -0.4 && gamepad1.right_stick_y < 0) {
+            telemetry.addData("DriveTrain", "Up and Left");
+            front_left.setPower(-(0.5 + front_left_modifier));
+            rear_left.setPower((1 + rear_left_modifier));
+            front_right.setPower((1 + front_right_modifier));
+            rear_right.setPower(-(0.5 + rear_right_modifier));
 
+        } else if (gamepad1.right_stick_x > 0.4 && gamepad1.right_stick_y < 0) {
+            telemetry.addData("DriveTrain", "Up and Right");
+            front_left.setPower((1 + front_left_modifier));
+            rear_left.setPower(-(.5 + rear_left_modifier));
+            front_right.setPower(-(.5 + front_right_modifier));
+            rear_right.setPower((1 + rear_right_modifier));
 
-            //block kickout
-            if (gamepad2.b) {
-                telemetry.addData("Status", "blcok kickout");
-                telemetry.update();
-                Block_Kickout.setPosition(.1);
-            }
+        } else if (gamepad1.right_stick_x < -0.4 && gamepad1.right_stick_y > 0) {
+            telemetry.addData("DriveTrain", "Down and Left");
+            front_left.setPower(-(1 + front_left_modifier));
+            rear_left.setPower((0.5 + rear_left_modifier));
+            front_right.setPower((0.5 + front_right_modifier));
+            rear_right.setPower(-(1 + rear_right_modifier));
 
+        } else if (gamepad1.right_stick_x > 0.4 && gamepad1.right_stick_y > 0) {
+            telemetry.addData("DriveTrain", "Down and Right");
+            front_left.setPower((0.5 + front_left_modifier));
+            rear_left.setPower(-(1 + rear_left_modifier));
+            front_right.setPower(-(1 + front_right_modifier));
+            rear_right.setPower((0.5 + rear_right_modifier));
 
-            //release servo
-            if (gamepad2.y) {
-                telemetry.addData("Status", "feeder relese");
-                telemetry.update();
-                Release_Servo.setPosition(.1);
-            }
+        } else if (gamepad1.right_stick_y > 0) {
+            telemetry.addData("DriveTrain", "Moving Backwards");
+            front_left.setPower(-(1 + front_left_modifier));
+            rear_left.setPower(-(1 + rear_left_modifier));
+            front_right.setPower(-(1 + front_right_modifier));
+            rear_right.setPower(-(1 + rear_right_modifier));
 
+        } else if (gamepad1.right_stick_y < 0) {
+            telemetry.addData("DriveTrain", "Moving Forward");
+
+            front_left.setPower((1 + front_left_modifier));
+            rear_left.setPower((1 + rear_left_modifier));
+            front_right.setPower((1 + front_right_modifier));
+            rear_right.setPower((1 + rear_right_modifier));
+
+        } else if (gamepad1.right_stick_x > 0) {
+            telemetry.addData("DriveTrain", "Strafing Right");
+            front_left.setPower(-(1 + front_left_modifier));
+            rear_left.setPower((1 + rear_left_modifier));
+            front_right.setPower((1 + front_right_modifier));
+            rear_right.setPower(-(1 + rear_right_modifier));
+
+        } else if (gamepad1.right_stick_x < 0) {
+            telemetry.addData("DriveTrain", "Strafing Left");
+            front_left.setPower((1 + front_left_modifier));
+            rear_left.setPower(-(1 + rear_left_modifier));
+            front_right.setPower(-(1 + front_right_modifier));
+            rear_right.setPower((1 + rear_right_modifier));
+
+        } else if (gamepad1.dpad_right) {
+            telemetry.addData("DriveTrain", "Strafing Right");
+            front_left.setPower(-(1 + front_left_modifier));
+            rear_left.setPower((1 + rear_left_modifier));
+            front_right.setPower((1 + front_right_modifier));
+            rear_right.setPower(-(1 + rear_right_modifier));
+
+        } else if (gamepad1.dpad_left) {
+            telemetry.addData("DriveTrain", "Strafing Left");
+            front_left.setPower((1 + front_left_modifier));
+            rear_left.setPower(-(1 + rear_left_modifier));
+            front_right.setPower(-(1 + front_right_modifier));
+            rear_right.setPower((1 + rear_right_modifier));
+
+        } else {
+            telemetry.addData("DriveTrain", "Not moving");
+            front_left.setPower(0);
+            rear_left.setPower(0);
+            front_right.setPower(0);
+            rear_right.setPower(0);
+        }
+    }
+
+    public void UpdateBlockPickUp() {
+        //Block pick up
+        if (gamepad2.right_bumper) {
+            telemetry.addData("BlockPickUp", "Block pickup open ");
+            Block_Pickup.setPosition(0f);
+
+        } else if (gamepad2.left_bumper) {
+            telemetry.addData("BlockPickUp", "Block pickup closed");
+            Block_Pickup.setPosition(1f);
+
+        } else {
+            telemetry.addData("BlockPickUp", "Not moving");
+        }
+    }
+
+    public void UpdateCapstone() {
+        //cap stone
+        if (gamepad2.a) {
+            telemetry.addData("Capstone", "Capstone");
+            Capstone.setPosition(0);
+        }
+    }
+
+    public void UpdateEndServo() {
+        //end servo
+        if (gamepad2.x) {
+            telemetry.addData("EndServo", "end servos");
+            End_Left.setPosition(.8);
+            End_Right.setPosition(.1);
+        }
+    }
+
+    public void UpdateBlockKickout() {
+        //block kickout
+        if (gamepad2.b) {
+            telemetry.addData("BlockKickout", "block kickout");
+            Block_Kickout.setPosition(.1);
+        }
+    }
+
+    public void UpdateReleaseServo() {
+        //release servo
+        if (gamepad2.y) {
+            telemetry.addData("ReleaseServo", "feeder release");
+            Release_Servo.setPosition(.1);
         }
     }
 }

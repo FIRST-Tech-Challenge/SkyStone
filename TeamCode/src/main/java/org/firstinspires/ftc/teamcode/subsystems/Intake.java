@@ -17,7 +17,7 @@ public class Intake extends Subsystem {
 
     public Intake(HardwareMap hardwareMap) {
         wrist = hardwareMap.servo.get("wrist");
-        main = hardwareMap.servo.get("main");
+        main = hardwareMap.servo.get("arm");
         initServos(new Servo[]{wrist, main});
         initIntake();
     }

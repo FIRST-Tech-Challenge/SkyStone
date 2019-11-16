@@ -38,6 +38,10 @@ public class Robot {
         //intake.run();
     }
 
+    public void test(Controller controller){
+
+    }
+
     public void setArm(Arm arm) {
         this.arm = arm;
     }

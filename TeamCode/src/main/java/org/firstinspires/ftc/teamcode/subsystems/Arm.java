@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Arm extends Subsystem {
-    public DcMotor main;
+    public DcMotor arm;
     int[] levelAngles = {0,
             -85,
             -136,
@@ -15,13 +15,13 @@ public class Arm extends Subsystem {
     };
 
     public Arm(HardwareMap hardwareMap) {
-        main = hardwareMap.dcMotor.get("arm");
-        initMotors(new DcMotor[]{main});
+        arm = hardwareMap.dcMotor.get("arm");
+        initMotors(new DcMotor[]{arm});
         initArm();
     }
 
-    public DcMotor getMain() {
-        return main;
+    public DcMotor getArm() {
+        return arm;
     }
 
     public void initArm() {
@@ -31,7 +31,7 @@ public class Arm extends Subsystem {
     }
 
     public void setArm(int level) {
-        main.setTargetPosition(levelAngles[level]);
+        arm.setTargetPosition(levelAngles[level]);
     }
 
     public void setArmCheck(double error) {
@@ -40,9 +40,9 @@ public class Arm extends Subsystem {
 
     public void run(int level) {
         setArm(level);
-        main.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         if(level!=0){
-            main.setPower(1);
+            arm.setPower(1);
         }
     }
 }

@@ -53,8 +53,6 @@ public class AutonomousRobot {
     private float phoneYRotate = 0;
     private float phoneZRotate = 0;
 
-    public boolean targetVisible;
-
     public VuforiaTrackables trackables;
     public List<VuforiaTrackable> trackablesList;
     public List<VuforiaTrackable> visibleTrackables;
@@ -222,13 +220,10 @@ public class AutonomousRobot {
      * Use this in the game loop to get the most up-to-date information from Vuforia
      */
     public void scan() {
-        targetVisible = false;
         for (VuforiaTrackable trackable : trackablesList) {
             visibleTrackables.clear();
             if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
                 visibleTrackables.add(trackable);
-                //telemetry.addData("Visible Target", trackable.getName());
-                targetVisible = true;
 
                 // getUpdatedRobotLocation() will return null if no new information is available since
                 // the last time that call was made, or if the trackable is not currently visible.
@@ -236,9 +231,27 @@ public class AutonomousRobot {
                 if (robotLocationTransform != null) {
                     lastLocation = robotLocationTransform;
                 }
-                break;
             }
         }
+    }
+
+    /**
+     * Checks if there is any visible targets
+     */
+    public boolean isTargetVisible() {
+        return visibleTrackables.size() > 0;
+    }
+
+    /**
+     * Stringifies visible targets
+     * @return string separated by a comma
+     */
+    public String stringifyVisibleTargets() {
+        StringBuilder stringTargets = new StringBuilder();
+        for (VuforiaTrackable vuforiaTrackable : visibleTrackables) {
+            stringTargets.append(vuforiaTrackable.getName()).append(", ");
+        }
+        return stringTargets.toString();
     }
 
     /**
@@ -246,7 +259,7 @@ public class AutonomousRobot {
      * @return current position on the FTC field
      */
     public Point getPosition() {
-        if (!targetVisible) return null;
+        if (!isTargetVisible()) return null;
         // express position (translation) of robot in inches.
         VectorF translation = lastLocation.getTranslation();
         return new Point(translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);

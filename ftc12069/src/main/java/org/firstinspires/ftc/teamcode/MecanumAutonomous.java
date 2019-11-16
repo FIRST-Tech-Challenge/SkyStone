@@ -42,7 +42,7 @@ import org.firstinspires.ftc.robotlib.util.Point;
 
 @Autonomous(name="Experimental Mecanum AUTO (12069)", group="Autonomous")
 public class MecanumAutonomous extends LinearOpMode {
-    private ElapsedTime elapsedTime;
+    private ElapsedTime elapsedTime = new ElapsedTime();
 
     private static final String VUFORIA_KEY =
             " AaeQZBH/////AAABmdfQDXE5pE4MtzACI8Xt4hFWa0s+iOsMjEia6gHgjNTLJv9GfGVm1eO9HJg1uKBiuJ8O2+jzEP758aHiiC6XHCPrQcWGP8tu18nrXgUgHATBy74yPVv1lNWZq0eWcJjVDAnSpeQiFc4DhbC1F4rLgRpHzzjiIQTmUncitQg9G+l2/BKBQTkhPKEsh4gngyj8qGvyTePsw4DFDNKjf731kblzdzkAQx6cmz6fzrarqo8e4wQdHeD3USTIDDOFAlSdJe5qUmNsB0S7YILvfQE3AesKYd6CZMsyonme915GoicNvDRhsNkdc9pPSY50De/PwILZFgsygSO4jsqnbLzlLDyrPw0Q39Gc47NsVCqdVAaG" ;
@@ -73,7 +73,7 @@ public class MecanumAutonomous extends LinearOpMode {
             robot.scan();
 
             // Provide feedback as to where the robot is located (if we know).
-            if (robot.targetVisible) {
+            if (robot.isTargetVisible()) {
                 // express position (translation) of robot in inches.
                 Point position = robot.getPosition();
                 telemetry.addData("Position (inch)", "{X, Y, Z} = %.1f, %.1f, %.1f", position.x, position.y, position.z);
@@ -81,6 +81,8 @@ public class MecanumAutonomous extends LinearOpMode {
                 // express the orientation of the robot in degrees.
                 Orientation orientation = robot.getOrientation();
                 telemetry.addData("Orientation (deg)", "{Heading, Roll, Pitch} = %.0f, %.0f, %.0f", orientation.thirdAngle, orientation.firstAngle, orientation.secondAngle);
+
+                telemetry.addData("Visible Target(s)", robot.stringifyVisibleTargets());
 
                 // move to stone if targeted
                 VuforiaTrackable trackedStone = robot.getVisibleTrackable("Stone Target");
@@ -91,7 +93,7 @@ public class MecanumAutonomous extends LinearOpMode {
                     robot.move(robot.getCourseFromRobot(stonePoint), 1, new OrientationInfo(145, 0.3), robot.getDistanceFromRobot(stonePoint));
                 }
             } else {
-                telemetry.addData("Visible Target", "none");
+                telemetry.addData("Visible Target", "None");
             }
 
             telemetry.update();

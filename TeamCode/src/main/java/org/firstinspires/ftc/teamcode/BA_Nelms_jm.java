@@ -74,6 +74,11 @@ public class BA_Nelms_jm extends LinearOpMode {
     private int front_right_position; //variable to hold encoder position
     private int rear_right_position; //variable to hold encoder position
     private int crane_state = 0;
+    private float front_left_modifier = -.1f;
+    private float rear_left_modifier = -.1f;
+    private float front_right_modifier = -.1f;
+    private float rear_right_modifier = 0;
+
 
 
 
@@ -160,42 +165,42 @@ public class BA_Nelms_jm extends LinearOpMode {
             if (gamepad1.right_stick_x < -0.4 && gamepad1.right_stick_y < 0) {
                 telemetry.addData("Status", "Up and Left");
                 telemetry.update();
-                front_left.setPower(-0.5);
-                rear_left.setPower(1);
-                front_right.setPower(1);
-                rear_right.setPower(-0.5);
+                front_left.setPower(-(0.5 + front_left_modifier));
+                rear_left.setPower((1 + rear_left_modifier));
+                front_right.setPower((1 + front_right_modifier));
+                rear_right.setPower(-(0.5 + rear_right_modifier));
 
             } else if (gamepad1.right_stick_x > 0.4 && gamepad1.right_stick_y < 0) {
                 telemetry.addData("Status", "Up and Right");
                 telemetry.update();
-                front_left.setPower(1);
-                rear_left.setPower(-0.5);
-                front_right.setPower(-0.5);
-                rear_right.setPower(1);
+                front_left.setPower((1 + front_left_modifier));
+                rear_left.setPower(-(.5 + rear_left_modifier));
+                front_right.setPower(-(.5 + front_right_modifier));
+                rear_right.setPower((1 + rear_right_modifier));
 
             } else if (gamepad1.right_stick_x < -0.4 && gamepad1.right_stick_y > 0) {
                 telemetry.addData("Status", "Down and Left");
                 telemetry.update();
-                front_left.setPower(-1);
-                rear_left.setPower(0.5);
-                front_right.setPower(0.5);
-                rear_right.setPower(-1);
+                front_left.setPower(-(1 + front_left_modifier));
+                rear_left.setPower((0.5 + rear_left_modifier));
+                front_right.setPower((0.5 + front_right_modifier));
+                rear_right.setPower(-(1 + rear_right_modifier));
 
             } else if (gamepad1.right_stick_x > 0.4 && gamepad1.right_stick_y > 0) {
                 telemetry.addData("Status", "Down and Right");
                 telemetry.update();
-                front_left.setPower(0.5);
-                rear_left.setPower(-1);
-                front_right.setPower(-1);
-                rear_right.setPower(0.5);
+                front_left.setPower((0.5 + front_left_modifier));
+                rear_left.setPower(-(1 + rear_left_modifier));
+                front_right.setPower(-(1 + front_right_modifier));
+                rear_right.setPower((0.5 + rear_right_modifier));
 
             } else if (gamepad1.right_stick_y > 0) {
                 telemetry.addData("Status", "Moving Backwards");
                 telemetry.update();
-                front_left.setPower(-1);
-                rear_left.setPower(-1);
-                front_right.setPower(-1);
-                rear_right.setPower(-1);
+                front_left.setPower(-(1 + front_left_modifier));
+                rear_left.setPower(-(1 + rear_left_modifier));
+                front_right.setPower(-(1 + front_right_modifier));
+                rear_right.setPower(-(1 + rear_right_modifier));
 
             } else if (gamepad1.right_stick_y < 0) {
                 telemetry.addData("Status", "Moving Forward");
@@ -204,58 +209,58 @@ public class BA_Nelms_jm extends LinearOpMode {
                 telemetry.addData("front_left Encoder Position",front_right.getCurrentPosition());
                 telemetry.addData("rear_right Encoder Position",rear_right.getCurrentPosition());
                 telemetry.update();
-                front_left.setPower(1);
-                rear_left.setPower(1);
-                front_right.setPower(1);
-                rear_right.setPower(1);
+                front_left.setPower((1 + front_left_modifier));
+                rear_left.setPower((1 + rear_left_modifier));
+                front_right.setPower((1 + front_right_modifier));
+                rear_right.setPower((1 + rear_right_modifier));
 
             } else if (gamepad1.right_stick_x > 0) {
                 telemetry.addData("Status", "Strafing Right");
                 telemetry.update();
-                front_left.setPower(-.9);
-                rear_left.setPower(1);
-                front_right.setPower(1);
-                rear_right.setPower(-1);
+                front_left.setPower(-(1 + front_left_modifier));
+                rear_left.setPower((1 + rear_left_modifier));
+                front_right.setPower((1 + front_right_modifier));
+                rear_right.setPower(-(1 + rear_right_modifier));
 
             } else if (gamepad1.right_stick_x < 0) {
                 telemetry.addData("Status", "Strafing Left");
                 telemetry.update();
-                front_left.setPower(.9);
-                rear_left.setPower(-1);
-                front_right.setPower(-1);
-                rear_right.setPower(1);
+                front_left.setPower((1 + front_left_modifier));
+                rear_left.setPower(-(1 + rear_left_modifier));
+                front_right.setPower(-(1 + front_right_modifier));
+                rear_right.setPower((1 + rear_right_modifier));
 
             } else if (gamepad1.left_stick_x > 0) {
                 telemetry.addData("Status", "Turning Right");
                 telemetry.update();
-                front_left.setPower(1);
-                rear_left.setPower(1);
-                front_right.setPower(-1);
-                rear_right.setPower(-1);
+                front_left.setPower((1 + front_left_modifier));
+                rear_left.setPower((1 + rear_left_modifier));
+                front_right.setPower(-(1 + front_right_modifier));
+                rear_right.setPower(-(1 + rear_right_modifier));
 
             } else if (gamepad1.left_stick_x < 0) {
                 telemetry.addData("Status", "Turning Left");
                 telemetry.update();
-                front_left.setPower(-1);
-                rear_left.setPower(-1);
-                front_right.setPower(1);
-                rear_right.setPower(1);
+                front_left.setPower(-(1 + front_left_modifier));
+                rear_left.setPower(-(1 + rear_left_modifier));
+                front_right.setPower((1 + front_right_modifier));
+                rear_right.setPower((1 + rear_right_modifier));
 
             } else if (gamepad1.dpad_right) {
                 telemetry.addData("Status", "Strafing Right");
                 telemetry.update();
-                front_left.setPower(-.9);
-                rear_left.setPower(1);
-                front_right.setPower(.9);
-                rear_right.setPower(-1);
+                front_left.setPower(-(1 + front_left_modifier));
+                rear_left.setPower((1 + rear_left_modifier));
+                front_right.setPower((1 + front_right_modifier));
+                rear_right.setPower(-(1 + rear_right_modifier));
 
             } else if (gamepad1.dpad_left) {
                 telemetry.addData("Status", "Strafing Left");
                 telemetry.update();
-                front_left.setPower(.9);
-                rear_left.setPower(-1);
-                front_right.setPower(-.9);
-                rear_right.setPower(1);
+                front_left.setPower((1 + front_left_modifier));
+                rear_left.setPower(-(1 + rear_left_modifier));
+                front_right.setPower(-(1 + front_right_modifier));
+                rear_right.setPower((1 + rear_right_modifier));
 
             } else {
                 telemetry.addData("Status", "Not moving");
@@ -278,7 +283,7 @@ public class BA_Nelms_jm extends LinearOpMode {
                 telemetry.addData("Status", "Clamp Up");
                 telemetry.update();
                 Clamp_Left.setPosition(0.6f);
-                Clamp_Right.setPosition(0.8f);
+                Clamp_Right.setPosition(0.5f);
 
             } else {
                 telemetry.addData("Status", "Not Moving");
@@ -430,7 +435,7 @@ public class BA_Nelms_jm extends LinearOpMode {
                 telemetry.addData("Status", "end servos");
                 telemetry.update();
                 End_Left.setPosition(.8);
-                End_Right.setPosition(.1);
+                End_Right.setPosition(.2);
             }
 
 
@@ -438,7 +443,7 @@ public class BA_Nelms_jm extends LinearOpMode {
             if (gamepad2.b) {
                 telemetry.addData("Status", "blcok kickout");
                 telemetry.update();
-                Block_Kickout.setPosition(.5);
+                Block_Kickout.setPosition(.1);
             }
 
 
@@ -446,7 +451,7 @@ public class BA_Nelms_jm extends LinearOpMode {
             if (gamepad2.y) {
                 telemetry.addData("Status", "feeder relese");
                 telemetry.update();
-                Release_Servo.setPosition(.5);
+                Release_Servo.setPosition(.1);
             }
 
         }

@@ -60,13 +60,22 @@ public class BA_Nelms_jm extends LinearOpMode {
     private Servo Clamp_Right = null;
     private Servo Feeder_Servo = null;
     private Servo Block_Pickup = null;
+    private Servo End_Left = null;
+    private Servo End_Right = null;
+    private Servo Block_Kickout = null;
     private Servo Capstone = null;
+    private Servo Release_Servo = null;
     private DigitalChannel Top_Sensor_Front = null;
     private DigitalChannel Top_Sensor_Rear = null;
     private DigitalChannel bottom_touch = null;
     private DigitalChannel top_touch = null;
-    //private DigitalChannel End_Left = null;
-    //private DigitalChannel End_Right = null;
+    private int front_left_position; //variable to hold encoder position
+    private int rear_left_position; //variable to hold encoder position
+    private int front_right_position; //variable to hold encoder position
+    private int rear_right_position; //variable to hold encoder position
+    private int crane_state = 0;
+
+
 
 
     float feederServoPosition = 0;
@@ -93,16 +102,28 @@ public class BA_Nelms_jm extends LinearOpMode {
         Feeder_Servo = hardwareMap.get(Servo.class, "Feeder_Servo");
         Block_Pickup = hardwareMap.get(Servo.class, "Block_Pickup");
         Capstone = hardwareMap.get(Servo.class, "Capstone");
+        End_Left = hardwareMap.get(Servo.class, "End_Left");
+        End_Right = hardwareMap.get(Servo.class, "End_Right");
+        Block_Kickout = hardwareMap.get(Servo.class, "Block_Kickout");
+        Release_Servo = hardwareMap.get(Servo.class, "Release_Servo");
         Top_Sensor_Rear = hardwareMap.get(DigitalChannel.class, "Top_Sensor_Rear");
         Top_Sensor_Front = hardwareMap.get(DigitalChannel.class, "Top_Sensor_Front");
         bottom_touch = hardwareMap.get(DigitalChannel.class, "bottom_touch");
         top_touch = hardwareMap.get(DigitalChannel.class, "top_touch");
-        // End_Left = hardwareMap.get(DigitalChannel.class, "End_Left");
-        // End_Right = hardwareMap.get(DigitalChannel.class, "End_Right");
 
 
         lift_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         lift_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        front_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        front_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rear_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rear_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        front_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        front_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rear_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rear_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
         // set digital channel to input mode.
@@ -124,6 +145,7 @@ public class BA_Nelms_jm extends LinearOpMode {
         top_motor.setDirection(DcMotor.Direction.FORWARD);
 
 
+
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
@@ -135,7 +157,7 @@ public class BA_Nelms_jm extends LinearOpMode {
             //Player 1
 
             //Strafing
-            if (gamepad1.right_stick_x < -0.2 && gamepad1.right_stick_y < 0) {
+            if (gamepad1.right_stick_x < -0.4 && gamepad1.right_stick_y < 0) {
                 telemetry.addData("Status", "Up and Left");
                 telemetry.update();
                 front_left.setPower(-0.5);
@@ -143,7 +165,7 @@ public class BA_Nelms_jm extends LinearOpMode {
                 front_right.setPower(1);
                 rear_right.setPower(-0.5);
 
-            } else if (gamepad1.right_stick_x > 0.2 && gamepad1.right_stick_y < 0) {
+            } else if (gamepad1.right_stick_x > 0.4 && gamepad1.right_stick_y < 0) {
                 telemetry.addData("Status", "Up and Right");
                 telemetry.update();
                 front_left.setPower(1);
@@ -151,7 +173,7 @@ public class BA_Nelms_jm extends LinearOpMode {
                 front_right.setPower(-0.5);
                 rear_right.setPower(1);
 
-            } else if (gamepad1.right_stick_x < -0.2 && gamepad1.right_stick_y > 0) {
+            } else if (gamepad1.right_stick_x < -0.4 && gamepad1.right_stick_y > 0) {
                 telemetry.addData("Status", "Down and Left");
                 telemetry.update();
                 front_left.setPower(-1);
@@ -159,7 +181,7 @@ public class BA_Nelms_jm extends LinearOpMode {
                 front_right.setPower(0.5);
                 rear_right.setPower(-1);
 
-            } else if (gamepad1.right_stick_x > 0.2 && gamepad1.right_stick_y > 0) {
+            } else if (gamepad1.right_stick_x > 0.4 && gamepad1.right_stick_y > 0) {
                 telemetry.addData("Status", "Down and Right");
                 telemetry.update();
                 front_left.setPower(0.5);
@@ -177,6 +199,10 @@ public class BA_Nelms_jm extends LinearOpMode {
 
             } else if (gamepad1.right_stick_y < 0) {
                 telemetry.addData("Status", "Moving Forward");
+                telemetry.addData("front_left Encoder Position",front_left.getCurrentPosition());
+                telemetry.addData("rear_right Encoder Position",rear_left.getCurrentPosition());
+                telemetry.addData("front_left Encoder Position",front_right.getCurrentPosition());
+                telemetry.addData("rear_right Encoder Position",rear_right.getCurrentPosition());
                 telemetry.update();
                 front_left.setPower(1);
                 rear_left.setPower(1);
@@ -188,7 +214,7 @@ public class BA_Nelms_jm extends LinearOpMode {
                 telemetry.update();
                 front_left.setPower(-.9);
                 rear_left.setPower(1);
-                front_right.setPower(.9);
+                front_right.setPower(1);
                 rear_right.setPower(-1);
 
             } else if (gamepad1.right_stick_x < 0) {
@@ -196,10 +222,10 @@ public class BA_Nelms_jm extends LinearOpMode {
                 telemetry.update();
                 front_left.setPower(.9);
                 rear_left.setPower(-1);
-                front_right.setPower(-.9);
+                front_right.setPower(-1);
                 rear_right.setPower(1);
 
-            } else if (gamepad1.dpad_right) {
+            } else if (gamepad1.left_stick_x > 0) {
                 telemetry.addData("Status", "Turning Right");
                 telemetry.update();
                 front_left.setPower(1);
@@ -207,13 +233,30 @@ public class BA_Nelms_jm extends LinearOpMode {
                 front_right.setPower(-1);
                 rear_right.setPower(-1);
 
-            } else if (gamepad1.dpad_left) {
+            } else if (gamepad1.left_stick_x < 0) {
                 telemetry.addData("Status", "Turning Left");
                 telemetry.update();
                 front_left.setPower(-1);
                 rear_left.setPower(-1);
                 front_right.setPower(1);
                 rear_right.setPower(1);
+
+            } else if (gamepad1.dpad_right) {
+                telemetry.addData("Status", "Strafing Right");
+                telemetry.update();
+                front_left.setPower(-.9);
+                rear_left.setPower(1);
+                front_right.setPower(.9);
+                rear_right.setPower(-1);
+
+            } else if (gamepad1.dpad_left) {
+                telemetry.addData("Status", "Strafing Left");
+                telemetry.update();
+                front_left.setPower(.9);
+                rear_left.setPower(-1);
+                front_right.setPower(-.9);
+                rear_right.setPower(1);
+
             } else {
                 telemetry.addData("Status", "Not moving");
                 telemetry.update();
@@ -228,13 +271,14 @@ public class BA_Nelms_jm extends LinearOpMode {
             if (gamepad1.left_bumper) {
                 telemetry.addData("Status", "Clamp Down");
                 telemetry.update();
-                Clamp_Left.setPosition(0.83f);
-                Clamp_Right.setPosition(0.17f);
+                Clamp_Left.setPosition(0.73f);
+                Clamp_Right.setPosition(0.27f);
+
             } else if (gamepad1.left_trigger > 0) {
                 telemetry.addData("Status", "Clamp Up");
                 telemetry.update();
                 Clamp_Left.setPosition(0.6f);
-                Clamp_Right.setPosition(0.7f);
+                Clamp_Right.setPosition(0.8f);
 
             } else {
                 telemetry.addData("Status", "Not Moving");
@@ -297,13 +341,13 @@ public class BA_Nelms_jm extends LinearOpMode {
             //Player 2
 
             //lift
-            if (gamepad2.right_stick_y > 0) {
+            if (gamepad2.right_stick_y > 0 & bottom_touch.getState()) {
                 telemetry.addData("Status", "Lift up");
                 telemetry.update();
                 lift_left.setPower(1);
                 lift_right.setPower(1);
 
-            } else if (gamepad2.right_stick_y < 0) {
+            } else if (gamepad2.right_stick_y < 0 && top_touch.getState()) {
                 telemetry.addData("Status", "Lift down");
                 telemetry.update();
                 lift_left.setPower(-1);
@@ -318,18 +362,42 @@ public class BA_Nelms_jm extends LinearOpMode {
 
 
             //Crain
-            if (gamepad2.dpad_down && Top_Sensor_Rear.getState()) {
-                telemetry.addData("Status", "Crain is moving foward");
+//            if (gamepad2.dpad_left && Top_Sensor_Rear.getState()) {
+//                telemetry.addData("Status", "Crain is moving foward");
+//                top_motor.setPower(1);
+//
+//            } else if (gamepad2.dpad_right && Top_Sensor_Front.getState()) {
+//                telemetry.addData("Status", "Crain is moving backward");
+//                top_motor.setPower(-1);
+//
+//            } else {
+//                telemetry.addData("Status", "Not Moving");
+//                top_motor.setPower(0);
+//            }
+//
+            if (gamepad2.dpad_left) {
+                crane_state = 1;
+
+            }else if (gamepad2.dpad_right) {
+                crane_state = 2;
+            }
+
+
+
+            if (crane_state == 0) {
+                top_motor.setPower(0);
+
+            }else if (crane_state == 1 && Top_Sensor_Rear.getState()) {
                 top_motor.setPower(1);
 
-            } else if (gamepad2.dpad_up && Top_Sensor_Front.getState()) {
-                telemetry.addData("Status", "Crain is moving backward");
+            }else if (crane_state == 2 && Top_Sensor_Front.getState()) {
                 top_motor.setPower(-1);
 
-            } else {
-                telemetry.addData("Status", "Not Moving");
+            }else {
+                crane_state = 0;
                 top_motor.setPower(0);
             }
+
 
 
             //Block pick up
@@ -348,23 +416,44 @@ public class BA_Nelms_jm extends LinearOpMode {
                 telemetry.update();
             }
 
+
             //cap stone
             if (gamepad2.a) {
-                telemetry.addData("Status", "Not moving");
+                telemetry.addData("Status", "Capstone");
                 telemetry.update();
                 Capstone.setPosition(0);
             }
 
+
+            //end servo
             if (gamepad2.x) {
-                telemetry.addData("Status", "Not moving");
+                telemetry.addData("Status", "end servos");
                 telemetry.update();
-
-
+                End_Left.setPosition(.8);
+                End_Right.setPosition(.1);
             }
+
+
+            //block kickout
+            if (gamepad2.b) {
+                telemetry.addData("Status", "blcok kickout");
+                telemetry.update();
+                Block_Kickout.setPosition(.5);
+            }
+
+
+            //release servo
+            if (gamepad2.y) {
+                telemetry.addData("Status", "feeder relese");
+                telemetry.update();
+                Release_Servo.setPosition(.5);
+            }
+
         }
     }
-
 }
+
+
 
 
 

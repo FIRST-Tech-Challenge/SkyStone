@@ -17,9 +17,16 @@ public class TeleOpMode extends LinearOpMode {
         Chassis chassis = new Chassis(hardwareMap);
         chassis.reverseMotors(new DcMotor[]{chassis.frontRight, chassis.backRight});
         robot.setChassis(chassis);
+        robot.intake.setwrist(1);
         telemetry.addData("Init", "v:1.0");
         waitForStart();
         while (opModeIsActive()) {
+            if (controller.getA()) {
+                telemetry.addData("thisn","hi");
+                telemetry.update();
+                telemetry.addData("thing:", robot.chassis.getAverageMotorError());
+                telemetry.update();
+            }
             robot.run(controller);
             telemetry.update();
         }

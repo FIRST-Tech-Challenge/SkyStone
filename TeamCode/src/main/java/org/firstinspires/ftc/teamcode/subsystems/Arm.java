@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class Arm extends Subsystem {
     public DcMotor arm;
     int[] levelAngles = {0,
+            -40,
             -85,
             -136,
             -189,
@@ -15,7 +16,7 @@ public class Arm extends Subsystem {
     };
 
     public Arm(HardwareMap hardwareMap) {
-        arm = hardwareMap.dcMotor.get("arm");
+        arm = hardwareMap.dcMotor.get("test");
         initMotors(new DcMotor[]{arm});
         initArm();
     }
@@ -43,6 +44,8 @@ public class Arm extends Subsystem {
         arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         if(level!=0){
             arm.setPower(1);
+        }else{
+            arm.setPower(0);
         }
     }
 }

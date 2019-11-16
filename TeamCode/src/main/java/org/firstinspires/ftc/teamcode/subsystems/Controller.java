@@ -117,4 +117,7 @@ public class Controller extends Gamepad {
     public double limitStick(double stickInput) {
         return stickInput * stickInput * stickInput;
     }
+    public double sensitiveStick(double stickInput){
+        return limitStick(stickInput) - (.75 * getRightTrigger());
+    }
 }

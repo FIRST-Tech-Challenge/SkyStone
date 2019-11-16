@@ -23,24 +23,28 @@ public class Robot {
 
     public void run(Controller controller) {
         //Chassis get
-        final double leftStickX = controller.limitStick(controller.getLeftStickX());
-        final double leftStickY = controller.limitStick(controller.getLeftStickY());
-        final double rightStickX = controller.limitStick(controller.getRightStickX());
+
+        final double leftStickX = controller.sensitiveStick(controller.getLeftStickX());
+        final double leftStickY = controller.sensitiveStick(controller.getLeftStickY());
+        final double rightStickX = controller.sensitiveStick(controller.getRightStickX());
         final double power = Math.hypot(leftStickX, leftStickY);
         final double targetAngle = Math.atan2(leftStickY, leftStickX);
         final double turn = rightStickX;
-
         //Arm get
         //Put in all run methods
+        setLevel(controller);
         arm.run(level);
         chassis.run(targetAngle, turn, power);
+        if(controller.getB()){
+            intake.setMainToHighPosition();
+        }
+        if(controller.getA()){
+            intake.setMainToLowPosition();
+        }
         //hook.run();
         //intake.run();
     }
 
-    public void test(Controller controller){
-
-    }
 
     public void setArm(Arm arm) {
         this.arm = arm;
@@ -59,13 +63,13 @@ public class Robot {
     }
 
     public void setLevel(Controller controller) {
-        if (controller.right_bumper) {
-            level++;
-            while (controller.right_bumper) ;
+        if (controller.getRightBumper()) {
+            level = Math.max(level+1, 7);
+            while (controller.getRightBumper()) ;
         }
-        if (controller.left_bumper) {
-            level--;
-            while (controller.left_bumper) ;
+        if (controller.getLeftBumper()) {
+            level = Math.min(level-1, 0);
+            while (controller.getLeftBumper()) ;
         }
     }
 }

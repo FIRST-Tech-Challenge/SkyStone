@@ -17,27 +17,10 @@ public class MotorTest extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        Servo intake = hardwareMap.servo.get("test");
-        intake.setPosition(0);
-        long timeTo = System.currentTimeMillis();
+        Servo intake = hardwareMap.servo.get("wrist");
         waitForStart();
         while (opModeIsActive()) {
-
-            if (gamepad1.a) {
-                intake.setPosition(.5);
-                intake.setPosition(1);
-                timeTo = System.currentTimeMillis()+1;
-                while(System.currentTimeMillis() < timeTo);
-                intake.setPosition(.5);
-            }
-            if (gamepad1.b) {
-                intake.setPosition(0);
-                intake.setPosition(1);
-                timeTo = System.currentTimeMillis()+1;
-                while(System.currentTimeMillis() < timeTo);
-                intake.setPosition(0);
-            }
-            telemetry.addData("intake cur pos: ", intake.getPosition());
+            telemetry.addData("wrist:", intake.getPosition());
             //Other unit test code if you want
             telemetry.update();
         }

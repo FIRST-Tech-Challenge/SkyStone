@@ -22,7 +22,7 @@ repositories {
 dependencies {
     implementation 'junit:junit:4.12'
     // other dependencies
-    implementation 'com.acmerobotics.roadrunner:core:0.4.5'
+    implementation 'com.acmerobotics.roadrunner:core:0.4.6'
     implementation 'com.acmerobotics.dashboard:dashboard:0.3.4'
     implementation 'com.android.support:multidex:1.0.3'
     implementation 'org.openftc:rev-extensions-2:1.2'

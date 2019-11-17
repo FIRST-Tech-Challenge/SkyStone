@@ -42,6 +42,6 @@ public class OmniAutoMinRed extends OmniAutoClass
          */
         waitForStart();
 
-        driveAtHeadingForTime(0.3, 0.1, 180.0, 0.0, 1100);
+        driveAtHeadingForTime(0.3, 0.1, 180.0, 0.0, 1100, true);
     }
 }

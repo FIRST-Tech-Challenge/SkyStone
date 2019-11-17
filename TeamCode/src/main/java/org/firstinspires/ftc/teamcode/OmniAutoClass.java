@@ -118,13 +118,15 @@ public abstract class OmniAutoClass extends LinearOpMode {
      * @param driveAngle   - The angle of movement to drive the robot
      * @param headingAngle - The heading angle to hold while driving
      */
-    public void driveAtHeadingForTime(double speed, double rotateSpeed, double driveAngle, double headingAngle, int driveTime) {
+    public void driveAtHeadingForTime(double speed, double rotateSpeed, double driveAngle, double headingAngle, int driveTime, boolean stopWhenDone) {
         double endTime = timer.milliseconds() + driveTime;
         while (!isStopRequested() && (timer.milliseconds() <= endTime)) {
             driveAtHeading(speed, rotateSpeed, driveAngle, headingAngle);
             robot.resetReads();
         }
-        robot.setAllDriveZero();
+        if(stopWhenDone) {
+            robot.setAllDriveZero();
+        }
     }
 
     /**

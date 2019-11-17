@@ -19,12 +19,11 @@ import static java.lang.Math.sqrt;
 import static java.lang.Math.toRadians;
 
 /**
- *Created by Ethan
+ *Created by 12090 STEM Punk
  */
 public class HardwareOmnibotDrive
 {
     /* Public OpMode members. */
-    public final static double MAX_SPIN_RATE = 0.7;
     public final static double MIN_SPIN_RATE = 0.05;
     public final static double MIN_DRIVE_RATE = 0.05;
 
@@ -88,12 +87,7 @@ public class HardwareOmnibotDrive
     {
         if(!imuRead) {
             // Read IMU Code
-            //double heading = (double)gyro.getHeading();
             Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-            //heading = abs(heading - 360.0);
-            zAngle = (double) angles.firstAngle;
-            yAngle = (double) angles.secondAngle;
-            xAngle = (double) angles.thirdAngle;
             imuValue = (double)angles.firstAngle;
             imuRead = true;
         }
@@ -296,28 +290,5 @@ public class HardwareOmnibotDrive
 
         initIMU();
     }
-
-    /***
-     *
-     * waitForTick implements a periodic delay. However, this acts like a metronome with a regular
-     * periodic tick.  This is used to compensate for varying processing times for each cycle.
-     * The function looks at the elapsed cycle time, and sleeps for the remaining time interval.
-     *
-     * @param periodMs  Length of wait cycle in mSec.
-     * @throws InterruptedException
-     */
-    /*
-    public void waitForTick(long periodMs) throws InterruptedException {
-
-        long  remaining = periodMs - (long)period.milliseconds();
-
-        // sleep for the remaining portion of the regular cycle period.
-        if (remaining > 0)
-            Thread.sleep(remaining);
-
-        // Reset the cycle clock for the next pass.
-        period.reset();
-    }
-    */
 }
 

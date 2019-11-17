@@ -50,9 +50,10 @@ public class OmniTeleOpDrive extends OpMode {
 
     @Override
     public void loop() {
+        robot.resetReads();
+
         //left joystick is for moving
         //right joystick is for rotation
-
         yPower = -gamepad1.left_stick_y;
         xPower = gamepad1.left_stick_x;
         spin = gamepad1.right_stick_x;
@@ -81,10 +82,6 @@ public class OmniTeleOpDrive extends OpMode {
         telemetry.addData("Spin: ", spin);
         telemetry.addData("Offset Angle: ", driverAngle);
         telemetry.addData("Gyro Angle: ", gyroAngle);
-        telemetry.addData("Front Left Encoder: ", robot.frontLeft.getCurrentPosition());
-        telemetry.addData("Front Right Encoder: ", robot.frontRight.getCurrentPosition());
-        telemetry.addData("Rear Left Encoder: ", robot.rearLeft.getCurrentPosition());
-        telemetry.addData("Rear Right Encoder: ", robot.rearRight.getCurrentPosition());
         updateTelemetry(telemetry);
     }
 }

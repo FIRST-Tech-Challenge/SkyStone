@@ -15,10 +15,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *Created by Ethan
+ *Created by 12090 STEM Punk
  */
 public class HardwareOmnibot extends HardwareOmnibotDrive
 {
+    public enum AlignmentSide {
+        FRONT,
+        BACK,
+        RIGHT,
+        LEFT
+    }
+
     public enum AlignActivity {
         IDLE,
         ALIGN_TO_FOUNDATION,
@@ -323,7 +330,6 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     protected DcMotor rightIntake = null;
     protected DcMotor lifter = null;
     protected DcMotorEx extender = null;
-    protected Rev2mDistanceSensor test = null;
     protected Rev2mTurbo rightTof = null;
     protected Rev2mTurbo leftTof = null;
     protected Rev2mTurbo backRightTof = null;
@@ -379,7 +385,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     // Keeps the sensor from initializing more than once.
     public static boolean tofInitialized = false;
     // We can set this in Auto
-    protected static boolean stackFromRightTof = false;
+    protected static AlignmentSide stackFromSide = AlignmentSide.RIGHT;
 
     /* Constructor */
     public HardwareOmnibot(){
@@ -646,7 +652,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 					// Add to our tower height for next lift.
 					addStone();
 					// Get the distance from the wall for alignment.
-					if(stackFromRightTof)
+					if(stackFromSide == AlignmentSide.RIGHT)
                     {
                         stackWallDistance = readRightTof();
                     } else {
@@ -778,43 +784,67 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         return maxExtended;
     }
 
-    public boolean distanceFromWall(double distance, double driveSpeed) {
+    public boolean distanceFromWall(AlignmentSide side, double distance, double driveSpeed, double error) {
         boolean targetReached = false;
         double wallDistance;
         double delta;
         double drivePower;
-        if(stackFromRightTof) {
-            wallDistance = readRightTof();
-            delta = wallDistance - distance;
-            if(Math.abs(delta) > 1.0) {
-                // Need to drive left away from the wall.
-                if(delta < 0) {
-                    drivePower = -driveSpeed;
-                // Need to drive right towards the wall.
+        switch(side)
+        {
+            case FRONT:
+                // Currently no sensor on the front.
+                break;
+            case BACK:
+                wallDistance = readBackTof();
+                delta = wallDistance - distance;
+                if(Math.abs(delta) > error) {
+                    // Need to drive forward away from the wall.
+                    if(delta < 0) {
+                        drivePower = driveSpeed;
+                        // Need to drive backward towards the wall.
+                    } else {
+                        drivePower = -driveSpeed;
+                    }
+                    drive(drivePower, 0.0, 0.0, 90-readIMU());
                 } else {
-                    drivePower = driveSpeed;
+                    setAllDriveZero();
+                    targetReached = true;
                 }
-                drive(drivePower, 0.0, 0.0, -readIMU());
-            } else {
-                setAllDriveZero();
-                targetReached = true;
-            }
-        } else {
-            wallDistance = readLeftTof();
-            delta = wallDistance - distance;
-            if(Math.abs(delta) > 1.0) {
-                // Need to drive right away from the wall.
-                if(delta < 0) {
-                    drivePower = driveSpeed;
-                    // Need to drive left towards the wall.
+                break;
+            case LEFT:
+                wallDistance = readLeftTof();
+                delta = wallDistance - distance;
+                if(Math.abs(delta) > error) {
+                    // Need to drive right away from the wall.
+                    if(delta < 0) {
+                        drivePower = driveSpeed;
+                        // Need to drive left towards the wall.
+                    } else {
+                        drivePower = -driveSpeed;
+                    }
+                    drive(drivePower, 0.0, 0.0, -readIMU());
                 } else {
-                    drivePower = -driveSpeed;
+                    setAllDriveZero();
+                    targetReached = true;
                 }
-                drive(drivePower, 0.0, 0.0, -readIMU());
-            } else {
-                setAllDriveZero();
-                targetReached = true;
-            }
+                break;
+            case RIGHT:
+                wallDistance = readRightTof();
+                delta = wallDistance - distance;
+                if(Math.abs(delta) > error) {
+                    // Need to drive left away from the wall.
+                    if(delta < 0) {
+                        drivePower = -driveSpeed;
+                        // Need to drive right towards the wall.
+                    } else {
+                        drivePower = driveSpeed;
+                    }
+                    drive(drivePower, 0.0, 0.0, -readIMU());
+                } else {
+                    setAllDriveZero();
+                    targetReached = true;
+                }
+                break;
         }
 
         return targetReached;
@@ -826,50 +856,6 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         stackBackRightFoundationDistance = distance;
 
         return parallelRearTarget(driveSpeed, spinSpeed, error);
-//        boolean parallel = false;
-//        double leftDistance = readBackLeftTof();
-//        double rightDistance = readBackRightTof();
-//        double drivePower = 0.0;
-//        double spinPower = 0.0;
-//        double leftError = distance - leftDistance;
-//        double rightError = distance - rightDistance;
-//        if((Math.abs(leftError) > error) || (Math.abs(rightError) > error)) {
-//            // Have to drive backwards towards the foundation
-//            if(((leftError) > error) && ((rightError) > error)) {
-//                drivePower = driveSpeed;
-//                // Have to spin ccw
-//                if(leftDistance > rightDistance) {
-//                    spinPower = -spinSpeed;
-//                    // We have to spin cw
-//                } else if(rightDistance > leftDistance) {
-//                    spinPower = spinSpeed;
-//                }
-//                // Have to drive away from the foundation.
-//            } else if(((leftError) < -error) && ((rightError) < -error)) {
-//                drivePower = -driveSpeed;
-//                if(leftDistance > rightDistance) {
-//                    spinPower = -spinSpeed;
-//                    // We have to spin cw
-//                } else if(rightDistance > leftDistance) {
-//                    spinPower = spinSpeed;
-//                }
-//                // We just need to spin
-//            } else {
-//                drivePower = 0.0;
-//                if(leftDistance > rightDistance) {
-//                    spinPower = -spinSpeed;
-//                    // We have to spin cw
-//                } else if(rightDistance > leftDistance) {
-//                    spinPower = spinSpeed;
-//                }
-//            }
-//            drive(0, drivePower, spinPower, -readIMU());
-//        } else {
-//            setAllDriveZero();
-//            parallel = true;
-//        }
-//
-//        return parallel;
     }
 
     // This function goes to a distance of two range sensors to maintain angle from object
@@ -941,7 +927,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         switch(alignState)
         {
             case REFINE_WALL:
-                if(distanceFromWall(stackWallDistance,0.05)) {
+                if(distanceFromWall(stackFromSide, stackWallDistance,0.05, 1.0)) {
                     alignState = AlignActivity.REFINE_FOUNDATION;
                 }
                 break;
@@ -951,7 +937,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                 }
                 break;
             case ALIGN_TO_WALL:
-                if(distanceFromWall(stackWallDistance,0.07)) {
+                if(distanceFromWall(stackFromSide, stackWallDistance,0.07, 1.0)) {
                     alignState = AlignActivity.REFINE_WALL;
                 }
                 break;
@@ -1238,28 +1224,5 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 
         initGroundEffects();
     }
-
-    /***
-     *
-     * waitForTick implements a periodic delay. However, this acts like a metronome with a regular
-     * periodic tick.  This is used to compensate for varying processing times for each cycle.
-     * The function looks at the elapsed cycle time, and sleeps for the remaining time interval.
-     *
-     * @param periodMs  Length of wait cycle in mSec.
-     * @throws InterruptedException
-     */
-    /*
-    public void waitForTick(long periodMs) throws InterruptedException {
-
-        long  remaining = periodMs - (long)period.milliseconds();
-
-        // sleep for the remaining portion of the regular cycle period.
-        if (remaining > 0)
-            Thread.sleep(remaining);
-
-        // Reset the cycle clock for the next pass.
-        period.reset();
-    }
-    */
 }
 

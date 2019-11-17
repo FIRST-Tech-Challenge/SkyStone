@@ -102,8 +102,8 @@ public class OmniAutoFullRed extends OmniAutoClass
                 // Start moving intake out, should be done when done driving.
                 robot.moveLift(HardwareOmnibot.LiftPosition.STOWED);
                 robot.moveIntake(HardwareOmnibot.IntakePosition.EXTENDED);
-                driveAtHeadingForTime(0.3, 0.1, 90.0, 0.0, 1100);
-                driveAtHeadingForTime(0.3, 0.1, 180.0, 0.0, 700);
+                driveAtHeadingForTime(0.3, 0.1, 90.0, 0.0, 1100, true);
+                driveAtHeadingForTime(0.3, 0.1, 180.0, 0.0, 700, true);
                 rotateRobotToAngle(0.3, 40, 2000);
 
                 // Make sure the intake is out.
@@ -116,35 +116,35 @@ public class OmniAutoFullRed extends OmniAutoClass
 
                 // Capture skystone
                 robot.startIntake(false);
-                driveAtHeadingForTime(0.3, 0.1, 130.0, 40.0, 1100);
+                driveAtHeadingForTime(0.3, 0.1, 130.0, 40.0, 1100, true);
 
                 // Reverse same amount we drove, then turn to drive under bridge
-                driveAtHeadingForTime(0.3, 0.1, 310.0, 40.0, 1000);
+                driveAtHeadingForTime(0.3, 0.1, 310.0, 40.0, 1000, true);
                 robot.stopIntake();
                 rotateRobotToAngle(0.3, 270.0, 2000);
                 // Drive under the bridge and eject stone
-                driveAtHeadingForTime(0.3, 0.1, 0.0,270.0, 3200);
+                driveAtHeadingForTime(0.3, 0.1, 0.0,270.0, 3200, true);
                 robot.startIntake(true);
                 sleep(1000);
 
                 // Drive back under bridge to get second stone.
-                driveAtHeadingForTime(0.3, 0.1, 180.0,270.0, 2000);
+                driveAtHeadingForTime(0.3, 0.1, 180.0,270.0, 2000, true);
                 rotateRobotToAngle(0.3, 40, 2000);
 
                 // Capture skystone
                 robot.startIntake(false);
-                driveAtHeadingForTime(0.3, 0.1, 130.0, 40.0, 1300);
+                driveAtHeadingForTime(0.3, 0.1, 130.0, 40.0, 1300, true);
                 // Reverse same amount we drove, then turn to drive under bridge
-                driveAtHeadingForTime(0.3, 0.1, 310.0, 40.0, 1100);
+                driveAtHeadingForTime(0.3, 0.1, 310.0, 40.0, 1100, true);
                 robot.stopIntake();
                 rotateRobotToAngle(0.3, 270.0, 2000);
                 // Drive under the bridge and eject stone
-                driveAtHeadingForTime(0.3, 0.1, 0.0,270.0, 2200);
+                driveAtHeadingForTime(0.3, 0.1, 0.0,270.0, 2200, true);
                 robot.startIntake(true);
                 sleep(1000);
 
                 // Drive to line
-                driveAtHeadingForTime(0.3, 0.1, 180.0,270.0, 1000);
+                driveAtHeadingForTime(0.3, 0.1, 180.0,270.0, 1000, true);
 
                 // Retract the intake.
                 robot.stopIntake();
@@ -155,7 +155,7 @@ public class OmniAutoFullRed extends OmniAutoClass
                 // Start moving intake out, should be done when done driving.
                 robot.moveLift(HardwareOmnibot.LiftPosition.STOWED);
                 robot.moveIntake(HardwareOmnibot.IntakePosition.EXTENDED);
-                driveAtHeadingForTime(0.3, 0.1, 90.0, 0.0, 1100);
+                driveAtHeadingForTime(0.3, 0.1, 90.0, 0.0, 1100, true);
                 rotateRobotToAngle(0.3, 40, 2000);
 
                 // Make sure the intake is out.
@@ -168,35 +168,35 @@ public class OmniAutoFullRed extends OmniAutoClass
 
                 // Capture skystone
                 robot.startIntake(false);
-                driveAtHeadingForTime(0.3, 0.1, 130.0, 40.0, 1100);
+                driveAtHeadingForTime(0.3, 0.1, 130.0, 40.0, 1100, true);
 
                 // Reverse same amount we drove, then turn to drive under bridge
-                driveAtHeadingForTime(0.3, 0.1, 310.0, 40.0, 900);
+                driveAtHeadingForTime(0.3, 0.1, 310.0, 40.0, 900, true);
                 robot.stopIntake();
                 rotateRobotToAngle(0.3, 270.0, 2000);
                 // Drive under the bridge and eject stone
-                driveAtHeadingForTime(0.3, 0.1, 0.0,270.0, 3000);
+                driveAtHeadingForTime(0.3, 0.1, 0.0,270.0, 3000, true);
                 robot.startIntake(true);
                 sleep(1000);
 
                 // Drive back under bridge to get second stone.
-                driveAtHeadingForTime(0.3, 0.1, 180.0,270.0, 1700);
+                driveAtHeadingForTime(0.3, 0.1, 180.0,270.0, 1700, true);
                 rotateRobotToAngle(0.3, 40, 2000);
 
                 // Capture skystone
                 robot.startIntake(false);
-                driveAtHeadingForTime(0.3, 0.1, 130.0, 40.0, 1100);
+                driveAtHeadingForTime(0.3, 0.1, 130.0, 40.0, 1100, true);
                 // Reverse same amount we drove, then turn to drive under bridge
-                driveAtHeadingForTime(0.3, 0.1, 310.0, 40.0, 1100);
+                driveAtHeadingForTime(0.3, 0.1, 310.0, 40.0, 1100, true);
                 robot.stopIntake();
                 rotateRobotToAngle(0.3, 270.0, 2000);
                 // Drive under the bridge and eject stone
-                driveAtHeadingForTime(0.3, 0.1, 0.0,270.0, 2000);
+                driveAtHeadingForTime(0.3, 0.1, 0.0,270.0, 2000, true);
                 robot.startIntake(true);
                 sleep(1000);
 
                 // Drive to line
-                driveAtHeadingForTime(0.3, 0.1, 180.0,270.0, 1300);
+                driveAtHeadingForTime(0.3, 0.1, 180.0,270.0, 1300, true);
 
                 // Retract the intake.
                 robot.stopIntake();
@@ -207,8 +207,8 @@ public class OmniAutoFullRed extends OmniAutoClass
                 // Start moving intake out, should be done when done driving.
                 robot.moveLift(HardwareOmnibot.LiftPosition.STOWED);
                 robot.moveIntake(HardwareOmnibot.IntakePosition.EXTENDED);
-                driveAtHeadingForTime(0.3, 0.1, 90.0, 0.0, 1100);
-                driveAtHeadingForTime(0.3, 0.1, 0.0, 0.0, 600);
+                driveAtHeadingForTime(0.3, 0.1, 90.0, 0.0, 1100, true);
+                driveAtHeadingForTime(0.3, 0.1, 0.0, 0.0, 600, true);
                 rotateRobotToAngle(0.3, 40, 2000);
 
                 // Make sure the intake is out.
@@ -221,35 +221,35 @@ public class OmniAutoFullRed extends OmniAutoClass
 
                 // Capture skystone
                 robot.startIntake(false);
-                driveAtHeadingForTime(0.3, 0.1, 130.0, 40.0, 1100);
+                driveAtHeadingForTime(0.3, 0.1, 130.0, 40.0, 1100, true);
 
                 // Reverse same amount we drove, then turn to drive under bridge
-                driveAtHeadingForTime(0.3, 0.1, 310.0, 40.0, 1000);
+                driveAtHeadingForTime(0.3, 0.1, 310.0, 40.0, 1000, true);
                 robot.stopIntake();
                 rotateRobotToAngle(0.3, 270.0, 2000);
                 // Drive under the bridge and eject stone
-                driveAtHeadingForTime(0.3, 0.1, 0.0,270.0, 2800);
+                driveAtHeadingForTime(0.3, 0.1, 0.0,270.0, 2800, true);
                 robot.startIntake(true);
                 sleep(1000);
 
                 // Drive back under bridge to get second stone.
-                driveAtHeadingForTime(0.3, 0.1, 180.0,270.0, 1700);
+                driveAtHeadingForTime(0.3, 0.1, 180.0,270.0, 1700, true);
                 rotateRobotToAngle(0.3, 40, 2000);
 
                 // Capture skystone
                 robot.startIntake(false);
-                driveAtHeadingForTime(0.3, 0.1, 130.0, 40.0, 1300);
+                driveAtHeadingForTime(0.3, 0.1, 130.0, 40.0, 1300, true);
                 // Reverse same amount we drove, then turn to drive under bridge
-                driveAtHeadingForTime(0.3, 0.1, 310.0, 40.0, 1100);
+                driveAtHeadingForTime(0.3, 0.1, 310.0, 40.0, 1100, true);
                 robot.stopIntake();
                 rotateRobotToAngle(0.3, 270.0, 2000);
                 // Drive under the bridge and eject stone
-                driveAtHeadingForTime(0.3, 0.1, 0.0,270.0, 1900);
+                driveAtHeadingForTime(0.3, 0.1, 0.0,270.0, 1900, true);
                 robot.startIntake(true);
                 sleep(1000);
 
                 // Drive to line
-                driveAtHeadingForTime(0.3, 0.1, 180.0,270.0, 1000);
+                driveAtHeadingForTime(0.3, 0.1, 180.0,270.0, 1000, true);
 
                 // Retract the intake.
                 robot.stopIntake();

@@ -280,7 +280,7 @@ public class OmniTeleOp extends OpMode {
         if(!left2Held && left2Pressed)
         {
             left2Held = true;
-            robot.stackFromRightTof = false;
+            robot.stackFromSide = HardwareOmnibot.AlignmentSide.LEFT;
         } else if (!left2Pressed) {
             left2Held = false;
         }
@@ -288,7 +288,7 @@ public class OmniTeleOp extends OpMode {
         if(!right2Held && right2Pressed)
         {
             right2Held = true;
-            robot.stackFromRightTof = true;
+            robot.stackFromSide = HardwareOmnibot.AlignmentSide.RIGHT;
         } else if (!right2Pressed) {
             right2Held = false;
         }

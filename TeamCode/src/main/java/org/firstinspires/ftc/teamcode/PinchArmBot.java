@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-public class PinchArmBot extends FourWheelsDriveBot {
+public class PinchArmBot extends TensorFlowBot {
     static final double INCREMENT   = 0.01;     // amount to slew servo each CYCLE_MS cycle
     static final int    CYCLE_MS    =   500;     // period of each cycle
     static final double MAX_POS     =  1.0;     // Maximum rotational position
@@ -44,6 +44,7 @@ public class PinchArmBot extends FourWheelsDriveBot {
     }
 
     public void pickupSkyStone(){
+
         print(String.format("Before Down: ARM POS : %f, PINCH POS : %f", servoArm.getPosition(), servoPinch.getPosition()));
         servoArm.setPosition(PINCH_ARM_DOWN);
         print(String.format("After Down: ARM POS : %f, PINCH POS : %f", servoArm.getPosition(), servoPinch.getPosition()));
@@ -54,6 +55,7 @@ public class PinchArmBot extends FourWheelsDriveBot {
         servoArm.setPosition(PINCH_ARM_FOLD);
         print(String.format("After Fold: ARM POS : %f, PINCH POS : %f", servoArm.getPosition(), servoPinch.getPosition()));
         opMode.idle();
+
     }
 
     public void dropSkyStone(){

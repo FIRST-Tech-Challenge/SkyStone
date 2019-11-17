@@ -50,6 +50,8 @@ public abstract class ChassisStandard extends OpMode {
     private Servo bull;
     private Servo dozer;
     private double angleHand;
+    private double ffAngleHand;
+    private double bfAngleHand;
 
 
     // Walle state management
@@ -195,10 +197,10 @@ public abstract class ChassisStandard extends OpMode {
     }
 
     protected void initFingers(){
-        if(useFingers){ 
+        if(useFingers){
             try {
                 fingerFront = hardwareMap.get(Servo.class, "servoFrontFinger");
-                fingerFront.
+
                 fingerBack = hardwareMap.get(Servo.class, "servoBackFinger");
 
             } catch (Exception e) {
@@ -251,7 +253,7 @@ public abstract class ChassisStandard extends OpMode {
     public void dropFrontFinger() {
         if (useFingers) {
             angleHand = 0.0;
-            fingerFront.setPosition(angleHand);
+            fingerFront.setPosition(ffAngleHand);
 
         }
     }
@@ -259,14 +261,14 @@ public abstract class ChassisStandard extends OpMode {
     public void raiseFrontFinger() {
         if (useFingers) {
             angleHand = 1.0;
-            fingerFront.setPosition(angleHand);
+            fingerFront.setPosition(ffAngleHand);
         }
     }
     
     public void dropBackFinger() {
         if (useFingers) {
             angleHand = 0.0;
-            fingerBack.setPosition(angleHand);
+            fingerBack.setPosition(bfAngleHand);
 
         }
     }
@@ -274,7 +276,7 @@ public abstract class ChassisStandard extends OpMode {
     public void raiseBackFinger() {
         if (useFingers) {
             angleHand = 1.0;
-            fingerBack.setPosition(angleHand);
+            fingerBack.setPosition(bfAngleHand);
         }
     }
 

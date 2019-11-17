@@ -195,8 +195,8 @@
 
          } else {
 
-             lift_left.setPower(-.5);
-             lift_right.setPower(-.5);
+             lift_left.setPower(-1);
+             lift_right.setPower(-1);
              telemetry.addData("Encoder liftDown() test", lift_left.getCurrentPosition());
              telemetry.update();
 
@@ -216,8 +216,8 @@
 
          } else {
 
-             lift_left.setPower(.5);
-             lift_right.setPower(.5);
+             lift_left.setPower(1);
+             lift_right.setPower(1);
              telemetry.addData("Encoder liftDown() test", lift_left.getCurrentPosition());
              telemetry.update();
 

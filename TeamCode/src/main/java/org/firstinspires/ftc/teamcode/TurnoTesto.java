@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 //Beanis = Square
 //Hagrids = Slash
 
-@Autonomous(name="Turn Test (small and slow)", group="turntest")
+@Autonomous(name="Turn Test Quarter", group="1Testing")
 public class TurnoTesto extends TurnTest {
     public TurnoTesto() {
         super(ChassisConfig.forTileRunner());

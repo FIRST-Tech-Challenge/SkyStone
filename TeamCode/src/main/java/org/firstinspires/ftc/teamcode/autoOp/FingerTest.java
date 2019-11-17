@@ -4,15 +4,16 @@ import org.firstinspires.ftc.teamcode.auto.ChassisConfig;
 import org.firstinspires.ftc.teamcode.auto.ChassisStandard;
 
 /**
- * This just runs from the position closest to the crater, into the crater.
+ *
  */
-public abstract class ShortRedBeanis2 extends ChassisStandard {
+public abstract class FingerTest extends ChassisStandard {
 
-    public ShortRedBeanis2(ChassisConfig config) {
+
+    public FingerTest(ChassisConfig config) {
         super(config);
     }
 
-    /**a
+    /**
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
     @Override
@@ -20,12 +21,19 @@ public abstract class ShortRedBeanis2 extends ChassisStandard {
 
         if (madeTheRun == false) {
 
-            encoderDrive(4);
+            raiseBackFinger();
 
-            turnRight(82);
+            raiseFrontFinger();
 
-            encoderDrive(37
-            );
+            dropBackFinger();
+
+            dropFrontFinger();
+
+
+           raiseBackFinger();
+
+           raiseFrontFinger();
+
             madeTheRun = true;
         }
     }

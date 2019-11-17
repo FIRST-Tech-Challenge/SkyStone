@@ -60,15 +60,23 @@ public abstract class ChassisStandard extends OpMode {
     private DcMotor motorFrontRight;
     private DcMotor extender;
     private DcMotor shoulder;
+    private DcMotor crane;
 
     //Crab
     protected Servo crab;
+
+    //fingers
+    protected Servo fingerFront;
+    protected Servo fingerBack;
 
     // Team Marker Servo
     private Servo flagHolder;
     private Servo bull;
     private Servo dozer;
     private double angleHand;
+    private double ffAngleHand;
+    private double bfAngleHand;
+
 
     // Walle state management
     int wasteAllocationLoadLifterEarthBegin;
@@ -91,6 +99,8 @@ public abstract class ChassisStandard extends OpMode {
     protected boolean useArm = false;
     protected boolean useEve = false;
     protected boolean useCrab = true;
+    protected boolean useFingers = true;
+
 
 
     protected ChassisStandard(ChassisConfig config) {
@@ -119,9 +129,9 @@ public abstract class ChassisStandard extends OpMode {
         initTimeouts();
         initGyroscope();
         initCrab();
+        initFingers();
 
-        // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
-        // first.
+        // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that first.
         initVuforia();
 
         if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
@@ -137,7 +147,6 @@ public abstract class ChassisStandard extends OpMode {
         if (tfod != null) {
             tfod.activate();
         }
-
     }
 
     /**
@@ -145,9 +154,13 @@ public abstract class ChassisStandard extends OpMode {
      */
     @Override
     public void init_loop () {
-      // printStatus();
+        printStatus();
     }
 
+
+    /**
+     *
+     */
     protected void printStatus() {
         if(useGyroScope) {
             telemetry.addData("Gyro", "angle: " + this.getGyroscopeAngle());
@@ -156,8 +169,7 @@ public abstract class ChassisStandard extends OpMode {
             telemetry.addData("Crab", "Angle =%f", crab.getPosition());
         }
         telemetry.addData("Status", "time: " + runtime.toString());
-        telemetry.addData("Status", "madeTheRun=%b", madeTheRun);
-
+        telemetry.addData("Run", "madeTheRun=%b", madeTheRun);
     }
 
     /*
@@ -224,6 +236,20 @@ public abstract class ChassisStandard extends OpMode {
         }
     }
 
+    protected void initFingers(){
+        if(useFingers){
+            try {
+                fingerFront = hardwareMap.get(Servo.class, "servoFrontFinger");
+
+                fingerBack = hardwareMap.get(Servo.class, "servoBackFinger");
+
+            } catch (Exception e) {
+                telemetry.addData("finger", "exception on init: " + e.toString());
+                useFingers = false;
+            }
+        }
+    }
+
 
     protected void initTimeouts() {
         // This code prevents the OpMode from freaking out if you go to sleep for more than a second.
@@ -238,8 +264,9 @@ public abstract class ChassisStandard extends OpMode {
 
     protected void initArm() {
         if (useArm) {
-            shoulder = hardwareMap.get(DcMotor.class, "motor4");
-            extender = hardwareMap.get(DcMotor.class, "motor5");
+            //shoulder = hardwareMap.get(DcMotor.class, "motor4");
+            extender = hardwareMap.get(DcMotor.class, "motorExtender");
+            crane = hardwareMap.get(DcMotor.class, "motorCrane");
         }
     }
 
@@ -263,6 +290,36 @@ public abstract class ChassisStandard extends OpMode {
     }
 
 
+    public void dropFrontFinger() {
+        if (useFingers) {
+            angleHand = 0.0;
+            fingerFront.setPosition(ffAngleHand);
+
+        }
+    }
+
+    public void raiseFrontFinger() {
+        if (useFingers) {
+            angleHand = 1.0;
+            fingerFront.setPosition(ffAngleHand);
+        }
+    }
+    
+    public void dropBackFinger() {
+        if (useFingers) {
+            angleHand = 0.0;
+            fingerBack.setPosition(bfAngleHand);
+
+        }
+    }
+
+    public void raiseBackFinger() {
+        if (useFingers) {
+            angleHand = 1.0;
+            fingerBack.setPosition(bfAngleHand);
+        }
+    }
+
 
     public void dropCrab() {
         if (useCrab) {
@@ -285,6 +342,11 @@ public abstract class ChassisStandard extends OpMode {
 
     protected void encoderDrive(double leftInches, double rightInches) {
         double speed = config.getMoveSpeed();
+        encoderDrive(leftInches, rightInches, speed);
+    }
+
+    protected void encoderDrive(double leftInches, double rightInches, double speed) {
+
         double countsPerInch = config.getRearWheelSpeed() / (config.getRearWheelDiameter() * Math.PI);
 
         // Get the current position.

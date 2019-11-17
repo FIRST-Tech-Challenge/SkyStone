@@ -21,30 +21,16 @@ public abstract class ClawTest extends ChassisStandard {
 
         if (madeTheRun == false) {
 
-            // encoderDrive(24);
             raiseCrab();
             sleep(2000);
-            /*while (crab.getPosition() < 1.0f) {
-                if (useCrab) {
-                    telemetry.addData("Crab", "Angle =%f", crab.getPosition());
-                    telemetry.update();
-                }
-            }*/
 
-            //encoderDrive(-12);
             dropCrab();
             sleep(2000);
-           /* while (crab.getPosition() > 0.0f) {
-                if (useCrab) {
-                         telemetry.addData("Crab", "Angle =%f", crab.getPosition());
-                         telemetry.update();
-                     }
-            }*/
-
-            encoderDrive(-24);
 
             madeTheRun = true;
         }
+
+        printStatus();
     }
 }
 

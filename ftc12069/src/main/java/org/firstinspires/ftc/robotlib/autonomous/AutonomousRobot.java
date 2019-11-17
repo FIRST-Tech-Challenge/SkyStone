@@ -71,10 +71,12 @@ public class AutonomousRobot {
      * Creates an instance of an autonomous robot manager
      * @param hwMap FTC hardware map
      * @param vuforiaKey Vuforia Key
+     * @param alliance Alliance Enum
      */
     public AutonomousRobot(HardwareMap hwMap, String vuforiaKey, Alliance alliance) {
         this.hardware = new MecanumHardwareMap(hwMap);
         this.vuforiaKey = vuforiaKey;
+        this.alliance = alliance;
     }
 
     /**

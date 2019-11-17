@@ -96,7 +96,7 @@ public class MecanumAutonomous {
 
             telemetry.addData("Visible Target(s)", robot.stringifyVisibleTargets());
 
-            // move to stone if targeted
+            // move to stone if visible
             VuforiaTrackable trackedStone = robot.getVisibleTrackable("Stone Target");
             if (trackedStone != null) {
                 Point3D stonePoint3D = new Point3D(trackedStone.getLocation());

@@ -20,7 +20,7 @@ public class GoToPointTest extends LinearOpMode
         while (opModeIsActive()){
             robot.goToPoint(15,0,1, 0.5,Math.toRadians(0));
             robot.goToPoint(0,-20,0.5, 0.5,Math.toRadians(0));
-            robot.finalTurn(135,1);
+            robot.finalTurn(135);
             robot.goToPoint(60,-20,0.5, 0.9,Math.toRadians(0));
             robot.finalMove(1,-80);
             break;

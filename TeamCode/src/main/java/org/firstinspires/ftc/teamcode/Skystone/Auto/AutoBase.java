@@ -22,7 +22,7 @@ public class AutoBase extends LinearOpMode {
         robot.setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         //robot.intializeIMU();
-        initServos();
+        //initServos();
         Position2D position2D = new Position2D(robot);
         position2D.startOdometry();
     }

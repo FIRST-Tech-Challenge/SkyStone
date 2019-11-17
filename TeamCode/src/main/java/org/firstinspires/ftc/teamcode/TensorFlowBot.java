@@ -102,43 +102,24 @@ public class TensorFlowBot extends FourWheelsDriveBot {
 
     }
 
-    public void driveUntilSeeSkystone(int direction, double maxPower){
-//        switch (direction){
-//            case DIRECTION_FORWARD:
-//                leftFront.setTargetPosition(leftFront.getCurrentPosition() + target);
-//                rightFront.setTargetPosition(rightFront.getCurrentPosition() + target);
-//                leftRear.setTargetPosition(leftRear.getCurrentPosition() + target);
-//                rightRear.setTargetPosition(rightRear.getCurrentPosition() + target);
-//                break;
-//            case DIRECTION_BACKWARD:
-//                leftFront.setTargetPosition(leftFront.getCurrentPosition() - target);
-//                rightFront.setTargetPosition(rightFront.getCurrentPosition() - target);
-//                leftRear.setTargetPosition(leftRear.getCurrentPosition() - target);
-//                rightRear.setTargetPosition(rightRear.getCurrentPosition() - target);
-//                break;
-//            case DIRECTION_LEFT:
-//                leftFront.setTargetPosition(leftFront.getCurrentPosition() + target);
-//                rightFront.setTargetPosition(rightFront.getCurrentPosition() - target);
-//                leftRear.setTargetPosition(leftRear.getCurrentPosition() - target);
-//                rightRear.setTargetPosition(rightRear.getCurrentPosition() + target);
-//                break;
-//            case DIRECTION_RIGHT:
-//                leftFront.setTargetPosition(leftFront.getCurrentPosition() - target);
-//                rightFront.setTargetPosition(rightFront.getCurrentPosition() + target);
-//                leftRear.setTargetPosition(leftRear.getCurrentPosition() + target);
-//                rightRear.setTargetPosition(rightRear.getCurrentPosition() - target);
-//                break;
-//            default:
-//                String msg = String.format("Unaccepted direction value (%d) for driveStraightByDistance()", direction);
-//                print(msg);
-//        }
+    public void driveUntilSeeSkystone(double maxPower, boolean forward){
 
-        double power = maxPower;
+        double power;
+
+        if (forward){
+            power = maxPower;
+        }
+        else{
+            power = - maxPower;
+        }
+
+//        leftFront.setDirection(direction);
 
         leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         leftRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         leftFront.setPower(power);
         rightFront.setPower(power);
         leftRear.setPower(power);
@@ -169,7 +150,7 @@ public class TensorFlowBot extends FourWheelsDriveBot {
 
     }
 
-    protected Boolean isSkystoneDetected(){
+    public Boolean isSkystoneDetected(){
         if (tfod != null) {
             // getUpdatedRecognitions() will return null if no new information is available since
             // the last time that call was made.

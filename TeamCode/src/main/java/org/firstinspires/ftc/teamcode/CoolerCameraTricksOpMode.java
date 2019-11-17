@@ -22,7 +22,7 @@ public class CoolerCameraTricksOpMode extends LinearOpMode {
 
         robot.driveStraightByDistance( robot.DIRECTION_RIGHT, 500, 0.3);
 
-        robot.driveUntilSeeSkystone(robot.DIRECTION_FORWARD, -0.08);
+        robot.driveUntilSeeSkystone(-0.08, true);
 
         robot.driveStraightByDistance(robot.DIRECTION_FORWARD, 200, 0.3);
 

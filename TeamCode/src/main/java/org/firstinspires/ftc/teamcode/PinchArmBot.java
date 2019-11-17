@@ -9,6 +9,14 @@ public class PinchArmBot extends FourWheelsDriveBot {
     static final int    CYCLE_MS    =   500;     // period of each cycle
     static final double MAX_POS     =  1.0;     // Maximum rotational position
     static final double MIN_POS     =  0.0;     // Minimum rotational position
+    static final double PINCH_ARM_FOLD = 0.0;
+    static final double PINCH_ARM_VERTICLE = 0.55;
+    static final double PINCH_ARM_DOWN = 0.8;
+    static final double PINCH_PINCH = 0.5;
+    static final double PINCH_RELEASE = 0.3;
+
+
+
 
     public Servo servoArm = null;
     public Servo servoPinch = null;
@@ -28,36 +36,41 @@ public class PinchArmBot extends FourWheelsDriveBot {
         servoArm = hwMap.servo.get("servoArm");
         servoPinch = hwMap.servo.get("servoPinch");
 
-        servoArm.setPosition(1.0);
-        servoPinch.setPosition(0.0);
+        print(String.format("Before Init : ARM POS : %f, PINCH POS : %f", servoArm.getPosition(), servoPinch.getPosition()));
+
+        servoArm.setPosition(PINCH_ARM_FOLD);
+        servoPinch.setPosition(PINCH_RELEASE);
+        print(String.format("After Init : ARM POS : %f, PINCH POS : %f", servoArm.getPosition(), servoPinch.getPosition()));
     }
 
     public void pickupSkyStone(){
-        opMode.sleep(3*1000);
-        return;
-
-        opMode.telemetry.log().add("pickupSkyStone()");
-        int i = 1;
-        while (this.opMode.opModeIsActive() && i < 4) {
-            opMode.telemetry.log().add(String.format("pickupSkystone loop %d, %.2f, %.2f", i, servoArm.getPosition(), servoPinch.getPosition()));
-
-            servoArm.setPosition(servoArm.getPosition() - 0.5);
-            servoPinch.setPosition(servoPinch.getPosition() + 0.3);
-            opMode.sleep(2000);
-            opMode.telemetry.log().add(String.format("pickupSkystone end %d, %.2f, %.2f", i, servoArm.getPosition(), servoPinch.getPosition()));
-            opMode.idle();
-            i++;
-        }
-
+        print(String.format("Before Down: ARM POS : %f, PINCH POS : %f", servoArm.getPosition(), servoPinch.getPosition()));
+        servoArm.setPosition(PINCH_ARM_DOWN);
+        print(String.format("After Down: ARM POS : %f, PINCH POS : %f", servoArm.getPosition(), servoPinch.getPosition()));
+        opMode.sleep(2000);
+        servoPinch.setPosition(PINCH_PINCH);
+        print(String.format("After Pinch: ARM POS : %f, PINCH POS : %f", servoArm.getPosition(), servoPinch.getPosition()));
+        opMode.sleep(2000);
+        servoArm.setPosition(PINCH_ARM_FOLD);
+        print(String.format("After Fold: ARM POS : %f, PINCH POS : %f", servoArm.getPosition(), servoPinch.getPosition()));
+        opMode.idle();
     }
 
     public void dropSkyStone(){
+        servoArm.setPosition(PINCH_ARM_DOWN);
+        opMode.sleep(2000);
+        servoPinch.setPosition(PINCH_RELEASE);
+        opMode.sleep(2000);
+        servoArm.setPosition(PINCH_ARM_FOLD);
         opMode.sleep(2*1000);
         return;
     }
 
     public void resetArm(){
-        opMode.sleep(1*1000);
+        servoPinch.setPosition(PINCH_RELEASE);
+        opMode.sleep(2000);
+        servoArm.setPosition(PINCH_ARM_FOLD);
+        opMode.sleep(2*1000);
         return;
     }
 

@@ -120,7 +120,7 @@
          front_left.setPower(0);
          rear_left.setPower(0);
          front_right.setPower(0);
-         rear_left.setPower(0);
+         rear_right.setPower(0);
          lift_left.setPower(0);
          lift_right.setPower(0);
          Clamp_Right.setPosition(.6f);

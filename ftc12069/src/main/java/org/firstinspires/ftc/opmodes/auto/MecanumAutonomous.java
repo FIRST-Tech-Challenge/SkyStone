@@ -77,13 +77,14 @@ public class MecanumAutonomous {
     }
 
     boolean loop() {
-        if (elapsedTime.seconds() > 25) {
+        /*if (elapsedTime.seconds() > 25) {
             robot.parkUnderBridge();
             return false;
-        }
+        }*/
 
         robot.scan();
 
+        telemetry.addData("TIME", elapsedTime.seconds());
         // Provide feedback as to where the robot is located (if we know).
         if (robot.isTargetVisible()) {
             // express position (translation) of robot in inches.
@@ -97,13 +98,13 @@ public class MecanumAutonomous {
             telemetry.addData("Visible Target(s)", robot.stringifyVisibleTargets());
 
             // move to stone if visible
-            VuforiaTrackable trackedStone = robot.getVisibleTrackable("Stone Target");
+            /*VuforiaTrackable trackedStone = robot.getVisibleTrackable("Stone Target");
             if (trackedStone != null) {
                 Point3D stonePoint3D = new Point3D(trackedStone.getLocation());
                 robot.simpleMove(robot.getCourseFromRobot(stonePoint3D), 1, 0, robot.getDistanceFromRobot(stonePoint3D));
                 robot.turn(90, 0.5);
                 robot.move(robot.getCourseFromRobot(stonePoint3D), 1, new OrientationInfo(145, 0.3), robot.getDistanceFromRobot(stonePoint3D));
-            }
+            }*/
         } else {
             telemetry.addData("Visible Target", "None");
         }

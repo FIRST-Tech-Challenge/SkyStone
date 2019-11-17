@@ -57,6 +57,7 @@ public class AutonomousRobot {
     private float phoneYRotate = 0;
     private float phoneZRotate = 0;
 
+    private boolean visibleTarget = false;
     public VuforiaTrackables trackables;
     public List<VuforiaTrackable> trackablesList;
     public List<VuforiaTrackable> visibleTrackables;
@@ -89,7 +90,7 @@ public class AutonomousRobot {
          */
         int cameraMonitorViewId = hardware.internalHardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardware.internalHardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-        parameters.cameraName = hardware.webcamName;
+        //parameters.cameraName = hardware.webcamName;
         // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
         parameters.vuforiaLicenseKey = vuforiaKey;
@@ -224,6 +225,8 @@ public class AutonomousRobot {
         for (VuforiaTrackable trackable : trackablesList) {
             ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
         }
+
+        visibleTrackables = new ArrayList<>();
     }
 
     /**
@@ -232,15 +235,17 @@ public class AutonomousRobot {
      * Use this in the game loop to get the most up-to-date information from Vuforia
      */
     public void scan() {
+        visibleTarget = false;
+        visibleTrackables.clear();
         for (VuforiaTrackable trackable : trackablesList) {
-            visibleTrackables.clear();
             if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
                 visibleTrackables.add(trackable);
+                visibleTarget = true;
 
                 // getUpdatedRobotLocation() will return null if no new information is available since
                 // the last time that call was made, or if the trackable is not currently visible.
                 OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
-                if (robotLocationTransform != null) {
+                if (robotLocationTransform != null && !trackable.getName().equals("Stone Target")) {
                     lastLocation = robotLocationTransform;
                 }
             }
@@ -271,7 +276,8 @@ public class AutonomousRobot {
      * @return current position on the FTC field
      */
     public Point3D getPosition() {
-        if (!isTargetVisible()) return null;
+        if (lastLocation == null) return null;
+        //if (!isTargetVisible()) return null;
         // express position (translation) of robot in inches.
         VectorF translation = lastLocation.getTranslation();
         return new Point3D(translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);

@@ -48,9 +48,9 @@
   * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
   */
 
- @Autonomous(name = "Unfold_Test", group = "Linear Opmode")
+ @Autonomous(name = "Unfold_Test2", group = "Linear Opmode")
 //@Disabled
- public class Unfold_Test extends LinearOpMode {
+ public class Unfold_Test2 extends LinearOpMode {
 
      // Declare OpMode members.
      private ElapsedTime runtime = new ElapsedTime();
@@ -139,13 +139,13 @@
 
                  liftDown();
 
-                 if (lift_left.getCurrentPosition() < -200) {
+                 if (lift_left.getCurrentPosition() < -100) {
 
                      Clamp_Right.setPosition(.37f);
                      Clamp_Left.setPosition(.63f);
                      liftUp();
 
-                     if (lift_left.getCurrentPosition() > 200) {
+                     if (lift_left.getCurrentPosition() > 100) {
 
                          Release_Servo.setPosition(.5);
                          startingPosition = false;
@@ -186,7 +186,7 @@
 
      public void liftDown() {
 
-         if (lift_left.getCurrentPosition() < -200) {
+         if (lift_left.getCurrentPosition() < -100) {
 
              lift_left.setPower(0);
              lift_right.setPower(0);
@@ -207,7 +207,7 @@
 
      public void liftUp() {
 
-         if (lift_left.getCurrentPosition() > 200) {
+         if (lift_left.getCurrentPosition() > 100) {
 
              lift_left.setPower(0);
              lift_right.setPower(0);

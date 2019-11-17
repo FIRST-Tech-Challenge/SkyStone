@@ -135,7 +135,7 @@
          if (startingPosition == true) {
 
              goForward();
-             while (opModeIsActive( ) && startingPosition) {
+             while (opModeIsActive() && startingPosition) {
                  liftDown();
 
                  if (lift_left.getCurrentPosition() > -200) {
@@ -225,3 +225,5 @@
 
 
      }
+
+ }

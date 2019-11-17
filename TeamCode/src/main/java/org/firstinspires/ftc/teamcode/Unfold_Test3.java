@@ -109,9 +109,11 @@
          front_right.setDirection(DcMotor.Direction.FORWARD);
          rear_right.setDirection(DcMotor.Direction.REVERSE);
          lift_left.setDirection(DcMotor.Direction.FORWARD);
-         lift_right.setDirection(DcMotor.Direction.FORWARD);
+         lift_right.setDirection(DcMotor.Direction.R);
 
          boolean startingPosition = true;
+
+         boolean lift_is_down = false;
 
          // Wait for the game to start (driver presses PLAY)
          waitForStart();

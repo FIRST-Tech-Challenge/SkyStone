@@ -19,12 +19,12 @@ public class SkyStoneOnlyRedOriginal extends LinearOpMode {
 
             robot.pickupSkyStone();
 
-            robot.driveStraightByDistance(robot.DIRECTION_FORWARD, 10000, 1);
+            robot.driveStraightByDistance(robot.DIRECTION_FORWARD, 3000, 1);
             robot.driveStraightByDistance(robot.DIRECTION_RIGHT, 100, 0.2);
 
             robot.dropSkyStone();
 
             robot.driveStraightByDistance(robot.DIRECTION_LEFT, 100, 1);
-            robot.driveStraightByDistance(robot.DIRECTION_BACKWARD, 500, 0.9);
+            robot.driveStraightByDistance(robot.DIRECTION_BACKWARD, 1500, 0.9); // Drive approximately 1/2 of where u came from (1000/2) values can change (park under bridge)
         }
 }

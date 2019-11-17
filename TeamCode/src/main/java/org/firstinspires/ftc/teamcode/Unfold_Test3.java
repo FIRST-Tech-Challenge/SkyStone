@@ -31,6 +31,7 @@
  import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
  import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
  import com.qualcomm.robotcore.hardware.DcMotor;
+ import com.qualcomm.robotcore.hardware.DcMotorSimple;
  import com.qualcomm.robotcore.hardware.Servo;
  import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -109,7 +110,7 @@
          front_right.setDirection(DcMotor.Direction.FORWARD);
          rear_right.setDirection(DcMotor.Direction.REVERSE);
          lift_left.setDirection(DcMotor.Direction.FORWARD);
-         lift_right.setDirection(DcMotor.Direction.R);
+         lift_right.setDirection(DcMotor.Direction.REVERSE);
 
          boolean startingPosition = true;
 

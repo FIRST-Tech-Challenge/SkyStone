@@ -114,7 +114,6 @@
          boolean startingPosition = true;
 
          boolean lift_is_down = false;
-         boolean lift_is_down = false;
 
          // Wait for the game to start (driver presses PLAY)
          waitForStart();

@@ -11,10 +11,10 @@ public class PinchArmBot extends TensorFlowBot {
     static final double MIN_POS     =  0.0;     // Minimum rotational position
     static final double PINCH_ARM_FOLD = 0.3;
     static final double PINCH_ARM_VERTICLE = 0.55;
-    static final double PINCH_ARM_DOWN = 0.95;
+    static final double PINCH_ARM_DOWN = 0.85;
     static final double PINCH_PINCH = 0.5;
-    static final double PINCH_RELEASE = 0.3;
-
+    static final double PINCH_RELEASE = 0.2;
+    static final double FOUNDATION_DRAG = 0.9;
 
 
 
@@ -48,10 +48,10 @@ public class PinchArmBot extends TensorFlowBot {
         print(String.format("Before Down: ARM POS : %f, PINCH POS : %f", servoArm.getPosition(), servoPinch.getPosition()));
         servoArm.setPosition(PINCH_ARM_DOWN);
         print(String.format("After Down: ARM POS : %f, PINCH POS : %f", servoArm.getPosition(), servoPinch.getPosition()));
-        opMode.sleep(2000);
+        opMode.sleep(1000);
         servoPinch.setPosition(PINCH_PINCH);
         print(String.format("After Pinch: ARM POS : %f, PINCH POS : %f", servoArm.getPosition(), servoPinch.getPosition()));
-        opMode.sleep(2000);
+        opMode.sleep(1000);
         servoArm.setPosition(PINCH_ARM_FOLD);
         print(String.format("After Fold: ARM POS : %f, PINCH POS : %f", servoArm.getPosition(), servoPinch.getPosition()));
 //        opMode.idle();
@@ -60,25 +60,25 @@ public class PinchArmBot extends TensorFlowBot {
 
     public void dropSkyStone(){
         servoArm.setPosition(PINCH_ARM_DOWN);
-        opMode.sleep(2000);
+        opMode.sleep(1000);
         servoPinch.setPosition(PINCH_RELEASE);
-        opMode.sleep(2000);
+        opMode.sleep(1000);
         servoArm.setPosition(PINCH_ARM_FOLD);
-        opMode.sleep(2*1000);
+        opMode.sleep(1000);
         return;
     }
 
     public void resetArm(){
         servoPinch.setPosition(PINCH_RELEASE);
         opMode.sleep(2000);
-        servoArm.setPosition(PINCH_ARM_FOLD);
-        opMode.sleep(2*1000);
+        servoArm.setPosition(PINCH_ARM_VERTICLE);
+        opMode.sleep(1000);
         return;
     }
 
     public void dragFoundation() {
-        servoArm.setPosition(PINCH_ARM_DOWN);
-        opMode.sleep(2000);
+        servoArm.setPosition(FOUNDATION_DRAG);
+        opMode.sleep(1000);
     }
 
 }

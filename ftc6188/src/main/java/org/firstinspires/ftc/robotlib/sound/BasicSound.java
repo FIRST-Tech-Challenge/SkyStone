@@ -31,8 +31,13 @@ public class BasicSound implements Sound
 
     public void playSound()
     {
-        stopSound();
-        SoundPlayer.getInstance().startPlaying(hwMap.appContext, soundID);
+        SoundPlayer.getInstance().startPlaying(hwMap.appContext, soundID, params, null, new Runnable() {
+            @Override
+            public void run()
+            {
+
+            }
+        });
     }
 
     public void stopSound()

@@ -23,6 +23,7 @@ public class SoundTest extends OpMode
     public void loop()
     {
         playSound.input(gamepad1.x);
+
         if (playSound.onRelease())
         {
             basicSound.toggleSound();

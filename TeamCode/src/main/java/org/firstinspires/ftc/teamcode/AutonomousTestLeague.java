@@ -18,40 +18,36 @@ public class AutonomousTestLeague extends LinearOpMode {
     private DcMotor leftRear = null;    // yellow - port 1
     private DcMotor rightFront = null;  // green - port 3
     private DcMotor rightRear = null;   // blue - port 0
+    double leftPower;
+    double rightPower;
+    double targetRange;
 
-    private Servo clawServo = null;
-    private CRServo armMotor = null;
-    private DistanceSensor sensorRange = null;
+    int rightFrontRange, leftFrontRange, rightRearRange, leftRearRange;
 
-    private DigitalChannel armStop = null;
+    final double MAX_RANGE = 36.0;
+    final double MID_SPEED = 0.25;
+    final double MID_RANGE = 12.0;
+    final double MIN_SPEED = 0.125;
+    final double MIN_RANGE = 1.0;
 
-    private double clawPos;
-    private final double clawIncrement = 0.02;
+    final double TICKS_PER_ROT = 537.6;
+    final double WHEEL_DIAMETER = 4;
+    final double TICKS_PER_INCH = TICKS_PER_ROT/(Math.PI * WHEEL_DIAMETER);
+    final double WHEEL_ANGLE = Math.PI/4;
 
+    final double DRIVE_PWR = 0.25;
     @Override
     public void runOpMode() throws InterruptedException {
 
         // Put initialization code between here and "waitforStart()"
 
         // Setup a variable for each side of the robot
-        double leftPower;
-        double rightPower;
-        double targetRange;
 
-        int rightFrontRange, leftFrontRange, rightRearRange, leftRearRange;
 
-        final double MAX_RANGE = 36.0;
-        final double MID_SPEED = 0.25;
-        final double MID_RANGE = 12.0;
-        final double MIN_SPEED = 0.125;
-        final double MIN_RANGE = 1.0;
 
-        final double TICKS_PER_ROT = 537.6;
-        final double WHEEL_DIAMETER = 4;
-        final double TICKS_PER_INCH = TICKS_PER_ROT/(Math.PI * WHEEL_DIAMETER);
-        final double WHEEL_ANGLE = Math.PI/4;
 
-        final double DRIVE_PWR = 0.25;
+
+
 
         // This driving mode uses left stick to go forward, and right stick to turn.
         // - This uses basic math to combine motions and is easier to drive straight.
@@ -77,18 +73,10 @@ public class AutonomousTestLeague extends LinearOpMode {
         rightFront.setDirection(DcMotor.Direction.FORWARD);
         rightRear.setDirection(DcMotor.Direction.FORWARD);
 
-        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        clawServo.setDirection(Servo.Direction.FORWARD);
-        armMotor.setDirection(CRServo.Direction.FORWARD);
+        leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // while the power of the wheels is 0, brake
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -98,20 +86,34 @@ public class AutonomousTestLeague extends LinearOpMode {
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
-        telemetry.addData("Claw position", "%4.2f", clawPos);
+
 
         waitForStart();
 
         // Put the autonomous portion of the code here
-
+        upToMe(10);
         // Move forward 3ft
         //    Determine the distance in number of ticks
-        rightFrontRange = (int)(3*12*TICKS_PER_INCH/Math.cos(WHEEL_ANGLE)/2);
+
+    }
+
+    public void upToMe(double upToMeLol){
+        rightFrontRange = (int)(upToMeLol*TICKS_PER_INCH/Math.cos(WHEEL_ANGLE)/2);
 
         leftFront.setTargetPosition(rightFrontRange);
         leftRear.setTargetPosition(rightFrontRange);
         rightFront.setTargetPosition(rightFrontRange);
         rightRear.setTargetPosition(rightFrontRange);
+
+        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         leftFront.setPower(DRIVE_PWR);
         leftRear.setPower(DRIVE_PWR);
@@ -125,6 +127,7 @@ public class AutonomousTestLeague extends LinearOpMode {
         leftRear.setPower(0);
         rightFront.setPower(0);
         rightRear.setPower(0);
+
     }
 
 }

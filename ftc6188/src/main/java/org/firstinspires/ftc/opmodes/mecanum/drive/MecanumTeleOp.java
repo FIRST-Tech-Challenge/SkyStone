@@ -18,7 +18,7 @@ public class MecanumTeleOp extends OpMode
 
     // Buttons and toggles
     private ToggleBoolean driverTwoBrakes;  //freezes robot in place for stacking, prevents stick bumping from driver one
-    private ToggleBoolean playSound;
+    private Button playSound;
     private Button servosUp;
     private Button servosDown;
     private Button servosMid;
@@ -33,7 +33,7 @@ public class MecanumTeleOp extends OpMode
         elapsedTime = new ElapsedTime();
 
         driverTwoBrakes = new ToggleBoolean(false);
-        playSound = new ToggleBoolean();
+        playSound = new Button();
         servosUp = new Button();
         servosDown = new Button();
         servosMid = new Button();
@@ -74,11 +74,7 @@ public class MecanumTeleOp extends OpMode
         robot.drivetrain.setRotation(-gamepad1.left_stick_x);
 
         // sound
-        if (playSound.output())
-        {
-            basicSound.playSound();
-            playSound.toggle();
-        }
+        if (playSound.onRelease()) { basicSound.toggleSound(); }
 
 
         //DRIVER TWO

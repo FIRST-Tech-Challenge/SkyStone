@@ -27,21 +27,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.opmodes;
+package org.firstinspires.ftc.opmodes.auto;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotlib.autonomous.AutonomousRobot;
 import org.firstinspires.ftc.robotlib.information.OrientationInfo;
-import org.firstinspires.ftc.robotlib.util.Point;
+import org.firstinspires.ftc.robotlib.navigation.Point3D;
+import org.firstinspires.ftc.robotlib.state.Alliance;
 
-
-@Autonomous(name="Experimental Mecanum AUTO (12069)", group="Autonomous")
-public class MecanumAutonomous extends LinearOpMode {
+public class MecanumAutonomous {
+    private Alliance alliance;
+    private Telemetry telemetry;
+    private HardwareMap hardwareMap;
     private ElapsedTime elapsedTime = new ElapsedTime();
 
     private static final String VUFORIA_KEY =
@@ -49,57 +51,64 @@ public class MecanumAutonomous extends LinearOpMode {
 
     private AutonomousRobot robot;
 
-    @Override
-    public void runOpMode() {
+    MecanumAutonomous(HardwareMap hardwareMap, Telemetry telemetry, Alliance alliance) {
+        this.hardwareMap = hardwareMap;
+        this.telemetry = telemetry;
+        this.alliance = alliance;
+    }
+
+    void init() {
         // Initialize robot
         telemetry.addData("Status", "Initialized");
-        robot = new AutonomousRobot(this.hardwareMap, VUFORIA_KEY);
+        robot = new AutonomousRobot(this.hardwareMap, VUFORIA_KEY, alliance);
         robot.init();
+    }
 
-        // Wait for driver to press start
-        waitForStart();
+    void start() {
         elapsedTime.reset();
 
         // Enable Tracking
         robot.trackables.activate();
+    }
 
-        // Game Loop
-        while (!isStopRequested()) {
-            if (elapsedTime.seconds() > 25) {
-                robot.parkUnderBridge();
-                break;
-            }
-
-            robot.scan();
-
-            // Provide feedback as to where the robot is located (if we know).
-            if (robot.isTargetVisible()) {
-                // express position (translation) of robot in inches.
-                Point position = robot.getPosition();
-                telemetry.addData("Position (inch)", "{X, Y, Z} = %.1f, %.1f, %.1f", position.x, position.y, position.z);
-
-                // express the orientation of the robot in degrees.
-                Orientation orientation = robot.getOrientation();
-                telemetry.addData("Orientation (deg)", "{Heading, Roll, Pitch} = %.0f, %.0f, %.0f", orientation.thirdAngle, orientation.firstAngle, orientation.secondAngle);
-
-                telemetry.addData("Visible Target(s)", robot.stringifyVisibleTargets());
-
-                // move to stone if targeted
-                VuforiaTrackable trackedStone = robot.getVisibleTrackable("Stone Target");
-                if (trackedStone != null) {
-                    Point stonePoint = new Point(trackedStone.getLocation());
-                    robot.simpleMove(robot.getCourseFromRobot(stonePoint), 1, 0, robot.getDistanceFromRobot(stonePoint));
-                    robot.turn(90, 0.5);
-                    robot.move(robot.getCourseFromRobot(stonePoint), 1, new OrientationInfo(145, 0.3), robot.getDistanceFromRobot(stonePoint));
-                }
-            } else {
-                telemetry.addData("Visible Target", "None");
-            }
-
-            telemetry.update();
-        }
-
+    void end() {
         // Disable Tracking when we are done
         robot.trackables.deactivate();
+    }
+
+    boolean loop() {
+        if (elapsedTime.seconds() > 25) {
+            robot.parkUnderBridge();
+            return false;
+        }
+
+        robot.scan();
+
+        // Provide feedback as to where the robot is located (if we know).
+        if (robot.isTargetVisible()) {
+            // express position (translation) of robot in inches.
+            Point3D position = robot.getPosition();
+            telemetry.addData("Position (inch)", "{X, Y, Z} = %.1f, %.1f, %.1f", position.x, position.y, position.z);
+
+            // express the orientation of the robot in degrees.
+            Orientation orientation = robot.getOrientation();
+            telemetry.addData("Orientation (deg)", "{Heading, Roll, Pitch} = %.0f, %.0f, %.0f", orientation.thirdAngle, orientation.firstAngle, orientation.secondAngle);
+
+            telemetry.addData("Visible Target(s)", robot.stringifyVisibleTargets());
+
+            // move to stone if targeted
+            VuforiaTrackable trackedStone = robot.getVisibleTrackable("Stone Target");
+            if (trackedStone != null) {
+                Point3D stonePoint3D = new Point3D(trackedStone.getLocation());
+                robot.simpleMove(robot.getCourseFromRobot(stonePoint3D), 1, 0, robot.getDistanceFromRobot(stonePoint3D));
+                robot.turn(90, 0.5);
+                robot.move(robot.getCourseFromRobot(stonePoint3D), 1, new OrientationInfo(145, 0.3), robot.getDistanceFromRobot(stonePoint3D));
+            }
+        } else {
+            telemetry.addData("Visible Target", "None");
+        }
+
+        telemetry.update();
+        return true;
     }
 }

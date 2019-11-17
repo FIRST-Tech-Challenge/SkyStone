@@ -1,18 +1,19 @@
-package org.firstinspires.ftc.opmodes;
+package org.firstinspires.ftc.opmodes.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotlib.robot.MecanumHardwareMap;
-import org.firstinspires.ftc.robotlib.state.ServoState;
 
-@TeleOp(name="Experimental Mecanum TELEOP (12069)", group="Linear Opmode")
-public class MecanumTeleOp extends OpMode
+@TeleOp(name="OldMecanumTeleOp", group="Linear Opmode")
+public class OldMecanumTeleOp extends OpMode
 {
     private MecanumHardwareMap robotHardware;
     private ElapsedTime elapsedTime;
     private boolean rightMotion = true;
+    private boolean servoUp = true;
+    //private boolean resetServo = true;
 
     @Override
     public void init()
@@ -20,7 +21,8 @@ public class MecanumTeleOp extends OpMode
         robotHardware = new MecanumHardwareMap(this.hardwareMap);
         elapsedTime = new ElapsedTime();
 
-        robotHardware.servoManager.reset();
+        robotHardware.servoManager.setPosition(1.0);
+        //robotHardware.servoManager.reset();
     }
 
     @Override
@@ -56,20 +58,26 @@ public class MecanumTeleOp extends OpMode
         robotHardware.drivetrain.setVelocity(velocity);
         robotHardware.drivetrain.setRotation(rotation);
 
-        ServoState servoState = robotHardware.servoManager.getServoState();
-        robotHardware.servoManager.updateServos();
+        //if (resetServo) {
+            //robotHardware.servoManager.setPosition(1.0);
+        if (servoUp) {
+            robotHardware.servoManager.setPosition(1.0); //0.7
+        } else {
+            robotHardware.servoManager.setPosition(0.5);
+        }
 
         if (gamepad1.a) rightMotion = false;
         if (gamepad1.b) rightMotion = true;
-
-        robotHardware.servoManager.handleUpdate(gamepad1);
+        //if (gamepad1.y) resetServo = true;
+        if (gamepad1.dpad_up) servoUp = true;
+        if (gamepad1.dpad_down) servoUp = false;
 
         telemetry.addData("Status", "Loop: " + elapsedTime.toString());
         telemetry.addData("Course", course);
         telemetry.addData("Velocity", velocity);
         telemetry.addData("Rotation", rotation);
         telemetry.addData("Driving Mode", rightMotion ? "RIGHT" : "LEFT");
-        telemetry.addData("Servo State", servoState.toString() + " (" + servoState.getLevel() + ")");
+        telemetry.addData("Servo Pos", servoUp ? "UP (1)" : "DOWN (0)");
         telemetry.update();
     }
 

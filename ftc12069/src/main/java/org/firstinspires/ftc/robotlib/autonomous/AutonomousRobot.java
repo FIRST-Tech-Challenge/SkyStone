@@ -10,9 +10,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
+import org.firstinspires.ftc.robotlib.information.Area;
 import org.firstinspires.ftc.robotlib.information.OrientationInfo;
+import org.firstinspires.ftc.robotlib.navigation.Point3D;
 import org.firstinspires.ftc.robotlib.robot.MecanumHardwareMap;
-import org.firstinspires.ftc.robotlib.util.Point;
+import org.firstinspires.ftc.robotlib.state.Alliance;
+import org.firstinspires.ftc.robotlib.navigation.Point;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +29,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
 public class AutonomousRobot {
     private String vuforiaKey;
     public MecanumHardwareMap hardware;
+    private Alliance alliance;
 
     private VuforiaLocalizer vuforia;
     private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
@@ -57,12 +61,18 @@ public class AutonomousRobot {
     public List<VuforiaTrackable> trackablesList;
     public List<VuforiaTrackable> visibleTrackables;
 
+    // Constants for Areas
+    private final Area blueBridge = new Area(new Point(2, 72), new Point(-2, 24));
+    private final Area redBridge = new Area(new Point(2, -24), new Point(-2, -72));
+    private final Area buildingZone = new Area(new Point(72, 72), new Point(10, -72));
+    private final Area loadingZone = new Area(new Point(-72, 72), new Point(-10, -72));
+
     /**
      * Creates an instance of an autonomous robot manager
      * @param hwMap FTC hardware map
      * @param vuforiaKey Vuforia Key
      */
-    public AutonomousRobot(HardwareMap hwMap, String vuforiaKey) {
+    public AutonomousRobot(HardwareMap hwMap, String vuforiaKey, Alliance alliance) {
         this.hardware = new MecanumHardwareMap(hwMap);
         this.vuforiaKey = vuforiaKey;
     }
@@ -258,11 +268,11 @@ public class AutonomousRobot {
      * Retrieves the current position of the robot (only works if there is a visible trackable)
      * @return current position on the FTC field
      */
-    public Point getPosition() {
+    public Point3D getPosition() {
         if (!isTargetVisible()) return null;
         // express position (translation) of robot in inches.
         VectorF translation = lastLocation.getTranslation();
-        return new Point(translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
+        return new Point3D(translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
     }
 
     /**
@@ -311,21 +321,21 @@ public class AutonomousRobot {
 
     /**
      * Calculates the course for the robot to arrive a point in a 2D space
-     * @param object Point
+     * @param object Point3D
      * @return required course to arrive at a point
      */
     public double getCourseFromRobot(Point object) {
-        Point robotPosition = this.getPosition();
+        Point3D robotPosition = this.getPosition();
         return Math.atan2(robotPosition.y - object.y, robotPosition.x - object.x);
     }
 
     /**
      * Calculates the course for the robot to arrive a point in a 3D space
-     * @param object Point
+     * @param object Point3D
      * @return required course to arrive at a point
      */
-    public double getCourseFromRobot3D(Point object) {
-        Point robotPosition = this.getPosition();
+    public double getCourseFromRobot3D(Point3D object) {
+        Point3D robotPosition = this.getPosition();
         double robotMagnitude = Math.sqrt(Math.pow(robotPosition.x, 2) + Math.pow(robotPosition.y, 2) + Math.pow(robotPosition.z, 2));
         double objectMagnitude = Math.sqrt(Math.pow(object.x, 2) + Math.pow(object.y, 2) + Math.pow(object.z, 2));
 
@@ -334,16 +344,26 @@ public class AutonomousRobot {
 
     /**
      * Calculates the distance between a point on the field and the robot
-     * @param object Point
+     * @param object Point3D
      * @return distance between point and robot center
      */
     public double getDistanceFromRobot(Point object) {
-        return this.getPosition().distance2D(object);
+        return this.getPosition().distance(object);
     }
 
-    // Shortcuts
+    /**
+     * Automatically moves the robot under the bridge
+     */
     public void parkUnderBridge() {
-        throw new UnsupportedOperationException("Unable to park");
+        Point3D robotPosition = this.getPosition();
+        //TODO Account for robot size
+        if (alliance == Alliance.BLUE) {
+            this.moveToPoint(new Point(robotPosition.x, blueBridge.getCornerPoint2().y), 1);
+            this.moveToPoint(new Point(blueBridge.getMiddleX(), robotPosition.y), 1);
+        } else if (alliance == Alliance.RED) {
+            this.moveToPoint(new Point(robotPosition.x, redBridge.getCornerPoint2().y), 1);
+            this.moveToPoint(new Point(redBridge.getMiddleX(), robotPosition.y), 1);
+        }
     }
 
     /**
@@ -383,5 +403,14 @@ public class AutonomousRobot {
         // In case the robot did not finish turning by the time it reached its destination
         if (this.getOrientation2D() - initialOrientation < orientationInfo.angle)
             this.turn(orientationInfo.angle - (this.getOrientation2D() - initialOrientation), orientationInfo.rotation);
+    }
+
+    /**
+     * Moves the robot to a point
+     * @param point point to move to
+     * @param velocity New velocity
+     */
+    public void moveToPoint(Point point, double velocity) {
+        this.simpleMove(this.getCourseFromRobot(point), velocity, 0, this.getDistanceFromRobot(point));
     }
 }

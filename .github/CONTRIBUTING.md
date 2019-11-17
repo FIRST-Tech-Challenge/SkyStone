@@ -53,7 +53,7 @@ Explain the problem and include additional details to help maintainers reproduce
 
 - Provide specific examples to demonstrate the steps.
 
-- Describe the behavior you observed after following the steps and point out what exactly is the problem with that behavior. Explain which behavior you expected to see instead and why. If applicable, include screenshots which show you following the described steps and clearly demonstrate the problem.
+- Describe the behavior you observed after following the steps and point3D out what exactly is the problem with that behavior. Explain which behavior you expected to see instead and why. If applicable, include screenshots which show you following the described steps and clearly demonstrate the problem.
 
 - If you're reporting that the RobotController crashed, include the logfile with a stack trace of the crash.  [Example of good bug report with stack trace](https://github.com/ftctechnh/ftc_app/issues/224)
 

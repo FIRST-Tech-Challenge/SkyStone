@@ -78,6 +78,7 @@ public class PinchArmBot extends TensorFlowBot {
 
     public void dragFoundation() {
         servoArm.setPosition(PINCH_ARM_DOWN);
+        opMode.sleep(2000);
     }
 
 }

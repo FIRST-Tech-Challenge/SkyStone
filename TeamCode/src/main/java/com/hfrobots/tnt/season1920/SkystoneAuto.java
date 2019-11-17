@@ -30,6 +30,7 @@ import com.hfrobots.tnt.corelib.control.DebouncedButton;
 import com.hfrobots.tnt.corelib.control.DebouncedGamepadButtons;
 import com.hfrobots.tnt.corelib.control.NinjaGamePad;
 import com.hfrobots.tnt.corelib.control.RangeInput;
+import com.hfrobots.tnt.corelib.drive.mecanum.DriveConstants;
 import com.hfrobots.tnt.corelib.drive.mecanum.RoadRunnerMecanumDriveREV;
 import com.hfrobots.tnt.corelib.drive.mecanum.TrajectoryFollowerState;
 import com.hfrobots.tnt.corelib.state.State;
@@ -88,7 +89,7 @@ public class SkystoneAuto extends OpMode {
         setupDriverControls();
 
         RealSimplerHardwareMap simplerHardwareMap = new RealSimplerHardwareMap(this.hardwareMap);
-        driveBase = new RoadRunnerMecanumDriveREV(simplerHardwareMap, false);
+        driveBase = new RoadRunnerMecanumDriveREV(new SkystoneDriveConstants(), simplerHardwareMap, false);
 
         stateMachine = new StateMachine(telemetry);
     }

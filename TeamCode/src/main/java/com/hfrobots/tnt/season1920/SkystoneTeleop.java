@@ -21,6 +21,7 @@ package com.hfrobots.tnt.season1920;
 
 import com.google.common.base.Ticker;
 import com.hfrobots.tnt.corelib.control.NinjaGamePad;
+import com.hfrobots.tnt.corelib.drive.mecanum.DriveConstants;
 import com.hfrobots.tnt.corelib.drive.mecanum.RoadRunnerMecanumDriveREV;
 import com.hfrobots.tnt.corelib.metrics.StatsDMetricSampler;
 import com.hfrobots.tnt.corelib.util.RealSimplerHardwareMap;
@@ -49,7 +50,7 @@ public class SkystoneTeleop extends OpMode {
         ticker = createAndroidTicker();
 
         RealSimplerHardwareMap simplerHardwareMap = new RealSimplerHardwareMap(this.hardwareMap);
-        driveBase = new RoadRunnerMecanumDriveREV(simplerHardwareMap, false);
+        driveBase = null; new RoadRunnerMecanumDriveREV(new SkystoneDriveConstants(), simplerHardwareMap, false);
         kinematics = new OpenLoopMecanumKinematics(driveBase);
 
         NinjaGamePad driversGamepad = new NinjaGamePad(gamepad1);

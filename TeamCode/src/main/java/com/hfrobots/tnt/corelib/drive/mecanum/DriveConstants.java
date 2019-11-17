@@ -1,13 +1,14 @@
 package com.hfrobots.tnt.corelib.drive.mecanum;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 
 /*
  * Constants shared between multiple drive types.
  */
 @Config
-public class DriveConstants {
+public abstract class DriveConstants {
 
     /*
      * TODO: Tune or adjust the following constants to fit your robot. Note that the non-final
@@ -27,9 +28,9 @@ public class DriveConstants {
      * angular distances although most angular parameters are wrapped in Math.toRadians() for
      * convenience.
      */
-    public static double WHEEL_RADIUS = 2;
-    public static double GEAR_RATIO = 1; // output (wheel) speed / input (motor) speed
-    public static double TRACK_WIDTH = 18;
+    protected double wheelRadius = 2;
+    protected double gearRatio = 1; // output (wheel) speed / input (motor) speed
+    protected double trackWidth = 18;
 
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using
@@ -37,9 +38,9 @@ public class DriveConstants {
      * motor encoders or have elected not to use them for velocity control, these values should be
      * empirically tuned.
      */
-    public static double kV = 1.0 / rpmToVelocity(getMaxRpm());
-    public static double kA = 0;
-    public static double kStatic = 0;
+
+    protected double kA = 0;
+    protected double kStatic = 0;
 
     /*
      * These values are used to generate the trajectories for you robot. To ensure proper operation,
@@ -49,21 +50,37 @@ public class DriveConstants {
      * acceleration values are required, and the jerk values are optional (setting a jerk of 0.0
      * forces acceleration-limited profiling).
      */
-    public static DriveConstraints BASE_CONSTRAINTS = new DriveConstraints(
-            25.0, 40.0, 0.0,
-            Math.toRadians(180.0), Math.toRadians(180.0), 0.0
-    );
+    public abstract DriveConstraints getBaseConstraints();
 
-
-    public static double encoderTicksToInches(int ticks) {
-        return WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO * ticks / TICKS_PER_REV;
+    public double encoderTicksToInches(int ticks) {
+        return wheelRadius * 2 * Math.PI * gearRatio * ticks / TICKS_PER_REV;
     }
 
-    public static double rpmToVelocity(double rpm) {
-        return rpm * GEAR_RATIO * 2 * Math.PI * WHEEL_RADIUS / 60.0;
+    public double rpmToVelocity(double rpm) {
+        return rpm * gearRatio * 2 * Math.PI * wheelRadius / 60.0;
     }
 
-    public static double getMaxRpm() {
-        return 315; /* return MOTOR_CONFIG.getMaxRPM() ; */
+    public double getMaxRpm() {
+        return 315.0; /* return MOTOR_CONFIG.getMaxRPM() ; */
     }
+
+    public double getKv() {
+        return 1.0 / rpmToVelocity(getMaxRpm());
+    }
+
+    public double getKa() {
+        return kA;
+    }
+
+    public double getKstatic() {
+        return kStatic;
+    }
+
+    public double getTrackWidth() {
+        return trackWidth;
+    }
+
+    public abstract PIDCoefficients getTranslationalPID();
+
+    public abstract PIDCoefficients getHeadingPid();
 }

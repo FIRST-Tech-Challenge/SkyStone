@@ -20,6 +20,7 @@
 package com.hfrobots.tnt.season1920;
 
 import com.hfrobots.tnt.corelib.control.NinjaGamePad;
+import com.hfrobots.tnt.corelib.drive.mecanum.DriveConstants;
 import com.hfrobots.tnt.corelib.drive.mecanum.RoadRunnerMecanumDriveREV;
 import com.hfrobots.tnt.corelib.metrics.StatsDMetricSampler;
 import com.hfrobots.tnt.corelib.util.RealSimplerHardwareMap;
@@ -40,7 +41,7 @@ public class SkystoneDriveBaseTest extends OpMode {
     @Override
     public void init() {
         RealSimplerHardwareMap simplerHardwareMap = new RealSimplerHardwareMap(this.hardwareMap);
-        driveBase = new RoadRunnerMecanumDriveREV(simplerHardwareMap, false);
+        driveBase = new RoadRunnerMecanumDriveREV(new SkystoneDriveConstants(), simplerHardwareMap, false);
         kinematics = new OpenLoopMecanumKinematics(driveBase);
 
         driversGamepad = new NinjaGamePad(gamepad1);

@@ -56,8 +56,8 @@ public class RoadRunnerMecanumDriveREV extends RoadRunnerMecanumDriveBase {
 
     private boolean encodersEnabled = false;
 
-    public RoadRunnerMecanumDriveREV(SimplerHardwareMap hardwareMap, boolean needImu) {
-        super();
+    public RoadRunnerMecanumDriveREV(final DriveConstants driveConstants, SimplerHardwareMap hardwareMap, boolean needImu) {
+        super(driveConstants);
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
@@ -70,7 +70,7 @@ public class RoadRunnerMecanumDriveREV extends RoadRunnerMecanumDriveBase {
 
             // TODO: if your hub is mounted vertically, remap the IMU axes so that the z-axis points
             // upward (normal to the floor) using a command like the following:
-            BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
+            BNO055IMUUtil.remapAxes(imu, AxesOrder.YXZ, AxesSigns.NPN);
         }
 
         leftFront = hardwareMap.get(DcMotorEx.class, "leftFrontDriveMotor");
@@ -144,11 +144,12 @@ public class RoadRunnerMecanumDriveREV extends RoadRunnerMecanumDriveBase {
     }
 
     public void enableEncoders() {
-        Log.d(LOG_TAG, "Enabling encoders for the drivebase");
 
         if (encodersEnabled) {
             return; // don't do it again if not needed
         }
+
+        Log.d(LOG_TAG, "Enabling encoders for the drivebase");
 
         for (DcMotorEx motor : motors) {
            motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -159,11 +160,12 @@ public class RoadRunnerMecanumDriveREV extends RoadRunnerMecanumDriveBase {
     }
 
     public void disableEncoders() {
-        Log.d(LOG_TAG, "Disabling encoders for the drivebase");
 
         if (!encodersEnabled) {
             return; // don't do it again if not needed
         }
+
+        Log.d(LOG_TAG, "Disabling encoders for the drivebase");
 
         for (DcMotorEx motor : motors) {
            motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

@@ -19,6 +19,8 @@
 
 package com.hfrobots.tnt.corelib.drive.mecanum;
 
+import android.util.Log;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.config.Config;
@@ -43,11 +45,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import lombok.Getter;
 
-import static com.hfrobots.tnt.corelib.drive.mecanum.DriveConstants.BASE_CONSTRAINTS;
-import static com.hfrobots.tnt.corelib.drive.mecanum.DriveConstants.TRACK_WIDTH;
-import static com.hfrobots.tnt.corelib.drive.mecanum.DriveConstants.kA;
-import static com.hfrobots.tnt.corelib.drive.mecanum.DriveConstants.kStatic;
-import static com.hfrobots.tnt.corelib.drive.mecanum.DriveConstants.kV;
+import static com.hfrobots.tnt.corelib.Constants.LOG_TAG;
+
 
 /*
  * Base class with shared functionality for sample mecanum drives. All hardware-specific details are
@@ -55,9 +54,6 @@ import static com.hfrobots.tnt.corelib.drive.mecanum.DriveConstants.kV;
  */
 @Config
 public abstract class RoadRunnerMecanumDriveBase extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
-
 
     public enum Mode {
         IDLE,
@@ -78,19 +74,21 @@ public abstract class RoadRunnerMecanumDriveBase extends MecanumDrive {
     private DriveConstraints constraints;
     private TrajectoryFollower follower;
 
-    public RoadRunnerMecanumDriveBase() {
-        super(kV, kA, kStatic, TRACK_WIDTH);
+    public RoadRunnerMecanumDriveBase(final DriveConstants driveConstants) {
+        super(driveConstants.getKv(), driveConstants.getKa(), driveConstants.getKstatic(), driveConstants.getTrackWidth());
 
         dashboard = FtcDashboard.getInstance();
         clock = NanoClock.system();
 
         mode = Mode.IDLE;
 
-        turnController = new PIDFController(HEADING_PID);
+        PIDCoefficients headingPid = driveConstants.getHeadingPid();
+        turnController = new PIDFController(headingPid);
         turnController.setInputBounds(0, 2 * Math.PI);
 
-        constraints = new MecanumConstraints(BASE_CONSTRAINTS, TRACK_WIDTH);
-        follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID);
+        constraints = new MecanumConstraints(driveConstants.getBaseConstraints(), driveConstants.getTrackWidth());
+        PIDCoefficients translationalPID = driveConstants.getTranslationalPID();
+        follower = new HolonomicPIDVAFollower(translationalPID, translationalPID, headingPid);
     }
 
     public TrajectoryBuilder trajectoryBuilder() {
@@ -142,6 +140,9 @@ public abstract class RoadRunnerMecanumDriveBase extends MecanumDrive {
 
         Pose2d currentPose = getPoseEstimate();
         Pose2d lastError = getLastError();
+
+        Log.d(LOG_TAG, "Current pose:" + currentPose);
+        Log.d(LOG_TAG, "Last error:" + lastError);
 
         TelemetryPacket packet = new TelemetryPacket();
         Canvas fieldOverlay = packet.fieldOverlay();

@@ -19,6 +19,8 @@
 
 package com.hfrobots.tnt.corelib.drive.mecanum;
 
+import android.util.Log;
+
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.quickstart.util.LynxOptimizedI2cFactory;
 import com.hfrobots.tnt.corelib.util.LynxModuleUtil;
@@ -50,8 +52,8 @@ public class RoadRunnerMecanumDriveREVOptimized extends RoadRunnerMecanumDriveBa
     private List<ExpansionHubMotor> motors;
     private BNO055IMU imu;
 
-    public RoadRunnerMecanumDriveREVOptimized(SimplerHardwareMap hardwareMap) {
-        super();
+    public RoadRunnerMecanumDriveREVOptimized(final DriveConstants driveConstants, SimplerHardwareMap hardwareMap, boolean needImu) {
+        super(driveConstants);
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
@@ -60,14 +62,16 @@ public class RoadRunnerMecanumDriveREVOptimized extends RoadRunnerMecanumDriveBa
         // if your motors are split between hubs, **you will need to add another bulk read**
         hub = hardwareMap.get(ExpansionHubEx.class, "Main Hub");
 
-        imu = LynxOptimizedI2cFactory.createLynxEmbeddedImu(hub.getStandardModule(), 0);
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
-        imu.initialize(parameters);
+        if (needImu) {
+            imu = LynxOptimizedI2cFactory.createLynxEmbeddedImu(hub.getStandardModule(), 0);
+            BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+            parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+            imu.initialize(parameters);
 
-        // TODO: if your hub is mounted vertically, remap the IMU axes so that the z-axis points
-        // upward (normal to the floor) using a command like the following:
-        // BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
+            // TODO: if your hub is mounted vertically, remap the IMU axes so that the z-axis points
+            // upward (normal to the floor) using a command like the following:
+            // BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
+        }
 
         leftFront = hardwareMap.get(ExpansionHubMotor.class, "leftFrontDriveMotor");
         leftRear = hardwareMap.get(ExpansionHubMotor.class, "leftRearDriveMotor");
@@ -136,6 +140,13 @@ public class RoadRunnerMecanumDriveREVOptimized extends RoadRunnerMecanumDriveBa
 
     @Override
     public double getRawExternalHeading() {
-        return imu.getAngularOrientation().firstAngle;
+        if (imu == null) {
+            return 0;
+        }
+
+        double angle = imu.getAngularOrientation().firstAngle;
+        Log.d("RR", "imu-angle:" + angle);
+
+        return angle;
     }
 }

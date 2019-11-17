@@ -4,11 +4,11 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.auto.ChassisConfig;
 import org.firstinspires.ftc.teamcode.autoOp.ClawTest;
-import org.firstinspires.ftc.teamcode.autoOp.OniChan;
+import org.firstinspires.ftc.teamcode.autoOp.MoveTest;
 
-@Autonomous(name="ClawTest", group="ZZTesting")
-public class TylerClawTest extends ClawTest {
-    public TylerClawTest() {
+@Autonomous(name="Move Test", group="ZZTesting")
+public class TylerMoveTest extends MoveTest {
+    public TylerMoveTest() {
         super(ChassisConfig.forTileRunner());
     }
 }

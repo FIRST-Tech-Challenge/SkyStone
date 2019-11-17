@@ -7,14 +7,38 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
 
 public abstract class ChassisStandard extends OpMode {
+
+    //copied from tensorflow example
+    private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
+    private static final String LABEL_FIRST_ELEMENT = "Stone";
+    private static final String LABEL_SECOND_ELEMENT = "Skystone";
+    private static final String VUFORIA_KEY =
+            "AfgOBrf/////AAABmRjMx12ilksPnWUyiHDtfRE42LuceBSFlCTIKmmNqCn2EOk3I4NtDCSr0wCLFxWPoLR2qHKraX49ofQ2JknI76SJS5Hy8cLbIN+1GlFDqC8ilhuf/Y1yDzKN6a4n0fYWcEPlzHRc8C1V+D8vZ9QjoF3r//FDDtm+M3qlmwA7J/jNy4nMSXWHPCn2IUASoNqybTi/CEpVQ+jEBOBjtqxNgb1CEdkFJrYGowUZRP0z90+Sew2cp1DJePT4YrAnhhMBOSCURgcyW3q6Pl10XTjwB4/VTjF7TOwboQ5VbUq0wO3teE2TXQAI53dF3ZUle2STjRH0Rk8H94VtHm9u4uitopFR7zmxVl3kQB565EUHwfvG";
+
+    //vision detection variables/state
+    /**
+     * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
+     * localization engine.
+     */
+    protected VuforiaLocalizer vuforia;
+
+    /**
+     * {@link #tfod} is the variable we will use to store our instance of the TensorFlow Object
+     * Detection engine.
+     */
+    protected TFObjectDetector tfod;
 
     //is sound playing?
     boolean soundPlaying = false;
@@ -41,11 +65,17 @@ public abstract class ChassisStandard extends OpMode {
     //Crab
     protected Servo crab;
 
+    //fingers
+    protected Servo fingerFront;
+    protected Servo fingerBack;
+
     // Team Marker Servo
     private Servo flagHolder;
     private Servo bull;
     private Servo dozer;
     private double angleHand;
+    private double ffAngleHand;
+    private double bfAngleHand;
 
 
     // Walle state management
@@ -69,6 +99,8 @@ public abstract class ChassisStandard extends OpMode {
     protected boolean useArm = false;
     protected boolean useEve = false;
     protected boolean useCrab = true;
+    protected boolean useFingers = true;
+
 
 
     protected ChassisStandard(ChassisConfig config) {
@@ -97,6 +129,24 @@ public abstract class ChassisStandard extends OpMode {
         initTimeouts();
         initGyroscope();
         initCrab();
+        initFingers();
+
+        // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that first.
+        initVuforia();
+
+        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
+            initTfod();
+        } else {
+            telemetry.addData("Sorry!", "This device is not compatible with TFOD");
+        }
+
+        /**
+         * Activate TensorFlow Object Detection before we wait for the start command.
+         * Do it here so that the Camera Stream window will have the TensorFlow annotations visible.
+         **/
+        if (tfod != null) {
+            tfod.activate();
+        }
     }
 
     /**
@@ -120,7 +170,6 @@ public abstract class ChassisStandard extends OpMode {
         }
         telemetry.addData("Status", "time: " + runtime.toString());
         telemetry.addData("Run", "madeTheRun=%b", madeTheRun);
-
     }
 
     /*
@@ -187,6 +236,20 @@ public abstract class ChassisStandard extends OpMode {
         }
     }
 
+    protected void initFingers(){
+        if(useFingers){
+            try {
+                fingerFront = hardwareMap.get(Servo.class, "servoFrontFinger");
+
+                fingerBack = hardwareMap.get(Servo.class, "servoBackFinger");
+
+            } catch (Exception e) {
+                telemetry.addData("finger", "exception on init: " + e.toString());
+                useFingers = false;
+            }
+        }
+    }
+
 
     protected void initTimeouts() {
         // This code prevents the OpMode from freaking out if you go to sleep for more than a second.
@@ -226,6 +289,36 @@ public abstract class ChassisStandard extends OpMode {
         }
     }
 
+
+    public void dropFrontFinger() {
+        if (useFingers) {
+            angleHand = 0.0;
+            fingerFront.setPosition(ffAngleHand);
+
+        }
+    }
+
+    public void raiseFrontFinger() {
+        if (useFingers) {
+            angleHand = 1.0;
+            fingerFront.setPosition(ffAngleHand);
+        }
+    }
+    
+    public void dropBackFinger() {
+        if (useFingers) {
+            angleHand = 0.0;
+            fingerBack.setPosition(bfAngleHand);
+
+        }
+    }
+
+    public void raiseBackFinger() {
+        if (useFingers) {
+            angleHand = 1.0;
+            fingerBack.setPosition(bfAngleHand);
+        }
+    }
 
 
     public void dropCrab() {
@@ -737,9 +830,34 @@ public abstract class ChassisStandard extends OpMode {
         //sleep(5000);
     }
 
-    protected void pushCrane() {
-        crane.setPower(1);
-        sleep(500);
-        crane.setPower(0);
+    /**
+     * Initialize the Vuforia localization engine.
+     */
+    private void initVuforia() {
+        /*
+         * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
+         */
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+
+        parameters.vuforiaLicenseKey = VUFORIA_KEY;
+        parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
+
+        //  Instantiate the Vuforia engine
+        vuforia = ClassFactory.getInstance().createVuforia(parameters);
+
+        // Loading trackables is not necessary for the TensorFlow Object Detection engine.
+
+    }
+
+    /**
+     * Initialize the TensorFlow Object Detection engine.
+     */
+    private void initTfod() {
+        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
+                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
+        tfodParameters.minimumConfidence = 0.8;
+        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
     }
 }

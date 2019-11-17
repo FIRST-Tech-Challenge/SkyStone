@@ -3,11 +3,13 @@ package org.firstinspires.ftc.robotlib.sound;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.ftccommon.SoundPlayer;
 
+import org.firstinspires.ftc.robotlib.state.ToggleBoolean;
+
 public class BasicSound implements Sound
 {
     private int soundID;
     private boolean soundFilePresent;
-    private boolean soundPlaying;
+    private ToggleBoolean playSound;
 
     private SoundPlayer.PlaySoundParams params;
     private HardwareMap hwMap;
@@ -17,25 +19,23 @@ public class BasicSound implements Sound
     public BasicSound(String identifier, HardwareMap hwMap, int loopControl, boolean waitForNonLoopingSoundsToFinish)
     {
         this.hwMap = hwMap;
-        soundPlaying = false;
 
         params = new SoundPlayer.PlaySoundParams();
         params.loopControl = loopControl;
         params.waitForNonLoopingSoundsToFinish = waitForNonLoopingSoundsToFinish;
+
+        playSound = new ToggleBoolean(false);
 
         setSoundID(identifier);
     }
 
     public void playSound()
     {
-        stopSound();
-        soundPlaying = true;
-        SoundPlayer.getInstance().startPlaying(hwMap.appContext, soundID, params, null, new Runnable()
-        {
+        SoundPlayer.getInstance().startPlaying(hwMap.appContext, soundID, params, null, new Runnable() {
             @Override
             public void run()
             {
-                soundPlaying = false;
+
             }
         });
     }
@@ -44,6 +44,19 @@ public class BasicSound implements Sound
     {
         SoundPlayer.getInstance().stopPlayingAll();
         SoundPlayer.getInstance().stopPlayingLoops();
+    }
+
+    public void toggleSound()
+    {
+        playSound.toggle();
+        if (playSound.output())
+        {
+            playSound();
+        }
+        else
+        {
+            stopSound();
+        }
     }
 
     public void setSoundID(String identifier)
@@ -56,5 +69,5 @@ public class BasicSound implements Sound
 
     public boolean isSoundFilePresent() { return soundFilePresent; }
 
-    public boolean isSoundPlaying() { return soundPlaying; }
+    public boolean isSoundPlaying() { return SoundPlayer.getInstance().isLocalSoundOn(); }
 }

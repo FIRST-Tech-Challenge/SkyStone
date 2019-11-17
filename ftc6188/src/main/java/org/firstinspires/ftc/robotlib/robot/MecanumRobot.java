@@ -87,7 +87,8 @@ public class MecanumRobot
         telemetry.addData("WheelPos FR", drivetrain.motorList[1].getCurrentPosition());
         telemetry.addData("WheelPos RL", drivetrain.motorList[2].getCurrentPosition());
         telemetry.addData("WheelPos RR", drivetrain.motorList[3].getCurrentPosition());
-        telemetry.addData("Current Pos", drivetrain.getCurrentPosition());
+        telemetry.addData("Current Pos Percent", drivetrain.getCurrentPosition());
+        telemetry.addData("Current Pos", drivetrain.getCurrentPosition() * drivetrain.getTargetPosition());
 
         telemetry.addData("> Wheel Powers", "-----");
         telemetry.addData("WheelPower FL", drivetrain.motorList[0].getPower());
@@ -101,6 +102,8 @@ public class MecanumRobot
         telemetry.addData("Rotation Target", drivetrain.getRotation());
         telemetry.addData("Velocity Target", drivetrain.getVelocity());
         telemetry.addData("Movement Velocity", drivetrain.getAutoVelocity());
+        telemetry.addData("Current Pos", drivetrain.getCurrentPosition());
+        telemetry.addData("Is Pos", drivetrain.isPositioning());
 
         telemetry.addData("> Servo Info", "-----");
         telemetry.addData("Servo Pos", "One: " + platformServos.getServoOne().getPosition() + " Two: " + platformServos.getServoTwo().getPosition());

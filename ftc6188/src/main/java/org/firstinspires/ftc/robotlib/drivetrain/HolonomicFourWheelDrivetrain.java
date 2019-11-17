@@ -1,6 +1,10 @@
 package org.firstinspires.ftc.robotlib.drivetrain;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+
 /*
 Frame work for a mecanum/omni drive train, the implemented interfaces provide the additional variables and functions to make movement possible
  */
@@ -79,13 +83,14 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
         this.targetPosition = targetPosition;
 
         for (DcMotor motor : this.motorList) motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        for (DcMotor motor : this.motorList) motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         for (int motorIndex = 0; motorIndex < this.motorList.length; motorIndex++)
         {
             wheelTargetPositions[motorIndex] = targetPosition*calculateWheelCoefficient(course, wheelAngles[motorIndex]);
             this.motorList[motorIndex].setTargetPosition((int)(wheelTargetPositions[motorIndex]+0.5));
         }
+
+        for (DcMotor motor : this.motorList) motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     // returns not the robots actual position on the field but the distance moved based on the current movement goal
@@ -97,7 +102,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
         {
             amountDone += this.motorList[motorIndex].getCurrentPosition()/wheelTargetPositions[motorIndex];
         }
-        return amountDone/4*targetPosition;
+        return amountDone/4;
     }
 
     @Override
@@ -110,10 +115,11 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     @Override
     public void position()
     {
-        updateMotorPowers();
-        while (isPositioning())
+        boolean override = false;
+        while (isPositioning() && !override)
         {
             updatePosition();
+            override = roundDecimal(getCurrentPosition()) >= 0.9999;
         }
         finishPositioning();
     }
@@ -130,10 +136,9 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     @Override
     public void updatePosition()
     {
-        double percentageTraveled = getCurrentPosition()/getTargetPosition();
-        double velocityMultiplier = -Math.pow((percentageTraveled - 0.5) * 2, 2) + 1.5;
-        setVelocity(getAutoVelocity() * velocityMultiplier);
-
+        double percentTraveled = getCurrentPosition();
+        double powerModifier = -Math.pow((1)*percentTraveled - 0.4, 2) + 0.6;
+        setVelocity(getAutoVelocity() * powerModifier);
         updateMotorPowers();
     }
 
@@ -177,5 +182,19 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     public double getTicksPerIn()
     {
         return ticksPerIn;
+    }
+
+    public double roundDecimal(double input)
+    {
+        try
+        {
+            DecimalFormat decimalFormat = new DecimalFormat("#.####");
+            decimalFormat.setRoundingMode(RoundingMode.CEILING);
+            return Double.parseDouble(decimalFormat.format(input));
+        }
+        catch (NumberFormatException ignored)
+        {
+            return 0;
+        }
     }
 }

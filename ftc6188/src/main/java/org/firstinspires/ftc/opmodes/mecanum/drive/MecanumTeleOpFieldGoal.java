@@ -4,16 +4,16 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotlib.robot.MecanumRobot;
+import org.firstinspires.ftc.robotlib.robot.MecanumRobotFieldGoal;
 import org.firstinspires.ftc.robotlib.sound.BasicSound;
 import org.firstinspires.ftc.robotlib.state.Button;
 import org.firstinspires.ftc.robotlib.state.ToggleBoolean;
 
-@TeleOp(name="Mecanum TeleOp V-Final", group="Tele")
-public class MecanumTeleOp extends OpMode
+@TeleOp(name="Mecanum TeleOp V-FieldGoal", group="Tele")
+public class MecanumTeleOpFieldGoal extends OpMode
 {
     // TeleOp specific variables
-    private MecanumRobot robot;
+    private MecanumRobotFieldGoal robot;
     private ElapsedTime elapsedTime;
 
     // Buttons and toggles
@@ -29,7 +29,7 @@ public class MecanumTeleOp extends OpMode
     @Override
     public void init()
     {
-        robot = new MecanumRobot(this.hardwareMap, this.telemetry, true);
+        robot = new MecanumRobotFieldGoal(this.hardwareMap, this.telemetry, true);
         elapsedTime = new ElapsedTime();
 
         driverTwoBrakes = new ToggleBoolean(false);
@@ -84,11 +84,8 @@ public class MecanumTeleOp extends OpMode
         //arm movement to be added later
         driverTwoBrakes.input(gamepad2.left_bumper);
 
-        // servo controls
-        if (servosUp.onPress()){robot.platformServos.setPosition(1); }
-        else if (servosDown.onPress()){robot.platformServos.setPosition(0);}
-        else if (servosMid.onPress()){robot.platformServos.setPosition(0.6);}
-
+        robot.armSystem.setVerticalPower(gamepad2.left_stick_y);
+        robot.armSystem.setHorizontalPower(gamepad2.right_stick_y);
 
         //TELEMETRY
         robot.informationUpdate();

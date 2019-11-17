@@ -5,10 +5,7 @@ public class ToggleBoolean
     private boolean toggle = false;
     private boolean previouslyPressed = false;
 
-    public ToggleBoolean()
-    {
-
-    }
+    public ToggleBoolean() { }
 
     public ToggleBoolean(boolean startingToggle)
     {

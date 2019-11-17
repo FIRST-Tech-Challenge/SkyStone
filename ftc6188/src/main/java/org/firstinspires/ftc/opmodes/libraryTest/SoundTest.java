@@ -4,19 +4,19 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotlib.sound.BasicSound;
-import org.firstinspires.ftc.robotlib.state.ToggleBoolean;
+import org.firstinspires.ftc.robotlib.state.Button;
 
 @TeleOp(name="Sound Test", group="Test")
 public class SoundTest extends OpMode
 {
     private BasicSound basicSound;
-    private ToggleBoolean playSound;
+    private Button playSound;
 
     @Override
     public void init()
     {
         basicSound = new BasicSound("police_siren", this.hardwareMap);
-        playSound = new ToggleBoolean();
+        playSound = new Button();
     }
 
     @Override
@@ -24,14 +24,20 @@ public class SoundTest extends OpMode
     {
         playSound.input(gamepad1.x);
 
-        if (playSound.output())
+        if (playSound.onRelease())
         {
-            basicSound.playSound();
-            playSound.toggle();
+            basicSound.toggleSound();
         }
 
-        telemetry.addData("PlaySound", playSound.output());
+        telemetry.addData("PlaySoundButton", playSound.isPressed());
         telemetry.addData("Gamepad X", gamepad1.x);
+        telemetry.addData("Is Playing", basicSound.isSoundPlaying());
         telemetry.update();
+    }
+
+    @Override
+    public void stop()
+    {
+        basicSound.stopSound();
     }
 }

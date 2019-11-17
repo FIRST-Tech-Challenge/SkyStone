@@ -40,7 +40,7 @@ Once you've copied the op mode and added it to the project, only the class has b
  5. Select **Build > Make Project** to build your changes. The build should complete successfully.
 
 ## Step 3: Run the code on the robot
-At this point3D you will need a phone with the correct configuration (**Example POV**) on it.
+At this point you will need a phone with the correct configuration (**Example POV**) on it.
 
  1. Make sure the phone is on, booted, and unlocked.
  2. Plug the phone into the computer via USB.

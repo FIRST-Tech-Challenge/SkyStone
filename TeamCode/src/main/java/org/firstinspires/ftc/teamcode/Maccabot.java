@@ -1,19 +1,20 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 @TeleOp(name="MaccaBot", group="Drive Systems")
-public class Maccabot {
+public class Maccabot extends LinearOpMode {
 
     // Pulling in OpMode data
     private OpMode parentOpMode;
     private HardwareMap hardwareMap;
 
     // Drive Motor Variables
-    private DcMotor front_left, front_right, back_left, back_right;
+    private DcMotor front_left, front_right, back_left, back_right; //intake_left, intake_right
 
     // Intake Motors TBD
     // private DcMotor intake_left, intake_right;
@@ -30,10 +31,15 @@ public class Maccabot {
         front_right = hardwareMap.dcMotor.get("front_right"); // Port 1
         back_left = hardwareMap.dcMotor.get("back_left"); // Port 2
         back_right = hardwareMap.dcMotor.get("back_right"); // Port 3
+        //intake_left = hardwareMap.dcMotor.get("intake_left");
+        //intake_right = hardwareMap.dcMotor.get("intake_right");
+
 
         // Reverse Right Side
         front_right.setDirection(DcMotorSimple.Direction.REVERSE);
         back_right.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        //intake_left.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // TODO PID!!!
         front_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -46,6 +52,8 @@ public class Maccabot {
         front_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         back_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         back_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //intake_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //intake_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     public void drive(double flPower, double frPower, double blPower, double brPower){
@@ -69,4 +77,16 @@ public class Maccabot {
         drive(flValue, frValue, blValue, brValue);
     }
 
+    /*public void intake(double power, int direction){
+        intake_right.setPower(power * direction);
+        intake_left.setPower(power * direction);
+
+        parentOpMode.telemetry.addLine(Integer.toString(intake_right.getCurrentPosition()));
+        parentOpMode.telemetry.addLine(Integer.toString(intake_left.getCurrentPosition()));
+    }*/
+
+    @Override
+    public void runOpMode() throws InterruptedException {
+
+    }
 }

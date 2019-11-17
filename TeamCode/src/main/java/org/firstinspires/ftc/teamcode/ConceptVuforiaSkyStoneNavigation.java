@@ -291,11 +291,11 @@ public class ConceptVuforiaSkyStoneNavigation extends LinearOpMode {
             phoneXRotate = 90 ;
         }
 
-        // Next, translate the camera lens to where it is on the robot.
+        // Next, translate the camera lens to where it is on the robot. 16.75 long 17.5 wide
         // In this example, it is centered (left to right), but forward of the middle of the robot, and above ground level.
-        final float CAMERA_FORWARD_DISPLACEMENT  = 4.0f * mmPerInch;   // eg: Camera is 4 Inches in front of robot center
-        final float CAMERA_VERTICAL_DISPLACEMENT = 8.0f * mmPerInch;   // eg: Camera is 8 Inches above ground
-        final float CAMERA_LEFT_DISPLACEMENT     = 0;     // eg: Camera is ON the robot's center line
+        final float CAMERA_FORWARD_DISPLACEMENT  = 1.5f * mmPerInch;   // eg: Camera is 1.5 Inches in front of robot center
+        final float CAMERA_VERTICAL_DISPLACEMENT = 6.0f * mmPerInch;   // eg: Camera is 6 Inches above ground
+        final float CAMERA_LEFT_DISPLACEMENT     = -7.625f * mmPerInch;     // eg: Camera is 7.625 Inches right of robot center
 
         OpenGLMatrix robotFromCamera = OpenGLMatrix
                     .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)

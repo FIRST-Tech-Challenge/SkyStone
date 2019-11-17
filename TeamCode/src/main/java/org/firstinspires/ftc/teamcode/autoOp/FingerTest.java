@@ -25,10 +25,9 @@ public abstract class FingerTest extends ChassisStandard {
 
             raiseFrontFinger();
 
-
             dropBackFinger();
 
-           dropFrontFinger();
+            dropFrontFinger();
 
 
            raiseBackFinger();

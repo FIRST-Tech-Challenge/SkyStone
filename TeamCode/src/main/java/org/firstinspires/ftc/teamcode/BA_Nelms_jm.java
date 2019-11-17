@@ -29,14 +29,14 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
+        import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+        import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+        import com.qualcomm.robotcore.hardware.DcMotor;
+        import com.qualcomm.robotcore.hardware.DcMotorSimple;
+        import com.qualcomm.robotcore.hardware.DigitalChannel;
+        import com.qualcomm.robotcore.hardware.Servo;
+        import com.qualcomm.robotcore.util.ElapsedTime;
+        import com.qualcomm.robotcore.util.Range;
 
 
 /**
@@ -241,13 +241,13 @@ public class BA_Nelms_jm extends LinearOpMode {
             telemetry.addData("Angle", feederServoPosition);
 
             Feeder_Servo.setPosition(feederServoPosition);
-            feederServoPosition = feederServoPosition + 0.01f;
+            feederServoPosition = feederServoPosition + 0.1f;
 
         } else if (gamepad1.right_bumper && feederServoPosition > 0) {
             telemetry.addData("FeederServo", "Feeder Servo Open");
             telemetry.addData("Angle", feederServoPosition);
             Feeder_Servo.setPosition(feederServoPosition);
-            feederServoPosition = feederServoPosition - 0.01f;
+            feederServoPosition = feederServoPosition - 0.1f;
 
         }
     }
@@ -438,7 +438,7 @@ public class BA_Nelms_jm extends LinearOpMode {
         if (gamepad2.x) {
             telemetry.addData("EndServo", "end servos");
             End_Left.setPosition(.8);
-            End_Right.setPosition(.1);
+            End_Right.setPosition(0);
         }
     }
 
@@ -454,7 +454,7 @@ public class BA_Nelms_jm extends LinearOpMode {
         //release servo
         if (gamepad2.y) {
             telemetry.addData("ReleaseServo", "feeder release");
-            Release_Servo.setPosition(.1);
+            Release_Servo.setPosition(.8);
         }
     }
 }

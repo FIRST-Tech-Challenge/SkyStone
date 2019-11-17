@@ -80,19 +80,21 @@ public class Gyro_Drive extends BaseAutoOpMode {
             front_right.setPower(-1);
             rear_right.setPower(1);
 
-            if(GetAngle() > 20){
+            if(GetAngle() > 10){
 
-                front_left.setPower(0.8);
-                rear_left.setPower(-0.8);
+                telemetry.addData("Tripped", " + 10 ");
+                front_left.setPower(0.7);
+                rear_left.setPower(-0.7);
                 front_right.setPower(-1);
                 rear_right.setPower(1);
             }
-            else if (GetAngle() < -20){
+            else if (GetAngle() < -10){
 
+                telemetry.addData("Tripped", " - -10 ");
                 front_left.setPower(1);
                 rear_left.setPower(-1);
-                front_right.setPower(-0.8);
-                rear_right.setPower(0.8);
+                front_right.setPower(-0.7);
+                rear_right.setPower(0.7);
             }
             else{
 

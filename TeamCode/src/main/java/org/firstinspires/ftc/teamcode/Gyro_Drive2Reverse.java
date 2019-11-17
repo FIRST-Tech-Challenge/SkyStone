@@ -38,27 +38,23 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
-import java.util.Locale;
-
 
 /**
  * This file contains basic code to run a 4 wheeled Mecanum wheel setup. The d-pad controls
  * forwards/backwards and turning left and right, and the right stick controls strafing. (working on diff. control setup currently)
  */
 
-@Autonomous(name = "Strafe_test", group = "Linear Opmode")
-public class Strafe_test extends BaseAutoOpMode {
+@Autonomous(name = "Gyro_Drive2Reverse", group = "Linear Opmode")
+public class Gyro_Drive2Reverse extends BaseAutoOpMode {
 
     BNO055IMU imu;
     float globalAngle = 0;
     Orientation lastAngles = new Orientation();
-    private double vertical;
-    private double horizontal;
+
 
 
     @Override
     public void runOpMode() {
-
 
 
         InitializeIMU();
@@ -75,48 +71,44 @@ public class Strafe_test extends BaseAutoOpMode {
         runtime.reset();
 
         ResetAngle();
-        while(opModeIsActive() && runtime.milliseconds() < 5000)
-        {
-            slideAngleIMU(90, 1,  runtime.milliseconds() < 5000, 0, 1);
+
+
+        while (opModeIsActive()) {
+
+
+
+            front_left.setPower(-1);
+            rear_left.setPower(1);
+            front_right.setPower(1);
+            rear_right.setPower(-1);
+
+            if(GetAngle() > 5){
+
+                telemetry.addData("Tripped", " + 5 ");
+                front_left.setPower(-0.6);
+                rear_left.setPower(0.6);
+                front_right.setPower(1);
+                rear_right.setPower(-1);
+            }
+            else if (GetAngle() < -5){
+
+                telemetry.addData("Tripped", " - -5 ");
+                front_left.setPower(-1);
+                rear_left.setPower(1);
+                front_right.setPower(0.6);
+                rear_right.setPower(-0.6);
+            }
+            else{
+
+                front_left.setPower(-1);
+                rear_left.setPower(1);
+                front_right.setPower(1);
+                rear_right.setPower(-1);
+
+            }
+            telemetry.addData("Angle" , GetAngle());
+            telemetry.update();
         }
-
-
-//        while (opModeIsActive()) {
-//
-//
-//
-//            front_left.setPower(1);
-//            rear_left.setPower(-1);
-//            front_right.setPower(-1);
-//            rear_right.setPower(1);
-//
-//            if(GetAngle() > 10){
-//
-//                telemetry.addData("Tripped", " + 10 ");
-//                front_left.setPower(0.7);
-//                rear_left.setPower(-0.7);
-//                front_right.setPower(-1);
-//                rear_right.setPower(1);
-//            }
-//            else if (GetAngle() < -10){
-//
-//                telemetry.addData("Tripped", " - -10 ");
-//                front_left.setPower(1);
-//                rear_left.setPower(-1);
-//                front_right.setPower(-0.7);
-//                rear_right.setPower(0.7);
-//            }
-//            else{
-//
-//                front_left.setPower(1);
-//                rear_left.setPower(-1);
-//                front_right.setPower(-1);
-//                rear_right.setPower(1);
-//
-//            }
-//            telemetry.addData("Angle" , GetAngle());
-//            telemetry.update();
-//        }
 
     }
     //Set up the IMU
@@ -177,62 +169,6 @@ public class Strafe_test extends BaseAutoOpMode {
         return globalAngle;
 
     }
-
-    //Code from Wizards.exe Mecanum drive - https://github.com/FTC9794/20161127/blob/918514aa6e1eda01c208efe50675bbdce57f8de9/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/MecanumDrive.java
-
-    //returns X vector value using angle and speed
-    public double calculateX(double desiredAngle, double speed) {
-        return Math.sin(Math.toRadians(desiredAngle)) * speed;
-    }
-
-    //returns the Y vector value using angle and speed
-    public double calculateY(double desiredAngle, double speed) {
-        return Math.cos(Math.toRadians(desiredAngle)) * speed;
-    }
-
-    //rounds the input to 2 decimal places
-    public double round2D(double input) {
-        input *= 100;
-        input = Math.round(input);
-        return input / 100;
-    }
-
-    double formatAngle(AngleUnit angleUnit, double angle) {
-        return Double.parseDouble(formatDegrees(AngleUnit.DEGREES.fromUnit(angleUnit, angle)));
-    }
-    String formatDegrees(double degrees){
-        return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(degrees));
-    }
-    public int slideAngleIMU(double slideDirection, double speed, boolean condition, double orientation, double oGain) {
-
-        // get the horizonal and vertical components of the robot speeds
-        // the horizonal and vertical are used to set the power of the motor
-        horizontal = round2D(calculateX(slideDirection, speed));
-        vertical = round2D(calculateY(slideDirection, speed));
-
-        Orientation o = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
-        double ox = formatAngle(o.angleUnit, o.secondAngle);
-        double gyroAngle = ox;
-
-        // What is the range of the gyroAngle?
-        double pivotCorrection = -((orientation - gyroAngle) * oGain);
-        //determine the powers using the new X and Y values and the other joystick to pivot
-        if (condition) {
-            front_right.setPower(((vertical - horizontal) - pivotCorrection) * .5);
-            rear_right.setPower(((vertical + horizontal) - pivotCorrection) * .5);
-            front_left.setPower(((vertical + horizontal) + pivotCorrection) * .5);
-            rear_left.setPower(((vertical - horizontal) + pivotCorrection) * .5);
-            telemetry.addData("gyro angle", gyroAngle);
-            return 1;
-        } else {
-            front_right.setPower(0);
-            rear_right.setPower(0);
-            front_left.setPower(0);
-            rear_left.setPower(0);
-            return 0;
-        }
-    }
-
 }
 
 

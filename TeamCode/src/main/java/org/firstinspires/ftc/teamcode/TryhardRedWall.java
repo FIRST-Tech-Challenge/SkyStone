@@ -22,7 +22,7 @@ public class TryhardRedWall extends LinearOpMode {
             robot.driveStraightByDistance(robot.DIRECTION_LEFT, 250, 0.3);
             robot.pickupSkyStone();
             robot.driveStraightByDistance(robot.DIRECTION_RIGHT, 100, 0.3);
-            robot.driveStraightByDistance(robot.DIRECTION_BACKWARD, 1800, 0.5);
+            robot.driveStraightByDistance(robot.DIRECTION_BACKWARD, 1600, 0.5);
             robot.driveStraightByDistance(robot.DIRECTION_LEFT, 300, 0.3);
             robot.dropSkyStone();
             robot.driveStraightByDistance(robot.DIRECTION_BACKWARD, 200, 0.4);
@@ -38,7 +38,7 @@ public class TryhardRedWall extends LinearOpMode {
                 robot.driveStraightByDistance(robot.DIRECTION_LEFT, 250, 0.3);
                 robot.pickupSkyStone();
                 robot.driveStraightByDistance(robot.DIRECTION_RIGHT, 100, 0.3);
-                robot.driveStraightByDistance(robot.DIRECTION_BACKWARD, 2000, 0.5);
+                robot.driveStraightByDistance(robot.DIRECTION_BACKWARD, 1800, 0.5);
                 robot.driveStraightByDistance(robot.DIRECTION_LEFT, 300, 0.3);
                 robot.dropSkyStone();
                 robot.driveStraightByDistance(robot.DIRECTION_BACKWARD, 200, 0.4);
@@ -52,7 +52,7 @@ public class TryhardRedWall extends LinearOpMode {
                 robot.driveStraightByDistance(robot.DIRECTION_LEFT, 250, 0.3);
                 robot.pickupSkyStone();
                 robot.driveStraightByDistance(robot.DIRECTION_RIGHT, 100, 0.3);
-                robot.driveStraightByDistance(robot.DIRECTION_BACKWARD, 2200, 0.5);
+                robot.driveStraightByDistance(robot.DIRECTION_BACKWARD, 2000, 0.5);
                 robot.driveStraightByDistance(robot.DIRECTION_LEFT, 300, 0.3);
                 robot.dropSkyStone();
                 robot.driveStraightByDistance(robot.DIRECTION_BACKWARD, 200, 0.4);

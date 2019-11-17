@@ -283,7 +283,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public static double CLAW_OPEN = 0.4;
     public static double CLAW_PINCHED = 0.9;
     public static double CLAWDRICOPTER_FRONT = 0.85;
-    public static double CLAWDRICOPTER_CAPSTONE = 0.69;
+    public static double CLAWDRICOPTER_CAPSTONE = 0.70;
     public static double CLAWDRICOPTER_BACK = 0.09;
     public static int CLAW_OPEN_TIME = 500;
     public static int CLAW_CLOSE_TIME = 500;
@@ -888,29 +888,29 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                 drivePower = driveSpeed;
                 // Have to spin ccw
                 if(leftError > rightError) {
-                    spinPower = -spinSpeed;
+                    spinPower = spinSpeed;
                 // We have to spin cw
                 } else if(rightError > leftError) {
-                    spinPower = spinSpeed;
+                    spinPower = -spinSpeed;
                 }
             // Have to drive away from the foundation.
             } else if(((leftError) < -error) &&
                     ((rightError) < -error)) {
                 drivePower = -driveSpeed;
                 if(leftError > rightError) {
-                    spinPower = -spinSpeed;
+                    spinPower = spinSpeed;
                     // We have to spin cw
                 } else if(rightError > leftError) {
-                    spinPower = spinSpeed;
+                    spinPower = -spinSpeed;
                 }
             // We just need to spin
             } else {
                 drivePower = 0.0;
                 if(leftError > rightError) {
-                    spinPower = -spinSpeed;
+                    spinPower = spinSpeed;
                     // We have to spin cw
                 } else if(rightError > leftError) {
-                    spinPower = spinSpeed;
+                    spinPower = -spinSpeed;
                 }
             }
             drive(0, drivePower, spinPower, -readIMU());

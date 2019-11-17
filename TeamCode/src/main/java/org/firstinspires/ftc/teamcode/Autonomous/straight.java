@@ -13,13 +13,20 @@ public class straight extends AutonomousControl {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        setup(runtime, Crane.setupType.drive, Crane.setupType.foundation, Crane.setupType.claw);
+        setup(runtime, Crane.setupType.drive);
         telemetry.addLine("Start!");
         telemetry.update();
 
         if (opModeIsActive()){
-            rob.driveTrainMovement(0.5, Crane.movements.forward);
+            rob.driveTrainMovement(0, Crane.movements.forward);
+            sleep(1000);
+            rob.driveTrainMovement(0.01, Crane.movements.forward);
             sleep(2500);
+            rob.driveTrainMovement(0.2, Crane.movements.forward);
+            sleep(2500);
+            rob.driveTrainMovement(0.2, Crane.movements.forward);
+            sleep(2500);
+            rob.driveTrainMovement(0, Crane.movements.forward);
 
 
 

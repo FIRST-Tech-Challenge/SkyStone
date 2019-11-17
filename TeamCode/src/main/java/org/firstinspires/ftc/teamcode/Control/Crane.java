@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Control;
 
 import com.qualcomm.hardware.bosch.BNO055IMUImpl;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
+import com.qualcomm.hardware.motors.Matrix12vMotor;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -194,6 +195,7 @@ public class Crane {
         motorDriveMode(EncoderMode.ON, motorFR, motorFL, motorBR, motorBL);
     }
 
+
     public void setupClaw() throws InterruptedException {
         rack = motor(racks, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.FLOAT);
         leftLinear = motor(leftLinears, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.BRAKE);
@@ -222,6 +224,7 @@ public class Crane {
         motor.setPower(0);
         return motor;
     }
+
     public Servo servo(String name, Servo.Direction direction, double min, double max, double start) throws InterruptedException {
         Servo servo = hardwareMap.servo.get(name);
         servo.setDirection(direction);
@@ -592,7 +595,7 @@ public class Crane {
         ON, OFF;
     }
     public enum setupType{
-        autonomous, teleop, endgame, drive, camera, claw, bSystem, foundation;
+        autonomous, teleop, endgame, drive, camera, claw, bSystem, foundation, yellow;
     }
 
     //-------------------SET FUNCTIONS--------------------------------

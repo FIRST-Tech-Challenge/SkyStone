@@ -64,6 +64,10 @@ public class Robot {
     private Servo clampPivot;
     private Servo intakePusher;
 
+    // Foundation Servos
+    private Servo leftFoundation;
+    private Servo rightFoundation;
+
     // Outtake Slide Positions
     public final double OUTTAKE_SLIDE_EXTENDED = .25;
     public final double OUTTAKE_SLIDE_RETRACTED = .75;
@@ -73,13 +77,19 @@ public class Robot {
     public final double CLAW_SERVO_RELEASED = .335;
 
     // Outtake Pivot Positions
-    public final double OUTTAKE_PIVOT_EXTENDED = .271;
-    public final double OUTTAKE_PIVOT_RETRACTED = .994;
-    public final double OUTTAKE_PIVOT_90 = 0.6325;
+    public final double OUTTAKE_PIVOT_EXTENDED = .944;
+    public final double OUTTAKE_PIVOT_RETRACTED = .221;
+    public final double OUTTAKE_PIVOT_90 = 0.5825;
 
     // Outtake Pusher Positions
     public final double PUSHER_PUSHED = .75;
     public final double PUSHER_RETRACTED = .475;
+
+    // Foundation Mover Positions
+    public final double LEFTFOUNDATION_EXTENDED = .63;
+    public final double LEFTFOUNDATION_RETRACTED = .86;
+    public final double RIGHTFOUNDATION_EXTENDED = .94;
+    public final double RIGHTFOUNDATION_RETRACTED = .72;
 
     //robots position
     private Point robotPos = new Point();
@@ -121,22 +131,21 @@ public class Robot {
         fLeft = getDcMotor("fLeft");
         if (fLeft != null){
             fLeft.setDirection(DcMotor.Direction.FORWARD);
-
         }
+
         fRight = getDcMotor("fRight");
         if (fRight != null){
             fRight.setDirection(DcMotor.Direction.REVERSE);
-
         }
+
         bLeft = getDcMotor("bLeft");
         if (bLeft != null){
             bLeft.setDirection(DcMotor.Direction.FORWARD);
-
         }
+
         bRight = getDcMotor("bRight");
         if (bRight != null){
             bRight.setDirection(DcMotor.Direction.REVERSE);
-
         }
 
         intakeLeft = getDcMotor("intakeLeft");
@@ -147,18 +156,20 @@ public class Robot {
         intakeRight = getDcMotor("intakeRight");
         if (intakeRight != null){
             intakeRight.setDirection(DcMotor.Direction.REVERSE);
-
         }
 
         outtakeSpool = getDcMotor("outtakeSpool");
         if (outtakeSpool != null){
-            outtakeSpool.setDirection(DcMotor.Direction.REVERSE);
+            outtakeSpool.setDirection(DcMotor.Direction.FORWARD);
         }
 
         outtakeExtender = getServo("outtakeExtender");
         clamp = getServo("clamp");
         clampPivot = getServo("clampPivot");
         intakePusher = getServo("intakePusher");
+
+        leftFoundation = getServo("leftFoundation");
+        rightFoundation = getServo("rightFoundation");
     }
 
     private DcMotor getDcMotor(String name){
@@ -427,7 +438,7 @@ public class Robot {
     }
 
     /**
-     * brakes all the motors
+     * brakes all drivetrain motors
      */
     public void brakeRobot() {
         //brakes robot
@@ -440,13 +451,26 @@ public class Robot {
     }
 
     /**
-     * idk
+     * Sets power behavior of all drive motors to brake
      */
     public void setBrakeModeDriveMotors() {
         fLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         fRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         bLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         bRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    }
+
+    /**
+     * Toggle foundation moveres
+     */
+    public void foundationMover(boolean isExtend) {
+        if (isExtend) {
+            leftFoundation.setPosition(LEFTFOUNDATION_EXTENDED);
+            rightFoundation.setPosition(RIGHTFOUNDATION_EXTENDED);
+        } else {
+            leftFoundation.setPosition(LEFTFOUNDATION_RETRACTED);
+            rightFoundation.setPosition(RIGHTFOUNDATION_RETRACTED);
+        }
     }
 
     /**
@@ -1094,6 +1118,14 @@ public class Robot {
     public void setIntakePusher(Servo intakePusher) {
         this.intakePusher = intakePusher;
     }
+
+    public Servo getLeftFoundation() {return leftFoundation;}
+
+    public void setLeftFoundation(Servo leftFoundation) {this.leftFoundation = leftFoundation;}
+
+    public Servo getRightFoundation() {return rightFoundation;}
+
+    public void setRightFoundation(Servo rightFoundation) {this.rightFoundation = rightFoundation;}
 
     public double getOUTTAKE_SLIDE_EXTENDED() {
         return OUTTAKE_SLIDE_EXTENDED;

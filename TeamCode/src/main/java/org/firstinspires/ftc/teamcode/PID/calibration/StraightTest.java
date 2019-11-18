@@ -18,19 +18,12 @@ import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveREV;
 @Config
 @Autonomous(name = "StraightTest", group = "drive")
 public class StraightTest extends LinearOpMode {
-    public static double DISTANCE = 12;
+    public static double DISTANCE = 24;
 
     @Override
     public void runOpMode() throws InterruptedException {
         HardwareMap map = new HardwareMap(hardwareMap);
-        SampleMecanumDriveBase drive = new SampleMecanumDriveREV(hardwareMap);
 
-        Trajectory trajectory = drive.trajectoryBuilder()
-                .forward(DISTANCE)
-                .build();
-
-        //HardwareMap.track.resetEncoders();
-        //HardwareMap.track.encoders(true);
         map.backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         map.frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         map.backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -43,6 +36,15 @@ public class StraightTest extends LinearOpMode {
         map.backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         map.frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        SampleMecanumDriveBase drive = new SampleMecanumDriveREV(hardwareMap);
+
+        Trajectory trajectory = drive.trajectoryBuilder()
+                .forward(DISTANCE)
+                .build();
+
+        //HardwareMap.track.resetEncoders();
+        //HardwareMap.track.encoders(true);
+
         telemetry.addData("STATUS", "Ready for START!");
         telemetry.update();
 
@@ -50,12 +52,18 @@ public class StraightTest extends LinearOpMode {
 
         if (isStopRequested()) return;
 
-        drive.followTrajectorySync(trajectory);
+        Thread followTraj = new Thread() {
+            public void run() {
+                drive.followTrajectorySync(trajectory);
+            }
+        };
+        followTraj.start();
 
         while(opModeIsActive()){
-            telemetry.addData("LeftForward", map.frontRight.getCurrentPosition());
-            telemetry.addData("RightForward", map.backLeft.getCurrentPosition());
-            telemetry.addData("Sideways", map.backRight.getCurrentPosition());
+            telemetry.addData("LeftForward", map.frontLeft.getCurrentPosition());
+            telemetry.addData("RightForward", map.backRight.getCurrentPosition());
+            telemetry.addData("Sideways", map.frontRight.getCurrentPosition());
+            telemetry.update();
 
             /*telemetry.addData("LeftForward", HardwareMap.track.getEncoderTicks().get(0));
             telemetry.addData("RightForward", HardwareMap.track.getEncoderTicks().get(1));

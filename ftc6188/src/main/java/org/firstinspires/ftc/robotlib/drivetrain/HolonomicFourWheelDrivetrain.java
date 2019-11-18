@@ -119,7 +119,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
         while (isPositioning() && !override)
         {
             updatePosition();
-            override = roundDecimal(getCurrentPosition()) >= 0.9999;
+            //override = roundDecimal(getCurrentPosition()) >= 0.9999;
         }
         finishPositioning();
     }
@@ -136,9 +136,24 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     @Override
     public void updatePosition()
     {
-        for (DcMotor motor : motorList)
+        for (int motorIndex = 0; motorIndex < motorList.length; motorIndex++)
         {
-            motor.setPower(getVelocity() * powerModifier(motor.getCurrentPosition()/motor.getTargetPosition()));
+            double powerMod = powerModifier(motorList[motorIndex].getCurrentPosition()/wheelTargetPositions[motorIndex]);
+            double percentComplete = 0;
+            try
+            {
+                percentComplete = motorList[motorIndex].getCurrentPosition()/wheelTargetPositions[motorIndex];
+            }
+            catch (Exception ignored) { }
+
+            if (percentComplete > 1)
+            {
+                motorList[motorIndex].setPower(0);
+            }
+            else
+            {
+                motorList[motorIndex].setPower(getVelocity() * powerMod);
+            }
         }
     }
 
@@ -155,7 +170,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
 
         // reset the drivetrain to a pre-movement state
         setCourse(0);
-        setAutoVelocity(0);
+        setVelocity(0);
         setRotation(0);
         setTargetPosition(0);
         updateMotorPowers();

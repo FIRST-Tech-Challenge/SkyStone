@@ -101,7 +101,6 @@ public class MecanumRobot
         telemetry.addData("Course Degrees", drivetrain.getCourse() * Math.PI/180);
         telemetry.addData("Rotation Target", drivetrain.getRotation());
         telemetry.addData("Velocity Target", drivetrain.getVelocity());
-        telemetry.addData("Movement Velocity", drivetrain.getAutoVelocity());
         telemetry.addData("Current Pos", drivetrain.getCurrentPosition());
         telemetry.addData("Is Pos", drivetrain.isPositioning());
 

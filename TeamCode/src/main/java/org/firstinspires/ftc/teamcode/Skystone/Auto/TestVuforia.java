@@ -26,6 +26,7 @@ public class TestVuforia extends AutoBase {
             Detection tfodPosition = tensorflow.detectTensorflow();
             telemetry.addLine("Position: " +  tfodPosition.getPosition());
             telemetry.addLine("Value: " + tfodPosition.getValue());
+            telemetry.addLine("numDetections: " + tfodPosition.getNumDetections());
             telemetry.update();
             //} catch (VuforiaException exception){
 //                telemetry.addLine("Wack");

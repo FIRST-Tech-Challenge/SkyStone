@@ -3,6 +3,8 @@ import android.os.SystemClock;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
+
 import org.firstinspires.ftc.teamcode.Skystone.Odometry.Position2D;
 @TeleOp(name="MainTeleOpSky", group="Linear Opmode")
 public class MainTeleop extends LinearOpMode {
@@ -28,6 +30,8 @@ public class MainTeleop extends LinearOpMode {
     boolean isClamp = false;
     boolean is90 = false;
     boolean outtakeExtended = false;
+    boolean foundationToggle = false;
+    boolean resetfoundation = false;
     public static double powerScaleFactor = 0.9;
     @Override
     public void runOpMode() {
@@ -43,6 +47,7 @@ public class MainTeleop extends LinearOpMode {
             intakeLogic();
             spoolLogic();
             outtakeLogic();
+            foundationLogic();
         }
     }
     private void spoolLogic(){
@@ -60,7 +65,7 @@ public class MainTeleop extends LinearOpMode {
         robot = new Robot(hardwareMap, telemetry, this);
         robot.setMotorMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
+        robot.getClampPivot().setDirection(Servo.Direction.FORWARD);
         robot.getOuttakeSpool().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         robot.getIntakeLeft().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         robot.getIntakeRight().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -68,9 +73,12 @@ public class MainTeleop extends LinearOpMode {
 //        robot.outtakeArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
     private void initServos() {
+        robot.foundationMover(false);
+
         isRetract = true;
         outtakeExecutionTime = SystemClock.elapsedRealtime();
 
+        robot.getIntakePusher().setPosition(robot.PUSHER_RETRACTED);
         robot.getClamp().setPosition(robot.CLAW_SERVO_RELEASED);
 
         while (isRetract) {
@@ -215,7 +223,7 @@ public class MainTeleop extends LinearOpMode {
         if(currentTime-outtakeExecutionTime >= 450 && isRetract){
             robot.getClampPivot().setPosition(robot.OUTTAKE_PIVOT_RETRACTED);
         }
-        if(currentTime-outtakeExecutionTime >= 1150 && isRetract){
+        if(currentTime-outtakeExecutionTime >= 1250 && isRetract){
             robot.getOuttakeExtender().setPosition(robot.OUTTAKE_SLIDE_RETRACTED);
             isRetract = false;
         }
@@ -226,5 +234,20 @@ public class MainTeleop extends LinearOpMode {
             isClamp = false;
             robot.getIntakePusher().setPosition(robot.PUSHER_RETRACTED);
         }
+    }
+
+    private void foundationLogic() {
+        if (gamepad2.left_bumper) {
+            if (foundationToggle && !resetfoundation) {
+                foundationToggle = false;
+            } else if (!foundationToggle && !resetfoundation){
+                foundationToggle = true;
+            }
+            resetfoundation = true;
+        } else {
+            resetfoundation = false;
+        }
+
+        robot.foundationMover(foundationToggle);
     }
 }

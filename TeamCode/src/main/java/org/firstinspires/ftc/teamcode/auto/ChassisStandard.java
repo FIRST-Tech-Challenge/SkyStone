@@ -60,6 +60,7 @@ public abstract class ChassisStandard extends OpMode {
     private DcMotor motorFrontRight;
     private DcMotor extender;
     private DcMotor shoulder;
+    private DcMotor elevator;
 
     //Crab
     protected Servo crab;
@@ -69,6 +70,7 @@ public abstract class ChassisStandard extends OpMode {
     private Servo bull;
     private Servo dozer;
     private double angleHand;
+    private double angleAnkle;
 
     // Walle state management
     int wasteAllocationLoadLifterEarthBegin;
@@ -91,6 +93,7 @@ public abstract class ChassisStandard extends OpMode {
     protected boolean useArm = false;
     protected boolean useEve = false;
     protected boolean useCrab = true;
+    protected boolean useElevator = true;
 
 
     protected ChassisStandard(ChassisConfig config) {
@@ -224,6 +227,17 @@ public abstract class ChassisStandard extends OpMode {
         }
     }
 
+    protected void initElevator() {
+        if (useElevator) {
+            try {
+                elevator = hardwareMap.get(DcMotor.class, "elevator");
+            } catch (Exception e) {
+                telemetry.addData("elevator", "exception on init: " + e.toString());
+                useElevator = false;
+            }
+        }
+    }
+
 
     protected void initTimeouts() {
         // This code prevents the OpMode from freaking out if you go to sleep for more than a second.
@@ -236,12 +250,14 @@ public abstract class ChassisStandard extends OpMode {
         }
     }
 
-    protected void initArm() {
+   /* protected void initArm() {
         if (useArm) {
             shoulder = hardwareMap.get(DcMotor.class, "motor4");
             extender = hardwareMap.get(DcMotor.class, "motor5");
         }
     }
+
+    */
 
     protected boolean initGyroscope() {
         if (useGyroScope) {
@@ -276,6 +292,20 @@ public abstract class ChassisStandard extends OpMode {
         if (useCrab) {
             angleHand = 1.0;
             crab.setPosition(angleHand);
+        }
+    }
+
+    public void raiseElevator() {
+        if(useElevator) {
+            angleAnkle = 1.0;
+            elevator.setPower(angleAnkle);
+        }
+    }
+
+    public void dropElevator() {
+        if(useElevator) {
+            angleAnkle = 0.0;
+            elevator.setPower(angleAnkle);
         }
     }
 
@@ -594,7 +624,7 @@ public abstract class ChassisStandard extends OpMode {
         }
     }
 
-    protected void slideUpExtender(int extenderCounts) {
+     protected void slideUpExtender(int extenderCounts) {
         double speed = 0.25;
 
         // Get the current position.
@@ -650,6 +680,7 @@ public abstract class ChassisStandard extends OpMode {
         shoulder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         shoulder.setPower(0);
     }
+
 
     protected void strafeLeft(int numberOfMillis) {
         float power = config.getTurnSpeed();
@@ -707,7 +738,7 @@ public abstract class ChassisStandard extends OpMode {
 
 
 
-   /* protected void lyftDownWalle(int howManySpins) {
+    protected void lyftDownWalle(int howManySpins) {
         double speed = 0.5f;
 
         // Get the current position.
@@ -735,10 +766,10 @@ public abstract class ChassisStandard extends OpMode {
         wasteAllocationLoadLifterEarth.setPower(0);
 
         //sleep(5000);
-    } */
+    }
 
 
-    protected void lyftDownEve(int howManySpins) {
+    protected void lyftDownEve (int howManySpins) {
         double speed = 0.5f;
 
         // Get the current position.

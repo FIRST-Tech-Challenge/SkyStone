@@ -136,10 +136,10 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     @Override
     public void updatePosition()
     {
-        double percentTraveled = getCurrentPosition();
-        double powerModifier = -Math.pow((1)*percentTraveled - 0.4, 2) + 0.6;
-        setVelocity(getAutoVelocity() * powerModifier);
-        updateMotorPowers();
+        for (DcMotor motor : motorList)
+        {
+            motor.setPower(getVelocity() * powerModifier(motor.getCurrentPosition()/motor.getTargetPosition()));
+        }
     }
 
     // returns the motors to their prior state after resetting the encoders back to 0
@@ -184,7 +184,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
         return ticksPerIn;
     }
 
-    public double roundDecimal(double input)
+    private double roundDecimal(double input)
     {
         try
         {
@@ -196,5 +196,10 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
         {
             return 0;
         }
+    }
+
+    private double powerModifier(double percentTraveled)
+    {
+        return -Math.pow((1)*percentTraveled - 0.4, 2) + 0.6;
     }
 }

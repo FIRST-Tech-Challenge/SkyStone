@@ -21,8 +21,10 @@ public class MecanumAutoDebugging extends LinearOpMode
 
         waitForStart();
 
-        telemetry.addData("> Status", "60 In Forward");
-        robot.drivetrain.autoPosition(0, 60, 1, 0);
+        telemetry.addData("> Status", "36 in front");
+        robot.drivetrain.autoPosition(0, 36, 1, 0);
+        telemetry.addData("> Status", "36 in rear");
+        robot.drivetrain.autoPosition(180, 36, 1, 0);
     }
 
     @Override

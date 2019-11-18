@@ -88,10 +88,10 @@ public class autonomous extends LinearOpMode {
             Skystone = SkystonePosition.R1;
         } else if (Webcam.PS == Webcam.PS.CENTER && AllianceColor == false){
             Skystone = SkystonePosition.B2;
-        } else if (Webcam.PS == Webcam.PS.LEFT && AllianceColor == false){
-            Skystone = SkystonePosition.B1;
-        } else {
+        } else if (Webcam.PS == Webcam.PS.RIGHT && AllianceColor == false){
             Skystone = SkystonePosition.B3;
+        } else {
+            Skystone = SkystonePosition.B1;
         }
 
         // wait for PLAY button to be pressed on driver station
@@ -130,6 +130,23 @@ public class autonomous extends LinearOpMode {
                 case GrabSkystone:
                     telemetry.addLine("Grab Skystone");
                     telemetry.update();
+                    if (Skystone == SkystonePosition.R2){
+                        telemetry.addLine("R2");
+                        Drive.strafeLeftDistance(0.75, 20.32);
+                    } else if (Skystone == SkystonePosition.R3){
+                        telemetry.addLine("R3");
+                        Drive.strafeLeftDistance(0.75, 40.64);
+                    } else if (Skystone == SkystonePosition.B2){
+                        telemetry.addLine("B2");
+                        Drive.strafeRightDistance(0.75, 20.32);
+                    } else if (Skystone == SkystonePosition.B3){
+                        telemetry.addLine("B3");
+                        Drive.strafeRightDistance(0.75, 40.64);
+                    } else if (Skystone == SkystonePosition.B1){
+                        telemetry.addLine("B1");
+                    } else {
+                        telemetry.addLine("R1");
+                    }
                     Grabber.open();
                     //Drive.moveForwardDistance(0.5,5);
                     Grabber.close();
@@ -146,14 +163,17 @@ public class autonomous extends LinearOpMode {
                         Drive.turnLeftDistance(0.5,50);
                     }
                     Drive.moveForwardDistance(0.75, 76.2);
+                    if (Skystone == SkystonePosition.R3 || Skystone == SkystonePosition.B3){
+                        Drive.moveForwardDistance(0.75, 20.32);
+                    }
                     //Drive until sees red or blue line
                     newState(State.ScoreStone);
                     break;
 
                 case ScoreStone:
-                    Drive.moveForwardDistance(0.75,91.44);
+                    Drive.moveForwardDistance(0.75,90);
                     Grabber.open();
-                    Drive.moveBackwardDistance(0.75,91.44);
+                    Drive.moveBackwardDistance(0.75,90);
                     newState(State.Stop);
                     break;
 

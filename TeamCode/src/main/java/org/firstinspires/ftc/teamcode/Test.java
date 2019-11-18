@@ -29,6 +29,8 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -38,6 +40,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
@@ -147,6 +150,10 @@ public class Test extends LinearOpMode {
         parameters.cameraDirection   = CAMERA_CHOICE;
 
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
+        FtcDashboard.getInstance().startCameraStream(vuforia, 0);
+
+        FtcDashboard dashboard = FtcDashboard.getInstance();
+        Telemetry dashboardTelemetry = dashboard.getTelemetry();
 
         VuforiaTrackables targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
 
@@ -293,6 +300,14 @@ public class Test extends LinearOpMode {
                 // express the rotation of the robot in degrees.
                 Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
                 telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
+
+                TelemetryPacket packet = new TelemetryPacket();
+                packet.fieldOverlay()
+                        .setStrokeWidth(1)
+                        .setStroke("goldenrod")
+                        .setFill("black")
+                        .fillRect(translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, 16.75, 17.5);
+                dashboard.sendTelemetryPacket(packet);
             }
             else {
                 telemetry.addData("Visible Target", "none");
@@ -339,6 +354,12 @@ public class Test extends LinearOpMode {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
             telemetry.update();
+
+            dashboardTelemetry.addData("Status", "Run Time: " + runtime.toString());
+            dashboardTelemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+            dashboardTelemetry.update();
+
+
         }
         targetsSkyStone.deactivate();
     }

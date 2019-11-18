@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.TestCode;
+package org.firstinspires.ftc.teamcode.opmodes.TestCode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
@@ -12,8 +12,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotlib.autonomous.AutonomousRobot;
-import org.firstinspires.ftc.robotlib.robot.MecanumHardwareMap;
+import org.firstinspires.ftc.teamcode.robotlib.autonomous.AutonomousRobot;
+import org.firstinspires.ftc.teamcode.robotlib.robot.MecanumHardwareMap;
 
 @Autonomous(name="Auto Blue", group="chad")
 public class ParkUnderBridgeBlue extends LinearOpMode {
@@ -25,11 +25,11 @@ public class ParkUnderBridgeBlue extends LinearOpMode {
     private AutonomousRobot robot;
     private static final String VUFORIA_KEY =
             " AaeQZBH/////AAABmdfQDXE5pE4MtzACI8Xt4hFWa0s+iOsMjEia6gHgjNTLJv9GfGVm1eO9HJg1uKBiuJ8O2+jzEP758aHiiC6XHCPrQcWGP8tu18nrXgUgHATBy74yPVv1lNWZq0eWcJjVDAnSpeQiFc4DhbC1F4rLgRpHzzjiIQTmUncitQg9G+l2/BKBQTkhPKEsh4gngyj8qGvyTePsw4DFDNKjf731kblzdzkAQx6cmz6fzrarqo8e4wQdHeD3USTIDDOFAlSdJe5qUmNsB0S7YILvfQE3AesKYd6CZMsyonme915GoicNvDRhsNkdc9pPSY50De/PwILZFgsygSO4jsqnbLzlLDyrPw0Q39Gc47NsVCqdVAaG" ;
-
+    public MecanumHardwareMap hardwareMap;
     //28 * 20 / (2ppi * 4.125)
     Double width = 16.0; //inches
     Integer cpr = 28; //counts per rotation
-    Integer gearratio = 40;
+    Integer gearratio = 2/1;
     Double diameter = 4.125;
     Double cpi = (cpr * gearratio)/(Math.PI * diameter); //counts per inch, 28cpr * gear ratio / (2 * pi * diameter (in inches, in the center))
     Double bias = 0.8;//default 0.8
@@ -41,12 +41,14 @@ public class ParkUnderBridgeBlue extends LinearOpMode {
     BNO055IMU imu;
     Orientation angles;
     Acceleration gravity;
+    private Object Alliance;
+
     //
     public void runOpMode(){
         //
         initGyro();
         //
-        robot = new AutonomousRobot(this.hardwareMap, VUFORIA_KEY);
+        robot = new AutonomousRobot(hardwareMap,VUFORIA_KEY,Alliance);
         frontright.setDirection(DcMotorSimple.Direction.REVERSE);
         backright.setDirection(DcMotorSimple.Direction.REVERSE);
         //
@@ -284,7 +286,7 @@ public class ParkUnderBridgeBlue extends LinearOpMode {
         parameters.loggingTag          = "IMU";
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
         //
-        imu = hardwaremap.get(BNO055IMU.class, "imu");
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
     }
     //

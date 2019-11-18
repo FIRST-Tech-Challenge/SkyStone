@@ -1,4 +1,6 @@
-package org.firstinspires.ftc.teamcode.autoOp;
+package org.firstinspires.ftc.teamcode.autoOpTest;
+
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.auto.ChassisConfig;
 import org.firstinspires.ftc.teamcode.auto.ChassisStandard;
@@ -6,12 +8,8 @@ import org.firstinspires.ftc.teamcode.auto.ChassisStandard;
 /**
  *
  */
-public abstract class MoveTest extends ChassisStandard {
-
-
-    public MoveTest(ChassisConfig config) {
-        super(config);
-    }
+@Autonomous(name="Move Test", group="ZZTesting")
+public class MoveTest extends ChassisStandard {
 
     /**
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
@@ -25,6 +23,8 @@ public abstract class MoveTest extends ChassisStandard {
 
             madeTheRun = true;
         }
+
+        printStatus();
     }
 }
 

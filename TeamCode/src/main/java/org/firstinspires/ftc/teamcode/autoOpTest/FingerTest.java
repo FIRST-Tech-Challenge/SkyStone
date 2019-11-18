@@ -1,4 +1,6 @@
-package org.firstinspires.ftc.teamcode.autoOp;
+package org.firstinspires.ftc.teamcode.autoOpTest;
+
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.auto.ChassisConfig;
 import org.firstinspires.ftc.teamcode.auto.ChassisStandard;
@@ -6,12 +8,8 @@ import org.firstinspires.ftc.teamcode.auto.ChassisStandard;
 /**
  *
  */
-public abstract class FingerTest extends ChassisStandard {
-
-
-    public FingerTest(ChassisConfig config) {
-        super(config);
-    }
+@Autonomous(name="Finger Test", group="ZZTesting")
+public class FingerTest extends ChassisStandard {
 
     /**
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
@@ -36,6 +34,8 @@ public abstract class FingerTest extends ChassisStandard {
 
             madeTheRun = true;
         }
+
+        printStatus();
     }
 }
 

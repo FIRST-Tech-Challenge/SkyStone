@@ -1,18 +1,17 @@
-package org.firstinspires.ftc.teamcode.autoOp;
+package org.firstinspires.ftc.teamcode.autoOpTest;
+
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.auto.ChassisStandard;
 import org.firstinspires.ftc.teamcode.auto.ChassisConfig;
 
 /**
- * This just runs from the position closest to the crater, into the crater.
+ *
  */
-public abstract class OniChan extends ChassisStandard {
+@Autonomous(name="Turn Test Half", group="ZZTesting")
+public class TurnHalfTest extends ChassisStandard {
 
-    public OniChan(ChassisConfig config) {
-        super(config);
-    }
-
-    /**a
+    /**
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
     @Override
@@ -20,14 +19,14 @@ public abstract class OniChan extends ChassisStandard {
 
         if (madeTheRun == false) {
 
-           // encoderDrive(24);
-
             turnRight(180);
-
+            sleep(500);
             turnLeft(180);
 
             madeTheRun = true;
         }
+
+        printStatus();
     }
 }
 

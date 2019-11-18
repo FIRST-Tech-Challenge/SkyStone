@@ -60,7 +60,7 @@ public class MecanumAutonomous {
     void init() {
         // Initialize robot
         telemetry.addData("Status", "Initialized");
-        robot = new AutonomousRobot(this.hardwareMap, VUFORIA_KEY, alliance);
+        robot = new AutonomousRobot(this.hardwareMap, VUFORIA_KEY, alliance, telemetry);
         robot.init();
     }
 
@@ -84,7 +84,7 @@ public class MecanumAutonomous {
 
         robot.scan();
 
-        telemetry.addData("TIME", elapsedTime.seconds());
+        telemetry.addData("Elapsed Time", elapsedTime.seconds() + " seconds");
         // Provide feedback as to where the robot is located (if we know).
         if (robot.isTargetVisible()) {
             // express position (translation) of robot in inches.
@@ -98,16 +98,23 @@ public class MecanumAutonomous {
             telemetry.addData("Visible Target(s)", robot.stringifyVisibleTargets());
 
             // move to stone if visible
-            /*VuforiaTrackable trackedStone = robot.getVisibleTrackable("Stone Target");
+            VuforiaTrackable trackedStone = robot.getVisibleTrackable("Stone Target");
             if (trackedStone != null) {
+                Point3D positionFromSkystone = robot.getPositionFromSkystone();
                 Point3D stonePoint3D = new Point3D(trackedStone.getLocation());
-                robot.simpleMove(robot.getCourseFromRobot(stonePoint3D), 1, 0, robot.getDistanceFromRobot(stonePoint3D));
-                robot.turn(90, 0.5);
-                robot.move(robot.getCourseFromRobot(stonePoint3D), 1, new OrientationInfo(145, 0.3), robot.getDistanceFromRobot(stonePoint3D));
-            }*/
+                telemetry.addData("Position relative to Skystone", positionFromSkystone);
+                robot.simpleMove(robot.getCourse(positionFromSkystone, stonePoint3D), 1, 0, robot.getDistance(positionFromSkystone, stonePoint3D));
+            }
         } else {
             telemetry.addData("Visible Target", "None");
         }
+
+        /*
+            Example Moving/Turning
+            robot.simpleMove(robot.getCourseFromRobot(stonePoint3D), 1, 0, robot.getDistanceFromRobot(stonePoint3D));
+            robot.turn(90, 0.5);
+            robot.move(robot.getCourseFromRobot(stonePoint3D), 1, new OrientationInfo(145, 0.3), robot.getDistanceFromRobot(stonePoint3D));
+         */
 
         telemetry.update();
         return true;

@@ -51,7 +51,7 @@ public class BlueMecanumAutonomous extends LinearOpMode {
         // Game Loop
         while (!isStopRequested()) {
             boolean keepLooping = mecanumAutonomous.loop();
-            //if (!keepLooping) break;
+            if (!keepLooping) break;
         }
 
         mecanumAutonomous.end();

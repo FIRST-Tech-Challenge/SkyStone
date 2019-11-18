@@ -3,6 +3,7 @@ package org.firstinspires.ftc.robotlib.autonomous;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
@@ -30,10 +31,12 @@ public class AutonomousRobot {
     private String vuforiaKey;
     public MecanumHardwareMap hardware;
     private Alliance alliance;
+    private Telemetry telemetry;
 
     private VuforiaLocalizer vuforia;
     private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
-    private OpenGLMatrix lastLocation = null;
+    private OpenGLMatrix lastRobotLocation = null;
+    private OpenGLMatrix lastRobotLocationFromSkystone;
 
     private static final float mmPerInch = 25.4f;
     private static final float mmTargetHeight = (6) * mmPerInch;
@@ -57,7 +60,6 @@ public class AutonomousRobot {
     private float phoneYRotate = 0;
     private float phoneZRotate = 0;
 
-    private boolean visibleTarget = false;
     public VuforiaTrackables trackables;
     public List<VuforiaTrackable> trackablesList;
     public List<VuforiaTrackable> visibleTrackables;
@@ -73,11 +75,13 @@ public class AutonomousRobot {
      * @param hwMap FTC hardware map
      * @param vuforiaKey Vuforia Key
      * @param alliance Alliance Enum
+     * @param telemetry Logging
      */
-    public AutonomousRobot(HardwareMap hwMap, String vuforiaKey, Alliance alliance) {
+    public AutonomousRobot(HardwareMap hwMap, String vuforiaKey, Alliance alliance, Telemetry telemetry) {
         this.hardware = new MecanumHardwareMap(hwMap);
         this.vuforiaKey = vuforiaKey;
         this.alliance = alliance;
+        this.telemetry = telemetry;
     }
 
     /**
@@ -235,18 +239,17 @@ public class AutonomousRobot {
      * Use this in the game loop to get the most up-to-date information from Vuforia
      */
     public void scan() {
-        visibleTarget = false;
         visibleTrackables.clear();
         for (VuforiaTrackable trackable : trackablesList) {
             if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
                 visibleTrackables.add(trackable);
-                visibleTarget = true;
 
                 // getUpdatedRobotLocation() will return null if no new information is available since
                 // the last time that call was made, or if the trackable is not currently visible.
                 OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
-                if (robotLocationTransform != null && !trackable.getName().equals("Stone Target")) {
-                    lastLocation = robotLocationTransform;
+                if (robotLocationTransform != null) {
+                    if (trackable.getName().equals("Stone Target")) lastRobotLocationFromSkystone = robotLocationTransform;
+                    else lastRobotLocation = robotLocationTransform;
                 }
             }
         }
@@ -276,10 +279,21 @@ public class AutonomousRobot {
      * @return current position on the FTC field
      */
     public Point3D getPosition() {
-        if (lastLocation == null) return null;
+        if (lastRobotLocation == null) return null;
         //if (!isTargetVisible()) return null;
         // express position (translation) of robot in inches.
-        VectorF translation = lastLocation.getTranslation();
+        VectorF translation = lastRobotLocation.getTranslation();
+        return new Point3D(translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
+    }
+
+    /**
+     * Retrieves the current position of the robot (only works if there is a visible Skystone)
+     * @return current position relative to the Skystone
+     */
+    public Point3D getPositionFromSkystone() {
+        if (lastRobotLocationFromSkystone == null) return null;
+        // express position (translation) of robot in inches.
+        VectorF translation = lastRobotLocationFromSkystone.getTranslation();
         return new Point3D(translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
     }
 
@@ -288,7 +302,7 @@ public class AutonomousRobot {
      * @return current heading
      */
     public double getOrientation2D() {
-        return Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES).thirdAngle;
+        return Orientation.getOrientation(lastRobotLocation, EXTRINSIC, XYZ, DEGREES).thirdAngle;
     }
 
     /**
@@ -297,7 +311,7 @@ public class AutonomousRobot {
      */
     public Orientation getOrientation() {
         // imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES)
-        return Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
+        return Orientation.getOrientation(lastRobotLocation, EXTRINSIC, XYZ, DEGREES);
     }
 
     /**
@@ -338,6 +352,16 @@ public class AutonomousRobot {
     }
 
     /**
+     * Calculates the course between a set "robot" point and an object
+     * @param robot point of reference
+     * @param object object to get course to
+     * @return required course to arrive at a point
+     */
+    public double getCourse(Point robot, Point object) {
+        return Math.atan2(robot.y - object.y, robot.x - object.x);
+    }
+
+    /**
      * Calculates the course for the robot to arrive a point in a 3D space
      * @param object Point3D
      * @return required course to arrive at a point
@@ -356,6 +380,16 @@ public class AutonomousRobot {
      * @return distance between point and robot center
      */
     public double getDistanceFromRobot(Point object) {
+        return this.getPosition().distance(object);
+    }
+
+    /**
+     * Calculates the distance between a point on the field and a supposed robot point
+     * @param robot supposed robot point
+     * @param object object point
+     * @return distance between point and "robot"
+     */
+    public double getDistance(Point robot, Point object) {
         return this.getPosition().distance(object);
     }
 
@@ -420,5 +454,15 @@ public class AutonomousRobot {
      */
     public void moveToPoint(Point point, double velocity) {
         this.simpleMove(this.getCourseFromRobot(point), velocity, 0, this.getDistanceFromRobot(point));
+    }
+
+    /**
+     * Moves the robot to a point
+     * @param robot supposed robot point
+     * @param point point to move to
+     * @param velocity New velocity
+     */
+    public void moveToPoint(Point robot, Point point, double velocity) {
+        this.simpleMove(this.getCourse(robot, point), velocity, 0, this.getDistance(robot, point));
     }
 }

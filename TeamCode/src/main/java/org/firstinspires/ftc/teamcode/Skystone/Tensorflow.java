@@ -44,6 +44,8 @@ public class Tensorflow extends LinearOpMode{
     public Detection detectTensorflow(){
         double shortestDetectionLength = 100000;
         float shortestValue = 700;
+        float rightValue = 0;
+        double difference = 0;
 
         /**
          * if it sees something/object detected : get the confidence
@@ -56,7 +58,7 @@ public class Tensorflow extends LinearOpMode{
 
         long startTime = SystemClock.elapsedRealtime();
         // scan for 5 seconds
-        while (robot.getLinearOpMode().opModeIsActive() && SystemClock.elapsedRealtime()-startTime < 4000){
+        while (robot.getLinearOpMode().opModeIsActive() && SystemClock.elapsedRealtime()-startTime < 6000){
             // get all the detections
             List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
 
@@ -71,21 +73,27 @@ public class Tensorflow extends LinearOpMode{
                 });
 
                 for (int i = 0; i < updatedRecognitions.size(); i++){
-                    if (updatedRecognitions.get(i).getTop()-updatedRecognitions.get(i).getBottom() < shortestDetectionLength) {
-                        shortestDetectionLength = updatedRecognitions.get(i).getTop()-updatedRecognitions.get(i).getBottom();
-                        shortestValue = (updatedRecognitions.get(i).getTop()+updatedRecognitions.get(i).getBottom())/2;
+                    if (updatedRecognitions.get(i).getConfidence() > 0.5){
+                        if (updatedRecognitions.get(i).getTop()-updatedRecognitions.get(i).getBottom() < shortestDetectionLength) {
+                            difference = shortestDetectionLength - (updatedRecognitions.get(i).getTop()-updatedRecognitions.get(i).getBottom());
+                            shortestDetectionLength = updatedRecognitions.get(i).getTop()-updatedRecognitions.get(i).getBottom();
+                            shortestValue = (updatedRecognitions.get(i).getTop()+updatedRecognitions.get(i).getBottom())/2;
+                            rightValue = updatedRecognitions.get(i).getRight();
+                        }
+                    }
+                }
+                if (difference < 100){
+                    return new Detection(1, rightValue, updatedRecognitions.size());
+                } else {
+                    if (shortestValue > 900) {
+                        return new Detection(0, rightValue, updatedRecognitions.size());
+                    } else if (shortestValue > 600){
+                        return new Detection(1, rightValue, updatedRecognitions.size());
+                    } else{
+                        return new Detection(2, rightValue, updatedRecognitions.size());
                     }
                 }
 
-                if (updatedRecognitions.size() == 1) {
-                    return new Detection(1, shortestValue, updatedRecognitions.size());
-                } else {
-                    if (shortestValue > 600) {
-                        return new Detection(0, shortestValue, updatedRecognitions.size());
-                    } else {
-                        return new Detection(2, shortestValue, updatedRecognitions.size());
-                    }
-                }
 
                 // iterate through each recognition
 //                for (int i = 0; i < updatedRecognitions.size(); i++){
@@ -129,7 +137,7 @@ public class Tensorflow extends LinearOpMode{
 ////        telemetry.addLine("retVal" + retVal);
 ////        telemetry.update();
 //        // return rounded int average
-//        return new Detection((int)Math.round(retVal), valueAvg, 0);
+//        return new Detooection((int)Math.round(retVal), valueAvg, 0);
         return new Detection(0,0,0);
     }
 

@@ -229,9 +229,9 @@ public abstract class ChassisStandard extends OpMode {
             } catch (Exception e) {
                 telemetry.addData("elevator", "exception on init: " + e.toString());
                 useElevator = false;
-
-	}
-}
+            }
+        }
+    }
 
     protected void initFingers(){
         if(useFingers){

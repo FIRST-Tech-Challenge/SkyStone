@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.Tensorflow;
 
 import android.hardware.Camera;
 
+import java.util.ArrayList;
+
 public class TFODCalc {
     private static float FOCAL_LENGTH = 1;    //in mm
     private static double SENSOR_HEIGHT = 1.0;    //in mm
@@ -30,13 +32,16 @@ public class TFODCalc {
         return dist;
     }
 
-    public static double getAngleOfObj(double objWidthPx, double distance){
-        double xIntOffset = 492.841 - (786.7 * Math.pow(Math.E, -0.049 * distance));    //Calculates width if 0 degree angle (Face facing camera)
-        xIntOffset = 0;
-        double theta = Math.pow(5.54560717 * 10, -12) * Math.pow(objWidthPx + xIntOffset, 6) - Math.pow(1.096973892027 * 10, -8) *
-                Math.pow(objWidthPx + xIntOffset, 5) + Math.pow(8.74991044895645 * 10, -6) * Math.pow(objWidthPx + xIntOffset, 4) -
-                0.00358997566920175 * Math.pow(objWidthPx + xIntOffset, 3) + 0.795649580979338 * Math.pow(objWidthPx + xIntOffset, 2) -
-                90.0326365149991 * (objWidthPx + xIntOffset) + 4133.59786820855;  //Calculates angle
-        return theta;
+    public static ArrayList<Double> getAngleOfStone(double objWidthPx, double distance){
+        double xIntercept = 307.369;
+        double estimated0DegreeWidth = 800.512823871366 * Math.pow(Math.E, -0.0476285053327913 * distance) - 15;
+        double xIntOffset = xIntercept - estimated0DegreeWidth;    //Calculates width if 0 degree angle (Face facing camera)
+        double theta = -0.00402486517332459 * Math.pow((objWidthPx + xIntOffset), 2) + 1.34744719385825 *
+                (objWidthPx + xIntOffset) - 33.9109714390624;  //Calculates angle
+        ArrayList<Double> output = new ArrayList<Double>(){{ add(theta);
+            add(Math.round((estimated0DegreeWidth - 197.369) * 1000.0) / 1000.0);
+            add(Math.round((estimated0DegreeWidth + 1.631) * 1000.0) / 1000.0);
+            add(Math.round(estimated0DegreeWidth * 1000.0) / 1000.0); }};
+        return output;
     }
 }

@@ -5,6 +5,10 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
+import com.qualcomm.robotcore.hardware.DigitalChannelController;
+import com.qualcomm.robotcore.hardware.DigitalChannelImpl;
+import com.qualcomm.robotcore.hardware.I2cDevice;
 import com.qualcomm.robotcore.hardware.IntegratingGyroscope;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -13,10 +17,10 @@ import java.util.ArrayList;
 public class HardwareMap {
     public DcMotorEx backLeft, backRight, frontLeft, frontRight, firstJoint, secondJoint, intakeJoint, leftIntake, rightIntake,
     liftOne, liftTwo;
-    public Servo servo1, servo2, servo3;
+    public Servo clawServo1, clawServo2, rightTransfer, leftTransfer, liftOdometer, transferLock;
     public BNO055IMU gyro;
     public IntegratingGyroscope imu;
-    public static AnalogInput leftForward, rightForward, sideways;
+    public static DcMotor leftForward, rightForward, sideways;
     public static String TAG = "MainThread";
 
     public com.qualcomm.robotcore.hardware.HardwareMap hardwareMap;
@@ -38,15 +42,18 @@ public class HardwareMap {
 
         //------------------------===Servos===------------------------
 
-        servo1 = hwMap.get(Servo.class, "clawServo1");
-        servo2 = hwMap.get(Servo.class, "clasServo2");
-        servo3 = hwMap.get(Servo.class, "servo3");
+        clawServo1 = hwMap.get(Servo.class, "clawServo1");
+        clawServo2 = hwMap.get(Servo.class, "clawServo2");
+        rightTransfer = hwMap.get(Servo.class, "rightTransfer");
+        leftTransfer = hwMap.get(Servo.class, "leftTransfer");
+        liftOdometer = hwMap.get(Servo.class, "liftOdometer");
+        transferLock = hwMap.get(Servo.class, "transferLock");
 
         //---------------------------------------------------------------------------
 
-        leftForward = hwMap.get(AnalogInput.class, "leftForward");
-        rightForward = hwMap.get(AnalogInput.class, "rightForward");
-        sideways = hwMap.get(AnalogInput.class, "sideways");
+        //leftForward = hwMap.get(DcMotor.class, "leftForward");
+        //rightForward = hwMap.get(DcMotor.class, "rightForward");
+        //sideways = hwMap.get(DcMotor.class, "sideways");
         gyro = hwMap.get(BNO055IMU.class, "imu");
         imu = (IntegratingGyroscope) gyro;
 
@@ -65,7 +72,7 @@ public class HardwareMap {
 
     //--------------------------------==================\/\/Track Encoders\/\/==================---------------------------------
 
-    public static class track extends Thread {  //Encoders: Min = 0.0, Max = 3.3
+  /*  public static class track extends Thread {  //Encoders: Min = 0.0, Max = 3.3
         static double totalLeft = 0;
         static double totalRight = 0;
         static double totalSide = 0;
@@ -141,34 +148,34 @@ public class HardwareMap {
 
             totalTicks.add(totalLeft /
                     DriveConstant.ENCODER_COUNTS_PER_REVOLUTION * DriveConstant.LEFT_GEAR_RATIO /**
-                    (2 * Math.PI * DriveConstant.ODOMETRY_RAD)*/ * (DriveConstant.ODOMETRY_RAD / DriveConstant.MECANUM_RAD));
-            totalTicks.add(totalRight /
+                    (2 * Math.PI * DriveConstant.ODOMETRY_RAD)*/ /* (DriveConstant.ODOMETRY_RAD / DriveConstant.MECANUM_RAD));
+        /*    totalTicks.add(totalRight /
                     DriveConstant.ENCODER_COUNTS_PER_REVOLUTION * DriveConstant.RIGHT_GEAR_RATIO /**
-                    (2 * Math.PI * DriveConstant.ODOMETRY_RAD)*/ * (DriveConstant.ODOMETRY_RAD / DriveConstant.MECANUM_RAD));
-            totalTicks.add(totalSide /
+                    (2 * Math.PI * DriveConstant.ODOMETRY_RAD)*/ /* (DriveConstant.ODOMETRY_RAD / DriveConstant.MECANUM_RAD));
+        /*    totalTicks.add(totalSide /
                     DriveConstant.ENCODER_COUNTS_PER_REVOLUTION * DriveConstant.SIDE_GEAR_RATIO /**
-                    (2 * Math.PI * DriveConstant.ODOMETRY_RAD)*/ * (DriveConstant.ODOMETRY_RAD / DriveConstant.MECANUM_RAD));
-            return totalTicks;
+                    (2 * Math.PI * DriveConstant.ODOMETRY_RAD)*/ /* (DriveConstant.ODOMETRY_RAD / DriveConstant.MECANUM_RAD));
+        /*    return totalTicks;
         }
 
         public static ArrayList<String> getEncoderDebug() {  //Debugs the entire formula for calculating encoder ticks
             ArrayList<String> debug = new ArrayList<>();
 
-            debug.add(/*"(ignoreLoopsAdditionalValue - getVoltage + 3.3 * numOfLoops)*/ "totalLeft / VOLTS_PER_REVOLUTION * GEAR_RATIO * " +
-                    "(2 * PI * ODOMETRY_RADIUS) * (ODOMETRY_RADIUS / MECANUM_RADIUS)");
+            debug.add(/*"(ignoreLoopsAdditionalValue - getVoltage + 3.3 * numOfLoops)*//* "totalLeft / VOLTS_PER_REVOLUTION * GEAR_RATIO * " +
+      /*              "(2 * PI * ODOMETRY_RADIUS) * (ODOMETRY_RADIUS / MECANUM_RADIUS)");
             debug.add("" + totalLeft + " / " +
                     DriveConstant.ENCODER_COUNTS_PER_REVOLUTION + " * " + DriveConstant.LEFT_GEAR_RATIO /*+ " * " +
-                    "(" + 2 + " * " + Math.PI + " * " + DriveConstant.ODOMETRY_RAD + ")"*/ + " * " +
-                    "(" + DriveConstant.ODOMETRY_RAD + " / " + DriveConstant.MECANUM_RAD + ")");
-            debug.add("" + totalRight + " / " +
+                    "(" + 2 + " * " + Math.PI + " * " + DriveConstant.ODOMETRY_RAD + ")"*/ /*+ " * " +
+        /*            "(" + DriveConstant.ODOMETRY_RAD + " / " + DriveConstant.MECANUM_RAD + ")");
+        /*    debug.add("" + totalRight + " / " +
                     DriveConstant.ENCODER_COUNTS_PER_REVOLUTION + " * " + DriveConstant.RIGHT_GEAR_RATIO /*+ " * " +
-                    "(" + 2 + " * " + Math.PI + " * " + DriveConstant.ODOMETRY_RAD + ")"*/ + " * " +
-                    "(" + DriveConstant.ODOMETRY_RAD + " / " + DriveConstant.MECANUM_RAD + ")");
-            debug.add("" + totalSide + " / " +
-                    DriveConstant.ENCODER_COUNTS_PER_REVOLUTION + " * " + DriveConstant.SIDE_GEAR_RATIO /*+ " * " +
-                    "(" + 2 + " * " + Math.PI + " * " + DriveConstant.ODOMETRY_RAD + ")"*/ + " * " +
-                    "(" + DriveConstant.ODOMETRY_RAD + " / " + DriveConstant.MECANUM_RAD + ")");
-            return debug;
+                    "(" + 2 + " * " + Math.PI + " * " + DriveConstant.ODOMETRY_RAD + ")"*//* + " * " +
+         /*//*           "(" + DriveConstant.ODOMETRY_RAD + " / " + DriveConstant.MECANUM_RAD + ")");
+          *//*  debug.add("" + totalSide + " / " +
+           //         DriveConstant.ENCODER_COUNTS_PER_REVOLUTION + " * " + DriveConstant.SIDE_GEAR_RATIO /*+ " * " +
+           //        "(" + 2 + " * " + Math.PI + " * " + DriveConstant.ODOMETRY_RAD + ")"*//* + " * " +
+          *//*          "(" + DriveConstant.ODOMETRY_RAD + " / " + DriveConstant.MECANUM_RAD + ")");
+         /*   return debug;
         }
 
         public static ArrayList<String> getElapsedTime() {   //Returns [elapsedTime, CurrentlyTracking]
@@ -217,7 +224,7 @@ public class HardwareMap {
             if (track)
                 beginTracking();
         }
-    }
+    }*/
 
     //----------------------------==================/\/\End Track Encoders/\/\==================-----------------------------
 }

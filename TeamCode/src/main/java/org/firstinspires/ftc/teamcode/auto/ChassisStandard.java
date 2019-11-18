@@ -7,14 +7,38 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
 
 public abstract class ChassisStandard extends OpMode {
+
+    //copied from tensorflow example
+    private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
+    private static final String LABEL_FIRST_ELEMENT = "Stone";
+    private static final String LABEL_SECOND_ELEMENT = "Skystone";
+    private static final String VUFORIA_KEY =
+            "AfgOBrf/////AAABmRjMx12ilksPnWUyiHDtfRE42LuceBSFlCTIKmmNqCn2EOk3I4NtDCSr0wCLFxWPoLR2qHKraX49ofQ2JknI76SJS5Hy8cLbIN+1GlFDqC8ilhuf/Y1yDzKN6a4n0fYWcEPlzHRc8C1V+D8vZ9QjoF3r//FDDtm+M3qlmwA7J/jNy4nMSXWHPCn2IUASoNqybTi/CEpVQ+jEBOBjtqxNgb1CEdkFJrYGowUZRP0z90+Sew2cp1DJePT4YrAnhhMBOSCURgcyW3q6Pl10XTjwB4/VTjF7TOwboQ5VbUq0wO3teE2TXQAI53dF3ZUle2STjRH0Rk8H94VtHm9u4uitopFR7zmxVl3kQB565EUHwfvG";
+
+    //vision detection variables/state
+    /**
+     * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
+     * localization engine.
+     */
+    protected VuforiaLocalizer vuforia;
+
+    /**
+     * {@link #tfod} is the variable we will use to store our instance of the TensorFlow Object
+     * Detection engine.
+     */
+    protected TFObjectDetector tfod;
 
     //is sound playing?
     boolean soundPlaying = false;
@@ -36,6 +60,7 @@ public abstract class ChassisStandard extends OpMode {
     private DcMotor motorFrontRight;
     private DcMotor extender;
     private DcMotor shoulder;
+    private DcMotor elevator;
     private DcMotor crane;
 
     //Crab
@@ -50,9 +75,9 @@ public abstract class ChassisStandard extends OpMode {
     private Servo bull;
     private Servo dozer;
     private double angleHand;
+    private double angleAnkle;
     private double ffAngleHand;
     private double bfAngleHand;
-
 
     // Walle state management
     int wasteAllocationLoadLifterEarthBegin;
@@ -62,22 +87,24 @@ public abstract class ChassisStandard extends OpMode {
     int extraterrestrialVegetationEvaluatorBegin;
     private DcMotor extraterrestrialVegetationEvaluator;
 
-
     //gyroscope built into hub
     private BNO055IMU bosch;
 
     // Hack stuff.
-    protected boolean useBulldozer = false;
     protected boolean useGyroScope = true;
     protected boolean useMotors = true;
-    protected boolean useTeamMarker = false;
     protected boolean hackTimeouts = true;
     protected boolean useArm = false;
     protected boolean useEve = false;
     protected boolean useCrab = true;
+    protected boolean useElevator = true;
     protected boolean useFingers = true;
+    protected boolean useVuforia = false;
 
 
+    protected ChassisStandard() {
+        this(ChassisConfig.forDefaultConfig());
+    }
 
     protected ChassisStandard(ChassisConfig config) {
         this.config = config;
@@ -96,7 +123,6 @@ public abstract class ChassisStandard extends OpMode {
 
     @Override
     public void stop (){
-
     }
 
     @Override
@@ -106,6 +132,7 @@ public abstract class ChassisStandard extends OpMode {
         initGyroscope();
         initCrab();
         initFingers();
+        initVuforia();
     }
 
     /**
@@ -129,7 +156,6 @@ public abstract class ChassisStandard extends OpMode {
         }
         telemetry.addData("Status", "time: " + runtime.toString());
         telemetry.addData("Run", "madeTheRun=%b", madeTheRun);
-
     }
 
     /*
@@ -196,6 +222,17 @@ public abstract class ChassisStandard extends OpMode {
         }
     }
 
+    protected void initElevator() {
+        if (useElevator) {
+            try {
+                elevator = hardwareMap.get(DcMotor.class, "elevator");
+            } catch (Exception e) {
+                telemetry.addData("elevator", "exception on init: " + e.toString());
+                useElevator = false;
+            }
+        }
+    }
+
     protected void initFingers(){
         if(useFingers){
             try {
@@ -222,13 +259,15 @@ public abstract class ChassisStandard extends OpMode {
         }
     }
 
-    protected void initArm() {
+   /* protected void initArm() {
         if (useArm) {
             //shoulder = hardwareMap.get(DcMotor.class, "motor4");
             extender = hardwareMap.get(DcMotor.class, "motorExtender");
             crane = hardwareMap.get(DcMotor.class, "motorCrane");
         }
     }
+
+    */
 
     protected boolean initGyroscope() {
         if (useGyroScope) {
@@ -285,7 +324,6 @@ public abstract class ChassisStandard extends OpMode {
         if (useCrab) {
             angleHand = 0.0;
             crab.setPosition(angleHand);
-
         }
     }
 
@@ -293,6 +331,20 @@ public abstract class ChassisStandard extends OpMode {
         if (useCrab) {
             angleHand = 1.0;
             crab.setPosition(angleHand);
+        }
+    }
+
+    public void raiseElevator() {
+        if(useElevator) {
+            angleAnkle = 1.0;
+            elevator.setPower(angleAnkle);
+        }
+    }
+
+    public void dropElevator() {
+        if(useElevator) {
+            angleAnkle = 0.0;
+            elevator.setPower(angleAnkle);
         }
     }
 
@@ -616,7 +668,7 @@ public abstract class ChassisStandard extends OpMode {
         }
     }
 
-    protected void slideUpExtender(int extenderCounts) {
+     protected void slideUpExtender(int extenderCounts) {
         double speed = 0.25;
 
         // Get the current position.
@@ -672,6 +724,7 @@ public abstract class ChassisStandard extends OpMode {
         shoulder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         shoulder.setPower(0);
     }
+
 
     protected void strafeLeft(int numberOfMillis) {
         float power = config.getTurnSpeed();
@@ -729,7 +782,7 @@ public abstract class ChassisStandard extends OpMode {
 
 
 
-   /* protected void lyftDownWalle(int howManySpins) {
+    protected void lyftDownWalle(int howManySpins) {
         double speed = 0.5f;
 
         // Get the current position.
@@ -757,10 +810,10 @@ public abstract class ChassisStandard extends OpMode {
         wasteAllocationLoadLifterEarth.setPower(0);
 
         //sleep(5000);
-    } */
+    }
 
 
-    protected void lyftDownEve(int howManySpins) {
+    protected void lyftDownEve (int howManySpins) {
         double speed = 0.5f;
 
         // Get the current position.
@@ -790,9 +843,57 @@ public abstract class ChassisStandard extends OpMode {
         //sleep(5000);
     }
 
-    protected void pushCrane() {
-        crane.setPower(1);
-        sleep(500);
-        crane.setPower(0);
+
+    /* VUFORIA */
+
+    /**
+     * Initialize the Vuforia localization engine.
+     */
+    private void initVuforia() {
+
+        if (useVuforia) {
+            try {
+                /*
+                 * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
+                 */
+                VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+                parameters.vuforiaLicenseKey = VUFORIA_KEY;
+                parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
+
+                //  Instantiate the Vuforia engine
+                vuforia = ClassFactory.getInstance().createVuforia(parameters);
+
+                // Loading trackables is not necessary for the TensorFlow Object Detection engine.
+                if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
+                    initTfod();
+                } else {
+                    telemetry.addData("Sorry!", "This device is not compatible with TFOD");
+                }
+
+                /**
+                 * Activate TensorFlow Object Detection before we wait for the start command.
+                 * Do it here so that the Camera Stream window will have the TensorFlow annotations visible.
+                 **/
+                if (tfod != null) {
+                    tfod.activate();
+                }
+            } catch (Exception e) {
+                telemetry.addData("vuforia", "exception on init: " + e.toString());
+                useVuforia = false;
+            }
+        }
+    }
+
+    /**
+     * Initialize the TensorFlow Object Detection engine.
+     */
+    private void initTfod() {
+        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
+                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
+        tfodParameters.minimumConfidence = 0.8;
+
+        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
     }
 }

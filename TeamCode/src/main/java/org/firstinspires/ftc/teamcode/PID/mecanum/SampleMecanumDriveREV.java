@@ -44,7 +44,7 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
 
         // TODO: if your hub is mounted vertically, remap the IMU axes so that the z-axis points
         // upward (normal to the floor) using a command like the following:
-         BNO055IMUUtil.remapAxes(imu, AxesOrder.ZXY, AxesSigns.PPP);  //NOT: PPP, NPP, NNP, XYZ, YZX, ZXY
+         BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.PPP);
 
         leftFront = hardwareMap.get(DcMotorEx.class, "frontLeft");
         leftRear = hardwareMap.get(DcMotorEx.class, "backLeft");

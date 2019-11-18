@@ -9,8 +9,14 @@ public class TFODCalc {
     private static float FOCAL_LENGTH = 1;    //in mm
     private static double SENSOR_HEIGHT = 1.0;    //in mm
     private static Camera camera;
+    private static ArrayList<Double> autoAdjustedOffset = new ArrayList<>();
 
-    public static void getPhoneCamConstants(){
+    public static void init(){
+        for(int i = 0; i < 100; i++)
+            autoAdjustedOffset.add(0.0);
+    }
+
+    public static void getPhoneCamConstants() {
         camera = Camera.open();
         Camera.Parameters params = camera.getParameters();
         FOCAL_LENGTH = params.getFocalLength();
@@ -32,16 +38,69 @@ public class TFODCalc {
         return dist;
     }
 
-    public static ArrayList<Double> getAngleOfStone(double objWidthPx, double distance){
-        double xIntercept = 307.369;
-        double estimated0DegreeWidth = 800.512823871366 * Math.pow(Math.E, -0.0476285053327913 * distance) - 15;
-        double xIntOffset = xIntercept - estimated0DegreeWidth;    //Calculates width if 0 degree angle (Face facing camera)
+    public static ArrayList<Double> getAngleOfStone(int objIndex, double objWidthPx, double distance){
+        double xIntercept = 307.369;    //Largest X-Intercept of quadratic model equation
+        double xAt60 = xIntercept - 197.369;    //Calculating Delta X at lower bounds of domain (x ~= 60°)
+        double estimated0DegreeWidth = 800.512823871366 * Math.pow(Math.E, -0.0476285053327913 * distance) - 15;    //Estimating 0° width
+
+        /**
+         * Calculates "old" X-offset (X-int & other previously calculated offsets), the supposed width
+         * of stone at 0° (stone facing camera). Algorithms will soon tune this value and adjust the model's domain
+         * to better fit the received Tensorflow data.
+         */
+
+        double xIntOffset = xIntercept - estimated0DegreeWidth - autoAdjustedOffset.get(objIndex);
+        double newAutoAdjustedOffset = autoAdjustDomain(xIntercept,xIntercept - xAt60, xIntOffset, objWidthPx, objIndex); //Algorithm tunes the value of the offset
+        xIntOffset = xIntercept - estimated0DegreeWidth - autoAdjustedOffset.get(objIndex) - newAutoAdjustedOffset;    //Re-calculates the X-offset
+
+        /*
+         * The model quadratic equation used:
+         * y = -0.00402486517332459(x + x-offset)^2 + 1.34744719385825(x + x-offset) - 33.9109714390624
+         */
+
         double theta = -0.00402486517332459 * Math.pow((objWidthPx + xIntOffset), 2) + 1.34744719385825 *
                 (objWidthPx + xIntOffset) - 33.9109714390624;  //Calculates angle
-        ArrayList<Double> output = new ArrayList<Double>(){{ add(theta);
-            add(Math.round((estimated0DegreeWidth - 197.369) * 1000.0) / 1000.0);
-            add(Math.round((estimated0DegreeWidth + 1.631) * 1000.0) / 1000.0);
-            add(Math.round(estimated0DegreeWidth * 1000.0) / 1000.0); }};
+
+        TFODCalc.autoAdjustedOffset.set(objIndex,
+                TFODCalc.autoAdjustedOffset.get(objIndex) + newAutoAdjustedOffset);   //The x-offset is saved under its index & will be reaccessed and used
+
+        /*
+         * Output: ArrayList containing in the following order:
+         * [Predicted Angle, Lower Bounds of model Domain, Upper Bounds of Model Domain (X-int),
+         * Unprocessed predicted width at 0°, New predicted width at 0°]
+         */
+
+        ArrayList<Double> output = new ArrayList<>();
+        output.add(theta);
+        output.add(Math.round((estimated0DegreeWidth - 197.369 + newAutoAdjustedOffset) * 1000.0) / 1000.0);
+        output.add(Math.round((estimated0DegreeWidth + newAutoAdjustedOffset) * 1000.0) / 1000.0);
+        output.add(Math.round(estimated0DegreeWidth * 1000.0) / 1000.0);
+        output.add(Math.round((estimated0DegreeWidth + newAutoAdjustedOffset +
+                TFODCalc.autoAdjustedOffset.get(objIndex)) * 1000.0) / 1000.0);
+
         return output;
+    }
+
+    private static double autoAdjustDomain(double xInt, double xAt90, double xIntOffset,
+                                         double objWidthPx, int objIndex){
+        double autoAdjustOutput = 0.0;
+
+        /**
+         * Allows up to a certain degree of error. If data is past the acceptable error, then tuning algorithm changes
+         * the X-offset of the model quadratic, thus better fitting the data. The algorithm finds the delta
+         * between the predicted and actual x-intercepts by finding the difference in x values at a certain point.
+         */
+
+        if(objWidthPx <= xInt + autoAdjustedOffset.get(objIndex) - 197.369){  //Allows up to -5° of error
+            autoAdjustOutput = getDomainOffset(xAt90, xIntOffset, objWidthPx);
+        } else if(objWidthPx >= xInt + autoAdjustedOffset.get(objIndex) + 8.611){   //Allows up to +10° of error
+            autoAdjustOutput = getDomainOffset(xInt, xIntOffset, objWidthPx);
+        }
+        return autoAdjustOutput;
+    }
+
+    private static double getDomainOffset(double anchorX, double xIntOffset, double objWidthPx){
+        double newOffset = anchorX - objWidthPx;
+        return xIntOffset - newOffset;
     }
 }

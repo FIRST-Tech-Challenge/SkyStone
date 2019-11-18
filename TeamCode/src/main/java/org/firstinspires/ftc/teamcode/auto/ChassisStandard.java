@@ -87,22 +87,24 @@ public abstract class ChassisStandard extends OpMode {
     int extraterrestrialVegetationEvaluatorBegin;
     private DcMotor extraterrestrialVegetationEvaluator;
 
-
     //gyroscope built into hub
     private BNO055IMU bosch;
 
     // Hack stuff.
-    protected boolean useBulldozer = false;
     protected boolean useGyroScope = true;
     protected boolean useMotors = true;
-    protected boolean useTeamMarker = false;
     protected boolean hackTimeouts = true;
     protected boolean useArm = false;
     protected boolean useEve = false;
     protected boolean useCrab = true;
     protected boolean useElevator = true;
     protected boolean useFingers = true;
+    protected boolean useVuforia = false;
 
+
+    protected ChassisStandard() {
+        this(ChassisConfig.forDefaultConfig());
+    }
 
     protected ChassisStandard(ChassisConfig config) {
         this.config = config;
@@ -121,7 +123,6 @@ public abstract class ChassisStandard extends OpMode {
 
     @Override
     public void stop (){
-
     }
 
     @Override
@@ -131,23 +132,7 @@ public abstract class ChassisStandard extends OpMode {
         initGyroscope();
         initCrab();
         initFingers();
-
-        // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that first.
         initVuforia();
-
-        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
-            initTfod();
-        } else {
-            telemetry.addData("Sorry!", "This device is not compatible with TFOD");
-        }
-
-        /**
-         * Activate TensorFlow Object Detection before we wait for the start command.
-         * Do it here so that the Camera Stream window will have the TensorFlow annotations visible.
-         **/
-        if (tfod != null) {
-            tfod.activate();
-        }
     }
 
     /**
@@ -858,23 +843,45 @@ public abstract class ChassisStandard extends OpMode {
         //sleep(5000);
     }
 
+
+    /* VUFORIA */
+
     /**
      * Initialize the Vuforia localization engine.
      */
     private void initVuforia() {
-        /*
-         * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
-         */
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
-        parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
+        if (useVuforia) {
+            try {
+                /*
+                 * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
+                 */
+                VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+                parameters.vuforiaLicenseKey = VUFORIA_KEY;
+                parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
 
-        //  Instantiate the Vuforia engine
-        vuforia = ClassFactory.getInstance().createVuforia(parameters);
+                //  Instantiate the Vuforia engine
+                vuforia = ClassFactory.getInstance().createVuforia(parameters);
 
-        // Loading trackables is not necessary for the TensorFlow Object Detection engine.
+                // Loading trackables is not necessary for the TensorFlow Object Detection engine.
+                if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
+                    initTfod();
+                } else {
+                    telemetry.addData("Sorry!", "This device is not compatible with TFOD");
+                }
 
+                /**
+                 * Activate TensorFlow Object Detection before we wait for the start command.
+                 * Do it here so that the Camera Stream window will have the TensorFlow annotations visible.
+                 **/
+                if (tfod != null) {
+                    tfod.activate();
+                }
+            } catch (Exception e) {
+                telemetry.addData("vuforia", "exception on init: " + e.toString());
+                useVuforia = false;
+            }
+        }
     }
 
     /**
@@ -885,6 +892,7 @@ public abstract class ChassisStandard extends OpMode {
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
         tfodParameters.minimumConfidence = 0.8;
+
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
     }

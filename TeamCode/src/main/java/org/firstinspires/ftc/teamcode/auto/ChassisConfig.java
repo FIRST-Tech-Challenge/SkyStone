@@ -59,19 +59,23 @@ public class ChassisConfig {
     static final float COUNTS_PER_MOTOR_REV_HDHEX_40  = 1120; // 28 cycles per rotation at the main motor, times 40:1 geared down
     static final float COUNTS_PER_MOTOR_REV_HDHEX_20 = 560; // 28 cycles per rotation at the main motor, times 20:1 geared down
 
-
     public static ChassisConfig forTileRunner() {
         return new ChassisConfig(
                 4.0f,
                 true,
                 COUNTS_PER_MOTOR_REV_HDHEX_40,
-                -0.8f,
                 0.8f,
-                true,
+                0.8f,
                 false,
+                true,
                                 false,
                 true,
                 true,
                 false);
+    }
+
+    /** If no config is given, use this one. */
+    public static ChassisConfig forDefaultConfig() {
+        return forTileRunner();
     }
 }

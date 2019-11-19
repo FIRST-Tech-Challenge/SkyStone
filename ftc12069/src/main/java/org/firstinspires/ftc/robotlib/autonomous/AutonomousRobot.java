@@ -36,6 +36,7 @@ public class AutonomousRobot {
     private VuforiaLocalizer vuforia;
     private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
     private OpenGLMatrix lastRobotLocation = null;
+    private long lastRobotLocationTime;
     private OpenGLMatrix lastRobotLocationFromSkystone;
 
     private static final float mmPerInch = 25.4f;
@@ -249,16 +250,23 @@ public class AutonomousRobot {
                 OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
                 if (robotLocationTransform != null) {
                     if (trackable.getName().equals("Stone Target")) lastRobotLocationFromSkystone = robotLocationTransform;
-                    else lastRobotLocation = robotLocationTransform;
+                    else {
+                        lastRobotLocation = robotLocationTransform;
+                        lastRobotLocationTime = System.currentTimeMillis();
+                    }
                 }
             }
         }
     }
 
+    public boolean isLocationKnown() {
+        return lastRobotLocation != null;
+    }
+
     /**
-     * Checks if there is any visible targets
+     * Checks if there is any visible trackables
      */
-    public boolean isTargetVisible() {
+    public boolean isTrackableVisible() {
         return visibleTrackables.size() > 0;
     }
 
@@ -280,7 +288,7 @@ public class AutonomousRobot {
      */
     public Point3D getPosition() {
         if (lastRobotLocation == null) return null;
-        //if (!isTargetVisible()) return null;
+        //if (!isTrackableVisible()) return null;
         // express position (translation) of robot in inches.
         VectorF translation = lastRobotLocation.getTranslation();
         return new Point3D(translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);

@@ -36,7 +36,6 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotlib.autonomous.AutonomousRobot;
-import org.firstinspires.ftc.robotlib.information.OrientationInfo;
 import org.firstinspires.ftc.robotlib.navigation.Point3D;
 import org.firstinspires.ftc.robotlib.state.Alliance;
 
@@ -86,14 +85,16 @@ public class MecanumAutonomous {
 
         telemetry.addData("Elapsed Time", elapsedTime.seconds() + " seconds");
         // Provide feedback as to where the robot is located (if we know).
-        if (robot.isTargetVisible()) {
-            // express position (translation) of robot in inches.
-            Point3D position = robot.getPosition();
-            telemetry.addData("Position (inch)", "{X, Y, Z} = %.1f, %.1f, %.1f", position.x, position.y, position.z);
+        if (robot.isTrackableVisible()) {
+            if (robot.isLocationKnown()) {
+                // express position (translation) of robot in inches.
+                Point3D position = robot.getPosition();
+                telemetry.addData("Position (inch)", "{X, Y, Z} = %.1f, %.1f, %.1f", position.x, position.y, position.z);
 
-            // express the orientation of the robot in degrees.
-            Orientation orientation = robot.getOrientation();
-            telemetry.addData("Orientation (deg)", "{Heading, Roll, Pitch} = %.0f, %.0f, %.0f", orientation.thirdAngle, orientation.firstAngle, orientation.secondAngle);
+                // express the orientation of the robot in degrees.
+                Orientation orientation = robot.getOrientation();
+                telemetry.addData("Orientation (deg)", "{Heading, Roll, Pitch} = %.0f, %.0f, %.0f", orientation.thirdAngle, orientation.firstAngle, orientation.secondAngle);
+            }
 
             telemetry.addData("Visible Target(s)", robot.stringifyVisibleTargets());
 

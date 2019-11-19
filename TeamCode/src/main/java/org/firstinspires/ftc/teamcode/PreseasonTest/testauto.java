@@ -43,10 +43,10 @@ public class testauto extends LinearOpMode {
         map.backLeft.setPower(power);
         map.backRight.setPower(-power);
         while(opModeIsActive() && !isStopRequested()) {
-            if (initFrontLeft - map.frontLeft.getCurrentPosition() <= rotations * -DriveConstant.ENCODER_COUNTS_PER_REVOLUTION &&
-                    initFrontRight - map.frontRight.getCurrentPosition() >= rotations * DriveConstant.ENCODER_COUNTS_PER_REVOLUTION &&
-                    initBackLeft - map.backLeft.getCurrentPosition() <= rotations * -DriveConstant.ENCODER_COUNTS_PER_REVOLUTION &&
-                    initBackRight - map.backRight.getCurrentPosition() >= rotations * DriveConstant.ENCODER_COUNTS_PER_REVOLUTION) {
+            if (initFrontLeft - map.frontLeft.getCurrentPosition() <= rotations * -DriveConstant.WHEEL_ENCODER_COUNTS_PER_REVOLUTION &&
+                    initFrontRight - map.frontRight.getCurrentPosition() >= rotations * DriveConstant.WHEEL_ENCODER_COUNTS_PER_REVOLUTION &&
+                    initBackLeft - map.backLeft.getCurrentPosition() <= rotations * -DriveConstant.WHEEL_ENCODER_COUNTS_PER_REVOLUTION &&
+                    initBackRight - map.backRight.getCurrentPosition() >= rotations * DriveConstant.WHEEL_ENCODER_COUNTS_PER_REVOLUTION) {
                 map.frontLeft.setPower(0);
                 map.frontRight.setPower(0);
                 map.backLeft.setPower(0);
@@ -58,10 +58,10 @@ public class testauto extends LinearOpMode {
             e = initBackLeft - map.backLeft.getCurrentPosition();
             r = initBackRight - map.backRight.getCurrentPosition();
             telemetry.clear();
-            telemetry.addData(map.TAG,"frontRight: "+ q + " >= " + rotations * DriveConstant.ENCODER_COUNTS_PER_REVOLUTION);
-            telemetry.addData(map.TAG,"frontLeft: "+ w + " <= " + rotations * -DriveConstant.ENCODER_COUNTS_PER_REVOLUTION);
-            telemetry.addData(map.TAG,"backRight: "+ r + " >= " + rotations * DriveConstant.ENCODER_COUNTS_PER_REVOLUTION);
-            telemetry.addData(map.TAG,"backLeft: "+ e + " <= " + rotations * -DriveConstant.ENCODER_COUNTS_PER_REVOLUTION);
+            telemetry.addData(map.TAG,"frontRight: "+ q + " >= " + rotations * DriveConstant.WHEEL_ENCODER_COUNTS_PER_REVOLUTION);
+            telemetry.addData(map.TAG,"frontLeft: "+ w + " <= " + rotations * -DriveConstant.WHEEL_ENCODER_COUNTS_PER_REVOLUTION);
+            telemetry.addData(map.TAG,"backRight: "+ r + " >= " + rotations * DriveConstant.WHEEL_ENCODER_COUNTS_PER_REVOLUTION);
+            telemetry.addData(map.TAG,"backLeft: "+ e + " <= " + rotations * -DriveConstant.WHEEL_ENCODER_COUNTS_PER_REVOLUTION);
             telemetry.update();
         }
     }

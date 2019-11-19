@@ -6,7 +6,7 @@ import android.hardware.Camera;
 import java.util.ArrayList;
 
 public class TFODCalc {
-    private static float FOCAL_LENGTH = 1;    //in mm
+    private static float FOCAL_LENGTH = 1.0f;    //in mm
     private static double SENSOR_HEIGHT = 1.0;    //in mm
     private static Camera camera;
     private static ArrayList<Double> autoAdjustedOffset = new ArrayList<>();
@@ -29,9 +29,15 @@ public class TFODCalc {
 
     public static double getSensorHeight(){ return SENSOR_HEIGHT; }
 
-    public static void setFocalLength(float focalLength){ FOCAL_LENGTH = focalLength; }
+    public static void setHardwareProperties(float focalLength, double sensorHeight){
+        FOCAL_LENGTH = focalLength;
+        SENSOR_HEIGHT = sensorHeight;
+    }
 
-    public static void setSensorHeight(double sensorHeight){ SENSOR_HEIGHT = sensorHeight; }
+    public static void setHardwareProperties(double verticalFOVAngle, float focalLength){
+        FOCAL_LENGTH = focalLength;
+        SENSOR_HEIGHT = Math.tan(Math.toRadians(verticalFOVAngle / 2)) * 2 * FOCAL_LENGTH;
+    }
 
     public static double getDistanceToObj(double objHeightmm, double imgHeightpx, double objHeightpx){
         double dist = (FOCAL_LENGTH * objHeightmm * imgHeightpx) / (objHeightpx * SENSOR_HEIGHT) / 25.4;   //in inches (mm / 25.4)
@@ -53,7 +59,7 @@ public class TFODCalc {
         double newAutoAdjustedOffset = autoAdjustDomain(xIntercept,xIntercept - xAt60, xIntOffset, objWidthPx, objIndex); //Algorithm tunes the value of the offset
         xIntOffset = xIntercept - estimated0DegreeWidth - autoAdjustedOffset.get(objIndex) - newAutoAdjustedOffset;    //Re-calculates the X-offset
 
-        /*
+        /**
          * The model quadratic equation used:
          * y = -0.00402486517332459(x + x-offset)^2 + 1.34744719385825(x + x-offset) - 33.9109714390624
          */
@@ -64,8 +70,8 @@ public class TFODCalc {
         TFODCalc.autoAdjustedOffset.set(objIndex,
                 TFODCalc.autoAdjustedOffset.get(objIndex) + newAutoAdjustedOffset);   //The x-offset is saved under its index & will be reaccessed and used
 
-        /*
-         * Output: ArrayList containing in the following order:
+        /**
+         * Output: ArrayList containing the following (in this order):
          * [Predicted Angle, Lower Bounds of model Domain, Upper Bounds of Model Domain (X-int),
          * Unprocessed predicted width at 0°, New predicted width at 0°]
          */

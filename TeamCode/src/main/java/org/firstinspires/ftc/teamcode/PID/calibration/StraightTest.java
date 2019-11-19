@@ -60,9 +60,9 @@ public class StraightTest extends LinearOpMode {
         followTraj.start();
 
         while(opModeIsActive()){
-            telemetry.addData("LeftForward", map.frontLeft.getCurrentPosition());
-            telemetry.addData("RightForward", map.backRight.getCurrentPosition());
-            telemetry.addData("Sideways", map.frontRight.getCurrentPosition());
+            telemetry.addData("LeftForward", map.leftIntake.getCurrentPosition());
+            telemetry.addData("RightForward", map.liftTwo.getCurrentPosition());
+            telemetry.addData("Sideways", map.rightIntake.getCurrentPosition());
             telemetry.update();
 
             /*telemetry.addData("LeftForward", HardwareMap.track.getEncoderTicks().get(0));

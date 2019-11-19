@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.PID;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.drive.Drive;
 import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 import com.qualcomm.hardware.motors.NeveRest20Gearmotor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
@@ -22,7 +23,7 @@ public class DriveConstantsPID {
     private static final MotorConfigurationType MOTOR_CONFIG =
             MotorConfigurationType.getMotorType(NeveRest20Gearmotor.class);
     //private static final double TICKS_PER_REV = MOTOR_CONFIG.getTicksPerRev();
-    private static final double TICKS_PER_REV = DriveConstant.ENCODER_COUNTS_PER_REVOLUTION;
+    private static final double TICKS_PER_REV = DriveConstant.WHEEL_ENCODER_COUNTS_PER_REVOLUTION;
 
     /*
      * These are physical constants that can be determined from your robot (including the track

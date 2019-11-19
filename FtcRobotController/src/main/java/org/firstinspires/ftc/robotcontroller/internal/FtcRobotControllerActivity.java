@@ -148,6 +148,7 @@ public class FtcRobotControllerActivity extends Activity
 
   protected UpdateUI.Callback callback;
   protected Context context;
+  private static Context saveContext;
   protected Utility utility;
   protected StartResult prefRemoterStartResult = new StartResult();
   protected StartResult deviceNameStartResult = new StartResult();
@@ -270,6 +271,8 @@ public class FtcRobotControllerActivity extends Activity
     if (enforcePermissionValidator()) {
       return;
     }
+
+    saveContext = getApplicationContext();
 
     RobotLog.onApplicationStart();  // robustify against onCreate() following onDestroy() but using the same app instance, which apparently does happen
     RobotLog.vv(TAG, "onCreate()");
@@ -555,6 +558,8 @@ public class FtcRobotControllerActivity extends Activity
     FtcDashboard.populateMenu(menu);
     return true;
   }
+
+  public static Context getContext(){ return saveContext; }
 
   private boolean isRobotRunning() {
     if (controllerService == null) {

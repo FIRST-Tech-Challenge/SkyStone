@@ -32,6 +32,8 @@ package org.firstinspires.ftc.teamcode.Tensorflow;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.vuforia.PIXEL_FORMAT;
+import com.vuforia.Vuforia;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -39,6 +41,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -58,6 +61,7 @@ public class CustomTFODWebcam extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "skystoneTFOD_v2_[105-15].tflite";
     private static final String LABEL_FIRST_ELEMENT = "skystone";
     private static final String LABEL_SECOND_ELEMENT = "stone";
+    private static double imgHeight = 1.0;
 
     private static final String VUFORIA_KEY =
             "ARjSEzX/////AAABmTyfc/uSOUjluYpQyDMk15tX0Mf3zESzZKo6V7Y0O/qtPvPQOVben+DaABjfl4m5YNOhGW1HuHywuYGMHpJ5/uXY6L8Mu93OdlOYwwVzeYBhHZx9le+rUMr7NtQO/zWEHajiZ6Jmx7K+A+UmRZMpCmr//dMQdlcuyHmPagFERkl4fdP0UKsRxANaHpwfQcY3npBkmgE8XsmK4zuFEmzfN2/FV0Cns/tiTfXtx1WaFD0YWYfkTHRyNwhmuBxY6MXNmaG8VlLwJcoanBFmor2PVBaRYZ9pnJ4TJU5w25h1lAFAFPbLTz1RT/UB3sHT5CeG0bMyM4mTYLi9SHPOUQjmIomxp9D7R39j8g5G7hiKr2JP";  //Variable Place--Remember to insert key here
@@ -78,7 +82,14 @@ public class CustomTFODWebcam extends LinearOpMode {
     public void runOpMode() {
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
-        initVuforia();
+        TFODCalc.init();
+        TFODCalc.setHardwareProperties(43.30, 3.67f);
+
+        try {
+            initVuforia();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
 
         if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
             initTfod();
@@ -109,12 +120,24 @@ public class CustomTFODWebcam extends LinearOpMode {
                       telemetry.addData("# Object Detected", updatedRecognitions.size());
                       // step through the list of recognitions and display boundary info.
                       int i = 0;
+                      int index = 0;
                       for (Recognition recognition : updatedRecognitions) {
-                        telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
-                        telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
+                          double objWidth = recognition.getWidth();
+                          double objHeight = recognition.getHeight();
+                          double distanceToObj = TFODCalc.getDistanceToObj(127, imgHeight, objHeight);
+                          ArrayList<Double> tfodData = TFODCalc.getAngleOfStone(index, objWidth, distanceToObj);
+
+                          telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
+                          telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
                                 recognition.getLeft(), recognition.getTop());
-                        telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
+                          telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
                                 recognition.getRight(), recognition.getBottom());
+
+                          telemetry.addData("Object Height", objHeight);
+                          telemetry.addData("Object Width", objWidth);
+                          telemetry.addData("Distance From Object", distanceToObj);
+                          telemetry.addData("Object Angle", tfodData.get(0));
+                          index += 1;
                       }
                       telemetry.update();
                     }
@@ -130,7 +153,7 @@ public class CustomTFODWebcam extends LinearOpMode {
     /**
      * Initialize the Vuforia localization engine.
      */
-    private void initVuforia() {
+    private void initVuforia() throws InterruptedException{
         /*
          * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
          */
@@ -143,6 +166,13 @@ public class CustomTFODWebcam extends LinearOpMode {
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
 
         // Loading trackables is not necessary for the TensorFlow Object Detection engine.
+
+        Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true); //enables RGB565 format for the image
+        vuforia.setFrameQueueCapacity(1); //tells VuforiaLocalizer to only store one frame at a time
+
+        VuforiaLocalizer.CloseableFrame frame = vuforia.getFrameQueue().take(); //takes the frame at the head of the queue
+
+        imgHeight = frame.getImage(0).getHeight();
     }
 
     /**

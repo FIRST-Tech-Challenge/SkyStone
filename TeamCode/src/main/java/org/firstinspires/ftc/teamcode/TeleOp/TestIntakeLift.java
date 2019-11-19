@@ -99,6 +99,16 @@ public class TestIntakeLift extends LinearOpMode {
                 hwMap.backLeft.setPower(0);
             }
 
+            if(gamepad1.right_stick_y == 0 && gamepad1.right_stick_x == 0){
+                hwMap.frontRight.setPower(0);
+                hwMap.backRight.setPower(0);
+            }
+
+            if(gamepad1.left_stick_y == 0 && gamepad1.left_stick_x == 0){
+                hwMap.frontLeft.setPower(0);
+                hwMap.backLeft.setPower(0);
+            }
+
             if(gamepad1.right_stick_y == 1){
                 hwMap.frontRight.setPower(-teleopConstants.drivePower);
                 hwMap.backRight.setPower(-teleopConstants.drivePower);
@@ -147,6 +157,18 @@ public class TestIntakeLift extends LinearOpMode {
             } else if(gamepad1.right_bumper) {
                 hwMap.transferLock.setPosition(-teleopConstants.transferLockPos);
             }
+
+            telemetry.addData("LeftForwardOdometry", hwMap.leftIntake.getCurrentPosition());
+            telemetry.addData("RightForwardOdometry", hwMap.liftTwo.getCurrentPosition());
+            telemetry.addData("SidewaysOdometry", hwMap.rightIntake.getCurrentPosition());
+
+            telemetry.addData("FrontLeft", hwMap.frontLeft.getCurrentPosition());
+            telemetry.addData("BackLeft", hwMap.backLeft.getCurrentPosition());
+            telemetry.addData("FrontRight", hwMap.frontRight.getCurrentPosition());
+            telemetry.addData("BackRight", hwMap.backRight.getCurrentPosition());
+
+            telemetry.addData("LiftOne", hwMap.liftOne.getCurrentPosition());
+            telemetry.update();
         }
     }
 }

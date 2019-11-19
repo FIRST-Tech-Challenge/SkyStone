@@ -6,65 +6,66 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.DeviceManager;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.teamcode.robotlib.autonomous.AutonomousRobot;
 import org.firstinspires.ftc.teamcode.robotlib.robot.HeadingableMecanumHardwareMap;
-import org.firstinspires.ftc.teamcode.robotlib.robot.MecanumHardwareMap;
 
 
 @Autonomous(name="Auto Blue", group="chad")
 public class ParkUnderBridgeBlue extends LinearOpMode {
     //
-    DcMotor frontleft;
-    DcMotor frontright;
-    DcMotor backleft;
-    DcMotor backright;
-    AutonomousRobot robot;
+    private DcMotor frontleft;
+    private DcMotor frontright;
+    private DcMotor backleft;
+    private DcMotor backright;
     private static final String VUFORIA_KEY =
             " AaeQZBH/////AAABmdfQDXE5pE4MtzACI8Xt4hFWa0s+iOsMjEia6gHgjNTLJv9GfGVm1eO9HJg1uKBiuJ8O2+jzEP758aHiiC6XHCPrQcWGP8tu18nrXgUgHATBy74yPVv1lNWZq0eWcJjVDAnSpeQiFc4DhbC1F4rLgRpHzzjiIQTmUncitQg9G+l2/BKBQTkhPKEsh4gngyj8qGvyTePsw4DFDNKjf731kblzdzkAQx6cmz6fzrarqo8e4wQdHeD3USTIDDOFAlSdJe5qUmNsB0S7YILvfQE3AesKYd6CZMsyonme915GoicNvDRhsNkdc9pPSY50De/PwILZFgsygSO4jsqnbLzlLDyrPw0Q39Gc47NsVCqdVAaG" ;
     public HeadingableMecanumHardwareMap hardwareMap;
-    public HardwareMap hwMap;
-    //28 * 20 / (2ppi * 4.125)
-    Double width = 16.0; //inches
-    Integer cpr = 28; //counts per rotation
-    Integer gearratio = 2/1;
-    Double diameter = 4.125;
-    Double cpi = (cpr * gearratio)/(Math.PI * diameter); //counts per inch, 28cpr * gear ratio / (2 * pi * diameter (in inches, in the center))
-    Double bias = 0.8;//default 0.8
-    Double meccyBias = 0.9;//change to adjust only strafing movement
+    private HardwareMap hwMap;
+    private Integer cpr = 28; //counts per rotation
+    private Integer gearratio = 2 / 1;
+    private Double diameter = 4.125;
+    private Double cpi = (cpr * gearratio) / (Math.PI * diameter); //counts per inch, 28cpr * gear ratio / (2 * pi * diameter (in inches, in the center))
     //
-    Double conversion = cpi * bias;
-    Boolean exit = false;
+    private Double conversion;
     //
     //
-    BNO055IMU imu;
-    Orientation angles;
-    Acceleration gravity;
+    private BNO055IMU imu;
     private Object Alliance;
+
+    public ParkUnderBridgeBlue(DcMotor frontleft, DcMotor frontright, DcMotor backleft, DcMotor backright, HardwareMap hwMap, BNO055IMU imu, Object alliance) {
+        this.frontleft = frontleft;
+        this.frontright = frontright;
+        this.backleft = backleft;
+        this.backright = backright;
+        this.hwMap = hwMap;
+        this.imu = imu;
+        Alliance = alliance;
+        //default 0.8
+        Double bias = 0.8;
+        conversion = cpi * bias;
+    }
 
     //
     public void runOpMode(){
         //
         initGyro();
         //
-        robot = new AutonomousRobot(this.hwMap,VUFORIA_KEY,Alliance);
+        new AutonomousRobot.AutonomousRobot(this.hwMap, VUFORIA_KEY, Alliance);
         frontright.setDirection(DcMotorSimple.Direction.REVERSE);
         backright.setDirection(DcMotorSimple.Direction.REVERSE);
         //
         waitForStartify();
         //
-        moveToPosition(27.6, 0.2);
+        moveToPosition();
         //
-        strafeToPosition(31.4, 0.2);
+        strafeToPosition(31.4);
         //
-        strafeToPosition(-66.8, 0.2);
+        strafeToPosition(-66.8);
         //
     }
     //
@@ -72,9 +73,9 @@ public class ParkUnderBridgeBlue extends LinearOpMode {
     This function's purpose is simply to drive forward or backward.
     To drive backward, simply make the inches input negative.
      */
-    public void moveToPosition(double inches, double speed){
+    private void moveToPosition() {
         //
-        int move = (int)(Math.round(inches*conversion));
+        int move = (int) (Math.round(27.6 * conversion));
         //
         backleft.setTargetPosition(backleft.getCurrentPosition() + move);
         frontleft.setTargetPosition(frontleft.getCurrentPosition() + move);
@@ -86,25 +87,17 @@ public class ParkUnderBridgeBlue extends LinearOpMode {
         backleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         backright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         //
-        frontleft.setPower(speed);
-        backleft.setPower(speed);
-        frontright.setPower(speed);
-        backright.setPower(speed);
+        frontleft.setPower(0.2);
+        backleft.setPower(0.2);
+        frontright.setPower(0.2);
+        backright.setPower(0.2);
         //
         while (frontleft.isBusy() && frontright.isBusy() && backleft.isBusy() && backright.isBusy()){
-            if (exit){
-                frontright.setPower(0);
-                frontleft.setPower(0);
-                backright.setPower(0);
-                backleft.setPower(0);
-                return;
-            }
         }
         frontright.setPower(0);
         frontleft.setPower(0);
         backright.setPower(0);
         backleft.setPower(0);
-        return;
     }
     //
     /*
@@ -113,7 +106,7 @@ public class ParkUnderBridgeBlue extends LinearOpMode {
      */
     public void turnWithGyro(double degrees, double speedDirection){
         //<editor-fold desc="Initialize">
-        angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         double yaw = -angles.firstAngle;//make this negative
         telemetry.addData("Speed Direction", speedDirection);
         telemetry.addData("Yaw", yaw);
@@ -158,7 +151,7 @@ public class ParkUnderBridgeBlue extends LinearOpMode {
         if (Math.abs(firsta - firstb) < 11) {
             while (!(firsta < yaw && yaw < firstb) && opModeIsActive()) {//within range?
                 angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-                gravity = imu.getGravity();
+                imu.getGravity();
                 yaw = -angles.firstAngle;
                 telemetry.addData("Position", yaw);
                 telemetry.addData("first before", first);
@@ -169,7 +162,7 @@ public class ParkUnderBridgeBlue extends LinearOpMode {
             //
             while (!((firsta < yaw && yaw < 180) || (-180 < yaw && yaw < firstb)) && opModeIsActive()) {//within range?
                 angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-                gravity = imu.getGravity();
+                imu.getGravity();
                 yaw = -angles.firstAngle;
                 telemetry.addData("Position", yaw);
                 telemetry.addData("first before", first);
@@ -186,7 +179,7 @@ public class ParkUnderBridgeBlue extends LinearOpMode {
         if (Math.abs(seconda - secondb) < 11) {
             while (!(seconda < yaw && yaw < secondb) && opModeIsActive()) {//within range?
                 angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-                gravity = imu.getGravity();
+                imu.getGravity();
                 yaw = -angles.firstAngle;
                 telemetry.addData("Position", yaw);
                 telemetry.addData("second before", second);
@@ -195,7 +188,7 @@ public class ParkUnderBridgeBlue extends LinearOpMode {
             }
             while (!((seconda < yaw && yaw < 180) || (-180 < yaw && yaw < secondb)) && opModeIsActive()) {//within range?
                 angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-                gravity = imu.getGravity();
+                imu.getGravity();
                 yaw = -angles.firstAngle;
                 telemetry.addData("Position", yaw);
                 telemetry.addData("second before", second);
@@ -223,8 +216,10 @@ public class ParkUnderBridgeBlue extends LinearOpMode {
     This function uses the encoders to strafe left or right.
     Negative input for inches results in left strafing.
      */
-    public void strafeToPosition(double inches, double speed){
+    private void strafeToPosition(double inches) {
         //
+        //change to adjust only strafing movement
+        double meccyBias = 0.9;
         int move = (int)(Math.round(inches * cpi * meccyBias));
         //
         backleft.setTargetPosition(backleft.getCurrentPosition() - move);
@@ -237,24 +232,23 @@ public class ParkUnderBridgeBlue extends LinearOpMode {
         backleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         backright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         //
-        frontleft.setPower(speed);
-        backleft.setPower(speed);
-        frontright.setPower(speed);
-        backright.setPower(speed);
+        frontleft.setPower(0.2);
+        backleft.setPower(0.2);
+        frontright.setPower(0.2);
+        backright.setPower(0.2);
         //
         while (frontleft.isBusy() && frontright.isBusy() && backleft.isBusy() && backright.isBusy()){}
         frontright.setPower(0);
         frontleft.setPower(0);
         backright.setPower(0);
         backleft.setPower(0);
-        return;
     }
     //
     /*
     A tradition within the Thunder Pengwins code, we always start programs with waitForStartify,
     our way of adding personality to our programs.
      */
-    public void waitForStartify(){
+    private void waitForStartify() {
         waitForStart();
     }
     //
@@ -262,13 +256,14 @@ public class ParkUnderBridgeBlue extends LinearOpMode {
     These functions are used in the turnWithGyro function to ensure inputs
     are interpreted properly.
      */
-    public double devertify(double degrees){
+    private double devertify(double degrees) {
         if (degrees < 0){
             degrees = degrees + 360;
         }
         return degrees;
     }
-    public double convertify(double degrees){
+
+    private double convertify(double degrees) {
         if (degrees > 179){
             degrees = -(360 - degrees);
         } else if(degrees < -180){
@@ -283,7 +278,7 @@ public class ParkUnderBridgeBlue extends LinearOpMode {
     This function is called at the beginning of the program to activate
     the IMU Integrated Gyro.
      */
-    public void initGyro(){
+    private void initGyro() {
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
@@ -298,7 +293,7 @@ public class ParkUnderBridgeBlue extends LinearOpMode {
     This function is used in the turnWithGyro function to set the
     encoder mode and turn.
      */
-    public void turnWithEncoder(double input){
+    private void turnWithEncoder(double input) {
         frontleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

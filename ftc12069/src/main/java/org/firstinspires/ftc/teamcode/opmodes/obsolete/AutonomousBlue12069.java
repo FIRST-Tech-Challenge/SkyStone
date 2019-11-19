@@ -29,7 +29,6 @@
 
 package org.firstinspires.ftc.teamcode.opmodes.obsolete;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -54,12 +53,10 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 
 
-@Autonomous(name="Auto Blue", group="Autonomous")
+//@Autonomous(name="Auto Blue", group="Autonomous")
 //@Disabled
 
 public class AutonomousBlue12069 extends LinearOpMode {
-    // Declare OpMode members.
-    private ElapsedTime runtime = new ElapsedTime();
 
     private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
     private static final boolean PHONE_IS_PORTRAIT = false  ;
@@ -67,14 +64,8 @@ public class AutonomousBlue12069 extends LinearOpMode {
                 " AaeQZBH/////AAABmdfQDXE5pE4MtzACI8Xt4hFWa0s+iOsMjEia6gHgjNTLJv9GfGVm1eO9HJg1uKBiuJ8O2+jzEP758aHiiC6XHCPrQcWGP8tu18nrXgUgHATBy74yPVv1lNWZq0eWcJjVDAnSpeQiFc4DhbC1F4rLgRpHzzjiIQTmUncitQg9G+l2/BKBQTkhPKEsh4gngyj8qGvyTePsw4DFDNKjf731kblzdzkAQx6cmz6fzrarqo8e4wQdHeD3USTIDDOFAlSdJe5qUmNsB0S7YILvfQE3AesKYd6CZMsyonme915GoicNvDRhsNkdc9pPSY50De/PwILZFgsygSO4jsqnbLzlLDyrPw0Q39Gc47NsVCqdVAaG" ;
     private static final float mmPerInch        = 25.4f;
     private static final float mmTargetHeight   = (6) * mmPerInch;
-    private MecanumHardwareMap robotHardware;
-    private ElapsedTime elapsedTime;
     private MecanumDrivetrain robotDrivetrain;
     private double ticksPerUnit;
-
-    public void setTicksPerUnit(double ticksPerUnit) {
-        this.ticksPerUnit = ticksPerUnit * mmPerInch;
-    }
 
     // Constant for Stone Target
     private static final float stoneZ = 2.00f * mmPerInch;
@@ -92,11 +83,8 @@ public class AutonomousBlue12069 extends LinearOpMode {
 
     // Class Members
     private OpenGLMatrix lastLocation = null;
-    private VuforiaLocalizer vuforia = null;
     private boolean targetVisible = false;
     private float phoneXRotate    = 0;
-    private float phoneYRotate    = 0;
-    private float phoneZRotate    = 0;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -114,11 +102,11 @@ public class AutonomousBlue12069 extends LinearOpMode {
         parameters.cameraDirection   = CAMERA_CHOICE;
 
         //  Instantiate the Vuforia engine
-        vuforia = ClassFactory.getInstance().createVuforia(parameters);
+        VuforiaLocalizer vuforia = ClassFactory.getInstance().createVuforia(parameters);
 
         // Load the data sets for the trackable objects. These particular data
         // sets are stored in the 'assets' part of our application.
-        VuforiaTrackables targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
+        VuforiaTrackables targetsSkyStone = vuforia.loadTrackablesFromAsset("Skystone");
 
         VuforiaTrackable stoneTarget = targetsSkyStone.get(0);
         stoneTarget.setName("Stone Target");
@@ -148,12 +136,11 @@ public class AutonomousBlue12069 extends LinearOpMode {
         rear2.setName("Rear Perimeter 2");
 
         // For convenience, gather together all the trackable objects in one easily-iterable collection */
-        List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
-        allTrackables.addAll(targetsSkyStone);
-        robotHardware = new MecanumHardwareMap(this.hardwareMap);
-        elapsedTime = new ElapsedTime();
+        List<VuforiaTrackable> allTrackables = new ArrayList<>(targetsSkyStone);
+        MecanumHardwareMap robotHardware = new MecanumHardwareMap(this.hardwareMap);
+        new ElapsedTime();
         robotDrivetrain = new MecanumDrivetrain(robotHardware.motorList);
-        ticksPerUnit = robotDrivetrain.getTicksPerUnit()*Math.PI*robotHardware.wheelRadius;
+        ticksPerUnit = robotDrivetrain.getTicksPerUnit() * Math.PI * robotHardware.wheelRadius;
         telemetry.addData("Status", "Initialized");
         // Set the position of the Stone Target.  Since it's not fixed in position, assume it's at the field origin.
         // Rotated it to to face forward, and raised it to sit on the ground correctly.
@@ -226,6 +213,7 @@ public class AutonomousBlue12069 extends LinearOpMode {
         // The two examples below assume that the camera is facing forward out the front of the robot.
 
         // We need to rotate the camera around it's long axis to bring the correct camera forward.
+        float phoneYRotate;
         if (CAMERA_CHOICE == BACK) {
             phoneYRotate = -90;
         } else {
@@ -240,10 +228,9 @@ public class AutonomousBlue12069 extends LinearOpMode {
         final float CAMERA_VERTICAL_DISPLACEMENT = 6.625f * mmPerInch;   // eg: Camera is 6.625 Inches above ground
         final float CAMERA_LEFT_DISPLACEMENT     = 0;     // eg: Camera is ON the robot's center line
 
-        OpenGLMatrix robotFromCamera = OpenGLMatrix
-                .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
-        /**  Let all the trackable listeners know where the phone is.  */
+        float phoneZRotate = 0;
+        OpenGLMatrix robotFromCamera = Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate).multiplied(OpenGLMatrix
+                .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT));
         for (VuforiaTrackable trackable : allTrackables) {
             ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
         }

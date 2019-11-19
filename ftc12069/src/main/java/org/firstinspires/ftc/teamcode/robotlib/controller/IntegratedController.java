@@ -1,17 +1,16 @@
 package org.firstinspires.ftc.teamcode.robotlib.controller;
 
 import org.firstinspires.ftc.teamcode.robotlib.sensor.DerivativeSensor;
-import org.firstinspires.ftc.teamcode.robotlib.sensor.IntegratingGyroscopeSensor;
 import org.firstinspires.ftc.teamcode.robotlib.sensor.Sensor;
 
 public class IntegratedController implements Controller, Targetable
 {
-    public Sensor sensor;
-    public ControlAlgorithm algorithm;
+    private Sensor sensor;
+    private ControlAlgorithm algorithm;
 
     private double target;
 
-    public IntegratedController(Sensor sensor, ControlAlgorithm algorithm)
+    IntegratedController(Sensor sensor, ControlAlgorithm algorithm)
     {
         this.sensor = sensor;
         this.algorithm = algorithm;

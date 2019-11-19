@@ -9,31 +9,30 @@ import org.firstinspires.ftc.teamcode.robotlib.robot.MecanumHardwareMap;
 public class AutonomousBasicBuildZone extends LinearOpMode
 {
     private MecanumHardwareMap robotHardware;
-    private ElapsedTime elapsedTime;
 
     @Override
     public void runOpMode()  {
         robotHardware = new MecanumHardwareMap(this.hardwareMap);
-        elapsedTime = new ElapsedTime();
+        new ElapsedTime();
 
-        robotHardware.servoManager.reset();
+        robotHardware.getServoManager().reset();
 
         update();
 
         waitForStart();
 
         telemetry.addData("Status", "Moving Forward");
-        robotMove(0, 1, 0, 20);
-        robotHardware.servoManager.setPosition(0.0);
-        robotMove(45, 1, 0, 120);
+        robotMove(0, 20);
+        robotHardware.getServoManager().setPosition(0.0);
+        robotMove(45, 120);
     }
 
     // Handles the drivetrain functions to set the 4 essential variables for movement
-    private void robotMove(double course, double velocity, double rotation, double distance)
+    private void robotMove(double course, double distance)
     {
         robotHardware.drivetrain.setCourse(course * Math.PI/180); //converts a degree input into radians
-        robotHardware.drivetrain.setVelocity(velocity); //quarters the velocity since a high velocity causes massive drift following a move command
-        robotHardware.drivetrain.setRotation(rotation);
+        robotHardware.drivetrain.setVelocity((double) 1); //quarters the velocity since a high velocity causes massive drift following a move command
+        robotHardware.drivetrain.setRotation((double) 0);
         robotHardware.drivetrain.setTargetPosition(distance * robotHardware.motorTicksPerInch); // adjust a distance in inches to the appropriate amount of motor ticks
         update();
         sleep(1000);

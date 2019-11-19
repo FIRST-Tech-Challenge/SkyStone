@@ -59,26 +59,16 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
 
 public class Vuforiadebug extends LinearOpMode {
 
-        // Declare OpMode members.
-        private ElapsedTime runtime = new ElapsedTime();
-
-        private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
+    private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
         private static final boolean PHONE_IS_PORTRAIT = false  ;
         private static final String VUFORIA_KEY =
                 " AaeQZBH/////AAABmdfQDXE5pE4MtzACI8Xt4hFWa0s+iOsMjEia6gHgjNTLJv9GfGVm1eO9HJg1uKBiuJ8O2+jzEP758aHiiC6XHCPrQcWGP8tu18nrXgUgHATBy74yPVv1lNWZq0eWcJjVDAnSpeQiFc4DhbC1F4rLgRpHzzjiIQTmUncitQg9G+l2/BKBQTkhPKEsh4gngyj8qGvyTePsw4DFDNKjf731kblzdzkAQx6cmz6fzrarqo8e4wQdHeD3USTIDDOFAlSdJe5qUmNsB0S7YILvfQE3AesKYd6CZMsyonme915GoicNvDRhsNkdc9pPSY50De/PwILZFgsygSO4jsqnbLzlLDyrPw0Q39Gc47NsVCqdVAaG" ;
         private static final float mmPerInch        = 25.4f;
         private static final float mmTargetHeight   = (6) * mmPerInch;
-        private MecanumHardwareMap robotHardware;
-        private ElapsedTime elapsedTime;
-        private MecanumDrivetrain robotDrivetrain;
-        private double ticksPerUnit;
-
-    public void setTicksPerUnit(double ticksPerUnit) {
-        this.ticksPerUnit = ticksPerUnit * mmPerInch;
-    }
-
-    // Constant for Stone Target
+    /* Constant for Stone Target */
         private static final float stoneZ = 2.00f * mmPerInch;
+    private double ticksPerUnit;
+    private MecanumDrivetrain robotDrivetrain;
 
         // Constants for the center support targets
         private static final float bridgeZ = 6.42f * mmPerInch;
@@ -93,14 +83,10 @@ public class Vuforiadebug extends LinearOpMode {
 
         // Class Members
         private OpenGLMatrix lastLocation = null;
-        private VuforiaLocalizer vuforia = null;
-        private boolean targetVisible = false;
-        private float phoneXRotate    = 0;
-        private float phoneYRotate    = 0;
-        private float phoneZRotate    = 0;
+    private float phoneXRotate = 0;
 
-        @Override
-        public void runOpMode() throws InterruptedException {
+    @Override
+    public void runOpMode() {
             telemetry.addData("Status", "Initialized");
             /* Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
              * We can pass Vuforia the handle to a camera preview resource (on the RC phone);
@@ -115,11 +101,11 @@ public class Vuforiadebug extends LinearOpMode {
             parameters.cameraDirection   = CAMERA_CHOICE;
 
             //  Instantiate the Vuforia engine
-            vuforia = ClassFactory.getInstance().createVuforia(parameters);
+        VuforiaLocalizer vuforia = ClassFactory.getInstance().createVuforia(parameters);
 
             // Load the data sets for the trackable objects. These particular data
             // sets are stored in the 'assets' part of our application.
-            VuforiaTrackables targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
+        VuforiaTrackables targetsSkyStone = vuforia.loadTrackablesFromAsset("Skystone");
 
             VuforiaTrackable stoneTarget = targetsSkyStone.get(0);
             stoneTarget.setName("Stone Target");
@@ -149,14 +135,12 @@ public class Vuforiadebug extends LinearOpMode {
             rear2.setName("Rear Perimeter 2");
 
             // For convenience, gather together all the trackable objects in one easily-iterable collection */
-            List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
-            allTrackables.addAll(targetsSkyStone);
-            robotHardware = new MecanumHardwareMap(this.hardwareMap);
-            elapsedTime = new ElapsedTime();
-            robotHardware = new MecanumHardwareMap(this.hardwareMap);
-            robotDrivetrain = new MecanumDrivetrain(robotHardware.motorList);
-            elapsedTime = new ElapsedTime();
-            ticksPerUnit = robotDrivetrain.getTicksPerUnit()*Math.PI*robotHardware.wheelRadius;
+        List<VuforiaTrackable> allTrackables = new ArrayList<>(targetsSkyStone);
+        new ElapsedTime();
+        MecanumHardwareMap robotHardware = new MecanumHardwareMap(this.hardwareMap);
+        robotDrivetrain = new MecanumDrivetrain(robotHardware.motorList);
+        new ElapsedTime();
+        ticksPerUnit = robotDrivetrain.getTicksPerUnit() * Math.PI * robotHardware.wheelRadius;
             telemetry.addData("Status", "Initialized");
             // Set the position of the Stone Target.  Since it's not fixed in position, assume it's at the field origin.
             // Rotated it to to face forward, and raised it to sit on the ground correctly.
@@ -229,6 +213,7 @@ public class Vuforiadebug extends LinearOpMode {
             // The two examples below assume that the camera is facing forward out the front of the robot.
 
             // We need to rotate the camera around it's long axis to bring the correct camera forward.
+        float phoneYRotate;
             if (CAMERA_CHOICE == BACK) {
                 phoneYRotate = -90;
             } else {
@@ -243,11 +228,11 @@ public class Vuforiadebug extends LinearOpMode {
             final float CAMERA_VERTICAL_DISPLACEMENT = 6.625f * mmPerInch;   // eg: Camera is 6.625 Inches above ground
             final float CAMERA_LEFT_DISPLACEMENT     = 0;     // eg: Camera is ON the robot's center line
 
-            OpenGLMatrix robotFromCamera = OpenGLMatrix
+        float phoneZRotate = 0;
+        OpenGLMatrix robotFromCamera = OpenGLMatrix
                     .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
                     .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
-            /**  Let all the trackable listeners know where the phone is.  */
-            for (VuforiaTrackable trackable : allTrackables) {
+        for (VuforiaTrackable trackable : allTrackables) {
                 ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
             }
 
@@ -268,7 +253,7 @@ public class Vuforiadebug extends LinearOpMode {
             while (!isStopRequested()) {
                 // Provide feedback as to where the robot is located (if we know).//
                 // check all the trackable targets to see which one (if any) is visible.
-                targetVisible = false;
+                boolean targetVisible = false;
                 for (VuforiaTrackable trackable : allTrackables) {
                     if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
                         telemetry.addData("Visible Target", trackable.getName());
@@ -305,13 +290,5 @@ public class Vuforiadebug extends LinearOpMode {
             targetsSkyStone.deactivate();
         }
 
-        private void robotMove(double course, double velocity, double rotation, double distance)
-        {
-        robotDrivetrain.setRotation(rotation);
-        robotDrivetrain.setCourse(course);
-        robotDrivetrain.setVelocity(velocity);
-        robotDrivetrain.setTargetPosition(distance * ticksPerUnit);
-        robotDrivetrain.position();
-        }
-    }
+}
 

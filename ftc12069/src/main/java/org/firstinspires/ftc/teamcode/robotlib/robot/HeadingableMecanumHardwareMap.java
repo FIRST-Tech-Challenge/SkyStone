@@ -1,19 +1,17 @@
 package org.firstinspires.ftc.teamcode.robotlib.robot;
 
-import android.hardware.Sensor;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.BNO055IMUImpl;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.IntegratingGyroscope;
 
 import org.firstinspires.ftc.teamcode.robotlib.controller.ControlAlgorithm;
 import org.firstinspires.ftc.teamcode.robotlib.controller.ErrorTimeThresholdFinishingAlgorithim;
 import org.firstinspires.ftc.teamcode.robotlib.controller.FinishableIntegratedController;
 import org.firstinspires.ftc.teamcode.robotlib.controller.PIDController;
 import org.firstinspires.ftc.teamcode.robotlib.drivetrain.HeadingableMecanumDrivetrain;
-import org.firstinspires.ftc.teamcode.robotlib.sensor.IntegratingGyroscopeSensor;
+
 
 public class HeadingableMecanumHardwareMap extends MecanumHardwareMap
 {

@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.robotlib.controller;
 
-import org.firstinspires.ftc.teamcode.robotlib.sensor.IntegratingGyroscopeSensor;
+
 import org.firstinspires.ftc.teamcode.robotlib.sensor.Sensor;
 
 public class FinishableIntegratedController extends IntegratedController

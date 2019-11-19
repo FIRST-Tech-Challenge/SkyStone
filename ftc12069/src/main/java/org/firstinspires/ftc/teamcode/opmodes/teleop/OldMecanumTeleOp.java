@@ -21,7 +21,7 @@ public class OldMecanumTeleOp extends OpMode
         robotHardware = new MecanumHardwareMap(this.hardwareMap);
         elapsedTime = new ElapsedTime();
 
-        robotHardware.servoManager.setPosition(1.0);
+        robotHardware.getServoManager().setPosition(1.0);
         //robotHardware.servoManager.reset();
     }
 
@@ -61,9 +61,9 @@ public class OldMecanumTeleOp extends OpMode
         //if (resetServo) {
             //robotHardware.servoManager.setPosition(1.0);
         if (servoUp) {
-            robotHardware.servoManager.setPosition(1.0); //0.7
+            robotHardware.getServoManager().setPosition(1.0); //0.7
         } else {
-            robotHardware.servoManager.setPosition(0.5);
+            robotHardware.getServoManager().setPosition(0.5);
         }
 
         if (gamepad1.a) rightMotion = false;

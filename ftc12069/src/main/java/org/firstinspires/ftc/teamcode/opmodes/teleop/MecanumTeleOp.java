@@ -20,7 +20,7 @@ public class MecanumTeleOp extends OpMode
         robotHardware = new MecanumHardwareMap(this.hardwareMap);
         elapsedTime = new ElapsedTime();
 
-        robotHardware.servoManager.reset();
+        robotHardware.getServoManager().reset();
     }
 
     @Override
@@ -56,13 +56,13 @@ public class MecanumTeleOp extends OpMode
         robotHardware.drivetrain.setVelocity(velocity);
         robotHardware.drivetrain.setRotation(rotation);
 
-        ServoState servoState = robotHardware.servoManager.getServoState();
-        robotHardware.servoManager.updateServos();
+        ServoState servoState = robotHardware.getServoManager().getServoState();
+        robotHardware.getServoManager().updateServos();
 
         if (gamepad1.a) rightMotion = false;
         if (gamepad1.b) rightMotion = true;
 
-        robotHardware.servoManager.handleUpdate(gamepad1);
+        robotHardware.getServoManager().handleUpdate(gamepad1);
 
         telemetry.addData("Status", "Loop: " + elapsedTime.toString());
         telemetry.addData("Course", course);

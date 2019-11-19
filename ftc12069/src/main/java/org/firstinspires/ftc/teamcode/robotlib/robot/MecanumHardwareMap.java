@@ -29,7 +29,7 @@ public class MecanumHardwareMap
     public BNO055IMU imu;
 
     public MecanumDrivetrain drivetrain;
-    public ServoManager servoManager;
+    private ServoManager servoManager;
 
     public final double wheelRadius = 4; //inches
     private static final double wheelToMotorRatio = 1.0/1.0;
@@ -84,11 +84,17 @@ public class MecanumHardwareMap
         imu.initialize(imuParamters);
 
         drivetrain = new MecanumDrivetrain(motorList);
-        servoManager = new ServoManager(new Servo[]{servoClaw});
+        setServoManager(new ServoManager(new Servo[]{servoClaw}));
         motorTicksPerInch = drivetrain.getTicksPerInch(wheelRadius, wheelToMotorRatio);
 
     }
 
 
+    public ServoManager getServoManager() {
+        return servoManager;
+    }
 
+    public void setServoManager(ServoManager servoManager) {
+        this.servoManager = servoManager;
+    }
 }

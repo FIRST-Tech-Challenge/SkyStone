@@ -155,7 +155,7 @@ public class Dash_Unfold_AutonomousAW2 extends LinearOpMode {
         rear_left.setPower(.8);
         rear_right.setPower(.8);
 
-        sleep(500);
+        sleep(300);
 
         front_left.setPower(0);
         front_right.setPower(0);
@@ -174,13 +174,17 @@ public class Dash_Unfold_AutonomousAW2 extends LinearOpMode {
 
         Clamp_Left.setPosition(0.73f);
         Clamp_Right.setPosition(0.27f);
-        sleep(1000);
+        sleep(250);
 
         lift_left.setPower(-1);
         lift_right.setPower(-1);
         sleep(500);
 
+        lift_left.setPower(0);
+        lift_right.setPower(0);
+        sleep(200);
 
+        Release_Servo.setPosition(.8);
 
 
     }

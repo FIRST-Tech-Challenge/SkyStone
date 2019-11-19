@@ -42,7 +42,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * forwards/backwards and turning left and right, and the right stick controls strafing. (working on diff. control setup currently)
  */
 
-@Autonomous(name = "Dash_Unfold_AutonomousAW1", group = "Linear Opmode")
+@Autonomous(name = "Dash_Unfold_AutonomousAW3", group = "Linear Opmode")
 public class Dash_Unfold_AutonomousAW3 extends LinearOpMode {
 
     // Declare OpMode members.
@@ -146,9 +146,8 @@ public class Dash_Unfold_AutonomousAW3 extends LinearOpMode {
         top_motor.setDirection(DcMotor.Direction.FORWARD);
 
 
-        // Wait for the game to start (driver presses PLAY)
-        waitForStart();
-        runtime.reset();
+        // Wait for the game to start (driver presses PLAY waitForStart();
+        /*runtime.reset();
 
         front_left.setPower(.8);
         front_right.setPower(.8);
@@ -174,14 +173,31 @@ public class Dash_Unfold_AutonomousAW3 extends LinearOpMode {
 
         Clamp_Left.setPosition(0.73f);
         Clamp_Right.setPosition(0.27f);
-        sleep(1000);
+        sleep(250);
 
         lift_left.setPower(-1);
         lift_right.setPower(-1);
         sleep(500);
 
+        lift_left.setPower(0);
+        lift_right.setPower(0);
+        sleep(200);
 
+        Release_Servo.setPosition(.8);
 
+        */
+
+        front_left.setPower(-.8);
+        front_right.setPower(.8);
+        rear_left.setPower(-.8);
+        rear_right.setPower(.8);
+
+        sleep (300);
+
+        front_left.setPower(0);
+        front_right.setPower(0);
+        rear_left.setPower(0);
+        rear_right.setPower(0);
 
     }
 }

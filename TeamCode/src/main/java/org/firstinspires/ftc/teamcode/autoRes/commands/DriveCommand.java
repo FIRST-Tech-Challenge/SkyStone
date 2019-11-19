@@ -34,7 +34,7 @@ public class DriveCommand implements ICommand {
         hasRun= true;
     }
 
-    public boolean check() {
+    public boolean isDone() {
         return chassis.motorErrorCheck(error);
     }
 

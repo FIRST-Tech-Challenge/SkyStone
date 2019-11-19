@@ -20,52 +20,52 @@ import java.util.EnumMap;
 public abstract class BaseOpMode extends OpMode {
 
     protected DriveSystem driveSystem;
-    protected LatchSystem latchSystem;
-    protected IntakeSystem intakeSystem;
-    protected Vuforia vuforia;
-    protected VuforiaTrackable skystone;
-    protected VuforiaTrackable rearPerimeter;
-    private boolean stopRequested;
+//    protected LatchSystem latchSystem;
+//    protected IntakeSystem intakeSystem;
+//    protected Vuforia vuforia;
+//    protected VuforiaTrackable skystone;
+//    protected VuforiaTrackable rearPerimeter;
+//    private boolean stopRequested;
 
     public void init(){
-        stopRequested = false;
-        this.msStuckDetectInit = 20000;
-        this.msStuckDetectInitLoop = 20000;
+//        stopRequested = false;
+//        this.msStuckDetectInit = 20000;
+//        this.msStuckDetectInitLoop = 20000;
         EnumMap<DriveSystem.MotorNames, DcMotor> driveMap = new EnumMap<>(DriveSystem.MotorNames.class);
         for(DriveSystem.MotorNames name : DriveSystem.MotorNames.values()){
             driveMap.put(name,hardwareMap.get(DcMotor.class, name.toString()));
         }
         driveSystem = new DriveSystem(driveMap, hardwareMap.get(BNO055IMU.class, "imu"));
 
-        latchSystem = new LatchSystem(hardwareMap.get(Servo.class, "latch"));
-
-        EnumMap<IntakeSystem.MotorNames, DcMotor> intakeMap = new EnumMap<>(IntakeSystem.MotorNames.class);
-        for(IntakeSystem.MotorNames name : IntakeSystem.MotorNames.values()){
-            intakeMap.put(name,hardwareMap.get(DcMotor.class, name.toString()));
-        }
-        intakeSystem = new IntakeSystem(intakeMap);
-
-        DistanceSensor distanceSensor2;
-        DistanceSensor distanceSensor3;
-        ColorSensor colorSensor;
-
-    }
-
-    protected void setCamera(CameraChoice cameraChoice){
-
-        vuforia = new Vuforia(hardwareMap, cameraChoice);
-        skystone = vuforia.targetsSkyStone.get(0);
-
+//        latchSystem = new LatchSystem(hardwareMap.get(Servo.class, "latch"));
+//
+//        EnumMap<IntakeSystem.MotorNames, DcMotor> intakeMap = new EnumMap<>(IntakeSystem.MotorNames.class);
+//        for(IntakeSystem.MotorNames name : IntakeSystem.MotorNames.values()){
+//            intakeMap.put(name,hardwareMap.get(DcMotor.class, name.toString()));
+//        }
+//        intakeSystem = new IntakeSystem(intakeMap);
+//
+//        DistanceSensor distanceSensor2;
+//        DistanceSensor distanceSensor3;
+//        ColorSensor colorSensor;
 
     }
 
-    public final boolean isStopRequested() {
-        return this.stopRequested || Thread.currentThread().isInterrupted();
-    }
-
-    @Override
-    public void stop() {
-        stopRequested = true;
-        super.stop();
-    }
+//    protected void setCamera(CameraChoice cameraChoice){
+//
+//        vuforia = new Vuforia(hardwareMap, cameraChoice);
+//        skystone = vuforia.targetsSkyStone.get(0);
+//
+//
+//    }
+//
+//    public final boolean isStopRequested() {
+//        return this.stopRequested || Thread.currentThread().isInterrupted();
+//    }
+//
+//    @Override
+//    public void stop() {
+//        stopRequested = true;
+//        super.stop();
+//    }
 }

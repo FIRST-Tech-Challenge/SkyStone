@@ -29,7 +29,7 @@ We've been using this to detect beacons and its worked great so far. If you have
 
 @Autonomous(name = MaccaAuto)
 
-public class MaccaAuto extends  {
+public class MaccaAuto extends AutoPID {
     DcMotorEx front_left, front_right, back_left, back_right;
 
     @Override

@@ -111,10 +111,6 @@
          lift_left.setDirection(DcMotor.Direction.FORWARD);
          lift_right.setDirection(DcMotor.Direction.FORWARD);
 
-         boolean startingPosition = true;
-
-         boolean lift_is_down = false;
-
          // Wait for the game to start (driver presses PLAY)
          waitForStart();
          runtime.reset();
@@ -150,7 +146,6 @@
          if (lift_left.getCurrentPosition() > 200) {
 
              Release_Servo.setPosition(.5);
-             startingPosition = false;
 
          }
          liftStop();

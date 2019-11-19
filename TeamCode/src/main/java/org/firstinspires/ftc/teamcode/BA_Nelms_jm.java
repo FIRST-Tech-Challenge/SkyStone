@@ -29,14 +29,14 @@
 
 package org.firstinspires.ftc.teamcode;
 
-        import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-        import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-        import com.qualcomm.robotcore.hardware.DcMotor;
-        import com.qualcomm.robotcore.hardware.DcMotorSimple;
-        import com.qualcomm.robotcore.hardware.DigitalChannel;
-        import com.qualcomm.robotcore.hardware.Servo;
-        import com.qualcomm.robotcore.util.ElapsedTime;
-        import com.qualcomm.robotcore.util.Range;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 
 /**
@@ -79,9 +79,6 @@ public class BA_Nelms_jm extends LinearOpMode {
     private float rear_left_modifier = 0;
     private float front_right_modifier = 0;
     private float rear_right_modifier = 0;
-
-
-
 
 
     float feederServoPosition = 0;
@@ -151,7 +148,6 @@ public class BA_Nelms_jm extends LinearOpMode {
         top_motor.setDirection(DcMotor.Direction.FORWARD);
 
 
-
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
@@ -191,19 +187,25 @@ public class BA_Nelms_jm extends LinearOpMode {
     public void UpdateClamps() {
         //Clamps
         if (gamepad1.left_bumper) {
-            telemetry.addData("Clamps", "Clamp Down");
-            Clamp_Left.setPosition(0.73f);
-            Clamp_Right.setPosition(0.27f);
+            telemetry.addData("Clamps", "Clamp Half");
+            Clamp_Left.setPosition(0.5f);
+            Clamp_Right.setPosition(0.5f);
 
         } else if (gamepad1.left_trigger > 0) {
             telemetry.addData("Clamps", "Clamp Up");
-            Clamp_Left.setPosition(0.6f);
-            Clamp_Right.setPosition(0.5f);
+            Clamp_Left.setPosition(0f);
+            Clamp_Right.setPosition(1f);
+
+        } else if (gamepad1.left_stick_button) {
+            telemetry.addData("Clamps", "Clamp Down");
+            Clamp_Left.setPosition(0.1f);
+            Clamp_Right.setPosition(0.0f);
 
         } else {
             telemetry.addData("Clamps", "Not Moving");
         }
     }
+
 
     public void UpdateFeeder() {
         //Feeder in
@@ -313,10 +315,10 @@ public class BA_Nelms_jm extends LinearOpMode {
 
     public void UpdateDriveTrain() {
 
-        telemetry.addData("front_left Encoder Position",front_left.getCurrentPosition());
-        telemetry.addData("rear_right Encoder Position",rear_left.getCurrentPosition());
-        telemetry.addData("front_left Encoder Position",front_right.getCurrentPosition());
-        telemetry.addData("rear_right Encoder Position",rear_right.getCurrentPosition());
+        telemetry.addData("front_left Encoder Position", front_left.getCurrentPosition());
+        telemetry.addData("rear_right Encoder Position", rear_left.getCurrentPosition());
+        telemetry.addData("front_left Encoder Position", front_right.getCurrentPosition());
+        telemetry.addData("rear_right Encoder Position", rear_right.getCurrentPosition());
 
         double leftPower;
         double rightPower;
@@ -458,6 +460,8 @@ public class BA_Nelms_jm extends LinearOpMode {
         }
     }
 }
+
+
 
 
 

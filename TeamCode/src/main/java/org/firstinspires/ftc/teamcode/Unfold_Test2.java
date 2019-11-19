@@ -111,8 +111,6 @@
          lift_left.setDirection(DcMotor.Direction.FORWARD);
          lift_right.setDirection(DcMotor.Direction.FORWARD);
 
-         boolean startingPosition = true;
-
          // Wait for the game to start (driver presses PLAY)
          waitForStart();
          runtime.reset();
@@ -132,35 +130,26 @@
          //This code get the robot out of starting position
 
 
-         if (startingPosition == true) {
+         goForward();
+         while (opModeIsActive() && lift_left.getCurrentPosition() > -100) {
 
-             goForward();
-             while (opModeIsActive() && startingPosition) {
+             liftDown();
 
-                 liftDown();
-
-                 if (lift_left.getCurrentPosition() < -100) {
-
-                     Clamp_Right.setPosition(.37f);
-                     Clamp_Left.setPosition(.63f);
-                     liftUp();
-
-                     if (lift_left.getCurrentPosition() > 100) {
-
-                         Release_Servo.setPosition(.5);
-                         startingPosition = false;
-
-                     }
-                 }
-             }
 
          }
+         liftStop();
+         Clamp_Right.setPosition(.37f);
+         Clamp_Left.setPosition(.63f);
+         sleep(300);
+         liftUp();
 
-         if (startingPosition == false) {
+         if (lift_left.getCurrentPosition() > 200) {
 
-             //Start your auto code here
+             Release_Servo.setPosition(.5);
 
          }
+         liftStop();
+
 
          telemetry.addData("Status", "Run Time: " + runtime.toString());
          telemetry.update();
@@ -185,46 +174,25 @@
      }
 
      public void liftDown() {
-
-         if (lift_left.getCurrentPosition() < -100) {
-
-             lift_left.setPower(0);
-             lift_right.setPower(0);
-             telemetry.addData("Encoder liftDown() test", lift_left.getCurrentPosition());
-             telemetry.update();
-
-         } else {
-
-             lift_left.setPower(-1);
-             lift_right.setPower(-1);
-             telemetry.addData("Encoder liftDown() test", lift_left.getCurrentPosition());
-             telemetry.update();
-
-
-         }
-
+         lift_left.setPower(-1);
+         lift_right.setPower(-1);
+         telemetry.addData("Encoder liftDown() test", lift_left.getCurrentPosition());
+         telemetry.update();
      }
 
      public void liftUp() {
 
-         if (lift_left.getCurrentPosition() > 100) {
-
-             lift_left.setPower(0);
-             lift_right.setPower(0);
-             telemetry.addData("Encoder liftDown() test", lift_left.getCurrentPosition());
-             telemetry.update();
-
-         } else {
-
-             lift_left.setPower(1);
-             lift_right.setPower(1);
-             telemetry.addData("Encoder liftDown() test", lift_left.getCurrentPosition());
-             telemetry.update();
-
-
-         }
-
-
+         lift_left.setPower(1);
+         lift_right.setPower(1);
+         telemetry.addData("Encoder liftDown() test", lift_left.getCurrentPosition());
+         telemetry.update();
      }
 
+     public void liftStop() {
+
+         lift_left.setPower(0);
+         lift_right.setPower(0);
+         telemetry.addData("Encoder liftDown() test", lift_left.getCurrentPosition());
+         telemetry.update();
+     }
  }

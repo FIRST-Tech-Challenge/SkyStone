@@ -35,10 +35,10 @@ public class Robot {
         setLevel(controller);
         arm.run(level);
         chassis.run(targetAngle, turn, power);
-        if(controller.getB()){
+        if (controller.getB()) {
             intake.setMainToHighPosition();
         }
-        if(controller.getA()){
+        if (controller.getA()) {
             intake.setMainToLowPosition();
         }
         //hook.run();
@@ -64,11 +64,17 @@ public class Robot {
 
     public void setLevel(Controller controller) {
         if (controller.getRightBumper()) {
-            level = Math.max(level+1, 7);
+            level++;
+            if (level == arm.levelAngles.length) {
+                level = arm.levelAngles.length-1;
+            }
             while (controller.getRightBumper()) ;
         }
         if (controller.getLeftBumper()) {
-            level = Math.min(level-1, 0);
+            level--;
+            if (level < 0) {
+                level = 0;
+            }
             while (controller.getLeftBumper()) ;
         }
     }

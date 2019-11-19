@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DeviceManager;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -13,7 +15,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.robotlib.autonomous.AutonomousRobot;
+import org.firstinspires.ftc.teamcode.robotlib.robot.HeadingableMecanumHardwareMap;
 import org.firstinspires.ftc.teamcode.robotlib.robot.MecanumHardwareMap;
+
 
 @Autonomous(name="Auto Blue", group="chad")
 public class ParkUnderBridgeBlue extends LinearOpMode {
@@ -22,10 +26,11 @@ public class ParkUnderBridgeBlue extends LinearOpMode {
     DcMotor frontright;
     DcMotor backleft;
     DcMotor backright;
-    private AutonomousRobot robot;
+    AutonomousRobot robot;
     private static final String VUFORIA_KEY =
             " AaeQZBH/////AAABmdfQDXE5pE4MtzACI8Xt4hFWa0s+iOsMjEia6gHgjNTLJv9GfGVm1eO9HJg1uKBiuJ8O2+jzEP758aHiiC6XHCPrQcWGP8tu18nrXgUgHATBy74yPVv1lNWZq0eWcJjVDAnSpeQiFc4DhbC1F4rLgRpHzzjiIQTmUncitQg9G+l2/BKBQTkhPKEsh4gngyj8qGvyTePsw4DFDNKjf731kblzdzkAQx6cmz6fzrarqo8e4wQdHeD3USTIDDOFAlSdJe5qUmNsB0S7YILvfQE3AesKYd6CZMsyonme915GoicNvDRhsNkdc9pPSY50De/PwILZFgsygSO4jsqnbLzlLDyrPw0Q39Gc47NsVCqdVAaG" ;
-    public MecanumHardwareMap hardwareMap;
+    public HeadingableMecanumHardwareMap hardwareMap;
+    public HardwareMap hwMap;
     //28 * 20 / (2ppi * 4.125)
     Double width = 16.0; //inches
     Integer cpr = 28; //counts per rotation
@@ -38,6 +43,7 @@ public class ParkUnderBridgeBlue extends LinearOpMode {
     Double conversion = cpi * bias;
     Boolean exit = false;
     //
+    //
     BNO055IMU imu;
     Orientation angles;
     Acceleration gravity;
@@ -48,7 +54,7 @@ public class ParkUnderBridgeBlue extends LinearOpMode {
         //
         initGyro();
         //
-        robot = new AutonomousRobot(hardwareMap,VUFORIA_KEY,Alliance);
+        robot = new AutonomousRobot(this.hwMap,VUFORIA_KEY,Alliance);
         frontright.setDirection(DcMotorSimple.Direction.REVERSE);
         backright.setDirection(DcMotorSimple.Direction.REVERSE);
         //
@@ -285,8 +291,6 @@ public class ParkUnderBridgeBlue extends LinearOpMode {
         parameters.loggingEnabled      = true;
         parameters.loggingTag          = "IMU";
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-        //
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
     }
     //

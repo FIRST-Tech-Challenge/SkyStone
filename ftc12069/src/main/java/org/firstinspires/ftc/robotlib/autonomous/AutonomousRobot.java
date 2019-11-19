@@ -259,6 +259,9 @@ public class AutonomousRobot {
         }
     }
 
+    /**
+     * Checks if the robot knows a location (might not be updated)
+     */
     public boolean isLocationKnown() {
         return lastRobotLocation != null;
     }

@@ -56,6 +56,9 @@ public class MecanumAutonomous {
         this.alliance = alliance;
     }
 
+    /**
+     * Ran before the game starts
+     */
     void init() {
         // Initialize robot
         telemetry.addData("Status", "Initialized");
@@ -63,6 +66,9 @@ public class MecanumAutonomous {
         robot.init();
     }
 
+    /**
+     * Ran after the game starts and before the game loop begins
+     */
     void start() {
         elapsedTime.reset();
 
@@ -70,11 +76,18 @@ public class MecanumAutonomous {
         robot.trackables.activate();
     }
 
+    /**
+     * Ran once the game has ended
+     */
     void end() {
         // Disable Tracking when we are done
         robot.trackables.deactivate();
     }
 
+    /**
+     * Game Loop Method (runs until stop is requested)
+     * @return true - keep looping | false - stop looping
+     */
     boolean loop() {
         /*if (elapsedTime.seconds() > 25) {
             robot.parkUnderBridge();

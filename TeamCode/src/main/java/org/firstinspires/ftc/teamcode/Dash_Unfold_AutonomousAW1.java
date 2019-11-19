@@ -147,7 +147,7 @@ public class Dash_Unfold_AutonomousAW1 extends LinearOpMode {
 
         Clamp_Left.setPosition(0);
         Clamp_Right.setPosition(.8);
-        Release_Servo.setPosition(.3);
+        Release_Servo.setPosition(0);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -188,8 +188,6 @@ public class Dash_Unfold_AutonomousAW1 extends LinearOpMode {
         sleep(200);
 
         Release_Servo.setPosition(1);
-
-
 
     }
 }

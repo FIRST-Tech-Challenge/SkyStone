@@ -42,8 +42,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * forwards/backwards and turning left and right, and the right stick controls strafing. (working on diff. control setup currently)
  */
 
-@Autonomous(name = "Dash_Unfold_AutonomousAW2", group = "Linear Opmode")
-public class Dash_Unfold_AutonomousAW2 extends LinearOpMode {
+@Autonomous(name = "Dash_Unfold_AutonomousAW4", group = "Linear Opmode")
+public class Dash_Unfold_AutonomousAW4 extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -145,6 +145,9 @@ public class Dash_Unfold_AutonomousAW2 extends LinearOpMode {
         feeder_motor.setDirection(DcMotor.Direction.REVERSE);
         top_motor.setDirection(DcMotor.Direction.FORWARD);
 
+        Clamp_Left.setPosition(0);
+        Clamp_Right.setPosition(.8);
+        Release_Servo.setPosition(1);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -155,7 +158,7 @@ public class Dash_Unfold_AutonomousAW2 extends LinearOpMode {
         rear_left.setPower(.8);
         rear_right.setPower(.8);
 
-        sleep(300);
+        sleep(400);
 
         front_left.setPower(0);
         front_right.setPower(0);
@@ -166,7 +169,7 @@ public class Dash_Unfold_AutonomousAW2 extends LinearOpMode {
 
         lift_left.setPower(1);
         lift_right.setPower(1);
-        sleep(100);
+        sleep(200);
 
         lift_left.setPower(0);
         lift_right.setPower(0);
@@ -185,6 +188,7 @@ public class Dash_Unfold_AutonomousAW2 extends LinearOpMode {
         sleep(200);
 
         Release_Servo.setPosition(0);
+
 
 
     }

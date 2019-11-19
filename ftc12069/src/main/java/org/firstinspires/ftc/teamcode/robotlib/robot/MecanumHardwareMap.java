@@ -71,7 +71,7 @@ public class MecanumHardwareMap
         servoClaw = hwMap.get(Servo.class, "servoClaw");
         servoClaw.setDirection(Servo.Direction.FORWARD);
 
-        webcamName = internalHardwareMap.get(WebcamName.class, "webcam");
+        //webcamName = internalHardwareMap.get(WebcamName.class, "webcam");
 
         imu = hwMap.get(BNO055IMU.class, "revIMU");
         BNO055IMU.Parameters imuParamters = new BNO055IMU.Parameters();

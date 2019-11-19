@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.opmodes.mecanum.drive;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -9,6 +10,7 @@ import org.firstinspires.ftc.robotlib.sound.BasicSound;
 import org.firstinspires.ftc.robotlib.state.Button;
 import org.firstinspires.ftc.robotlib.state.ToggleBoolean;
 
+@Disabled
 @TeleOp(name="Mecanum TeleOp V-FieldGoal", group="Tele")
 public class MecanumTeleOpFieldGoal extends OpMode
 {

@@ -9,7 +9,6 @@ Drivetrain is the base class for all other drivetrains, each contain instruction
 abstract public class Drivetrain
 {
     private double velocity = 0;
-    private double autoVelocity = 0; // velocity used by autonomous acceleration curves as peak value
 
     // Toggles the half power drive mode for precision control
     private ToggleBoolean lowPower;
@@ -35,14 +34,6 @@ abstract public class Drivetrain
         {
             updateMotorPowers();
         }
-    }
-
-    public double getAutoVelocity() { return autoVelocity; }
-
-    public void setAutoVelocity(double autoVelocity)
-    {
-        this.autoVelocity = autoVelocity;
-        setVelocity(autoVelocity);
     }
 
     // This function iterates through the list of motors and sets each power to the power calculated in the calculateMotorPowers function

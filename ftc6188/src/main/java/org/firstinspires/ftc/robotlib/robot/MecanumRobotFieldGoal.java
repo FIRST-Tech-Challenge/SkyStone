@@ -64,7 +64,6 @@ public class MecanumRobotFieldGoal extends MecanumRobot
         telemetry.addData("Course Degrees", drivetrain.getCourse() * Math.PI/180);
         telemetry.addData("Rotation Target", drivetrain.getRotation());
         telemetry.addData("Velocity Target", drivetrain.getVelocity());
-        telemetry.addData("Movement Velocity", drivetrain.getAutoVelocity());
 
         telemetry.addData("> Arm Info", "-----");
         telemetry.addData("Vertical Power", armVerticalSlide.getPower());

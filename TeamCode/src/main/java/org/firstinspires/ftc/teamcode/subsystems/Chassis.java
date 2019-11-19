@@ -45,10 +45,6 @@ public class Chassis extends Subsystem {
         frontRight.setTargetPosition((int) (wheelDistance * Math.sin(turnAngle) - robotTurn));
         backLeft.setTargetPosition((int) (wheelDistance * Math.sin(turnAngle) + robotTurn));
         backRight.setTargetPosition((int) (wheelDistance * Math.cos(turnAngle) - robotTurn));
-        frontLeft.setTargetPosition(1440);
-        frontRight.setTargetPosition(1440);
-        backLeft.setTargetPosition(1440);
-        backRight.setTargetPosition(1440);
         setMotorPowers(power);
         setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }

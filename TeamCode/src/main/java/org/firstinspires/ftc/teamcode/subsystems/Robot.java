@@ -45,6 +45,10 @@ public class Robot {
         //intake.run();
     }
 
+    public void test(double rot, double power){
+        chassis.runRotations(rot, power);
+    }
+
 
     public void setArm(Arm arm) {
         this.arm = arm;

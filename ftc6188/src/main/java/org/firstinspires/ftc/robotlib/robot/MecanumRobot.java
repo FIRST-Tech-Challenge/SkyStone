@@ -67,8 +67,7 @@ public class MecanumRobot
         servoClawRight.setDirection(Servo.Direction.REVERSE);
 
         motorList = new DcMotor[]{driveFrontLeft, driveFrontRight, driveRearLeft, driveRearRight};
-        drivetrain = new MecanumDrivetrain(motorList,
-                teleOpMode, wheelRadius, wheelToMotorRatio);
+        drivetrain = new MecanumDrivetrain(motorList, teleOpMode, wheelRadius, wheelToMotorRatio);
         platformServos = new LinkedServo(servoClawLeft, servoClawRight);
     }
 

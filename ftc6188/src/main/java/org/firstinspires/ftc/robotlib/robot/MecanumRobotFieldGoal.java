@@ -9,13 +9,16 @@ import org.firstinspires.ftc.robotlib.motor.LimitedMotor;
 
 public class MecanumRobotFieldGoal extends MecanumRobot
 {
+    // Motors but now they're a new kind of motor
     private LimitedMotor armVerticalSlide;
     private LimitedMotor armHorizontalSlide;
 
+    // FieldGoalArmSystem much like a drivetrain
     public FieldGoalArmSystem armSystem;
 
-    private static final int verticalLimit = 24; //in
-    private static final int horizontalLimit = 12; //in
+    // Motor tick limits as found in test
+    private static final int verticalLimit = 24;
+    private static final int horizontalLimit = 12;
 
     public MecanumRobotFieldGoal(HardwareMap hwMap, Telemetry telemetry, boolean teleOpMode)
     {

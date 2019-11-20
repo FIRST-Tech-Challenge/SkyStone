@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Maccabot;
 
-@TeleOp(name="Why da hecc does i do this")
+@TeleOp(name="MainTeleOp")
 //@Disabled
 public class PIDTuningOpMode extends OpMode {
 
@@ -21,5 +21,6 @@ public class PIDTuningOpMode extends OpMode {
     @Override
     public void loop() {
         robot.mecanumDrive(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
+        robot.intake(gamepad1.a, gamepad1.b);
     }
 }

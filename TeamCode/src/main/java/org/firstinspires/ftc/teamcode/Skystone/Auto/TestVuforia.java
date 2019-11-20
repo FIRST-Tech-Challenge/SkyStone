@@ -1,8 +1,6 @@
 package org.firstinspires.ftc.teamcode.Skystone.Auto;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.robotcore.internal.vuforia.VuforiaException;
-import org.firstinspires.ftc.teamcode.Skystone.Detection;
 import org.firstinspires.ftc.teamcode.Skystone.Tensorflow;
 
 @Autonomous(name="TestVuforia")

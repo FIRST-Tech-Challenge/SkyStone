@@ -5,11 +5,9 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
-import com.vuforia.Vuforia;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -25,18 +23,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
-import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
-import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.CurvePoint;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.PathPoints;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
-import org.firstinspires.ftc.teamcode.Skystone.Odometry.Position2D;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Vector;
 
 import static java.lang.Thread.sleep;
@@ -561,7 +552,7 @@ public class Robot {
 
         Vector<CurvePoint> pathExtended = (Vector<CurvePoint>) allPoints.clone();
 
-        pointWithIndex distanceAlongPath = distanceAlongPath(allPoints, robotPos);
+        PointWithIndex distanceAlongPath = distanceAlongPath(allPoints, robotPos);
         int currFollowIndex = distanceAlongPath.index + 1;
 
         CurvePoint followMe = getFollowPointPath(pathExtended, robotPos, allPoints.get(currFollowIndex).followDistance);
@@ -711,7 +702,7 @@ public class Robot {
 
         Vector<CurvePoint> pathExtended = (Vector<CurvePoint>) allPoints.clone();
 
-        pointWithIndex distanceAlongPath = distanceAlongPath(allPoints, robotPos);
+        PointWithIndex distanceAlongPath = distanceAlongPath(allPoints, robotPos);
         int currFollowIndex = distanceAlongPath.index + 1;
 
         CurvePoint followMe = getFollowPointPath(pathExtended, robotPos, allPoints.get(currFollowIndex).followDistance);
@@ -749,19 +740,7 @@ public class Robot {
         }
     }
 
-    public static class pointWithIndex {
-        private double x;
-        private double y;
-        private int index;
-
-        public pointWithIndex(double xPos, double yPos, int index) {
-            this.x = xPos;
-            this.y = yPos;
-            this.index = index;
-        }
-    }
-
-    public static pointWithIndex distanceAlongPath(Vector<CurvePoint> pathPoints, Point robot) {
+    public PointWithIndex distanceAlongPath(Vector<CurvePoint> pathPoints, Point robot) {
         double closestDistance = Integer.MAX_VALUE;
 
         int closestDistanceIndex = 0;
@@ -783,7 +762,7 @@ public class Robot {
             }
         }
         //return the three things
-        return new pointWithIndex(distanceAlongLine.x, distanceAlongLine.y, closestDistanceIndex);//now return the closestDistanceIndex
+        return new PointWithIndex(distanceAlongLine.x, distanceAlongLine.y, closestDistanceIndex);//now return the closestDistanceIndex
     }
 
     public static Point distanceAlongLine(CurvePoint line1, CurvePoint line2, Point robot) {
@@ -1026,6 +1005,18 @@ public class Robot {
         } else {
             currentVal += val;
             recognitions.put(key, currentVal);
+        }
+    }
+
+    public class PointWithIndex {
+        private double x;
+        private double y;
+        private int index;
+
+        public PointWithIndex(double xPos, double yPos, int index) {
+            this.x = xPos;
+            this.y = yPos;
+            this.index = index;
         }
     }
 

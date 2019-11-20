@@ -12,14 +12,14 @@ import java.util.Comparator;
 import java.util.List;
 
 public class Vision{
-    final String VUFORIA_KEY = "AbSCRq//////AAAAGYEdTZut2U7TuZCfZGlOu7ZgOzsOlUVdiuQjgLBC9B3dNvrPE1x/REDktOALxt5jBEJJBAX4gM9ofcwMjCzaJKoZQBBlXXxrOscekzvrWkhqs/g+AtWJLkpCOOWKDLSixgH0bF7HByYv4h3fXECqRNGUUCHELf4Uoqea6tCtiGJvee+5K+5yqNfGduJBHcA1juE3kxGMdkqkbfSjfrNgWuolkjXR5z39tRChoOUN24HethAX8LiECiLhlKrJeC4BpdRCRazgJXGLvvI74Tmih9nhCz6zyVurHAHttlrXV17nYLyt6qQB1LtVEuSCkpfLJS8lZWS9ztfC1UEfrQ8m5zA6cYGQXjDMeRumdq9ugMkS";
+    private final String VUFORIA_KEY = "AbSCRq//////AAAAGYEdTZut2U7TuZCfZGlOu7ZgOzsOlUVdiuQjgLBC9B3dNvrPE1x/REDktOALxt5jBEJJBAX4gM9ofcwMjCzaJKoZQBBlXXxrOscekzvrWkhqs/g+AtWJLkpCOOWKDLSixgH0bF7HByYv4h3fXECqRNGUUCHELf4Uoqea6tCtiGJvee+5K+5yqNfGduJBHcA1juE3kxGMdkqkbfSjfrNgWuolkjXR5z39tRChoOUN24HethAX8LiECiLhlKrJeC4BpdRCRazgJXGLvvI74Tmih9nhCz6zyVurHAHttlrXV17nYLyt6qQB1LtVEuSCkpfLJS8lZWS9ztfC1UEfrQ8m5zA6cYGQXjDMeRumdq9ugMkS";
 
     private enum Location{
         CENTER,LEFT,RIGHT,UNKNOWN;
     }
 
-    Location location = Location.UNKNOWN;
-    Robot robot;
+    private Location location = Location.UNKNOWN;
+    private Robot robot;
 
     private VuforiaLocalizer vuforia;
 
@@ -37,7 +37,7 @@ public class Vision{
     }
 
     public Location runDetection(){
-        double shortestDetectionLength = 100000;
+        double shortestDetectionLength = Double.MAX_VALUE;
         float shortestValue = 700;
         double difference = 0;
 
@@ -132,7 +132,7 @@ public class Vision{
         return location;
     }
 
-    public void initVuforia() {
+    private void initVuforia() {
 
         /*
          * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.

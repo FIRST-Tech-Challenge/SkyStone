@@ -56,7 +56,7 @@ class SSMechTeleOp : OpMode() {
 
         if (gamepad1.a) tankMode()
         else if (gamepad1.b) povMode()
-        else tankMode()
+        else povMode()
 
         //Vertical Slide Power Calculation
         linSlidePow = gamepad2.right_stick_y //negative for up

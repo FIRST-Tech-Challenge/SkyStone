@@ -37,8 +37,8 @@ class SSMechAutoOp : LinearOpMode()
         robot.drive(0.5)
         sleep(3000)
         robot.brake()
-        robot.leftHook?.position = 0 // Puts the Hooks back
-        robot.rightHook?.position = 0
+        robot.leftHook?.position = 0.0 // Puts the Hooks back
+        robot.rightHook?.position = 0.0
         robot.drive(-0.50) //Parks Under Bridge
         sleep(1500)
         /*robot.vSlide?.power = -0.60

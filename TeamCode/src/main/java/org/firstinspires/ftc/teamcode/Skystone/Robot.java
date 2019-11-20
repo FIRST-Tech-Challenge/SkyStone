@@ -30,8 +30,6 @@ import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
 import java.util.HashMap;
 import java.util.Vector;
 
-import static java.lang.Thread.sleep;
-//import static org.firstinspires.ftc.teamcode.RoverRuckus.RR2.Auto.TensorFlowMineralDetection.VUFORIA_KEY;
 import static org.firstinspires.ftc.teamcode.Skystone.MathFunctions.angleWrap;
 import static org.firstinspires.ftc.teamcode.Skystone.MathFunctions.lineCircleIntersection;
 

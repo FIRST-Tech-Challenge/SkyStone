@@ -2,8 +2,16 @@ package org.firstinspires.ftc.teamcode.TeleOp;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
+import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
+import org.firstinspires.ftc.teamcode.All.DriveConstant;
+import org.firstinspires.ftc.teamcode.All.FourWheelMecanumDrivetrain;
 import org.firstinspires.ftc.teamcode.All.HardwareMap;
+
+import java.util.ArrayList;
 
 /*
  * -Gamepad A:
@@ -24,12 +32,47 @@ import org.firstinspires.ftc.teamcode.All.HardwareMap;
 public class TestIntakeLift extends LinearOpMode {
     boolean intake = false;
     boolean outake = false;
+    final double slowSpeed = 0.7;
+    final double turnSpeed = 0.6;
+    boolean turningTowards = false;
+    boolean runLogic = false;
+
+    ArrayList<String> kVData = new ArrayList<>();
+
+    FourWheelMecanumDrivetrain drivetrain;
     public void runOpMode(){
         HardwareMap hwMap = new HardwareMap(hardwareMap);
+
+        runLogic = true;
+        saveDataLoop(hwMap);
+
+        drivetrain = new FourWheelMecanumDrivetrain(hwMap);
+
+        drivetrain.setMotorZeroPower(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        drivetrain.setSpeedMultiplier(slowSpeed);
+        drivetrain.resetEncoders();
+
+        drivetrain.setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        hwMap.frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        hwMap.backRight.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        telemetry.addData("Status", "Ready");
 
         waitForStart();
 
         while (opModeIsActive()){
+
+            double turn = (-1) * (gamepad1.left_trigger - gamepad1.right_trigger) * turnSpeed;
+
+            if (isStopRequested()) {
+                StringBuilder sb = new StringBuilder();
+                for (String row : kVData) {
+                    sb.append(row);
+                    sb.append("\n");
+                }
+            }
 
             //------------------------------===Intake/Outake===------------------------------------------
 
@@ -88,50 +131,31 @@ public class TestIntakeLift extends LinearOpMode {
 
             //------------------------------===Driving/Strafing===------------------------------------------
 
-            if(gamepad1.left_stick_y == 1){
-                hwMap.frontLeft.setPower(teleopConstants.drivePower);
-                hwMap.backLeft.setPower(teleopConstants.drivePower);
-            } else if(gamepad1.left_stick_y == -1){
-                hwMap.frontLeft.setPower(-teleopConstants.drivePower);
-                hwMap.backLeft.setPower(-teleopConstants.drivePower);
+
+
+            if (!(gamepad1.left_stick_x == 0 && gamepad1.right_stick_y == 0 && turn == 0)) {
+
+
+
+                double speed;
+
+                if (gamepad1.left_stick_x == 0 && gamepad1.right_stick_y == 0) {
+                    speed = 0;
+                }
+                else if ( gamepad1.right_stick_y == 0 ) {
+                    speed = Math.abs(gamepad1.left_stick_x) ;
+                }
+                else if ( gamepad1.left_stick_x == 0 ) {
+                    speed = Math.abs(gamepad1.right_stick_y) ;
+                }
+                else {
+                    speed = ( Math.abs(gamepad1.left_stick_x) + Math.abs(gamepad1.right_stick_y) ) / 2;
+                }
+
+                double angle = Math.atan2(gamepad1.left_stick_x, -gamepad1.right_stick_y);
+                drivetrain.MoveAngle(speed, angle, turn);
             } else {
-                hwMap.frontLeft.setPower(0);
-                hwMap.backLeft.setPower(0);
-            }
-
-            if(gamepad1.right_stick_y == 0 && gamepad1.right_stick_x == 0){
-                hwMap.frontRight.setPower(0);
-                hwMap.backRight.setPower(0);
-            }
-
-            if(gamepad1.left_stick_y == 0 && gamepad1.left_stick_x == 0){
-                hwMap.frontLeft.setPower(0);
-                hwMap.backLeft.setPower(0);
-            }
-
-            if(gamepad1.right_stick_y == 1){
-                hwMap.frontRight.setPower(-teleopConstants.drivePower);
-                hwMap.backRight.setPower(-teleopConstants.drivePower);
-            } else if(gamepad1.right_stick_y == -1){
-                hwMap.frontRight.setPower(teleopConstants.drivePower);
-                hwMap.backRight.setPower(teleopConstants.drivePower);
-            } else {
-                hwMap.frontRight.setPower(0);
-                hwMap.backRight.setPower(0);
-            }
-
-            if(gamepad1.right_stick_x == -1 && gamepad1.left_stick_x == -1){
-                hwMap.frontLeft.setPower(-teleopConstants.strafePower);     //FrontRight and BackLeft forwards, FrontLeft and BackRight backwards
-                hwMap.backRight.setPower(teleopConstants.strafePower);
-                hwMap.frontRight.setPower(-teleopConstants.strafePower);
-                hwMap.backLeft.setPower(teleopConstants.strafePower);
-            }
-
-            if(gamepad1.right_stick_x == 1 && gamepad1.left_stick_x == 1){
-                hwMap.frontLeft.setPower(teleopConstants.strafePower);     //FrontLeft and BackRight forwards, FrontRight and BackLeft backwards
-                hwMap.backRight.setPower(-teleopConstants.strafePower);
-                hwMap.frontRight.setPower(teleopConstants.strafePower);
-                hwMap.backLeft.setPower(-teleopConstants.strafePower);
+                drivetrain.stop();
             }
 
             //------------------------------===Servos===------------------------------------------
@@ -158,6 +182,14 @@ public class TestIntakeLift extends LinearOpMode {
                 hwMap.transferLock.setPosition(-teleopConstants.transferLockPos);
             }
 
+            if(gamepad1.left_bumper) {
+                String temp = kVData.toString();
+                temp = temp.replaceAll("]","");
+                temp = temp.replaceAll("\\[","");
+                DriveConstant.writeFile(AppUtil.ROOT_FOLDER + "/RoadRunner/kV_regression_data.csv", temp);
+                runLogic = false;
+            }
+
             telemetry.addData("LeftForwardOdometry", hwMap.leftIntake.getCurrentPosition());
             telemetry.addData("RightForwardOdometry", hwMap.liftTwo.getCurrentPosition());
             telemetry.addData("SidewaysOdometry", hwMap.rightIntake.getCurrentPosition());
@@ -170,5 +202,22 @@ public class TestIntakeLift extends LinearOpMode {
             telemetry.addData("LiftOne", hwMap.liftOne.getCurrentPosition());
             telemetry.update();
         }
+
+
+    }
+
+    public void saveDataLoop(HardwareMap hw){
+        Thread loop = new Thread() {
+            public void run() {
+                while(runLogic) {
+                    kVData.add(hw.frontLeft.getPower() + "," + hw.backLeft.getPower() + "," +
+                            "," + hw.frontLeft.getCurrentPosition() + "," + hw.backLeft.getCurrentPosition());
+                    try {
+                        sleep(50);
+                    } catch (Exception e){}
+                }
+            }
+        };
+        loop.start();
     }
 }

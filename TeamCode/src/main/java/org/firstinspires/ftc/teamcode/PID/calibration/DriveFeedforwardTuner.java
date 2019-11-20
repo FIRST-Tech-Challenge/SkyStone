@@ -43,7 +43,7 @@ import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.rpmToVelocity
 @Autonomous(name = "FeedForward", group = "drive")
 public class DriveFeedforwardTuner extends LinearOpMode {
     public static final double MAX_POWER = 0.7;
-    public static final double DISTANCE = 50;
+    public static final double DISTANCE = 100;
 
     private ArrayList<String> odometryData = new ArrayList<>();
 
@@ -139,8 +139,8 @@ public class DriveFeedforwardTuner extends LinearOpMode {
         telemetry.log().clear();
         telemetry.log().add("Quasi-static ramp up test complete");
         if (fitIntercept) {
-            telemetry.log().add(Misc.formatInvariant("kV = %.5f, kStatic = %.5f (R^2 = %.2f)",
-                    rampResult.kV, rampResult.kStatic, rampResult.rSquare));
+            telemetry.log().add(Misc.formatInvariant("kV = " + rampResult.kV + ", kStatic = %.5f (R^2 = %.2f)",
+                    rampResult.kStatic, rampResult.rSquare));
         } else {
             telemetry.log().add(Misc.formatInvariant("kV = %.5f (R^2 = %.2f)",
                     rampResult.kStatic, rampResult.rSquare));

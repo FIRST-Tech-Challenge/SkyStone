@@ -140,7 +140,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public static int MAX_LIFT = 2800;
     public enum LiftPosition {
 		GRABBING(0),
-        STOWED(25),
+        STOWED(15),
         STONE1_RELEASE(126),
         STONE1(176),
         CAPSTONE_GRAB(300),
@@ -281,7 +281,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     /* Public OpMode members. */
     public static double INTAKE_SPEED = 1.0;
 	public static double LIFT_SPEED = 1.0;
-	public static double LOWER_SPEED = 0.2;
+	public static double LOWER_SPEED = 0.3;
 	public static double EXTEND_SPEED = 1.0;
     public static double RIGHT_FINGER_DOWN = 0.32;
     public static double LEFT_FINGER_DOWN = 0.82;

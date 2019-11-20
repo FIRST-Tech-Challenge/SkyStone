@@ -19,7 +19,7 @@ public class RedRight extends AutoBase {
 
         intake(true);
 
-        //int position = robot.detectTensorflow();
+        //int position = robot.runDetection();
 
         int position = 1;
 

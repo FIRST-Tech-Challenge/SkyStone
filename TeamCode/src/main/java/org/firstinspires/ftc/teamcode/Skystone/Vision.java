@@ -15,8 +15,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class Tensorflow extends LinearOpMode{
-    public enum Location{
+public class Vision extends LinearOpMode{
+    private enum Location{
         CENTER,LEFT,RIGHT,UNKNOWN;
     }
 
@@ -30,7 +30,7 @@ public class Tensorflow extends LinearOpMode{
     @Override
     public void runOpMode(){}
 
-    public Tensorflow(Robot robot){
+    public Vision(Robot robot){
         this.robot = robot;
     }
 

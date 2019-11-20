@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.Skystone.Auto;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.teamcode.Skystone.Tensorflow;
+import org.firstinspires.ftc.teamcode.Skystone.Vision;
 
 @Autonomous(name="TestVuforia")
 public class TestVuforia extends AutoBase {
@@ -12,25 +12,14 @@ public class TestVuforia extends AutoBase {
     public void runOpMode() {
 
         initLogic();
-        Tensorflow tensorflow = new Tensorflow(robot);
+        Vision tensorflow = new Vision(robot);
 
         tensorflow.initTensorflow();
         waitForStart();
 
 
         while (opModeIsActive()){
-            //try {
-            //robot.moveToPoint(10,0,1,0,Math.toRadians(0));
-            Detection tfodPosition = tensorflow.detectTensorflow();
-            telemetry.addLine("Position: " +  tfodPosition.getPosition());
-            telemetry.addLine("Value: " + tfodPosition.getValue());
-            telemetry.addLine("numDetections: " + tfodPosition.getNumDetections());
-            telemetry.update();
-            //} catch (VuforiaException exception){
-//                telemetry.addLine("Wack");
-//                telemetry.update();
-            //}
-            //goToSkystone(tfodPosition, 0);
+
         }
     }
 }

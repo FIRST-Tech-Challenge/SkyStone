@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.util.Range
+import kotlin.math.abs
+import kotlin.math.max
 
 /**
  * Created by KasaiYuki on 9/20/2018.
@@ -120,21 +122,20 @@ class SSMechTeleOp : OpMode() {
         var drive = (-gamepad1.left_stick_y).toDouble()
         var turn = gamepad1.left_stick_x.toDouble() * 1.5
         var strafe = gamepad1.right_stick_x.toDouble()
-        var nor = 1
+        var nor = 0.0
 
         var frontLeftPower = (drive + turn + strafe)
         var backLeftPower = (drive - turn + strafe)
         var frontRightPower = (drive - turn - strafe)
         var backRightPower = (drive + turn - strafe)
 
-        /*if (Math.abs(frontLeftPower) > 1 || Math.abs(backLeftPower) > 1 ||
-                Math.abs(frontRightPower) > 1 || Math.abs(backRightPower) > 1) { //normalizing values to [-1.0,1.0]
+        if (abs(frontLeftPower) > 1 || abs(backLeftPower) > 1 ||
+                abs(frontRightPower) > 1 || abs(backRightPower) > 1) { //normalizing values to [-1.0,1.0]
             // Find the largest power
-            var max = 0.0
-            max = Math.max(Math.abs(frontLeftPower), Math.abs(backLeftPower))
-            max = Math.max(Math.abs(frontRightPower), max)
-            max = Math.max(Math.abs(backRightPower), max)
-        }*/
+            nor = max(abs(frontLeftPower), abs(backLeftPower))
+            nor = max(abs(frontRightPower), nor)
+            nor = max(abs(backRightPower), nor)
+        }
         // Divide everything by max (it's positive so we don't need to worry
         // about signs)
         robot.fLDrive?.power = frontLeftPower / nor

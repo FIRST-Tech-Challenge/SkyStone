@@ -87,6 +87,8 @@ class SSMechTeleOp : OpMode() {
         telemetry.addData("Attachments:", "HSlide = ${robot.hSlide?.position?.toFloat()}, " +
                 "Claw = ${robot.claw?.position?.toFloat()}, " +
                 "VSlide = ${curPos.toFloat()}", "")
+        telemetry.addData("GP: stick1 = ${gamepad1.left_stick_x}, ${gamepad1.left_stick_y}; " +
+                "stick2 = ${gamepad1.right_stick_x}, ${gamepad1.right_stick_y}", "")
     }
 
     override fun stop() {
@@ -118,27 +120,27 @@ class SSMechTeleOp : OpMode() {
         var drive = (-gamepad1.left_stick_y).toDouble()
         var turn = gamepad1.left_stick_x.toDouble() * 1.5
         var strafe = gamepad1.right_stick_x.toDouble()
+        var nor = 1
 
         var frontLeftPower = (drive + turn + strafe)
         var backLeftPower = (drive - turn + strafe)
         var frontRightPower = (drive - turn - strafe)
         var backRightPower = (drive + turn - strafe)
 
-        if (Math.abs(frontLeftPower) > 1 || Math.abs(backLeftPower) > 1 ||
+        /*if (Math.abs(frontLeftPower) > 1 || Math.abs(backLeftPower) > 1 ||
                 Math.abs(frontRightPower) > 1 || Math.abs(backRightPower) > 1) { //normalizing values to [-1.0,1.0]
             // Find the largest power
             var max = 0.0
             max = Math.max(Math.abs(frontLeftPower), Math.abs(backLeftPower))
             max = Math.max(Math.abs(frontRightPower), max)
             max = Math.max(Math.abs(backRightPower), max)
-
-            // Divide everything by max (it's positive so we don't need to worry
-            // about signs)
-            robot.fLDrive?.power = frontLeftPower / max
-            robot.bLDrive?.power = backLeftPower / max
-            robot.fRDrive?.power = frontRightPower / max
-            robot.bRDrive?.power = backRightPower / max
-        }
+        }*/
+        // Divide everything by max (it's positive so we don't need to worry
+        // about signs)
+        robot.fLDrive?.power = frontLeftPower / nor
+        robot.bLDrive?.power = backLeftPower / nor
+        robot.fRDrive?.power = frontRightPower / nor
+        robot.bRDrive?.power = backRightPower / nor
 
     }
 }

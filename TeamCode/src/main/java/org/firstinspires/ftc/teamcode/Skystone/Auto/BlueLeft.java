@@ -19,7 +19,7 @@ public class BlueLeft extends AutoBase {
 
         intake(true);
 
-        //int position = robot.detectTensorflow();
+        //int position = robot.runDetection();
 
         int position = 1;
 

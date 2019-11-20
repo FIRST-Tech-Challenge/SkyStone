@@ -20,8 +20,8 @@ public class BBIntake {
 
         _leftIntakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         _rightIntakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        _leftIntakeMotor.setPower(0.75);
-        _rightIntakeMotor.setPower(0.75);
+        _leftIntakeMotor.setPower(1);
+        _rightIntakeMotor.setPower(1);
     }
 
     public void Stop()
@@ -35,7 +35,7 @@ public class BBIntake {
 
         _leftIntakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         _rightIntakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        _leftIntakeMotor.setPower(0.75);
-        _rightIntakeMotor.setPower(0.75);
+        _leftIntakeMotor.setPower(1);
+        _rightIntakeMotor.setPower(1);
     }
 }

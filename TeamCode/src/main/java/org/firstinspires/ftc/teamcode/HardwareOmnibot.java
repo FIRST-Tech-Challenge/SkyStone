@@ -279,6 +279,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     }
 
     /* Public OpMode members. */
+	public static double MIN_DRIVE_SPEED = 0.05;
     public static double INTAKE_SPEED = 1.0;
 	public static double LIFT_SPEED = 1.0;
 	public static double LOWER_SPEED = 0.3;
@@ -789,6 +790,10 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         double wallDistance;
         double delta;
         double drivePower;
+		double driveAngle = 0;
+		double maxRange = 40.0;
+		double midRange = 20.0;
+		double minRange = 10.0;
         switch(side)
         {
             case FRONT:
@@ -796,77 +801,62 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                 break;
             case BACK:
                 wallDistance = readBackTof();
-                delta = wallDistance - distance;
-                if(Math.abs(delta) > error) {
-                    // Need to drive forward away from the wall.
-                    if(delta < 0) {
-                        drivePower = driveSpeed;
-                        // Need to drive backward towards the wall.
-                    } else {
-                        drivePower = -driveSpeed;
-                    }
-                    drive(drivePower, 0.0, 0.0, 90-readIMU());
-                } else {
-                    setAllDriveZero();
-                    targetReached = true;
-                }
+				driveAngle = 90;
                 break;
             case LEFT:
                 wallDistance = readLeftTof();
-                delta = wallDistance - distance;
-                if(Math.abs(delta) > error) {
-                    // Need to drive right away from the wall.
-                    if(delta < 0) {
-                        drivePower = driveSpeed;
-                        // Need to drive left towards the wall.
-                    } else {
-                        drivePower = -driveSpeed;
-                    }
-                    drive(drivePower, 0.0, 0.0, -readIMU());
-                } else {
-                    setAllDriveZero();
-                    targetReached = true;
-                }
+				driveAngle = 0;
                 break;
             case RIGHT:
                 wallDistance = readRightTof();
-                delta = wallDistance - distance;
-                if(Math.abs(delta) > error) {
-                    // Need to drive left away from the wall.
-                    if(delta < 0) {
-                        drivePower = -driveSpeed;
-                        // Need to drive right towards the wall.
-                    } else {
-                        drivePower = driveSpeed;
-                    }
-                    drive(drivePower, 0.0, 0.0, -readIMU());
-                } else {
-                    setAllDriveZero();
-                    targetReached = true;
-                }
+				driveAngle = 180;
                 break;
         }
+        delta = wallDistance - distance;
+		// Slow down as distance is approached
+        if(Math.abs(delta) > error) {
+			if(delta < 0) {
+				// Need to drive forward away from the wall.
+				drivePower = driveSpeed;
+			} else {
+				// Need to drive backward towards the wall.
+				drivePower = -driveSpeed;
+			}
+
+			// Go at slowest speed.
+			if(Math.abs(delta) <= minRange) {
+				drivePower *= 0.05;
+			} else if(Math.abs(delta) <= midRange) {
+				drivePower *= 0.2;
+			} else if (Math.abs(delta) < maxRange) {
+				drivePower *= 0.4;
+			}
+			// make sure we don't go below minimum drive power.
+			if(Math.abs(drivePower) < MIN_DRIVE_SPEED) {
+				if(drivePower < 0) {
+					drivePower = -MIN_DRIVE_SPEED;
+				} else {
+					drivePower = MIN_DRIVE_SPEED;
+				}
+			}
+            drive(drivePower, 0.0, 0.0, driveAngle-readIMU());
+		} else {
+            setAllDriveZero();
+            targetReached = true;
+		}
 
         return targetReached;
     }
 
-    // This function goes to a set distance from the rear distance sensors
-    public boolean parallelRearTarget(double distance, double driveSpeed, double spinSpeed, double error) {
-        stackBackLeftFoundationDistance = distance;
-        stackBackRightFoundationDistance = distance;
-
-        return parallelRearTarget(driveSpeed, spinSpeed, error);
-    }
-
     // This function goes to a distance of two range sensors to maintain angle from object
-    public boolean parallelRearTarget(double driveSpeed, double spinSpeed, double error) {
+    public boolean parallelRearTarget(double backLeftDistance, double backRightDistance, double driveSpeed, double spinSpeed, double error) {
         boolean parallel = false;
         double leftDistance = readBackLeftTof();
         double rightDistance = readBackRightTof();
         double drivePower = 0.0;
         double spinPower = 0.0;
-        double leftError = stackBackLeftFoundationDistance - leftDistance;
-        double rightError = stackBackRightFoundationDistance - rightDistance;
+        double leftError = backLeftDistance - leftDistance;
+        double rightError = backRightDistance - rightDistance;
         if((Math.abs(leftError) > error) || (Math.abs(rightError) > error)) {
             // Have to drive backwards towards the foundation
             if(((leftError) > error) &&
@@ -917,7 +907,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         if (alignState == AlignActivity.IDLE) {
             aligning = true;
             alignState = AlignActivity.ALIGN_TO_FOUNDATION;
-            parallelRearTarget(0.07, 0.07, 1.0);
+            parallelRearTarget(stackBackLeftFoundationDistance, stackBackRightFoundationDistance, 0.07, 0.07, 1.0);
         }
 
         return aligning;
@@ -932,7 +922,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                 }
                 break;
             case REFINE_FOUNDATION:
-                if(parallelRearTarget(0.05, 0.05, 0.5)) {
+                if(parallelRearTarget(stackBackLeftFoundationDistance, stackBackRightFoundationDistance, 0.05, 0.05, 0.5)) {
                     alignState = AlignActivity.IDLE;
                 }
                 break;
@@ -942,7 +932,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                 }
                 break;
             case ALIGN_TO_FOUNDATION:
-                if(parallelRearTarget(0.07, 0.07, 1.0)) {
+                if(parallelRearTarget(stackBackLeftFoundationDistance, stackBackRightFoundationDistance, 0.07, 0.07, 1.0)) {
                     alignState = AlignActivity.ALIGN_TO_WALL;
                 }
                 break;

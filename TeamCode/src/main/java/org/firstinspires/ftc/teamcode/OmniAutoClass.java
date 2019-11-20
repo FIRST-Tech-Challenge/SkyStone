@@ -8,12 +8,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 public abstract class OmniAutoClass extends LinearOpMode {
 
-    public enum TofDirection {
-        LEFT,
-        RIGHT,
-        BACK
-    }
-
     private ElapsedTime timer;
 
     public static float mmPerInch = OmniAutoClass.MM_PER_INCH;
@@ -34,7 +28,6 @@ public abstract class OmniAutoClass extends LinearOpMode {
     private static double clicksPerInch = (myMotorRatio * encoderClicksPerRev) / (Math.PI * myWheelSize);
 
     public static final float MM_PER_INCH = 25.4f;
-
 
     /**
      * @param newWheelSize  - The size of the wheels, used to calculate encoder clicks per inch
@@ -371,67 +364,45 @@ public abstract class OmniAutoClass extends LinearOpMode {
         return result;
     }
 
-    protected double readSpecifiedTof(TofDirection tofDirection) {
-        double tofDistance = 0.0;
-        switch(tofDirection) {
-            case LEFT:
-                tofDistance = robot.readLeftTof();
-                break;
-            case RIGHT:
-                tofDistance = robot.readRightTof();
-                break;
-            case BACK:
-                tofDistance = robot.readBackTof();
-                break;
-        }
+    /**
+	 * Moved the robot a set distance from the wall, or the timeout expires.
+	 * @param side       - The ToF sensor to use to distance from the wall.
+	 * @param distance   - The distance in cm from the wall to move the robot.
+	 * @param driveSpeed - The maximum speed to drive to position the robot,
+     *                     will slow down as approaching distance.
+	 * @param error      - The allowable error from desired target distance.
+	 */
+	public boolean distanceFromWall(AlignmentSide side, double distance, double driveSpeed, double error, int timeout) {
+		double endTime = timer.milliseconds() + timeout;
+		// Allow the robot to read new values from the ToF sensors.
+		robot.resetReads();
+		while(endTime < timer.milliseconds() && !robot.distanceFromWall(side, distance, driveSpeed, error)) {
+			robot.resetReads();
+		}
 
-        return tofDistance;
-    }
+		return robot.distanceFromWall(side, distance, driveSpeed, error);
+	}
 
-    // Speed is absolute value, will shift to positive or negative to get nearer
-    // or farther from the wall to achieve distance (in CM) or until the maxTime
-    // is exceeded.
-    public void driveDistanceFromTof(double speed, double distance, int maxTime, TofDirection tofDirection) {
-        double endTime = timer.milliseconds() + maxTime;
-        double delta =  distance - readSpecifiedTof(tofDirection);
-        double driveSpeed = speed;
-        double driveSign = 1.0;
-        double driveAngle = 0.0;
-        switch(tofDirection) {
-            case LEFT:
-                driveAngle = 0.0 + robot.readIMU();
-                break;
-            case RIGHT:
-                driveAngle = 180.0 + robot.readIMU();
-                break;
-            case BACK:
-                driveAngle = 90.0 + robot.readIMU();
-                break;
-        }
+    /**
+	 * Moved the robot a set distance from the wall, or the timeout expires.
+	 * @param backLeftDistance  - The ToF sensor to use to distance from the wall.
+	 * @param backLeftDistance  - The distance in cm from the foundation to move the robot.
+	 * @param backRightDistance - The distance in cm from the foundation to move the robot.
+	 * @param driveSpeed        - The maximum speed to drive to position the robot,
+     *                            will slow down as approaching distance.
+	 * @param spinSpeed         - The maximum speed to rotate the robot.
+	 * @param error             - The allowable error from desired target distance.
+	 */
+	public boolean parallelRearTarget(double backLeftDistance, double backRightDistance, double driveSpeed, double spinSpeed, double error, int timeout) {
+		double endTime = timer.milliseconds() + timeout;
+		// Allow the robot to read new values from the ToF sensors.
+		robot.resetReads();
+		while(endTime < timer.milliseconds() && !robot.parallelRearTarget(backLeftDistance, backRightDistance, driveSpeed, spinSpeed, error)) {
+			robot.resetReads();
+		}
 
-        while(Math.abs(delta) > 1 && timer.milliseconds() < endTime && opModeIsActive()) {
-            if(delta < 0) {
-                driveSign = -1.0;
-            } else {
-                driveSign = 1.0;
-            }
-
-            if(Math.abs(delta) < 10) {
-                driveSpeed = 0.05 * driveSign;
-            }
-            else if(Math.abs(delta) < 35) {
-                driveSpeed = 0.1 * driveSign;
-            } else {
-                driveSpeed = speed * driveSign;
-            }
-
-            driveAtHeading(driveSpeed, 0, driveAngle, 0);
-            delta =  distance - readSpecifiedTof(tofDirection);
-            robot.resetReads();
-        }
-
-        robot.setAllDriveZero();
-    }
+		return robot.parallelRearTarget(backLeftDistance, backRightDistance, driveSpeed, error);
+	}
 
     public void endAuto() {
         while (!isStopRequested()) {

@@ -16,14 +16,15 @@ import java.util.Comparator;
 import java.util.List;
 
 public class Tensorflow extends LinearOpMode{
+    public enum Location{
+        CENTER,LEFT,RIGHT,UNKNOWN;
+    }
 
+    Location location = Location.UNKNOWN;
     Robot robot;
+
     private VuforiaLocalizer vuforia;
 
-    /**
-     * {@link #tfod} is the variable we will use to store our instance of the TensorFlow Object
-     * Detection engine.
-     */
     private TFObjectDetector tfod;
 
     @Override
@@ -41,10 +42,10 @@ public class Tensorflow extends LinearOpMode{
     }
 
     final String VUFORIA_KEY = "AbSCRq//////AAAAGYEdTZut2U7TuZCfZGlOu7ZgOzsOlUVdiuQjgLBC9B3dNvrPE1x/REDktOALxt5jBEJJBAX4gM9ofcwMjCzaJKoZQBBlXXxrOscekzvrWkhqs/g+AtWJLkpCOOWKDLSixgH0bF7HByYv4h3fXECqRNGUUCHELf4Uoqea6tCtiGJvee+5K+5yqNfGduJBHcA1juE3kxGMdkqkbfSjfrNgWuolkjXR5z39tRChoOUN24HethAX8LiECiLhlKrJeC4BpdRCRazgJXGLvvI74Tmih9nhCz6zyVurHAHttlrXV17nYLyt6qQB1LtVEuSCkpfLJS8lZWS9ztfC1UEfrQ8m5zA6cYGQXjDMeRumdq9ugMkS";
-    public Detection detectTensorflow(){
+
+    public Location detectTensorflow(){
         double shortestDetectionLength = 100000;
         float shortestValue = 700;
-        float rightValue = 0;
         double difference = 0;
 
         /**
@@ -52,9 +53,6 @@ public class Tensorflow extends LinearOpMode{
          * if confidence is greater than 0.7 : find its position and return that
          * if confidence is less than 0.7 : get the position it thinks, go through the code again, if is the same, then return that
          */
-        // 2 is right, 1 is center, 0 is left
-        ArrayList<Integer> retVals = new ArrayList<>();
-        ArrayList<Float> values = new ArrayList<>();
 
         long startTime = SystemClock.elapsedRealtime();
         // scan for 5 seconds
@@ -78,21 +76,21 @@ public class Tensorflow extends LinearOpMode{
                             difference = shortestDetectionLength - (updatedRecognitions.get(i).getTop()-updatedRecognitions.get(i).getBottom());
                             shortestDetectionLength = updatedRecognitions.get(i).getTop()-updatedRecognitions.get(i).getBottom();
                             shortestValue = (updatedRecognitions.get(i).getTop()+updatedRecognitions.get(i).getBottom())/2;
-                            rightValue = updatedRecognitions.get(i).getRight();
                         }
                     }
                 }
                 if (difference < 100){
-                    return new Detection(1, rightValue, updatedRecognitions.size());
+                    location = Location.CENTER;
                 } else {
                     if (shortestValue > 900) {
-                        return new Detection(0, rightValue, updatedRecognitions.size());
+                        location = Location.LEFT;
                     } else if (shortestValue > 600){
-                        return new Detection(1, rightValue, updatedRecognitions.size());
+                        location = Location.CENTER;
                     } else{
-                        return new Detection(2, rightValue, updatedRecognitions.size());
+                        location = Location.RIGHT;
                     }
                 }
+                return location;
 
 
                 // iterate through each recognition
@@ -138,7 +136,7 @@ public class Tensorflow extends LinearOpMode{
 ////        telemetry.update();
 //        // return rounded int average
 //        return new Detooection((int)Math.round(retVal), valueAvg, 0);
-        return new Detection(0,0,0);
+        return location;
     }
 
     public void initVuforia() {

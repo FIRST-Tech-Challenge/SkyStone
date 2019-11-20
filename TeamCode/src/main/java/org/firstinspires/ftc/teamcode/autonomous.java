@@ -8,6 +8,7 @@ import org.firstinspires.ftc.robotcore.internal.opmode.OpModeManagerImpl;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+//This part is importing information from other programs
 import org.firstinspires.ftc.teamcode.SubAssembly.Grabber.GrabberControl;
 import org.firstinspires.ftc.teamcode.SubAssembly.DriveTrain.DriveControl;
 import org.firstinspires.ftc.teamcode.Utilities.UserControl;
@@ -18,6 +19,7 @@ import javax.crypto.spec.RC2ParameterSpec;
 @Autonomous(name = "Autonomous", group = "Auto")
 public class autonomous extends LinearOpMode {
 
+    //This gives the control programs shortened names to refer to them in this program
     DriveControl Drive = new DriveControl();
     GrabberControl Grabber = new GrabberControl();
     ConceptVuforiaSkyStoneNavigationWebcam Webcam = new ConceptVuforiaSkyStoneNavigationWebcam();
@@ -30,6 +32,7 @@ public class autonomous extends LinearOpMode {
         //resetClock();
     }
 
+    //This is a list of all of the states
     private enum State {
         Initial,
         DrivetoQuarry,
@@ -44,6 +47,7 @@ public class autonomous extends LinearOpMode {
         test
     }
 
+    //This is a list of all the possible skystone positions
     private enum SkystonePosition {
         R1,
         R2,
@@ -52,9 +56,10 @@ public class autonomous extends LinearOpMode {
         B2,
         B3,
     }
-
+    //This sets the skystone to a default position
     private SkystonePosition Skystone = SkystonePosition.B1;
 
+    //This sets the default starting state
     private State mCurrentState = State.Initial;
 
     @Override
@@ -77,9 +82,12 @@ public class autonomous extends LinearOpMode {
         boolean bAnswer;
         boolean AllianceColor;
 
+        //This asks whether you want to delay start or not and whether you are red or blue
         bAnswer = User.getYesNo("Wait?");
         AllianceColor = User.getRedBlue("Alliance Color");
 
+        /*This will use the skystone position determined by vuforia and the
+        alliance color to determine the skystone position*/
         if (Webcam.PS == Webcam.PS.CENTER && AllianceColor == true){
             Skystone = SkystonePosition.R2;
         } else if (Webcam.PS == Webcam.PS.LEFT && AllianceColor == true){
@@ -121,12 +129,14 @@ public class autonomous extends LinearOpMode {
                     }
                     newState(State.DrivetoQuarry);
                     break;
+                // The robot drives forward until it reaches the quarry
                 case DrivetoQuarry:
                     telemetry.addLine("Drive to Quarry");
                     telemetry.update();
                     Drive.moveForwardDistance(0.75,71.2);
                     newState(State.GrabSkystone);
                     break;
+                // Navigates to where the skystone is and grabs it
                 case GrabSkystone:
                     telemetry.addLine("Grab Skystone");
                     telemetry.update();
@@ -152,6 +162,7 @@ public class autonomous extends LinearOpMode {
                     Grabber.close();
                     newState(State.MovetoLine);
                     break;
+                // Turns and drives until under the skybridge
                 case MovetoLine:
                     telemetry.addLine("MovetoLine");
                     telemetry.update();
@@ -170,6 +181,8 @@ public class autonomous extends LinearOpMode {
                     newState(State.ScoreStone);
                     break;
 
+                /* Drives into the building zone, leaves the skystone there, and backs up
+                until under the skybridge again*/
                 case ScoreStone:
                     Drive.moveForwardDistance(0.75,90);
                     Grabber.open();

@@ -29,9 +29,10 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -82,69 +83,19 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  * is explained below.
  */
 
-@TeleOp(name="SKYSTONEWebcam", group ="Concept")
-//@Disabled
-public class SkystoneNavWebCam extends LinearOpMode {
+@Autonomous(name = "foo", group = "blah")
 
-    // IMPORTANT: If you are using a USB WebCam, you must select CAMERA_CHOICE = BACK; and PHONE_IS_PORTRAIT = false;
-    private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
-    private static final boolean PHONE_IS_PORTRAIT = false  ;
-
-    /*
-     * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
-     * 'parameters.vuforiaLicenseKey' is initialized is for illustration only, and will not function.
-     * A Vuforia 'Development' license key, can be obtained free of charge from the Vuforia developer
-     * web site at https://developer.vuforia.com/license-manager.
-     *
-     * Vuforia license keys are always 380 characters long, and look as if they contain mostly
-     * random data. As an example, here is a example of a fragment of a valid key:
-     *      ... yIgIzTqZ4mWjk9wd3cZO9T1axEqzuhxoGlfOOI2dRzKS4T0hQ8kT ...
-     * Once you've obtained a license key, copy the string from the Vuforia web site
-     * and paste it in to your code on the next line, between the double quotes.
-     */
-    private static final String VUFORIA_KEY =
-            "AfSbRRH/////AAABmdZp/meEF0rrnF8x1B4RWA4U4MtiR4e9F4vLUBpFtxRVxfYp7Zn6hqj3zxh3oPeqmJLbXBaQx/bYT2lxN5uViFpcOzCfRx6FRSV3saH8TyKN/IGgOpP5nP0HgYt+zbWlfpo+efBy5YBNjQz0C25jgtKEWVQ/O6ibyOuRL+IZJfLz8dniv1n6lAwa9lLMIrWPOb31OrrcnIzumkoSbr6/0B6mNhzS2YJzkL8gwDNylOuZIcyzuTOCtknO5RpBC86Lfq96P8JKVeQ9h7bkJ9ZXnDm+dLfH+TWsh5wQBRq2rS0PE2Ji9FPn1lfOqk+MjIOHGGaig2jgB75DGhxcF07SHcKYtClXstRrM4L3Cqo3PSZ8";
-
-    // Since ImageTarget trackables use mm to specifiy their dimensions, we must use mm for all the physical dimension.
-    // We will define some constants and conversions here
-    private static final float mmPerInch        = 25.4f;
-    private static final float mmTargetHeight   = (6) * mmPerInch;          // the height of the center of the target image above the floor
-
-    // Constant for Stone Target
-    private static final float stoneZ = 2.00f * mmPerInch;
-
-    // Constants for the center support targets
-    private static final float bridgeZ = 6.42f * mmPerInch;
-    private static final float bridgeY = 23 * mmPerInch;
-    private static final float bridgeX = 5.18f * mmPerInch;
-    private static final float bridgeRotY = 59;                                 // Units are degrees
-    private static final float bridgeRotZ = 180;
-
-    // Constants for perimeter targets
-    private static final float halfField = 72 * mmPerInch;
-    private static final float quadField  = 36 * mmPerInch;
-
-    // Class Members
-    private OpenGLMatrix lastLocation = null;
-    private VuforiaLocalizer vuforia = null;
-
-    /**
-     * This is the webcam we are to use. As with other hardware devices such as motors and
-     * servos, this device is identified using the robot configuration tool in the FTC application.
-     */
-    WebcamName webcamName = null;
-
-    private boolean targetVisible = false;
-    private float phoneXRotate    = 0;
-    private float phoneYRotate    = 0;
-    private float phoneZRotate    = 0;
-    private String quad           = "empty";
+public class VuforiaSetup extends LinearOpMode {
+    RobotOneHardware robotOne           = new RobotOneHardware();
+    //public String vuforiaLicenseKey = "empty";
+    private String quad           = null;
+    private String turn           = null;
 
     @Override public void runOpMode() {
         /*
          * Retrieve the camera we are to use.
          */
-        webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
+        robotOne.init(hardwareMap);
 
         /*
          * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
@@ -156,19 +107,21 @@ public class SkystoneNavWebCam extends LinearOpMode {
 
         // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
-        parameters.vuforiaLicenseKey = VUFORIA_KEY;
+        parameters.vuforiaLicenseKey = robotOne.VUFORIA_KEY;
 
         /**
          * We also indicate which camera on the RC we wish to use.
          */
-        parameters.cameraName = webcamName;
+        parameters.cameraName = robotOne.webcamName;
 
         //  Instantiate the Vuforia engine
-        vuforia = ClassFactory.getInstance().createVuforia(parameters);
+        robotOne.vuforia = ClassFactory.getInstance().createVuforia(parameters);
+
 
         // Load the data sets for the trackable objects. These particular data
         // sets are stored in the 'assets' part of our application.
-        VuforiaTrackables targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
+        VuforiaTrackables targetsSkyStone = this.robotOne.vuforia.loadTrackablesFromAsset("Skystone");
+        VuforiaTrackables targetsSkyStone2 = this.robotOne.vuforia.loadTrackablesFromAsset("yellowBlock");
 
         VuforiaTrackable stoneTarget = targetsSkyStone.get(0);
         stoneTarget.setName("Stone Target");
@@ -196,6 +149,8 @@ public class SkystoneNavWebCam extends LinearOpMode {
         rear1.setName("Rear Perimeter 1");
         VuforiaTrackable rear2 = targetsSkyStone.get(12);
         rear2.setName("Rear Perimeter 2");
+        VuforiaTrackable block = targetsSkyStone2.get(0);
+        block.setName("yellowBlock");
 
         // For convenience, gather together all the trackable objects in one easily-iterable collection */
         List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
@@ -223,58 +178,71 @@ public class SkystoneNavWebCam extends LinearOpMode {
         // Rotated it to to face forward, and raised it to sit on the ground correctly.
         // This can be used for generic target-centric approach algorithms
         stoneTarget.setLocation(OpenGLMatrix
-                .translation(0, 0, stoneZ)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
+                .translation(0, 0, robotOne.stoneZ)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90,
+                        0, -90)));
 
         //Set the position of the bridge support targets with relation to origin (center of field)
         blueFrontBridge.setLocation(OpenGLMatrix
-                .translation(-bridgeX, bridgeY, bridgeZ)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 0, bridgeRotY, bridgeRotZ)));
+                .translation(-robotOne.bridgeX, robotOne.bridgeY, robotOne.bridgeZ)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 0,
+                        robotOne.bridgeRotY, robotOne.bridgeRotZ)));
 
         blueRearBridge.setLocation(OpenGLMatrix
-                .translation(-bridgeX, bridgeY, bridgeZ)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 0, -bridgeRotY, bridgeRotZ)));
+                .translation(-robotOne.bridgeX, robotOne.bridgeY, robotOne.bridgeZ)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 0,
+                        -robotOne.bridgeRotY, robotOne.bridgeRotZ)));
 
         redFrontBridge.setLocation(OpenGLMatrix
-                .translation(-bridgeX, -bridgeY, bridgeZ)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 0, -bridgeRotY, 0)));
+                .translation(-robotOne.bridgeX, -robotOne.bridgeY, robotOne.bridgeZ)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 0,
+                        -robotOne.bridgeRotY, 0)));
 
         redRearBridge.setLocation(OpenGLMatrix
-                .translation(bridgeX, -bridgeY, bridgeZ)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 0, bridgeRotY, 0)));
+                .translation(robotOne.bridgeX, -robotOne.bridgeY, robotOne.bridgeZ)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 0,
+                        robotOne.bridgeRotY, 0)));
 
         //Set the position of the perimeter targets with relation to origin (center of field)
         red1.setLocation(OpenGLMatrix
-                .translation(quadField, -halfField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 180)));
+                .translation(robotOne.quadField, -robotOne.halfField, robotOne.mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90,
+                        0, 180)));
 
         red2.setLocation(OpenGLMatrix
-                .translation(-quadField, -halfField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 180)));
+                .translation(-robotOne.quadField, -robotOne.halfField, robotOne.mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90,
+                        0, 180)));
 
         front1.setLocation(OpenGLMatrix
-                .translation(-halfField, -quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , 90)));
+                .translation(-robotOne.halfField, -robotOne.quadField, robotOne.mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90,
+                        0 , 90)));
 
         front2.setLocation(OpenGLMatrix
-                .translation(-halfField, quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 90)));
+                .translation(-robotOne.halfField, robotOne.quadField, robotOne.mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90,
+                        0, 90)));
 
         blue1.setLocation(OpenGLMatrix
-                .translation(-quadField, halfField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 0)));
+                .translation(-robotOne.quadField, robotOne.halfField, robotOne.mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90,
+                        0, 0)));
 
         blue2.setLocation(OpenGLMatrix
-                .translation(quadField, halfField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 0)));
+                .translation(robotOne.quadField, robotOne.halfField, robotOne.mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90,
+                        0, 0)));
 
         rear1.setLocation(OpenGLMatrix
-                .translation(halfField, quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , -90)));
+                .translation(robotOne.halfField, robotOne.quadField, robotOne.mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90,
+                        0 , -90)));
 
         rear2.setLocation(OpenGLMatrix
-                .translation(halfField, -quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
+                .translation(robotOne.halfField, -robotOne.quadField, robotOne.mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90,
+                        0, -90)));
 
         //
         // Create a transformation matrix describing where the phone is on the robot.
@@ -291,26 +259,27 @@ public class SkystoneNavWebCam extends LinearOpMode {
         // The two examples below assume that the camera is facing forward out the front of the robot.
 
         // We need to rotate the camera around it's long axis to bring the correct camera forward.
-        if (CAMERA_CHOICE == BACK) {
-            phoneYRotate = -90;
+        if (robotOne.CAMERA_CHOICE == BACK) {
+            robotOne.phoneYRotate = -90;
         } else {
-            phoneYRotate = 90;
+            robotOne.phoneYRotate = 90;
         }
 
         // Rotate the phone vertical about the X axis if it's in portrait mode
-        if (PHONE_IS_PORTRAIT) {
-            phoneXRotate = 90 ;
+        if (robotOne.PHONE_IS_PORTRAIT) {
+            robotOne.phoneXRotate = 90 ;
         }
 
         // Next, translate the camera lens to where it is on the robot.
         // In this example, it is centered (left to right), but forward of the middle of the robot, and above ground level.
-        final float CAMERA_FORWARD_DISPLACEMENT  = 4.0f * mmPerInch;   // eg: Camera is 4 Inches in front of robot-center
-        final float CAMERA_VERTICAL_DISPLACEMENT = 8.0f * mmPerInch;   // eg: Camera is 8 Inches above ground
+        final float CAMERA_FORWARD_DISPLACEMENT  = 4.0f * robotOne.mmPerInch;   // eg: Camera is 4 Inches in front of robot-center
+        final float CAMERA_VERTICAL_DISPLACEMENT = 8.0f * robotOne.mmPerInch;   // eg: Camera is 8 Inches above ground
         final float CAMERA_LEFT_DISPLACEMENT     = 0;     // eg: Camera is ON the robot's center line
 
         OpenGLMatrix robotFromCamera = OpenGLMatrix
                     .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
-                    .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
+                    .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES,
+                            robotOne.phoneYRotate, robotOne.phoneZRotate, robotOne.phoneXRotate));
 
         /**  Let all the trackable listeners know where the phone is.  */
         for (VuforiaTrackable trackable : allTrackables) {
@@ -333,57 +302,124 @@ public class SkystoneNavWebCam extends LinearOpMode {
         while (!isStopRequested()) {
 
             // check all the trackable targets to see which one (if any) is visible.
-            targetVisible = false;
-
+            robotOne.targetVisible = false;
             for (VuforiaTrackable trackable : allTrackables) {
                 if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
                     telemetry.addData("Visible Target", trackable.getName());
+                    robotOne.targetVisible = true;
 
-                    if((trackable.getName().equals("Red Perimeter 1") && quad == "empty") &
-                            (trackable.getName().equals("Red Perimeter 1") && quad == "unknown")) {
+                    if((trackable.getName().equals("Red Perimeter 1") && quad == null)
+                        || (trackable.getName().equals("Rear Perimeter 1") && quad == null)) {
+                        //Blue Building
                         quad = "q1";
-                    } else if((trackable.getName().equals("Red Perimeter 2") && quad == "empty") &
-                            (trackable.getName().equals("Red Perimeter 2") && quad == "unknown")) {
+                        turn = "right";
+                    } else if((trackable.getName().equals("Red Perimeter 2") && quad == null)
+                        || (trackable.getName().equals("Front Perimeter 2") && quad == null)) {
+                        //Blue Loading
                         quad = "q2";
-                    } else if((trackable.getName().equals("Blue Perimeter 1") && quad == "empty") &
-                            (trackable.getName().equals("Blue Perimeter 1") && quad == "unknown")) {
+                        turn = "left";
+                    } else if((trackable.getName().equals("Blue Perimeter 1") && quad == null)
+                        || (trackable.getName().equals("Front Perimeter 1") && quad == null)) {
+                        //Red Loading
                         quad = "q3";
-                    } else if((trackable.getName().equals("Blue Perimeter 2") && quad == "empty") &
-                            (trackable.getName().equals("Blue Perimeter 2") && quad == "unknown")) {
+                        turn = "right";
+                    } else if((trackable.getName().equals("Blue Perimeter 2") && quad == null)
+                        || (trackable.getName().equals("Rear Perimeter 2") && quad == null)){
+                        //Red Building
                         quad = "q4";
-                    } else {
-                        quad = "unknown";
+                        turn = "left";
                     }
 
                     telemetry.addData("Quadrant", quad);
-
-
-                    targetVisible = true;
 
                     // getUpdatedRobotLocation() will return null if no new information is available since
                     // the last time that call was made, or if the trackable is not currently visible.
                     OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
                     if (robotLocationTransform != null) {
-                        lastLocation = robotLocationTransform;
+                        robotOne.lastLocation = robotLocationTransform;
                     }
                     break;
                 }
             }
 
             // Provide feedback as to where the robot is located (if we know).
-            if (targetVisible) {
+            if (robotOne.targetVisible) {
                 // express position (translation) of robot in inches.
-                VectorF translation = lastLocation.getTranslation();
+                VectorF translation = robotOne.lastLocation.getTranslation();
                 telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
-                        translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
+                        translation.get(0) / robotOne.mmPerInch, translation.get(1) / robotOne.mmPerInch,
+                        translation.get(2) / robotOne.mmPerInch);
 
                 // express the rotation of the robot in degrees.
-                Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
-                telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
+                Orientation rotation = Orientation.getOrientation(robotOne.lastLocation, EXTRINSIC, XYZ, DEGREES);
+                telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f",
+                        rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
+
+
             }
             else {
                 telemetry.addData("Visible Target", "none");
             }
+
+            if (quad == "q1") {
+                //blue building
+                telemetry.addData("Executing:", "Blue Building Sequence");
+                while (opModeIsActive()) {
+                    //turn direction = turn
+                    //move platform
+                    //find block (not skystone)
+                    //pick up block
+                    //put block on platform
+                    //repeat
+                    //park under blue skybridge next to center bridge
+                }
+            } else if (quad == "q2") {
+                //blue loading
+                telemetry.addData("Executing:", "Blue Loading Sequence");
+                while (opModeIsActive()) {
+                    //turn direction = ture
+                    //find skystone
+                    //pick up skystone
+                    //move to building area
+                    //put skystone down
+                    //return to start
+                    //find second skystone
+                    //repeat
+                    //park under blue skybridge next to center bridge
+                }
+            } else if (quad == "q3") {
+                //red loading
+                telemetry.addData("Executing:", "Red Loading Sequence");
+                while (opModeIsActive()) {
+                    //turn direction = turn
+                    //find skystone
+                    //pick up skystone
+                    //move to building area
+                    //put skystone down
+                    //return to start
+                    //find second skystone
+                    //repeat
+                    //park under red skybridge next to center bridge
+                }
+            } else if (quad == "q4") {
+                //red building
+                telemetry.addData("Executing:", "Red Building Sequence");
+                while (opModeIsActive()) {
+                    //turn direction = turn
+                    //move platform
+                    //find block (not skystone)
+                    //pick up block
+                    //put block on platform
+                    //repeat
+                    //park under red skybridge next to center bridge
+                }
+            } else {
+                telemetry.addData("Does Not Compute...", "I'm lost....");
+                while (opModeIsActive()) {
+                    //adjust location and try to find the target
+                }
+            }
+
             telemetry.update();
         }
 

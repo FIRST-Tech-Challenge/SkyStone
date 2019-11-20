@@ -34,6 +34,12 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+
+import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
+
 /**
  * This is NOT an opmode.
  *
@@ -56,12 +62,49 @@ public class RobotOneHardware
     public DcMotor  leftDrive   = null;
     public DcMotor  rightDrive  = null;
     public DcMotor  InAndOut     = null;
-    public Servo    leftServo    = null;
-    public Servo    rightServo   = null;
+    //public Servo    leftClaw    = null;
+    //public Servo    rightClaw   = null;
+    public Servo    leftServo = null;
+    public Servo    rightServo = null;
 
     public static final double MID_SERVO       =  0.5 ;
     public static final double ARM_UP_POWER    =  0.45 ;
     public static final double ARM_DOWN_POWER  = -0.45 ;
+
+    //vuforia
+    public static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
+    public static final boolean PHONE_IS_PORTRAIT = false  ;
+    public static final String VUFORIA_KEY =
+            "AfSbRRH/////AAABmdZp/meEF0rrnF8x1B4RWA4U4MtiR4e9F4vLUBpFtxRVxfYp7Zn6hqj3zxh3oPeqmJLbXBaQx/bYT2lxN5uViFpcOzCfRx6FRSV3saH8TyKN/IGgOpP5nP0HgYt+zbWlfpo+efBy5YBNjQz0C25jgtKEWVQ/O6ibyOuRL+IZJfLz8dniv1n6lAwa9lLMIrWPOb31OrrcnIzumkoSbr6/0B6mNhzS2YJzkL8gwDNylOuZIcyzuTOCtknO5RpBC86Lfq96P8JKVeQ9h7bkJ9ZXnDm+dLfH+TWsh5wQBRq2rS0PE2Ji9FPn1lfOqk+MjIOHGGaig2jgB75DGhxcF07SHcKYtClXstRrM4L3Cqo3PSZ8";
+    // Since ImageTarget trackables use mm to specifiy their dimensions, we must use mm for all the physical dimension.
+    // We will define some constants and conversions here
+    public static final float mmPerInch        = 25.4f;
+    public static final float mmTargetHeight   = (6) * mmPerInch;          // the height of the center of the target image above the floor
+    // Constant for Stone Target
+    public static final float stoneZ = 2.00f * mmPerInch;
+    // Constants for the center support targets
+    public static final float bridgeZ = 6.42f * mmPerInch;
+    public static final float bridgeY = 23 * mmPerInch;
+    public static final float bridgeX = 5.18f * mmPerInch;
+    public static final float bridgeRotY = 59;                                 // Units are degrees
+    public static final float bridgeRotZ = 180;
+    // Constants for perimeter targets
+    public static final float halfField = 72 * mmPerInch;
+    public static final float quadField  = 36 * mmPerInch;
+    // Class Members
+    public OpenGLMatrix lastLocation = null;
+    public VuforiaLocalizer vuforia = null;
+    /**
+     * This is the webcam we are to use. As with other hardware devices such as motors and
+     * servos, this device is identified using the robot configuration tool in the FTC application.
+     */
+    WebcamName webcamName = null;
+    public boolean targetVisible = false;
+    public float phoneXRotate    = 0;
+    public float phoneYRotate    = 0;
+    public float phoneZRotate    = 0;
+
+
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
@@ -92,22 +135,21 @@ public class RobotOneHardware
         InAndOut.setPower(0);
         leftServo.setPosition(1.0);
         rightServo.setPosition(0.0);
-//        leftServo.setPosition(0.60);
-//        rightServo.setPosition(1.0);
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
         leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         InAndOut.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        leftServo.setPosition(Servo.MAX_POSITION);
-//        rightServo.setPosition(Servo.MIN_POSITION);
 
         // Define and initialize ALL installed servos.
         /*leftClaw  = hwMap.get(Servo.class, "left_hand");
         rightClaw = hwMap.get(Servo.class, "right_hand");
         leftClaw.setPosition(MID_SERVO);
         rightClaw.setPosition(MID_SERVO);*/
+
+        webcamName = hwMap.get(WebcamName.class, "Webcam 1");
+
     }
  }
 

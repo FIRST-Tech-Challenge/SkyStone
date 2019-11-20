@@ -2,6 +2,10 @@ package org.firstinspires.ftc.robotlib.autonomous;
 
 import org.firstinspires.ftc.robotlib.state.OrientationState;
 
+/**
+ * Old class for managing heading during movement
+ * @deprecated
+ */
 public class HeadingManager {
     private OrientationState orientationState = OrientationState.STATIONERY;
     private double targetHeading = 0;

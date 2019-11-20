@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.robotlib.state;
 
+/**
+ * Stores the state of Servo(s) for ease of use
+ */
 public enum ServoState {
     UNKNOWN(-1),
     STOWED(0),

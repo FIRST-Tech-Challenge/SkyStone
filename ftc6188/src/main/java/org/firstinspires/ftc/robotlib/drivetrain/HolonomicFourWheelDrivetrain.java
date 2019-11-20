@@ -2,9 +2,6 @@ package org.firstinspires.ftc.robotlib.drivetrain;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
-
 /*
 Frame work for a mecanum/omni drive train, the implemented interfaces provide the additional variables and functions to make movement possible
  */
@@ -20,7 +17,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     private DcMotor.RunMode[] runModes = new DcMotor.RunMode[4];
     private final double[] wheelAngles;
 
-    public HolonomicFourWheelDrivetrain(DcMotor[] motorList, double[] wheelAngles, boolean teleOpMode)
+    HolonomicFourWheelDrivetrain(DcMotor[] motorList, double[] wheelAngles, boolean teleOpMode)
     {
         super(motorList, teleOpMode);
         this.wheelAngles = wheelAngles;
@@ -115,11 +112,9 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     @Override
     public void position()
     {
-        boolean override = false;
-        while (isPositioning() && !override)
+        while (isPositioning())
         {
             updatePosition();
-            //override = roundDecimal(getCurrentPosition()) >= 0.9999;
         }
         finishPositioning();
     }
@@ -138,7 +133,6 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     {
         for (int motorIndex = 0; motorIndex < motorList.length; motorIndex++)
         {
-            double powerMod = powerModifier(motorList[motorIndex].getCurrentPosition()/wheelTargetPositions[motorIndex]);
             double percentComplete = 0;
             try
             {
@@ -146,13 +140,14 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
             }
             catch (Exception ignored) { }
 
-            if (percentComplete > 1)
+            if (percentComplete >= 1)
             {
                 motorList[motorIndex].setPower(0);
+                motorList[motorIndex].setTargetPosition(motorList[motorIndex].getCurrentPosition());
             }
             else
             {
-                motorList[motorIndex].setPower(getVelocity() * powerMod);
+                motorList[motorIndex].setPower(getVelocity());
             }
         }
     }
@@ -197,24 +192,5 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     public double getTicksPerIn()
     {
         return ticksPerIn;
-    }
-
-    private double roundDecimal(double input)
-    {
-        try
-        {
-            DecimalFormat decimalFormat = new DecimalFormat("#.####");
-            decimalFormat.setRoundingMode(RoundingMode.CEILING);
-            return Double.parseDouble(decimalFormat.format(input));
-        }
-        catch (NumberFormatException ignored)
-        {
-            return 0;
-        }
-    }
-
-    private double powerModifier(double percentTraveled)
-    {
-        return -Math.pow((1)*percentTraveled - 0.4, 2) + 0.6;
     }
 }

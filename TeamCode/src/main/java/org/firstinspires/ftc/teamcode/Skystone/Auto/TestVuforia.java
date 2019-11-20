@@ -14,7 +14,7 @@ public class TestVuforia extends AutoBase {
         initLogic();
         Vision tensorflow = new Vision(robot);
 
-        tensorflow.initTensorflow();
+        tensorflow.initVision();
         waitForStart();
 
 

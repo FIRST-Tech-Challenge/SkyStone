@@ -34,7 +34,7 @@ public class Vision extends LinearOpMode{
         this.robot = robot;
     }
 
-    public void initTensorflow(){
+    public void initVision(){
         initVuforia();
         initTfod();
 

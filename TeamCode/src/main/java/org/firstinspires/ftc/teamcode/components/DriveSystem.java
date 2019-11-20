@@ -92,7 +92,8 @@ public class DriveSystem {
     // TODO
     public void drive(float rightX, float leftX, float leftY, float leftTrig) {
         Log.d(TAG, "leftTrig -- " + leftTrig);
-        this.slowDrive = leftTrig > 0.3f ? true : false;
+
+        this.slowDrive = leftTrig > 0.3f;
 
         Log.d(TAG, "slow drive -- " + slowDrive);
         // Prevent small values from causing the robot to drift
@@ -116,16 +117,16 @@ public class DriveSystem {
         motors.forEach((name, motor) -> {
             switch(name) {
                 case FRONTRIGHT:
-                    motor.setPower(Range.clip(slowDrive == false ? frontRightPower : SLOW_DRIVE_COEFF * frontRightPower, -1, 1));
+                    motor.setPower(Range.clip(!slowDrive ? frontRightPower : SLOW_DRIVE_COEFF * frontRightPower, -1, 1));
                     break;
                 case BACKLEFT:
-                    motor.setPower(Range.clip(slowDrive == false ? backLeftPower : SLOW_DRIVE_COEFF * backLeftPower, -1, 1));
+                    motor.setPower(Range.clip(!slowDrive ? backLeftPower : SLOW_DRIVE_COEFF * backLeftPower, -1, 1));
                     break;
                 case FRONTLEFT:
-                    motor.setPower(Range.clip(slowDrive == false ? frontLeftPower : SLOW_DRIVE_COEFF * frontLeftPower, -1, 1));
+                    motor.setPower(Range.clip(!slowDrive ? frontLeftPower : SLOW_DRIVE_COEFF * frontLeftPower, -1, 1));
                     break;
                 case BACKRIGHT:
-                    motor.setPower(Range.clip(slowDrive == false ? backRightPower : SLOW_DRIVE_COEFF * backRightPower, -1, 1));
+                    motor.setPower(Range.clip(!slowDrive ? backRightPower : SLOW_DRIVE_COEFF * backRightPower, -1, 1));
                     break;
             }
         });

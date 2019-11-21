@@ -69,11 +69,12 @@ class SSMechTeleOp : OpMode() {
         }
         tooHigh = curPos >= max
         tooLow = curPos < 0
-
         //if (curPos > 1500) linSlidePow /= 1.2.toFloat() //slow slide if greater than value
         robot.vSlide?.power = -linSlidePow.toDouble()//controls vertical slide, flips sign
+        
+        // Horizontal slide calcs
         slideP = (gamepad2.left_stick_y.toDouble() / 2) + 0.5 // horizontal slide
-        if (touched) { //controls horizontal slide with the left stick of gp2
+        if (touched) { //toggle controls horizontal slide with the left stick of gp2
             if (slideP > 0.5) robot.hSlide?.position = slideP //1=back; 0=forward
             else robot.hSlide?.position = 0.5
         } else robot.hSlide?.position = slideP
@@ -85,12 +86,12 @@ class SSMechTeleOp : OpMode() {
         if (tooHigh) telemetry.addData("Linear Slide Y Error:", "MAX HEIGHT REACHED")
         if (tooLow) telemetry.addData("Linear Slide Y Error:", "MIN HEIGHT REACHED")
         if (gamepad1.left_bumper) telemetry.addData("Slowdown:", "Engaged!")
-        telemetry.addData("Motors: left = $leftPower, right = $rightPower, pow = $linSlidePow", "") //kotlin string templates
+        telemetry.addData("Linear Slide V: $linSlidePow", "") //kotlin string templates
         telemetry.addData("Attachments:", "HSlide = ${robot.hSlide?.position?.toFloat()}, " +
                 "Claw = ${robot.claw?.position?.toFloat()}, " +
                 "VSlide = ${curPos.toFloat()}", "")
-        telemetry.addData("GP: stick1 = ${gamepad1.left_stick_x}, ${gamepad1.left_stick_y}; " +
-                "stick2 = ${gamepad1.right_stick_x}, ${gamepad1.right_stick_y}", "")
+        telemetry.addData("GP: stick 1 = ${gamepad1.left_stick_x}, ${gamepad1.left_stick_y}; " +
+                "stick 2 = ${gamepad1.right_stick_x}, ${gamepad1.right_stick_y}", "")
     }
 
     override fun stop() {
@@ -120,7 +121,7 @@ class SSMechTeleOp : OpMode() {
 
 
         var drive = (-gamepad1.left_stick_y).toDouble()
-        var turn = gamepad1.left_stick_x.toDouble() * 1.5
+        var turn = gamepad1.left_stick_x.toDouble() * 1.5 //compensate for different angles of the wheel
         var strafe = gamepad1.right_stick_x.toDouble()
         var nor = 0.0
 
@@ -136,12 +137,14 @@ class SSMechTeleOp : OpMode() {
             nor = max(abs(frontRightPower), nor)
             nor = max(abs(backRightPower), nor)
         }
-        // Divide everything by max (it's positive so we don't need to worry
+        // Divide everything by nor (it's positive so we don't need to worry
         // about signs)
+        //need to compensate for difference in core hex and 40:1 motors
         robot.fLDrive?.power = frontLeftPower / nor
         robot.bLDrive?.power = backLeftPower / nor
         robot.fRDrive?.power = frontRightPower / nor
         robot.bRDrive?.power = backRightPower / nor
+        telemetry.addData("front left: $frontLeftPower, front back: $frontBackPower, back left: $backLeftPower, back right: $backRightPower", "")
 
     }
 }

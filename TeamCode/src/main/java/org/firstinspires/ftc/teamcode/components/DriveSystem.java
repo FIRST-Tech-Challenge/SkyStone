@@ -22,7 +22,7 @@ public class DriveSystem {
         }
     }
 
-    public static final double SLOW_DRIVE_COEFF = 0.3;
+    public static final double SLOW_DRIVE_COEFF = 0.25;
 
     public int counter = 0;
     public boolean slowDrive;

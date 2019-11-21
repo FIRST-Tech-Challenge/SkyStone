@@ -39,6 +39,7 @@ public class AutoBlue extends LinearOpMode {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
+
     private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
     private static final boolean PHONE_IS_PORTRAIT = false  ;
 
@@ -214,8 +215,13 @@ public class AutoBlue extends LinearOpMode {
                     if (robotLocationTransform != null) {
                         lastLocation = robotLocationTransform;
                     }
-                    break;
+
+
                 }
+                front_left.setTargetPosition(1);
+                front_right.setTargetPosition(1);
+                break;
+
             }
 
             // Provide feedback as to where the robot is located (if we know).

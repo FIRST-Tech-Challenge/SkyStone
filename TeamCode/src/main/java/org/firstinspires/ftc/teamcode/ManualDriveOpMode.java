@@ -33,6 +33,10 @@ public class ManualDriveOpMode extends LinearOpMode {
             robot.driveByHand(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x, arcadeMode);
             robot.scoopSetPosition(gamepad1.b, gamepad1.y, gamepad1.x);
             robot.scoopFreeRun(gamepad1.right_bumper, gamepad1.left_bumper);
+            if (gamepad1.b || gamepad1.y || gamepad1.x || gamepad1.right_bumper || gamepad1.left_bumper){
+                // when we are moving the scoop arm, make sure the pinch arm is not on the way
+                robot.armVertical();
+            }
         }
     }
 }

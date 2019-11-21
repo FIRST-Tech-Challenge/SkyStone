@@ -76,6 +76,10 @@ public class PinchArmBot extends FourWheelsDriveBot {
         return;
     }
 
+    public void armVertical(){
+        servoArm.setPosition(PINCH_ARM_VERTICLE);
+    }
+
     public void dragFoundation() {
         servoArm.setPosition(FOUNDATION_DRAG);
         opMode.sleep(1000);

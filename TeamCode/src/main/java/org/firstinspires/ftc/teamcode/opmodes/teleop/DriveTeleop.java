@@ -27,7 +27,7 @@ public class DriveTeleop extends BaseOpMode {
         latchSystem.run(gamepad2.x, gamepad2.y);
         String armReturn = armSystem.run(gamepad2.b, gamepad2.dpad_left, gamepad2.dpad_right, gamepad2.dpad_up,
                 gamepad2.dpad_down, gamepad2.right_bumper, gamepad2.left_bumper, gamepad2.a,
-                true,1, 0.005);
+                true,1, 0.005, true);
         telemetry.addData("", armReturn);
     }
 }

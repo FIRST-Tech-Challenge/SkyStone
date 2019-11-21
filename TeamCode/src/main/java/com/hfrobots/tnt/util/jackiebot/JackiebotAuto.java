@@ -17,13 +17,15 @@
  SOFTWARE.
  **/
 
-package com.hfrobots.tnt.season1920;
+package com.hfrobots.tnt.util.jackiebot;
 
 import android.util.Log;
 
+import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.path.heading.ConstantInterpolator;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
+import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 import com.google.common.base.Ticker;
 import com.hfrobots.tnt.corelib.Constants;
 import com.hfrobots.tnt.corelib.control.DebouncedButton;
@@ -31,7 +33,7 @@ import com.hfrobots.tnt.corelib.control.DebouncedGamepadButtons;
 import com.hfrobots.tnt.corelib.control.NinjaGamePad;
 import com.hfrobots.tnt.corelib.control.RangeInput;
 import com.hfrobots.tnt.corelib.drive.mecanum.DriveConstants;
-import com.hfrobots.tnt.corelib.drive.mecanum.RoadRunnerMecanumDriveREV;
+import com.hfrobots.tnt.corelib.drive.mecanum.RoadRunnerMecanumDriveREVOptimized;
 import com.hfrobots.tnt.corelib.drive.mecanum.TrajectoryFollowerState;
 import com.hfrobots.tnt.corelib.state.State;
 import com.hfrobots.tnt.corelib.state.StateMachine;
@@ -44,21 +46,48 @@ import java.util.concurrent.TimeUnit;
 
 import static com.hfrobots.tnt.corelib.Constants.LOG_TAG;
 
-@Autonomous(name="00 Skystone Auto")
+@Autonomous(name="Jackie Auto Test", group="Utilities")
 @SuppressWarnings("unused")
-public class SkystoneAuto extends OpMode {
+public class JackiebotAuto extends OpMode {
+    /**
+     * Describes the tuned characteristics of the drivebase for Jackiebot
+     */
+    static class JackieDriveConstants extends DriveConstants {
+        private static DriveConstraints DRIVE_CONSTRAINTS = new DriveConstraints(40, 20.0, 0.0,
+                Math.toRadians(180.0), Math.toRadians(180.0), 0.0);
+        private static PIDCoefficients TRANSLATIONAL_PID_COEFFICIENTS = new PIDCoefficients(4.2D, 0, 0);
+        private static PIDCoefficients HEADING_PID_COEFFICIENTS = new PIDCoefficients(0.295D, 0, 0);
+
+        @Override
+        public DriveConstraints getBaseConstraints() {
+            return DRIVE_CONSTRAINTS;
+        }
+
+        @Override
+        public PIDCoefficients getTranslationalPID() {
+            return TRANSLATIONAL_PID_COEFFICIENTS;
+        }
+
+        @Override
+        public PIDCoefficients getHeadingPid() {
+            return HEADING_PID_COEFFICIENTS;
+        }
+    }
+
     private Ticker ticker;
 
-    private RoadRunnerMecanumDriveREV driveBase;
+    private RoadRunnerMecanumDriveREVOptimized driveBase;
 
     private StateMachine stateMachine;
 
     // The routes our robot knows how to do
     private enum Routes {
+        MOVE_FOUNDATION("Move Foundation"),
+        SCAN_SKYSTONES("Scan Skystones"),
         PARK_LEFT_NEAR_POS("Park from left to near"),
-        PARK_RIGHT_NEAR_POS("Park from right to near");
-        //PARK_LEFT_FAR_POS("Park from left to far"),
-        //PARK_RIGHT_FAR_POS("Park from right to far");
+        PARK_RIGHT_NEAR_POS("Park from right to near"),
+        PARK_LEFT_FAR_POS("Park from left to far"),
+        PARK_RIGHT_FAR_POS("Park from right to far");
 
         final String description;
 
@@ -89,7 +118,7 @@ public class SkystoneAuto extends OpMode {
         setupDriverControls();
 
         RealSimplerHardwareMap simplerHardwareMap = new RealSimplerHardwareMap(this.hardwareMap);
-        driveBase = new RoadRunnerMecanumDriveREV(new SkystoneDriveConstants(), simplerHardwareMap, false);
+        driveBase = new RoadRunnerMecanumDriveREVOptimized(new JackieDriveConstants(), simplerHardwareMap, true);
 
         stateMachine = new StateMachine(telemetry);
     }
@@ -205,12 +234,18 @@ public class SkystoneAuto extends OpMode {
                     case PARK_RIGHT_NEAR_POS:
                         setupParkFromRightNear();
                         break;
-//                    case PARK_LEFT_FAR_POS:
-//                        setupParkFromLeftFar();
-//                        break;
-//                    case PARK_RIGHT_FAR_POS:
-//                        setupParkFromRightFar();
-//                        break;
+                    case PARK_LEFT_FAR_POS:
+                        setupParkFromLeftFar();
+                        break;
+                    case PARK_RIGHT_FAR_POS:
+                        setupParkFromRightFar();
+                        break;
+                    case SCAN_SKYSTONES:
+                        setupScanSkytones();
+                        break;
+                    case MOVE_FOUNDATION:
+                        setupMoveFoundation();
+                        break;
                     default:
                         stateMachine.addSequential(newDoneState("Default done"));
                         break;
@@ -263,16 +298,58 @@ public class SkystoneAuto extends OpMode {
 
         State parkTrajectoryState = new TrajectoryFollowerState(stateName,
                 telemetry, driveBase, ticker, TimeUnit.SECONDS.toMillis(20 * 1000)) {
+                @Override
+                protected Trajectory createTrajectory() {
+                    return driveBase.trajectoryBuilder().lineTo(TntPose2d.toVector2d(0, forwardDistance), new ConstantInterpolator(0))
+                            .lineTo(TntPose2d.toVector2d(strafeDistance, forwardDistance), new ConstantInterpolator(0))
+                            .build();
+                }
+        };
+
+        stateMachine.addSequential(parkTrajectoryState);
+        stateMachine.addSequential(newDoneState("Done!"));
+    }
+
+    protected void setupScanSkytones() {
+        // Robot starts against wall, depot side of tape line
+
+        State straightTrajectoryState = new TrajectoryFollowerState("Straight",
+                telemetry, driveBase, ticker, TimeUnit.SECONDS.toMillis(20 * 1000)) {
             @Override
             protected Trajectory createTrajectory() {
-                return driveBase.trajectoryBuilder()
-                        .lineTo(TntPose2d.toVector2d(0, forwardDistance), new ConstantInterpolator(0))
-                        .lineTo(TntPose2d.toVector2d(strafeDistance, forwardDistance), new ConstantInterpolator(0))
+                return driveBase.trajectoryBuilder().lineTo(TntPose2d.toVector2d(0, 28), new ConstantInterpolator(0))
+                        .lineTo(TntPose2d.toVector2d(-20, 28), new ConstantInterpolator(0))
                         .build();
             }
         };
 
-        stateMachine.addSequential(parkTrajectoryState);
+        stateMachine.addSequential(straightTrajectoryState);
+        stateMachine.addSequential(newDoneState("Done!"));
+    }
+
+    protected void setupMoveFoundation() {
+        // Robot starts against wall, left side on tile seam nearest to tape
+
+        State splineTrajectoryState = new TrajectoryFollowerState("Spline",
+                telemetry, driveBase, ticker, TimeUnit.SECONDS.toMillis(20 * 1000)) {
+            @Override
+            protected Trajectory createTrajectory() {
+                return driveBase.trajectoryBuilder().splineTo(TntPose2d.toPose2d(9, 28))
+                        .build();
+            }
+        };
+
+        // GRIP!
+
+        // Turn 90 degrees clockwise
+
+        // Forward 5-6"
+
+        // UNGRIP
+
+        // Win!
+
+        stateMachine.addSequential(splineTrajectoryState);
         stateMachine.addSequential(newDoneState("Done!"));
     }
 

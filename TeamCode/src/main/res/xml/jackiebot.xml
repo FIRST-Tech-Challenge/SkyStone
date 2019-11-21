@@ -20,18 +20,11 @@ SOFTWARE.
 <Robot type="FirstInspires-FTC">
     <LynxUsbDevice name="Expansion Hub Portal 1" serialNumber="DQ1476N4" parentModuleAddress="2">
         <LynxModule name="Main Hub" port="2">
-            <LynxEmbeddedIMU name="imu" port="0" bus="0" />
-
             <!-- DC Motors -->
             <Motor name="leftFrontDriveMotor"  port="0" />
             <Motor name="rightFrontDriveMotor" port="1" />
             <Motor name="leftRearDriveMotor"  port="2" />
             <Motor name="rightRearDriveMotor"  port="3" />
-
-            <LynxColorSensor name="colorSensor" port="0" bus="0" />
-            <REV_VL53L0X_RANGE_SENSOR name="tof" port="0" bus="1" />
-            <AnalogInput name="analog_0" port="0" />
-            <AnalogInput name="analog_1" port="1" />
         </LynxModule>
     </LynxUsbDevice>
 </Robot>

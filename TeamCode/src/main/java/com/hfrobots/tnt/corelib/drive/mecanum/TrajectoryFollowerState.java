@@ -36,17 +36,16 @@ import lombok.NonNull;
  * A TNT State Machine state that will follow a RoadRunner trajectory
  * using motion profiles for the given MecanumDrive.
  */
-public class TrajectoryFollowerState extends StopwatchTimeoutSafetyState {
+public abstract class TrajectoryFollowerState extends StopwatchTimeoutSafetyState {
     protected Trajectory trajectory;
 
     private boolean initialized;
 
-    private final RoadRunnerMecanumDriveBase driveBase;
+    protected final RoadRunnerMecanumDriveBase driveBase;
 
     public TrajectoryFollowerState(@NonNull String name,
                                    @NonNull Telemetry telemetry,
                                    @NonNull RoadRunnerMecanumDriveBase driveBase,
-                                   @NonNull Trajectory trajectory,
                                    @NonNull Ticker ticker,
                                    long safetyTimeoutMillis) {
         super(name, telemetry, ticker, safetyTimeoutMillis);
@@ -64,6 +63,8 @@ public class TrajectoryFollowerState extends StopwatchTimeoutSafetyState {
         }
 
         if (!initialized) {
+            trajectory = createTrajectory();
+
             driveBase.followTrajectory(trajectory);
 
             initialized = true;
@@ -82,4 +83,6 @@ public class TrajectoryFollowerState extends StopwatchTimeoutSafetyState {
     public void liveConfigure(DebouncedGamepadButtons buttons) {
 
     }
+
+    protected abstract Trajectory createTrajectory();
 }

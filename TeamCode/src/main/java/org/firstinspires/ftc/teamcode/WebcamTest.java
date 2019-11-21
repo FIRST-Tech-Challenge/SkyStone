@@ -18,7 +18,7 @@ public class WebcamTest {
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
-    private static final double MIN_CONFIDENCE = 0.5;
+    private static final double MIN_CONFIDENCE = 0.65;
     private static final int NUM_BLOCKS = 3;
     int cameraMonitorViewId;
 
@@ -271,7 +271,7 @@ public class WebcamTest {
                 }
             }
         }
-        opmode.telemetry.addData("Skystone Position", "Error occurred");
+        opmode.telemetry.addData("Skystone Position", "UNKNOWN");
         opmode.telemetry.update();
         return 2; // if something goes wrong
     }

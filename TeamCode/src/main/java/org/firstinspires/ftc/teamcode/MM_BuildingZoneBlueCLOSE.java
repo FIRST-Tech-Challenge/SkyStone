@@ -3,11 +3,11 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-@Autonomous(name = "Building Zone Blue")
-public class MM_BuildingZoneBlue extends LinearOpMode {
+@Autonomous(group = "Blue", name = "Building Zone Blue Close")
+public class MM_BuildingZoneBlueCLOSE extends LinearOpMode {
     private Robot robot = new Robot();
     private enum ParkingPosition {FAR, CLOSE}// far or close to center
-    private ParkingPosition parkingPosition = ParkingPosition.FAR;
+    private ParkingPosition parkingPosition = ParkingPosition.CLOSE;
     private double speed = 0.4;
 
     @Override
@@ -19,7 +19,7 @@ public class MM_BuildingZoneBlue extends LinearOpMode {
         robot.strafeTime(-speed, 250);
         robot.driveForwardDistance(18, speed, this);
         robot.moveWaffleMover();
-        robot.strafeTime(speed, 3000);
+        robot.strafeTime(speed, 2000);
         // correction for strafe
         //robot.turnWithImu(0.25, -90, this);
         robot.driveForwardDistance(8, -0.25, this);
@@ -27,11 +27,8 @@ public class MM_BuildingZoneBlue extends LinearOpMode {
         robot.driveForwardDistance(34, 0.25, this);
         robot.moveWaffleMover();
         robot.strafeTime(-speed, 3500);
-        robot.driveForwardDistance(6, -0.25, this);
-        robot.turnWithImu(speed, 90, this);
-        robot.driveForwardDistance(24, speed, this);
         if (parkingPosition == ParkingPosition.CLOSE) {
-            robot.strafeTime(speed, 1000);
+            robot.driveForwardDistance(22, -0.4, this);
         }
     }
 }

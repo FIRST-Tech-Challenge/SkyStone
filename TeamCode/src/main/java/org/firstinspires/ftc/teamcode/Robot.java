@@ -6,16 +6,19 @@ import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.hardware.kauailabs.NavxMicroNavigationSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IntegratingGyroscope;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 import java.util.concurrent.TimeUnit;
@@ -44,7 +47,9 @@ public class Robot {
     NavxMicroNavigationSensor navxMicro;
     BNO055IMU imu;
 
-    DistanceSensor frontDistance;
+    DistanceSensor frontDistance, leftDistance, rightDistance, rearDistance;
+    ColorSensor leftColor, insideColor;
+    TouchSensor rearTouch;
 
     // Vuforia
     WebcamTest detector;
@@ -127,16 +132,24 @@ public class Robot {
 
         // Servo mapping
         this.gripperRotateServo1 = hwMap.get(Servo.class, "gripperRotateServo1");
-        this.gripperRotateServo2 = hwMap.get(Servo.class, "gripperRotateServo2");
         this.grabServo = hwMap.get(Servo.class, "grabServo");
 
         // Servo direction
         this.gripperRotateServo1.setDirection(Servo.Direction.FORWARD);
-        this.gripperRotateServo2.setDirection(Servo.Direction.REVERSE);
         this.grabServo.setDirection(Servo.Direction.FORWARD);
 
         // Sensor init
         this.frontDistance = hwMap.get(DistanceSensor.class, "frontDistance");
+        this.leftDistance = hwMap.get(DistanceSensor.class, "leftDistance");
+        this.rightDistance = hwMap.get(DistanceSensor.class, "rightDistance");
+        this.rearDistance = hwMap.get(DistanceSensor.class, "rearDistance");
+
+        this.leftColor = hwMap.get(ColorSensor.class, "leftColor");
+        this.insideColor = hwMap.get(ColorSensor.class, "insideColor");
+
+        this.rearTouch = hwMap.get(TouchSensor.class, "rearTouch");
+
+        // init imu
         this.initImu();
 
         // Vuforia init
@@ -202,6 +215,17 @@ public class Robot {
 
     }
 
+    void driveWithDIstanceSensor(double distanceForSensor, double power, DistanceSensor distanceSensor, OpMode opmode) {
+        this.setDrivePower(power);
+        double distanceToBlock = distanceSensor.getDistance(DistanceUnit.INCH);
+        while (distanceToBlock > 15) {
+            opmode.telemetry.addData("Distance", distanceToBlock);
+            opmode.telemetry.update();
+            distanceToBlock = distanceSensor.getDistance(DistanceUnit.INCH);
+        }
+        this.stopDrive();
+    }
+
     void setStrafe(double power) {
         /* strafes at certain power
         positive power goes to the right
@@ -220,7 +244,7 @@ public class Robot {
         timer.reset();
         while (timer.time(TimeUnit.MILLISECONDS) < milliseconds) {
             double currentAngle = this.getHeading();
-            double error = Math.tanh((currentAngle - targetAngle) / 20); // we have to constraing the error between -1 and 1
+            double error = Math.tanh((currentAngle - targetAngle) / 20); // we have to constrain the error between -1 and 1
             this.frontLeft.setPower(power + error);
             this.frontRight.setPower(-power - error);
             this.rearLeft.setPower(-power - error);
@@ -300,7 +324,7 @@ public class Robot {
     void bringArmDown(OpMode opmode) {
         if (armPos == armPosition.REST) { // we only bring the arm down if the arm is resting
             // we rotate the arm 180 + ANGLE_OF_GRIPPER_WHEN_GRABBING degrees
-            this.moveArmRotate(-2800, 0.6, opmode);
+            this.moveArmRotate(-3100, 0.6, opmode);
             this.stopArmRotate();
             this.armPos = armPosition.ACTIVE;
         }
@@ -313,7 +337,7 @@ public class Robot {
                 this.rotateGripper(0.5);
             }
             // we rotate the arm 225 degrees
-            this.moveArmRotate(2800, -0.6, opmode);
+            this.moveArmRotate(3100, -0.6, opmode);
             this.armPos = armPosition.REST;
         }
     }
@@ -371,6 +395,8 @@ public class Robot {
 
         output += this.gripperPos;
 
+        output += "\nRobot Angle: " + this.getHeading();
+
         return output;
     }
 
@@ -416,7 +442,7 @@ public class Robot {
         Thread.sleep(500);
         this.gripBlock();
         Thread.sleep(500);
-        this.rotateGripper(0.7);
+        this.rotateGripper(0.8);
     }
 
     void stopEverything() {

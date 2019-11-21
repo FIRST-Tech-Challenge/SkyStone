@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -9,9 +8,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import java.util.concurrent.TimeUnit;
 
-@Disabled
-@Autonomous(group =  "Red", name = "Loading Zone Red Backup")
-public class MM_LoadingZoneRedBackup extends LinearOpMode {
+@Autonomous(group =  "Blue", name = "Loading Zone Blue Close")
+public class MM_LoadingZoneBlueCLOSE extends LinearOpMode {
 
     private Robot robot = new Robot();
     enum Skystone {LEFT, CENTER, RIGHT}
@@ -29,7 +27,7 @@ public class MM_LoadingZoneRedBackup extends LinearOpMode {
         robot.releaseBlock(this);
         // timer
         ElapsedTime timer = new ElapsedTime();
-        // Detect skystone with camera
+        // Detect skystone with camera that doesn't even work properly
         int position;
         timer.reset();
         while (true) {
@@ -49,8 +47,7 @@ public class MM_LoadingZoneRedBackup extends LinearOpMode {
             }
             idle();
         }
-
-        telemetry.addData("Distance", robot.frontDistance.getDistance(DistanceUnit.INCH));
+        telemetry.addData("Opmode", "Ready to start.");
         telemetry.update();
 
         // wait for start
@@ -63,9 +60,9 @@ public class MM_LoadingZoneRedBackup extends LinearOpMode {
                 idle();
             }
         } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
+            //Thread.currentThread().interrupt();
         } finally {
-            robot.stopEverything();
+            this.onRobotStopOrInterrupt();
         }
 /*
         // put arm down
@@ -158,15 +155,21 @@ public class MM_LoadingZoneRedBackup extends LinearOpMode {
     private void linearOpmodeSteps() throws InterruptedException {
         switch (stepNumber) {
             case 1:
-                // put arm down
-                robot.bringArmDown(this);
-                robot.rotateGripper(0.8);
-                Thread.sleep(250);
+                if (robot.frontDistance.getDistance(DistanceUnit.INCH) == 0.0) {
+                    this.driveWithoutDistanceSensor();
+                } else {
+                    robot.setDrivePower(0.25);
+                    double distanceToBlock = robot.frontDistance.getDistance(DistanceUnit.INCH);
+                    while (distanceToBlock > 15) {
+                        telemetry.addData("Distance", robot.frontDistance.getDistance(DistanceUnit.INCH));
+                        telemetry.update();
+                        distanceToBlock = robot.frontDistance.getDistance(DistanceUnit.INCH);
+                    }
+                    robot.stopDrive();
+                }
                 this.stepNumber++;
                 break;
             case 2:
-                // Drive to quarry
-                robot.driveForwardDistance(17, 0.4, this);
                 /*robot.setDrivePower(speed);
                 double distanceToBlock = robot.frontDistance.getDistance(DistanceUnit.INCH);
                 while (distanceToBlock > 11.5) {
@@ -176,23 +179,26 @@ public class MM_LoadingZoneRedBackup extends LinearOpMode {
                 }
                 robot.stopDrive();
                  */
+                // put arm down
+                robot.bringArmDown(this);
+                robot.rotateGripper(0.8);
                 Thread.sleep(500);
                 switch (skystonePos) {
                     case LEFT:
-                        distanceToBuildZone = 36;
+                        distanceToBuildZone = 24;
                         // strafe to block
-                        robot.strafeTime(-speed, 1500);
+                        robot.strafeTime(-0.4, 1500);
                         // correct for the strafe
                         //robot.turnRight(-0.25, 250);
                         break;
                     case CENTER:
                         distanceToBuildZone = 30;
-                        robot.strafeTime(-speed, 250);
+                        robot.strafeTime(-0.4, 250);
                         break;
                     case RIGHT:
-                        distanceToBuildZone = 24;
+                        distanceToBuildZone = 36;
                         // strafe to block
-                        robot.strafeTime(speed, 1250);
+                        robot.strafeTime(0.4, 1250);
                         // correct for the strafe
                         //robot.turnRight(-0.25, 250);
                         break;
@@ -207,11 +213,11 @@ public class MM_LoadingZoneRedBackup extends LinearOpMode {
                 break;
             case 4:
                 // back up
-                robot.driveForwardDistance(8, -speed, this);
+                robot.driveForwardDistance(20, -speed, this);
                 // turn towards skybridge
-                robot.turnWithImu(0.3, -90, this);
+                robot.turnWithImu(0.3, 90, this);
                 // drive to foundation
-                robot.driveForwardDistance(distanceToFoundation + distanceToBuildZone, speed, this);
+                robot.driveForwardDistance(distanceToFoundation + distanceToBuildZone - 12, speed, this);
                 this.stepNumber++;
                 break;
             case 5:
@@ -226,8 +232,8 @@ public class MM_LoadingZoneRedBackup extends LinearOpMode {
                 break;
             case 6:
                 Thread.sleep(500);
-                // correct position
-                robot.turnToGlobalPosition(0.25, -90, this);
+                // correct position - obviously its in the code
+                robot.turnToGlobalPosition(0.25, 90, this);
                 // drive to second Skystone
                 robot.driveForwardDistance(distanceToBuildZone + distanceToFoundation + 24, -speed, this);
                 // turn
@@ -235,9 +241,17 @@ public class MM_LoadingZoneRedBackup extends LinearOpMode {
                 this.stepNumber++;
                 break;
             case 7:
+                robot.rotateGripper(0.8);
                 // go to block
-                Thread.sleep(500);
-                robot.driveForwardDistance(10, 0.4, this);
+                /*robot.setDrivePower(0.25);
+                double distanceToBlock2 = robot.frontDistance.getDistance(DistanceUnit.INCH);
+                while (distanceToBlock2 > 15) {
+                    telemetry.addData("Distance", robot.frontDistance.getDistance(DistanceUnit.INCH));
+                    telemetry.update();
+                    distanceToBlock2 = robot.frontDistance.getDistance(DistanceUnit.INCH);
+                }
+                robot.stopDrive();*/
+                robot.driveForwardDistance(8, 0.25, this);
                 this.stepNumber++;
                 break;
             case 8:
@@ -247,24 +261,24 @@ public class MM_LoadingZoneRedBackup extends LinearOpMode {
                 this.stepNumber++;
                 break;
             case 9:
-                // drive to foundation to drop the block off
+                // drive to foundation to drop the block off -  aight bruh im bouta head out now
                 Thread.sleep(500);
                 robot.driveForwardDistance(15, -speed, this);
-                robot.turnWithImu(0.3, -90, this);
-                robot.driveForwardDistance(distanceToBuildZone + distanceToFoundation, speed, this);
+                robot.turnWithImu(0.3, 90, this);
+                robot.driveForwardDistance(distanceToBuildZone + distanceToFoundation + 18, speed, this);
                 robot.releaseBlock(this);
                 this.stepNumber++;
                 break;
             case 10:
                 // park
                 Thread.sleep(500);
-                robot.driveForwardDistance(6, -speed, this);
+                robot.driveForwardDistance(21, -0.6, this);
                 switch(parkingPosition) {
                     case FAR:
-                        robot.strafeTime(speed, 2800);
+                        robot.strafeTime(-speed, 2800);
                         break;
                     case CLOSE:
-                        robot.strafeTime(-speed, 1250);
+                        robot.strafeTime(speed, 1250);
                         break;
                 }
                 this.stepNumber++;
@@ -279,6 +293,11 @@ public class MM_LoadingZoneRedBackup extends LinearOpMode {
         robot.stopEverything();
         telemetry.addData("Opmode", "Stopped or Interrupted");
         telemetry.update();
+    }
+
+    void driveWithoutDistanceSensor() throws InterruptedException {
+        robot.driveForwardDistance(16, speed, this);
+        Thread.sleep(500);
     }
 
 }

@@ -50,9 +50,10 @@ public class DriveHalo extends OpMode {
     }
 
     void liftController() {
-        if (gamepad1.dpad_down) { // lift logic
+        double ry = gamepad1.right_stick_y;
+        if (ry > 0.2) { // lift logic
             robot.liftDown();
-        } else if (gamepad1.dpad_up) {
+        } else if (ry < -0.2) {
             robot.liftUp();
         } else {
             robot.stopLift();

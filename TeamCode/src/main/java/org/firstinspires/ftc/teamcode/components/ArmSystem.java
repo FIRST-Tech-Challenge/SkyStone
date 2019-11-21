@@ -77,6 +77,8 @@ public class ArmSystem {
     // Set to true when we're in the process of going home
     private boolean homing = false;
 
+    private boolean fastMode;
+
     // I know in terms of style points these should be private and just have getters and setters but
     // I want to make them easily incrementable
     public Position queuedPosition;
@@ -86,6 +88,8 @@ public class ArmSystem {
     public enum Position {
         POSITION_HOME, POSITION_WEST, POSITION_SOUTH, POSITION_EAST, POSITION_NORTH
     }
+
+    private EnumMap<Position, double[]> positionEnumMap;
 
     public enum ServoNames {
         GRIPPER, WRIST, ELBOW, PIVOT
@@ -108,8 +112,6 @@ public class ArmSystem {
 
      XX
      OO  <--- Position north
-
-     Probably should be controlled by the D pad or something.
      */
     public ArmSystem(EnumMap<ServoNames, Servo> servos, DcMotor slider, DigitalChannel limitSwitch,
                      boolean calibrate) {
@@ -124,11 +126,22 @@ public class ArmSystem {
         }
         this.direction = Direction.UP;
         this.slider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        // We map Position enums to an array of their servo values.
+        // We might want to move to these values in different parts of code,
+        // for example if we want to turn on / off fastmode, that can be done easily.
+        // Double values ordered Pivot, elbow, wrist.
+        this.positionEnumMap = new EnumMap<Position, double[]>(Position.class);
+        positionEnumMap.put(Position.POSITION_NORTH, new double[] {0.88, 0.94, 0.09});
+        positionEnumMap.put(Position.POSITION_EAST, new double[] {0.62, 0.09, 0.09});
+        positionEnumMap.put(Position.POSITION_WEST, new double[] {0.1, 0.64, 0.09});
+        positionEnumMap.put(Position.POSITION_SOUTH, new double[] {0.62, 0.64, 0.09});
+        positionEnumMap.put(Position.POSITION_HOME, new double[] {0.06, 0.68, 0.83});
     }
 
     /*
         Use this method in teleop.
-        Set assist to true if you want to use driver assist.
+        Set assist to true if you want to use driver assist. Same w/ fastmode.
         Each of these values should just be the raw button data (including gripper, which is
         a toggle.)
         The method variables are for keeping track of the buttons, so our driver class can just give
@@ -138,7 +151,9 @@ public class ArmSystem {
     private boolean m_gripper, m_up, m_down = false;
     public String run(boolean home, boolean west, boolean east, boolean north, boolean south,
                       boolean up, boolean down, boolean gripperButton, boolean assist,
-                      double sliderSpeed, double armSpeed) {
+                      double sliderSpeed, double armSpeed, boolean fastMode) {
+
+        this.fastMode = fastMode;
 
         if (homing) {
             goHome();
@@ -148,13 +163,13 @@ public class ArmSystem {
         this.SERVO_SPEED = armSpeed;
 
         if (west) {
-            movePresetPosition(Position.POSITION_WEST);
+            movePresetPosition(Position.POSITION_WEST, false);
         } else if (east) {
-            movePresetPosition(Position.POSITION_EAST);
+            movePresetPosition(Position.POSITION_EAST, false);
         } else if (south) {
-            movePresetPosition(Position.POSITION_SOUTH);
+            movePresetPosition(Position.POSITION_SOUTH, false);
         } else if (north) {
-            // Nope!
+            movePresetPosition(Position.POSITION_NORTH, false);
         } else if (home) {
             homing = true;
         }
@@ -213,26 +228,7 @@ public class ArmSystem {
                 m_currState = autoState.GO_UP
         }
     }
-*/
-
-    private void moveGripper(double pos) {
-        gripper.setPosition(pos);
-    }
-
-    private void moveWrist(double pos) {
-        //wrist.setPosition(pos);
-        wristTarget = pos;
-    }
-
-    private void moveElbow(double pos) {
-        //elbow.setPosition(pos);
-        elbowTarget = pos;
-    }
-
-    private void movePivot(double pos) {
-        //pivot.setPosition(pos);
-        pivotTarget = pos;
-    }
+    */
 
     // These are public for debugging purposes
     public double getGripper() {
@@ -256,11 +252,15 @@ public class ArmSystem {
     private Direction m_homeDirection = Direction.UP;
     private void goHome() {
         if (m_homeDirection == Direction.UP) {
+            int diff = getSliderPos() - calculateHeight(0);
+            if (Math.abs(diff) < 100) {
+
+            }
             setSliderHeight(1);
             if (getSliderPos() == calculateHeight(1)) {
-                moveWrist(0.06);
-                moveElbow(0.68);
-                movePivot(0.83);
+                // We know we can set fastmode to true here because we always want it to go fast
+                // to the home position
+                movePresetPosition(Position.POSITION_HOME, true);
                 openGripper();
                 m_homeDirection = Direction.DOWN;
             }
@@ -271,6 +271,7 @@ public class ArmSystem {
             // Should we even have the reversing direction?
             setSliderHeight(-1);
             if (getSliderPos() == calculateHeight(-1)) {
+                m_homeDirection = Direction.UP;
                 homing = false; // We're done!
             }
         }
@@ -279,11 +280,11 @@ public class ArmSystem {
     }
 
     private void openGripper() {
-        moveGripper(GRIPPER_OPEN);
+        gripper.setPosition(GRIPPER_OPEN);
     }
 
     private void closeGripper() {
-        moveGripper(GRIPPER_CLOSE);
+        gripper.setPosition(GRIPPER_CLOSE);
     }
 
     private void toggleGripper() {
@@ -296,29 +297,16 @@ public class ArmSystem {
         }
     }
 
-    private void movePresetPosition(Position pos) {
-        switch(pos) {
-            case POSITION_NORTH:
-                // TODO: Find north pos with new motor
-                moveWrist(0.88);
-                moveElbow(0.94);
-                movePivot(0.09);
-                break;
-            case POSITION_EAST:
-                moveWrist(0.62);
-                moveElbow(0.09);
-                movePivot(0.09);
-                break;
-            case POSITION_WEST:
-                moveWrist(0.1);
-                moveElbow(0.64);
-                movePivot(0.09);
-                break;
-            case POSITION_SOUTH:
-                moveWrist(0.62);
-                moveElbow(0.64);
-                movePivot(0.09);
-                break;
+    private void movePresetPosition(Position pos, boolean fastmode) {
+        double[] posArray = positionEnumMap.get(pos);
+        if (fastmode) {
+            pivot.setPosition(posArray[0]);
+            elbow.setPosition(posArray[1]);
+            wrist.setPosition(posArray[2]);
+        } else {
+            pivotTarget = posArray[0];
+            elbowTarget = posArray[1];
+            wristTarget = posArray[2];
         }
     }
 
@@ -343,7 +331,7 @@ public class ArmSystem {
 
         // The following code has a high chance of causing a timeout in init.
         // The commented code doesn't timeout but it also doesn't work.
-        // The coaches seem to agree that we don't really need calibration anyway so it should be
+        // Everybody seems to agree that we don't really need calibration anyway so it should be
         // fine, just don't run this code. I'm keeping it here because we might want it later,
         // although calling it in init() or start() will take more time in the round which might
         // cause problems.
@@ -430,12 +418,14 @@ public class ArmSystem {
     private void updateHeight(double speed) {
         slider.setPower(speed);
         slider.setTargetPosition(calculateHeight(targetHeight));
-        updateServo(elbow, elbowTarget);
-        toReturn += elbowTarget +"\n";
-        updateServo(pivot, pivotTarget);
-        toReturn += pivotTarget + "\n";
-        updateServo(wrist, wristTarget);
-        toReturn += wristTarget + "\n";
+        if (!fastMode) {
+            updateServo(elbow, elbowTarget);
+            toReturn += elbowTarget + "\n";
+            updateServo(pivot, pivotTarget);
+            toReturn += pivotTarget + "\n";
+            updateServo(wrist, wristTarget);
+            toReturn += wristTarget + "\n";
+        }
     }
 
     private void updateServo(Servo servo, double pos) {

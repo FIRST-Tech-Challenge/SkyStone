@@ -358,8 +358,8 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     private boolean clawdricopterBack = false;
     // These are the heights of the stone levels to auto set the lift to
     protected LiftPosition lastLiftHeight = LiftPosition.STOWED;
-    protected int liftZero = 0;
-    protected int intakeZero = 0;
+    protected static int liftZero = 0;
+    protected static int intakeZero = 0;
     public double intakePower = 0.0;
     protected boolean intakeZeroUpdated = false;
 

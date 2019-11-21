@@ -333,6 +333,9 @@ public class OmniAutoFullRed extends OmniAutoClass
 //    		}
 //		}
 
+        // Set the zero for the extender for when we start teleop
+		robot.setIntakeZero(-robot.getIntakePosition());
+
 		// Park
         driveAtHeadingForTime(maxSpeed, precisionSpin, 180.0, 90.0, 1000, true);
     }

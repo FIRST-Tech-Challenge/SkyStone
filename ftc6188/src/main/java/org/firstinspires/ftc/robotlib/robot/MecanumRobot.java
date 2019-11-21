@@ -75,10 +75,10 @@ public class MecanumRobot
     public void informationUpdate()
     {
         telemetry.addData("> Target Positions", "-----");
-        telemetry.addData("WheelTarget FL", drivetrain.motorList[0].getTargetPosition());
-        telemetry.addData("WheelTarget FR", drivetrain.motorList[1].getTargetPosition());
-        telemetry.addData("WheelTarget RL", drivetrain.motorList[2].getTargetPosition());
-        telemetry.addData("WheelTarget RR", drivetrain.motorList[3].getTargetPosition());
+        telemetry.addData("WheelTarget FL", drivetrain.wheelTargetPositions[0]);
+        telemetry.addData("WheelTarget FR", drivetrain.wheelTargetPositions[1]);
+        telemetry.addData("WheelTarget RL", drivetrain.wheelTargetPositions[2]);
+        telemetry.addData("WheelTarget RR", drivetrain.wheelTargetPositions[3]);
         telemetry.addData("Distance Target", drivetrain.getTargetPosition());
 
         telemetry.addData("> Wheel Positions", "-----");

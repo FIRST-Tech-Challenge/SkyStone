@@ -21,7 +21,6 @@ public class MecanumTeleOp extends OpMode
     private Button playSound;
     private Button servosUp;
     private Button servosDown;
-    private Button servosMid;
 
     // Sound players
     private BasicSound basicSound;
@@ -36,7 +35,6 @@ public class MecanumTeleOp extends OpMode
         playSound = new Button();
         servosUp = new Button();
         servosDown = new Button();
-        servosMid = new Button();
 
         basicSound = new BasicSound("police_siren", this.hardwareMap, 0, true);
     }
@@ -66,7 +64,6 @@ public class MecanumTeleOp extends OpMode
         robot.drivetrain.lowPowerInput(gamepad1.right_stick_button);
         playSound.input(gamepad1.x);
         servosDown.input(gamepad1.dpad_down);
-        servosMid.input(gamepad1.dpad_left || gamepad1.dpad_right);
 
         // movement controls
         robot.drivetrain.setCourse(course);
@@ -87,7 +84,6 @@ public class MecanumTeleOp extends OpMode
         // servo controls
         if (servosUp.onPress()){robot.platformServos.setPosition(1); }
         else if (servosDown.onPress()){robot.platformServos.setPosition(0);}
-        else if (servosMid.onPress()){robot.platformServos.setPosition(0.6);}
 
 
         //TELEMETRY

@@ -44,8 +44,8 @@ public abstract class HardwareChassis {
      */
     public void init(HardwareMap hwMap) {
         //initialize motors with directs to Expansion Hub
-        motor_front_right = hwMap.get(DcMotor.class, "motor_front_right");
-        motor_front_left = hwMap.get(DcMotor.class, "motor_front_left");
+        motor_front_right = hwMap.get(DcMotor.class, "motor_hub1_port0");
+        motor_front_left = hwMap.get(DcMotor.class, "motor_hub1_port1");
         motor_back_right = hwMap.get(DcMotor.class, "motor_back_right");
         motor_back_left = hwMap.get(DcMotor.class, "motor_back_left");
 

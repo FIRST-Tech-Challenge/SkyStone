@@ -3,13 +3,18 @@ package org.firstinspires.ftc.teamcode.Testing;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassis;
 import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassisGyro;
+import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareNeutral;
 
 @TeleOp (name = "hardware_tests")
 public class hardware_tests extends OpMode {
+    HardwareMap hwChss = hardwareMap;
+
+
     Servo servo_hub1_port0 = null;
     DcMotor motor_hub1_port0 = null;
     DcMotor motor_hub1_port1 = null;

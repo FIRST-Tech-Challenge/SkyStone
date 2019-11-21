@@ -265,12 +265,10 @@ public abstract class OmniAutoClass extends LinearOpMode {
 
         // We won't do circles with this function, just minimum rotation.
         // Get the destination gyro angle
-        while (targetAngle > 360.0) {
-            targetAngle -= 360.0;
-        }
-        while (targetAngle < 0.0) {
-            targetAngle += 360.0;
-        }
+		targetAngle = targetAngle % 360;
+		if(targetAngle < 0.0) {
+			targetAngle += 360.0;
+		}
 
         rotateRobotToAngle(speed, targetAngle, maxTime);
     }
@@ -376,7 +374,7 @@ public abstract class OmniAutoClass extends LinearOpMode {
 		double endTime = timer.milliseconds() + timeout;
 		// Allow the robot to read new values from the ToF sensors.
 		robot.resetReads();
-		while(endTime < timer.milliseconds() && !robot.distanceFromWall(side, distance, driveSpeed, error)) {
+		while(endTime < timer.milliseconds() && !robot.distanceFromWall(side, distance, driveSpeed, error) && !isStopRequested()) {
 			robot.resetReads();
 		}
 
@@ -397,11 +395,20 @@ public abstract class OmniAutoClass extends LinearOpMode {
 		double endTime = timer.milliseconds() + timeout;
 		// Allow the robot to read new values from the ToF sensors.
 		robot.resetReads();
-		while(endTime < timer.milliseconds() && !robot.parallelRearTarget(backLeftDistance, backRightDistance, driveSpeed, spinSpeed, error)) {
+		while(endTime < timer.milliseconds() && !robot.parallelRearTarget(backLeftDistance, backRightDistance, driveSpeed, spinSpeed, error) && !isStopRequested()) {
 			robot.resetReads();
 		}
 
 		return robot.parallelRearTarget(backLeftDistance, backRightDistance, driveSpeed, error);
+	}
+
+    public void moveFingers(boolean moveUp) {
+		if(moveUp) {
+			robot.fingersUp();
+		} else {
+			robot.fingersDown();
+		}
+		sleep(500);
 	}
 
     public void endAuto() {

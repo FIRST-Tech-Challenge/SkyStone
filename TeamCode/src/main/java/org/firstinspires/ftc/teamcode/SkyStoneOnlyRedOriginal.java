@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 public class SkyStoneOnlyRedOriginal extends LinearOpMode {
-    private PinchArmBot robot = new PinchArmBot(this);
+    private TensorFlowBot robot = new TensorFlowBot(this);
 
     @Override
     public void runOpMode() {

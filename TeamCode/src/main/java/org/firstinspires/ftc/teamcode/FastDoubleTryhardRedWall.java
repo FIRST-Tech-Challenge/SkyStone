@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 public class FastDoubleTryhardRedWall extends LinearOpMode {
-        private PinchArmBot robot = new PinchArmBot(this);
+        private TensorFlowBot robot = new TensorFlowBot(this);
 
 
         @Override
@@ -15,7 +15,7 @@ public class FastDoubleTryhardRedWall extends LinearOpMode {
             }
 
             robot.driveStraightByDistance( robot.DIRECTION_RIGHT, 500, 0.3);
-            robot.driveUntilSeeSkystone(robot.DIRECTION_FORWARD, -0.08);
+            robot.driveUntilSeeSkystone(-0.08, true);
             robot.driveStraightByDistance(robot.DIRECTION_FORWARD, 200, 0.3);
             robot.driveStraightByDistance(robot.DIRECTION_RIGHT, 400, 0.3);
 
@@ -27,7 +27,7 @@ public class FastDoubleTryhardRedWall extends LinearOpMode {
             robot.dropSkyStone();
 
             robot.driveStraightByDistance(robot.DIRECTION_BACKWARD, 2000, 0.9);
-            robot.driveUntilSeeSkystone(robot.DIRECTION_FORWARD, -0.08);
+            robot.driveUntilSeeSkystone(-0.08, true);
             robot.driveStraightByDistance(robot.DIRECTION_FORWARD, 200, 0.3);
             robot.driveStraightByDistance(robot.DIRECTION_RIGHT, 400, 0.3);
 
@@ -45,10 +45,3 @@ public class FastDoubleTryhardRedWall extends LinearOpMode {
 
         }
     }
-
-
-
-
-}
-
-}

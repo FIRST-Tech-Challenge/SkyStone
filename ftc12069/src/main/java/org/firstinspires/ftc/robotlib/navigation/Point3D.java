@@ -29,8 +29,9 @@ public class Point3D extends Point {
      * @param openGLMatrix OpenGLMatrix
      */
     public Point3D(OpenGLMatrix openGLMatrix) {
-        super(Helpers.getValueFromMatrix(openGLMatrix, 0, 0), Helpers.getValueFromMatrix(openGLMatrix, 1, 1));
-        this.z = Helpers.getValueFromMatrix(openGLMatrix, 2, 2);
+        this(openGLMatrix.getTranslation());
+        /*super(Helpers.getValueFromMatrix(openGLMatrix, 0, 0), Helpers.getValueFromMatrix(openGLMatrix, 1, 1));
+        this.z = Helpers.getValueFromMatrix(openGLMatrix, 2, 2);*/
     }
 
     /**

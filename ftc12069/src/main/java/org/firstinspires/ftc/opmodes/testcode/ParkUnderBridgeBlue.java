@@ -54,7 +54,7 @@ public class ParkUnderBridgeBlue extends LinearOpMode {
         //
         initGyro();
         //
-        new AutonomousRobot(this.hwMap, VUFORIA_KEY, Alliance.BLUE, this.telemetry);
+        new AutonomousRobot(this.hwMap, Alliance.BLUE, this.telemetry);
         frontright.setDirection(DcMotorSimple.Direction.REVERSE);
         backright.setDirection(DcMotorSimple.Direction.REVERSE);
         //

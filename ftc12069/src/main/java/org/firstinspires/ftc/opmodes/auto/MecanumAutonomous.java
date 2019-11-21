@@ -45,9 +45,6 @@ public class MecanumAutonomous {
     private HardwareMap hardwareMap;
     private ElapsedTime elapsedTime = new ElapsedTime();
 
-    private static final String VUFORIA_KEY =
-            " AaeQZBH/////AAABmdfQDXE5pE4MtzACI8Xt4hFWa0s+iOsMjEia6gHgjNTLJv9GfGVm1eO9HJg1uKBiuJ8O2+jzEP758aHiiC6XHCPrQcWGP8tu18nrXgUgHATBy74yPVv1lNWZq0eWcJjVDAnSpeQiFc4DhbC1F4rLgRpHzzjiIQTmUncitQg9G+l2/BKBQTkhPKEsh4gngyj8qGvyTePsw4DFDNKjf731kblzdzkAQx6cmz6fzrarqo8e4wQdHeD3USTIDDOFAlSdJe5qUmNsB0S7YILvfQE3AesKYd6CZMsyonme915GoicNvDRhsNkdc9pPSY50De/PwILZFgsygSO4jsqnbLzlLDyrPw0Q39Gc47NsVCqdVAaG" ;
-
     private AutonomousRobot robot;
 
     MecanumAutonomous(HardwareMap hardwareMap, Telemetry telemetry, Alliance alliance) {
@@ -62,7 +59,7 @@ public class MecanumAutonomous {
     void init() {
         // Initialize robot
         telemetry.addData("Status", "Initialized");
-        robot = new AutonomousRobot(this.hardwareMap, VUFORIA_KEY, alliance, telemetry);
+        robot = new AutonomousRobot(this.hardwareMap, alliance, telemetry);
         robot.init();
     }
 

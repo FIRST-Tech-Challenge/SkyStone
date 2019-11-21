@@ -7,5 +7,5 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 public class DumbAutoGoRight {
     private DcMotor front_left, front_right, back_left, back_right;
 
-    
+
 }

@@ -15,10 +15,10 @@ public class EncoderDriveAuto extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        tl = (DcMotorEx)hardwareMap.dcMotor.get("top_left_wheel");
-        tr = (DcMotorEx)hardwareMap.dcMotor.get("top_right_wheel");
-        bl = (DcMotorEx)hardwareMap.dcMotor.get("bottom_left_wheel");
-        br = (DcMotorEx)hardwareMap.dcMotor.get("bottom_right_wheel");
+        tl = (DcMotorEx)hardwareMap.dcMotor.get("front_left");
+        tr = (DcMotorEx)hardwareMap.dcMotor.get("front_right");
+        bl = (DcMotorEx)hardwareMap.dcMotor.get("back_left");
+        br = (DcMotorEx)hardwareMap.dcMotor.get("back_right");
 
         //PID Coefficients for tuning
         PIDCoefficients tunedConstants = new PIDCoefficients(0.0025, 0.1, 0.2);

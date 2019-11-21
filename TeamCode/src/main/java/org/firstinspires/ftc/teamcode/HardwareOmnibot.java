@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *Created by 12090 STEM Punk
+ * Created by 12090 STEM Punk
  */
 public class HardwareOmnibot extends HardwareOmnibotDrive
 {
@@ -792,8 +792,11 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         double drivePower;
 		double driveAngle = 0;
 		double maxRange = 40.0;
+		double maxMultiplier = 0.4;
 		double midRange = 20.0;
+		double midMultiplier = 0.2;
 		double minRange = 10.0;
+		double minMultiplier = 0.05;
         switch(side)
         {
             case FRONT:
@@ -825,19 +828,15 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 
 			// Go at slowest speed.
 			if(Math.abs(delta) <= minRange) {
-				drivePower *= 0.05;
+				drivePower *= minMultiplier;
 			} else if(Math.abs(delta) <= midRange) {
-				drivePower *= 0.2;
+				drivePower *= midMultiplier;
 			} else if (Math.abs(delta) < maxRange) {
-				drivePower *= 0.4;
+				drivePower *= maxMultiplier;
 			}
 			// make sure we don't go below minimum drive power.
 			if(Math.abs(drivePower) < MIN_DRIVE_SPEED) {
-				if(drivePower < 0) {
-					drivePower = -MIN_DRIVE_SPEED;
-				} else {
-					drivePower = MIN_DRIVE_SPEED;
-				}
+				drivePower = Math.copysign(MIN_DRIVE_SPEED, drivePower);
 			}
             drive(drivePower, 0.0, 0.0, driveAngle-readIMU());
 		} else {

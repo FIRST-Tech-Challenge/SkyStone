@@ -35,6 +35,9 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 import org.openftc.easyopencv.OpenCvPipeline;
 
+/**
+ * Created by 12090 STEM Punk
+ */
 @Autonomous(name="Auto: AutoFullRedTof", group ="Auto")
 public class OmniAutoFullRed extends OmniAutoClass
 {
@@ -48,8 +51,18 @@ public class OmniAutoFullRed extends OmniAutoClass
 		double leftDistance;
 		double attackAngle;
 		double maxSpeed = 1.0;
+		double slowSpeed = 0.3;
+		double precisionSpeed = 0.05;
 		double rotateSpeed = 0.3;
+		double precisionSpin = 0.05;
 		int stonePosition = 1;
+
+        // Error to consider distance from wall a success
+		// 1 cm
+		double standardDistanceError = 1.0;
+		// 0.5 cm
+		double precisionDistanceError = 0.5;
+
         /*
          * Instantiate an OpenCvCamera object for the camera we'll be using.
          * In this sample, we're using the phone's internal camera. We pass it a
@@ -111,7 +124,7 @@ public class OmniAutoFullRed extends OmniAutoClass
         robot.moveIntake(HardwareOmnibot.IntakePosition.EXTENDED);
 
 		// Drive out from the starting position, 10cm from the skystones
-		distanceFromWall(HardwareOmnibot.AlignmentSide.BACK, 110.0, maxSpeed, 1.0, 5000);
+		distanceFromWall(HardwareOmnibot.AlignmentSide.BACK, 110.0, maxSpeed, standardDistanceError, 5000);
 
 		switch(stonePosition) {
             case 1:
@@ -128,7 +141,7 @@ public class OmniAutoFullRed extends OmniAutoClass
 		}
 
 		// Drive from the side wall to the collection identified stone position.
-		distanceFromWall(HardwareOmnibot.AlignmentSide.LEFT, leftDistance, maxSpeed, 1.0, 5000);
+		distanceFromWall(HardwareOmnibot.AlignmentSide.LEFT, leftDistance, maxSpeed, standardDistanceError, 5000);
 
 		// Rotate the robot to collection angle.
         rotateRobotToAngle(rotateSpeed, attackAngle, 2000);
@@ -143,8 +156,8 @@ public class OmniAutoFullRed extends OmniAutoClass
         robot.startIntake(false);
 
         // Drive forward to collect the skystone and drive back.
-        driveAtHeadingForTime(0.3, 0.05, 90+attackAngle, attackAngle, 500, true);
-        driveAtHeadingForTime(0.3, 0.05, 270+attackAngle, attackAngle, 500, true);
+        driveAtHeadingForTime(slowSpeed, precisionSpin, 90+attackAngle, attackAngle, 500, true);
+        driveAtHeadingForTime(slowSpeed, precisionSpin, 270+attackAngle, attackAngle, 500, true);
 
 		// Stop the intake
 		robot.stopIntake();
@@ -155,20 +168,20 @@ public class OmniAutoFullRed extends OmniAutoClass
         // Move robot to center of lane before launching.  Lane defined as
 		// skybridge 48 inches and robot width 18 inches, with our robot width
 		// that is 24 inches to 42 inches, leaving 6 inches on either side.
-		distanceFromWall(HardwareOmnibot.AlignmentSide.LEFT, 61.0, maxSpeed, 1.0, 5000);
+		distanceFromWall(HardwareOmnibot.AlignmentSide.LEFT, 61.0, maxSpeed, standardDistanceError, 5000);
 
 		// Fly to the other side.  Do not put the brakes on, allow the distance
 		// from wall function take over.
-        driveAtHeadingForTime(maxSpeed, 0.05, 0.0, 90.0, 2000, false);
+        driveAtHeadingForTime(maxSpeed, precisionSpin, 0.0, 90.0, 2000, false);
 
 		// Get to foundation midpoint.
-		distanceFromWall(HardwareOmnibot.AlignmentSide.BACK, 31.1, maxSpeed, 1.0, 5000);
+		distanceFromWall(HardwareOmnibot.AlignmentSide.BACK, 31.1, maxSpeed, standardDistanceError, 5000);
 
 		// Rotate to foundation grabbing angle.
         rotateRobotToAngle(rotateSpeed, 180.0, 2000);
 
 		// Back the robot up to the foundation
-		parallelRearTarget(0.0, 0.0, 0.05, 0.05, 0.5, 5000);
+		parallelRearTarget(0.0, 0.0, precisionSpeed, precisionSpin, precisionDistanceError, 5000);
 
 		// Grab the foundation
 		moveFingers(false);
@@ -176,8 +189,11 @@ public class OmniAutoFullRed extends OmniAutoClass
         // Might want to start the process to place the skystone here.
 		// We also might want to put the perform function we use in the
 		// loops of the autonomous functions.
-//		robot.startLifting();
-//      robot.performLifting();
+//		if(!isStopRequested()) {
+//    		robot.startLifting();
+//		    robot.performLifiting();
+//      }
+
 		// Move the foundation to parallel back wall.
 		driveAtHeadingForTime(maxSpeed, rotateSpeed, 180.0, 90.0, 3000, true);
 //      robot.performLifting();
@@ -187,7 +203,7 @@ public class OmniAutoFullRed extends OmniAutoClass
 //      robot.performLifting();
 
 		// Drive the foundation into the back wall.
-		driveAtHeadingForTime(maxSpeed, 0.05, 0.0, 90.0, 2000, true);
+		driveAtHeadingForTime(maxSpeed, precisionSpin, 0.0, 90.0, 2000, true);
 //      robot.performLifting();
 
 		// Release the foundation
@@ -195,43 +211,49 @@ public class OmniAutoFullRed extends OmniAutoClass
 //      robot.performLifting();
 
 		// Back the robot up to the foundation for deploying skystone
-		parallelRearTarget(7.0, 7.0, 0.05, 0.05, 0.5, 5000);
+		parallelRearTarget(7.0, 7.0, precisionSpeed, precisionSpin, precisionDistanceError, 5000);
 //      robot.performLifting();
 
         // Get to running distance from the wall before placing.
         // Move robot to center of lane before launching.  Lane defined as
 		// skybridge 48 inches and robot width 18 inches, with our robot width
 		// that is 24 inches to 42 inches, leaving 6 inches on either side.
-		distanceFromWall(HardwareOmnibot.AlignmentSide.LEFT, 61.0, maxSpeed, 1.0, 5000);
+		distanceFromWall(HardwareOmnibot.AlignmentSide.LEFT, 61.0, maxSpeed, standardDistanceError, 5000);
 
         // Wait until robot is done lifting the stone.
-//      robot.performLifting();
-//      while(robot.liftState != HardwareOmnibot.LiftActivity.IDLE && !isStopRequested()) {
-//	        robot.performLifting();
+//		if(!isStopRequested()) {
+//          robot.performLifting();
+//          while(robot.liftState != HardwareOmnibot.LiftActivity.IDLE && !isStopRequested()) {
+//    	        robot.performLifting();
+//          }
 //      }
 //      
 		// Release the stone on the foundation.
-//		robot.startReleasing();
-//        while(robot.releaseState != HardwareOmnibot.ReleaseActivity.IDLE && !isStopRequested()) {
-//			robot.performingReleasing();
-//		}
+//		if(!isStopRequested()) {
+//    		robot.startReleasing();
+//            while(robot.releaseState != HardwareOmnibot.ReleaseActivity.IDLE && !isStopRequested()) {
+//			    robot.performingReleasing();
+//		    }
+//      }
 
         // Start stowing the lift.
 		// We might want to start running at a point in the stow activity before it completes.
-//		robot.startStowing();
-//		while(robot.stowState != HardwareOmnibot.StowActivity.IDLE && !isStopRequested()) {
-//			robot.peformingStowing();
+//		if(!isStopRequested()) {
+//		    robot.startStowing();
+//		    while(robot.stowState != HardwareOmnibot.StowActivity.IDLE && !isStopRequested()) {
+//		    	robot.peformingStowing();
+//    		}
 //		}
 
 		// Fly to the other side.  Do not put the brakes on, allow the distance
 		// from wall function take over.
-        driveAtHeadingForTime(maxSpeed, 0.05, 180.0, 90.0, 2000, true);
+        driveAtHeadingForTime(maxSpeed, precisionSpin, 180.0, 90.0, 2000, true);
 
         // Rotate the robot to line up to collect.
         rotateRobotToAngle(rotateSpeed, 0.0, 2000);
 
 		// Drive out to 10cm from the skystones
-		distanceFromWall(HardwareOmnibot.AlignmentSide.BACK, 110.0, maxSpeed, 1.0, 5000);
+		distanceFromWall(HardwareOmnibot.AlignmentSide.BACK, 110.0, maxSpeed, standardDistanceError, 5000);
 
         // Stone 1 come from bridge side and go away.
         // Stone 2 and 3, come from the away and go to bridge.
@@ -254,8 +276,8 @@ public class OmniAutoFullRed extends OmniAutoClass
         robot.startIntake(false);
 
         // Drive forward to collect the skystone and drive back.
-        driveAtHeadingForTime(0.3, 0.05, 90+attackAngle, attackAngle, 500, true);
-        driveAtHeadingForTime(0.3, 0.05, 270+attackAngle, attackAngle, 500, true);
+        driveAtHeadingForTime(slowSpeed, precisionSpin, 90+attackAngle, attackAngle, 500, true);
+        driveAtHeadingForTime(slowSpeed, precisionSpin, 270+attackAngle, attackAngle, 500, true);
 
 		// Stop the intake
 		robot.stopIntake();
@@ -266,45 +288,53 @@ public class OmniAutoFullRed extends OmniAutoClass
         // Move robot to center of lane before launching.  Lane defined as
 		// skybridge 48 inches and robot width 18 inches, with our robot width
 		// that is 24 inches to 42 inches, leaving 6 inches on either side.
-		distanceFromWall(HardwareOmnibot.AlignmentSide.LEFT, 61.0, maxSpeed, 1.0, 5000);
+		distanceFromWall(HardwareOmnibot.AlignmentSide.LEFT, 61.0, maxSpeed, standardDistanceError, 5000);
 
 		// Fly to the other side.  Do not put the brakes on, allow the distance
 		// from wall function take over.
-        driveAtHeadingForTime(maxSpeed, 0.05, 0.0, 90.0, 2000, false);
+        driveAtHeadingForTime(maxSpeed, precisionSpin, 0.0, 90.0, 2000, false);
 
 		// Want to start lifting here.
-//		robot.startLifting();
-//		robot.performLifiting();
+//		if(!isStopRequested()) {
+//    		robot.startLifting();
+//		    robot.performLifiting();
+//      }
 
 		// Back the robot up to the foundation
-        parallelRearTarget(robot.stackBackLeftFoundationDistance, robot.stackBackRightFoundationDistance, 0.05, 0.05, 0.5, 5000);
+        parallelRearTarget(robot.stackBackLeftFoundationDistance, robot.stackBackRightFoundationDistance, precisionSpeed, precisionSpin, precisionDistanceError, 5000);
 //		robot.performLifiting();
 
         // Get to the stacking distance from the wall.
-		distanceFromWall(robot.stackFromSide, robot.stackWallDistance, maxSpeed, 1.0, 5000);
+		distanceFromWall(robot.stackFromSide, robot.stackWallDistance, maxSpeed, standardDistanceError, 5000);
 //		robot.performLifiting();
 
         // Wait until robot is done lifting the stone.
-//      robot.performLifting();
-//      while(robot.liftState != HardwareOmnibot.LiftActivity.IDLE && !isStopRequested()) {
-//	        robot.performLifting();
+//		if(!isStopRequested()) {
+//          robot.performLifting();
+//          while(robot.liftState != HardwareOmnibot.LiftActivity.IDLE && !isStopRequested()) {
+//    	        robot.performLifting();
+//          }
 //      }
 //      
 		// Release the stone on the foundation.
-//		robot.startReleasing();
-//        while(robot.releaseState != HardwareOmnibot.ReleaseActivity.IDLE && !isStopRequested()) {
-//			robot.performingReleasing();
-//		}
+//		if(!isStopRequested()) {
+//    		robot.startReleasing();
+//            while(robot.releaseState != HardwareOmnibot.ReleaseActivity.IDLE && !isStopRequested()) {
+//			    robot.performingReleasing();
+//		    }
+//      }
 
         // Start stowing the lift.
 		// We might want to start running at a point in the stow activity before it completes.
-//		robot.startStowing();
-//		while(robot.stowState != HardwareOmnibot.StowActivity.IDLE && !isStopRequested()) {
-//			robot.peformingStowing();
+//		if(!isStopRequested()) {
+//		    robot.startStowing();
+//		    while(robot.stowState != HardwareOmnibot.StowActivity.IDLE && !isStopRequested()) {
+//		    	robot.peformingStowing();
+//    		}
 //		}
 
 		// Park
-        driveAtHeadingForTime(maxSpeed, 0.05, 180.0, 90.0, 1000, true);
+        driveAtHeadingForTime(maxSpeed, precisionSpin, 180.0, 90.0, 1000, true);
     }
 
     /*

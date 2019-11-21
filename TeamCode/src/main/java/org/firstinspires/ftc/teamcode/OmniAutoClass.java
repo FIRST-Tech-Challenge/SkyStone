@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
- * Created by Ethan on 10/23/2016.
+ * Created by 12090 STEM Punk
  */
 public abstract class OmniAutoClass extends LinearOpMode {
 

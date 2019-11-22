@@ -29,11 +29,11 @@ public class PIDTuningOpMode extends OpMode {
         robot.mecanumDrive(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
         robot.intake(gamepad2.left_trigger, gamepad2.right_trigger);
         if(gamepad2.a){
-            servo.setPosition(0.5);
+            servo.setPosition(.35);
 
         }
         else if(gamepad2.b){
-            servo.setPosition(-0.5);
+            servo.setPosition(-0.35);
 
         }
         telemetry.addData("encoder value:", encoder);

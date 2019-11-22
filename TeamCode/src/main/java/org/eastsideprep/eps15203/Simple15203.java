@@ -50,6 +50,9 @@ public class Simple15203 extends LinearOpMode {
         telemetry.addData("Say", "ready");
         telemetry.update();
 
+        int grabberPos;
+        int zArmMultiplier;
+
         // Wait for the game to start (driver presses PLAY)
         //robot.armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
@@ -90,6 +93,12 @@ public class Simple15203 extends LinearOpMode {
                 dsWeight *= 0.6;
             }
 
+            if (gamepad1.left_bumper) {
+                zArmMultiplier = 3;
+            } else {
+                zArmMultiplier = 2;
+            }
+
 // make sure values are not greater than 1
 
             if (dsWeight + rotWeight > 1.0) {
@@ -109,16 +118,21 @@ public class Simple15203 extends LinearOpMode {
 
 
 
+            //arm controls
+            if(gamepad1.y){
+                robot.zArmMotor.setPower(-0.2 * zArmMultiplier);
+            } else if (gamepad1.a) {
+                robot.zArmMotor.setPower(0.2 * zArmMultiplier);
+            } else {
+                robot.zArmMotor.setPower(0.0);
+            }
 
-            // Send telemetry message to signify robot running;
-            telemetry.addData("LeftX", left_stick_x);
-            telemetry.addData("LeftY", left_stick_y);
-            telemetry.addData("RightX", right_stick_x);
-            telemetry.addData("RightY", right_stick_y);
-            telemetry.update();
+            //grabber controls
+            if(gamepad1.x){
 
+            } else if (gamepad1.b) {
 
-
+            }
 
             // Pause for 40 mS each cycle = update 25 times a second.
             sleep(40);

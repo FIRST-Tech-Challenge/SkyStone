@@ -24,6 +24,7 @@ public class Hardware15203 {
     public DcMotor rightBackMotor = null;
     public DcMotor [] allMotors;
     public DcMotor zArmMotor = null;
+    public Servo grabberServo = null;
     public Gyroscope gyro = null;
 
     double [] rotationArray;
@@ -53,6 +54,7 @@ public class Hardware15203 {
         zArmMotor = hwMap.dcMotor.get("ZM");
         zArmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        grabberServo = hwMap.servo.get("GS");
 
         allMotors = new DcMotor[]{ leftFrontMotor, rightFrontMotor, leftBackMotor, rightBackMotor};
         rotationArray= new double[]{-1.0, 1.0, -1.0, 1.0};

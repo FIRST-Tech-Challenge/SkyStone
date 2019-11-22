@@ -47,7 +47,11 @@ public class DriveTeleop extends BaseOpMode {
         float lx = (float) Math.pow(gamepad1.left_stick_x, 3);
         float ly = (float) Math.pow(gamepad1.left_stick_y, 3);
         driveSystem.drive(rx, lx, -ly, gamepad1.left_trigger);
-        intakeSystem.spin(gamepad1.right_bumper, gamepad1.left_bumper);
+        if (gamepad1.right_bumper) {
+            intakeSystem.suck();
+        } else if (gamepad1.left_bumper) {
+            intakeSystem.unsuck();
+        }
         latchSystem.run(gamepad2.x, gamepad2.y);
 
         // Arm code (THIS NEEDS TO BE CLEANED UP LATER)

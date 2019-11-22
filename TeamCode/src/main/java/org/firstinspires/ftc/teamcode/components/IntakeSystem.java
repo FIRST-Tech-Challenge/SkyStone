@@ -10,7 +10,7 @@ public class IntakeSystem {
         RIGHT_INTAKE, LEFT_INTAKE, BOTTOM_INTAKE
     }
 
-    public enum SuckDirection {
+    private enum SuckDirection {
         SUCK, UNSUCK
     }
     private EnumMap<IntakeSystem.MotorNames, DcMotor> motors;
@@ -18,27 +18,6 @@ public class IntakeSystem {
     public IntakeSystem(EnumMap<IntakeSystem.MotorNames, DcMotor> motors) {
         this.motors = motors;
         initMotors();
-    }
-
-    public void spin(boolean leftBumper, boolean rightBumper) {
-        if (leftBumper) {
-            setMotorsPower(1.0);
-        } else if (rightBumper) {
-            setMotorsPower(-1.0);
-        } else {
-            setMotorsPower(0.0);
-        }
-    }
-    public void spin(SuckDirection direction) {
-        if (direction == SuckDirection.SUCK) {
-            spin(true, false);
-        } else {
-            spin(false, true);
-        }
-    }
-
-    public void stop() {
-        spin(false, false);
     }
 
     private void initMotors() {
@@ -53,9 +32,23 @@ public class IntakeSystem {
         });
     }
 
-    private void setMotorsPower(double power) {
+    public void stop() {
         for (DcMotor motor : motors.values()) {
-            motor.setPower(power);
+            motor.setPower(0.0);
+        }
+    }
+
+    public void suck() {
+        direction(SuckDirection.SUCK);
+    }
+
+    public void unsuck() {
+        direction(SuckDirection.UNSUCK);
+    }
+
+    private void direction(SuckDirection direction) {
+        for (DcMotor motor : motors.values()) {
+            motor.setPower(direction == SuckDirection.SUCK ? 1.0 : -1.0);
         }
     }
 }

@@ -17,17 +17,20 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 public class Mecanum_Drive extends LinearOpMode {
     private DcMotor frontLeft, frontRight, backLeft, backRight;
     private DcMotor lowerArm;
-    private Servo leftClaw, rightClaw, linear, grabber;
+    private Servo leftClaw, rightClaw, linear, grabber, rotate, front_grab, side_grab;
     private DigitalChannel lower_sensor;
     private float fwd, side, turn, power, lower_arm_stick, grabber_stick;
     private double clawOffset = 0.5;
+    private double rotation_offset = 0.0;
     private double linearOffset = 0.0;
     private double grabberOffset = 0.0;
-    private boolean btn_y, btn_a, left_bumper, right_bumper, btn_x1, btn_b1, btn_x2, btn_b2;
+    private boolean btn_y, btn_a, left_bumper_1, right_bumper_1, left_bumper_2, right_bumper_2, dpad_left, dpad_right, btn_x1, btn_b1, btn_x2, btn_b2;
     private boolean clawExpanded = false;
     private boolean clawOpen = true;
     private boolean turning = false;
     private boolean gyro_assist = false;
+    private boolean front_grabber_up = true;
+    private boolean side_grabber_up = true;
     private double target_grabber = 0.0;
 
 
@@ -40,6 +43,9 @@ public class Mecanum_Drive extends LinearOpMode {
     public final static double deadzone = 0.2;              // Deadzone for bot movement
     public final static double deadzone_hi = 0.9;           // Deadzone for straight movement
     public final static double turn_speed_max = 0.15;       // Max turn speed
+    public final static double rotation_speed = 0.01;       // Claw rotation movement rate
+    public final static double rotation_offset_max = 0.1;   // Max offset allowed to move rotation servo
+    public final static double rotation_initial = 0.5;       // Claw rotation movement rate
     public final static double claw_speed = 0.01;           // Claw movement rate
     public final static double claw_left_initial = 0.0;    // Left claw initial position
     public final static double claw_right_initial = 0.0;   // Right claw initial position
@@ -104,6 +110,11 @@ public class Mecanum_Drive extends LinearOpMode {
         rightClaw = hardwareMap.get(Servo.class, "right_claw");
         linear = hardwareMap.get(Servo.class, "linear");
         grabber = hardwareMap.get(Servo.class,"grabber");
+        rotate = hardwareMap.get(Servo.class, "rotate");
+
+        // Front and side grabber servos
+        front_grab = hardwareMap.get(Servo.class, "front_grab");
+        side_grab = hardwareMap.get(Servo.class, "side_grab");
 
         // Sensor for lower arm
         lower_sensor = hardwareMap.get(DigitalChannel.class, "arm_lower_sensor");
@@ -175,12 +186,12 @@ public class Mecanum_Drive extends LinearOpMode {
 
 
             // Use gamepad left & right Bumpers to open and close the claw
-            if (left_bumper) {
+            if (left_bumper_2) {
                 clawOffset += claw_speed;
 //                clawOffset = claw_grip_offset;
                 clawOpen = true;
                 clawExpanded = true;
-            } else if (right_bumper) {
+            } else if (right_bumper_2) {
                 clawOffset -= claw_speed;
 //                clawOffset = claw_release_offset;
                 clawOpen = false;
@@ -200,6 +211,39 @@ public class Mecanum_Drive extends LinearOpMode {
                     rightClaw.setPosition(0.4);
                 }
             }
+
+
+            // User gamepad left bumper to move up and down the front grabber
+            if (left_bumper_1) {
+                front_grabber_up = !front_grabber_up;
+                sleep(300);
+            }
+
+            if ( front_grabber_up )
+                front_grab.setPosition(0.0);
+            else
+                front_grab.setPosition(1.0);
+
+            // User gamepad right bumper to move up and down the side grabber
+            if (right_bumper_1) {
+                side_grabber_up = !side_grabber_up;
+                sleep(300);
+            }
+
+            if ( side_grabber_up )
+                side_grab.setPosition(0.0);
+            else
+                side_grab.setPosition(1.0);
+
+
+            // User DPad left and right to rotate claw
+            if (dpad_left)
+                rotation_offset -= rotation_speed;
+            else if (dpad_right)
+                rotation_offset += rotation_speed;
+
+            rotation_offset = Range.clip( rotation_offset, -0.5, 0.5 );
+            rotate.setPosition( rotation_initial + rotation_offset );
 
 
             // Use gamepad Y & right A buttons to rotate the linear servo
@@ -287,8 +331,13 @@ public class Mecanum_Drive extends LinearOpMode {
         btn_x2 = gamepad2.x;                        // For initialize positions
         btn_b2 = gamepad2.b;                        // For initialize positions
 
-        left_bumper = gamepad2.left_bumper;         // For claw release
-        right_bumper = gamepad2.right_bumper;       // For claw grip
+        left_bumper_1 = gamepad1.left_bumper;       // For front grabber
+        right_bumper_1 = gamepad1.right_bumper;     // For right grabber
+        left_bumper_2 = gamepad2.left_bumper;         // For claw release
+        right_bumper_2 = gamepad2.right_bumper;       // For claw grip
+
+        dpad_left = gamepad2.dpad_left;             // For rotation servo
+        dpad_right = gamepad2.dpad_right;           // For rotation servo
 
         //updates joystick values
         if( Math.abs(fwd) < deadzone_hi ) fwd = 0;

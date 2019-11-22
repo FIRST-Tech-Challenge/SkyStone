@@ -89,5 +89,19 @@ See https://developer.android.com/guide/topics/ui/settings.html
     </PreferenceScreen>
 
   </PreferenceCategory>
+  <PreferenceCategory
+      android:title="Match Information Settings">
+    <PreferenceScreen
+        android:title="Configure Match">
+
+      <CheckBoxPreference
+          android:title="Red Alliance"
+          android:key="omega_Red"
+          android:summary="Alliance Color"
+          android:defaultValue="false"/>
+
+    </PreferenceScreen>
+
+  </PreferenceCategory>
 
 </PreferenceScreen>

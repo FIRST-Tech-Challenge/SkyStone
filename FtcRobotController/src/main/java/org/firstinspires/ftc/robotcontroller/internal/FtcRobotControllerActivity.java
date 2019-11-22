@@ -60,6 +60,10 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.google.blocks.ftcrobotcontroller.BlocksActivity;
+import com.google.blocks.ftcrobotcontroller.ProgrammingModeActivity;
+import com.google.blocks.ftcrobotcontroller.ProgrammingModeControllerImpl;
 import com.google.blocks.ftcrobotcontroller.ProgrammingWebHandlers;
 import com.google.blocks.ftcrobotcontroller.runtime.BlocksOpMode;
 import com.qualcomm.ftccommon.ClassManagerFactory;
@@ -71,6 +75,7 @@ import com.qualcomm.ftccommon.FtcRobotControllerService.FtcRobotControllerBinder
 import com.qualcomm.ftccommon.FtcRobotControllerSettingsActivity;
 import com.qualcomm.ftccommon.LaunchActivityConstantsList;
 import com.qualcomm.ftccommon.LaunchActivityConstantsList.RequestCode;
+import com.qualcomm.ftccommon.ProgrammingModeController;
 import com.qualcomm.ftccommon.Restarter;
 import com.qualcomm.ftccommon.UpdateUI;
 import com.qualcomm.ftccommon.configuration.EditParameters;
@@ -113,6 +118,7 @@ import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.robotcore.internal.system.Assert;
 import org.firstinspires.ftc.robotcore.internal.system.PreferencesHelper;
 import org.firstinspires.ftc.robotcore.internal.system.ServiceController;
+import org.firstinspires.ftc.robotcore.internal.ui.LocalByRefIntentExtraHolder;
 import org.firstinspires.ftc.robotcore.internal.ui.ThemedActivity;
 import org.firstinspires.ftc.robotcore.internal.ui.UILocation;
 import org.firstinspires.ftc.robotcore.internal.webserver.RobotControllerWebInfo;
@@ -135,6 +141,7 @@ public class FtcRobotControllerActivity extends Activity
   protected RobotConfigFileManager cfgFileMgr;
 
   protected ProgrammingModeManager programmingModeManager;
+  protected ProgrammingModeController programmingModeController;
 
   protected UpdateUI.Callback callback;
   protected Context context;
@@ -313,6 +320,7 @@ public class FtcRobotControllerActivity extends Activity
           }
         });
         popupMenu.inflate(R.menu.ftc_robot_controller);
+        //FtcDashboard.populateMenu(popupMenu.getMenu());
         popupMenu.show();
       }
     });
@@ -356,6 +364,8 @@ public class FtcRobotControllerActivity extends Activity
     programmingModeManager = new ProgrammingModeManager();
     programmingModeManager.register(new ProgrammingWebHandlers());
     programmingModeManager.register(new OnBotJavaProgrammingMode());
+    programmingModeController = new ProgrammingModeControllerImpl(
+            this, (TextView) findViewById(R.id.textRemoteProgrammingMode), programmingModeManager);
 
     updateUI = createUpdateUI();
     callback = createUICallback(updateUI);
@@ -399,6 +409,8 @@ public class FtcRobotControllerActivity extends Activity
   @Override
   protected void onStart() {
     super.onStart();
+    //TODO Comment out next line before competition
+    //FtcDashboard.start();
     RobotLog.vv(TAG, "onStart()");
 
     // If we're start()ing after a stop(), then shut the old robot down so
@@ -431,6 +443,9 @@ public class FtcRobotControllerActivity extends Activity
   protected void onPause() {
     super.onPause();
     RobotLog.vv(TAG, "onPause()");
+    if (programmingModeController.isActive()) {
+      programmingModeController.stopProgrammingMode();
+    }
   }
 
   @Override
@@ -444,6 +459,9 @@ public class FtcRobotControllerActivity extends Activity
   @Override
   protected void onDestroy() {
     super.onDestroy();
+
+    //TODO Make sure to comment line for competition
+    //FtcDashboard.stop();
     RobotLog.vv(TAG, "onDestroy()");
 
     shutdownRobot();  // Ensure the robot is put away to bed
@@ -531,6 +549,7 @@ public class FtcRobotControllerActivity extends Activity
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     getMenuInflater().inflate(R.menu.ftc_robot_controller, menu);
+    //FtcDashboard.populateMenu(menu);
     return true;
   }
 
@@ -558,7 +577,20 @@ public class FtcRobotControllerActivity extends Activity
   public boolean onOptionsItemSelected(MenuItem item) {
     int id = item.getItemId();
 
-    if (id == R.id.action_program_and_manage) {
+    if (id == R.id.action_programming_mode) {
+      if (cfgFileMgr.getActiveConfig().isNoConfig()) {
+        // Tell the user they must configure the robot before starting programming mode.
+        // TODO: as we are no longer truly 'modal' this warning should be adapted
+        AppUtil.getInstance().showToast(UILocation.BOTH, context.getString(R.string.toastConfigureRobotBeforeProgrammingMode));
+      } else {
+        Intent programmingModeIntent = new Intent(AppUtil.getDefContext(), ProgrammingModeActivity.class);
+        programmingModeIntent.putExtra(
+            LaunchActivityConstantsList.PROGRAMMING_MODE_ACTIVITY_PROGRAMMING_WEB_HANDLERS,
+            new LocalByRefIntentExtraHolder(programmingModeManager));
+        startActivity(programmingModeIntent);
+      }
+      return true;
+    } else if (id == R.id.action_program_and_manage) {
       if (isRobotRunning()) {
         Intent programmingModeIntent = new Intent(AppUtil.getDefContext(), ProgramAndManageActivity.class);
         RobotControllerWebInfo webInfo = programmingModeManager.getWebServer().getConnectionInformation();
@@ -571,7 +603,13 @@ public class FtcRobotControllerActivity extends Activity
       Intent inspectionModeIntent = new Intent(AppUtil.getDefContext(), RcInspectionActivity.class);
       startActivity(inspectionModeIntent);
       return true;
-    } else if (id == R.id.action_restart_robot) {
+    }
+    else if (id == R.id.action_blocks) {
+      Intent blocksIntent = new Intent(AppUtil.getDefContext(), BlocksActivity.class);
+      startActivity(blocksIntent);
+      return true;
+    }
+    else if (id == R.id.action_restart_robot) {
       dimmer.handleDimTimer();
       AppUtil.getInstance().showToast(UILocation.BOTH, context.getString(R.string.toastRestartingRobot));
       requestRobotRestart();
@@ -665,6 +703,8 @@ public class FtcRobotControllerActivity extends Activity
         return service.getRobot().eventLoopManager;
       }
     });
+
+    //FtcDashboard.attachWebServer(service.getWebServer());
   }
 
   private void updateUIAndRequestRobotSetup() {
@@ -696,14 +736,16 @@ public class FtcRobotControllerActivity extends Activity
     }
 
     OpModeRegister userOpModeRegister = createOpModeRegister();
-    eventLoop = new FtcEventLoop(hardwareFactory, userOpModeRegister, callback, this);
-    FtcEventLoopIdle idleLoop = new FtcEventLoopIdle(hardwareFactory, userOpModeRegister, callback, this);
+    eventLoop = new FtcEventLoop(hardwareFactory, userOpModeRegister, callback, this, programmingModeController);
+    FtcEventLoopIdle idleLoop = new FtcEventLoopIdle(hardwareFactory, userOpModeRegister, callback, this, programmingModeController);
 
     controllerService.setCallback(callback);
     controllerService.setupRobot(eventLoop, idleLoop, runOnComplete);
 
     passReceivedUsbAttachmentsToEventLoop();
     AndroidBoard.showErrorIfUnknownControlHub();
+
+    //FtcDashboard.attachEventLoop(eventLoop);
   }
 
   protected OpModeRegister createOpModeRegister() {

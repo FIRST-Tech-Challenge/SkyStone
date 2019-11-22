@@ -19,6 +19,8 @@ import java.util.regex.Pattern
 
 apply plugin: 'com.android.application'
 
+def useProguard = false
+
 android {
 
     compileSdkVersion 28
@@ -40,6 +42,7 @@ android {
         applicationId 'com.qualcomm.ftcrobotcontroller'
         minSdkVersion 19
         targetSdkVersion 26
+        multiDexEnabled !useProguard
 
         /**
          * We keep the versionCode and versionName of robot controller applications in sync with
@@ -79,6 +82,13 @@ android {
             ndk {
                 abiFilters "armeabi-v7a"
             }
+
+            if (useProguard) {
+                minifyEnabled true
+                proguardFiles getDefaultProguardFile('proguard-android.txt'),
+                        'proguard-rules.pro'
+                println(getProguardFiles())
+            }
         }
         debug {
             debuggable true
@@ -87,12 +97,19 @@ android {
             ndk {
                 abiFilters "armeabi-v7a"
             }
+
+            if (useProguard) {
+                minifyEnabled true
+                proguardFiles getDefaultProguardFile('proguard-android.txt'),
+                        'proguard-rules.pro'
+                println(getProguardFiles())
+            }
         }
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     sourceSets.main {

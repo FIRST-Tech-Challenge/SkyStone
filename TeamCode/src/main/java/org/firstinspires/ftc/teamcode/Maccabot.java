@@ -7,16 +7,18 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
+
 public class Maccabot {
 
     // Pulling in OpMode data
     private OpMode parentOpMode;
     private HardwareMap hardwareMap;
-    private double power;
+    private double encoder;
 
     // Drive Motor Variables
     private DcMotor front_left, front_right, back_left, back_right, intake_left, intake_right;
-    //private CRServo arm;
+    private Servo servo;
 
     // Intake Motors TBD
     // private DcMotor intake_left, intake_right;
@@ -35,7 +37,9 @@ public class Maccabot {
         back_right = hardwareMap.dcMotor.get("back_right"); // Port 3
         intake_left = hardwareMap.dcMotor.get("intake_left");
         intake_right = hardwareMap.dcMotor.get("intake_right");
-        //arm = hardwareMap.crservo.get("arm");
+        servo = hardwareMap.servo.get("servo");
+
+        encoder = 0;
 
 
         // Reverse Right Side
@@ -80,21 +84,13 @@ public class Maccabot {
         drive(flValue, frValue, blValue, brValue);
     }
 
-    public void intake(boolean cond1, boolean cond2) {
-        if (cond1) {
-            power = 1;
-        } else {
-            if (cond2) {
-                power = -1;
-            } else {
-                power = 0;
-            }
-        }
-        intake_right.setPower(power);
-        intake_left.setPower(power);
+    public void intake(double cond1, double cond2) {
+        intake_right.setPower(cond1 - cond2);
+        intake_left.setPower(cond1 - cond2);
 
         parentOpMode.telemetry.addLine(Double.toString(intake_right.getPower()));
         parentOpMode.telemetry.addLine(Double.toString(intake_left.getPower()));
     }
+
 
 }

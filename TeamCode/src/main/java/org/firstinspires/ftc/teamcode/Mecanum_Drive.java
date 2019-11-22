@@ -254,13 +254,19 @@ public class Mecanum_Drive extends LinearOpMode {
 //            telemetry.addData("FWD=", fwd);
 //            telemetry.addData("SIDE=", side);
 //            telemetry.addData("TURN=", turn);
-            telemetry.addData("RCLAW=", rightClaw.getPosition());
-            telemetry.addData("LCLAW", leftClaw.getPosition());
-            telemetry.addData("GRAB=", grabber.getPosition());
-            telemetry.addData("TGRAB=", target_grabber );
-            telemetry.addData("Linear= ", linear.getPosition());
-            telemetry.addData("Arm= ", lowerArm.getCurrentPosition());
-            telemetry.addData("Gyro= ", gyro_assist);
+//            telemetry.addData("RCLAW=", rightClaw.getPosition());
+//            telemetry.addData("LCLAW", leftClaw.getPosition());
+//            telemetry.addData("GRAB=", grabber.getPosition());
+//            telemetry.addData("TGRAB=", target_grabber );
+//            telemetry.addData("Linear= ", linear.getPosition());
+//            telemetry.addData("ARMSTK=", lower_arm_stick);
+//            telemetry.addData("Arm= ", lowerArm.getCurrentPosition());
+//            telemetry.addData("Gyro= ", gyro_assist);
+            telemetry.addData("LF", frontLeft.getCurrentPosition());
+            telemetry.addData("RF", frontRight.getCurrentPosition());
+            telemetry.addData("LB", backLeft.getCurrentPosition());
+            telemetry.addData("RB", backRight.getCurrentPosition());
+
             telemetry.update();
         }
     }

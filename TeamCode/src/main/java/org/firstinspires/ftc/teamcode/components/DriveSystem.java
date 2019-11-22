@@ -117,20 +117,25 @@ public class DriveSystem {
         motors.forEach((name, motor) -> {
             switch(name) {
                 case FRONTRIGHT:
-                    motor.setPower(Range.clip(!slowDrive ? frontRightPower : SLOW_DRIVE_COEFF * frontRightPower, -1, 1));
+                    setDrivePower(motor, frontRightPower);
                     break;
                 case BACKLEFT:
-                    motor.setPower(Range.clip(!slowDrive ? backLeftPower : SLOW_DRIVE_COEFF * backLeftPower, -1, 1));
+                    setDrivePower(motor, backLeftPower);
                     break;
                 case FRONTLEFT:
-                    motor.setPower(Range.clip(!slowDrive ? frontLeftPower : SLOW_DRIVE_COEFF * frontLeftPower, -1, 1));
+                    setDrivePower(motor, frontLeftPower);
                     break;
                 case BACKRIGHT:
-                    motor.setPower(Range.clip(!slowDrive ? backRightPower : SLOW_DRIVE_COEFF * backRightPower, -1, 1));
+                    setDrivePower(motor, backRightPower);
                     break;
             }
         });
         slowDrive = false;
+    }
+
+    private void setDrivePower(DcMotor motor, double motorPower) {
+        motor.setPower(Range.clip(slowDrive ?
+                SLOW_DRIVE_COEFF * motorPower : motorPower, -1, 1));
     }
 
     public boolean driveToPositionTicks(int ticks, Direction direction, double maxPower) {

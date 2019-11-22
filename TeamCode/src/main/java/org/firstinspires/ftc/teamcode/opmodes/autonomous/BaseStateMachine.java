@@ -10,6 +10,7 @@ import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.teamcode.components.DriveSystem;
+import org.firstinspires.ftc.teamcode.components.IntakeSystem;
 import org.firstinspires.ftc.teamcode.components.Vuforia.CameraChoice;
 import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
 
@@ -78,7 +79,7 @@ public abstract class BaseStateMachine extends BaseOpMode {
                 // Initialize
                 // Drive 0.5m (1 tile) to the left
                 direction = currentTeam == Team.RED ? DriveSystem.Direction.RIGHT : DriveSystem.Direction.LEFT;
-//                while (!driveSystem.driveToPosition(400, direction, 0.8) && !isStopRequested()) {}
+                while (!driveSystem.driveToPosition(400, direction, 0.8) && !isStopRequested()) {}
                 newState(State.STATE_FIND_SKYSTONE);
                 mStateTime.reset();
                 break;
@@ -94,11 +95,11 @@ public abstract class BaseStateMachine extends BaseOpMode {
                     break;
                 }
                 Log.d(TAG, mCurrentState.toString());
-//                if (vuforia.isTargetVisible(skystone)) {
-//                    Log.d(TAG, "Got here");
-//                    newState(State.STATE_GRAB_STONE);
-//                    break;
-//                }
+                if (vuforia.isTargetVisible(skystone)) {
+                    Log.d(TAG, "Got here");
+                    newState(State.STATE_GRAB_STONE);
+                    break;
+                }
                 telemetry.update();
                 break;
             case STATE_GRAB_STONE:
@@ -107,37 +108,37 @@ public abstract class BaseStateMachine extends BaseOpMode {
                 telemetry.addData("State", "STATE_GRAB_STONE");
                 telemetry.update();
 
-//                if (vuforia.isTargetVisible(skystone)) {
-//                    Log.d(TAG, "inside grab stone loop");
-//                    VectorF translation = vuforia.getRobotPosition();
-//                    // Strafe to align with skystone
-//                    while (!driveSystem.driveToPosition((int) translation.get(1), DriveSystem.Direction.FORWARD, 0.5) && !isStopRequested()) {}
-//
-//                    // Drive up to the skystone
-//                    double distance = distanceSide.getDistance(DistanceUnit.MM);
-//                    distance -= 10;
-//                    direction = currentTeam == Team.RED ? DriveSystem.Direction.RIGHT : DriveSystem.Direction.LEFT;
-//                    while (!driveSystem.driveToPosition((int) distance, direction, 0.8) && !isStopRequested()) {};
-//                    // Offset from skystone
-//                    while (!driveSystem.driveToPosition(700, DriveSystem.Direction.FORWARD, 0.5) && !isStopRequested()) {}
-//                    // Shove into the other stones
-//                    direction = currentTeam == Team.RED ? DriveSystem.Direction.RIGHT : DriveSystem.Direction.LEFT;
-//                    while (!driveSystem.driveToPosition(1525, direction, 0.5) && !isStopRequested()) {}
-//                    // Drive into skystone
-//                    while (!driveSystem.driveToPosition(500, DriveSystem.Direction.BACKWARD, 0.3) && !isStopRequested()) {
-//                        intakeSystem.suck();
-//                    }
-//                    intakeSystem.spin(false, false);
-//                    // Move away with skystone (prepare for next state)
-//                    direction = currentTeam == Team.RED ? DriveSystem.Direction.LEFT : DriveSystem.Direction.RIGHT;
-//                    while (!driveSystem.driveToPosition(1200, direction, 0.8) && !isStopRequested()) {};
-//                    double heading = driveSystem.imuSystem.getHeading();
-//                    // I think it is getting stuck here. The purpose is to align the robot with the
-//                    // audience such it moves straight
-//                    while (!driveSystem.turn(-heading + 190, 0.9) && !isStopRequested()) {};
-//                    telemetry.update();
-//                    newState(State.STATE_DELIVER_STONE);
-//                }
+                if (vuforia.isTargetVisible(skystone)) {
+                    Log.d(TAG, "inside grab stone loop");
+                    VectorF translation = vuforia.getRobotPosition();
+                    // Strafe to align with skystone
+                    while (!driveSystem.driveToPosition((int) translation.get(1), DriveSystem.Direction.FORWARD, 0.5) && !isStopRequested()) {}
+
+                    // Drive up to the skystone
+                    double distance = distanceSide.getDistance(DistanceUnit.MM);
+                    distance -= 10;
+                    direction = currentTeam == Team.RED ? DriveSystem.Direction.RIGHT : DriveSystem.Direction.LEFT;
+                    while (!driveSystem.driveToPosition((int) distance, direction, 0.8) && !isStopRequested()) {};
+                    // Offset from skystone
+                    while (!driveSystem.driveToPosition(700, DriveSystem.Direction.FORWARD, 0.5) && !isStopRequested()) {}
+                    // Shove into the other stones
+                    direction = currentTeam == Team.RED ? DriveSystem.Direction.RIGHT : DriveSystem.Direction.LEFT;
+                    while (!driveSystem.driveToPosition(1525, direction, 0.5) && !isStopRequested()) {}
+                    // Drive into skystone
+                    while (!driveSystem.driveToPosition(500, DriveSystem.Direction.BACKWARD, 0.3) && !isStopRequested()) {
+                        intakeSystem.spin(IntakeSystem.SuckDirection.SUCK);
+                    }
+                    intakeSystem.spin(false, false);
+                    // Move away with skystone (prepare for next state)
+                    direction = currentTeam == Team.RED ? DriveSystem.Direction.LEFT : DriveSystem.Direction.RIGHT;
+                    while (!driveSystem.driveToPosition(1200, direction, 0.8) && !isStopRequested()) {};
+                    double heading = driveSystem.imuSystem.getHeading();
+                    // I think it is getting stuck here. The purpose is to align the robot with the
+                    // audience such it moves straight
+                    while (!driveSystem.turn(-heading + 190, 0.9) && !isStopRequested()) {};
+                    telemetry.update();
+                    newState(State.STATE_DELIVER_STONE);
+                }
 
                 telemetry.update();
                 newState(State.STATE_DELIVER_STONE);
@@ -149,42 +150,42 @@ public abstract class BaseStateMachine extends BaseOpMode {
                 double distance = distanceSide.getDistance(DistanceUnit.MM);
                 distance -= 10;
                 direction = currentTeam == Team.RED ? DriveSystem.Direction.RIGHT : DriveSystem.Direction.LEFT;
-//                while (!driveSystem.driveToPosition((int) distance, direction, 0.8) && !isStopRequested()) {};
+                while (!driveSystem.driveToPosition((int) distance, direction, 0.8) && !isStopRequested()) {};
                 // Offset from skystone
-//                while (!driveSystem.driveToPosition(700, DriveSystem.Direction.FORWARD, 0.5) && !isStopRequested()) {}
+                while (!driveSystem.driveToPosition(700, DriveSystem.Direction.FORWARD, 0.5) && !isStopRequested()) {}
                 // Shove into the other stones
                 direction = currentTeam == Team.RED ? DriveSystem.Direction.RIGHT : DriveSystem.Direction.LEFT;
-//                while (!driveSystem.driveToPosition(1525, direction, 0.5) && !isStopRequested()) {}
+                while (!driveSystem.driveToPosition(1525, direction, 0.5) && !isStopRequested()) {}
                 // Drive into skystone
-//                while (!driveSystem.driveToPosition(500, DriveSystem.Direction.BACKWARD, 0.3) && !isStopRequested()) {
-//                    intakeSystem.suck();
-//                }
-//                intakeSystem.stopIntake();
+                while (!driveSystem.driveToPosition(500, DriveSystem.Direction.BACKWARD, 0.3) && !isStopRequested()) {
+                    intakeSystem.spin(IntakeSystem.SuckDirection.SUCK);
+                }
+                intakeSystem.stop();
                 // Move away with skystone (prepare for next state)
                 direction = currentTeam == Team.RED ? DriveSystem.Direction.LEFT : DriveSystem.Direction.RIGHT;
-//                while (!driveSystem.driveToPosition(1200, direction, 0.8) && !isStopRequested()) {};
+                while (!driveSystem.driveToPosition(1200, direction, 0.8) && !isStopRequested()) {};
                 double heading = driveSystem.imuSystem.getHeading();
                 // I think it is getting stuck here. The purpose is to align the robot with the
                 // audience such it moves straight
-//                while (!driveSystem.turn(-heading + 190, 0.9) && !isStopRequested()) {};
+                while (!driveSystem.turn(-heading + 190, 0.9) && !isStopRequested()) {};
                 telemetry.update();
                 newState(State.STATE_DELIVER_STONE);
                 break;
 
             case STATE_DELIVER_STONE:
                 telemetry.addData("State", "STATE_DELIVER_STONE");
-//                while (!driveSystem.driveToPosition(2200, DriveSystem.Direction.BACKWARD, 1.0)  && !isStopRequested()) {};
-//                intakeSystem.unsuck();
+                while (!driveSystem.driveToPosition(2200, DriveSystem.Direction.BACKWARD, 1.0)  && !isStopRequested()) {};
+                intakeSystem.spin(IntakeSystem.SuckDirection.UNSUCK);
                 newState(State.EJECT_STONE);
                 telemetry.update();
                 break;
 
             case EJECT_STONE:
                 if (mStateTime.milliseconds() >= 1000) {
-//                    intakeSystem.stopIntake();
+                    intakeSystem.stop();
                     newState(State.STATE_PARK_AT_LINE);
                 } else {
-//                    intakeSystem.unsuck();
+                    intakeSystem.stop();
                 }
                 break;
 

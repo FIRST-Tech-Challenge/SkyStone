@@ -82,6 +82,15 @@ public class DriveSystem {
         setMotorPower(0);
     }
 
+    public void slowDrive(boolean on) {
+        slowDrive = on;
+    }
+
+    private void setDriveSpeed(DcMotor motor, double motorPower) {
+        motor.setPower(Range.clip(slowDrive ?
+                SLOW_DRIVE_COEFF * motorPower : motorPower, -1, 1));
+    }
+
     /**
      * Clips joystick values and drives the motors.
      * @param rightX Right X joystick value
@@ -90,12 +99,7 @@ public class DriveSystem {
      */
 
     // TODO
-    public void drive(float rightX, float leftX, float leftY, float leftTrig) {
-        Log.d(TAG, "leftTrig -- " + leftTrig);
-
-        this.slowDrive = leftTrig > 0.3f;
-
-        Log.d(TAG, "slow drive -- " + slowDrive);
+    public void drive(float rightX, float leftX, float leftY) {
         // Prevent small values from causing the robot to drift
         if (Math.abs(rightX) < 0.01) {
             rightX = 0.0f;
@@ -117,25 +121,20 @@ public class DriveSystem {
         motors.forEach((name, motor) -> {
             switch(name) {
                 case FRONTRIGHT:
-                    setDrivePower(motor, frontRightPower);
+                    setDriveSpeed(motor, frontRightPower);
                     break;
                 case BACKLEFT:
-                    setDrivePower(motor, backLeftPower);
+                    setDriveSpeed(motor, backLeftPower);
                     break;
                 case FRONTLEFT:
-                    setDrivePower(motor, frontLeftPower);
+                    setDriveSpeed(motor, frontLeftPower);
                     break;
                 case BACKRIGHT:
-                    setDrivePower(motor, backRightPower);
+                    setDriveSpeed(motor, backRightPower);
                     break;
             }
         });
         slowDrive = false;
-    }
-
-    private void setDrivePower(DcMotor motor, double motorPower) {
-        motor.setPower(Range.clip(slowDrive ?
-                SLOW_DRIVE_COEFF * motorPower : motorPower, -1, 1));
     }
 
     public boolean driveToPositionTicks(int ticks, Direction direction, double maxPower) {

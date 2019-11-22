@@ -209,7 +209,7 @@ public abstract class BaseStateMachine extends BaseOpMode {
                         break;
                     }
                 }
-                driveSystem.drive(0.0f, 0.0f, -0.2f, 0.0f);
+                driveSystem.drive(0.0f, 0.0f, -0.2f);
                 break;
 
             case STATE_DEPOSIT_STONE:

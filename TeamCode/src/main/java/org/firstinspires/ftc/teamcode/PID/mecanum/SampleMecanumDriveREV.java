@@ -126,6 +126,15 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
 
     }
 
+    public List<Double> getMotorPowers() {
+        ArrayList<Double> powers = new ArrayList<>();
+        powers.add(leftFront.getPower());
+        powers.add(leftRear.getPower());
+        powers.add(rightRear.getPower());
+        powers.add(rightFront.getPower());
+        return powers;
+    }
+
     @Override
     public double getRawExternalHeading() {
         return imu.getAngularOrientation().firstAngle;

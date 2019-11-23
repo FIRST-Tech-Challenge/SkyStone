@@ -49,7 +49,7 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
     private String catName;
     private CustomVariable catVar;
 
-    private SampleMecanumDriveBase drive;
+    private SampleMecanumDriveREV drive;
 
     private static MotionProfile generateProfile(boolean movingForward) {
         MotionState start = new MotionState(movingForward ? 0 : DISTANCE, 0, 0, 0);
@@ -175,11 +175,15 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
                     syntheticVelocities.add((wheelPositions.get(i) - lastWheelPositions.get(i)) / dt);
                 }
 
+                List<Double> motorPowers = drive.getMotorPowers();
+
                 // update telemetry
                 telemetry.addData("targetVelocity", motionState.getV());
                 for (int i = 0; i < syntheticVelocities.size(); i++) {
                     telemetry.addData("velocity" + i, syntheticVelocities.get(i));
                     telemetry.addData("error" + i, motionState.getV() - syntheticVelocities.get(i));
+                    telemetry.addData("power" + i, motorPowers.get(i));
+                    telemetry.addData("calculated kV " + i, motorPowers.get(i) / syntheticVelocities.get(i));
                 }
                 telemetry.update();
             }

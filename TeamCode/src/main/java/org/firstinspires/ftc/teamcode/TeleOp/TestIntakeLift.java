@@ -34,7 +34,6 @@ public class TestIntakeLift extends LinearOpMode {
     boolean outake = false;
     final double slowSpeed = 0.7;
     final double turnSpeed = 0.4;
-    boolean turningTowards = false;
     boolean runLogic = false;
 
     ArrayList<String> kVData = new ArrayList<>();
@@ -182,10 +181,6 @@ public class TestIntakeLift extends LinearOpMode {
                 DriveConstant.writeFile(AppUtil.ROOT_FOLDER + "/RoadRunner/kV_regression_data_" + System.currentTimeMillis() + ".csv", sb.toString());
                 runLogic = false;
                 break;
-            }
-
-            if(gamepad1.right_bumper){
-
             }
 
             telemetry.addData("LeftForwardOdometry", hwMap.leftIntake.getCurrentPosition());

@@ -50,7 +50,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
-@Autonomous(name="DM: Auto Simple", group="Pushbot")
+@Autonomous(name="DM: Auto Mecanum", group="Pushbot")
 //@Disabled
 public class DM_Auto_Mecanum extends LinearOpMode {
 
@@ -58,6 +58,7 @@ public class DM_Auto_Mecanum extends LinearOpMode {
 //    HardwarePushbot         robot   = new HardwarePushbot();   // Use a Pushbot's hardware
     private DcMotor frontLeft, frontRight, backLeft, backRight;
     ColorSensor colorSensor;    // Hardware Device Object
+    ColorSensor colorSensor2;
     float hsvValues[] = {0F,0F,0F};
     final float values[] = hsvValues;
     int relativeLayoutId;
@@ -77,7 +78,8 @@ public class DM_Auto_Mecanum extends LinearOpMode {
 
     public final static int     COLOR_RED = 1;
     public final static int     COLOR_BLUE = 2;
-    public final static int     COLOR_DIFF = 60;
+    public final static int     COLOR_MIN = 50;
+    public final static int     COLOR_MIN2 = 500;
 
     // Gyro related initialization
     BNO055IMU               imu;
@@ -167,6 +169,8 @@ public class DM_Auto_Mecanum extends LinearOpMode {
         // get a reference to our ColorSensor object.
         colorSensor = hardwareMap.get(ColorSensor.class, "color_sensor");
         colorSensor.enableLed(true);
+        colorSensor2 = hardwareMap.get(ColorSensor.class, "color_sensor2");
+        colorSensor2.enableLed(true);
 
 
         // Send telemetry message to indicate successful Encoder reset
@@ -294,8 +298,8 @@ public class DM_Auto_Mecanum extends LinearOpMode {
             }
         });
 
-        telemetry.addData("Path", "Complete");
-        telemetry.update();
+//        telemetry.addData("Path", "Complete");
+//        telemetry.update();
 
         // Vuforia and Tensorflow related clean-up
         if (tfod != null) {
@@ -335,14 +339,20 @@ public class DM_Auto_Mecanum extends LinearOpMode {
             int blue_value = colorSensor.blue();
             int green_value = colorSensor.green();
 
+            int red_value2 = colorSensor2.red();
+            int blue_value2 = colorSensor2.blue();
+            int green_value2 = colorSensor2.green();
+
             switch( color_to_stop ) {
                 case COLOR_RED:
-                    if ( red_value > blue_value + COLOR_DIFF && red_value > green_value + COLOR_DIFF )
+                    if ( ( red_value > COLOR_MIN && red_value > blue_value ) ||
+                           red_value2 > COLOR_MIN2 && red_value2 > blue_value2 )
                         colorDetected = true;
                     break;
 
                 case COLOR_BLUE:
-                    if ( blue_value > red_value + COLOR_DIFF && blue_value > green_value + COLOR_DIFF )
+                    if ( ( blue_value > COLOR_MIN && blue_value > red_value ) ||
+                            blue_value2 > COLOR_MIN2 && blue_value2 > red_value2 )
                         colorDetected = true;
                     break;
 
@@ -351,13 +361,17 @@ public class DM_Auto_Mecanum extends LinearOpMode {
             }
 
             // Display it for the driver.
-            telemetry.addData("LF", frontLeft.getCurrentPosition());
-            telemetry.addData("RF", frontRight.getCurrentPosition());
-            telemetry.addData("LB", backLeft.getCurrentPosition());
-            telemetry.addData("RB", backRight.getCurrentPosition());
-            telemetry.addData("Red  ", colorSensor.red());
-            telemetry.addData("Green", colorSensor.green());
-            telemetry.addData("Blue ", colorSensor.blue());
+//            telemetry.addData("LF", frontLeft.getCurrentPosition());
+//            telemetry.addData("RF", frontRight.getCurrentPosition());
+//            telemetry.addData("LB", backLeft.getCurrentPosition());
+//            telemetry.addData("RB", backRight.getCurrentPosition());
+            telemetry.addData("1:Red  ", red_value);
+            telemetry.addData("1:Green", green_value);
+            telemetry.addData("1:Blue ", blue_value);
+            telemetry.addData("2:Red  ", red_value2);
+            telemetry.addData("2:Green", green_value2);
+            telemetry.addData("2:Blue ", blue_value2);
+            telemetry.addData("Found: ", colorDetected);
 
             // change the background color to match the color detected by the RGB sensor.
             // pass a reference to the hue, saturation, and value array as an argument

@@ -15,7 +15,9 @@ import java.util.List;
 
 public class Vision{
     private final String VUFORIA_KEY = "AbSCRq//////AAAAGYEdTZut2U7TuZCfZGlOu7ZgOzsOlUVdiuQjgLBC9B3dNvrPE1x/REDktOALxt5jBEJJBAX4gM9ofcwMjCzaJKoZQBBlXXxrOscekzvrWkhqs/g+AtWJLkpCOOWKDLSixgH0bF7HByYv4h3fXECqRNGUUCHELf4Uoqea6tCtiGJvee+5K+5yqNfGduJBHcA1juE3kxGMdkqkbfSjfrNgWuolkjXR5z39tRChoOUN24HethAX8LiECiLhlKrJeC4BpdRCRazgJXGLvvI74Tmih9nhCz6zyVurHAHttlrXV17nYLyt6qQB1LtVEuSCkpfLJS8lZWS9ztfC1UEfrQ8m5zA6cYGQXjDMeRumdq9ugMkS";
+
     float value = 0;
+
     public enum Location{
         CENTER,LEFT,RIGHT,UNKNOWN;
     }
@@ -49,14 +51,14 @@ public class Vision{
          */
 
         long startTime = SystemClock.elapsedRealtime();
-        // scan for 5 seconds
+        // Repeat scanning for 5 seconds
         while (robot.getLinearOpMode().opModeIsActive() && SystemClock.elapsedRealtime()-startTime < 6000){
-            // get all the detections
+            // get all new detections
             List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
 
-            // if there is a detection run the logic
+            // if there is a new detection run the logic
             if (updatedRecognitions != null && updatedRecognitions.size()>0) {
-                // sorts based on confidence levels
+                // sort detections based on confidence levels
                 Collections.sort(updatedRecognitions, new Comparator<Recognition>() {
                     @Override
                     public int compare(Recognition recognition, Recognition t1) {
@@ -64,6 +66,7 @@ public class Vision{
                     }
                 });
 
+                // For every detection, see if its confidence level is greater than .5. If so, find the width of the detection and store the shortest detection.
                 for (int i = 0; i < updatedRecognitions.size(); i++){
                     if (updatedRecognitions.get(i).getConfidence() >= 0.5){
                         if (updatedRecognitions.get(i).getTop()-updatedRecognitions.get(i).getBottom() < shortestDetectionLength) {
@@ -83,51 +86,8 @@ public class Vision{
                         location = Location.RIGHT;
                     }
                 return location;
-
-
-                // iterate through each recognition
-//                for (int i = 0; i < updatedRecognitions.size(); i++){
-//                    // value is the center of the detection
-//                    float value = (updatedRecognitions.get(i).getTop()+updatedRecognitions.get(i).getBottom())/2;
-//                    // if the confidence is greater than 0.9, then return that
-//                    if ((double)updatedRecognitions.get(i).getConfidence() > 0.9){
-//                        if (value < 600){
-//                            return new Detection(2, value, updatedRecognitions.size());
-//                        } else if (value < 800){
-//                            return new Detection(1, value, updatedRecognitions.size());
-//                        } else {
-//                            return new Detection(0, value, updatedRecognitions.size());
-//                        }
-//                    }
-//                    // if the confidence is greater than 0.5, add it to the arraylist
-//                    if ((double)updatedRecognitions.get(i).getConfidence() > 0.5) {
-//                        values.add(value);
-//                        if (value < 560){
-//                            retVals.add(2);
-//                        } else if (value < 605) {
-//                            retVals.add(1);
-//                        } else {
-//                            retVals.add(0);
-//                        }
-//                    }
-//                }
             }
         }
-//        // find the average of everything in the arraylist
-//        double retVal = 0;
-//        for (int i = 0; i < retVals.size(); i++){
-//            retVal += retVals.get(i);
-//        }
-//        retVal /= retVals.size();
-//        float valueAvg = 0;
-//        for (int i = 0; i < values.size(); i++){
-//            valueAvg += values.get(i);
-//        }
-//        valueAvg /= values.size();
-////        telemetry.addLine("retVal" + retVal);
-////        telemetry.update();
-//        // return rounded int average
-//        return new Detooection((int)Math.round(retVal), valueAvg, 0);
         return location;
     }
 

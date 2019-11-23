@@ -2,8 +2,6 @@ package org.firstinspires.ftc.teamcode.Skystone.Auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.teamcode.Skystone.MathFunctions;
-import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.PathPoints;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
 
 @Autonomous(name="RedRight", group ="LinearOpmode")
@@ -47,7 +45,7 @@ public class RedRight extends AutoBase {
 
         intake(true);
         double [][] toSecondStone = {{5.0,-78.0},{10.0,-79.0},{28.0,-30.0},{25.0,22.0}};
-        robot.moveFollowCurveWithRetract(toSecondStone, Math.toRadians(0),20,Math.toRadians(-90),0,new Point(29.0, 78.0));
+        robot.moveFollowCurveWithDepositandRetract(toSecondStone, Math.toRadians(0),20,Math.toRadians(-90),0,new Point(29.0, 78.0));
 
         robot.moveToPoint(80.0,secondSkyStoneY,0.5,1,Math.toRadians(-25));
 

@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.Skystone.Auto;
 
-
 import android.os.SystemClock;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -8,11 +7,16 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 ;
 import org.firstinspires.ftc.teamcode.Skystone.Odometry.Position2D;
 import org.firstinspires.ftc.teamcode.Skystone.Robot;
+import org.firstinspires.ftc.teamcode.Skystone.Vision;
 
 public class AutoBase extends LinearOpMode {
     protected Robot robot;
+    protected Vision vision;
     protected long currentTime;
+
     public void initLogic(){
+        vision.initVision();
+
         //Init's robot
         robot = new Robot(this.hardwareMap, this.telemetry, this);
 

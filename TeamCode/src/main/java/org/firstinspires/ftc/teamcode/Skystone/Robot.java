@@ -647,13 +647,17 @@ public class Robot {
         }
     }
 
-    public void moveFollowCurveWithRetract(double [][] points, double followAngle, double followDistance, double angleLockRadians, double angleLockDistance, Point whereYouRetract) {
+    public void moveFollowCurveWithDepositandRetract(double [][] points, double followAngle, double followDistance, double angleLockRadians, double angleLockDistance, Point whereYouRetract) {
 
         long outtakeExecutionTime = 0;
         long currentTime;
         boolean isRetract = false;
         boolean isMoving = true;
         boolean hasRetracted = false;
+
+        // Deposit stone
+        clamp.setPosition(CLAW_SERVO_RELEASED);
+
         while (linearOpMode.opModeIsActive()) {
             currentTime = SystemClock.elapsedRealtime();
 
@@ -666,7 +670,7 @@ public class Robot {
 
             if (Math.hypot(whereYouRetract.x - robotPos.x, whereYouRetract.y - robotPos.y) < 40 && !hasRetracted){
                 outtakeExecutionTime = SystemClock.elapsedRealtime();
-                intakePusher.setPosition(PUSHER_PUSHED); // Push block all the way to clamp
+                intakePusher.setPosition(PUSHER_RETRACTED); // Retract pusher
                 hasRetracted = true;
                 telemetry.addLine("in range");
                 isRetract = true;

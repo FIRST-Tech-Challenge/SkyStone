@@ -377,7 +377,7 @@ public abstract class OmniAutoClass extends LinearOpMode {
 		// Allow the robot to read new values from the ToF sensors.
 		robot.resetReads();
 		foundDistance = robot.distanceFromWall(side, distance, driveSpeed, error);
-		while(timer.milliseconds() < endTime && !foundDistance && !isStopRequested()) {
+		while(timer.milliseconds() < endTime && !foundDistance) {
 			robot.resetReads();
 			foundDistance = robot.distanceFromWall(side, distance, driveSpeed, error);
 		}
@@ -401,7 +401,7 @@ public abstract class OmniAutoClass extends LinearOpMode {
 		// Allow the robot to read new values from the ToF sensors.
 		robot.resetReads();
 		foundDistance = robot.parallelRearTarget(backLeftDistance, backRightDistance, driveSpeed, spinSpeed, error);
-		while(timer.milliseconds() < endTime && !foundDistance && !isStopRequested()) {
+		while(timer.milliseconds() < endTime && !foundDistance) {
 			robot.resetReads();
             foundDistance = robot.parallelRearTarget(backLeftDistance, backRightDistance, driveSpeed, spinSpeed, error);
 		}

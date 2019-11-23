@@ -58,6 +58,8 @@ public class OmniAutoFullRedToF extends OmniAutoClass
 		double rotateSpeed = 0.3;
 		double precisionSpin = 0.05;
 		int stonePosition = 1;
+		int flyTime = 1500;
+		int flyBackTime = 1500;
 
         // Error to consider distance from wall a success
 		// 1 cm
@@ -130,16 +132,21 @@ public class OmniAutoFullRedToF extends OmniAutoClass
 
 		switch(stonePosition) {
             case 1:
-			attackAngle = 45.0;
-			leftDistance = 50.3;
-			break;
+                attackAngle = 45.0;
+                leftDistance = 50.3;
+                flyTime = 1500;
+                flyBackTime = 1200;
+                break;
 			case 2:
-			attackAngle = 45.0;
-			leftDistance = 70.6;
+			    attackAngle = 45.0;
+			    leftDistance = 70.6;
+			    flyTime = 1600;
+			    break;
 			case 3:
-			attackAngle = 45.0;
-			leftDistance = 91.0;
-			break;
+			    attackAngle = 45.0;
+			    leftDistance = 91.0;
+                flyTime = 1700;
+                break;
 		}
 
 		// Drive from the side wall to the collection identified stone position.
@@ -154,12 +161,16 @@ public class OmniAutoFullRedToF extends OmniAutoClass
             robot.resetReads();
         }
 
+        // Set the zero for the extender for when we start teleop.  We should do this as late
+        // as will get reliably called.
+        robot.setIntakeZero(-robot.getIntakePosition());
+
         // Start the intake to collect.
         robot.startIntake(false);
 
         // Drive forward to collect the skystone and drive back.
-        driveAtHeadingForTime(slowSpeed, precisionSpin, 90+attackAngle, attackAngle, 500, true);
-        driveAtHeadingForTime(slowSpeed, precisionSpin, 270+attackAngle, attackAngle, 500, true);
+        driveAtHeadingForTime(slowSpeed, precisionSpin, 90+attackAngle, attackAngle, 700, true);
+        driveAtHeadingForTime(slowSpeed, precisionSpin, 270+attackAngle, attackAngle, 700, true);
 
 		// Stop the intake
 		robot.stopIntake();
@@ -174,16 +185,16 @@ public class OmniAutoFullRedToF extends OmniAutoClass
 
 		// Fly to the other side.  Do not put the brakes on, allow the distance
 		// from wall function take over.
-        driveAtHeadingForTime(maxSpeed, precisionSpin, 0.0, 90.0, 1200, false);
+        driveAtHeadingForTime(maxSpeed, precisionSpin, 0.0, 90.0, flyTime, false);
 
 		// Get to foundation midpoint.
-		distanceFromWall(HardwareOmnibot.AlignmentSide.BACK, 31.1, maxSpeed, standardDistanceError, 5000);
+		distanceFromWall(HardwareOmnibot.AlignmentSide.BACK, 40.0, maxSpeed, standardDistanceError, 5000);
 
 		// Rotate to foundation grabbing angle.
         rotateRobotToAngle(rotateSpeed, 180.0, 2000);
 
 		// Back the robot up to the foundation
-		parallelRearTarget(0.0, 0.0, precisionSpeed, precisionSpin, precisionDistanceError, 5000);
+		parallelRearTarget(0.5, 3.0, precisionSpeed, precisionSpin, precisionDistanceError, 5000);
 
 		// Grab the foundation
 		moveFingers(false);
@@ -197,7 +208,7 @@ public class OmniAutoFullRedToF extends OmniAutoClass
 //      }
 
 		// Move the foundation to parallel back wall.
-		driveAtHeadingForTime(maxSpeed, foundationRotateSpeed, 180.0, 90.0, 1000, true);
+		driveAtHeadingForTime(maxSpeed, foundationRotateSpeed, 225.0, 90.0, 1000, true);
 //      robot.performLifting();
 
 		// Rotate to parallel back wall.
@@ -205,7 +216,7 @@ public class OmniAutoFullRedToF extends OmniAutoClass
 //      robot.performLifting();
 
 		// Drive the foundation into the back wall.
-		driveAtHeadingForTime(maxSpeed, precisionSpin, 0.0, 90.0, 1000, true);
+		driveAtHeadingForTime(maxSpeed, precisionSpin, 0.0, 90.0, 700, true);
 //      robot.performLifting();
 
 		// Release the foundation
@@ -247,9 +258,8 @@ public class OmniAutoFullRedToF extends OmniAutoClass
 //    		}
 //		}
 
-		// Fly to the other side.  Do not put the brakes on, allow the distance
-		// from wall function take over.
-        driveAtHeadingForTime(maxSpeed, precisionSpin, 180.0, 90.0, 1700, true);
+		// Fly back to the other side to collect second stone.
+        driveAtHeadingForTime(maxSpeed, precisionSpin, 180.0, 90.0, flyBackTime, true);
 
         // Rotate the robot to line up to collect.
         rotateRobotToAngle(rotateSpeed, 0.0, 2000);
@@ -262,24 +272,34 @@ public class OmniAutoFullRedToF extends OmniAutoClass
 		// This is due to range sensor limits.
 		switch(stonePosition) {
             case 1:
-			attackAngle = 45.0;
-			leftDistance = 101.3;
-			break;
+                attackAngle = 45.0;
+                leftDistance = 101.3;
+                flyTime = 1300;
+                break;
 			case 2:
-			attackAngle = -45.0;
-			leftDistance = 51.3;
+			    attackAngle = -45.0;
+			    leftDistance = 51.3;
+			    flyTime = 1500;
+			    break;
 			case 3:
-			attackAngle = -45.0;
-			leftDistance = 71.6;
-			break;
+			    attackAngle = -45.0;
+			    leftDistance = 71.6;
+			    flyTime = 1600;
+			    break;
 		}
+
+        // Drive from the side wall to the collection identified stone position.
+        distanceFromWall(HardwareOmnibot.AlignmentSide.LEFT, leftDistance, maxSpeed, standardDistanceError, 5000);
+
+        // Rotate the robot to collection angle.
+        rotateRobotToAngle(rotateSpeed, attackAngle, 2000);
 
         // Start the intake to collect.
         robot.startIntake(false);
 
         // Drive forward to collect the skystone and drive back.
-        driveAtHeadingForTime(slowSpeed, precisionSpin, 90+attackAngle, attackAngle, 500, true);
-        driveAtHeadingForTime(slowSpeed, precisionSpin, 270+attackAngle, attackAngle, 500, true);
+        driveAtHeadingForTime(slowSpeed, precisionSpin, 90+attackAngle, attackAngle, 700, true);
+        driveAtHeadingForTime(slowSpeed, precisionSpin, 270+attackAngle, attackAngle, 700, true);
 
 		// Stop the intake
 		robot.stopIntake();
@@ -294,7 +314,7 @@ public class OmniAutoFullRedToF extends OmniAutoClass
 
 		// Fly to the other side.  Do not put the brakes on, allow the distance
 		// from wall function take over.
-        driveAtHeadingForTime(maxSpeed, precisionSpin, 0.0, 90.0, 2000, false);
+        driveAtHeadingForTime(maxSpeed, precisionSpin, 0.0, 90.0, flyTime, false);
 
 		// Want to start lifting here.
 //		if(!isStopRequested()) {
@@ -334,9 +354,6 @@ public class OmniAutoFullRedToF extends OmniAutoClass
 //		    	robot.peformingStowing();
 //    		}
 //		}
-
-        // Set the zero for the extender for when we start teleop
-		robot.setIntakeZero(-robot.getIntakePosition());
 
 		// Park
         driveAtHeadingForTime(maxSpeed, precisionSpin, 180.0, 90.0, 1000, true);

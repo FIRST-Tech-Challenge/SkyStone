@@ -135,11 +135,11 @@ public class OmniTeleTest extends OmniAutoClass {
             // Allow the robot to read encoders again
             robot.resetReads();
 
-            leftTof = robot.readLeftTof();
-            rightTof = robot.readRightTof();
-            backTof = robot.readBackTof();
-//            backRightTof = robot.readBackRightTof();
-//            backLeftTof = robot.readBackLeftTof();
+            //leftTof = robot.readLeftTof();
+            //rightTof = robot.readRightTof();
+            //backTof = robot.readBackTof();
+            backRightTof = robot.readBackRightTof();
+            backLeftTof = robot.readBackLeftTof();
 
             if (!xHeld && xPressed) {
                 xHeld = true;
@@ -171,7 +171,21 @@ public class OmniTeleTest extends OmniAutoClass {
 
             if (!yHeld && yPressed) {
                 yHeld = true;
-            } else if (!yPressed) {
+                if (gamepad1.y) {
+                // The driver presses X, then uses the left joystick to say what angle the robot
+                // is aiming.  This will calculate the values as long as X is pressed, and will
+                // not drive the robot using the left stick.  Once X is released, it will use the
+                // final calculated angle and drive with the left stick.  Button should be released
+                // before stick.  The default behavior of atan2 is 0 to -180 on Y Axis CCW, and 0 to
+                // 180 CW.  This code normalizes that to 0 to 360 CCW from the Y Axis
+                //robot.resetGyro();
+                driverAngle = toDegrees(atan2(yPower, xPower)) - 90.0 - robot.readIMU();
+                xPower = 0.0;
+                yPower = 0.0;
+                spin = 0.0;
+            }
+
+        } else if (!yPressed) {
                 yHeld = false;
             }
 
@@ -203,18 +217,11 @@ public class OmniTeleTest extends OmniAutoClass {
                 leftHeld = false;
             }
 
-            if (Math.abs(yPower) > 0.1) {
-                robot.lifter.setPower(yPower);
-            } else {
-                robot.lifter.setPower(0);
-            }
 
-            if (Math.abs(spin) > 0.1) {
-                robot.extender.setPower(spin);
-            } else {
-                robot.extender.setPower(0);
-            }
-//        if(!xHeld && xPressed)
+
+            robot.drive(speedMultiplier * xPower, speedMultiplier * yPower, spinMultiplier * spin, driverAngle);
+
+            //        if(!xHeld && xPressed)
 //        {
 //            xHeld = true;
 //            robot.extendIntake(HardwareOmnibot.ExtendPosition.EXTENDED);
@@ -299,13 +306,13 @@ public class OmniTeleTest extends OmniAutoClass {
 //        robot.performStowing();
 
 
-            telemetry.addData("Left TOF: ", leftTof);
-            telemetry.addData("Right TOF: ", rightTof);
-            telemetry.addData("Back TOF: ", backTof);
+            //telemetry.addData("Left TOF: ", leftTof);
+            //telemetry.addData("Right TOF: ", rightTof);
+            //telemetry.addData("Back TOF: ", backTof);
             telemetry.addData("Side Target Distance: ", sideDistanceTarget);
             telemetry.addData("Back Target Distance: ", backDistanceTarget);
-//            telemetry.addData("Back Left TOF: ", backLeftTof);
-//            telemetry.addData("Back Right TOF: ", backRightTof);
+            telemetry.addData("Back Left TOF: ", backLeftTof);
+            telemetry.addData("Back Right TOF: ", backRightTof);
             telemetry.addData("Lift Target Height: ", robot.liftTargetHeight.toString());
             telemetry.addData("Intake Target: ", robot.intakeTargetPosition.toString());
             telemetry.addData("Lift State: ", robot.liftState);

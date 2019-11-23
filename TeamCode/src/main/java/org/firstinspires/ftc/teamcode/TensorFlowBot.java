@@ -12,7 +12,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
 import java.util.List;
 
-public class TensorFlowBot extends FourWheelsDriveBot {
+public class TensorFlowBot extends PinchArmBot {
     public TensorFlowBot(LinearOpMode opMode) {
         super(opMode);
     }

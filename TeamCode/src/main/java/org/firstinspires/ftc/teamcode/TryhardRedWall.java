@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 @Autonomous(name="Tryhard Red Wall", group="Exercises")
 
 public class TryhardRedWall extends LinearOpMode {
-    private PinchArmBot robot = new PinchArmBot(this);
+    private TensorFlowBot robot = new TensorFlowBot(this);
 
     @Override
     public void runOpMode() {

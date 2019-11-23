@@ -23,6 +23,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import org.firstinspires.ftc.teamcode.HardwareOmnibot;
 
 import org.opencv.core.Mat;
 import org.opencv.core.Core;
@@ -39,7 +40,7 @@ import org.openftc.easyopencv.OpenCvPipeline;
  * Created by 12090 STEM Punk
  */
 @Autonomous(name="Auto: AutoFullRedTof", group ="Auto")
-public class OmniAutoFullRed extends OmniAutoClass
+public class OmniAutoFullRedToF extends OmniAutoClass
 {
     OpenCvCamera phoneCam;
     public static int position = 0;
@@ -48,11 +49,12 @@ public class OmniAutoFullRed extends OmniAutoClass
     public void runOpMode()
     {
         int timeout = 0;
-		double leftDistance;
-		double attackAngle;
+		double leftDistance = 0;
+		double attackAngle = 45;
 		double maxSpeed = 1.0;
 		double slowSpeed = 0.3;
 		double precisionSpeed = 0.05;
+		double foundationRotateSpeed = 0.6;
 		double rotateSpeed = 0.3;
 		double precisionSpin = 0.05;
 		int stonePosition = 1;
@@ -87,7 +89,7 @@ public class OmniAutoFullRed extends OmniAutoClass
          * of a frame from the camera. Note that switching pipelines on-the-fly
          * (while a streaming session is in flight) *IS* supported.
          */
-        phoneCam.setPipeline(new OmniAutoFullRed.SamplePipeline());
+        phoneCam.setPipeline(new OmniAutoFullRedToF.SamplePipeline());
 
         /*
          * Tell the camera to start streaming images to us! Note that you must make sure
@@ -124,19 +126,19 @@ public class OmniAutoFullRed extends OmniAutoClass
         robot.moveIntake(HardwareOmnibot.IntakePosition.EXTENDED);
 
 		// Drive out from the starting position, 10cm from the skystones
-		distanceFromWall(HardwareOmnibot.AlignmentSide.BACK, 110.0, maxSpeed, standardDistanceError, 5000);
+		distanceFromWall(HardwareOmnibot.AlignmentSide.BACK, 54.0, maxSpeed, standardDistanceError, 5000);
 
 		switch(stonePosition) {
             case 1:
 			attackAngle = 45.0;
-			leftDistance = 30.3;
+			leftDistance = 50.3;
 			break;
 			case 2:
 			attackAngle = 45.0;
-			leftDistance = 50.6;
+			leftDistance = 70.6;
 			case 3:
 			attackAngle = 45.0;
-			leftDistance = 71.0;
+			leftDistance = 91.0;
 			break;
 		}
 
@@ -148,7 +150,7 @@ public class OmniAutoFullRed extends OmniAutoClass
 
         // Make sure the intake is out.
 		double endTime = timer.milliseconds() + 1000;
-        while(!robot.intakeAtPosition(HardwareOmnibot.IntakePosition.EXTENDED) && endTime < timer.milliseconds()) {
+        while(!robot.intakeAtPosition(HardwareOmnibot.IntakePosition.EXTENDED) && timer.milliseconds() < endTime) {
             robot.resetReads();
         }
 
@@ -172,7 +174,7 @@ public class OmniAutoFullRed extends OmniAutoClass
 
 		// Fly to the other side.  Do not put the brakes on, allow the distance
 		// from wall function take over.
-        driveAtHeadingForTime(maxSpeed, precisionSpin, 0.0, 90.0, 2000, false);
+        driveAtHeadingForTime(maxSpeed, precisionSpin, 0.0, 90.0, 1200, false);
 
 		// Get to foundation midpoint.
 		distanceFromWall(HardwareOmnibot.AlignmentSide.BACK, 31.1, maxSpeed, standardDistanceError, 5000);
@@ -195,7 +197,7 @@ public class OmniAutoFullRed extends OmniAutoClass
 //      }
 
 		// Move the foundation to parallel back wall.
-		driveAtHeadingForTime(maxSpeed, rotateSpeed, 180.0, 90.0, 3000, true);
+		driveAtHeadingForTime(maxSpeed, foundationRotateSpeed, 180.0, 90.0, 1000, true);
 //      robot.performLifting();
 
 		// Rotate to parallel back wall.
@@ -203,7 +205,7 @@ public class OmniAutoFullRed extends OmniAutoClass
 //      robot.performLifting();
 
 		// Drive the foundation into the back wall.
-		driveAtHeadingForTime(maxSpeed, precisionSpin, 0.0, 90.0, 2000, true);
+		driveAtHeadingForTime(maxSpeed, precisionSpin, 0.0, 90.0, 1000, true);
 //      robot.performLifting();
 
 		// Release the foundation
@@ -247,13 +249,13 @@ public class OmniAutoFullRed extends OmniAutoClass
 
 		// Fly to the other side.  Do not put the brakes on, allow the distance
 		// from wall function take over.
-        driveAtHeadingForTime(maxSpeed, precisionSpin, 180.0, 90.0, 2000, true);
+        driveAtHeadingForTime(maxSpeed, precisionSpin, 180.0, 90.0, 1700, true);
 
         // Rotate the robot to line up to collect.
         rotateRobotToAngle(rotateSpeed, 0.0, 2000);
 
 		// Drive out to 10cm from the skystones
-		distanceFromWall(HardwareOmnibot.AlignmentSide.BACK, 110.0, maxSpeed, standardDistanceError, 5000);
+		distanceFromWall(HardwareOmnibot.AlignmentSide.BACK, 54.0, maxSpeed, standardDistanceError, 5000);
 
         // Stone 1 come from bridge side and go away.
         // Stone 2 and 3, come from the away and go to bridge.
@@ -261,14 +263,14 @@ public class OmniAutoFullRed extends OmniAutoClass
 		switch(stonePosition) {
             case 1:
 			attackAngle = 45.0;
-			leftDistance = 81.3;
+			leftDistance = 101.3;
 			break;
 			case 2:
 			attackAngle = -45.0;
-			leftDistance = 71.3;
+			leftDistance = 51.3;
 			case 3:
 			attackAngle = -45.0;
-			leftDistance = 91.6;
+			leftDistance = 71.6;
 			break;
 		}
 

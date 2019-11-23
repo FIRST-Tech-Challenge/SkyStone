@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 public abstract class OmniAutoClass extends LinearOpMode {
 
-    private ElapsedTime timer;
+    protected ElapsedTime timer;
 
     public static float mmPerInch = OmniAutoClass.MM_PER_INCH;
     public static float mmBotWidth = 18 * mmPerInch;            // ... or whatever is right for your robot
@@ -370,15 +370,19 @@ public abstract class OmniAutoClass extends LinearOpMode {
      *                     will slow down as approaching distance.
 	 * @param error      - The allowable error from desired target distance.
 	 */
-	public boolean distanceFromWall(AlignmentSide side, double distance, double driveSpeed, double error, int timeout) {
-		double endTime = timer.milliseconds() + timeout;
+	public boolean distanceFromWall(HardwareOmnibot.AlignmentSide side, double distance, double driveSpeed, double error, int maxTime) {
+		double endTime = timer.milliseconds() + maxTime;
+		boolean foundDistance;
+		double testDistance = 0;
 		// Allow the robot to read new values from the ToF sensors.
 		robot.resetReads();
-		while(endTime < timer.milliseconds() && !robot.distanceFromWall(side, distance, driveSpeed, error) && !isStopRequested()) {
+		foundDistance = robot.distanceFromWall(side, distance, driveSpeed, error);
+		while(timer.milliseconds() < endTime && !foundDistance && !isStopRequested()) {
 			robot.resetReads();
+			foundDistance = robot.distanceFromWall(side, distance, driveSpeed, error);
 		}
 
-		return robot.distanceFromWall(side, distance, driveSpeed, error);
+		return foundDistance;
 	}
 
     /**
@@ -391,15 +395,18 @@ public abstract class OmniAutoClass extends LinearOpMode {
 	 * @param spinSpeed         - The maximum speed to rotate the robot.
 	 * @param error             - The allowable error from desired target distance.
 	 */
-	public boolean parallelRearTarget(double backLeftDistance, double backRightDistance, double driveSpeed, double spinSpeed, double error, int timeout) {
-		double endTime = timer.milliseconds() + timeout;
+	public boolean parallelRearTarget(double backLeftDistance, double backRightDistance, double driveSpeed, double spinSpeed, double error, int maxTime) {
+		double endTime = timer.milliseconds() + maxTime;
+		boolean foundDistance;
 		// Allow the robot to read new values from the ToF sensors.
 		robot.resetReads();
-		while(endTime < timer.milliseconds() && !robot.parallelRearTarget(backLeftDistance, backRightDistance, driveSpeed, spinSpeed, error) && !isStopRequested()) {
+		foundDistance = robot.parallelRearTarget(backLeftDistance, backRightDistance, driveSpeed, spinSpeed, error);
+		while(timer.milliseconds() < endTime && !foundDistance && !isStopRequested()) {
 			robot.resetReads();
+            foundDistance = robot.parallelRearTarget(backLeftDistance, backRightDistance, driveSpeed, spinSpeed, error);
 		}
 
-		return robot.parallelRearTarget(backLeftDistance, backRightDistance, driveSpeed, error);
+		return foundDistance;
 	}
 
     public void moveFingers(boolean moveUp) {

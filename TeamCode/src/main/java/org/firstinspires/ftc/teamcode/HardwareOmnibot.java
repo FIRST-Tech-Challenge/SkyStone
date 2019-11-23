@@ -331,11 +331,11 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     protected DcMotor rightIntake = null;
     protected DcMotor lifter = null;
     protected DcMotorEx extender = null;
-    protected Rev2mTurbo rightTof = null;
-    protected Rev2mTurbo leftTof = null;
-    protected Rev2mTurbo backRightTof = null;
-    protected Rev2mTurbo backLeftTof = null;
-    protected Rev2mTurbo backTof = null;
+    protected Rev2mDistanceSensor rightTof = null;
+    protected Rev2mDistanceSensor leftTof = null;
+    protected Rev2mDistanceSensor backRightTof = null;
+    protected Rev2mDistanceSensor backLeftTof = null;
+    protected Rev2mDistanceSensor backTof = null;
 
 
     /* LEDs: Use this line if you drive the LEDs using an I2C/SPI bridge. */
@@ -787,7 +787,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 
     public boolean distanceFromWall(AlignmentSide side, double distance, double driveSpeed, double error) {
         boolean targetReached = false;
-        double wallDistance;
+        double wallDistance = 0;
         double delta;
         double drivePower;
 		double driveAngle = 0;
@@ -808,11 +808,11 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                 break;
             case LEFT:
                 wallDistance = readLeftTof();
-				driveAngle = 0;
+				driveAngle = 180;
                 break;
             case RIGHT:
                 wallDistance = readRightTof();
-				driveAngle = 180;
+				driveAngle = 0;
                 break;
         }
         delta = wallDistance - distance;
@@ -820,10 +820,10 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         if(Math.abs(delta) > error) {
 			if(delta < 0) {
 				// Need to drive forward away from the wall.
-				drivePower = driveSpeed;
+				drivePower = -driveSpeed;
 			} else {
 				// Need to drive backward towards the wall.
-				drivePower = -driveSpeed;
+				drivePower = driveSpeed;
 			}
 
 			// Go at slowest speed.
@@ -836,7 +836,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 			}
 			// make sure we don't go below minimum drive power.
 			if(Math.abs(drivePower) < MIN_DRIVE_SPEED) {
-				drivePower = Math.copysign(MIN_DRIVE_SPEED, drivePower);
+				drivePower = Math.copySign(MIN_DRIVE_SPEED, drivePower);
 			}
             drive(drivePower, 0.0, 0.0, driveAngle-readIMU());
 		} else {
@@ -1152,19 +1152,19 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         lifter = hwMap.get(DcMotor.class, LIFTER);
         extender = hwMap.get(DcMotorEx.class, EXTENDER);
 
-        rightTof = (Rev2mTurbo)hwMap.get(DistanceSensor.class, RIGHT_RANGE);
-        leftTof = (Rev2mTurbo)hwMap.get(DistanceSensor.class, LEFT_RANGE);
-        backRightTof = (Rev2mTurbo)hwMap.get(DistanceSensor.class, BACK_RIGHT_RANGE);
-        backLeftTof = (Rev2mTurbo)hwMap.get(DistanceSensor.class, BACK_LEFT_RANGE);
-        backTof = (Rev2mTurbo)hwMap.get(DistanceSensor.class, BACK_RANGE);
-        if(!tofInitialized) {
-            rightTof.initVL53L0X(false);
-            leftTof.initVL53L0X(false);
-            backRightTof.initVL53L0X(false);
-            backLeftTof.initVL53L0X(false);
-            backTof.initVL53L0X(false);
-            tofInitialized = true;
-        }
+        rightTof = (Rev2mDistanceSensor)hwMap.get(DistanceSensor.class, RIGHT_RANGE);
+        leftTof = (Rev2mDistanceSensor)hwMap.get(DistanceSensor.class, LEFT_RANGE);
+        backRightTof = (Rev2mDistanceSensor)hwMap.get(DistanceSensor.class, BACK_RIGHT_RANGE);
+        backLeftTof = (Rev2mDistanceSensor)hwMap.get(DistanceSensor.class, BACK_LEFT_RANGE);
+        backTof = (Rev2mDistanceSensor)hwMap.get(DistanceSensor.class, BACK_RANGE);
+//        if(!tofInitialized) {
+//            rightTof.initVL53L0X(false);
+//            leftTof.initVL53L0X(false);
+//            backRightTof.initVL53L0X(false);
+//            backLeftTof.initVL53L0X(false);
+//            backTof.initVL53L0X(false);
+//            tofInitialized = true;
+//        }
 
         // Set motor rotation
         // This makes lift go up with positive encoder values and power

@@ -10,7 +10,7 @@ public class PinchArmBot extends FourWheelsDriveBot {
     static final double MAX_POS     =  1.0;     // Maximum rotational position
     static final double MIN_POS     =  0.0;     // Minimum rotational position
     static final double PINCH_ARM_FOLD = 0.3;
-    static final double PINCH_ARM_VERTICLE = 0.55;
+    static final double PINCH_ARM_VERTICAL = 0.55;
     static final double PINCH_ARM_DOWN = 0.85;
     static final double PINCH_PINCH = 0.5;
     static final double PINCH_RELEASE = 0.2;
@@ -71,13 +71,13 @@ public class PinchArmBot extends FourWheelsDriveBot {
     public void resetArm(){
         servoPinch.setPosition(PINCH_RELEASE);
         opMode.sleep(2000);
-        servoArm.setPosition(PINCH_ARM_VERTICLE);
+        servoArm.setPosition(PINCH_ARM_VERTICAL);
         opMode.sleep(1000);
         return;
     }
 
     public void armVertical(){
-        servoArm.setPosition(PINCH_ARM_VERTICLE);
+        servoArm.setPosition(PINCH_ARM_VERTICAL);
     }
 
     public void dragFoundation() {

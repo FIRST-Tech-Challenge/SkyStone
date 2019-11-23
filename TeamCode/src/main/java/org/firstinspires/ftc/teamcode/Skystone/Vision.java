@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.Skystone;
 
 import android.os.SystemClock;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
@@ -13,8 +15,8 @@ import java.util.List;
 
 public class Vision{
     private final String VUFORIA_KEY = "AbSCRq//////AAAAGYEdTZut2U7TuZCfZGlOu7ZgOzsOlUVdiuQjgLBC9B3dNvrPE1x/REDktOALxt5jBEJJBAX4gM9ofcwMjCzaJKoZQBBlXXxrOscekzvrWkhqs/g+AtWJLkpCOOWKDLSixgH0bF7HByYv4h3fXECqRNGUUCHELf4Uoqea6tCtiGJvee+5K+5yqNfGduJBHcA1juE3kxGMdkqkbfSjfrNgWuolkjXR5z39tRChoOUN24HethAX8LiECiLhlKrJeC4BpdRCRazgJXGLvvI74Tmih9nhCz6zyVurHAHttlrXV17nYLyt6qQB1LtVEuSCkpfLJS8lZWS9ztfC1UEfrQ8m5zA6cYGQXjDMeRumdq9ugMkS";
-
-    private enum Location{
+    float value = 0;
+    public enum Location{
         CENTER,LEFT,RIGHT,UNKNOWN;
     }
 
@@ -28,7 +30,6 @@ public class Vision{
     public Vision(Robot robot){
         this.robot = robot;
     }
-
     public void initVision(){
         initVuforia();
         initTfod();
@@ -38,7 +39,7 @@ public class Vision{
 
     public Location runDetection(){
         double shortestDetectionLength = Double.MAX_VALUE;
-        float shortestValue = 700;
+        float shortestBlockValue = 0;
         double difference = 0;
 
         /**
@@ -64,25 +65,23 @@ public class Vision{
                 });
 
                 for (int i = 0; i < updatedRecognitions.size(); i++){
-                    if (updatedRecognitions.get(i).getConfidence() > 0.5){
+                    if (updatedRecognitions.get(i).getConfidence() >= 0.5){
                         if (updatedRecognitions.get(i).getTop()-updatedRecognitions.get(i).getBottom() < shortestDetectionLength) {
                             difference = shortestDetectionLength - (updatedRecognitions.get(i).getTop()-updatedRecognitions.get(i).getBottom());
                             shortestDetectionLength = updatedRecognitions.get(i).getTop()-updatedRecognitions.get(i).getBottom();
-                            shortestValue = (updatedRecognitions.get(i).getTop()+updatedRecognitions.get(i).getBottom())/2;
+                            shortestBlockValue = (updatedRecognitions.get(i).getTop()+updatedRecognitions.get(i).getBottom())/2;
                         }
                     }
+                    robot.getTelemetry().addLine("Shortest Value: " + shortestBlockValue);
+                    robot.getTelemetry().update();
                 }
-                if (difference < 100){
-                    location = Location.CENTER;
-                } else {
-                    if (shortestValue > 900) {
+                    if (shortestBlockValue > 200) {
                         location = Location.LEFT;
-                    } else if (shortestValue > 600){
+                    } else if (shortestBlockValue > 800){
                         location = Location.CENTER;
                     } else{
                         location = Location.RIGHT;
                     }
-                }
                 return location;
 
 
@@ -155,9 +154,12 @@ public class Vision{
         int tfodMonitorViewId = robot.getHardwareMap().appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", robot.getHardwareMap().appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minimumConfidence = 0.50;
+        tfodParameters.minimumConfidence = 0.5;
 
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
+    }
+    public float getValue(){
+        return value;
     }
 }

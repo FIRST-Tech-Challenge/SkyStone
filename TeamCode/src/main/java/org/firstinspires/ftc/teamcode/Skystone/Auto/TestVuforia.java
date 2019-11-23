@@ -17,9 +17,32 @@ public class TestVuforia extends AutoBase {
         tensorflow.initVision();
         waitForStart();
 
+        //robot.moveToPoint(8.5 ,0,0.5,1,Math.toRadians(0));
 
-        while (opModeIsActive()){
+        Vision.Location position = tensorflow.runDetection();
+        double firstSkyStoneY = 0.0;
+        double secondSkyStoneY = 24.0;
 
+
+        if (position == Vision.Location.RIGHT){
+            //telemetry.addLine("Position: Right");
+            telemetry.update();
+//            firstSkyStoneY = 3.0;
+//            secondSkyStoneY = -12.0;
+//            robot.moveToPoint(55,firstSkyStoneY,0.5,0.5,0);
+        } else if (position == Vision.Location.CENTER){
+            //telemetry.addLine("Position: Center");
+            telemetry.update();
+//            firstSkyStoneY = 0.0;
+//            secondSkyStoneY = -15.0;
+//            robot.moveToPoint(55, firstSkyStoneY, 0.5, 0.5,0);
+        } else {
+            //telemetry.addLine("Position: Center");
+            telemetry.update();
+//            firstSkyStoneY = -3.0;
+//            secondSkyStoneY = -35.0;
+//            robot.moveToPoint(55,firstSkyStoneY,0.5,0.5,0);
         }
+        sleep(99999999);
     }
 }

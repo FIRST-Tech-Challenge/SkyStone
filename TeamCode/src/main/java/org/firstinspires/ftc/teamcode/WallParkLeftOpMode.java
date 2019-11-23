@@ -16,14 +16,14 @@ public class WallParkLeftOpMode extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        this.robot.init(hardwareMap);
+        robot.init(hardwareMap);
 
         waitForStart();
         sleep(1000);
        // robot.driveStraightByDistance( robot.DIRECTION_FORWARD, 200);
        // robot.driveStraightByDistance( robot.DIRECTION_LEFT, 200);
        // robot.driveStraightByDistance( robot.DIRECTION_BACKWARD, 200);
-        robot.driveStraightByDistance( robot.DIRECTION_RIGHT, 200);
+        robot.driveStraightByDistance( robot.DIRECTION_RIGHT, 200, 0.5);
     }
 
 }

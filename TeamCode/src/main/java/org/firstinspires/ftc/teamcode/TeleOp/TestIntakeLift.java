@@ -4,7 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.All.DriveConstant;
@@ -26,7 +25,7 @@ import java.util.ArrayList;
  *  -Y and A to intake and outake
  *  -Left joystick and Right joysticks to control the lift
  *  -Adjust the HardwareMap configurations in HardwareMap.java class
- *  -Adjust Intake/Lift power in teleopConstants.java class
+ *  -Adjust Intake/Lift power in TeleopConstants.java class
  */
 
 @TeleOp(name="Test Intake & Lift", group="Linear Opmode")
@@ -90,13 +89,13 @@ public class TestIntakeLift extends LinearOpMode {
             }
 
             if(intake){
-                hwMap.rightIntake.setPower(-teleopConstants.intakePower);
-                hwMap.leftIntake.setPower(teleopConstants.intakePower);
+                hwMap.rightIntake.setPower(-TeleopConstants.intakePower);
+                hwMap.leftIntake.setPower(TeleopConstants.intakePower);
             }
 
             if(outake){
-                hwMap.rightIntake.setPower(teleopConstants.intakePower);
-                hwMap.leftIntake.setPower(-teleopConstants.intakePower);
+                hwMap.rightIntake.setPower(TeleopConstants.intakePower);
+                hwMap.leftIntake.setPower(-TeleopConstants.intakePower);
             }
 
             if(!intake && !outake){
@@ -107,17 +106,17 @@ public class TestIntakeLift extends LinearOpMode {
             //------------------------------===Linear Sliders===------------------------------------------
 
             if(gamepad2.left_stick_y == 1){
-                hwMap.liftOne.setPower(teleopConstants.liftPower);
+                hwMap.liftOne.setPower(TeleopConstants.liftPower);
             } else if(gamepad2.left_stick_y == -1){
-                hwMap.liftOne.setPower(-teleopConstants.liftPower);
+                hwMap.liftOne.setPower(-TeleopConstants.liftPower);
             } else {
                 hwMap.liftOne.setPower(0);
             }
 
             if(gamepad2.right_stick_y == 1){
-                hwMap.liftTwo.setPower(-teleopConstants.liftPower);
+                hwMap.liftTwo.setPower(-TeleopConstants.liftPower);
             } else if(gamepad2.right_stick_y == -1){
-                hwMap.liftTwo.setPower(teleopConstants.liftPower);
+                hwMap.liftTwo.setPower(TeleopConstants.liftPower);
             } else {
                 hwMap.liftTwo.setPower(0);
             }
@@ -151,26 +150,26 @@ public class TestIntakeLift extends LinearOpMode {
 
             //------------------------------===Servos===------------------------------------------
 
-            if(gamepad1.y)  //Change servo positions in teleopConstants.java
-                hwMap.clawServo1.setPosition(teleopConstants.clawServo1Pos1);
+            if(gamepad1.y)  //Change servo positions in TeleopConstants.java
+                hwMap.clawServo1.setPosition(TeleopConstants.clawServo1Pos1);
             else if(gamepad1.b)
-                hwMap.clawServo1.setPosition(teleopConstants.clawServo1Pos2);
+                hwMap.clawServo1.setPosition(TeleopConstants.clawServo1Pos2);
 
             if(gamepad1.x)
-                hwMap.clawServo2.setPosition(teleopConstants.clawServo2Pos1);
+                hwMap.clawServo2.setPosition(TeleopConstants.clawServo2Pos1);
             else if(gamepad1.a)
-                hwMap.clawServo2.setPosition(teleopConstants.clawServo2Pos2);
+                hwMap.clawServo2.setPosition(TeleopConstants.clawServo2Pos2);
 
             if(gamepad2.left_bumper) {
-                hwMap.liftOdometer.setPosition(teleopConstants.odometerLockPos);
+                hwMap.liftOdometer.setPosition(TeleopConstants.odometerLockPos);
             } else if(gamepad2.right_bumper) {
-                hwMap.liftOdometer.setPosition(-teleopConstants.odometerLockPos);
+                hwMap.liftOdometer.setPosition(-TeleopConstants.odometerLockPos);
             }
 
             if(gamepad1.left_bumper) {
-                hwMap.transferLock.setPosition(teleopConstants.transferLockPos);
+                hwMap.transferLock.setPosition(TeleopConstants.transferLockPos);
             } else if(gamepad1.right_bumper) {
-                hwMap.transferLock.setPosition(-teleopConstants.transferLockPos);
+                hwMap.transferLock.setPosition(-TeleopConstants.transferLockPos);
             }
 
             if(gamepad1.left_bumper) {

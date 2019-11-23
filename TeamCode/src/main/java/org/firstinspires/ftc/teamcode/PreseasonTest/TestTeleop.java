@@ -1,13 +1,6 @@
 package org.firstinspires.ftc.teamcode.PreseasonTest;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
-import org.firstinspires.ftc.teamcode.All.HardwareMap;
-import org.firstinspires.ftc.teamcode.TeleOp.teleopConstants;
-
-/*@TeleOp(name = "TeleOpTest", group = "LinearOpMode")
+/*@Teleop(name = "TeleOpTest", group = "LinearOpMode")
 @Disabled
 public class testTeleop extends LinearOpMode {
     @Override
@@ -40,21 +33,21 @@ public class testTeleop extends LinearOpMode {
                 map.intake.setPower(-0.8);
             }
             if(gamepad1.left_stick_y == 1){
-                map.frontLeft.setPower(teleopConstants.drivePower);
-                map.backLeft.setPower(teleopConstants.drivePower);
+                map.frontLeft.setPower(TeleopConstants.drivePower);
+                map.backLeft.setPower(TeleopConstants.drivePower);
             } else if(gamepad1.left_stick_y == -1){
-                map.frontLeft.setPower(-teleopConstants.drivePower);
-                map.backLeft.setPower(-teleopConstants.drivePower);
+                map.frontLeft.setPower(-TeleopConstants.drivePower);
+                map.backLeft.setPower(-TeleopConstants.drivePower);
             } else {
                 map.frontLeft.setPower(0);
                 map.backLeft.setPower(0);
             }
             if(gamepad1.right_stick_y == 1){
-                map.frontRight.setPower(-teleopConstants.drivePower);
-                map.backRight.setPower(-teleopConstants.drivePower);
+                map.frontRight.setPower(-TeleopConstants.drivePower);
+                map.backRight.setPower(-TeleopConstants.drivePower);
             } else if(gamepad1.right_stick_y == -1){
-                map.frontRight.setPower(teleopConstants.drivePower);
-                map.backRight.setPower(teleopConstants.drivePower);
+                map.frontRight.setPower(TeleopConstants.drivePower);
+                map.backRight.setPower(TeleopConstants.drivePower);
             } else {
                 map.frontRight.setPower(0);
                 map.backRight.setPower(0);
@@ -72,9 +65,9 @@ public class testTeleop extends LinearOpMode {
                 map.backRight.setPower(-2);
             }
             if(gamepad1.left_trigger == 1){
-                //teleopConstants.switchPower(0.6);
+                //TeleopConstants.switchPower(0.6);
             } else if(gamepad1.right_trigger == 1) {
-                //teleopConstants.switchPower(1);
+                //TeleopConstants.switchPower(1);
             }
             if(gamepad2.left_stick_y == 1){
                 map.firstJoint.setPower(0.7);

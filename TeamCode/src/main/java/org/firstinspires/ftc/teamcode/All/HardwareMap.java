@@ -57,9 +57,6 @@ public class HardwareMap {
         gyro = hwMap.get(BNO055IMU.class, "imu");
         imu = (IntegratingGyroscope) gyro;
 
-        //firstJointVirtualServo = new MotorServo(firstJoint, MotorServo.MotorConfiguration.firstJoint);
-        //secondJointVirtualServo = new MotorServo(secondJoint, MotorServo.MotorConfiguration.secondJoint);
-
         this.hardwareMap = hwMap;
     }
 

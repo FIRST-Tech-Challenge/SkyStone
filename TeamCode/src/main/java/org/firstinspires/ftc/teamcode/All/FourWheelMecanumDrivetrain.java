@@ -17,7 +17,6 @@ import static java.lang.Math.sin;
 
 public class FourWheelMecanumDrivetrain {
 
-
     public enum Direction {
         FORWARD,
         RIGHT,
@@ -28,14 +27,11 @@ public class FourWheelMecanumDrivetrain {
 
     LinearOpMode runningOpMode;
 
-    Orientation angles;
-
     double speedMultiplier = 0.75;
 
     // Constants used to adjust various parameters / characteristics of the drivetrain
     final double rotSpeed = 0.75;
     final double speedThreshold = 0.05;
-    public double turnThreshold = 2;
 
     public FourWheelMecanumDrivetrain(HardwareMap rw) {
         this.rw = rw;

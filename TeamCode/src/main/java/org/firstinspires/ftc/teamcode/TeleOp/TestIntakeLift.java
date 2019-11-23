@@ -10,6 +10,7 @@ import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.All.DriveConstant;
 import org.firstinspires.ftc.teamcode.All.FourWheelMecanumDrivetrain;
 import org.firstinspires.ftc.teamcode.All.HardwareMap;
+import org.firstinspires.ftc.teamcode.PID.DriveConstantsPID;
 
 import java.util.ArrayList;
 
@@ -33,7 +34,7 @@ public class TestIntakeLift extends LinearOpMode {
     boolean intake = false;
     boolean outake = false;
     final double slowSpeed = 0.7;
-    final double turnSpeed = 0.6;
+    final double turnSpeed = 0.4;
     boolean turningTowards = false;
     boolean runLogic = false;
 
@@ -55,8 +56,8 @@ public class TestIntakeLift extends LinearOpMode {
 
         drivetrain.setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        hwMap.frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        hwMap.backRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        hwMap.frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        hwMap.backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
         telemetry.addData("Status", "Ready");
 
@@ -65,14 +66,6 @@ public class TestIntakeLift extends LinearOpMode {
         while (opModeIsActive()){
 
             double turn = (-1) * (gamepad1.left_trigger - gamepad1.right_trigger) * turnSpeed;
-
-            if (isStopRequested()) {
-                StringBuilder sb = new StringBuilder();
-                for (String row : kVData) {
-                    sb.append(row);
-                    sb.append("\n");
-                }
-            }
 
             //------------------------------===Intake/Outake===------------------------------------------
 
@@ -135,8 +128,6 @@ public class TestIntakeLift extends LinearOpMode {
 
             if (!(gamepad1.left_stick_x == 0 && gamepad1.right_stick_y == 0 && turn == 0)) {
 
-
-
                 double speed;
 
                 if (gamepad1.left_stick_x == 0 && gamepad1.right_stick_y == 0) {
@@ -183,11 +174,19 @@ public class TestIntakeLift extends LinearOpMode {
             }
 
             if(gamepad1.left_bumper) {
-                String temp = kVData.toString();
-                temp = temp.replaceAll("]","");
-                temp = temp.replaceAll("\\[","");
-                DriveConstant.writeFile(AppUtil.ROOT_FOLDER + "/RoadRunner/kV_regression_data.csv", temp);
+                StringBuilder sb = new StringBuilder();
+                for (String row : kVData) {
+                    sb.append(row);
+                    sb.append("\n");
+                }
+
+                DriveConstant.writeFile(AppUtil.ROOT_FOLDER + "/RoadRunner/kV_regression_data_" + System.currentTimeMillis() + ".csv", sb.toString());
                 runLogic = false;
+                break;
+            }
+
+            if(gamepad1.right_bumper){
+
             }
 
             telemetry.addData("LeftForwardOdometry", hwMap.leftIntake.getCurrentPosition());
@@ -200,6 +199,8 @@ public class TestIntakeLift extends LinearOpMode {
             telemetry.addData("BackRight", hwMap.backRight.getCurrentPosition());
 
             telemetry.addData("LiftOne", hwMap.liftOne.getCurrentPosition());
+            telemetry.addData("maxRPM", DriveConstantsPID.getMaxRpm());
+            telemetry.addData("encoderTicksPerRev",DriveConstantsPID.TICKS_PER_REV);
             telemetry.update();
         }
 
@@ -209,9 +210,11 @@ public class TestIntakeLift extends LinearOpMode {
     public void saveDataLoop(HardwareMap hw){
         Thread loop = new Thread() {
             public void run() {
+                long initTime = System.currentTimeMillis();
                 while(runLogic) {
                     kVData.add(hw.frontLeft.getPower() + "," + hw.backLeft.getPower() + "," +
-                            "," + hw.frontLeft.getCurrentPosition() + "," + hw.backLeft.getCurrentPosition());
+                            hw.frontLeft.getCurrentPosition() + "," + hw.backLeft.getCurrentPosition() + "," +
+                            (System.currentTimeMillis() - initTime));
                     try {
                         sleep(50);
                     } catch (Exception e){}

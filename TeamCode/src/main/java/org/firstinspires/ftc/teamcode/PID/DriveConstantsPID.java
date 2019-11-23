@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.PID;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.drive.Drive;
 import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
+import com.qualcomm.hardware.motors.Matrix12vMotor;
 import com.qualcomm.hardware.motors.NeveRest20Gearmotor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
@@ -21,9 +22,9 @@ public class DriveConstantsPID {
      * adjust them in the dashboard; **config variable changes don't persist between app restarts**.
      */
     private static final MotorConfigurationType MOTOR_CONFIG =
-            MotorConfigurationType.getMotorType(NeveRest20Gearmotor.class);
-    //private static final double TICKS_PER_REV = MOTOR_CONFIG.getTicksPerRev();
-    private static final double TICKS_PER_REV = DriveConstant.WHEEL_ENCODER_COUNTS_PER_REVOLUTION;
+            MotorConfigurationType.getMotorType(Matrix12vMotor.class);
+    //public static final double TICKS_PER_REV = MOTOR_CONFIG.getTicksPerRev();
+    public static final double TICKS_PER_REV = DriveConstant.WHEEL_ENCODER_COUNTS_PER_REVOLUTION;
 
     /*
      * These are physical constants that can be determined from your robot (including the track
@@ -34,7 +35,7 @@ public class DriveConstantsPID {
      * convenience.
      */
     public static double WHEEL_RADIUS = DriveConstant.MECANUM_RAD;;
-    public static double GEAR_RATIO = 1; // output (wheel) speed / input (motor) speed
+    public static double GEAR_RATIO = DriveConstant.MOTOR_GEAR_RATIO; // output (wheel) speed / input (motor) speed
     public static double TRACK_WIDTH = 12.0;
 
     /*
@@ -43,7 +44,7 @@ public class DriveConstantsPID {
      * motor encoders or have elected not to use them for velocity control, these values should be
      * empirically tuned.
      */
-    public static double kV = 0.0065; //translates motor power in sw and real distance
+    public static double kV = 0.0055; //translates motor power in sw and real distance 0.01145
     public static double kA = 0;
     public static double kStatic = 0;
 
@@ -56,7 +57,7 @@ public class DriveConstantsPID {
      * forces acceleration-limited profiling).
      */
     public static DriveConstraints BASE_CONSTRAINTS = new DriveConstraints(
-            24.0, 12.0, Math.PI / 2,
+            24.0, 12.0, 24.0,
             Math.toRadians(180.0), Math.toRadians(180.0), Math.PI / 4
     );
 
@@ -68,6 +69,10 @@ public class DriveConstantsPID {
     public static double rpmToVelocity(double rpm) {
         return rpm * GEAR_RATIO * 2 * Math.PI * WHEEL_RADIUS / 60.0;
     }
+
+    //public static double getMaxRpm() {
+    //    return MOTOR_CONFIG.getMaxRPM();
+    //}
 
     public static double getMaxRpm() {
         return 435.0;

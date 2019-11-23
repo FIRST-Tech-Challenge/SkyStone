@@ -45,15 +45,11 @@ public class DriveFeedforwardTuner extends LinearOpMode {
     public static final double MAX_POWER = 0.7;
     public static final double DISTANCE = 100;
 
-    private ArrayList<String> odometryData = new ArrayList<>();
-
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDriveBase drive = new SampleMecanumDriveREV(hardwareMap);
 
         HardwareMap map = new HardwareMap(hardwareMap);
-
-        odometryData.add("Time: Power, (Left_Odometer, Right_Odometer, Side_Odometer) <<|");
 
         NanoClock clock = NanoClock.system();
 
@@ -121,8 +117,8 @@ public class DriveFeedforwardTuner extends LinearOpMode {
             double power = vel / maxVel;
 
             rampRegression.add(elapsedTime, drive.getPoseEstimate().getX(), power);
-            odometryData.add(elapsedTime + ": " + power + ", (" + map.leftIntake.getCurrentPosition()
-                    + ", " + map.liftTwo.getCurrentPosition() + ", " + map.rightIntake.getCurrentPosition() + ") <<|");
+            //odometryData.add(elapsedTime + ": " + power + ", (" + map.leftIntake.getCurrentPosition()
+            //        + ", " + map.liftTwo.getCurrentPosition() + ", " + map.rightIntake.getCurrentPosition() + ") <<|");
 
             drive.setDrivePower(new Pose2d(power, 0.0, 0.0));
             drive.updatePoseEstimate();
@@ -134,7 +130,7 @@ public class DriveFeedforwardTuner extends LinearOpMode {
         rampRegression.save(LoggingUtil.getLogFile(Misc.formatInvariant(
                 "DriveRampRegression-%d.csv", System.currentTimeMillis())));
 
-        writeFile(AppUtil.ROOT_FOLDER + "/RoadRunner/odometer_values.txt", odometryData.toString());
+        //writeFile(AppUtil.ROOT_FOLDER + "/RoadRunner/odometer_values.txt", odometryData.toString());
 
         telemetry.log().clear();
         telemetry.log().add("Quasi-static ramp up test complete");

@@ -47,6 +47,8 @@ public class BasicTeleOp extends TeleOpControl {
                 yToggle = !yToggle;
             }
 
+            telemetry.addData("power", fb);
+            telemetry.update();
 
             if (!yToggle) {
                 if (g(0)) {

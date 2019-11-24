@@ -20,13 +20,15 @@ public class straight extends AutonomousControl {
         if (opModeIsActive()){
             rob.driveTrainMovement(0, Crane.movements.forward);
             sleep(1000);
+            rob.driveTrainMovement(0.0001, Crane.movements.forward);
+            sleep(2500);
+            rob.driveTrainMovement(0.001, Crane.movements.forward);
+            sleep(2500);
             rob.driveTrainMovement(0.01, Crane.movements.forward);
             sleep(2500);
-            rob.driveTrainMovement(0.2, Crane.movements.forward);
+            rob.driveTrainMovement(0.1, Crane.movements.forward);
             sleep(2500);
-            rob.driveTrainMovement(0.2, Crane.movements.forward);
-            sleep(2500);
-            rob.driveTrainMovement(0, Crane.movements.forward);
+            rob.stopDrivetrain();
 
 
 

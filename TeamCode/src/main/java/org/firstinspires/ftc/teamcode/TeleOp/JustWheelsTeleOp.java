@@ -17,11 +17,21 @@ public class JustWheelsTeleOp extends TeleOpControl {
     public void runOpMode() throws InterruptedException {
         boolean yToggle = false;
 
-        setup(runtime, Crane.setupType.drive);
+        setup(runtime, Crane.setupType.drive, Crane.setupType.intake);
 
         while (opModeIsActive()){
             standardGamepadData();
 
+            if(gamepad1.dpad_up){
+                rob.rightSuck.setPower(-0.8);
+                rob.leftSuck.setPower(0.8);
+            }else if(gamepad1.dpad_down){
+                rob.rightSuck.setPower(0.8);
+                rob.leftSuck.setPower(-0.8);
+            }else{
+                rob.rightSuck.setPower(0);
+                rob.leftSuck.setPower(0);
+            }
 
             if (gamepad1.y){
                 yToggle = !yToggle;
@@ -48,40 +58,44 @@ public class JustWheelsTeleOp extends TeleOpControl {
                     rob.driveTrainMovement(diagonalSpeed, Crane.movements.br);
                 }
                 else if (g(8)) {
-                    rob.driveTrainMovement(0.8, Crane.movements.ccw);
+                    rob.driveTrainMovement(0.4, Crane.movements.ccw);
                 } else if (g(9)) {
-                    rob.driveTrainMovement(0.8, Crane.movements.cw);
+                    rob.driveTrainMovement(0.4, Crane.movements.cw);
                 } else {
                     rob.stopDrivetrain();
                 }
             }
             else {
                 if (g(0)) {
-                    rob.driveTrainMovement(0.2, Crane.movements.forward);
+                    rob.driveTrainMovement(0.1, Crane.movements.forward);
                 } else if (g(2)) {
-                    rob.driveTrainMovement(0.2, Crane.movements.backward);
+                    rob.driveTrainMovement(0.1, Crane.movements.backward);
                 } else if (g(3)) {
-                    rob.driveTrainMovement(0.2, Crane.movements.right);
+                    rob.driveTrainMovement(0.1, Crane.movements.right);
                 } else if (g(1)) {
-                    rob.driveTrainMovement(0.2, Crane.movements.left);
+                    rob.driveTrainMovement(0.1, Crane.movements.left);
                 }
                 else if (g(4)) {
-                    rob.driveTrainMovement(0.2, Crane.movements.tr);
+                    rob.driveTrainMovement(0.1, Crane.movements.tr);
                 }else if (g(5)) {
-                    rob.driveTrainMovement(0.2, Crane.movements.tl);
+                    rob.driveTrainMovement(0.1, Crane.movements.tl);
                 }else if (g(6)) {
-                    rob.driveTrainMovement(0.2, Crane.movements.bl);
+                    rob.driveTrainMovement(0.1, Crane.movements.bl);
                 }else if (g(7)) {
-                    rob.driveTrainMovement(0.2, Crane.movements.br);
+                    rob.driveTrainMovement(0.1, Crane.movements.br);
                 }
                 else if (g(8)) {
-                    rob.driveTrainMovement(0.2, Crane.movements.ccw);
+                    rob.driveTrainMovement(0.1, Crane.movements.ccw);
                 } else if (g(9)) {
-                    rob.driveTrainMovement(0.2, Crane.movements.cw);
+                    rob.driveTrainMovement(0.1, Crane.movements.cw);
                 } else {
                     rob.stopDrivetrain();
                 }
             }
+
+            telemetry.addData("power", fb);
+            telemetry.addData("crawl", yToggle);
+            telemetry.update();
 
         }
     }

@@ -37,6 +37,7 @@ import static org.firstinspires.ftc.teamcode.Control.Constants.flimits;
 import static org.firstinspires.ftc.teamcode.Control.Constants.foundationServos;
 import static org.firstinspires.ftc.teamcode.Control.Constants.leftLinears;
 import static org.firstinspires.ftc.teamcode.Control.Constants.leftServos;
+import static org.firstinspires.ftc.teamcode.Control.Constants.leftsucks;
 import static org.firstinspires.ftc.teamcode.Control.Constants.motorBLS;
 import static org.firstinspires.ftc.teamcode.Control.Constants.motorBRS;
 import static org.firstinspires.ftc.teamcode.Control.Constants.motorFLS;
@@ -44,6 +45,7 @@ import static org.firstinspires.ftc.teamcode.Control.Constants.motorFRS;
 import static org.firstinspires.ftc.teamcode.Control.Constants.racks;
 import static org.firstinspires.ftc.teamcode.Control.Constants.rightLinears;
 import static org.firstinspires.ftc.teamcode.Control.Constants.rightServos;
+import static org.firstinspires.ftc.teamcode.Control.Constants.rightsucks;
 import static org.firstinspires.ftc.teamcode.Control.Constants.rotationservos;
 import static org.firstinspires.ftc.teamcode.Control.Constants.servos;
 
@@ -59,6 +61,9 @@ public class Crane {
 
         for (setupType type: setup) {
             switch (type) {
+                case intake:
+                    setupIntake();
+                    break;
                 case autonomous:
                     setupDrivetrain();
                     break;
@@ -142,6 +147,9 @@ public class Crane {
     public DcMotor leftLinear;
     public DcMotor rack;
 
+    public DcMotor rightSuck;
+    public DcMotor leftSuck;
+
     public  List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
     public VuforiaTrackables targetsSkyStone;
     public boolean targetVisible = false;
@@ -192,7 +200,7 @@ public class Crane {
         motorBR = motor(motorBRS, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.BRAKE);
         motorBL = motor(motorBLS, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.BRAKE);
 
-        motorDriveMode(EncoderMode.ON, motorFR, motorFL, motorBR, motorBL);
+        motorDriveMode(EncoderMode.OFF, motorFR, motorFL, motorBR, motorBL);
     }
 
 
@@ -209,11 +217,19 @@ public class Crane {
         leftServo = servo(leftServos, Servo.Direction.REVERSE,0,1,0.5);
 
 
-        encoder(EncoderMode.ON, rack, leftLinear, rightLinear);
+        encoder(EncoderMode.OFF, rack, leftLinear, rightLinear);
+
     }
 
     public void setupFoundation() throws InterruptedException{
         foundationServo = servo(foundationServos, Servo.Direction.FORWARD,0,1,0.5);
+    }
+
+    public void setupIntake() throws InterruptedException{
+        rightSuck = motor(rightsucks, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.BRAKE);
+        leftSuck = motor(leftsucks, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.BRAKE);
+
+        encoder(EncoderMode.OFF, rack, leftLinear, rightLinear);
     }
 
     //-----------------------HARDWARE SETUP FUNCTIONS---------------------------------------
@@ -595,7 +611,7 @@ public class Crane {
         ON, OFF;
     }
     public enum setupType{
-        autonomous, teleop, endgame, drive, camera, claw, bSystem, foundation, yellow;
+        autonomous, teleop, endgame, drive, camera, claw, bSystem, foundation, yellow, intake;
     }
 
     //-------------------SET FUNCTIONS--------------------------------

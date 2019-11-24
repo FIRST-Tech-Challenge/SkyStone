@@ -1,13 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
-import com.qualcomm.robotcore.hardware.Servo;
 
 @Autonomous(name="Basic: Autonomous League Test Drive", group="Linear Opmode")
 
@@ -22,7 +17,7 @@ public class AutonomousTestLeague extends LinearOpMode {
     double rightPower;
     double targetRange;
 
-    int rightFrontRange, leftFrontRange, rightRearRange, leftRearRange;
+    int range, leftFrontRange, rightRearRange, leftRearRange;
 
     final double MAX_RANGE = 36.0;
     final double MID_SPEED = 0.25;
@@ -31,9 +26,14 @@ public class AutonomousTestLeague extends LinearOpMode {
     final double MIN_RANGE = 1.0;
 
     final double TICKS_PER_ROT = 537.6;
+    //ticks 12.85
     final double WHEEL_DIAMETER = 4;
     final double TICKS_PER_INCH = TICKS_PER_ROT/(Math.PI * WHEEL_DIAMETER);
     final double WHEEL_ANGLE = Math.PI/4;
+    final double ROBOT_DIAMETER = 18.25;
+    final double ROBOT_CIRCUMFRINCE = ROBOT_DIAMETER*Math.PI;
+    final double TICKS_PER_ROBOT_ROT = ROBOT_CIRCUMFRINCE*TICKS_PER_INCH;
+
 
     final double DRIVE_PWR = 0.25;
     @Override
@@ -91,19 +91,29 @@ public class AutonomousTestLeague extends LinearOpMode {
         waitForStart();
 
         // Put the autonomous portion of the code here
-        upToMe(10);
+        forwardInches(12);
+        rotDeg(180, .1);
+        forwardInches(6);
+        sleep(250);
+        rotDeg(90, .1);
+        sleep(250);
+        rotDeg(90, .1);
+        sleep(250);
+        rotDeg(90, .1);
+        sleep(250);
+        rotDeg(90, .1);
         // Move forward 3ft
         //    Determine the distance in number of ticks
 
     }
 
-    public void upToMe(double upToMeLol){
-        rightFrontRange = (int)(upToMeLol*TICKS_PER_INCH/Math.cos(WHEEL_ANGLE)/2);
+    public void forwardInches(double inches){
+        range = (int)(inches*TICKS_PER_INCH/Math.cos(WHEEL_ANGLE)/2);
 
-        leftFront.setTargetPosition(rightFrontRange);
-        leftRear.setTargetPosition(rightFrontRange);
-        rightFront.setTargetPosition(rightFrontRange);
-        rightRear.setTargetPosition(rightFrontRange);
+        leftFront.setTargetPosition(range);
+        leftRear.setTargetPosition(range);
+        rightFront.setTargetPosition(range);
+        rightRear.setTargetPosition(range);
 
         leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -128,6 +138,30 @@ public class AutonomousTestLeague extends LinearOpMode {
         rightFront.setPower(0);
         rightRear.setPower(0);
 
+    }
+
+    public void rotDeg(double deg, double speed){
+        range = (int)((deg/360)*TICKS_PER_ROBOT_ROT);
+
+        leftFront.setTargetPosition(range);
+        leftRear.setTargetPosition(range);
+        rightFront.setTargetPosition(range);
+        rightRear.setTargetPosition(range);
+
+        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        leftFront.setPower(speed);
+        leftRear.setPower(-speed);
+        rightFront.setPower(speed);
+        rightRear.setPower(-speed);
     }
 
 }

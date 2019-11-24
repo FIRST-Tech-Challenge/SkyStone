@@ -22,12 +22,10 @@ public class DriveSystem {
         }
     }
 
-    public static final double SLOW_DRIVE_POWER = 0.3;
-    public static final double MAX_DRIVE_POWER = 1.0;
+    public static final double SLOW_DRIVE_COEFF = 0.25;
 
     public int counter = 0;
     public boolean slowDrive;
-    public double power;
 
 
     public static final String TAG = "DriveSystem";
@@ -84,6 +82,15 @@ public class DriveSystem {
         setMotorPower(0);
     }
 
+    public void slowDrive(boolean on) {
+        slowDrive = on;
+    }
+
+    private void setDriveSpeed(DcMotor motor, double motorPower) {
+        motor.setPower(Range.clip(slowDrive ?
+                SLOW_DRIVE_COEFF * motorPower : motorPower, -1, 1));
+    }
+
     /**
      * Clips joystick values and drives the motors.
      * @param rightX Right X joystick value
@@ -92,16 +99,7 @@ public class DriveSystem {
      */
 
     // TODO
-    public void drive(float rightX, float leftX, float leftY, boolean xButton) {
-
-
-        this.slowDrive = xButton;
-        Log.d(TAG, "slow drive -- " + slowDrive);
-        if (slowDrive) {
-            power = SLOW_DRIVE_POWER;
-        } else {
-            power = MAX_DRIVE_POWER;
-        }
+    public void drive(float rightX, float leftX, float leftY) {
         // Prevent small values from causing the robot to drift
         if (Math.abs(rightX) < 0.01) {
             rightX = 0.0f;
@@ -118,19 +116,21 @@ public class DriveSystem {
         double backLeftPower = -leftY + rightX - leftX;
         double backRightPower = -leftY - rightX + leftX;
 
+
+
         motors.forEach((name, motor) -> {
             switch(name) {
                 case FRONTRIGHT:
-                    motor.setPower(Range.clip(frontRightPower, -power, power));
+                    setDriveSpeed(motor, frontRightPower);
                     break;
                 case BACKLEFT:
-                    motor.setPower(Range.clip(backLeftPower, -power, power));
+                    setDriveSpeed(motor, backLeftPower);
                     break;
                 case FRONTLEFT:
-                    motor.setPower(Range.clip(frontLeftPower, -power, power));
+                    setDriveSpeed(motor, frontLeftPower);
                     break;
                 case BACKRIGHT:
-                    motor.setPower(Range.clip(backRightPower, -power, power));
+                    setDriveSpeed(motor, backRightPower);
                     break;
             }
         });

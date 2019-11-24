@@ -4,33 +4,23 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import java.util.EnumMap;
 
-public class SpinnySystem {
+public class IntakeSystem {
 
     public enum MotorNames {
-        RIGHTINTAKE, LEFTINTAKE, BOTTOMINTAKE
+        RIGHT_INTAKE, LEFT_INTAKE, BOTTOM_INTAKE
     }
 
-    private EnumMap<SpinnySystem.MotorNames, DcMotor> motors;
+    private EnumMap<IntakeSystem.MotorNames, DcMotor> motors;
 
-    public SpinnySystem(EnumMap<SpinnySystem.MotorNames, DcMotor> motors) {
+    public IntakeSystem(EnumMap<IntakeSystem.MotorNames, DcMotor> motors) {
         this.motors = motors;
         initMotors();
-    }
-
-    public void spin(boolean leftBumper, boolean rightBumper) {
-        if (leftBumper) {
-            setMotorsPower(1.0);
-        } else if (rightBumper) {
-            setMotorsPower(-1.0);
-        } else {
-            setMotorsPower(0.0);
-        }
     }
 
     private void initMotors() {
         motors.forEach((name, motor) -> {
             motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            if (name == MotorNames.RIGHTINTAKE) {
+            if (name == MotorNames.RIGHT_INTAKE) {
                 motor.setDirection(DcMotorSimple.Direction.REVERSE);
             } else {
                 motor.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -39,7 +29,19 @@ public class SpinnySystem {
         });
     }
 
-    private void setMotorsPower(double power) {
+    public void stop() {
+        setMotorPowers(0.0);
+    }
+
+    public void suck() {
+        setMotorPowers(1.0);
+    }
+
+    public void unsuck() {
+        setMotorPowers(-1.0);
+    }
+
+    private void setMotorPowers(double power) {
         for (DcMotor motor : motors.values()) {
             motor.setPower(power);
         }

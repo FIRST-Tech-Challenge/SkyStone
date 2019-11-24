@@ -10,6 +10,7 @@ import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.teamcode.components.DriveSystem;
+import org.firstinspires.ftc.teamcode.components.IntakeSystem;
 import org.firstinspires.ftc.teamcode.components.Vuforia.CameraChoice;
 import org.firstinspires.ftc.teamcode.opmodes.base.BaseOpMode;
 
@@ -49,15 +50,15 @@ public abstract class BaseStateMachine extends BaseOpMode {
 //        rearPerimeter = vuforia.targetsSkyStone.get(team == Team.RED ? 12 : 11);
         if (currentTeam == Team.RED) {
             distanceSide = hardwareMap.get(DistanceSensor.class, "FRONTRIGHTLIDAR");
-            super.setCamera(CameraChoice.WEBCAM1);
+//            super.setCamera(CameraChoice.WEBCAM1);
         } else {
             distanceSide = hardwareMap.get(DistanceSensor.class, "FRONTLEFTLIDAR");
-            super.setCamera(CameraChoice.WEBCAM2);
+//            super.setCamera(CameraChoice.WEBCAM2);
         }
         colorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
         this.msStuckDetectLoop = 30000;
         newState(State.STATE_INITIAL);
-        skystone = vuforia.targetsSkyStone.get(0);
+//        skystone = vuforia.targetsSkyStone.get(0);
         currentTeam = team;
     }
 
@@ -125,9 +126,9 @@ public abstract class BaseStateMachine extends BaseOpMode {
                     while (!driveSystem.driveToPosition(1525, direction, 0.5) && !isStopRequested()) {}
                     // Drive into skystone
                     while (!driveSystem.driveToPosition(500, DriveSystem.Direction.BACKWARD, 0.3) && !isStopRequested()) {
-                        spinnySystem.spin(true, false);
+                        intakeSystem.suck();
                     }
-                    spinnySystem.spin(false, false);
+                    intakeSystem.stop();
                     // Move away with skystone (prepare for next state)
                     direction = currentTeam == Team.RED ? DriveSystem.Direction.LEFT : DriveSystem.Direction.RIGHT;
                     while (!driveSystem.driveToPosition(1200, direction, 0.8) && !isStopRequested()) {};
@@ -157,9 +158,9 @@ public abstract class BaseStateMachine extends BaseOpMode {
                 while (!driveSystem.driveToPosition(1525, direction, 0.5) && !isStopRequested()) {}
                 // Drive into skystone
                 while (!driveSystem.driveToPosition(500, DriveSystem.Direction.BACKWARD, 0.3) && !isStopRequested()) {
-                    spinnySystem.spin(true, false);
+                    intakeSystem.suck();
                 }
-                spinnySystem.spin(false, false);
+                intakeSystem.stop();
                 // Move away with skystone (prepare for next state)
                 direction = currentTeam == Team.RED ? DriveSystem.Direction.LEFT : DriveSystem.Direction.RIGHT;
                 while (!driveSystem.driveToPosition(1200, direction, 0.8) && !isStopRequested()) {};
@@ -174,17 +175,17 @@ public abstract class BaseStateMachine extends BaseOpMode {
             case STATE_DELIVER_STONE:
                 telemetry.addData("State", "STATE_DELIVER_STONE");
                 while (!driveSystem.driveToPosition(2200, DriveSystem.Direction.BACKWARD, 1.0)  && !isStopRequested()) {};
-                spinnySystem.spin(false, true);
+                intakeSystem.unsuck();
                 newState(State.EJECT_STONE);
                 telemetry.update();
                 break;
 
             case EJECT_STONE:
                 if (mStateTime.milliseconds() >= 1000) {
-                    spinnySystem.spin(false, false);
+                    intakeSystem.stop();
                     newState(State.STATE_PARK_AT_LINE);
                 } else {
-                    spinnySystem.spin(false, true);
+                    intakeSystem.stop();
                 }
                 break;
 
@@ -208,7 +209,7 @@ public abstract class BaseStateMachine extends BaseOpMode {
                         break;
                     }
                 }
-                driveSystem.drive(0.0f, 0.0f, -0.2f, false);
+                driveSystem.drive(0.0f, 0.0f, -0.2f);
                 break;
 
             case STATE_DEPOSIT_STONE:

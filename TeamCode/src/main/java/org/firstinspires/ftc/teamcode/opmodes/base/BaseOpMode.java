@@ -12,8 +12,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.teamcode.components.ArmSystem;
 import org.firstinspires.ftc.teamcode.components.DriveSystem;
 import org.firstinspires.ftc.teamcode.components.IMUSystem;
+import org.firstinspires.ftc.teamcode.components.IntakeSystem;
 import org.firstinspires.ftc.teamcode.components.LatchSystem;
-import org.firstinspires.ftc.teamcode.components.SpinnySystem;
 import org.firstinspires.ftc.teamcode.components.Vuforia;
 import org.firstinspires.ftc.teamcode.components.Vuforia.CameraChoice;
 
@@ -23,7 +23,7 @@ public abstract class BaseOpMode extends OpMode {
 
     protected DriveSystem driveSystem;
     protected LatchSystem latchSystem;
-    protected SpinnySystem spinnySystem;
+    protected IntakeSystem intakeSystem;
     protected Vuforia vuforia;
     protected VuforiaTrackable skystone;
     protected VuforiaTrackable rearPerimeter;
@@ -42,11 +42,11 @@ public abstract class BaseOpMode extends OpMode {
 
         latchSystem = new LatchSystem(hardwareMap.get(Servo.class, "latch"));
 
-        EnumMap<SpinnySystem.MotorNames, DcMotor> spinnyMap = new EnumMap<>(SpinnySystem.MotorNames.class);
-        for(SpinnySystem.MotorNames name : SpinnySystem.MotorNames.values()){
-            spinnyMap.put(name,hardwareMap.get(DcMotor.class, name.toString()));
+        EnumMap<IntakeSystem.MotorNames, DcMotor> intakeMap = new EnumMap<>(IntakeSystem.MotorNames.class);
+        for(IntakeSystem.MotorNames name : IntakeSystem.MotorNames.values()){
+            intakeMap.put(name,hardwareMap.get(DcMotor.class, name.toString()));
         }
-        spinnySystem = new SpinnySystem(spinnyMap);
+        intakeSystem = new IntakeSystem(intakeMap);
 
         DistanceSensor distanceSensor2;
         DistanceSensor distanceSensor3;

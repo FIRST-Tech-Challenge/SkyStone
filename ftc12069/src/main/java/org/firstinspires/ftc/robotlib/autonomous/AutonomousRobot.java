@@ -404,12 +404,11 @@ public class AutonomousRobot {
      */
     public void parkUnderBridge() {
         Point3D robotPosition = this.getPosition();
-        //TODO Account for robot size
         if (alliance == Alliance.BLUE) {
-            this.moveToPoint(new Point(robotPosition.x, blueBridge.getCornerPoint2().y), 1);
+            this.moveToPoint(new Point(robotPosition.x, blueBridge.getCornerPoint2().y + 18), 1);
             this.moveToPoint(new Point(blueBridge.getMiddleX(), robotPosition.y), 1);
         } else if (alliance == Alliance.RED) {
-            this.moveToPoint(new Point(robotPosition.x, redBridge.getCornerPoint2().y), 1);
+            this.moveToPoint(new Point(robotPosition.x, redBridge.getCornerPoint2().y - 18), 1);
             this.moveToPoint(new Point(redBridge.getMiddleX(), robotPosition.y), 1);
         }
     }
@@ -423,6 +422,8 @@ public class AutonomousRobot {
      * @param distance Distance (in inches) to execute this movement
      */
     public void simpleMove(double course, double velocity, double rotation, double distance) {
+        telemetry.addData("SIMPLE MOVE EXECUTING", "Course: %.0f degrees\nVelocity: %.0f\nRotation: %.0f\nDistance: %.0f inches", course, velocity, rotation, distance);
+        telemetry.update();
         hardware.drivetrain.setCourse(course * Math.PI / 180);
         hardware.drivetrain.setRotation(rotation);
         hardware.drivetrain.setVelocity(velocity);
@@ -439,6 +440,8 @@ public class AutonomousRobot {
      * @param distance Distance (in inches) to execute this movement
      */
     public void move(double course, double velocity, OrientationInfo orientationInfo, double distance) {
+        telemetry.addData("MOVE EXECUTING", "Course: %.0f degrees\nVelocity: %.0f\nOrientation: Angle: %.0f, Rotation: %.0f\nDistance: %.0f inches", course, velocity, orientationInfo.angle, orientationInfo.rotation, distance);
+        telemetry.update();
         hardware.drivetrain.setCourse(course * Math.PI / 180);
         hardware.drivetrain.setVelocity(velocity);
         hardware.drivetrain.setTargetPosition(distance * hardware.motorTicksPerInch);

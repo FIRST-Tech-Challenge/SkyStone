@@ -68,8 +68,8 @@ public class MecanumHardwareMap
         driveRearRight.setDirection(DcMotorSimple.Direction.FORWARD);
         driveRearLeft.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        servoClaw = hwMap.get(Servo.class, "servoClaw");
-        servoClaw.setDirection(Servo.Direction.FORWARD);
+        //servoClaw = hwMap.get(Servo.class, "servoClaw");
+        //servoClaw.setDirection(Servo.Direction.FORWARD);
 
         //webcamName = internalHardwareMap.get(WebcamName.class, "webcam");
 
@@ -84,7 +84,7 @@ public class MecanumHardwareMap
         imu.initialize(imuParamters);*/
 
         drivetrain = new MecanumDrivetrain(motorList);
-        servoManager = new ServoManager(new Servo[]{servoClaw});
+        //servoManager = new ServoManager(new Servo[]{servoClaw});
         motorTicksPerInch = drivetrain.getTicksPerInch(wheelRadius, wheelToMotorRatio);
     }
 }

@@ -995,21 +995,6 @@ public class Robot {
         return 1;
     }
 
-
-    /**
-     * Initialize the TensorFlow Object Detection engine.
-     */
-
-    private void incrementBy(HashMap<Integer, Integer> recognitions, int key, int val){
-        Integer currentVal = recognitions.get(key);
-        if (currentVal == null){
-            recognitions.put(key, val);
-        } else {
-            currentVal += val;
-            recognitions.put(key, currentVal);
-        }
-    }
-
     public class PointWithIndex {
         private double x;
         private double y;

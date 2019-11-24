@@ -1,14 +1,22 @@
 package org.firstinspires.ftc.teamcode.Skystone;
 
+import android.drm.DrmStore;
+import android.graphics.Bitmap;
+import android.net.wifi.WifiManager;
 import android.os.SystemClock;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.vuforia.Frame;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.Camera;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraCaptureRequest;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraFrame;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -32,33 +40,29 @@ public class Vision{
     public Vision(Robot robot){
         this.robot = robot;
     }
-    public void initVision(){
-        initVuforia();
-        initTfod();
-
-        tfod.activate();
-    }
+//    public void initVision(){
+//        initVuforia();
+//        initTfod();
+//        tfod.activate();
+//    }
 
     public Location runDetection(){
-        double shortestDetectionLength = Double.MAX_VALUE;
-        float shortestBlockValue = 0;
-        double difference = 0;
 
-        /**
-         * if it sees something/object detected : get the confidence
-         * if confidence is greater than 0.7 : find its position and return that
-         * if confidence is less than 0.7 : get the position it thinks, go through the code again, if is the same, then return that
-         */
-
+        VuforiaLocalizer vuforia = initVuforia();
+        TFObjectDetector tfod;
+        tfod = initTfod(vuforia);
+        tfod.activate();
         long startTime = SystemClock.elapsedRealtime();
-        // Repeat scanning for 5 seconds
-        while (robot.getLinearOpMode().opModeIsActive() && SystemClock.elapsedRealtime()-startTime < 6000){
-            // get all new detections
-            List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
 
-            // if there is a new detection run the logic
+        // 2 is right, 1 is center, 0 is left
+        ArrayList<Double> leftCount = new ArrayList<>();
+        ArrayList<Double> centerCount = new ArrayList<>();
+        ArrayList<Double> rightCount = new ArrayList<>();
+
+        while (robot.getLinearOpMode().opModeIsActive() && SystemClock.elapsedRealtime()-startTime<1500){
+
+            List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
             if (updatedRecognitions != null && updatedRecognitions.size()>0) {
-                // sort detections based on confidence levels
                 Collections.sort(updatedRecognitions, new Comparator<Recognition>() {
                     @Override
                     public int compare(Recognition recognition, Recognition t1) {
@@ -68,58 +72,107 @@ public class Vision{
 
                 // For every detection, see if its confidence level is greater than .5. If so, find the width of the detection and store the shortest detection.
                 for (int i = 0; i < updatedRecognitions.size(); i++){
-                    if (updatedRecognitions.get(i).getConfidence() >= 0.5){
-                        if (updatedRecognitions.get(i).getTop()-updatedRecognitions.get(i).getBottom() < shortestDetectionLength) {
-                            difference = shortestDetectionLength - (updatedRecognitions.get(i).getTop()-updatedRecognitions.get(i).getBottom());
-                            shortestDetectionLength = updatedRecognitions.get(i).getTop()-updatedRecognitions.get(i).getBottom();
-                            shortestBlockValue = (updatedRecognitions.get(i).getTop()+updatedRecognitions.get(i).getBottom())/2;
+                    float value = (updatedRecognitions.get(i).getTop()+updatedRecognitions.get(i).getBottom())/2;
+
+                    // if it is 90% sure that it found a correct skystone then return it based on its position
+                    if ((double)updatedRecognitions.get(i).getConfidence() > 0.9){
+                        if (value < 600){
+                            return Location.RIGHT;
+                        } else if (value < 800){
+                            return Location.CENTER;
+                        } else {
+                            return Location.LEFT;
                         }
                     }
-                    robot.getTelemetry().addLine("Shortest Value: " + shortestBlockValue);
-                    robot.getTelemetry().update();
-                }
-                    if (shortestBlockValue > 200) {
-                        location = Location.LEFT;
-                    } else if (shortestBlockValue > 800){
-                        location = Location.CENTER;
-                    } else{
-                        location = Location.RIGHT;
+                    // otherwise if it is greater than 50% confidence add its confidence to the sum
+                    else if ((double)updatedRecognitions.get(i).getConfidence() > 0.5) {
+                        if (value < 600){
+                            rightCount.add((double)updatedRecognitions.get(i).getConfidence());
+                        } else if (value < 800) {
+                            centerCount.add((double)updatedRecognitions.get(i).getConfidence());
+                        } else {
+                            leftCount.add((double)updatedRecognitions.get(i).getConfidence());
+                        }
                     }
-                return location;
+                }
+
+            }
+
+        }
+
+        // find the confidence levels
+        double leftConfidence = MathFunctions.arrayListAverage(leftCount);
+        double centerConfidence = MathFunctions.arrayListAverage(centerCount);
+        double rightConfidence = MathFunctions.arrayListAverage(rightCount);
+
+        // all of this just determines the best just based on the confidence levels
+        if (leftConfidence > centerConfidence) {
+            // if left confidence is more than center and right
+            if (leftConfidence > rightConfidence) {
+                return Location.LEFT;
+            }
+            // if left confidence is more than center but right is more than left
+            else if (leftConfidence < rightConfidence){
+                return Location.RIGHT;
+            }
+            // tiebreaker: based on size
+            else if (leftCount.size() > rightCount.size()){
+                return Location.LEFT;
+            } else {
+                return Location.RIGHT;
+            }
+        } else if (leftConfidence < centerConfidence){
+            // if center confidence is more than left and more than right
+            if (centerConfidence > rightConfidence){
+                return Location.CENTER;
+            }
+            // if center confidence is more left but right is more than center
+            else if (centerConfidence < rightConfidence){
+                return Location.RIGHT;
+            }
+            // tiebreaker: based on size
+            else if (centerCount.size() > rightCount.size()){
+                return Location.CENTER;
+            } else {
+                return Location.RIGHT;
             }
         }
-        return location;
+        // if center is same as left
+        else {
+            if (leftCount.size() > centerCount.size()){
+                return Location.LEFT;
+            } else {
+                return Location.CENTER;
+            }
+        }
     }
 
-    private void initVuforia() {
-
+    private VuforiaLocalizer initVuforia() {
         /*
          * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
          */
-
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
 
         //  Instantiate the Vuforia engine
-        vuforia = ClassFactory.getInstance().createVuforia(parameters);
+        return ClassFactory.getInstance().createVuforia(parameters);
 
         // Loading trackables is not necessary for the TensorFlow Object Detection engine.
     }
 
-    private void initTfod() {
+    private TFObjectDetector initTfod(VuforiaLocalizer vuforia) {
         final String TFOD_MODEL_ASSET = "Skystone.tflite";
         final String LABEL_FIRST_ELEMENT = "Stone";
         final String LABEL_SECOND_ELEMENT = "Skystone";
         int tfodMonitorViewId = robot.getHardwareMap().appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", robot.getHardwareMap().appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minimumConfidence = 0.5;
-
+        tfodParameters.minimumConfidence = 0.50;
+        TFObjectDetector tfod;
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
-    }
-    public float getValue(){
-        return value;
+        return tfod;
     }
 }

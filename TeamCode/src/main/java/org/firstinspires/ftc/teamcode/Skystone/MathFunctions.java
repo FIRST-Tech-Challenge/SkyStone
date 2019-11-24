@@ -1,12 +1,27 @@
 package org.firstinspires.ftc.teamcode.Skystone;
 
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
+
+import java.util.ArrayList;
 import java.util.Vector;
 import static java.lang.Math.*;
 
 public class MathFunctions {
 
     public static double angleWrap (double angle) {return angle % (2 * Math.PI );
+    }
+
+    public static double arrayListAverage(ArrayList<Double> arrayList){
+
+        if (arrayList.size() == 0){
+            return 0.0;
+        }
+
+        double sum = 0;
+        for (int i = 0; i < arrayList.size(); i++){
+            sum += arrayList.get(i);
+        }
+        return sum / arrayList.size();
     }
 
     public static Vector<Double> getArrayOfRow(double[][] matrix, int row){

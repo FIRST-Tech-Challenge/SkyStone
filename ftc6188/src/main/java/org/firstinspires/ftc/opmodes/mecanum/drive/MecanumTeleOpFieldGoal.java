@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotlib.robot.MecanumRobotFieldGoal;
+import org.firstinspires.ftc.robotlib.robot.MecanumFieldGoalRobot;
 import org.firstinspires.ftc.robotlib.sound.BasicSound;
 import org.firstinspires.ftc.robotlib.state.Button;
 import org.firstinspires.ftc.robotlib.state.ToggleBoolean;
@@ -15,7 +15,7 @@ import org.firstinspires.ftc.robotlib.state.ToggleBoolean;
 public class MecanumTeleOpFieldGoal extends OpMode
 {
     // TeleOp specific variables
-    private MecanumRobotFieldGoal robot;
+    private MecanumFieldGoalRobot robot;
     private ElapsedTime elapsedTime;
 
     // Buttons and toggles
@@ -31,7 +31,7 @@ public class MecanumTeleOpFieldGoal extends OpMode
     @Override
     public void init()
     {
-        robot = new MecanumRobotFieldGoal(this.hardwareMap, this.telemetry, true);
+        robot = new MecanumFieldGoalRobot(this.hardwareMap, this.telemetry, true);
         elapsedTime = new ElapsedTime();
 
         driverTwoBrakes = new ToggleBoolean(false);

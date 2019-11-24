@@ -7,7 +7,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotlib.armsystem.FieldGoalArmSystem;
 import org.firstinspires.ftc.robotlib.motor.LimitedMotor;
 
-public class MecanumRobotFieldGoal extends MecanumRobot
+public class MecanumFieldGoalRobot extends MecanumRobot
 {
     // Motors but now they're a new kind of motor
     private LimitedMotor armVerticalSlide;
@@ -20,7 +20,7 @@ public class MecanumRobotFieldGoal extends MecanumRobot
     private static final int verticalLimit = 24;
     private static final int horizontalLimit = 12;
 
-    public MecanumRobotFieldGoal(HardwareMap hwMap, Telemetry telemetry, boolean teleOpMode)
+    public MecanumFieldGoalRobot(HardwareMap hwMap, Telemetry telemetry, boolean teleOpMode)
     {
         super(hwMap, telemetry, teleOpMode);
 

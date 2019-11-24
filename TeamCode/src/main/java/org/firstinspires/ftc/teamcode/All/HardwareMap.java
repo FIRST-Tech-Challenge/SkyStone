@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.hardware.DigitalChannelImpl;
 import com.qualcomm.robotcore.hardware.I2cDevice;
 import com.qualcomm.robotcore.hardware.IntegratingGyroscope;
 import com.qualcomm.robotcore.hardware.Servo;
-
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import java.util.ArrayList;
 
 public class HardwareMap {
@@ -39,7 +39,6 @@ public class HardwareMap {
         liftTwo = (DcMotorEx) hwMap.get(DcMotor.class, "liftTwo");
 
         //---------------------------------------------------------------------------
-
         //------------------------===Servos===------------------------
 
         clawServo1 = hwMap.get(Servo.class, "clawServo1");

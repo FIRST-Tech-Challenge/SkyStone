@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.BlockDetectionTest;
+package org.firstinspires.ftc.teamcode.Autonomous.BlockDetectionTest;
 
 public enum BLOCKPOS {
     LEFT, MIDDLE, RIGHT, NONE

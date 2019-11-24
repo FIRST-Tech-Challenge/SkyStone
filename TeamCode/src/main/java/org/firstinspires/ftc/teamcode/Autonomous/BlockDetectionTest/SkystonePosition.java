@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.BlockDetectionTest;
+package org.firstinspires.ftc.teamcode.Autonomous.BlockDetectionTest;
 
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 
@@ -46,25 +46,13 @@ public class SkystonePosition {
         Collections.sort(centerPos);
 
         INDEX = centerPos.indexOf(SKYSTONEX);
-
-        if (numObjects == 2) {
-            if(INDEX == 0){
+        if(INDEX == 0){
                 position = BLOCKPOS.LEFT;
-            }else if(INDEX == 1){
+        }else if(INDEX == 1){
                 position = BLOCKPOS.MIDDLE;
-            }else{
+        }else if(INDEX == 2){
                 position = BLOCKPOS.RIGHT;
             }
-        }
-        else{
-            if(INDEX == 0){
-                position = BLOCKPOS.LEFT;
-            }else if(INDEX == 1){
-                position = BLOCKPOS.MIDDLE;
-            }else if(INDEX == 2){
-                position = BLOCKPOS.RIGHT;
-            }
-        }
 
         return position;
     }

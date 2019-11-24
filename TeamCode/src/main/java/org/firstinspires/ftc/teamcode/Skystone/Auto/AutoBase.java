@@ -13,7 +13,7 @@ public class AutoBase extends LinearOpMode {
     protected Robot robot;
     protected Vision vision;
     protected long currentTime;
-
+    Position2D position2D;
     public void initLogic(){
         //vision.initVision();
 
@@ -27,8 +27,7 @@ public class AutoBase extends LinearOpMode {
 
         //robot.intializeIMU();
         //initServos();
-        Position2D position2D = new Position2D(robot);
-        position2D.startOdometry();
+        position2D = new Position2D(robot);
     }
 
     private void initServos() {

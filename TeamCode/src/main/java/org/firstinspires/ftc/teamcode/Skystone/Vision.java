@@ -58,7 +58,7 @@ public class Vision{
         ArrayList<Double> centerCount = new ArrayList<>();
         ArrayList<Double> rightCount = new ArrayList<>();
 
-        while (robot.getLinearOpMode().opModeIsActive() && SystemClock.elapsedRealtime()-startTime<3000){
+        while (robot.getLinearOpMode().opModeIsActive() && SystemClock.elapsedRealtime()-startTime<1000){
 
             List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
             if (updatedRecognitions != null && updatedRecognitions.size()>0) {
@@ -71,28 +71,32 @@ public class Vision{
 
                 // For every detection, see if its confidence level is greater than .5. If so, find the width of the detection and store the shortest detection.
                 for (int i = 0; i < updatedRecognitions.size(); i++){
-                    float blockPixelPosition = (updatedRecognitions.get(i).getTop()+updatedRecognitions.get(i).getBottom())/2;
+                    float blockPixelX = (updatedRecognitions.get(i).getTop()+updatedRecognitions.get(i).getBottom())/2;
+                    float blockPixelY = (updatedRecognitions.get(i).getLeft() + updatedRecognitions.get(i).getRight())/2;
 
-                    robot.getTelemetry().addLine("value: " + blockPixelPosition);
+                    robot.getTelemetry().addLine("blockPixelX: " + blockPixelX);
+                    robot.getTelemetry().addLine("blockPixelY: " + blockPixelY);
+                    robot.getTelemetry().addLine("blockLabel: " + updatedRecognitions.get(i).getLabel());
 
-                    // if it is 90% sure that it found a correct skystone then return it based on its position
-                    if ((double)updatedRecognitions.get(i).getConfidence() > 0.95 && updatedRecognitions.get(i).getLabel().equals("Skystone")){
-                        if (blockPixelPosition < 600){
-                            return Location.RIGHT;
-                        } else if (blockPixelPosition < 800){
-                            return Location.CENTER;
-                        } else {
-                            return Location.LEFT;
+                    if (350 < blockPixelY && blockPixelY < 450){
+                        if ((double)updatedRecognitions.get(i).getConfidence() > 0.95 && updatedRecognitions.get(i).getLabel().equals("Skystone")){
+                            if (blockPixelX < 600){
+                                return Location.RIGHT;
+                            } else if (blockPixelX < 800){
+                                return Location.CENTER;
+                            } else {
+                                return Location.LEFT;
+                            }
                         }
-                    }
-                    // otherwise if it is greater than 50% confidence add its confidence to the sum
-                    else if ((double)updatedRecognitions.get(i).getConfidence() > minConfidenceLevel && updatedRecognitions.get(i).getLabel().equals("Skystone")) {
-                        if (blockPixelPosition < 600){
-                            rightCount.add((double)updatedRecognitions.get(i).getConfidence());
-                        } else if (blockPixelPosition < 800) {
-                            centerCount.add((double)updatedRecognitions.get(i).getConfidence());
-                        } else {
-                            leftCount.add((double)updatedRecognitions.get(i).getConfidence());
+                        // otherwise if it is greater than 50% confidence add its confidence to the sum
+                        else if ((double)updatedRecognitions.get(i).getConfidence() > minConfidenceLevel && updatedRecognitions.get(i).getLabel().equals("Skystone")) {
+                            if (blockPixelX < 600){
+                                rightCount.add((double)updatedRecognitions.get(i).getConfidence());
+                            } else if (blockPixelX < 800) {
+                                centerCount.add((double)updatedRecognitions.get(i).getConfidence());
+                            } else {
+                                leftCount.add((double)updatedRecognitions.get(i).getConfidence());
+                            }
                         }
                     }
                 }
@@ -121,37 +125,17 @@ public class Vision{
                 return Location.LEFT;
             }
             // if left confidence is more than center but right is more than left
-            else if (leftConfidence < rightConfidence){
+            else {
                 return Location.RIGHT;
             }
-            // tiebreaker: based on size
-            else if (leftCount.size() > rightCount.size()){
-                return Location.LEFT;
-            } else {
-                return Location.RIGHT;
-            }
-        } else if (leftConfidence < centerConfidence){
+        } else {
             // if center confidence is more than left and more than right
             if (centerConfidence > rightConfidence){
                 return Location.CENTER;
             }
             // if center confidence is more left but right is more than center
-            else if (centerConfidence < rightConfidence){
+            else {
                 return Location.RIGHT;
-            }
-            // tiebreaker: based on size
-            else if (centerCount.size() > rightCount.size()){
-                return Location.CENTER;
-            } else {
-                return Location.RIGHT;
-            }
-        }
-        // if center is same as left
-        else {
-            if (leftCount.size() > centerCount.size()){
-                return Location.LEFT;
-            } else {
-                return Location.CENTER;
             }
         }
     }

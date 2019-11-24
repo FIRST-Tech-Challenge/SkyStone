@@ -76,7 +76,6 @@ class Odometry{
 
     public Odometry(Robot robot){
         this.robot = robot;
-        robot.intializeIMU();
     }
 
     public void circularOdometry () {

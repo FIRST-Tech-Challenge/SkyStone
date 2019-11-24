@@ -634,6 +634,8 @@ public class Robot {
             }
 
             if(currentTime-outtakeExecutionTime >= 2000 && isExtend){
+                telemetry.addLine("EXTENDING CLAMP");
+                telemetry.update();
                 clampPivot.setPosition(OUTTAKE_PIVOT_90);
             }
 
@@ -712,7 +714,7 @@ public class Robot {
                 isMoving = false;
             }
 
-            if (Math.hypot(whereYouRetract.x - robotPos.x, whereYouRetract.y - robotPos.y) < 40 && !hasRetracted){
+            if (Math.hypot(whereYouRetract.x - robotPos.x, whereYouRetract.y - robotPos.y) < 20 && !hasRetracted){
                 hasRetracted = true;
                 foundationMover(false);
             }
@@ -867,7 +869,7 @@ public class Robot {
 
         xMovement = xPower * moveSpeed;
         yMovement = yPower * moveSpeed;
-        turnMovement = Range.clip(relativeTurnAngle / Math.toRadians(270), -1, 1) * turnSpeed;
+        turnMovement = Range.clip(relativeTurnAngle / Math.toRadians(360), -1, 1) * turnSpeed;
     }
 
     private void applyMove() {
@@ -957,7 +959,7 @@ public class Robot {
             // that moves in a x and y direction but also has a heading, where it is pointing
             xMovement = xPower * moveSpeed * decelerationScaleFactor;
             yMovement = yPower * moveSpeed * decelerationScaleFactor;
-            turnMovement = Range.clip(relativeTurnAngle / Math.toRadians(270),
+            turnMovement = Range.clip(relativeTurnAngle / Math.toRadians(360),
                     -1, 1) * turnSpeed * decelerationScaleFactor;
 
             applyMove();

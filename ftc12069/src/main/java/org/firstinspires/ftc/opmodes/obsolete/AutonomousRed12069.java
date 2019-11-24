@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.opmodes.obsolete;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -55,8 +56,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
 
 
 @Autonomous(name="Auto Red", group="Autonomous")
-//@Disabled
-
+@Disabled
 public class AutonomousRed12069 extends LinearOpMode {
 
     // Declare OpMode members.

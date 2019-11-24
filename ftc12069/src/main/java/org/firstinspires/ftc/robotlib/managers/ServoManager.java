@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.robotlib.servo;
+package org.firstinspires.ftc.robotlib.managers;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;

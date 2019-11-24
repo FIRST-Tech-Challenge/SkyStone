@@ -114,9 +114,10 @@ public class MecanumAutonomous {
                 Point3D positionFromSkystone = robot.getPositionFromSkystone();
                 Point3D stonePoint3D = new Point3D(trackedStone.getLocation());
                 telemetry.addData("Position relative to Skystone", "{X, Y, Z} = %.0f, %.0f, %.0f", positionFromSkystone.x, positionFromSkystone.y, positionFromSkystone.z);
-                telemetry.addData("Course", Math.toDegrees(robot.getCourse(positionFromSkystone, stonePoint3D)));
-                telemetry.addData("Distance", robot.getDistance(positionFromSkystone, stonePoint3D));
-                //robot.simpleMove(robot.getCourse(positionFromSkystone, stonePoint3D), 1, 0, robot.getDistance(positionFromSkystone, stonePoint3D));
+                telemetry.addData("Course", Math.toDegrees(robot.getCourse(positionFromSkystone, stonePoint3D)) + " degrees");
+                telemetry.addData("Distance", robot.getDistance(positionFromSkystone, stonePoint3D) + " inches");
+                robot.simpleMove(robot.getCourse(positionFromSkystone, stonePoint3D), 1, 0, robot.getDistance(positionFromSkystone, stonePoint3D));
+                robot.hardware.intakeMotorManager.setMotorsVelocity(1.0);
             }
         } else {
             telemetry.addData("Visible Target", "None");

@@ -27,6 +27,7 @@ public class LocationInfo {
      * @return 3D point
      */
     public Point3D getRobotLocation() {
+        if (robotLocation == null) return null;
         return this.convertOpenGLMatrix(robotLocation);
     }
 

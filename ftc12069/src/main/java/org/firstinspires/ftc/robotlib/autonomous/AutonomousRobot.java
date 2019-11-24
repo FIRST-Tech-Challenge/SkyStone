@@ -342,7 +342,7 @@ public class AutonomousRobot {
      * @return Trackable information if visible (else null)
      */
     public VuforiaTrackable getVisibleTrackable(String name) {
-        for (VuforiaTrackable trackable : trackablesList) {
+        for (VuforiaTrackable trackable : visibleTrackables) {
             if (trackable.getName().equals(name)) return trackable;
         }
         return null;

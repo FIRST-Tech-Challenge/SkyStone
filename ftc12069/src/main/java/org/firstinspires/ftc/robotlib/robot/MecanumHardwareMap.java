@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.robotlib.robot;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -8,7 +7,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotlib.drivetrain.MecanumDrivetrain;
-import org.firstinspires.ftc.robotlib.servo.ServoManager;
+import org.firstinspires.ftc.robotlib.managers.MotorManager;
+import org.firstinspires.ftc.robotlib.managers.ServoManager;
 
 public class MecanumHardwareMap
 {
@@ -20,6 +20,10 @@ public class MecanumHardwareMap
     private DcMotor driveRearRight;
     private DcMotor driveRearLeft;
 
+    // Intake
+    private DcMotor intakeLeft;
+    private DcMotor intakeRight;
+
     // Servos in Mecanum Robot
     private Servo servoClaw;
 
@@ -30,6 +34,7 @@ public class MecanumHardwareMap
 
     public MecanumDrivetrain drivetrain;
     public ServoManager servoManager;
+    public MotorManager intakeMotorManager;
 
     public final double wheelRadius = 4; //inches
     private static final double wheelToMotorRatio = 1.0/1.0;
@@ -51,6 +56,9 @@ public class MecanumHardwareMap
         driveRearRight = hwMap.get(DcMotor.class, "driveRearRight");
         driveRearLeft = hwMap.get(DcMotor.class, "driveRearLeft");
 
+        intakeLeft = hwMap.get(DcMotor.class, "intakeLeft");
+        intakeRight = hwMap.get(DcMotor.class, "intakeRight");
+
         motorList = new DcMotor[]{driveFrontLeft, driveFrontRight, driveRearLeft, driveRearRight};
 
         driveFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -67,6 +75,9 @@ public class MecanumHardwareMap
         driveFrontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         driveRearRight.setDirection(DcMotorSimple.Direction.FORWARD);
         driveRearLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        intakeLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        intakeRight.setDirection(DcMotorSimple.Direction.FORWARD);
 
         //servoClaw = hwMap.get(Servo.class, "servoClaw");
         //servoClaw.setDirection(Servo.Direction.FORWARD);
@@ -85,6 +96,7 @@ public class MecanumHardwareMap
 
         drivetrain = new MecanumDrivetrain(motorList);
         //servoManager = new ServoManager(new Servo[]{servoClaw});
+        intakeMotorManager = new MotorManager(new DcMotor[]{intakeLeft, intakeRight});
         motorTicksPerInch = drivetrain.getTicksPerInch(wheelRadius, wheelToMotorRatio);
     }
 }

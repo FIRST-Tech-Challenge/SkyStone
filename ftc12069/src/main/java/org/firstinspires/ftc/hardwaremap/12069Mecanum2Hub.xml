@@ -4,12 +4,14 @@
         <LynxModule name="Expansion Hub 1" port="1">
             <RevRobotics40HDHexMotor name="driveFrontLeft" port="0"/>
             <RevRobotics40HDHexMotor name="driveRearLeft" port="1"/>
+            <RevRoboticsCoreHexMotor name="intakeLeft" port="2"/>
             <!-- <Servo name="servoClaw" port="0"/> -->
             <LynxEmbeddedIMU name="imu" port="0" bus="0"/>
         </LynxModule>
         <LynxModule name="Expansion Hub 2" port="2">
             <RevRobotics40HDHexMotor name="driveFrontRight" port="1"/>
             <RevRobotics40HDHexMotor name="driveRearRight" port="0"/>
+            <RevRoboticsCoreHexMotor name="intakeRight" port="2"/>
             <LynxEmbeddedIMU name="imu 1" port="0" bus="0"/>
         </LynxModule>
     </LynxUsbDevice>

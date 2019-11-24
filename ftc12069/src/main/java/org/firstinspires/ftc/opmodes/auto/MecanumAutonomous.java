@@ -117,6 +117,7 @@ public class MecanumAutonomous {
                 telemetry.addData("Course", Math.toDegrees(robot.getCourse(positionFromSkystone, stonePoint3D)) + " degrees");
                 telemetry.addData("Distance", robot.getDistance(positionFromSkystone, stonePoint3D) + " inches");
                 robot.simpleMove(robot.getCourse(positionFromSkystone, stonePoint3D), 1, 0, robot.getDistance(positionFromSkystone, stonePoint3D));
+                robot.hardware.intakeMotorManager.setMotorsVelocity(1.0);
             }
         } else {
             telemetry.addData("Visible Target", "None");

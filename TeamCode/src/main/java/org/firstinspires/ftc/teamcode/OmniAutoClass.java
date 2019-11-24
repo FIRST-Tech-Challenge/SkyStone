@@ -409,6 +409,18 @@ public abstract class OmniAutoClass extends LinearOpMode {
 		return foundDistance;
 	}
 
+	public void grabFoundation(int maxTime) {
+	    double endTime = timer.milliseconds() + maxTime;
+	    boolean grabbedFoundation = false;
+	    robot.resetReads();
+	    robot.startGrabbing();
+        robot.performGrabbing();
+	    while(timer.milliseconds() < endTime && robot.grabState != HardwareOmnibot.GrabFoundationActivity.IDLE) {
+            robot.resetReads();
+            robot.performGrabbing();
+        }
+    }
+
     public void moveFingers(boolean moveUp) {
 		if(moveUp) {
 			robot.fingersUp();

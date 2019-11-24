@@ -26,6 +26,13 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         LEFT
     }
 
+    public enum GrabFoundationActivity {
+        IDLE,
+        BACKING_UP,
+        GRABBING,
+        STOPPING
+    }
+
     public enum AlignActivity {
         IDLE,
         ALIGN_TO_FOUNDATION,
@@ -279,7 +286,6 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     }
 
     /* Public OpMode members. */
-	public static double MIN_DRIVE_SPEED = 0.05;
     public static double INTAKE_SPEED = 1.0;
 	public static double LIFT_SPEED = 1.0;
 	public static double LOWER_SPEED = 0.3;
@@ -298,6 +304,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public static int CLAW_ROTATE_BACK_TIME = 1000;
     public static int CLAW_ROTATE_CAPSTONE_TIME = 500;
     public static int CLAW_ROTATE_FRONT_TIME = 1000;
+    public static int FINGER_ROTATE_TIME = 500;
 	private static int ENCODER_ERROR = 10;
 
 	// The OpMode set target height for the lift to go.
@@ -352,6 +359,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public StowActivity stowState = StowActivity.IDLE;
     public EjectActivity ejectState = EjectActivity.IDLE;
     public AlignActivity alignState = AlignActivity.IDLE;
+    public GrabFoundationActivity grabState = GrabFoundationActivity.IDLE;
     public CapstoneActivity capstoneState = CapstoneActivity.IDLE;
     private boolean fingersUp = true;
     private boolean clawPinched = false;
@@ -835,8 +843,8 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 				drivePower *= maxMultiplier;
 			}
 			// make sure we don't go below minimum drive power.
-			if(Math.abs(drivePower) < MIN_DRIVE_SPEED) {
-				drivePower = Math.copySign(MIN_DRIVE_SPEED, drivePower);
+			if(Math.abs(drivePower) < MIN_DRIVE_RATE) {
+				drivePower = Math.copySign(MIN_DRIVE_RATE, drivePower);
 			}
             drive(drivePower, 0.0, 0.0, driveAngle-readIMU());
 		} else {
@@ -897,6 +905,73 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         return parallel;
     }
 
+    // This function backs up to an object
+    public boolean gotoRearTarget(double driveSpeed, double spinSpeed) {
+        // These are the values we see when it is against the platform.
+        double backLeftDistance = 1.0;
+        double backRightDistance = 3.5;
+        double leftDistance = readBackLeftTof();
+        double rightDistance = readBackRightTof();
+        double drivePower = 0.0;
+        double spinPower = 0.0;
+        double leftError = backLeftDistance - leftDistance;
+        double rightError = backRightDistance - rightDistance;
+        boolean touching = false;
+        double maxRange = -40.0;
+        double maxMultiplier = 0.4;
+        double midRange = -20.0;
+        double midMultiplier = 0.2;
+        double minRange = -10.0;
+        double minMultiplier = 0.05;
+        if((leftError < 0) || (rightError < 0)) {
+            // Have to drive backwards towards the foundation
+            drivePower = driveSpeed;
+            // Have to spin ccw
+            if(leftError > rightError) {
+                spinPower = spinSpeed;
+                // We have to spin cw
+            } else if(rightError > leftError) {
+                spinPower = -spinSpeed;
+            }
+
+            // If one of them is within range, drive speed should be minimum, all
+            // rotation.
+            if(!(rightError < 0 && leftError < 0)) {
+                drivePower = MIN_DRIVE_RATE;
+                spinPower = Math.copySign(spinPower, MIN_SPIN_RATE);
+            } else {
+                double minError = Math.min(rightError, leftError);
+                // Need to set drive power based on range.
+                // Go at slowest speed.
+                if(minError <= minRange) {
+                    drivePower *= minMultiplier;
+                    spinPower *= minMultiplier;
+                } else if(minError <= midRange) {
+                    drivePower *= midMultiplier;
+                    spinPower *= midMultiplier;
+                } else if (minError < maxRange) {
+                    drivePower *= maxMultiplier;
+                    spinPower *= maxMultiplier;
+                }
+            }
+            // make sure we don't go below minimum spin power.
+            if(spinPower < MIN_SPIN_RATE) {
+                spinPower = Math.copySign(spinPower, MIN_SPIN_RATE);
+            }
+            // make sure we don't go below minimum drive power.
+            if(drivePower < MIN_DRIVE_RATE) {
+                drivePower = MIN_DRIVE_RATE;
+            }
+            // Scale the power based on how far
+            drive(0, drivePower, spinPower, -readIMU());
+        } else {
+            drive(0, MIN_DRIVE_RATE, 0, -readIMU());
+            touching = true;
+        }
+
+        return touching;
+    }
+
     public void stopAligning() {
         alignState = AlignActivity.STOPPING;
     }
@@ -938,6 +1013,38 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
             case STOPPING:
                 setAllDriveZero();
                 alignState = AlignActivity.IDLE;
+            case IDLE:
+            default:
+                break;
+        }
+    }
+
+    public void startGrabbing() {
+        if (grabState == GrabFoundationActivity.IDLE) {
+            grabState = GrabFoundationActivity.BACKING_UP;
+            gotoRearTarget(0.4, 0.3);
+        }
+    }
+
+    public void performGrabbing() {
+        switch(grabState)
+        {
+            case GRABBING:
+                if((stateTimer.milliseconds() >= FINGER_ROTATE_TIME)) {
+                    setAllDriveZero();
+                    grabState = GrabFoundationActivity.IDLE;
+                }
+                break;
+            case BACKING_UP:
+                if(gotoRearTarget(0.4, 0.3)) {
+                    grabState = GrabFoundationActivity.GRABBING;
+                    fingersDown();
+                    stateTimer.reset();
+                }
+                break;
+            case STOPPING:
+                setAllDriveZero();
+                grabState = GrabFoundationActivity.IDLE;
             case IDLE:
             default:
                 break;

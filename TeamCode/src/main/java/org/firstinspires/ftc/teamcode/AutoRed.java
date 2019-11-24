@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -34,8 +32,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
 @Autonomous(name="Auto Red", group="Autonomous")
 
 public class AutoRed extends LinearOpMode {
-    private DcMotor front_left, front_right, back_left, back_right;
-
+    private Maccabot robot;
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -72,6 +69,8 @@ public class AutoRed extends LinearOpMode {
     private float phoneZRotate    = 0;
 
     public void runOpMode() throws InterruptedException {
+        robot = new Maccabot(this);
+        robot.initializeRobot();
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
@@ -79,10 +78,10 @@ public class AutoRed extends LinearOpMode {
         parameters.cameraDirection   = CAMERA_CHOICE;
 
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
-        FtcDashboard.getInstance().startCameraStream(vuforia, 0);
+        //FtcDashboard.getInstance().startCameraStream(vuforia, 0);
 
-        FtcDashboard dashboard = FtcDashboard.getInstance();
-        Telemetry dashboardTelemetry = dashboard.getTelemetry();
+        //FtcDashboard dashboard = FtcDashboard.getInstance();
+        //Telemetry dashboardTelemetry = dashboard.getTelemetry();
 
         VuforiaTrackables targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
 
@@ -229,18 +228,31 @@ public class AutoRed extends LinearOpMode {
                 Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
                 telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
 
-                TelemetryPacket packet = new TelemetryPacket();
-                packet.fieldOverlay()
+                //TelemetryPacket packet = new TelemetryPacket();
+                /*packet.fieldOverlay()
                         .setStrokeWidth(1)
                         .setStroke("goldenrod")
                         .setFill("black")
                         .fillRect(translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, 16.75, 17.5);
-                dashboard.sendTelemetryPacket(packet);
+                dashboard.sendTelemetryPacket(packet);*/
             } else {
                 telemetry.addData("Visible Target", "none");
             }
+
+            robot.mecanumDrive(0,0.6,0);
+            sleep(500);
+            robot.mecanumDrive(0,0,0);
+            for(int i = 0; i < 15; i++){
+                robot.intake(Math.random()*2 -1, 0);
+                sleep(500);
+            }
+            robot.intake(1, 0);
+            sleep(10000);
+            stop();
         }
         targetsSkyStone.deactivate();
+
+
 
     }
 }

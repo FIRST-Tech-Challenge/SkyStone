@@ -364,7 +364,7 @@ public class AutonomousRobot {
      * @return required course to arrive at a point
      */
     public double getCourse(Point robot, Point object) {
-        return Math.atan2(object.y - robot.y, object.x - robot.x) - Math.PI / 2;
+        return -Math.atan2(object.y - robot.y, object.x - robot.x);
     }
 
     /**

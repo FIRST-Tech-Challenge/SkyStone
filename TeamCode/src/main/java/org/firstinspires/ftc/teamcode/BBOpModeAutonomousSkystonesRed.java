@@ -131,6 +131,7 @@ public class BBOpModeAutonomousSkystonesRed extends LinearOpMode
                 robot.Stop();
                 TimeElapsedPause(100);
 
+
                 targets = _vision.visionFeedback(telemetry);
 
                 if(targets == null || targets.size() == 0){
@@ -172,7 +173,7 @@ public class BBOpModeAutonomousSkystonesRed extends LinearOpMode
 
         ElapsedTime timer = new ElapsedTime();
         while(timer.milliseconds() < ms){
-
+            idle();
         }
 
     }

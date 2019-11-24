@@ -33,6 +33,7 @@ public class BBSRobot {
 
     private BBHooks _hooks = new BBHooks();
     private BBIntake _intakeMotor = new BBIntake();
+    private BBLift _lift = new BBLift();
 
     private DcMotor leftFront = null;
     private DcMotor rightFront = null;
@@ -63,7 +64,7 @@ public class BBSRobot {
 
         telemetry = tele;
         _intakeMotor.init(hwmap);
-
+        _lift.init(hwmap, tele, mode);
         _hooks.init(hwmap);
         _mode = mode;
 
@@ -182,6 +183,30 @@ public class BBSRobot {
 
         }
 
+        if(gp1.dpad_up || gp2.left_stick_x > 0) {
+            _lift.DropOff();
+        }
+        else if(gp1.dpad_down || gp2.left_stick_x < 0){
+            _lift.Home();
+        }
+        else{
+            _lift.Off();
+        }
+
+        if(gp1.y){
+            _lift.GoToHome();
+        }
+        if(gp1.x){
+            _lift.LoadBrick();
+        }
+
+        if(gp1.a){
+            _lift.Grip();
+        }
+
+        if(gp1.b){
+            _lift.Release();
+        }
 
        /* telemetry.addData("1:", leftRear.getCurrentPosition()); //side
         telemetry.addData("2", rightRear.getCurrentPosition()); //forward

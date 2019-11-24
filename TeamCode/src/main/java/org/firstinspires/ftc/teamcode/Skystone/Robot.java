@@ -564,7 +564,7 @@ public class Robot {
         }
 
         // check if finished pp
-        if ((distanceToEnd < 0.5)) {
+        if ((distanceToEnd < 1)) {
             return false;
         }
 
@@ -689,6 +689,35 @@ public class Robot {
             }
 
             if(!isMoving && !isRetract){
+                telemetry.addLine("done with movefollowcurve");
+                return;
+            }
+        }
+    }
+
+    public void moveFollowCurveWithFoundationMover(double [][] points, double followAngle, double followDistance, double angleLockRadians, double angleLockDistance, Point whereYouRetract) {
+
+        boolean isMoving = true;
+        boolean hasRetracted = false;
+
+        // Deposit stone
+        clamp.setPosition(CLAW_SERVO_RELEASED);
+
+        while (linearOpMode.opModeIsActive()) {
+
+            // if followCurve returns false then it is ready to stop
+            // else, it moves
+            if (isMoving && !followCurve(points, followAngle, followDistance,angleLockRadians, angleLockDistance)) {
+                brakeRobot();
+                isMoving = false;
+            }
+
+            if (Math.hypot(whereYouRetract.x - robotPos.x, whereYouRetract.y - robotPos.y) < 40 && !hasRetracted){
+                hasRetracted = true;
+                foundationMover(false);
+            }
+
+            if(!isMoving){
                 telemetry.addLine("done with movefollowcurve");
                 return;
             }
@@ -928,7 +957,7 @@ public class Robot {
             // that moves in a x and y direction but also has a heading, where it is pointing
             xMovement = xPower * moveSpeed * decelerationScaleFactor;
             yMovement = yPower * moveSpeed * decelerationScaleFactor;
-            turnMovement = Range.clip(relativeTurnAngle / Math.toRadians(30),
+            turnMovement = Range.clip(relativeTurnAngle / Math.toRadians(270),
                     -1, 1) * turnSpeed * decelerationScaleFactor;
 
             applyMove();

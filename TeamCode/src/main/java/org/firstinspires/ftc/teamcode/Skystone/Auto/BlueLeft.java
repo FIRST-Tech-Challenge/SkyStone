@@ -8,4 +8,5 @@ import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
 
 @Autonomous(name="BlueLeft", group ="LinearOpmode")
 public class BlueLeft extends AutoBase {
-    }
+
+}

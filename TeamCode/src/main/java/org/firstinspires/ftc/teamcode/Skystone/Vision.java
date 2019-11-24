@@ -33,25 +33,24 @@ public class Vision{
     private Location location = Location.UNKNOWN;
     private Robot robot;
 
+    private final double minConfidenceLevel = 0.2;
+
     private VuforiaLocalizer vuforia;
 
     private TFObjectDetector tfod;
 
     public Vision(Robot robot){
         this.robot = robot;
+        initVision();
     }
-//    public void initVision(){
-//        initVuforia();
-//        initTfod();
-//        tfod.activate();
-//    }
+
+    public void initVision(){
+        initVuforia();
+        initTfod();
+        tfod.activate();
+    }
 
     public Location runDetection(){
-
-        VuforiaLocalizer vuforia = initVuforia();
-        TFObjectDetector tfod;
-        tfod = initTfod(vuforia);
-        tfod.activate();
         long startTime = SystemClock.elapsedRealtime();
 
         // 2 is right, 1 is center, 0 is left
@@ -72,25 +71,25 @@ public class Vision{
 
                 // For every detection, see if its confidence level is greater than .5. If so, find the width of the detection and store the shortest detection.
                 for (int i = 0; i < updatedRecognitions.size(); i++){
-                    float value = (updatedRecognitions.get(i).getTop()+updatedRecognitions.get(i).getBottom())/2;
+                    float blockPixelPosition = (updatedRecognitions.get(i).getTop()+updatedRecognitions.get(i).getBottom())/2;
 
-                    robot.getTelemetry().addLine("value: " + value);
+                    robot.getTelemetry().addLine("value: " + blockPixelPosition);
 
                     // if it is 90% sure that it found a correct skystone then return it based on its position
-                    if ((double)updatedRecognitions.get(i).getConfidence() > 0.95){
-                        if (value < 600){
+                    if ((double)updatedRecognitions.get(i).getConfidence() > 0.95 && updatedRecognitions.get(i).getLabel().equals("Skystone")){
+                        if (blockPixelPosition < 600){
                             return Location.RIGHT;
-                        } else if (value < 800){
+                        } else if (blockPixelPosition < 800){
                             return Location.CENTER;
                         } else {
                             return Location.LEFT;
                         }
                     }
                     // otherwise if it is greater than 50% confidence add its confidence to the sum
-                    else if ((double)updatedRecognitions.get(i).getConfidence() > 0.20) {
-                        if (value < 600){
+                    else if ((double)updatedRecognitions.get(i).getConfidence() > minConfidenceLevel && updatedRecognitions.get(i).getLabel().equals("Skystone")) {
+                        if (blockPixelPosition < 600){
                             rightCount.add((double)updatedRecognitions.get(i).getConfidence());
-                        } else if (value < 800) {
+                        } else if (blockPixelPosition < 800) {
                             centerCount.add((double)updatedRecognitions.get(i).getConfidence());
                         } else {
                             leftCount.add((double)updatedRecognitions.get(i).getConfidence());
@@ -157,7 +156,7 @@ public class Vision{
         }
     }
 
-    private VuforiaLocalizer initVuforia() {
+    private void initVuforia() {
         /*
          * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
          */
@@ -166,23 +165,23 @@ public class Vision{
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
 
+        this.vuforia = ClassFactory.getInstance().createVuforia(parameters);
+
         //  Instantiate the Vuforia engine
-        return ClassFactory.getInstance().createVuforia(parameters);
 
         // Loading trackables is not necessary for the TensorFlow Object Detection engine.
     }
 
-    private TFObjectDetector initTfod(VuforiaLocalizer vuforia) {
+    private void initTfod() {
         final String TFOD_MODEL_ASSET = "Skystone.tflite";
         final String LABEL_FIRST_ELEMENT = "Stone";
         final String LABEL_SECOND_ELEMENT = "Skystone";
         int tfodMonitorViewId = robot.getHardwareMap().appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", robot.getHardwareMap().appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minimumConfidence = 0.20;
-        TFObjectDetector tfod;
-        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
-        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
-        return tfod;
+        tfodParameters.minimumConfidence = minConfidenceLevel;
+
+        this.tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+        this.tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
     }
 }

@@ -21,5 +21,6 @@ public class TestVuforia extends AutoBase {
         robot.getTelemetry().addLine("position: " + position);
         robot.getTelemetry().update();
         sleep(10000);
+
     }
 }

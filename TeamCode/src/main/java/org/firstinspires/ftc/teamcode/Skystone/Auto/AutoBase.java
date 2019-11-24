@@ -15,7 +15,7 @@ public class AutoBase extends LinearOpMode {
     protected long currentTime;
 
     public void initLogic(){
-        vision.initVision();
+        //vision.initVision();
 
         //Init's robot
         robot = new Robot(this.hardwareMap, this.telemetry, this);

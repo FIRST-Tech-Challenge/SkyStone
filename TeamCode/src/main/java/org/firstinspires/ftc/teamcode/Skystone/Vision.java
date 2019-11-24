@@ -59,7 +59,7 @@ public class Vision{
         ArrayList<Double> centerCount = new ArrayList<>();
         ArrayList<Double> rightCount = new ArrayList<>();
 
-        while (robot.getLinearOpMode().opModeIsActive() && SystemClock.elapsedRealtime()-startTime<1500){
+        while (robot.getLinearOpMode().opModeIsActive() && SystemClock.elapsedRealtime()-startTime<3000){
 
             List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
             if (updatedRecognitions != null && updatedRecognitions.size()>0) {
@@ -74,8 +74,10 @@ public class Vision{
                 for (int i = 0; i < updatedRecognitions.size(); i++){
                     float value = (updatedRecognitions.get(i).getTop()+updatedRecognitions.get(i).getBottom())/2;
 
+                    robot.getTelemetry().addLine("value: " + value);
+
                     // if it is 90% sure that it found a correct skystone then return it based on its position
-                    if ((double)updatedRecognitions.get(i).getConfidence() > 0.9){
+                    if ((double)updatedRecognitions.get(i).getConfidence() > 0.95){
                         if (value < 600){
                             return Location.RIGHT;
                         } else if (value < 800){
@@ -85,7 +87,7 @@ public class Vision{
                         }
                     }
                     // otherwise if it is greater than 50% confidence add its confidence to the sum
-                    else if ((double)updatedRecognitions.get(i).getConfidence() > 0.5) {
+                    else if ((double)updatedRecognitions.get(i).getConfidence() > 0.20) {
                         if (value < 600){
                             rightCount.add((double)updatedRecognitions.get(i).getConfidence());
                         } else if (value < 800) {
@@ -104,6 +106,14 @@ public class Vision{
         double leftConfidence = MathFunctions.arrayListAverage(leftCount);
         double centerConfidence = MathFunctions.arrayListAverage(centerCount);
         double rightConfidence = MathFunctions.arrayListAverage(rightCount);
+
+        robot.getTelemetry().addLine("left confidence: " + leftConfidence + " leftCount: " + leftCount.size());
+        robot.getTelemetry().addLine("right confidence: " + rightConfidence + " rightCount: " + rightCount.size());
+        robot.getTelemetry().addLine("center confidence: " + centerConfidence + " centerCount: " + centerCount.size());
+
+        if (leftConfidence == rightConfidence){
+            return Location.CENTER;
+        }
 
         // all of this just determines the best just based on the confidence levels
         if (leftConfidence > centerConfidence) {
@@ -169,7 +179,7 @@ public class Vision{
         int tfodMonitorViewId = robot.getHardwareMap().appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", robot.getHardwareMap().appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minimumConfidence = 0.50;
+        tfodParameters.minimumConfidence = 0.20;
         TFObjectDetector tfod;
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);

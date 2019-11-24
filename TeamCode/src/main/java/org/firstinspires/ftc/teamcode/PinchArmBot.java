@@ -11,7 +11,8 @@ public class PinchArmBot extends FourWheelsDriveBot {
     static final double MIN_POS     =  0.0;     // Minimum rotational position
     static final double PINCH_ARM_FOLD = 0.3;
     static final double PINCH_ARM_VERTICAL = 0.55;
-    static final double PINCH_ARM_DOWN = 0.85;
+    static final double PINCH_ARM_DOWN1 = 0.85;
+    static final double PINCH_ARM_DOWN2 = 0.7;
     static final double PINCH_PINCH = 0.5;
     static final double PINCH_RELEASE = 0.2;
     static final double FOUNDATION_DRAG = 0.9;
@@ -46,7 +47,7 @@ public class PinchArmBot extends FourWheelsDriveBot {
     public void pickupSkyStone(){
 
         print(String.format("Before Down: ARM POS : %f, PINCH POS : %f", servoArm.getPosition(), servoPinch.getPosition()));
-        servoArm.setPosition(PINCH_ARM_DOWN);
+        servoArm.setPosition(PINCH_ARM_DOWN1);
         print(String.format("After Down: ARM POS : %f, PINCH POS : %f", servoArm.getPosition(), servoPinch.getPosition()));
         opMode.sleep(1000);
         servoPinch.setPosition(PINCH_PINCH);
@@ -59,12 +60,11 @@ public class PinchArmBot extends FourWheelsDriveBot {
     }
 
     public void dropSkyStone(){
-        servoArm.setPosition(PINCH_ARM_DOWN);
+        servoArm.setPosition(PINCH_ARM_DOWN2);
         opMode.sleep(1000);
         servoPinch.setPosition(PINCH_RELEASE);
         opMode.sleep(1000);
         servoArm.setPosition(PINCH_ARM_FOLD);
-        opMode.sleep(1000);
         return;
     }
 

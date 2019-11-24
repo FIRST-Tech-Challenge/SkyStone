@@ -1,16 +1,25 @@
 package org.firstinspires.ftc.teamcode.Tensorflow;
 
+import android.content.Context;
+import android.util.Log;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.vuforia.PIXEL_FORMAT;
 import com.vuforia.Vuforia;
 
+import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.List;
 
 /**
@@ -43,6 +52,7 @@ public class CustomTensorFlowObjectDetection extends LinearOpMode {
     public void runOpMode() {
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
+        TFODCalc.init();
         TFODCalc.getPhoneCamConstants();
 
         try {
@@ -84,6 +94,7 @@ public class CustomTensorFlowObjectDetection extends LinearOpMode {
 
                         // step through the list of recognitions and display boundary info.
                         int i = 0;
+                        int objIndex = 0;
                         for (Recognition recognition : updatedRecognitions) {
                             telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
                             telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
@@ -93,24 +104,30 @@ public class CustomTensorFlowObjectDetection extends LinearOpMode {
 
                             double objWidthpx = Math.abs(recognition.getTop() - recognition.getBottom());
                             double objHeightpx = Math.abs(recognition.getLeft() - recognition.getRight());
+                            double distanceToObj = TFODCalc.getDistanceToObj(127,
+                                    imgHeight, objHeightpx);
 
-                            telemetry.addData("Height", objHeightpx);
-                            telemetry.addData("Width", objWidthpx);
-                            telemetry.addData("Distance to Object", TFODCalc.getDistanceToObj(127,
-                                    imgHeight, objHeightpx));
-                            telemetry.addData("Estimated Angle", TFODCalc.getAngleOfStone(objWidthpx,
-                                    TFODCalc.getDistanceToObj(127, imgHeight, objHeightpx)).get(0));
+                            telemetry.addData("**Height", objHeightpx);
+                            telemetry.addData("**Width", objWidthpx);
+                            telemetry.addData("**Distance to Object", distanceToObj);
+                            telemetry.addData("**Estimated Angle", TFODCalc.getAngleOfStone(objIndex, objWidthpx,
+                                    distanceToObj).get(0));
 
-                            double min = TFODCalc.getAngleOfStone(objWidthpx,
-                                    TFODCalc.getDistanceToObj(127, imgHeight, objHeightpx)).get(1);
-                            double max = TFODCalc.getAngleOfStone(objWidthpx,
-                                    TFODCalc.getDistanceToObj(127, imgHeight, objHeightpx)).get(2);
-                            double zeroDegreeWidth = TFODCalc.getAngleOfStone(objWidthpx,
-                                    TFODCalc.getDistanceToObj(127, imgHeight, objHeightpx)).get(3);
+                            double min = TFODCalc.getAngleOfStone(objIndex, objWidthpx, distanceToObj).get(1);
+                            double max = TFODCalc.getAngleOfStone(objIndex, objWidthpx, distanceToObj).get(2);
+                            double zeroDegreeWidth = TFODCalc.getAngleOfStone(objIndex, objWidthpx, distanceToObj).get(3);
+                            double offsetWidth = TFODCalc.getAngleOfStone(objIndex, objWidthpx, distanceToObj).get(4);
+                            double deltaWidth = TFODCalc.getAngleOfStone(objIndex, objWidthpx, distanceToObj).get(4) -
+                                    TFODCalc.getAngleOfStone(objIndex, objWidthpx, distanceToObj).get(3);
 
                             telemetry.addData("Angle Model Domain", "[" + min + ", " + max + "]");
-                            telemetry.addData("Predicted Zero Degree Width", zeroDegreeWidth);
+                            telemetry.addData("Predicted 0° Stone Width", zeroDegreeWidth);
+                            telemetry.addData("Auto-adjusted Domain-Predicted 0° Stone Width", offsetWidth);
+                            telemetry.addData("Auto-adjusted Domain-Predicted 0° Stone Width Delta",
+                                    Math.round((deltaWidth) * 1000.0) / 1000.0);
+                            telemetry.addData("","----------------------------");
 
+                            objIndex += 1;
                         }
                         telemetry.update();
                     }

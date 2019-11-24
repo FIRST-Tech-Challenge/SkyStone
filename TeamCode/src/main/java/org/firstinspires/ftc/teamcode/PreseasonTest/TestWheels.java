@@ -69,9 +69,9 @@ public class TestWheels extends LinearOpMode {
 
             telemetry.addData("Wheel Power", power);
             telemetry.addData("","-------------------");
-            telemetry.addData("LeftForward", map.backLeft.getCurrentPosition());
-            telemetry.addData("RightForward", map.frontRight.getCurrentPosition());
-            telemetry.addData("Sideways", map.frontLeft.getCurrentPosition());
+            telemetry.addData("LeftForward", map.leftIntake.getCurrentPosition());
+            telemetry.addData("RightForward", map.liftTwo.getCurrentPosition());
+            telemetry.addData("Sideways", map.rightIntake.getCurrentPosition());
 
             /*telemetry.addData("LeftForward", HardwareMap.track.getEncoderTicks().get(0));
             telemetry.addData("RightForward", HardwareMap.track.getEncoderTicks().get(1));

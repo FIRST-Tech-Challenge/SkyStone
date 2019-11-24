@@ -30,15 +30,13 @@ import java.util.List;
  */
 @Config
 public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer {
-    public static double TICKS_PER_REV = 1;
+    public static double TICKS_PER_REV = DriveConstant.ODOMETRY_ENCODER_COUNTS_PER_REVOLUTION;
     public static double WHEEL_RADIUS = DriveConstant.MECANUM_RAD; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
 
-    public static double LATERAL_DISTANCE = 10; // in; distance between the left and right wheels
-    public static double FORWARD_OFFSET = 4; // in; offset of the lateral wheel
+    public static double LATERAL_DISTANCE = 14.0; // in; distance between the left and right wheels
+    public static double FORWARD_OFFSET = 6.5; // in; offset of the lateral wheel
     org.firstinspires.ftc.teamcode.All.HardwareMap hwMap;
-
-    private AnalogInput leftForward, rightForward, sideways;
 
     public StandardTrackingWheelLocalizer(HardwareMap hardwareMap) {
         super(Arrays.asList(
@@ -58,9 +56,9 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
     @Override
     public List<Double> getWheelPositions() {
         return Arrays.asList(
-                (double) hwMap.frontRight.getCurrentPosition(),
-                (double) hwMap.backLeft.getCurrentPosition(),
-                (double) hwMap.frontLeft.getCurrentPosition()
+                (double) hwMap.leftIntake.getCurrentPosition(),
+                (double) hwMap.liftTwo.getCurrentPosition(),  //@TODO: Switch to "hwMap.backRight.getCurrentPosition()" later
+                (double) hwMap.rightIntake.getCurrentPosition()
                 //encoderTicksToInches(leftEncoder.getCurrentPosition()),
                 //encoderTicksToInches(rightEncoder.getCurrentPosition()),
                 //encoderTicksToInches(frontEncoder.getCurrentPosition())

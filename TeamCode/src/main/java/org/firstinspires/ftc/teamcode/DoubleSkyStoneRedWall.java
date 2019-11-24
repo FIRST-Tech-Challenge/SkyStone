@@ -72,8 +72,17 @@ public class DoubleSkyStoneRedWall extends LinearOpMode {
                 robot.driveStraightByDistance(robot.DIRECTION_LEFT, 250, 0.5);
                 robot.dropSkyStone();
                 robot.originalPosition();
+                robot.driveStraightByDistance(robot.DIRECTION_RIGHT, 250, 0.9);
+                robot.driveStraightByDistance(direction_forward, 1600, 0.75);
+                robot.driveStraightByDistance(robot.DIRECTION_LEFT, 270, 0.5);
+                robot.pickupSkyStone();
+                robot.driveStraightByDistance(robot.DIRECTION_RIGHT, 100, 0.5);
+                robot.driveStraightByDistance(direction_backward, 1600, 0.8);
+                robot.driveStraightByDistance(robot.DIRECTION_LEFT, 250, 0.5);
+                robot.dropSkyStone();
+                robot.resetArm();
                 robot.driveStraightByDistance(robot.DIRECTION_RIGHT, 1200, 0.9);
-                robot.driveStraightByDistance(direction_forward, 1000, 1);
+                robot.driveStraightByDistance(robot.DIRECTION_FORWARD, 1000, 1);
 
             }
         }

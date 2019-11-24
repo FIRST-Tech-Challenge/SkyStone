@@ -10,7 +10,7 @@ public class CommandList {
     }
 
     public boolean run() {
-        if (commands.peek().check()) {
+        if (commands.peek().isDone()) {
             commands.pop();
             if (commands.isEmpty()) {
                 return true;

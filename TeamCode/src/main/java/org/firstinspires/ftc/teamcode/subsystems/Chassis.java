@@ -50,13 +50,12 @@ public class Chassis extends Subsystem {
     }
 
     public void runRotations(double rotations, double power) {
+        setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         reset();
-        frontLeft.setTargetPosition((int)(1440 * rotations));
-        frontRight.setTargetPosition((int)(1440 * rotations));
-        backLeft.setTargetPosition((int)(1440 * rotations));
-        backRight.setTargetPosition((int)(1440 * rotations));
         setMotorPowers(power);
-        setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        while (Math.abs(backLeft.getCurrentPosition()) < Math.abs(1440 * rotations)) ;
+        setMotorPowers(0);
+        setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     // Returns true if the moving is done

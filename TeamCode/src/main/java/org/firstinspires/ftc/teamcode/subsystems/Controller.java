@@ -95,7 +95,7 @@ public class Controller extends Gamepad {
     }
 
     public boolean getAPress() {
-        boolean isPress = getA() ^ aLast;
+        boolean isPress = (getA() ^ aLast) && getA();
         aLast = getA();
         return isPress;
     }
@@ -124,7 +124,7 @@ public class Controller extends Gamepad {
     }
 
     public double sensitiveStick(double stickInput) {
-        if (getRightTrigger() > .5) {
+        if (getRightTrigger() < .5) {
             return limitStick(stickInput) * .25;
         } else {
             return limitStick(stickInput);

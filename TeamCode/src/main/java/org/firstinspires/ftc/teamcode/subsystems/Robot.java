@@ -35,17 +35,15 @@ public class Robot {
         setLevel(controller);
         arm.run(level);
         chassis.run(targetAngle, turn, power);
-        if (controller.getB()) {
-            intake.setMainToHighPosition();
-        }
+        intake.run(controller.getBPress());
         if (controller.getA()) {
-            intake.setMainToLowPosition();
+            autoPlace(controller);
         }
         //hook.run();
         //intake.run();
     }
 
-    public void test(double rot, double power){
+    public void test(double rot, double power) {
         chassis.runRotations(rot, power);
     }
 
@@ -70,7 +68,7 @@ public class Robot {
         if (controller.getRightBumper()) {
             level++;
             if (level == arm.levelAngles.length) {
-                level = arm.levelAngles.length-1;
+                level = arm.levelAngles.length - 1;
             }
             while (controller.getRightBumper()) ;
         }
@@ -81,5 +79,20 @@ public class Robot {
             }
             while (controller.getLeftBumper()) ;
         }
+    }
+
+    public void autoPlace(Controller controller) {
+        chassis.runRotations(.25, -.25);
+        arm.run(level);
+        while (!controller.getAPress()) ;
+        chassis.runRotations(.3, .25);
+        while (!controller.getAPress()) ;
+        arm.run(level);
+        while (!controller.getAPress()) ;
+        intake.setMainToHighPosition();
+        while (!controller.getAPress()) ;
+        arm.run(arm.levelAngles.length - 1);
+        while (!controller.getAPress()) ;
+        chassis.runRotations(.4, -.25);
     }
 }

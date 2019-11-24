@@ -32,7 +32,7 @@ public class Arm extends Subsystem {
     }
 
     public void setArm(int level) {
-        arm.setTargetPosition(levelAngles[level]+10);
+        arm.setTargetPosition(levelAngles[level]-10);
     }
 
     public void setArmCheck(double error) {

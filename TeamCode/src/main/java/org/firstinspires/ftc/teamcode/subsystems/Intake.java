@@ -13,8 +13,6 @@ public class Intake extends Subsystem {
     double mainLowPosition = .25;
 
 
-
-
     public Intake(HardwareMap hardwareMap) {
         wrist = hardwareMap.servo.get("wrist");
         main = hardwareMap.servo.get("arm");
@@ -59,11 +57,13 @@ public class Intake extends Subsystem {
         main.setPosition(mainLowPosition);
     }
 
-    public void run(boolean setHigh) {
-        if(setHigh){
-            setMainToHighPosition();
-        }else{
-            setMainToLowPosition();
+    public void run(boolean switchMain) {
+        if (switchMain) {
+            if (main.getPosition() == mainHighPosition) {
+                setMainToLowPosition();
+            } else {
+                setMainToHighPosition();
+            }
         }
     }
 }

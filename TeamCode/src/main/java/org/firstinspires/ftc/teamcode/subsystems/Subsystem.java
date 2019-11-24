@@ -52,8 +52,11 @@ public class Subsystem {
     }
 
     public void reset() {
+
         for (DcMotor motor : motors) {
+            DcMotor.RunMode runMode = motor.getMode();
             motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            motor.setMode(runMode);
         }
     }
 

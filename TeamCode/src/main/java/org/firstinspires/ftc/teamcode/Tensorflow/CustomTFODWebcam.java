@@ -37,11 +37,14 @@ import com.vuforia.Vuforia;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.teamcode.Autonomous.Vision.Detect;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -105,6 +108,8 @@ public class CustomTFODWebcam extends LinearOpMode {
             tfod.activate();
         }
 
+        Detect detect = new Detect();
+
         /** Wait for the game to begin */
         telemetry.addData(">", "Press Play to start op mode");
         telemetry.update();
@@ -141,6 +146,8 @@ public class CustomTFODWebcam extends LinearOpMode {
                                   "[" + tfodData.get(1) + ", " + tfodData.get(2) + "]");
                           telemetry.addData("Auto-adjusted Domain-Predicted 0° Stone Width Delta",
                                   Math.round((tfodData.get(3)) * 1000.0) / 1000.0);
+                          telemetry.addData("Position",
+                                  Arrays.toString(detect.getPositions(updatedRecognitions)));
                           index += 1;
                       }
                       telemetry.update();

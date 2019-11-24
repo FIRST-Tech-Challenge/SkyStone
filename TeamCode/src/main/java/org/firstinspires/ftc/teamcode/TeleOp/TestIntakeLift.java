@@ -10,6 +10,7 @@ import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.All.DriveConstant;
 import org.firstinspires.ftc.teamcode.All.FourWheelMecanumDrivetrain;
 import org.firstinspires.ftc.teamcode.All.HardwareMap;
+import org.firstinspires.ftc.teamcode.All.Lift;
 import org.firstinspires.ftc.teamcode.PID.DriveConstantsPID;
 
 import java.util.ArrayList;
@@ -35,12 +36,17 @@ public class TestIntakeLift extends LinearOpMode {
     boolean outake = false;
     final double slowSpeed = 0.7;
     final double turnSpeed = 0.4;
-    boolean turningTowards = false;
     boolean runLogic = false;
 
+    double a = 0;
+    double b = 0;
+    double c = 0;
+
+    boolean blocker = false;
     ArrayList<String> kVData = new ArrayList<>();
 
     FourWheelMecanumDrivetrain drivetrain;
+    Lift lift;
     public void runOpMode(){
         HardwareMap hwMap = new HardwareMap(hardwareMap);
 
@@ -56,8 +62,19 @@ public class TestIntakeLift extends LinearOpMode {
 
         drivetrain.setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        hwMap.frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        hwMap.backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        hwMap.frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        hwMap.backRight.setDirection(DcMotorSimple.Direction.REVERSE);
+
+
+        lift.setMotorZeroPower(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        lift.setSpeedMultiplier(teleopConstants.liftPower);
+        lift.resetEncoders();
+
+        lift.setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        hwMap.liftOne.setDirection(DcMotorSimple.Direction.REVERSE);
+
 
         telemetry.addData("Status", "Ready");
 
@@ -69,7 +86,7 @@ public class TestIntakeLift extends LinearOpMode {
 
             //------------------------------===Intake/Outake===------------------------------------------
 
-            if(gamepad2.y) {
+            if(gamepad2.y && !blocker) {
                 if(!intake) {
                     intake = true;
                     outake = false;
@@ -77,9 +94,12 @@ public class TestIntakeLift extends LinearOpMode {
                     intake = false;
                     outake = false;
                 }
+                blocker = true;
+            } else {
+                blocker = false;
             }
 
-            if(gamepad2.a) {
+            if(gamepad2.a && !blocker) {
                 if(!outake) {
                     intake = false;
                     outake = true;
@@ -87,6 +107,9 @@ public class TestIntakeLift extends LinearOpMode {
                     intake = false;
                     outake = false;
                 }
+                blocker = true;
+            } else {
+                blocker = false;
             }
 
             if(intake){
@@ -106,21 +129,13 @@ public class TestIntakeLift extends LinearOpMode {
 
             //------------------------------===Linear Sliders===------------------------------------------
 
-            if(gamepad2.left_stick_y == 1){
-                hwMap.liftOne.setPower(teleopConstants.liftPower);
-            } else if(gamepad2.left_stick_y == -1){
-                hwMap.liftOne.setPower(-teleopConstants.liftPower);
+            if(gamepad2.right_stick_y != 0){
+                lift.moveLift(gamepad2.right_stick_y);
             } else {
-                hwMap.liftOne.setPower(0);
+                lift.stop();
             }
 
-            if(gamepad2.right_stick_y == 1){
-                hwMap.liftTwo.setPower(-teleopConstants.liftPower);
-            } else if(gamepad2.right_stick_y == -1){
-                hwMap.liftTwo.setPower(teleopConstants.liftPower);
-            } else {
-                hwMap.liftTwo.setPower(0);
-            }
+            lift.detectResetEncoder();
 
             //------------------------------===Driving/Strafing===------------------------------------------
 
@@ -144,6 +159,9 @@ public class TestIntakeLift extends LinearOpMode {
                 }
 
                 double angle = Math.atan2(gamepad1.left_stick_x, -gamepad1.right_stick_y);
+                a = speed;
+                b = angle;
+                c = turn;
                 drivetrain.MoveAngle(speed, angle, turn);
             } else {
                 drivetrain.stop();
@@ -201,6 +219,10 @@ public class TestIntakeLift extends LinearOpMode {
             telemetry.addData("LiftOne", hwMap.liftOne.getCurrentPosition());
             telemetry.addData("maxRPM", DriveConstantsPID.getMaxRpm());
             telemetry.addData("encoderTicksPerRev",DriveConstantsPID.TICKS_PER_REV);
+
+            telemetry.addData("Speed", a);
+            telemetry.addData("Angle", b);
+            telemetry.addData("Turn", c);
             telemetry.update();
         }
 

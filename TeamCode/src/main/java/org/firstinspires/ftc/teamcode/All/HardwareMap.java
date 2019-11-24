@@ -18,6 +18,7 @@ public class HardwareMap {
     public DcMotorEx backLeft, backRight, frontLeft, frontRight, firstJoint, secondJoint, intakeJoint, leftIntake, rightIntake,
     liftOne, liftTwo;
     public Servo clawServo1, clawServo2, rightTransfer, leftTransfer, liftOdometer, transferLock;
+    public DigitalChannel liftReset;
     public BNO055IMU gyro;
     public IntegratingGyroscope imu;
     public static DcMotor leftForward, rightForward, sideways;
@@ -51,9 +52,10 @@ public class HardwareMap {
 
         //---------------------------------------------------------------------------
 
-        //leftForward = hwMap.get(DcMotor.class, "leftForward");
-        //rightForward = hwMap.get(DcMotor.class, "rightForward");
-        //sideways = hwMap.get(DcMotor.class, "sideways");
+        liftReset = hwMap.get(DigitalChannel.class, "liftReset");
+
+        //---------------------------------------------------------------------------
+
         gyro = hwMap.get(BNO055IMU.class, "imu");
         imu = (IntegratingGyroscope) gyro;
 

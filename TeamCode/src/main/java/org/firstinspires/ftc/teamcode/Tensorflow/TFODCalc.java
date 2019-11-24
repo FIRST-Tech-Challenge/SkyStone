@@ -99,7 +99,7 @@ public class TFODCalc {
 
         if(objWidthPx <= xInt + autoAdjustedOffset.get(objIndex) - 197.369){  //Allows up to -5° of error
             autoAdjustOutput = getDomainOffset(xAt90, xIntOffset, objWidthPx);
-        } else if(objWidthPx >= xInt + autoAdjustedOffset.get(objIndex) + 8.611){   //Allows up to +10° of error
+        } else if(objWidthPx >= xInt + autoAdjustedOffset.get(objIndex) + 20.611){   //Allows up to +10° of error 8.611
             autoAdjustOutput = getDomainOffset(xInt, xIntOffset, objWidthPx);
         }
         return autoAdjustOutput;

@@ -26,6 +26,6 @@ public class MecanumTeleOpGyro extends OpMode
         robot.drivetrain.setVelocity(velocity);
         robot.drivetrain.setRotation(-gamepad1.left_stick_x);
 
-        robot.informationUpdate();
+        telemetry.update();
     }
 }

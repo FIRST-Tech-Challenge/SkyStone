@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.robotlib.motor;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotlib.state.ToggleBoolean;
 
@@ -66,9 +67,15 @@ public class LimitedMotor
 
     public void setLowerLimit(int lowerLimit) { this.lowerLimit = lowerLimit; }
 
+    public void setDirection (DcMotorSimple.Direction direction) { motor.setDirection(direction); }
+
+    public DcMotorSimple.Direction getDirection() { return motor.getDirection(); }
+
     public int getUpperLimit() {return upperLimit;}
 
     public int getLowerLimit() {return lowerLimit;}
+
+    public boolean isLimited() {return limited.output();}
 
     public double getTicksPerRev() { return motor.getMotorType().getTicksPerRev(); }
 }

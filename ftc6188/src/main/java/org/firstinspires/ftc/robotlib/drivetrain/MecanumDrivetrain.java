@@ -22,8 +22,8 @@ public class MecanumDrivetrain extends HolonomicFourWheelDrivetrain
 
     public void autoPosition(double course, double distanceIN, double rotation)
     {
-        this.setCourse(course * Math.PI/180);
-        this.setVelocity(0.6);
+        this.setCourse(course * (Math.PI/180));
+        this.setVelocity(0);
         this.setRotation(rotation);
         this.setTargetPosition(distanceIN * getTicksPerIn());
         position();

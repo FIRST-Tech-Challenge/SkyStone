@@ -12,6 +12,7 @@ public class GrabberControl {
 
     //initializing motors
     private Servo grabberS;
+    private Servo wristS;
     private Servo foundationMover;
    // private Servo wristS;
 
@@ -32,11 +33,11 @@ public class GrabberControl {
         /* Map hardware devices */
         grabberS = hwMap.servo.get("grabberS");
         foundationMover = hwMap.servo.get("foundationMover");
-        //wristS = hwMap.servo.get("wristS");
+        wristS = hwMap.servo.get("wristS");
 
         grabberS.setPosition(1);
         foundationMover.setPosition(0.4);
-        //wristS.setPosition(0);
+        wristS.setPosition(0);
 
     }
 
@@ -52,7 +53,13 @@ public class GrabberControl {
 
     public void down() {foundationMover.setPosition(1);}
 
-   /* public void wrist(int position) {
+    public void position1 () {wristS.setPosition(0);}
+
+    public void position2 () {wristS.setPosition(0.5);}/*90 degrees*/
+
+    public void position3 () {wristS.setPosition(1);}/*180 degrees*/
+
+    /*public void wrist(int position) {
         wristS.setPosition(position);
     }*/
 

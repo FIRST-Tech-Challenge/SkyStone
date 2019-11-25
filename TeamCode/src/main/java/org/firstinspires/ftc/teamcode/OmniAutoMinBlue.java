@@ -42,6 +42,16 @@ public class OmniAutoMinBlue extends OmniAutoClass
          */
         waitForStart();
 
-        driveAtHeadingForTime(0.3, 0.1, 0.0, 0.0, 1100, true);
+        robot.stackFromSide = HardwareOmnibot.AlignmentSide.RIGHT;
+        // Make sure the intake is out.
+        double endTime = timer.milliseconds() + 5000;
+        while (!robot.intakeAtPosition(HardwareOmnibot.IntakePosition.EXTENDED) && timer.milliseconds() < endTime) {
+            robot.resetReads();
+        }
+
+        sleep(5000);
+        // Set the zero for the extender for when we start teleop.  We should do this as late
+        // as will get reliably called.
+        robot.setIntakeZero(-robot.getIntakePosition());
     }
 }

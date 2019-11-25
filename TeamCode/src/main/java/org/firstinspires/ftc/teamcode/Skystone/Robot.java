@@ -988,9 +988,8 @@ public class Robot {
         }
     }
 
-    private final float YMOVEMENT_FACTOR = (float) 1.414;
-
     private void applyMove() {
+        float YMOVEMENT_FACTOR = (float) 1.414;
 
         // convert movements to motor powers
         double fLeftPower = (yMovement * YMOVEMENT_FACTOR + turnMovement + xMovement);

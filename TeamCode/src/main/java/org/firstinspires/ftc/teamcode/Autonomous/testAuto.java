@@ -25,6 +25,7 @@ import org.firstinspires.ftc.teamcode.Autonomous.BlockDetectionTest.SkystonePosi
 import static org.firstinspires.ftc.teamcode.Autonomous.BlockDetectionTest.BLOCKPOS.NONE;
 
 @Autonomous(name = "Test Auto (DUMMY)", group = "Linear Opmode")
+@Disabled
 public class testAuto extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "skystoneTFOD_v2_[105-15].tflite";
     private static final String LABEL_FIRST_ELEMENT = "Skystone";

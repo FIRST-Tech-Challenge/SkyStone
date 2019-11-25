@@ -15,8 +15,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import java.util.ArrayList;
 
 public class HardwareMap {
-    public DcMotorEx backLeft, backRight, frontLeft, frontRight, leftIntake, rightIntake,
-            liftOne, liftTwo;
+    public DcMotorEx backLeft, backRight, frontLeft, frontRight, leftIntake, rightIntake, liftOne, liftTwo;
     public Servo clawServo1, clawServo2, foundationLock, plateLifter, liftOdometer, transferLock, transferHorn, clawInit, innerTransfer;
     public DigitalChannel liftReset;
     public BNO055IMU gyro;

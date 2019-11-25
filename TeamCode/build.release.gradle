@@ -13,5 +13,7 @@ dependencies {
     implementation 'com.android.support:multidex:1.0.3'
     implementation 'org.openftc:rev-extensions-2:1.2'
 
+    implementation 'org.apache.commons:commons-math3:3.6.1'
+
     implementation 'de.siegmar:fastcsv:1.0.3'
 }

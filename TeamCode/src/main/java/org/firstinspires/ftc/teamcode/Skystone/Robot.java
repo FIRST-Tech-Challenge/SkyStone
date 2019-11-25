@@ -492,14 +492,10 @@ public class Robot {
             distanceToEnd = Math.hypot(robotPos.x - data[data.length-1][0], robotPos.y - data[data.length - 1][1]);
             distanceToNext = Math.hypot(robotPos.x - pathPoints[followIndex][0], robotPos.y - pathPoints[followIndex][1]);
             desiredHeading = angleWrap(Math.atan2(pathPoints[followIndex][1] - pathPoints[followIndex - 1][1], pathPoints[followIndex][0] - pathPoints[followIndex - 1][0]) + 2 * Math.PI);
+
             if(isBackwards){
                 desiredHeading = angleWrap((desiredHeading - Math.toRadians(180)) + 2 * Math.PI);
             }
-
-            if(desiredHeading < 0 || posAngle < 0){
-                return;
-            }
-
 
             if(desiredHeading == 0){
                 desiredHeading = Math.toRadians(360);

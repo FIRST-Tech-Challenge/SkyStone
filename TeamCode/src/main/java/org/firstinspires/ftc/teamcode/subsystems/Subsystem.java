@@ -5,6 +5,10 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import java.util.HashMap;
 
+//TO BE CLEANED UP
+//ONLY REMAINING IS setRevese and Error methods not moved to Chassis.
+
+
 /**
  * Base definition of Subsystems. Subsystems are identifiable sections of robot
  * that contain motors or servos

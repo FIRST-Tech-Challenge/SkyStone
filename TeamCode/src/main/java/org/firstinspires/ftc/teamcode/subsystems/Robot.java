@@ -34,7 +34,7 @@ public class Robot {
         //Put in all run methods
         setLevel(controller);
         arm.run(level);
-        chassis.run(targetAngle, turn, power);
+        chassis.runByGamepadCommand(targetAngle, turn, power);
         intake.run(controller.getBPress());
         if (controller.getA()) {
             autoPlace(controller);

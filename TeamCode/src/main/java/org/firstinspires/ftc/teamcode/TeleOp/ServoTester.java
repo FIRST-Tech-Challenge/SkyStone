@@ -23,14 +23,24 @@ public class ServoTester extends LinearOpMode {
                 rw.clawServo1,
                 rw.clawServo2,
                 rw.transferLock,
-                rw.liftOdometer
+                rw.liftOdometer,
+                rw.transferHorn,
+                rw.plateLifter,
+                rw.clawInit,
+                rw.innerTransfer,
+                rw.foundationLock
         };//hardwareMap.getAll(Servo.class);
 
         List<String> servoNames = new ArrayList<>();
         List<Double> servoPositions = new ArrayList<>();
-        for (Servo s : servos) {
-            servoPositions.add(0.5);
-            servoNames.add(hardwareMap.getNamesOf(s).iterator().next());
+        double[] pos = new double[] {teleopConstants.clawServo1PosClose, teleopConstants.clawServo2PosClose,
+                teleopConstants.transferLockPosUp, teleopConstants.odometerLockPosDown, teleopConstants.transferHornPosReady,
+                teleopConstants.plateLifterPosDown, teleopConstants.clawInitPosOpen, teleopConstants.innerTransferPosTucked,
+                teleopConstants.foundationLockUnlock};
+
+        for(int i = 0; i < servos.length; i++) {
+            servoPositions.add(pos[i]);
+            servoNames.add(hardwareMap.getNamesOf(servos[i]).iterator().next());
         }
 
 

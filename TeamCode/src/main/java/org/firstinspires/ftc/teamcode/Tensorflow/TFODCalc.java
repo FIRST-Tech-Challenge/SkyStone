@@ -16,6 +16,10 @@ public class TFODCalc {
             autoAdjustedOffset.add(0.0);
     }
 
+    public static double getSavedOffset(int index){
+        return autoAdjustedOffset.get(index);
+    }
+
     public static void getPhoneCamConstants() {
         camera = Camera.open();
         Camera.Parameters params = camera.getParameters();
@@ -55,8 +59,8 @@ public class TFODCalc {
          * to better fit the received Tensorflow data.
          */
 
-        double xIntOffset = xIntercept - estimated0DegreeWidth - autoAdjustedOffset.get(objIndex);
-        double newAutoAdjustedOffset = autoAdjustDomain(xIntercept,xIntercept - xAt60, xIntOffset, objWidthPx, objIndex); //Algorithm tunes the value of the offset
+        double xIntOffset = xIntercept - estimated0DegreeWidth - autoAdjustedOffset.get(objIndex);  //The original x-offset value
+        double newAutoAdjustedOffset = autoAdjustDomain(xIntercept, xAt60, xIntOffset, objWidthPx, objIndex); //Algorithm tunes the value of the offset, gets additional offset
         xIntOffset = xIntercept - estimated0DegreeWidth - autoAdjustedOffset.get(objIndex) - newAutoAdjustedOffset;    //Re-calculates the X-offset
 
         /**
@@ -67,8 +71,8 @@ public class TFODCalc {
         double theta = -0.00402486517332459 * Math.pow((objWidthPx + xIntOffset), 2) + 1.34744719385825 *
                 (objWidthPx + xIntOffset) - 33.9109714390624;  //Calculates angle
 
-        TFODCalc.autoAdjustedOffset.set(objIndex,
-                TFODCalc.autoAdjustedOffset.get(objIndex) + newAutoAdjustedOffset);   //The x-offset is saved under its index & will be reaccessed and used
+        autoAdjustedOffset.set(objIndex,
+                autoAdjustedOffset.get(objIndex) + newAutoAdjustedOffset);   //The x-offset is saved under its index & will be reaccessed again and used
 
         /**
          * Output: ArrayList containing the following (in this order):
@@ -87,7 +91,7 @@ public class TFODCalc {
         return output;
     }
 
-    private static double autoAdjustDomain(double xInt, double xAt90, double xIntOffset,
+    private static double autoAdjustDomain(double xInt, double xAt60, double xIntOffset,
                                          double objWidthPx, int objIndex){
         double autoAdjustOutput = 0.0;
 
@@ -97,16 +101,17 @@ public class TFODCalc {
          * between the predicted and actual x-intercepts by finding the difference in x values at a certain point.
          */
 
-        if(objWidthPx <= xInt + autoAdjustedOffset.get(objIndex) - 197.369){  //Allows up to -5° of error
-            autoAdjustOutput = getDomainOffset(xAt90, xIntOffset, objWidthPx);
-        } else if(objWidthPx >= xInt + autoAdjustedOffset.get(objIndex) + 20.611){   //Allows up to +10° of error 8.611
-            autoAdjustOutput = getDomainOffset(xInt, xIntOffset, objWidthPx);
+        if(xInt - objWidthPx <= xInt + xIntOffset - 207.369){  //Allows up to -5° of error (- 10)
+            double allowedErrorOffset = xAt60 - (xInt + autoAdjustedOffset.get(objIndex) - 207.369);    //Calculates allowed error offset (- 10)
+            autoAdjustOutput = getDomainOffset(xAt60 - allowedErrorOffset, xIntOffset, objWidthPx); //Gets new, additional offset
+        } else if(xInt - objWidthPx >= xInt + xIntOffset + 10.611){   //Allows up to +10° of error (+ 8.611)
+            autoAdjustOutput = getDomainOffset(xInt + 10.611, xIntOffset, objWidthPx);   //Calculates new, additional offset
         }
         return autoAdjustOutput;
     }
 
     private static double getDomainOffset(double anchorX, double xIntOffset, double objWidthPx){
-        double newOffset = anchorX - objWidthPx;
-        return xIntOffset - newOffset;
+        double newOffset = anchorX - objWidthPx;    //Actual offset based on current width of the skystone
+        return xIntOffset - newOffset;  //Creates an additional offset that is subtracted from the "old" offset (Delta x-offset)
     }
 }

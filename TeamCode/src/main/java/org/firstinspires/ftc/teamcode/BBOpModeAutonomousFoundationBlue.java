@@ -38,6 +38,7 @@ public class BBOpModeAutonomousFoundationBlue extends LinearOpMode
          //while(this.opModeIsActive()){
         robot.RobotMoveY(way1, 0.3);
         robot.Stop();
+
         Waypoint way2 = new Waypoint(20, 0, 0);
         robot.RobotMoveX(way2, 0.3);
 

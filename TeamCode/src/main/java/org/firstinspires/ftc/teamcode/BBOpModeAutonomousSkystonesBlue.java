@@ -40,7 +40,7 @@ public class BBOpModeAutonomousSkystonesBlue extends LinearOpMode
         waitForStart();
         runtime.reset();
 
-        robot.moveForward(100,0.6);
+
 
         boolean foundStone = false;
 
@@ -88,9 +88,9 @@ public class BBOpModeAutonomousSkystonesBlue extends LinearOpMode
 
             robot.turnLeft(110, 0.70);
             if(runtime.seconds() > 10){
-                robot.moveForward(190, 0.6);
+                //robot.moveForward(190, 0.6);
             }else {
-                robot.moveForward(150, 0.6);
+                //robot.moveForward(150, 0.6);
             }
         }
 

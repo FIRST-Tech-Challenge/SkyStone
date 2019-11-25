@@ -9,12 +9,16 @@ public class BBHooks {
 
     private Servo _leftHookMotor;
     private Servo _rightHookMotor;
+
+    private Servo _skyHookMotor;
+
     private boolean _hookState;
 
         public void init(HardwareMap hwmap){
 
             _leftHookMotor = hwmap.get(Servo.class, "left_hook");
             _rightHookMotor = hwmap.get(Servo.class, "right_hook");
+            _skyHookMotor = hwmap.get(Servo.class, "sky_hook");
             _hookState = false;
         }
 
@@ -42,6 +46,14 @@ public class BBHooks {
                 UnLatched();
             }
 
+        }
+
+        public void SkyHookOn(){
+            _skyHookMotor.setPosition(1);
+        }
+
+        public void SkyHookOff(){
+            _skyHookMotor.setPosition(0);
         }
 
 

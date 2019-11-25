@@ -84,16 +84,16 @@ public class TwoWheelTrackingLocalizer {
 
     public void update(RevBulkData data1, RevBulkData data2, double heading) {
         double[] deltas = new double[] {
-                encoderTicksToCM(data1.getMotorCurrentPosition(0) - prevWheelPositions[0],
+                encoderTicksToCM(data2.getMotorCurrentPosition(0) - prevWheelPositions[0],
                         PARALLEL_WHEEL_RADIUS),
-                encoderTicksToCM(data2.getMotorCurrentPosition(0) - prevWheelPositions[1],
+                encoderTicksToCM(data1.getMotorCurrentPosition(0) - prevWheelPositions[1],
                         LATERAL_WHEEL_RADIUS),
                 MathUtil.angleWrap(heading - prevHeading)
         };
 
-        prevWheelPositions[0] = data1.getMotorCurrentPosition(0);
+        prevWheelPositions[0] = data2.getMotorCurrentPosition(0);
         prevHeading = heading;
-        prevWheelPositions[1] = data2.getMotorCurrentPosition(0);
+        prevWheelPositions[1] = data1.getMotorCurrentPosition(0);
 
         RealMatrix m = MatrixUtils.createRealMatrix(new double[][] {deltas});
 

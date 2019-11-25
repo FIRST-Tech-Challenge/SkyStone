@@ -33,6 +33,7 @@ public class BBSRobot {
 
     private BBHooks _hooks = new BBHooks();
     private BBIntake _intakeMotor = new BBIntake();
+    private BBLift _lift = new BBLift();
 
     private DcMotor leftFront = null;
     private DcMotor rightFront = null;
@@ -63,7 +64,7 @@ public class BBSRobot {
 
         telemetry = tele;
         _intakeMotor.init(hwmap);
-
+        _lift.init(hwmap, tele, mode);
         _hooks.init(hwmap);
         _mode = mode;
 
@@ -100,7 +101,8 @@ public class BBSRobot {
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         imu.initialize(parameters);
-        //remap axis
+        // remap axis
+        BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
         headingOffset = imu.getAngularOrientation().firstAngle;
 
 
@@ -136,6 +138,7 @@ public class BBSRobot {
         telemetry.update();
 
         double slowScale = ((1 - gp1.left_trigger) * 0.7 + 0.3);
+
         double leftX = MecanumUtil.deadZone(gp1.left_stick_x, 0.05) * slowScale;
         double leftY = MecanumUtil.deadZone(gp1.left_stick_y, 0.05) * slowScale;
         double angle = Math.atan2(leftY, leftX) + Math.PI / 2;
@@ -180,6 +183,30 @@ public class BBSRobot {
 
         }
 
+        if(gp1.dpad_up || gp2.left_stick_x > 0) {
+            _lift.DropOff();
+        }
+        else if(gp1.dpad_down || gp2.left_stick_x < 0){
+            _lift.Home();
+        }
+        else{
+            _lift.Off();
+        }
+
+        if(gp1.y){
+            _lift.GoToHome();
+        }
+        if(gp1.x){
+            _lift.LoadBrick();
+        }
+
+        if(gp1.a){
+            _lift.Grip();
+        }
+
+        if(gp1.b){
+            _lift.Release();
+        }
 
        /* telemetry.addData("1:", leftRear.getCurrentPosition()); //side
         telemetry.addData("2", rightRear.getCurrentPosition()); //forward
@@ -257,41 +284,40 @@ public class BBSRobot {
     public void RobotMoveY(Waypoint target, double movementSpeed) {
 
         //TODO: Think about this -- we loose position on the field
-       /*rightRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        leftRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);*/
+        leftRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        telemetry.addData("X:", String.format("%.1f", localizer.x()));
-        telemetry.addData("Y:",String.format("%.1f", localizer.y()));
-        telemetry.addData("H:",String.format("%.1f", Math.toDegrees(localizer.h())));
-        telemetry.update();
+        double angle = 0;
 
-        while(_mode.opModeIsActive() && localizer.y() < target.y) {
+        if(target.y < 0){
+            double y = MecanumUtil.deadZone(1.0, 0.05) * 0.3;
+            angle = Math.atan2(y, 0) + Math.PI / 2;
+        }
+
+        LocalizerUpdate();
+        while(_mode.opModeIsActive() &&  Math.abs(localizer.y()) < Math.abs(target.y)) {
             LocalizerUpdate();
-            MecanumPowers powers = MecanumUtil.powersFromAngle(0, movementSpeed, 0);
+            MecanumPowers powers = MecanumUtil.powersFromAngle(angle, movementSpeed, 0);
             setPowers(powers);
-            telemetry.addLine("Robot Y");
-            telemetry.addData("X:", String.format("%.1f", localizer.x()));
-            telemetry.addData("Y:",String.format("%.1f", localizer.y()));
-            telemetry.addData("H:",String.format("%.1f", MathUtil.angleWrap(Math.toDegrees(localizer.h()))));
-            telemetry.update();
+
         }
     }
 
     public void RobotMoveX(Waypoint target, double movementSpeed) {
 
          //TODO: Think about this
-        /*rightRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        leftRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);*/
+        leftRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        telemetry.addData("X:", String.format("%.1f", localizer.x()));
-        telemetry.addData("Y:",String.format("%.1f", localizer.y()));
-        telemetry.addData("H:",String.format("%.1f", Math.toDegrees(localizer.h())));
-        telemetry.update();
-
+       // telemetry.addData("X:", String.format("%.1f", localizer.x()));
+       // telemetry.addData("Y:",String.format("%.1f", localizer.y()));
+       // telemetry.addData("H:",String.format("%.1f", Math.toDegrees(localizer.h())));
+       // telemetry.update();
+        LocalizerUpdate();
         while(_mode.opModeIsActive() && Math.abs(localizer.x()) < Math.abs(target.x)) {
             LocalizerUpdate();
 
@@ -330,8 +356,24 @@ public class BBSRobot {
 
     }
 
-    public void moveForward(int centimetres, double speed){
+    public void moveForward()
+    {
+        double slowScale = 0.18;
+        double leftX = MecanumUtil.deadZone(0, 0.05) * slowScale;
+        double leftY = MecanumUtil.deadZone(-1, 0.05) * slowScale;
+        double angle = Math.atan2(leftY, leftX) + Math.PI / 2;
 
+        double driveScale = Math.sqrt(Math.pow(leftX, 2) + Math.pow(leftY, 2));
+        driveScale = Range.clip(driveScale, 0, 1);
+
+        // Exponentiate our turn
+        double turn = Math.copySign(
+                Math.pow(MecanumUtil.deadZone(0, 0.05), 2),
+                0) * slowScale;
+
+
+        MecanumPowers powers = MecanumUtil.powersFromAngle(angle, driveScale, turn);
+        setPowers(powers);
     }
 
 
@@ -347,5 +389,12 @@ public class BBSRobot {
     }
 
 
+    public void SkyHookOn(){
+         _hooks.SkyHookOn();
+    }
+
+    public void SkyHookOff(){
+        _hooks.SkyHookOff();
+    }
 
 }

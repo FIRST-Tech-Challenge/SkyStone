@@ -6,7 +6,7 @@ import org.firstinspires.ftc.teamcode.Skystone.MathFunctions;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.PathPoints;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.SplineGenerator;
-//import org.firstinspires.ftc.teamcode.Skystone.Vision;
+import org.firstinspires.ftc.teamcode.Skystone.Vision;
 
 @Autonomous(name="Khue", group ="LinearOpmode")
 public class RedLeft extends AutoBase{
@@ -16,7 +16,7 @@ public class RedLeft extends AutoBase{
     @Override
     public void runOpMode() {
         initLogic();
-//        Vision tensorflow = new Vision(robot);
+        Vision tensorflow = new Vision(robot);
 
 
         waitForStart();
@@ -25,17 +25,17 @@ public class RedLeft extends AutoBase{
         int firstSkystoneX = -2;
         int secondSkyStoneX = -26;
 
-//        Vision.Location position = tensorflow.runDetection();
-//
-//        int firstSkystoneX = -2;
-//        int secondSkyStoneX = -26;
-//        if (position == Vision.Location.LEFT){
-//            firstSkystoneX = -5;
-//            secondSkyStoneX = -29;
-//        } else if (position == Vision.Location.RIGHT){
-//            firstSkystoneX = 1;
-//            secondSkyStoneX = -23;
-//        }
+        Vision.Location position = tensorflow.runDetection();
+
+        int firstSkystoneX = -2;
+        int secondSkyStoneX = -26;
+        if (position == Vision.Location.LEFT){
+            firstSkystoneX = -5;
+            secondSkyStoneX = -29;
+        } else if (position == Vision.Location.RIGHT){
+            firstSkystoneX = 1;
+            secondSkyStoneX = -23;
+        }
 
         double[][] toFirstStone = {{0,0,10,0},{55,firstSkystoneX,10,0}};
 

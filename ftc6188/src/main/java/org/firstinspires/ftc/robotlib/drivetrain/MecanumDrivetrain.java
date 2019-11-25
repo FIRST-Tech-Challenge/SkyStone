@@ -13,6 +13,8 @@ public class MecanumDrivetrain extends HolonomicFourWheelDrivetrain
         setTicksPerIn(wheelRadius, wheelToMotorRatio);
     }
 
+    public MecanumDrivetrain(DcMotor[] motorList, boolean teleOpMode) { this(motorList, teleOpMode, 1, 1); }
+
     // this math returns a multiplier to the holonomic four wheel drivetrain, the math is very complex but it just works so it shouldnt be changed
     @Override
     double calculateWheelCoefficient(double course, double wheelAngle)

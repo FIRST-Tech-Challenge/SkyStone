@@ -1,24 +1,12 @@
 package org.firstinspires.ftc.teamcode.Autonomous.Vision;
 
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.vuforia.PIXEL_FORMAT;
-import com.vuforia.Vuforia;
-
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
-import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.Tensorflow.TFODCalc;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Detect {
-    private VuforiaLocalizer vuforia;
-    private TFObjectDetector tfod;
 
     public Detect(){
         TFODCalc.init();
@@ -151,14 +139,5 @@ public class Detect {
             }
         }
         return new int[] {-1, -1};
-    }
-
-    public double getImageHeight() throws InterruptedException{
-        Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true); //enables RGB565 format for the image
-        vuforia.setFrameQueueCapacity(1); //tells VuforiaLocalizer to only store one frame at a time
-
-        VuforiaLocalizer.CloseableFrame frame = vuforia.getFrameQueue().take(); //takes the frame at the head of the queue
-
-        return frame.getImage(0).getHeight();
     }
 }

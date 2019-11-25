@@ -60,6 +60,8 @@ public class Constants {
     public static final String foundationServos = "foundationservo";
     public static final String rightsucks = "rightSuck";
     public static final String leftsucks = "leftSuck";
+    public static final String smallRSucks = "smallRSuck";
+    public static final String smallLSucks = "smallLSuck";
 
 
 

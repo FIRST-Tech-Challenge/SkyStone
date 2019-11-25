@@ -48,6 +48,8 @@ import static org.firstinspires.ftc.teamcode.Control.Constants.rightServos;
 import static org.firstinspires.ftc.teamcode.Control.Constants.rightsucks;
 import static org.firstinspires.ftc.teamcode.Control.Constants.rotationservos;
 import static org.firstinspires.ftc.teamcode.Control.Constants.servos;
+import static org.firstinspires.ftc.teamcode.Control.Constants.smallLSucks;
+import static org.firstinspires.ftc.teamcode.Control.Constants.smallRSucks;
 
 public class Crane {
 
@@ -152,6 +154,7 @@ public class Crane {
 
     public  List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
     public VuforiaTrackables targetsSkyStone;
+    public VuforiaTrackable stoneTarget;
     public boolean targetVisible = false;
     public OpenGLMatrix robotFromCamera;
     public int cameraMonitorViewId;
@@ -160,6 +163,7 @@ public class Crane {
     public Servo servo;
 
     public Servo rotationservo, rightServo, leftServo, foundationServo;
+    public CRServo smallRSuck, smallLSuck;
 
     public DigitalChannel flimit;
     public DigitalChannel blimit;
@@ -195,10 +199,10 @@ public class Crane {
     }
     */
     public void setupDrivetrain() throws InterruptedException {
-        motorFR = motor(motorFRS, DcMotorSimple.Direction.REVERSE, DcMotor.ZeroPowerBehavior.BRAKE);
-        motorFL = motor(motorFLS, DcMotorSimple.Direction.REVERSE, DcMotor.ZeroPowerBehavior.BRAKE);
-        motorBR = motor(motorBRS, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.BRAKE);
-        motorBL = motor(motorBLS, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.BRAKE);
+        motorFR = motor(motorFRS, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.BRAKE);
+        motorFL = motor(motorFLS, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.BRAKE);
+        motorBR = motor(motorBRS, DcMotorSimple.Direction.REVERSE, DcMotor.ZeroPowerBehavior.BRAKE);
+        motorBL = motor(motorBLS, DcMotorSimple.Direction.REVERSE, DcMotor.ZeroPowerBehavior.BRAKE);
 
         motorDriveMode(EncoderMode.OFF, motorFR, motorFL, motorBR, motorBL);
     }
@@ -228,6 +232,9 @@ public class Crane {
     public void setupIntake() throws InterruptedException{
         rightSuck = motor(rightsucks, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.BRAKE);
         leftSuck = motor(leftsucks, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.BRAKE);
+
+        smallRSuck = servo(smallRSucks, DcMotorSimple.Direction.FORWARD, 0);
+        smallLSuck = servo(smallLSucks, DcMotorSimple.Direction.FORWARD, 0);
 
         encoder(EncoderMode.OFF, rack, leftLinear, rightLinear);
     }
@@ -495,7 +502,7 @@ public class Crane {
         // Load the data sets for the trackable objects. These particular data
         // sets are stored in the 'assets' part of our application.
 
-        VuforiaTrackable stoneTarget = targetsSkyStone.get(0);
+        stoneTarget = targetsSkyStone.get(0);
         stoneTarget.setName("Stone Target");
         VuforiaTrackable blueRearBridge = targetsSkyStone.get(1);
         blueRearBridge.setName("Blue Rear Bridge");
@@ -590,6 +597,7 @@ public class Crane {
         final float CAMERA_FORWARD_DISPLACEMENT  = 4.0f * mmPerInch;   // eg: Camera is 4 Inches in front of robot-center
         final float CAMERA_VERTICAL_DISPLACEMENT = 8.0f * mmPerInch;   // eg: Camera is 8 Inches above ground
         final float CAMERA_LEFT_DISPLACEMENT     = 0;     // eg: Camera is ON the robot's center line
+
 
         robotFromCamera = OpenGLMatrix
                 .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)

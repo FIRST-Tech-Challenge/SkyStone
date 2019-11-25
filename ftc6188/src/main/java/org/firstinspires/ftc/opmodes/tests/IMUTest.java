@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.opmodes.tests;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -7,6 +8,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.robotlib.robot.GyroRobot;
 
+@Disabled
 @TeleOp(name="IMU Test", group="Test")
 public class IMUTest extends OpMode
 {

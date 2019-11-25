@@ -16,7 +16,6 @@ public class MecanumAutoDebugging extends LinearOpMode
     public void runOpMode() throws InterruptedException
     {
         robot = new MecanumRobot(this.hardwareMap, this.telemetry, false);
-
         robot.informationUpdate();
         telemetry.addData("> Status", "Initialized");
         telemetry.update();
@@ -43,11 +42,6 @@ public class MecanumAutoDebugging extends LinearOpMode
     public void internalPostLoop()
     {
         robot.informationUpdate();
-    }
-
-    @Override
-    public void internalPostInitLoop()
-    {
-        robot.informationUpdate();
+        telemetry.update();
     }
 }

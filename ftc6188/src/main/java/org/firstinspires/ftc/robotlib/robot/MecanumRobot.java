@@ -23,8 +23,8 @@ public class MecanumRobot
     private Servo servoClawRight;
 
     // Drive constants
-    static final double wheelRadius = 2; //inches
-    static final double wheelToMotorRatio = 2.0/1.0;
+    private static final double wheelRadius = 2; //inches
+    private static final double wheelToMotorRatio = 2.0/1.0;
 
     // Temporary telemetry reference will likely be removed later
     Telemetry telemetry;
@@ -96,6 +96,12 @@ public class MecanumRobot
         telemetry.addData("WheelPower RL", drivetrain.motorList[2].getPower());
         telemetry.addData("WheelPower RR", drivetrain.motorList[3].getPower());
 
+        telemetry.addData("> Is Busy", "-----");
+        telemetry.addData("FL", drivetrain.motorList[0].isBusy());
+        telemetry.addData("FR", drivetrain.motorList[1].isBusy());
+        telemetry.addData("RL", drivetrain.motorList[2].isBusy());
+        telemetry.addData("RR", drivetrain.motorList[3].isBusy());
+
         telemetry.addData("> Drivetrain Info", "-----");
         telemetry.addData("Course Radians", drivetrain.getCourse());
         telemetry.addData("Course Degrees", drivetrain.getCourse() * Math.PI/180);
@@ -106,7 +112,7 @@ public class MecanumRobot
 
         telemetry.addData("> Servo Info", "-----");
         telemetry.addData("Servo Pos", "One: " + platformServos.getServoOne().getPosition() + " Two: " + platformServos.getServoTwo().getPosition());
+        telemetry.addData("Servo Pos2", "One: " + servoClawLeft.getPosition() + " Two: " + servoClawRight.getPosition());
         telemetry.addData("Linked Pos", platformServos.getPosition());
-        telemetry.update();
     }
 }

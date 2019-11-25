@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.opmodes.mecanum.drive;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotlib.robot.MecanumGyroRobot;
 
+@Disabled
 @TeleOp(name="Mecanum TeleOp V-Gyro", group="TeleOp")
 public class MecanumTeleOpGyro extends OpMode
 {

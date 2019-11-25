@@ -145,7 +145,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
             if (percentComplete >= 1)
             {
                 motorList[motorIndex].setPower(0);
-                //motorList[motorIndex].setTargetPosition(motorList[motorIndex].getCurrentPosition());
+                motorList[motorIndex].setTargetPosition(motorList[motorIndex].getCurrentPosition());
             }
             else
             {
@@ -165,14 +165,12 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
             this.motorList[motorIndex].setMode(runModes[motorIndex]);
         }
 
-        /*
         // reset the drivetrain to a pre-movement state
         setCourse(0);
         setVelocity(0);
         setRotation(0);
         setTargetPosition(0);
         updateMotorPowers();
-         */
     }
 
     // returns each motors ticks per full revolution

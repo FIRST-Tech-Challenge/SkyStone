@@ -15,8 +15,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import java.util.ArrayList;
 
 public class HardwareMap {
-    public DcMotorEx backLeft, backRight, frontLeft, frontRight, leftIntake, rightIntake,
-    liftOne, liftTwo;
+    public DcMotorEx backLeft, backRight, frontLeft, frontRight, leftIntake, rightIntake, liftOne, liftTwo;
     public Servo clawServo1, clawServo2, foundationLock, plateLifter, liftOdometer, transferLock, transferHorn, clawInit, innerTransfer;
     public DigitalChannel liftReset;
     public BNO055IMU gyro;
@@ -86,7 +85,6 @@ public class HardwareMap {
         static double leftDelta = 0;
         static double rightDelta = 0;
         static double sideDelta = 0;
-
         private static void beginTracking() {        //Right, Left, and Side--Encoders: Forward = 0 - 1 - 2 - 3 - 0 - 1..., Backward = 3 - 2 - 1 - 0 - 3 - 2...
             Thread update = new Thread() {
                 public void run() {
@@ -96,20 +94,16 @@ public class HardwareMap {
                         double leftInit = leftForward.getVoltage();
                         double rightInit = rightForward.getVoltage();
                         double sideInit = sideways.getVoltage();
-
                         try {
                             Thread.sleep(readDelay);
                         } catch (Exception e) {
                         }
-
                         double leftFinal = leftForward.getVoltage();
                         double rightFinal = rightForward.getVoltage();
                         double sideFinal = sideways.getVoltage();
-
                         leftDelta = leftFinal - leftInit;
                         rightDelta = rightFinal - rightInit;
                         sideDelta = sideFinal - sideInit;
-
                         if (leftDelta >= 2.3) {
                             totalLeft -= leftInit + (3.3 - leftFinal);
                         } else if (leftDelta <= -2.3) {
@@ -117,7 +111,6 @@ public class HardwareMap {
                         } else {
                             totalLeft += leftDelta;
                         }
-
                         if (rightDelta >= 2.3) {
                             totalRight -= rightInit + (3.3 - rightFinal);
                         } else if (rightDelta <= -2.3) {
@@ -125,7 +118,6 @@ public class HardwareMap {
                         } else {
                             totalRight += rightDelta;
                         }
-
                         if (sideDelta >= 2.3) {
                             totalSide += sideInit + (3.3 - sideFinal);
                         } else if (sideDelta <= -2.3) {
@@ -133,7 +125,6 @@ public class HardwareMap {
                         } else {
                             totalSide += sideDelta;
                         }
-
                         try {
                             Thread.sleep(delay);
                         } catch (Exception e) {
@@ -144,10 +135,8 @@ public class HardwareMap {
             };
             update.start();
         }
-
         public static ArrayList<Double> getEncoderTicks() {  //Returns ArrayList [leftTicks, rightTicks, sideTicks] in cm
             ArrayList<Double> totalTicks = new ArrayList<>();
-
             totalTicks.add(totalLeft /
                     DriveConstant.ENCODER_COUNTS_PER_REVOLUTION * DriveConstant.LEFT_GEAR_RATIO /**
                     (2 * Math.PI * DriveConstant.ODOMETRY_RAD)*/ /* (DriveConstant.ODOMETRY_RAD / DriveConstant.MECANUM_RAD));
@@ -159,10 +148,8 @@ public class HardwareMap {
                     (2 * Math.PI * DriveConstant.ODOMETRY_RAD)*/ /* (DriveConstant.ODOMETRY_RAD / DriveConstant.MECANUM_RAD));
         /*    return totalTicks;
         }
-
         public static ArrayList<String> getEncoderDebug() {  //Debugs the entire formula for calculating encoder ticks
             ArrayList<String> debug = new ArrayList<>();
-
             debug.add(/*"(ignoreLoopsAdditionalValue - getVoltage + 3.3 * numOfLoops)*//* "totalLeft / VOLTS_PER_REVOLUTION * GEAR_RATIO * " +
       /*              "(2 * PI * ODOMETRY_RADIUS) * (ODOMETRY_RADIUS / MECANUM_RADIUS)");
             debug.add("" + totalLeft + " / " +
@@ -173,13 +160,12 @@ public class HardwareMap {
                     DriveConstant.ENCODER_COUNTS_PER_REVOLUTION + " * " + DriveConstant.RIGHT_GEAR_RATIO /*+ " * " +
                     "(" + 2 + " * " + Math.PI + " * " + DriveConstant.ODOMETRY_RAD + ")"*//* + " * " +
          /*//*           "(" + DriveConstant.ODOMETRY_RAD + " / " + DriveConstant.MECANUM_RAD + ")");
-          *//*  debug.add("" + totalSide + " / " +
+     *//*  debug.add("" + totalSide + " / " +
            //         DriveConstant.ENCODER_COUNTS_PER_REVOLUTION + " * " + DriveConstant.SIDE_GEAR_RATIO /*+ " * " +
            //        "(" + 2 + " * " + Math.PI + " * " + DriveConstant.ODOMETRY_RAD + ")"*//* + " * " +
-          *//*          "(" + DriveConstant.ODOMETRY_RAD + " / " + DriveConstant.MECANUM_RAD + ")");
+     *//*          "(" + DriveConstant.ODOMETRY_RAD + " / " + DriveConstant.MECANUM_RAD + ")");
          /*   return debug;
         }
-
         public static ArrayList<String> getElapsedTime() {   //Returns [elapsedTime, CurrentlyTracking]
             ArrayList<String> time = new ArrayList<>();
             if (tracking) {
@@ -191,7 +177,6 @@ public class HardwareMap {
             }
             return time;
         }
-
         public static void resetEncoders() {     //Resets everything to 0 including elapsedTime
             leftForward.resetDeviceConfigurationForOpMode();
             rightForward.resetDeviceConfigurationForOpMode();
@@ -201,24 +186,19 @@ public class HardwareMap {
             totalRight = 0;
             startTime = -1;
         }
-
         public static void encoders(boolean track, int readingDelay, int loopDelay) {
             tracking = track;
-
             if (readingDelay >= 0)
                 readDelay = loopDelay;
             else
                 readDelay = 15;
-
             if (loopDelay >= 0)
                 delay = loopDelay;
             else
                 delay = 25;
-
             if (track)
                 beginTracking();
         }
-
         public static void encoders(boolean track) {
             tracking = track;
             readDelay = 15;

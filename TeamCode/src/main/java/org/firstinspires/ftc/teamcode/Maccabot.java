@@ -92,5 +92,14 @@ public class Maccabot {
         parentOpMode.telemetry.addLine(Double.toString(intake_left.getPower()));
     }
 
+    public void servo(double pos, boolean con1, boolean con2){
+        if(con1){
+            servo.setPosition(pos);
+        }
+        if(con2){
+            servo.setPosition(-pos);
+        }
+    }
+
 
 }

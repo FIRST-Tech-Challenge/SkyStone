@@ -29,6 +29,7 @@ import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.PathPoints;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.SplineGenerator;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -464,26 +465,47 @@ public class Robot {
         }
     }
 
-    public void splineMove(double[][] data, double moveSpeed, double turnSpeed, double optimalAngle, double angleLockRadians, double angleLockInches) {
+    public enum Actions{
+        EXTEND_OUTTAKE, RETRACT_OUTTAKE, RELEASE_FOUNDATION, START_INTAKE, STOP_INTAKE
+    }
+
+    public void splineMove(double[][] data, double moveSpeed, double turnSpeed, double optimalAngle, double angleLockRadians, double angleLockInches, Actions[] actions, Point[] actionPoints) {
         double posAngle;
         SplineGenerator s = new SplineGenerator(data);
         double[][] pathPoints = s.getOutputData();
 
+        long extendOuttakeStartTime = 0;
+        long retractOuttakeStartTime = 0;
+
+        boolean isExendingOuttake = false;
+        boolean isRetractingOuttake = false;
+        boolean isReleasingFoundation = false;
+        boolean isStartingIntake = false;
+        boolean isStoppingIntake = false;
+
+        boolean hasExtendedOuttake = false;
+        boolean hasRetractedOuttake = false;
+        boolean hasReleasedFoundation = false;
+        boolean hasStartedIntake = false;
+        boolean hasStoppedIntake = false;
+
+        boolean isMoving = true;
+
         int followIndex = 1;
-        double scale;
-        double powerScale;
         double angleLockScale;
         double distanceToEnd;
         double distanceToNext;
         double desiredHeading;
 
+        long currentTime;
+
         while (linearOpMode.opModeIsActive()){
+            currentTime = SystemClock.elapsedRealtime();
 
             posAngle = MathFunctions.angleWrap(anglePos + 2*Math.PI);
 
             if(followIndex == pathPoints.length){
-                brakeRobot();
-                return;
+                followIndex --;
             }
 
             distanceToEnd = Math.hypot(robotPos.x - data[data.length-1][0], robotPos.y - data[data.length - 1][1]);
@@ -512,70 +534,99 @@ public class Robot {
                 goToPoint(pathPoints[followIndex][0], pathPoints[followIndex][1], moveSpeed, turnSpeed, optimalAngle, false);
             }
 
-//            desiredHeading = angleWrap(Math.atan2(pathPoints[followIndex][1] - pathPoints[followIndex - 1][1], pathPoints[followIndex][0] - pathPoints[followIndex - 1][0]) + 2 * Math.PI);
-//
-//            if(isBackwards){
-//                desiredHeading = angleWrap((desiredHeading - Math.toRadians(180)) + 2 * Math.PI);
-//            }
-//
-//            if(desiredHeading == 0){
-//                desiredHeading = Math.toRadians(360);
-//            }
-//
-//            if(angleLockRadians  == 0){
-//                angleLockRadians = Math.toRadians(360);
-//            }
-//
-//            scale = Math.abs(desiredHeading-posAngle);
-//            angleLockScale = Math.abs(angleLockRadians-posAngle) * Math.abs(desiredHeading-angleLockRadians) * 1.8;
-//
-//            if (distanceToEnd < angleLockInches){
-//                if(angleLockRadians-posAngle > Math.toRadians(0) && angleLockRadians-posAngle < Math.toRadians(180)){
-//                    turnMovement = 1 * angleLockScale;
-//                }else if(angleLockRadians-posAngle < Math.toRadians(0) || angleLockRadians-posAngle > Math.toRadians(180)){
-//                    turnMovement = -1 * angleLockScale;
-//                }else{
-//                    turnMovement = 0;
-//                }
-//            }else if(desiredHeading-posAngle > Math.toRadians(0) && desiredHeading-posAngle < Math.toRadians(180)){
-//                turnMovement = 1 * scale;
-//            }else if(desiredHeading-posAngle < Math.toRadians(0) || desiredHeading-posAngle > Math.toRadians(180)){
-//                turnMovement = -1 * scale;
-//            }else{
-//                turnMovement = 0;
-//            }
-//
-//
-//            powerScale = (distanceToEnd/pathLength)*5;
-//
-//            if(distanceToEnd<5){
-//                powerScale = 0.5;
-//            }
-//
-//            xMovement *= powerScale;
-//            yMovement *= powerScale;
-
-
-//            telemetry.addLine("POWER " + fLeft.getPower());
-//            telemetry.addLine("NEW UPDATE:");
-//            telemetry.addLine("desiredHeading: " + Math.toDegrees(desiredHeading));
-//            telemetry.addLine("heading: " + Math.toDegrees(posAngle));
-//            telemetry.addLine("TURNMOVEMENT: "+ turnMovement);
-//            telemetry.update();
-
-
-//            if(desiredHeading - posAngle != 0){
-//                turnMovement *= (desiredHeading - posAngle)/ Math.abs(desiredHeading-posAngle) * 10 ;
-//            }
-
             if (distanceToEnd < 1){
                 brakeRobot();
-                return;
+                isMoving = false;
             } else if (distanceToNext < 10){
                 followIndex++;
             }
 
-            applyMove();
+            // go through all actionpoints and see if the robot is near one
+            for (int i = 0; i < actionPoints.length; i++){
+                if (Math.hypot(actionPoints[i].x - robotPos.x, actionPoints[i].y - robotPos.y) < 20){
+                    telemetry.addLine("WITHIN RANGE FROM A HOTSPOT");
+                    telemetry.update();
+                    // if it is near a action point then check the corresponding action to see which action it is
+                    if (actions[i] == Actions.EXTEND_OUTTAKE && !hasExtendedOuttake){
+                        isExendingOuttake = true;
+                        hasExtendedOuttake = true;
+                        extendOuttakeStartTime = SystemClock.elapsedRealtime();
+                    } else if (actions[i] == Actions.RETRACT_OUTTAKE && !hasRetractedOuttake){
+                        isRetractingOuttake = true;
+                        hasRetractedOuttake = true;
+                        retractOuttakeStartTime = SystemClock.elapsedRealtime();
+                    } else if (actions[i] == Actions.RELEASE_FOUNDATION && !hasReleasedFoundation){
+                        isReleasingFoundation = true;
+                        hasReleasedFoundation = true;
+                    } else if (actions[i] == Actions.START_INTAKE && !hasStartedIntake){
+                        isStartingIntake = true;
+                        hasStartedIntake = true;
+                    } else if (actions[i] == Actions.STOP_INTAKE && !hasStoppedIntake){
+                        isStoppingIntake = true;
+                        hasStoppedIntake = true;
+                    }
+                }
+            }
+
+            if (isExendingOuttake){
+                if (currentTime - extendOuttakeStartTime >= 600) {
+                    intakePusher.setPosition(PUSHER_RETRACTED);
+                }
+                if (currentTime - extendOuttakeStartTime >= 950) {
+                    clamp.setPosition(CLAW_SERVO_CLAMPED);
+                }
+                if(currentTime-extendOuttakeStartTime >= 1300){
+                    outtakeExtender.setPosition(OUTTAKE_SLIDE_EXTENDED);
+                }
+                if(currentTime-extendOuttakeStartTime >= 2200){
+                    telemetry.addLine("EXTENDING CLAMP");
+                    telemetry.update();
+                    clampPivot.setPosition(OUTTAKE_PIVOT_90);
+                }
+                if(currentTime-extendOuttakeStartTime >=2500){
+                    isExendingOuttake = false;
+                }
+            }
+
+            if (isRetractingOuttake){
+                intakePusher.setPosition(PUSHER_RETRACTED);
+                clamp.setPosition(CLAW_SERVO_RELEASED);
+
+                if(currentTime-retractOuttakeStartTime >= 450){
+                    clampPivot.setPosition(OUTTAKE_PIVOT_RETRACTED);
+                    telemetry.addLine("pivot retracted");
+                }
+                if(currentTime-retractOuttakeStartTime >= 1150){
+                    outtakeExtender.setPosition(OUTTAKE_SLIDE_RETRACTED);
+                    clamp.setPosition(CLAW_SERVO_RELEASED);
+                    intakePusher.setPosition(PUSHER_RETRACTED);
+                    telemetry.addLine("slide retracted");
+                    isRetractingOuttake = false;
+                }
+            }
+
+            if (isReleasingFoundation){
+                foundationMover(false);
+                isReleasingFoundation = false;
+            }
+
+            if (isStartingIntake){
+                intake(true);
+                isStartingIntake = false;
+            }
+
+            if (isStoppingIntake){
+                intake(false);
+                isStoppingIntake = false;
+            }
+
+            if (!isMoving && !isRetractingOuttake && !isExendingOuttake && !isReleasingFoundation && !isStartingIntake && !isStoppingIntake){
+                return;
+            }
+
+            if (isMoving){
+                applyMove();
+            }
         }
     }
 

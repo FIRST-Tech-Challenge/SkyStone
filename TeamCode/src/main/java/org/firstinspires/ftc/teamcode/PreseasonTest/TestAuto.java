@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.All.HardwareMap;
 @Autonomous(name="Test Auto", group="Test")
 @Disabled
 
-public class testauto extends LinearOpMode {
+public class TestAuto extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException{
         HardwareMap map = new HardwareMap(hardwareMap);

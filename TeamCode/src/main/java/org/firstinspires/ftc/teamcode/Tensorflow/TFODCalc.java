@@ -10,6 +10,7 @@ public class TFODCalc {
     private static double SENSOR_HEIGHT = 1.0;    //in mm
     private static Camera camera;
     private static ArrayList<Double> autoAdjustedOffset = new ArrayList<>();
+    private static ArrayList<Double> distanceAway = new ArrayList<>();
 
     public static void init(){
         for(int i = 0; i < 100; i++)

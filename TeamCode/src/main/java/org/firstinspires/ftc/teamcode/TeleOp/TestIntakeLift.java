@@ -4,7 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.All.DriveConstant;
@@ -27,7 +26,7 @@ import java.util.ArrayList;
  *  -Y and A to intake and outake
  *  -Left joystick and Right joysticks to control the lift
  *  -Adjust the HardwareMap configurations in HardwareMap.java class
- *  -Adjust Intake/Lift power in teleopConstants.java class
+ *  -Adjust Intake/Lift power in TeleopConstants.java class
  */
 
 @TeleOp(name="Test Intake & Lift", group="Linear Opmode")
@@ -65,7 +64,7 @@ public class TestIntakeLift extends LinearOpMode {
         hwMap.frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         hwMap.backRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        /*lift = new Lift(hardwareMap);
+        lift = new Lift(hardwareMap);
 
         lift.setMotorZeroPower(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -74,7 +73,7 @@ public class TestIntakeLift extends LinearOpMode {
 
         lift.setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        hwMap.liftOne.setDirection(DcMotorSimple.Direction.REVERSE);*/
+        hwMap.liftOne.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
         telemetry.addData("Status", "Ready");
@@ -130,13 +129,12 @@ public class TestIntakeLift extends LinearOpMode {
 
             //------------------------------===Linear Sliders===------------------------------------------
 
-            /*if(gamepad2.right_stick_y != 0){
+            if(gamepad2.right_stick_y != 0){
                 lift.moveLift(gamepad2.right_stick_y);
             } else {
                 lift.stop();
             }
-
-            lift.detectResetEncoder();*/
+            lift.detectResetEncoder();
 
             //------------------------------===Driving/Strafing===------------------------------------------
 
@@ -202,10 +200,6 @@ public class TestIntakeLift extends LinearOpMode {
                 DriveConstant.writeFile(AppUtil.ROOT_FOLDER + "/RoadRunner/kV_regression_data_" + System.currentTimeMillis() + ".csv", sb.toString());
                 runLogic = false;
                 break;
-            }
-
-            if(gamepad1.right_bumper){
-
             }
 
             telemetry.addData("LeftForwardOdometry", hwMap.leftIntake.getCurrentPosition());

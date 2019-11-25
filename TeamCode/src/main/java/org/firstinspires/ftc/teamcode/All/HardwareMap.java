@@ -15,7 +15,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import java.util.ArrayList;
 
 public class HardwareMap {
-    public DcMotorEx backLeft, backRight, frontLeft, frontRight, firstJoint, secondJoint, intakeJoint, leftIntake, rightIntake,
+    public DcMotorEx backLeft, backRight, frontLeft, frontRight, leftIntake, rightIntake,
     liftOne, liftTwo;
     public Servo clawServo1, clawServo2, foundationLock, plateLifter, liftOdometer, transferLock, transferHorn, clawInit, innerTransfer;
     public DigitalChannel liftReset;
@@ -61,9 +61,6 @@ public class HardwareMap {
 
         gyro = hwMap.get(BNO055IMU.class, "imu");
         imu = (IntegratingGyroscope) gyro;
-
-        //firstJointVirtualServo = new MotorServo(firstJoint, MotorServo.MotorConfiguration.firstJoint);
-        //secondJointVirtualServo = new MotorServo(secondJoint, MotorServo.MotorConfiguration.secondJoint);
 
         this.hardwareMap = hwMap;
     }

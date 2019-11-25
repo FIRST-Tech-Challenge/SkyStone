@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.All.HardwareMap;
 
 @TeleOp(name="GyroTester", group="Linear Opmode")
 @Disabled
-public class gyroOutputTest extends LinearOpMode {
+public class GyroOutputTest extends LinearOpMode {
     boolean a = false;
     boolean b = false;
     boolean x = false;

@@ -5,7 +5,6 @@ public class teleopConstants {
     public static double turnPower = 0.5;
     public static double intakePower = 1;
     public static double liftPower = 1;
-
     public static double clawServo1PosClose = 0.696;    //1 = close, 2 = open for all
     public static double clawServo1PosOpen = 0.295;
     public static double clawServo2PosClose = 0.31;

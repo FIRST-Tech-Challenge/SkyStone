@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.All.HardwareMap;
 
 @TeleOp(name="EncoderTester", group="Linear Opmode")
 @Disabled
-public class encoderCountsPerRevTest extends LinearOpMode {
+public class EncoderCountsPerRevTest extends LinearOpMode {
     boolean onA = false;
     boolean onB = false;
     @Override

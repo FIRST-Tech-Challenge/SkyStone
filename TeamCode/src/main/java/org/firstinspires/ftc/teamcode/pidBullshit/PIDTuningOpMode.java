@@ -36,6 +36,7 @@ public class PIDTuningOpMode extends OpMode {
             servo.setPosition(-0.35);
 
         }
-        telemetry.addData("encoder value:", encoder);
+        telemetry.addData("encoder value:", servo.getPosition());
+        telemetry.update();
     }
 }

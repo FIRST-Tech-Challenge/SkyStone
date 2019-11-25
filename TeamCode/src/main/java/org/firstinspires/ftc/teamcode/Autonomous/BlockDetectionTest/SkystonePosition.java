@@ -2,7 +2,9 @@ package org.firstinspires.ftc.teamcode.Autonomous.BlockDetectionTest;
 
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -15,12 +17,11 @@ public class SkystonePosition {
      */
 
     public BLOCKPOS findLocation(List<Recognition> recognitions) {
-        double SKYSTONEX = 0;
+        double SKYSTONEX = -1;
         ArrayList<Block> blocks = new ArrayList<Block>();
         ArrayList<Double> centerPos = new ArrayList<Double>();
-        int INDEX = -2;
+        int INDEX = -1;
         BLOCKPOS position = BLOCKPOS.NONE;
-        int numObjects = 0;
 
         for (Recognition object : recognitions) {
             if (object.getLabel().equals("Skystone")) {
@@ -29,13 +30,10 @@ public class SkystonePosition {
                 blocks.add(new Stone(object.getLeft(), object.getTop(), object.getRight(), object.getBottom(), "Stone"));
             }
         }
-        numObjects = recognitions.size();
 
         for (int i = 0; i < blocks.size(); i++) {
             if(blocks.get(i).label == "Skystone"){
                 SKYSTONEX = blocks.get(i).centerX;
-            }else{
-                SKYSTONEX = -1;
             }
         }
 
@@ -44,8 +42,8 @@ public class SkystonePosition {
         }
 
         Collections.sort(centerPos);
-
         INDEX = centerPos.indexOf(SKYSTONEX);
+
         if(INDEX == 0){
                 position = BLOCKPOS.LEFT;
         }else if(INDEX == 1){

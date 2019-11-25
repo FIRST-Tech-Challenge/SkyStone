@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class HardwareMap {
     public DcMotorEx backLeft, backRight, frontLeft, frontRight, firstJoint, secondJoint, intakeJoint, leftIntake, rightIntake,
     liftOne, liftTwo;
-    public Servo clawServo1, clawServo2, rightTransfer, leftTransfer, liftOdometer, transferLock;
+    public Servo clawServo1, clawServo2, liftOdometer, transferLock;
     public BNO055IMU gyro;
     public IntegratingGyroscope imu;
     public static DcMotor leftForward, rightForward, sideways;
@@ -43,8 +43,6 @@ public class HardwareMap {
 
         clawServo1 = hwMap.get(Servo.class, "clawServo1");
         clawServo2 = hwMap.get(Servo.class, "clawServo2");
-        rightTransfer = hwMap.get(Servo.class, "rightTransfer");
-        leftTransfer = hwMap.get(Servo.class, "leftTransfer");
         liftOdometer = hwMap.get(Servo.class, "liftOdometer");
         transferLock = hwMap.get(Servo.class, "transferLock");
 

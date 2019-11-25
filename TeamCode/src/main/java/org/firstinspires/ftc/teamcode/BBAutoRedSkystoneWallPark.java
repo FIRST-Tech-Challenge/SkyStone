@@ -40,5 +40,12 @@ public class BBAutoRedSkystoneWallPark extends LinearOpMode
 
 
 
+        robot.init(hardwareMap, telemetry, this);
+
+        waitForStart();
+
+        //code below is our auto
+
+        
     }
 }

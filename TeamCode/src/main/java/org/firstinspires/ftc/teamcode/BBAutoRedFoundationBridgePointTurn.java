@@ -4,10 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.navigation.Waypoint;
-
-@Autonomous(name="Auto-Foundation-Blue-Complicated-Closer", group="BB")
-public class BBOpModeAutonomousFoundationBlueComplicatedParkingCloser extends LinearOpMode
+@Autonomous(name="Auto-Foundation-Red-Point-Bridge", group="BB")
+public class BBAutoRedFoundationBridgePointTurn extends LinearOpMode
 {
     private ElapsedTime runtime = new ElapsedTime();
     private BBSRobot robot = new BBSRobot();
@@ -25,6 +23,7 @@ public class BBOpModeAutonomousFoundationBlueComplicatedParkingCloser extends Li
         hooks.init(hardwareMap);
 
 
+
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Starting Auto");
         telemetry.update();
@@ -32,14 +31,34 @@ public class BBOpModeAutonomousFoundationBlueComplicatedParkingCloser extends Li
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
-        robot.LocalizerUpdate();
 
-        Waypoint way1 = new Waypoint(0, 55.0, 0);
-         //while(this.opModeIsActive()){
-        robot.RobotMoveY(way1, 0.3);
-        robot.Stop();
-        Waypoint way2 = new Waypoint(20, 0, 0);
-        robot.RobotMoveX(way2, 0.3);
+        //hooks.UnLatched();
+        sleep(1000);
+        //work out how far forward we need to move
+        //robot.moveForward(150, 0.55);
+        sleep(1000);
+
+        //put down the hooks into the foundation
+        hooks.Latched();
+        sleep(2000);
+
+        //work out how far backwards we need to move
+        //robot.twoPowerBackwards(135, 0.8, 0.4);
+        robot.moveBackwards(130, 0.60);
+        sleep(500);
+
+        hooks.UnLatched();
+        sleep(2000);
+
+
+        //we need to move out onto the line.
+        robot.turnLeft(95, 0.70);
+        sleep(1000);
+        //robot.moveForward(170, 0.60);
+        //robot.strafe(0.7);
+
+        sleep(2000);
+        //robot.moveForward(0, 0);
 
 
 

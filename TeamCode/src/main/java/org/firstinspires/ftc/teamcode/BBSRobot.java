@@ -313,9 +313,38 @@ public class BBSRobot {
         }
     }
 
+    public void RightPointTurn(double degrees, double speed){
+
+        rightRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+
+        LocalizerUpdate();
+
+        double driveScale = Math.sqrt(Math.pow(speed, 2) + Math.pow(0, 2));
+        driveScale = Range.clip(driveScale, 0, 1);
+
+        // Exponentiate our turn
+        double turn = Math.copySign(
+                Math.pow(MecanumUtil.deadZone(0, 0.05), 2),
+                0) * 0;
+
+
+            // Exponentiate our turn
+
+        MecanumPowers powers = MecanumUtil.powersFromAngle(0, 0, turn);
+        setPowers(powers);
+
+        _mode.sleep(250); //TODO: Test for now
+
+
+    }
+
     public void RobotMoveX(Waypoint target, double movementSpeed) {
 
-         //TODO: Think about this
+
         rightRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

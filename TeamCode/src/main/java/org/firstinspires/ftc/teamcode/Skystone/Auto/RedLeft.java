@@ -27,8 +27,6 @@ public class RedLeft extends AutoBase{
 
         Vision.Location position = tensorflow.runDetection();
 
-        int firstSkystoneX = -2;
-        int secondSkyStoneX = -26;
         if (position == Vision.Location.LEFT){
             firstSkystoneX = -5;
             secondSkyStoneX = -29;

@@ -464,7 +464,7 @@ public class Robot {
         }
     }
 
-    public void splineMove(double[][] data, double moveSpeed, double turnSpeed, double optimalAngle, double angleLockRadians, double angleLockInches, boolean isBackwards) {
+    public void splineMove(double[][] data, double moveSpeed, double turnSpeed, double optimalAngle, double angleLockRadians, double angleLockInches) {
         double posAngle;
         SplineGenerator s = new SplineGenerator(data);
         double[][] pathPoints = s.getOutputData();
@@ -476,7 +476,6 @@ public class Robot {
         double distanceToEnd;
         double distanceToNext;
         double desiredHeading;
-        double pathLength = Math.hypot(data[0][0]-data[data.length-1][0], data[0][1]-data[data.length-1][1]);
 
         while (linearOpMode.opModeIsActive()){
 
@@ -486,29 +485,22 @@ public class Robot {
                 brakeRobot();
                 return;
             }
-            goToPoint(pathPoints[followIndex][0], pathPoints[followIndex][1], moveSpeed, turnSpeed, optimalAngle);
-
 
             distanceToEnd = Math.hypot(robotPos.x - data[data.length-1][0], robotPos.y - data[data.length - 1][1]);
             distanceToNext = Math.hypot(robotPos.x - pathPoints[followIndex][0], robotPos.y - pathPoints[followIndex][1]);
-            desiredHeading = angleWrap(Math.atan2(pathPoints[followIndex][1] - pathPoints[followIndex - 1][1], pathPoints[followIndex][0] - pathPoints[followIndex - 1][0]) + 2 * Math.PI);
-
-            if(isBackwards){
-                desiredHeading = angleWrap((desiredHeading - Math.toRadians(180)) + 2 * Math.PI);
-            }
-
-            if(desiredHeading == 0){
-                desiredHeading = Math.toRadians(360);
-            }
-
-            if(angleLockRadians  == 0){
-                angleLockRadians = Math.toRadians(360);
-            }
-
-            scale = Math.abs(desiredHeading-posAngle);
-            angleLockScale = Math.abs(angleLockRadians-posAngle) * Math.abs(desiredHeading-angleLockRadians) * 1.8;
 
             if (distanceToEnd < angleLockInches){
+                desiredHeading = angleWrap(Math.atan2(pathPoints[followIndex][1] - pathPoints[followIndex - 1][1], pathPoints[followIndex][0] - pathPoints[followIndex - 1][0]) + 2 * Math.PI);
+                if(desiredHeading == 0){
+                    desiredHeading = Math.toRadians(360);
+                }
+                angleLockScale = Math.abs(angleLockRadians-posAngle) * Math.abs(desiredHeading-angleLockRadians) * 1.8;
+                if(angleLockRadians  == 0){
+                    angleLockRadians = Math.toRadians(360);
+                }
+
+                goToPoint(pathPoints[followIndex][0], pathPoints[followIndex][1], moveSpeed, turnSpeed, optimalAngle, true);
+
                 if(angleLockRadians-posAngle > Math.toRadians(0) && angleLockRadians-posAngle < Math.toRadians(180)){
                     turnMovement = 1 * angleLockScale;
                 }else if(angleLockRadians-posAngle < Math.toRadians(0) || angleLockRadians-posAngle > Math.toRadians(180)){
@@ -516,21 +508,54 @@ public class Robot {
                 }else{
                     turnMovement = 0;
                 }
-            }else if(desiredHeading-posAngle > Math.toRadians(0) && desiredHeading-posAngle < Math.toRadians(180)){
-                turnMovement = 1 * scale;
-            }else if(desiredHeading-posAngle < Math.toRadians(0) || desiredHeading-posAngle > Math.toRadians(180)){
-                turnMovement = -1 * scale;
-            }else{
-                turnMovement = 0;
+            } else {
+                goToPoint(pathPoints[followIndex][0], pathPoints[followIndex][1], moveSpeed, turnSpeed, optimalAngle, false);
             }
 
+//            desiredHeading = angleWrap(Math.atan2(pathPoints[followIndex][1] - pathPoints[followIndex - 1][1], pathPoints[followIndex][0] - pathPoints[followIndex - 1][0]) + 2 * Math.PI);
+//
+//            if(isBackwards){
+//                desiredHeading = angleWrap((desiredHeading - Math.toRadians(180)) + 2 * Math.PI);
+//            }
+//
+//            if(desiredHeading == 0){
+//                desiredHeading = Math.toRadians(360);
+//            }
+//
+//            if(angleLockRadians  == 0){
+//                angleLockRadians = Math.toRadians(360);
+//            }
+//
+//            scale = Math.abs(desiredHeading-posAngle);
+//            angleLockScale = Math.abs(angleLockRadians-posAngle) * Math.abs(desiredHeading-angleLockRadians) * 1.8;
+//
+//            if (distanceToEnd < angleLockInches){
+//                if(angleLockRadians-posAngle > Math.toRadians(0) && angleLockRadians-posAngle < Math.toRadians(180)){
+//                    turnMovement = 1 * angleLockScale;
+//                }else if(angleLockRadians-posAngle < Math.toRadians(0) || angleLockRadians-posAngle > Math.toRadians(180)){
+//                    turnMovement = -1 * angleLockScale;
+//                }else{
+//                    turnMovement = 0;
+//                }
+//            }else if(desiredHeading-posAngle > Math.toRadians(0) && desiredHeading-posAngle < Math.toRadians(180)){
+//                turnMovement = 1 * scale;
+//            }else if(desiredHeading-posAngle < Math.toRadians(0) || desiredHeading-posAngle > Math.toRadians(180)){
+//                turnMovement = -1 * scale;
+//            }else{
+//                turnMovement = 0;
+//            }
+//
+//
+//            powerScale = (distanceToEnd/pathLength)*5;
+//
+//            if(distanceToEnd<5){
+//                powerScale = 0.5;
+//            }
+//
+//            xMovement *= powerScale;
+//            yMovement *= powerScale;
 
-            powerScale = (distanceToEnd/pathLength)*5;
-            if(distanceToEnd<5){
-                powerScale = 0.5;
-            }
-            xMovement *= powerScale;
-            yMovement *= powerScale;
+
 //            telemetry.addLine("POWER " + fLeft.getPower());
 //            telemetry.addLine("NEW UPDATE:");
 //            telemetry.addLine("desiredHeading: " + Math.toDegrees(desiredHeading));
@@ -543,10 +568,10 @@ public class Robot {
 //                turnMovement *= (desiredHeading - posAngle)/ Math.abs(desiredHeading-posAngle) * 10 ;
 //            }
 
-            if (distanceToEnd < 3 && turnMovement >= -0.3 && turnMovement <=0.3){
+            if (distanceToEnd < 1){
                 brakeRobot();
                 return;
-            } else if (distanceToNext < 3){
+            } else if (distanceToNext < 10){
                 followIndex++;
             }
 
@@ -591,12 +616,12 @@ public class Robot {
         }
 
         // get the movements
-        goToPoint(followMe.x, followMe.y, followMe.moveSpeed, followMe.turnSpeed, followAngle);
+        goToPoint(followMe.x, followMe.y, followMe.moveSpeed, followMe.turnSpeed, followAngle, true);
 
         // angle lock
         if (distanceToEnd < angleLockDistance){
             telemetry.addLine("TURNMOVEMENT: "+turnMovement);
-            telemetry.addLine("ANGLEPOS: " +anglePos);
+            telemetry.addLine("go: " +anglePos);
             telemetry.update();
             if (Math.abs(anglePos-angleLockRadians) < Math.toRadians(2)){
                 followAngle = 0;
@@ -775,7 +800,7 @@ public class Robot {
 
         double decelerationScaleFactor = Range.clip(distanceToEnd/12,-1,1);
 
-        goToPoint(followMe.x, followMe.y, followMe.moveSpeed * decelerationScaleFactor, followMe.turnSpeed * decelerationScaleFactor, followAngle);
+        goToPoint(followMe.x, followMe.y, followMe.moveSpeed * decelerationScaleFactor, followMe.turnSpeed * decelerationScaleFactor, followAngle, true);
         if ((distanceToEnd < 0.5)) {
             return false;
         }
@@ -891,8 +916,7 @@ public class Robot {
         return followMe;
     }
 
-    public void goToPoint(double x, double y, double moveSpeed, double turnSpeed, double optimalAngle) {
-        telemetry.addLine("X: " + x + " Y: " + y);
+    public void goToPoint(double x, double y, double moveSpeed, double turnSpeed, double optimalAngle, boolean willMecanum) {
 
         double distanceToTarget = Math.hypot(x - robotPos.x, y - robotPos.y);
         double absoluteAngleToTarget = Math.atan2(y - robotPos.y, x - robotPos.x);
@@ -902,12 +926,24 @@ public class Robot {
         double relativeYToPoint = Math.sin(relativeAngleToPoint) * distanceToTarget;
         double relativeTurnAngle = relativeAngleToPoint + optimalAngle;
 
+        if (relativeTurnAngle > Math.PI){
+            relativeTurnAngle -= 2*Math.PI;
+        }
+
         double xPower = relativeXToPoint / (Math.abs(relativeXToPoint) + Math.abs(relativeYToPoint));
-        double yPower = relativeYToPoint / (Math.abs(relativeYToPoint) + Math.abs(relativeXToPoint));
+        double yPower = 0;
+
+        if (willMecanum){
+            yPower = relativeYToPoint / (Math.abs(relativeYToPoint) + Math.abs(relativeXToPoint));
+        }
 
         xMovement = xPower * moveSpeed;
         yMovement = yPower * moveSpeed;
-        turnMovement = Range.clip(relativeTurnAngle / Math.toRadians(360), -1, 1) * turnSpeed;
+        turnMovement = 5 * Range.clip(relativeTurnAngle / Math.toRadians(360), -1, 1) * turnSpeed;
+
+        if (willMecanum){
+            turnMovement = Range.clip(relativeTurnAngle / Math.toRadians(360), -1, 1) * turnSpeed;
+        }
     }
 
     private void applyMove() {

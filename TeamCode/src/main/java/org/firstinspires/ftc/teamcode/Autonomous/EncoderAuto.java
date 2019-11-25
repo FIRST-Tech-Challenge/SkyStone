@@ -46,6 +46,9 @@ public class EncoderAuto extends LinearOpMode {
         hwMap.backRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
         while (!isStarted()) {
+            telemetry.addData("Select a path", "gamepad1: A-BF B-RF Y-RQ, X-BQ");
+            telemetry.update();
+
             if (gamepad1.a) {
                 fieldPosition = FieldPosition.BLUE_FOUNDATION;
             } else if (gamepad1.b) {
@@ -55,6 +58,9 @@ public class EncoderAuto extends LinearOpMode {
             } else if (gamepad1.x) {
                 fieldPosition = FieldPosition.BLUE_QUARY;
             }
+
+            telemetry.addData("Press gamepad1[start] to initiate detection", "...");
+            telemetry.update();
 
             if (gamepad1.start) {
                 switch (fieldPosition) {

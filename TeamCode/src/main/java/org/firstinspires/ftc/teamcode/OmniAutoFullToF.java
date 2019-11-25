@@ -182,9 +182,6 @@ public abstract class OmniAutoFullToF extends OmniAutoClass
         grabFoundation(5000);
 //		parallelRearTarget(0.5, 3.0, precisionSpeed, precisionSpin, precisionDistanceError, 5000);
 
-		// Grab the foundation
-		moveFingers(false);
-
         // Might want to start the process to place the skystone here.
 		// We also might want to put the perform function we use in the
 		// loops of the autonomous functions.

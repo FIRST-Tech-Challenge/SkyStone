@@ -201,18 +201,18 @@ public class BBSRobot {
             _lift.Off();
         }
 
-        if(gp1.y){
+        if(gp1.y || gp2.y){
             _lift.GoToHome();
         }
-        if(gp1.x){
+        if(gp1.x || gp2.x){
             _lift.LoadBrick();
         }
 
-        if(gp1.a){
+        if(gp1.a || gp2.a){
             _lift.Grip();
         }
 
-        if(gp1.b){
+        if(gp1.b || gp2.b){
             _lift.Release();
         }
 
@@ -372,6 +372,16 @@ public class BBSRobot {
                     direction) * slowScale;
 
             MecanumPowers powers = MecanumUtil.powersFromAngle(0, 0, turn);
+
+            if(target.x  < 0) {
+                powers.backRight -= 0.03;
+                powers.backLeft += 0.03;
+            }
+            else{
+
+                powers.backRight += 0.03;
+                powers.backLeft -= 0.03;
+            }
             setPowers(powers);
             telemetry.addLine("Robot X");
             telemetry.addData("X:", String.format("%.1f", localizer.x()));

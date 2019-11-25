@@ -49,12 +49,14 @@ public class BBOpModeAutonomousSkystonesRed extends LinearOpMode
 
         boolean foundStone = false;
 
+
+        robot.RobotMoveX(new Waypoint(25, 0, 0 ), 0.2);
+        robot.Stop();
+
         //look for the skystones for a period of time.
         List<Recognition> targets =  _vision.visionFeedback(telemetry);
         runtime.reset();
 
-        robot.RobotMoveX(new Waypoint(45, 0, 0 ), 0.2);
-        robot.Stop();
 
 
         Recognition foundTarget = null;
@@ -64,15 +66,16 @@ public class BBOpModeAutonomousSkystonesRed extends LinearOpMode
                 //we found something!
 
                 for(int count = 0; count < targets.size(); count++){
-                    foundTarget = targets.get(count);
-                    telemetry.addLine(foundTarget.getLabel());
-                    if(foundTarget.getLabel() == "Skystone"){
-
+                    if(targets.get(count).getLabel() == "Skystone")
+                    {
+                        foundTarget = targets.get(count);
                         telemetry.addLine("SKYSTONE FOUND");
                         telemetry.addData("Pos", foundTarget.getLeft());
                         telemetry.addData("Right", foundTarget.getRight());
                         telemetry.addData("Left", foundTarget.getLeft());
+                        telemetry.addData("Left", foundTarget.getLabel());
                         telemetry.update();
+                        sleep(1000);
                         foundStone = true;
                         robot.Stop();
                         break;
@@ -90,9 +93,7 @@ public class BBOpModeAutonomousSkystonesRed extends LinearOpMode
                 movesForward++;
 
             } else {
-                telemetry.addLine("NOPE");
-                telemetry.addData("moves", movesForward);
-                telemetry.update();
+
                 //move left (i.e. forward)
                 robot.RobotMoveY(new Waypoint(0, 5, 0 ), 0.2);
                 robot.Stop();
@@ -113,20 +114,27 @@ public class BBOpModeAutonomousSkystonesRed extends LinearOpMode
             //use the left / right position to determine how far to move
             telemetry.addData("L", foundTarget.getLeft());
             telemetry.addData("R", foundTarget.getRight());
-            telemetry.addData("A", foundTarget.estimateAngleToObject(AngleUnit.DEGREES));
+            telemetry.addData("Label", foundTarget.getLabel());
+
+            telemetry.addData("Angle", foundTarget.estimateAngleToObject(AngleUnit.DEGREES));
             double foundAngle = foundTarget.estimateAngleToObject(AngleUnit.DEGREES);
             telemetry.update();
 
+           // sleep(2000);
 
-            while(this.opModeIsActive() && Math.abs(foundAngle) > 1) {
+
+            while(this.opModeIsActive() && Math.abs(foundAngle) > 2) {
                 foundAngle = foundTarget.estimateAngleToObject(AngleUnit.DEGREES);
                 telemetry.addLine("Moving to SKY stone");
                 telemetry.addData("Angle", foundAngle);
                 telemetry.update();
-                if (foundAngle > 0) {
-                    robot.RobotMoveY(new Waypoint(0, -2, 0), 0.18);
+               // sleep(500);
+
+
+                if (foundAngle >= 0) {
+                    robot.RobotMoveY(new Waypoint(0, -2, 0), 0.3);
                 } else {
-                    robot.RobotMoveY(new Waypoint(0, 2, 0), 0.18);
+                    robot.RobotMoveY(new Waypoint(0, 2, 0), 0.3);
                 }
                 robot.Stop();
                 TimeElapsedPause(100);
@@ -138,6 +146,7 @@ public class BBOpModeAutonomousSkystonesRed extends LinearOpMode
                     break;
                 }
 
+                //refind the target
                 for (int count = 0; count < targets.size(); count++) {
 
                     if (targets.get(count).getLabel() == "Skystone") {
@@ -147,6 +156,14 @@ public class BBOpModeAutonomousSkystonesRed extends LinearOpMode
                 }
 
             }
+            //sleep(2000);
+
+            telemetry.addLine("LOCKED ONTO Stone");
+            telemetry.addData("Angle", foundAngle);
+            telemetry.addData("Stone", foundTarget.getLabel());
+            telemetry.update();
+
+           // sleep(2000);
 
             robot.RobotMoveX(new Waypoint(35, 0, 0 ), 0.2);
             robot.Stop();

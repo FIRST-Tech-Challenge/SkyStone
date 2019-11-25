@@ -11,19 +11,19 @@ public class MotorManager {
 
     /**
      * Creates a manager for a group of motors
-     * @param motors
+     * @param motors Array of DcMotors
      */
     public MotorManager(DcMotor[] motors) {
         this.motors = motors;
     }
 
     /**
-     * Sets the position of the motors
+     * Sets the velocity of the motors
      * @param velocity new velocity
      */
     public void setMotorsVelocity(double velocity) {
         for (DcMotor motor : motors) {
-           motor.setPower(velocity);
+           if (motor.getPower() != velocity) motor.setPower(velocity);
         }
     }
 

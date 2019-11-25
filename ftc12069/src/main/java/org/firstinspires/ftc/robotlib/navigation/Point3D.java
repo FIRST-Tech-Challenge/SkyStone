@@ -2,7 +2,6 @@ package org.firstinspires.ftc.robotlib.navigation;
 
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
-import org.firstinspires.ftc.robotlib.util.Helpers;
 
 public class Point3D extends Point {
     public float z;

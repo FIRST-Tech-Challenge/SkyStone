@@ -5,14 +5,13 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
-import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import org.firstinspires.ftc.robotlib.Constants;
-import org.firstinspires.ftc.robotlib.information.Area;
+import org.firstinspires.ftc.robotlib.navigation.Area;
 import org.firstinspires.ftc.robotlib.information.LocationInfo;
 import org.firstinspires.ftc.robotlib.information.OrientationInfo;
 import org.firstinspires.ftc.robotlib.navigation.Point3D;
@@ -255,7 +254,7 @@ public class AutonomousRobot {
     }
 
     /**
-     * Checks if the robot knows a location
+     * Checks if the robot knows its approximate location
      */
     public boolean isLocationKnown() {
         return locationInfo.getRobotLocation() != null;
@@ -305,7 +304,7 @@ public class AutonomousRobot {
     }
 
     /**
-     * Retrieves the orientation of the robot in 2D space (heading)
+     * Retrieves the orientation of the robot in a 2D space (heading/yaw)
      * @return current heading
      */
     public double getOrientation2D() {
@@ -313,7 +312,7 @@ public class AutonomousRobot {
     }
 
     /**
-     * Retrieves the orientation of the robot in 3D space
+     * Retrieves the orientation of the robot in a 3D space
      * @return current orientation
      */
     public Orientation getOrientation() {
@@ -393,7 +392,7 @@ public class AutonomousRobot {
      * Calculates the distance between a point on the field and a supposed robot point
      * @param robot supposed robot point
      * @param object object point
-     * @return distance between point and "robot"
+     * @return distance between the point and "robot"
      */
     public double getDistance(Point robot, Point object) {
         return robot.distance(object);

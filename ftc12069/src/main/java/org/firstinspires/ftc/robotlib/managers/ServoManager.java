@@ -14,7 +14,7 @@ public class ServoManager {
 
     /**
      * Creates a manager for a group of servos
-     * @param servos
+     * @param servos Array of Servos
      */
     public ServoManager(Servo[] servos) {
         this.servos = servos;

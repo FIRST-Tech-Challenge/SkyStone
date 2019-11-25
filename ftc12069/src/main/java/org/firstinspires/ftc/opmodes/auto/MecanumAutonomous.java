@@ -47,6 +47,12 @@ public class MecanumAutonomous {
 
     private AutonomousRobot robot;
 
+    /**
+     * Creates an autonomous mecanum robot
+     * @param hardwareMap FTC hardware map
+     * @param telemetry FTC Logging
+     * @param alliance Alliance to operate under
+     */
     MecanumAutonomous(HardwareMap hardwareMap, Telemetry telemetry, Alliance alliance) {
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
@@ -54,10 +60,10 @@ public class MecanumAutonomous {
     }
 
     /**
+     * Initializes the robot
      * Ran before the game starts
      */
     void init() {
-        // Initialize robot
         telemetry.addData("Status", "Initialized");
         robot = new AutonomousRobot(this.hardwareMap, alliance, telemetry);
         robot.init();
@@ -77,7 +83,7 @@ public class MecanumAutonomous {
      * Ran once the game has ended
      */
     void end() {
-        // Disable Tracking when we are done
+        // Disable Tracking
         robot.trackables.deactivate();
     }
 

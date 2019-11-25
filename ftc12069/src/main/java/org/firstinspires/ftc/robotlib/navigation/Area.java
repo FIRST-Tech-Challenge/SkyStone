@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.robotlib.information;
+package org.firstinspires.ftc.robotlib.navigation;
 
 import org.firstinspires.ftc.robotlib.navigation.Point;
 

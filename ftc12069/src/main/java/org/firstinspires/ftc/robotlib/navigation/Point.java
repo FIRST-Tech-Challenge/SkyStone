@@ -22,11 +22,11 @@ public class Point {
 
     /**
      * Multiplies two points together
-     * @param point3D other point3D
+     * @param point other point
      * @return Product
      */
-    public double multiply(Point3D point3D) {
-        return this.x * point3D.x + this.y * point3D.y;
+    public double multiply(Point point) {
+        return this.x * point.x + this.y * point.y;
     }
 
     /**

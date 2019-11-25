@@ -23,7 +23,6 @@ public class SplineGenerator {
         }
         outputData[v.xV1.size()][0] = data[data.length-1][0];
         outputData[v.xV1.size()][1] = data[data.length-1][1];
-        outputData[v.xV1.size()][2] = v.heading[v.heading.length-1];
     }
 
     public double[][] getOutputData(){

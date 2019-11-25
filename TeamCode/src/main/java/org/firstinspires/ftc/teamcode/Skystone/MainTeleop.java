@@ -41,9 +41,6 @@ public class MainTeleop extends LinearOpMode {
         Position2D position2D = new Position2D(robot);
         position2D.startOdometry();
         while (opModeIsActive()) {
-            telemetry.addLine("X:" +robot.getRobotPos().x);
-            telemetry.addLine("Y" + robot.getRobotPos().y);
-            telemetry.addLine("Angle" + robot.getAnglePos());
             telemetry.update();
             slowDriveLogic();
             driveLogic();

@@ -73,7 +73,7 @@ public class FakeMotor implements DcMotor
     public int getTargetPosition() { return targetPosition; }
 
     @Override
-    public boolean isBusy() { return Math.abs(getPower()) > 0 || getTargetPosition() != position || true; }
+    public boolean isBusy() { return Math.abs(getPower()) > 0; }
 
     @Override
     public int getCurrentPosition() { return position; }

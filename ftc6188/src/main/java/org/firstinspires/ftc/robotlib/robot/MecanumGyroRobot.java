@@ -39,7 +39,8 @@ public class MecanumGyroRobot extends MecanumRobot
         imu.initialize(parameters);
 
         // Telemetry init
-        telemetry.addAction(new Runnable() { @Override public void run()
+        /*
+                telemetry.addAction(new Runnable() { @Override public void run()
         {
             angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             gravity = imu.getGravity();
@@ -118,15 +119,28 @@ public class MecanumGyroRobot extends MecanumRobot
                                         + acceleration.zAccel * acceleration.zAccel));
                     }
                 });
+         */
     }
 
     @Override
     public void informationUpdate()
     {
+        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        gravity = imu.getGravity();
+        acceleration = imu.getAcceleration();
+
         telemetry.addData("> IMU Output", "-----");
-        telemetry.addData("Acceleration", imu.getAcceleration());
+        telemetry.addData("Status", imu.getSystemStatus());
+        telemetry.addData("Acceleration IMU", imu.getAcceleration());
+        telemetry.addData("Accel String", acceleration.toString());
         telemetry.addData("Angle", imu.getAngularOrientation());
         telemetry.addData("Omega", imu.getAngularVelocity());
+        telemetry.addData("Gravity", gravity.toString());
+
+        telemetry.addData("> Heading", "-----");
+        telemetry.addData("Roll", formatAngle(angles.angleUnit, angles.firstAngle));
+        telemetry.addData("Yaw", formatAngle(angles.angleUnit, angles.secondAngle));
+        telemetry.addData("Pitch", formatAngle(angles.angleUnit, angles.thirdAngle));
 
         telemetry.addData("> Wheel Positions", "-----");
         telemetry.addData("WheelPos FL", drivetrain.motorList[0].getCurrentPosition());

@@ -7,12 +7,13 @@ Frame work for a mecanum/omni drive train, the implemented interfaces provide th
  */
 abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements Holonomic, Rotatable, Positionable
 {
+    // Movement variables
     private double rotation = 0; //the robots rotation about its own z axis
     private double course = 0; //the angle the robot is going to move at relative to its heading
     private double targetPosition = 0; //distance the robot has to move
+    private double ticksPerIn = 0; //the number of encoder ticks needed to move the robot 1 inch
 
-    private double ticksPerIn = 0;
-
+    // Motor information variables
     public double[] wheelTargetPositions = new double[4];
     private DcMotor.RunMode[] runModes = new DcMotor.RunMode[4];
     private final double[] wheelAngles;
@@ -73,6 +74,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     @Override
     public void setTargetPosition(double targetPosition)
     {
+
         for (int motorIndex = 0; motorIndex < this.runModes.length; motorIndex++)
         {
             runModes[motorIndex] = this.motorList[motorIndex].getMode();
@@ -136,14 +138,14 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
             double percentComplete = 0;
             try
             {
-                percentComplete = motorList[motorIndex].getCurrentPosition()/wheelTargetPositions[motorIndex];
+                percentComplete = (double)motorList[motorIndex].getCurrentPosition()/wheelTargetPositions[motorIndex];
             }
             catch (Exception ignored) { }
 
             if (percentComplete >= 1)
             {
                 motorList[motorIndex].setPower(0);
-                motorList[motorIndex].setTargetPosition(motorList[motorIndex].getCurrentPosition());
+                //motorList[motorIndex].setTargetPosition(motorList[motorIndex].getCurrentPosition());
             }
             else
             {
@@ -163,12 +165,14 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
             this.motorList[motorIndex].setMode(runModes[motorIndex]);
         }
 
+        /*
         // reset the drivetrain to a pre-movement state
         setCourse(0);
         setVelocity(0);
         setRotation(0);
         setTargetPosition(0);
         updateMotorPowers();
+         */
     }
 
     // returns each motors ticks per full revolution

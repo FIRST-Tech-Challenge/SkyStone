@@ -4,12 +4,13 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotlib.robot.MecanumRobot;
-import org.firstinspires.ftc.robotlib.state.Button;
 
 @Autonomous(name="Mecanum Auto V-Debug", group="Auto")
 public class MecanumAutoDebugging extends LinearOpMode
 {
     private MecanumRobot robot;
+    private static final int STOP_TIME = 5000;
+    private static final double VELOCITY = 0.6;
 
     @Override
     public void runOpMode() throws InterruptedException
@@ -23,20 +24,30 @@ public class MecanumAutoDebugging extends LinearOpMode
         waitForStart();
 
         telemetry.addData("> Status", "36 in front");
-        robot.drivetrain.autoPosition(0, 36, 0);
-        sleep(10000);
-        telemetry.addData("> Status", "36 in right");
-        robot.drivetrain.autoPosition(270, 36, 0);
-        sleep(10000);
+        robot.drivetrain.autoPosition(0, 36, VELOCITY,0);
+        sleep(STOP_TIME);
         telemetry.addData("> Status", "36 in left");
-        robot.drivetrain.autoPosition(90, 36, 0);
-        sleep(10000);
+        robot.drivetrain.autoPosition(90, 36, VELOCITY,0);
+        sleep(STOP_TIME);
+        telemetry.addData("> Status", "36 in reverse");
+        robot.drivetrain.autoPosition(180, 36, VELOCITY,0);
+        sleep(STOP_TIME);
+        telemetry.addData("> Status", "36 in right");
+        robot.drivetrain.autoPosition(270, 36, VELOCITY,0);
+        sleep(STOP_TIME);
+
+        requestOpModeStop();
     }
 
     @Override
     public void internalPostLoop()
     {
-        telemetry.addData("Loop Status", "IPL");
+        robot.informationUpdate();
+    }
+
+    @Override
+    public void internalPostInitLoop()
+    {
         robot.informationUpdate();
     }
 }

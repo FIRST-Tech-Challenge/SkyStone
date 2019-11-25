@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.All.HardwareMap;
 
 @Autonomous(name="Test Encoder", group="Test")       //Dashboard: https://192.168.49.1:8080/dash
 @Disabled
-public class TestDetection extends LinearOpMode {
+public class  TestDetection extends LinearOpMode {
     private static double p, i, d, f = 0.0;
 
     @Override

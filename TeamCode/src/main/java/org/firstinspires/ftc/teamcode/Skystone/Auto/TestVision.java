@@ -3,8 +3,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.Skystone.Vision;
 
-@Autonomous(name="TestVuforia")
-public class TestVuforia extends AutoBase {
+@Autonomous(name="TestVision")
+public class TestVision extends AutoBase {
 
     @Override
     public void runOpMode() {

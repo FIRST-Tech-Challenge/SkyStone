@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.PIDCoefficients;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
+import static java.lang.Math.PI;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
@@ -155,6 +156,74 @@ public class FourWheelMecanumDrivetrain {
             }
 
             if (avg >= counts) {
+                break;
+            }
+        }
+        stop();
+    }
+
+    public void encoderDrive(double power, double inches){
+        double counts = inches / (2 * PI * 2) * DriveConstant.WHEEL_ENCODER_COUNTS_PER_REVOLUTION;
+        int backLeftStart = rw.backLeft.getCurrentPosition();
+        int backRightStart = rw.backRight.getCurrentPosition();
+        int frontLeftStart = rw.frontLeft.getCurrentPosition();
+        int frontRightStart = rw.frontRight.getCurrentPosition();
+
+        if (runningOpMode == null) {
+            return;
+        }
+        setPowerAll(power);
+
+        while (runningOpMode.opModeIsActive()) {
+            int backLeft = rw.backLeft.getCurrentPosition();
+            int backRight = rw.backRight.getCurrentPosition();
+            int frontLeft = rw.frontLeft.getCurrentPosition();
+            int frontRight = rw.frontRight.getCurrentPosition();
+
+            int backLeftDiff = Math.abs(backLeft - backLeftStart);
+            int backRightDiff = Math.abs(backRight - backRightStart);
+            int frontLeftDiff = Math.abs(frontLeft - frontLeftStart);
+            int frontRightDiff = Math.abs(frontRight - frontRightStart);
+
+            double avg = (backLeftDiff + backRightDiff + frontLeftDiff + frontRightDiff) / 4;
+
+            if (runningOpMode != null) {
+                runningOpMode.telemetry.addData("Average", avg);
+                runningOpMode.telemetry.addData("Target", counts);
+                runningOpMode.telemetry.update();
+            }
+
+            if (avg >= counts) {
+                break;
+            }
+        }
+        stop();
+    }
+
+    public void odometryStrafe(int power, double inches, boolean right){
+        double counts = inches / (2 * PI * 2) * DriveConstant.WHEEL_ENCODER_COUNTS_PER_REVOLUTION;
+        int sidewaysStart = rw.rightIntake.getCurrentPosition();
+
+        if(!right)
+            power = -power;
+
+        rw.frontRight.setPower(-power);
+        rw.frontLeft.setPower(power);
+        rw.backRight.setPower(power);
+        rw.backLeft.setPower(-power);
+
+        while (runningOpMode.opModeIsActive()) {
+            int sideways = rw.backLeft.getCurrentPosition();
+
+            int sidewaysDiff = Math.abs(sideways - sidewaysStart);
+
+            if (runningOpMode != null) {
+                runningOpMode.telemetry.addData("Side", sidewaysDiff);
+                runningOpMode.telemetry.addData("Target", counts);
+                runningOpMode.telemetry.update();
+            }
+
+            if (sidewaysDiff >= counts) {
                 break;
             }
         }

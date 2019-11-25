@@ -29,6 +29,27 @@ public class Subsystem {
         this.servos = servos;
     }
 
+    //TO DELETE? NOT USED ANYWHERE
+    /**
+     * Methods for ServoMotors
+     */
+    /**
+     * Sets servomotor to correct position between 0 and 1
+     * When physical set up of motor is done, the 0 and/or 1 position has to be caliberated
+     * by totating motor to desired value. Use tools like RevHubInterface for set up of
+     * the servomotors to known 0 and/or 1 position.
+     * @param position is the desired value to which the servo rotates on calling the
+     *                 setPosition method
+     */
+    public void setServoPosition(double position) {
+        for (Servo servo : servos) {
+            servo.setPosition(position);
+        }
+    }
+
+    /**
+     * Methods for DCMotors
+     */
     /**
      * Set the DC motor power to passed value.
      * @param power
@@ -66,21 +87,6 @@ public class Subsystem {
     public void reverseMotors(DcMotor[] reverseMotors) {
         for (DcMotor reverseMotor : reverseMotors) {
             reverseMotor.setDirection(DcMotor.Direction.REVERSE);
-        }
-    }
-
-    //TO DELETE? NOT USED ANYWHERE
-    /**
-     * Sets servomotor to correct position between 0 and 1
-     * When physical set up of motor is done, the 0 and/or 1 position has to be caliberated
-     * by totating motor to desired value. Use tools like RevHubInterface for set up of
-     * the servomotors to known 0 and/or 1 position.
-     * @param position is the desired value to which the servo rotates on calling the
-     *                 setPosition method
-     */
-    public void setServoPosition(double position) {
-        for (Servo servo : servos) {
-            servo.setPosition(position);
         }
     }
 

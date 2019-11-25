@@ -6,17 +6,17 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class Intake extends Subsystem {
     Servo wrist;
-    Servo main;
+    Servo grip;
     double wristHighPosition;
     double wristLowPosition;
-    double mainHighPosition = .75;
-    double mainLowPosition = .25;
+    double gripHighPosition = .75;
+    double gripLowPosition = .25;
 
 
     public Intake(HardwareMap hardwareMap) {
         wrist = hardwareMap.servo.get("wrist");
-        main = hardwareMap.servo.get("arm");
-        initServos(new Servo[]{wrist, main});
+        grip = hardwareMap.servo.get("grip");
+        initServos(new Servo[]{wrist, grip});
         initIntake();
     }
 
@@ -30,8 +30,8 @@ public class Intake extends Subsystem {
         wrist.setPosition(position);
     }
 
-    public void setmain(double position) {
-        main.setPosition(position);
+    public void setgrip(double position) {
+        grip.setPosition(position);
     }
 
 // values need to be tested
@@ -47,22 +47,22 @@ public class Intake extends Subsystem {
     }
 
     // values need to be tested
-    public void setMainToHighPosition() {
-        main.setPosition(mainHighPosition);
+    public void setgripToHighPosition() {
+        grip.setPosition(gripHighPosition);
     }
 
 // values need to be tested
 
-    public void setMainToLowPosition() {
-        main.setPosition(mainLowPosition);
+    public void setgripToLowPosition() {
+        grip.setPosition(gripLowPosition);
     }
 
-    public void run(boolean switchMain) {
-        if (switchMain) {
-            if (main.getPosition() == mainHighPosition) {
-                setMainToLowPosition();
+    public void run(boolean switchgrip) {
+        if (switchgrip) {
+            if (grip.getPosition() == gripHighPosition) {
+                setgripToLowPosition();
             } else {
-                setMainToHighPosition();
+                setgripToHighPosition();
             }
         }
     }

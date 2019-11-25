@@ -26,15 +26,19 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
  */
 public class Chassis {
 
+    //Declare Chassis Motor and configurations
     public DcMotor frontLeft;
     public DcMotor frontRight;
     public DcMotor backLeft;
     public DcMotor backRight;
-    public Double wheelRadius;
-    public Double robotRadius;
     //Declare TouchSensor frontleftBumperSensor #TOBEFILLED
     //Declare LightSensor chassisLocationSensor #TOBEFILLED
 
+    //Declare Chassis Configuration variables
+    public Double wheelRadius;
+    public Double robotRadius;
+
+    //Constructor
     public Chassis(HardwareMap hardwareMap) {
         frontLeft = hardwareMap.dcMotor.get("front_left_drive");
         frontRight = hardwareMap.dcMotor.get("front_right_drive");

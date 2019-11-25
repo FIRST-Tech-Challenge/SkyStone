@@ -37,6 +37,8 @@ public class PIDTuningOpMode extends OpMode {
 
         }
         telemetry.addData("encoder value:", servo.getPosition());
+        robot.servo(0.35, gamepad2.a, gamepad2.b);
+        telemetry.addData("servo position",servo.getPosition());
         telemetry.update();
     }
 }

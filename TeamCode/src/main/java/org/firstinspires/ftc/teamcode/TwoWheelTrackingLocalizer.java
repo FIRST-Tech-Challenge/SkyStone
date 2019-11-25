@@ -78,11 +78,12 @@ public class TwoWheelTrackingLocalizer {
         return wheel_radius * 2 * Math.PI * GEAR_RATIO * ticks / TICKS_PER_REV;
     }
 
-    public static int cmToEncoderTicks(double inches) {
-        return (int) Math.round(inches * TICKS_PER_REV / (PARALLEL_WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO));
+    public static int cmToEncoderTicks(double cm) {
+        return (int) Math.round(cm * TICKS_PER_REV / (PARALLEL_WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO));
     }
 
     public void update(RevBulkData data1, RevBulkData data2, double heading) {
+        heading = (Math.PI / 180) * heading; //convert to radians
         double[] deltas = new double[] {
                 encoderTicksToCM(data2.getMotorCurrentPosition(0) - prevWheelPositions[0],
                         PARALLEL_WHEEL_RADIUS),

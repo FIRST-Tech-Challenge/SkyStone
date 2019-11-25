@@ -16,8 +16,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
  * @ChassisMethods : resetChassis()
  * @ChassisMethods : runByGamepadCommand()
  * @ChassisMethods : runDistance()
- * @ChassisMethods : onfrontleftBumperSensorPressed()
- * @ChassisMethods : onchassisLocationSensorIdentifiesLine()
+ * @ChassisMethods : runTill_frontleftBumperSensor_Pressed(max stop distance)
+ * @ChassisMethods : runTill_chassisLocationSensorIdentifiesLine(color)
  *
  */
 
@@ -164,21 +164,6 @@ public class Chassis {
     }
 
     /**
-     * Method to move chassis based on computed vector inputs for a set distance
-     * Till frontleftBumperSensor is pressed.
-     * To be used in Autonomous mode for moving by distance or turning by angle
-     * Uses PID loop in motors to ensure motion without errors
-     * @param distance in same unit of measure as wheelRadius
-     * @param targetAngle
-     * @param turn
-     * @param power
-     */
-    public void runTill_frontleftBumperSensor_Pressed(double distance, double targetAngle, double turn, double power) {
-
-    }
-
-
-    /**
      * Method to move chassis by rotation.
      * Used in Auto placement of block
      * @param rotations
@@ -203,6 +188,33 @@ public class Chassis {
     }
 
 
+    /**
+     * Method to move chassis based on computed vector inputs for a set max_stop_distance
+     * Till frontleftBumperSensor is pressed.
+     * To be used in Autonomous mode for moving by distance or turning by angle
+     * Uses PID loop in motors to ensure motion without errors
+     * @param max_stop_distance in same unit of measure as wheelRadius
+     * @param targetAngle
+     * @param turn
+     * @param power
+     */
+    public void runTill_frontleftBumperSensor_Pressed(double max_stop_distance, double targetAngle, double turn, double power) {
 
-    // Returns true if the moving is done
+    }
+
+    /**
+     * Method to move chassis based on computed vector inputs for a set max_stop_distance
+     * Till team color is identified below Chassis
+     * To be used in Autonomous mode for moving by distance or turning by angle
+     * Uses PID loop in motors to ensure motion without errors
+     * @param max_stop_distance
+     * @param targetAngle
+     * @param turn
+     * @param power
+     */
+    public void runTill_chassisLocationSensorIdentifiesLine(double max_stop_distance, double targetAngle, double turn, double power){
+        //Color needs to be added to definition
+    }
+
+
 }

@@ -16,7 +16,7 @@ public class Robot {
     public Robot(HardwareMap hardwareMap) {
         //constructors
         arm = new Arm(hardwareMap);
-        hook = new Hook(hardwareMap);
+        //hook = new Hook(hardwareMap);
         chassis = new Chassis(hardwareMap);
         intake = new Intake(hardwareMap);
     }

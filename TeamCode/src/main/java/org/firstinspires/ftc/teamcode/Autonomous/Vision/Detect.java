@@ -23,22 +23,11 @@ public class Detect {
     public Detect(){
         TFODCalc.init();
         TFODCalc.setHardwareProperties(43.30, 3.67f);
-
-        /*if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
-            initTfod(hardwareMap, model, firstElement, secondElement);
-        } else {
-            telemetry.addData("Sorry!", "This device is not compatible with TFOD");
-        }
-
-        if (tfod != null) {
-            tfod.activate();
-        }*/
     }
 
-    public int[] getPositions(List<Recognition> updatedRecognitions){
+    public int[] getSkystonePositionsBlue(List<Recognition> updatedRecognitions, double imageWidthPx){    //Stones left -> right
         if (updatedRecognitions != null) {
             // step through the list of recognitions and display boundary info.
-            int i = 0;
             int index = 0;
             double[] left = new double[updatedRecognitions.size()];
             ArrayList<String> skystoneIndex = new ArrayList<>();
@@ -54,7 +43,18 @@ public class Detect {
 
             switch(updatedRecognitions.size()){
                 case 1:
-                    return new int[] {0, 0};
+                    if(skystoneIndex.get(0).equalsIgnoreCase("skystone")){
+                        double horizontalMid = updatedRecognitions.get(0).getLeft() + updatedRecognitions.get(0).getWidth() / 2;
+                        double dividedImg = imageWidthPx / 4;
+
+                        if(horizontalMid <= dividedImg)
+                            return new int[] {1, 4};
+                        else if(horizontalMid > dividedImg && horizontalMid <= dividedImg * 2)
+                            return new int[] {2, 5};
+                        else
+                            return new int[] {3, 6};
+                    } else
+                        return new int[] {1, 4};
                 case 2:
                     if(!skystoneIndex.contains("skystone")) {
                         return new int[]{3, 6};
@@ -85,8 +85,72 @@ public class Detect {
                     return new int[]{idx + 1, idx + 4};
                 }
             }
-        }// -1.5707 , -3.14
-        return new int[] {0, 0};
+        }
+        return new int[] {-1, -1};
+    }
+
+    public int[] getSkystonePositionsRed(List<Recognition> updatedRecognitions, double imageWidthPx){     //Stones right -> left
+        if (updatedRecognitions != null) {
+            // step through the list of recognitions and display boundary info.
+            int index = 0;
+            double[] right = new double[updatedRecognitions.size()];
+            ArrayList<String> skystoneIndex = new ArrayList<>();
+
+            for (Recognition recognition : updatedRecognitions) {
+                right[index] = recognition.getRight();
+                if(recognition.getLabel().equalsIgnoreCase("skystone"))
+                    skystoneIndex.add("skystone");
+                else
+                    skystoneIndex.add("stone");
+                index += 1;
+            }
+
+            switch(updatedRecognitions.size()){
+                case 1:
+                    if(skystoneIndex.get(0).equalsIgnoreCase("skystone")){
+                        double horizontalMid = updatedRecognitions.get(0).getLeft() + updatedRecognitions.get(0).getWidth() / 2;
+                        double dividedImg = imageWidthPx / 4;
+
+                        if(horizontalMid >= dividedImg * 3)
+                            return new int[] {1, 4};
+                        else if(horizontalMid < dividedImg * 3 && horizontalMid >= dividedImg * 2)
+                            return new int[] {2, 5};
+                        else
+                            return new int[] {3, 6};
+                    } else
+                        return new int[] {1, 4};
+                case 2:
+                    if(!skystoneIndex.contains("skystone")) {
+                        return new int[]{3, 6};
+                    } else {
+                        if(right[skystoneIndex.indexOf("skystone")] > right[skystoneIndex.indexOf("stone")])
+                            return new int[] {1, 4};
+                        else if(right[skystoneIndex.indexOf("skystone")] <= right[skystoneIndex.indexOf("stone")])
+                            return new int[] {2, 5};
+                    }
+                    break;
+            }
+
+            if(skystoneIndex.contains("skystone")) {
+                double maxPos = -9999;
+                if (updatedRecognitions.size() >= 3) {
+                    for (int x = 0; x < skystoneIndex.size(); x++) {
+                        if (skystoneIndex.get(x).equalsIgnoreCase("skystone")) {
+                            if (maxPos < updatedRecognitions.get(x).getRight())
+                                maxPos = updatedRecognitions.get(x).getRight();
+                        }
+                    }
+
+                    int idx = 0;
+                    for (Recognition r : updatedRecognitions) {
+                        if (r.getRight() > maxPos)
+                            idx += 1;
+                    }
+                    return new int[]{idx + 1, idx + 4};
+                }
+            }
+        }
+        return new int[] {-1, -1};
     }
 
     public double getImageHeight() throws InterruptedException{
@@ -96,49 +160,5 @@ public class Detect {
         VuforiaLocalizer.CloseableFrame frame = vuforia.getFrameQueue().take(); //takes the frame at the head of the queue
 
         return frame.getImage(0).getHeight();
-    }
-
-    public VuforiaLocalizer getVuforia(){
-        return vuforia;
-    }
-
-    public TFObjectDetector getTfod(){
-        return tfod;
-    }
-
-    public List<Recognition> getUpdatedRecognitions(){
-        return tfod.getUpdatedRecognitions();
-    }
-
-    /**
-     * Initialize the TensorFlow Object Detection engine.
-     */
-
-    private void initVuforia(HardwareMap hardwareMap){
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
-
-        parameters.vuforiaLicenseKey = "ARjSEzX/////AAABmTyfc/uSOUjluYpQyDMk15tX0Mf3zESzZKo6V7Y0O/qtPvPQOVben+DaABjfl4m5YNOhGW1HuHywuYGMHpJ5/uXY6L8Mu93OdlOYwwVzeYBhHZx9le+rUMr7NtQO/zWEHajiZ6Jmx7K+A+UmRZMpCmr//dMQdlcuyHmPagFERkl4fdP0UKsRxANaHpwfQcY3npBkmgE8XsmK4zuFEmzfN2/FV0Cns/tiTfXtx1WaFD0YWYfkTHRyNwhmuBxY6MXNmaG8VlLwJcoanBFmor2PVBaRYZ9pnJ4TJU5w25h1lAFAFPbLTz1RT/UB3sHT5CeG0bMyM4mTYLi9SHPOUQjmIomxp9D7R39j8g5G7hiKr2JP";  //Variable Place--Remember to insert key here
-        parameters.cameraName = hardwareMap.get(WebcamName.class, "WebcamFront");
-
-        //  Instantiate the Vuforia engine
-        vuforia = ClassFactory.getInstance().createVuforia(parameters);
-    }
-    private void initTfod(HardwareMap hardwareMap,
-                          String model, String firstElement, String secondElement)  {
-        initVuforia(hardwareMap);
-
-        /*
-         * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
-         */
-
-        // Loading trackables is not necessary for the TensorFlow Object Detection engine.
-
-
-        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
-                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minimumConfidence = 0.85;
-        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
-        tfod.loadModelFromAsset(model, firstElement, secondElement);
     }
 }

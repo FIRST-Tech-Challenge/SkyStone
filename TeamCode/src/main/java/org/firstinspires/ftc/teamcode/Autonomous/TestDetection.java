@@ -25,12 +25,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/*
+ * Broken... Do Not Use!
+ */
 @Autonomous(name = "Mini-Auto", group = "Test")       //Dashboard: https://192.168.49.1:8080/dash
 public class TestDetection extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "skystoneTFOD_v2_[105-15].tflite";
     private static final String LABEL_FIRST_ELEMENT = "skystone";
     private static final String LABEL_SECOND_ELEMENT = "stone";
     private static double imgHeight = 1.0;
+    private static double imgWidth = 1.0;
     int[] skystonePos = new int[]{0, 0};
     final double slowSpeed = 0.5;
     private VuforiaLocalizer vuforia;
@@ -126,6 +130,7 @@ public class TestDetection extends LinearOpMode {
         VuforiaLocalizer.CloseableFrame frame = vuforia.getFrameQueue().take(); //takes the frame at the head of the queue
 
         imgHeight = frame.getImage(0).getHeight();
+        imgWidth = frame.getImage(0).getWidth();
     }
 
     /**
@@ -149,7 +154,7 @@ public class TestDetection extends LinearOpMode {
                             // getUpdatedRecognitions() will return null if no new information is available since
                             // the last time that call was made.
                             List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-                            skystonePos = detect.getPositions(updatedRecognitions);
+                            skystonePos = detect.getSkystonePositionsBlue(updatedRecognitions, imgWidth);
                             telemetry.addData("Position", Arrays.toString(skystonePos));
                             if(updatedRecognitions != null)
                                 telemetry.addData("# Object Detected", updatedRecognitions.size());

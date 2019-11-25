@@ -15,8 +15,15 @@ public class SplineGenerator {
     public SplineGenerator(double[][] data){
         Profiler v = new Profiler(data);
         v.vehiclePath();
-        v.vehicleTraj();
-        this.outputData = v.generateOutput();
+        outputData = new double[v.xV1.size()+1][3];
+        for(int i = 0;i<v.xV1.size();i++){
+            outputData[i][0] = v.xV1.get(i);
+            outputData[i][1] = v.yV1.get(i);
+            outputData[i][2] = v.heading[i];
+        }
+        outputData[v.xV1.size()][0] = data[data.length-1][0];
+        outputData[v.xV1.size()][1] = data[data.length-1][1];
+        outputData[v.xV1.size()][2] = v.heading[v.heading.length-1];
     }
 
     public double[][] getOutputData(){
@@ -64,7 +71,7 @@ class Profiler {
         int Nu = 100;
         double distWheels = 14;
 
-        for(double i = 0; i<=numData-1;i+=0.01){
+        for(double i = 0; i<=numData-1;i+=15){
             uV.add(i);
             xV.add(0.0);
             yV.add(0.0);
@@ -76,7 +83,7 @@ class Profiler {
         dxdu.add(0.0);
         dydu.add(0.0);
 
-        for(double i = 0;i<=(1-1/Nu);i+=0.01){
+        for(double i = 0;i<=(1-1/Nu);i+=15){
             u.add(i);
         }
         uV.clear();
@@ -107,33 +114,17 @@ class Profiler {
             dxdu.addAll(dxdu1);
             dydu.addAll(dydu1);
         }
-        uV.add(1.0);
 
-        xV.add(data[data.length-1][0]);
-        yV.add(data[data.length-1][1]);
-        dxdu.add(data[data.length-1][2]);
-        dydu.add(data[data.length-1][3]);
+        heading = new double[uV.size()];
 
-        distance = new double[uV.size()];
-
-        for(int i = 0;i<xV.size()-1;i++){
-            distance[i+1] = distance[i] +Math.sqrt(Math.pow(xV.get(i+1)- xV.get(i),2) + Math.pow((yV.get(i+1) - yV.get(i)),2));
-        }
-
-        leftWheel = new double[uV.size()][2];
-        rightWheel = new double[uV.size()][2];
-
-        for(int i = 0;i<uV.size();i++){
-            double[] tanV = {dxdu.get(i), dydu.get(i)};
-
-            for(int j = 0;j<2;j++){
-                tanV[j] = tanV[j] / Math.sqrt(Math.pow(tanV[0],2) + Math.pow(tanV[1],2));
+        for (int i = 0; i < uV.size(); i++) {
+            if (dxdu.get(i) > 0) {
+                heading[i] = 90 - Math.toDegrees(Math.atan(dydu.get(i) / dxdu.get(i)));
+            } else if (dxdu.get(i) < 0) {
+                heading[i] = -1 * Math.atan(dydu.get(i) / dxdu.get(i)) - 90;
+            } else {
+                heading[i] = 0;
             }
-            double[] leftV = {-1*tanV[1], tanV[0]};
-            leftWheel[i][0] = xV.get(i) + leftV[0] * distWheels/2;
-            rightWheel[i][0] = xV.get(i) - leftV[0] * distWheels/2;
-            leftWheel[i][1] = yV.get(i) + leftV[1] * distWheels/2;
-            rightWheel[i][1] = yV.get(i) - leftV[1] * distWheels/2;
         }
     }
 

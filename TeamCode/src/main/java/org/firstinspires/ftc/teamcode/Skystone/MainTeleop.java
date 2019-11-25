@@ -41,6 +41,10 @@ public class MainTeleop extends LinearOpMode {
         Position2D position2D = new Position2D(robot);
         position2D.startOdometry();
         while (opModeIsActive()) {
+            telemetry.addLine("X:" +robot.getRobotPos().x);
+            telemetry.addLine("Y" + robot.getRobotPos().y);
+            telemetry.addLine("Angle" + robot.getAnglePos());
+            telemetry.update();
             slowDriveLogic();
             driveLogic();
 //            outtakeLogic();
@@ -222,6 +226,9 @@ public class MainTeleop extends LinearOpMode {
         //retract
         if(currentTime-outtakeExecutionTime >= 450 && isRetract){
             robot.getClampPivot().setPosition(robot.OUTTAKE_PIVOT_RETRACTED);
+        }
+        if(currentTime-outtakeExecutionTime >= 750 && isRetract){
+            robot.getClamp().setPosition(robot.CLAW_SERVO_CLAMPED);
         }
         if(currentTime-outtakeExecutionTime >= 1250 && isRetract){
             robot.getOuttakeExtender().setPosition(robot.OUTTAKE_SLIDE_RETRACTED);

@@ -7,14 +7,14 @@ import org.firstinspires.ftc.teamcode.Skystone.Robot;
 
 public class Position2D{
     Robot robot;
+    NewThread newThread;
     public Position2D(Robot robot) {
         this.robot = robot;
+        Odometry o = new Odometry(robot);
+        newThread = new NewThread(robot,o);
     }
 
     public void startOdometry(){
-        Odometry o = new Odometry(robot);
-        NewThread newThread = new NewThread(robot,o);
-
         newThread.execute();
     }
 }

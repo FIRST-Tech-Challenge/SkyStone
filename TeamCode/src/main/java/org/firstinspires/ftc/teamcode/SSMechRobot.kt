@@ -124,8 +124,16 @@ class SSMechRobot {
             this.rightHook?.position = 0.0
         }
 
+        if(gp.left_bumper) { //hook down
+            this.claw?.position = 1.00
+        }
+        else { //default position
+            this.claw?.position = 0.00
+        }
+
 
     }
+
 
 
     fun pinch(gp: Gamepad) {

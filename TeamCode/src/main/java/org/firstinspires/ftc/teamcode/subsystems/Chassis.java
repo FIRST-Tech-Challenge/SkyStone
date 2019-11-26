@@ -46,14 +46,18 @@ public class Chassis {
         backRight = hardwareMap.dcMotor.get("back_right_drive");
         //frontleftBumperSensor = #TOBEFILLED
         //chassisLocationSensor = #TOBEFILLED
+        configureRobot();
         initChassis();
     }
 
     /**
      * Configure Chassis #TOBEFILLED
      */
-    //wheelRadius =
-    //robotRadius =
+    public void configureRobot(){
+        //wheelRadius =
+        //robotRadius =
+    }
+
 
     /**
      * Initialize Chassis - Reset, Set Zero Behavior

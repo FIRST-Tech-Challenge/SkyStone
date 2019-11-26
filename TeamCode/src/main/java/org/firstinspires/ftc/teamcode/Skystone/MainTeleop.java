@@ -53,9 +53,9 @@ public class MainTeleop extends LinearOpMode {
     }
     private void spoolLogic(){
         if (gamepad2.dpad_up ) {
-            robot.getOuttakeSpool().setPower(1);
-        }else if(gamepad2.dpad_down  ){
             robot.getOuttakeSpool().setPower(-1);
+        }else if(gamepad2.dpad_down  ){
+            robot.getOuttakeSpool().setPower(1);
         }else{
             robot.getOuttakeSpool().setPower(0);
         }

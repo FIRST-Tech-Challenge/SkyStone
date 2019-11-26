@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Skystone.Auto;
 
+import android.os.SystemClock;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.Skystone.MathFunctions;
@@ -13,15 +15,17 @@ import org.firstinspires.ftc.teamcode.Skystone.Robot;
 public class RedLeft extends AutoBase{
     @Override
     public void runOpMode() {
+        long startTime;
         initLogic();
 //        Vision tensorflow = new Vision(robot);
 
 
         waitForStart();
+        startTime = SystemClock.elapsedRealtime();
         position2D.startOdometry();
 
         int firstSkystoneX = -2;
-        int secondSkyStoneX = -26;
+        int secondSkyStoneX = -20;
 
 //        Vision.Location position = tensorflow.runDetection();
 //
@@ -35,7 +39,7 @@ public class RedLeft extends AutoBase{
 
         double[][] toFirstStone = {
                 {0,0,10,0},
-                {55,firstSkystoneX,10,0}};
+                {50,firstSkystoneX,10,0}};
         Robot.Actions[] toFirstStoneActions = {};
         Point[] toFirstStoneActionPoints = {};
 
@@ -43,21 +47,21 @@ public class RedLeft extends AutoBase{
                 {55,firstSkystoneX,-30,0},
                 {24,10,0,10},
                 {24,30,0,10},
-                {24,55,0,10},
-                {31,75,10,0}};
+                {20,77,0,10},
+                {32,77,10,0}};
         Robot.Actions[] toFoundationActions = {
                 Robot.Actions.EXTEND_OUTTAKE,
                 Robot.Actions.STOP_INTAKE};
         Point[] toFoundationActionPoints = {
-                new Point(24,30),
+                new Point(24,40),
                 new Point(24,30)};
 
         double[][] toSecondStone = {
                 {31,75,-10,0},
                 {8,75,0,-30},
-                {24,30,0,-10},
+                {28,30,0,-10},
                 {24,-15,10,0},
-                {55,secondSkyStoneX,30,0}};
+                {65,secondSkyStoneX,30,0}};
         Robot.Actions[] toSecondStoneActions = {
                 Robot.Actions.RETRACT_OUTTAKE,
                 Robot.Actions.RELEASE_FOUNDATION,
@@ -68,19 +72,41 @@ public class RedLeft extends AutoBase{
                 new Point(24,55)};
 
         double[][] toDepositSecondStone = {
-                {40,secondSkyStoneX,-30,0},
+                {55,secondSkyStoneX,-30,0},
                 {24,-10,0,20},{15,30,0,-10},
                 {15,60,0,10}};
         Robot.Actions[] toDepositSecondStoneActions = {
                 Robot.Actions.EXTEND_OUTTAKE,
                 Robot.Actions.STOP_INTAKE};
         Point[] toDepositSecondStoneActionPoints = {
-                new Point(15,20),
+                new Point(15,30),
                 new Point(15,20)};
 
         double[][] toPark = {{10,60,0,-10},{10,30,0,-10}};
         Robot.Actions[] toParkActions = {};
         Point[] toParkActionPoints = {};
+
+        double[][] toThirdStone = {
+                {16,60,0,-10},
+                {28, 30, 0,-10},
+                {24, -10, 10,0},
+                {55, -20, 30,0}};
+        Robot.Actions[] toThirdStoneActions = {
+                Robot.Actions.START_INTAKE};
+        Point[] toThirdStoneActionPoints = {
+                new Point(28,30)};
+
+        double[][] toDepositThirdStone = {
+                {55,-20,-30,0},
+                {24,-10,0,20},
+                {15,30,0,-10},
+                {15,60,0,10}};
+        Robot.Actions[] toDepositThirdStoneActions = {
+                Robot.Actions.EXTEND_OUTTAKE,
+                Robot.Actions.STOP_INTAKE};
+        Point[] toDepositThirdStoneActionPoints = {
+                new Point(15,30),
+                new Point(15,20)};
 
         intake(true);
         robot.splineMove(toFirstStone,0.5,1,0,0,15,
@@ -93,14 +119,24 @@ public class RedLeft extends AutoBase{
         robot.foundationMover(true);
         sleep(500);
 
-        robot.splineMove(toSecondStone,1,1,0,Math.toRadians(345),20,
+        robot.splineMove(toSecondStone,1,1,0,Math.toRadians(320),20,
                 toSecondStoneActions, toSecondStoneActionPoints);
 
-        robot.splineMove(toDepositSecondStone,1,1,Math.toRadians(180),Math.toRadians(270),10,
+        robot.splineMove(toDepositSecondStone,0.9,1,Math.toRadians(180),Math.toRadians(270),10,
                 toDepositSecondStoneActions, toDepositSecondStoneActionPoints);
 
-        retractOuttake();
+        retractOuttakeWait();
         sleep(800);
+
+        if (SystemClock.elapsedRealtime() - startTime < 20000){
+            robot.splineMove(toThirdStone, 1,1,0,0,20,
+                    toThirdStoneActions, toThirdStoneActionPoints);
+
+            robot.splineMove(toDepositThirdStone, 1, 1, Math.toRadians(180), Math.toRadians(270), 10,
+                    toDepositThirdStoneActions, toDepositThirdStoneActionPoints);
+
+            retractOuttakeWait();
+        }
 
         robot.splineMove(toPark,1,1,0,Math.toRadians(270),5, toParkActions, toParkActionPoints);
         return;

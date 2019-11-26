@@ -81,6 +81,19 @@ public class AutoBase extends LinearOpMode {
         }
     }
 
+    protected void retractOuttakeWait() {
+        robot.getIntakePusher().setPosition(robot.PUSHER_RETRACTED); // Push block all the way to clamp
+        robot.getClamp().setPosition(robot.CLAW_SERVO_RELEASED); // Release clamp
+
+        sleep(450);
+
+        robot.getClampPivot().setPosition(robot.OUTTAKE_PIVOT_RETRACTED);
+
+        sleep(1150-450);
+
+        robot.getOuttakeExtender().setPosition(robot.OUTTAKE_SLIDE_RETRACTED);
+    }
+
     protected void retractOuttake() {
         boolean isRetract = true;
         long outtakeExecutionTime = SystemClock.elapsedRealtime();
@@ -88,7 +101,7 @@ public class AutoBase extends LinearOpMode {
         robot.getIntakePusher().setPosition(robot.PUSHER_RETRACTED); // Push block all the way to clamp
         robot.getClamp().setPosition(robot.CLAW_SERVO_RELEASED); // Release clamp
 
-        while(isRetract&& robot.getLinearOpMode().opModeIsActive()) {
+        while(isRetract && robot.getLinearOpMode().opModeIsActive()) {
             currentTime = SystemClock.elapsedRealtime();
 
             if(currentTime-outtakeExecutionTime >= 450 && isRetract){

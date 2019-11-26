@@ -510,16 +510,20 @@ public class Robot {
 
             distanceToEnd = Math.hypot(robotPos.x - data[data.length-1][0], robotPos.y - data[data.length - 1][1]);
             distanceToNext = Math.hypot(robotPos.x - pathPoints[followIndex][0], robotPos.y - pathPoints[followIndex][1]);
+            desiredHeading = angleWrap(Math.atan2(pathPoints[followIndex][1] - pathPoints[followIndex - 1][1], pathPoints[followIndex][0] - pathPoints[followIndex - 1][0]) + 2 * Math.PI);
+
+            if(desiredHeading == 0){
+                desiredHeading = Math.toRadians(360);
+            }
+            if(angleLockRadians  == 0){
+                angleLockRadians = Math.toRadians(360);
+            }
+
+            angleLockScale = Math.abs(angleLockRadians-posAngle) * Math.abs(desiredHeading-angleLockRadians) * 1.8;
+
 
             if (distanceToEnd < angleLockInches){
-                desiredHeading = angleWrap(Math.atan2(pathPoints[followIndex][1] - pathPoints[followIndex - 1][1], pathPoints[followIndex][0] - pathPoints[followIndex - 1][0]) + 2 * Math.PI);
-                if(desiredHeading == 0){
-                    desiredHeading = Math.toRadians(360);
-                }
-                angleLockScale = Math.abs(angleLockRadians-posAngle) * Math.abs(desiredHeading-angleLockRadians) * 1.8;
-                if(angleLockRadians  == 0){
-                    angleLockRadians = Math.toRadians(360);
-                }
+
 
                 goToPoint(pathPoints[followIndex][0], pathPoints[followIndex][1], moveSpeed, turnSpeed, optimalAngle, true);
 
@@ -550,10 +554,15 @@ public class Robot {
                     if (actions[i] == Actions.EXTEND_OUTTAKE && !hasExtendedOuttake){
                         isExendingOuttake = true;
                         hasExtendedOuttake = true;
+                        isRetractingOuttake = false;
                         extendOuttakeStartTime = SystemClock.elapsedRealtime();
+                        intakePusher.setPosition(PUSHER_PUSHED);
                     } else if (actions[i] == Actions.RETRACT_OUTTAKE && !hasRetractedOuttake){
+                        intakePusher.setPosition(PUSHER_RETRACTED); // Reset intake pusher
+                        clamp.setPosition(CLAW_SERVO_RELEASED);
                         isRetractingOuttake = true;
                         hasRetractedOuttake = true;
+                        isExendingOuttake = false;
                         retractOuttakeStartTime = SystemClock.elapsedRealtime();
                     } else if (actions[i] == Actions.RELEASE_FOUNDATION && !hasReleasedFoundation){
                         isReleasingFoundation = true;
@@ -569,39 +578,38 @@ public class Robot {
             }
 
             if (isExendingOuttake){
-                if (currentTime - extendOuttakeStartTime >= 600) {
+                if (currentTime - extendOuttakeStartTime >= 650) {
                     intakePusher.setPosition(PUSHER_RETRACTED);
                 }
-                if (currentTime - extendOuttakeStartTime >= 950) {
+                if (currentTime - extendOuttakeStartTime >= 900 ) {
                     clamp.setPosition(CLAW_SERVO_CLAMPED);
                 }
-                if(currentTime-extendOuttakeStartTime >= 1300){
+                if(currentTime-extendOuttakeStartTime >= 1000){
                     outtakeExtender.setPosition(OUTTAKE_SLIDE_EXTENDED);
                 }
-                if(currentTime-extendOuttakeStartTime >= 2200){
-                    telemetry.addLine("EXTENDING CLAMP");
-                    telemetry.update();
+
+                if(currentTime-extendOuttakeStartTime >= 1850 ){
                     clampPivot.setPosition(OUTTAKE_PIVOT_90);
                 }
-                if(currentTime-extendOuttakeStartTime >=2500){
+
+                if(currentTime-extendOuttakeStartTime >=2900){
                     isExendingOuttake = false;
+                    hasExtendedOuttake = false;
                 }
             }
 
             if (isRetractingOuttake){
-                intakePusher.setPosition(PUSHER_RETRACTED);
-                clamp.setPosition(CLAW_SERVO_RELEASED);
-
                 if(currentTime-retractOuttakeStartTime >= 450){
                     clampPivot.setPosition(OUTTAKE_PIVOT_RETRACTED);
-                    telemetry.addLine("pivot retracted");
                 }
-                if(currentTime-retractOuttakeStartTime >= 1150){
-                    outtakeExtender.setPosition(OUTTAKE_SLIDE_RETRACTED);
+                if(currentTime-retractOuttakeStartTime >= 750){
+                    clamp.setPosition(CLAW_SERVO_CLAMPED);
+                }
+                if(currentTime-retractOuttakeStartTime >= 1250){
+                    getOuttakeExtender().setPosition(OUTTAKE_SLIDE_RETRACTED);
                     clamp.setPosition(CLAW_SERVO_RELEASED);
-                    intakePusher.setPosition(PUSHER_RETRACTED);
-                    telemetry.addLine("slide retracted");
                     isRetractingOuttake = false;
+                    hasRetractedOuttake = false;
                 }
             }
 

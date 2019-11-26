@@ -470,7 +470,7 @@ public class Robot {
         EXTEND_OUTTAKE, RETRACT_OUTTAKE, RELEASE_FOUNDATION, START_INTAKE, STOP_INTAKE
     }
 
-    public void splineMove(double[][] data, double moveSpeed, double turnSpeed, double optimalAngle, double angleLockRadians, double angleLockInches, Actions[] actions, Point[] actionPoints) {
+    public void splineMove(double[][] data, double moveSpeed, double turnSpeed, double slowDownSpeed, double slowDownDistance, double optimalAngle, double angleLockRadians, double angleLockInches, Actions[] actions, Point[] actionPoints) {
         double posAngle;
         SplineGenerator s = new SplineGenerator(data);
         double[][] pathPoints = s.getOutputData();
@@ -546,6 +546,12 @@ public class Robot {
                 followIndex++;
             }
 
+            if (distanceToEnd < slowDownDistance){
+                xMovement *= slowDownSpeed;
+                yMovement *= slowDownSpeed;
+                turnMovement *= slowDownSpeed;
+            }
+
             // go through all actionpoints and see if the robot is near one
             for (int i = 0; i < actionPoints.length; i++){
                 if (Math.hypot(actionPoints[i].x - robotPos.x, actionPoints[i].y - robotPos.y) < 20){
@@ -580,27 +586,28 @@ public class Robot {
             }
 
             if (isExendingOuttake){
-                if (currentTime - extendOuttakeStartTime >= 650) {
+                if (currentTime - extendOuttakeStartTime >= 250) {
                     intakePusher.setPosition(PUSHER_RETRACTED);
                 }
-                if (currentTime - extendOuttakeStartTime >= 900 ) {
+                if (currentTime - extendOuttakeStartTime >= 350 ) {
                     clamp.setPosition(CLAW_SERVO_CLAMPED);
                 }
-                if(currentTime-extendOuttakeStartTime >= 1000){
+                if(currentTime-extendOuttakeStartTime >= 450){
                     outtakeExtender.setPosition(OUTTAKE_SLIDE_EXTENDED);
                 }
 
-                if(currentTime-extendOuttakeStartTime >= 1850 ){
+                if(currentTime-extendOuttakeStartTime >= 1150 ){
                     clampPivot.setPosition(OUTTAKE_PIVOT_90);
                 }
 
-                if(currentTime-extendOuttakeStartTime >=2900){
+                if(currentTime-extendOuttakeStartTime >=1650){
                     isExendingOuttake = false;
                     hasExtendedOuttake = false;
                 }
             }
 
             if (isRetractingOuttake){
+
                 if(currentTime-retractOuttakeStartTime >= 450){
                     clampPivot.setPosition(OUTTAKE_PIVOT_RETRACTED);
                 }
@@ -610,6 +617,7 @@ public class Robot {
                 if(currentTime-retractOuttakeStartTime >= 1250){
                     getOuttakeExtender().setPosition(OUTTAKE_SLIDE_RETRACTED);
                     clamp.setPosition(CLAW_SERVO_RELEASED);
+                    intakePusher.setPosition(PUSHER_RETRACTED);
                     isRetractingOuttake = false;
                     hasRetractedOuttake = false;
                 }

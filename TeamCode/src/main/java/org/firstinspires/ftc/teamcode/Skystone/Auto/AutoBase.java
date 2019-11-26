@@ -21,6 +21,7 @@ public class AutoBase extends LinearOpMode {
         robot = new Robot(this.hardwareMap, this.telemetry, this);
 
         robot.driveMotorsBreakZeroBehavior();
+        initServos();
 
         robot.setMotorMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -34,7 +35,9 @@ public class AutoBase extends LinearOpMode {
         boolean isRetract = true;
         long outtakeExecutionTime = 0;
         long currentTime;
+        robot.foundationMover(false);
         robot.getClamp().setPosition(robot.CLAW_SERVO_RELEASED);
+        robot.getIntakePusher().setPosition(robot.PUSHER_RETRACTED);
 
         while (isRetract && robot.getLinearOpMode().opModeIsActive()) {
             currentTime = SystemClock.elapsedRealtime();

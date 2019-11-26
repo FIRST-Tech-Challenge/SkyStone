@@ -24,19 +24,9 @@ public class LimitedMotor
     {
         if (limited.output())
         {
-            if (power > 0)
+            if ((power > 0 && motor.getCurrentPosition() >= upperLimit) || (power < 0 && motor.getCurrentPosition() <= lowerLimit))
             {
-                if (!(motor.getCurrentPosition() >= upperLimit))
-                {
-                    motor.setPower(power);
-                }
-            }
-            else if (power < 0)
-            {
-                if (!(motor.getCurrentPosition() <= lowerLimit))
-                {
-                    motor.setPower(power);
-                }
+                motor.setPower(0);
             }
             else
             {

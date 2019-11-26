@@ -114,10 +114,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     @Override
     public void position()
     {
-        while (isPositioning())
-        {
-            updatePosition();
-        }
+        while (isPositioning()) { updatePosition(); }
         finishPositioning();
     }
 
@@ -155,7 +152,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
             }
             else
             {
-                motorList[motorIndex].setPower(getVelocity() * powerScale);
+                motorList[motorIndex].setPower(getVelocity() * powerScale); // to undo powerScaling remove the * powerScale
             }
         }
     }

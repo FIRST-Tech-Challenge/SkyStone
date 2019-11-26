@@ -10,7 +10,6 @@ import org.firstinspires.ftc.robotlib.sound.BasicSound;
 import org.firstinspires.ftc.robotlib.state.Button;
 import org.firstinspires.ftc.robotlib.state.ToggleBoolean;
 
-@Disabled
 @TeleOp(name="Mecanum TeleOp V-FieldGoal", group="Tele")
 public class MecanumTeleOpFieldGoal extends OpMode
 {
@@ -23,7 +22,7 @@ public class MecanumTeleOpFieldGoal extends OpMode
     private Button playSound;
     private Button servosUp;
     private Button servosDown;
-    private Button servosMid;
+    private Button toggleLimited;
 
     // Sound players
     private BasicSound basicSound;
@@ -38,7 +37,7 @@ public class MecanumTeleOpFieldGoal extends OpMode
         playSound = new Button();
         servosUp = new Button();
         servosDown = new Button();
-        servosMid = new Button();
+        toggleLimited = new Button();
 
         basicSound = new BasicSound("police_siren", this.hardwareMap, 0, true);
     }
@@ -67,8 +66,6 @@ public class MecanumTeleOpFieldGoal extends OpMode
         // gamepad 1 inputs
         robot.drivetrain.lowPowerInput(gamepad1.right_stick_button);
         playSound.input(gamepad1.x);
-        servosDown.input(gamepad1.dpad_down);
-        servosMid.input(gamepad1.dpad_left || gamepad1.dpad_right);
 
         // movement controls
         robot.drivetrain.setCourse(course);
@@ -81,10 +78,16 @@ public class MecanumTeleOpFieldGoal extends OpMode
 
         //DRIVER TWO
         // gamepad 2 inputs
-        servosUp.input(gamepad1.dpad_up);
-
-        //arm movement to be added later
+        servosUp.input(gamepad2.dpad_up);
+        servosDown.input(gamepad2.dpad_down);
+        toggleLimited.input(gamepad2.b);
         driverTwoBrakes.input(gamepad2.left_bumper);
+
+        if (toggleLimited.isPressed())
+        {
+            robot.armSystem.getVerticalLimitedMotor().setLimited(!robot.armSystem.getVerticalLimitedMotor().isLimited());
+            robot.armSystem.getHorizontalLimitedMotor().setLimited(!robot.armSystem.getHorizontalLimitedMotor().isLimited());
+        }
 
         robot.armSystem.setVerticalPower(gamepad2.left_stick_y);
         robot.armSystem.setHorizontalPower(gamepad2.right_stick_y);

@@ -17,23 +17,23 @@ public class MecanumFieldGoalRobot extends MecanumRobot
     public FieldGoalArmSystem armSystem;
 
     // Motor tick limits as found in test
-    private static final int verticalLimit = 24;
-    private static final int horizontalLimit = 12;
+    private static final int[] VERTICAL_LIMITS = {0, 1270};
+    private static final int[] HORIZONTAL_LIMITS = {-1400, -400};
 
     public MecanumFieldGoalRobot(HardwareMap hwMap, Telemetry telemetry, boolean teleOpMode)
     {
         super(hwMap, telemetry, teleOpMode);
 
-        armVerticalSlide = new LimitedMotor(hwMap.get(DcMotor.class, "armVerticalSlide"), 0, 24);
-        armHorizontalSlide = new LimitedMotor(hwMap.get(DcMotor.class, "armHorizontalSlide"), 0, 12);
+        armVerticalSlide = new LimitedMotor(hwMap.get(DcMotor.class, "armVerticalSlide"), VERTICAL_LIMITS[0], VERTICAL_LIMITS[1]);
+        armHorizontalSlide = new LimitedMotor(hwMap.get(DcMotor.class, "armHorizontalSlide"), HORIZONTAL_LIMITS[0], HORIZONTAL_LIMITS[1]);
 
         // Set the upper limits of the LimitedMotors, lower limit is 0
         armVerticalSlide.setUpperLimit(24 * (int)armVerticalSlide.getTicksPerRev());
         armHorizontalSlide.setUpperLimit(12 * (int)armHorizontalSlide.getTicksPerRev());
 
         // Disables the limiting function of the LimitedMotors for testing
-        armVerticalSlide.setLimited(false);
-        armHorizontalSlide.setLimited(false);
+        armVerticalSlide.setLimited(true);
+        armHorizontalSlide.setLimited(true);
 
         // Finally initialize the armSystem with the LimitedMotors instead of regular motors
         armSystem = new FieldGoalArmSystem(armVerticalSlide, armHorizontalSlide);
@@ -70,9 +70,11 @@ public class MecanumFieldGoalRobot extends MecanumRobot
 
         telemetry.addData("> Arm Info", "-----");
         telemetry.addData("Vertical Power", armVerticalSlide.getPower());
-        telemetry.addData("Horizontal Power", armHorizontalSlide.getPower());
         telemetry.addData("Vertical Position", armVerticalSlide.getPosition());
+        telemetry.addData("Vertical Limited", armVerticalSlide.isLimited());
+        telemetry.addData("Horizontal Power", armHorizontalSlide.getPower());
         telemetry.addData("Horizontal Position", armHorizontalSlide.getPosition());
+        telemetry.addData("Horizontal Limited", armHorizontalSlide.isLimited());
 
         telemetry.addData("> Servo Info", "-----");
         telemetry.addData("Servo Pos", "One: " + platformServos.getServoOne().getPosition() + " Two: " + platformServos.getServoTwo().getPosition());

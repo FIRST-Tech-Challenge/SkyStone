@@ -9,7 +9,10 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
@@ -17,11 +20,17 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.CurvePoint;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.PathPoints;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.SplineGenerator;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Vector;
 
 import static org.firstinspires.ftc.teamcode.Skystone.MathFunctions.angleWrap;
@@ -335,6 +344,7 @@ public class Robot {
      * @param toggle if true, intake, if false, stop intake
      */
     public void intake(boolean toggle) {
+        clamp.setPosition(CLAW_SERVO_RELEASED);
         if (toggle) {
             intakeLeft.setPower(1);
             intakeRight.setPower(1);
@@ -559,6 +569,7 @@ public class Robot {
                         isReleasingFoundation = true;
                         hasReleasedFoundation = true;
                     } else if (actions[i] == Actions.START_INTAKE && !hasStartedIntake){
+                        clamp.setPosition(CLAW_SERVO_RELEASED);
                         isStartingIntake = true;
                         hasStartedIntake = true;
                     } else if (actions[i] == Actions.STOP_INTAKE && !hasStoppedIntake){
@@ -997,13 +1008,12 @@ public class Robot {
     }
 
     private void applyMove() {
-        float YMOVEMENT_FACTOR = (float) 1.414;
 
         // convert movements to motor powers
-        double fLeftPower = (yMovement * YMOVEMENT_FACTOR + turnMovement + xMovement);
-        double fRightPower = (-yMovement * YMOVEMENT_FACTOR - turnMovement + xMovement);
-        double bLeftPower = (-yMovement * YMOVEMENT_FACTOR + turnMovement + xMovement);
-        double bRightPower = (yMovement * YMOVEMENT_FACTOR - turnMovement + xMovement);
+        double fLeftPower = (yMovement * 1.414 + turnMovement + xMovement);
+        double fRightPower = (-yMovement * 1.414 - turnMovement + xMovement);
+        double bLeftPower = (-yMovement * 1.414 + turnMovement + xMovement);
+        double bRightPower = (yMovement * 1.414 - turnMovement + xMovement);
 
         //scale all powers to below 1
         double maxPower = Math.abs(fLeftPower);

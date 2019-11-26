@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotlib.drivetrain.MecanumDrivetrain;
 import org.firstinspires.ftc.robotlib.servo.LinkedServo;
@@ -36,7 +37,7 @@ public class MecanumRobot
     public LinkedServo platformServos;
 
     // This general constructor style should be followed with all Robots
-    public MecanumRobot(HardwareMap hwMap, Telemetry telemetry, boolean teleOpMode)
+    public MecanumRobot(HardwareMap hwMap, final Telemetry telemetry, boolean teleOpMode)
     {
         this.telemetry = telemetry;
 
@@ -70,6 +71,184 @@ public class MecanumRobot
         motorList = new DcMotor[]{driveFrontLeft, driveFrontRight, driveRearLeft, driveRearRight};
         drivetrain = new MecanumDrivetrain(motorList, teleOpMode, wheelRadius, wheelToMotorRatio);
         platformServos = new LinkedServo(servoClawLeft, servoClawRight);
+
+        // Telemetry Initialization
+        telemetry.addAction(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+
+            }
+        });
+        // front left
+        telemetry.addLine()
+                .addData("driveFrontLeft: ", new Func<String>()
+                {
+                    @Override
+                    public String value()
+                    {
+                        return ("");
+                    }
+                })
+                .addData("IsBusy: ", new Func<String>()
+                {
+                    @Override
+                    public String value()
+                    {
+                        return ("" + driveFrontLeft.isBusy());
+                    }
+                })
+                .addData("Position: ", new Func<String>()
+                {
+                    @Override
+                    public String value()
+                    {
+                        return ("" + driveFrontLeft.getCurrentPosition());
+                    }
+                })
+                .addData("Target Position: ", new Func<String>()
+                {
+                    @Override
+                    public String value()
+                    {
+                        return ("" + driveFrontLeft.getTargetPosition());
+                    }
+                })
+                .addData("Power: ", new Func<String>()
+                {
+                    @Override
+                    public String value()
+                    {
+                        return ("" + driveFrontLeft.getPower());
+                    }
+                });
+        // front right
+        telemetry.addLine()
+                .addData("driveFrontRight: ", new Func<String>()
+                {
+                    @Override
+                    public String value()
+                    {
+                        return ("");
+                    }
+                })
+                .addData("IsBusy: ", new Func<String>()
+                {
+                    @Override
+                    public String value()
+                    {
+                        return ("" + driveFrontRight.isBusy());
+                    }
+                })
+                .addData("Position: ", new Func<String>()
+                {
+                    @Override
+                    public String value()
+                    {
+                        return ("" + driveFrontRight.getCurrentPosition());
+                    }
+                })
+                .addData("Target Position: ", new Func<String>()
+                {
+                    @Override
+                    public String value()
+                    {
+                        return ("" + driveFrontRight.getTargetPosition());
+                    }
+                })
+                .addData("Power: ", new Func<String>()
+                {
+                    @Override
+                    public String value()
+                    {
+                        return ("" + driveFrontRight.getPower());
+                    }
+                });
+        // rear left
+        telemetry.addLine()
+                .addData("driveRearLeft: ", new Func<String>()
+                {
+                    @Override
+                    public String value()
+                    {
+                        return ("");
+                    }
+                })
+                .addData("IsBusy: ", new Func<String>()
+                {
+                    @Override
+                    public String value()
+                    {
+                        return ("" + driveRearLeft.isBusy());
+                    }
+                })
+                .addData("Position: ", new Func<String>()
+                {
+                    @Override
+                    public String value()
+                    {
+                        return ("" + driveRearLeft.getCurrentPosition());
+                    }
+                })
+                .addData("Target Position: ", new Func<String>()
+                {
+                    @Override
+                    public String value()
+                    {
+                        return ("" + driveRearLeft.getTargetPosition());
+                    }
+                })
+                .addData("Power: ", new Func<String>()
+                {
+                    @Override
+                    public String value()
+                    {
+                        return ("" + driveRearLeft.getPower());
+                    }
+                });
+        // rear right
+        telemetry.addLine()
+                .addData("driveRearRight: ", new Func<String>()
+                {
+                    @Override
+                    public String value()
+                    {
+                        return ("");
+                    }
+                })
+                .addData("IsBusy: ", new Func<String>()
+                {
+                    @Override
+                    public String value()
+                    {
+                        return ("" + driveRearRight.isBusy());
+                    }
+                })
+                .addData("Position: ", new Func<String>()
+                {
+                    @Override
+                    public String value()
+                    {
+                        return ("" + driveRearRight.getCurrentPosition());
+                    }
+                })
+                .addData("Target Position: ", new Func<String>()
+                {
+                    @Override
+                    public String value()
+                    {
+                        return ("" + driveRearRight.getTargetPosition());
+                    }
+                })
+                .addData("Power: ", new Func<String>()
+                {
+                    @Override
+                    public String value()
+                    {
+                        return ("" + driveRearRight.getPower());
+                    }
+                });
     }
 
     // Just a central place to store all the telemetry from the robot, will likely me removed later

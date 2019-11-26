@@ -10,7 +10,7 @@ public class MecanumAutoDebugging extends LinearOpMode
 {
     private MecanumRobot robot;
     private static final int STOP_TIME = 5000;
-    private static final double VELOCITY = 0.6;
+    private static final double VELOCITY = 1;
 
     @Override
     public void runOpMode() throws InterruptedException
@@ -41,7 +41,7 @@ public class MecanumAutoDebugging extends LinearOpMode
     @Override
     public void internalPostLoop()
     {
-        robot.informationUpdate();
+        //robot.informationUpdate();
         telemetry.update();
     }
 }

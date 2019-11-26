@@ -125,7 +125,10 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     @Override
     public boolean isPositioning()
     {
-        for (DcMotor motor : this.motorList) { if (motor.isBusy()) { return true; } }
+        for (DcMotor motor : this.motorList)
+        {
+            if (motor.getCurrentPosition() >= motor.getTargetPosition()) { return true; }
+        }
         return false;
     }
 
@@ -133,23 +136,26 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     @Override
     public void updatePosition()
     {
+        double minInToPowerScale = 12; // the minimum distance in IN the robot must be trying to travel to enable power scale
         for (int motorIndex = 0; motorIndex < motorList.length; motorIndex++)
         {
-            double percentComplete = 0;
+            double percentComplete = 0; // the percent of the movement the robot has completed
+            double powerScale = 1; // the scale as returned by the power curve
+
             try
             {
                 percentComplete = (double)motorList[motorIndex].getCurrentPosition()/wheelTargetPositions[motorIndex];
+                if (targetPosition/getTicksPerIn() >= minInToPowerScale) { powerScale = powerScaleFunction(percentComplete); }
             }
-            catch (Exception ignored) { }
+            catch (Exception ignored) {}
 
-            if (percentComplete >= 1)
+            if (percentComplete >= 1.0)
             {
                 motorList[motorIndex].setPower(0);
-                motorList[motorIndex].setTargetPosition(motorList[motorIndex].getCurrentPosition());
             }
             else
             {
-                motorList[motorIndex].setPower(getVelocity());
+                motorList[motorIndex].setPower(getVelocity() * powerScale);
             }
         }
     }
@@ -194,5 +200,11 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     public double getTicksPerIn()
     {
         return ticksPerIn;
+    }
+
+    private double powerScaleFunction(double percentComplete)
+    {
+        // powerScale = -(x-0.35)^2 + 0.75
+        return Math.abs(-Math.pow((percentComplete - 0.35), 2) + 0.75);
     }
 }

@@ -19,6 +19,9 @@ import static java.lang.Boolean.FALSE;
  * @IntakeMethods : moveWristToVerticalPosition()
  * @IntakeMethods : openGrip()
  * @IntakeMethods : closeGrip()
+ * @IntakeMethods : toggleGrip()
+ * @IntakeMethods : detectSkystoneColorSensorIsYellow
+ * @IntakeMethods : detectSkystoneColorSensorIsBlack
  */
 
 /**
@@ -41,6 +44,7 @@ public class Intake{
     public Intake(HardwareMap hardwareMap) {
         wrist = hardwareMap.servo.get("wrist");
         grip = hardwareMap.servo.get("grip");
+        detectSkystone = hardwareMap.colorSensor.get("detectSkystone");
         initIntake();
     }
 
@@ -66,7 +70,7 @@ public class Intake{
     /**
      * Method to open and close grip based on switching from current state.
      */
-    public void runGrip() {
+    public void toggleGrip() {
         if (grip.getPosition() == gripOpenPosition) {
             closeGrip();
         } else {
@@ -77,21 +81,21 @@ public class Intake{
     /**
      * Method to move wrist to Initial position
      */
-    public void runWristToClose(){
+    public void moveWristToClose(){
         wrist.setPosition(wristInitialPosition);
     }
 
     /**
      * Method to move wrist to Vertical position
      */
-    public void runWristToVertical(){
+    public void moveWristToVertical(){
         wrist.setPosition(wristVerticalPosition);
     }
 
     /**
      * Method to move wrist to Horizontal position
      */
-    public void runWristToHorizontal(){
+    public void moveWristToHorizontal(){
         wrist.setPosition(wristHorizontalPosition);
     }
 
@@ -100,6 +104,8 @@ public class Intake{
      */
     public void resetIntake() {
         detectSkystone.enableLed(FALSE);
+        moveWristToHorizontal();
+        openGrip();
     }
 
     /**
@@ -108,6 +114,32 @@ public class Intake{
      */
     public void setDetectSkystoneColorSensordEnabled(boolean colorSensorEnabled){
         detectSkystone.enableLed(colorSensorEnabled);
+    }
+
+    /**
+     * Method to check for detectSkystone Color Sensor to sense Yellow block or Skystone black color
+     * Used in Autonomous mode to identify skystone and regular block.
+     * @return
+     */
+    public boolean detectSkystoneColorSensorIsYellow() {
+        if (detectSkystone.red()>127 && detectSkystone.green()>127 && detectSkystone.blue()<127) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Method to check for detectSkystone Color Sensor to sense Yellow block or Skystone black color
+     * Used in Autonomous mode to identify skystone and regular block.
+     * @return
+     */
+    public boolean detectSkystoneColorSensorIsBlack() {
+        if (detectSkystone.red()<127 && detectSkystone.green()<127 && detectSkystone.blue()<127) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     // #TOBEDELETED

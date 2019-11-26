@@ -38,6 +38,8 @@ public class Chassis {
     public Double wheelRadius;
     public Double robotRadius;
 
+    public boolean configureRobot = false;
+
     //Constructor
     public Chassis(HardwareMap hardwareMap) {
         frontLeft = hardwareMap.dcMotor.get("front_left_drive");
@@ -56,6 +58,8 @@ public class Chassis {
     public void configureRobot(){
         //wheelRadius =
         //robotRadius =
+
+        configureRobot = false;
     }
 
 

@@ -27,10 +27,6 @@ public class MecanumFieldGoalRobot extends MecanumRobot
         armVerticalSlide = new LimitedMotor(hwMap.get(DcMotor.class, "armVerticalSlide"), VERTICAL_LIMITS[0], VERTICAL_LIMITS[1]);
         armHorizontalSlide = new LimitedMotor(hwMap.get(DcMotor.class, "armHorizontalSlide"), HORIZONTAL_LIMITS[0], HORIZONTAL_LIMITS[1]);
 
-        // Set the upper limits of the LimitedMotors, lower limit is 0
-        armVerticalSlide.setUpperLimit(24 * (int)armVerticalSlide.getTicksPerRev());
-        armHorizontalSlide.setUpperLimit(12 * (int)armHorizontalSlide.getTicksPerRev());
-
         // Disables the limiting function of the LimitedMotors for testing
         armVerticalSlide.setLimited(true);
         armHorizontalSlide.setLimited(true);

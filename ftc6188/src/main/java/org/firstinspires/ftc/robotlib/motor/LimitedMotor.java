@@ -24,19 +24,11 @@ public class LimitedMotor
     {
         if (limited.output())
         {
-            if ((power > 0 && motor.getCurrentPosition() >= upperLimit) || (power < 0 && motor.getCurrentPosition() <= lowerLimit))
-            {
-                motor.setPower(0);
-            }
-            else
-            {
-                motor.setPower(power);
-            }
+            if ((power > 0 && motor.getCurrentPosition() >= upperLimit)
+                    || (power < 0 && motor.getCurrentPosition() <= lowerLimit)) { motor.setPower(0); }
+            else { motor.setPower(power); }
         }
-        else
-        {
-            motor.setPower(power);
-        }
+        else { motor.setPower(power); }
     }
 
     public void setLimited(boolean input) { limited.input(input); }

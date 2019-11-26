@@ -129,7 +129,7 @@ class SSMechTeleOp : OpMode() {
         robot.bLDrive?.power = backLeftPower / nor
         robot.fRDrive?.power = frontRightPower / nor
         robot.bRDrive?.power = backRightPower / nor
-        telemetry.addData("front left: $frontLeftPower, front back: $frontBackPower, back left: $backLeftPower, back right: $backRightPower", "")
+        telemetry.addData("front left: $frontLeftPower, front right: $frontRightPower, back left: $backLeftPower, back right: $backRightPower", "")
 
     }
 }

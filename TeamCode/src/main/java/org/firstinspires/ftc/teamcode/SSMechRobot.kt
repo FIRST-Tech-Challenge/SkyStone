@@ -98,7 +98,7 @@ class SSMechRobot {
 
     fun dropHook(gp: Gamepad)
     {
-        var down = false
+/*        var down = false
         var changed = false
 
         if(gp.a and !changed) {
@@ -113,7 +113,17 @@ class SSMechRobot {
         else { //down
             this.leftHook?.position = 0.7
             this.rightHook?.position = 0.7
+        }*/
+        if(gp.a) {
+            this.leftHook?.position = 0.7
+            this.rightHook?.position = 0.7
         }
+        else {
+            this.leftHook?.position = 0.0
+            this.rightHook?.position = 0.0
+        }
+
+
     }
 
 

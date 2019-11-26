@@ -26,7 +26,7 @@ class SSMechTeleOp : OpMode() {
     var curPos = 0
     var leftPower: Float = 0.0.toFloat()
     var rightPower: Float = 0.0.toFloat()
-    val max = 1860
+    val max = 7100
     var strafePow: Double = 0.00
     var drive = 0.0
     var turn = 0.0
@@ -44,6 +44,8 @@ class SSMechTeleOp : OpMode() {
 
     override fun start() { //runs once when play button is pushed
         robot.vSlide?.mode = DcMotor.RunMode.RUN_USING_ENCODER
+        robot.leftHook?.position = 0.0
+        robot.rightHook?.position = 0.0
     }
 
     override fun loop() {
@@ -54,11 +56,6 @@ class SSMechTeleOp : OpMode() {
          */
 
         touched = !robot.touch!!.state //true if not pressed
-        slowDown = if (gamepad1.left_bumper) 2.35 else 1.00 //condensed if else
-
-        if (gamepad1.a) tankMode()
-        else if (gamepad1.b) povMode()
-        else povMode()
 
         //Vertical Slide Power Calculation
         linSlidePow = gamepad2.right_stick_y //negative for up
@@ -99,29 +96,17 @@ class SSMechTeleOp : OpMode() {
         telemetry.update()
     }
 
-    fun tankMode() {
-        //Tank Drive-sets power equal to numerical value of joystick positions
-        leftPower = -gamepad1.left_stick_y
-        rightPower = -gamepad1.right_stick_y
-        robot.leftPow(leftPower.toDouble() / slowDown)
-        robot.rightPow(rightPower.toDouble() / slowDown)
-        strafePow = when {
-            gamepad1.left_trigger > 0 -> gamepad1.left_trigger.toDouble()
-            gamepad1.right_trigger > 0 -> -gamepad1.right_trigger.toDouble()
-            else -> 0.00
-        }
-        robot.strafe(strafePow)
-    }
-
     fun povMode() {
         //POV Mode-left joystick=power(y power and strafing), right joystick=turning
         // Put powers in the range of -1 to 1 only if they aren't already (not
         // checking would cause us to always drive at full speed)
 
+        slowDown = if (gamepad1.left_bumper) 1.5 else 1.00 //condensed if else
 
-        var drive = (-gamepad1.left_stick_y).toDouble()
-        var turn = gamepad1.left_stick_x.toDouble() * 1.5
-        var strafe = gamepad1.right_stick_x.toDouble()
+
+        var drive = (gamepad1.left_stick_y).toDouble()
+        var turn = -gamepad1.left_stick_x.toDouble() * 1.5
+        var strafe = -gamepad1.right_stick_x.toDouble()
         var nor = 0.0
 
         var frontLeftPower = (drive + turn + strafe)
@@ -138,10 +123,10 @@ class SSMechTeleOp : OpMode() {
         }
         // Divide everything by max (it's positive so we don't need to worry
         // about signs)
-        robot.fLDrive?.power = frontLeftPower / nor
-        robot.bLDrive?.power = backLeftPower / nor
-        robot.fRDrive?.power = frontRightPower / nor
-        robot.bRDrive?.power = backRightPower / nor
+        robot.fLDrive?.power = frontLeftPower / slowDown / nor
+        robot.bLDrive?.power = backLeftPower / slowDown / nor
+        robot.fRDrive?.power = frontRightPower / slowDown / nor
+        robot.bRDrive?.power = backRightPower / slowDown / nor
 
     }
 }

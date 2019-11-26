@@ -23,8 +23,8 @@ public class FieldGoalRobot
     public FieldGoalRobot(HardwareMap hwMap, Telemetry telemetry, boolean teleOpMode)
     {
         // Collect hardware data
-        armVerticalSlide = new LimitedMotor(hwMap.get(DcMotor.class, "armVerticalSlide"), 0, 24);
-        armHorizontalSlide = new LimitedMotor(hwMap.get(DcMotor.class, "armHorizontalSlide"), -1270, 0);
+        armVerticalSlide = new LimitedMotor(hwMap.get(DcMotor.class, "armVerticalSlide"), 0, 1270);
+        armHorizontalSlide = new LimitedMotor(hwMap.get(DcMotor.class, "armHorizontalSlide"), -1200, 0);
         armGripSlide = hwMap.get(Servo.class, "armGripSlide");
 
         // Set the upper limits of the LimitedMotors, lower limit is 0
@@ -82,6 +82,14 @@ public class FieldGoalRobot
                     @Override public String value()
                     {
                         return ("" + armGripSlide.getPosition());
+                    }
+                });
+        telemetry.addLine()
+                .addData("Is Limited", new Func<String>()
+                {
+                    @Override public String value()
+                    {
+                        return ("Vert: " + armVerticalSlide.isLimited() + " Horiz: " + armHorizontalSlide.isLimited());
                     }
                 });
     }

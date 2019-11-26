@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.opmodes.tests;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotlib.robot.FieldGoalRobot;
 import org.firstinspires.ftc.robotlib.state.Button;
 
+@Disabled
 @TeleOp(name="FieldGoal Test", group="Test")
 public class FieldGoalTest extends OpMode
 {
@@ -35,14 +37,8 @@ public class FieldGoalTest extends OpMode
         servoMax.input(gamepad1.dpad_up);
         servoMin.input(gamepad1.dpad_down);
 
-        robot.armSystem.setVerticalPower(gamepad1.right_stick_y);
-        robot.armSystem.setHorizontalPower(gamepad1.left_stick_y);
-
-        if (setLimits.isPressed())
-        {
-            robot.armSystem.getVerticalLimitedMotor().setUpperLimit(robot.armSystem.getVerticalMotor().getCurrentPosition());
-            robot.armSystem.getHorizontalLimitedMotor().setUpperLimit(robot.armSystem.getHorizontalMotor().getCurrentPosition());
-        }
+        robot.armSystem.setVerticalPower(gamepad1.left_stick_y);
+        robot.armSystem.setHorizontalPower(gamepad1.right_stick_y);
 
         if (toggleLimits.isPressed())
         {

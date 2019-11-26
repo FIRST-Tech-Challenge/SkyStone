@@ -1,3 +1,5 @@
+package loki;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -9,7 +11,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name = "Button_Drive")
+@TeleOp(name = "loki.Button_Drive")
 public class Button_Drive extends OpMode{
     DcMotor lf, rf, lb, rb;
     public Gamepad g1, g2;

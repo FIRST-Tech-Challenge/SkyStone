@@ -1,3 +1,5 @@
+package loki;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -6,7 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 
-@TeleOp (name = "Spectrum")
+@TeleOp (name = "loki.Spectrum")
 public class Spectrum extends OpMode{
     //Defines Your Motors inside the code
     DcMotor lf, rf, rb, lb;

@@ -108,7 +108,7 @@ public class SensorBNO055IMU extends LinearOpMode
     }
 
     //----------------------------------------------------------------------------------------------
-    // Telemetry Configuration
+    // loki.Telemetry Configuration
     //----------------------------------------------------------------------------------------------
 
     void composeTelemetry() {

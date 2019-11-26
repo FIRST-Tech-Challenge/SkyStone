@@ -62,7 +62,7 @@ Version 5.0 (built on 19.06.14)
  * Adds calibration for Logitech C270
  * Updates build tooling and target SDK.
  * Compliance with Google's permissions infrastructure (Required after build tooling update).
- * Keep Alives to mitigate the Motorola wifi scanning problem.  Telemetry substitute no longer necessary.
+ * Keep Alives to mitigate the Motorola wifi scanning problem.  loki.Telemetry substitute no longer necessary.
  * Improves Vuforia error reporting.
  * Fixes ftctechnh/ftc_app issues 621, 713.
  * Miscellaneous bug fixes and improvements.
@@ -111,7 +111,7 @@ Changes include:
  * Fix to prevent crash when deprecated configuration annotations are used.
  * Change to allow FTC Robot Controller APK to be auto-updated using FIRST Global Control Hub update scripts.
  * Removed samples for non supported / non legal hardware.
- * Improvements to Telemetry.addData block with "text" socket.
+ * Improvements to loki.Telemetry.addData block with "text" socket.
  * Updated Blocks sample op mode list to include Rover Ruckus Vuforia example.
  * Update SDK library version number.
      
@@ -167,7 +167,7 @@ Changes include:
     - Support for USB connected UVC webcams.
     - Refactored optimized Blocks Vuforia code to support Rover Ruckus image targets.
     - Added programming blocks to support PIDF (proportional, integral, derivative and feed forward) motor control.
-    - Added formatting options (under Telemetry and Miscellaneous categories) so user can set how many decimal places to display a numerical value.
+    - Added formatting options (under loki.Telemetry and Miscellaneous categories) so user can set how many decimal places to display a numerical value.
     - Support to play audio files (which are uploaded through Blocks web interface) on Driver Station in addition to the Robot Controller.
     - Fixed bug with Download Image of Blocks feature.
     - Support for REV Robotics Blinkin LED Controller.
@@ -465,7 +465,7 @@ Version 2.5 (internal release on released on 16.12.13)
      - Added type safety to blocks for Quaternion.
      - Added type safety to blocks for Servo.
      - Added type safety to blocks for ServoController.
-     - Added type safety to blocks for Telemetry.
+     - Added type safety to blocks for loki.Telemetry.
      - Added type safety to blocks for Temperature.
      - Added type safety to blocks for TouchSensor.
      - Added type safety to blocks for UltrasonicSensor.
@@ -694,7 +694,7 @@ Release 16.01.04
  * Corrrected "Dead zone" joystick code.
  * LED.getDeviceName and .getConnectionInfo() return null
  * apps check for ROBOCOL_VERSION mismatch
- * Fix for Telemetry also has off-by-one errors in its data string sizing / short size limitations error
+ * Fix for loki.Telemetry also has off-by-one errors in its data string sizing / short size limitations error
  * User telemetry output is sorted.
  * added formatting variants to DbgLog and RobotLog APIs
  * code modified to allow for a long list of op mode names.

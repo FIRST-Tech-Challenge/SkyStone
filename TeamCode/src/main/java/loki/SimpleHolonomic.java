@@ -40,6 +40,7 @@ public class SimpleHolonomic extends OpMode {
         lb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        //Gyro Stuff
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit           = BNO055IMU.AngleUnit.RADIANS;
         parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
@@ -76,9 +77,10 @@ public class SimpleHolonomic extends OpMode {
         //returns hypotonuse (C value in triangle)
 
         //calculate difference in starting angle and current angle
-        double angleDiff = startOrient - getHeading();
+        final double currentHeading = getHeading();
+        double angleDiff = startOrient - currentHeading;
 
-        double robotAngle = Math.atan2(y, x) + angleDiff;
+        double robotAngle = Math.atan2(y, x) - angleDiff;
         //return angle x (next to center of circle)
 
         double rightX = gamepad1.right_stick_x; //reverses rotation
@@ -96,8 +98,9 @@ public class SimpleHolonomic extends OpMode {
         lf.setPower(lfPow);
         lb.setPower(lbPow);
 
-        telemetry.addData("Robot Angle",robotAngle*(180/Math.PI));
-        telemetry.addData("heading", Math.toDegrees(getHeading()) );
+        telemetry.addData("Robot Angle", Math.toDegrees(robotAngle));
+        telemetry.addData("heading", Math.toDegrees(currentHeading));
+        telemetry.addData("anglediff", Math.toDegrees(angleDiff));
         telemetry.update();
     }
 }

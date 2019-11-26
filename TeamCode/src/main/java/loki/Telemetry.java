@@ -1,3 +1,5 @@
+package loki;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -7,8 +9,8 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp (name = "Test_TeleOp")
-public class Test_TeleOp extends OpMode{
+@TeleOp (name = "loki.Telemetry")
+public class Telemetry extends OpMode {
     DcMotor lf, rf, lb, rb, ls; //Define Motors In Code
     public Gamepad g1, g2;
     Servo clawL, clawR;
@@ -117,6 +119,8 @@ public class Test_TeleOp extends OpMode{
         double leftPower;
         double rightPower;
 
+
+        //Create dead zones
         leftPower = Math.abs(gamepad1.left_stick_y) > 0.05? gamepad1.left_stick_y : 0;
         rightPower = Math.abs(gamepad1.right_stick_y) > 0.05? gamepad1.right_stick_y : 0;
 
@@ -145,15 +149,22 @@ public class Test_TeleOp extends OpMode{
             clawL.setPosition(1);
         }
         if (gamepad2.b) {
-            clawR.setPosition(1);
-            clawL.setPosition(1);
+            clawR.setPosition(0);
+            clawL.setPosition(0);
         }
 
         //Linear Slide
         ls.setPower(gamepad2.left_stick_y);
 
+        telemetry.addData("rb", rb.getCurrentPosition());
+        telemetry.addData("rf", rf.getCurrentPosition());
+        telemetry.addData("lf", lf.getCurrentPosition());
+        telemetry.addData("lb", lb.getCurrentPosition());
+        telemetry.update();
 
     }
+
+
 
   /*  public class JoystickCalc
     {
@@ -184,5 +195,5 @@ public class Test_TeleOp extends OpMode{
             bButton = opmode.gamepad1.b;
             aButton = opmode.gamepad1.a;
         }*/
-    }
+}
 

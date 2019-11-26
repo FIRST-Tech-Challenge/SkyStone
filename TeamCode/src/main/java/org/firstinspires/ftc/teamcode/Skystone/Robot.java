@@ -29,8 +29,9 @@ import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.PathPoints;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.SplineGenerator;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Vector;
 
 import static org.firstinspires.ftc.teamcode.Skystone.MathFunctions.angleWrap;
@@ -470,7 +471,7 @@ public class Robot {
         EXTEND_OUTTAKE, RETRACT_OUTTAKE, RELEASE_FOUNDATION, START_INTAKE, STOP_INTAKE
     }
 
-    public void splineMove(double[][] data, double moveSpeed, double turnSpeed, double slowDownSpeed, double slowDownDistance, double optimalAngle, double angleLockRadians, double angleLockInches, Actions[] actions, Point[] actionPoints) {
+    public void splineMove(double[][] data, double moveSpeed, double turnSpeed, double slowDownSpeed, double slowDownDistance, double optimalAngle, double angleLockRadians, double angleLockInches, HashMap<Point, Actions> actions) {
         double posAngle;
         SplineGenerator s = new SplineGenerator(data);
         double[][] pathPoints = s.getOutputData();
@@ -553,34 +554,37 @@ public class Robot {
             }
 
             // go through all actionpoints and see if the robot is near one
-            for (int i = 0; i < actionPoints.length; i++){
-                if (Math.hypot(actionPoints[i].x - robotPos.x, actionPoints[i].y - robotPos.y) < 20){
-                    telemetry.addLine("WITHIN RANGE FROM A HOTSPOT");
-                    telemetry.update();
-                    // if it is near a action point then check the corresponding action to see which action it is
-                    if (actions[i] == Actions.EXTEND_OUTTAKE && !hasExtendedOuttake){
-                        isExendingOuttake = true;
-                        hasExtendedOuttake = true;
-                        isRetractingOuttake = false;
-                        extendOuttakeStartTime = SystemClock.elapsedRealtime();
-                        intakePusher.setPosition(PUSHER_PUSHED);
-                    } else if (actions[i] == Actions.RETRACT_OUTTAKE && !hasRetractedOuttake){
-                        intakePusher.setPosition(PUSHER_RETRACTED); // Reset intake pusher
-                        clamp.setPosition(CLAW_SERVO_RELEASED);
-                        isRetractingOuttake = true;
-                        hasRetractedOuttake = true;
-                        isExendingOuttake = false;
-                        retractOuttakeStartTime = SystemClock.elapsedRealtime();
-                    } else if (actions[i] == Actions.RELEASE_FOUNDATION && !hasReleasedFoundation){
-                        isReleasingFoundation = true;
-                        hasReleasedFoundation = true;
-                    } else if (actions[i] == Actions.START_INTAKE && !hasStartedIntake){
-                        clamp.setPosition(CLAW_SERVO_RELEASED);
-                        isStartingIntake = true;
-                        hasStartedIntake = true;
-                    } else if (actions[i] == Actions.STOP_INTAKE && !hasStoppedIntake){
-                        isStoppingIntake = true;
-                        hasStoppedIntake = true;
+            if (actions.size() != 0) {
+                Iterator actionIterator = actions.entrySet().iterator();
+                for (int i = 0; i < actions.size(); i++) {
+                    Map.Entry<Point,Robot.Actions> possibleAction = (Map.Entry<Point, Actions>) actionIterator.next();
+
+                    Point actionPoint = possibleAction.getKey();
+                    Actions executableAction = possibleAction.getValue();
+                    if (Math.hypot(actionPoint.x - robotPos.x, actionPoint.y - robotPos.y) < 20) {
+                        telemetry.addLine("WITHIN RANGE FROM A HOTSPOT");
+                        telemetry.update();
+                        // if it is near a action point then check the corresponding action to see which action it is
+                        if (executableAction == Actions.EXTEND_OUTTAKE && !hasExtendedOuttake) {
+                            isExendingOuttake = true;
+                            hasExtendedOuttake = true;
+                            extendOuttakeStartTime = SystemClock.elapsedRealtime();
+                        } else if (executableAction == Actions.RETRACT_OUTTAKE && !hasRetractedOuttake) {
+                            isRetractingOuttake = true;
+                            hasRetractedOuttake = true;
+                            retractOuttakeStartTime = SystemClock.elapsedRealtime();
+                        } else if (executableAction == Actions.RELEASE_FOUNDATION && !hasReleasedFoundation) {
+                            isReleasingFoundation = true;
+                            hasReleasedFoundation = true;
+                        } else if (executableAction == Actions.START_INTAKE && !hasStartedIntake) {
+                            isStartingIntake = true;
+                            hasStartedIntake = true;
+                        } else if (executableAction == Actions.STOP_INTAKE && !hasStoppedIntake) {
+                            isStoppingIntake = true;
+                            hasStoppedIntake = true;
+                        }
+
+                        actions.remove(actionPoint);
                     }
                 }
             }

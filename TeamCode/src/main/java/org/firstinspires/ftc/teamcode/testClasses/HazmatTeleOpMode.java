@@ -13,8 +13,8 @@ import org.firstinspires.ftc.teamcode.subsystems.*;
 public class HazmatTeleOpMode extends LinearOpMode{
     public void runOpMode() {
         //Instantiate Controller and Robot
-        Controller controller = new Controller(gamepad1);
-        Robot robot = new Robot(hardwareMap);
+        Controller myController = new Controller(gamepad1);
+        Robot myRobot = new Robot(hardwareMap);
 
         telemetry.addData("Init", "v:1.0");
         //Wait for pressing plan on controller
@@ -22,7 +22,7 @@ public class HazmatTeleOpMode extends LinearOpMode{
 
         //Run Robot based on Tonctoller inputs
         while (opModeIsActive()) {
-            robot.run(controller);
+            myRobot.run(myController);
             telemetry.update();
             }
     }

@@ -14,11 +14,11 @@ import java.util.HashMap;
 public class TeleOpMode extends LinearOpMode {
     public void runOpMode() {
         Controller controller = new Controller(gamepad1);
-        Robot robot = new Robot(hardwareMap);
-        Chassis chassis = new Chassis(hardwareMap);
+        Robot myRobot = new Robot(hardwareMap);
+        Chassis myChassis = new Chassis(hardwareMap);
         //chassis.reverseMotors(new DcMotor[]{chassis.frontRight, chassis.backRight});
-        robot.setChassis(chassis);
-        robot.intake.setwrist(1);
+        myRobot.setChassis(chassis);
+        myRobot.intake.setwrist(1);
         telemetry.addData("Init", "v:1.0");
         waitForStart();
         while (opModeIsActive()) {
@@ -28,7 +28,7 @@ public class TeleOpMode extends LinearOpMode {
                 //telemetry.addData("thing:", robot.chassis.getAverageMotorError());
                 telemetry.update();
             }
-            robot.run(controller);
+            myRobot.run(controller);
             telemetry.update();
         }
     }

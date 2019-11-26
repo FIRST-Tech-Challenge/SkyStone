@@ -37,7 +37,7 @@ public class MecanumHardwareMap
     public MotorManager intakeMotorManager;
 
     public final double wheelRadius = 4; //inches
-    private static final double wheelToMotorRatio = 2.0/1.0;
+    private static final double wheelToMotorRatio = 1.0/1.0;
 
     public DcMotor[] motorList;
 
@@ -56,8 +56,8 @@ public class MecanumHardwareMap
         driveRearRight = hwMap.get(DcMotor.class, "driveRearRight");
         driveRearLeft = hwMap.get(DcMotor.class, "driveRearLeft");
 
-        intakeLeft = hwMap.get(DcMotor.class, "intakeLeft");
-        intakeRight = hwMap.get(DcMotor.class, "intakeRight");
+        //intakeLeft = hwMap.get(DcMotor.class, "intakeLeft");
+        //intakeRight = hwMap.get(DcMotor.class, "intakeRight");
 
         motorList = new DcMotor[]{driveFrontLeft, driveFrontRight, driveRearLeft, driveRearRight};
 
@@ -76,8 +76,8 @@ public class MecanumHardwareMap
         driveRearRight.setDirection(DcMotorSimple.Direction.FORWARD);
         driveRearLeft.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        intakeLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        intakeRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        //intakeLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        //intakeRight.setDirection(DcMotorSimple.Direction.FORWARD);
 
         //servoClaw = hwMap.get(Servo.class, "servoClaw");
         //servoClaw.setDirection(Servo.Direction.FORWARD);
@@ -96,7 +96,7 @@ public class MecanumHardwareMap
 
         drivetrain = new MecanumDrivetrain(motorList);
         //servoManager = new ServoManager(new Servo[]{servoClaw});
-        intakeMotorManager = new MotorManager(new DcMotor[]{intakeLeft, intakeRight});
+        //intakeMotorManager = new MotorManager(new DcMotor[]{intakeLeft, intakeRight});
         motorTicksPerInch = drivetrain.getTicksPerInch(wheelRadius, wheelToMotorRatio);
     }
 }

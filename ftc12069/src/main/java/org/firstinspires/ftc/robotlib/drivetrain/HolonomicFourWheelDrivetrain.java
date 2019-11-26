@@ -222,7 +222,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
      */
     public double getTicksPerInch(double wheelRadius, double motorToWheelRatio)
     {
-        return (wheelRadius * motorToWheelRatio * 2 * Math.PI) / getTicksPerUnit();
+        return getTicksPerUnit() / (wheelRadius * motorToWheelRatio * 2 * Math.PI);
     }
 
     /**

@@ -1,14 +1,18 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import static java.lang.Boolean.FALSE;
 
 /**
  *  Definition of Robot Chassis.
  *  Chassis has :
  *      4 DC motors connected to Mecanum wheels
  *      1 limit switch on left front bumper to identify hitting to foundation plate or other walls
- *      1 light sensor pointing down (to identify red / blue lines below skybridge for parking
+ *      2 Color sensors pointing down one on left and another on right
+ *      (to identify red / blue lines below skybridge for parking
  *
  * @ChassisMethods : Chassis(HardwareMap) - Constructor
  * @ChassisMethods : initChassis()
@@ -18,6 +22,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
  * @ChassisMethods : runDistance()
  * @ChassisMethods : runTill_frontleftBumperSensor_Pressed(max stop distance)
  * @ChassisMethods : runTill_chassisLocationSensorIdentifiesLine(color)
+ * @ChassisMethods : resetColorSensorEnabled
+ * @ChassisMethods : leftColorSensorIsRed()
+ * @ChassisMethods : rightColorSensorIsBlue()
  *
  */
 
@@ -32,7 +39,10 @@ public class Chassis {
     public DcMotor backLeft;
     public DcMotor backRight;
     //Declare TouchSensor frontleftBumperSensor #TOBEFILLED
-    //Declare LightSensor chassisLocationSensor #TOBEFILLED
+
+    //Declare Color Sensors
+    public ColorSensor leftColorSensor;
+    public ColorSensor rightColorSensor;
 
     //Declare Chassis Configuration variables
     public Double wheelRadius;
@@ -42,12 +52,19 @@ public class Chassis {
 
     //Constructor
     public Chassis(HardwareMap hardwareMap) {
+        //Map DCMotors from configuration
         frontLeft = hardwareMap.dcMotor.get("front_left_drive");
         frontRight = hardwareMap.dcMotor.get("front_right_drive");
         backLeft = hardwareMap.dcMotor.get("back_left_drive");
         backRight = hardwareMap.dcMotor.get("back_right_drive");
+
+        //Map TouchSensor from configuration
         //frontleftBumperSensor = #TOBEFILLED
-        //chassisLocationSensor = #TOBEFILLED
+
+        //Map ColorSensors from configuration
+        leftColorSensor = hardwareMap.colorSensor.get("left_color");
+        rightColorSensor = hardwareMap.colorSensor.get("right_color");
+
         configureRobot();
         initChassis();
     }
@@ -69,7 +86,7 @@ public class Chassis {
     public void initChassis() {
         resetChassis();
         setZeroBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
         //setfrontleftBumperSensorMode = #TOBEFILLED
         //frontleftBumperSensorMode = #TOBEFILLED
     }
@@ -78,6 +95,8 @@ public class Chassis {
      * Reset function for motor encoders to be set to reset state of encoder.
      * Usage of this is typically followed by using setZeroBehaviour and then setting
      * the mode for the motor
+     *
+     * Reset Color Sensors to off for TeleOpMode
      */
     public void resetChassis() {
 
@@ -100,7 +119,8 @@ public class Chassis {
         //frontleftBumperSensor = #TOBEFILLED
         //chassisLocationSensor = #TOBEFILLED
 
-
+        leftColorSensor.enableLed(FALSE);
+        rightColorSensor.enableLed(FALSE);
     }
 
     /**
@@ -116,16 +136,59 @@ public class Chassis {
     }
 
     /**
-     * Set the mode of the DC motor to RUN_WITHOUT_ENCODER (run at achievable velocity
-     * RUN_USING_ENCODER (run at a targeted velocity or RUN_TO_POSITION (PID based rotation to
-     * achieve the desited encoder count
+     * Set the mode of the DC motor to RUN_WITHOUT_ENCODER (run at achievable velocity)
+     * RUN_USING_ENCODER (run at a targeted velocity) or RUN_TO_POSITION (PID based rotation to
+     * achieve the desited encoder count)
      * @param runMode
      */
-    public void setMode(DcMotor.RunMode runMode) {
+    public void setMotorMode(DcMotor.RunMode runMode) {
         frontLeft.setMode(runMode);
         frontRight.setMode(runMode);
         backLeft.setMode(runMode);
         backRight.setMode(runMode);
+    }
+
+    /**
+     * Method to set the ColorSensor to be enabled or disabled
+     * @param colorSensorEnabled
+     */
+    public void setLeftColorSensorEnabled(boolean colorSensorEnabled){
+        leftColorSensor.enableLed(colorSensorEnabled);
+    }
+
+    /**
+     * Method to set the ColorSensor to be enabled or disabled
+     * @param colorSensorEnabled
+     */
+    public void setRightColorSensordEnabled(boolean colorSensorEnabled){
+             rightColorSensor.enableLed(colorSensorEnabled);
+    }
+
+
+    /**
+     * Method to check for left Color Sensor crossing over Red Line
+     * Used in Autonomous mode to stop below Red Skybridge after moving foundation to wall.
+     * @return
+     */
+    public boolean leftColorSensorIsRed() {
+        if (leftColorSensor.red()>127 && leftColorSensor.green()<127 && leftColorSensor.blue()<127) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Method to check for right Color Sensor crossing over Blue Line
+     * Used in Autonomous mode to stop below Red Skybridge after moving foundation to wall.
+     * @return
+     */
+    public boolean rightColorSensorIsBlue() {
+        if (leftColorSensor.red()<127 && leftColorSensor.green()<127 && leftColorSensor.blue()>127) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -172,7 +235,7 @@ public class Chassis {
         frontRight.setPower(power);
         backLeft.setPower(power);
         backRight.setPower(power);
-        setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        setMotorMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     /**
@@ -182,7 +245,7 @@ public class Chassis {
      * @param power
      */
     public void runRotations(double rotations, double power) {
-        setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
         resetChassis();
 
         frontLeft.setPower(power);
@@ -196,7 +259,7 @@ public class Chassis {
         frontRight.setPower(0);
         backLeft.setPower(0);
         backRight.setPower(0);
-        setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
 

@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 /**
  * Definition of Robot Arm.
  * Arm has :
- *      1 motor to lift wrist and grip to set levels
+ *      1 motor to lift Intake to set levels
  *      Levels are :
  *          6 blockLevels for brick placement
  *          groundLevel as the arm is resting on ground
@@ -49,7 +49,7 @@ public class Arm {
     int onFoundationLevel = -10; //#TOBEFILLED correctly
 
     int currentLevel = 0;
-    int MAXBLOCKLEVEL = 6;
+    int MAX_BLOCK_LEVEL = 6;
     int DROP_BLOCK_HEIGHT = 10;
     int LIFT_BLOCK_HEIGHT = 40;
 
@@ -135,7 +135,7 @@ public class Arm {
      * Method to move arm up by a block level from current level in TeleOp
      */
     public void moveArm_blockLevelUp(){
-        if (currentLevel != MAXBLOCKLEVEL) {
+        if (currentLevel != MAX_BLOCK_LEVEL) {
             armMotor.setTargetPosition(blockLevel[currentLevel+1]);
             currentLevel++;
             runArmToLevel();
@@ -150,6 +150,8 @@ public class Arm {
             armMotor.setTargetPosition(blockLevel[currentLevel-1]);
             currentLevel--;
             runArmToLevel();
+        } else {
+            releaseArmMotor();
         }
     }
 
@@ -190,6 +192,14 @@ public class Arm {
         }*/
     }
 
+    /**
+     * Method to release the Arm motor to no power
+     */
+    public void releaseArmMotor(){
+        armMotor.setPower(0);
+    }
+
+    //#TOBEDELETED
     public void setArm(int level) {
         armMotor.setTargetPosition(blockLevel[level]-10);
     }

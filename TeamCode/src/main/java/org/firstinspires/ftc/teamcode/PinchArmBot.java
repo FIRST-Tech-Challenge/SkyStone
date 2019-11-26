@@ -76,6 +76,11 @@ public class PinchArmBot extends FourWheelsDriveBot {
         return;
     }
 
+    public void originalPosition(){
+        servoArm.setPosition(PINCH_ARM_FOLD);
+        servoPinch.setPosition(PINCH_RELEASE);
+    }
+
     public void armVertical(){
         servoArm.setPosition(PINCH_ARM_VERTICAL);
     }

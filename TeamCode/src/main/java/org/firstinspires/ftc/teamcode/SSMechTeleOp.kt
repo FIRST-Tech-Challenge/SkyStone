@@ -26,7 +26,7 @@ class SSMechTeleOp : OpMode() {
     var curPos = 0
     var leftPower: Float = 0.0.toFloat()
     var rightPower: Float = 0.0.toFloat()
-    val max = 7100
+    val max = 7050
     var strafePow: Double = 0.00
     var drive = 0.0
     var turn = 0.0
@@ -80,13 +80,19 @@ class SSMechTeleOp : OpMode() {
         robot.dropHook(gamepad2)
 
         if (touched) telemetry.addData("Touch Sensor:", "Activated")
+
         if (tooHigh) telemetry.addData("Linear Slide Y Error:", "MAX HEIGHT REACHED")
+
         if (tooLow) telemetry.addData("Linear Slide Y Error:", "MIN HEIGHT REACHED")
+
         if (gamepad1.left_bumper) telemetry.addData("Slowdown:", "Engaged!")
+
         telemetry.addData("Linear Slide V: $linSlidePow", "") //kotlin string templates
+
         telemetry.addData("Attachments:", "HSlide = ${robot.hSlide?.position?.toFloat()}, " +
                 "Claw = ${robot.claw?.position?.toFloat()}, " +
                 "VSlide = ${curPos.toFloat()}", "")
+
         telemetry.addData("GP: stick 1 = ${gamepad1.left_stick_x}, ${gamepad1.left_stick_y}; " +
                 "stick 2 = ${gamepad1.right_stick_x}, ${gamepad1.right_stick_y}", "")
     }
@@ -102,7 +108,7 @@ class SSMechTeleOp : OpMode() {
         // Put powers in the range of -1 to 1 only if they aren't already (not
         // checking would cause us to always drive at full speed)
 
-        slowDown = if (gamepad1.left_bumper) 1.5 else 1.00 //condensed if else
+        slowDown = if (gamepad1.left_bumper) 3.0 else 1.00 //condensed if else
 
 
         var drive = (gamepad1.left_stick_y).toDouble()
@@ -125,10 +131,10 @@ class SSMechTeleOp : OpMode() {
         // Divide everything by nor (it's positive so we don't need to worry
         // about signs)
         //need to compensate for difference in core hex and 40:1 motors
-        robot.fLDrive?.power = frontLeftPower / nor
-        robot.bLDrive?.power = backLeftPower / nor
-        robot.fRDrive?.power = frontRightPower / nor
-        robot.bRDrive?.power = backRightPower / nor
+        robot.fLDrive?.power = frontLeftPower / slowDown / nor
+        robot.bLDrive?.power = backLeftPower / slowDown / nor
+        robot.fRDrive?.power = frontRightPower / slowDown / nor
+        robot.bRDrive?.power = backRightPower / slowDown / nor
         telemetry.addData("front left: $frontLeftPower, front right: $frontRightPower, back left: $backLeftPower, back right: $backRightPower", "")
 
     }

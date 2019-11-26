@@ -16,7 +16,7 @@ public class TeleOpMode extends LinearOpMode {
         Controller controller = new Controller(gamepad1);
         Robot myRobot = new Robot(hardwareMap);
         Chassis myChassis = new Chassis(hardwareMap);
-        //chassis.reverseMotors(new DcMotor[]{chassis.frontRight, chassis.backRight});
+        chassis.reverseMotors(new DcMotor[]{chassis.frontRight, chassis.backRight});
         myRobot.setChassis(chassis);
         myRobot.intake.setwrist(1);
         telemetry.addData("Init", "v:1.0");

@@ -2,9 +2,8 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
-import static java.lang.Boolean.FALSE;
 
 /**
  *  Definition of Robot Chassis.
@@ -38,7 +37,9 @@ public class Chassis {
     public DcMotor frontRight;
     public DcMotor backLeft;
     public DcMotor backRight;
-    //Declare TouchSensor frontleftBumperSensor #TOBEFILLED
+
+    //Declare TouchSensor on front left Bumper
+    public TouchSensor frontleftBumperSensor;
 
     //Declare Color Sensors
     public ColorSensor leftColorSensor;
@@ -59,7 +60,7 @@ public class Chassis {
         backRight = hardwareMap.dcMotor.get("back_right_drive");
 
         //Map TouchSensor from configuration
-        //frontleftBumperSensor = #TOBEFILLED
+        frontleftBumperSensor = hardwareMap.touchSensor.get("front_left_touch");
 
         //Map ColorSensors from configuration
         leftColorSensor = hardwareMap.colorSensor.get("left_color");
@@ -76,7 +77,10 @@ public class Chassis {
         //wheelRadius =
         //robotRadius =
 
-        configureRobot = false;
+        //#TOBEFILLED Reverse direction of front right and back right motors for mecanum
+        frontRight.setDirection(DcMotor.Direction.REVERSE)
+        backRight.setDirection(DcMotor.Direction.REVERSE)
+        configureRobot = true;
     }
 
 
@@ -85,10 +89,9 @@ public class Chassis {
      */
     public void initChassis() {
         resetChassis();
+        configureRobot();
         setZeroBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //setfrontleftBumperSensorMode = #TOBEFILLED
-        //frontleftBumperSensorMode = #TOBEFILLED
     }
 
     /**
@@ -116,11 +119,8 @@ public class Chassis {
         backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backRight.setMode(runMode);
 
-        //frontleftBumperSensor = #TOBEFILLED
-        //chassisLocationSensor = #TOBEFILLED
-
-        leftColorSensor.enableLed(FALSE);
-        rightColorSensor.enableLed(FALSE);
+        leftColorSensor.enableLed(false);
+        rightColorSensor.enableLed(false);
     }
 
     /**
@@ -274,6 +274,23 @@ public class Chassis {
      * @param power
      */
     public void runTill_frontleftBumperSensor_Pressed(double max_stop_distance, double targetAngle, double turn, double power) {
+        //#TOBEFILLED
+        final double turnAngle = targetAngle - Math.PI / 4;
+        final double wheelDistance = (Math.sqrt(2) / wheelRadius) * distance;
+        final double robotTurn = robotRadius * turn;
+
+        //#TOBEFILLED
+        frontLeft.setTargetPosition((int) (wheelDistance * Math.cos(turnAngle) + robotTurn));
+        frontRight.setTargetPosition((int) (wheelDistance * Math.sin(turnAngle) - robotTurn));
+        backLeft.setTargetPosition((int) (wheelDistance * Math.sin(turnAngle) + robotTurn));
+        backRight.setTargetPosition((int) (wheelDistance * Math.cos(turnAngle) - robotTurn));
+
+        //#TOBEFILLED
+        frontLeft.setPower(power);
+        frontRight.setPower(power);
+        backLeft.setPower(power);
+        backRight.setPower(power);
+        setMotorMode(DcMotor.RunMode.RUN_TO_POSITION);
 
     }
 

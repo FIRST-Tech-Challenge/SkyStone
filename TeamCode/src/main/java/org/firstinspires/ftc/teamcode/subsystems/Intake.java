@@ -4,8 +4,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import static java.lang.Boolean.FALSE;
-
 /**
  * Definition of Intake Mechanism.
  * Intake has :
@@ -103,7 +101,7 @@ public class Intake{
      * Method to set Intake Color sensor Off
      */
     public void resetIntake() {
-        detectSkystone.enableLed(FALSE);
+        detectSkystone.enableLed(false);
         moveWristToHorizontal();
         openGrip();
     }

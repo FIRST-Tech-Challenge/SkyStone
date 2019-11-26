@@ -27,6 +27,7 @@ class SSMechRobot {
 
     fun init(ahwdMap: HardwareMap) {
         //hardware maping motors, servos, and sensors
+        //TODO: use list and iterate over
         hwdMap = ahwdMap
         bLDrive = ahwdMap.dcMotor.get("bLDrive")
         bRDrive = ahwdMap.dcMotor.get("bRDrive")

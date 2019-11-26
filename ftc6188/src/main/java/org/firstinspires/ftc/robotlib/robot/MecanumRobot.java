@@ -20,8 +20,8 @@ public class MecanumRobot
     private DcMotor[] motorList;
 
     // Platform servos
-    private Servo servoClawLeft;
-    private Servo servoClawRight;
+    protected Servo servoClawLeft;
+    protected Servo servoClawRight;
 
     // Drive constants
     private static final double wheelRadius = 2; //inches
@@ -65,7 +65,7 @@ public class MecanumRobot
         servoClawRight = hwMap.get(Servo.class, "servoClawRight");
 
         servoClawLeft.setDirection(Servo.Direction.FORWARD);
-        servoClawRight.setDirection(Servo.Direction.REVERSE);
+        servoClawRight.setDirection(Servo.Direction.FORWARD);
 
         // Construct the drive and arm systems
         motorList = new DcMotor[]{driveFrontLeft, driveFrontRight, driveRearLeft, driveRearRight};

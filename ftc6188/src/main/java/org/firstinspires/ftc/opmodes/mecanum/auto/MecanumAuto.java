@@ -20,10 +20,10 @@ public class MecanumAuto extends LinearOpMode
         robot.platformServos.setPosition(1);
         robot.drivetrain.autoPosition(180, 24, 1, 0);
         robot.platformServos.setPosition(0);
-        robot.drivetrain.autoPosition(90, 24, 1, 0);
-        robot.drivetrain.autoPosition(0, 20, 1, 0);
         robot.drivetrain.autoPosition(270, 24, 1, 0);
+        robot.drivetrain.autoPosition(0, 20, 1, 0);
+        robot.drivetrain.autoPosition(90, 24, 1, 0);
         robot.drivetrain.autoPosition(180, 36, 1, 0);
-        robot.drivetrain.autoPosition(90, 36, 1, 0);
+        robot.drivetrain.autoPosition(270, 36, 1, 0);
     }
 }

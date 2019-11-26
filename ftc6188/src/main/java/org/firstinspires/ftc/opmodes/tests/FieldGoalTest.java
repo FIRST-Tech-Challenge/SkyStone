@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.opmodes.tests;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotlib.robot.FieldGoalRobot;
 import org.firstinspires.ftc.robotlib.state.Button;
 
+@Disabled
 @TeleOp(name="FieldGoal Test", group="Test")
 public class FieldGoalTest extends OpMode
 {

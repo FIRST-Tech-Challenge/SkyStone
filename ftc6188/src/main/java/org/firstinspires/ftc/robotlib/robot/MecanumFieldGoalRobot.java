@@ -2,16 +2,19 @@ package org.firstinspires.ftc.robotlib.robot;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotlib.armsystem.FieldGoalArmSystem;
 import org.firstinspires.ftc.robotlib.motor.LimitedMotor;
+import org.firstinspires.ftc.robotlib.sound.BasicSound;
 
 public class MecanumFieldGoalRobot extends MecanumRobot
 {
     // Motors but now they're a new kind of motor
     private LimitedMotor armVerticalSlide;
     private LimitedMotor armHorizontalSlide;
+    public Servo armGripSlide;
 
     // FieldGoalArmSystem much like a drivetrain
     public FieldGoalArmSystem armSystem;
@@ -20,12 +23,20 @@ public class MecanumFieldGoalRobot extends MecanumRobot
     private static final int[] VERTICAL_LIMITS = {0, 1270};
     private static final int[] HORIZONTAL_LIMITS = {-1400, -400};
 
+    // Sound players
+    public BasicSound basicSound;
+
     public MecanumFieldGoalRobot(HardwareMap hwMap, Telemetry telemetry, boolean teleOpMode)
     {
         super(hwMap, telemetry, teleOpMode);
+        // Sound init
+        basicSound = new BasicSound("police_siren", hwMap, 0, true);
+        basicSound.stopSound();
 
+        // Motors init
         armVerticalSlide = new LimitedMotor(hwMap.get(DcMotor.class, "armVerticalSlide"), VERTICAL_LIMITS[0], VERTICAL_LIMITS[1]);
         armHorizontalSlide = new LimitedMotor(hwMap.get(DcMotor.class, "armHorizontalSlide"), HORIZONTAL_LIMITS[0], HORIZONTAL_LIMITS[1]);
+        armGripSlide = hwMap.get(Servo.class, "armGripSlide");
 
         // Disables the limiting function of the LimitedMotors for testing
         armVerticalSlide.setLimited(true);
@@ -38,43 +49,24 @@ public class MecanumFieldGoalRobot extends MecanumRobot
     @Override
     public void informationUpdate()
     {
-        telemetry.addData("> Target Positions", "-----");
-        telemetry.addData("WheelTarget FL", drivetrain.motorList[0].getTargetPosition());
-        telemetry.addData("WheelTarget FR", drivetrain.motorList[1].getTargetPosition());
-        telemetry.addData("WheelTarget RL", drivetrain.motorList[2].getTargetPosition());
-        telemetry.addData("WheelTarget RR", drivetrain.motorList[3].getTargetPosition());
-        telemetry.addData("Distance Target", drivetrain.getTargetPosition());
+        telemetry.addData("> Drive Info", "-----");
+        telemetry.addData("Half Power Mode(G1-RStickButton)", drivetrain.getLowPower());
+        telemetry.addData("Course Degrees", drivetrain.getCourse());
+        telemetry.addData("Velocity", drivetrain.getVelocity());
+        telemetry.addData("Rotation", drivetrain.getRotation());
 
-        telemetry.addData("> Wheel Positions", "-----");
-        telemetry.addData("WheelPos FL", drivetrain.motorList[0].getCurrentPosition());
-        telemetry.addData("WheelPos FR", drivetrain.motorList[1].getCurrentPosition());
-        telemetry.addData("WheelPos RL", drivetrain.motorList[2].getCurrentPosition());
-        telemetry.addData("WheelPos RR", drivetrain.motorList[3].getCurrentPosition());
-        telemetry.addData("Current Pos", drivetrain.getCurrentPosition());
-
-        telemetry.addData("> Wheel Powers", "-----");
-        telemetry.addData("WheelPower FL", drivetrain.motorList[0].getPower());
-        telemetry.addData("WheelPower FR", drivetrain.motorList[1].getPower());
-        telemetry.addData("WheelPower RL", drivetrain.motorList[2].getPower());
-        telemetry.addData("WheelPower RR", drivetrain.motorList[3].getPower());
-
-        telemetry.addData("> Drivetrain Info", "-----");
-        telemetry.addData("Course Radians", drivetrain.getCourse());
-        telemetry.addData("Course Degrees", drivetrain.getCourse() * Math.PI/180);
-        telemetry.addData("Rotation Target", drivetrain.getRotation());
-        telemetry.addData("Velocity Target", drivetrain.getVelocity());
-
-        telemetry.addData("> Arm Info", "-----");
-        telemetry.addData("Vertical Power", armVerticalSlide.getPower());
-        telemetry.addData("Vertical Position", armVerticalSlide.getPosition());
-        telemetry.addData("Vertical Limited", armVerticalSlide.isLimited());
-        telemetry.addData("Horizontal Power", armHorizontalSlide.getPower());
-        telemetry.addData("Horizontal Position", armHorizontalSlide.getPosition());
-        telemetry.addData("Horizontal Limited", armHorizontalSlide.isLimited());
+        telemetry.addData("> Arm Info", "Limited(G2-B)? " + armVerticalSlide.isLimited());
+        telemetry.addData("Vertical Position(G2-LStickY)", armVerticalSlide.getPosition());
+        telemetry.addData("Horizontal Position(G2-RStickY", armHorizontalSlide.getPosition());
 
         telemetry.addData("> Servo Info", "-----");
-        telemetry.addData("Servo Pos", "One: " + platformServos.getServoOne().getPosition() + " Two: " + platformServos.getServoTwo().getPosition());
-        telemetry.addData("Linked Pos", platformServos.getPosition());
+        telemetry.addData("Platform Servos Pos(G2-DpadUp/DpadDown)", platformServos.getPosition());
+        telemetry.addData("Platform Claw Left", "Pos: " + servoClawLeft.getPosition());
+        telemetry.addData("Platform Claw Right", "Pos: " + servoClawRight.getPosition());
+        telemetry.addData("Arm Grip Slide(G2-Y/A)", armGripSlide.getPosition());
+
+        telemetry.addData("> Sound Info", "Playing(G1-X)? " + basicSound.isSoundPlaying());
+
         telemetry.update();
     }
 }

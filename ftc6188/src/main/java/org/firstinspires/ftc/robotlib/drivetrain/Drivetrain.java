@@ -42,7 +42,7 @@ abstract public class Drivetrain
         double[] motorPowers = calculateMotorPowers();
         for (int motorIndex = 0; motorIndex < motorPowers.length; motorIndex++)
         {
-            motorList[motorIndex].setPower(motorPowers[motorIndex] * (getLowPower() ? 0.75 : 1));
+            motorList[motorIndex].setPower(motorPowers[motorIndex] * (getLowPower() ? 0.35 : 1));
         }
     }
 

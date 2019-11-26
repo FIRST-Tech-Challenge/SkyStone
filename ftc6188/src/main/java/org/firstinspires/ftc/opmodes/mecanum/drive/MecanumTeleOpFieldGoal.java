@@ -1,12 +1,10 @@
 package org.firstinspires.ftc.opmodes.mecanum.drive;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotlib.robot.MecanumFieldGoalRobot;
-import org.firstinspires.ftc.robotlib.sound.BasicSound;
 import org.firstinspires.ftc.robotlib.state.Button;
 import org.firstinspires.ftc.robotlib.state.ToggleBoolean;
 
@@ -20,12 +18,11 @@ public class MecanumTeleOpFieldGoal extends OpMode
     // Buttons and toggles
     private ToggleBoolean driverTwoBrakes;  //freezes robot in place for stacking, prevents stick bumping from driver one
     private Button playSound;
-    private Button servosUp;
-    private Button servosDown;
+    private Button platformServoUp;
+    private Button platformServoDown;
+    private Button armServoUp;
+    private Button armServoDown;
     private Button toggleLimited;
-
-    // Sound players
-    private BasicSound basicSound;
 
     @Override
     public void init()
@@ -35,11 +32,11 @@ public class MecanumTeleOpFieldGoal extends OpMode
 
         driverTwoBrakes = new ToggleBoolean(false);
         playSound = new Button();
-        servosUp = new Button();
-        servosDown = new Button();
+        platformServoUp = new Button();
+        platformServoDown = new Button();
+        armServoUp = new Button();
+        armServoDown = new Button();
         toggleLimited = new Button();
-
-        basicSound = new BasicSound("police_siren", this.hardwareMap, 0, true);
     }
 
     @Override
@@ -73,17 +70,19 @@ public class MecanumTeleOpFieldGoal extends OpMode
         robot.drivetrain.setRotation(-gamepad1.left_stick_x);
 
         // sound
-        if (playSound.onRelease()) { basicSound.toggleSound(); }
+        if (playSound.onRelease()) { robot.basicSound.toggleSound(); }
 
 
         //DRIVER TWO
         // gamepad 2 inputs
-        servosUp.input(gamepad2.dpad_up);
-        servosDown.input(gamepad2.dpad_down);
+        platformServoUp.input(gamepad2.dpad_up);
+        platformServoDown.input(gamepad2.dpad_down);
+        armServoUp.input(gamepad2.y);
+        armServoDown.input(gamepad2.a);
         toggleLimited.input(gamepad2.b);
-        driverTwoBrakes.input(gamepad2.left_bumper);
+        driverTwoBrakes.input(gamepad2.left_bumper || gamepad1.left_bumper);
 
-        if (toggleLimited.isPressed())
+        if (toggleLimited.onRelease())
         {
             robot.armSystem.getVerticalLimitedMotor().setLimited(!robot.armSystem.getVerticalLimitedMotor().isLimited());
             robot.armSystem.getHorizontalLimitedMotor().setLimited(!robot.armSystem.getHorizontalLimitedMotor().isLimited());
@@ -92,6 +91,12 @@ public class MecanumTeleOpFieldGoal extends OpMode
         robot.armSystem.setVerticalPower(gamepad2.left_stick_y);
         robot.armSystem.setHorizontalPower(gamepad2.right_stick_y);
 
+        if (platformServoUp.onRelease()) { robot.platformServos.setPosition(1); }
+        else if (platformServoDown.onRelease()) { robot.platformServos.setPosition(0); }
+
+        if (armServoUp.onRelease()) { robot.armGripSlide.setPosition(1); }
+        else if (armServoDown.onRelease()) { robot.armGripSlide.setPosition(0); }
+
         //TELEMETRY
         robot.informationUpdate();
     }
@@ -99,7 +104,7 @@ public class MecanumTeleOpFieldGoal extends OpMode
     @Override
     public void stop()
     {
-        basicSound.stopSound(); // very important otherwise it will keep playing forever
+        robot.basicSound.stopSound(); // very important otherwise it will keep playing forever
 
         telemetry.addData("Status", "Stop");
         telemetry.update();

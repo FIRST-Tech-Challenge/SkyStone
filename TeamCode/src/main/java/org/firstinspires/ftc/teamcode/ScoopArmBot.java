@@ -38,14 +38,53 @@ public class ScoopArmBot extends PinchArmBot {
         opMode.sleep(2000);
         opMode.telemetry.log().add(String.format("scoopStone %.2f", servoScoop.getPosition()));
     }
-
     public void scoopSetPosition(boolean buttonB, boolean buttonY, boolean buttonX) {
         if (buttonB) {
             servoScoop.setPosition(0.1);
+            servoArm.setPosition(PINCH_ARM_FOLD);
         } else if (buttonY) {
-            servoScoop.setPosition(0.4);
+            servoScoop.setPosition(0.18);
+            opMode.sleep(600);
+            servoArm.setPosition(PINCH_ARM_FOLD);
         } else if (buttonX) {
-            servoScoop.setPosition(0.7);
+            servoScoop.setPosition(0.5);
+            servoArm.setPosition(PINCH_ARM_VERTICAL);
+        }
+    }
+        public void manualFoundationDrop(boolean dpadDown) {
+            if (dpadDown) {
+                servoArm.setPosition(FOUNDATION_DRAG);
+            }
+        }
+
+    public void manualFoundationReset(boolean dpadUp) {
+        if (dpadUp) {
+            servoPinch.setPosition(PINCH_ARM_FOLD);
+        }
+    }
+    public void manualPickupSkystone(boolean dpadLeft) {
+        if (dpadLeft) {
+            servoArm.setPosition(PINCH_ARM_DOWN);
+            opMode.sleep(1000);
+            servoPinch.setPosition(PINCH_PINCH);
+            opMode.sleep(1000);
+            servoArm.setPosition(PINCH_ARM_FOLD);
+        }
+    }
+    public void manualDropSkystone(boolean dpadRight) {
+        if (dpadRight) {
+            servoArm.setPosition(PINCH_ARM_DOWN);
+            opMode.sleep(1000);
+            servoPinch.setPosition(PINCH_RELEASE);
+            opMode.sleep(1000);
+            servoArm.setPosition(PINCH_ARM_FOLD);
+            opMode.sleep(1000);
+            return;
+        }
+    }
+    public void manualArmRelease(boolean buttonA) {
+        if (buttonA) {
+            servoArm.setPosition(PINCH_RELEASE);
         }
     }
 
@@ -56,5 +95,4 @@ public class ScoopArmBot extends PinchArmBot {
             servoScoop.setPosition(servoScoop.getPosition() - 0.005);
         }
 
-    }
-}
+    }}

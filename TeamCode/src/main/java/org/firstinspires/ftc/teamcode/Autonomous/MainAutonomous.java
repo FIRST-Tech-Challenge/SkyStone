@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -16,12 +17,15 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.All.FourWheelMecanumDrivetrain;
 import org.firstinspires.ftc.teamcode.All.HardwareMap;
 import org.firstinspires.ftc.teamcode.Autonomous.Vision.Detect;
+import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveBase;
+import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveREV;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Autonomous(name = "Autonomous", group = "LinearOpMode")
 @Disabled
-public class EncoderAuto extends LinearOpMode {
+public class MainAutonomous extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "skystoneTFOD_v2_[105-15].tflite";
     private static final String LABEL_FIRST_ELEMENT = "skystone";
     private static final String LABEL_SECOND_ELEMENT = "stone";
@@ -29,11 +33,16 @@ public class EncoderAuto extends LinearOpMode {
     private static final String VUFORIA_KEY = "ARjSEzX/////AAABmTyfc/uSOUjluYpQyDMk15tX0Mf3zESzZKo6V7Y0O/qtPvPQOVben+DaABjfl4m5YNOhGW1HuHywuYGMHpJ5/uXY6L8Mu93OdlOYwwVzeYBhHZx9le+rUMr7NtQO/zWEHajiZ6Jmx7K+A+UmRZMpCmr//dMQdlcuyHmPagFERkl4fdP0UKsRxANaHpwfQcY3npBkmgE8XsmK4zuFEmzfN2/FV0Cns/tiTfXtx1WaFD0YWYfkTHRyNwhmuBxY6MXNmaG8VlLwJcoanBFmor2PVBaRYZ9pnJ4TJU5w25h1lAFAFPbLTz1RT/UB3sHT5CeG0bMyM4mTYLi9SHPOUQjmIomxp9D7R39j8g5G7hiKr2JP";
     private VuforiaLocalizer vuforia;
     private TFObjectDetector tfod;
-    public FieldPosition fieldPosition = null;
-    public HardwareMap hwMap;
-    public double imgWidth;
+    private FieldPosition fieldPosition = null;
+    private HardwareMap hwMap;
+    private double imgWidth;
     Detect detect;
     private int[] skystonePositions;
+    Pose2d startingPos;
+    Path path;
+    SampleMecanumDriveBase drive;
+    boolean initialize = false;
+
 
     double power = 0.7;
 
@@ -51,17 +60,40 @@ public class EncoderAuto extends LinearOpMode {
         hwMap.backRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
         while (!isStarted()) {
-            if (gamepad1.a) {
-                fieldPosition = FieldPosition.BLUE_FOUNDATION;
-            } else if (gamepad1.b) {
-                fieldPosition = FieldPosition.RED_FOUNDATION;
-            } else if (gamepad1.y) {
-                fieldPosition = FieldPosition.RED_QUARY;
-            } else if (gamepad1.x) {
-                fieldPosition = FieldPosition.BLUE_QUARY;
+            if(fieldPosition == null) {
+                telemetry.addData("SELECT STARTING LOCATION", "Press one of the following buttons below to" +
+                        "select the autonomous starting position. Once you have selected, press the \"start\" button" +
+                        "on gamepad A.");
+                telemetry.addData("A", FieldPosition.BLUE_FOUNDATION);
+                telemetry.addData("B", FieldPosition.RED_FOUNDATION);
+                telemetry.addData("Y", FieldPosition.RED_QUARY);
+                telemetry.addData("X", FieldPosition.BLUE_QUARY);
             }
 
-            if (gamepad1.start) {
+            if (gamepad1.a) {
+                fieldPosition = FieldPosition.BLUE_FOUNDATION;
+                startingPos = new Pose2d(15.552, -67.392);
+            } else if (gamepad1.b) {
+                fieldPosition = FieldPosition.RED_FOUNDATION;
+                startingPos = new Pose2d(15.552, 67.392);
+            } else if (gamepad1.y) {
+                fieldPosition = FieldPosition.RED_QUARY;
+                startingPos = new Pose2d(-51.648, -67.392);
+            } else if (gamepad1.x) {
+                fieldPosition = FieldPosition.BLUE_QUARY;
+                startingPos = new Pose2d(-51.648, 67.392);
+            }
+
+            if(fieldPosition != null && !initialize)
+                telemetry.addData("SELECTED STARTING LOCATION", fieldPosition);
+
+            if(gamepad1.start && fieldPosition != null)
+                initialize = true;
+
+            if (initialize) {
+                drive = new SampleMecanumDriveREV(hardwareMap);
+                path = new Path(drive, startingPos);
+
                 switch (fieldPosition) {
                     case RED_QUARY:
                         drivetrain.resetEncoders();
@@ -79,6 +111,8 @@ public class EncoderAuto extends LinearOpMode {
                         List<Recognition> recognizedList = recognize();
                         if (recognizedList != null)
                             skystonePositions = detect.getSkystonePositionsRed(recognizedList, imgWidth);
+
+                        telemetry.addData("SKYSTONE POSITIONS", Arrays.toString(skystonePositions));
                         break;
                     case BLUE_QUARY:
                         drivetrain.resetEncoders();
@@ -96,35 +130,30 @@ public class EncoderAuto extends LinearOpMode {
                         List<Recognition> recognized = recognize();
                         if (recognized != null)
                             skystonePositions = detect.getSkystonePositionsBlue(recognized, imgWidth);
+
+                        telemetry.addData("SKYSTONE POSITIONS", Arrays.toString(skystonePositions));
                         break;
                 }
             }
-            telemetry.addData("Position", fieldPosition);
             telemetry.update();
 
         }
 
-        /** Wait for the game to begin */
         waitForStart();
+
         if (opModeIsActive()) {
             switch (fieldPosition){
                 case RED_QUARY:
-                    if(skystonePositions[0] == 1){
-                        /*drivetrain.odometryStrafe(0.5, 6, false);
-                        intake(1, true);
-                        drivetrain.encoderDrive(0.5,34);
-                        sleep(500);*/
-                    } else if(skystonePositions[0] == 2){
-
-                    } else if(skystonePositions[0] == 3){
-
-                    }
+                    path.RedQuary(skystonePositions);
                     break;
                 case RED_FOUNDATION:
+                    path.RedFoundation();
                     break;
                 case BLUE_QUARY:
+                    path.BlueQuary(skystonePositions);
                     break;
                 case BLUE_FOUNDATION:
+                    path.BlueFoundation();
                     break;
             }
         }

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.TeleOp.Experimental;
+package org.firstinspires.ftc.teamcode.TeleOp.ToggleButtons;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -75,6 +75,42 @@ public class OnOffButton {
             oneButtonHandler();
         else if(situation == Situation.TWO_BUTTON_MOTOR || situation == Situation.TWO_BUTTON_SERVO)
             twoButtonHandler();
+    }
+
+    public boolean[] isRunning(){
+        if(situation == Situation.ONE_BUTTON_MOTOR || situation == Situation.ONE_BUTTON_SERVO)
+            return new boolean[] { mvmt1 };
+        else
+            return new boolean[] { mvmt1, mvmt2 };
+    }
+
+    public GamepadButtons[] getButtons(){
+        if(situation == Situation.ONE_BUTTON_MOTOR || situation == Situation.ONE_BUTTON_SERVO)
+            return new GamepadButtons[] { button1 };
+        else
+            return new GamepadButtons[] { button1, button2 };
+    }
+
+    public boolean controllingServos(){
+        if(situation == Situation.ONE_BUTTON_SERVO || situation == Situation.TWO_BUTTON_SERVO)
+            return true;
+        else
+            return false;
+    }
+
+    public boolean controllingDcMotors(){
+        if(situation == Situation.ONE_BUTTON_SERVO || situation == Situation.TWO_BUTTON_SERVO)
+            return false;
+        else
+            return true;
+    }
+
+    public Servo[] getServos(){
+        return servos;
+    }
+
+    public DcMotor[] getMotors(){
+        return motors;
     }
 
     private void oneButtonLogic(){

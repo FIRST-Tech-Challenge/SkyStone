@@ -36,7 +36,7 @@ public class DriveConstant {
 
     public static void writeSerializedObject(String filePath, Object data) {
         try {
-            File folder = new File(filePath.substring(0,filePath.lastIndexOf("/") + 1));
+            File folder = new File(filePath.substring(0, filePath.lastIndexOf("/") + 1));
             folder.mkdirs();
             ObjectOutputStream outputStreamWriter = new ObjectOutputStream(new FileOutputStream(new File(filePath), true));
             outputStreamWriter.writeObject(data);
@@ -50,7 +50,7 @@ public class DriveConstant {
     public static Object getSerializedObject(String filePath){
         Object output = null;
         try {
-            File folder = new File(filePath.substring(0,filePath.lastIndexOf("/") + 1));
+            File folder = new File(filePath.substring(0, filePath.lastIndexOf("/") + 1));
             folder.mkdirs();
             ObjectInputStream outputStreamReader = new ObjectInputStream(new FileInputStream(new File(filePath)));
             output = outputStreamReader.readObject();

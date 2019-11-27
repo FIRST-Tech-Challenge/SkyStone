@@ -25,9 +25,9 @@ public class FullTest extends OpMode {
         telemetry.addData("Wheel FR", result[1]);
         telemetry.addData("Wheel RL", result[2]);
         telemetry.addData("Wheel RR", result[3]);
-        telemetry.addData("R Y", -gamepad1.right_stick_y);
+        telemetry.addData("R Y", gamepad1.right_stick_y);
         telemetry.addData("R X", gamepad1.right_stick_x);
-        telemetry.addData("L Y", -gamepad1.left_stick_y);
+        telemetry.addData("L Y", gamepad1.left_stick_y);
         telemetry.addData("L X", gamepad1.left_stick_x);
 
         robot.motor_front_left.setPower(result[0]);
@@ -36,7 +36,7 @@ public class FullTest extends OpMode {
         robot.motor_rear_right.setPower(result[3]);
 
         robot.motor_lift_left.setPower(gamepad2.right_stick_y*0.5);
-        robot.motor_lift_right.setPower(-gamepad2.right_stick_y*0.5);
+        robot.motor_lift_right.setPower(gamepad2.right_stick_y*0.5);
         robot.motor_clamp.setPower(gamepad2.left_stick_x);
     }
 }

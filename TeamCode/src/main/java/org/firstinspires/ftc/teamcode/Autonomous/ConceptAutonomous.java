@@ -12,11 +12,11 @@ import org.firstinspires.ftc.teamcode.Library.Movement.ControlledDrive;
 @Autonomous (name = "ConceptAutonomous")
 public class ConceptAutonomous extends LinearOpMode {
 
-    HardwareChassis robot;
-    ControlledDrive controlledDrive;
-    ControlledClamp controlledClamp;
-    ControlledArm controlledArm;
-    ColorTools colorTools;
+    private HardwareChassis robot;
+    private ControlledDrive controlledDrive;
+    private ControlledClamp controlledClamp;
+    private ControlledArm controlledArm;
+    private ColorTools colorTools;
 
     @Override
     public void runOpMode() {

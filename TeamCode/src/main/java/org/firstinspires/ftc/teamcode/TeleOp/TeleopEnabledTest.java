@@ -4,13 +4,13 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
+import org.firstinspires.ftc.teamcode.All.DriveConstant;
 import org.firstinspires.ftc.teamcode.All.FourWheelMecanumDrivetrain;
 import org.firstinspires.ftc.teamcode.All.HardwareMap;
 import org.firstinspires.ftc.teamcode.All.Lift;
-import org.firstinspires.ftc.teamcode.TeleOp.ToggleButtons.GamepadButtons;
-import org.firstinspires.ftc.teamcode.TeleOp.ToggleButtons.OnOffButton;
+import org.firstinspires.ftc.teamcode.PID.DriveConstantsPID;
 
 import java.util.ArrayList;
 
@@ -29,26 +29,28 @@ import java.util.ArrayList;
  *  -Adjust Intake/Lift power in TeleopConstants.java class
  */
 
-@TeleOp(name = "TeleOp", group = "Linear Opmode")
-public class Teleop extends LinearOpMode {
+@TeleOp(name="TeleopTests", group="Linear Opmode")
+public class TeleopEnabledTest extends LinearOpMode {
     boolean intake = false;
     boolean outake = false;
     final double slowSpeed = TeleopConstants.drivePower;
     final double turnSpeed = TeleopConstants.turnPower;
     boolean runLogic = false;
 
-    ArrayList<OnOffButton> buttonLogic = new ArrayList<>();
+    double a = 0;
+    double b = 0;
+    double c = 0;
 
     boolean blocker = false;
     ArrayList<String> kVData = new ArrayList<>();
 
     FourWheelMecanumDrivetrain drivetrain;
     Lift lift;
-
-    public void runOpMode() {
+    public void runOpMode(){
         HardwareMap hwMap = new HardwareMap(hardwareMap);
 
         runLogic = true;
+        saveDataLoop(hwMap);
 
         drivetrain = new FourWheelMecanumDrivetrain(hwMap);
 
@@ -67,62 +69,67 @@ public class Teleop extends LinearOpMode {
         lift.setMotorZeroPower(DcMotor.ZeroPowerBehavior.BRAKE);
 
         lift.setSpeedMultiplier(TeleopConstants.liftPower);
-
         lift.resetEncoders();
 
         lift.setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         hwMap.liftOne.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        buttonLogic.add(new OnOffButton(gamepad2, gamepad2, GamepadButtons.A, GamepadButtons.B, //Intake-A & B
-                new DcMotor[] { hwMap.leftIntake, hwMap.rightIntake },
-                new double[][] { {-TeleopConstants.intakePower, 0}, {TeleopConstants.intakePower, 0} },
-                new double[] { TeleopConstants.intakePower, -TeleopConstants.intakePower }));
-        buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.Y, new Servo[] { hwMap.foundationLock },   //Foundation Lock-Y
-                new double[][] { {TeleopConstants.foundationLockLock, TeleopConstants.foundationLockUnlock} }));
-        buttonLogic.add(new OnOffButton(gamepad2, gamepad2, GamepadButtons.LEFT_BUMPER, GamepadButtons.RIGHT_BUMPER,   //Transfer Lock-L & R Bumpers
-                new Servo[] { hwMap.transferLock }, new double[][] { {TeleopConstants.transferLockPosUp,
-                TeleopConstants.transferLockPosPlatform} },
-                new double[] { TeleopConstants.transferLockPosFoundationGrabing }));
-        buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.DPAD_DOWN, new Servo[] {hwMap.liftOdometer, hwMap.plateLifter},    //Odometer Lock and Plate Lifter-DPAD DOwn
-                new double[][] { {TeleopConstants.odometerLockPosUp, TeleopConstants.odometerLockPosDown},
-                        {TeleopConstants.plateLifterPosUp, TeleopConstants.plateLifterPosDown} }));
-        buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.LEFT_BUMPER, new Servo[] {hwMap.clawServo1, hwMap.clawServo2}, //Claw Servos-LEFT BUMPER
-                new double[][] { {TeleopConstants.clawServo1PosOpen, TeleopConstants.clawServo1PosClose},
-                        {TeleopConstants.clawServo2PosOpen, TeleopConstants.clawServo2PosClose} }));
-        buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.RIGHT_BUMPER, new Servo[] { hwMap.transferHorn },   //Foundation Lock-Y
-                new double[][] { {TeleopConstants.transferHornPosPush, TeleopConstants.transferHornPosReady} }));
 
         telemetry.addData("Status", "Ready");
 
         waitForStart();
 
-
-        while (opModeIsActive()) {
+        while (opModeIsActive()){
 
             double turn = (-1) * (gamepad1.left_trigger - gamepad1.right_trigger) * turnSpeed;
 
             //------------------------------===Intake/Outake===------------------------------------------
 
-            intakeLogic(hwMap);
-
-            for(OnOffButton onOffButton : buttonLogic) {
-                onOffButton.getGamepadStateAndRun();
-
-                if(onOffButton.controllingServos() && onOffButton.getServos()[0].getDeviceName()
-                        .equalsIgnoreCase("transferHorn") && onOffButton.isRunning()[0]) {
-                    sleep(400);
-                    hwMap.innerTransfer.setPosition(TeleopConstants.innerTransferPosTucked);
-                } else if(onOffButton.controllingServos() && onOffButton.getServos()[0].getDeviceName()
-                        .equalsIgnoreCase("transferHorn") && !onOffButton.isRunning()[0]) {
-                    hwMap.innerTransfer.setPosition(TeleopConstants.innerTransferPosExtended);
+            if(gamepad2.y && !blocker) {
+                if(!intake) {
+                    intake = true;
+                    outake = false;
+                } else {
+                    intake = false;
+                    outake = false;
                 }
+                blocker = true;
+            } else {
+                blocker = false;
             }
 
+            if(gamepad2.a && !blocker) {
+                if(!outake) {
+                    intake = false;
+                    outake = true;
+                } else {
+                    intake = false;
+                    outake = false;
+                }
+                blocker = true;
+            } else {
+                blocker = false;
+            }
+
+            if(intake){
+                hwMap.rightIntake.setPower(-TeleopConstants.intakePower);
+                hwMap.leftIntake.setPower(TeleopConstants.intakePower);
+            }
+
+            if(outake){
+                hwMap.rightIntake.setPower(TeleopConstants.intakePower);
+                hwMap.leftIntake.setPower(-TeleopConstants.intakePower);
+            }
+
+            if(!intake && !outake){
+                hwMap.rightIntake.setPower(0);
+                hwMap.leftIntake.setPower(0);
+            }
 
             //------------------------------===Linear Sliders===------------------------------------------
 
-            if (gamepad2.right_stick_y != 0) {
+            if(gamepad2.right_stick_y != 0){
                 lift.moveLift(gamepad2.right_stick_y);
             } else {
                 lift.stop();
@@ -131,21 +138,29 @@ public class Teleop extends LinearOpMode {
 
             //------------------------------===Driving/Strafing===------------------------------------------
 
+
+
             if (!(gamepad1.left_stick_x == 0 && gamepad1.right_stick_y == 0 && turn == 0)) {
 
                 double speed;
 
                 if (gamepad1.left_stick_x == 0 && gamepad1.right_stick_y == 0) {
                     speed = 0;
-                } else if (gamepad1.right_stick_y == 0) {
-                    speed = Math.abs(gamepad1.left_stick_x);
-                } else if (gamepad1.left_stick_x == 0) {
-                    speed = Math.abs(gamepad1.right_stick_y);
-                } else {
+                }
+                else if ( gamepad1.right_stick_y == 0 ) {
+                    speed = Math.abs(gamepad1.left_stick_x) ;
+                }
+                else if ( gamepad1.left_stick_x == 0 ) {
+                    speed = Math.abs(gamepad1.right_stick_y) ;
+                }
+                else {
                     speed = (Math.abs(gamepad1.left_stick_x) + Math.abs(gamepad1.right_stick_y)) / 2;
                 }
 
                 double angle = Math.atan2(gamepad1.left_stick_x, -gamepad1.right_stick_y);
+                a = speed;
+                b = angle;
+                c = turn;
                 drivetrain.MoveAngle(speed, angle, turn);
             } else {
                 drivetrain.stop();
@@ -153,37 +168,38 @@ public class Teleop extends LinearOpMode {
 
             //------------------------------===Servos===------------------------------------------
 
-            if (gamepad1.y)  //Change servo positions in TeleopConstants.java
+            if(gamepad1.y)  //Change servo positions in TeleopConstants.java
                 hwMap.clawServo1.setPosition(TeleopConstants.clawServo1PosClose);
-            else if (gamepad1.b)
+            else if(gamepad1.b)
                 hwMap.clawServo1.setPosition(TeleopConstants.clawServo1PosClose);
 
-            if (gamepad1.x)
+            if(gamepad1.x)
                 hwMap.clawServo2.setPosition(TeleopConstants.clawServo2PosOpen);
-            else if (gamepad1.a)
+            else if(gamepad1.a)
                 hwMap.clawServo2.setPosition(TeleopConstants.clawServo2PosClose);
 
-            if (gamepad2.left_bumper) {
+            if(gamepad2.left_bumper) {
                 hwMap.liftOdometer.setPosition(TeleopConstants.odometerLockPosUp);
-            } else if (gamepad2.right_bumper) {
+            } else if(gamepad2.right_bumper) {
                 hwMap.liftOdometer.setPosition(TeleopConstants.odometerLockPosDown);
             }
 
-            if (gamepad1.left_bumper) {
+            if(gamepad1.left_bumper) {
                 hwMap.transferLock.setPosition(TeleopConstants.transferLockPosUp);
-            } else if (gamepad1.right_bumper) {
+            } else if(gamepad1.right_bumper) {
                 hwMap.transferLock.setPosition(TeleopConstants.transferLockPosPlatform);
             }
 
-            if (gamepad1.left_bumper) {
+            if(gamepad1.left_bumper) {
                 StringBuilder sb = new StringBuilder();
                 for (String row : kVData) {
                     sb.append(row);
                     sb.append("\n");
                 }
 
-                //DriveConstant.writeFile(AppUtil.ROOT_FOLDER + "/RoadRunner/kV_regression_data_" + System.currentTimeMillis() + ".csv", sb.toString());
-                //break;
+                DriveConstant.writeFile(AppUtil.ROOT_FOLDER + "/RoadRunner/kV_regression_data_" + System.currentTimeMillis() + ".csv", sb.toString());
+                runLogic = false;
+                break;
             }
 
             telemetry.addData("LeftForwardOdometry", hwMap.leftIntake.getCurrentPosition());
@@ -196,67 +212,28 @@ public class Teleop extends LinearOpMode {
             telemetry.addData("BackRight", hwMap.backRight.getCurrentPosition());
 
             telemetry.addData("LiftOne", hwMap.liftOne.getCurrentPosition());
+            telemetry.addData("maxRPM", DriveConstantsPID.getMaxRpm());
+
+            telemetry.addData("Speed", a);
+            telemetry.addData("Angle", b);
+            telemetry.addData("Turn", c);
             telemetry.update();
         }
 
 
     }
 
-    private void intakeLogic(HardwareMap hwMap){
-        if (gamepad2.y && !blocker) {
-            if (!intake) {
-                intake = true;
-                outake = false;
-            } else {
-                intake = false;
-                outake = false;
-            }
-            blocker = true;
-        }
-
-        if (gamepad2.a && !blocker) {
-            if (!outake) {
-                intake = false;
-                outake = true;
-            } else {
-                intake = false;
-                outake = false;
-            }
-            blocker = true;
-        }
-
-        if(!gamepad2.y && !gamepad2.a){
-            blocker = false;
-        }
-
-        if (intake) {
-            hwMap.rightIntake.setPower(-TeleopConstants.intakePower);
-            hwMap.leftIntake.setPower(TeleopConstants.intakePower);
-        }
-
-        if (outake) {
-            hwMap.rightIntake.setPower(TeleopConstants.intakePower);
-            hwMap.leftIntake.setPower(-TeleopConstants.intakePower);
-        }
-
-        if (!intake && !outake) {
-            hwMap.rightIntake.setPower(0);
-            hwMap.leftIntake.setPower(0);
-        }
-    }
-
-    private void saveDataLoop(HardwareMap hw) {
+    public void saveDataLoop(HardwareMap hw){
         Thread loop = new Thread() {
             public void run() {
                 long initTime = System.currentTimeMillis();
-                while (runLogic) {
+                while(runLogic) {
                     kVData.add(hw.frontLeft.getPower() + "," + hw.backLeft.getPower() + "," +
                             hw.frontLeft.getCurrentPosition() + "," + hw.backLeft.getCurrentPosition() + "," +
                             (System.currentTimeMillis() - initTime));
                     try {
                         sleep(50);
-                    } catch (Exception e) {
-                    }
+                    } catch (Exception e){}
                 }
             }
         };

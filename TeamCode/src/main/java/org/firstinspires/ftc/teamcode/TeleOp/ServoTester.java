@@ -33,26 +33,15 @@ public class ServoTester extends LinearOpMode {
 
         List<String> servoNames = new ArrayList<>();
         List<Double> servoPositions = new ArrayList<>();
-        double[] pos = new double[] {teleopConstants.clawServo1PosClose, teleopConstants.clawServo2PosClose,
-                teleopConstants.transferLockPosUp, teleopConstants.odometerLockPosDown, teleopConstants.transferHornPosReady,
-                teleopConstants.plateLifterPosDown, teleopConstants.clawInitPosOpen, teleopConstants.innerTransferPosTucked,
-                teleopConstants.foundationLockUnlock};
+        double[] pos = new double[] {TeleopConstants.clawServo1PosClose, TeleopConstants.clawServo2PosClose,
+                TeleopConstants.transferLockPosUp, TeleopConstants.odometerLockPosDown, TeleopConstants.transferHornPosReady,
+                TeleopConstants.plateLifterPosDown, TeleopConstants.clawInitPosOpen, TeleopConstants.innerTransferPosTucked,
+                TeleopConstants.foundationLockUnlock};
 
         for(int i = 0; i < servos.length; i++) {
             servoPositions.add(pos[i]);
             servoNames.add(hardwareMap.getNamesOf(servos[i]).iterator().next());
         }
-
-
-        // specifically for this year
-        /*RobotHardware rw = new RobotHardware(hardwareMap);
-        servos.add(rw.firstJointVirtualServo);
-        servos.add(rw.secondJointVirtualServo);
-        servoNames.add("First Joint Virtual Servo");
-        servoNames.add("Second Joint Virtual Servo");
-        servoPositions.add(0d);
-        servoPositions.add(0d);*/
-
 
         waitForStart();
         elapsedTime.reset();

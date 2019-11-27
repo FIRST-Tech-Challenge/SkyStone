@@ -61,6 +61,5 @@ public class ICCLocalizer implements BulkReadConsumer{
         xCoordinate = resultant.getEntry(0);
         yCoordinate = resultant.getEntry(1);
         heading = resultant.getEntry(2);
-
     }
 }

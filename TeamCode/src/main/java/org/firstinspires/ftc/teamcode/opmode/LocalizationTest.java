@@ -3,22 +3,18 @@ package org.firstinspires.ftc.teamcode.opmode;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.acmerobotics.roadrunner.drive.MecanumDrive;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.auto.structurebuilder.StructureConstructor;
 import org.firstinspires.ftc.teamcode.auto.structurebuilder.prefab.TwoByTwoByFive;
 import org.firstinspires.ftc.teamcode.hardware.Elevator;
 import org.firstinspires.ftc.teamcode.hardware.drive.mecanum.SampleMecanumDriveBase;
 import org.firstinspires.ftc.teamcode.hardware.drive.mecanum.SampleMecanumDriveREVOptimized;
 import org.firstinspires.ftc.teamcode.hardware.FoundationGrabber;
-import org.firstinspires.ftc.teamcode.util.Button;
 
 /**
  * This is a simple teleop routine for testing localization. Drive the robot around like a normal

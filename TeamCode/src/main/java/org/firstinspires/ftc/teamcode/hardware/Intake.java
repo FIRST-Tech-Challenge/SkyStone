@@ -20,7 +20,7 @@ public class Intake extends Subsystem{
     public static double grabPosition = 0;
     public static double stoneHoldPosition = 0.5;
 
-    private enum State {
+    public enum State {
         RELEASING, GRABBING, OPEN
     }
 
@@ -80,5 +80,9 @@ public class Intake extends Subsystem{
             return false;
         }
         return true;
+    }
+
+    public State getCurrentState(){
+        return currentState;
     }
 }

@@ -16,8 +16,8 @@ import org.firstinspires.ftc.teamcode.paths.MovedFoundationToAllianceBridge;
 import org.firstinspires.ftc.teamcode.vision.SkystonePosition;
 import org.firstinspires.ftc.teamcode.vision.SkystoneVision;
 import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.openftc.easyopencv.OpenCvWebcam;
 
 @Autonomous(name="1 - Two Skystones and Park")
 public class TwoSkystonesAndPark extends LinearOpMode {
@@ -49,7 +49,7 @@ public class TwoSkystonesAndPark extends LinearOpMode {
         intake = Intake.getInstance(hardwareMap);
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        webcam = new OpenCvWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
 
         skystoneVision = new SkystoneVision();
 

@@ -258,4 +258,8 @@ public class Elevator extends Subsystem {
     public double getEncoderPosition(){
         return currentEncoder;
     }
+
+    public void setHolding(){
+        currentState = SystemState.HOLD;
+    }
 }

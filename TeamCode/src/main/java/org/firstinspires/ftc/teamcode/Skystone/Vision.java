@@ -58,7 +58,7 @@ public class Vision{
         ArrayList<Double> centerCount = new ArrayList<>();
         ArrayList<Double> rightCount = new ArrayList<>();
 
-        while (robot.getLinearOpMode().opModeIsActive() && SystemClock.elapsedRealtime()-startTime<500){
+        while (robot.getLinearOpMode().opModeIsActive() && SystemClock.elapsedRealtime()-startTime<2000){
 
             List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
             if (updatedRecognitions != null && updatedRecognitions.size()>0) {
@@ -102,7 +102,6 @@ public class Vision{
                 }
 
             }
-
         }
 
         // find the confidence levels

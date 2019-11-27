@@ -156,7 +156,6 @@ public class CollectTensorflowDataWebcam extends LinearOpMode {
                             double objWidth = recognition.getWidth();
                             double objHeight = recognition.getHeight();
                             double distanceToObj = TFODCalc.getDistanceToObj(127, imgHeight, objHeight);
-                            ArrayList<Double> tfodData = TFODCalc.getAngleOfStone(index, objWidth, distanceToObj);
 
                             telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
                             telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
@@ -167,11 +166,6 @@ public class CollectTensorflowDataWebcam extends LinearOpMode {
                             telemetry.addData("Object Height", objHeight);
                             telemetry.addData("Object Width", objWidth);
                             telemetry.addData("**Distance From Object", distanceToObj);
-                            telemetry.addData("**Object Angle", tfodData.get(0));
-                            telemetry.addData("Angle Model Domain",
-                                    "[" + tfodData.get(1) + ", " + tfodData.get(2) + "]");
-                            telemetry.addData("Auto-adjusted Domain-Predicted 0° Stone Width Delta",
-                                    Math.round((tfodData.get(3)) * 1000.0) / 1000.0);
                             telemetry.addData("Position",
                                     Arrays.toString(detect.getSkystonePositionsRed(updatedRecognitions, imgWidth)));
 

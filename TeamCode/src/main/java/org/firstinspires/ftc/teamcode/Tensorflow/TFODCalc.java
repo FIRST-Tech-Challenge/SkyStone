@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.Tensorflow;
 
 import android.hardware.Camera;
 
+import org.firstinspires.ftc.teamcode.All.DriveConstant;
+
 import java.util.ArrayList;
 
 public class TFODCalc {
@@ -10,14 +12,13 @@ public class TFODCalc {
     private static double SENSOR_HEIGHT = 1.0;    //in mm
     private static Camera camera;
     private static ArrayList<ArrayList<Double>> autoAdjustedOffset = new ArrayList<>();
-    private static ArrayList<Double> distanceAway = new ArrayList<>();
 
-    public static void init(){
-        for(int i = 0; i < 100; i++)
+    public static void init() {
+        for (int i = 0; i < 100; i++)
             autoAdjustedOffset.add(new ArrayList<>());
     }
 
-    public static double getSavedOffset(int index1, int index2){
+    public static double getSavedOffset(int index1, int index2) {
         return autoAdjustedOffset.get(index1).get(index2);
     }
 
@@ -30,43 +31,63 @@ public class TFODCalc {
         SENSOR_HEIGHT = Math.tan(Math.toRadians(verticalViewAngle / 2)) * 2 * FOCAL_LENGTH;  //tan(angle/2) * 2 * focalLength (in degrees)
     }
 
-    public static float getFocalLength(){ return FOCAL_LENGTH; }
+    public static float getFocalLength() {
+        return FOCAL_LENGTH;
+    }
 
-    public static double getSensorHeight(){ return SENSOR_HEIGHT; }
+    public static double getSensorHeight() {
+        return SENSOR_HEIGHT;
+    }
 
-    public static void setHardwareProperties(float focalLength, double sensorHeight){
+    public static void setHardwareProperties(float focalLength, double sensorHeight) {
         FOCAL_LENGTH = focalLength;
         SENSOR_HEIGHT = sensorHeight;
     }
 
-    public static void setHardwareProperties(double verticalFOVAngle, float focalLength){
+    public static void setHardwareProperties(double verticalFOVAngle, float focalLength) {
         FOCAL_LENGTH = focalLength;
         SENSOR_HEIGHT = Math.tan(Math.toRadians(verticalFOVAngle / 2)) * 2 * FOCAL_LENGTH;
     }
 
-    public static double getDistanceToObj(double objHeightmm, double imgHeightpx, double objHeightpx){
+    public static double getDistanceToObj(double objHeightmm, double imgHeightpx, double objHeightpx) {
         double dist = (FOCAL_LENGTH * objHeightmm * imgHeightpx) / (objHeightpx * SENSOR_HEIGHT) / 25.4;   //in inches (mm / 25.4)
         return dist;
     }
 
-    public static ArrayList<Double> getAngleOfStone(int objIndex, double objWidthPx, double distance){
+    public static ArrayList<Double> getAngleOfStone(int objIndex, double objWidthPx, double distance) {
         double xIntercept = 307.369;    //Largest X-Intercept of quadratic model equation
         double xAt60 = xIntercept - 197.369;    //Calculating Delta X at lower bounds of domain (x ~= 60°)
-        double estimated0DegreeWidth = 800.512823871366 * Math.pow(Math.E, -0.0476285053327913 * distance) - 15;    //Estimating 0° width
+        double estimated0DegreeWidth;
+        ArrayList<Integer> distances = new ArrayList<>();
+        ArrayList<Double> widths = new ArrayList<>();
+
+        try {
+            distances = (ArrayList<Integer>) DriveConstant.getSerializedObject("/TFOD Data/TFOD_Distances_webcam.txt");
+            widths = (ArrayList<Double>) DriveConstant.getSerializedObject("/TFOD Data/TFOD_Widths_webcam.txt");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        System.out.println(distances + ", " + widths);
+
+        if (!distances.isEmpty() && !widths.isEmpty() && distances.contains((int) Math.round(distance)))
+            estimated0DegreeWidth = widths.get((int) Math.round(distance));
+        else
+            estimated0DegreeWidth = 800.512823871366 * Math.pow(Math.E, -0.0476285053327913 * distance) - 15;    //Estimating 0° width
 
         double prevCalcOffset = -1;
         int usedIndex = -1;
-        if(!autoAdjustedOffset.get(objIndex).isEmpty()){
+        if (!autoAdjustedOffset.get(objIndex).isEmpty()) {
             double delta = 9999;
 
             ArrayList<Double> temp = new ArrayList<>();
-            for(int i = 0; i < autoAdjustedOffset.get(objIndex).size(); i++) {
+            for (int i = 0; i < autoAdjustedOffset.get(objIndex).size(); i++) {
                 if (i % 2 == 1)
                     temp.add(autoAdjustedOffset.get(objIndex).get(i));
             }
 
-            for(int i = 0; i < temp.size(); i++){
-                if(Math.abs(temp.get(i) - distance) < 2 && Math.abs(temp.get(i) - distance) < delta) {
+            for (int i = 0; i < temp.size(); i++) {
+                if (Math.abs(temp.get(i) - distance) < 2 && Math.abs(temp.get(i) - distance) < delta) {
                     delta = Math.abs(temp.get(i) - distance);
                     prevCalcOffset = autoAdjustedOffset.get(objIndex).get(i * 2 + 1);
                     usedIndex = i * 2 + 1;
@@ -74,7 +95,7 @@ public class TFODCalc {
             }
         }
 
-        if(prevCalcOffset == -1){
+        if (prevCalcOffset == -1) {
             usedIndex = autoAdjustedOffset.get(objIndex).size();
             autoAdjustedOffset.get(objIndex).add(0.0);
             autoAdjustedOffset.get(objIndex).add(distance);
@@ -100,7 +121,7 @@ public class TFODCalc {
                 (objWidthPx + xIntOffset) - 33.9109714390624;  //Calculates angle
 
         autoAdjustedOffset.get(objIndex).set(usedIndex,
-               prevCalcOffset + newAutoAdjustedOffset);   //The x-offset is saved under its index & will be reaccessed again and used
+                prevCalcOffset + newAutoAdjustedOffset);   //The x-offset is saved under its index & will be reaccessed again and used
 
 
         /**
@@ -121,7 +142,7 @@ public class TFODCalc {
     }
 
     private static double autoAdjustDomain(double xInt, double xAt60, double xIntOffset,
-                                         double objWidthPx, int objIndex, double prevCalcOffset){
+                                           double objWidthPx, int objIndex, double prevCalcOffset) {
         double autoAdjustOutput = 0.0;
 
         /**
@@ -130,16 +151,16 @@ public class TFODCalc {
          * between the predicted and actual x-intercepts by finding the difference in x values at a certain point.
          */
 
-        if(xInt - objWidthPx <= xInt + xIntOffset - 207.369){  //Allows up to -5° of error (- 10)
+        if (xInt - objWidthPx <= xInt + xIntOffset - 207.369) {  //Allows up to -5° of error (- 10)
             double allowedErrorOffset = xAt60 - (xInt + prevCalcOffset - 207.369);    //Calculates allowed error offset (- 10)
             autoAdjustOutput = getDomainOffset(xAt60 - allowedErrorOffset, xIntOffset, objWidthPx); //Gets new, additional offset
-        } else if(xInt - objWidthPx >= xInt + xIntOffset + 10.611){   //Allows up to +10° of error (+ 8.611)
+        } else if (xInt - objWidthPx >= xInt + xIntOffset + 10.611) {   //Allows up to +10° of error (+ 8.611)
             autoAdjustOutput = getDomainOffset(xInt + 10.611, xIntOffset, objWidthPx);   //Calculates new, additional offset
         }
         return autoAdjustOutput;
     }
 
-    private static double getDomainOffset(double anchorX, double xIntOffset, double objWidthPx){
+    private static double getDomainOffset(double anchorX, double xIntOffset, double objWidthPx) {
         double newOffset = anchorX - objWidthPx;    //Actual offset based on current width of the skystone
         return xIntOffset - newOffset;  //Creates an additional offset that is subtracted from the "old" offset (Delta x-offset)
     }

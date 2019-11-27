@@ -4,15 +4,13 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
-import org.firstinspires.ftc.teamcode.All.DriveConstant;
 import org.firstinspires.ftc.teamcode.All.FourWheelMecanumDrivetrain;
 import org.firstinspires.ftc.teamcode.All.HardwareMap;
 import org.firstinspires.ftc.teamcode.All.Lift;
-import org.firstinspires.ftc.teamcode.PID.DriveConstantsPID;
-import org.firstinspires.ftc.teamcode.TeleOp.Experimental.GamepadButtons;
-import org.firstinspires.ftc.teamcode.TeleOp.Experimental.OnOffButton;
+import org.firstinspires.ftc.teamcode.TeleOp.ToggleButtons.GamepadButtons;
+import org.firstinspires.ftc.teamcode.TeleOp.ToggleButtons.OnOffButton;
 
 import java.util.ArrayList;
 
@@ -62,8 +60,8 @@ public class Teleop extends LinearOpMode {
 
         drivetrain.setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        hwMap.frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        hwMap.backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        hwMap.frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        hwMap.backRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
         lift = new Lift(hardwareMap);
 
@@ -76,11 +74,24 @@ public class Teleop extends LinearOpMode {
 
         hwMap.liftOne.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        buttonLogic.add(new OnOffButton(gamepad2, gamepad2, GamepadButtons.A, GamepadButtons.B,
+        buttonLogic.add(new OnOffButton(gamepad2, gamepad2, GamepadButtons.A, GamepadButtons.B, //Intake-A & B
                 new DcMotor[] { hwMap.leftIntake, hwMap.rightIntake },
                 new double[][] { {-teleopConstants.intakePower, 0}, {teleopConstants.intakePower, 0} },
                 new double[] { teleopConstants.intakePower, -teleopConstants.intakePower }));
-
+        buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.Y, new Servo[] { hwMap.foundationLock },   //Foundation Lock-Y
+                new double[][] { {teleopConstants.foundationLockLock, teleopConstants.foundationLockUnlock} }));
+        buttonLogic.add(new OnOffButton(gamepad2, gamepad2, GamepadButtons.LEFT_BUMPER, GamepadButtons.RIGHT_BUMPER,   //Transfer Lock-L & R Bumpers
+                new Servo[] { hwMap.transferLock }, new double[][] { {teleopConstants.transferLockPosUp,
+                teleopConstants.transferLockPosPlatform} },
+                new double[] { teleopConstants.transferLockPosFoundationGrabing }));
+        buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.DPAD_DOWN, new Servo[] {hwMap.liftOdometer, hwMap.plateLifter},    //Odometer Lock and Plate Lifter-DPAD DOwn
+                new double[][] { {teleopConstants.odometerLockPosUp, teleopConstants.odometerLockPosDown},
+                        {teleopConstants.plateLifterPosUp, teleopConstants.plateLifterPosDown} }));
+        buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.LEFT_BUMPER, new Servo[] {hwMap.clawServo1, hwMap.clawServo2}, //Claw Servos-LEFT BUMPER
+                new double[][] { {teleopConstants.clawServo1PosOpen, teleopConstants.clawServo1PosClose},
+                        {teleopConstants.clawServo2PosOpen, teleopConstants.clawServo2PosClose} }));
+        buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.RIGHT_BUMPER, new Servo[] { hwMap.transferHorn },   //Foundation Lock-Y
+                new double[][] { {teleopConstants.transferHornPosPush, teleopConstants.transferHornPosReady} }));
 
         telemetry.addData("Status", "Ready");
 
@@ -94,8 +105,18 @@ public class Teleop extends LinearOpMode {
 
             intakeLogic(hwMap);
 
-            for(OnOffButton onOffButton : buttonLogic)
+            for(OnOffButton onOffButton : buttonLogic) {
                 onOffButton.getGamepadStateAndRun();
+
+                if(onOffButton.controllingServos() && onOffButton.getServos()[0].getDeviceName()
+                        .equalsIgnoreCase("transferHorn") && onOffButton.isRunning()[0]) {
+                    sleep(400);
+                    hwMap.innerTransfer.setPosition(teleopConstants.innerTransferPosTucked);
+                } else if(onOffButton.controllingServos() && onOffButton.getServos()[0].getDeviceName()
+                        .equalsIgnoreCase("transferHorn") && !onOffButton.isRunning()[0]) {
+                    hwMap.innerTransfer.setPosition(teleopConstants.innerTransferPosExtended);
+                }
+            }
 
 
             //------------------------------===Linear Sliders===------------------------------------------
@@ -161,9 +182,9 @@ public class Teleop extends LinearOpMode {
                     sb.append("\n");
                 }
 
-                DriveConstant.writeFile(AppUtil.ROOT_FOLDER + "/RoadRunner/kV_regression_data_" + System.currentTimeMillis() + ".csv", sb.toString());
+                //DriveConstant.writeFile(AppUtil.ROOT_FOLDER + "/RoadRunner/kV_regression_data_" + System.currentTimeMillis() + ".csv", sb.toString());
                 runLogic = false;
-                break;
+                //break;
             }
 
             telemetry.addData("LeftForwardOdometry", hwMap.leftIntake.getCurrentPosition());

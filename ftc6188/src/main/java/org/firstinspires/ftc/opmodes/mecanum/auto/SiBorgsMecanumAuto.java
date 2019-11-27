@@ -17,17 +17,28 @@ public class SiBorgsMecanumAuto extends LinearOpMode
     @Override
     public void runOpMode() throws InterruptedException
     {
-        robot = new SiBorgsMecanumRobot(this.hardwareMap);
+        robot = new SiBorgsMecanumRobot(this.hardwareMap, this.telemetry);
         waitForStart();
 
-        robot.drivetrain.autoPosition(270, 48, VELOCITY, 0);
+        robot.drivetrain.autoPositionWithTelemetry(270, 48, VELOCITY, robot);
+        sleep(1000);
         robot.platformServo.setPosition(1);
-        robot.drivetrain.autoPosition(90, 24, VELOCITY, 0);
+        sleep(1000);
+        robot.drivetrain.autoPositionWithTelemetry(90, 24, VELOCITY, robot);
+        sleep(1000);
         robot.platformServo.setPosition(0);
-        robot.drivetrain.autoPosition(180, 24, VELOCITY, 0);
-        robot.drivetrain.autoPosition(270, 20, VELOCITY, 0);
-        robot.drivetrain.autoPosition(0, 24, VELOCITY, 0);
-        robot.drivetrain.autoPosition(90, 36, VELOCITY, 0);
-        robot.drivetrain.autoPosition(180, 36, VELOCITY, 0);
+        sleep(1000);
+        robot.drivetrain.autoPositionWithTelemetry(180, 24, VELOCITY, robot);
+        sleep(1000);
+        robot.drivetrain.autoPositionWithTelemetry(270, 20, VELOCITY, robot);
+        sleep(1000);
+        robot.drivetrain.autoPositionWithTelemetry(0, 24, VELOCITY, robot);
+        sleep(1000);
+        robot.drivetrain.autoPositionWithTelemetry(90, 36, VELOCITY, robot);
+        sleep(1000);
+        robot.drivetrain.autoPositionWithTelemetry(180, 36, VELOCITY, robot);
+        sleep(1000);
+
+        requestOpModeStop();
     }
 }

@@ -127,7 +127,17 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
 
     // auto function to implement an acceleration curve
     @Override
-    public void updatePosition() { }
+    public void updatePosition()
+    {
+        for (DcMotor motor : motorList)
+        {
+            if (!motor.isBusy())
+            {
+                motor.setPower(0);
+                motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            }
+        }
+    }
 
     // returns the motors to their prior state after resetting the encoders back to 0
     @Override

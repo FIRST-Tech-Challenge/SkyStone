@@ -30,7 +30,7 @@ public class SiBorgsMecanumTeleOp extends OpMode
     public void init()
     {
         // Misc class declarations
-        robot = new SiBorgsMecanumRobot(this.hardwareMap);
+        robot = new SiBorgsMecanumRobot(this.hardwareMap, this.telemetry);
         elapsedTime = new ElapsedTime();
 
         // Servo buttons
@@ -105,7 +105,7 @@ public class SiBorgsMecanumTeleOp extends OpMode
         else if (armServoDown.onRelease()) { robot.armGripSlide.setPosition(0); }
 
         //TELEMETRY
-        robot.driverTelemetry(this.telemetry);
+        robot.driverTelemetry();
     }
 
     @Override

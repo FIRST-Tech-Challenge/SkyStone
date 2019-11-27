@@ -2,6 +2,9 @@ package org.firstinspires.ftc.robotlib.drivetrain;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotlib.robot.SiBorgsMecanumRobot;
+
 /*
 The actual final drivetrain used for the robot, just changes the wheel angles and the wheel coefficient math to match our setup
  */
@@ -33,5 +36,25 @@ public class MecanumDrivetrain extends HolonomicFourWheelDrivetrain
         this.setVelocity(velocity);
         this.setRotation(rotation);
         this.position();
+    }
+
+    // auto positions with a live telemetry output
+    public void autoPositionWithTelemetry(double course, double distance, double velocity, SiBorgsMecanumRobot robot)
+    {
+        this.setTargetPosition(distance * getTicksPerIn());
+        this.setCourse(course * (Math.PI/180));
+        this.setVelocity(velocity);
+        this.setRotation(0);
+
+        updatePosition();
+        while (robot.driveFrontRight.isEncoderBusy()
+                || robot.driveRearLeft.isEncoderBusy()
+                || robot.driveFrontLeft.isEncoderBusy()
+                || robot.driveRearRight.isEncoderBusy())
+        {
+            updatePosition();
+            robot.informationTelemetry("Driving");
+        }
+        finishPositioning();
     }
 }

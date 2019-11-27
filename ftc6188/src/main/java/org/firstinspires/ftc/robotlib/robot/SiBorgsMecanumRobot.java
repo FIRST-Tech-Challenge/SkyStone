@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotlib.armsystem.FieldGoalArmSystem;
 import org.firstinspires.ftc.robotlib.drivetrain.MecanumDrivetrain;
+import org.firstinspires.ftc.robotlib.motor.CalculatedVelocityMotor;
 import org.firstinspires.ftc.robotlib.motor.LimitedMotor;
 import org.firstinspires.ftc.robotlib.servo.LinkedServo;
 import org.firstinspires.ftc.robotlib.sound.BasicSound;
@@ -16,10 +17,10 @@ import org.jetbrains.annotations.NotNull;
 public class SiBorgsMecanumRobot
 {
     // Drive motors
-    private DcMotor driveFrontLeft;
-    private DcMotor driveFrontRight;
-    private DcMotor driveRearLeft;
-    private DcMotor driveRearRight;
+    public CalculatedVelocityMotor driveFrontLeft;
+    public CalculatedVelocityMotor driveFrontRight;
+    public CalculatedVelocityMotor driveRearLeft;
+    public CalculatedVelocityMotor driveRearRight;
     private DcMotor[] driveMotorList;
 
     // Drive constants
@@ -44,18 +45,23 @@ public class SiBorgsMecanumRobot
     // Sound objects
     public BasicSound sirenSound;
 
+    // Telemetry reference
+    private final Telemetry telemetry;
+
     // Movement systems (drivetrain/arm system)
     public MecanumDrivetrain drivetrain;
     public FieldGoalArmSystem crane;
 
     // Class constructor with full systems initialization
-    public SiBorgsMecanumRobot (@NotNull HardwareMap hwMap)
+    public SiBorgsMecanumRobot (@NotNull HardwareMap hwMap, Telemetry telemetry)
     {
+        this.telemetry = telemetry;
+
         // Drive motors init
-        driveFrontLeft = hwMap.get(DcMotor.class, "driveFrontLeft");
-        driveFrontRight = hwMap.get(DcMotor.class, "driveFrontRight");
-        driveRearRight = hwMap.get(DcMotor.class, "driveRearRight");
-        driveRearLeft = hwMap.get(DcMotor.class, "driveRearLeft");
+        driveFrontLeft = new CalculatedVelocityMotor(hwMap.get(DcMotor.class, "driveFrontLeft"));
+        driveFrontRight = new CalculatedVelocityMotor(hwMap.get(DcMotor.class, "driveFrontRight"));
+        driveRearRight = new CalculatedVelocityMotor(hwMap.get(DcMotor.class, "driveRearRight"));
+        driveRearLeft = new CalculatedVelocityMotor(hwMap.get(DcMotor.class, "driveRearLeft"));
         driveMotorList = new DcMotor[] {driveFrontLeft, driveFrontRight, driveRearLeft, driveRearRight};
 
         for (DcMotor motor : driveMotorList)
@@ -101,7 +107,7 @@ public class SiBorgsMecanumRobot
 
         servoClawLeft.setPosition(0);
         servoClawRight.setPosition(0);
-        armGripSlide.setPosition(0);
+        armGripSlide.setPosition(1);
 
         platformServo = new LinkedServo(servoClawLeft, servoClawRight);
 
@@ -114,7 +120,7 @@ public class SiBorgsMecanumRobot
     }
 
     // Telemetry command useful for drivers
-    public void driverTelemetry(Telemetry telemetry)
+    public void driverTelemetry()
     {
         telemetry.addData("> Drive Info", "-----");
         telemetry.addData("Half Power Mode\t(G1-RStickButton)", drivetrain.getLowPower());
@@ -136,7 +142,7 @@ public class SiBorgsMecanumRobot
     }
 
     // Full output of all basic functions for debugging
-    public void informationTelemetry(Telemetry telemetry)
+    public void informationTelemetry()
     {
         telemetry.addData("> Target Positions", "-----");
         telemetry.addData("WheelTarget FL", drivetrain.wheelTargetPositions[0]);
@@ -159,6 +165,12 @@ public class SiBorgsMecanumRobot
         telemetry.addData("WheelPower RL", drivetrain.motorList[2].getPower());
         telemetry.addData("WheelPower RR", drivetrain.motorList[3].getPower());
 
+        telemetry.addData("> Motor Speed", "-----");
+        telemetry.addData("Speed FL", driveFrontLeft.getEncoderPerSecond());
+        telemetry.addData("Speed FR", driveFrontRight.getEncoderPerSecond());
+        telemetry.addData("Speed RL", driveRearLeft.getEncoderPerSecond());
+        telemetry.addData("Speed RR", driveRearLeft.getEncoderPerSecond());
+
         telemetry.addData("> Is Busy", "-----");
         telemetry.addData("FL", drivetrain.motorList[0].isBusy());
         telemetry.addData("FR", drivetrain.motorList[1].isBusy());
@@ -179,5 +191,12 @@ public class SiBorgsMecanumRobot
         telemetry.addData("Linked Pos", platformServo.getPosition());
 
         telemetry.update();
+    }
+
+    // full information output plus an optional status
+    public void informationTelemetry(String programStatus)
+    {
+        telemetry.addData("> Prog Status", programStatus);
+        informationTelemetry();
     }
 }

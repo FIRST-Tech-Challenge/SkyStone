@@ -100,6 +100,7 @@ public class MecanumAutonomous {
         robot.scan();
 
         telemetry.addData("Elapsed Time", elapsedTime.seconds() + " seconds");
+
         // Provide feedback as to where the robot is located (if we know).
         if (robot.isTrackableVisible()) {
             if (robot.isLocationKnown()) {
@@ -114,16 +115,14 @@ public class MecanumAutonomous {
 
             telemetry.addData("Visible Target(s)", robot.stringifyVisibleTargets());
 
-            // move to stone if visible
+            // Move to stone if visible
             VuforiaTrackable trackedStone = robot.getVisibleTrackable("Stone Target");
             if (trackedStone != null) {
                 Point3D positionFromSkystone = robot.getPositionFromSkystone();
                 Point3D stonePoint3D = new Point3D(trackedStone.getLocation());
                 telemetry.addData("Position relative to Skystone", "{X, Y, Z} = %.0f, %.0f, %.0f", positionFromSkystone.x, positionFromSkystone.y, positionFromSkystone.z);
-                telemetry.addData("Course", Math.toDegrees(robot.getCourse(positionFromSkystone, stonePoint3D)) + " degrees");
-                telemetry.addData("Distance", robot.getDistance(positionFromSkystone, stonePoint3D) + " inches");
-                robot.simpleMove(robot.getCourse(positionFromSkystone, stonePoint3D), 1, 0, robot.getDistance(positionFromSkystone, stonePoint3D));
-                robot.hardware.intakeMotorManager.setMotorsVelocity(1.0);
+                robot.simpleMove(robot.getCourse(positionFromSkystone, stonePoint3D), 0.5, 0, robot.getDistance(positionFromSkystone, stonePoint3D) - 8.75);
+                //robot.hardware.intakeMotorManager.setMotorsVelocity(1.0);
             }
         } else {
             telemetry.addData("Visible Target", "None");
@@ -134,6 +133,10 @@ public class MecanumAutonomous {
             robot.simpleMove(robot.getCourseFromRobot(stonePoint3D), 1, 0, robot.getDistanceFromRobot(stonePoint3D));
             robot.turn(90, 0.5);
             robot.move(robot.getCourseFromRobot(stonePoint3D), 1, new OrientationInfo(145, 0.3), robot.getDistanceFromRobot(stonePoint3D));
+
+            Stone Target Debug
+            telemetry.addData("Course", Math.toDegrees(robot.getCourse(positionFromSkystone, stonePoint3D)) + " degrees");
+            telemetry.addData("Distance", robot.getDistance(positionFromSkystone, stonePoint3D) + " inches");
          */
 
         telemetry.update();

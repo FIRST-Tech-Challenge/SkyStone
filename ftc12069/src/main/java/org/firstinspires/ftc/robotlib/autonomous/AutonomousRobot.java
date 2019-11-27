@@ -11,6 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import org.firstinspires.ftc.robotlib.Constants;
+import org.firstinspires.ftc.robotlib.debug.WebserverManager;
 import org.firstinspires.ftc.robotlib.navigation.Area;
 import org.firstinspires.ftc.robotlib.information.LocationInfo;
 import org.firstinspires.ftc.robotlib.information.OrientationInfo;
@@ -19,6 +20,7 @@ import org.firstinspires.ftc.robotlib.robot.MecanumHardwareMap;
 import org.firstinspires.ftc.robotlib.state.Alliance;
 import org.firstinspires.ftc.robotlib.navigation.Point;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,6 +64,9 @@ public class AutonomousRobot {
     public VuforiaTrackables trackables;
     public List<VuforiaTrackable> trackablesList;
     public List<VuforiaTrackable> visibleTrackables;
+
+    // Debug
+    private WebserverManager webserverManager;
 
     // Constants for Areas
     private final Area blueBridge = new Area(new Point(2, 72), new Point(-2, 24));
@@ -215,9 +220,9 @@ public class AutonomousRobot {
         if (PHONE_IS_PORTRAIT) {
             phoneXRotate = 90 ;
         }
-        final float CAMERA_FORWARD_DISPLACEMENT  = 0f * mmPerInch;   // eg: Camera is 0 Inches in front of robot center
-        final float CAMERA_VERTICAL_DISPLACEMENT = 0f * mmPerInch;   // eg: Camera is 6.625 Inches above ground
-        final float CAMERA_LEFT_DISPLACEMENT     = 0;     // eg: Camera is ON the robot's center line
+        final float CAMERA_FORWARD_DISPLACEMENT  = 9.25f * mmPerInch;   // eg: Camera is 0 Inches in front of robot center
+        final float CAMERA_VERTICAL_DISPLACEMENT = 6.75f * mmPerInch;   // eg: Camera is 6.625 Inches above ground
+        final float CAMERA_LEFT_DISPLACEMENT     = 2.625f * mmPerInch;     // eg: Camera is ON the robot's center line
 
         OpenGLMatrix robotFromCamera = OpenGLMatrix
                 .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
@@ -229,6 +234,17 @@ public class AutonomousRobot {
         }
 
         visibleTrackables = new ArrayList<>();
+
+        //this.startDebugServer();
+    }
+
+    public void startDebugServer() {
+        try {
+            webserverManager = new WebserverManager();
+        } catch (IOException e) {
+            telemetry.addData("DEBUG FAIL", "Debug webserver failed to start");
+            telemetry.update();
+        }
     }
 
     /**
@@ -395,7 +411,8 @@ public class AutonomousRobot {
      * @return distance between the point and "robot"
      */
     public double getDistance(Point robot, Point object) {
-        return robot.distance(object);
+        double distanceFromRobotCenter = robot.distance(object);
+        return distanceFromRobotCenter - 9; // this is because the distance is calculated from the center of the robot. The camera is ~9 inches in front
     }
 
     /**
@@ -421,14 +438,15 @@ public class AutonomousRobot {
      * @param distance Distance (in inches) to execute this movement
      */
     public void simpleMove(double course, double velocity, double rotation, double distance) {
-        telemetry.addData("SIMPLE MOVE EXECUTING", "Course: %.0f degrees\nVelocity: %.0f\nRotation: %.0f\nDistance: %.0f inches", course, velocity, rotation, distance);
+        telemetry.addData("SIMPLE MOVE EXECUTING", "Course: %.2f degrees\nVelocity: %.2f\nRotation: %.2f\nDistance: %.2f inches", course, velocity, rotation, distance);
         telemetry.update();
-        hardware.drivetrain.setCourse(course * Math.PI / 180);
+
+        hardware.drivetrain.setCourse(Math.toRadians(course));
         hardware.drivetrain.setRotation(rotation);
         hardware.drivetrain.setVelocity(velocity);
         hardware.drivetrain.setTargetPosition(distance * hardware.motorTicksPerInch);
         hardware.drivetrain.position();
-        locationInfo.translateRobotLocation(this.getOrientation2D(), distance);
+        //locationInfo.translateRobotLocation(this.getOrientation2D(), distance);
     }
 
     /**

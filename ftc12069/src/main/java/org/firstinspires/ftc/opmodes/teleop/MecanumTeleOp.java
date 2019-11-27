@@ -20,7 +20,7 @@ public class MecanumTeleOp extends OpMode
         robotHardware = new MecanumHardwareMap(this.hardwareMap);
         elapsedTime = new ElapsedTime();
 
-        robotHardware.servoManager.reset();
+        //robotHardware.servoManager.reset();
     }
 
     @Override
@@ -43,9 +43,9 @@ public class MecanumTeleOp extends OpMode
         double velocity;
         double rotation;
         if (rightMotion) {
-            course = Math.atan2(gamepad1.right_stick_y, -gamepad1.right_stick_x) - Math.PI/2;
+            course = -Math.atan2(gamepad1.right_stick_y, -gamepad1.right_stick_x) - Math.PI/2;
             velocity = Math.hypot(gamepad1.right_stick_x, gamepad1.right_stick_y);
-            rotation = gamepad1.left_stick_x;
+            rotation = -gamepad1.left_stick_x;
         } else {
             course = Math.atan2(gamepad1.left_stick_y, -gamepad1.left_stick_x) - Math.PI/2;
             velocity = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
@@ -56,20 +56,20 @@ public class MecanumTeleOp extends OpMode
         robotHardware.drivetrain.setVelocity(velocity);
         robotHardware.drivetrain.setRotation(rotation);
 
-        ServoState servoState = robotHardware.servoManager.getServoState();
-        robotHardware.servoManager.updateServos();
+        //ServoState servoState = robotHardware.servoManager.getServoState();
+        //robotHardware.servoManager.updateServos();
 
         if (gamepad1.a) rightMotion = false;
         if (gamepad1.b) rightMotion = true;
 
-        robotHardware.servoManager.handleUpdate(gamepad1);
+        //robotHardware.servoManager.handleUpdate(gamepad1);
 
         telemetry.addData("Status", "Loop: " + elapsedTime.toString());
         telemetry.addData("Course", course);
         telemetry.addData("Velocity", velocity);
         telemetry.addData("Rotation", rotation);
         telemetry.addData("Driving Mode", rightMotion ? "RIGHT" : "LEFT");
-        telemetry.addData("Servo State", servoState.toString() + " (" + servoState.getLevel() + ")");
+        //telemetry.addData("Servo State", servoState.toString() + " (" + servoState.getLevel() + ")");
         telemetry.update();
     }
 

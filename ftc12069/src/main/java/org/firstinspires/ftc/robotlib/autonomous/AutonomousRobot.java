@@ -5,6 +5,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
@@ -321,7 +324,7 @@ public class AutonomousRobot {
 
     /**
      * Retrieves the orientation of the robot in a 2D space (heading/yaw)
-     * @return current heading
+     * @return current heading in degrees
      */
     public double getOrientation2D() {
         return this.getOrientation().thirdAngle;
@@ -329,11 +332,27 @@ public class AutonomousRobot {
 
     /**
      * Retrieves the orientation of the robot in a 3D space
-     * @return current orientation
+     * @return current orientation in degrees
      */
     public Orientation getOrientation() {
-        // imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES)
-        return Orientation.getOrientation(locationInfo.getRobotLocationMatrix(), EXTRINSIC, XYZ, DEGREES);
+        return Orientation.getOrientation(locationInfo.getRobotLocationMatrix(), EXTRINSIC, AxesOrder.XYZ, DEGREES);
+    }
+
+    /**
+     * Retrieves the orientation of the robot according to the IMU
+     * The orientation is based off the robot (NOT the FTC field)
+     * @return current orientation according to the IMU (in degrees)
+     */
+    public Orientation getOrientationIMU() {
+        return hardware.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, DEGREES);
+    }
+
+    /**
+     * Retrieves the orientation of the robot in a 2D space (heading/yaw) according to the IMU
+     * @return current heading in degrees
+     */
+    public double getOrientation2DIMU() {
+        return AngleUnit.DEGREES.normalize(this.getOrientationIMU().firstAngle);
     }
 
     /**
@@ -343,10 +362,10 @@ public class AutonomousRobot {
      * @param velocity rotation speed (between 0 and 1)
      */
     public void turn(double angle, double velocity) {
-        double initialOrientation = this.getOrientation2D();
+        double initialOrientation = this.getOrientation2DIMU();
         double[] rotationValues = hardware.drivetrain.getWheelRotationValues(velocity);
 
-        while (this.getOrientation2D() - initialOrientation < angle) {
+        while (this.getOrientation2DIMU() - initialOrientation < angle) {
             hardware.drivetrain.setMotorPowers(rotationValues[0], rotationValues[1], rotationValues[2], rotationValues[3]);
         }
     }
@@ -366,7 +385,7 @@ public class AutonomousRobot {
     /**
      * Calculates the course for the robot to arrive a point in a 2D space
      * @param object Point3D
-     * @return required course to arrive at a point
+     * @return required course to arrive at a point in radians
      */
     public double getCourseFromRobot(Point object) {
         return this.getCourse(this.getPosition(), object);
@@ -376,7 +395,7 @@ public class AutonomousRobot {
      * Calculates the course between a set "robot" point and an object
      * @param robot point of reference
      * @param object object to get course to
-     * @return required course to arrive at a point
+     * @return required course to arrive at a point in radians
      */
     public double getCourse(Point robot, Point object) {
         return -Math.atan2(object.y - robot.y, object.x - robot.x);
@@ -434,19 +453,11 @@ public class AutonomousRobot {
      * This adjusts some values, not including rotation
      * @param course Angle (in degrees) of movement
      * @param velocity New velocity (-1 to 1)
-     * @param rotation Double (between -1 and 1) -1 - clockwise 0 - no rotation 1 - counterclockwise
+     * @param rotation Double (between -1 and 1) -1 - clockwise 0 - no rotation 1 - counterclockwise (currently ignored as it is useless)
      * @param distance Distance (in inches) to execute this movement
      */
     public void simpleMove(double course, double velocity, double rotation, double distance) {
-        telemetry.addData("SIMPLE MOVE EXECUTING", "Course: %.2f degrees\nVelocity: %.2f\nRotation: %.2f\nDistance: %.2f inches", course, velocity, rotation, distance);
-        telemetry.update();
-
-        hardware.drivetrain.setCourse(Math.toRadians(course));
-        hardware.drivetrain.setRotation(rotation);
-        hardware.drivetrain.setVelocity(velocity);
-        hardware.drivetrain.setTargetPosition(distance * hardware.motorTicksPerInch);
-        hardware.drivetrain.position();
-        //locationInfo.translateRobotLocation(this.getOrientation2D(), distance);
+        this.move(course, velocity, null, distance);
     }
 
     /**
@@ -457,23 +468,31 @@ public class AutonomousRobot {
      * @param distance Distance (in inches) to execute this movement
      */
     public void move(double course, double velocity, OrientationInfo orientationInfo, double distance) {
-        telemetry.addData("MOVE EXECUTING", "Course: %.2f degrees\nVelocity: %.2f\nOrientation: Angle: %.2f, Rotation: %.2f\nDistance: %.2f inches", course, velocity, orientationInfo.angle, orientationInfo.rotation, distance);
+        telemetry.addData("MOVE EXECUTING", "Course: %.2f degrees\nVelocity: %.2f\nOrientation: %s\nDistance: %.2f inches",
+                course, velocity,
+                orientationInfo != null ? "Angle: " + orientationInfo.angle + ", Rotation: " + orientationInfo.rotation : "Not Available",
+                distance
+        );
         telemetry.update();
+
         hardware.drivetrain.setCourse(Math.toRadians(course));
         hardware.drivetrain.setVelocity(velocity);
         hardware.drivetrain.setTargetPosition(distance * hardware.motorTicksPerInch);
 
-        double initialOrientation = this.getOrientation2D();
+        if (orientationInfo != null) {
+            double initialOrientation = this.getOrientation2D();
 
-        while (hardware.drivetrain.isPositioning()) {
-            if (this.getOrientation2D() - initialOrientation < orientationInfo.angle) hardware.drivetrain.setRotation(orientationInfo.rotation);
+            while (hardware.drivetrain.isPositioning()) {
+                if (this.getOrientation2D() - initialOrientation < orientationInfo.angle)
+                    hardware.drivetrain.setRotation(orientationInfo.rotation);
+            }
+
+            // In case the robot did not finish turning by the time it reached its destination
+            if (this.getOrientation2D() - initialOrientation < orientationInfo.angle)
+                this.turn(orientationInfo.angle - (this.getOrientation2D() - initialOrientation), orientationInfo.rotation);
         }
 
-        // In case the robot did not finish turning by the time it reached its destination
-        if (this.getOrientation2D() - initialOrientation < orientationInfo.angle)
-            this.turn(orientationInfo.angle - (this.getOrientation2D() - initialOrientation), orientationInfo.rotation);
-
-        locationInfo.translateRobotLocation(this.getOrientation2D(), distance);
+        if (this.isLocationKnown()) locationInfo.translateRobotLocation(this.getOrientation2D(), distance);
     }
 
     /**

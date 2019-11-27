@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.BaseTrajectoryBuilder;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -12,7 +14,7 @@ import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveBase;
 public class Path {
     Pose2d startingPos;
     SampleMecanumDriveBase drive;
-    TrajectoryBuilder builder;
+    BaseTrajectoryBuilder builder;
     Trajectory trajectory;
 
     public Path(SampleMecanumDriveBase drive, Pose2d startingPos){
@@ -25,11 +27,7 @@ public class Path {
     public void RedQuary(int[] skystonePositions){
         switch(skystonePositions[0]){
             case 1:
-                drive.followTrajectorySync(
-                        drive.trajectoryBuilder()
-                                .splineTo(new Pose2d())
-                                .build()
-                );
+                builder = builder.splineTo(new Pose2d(new Vector2d(-49.728, 37.824), Math.toRadians(-90)));
                 drive.turnSync(Math.toRadians(90));
                 break;
             case 2:

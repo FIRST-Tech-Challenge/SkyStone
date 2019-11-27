@@ -180,7 +180,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
             }
         }
 
-        return busyMotors > 2;
+        return busyMotors <= this.motorList.length / 2;
     }
 
     /**

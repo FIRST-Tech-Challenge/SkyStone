@@ -5,6 +5,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
@@ -321,7 +324,7 @@ public class AutonomousRobot {
 
     /**
      * Retrieves the orientation of the robot in a 2D space (heading/yaw)
-     * @return current heading
+     * @return current heading in degrees
      */
     public double getOrientation2D() {
         return this.getOrientation().thirdAngle;
@@ -329,11 +332,27 @@ public class AutonomousRobot {
 
     /**
      * Retrieves the orientation of the robot in a 3D space
-     * @return current orientation
+     * @return current orientation in degrees
      */
     public Orientation getOrientation() {
-        // imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES)
-        return Orientation.getOrientation(locationInfo.getRobotLocationMatrix(), EXTRINSIC, XYZ, DEGREES);
+        return Orientation.getOrientation(locationInfo.getRobotLocationMatrix(), EXTRINSIC, AxesOrder.XYZ, DEGREES);
+    }
+
+    /**
+     * Retrieves the orientation of the robot according to the IMU
+     * The orientation is based off the robot (NOT the FTC field)
+     * @return current orientation according to the IMU (in degrees)
+     */
+    public Orientation getOrientationIMU() {
+        return hardware.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, DEGREES);
+    }
+
+    /**
+     * Retrieves the orientation of the robot in a 2D space (heading/yaw) according to the IMU
+     * @return current heading in degrees
+     */
+    public double getOrientation2DIMU() {
+        return AngleUnit.DEGREES.normalize(this.getOrientationIMU().firstAngle);
     }
 
     /**
@@ -343,10 +362,10 @@ public class AutonomousRobot {
      * @param velocity rotation speed (between 0 and 1)
      */
     public void turn(double angle, double velocity) {
-        double initialOrientation = this.getOrientation2D();
+        double initialOrientation = this.getOrientation2DIMU();
         double[] rotationValues = hardware.drivetrain.getWheelRotationValues(velocity);
 
-        while (this.getOrientation2D() - initialOrientation < angle) {
+        while (this.getOrientation2DIMU() - initialOrientation < angle) {
             hardware.drivetrain.setMotorPowers(rotationValues[0], rotationValues[1], rotationValues[2], rotationValues[3]);
         }
     }
@@ -366,7 +385,7 @@ public class AutonomousRobot {
     /**
      * Calculates the course for the robot to arrive a point in a 2D space
      * @param object Point3D
-     * @return required course to arrive at a point
+     * @return required course to arrive at a point in radians
      */
     public double getCourseFromRobot(Point object) {
         return this.getCourse(this.getPosition(), object);
@@ -376,7 +395,7 @@ public class AutonomousRobot {
      * Calculates the course between a set "robot" point and an object
      * @param robot point of reference
      * @param object object to get course to
-     * @return required course to arrive at a point
+     * @return required course to arrive at a point in radians
      */
     public double getCourse(Point robot, Point object) {
         return -Math.atan2(object.y - robot.y, object.x - robot.x);

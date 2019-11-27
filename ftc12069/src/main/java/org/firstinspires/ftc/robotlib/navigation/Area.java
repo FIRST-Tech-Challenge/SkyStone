@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.robotlib.navigation;
 
-import org.firstinspires.ftc.robotlib.navigation.Point;
-
 public class Area {
     private Point cornerPoint;
     private Point cornerPoint2;

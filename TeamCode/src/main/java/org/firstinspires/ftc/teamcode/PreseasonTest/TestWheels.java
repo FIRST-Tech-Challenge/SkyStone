@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode.PreseasonTest;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 import org.firstinspires.ftc.teamcode.All.HardwareMap;
 
 @Autonomous(name="Test Encoders", group="Test")       //Dashboard: https://192.168.49.1:8080/dash
+@Disabled
 public class TestWheels extends LinearOpMode {
     private static double power = 0.5;
     private static boolean blocked = false;

@@ -1,8 +1,5 @@
 package org.firstinspires.ftc.teamcode.PID.mecanum;
 
-import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.BASE_CONSTRAINTS;
-import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.TRACK_WIDTH;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.config.Config;
@@ -25,7 +22,14 @@ import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.PID.DriveConstantsPID;
-import org.firstinspires.ftc.teamcode.PID.util.DashboardUtil;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.BASE_CONSTRAINTS;
+import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.TRACK_WIDTH;
+import static org.firstinspires.ftc.teamcode.PID.util.DashboardUtil.drawRobot;
+import static org.firstinspires.ftc.teamcode.PID.util.DashboardUtil.drawSampledPath;
 
 /*
  * Base class with shared functionality for sample mecanum drives. All hardware-specific details are
@@ -55,10 +59,15 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
     private DriveConstraints constraints;
     private TrajectoryFollower follower;
 
+    private List<Double> lastWheelPositions;
+    private double lastTimestamp;
+
     public SampleMecanumDriveBase() {
         super(DriveConstantsPID.kV, DriveConstantsPID.kA, DriveConstantsPID.kStatic, TRACK_WIDTH);
 
         dashboard = FtcDashboard.getInstance();
+        dashboard.setTelemetryTransmissionInterval(25);
+
         clock = NanoClock.system();
 
         mode = Mode.IDLE;
@@ -136,12 +145,14 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
         switch (mode) {
             case IDLE:
                 // do nothing
-                setDriveSignal(new DriveSignal());
                 break;
             case TURN: {
                 double t = clock.seconds() - turnStart;
 
                 MotionState targetState = turnProfile.get(t);
+
+                turnController.setTargetPosition(targetState.getX());
+
                 double targetOmega = targetState.getV();
                 double targetAlpha = targetState.getA();
                 double correction = turnController.update(currentPose.getHeading(), targetOmega);
@@ -166,11 +177,11 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
 
                 fieldOverlay.setStrokeWidth(1);
                 fieldOverlay.setStroke("4CAF50");
-                DashboardUtil.drawSampledPath(fieldOverlay, trajectory.getPath());
+                drawSampledPath(fieldOverlay, trajectory.getPath());
 
                 fieldOverlay.setStroke("#F44336");
                 double t = follower.elapsedTime();
-                DashboardUtil.drawRobot(fieldOverlay, trajectory.get(t));
+                drawRobot(fieldOverlay, trajectory.get(t));
 
                 fieldOverlay.setStroke("#3F51B5");
                 fieldOverlay.fillCircle(currentPose.getX(), currentPose.getY(), 3);
@@ -195,6 +206,28 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
 
     public boolean isBusy() {
         return mode != Mode.IDLE;
+    }
+
+    public List<Double> getWheelVelocities() {
+        List<Double> positions = getWheelPositions();
+        double currentTimestamp = clock.seconds();
+
+        List<Double> velocities = new ArrayList<>(positions.size());;
+        if (lastWheelPositions != null) {
+            double dt = currentTimestamp - lastTimestamp;
+            for (int i = 0; i < positions.size(); i++) {
+                velocities.add((positions.get(i) - lastWheelPositions.get(i)) / dt);
+            }
+        } else {
+            for (int i = 0; i < positions.size(); i++) {
+                velocities.add(0.0);
+            }
+        }
+
+        lastTimestamp = currentTimestamp;
+        lastWheelPositions = positions;
+
+        return velocities;
     }
 
     public abstract PIDCoefficients getPIDCoefficients(DcMotor.RunMode runMode);

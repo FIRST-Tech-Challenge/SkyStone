@@ -132,6 +132,7 @@ public class FourWheelMecanumDrivetrain {
 
     public void encoderRotate(double speed, double inches, boolean clockwise) {
         double counts = inches / (2 * PI * 2) * DriveConstant.WHEEL_ENCODER_COUNTS_PER_REVOLUTION;
+
         int backLeftStart = rw.backLeft.getCurrentPosition();
         int backRightStart = rw.backRight.getCurrentPosition();
         int frontLeftStart = rw.frontLeft.getCurrentPosition();

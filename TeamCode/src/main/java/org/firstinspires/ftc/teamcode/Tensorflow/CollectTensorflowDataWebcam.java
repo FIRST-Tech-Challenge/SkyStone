@@ -43,6 +43,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
+import org.firstinspires.ftc.teamcode.All.DriveConstant;
 import org.firstinspires.ftc.teamcode.All.FourWheelMecanumDrivetrain;
 import org.firstinspires.ftc.teamcode.All.HardwareMap;
 import org.firstinspires.ftc.teamcode.Autonomous.Vision.Detect;
@@ -63,14 +65,16 @@ import java.util.List;
  *  NOTE: Covering a wider variety of light conditions sacrifices some accuracy
  */
 
-@TeleOp(name = "Custom TFOD Webcam", group = "Linear Opmode")
-public class CustomTFODWebcam extends LinearOpMode {
+@TeleOp(name = "Collect Tensorflow Data Webcam", group = "Linear Opmode")
+public class CollectTensorflowDataWebcam extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "skystoneTFOD_v2_[105-15].tflite";
     private static final String LABEL_FIRST_ELEMENT = "skystone";
     private static final String LABEL_SECOND_ELEMENT = "stone";
     private static double imgHeight = 1.0;
     private static double imgWidth = 1.0;
     FourWheelMecanumDrivetrain drivetrain;
+    private ArrayList<Integer> distance = new ArrayList<>();
+    private ArrayList<Double> width = new ArrayList<>();
     boolean blocker = false;
     double power = 0.5;
 
@@ -144,82 +148,52 @@ public class CustomTFODWebcam extends LinearOpMode {
                     // the last time that call was made.
                     List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                     if (updatedRecognitions != null) {
-                      telemetry.addData("# Object Detected", updatedRecognitions.size());
-                      // step through the list of recognitions and display boundary info.
-                      int i = 0;
-                      int index = 0;
-                      for (Recognition recognition : updatedRecognitions) {
-                          double objWidth = recognition.getWidth();
-                          double objHeight = recognition.getHeight();
-                          double distanceToObj = TFODCalc.getDistanceToObj(127, imgHeight, objHeight);
-                          ArrayList<Double> tfodData = TFODCalc.getAngleOfStone(index, objWidth, distanceToObj);
+                        telemetry.addData("# Object Detected", updatedRecognitions.size());
+                        // step through the list of recognitions and display boundary info.
+                        int i = 0;
+                        int index = 0;
+                        for (Recognition recognition : updatedRecognitions) {
+                            double objWidth = recognition.getWidth();
+                            double objHeight = recognition.getHeight();
+                            double distanceToObj = TFODCalc.getDistanceToObj(127, imgHeight, objHeight);
+                            ArrayList<Double> tfodData = TFODCalc.getAngleOfStone(index, objWidth, distanceToObj);
 
-                          telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
-                          telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
-                                recognition.getLeft(), recognition.getTop());
-                          telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
-                                recognition.getRight(), recognition.getBottom());
+                            telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
+                            telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
+                                    recognition.getLeft(), recognition.getTop());
+                            telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
+                                    recognition.getRight(), recognition.getBottom());
 
-                          telemetry.addData("Object Height", objHeight);
-                          telemetry.addData("Object Width", objWidth);
-                          telemetry.addData("**Distance From Object", distanceToObj);
-                          telemetry.addData("**Object Angle", tfodData.get(0));
-                          telemetry.addData("Angle Model Domain",
-                                  "[" + tfodData.get(1) + ", " + tfodData.get(2) + "]");
-                          telemetry.addData("Auto-adjusted Domain-Predicted 0° Stone Width Delta",
-                                  Math.round((tfodData.get(3)) * 1000.0) / 1000.0);
-<<<<<<< HEAD
-                          //telemetry.addData("Position",
-                          //        Arrays.toString(detect.getPositions(updatedRecognitions)));
-=======
-                          telemetry.addData("Position",
-                                  Arrays.toString(detect.getSkystonePositionsRed(updatedRecognitions, imgWidth)));
->>>>>>> 54dad6002d010477d957a88e569fbbfb3f221460
-                          index += 1;
-                      }
+                            telemetry.addData("Object Height", objHeight);
+                            telemetry.addData("Object Width", objWidth);
+                            telemetry.addData("**Distance From Object", distanceToObj);
+                            telemetry.addData("**Object Angle", tfodData.get(0));
+                            telemetry.addData("Angle Model Domain",
+                                    "[" + tfodData.get(1) + ", " + tfodData.get(2) + "]");
+                            telemetry.addData("Auto-adjusted Domain-Predicted 0° Stone Width Delta",
+                                    Math.round((tfodData.get(3)) * 1000.0) / 1000.0);
+                            telemetry.addData("Position",
+                                    Arrays.toString(detect.getSkystonePositionsRed(updatedRecognitions, imgWidth)));
+
+                            if(recognition.getLabel().equalsIgnoreCase("skystone")){
+                                if(distance.contains((int) Math.round(distanceToObj))){
+                                    int val = distance.indexOf((int) Math.round(distanceToObj));
+                                    width.set(val, objWidth);
+                                } else {
+                                    distance.add((int) Math.round(distanceToObj));
+                                    width.add(objWidth);
+                                }
+                            }
+
+                            index += 1;
+                        }
                     }
                 }
-                if (!(gamepad1.left_stick_x == 0 && gamepad1.right_stick_y == 0)) {
-
-                    double speed;
-
-                    if (gamepad1.left_stick_x == 0 && gamepad1.right_stick_y == 0) {
-                        speed = 0;
-                    }
-                    else if ( gamepad1.right_stick_y == 0 ) {
-                        speed = Math.abs(gamepad1.left_stick_x) ;
-                    }
-                    else if ( gamepad1.left_stick_x == 0 ) {
-                        speed = Math.abs(gamepad1.right_stick_y) ;
-                    }
-                    else {
-                        speed = (Math.abs(gamepad1.left_stick_x) + Math.abs(gamepad1.right_stick_y)) / 2;
-                    }
-
-                    double angle = Math.atan2(gamepad1.left_stick_x, -gamepad1.right_stick_y);
-                    drivetrain.MoveAngle(speed, angle, 0);
-                } else {
-                    drivetrain.stop();
-                }
-
-                if(gamepad1.a) {
-                    if(!blocker) {
-                        power += 0.1;
-                        drivetrain.setSpeedMultiplier(power);
-                        blocker = true;
-                    }
-                } else if(gamepad1.b) {
-                    if(!blocker) {
-                        power -= 0.1;
-                        drivetrain.setSpeedMultiplier(power);
-                        blocker = true;
-                    }
-                } else {
-                    blocker = false;
-                }
-
-                telemetry.addData("Motor Power", power);
                 telemetry.update();
+            }
+            if(isStopRequested()){
+                DriveConstant.writeSerializedObject(AppUtil.ROOT_FOLDER + "/TFOD Data/TFOD_Distances_webcam.txt", distance);
+                DriveConstant.writeSerializedObject(AppUtil.ROOT_FOLDER + "/TFOD Data/TFOD_Widths_webcam.txt", width);
             }
         }
 
@@ -259,10 +233,10 @@ public class CustomTFODWebcam extends LinearOpMode {
      */
     private void initTfod() {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
-            "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-       tfodParameters.minimumConfidence = 0.85;
-       tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
-       tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
+        tfodParameters.minimumConfidence = 0.85;
+        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
     }
 }

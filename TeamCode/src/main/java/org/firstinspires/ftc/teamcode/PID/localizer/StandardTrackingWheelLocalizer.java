@@ -5,11 +5,8 @@ import android.support.annotation.NonNull;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.localization.ThreeTrackingWheelLocalizer;
-import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
-import org.firstinspires.ftc.teamcode.All.DriveConstant;
 
 import java.util.Arrays;
 import java.util.List;
@@ -30,13 +27,14 @@ import java.util.List;
  */
 @Config
 public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer {
-    public static double TICKS_PER_REV = DriveConstant.ODOMETRY_ENCODER_COUNTS_PER_REVOLUTION;
-    public static double WHEEL_RADIUS = DriveConstant.MECANUM_RAD; // in
+    public static double TICKS_PER_REV = 1400.0;
+    public static double WHEEL_RADIUS = 1.142; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
 
     public static double LATERAL_DISTANCE = 14.0; // in; distance between the left and right wheels
     public static double FORWARD_OFFSET = 6.5; // in; offset of the lateral wheel
-    org.firstinspires.ftc.teamcode.All.HardwareMap hwMap;
+
+    private DcMotor leftEncoder, rightEncoder, frontEncoder;
 
     public StandardTrackingWheelLocalizer(HardwareMap hardwareMap) {
         super(Arrays.asList(
@@ -45,7 +43,9 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
                 new Pose2d(FORWARD_OFFSET, 0, Math.toRadians(90)) // front
         ));
 
-        hwMap = new org.firstinspires.ftc.teamcode.All.HardwareMap(hardwareMap);
+        leftEncoder = hardwareMap.dcMotor.get("leftIntake");
+        rightEncoder = hardwareMap.dcMotor.get("liftTwo");
+        frontEncoder = hardwareMap.dcMotor.get("rightIntake");
     }
 
     public static double encoderTicksToInches(int ticks) {
@@ -56,12 +56,9 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
     @Override
     public List<Double> getWheelPositions() {
         return Arrays.asList(
-                (double) hwMap.leftIntake.getCurrentPosition(),
-                (double) hwMap.liftTwo.getCurrentPosition(),  //@TODO: Switch to "hwMap.backRight.getCurrentPosition()" later
-                (double) hwMap.rightIntake.getCurrentPosition()
-                //encoderTicksToInches(leftEncoder.getCurrentPosition()),
-                //encoderTicksToInches(rightEncoder.getCurrentPosition()),
-                //encoderTicksToInches(frontEncoder.getCurrentPosition())
+                encoderTicksToInches(leftEncoder.getCurrentPosition()),
+                encoderTicksToInches(rightEncoder.getCurrentPosition()),
+                encoderTicksToInches(frontEncoder.getCurrentPosition())
         );
     }
 }

@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -13,13 +15,12 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.All.FourWheelMecanumDrivetrain;
 import org.firstinspires.ftc.teamcode.All.HardwareMap;
-import org.firstinspires.ftc.teamcode.Autonomous.BlockDetectionTest.BLOCKPOS;
-import org.firstinspires.ftc.teamcode.Autonomous.BlockDetectionTest.SkystonePosition;
 import org.firstinspires.ftc.teamcode.Autonomous.Vision.Detect;
-import org.firstinspires.ftc.teamcode.TeleOp.Teleop;
 
 import java.util.List;
 
+@Autonomous(name = "Autonomous", group = "LinearOpMode")
+@Disabled
 public class EncoderAuto extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "skystoneTFOD_v2_[105-15].tflite";
     private static final String LABEL_FIRST_ELEMENT = "skystone";
@@ -44,6 +45,7 @@ public class EncoderAuto extends LinearOpMode {
         FourWheelMecanumDrivetrain drivetrain = new FourWheelMecanumDrivetrain(hwMap);
 
         drivetrain.setMotorZeroPower(DcMotor.ZeroPowerBehavior.BRAKE);
+        drivetrain.resetEncoders();
         drivetrain.setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
         hwMap.frontRight.setDirection(DcMotorSimple.Direction.REVERSE); //???
         hwMap.backRight.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -68,6 +70,7 @@ public class EncoderAuto extends LinearOpMode {
             if (gamepad1.start) {
                 switch (fieldPosition) {
                     case RED_QUARY:
+                        drivetrain.resetEncoders();
                         initVuforia();
                         if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
                             initTfod();
@@ -84,6 +87,7 @@ public class EncoderAuto extends LinearOpMode {
                             skystonePositions = detect.getSkystonePositionsRed(recognizedList, imgWidth);
                         break;
                     case BLUE_QUARY:
+                        drivetrain.resetEncoders();
                         initVuforia();
 
                         if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
@@ -111,6 +115,16 @@ public class EncoderAuto extends LinearOpMode {
         if (opModeIsActive()) {
             switch (fieldPosition){
                 case RED_QUARY:
+                    if(skystonePositions[0] == 1){
+                        /*drivetrain.odometryStrafe(0.5, 6, false);
+                        intake(1, true);
+                        drivetrain.encoderDrive(0.5,34);
+                        sleep(500);*/
+                    } else if(skystonePositions[0] == 2){
+
+                    } else if(skystonePositions[0] == 3){
+
+                    }
                     break;
                 case RED_FOUNDATION:
                     break;
@@ -223,5 +237,20 @@ public class EncoderAuto extends LinearOpMode {
     public void stopIntake(){
         hwMap.leftIntake.setPower(0);
         hwMap.rightIntake.setPower(0);
+    }
+
+    public void intake(int pw, boolean on) {
+        Thread thread = new Thread() {
+            public void run() {
+                if(on) {
+                    hwMap.leftIntake.setPower(-pw);
+                    hwMap.rightIntake.setPower(pw);
+                } else {
+                    hwMap.leftIntake.setPower(0);
+                    hwMap.rightIntake.setPower(0);
+                }
+            }
+        };
+        thread.start();
     }
 }

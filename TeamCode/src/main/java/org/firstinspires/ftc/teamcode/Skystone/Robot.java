@@ -569,10 +569,12 @@ public class Robot {
                             isExendingOuttake = true;
                             hasExtendedOuttake = true;
                             extendOuttakeStartTime = SystemClock.elapsedRealtime();
+                            intakePusher.setPosition(PUSHER_PUSHED);
                         } else if (executableAction == Actions.RETRACT_OUTTAKE && !hasRetractedOuttake) {
                             isRetractingOuttake = true;
                             hasRetractedOuttake = true;
                             retractOuttakeStartTime = SystemClock.elapsedRealtime();
+                            clamp.setPosition(CLAW_SERVO_RELEASED);
                         } else if (executableAction == Actions.RELEASE_FOUNDATION && !hasReleasedFoundation) {
                             isReleasingFoundation = true;
                             hasReleasedFoundation = true;
@@ -583,8 +585,6 @@ public class Robot {
                             isStoppingIntake = true;
                             hasStoppedIntake = true;
                         }
-
-                        actions.remove(actionPoint);
                     }
                 }
             }
@@ -611,16 +611,11 @@ public class Robot {
             }
 
             if (isRetractingOuttake){
-
                 if(currentTime-retractOuttakeStartTime >= 450){
                     clampPivot.setPosition(OUTTAKE_PIVOT_RETRACTED);
                 }
                 if(currentTime-retractOuttakeStartTime >= 750){
-                    clamp.setPosition(CLAW_SERVO_CLAMPED);
-                }
-                if(currentTime-retractOuttakeStartTime >= 1250){
                     getOuttakeExtender().setPosition(OUTTAKE_SLIDE_RETRACTED);
-                    clamp.setPosition(CLAW_SERVO_RELEASED);
                     intakePusher.setPosition(PUSHER_RETRACTED);
                     isRetractingOuttake = false;
                     hasRetractedOuttake = false;

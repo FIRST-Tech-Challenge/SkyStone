@@ -40,12 +40,6 @@ public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
     //rightFront Port 2
     //rightRear Port 3
 
-    public static double angleCorrection = 0.05;
-    private double startingAngle = 0;
-
-    //If the boolean below is false, then it will attempt to store a new angle for correction. If it is true, then the robot is translating and is referencing the previous angle.
-    private boolean ifStartingAngle = false;
-
     private static SampleMecanumDriveREVOptimized drive;
 
     private List<ExpansionHubMotor> motors;
@@ -132,73 +126,7 @@ public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
         leftRear.setPower(v1);
     }
 
-//    @Override
-//    public void setDrivePower(Pose2d pose){
-//
-//        Double velocityX = pose.getX();
-//        Double velocityY = pose.getY();
-//        Double velocityR = pose.getHeading();
-//
-//        double anglePowerCorrection = 0;
-//        if(velocityR < 0.05 && velocityR > -0.05){
-//            if(!ifStartingAngle){
-//                ifStartingAngle = true;
-//                startingAngle = drive.getPoseEstimate().getHeading();
-//            }
-//            anglePowerCorrection = angleCorrection * (startingAngle - drive.getPoseEstimate().getHeading());
-//        } else if((velocityR >= 0.05 || velocityR <= -0.05) || ((velocityX <= 0.05 && velocityX >= -0.05) && (velocityY <= 0.05 && velocityY >= -0.05))){
-//            ifStartingAngle = false;
-//        }
-//
-//        List<Double> translationValues = new ArrayList<>();
-//        //Front Left
-//        translationValues.add(velocityX + velocityY);
-//
-//        //Front Right
-//        translationValues.add(velocityX - velocityY);
-//
-//        //Back Left
-//        translationValues.add(velocityX - velocityY);
-//
-//        //Back Right
-//        translationValues.add(velocityX + velocityY);
-//
-//        List<Double> rotationValues = new ArrayList<>();
-//        //Front Left
-//        rotationValues.add(velocityR + anglePowerCorrection);
-//
-//        //Front Right
-//        rotationValues.add(-velocityR - anglePowerCorrection);
-//
-//        //Back Left
-//        rotationValues.add(velocityR + anglePowerCorrection);
-//
-//        //Back Right
-//        rotationValues.add(-velocityR - anglePowerCorrection);
-//
-//        double scaleFactor = 1;
-//        double tmpScale = 1;
-//
-//        for (int i = 0; i < 4; i++) {
-//            if (Math.abs(translationValues.get(i) + rotationValues.get(i)) > 1) {
-//                tmpScale = (1 - rotationValues.get(i)) / translationValues.get(i);
-//            } else if (translationValues.get(i) + rotationValues.get(i) < -1) {
-//                tmpScale = (rotationValues.get(i) - 1) / translationValues.get(i);
-//            }
-//            if (tmpScale < scaleFactor) {
-//                scaleFactor = tmpScale;
-//            }
-//        }
-//
-//
-//        List<Double> valuesScaled = new ArrayList<>();
-//        for (int i = 0; i < 4; i++) {
-//            valuesScaled.add(translationValues.get(i) * scaleFactor + rotationValues.get(i));
-//        }
-//
-//        setMotorPowers(valuesScaled.get(0),valuesScaled.get(2),valuesScaled.get(3),valuesScaled.get(1));
-//
-//    }
+
 
     @Override
     public double getRawExternalHeading() {

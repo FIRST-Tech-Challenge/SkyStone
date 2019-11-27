@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.vuforia.PIXEL_FORMAT;
 import com.vuforia.Vuforia;
@@ -33,7 +34,7 @@ public class EncoderAuto extends LinearOpMode {
     Detect detect;
     private int[] skystonePositions;
 
-    double power = 0.7;
+    double power = 0.4;
 
     @Override
     public void runOpMode() {
@@ -42,6 +43,8 @@ public class EncoderAuto extends LinearOpMode {
 
         FourWheelMecanumDrivetrain drivetrain = new FourWheelMecanumDrivetrain(hwMap);
 
+        drivetrain.setMotorZeroPower(DcMotor.ZeroPowerBehavior.BRAKE);
+        drivetrain.setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
         hwMap.frontRight.setDirection(DcMotorSimple.Direction.REVERSE); //???
         hwMap.backRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -112,6 +115,27 @@ public class EncoderAuto extends LinearOpMode {
                 case RED_FOUNDATION:
                     break;
                 case BLUE_QUARY:
+                    drivetrain.resetEncoders();
+                    //first to the left
+                    if(skystonePositions[0] == 1){
+                        drivetrain.odometryStrafe(0.5,5,false);
+
+                        intakeWithSeconds(1,10);
+                        drivetrain.encoderDrive(power,34);
+
+                        drivetrain.encoderDrive(-power, 25);
+
+
+                    }
+                    //second to the left
+                    else if(skystonePositions[0] == 2){
+
+                    }
+                    //third to the left
+                    else{
+
+                    }
+
                     break;
                 case BLUE_FOUNDATION:
                     break;
@@ -171,7 +195,7 @@ public class EncoderAuto extends LinearOpMode {
         return updatedRecognitions;
     }
 
-    public void intake(int pw, int seconds) {
+    public void intakeWithSeconds(int pw, int seconds) {
         Thread thread = new Thread() {
             public void run() {
                 hwMap.leftIntake.setPower(-pw);
@@ -185,5 +209,19 @@ public class EncoderAuto extends LinearOpMode {
         };
 
         thread.start();
+    }
+    public void intake(int pw){
+        Thread thread = new Thread() {
+            public void run() {
+                hwMap.leftIntake.setPower(-pw);
+                hwMap.rightIntake.setPower(pw);
+            }
+        };
+
+        thread.start();
+    }
+    public void stopIntake(){
+        hwMap.leftIntake.setPower(0);
+        hwMap.rightIntake.setPower(0);
     }
 }

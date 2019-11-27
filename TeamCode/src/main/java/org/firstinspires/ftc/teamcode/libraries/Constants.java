@@ -46,8 +46,8 @@ public class Constants {
     static final int TOUCH_ARM_TOP = 1;
 
     //********** CalcMove Constants **********//
-    static final float WHEEL_DIAMETER = 9f; // Centimeters
-    static final float WHEEL_GEAR_RATIO = (2f / 2);
+    static final float WHEEL_DIAMETER = 9f;
+    static final float WHEEL_GEAR_RATIO = (1f / 1);
     static final float NEVEREST_40_REVOLUTION_ENCODER_COUNT = 1120f;
     static final float TRACK_DISTANCE = 30f;
 
@@ -55,6 +55,11 @@ public class Constants {
 
     //********** TensorFlow **********//
     static final float TENSOR_READING_TIME = 3f;
+
+    static final String VUFORIA_KEY = "ARSzhHP/////AAABmQ3dyIKKfkcipjZh0HtnoDEkjuCn18CTNUWRN7PTFoedxZLS+QZmpkyXpQnQXFpQ5ol//l0ZwTejVrGRQ4i/kQBrrFJ8E0C7ckr4lzf5bLCvi1/E9x8anPwt2D0UToZ3MB5jPx4T6s/EOs575BtxjL7uv5jrCbQDsXebm2PROU4zC/Dj7+AYFkKCqD3YYLbGPGV4YoSgp9Ihoe+ZF/eae0FLG8K/o4eyfZj0B3aXkRvYi3dC5LY+c76aU72bKTrQ2PDYSxDG8xCaY1JyEyfDA6XqjHjYMvh0BBbb8bAQvPgG6/G50+5L+c/a8u6sbYJLbvVtXdMtrG1EA4CglbnsDs7GyyJmH5AusSwIDb9DQnTA";
+
+    private static final float mmPerInch = 25.4f;
+    private static final float mmTargetHeight = (6) * mmPerInch;
 
     public enum GoldObjectPosition {LEFT, CENTER, RIGHT}
 }

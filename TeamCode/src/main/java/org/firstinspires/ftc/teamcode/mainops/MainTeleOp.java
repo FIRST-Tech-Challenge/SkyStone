@@ -27,7 +27,7 @@ public class MainTeleOp extends LinearOpMode {
             // Gamepad 1
             teleLib.processDrive();
             teleLib.processIntakeMinerals();
-            teleLib.processStopIntake();
+//            teleLib.processStopIntake();
             teleLib.processOutakeMinerals();
             teleLib.processFoundation();
 

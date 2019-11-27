@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.libraries;
 
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
+import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.hardware.rev.RevTouchSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -84,18 +85,10 @@ public class Robot {
 
     }
 
-    //        servos[SERVO_LATCHER] = opMode.hardwareMap.get(Servo.class, "servoLatcher");
-//        servos[SERVO_INTAKE_ANGLE] = opMode.hardwareMap.get(Servo.class, "servoIntakeAngle");
-//        servos[SERVO_SCORING] = opMode.hardwareMap.get(Servo.class, "servoScoring");
-//        servos[SERVO_INTAKE_HOLDER] = opMode.hardwareMap.get(Servo.class, "servoIntakeHolder");
-//    }
-//
     private void initSensors() {
         frontDistanceSensor = opMode.hardwareMap.get(Rev2mDistanceSensor.class, "frontDistanceSensor");
         touchSensors[TOUCH_ARM_TOP] = opMode.hardwareMap.get(RevTouchSensor.class, "touchArmTop");
         touchSensors[TOUCH_ARM_BOTTOM] = opMode.hardwareMap.get(RevTouchSensor.class, "touchArmBottom");
-//        touchSensors[TOUCH_LATCHER_TOP] = opMode.hardwareMap.get(RevTouchSensor.class, "touchLatcherTop");
-//        touchSensors[TOUCH_LATCHER_BOTTOM] = opMode.hardwareMap.get(RevTouchSensor.class, "touchLatcherBottom");
     }
 
     // Motor methods
@@ -137,6 +130,7 @@ public class Robot {
     boolean isTouchSensorPressed(int index) {
         return touchSensors[index].isPressed();
     }
+
     double getWallDistanceCenti() {
         return (frontDistanceSensor.getDistance(DistanceUnit.METER) * 100);
     }

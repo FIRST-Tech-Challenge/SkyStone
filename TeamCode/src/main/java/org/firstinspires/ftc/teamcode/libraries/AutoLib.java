@@ -46,7 +46,7 @@ import static org.firstinspires.ftc.teamcode.libraries.Constants.WHEEL_GEAR_RATI
  * Title: AutoLib
  * Date Created: 10/28/2018
  * Date Modified: 1/22/2019
- * Author: Rahul, Poorvi, Varnika
+ * Author: Poorvi, Sachin
  * Type: Library
  * Description: This will contain the methods for Autonomous, and other autonomous-related programs.
  */
@@ -198,7 +198,7 @@ public class AutoLib {
 
         Thread.sleep(100);
 
-        robot.setDcMotorPower(MOTOR_ARM, .9f);
+        robot.setDcMotorPower(MOTOR_ARM, .75f);
 
         while (!robot.isTouchSensorPressed(TOUCH_ARM_BOTTOM)) {
             opMode.idle();
@@ -254,8 +254,17 @@ public class AutoLib {
     public void moveArmUpSeconds()  {
         ElapsedTime time = new ElapsedTime();
 
-        robot.setDcMotorPower(MOTOR_ARM, -.8f);
-        while (time.seconds() <= 1.75) {
+        robot.setDcMotorPower(MOTOR_ARM, -.9f);
+        while (time.seconds() <= 1.5) {
+            opMode.idle();
+        }
+        robot.setDcMotorPower(MOTOR_ARM, 0);
+    }
+    public void moveArmUpSeconds1()  {
+        ElapsedTime time = new ElapsedTime();
+
+        robot.setDcMotorPower(MOTOR_ARM, -.9f);
+        while (time.seconds() <= .5) {
             opMode.idle();
         }
         robot.setDcMotorPower(MOTOR_ARM, 0);

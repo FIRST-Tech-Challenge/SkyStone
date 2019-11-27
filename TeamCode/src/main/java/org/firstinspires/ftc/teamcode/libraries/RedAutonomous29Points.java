@@ -58,7 +58,7 @@ public class RedAutonomous29Points extends LinearOpMode {
     double yPosition = 0;
     double xPosition = 0;
     boolean startIdentify = true;
-    float distanceToDepot = 165;
+    float distanceToDepot = 170;    //165
 
     // Class Members
     private OpenGLMatrix lastLocation = null;
@@ -104,30 +104,6 @@ public class RedAutonomous29Points extends LinearOpMode {
 
         VuforiaTrackable stoneTarget = targetsSkyStone.get(0);
         stoneTarget.setName("Stone Target");
-//        VuforiaTrackable blueRearBridge = targetsSkyStone.get(1);
-//        blueRearBridge.setName("Blue Rear Bridge");
-//        VuforiaTrackable redRearBridge = targetsSkyStone.get(2);
-//        redRearBridge.setName("Red Rear Bridge");
-//        VuforiaTrackable redFrontBridge = targetsSkyStone.get(3);
-//        redFrontBridge.setName("Red Front Bridge");
-//        VuforiaTrackable blueFrontBridge = targetsSkyStone.get(4);
-//        blueFrontBridge.setName("Blue Front Bridge");
-//        VuforiaTrackable red1 = targetsSkyStone.get(5);
-//        red1.setName("Red Perimeter 1");
-//        VuforiaTrackable red2 = targetsSkyStone.get(6);
-//        red2.setName("Red Perimeter 2");
-//        VuforiaTrackable front1 = targetsSkyStone.get(7);
-//        front1.setName("Front Perimeter 1");
-//        VuforiaTrackable front2 = targetsSkyStone.get(8);
-//        front2.setName("Front Perimeter 2");
-//        VuforiaTrackable blue1 = targetsSkyStone.get(9);
-//        blue1.setName("Blue Perimeter 1");
-//        VuforiaTrackable blue2 = targetsSkyStone.get(10);
-//        blue2.setName("Blue Perimeter 2");
-//        VuforiaTrackable rear1 = targetsSkyStone.get(11);
-//        rear1.setName("Rear Perimeter 1");
-//        VuforiaTrackable rear2 = targetsSkyStone.get(12);
-//        rear2.setName("Rear Perimeter 2");
 
         // For convenience, gather together all the trackable objects in one easily-iterable collection */
         List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
@@ -140,57 +116,6 @@ public class RedAutonomous29Points extends LinearOpMode {
         stoneTarget.setLocation(OpenGLMatrix
                 .translation(0, 0, stoneZ)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
-
-        //Set the position of the bridge support targets with relation to origin (center of field)
-//        blueFrontBridge.setLocation(OpenGLMatrix
-//                .translation(-bridgeX, bridgeY, bridgeZ)
-//                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 0, bridgeRotY, bridgeRotZ)));
-//
-//        blueRearBridge.setLocation(OpenGLMatrix
-//                .translation(-bridgeX, bridgeY, bridgeZ)
-//                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 0, -bridgeRotY, bridgeRotZ)));
-//
-//        redFrontBridge.setLocation(OpenGLMatrix
-//                .translation(-bridgeX, -bridgeY, bridgeZ)
-//                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 0, -bridgeRotY, 0)));
-//
-//        redRearBridge.setLocation(OpenGLMatrix
-//                .translation(bridgeX, -bridgeY, bridgeZ)
-//                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 0, bridgeRotY, 0)));
-//
-//        //Set the position of the perimeter targets with relation to origin (center of field)
-//        red1.setLocation(OpenGLMatrix
-//                .translation(quadField, -halfField, mmTargetHeight)
-//                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 180)));
-//
-//        red2.setLocation(OpenGLMatrix
-//                .translation(-quadField, -halfField, mmTargetHeight)
-//                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 180)));
-//
-//        front1.setLocation(OpenGLMatrix
-//                .translation(-halfField, -quadField, mmTargetHeight)
-//                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 90)));
-//
-//        front2.setLocation(OpenGLMatrix
-//                .translation(-halfField, quadField, mmTargetHeight)
-//                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 90)));
-//
-//        blue1.setLocation(OpenGLMatrix
-//                .translation(-quadField, halfField, mmTargetHeight)
-//                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 0)));
-//
-//        blue2.setLocation(OpenGLMatrix
-//                .translation(quadField, halfField, mmTargetHeight)
-//                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 0)));
-//
-//        rear1.setLocation(OpenGLMatrix
-//                .translation(halfField, quadField, mmTargetHeight)
-//                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
-//
-//        rear2.setLocation(OpenGLMatrix
-//                .translation(halfField, -quadField, mmTargetHeight)
-//                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
-
 
         // We need to rotate the camera around it's long axis to bring the correct camera forward.
         if (CAMERA_CHOICE == BACK) {
@@ -241,10 +166,6 @@ public class RedAutonomous29Points extends LinearOpMode {
                     }
                 }
 
-                // Provide feedback as to where the robot is located (if we know).
-//            String positionSkystone = "";
-//            double yPosition = 0;
-//            double xPosition = 0;
                 if (targetVisible) {
                     // express position (translation) of robot in inches.
                     VectorF translation = lastLocation.getTranslation();
@@ -256,19 +177,15 @@ public class RedAutonomous29Points extends LinearOpMode {
                     if (yPosition >0 && yPosition <=10 ) {
                         positionSkystone = "Left"; //right
                         autoLib.calcMove(3, .5f, Constants.Direction.RIGHT);
-//                        distanceToDepot = distanceToDepot - 68.5f;
-                        //  sleep(3000);
+
                     } else {
                         positionSkystone = "Center";
-                        //if (xPosition <= -25) {
-                        sleep(1000);
+//                        sleep(1000);
                         yPosition = translation.get(1);
                         xPosition = translation.get(0);
                         finalMove(-xPosition, yPosition);
                         break;
-//                        } else {
-//                            telemetry.addData("Final Position Reached", "none");
-//                        }
+
                     }
 
                     // express the rotation of the robot in degrees.
@@ -304,26 +221,24 @@ public class RedAutonomous29Points extends LinearOpMode {
 // go near skystone
         autoLib.calcMove((float) (-xPosition / 10) + 14.75f, .9f, Constants.Direction.FORWARD);   //when increased-moves back
         autoLib.calcMove((float) (yPosition / 10) + 12, .9f, Constants.Direction.RIGHT); //when decreased- moves to the left
-//        distanceToDepot = distanceToDepot + (float) yPosition + 5;
         autoLib.calcMove(3, .3f, Constants.Direction.BACKWARD);
         autoLib.armGrab();
         Thread.sleep(250);
         autoLib.calcMove(25, .9f, Constants.Direction.FORWARD);
-//        autoLib.calcTurn(84, .6f);
+        autoLib.moveArmUpSeconds1();
         if(distanceToDepot >195)
         {
             distanceToDepot=205;
         }
-        autoLib.calcMove(distanceToDepot, 1f, Constants.Direction.RIGHT);
+        autoLib.calcMove(distanceToDepot, .8f, Constants.Direction.RIGHT);
         autoLib.moveArmUpSeconds();
-//        autoLib.calcTurn(-83, .6f);
-        autoLib.calcMove(42.5f, .9f, Constants.Direction.BACKWARD);     //34.5
+        autoLib.calcMove(38, .9f, Constants.Direction.BACKWARD);
         autoLib.scoreServo();
         Thread.sleep(250);
-        autoLib.calcMove(4,.3f, Constants.Direction.BACKWARD);
+        autoLib.calcMove(4,.6f, Constants.Direction.BACKWARD);
         autoLib.latchServoFoundation();
         Thread.sleep(1000);
-        autoLib.calcMove(76, .9f, Constants.Direction.FORWARD);
+        autoLib.calcMove(80, .9f, Constants.Direction.FORWARD);
         autoLib.restServoFoundation();
         autoLib.calcMove(120, 1f, Constants.Direction.LEFT);
         startIdentify = false;

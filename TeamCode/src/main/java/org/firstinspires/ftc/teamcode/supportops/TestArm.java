@@ -28,7 +28,9 @@ public class TestArm extends LinearOpMode {
         telemetry.addData("about to move","initialized");
         telemetry.update();
         Thread.sleep(2000);
-
+        autoLib.calcMove(300,.5f, Constants.Direction.FORWARD);
+        autoLib.calcMove(290,1f, Constants.Direction.BACKWARD);
+        autoLib.calcMove(30,.2f, Constants.Direction.FORWARD);
 
         telemetry.addData("Just moved","finished moving");
         telemetry.update();

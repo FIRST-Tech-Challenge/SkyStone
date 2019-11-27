@@ -92,12 +92,22 @@ public class TeleLib {
         }
     }
 
-    public void processStopIntake() {
-        if (opMode.gamepad1.y) {
-            robot.setDcMotorPower(MOTOR_LEFT_INTAKE, 0);
-            robot.setDcMotorPower(MOTOR_RIGHT_INTAKE, 0);
-        }
-    }
+//    public void processStopIntake() {
+//        if (opMode.gamepad1.y || !isBlockInIntake()) {
+//            robot.setDcMotorPower(MOTOR_LEFT_INTAKE, 0);
+//            robot.setDcMotorPower(MOTOR_RIGHT_INTAKE, 0);
+//        }
+//    }
+
+//    private boolean isBlockInIntake() {
+//        if (distance <= 2) {
+//            return true;
+//        } else {
+//            return false;
+//        }
+
+//        return distance <= 2;
+//    }
 
     public void processIntakeMinerals() {
         if (opMode.gamepad1.right_bumper) {
@@ -108,18 +118,18 @@ public class TeleLib {
 
     //gamepad 2
 
-//    public void processDrive2() {
-//        // Values need to be reversed (up on joystick is -1)
-//        double r = Math.hypot(opMode.gamepad2.left_stick_x, opMode.gamepad2.left_stick_y);  //y is changed to positive
-//        double robotAngle = Math.atan2(opMode.gamepad2.left_stick_y, opMode.gamepad2.left_stick_x) - Math.PI / 4;
-//        double rightX = opMode.gamepad2.right_stick_x;
-//        final double v4 = r * Math.cos(robotAngle) - rightX;
-//
-//        robot.setDcMotorPower(MOTOR_FRONT_LEFT_WHEEL, (float) (r * Math.cos(robotAngle) - rightX));
-//        robot.setDcMotorPower(MOTOR_FRONT_RIGHT_WHEEL, (float) (r * Math.sin(robotAngle) + rightX));
-//        robot.setDcMotorPower(MOTOR_BACK_LEFT_WHEEL, (float) (r * Math.sin(robotAngle) - rightX));
-//        robot.setDcMotorPower(MOTOR_BACK_RIGHT_WHEEL, (float) (r * Math.cos(robotAngle) + rightX));
-//    }
+    public void processDrive2() {
+        // Values need to be reversed (up on joystick is -1)
+        double r = Math.hypot(opMode.gamepad2.left_stick_x, opMode.gamepad2.left_stick_y);  //y is changed to positive
+        double robotAngle = Math.atan2(opMode.gamepad2.left_stick_y, opMode.gamepad2.left_stick_x) - Math.PI / 4;
+        double rightX = opMode.gamepad2.right_stick_x;
+        final double v4 = r * Math.cos(robotAngle) - rightX;
+
+        robot.setDcMotorPower(MOTOR_FRONT_LEFT_WHEEL, (float) (r * Math.cos(robotAngle) - rightX));
+        robot.setDcMotorPower(MOTOR_FRONT_RIGHT_WHEEL, (float) (r * Math.sin(robotAngle) + rightX));
+        robot.setDcMotorPower(MOTOR_BACK_LEFT_WHEEL, (float) (r * Math.sin(robotAngle) - rightX));
+        robot.setDcMotorPower(MOTOR_BACK_RIGHT_WHEEL, (float) (r * Math.cos(robotAngle) + rightX));
+    }
 
 
     public void processMoveArm() {

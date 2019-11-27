@@ -40,9 +40,9 @@ public class Intake{
 
     //Constructor
     public Intake(HardwareMap hardwareMap) {
-        wrist = hardwareMap.servo.get("wrist");
-        grip = hardwareMap.servo.get("grip");
-        detectSkystone = hardwareMap.colorSensor.get("detectSkystone");
+        //wrist = hardwareMap.servo.get("wrist");
+        //grip = hardwareMap.servo.get("grip");
+        //detectSkystone = hardwareMap.colorSensor.get("detectSkystone");
         initIntake();
     }
 

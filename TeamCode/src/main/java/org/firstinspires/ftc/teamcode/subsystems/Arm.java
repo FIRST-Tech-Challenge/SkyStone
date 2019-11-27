@@ -55,7 +55,7 @@ public class Arm {
 
     //Constructor
     public Arm(HardwareMap hardwareMap) {
-        armMotor = hardwareMap.dcMotor.get("arm");
+    //    armMotor = hardwareMap.dcMotor.get("arm");
         initArm();
     }
 

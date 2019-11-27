@@ -11,7 +11,7 @@ public class ColorDetector {
 
     public void ColorDetector(HardwareMap hardwareMap) {
 
-        color_sensor = hardwareMap.colorSensor.get("color");
+        //color_sensor = hardwareMap.colorSensor.get("color");
     }
 
    public void setMode(boolean mode){

@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.autoRes.commands;
 import java.util.ArrayDeque;
 
 public class CommandList {
-    public ArrayDeque<ICommand> commands;
+ /*   public ArrayDeque<ICommand> commands;
 
     public CommandList(ArrayDeque<ICommand> commands) {
         this.commands = commands;
@@ -20,4 +20,6 @@ public class CommandList {
         }
         return false;
     }
+*/
 }
+

@@ -7,18 +7,18 @@ import org.firstinspires.ftc.teamcode.autoRes.commands.CommandList;
 public class Robot {
     public int level = 0;
     // calling other classes
-    public Arm arm;
-    public Hook hook;
+    //public Arm arm;
+    //public Hook hook;
     public Chassis chassis;
-    public Intake intake;
-    public CommandList commands;
+    //public Intake intake;
+    //public CommandList commands;
 
     public Robot(HardwareMap hardwareMap) {
         //constructors
-        arm = new Arm(hardwareMap);
+        //arm = new Arm(hardwareMap);
         //hook = new Hook(hardwareMap);
         chassis = new Chassis(hardwareMap);
-        intake = new Intake(hardwareMap);
+        //intake = new Intake(hardwareMap);
     }
 
     public void run(Controller controller) {
@@ -33,9 +33,9 @@ public class Robot {
         //Arm get
         //Put in all run methods
         setLevel(controller);
-        arm.run(level);
+        //arm.run(level);
         chassis.runByGamepadCommand(targetAngle, turn, power);
-        intake.run(controller.getBPress());
+        //intake.run(controller.getBPress());
         if (controller.getA()) {
             autoPlace(controller);
         }
@@ -49,11 +49,11 @@ public class Robot {
 
 
     public void setArm(Arm arm) {
-        this.arm = arm;
+        //this.arm = arm;
     }
 
     public void setHook(Hook hook) {
-        this.hook = hook;
+        //this.hook = hook;
     }
 
     public void setChassis(Chassis chassis) {
@@ -61,11 +61,11 @@ public class Robot {
     }
 
     public void setIntake(Intake intake) {
-        this.intake = intake;
+        //this.intake = intake;
     }
 
     public void setLevel(Controller controller) {
-        if (controller.getRightBumper()) {
+    /*    if (controller.getRightBumper()) {
             level++;
             if (level == arm.levelAngles.length) {
                 level = arm.levelAngles.length - 1;
@@ -79,10 +79,12 @@ public class Robot {
             }
             while (controller.getLeftBumper()) ;
         }
+
+     */
     }
 
     public void autoPlace(Controller controller) {
-        chassis.runRotations(.25, -.25);
+    /*    chassis.runRotations(.25, -.25);
         arm.run(level);
         while (!controller.getAPress()) ;
         chassis.runRotations(.3, .25);
@@ -94,5 +96,7 @@ public class Robot {
         arm.run(arm.levelAngles.length - 1);
         while (!controller.getAPress()) ;
         chassis.runRotations(.4, -.25);
+
+     */
     }
 }

@@ -78,8 +78,8 @@ public class Chassis {
         //robotRadius =
 
         //#TOBEFILLED Reverse direction of front right and back right motors for mecanum
-        frontRight.setDirection(DcMotor.Direction.REVERSE)
-        backRight.setDirection(DcMotor.Direction.REVERSE)
+        frontRight.setDirection(DcMotor.Direction.REVERSE);
+        backRight.setDirection(DcMotor.Direction.REVERSE);;
         configureRobot = true;
     }
 

@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.subsystems.Chassis;
 
 public class DriveCommand implements ICommand {
-    Chassis chassis;
+    /*Chassis chassis;
     double targetAngle;
     double turn;
     int distance;
@@ -37,5 +37,6 @@ public class DriveCommand implements ICommand {
     public boolean isDone() {
         return chassis.motorErrorCheck(error);
     }
-
+*/
 }
+

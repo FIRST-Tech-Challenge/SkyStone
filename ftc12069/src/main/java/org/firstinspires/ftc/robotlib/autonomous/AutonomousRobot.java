@@ -434,19 +434,11 @@ public class AutonomousRobot {
      * This adjusts some values, not including rotation
      * @param course Angle (in degrees) of movement
      * @param velocity New velocity (-1 to 1)
-     * @param rotation Double (between -1 and 1) -1 - clockwise 0 - no rotation 1 - counterclockwise
+     * @param rotation Double (between -1 and 1) -1 - clockwise 0 - no rotation 1 - counterclockwise (currently ignored as it is useless)
      * @param distance Distance (in inches) to execute this movement
      */
     public void simpleMove(double course, double velocity, double rotation, double distance) {
-        telemetry.addData("SIMPLE MOVE EXECUTING", "Course: %.2f degrees\nVelocity: %.2f\nRotation: %.2f\nDistance: %.2f inches", course, velocity, rotation, distance);
-        telemetry.update();
-
-        hardware.drivetrain.setCourse(Math.toRadians(course));
-        hardware.drivetrain.setRotation(rotation);
-        hardware.drivetrain.setVelocity(velocity);
-        hardware.drivetrain.setTargetPosition(distance * hardware.motorTicksPerInch);
-        hardware.drivetrain.position();
-        //locationInfo.translateRobotLocation(this.getOrientation2D(), distance);
+        this.move(course, velocity, null, distance);
     }
 
     /**
@@ -457,23 +449,31 @@ public class AutonomousRobot {
      * @param distance Distance (in inches) to execute this movement
      */
     public void move(double course, double velocity, OrientationInfo orientationInfo, double distance) {
-        telemetry.addData("MOVE EXECUTING", "Course: %.2f degrees\nVelocity: %.2f\nOrientation: Angle: %.2f, Rotation: %.2f\nDistance: %.2f inches", course, velocity, orientationInfo.angle, orientationInfo.rotation, distance);
+        telemetry.addData("MOVE EXECUTING", "Course: %.2f degrees\nVelocity: %.2f\nOrientation: %s\nDistance: %.2f inches",
+                course, velocity,
+                orientationInfo != null ? "Angle: " + orientationInfo.angle + ", Rotation: " + orientationInfo.rotation : "Not Available",
+                distance
+        );
         telemetry.update();
+
         hardware.drivetrain.setCourse(Math.toRadians(course));
         hardware.drivetrain.setVelocity(velocity);
         hardware.drivetrain.setTargetPosition(distance * hardware.motorTicksPerInch);
 
-        double initialOrientation = this.getOrientation2D();
+        if (orientationInfo != null) {
+            double initialOrientation = this.getOrientation2D();
 
-        while (hardware.drivetrain.isPositioning()) {
-            if (this.getOrientation2D() - initialOrientation < orientationInfo.angle) hardware.drivetrain.setRotation(orientationInfo.rotation);
+            while (hardware.drivetrain.isPositioning()) {
+                if (this.getOrientation2D() - initialOrientation < orientationInfo.angle)
+                    hardware.drivetrain.setRotation(orientationInfo.rotation);
+            }
+
+            // In case the robot did not finish turning by the time it reached its destination
+            if (this.getOrientation2D() - initialOrientation < orientationInfo.angle)
+                this.turn(orientationInfo.angle - (this.getOrientation2D() - initialOrientation), orientationInfo.rotation);
         }
 
-        // In case the robot did not finish turning by the time it reached its destination
-        if (this.getOrientation2D() - initialOrientation < orientationInfo.angle)
-            this.turn(orientationInfo.angle - (this.getOrientation2D() - initialOrientation), orientationInfo.rotation);
-
-        locationInfo.translateRobotLocation(this.getOrientation2D(), distance);
+        if (this.isLocationKnown()) locationInfo.translateRobotLocation(this.getOrientation2D(), distance);
     }
 
     /**

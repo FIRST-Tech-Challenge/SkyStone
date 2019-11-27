@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.openftc.revextensions2.ExpansionHubEx;
+
 import static java.lang.Math.*;
 
 /**
@@ -153,11 +155,16 @@ public class OmniTeleOp extends OpMode {
         if(!bHeld && bPressed)
         {
             bHeld = true;
-            if(robot.alignState == HardwareOmnibot.AlignActivity.IDLE) {
-                robot.startAligning();
+            if(robot.grabState == HardwareOmnibot.GrabFoundationActivity.IDLE) {
+                robot.startGrabbing();
             } else {
-                robot.stopAligning();
+                robot.stopGrabbing();
             }
+//            if(robot.alignState == HardwareOmnibot.AlignActivity.IDLE) {
+//                robot.startAligning();
+//            } else {
+//                robot.stopAligning();
+//            }
         } else if(!bPressed) {
             bHeld = false;
         }
@@ -311,11 +318,11 @@ public class OmniTeleOp extends OpMode {
 
         if(!rightBumper2Held && rightBumper2Pressed)
         {
-            int newHeight = robot.getLifterPosition();
+            int newHeight = robot.getLifterAbsoluteEncoder();
             newHeight += heightIncrement;
             robot.lifter.setTargetPosition(newHeight);
             robot.lifter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.lifter.setPower(robot.LIFT_SPEED);
+            robot.lifter.setPower(robot.LIFT_MAX_SPEED);
             rightBumper2Held = true;
         } else if(!rightBumper2Pressed) {
             rightBumper2Held = false;
@@ -323,11 +330,11 @@ public class OmniTeleOp extends OpMode {
 
         if(!leftBumper2Held && leftBumper2Pressed)
         {
-            int newHeight = robot.getLifterPosition();
+            int newHeight = robot.getLifterAbsoluteEncoder();
             newHeight -= heightIncrement;
             robot.lifter.setTargetPosition(newHeight);
             robot.lifter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.lifter.setPower(robot.LOWER_SPEED);
+            robot.lifter.setPower(robot.LIFT_MIN_SPEED);
             leftBumper2Held = true;
         } else if(!leftBumper2Pressed) {
             leftBumper2Held = false;
@@ -341,8 +348,9 @@ public class OmniTeleOp extends OpMode {
         robot.performEjecting();
         robot.performAligning();
         robot.performCapstone();
+        robot.performGrabbing();
 
-        if(robot.alignState == HardwareOmnibot.AlignActivity.IDLE) {
+        if((robot.alignState == HardwareOmnibot.AlignActivity.IDLE) && (robot.grabState == HardwareOmnibot.GrabFoundationActivity.IDLE)){
             robot.drive(speedMultiplier * xPower, speedMultiplier * yPower, spinMultiplier * spin, driverAngle);
         }
 
@@ -351,6 +359,7 @@ public class OmniTeleOp extends OpMode {
         telemetry.addData("Stack Distance: ", robot.stackWallDistance);
         telemetry.addData("Offset Angle: ", driverAngle);
         telemetry.addData("Align State:", robot.alignState);
+        telemetry.addData("Grab State: ", robot.grabState);
         telemetry.addData("Left Range: ", robot.leftTofValue);
         telemetry.addData("Right Range: ", robot.rightTofValue);
         telemetry.addData("Back Range: ", robot.backTofValue);

@@ -30,6 +30,7 @@ import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 import org.openftc.easyopencv.OpenCvPipeline;
@@ -79,7 +80,7 @@ public abstract class OmniAutoFullToF extends OmniAutoClass
          * single-parameter constructor instead (commented out below)
          */
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        phoneCam = new OpenCvInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
+        phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
 
         // OR...  Do Not Activate the Camera Monitor View
         //phoneCam = new OpenCvInternalCamera(OpenCvInternalCamera.CameraDirection.BACK);
@@ -150,7 +151,7 @@ public abstract class OmniAutoFullToF extends OmniAutoClass
 
             // Set the zero for the extender for when we start teleop.  We should do this as late
             // as will get reliably called.
-            robot.setIntakeZero(-robot.getIntakePosition());
+            robot.setIntakeZero(-robot.getIntakeAbsoluteEncoder());
 
             // Start the intake to collect.
             robot.startIntake(false);

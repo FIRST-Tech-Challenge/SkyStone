@@ -113,7 +113,7 @@ public abstract class OmniAutoClass extends LinearOpMode {
      */
     public void driveAtHeadingForTime(double speed, double rotateSpeed, double driveAngle, double headingAngle, int driveTime, boolean stopWhenDone) {
         double endTime = timer.milliseconds() + driveTime;
-        while (!isStopRequested() && (timer.milliseconds() <= endTime)) {
+        while (!isStopRequested() && (timer.milliseconds() <= endTime) && (!isStopRequested())) {
             driveAtHeading(speed, rotateSpeed, driveAngle, headingAngle);
             robot.resetReads();
         }
@@ -153,7 +153,7 @@ public abstract class OmniAutoClass extends LinearOpMode {
             }
         }
 
-        while ((!reachedClickPosition(position, finalEncoderValue, speed, reverseEncoders) && (timer.milliseconds() < endTime))) {
+        while ((!reachedClickPosition(position, finalEncoderValue, speed, reverseEncoders) && (timer.milliseconds() < endTime) && (!isStopRequested()))) {
             String myTelemetry = "Current Encoder: " + position + " Destination Encoder: " + finalEncoderValue;
             telemetry.addLine(myTelemetry);
             telemetry.addData("Setting Power: ", speed);
@@ -278,7 +278,7 @@ public abstract class OmniAutoClass extends LinearOpMode {
      */
     public void rotateRobotForTime(double speed, int maxTime) {
         double endTime = timer.milliseconds() + maxTime;
-        while(opModeIsActive() && timer.milliseconds() < endTime) {
+        while(opModeIsActive() && timer.milliseconds() < endTime && (!isStopRequested())) {
             robot.drive(0.0,0.0,speed,0.0);
             robot.resetReads();
         }
@@ -377,7 +377,7 @@ public abstract class OmniAutoClass extends LinearOpMode {
 		// Allow the robot to read new values from the ToF sensors.
 		robot.resetReads();
 		foundDistance = robot.distanceFromWall(side, distance, driveSpeed, error);
-		while(timer.milliseconds() < endTime && !foundDistance) {
+		while(timer.milliseconds() < endTime && !foundDistance && (!isStopRequested())) {
 			robot.resetReads();
 			foundDistance = robot.distanceFromWall(side, distance, driveSpeed, error);
 		}
@@ -401,7 +401,7 @@ public abstract class OmniAutoClass extends LinearOpMode {
 		// Allow the robot to read new values from the ToF sensors.
 		robot.resetReads();
 		foundDistance = robot.parallelRearTarget(backLeftDistance, backRightDistance, driveSpeed, spinSpeed, error);
-		while(timer.milliseconds() < endTime && !foundDistance) {
+		while(timer.milliseconds() < endTime && !foundDistance && (!isStopRequested())) {
 			robot.resetReads();
             foundDistance = robot.parallelRearTarget(backLeftDistance, backRightDistance, driveSpeed, spinSpeed, error);
 		}
@@ -415,7 +415,7 @@ public abstract class OmniAutoClass extends LinearOpMode {
 	    robot.resetReads();
 	    robot.startGrabbing();
         robot.performGrabbing();
-	    while(timer.milliseconds() < endTime && robot.grabState != HardwareOmnibot.GrabFoundationActivity.IDLE) {
+	    while(timer.milliseconds() < endTime && robot.grabState != HardwareOmnibot.GrabFoundationActivity.IDLE && (!isStopRequested())) {
             robot.resetReads();
             robot.performGrabbing();
         }
@@ -453,7 +453,7 @@ public abstract class OmniAutoClass extends LinearOpMode {
         final int DELTA_SLEEP = 10;
         double deltaAngle = 0.0;
 
-        while ((timer.milliseconds() < endTime) && (Math.abs(rotationAngle - angleTraveled) > SAME_ANGLE)) {
+        while ((timer.milliseconds() < endTime) && (Math.abs(rotationAngle - angleTraveled) > SAME_ANGLE) && (!isStopRequested())) {
             currentAngle = robot.readIMU();
             if (currentAngle >= lastAngle) {
                 angleTraveled += currentAngle - lastAngle;
@@ -512,7 +512,7 @@ public abstract class OmniAutoClass extends LinearOpMode {
             normalizedAngle = rotationAngle;
         }
 
-        while ((timer.milliseconds() < endTime) && (Math.abs(normalizedAngle - angleTraveled) > SAME_ANGLE)
+        while ((timer.milliseconds() < endTime) && ((Math.abs(normalizedAngle - angleTraveled) > SAME_ANGLE) && (!isStopRequested()))
                 && (!isStopRequested())) {
             currentAngle = robot.readIMU();
             if (normalizedSpeed < 0.0) {

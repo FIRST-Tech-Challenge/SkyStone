@@ -9,6 +9,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.openftc.revextensions2.ExpansionHubMotor;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.atan2;
@@ -268,10 +269,10 @@ public class HardwareOmnibotDrive
         hwMap = ahwMap;
 
         // Define and Initialize Motors
-        frontLeft = hwMap.dcMotor.get(FRONT_LEFT_MOTOR);
-        frontRight  = hwMap.dcMotor.get(FRONT_RIGHT_MOTOR);
-        rearLeft = hwMap.dcMotor.get(REAR_LEFT_MOTOR);
-        rearRight = hwMap.dcMotor.get(REAR_RIGHT_MOTOR);
+        frontLeft = (ExpansionHubMotor) hwMap.dcMotor.get(FRONT_LEFT_MOTOR);
+        frontRight = (ExpansionHubMotor) hwMap.dcMotor.get(FRONT_RIGHT_MOTOR);
+        rearLeft = (ExpansionHubMotor) hwMap.dcMotor.get(REAR_LEFT_MOTOR);
+        rearRight = (ExpansionHubMotor) hwMap.dcMotor.get(REAR_RIGHT_MOTOR);
 
 
         frontLeft.setDirection(DcMotor.Direction.FORWARD);

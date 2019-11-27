@@ -27,7 +27,7 @@ public class Path {
             case 1:
                 drive.followTrajectorySync(
                         drive.trajectoryBuilder()
-                                .forward(10)
+                                .splineTo(new Pose2d())
                                 .build()
                 );
                 drive.turnSync(Math.toRadians(90));
@@ -38,12 +38,12 @@ public class Path {
                 break;
         }
         trajectory = builder.build();
-        drive.followTrajectory(trajectory);
+        drive.followTrajectorySync(trajectory);
     }
 
     public void RedFoundation(){
         trajectory = builder.build();
-        drive.followTrajectory(trajectory);
+        drive.followTrajectorySync(trajectory);
     }
 
     public void BlueQuary(int[] skystonePositions){
@@ -56,11 +56,11 @@ public class Path {
                 break;
         }
         trajectory = builder.build();
-        drive.followTrajectory(trajectory);
+        drive.followTrajectorySync(trajectory);
     }
 
     public void BlueFoundation(){
         trajectory = builder.build();
-        drive.followTrajectory(trajectory);
+        drive.followTrajectorySync(trajectory);
     }
 }

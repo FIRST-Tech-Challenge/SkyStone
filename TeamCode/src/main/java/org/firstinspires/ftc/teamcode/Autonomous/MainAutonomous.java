@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -72,16 +73,16 @@ public class MainAutonomous extends LinearOpMode {
 
             if (gamepad1.a) {
                 fieldPosition = FieldPosition.BLUE_FOUNDATION;
-                startingPos = new Pose2d(15.552, -67.392);
+                startingPos = new Pose2d(new Vector2d(15.552, -67.392), Math.toRadians(270));
             } else if (gamepad1.b) {
                 fieldPosition = FieldPosition.RED_FOUNDATION;
-                startingPos = new Pose2d(15.552, 67.392);
+                startingPos = new Pose2d(new Vector2d(15.552, 67.392), Math.toRadians(270));
             } else if (gamepad1.y) {
                 fieldPosition = FieldPosition.RED_QUARY;
-                startingPos = new Pose2d(-51.648, -67.392);
+                startingPos = new Pose2d(new Vector2d(-51.648, -67.392), Math.toRadians(270));
             } else if (gamepad1.x) {
                 fieldPosition = FieldPosition.BLUE_QUARY;
-                startingPos = new Pose2d(-51.648, 67.392);
+                startingPos = new Pose2d(new Vector2d(-51.648, 67.392), Math.toRadians(270));
             }
 
             if(fieldPosition != null && !initialize)

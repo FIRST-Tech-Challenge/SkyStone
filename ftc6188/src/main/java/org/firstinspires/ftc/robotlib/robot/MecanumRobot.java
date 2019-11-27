@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotlib.drivetrain.MecanumDrivetrain;
+import org.firstinspires.ftc.robotlib.drivetrain.MecanumTelemetryDrivetrain;
 import org.firstinspires.ftc.robotlib.servo.LinkedServo;
 
 public class MecanumRobot
@@ -31,7 +32,7 @@ public class MecanumRobot
     Telemetry telemetry;
 
     // This robot operates on a mecanum drivetrain
-    public MecanumDrivetrain drivetrain;
+    public MecanumTelemetryDrivetrain drivetrain;
 
     // The various LinkedServo or LimitedMotors used in place of regular items
     public LinkedServo platformServos;
@@ -69,7 +70,7 @@ public class MecanumRobot
 
         // Construct the drive and arm systems
         motorList = new DcMotor[]{driveFrontLeft, driveFrontRight, driveRearLeft, driveRearRight};
-        drivetrain = new MecanumDrivetrain(motorList, teleOpMode, wheelRadius, wheelToMotorRatio);
+        drivetrain = new MecanumTelemetryDrivetrain(motorList, teleOpMode, wheelRadius, wheelToMotorRatio, telemetry);
         platformServos = new LinkedServo(servoClawLeft, servoClawRight);
     }
 

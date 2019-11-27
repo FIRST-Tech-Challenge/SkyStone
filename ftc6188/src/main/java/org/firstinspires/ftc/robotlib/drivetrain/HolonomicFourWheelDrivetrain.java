@@ -2,6 +2,8 @@ package org.firstinspires.ftc.robotlib.drivetrain;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import java.sql.ResultSet;
+
 /*
 Frame work for a mecanum/omni drive train, the implemented interfaces provide the additional variables and functions to make movement possible
  */
@@ -114,7 +116,10 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     @Override
     public void position()
     {
-        while (isPositioning()) { updatePosition(); }
+        while (isPositioning())
+        {
+            updatePosition();
+        }
         finishPositioning();
     }
 
@@ -122,9 +127,9 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     @Override
     public boolean isPositioning()
     {
-        for (DcMotor motor : this.motorList)
+        for (DcMotor motor : motorList)
         {
-            if (motor.getCurrentPosition() >= motor.getTargetPosition()) { return true; }
+            if (motor.isBusy()) { return true; }
         }
         return false;
     }
@@ -133,26 +138,16 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     @Override
     public void updatePosition()
     {
-        double minInToPowerScale = 12; // the minimum distance in IN the robot must be trying to travel to enable power scale
-        for (int motorIndex = 0; motorIndex < motorList.length; motorIndex++)
+        for (DcMotor motor : motorList)
         {
-            double percentComplete = 0; // the percent of the movement the robot has completed
-            double powerScale = 1; // the scale as returned by the power curve
-
-            try
+            if (motor.getCurrentPosition() >= motor.getTargetPosition())
             {
-                percentComplete = (double)motorList[motorIndex].getCurrentPosition()/wheelTargetPositions[motorIndex];
-                if (targetPosition/getTicksPerIn() >= minInToPowerScale) { powerScale = powerScaleFunction(percentComplete); }
-            }
-            catch (Exception ignored) {}
-
-            if (percentComplete >= 1.0)
-            {
-                motorList[motorIndex].setPower(0);
+                motor.setPower(0);
+                motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             }
             else
             {
-                motorList[motorIndex].setPower(getVelocity() * powerScale); // to undo powerScaling remove the * powerScale
+                motor.setPower(getVelocity());
             }
         }
     }
@@ -167,13 +162,6 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
             this.motorList[motorIndex].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             this.motorList[motorIndex].setMode(runModes[motorIndex]);
         }
-
-        // reset the drivetrain to a pre-movement state
-        setCourse(0);
-        setVelocity(0);
-        setRotation(0);
-        setTargetPosition(0);
-        updateMotorPowers();
     }
 
     // returns each motors ticks per full revolution
@@ -197,11 +185,5 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     public double getTicksPerIn()
     {
         return ticksPerIn;
-    }
-
-    private double powerScaleFunction(double percentComplete)
-    {
-        // powerScale = -(x-0.35)^2 + 0.75
-        return Math.abs(-Math.pow((percentComplete - 0.35), 2) + 0.75);
     }
 }

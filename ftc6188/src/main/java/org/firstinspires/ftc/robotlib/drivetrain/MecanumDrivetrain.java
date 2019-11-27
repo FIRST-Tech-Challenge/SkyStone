@@ -7,15 +7,13 @@ The actual final drivetrain used for the robot, just changes the wheel angles an
  */
 public class MecanumDrivetrain extends HolonomicFourWheelDrivetrain
 {
-    public MecanumDrivetrain(DcMotor[] motorList, boolean teleOpMode, double wheelRadius, double wheelToMotorRatio)
+    public MecanumDrivetrain(DcMotor[] motorList, double wheelRadius, double wheelToMotorRatio)
     {
-        super(motorList, new double[] {-3*Math.PI/4, 3*Math.PI/4, -Math.PI/4, Math.PI/4}, teleOpMode);
+        super(motorList, new double[] {-3*Math.PI/4, 3*Math.PI/4, -Math.PI/4, Math.PI/4});
         setTicksPerIn(wheelRadius, wheelToMotorRatio);
     }
 
-    public MecanumDrivetrain(DcMotor[] motorList, boolean teleOpMode) { this(motorList, teleOpMode, 1, 1); }
-
-    // this math returns a multiplier to the holonomic four wheel drivetrain, the math is very complex but it just works so it shouldnt be changed
+    // this math returns a multiplier to the holonomic four wheel drivetrain, the math is very complex but it just works so it should'nt be changed
     @Override
     double calculateWheelCoefficient(double course, double wheelAngle)
     {
@@ -25,9 +23,9 @@ public class MecanumDrivetrain extends HolonomicFourWheelDrivetrain
     public void autoPosition(double course, double distanceIN, double velocity, double rotation)
     {
         this.setCourse(course * (Math.PI/180));
+        this.setTargetPosition(distanceIN * getTicksPerIn());
         this.setVelocity(velocity);
         this.setRotation(rotation);
-        this.setTargetPosition(distanceIN * getTicksPerIn());
         position();
     }
 }

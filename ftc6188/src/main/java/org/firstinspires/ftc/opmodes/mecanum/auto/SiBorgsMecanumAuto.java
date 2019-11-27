@@ -3,14 +3,13 @@ package org.firstinspires.ftc.opmodes.mecanum.auto;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.robotlib.robot.MecanumFieldGoalRobot;
-import org.firstinspires.ftc.robotlib.robot.MecanumRobot;
+import org.firstinspires.ftc.robotlib.robot.SiBorgsMecanumRobot;
 
-@Autonomous(name="Mecanum Auto V-Comp", group="Auto")
-public class MecanumAuto extends LinearOpMode
+@Autonomous(name="Mecanum Auto V-CompetitionReady", group="AutoComp")
+public class SiBorgsMecanumAuto extends LinearOpMode
 {
     // Robot
-    private MecanumFieldGoalRobot robot;
+    private SiBorgsMecanumRobot robot;
 
     // Fields
     private static final double VELOCITY = 0.35;
@@ -18,13 +17,13 @@ public class MecanumAuto extends LinearOpMode
     @Override
     public void runOpMode() throws InterruptedException
     {
-        robot = new MecanumFieldGoalRobot(this.hardwareMap, this.telemetry, false);
+        robot = new SiBorgsMecanumRobot(this.hardwareMap);
         waitForStart();
 
         robot.drivetrain.autoPosition(270, 48, VELOCITY, 0);
-        robot.platformServos.setPosition(1);
+        robot.platformServo.setPosition(1);
         robot.drivetrain.autoPosition(90, 24, VELOCITY, 0);
-        robot.platformServos.setPosition(0);
+        robot.platformServo.setPosition(0);
         robot.drivetrain.autoPosition(180, 24, VELOCITY, 0);
         robot.drivetrain.autoPosition(270, 20, VELOCITY, 0);
         robot.drivetrain.autoPosition(0, 24, VELOCITY, 0);

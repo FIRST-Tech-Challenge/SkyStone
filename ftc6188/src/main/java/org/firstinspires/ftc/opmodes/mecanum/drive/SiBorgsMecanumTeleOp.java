@@ -4,38 +4,44 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotlib.robot.MecanumFieldGoalRobot;
+import org.firstinspires.ftc.robotlib.robot.SiBorgsMecanumRobot;
 import org.firstinspires.ftc.robotlib.state.Button;
 import org.firstinspires.ftc.robotlib.state.ToggleBoolean;
 
-@TeleOp(name="Mecanum TeleOp V-FieldGoal", group="Tele")
-public class MecanumTeleOpFieldGoal extends OpMode
+@TeleOp(name="Mecanum TeleOp V-CompetitionReady", group="TeleComp")
+public class SiBorgsMecanumTeleOp extends OpMode
 {
     // TeleOp specific variables
-    private MecanumFieldGoalRobot robot;
+    private SiBorgsMecanumRobot robot;
     private ElapsedTime elapsedTime;
 
-    // Buttons and toggles
-    private ToggleBoolean driverTwoBrakes;  //freezes robot in place for stacking, prevents stick bumping from driver one
-    private Button playSound;
+    // Servo buttons
     private Button platformServoUp;
     private Button platformServoDown;
     private Button armServoUp;
     private Button armServoDown;
+
+    // Buttons and toggles
+    private ToggleBoolean driverTwoBrakes;  //freezes robot in place for stacking, prevents stick bumping from driver one
+    private Button playSound;
     private Button toggleLimited;
 
     @Override
     public void init()
     {
-        robot = new MecanumFieldGoalRobot(this.hardwareMap, this.telemetry, true);
+        // Misc class declarations
+        robot = new SiBorgsMecanumRobot(this.hardwareMap);
         elapsedTime = new ElapsedTime();
 
-        driverTwoBrakes = new ToggleBoolean(false);
-        playSound = new Button();
+        // Servo buttons
         platformServoUp = new Button();
         platformServoDown = new Button();
         armServoUp = new Button();
         armServoDown = new Button();
+
+        // Buttons and toggles
+        driverTwoBrakes = new ToggleBoolean(false);
+        playSound = new Button();
         toggleLimited = new Button();
     }
 
@@ -70,41 +76,42 @@ public class MecanumTeleOpFieldGoal extends OpMode
         robot.drivetrain.setRotation(-gamepad1.left_stick_x);
 
         // sound
-        if (playSound.onRelease()) { robot.basicSound.toggleSound(); }
+        if (playSound.onRelease()) { robot.sirenSound.toggleSound(); }
 
 
         //DRIVER TWO
         // gamepad 2 inputs
+        toggleLimited.input(gamepad2.b);
+        driverTwoBrakes.input(gamepad2.left_bumper);
+        // servo controls
         platformServoUp.input(gamepad2.dpad_up);
         platformServoDown.input(gamepad2.dpad_down);
         armServoUp.input(gamepad2.y);
         armServoDown.input(gamepad2.a);
-        toggleLimited.input(gamepad2.b);
-        driverTwoBrakes.input(gamepad2.left_bumper || gamepad1.left_bumper);
 
         if (toggleLimited.onRelease())
         {
-            robot.armSystem.getVerticalLimitedMotor().setLimited(!robot.armSystem.getVerticalLimitedMotor().isLimited());
-            robot.armSystem.getHorizontalLimitedMotor().setLimited(!robot.armSystem.getHorizontalLimitedMotor().isLimited());
+            robot.crane.getVerticalLimitedMotor().setLimited(!robot.crane.getVerticalLimitedMotor().isLimited());
+            robot.crane.getHorizontalLimitedMotor().setLimited(!robot.crane.getHorizontalLimitedMotor().isLimited());
         }
 
-        robot.armSystem.setVerticalPower(gamepad2.left_stick_y);
-        robot.armSystem.setHorizontalPower(gamepad2.right_stick_y);
+        robot.crane.setVerticalPower(gamepad2.left_stick_y);
+        robot.crane.setHorizontalPower(gamepad2.right_stick_y);
 
-        if (platformServoUp.onRelease()) { robot.platformServos.setPosition(1); }
-        else if (platformServoDown.onRelease()) { robot.platformServos.setPosition(0); }
+        if (platformServoUp.onRelease()) { robot.platformServo.setPosition(1); }
+        else if (platformServoDown.onRelease()) { robot.platformServo.setPosition(0); }
 
         if (armServoUp.onRelease()) { robot.armGripSlide.setPosition(1); }
         else if (armServoDown.onRelease()) { robot.armGripSlide.setPosition(0); }
 
         //TELEMETRY
-        robot.informationUpdate();
+        robot.driverTelemetry(this.telemetry);
     }
 
     @Override
     public void stop()
     {
-        robot.basicSound.stopSound(); // very important otherwise it will keep playing forever
+        robot.sirenSound.stopSound(); // very important otherwise it will keep playing forever
 
         telemetry.addData("Status", "Stop");
         telemetry.update();

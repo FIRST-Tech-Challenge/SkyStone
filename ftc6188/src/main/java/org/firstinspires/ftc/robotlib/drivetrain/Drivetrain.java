@@ -13,15 +13,11 @@ abstract public class Drivetrain
     // Toggles the half power drive mode for precision control
     private ToggleBoolean lowPower;
 
-    // Since auto code messes up we have to tell the drivetrain if we are driving this manually or pre-programmed
-    private final boolean teleOpMode;
-
     public DcMotor[] motorList;
 
-    Drivetrain(DcMotor[] motorList, boolean teleOpMode)
+    Drivetrain(DcMotor[] motorList)
     {
         this.motorList = motorList;
-        this.teleOpMode = teleOpMode;
         lowPower = new ToggleBoolean(false);
     }
 
@@ -30,10 +26,7 @@ abstract public class Drivetrain
     public void setVelocity(double velocity)
     {
         this.velocity = velocity;
-        if (isTeleOpMode())
-        {
-            updateMotorPowers();
-        }
+        updateMotorPowers();
     }
 
     // This function iterates through the list of motors and sets each power to the power calculated in the calculateMotorPowers function
@@ -58,6 +51,4 @@ abstract public class Drivetrain
 
 	// Defined per drivetrain, does math related to the power of the motor based on stick inputs
     abstract protected double[] calculateMotorPowers();
-
-    public boolean isTeleOpMode() { return teleOpMode; }
 }

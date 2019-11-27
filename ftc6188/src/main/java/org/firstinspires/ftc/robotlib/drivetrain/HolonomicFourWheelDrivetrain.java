@@ -2,8 +2,6 @@ package org.firstinspires.ftc.robotlib.drivetrain;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import java.sql.ResultSet;
-
 /*
 Frame work for a mecanum/omni drive train, the implemented interfaces provide the additional variables and functions to make movement possible
  */
@@ -20,9 +18,9 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     private DcMotor.RunMode[] runModes = new DcMotor.RunMode[4];
     private final double[] wheelAngles;
 
-    HolonomicFourWheelDrivetrain(DcMotor[] motorList, double[] wheelAngles, boolean teleOpMode)
+    HolonomicFourWheelDrivetrain(DcMotor[] motorList, double[] wheelAngles)
     {
-        super(motorList, teleOpMode);
+        super(motorList);
         this.wheelAngles = wheelAngles;
     }
 
@@ -30,10 +28,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     public void setRotation(double rotation)
     {
         this.rotation = rotation;
-        if (isTeleOpMode())
-        {
-            updateMotorPowers();
-        }
+        updateMotorPowers();
     }
 
     @Override
@@ -46,10 +41,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     public void setCourse(double course)
     {
         this.course = course;
-        if (isTeleOpMode())
-        {
-            updateMotorPowers();
-        }
+        updateMotorPowers();
     }
 
     // passes the motor powers as calculated under the calculateWheelPower function back to the update motor powers function defined in Drivetrain
@@ -92,6 +84,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
         }
 
         for (DcMotor motor : this.motorList) motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        updateMotorPowers();
     }
 
     // returns not the robots actual position on the field but the distance moved based on the current movement goal
@@ -136,21 +129,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
 
     // auto function to implement an acceleration curve
     @Override
-    public void updatePosition()
-    {
-        for (DcMotor motor : motorList)
-        {
-            if (motor.getCurrentPosition() >= motor.getTargetPosition())
-            {
-                motor.setPower(0);
-                motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            }
-            else
-            {
-                motor.setPower(getVelocity());
-            }
-        }
-    }
+    public void updatePosition() { }
 
     // returns the motors to their prior state after resetting the encoders back to 0
     @Override

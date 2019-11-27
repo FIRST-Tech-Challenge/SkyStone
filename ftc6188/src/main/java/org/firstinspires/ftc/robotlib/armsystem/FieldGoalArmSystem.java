@@ -16,7 +16,7 @@ public class FieldGoalArmSystem implements DualLinearSlideSystem
     }
 
     @Override
-    public void setVerticalPower(double power) { armVerticalSlide.setPower(-power); }
+    public void setVerticalPower(double power) { armVerticalSlide.setPower(power); }
 
     @Override
     public void setHorizontalPower(double power) { armHorizontalSlide.setPower(power); }

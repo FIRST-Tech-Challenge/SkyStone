@@ -39,6 +39,10 @@ public class LimitedMotor
         limited.input(runMode == DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
+    public void setZeroPowerBehavior(DcMotor.ZeroPowerBehavior zeroPowerBehavior) { motor.setZeroPowerBehavior(zeroPowerBehavior); }
+
+    public DcMotor.ZeroPowerBehavior getZeroPowerBehavior() { return motor.getZeroPowerBehavior(); }
+
     public DcMotor getMotor() { return motor; }
 
     public double getPower() { return motor.getPower(); }

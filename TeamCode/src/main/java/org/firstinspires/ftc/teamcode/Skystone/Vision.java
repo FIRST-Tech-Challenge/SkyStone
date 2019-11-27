@@ -80,6 +80,8 @@ public class Vision{
 
                     if (350 < blockPixelY && blockPixelY < 450){
                         if ((double)updatedRecognitions.get(i).getConfidence() > 0.95 && updatedRecognitions.get(i).getLabel().equals("Skystone")){
+                            tfod.deactivate();
+                            tfod.shutdown();
                             if (blockPixelX < 600){
                                 return Location.RIGHT;
                             } else if (blockPixelX < 800){
@@ -103,7 +105,8 @@ public class Vision{
 
             }
         }
-
+        tfod.deactivate();
+        tfod.shutdown();
         // find the confidence levels
         double leftConfidence = MathFunctions.arrayListAverage(leftCount);
         double centerConfidence = MathFunctions.arrayListAverage(centerCount);

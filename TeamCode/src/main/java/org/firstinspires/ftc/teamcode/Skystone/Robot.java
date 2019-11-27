@@ -600,7 +600,7 @@ public class Robot {
                     outtakeExtender.setPosition(OUTTAKE_SLIDE_EXTENDED);
                 }
 
-                if(currentTime-extendOuttakeStartTime >= 1150 ){
+                if(currentTime-extendOuttakeStartTime >= 1250 ){
                     clampPivot.setPosition(OUTTAKE_PIVOT_90);
                 }
 
@@ -617,6 +617,9 @@ public class Robot {
                 if(currentTime-retractOuttakeStartTime >= 750){
                     getOuttakeExtender().setPosition(OUTTAKE_SLIDE_RETRACTED);
                     intakePusher.setPosition(PUSHER_RETRACTED);
+                }
+
+                if(currentTime-retractOuttakeStartTime >= 1500){
                     isRetractingOuttake = false;
                     hasRetractedOuttake = false;
                 }

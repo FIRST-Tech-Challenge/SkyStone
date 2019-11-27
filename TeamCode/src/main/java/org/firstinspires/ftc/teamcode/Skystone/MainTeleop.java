@@ -49,6 +49,10 @@ public class MainTeleop extends LinearOpMode {
             spoolLogic();
             outtakeLogic();
             foundationLogic();
+
+            telemetry.addLine("xPos: " + robot.getRobotPos().x);
+            telemetry.addLine("yPos: " + robot.getRobotPos().y);
+            telemetry.addLine("angle: " + robot.getAnglePos());
         }
     }
     private void spoolLogic(){

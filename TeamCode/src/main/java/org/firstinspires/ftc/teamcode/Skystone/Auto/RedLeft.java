@@ -22,9 +22,11 @@ public class RedLeft extends AutoBase{
 
         telemetry.addLine("HEREEE");
         telemetry.update();
+
+
         waitForStart();
         startTime = SystemClock.elapsedRealtime();
-        position2D.startOdometry();
+
 
         // this will be the center positions
         int firstSkystoneX = -2;
@@ -32,6 +34,8 @@ public class RedLeft extends AutoBase{
         int secondSkystoneY = 65;
 
         Vision.Location skystoneLocation = vision.runDetection();
+
+        position2D.startOdometry();
 
         if (skystoneLocation == Vision.Location.LEFT){
             firstSkystoneX = -7;
@@ -62,7 +66,7 @@ public class RedLeft extends AutoBase{
         double[][] toSecondStone = {
                 {31,75,-10,0},
                 {10, 70,0,-10},
-                {26,57,0,10},
+                {24,57,0,10},
                 {26,30,0,10},
                 {26,secondSkyStoneX + 5,10,0},
                 {secondSkystoneY,secondSkyStoneX,30,0}};
@@ -85,17 +89,26 @@ public class RedLeft extends AutoBase{
         double[][] toPark = {
                 {15,60,0,-10},
                 {28,50,0,-10},
-                {29,30,0,-10}};
-        HashMap<Point,Robot.Actions> toParkActions = new HashMap<Point,Robot.Actions>();
+                {27,30,0,-10}};
+        HashMap<Point,Robot.Actions> toParkActions = new HashMap<Point,Robot.Actions>(){{
+            put(new Point(16,70), Robot.Actions.RETRACT_OUTTAKE);
+        }};
 
         double[][] toThirdStone = {
                 {16,60,0,-10},
                 {28, 30, 0,-10},
-                {24, -10, 10,0},
+                {45,6,0,-10},
+                {52, -10, 10,0},
                 {55, -20, 30,0}};
         HashMap<Point,Robot.Actions> toThirdStoneActions = new HashMap<Point,Robot.Actions>() {{
+            put(new Point(16,67), Robot.Actions.RETRACT_OUTTAKE);
             put(new Point(28,30), Robot.Actions.START_INTAKE);
         }};
+
+        double[][] toParkAfterThirdStone = {
+                {30,-10,0,-10},
+                {27,30,0,-10}};
+        HashMap<Point,Robot.Actions> toParkAfterThirdStoneActions = new HashMap<Point,Robot.Actions>();
 
         double[][] toDepositThirdStone = {
                 {55,-20,-30,0},
@@ -116,28 +129,28 @@ public class RedLeft extends AutoBase{
 
         // get ready to pull foundation
         robot.foundationMover(true);
-        sleep(500);
+        sleep(250);
 
         robot.splineMove(toSecondStone,1,1, 0.5, 20,0,Math.toRadians(345),30,
                 toSecondStoneActions);
 
         robot.splineMove(toDepositSecondStone,0.9,1, 0.5, 10, Math.toRadians(180),Math.toRadians(270),10,
                 toDepositSecondStoneActions);
+        robot.getClamp().setPosition(robot.CLAW_SERVO_RELEASED);
 
-        retractOuttakeWait();
-        sleep(800);
-
-        if (SystemClock.elapsedRealtime() - startTime < 20000){
-            robot.splineMove(toThirdStone, 1,1, 0.5, 20,0,0,20,
+        if (SystemClock.elapsedRealtime() - startTime < 25000){
+            robot.splineMove(toThirdStone, 1,1, 0.5, 20,0,Math.toRadians(270),20,
                     toThirdStoneActions);
 
-            robot.splineMove(toDepositThirdStone, 1, 1, 0.5, 20, Math.toRadians(180), Math.toRadians(270), 10,
-                    toDepositThirdStoneActions);
+//            robot.splineMove(toDepositThirdStone, 1, 1, 0.5, 20, Math.toRadians(180), Math.toRadians(270), 10,
+//                    toDepositThirdStoneActions);
+//
+//            retractOuttakeWait();
+            robot.splineMove(toParkAfterThirdStone, 1, 1, 0.3, 10, Math.toRadians(180), Math.toRadians(270), 5, toParkAfterThirdStoneActions);
 
-            retractOuttakeWait();
+
+        }else {
+            robot.splineMove(toPark, 1, 1, 0.3, 10, 0, Math.toRadians(270), 5, toParkActions);
         }
-
-        robot.splineMove(toPark,1,1, 0.3, 10,0,Math.toRadians(270),5, toParkActions);
-        return;
     }
 }

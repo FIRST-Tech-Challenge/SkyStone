@@ -36,6 +36,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotlib.autonomous.AutonomousRobot;
+import org.firstinspires.ftc.robotlib.information.OrientationInfo;
 import org.firstinspires.ftc.robotlib.navigation.Point3D;
 import org.firstinspires.ftc.robotlib.state.Alliance;
 
@@ -121,7 +122,7 @@ public class MecanumAutonomous {
                 Point3D positionFromSkystone = robot.getPositionFromSkystone();
                 Point3D stonePoint3D = new Point3D(trackedStone.getLocation());
                 telemetry.addData("Position relative to Skystone", "{X, Y, Z} = %.0f, %.0f, %.0f", positionFromSkystone.x, positionFromSkystone.y, positionFromSkystone.z);
-                robot.simpleMove(robot.getCourse(positionFromSkystone, stonePoint3D), 0.5, 0, robot.getDistance(positionFromSkystone, stonePoint3D) - 8.75);
+                robot.simpleMove(robot.getCourse(positionFromSkystone, stonePoint3D), 0.5, 0, robot.getDistance(positionFromSkystone, stonePoint3D));
                 //robot.hardware.intakeMotorManager.setMotorsVelocity(1.0);
             }
         } else {

@@ -457,9 +457,9 @@ public class AutonomousRobot {
      * @param distance Distance (in inches) to execute this movement
      */
     public void move(double course, double velocity, OrientationInfo orientationInfo, double distance) {
-        telemetry.addData("MOVE EXECUTING", "Course: %.0f degrees\nVelocity: %.0f\nOrientation: Angle: %.0f, Rotation: %.0f\nDistance: %.0f inches", course, velocity, orientationInfo.angle, orientationInfo.rotation, distance);
+        telemetry.addData("MOVE EXECUTING", "Course: %.2f degrees\nVelocity: %.2f\nOrientation: Angle: %.2f, Rotation: %.2f\nDistance: %.2f inches", course, velocity, orientationInfo.angle, orientationInfo.rotation, distance);
         telemetry.update();
-        hardware.drivetrain.setCourse(course * Math.PI / 180);
+        hardware.drivetrain.setCourse(Math.toRadians(course));
         hardware.drivetrain.setVelocity(velocity);
         hardware.drivetrain.setTargetPosition(distance * hardware.motorTicksPerInch);
 

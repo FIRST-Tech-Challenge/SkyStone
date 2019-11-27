@@ -171,14 +171,16 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     @Override
     public boolean isPositioning()
     {
+        int busyMotors = 0;
         for (DcMotor motor : this.motorList)
         {
             if (motor.isBusy())
             {
-                return true;
+                busyMotors++;
             }
         }
-        return false;
+
+        return busyMotors > 3;
     }
 
     /**

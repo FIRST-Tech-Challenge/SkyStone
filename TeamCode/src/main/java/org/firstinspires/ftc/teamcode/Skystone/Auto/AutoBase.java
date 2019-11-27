@@ -15,10 +15,10 @@ public class AutoBase extends LinearOpMode {
     protected long currentTime;
     Position2D position2D;
     public void initLogic(){
-        vision.initVision();
 
         //Init's robot
         robot = new Robot(this.hardwareMap, this.telemetry, this);
+        vision = new Vision(robot);
 
         robot.driveMotorsBreakZeroBehavior();
         initServos();

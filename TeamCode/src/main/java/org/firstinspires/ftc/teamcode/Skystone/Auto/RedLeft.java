@@ -20,8 +20,8 @@ public class RedLeft extends AutoBase{
         long startTime;
         initLogic();
 
-        Vision tensorflow = new Vision(robot);
-
+        telemetry.addLine("HEREEE");
+        telemetry.update();
         waitForStart();
         startTime = SystemClock.elapsedRealtime();
         position2D.startOdometry();
@@ -31,7 +31,7 @@ public class RedLeft extends AutoBase{
         int secondSkyStoneX = -20;
         int secondSkystoneY = 65;
 
-        Vision.Location skystoneLocation = tensorflow.runDetection();
+        Vision.Location skystoneLocation = vision.runDetection();
 
         if (skystoneLocation == Vision.Location.LEFT){
             firstSkystoneX = -7;

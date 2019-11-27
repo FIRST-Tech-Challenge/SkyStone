@@ -1,9 +1,8 @@
 package org.firstinspires.ftc.teamcode.PID.calibration;
 
-import android.content.Context;
-import android.util.Log;
-
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.tuning.AccelRegression;
 import com.acmerobotics.roadrunner.tuning.RampRegression;
@@ -11,21 +10,14 @@ import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.RobotLog;
 
-import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
-import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.robotcore.internal.system.Misc;
-import org.firstinspires.ftc.teamcode.All.HardwareMap;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveBase;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveREV;
 import org.firstinspires.ftc.teamcode.PID.util.LoggingUtil;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-
+import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.RUN_USING_ENCODER;
 import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.getMaxRpm;
 import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.rpmToVelocity;
 
@@ -40,29 +32,35 @@ import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.rpmToVelocity
  *      regression.
  */
 @Config
-@Autonomous(name = "FeedForward", group = "drive")
+@Autonomous(name = "DriveFeedForwardTuner", group = "drive")
+//@Disabled
 public class DriveFeedforwardTuner extends LinearOpMode {
     public static final double MAX_POWER = 0.7;
     public static final double DISTANCE = 100;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        SampleMecanumDriveBase drive = new SampleMecanumDriveREV(hardwareMap);
+        if (RUN_USING_ENCODER) {
+            RobotLog.setGlobalErrorMsg("Feedforward constants usually don't need to be tuned " +
+                    "when using the built-in drive motor velocity PID.");
+        }
 
-        HardwareMap map = new HardwareMap(hardwareMap);
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+
+        SampleMecanumDriveBase drive = new SampleMecanumDriveREV(hardwareMap);
 
         NanoClock clock = NanoClock.system();
 
-        telemetry.log().add("Press play to begin the feedforward tuning routine");
+        telemetry.addLine("Press play to begin the feedforward tuning routine");
         telemetry.update();
 
         waitForStart();
 
         if (isStopRequested()) return;
 
-        telemetry.log().clear();
-        telemetry.log().add("Would you like to fit kStatic?");
-        telemetry.log().add("Press (A) for yes, (B) for no");
+        telemetry.clearAll();
+        telemetry.addLine("Would you like to fit kStatic?");
+        telemetry.addLine("Press (A) for yes, (B) for no");
         telemetry.update();
 
         boolean fitIntercept = false;
@@ -82,10 +80,10 @@ public class DriveFeedforwardTuner extends LinearOpMode {
             idle();
         }
 
-        telemetry.log().clear();
-        telemetry.log().add(Misc.formatInvariant(
+        telemetry.clearAll();
+        telemetry.addLine(Misc.formatInvariant(
                 "Place your robot on the field with at least %.2f in of room in front", DISTANCE));
-        telemetry.log().add("Press (A) to begin");
+        telemetry.addLine("Press (A) to begin");
         telemetry.update();
 
         while (!isStopRequested() && !gamepad1.a) {
@@ -95,8 +93,8 @@ public class DriveFeedforwardTuner extends LinearOpMode {
             idle();
         }
 
-        telemetry.log().clear();
-        telemetry.log().add("Running...");
+        telemetry.clearAll();
+        telemetry.addLine("Running...");
         telemetry.update();
 
         double maxVel = rpmToVelocity(getMaxRpm());
@@ -117,8 +115,6 @@ public class DriveFeedforwardTuner extends LinearOpMode {
             double power = vel / maxVel;
 
             rampRegression.add(elapsedTime, drive.getPoseEstimate().getX(), power);
-            //odometryData.add(elapsedTime + ": " + power + ", (" + map.leftIntake.getCurrentPosition()
-            //        + ", " + map.liftTwo.getCurrentPosition() + ", " + map.rightIntake.getCurrentPosition() + ") <<|");
 
             drive.setDrivePower(new Pose2d(power, 0.0, 0.0));
             drive.updatePoseEstimate();
@@ -130,19 +126,17 @@ public class DriveFeedforwardTuner extends LinearOpMode {
         rampRegression.save(LoggingUtil.getLogFile(Misc.formatInvariant(
                 "DriveRampRegression-%d.csv", System.currentTimeMillis())));
 
-        //writeFile(AppUtil.ROOT_FOLDER + "/RoadRunner/odometer_values.txt", odometryData.toString());
-
-        telemetry.log().clear();
-        telemetry.log().add("Quasi-static ramp up test complete");
+        telemetry.clearAll();
+        telemetry.addLine("Quasi-static ramp up test complete");
         if (fitIntercept) {
-            telemetry.log().add(Misc.formatInvariant("kV = " + rampResult.kV + ", kStatic = %.5f (R^2 = %.2f)",
-                    rampResult.kStatic, rampResult.rSquare));
+            telemetry.addLine(Misc.formatInvariant("kV = %.5f, kStatic = %.5f (R^2 = %.2f)",
+                    rampResult.kV, rampResult.kStatic, rampResult.rSquare));
         } else {
-            telemetry.log().add(Misc.formatInvariant("kV = %.5f (R^2 = %.2f)",
+            telemetry.addLine(Misc.formatInvariant("kV = %.5f (R^2 = %.2f)",
                     rampResult.kStatic, rampResult.rSquare));
         }
-        telemetry.log().add("Would you like to fit kA?");
-        telemetry.log().add("Press (A) for yes, (B) for no");
+        telemetry.addLine("Would you like to fit kA?");
+        telemetry.addLine("Press (A) for yes, (B) for no");
         telemetry.update();
 
         boolean fitAccelFF = false;
@@ -163,9 +157,9 @@ public class DriveFeedforwardTuner extends LinearOpMode {
         }
 
         if (fitAccelFF) {
-            telemetry.log().clear();
-            telemetry.log().add("Place the robot back in its starting position");
-            telemetry.log().add("Press (A) to continue");
+            telemetry.clearAll();
+            telemetry.addLine("Place the robot back in its starting position");
+            telemetry.addLine("Press (A) to continue");
             telemetry.update();
 
             while (!isStopRequested() && !gamepad1.a) {
@@ -175,8 +169,8 @@ public class DriveFeedforwardTuner extends LinearOpMode {
                 idle();
             }
 
-            telemetry.log().clear();
-            telemetry.log().add("Running...");
+            telemetry.clearAll();
+            telemetry.addLine("Running...");
             telemetry.update();
 
             double maxPowerTime = DISTANCE / maxVel;
@@ -198,35 +192,21 @@ public class DriveFeedforwardTuner extends LinearOpMode {
             }
             drive.setDrivePower(new Pose2d(0.0, 0.0, 0.0));
 
-
             AccelRegression.AccelResult accelResult = accelRegression.fit(
                     rampResult.kV, rampResult.kStatic);
 
             accelRegression.save(LoggingUtil.getLogFile(Misc.formatInvariant(
                     "DriveAccelRegression-%d.csv", System.currentTimeMillis())));
 
-            telemetry.log().clear();
-            telemetry.log().add("Constant power test complete");
-            telemetry.log().add(Misc.formatInvariant("kA = %.5f (R^2 = %.2f)",
+            telemetry.clearAll();
+            telemetry.addLine("Constant power test complete");
+            telemetry.addLine(Misc.formatInvariant("kA = %.5f (R^2 = %.2f)",
                     accelResult.kA, accelResult.rSquare));
             telemetry.update();
         }
 
         while (!isStopRequested()) {
             idle();
-        }
-    }
-
-    private void writeFile(String filePath, String data) {
-        try {
-            File folder = new File(filePath.substring(0,filePath.lastIndexOf("/") + 1));
-            folder.mkdirs();
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(new FileOutputStream(new File(filePath), true));
-            outputStreamWriter.write(data);
-            outputStreamWriter.close();
-        }
-        catch (IOException e) {
-            Log.e("Exception", "File write failed: " + e.toString());
         }
     }
 }

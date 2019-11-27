@@ -9,16 +9,16 @@ public class TFODCalc {
     private static float FOCAL_LENGTH = 1.0f;    //in mm
     private static double SENSOR_HEIGHT = 1.0;    //in mm
     private static Camera camera;
-    private static ArrayList<Double> autoAdjustedOffset = new ArrayList<>();
+    private static ArrayList<ArrayList<Double>> autoAdjustedOffset = new ArrayList<>();
     private static ArrayList<Double> distanceAway = new ArrayList<>();
 
     public static void init(){
         for(int i = 0; i < 100; i++)
-            autoAdjustedOffset.add(0.0);
+            autoAdjustedOffset.add(new ArrayList<>());
     }
 
-    public static double getSavedOffset(int index){
-        return autoAdjustedOffset.get(index);
+    public static double getSavedOffset(int index1, int index2){
+        return autoAdjustedOffset.get(index1).get(index2);
     }
 
     public static void getPhoneCamConstants() {
@@ -54,15 +54,42 @@ public class TFODCalc {
         double xAt60 = xIntercept - 197.369;    //Calculating Delta X at lower bounds of domain (x ~= 60°)
         double estimated0DegreeWidth = 800.512823871366 * Math.pow(Math.E, -0.0476285053327913 * distance) - 15;    //Estimating 0° width
 
+        double prevCalcOffset = -1;
+        int usedIndex = -1;
+        if(!autoAdjustedOffset.get(objIndex).isEmpty()){
+            double delta = 9999;
+
+            ArrayList<Double> temp = new ArrayList<>();
+            for(int i = 0; i < autoAdjustedOffset.get(objIndex).size(); i++) {
+                if (i % 2 == 1)
+                    temp.add(autoAdjustedOffset.get(objIndex).get(i));
+            }
+
+            for(int i = 0; i < temp.size(); i++){
+                if(Math.abs(temp.get(i) - distance) < 2 && Math.abs(temp.get(i) - distance) < delta) {
+                    delta = Math.abs(temp.get(i) - distance);
+                    prevCalcOffset = autoAdjustedOffset.get(objIndex).get(i * 2 + 1);
+                    usedIndex = i * 2 + 1;
+                }
+            }
+        }
+
+        if(prevCalcOffset == -1){
+            usedIndex = autoAdjustedOffset.get(objIndex).size();
+            autoAdjustedOffset.get(objIndex).add(0.0);
+            autoAdjustedOffset.get(objIndex).add(distance);
+            prevCalcOffset = 0;
+        }
+
         /**
          * Calculates "old" X-offset (X-int & other previously calculated offsets), the supposed width
          * of stone at 0° (stone facing camera). Algorithms will soon tune this value and adjust the model's domain
          * to better fit the received Tensorflow data.
          */
 
-        double xIntOffset = xIntercept - estimated0DegreeWidth - autoAdjustedOffset.get(objIndex);  //The original x-offset value
-        double newAutoAdjustedOffset = autoAdjustDomain(xIntercept, xAt60, xIntOffset, objWidthPx, objIndex); //Algorithm tunes the value of the offset, gets additional offset
-        xIntOffset = xIntercept - estimated0DegreeWidth - autoAdjustedOffset.get(objIndex) - newAutoAdjustedOffset;    //Re-calculates the X-offset
+        double xIntOffset = xIntercept - estimated0DegreeWidth - prevCalcOffset;  //The original x-offset value
+        double newAutoAdjustedOffset = autoAdjustDomain(xIntercept, xAt60, xIntOffset, objWidthPx, objIndex, prevCalcOffset); //Algorithm tunes the value of the offset, gets additional offset
+        xIntOffset = xIntercept - estimated0DegreeWidth - prevCalcOffset - newAutoAdjustedOffset;    //Re-calculates the X-offset
 
         /**
          * The model quadratic equation used:
@@ -72,8 +99,9 @@ public class TFODCalc {
         double theta = -0.00402486517332459 * Math.pow((objWidthPx + xIntOffset), 2) + 1.34744719385825 *
                 (objWidthPx + xIntOffset) - 33.9109714390624;  //Calculates angle
 
-        autoAdjustedOffset.set(objIndex,
-                autoAdjustedOffset.get(objIndex) + newAutoAdjustedOffset);   //The x-offset is saved under its index & will be reaccessed again and used
+        autoAdjustedOffset.get(objIndex).set(usedIndex,
+               prevCalcOffset + newAutoAdjustedOffset);   //The x-offset is saved under its index & will be reaccessed again and used
+
 
         /**
          * Output: ArrayList containing the following (in this order):
@@ -87,13 +115,13 @@ public class TFODCalc {
         output.add(Math.round((estimated0DegreeWidth + newAutoAdjustedOffset) * 1000.0) / 1000.0);
         output.add(Math.round(estimated0DegreeWidth * 1000.0) / 1000.0);
         output.add(Math.round((estimated0DegreeWidth + newAutoAdjustedOffset +
-                TFODCalc.autoAdjustedOffset.get(objIndex)) * 1000.0) / 1000.0);
+                prevCalcOffset) * 1000.0) / 1000.0);
 
         return output;
     }
 
     private static double autoAdjustDomain(double xInt, double xAt60, double xIntOffset,
-                                         double objWidthPx, int objIndex){
+                                         double objWidthPx, int objIndex, double prevCalcOffset){
         double autoAdjustOutput = 0.0;
 
         /**
@@ -103,7 +131,7 @@ public class TFODCalc {
          */
 
         if(xInt - objWidthPx <= xInt + xIntOffset - 207.369){  //Allows up to -5° of error (- 10)
-            double allowedErrorOffset = xAt60 - (xInt + autoAdjustedOffset.get(objIndex) - 207.369);    //Calculates allowed error offset (- 10)
+            double allowedErrorOffset = xAt60 - (xInt + prevCalcOffset - 207.369);    //Calculates allowed error offset (- 10)
             autoAdjustOutput = getDomainOffset(xAt60 - allowedErrorOffset, xIntOffset, objWidthPx); //Gets new, additional offset
         } else if(xInt - objWidthPx >= xInt + xIntOffset + 10.611){   //Allows up to +10° of error (+ 8.611)
             autoAdjustOutput = getDomainOffset(xInt + 10.611, xIntOffset, objWidthPx);   //Calculates new, additional offset

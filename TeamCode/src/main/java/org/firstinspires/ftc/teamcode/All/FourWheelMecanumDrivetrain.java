@@ -126,7 +126,9 @@ public class FourWheelMecanumDrivetrain {
         }
     }
 
-    public void EncoderTurn(double speed, double counts, boolean clockwise) {
+    public void encoderRotate(double speed, double inches, boolean clockwise) {
+        double counts = inches / (2 * PI * 2) * DriveConstant.WHEEL_ENCODER_COUNTS_PER_REVOLUTION;
+
         int backLeftStart = rw.backLeft.getCurrentPosition();
         int backRightStart = rw.backRight.getCurrentPosition();
         int frontLeftStart = rw.frontLeft.getCurrentPosition();
@@ -200,7 +202,7 @@ public class FourWheelMecanumDrivetrain {
         stop();
     }
 
-    public void odometryStrafe(int power, double inches, boolean right){
+    public void odometryStrafe(double power, double inches, boolean right){
         double counts = inches / (2 * PI * 2) * DriveConstant.WHEEL_ENCODER_COUNTS_PER_REVOLUTION;
         int sidewaysStart = rw.rightIntake.getCurrentPosition();
 

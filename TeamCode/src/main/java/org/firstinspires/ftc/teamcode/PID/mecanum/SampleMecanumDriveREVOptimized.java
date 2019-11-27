@@ -1,26 +1,24 @@
 package org.firstinspires.ftc.teamcode.PID.mecanum;
 
 import android.support.annotation.NonNull;
-
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
-
-import org.firstinspires.ftc.teamcode.PID.localizer.StandardTrackingWheelLocalizer;
-import org.firstinspires.ftc.teamcode.PID.util.LynxOptimizedI2cFactory;
-import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
-import org.openftc.revextensions2.ExpansionHubEx;
-import org.openftc.revextensions2.ExpansionHubMotor;
-import org.openftc.revextensions2.RevBulkData;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.encoderTicksToInches;
+import org.firstinspires.ftc.teamcode.PID.util.LynxModuleUtil;
+import org.openftc.revextensions2.ExpansionHubEx;
+import org.openftc.revextensions2.ExpansionHubMotor;
+import org.openftc.revextensions2.RevBulkData;
 
+import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.MOTOR_VELO_PID;
+import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.RUN_USING_ENCODER;
+import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.encoderTicksToInches;
+import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.getMotorVelocityF;
 
 /*
  * Optimized mecanum drive implementation for REV ExHs. The time savings may significantly improve
@@ -42,7 +40,7 @@ public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
         // if your motors are split between hubs, **you will need to add another bulk read**
         hub = hardwareMap.get(ExpansionHubEx.class, "hub");
 
-        imu = LynxOptimizedI2cFactory.createLynxEmbeddedImu(hub.getStandardModule(), 0);
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         imu.initialize(parameters);
@@ -59,21 +57,20 @@ public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
         for (ExpansionHubMotor motor : motors) {
-            // TODO: decide whether or not to use the built-in velocity PID
-            // if you keep it, then don't tune kStatic or kA
-            // otherwise, comment out the following line
-            motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            if (RUN_USING_ENCODER) {
+                motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            }
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        }
+
+        if (RUN_USING_ENCODER && MOTOR_VELO_PID != null) {
+            setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
         }
 
         // TODO: reverse any motors using DcMotor.setDirection()
 
-        // TODO: set the tuned coefficients from DriveVelocityPIDTuner if using RUN_USING_ENCODER
-        // setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, ...);
-
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
-        setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
     }
 
     @Override
@@ -86,7 +83,7 @@ public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
     public void setPIDCoefficients(DcMotor.RunMode runMode, PIDCoefficients coefficients) {
         for (ExpansionHubMotor motor : motors) {
             motor.setPIDFCoefficients(runMode, new PIDFCoefficients(
-                    coefficients.kP, coefficients.kI, coefficients.kD, 1
+                    coefficients.kP, coefficients.kI, coefficients.kD, getMotorVelocityF()
             ));
         }
     }
@@ -105,6 +102,21 @@ public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
             wheelPositions.add(encoderTicksToInches(bulkData.getMotorCurrentPosition(motor)));
         }
         return wheelPositions;
+    }
+
+    @Override
+    public List<Double> getWheelVelocities() {
+        RevBulkData bulkData = hub.getBulkInputData();
+
+        if (bulkData == null) {
+            return Arrays.asList(0.0, 0.0, 0.0, 0.0);
+        }
+
+        List<Double> wheelVelocities = new ArrayList<>();
+        for (ExpansionHubMotor motor : motors) {
+            wheelVelocities.add(encoderTicksToInches(bulkData.getMotorVelocity(motor)));
+        }
+        return wheelVelocities;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Autonomous.BlockDetectionTest;
 
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import java.util.List;
@@ -11,6 +12,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 
 @TeleOp(name = "TensorFlow Skystone Detection Test", group = "Linear Opmode" )
+@Disabled
 public class skystoneDetectionTest extends LinearOpMode{
     public static final String TFOD_MODEL_ASSET = "skystoneTFOD_v2_[105-15].tflite";
     public static final String LABEL_FIRST_ELEMENT = "Skystone";

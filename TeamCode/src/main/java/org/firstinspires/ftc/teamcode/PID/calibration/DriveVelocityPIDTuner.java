@@ -18,13 +18,13 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.RobotLog;
 
-import org.firstinspires.ftc.teamcode.PID.DriveConstantsPID;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveBase;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveREV;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.BASE_CONSTRAINTS;
+import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.RUN_USING_ENCODER;
 import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.kV;
 
 /*
@@ -39,9 +39,10 @@ import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.kV;
  * ctor.
  */
 @Config
-@Autonomous(name = "DriveVelocity", group = "drive")
+@Autonomous(name = "DriveVelocityPIDTuner", group = "drive")
+//@Disabled
 public class DriveVelocityPIDTuner extends LinearOpMode {
-    public static double DISTANCE = 96;
+    public static double DISTANCE = 72;
 
     private static final String PID_VAR_NAME = "VELO_PID";
 
@@ -49,15 +50,15 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
     private String catName;
     private CustomVariable catVar;
 
-    private SampleMecanumDriveREV drive;
+    private SampleMecanumDriveBase drive;
 
     private static MotionProfile generateProfile(boolean movingForward) {
         MotionState start = new MotionState(movingForward ? 0 : DISTANCE, 0, 0, 0);
         MotionState goal = new MotionState(movingForward ? DISTANCE : 0, 0, 0, 0);
         return MotionProfileGenerator.generateSimpleMotionProfile(start, goal,
-                DriveConstantsPID.BASE_CONSTRAINTS.maxVel,
-                DriveConstantsPID.BASE_CONSTRAINTS.maxAccel,
-                DriveConstantsPID.BASE_CONSTRAINTS.maxJerk);
+                BASE_CONSTRAINTS.maxVel,
+                BASE_CONSTRAINTS.maxAccel,
+                BASE_CONSTRAINTS.maxJerk);
     }
 
     private void addPidVariable() {
@@ -127,6 +128,11 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        if (!RUN_USING_ENCODER) {
+            RobotLog.setGlobalErrorMsg("%s does not need to be run if the built-in motor velocity" +
+                    "PID is not in use", getClass().getSimpleName());
+        }
+
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
 
         drive = new SampleMecanumDriveREV(hardwareMap);
@@ -135,7 +141,7 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
 
         NanoClock clock = NanoClock.system();
 
-        telemetry.log().add("Ready!");
+        telemetry.addLine("Ready!");
         telemetry.update();
         telemetry.clearAll();
 
@@ -147,14 +153,10 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
         MotionProfile activeProfile = generateProfile(true);
         double profileStart = clock.seconds();
 
-        List<Double> lastWheelPositions = null;
-        double lastTimestamp = 0;
 
         while (!isStopRequested()) {
             // calculate and set the motor power
             double profileTime = clock.seconds() - profileStart;
-            double dt = profileTime - lastTimestamp;
-            lastTimestamp = profileTime;
 
             if (profileTime > activeProfile.duration()) {
                 // generate a new profile
@@ -167,27 +169,15 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
             double targetPower = kV * motionState.getV();
             drive.setDrivePower(new Pose2d(targetPower, 0, 0));
 
-            List<Double> wheelPositions = drive.getWheelPositions();
-            if (lastWheelPositions != null) {
-                // compute velocities
-                List<Double> syntheticVelocities = new ArrayList<>();
-                for (int i = 0; i < wheelPositions.size(); i++) {
-                    syntheticVelocities.add((wheelPositions.get(i) - lastWheelPositions.get(i)) / dt);
-                }
+            List<Double> velocities = drive.getWheelVelocities();
 
-                List<Double> motorPowers = drive.getMotorPowers();
-
-                // update telemetry
-                telemetry.addData("targetVelocity", motionState.getV());
-                for (int i = 0; i < syntheticVelocities.size(); i++) {
-                    telemetry.addData("velocity" + i, syntheticVelocities.get(i));
-                    telemetry.addData("error" + i, motionState.getV() - syntheticVelocities.get(i));
-                    telemetry.addData("power" + i, motorPowers.get(i));
-                    telemetry.addData("calculated kV " + i, motorPowers.get(i) / syntheticVelocities.get(i));
-                }
-                telemetry.update();
+            // update telemetry
+            telemetry.addData("targetVelocity", motionState.getV());
+            for (int i = 0; i < velocities.size(); i++) {
+                telemetry.addData("velocity" + i, velocities.get(i));
+                telemetry.addData("error" + i, motionState.getV() - velocities.get(i));
             }
-            lastWheelPositions = wheelPositions;
+            telemetry.update();
         }
 
         removePidVariable();

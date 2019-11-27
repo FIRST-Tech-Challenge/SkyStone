@@ -3,29 +3,23 @@ package org.firstinspires.ftc.teamcode.PID.mecanum;
 import android.support.annotation.NonNull;
 
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
-import com.acmerobotics.roadrunner.localization.ThreeTrackingWheelLocalizer;
 import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.hardware.motors.Matrix12vMotor;
-import com.qualcomm.hardware.motors.NeveRest20Gearmotor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
-import com.qualcomm.robotcore.util.RobotLog;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.teamcode.PID.localizer.StandardTrackingWheelLocalizer;
-import org.firstinspires.ftc.teamcode.PID.util.AxesSigns;
-import org.firstinspires.ftc.teamcode.PID.util.BNO055IMUUtil;
-import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
+import org.firstinspires.ftc.teamcode.PID.util.LynxModuleUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.MOTOR_VELO_PID;
+import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.RUN_USING_ENCODER;
 import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.encoderTicksToInches;
-
+import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.getMotorVelocityF;
 
 /*
  * Simple mecanum drive hardware implementation for REV hardware. If your hardware configuration
@@ -35,7 +29,6 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
     private DcMotorEx leftFront, leftRear, rightRear, rightFront;
     private List<DcMotorEx> motors;
     private BNO055IMU imu;
-    PIDCoefficients pidCoefficients = new PIDCoefficients(0,0,0);
 
     public SampleMecanumDriveREV(HardwareMap hardwareMap) {
         super();
@@ -50,7 +43,7 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
 
         // TODO: if your hub is mounted vertically, remap the IMU axes so that the z-axis points
         // upward (normal to the floor) using a command like the following:
-         BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.PPP);
+        // BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
 
         leftFront = hardwareMap.get(DcMotorEx.class, "frontLeft");
         leftRear = hardwareMap.get(DcMotorEx.class, "backLeft");
@@ -60,25 +53,26 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
         for (DcMotorEx motor : motors) {
-            // TODO: decide whether or not to use the built-in velocity PID
-            // if you keep it, then don't tune kStatic or kA
-            // otherwise, comment out the following line
-            motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            if (RUN_USING_ENCODER) {
+                motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            }
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        }
 
+        if (RUN_USING_ENCODER && MOTOR_VELO_PID != null) {
+            setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
         }
 
         // TODO: reverse any motors using DcMotor.setDirection()
-        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightRear.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        // TODO: set the tuned coefficients from DriveVelocityPIDTuner if using RUN_USING_ENCODER
-        // setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidCoefficients);
+        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
+
         //setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
-    }
+}
 
     @Override
     public PIDCoefficients getPIDCoefficients(DcMotor.RunMode runMode) {
@@ -90,14 +84,10 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
     public void setPIDCoefficients(DcMotor.RunMode runMode, PIDCoefficients coefficients) {
         for (DcMotorEx motor : motors) {
             motor.setPIDFCoefficients(runMode, new PIDFCoefficients(
-                    coefficients.kP, coefficients.kI, coefficients.kD, 1
+                    coefficients.kP, coefficients.kI, coefficients.kD, getMotorVelocityF()
             ));
         }
     }
-
-
-
-
 
     @NonNull
     @Override
@@ -110,29 +100,20 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
     }
 
     @Override
+    public List<Double> getWheelVelocities() {
+        List<Double> wheelVelocities = new ArrayList<>();
+        for (DcMotorEx motor : motors) {
+            wheelVelocities.add(encoderTicksToInches(motor.getVelocity()));
+        }
+        return wheelVelocities;
+    }
+
+    @Override
     public void setMotorPowers(double v, double v1, double v2, double v3) {
         leftFront.setPower(v);
         leftRear.setPower(v1);
         rightRear.setPower(v2);
         rightFront.setPower(v3);
-        RobotLog.i("lf: " + v + " " + leftFront.getDirection());
-
-        RobotLog.i("lr: " + v1+ " " + leftRear.getDirection());
-
-        RobotLog.i("rr: " + v2+ " " + rightRear.getDirection());
-
-        RobotLog.i("rf: " + v3+ " " + rightFront.getDirection());
-
-
-    }
-
-    public List<Double> getMotorPowers() {
-        ArrayList<Double> powers = new ArrayList<>();
-        powers.add(leftFront.getPower());
-        powers.add(leftRear.getPower());
-        powers.add(rightRear.getPower());
-        powers.add(rightFront.getPower());
-        return powers;
     }
 
     @Override

@@ -1,30 +1,41 @@
 package org.firstinspires.ftc.teamcode.PID;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.drive.Drive;
+import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
-import com.qualcomm.hardware.motors.Matrix12vMotor;
+import com.qualcomm.hardware.motors.GoBILDA5202Series;
 import com.qualcomm.hardware.motors.NeveRest20Gearmotor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
-import org.firstinspires.ftc.teamcode.All.DriveConstant;
-
 /*
  * Constants shared between multiple drive types.
+ *
+ * TODO: Tune or adjust the following constants to fit your robot. Note that the non-final
+ * fields may also be edited through the dashboard (connect to the robot's WiFi network and
+ * navigate to https://192.168.49.1:8080/dash). Make sure to save the values here after you
+ * adjust them in the dashboard; **config variable changes don't persist between app restarts**.
+ *
+ * These are not the only parameters; some are located in the localizer classes, drive base classes,
+ * and op modes themselves.
  */
 @Config
 public class DriveConstantsPID {
 
     /*
-     * TODO: Tune or adjust the following constants to fit your robot. Note that the non-final
-     * fields may also be edited through the dashboard (connect to the robot's WiFi network and
-     * navigate to https://192.168.49.1:8080/dash). Make sure to save the values here after you
-     * adjust them in the dashboard; **config variable changes don't persist between app restarts**.
+     * The type of motor used on the drivetrain. While the SDK has definitions for many common
+     * motors, there may be slight gear ratio inaccuracies for planetary gearboxes and other
+     * discrepancies. Additional motor types can be defined via an interface with the
+     * @DeviceProperties and @MotorType annotations.
      */
     private static final MotorConfigurationType MOTOR_CONFIG =
-            MotorConfigurationType.getMotorType(Matrix12vMotor.class);
-    //public static final double TICKS_PER_REV = MOTOR_CONFIG.getTicksPerRev();
-    public static final double TICKS_PER_REV = DriveConstant.WHEEL_ENCODER_COUNTS_PER_REVOLUTION;
+            MotorConfigurationType.getMotorType(GoBILDA5202Series.class);
+
+    /*
+     * Set the first flag appropriately. If using the built-in motor velocity PID, update
+     * MOTOR_VELO_PID with the tuned coefficients from DriveVelocityPIDTuner.
+     */
+    public static final boolean RUN_USING_ENCODER = true;
+    public static final PIDCoefficients MOTOR_VELO_PID = new PIDCoefficients(35, 0.5, 2.5);
 
     /*
      * These are physical constants that can be determined from your robot (including the track
@@ -32,11 +43,11 @@ public class DriveConstantsPID {
      * free to chose whichever linear distance unit they would like so long as it is consistently
      * used. The default values were selected with inches in mind. Road runner uses radians for
      * angular distances although most angular parameters are wrapped in Math.toRadians() for
-     * convenience.
+     * convenience. Make sure to exclude any gear ratio included in MOTOR_CONFIG from GEAR_RATIO.
      */
-    public static double WHEEL_RADIUS = DriveConstant.MECANUM_RAD;;
-    public static double GEAR_RATIO = DriveConstant.MOTOR_GEAR_RATIO; // output (wheel) speed / input (motor) speed
-    public static double TRACK_WIDTH = 12.0;
+    public static double WHEEL_RADIUS = 2;
+    public static double GEAR_RATIO = (99.5 / 13.7) * (24.0 / 16); // output (wheel) speed / input (motor) speed
+    public static double TRACK_WIDTH = 17;
 
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using
@@ -44,7 +55,7 @@ public class DriveConstantsPID {
      * motor encoders or have elected not to use them for velocity control, these values should be
      * empirically tuned.
      */
-    public static double kV = 0.0065; //translates motor power in sw and real distance 0.01145
+    public static double kV = 0.0093;
     public static double kA = 0;
     public static double kStatic = 0;
 
@@ -57,24 +68,31 @@ public class DriveConstantsPID {
      * forces acceleration-limited profiling).
      */
     public static DriveConstraints BASE_CONSTRAINTS = new DriveConstraints(
-            24.0, 12.0, 24.0,
-            Math.toRadians(180.0), Math.toRadians(180.0), Math.PI / 4
+            30.0, 30.0, 0.0,
+            Math.toRadians(180.0), Math.toRadians(180.0), 0.0
     );
 
 
-    public static double encoderTicksToInches(int ticks) {
-        return WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO * ticks / TICKS_PER_REV;
+    public static double encoderTicksToInches(double ticks) {
+        return WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO * ticks / MOTOR_CONFIG.getTicksPerRev();
     }
 
     public static double rpmToVelocity(double rpm) {
         return rpm * GEAR_RATIO * 2 * Math.PI * WHEEL_RADIUS / 60.0;
     }
 
-    //public static double getMaxRpm() {
-    //    return MOTOR_CONFIG.getMaxRPM();
-    //}
-
     public static double getMaxRpm() {
-        return 435.0;
+        return 435.0 *
+                (RUN_USING_ENCODER ? 0.683 : 1.0);
+    }
+
+    public static double getTicksPerSec() {
+        // note: MotorConfigurationType#getAchieveableMaxTicksPerSecond() isn't quite what we want
+        return (MOTOR_CONFIG.getMaxRPM() * MOTOR_CONFIG.getTicksPerRev() / 60.0);
+    }
+
+    public static double getMotorVelocityF() {
+        // see https://docs.google.com/document/d/1tyWrXDfMidwYyP_5H4mZyVgaEswhOC35gvdmP-V-5hA/edit#heading=h.61g9ixenznbx
+        return 32767 / getTicksPerSec();
     }
 }

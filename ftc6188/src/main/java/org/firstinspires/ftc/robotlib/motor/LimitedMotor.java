@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotlib.state.ToggleBoolean;
 
+// TODO: Convert to a DcMotor interface
 public class LimitedMotor
 {
     private DcMotor motor;

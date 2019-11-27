@@ -58,10 +58,11 @@ public class SiBorgsMecanumRobot
         driveRearLeft = hwMap.get(DcMotor.class, "driveRearLeft");
         driveMotorList = new DcMotor[] {driveFrontLeft, driveFrontRight, driveRearLeft, driveRearRight};
 
-        driveFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        driveFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        driveRearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        driveRearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        for (DcMotor motor : driveMotorList)
+        {
+            motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
 
         driveFrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         driveFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

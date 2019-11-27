@@ -12,7 +12,7 @@ public class SiBorgsMecanumAuto extends LinearOpMode
     private SiBorgsMecanumRobot robot;
 
     // Fields
-    private static final double VELOCITY = 0.35;
+    private static final double VELOCITY = 0.5;
 
     @Override
     public void runOpMode() throws InterruptedException

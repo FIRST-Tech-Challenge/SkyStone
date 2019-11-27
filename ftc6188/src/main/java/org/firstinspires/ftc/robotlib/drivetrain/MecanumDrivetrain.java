@@ -13,6 +13,11 @@ public class MecanumDrivetrain extends HolonomicFourWheelDrivetrain
         setTicksPerIn(wheelRadius, wheelToMotorRatio);
     }
 
+    public MecanumDrivetrain(DcMotor[] motorList)
+    {
+        this(motorList, 1, 1);
+    }
+
     // this math returns a multiplier to the holonomic four wheel drivetrain, the math is very complex but it just works so it should'nt be changed
     @Override
     double calculateWheelCoefficient(double course, double wheelAngle)
@@ -20,12 +25,13 @@ public class MecanumDrivetrain extends HolonomicFourWheelDrivetrain
         return (Math.cos(course)-Math.sin(course)/Math.tan(wheelAngle))*Math.signum(wheelAngle);
     }
 
+    // automatically triggers the motors to produce the desired movement (do not use rotation?)
     public void autoPosition(double course, double distanceIN, double velocity, double rotation)
     {
-        this.setCourse(course * (Math.PI/180));
         this.setTargetPosition(distanceIN * getTicksPerIn());
+        this.setCourse(course * (Math.PI/180.0));
         this.setVelocity(velocity);
         this.setRotation(rotation);
-        position();
+        this.position();
     }
 }

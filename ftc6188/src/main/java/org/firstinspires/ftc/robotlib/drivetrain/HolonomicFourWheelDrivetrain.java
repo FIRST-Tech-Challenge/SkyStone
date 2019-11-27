@@ -68,7 +68,6 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     @Override
     public void setTargetPosition(double targetPosition)
     {
-
         for (int motorIndex = 0; motorIndex < this.runModes.length; motorIndex++)
         {
             runModes[motorIndex] = this.motorList[motorIndex].getMode();
@@ -84,7 +83,12 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
         }
 
         for (DcMotor motor : this.motorList) motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        updateMotorPowers();
+    }
+
+    @Override
+    public double getTargetPosition()
+    {
+        return targetPosition;
     }
 
     // returns not the robots actual position on the field but the distance moved based on the current movement goal
@@ -94,15 +98,9 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
         double amountDone = 0;
         for (int motorIndex = 0; motorIndex < this.motorList.length; motorIndex++)
         {
-            amountDone += this.motorList[motorIndex].getCurrentPosition()/wheelTargetPositions[motorIndex];
+            amountDone += (double)this.motorList[motorIndex].getCurrentPosition()/wheelTargetPositions[motorIndex];
         }
-        return amountDone/4;
-    }
-
-    @Override
-    public double getTargetPosition()
-    {
-        return targetPosition;
+        return amountDone/4.0 * getTargetPosition();
     }
 
     // auto function to initiate the positioning of the robot, dont use instead recreate loop in robotmove function
@@ -141,6 +139,13 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
             this.motorList[motorIndex].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             this.motorList[motorIndex].setMode(runModes[motorIndex]);
         }
+
+        // reset drive to a pre-movement state
+        this.setVelocity(0);
+        setCourse(0);
+        setTargetPosition(0);
+        setRotation(0);
+        updateMotorPowers();
     }
 
     // returns each motors ticks per full revolution

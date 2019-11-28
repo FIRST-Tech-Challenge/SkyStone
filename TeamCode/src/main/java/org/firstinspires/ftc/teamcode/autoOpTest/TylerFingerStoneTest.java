@@ -21,13 +21,13 @@ public class TylerFingerStoneTest extends ChassisStandard {
             sleep(1000);
             raiseFrontFinger();*/
 
-            encoderDrive(-24);
+            encoderDrive(-30);
             sleep(500);
             dropBackFinger();
             sleep(2000);
-            encoderDrive(24);
+            encoderDrive(6);
             turnRight(75);
-            encoderDrive(-24);
+            encoderDrive(-60);
             raiseBackFinger();
             sleep(2000);
             encoderDrive(24);

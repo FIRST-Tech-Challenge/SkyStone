@@ -6,7 +6,6 @@ import org.firstinspires.ftc.teamcode.Library.ColorTools;
 
 import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassis;
 import org.firstinspires.ftc.teamcode.Library.Movement.ControlledArm;
-import org.firstinspires.ftc.teamcode.Library.Movement.ControlledClamp;
 import org.firstinspires.ftc.teamcode.Library.Movement.ControlledDrive;
 
 @Autonomous (name = "ConceptAutonomous")

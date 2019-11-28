@@ -7,7 +7,9 @@
             <Matrix12vMotor name="hub1_motorport2" port="2" />
             <Matrix12vMotor name="hub1_motorport3" port="3" />
             <Servo name="hub1_servoport0" port="0" />
-            <ContinuousRotationServo name="hub1_servoport1" port="1" />
+            <Servo name="hub1_servoport1" port="1" />
+            <Servo name="hub1_servoport2" port="2" />
+            <Servo name="hub1_servoport3" port="3" />
             <DigitalDevice name="hub1_digitalport0" port="0" />
             <DigitalDevice name="hub1_digitalport1" port="1" />
             <DigitalDevice name="hub1_digitalport2" port="2" />

@@ -15,7 +15,6 @@ public class AutoBase extends LinearOpMode {
     protected long currentTime;
     Position2D position2D;
     public void initLogic(){
-
         //Init's robot
         robot = new Robot(this.hardwareMap, this.telemetry, this);
         vision = new Vision(robot);
@@ -26,8 +25,6 @@ public class AutoBase extends LinearOpMode {
         robot.setMotorMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        //robot.intializeIMU();
-        //initServos();
         position2D = new Position2D(robot);
     }
 
@@ -35,6 +32,7 @@ public class AutoBase extends LinearOpMode {
         boolean isRetract = true;
         long outtakeExecutionTime = 0;
         long currentTime;
+
         robot.foundationMover(false);
         robot.getClamp().setPosition(robot.CLAW_SERVO_RELEASED);
         robot.getIntakePusher().setPosition(robot.PUSHER_RETRACTED);

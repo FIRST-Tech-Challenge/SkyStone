@@ -20,23 +20,21 @@ public class RedLeft extends AutoBase{
         long startTime;
         initLogic();
 
-        telemetry.addLine("HEREEE");
-        telemetry.update();
-
-
         waitForStart();
         startTime = SystemClock.elapsedRealtime();
 
-
-        // this will be the center positions
+        // Positions assuming center Skystone
         int firstSkystoneY = -2;
         int secondSkyStoneY = -20;
         int secondSkyStoneX = 65;
 
         Vision.Location skystoneLocation = vision.runDetection();
 
+        sleep(250);
+
         position2D.startOdometry();
 
+        // Change Skystone positions if detected left or right
         if (skystoneLocation == Vision.Location.LEFT){
             firstSkystoneY = -7;
             secondSkyStoneY = -27;
@@ -138,6 +136,8 @@ public class RedLeft extends AutoBase{
                 toDepositSecondStoneActions);
         robot.getClamp().setPosition(robot.CLAW_SERVO_RELEASED);
 
+        sleep(250);
+
         if (SystemClock.elapsedRealtime() - startTime < 25000){
             robot.splineMove(toThirdStone, 1,1, 0.5, 20,0,Math.toRadians(270),20,
                     toThirdStoneActions);
@@ -147,9 +147,7 @@ public class RedLeft extends AutoBase{
 //
 //            retractOuttakeWait();
             robot.splineMove(toParkAfterThirdStone, 1, 1, 0.3, 10, Math.toRadians(180), Math.toRadians(270), 5, toParkAfterThirdStoneActions);
-
-
-        }else {
+        } else {
             robot.splineMove(toPark, 1, 1, 0.3, 10, 0, Math.toRadians(270), 5, toParkActions);
         }
     }

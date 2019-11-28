@@ -20,15 +20,10 @@ public class BlueRight extends AutoBase{
         long startTime;
         initLogic();
 
-        telemetry.addLine("HEREEE");
-        telemetry.update();
-
-
         waitForStart();
         startTime = SystemClock.elapsedRealtime();
 
-
-        // this will be the center positions
+        // Positions assuming center Skystone
         int firstSkystoneY = 2;
         int secondSkyStoneY = 20;
         int secondSkyStoneX = 65;
@@ -123,6 +118,7 @@ public class BlueRight extends AutoBase{
         }};
 
         intake(true);
+
         robot.splineMove(toFirstStone,0.5,1, 0.5,3,0,0,30,
                 toFirstStoneActions);
 

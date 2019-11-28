@@ -84,7 +84,7 @@ public class MainAutonomous extends LinearOpMode {
                 startingPos = new Pose2d(new Vector2d(-51.648, -67.392), Math.toRadians(270));
             } else if (gamepad1.x) {
                 fieldPosition = FieldPosition.BLUE_QUARY;
-                startingPos = new Pose2d(new Vector2d(-51.648, 67.392), Math.toRadians(90));
+                startingPos = new Pose2d(new Vector2d(-34.752, 67.392), Math.toRadians(270));
             }
 
             telemetry.addData("Press gamepad1[start] to initiate detection", "...");
@@ -100,7 +100,6 @@ public class MainAutonomous extends LinearOpMode {
                 if (initialize) {
                     drive = new SampleMecanumDriveREV(hardwareMap);
                     path = new Path(drive, startingPos);
-
                     switch (fieldPosition) {
                         case RED_QUARY:
                             drivetrain.resetEncoders();
@@ -157,26 +156,6 @@ public class MainAutonomous extends LinearOpMode {
                         path.RedFoundation();
                         break;
                     case BLUE_QUARY:
-                        drivetrain.resetEncoders();
-                        //first to the left
-                        if (skystonePositions[0] == 1) {
-                            drivetrain.odometryStrafe(0.5, 5, false);
-
-                            intakeWithSeconds(1, 10);
-                            drivetrain.encoderDrive(power, 34);
-
-                            drivetrain.encoderDrive(-power, 25);
-
-
-                        }
-                        //second to the left
-                        else if (skystonePositions[0] == 2) {
-
-                        }
-                        //third to the left
-                        else {
-
-                        }
                         path.BlueQuary(skystonePositions);
                         break;
                     case BLUE_FOUNDATION:

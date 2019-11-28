@@ -47,6 +47,11 @@ public class Path {
     public void BlueQuary(int[] skystonePositions){
         switch(skystonePositions[0]){
             case 1:
+                builder = builder.splineTo(new Pose2d(new Vector2d(-28,9), Math.toRadians(270))).splineTo(new Pose2d(new Vector2d(-28,50), Math.toRadians(0)));
+                trajectory = builder.build();
+                drive.followTrajectory(trajectory);
+
+                drive.turnSync(-180);
                 break;
             case 2:
                 break;

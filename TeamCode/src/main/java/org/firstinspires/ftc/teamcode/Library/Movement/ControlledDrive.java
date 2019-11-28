@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassis;
 import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareOmniTest;
 import org.firstinspires.ftc.teamcode.Library.OmniWheel;
 
@@ -25,11 +26,11 @@ public class ControlledDrive {
     private Telemetry telemetry;
 
     HardwareMap hardwareMap;
-    HardwareOmniTest robot;
+    HardwareChassis robot;
 
     public ControlledDrive(HardwareMap hardwareMap, Telemetry telemetry) {
         this.hardwareMap = hardwareMap;
-        this.robot = new HardwareOmniTest(hardwareMap);
+        this.robot = new HardwareChassis(hardwareMap);
 
         this.telemetry = telemetry;
     }

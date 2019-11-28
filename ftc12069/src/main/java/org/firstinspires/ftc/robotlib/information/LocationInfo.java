@@ -67,6 +67,14 @@ public class LocationInfo {
     }
 
     /**
+     * Shortcut for translating robot location with "doubles"
+     * @see #translateRobotLocation(float, float, float)
+     */
+    public void translateRobotLocation(double dx, double dy, double dz) {
+        this.translateRobotLocation((float) dx, (float) dy, (float) dz);
+    }
+
+    /**
      * Translates the local robot location based on a course and distance
      * @param heading Heading/Yaw
      * @param distance Distance traveled

@@ -2,13 +2,26 @@ package org.firstinspires.ftc.robotlib.util;
 
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 
+import java.util.ArrayList;
+
 /**
- * Various generic methods used throughout the library
- * @deprecated
+ * Various generic helper methods used throughout the library
  */
 public class Helpers {
     /**
+     * Averages the doubles in an ArrayList
+     * @param arrayList list to average values
+     * @return the average of the values
+     */
+    public static double averageArrayList(ArrayList<Double> arrayList) {
+        double sum = 0;
+        for (int i = 0; i < arrayList.size(); i++) sum += arrayList.get(i);
+        return sum / arrayList.size();
+    }
+
+    /**
      * Retrieves a value from an OpenGLMatrix (OpenGLMatrix is stored in Column-Major)
+     * @deprecated
      * @param openGLMatrix OpenGLMatrix
      * @param row desired row
      * @param column desired column

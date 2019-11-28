@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.robotlib.autonomous;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -9,6 +10,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
@@ -22,6 +24,7 @@ import org.firstinspires.ftc.robotlib.navigation.Point3D;
 import org.firstinspires.ftc.robotlib.robot.MecanumHardwareMap;
 import org.firstinspires.ftc.robotlib.state.Alliance;
 import org.firstinspires.ftc.robotlib.navigation.Point;
+import org.firstinspires.ftc.robotlib.util.Helpers;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,6 +44,7 @@ public class AutonomousRobot {
     private VuforiaLocalizer vuforia;
     private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
     private LocationInfo locationInfo;
+    private ElapsedTime elapsedTime;
 
     private static final float mmPerInch = 25.4f;
     private static final float mmTargetHeight = (6) * mmPerInch;
@@ -71,11 +75,21 @@ public class AutonomousRobot {
     // Debug
     private WebserverManager webserverManager;
 
-    // Constants for Areas
+    // Constants for Areas/Points on the field
     private final Area blueBridge = new Area(new Point(2, 72), new Point(-2, 24));
     private final Area redBridge = new Area(new Point(2, -24), new Point(-2, -72));
-    private final Area buildingZone = new Area(new Point(72, 72), new Point(10, -72));
-    private final Area loadingZone = new Area(new Point(-72, 72), new Point(-10, -72));
+    public final Area buildingZone = new Area(new Point(72, 72), new Point(10, -72));
+    public final Area loadingZone = new Area(new Point(-72, 72), new Point(-10, -72));
+
+    // Foundation Points
+    private final Point blueFoundationMoveLocation = new Point(42, 24);
+    private final Point redFoundationMoveLocation = blueFoundationMoveLocation.opponentPoint();
+    private final Point blueFoundationFinalLocation = new Point(42, 67);
+    private final Point redFoundationFinalLocation = blueFoundationFinalLocation.opponentPoint();
+
+    // Loading Points
+    private final Point blueLoadingScanLocation = new Point(loadingZone.getMiddleX(), 40);
+    private final Point redLoadingScanLocation = blueLoadingScanLocation.opponentPoint();
 
     /**
      * Creates an instance of an autonomous robot manager
@@ -87,6 +101,22 @@ public class AutonomousRobot {
         this.hardware = new MecanumHardwareMap(hwMap);
         this.alliance = alliance;
         this.telemetry = telemetry;
+        this.elapsedTime = new ElapsedTime();
+        this.locationInfo = new LocationInfo();
+    }
+
+    /**
+     * Creates an instance of an autonomous robot manager
+     * @param hwMap FTC hardware map
+     * @param alliance Alliance Enum
+     * @param telemetry Logging
+     * @param elapsedTime Game Timer
+     */
+    public AutonomousRobot(HardwareMap hwMap, Alliance alliance, Telemetry telemetry, ElapsedTime elapsedTime) {
+        this.hardware = new MecanumHardwareMap(hwMap);
+        this.alliance = alliance;
+        this.telemetry = telemetry;
+        this.elapsedTime = elapsedTime;
         this.locationInfo = new LocationInfo();
     }
 
@@ -287,6 +317,20 @@ public class AutonomousRobot {
     }
 
     /**
+     * Checks if there is any visible Skystones
+     */
+    public boolean isSkystoneVisible() {
+        return this.getVisibleTrackable("Stone Target") != null;
+    }
+
+    /**
+     * Retrieves a tracked Skystone
+     */
+    public VuforiaTrackable getTrackedSkystone() {
+        return this.getVisibleTrackable("Stone Target");
+    }
+
+    /**
      * Stringifies visible targets
      * @return string separated by a comma
      */
@@ -449,15 +493,41 @@ public class AutonomousRobot {
     }
 
     /**
+     * Automatically repositions the foundation to the Building Site
+     * This assumes the foundation is in its initial position
+     */
+    public void repositionFoundation() {
+        Point3D robotPosition = this.getPosition();
+        if (alliance == Alliance.BLUE) {
+            this.moveToPoint(blueFoundationMoveLocation, 0.5, new OrientationInfo(90, 0.7));
+            // @TODO This is where we would move the servos
+            this.moveToPoint(blueFoundationFinalLocation, 0.5);
+        } else if (alliance == Alliance.RED) {
+            this.moveToPoint(redFoundationMoveLocation, 0.5, new OrientationInfo(-90, 0.7));
+            // This is where we would move the servos
+            this.moveToPoint(redFoundationFinalLocation, 0.5);
+        }
+    }
+
+    public void gotoLoadingZone() {
+        if (alliance == Alliance.BLUE) this.moveToPoint(blueLoadingScanLocation, 0.5, new OrientationInfo(90, 0.7));
+        else if (alliance == Alliance.RED) this.moveToPoint(redLoadingScanLocation, 0.5, new OrientationInfo(-90, 0.7));
+    }
+
+    /**
      * Moves the robot using a course, velocity, rotation, and distance
      * This adjusts some values, not including rotation
      * @param course Angle (in degrees) of movement
      * @param velocity New velocity (-1 to 1)
-     * @param rotation Double (between -1 and 1) -1 - clockwise 0 - no rotation 1 - counterclockwise (currently ignored as it is useless)
+     * @param rotation Double (between -1 and 1) -1 - clockwise 0 - no rotation 1 - counterclockwise
      * @param distance Distance (in inches) to execute this movement
      */
     public void simpleMove(double course, double velocity, double rotation, double distance) {
-        this.move(course, velocity, null, distance);
+        hardware.drivetrain.setCourse(Math.toRadians(course));
+        hardware.drivetrain.setRotation(rotation);
+        hardware.drivetrain.setVelocity(velocity);
+        hardware.drivetrain.setTargetPosition(distance * hardware.motorTicksPerInch);
+        hardware.drivetrain.position();
     }
 
     /**
@@ -479,31 +549,60 @@ public class AutonomousRobot {
         hardware.drivetrain.setVelocity(velocity);
         hardware.drivetrain.setTargetPosition(distance * hardware.motorTicksPerInch);
 
+        double startMillis = elapsedTime.milliseconds();
+        ArrayList<Double> xVelocities = new ArrayList<>();
+        ArrayList<Double> yVelocities = new ArrayList<>();
+
         if (orientationInfo != null) {
-            double initialOrientation = this.getOrientation2D();
+            double initialOrientation = this.getOrientation2DIMU();
 
             while (hardware.drivetrain.isPositioning()) {
-                if (this.getOrientation2D() - initialOrientation < orientationInfo.angle)
+                if (this.getOrientation2DIMU() - initialOrientation < orientationInfo.angle)
                     hardware.drivetrain.setRotation(orientationInfo.rotation);
             }
 
             // In case the robot did not finish turning by the time it reached its destination
             if (this.getOrientation2D() - initialOrientation < orientationInfo.angle)
                 this.turn(orientationInfo.angle - (this.getOrientation2D() - initialOrientation), orientationInfo.rotation);
+        } else {
+            while (hardware.drivetrain.isPositioning()) {
+                Velocity gyroVelocity = hardware.imu.getVelocity();
+                xVelocities.add(gyroVelocity.xVeloc);
+                yVelocities.add(gyroVelocity.yVeloc);
+            }
         }
 
-        if (this.isLocationKnown()) locationInfo.translateRobotLocation(this.getOrientation2D(), distance);
+        if (this.isLocationKnown()) {
+            locationInfo.translateRobotLocation(this.getOrientation2D(), distance);
+
+            /*
+                REV IMU Version
+                locationInfo.translateRobotLocation(Helpers.averageArrayList(xVelocities) * (elapsedTime.milliseconds() - startMillis), Helpers.averageArrayList(yVelocities) * (elapsedTime.milliseconds() - startMillis), 0.0);
+             */
+        }
     }
 
     /**
      * Moves the robot to a point
      * @param point point to move to
      * @param velocity New velocity
+     * @see #move(double, double, OrientationInfo, double)
      */
     public void moveToPoint(Point point, double velocity) {
-        Point newRobotPosition = new Point(point.x - 4, point.y);
-        this.simpleMove(this.getCourseFromRobot(point), velocity, 0, this.getDistanceFromRobot(newRobotPosition));
+        this.moveToPoint(point, velocity, null);
     }
+
+    /**
+     * Moves the robot to a point with orientation info
+     * @param point point to move to
+     * @param velocity New velocity
+     * @param orientationInfo The orientation to be at when moving to the point
+     */
+    public void moveToPoint(Point point, double velocity, OrientationInfo orientationInfo) {
+        Point newRobotPosition = new Point(point.x - 4, point.y);
+        this.move(this.getCourseFromRobot(point), velocity, orientationInfo, this.getDistanceFromRobot(newRobotPosition));
+    }
+
 
     /**
      * Moves the robot to a point
@@ -512,6 +611,23 @@ public class AutonomousRobot {
      * @param velocity New velocity
      */
     public void moveToPoint(Point robot, Point point, double velocity) {
-        this.simpleMove(this.getCourse(robot, point), velocity, 0, this.getDistance(robot, point));
+        this.move(this.getCourse(robot, point), velocity, null, this.getDistance(robot, point));
+    }
+
+    public void printTelemetry() {
+        telemetry.addData("Visible Target(s)", this.stringifyVisibleTargets());
+
+        if (this.isLocationKnown()) {
+            // express position (translation) of robot in inches.
+            Point3D position = this.getPosition();
+            telemetry.addData("Position (inch)", "{X, Y, Z} = %.1f, %.1f, %.1f", position.x, position.y, position.z);
+
+            // express the orientation of the robot in degrees.
+            Orientation orientation = this.getOrientation();
+            telemetry.addData("Orientation (deg)", "{Heading, Roll, Pitch} = %.0f, %.0f, %.0f", orientation.thirdAngle, orientation.firstAngle, orientation.secondAngle);
+        } else {
+            telemetry.addData("Visible Target", "None");
+        }
+        telemetry.update();
     }
 }

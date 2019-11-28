@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.robotlib.drivetrain;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotlib.motor.CalculatedVelocityMotor;
 
 /*
 Frame work for a mecanum/omni drive train, the implemented interfaces provide the additional variables and functions to make movement possible
@@ -17,6 +20,12 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     public double[] wheelTargetPositions = new double[4];
     private DcMotor.RunMode[] runModes = new DcMotor.RunMode[4];
     private final double[] wheelAngles;
+
+    HolonomicFourWheelDrivetrain(CalculatedVelocityMotor[] motorList, double[] wheelAngles)
+    {
+        super(motorList);
+        this.wheelAngles = wheelAngles;
+    }
 
     HolonomicFourWheelDrivetrain(DcMotor[] motorList, double[] wheelAngles)
     {
@@ -107,10 +116,16 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     @Override
     public void position()
     {
-        while (isPositioning())
-        {
-            updatePosition();
-        }
+        // Essentially mimics the physics equation Xf = Xi + Vi(t) + (1/2)a(t)^2 to solve for time but a = 0 and Xi-Xf = changeX which is what targetPosition is
+        double timeoutTime = (getTargetPosition()/getTicksPerIn())/(motorList[0].getMotorType().getAchieveableMaxTicksPerSecond()*getVelocity()) * 2;
+
+        // Creates a timer object so the robot will auto stop after 2 times the timeoutTime (seconds)
+        ElapsedTime timeoutTimer = new ElapsedTime();
+        timeoutTimer.reset();
+
+        // do runs the inner code before checking against the while conditional this is needed since on first call velocity will be 0
+        do { updatePosition(); }
+        while (isPositioning() && timeoutTimer.seconds() <= timeoutTime);
         finishPositioning();
     }
 
@@ -118,26 +133,16 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     @Override
     public boolean isPositioning()
     {
-        for (DcMotor motor : motorList)
+        for (CalculatedVelocityMotor motor : motorList)
         {
-            if (motor.isBusy()) { return true; }
+            if (motor.isEncoderBusy()) { return true; }
         }
         return false;
     }
 
     // auto function to implement an acceleration curve
     @Override
-    public void updatePosition()
-    {
-        for (DcMotor motor : motorList)
-        {
-            if (!motor.isBusy())
-            {
-                motor.setPower(0);
-                motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            }
-        }
-    }
+    public void updatePosition() { }
 
     // returns the motors to their prior state after resetting the encoders back to 0
     @Override

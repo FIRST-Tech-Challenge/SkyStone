@@ -83,26 +83,29 @@ public class SiBorgsMecanumTeleOp extends OpMode
         // gamepad 2 inputs
         toggleLimited.input(gamepad2.b);
         driverTwoBrakes.input(gamepad2.left_bumper);
-        // servo controls
+
         platformServoUp.input(gamepad2.dpad_up);
         platformServoDown.input(gamepad2.dpad_down);
         armServoUp.input(gamepad2.y);
         armServoDown.input(gamepad2.a);
 
+        // Basic toggles
         if (toggleLimited.onRelease())
         {
             robot.crane.getVerticalLimitedMotor().setLimited(!robot.crane.getVerticalLimitedMotor().isLimited());
             robot.crane.getHorizontalLimitedMotor().setLimited(!robot.crane.getHorizontalLimitedMotor().isLimited());
         }
 
-        robot.crane.setVerticalPower(gamepad2.left_stick_y);
-        robot.crane.setHorizontalPower(gamepad2.right_stick_y);
-
         if (platformServoUp.onRelease()) { robot.platformServo.setPosition(1); }
         else if (platformServoDown.onRelease()) { robot.platformServo.setPosition(0); }
 
         if (armServoUp.onRelease()) { robot.armGripSlide.setPosition(1); }
         else if (armServoDown.onRelease()) { robot.armGripSlide.setPosition(0); }
+
+        // Motor powers
+        robot.crane.setVerticalPower(gamepad2.left_stick_y);
+        robot.crane.setHorizontalPower(gamepad2.right_stick_y);
+
 
         //TELEMETRY
         robot.driverTelemetry();

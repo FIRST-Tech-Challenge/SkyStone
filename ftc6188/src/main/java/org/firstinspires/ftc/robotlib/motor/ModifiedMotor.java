@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
-public class ModifiedMotor implements DcMotor
+public abstract class ModifiedMotor implements DcMotor
 {
     protected DcMotor motor;
 

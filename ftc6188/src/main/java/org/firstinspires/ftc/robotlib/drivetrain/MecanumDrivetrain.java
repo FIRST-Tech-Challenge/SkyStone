@@ -2,24 +2,28 @@ package org.firstinspires.ftc.robotlib.drivetrain;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotlib.robot.SiBorgsMecanumRobot;
+import org.firstinspires.ftc.robotlib.motor.CalculatedVelocityMotor;
 
 /*
 The actual final drivetrain used for the robot, just changes the wheel angles and the wheel coefficient math to match our setup
  */
 public class MecanumDrivetrain extends HolonomicFourWheelDrivetrain
 {
+    public MecanumDrivetrain(CalculatedVelocityMotor[] motorList, double wheelRadius, double wheelToMotorRatio)
+    {
+        super(motorList, new double[] {-3*Math.PI/4, 3*Math.PI/4, -Math.PI/4, Math.PI/4});
+        setTicksPerIn(wheelRadius, wheelToMotorRatio);
+    }
+
     public MecanumDrivetrain(DcMotor[] motorList, double wheelRadius, double wheelToMotorRatio)
     {
         super(motorList, new double[] {-3*Math.PI/4, 3*Math.PI/4, -Math.PI/4, Math.PI/4});
         setTicksPerIn(wheelRadius, wheelToMotorRatio);
     }
 
-    public MecanumDrivetrain(DcMotor[] motorList)
-    {
-        this(motorList, 1, 1);
-    }
+    public MecanumDrivetrain(CalculatedVelocityMotor[] motorList) { this(motorList, 1, 1); }
+
+    public MecanumDrivetrain(DcMotor[] motorList) { this(motorList, 1, 1); }
 
     // this math returns a multiplier to the holonomic four wheel drivetrain, the math is very complex but it just works so it should'nt be changed
     @Override
@@ -36,25 +40,5 @@ public class MecanumDrivetrain extends HolonomicFourWheelDrivetrain
         this.setVelocity(velocity);
         this.setRotation(rotation);
         this.position();
-    }
-
-    // auto positions with a live telemetry output
-    public void autoPositionWithTelemetry(double course, double distance, double velocity, SiBorgsMecanumRobot robot)
-    {
-        this.setTargetPosition(distance * getTicksPerIn());
-        this.setCourse(course * (Math.PI/180));
-        this.setVelocity(velocity);
-        this.setRotation(0);
-
-        updatePosition();
-        while (robot.driveFrontRight.isEncoderBusy()
-                || robot.driveRearLeft.isEncoderBusy()
-                || robot.driveFrontLeft.isEncoderBusy()
-                || robot.driveRearRight.isEncoderBusy())
-        {
-            updatePosition();
-            robot.informationTelemetry("Driving");
-        }
-        finishPositioning();
     }
 }

@@ -17,11 +17,11 @@ import org.jetbrains.annotations.NotNull;
 public class SiBorgsMecanumRobot
 {
     // Drive motors
-    public CalculatedVelocityMotor driveFrontLeft;
-    public CalculatedVelocityMotor driveFrontRight;
-    public CalculatedVelocityMotor driveRearLeft;
-    public CalculatedVelocityMotor driveRearRight;
-    private DcMotor[] driveMotorList;
+    private CalculatedVelocityMotor driveFrontLeft;
+    private CalculatedVelocityMotor driveFrontRight;
+    private CalculatedVelocityMotor driveRearLeft;
+    private CalculatedVelocityMotor driveRearRight;
+    private CalculatedVelocityMotor[] driveMotorList;
 
     // Drive constants
     private static final double WHEEL_RADIUS_IN = 2;
@@ -62,23 +62,18 @@ public class SiBorgsMecanumRobot
         driveFrontRight = new CalculatedVelocityMotor(hwMap.get(DcMotor.class, "driveFrontRight"));
         driveRearRight = new CalculatedVelocityMotor(hwMap.get(DcMotor.class, "driveRearRight"));
         driveRearLeft = new CalculatedVelocityMotor(hwMap.get(DcMotor.class, "driveRearLeft"));
-        driveMotorList = new DcMotor[] {driveFrontLeft, driveFrontRight, driveRearLeft, driveRearRight};
+        driveMotorList = new CalculatedVelocityMotor[] {driveFrontLeft, driveFrontRight, driveRearLeft, driveRearRight};
 
+        // Since all drive motors are considered the same a loop is used
         for (DcMotor motor : driveMotorList)
         {
             motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+            motor.setDirection(DcMotorSimple.Direction.FORWARD);
         }
-
-        driveFrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        driveFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        driveRearRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        driveRearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        driveFrontRight.setDirection(DcMotor.Direction.FORWARD);
-        driveFrontLeft.setDirection(DcMotor.Direction.FORWARD);
-        driveRearRight.setDirection(DcMotor.Direction.FORWARD);
-        driveRearLeft.setDirection(DcMotor.Direction.FORWARD);
 
         // Arm motors init
         armVerticalSlide = new LimitedMotor(hwMap.get(DcMotor.class, "armVerticalSlide"), VERTICAL_LIMIT[0], VERTICAL_LIMIT[1]);
@@ -129,8 +124,8 @@ public class SiBorgsMecanumRobot
         telemetry.addData("Rotation\t(G1-LStick)", drivetrain.getRotation());
 
         telemetry.addData("> Arm Info", "Limited\t(G2-B)? " + armVerticalSlide.isLimited());
-        telemetry.addData("Vertical Position\t(G2-LStickY)", armVerticalSlide.getPosition());
-        telemetry.addData("Horizontal Position\t(G2-RStickY", armHorizontalSlide.getPosition());
+        telemetry.addData("Vertical Position\t(G2-LStickY)", armVerticalSlide.getCurrentPosition());
+        telemetry.addData("Horizontal Position\t(G2-RStickY", armHorizontalSlide.getCurrentPosition());
 
         telemetry.addData("> Servo Info", "-----");
         telemetry.addData("Platform Servos Pos\t(G2-DpadUp/DpadDown)", platformServo.getPosition());
@@ -165,17 +160,23 @@ public class SiBorgsMecanumRobot
         telemetry.addData("WheelPower RL", drivetrain.motorList[2].getPower());
         telemetry.addData("WheelPower RR", drivetrain.motorList[3].getPower());
 
-        telemetry.addData("> Motor Speed", "-----");
-        telemetry.addData("Speed FL", driveFrontLeft.getEncoderPerSecond());
-        telemetry.addData("Speed FR", driveFrontRight.getEncoderPerSecond());
-        telemetry.addData("Speed RL", driveRearLeft.getEncoderPerSecond());
-        telemetry.addData("Speed RR", driveRearLeft.getEncoderPerSecond());
+        telemetry.addData("> Motor Revs Per Sec", "-----");
+        telemetry.addData("Speed FL", drivetrain.motorList[0].getRevolutionsPerSecond());
+        telemetry.addData("Speed FR", drivetrain.motorList[1].getRevolutionsPerSecond());
+        telemetry.addData("Speed RL", drivetrain.motorList[2].getRevolutionsPerSecond());
+        telemetry.addData("Speed RR", drivetrain.motorList[3].getRevolutionsPerSecond());
 
         telemetry.addData("> Is Busy", "-----");
         telemetry.addData("FL", drivetrain.motorList[0].isBusy());
         telemetry.addData("FR", drivetrain.motorList[1].isBusy());
         telemetry.addData("RL", drivetrain.motorList[2].isBusy());
         telemetry.addData("RR", drivetrain.motorList[3].isBusy());
+
+        telemetry.addData("> Is Encoder Busy", "-----");
+        telemetry.addData("FL", drivetrain.motorList[0].isEncoderBusy());
+        telemetry.addData("FR", drivetrain.motorList[1].isEncoderBusy());
+        telemetry.addData("RL", drivetrain.motorList[2].isEncoderBusy());
+        telemetry.addData("RR", drivetrain.motorList[3].isEncoderBusy());
 
         telemetry.addData("> Drivetrain Info", "-----");
         telemetry.addData("Course Radians", drivetrain.getCourse());
@@ -193,7 +194,7 @@ public class SiBorgsMecanumRobot
         telemetry.update();
     }
 
-    // full information output plus an optional status
+    // Full information output plus an optional status
     public void informationTelemetry(String programStatus)
     {
         telemetry.addData("> Prog Status", programStatus);

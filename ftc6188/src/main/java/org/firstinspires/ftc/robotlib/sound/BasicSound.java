@@ -35,7 +35,7 @@ public class BasicSound implements Sound
             @Override
             public void run()
             {
-
+                if (playSound.output()) { playSound(); }
             }
         });
     }
@@ -49,14 +49,8 @@ public class BasicSound implements Sound
     public void toggleSound()
     {
         playSound.toggle();
-        if (playSound.output())
-        {
-            playSound();
-        }
-        else
-        {
-            stopSound();
-        }
+        if (playSound.output()) { playSound(); }
+        else { stopSound(); }
     }
 
     public void setSoundID(String identifier)

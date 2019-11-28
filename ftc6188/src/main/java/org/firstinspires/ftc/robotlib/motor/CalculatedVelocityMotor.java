@@ -10,29 +10,36 @@ public class CalculatedVelocityMotor extends ModifiedMotor
 
     // Storing values for velocity calculation
     private double lastEncoderCheck;
-    private double encoderCheck;
+    private double newEncoderCheck;
 
     public CalculatedVelocityMotor(DcMotor motor)
     {
         super(motor);
-        this.elapsedTime = new ElapsedTime(ElapsedTime.MILLIS_IN_NANO);
+        this.elapsedTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
         this.elapsedTime.startTime();
 
         lastEncoderCheck = 0;
-        encoderCheck = motor.getCurrentPosition();
+        newEncoderCheck = motor.getCurrentPosition();
     }
 
-    public double getEncoderPerSecond()
+    public double getRevolutionsPerSecond()
     {
-        lastEncoderCheck = encoderCheck;
-        encoderCheck = (double)motor.getCurrentPosition();
-        long encoderTime = elapsedTime.nanoseconds();
-
-        return (encoderCheck - lastEncoderCheck)/encoderTime;
+        return getEncoderTicksPerSecond()/this.getMotorType().getTicksPerRev();
     }
 
+    public double getEncoderTicksPerSecond()
+    {
+        lastEncoderCheck = newEncoderCheck;
+        newEncoderCheck = (double)motor.getCurrentPosition();
+        double encoderTime = elapsedTime.seconds();
+
+        elapsedTime.reset();
+        return (newEncoderCheck - lastEncoderCheck)/encoderTime;
+    }
+
+    // Returns true if the encoder is still running
     public boolean isEncoderBusy()
     {
-        return getEncoderPerSecond() != 0;
+        return getEncoderTicksPerSecond() != 0;
     }
 }

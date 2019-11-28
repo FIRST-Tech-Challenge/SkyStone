@@ -5,25 +5,27 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotlib.state.ToggleBoolean;
 
-// TODO: Convert to a DcMotor interface
-public class LimitedMotor
+public class LimitedMotor extends ModifiedMotor
 {
-    private DcMotor motor;
+    // Limiting variables
     private int upperLimit;
     private int lowerLimit;
-    private ToggleBoolean limited;
+    private boolean limited;
 
     public LimitedMotor(DcMotor motor, int lowerLimit, int upperLimit)
     {
-        this.motor = motor;
+        super(motor);
         this.upperLimit = upperLimit;
         this.lowerLimit = lowerLimit;
-        limited = new ToggleBoolean((motor.getMode() == DcMotor.RunMode.RUN_USING_ENCODER));
+        limited = false;
     }
 
+    public LimitedMotor(DcMotor motor) { this(motor, 0, 0); }
+
+    @Override
     public void setPower(double power)
     {
-        if (limited.output())
+        if (limited)
         {
             if ((power > 0 && motor.getCurrentPosition() >= upperLimit)
                     || (power < 0 && motor.getCurrentPosition() <= lowerLimit)) { motor.setPower(0); }
@@ -32,37 +34,22 @@ public class LimitedMotor
         else { motor.setPower(power); }
     }
 
-    public void setLimited(boolean input) { limited.input(input); }
+    public void setLimited(boolean limited) { this.limited = limited; }
 
-    public void setMode(DcMotor.RunMode runMode)
-    {
-        motor.setMode(runMode);
-        limited.input(runMode == DcMotor.RunMode.RUN_USING_ENCODER);
-    }
-
-    public void setZeroPowerBehavior(DcMotor.ZeroPowerBehavior zeroPowerBehavior) { motor.setZeroPowerBehavior(zeroPowerBehavior); }
-
-    public DcMotor.ZeroPowerBehavior getZeroPowerBehavior() { return motor.getZeroPowerBehavior(); }
-
-    public DcMotor getMotor() { return motor; }
-
-    public double getPower() { return motor.getPower(); }
-
-    public int getPosition() { return motor.getCurrentPosition(); }
+    public boolean isLimited() { return limited; }
 
     public void setUpperLimit(int upperLimit) { this.upperLimit = upperLimit; }
 
+    public int getUpperLimit() { return upperLimit; }
+
     public void setLowerLimit(int lowerLimit) { this.lowerLimit = lowerLimit; }
 
-    public void setDirection (DcMotorSimple.Direction direction) { motor.setDirection(direction); }
+    public int getLowerLimit() { return lowerLimit; }
 
-    public DcMotorSimple.Direction getDirection() { return motor.getDirection(); }
-
-    public int getUpperLimit() {return upperLimit;}
-
-    public int getLowerLimit() {return lowerLimit;}
-
-    public boolean isLimited() {return limited.output();}
-
-    public double getTicksPerRev() { return motor.getMotorType().getTicksPerRev(); }
+    @Override
+    public void setMode(DcMotor.RunMode runMode)
+    {
+        motor.setMode(runMode);
+        limited = runMode == DcMotor.RunMode.RUN_USING_ENCODER;
+    }
 }

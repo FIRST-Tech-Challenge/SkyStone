@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 public class HardwareChassis {
     //declare all motors as DcMotor to be used furthermore
@@ -15,6 +16,12 @@ public class HardwareChassis {
     public DcMotor motor_lift_left = null;
     public DcMotor motor_lift_right = null;
     public DcMotor motor_clamp = null;
+
+    public Servo servo_grab;
+    public Servo servo_2;
+    public Servo servo_3;
+    public Servo servo_4;
+
 
     // declare sensors
     public ColorSensor color_left = null;
@@ -42,7 +49,12 @@ public class HardwareChassis {
 
         this.motor_lift_left =   hwMap.get(DcMotor.class, "hub2_motorport0");
         this.motor_lift_right =  hwMap.get(DcMotor.class, "hub2_motorport1");
-        this.motor_clamp =       hwMap.get(DcMotor.class, "hub2_motorport2");
+
+        this.servo_grab = hwMap.get(Servo.class, "hub1_servoport0");
+        this.servo_2 = hwMap.get(Servo.class, "hub1_servoport1");
+        this.servo_3 = hwMap.get(Servo.class, "hub1_servoport2");
+        this.servo_4 = hwMap.get(Servo.class, "hub1_servoport3");
+
 
         //set all motors to 0 to stop possible errors caused by not doing this.
         this.motor_front_right.setPower(0);

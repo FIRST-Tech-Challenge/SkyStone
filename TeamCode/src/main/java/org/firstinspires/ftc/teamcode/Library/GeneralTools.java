@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Library;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassis;
 
@@ -9,6 +10,11 @@ public class GeneralTools {
     public GeneralTools(LinearOpMode opMode) {
         this.opMode = opMode;
     }
+
+    HardwareMap hardwareMap;
+
+    public HardwareChassis hardwareChassis = new HardwareChassis(hardwareMap);
+
 
     /**
      * pauses the program for additional seconds
@@ -24,8 +30,11 @@ public class GeneralTools {
      * set claw to close
      */
     public void grabSkysstone () {
-        servo_1.setPosition(0.6);
-        servo_1.setPosition(0.1);
+        hardwareChassis.servo_grab.setPosition(0.6);
+    }
+
+    public void openClamp () {
+        hardwareChassis.servo_2.setPosition(0.1);
     }
 }
 

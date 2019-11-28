@@ -62,8 +62,8 @@ public class Robot {
     private Servo rightFoundation;
 
     // Outtake Slide Positions
-    public final double OUTTAKE_SLIDE_EXTENDED = .25;
-    public final double OUTTAKE_SLIDE_RETRACTED = .75;
+    public final double OUTTAKE_SLIDE_EXTENDED = .2;
+    public final double OUTTAKE_SLIDE_RETRACTED = .7;
 
     // Outtake Clamp Positions
     public final double CLAW_SERVO_CLAMPED = .45;
@@ -236,6 +236,18 @@ public class Robot {
 //    public void finalTurn(double targetHeading, double turnSpeed) {
 //        finalTurn(targetHeading, turnSpeed, 2500);
 //    }
+
+    public void disableOuttakeExtender(){
+//        outtakeExtender.getController().pwmDisable();
+//        clampPivot.getController().pwmEnable();
+//        clamp.getController().pwmEnable();
+    }
+
+    public void enableOuttakeExtender(){
+//        outtakeExtender.getController().pwmEnable();
+//        clampPivot.getController().pwmEnable();
+//        clamp.getController().pwmEnable();
+    }
 
     /**
      * crappy finalTurn, random deceleration

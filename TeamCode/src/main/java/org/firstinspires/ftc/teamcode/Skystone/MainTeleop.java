@@ -180,6 +180,8 @@ public class MainTeleop extends LinearOpMode {
             is90 = false;
             outtakeExecutionTime = currentTime;
         } else if (gamepad2.b) { // Deposit and Reset
+            robot.enableOuttakeExtender();
+            robot.getOuttakeExtender().setPosition(robot.OUTTAKE_SLIDE_EXTENDED);
             robot.getIntakePusher().setPosition(robot.PUSHER_RETRACTED); // Reset intake pusher
             isRetract = true;
             isExtend = false;
@@ -215,6 +217,7 @@ public class MainTeleop extends LinearOpMode {
         if(currentTime-outtakeExecutionTime >= 1150 && isExtend && !is90){
             robot.getClampPivot().setPosition(robot.OUTTAKE_PIVOT_EXTENDED);
             isExtend = false;
+            robot.disableOuttakeExtender();
         }
 
         //pivot 90
@@ -222,6 +225,7 @@ public class MainTeleop extends LinearOpMode {
             robot.getClampPivot().setPosition(robot.OUTTAKE_PIVOT_90);
             isExtend = false;
             is90 = false;
+            robot.disableOuttakeExtender();
         }
 
         //retract
@@ -245,7 +249,7 @@ public class MainTeleop extends LinearOpMode {
     }
 
     private void foundationLogic() {
-        if (gamepad2.left_bumper) {
+        if (gamepad1.left_bumper) {
             if (foundationToggle && !resetfoundation) {
                 foundationToggle = false;
             } else if (!foundationToggle && !resetfoundation){

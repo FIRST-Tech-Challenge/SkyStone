@@ -35,13 +35,14 @@ public class HardwareChassis {
         //// MOTORS
 
         //initialize motors with directs to Expansion Hub
-        this.motor_front_left =  hwMap.get(DcMotor.class, "h1_m0");
-        this.motor_rear_right =  hwMap.get(DcMotor.class, "h1_m1");
-        this.motor_front_right = hwMap.get(DcMotor.class, "h1_m2");
-        this.motor_rear_left =   hwMap.get(DcMotor.class, "h1_m3");
-        this.motor_lift_left =   hwMap.get(DcMotor.class, "h2_m0");
-        this.motor_lift_right =  hwMap.get(DcMotor.class, "h2_m1");
-        this.motor_clamp =       hwMap.get(DcMotor.class, "h2_m2");
+        this.motor_front_left =  hwMap.get(DcMotor.class, "hub1_motorport2");
+        this.motor_rear_right =  hwMap.get(DcMotor.class, "hub1_motorport1");
+        this.motor_front_right = hwMap.get(DcMotor.class, "hub1_motorport0");
+        this.motor_rear_left =   hwMap.get(DcMotor.class, "hub1_motorport3");
+
+        this.motor_lift_left =   hwMap.get(DcMotor.class, "hub2_motorport0");
+        this.motor_lift_right =  hwMap.get(DcMotor.class, "hub2_motorport1");
+        this.motor_clamp =       hwMap.get(DcMotor.class, "hub2_motorport2");
 
         //set all motors to 0 to stop possible errors caused by not doing this.
         this.motor_front_right.setPower(0);
@@ -71,11 +72,11 @@ public class HardwareChassis {
         this.motor_clamp.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //// SENSORS
-        this.color_left =    hwMap.get(ColorSensor.class, "h1_s0");
-        this.color_right =   hwMap.get(ColorSensor.class, "h2_s0");
+        //this.color_left =    hwMap.get(ColorSensor.class, "h1_s0");
+        //this.color_right =   hwMap.get(ColorSensor.class, "h2_s0");
 
-        this.touch_left =    hwMap.get(DigitalChannel.class, "h2_s2");
-        this.touch_right =   hwMap.get(DigitalChannel.class, "h2_s2");
+        //this.touch_left =    hwMap.get(DigitalChannel.class, "h2_s2");
+        //this.touch_right =   hwMap.get(DigitalChannel.class, "h2_s2");
 
     }
 }

@@ -1,10 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
-import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -24,11 +21,17 @@ import java.util.List;
  */
 public class HardwareOmnibot extends HardwareOmnibotDrive
 {
-    public enum AlignmentSide {
+    public enum RobotSide {
         FRONT,
         BACK,
         RIGHT,
         LEFT
+    }
+
+    public enum ControlledAcceleration {
+        IDLE,
+        ACCELERATING,
+        STOPPING
     }
 
     public enum GrabFoundationActivity {
@@ -377,6 +380,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public EjectActivity ejectState = EjectActivity.IDLE;
     public AlignActivity alignState = AlignActivity.IDLE;
     public GrabFoundationActivity grabState = GrabFoundationActivity.IDLE;
+    public ControlledAcceleration accelerationState = ControlledAcceleration.IDLE;
     public CapstoneActivity capstoneState = CapstoneActivity.IDLE;
     private boolean fingersUp = true;
     private boolean clawPinched = false;
@@ -406,11 +410,14 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 	protected double backRightTofValue = 0.0;
 	protected double backLeftTofValue = 0.0;
 	protected double backTofValue = 0.0;
+	protected double accelerationFinal = 0.0;
+	protected double accelerationCurrent = 0.0;
+	protected RobotSide accelerationSide = RobotSide.FRONT;
 
     // Keeps the sensor from initializing more than once.
     public static boolean tofInitialized = false;
     // We can set this in Auto
-    protected static AlignmentSide stackFromSide = AlignmentSide.RIGHT;
+    protected static RobotSide stackFromSide = RobotSide.RIGHT;
 
     /* Constructor */
     public HardwareOmnibot(){
@@ -774,7 +781,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                     stowState = StowActivity.RAISING_TO_ROTATE;
 					// Add to our tower height for next lift.
 					// Get the distance from the wall for alignment.
-					if(stackFromSide == AlignmentSide.RIGHT)
+					if(stackFromSide == RobotSide.RIGHT)
                     {
                         stackWallDistance = readRightTof();
                     } else {
@@ -831,7 +838,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         return maxExtended;
     }
 
-    public boolean distanceFromWall(AlignmentSide side, double distance, double driveSpeed, double error) {
+    public boolean distanceFromWall(RobotSide side, double distance, double driveSpeed, double error) {
         boolean targetReached = false;
         double wallDistance = 0;
         double delta;
@@ -1043,11 +1050,70 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         }
     }
 
-    public void startGrabbing() {
+    public boolean startAccelerating(double finalSpeed, RobotSide driveDirection) {
+        boolean isAccelerating;
+        if (accelerationState == ControlledAcceleration.IDLE) {
+            isAccelerating = true;
+            accelerationState = ControlledAcceleration.ACCELERATING;
+            accelerationFinal = finalSpeed;
+            accelerationSide = driveDirection;
+            accelerationCurrent = 0.0;
+        } else {
+            isAccelerating = true;
+        }
+
+        return isAccelerating;
+    }
+
+    public void stopAccelerating() {
+        if (accelerationState != ControlledAcceleration.IDLE) {
+            accelerationState = ControlledAcceleration.IDLE;
+            setAllDriveZero();
+        }
+    }
+
+    public void performAcceleration() {
+        switch(accelerationState) {
+            case ACCELERATING:
+                accelerationCurrent += MIN_DRIVE_RATE;
+                if(accelerationCurrent > accelerationFinal) {
+                    accelerationCurrent = accelerationFinal;
+                    accelerationState = ControlledAcceleration.IDLE;
+                }
+                switch(accelerationSide) {
+                    case LEFT:
+                        drive(-accelerationCurrent, 0, 0, -readIMU());
+                        break;
+                    case RIGHT:
+                        drive(accelerationCurrent, 0, 0, -readIMU());
+                        break;
+                    case BACK:
+                        drive(0, -accelerationCurrent, 0, -readIMU());
+                        break;
+                    case FRONT:
+                        drive(0, accelerationCurrent, 0, -readIMU());
+                        break;
+                }
+                break;
+            case STOPPING:
+                setAllDriveZero();
+                accelerationState = ControlledAcceleration.IDLE;
+            case IDLE:
+                break;
+        }
+    }
+
+    public boolean startGrabbing() {
+        boolean isGrabbing;
         if (grabState == GrabFoundationActivity.IDLE) {
+            isGrabbing = true;
             grabState = GrabFoundationActivity.BACKING_UP;
             gotoRearTarget(0.3, 0.1);
+        } else {
+            isGrabbing = true;
         }
+
+        return isGrabbing;
     }
 
     public void stopGrabbing() {

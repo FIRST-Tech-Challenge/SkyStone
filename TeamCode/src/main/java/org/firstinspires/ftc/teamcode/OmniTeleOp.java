@@ -4,12 +4,10 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.openftc.revextensions2.ExpansionHubEx;
-
 import static java.lang.Math.*;
 
 /**
- * Created by Ethan on 12/2/2016.
+ * Created by 12090 STEM Punk.
  */
 
 @TeleOp(name="Omni: TeleOp", group ="TeleOp")
@@ -34,6 +32,12 @@ public class OmniTeleOp extends OpMode {
         STOW
     }
 
+    public enum FoundationActivities {
+        GRAB,
+        MOVE,
+        STOP
+    }
+
     @Override
     public void init() {
         telemetry.addLine("Calling robot.init");
@@ -47,6 +51,7 @@ public class OmniTeleOp extends OpMode {
 
     private CapstoneState capstoneState = CapstoneState.ALIGN;
     private CompleteActivities completeActivities = CompleteActivities.STOW;
+    private FoundationActivities removeFoundation = FoundationActivities.GRAB;
     private double driverAngle = 0.0;
     private final double MAX_SPEED = 1.0;
     private final double MAX_SPIN = 1.0;
@@ -155,10 +160,20 @@ public class OmniTeleOp extends OpMode {
         if(!bHeld && bPressed)
         {
             bHeld = true;
-            if(robot.grabState == HardwareOmnibot.GrabFoundationActivity.IDLE) {
-                robot.startGrabbing();
-            } else {
-                robot.stopGrabbing();
+            switch(removeFoundation) {
+                case GRAB:
+                    if(robot.startGrabbing()) {
+                        removeFoundation = FoundationActivities.MOVE;
+                    }
+                    break;
+                case MOVE:
+                    if (robot.startAccelerating(1.0, HardwareOmnibot.RobotSide.FRONT)) {
+                        removeFoundation = FoundationActivities.STOP;
+                    }
+                    break;
+                case STOP:
+                    robot.setAllDriveZero();
+                    break;
             }
 //            if(robot.alignState == HardwareOmnibot.AlignActivity.IDLE) {
 //                robot.startAligning();
@@ -287,7 +302,7 @@ public class OmniTeleOp extends OpMode {
         if(!left2Held && left2Pressed)
         {
             left2Held = true;
-            robot.stackFromSide = HardwareOmnibot.AlignmentSide.LEFT;
+            robot.stackFromSide = HardwareOmnibot.RobotSide.LEFT;
         } else if (!left2Pressed) {
             left2Held = false;
         }
@@ -295,7 +310,7 @@ public class OmniTeleOp extends OpMode {
         if(!right2Held && right2Pressed)
         {
             right2Held = true;
-            robot.stackFromSide = HardwareOmnibot.AlignmentSide.RIGHT;
+            robot.stackFromSide = HardwareOmnibot.RobotSide.RIGHT;
         } else if (!right2Pressed) {
             right2Held = false;
         }
@@ -349,8 +364,10 @@ public class OmniTeleOp extends OpMode {
         robot.performAligning();
         robot.performCapstone();
         robot.performGrabbing();
+        robot.performAligning();
 
-        if((robot.alignState == HardwareOmnibot.AlignActivity.IDLE) && (robot.grabState == HardwareOmnibot.GrabFoundationActivity.IDLE)){
+        if((robot.alignState == HardwareOmnibot.AlignActivity.IDLE) && (robot.grabState == HardwareOmnibot.GrabFoundationActivity.IDLE) &&
+                (robot.accelerationState == HardwareOmnibot.ControlledAcceleration.IDLE)){
             robot.drive(speedMultiplier * xPower, speedMultiplier * yPower, spinMultiplier * spin, driverAngle);
         }
 
@@ -358,6 +375,7 @@ public class OmniTeleOp extends OpMode {
         telemetry.addData("Intake Target: ", robot.intakeTargetPosition);
         telemetry.addData("Stack Distance: ", robot.stackWallDistance);
         telemetry.addData("Offset Angle: ", driverAngle);
+        telemetry.addData("Acceleration State: ", robot.accelerationState);
         telemetry.addData("Align State:", robot.alignState);
         telemetry.addData("Grab State: ", robot.grabState);
         telemetry.addData("Left Range: ", robot.leftTofValue);

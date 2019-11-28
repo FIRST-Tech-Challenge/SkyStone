@@ -362,8 +362,8 @@ public class Robot {
             intakeLeft.setPower(1);
             intakeRight.setPower(1);
         } else {
-            intakeLeft.setPower(0);
-            intakeRight.setPower(0);
+            intakeLeft.setPower(-1);
+            intakeRight.setPower(-1);
         }
     }
 
@@ -612,11 +612,11 @@ public class Robot {
                     outtakeExtender.setPosition(OUTTAKE_SLIDE_EXTENDED);
                 }
 
-                if(currentTime-extendOuttakeStartTime >= 1250 ){
+                if(currentTime-extendOuttakeStartTime >= 1500 ){
                     clampPivot.setPosition(OUTTAKE_PIVOT_90);
                 }
 
-                if(currentTime-extendOuttakeStartTime >=1650){
+                if(currentTime-extendOuttakeStartTime >=2200){
                     isExendingOuttake = false;
                     hasExtendedOuttake = false;
                 }

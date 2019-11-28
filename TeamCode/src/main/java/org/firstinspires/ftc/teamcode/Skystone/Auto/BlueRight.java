@@ -63,7 +63,7 @@ public class BlueRight extends AutoBase{
                 {35,-90,-10,0},
                 {12,-80,-10,0},
                 {28,-60,10,0},
-                {28,-30,10,0},
+                {27,-30,10,0},
                 {32,secondSkyStoneY - 5,10,0},
                 {secondSkyStoneX,secondSkyStoneY,30,0}};
         HashMap<Point,Robot.Actions> toSecondStoneActions = new HashMap<Point,Robot.Actions>() {{
@@ -79,16 +79,17 @@ public class BlueRight extends AutoBase{
                 {38,-30,5,10},
                 {40,-77,5,-10}};
         HashMap<Point,Robot.Actions> toDepositSecondStoneActions = new HashMap<Point,Robot.Actions>() {{
-            put(new Point(34,-32), Robot.Actions.EXTEND_OUTTAKE);
-            put(new Point(30,-30), Robot.Actions.STOP_INTAKE);
+            put(new Point(34,-36), Robot.Actions.EXTEND_OUTTAKE);
+            put(new Point(30,0), Robot.Actions.STOP_INTAKE);
+            put(new Point(30,-10), Robot.Actions.START_INTAKE);
         }};
 
         double[][] toPark = {
                 {15,-60,10,0},
-                {28,-50,10,0},
+                {32,-50,10,0},
                 {35,-30,0,10}};
         HashMap<Point,Robot.Actions> toParkActions = new HashMap<Point,Robot.Actions>(){{
-            put(new Point(16,-70), Robot.Actions.RETRACT_OUTTAKE);
+            put(new Point(40,-74), Robot.Actions.RETRACT_OUTTAKE);
         }};
 
         double[][] toThirdStone = {
@@ -98,7 +99,7 @@ public class BlueRight extends AutoBase{
                 {52,10, 10,0},
                 {55,20, 30,0}};
         HashMap<Point,Robot.Actions> toThirdStoneActions = new HashMap<Point,Robot.Actions>() {{
-            put(new Point(34,-74), Robot.Actions.RETRACT_OUTTAKE);
+            put(new Point(40,-74), Robot.Actions.RETRACT_OUTTAKE);
             put(new Point(28,-30), Robot.Actions.START_INTAKE);
         }};
 
@@ -140,7 +141,7 @@ public class BlueRight extends AutoBase{
         sleep(250);
 
         if (SystemClock.elapsedRealtime() - startTime < 23000){
-            robot.splineMove(toThirdStone, 0.5,1, 0.5, 20,0,Math.toRadians(90),20,
+            robot.splineMove(toThirdStone, 0.7,1, 0.5, 20,0,Math.toRadians(90),20,
                     toThirdStoneActions);
 
 //            robot.splineMove(toDepositThirdStone, 1, 1, 0.5, 20, Math.toRadians(180), Math.toRadians(270), 10,
@@ -151,7 +152,7 @@ public class BlueRight extends AutoBase{
 
 
         }else {
-            robot.splineMove(toPark, 1, 1, 0.3, 10, 0, Math.toRadians(90), 5, toParkActions);
+            robot.splineMove(toPark, 0.7, 1, 0.3, 10, 0, Math.toRadians(90), 5, toParkActions);
         }
     }
 }

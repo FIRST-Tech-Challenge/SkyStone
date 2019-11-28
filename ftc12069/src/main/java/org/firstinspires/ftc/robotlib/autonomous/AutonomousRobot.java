@@ -16,7 +16,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import org.firstinspires.ftc.robotlib.Constants;
-import org.firstinspires.ftc.robotlib.debug.WebserverManager;
+import org.firstinspires.ftc.robotlib.debug.DebugServer;
 import org.firstinspires.ftc.robotlib.navigation.Area;
 import org.firstinspires.ftc.robotlib.information.LocationInfo;
 import org.firstinspires.ftc.robotlib.information.OrientationInfo;
@@ -24,7 +24,6 @@ import org.firstinspires.ftc.robotlib.navigation.Point3D;
 import org.firstinspires.ftc.robotlib.robot.MecanumHardwareMap;
 import org.firstinspires.ftc.robotlib.state.Alliance;
 import org.firstinspires.ftc.robotlib.navigation.Point;
-import org.firstinspires.ftc.robotlib.util.Helpers;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -73,7 +72,7 @@ public class AutonomousRobot {
     public List<VuforiaTrackable> visibleTrackables;
 
     // Debug
-    private WebserverManager webserverManager;
+    public DebugServer debugServer;
 
     // Constants for Areas/Points on the field
     private final Area blueBridge = new Area(new Point(2, 72), new Point(-2, 24));
@@ -268,12 +267,13 @@ public class AutonomousRobot {
 
         visibleTrackables = new ArrayList<>();
 
-        //this.startDebugServer();
+        this.startDebugServer();
     }
 
     public void startDebugServer() {
         try {
-            webserverManager = new WebserverManager();
+            debugServer = new DebugServer(this.hardware.internalHardwareMap, this.vuforia);
+            debugServer.init();
         } catch (IOException e) {
             telemetry.addData("DEBUG FAIL", "Debug webserver failed to start");
             telemetry.update();

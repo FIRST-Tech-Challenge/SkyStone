@@ -296,7 +296,7 @@ public abstract class ChassisStandard extends OpMode {
 
     public void dropFrontFinger() {
         if (useFingers) {
-            angleHand = 0.0;
+            ffAngleHand = 0.0;
             fingerFront.setPosition(ffAngleHand);
 
         }
@@ -304,14 +304,14 @@ public abstract class ChassisStandard extends OpMode {
 
     public void raiseFrontFinger() {
         if (useFingers) {
-            angleHand = 1.0;
+            ffAngleHand = 1.0;
             fingerFront.setPosition(ffAngleHand);
         }
     }
     
     public void dropBackFinger() {
         if (useFingers) {
-            angleHand = 0.0;
+            bfAngleHand = 0.0;
             fingerBack.setPosition(bfAngleHand);
 
         }
@@ -319,7 +319,7 @@ public abstract class ChassisStandard extends OpMode {
 
     public void raiseBackFinger() {
         if (useFingers) {
-            angleHand = 1.0;
+            bfAngleHand = 1.0;
             fingerBack.setPosition(bfAngleHand);
         }
     }
@@ -327,7 +327,7 @@ public abstract class ChassisStandard extends OpMode {
 
     public void dropCrab() {
         if (useCrab) {
-            angleHand = 0.0;
+            angleHand = 0.5;
             crab.setPosition(angleHand);
         }
     }
@@ -480,7 +480,6 @@ public abstract class ChassisStandard extends OpMode {
             Thread.sleep(milliseconds);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-
         }
     }
 

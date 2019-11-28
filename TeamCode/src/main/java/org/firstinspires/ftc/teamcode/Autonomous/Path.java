@@ -27,7 +27,8 @@ public class Path {
     public void RedQuary(int[] skystonePositions){
         switch(skystonePositions[0]){
             case 1:
-                builder = builder.splineTo(new Pose2d(new Vector2d(-49.728, 37.824), Math.toRadians(-90)));
+                builder = builder.splineTo(new Pose2d(new Vector2d(-49.728, 37.824), Math.toRadians(0)))
+                        .lineTo(new Vector2d(-49.728, 24.576));
                 drive.turnSync(Math.toRadians(90));
                 break;
             case 2:

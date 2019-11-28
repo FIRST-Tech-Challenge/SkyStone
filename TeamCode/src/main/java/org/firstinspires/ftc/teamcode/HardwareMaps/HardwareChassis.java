@@ -35,10 +35,11 @@ public class HardwareChassis {
         //// MOTORS
 
         //initialize motors with directs to Expansion Hub
-        this.motor_front_left =  hwMap.get(DcMotor.class, "hub1_motorport0");
+        this.motor_front_left =  hwMap.get(DcMotor.class, "hub1_motorport2");
         this.motor_rear_right =  hwMap.get(DcMotor.class, "hub1_motorport1");
-        this.motor_front_right = hwMap.get(DcMotor.class, "hub1_motorport2");
+        this.motor_front_right = hwMap.get(DcMotor.class, "hub1_motorport0");
         this.motor_rear_left =   hwMap.get(DcMotor.class, "hub1_motorport3");
+
         this.motor_lift_left =   hwMap.get(DcMotor.class, "hub2_motorport0");
         this.motor_lift_right =  hwMap.get(DcMotor.class, "hub2_motorport1");
         this.motor_clamp =       hwMap.get(DcMotor.class, "hub2_motorport2");

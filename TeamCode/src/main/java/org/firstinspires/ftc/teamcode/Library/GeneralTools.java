@@ -19,5 +19,13 @@ public class GeneralTools {
         while ((System.currentTimeMillis() < time + timeStop) && !opMode.isStopRequested()) {}
     }
 
+    public static double calculateControllerSmooting(double controllerValue, double smootingFactor) {
+        if (controllerValue > 0) {
+            return -smootingFactor*Math.exp(Math.log((smootingFactor-1)/smootingFactor)*controllerValue)+smootingFactor;
+        } else {
+            return -(-smootingFactor*Math.exp(Math.log((smootingFactor-1)/smootingFactor)*-controllerValue)+smootingFactor);
+        }
+
+    }
 }
 

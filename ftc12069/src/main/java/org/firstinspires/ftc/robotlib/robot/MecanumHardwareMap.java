@@ -26,7 +26,7 @@ public class MecanumHardwareMap
     private DcMotor intakeRight;
 
     // Servos in Mecanum Robot
-    private Servo servoClaw;
+    //private Servo servoClaw;
 
     // Camera
     public WebcamName webcamName;
@@ -58,8 +58,8 @@ public class MecanumHardwareMap
         driveRearRight = hwMap.get(DcMotor.class, "driveRearRight");
         driveRearLeft = hwMap.get(DcMotor.class, "driveRearLeft");
 
-        //intakeLeft = hwMap.get(DcMotor.class, "intakeLeft");
-        //intakeRight = hwMap.get(DcMotor.class, "intakeRight");
+        intakeLeft = hwMap.get(DcMotor.class, "intakeLeft");
+        intakeRight = hwMap.get(DcMotor.class, "intakeRight");
 
         motorList = new DcMotor[]{driveFrontLeft, driveFrontRight, driveRearLeft, driveRearRight};
 
@@ -78,13 +78,13 @@ public class MecanumHardwareMap
         driveRearRight.setDirection(DcMotorSimple.Direction.FORWARD);
         driveRearLeft.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        //intakeLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        //intakeRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        intakeLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        intakeRight.setDirection(DcMotorSimple.Direction.FORWARD);
 
         //servoClaw = hwMap.get(Servo.class, "servoClaw");
         //servoClaw.setDirection(Servo.Direction.FORWARD);
 
-        //webcamName = hwMap.get(WebcamName.class, "webcam");
+        webcamName = hwMap.get(WebcamName.class, "webcam");
 
         BNO055IMU.Parameters imuParameters = new BNO055IMU.Parameters();
         imuParameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
@@ -98,7 +98,7 @@ public class MecanumHardwareMap
 
         drivetrain = new MecanumDrivetrain(motorList);
         //servoManager = new ServoManager(new Servo[]{servoClaw});
-        //intakeMotorManager = new MotorManager(new DcMotor[]{intakeLeft, intakeRight});
+        intakeMotorManager = new MotorManager(new DcMotor[]{intakeLeft, intakeRight});
         motorTicksPerInch = drivetrain.getTicksPerInch(wheelRadius, wheelToMotorRatio);
     }
 }

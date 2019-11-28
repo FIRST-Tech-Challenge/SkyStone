@@ -37,10 +37,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotlib.autonomous.AutonomousRobot;
 import org.firstinspires.ftc.robotlib.information.OrientationInfo;
+import org.firstinspires.ftc.robotlib.navigation.Point;
 import org.firstinspires.ftc.robotlib.navigation.Point3D;
 import org.firstinspires.ftc.robotlib.state.Alliance;
 
-public class MecanumAutonomous {
+class MecanumAutonomous {
     private Alliance alliance;
     private Telemetry telemetry;
     private HardwareMap hardwareMap;
@@ -66,7 +67,7 @@ public class MecanumAutonomous {
      */
     void init() {
         telemetry.addData("Status", "Initialized");
-        robot = new AutonomousRobot(this.hardwareMap, alliance, telemetry);
+        robot = new AutonomousRobot(this.hardwareMap, alliance, telemetry, elapsedTime);
         robot.init();
     }
 
@@ -93,54 +94,40 @@ public class MecanumAutonomous {
      * @return true - keep looping | false - stop looping
      */
     boolean loop() {
-        /*if (elapsedTime.seconds() > 25) {
-            robot.parkUnderBridge();
-            return false;
-        }*/
-
+        // Backup so we can scan a trackable and get our initial location
+        robot.move(0, 0.7, null, 10);
         robot.scan();
-
-        telemetry.addData("Elapsed Time", elapsedTime.seconds() + " seconds");
-
-        // Provide feedback as to where the robot is located (if we know).
-        if (robot.isTrackableVisible()) {
-            if (robot.isLocationKnown()) {
-                // express position (translation) of robot in inches.
-                Point3D position = robot.getPosition();
-                telemetry.addData("Position (inch)", "{X, Y, Z} = %.1f, %.1f, %.1f", position.x, position.y, position.z);
-
-                // express the orientation of the robot in degrees.
-                Orientation orientation = robot.getOrientation();
-                telemetry.addData("Orientation (deg)", "{Heading, Roll, Pitch} = %.0f, %.0f, %.0f", orientation.thirdAngle, orientation.firstAngle, orientation.secondAngle);
-            }
-
-            telemetry.addData("Visible Target(s)", robot.stringifyVisibleTargets());
-
-            // Move to stone if visible
-            VuforiaTrackable trackedStone = robot.getVisibleTrackable("Stone Target");
-            if (trackedStone != null) {
-                Point3D positionFromSkystone = robot.getPositionFromSkystone();
-                Point3D stonePoint3D = new Point3D(trackedStone.getLocation());
-                telemetry.addData("Position relative to Skystone", "{X, Y, Z} = %.0f, %.0f, %.0f", positionFromSkystone.x, positionFromSkystone.y, positionFromSkystone.z);
-                robot.simpleMove(robot.getCourse(positionFromSkystone, stonePoint3D), 0.5, 0, robot.getDistance(positionFromSkystone, stonePoint3D));
-                //robot.hardware.intakeMotorManager.setMotorsVelocity(1.0);
-            }
-        } else {
-            telemetry.addData("Visible Target", "None");
+        if (!robot.isTrackableVisible() || !robot.isLocationKnown()) {
+            telemetry.addData("FAIL", "Failed to scan trackable. Time to give up");
+            telemetry.update();
+            return false;
         }
 
-        /*
-            Example Moving/Turning
-            robot.simpleMove(robot.getCourseFromRobot(stonePoint3D), 1, 0, robot.getDistanceFromRobot(stonePoint3D));
-            robot.turn(90, 0.5);
-            robot.move(robot.getCourseFromRobot(stonePoint3D), 1, new OrientationInfo(145, 0.3), robot.getDistanceFromRobot(stonePoint3D));
+        // Scan for a block and retrieve it
+        robot.gotoLoadingZone();
+        robot.scan();
+        if (!robot.isTrackableVisible() || !robot.isSkystoneVisible()) {
+            telemetry.addData("FAIL", "Failed to scan Skystone. Time to give up");
+            telemetry.update();
+            return false;
+        }
 
-            Stone Target Debug
-            telemetry.addData("Course", Math.toDegrees(robot.getCourse(positionFromSkystone, stonePoint3D)) + " degrees");
-            telemetry.addData("Distance", robot.getDistance(positionFromSkystone, stonePoint3D) + " inches");
-         */
+        // Until the timer has 5 seconds left, deliver stones
+        while (elapsedTime.seconds() < 25) {
+            // Get Skystone
+            Point3D positionFromSkystone = robot.getPositionFromSkystone();
+            Point3D stonePoint3D = new Point3D(robot.getTrackedSkystone().getLocation());
+            telemetry.addData("Position relative to Skystone", "{X, Y, Z} = %.0f, %.0f, %.0f", positionFromSkystone.x, positionFromSkystone.y, positionFromSkystone.z);
+            robot.move(robot.getCourse(positionFromSkystone, stonePoint3D), 0.5, null, robot.getDistance(positionFromSkystone, stonePoint3D));
+            robot.hardware.intakeMotorManager.setMotorsVelocity(1.0);
 
-        telemetry.update();
-        return true;
+            // Move Skystone back to building zone
+            robot.moveToPoint(new Point(robot.buildingZone.getMiddleX(), robot.buildingZone.getMiddleY()), 0.5);
+
+            // TODO: This is where the servos should deliver the stone
+        }
+
+        robot.parkUnderBridge();
+        return false;
     }
 }

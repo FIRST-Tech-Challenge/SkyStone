@@ -5,12 +5,11 @@
 
 package org.firstinspires.ftc.teamcode.Library.Movement;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareClampTest;
+import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassis;
 
 import java.util.function.Supplier;
 
@@ -24,13 +23,16 @@ public class ControlledClamp {
     private Telemetry telemetry;
 
     HardwareMap hardwareMap;
-    HardwareClampTest robot;
+    HardwareChassis robot;
 
-    public ControlledClamp(HardwareMap hardwareMap, Telemetry telemetry) {
+    Supplier<Boolean> opModeRunning;
+
+    public ControlledClamp(HardwareMap hardwareMap, Telemetry telemetry, Supplier<Boolean> opModeRunning) {
         this.hardwareMap = hardwareMap;
-        this.robot = new HardwareClampTest(hardwareMap);
+        this.robot = new HardwareChassis(hardwareMap);
 
         this.telemetry = telemetry;
+        this.opModeRunning = opModeRunning;
     }
 
     public void openDistance(double distance, double speed, int timeout) {
@@ -81,7 +83,7 @@ public class ControlledClamp {
 
     // driveCondition(1,1, () -> button.getState() == false);
     public void openConditionally(double speedForward, double speedSideways, Supplier<Boolean> condition) {
-        while (condition.get()) {
+        while (condition.get() && this.opModeRunning.get()) {
             //drive
         }
     }

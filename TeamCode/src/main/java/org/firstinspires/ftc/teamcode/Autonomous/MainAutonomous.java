@@ -73,16 +73,16 @@ public class MainAutonomous extends LinearOpMode {
 
             if (gamepad1.a) {
                 fieldPosition = FieldPosition.BLUE_FOUNDATION;
-                startingPos = new Pose2d(new Vector2d(15.552, -67.392), Math.toRadians(270));
+                startingPos = new Pose2d(new Vector2d(20.736, 63.936), Math.toRadians(270));
             } else if (gamepad1.b) {
                 fieldPosition = FieldPosition.RED_FOUNDATION;
-                startingPos = new Pose2d(new Vector2d(15.552, 67.392), Math.toRadians(90));
+                startingPos = new Pose2d(new Vector2d(20.736, -63.936), Math.toRadians(90));
             } else if (gamepad1.y) {
                 fieldPosition = FieldPosition.RED_QUARY;
-                startingPos = new Pose2d(new Vector2d(-51.648, -67.392), Math.toRadians(270));
+                startingPos = new Pose2d(new Vector2d(-34.752, -63.936), Math.toRadians(90));
             } else if (gamepad1.x) {
                 fieldPosition = FieldPosition.BLUE_QUARY;
-                startingPos = new Pose2d(new Vector2d(-51.648, 67.392), Math.toRadians(90));
+                startingPos = new Pose2d(new Vector2d(-34.752, 63.936), Math.toRadians(270));
             }
 
             if(fieldPosition != null && !initialize)

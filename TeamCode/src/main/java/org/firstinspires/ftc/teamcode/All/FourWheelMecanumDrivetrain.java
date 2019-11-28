@@ -303,6 +303,9 @@ public class FourWheelMecanumDrivetrain {
         rw.frontLeft.setMode(runMode);
         rw.backRight.setMode(runMode);
         rw.backLeft.setMode(runMode);
+        rw.leftIntake.setMode(runMode);
+        rw.liftTwo.setMode(runMode);
+        rw.rightIntake.setMode(runMode);
     }
 
     // Sets the "overall" speed of the drivetrain

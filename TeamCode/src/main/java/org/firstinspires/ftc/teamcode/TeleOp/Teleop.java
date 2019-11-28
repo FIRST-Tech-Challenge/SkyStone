@@ -90,7 +90,7 @@ public class Teleop extends LinearOpMode {
         buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.LEFT_BUMPER, new Servo[] {hwMap.clawServo1, hwMap.clawServo2}, //Claw Servos-LEFT BUMPER
                 new double[][] { {teleopConstants.clawServo1PosOpen, teleopConstants.clawServo1PosClose},
                         {teleopConstants.clawServo2PosOpen, teleopConstants.clawServo2PosClose} }));
-        buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.RIGHT_BUMPER, new Servo[] { hwMap.transferHorn },   //Foundation Lock-Y
+        buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.X, new Servo[] { hwMap.transferHorn },   //Foundation Lock-Y
                 new double[][] { {teleopConstants.transferHornPosPush, teleopConstants.transferHornPosReady} }));
 
         telemetry.addData("Status", "Ready");
@@ -103,7 +103,7 @@ public class Teleop extends LinearOpMode {
 
             //------------------------------===Intake/Outake===------------------------------------------
 
-            intakeLogic(hwMap);
+            //intakeLogic(hwMap);
 
             for(OnOffButton onOffButton : buttonLogic) {
                 onOffButton.getGamepadStateAndRun();

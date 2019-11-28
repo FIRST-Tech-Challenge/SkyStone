@@ -22,6 +22,7 @@ import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.PID.DriveConstantsPID;
+import org.firstinspires.ftc.teamcode.PID.util.DashboardUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +38,7 @@ import static org.firstinspires.ftc.teamcode.PID.util.DashboardUtil.drawSampledP
  */
 @Config
 public abstract class SampleMecanumDriveBase extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(5, 0, 0);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(3, 0, 0);
 
 
@@ -142,6 +143,8 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
         packet.put("yError", lastError.getY());
         packet.put("headingError", lastError.getHeading());
 
+        drawPosition(packet, currentPose);
+
         switch (mode) {
             case IDLE:
                 // do nothing
@@ -233,4 +236,22 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
     public abstract PIDCoefficients getPIDCoefficients(DcMotor.RunMode runMode);
 
     public abstract void setPIDCoefficients(DcMotor.RunMode runMode, PIDCoefficients coefficients);
+
+    public static void drawSampledTrajectory(Trajectory trajectory) {
+        FtcDashboard dashboard = FtcDashboard.getInstance();
+        TelemetryPacket packet = new TelemetryPacket();
+        DashboardUtil.drawSampledTrajectory(packet.fieldOverlay(), trajectory);
+        dashboard.sendTelemetryPacket(packet);
+    }
+
+    public static void drawPosition(SampleMecanumDriveBase drive){
+        FtcDashboard dashboard = FtcDashboard.getInstance();
+        TelemetryPacket packet = new TelemetryPacket();
+        DashboardUtil.drawRobot(packet.fieldOverlay(), drive.getPoseEstimate());
+        dashboard.sendTelemetryPacket(packet);
+    }
+
+    private static void drawPosition(TelemetryPacket packet, Pose2d poseEstimate){
+        DashboardUtil.drawRobot(packet.fieldOverlay(), poseEstimate);
+    }
 }

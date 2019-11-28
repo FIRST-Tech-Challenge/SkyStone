@@ -23,14 +23,19 @@ public class FingerTest extends ChassisStandard {
 
             raiseFrontFinger();
 
+            sleep(2500);
+
             dropBackFinger();
 
             dropFrontFinger();
 
+            sleep(2500);
 
-           raiseBackFinger();
+            raiseBackFinger();
 
            raiseFrontFinger();
+
+            sleep(2500);
 
             madeTheRun = true;
         }

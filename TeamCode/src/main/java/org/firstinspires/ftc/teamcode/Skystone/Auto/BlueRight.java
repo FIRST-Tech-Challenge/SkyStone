@@ -1,62 +1,157 @@
 package org.firstinspires.ftc.teamcode.Skystone.Auto;
 
+import android.os.SystemClock;
+
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
+import org.firstinspires.ftc.teamcode.Skystone.MathFunctions;
+import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.PathPoints;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
+import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.SplineGenerator;
+import org.firstinspires.ftc.teamcode.Skystone.Robot;
 import org.firstinspires.ftc.teamcode.Skystone.Vision;
 
-public class BlueRight extends AutoBase {
-    // transport two skystones and other stones if time permits
+import java.util.HashMap;
 
-    // park in building zone (even if other team is in corner)
+@Autonomous(name="BlueRight", group ="LinearOpmode")
+public class BlueRight extends AutoBase{
     @Override
     public void runOpMode() {
+        long startTime;
         initLogic();
 
-        // Move forward for initial detection of Skystone
-        robot.moveToPoint(11.5 ,0,1,1,Math.toRadians(0));
+        telemetry.addLine("HEREEE");
+        telemetry.update();
 
-        // Start intaking
-        intake(true);
 
-        // Run vision to detect where Skystone is located (LEFT, RIGHT, or CENTER)
-        Vision.Location position = vision.runDetection();
+        waitForStart();
+        startTime = SystemClock.elapsedRealtime();
 
-        double firstSkyStoneY;
-        double secondSkyStoneY;
 
-        if (position == Vision.Location.LEFT){
-            firstSkyStoneY = -3.0;
-            secondSkyStoneY = -12.0; // Using the location of the first Skystone (in the first set of three) we can determine where the second Skystone is also.
-            robot.moveToPoint(55,firstSkyStoneY,0.5,0.5,0); // Move to the location of the Skystone
-        } else if (position == Vision.Location.CENTER){
-            firstSkyStoneY = 0.0;
-            secondSkyStoneY = -15.0;
-            robot.moveToPoint(55, firstSkyStoneY, 0.5, 0.5,0);
-        } else {
-            firstSkyStoneY = 3.0;
-            secondSkyStoneY = -35.0;
-            robot.moveToPoint(55,firstSkyStoneY,0.5,0.5,0);
+        // this will be the center positions
+        int firstSkystoneY = 2;
+        int secondSkyStoneY = 20;
+        int secondSkyStoneX = 65;
+
+        Vision.Location skystoneLocation = vision.runDetection();
+
+        sleep(250);
+
+        position2D.startOdometry();
+
+        if (skystoneLocation == Vision.Location.LEFT){
+            firstSkystoneY = -5;
+            secondSkyStoneY = 13;
+        } else if (skystoneLocation == Vision.Location.RIGHT){
+            firstSkystoneY = 7;
+            secondSkyStoneY = 27;
+            secondSkyStoneX = 48;
         }
+        double[][] toFirstStone = {
+                {0,0,10,0},
+                {10,firstSkystoneY,10,0},
+                {50,firstSkystoneY,10,0}};
+        HashMap<Point,Robot.Actions> toFirstStoneActions = new HashMap<Point,Robot.Actions>();
 
-        // Store pathpoints required to navigate to foundation. Move through those points and extend outtake.
-        double[][] toFoundation = {{55.0,firstSkyStoneY},{10.0,-10.0},{15.0,-30.0},{15.0,-79.0},{29.0,-78.0}};
-        robot.moveFollowCurveWithExtend(toFoundation, Math.toRadians(-179), 25, Math.toRadians(180), 35, new Point(16.0,60.0));
+        double[][] toFoundation = {
+                {55,firstSkystoneY,-30,0},
+                {26,-10,0,-10},
+                {26,-30,0,-10},
+                {24,-80,0,-10},
+                {35,-90,10,0}};
+        HashMap<Point,Robot.Actions> toFoundationActions = new HashMap<Point,Robot.Actions>() {{
+            put(new Point(24,-40), Robot.Actions.EXTEND_OUTTAKE);
+            put(new Point(24,-30), Robot.Actions.STOP_INTAKE);
+        }};
 
-        // Store pathpoints required to navigate back to second set of three stones, to pick up second Skystone. Deposit the first Skystone and move via those points.
-        double [][] toSecondStone = {{5.0,78.0},{10.0,79.0},{28.0,30.0},{25.0,-22.0}};
-        robot.moveFollowCurveWithDepositandRetract(toSecondStone, Math.toRadians(0),20,Math.toRadians(-90),0,new Point(25.0, -22.0));
+        double[][] toSecondStone = {
+                {31,-75,-10,0},
+                {10,-70,0,10},
+                {24,-57,-10,0},
+                {26,-30,0,-10},
+                {26,secondSkyStoneY - 5,10,0},
+                {secondSkyStoneX,secondSkyStoneY,30,0}};
+        HashMap<Point,Robot.Actions> toSecondStoneActions = new HashMap<Point,Robot.Actions>() {{
+            put(new Point(32,-80), Robot.Actions.RETRACT_OUTTAKE);
+            put(new Point(20,-55), Robot.Actions.RELEASE_FOUNDATION);
+            put(new Point(28,-55), Robot.Actions.START_INTAKE);
+        }};
 
-        // Move to actual location of second skystone
-        robot.moveToPoint(80.0,secondSkyStoneY,0.5,1,Math.toRadians(-25));
+        double[][] toDepositSecondStone = {
+                {55,secondSkyStoneY,-30,0},
+                {30,10,0,-20},
+                {30,-30,0,10},
+                {25,-75,0,-10}};
+        HashMap<Point,Robot.Actions> toDepositSecondStoneActions = new HashMap<Point,Robot.Actions>() {{
+            put(new Point(15,-32), Robot.Actions.EXTEND_OUTTAKE);
+            put(new Point(30,-30), Robot.Actions.STOP_INTAKE);
+        }};
 
-        // Store pathpoints required to navigate back to foundation, move through those points and extend outtake.
-        double[][] toDepositSecondStone = {{40.0,secondSkyStoneY},{15.0,10.0},{15.0,30.0},{15.0,70.0}};
-        robot.moveFollowCurveWithExtend(toDepositSecondStone,Math.toRadians(-179),20,Math.toRadians(-90),10,new Point(12.0,50.0));
+        double[][] toPark = {
+                {15,-60,0,10},
+                {28,-50,0,10},
+                {27,-30,0,10}};
+        HashMap<Point,Robot.Actions> toParkActions = new HashMap<Point,Robot.Actions>(){{
+            put(new Point(16,-70), Robot.Actions.RETRACT_OUTTAKE);
+        }};
 
-        // Turn off intake
-        intake(false);
+        double[][] toThirdStone = {
+                {16,-60,5,10},
+                {28,-30, 10,0},
+                {45,-6,0,10},
+                {52,10, 10,0},
+                {55,20, 30,0}};
+        HashMap<Point,Robot.Actions> toThirdStoneActions = new HashMap<Point,Robot.Actions>() {{
+            put(new Point(16,-67), Robot.Actions.RETRACT_OUTTAKE);
+            put(new Point(28,-30), Robot.Actions.START_INTAKE);
+        }};
 
-        // Store pathpoints required to navigate to parking. Deposit stone and move via those points.
-        double[][] toParking = {{15.0,70.0},{15.0,40.0}};
-        robot.moveFollowCurveWithDepositandRetract(toParking, Math.toRadians(0),20, Math.toRadians(90),0,new Point(15.0,70.0));
+        double[][] toParkAfterThirdStone = {
+                {30,10,0,10},
+                {27,-30,0,10}};
+        HashMap<Point,Robot.Actions> toParkAfterThirdStoneActions = new HashMap<Point,Robot.Actions>();
+
+        double[][] toDepositThirdStone = {
+                {55,20,-30,0},
+                {24,10,0,-20},
+                {15,-30,0,10},
+                {15,-60,0,-10}};
+        HashMap<Point,Robot.Actions> toDepositThirdStoneActions = new HashMap<Point,Robot.Actions>() {{
+            put(new Point(15,-30), Robot.Actions.EXTEND_OUTTAKE);
+            put(new Point(15,-20), Robot.Actions.STOP_INTAKE);
+        }};
+
+        intake(true);
+        robot.splineMove(toFirstStone,0.5,1, 0.5,3,0,0,30,
+                toFirstStoneActions);
+
+        robot.splineMove(toFoundation,1,1, 0.5, 10, Math.toRadians(180),Math.toRadians(180),30,
+                toFoundationActions);
+
+        // get ready to pull foundation
+        robot.foundationMover(true);
+        sleep(250);
+
+        robot.splineMove(toSecondStone,1,1, 0.5, 20,0,Math.toRadians(15),30,
+                toSecondStoneActions);
+
+        robot.splineMove(toDepositSecondStone,0.9,1, 0.5, 10, Math.toRadians(180),Math.toRadians(90),10,
+                toDepositSecondStoneActions);
+        robot.getClamp().setPosition(robot.CLAW_SERVO_RELEASED);
+
+        if (SystemClock.elapsedRealtime() - startTime < 25000){
+            robot.splineMove(toThirdStone, 1,1, 0.5, 20,0,Math.toRadians(90),20,
+                    toThirdStoneActions);
+
+//            robot.splineMove(toDepositThirdStone, 1, 1, 0.5, 20, Math.toRadians(180), Math.toRadians(270), 10,
+//                    toDepositThirdStoneActions);
+//
+//            retractOuttakeWait();
+            robot.splineMove(toParkAfterThirdStone, 1, 1, 0.3, 10, Math.toRadians(180), Math.toRadians(90), 5, toParkAfterThirdStoneActions);
+
+
+        }else {
+            robot.splineMove(toPark, 1, 1, 0.3, 10, 0, Math.toRadians(90), 5, toParkActions);
+        }
     }
 }

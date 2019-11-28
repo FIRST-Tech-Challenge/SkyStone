@@ -29,34 +29,34 @@ public class RedLeft extends AutoBase{
 
 
         // this will be the center positions
-        int firstSkystoneX = -2;
-        int secondSkyStoneX = -20;
-        int secondSkystoneY = 65;
+        int firstSkystoneY = -2;
+        int secondSkyStoneY = -20;
+        int secondSkyStoneX = 65;
 
         Vision.Location skystoneLocation = vision.runDetection();
 
         position2D.startOdometry();
 
         if (skystoneLocation == Vision.Location.LEFT){
-            firstSkystoneX = -7;
-            secondSkyStoneX = -27;
-            secondSkystoneY = 48;
+            firstSkystoneY = -7;
+            secondSkyStoneY = -27;
+            secondSkyStoneX = 48;
         } else if (skystoneLocation == Vision.Location.RIGHT){
-            firstSkystoneX = 5;
-            secondSkyStoneX = -13;
+            firstSkystoneY = 5;
+            secondSkyStoneY = -13;
         }
 
         double[][] toFirstStone = {
                 {0,0,10,0},
-                {10,firstSkystoneX,10,0},
-                {50,firstSkystoneX,10,0}};
+                {10,firstSkystoneY,10,0},
+                {50,firstSkystoneY,10,0}};
         HashMap<Point,Robot.Actions> toFirstStoneActions = new HashMap<Point,Robot.Actions>();
 
         double[][] toFoundation = {
-                {55,firstSkystoneX,-30,0},
-                {26,10,0,10},
-                {26,30,0,10},
-                {24,80,0,10},
+                {55,firstSkystoneY,-30,0},
+                {28,10,0,10},
+                {28,30,0,10},
+                {26,80,0,10},
                 {33,80,10,0}};
         HashMap<Point,Robot.Actions> toFoundationActions = new HashMap<Point,Robot.Actions>() {{
             put(new Point(24,40), Robot.Actions.EXTEND_OUTTAKE);
@@ -66,10 +66,10 @@ public class RedLeft extends AutoBase{
         double[][] toSecondStone = {
                 {31,75,-10,0},
                 {10, 70,0,-10},
-                {24,57,0,10},
-                {26,30,0,10},
-                {26,secondSkyStoneX + 5,10,0},
-                {secondSkystoneY,secondSkyStoneX,30,0}};
+                {26,57,0,10},
+                {28,30,0,10},
+                {28,secondSkyStoneY + 5,10,0},
+                {secondSkyStoneX,secondSkyStoneY,30,0}};
         HashMap<Point,Robot.Actions> toSecondStoneActions = new HashMap<Point,Robot.Actions>() {{
             put(new Point(32,80), Robot.Actions.RETRACT_OUTTAKE);
             put(new Point(20,55), Robot.Actions.RELEASE_FOUNDATION);
@@ -77,10 +77,10 @@ public class RedLeft extends AutoBase{
         }};
 
         double[][] toDepositSecondStone = {
-                {55,secondSkyStoneX,-30,0},
-                {30,-10,0,20},
-                {30,30,0,-10},
-                {17,75,0,10}};
+                {55,secondSkyStoneY,-30,0},
+                {45,-20,10,20},
+                {38,30,5,10},
+                {34,75,0,10}};
         HashMap<Point,Robot.Actions> toDepositSecondStoneActions = new HashMap<Point,Robot.Actions>() {{
             put(new Point(15,32), Robot.Actions.EXTEND_OUTTAKE);
             put(new Point(30,30), Robot.Actions.STOP_INTAKE);
@@ -89,9 +89,9 @@ public class RedLeft extends AutoBase{
         double[][] toPark = {
                 {15,60,0,-10},
                 {28,50,0,-10},
-                {27,30,0,-10}};
+                {30,30,0,-10}};
         HashMap<Point,Robot.Actions> toParkActions = new HashMap<Point,Robot.Actions>(){{
-            put(new Point(16,70), Robot.Actions.RETRACT_OUTTAKE);
+            put(new Point(25,70), Robot.Actions.RETRACT_OUTTAKE);
         }};
 
         double[][] toThirdStone = {
@@ -107,7 +107,7 @@ public class RedLeft extends AutoBase{
 
         double[][] toParkAfterThirdStone = {
                 {30,-10,0,-10},
-                {27,30,0,-10}};
+                {33,30,0,-10}};
         HashMap<Point,Robot.Actions> toParkAfterThirdStoneActions = new HashMap<Point,Robot.Actions>();
 
         double[][] toDepositThirdStone = {

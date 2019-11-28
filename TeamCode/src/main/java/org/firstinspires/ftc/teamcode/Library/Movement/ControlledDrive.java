@@ -27,11 +27,9 @@ public class ControlledDrive {
     HardwareMap hardwareMap;
     HardwareOmniTest robot;
 
-    public ControlledDrive(HardwareMap hardwareMap, Telemetry telemetry) {
+    public ControlledDrive(HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
         this.robot = new HardwareOmniTest(hardwareMap);
-
-        this.telemetry = telemetry;
     }
 
     public void driveDistance(double distanceForward, double distanceSideways, double speed, int timeout) {
@@ -89,9 +87,22 @@ public class ControlledDrive {
     }
 
     // driveCondition(1,1, () -> button.getState() == false);
+
+    /**
+     * drive in any direction based on given parameters ( 1 to -1)
+     * @param speedForward
+     * @param speedSideways
+     * @param condition
+     */
     public void driveConditionally(double speedForward, double speedSideways, Supplier<Boolean> condition) {
         while (condition.get()) {
             //drive
+            double[] result = OmniWheel.calculate(5.0, 38, 24, -speedForward, speedSideways, 0);
+
+            robot.motor_front_left.setPower(result[0]);
+            robot.motor_front_right.setPower(result[1]);
+            robot.motor_rear_left.setPower(result[2]);
+            robot.motor_rear_right.setPower(result[3]);
         }
     }
 

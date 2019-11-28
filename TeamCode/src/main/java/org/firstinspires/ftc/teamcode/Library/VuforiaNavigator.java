@@ -16,6 +16,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassis;
+import org.firstinspires.ftc.teamcode.Library.Movement.ControlledDrive;
 
 import java.util.function.Supplier;
 
@@ -30,10 +31,19 @@ public class VuforiaNavigator {
     private HardwareChassis robot;
     private HardwareMap hardwareMap;
     private VuforiaTrackable stoneTarget;
+    private ControlledDrive controlledDrive;
+
+    double targetX;
+    double targetY;
+    double targetZ;
+    double rX;
+    double rY;
+    double rZ;
 
     public VuforiaNavigator(HardwareMap hardwareMap, HardwareChassis robot) {
         this.hardwareMap = hardwareMap;
         this.robot = robot;
+        this.controlledDrive = new ControlledDrive(hardwareMap);
 
         /*
          * To start up Vuforia, tell it the view that we wish to use for camera monitor (on the RC phone);
@@ -95,7 +105,10 @@ public class VuforiaNavigator {
         return ((VuforiaTrackableDefaultListener)stoneTarget.getListener()).isVisible();
     }
 
-
+    public void navigateToSklystone() {
+        controlledDrive.driveConditionally(0, 0.5, () -> targetY != 0);
+        controlledDrive.driveConditionally(0.5, 0, () -> targetX != 3);
+    }
     //TODO: method navigateToSkystone() --> void, richte genau auf skystone aus, fahr vorwarts
 
     public void navigateToSkystone(Supplier<Boolean> opModeActive, double speed) {
@@ -127,14 +140,14 @@ public class VuforiaNavigator {
                     Orientation rot = Orientation.getOrientation(pose, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
 
                     // Extract the X, Y, and Z components of the offset of the target relative to the robot
-                    double tX = trans.get(0);
-                    double tY = trans.get(1);
-                    double tZ = trans.get(2);
+                    targetX = trans.get(0);
+                    targetY = trans.get(1);
+                    targetZ = trans.get(2);
 
                     // Extract the rotational components of the target relative to the robot
-                    double rX = rot.firstAngle;
-                    double rY = rot.secondAngle;
-                    double rZ = rot.thirdAngle;
+                    rX = rot.firstAngle;
+                    rY = rot.secondAngle;
+                    rZ = rot.thirdAngle;
 
                     // TODO: Navigate to Skystone
 

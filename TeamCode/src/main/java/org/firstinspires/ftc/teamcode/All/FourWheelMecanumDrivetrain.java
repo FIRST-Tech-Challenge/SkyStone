@@ -231,6 +231,26 @@ public class FourWheelMecanumDrivetrain {
         }
         stop();
     }
+
+    public void strafe(double power, boolean right){
+        if(!right)
+            power = -power;
+
+        rw.frontRight.setPower(-power);
+        rw.frontLeft.setPower(power);
+        rw.backRight.setPower(power);
+        rw.backLeft.setPower(-power);
+    }
+
+    public void rotate(double power, boolean right){
+        if(!right)
+            power = -power;
+
+        rw.frontRight.setPower(-power);
+        rw.frontLeft.setPower(power);
+        rw.backRight.setPower(-power);
+        rw.backLeft.setPower(power);
+    }
     // Primary movement methods
 
     /**

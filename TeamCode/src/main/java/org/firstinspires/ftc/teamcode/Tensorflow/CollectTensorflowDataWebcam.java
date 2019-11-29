@@ -183,6 +183,9 @@ public class CollectTensorflowDataWebcam extends LinearOpMode {
                         }
                     }
                 }
+
+                telemetry.addData("1", distance);
+                telemetry.addData("2", width);
                 telemetry.update();
             }
             if(isStopRequested()){

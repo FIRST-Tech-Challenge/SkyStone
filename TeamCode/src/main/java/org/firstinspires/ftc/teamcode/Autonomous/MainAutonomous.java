@@ -5,6 +5,7 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.vuforia.PIXEL_FORMAT;
@@ -25,7 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Autonomous(name = "Autonomous", group = "LinearOpMode")
-@Disabled
+//@Disabled
 public class MainAutonomous extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "skystoneTFOD_v2_[105-15].tflite";
     private static final String LABEL_FIRST_ELEMENT = "skystone";
@@ -37,11 +38,11 @@ public class MainAutonomous extends LinearOpMode {
     private FieldPosition fieldPosition = null;
     private HardwareMap hwMap;
     private double imgWidth;
-    Detect detect;
+    private Detect detect;
     private int[] skystonePositions;
-    Pose2d startingPos;
-    Path path;
-    SampleMecanumDriveBase drive;
+    private Pose2d startingPos;
+    private Path path;
+    private SampleMecanumDriveBase drive;
     boolean initialize = false;
 
 
@@ -60,10 +61,10 @@ public class MainAutonomous extends LinearOpMode {
         hwMap.frontRight.setDirection(DcMotorSimple.Direction.REVERSE); //???
         hwMap.backRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        while (!isStarted()) {
-            if(fieldPosition == null) {
-                telemetry.addData("SELECT STARTING LOCATION", "Press one of the following buttons below to" +
-                        "select the autonomous starting position. Once you have selected, press the \"start\" button" +
+        while (!isStarted() && !isStopRequested()) {
+            if (fieldPosition == null) {
+                telemetry.addData("SELECT STARTING LOCATION", "Press one of the following buttons below to " +
+                        "select the autonomous starting position. Once you have selected, press the \"start\" button " +
                         "on gamepad A.");
                 telemetry.addData("A", FieldPosition.BLUE_FOUNDATION);
                 telemetry.addData("B", FieldPosition.RED_FOUNDATION);
@@ -85,65 +86,68 @@ public class MainAutonomous extends LinearOpMode {
                 startingPos = new Pose2d(new Vector2d(-34.752, 63.936), Math.toRadians(270));
             }
 
-            if(fieldPosition != null && !initialize)
+            if (fieldPosition != null && !initialize)
                 telemetry.addData("SELECTED STARTING LOCATION", fieldPosition);
 
-            if(gamepad1.start && fieldPosition != null)
+            if (gamepad1.start && fieldPosition != null)
                 initialize = true;
 
             if (initialize) {
+                telemetry.addData("STATUS", "Calibrating IMU...");
+                telemetry.update();
                 drive = new SampleMecanumDriveREV(hardwareMap);
-                path = new Path(drive, startingPos);
+                telemetry.addData("STATUS", "Done!");
+                telemetry.update();
+                path = new Path(hwMap, this, drive, startingPos);
 
-                switch (fieldPosition) {
-                    case RED_QUARY:
-                        drivetrain.resetEncoders();
-                        initVuforia();
-                        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
-                            initTfod();
-                        } else {
-                            telemetry.addData("Sorry!", "This device is not compatible with TFOD");
-                        }
+                if (fieldPosition == FieldPosition.RED_QUARY || fieldPosition == FieldPosition.BLUE_QUARY) {
+                    telemetry.addData("STATUS", "Initializing TensorFlow...");
+                    telemetry.update();
 
-                        if (tfod != null) {
-                            tfod.activate();
-                        }
+                    drivetrain.resetEncoders();
+                    initVuforia();
 
-                        List<Recognition> recognizedList = recognize();
-                        if (recognizedList != null)
-                            skystonePositions = detect.getSkystonePositionsRed(recognizedList, imgWidth);
+                    if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
+                        initTfod();
+                    } else {
+                        telemetry.addData("Sorry!", "This device is not compatible with TFOD");
+                    }
 
-                        telemetry.addData("SKYSTONE POSITIONS", Arrays.toString(skystonePositions));
-                        break;
-                    case BLUE_QUARY:
-                        drivetrain.resetEncoders();
-                        initVuforia();
+                    if (tfod != null) {
+                        tfod.activate();
+                    }
 
-                        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
-                            initTfod();
-                        } else {
-                            telemetry.addData("Sorry!", "This device is not compatible with TFOD");
-                        }
-                        if (tfod != null) {
-                            tfod.activate();
-                        }
-
-                        List<Recognition> recognized = recognize();
-                        if (recognized != null)
-                            skystonePositions = detect.getSkystonePositionsBlue(recognized, imgWidth);
-
-                        telemetry.addData("SKYSTONE POSITIONS", Arrays.toString(skystonePositions));
-                        break;
+                    telemetry.addData("STATUS", "Done!");
+                    telemetry.update();
                 }
+                break;
             }
             telemetry.update();
-
         }
+
+        while(!isStarted() && (fieldPosition == FieldPosition.BLUE_QUARY || fieldPosition == FieldPosition.RED_QUARY) &&
+                !isStopRequested()){
+            List<Recognition> recognized = recognize();
+
+            if (recognized != null && fieldPosition == FieldPosition.BLUE_QUARY)
+                skystonePositions = detect.getSkystonePositionsBlue(recognized, imgWidth);
+            else if(recognized != null && fieldPosition == FieldPosition.RED_QUARY)
+                skystonePositions = detect.getSkystonePositionsRed(recognized, imgWidth);
+
+            telemetry.addData("SKYSTONE POSITIONS", Arrays.toString(skystonePositions));
+            telemetry.addData("Heading", path.getPoseEstimate() + ", " + startingPos + ", "
+                    + Math.round(Math.toDegrees(path.getExternalHeading()) * 1000.0) / 1000.0);
+            telemetry.update();
+        }
+
+        if(isStopRequested() && tfod != null)
+            tfod.shutdown();
 
         waitForStart();
 
-        if (opModeIsActive()) {
-            switch (fieldPosition){
+        if (opModeIsActive() && fieldPosition != null) {
+            sendData();
+            switch (fieldPosition) {
                 case RED_QUARY:
                     path.RedQuary(skystonePositions);
                     break;
@@ -156,6 +160,10 @@ public class MainAutonomous extends LinearOpMode {
                 case BLUE_FOUNDATION:
                     path.BlueFoundation();
                     break;
+            }
+        } else {
+            while (opModeIsActive()){
+                telemetry.addData("ERROR", "Please select parameters with gamepad1 upon initialization!");
             }
         }
     }
@@ -231,7 +239,7 @@ public class MainAutonomous extends LinearOpMode {
     public void intake(int pw, boolean on) {
         Thread thread = new Thread() {
             public void run() {
-                if(on) {
+                if (on) {
                     hwMap.leftIntake.setPower(-pw);
                     hwMap.rightIntake.setPower(pw);
                 } else {
@@ -241,5 +249,24 @@ public class MainAutonomous extends LinearOpMode {
             }
         };
         thread.start();
+    }
+
+    private void sendData() {
+        Thread update = new Thread() {
+            public void run() {
+                while (opModeIsActive()) {
+                    path.updateTFODData(recognize());
+                    path.updateHeading();
+                    if(isStopRequested() && tfod != null)
+                        tfod.shutdown();
+                }
+            }
+        };
+        update.start();
+    }
+
+    public void setPoseEstimate(Pose2d pose2d){
+        if(drive != null)
+            drive.setPoseEstimate(pose2d);
     }
 }

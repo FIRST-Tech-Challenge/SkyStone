@@ -39,7 +39,7 @@ import java.util.List;
  */
 
 @TeleOp(name = "Collect TFOD Data Phone", group = "Linear Opmode")
-@Disabled
+//@Disabled
 public class CollectTensorflowDataPhone extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "skystoneTFOD_v2_[105-15].tflite";    //Set model (see above for file names)
     private static final String LABEL_FIRST_ELEMENT = "skystone";
@@ -117,21 +117,6 @@ public class CollectTensorflowDataPhone extends LinearOpMode {
                             telemetry.addData("**Height", objHeightpx);
                             telemetry.addData("**Width", objWidthpx);
                             telemetry.addData("**Distance to Object", distanceToObj);
-                            telemetry.addData("**Estimated Angle", TFODCalc.getAngleOfStone(objIndex, objWidthpx,
-                                    distanceToObj).get(0));
-
-                            double min = TFODCalc.getAngleOfStone(objIndex, objWidthpx, distanceToObj).get(1);
-                            double max = TFODCalc.getAngleOfStone(objIndex, objWidthpx, distanceToObj).get(2);
-                            double zeroDegreeWidth = TFODCalc.getAngleOfStone(objIndex, objWidthpx, distanceToObj).get(3);
-                            double offsetWidth = TFODCalc.getAngleOfStone(objIndex, objWidthpx, distanceToObj).get(4);
-                            double deltaWidth = TFODCalc.getAngleOfStone(objIndex, objWidthpx, distanceToObj).get(4) -
-                                    TFODCalc.getAngleOfStone(objIndex, objWidthpx, distanceToObj).get(3);
-
-                            telemetry.addData("Angle Model Domain", "[" + min + ", " + max + "]");
-                            telemetry.addData("Predicted 0° Stone Width", zeroDegreeWidth);
-                            telemetry.addData("Auto-adjusted Domain-Predicted 0° Stone Width", offsetWidth);
-                            telemetry.addData("Auto-adjusted Domain-Predicted 0° Stone Width Delta",
-                                    Math.round((deltaWidth) * 1000.0) / 1000.0);
                             telemetry.addData("","----------------------------");
 
                             if(recognition.getLabel().equalsIgnoreCase("skystone")){

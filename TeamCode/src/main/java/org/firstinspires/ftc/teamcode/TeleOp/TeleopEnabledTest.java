@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.TeleOp;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -30,10 +31,11 @@ import java.util.ArrayList;
  */
 
 @TeleOp(name="TeleopTests", group="Linear Opmode")
+@Disabled
 public class TeleopEnabledTest extends LinearOpMode {
     boolean intake = false;
     boolean outake = false;
-    final double slowSpeed = TeleopConstants.drivePower;
+    final double slowSpeed = TeleopConstants.drivePowerNormal;
     final double turnSpeed = TeleopConstants.turnPower;
     boolean runLogic = false;
 

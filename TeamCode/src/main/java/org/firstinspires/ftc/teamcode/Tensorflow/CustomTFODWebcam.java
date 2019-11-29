@@ -152,7 +152,7 @@ public class CustomTFODWebcam extends LinearOpMode {
                           double objWidth = recognition.getWidth();
                           double objHeight = recognition.getHeight();
                           double distanceToObj = TFODCalc.getDistanceToObj(127, imgHeight, objHeight);
-                          ArrayList<Double> tfodData = TFODCalc.getAngleOfStone(index, objWidth, distanceToObj);
+                          ArrayList<Double> tfodData = TFODCalc.getAngleOfStone(objWidth, distanceToObj);
 
                           telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
                           telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",

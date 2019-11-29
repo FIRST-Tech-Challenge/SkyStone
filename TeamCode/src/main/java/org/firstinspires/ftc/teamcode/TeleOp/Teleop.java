@@ -33,7 +33,9 @@ import java.util.ArrayList;
 public class Teleop extends LinearOpMode {
     boolean intake = false;
     boolean outake = false;
-    final double slowSpeed = TeleopConstants.drivePower;
+    final double normalSpeed = TeleopConstants.drivePowerNormal;
+    final double turboSpeed = TeleopConstants.drivePowerTurbo;
+    final double slowSpeed = TeleopConstants.drivePowerSlow;
     final double turnSpeed = TeleopConstants.turnPower;
     boolean runLogic = false;
 
@@ -52,9 +54,9 @@ public class Teleop extends LinearOpMode {
 
         drivetrain = new FourWheelMecanumDrivetrain(hwMap);
 
-        drivetrain.setMotorZeroPower(DcMotor.ZeroPowerBehavior.BRAKE);
+        drivetrain.setMotorZeroPower(DcMotor.ZeroPowerBehavior.FLOAT);
 
-        drivetrain.setSpeedMultiplier(slowSpeed);
+        drivetrain.setSpeedMultiplier(normalSpeed);
         drivetrain.resetEncoders();
 
         drivetrain.setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -100,7 +102,7 @@ public class Teleop extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            double turn = (-1) * (gamepad1.left_trigger - gamepad1.right_trigger) * turnSpeed;
+            //double turn = (-1) * (gamepad1.left_trigger - gamepad1.right_trigger) * turnSpeed;
 
             //------------------------------===Intake/Outake===------------------------------------------
 
@@ -131,23 +133,54 @@ public class Teleop extends LinearOpMode {
 
             //------------------------------===Driving/Strafing===------------------------------------------
 
-            if (!(gamepad1.left_stick_x == 0 && gamepad1.right_stick_y == 0 && turn == 0)) {
+            if (!(gamepad1.left_stick_x == 0 && gamepad1.left_stick_y == 0)) {
 
                 double speed;
 
-                if (gamepad1.left_stick_x == 0 && gamepad1.right_stick_y == 0) {
+                if (gamepad1.left_stick_x == 0 && gamepad1.left_stick_y == 0) {
                     speed = 0;
-                } else if (gamepad1.right_stick_y == 0) {
+                } else if (gamepad1.left_stick_y == 0) {
                     speed = Math.abs(gamepad1.left_stick_x);
                 } else if (gamepad1.left_stick_x == 0) {
-                    speed = Math.abs(gamepad1.right_stick_y);
+                    speed = Math.abs(gamepad1.left_stick_y);
                 } else {
-                    speed = (Math.abs(gamepad1.left_stick_x) + Math.abs(gamepad1.right_stick_y)) / 2;
+                    speed = (Math.abs(gamepad1.left_stick_x) + Math.abs(gamepad1.left_stick_y)) / 2;
                 }
 
-                double angle = Math.atan2(gamepad1.left_stick_x, -gamepad1.right_stick_y);
-                drivetrain.MoveAngle(speed, angle, turn);
+                double angle = Math.atan2(gamepad1.left_stick_x, -gamepad1.left_stick_y);
+                drivetrain.MoveAngle(speed, angle, 0);
+            }
+
+            if(gamepad1.right_stick_x != 0){
+                if(gamepad1.right_stick_x > 0)
+                    drivetrain.rotate(normalSpeed * gamepad1.right_stick_x, true);
+                else if(gamepad1.right_stick_x < 0)
+                    drivetrain.rotate(normalSpeed * Math.abs(gamepad1.right_stick_x), false);
+            }
+
+            if(gamepad1.left_trigger >= 0.5){
+                drivetrain.setMotorZeroPower(DcMotor.ZeroPowerBehavior.BRAKE);
             } else {
+                drivetrain.setMotorZeroPower(DcMotor.ZeroPowerBehavior.FLOAT);
+            }
+
+            if(gamepad1.right_trigger >= 0.5){
+                drivetrain.setPowerAll(turboSpeed);
+            }
+
+            if(gamepad1.dpad_up){
+                drivetrain.setPowerAll(slowSpeed);
+            } else if(gamepad1.dpad_down){
+                drivetrain.setPowerAll(-slowSpeed);
+            } else if(gamepad1.dpad_right){
+                drivetrain.strafe(slowSpeed, true);
+            } else if(gamepad1.dpad_left){
+                drivetrain.strafe(slowSpeed, false);
+            }
+
+            if(gamepad1.left_stick_x == 0 && gamepad1.right_stick_x == 0 && gamepad1.left_stick_y == 0 &&
+                    gamepad1.right_stick_y == 0 && gamepad1.right_trigger == 0 &&
+                    !gamepad1.dpad_up && !gamepad1.dpad_left && !gamepad1.dpad_right && !gamepad1.dpad_down){
                 drivetrain.stop();
             }
 

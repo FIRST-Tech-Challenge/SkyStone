@@ -19,10 +19,6 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.All.FourWheelMecanumDrivetrain;
 import org.firstinspires.ftc.teamcode.All.HardwareMap;
-import org.firstinspires.ftc.teamcode.Autonomous.BlockDetectionTest.BLOCKPOS;
-import org.firstinspires.ftc.teamcode.Autonomous.BlockDetectionTest.SkystonePosition;
-
-import static org.firstinspires.ftc.teamcode.Autonomous.BlockDetectionTest.BLOCKPOS.NONE;
 
 @Autonomous(name = "Test Auto (DUMMY)", group = "Linear Opmode")
 @Disabled
@@ -34,9 +30,7 @@ public class testAuto extends LinearOpMode {
     private static final String VUFORIA_KEY = "ARjSEzX/////AAABmTyfc/uSOUjluYpQyDMk15tX0Mf3zESzZKo6V7Y0O/qtPvPQOVben+DaABjfl4m5YNOhGW1HuHywuYGMHpJ5/uXY6L8Mu93OdlOYwwVzeYBhHZx9le+rUMr7NtQO/zWEHajiZ6Jmx7K+A+UmRZMpCmr//dMQdlcuyHmPagFERkl4fdP0UKsRxANaHpwfQcY3npBkmgE8XsmK4zuFEmzfN2/FV0Cns/tiTfXtx1WaFD0YWYfkTHRyNwhmuBxY6MXNmaG8VlLwJcoanBFmor2PVBaRYZ9pnJ4TJU5w25h1lAFAFPbLTz1RT/UB3sHT5CeG0bMyM4mTYLi9SHPOUQjmIomxp9D7R39j8g5G7hiKr2JP";
     private VuforiaLocalizer vuforia;
     private TFObjectDetector tfod;
-    private SkystonePosition posFinder = new SkystonePosition();
     public double centerPos = 0;
-    public BLOCKPOS position = BLOCKPOS.LEFT;
     public HardwareMap hwMap;
     public double imgWidth;
 
@@ -85,7 +79,7 @@ public class testAuto extends LinearOpMode {
         waitForStart();
         if (opModeIsActive()) {
             boolean foundSkystone = false;
-            if (position == BLOCKPOS.LEFT) {
+            //if (position == BLOCKPOS.LEFT) {
                 /*hwMap.frontLeft.setPower(-0.);
                 hwMap.frontRight.setPower(0.4);
                 hwMap.backLeft.setPower(0.4);
@@ -208,7 +202,7 @@ public class testAuto extends LinearOpMode {
                 }
 
 
-            } else if (position == BLOCKPOS.MIDDLE) {
+            //} else if (position == BLOCKPOS.MIDDLE) {
                 hwMap.leftIntake.setPower(-1);
                 hwMap.rightIntake.setPower(1);
 
@@ -256,7 +250,7 @@ public class testAuto extends LinearOpMode {
                 hwMap.backRight.setPower(0);
             }
         }
-    }
+    //}
 
     private void initVuforia() {
         /*

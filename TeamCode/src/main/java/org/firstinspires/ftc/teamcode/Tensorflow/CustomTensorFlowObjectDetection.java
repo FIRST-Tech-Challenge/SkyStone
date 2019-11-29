@@ -111,15 +111,15 @@ public class CustomTensorFlowObjectDetection extends LinearOpMode {
                             telemetry.addData("**Height", objHeightpx);
                             telemetry.addData("**Width", objWidthpx);
                             telemetry.addData("**Distance to Object", distanceToObj);
-                            telemetry.addData("**Estimated Angle", TFODCalc.getAngleOfStone(objIndex, objWidthpx,
+                            telemetry.addData("**Estimated Angle", TFODCalc.getAngleOfStone(objWidthpx,
                                     distanceToObj).get(0));
 
-                            double min = TFODCalc.getAngleOfStone(objIndex, objWidthpx, distanceToObj).get(1);
-                            double max = TFODCalc.getAngleOfStone(objIndex, objWidthpx, distanceToObj).get(2);
-                            double zeroDegreeWidth = TFODCalc.getAngleOfStone(objIndex, objWidthpx, distanceToObj).get(3);
-                            double offsetWidth = TFODCalc.getAngleOfStone(objIndex, objWidthpx, distanceToObj).get(4);
-                            double deltaWidth = TFODCalc.getAngleOfStone(objIndex, objWidthpx, distanceToObj).get(4) -
-                                    TFODCalc.getAngleOfStone(objIndex, objWidthpx, distanceToObj).get(3);
+                            double min = TFODCalc.getAngleOfStone(objWidthpx, distanceToObj).get(1);
+                            double max = TFODCalc.getAngleOfStone(objWidthpx, distanceToObj).get(2);
+                            double zeroDegreeWidth = TFODCalc.getAngleOfStone(objWidthpx, distanceToObj).get(3);
+                            double offsetWidth = TFODCalc.getAngleOfStone(objWidthpx, distanceToObj).get(4);
+                            double deltaWidth = TFODCalc.getAngleOfStone(objWidthpx, distanceToObj).get(4) -
+                                    TFODCalc.getAngleOfStone(objWidthpx, distanceToObj).get(3);
 
                             telemetry.addData("Angle Model Domain", "[" + min + ", " + max + "]");
                             telemetry.addData("Predicted 0° Stone Width", zeroDegreeWidth);

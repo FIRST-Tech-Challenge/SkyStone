@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode.TeleOp;
 
 public class TeleopConstants {
-    public static double drivePower = 0.7;
+    public static double drivePowerNormal = 0.7;
+    public static double drivePowerTurbo = 1;
+    public static double drivePowerSlow = 0.3;
     public static double turnPower = 0.5;
     public static double intakePower = 1;
     public static double liftPower = 1;

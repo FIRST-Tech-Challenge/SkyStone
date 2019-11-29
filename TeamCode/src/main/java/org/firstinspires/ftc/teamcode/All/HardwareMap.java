@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class HardwareMap {
     public DcMotorEx backLeft, backRight, frontLeft, frontRight, leftIntake, rightIntake, liftOne, liftTwo;
     public Servo clawServo1, clawServo2, foundationLock, plateLifter, liftOdometer, transferLock, transferHorn, clawInit, innerTransfer;
-    public DigitalChannel liftReset;
+    public DigitalChannel liftReset, intakeDetect1, foundationDetect1, foundationDetect2;
     public BNO055IMU gyro;
     public IntegratingGyroscope imu;
     public static DcMotor leftForward, rightForward, sideways;
@@ -55,6 +55,9 @@ public class HardwareMap {
         //---------------------------------------------------------------------------
 
         liftReset = hwMap.get(DigitalChannel.class, "liftReset");
+        intakeDetect1 = hwMap.get(DigitalChannel.class, "intakeDetect1");
+        foundationDetect1 = hwMap.get(DigitalChannel.class, "foundationDetect1");
+        foundationDetect2 = hwMap.get(DigitalChannel.class, "foundationDetect2");
 
         //---------------------------------------------------------------------------
 

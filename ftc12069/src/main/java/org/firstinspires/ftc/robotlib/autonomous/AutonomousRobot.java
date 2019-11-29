@@ -16,7 +16,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import org.firstinspires.ftc.robotlib.Constants;
-import org.firstinspires.ftc.robotlib.debug.DebugServer;
 import org.firstinspires.ftc.robotlib.navigation.Area;
 import org.firstinspires.ftc.robotlib.information.LocationInfo;
 import org.firstinspires.ftc.robotlib.information.OrientationInfo;
@@ -70,9 +69,6 @@ public class AutonomousRobot {
     public VuforiaTrackables trackables;
     public List<VuforiaTrackable> trackablesList;
     public List<VuforiaTrackable> visibleTrackables;
-
-    // Debug
-    public DebugServer debugServer;
 
     // Constants for Areas/Points on the field
     private final Area blueBridge = new Area(new Point(2, 72), new Point(-2, 24));
@@ -266,18 +262,6 @@ public class AutonomousRobot {
         }
 
         visibleTrackables = new ArrayList<>();
-
-        this.startDebugServer();
-    }
-
-    public void startDebugServer() {
-        try {
-            debugServer = new DebugServer(this.hardware.internalHardwareMap, this.vuforia);
-            debugServer.init();
-        } catch (IOException e) {
-            telemetry.addData("DEBUG FAIL", "Debug webserver failed to start");
-            telemetry.update();
-        }
     }
 
     /**

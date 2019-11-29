@@ -87,8 +87,6 @@ class MecanumAutonomous {
     void end() {
         // Disable Tracking
         robot.trackables.deactivate();
-
-        robot.debugServer.shutdownCameraThread();
     }
 
     /**

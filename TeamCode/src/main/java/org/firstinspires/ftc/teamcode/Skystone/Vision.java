@@ -34,7 +34,7 @@ public class Vision {
 
     private Location location = Location.UNKNOWN;
 
-    private final double minConfidenceLevel = 0.35;
+    private final double minConfidenceLevel = 0.2;
 
     private VuforiaLocalizer vuforia;
 
@@ -79,18 +79,18 @@ public class Vision {
                 for (int i = 0; i < updatedRecognitions.size(); i++){
                     float blockPixelX = (updatedRecognitions.get(i).getTop()+updatedRecognitions.get(i).getBottom())/2;
                     float blockPixelY = (updatedRecognitions.get(i).getLeft() + updatedRecognitions.get(i).getRight())/2;
-
-                    linearOpMode.telemetry.addLine("blockPixelX: " + blockPixelX);
-                    linearOpMode.telemetry.addLine("blockPixelY: " + blockPixelY);
-                    linearOpMode.telemetry.addLine("blockLabel: " + updatedRecognitions.get(i).getLabel());
+//
+//                    linearOpMode.telemetry.addLine("blockPixelX: " + blockPixelX);
+//                    linearOpMode.telemetry.addLine("blockPixelY: " + blockPixelY);
+//                    linearOpMode.telemetry.addLine("blockLabel: " + updatedRecognitions.get(i).getLabel());
 
                     if (350 < blockPixelY && blockPixelY < 450){
                         if ((double)updatedRecognitions.get(i).getConfidence() > 0.95 && updatedRecognitions.get(i).getLabel().equals("Skystone")){
                             tfod.deactivate();
                             tfod.shutdown();
-                            if (blockPixelX < 600){
+                            if (blockPixelX < 690){
                                 return Location.RIGHT;
-                            } else if (blockPixelX < 800){
+                            } else if (blockPixelX < 810){
                                 return Location.CENTER;
                             } else {
                                 return Location.LEFT;
@@ -120,9 +120,9 @@ public class Vision {
         double centerConfidence = MathFunctions.arrayListAverage(centerCount);
         double rightConfidence = MathFunctions.arrayListAverage(rightCount);
 
-        linearOpMode.telemetry.addLine("left confidence: " + leftConfidence + " leftCount: " + leftCount.size());
-        linearOpMode.telemetry.addLine("right confidence: " + rightConfidence + " rightCount: " + rightCount.size());
-        linearOpMode.telemetry.addLine("center confidence: " + centerConfidence + " centerCount: " + centerCount.size());
+//        linearOpMode.telemetry.addLine("left confidence: " + leftConfidence + " leftCount: " + leftCount.size());
+//        linearOpMode.telemetry.addLine("right confidence: " + rightConfidence + " rightCount: " + rightCount.size());
+//        linearOpMode.telemetry.addLine("center confidence: " + centerConfidence + " centerCount: " + centerCount.size());
 
         if (leftConfidence == rightConfidence){
             return Location.CENTER;
@@ -161,8 +161,7 @@ public class Vision {
         detectionResults.add(center);
         detectionResults.add(right);
         detectionResults.add(left);
-        while (linearOpMode.opModeIsActive() && (SystemClock.elapsedRealtime() - startTime < 2000 || numOfSkystonesFound <= 3)) {
-
+        while (linearOpMode.opModeIsActive() && SystemClock.elapsedRealtime() - startTime < 2000 && numOfSkystonesFound <= 3) {
             List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
             if (updatedRecognitions != null && updatedRecognitions.size() > 0) {
                 Collections.sort(updatedRecognitions, new Comparator<Recognition>() {
@@ -171,22 +170,24 @@ public class Vision {
                         //sort in descending order
                         if (recognition.getConfidence() < t1.getConfidence()){
                             return 1;
-                        }else if (recognition.getConfidence() == t1.getConfidence()){
+                        } else if (recognition.getConfidence() == t1.getConfidence()) {
                             return 0;
-                        }else{
+                        } else {
                             return -1;
                         }
                     }
                 });
 
-                for (int i = 0; i < updatedRecognitions.size(); i++){
+                for (int i = 0; i < updatedRecognitions.size(); i++) {
                     Recognition recognition = updatedRecognitions.get(i);
                     if (recognition.getLabel().equals("Skystone")){
                         numOfSkystonesFound++;
                         float blockPixelX = (updatedRecognitions.get(i).getTop()+updatedRecognitions.get(i).getBottom())/2;
-                        if (blockPixelX < 630){
+                        linearOpMode.telemetry.clear();
+                        linearOpMode.telemetry.addLine("blockPixelX: " + blockPixelX + ". confidence:" + recognition.getConfidence());
+                        if (blockPixelX < 690){
                             right.incrementConfidence(recognition.getConfidence());
-                        } else if (blockPixelX < 800) {
+                        } else if (blockPixelX < 810) {
                             center.incrementConfidence(recognition.getConfidence());
                         } else {
                             left.incrementConfidence(recognition.getConfidence());
@@ -195,17 +196,20 @@ public class Vision {
                 }
             }
         }
+
+        // Sort detectionResult values (left, right, center) by most count. If two of those have
+        // the same count, then sort them by average confidence.
         Collections.sort(detectionResults, new Comparator<DetectionResult>() {
             @Override
             public int compare(DetectionResult detectionResult, DetectionResult t1) {
-                if (detectionResult.getCount() < t1.getCount()){
+                if (detectionResult.avgConfidence() < t1.avgConfidence()){
                     return 1;
-                } else if (detectionResult.getCount() > t1.getCount()){
+                } else if (detectionResult.avgConfidence() > t1.avgConfidence()){
                     return -1;
-                }else {
-                    if (detectionResult.avgConfidence() < t1.avgConfidence()){
+                } else {
+                    if (detectionResult.getCount() < t1.getCount()){
                         return 1;
-                    }else if (detectionResult.avgConfidence() > t1.avgConfidence()){
+                    }else if (detectionResult.getCount() > t1.getCount()){
                         return -1;
                     }else {
                         return 0;
@@ -213,6 +217,7 @@ public class Vision {
                 }
             }
         });
+
         if (numOfSkystonesFound == 0){
             return Location.UNKNOWN;
         }else {

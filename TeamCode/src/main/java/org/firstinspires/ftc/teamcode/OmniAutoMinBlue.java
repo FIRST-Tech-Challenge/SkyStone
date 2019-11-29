@@ -42,7 +42,7 @@ public class OmniAutoMinBlue extends OmniAutoClass
          */
         waitForStart();
 
-        robot.stackFromSide = HardwareOmnibot.AlignmentSide.RIGHT;
+        robot.stackFromSide = HardwareOmnibot.RobotSide.RIGHT;
         // Make sure the intake is out.
         double endTime = timer.milliseconds() + 5000;
         while (!robot.intakeAtPosition(HardwareOmnibot.IntakePosition.EXTENDED) && timer.milliseconds() < endTime) {

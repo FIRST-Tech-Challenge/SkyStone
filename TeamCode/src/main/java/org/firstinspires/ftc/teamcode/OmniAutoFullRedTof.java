@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 public class OmniAutoFullRedTof extends OmniAutoFullToF {
     @Override
     public void setFirstSkystoneValues(int position) {
-        robot.stackFromSide = HardwareOmnibot.AlignmentSide.LEFT;
+        robot.stackFromSide = HardwareOmnibot.RobotSide.LEFT;
         baseAngle = 0.0;
         switch(position) {
             case 1:

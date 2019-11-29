@@ -143,7 +143,7 @@ public class OmniTeleTest extends OmniAutoClass {
 
             if (!xHeld && xPressed) {
                 xHeld = true;
-                distanceFromWall(HardwareOmnibot.AlignmentSide.LEFT, sideDistanceTarget, 1.0, 1.0, 5000);
+                distanceFromWall(HardwareOmnibot.RobotSide.LEFT, sideDistanceTarget, 1.0, 1.0, 5000);
             } else if (!xPressed) {
                 xHeld = false;
             }
@@ -155,7 +155,7 @@ public class OmniTeleTest extends OmniAutoClass {
             }
 
             if (!aHeld && aPressed) {
-                distanceFromWall(HardwareOmnibot.AlignmentSide.BACK, backDistanceTarget, 1.0, 1.0, 5000);
+                distanceFromWall(HardwareOmnibot.RobotSide.BACK, backDistanceTarget, 1.0, 1.0, 5000);
                 aHeld = true;
 
             } else if (!aPressed) {
@@ -164,7 +164,7 @@ public class OmniTeleTest extends OmniAutoClass {
 
             if (!bHeld && bPressed) {
                 bHeld = true;
-                distanceFromWall(HardwareOmnibot.AlignmentSide.RIGHT, sideDistanceTarget, 1.0, 1.0, 5000);
+                distanceFromWall(HardwareOmnibot.RobotSide.RIGHT, sideDistanceTarget, 1.0, 1.0, 5000);
             } else if (!bPressed) {
                 bHeld = false;
             }

@@ -135,7 +135,7 @@ public abstract class OmniAutoFullToF extends OmniAutoClass
             setFirstSkystoneValues(stonePosition);
 
             // Drive out from the starting position, 10cm from the skystones
-            distanceFromWall(HardwareOmnibot.AlignmentSide.BACK, 54.0, maxSpeed, standardDistanceError, 5000);
+            distanceFromWall(HardwareOmnibot.RobotSide.BACK, 54.0, maxSpeed, standardDistanceError, 5000);
 
             // Drive from the side wall to the collection identified stone position.
             distanceFromWall(robot.stackFromSide, sideDistance, maxSpeed, standardDistanceError, 5000);
@@ -176,7 +176,7 @@ public abstract class OmniAutoFullToF extends OmniAutoClass
             driveAtHeadingForTime(maxSpeed, precisionSpin, baseAngle + 0.0, baseAngle + 90.0, flyTime, false);
 
             // Get to foundation midpoint.
-            distanceFromWall(HardwareOmnibot.AlignmentSide.BACK, 40.0, maxSpeed, standardDistanceError, 5000);
+            distanceFromWall(HardwareOmnibot.RobotSide.BACK, 40.0, maxSpeed, standardDistanceError, 5000);
 
             // Rotate to foundation grabbing angle.
             rotateRobotToAngle(rotateSpeed, baseAngle + 180.0, 2000);
@@ -254,7 +254,7 @@ public abstract class OmniAutoFullToF extends OmniAutoClass
             rotateRobotToAngle(rotateSpeed, baseAngle + 0.0, 2000);
 
             // Drive out to 10cm from the skystones
-            distanceFromWall(HardwareOmnibot.AlignmentSide.BACK, 54.0, maxSpeed, standardDistanceError, 5000);
+            distanceFromWall(HardwareOmnibot.RobotSide.BACK, 54.0, maxSpeed, standardDistanceError, 5000);
 
 
             // Drive from the side wall to the collection identified stone position.

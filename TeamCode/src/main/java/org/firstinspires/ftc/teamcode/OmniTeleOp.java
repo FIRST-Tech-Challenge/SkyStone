@@ -32,12 +32,6 @@ public class OmniTeleOp extends OpMode {
         STOW
     }
 
-    public enum FoundationActivities {
-        GRAB,
-        MOVE,
-        STOP
-    }
-
     @Override
     public void init() {
         telemetry.addLine("Calling robot.init");
@@ -51,7 +45,6 @@ public class OmniTeleOp extends OpMode {
 
     private CapstoneState capstoneState = CapstoneState.ALIGN;
     private CompleteActivities completeActivities = CompleteActivities.STOW;
-    private FoundationActivities removeFoundation = FoundationActivities.GRAB;
     private double driverAngle = 0.0;
     private final double MAX_SPEED = 1.0;
     private final double MAX_SPIN = 1.0;
@@ -160,20 +153,10 @@ public class OmniTeleOp extends OpMode {
         if(!bHeld && bPressed)
         {
             bHeld = true;
-            switch(removeFoundation) {
-                case GRAB:
-                    if(robot.startGrabbing()) {
-                        removeFoundation = FoundationActivities.MOVE;
-                    }
-                    break;
-                case MOVE:
-                    if (robot.startAccelerating(1.0, HardwareOmnibot.RobotSide.FRONT)) {
-                        removeFoundation = FoundationActivities.STOP;
-                    }
-                    break;
-                case STOP:
-                    robot.setAllDriveZero();
-                    break;
+            if(robot.removeFoundation == HardwareOmnibot.FoundationActivities.IDLE) {
+                robot.startFoundation();
+            } else {
+                robot.stopFoundation();
             }
 //            if(robot.alignState == HardwareOmnibot.AlignActivity.IDLE) {
 //                robot.startAligning();
@@ -364,10 +347,13 @@ public class OmniTeleOp extends OpMode {
         robot.performAligning();
         robot.performCapstone();
         robot.performGrabbing();
-        robot.performAligning();
+        robot.performAcceleration();
+        robot.performDeceleration();
+        robot.performFoundation();
 
         if((robot.alignState == HardwareOmnibot.AlignActivity.IDLE) && (robot.grabState == HardwareOmnibot.GrabFoundationActivity.IDLE) &&
-                (robot.accelerationState == HardwareOmnibot.ControlledAcceleration.IDLE)){
+                (robot.accelerationState == HardwareOmnibot.ControlledAcceleration.IDLE) &&
+                (robot.decelerationState == HardwareOmnibot.ControlledDeceleration.IDLE)){
             robot.drive(speedMultiplier * xPower, speedMultiplier * yPower, spinMultiplier * spin, driverAngle);
         }
 

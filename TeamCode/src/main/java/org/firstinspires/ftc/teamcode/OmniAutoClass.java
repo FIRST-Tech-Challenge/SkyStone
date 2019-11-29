@@ -370,7 +370,7 @@ public abstract class OmniAutoClass extends LinearOpMode {
      *                     will slow down as approaching distance.
 	 * @param error      - The allowable error from desired target distance.
 	 */
-	public boolean distanceFromWall(HardwareOmnibot.AlignmentSide side, double distance, double driveSpeed, double error, int maxTime) {
+	public boolean distanceFromWall(HardwareOmnibot.RobotSide side, double distance, double driveSpeed, double error, int maxTime) {
 		double endTime = timer.milliseconds() + maxTime;
 		boolean foundDistance;
 		double testDistance = 0;

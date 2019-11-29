@@ -21,6 +21,15 @@ import java.util.List;
  */
 public class HardwareOmnibot extends HardwareOmnibotDrive
 {
+    public enum FoundationActivities {
+        IDLE,
+        GRAB,
+        SETTLE,
+        ACCEL,
+        DECEL,
+        STOP
+    }
+
     public enum RobotSide {
         FRONT,
         BACK,
@@ -31,6 +40,12 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public enum ControlledAcceleration {
         IDLE,
         ACCELERATING,
+        STOPPING
+    }
+
+    public enum ControlledDeceleration {
+        IDLE,
+        DECELERATING,
         STOPPING
     }
 
@@ -294,6 +309,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     }
 
     /* Public OpMode members. */
+    public final static double ACCEL_STEP = 0.007;
     public static double INTAKE_SPEED = 1.0;
 	public static double LIFT_MAX_SPEED = 1.0;
 	public static double LIFT_MID_SPEED = 0.5;
@@ -373,6 +389,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     // Tracking variables
     private ElapsedTime clawTimer;
     private ElapsedTime fingerTimer;
+    private ElapsedTime settleTimer;
     private ElapsedTime clawdricopterTimer;
     public LiftActivity liftState = LiftActivity.IDLE;
     public ReleaseActivity releaseState = ReleaseActivity.IDLE;
@@ -381,8 +398,9 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public AlignActivity alignState = AlignActivity.IDLE;
     public GrabFoundationActivity grabState = GrabFoundationActivity.IDLE;
     public ControlledAcceleration accelerationState = ControlledAcceleration.IDLE;
+    public ControlledDeceleration decelerationState = ControlledDeceleration.IDLE;
     public CapstoneActivity capstoneState = CapstoneActivity.IDLE;
-    private boolean fingersUp = true;
+    public FoundationActivities removeFoundation = FoundationActivities.IDLE;
     private boolean clawPinched = false;
     private boolean clawdricopterBack = false;
     // These are the heights of the stone levels to auto set the lift to
@@ -413,6 +431,9 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 	protected double accelerationFinal = 0.0;
 	protected double accelerationCurrent = 0.0;
 	protected RobotSide accelerationSide = RobotSide.FRONT;
+    protected double decelerationStart = 0.0;
+    protected double decelerationCurrent = 0.0;
+    protected RobotSide decelerationSide = RobotSide.FRONT;
 
     // Keeps the sensor from initializing more than once.
     public static boolean tofInitialized = false;
@@ -1075,10 +1096,12 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public void performAcceleration() {
         switch(accelerationState) {
             case ACCELERATING:
-                accelerationCurrent += MIN_DRIVE_RATE;
+                accelerationCurrent += ACCEL_STEP;
                 if(accelerationCurrent > accelerationFinal) {
                     accelerationCurrent = accelerationFinal;
                     accelerationState = ControlledAcceleration.IDLE;
+                    // Just for testing, do the accel and decel at once.
+                    startDecelerating(accelerationCurrent, accelerationSide);
                 }
                 switch(accelerationSide) {
                     case LEFT:
@@ -1098,6 +1121,59 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
             case STOPPING:
                 setAllDriveZero();
                 accelerationState = ControlledAcceleration.IDLE;
+            case IDLE:
+                break;
+        }
+    }
+
+    public boolean startDecelerating(double startSpeed, RobotSide driveDirection) {
+        boolean isDecelerating;
+        if (decelerationState == ControlledDeceleration.IDLE) {
+            isDecelerating = true;
+            decelerationState = ControlledDeceleration.DECELERATING;
+            decelerationStart = startSpeed;
+            decelerationSide = driveDirection;
+            decelerationCurrent = startSpeed;
+        } else {
+            isDecelerating = true;
+        }
+
+        return isDecelerating;
+    }
+
+    public void stopDecelerating() {
+        if (decelerationState != ControlledDeceleration.IDLE) {
+            decelerationState = ControlledDeceleration.IDLE;
+            setAllDriveZero();
+        }
+    }
+
+    public void performDeceleration() {
+        switch(decelerationState) {
+            case DECELERATING:
+                decelerationCurrent -= ACCEL_STEP;
+                if(decelerationCurrent < 0.0) {
+                    decelerationCurrent = 0.0;
+                    decelerationState = ControlledDeceleration.IDLE;
+                }
+                switch(decelerationSide) {
+                    case LEFT:
+                        drive(-decelerationCurrent, 0, 0, -readIMU());
+                        break;
+                    case RIGHT:
+                        drive(decelerationCurrent, 0, 0, -readIMU());
+                        break;
+                    case BACK:
+                        drive(0, -decelerationCurrent, 0, -readIMU());
+                        break;
+                    case FRONT:
+                        drive(0, decelerationCurrent, 0, -readIMU());
+                        break;
+                }
+                break;
+            case STOPPING:
+                setAllDriveZero();
+                decelerationState = ControlledDeceleration.IDLE;
             case IDLE:
                 break;
         }
@@ -1142,6 +1218,69 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
             case STOPPING:
                 setAllDriveZero();
                 grabState = GrabFoundationActivity.IDLE;
+            case IDLE:
+            default:
+                break;
+        }
+    }
+
+    public boolean startFoundation() {
+        boolean isGrabbing;
+        if (removeFoundation == FoundationActivities.IDLE) {
+            isGrabbing = true;
+            removeFoundation = FoundationActivities.GRAB;
+            startGrabbing();
+        } else {
+            isGrabbing = true;
+        }
+
+        return isGrabbing;
+    }
+
+    public void stopFoundation() {
+        if (removeFoundation != FoundationActivities.IDLE) {
+            removeFoundation = FoundationActivities.IDLE;
+            stopGrabbing();
+            stopAccelerating();
+            stopDecelerating();
+            fingersUp();
+            setAllDriveZero();
+        }
+    }
+
+    public void performFoundation() {
+        switch(removeFoundation)
+        {
+            case STOP:
+                if(fingerTimer.milliseconds() >= FINGER_ROTATE_TIME) {
+                    removeFoundation = FoundationActivities.IDLE;
+                }
+                break;
+            case DECEL:
+                if(decelerationState == ControlledDeceleration.IDLE) {
+                    fingersUp();
+                    fingerTimer.reset();
+                    removeFoundation = FoundationActivities.STOP;
+                }
+                break;
+            case ACCEL:
+                if(accelerationState == ControlledAcceleration.IDLE) {
+                    startDecelerating(0.5, RobotSide.FRONT);
+                    removeFoundation = FoundationActivities.DECEL;
+                }
+                break;
+            case SETTLE:
+                if(settleTimer.milliseconds() >= 500) {
+                    startAccelerating(0.5, RobotSide.FRONT);
+                    removeFoundation = FoundationActivities.ACCEL;
+                }
+                break;
+            case GRAB:
+                if(grabState == GrabFoundationActivity.IDLE) {
+                    settleTimer.reset();
+                    removeFoundation = FoundationActivities.SETTLE;
+                }
+                break;
             case IDLE:
             default:
                 break;
@@ -1373,6 +1512,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         clawTimer = new ElapsedTime();
         clawdricopterTimer = new ElapsedTime();
         fingerTimer = new ElapsedTime();
+        settleTimer = new ElapsedTime();
         rightFinger = hwMap.get(Servo.class, RIGHT_FINGER);
         leftFinger = hwMap.get(Servo.class, LEFT_FINGER);
         claw = hwMap.get(Servo.class, CLAW);

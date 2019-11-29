@@ -44,6 +44,7 @@ public class PinchArmBot extends FourWheelsDriveBot {
         print(String.format("After Init : ARM POS : %f, PINCH POS : %f", servoArm.getPosition(), servoPinch.getPosition()));
     }
 
+
     public void pickupSkyStone(){
 
         print(String.format("Before Down: ARM POS : %f, PINCH POS : %f", servoArm.getPosition(), servoPinch.getPosition()));
@@ -65,7 +66,6 @@ public class PinchArmBot extends FourWheelsDriveBot {
         servoPinch.setPosition(PINCH_RELEASE);
         opMode.sleep(500);
         servoArm.setPosition(PINCH_ARM_FOLD);
-//        opMode.sleep(1000);
         return;
     }
 

@@ -6,6 +6,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -72,15 +73,14 @@ public class FourWheelsDriveBot
 
 
 //    public void driveByHand(double _lf, double _lr, double _rf, double _rr) {
-    public void driveByHand(double left_stick_x, double left_stick_y, double right_stick_x, boolean arcadeMode) {
+    public void driveByHandRedWall(double left_stick_x, double left_stick_y, double right_stick_x) {
 
         final double x = Math.pow(left_stick_x, 3.0);
         final double y = Math.pow(left_stick_y, 3.0);
 
         final double rotation = Math.pow(right_stick_x, 3.0);
-        final double direction = Math.atan2(x, y) + (arcadeMode ? getHeading() : 0.0);
+        final double direction = Math.atan2(x, y);
         final double speed = Math.min(1.0, Math.sqrt(x * x + y * y));
-
         final double lf = speed * Math.sin(direction + Math.PI / 4.0) + rotation;
         final double rf = speed * Math.cos(direction + Math.PI / 4.0) - rotation;
         final double lr = speed * Math.cos(direction + Math.PI / 4.0) + rotation;
@@ -94,7 +94,26 @@ public class FourWheelsDriveBot
 
     }
 
+    public void driveByHandBlueWall(double left_stick_x, double left_stick_y, double right_stick_x) {
 
+        final double x = Math.pow(left_stick_x, 3.0);
+        final double y = Math.pow(left_stick_y, 3.0);
+
+        final double rotation = Math.pow(right_stick_x, 3.0);
+        final double direction = Math.atan2(-x, -y);
+        final double speed = Math.min(1.0, Math.sqrt(x * x + y * y));
+        final double lf = speed * Math.sin(direction + Math.PI / 4.0) + rotation;
+        final double rf = speed * Math.cos(direction + Math.PI / 4.0) - rotation;
+        final double lr = speed * Math.cos(direction + Math.PI / 4.0) + rotation;
+        final double rr = speed * Math.sin(direction + Math.PI / 4.0) - rotation;
+
+        final double scale = maxAbs(1.0, lf, lr, rf, rr);
+        leftFront.setPower(lf / scale);
+        leftRear.setPower(lr / scale);
+        rightFront.setPower(rf / scale);
+        rightRear.setPower(rr / scale);
+
+    }
     public void print(String message){
         String caption = "4WD";
         this.opMode.telemetry.addData(caption, message);

@@ -1,26 +1,22 @@
 package org.firstinspires.ftc.teamcode.Skystone.Auto;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Skystone.Vision;
 
-@Autonomous(name="TestVision")
-public class TestVision extends AutoBase {
+@TeleOp(name="TestVision", group = "Linear Opmode")
+public class TestVision extends LinearOpMode {
 
     @Override
     public void runOpMode() {
 
-        initLogic();
-        Vision tensorflow = new Vision(robot);
-
-//        tensorflow.initVision();
-        waitForStart();
-
-        //robot.moveToPoint(8.5,0,0.5,1,Math.toRadians(0));
-
-        Vision.Location position = tensorflow.runDetection();
-        robot.getTelemetry().addLine("position: " + position);
-        robot.getTelemetry().update();
-        sleep(10000);
-
+        Vision tensorflow = new Vision(this);
+        while (opModeIsActive()){
+            Vision.Location position = tensorflow.runDetection2(false);
+            this.telemetry.addData("position: ", position);
+            this.telemetry.update();
+            sleep(3000);
+            this.telemetry.clear();
+        }
     }
 }

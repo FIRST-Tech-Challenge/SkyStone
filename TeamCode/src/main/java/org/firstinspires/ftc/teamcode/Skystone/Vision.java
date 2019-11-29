@@ -6,9 +6,11 @@ import android.net.wifi.WifiManager;
 import android.os.SystemClock;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.vuforia.Frame;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.Camera;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraCaptureRequest;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraFrame;
@@ -21,7 +23,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class Vision{
+public class Vision {
     private final String VUFORIA_KEY = "AbSCRq//////AAAAGYEdTZut2U7TuZCfZGlOu7ZgOzsOlUVdiuQjgLBC9B3dNvrPE1x/REDktOALxt5jBEJJBAX4gM9ofcwMjCzaJKoZQBBlXXxrOscekzvrWkhqs/g+AtWJLkpCOOWKDLSixgH0bF7HByYv4h3fXECqRNGUUCHELf4Uoqea6tCtiGJvee+5K+5yqNfGduJBHcA1juE3kxGMdkqkbfSjfrNgWuolkjXR5z39tRChoOUN24HethAX8LiECiLhlKrJeC4BpdRCRazgJXGLvvI74Tmih9nhCz6zyVurHAHttlrXV17nYLyt6qQB1LtVEuSCkpfLJS8lZWS9ztfC1UEfrQ8m5zA6cYGQXjDMeRumdq9ugMkS";
 
     float value = 0;
@@ -31,16 +33,16 @@ public class Vision{
     }
 
     private Location location = Location.UNKNOWN;
-    private Robot robot;
 
-    private final double minConfidenceLevel = 0.2;
+    private final double minConfidenceLevel = 0.35;
 
     private VuforiaLocalizer vuforia;
 
     private TFObjectDetector tfod;
+    private LinearOpMode linearOpMode;
 
-    public Vision(Robot robot){
-        this.robot = robot;
+    public Vision(LinearOpMode linearOpmode){
+        this.linearOpMode = linearOpmode;
         initVision();
     }
 
@@ -51,6 +53,10 @@ public class Vision{
     }
 
     public Location runDetection(){
+        return runDetection(true);
+    }
+
+    public Location runDetection(boolean deactivate){
         long startTime = SystemClock.elapsedRealtime();
 
         // 2 is right, 1 is center, 0 is left
@@ -58,7 +64,7 @@ public class Vision{
         ArrayList<Double> centerCount = new ArrayList<>();
         ArrayList<Double> rightCount = new ArrayList<>();
 
-        while (robot.getLinearOpMode().opModeIsActive() && SystemClock.elapsedRealtime()-startTime<2000){
+        while (linearOpMode.opModeIsActive() && SystemClock.elapsedRealtime()-startTime<2000){
 
             List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
             if (updatedRecognitions != null && updatedRecognitions.size()>0) {
@@ -74,9 +80,9 @@ public class Vision{
                     float blockPixelX = (updatedRecognitions.get(i).getTop()+updatedRecognitions.get(i).getBottom())/2;
                     float blockPixelY = (updatedRecognitions.get(i).getLeft() + updatedRecognitions.get(i).getRight())/2;
 
-                    robot.getTelemetry().addLine("blockPixelX: " + blockPixelX);
-                    robot.getTelemetry().addLine("blockPixelY: " + blockPixelY);
-                    robot.getTelemetry().addLine("blockLabel: " + updatedRecognitions.get(i).getLabel());
+                    linearOpMode.telemetry.addLine("blockPixelX: " + blockPixelX);
+                    linearOpMode.telemetry.addLine("blockPixelY: " + blockPixelY);
+                    linearOpMode.telemetry.addLine("blockLabel: " + updatedRecognitions.get(i).getLabel());
 
                     if (350 < blockPixelY && blockPixelY < 450){
                         if ((double)updatedRecognitions.get(i).getConfidence() > 0.95 && updatedRecognitions.get(i).getLabel().equals("Skystone")){
@@ -105,16 +111,18 @@ public class Vision{
 
             }
         }
-        tfod.deactivate();
-        tfod.shutdown();
+        if (deactivate){
+            tfod.deactivate();
+            tfod.shutdown();
+        }
         // find the confidence levels
         double leftConfidence = MathFunctions.arrayListAverage(leftCount);
         double centerConfidence = MathFunctions.arrayListAverage(centerCount);
         double rightConfidence = MathFunctions.arrayListAverage(rightCount);
 
-        robot.getTelemetry().addLine("left confidence: " + leftConfidence + " leftCount: " + leftCount.size());
-        robot.getTelemetry().addLine("right confidence: " + rightConfidence + " rightCount: " + rightCount.size());
-        robot.getTelemetry().addLine("center confidence: " + centerConfidence + " centerCount: " + centerCount.size());
+        linearOpMode.telemetry.addLine("left confidence: " + leftConfidence + " leftCount: " + leftCount.size());
+        linearOpMode.telemetry.addLine("right confidence: " + rightConfidence + " rightCount: " + rightCount.size());
+        linearOpMode.telemetry.addLine("center confidence: " + centerConfidence + " centerCount: " + centerCount.size());
 
         if (leftConfidence == rightConfidence){
             return Location.CENTER;
@@ -141,7 +149,76 @@ public class Vision{
             }
         }
     }
+    public Location runDetection2(boolean deactivated) {
 
+        ArrayList<DetectionResult> detectionResults = new ArrayList<>();
+        long startTime = SystemClock.elapsedRealtime();
+        int numOfSkystonesFound = 0;
+        DetectionResult center = new DetectionResult(Location.CENTER);
+        DetectionResult right = new DetectionResult(Location.RIGHT);
+        DetectionResult left = new DetectionResult(Location.LEFT);
+
+        detectionResults.add(center);
+        detectionResults.add(right);
+        detectionResults.add(left);
+        while (linearOpMode.opModeIsActive() && (SystemClock.elapsedRealtime() - startTime < 2000 || numOfSkystonesFound <= 3)) {
+
+            List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+            if (updatedRecognitions != null && updatedRecognitions.size() > 0) {
+                Collections.sort(updatedRecognitions, new Comparator<Recognition>() {
+                    @Override
+                    public int compare(Recognition recognition, Recognition t1) {
+                        //sort in descending order
+                        if (recognition.getConfidence() < t1.getConfidence()){
+                            return 1;
+                        }else if (recognition.getConfidence() == t1.getConfidence()){
+                            return 0;
+                        }else{
+                            return -1;
+                        }
+                    }
+                });
+
+                for (int i = 0; i < updatedRecognitions.size(); i++){
+                    Recognition recognition = updatedRecognitions.get(i);
+                    if (recognition.getLabel().equals("Skystone")){
+                        numOfSkystonesFound++;
+                        float blockPixelX = (updatedRecognitions.get(i).getTop()+updatedRecognitions.get(i).getBottom())/2;
+                        if (blockPixelX < 630){
+                            right.incrementConfidence(recognition.getConfidence());
+                        } else if (blockPixelX < 800) {
+                            center.incrementConfidence(recognition.getConfidence());
+                        } else {
+                            left.incrementConfidence(recognition.getConfidence());
+                        }
+                    }
+                }
+            }
+        }
+        Collections.sort(detectionResults, new Comparator<DetectionResult>() {
+            @Override
+            public int compare(DetectionResult detectionResult, DetectionResult t1) {
+                if (detectionResult.getCount() < t1.getCount()){
+                    return 1;
+                } else if (detectionResult.getCount() > t1.getCount()){
+                    return -1;
+                }else {
+                    if (detectionResult.avgConfidence() < t1.avgConfidence()){
+                        return 1;
+                    }else if (detectionResult.avgConfidence() > t1.avgConfidence()){
+                        return -1;
+                    }else {
+                        return 0;
+                    }
+                }
+            }
+        });
+        if (numOfSkystonesFound == 0){
+            return Location.UNKNOWN;
+        }else {
+            return detectionResults.get(0).getLocation();
+        }
+    }
     private void initVuforia() {
         /*
          * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
@@ -162,12 +239,14 @@ public class Vision{
         final String TFOD_MODEL_ASSET = "Skystone.tflite";
         final String LABEL_FIRST_ELEMENT = "Stone";
         final String LABEL_SECOND_ELEMENT = "Skystone";
-        int tfodMonitorViewId = robot.getHardwareMap().appContext.getResources().getIdentifier(
-                "tfodMonitorViewId", "id", robot.getHardwareMap().appContext.getPackageName());
+        int tfodMonitorViewId = linearOpMode.hardwareMap.appContext.getResources().getIdentifier(
+                "tfodMonitorViewId", "id", linearOpMode.hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
         tfodParameters.minimumConfidence = minConfidenceLevel;
 
         this.tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         this.tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
     }
+
 }
+

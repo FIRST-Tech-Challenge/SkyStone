@@ -18,7 +18,7 @@ public class AutoTemplate extends AutoBase
         PathPoints testPath = new PathPoints(testPoints);
 
         while (opModeIsActive()){
-//            robot.moveFollowCurve(testPath.targetPoints);
+//a1`
             //does a new path below
 //            robot.moveFollowCurve(testPath.newPoints(testPoints2));
             break;

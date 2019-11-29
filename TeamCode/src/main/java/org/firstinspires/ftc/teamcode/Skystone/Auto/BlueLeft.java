@@ -12,7 +12,7 @@ public class BlueLeft extends AutoBase {
     @Override
     public void runOpMode() {
         initLogic();
-        Vision tensorflow = new Vision(robot);
+        Vision tensorflow = new Vision(this);
 
 
         waitForStart();

@@ -2,9 +2,9 @@ package org.firstinspires.ftc.teamcode.autoRes.commands;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.subsystems.Arm;
-import org.firstinspires.ftc.teamcode.subsystems.Chassis;
-import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.SubSystems.Arm;
+import org.firstinspires.ftc.teamcode.SubSystems.Chassis;
+import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 
 public class AutononousUC2 {
 

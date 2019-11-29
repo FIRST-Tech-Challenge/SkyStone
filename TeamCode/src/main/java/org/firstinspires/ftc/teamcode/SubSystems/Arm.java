@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.subsystems;
+package org.firstinspires.ftc.teamcode.SubSystems;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -16,14 +16,15 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
  *          onFoundationLevel as the arm is holding the foundation
  *
  * @ArmMethods : moveArm_groundLevel()
- * @ArmMethods : moveArm_detectSkystoneLevel()
- * @ArmMethods : moveArm_aboveFoundationLevel(()
- * @ArmMethods : moveArm_onFoundationLevel()
  * @ArmMethods : moveArm_blockLevelUp()
  * @ArmMethods : moveArm_blockLevelDown()
  * @ArmMethods : moveArmToPlaceBlockAtLevel()
  * @ArmMethods : moveArmToLiftAfterBlockPlacement()
  * @ArmMethods : runArmToLevel()
+ * @ArmAutoMethods : moveArm_detectSkystoneLevel()
+ * @ArmAutoMethods : moveArm_aboveFoundationLevel(()
+ * @ArmAutoMethods : moveArm_onFoundationLevel()
+ *
  */
 
 /**
@@ -51,21 +52,41 @@ public class Arm {
     int currentLevel = 0;
     int MAX_BLOCK_LEVEL = 6;
     int DROP_BLOCK_HEIGHT = 10;
-    int LIFT_BLOCK_HEIGHT = 40;
+    int MAX_ARM_HEIGHT = -350;
 
     //Constructor
     public Arm(HardwareMap hardwareMap) {
-    //    armMotor = hardwareMap.dcMotor.get("arm");
+        armMotor = hardwareMap.dcMotor.get("arm");
         initArm();
     }
 
     /**
-     * Initialize Arm - Reset, Set Zero Behavior
+     * Initialize Arm - Reset, Set Zero Behavior to FLOAT (instead of BRAKE),
+     * and mode to RUN_TO_POSITION (PID based rotation to
+     * achieve the desire ed encoder count
      */
     public void initArm() {
         resetArm();
-        setZeroBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
+    /**
+     * Method to set Arm brake mode to ON when Zero (0.0) power is applied.
+     * To be used when arm is above groundlevel
+     * setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE)
+     */
+    public void turnArmBrakeModeOn(){
+        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    }
+
+     /**
+     * Method to set Arm brake mode to OFF when Zero (0.0) power is applied.
+     * To be used when arm is on groundlevel or blockLevel[0]
+     * setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE)
+     */
+    public void turnArmBrakeModeOff(){
+        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
     }
 
     /**
@@ -81,100 +102,95 @@ public class Arm {
     }
 
     /**
-     * Function to set the behaviour of the motor on passing Zero power to the motor
-     * @param zeroPowerBehavior could be BRAKE or FLOAT. When not defined, it is set
-     *                          to UNKNOWN state, which is not desired.
-     */
-    public void setZeroBehavior(DcMotor.ZeroPowerBehavior zeroPowerBehavior) {
-        armMotor.setZeroPowerBehavior(zeroPowerBehavior);
-    }
-
-    /**
-     * Set the mode of the DC motor to RUN_WITHOUT_ENCODER (run at achievable velocity
-     * RUN_USING_ENCODER (run at a targeted velocity or RUN_TO_POSITION (PID based rotation to
-     * achieve the desited encoder count
-     * @param runMode
-     */
-    public void setMode(DcMotor.RunMode runMode) {
-        armMotor.setMode(runMode);
-    }
-
-    /**
-     * Method to move Arm to groundlevel
+     * Method to move Arm to groundlevel and turn Brake Mode OFF
      */
     public void moveArm_groundLevel(){
         armMotor.setTargetPosition(groundLevel);
+        turnArmBrakeModeOff();
         runArmToLevel();
     }
 
     /**
-     * Method to move Arm to detectSkystoneLevel
+     * Method to move Arm to detectSkystoneLevel and turn Brake Mode ON
      */
     public void moveArm_detectSkystoneLevel(){
         armMotor.setTargetPosition(detectSkystoneLevel);
+        turnArmBrakeModeOn();
         runArmToLevel();
     }
 
     /**
-     * Method to move Arm to aboveFoundationLevel
+     * Method to move Arm to aboveFoundationLevel and turn Brake Mode ON
      */
     public void moveArm_aboveFoundationLevel(){
         armMotor.setTargetPosition(aboveFoundationLevel);
+        turnArmBrakeModeOn();
         runArmToLevel();
     }
 
     /**
-     * Method to move Arm to onFoundationLevel
+     * Method to move Arm to onFoundationLevel and turn Brake Mode ON
      */
     public void moveArm_onFoundationLevel(){
         armMotor.setTargetPosition(onFoundationLevel);
+        turnArmBrakeModeOn();
         runArmToLevel();
     }
 
     /**
-     * Method to move arm up by a block level from current level in TeleOp
+     * Method to move arm up by a block level from current level in TeleOp and turn Brake Mode ON
      */
     public void moveArm_blockLevelUp(){
-        if (currentLevel != MAX_BLOCK_LEVEL) {
+        turnArmBrakeModeOn();
+        if (currentLevel < MAX_BLOCK_LEVEL) {
             armMotor.setTargetPosition(blockLevel[currentLevel+1]);
             currentLevel++;
             runArmToLevel();
+        } else {
+            armMotor.setPower(0.0);
         }
     }
 
     /**
      * Method to move arm down by a block level from current level in TeleOp
+     * For blockLevel[1 to MAX_BLOCK_LEVEL], turn Brake Mode On
+     * For blockLevel[0], set to groundlevel and turn Brake Mode Off
      */
     public void moveArm_blockLevelDown(){
-        if (currentLevel != 0) {
+        if (currentLevel > 1) {
+            turnArmBrakeModeOn();
             armMotor.setTargetPosition(blockLevel[currentLevel-1]);
             currentLevel--;
             runArmToLevel();
         } else {
-            releaseArmMotor();
+            turnArmBrakeModeOff();
+            moveArm_groundLevel();
+            currentLevel = 0;
+            armMotor.setPower(0.0);
         }
+
     }
 
     /**
-     * Method to move arm down a bit to place block on a level
+     * Method to move arm down a bit (DROP_BLOCK_HEIGHT) to place block on a level
      */
     public void moveArmToPlaceBlockAtLevel(){
-        int currentPosition = armMotor.getCurrentPosition();
-        if (currentPosition <1) {
+        if (currentLevel >=1){
+            turnArmBrakeModeOn();
             armMotor.setTargetPosition(blockLevel[currentLevel] - DROP_BLOCK_HEIGHT);
+            runArmToLevel();
         }
-        runArmToLevel();
     }
 
     /**
-     * Method to move arm up a bit to release block on a level
+     * Method to move arm up to currentLevel to release block on a level
      */
     public void moveArmToLiftAfterBlockPlacement(){
-        int currentPosition = armMotor.getCurrentPosition();
-        if (currentPosition <1) {
-            armMotor.setTargetPosition(blockLevel[currentLevel] + LIFT_BLOCK_HEIGHT);
+        if (currentLevel >=1) {
+            turnArmBrakeModeOn();
+            armMotor.setTargetPosition(blockLevel[currentLevel]);
+            runArmToLevel();
         }
-        runArmToLevel();
     }
 
     /**
@@ -184,29 +200,10 @@ public class Arm {
     public void runArmToLevel() {
         //armMotor.setTargetPosition(blockLevel[level]);;
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        armMotor.setPower(1);
-        /*if(level!=0){
-            armMotor.setPower(1);
-        }else{
-            armMotor.setPower(0);
-        }*/
-    }
-
-    /**
-     * Method to release the Arm motor to no power
-     */
-    public void releaseArmMotor(){
-        armMotor.setPower(0);
-    }
-
-    //#TOBEDELETED
-    public void setArm(int level) {
-        armMotor.setTargetPosition(blockLevel[level]-10);
-    }
-
-
-    public void setArmCheck(double error) {
-
+        armMotor.setPower(1.0);
+        while (!armMotor.isBusy()) {
+            armMotor.setPower(0.0);
+        }
     }
 
 }

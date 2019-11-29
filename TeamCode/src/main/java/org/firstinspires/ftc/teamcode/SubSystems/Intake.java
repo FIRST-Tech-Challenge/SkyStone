@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.subsystems;
+package org.firstinspires.ftc.teamcode.SubSystems;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -8,18 +8,19 @@ import com.qualcomm.robotcore.hardware.Servo;
  * Definition of Intake Mechanism.
  * Intake has :
  *      1 ServoMotor for Wrist motion that operates in 3 modes -
- *          INITIAL, VERITICAL_BLOCK, HORIZONTAL_BLODK)
+ *          INITIAL, VERITICAL_BLOCK, HORIZONTAL_BLOCK)
  *      1 Linear Actutator which a Servomotor to open and close Grip mechanism
  *      1 Color Sensor for identifying skystone and blocks
  *
  * @IntakeMethods : moveWristToInitialPosition()
  * @IntakeMethods : moveWristToHorizontalPosition()
  * @IntakeMethods : moveWristToVerticalPosition()
- * @IntakeMethods : openGrip()
- * @IntakeMethods : closeGrip()
  * @IntakeMethods : toggleGrip()
- * @IntakeMethods : detectSkystoneColorSensorIsYellow
- * @IntakeMethods : detectSkystoneColorSensorIsBlack
+ * @IntakeAutoMethods : openGrip()
+ * @IntakeAutoMethods : closeGrip()
+ * @IntakeAutoMethods : setDetectSkystoneColorSensordEnabled()
+ * @IntakeAutoMethods : detectSkystoneColorSensorIsYellow()
+ * @IntakeAutoMethods : detectSkystoneColorSensorIsBlack()
  */
 
 /**
@@ -40,9 +41,9 @@ public class Intake{
 
     //Constructor
     public Intake(HardwareMap hardwareMap) {
-        //wrist = hardwareMap.servo.get("wrist");
-        //grip = hardwareMap.servo.get("grip");
-        //detectSkystone = hardwareMap.colorSensor.get("detectSkystone");
+        wrist = hardwareMap.servo.get("wrist");
+        grip = hardwareMap.servo.get("grip");
+        detectSkystone = hardwareMap.colorSensor.get("detectSkystone");
         initIntake();
     }
 
@@ -107,7 +108,7 @@ public class Intake{
     }
 
     /**
-     * Method to set the ColorSensor to be enabled or disabled
+     * Method to set the ColorSensor to be enabled (true) or disabled (false)
      * @param colorSensorEnabled
      */
     public void setDetectSkystoneColorSensordEnabled(boolean colorSensorEnabled){
@@ -117,9 +118,10 @@ public class Intake{
     /**
      * Method to check for detectSkystone Color Sensor to sense Yellow block or Skystone black color
      * Used in Autonomous mode to identify skystone and regular block.
-     * @return
+     * @return true if Yellow is detected, else false
      */
     public boolean detectSkystoneColorSensorIsYellow() {
+        //Logic to detect Yellow #TOBEFILLED
         if (detectSkystone.red()>127 && detectSkystone.green()>127 && detectSkystone.blue()<127) {
             return true;
         } else {
@@ -130,9 +132,10 @@ public class Intake{
     /**
      * Method to check for detectSkystone Color Sensor to sense Yellow block or Skystone black color
      * Used in Autonomous mode to identify skystone and regular block.
-     * @return
+     * @return true if Black is detected, else false
      */
     public boolean detectSkystoneColorSensorIsBlack() {
+        //Logic to detect Black #TOBEFILLED
         if (detectSkystone.red()<127 && detectSkystone.green()<127 && detectSkystone.blue()<127) {
             return true;
         } else {

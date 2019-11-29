@@ -1,11 +1,11 @@
-package org.firstinspires.ftc.teamcode.subsystems;
+package org.firstinspires.ftc.teamcode.SubSystems;
 
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 //#TOBEDELETED
 
-public class ColorDetector {
+public class ColorDetectorTOBEDELTED {
 
     public ColorSensor color_sensor;
 

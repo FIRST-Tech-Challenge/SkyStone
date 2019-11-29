@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.subsystems;
+package org.firstinspires.ftc.teamcode.SubSystems;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -14,7 +14,7 @@ import java.util.HashMap;
  * that contain motors or servos
  *
  */
-public class Subsystem {
+public class SubsystemTOBEDELETED {
     /**
      * Definition of arrays of types of motors used
      */

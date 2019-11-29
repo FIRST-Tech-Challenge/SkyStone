@@ -1,0 +1,47 @@
+
+Old Controller network details
+Name : 13201-RC (Driver Station : 13201-DC)
+IP Address: 192.168.49.1
+Passphrase : aMhaVG6r
+Group Owner : 13201-RC
+
+Connect Wirelessly to phone
+1. Connect computer to the Wireless Direct Network of phone
+2. Plug Controller phone using USB cable to phone
+2. Open Terminal
+3. Commands :
+    adb disconnect
+    adb tcpip 5555
+4. Unplug phone from computer
+5. Commands :
+    adb connect 192.168.49.1:5555
+
+Pending to do
+Arm.java
+    All block levels and other levels to be filled with correct values
+        Caliberation OpMode to be made
+    BRAKE mode to be tested to avoid shake
+
+Chassis.java
+    Color sensor values to be set
+        https://ftc-tricks.com/overview-color-sensor/
+        Caliberation OpMode to be made
+    Decide of Touch sensor to be operated as Analog or Digital
+    Run till touch Sensor pressed to be corrected
+    Run by distance to be caliberated
+        Caliberation OpMOde to be made
+    Turn by angle to be written
+        Caliberation OpMode to be made
+    Remove unused RunMethods
+
+Intake.java
+    Color sensor values to be set
+        https://ftc-tricks.com/overview-color-sensor/
+        Caliberation OpMode to be made
+
+HazmatTeleOpMode.java
+    Class comments to be updated
+
+Autonomous
+    Commands to be listed
+    Use Cases to be written

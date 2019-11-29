@@ -1,29 +1,21 @@
-package org.firstinspires.ftc.teamcode.testClasses;
+package org.firstinspires.ftc.teamcode.OpModes;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.HardwareDevice;
 
-import org.firstinspires.ftc.teamcode.subsystems.Chassis;
-import org.firstinspires.ftc.teamcode.subsystems.Controller;
-import org.firstinspires.ftc.teamcode.subsystems.Hook;
-import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.SubSystems.Chassis;
+import org.firstinspires.ftc.teamcode.SubSystems.HzGamepad1;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Scanner;
 
 @TeleOp
 public class IntegrationTest extends LinearOpMode {
     Chassis chassis;
-    Hook hook;
 
     @Override
     public void runOpMode() {
+    /*
         Chassis chassis = new Chassis(hardwareMap);
         telemetry.setMsTransmissionInterval(1);
         telemetry.addLine("Init | v1.0");
@@ -39,11 +31,13 @@ public class IntegrationTest extends LinearOpMode {
             sleep(100);
             motor.setPower(0);
         }
-        Controller controller = new Controller(gamepad1);
+        HzGamepad1 controller = new HzGamepad1(gamepad1);
         waitForStart();
         while (opModeIsActive()) {
             //Other unit test code if you want
             telemetry.update();
         }
+    */
     }
+
 }

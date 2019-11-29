@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-@Autonomous(name="Tryhard Blue Wall", group="Exercises")
+@Autonomous(name="Double SkyStone Blue Wall", group="Exercises")
 
 public class DoubleSkyStoneBlueWall extends DoubleSkyStoneRedWall {
     protected TensorFlowBot robot = new TensorFlowBot(this);

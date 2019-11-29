@@ -53,7 +53,7 @@ public class PinchArmBot extends FourWheelsDriveBot {
         opMode.sleep(1000);
         servoPinch.setPosition(PINCH_PINCH);
         print(String.format("After Pinch: ARM POS : %f, PINCH POS : %f", servoArm.getPosition(), servoPinch.getPosition()));
-        opMode.sleep(1000);
+        opMode.sleep(500);
         servoArm.setPosition(PINCH_ARM_FOLD);
         print(String.format("After Fold: ARM POS : %f, PINCH POS : %f", servoArm.getPosition(), servoPinch.getPosition()));
 //        opMode.idle();
@@ -64,7 +64,7 @@ public class PinchArmBot extends FourWheelsDriveBot {
         servoArm.setPosition(PINCH_ARM_DOWN2);
         opMode.sleep(1000);
         servoPinch.setPosition(PINCH_RELEASE);
-        opMode.sleep(1000);
+        opMode.sleep(500);
         servoArm.setPosition(PINCH_ARM_FOLD);
         return;
     }

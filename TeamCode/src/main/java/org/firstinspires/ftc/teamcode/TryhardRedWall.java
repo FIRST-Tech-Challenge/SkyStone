@@ -28,8 +28,9 @@ public class TryhardRedWall extends LinearOpMode {
             robot.driveStraightByDistance(direction_backward, 1600, 0.8);
             robot.driveStraightByDistance(robot.DIRECTION_LEFT, 250, 0.5);
             robot.dropSkyStone();
+            robot.originalPosition();
             robot.driveStraightByDistance(robot.DIRECTION_RIGHT, 800, 0.9);
-            robot.driveStraightByDistance(direction_forward, 900, 1);
+            robot.driveStraightByDistance(direction_forward, 850, 1);
         } else {
             robot.driveStraightByDistance(direction_forward, 200, 0.6);
             robot.opMode.sleep(2000);
@@ -41,8 +42,9 @@ public class TryhardRedWall extends LinearOpMode {
                 robot.driveStraightByDistance(direction_backward, 1800, 0.8);
                 robot.driveStraightByDistance(robot.DIRECTION_LEFT, 250, 0.5);
                 robot.dropSkyStone();
-                robot.driveStraightByDistance(robot.DIRECTION_RIGHT, 800, 0.9);
-                robot.driveStraightByDistance(direction_forward, 900, 1);
+                robot.originalPosition();
+                robot.driveStraightByDistance(robot.DIRECTION_RIGHT, 1200, 0.9);
+                robot.driveStraightByDistance(direction_forward, 850, 1);
             } else {
                 robot.driveStraightByDistance(direction_forward, 350, 0.6);
                 robot.driveStraightByDistance(robot.DIRECTION_LEFT, 270, 0.5);
@@ -51,8 +53,9 @@ public class TryhardRedWall extends LinearOpMode {
                 robot.driveStraightByDistance(direction_backward, 2000, 0.8);
                 robot.driveStraightByDistance(robot.DIRECTION_LEFT, 250, 0.5);
                 robot.dropSkyStone();
-                robot.driveStraightByDistance(robot.DIRECTION_RIGHT, 800, 0.9);
-                robot.driveStraightByDistance(direction_forward, 900, 1);
+                robot.originalPosition();
+                robot.driveStraightByDistance(robot.DIRECTION_RIGHT, 1200, 0.9);
+                robot.driveStraightByDistance(direction_forward, 850, 1);
             }
         }
 

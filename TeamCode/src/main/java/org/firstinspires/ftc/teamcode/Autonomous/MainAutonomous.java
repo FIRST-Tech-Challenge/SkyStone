@@ -125,22 +125,23 @@ public class MainAutonomous extends LinearOpMode {
             telemetry.update();
         }
 
-        while(!isStarted() && (fieldPosition == FieldPosition.BLUE_QUARY || fieldPosition == FieldPosition.RED_QUARY) &&
-                !isStopRequested()){
+        while (!isStarted() && (fieldPosition == FieldPosition.BLUE_QUARY || fieldPosition == FieldPosition.RED_QUARY) &&
+                !isStopRequested()) {
             List<Recognition> recognized = recognize();
 
             if (recognized != null && fieldPosition == FieldPosition.BLUE_QUARY)
                 skystonePositions = detect.getSkystonePositionsBlue(recognized, imgWidth);
-            else if(recognized != null && fieldPosition == FieldPosition.RED_QUARY)
+            else if (recognized != null && fieldPosition == FieldPosition.RED_QUARY)
                 skystonePositions = detect.getSkystonePositionsRed(recognized, imgWidth);
 
             telemetry.addData("SKYSTONE POSITIONS", Arrays.toString(skystonePositions));
-            telemetry.addData("Heading", path.getPoseEstimate() + ", " + startingPos + ", "
-                    + Math.round(Math.toDegrees(path.getExternalHeading()) * 1000.0) / 1000.0);
+            telemetry.addData("External Heading",
+                    Math.round(Math.toDegrees(path.getExternalHeading()) * 1000.0) / 1000.0);
+            telemetry.addData("Current (starting) Location", path.getPoseEstimate());
             telemetry.update();
         }
 
-        if(isStopRequested() && tfod != null)
+        if (isStopRequested() && tfod != null)
             tfod.shutdown();
 
         waitForStart();
@@ -162,8 +163,9 @@ public class MainAutonomous extends LinearOpMode {
                     break;
             }
         } else {
-            while (opModeIsActive()){
+            while (opModeIsActive()) {
                 telemetry.addData("ERROR", "Please select parameters with gamepad1 upon initialization!");
+                telemetry.update();
             }
         }
     }
@@ -257,7 +259,7 @@ public class MainAutonomous extends LinearOpMode {
                 while (opModeIsActive()) {
                     path.updateTFODData(recognize());
                     path.updateHeading();
-                    if(isStopRequested() && tfod != null)
+                    if (isStopRequested() && tfod != null)
                         tfod.shutdown();
                 }
             }
@@ -265,8 +267,8 @@ public class MainAutonomous extends LinearOpMode {
         update.start();
     }
 
-    public void setPoseEstimate(Pose2d pose2d){
-        if(drive != null)
+    public void setPoseEstimate(Pose2d pose2d) {
+        if (drive != null)
             drive.setPoseEstimate(pose2d);
     }
 }

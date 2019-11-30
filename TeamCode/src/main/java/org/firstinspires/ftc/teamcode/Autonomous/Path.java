@@ -72,7 +72,7 @@ public class Path {
                 hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
                 hwMap.transferLock.setPosition(TeleopConstants.transferLockPosUp);
 
-                align.foundation();
+                align.foundation(FieldPosition.RED_QUARY);
 
                 hwMap.foundationLock.setPosition(TeleopConstants.foundationLockLock);
                 hwMap.transferLock.setPosition(TeleopConstants.transferLockPosFoundationGrabing);
@@ -107,8 +107,8 @@ public class Path {
                 drive.getLocalizer().update();
                 builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
                 builder = builder.setReversed(true).lineTo(new Vector2d(-35.208, -39.672))
-                        .setReversed(false).splineTo(new Pose2d(new Vector2d(-5.568, -21.44), Math.toRadians(0)))
-                        .splineTo(new Pose2d(new Vector2d(55.488, -25.296), Math.toRadians(-90)));  ////
+                        .setReversed(false).splineTo(new Pose2d(new Vector2d(-5.568, -17.44), Math.toRadians(0)))
+                        .splineTo(new Pose2d(new Vector2d(55.488, -22.296), Math.toRadians(-90)));  ////
                 trajectory = builder.build();
                 drive.followTrajectorySync(trajectory);
 
@@ -127,6 +127,9 @@ public class Path {
             case 3:
                 hwMap.transferHorn.setPosition(TeleopConstants.transferHornPosReady);
                 hwMap.innerTransfer.setPosition(TeleopConstants.innerTransferPosExtended);
+                hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
+                hwMap.transferLock.setPosition(TeleopConstants.transferLockPosPlatform);
+
                 builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
 
                 builder = builder.splineTo(new Pose2d(new Vector2d(-42.728, -39.672), Math.toRadians(90)));
@@ -138,28 +141,31 @@ public class Path {
                 drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(-42.728, -39.672), Math.toRadians(0)));
                 drive.getLocalizer().update();
                 builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
-                builder = builder.lineTo(new Vector2d(-42.728, -11.52));
+                builder = builder.lineTo(new Vector2d(-39.728, -11.52));
                 trajectory = builder.build();
                 drive.followTrajectorySync(trajectory);
 
                 intake(0);
 
-                drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(-42.728, -11.52), Math.toRadians(0)));
+                drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(-39.728, -11.52), Math.toRadians(0)));
                 drive.getLocalizer().update();
                 builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
-                builder = builder.setReversed(true).lineTo(new Vector2d(-42.728, -39.672))
+                builder = builder.setReversed(true).lineTo(new Vector2d(-39.728, -39.672))
                         .setReversed(false).splineTo(new Pose2d(new Vector2d(-5.568, -21.44), Math.toRadians(0)))
-                        .splineTo(new Pose2d(new Vector2d(55.488, -25.296), Math.toRadians(-90)));  ////
+                        .splineTo(new Pose2d(new Vector2d(52.488, -27.296), Math.toRadians(-90)));  ////
                 trajectory = builder.build();
                 drive.followTrajectorySync(trajectory);
 
-                hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
-                hwMap.transferLock.setPosition(TeleopConstants.transferLockPosUp);
+                /*hwMap.transferLock.setPosition(TeleopConstants.transferLockPosUp);
 
-                align.foundation();
+                try {
+                    Thread.sleep(300);
+                } catch (Exception e){}
 
-                hwMap.foundationLock.setPosition(TeleopConstants.foundationLockLock);
-                hwMap.transferLock.setPosition(TeleopConstants.transferLockPosFoundationGrabing);
+                hwMap.transferLock.setPosition(TeleopConstants.transferLockPosPlatform);*/
+
+                align.setPower(0.2, 0.2);
+                align.foundation(FieldPosition.RED_QUARY);
 
                 hwMap.transferHorn.setPosition(TeleopConstants.transferHornPosPush);
                 try {
@@ -167,18 +173,31 @@ public class Path {
                 } catch (Exception e){}
                 hwMap.innerTransfer.setPosition(TeleopConstants.innerTransferPosTucked);
 
-
-                //Move foundation here
-
-                /*drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(55.488, -31.296), Math.toRadians(90)));
+                drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(54.144, -16.128), drive.getExternalHeading()));
+                drive.getLocalizer().update();
                 builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
+                builder = builder.splineTo(new Pose2d(new Vector2d(29.064, -56.72), Math.toRadians(220)))
+                        .setReversed(true).lineTo(new Vector2d(61.0, -56.72)).setReversed(false);
+                trajectory = builder.build();
+                drive.followTrajectorySync(trajectory);
 
-                builder = builder.setReversed(true).splineTo(new Pose2d(new Vector2d(32.064, -54.72), Math.toRadians(0)))
-                        .setReversed(false).lineTo(new Vector2d(48.0, -54.72)).setReversed(true)
-                        .lineTo(new Vector2d(33.408, -54.72)).strafeTo(new Vector2d(-66.432, -39.744))
-                        .lineTo(new Vector2d(-63.552, -39.744));
-                drive.turnSync(Math.toRadians(90));
-                align.skystone();*/
+                hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
+                hwMap.transferLock.setPosition(TeleopConstants.transferLockPosPlatform);
+
+                try {
+                    Thread.sleep(300);
+                } catch (Exception e){}
+
+                drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(61.0, -56.72), Math.toRadians(0)));
+                drive.getLocalizer().update();
+                builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
+                builder = builder.setReversed(false).lineTo(new Vector2d(55.0, -56.72)).strafeTo(new Vector2d(55.0, -29.44))
+                        .lineTo(new Vector2d(-49.552, -29.44));
+                trajectory = builder.build();
+                drive.followTrajectorySync(trajectory);
+
+                drive.turnSync(Math.toRadians(-90));
+                //align.skystone();
                 break;
         }
     }

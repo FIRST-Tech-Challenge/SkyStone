@@ -5,18 +5,21 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.All.HardwareMap;
+import org.firstinspires.ftc.teamcode.Autonomous.FieldPosition;
 import org.firstinspires.ftc.teamcode.TeleOp.TeleopConstants;
 import org.firstinspires.ftc.teamcode.Tensorflow.TFODCalc;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.transform.sax.TemplatesHandler;
+
 import static java.lang.Math.PI;
 
 public class Align {
     HardwareMap hwMap;
-    private double approachingPower = 0.5;
-    private double turnPower = 0.4;
+    private double approachingPower = 0.4;
+    private double turnPower = 0.3;
     private LinearOpMode opMode;
     private List<Recognition> detectedObj;
     private boolean atOriginalPos = false;
@@ -36,62 +39,101 @@ public class Align {
         this.turnPower = turnPower;
     }
 
-    public void foundation(){
-        double delta90 = Math.abs(450 - externalHeading);
-        double delta270 = Math.abs(externalHeading - 270);
+    public void foundation(FieldPosition f){
         boolean correctRotation = false;
 
         while(!opMode.isStopRequested() && opMode.opModeIsActive()) {
-            if (delta270 <= delta90 && !correctRotation) {
-                if (externalHeading >= 280) {
+            externalHeading = Math.toDegrees(externalHeading);
+
+            if ((f == FieldPosition.RED_QUARY || f == FieldPosition.RED_FOUNDATION) && !correctRotation) {
+                if (externalHeading >= 271 || externalHeading < 90) {
                     setRightPower(-turnPower);
                     setLeftPower(turnPower);
-                } else if (externalHeading <= 260) {
+                } else if (externalHeading <= 269 && externalHeading >= 90) {
                     setRightPower(turnPower);
                     setLeftPower(-turnPower);
                 }
-            } else if (delta270 > delta90 && !correctRotation) {
-                if (externalHeading <= 80) {
+                opMode.telemetry.addData("Target Heading", 270 + "°");
+                opMode.telemetry.addData("Current Heading", externalHeading);
+            } else if ((f == FieldPosition.BLUE_QUARY || f == FieldPosition.BLUE_FOUNDATION) && !correctRotation) {
+                if (externalHeading <= 89 || externalHeading >= 270) {
                     setRightPower(turnPower);
                     setLeftPower(-turnPower);
-                } else if (externalHeading >= 100) {
+                } else if (externalHeading >= 91 && externalHeading < 270) {
                     setRightPower(-turnPower);
                     setLeftPower(turnPower);
                 }
+                opMode.telemetry.addData("Target Heading", 90 + "°");
+                opMode.telemetry.addData("Current Heading", externalHeading);
             }
 
-            if ((externalHeading > 80 && externalHeading < 100) || (externalHeading < 280 && externalHeading > 260) &&
+            if ((externalHeading > 89 && externalHeading < 91) || (externalHeading < 271 && externalHeading > 269) &&
                     !correctRotation) {
                 stop();
                 correctRotation = true;
+                opMode.telemetry.addData("Target Heading", "AT TARGET (±1°)");
+                opMode.telemetry.addData("Current Heading", externalHeading);
             }
 
-            if(correctRotation && !hwMap.foundationDetect1.getState() && !hwMap.foundationDetect2.getState()){
+            if(correctRotation && hwMap.foundationDetectLeft.getState() && hwMap.foundationDetectRight.getState()){
                 setPower(-approachingPower);
-            } else if(correctRotation && hwMap.foundationDetect1.getState() && !hwMap.foundationDetect2.getState()){
+                opMode.telemetry.addData("Target Heading", "AT TARGET (±3°)");
+                opMode.telemetry.addData("Current Heading", externalHeading);
+                opMode.telemetry.addData("LimitSwitchLeft", !hwMap.foundationDetectLeft.getState());
+                opMode.telemetry.addData("LimitSwitchRight", !hwMap.foundationDetectRight.getState());
+            /*} else if(correctRotation && !hwMap.foundationDetectLeft.getState() && hwMap.foundationDetectRight.getState()){
                 strafe(approachingPower, false);
-            } else if(correctRotation && !hwMap.foundationDetect1.getState() && hwMap.foundationDetect2.getState()){
-                strafe(approachingPower, true);
-            } else if(correctRotation && hwMap.foundationDetect1.getState() && hwMap.foundationDetect2.getState()){
+            } else if(correctRotation && hwMap.foundationDetectLeft.getState() && !hwMap.foundationDetectRight.getState()){
+                strafe(approachingPower, true);*/
+
+            } else if(!hwMap.foundationDetectLeft.getState() && !hwMap.foundationDetectRight.getState()){
+                hwMap.transferLock.setPosition(TeleopConstants.transferLockPosUp);
+                hwMap.foundationLock.setPosition(TeleopConstants.foundationLockLock);
                 stop();
+            } else if(correctRotation && (!hwMap.foundationDetectLeft.getState() || !hwMap.foundationDetectRight.getState())){
+                if(!hwMap.foundationDetectLeft.getState()){
+                    hwMap.foundationLock.setPosition(TeleopConstants.foundationLockLock);
+                    try {
+                        Thread.sleep(300);
+                    } catch (Exception e){}
+                    while(hwMap.foundationDetectRight.getState()){
+                        setLeftPower(-turnPower);
+                        setRightPower(turnPower);
+                    }
+                    hwMap.transferLock.setPosition(TeleopConstants.transferLockPosUp);
+                    stop();
+                } else if(!hwMap.foundationDetectRight.getState()){
+                    hwMap.transferLock.setPosition(TeleopConstants.transferLockPosUp);
+                    try {
+                        Thread.sleep(300);
+                    } catch (Exception e){}
+                    while(hwMap.foundationDetectRight.getState()){
+                        setLeftPower(turnPower);
+                        setRightPower(-turnPower);
+                    }
+                    hwMap.foundationLock.setPosition(TeleopConstants.foundationLockLock);
+                    stop();
+                }
+                break;
             }
+            opMode.telemetry.update();
         }
 
     }
 
     public void skystone() {
-        double horizontalMid = -1;
-        double distanceAway = -1;
+        double horizontalMid;
+        double distanceAway;
         double theta = -1;
         double initLeft = getOdometry()[0];
         double initRight = getOdometry()[1];
         double initSide = getOdometry()[2];
         boolean isAligned = false;
         boolean collected = false;
-        int imgWidth = -1;
+        int imgWidth;
         atOriginalPos = false;
 
-        while (detectedObj != null) {
+        while (detectedObj != null && !atOriginalPos) {
             // step through the list of recognitions and display boundary info.
             for (Recognition recognition : detectedObj) {
                 if (recognition.getLabel().equalsIgnoreCase("skystone")) {
@@ -165,7 +207,6 @@ public class Align {
                                 atOriginalPos = true;
                             }
                         }
-
                     }
                 }
             }

@@ -21,6 +21,13 @@ import java.util.List;
  */
 public class HardwareOmnibot extends HardwareOmnibotDrive
 {
+    public enum StackActivities {
+        IDLE,
+        LIFT,
+        RELEASE,
+        STOW
+    }
+
     public enum FoundationActivities {
         IDLE,
         GRAB,
@@ -173,31 +180,43 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         STOWED(15),
         STONE1_RELEASE(126),
         STONE1(176),
+        STONE1_ROTATE(226),
         CAPSTONE_GRAB(300),
         STONE2_RELEASE(424),
         STONE2(474),
+        STONE2_ROTATE(424),
         CAPSTONE_ROTATE(650),
         STONE3_RELEASE(622),
         STONE3(672),
+        STONE3_ROTATE(722),
         ROTATE(850),
         STONE4_RELEASE(847),
         STONE4(907),
+        STONE4_ROTATE(957),
         STONE5_RELEASE(1071),
         STONE5(1131),
+        STONE5_ROTATE(1181),
         STONE6_RELEASE(1297),
         STONE6(1357),
+        STONE6_ROTATE(1407),
         STONE7_RELEASE(1533),
         STONE7(1593),
+        STONE7_ROTATE(1643),
         STONE8_RELEASE(1750),
         STONE8(1810),
+        STONE8_ROTATE(1860),
         STONE9_RELEASE(1970),
         STONE9(2030),
+        STONE9_ROTATE(2080),
         STONE10_RELEASE(2191),
         STONE10(2251),
+        STONE10_ROTATE(2301),
         STONE11_RELEASE(2415),
         STONE11(2475),
+        STONE11_ROTATE(2525),
         STONE12_RELEASE(2620),
         STONE12(2680),
+        STONE12_ROTATE(2730),
         LIFTMAX(MAX_LIFT);
 
         private final int encoderCount;
@@ -240,6 +259,41 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                     return STONE11_RELEASE;
                 case STONE12:
                     return STONE12_RELEASE;
+                default:
+                    return currentStone;
+            }
+        }
+
+        public static LiftPosition rotatePosition(LiftPosition currentStone)
+        {
+            switch(currentStone)
+            {
+                case ROTATE:
+                    return ROTATE;
+                case STONE1:
+                    return STONE1_ROTATE;
+                case STONE2:
+                    return STONE2_ROTATE;
+                case STONE3:
+                    return STONE3_ROTATE;
+                case STONE4:
+                    return STONE4_ROTATE;
+                case STONE5:
+                    return STONE5_ROTATE;
+                case STONE6:
+                    return STONE6_ROTATE;
+                case STONE7:
+                    return STONE7_ROTATE;
+                case STONE8:
+                    return STONE8_ROTATE;
+                case STONE9:
+                    return STONE9_ROTATE;
+                case STONE10:
+                    return STONE10_ROTATE;
+                case STONE11:
+                    return STONE11_ROTATE;
+                case STONE12:
+                    return STONE12_ROTATE;
                 default:
                     return currentStone;
             }
@@ -401,6 +455,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public ControlledDeceleration decelerationState = ControlledDeceleration.IDLE;
     public CapstoneActivity capstoneState = CapstoneActivity.IDLE;
     public FoundationActivities removeFoundation = FoundationActivities.IDLE;
+    public StackActivities stackStone = StackActivities.IDLE;
     private boolean clawPinched = false;
     private boolean clawdricopterBack = false;
     // These are the heights of the stone levels to auto set the lift to
@@ -781,7 +836,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 			case RAISING_TO_ROTATE:
 			    // It has gotten high enough
 				if(clawdricopterBack) {
-					if(lifterAtPosition(liftActivityTargetHeight)) {
+					if(lifterAtPosition(LiftPosition.releasePosition(liftActivityTargetHeight))) {
 						stowState = StowActivity.ROTATING;
 						clawdricopter.setPosition(CLAWDRICOPTER_FRONT);
 						clawdricopterTimer.reset();
@@ -815,7 +870,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                         if (liftActivityTargetHeight.getEncoderCount() < LiftPosition.ROTATE.getEncoderCount()) {
                             liftActivityTargetHeight = LiftPosition.ROTATE;
                         }
-                        moveLift(liftActivityTargetHeight);
+                        moveLift(LiftPosition.releasePosition(liftActivityTargetHeight));
                     }
                 }
                 break;
@@ -1279,6 +1334,45 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                 if(grabState == GrabFoundationActivity.IDLE) {
                     settleTimer.reset();
                     removeFoundation = FoundationActivities.SETTLE;
+                }
+                break;
+            case IDLE:
+            default:
+                break;
+        }
+    }
+
+    public boolean startStoneStacking() {
+        boolean isStacking;
+        if (stackStone == StackActivities.IDLE) {
+            isStacking = true;
+            stackStone = StackActivities.LIFT;
+            startLifting();
+        } else {
+            isStacking = true;
+        }
+
+        return isStacking;
+    }
+
+    public void performStoneStacking() {
+        switch(stackStone)
+        {
+            case STOW:
+                if(stowState == StowActivity.IDLE) {
+                    stackStone = StackActivities.IDLE;
+                }
+                break;
+            case RELEASE:
+                if(releaseState == ReleaseActivity.IDLE) {
+                    stackStone = StackActivities.STOW;
+                    startStowing();
+                }
+                break;
+            case LIFT:
+                if(liftState == LiftActivity.IDLE) {
+                    stackStone = StackActivities.RELEASE;
+                    startReleasing();
                 }
                 break;
             case IDLE:

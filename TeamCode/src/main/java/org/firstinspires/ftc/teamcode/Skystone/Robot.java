@@ -61,6 +61,9 @@ public class Robot {
     private Servo leftFoundation;
     private Servo rightFoundation;
 
+    private Servo markerServo;
+    private Servo backStopper;
+
     // Outtake Slide Positions
     public final double OUTTAKE_SLIDE_EXTENDED = .2;
     public final double OUTTAKE_SLIDE_RETRACTED = .7;
@@ -163,6 +166,9 @@ public class Robot {
 
         leftFoundation = getServo("leftFoundation");
         rightFoundation = getServo("rightFoundation");
+
+        markerServo = getServo("markerServo");
+        backStopper = getServo("backStopper");
     }
 
     private DcMotor getDcMotor(String name){
@@ -1340,4 +1346,11 @@ public class Robot {
     public void setPosition(Position position) {
         this.position = position;
     }
+    public Servo getMarkerServo() { return markerServo; }
+
+    public void setMarkerServo(Servo markerServo) { this.markerServo = markerServo; }
+
+    public Servo getBackStopper() { return backStopper; }
+
+    public void setBackStopper(Servo backStopper) { this.backStopper = backStopper; }
 }

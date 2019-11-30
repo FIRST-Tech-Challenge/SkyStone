@@ -49,6 +49,7 @@ public class MainTeleop extends LinearOpMode {
             spoolLogic();
             outtakeLogic();
             foundationLogic();
+            capStoneLogic();
 
             telemetry.addLine("xPos: " + robot.getRobotPos().x);
             telemetry.addLine("yPos: " + robot.getRobotPos().y);
@@ -261,5 +262,13 @@ public class MainTeleop extends LinearOpMode {
         }
 
         robot.foundationMover(foundationToggle);
+    }
+
+    private void capStoneLogic() {
+        if (gamepad1.a){
+            robot.getMarkerServo().setPosition(1);
+        } else if (gamepad1.b){
+            robot.getMarkerServo().setPosition(0.3);
+        }
     }
 }

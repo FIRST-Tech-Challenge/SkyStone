@@ -34,7 +34,7 @@ public class Vision {
 
     private Location location = Location.UNKNOWN;
 
-    private final double minConfidenceLevel = 0.2;
+    private final double minConfidenceLevel = 0.3;
 
     private VuforiaLocalizer vuforia;
 
@@ -149,11 +149,14 @@ public class Vision {
             }
         }
     }
+
     public Location runDetection2(boolean deactivated) {
 
         ArrayList<DetectionResult> detectionResults = new ArrayList<>();
         long startTime = SystemClock.elapsedRealtime();
+
         int numOfSkystonesFound = 0;
+
         DetectionResult center = new DetectionResult(Location.CENTER);
         DetectionResult right = new DetectionResult(Location.RIGHT);
         DetectionResult left = new DetectionResult(Location.LEFT);
@@ -161,6 +164,7 @@ public class Vision {
         detectionResults.add(center);
         detectionResults.add(right);
         detectionResults.add(left);
+
         while (linearOpMode.opModeIsActive() && SystemClock.elapsedRealtime() - startTime < 2000 && numOfSkystonesFound <= 3) {
             List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
             if (updatedRecognitions != null && updatedRecognitions.size() > 0) {
@@ -183,17 +187,28 @@ public class Vision {
                     if (recognition.getLabel().equals("Skystone")){
                         numOfSkystonesFound++;
                         float blockPixelX = (updatedRecognitions.get(i).getTop()+updatedRecognitions.get(i).getBottom())/2;
-                        linearOpMode.telemetry.clear();
-                        linearOpMode.telemetry.addLine("blockPixelX: " + blockPixelX + ". confidence:" + recognition.getConfidence());
-                        if (blockPixelX < 690){
-                            right.incrementConfidence(recognition.getConfidence());
-                        } else if (blockPixelX < 810) {
-                            center.incrementConfidence(recognition.getConfidence());
-                        } else {
-                            left.incrementConfidence(recognition.getConfidence());
+                        float blockPixelY = (updatedRecognitions.get(i).getLeft() + updatedRecognitions.get(i).getRight())/2;
+
+//                        linearOpMode.telemetry.update();
+                        if (blockPixelY < 100){
+                            if (blockPixelX > 100) {
+                                linearOpMode.telemetry.clear();
+                                linearOpMode.telemetry.addLine("blockPixelX: " + blockPixelX + " blockPixelY: " + blockPixelY + " confidence:" + recognition.getConfidence());
+                                linearOpMode.telemetry.addLine("updated");
+                                if (blockPixelX > 900) {
+                                    left.incrementConfidence(recognition.getConfidence());
+                                } else if (blockPixelX > 700) {
+                                    center.incrementConfidence(recognition.getConfidence());
+                                } else {
+                                    right.incrementConfidence(recognition.getConfidence());
+                                }
+                            }
                         }
                     }
                 }
+
+
+
             }
         }
 

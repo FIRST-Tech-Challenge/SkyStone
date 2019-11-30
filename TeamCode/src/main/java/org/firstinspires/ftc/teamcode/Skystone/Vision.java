@@ -34,7 +34,7 @@ public class Vision {
 
     private Location location = Location.UNKNOWN;
 
-    private final double minConfidenceLevel = 0.3;
+    private final double minConfidenceLevel = 0.5;
 
     private VuforiaLocalizer vuforia;
 
@@ -182,6 +182,7 @@ public class Vision {
                     }
                 });
 
+                linearOpMode.telemetry.clear();
                 for (int i = 0; i < updatedRecognitions.size(); i++) {
                     Recognition recognition = updatedRecognitions.get(i);
                     if (recognition.getLabel().equals("Skystone")){
@@ -190,19 +191,22 @@ public class Vision {
                         float blockPixelY = (updatedRecognitions.get(i).getLeft() + updatedRecognitions.get(i).getRight())/2;
 
 //                        linearOpMode.telemetry.update();
-                        if (blockPixelY < 100){
-                            if (blockPixelX > 100) {
-                                linearOpMode.telemetry.clear();
-                                linearOpMode.telemetry.addLine("blockPixelX: " + blockPixelX + " blockPixelY: " + blockPixelY + " confidence:" + recognition.getConfidence());
-                                linearOpMode.telemetry.addLine("updated");
-                                if (blockPixelX > 900) {
+                        if (updatedRecognitions.get(i).getLeft() > 250){
+                            linearOpMode.telemetry.addLine(i + " not filtered: " + recognition);
+//                            linearOpMode.telemetry.addLine("not filtered blockPixelX: " + blockPixelX);
+//                            linearOpMode.telemetry.addLine("blockPixelY: " + blockPixelY);
+//                            linearOpMode.telemetry.addLine( "confidence:" + recognition.getConfidence());
+                            if (blockPixelX > 0) {
+                                if (blockPixelX > 927) {
                                     left.incrementConfidence(recognition.getConfidence());
-                                } else if (blockPixelX > 700) {
+                                } else if (blockPixelX > 615) {
                                     center.incrementConfidence(recognition.getConfidence());
                                 } else {
                                     right.incrementConfidence(recognition.getConfidence());
                                 }
                             }
+//                       } else {
+//                            linearOpMode.telemetry.addLine(i + " filtered: " + recognition);
                         }
                     }
                 }

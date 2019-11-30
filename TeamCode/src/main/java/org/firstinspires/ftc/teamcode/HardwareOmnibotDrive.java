@@ -49,7 +49,7 @@ public class HardwareOmnibotDrive
     protected double rearLeftMotorPower = 0.0;
     protected double frontRightMotorPower = 0.0;
     protected double rearRightMotorPower = 0.0;
-    private boolean inputShaping = true;
+    public boolean defaultInputShaping = true;
     protected boolean imuRead = false;
     protected double imuValue = 0.0;
 
@@ -62,7 +62,7 @@ public class HardwareOmnibotDrive
     }
 
     public void setInputShaping(boolean inputShapingEnabled) {
-        inputShaping = inputShapingEnabled;
+        defaultInputShaping = inputShapingEnabled;
     }
 
     public void initIMU()
@@ -151,7 +151,7 @@ public class HardwareOmnibotDrive
      * @param spin - -1.0 to 1.0 power to rotate the robot, reduced to MAX_SPIN_RATE
      * @param angleOffset - The offset from the gyro to run at, such as drive compensation
      */
-    public void drive(double xPower, double yPower, double spin, double angleOffset) {
+    public void drive(double xPower, double yPower, double spin, double angleOffset, boolean inputShaping) {
         double gyroAngle = readIMU() + angleOffset;
         double leftFrontAngle = toRadians(45.0 + gyroAngle);
         double rightFrontAngle = toRadians(-45.0 + gyroAngle);
@@ -159,8 +159,8 @@ public class HardwareOmnibotDrive
         double rightRearAngle = toRadians(-135.0 + gyroAngle);
         double joystickMagnitude = sqrt(xPower*xPower + yPower*yPower);
         double joystickAngle = atan2(yPower, xPower);
-        double newPower = driverInputShaping(joystickMagnitude);
-        double newSpin = driverInputSpinShaping(spin);
+        double newPower = driverInputShaping(joystickMagnitude, inputShaping);
+        double newSpin = driverInputSpinShaping(spin, inputShaping);
         double newXPower = newPower * cos(joystickAngle);
         double newYPower = newPower * sin(joystickAngle);
 
@@ -185,40 +185,32 @@ public class HardwareOmnibotDrive
         setRearLeftMotorPower(LRpower);
     }
 
-    protected double driverInputShaping( double valueIn) {
+    protected double driverInputShaping( double valueIn, boolean inputShaping) {
+        double aValue = 0.77;
         double valueOut = 0.0;
 
-        if(Math.abs(valueIn) < MIN_DRIVE_RATE) {
+        if(valueIn == 0.0) {
             valueOut = 0.0;
         } else {
             if (inputShaping) {
-                if (valueIn > 0) {
-                    valueOut = MIN_DRIVE_RATE + (1.0 - MIN_DRIVE_RATE) * valueIn;
-                } else {
-                    valueOut = -MIN_DRIVE_RATE + (1.0 - MIN_DRIVE_RATE) * valueIn;
-                }
-            } else {
-                valueOut = valueIn;
+                valueOut = aValue * Math.pow(valueIn, 3) + (1 - aValue) * valueIn;
+                valueOut = Math.max(MIN_DRIVE_RATE, valueOut);
             }
         }
 
         return valueOut;
     }
 
-    protected double driverInputSpinShaping( double valueIn) {
+    protected double driverInputSpinShaping( double valueIn, boolean inputShaping) {
+        double aValue = 0.77;
         double valueOut = 0.0;
 
-        if(Math.abs(valueIn) < MIN_SPIN_RATE) {
+        if(valueIn == 0.0) {
             valueOut = 0.0;
         } else {
             if (inputShaping) {
-                if (valueIn > 0) {
-                    valueOut = (1.0 + MIN_SPIN_RATE) * valueIn - MIN_SPIN_RATE;
-                } else {
-                    valueOut = (1.0 + MIN_SPIN_RATE) * valueIn + MIN_SPIN_RATE;
-                }
-            } else {
-                valueOut = valueIn;
+                valueOut = aValue * Math.pow(valueIn, 3) + (1 - aValue) * valueIn;
+                valueOut = Math.max(MIN_SPIN_RATE, valueOut);
             }
         }
 

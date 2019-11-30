@@ -37,6 +37,8 @@ public class OmniTeleOp extends OpMode {
         telemetry.addLine("Calling robot.init");
         updateTelemetry(telemetry);
         robot.init(hardwareMap);
+        gamepad1.setJoystickDeadzone((float)robot.MIN_DRIVE_RATE);
+        gamepad2.setJoystickDeadzone((float)robot.MIN_DRIVE_RATE);
 //        robot.disableDriveEncoders();
         robot.setInputShaping(true);
         telemetry.addLine("Ready");
@@ -354,7 +356,7 @@ public class OmniTeleOp extends OpMode {
         if((robot.alignState == HardwareOmnibot.AlignActivity.IDLE) && (robot.grabState == HardwareOmnibot.GrabFoundationActivity.IDLE) &&
                 (robot.accelerationState == HardwareOmnibot.ControlledAcceleration.IDLE) &&
                 (robot.decelerationState == HardwareOmnibot.ControlledDeceleration.IDLE)){
-            robot.drive(speedMultiplier * xPower, speedMultiplier * yPower, spinMultiplier * spin, driverAngle);
+            robot.drive(speedMultiplier * xPower, speedMultiplier * yPower, spinMultiplier * spin, driverAngle, robot.defaultInputShaping);
         }
 
 		telemetry.addData("Lift Target Height: ", robot.liftTargetHeight);

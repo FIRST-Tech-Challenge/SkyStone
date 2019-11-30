@@ -967,7 +967,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 			if(Math.abs(drivePower) < MIN_DRIVE_RATE) {
 				drivePower = Math.copySign(MIN_DRIVE_RATE, drivePower);
 			}
-            drive(drivePower, 0.0, 0.0, driveAngle-readIMU());
+            drive(drivePower, 0.0, 0.0, driveAngle-readIMU(), false);
 		} else {
             setAllDriveZero();
             targetReached = true;
@@ -1017,7 +1017,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                     spinPower = -spinSpeed;
                 }
             }
-            drive(0, drivePower, spinPower, -readIMU());
+            drive(0, drivePower, spinPower, -readIMU(), false);
         } else {
             setAllDriveZero();
             parallel = true;
@@ -1070,9 +1070,9 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                 drivePower = MIN_DRIVE_RATE;
             }
             // Scale the power based on how far
-            drive(0, -drivePower, -spinPower, -readIMU());
+            drive(0, -drivePower, -spinPower, -readIMU(), false);
         } else {
-            drive(0, -MIN_DRIVE_RATE, 0, -readIMU());
+            drive(0, -MIN_DRIVE_RATE, 0, -readIMU(), false);
             touching = true;
         }
 
@@ -1160,16 +1160,16 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                 }
                 switch(accelerationSide) {
                     case LEFT:
-                        drive(-accelerationCurrent, 0, 0, -readIMU());
+                        drive(-accelerationCurrent, 0, 0, -readIMU(), false);
                         break;
                     case RIGHT:
-                        drive(accelerationCurrent, 0, 0, -readIMU());
+                        drive(accelerationCurrent, 0, 0, -readIMU(), false);
                         break;
                     case BACK:
-                        drive(0, -accelerationCurrent, 0, -readIMU());
+                        drive(0, -accelerationCurrent, 0, -readIMU(), false);
                         break;
                     case FRONT:
-                        drive(0, accelerationCurrent, 0, -readIMU());
+                        drive(0, accelerationCurrent, 0, -readIMU(), false);
                         break;
                 }
                 break;
@@ -1213,16 +1213,16 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                 }
                 switch(decelerationSide) {
                     case LEFT:
-                        drive(-decelerationCurrent, 0, 0, -readIMU());
+                        drive(-decelerationCurrent, 0, 0, -readIMU(), false);
                         break;
                     case RIGHT:
-                        drive(decelerationCurrent, 0, 0, -readIMU());
+                        drive(decelerationCurrent, 0, 0, -readIMU(), false);
                         break;
                     case BACK:
-                        drive(0, -decelerationCurrent, 0, -readIMU());
+                        drive(0, -decelerationCurrent, 0, -readIMU(), false);
                         break;
                     case FRONT:
-                        drive(0, decelerationCurrent, 0, -readIMU());
+                        drive(0, decelerationCurrent, 0, -readIMU(), false);
                         break;
                 }
                 break;

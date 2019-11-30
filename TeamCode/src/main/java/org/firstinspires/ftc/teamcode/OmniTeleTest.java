@@ -24,6 +24,8 @@ public class OmniTeleTest extends OmniAutoClass {
     public void initRobot() {
         telemetry.addLine("Calling robot.init");
         updateTelemetry(telemetry);
+        gamepad1.setJoystickDeadzone((float)robot.MIN_DRIVE_RATE);
+        gamepad2.setJoystickDeadzone((float)robot.MIN_DRIVE_RATE);
         robot.init(hardwareMap);
         robot.setInputShaping(true);
         telemetry.addLine("Ready");
@@ -219,7 +221,7 @@ public class OmniTeleTest extends OmniAutoClass {
 
 
 
-            robot.drive(speedMultiplier * xPower, speedMultiplier * yPower, spinMultiplier * spin, driverAngle);
+            robot.drive(speedMultiplier * xPower, speedMultiplier * yPower, spinMultiplier * spin, driverAngle, robot.defaultInputShaping);
 
             //        if(!xHeld && xPressed)
 //        {

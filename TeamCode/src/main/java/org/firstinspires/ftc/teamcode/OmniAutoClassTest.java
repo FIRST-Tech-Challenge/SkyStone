@@ -199,7 +199,7 @@ public abstract class OmniAutoClassTest extends LinearOpMode {
 
         xPower = speed * Math.cos(Math.toRadians(driveAngle));
         yPower = speed * Math.sin(Math.toRadians(driveAngle));
-        robot.drive(xPower, yPower, rotateSpeed, -90.0);
+        robot.drive(xPower, yPower, rotateSpeed, -90.0, false);
     }
 
     /**
@@ -336,7 +336,7 @@ public abstract class OmniAutoClassTest extends LinearOpMode {
                 // Positive angle, need to rotate right
                 rotateSpeed = -rotateSpeed;
             }
-            robot.drive(0.0, 0.0, rotateSpeed, 0.0);
+            robot.drive(0.0, 0.0, rotateSpeed, 0.0, false);
             updateTelemetry(telemetry);
             gyroReading = robot.readIMU();
             angleRemaining = deltaAngle(targetAngle, gyroReading);
@@ -372,7 +372,7 @@ public abstract class OmniAutoClassTest extends LinearOpMode {
     public void rotateRobotForTime(double speed, int maxTime) {
         int elaspedTime = 0;
         while(opModeIsActive() && elaspedTime < maxTime) {
-            robot.drive(0.0,0.0,speed,0.0);
+            robot.drive(0.0,0.0,speed,0.0, false);
             elaspedTime += 50;
             sleep(50);
         }
@@ -917,10 +917,10 @@ public abstract class OmniAutoClassTest extends LinearOpMode {
             spinRate = controlledRotationAngle(deltaAngle, maxSpeed);
             // We went too far, come back
             if (deltaAngle < 0.0) {
-                robot.drive(0.0, 0.0, -spinRate, 0.0);
+                robot.drive(0.0, 0.0, -spinRate, 0.0, false);
                 telemetry.addData("Spin Rate: ", -spinRate);
             } else {
-                robot.drive(0.0, 0.0, spinRate, 0.0);
+                robot.drive(0.0, 0.0, spinRate, 0.0, false);
                 telemetry.addData("Spin Rate: ", spinRate);
             }
             if (isStopRequested()) {
@@ -993,20 +993,20 @@ public abstract class OmniAutoClassTest extends LinearOpMode {
                 // CCW
                 // We went too far, come back
                 if (deltaAngle < 0.0) {
-                    robot.drive(0.0, 0.0, -spinRate, 0.0);
+                    robot.drive(0.0, 0.0, -spinRate, 0.0, false);
                     telemetry.addData("Spin Rate: ", spinRate);
                 } else {
-                    robot.drive(0.0, 0.0, spinRate, 0.0);
+                    robot.drive(0.0, 0.0, spinRate, 0.0, false);
                     telemetry.addData("Spin Rate: ", -spinRate);
                 }
             } else {
                 // CW
                 // We went too far, come back
                 if (deltaAngle < 0.0) {
-                    robot.drive(0.0, 0.0, -spinRate, 0.0);
+                    robot.drive(0.0, 0.0, -spinRate, 0.0, false);
                     telemetry.addData("Spin Rate: ", -spinRate);
                 } else {
-                    robot.drive(0.0, 0.0, spinRate, 0.0);
+                    robot.drive(0.0, 0.0, spinRate, 0.0, false);
                     telemetry.addData("Spin Rate: ", spinRate);
                 }
             }

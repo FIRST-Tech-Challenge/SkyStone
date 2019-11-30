@@ -24,6 +24,8 @@ public class OmniTeleOpTimer extends OpMode {
     public void init() {
         telemetry.addLine("Calling robot.init");
         updateTelemetry(telemetry);
+        gamepad1.setJoystickDeadzone((float)robot.MIN_DRIVE_RATE);
+        gamepad2.setJoystickDeadzone((float)robot.MIN_DRIVE_RATE);
         robot.init(hardwareMap);
         robot.setInputShaping(true);
         // This  should override the Half And Half pattern with the timer.
@@ -280,7 +282,7 @@ public class OmniTeleOpTimer extends OpMode {
 
         //slow up
 //        robot.drive(speedMultiplier * xPower, speedMultiplier * yPower, spinMultiplier * spin, driverAngle);
-        robot.drive(speedMultiplier * xPower, speedMultiplier * yPower, spinMultiplier * spin, driverAngle);
+        robot.drive(speedMultiplier * xPower, speedMultiplier * yPower, spinMultiplier * spin, driverAngle, robot.defaultInputShaping);
 
         //Set null zones
         if(abs(liftPower) <= 0.1)

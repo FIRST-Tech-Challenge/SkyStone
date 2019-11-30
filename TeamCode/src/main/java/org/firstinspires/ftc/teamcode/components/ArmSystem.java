@@ -183,13 +183,14 @@ public class ArmSystem {
                 m_up = false;
             }
 
-            if (down && m_down) {
+            if (down && !m_down) {
                 setSliderHeight(--targetHeight);
                 m_down = true;
             } else if (!down) {
                 m_down = false;
             }
             updateHeight(sliderSpeed);
+            toReturn += "Down: " + down;
         } else {
             slider.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             if (up) {

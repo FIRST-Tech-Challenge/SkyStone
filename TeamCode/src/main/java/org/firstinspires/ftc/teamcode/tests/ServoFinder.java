@@ -13,9 +13,9 @@ public class ServoFinder extends OpMode {
     public double speed = 0.001;
 
     public void init() {
-        pivot = hardwareMap.get(Servo.class, "pivot");
-        elbow = hardwareMap.get(Servo.class, "gripper");
-        wrist = hardwareMap.get(Servo.class, "wrist");
+        pivot = hardwareMap.get(Servo.class, "PIVOT");
+        elbow = hardwareMap.get(Servo.class, "ELBOW");
+        wrist = hardwareMap.get(Servo.class, "WRIST");
 
     }
     public void loop() {

@@ -3,8 +3,8 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name="Tryhard Blue Wall", group="Exercises")
-public class TryhardBlueWall extends TryhardRedWall{
+@Autonomous(name="One SkyStone Blue Wall", group="Exercises")
+public class OneSkyStoneBlueWall extends OneSkyStoneRedWall {
     @Override
     public void runOpMode() {
         direction_forward = robot.DIRECTION_BACKWARD;

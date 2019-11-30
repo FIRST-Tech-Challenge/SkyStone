@@ -3,9 +3,9 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-@Autonomous(name="Tryhard Red Wall", group="Exercises")
+@Autonomous(name="One SkyStone Red Wall", group="Exercises")
 
-public class TryhardRedWall extends LinearOpMode {
+public class OneSkyStoneRedWall extends LinearOpMode {
     protected TensorFlowBot robot = new TensorFlowBot(this);
 
     int direction_forward, direction_backward;

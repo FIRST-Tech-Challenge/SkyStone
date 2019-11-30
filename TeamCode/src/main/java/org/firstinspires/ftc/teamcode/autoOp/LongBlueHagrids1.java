@@ -6,9 +6,9 @@ import org.firstinspires.ftc.teamcode.auto.ChassisConfig;
 /**
  * This just runs from the position closest to the crater, into the crater.
  */
-public abstract class LongBeanis2 extends ChassisStandard {
+public abstract class LongBlueHagrids1 extends ChassisStandard {
 
-    public LongBeanis2(ChassisConfig config) {
+    public LongBlueHagrids1(ChassisConfig config) {
         super(config);
     }
 
@@ -20,13 +20,13 @@ public abstract class LongBeanis2 extends ChassisStandard {
 
         if (madeTheRun == false) {
 
-            encoderDrive(27);
+            encoderDrive(24);
 
-            turnLeft(90);
-
-            encoderDrive(27);
+            turnRight(100);
+            encoderDrive(13);
             madeTheRun = true;
         }
+
     }
 }
 

@@ -1,81 +1,89 @@
 package org.firstinspires.ftc.teamcode.auto;
 
-import com.qualcomm.ftccommon.SoundPlayer;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+
+import java.util.List;
 
 
 public abstract class ChassisStandard extends OpMode {
 
-    //is sound playing?
-    boolean soundPlaying = false;
+    enum InitStage {
+        INIT_STAGE_START,
+        INIT_STAGE_ARM,
+        INIT_STAGE_VUFORIA,
+        INIT_STAGE_FINISHED
+    };
 
+    // vision detection variables/state
+    private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
+    private static final String LABEL_FIRST_ELEMENT = "Stone";
+    private static final String LABEL_SECOND_ELEMENT = "Skystone";
+    private static final String VUFORIA_KEY =
+            "AfgOBrf/////AAABmRjMx12ilksPnWUyiHDtfRE42LuceBSFlCTIKmmNqCn2EOk3I4NtDCSr0wCLFxWPoLR2qHKraX49ofQ2JknI76SJS5Hy8cLbIN+1GlFDqC8ilhuf/Y1yDzKN6a4n0fYWcEPlzHRc8C1V+D8vZ9QjoF3r//FDDtm+M3qlmwA7J/jNy4nMSXWHPCn2IUASoNqybTi/CEpVQ+jEBOBjtqxNgb1CEdkFJrYGowUZRP0z90+Sew2cp1DJePT4YrAnhhMBOSCURgcyW3q6Pl10XTjwB4/VTjF7TOwboQ5VbUq0wO3teE2TXQAI53dF3ZUle2STjRH0Rk8H94VtHm9u4uitopFR7zmxVl3kQB565EUHwfvG";
+    protected VuforiaLocalizer vuforia;
+    protected TFObjectDetector tfod;
+    private int lastStones = 0;
+    private int lastSkyStones = 0;
+
+    // is sound playing?
+    boolean soundPlaying = false;
     int bruhSoundID = -1;
 
     protected ChassisConfig config;
     protected boolean madeTheRun = false;
-
-
-    // Elapsed time since the opmode started.
     protected ElapsedTime runtime = new ElapsedTime();
-    protected ElapsedTime dropTime = new ElapsedTime();
+    private InitStage initStage =  InitStage.INIT_STAGE_START;
 
-    // Motors connected to the hub.
+    // Motors
     private DcMotor motorBackLeft;
     private DcMotor motorBackRight;
     private DcMotor motorFrontLeft;
     private DcMotor motorFrontRight;
-    private DcMotor extender;
-    private DcMotor shoulder;
-    private DcMotor crane;
 
-    //Crab
+    // Crab
     protected Servo crab;
+    private double crabAngle;
 
-    //fingers
+    // Fingers
     protected Servo fingerFront;
     protected Servo fingerBack;
+    private double ffAngleHand;
+    private double bfAngleHand;
 
-    // Team Marker Servo
-    private Servo flagHolder;
-    private Servo bull;
-    private Servo dozer;
-    private double angleHand;
+    // Elevator
+    private DcMotor elevator;
+    private double angleAnkle;
 
-
-    // Walle state management
-    int wasteAllocationLoadLifterEarthBegin;
-    private DcMotor wasteAllocationLoadLifterEarth;
-
-    //Screw
-    int extraterrestrialVegetationEvaluatorBegin;
-    private DcMotor extraterrestrialVegetationEvaluator;
-
-
-    //gyroscope built into hub
+    // Gyroscope
     private BNO055IMU bosch;
 
-    // Hack stuff.
-    protected boolean useBulldozer = false;
+    // Optionally turn on/off the subsystems.
     protected boolean useGyroScope = true;
     protected boolean useMotors = true;
-    protected boolean useTeamMarker = false;
-    protected boolean hackTimeouts = true;
-    protected boolean useArm = false;
-    protected boolean useEve = false;
+    protected boolean useTimeouts = true;
     protected boolean useCrab = true;
+    protected boolean useElevator = true;
     protected boolean useFingers = true;
+    protected boolean useVuforia = false;
 
 
+    protected ChassisStandard() {
+        this(ChassisConfig.forDefaultConfig());
+    }
 
     protected ChassisStandard(ChassisConfig config) {
         this.config = config;
@@ -86,15 +94,13 @@ public abstract class ChassisStandard extends OpMode {
      */
 
     @Override
-    public void start () {
+    public void start() {
         // Reset the game timer.
         runtime.reset();
-
     }
 
     @Override
-    public void stop (){
-
+    public void stop() {
     }
 
     @Override
@@ -102,8 +108,7 @@ public abstract class ChassisStandard extends OpMode {
         initMotors();
         initTimeouts();
         initGyroscope();
-        initCrab();
-        initFingers();
+        initStage = InitStage.INIT_STAGE_ARM;
     }
 
     /**
@@ -111,6 +116,23 @@ public abstract class ChassisStandard extends OpMode {
      */
     @Override
     public void init_loop () {
+        switch (initStage) {
+            case INIT_STAGE_ARM:
+                initCrab();
+                initFingers();
+                initStage = InitStage.INIT_STAGE_VUFORIA;
+               break;
+
+            case INIT_STAGE_VUFORIA:
+                initVuforia();
+                initStage = InitStage.INIT_STAGE_FINISHED;
+                break;
+
+            case INIT_STAGE_FINISHED:
+            default:
+                break;
+        }
+
         printStatus();
     }
 
@@ -119,16 +141,73 @@ public abstract class ChassisStandard extends OpMode {
      *
      */
     protected void printStatus() {
-        if(useGyroScope) {
-            telemetry.addData("Gyro", "angle: " + this.getGyroscopeAngle());
-        }
-        if(useCrab) {
-            telemetry.addData("Crab", "Angle =%f", crab.getPosition());
-        }
-        telemetry.addData("Status", "time: " + runtime.toString());
-        telemetry.addData("Run", "madeTheRun=%b", madeTheRun);
+        if (initStage == InitStage.INIT_STAGE_FINISHED) {
+            if (useGyroScope) {
+                telemetry.addData("Gyro", "angle: " + this.getGyroscopeAngle());
+            } else {
+                telemetry.addData("Gyro", "DISABLED");
+            }
 
+            if (useMotors) {
+                telemetry.addData("Motor: frnt", "left:%02.1f, (%d), rigt: %02.1f, (%d)",
+                        motorFrontLeft.getPower(), motorFrontLeft.getCurrentPosition(), motorFrontRight.getPower(), motorFrontRight.getCurrentPosition());
+                telemetry.addData("Motor: back", "left:%02.1f, (%d), rigt: %02.1f, (%d)",
+                        motorBackLeft.getPower(), motorBackLeft.getCurrentPosition(), motorBackRight.getPower(), motorBackRight.getCurrentPosition());
+            } else {
+                telemetry.addData("Motor", "DISABLED");
+            }
+
+            if (useCrab) {
+                telemetry.addData("Crab", "%02.1f (%02.1f)", crab.getPosition(), crabAngle);
+            } else {
+                telemetry.addData("Crab", "DISABLED");
+            }
+
+            if (useFingers) {
+                telemetry.addData("Finger", "%02.1f (%02.1f), %02.1f (%02.1f)",
+                        fingerFront.getPosition(), ffAngleHand, fingerBack.getPosition(), bfAngleHand);
+            } else {
+                telemetry.addData("Finger", "DISABLED");
+            }
+
+            if (useVuforia) {
+                int numStones = 0;
+                int numSkyStones = 0;
+
+                if (tfod != null) {
+                    // getUpdatedRecognitions() will return null if no new information is available since
+                    // the last time that call was made.
+                    List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+                    if (updatedRecognitions == null) {
+                        numStones = lastStones;
+                        numSkyStones = lastSkyStones;
+                    } else {
+                        numStones = updatedRecognitions.size();
+                        for (Recognition recognition : updatedRecognitions) {
+                            if (recognition.getLabel() == "Skystone") {
+                                numSkyStones++;
+                                numStones--;
+                            }
+                        }
+                        lastStones = numStones;
+                        lastSkyStones = numSkyStones;
+                    }
+                }
+
+                telemetry.addData("StoneDetect", "norm: %d, sky: %d", numStones, numSkyStones);
+            } else {
+                telemetry.addData("StoneDetect", "DISABLED");
+            }
+
+            telemetry.addData("Status", "time: " + runtime.toString());
+            telemetry.addData("Run", "madeTheRun=%b", madeTheRun);
+        } else {
+            telemetry.addData("Status", "still initializing... %s", initStage);
+        }
+
+        telemetry.update();
     }
+
 
     /*
         MOTOR SUBSYTEM
@@ -138,47 +217,36 @@ public abstract class ChassisStandard extends OpMode {
 
         // Initialize the motors.
         if (useMotors) {
-            motorBackLeft = hardwareMap.get(DcMotor.class, "motor0");
-            motorBackRight = hardwareMap.get(DcMotor.class, "motor1");
+            try  {
+                motorBackLeft = hardwareMap.get(DcMotor.class, "motor0");
+                motorBackRight = hardwareMap.get(DcMotor.class, "motor1");
 
-            // Most robots need the motor on one side to be reversed to drive forward
-            // Reverse the motor that runs backwards when connected directly to the battery
-            motorBackLeft.setDirection(config.isLeftMotorReversed() ? DcMotor.Direction.REVERSE : DcMotor.Direction.FORWARD);
-            motorBackRight.setDirection(config.isRightMotorReversed() ? DcMotor.Direction.REVERSE : DcMotor.Direction.FORWARD);
+                // Most robots need the motor on one side to be reversed to drive forward
+                // Reverse the motor that runs backwards when connected directly to the battery
+                motorBackLeft.setDirection(config.isLeftMotorReversed() ? DcMotor.Direction.REVERSE : DcMotor.Direction.FORWARD);
+                motorBackRight.setDirection(config.isRightMotorReversed() ? DcMotor.Direction.REVERSE : DcMotor.Direction.FORWARD);
 
-            // initilize the encoder
-            motorBackLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            motorBackRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            motorBackLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            motorBackRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                // initilize the encoder
+                motorBackLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                motorBackRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                motorBackLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                motorBackRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-            if (config.getUseFourWheelDrive()) {
-                motorFrontLeft = hardwareMap.get(DcMotor.class, "motor2");
-                motorFrontRight = hardwareMap.get(DcMotor.class, "motor3");
+                if (config.getUseFourWheelDrive()) {
+                    motorFrontLeft = hardwareMap.get(DcMotor.class, "motor2");
+                    motorFrontRight = hardwareMap.get(DcMotor.class, "motor3");
 
-                motorFrontLeft.setDirection(config.isLeftMotorReversed() ? DcMotor.Direction.REVERSE : DcMotor.Direction.FORWARD);
-                motorFrontRight.setDirection(config.isRightMotorReversed() ? DcMotor.Direction.REVERSE : DcMotor.Direction.FORWARD);
+                    motorFrontLeft.setDirection(config.isLeftMotorReversed() ? DcMotor.Direction.REVERSE : DcMotor.Direction.FORWARD);
+                    motorFrontRight.setDirection(config.isRightMotorReversed() ? DcMotor.Direction.REVERSE : DcMotor.Direction.FORWARD);
 
-                motorFrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                motorFrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                motorFrontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                motorFrontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            }
-        }
-
-
-        // init the lifter arm,
-        if (config.getHasWalle()) {
-            if (useEve == true) {
-                extraterrestrialVegetationEvaluator = hardwareMap.get(DcMotor.class, "motor6");
-                extraterrestrialVegetationEvaluator.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                extraterrestrialVegetationEvaluator.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                extraterrestrialVegetationEvaluatorBegin = extraterrestrialVegetationEvaluator.getCurrentPosition();
-            } else {
-                wasteAllocationLoadLifterEarth = hardwareMap.get(DcMotor.class, "motor6");
-                wasteAllocationLoadLifterEarth.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                wasteAllocationLoadLifterEarth.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                wasteAllocationLoadLifterEarthBegin = wasteAllocationLoadLifterEarth.getCurrentPosition();
+                    motorFrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    motorFrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    motorFrontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    motorFrontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                }
+            } catch (Exception e) {
+                telemetry.addData("motors", "exception on init: " + e.toString());
+                useMotors = false;
             }
         }
     }
@@ -194,11 +262,22 @@ public abstract class ChassisStandard extends OpMode {
         }
     }
 
+    protected void initElevator() {
+        if (useElevator) {
+            try {
+                elevator = hardwareMap.get(DcMotor.class, "elevator");
+            } catch (Exception e) {
+                telemetry.addData("elevator", "exception on init: " + e.toString());
+                useElevator = false;
+            }
+        }
+    }
+
     protected void initFingers(){
-        if(useFingers){ 
+        if(useFingers){
             try {
                 fingerFront = hardwareMap.get(Servo.class, "servoFrontFinger");
-                fingerFront.
+
                 fingerBack = hardwareMap.get(Servo.class, "servoBackFinger");
 
             } catch (Exception e) {
@@ -211,7 +290,7 @@ public abstract class ChassisStandard extends OpMode {
 
     protected void initTimeouts() {
         // This code prevents the OpMode from freaking out if you go to sleep for more than a second.
-        if (hackTimeouts) {
+        if (useTimeouts) {
             this.msStuckDetectInit = 30000;
             this.msStuckDetectInitLoop = 30000;
             this.msStuckDetectStart = 30000;
@@ -220,13 +299,6 @@ public abstract class ChassisStandard extends OpMode {
         }
     }
 
-    protected void initArm() {
-        if (useArm) {
-            //shoulder = hardwareMap.get(DcMotor.class, "motor4");
-            extender = hardwareMap.get(DcMotor.class, "motorExtender");
-            crane = hardwareMap.get(DcMotor.class, "motorCrane");
-        }
-    }
 
     protected boolean initGyroscope() {
         if (useGyroScope) {
@@ -247,50 +319,126 @@ public abstract class ChassisStandard extends OpMode {
         }
     }
 
+    /* VUFORIA */
+
+    /**
+     * Initialize the Vuforia localization engine.
+     */
+    private void initVuforia() {
+
+        if (useVuforia) {
+
+            lastStones = 0;
+            lastSkyStones = 0;
+
+            try {
+                /*
+                 * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
+                 */
+                VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+                parameters.vuforiaLicenseKey = VUFORIA_KEY;
+                parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
+
+                telemetry.addData("Vuforia 1", "found camera");
+                telemetry.update();
+
+                //  Instantiate the Vuforia engine
+                vuforia = ClassFactory.getInstance().createVuforia(parameters);
+
+                telemetry.addData("Vuforia 1", "found vuforia");
+                telemetry.update();
+
+                // Loading trackables is not necessary for the TensorFlow Object Detection engine.
+                if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
+                    initTfod();
+                } else {
+                    telemetry.addData("Sorry!", "This device is not compatible with TFOD");
+                }
+
+                telemetry.addData("Vuforia 1", "init tfod");
+                telemetry.update();
+
+                if (tfod != null) {
+                    tfod.activate();
+                }
+
+                telemetry.addData("Vuforia 1", "activate");
+                telemetry.update();
+
+            } catch (Exception e) {
+                telemetry.addData("vuforia", "exception on init: " + e.toString());
+                useVuforia = false;
+            }
+        }
+    }
+
+    /**
+     * Initialize the TensorFlow Object Detection engine.
+     */
+    private void initTfod() {
+        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
+                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
+        tfodParameters.minimumConfidence = 0.8;
+
+        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
+    }
+
 
     public void dropFrontFinger() {
         if (useFingers) {
-            angleHand = 0.0;
-            fingerFront.setPosition(angleHand);
-
+            ffAngleHand = 0.0;
+            fingerFront.setPosition(ffAngleHand);
         }
     }
 
     public void raiseFrontFinger() {
         if (useFingers) {
-            angleHand = 1.0;
-            fingerFront.setPosition(angleHand);
+            ffAngleHand = 1.0;
+            fingerFront.setPosition(ffAngleHand);
         }
     }
     
     public void dropBackFinger() {
         if (useFingers) {
-            angleHand = 0.0;
-            fingerBack.setPosition(angleHand);
-
+            bfAngleHand = 0.0;
+            fingerBack.setPosition(bfAngleHand);
         }
     }
 
     public void raiseBackFinger() {
         if (useFingers) {
-            angleHand = 1.0;
-            fingerBack.setPosition(angleHand);
+            bfAngleHand = 1.0;
+            fingerBack.setPosition(bfAngleHand);
         }
     }
 
-
     public void dropCrab() {
         if (useCrab) {
-            angleHand = 0.0;
-            crab.setPosition(angleHand);
-
+            crabAngle = 0.5;
+            crab.setPosition(crabAngle);
         }
     }
 
     public void raiseCrab() {
         if (useCrab) {
-            angleHand = 1.0;
-            crab.setPosition(angleHand);
+            crabAngle = 1.0;
+            crab.setPosition(crabAngle);
+        }
+    }
+
+    public void raiseElevator() {
+        if(useElevator) {
+            angleAnkle = 1.0;
+            elevator.setPower(angleAnkle);
+        }
+    }
+
+    public void dropElevator() {
+        if(useElevator) {
+            angleAnkle = 0.0;
+            elevator.setPower(angleAnkle);
         }
     }
 
@@ -304,6 +452,10 @@ public abstract class ChassisStandard extends OpMode {
     }
 
     protected void encoderDrive(double leftInches, double rightInches, double speed) {
+
+        // Jump out if the motors are turned off.
+        if (!useMotors)
+            return;
 
         double countsPerInch = config.getRearWheelSpeed() / (config.getRearWheelDiameter() * Math.PI);
 
@@ -412,28 +564,31 @@ public abstract class ChassisStandard extends OpMode {
                 rightBackTarget,
                 leftFrontTarget,
                 rightFrontTarget); */
-        sleep(1000);
+        sleep(100);
     }
 
 
     protected void sleep(long milliseconds) {
         try {
-            Thread.sleep(milliseconds);
+            ElapsedTime sleepTime = new ElapsedTime();
+            while (sleepTime.milliseconds() < milliseconds) {
+                Thread.sleep(1);
+                printStatus();
+            }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-
         }
     }
 
     // Always returns a number from 0-359.9999
     protected float getGyroscopeAngle() {
-        if (useGyroScope && bosch != null) {
+        if (useGyroScope) {
             Orientation exangles = bosch.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
             float gyroAngle = exangles.thirdAngle;
             //exangles.
-            telemetry.addData("angle", "angle: " + exangles.thirdAngle);
+            //telemetry.addData("angle", "angle: " + exangles.thirdAngle);
             float calculated = CrazyAngle.normalizeAngle(CrazyAngle.reverseAngle(gyroAngle));
-            telemetry.addData("angle2","calculated:" + calculated);
+            //telemetry.addData("angle2","calculated:" + calculated);
             return calculated;
         } else {
             return 0.0f;
@@ -543,9 +698,7 @@ public abstract class ChassisStandard extends OpMode {
         if (config.getUseFourWheelDrive()) {
             motorFrontLeft.setPower(0);
             motorFrontRight.setPower(0);
-
         }
-
     }
 
     // This nudges over about 2 degrees.
@@ -614,63 +767,6 @@ public abstract class ChassisStandard extends OpMode {
         }
     }
 
-    protected void slideUpExtender(int extenderCounts) {
-        double speed = 0.25;
-
-        // Get the current position.
-        int extenderStart = extender.getCurrentPosition();
-        telemetry.addData("encoderDrive", "Starting %7d", extenderStart);
-
-        // Determine new target position, and pass to motor controller
-        int extenderTarget = extenderStart + extenderCounts;
-        extender.setTargetPosition(extenderTarget);
-        telemetry.addData("encoderDrive", "Target %7d", extenderTarget);
-
-        // Turn On RUN_TO_POSITION
-        extender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        extender.setPower(speed);
-
-        ElapsedTime motorOnTime = new ElapsedTime();
-        while ((motorOnTime.seconds() < 30) && extender.isBusy()) {
-            telemetry.addData("slideUpExtender", "Running at %7d to %7d", extender.getCurrentPosition(), extenderTarget);
-            telemetry.update();
-            sleep(10);
-        }
-
-        // Turn off RUN_TO_POSITION
-        extender.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        extender.setPower(0);
-    }
-
-    protected void shiftShoulderDown(int shoulderCounts) {
-        double speed = 0.5;
-
-        // Get the current position.
-        int shoulderStart = shoulder.getCurrentPosition();
-        telemetry.addData("shoulderShifting", "Starting %7d", shoulderStart);
-
-        // Determine new target position, and pass to motor controller
-        int shoulderTarget = shoulderStart + shoulderCounts;
-        shoulder.setTargetPosition(shoulderTarget);
-        telemetry.addData("shoulderShifting", "Target %7d", shoulderTarget);
-
-        // Turn On RUN_TO_POSITION
-        shoulder.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        shoulder.setPower(speed);
-
-        ElapsedTime motorOnTime = new ElapsedTime();
-        while ((motorOnTime.seconds() < 30) && shoulder.isBusy()) {
-            telemetry.addData("shiftShoulderDown", "Running at %7d to %7d", shoulder.getCurrentPosition(), shoulderTarget);
-            telemetry.update();
-            telemetry.update();
-            sleep(10);
-        }
-
-        // Turn off RUN_TO_POSITION
-        shoulder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        shoulder.setPower(0);
-    }
-
     protected void strafeLeft(int numberOfMillis) {
         float power = config.getTurnSpeed();
 
@@ -710,24 +806,8 @@ public abstract class ChassisStandard extends OpMode {
         }
     }
 
-    protected void descendFromLander() {
-        if (!config.getlyftStrategy()) {
-            // go down.
-            lyftDownEve(13930);
-            encoderDrive(10);
-            lyftDownEve(-13930);
-        } else {
-            lyftDownEve(-1449);
-            //write new phatswipe descend strategy
-            turnLeft(25);
-            encoderDrive(2, 2);
-            turnRight(25);
-        }
-    }
 
-
-
-   /* protected void lyftDownWalle(int howManySpins) {
+    /*protected void lyftDownWalle(int howManySpins) {
         double speed = 0.5f;
 
         // Get the current position.
@@ -756,41 +836,4 @@ public abstract class ChassisStandard extends OpMode {
 
         //sleep(5000);
     } */
-
-
-    protected void lyftDownEve(int howManySpins) {
-        double speed = 0.5f;
-
-        // Get the current position.
-        int lyftBegin = extraterrestrialVegetationEvaluator.getCurrentPosition();
-        telemetry.addData("lyftDownWalle", "Starting %7d", lyftBegin);
-
-        // Determine new target position, and pass to motor controller
-        int lyftTarget = lyftBegin + howManySpins;
-        extraterrestrialVegetationEvaluator.setTargetPosition(lyftTarget);
-        telemetry.addData("lyftDownWalle", "Target %7d", lyftTarget);
-
-        // Turn On RUN_TO_POSITION
-        extraterrestrialVegetationEvaluator.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        extraterrestrialVegetationEvaluator.setPower(speed);
-
-        ElapsedTime motorOnTime = new ElapsedTime();
-        while ((motorOnTime.seconds() < 30) && extraterrestrialVegetationEvaluator.isBusy()) {
-            telemetry.addData("lyftDownWalle", "Running at %7d to %7d", extraterrestrialVegetationEvaluator.getCurrentPosition(), lyftTarget);
-            telemetry.update();
-            sleep(10);
-        }
-
-        // Turn off RUN_TO_POSITION
-        extraterrestrialVegetationEvaluator.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        extraterrestrialVegetationEvaluator.setPower(0);
-
-        //sleep(5000);
-    }
-
-    protected void pushCrane() {
-        crane.setPower(1);
-        sleep(500);
-        crane.setPower(0);
-    }
 }

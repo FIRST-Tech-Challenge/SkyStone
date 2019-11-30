@@ -41,6 +41,7 @@ public class TylerController extends OpMode {
     private DcMotor motorBackRight;
     private DcMotor motorFrontLeft;
     private DcMotor motorFrontRight;
+    private DcMotor elevator;
 
     //Arm
     private DcMotor crane;
@@ -51,6 +52,7 @@ public class TylerController extends OpMode {
     private Servo crab;
     private DigitalChannel digitalTouch;  // Hardware Device Object
     private double angleHand;
+    private double angleAnkle;
 
     // Hack stuff.
     private boolean useMotors = true;
@@ -63,14 +65,16 @@ public class TylerController extends OpMode {
     private boolean useRange = true;
     private boolean useStoneDetector = false;
     private boolean useOpenCvDisplay = false;
+    private boolean useElevator = true;
 
     //Movement State
     private int armState;
     private int extenderTarget;
     private int lifterState;
     private int lifterExtenderTarget;
+    private int elevatorExtenderTarget;
     private int extenderStartPostion = 0;
-    private int lifterStartPosition = 0;
+    private int elevatorStartPosition = 0;
     private int shoulderTarget;
     private int shoulderStartPosition = 0;
 
@@ -199,6 +203,15 @@ public class TylerController extends OpMode {
                 useTouch = false;
             } else {
                 digitalTouch.setMode(DigitalChannel.Mode.INPUT);
+            }
+        }
+
+        if (useElevator) {
+            try {
+                elevator = hardwareMap.get(DcMotor.class, "elevator");
+            } catch (Exception e) {
+                telemetry.addData("elevator", "exception on init: " + e.toString());
+                useElevator = false;
             }
         }
 
@@ -500,6 +513,14 @@ public class TylerController extends OpMode {
             }
         }
 
+        boolean liftAllIn = gamepad1.b;
+        boolean liftAllOut = gamepad1.a;
+        if (liftAllOut) {
+            startElevatorMoving(elevatorStartPosition + 4500);
+        } else if (liftAllIn) {
+            startElevatorMoving(elevatorStartPosition);
+        }
+
         if (useTouch) {
             if (digitalTouch.getState() == false) {
                 telemetry.addData("Digital Touch", "we touching");
@@ -593,6 +614,22 @@ public class TylerController extends OpMode {
         }
     }
 
+    protected void startElevatorMoving(int lTarget){
+        // Get the current position.
+        int elevatorStart = elevator.getCurrentPosition();
+        telemetry.addData("ElevatorStartingPos.", "Starting %7d", elevatorStart);
+
+        // Turn On RUN_TO_POSITION
+        elevator.setTargetPosition(lTarget);
+        elevator.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        elevator.setPower(0.75);
+
+        //Set global Movement State
+        elevatorExtenderTarget = lTarget;
+    }
+
+
+
     /*
      * An example image processing pipeline to be run upon receipt of each frame from the camera.
      * Note that the processFrame() method is called serially from the frame worker thread -
@@ -600,7 +637,7 @@ public class TylerController extends OpMode {
      * In other words, the processFrame() method will never be called multiple times simultaneously.
      *
      * However, the rendering of your processed image to the viewport is done in parallel to the
-     * frame worker thread. That is, the amount of time it takes to render the image to the
+     * frame worker thread. Thzat is, the amount of time it takes to render the image to the
      * viewport does NOT impact the amount of frames per second that your pipeline can process.
      *
      * IMPORTANT NOTE: this pipeline is NOT invoked on your OpMode thread. It is invoked on the

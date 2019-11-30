@@ -1,13 +1,13 @@
 package org.firstinspires.ftc.teamcode;
 
 import org.firstinspires.ftc.teamcode.auto.ChassisConfig;
-import org.firstinspires.ftc.teamcode.autoOp.LongHagrids2;
+import org.firstinspires.ftc.teamcode.autoOp.LongBlueHagrids2;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 @Autonomous(name="Long Blue Hagrids 2", group="bluehagrids")
-public class TylerLongHagrids2 extends LongHagrids2 {
-    public TylerLongHagrids2() {
+public class TylerLongBlueHagrids2 extends LongBlueHagrids2 {
+    public TylerLongBlueHagrids2() {
         super(ChassisConfig.forTileRunner());
     }
 }

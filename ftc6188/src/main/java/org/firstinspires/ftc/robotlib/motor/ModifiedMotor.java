@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+// The modified motor is an abstract class made from the DcMotor interface and is used to create DcMotors with additional functionality
 public abstract class ModifiedMotor implements DcMotor
 {
     protected DcMotor motor;

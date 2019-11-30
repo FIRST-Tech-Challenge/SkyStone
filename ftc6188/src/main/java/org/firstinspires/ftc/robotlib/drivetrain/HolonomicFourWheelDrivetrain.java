@@ -3,7 +3,7 @@ package org.firstinspires.ftc.robotlib.drivetrain;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotlib.motor.CalculatedVelocityMotor;
+import org.firstinspires.ftc.robotlib.motor.EncoderMotor;
 
 /*
 Frame work for a mecanum/omni drive train, the implemented interfaces provide the additional variables and functions to make movement possible
@@ -21,7 +21,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     private DcMotor.RunMode[] runModes = new DcMotor.RunMode[4];
     private final double[] wheelAngles;
 
-    HolonomicFourWheelDrivetrain(CalculatedVelocityMotor[] motorList, double[] wheelAngles)
+    HolonomicFourWheelDrivetrain(EncoderMotor[] motorList, double[] wheelAngles)
     {
         super(motorList);
         this.wheelAngles = wheelAngles;
@@ -133,7 +133,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     @Override
     public boolean isPositioning()
     {
-        for (CalculatedVelocityMotor motor : motorList)
+        for (EncoderMotor motor : motorList)
         {
             if (motor.isEncoderBusy()) { return true; }
         }

@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotlib.armsystem.FieldGoalArmSystem;
 import org.firstinspires.ftc.robotlib.drivetrain.MecanumDrivetrain;
-import org.firstinspires.ftc.robotlib.motor.CalculatedVelocityMotor;
+import org.firstinspires.ftc.robotlib.motor.EncoderMotor;
 import org.firstinspires.ftc.robotlib.motor.LimitedMotor;
 import org.firstinspires.ftc.robotlib.servo.LinkedServo;
 import org.firstinspires.ftc.robotlib.sound.BasicSound;
@@ -17,11 +17,11 @@ import org.jetbrains.annotations.NotNull;
 public class SiBorgsMecanumRobot
 {
     // Drive motors
-    private CalculatedVelocityMotor driveFrontLeft;
-    private CalculatedVelocityMotor driveFrontRight;
-    private CalculatedVelocityMotor driveRearLeft;
-    private CalculatedVelocityMotor driveRearRight;
-    private CalculatedVelocityMotor[] driveMotorList;
+    private EncoderMotor driveFrontLeft;
+    private EncoderMotor driveFrontRight;
+    private EncoderMotor driveRearLeft;
+    private EncoderMotor driveRearRight;
+    private EncoderMotor[] driveMotorList;
 
     // Drive constants
     private static final double WHEEL_RADIUS_IN = 2;
@@ -58,11 +58,11 @@ public class SiBorgsMecanumRobot
         this.telemetry = telemetry;
 
         // Drive motors init
-        driveFrontLeft = new CalculatedVelocityMotor(hwMap.get(DcMotor.class, "driveFrontLeft"));
-        driveFrontRight = new CalculatedVelocityMotor(hwMap.get(DcMotor.class, "driveFrontRight"));
-        driveRearRight = new CalculatedVelocityMotor(hwMap.get(DcMotor.class, "driveRearRight"));
-        driveRearLeft = new CalculatedVelocityMotor(hwMap.get(DcMotor.class, "driveRearLeft"));
-        driveMotorList = new CalculatedVelocityMotor[] {driveFrontLeft, driveFrontRight, driveRearLeft, driveRearRight};
+        driveFrontLeft = new EncoderMotor(hwMap.get(DcMotor.class, "driveFrontLeft"));
+        driveFrontRight = new EncoderMotor(hwMap.get(DcMotor.class, "driveFrontRight"));
+        driveRearRight = new EncoderMotor(hwMap.get(DcMotor.class, "driveRearRight"));
+        driveRearLeft = new EncoderMotor(hwMap.get(DcMotor.class, "driveRearLeft"));
+        driveMotorList = new EncoderMotor[] {driveFrontLeft, driveFrontRight, driveRearLeft, driveRearRight};
 
         // Since all drive motors are considered the same a loop is used
         for (DcMotor motor : driveMotorList)

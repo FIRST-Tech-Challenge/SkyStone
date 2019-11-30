@@ -2,14 +2,14 @@ package org.firstinspires.ftc.robotlib.drivetrain;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.robotlib.motor.CalculatedVelocityMotor;
+import org.firstinspires.ftc.robotlib.motor.EncoderMotor;
 
 /*
 The actual final drivetrain used for the robot, just changes the wheel angles and the wheel coefficient math to match our setup
  */
 public class MecanumDrivetrain extends HolonomicFourWheelDrivetrain
 {
-    public MecanumDrivetrain(CalculatedVelocityMotor[] motorList, double wheelRadius, double wheelToMotorRatio)
+    public MecanumDrivetrain(EncoderMotor[] motorList, double wheelRadius, double wheelToMotorRatio)
     {
         super(motorList, new double[] {-3*Math.PI/4, 3*Math.PI/4, -Math.PI/4, Math.PI/4});
         setTicksPerIn(wheelRadius, wheelToMotorRatio);
@@ -21,7 +21,7 @@ public class MecanumDrivetrain extends HolonomicFourWheelDrivetrain
         setTicksPerIn(wheelRadius, wheelToMotorRatio);
     }
 
-    public MecanumDrivetrain(CalculatedVelocityMotor[] motorList) { this(motorList, 1, 1); }
+    public MecanumDrivetrain(EncoderMotor[] motorList) { this(motorList, 1, 1); }
 
     public MecanumDrivetrain(DcMotor[] motorList) { this(motorList, 1, 1); }
 

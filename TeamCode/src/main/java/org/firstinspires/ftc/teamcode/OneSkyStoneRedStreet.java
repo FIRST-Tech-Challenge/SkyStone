@@ -3,9 +3,9 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-@Autonomous(name="One SkyStone Red Wall", group="Exercises")
+@Autonomous(name="One SkyStone Red Street", group="Exercises")
 
-public class OneSkyStoneRedWall extends LinearOpMode {
+public class OneSkyStoneRedStreet extends LinearOpMode {
     protected TensorFlowBot robot = new TensorFlowBot(this);
 
     int direction_forward, direction_backward;
@@ -32,7 +32,7 @@ public class OneSkyStoneRedWall extends LinearOpMode {
             robot.driveStraightByDistance(robot.DIRECTION_LEFT, 250, 0.5);
             robot.dropSkyStone();
             robot.originalPosition();
-            robot.driveStraightByDistance(robot.DIRECTION_RIGHT, 800, 0.9);
+            robot.driveStraightByDistance(robot.DIRECTION_RIGHT, 150, 0.5);
             robot.driveStraightByDistance(direction_forward, 850, 1);
         } else {
             robot.driveStraightByDistance(direction_forward, 200, 0.6);
@@ -46,9 +46,10 @@ public class OneSkyStoneRedWall extends LinearOpMode {
                 robot.driveStraightByDistance(robot.DIRECTION_LEFT, 250, 0.5);
                 robot.dropSkyStone();
                 robot.originalPosition();
-                robot.driveStraightByDistance(robot.DIRECTION_RIGHT, 1200, 0.9);
+                robot.driveStraightByDistance(robot.DIRECTION_RIGHT, 150, 0.5);
                 robot.driveStraightByDistance(direction_forward, 850, 1);
             } else {
+
                 robot.driveStraightByDistance(direction_forward, 200, 0.6);
                 robot.driveStraightByDistance(robot.DIRECTION_FORWARD, 150, 0.6);
                 robot.driveStraightByDistance(robot.DIRECTION_LEFT, 270, 0.5);
@@ -58,7 +59,7 @@ public class OneSkyStoneRedWall extends LinearOpMode {
                 robot.driveStraightByDistance(robot.DIRECTION_LEFT, 250, 0.5);
                 robot.dropSkyStone();
                 robot.originalPosition();
-                robot.driveStraightByDistance(robot.DIRECTION_RIGHT, 1200, 0.9);
+                robot.driveStraightByDistance(robot.DIRECTION_RIGHT, 150, 0.5);
                 robot.driveStraightByDistance(direction_forward, 850, 1);
             }
         }

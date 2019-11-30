@@ -11,18 +11,23 @@ public class DoubleSkyStoneBlueWall extends LinearOpMode {
 
     int direction_forward, direction_backward;
 
+
+    protected void setDirection(){
+        direction_forward = robot.DIRECTION_FORWARD;
+        direction_backward = robot.DIRECTION_BACKWARD;
+    }
+
+
     @Override
     public void runOpMode() {
         robot.init(hardwareMap);
         waitForStart();
 
-        direction_forward = robot.DIRECTION_FORWARD;
-        direction_backward = robot.DIRECTION_BACKWARD;
-
+        setDirection();
         robot.driveStraightByDistance( robot.DIRECTION_LEFT, 400, 0.7);
         robot.opMode.sleep(1800);
         if (robot.isSkystoneDetected()) {
-            robot.driveStraightByDistance(direction_forward, 150, 0.6);
+            robot.driveStraightByDistance(robot.DIRECTION_FORWARD, 150, 0.6);
             robot.driveStraightByDistance(robot.DIRECTION_LEFT, 270, 0.5);
             robot.pickupSkyStone();
             robot.driveStraightByDistance(robot.DIRECTION_RIGHT, 100, 0.5);
@@ -43,10 +48,10 @@ public class DoubleSkyStoneBlueWall extends LinearOpMode {
 
             robot.driveStraightByDistance(robot.DIRECTION_FORWARD, 300, 1);
         } else {
-            robot.driveStraightByDistance(direction_forward, 275, 0.6);
+            robot.driveStraightByDistance(direction_forward, 200, 0.6);
             robot.opMode.sleep(1800);
             if (robot.isSkystoneDetected()) {
-                robot.driveStraightByDistance(direction_forward, 150, 0.6);
+                robot.driveStraightByDistance(robot.DIRECTION_FORWARD, 150, 0.6);
                 robot.driveStraightByDistance(robot.DIRECTION_LEFT, 270, 0.5);
                 robot.pickupSkyStone();
                 robot.driveStraightByDistance(robot.DIRECTION_RIGHT, 100, 0.5);
@@ -67,7 +72,7 @@ public class DoubleSkyStoneBlueWall extends LinearOpMode {
 
                 robot.driveStraightByDistance(robot.DIRECTION_FORWARD, 300, 1);
             } else {
-                robot.driveStraightByDistance(direction_forward, 275, 0.6);
+                robot.driveStraightByDistance(robot.DIRECTION_FORWARD, 300, 0.6);
                 robot.driveStraightByDistance(robot.DIRECTION_LEFT, 270, 0.5);
                 robot.pickupSkyStone();
                 robot.driveStraightByDistance(robot.DIRECTION_RIGHT, 100, 0.5);

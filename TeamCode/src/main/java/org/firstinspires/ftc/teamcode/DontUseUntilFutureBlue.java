@@ -1,9 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-@Autonomous(name="DON'T USE UNTIL FUTURE BLUE", group="Exercises")
+//@Autonomous(name="DON'T USE UNTIL FUTURE BLUE", group="Exercises")
 
 public class DontUseUntilFutureBlue extends LinearOpMode {
     protected TensorFlowBot robot = new TensorFlowBot(this);

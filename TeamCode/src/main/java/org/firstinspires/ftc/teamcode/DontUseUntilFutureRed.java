@@ -1,8 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-
-@Autonomous(name="DON'T USE UNTIL FUTURE RED", group="Exercises")
+//@Autonomous(name="DON'T USE UNTIL FUTURE RED", group="Exercises")
 
 public class DontUseUntilFutureRed extends DontUseUntilFutureBlue {
     protected TensorFlowBot robot = new TensorFlowBot(this);

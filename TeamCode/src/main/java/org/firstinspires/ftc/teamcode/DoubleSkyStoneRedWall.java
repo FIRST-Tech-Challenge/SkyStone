@@ -10,10 +10,8 @@ public class DoubleSkyStoneRedWall extends DoubleSkyStoneBlueWall {
     int direction_forward, direction_backward;
 
     @Override
-    public void runOpMode() {
-        robot.init(hardwareMap);
+    protected void setDirection(){
         direction_forward = robot.DIRECTION_BACKWARD;
         direction_backward = robot.DIRECTION_FORWARD;
-        super.runOpMode();
     }
 }

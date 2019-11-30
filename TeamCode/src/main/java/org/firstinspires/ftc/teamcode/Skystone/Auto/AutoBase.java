@@ -29,6 +29,8 @@ public class AutoBase extends LinearOpMode {
     }
 
     private void initServos() {
+        robot.getMarkerServo().setPosition(robot.TEAM_MARKER_RETRACT);
+        robot.getBackStopper().setPosition(robot.BACK_STOPPER_UP);
         boolean isRetract = true;
         long outtakeExecutionTime = 0;
         long currentTime;

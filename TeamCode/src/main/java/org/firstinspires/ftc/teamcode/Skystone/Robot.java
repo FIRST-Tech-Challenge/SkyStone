@@ -68,6 +68,14 @@ public class Robot {
     public final double OUTTAKE_SLIDE_EXTENDED = .2;
     public final double OUTTAKE_SLIDE_RETRACTED = .7;
 
+    //team marker positions
+    public final double TEAM_MARKER_DUMP = 1;
+    public final double TEAM_MARKER_RETRACT = .24;
+
+    //back stopper positions
+    public final double BACK_STOPPER_DOWN = 0.85;
+    public final double BACK_STOPPER_UP = 0.5;
+
     // Outtake Clamp Positions
     public final double CLAW_SERVO_CLAMPED = .45;
     public final double CLAW_SERVO_RELEASED = .335;

@@ -86,7 +86,8 @@ public class ArmSystem {
     public int queuedHeight;
 
     public enum Position {
-        POSITION_HOME, POSITION_WEST, POSITION_SOUTH, POSITION_EAST, POSITION_NORTH
+        POSITION_HOME, POSITION_WEST, POSITION_SOUTH,
+        POSITION_EAST, POSITION_NORTH, POSITION_CAPSTONE
     }
 
     private EnumMap<Position, double[]> positionEnumMap;
@@ -136,7 +137,8 @@ public class ArmSystem {
         positionEnumMap.put(Position.POSITION_EAST, new double[] {1, 0.24, 0.13});
         positionEnumMap.put(Position.POSITION_WEST, new double[] {1, 0.24, 0.13});
         positionEnumMap.put(Position.POSITION_SOUTH, new double[] {1, 0.24, 0.7});
-        positionEnumMap.put(Position.POSITION_HOME, new double[] {0.18, 0.09, 0.7});
+        positionEnumMap.put(Position.POSITION_HOME, new double[] {0.19, 0.15, 0.79});
+        positionEnumMap.put(Position.POSITION_CAPSTONE, new double[] {0.42, 0.31, 0.75});
     }
 
     /*

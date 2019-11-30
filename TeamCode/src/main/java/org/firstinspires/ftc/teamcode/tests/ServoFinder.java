@@ -10,12 +10,14 @@ public class ServoFinder extends OpMode {
     public Servo pivot;
     public Servo elbow;
     public Servo wrist;
+    public Servo gripper;
     public double speed = 0.001;
 
     public void init() {
         pivot = hardwareMap.get(Servo.class, "PIVOT");
         elbow = hardwareMap.get(Servo.class, "ELBOW");
         wrist = hardwareMap.get(Servo.class, "WRIST");
+        gripper = hardwareMap.get(Servo.class, "GRIPPER");
 
     }
     public void loop() {
@@ -29,7 +31,9 @@ public class ServoFinder extends OpMode {
         if (gamepad1.y) {
             wrist.setPosition(wrist.getPosition() + speed);
         }
-
+        if (gamepad1.x) {
+            gripper.setPosition(gripper.getPosition() + speed);
+        }
         if (gamepad1.dpad_down) {
             pivot.setPosition(pivot.getPosition() - speed);
         }
@@ -39,10 +43,14 @@ public class ServoFinder extends OpMode {
         if (gamepad1.dpad_up) {
             wrist.setPosition(wrist.getPosition() - speed);
         }
+        if (gamepad1.dpad_left) {
+            gripper.setPosition(gripper.getPosition() - speed);
+        }
 
         telemetry.addData("Pivot: ", pivot.getPosition());
         telemetry.addData("Elbow: ", elbow.getPosition());
         telemetry.addData("Wrist: ", wrist.getPosition());
+        telemetry.addData("Gripper", gripper.getPosition());
         telemetry.update();
     }
 }

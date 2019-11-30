@@ -20,7 +20,7 @@ public class DoubleSkyStoneBlueWall extends LinearOpMode {
         direction_backward = robot.DIRECTION_BACKWARD;
 
         robot.driveStraightByDistance( robot.DIRECTION_LEFT, 400, 0.7);
-        robot.opMode.sleep(2000);
+        robot.opMode.sleep(1800);
         if (robot.isSkystoneDetected()) {
             robot.driveStraightByDistance(direction_forward, 150, 0.6);
             robot.driveStraightByDistance(robot.DIRECTION_LEFT, 270, 0.5);
@@ -35,7 +35,7 @@ public class DoubleSkyStoneBlueWall extends LinearOpMode {
             robot.driveStraightByDistance(direction_forward, 200, 0.3);
             robot.driveStraightByDistance(robot.DIRECTION_RIGHT, 700, 0.5);
             robot.driveStraightByDistance(robot.DIRECTION_BACKWARD, 250, 0.7);
-            robot.driveStraightByDistance(robot.DIRECTION_LEFT, 595, 0.7);
+            robot.driveStraightByDistance(robot.DIRECTION_LEFT, 630, 0.7);
             robot.pickupSkyStone();
             robot.opMode.sleep(500);
             robot.driveStraightByDistance(direction_backward, 1600, 1);
@@ -43,8 +43,8 @@ public class DoubleSkyStoneBlueWall extends LinearOpMode {
 
             robot.driveStraightByDistance(robot.DIRECTION_FORWARD, 300, 1);
         } else {
-            robot.driveStraightByDistance(direction_forward, 200, 0.6);
-            robot.opMode.sleep(2000);
+            robot.driveStraightByDistance(direction_forward, 275, 0.6);
+            robot.opMode.sleep(1800);
             if (robot.isSkystoneDetected()) {
                 robot.driveStraightByDistance(direction_forward, 150, 0.6);
                 robot.driveStraightByDistance(robot.DIRECTION_LEFT, 270, 0.5);
@@ -59,7 +59,7 @@ public class DoubleSkyStoneBlueWall extends LinearOpMode {
                 robot.driveStraightByDistance(direction_forward, 200, 0.3);
                 robot.driveStraightByDistance(robot.DIRECTION_RIGHT, 700, 0.5);
                 robot.driveStraightByDistance(robot.DIRECTION_BACKWARD, 50, 0.7);
-                robot.driveStraightByDistance(robot.DIRECTION_LEFT, 595, 0.7);
+                robot.driveStraightByDistance(robot.DIRECTION_LEFT, 630, 0.7);
                 robot.pickupSkyStone();
                 robot.opMode.sleep(500);
                 robot.driveStraightByDistance(direction_backward, 1800, 1);
@@ -67,7 +67,7 @@ public class DoubleSkyStoneBlueWall extends LinearOpMode {
 
                 robot.driveStraightByDistance(robot.DIRECTION_FORWARD, 300, 1);
             } else {
-                robot.driveStraightByDistance(direction_forward, 350, 0.6);
+                robot.driveStraightByDistance(direction_forward, 275, 0.6);
                 robot.driveStraightByDistance(robot.DIRECTION_LEFT, 270, 0.5);
                 robot.pickupSkyStone();
                 robot.driveStraightByDistance(robot.DIRECTION_RIGHT, 100, 0.5);
@@ -80,7 +80,7 @@ public class DoubleSkyStoneBlueWall extends LinearOpMode {
                 robot.driveStraightByDistance(direction_forward, 200, 0.3);
                 robot.driveStraightByDistance(robot.DIRECTION_RIGHT, 700, 0.5);
                 robot.driveStraightByDistance(robot.DIRECTION_BACKWARD, 50, 0.7);
-                robot.driveStraightByDistance(robot.DIRECTION_LEFT, 595, 0.7);
+                robot.driveStraightByDistance(robot.DIRECTION_LEFT, 630, 0.7);
                 robot.pickupSkyStone();
                 robot.opMode.sleep(500);
                 robot.driveStraightByDistance(direction_backward, 1800, 1);

@@ -64,7 +64,7 @@ public class ScoopArmBot extends PinchArmBot {
     }
     public void manualPickupSkystone(boolean dpadLeft) {
         if (dpadLeft) {
-            servoArm.setPosition(PINCH_ARM_DOWN);
+            servoArm.setPosition(PINCH_ARM_DOWN2);
             opMode.sleep(1000);
             servoPinch.setPosition(PINCH_PINCH);
             opMode.sleep(1000);
@@ -73,7 +73,7 @@ public class ScoopArmBot extends PinchArmBot {
     }
     public void manualDropSkystone(boolean dpadRight) {
         if (dpadRight) {
-            servoArm.setPosition(PINCH_ARM_DOWN);
+            servoArm.setPosition(PINCH_ARM_DOWN2);
             opMode.sleep(1000);
             servoPinch.setPosition(PINCH_RELEASE);
             opMode.sleep(1000);

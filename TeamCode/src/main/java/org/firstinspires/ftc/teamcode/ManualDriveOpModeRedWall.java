@@ -25,7 +25,7 @@ public class ManualDriveOpModeRedWall extends LinearOpMode {
         waitForStart();
         while (opModeIsActive()) {
 
-            robot.driveByHandBlueWall(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+            robot.driveByHandRedWall(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
             robot.scoopSetPosition(gamepad1.b, gamepad1.y, gamepad1.x);
             robot.scoopFreeRun(gamepad1.right_bumper, gamepad1.left_bumper);
             robot.manualFoundationDrop(gamepad1.dpad_down);

@@ -9,13 +9,16 @@ public class ChassisConfig {
     private float moveSpeed;
     private boolean leftMotorsReversed;
     private boolean rightMotorsReversed;
-    private boolean hasWalle;
-    private boolean teamMarkersReversed;
-    private boolean lyftStrategy;
     private boolean touchSensorON;
 
-    protected ChassisConfig(float rearDiameter, boolean useFourWheelDrive, float rearWheelSpeed,
-                            float turnSpeed, float moveSpeed, boolean leftMotorsReversed, boolean rightMotorsReversed, boolean hasWalle, boolean teamMarkersReversed, boolean lyftStrategy, boolean touchSensorON) {
+    protected ChassisConfig(float rearDiameter,
+                            boolean useFourWheelDrive,
+                            float rearWheelSpeed,
+                            float turnSpeed,
+                            float moveSpeed,
+                            boolean leftMotorsReversed,
+                            boolean rightMotorsReversed,
+                            boolean touchSensorON) {
         this.rearDiameter = rearDiameter;
         this.useFourWheelDrive = useFourWheelDrive;
         this.rearWheelSpeed = rearWheelSpeed;
@@ -23,9 +26,6 @@ public class ChassisConfig {
         this.moveSpeed = moveSpeed;
         this.leftMotorsReversed = leftMotorsReversed;
         this.rightMotorsReversed = rightMotorsReversed;
-        this.hasWalle = hasWalle;
-        this.teamMarkersReversed = teamMarkersReversed;
-        this.lyftStrategy = lyftStrategy;
         this.touchSensorON = touchSensorON;
     }
 
@@ -42,14 +42,9 @@ public class ChassisConfig {
     public float getMoveSpeed() { return moveSpeed; }
     public boolean isLeftMotorReversed() { return leftMotorsReversed; }
     public boolean isRightMotorReversed() { return rightMotorsReversed; }
-    public boolean getHasWalle() {return hasWalle; }
-    public boolean isTeamMarkerReversed() { return teamMarkersReversed; }
-    public boolean getlyftStrategy() { return lyftStrategy; }
     public boolean isTouchSensorON() {return touchSensorON;}
 
-
-    // https://www.wikihow.com/Determine-Gear-Ratio
-    // 20  -> 26
+    // https://www.wikihow.com/Determine-Gear-Ratio: 20  -> 26
     static final float QUICK_SILVER_CHAIN_GEAR = 1.3f;
 
     // MAGIC NUMBERS for the motor encoders
@@ -68,10 +63,7 @@ public class ChassisConfig {
                 0.8f,
                 false,
                 true,
-                                false,
-                true,
-                true,
-                false);
+                                false);
     }
 
     /** If no config is given, use this one. */

@@ -132,11 +132,11 @@ public class ArmSystem {
         // for example if we want to turn on / off fastmode, that can be done easily.
         // Double values ordered Pivot, elbow, wrist.
         this.positionEnumMap = new EnumMap<Position, double[]>(Position.class);
-        positionEnumMap.put(Position.POSITION_NORTH, new double[] {0.88, 0.94, 0.09});
-        positionEnumMap.put(Position.POSITION_EAST, new double[] {0.62, 0.09, 0.09});
-        positionEnumMap.put(Position.POSITION_WEST, new double[] {0.1, 0.64, 0.09});
-        positionEnumMap.put(Position.POSITION_SOUTH, new double[] {0.62, 0.64, 0.09});
-        positionEnumMap.put(Position.POSITION_HOME, new double[] {0.06, 0.68, 0.83});
+        positionEnumMap.put(Position.POSITION_NORTH, new double[] {1, 0.56, 0.44});
+        positionEnumMap.put(Position.POSITION_EAST, new double[] {1, 0.24, 0.13});
+        positionEnumMap.put(Position.POSITION_WEST, new double[] {1, 0.24, 0.13});
+        positionEnumMap.put(Position.POSITION_SOUTH, new double[] {1, 0.24, 0.7});
+        positionEnumMap.put(Position.POSITION_HOME, new double[] {0.18, 0.09, 0.7});
     }
 
     /*

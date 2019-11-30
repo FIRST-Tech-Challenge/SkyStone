@@ -2,9 +2,9 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name = "Double SkyStone Blue Wall", group = "Exercises")
+@Autonomous(name="DON'T USE UNTIL FUTURE RED", group="Exercises")
 
-public class DoubleSkyStoneBlueWall extends DoubleSkyStoneRedWall {
+public class DontUseUntilFutureRed extends DontUseUntilFutureBlue {
     protected TensorFlowBot robot = new TensorFlowBot(this);
 
     int direction_forward, direction_backward;
@@ -12,13 +12,9 @@ public class DoubleSkyStoneBlueWall extends DoubleSkyStoneRedWall {
     @Override
     public void runOpMode() {
         robot.init(hardwareMap);
-        direction_forward = robot.DIRECTION_BACKWARD;
-        direction_backward = robot.DIRECTION_FORWARD;
-        super.runOpMode();
+            direction_forward = robot.DIRECTION_BACKWARD;
+            direction_backward = robot.DIRECTION_FORWARD;
+            super.runOpMode();
+        }
     }
-}
-
-
-
-
 

@@ -89,21 +89,34 @@ public class Align {
             } else if(!hwMap.foundationDetectLeft.getState() && !hwMap.foundationDetectRight.getState()){
                 hwMap.transferLock.setPosition(TeleopConstants.transferLockPosUp);
                 hwMap.foundationLock.setPosition(TeleopConstants.foundationLockLock);
+                opMode.telemetry.addData("Target Heading", "AT TARGET (±3°)");
+                opMode.telemetry.addData("Current Heading", externalHeading);
+                opMode.telemetry.addData("LimitSwitchLeft", "Already Pressed");
+                opMode.telemetry.addData("LimitSwitchRight", "Already Pressed");
                 stop();
+                break;
             } else if(correctRotation && (!hwMap.foundationDetectLeft.getState() || !hwMap.foundationDetectRight.getState())){
                 if(!hwMap.foundationDetectLeft.getState()){
                     hwMap.foundationLock.setPosition(TeleopConstants.foundationLockLock);
+                    opMode.telemetry.addData("Target Heading", "AT TARGET (±3°)");
+                    opMode.telemetry.addData("Current Heading", externalHeading);
+                    opMode.telemetry.addData("LimitSwitchLeft", "Already Pressed");
                     try {
                         Thread.sleep(300);
                     } catch (Exception e){}
+
                     while(hwMap.foundationDetectRight.getState()){
                         setLeftPower(-turnPower);
                         setRightPower(turnPower);
                     }
+                    opMode.telemetry.addData("LimitSwitchRight", "Already Pressed");
                     hwMap.transferLock.setPosition(TeleopConstants.transferLockPosUp);
                     stop();
                 } else if(!hwMap.foundationDetectRight.getState()){
                     hwMap.transferLock.setPosition(TeleopConstants.transferLockPosUp);
+                    opMode.telemetry.addData("Target Heading", "AT TARGET (±3°)");
+                    opMode.telemetry.addData("Current Heading", externalHeading);
+                    opMode.telemetry.addData("LimitSwitchRight", "Already Pressed");
                     try {
                         Thread.sleep(300);
                     } catch (Exception e){}
@@ -112,6 +125,7 @@ public class Align {
                         setRightPower(-turnPower);
                     }
                     hwMap.foundationLock.setPosition(TeleopConstants.foundationLockLock);
+                    opMode.telemetry.addData("LimitSwitchLeft", "Already Pressed");
                     stop();
                 }
                 break;

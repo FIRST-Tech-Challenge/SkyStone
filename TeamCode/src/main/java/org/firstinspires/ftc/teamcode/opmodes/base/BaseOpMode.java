@@ -59,8 +59,8 @@ public abstract class BaseOpMode extends OpMode {
         servoEnumMap.put(ArmSystem.ServoNames.PIVOT, hardwareMap.get(Servo.class, "PIVOT"));
         armSystem = new ArmSystem(
                 servoEnumMap,
-                hardwareMap.get(DcMotor.class, "slider_motor"),
-                hardwareMap.get(DigitalChannel.class, "slider_switch"), false);
+                hardwareMap.get(DcMotor.class, "SLIDER_MOTOR"),
+                hardwareMap.get(DigitalChannel.class, "SLIDER_SWITCH"), false);
 
     }
 

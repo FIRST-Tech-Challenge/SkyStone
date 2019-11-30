@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.auto.ChassisConfig;
-import org.firstinspires.ftc.teamcode.autoOp.LongBeanis1;
 import org.firstinspires.ftc.teamcode.autoOp.LongRedBeanis1;
 
 //Beanis = Square

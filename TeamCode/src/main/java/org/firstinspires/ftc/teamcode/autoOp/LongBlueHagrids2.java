@@ -1,19 +1,18 @@
 package org.firstinspires.ftc.teamcode.autoOp;
 
-import org.firstinspires.ftc.teamcode.auto.ChassisConfig;
 import org.firstinspires.ftc.teamcode.auto.ChassisStandard;
+import org.firstinspires.ftc.teamcode.auto.ChassisConfig;
 
 /**
- *
+ * This just runs from the position closest to the crater, into the crater.
  */
-public abstract class FingerTest extends ChassisStandard {
+public abstract class LongBlueHagrids2 extends ChassisStandard {
 
-
-    public FingerTest(ChassisConfig config) {
+    public LongBlueHagrids2(ChassisConfig config) {
         super(config);
     }
 
-    /**
+    /**a
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
     @Override
@@ -21,22 +20,13 @@ public abstract class FingerTest extends ChassisStandard {
 
         if (madeTheRun == false) {
 
-            raiseBackFinger();
+            encoderDrive(26);
 
-            raiseFrontFinger();
-
-
-            dropBackFinger();
-
-           dropFrontFinger();
-
-
-           raiseBackFinger();
-
-           raiseFrontFinger();
-
+            turnRight(80);
+            encoderDrive(35);
             madeTheRun = true;
         }
+
     }
 }
 

@@ -11,7 +11,10 @@ import org.firstinspires.ftc.robotlib.drivetrain.MecanumDrivetrain;
 import org.firstinspires.ftc.robotlib.motor.EncoderMotor;
 import org.firstinspires.ftc.robotlib.motor.LimitedMotor;
 import org.firstinspires.ftc.robotlib.servo.LinkedServo;
+import org.firstinspires.ftc.robotlib.servo.LinkedStateServo;
+import org.firstinspires.ftc.robotlib.servo.StateServo;
 import org.firstinspires.ftc.robotlib.sound.BasicSound;
+import org.firstinspires.ftc.robotlib.state.ServoState;
 import org.jetbrains.annotations.NotNull;
 
 public class SiBorgsMecanumRobot
@@ -36,11 +39,11 @@ public class SiBorgsMecanumRobot
     private static final int[] HORIZONTAL_LIMIT = {-1400, -400};
 
     // Servo motors
-    private Servo servoClawLeft;
-    private Servo servoClawRight;
-    public Servo armGripSlide;
+    private StateServo servoClawLeft;
+    private StateServo servoClawRight;
+    public StateServo armGripSlide;
 
-    public LinkedServo platformServo;
+    public LinkedStateServo platformServo;
 
     // Sound objects
     public BasicSound sirenSound;
@@ -92,19 +95,19 @@ public class SiBorgsMecanumRobot
         armHorizontalSlide.setLimited(true);
 
         // Servos init
-        servoClawLeft = hwMap.get(Servo.class, "servoClawLeft");
-        servoClawRight = hwMap.get(Servo.class, "servoClawRight");
-        armGripSlide = hwMap.get(Servo.class, "armGripSlide");
+        servoClawLeft = new StateServo(hwMap.get(Servo.class, "servoClawLeft"), 1, 1, 0);
+        servoClawRight = new StateServo(hwMap.get(Servo.class, "servoClawRight"), 1, 1, 0);
+        armGripSlide = new StateServo(hwMap.get(Servo.class, "armGripSlide"), 0, 1, 1);
 
         servoClawLeft.setDirection(Servo.Direction.FORWARD);
         servoClawRight.setDirection(Servo.Direction.FORWARD);
         armGripSlide.setDirection(Servo.Direction.FORWARD);
 
-        servoClawLeft.setPosition(0);
-        servoClawRight.setPosition(0);
-        armGripSlide.setPosition(1);
+        servoClawLeft.setPosition(ServoState.DOWN);
+        servoClawRight.setPosition(ServoState.DOWN);
+        armGripSlide.setPosition(ServoState.UP);
 
-        platformServo = new LinkedServo(servoClawLeft, servoClawRight);
+        platformServo = new LinkedStateServo(servoClawLeft, servoClawRight, 1, 1, 0, false);
 
         // Sounds init
         sirenSound = new BasicSound("police_siren", hwMap);
@@ -120,7 +123,7 @@ public class SiBorgsMecanumRobot
         telemetry.addData("> Drive Info", "-----");
         telemetry.addData("Half Power Mode\t(G1-RStickButton)", drivetrain.getLowPower());
         telemetry.addData("Course Degrees\t(G1-RStick)", drivetrain.getCourse());
-        telemetry.addData("Velocity\t(G1-RStick)", drivetrain.getVelocity());
+        telemetry.addData("Power\t(G1-RStick)", drivetrain.getVelocity());
         telemetry.addData("Rotation\t(G1-LStick)", drivetrain.getRotation());
 
         telemetry.addData("> Arm Info", "Limited\t(G2-B)? " + armVerticalSlide.isLimited());
@@ -128,10 +131,10 @@ public class SiBorgsMecanumRobot
         telemetry.addData("Horizontal Position\t(G2-RStickY", armHorizontalSlide.getCurrentPosition());
 
         telemetry.addData("> Servo Info", "-----");
-        telemetry.addData("Platform Servos Pos\t(G2-DpadUp/DpadDown)", platformServo.getPosition());
-        telemetry.addData("Platform Claw Left\t(^)", servoClawLeft.getPosition());
-        telemetry.addData("Platform Claw Right\t(^)", servoClawRight.getPosition());
-        telemetry.addData("Arm Grip Slide\t(G2-Y/A)", armGripSlide.getPosition());
+        telemetry.addData("Platform Servos Pos\t(G2-DpadUp/DpadDown)", platformServo.getStateString());
+        telemetry.addData("Platform Claw Left\t(^)", servoClawLeft.getState());
+        telemetry.addData("Platform Claw Right\t(^)", servoClawRight.getState());
+        telemetry.addData("Arm Grip Slide\t(G2-Y/A)", armGripSlide.getState());
 
         telemetry.update();
     }
@@ -187,9 +190,8 @@ public class SiBorgsMecanumRobot
         telemetry.addData("Is Pos", drivetrain.isPositioning());
 
         telemetry.addData("> Servo Info", "-----");
-        telemetry.addData("Servo Pos", "One: " + platformServo.getServoOne().getPosition() + " Two: " + platformServo.getServoTwo().getPosition());
-        telemetry.addData("Servo Pos2", "One: " + servoClawLeft.getPosition() + " Two: " + servoClawRight.getPosition());
-        telemetry.addData("Linked Pos", platformServo.getPosition());
+        telemetry.addData("Arm Pos", armGripSlide.getState());
+        telemetry.addData("Linked Pos", platformServo.getStateString());
 
         telemetry.update();
     }

@@ -32,7 +32,8 @@ public class MecanumTeleOp extends OpMode
         rightTrigger = new Button();
         yButton = new Button();
 
-        //hardware.servoManager.reset();
+        hardware.deliveryServoManager.reset();
+        hardware.intakeMotorManager.stop();
     }
 
     @Override

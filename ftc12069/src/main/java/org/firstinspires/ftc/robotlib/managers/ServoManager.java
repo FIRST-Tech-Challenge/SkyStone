@@ -32,12 +32,7 @@ public class ServoManager {
      * Updates the servos based on their state
      */
     public void update() {
-        switch (servoState) {
-            case STOWED:
-                this.setPosition(1.0);
-            case DOWN:
-                this.setPosition(0.0);
-        }
+        this.setPosition(servoState.getPosition());
     }
 
     /**

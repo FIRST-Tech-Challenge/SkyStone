@@ -4,18 +4,24 @@ package org.firstinspires.ftc.robotlib.state;
  * Stores the state of Servo(s) for ease of use
  */
 public enum ServoState {
-    UNKNOWN(-1),
-    STOWED(0),
-    DOWN(1);
+    UNKNOWN(-1, -1),
+    STOWED(0, 0),
+    DOWN(1, 1);
 
     private int level;
+    private int position;
 
-    ServoState(int level) {
+    ServoState(int level, int position) {
         this.level = level;
+        this.position = position;
     }
 
     public int getLevel() {
         return level;
+    }
+
+    public int getPosition() {
+        return position;
     }
 
     // This auto corrects if the value is too high or low

@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -44,6 +45,7 @@ public class CustomTensorFlowObjectDetection extends LinearOpMode {
             "ARjSEzX/////AAABmTyfc/uSOUjluYpQyDMk15tX0Mf3zESzZKo6V7Y0O/qtPvPQOVben+DaABjfl4m5YNOhGW1HuHywuYGMHpJ5/uXY6L8Mu93OdlOYwwVzeYBhHZx9le+rUMr7NtQO/zWEHajiZ6Jmx7K+A+UmRZMpCmr//dMQdlcuyHmPagFERkl4fdP0UKsRxANaHpwfQcY3npBkmgE8XsmK4zuFEmzfN2/FV0Cns/tiTfXtx1WaFD0YWYfkTHRyNwhmuBxY6MXNmaG8VlLwJcoanBFmor2PVBaRYZ9pnJ4TJU5w25h1lAFAFPbLTz1RT/UB3sHT5CeG0bMyM4mTYLi9SHPOUQjmIomxp9D7R39j8g5G7hiKr2JP";  //Variable Place--Remember to insert key here
 
     private VuforiaLocalizer vuforia;       //Image dimensions 360x640
+    private static double imgWidth = 1.0;
 
     private TFObjectDetector tfod;
 
@@ -75,6 +77,8 @@ public class CustomTensorFlowObjectDetection extends LinearOpMode {
         if (tfod != null) {
             tfod.activate();
         }
+
+        Detect detect = new Detect();
 
         /** Wait for the game to begin */
         telemetry.addData(">", "Press Play to start op mode");
@@ -126,6 +130,8 @@ public class CustomTensorFlowObjectDetection extends LinearOpMode {
                             telemetry.addData("Auto-adjusted Domain-Predicted 0° Stone Width", offsetWidth);
                             telemetry.addData("Auto-adjusted Domain-Predicted 0° Stone Width Delta",
                                     Math.round((deltaWidth) * 1000.0) / 1000.0);
+                            telemetry.addData("Position",
+                                    Arrays.toString(detect.getSkystonePositionsRed(updatedRecognitions, imgWidth)));
                             telemetry.addData("","----------------------------");
 
                             objIndex += 1;
@@ -162,6 +168,7 @@ public class CustomTensorFlowObjectDetection extends LinearOpMode {
         VuforiaLocalizer.CloseableFrame frame = vuforia.getFrameQueue().take(); //takes the frame at the head of the queue
 
         imgHeight = frame.getImage(0).getHeight();
+        imgWidth = frame.getImage(0).getWidth();
 
         // Loading trackables is not necessary for the TensorFlow Object Detection engine.
     }

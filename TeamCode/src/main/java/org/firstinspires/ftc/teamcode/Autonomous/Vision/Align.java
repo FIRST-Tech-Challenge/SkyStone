@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Autonomous.Vision;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.All.HardwareMap;
 import org.firstinspires.ftc.teamcode.Autonomous.FieldPosition;
@@ -46,20 +47,20 @@ public class Align {
             externalHeading = Math.toDegrees(externalHeading);
 
             if ((f == FieldPosition.RED_QUARY || f == FieldPosition.RED_FOUNDATION) && !correctRotation) {
-                if (externalHeading >= 271 || externalHeading < 90) {
+                if (externalHeading >= 282 || externalHeading < 90) {
                     setRightPower(-turnPower);
                     setLeftPower(turnPower);
-                } else if (externalHeading <= 269 && externalHeading >= 90) {
+                } else if (externalHeading <= 278 && externalHeading >= 90) {
                     setRightPower(turnPower);
                     setLeftPower(-turnPower);
                 }
                 opMode.telemetry.addData("Target Heading", 270 + "°");
                 opMode.telemetry.addData("Current Heading", externalHeading);
             } else if ((f == FieldPosition.BLUE_QUARY || f == FieldPosition.BLUE_FOUNDATION) && !correctRotation) {
-                if (externalHeading <= 89 || externalHeading >= 270) {
+                if (externalHeading <= 98 || externalHeading >= 270) {
                     setRightPower(turnPower);
                     setLeftPower(-turnPower);
-                } else if (externalHeading >= 91 && externalHeading < 270) {
+                } else if (externalHeading >= 102 && externalHeading < 270) {
                     setRightPower(-turnPower);
                     setLeftPower(turnPower);
                 }
@@ -67,7 +68,7 @@ public class Align {
                 opMode.telemetry.addData("Current Heading", externalHeading);
             }
 
-            if ((externalHeading > 89 && externalHeading < 91) || (externalHeading < 271 && externalHeading > 269) &&
+            if ((externalHeading > 98 && externalHeading < 102) || (externalHeading < 282 && externalHeading > 278) &&
                     !correctRotation) {
                 stop();
                 correctRotation = true;
@@ -81,18 +82,14 @@ public class Align {
                 opMode.telemetry.addData("Current Heading", externalHeading);
                 opMode.telemetry.addData("LimitSwitchLeft", !hwMap.foundationDetectLeft.getState());
                 opMode.telemetry.addData("LimitSwitchRight", !hwMap.foundationDetectRight.getState());
-            /*} else if(correctRotation && !hwMap.foundationDetectLeft.getState() && hwMap.foundationDetectRight.getState()){
-                strafe(approachingPower, false);
-            } else if(correctRotation && hwMap.foundationDetectLeft.getState() && !hwMap.foundationDetectRight.getState()){
-                strafe(approachingPower, true);*/
-
-            } else if(!hwMap.foundationDetectLeft.getState() && !hwMap.foundationDetectRight.getState()){
+            } else if(correctRotation && !hwMap.foundationDetectLeft.getState() && !hwMap.foundationDetectRight.getState()){
                 hwMap.transferLock.setPosition(TeleopConstants.transferLockPosUp);
                 hwMap.foundationLock.setPosition(TeleopConstants.foundationLockLock);
                 opMode.telemetry.addData("Target Heading", "AT TARGET (±3°)");
                 opMode.telemetry.addData("Current Heading", externalHeading);
                 opMode.telemetry.addData("LimitSwitchLeft", "Already Pressed");
                 opMode.telemetry.addData("LimitSwitchRight", "Already Pressed");
+                opMode.telemetry.update();
                 stop();
                 break;
             } else if(correctRotation && (!hwMap.foundationDetectLeft.getState() || !hwMap.foundationDetectRight.getState())){
@@ -101,9 +98,7 @@ public class Align {
                     opMode.telemetry.addData("Target Heading", "AT TARGET (±3°)");
                     opMode.telemetry.addData("Current Heading", externalHeading);
                     opMode.telemetry.addData("LimitSwitchLeft", "Already Pressed");
-                    try {
-                        Thread.sleep(300);
-                    } catch (Exception e){}
+                    try { Thread.sleep(300); } catch (Exception e){}
 
                     while(hwMap.foundationDetectRight.getState()){
                         setLeftPower(-turnPower);
@@ -112,14 +107,14 @@ public class Align {
                     opMode.telemetry.addData("LimitSwitchRight", "Already Pressed");
                     hwMap.transferLock.setPosition(TeleopConstants.transferLockPosUp);
                     stop();
+                    break;
                 } else if(!hwMap.foundationDetectRight.getState()){
                     hwMap.transferLock.setPosition(TeleopConstants.transferLockPosUp);
                     opMode.telemetry.addData("Target Heading", "AT TARGET (±3°)");
                     opMode.telemetry.addData("Current Heading", externalHeading);
                     opMode.telemetry.addData("LimitSwitchRight", "Already Pressed");
-                    try {
-                        Thread.sleep(300);
-                    } catch (Exception e){}
+                    try { Thread.sleep(300); } catch (Exception e){}
+
                     while(hwMap.foundationDetectRight.getState()){
                         setLeftPower(turnPower);
                         setRightPower(-turnPower);
@@ -127,8 +122,9 @@ public class Align {
                     hwMap.foundationLock.setPosition(TeleopConstants.foundationLockLock);
                     opMode.telemetry.addData("LimitSwitchLeft", "Already Pressed");
                     stop();
+                    break;
                 }
-                break;
+                opMode.telemetry.update();
             }
             opMode.telemetry.update();
         }
@@ -171,7 +167,7 @@ public class Align {
                         //if(distanceAway < 12 && theta > 35)
                         //    setPower(-approachingPower);
 
-                        if (distanceAway < 12) {
+                        if (distanceAway < 15) {
                             stop();
                             isAligned = true;
                         }
@@ -187,7 +183,7 @@ public class Align {
                         double inchesMoved = averageDelta / 1400d * 2 * PI * 2;
                         //collected = intook();
 
-                        if (inchesMoved > 12 /*|| collected*/) {
+                        if (inchesMoved > 15 /*|| collected*/) {
                             intake(0);
                             stop();
                             collected = true;

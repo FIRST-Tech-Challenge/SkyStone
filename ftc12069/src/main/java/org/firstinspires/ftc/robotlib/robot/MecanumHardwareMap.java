@@ -25,8 +25,10 @@ public class MecanumHardwareMap
     private DcMotor intakeLeft;
     private DcMotor intakeRight;
 
-    // Servos in Mecanum Robot
-    //private Servo servoClaw;
+    // Servos
+    public Servo blockGrabber;
+    private Servo deliveryLeft;
+    private Servo deliveryRight;
 
     // Camera
     public WebcamName webcamName;
@@ -35,7 +37,9 @@ public class MecanumHardwareMap
     public BNO055IMU imu;
 
     public MecanumDrivetrain drivetrain;
-    public ServoManager servoManager;
+
+    // Managers (for treating a group of objects as one)
+    public ServoManager deliveryServoManager;
     public MotorManager intakeMotorManager;
 
     public final double wheelRadius = 4; //inches
@@ -61,6 +65,10 @@ public class MecanumHardwareMap
         intakeLeft = hwMap.get(DcMotor.class, "intakeLeft");
         intakeRight = hwMap.get(DcMotor.class, "intakeRight");
 
+        blockGrabber = hwMap.get(Servo.class, "blockGrabber");
+        deliveryLeft = hwMap.get(Servo.class, "deliveryLeft");
+        deliveryRight = hwMap.get(Servo.class, "deliveryLeft");
+
         motorList = new DcMotor[]{driveFrontLeft, driveFrontRight, driveRearLeft, driveRearRight};
 
         driveFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -81,8 +89,9 @@ public class MecanumHardwareMap
         intakeLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         intakeRight.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        //servoClaw = hwMap.get(Servo.class, "servoClaw");
-        //servoClaw.setDirection(Servo.Direction.FORWARD);
+        blockGrabber.setDirection(Servo.Direction.FORWARD);
+        deliveryLeft.setDirection(Servo.Direction.FORWARD);
+        deliveryRight.setDirection(Servo.Direction.FORWARD);
 
         webcamName = hwMap.get(WebcamName.class, "webcam");
 
@@ -97,8 +106,9 @@ public class MecanumHardwareMap
         imu.initialize(imuParameters);
 
         drivetrain = new MecanumDrivetrain(motorList);
-        //servoManager = new ServoManager(new Servo[]{servoClaw});
         intakeMotorManager = new MotorManager(new DcMotor[]{intakeLeft, intakeRight});
+        deliveryServoManager = new ServoManager(new Servo[] {deliveryLeft, deliveryRight});
+
         motorTicksPerInch = drivetrain.getTicksPerInch(wheelRadius, wheelToMotorRatio);
     }
 }

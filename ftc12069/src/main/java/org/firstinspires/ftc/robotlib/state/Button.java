@@ -1,52 +1,51 @@
 package org.firstinspires.ftc.robotlib.state;
 
 //This class stores the states for buttons pressed on the controller
-public class Button
-{
-    private boolean previouslyPressed = false;
-    private boolean pressed = false;
-    private boolean onPress = false;
-    private boolean onRelease = false;
+public class Button {
+    private boolean previouslyToggled = false;
+    private boolean toggled = false;
+    private boolean isPressed = false;
+    private boolean isReleased = false;
 
-    public void input(boolean currentlyPressed)
+    public void input(boolean currentlyToggled)
     {
-        pressed = currentlyPressed;
+        toggled = currentlyToggled;
 
-        if (currentlyPressed && !previouslyPressed)
+        if (currentlyToggled && !previouslyToggled)
         {
-            onPress = true;
+            isPressed = true;
         }
 
-        if (!currentlyPressed && previouslyPressed)
+        if (!currentlyToggled && previouslyToggled)
         {
-            onRelease = true;
+            isReleased = true;
         }
 
-        previouslyPressed = currentlyPressed;
-    }
-
-    public boolean onPress()
-    {
-        if (onPress)
-        {
-            onPress = false;
-            return true;
-        }
-        return false;
-    }
-
-    public boolean onRelease()
-    {
-        if (onRelease)
-        {
-            onRelease = false;
-            return true;
-        }
-        return false;
+        previouslyToggled = currentlyToggled;
     }
 
     public boolean isPressed()
     {
-        return pressed;
+        if (isPressed)
+        {
+            isPressed = false;
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isReleased()
+    {
+        if (isReleased)
+        {
+            isReleased = false;
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isToggled()
+    {
+        return toggled;
     }
 }

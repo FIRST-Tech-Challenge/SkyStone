@@ -1,16 +1,14 @@
 package org.firstinspires.ftc.robotlib.managers;
 
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotlib.state.ServoState;
+import org.jetbrains.annotations.NotNull;
 
 public class ServoManager {
     // State of managed servos
     private ServoState servoState = ServoState.STOWED;
     private Servo[] servos;
-    private boolean leftBumperToggled = false;
-    private boolean rightBumperToggled = false;
 
     /**
      * Creates a manager for a group of servos
@@ -31,28 +29,9 @@ public class ServoManager {
     }
 
     /**
-     * Handles updates to the controller
-     * @param gamepad controller
-     */
-    public void handleUpdate(Gamepad gamepad) {
-        if (gamepad.left_bumper) {
-            if (!leftBumperToggled) {
-                servoState = ServoState.getServoStateFromInt(servoState.getLevel() + 1);
-                leftBumperToggled = true;
-            }
-        } else leftBumperToggled = false;
-        if (gamepad.right_bumper) {
-            if (!rightBumperToggled) {
-                servoState = ServoState.getServoStateFromInt(servoState.getLevel() - 1);
-                rightBumperToggled = true;
-            }
-        } else rightBumperToggled = false;
-    }
-
-    /**
      * Updates the servos based on their state
      */
-    public void updateServos() {
+    public void update() {
         switch (servoState) {
             case STOWED:
                 this.setPosition(1.0);
@@ -75,5 +54,20 @@ public class ServoManager {
      */
     public ServoState getServoState() {
         return servoState;
+    }
+
+    /**
+     * Sets the servo state and updates the servos position
+     * @param servoState New state
+     */
+    public void setServoState(ServoState servoState) {
+        this.servoState = servoState;
+        this.update();
+
+    }
+
+    @NotNull
+    public String toString() {
+        return servoState.toString() + " (" + servoState.getLevel() + ")";
     }
 }

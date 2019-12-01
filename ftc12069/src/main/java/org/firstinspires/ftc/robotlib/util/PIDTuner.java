@@ -44,7 +44,7 @@ public class PIDTuner
         selected.input(gamepad.x);
         aButton.input(gamepad.a);
 
-        if (upButton.onPress())
+        if (upButton.isPressed())
         {
             switch (selected.output())
             {
@@ -58,7 +58,7 @@ public class PIDTuner
                     controller.setKD(controller.getKD()+stepD);
             }
         }
-        if (downButton.onPress())
+        if (downButton.isPressed())
         {
             switch (selected.output())
             {
@@ -73,7 +73,7 @@ public class PIDTuner
             }
         }
 
-        if (yButton.onPress())
+        if (yButton.isPressed())
         {
             controller.resetIntegration();
         }

@@ -5,22 +5,32 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotlib.robot.MecanumHardwareMap;
+import org.firstinspires.ftc.robotlib.state.Button;
 import org.firstinspires.ftc.robotlib.state.ServoState;
 
 @TeleOp(name="Experimental Mecanum TELEOP (12069)", group="Linear Opmode")
 public class MecanumTeleOp extends OpMode
 {
-    private MecanumHardwareMap robotHardware;
+    private MecanumHardwareMap hardware;
     private ElapsedTime elapsedTime;
+
+    // TeleOp States
     private boolean rightMotion = true;
+    private Button leftBumper;
+    private Button rightBumper;
+    private Button yButton;
 
     @Override
     public void init()
     {
-        robotHardware = new MecanumHardwareMap(this.hardwareMap);
+        hardware = new MecanumHardwareMap(this.hardwareMap);
         elapsedTime = new ElapsedTime();
 
-        //robotHardware.servoManager.reset();
+        leftBumper = new Button();
+        rightBumper = new Button();
+        yButton = new Button();
+
+        //hardware.servoManager.reset();
     }
 
     @Override
@@ -47,22 +57,33 @@ public class MecanumTeleOp extends OpMode
             velocity = Math.hypot(gamepad1.right_stick_x, gamepad1.right_stick_y);
             rotation = -gamepad1.left_stick_x;
         } else {
-            course = Math.atan2(gamepad1.left_stick_y, -gamepad1.left_stick_x) - Math.PI/2;
+            course = -Math.atan2(gamepad1.left_stick_y, -gamepad1.left_stick_x) - Math.PI/2;
             velocity = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
-            rotation = gamepad1.right_stick_x;
+            rotation = -gamepad1.right_stick_x;
         }
 
-        robotHardware.drivetrain.setCourse(course);
-        robotHardware.drivetrain.setVelocity(velocity);
-        robotHardware.drivetrain.setRotation(rotation);
+        hardware.drivetrain.setCourse(course);
+        hardware.drivetrain.setVelocity(velocity);
+        hardware.drivetrain.setRotation(rotation);
 
-        //ServoState servoState = robotHardware.servoManager.getServoState();
-        //robotHardware.servoManager.updateServos();
+        ServoState deliveryServoState = hardware.deliveryServoManager.getServoState();
+        if (leftBumper.isReleased()) {
+            hardware.deliveryServoManager.setServoState(ServoState.getServoStateFromInt(deliveryServoState.getLevel() - 1));
+        } else if (rightBumper.isReleased()) {
+            hardware.deliveryServoManager.setServoState(ServoState.getServoStateFromInt(deliveryServoState.getLevel() + 1));
+        }
+
+        if (yButton.isReleased()) {
+            if (hardware.blockGrabber.getPosition() == 0.0) hardware.blockGrabber.setPosition(1.0);
+            else hardware.blockGrabber.setPosition(0.0);
+        }
 
         if (gamepad1.a) rightMotion = false;
         if (gamepad1.b) rightMotion = true;
 
-        //robotHardware.servoManager.handleUpdate(gamepad1);
+        leftBumper.input(gamepad1.left_bumper);
+        rightBumper.input(gamepad1.right_bumper);
+        yButton.input(gamepad1.y);
 
         telemetry.addData("Status", "Loop: " + elapsedTime.toString());
         telemetry.addData("Course", course);

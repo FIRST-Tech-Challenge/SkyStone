@@ -16,11 +16,11 @@ import java.util.ArrayList;
 
 public class HardwareMap {
     public DcMotorEx backLeft, backRight, frontLeft, frontRight, leftIntake, rightIntake, liftOne, liftTwo;
-    public Servo clawServo1, clawServo2, foundationLock, plateLifter, liftOdometer, transferLock, transferHorn, clawInit, innerTransfer;
-    public DigitalChannel liftReset, intakeDetect1, foundationDetectLeft, foundationDetectRight;
+    public Servo clawServo1, clawServo2, foundationLock, plateLifter, liftOdometer, transferLock, transferHorn,
+            clawInit, innerTransfer, intakeInit;
+    public DigitalChannel liftReset, intakeDetect, foundationDetectLeft, foundationDetectRight;
     public BNO055IMU gyro;
     public IntegratingGyroscope imu;
-    public static DcMotor leftForward, rightForward, sideways;
     public static String TAG = "MainThread";
 
     public com.qualcomm.robotcore.hardware.HardwareMap hardwareMap;
@@ -51,11 +51,12 @@ public class HardwareMap {
         transferHorn = hwMap.get(Servo.class, "transferHorn");
         clawInit = hwMap.get(Servo.class, "clawInit");
         innerTransfer = hwMap.get(Servo.class, "innerTransfer");
+        intakeInit = hwMap.get(Servo.class, "intakeInit");  //@TODO Configure intakeInit on the robot
 
         //---------------------------------------------------------------------------
 
         liftReset = hwMap.get(DigitalChannel.class, "liftReset");
-        //intakeDetect1 = hwMap.get(DigitalChannel.class, "intakeDetect1");
+        //intakeDetect = hwMap.get(DigitalChannel.class, "intakeDetect");   //@TODO Configue intakeDetect on the robot
         foundationDetectLeft = hwMap.get(DigitalChannel.class, "foundationDetectLeft");
         foundationDetectRight = hwMap.get(DigitalChannel.class, "foundationDetectRight");
 

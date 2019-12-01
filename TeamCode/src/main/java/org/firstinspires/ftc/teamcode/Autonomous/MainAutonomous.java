@@ -58,6 +58,8 @@ public class MainAutonomous extends LinearOpMode {
         drivetrain.setMotorZeroPower(DcMotor.ZeroPowerBehavior.BRAKE);
         drivetrain.resetEncoders();
         drivetrain.setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        hwMap.liftOne.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        hwMap.liftOne.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         hwMap.frontRight.setDirection(DcMotorSimple.Direction.REVERSE); //???
         hwMap.backRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -148,6 +150,7 @@ public class MainAutonomous extends LinearOpMode {
 
         if (opModeIsActive() && fieldPosition != null) {
             sendData();
+            resetLiftEncoder();
             switch (fieldPosition) {
                 case RED_QUARY:
                     path.RedQuary(skystonePositions);
@@ -222,37 +225,6 @@ public class MainAutonomous extends LinearOpMode {
         return updatedRecognitions;
     }
 
-    public void intake(int pw, int seconds) {
-        Thread thread = new Thread() {
-            public void run() {
-                hwMap.leftIntake.setPower(-pw);
-                hwMap.rightIntake.setPower(pw);
-                try {
-                    Thread.sleep(seconds * 1000);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-
-        thread.start();
-    }
-
-    public void intake(int pw, boolean on) {
-        Thread thread = new Thread() {
-            public void run() {
-                if (on) {
-                    hwMap.leftIntake.setPower(-pw);
-                    hwMap.rightIntake.setPower(pw);
-                } else {
-                    hwMap.leftIntake.setPower(0);
-                    hwMap.rightIntake.setPower(0);
-                }
-            }
-        };
-        thread.start();
-    }
-
     private void sendData() {
         Thread update = new Thread() {
             public void run() {
@@ -267,8 +239,20 @@ public class MainAutonomous extends LinearOpMode {
         update.start();
     }
 
-    public void setPoseEstimate(Pose2d pose2d) {
-        if (drive != null)
-            drive.setPoseEstimate(pose2d);
+    private void resetLiftEncoder() {
+        Thread resetEncoderLoop = new Thread() {
+            public void run() {
+                while (opModeIsActive())
+                    if (!hwMap.liftReset.getState()) {
+                        hwMap.liftOne.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                        try {
+                            Thread.sleep(300);
+                        } catch (Exception e) {
+                        }
+                        hwMap.liftOne.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    }
+            }
+        };
+        resetEncoderLoop.start();
     }
 }

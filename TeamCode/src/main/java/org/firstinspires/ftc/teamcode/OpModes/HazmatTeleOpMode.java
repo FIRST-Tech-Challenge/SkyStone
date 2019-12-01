@@ -62,7 +62,7 @@ public class HazmatTeleOpMode extends LinearOpMode{
         telemetry.addData("hzGamepad1.gpGamepad1.dpad_up", hzGamepad1.gpGamepad1.dpad_up);
         telemetry.addData("hzGamepad1.getDpad_upPress", hzGamepad1.getDpad_upPress());
         telemetry.addData("hzGamepad1.gpGamepad1.dpad_down", hzGamepad1.gpGamepad1.dpad_down);
-        telemetry.addData("hzGamepad1.getDpad_upPress", hzGamepad1.getDpad_upPress());
+        telemetry.addData("hzGamepad1.getDpad_downPress", hzGamepad1.getDpad_downPress());
 
         telemetry.addData("Intake.grip.getPosition", hzIntake.wrist.getPosition());
 

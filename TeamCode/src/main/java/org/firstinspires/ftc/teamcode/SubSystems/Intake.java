@@ -34,10 +34,9 @@ public class Intake{
     public ColorSensor detectSkystone;
 
     //initialize limit positions
-    double wristClosePosition; // = 0.7 #TOBEDEFINED
-    double wristHorizontalPosition; // = 0.5#TOBEDEFINED
-    double wristVerticalPosition; // = 1.0 #TOBEDEFINED
-
+    double wristClosePosition = 0.2; // = 0.7 #TOBEDEFINED
+    double wristVerticalPosition = 0.5; // = 0.5 #TOBEDEFINED
+    double wristHorizontalPosition = 1.0 ; // = 1.0#TOBEDEFINED
     double wristCurrentPosition;
 
     double gripOpenPosition = 0.75; //Value is specific for each grip
@@ -55,6 +54,7 @@ public class Intake{
     //#TOBEFILLED Consider initializing position?
     public void initIntake() {
         detectSkystone.enableLed(false);
+        moveWristToVertical();
     }
 
     /**
@@ -108,14 +108,17 @@ public class Intake{
      */
     public void moveWristUp(){
         wristCurrentPosition = wrist.getPosition();
-        //if currently in close position, move to vertical position
-        if (wristCurrentPosition ==  wristClosePosition) {
+        //if currently in close position, move to vertical position (tolerance 0f +/- 0.05)
+        /*if ((wristCurrentPosition > wristClosePosition - 0.05) &&
+                (wristCurrentPosition < wristClosePosition + 0.05)) {
             moveWristToVertical();
         }
-        //if currently in vertical position, move to horizontal position
-        if (wristCurrentPosition ==  wristVerticalPosition) {
+        //if currently in vertical position, move to horizontal position (tolerance 0f +/- 0.05)
+        if ((wristCurrentPosition > wristVerticalPosition - 0.05) &&
+                (wristCurrentPosition < wristVerticalPosition + 0.05)) {
             moveWristToHorizontal();
-        }
+        }*/
+        moveWristToHorizontal();
 
     }
 
@@ -125,13 +128,16 @@ public class Intake{
     public void moveWristDown(){
         wristCurrentPosition = wrist.getPosition();
         //if currently in horizontal position, move to vertical position
-        if (wristCurrentPosition ==  wristHorizontalPosition) {
+        /*if ((wristCurrentPosition > wristHorizontalPosition -0.05) &&
+                (wristHorizontalPosition < wristClosePosition + 0.05)) {
             moveWristToVertical();
         }
         //if currently in vertical position, move to close position
-        if (wristCurrentPosition ==  wristVerticalPosition) {
+        if ((wristCurrentPosition > wristVerticalPosition - 0.05) &&
+                (wristCurrentPosition < wristVerticalPosition + 0.05)) {
             moveWristToClose();
-        }
+        }*/
+        moveWristToClose();
 
     }
 

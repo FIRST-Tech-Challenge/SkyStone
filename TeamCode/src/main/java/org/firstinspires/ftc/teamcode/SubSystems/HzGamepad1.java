@@ -232,8 +232,10 @@ public class HzGamepad1 {
         if (!dpad_upLast && gpGamepad1.dpad_up) {
             isPressedDpad_up = true;
         }
-        dpad_upLast = gpGamepad1.dpad_down;
+        dpad_upLast = gpGamepad1.dpad_up;
         return isPressedDpad_up;
+
+        //return gpGamepad1.dpad_up;
     }
 
     /**
@@ -253,6 +255,8 @@ public class HzGamepad1 {
         }
         dpad_downLast = gpGamepad1.dpad_down;
         return isPressedDpad_down;
+
+        //return gpGamepad1.dpad_down;
     }
 
     /**
@@ -363,8 +367,8 @@ public class HzGamepad1 {
             gpIntake.moveWristUp();
         }
         //If Dpad_down is pressed, close wrist from horizontal to vertical to close
-        if (getDpad_upPress()){
-            gpIntake.moveWristUp();
+        if (getDpad_downPress()){
+            gpIntake.moveWristDown();
         }
 
         /* Combination Auto action - Place block on level

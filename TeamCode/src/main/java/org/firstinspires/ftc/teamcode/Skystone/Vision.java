@@ -1,25 +1,18 @@
 package org.firstinspires.ftc.teamcode.Skystone;
 
-import android.drm.DrmStore;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.net.wifi.WifiManager;
 import android.os.SystemClock;
 import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.RobotLog;
 import com.qualcomm.robotcore.util.ThreadPool;
 import com.vuforia.Frame;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.function.Consumer;
 import org.firstinspires.ftc.robotcore.external.function.Continuation;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.Camera;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraCaptureRequest;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraFrame;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
@@ -165,7 +158,7 @@ public class Vision {
         }
     }
 
-    public static double calcAverageBlue(Bitmap bitmap, int x, int y, int width, int height){
+    public static double calcAverageYellow(Bitmap bitmap, int x, int y, int width, int height){
         double sum = 0;
         int endX = x+width;
         int endY = y+height;
@@ -235,9 +228,9 @@ public class Vision {
                 int gap = 50;
                 if (bitmap != null) {
 
-                    left = calcAverageBlue(bitmap,startX,starty,width,height);
-                    center = calcAverageBlue(bitmap,startX+width+gap,starty,width,height);
-                    right = calcAverageBlue(bitmap,startX+width*2+gap*2,starty,width,height);
+                    left = calcAverageYellow(bitmap,startX,starty,width,height);
+                    center = calcAverageYellow(bitmap,startX+width+gap,starty,width,height);
+                    right = calcAverageYellow(bitmap,startX+width*2+gap*2,starty,width,height);
 
                     Log.d("Vision","Left " + left + " Center: " + center + " Right: " + right);
 

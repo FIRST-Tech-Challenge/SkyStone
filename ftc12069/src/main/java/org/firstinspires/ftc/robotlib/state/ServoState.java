@@ -27,6 +27,6 @@ public enum ServoState {
             if (servoState.getLevel() == level) return servoState;
         }
 
-        return STOWED; // this shouldn't ever happen
+        return UNKNOWN; // this shouldn't happen
     }
 }

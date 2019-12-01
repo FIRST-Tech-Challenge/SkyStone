@@ -24,7 +24,7 @@ public class ServoManager {
      */
     public void setPosition(double position) {
         for (Servo servo : servos) {
-            if (servo.getPosition() != position) servo.setPosition(position);
+            servo.setPosition(position);
         }
     }
 
@@ -35,10 +35,8 @@ public class ServoManager {
         switch (servoState) {
             case STOWED:
                 this.setPosition(1.0);
-            case UP:
-                this.setPosition(0.9);
             case DOWN:
-                this.setPosition(0.6);
+                this.setPosition(0.0);
         }
     }
 
@@ -63,7 +61,6 @@ public class ServoManager {
     public void setServoState(ServoState servoState) {
         this.servoState = servoState;
         this.update();
-
     }
 
     @NotNull

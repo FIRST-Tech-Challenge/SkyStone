@@ -248,9 +248,9 @@ public class AutonomousRobot {
         if (PHONE_IS_PORTRAIT) {
             phoneXRotate = 90 ;
         }
-        final float CAMERA_FORWARD_DISPLACEMENT  = 9.25f * mmPerInch;   // eg: Camera is 0 Inches in front of robot center
-        final float CAMERA_VERTICAL_DISPLACEMENT = 6.75f * mmPerInch;   // eg: Camera is 6.625 Inches above ground
-        final float CAMERA_LEFT_DISPLACEMENT     = 2.625f * mmPerInch;     // eg: Camera is ON the robot's center line
+        final float CAMERA_FORWARD_DISPLACEMENT  = -9f * mmPerInch;   // eg: Camera is 0 Inches in front of robot center
+        final float CAMERA_VERTICAL_DISPLACEMENT = 9.5f * mmPerInch;   // eg: Camera is 6.625 Inches above ground
+        final float CAMERA_LEFT_DISPLACEMENT     = 0f * mmPerInch;     // eg: Camera is ON the robot's center line
 
         OpenGLMatrix robotFromCamera = OpenGLMatrix
                 .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
@@ -503,7 +503,7 @@ public class AutonomousRobot {
     }
 
     public void gotoLoadingZone() {
-        if (alliance == Alliance.BLUE) this.moveToPoint(blueLoadingScanLocation, 0.5, new OrientationInfo(90, 0.7));
+        if (alliance == Alliance.BLUE) this.moveToPoint(blueLoadingScanLocation, 0.3, new OrientationInfo(90, 0.7));
         else if (alliance == Alliance.RED) this.moveToPoint(redLoadingScanLocation, 0.5, new OrientationInfo(-90, 0.7));
     }
 
@@ -592,7 +592,7 @@ public class AutonomousRobot {
      * @param orientationInfo The orientation to be at when moving to the point
      */
     public void moveToPoint(Point point, double velocity, OrientationInfo orientationInfo) {
-        Point newRobotPosition = new Point(point.x - 4, point.y);
+        Point newRobotPosition = new Point(point.x, point.y);
         this.move(this.getCourseFromRobot(point), velocity, orientationInfo, this.getDistanceFromRobot(newRobotPosition));
     }
 

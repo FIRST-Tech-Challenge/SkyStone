@@ -18,6 +18,7 @@ public class MecanumTeleOp extends OpMode
     private boolean rightMotion = true;
     private Button leftBumper;
     private Button rightBumper;
+    private Button rightTrigger;
     private Button yButton;
 
     @Override
@@ -28,6 +29,7 @@ public class MecanumTeleOp extends OpMode
 
         leftBumper = new Button();
         rightBumper = new Button();
+        rightTrigger = new Button();
         yButton = new Button();
 
         //hardware.servoManager.reset();
@@ -53,7 +55,7 @@ public class MecanumTeleOp extends OpMode
         double velocity;
         double rotation;
         if (rightMotion) {
-            course = -Math.atan2(gamepad1.right_stick_y, -gamepad1.right_stick_x) - Math.PI/2;
+            course = -Math.atan2(gamepad1.right_stick_y, gamepad1.right_stick_x) - Math.PI/2;
             velocity = Math.hypot(gamepad1.right_stick_x, gamepad1.right_stick_y);
             rotation = -gamepad1.left_stick_x;
         } else {
@@ -73,16 +75,24 @@ public class MecanumTeleOp extends OpMode
             hardware.deliveryServoManager.setServoState(ServoState.getServoStateFromInt(deliveryServoState.getLevel() + 1));
         }
 
+        if (rightTrigger.isToggled()) {
+            hardware.intakeMotorManager.setMotorsVelocity(1.0);
+        }
+        if (rightTrigger.isReleased()) {
+            hardware.intakeMotorManager.setMotorsVelocity(0.0);
+        }
+
         if (yButton.isReleased()) {
             if (hardware.blockGrabber.getPosition() == 0.0) hardware.blockGrabber.setPosition(1.0);
             else hardware.blockGrabber.setPosition(0.0);
         }
 
-        if (gamepad1.a) rightMotion = false;
-        if (gamepad1.b) rightMotion = true;
+        //if (gamepad1.a) rightMotion = false;
+        //if (gamepad1.b) rightMotion = true;
 
         leftBumper.input(gamepad1.left_bumper);
         rightBumper.input(gamepad1.right_bumper);
+        rightTrigger.input(gamepad1.right_trigger > 0);
         yButton.input(gamepad1.y);
 
         telemetry.addData("Status", "Loop: " + elapsedTime.toString());
@@ -90,7 +100,7 @@ public class MecanumTeleOp extends OpMode
         telemetry.addData("Velocity", velocity);
         telemetry.addData("Rotation", rotation);
         telemetry.addData("Driving Mode", rightMotion ? "RIGHT" : "LEFT");
-        //telemetry.addData("Servo State", servoState.toString() + " (" + servoState.getLevel() + ")");
+        telemetry.addData("Servo State", hardware.deliveryServoManager.toString());
         telemetry.update();
     }
 

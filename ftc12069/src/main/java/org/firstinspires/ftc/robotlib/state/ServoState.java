@@ -6,8 +6,7 @@ package org.firstinspires.ftc.robotlib.state;
 public enum ServoState {
     UNKNOWN(-1),
     STOWED(0),
-    UP(1),
-    DOWN(2);
+    DOWN(1);
 
     private int level;
 
@@ -28,6 +27,6 @@ public enum ServoState {
             if (servoState.getLevel() == level) return servoState;
         }
 
-        return UNKNOWN;
+        return STOWED; // this shouldn't ever happen
     }
 }

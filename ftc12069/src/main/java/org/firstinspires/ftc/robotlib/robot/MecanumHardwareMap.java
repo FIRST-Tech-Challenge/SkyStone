@@ -86,12 +86,12 @@ public class MecanumHardwareMap
         driveRearRight.setDirection(DcMotorSimple.Direction.FORWARD);
         driveRearLeft.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        intakeLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        intakeRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        intakeLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        intakeRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
         blockGrabber.setDirection(Servo.Direction.FORWARD);
         deliveryLeft.setDirection(Servo.Direction.FORWARD);
-        deliveryRight.setDirection(Servo.Direction.FORWARD);
+        deliveryRight.setDirection(Servo.Direction.REVERSE);
 
         webcamName = hwMap.get(WebcamName.class, "Webcam 1");
 

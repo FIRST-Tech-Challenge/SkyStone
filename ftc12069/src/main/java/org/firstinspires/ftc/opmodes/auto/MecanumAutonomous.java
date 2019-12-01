@@ -111,11 +111,12 @@ class MecanumAutonomous {
 
         // Until the timer has 5 seconds left, deliver stones
         while (elapsedTime.seconds() < 25) {
+            robot.scanWait(1);
             // Get Skystone
             Point3D positionFromSkystone = robot.getPositionFromSkystone();
             Point3D stonePoint3D = new Point3D(robot.getTrackedSkystone().getLocation());
             telemetry.addData("Position relative to Skystone", "{X, Y, Z} = %.0f, %.0f, %.0f", positionFromSkystone.x, positionFromSkystone.y, positionFromSkystone.z);
-            robot.move(robot.getCourse(positionFromSkystone, stonePoint3D), 0.5, null, robot.getDistance(positionFromSkystone, stonePoint3D));
+            robot.move(robot.getCourse(positionFromSkystone, stonePoint3D), 0.3, null, robot.getDistance(positionFromSkystone, stonePoint3D));
             robot.hardware.intakeMotorManager.setMotorsVelocity(1.0);
 
             // Move Skystone back to building zone

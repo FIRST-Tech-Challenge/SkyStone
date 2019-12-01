@@ -8,6 +8,7 @@ import org.firstinspires.ftc.robotlib.state.ServoState;
 
 public class MotorManager {
     private DcMotor[] motors;
+    private double velocity;
 
     /**
      * Creates a manager for a group of motors
@@ -15,6 +16,10 @@ public class MotorManager {
      */
     public MotorManager(DcMotor[] motors) {
         this.motors = motors;
+    }
+
+    public double getVelocity() {
+        return velocity;
     }
 
     /**
@@ -25,6 +30,7 @@ public class MotorManager {
         for (DcMotor motor : motors) {
            if (motor.getPower() != velocity) motor.setPower(velocity);
         }
+        this.velocity = velocity;
     }
 
     /**

@@ -28,6 +28,9 @@ public abstract class ChassisStandard extends OpMode {
         INIT_STAGE_FINISHED
     }
 
+    private static final int NUDGE_TIME = 1;
+    private static final float NUDGE_ANGLE = 10.0f;
+
     ;
 
     // vision detection variables/state
@@ -290,8 +293,12 @@ public abstract class ChassisStandard extends OpMode {
 
             } catch (Exception e) {
                 telemetry.addData("finger", "exception on init: " + e.toString());
+                sleep(2000);
                 useFingers = false;
             }
+
+            raiseBackFinger();
+            raiseFrontFinger();
         }
     }
 
@@ -681,7 +688,7 @@ public abstract class ChassisStandard extends OpMode {
         }
 
         // turn the last part
-        while ((currentAngle - destinationAngle) > 5.0) {
+        while ((currentAngle - destinationAngle) > NUDGE_ANGLE) {
 
             float oldAngle = currentAngle;
             nudgeLeft();
@@ -733,7 +740,7 @@ public abstract class ChassisStandard extends OpMode {
         }
 
         // turn the last part
-        while ((destinationAngle - currentAngle) > 5.0) {
+        while ((destinationAngle - currentAngle) > NUDGE_ANGLE) {
 
             float oldAngle = currentAngle;
             nudgeRight();
@@ -765,8 +772,16 @@ public abstract class ChassisStandard extends OpMode {
             motorFrontLeft.setPower(power);
             motorFrontRight.setPower(-power);
         }
-        sleep(5);
+        sleep(NUDGE_TIME);
+        //turn off the motor
+        motorBackLeft.setPower(0);
+        motorBackRight.setPower(0);
+        if (config.getUseFourWheelDrive()) {
+            motorFrontLeft.setPower(0);
+            motorFrontRight.setPower(0);
+        }
     }
+
 
     // This nudges over about 2 degrees.
     protected void nudgeLeft() {
@@ -778,7 +793,14 @@ public abstract class ChassisStandard extends OpMode {
             motorFrontLeft.setPower(-power);
             motorFrontRight.setPower(power);
         }
-        sleep(5);
+        sleep(NUDGE_TIME);
+        //turn off the motor
+        motorBackLeft.setPower(0);
+        motorBackRight.setPower(0);
+        if (config.getUseFourWheelDrive()) {
+            motorFrontLeft.setPower(0);
+            motorFrontRight.setPower(0);
+        }
     }
 
 

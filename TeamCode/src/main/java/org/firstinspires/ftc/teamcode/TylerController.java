@@ -91,6 +91,10 @@ public class TylerController extends OpMode {
     private SkystoneDetector detector;
     OpenCvCamera phoneCam;
 
+    //elevator
+    private DigitalChannel elevatorMagnet;
+    protected boolean useMagnets = true;
+
     /**
      * Code to run ONCE when the driver hits INIT
      */
@@ -626,6 +630,23 @@ public class TylerController extends OpMode {
 
         //Set global Movement State
         elevatorExtenderTarget = lTarget;
+    }
+    protected boolean initMagnets() {
+        if (useMagnets) {
+            elevatorMagnet = hardwareMap.get(DigitalChannel.class, "elevatorMagnet");
+            telemetry.addData("Magnet", "class:" + elevatorMagnet.getClass().getName());
+            return true;
+
+
+        } else {
+            useMagnets = false;
+            return false;
+
+        }
+    }
+
+    protected boolean isElevatorMagnetOn() {
+        return !elevatorMagnet.getState();
     }
 
 

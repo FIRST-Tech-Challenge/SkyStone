@@ -17,7 +17,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
 import java.util.List;
-
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 
 public abstract class ChassisStandard extends OpMode {
 
@@ -26,7 +26,9 @@ public abstract class ChassisStandard extends OpMode {
         INIT_STAGE_ARM,
         INIT_STAGE_VUFORIA,
         INIT_STAGE_FINISHED
-    };
+    }
+
+    ;
 
     // vision detection variables/state
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
@@ -46,7 +48,7 @@ public abstract class ChassisStandard extends OpMode {
     protected ChassisConfig config;
     protected boolean madeTheRun = false;
     protected ElapsedTime runtime = new ElapsedTime();
-    private InitStage initStage =  InitStage.INIT_STAGE_START;
+    private InitStage initStage = InitStage.INIT_STAGE_START;
 
     // Motors
     private DcMotor motorBackLeft;
@@ -67,6 +69,7 @@ public abstract class ChassisStandard extends OpMode {
     // Elevator
     private DcMotor elevator;
     private double angleAnkle;
+    private DigitalChannel elevatorMagnet;
 
     // Gyroscope
     private BNO055IMU bosch;
@@ -79,6 +82,7 @@ public abstract class ChassisStandard extends OpMode {
     protected boolean useElevator = true;
     protected boolean useFingers = true;
     protected boolean useVuforia = false;
+    protected boolean useMagnets = true;
 
 
     protected ChassisStandard() {
@@ -108,6 +112,7 @@ public abstract class ChassisStandard extends OpMode {
         initMotors();
         initTimeouts();
         initGyroscope();
+        initMagnets();
         initStage = InitStage.INIT_STAGE_ARM;
     }
 
@@ -115,13 +120,13 @@ public abstract class ChassisStandard extends OpMode {
      * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
      */
     @Override
-    public void init_loop () {
+    public void init_loop() {
         switch (initStage) {
             case INIT_STAGE_ARM:
                 initCrab();
                 initFingers();
                 initStage = InitStage.INIT_STAGE_VUFORIA;
-               break;
+                break;
 
             case INIT_STAGE_VUFORIA:
                 initVuforia();
@@ -217,7 +222,7 @@ public abstract class ChassisStandard extends OpMode {
 
         // Initialize the motors.
         if (useMotors) {
-            try  {
+            try {
                 motorBackLeft = hardwareMap.get(DcMotor.class, "motor0");
                 motorBackRight = hardwareMap.get(DcMotor.class, "motor1");
 
@@ -251,8 +256,8 @@ public abstract class ChassisStandard extends OpMode {
         }
     }
 
-    protected void initCrab(){
-        if(useCrab){
+    protected void initCrab() {
+        if (useCrab) {
             try {
                 crab = hardwareMap.get(Servo.class, "servoCrab");
             } catch (Exception e) {
@@ -273,8 +278,8 @@ public abstract class ChassisStandard extends OpMode {
         }
     }
 
-    protected void initFingers(){
-        if(useFingers){
+    protected void initFingers() {
+        if (useFingers) {
             try {
                 fingerFront = hardwareMap.get(Servo.class, "servoFrontFinger");
 
@@ -318,6 +323,25 @@ public abstract class ChassisStandard extends OpMode {
             return true;
         }
     }
+
+    protected boolean initMagnets() {
+        if (useMagnets) {
+            elevatorMagnet = hardwareMap.get(DigitalChannel.class, "elevatorMagnet");
+            telemetry.addData("Magnet", "class:" + elevatorMagnet.getClass().getName());
+            return true;
+
+
+        } else {
+            useMagnets = false;
+            return false;
+
+        }
+    }
+
+    protected boolean isElevatorMagnetOn() {
+        return !elevatorMagnet.getState();
+    }
+
 
     /* VUFORIA */
 

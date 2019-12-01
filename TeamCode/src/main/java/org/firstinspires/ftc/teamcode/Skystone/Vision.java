@@ -168,7 +168,7 @@ public class Vision {
         for(int i = x; i<endX;i++){
             for(int j = y; j<endY;j++){
                 intColor = bitmap.getPixel(i,j);
-                redGreen = Color.red(intColor)  + Color.red(intColor);
+                redGreen = Color.red(intColor)  + Color.green(intColor);
                 sum+=redGreen;
             }
         }

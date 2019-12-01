@@ -2,6 +2,7 @@ package org.firstinspires.ftc.robotlib.servo;
 
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotlib.state.ServoState;
 
 /*
@@ -19,11 +20,17 @@ public class StateServo extends ModifiedServo
 
     public StateServo(Servo servo) { this(servo, 1, 0, 1); }
 
-    public void setPosition(ServoState servoState) { if (servoState != ServoState.UNKNOWN) { setPosition(positions[servoState.getLevel()]); }}
+    public void setPosition(ServoState servoState)
+    {
+        if (servoState != ServoState.UNKNOWN)
+        {
+            setPosition(positions[servoState.getLevel()]);
+        }
+    }
 
     public ServoState getState()
     {
-        for (int index = 0; index < ServoState.values().length; index++)
+        for (int index = positions.length-1; index > 0; index--)
         {
             if (positions[index] == getPosition())
             {
@@ -32,4 +39,8 @@ public class StateServo extends ModifiedServo
         }
         return ServoState.UNKNOWN;
     }
+
+    public void setPositions(double[] positions) { this.positions = positions; }
+
+    public double[] getPositions() { return positions; }
 }

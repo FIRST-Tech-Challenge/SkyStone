@@ -53,6 +53,8 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
         updateMotorPowers();
     }
 
+    public void setCourseDegrees(double course) { setCourse(course * Math.PI/180.0); }
+
     // passes the motor powers as calculated under the calculateWheelPower function back to the update motor powers function defined in Drivetrain
     protected double[] calculateMotorPowers()
     {

@@ -21,14 +21,25 @@ public enum ServoState
     }
 
     // This auto corrects if the value is too high or low
-    public static ServoState getServoStateFromInt(int level) {
-        if (level > values().length - 1) return getServoStateFromInt(values().length - 1);
-        if (level < 0) return getServoStateFromInt(0);
-
-        for (ServoState servoState : values()) {
-            if (servoState.getLevel() == level) return servoState;
+    public static ServoState getServoStateFromInt(int level)
+    {
+        if (level > values().length - 1)
+        {
+            return getServoStateFromInt(values().length - 1);
         }
 
+        if (level < 0)
+        {
+            return UNKNOWN;
+        }
+
+        for (ServoState servoState : values())
+        {
+            if (servoState.getLevel() == level)
+            {
+                return servoState;
+            }
+        }
         return UNKNOWN;
     }
 }

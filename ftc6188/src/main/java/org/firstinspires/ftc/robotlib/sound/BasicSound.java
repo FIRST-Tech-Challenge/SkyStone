@@ -31,11 +31,12 @@ public class BasicSound implements Sound
 
     public void playSound()
     {
-        SoundPlayer.getInstance().startPlaying(hwMap.appContext, soundID, params, null, new Runnable() {
+        SoundPlayer.getInstance().startPlaying(hwMap.appContext, soundID, params, null, new Runnable()
+        {
             @Override
             public void run()
             {
-                if (playSound.output()) { playSound(); }
+                toggleSound();
             }
         });
     }

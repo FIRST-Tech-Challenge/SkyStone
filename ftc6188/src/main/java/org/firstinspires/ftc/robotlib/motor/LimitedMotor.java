@@ -35,7 +35,7 @@ public class LimitedMotor extends ModifiedMotor
     public void setPower(double power)
     {
         // If both the upper limit and lower limit are the same (such as in default init) then the motor will not be constrained
-        limited = upperLimit != lowerLimit;
+        if (limited) { limited = upperLimit != lowerLimit; }
 
         if (limited)
         {

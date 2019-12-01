@@ -79,8 +79,8 @@ public class SiBorgsMecanumRobot
         }
 
         // Arm motors init
-        armVerticalSlide = new LimitedMotor(hwMap.get(DcMotor.class, "armVerticalSlide"), VERTICAL_LIMIT[0], VERTICAL_LIMIT[1]);
-        armHorizontalSlide = new LimitedMotor(hwMap.get(DcMotor.class, "armHorizontalSlide"), HORIZONTAL_LIMIT[0], HORIZONTAL_LIMIT[1]);
+        armVerticalSlide = new LimitedMotor(hwMap.get(DcMotor.class, "armVerticalSlide"));
+        armHorizontalSlide = new LimitedMotor(hwMap.get(DcMotor.class, "armHorizontalSlide"));
 
         armVerticalSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         armHorizontalSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -88,24 +88,24 @@ public class SiBorgsMecanumRobot
         armVerticalSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         armHorizontalSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        armVerticalSlide.setDirection(DcMotorSimple.Direction.REVERSE);
-        armHorizontalSlide.setDirection(DcMotorSimple.Direction.REVERSE);
+        armVerticalSlide.setDirection(DcMotorSimple.Direction.FORWARD);
+        armHorizontalSlide.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        armVerticalSlide.setLimited(true);
-        armHorizontalSlide.setLimited(true);
+        armVerticalSlide.setLimited(false);
+        armHorizontalSlide.setLimited(false);
 
         // Servos init
-        servoClawLeft = new StateServo(hwMap.get(Servo.class, "servoClawLeft"), 1, 1, 0);
-        servoClawRight = new StateServo(hwMap.get(Servo.class, "servoClawRight"), 1, 1, 0);
-        armGripSlide = new StateServo(hwMap.get(Servo.class, "armGripSlide"), 0, 1, 1);
+        servoClawLeft = new StateServo(hwMap.get(Servo.class, "servoClawLeft"), 0, 0, 1);
+        servoClawRight = new StateServo(hwMap.get(Servo.class, "servoClawRight"), 0, 0, 1);
+        armGripSlide = new StateServo(hwMap.get(Servo.class, "armGripSlide"), 1, 1, 0);
 
         servoClawLeft.setDirection(Servo.Direction.FORWARD);
         servoClawRight.setDirection(Servo.Direction.FORWARD);
         armGripSlide.setDirection(Servo.Direction.FORWARD);
 
-        servoClawLeft.setPosition(ServoState.DOWN);
-        servoClawRight.setPosition(ServoState.DOWN);
-        armGripSlide.setPosition(ServoState.UP);
+        servoClawLeft.setPosition(ServoState.STOWED);
+        servoClawRight.setPosition(ServoState.STOWED);
+        armGripSlide.setPosition(ServoState.STOWED);
 
         platformServo = new LinkedStateServo(servoClawLeft, servoClawRight, 1, 1, 0, false);
 

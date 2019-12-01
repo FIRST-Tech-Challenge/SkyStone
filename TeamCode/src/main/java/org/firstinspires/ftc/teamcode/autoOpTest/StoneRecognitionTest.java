@@ -16,10 +16,12 @@ public class StoneRecognitionTest extends ChassisStandard {
 
     private final int SCREEN_WIDTH = 600;
 
+    private String stoneconfig;
 
     public StoneRecognitionTest() {
         // override the default of vuforia being off.
         useVuforia = true;
+        stoneconfig = "unknown";
     }
 
 
@@ -29,14 +31,12 @@ public class StoneRecognitionTest extends ChassisStandard {
     @Override
     public void loop () {
 
-        String stoneconfig = "unknown";
-
         if (tfod != null) {
             // getUpdatedRecognitions() will return null if no new information is available since
             // the last time that call was made.
 
             // TODO: use chassis function, dont call getUpdatesRecodgnitions directly.
-            /*List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+            List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
             if (updatedRecognitions != null) {
 
                 // step through the list of recognitions and display boundary info.
@@ -48,17 +48,21 @@ public class StoneRecognitionTest extends ChassisStandard {
                     telemetry.addData(String.format("StoneDetect right,bottom (%d)", i), "%.03f , %.03f",
                             recognition.getRight(), recognition.getBottom());
 
+                    int offSet = -50;
+                    int leftBorder = SCREEN_WIDTH/3 +offSet;
+                    int rightBorder = (int) (SCREEN_WIDTH * 2.0 / 3.0 +offSet);
+
                     if (recognition.getLabel() == "Skystone") {
-                        if (recognition.getLeft() < (SCREEN_WIDTH / 3)) {
+                        if (recognition.getLeft() < leftBorder) {
                             stoneconfig = "LEFT";
-                        } else if (recognition.getLeft() > (SCREEN_WIDTH * 2.0 / 3.0)) {
+                        } else if (recognition.getLeft() > rightBorder) {
                             stoneconfig = "RIGHT";
                         } else {
                             stoneconfig = "CENTER";
                         }
                     }
                 }
-            } */
+            }
         }
 
         telemetry.addData("StoneDetectLoc", "loc=%s", stoneconfig);

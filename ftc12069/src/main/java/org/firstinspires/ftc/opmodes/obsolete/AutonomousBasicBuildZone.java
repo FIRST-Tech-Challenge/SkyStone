@@ -16,7 +16,7 @@ public class AutonomousBasicBuildZone extends LinearOpMode
         robotHardware = new MecanumHardwareMap(this.hardwareMap);
         elapsedTime = new ElapsedTime();
 
-        robotHardware.servoManager.reset();
+        //robotHardware.servoManager.reset();
 
         update();
 
@@ -24,7 +24,7 @@ public class AutonomousBasicBuildZone extends LinearOpMode
 
         telemetry.addData("Status", "Moving Forward");
         robotMove(0, 1, 0, 20);
-        robotHardware.servoManager.setPosition(0.0);
+        //robotHardware.servoManager.setPosition(0.0);
         robotMove(45, 1, 0, 120);
     }
 

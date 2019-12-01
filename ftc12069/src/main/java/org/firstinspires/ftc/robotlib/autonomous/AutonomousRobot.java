@@ -125,7 +125,7 @@ public class AutonomousRobot {
          */
         int cameraMonitorViewId = hardware.internalHardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardware.internalHardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-        //parameters.cameraName = hardware.webcamName;
+        parameters.cameraName = hardware.webcamName;
         // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
         parameters.vuforiaLicenseKey = Constants.VUFORIA_KEY;
@@ -284,6 +284,15 @@ public class AutonomousRobot {
                 }
             }
         }
+    }
+
+    /**
+     * Scans for x seconds
+     * @param waitTime seconds to scan
+     */
+    public void scanWait(int waitTime) {
+        double initialTime = elapsedTime.milliseconds();
+        while (!this.isTrackableVisible() && elapsedTime.milliseconds() < initialTime + (waitTime * 1000)) this.scan();
     }
 
     /**

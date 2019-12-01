@@ -67,7 +67,7 @@ public class MecanumHardwareMap
 
         blockGrabber = hwMap.get(Servo.class, "blockGrabber");
         deliveryLeft = hwMap.get(Servo.class, "deliveryLeft");
-        deliveryRight = hwMap.get(Servo.class, "deliveryLeft");
+        deliveryRight = hwMap.get(Servo.class, "deliveryRight");
 
         motorList = new DcMotor[]{driveFrontLeft, driveFrontRight, driveRearLeft, driveRearRight};
 
@@ -93,7 +93,7 @@ public class MecanumHardwareMap
         deliveryLeft.setDirection(Servo.Direction.FORWARD);
         deliveryRight.setDirection(Servo.Direction.FORWARD);
 
-        webcamName = hwMap.get(WebcamName.class, "webcam");
+        webcamName = hwMap.get(WebcamName.class, "Webcam 1");
 
         BNO055IMU.Parameters imuParameters = new BNO055IMU.Parameters();
         imuParameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;

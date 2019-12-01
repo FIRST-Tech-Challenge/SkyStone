@@ -17,7 +17,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
 import java.util.List;
-
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 
 public abstract class ChassisStandard extends OpMode {
 
@@ -26,9 +26,7 @@ public abstract class ChassisStandard extends OpMode {
         INIT_STAGE_ARM,
         INIT_STAGE_VUFORIA,
         INIT_STAGE_FINISHED
-    }
-
-    ;
+    };
 
     // vision detection variables/state
     private final int SCREEN_WIDTH = 600;
@@ -74,6 +72,7 @@ public abstract class ChassisStandard extends OpMode {
     // Elevator
     private DcMotor elevator;
     private double angleAnkle;
+    private DigitalChannel elevatorMagnet;
 
     // Gyroscope
     private BNO055IMU bosch;
@@ -86,6 +85,7 @@ public abstract class ChassisStandard extends OpMode {
     protected boolean useElevator = true;
     protected boolean useFingers = true;
     protected boolean useVuforia = false;
+    protected boolean useMagnets = true;
 
 
     protected ChassisStandard() {
@@ -116,6 +116,7 @@ public abstract class ChassisStandard extends OpMode {
         initMotors();
         initTimeouts();
         initGyroscope();
+        initMagnets();
         initStage = InitStage.INIT_STAGE_ARM;
     }
 
@@ -326,6 +327,25 @@ public abstract class ChassisStandard extends OpMode {
             return true;
         }
     }
+
+    protected boolean initMagnets() {
+        if (useMagnets) {
+            elevatorMagnet = hardwareMap.get(DigitalChannel.class, "elevatorMagnet");
+            telemetry.addData("Magnet", "class:" + elevatorMagnet.getClass().getName());
+            return true;
+
+
+        } else {
+            useMagnets = false;
+            return false;
+
+        }
+    }
+
+    protected boolean isElevatorMagnetOn() {
+        return !elevatorMagnet.getState();
+    }
+
 
     /* VUFORIA */
 

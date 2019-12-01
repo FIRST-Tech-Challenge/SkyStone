@@ -33,10 +33,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotlib.autonomous.AutonomousRobot;
-import org.firstinspires.ftc.robotlib.information.OrientationInfo;
 import org.firstinspires.ftc.robotlib.navigation.Point;
 import org.firstinspires.ftc.robotlib.navigation.Point3D;
 import org.firstinspires.ftc.robotlib.state.Alliance;
@@ -96,7 +93,7 @@ class MecanumAutonomous {
     boolean loop() {
         // Backup so we can scan a trackable and get our initial location
         robot.move(0, 0.7, null, 10);
-        robot.scan();
+        robot.scanWait(3);
         if (!robot.isTrackableVisible() || !robot.isLocationKnown()) {
             telemetry.addData("FAIL", "Failed to scan trackable. Time to give up");
             telemetry.update();
@@ -105,7 +102,7 @@ class MecanumAutonomous {
 
         // Scan for a block and retrieve it
         robot.gotoLoadingZone();
-        robot.scan();
+        robot.scanWait(3);
         if (!robot.isTrackableVisible() || !robot.isSkystoneVisible()) {
             telemetry.addData("FAIL", "Failed to scan Skystone. Time to give up");
             telemetry.update();

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.SubSystems;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
  * Definition of Robot Arm.
@@ -53,6 +54,9 @@ public class Arm {
     int MAX_BLOCK_LEVEL = 6;
     int DROP_BLOCK_HEIGHT = 10;
     int MAX_ARM_HEIGHT = -350;
+
+    //Timer for timing out Arm motion incase targetPosition cannot be achieved
+    ElapsedTime ArmMotionTimeOut = new ElapsedTime();
 
     //Constructor
     public Arm(HardwareMap hardwareMap) {
@@ -199,11 +203,16 @@ public class Arm {
 
     public void runArmToLevel() {
         //armMotor.setTargetPosition(blockLevel[level]);;
+        ArmMotionTimeOut.reset();
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        //Turn Motors on
         armMotor.setPower(1.0);
-        while (!armMotor.isBusy()) {
-            armMotor.setPower(0.0);
+        //Move motor till target Position is achieved, or timeout in 3000 milliseconds
+        while (!armMotor.isBusy() && (ArmMotionTimeOut.milliseconds()<3000)) {
+            //Wait
         }
+        //Turn Motor to BRAKE
+        armMotor.setPower(0.0);
     }
 
 }

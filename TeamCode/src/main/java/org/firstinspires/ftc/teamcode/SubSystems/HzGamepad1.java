@@ -21,12 +21,14 @@ import com.qualcomm.robotcore.hardware.Gamepad;
  *      Button Y to open / extend linear actuator Intake-Grip (gamepad1.y)
  *      Button X to move Arm to place block at level (gamepad1.x)
  *      Button B to move Arm to lift after block placement (gamepad1.b)
+ *      Button Dpad_up to open wrist (gamepad1.dpad_up)
+ *      Button Dpad_down to close wrist (gamepad1.dpad_down)
  */
 
 public class HzGamepad1 {
 
     //Create gamepad object reference to connect to gamepad1
-    Gamepad gpGamepad1;
+    public Gamepad gpGamepad1;
 
     //Records last button press to deal with single button presses doing a certain methods
     boolean buttonALast = false;
@@ -35,6 +37,8 @@ public class HzGamepad1 {
     boolean buttonYLast = false;
     boolean rightBumperLast = false;
     boolean leftBumperLast = false;
+    boolean dpad_upLast = false;
+    boolean dpad_downLast = false;
 
     /**
      * Constructor for HzGamepad1 class that extends gamepad
@@ -99,7 +103,6 @@ public class HzGamepad1 {
         return gpGamepad1.left_trigger;
     }
 
-
     /**
      * Method to track if Left Bumper was pressed to trigger arm to go down a level.
      * To ensure that the continuous holding of the left bumper does not cause a continual fall,
@@ -114,8 +117,8 @@ public class HzGamepad1 {
         boolean isPressedLeftBumper = false;
         if (!leftBumperLast && gpGamepad1.left_bumper) {
             isPressedLeftBumper = true;
-            leftBumperLast = true;
         }
+        leftBumperLast = gpGamepad1.left_bumper;
         return isPressedLeftBumper;
     }
 
@@ -133,8 +136,8 @@ public class HzGamepad1 {
         boolean isPressedRightBumper = false;
         if (!rightBumperLast && gpGamepad1.right_bumper) {
             isPressedRightBumper = true;
-            leftBumperLast = true;
         }
+        rightBumperLast = gpGamepad1.right_bumper;
         return isPressedRightBumper;
     }
 
@@ -152,8 +155,8 @@ public class HzGamepad1 {
         boolean isPressedButtonA = false;
         if (!buttonALast && gpGamepad1.a) {
             isPressedButtonA = true;
-            buttonALast = true;
         }
+        buttonALast = gpGamepad1.a;
         return isPressedButtonA;
     }
 
@@ -171,8 +174,8 @@ public class HzGamepad1 {
         boolean isPressedButtonY = false;
         if (!buttonYLast && gpGamepad1.y) {
             isPressedButtonY = true;
-            buttonYLast = true;
         }
+        buttonYLast = gpGamepad1.y;
         return isPressedButtonY;
     }
 
@@ -190,8 +193,8 @@ public class HzGamepad1 {
         boolean isPressedButtonX = false;
         if (!buttonXLast && gpGamepad1.x) {
             isPressedButtonX = true;
-            buttonXLast = true;
         }
+        buttonXLast = gpGamepad1.x;
         return isPressedButtonX;
     }
 
@@ -209,11 +212,48 @@ public class HzGamepad1 {
         boolean isPressedButtonB = false;
         if (!buttonBLast && gpGamepad1.b) {
             isPressedButtonB = true;
-            buttonBLast = true;
         }
+        buttonBLast = gpGamepad1.b;
         return isPressedButtonB;
     }
 
+    /**
+     * Method to track if Dpad_up was pressed to open wrist.
+     * To ensure that the continuous holding of Dpad_up does not send continual triggers to
+     * motor, the state of the button is recorded and compared against previous time.
+     * Only if the previous state is unpressed and current state is pressed would
+     * the function return true.
+     * Continue to not press, or continuing to hold or release of button should not trigger action.
+     *
+     * @return isPressedDpad_up = true if prev state is not pressed and current is pressed.
+     */
+    public boolean getDpad_upPress() {
+        boolean isPressedDpad_up = false;
+        if (!dpad_upLast && gpGamepad1.dpad_up) {
+            isPressedDpad_up = true;
+        }
+        dpad_upLast = gpGamepad1.dpad_down;
+        return isPressedDpad_up;
+    }
+
+    /**
+     * Method to track if Dpad_down was pressed to open wrist.
+     * To ensure that the continuous holding of Dpad_up does not send continual triggers to
+     * motor, the state of the button is recorded and compared against previous time.
+     * Only if the previous state is unpressed and current state is pressed would
+     * the function return true.
+     * Continue to not press, or continuing to hold or release of button should not trigger action.
+     *
+     * @return isPressedDpad_down = true if prev state is not pressed and current is pressed.
+     */
+    public boolean getDpad_downPress() {
+        boolean isPressedDpad_down = false;
+        if (!dpad_downLast && gpGamepad1.dpad_down) {
+            isPressedDpad_down = true;
+        }
+        dpad_downLast = gpGamepad1.dpad_down;
+        return isPressedDpad_down;
+    }
 
     /**
      * Method to convert linear map from gamepad1 stick input to a cubic map
@@ -222,7 +262,7 @@ public class HzGamepad1 {
      * @return Cube of the stick input reduced to 25% speed
      */
     public double limitStick(double stickInput) {
-        return (stickInput * stickInput * stickInput / 0.25);
+        return (stickInput * stickInput * stickInput * 0.25);
     }
 
     /**
@@ -249,6 +289,7 @@ public class HzGamepad1 {
     public void autoPlace(Chassis apChassis, Arm apArm, Intake apIntake) {
         //Assumption - Arm is holding block right at the holding height of level to place
         //Robot aligned at location to place. Goes forward and hits frontLeftBumperTouch sensor
+
         while ((getLeftTrigger() > 0.75) && apChassis.frontleftChassisTouchSensorIsPressed()) {
             //Move back slightly
             //#TOBEUPDATED : Need to make motion a function of apArm.currentlevel since different
@@ -317,11 +358,20 @@ public class HzGamepad1 {
         if (getButtonYPress()){
             gpIntake.openGrip();
         }
+        //If Dpad_up is pressed, open wrist from close to vertical to horizontal
+        if (getDpad_upPress()){
+            gpIntake.moveWristUp();
+        }
+        //If Dpad_down is pressed, close wrist from horizontal to vertical to close
+        if (getDpad_upPress()){
+            gpIntake.moveWristUp();
+        }
 
         /* Combination Auto action - Place block on level
            Activates when Left Trigger is held pressed and when Robot chassis aligns to front of
            location to place block and touch sensor on frontleft of chassis is pressed
          */
+
         if (getLeftTrigger()>0.75){
             if (gpChassis.frontleftChassisTouchSensorIsPressed()){
                 autoPlace(gpChassis, gpArm, gpIntake);

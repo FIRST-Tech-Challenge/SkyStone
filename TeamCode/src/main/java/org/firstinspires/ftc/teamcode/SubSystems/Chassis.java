@@ -2,8 +2,8 @@ package org.firstinspires.ftc.teamcode.SubSystems;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.ColorSensor;
-//import com.qualcomm.robotcore.hardware.TouchSensor;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
+import com.qualcomm.robotcore.hardware.TouchSensor;
+//import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 /** Definition of Robot Chassis.
@@ -40,16 +40,16 @@ public class Chassis {
     public DcMotor backRight;
 
     //Declare TouchSensor on front left of Chassis
-    //public TouchSensor frontleftChassisTouchSensor; //Analog mode of Touch Sensor
-    public DigitalChannel frontleftChassisTouchSensor;
+    public TouchSensor frontleftChassisTouchSensor; //Analog mode of Touch Sensor
+    //public DigitalChannel frontleftChassisTouchSensor;
 
     //Declare Color Sensors
     public ColorSensor leftColorSensor;
     public ColorSensor rightColorSensor;
 
     //Declare Chassis Configuration variables
-    public Double wheelRadius;
-    public Double robotRadius;
+    public double wheelRadius;
+    public double robotRadius;
 
     public boolean configureRobot = false;
 
@@ -68,12 +68,12 @@ public class Chassis {
         backRight = hardwareMap.dcMotor.get("back_right_drive");
 
         //Map TouchSensor from configuration
-        //frontleftChassisTouchSensor = hardwareMap.touchSensor.get("front_left_touch"); //Analog mode
-        frontleftChassisTouchSensor = hardwareMap.get(DigitalChannel.class, "touch_sensor");
+        frontleftChassisTouchSensor = hardwareMap.touchSensor.get("ch_touch_sensor"); //Analog mode
+        //frontleftChassisTouchSensor = hardwareMap.get(DigitalChannel.class, "ch_touch_sensor");
 
         //Map ColorSensors from configuration
-        leftColorSensor = hardwareMap.colorSensor.get("left_color");
-        rightColorSensor = hardwareMap.colorSensor.get("right_color");
+        leftColorSensor = hardwareMap.get(ColorSensor.class, "ch_left_color");
+        rightColorSensor = hardwareMap.get(ColorSensor.class, "ch_right_color");
 
         //Configure Robot to dimensions and modified for wheel type
         configureRobot();
@@ -86,8 +86,8 @@ public class Chassis {
      * Configure Chassis for size and mecanum wheel directions
      */
     public void configureRobot(){
-        //wheelRadius =
-        //robotRadius =
+        wheelRadius = 1.965; //inches
+        robotRadius = 12.379; //inches - Radius = half of longest diagonal = 0.5*sqrt(sq(17)+sq(18).
 
         //Set direction of motors wrt motor drive set up, so that wheels go forward +y power
         frontRight.setDirection(DcMotor.Direction.REVERSE);
@@ -105,7 +105,7 @@ public class Chassis {
         setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // set the digital channel Touch Sensor to input.
-        frontleftChassisTouchSensor.setMode(DigitalChannel.Mode.INPUT);
+        //frontleftChassisTouchSensor.setMode(DigitalChannel.Mode.INPUT);
     }
 
     /**
@@ -185,8 +185,8 @@ public class Chassis {
      * @return
      */
     public boolean leftColorSensorIsRed() {
-        //Logic to detect Red #TOBEFILLED
-        if (leftColorSensor.red()>127 && leftColorSensor.green()<127 && leftColorSensor.blue()<127) {
+        //Logic to detect Red R>200 G<127 B<127
+        if (leftColorSensor.red()>200 && leftColorSensor.green()<127 && leftColorSensor.blue()<127 && leftColorSensor.alpha()>60) {
             return true;
         } else {
             return false;
@@ -199,8 +199,8 @@ public class Chassis {
      * @return
      */
     public boolean rightColorSensorIsRed() {
-        //Logic to detect Red #TOBEFILLED
-        if (leftColorSensor.red()>127 && leftColorSensor.green()<127 && leftColorSensor.blue()<127) {
+        //Logic to detect Red R>200 G<127 B<127
+        if (rightColorSensor.red()>200 && rightColorSensor.green()<127 && rightColorSensor.blue()<127 && rightColorSensor.alpha()>60) {
             return true;
         } else {
             return false;
@@ -213,8 +213,8 @@ public class Chassis {
      * @return
      */
     public boolean rightColorSensorIsBlue() {
-        //Logic to detect Blue #TOBEFILLED
-        if (leftColorSensor.red()<127 && leftColorSensor.green()<127 && leftColorSensor.blue()>127) {
+        //Logic to detect Blue R<127 G<127 B>200
+        if (rightColorSensor.red()<127 && rightColorSensor.green()<127 && rightColorSensor.blue()>200 && rightColorSensor.alpha()>60) {
             return true;
         } else {
             return false;
@@ -227,8 +227,8 @@ public class Chassis {
      * @return
      */
     public boolean leftColorSensorIsBlue() {
-        //Logic to detect Blue #TOBEFILLED
-        if (leftColorSensor.red()<127 && leftColorSensor.green()<127 && leftColorSensor.blue()>127) {
+        //Logic to detect Blue R<127 G<127 B>200
+        if (leftColorSensor.red()<127 && leftColorSensor.green()<127 && leftColorSensor.blue()>200 && leftColorSensor.alpha()>60) {
             return true;
         } else {
             return false;
@@ -299,10 +299,10 @@ public class Chassis {
             backLeft.setPower(power);
             backRight.setPower(power);
         };
-        frontLeft.setPower(0);
-        frontRight.setPower(0);
-        backLeft.setPower(0);
-        backRight.setPower(0);
+        frontLeft.setPower(0.0);
+        frontRight.setPower(0.0);
+        backLeft.setPower(0.0);
+        backRight.setPower(0.0);
     }
 
 
@@ -354,8 +354,10 @@ public class Chassis {
     /**
      * Method to turn robot by a specified angle.
      */
-    public void turnRobotByAngle(double turnAngle){
+    public void turnRobotByAngle(double robotTurn){
         //#TOBEFILLED
+        //runDistance(double distance, double targetAngle, double turn, double power)
+        runDistance(0,0,robotTurn,1.0);
     }
 
     /**
@@ -364,7 +366,7 @@ public class Chassis {
      *
      */
     public boolean frontleftChassisTouchSensorIsPressed(){
-        /* Analog Mode
+        /* Analog Mode */
         if (frontleftChassisTouchSensor.isPressed()){
 
             //function returns tr
@@ -372,15 +374,17 @@ public class Chassis {
         } else {
             return false;
         }
-        */
 
+
+        /*
         if (frontleftChassisTouchSensor.getState()){
-            //function returns true when not touched, so isPressed is false
+                     //function returns true when not touched, so isPressed is false
             return false;
         } else {
             //function returns false when touched, so isPressed is true
             return true;
         }
+        */
     }
 
 }

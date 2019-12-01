@@ -3,18 +3,16 @@ package org.firstinspires.ftc.teamcode.SubSystems;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-//#TOBEDELETED
 
-public class ColorDetectorTOBEDELTED {
+public class ColorDetector {
 
-    public ColorSensor color_sensor;
-
+    ColorSensor color_sensor;
     public void ColorDetector(HardwareMap hardwareMap) {
 
         //color_sensor = hardwareMap.colorSensor.get("color");
     }
 
-   public void setMode(boolean mode){
+    public void setMode(boolean mode){
 
         color_sensor.enableLed(mode);
     }
@@ -39,5 +37,4 @@ public class ColorDetectorTOBEDELTED {
         }
         return false;
     }
-
 }

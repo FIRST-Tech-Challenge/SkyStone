@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.SubSystems;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.I2cDevice;
 import com.qualcomm.robotcore.hardware.Servo;
 
 /**
@@ -15,10 +16,11 @@ import com.qualcomm.robotcore.hardware.Servo;
  * @IntakeMethods : moveWristToInitialPosition()
  * @IntakeMethods : moveWristToHorizontalPosition()
  * @IntakeMethods : moveWristToVerticalPosition()
+ * @IntakeTeleOpMethods : moveWristUp()
+ * @IntakeTeleOpMethods : moveWristDown()
  * @IntakeMethods : toggleGrip()
  * @IntakeAutoMethods : openGrip()
  * @IntakeAutoMethods : closeGrip()
- * @IntakeAutoMethods : setDetectSkystoneColorSensordEnabled()
  * @IntakeAutoMethods : detectSkystoneColorSensorIsYellow()
  * @IntakeAutoMethods : detectSkystoneColorSensorIsBlack()
  */
@@ -27,29 +29,32 @@ import com.qualcomm.robotcore.hardware.Servo;
  * Class Definition
  */
 public class Intake{
-    Servo wrist;
-    Servo grip;
-    ColorSensor detectSkystone;
+    public Servo wrist;
+    public Servo grip;
+    public ColorSensor detectSkystone;
 
     //initialize limit positions
-    double wristInitialPosition; // = 0.7 #TOBEDEFINED
+    double wristClosePosition; // = 0.7 #TOBEDEFINED
     double wristHorizontalPosition; // = 0.5#TOBEDEFINED
     double wristVerticalPosition; // = 1.0 #TOBEDEFINED
 
-    double gripOpenPosition = 0.75;
-    double gripClosePosition = 0.25;
+    double wristCurrentPosition;
+
+    double gripOpenPosition = 0.75; //Value is specific for each grip
+    double gripClosePosition = 0.25; //Value is specific for each grip
 
     //Constructor
     public Intake(HardwareMap hardwareMap) {
         wrist = hardwareMap.servo.get("wrist");
         grip = hardwareMap.servo.get("grip");
-        detectSkystone = hardwareMap.colorSensor.get("detectSkystone");
+
+        detectSkystone = hardwareMap.get(ColorSensor.class, "detect_skystone");
         initIntake();
     }
 
     //#TOBEFILLED Consider initializing position?
     public void initIntake() {
-
+        detectSkystone.enableLed(false);
     }
 
     /**
@@ -81,7 +86,7 @@ public class Intake{
      * Method to move wrist to Initial position
      */
     public void moveWristToClose(){
-        wrist.setPosition(wristInitialPosition);
+        wrist.setPosition(wristClosePosition);
     }
 
     /**
@@ -99,6 +104,39 @@ public class Intake{
     }
 
     /**
+     * Method to manage state of wrist and move based on dpad_up input
+     */
+    public void moveWristUp(){
+        wristCurrentPosition = wrist.getPosition();
+        //if currently in close position, move to vertical position
+        if (wristCurrentPosition ==  wristClosePosition) {
+            moveWristToVertical();
+        }
+        //if currently in vertical position, move to horizontal position
+        if (wristCurrentPosition ==  wristVerticalPosition) {
+            moveWristToHorizontal();
+        }
+
+    }
+
+    /**
+     * Method to manage state of wrist and move based on dpad_down input
+     */
+    public void moveWristDown(){
+        wristCurrentPosition = wrist.getPosition();
+        //if currently in horizontal position, move to vertical position
+        if (wristCurrentPosition ==  wristHorizontalPosition) {
+            moveWristToVertical();
+        }
+        //if currently in vertical position, move to close position
+        if (wristCurrentPosition ==  wristVerticalPosition) {
+            moveWristToClose();
+        }
+
+    }
+
+
+    /**
      * Method to set Intake Color sensor Off
      */
     public void resetIntake() {
@@ -108,23 +146,18 @@ public class Intake{
     }
 
     /**
-     * Method to set the ColorSensor to be enabled (true) or disabled (false)
-     * @param colorSensorEnabled
-     */
-    public void setDetectSkystoneColorSensordEnabled(boolean colorSensorEnabled){
-        detectSkystone.enableLed(colorSensorEnabled);
-    }
-
-    /**
      * Method to check for detectSkystone Color Sensor to sense Yellow block or Skystone black color
      * Used in Autonomous mode to identify skystone and regular block.
      * @return true if Yellow is detected, else false
      */
     public boolean detectSkystoneColorSensorIsYellow() {
-        //Logic to detect Yellow #TOBEFILLED
-        if (detectSkystone.red()>127 && detectSkystone.green()>127 && detectSkystone.blue()<127) {
+        //Logic to detect Yellow R>150 G>150 B<100
+        detectSkystone.enableLed(true);
+        if (detectSkystone.red()>150 && detectSkystone.green()>150 && detectSkystone.blue()<100 && detectSkystone.alpha()>60) {
+            detectSkystone.enableLed(false);
             return true;
         } else {
+            detectSkystone.enableLed(false);
             return false;
         }
     }
@@ -135,10 +168,13 @@ public class Intake{
      * @return true if Black is detected, else false
      */
     public boolean detectSkystoneColorSensorIsBlack() {
-        //Logic to detect Black #TOBEFILLED
-        if (detectSkystone.red()<127 && detectSkystone.green()<127 && detectSkystone.blue()<127) {
+        //Logic to detect Black R<64 G<64 B<64
+        detectSkystone.enableLed(true);
+        if (detectSkystone.red()<64 && detectSkystone.green()<64 && detectSkystone.blue()<64) {
+            detectSkystone.enableLed(false);
             return true;
         } else {
+            detectSkystone.enableLed(false);
             return false;
         }
     }

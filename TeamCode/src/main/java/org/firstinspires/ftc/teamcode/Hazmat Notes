@@ -6,7 +6,8 @@ Passphrase : aMhaVG6r
 Group Owner : 13201-RC
 
 Connect Wirelessly to phone
-1. Connect computer to the Wireless Direct Network of phone
+1. Connect computer to the Wireless Direct Network of phone.
+    Password : 13201-RC : aMhaVG6r
 2. Plug Controller phone using USB cable to phone
 2. Open Terminal
 3. Commands :
@@ -24,6 +25,7 @@ Arm.java
 
 Chassis.java
     Color sensor values to be set
+        Connect to I2C sensor - Need to rework program
         https://ftc-tricks.com/overview-color-sensor/
         Caliberation OpMode to be made
     Decide of Touch sensor to be operated as Analog or Digital
@@ -37,6 +39,7 @@ Chassis.java
 Intake.java
     Color sensor values to be set
         https://ftc-tricks.com/overview-color-sensor/
+        https://www.rapidtables.com/web/color/RGB_Color.html
         Caliberation OpMode to be made
 
 HazmatTeleOpMode.java
@@ -45,3 +48,8 @@ HazmatTeleOpMode.java
 Autonomous
     Commands to be listed
     Use Cases to be written
+
+Logging
+    Currently use telemetry using HzDEBUG_FLAG in HazmatTeleOpMode
+    Consider logging from STEM Robotics https://stemrobotics.cs.pdx.edu/node/5183?root=4196
+    https://github.com/stemrobotics/Tetrix-Exercises/blob/master/Logging.java

@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotlib.robot.SiBorgsMecanumRobot;
+import org.firstinspires.ftc.robotlib.state.ServoState;
 
 @Autonomous(name="Mecanum Auto V-CompetitionReady", group="AutoComp")
 public class SiBorgsMecanumAuto extends LinearOpMode
@@ -21,9 +22,9 @@ public class SiBorgsMecanumAuto extends LinearOpMode
         waitForStart();
 
         robot.drivetrain.autoPosition(270, 48, VELOCITY, 0);
-        robot.platformServo.setPosition(1);
+        robot.platformServo.setPosition(ServoState.DOWN);
         robot.drivetrain.autoPosition(90, 24, VELOCITY, 0);
-        robot.platformServo.setPosition(0);
+        robot.platformServo.setPosition(ServoState.UP);
         robot.drivetrain.autoPosition(180, 24, VELOCITY, 0);
         robot.drivetrain.autoPosition(270, 20, VELOCITY, 0);
         robot.drivetrain.autoPosition(0, 24, VELOCITY, 0);

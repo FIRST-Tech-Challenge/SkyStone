@@ -26,10 +26,7 @@ public class SoundTest extends OpMode
     {
         playSound.input(gamepad1.x);
 
-        if (playSound.onRelease())
-        {
-            basicSound.toggleSound();
-        }
+        if (playSound.onPress()) { basicSound.toggleSound(); }
 
         telemetry.addData("PlaySoundButton", playSound.isPressed());
         telemetry.addData("Gamepad X", gamepad1.x);

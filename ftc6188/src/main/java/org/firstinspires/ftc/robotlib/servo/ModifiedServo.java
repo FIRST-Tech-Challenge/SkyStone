@@ -3,7 +3,9 @@ package org.firstinspires.ftc.robotlib.servo;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoController;
 
-
+/*
+A modified servo is an abstract class made from the servo interface and is used to create servos with additional functionality
+ */
 public abstract class ModifiedServo implements Servo
 {
     private Servo servo;

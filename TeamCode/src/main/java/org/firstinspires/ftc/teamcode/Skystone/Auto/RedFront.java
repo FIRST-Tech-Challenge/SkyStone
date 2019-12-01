@@ -28,11 +28,16 @@ public class RedFront extends AutoBase{
         int secondSkyStoneY = -20;
         int secondSkyStoneX = 65;
 
-        Vision.Location skystoneLocation = vision.runDetection();
+        Vision.Location skystoneLocation = vision.runDetection2(true);
 
         sleep(250);
 
         position2D.startOdometry();
+
+
+
+
+
 
         // Change Skystone positions if detected left or right
         if (skystoneLocation == Vision.Location.LEFT){
@@ -55,7 +60,7 @@ public class RedFront extends AutoBase{
                 {28,10,0,10},
                 {28,30,0,10},
                 {26,80,0,10},
-                {33,90,10,0}};
+                {34,90,10,0}};
         HashMap<Point,Robot.Actions> toFoundationActions = new HashMap<Point,Robot.Actions>() {{
             put(new Point(24,45), Robot.Actions.EXTEND_OUTTAKE);
             put(new Point(24,30), Robot.Actions.STOP_INTAKE);

@@ -11,12 +11,15 @@ public class TestVision extends LinearOpMode {
     public void runOpMode() {
 
         Vision tensorflow = new Vision(this);
+
+        waitForStart();
+
         while (opModeIsActive()){
             Vision.Location position = tensorflow.runDetection2(false);
-            this.telemetry.addData("position: ", position);
-            this.telemetry.update();
-            sleep(3000);
-            this.telemetry.clear();
+//            this.telemetry.addData("position: ", position);
+//            this.telemetry.update();
+//            sleep(3000);
+//            this.telemetry.clear();
         }
     }
 }

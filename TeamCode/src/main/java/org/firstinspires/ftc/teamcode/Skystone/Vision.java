@@ -2,26 +2,37 @@ package org.firstinspires.ftc.teamcode.Skystone;
 
 import android.drm.DrmStore;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.wifi.WifiManager;
 import android.os.SystemClock;
+import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.RobotLog;
+import com.qualcomm.robotcore.util.ThreadPool;
 import com.vuforia.Frame;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.function.Consumer;
+import org.firstinspires.ftc.robotcore.external.function.Continuation;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.Camera;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraCaptureRequest;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraFrame;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 public class Vision {
     private final String VUFORIA_KEY = "AbSCRq//////AAAAGYEdTZut2U7TuZCfZGlOu7ZgOzsOlUVdiuQjgLBC9B3dNvrPE1x/REDktOALxt5jBEJJBAX4gM9ofcwMjCzaJKoZQBBlXXxrOscekzvrWkhqs/g+AtWJLkpCOOWKDLSixgH0bF7HByYv4h3fXECqRNGUUCHELf4Uoqea6tCtiGJvee+5K+5yqNfGduJBHcA1juE3kxGMdkqkbfSjfrNgWuolkjXR5z39tRChoOUN24HethAX8LiECiLhlKrJeC4BpdRCRazgJXGLvvI74Tmih9nhCz6zyVurHAHttlrXV17nYLyt6qQB1LtVEuSCkpfLJS8lZWS9ztfC1UEfrQ8m5zA6cYGQXjDMeRumdq9ugMkS";
@@ -35,6 +46,9 @@ public class Vision {
     private Location location = Location.UNKNOWN;
 
     private final double minConfidenceLevel = 0.5;
+
+    File captureDirectory = AppUtil.ROBOT_DATA_DIR;
+    int captureCounter = 0;
 
     private VuforiaLocalizer vuforia;
 
@@ -57,6 +71,7 @@ public class Vision {
     }
 
     public Location runDetection(boolean deactivate){
+
         long startTime = SystemClock.elapsedRealtime();
 
         // 2 is right, 1 is center, 0 is left
@@ -150,7 +165,92 @@ public class Vision {
         }
     }
 
+    public static double calcAverageBlue(Bitmap bitmap, int x, int y, int width, int height){
+        double sum = 0;
+        int endX = x+width;
+        int endY = y+height;
+        int intColor;
+        int redGreen;
+
+        for(int i = x; i<endX;i++){
+            for(int j = y; j<endY;j++){
+                intColor = bitmap.getPixel(i,j);
+                redGreen = Color.red(intColor)  + Color.red(intColor);
+                sum+=redGreen;
+            }
+        }
+
+        return sum/(width*height);
+    }
+
+    void captureFrameToFile() {
+        vuforia.getFrameOnce(Continuation.create(ThreadPool.getDefault(), new Consumer<Frame>()
+        {
+            @Override public void accept(Frame frame)
+            {
+                Bitmap bitmap = vuforia.convertFrameToBitmap(frame);
+                for(int i = 444;i<444+217;i++){
+                    for(int j = 320;j<320+90;j++){
+                        bitmap.setPixel(i,j,Color.argb(1,0,0,0));
+                    }
+                }
+
+                if (bitmap != null) {
+                    File file = new File(captureDirectory, String.format(Locale.getDefault(), "VuforiaFrame-%d.png", captureCounter++));
+                    try {
+                        FileOutputStream outputStream = new FileOutputStream(file);
+                        try {
+                            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+                        } finally {
+                            outputStream.close();
+                            Log.d("Vision","captured %s" + file.getAbsolutePath());
+                        }
+                    } catch (IOException e) {
+                        RobotLog.ee("TAG", e, "exception in captureFrameToFile()");
+                    }
+                }
+            }
+        }));
+    }
+
     public Location runDetection2(boolean deactivated) {
+
+        vuforia.getFrameOnce(Continuation.create(ThreadPool.getDefault(), new Consumer<Frame>()
+        {
+
+            @Override public void accept(Frame frame)
+            {
+                //x = width 1280
+                //y = height 720
+
+                Bitmap bitmap = vuforia.convertFrameToBitmap(frame);
+                double left;
+                double center;
+                double right;
+
+                int startX = 344;
+                int starty = 320;
+                int width = 217;
+                int height = 90;
+                int gap = 50;
+                if (bitmap != null) {
+
+                    left = calcAverageBlue(bitmap,startX,starty,width,height);
+                    center = calcAverageBlue(bitmap,startX+width+gap,starty,width,height);
+                    right = calcAverageBlue(bitmap,startX+width*2+gap*2,starty,width,height);
+
+                    Log.d("Vision","Left " + left + " Center: " + center + " Right: " + right);
+
+                    linearOpMode.sleep(1000);
+                }
+            }
+
+
+        }));
+
+        if(true){
+            return Location.CENTER;
+        }
 
         ArrayList<DetectionResult> detectionResults = new ArrayList<>();
         long startTime = SystemClock.elapsedRealtime();
@@ -182,17 +282,18 @@ public class Vision {
                     }
                 });
 
-                linearOpMode.telemetry.clear();
                 for (int i = 0; i < updatedRecognitions.size(); i++) {
                     Recognition recognition = updatedRecognitions.get(i);
                     if (recognition.getLabel().equals("Skystone")){
+
                         numOfSkystonesFound++;
                         float blockPixelX = (updatedRecognitions.get(i).getTop()+updatedRecognitions.get(i).getBottom())/2;
                         float blockPixelY = (updatedRecognitions.get(i).getLeft() + updatedRecognitions.get(i).getRight())/2;
 
 //                        linearOpMode.telemetry.update();
                         if (updatedRecognitions.get(i).getLeft() > 250){
-                            linearOpMode.telemetry.addLine(i + " not filtered: " + recognition);
+                            linearOpMode.telemetry.addLine("Recog: " + i + recognition.toString());
+//                            linearOpMode.telemetry.addLine(i + " not filtered: " + recognition);
 //                            linearOpMode.telemetry.addLine("not filtered blockPixelX: " + blockPixelX);
 //                            linearOpMode.telemetry.addLine("blockPixelY: " + blockPixelY);
 //                            linearOpMode.telemetry.addLine( "confidence:" + recognition.getConfidence());
@@ -210,7 +311,7 @@ public class Vision {
                         }
                     }
                 }
-
+                linearOpMode.telemetry.update();
 
 
             }

@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -93,15 +94,17 @@ public class TensorFlowAuto extends LinearOpMode {
     private DcMotor backLeft = null;
     private DcMotor backRight = null;
 
-    //Other Motors
-    private DcMotor hook = null;
+    //Attachment Motors
+    private DcMotor collectorLeft = null;
+    private DcMotor collectorRight = null;
+    private DcMotor linearSlide = null;
 
-    //Servos
-    private Servo hookServo = null;
+    //Attachment Servos
+    private CRServo clamp = null;
+    private Servo rotation = null;
+    private Servo foundation = null;
+    private Servo release = null;
 
-    //Sensors
-    private ColorSensor blueColorSensor = null;
-    private ColorSensor redColorSensor = null;
 
     // Other
     int skystonePosition; // Can equal 1, 2, or 3. This corresponds to the A, B and C patterns.
@@ -166,6 +169,18 @@ public class TensorFlowAuto extends LinearOpMode {
         backLeft = getNewMotor("lb");
         backRight = getNewMotor("rb");
 
+        //init accessory motors
+        collectorLeft = getNewMotor("lla");
+        collectorRight = getNewMotor("rla");
+        linearSlide = getNewMotor("elevator");
+
+        //init servos
+        clamp = hardwareMap.crservo.get("clamp");
+        foundation = hardwareMap.servo.get("foundation");
+        rotation = hardwareMap.servo.get("rotation");
+        release = hardwareMap.servo.get("release");
+
+
 
         if (frontLeft != null)
             frontLeft.setDirection(DcMotor.Direction.REVERSE);
@@ -184,18 +199,18 @@ public class TensorFlowAuto extends LinearOpMode {
         SkytoneDetector(); // Determines the positions of the Skystone
         if (skystonePosition == 1) // Pattern A
         {
-            MoveHook(1.0, 500); // Hook skystone
+            MoveHook(0.8); // Hook skystone
             DriveForward(1.0, 500); // Pull skystone out
-            MoveHook(1, -500);// Raise hook out of the way
+            MoveHook(0.0);// Raise hook out of the way
             //Collect block by moving forward while running collection device
             DriveForward(1.0, 5000);  //Move into a path for the alliance bridge
             TurnRight(1, 1500);
         } else if (skystonePosition == 2) // Pattern B
         {
             StrafeRight(1, -1000); // Align with Skystone
-            MoveHook(1.0, 500); // Hook skystone
+            MoveHook(0.8); // Hook skystone
             DriveForward(1.0, 500); // Pull skystone out
-            MoveHook(1, -500);// Raise hook out of the way
+            MoveHook(0.0);// Raise hook out of the way
             //Collect block by moving forward while running collection device
             DriveForward(1.0, 5000);  //Move into a path for the alliance bridge
             TurnRight(1, 1500);
@@ -203,9 +218,9 @@ public class TensorFlowAuto extends LinearOpMode {
         } else if (skystonePosition == 3) // Pattern C
         {
             StrafeRight(1, -2000); // Align with Skystone
-            MoveHook(1.0, 500); // Hook skystone
+            MoveHook(0.8); // Hook skystone
             DriveForward(1.0, 500); // Pull skystone out
-            MoveHook(1, -500);// Raise hook out of the way
+            MoveHook(0.0);// Raise hook out of the way
             //Collect block by moving forward while running collection device
             DriveForward(1.0, 5000);  //Move into a path for the alliance bridge
             TurnRight(1, 1500);
@@ -215,7 +230,7 @@ public class TensorFlowAuto extends LinearOpMode {
         DriveForward(1, 7500); // Drive to  just before Foundation
         StrafeRight(1, 1500); // move right under foundation
         TurnRight(1, 3000); // Do a 180
-        MoveHook(1, 500); // Hook foundation
+        MoveHook(0.8); // Hook foundation
         StrafeRight(1, 5000); // move foundation into building depot
         TurnRight(1, -3000); // Do a 180
         // PLace block in foundation
@@ -261,27 +276,11 @@ public class TensorFlowAuto extends LinearOpMode {
         backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    public void MoveHook(double power, int distance) //Drive Forward
+    public void MoveHook(double position ) //Drive Forward
     {
         //resets encoder values
-        hook.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        foundation.setPosition(position);
 
-        //sets Target position
-        hook.setTargetPosition(distance);
-
-        //sets to runs to position
-        hook.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        //runs
-        hook.setPower(power);
-
-        while (hook.isBusy()) {                 //RED FLAG CHECK THIS THING!!!!
-            //waits for all motors to stop
-        }
-        hook.setPower(0);
-
-        //resets mode
-        hook.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
     }
 

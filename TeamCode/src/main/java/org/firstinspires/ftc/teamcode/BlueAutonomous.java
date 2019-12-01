@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -86,11 +87,16 @@ public class BlueAutonomous extends LinearOpMode {
     private DcMotor backLeft = null;
     private DcMotor backRight = null;
 
-    //Other Motors
-    private DcMotor hook = null;
+    //Attachment Motors
+    private DcMotor collectorLeft = null;
+    private DcMotor collectorRight = null;
+    private DcMotor linearSlide = null;
 
-    //Servos
-    private Servo hookServo = null;
+    //Attachment Servos
+    private CRServo clamp = null;
+    private Servo rotation = null;
+    private Servo foundation = null;
+    private Servo release = null;
 
     //Sensors
     private ColorSensor blueColorSensor = null;
@@ -128,6 +134,18 @@ public class BlueAutonomous extends LinearOpMode {
         frontRight = getNewMotor("rf");
         backLeft = getNewMotor("lb");
         backRight = getNewMotor("rb");
+
+        //init accessory motors
+        collectorLeft = getNewMotor("lla");
+        collectorRight = getNewMotor("rla");
+        linearSlide = getNewMotor("elevator");
+
+        //init servos
+        clamp = hardwareMap.crservo.get("clamp");
+        foundation = hardwareMap.servo.get("foundation");
+        rotation = hardwareMap.servo.get("rotation");
+        release = hardwareMap.servo.get("release");
+
 
 
         if (frontLeft != null)
@@ -224,27 +242,10 @@ public class BlueAutonomous extends LinearOpMode {
         backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    public void MoveHook(double power, int distance) //Drive Forward
+    public void MoveHook(doubleposition) //Drive Forward
     {
-        //resets encoder values
-        hook.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        //sets Target position
-        hook.setTargetPosition(distance);
-
-        //sets to runs to position
-        hook.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        //runs
-        hook.setPower(power);
-
-        while (hook.isBusy()) {                 //RED FLAG CHECK THIS THING!!!!
-            //waits for all motors to stop
-        }
-        hook.setPower(0);
-
-        //resets mode
-        hook.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        foundation.setPosition(position);
 
     }
 

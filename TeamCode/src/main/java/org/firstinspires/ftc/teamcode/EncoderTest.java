@@ -142,15 +142,6 @@ public class EncoderTest extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        while(frontLeft.getCurrentPosition() != 5000) {
-
-            telemetry.addData("Front Left Motor Encoder Value", frontLeft.getCurrentPosition());
-            telemetry.addData("Back Left Motor Encoder Value", backLeft.getCurrentPosition());
-            telemetry.addData("Front Right Motor Encoder Value", frontRight.getCurrentPosition());
-            telemetry.addData("Back Right Motor Encoder Value", backRight.getCurrentPosition());
-
-            telemetry.update();
-        }
 
 
     }

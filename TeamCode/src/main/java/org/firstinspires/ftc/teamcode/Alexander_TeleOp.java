@@ -95,6 +95,7 @@
         private DcMotor collectorLeft = null;
         private DcMotor collectorRight = null;
         private DcMotor linearSlide = null;
+        private DcMotor guidance = null;
         //Attachment Servos
         private CRServo clamp = null;
         private Servo rotation = null;
@@ -142,6 +143,9 @@
                 if(collectorRight != null) {
                     collectorRight.setPower(1.0);
                 }
+                if(guidance != null) {
+                    guidance.setPower(1.0);
+                }
 
             }
             else
@@ -151,6 +155,9 @@
                 }
                 if(collectorRight != null) {
                     collectorRight.setPower(0.0);
+                }
+                if(guidance != null) {
+                    guidance.setPower(0.0);
                 }
             }
 
@@ -240,14 +247,16 @@
             // Send telemetry message to signify robot waiting;
             //telemetry.addData("Say", "Hello Driver");
 
-            telemetry.addData("Status", "Initialized");                 //Telemetry is the messages displayed on phone
-            telemetry.update();
+
+
 
             //initialize required driving motors
             frontLeft = getNewMotor("lf");
             frontRight = getNewMotor("rf");
             backLeft = getNewMotor("lb");
             backRight = getNewMotor("rb");
+
+
 
             //init servos
             clamp = hardwareMap.crservo.get("clamp");
@@ -257,10 +266,12 @@
 
 
 
-            //Init Accesory Motors
+            //Init Accessory Motors
             collectorLeft = getNewMotor("lla");
             collectorRight = getNewMotor("rla");
+            collectorRight = getNewMotor("rla");
             linearSlide = getNewMotor("elevator");
+            guidance = getNewMotor("guidance");
 
 
             if(frontLeft != null)
@@ -279,11 +290,24 @@
 
             if(linearSlide != null)
                 linearSlide.setDirection(DcMotor.Direction.FORWARD);
+            if(guidance!= null)
+                guidance.setDirection(DcMotor.Direction.REVERSE);
 
 
+            rotation.setPosition(0.2);
 
+            frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+            telemetry.addData("Encoder Value Front Left: ",frontLeft.getCurrentPosition());
+            telemetry.addData("Encoder Value Front Right: ",frontRight.getCurrentPosition());
+            telemetry.addData("Encoder Value Back Left: ",backLeft.getCurrentPosition());
+            telemetry.addData("Encoder Value Back Right: ",backRight.getCurrentPosition());
 
+            telemetry.addData("Status", "Initialized");                 //Telemetry is the messages displayed on phone
+            telemetry.update();
 
             // Wait for the game to start (driver presses PLAY)
             waitForStart();
@@ -346,6 +370,11 @@
                 RotateBlock(rotateLeft, rotateRight);
                 MoveHook(hookUp, hookDown);
                 ReleaseCollector(released);
+
+                telemetry.addData("Encoder Value Front Left: ",frontLeft.getCurrentPosition());
+                telemetry.addData("Encoder Value Front Right: ",frontRight.getCurrentPosition());
+                telemetry.addData("Encoder Value Back Left: ",backLeft.getCurrentPosition());
+                telemetry.addData("Encoder Value Back Right: ",backRight.getCurrentPosition());
 
 
                 //Telemetry

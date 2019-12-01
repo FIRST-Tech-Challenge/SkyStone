@@ -33,7 +33,9 @@ import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -91,7 +93,7 @@ public class GyroTest extends LinearOpMode {
     static final double     DRIVE_GEAR_REDUCTION    = 0.5;     // This is < 1.0 if geared UP
     static final double     WHEEL_DIAMETER_INCHES   = 4.0;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
-            (WHEEL_DIAMETER_INCHES * 3.1415);
+            (WHEEL_DIAMETER_INCHES * Math.PI);
 
     // These constants define the desired driving/control characteristics
     // The can/should be tweaked to suite the specific robot drive train.
@@ -117,6 +119,17 @@ public class GyroTest extends LinearOpMode {
         backLeft = getNewMotor("lb");
         backRight = getNewMotor("rb");
 
+        //Attachment Motors
+         DcMotor collectorLeft = null;
+         DcMotor collectorRight = null;
+         DcMotor linearSlide = null;
+
+        //Attachment Servos
+         CRServo clamp = null;
+         Servo rotation = null;
+         Servo foundation = null;
+         Servo release = null;
+
 
         if (frontLeft != null)
             frontLeft.setDirection(DcMotor.Direction.REVERSE);
@@ -130,6 +143,24 @@ public class GyroTest extends LinearOpMode {
          * Initialize the standard drive system variables.
          * The init() method of the hardware class does most of the work here
          */
+
+        //initialize required driving motors
+        frontLeft = getNewMotor("lf");
+        frontRight = getNewMotor("rf");
+        backLeft = getNewMotor("lb");
+        backRight = getNewMotor("rb");
+
+        //init accessory motors
+        collectorLeft = getNewMotor("lla");
+        collectorRight = getNewMotor("rla");
+        linearSlide = getNewMotor("elevator");
+
+        //init servos
+        clamp = hardwareMap.crservo.get("clamp");
+        foundation = hardwareMap.servo.get("foundation");
+        rotation = hardwareMap.servo.get("rotation");
+        release = hardwareMap.servo.get("release");
+
         gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
 
         // Ensure the robot it stationary, then reset the encoders and calibrate the gyro.

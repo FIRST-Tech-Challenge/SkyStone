@@ -48,11 +48,22 @@ public class Path {
     public void BlueQuary(int[] skystonePositions){
         switch(skystonePositions[0]){
             case 1:
-                builder = builder.splineTo(new Pose2d(new Vector2d(-28,9), Math.toRadians(270))).splineTo(new Pose2d(new Vector2d(-28,50), Math.toRadians(0)));
+                // moves to block
+                builder = builder.splineTo(new Pose2d(new Vector2d(-28,9), Math.toRadians(270))).
+                        reverse().splineTo(new Pose2d(new Vector2d(-28,50), Math.toRadians(0))).reverse()
+                        .splineTo(new Pose2d(new Vector2d(-5.568,37.44), Math.toRadians(0)))
+                        .splineTo(new Pose2d(new Vector2d(50,32),Math.toRadians(80)));
+
                 trajectory = builder.build();
-                drive.followTrajectory(trajectory);
+                drive.followTrajectorySync(trajectory);
 
                 drive.turnSync(-180);
+
+                builder = builder.lineTo(new Vector2d((-53,40));
+                trajectory = builder.build();
+                drive.followTrajectorySync(trajectory);
+
+                while()
                 break;
             case 2:
                 break;

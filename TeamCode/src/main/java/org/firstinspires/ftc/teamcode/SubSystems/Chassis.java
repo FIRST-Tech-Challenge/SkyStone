@@ -13,14 +13,20 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  *      2 Color sensors pointing down one on left and another on right
  *      (to identify red / blue lines below skybridge for parking
  *
+ *      Robot 1 : Chassis Motor : 5201 Series, 26:1 Ratio, 210 RPM Spur Gear Motor w/Encoder
+ *      Encoder Countable Events Per Revolution (Output Shaft)	723.24 (Rises & Falls of Ch A & B)
+ *
+ *      Robot 2 : 5202 Series Yellow Jacket Planetary Gear Motor (19.2:1 Ratio, 312 RPM, 3.3 - 5V Encoder)
+ *      Encoder Countable Events Per Revolution (Output Shaft)	537.6 (Rises & Falls of Ch A & B)
+ *
  * @ChassisMethods : Chassis(HardwareMap) - Constructor
  * @ChassisMethods : initChassis()
  * @ChassisMethods : configureChassis()
  * @ChassisMethods : resetChassis()
  * @ChassisTeleOpMethods : runByGamepadCommand()
  * @ChassisAutoMethods : runDistance()
- * @ChassisAutoMethods : runTill_frontleftBumperSensor_Pressed(max stop distance)
- * @ChassisAutoMethods : runTill_chassisLocationSensorIdentifiesLine(color)
+ * @ChassisAutoMethods : runTill_frontleftBumperSensor_Pressed()
+ * @ChassisAutoMethods : runTill_ChassisRightColorSensorIsRed()
  * @ChassisAutoMethods : turnRobotByAngle()
  * @ChassisAutoMethods : resetColorSensorEnabled()
  * @ChassisAutoMethods : leftColorSensorIsRed()
@@ -55,6 +61,8 @@ public class Chassis {
     ElapsedTime ChassisMotionTimeOut = new ElapsedTime();
 
     public boolean configureRobot = false;
+
+    double ChassisMotorEncoderCount = 723.24;
 
     /**
      * Constructor of Chassis.
@@ -271,8 +279,8 @@ public class Chassis {
         ChassisMotionTimeOut.reset();
         double turnAngle = targetAngle + Math.PI / 4;
         //double wheelDistance = (Math.sqrt(2) / wheelRadius) * distance;
-        double wheelDistance = 1440*distance/(2*Math.PI*wheelRadius);
-        double robotTurn = robotRadius * turn *1440;
+        double wheelDistance = ChassisMotorEncoderCount*distance/(2*Math.PI*wheelRadius);
+        double robotTurn = robotRadius * turn *ChassisMotorEncoderCount;
 
         //#TOBEFILLED
         frontLeft.setTargetPosition((int) (wheelDistance * Math.cos(turnAngle) + robotTurn));
@@ -299,11 +307,10 @@ public class Chassis {
      * @param power
      */
     public void runRotations(double rotations, double power) {
-        setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        resetChassis();
 
-        //#TOBEFILLED A US Digital E4P encoder (in the Tetrix kit) will report 1440 counts for one revolution of the motor shaft
-        while (Math.abs(backLeft.getCurrentPosition()) < Math.abs(1440 * rotations)) {
+        resetChassis();
+        setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        while (Math.abs(backLeft.getCurrentPosition()) < Math.abs(ChassisMotorEncoderCount * rotations)) {
             frontLeft.setPower(power);
             frontRight.setPower(power);
             backLeft.setPower(power);
@@ -328,8 +335,7 @@ public class Chassis {
         //Total Rotations of wheel = distance / circumference of wheel
         double targetRotations = distance/(2*Math.PI*wheelRadius);
 
-        //#TOBEFILLED A US Digital E4P encoder (in the Tetrix kit) will report 1440 counts for one revolution of the motor shaft
-        while (Math.abs(backLeft.getCurrentPosition()) < Math.abs(1440 * targetRotations)) {
+        while (Math.abs(backLeft.getCurrentPosition()) < Math.abs(ChassisMotorEncoderCount * targetRotations)) {
             frontLeft.setPower(power);
             frontRight.setPower(power);
             backLeft.setPower(power);
@@ -353,23 +359,22 @@ public class Chassis {
      * @param power
      */
     public void runTill_frontleftChassisTouchSensor_Pressed(double max_stop_distance, double targetAngle, double turn, double power) {
-        //#TOBEFILLED
-        double turnAngle = targetAngle - Math.PI / 4;double wheelDistance = (Math.sqrt(2) / wheelRadius) * max_stop_distance;
-        double robotTurn = robotRadius * turn;
+        setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        resetChassis();
 
-        //#TOBEFILLED
-        frontLeft.setTargetPosition((int) (wheelDistance * Math.cos(turnAngle) + robotTurn));
-        frontRight.setTargetPosition((int) (wheelDistance * Math.sin(turnAngle) - robotTurn));
-        backLeft.setTargetPosition((int) (wheelDistance * Math.sin(turnAngle) + robotTurn));
-        backRight.setTargetPosition((int) (wheelDistance * Math.cos(turnAngle) - robotTurn));
+        //Max Total Rotations of wheel = distance / circumference of wheel
+        double targetRotations = max_stop_distance/(2*Math.PI*wheelRadius);
 
-        //#TOBEFILLED
-        frontLeft.setPower(power);
-        frontRight.setPower(power);
-        backLeft.setPower(power);
-        backRight.setPower(power);
-        setMotorMode(DcMotor.RunMode.RUN_TO_POSITION);
-
+        while (!frontleftChassisTouchSensor.isPressed() && (Math.abs(backLeft.getCurrentPosition()) < Math.abs(ChassisMotorEncoderCount * targetRotations))) {
+            frontLeft.setPower(power);
+            frontRight.setPower(power);
+            backLeft.setPower(power);
+            backRight.setPower(power);
+        };
+        frontLeft.setPower(0.0);
+        frontRight.setPower(0.0);
+        backLeft.setPower(0.0);
+        backRight.setPower(0.0);
     }
 
     /**
@@ -382,9 +387,12 @@ public class Chassis {
      * @param turn
      * @param power
      */
-    public void runTill_chassisLocationSensorIdentifiesLine(double max_stop_distance, double targetAngle, double turn, double power){
+    public void runTill_ChassisRightColorSensorIsRed(double max_stop_distance, double targetAngle, double turn, double power){
         //Color needs to be added to definition
+        //********** COPY METHOD FROM runTill_frontleftChassisTouchSensor_Pressed() *****?
+        //*********** ADJUST while condistion
     }
+    //Once completed replicate for other 3 combinations Right-Blue, Left-Red, Left-Blue
 
     /**
      * Method to turn robot by a specified angle.

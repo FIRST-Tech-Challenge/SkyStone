@@ -116,7 +116,8 @@ public class Intake{
         if (wristCurrentPosition == wristVerticalPosition) {
             moveWristToHorizontal();
         }
-        //moveWristToHorizontal();
+        //********** MODIFY ABOVE METHOD TO MOVE WRIST fROM VERTICAL TO HORIZONTAL POSITION BY
+        //INCREMENTING POSITION by 0.1. DONT INCREMENT AFTER REACHING HORIZONTAL POSITION
 
     }
 
@@ -129,6 +130,9 @@ public class Intake{
         if (wristCurrentPosition == wristHorizontalPosition) {
             moveWristToVertical();
         }
+        //********** MODIFY ABOVE METHOD TO MOVE WRIST fROM HORIZONTAL TO VERTICAL  POSITION BY
+        //DECREMENTING POSITION by 0.1. AFTER REACHING VERTICAL POSITION, GO TO CLOSE POSITION
+
         //if currently in vertical position, move to close position
         if (wristCurrentPosition == wristVerticalPosition) {
             moveWristToClose();

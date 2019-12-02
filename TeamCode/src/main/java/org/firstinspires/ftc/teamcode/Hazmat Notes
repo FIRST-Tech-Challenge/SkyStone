@@ -53,3 +53,33 @@ Logging
     Currently use telemetry using HzDEBUG_FLAG in HazmatTeleOpMode
     Consider logging from STEM Robotics https://stemrobotics.cs.pdx.edu/node/5183?root=4196
     https://github.com/stemrobotics/Tetrix-Exercises/blob/master/Logging.java
+
+Robot 1 : Chassis Motor
+5201 Series, 26:1 Ratio, 210 RPM Spur Gear Motor w/Encoder
+Encoder Cycles Per Revolution (Encoder Shaft)	7 (Rises of Ch A)
+Encoder Cycles Per Revolution (Output Shaft)	180.81 (Rises of Ch A)
+Encoder Countable Events Per Revolution (Encoder Shaft)	28 (Rises & Falls of Ch A & B)
+Encoder Countable Events Per Revolution (Output Shaft)	723.24 (Rises & Falls of Ch A & B)
+
+Robot 1 : Arm Motor
+5201 Series, 53:1 Ratio, 105 RPM Spur Gear Motor w/Encoder
+ncoder Cycles Per Revolution (Encoder Shaft)	7 (Rises of Ch A)
+Encoder Cycles Per Revolution (Output Shaft)	374.325 (Rises of Ch A)
+Encoder Countable Events Per Revolution (Encoder Shaft)	28 (Rises & Falls of Ch A & B)
+Encoder Countable Events Per Revolution (Output Shaft)	1,497.325 (Rises & Falls of Ch A & B)
+
+Robot 2 : Chassis Motors
+5202 Series Yellow Jacket Planetary Gear Motor (19.2:1 Ratio, 312 RPM, 3.3 - 5V Encoder)
+https://www.gobilda.com/5202-series-yellow-jacket-planetary-gear-motor-19-2-1-ratio-312-rpm-3-3-5v-encoder/
+Encoder Cycles Per Revolution (Encoder Shaft)	7 (Rises of Ch A)
+Encoder Cycles Per Revolution (Output Shaft)	134.4 (Rises of Ch A)
+Encoder Countable Events Per Revolution (Encoder Shaft)	28 (Rises & Falls of Ch A & B)
+Encoder Countable Events Per Revolution (Output Shaft)	537.6 (Rises & Falls of Ch A & B)
+
+Robot 2 : Arm Motor
+5202 Series Yellow Jacket Planetary Gear Motor (26.9:1 Ratio, 223 RPM, 3.3 - 5V Encoder)
+https://www.gobilda.com/5202-series-yellow-jacket-planetary-gear-motor-26-9-1-ratio-223-rpm-3-3-5v-encoder/
+Encoder Cycles Per Revolution (Encoder Shaft)	7 (Rises of Ch A)
+Encoder Cycles Per Revolution (Output Shaft)	188.3 (Rises of Ch A)
+Encoder Countable Events Per Revolution (Encoder Shaft)	28 (Rises & Falls of Ch A & B)
+Encoder Countable Events Per Revolution (Output Shaft)	753.2 (Rises & Falls of Ch A & B)

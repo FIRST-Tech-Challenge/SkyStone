@@ -5,6 +5,7 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
@@ -154,12 +155,12 @@ public class Robot {
 
         intakeLeft = getDcMotor("intakeLeft");
         if (intakeLeft != null){
-            intakeLeft.setDirection(DcMotor.Direction.FORWARD);
+            intakeLeft.setDirection(DcMotor.Direction.REVERSE);
         }
 
         intakeRight = getDcMotor("intakeRight");
         if (intakeRight != null){
-            intakeRight.setDirection(DcMotor.Direction.REVERSE);
+            intakeRight.setDirection(DcMotor.Direction.FORWARD);
         }
 
         outtakeSpool = getDcMotor("outtakeSpool");

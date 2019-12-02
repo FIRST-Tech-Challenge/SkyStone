@@ -42,8 +42,8 @@ import org.firstinspires.ftc.teamcode.SubSystems.*;
  *  * @IntakeAutoMethods : detectSkystoneColorSensorIsBlack()
  */
 
-@Autonomous(name = "HzAutoTest", group = "Autonomous")
-public class AutonomousTests extends LinearOpMode{
+@Autonomous(name = "HzAutoRunDistance", group = "Autonomous")
+public class AutoTestRunDistance extends LinearOpMode{
 
     public boolean HzDEBUG_FLAG = true;
 
@@ -77,7 +77,7 @@ public class AutonomousTests extends LinearOpMode{
         while (opModeIsActive() && AutonomousTimeOut.milliseconds()<30000) {
             //hzGamepad1.runSubsystemByGamepadInput(hzChassis, hzArm, hzIntake);
             hzArm.moveArm_aboveFoundationLevel();
-            hzChassis.runDistance(20, 0, 0, 0.25);
+            hzChassis.runDistance(10, 0, 0, 0.25);
             //hzChassis.runDistance(0, 0, Math.PI/4, 0.25);
 
             //hzChassis.runRotations(1, 0.25);

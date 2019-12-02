@@ -18,6 +18,8 @@ public class HazmatRobot2TeleOpMode extends LinearOpMode{
 
     public boolean HzDEBUG_FLAG = true;
 
+    int hzRobotNum; //Set to 1 for main robot, 2 for second robot
+
     HzGamepad1NoWrist hzGamepad1NoWrist;
     Chassis hzChassis;
     Arm hzArm;

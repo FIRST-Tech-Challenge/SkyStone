@@ -25,7 +25,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * @ChassisMethods : resetChassis()
  * @ChassisTeleOpMethods : runByGamepadCommand()
  * @ChassisAutoMethods : runDistance()
- * @ChassisAutoMethods : runTill_frontleftBumperSensor_Pressed()
+ * @ChassisAutoMethods : runTill_frontleftBumperSensor_Pressed(
  * @ChassisAutoMethods : runTill_ChassisRightColorSensorIsRed()
  * @ChassisAutoMethods : turnRobotByAngle()
  * @ChassisAutoMethods : resetColorSensorEnabled()
@@ -279,8 +279,8 @@ public class Chassis {
         ChassisMotionTimeOut.reset();
         double turnAngle = targetAngle + Math.PI / 4;
         //double wheelDistance = (Math.sqrt(2) / wheelRadius) * distance;
-        double wheelDistance = ChassisMotorEncoderCount*distance/(2*Math.PI*wheelRadius);
-        double robotTurn = robotRadius * turn *ChassisMotorEncoderCount;
+        double wheelDistance = distance * ChassisMotorEncoderCount/(2*Math.PI*wheelRadius);
+        double robotTurn = robotRadius * turn * ChassisMotorEncoderCount/(2*Math.PI*wheelRadius);
 
         //#TOBEFILLED
         frontLeft.setTargetPosition((int) (wheelDistance * Math.cos(turnAngle) + robotTurn));

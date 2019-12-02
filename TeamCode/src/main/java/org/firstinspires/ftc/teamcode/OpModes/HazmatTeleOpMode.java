@@ -13,6 +13,7 @@ public class HazmatTeleOpMode extends LinearOpMode{
 
     public boolean HzDEBUG_FLAG = true;
 
+    int hzRobotNum; //Set to 1 for main robot, 2 for second robot
 
     HzGamepad1 hzGamepad1;
     Chassis hzChassis;
@@ -24,8 +25,6 @@ public class HazmatTeleOpMode extends LinearOpMode{
     public void runOpMode() {
 
         //Instantiate Subsystems : Chassis, Arm, Intake, Gamepad1
-
-
         hzChassis = new Chassis(hardwareMap);
         hzArm = new Arm(hardwareMap);
         hzIntake = new Intake(hardwareMap);

@@ -41,16 +41,24 @@ public class TylerController extends OpMode {
     private DcMotor motorBackRight;
     private DcMotor motorFrontLeft;
     private DcMotor motorFrontRight;
+
+    //elevator
     private DcMotor elevator;
 
     //Arm
     private DcMotor crane;
-    private DcMotor extender;
-    private Servo gripper;
+    //private DcMotor extender;
+    private Servo hand;
+
+    //Succ
+    private DcMotor leftSucc;
+    private DcMotor rightSucc;
 
     // Crab state.
     private Servo crab;
-    private DigitalChannel digitalTouch;  // Hardware Device Object
+    private DigitalChannel digitalTouch;
+
+    // Hardware Device Object
     private double angleHand;
     private double angleAnkle;
 
@@ -58,14 +66,16 @@ public class TylerController extends OpMode {
     private boolean useMotors = true;
     private boolean useEncoders = true;
     private boolean useArm = true; // HACK
-    private boolean useLifter = true;
+    private boolean useLifter = false;
     private boolean useCrab = true;
-    private boolean useDropper = true;
+    private boolean useDropper = false;
     private boolean useTouch = true;
     private boolean useRange = true;
     private boolean useStoneDetector = false;
     private boolean useOpenCvDisplay = false;
     private boolean useElevator = true;
+    private boolean useSucc = true;
+
 
     //Movement State
     private int armState;
@@ -90,6 +100,10 @@ public class TylerController extends OpMode {
     // stone detector state.
     private SkystoneDetector detector;
     OpenCvCamera phoneCam;
+
+    //elevator
+    private DigitalChannel elevatorMagnet;
+    protected boolean useMagnets = true;
 
     /**
      * Code to run ONCE when the driver hits INIT
@@ -152,27 +166,27 @@ public class TylerController extends OpMode {
         if (useArm) {
             try {
                 crane = hardwareMap.get(DcMotor.class, "motorCrane");
-                gripper = hardwareMap.get(Servo.class, "servoGripper");
-                extender = hardwareMap.get(DcMotor.class, "motorExtend");
+                hand = hardwareMap.get(Servo.class, "servoGripper");
+              //  extender = hardwareMap.get(DcMotor.class, "motorExtend");
 
             } catch (Exception e) {
                 telemetry.addData("Arm", "exception on init: " + e.toString());
                 crane = null;
-                gripper = null;
-                extender = null;
+                hand = null;
+                //extender = null;
             }
             if (crane == null) {
-                telemetry.addData("Arm", "You forgot to set up crab, set up Crane");
+                telemetry.addData("Arm", "You forgot to set up crane, set up Crane");
                 useArm = false;
             }
-            if (gripper == null) {
-                telemetry.addData("Arm", "You forgot to set up crab, set up the gripper");
+            if (hand == null) {
+                telemetry.addData("Arm", "You forgot to set up hand, set up the hand");
                 useArm = false;
             }
-            if (extender == null) {
-                telemetry.addData("Arm", "You forgot to set up crab, set up the extender");
+            /*if (extender == null) {
+                telemetry.addData("Arm", "You forgot to set up extender, set up the extender");
                 useArm = false;
-            }
+            }*/
         }
 
 
@@ -214,6 +228,18 @@ public class TylerController extends OpMode {
                 useElevator = false;
             }
         }
+
+        if (useSucc) {
+            try {
+                leftSucc = hardwareMap.get(DcMotor.class, "leftSucc");
+                rightSucc = hardwareMap.get(DcMotor.class, "rightSucc");
+
+            } catch (Exception e) {
+                telemetry.addData("Succ", "exception on init: " + e.toString());
+                useElevator = false;
+            }
+        }
+
 
         if (useRange) {
             try {
@@ -369,7 +395,7 @@ public class TylerController extends OpMode {
 
         if (useMotors) {
             // Switch the directions for driving!
-            if (gamepad1.x) {
+            if (gamepad1.start) {
                 switchFront = !switchFront;
                 sleep(500);
             }
@@ -478,15 +504,16 @@ public class TylerController extends OpMode {
             }*/
 
             // Control the crane.
-            float suckOut = gamepad1.right_trigger;
-            float suckIn = gamepad1.left_trigger;
-            if (suckOut != 0) {
-                crane.setPower(-suckOut);
-            } else if (suckIn != 0) {
-                crane.setPower(suckIn);
+            boolean suckOut = gamepad1.dpad_up;
+            boolean suckIn = gamepad1.dpad_down;
+            if (suckOut != false) {
+                crane.setPower(1.0);
+            } else if (suckIn != false) {
+                crane.setPower(-1.0);
             } else {
                 crane.setPower(0);
             }
+
 
             /*if(gamepad1.right_trigger){
                 crane.setPower(1);
@@ -496,13 +523,40 @@ public class TylerController extends OpMode {
                 crane.setPower(0);
             }*/
 
-            /*if(gamepad1.dpad_up){
-                gripper.
-            }*/
+            boolean closeHand = gamepad1.dpad_right;
+            boolean openHand = gamepad1.dpad_left;
+            if (closeHand) {
+                hand.setPosition(1);
+            } else if (openHand) {
+                hand.setPosition(-1);
+            }
 
-            telemetry.addData("Extender", "start: %d, curr: %d, target: %d, armState: %d", extenderStartPostion, extender.getCurrentPosition(), extenderTarget, armState);
+            //telemetry.addData("Extender", "start: %d, curr: %d, target: %d, armState: %d", extenderStartPostion, extender.getCurrentPosition(), extenderTarget, armState);
         }
 
+       if (useElevator) {
+           boolean liftAllIn = gamepad1.a;
+           boolean liftAllOut = gamepad1.y;
+           if (liftAllOut) {
+               startElevatorMoving(elevatorStartPosition + 4500);
+           } else if (liftAllIn) {
+               startElevatorMoving(elevatorStartPosition);
+           }
+       }
+
+       if (useSucc){
+           float succIn = gamepad1.right_trigger;
+           boolean succOut = gamepad1.right_bumper;
+           if (succIn == 1) {
+               leftSucc.setPower(-1.0);
+               rightSucc.setPower(1.0);
+
+           } else if (succOut) {
+               leftSucc.setPower(1.0);
+               rightSucc.setPower(-1.0);
+
+           }
+       }
 
         if (useCrab) {
             if (gamepad1.b) {
@@ -513,13 +567,7 @@ public class TylerController extends OpMode {
             }
         }
 
-        boolean liftAllIn = gamepad1.b;
-        boolean liftAllOut = gamepad1.a;
-        if (liftAllOut) {
-            startElevatorMoving(elevatorStartPosition + 4500);
-        } else if (liftAllIn) {
-            startElevatorMoving(elevatorStartPosition);
-        }
+
 
         if (useTouch) {
             if (digitalTouch.getState() == false) {
@@ -626,6 +674,23 @@ public class TylerController extends OpMode {
 
         //Set global Movement State
         elevatorExtenderTarget = lTarget;
+    }
+    protected boolean initMagnets() {
+        if (useMagnets) {
+            elevatorMagnet = hardwareMap.get(DigitalChannel.class, "elevatorMagnet");
+            telemetry.addData("Magnet", "class:" + elevatorMagnet.getClass().getName());
+            return true;
+
+
+        } else {
+            useMagnets = false;
+            return false;
+
+        }
+    }
+
+    protected boolean isElevatorMagnetOn() {
+        return !elevatorMagnet.getState();
     }
 
 

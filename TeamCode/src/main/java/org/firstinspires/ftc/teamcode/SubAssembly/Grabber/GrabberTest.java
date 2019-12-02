@@ -38,11 +38,14 @@ public class GrabberTest extends LinearOpMode {
             egamepad2.updateEdge();
 
 
-            if (egamepad1.a.released) {
+
+            /*if (egamepad1.a.released) {
                 Grabber.open();
             } else if (egamepad1.b.released) {
                 Grabber.close();
-            }
+            }*/
+
+
 
            /* if (egamepad1.x.released) {
 

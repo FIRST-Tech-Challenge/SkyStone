@@ -1,8 +1,15 @@
 package org.firstinspires.ftc.teamcode.SubAssembly.Grabber;
 
+import android.app.Notification;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+
+import org.firstinspires.ftc.teamcode.Utilities.EnumWrapper;
+import org.firstinspires.ftc.teamcode.Utilities.ServoControl;
+
+import java.util.EnumMap;
 
 /* Sub Assembly Class
  */
@@ -13,8 +20,25 @@ public class GrabberControl {
     //initializing motors
     private Servo grabberS;
     private Servo wristS;
-    private Servo foundationMover;
-   // private Servo wristS;
+    private Servo extenderS;
+
+    public ServoControl<GrabberSetpt, EnumMap<GrabberSetpt, Double>> GrabberServo;
+    public ServoControl<WristSetpt, EnumMap<WristSetpt, Double>> WristServo;
+    public ServoControl<ExtenderSetpt, EnumMap<ExtenderSetpt, Double>> ExtenderServo;
+
+    // declare servo mapping variables
+    private EnumMap<GrabberSetpt, Double> MapGrabber;
+    public enum GrabberSetpt implements EnumWrapper<GrabberSetpt> {
+        Home, Close, Open;
+    }
+    private EnumMap<WristSetpt, Double> MapWrist;
+    public enum WristSetpt implements EnumWrapper<WristSetpt> {
+        Horizontal, Vertical;
+    }
+    private EnumMap<ExtenderSetpt, Double> MapExtender;
+    public enum ExtenderSetpt implements EnumWrapper<ExtenderSetpt> {
+        Home, Pos1, Pos2, Pos3;
+    }
 
     /* Subassembly constructor */
     public GrabberControl() {
@@ -30,37 +54,57 @@ public class GrabberControl {
         opmode = opMode;
         hwMap = opMode.hardwareMap;
 
+        // create servo mappings
+        MapGrabber = new EnumMap<GrabberSetpt, Double>(GrabberSetpt.class);
+        MapGrabber.put(GrabberSetpt.Home, 0.06);
+        MapGrabber.put(GrabberSetpt.Close, 0.13);
+        MapGrabber.put(GrabberSetpt.Open, 0.32);
+
+        MapWrist = new EnumMap<WristSetpt, Double>(WristSetpt.class);
+        MapWrist.put(WristSetpt.Horizontal, 0.28);
+        MapWrist.put(WristSetpt.Vertical, 0.69);
+
+        MapExtender = new EnumMap<ExtenderSetpt, Double>(ExtenderSetpt.class);
+        MapExtender.put(ExtenderSetpt.Home, 0.81);
+        MapExtender.put(ExtenderSetpt.Pos1, 0.55);
+        MapExtender.put(ExtenderSetpt.Pos2, 0.34);
+        MapExtender.put(ExtenderSetpt.Pos3, 0.16);
+
         /* Map hardware devices */
         grabberS = hwMap.servo.get("grabberS");
-        foundationMover = hwMap.servo.get("foundationMover");
         wristS = hwMap.servo.get("wristS");
+        extenderS = hwMap.servo.get("extenderS");
 
-        grabberS.setPosition(1);
-        foundationMover.setPosition(0.4);
-        wristS.setPosition(0);
-
+        GrabberServo = new ServoControl(grabberS, MapGrabber, GrabberSetpt.Home, true);
+        WristServo = new ServoControl(wristS, MapWrist, WristSetpt.Horizontal, true);
+        ExtenderServo = new ServoControl (extenderS, MapExtender, ExtenderSetpt.Home, true);
     }
 
     public void open() {
-        grabberS.setPosition(0.96);
+        GrabberServo.setSetpoint(GrabberSetpt.Open);
+
     }
 
     public void close() {
-        grabberS.setPosition(0.13);
+        GrabberServo.setSetpoint(GrabberSetpt.Close);
     }
 
-    public void up() {foundationMover.setPosition(0.4);}
+    public void grab() {
+        if (GrabberServo.getSetpoint() == GrabberSetpt.Open)
+            GrabberServo.setSetpoint(GrabberSetpt.Close);
+        else
+            GrabberServo.setSetpoint(GrabberSetpt.Open);
+    }
 
-    public void down() {foundationMover.setPosition(1);}
+    public void wrist() {
+        WristServo.nextSetpoint(true);
+    }
 
-    public void position1 () {wristS.setPosition(0);}
+    public void extend() {
+        ExtenderServo.nextSetpoint(true);
+    }
 
-    public void position2 () {wristS.setPosition(0.5);}/*90 degrees*/
-
-    public void position3 () {wristS.setPosition(1);}/*180 degrees*/
-
-    /*public void wrist(int position) {
-        wristS.setPosition(position);
-    }*/
-
+    public void home(){
+        ExtenderServo.setSetpoint(ExtenderSetpt.Home);
+    }
 }

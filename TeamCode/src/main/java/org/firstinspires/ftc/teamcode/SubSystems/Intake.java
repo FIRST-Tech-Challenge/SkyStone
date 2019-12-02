@@ -54,7 +54,7 @@ public class Intake{
     //#TOBEFILLED Consider initializing position?
     public void initIntake() {
         detectSkystone.enableLed(false);
-        moveWristToVertical();
+        moveWristToHorizontal();
     }
 
     /**

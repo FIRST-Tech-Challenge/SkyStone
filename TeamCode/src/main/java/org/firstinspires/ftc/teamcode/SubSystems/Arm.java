@@ -36,7 +36,7 @@ public class Arm {
     public DcMotor armMotor;
 
     //Declare Arm levels in arm motor encoder values set just above the block level
-    int[] blockLevel = {
+    public int[] blockLevel = {
              0, //ground level
             -50, //block level 1
             -95, //block level 2
@@ -50,7 +50,7 @@ public class Arm {
     int aboveFoundationLevel = -50; //#TOBEFILLED correctly
     int onFoundationLevel = -10; //#TOBEFILLED correctly
 
-    int currentLevel = 0;
+    public int currentLevel = 0;
     int MAX_BLOCK_LEVEL = 6;
     int DROP_BLOCK_HEIGHT = 10;
     int MAX_ARM_HEIGHT = -350;
@@ -150,8 +150,6 @@ public class Arm {
             armMotor.setTargetPosition(blockLevel[currentLevel+1]);
             currentLevel++;
             runArmToLevel();
-        } else {
-            armMotor.setPower(0.0);
         }
     }
 
@@ -208,11 +206,11 @@ public class Arm {
         //Turn Motors on
         armMotor.setPower(1.0);
         //Move motor till target Position is achieved, or timeout in 3000 milliseconds
-        while (!armMotor.isBusy() && (ArmMotionTimeOut.milliseconds()<3000)) {
+        //while (armMotor.isBusy() && (ArmMotionTimeOut.milliseconds()<3000)) {
             //Wait
-        }
+        //}
         //Turn Motor to BRAKE
-        armMotor.setPower(0.0);
+        //armMotor.setPower(0.0);
     }
 
 }

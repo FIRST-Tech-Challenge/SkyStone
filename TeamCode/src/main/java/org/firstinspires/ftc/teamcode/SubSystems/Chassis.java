@@ -3,8 +3,8 @@ package org.firstinspires.ftc.teamcode.SubSystems;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.TouchSensor;
-//import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 /** Definition of Robot Chassis.
  *  Chassis has :
@@ -50,6 +50,9 @@ public class Chassis {
     //Declare Chassis Configuration variables
     public double wheelRadius;
     public double robotRadius;
+
+    //Timer for timing out Arm motion incase targetPosition cannot be achieved
+    ElapsedTime ChassisMotionTimeOut = new ElapsedTime();
 
     public boolean configureRobot = false;
 
@@ -244,7 +247,7 @@ public class Chassis {
      */
     public void runByGamepadCommand(double targetAngle, double turn, double power) {
         //#TOBEFILLED Why subtract by 90dec?
-        final double turnAngle = targetAngle - Math.PI / 4;
+        double turnAngle = targetAngle - Math.PI / 4;
 
         //Distribute power to wheels a cos and sin of vector.
         // Add turn as input from right stick to add in radiants
@@ -265,9 +268,11 @@ public class Chassis {
      */
     public void runDistance(double distance, double targetAngle, double turn, double power) {
         //#TOBEFILLED
-        final double turnAngle = targetAngle - Math.PI / 4;
-        final double wheelDistance = (Math.sqrt(2) / wheelRadius) * distance;
-        final double robotTurn = robotRadius * turn;
+        ChassisMotionTimeOut.reset();
+        double turnAngle = targetAngle + Math.PI / 4;
+        //double wheelDistance = (Math.sqrt(2) / wheelRadius) * distance;
+        double wheelDistance = 1440*distance/(2*Math.PI*wheelRadius);
+        double robotTurn = robotRadius * turn *1440;
 
         //#TOBEFILLED
         frontLeft.setTargetPosition((int) (wheelDistance * Math.cos(turnAngle) + robotTurn));
@@ -281,6 +286,10 @@ public class Chassis {
         backLeft.setPower(power);
         backRight.setPower(power);
         setMotorMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        //wait till motor finishes motion
+        //while(frontLeft.isBusy() && ChassisMotionTimeOut.milliseconds() < 10000);
+
     }
 
     /**
@@ -290,11 +299,37 @@ public class Chassis {
      * @param power
      */
     public void runRotations(double rotations, double power) {
-        setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         resetChassis();
 
         //#TOBEFILLED A US Digital E4P encoder (in the Tetrix kit) will report 1440 counts for one revolution of the motor shaft
         while (Math.abs(backLeft.getCurrentPosition()) < Math.abs(1440 * rotations)) {
+            frontLeft.setPower(power);
+            frontRight.setPower(power);
+            backLeft.setPower(power);
+            backRight.setPower(power);
+        };
+        frontLeft.setPower(0.0);
+        frontRight.setPower(0.0);
+        backLeft.setPower(0.0);
+        backRight.setPower(0.0);
+    }
+
+    /**
+     * Method to move chassis by rotation.
+     * Used in Auto placement of block
+     * @param distance
+     * @param power
+     */
+    public void runStraightDistanceByRotations(double distance, double power) {
+        setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        resetChassis();
+
+        //Total Rotations of wheel = distance / circumference of wheel
+        double targetRotations = distance/(2*Math.PI*wheelRadius);
+
+        //#TOBEFILLED A US Digital E4P encoder (in the Tetrix kit) will report 1440 counts for one revolution of the motor shaft
+        while (Math.abs(backLeft.getCurrentPosition()) < Math.abs(1440 * targetRotations)) {
             frontLeft.setPower(power);
             frontRight.setPower(power);
             backLeft.setPower(power);
@@ -319,9 +354,8 @@ public class Chassis {
      */
     public void runTill_frontleftChassisTouchSensor_Pressed(double max_stop_distance, double targetAngle, double turn, double power) {
         //#TOBEFILLED
-        final double turnAngle = targetAngle - Math.PI / 4;
-        final double wheelDistance = (Math.sqrt(2) / wheelRadius) * max_stop_distance;
-        final double robotTurn = robotRadius * turn;
+        double turnAngle = targetAngle - Math.PI / 4;double wheelDistance = (Math.sqrt(2) / wheelRadius) * max_stop_distance;
+        double robotTurn = robotRadius * turn;
 
         //#TOBEFILLED
         frontLeft.setTargetPosition((int) (wheelDistance * Math.cos(turnAngle) + robotTurn));
@@ -355,12 +389,9 @@ public class Chassis {
     /**
      * Method to turn robot by a specified angle.
      */
-    public void turnRobotByAngle(double robotTurn){
+    public void turnRobotByAngle(double robotTurn, double power) {
         //#TOBEFILLED
-        //runDistance(double distance, double targetAngle, double turn, double power)
-        runDistance(0,0,robotTurn,1.0);
     }
-
     /**
      * Method to identify when frontleftChassisTouchSensor is pressed
      * frontleftChassisTouchSensor.getState() return true when not touched

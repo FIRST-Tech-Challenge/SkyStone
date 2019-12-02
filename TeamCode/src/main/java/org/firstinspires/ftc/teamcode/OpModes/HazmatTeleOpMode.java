@@ -47,6 +47,16 @@ public class HazmatTeleOpMode extends LinearOpMode{
     public void printDebugMessages(){
         telemetry.setAutoClear(true);
         telemetry.addData("HzDEBUG_FLAG is : ", HzDEBUG_FLAG);
+
+        telemetry.addData("armMotor.isBusy : ", hzArm.armMotor.isBusy());
+        telemetry.addData("armMotor.getTargetPosition : ", hzArm.armMotor.getTargetPosition());
+        telemetry.addData("armMotor.getCurrentPosition : ", hzArm.armMotor.getCurrentPosition());
+        telemetry.addData("armMotor.getMode : ", hzArm.armMotor.getMode());
+        telemetry.addData("Arm.currentLevel : ", hzArm.currentLevel);
+        telemetry.addData("Arm.blockLevel[hzArm.currentLevel] : ", hzArm.blockLevel[hzArm.currentLevel]);
+
+
+
         /*
         telemetry.addData("Intake.grip.getPosition", hzIntake.grip.getPosition());
         telemetry.addData("Intake.wrist.getPosition", hzIntake.wrist.getPosition());
@@ -54,11 +64,9 @@ public class HazmatTeleOpMode extends LinearOpMode{
         telemetry.addData("hzGamepad1.getDpad_upPress", hzGamepad1.getDpad_upPress());
         telemetry.addData("hzGamepad1.gpGamepad1.dpad_down", hzGamepad1.gpGamepad1.dpad_down);
         telemetry.addData("hzGamepad1.getDpad_downPress", hzGamepad1.getDpad_downPress());
-
         telemetry.addData("Intake.grip.getPosition", hzIntake.wrist.getPosition());
-        */
         telemetry.addData("Chassis.touchSensorIsPressed", hzChassis.frontleftChassisTouchSensorIsPressed());
-
+        */
     }
 
 }

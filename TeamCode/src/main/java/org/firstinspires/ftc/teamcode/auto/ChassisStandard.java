@@ -61,6 +61,7 @@ public abstract class ChassisStandard extends OpMode {
     private DcMotor motorBackRight;
     private DcMotor motorFrontLeft;
     private DcMotor motorFrontRight;
+    private boolean reverseMotors = false;
 
     // Crab
     protected Servo crab;
@@ -149,6 +150,9 @@ public abstract class ChassisStandard extends OpMode {
     }
 
 
+    protected void switchMotorDirection() {
+        this.reverseMotors = !this.reverseMotors;
+    }
     /**
      *
      */
@@ -537,6 +541,11 @@ public abstract class ChassisStandard extends OpMode {
         // Jump out if the motors are turned off.
         if (!useMotors)
             return;
+
+        if (reverseMotors) {
+            leftInches = -leftInches;
+            rightInches = -rightInches;
+        }
 
         double countsPerInch = config.getRearWheelSpeed() / (config.getRearWheelDiameter() * Math.PI);
 

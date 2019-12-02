@@ -235,7 +235,6 @@ public class HzGamepad1 {
         dpad_upLast = gpGamepad1.dpad_up;
         return isPressedDpad_up;
 
-        //return gpGamepad1.dpad_up;
     }
 
     /**
@@ -256,7 +255,6 @@ public class HzGamepad1 {
         dpad_downLast = gpGamepad1.dpad_down;
         return isPressedDpad_down;
 
-        //return gpGamepad1.dpad_down;
     }
 
     /**
@@ -286,9 +284,9 @@ public class HzGamepad1 {
     /**
      * Method for automatic placement of block at a particular level.
      *
-     * @param apChassis
-     * @param apArm
-     * @param apIntake
+     * @param apChassis Chassis object passed for autoPlace
+     * @param apArm Arm object passed for autoPlace
+     * @param apIntake Intake object passed for autoPlace
      */
     public void autoPlace(Chassis apChassis, Arm apArm, Intake apIntake) {
         //Assumption - Arm is holding block right at the holding height of level to place

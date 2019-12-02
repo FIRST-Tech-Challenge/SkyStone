@@ -41,7 +41,7 @@ public class Chassis {
 
     //Declare TouchSensor on front left of Chassis
     public TouchSensor frontleftChassisTouchSensor; //Analog mode of Touch Sensor
-    //public DigitalChannel frontleftChassisTouchSensor;
+
 
     //Declare Color Sensors
     public ColorSensor leftColorSensor;
@@ -87,7 +87,8 @@ public class Chassis {
      */
     public void configureRobot(){
         wheelRadius = 1.965; //inches
-        robotRadius = 12.379; //inches - Radius = half of longest diagonal = 0.5*sqrt(sq(17)+sq(18).
+        // Robot width = 17.00 inch, length = 13.75 inch. Hypotensuse = 21.86 inch, radius = hyp/2 = 10.93
+        robotRadius = 10.93; //inches - Radius = half of longest diagonal = 0.5*sqrt(sq(17)+sq(18).
 
         //Set direction of motors wrt motor drive set up, so that wheels go forward +y power
         frontRight.setDirection(DcMotor.Direction.REVERSE);
@@ -153,7 +154,7 @@ public class Chassis {
      * Set the mode of the DC motor to RUN_WITHOUT_ENCODER (run at achievable velocity)
      * RUN_USING_ENCODER (run at a targeted velocity) or RUN_TO_POSITION (PID based rotation to
      * achieve the desited encoder count)
-     * @param runMode
+     * @param runMode RUN_WITHOUT_ENCODER
      */
     public void setMotorMode(DcMotor.RunMode runMode) {
         frontLeft.setMode(runMode);
@@ -164,7 +165,7 @@ public class Chassis {
 
     /**
      * Method to set the ColorSensor to be enabled or disabled
-     * @param colorSensorEnabled
+     * @param colorSensorEnabled to set the mode of color sensor on
      */
     public void setLeftColorSensorEnabled(boolean colorSensorEnabled){
         leftColorSensor.enableLed(colorSensorEnabled);
@@ -172,7 +173,7 @@ public class Chassis {
 
     /**
      * Method to set the ColorSensor to be enabled or disabled
-     * @param colorSensorEnabled
+     * @param colorSensorEnabled to set the mode of color sensor on
      */
     public void setRightColorSensordEnabled(boolean colorSensorEnabled){
              rightColorSensor.enableLed(colorSensorEnabled);
@@ -182,7 +183,7 @@ public class Chassis {
     /**
      * Method to check for left Color Sensor crossing over Red Line
      * Used in Autonomous mode to stop below Red Skybridge after moving foundation to wall.
-     * @return
+     * @return if Color Sensor is red
      */
     public boolean leftColorSensorIsRed() {
         //Logic to detect Red R>200 G<127 B<127
@@ -196,7 +197,7 @@ public class Chassis {
     /**
      * Method to check for right Color Sensor crossing over Red Line
      * Used in Autonomous mode to stop below Red Skybridge after moving blocks (Optional use)
-     * @return
+     * @return if color sensor is red
      */
     public boolean rightColorSensorIsRed() {
         //Logic to detect Red R>200 G<127 B<127
@@ -210,7 +211,7 @@ public class Chassis {
     /**
      * Method to check for right Color Sensor crossing over Blue Line
      * Used in Autonomous mode to stop below Red Skybridge after moving foundation to wall.
-     * @return
+     * @return if color sensor is blue
      */
     public boolean rightColorSensorIsBlue() {
         //Logic to detect Blue R<127 G<127 B>200
@@ -224,7 +225,7 @@ public class Chassis {
     /**
      * Method to check for right Color Sensor crossing over Blue Line
      * Used in Autonomous mode to stop below Red Skybridge after after moving blocks (Optional use)
-     * @return
+     * @return if color sensor is blue
      */
     public boolean leftColorSensorIsBlue() {
         //Logic to detect Blue R<127 G<127 B>200

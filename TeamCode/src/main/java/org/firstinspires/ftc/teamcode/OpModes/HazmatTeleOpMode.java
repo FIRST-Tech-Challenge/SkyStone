@@ -21,21 +21,11 @@ public class HazmatTeleOpMode extends LinearOpMode{
     @Override
     public void runOpMode() {
 
-        //Instantiate controller with gamepad1 connected to it.
-        //Controller hzController = new Controller(gamepad1);
-
-
-
         //Instantiate Subsystems : Chassis, Arm, Intake, Gamepad1
         hzChassis = new Chassis(hardwareMap);
         hzArm = new Arm(hardwareMap);
         hzIntake = new Intake(hardwareMap);
         hzGamepad1 = new HzGamepad1(gamepad1);
-
-        //Initialize Subsystems - Chassis, Arm, Intake.
-        /*hzChassis.initChassis();
-        hzArm.initArm();
-        hzIntake.initIntake();*/
 
         telemetry.addData("Init", "v:1.0");
 
@@ -57,14 +47,17 @@ public class HazmatTeleOpMode extends LinearOpMode{
     public void printDebugMessages(){
         telemetry.setAutoClear(true);
         telemetry.addData("HzDEBUG_FLAG is : ", HzDEBUG_FLAG);
-        //telemetry.addData("Intake.grip.getPosition", hzIntake.grip.getPosition());
-        //telemetry.addData("Intake.wrist.getPosition", hzIntake.wrist.getPosition());
+        /*
+        telemetry.addData("Intake.grip.getPosition", hzIntake.grip.getPosition());
+        telemetry.addData("Intake.wrist.getPosition", hzIntake.wrist.getPosition());
         telemetry.addData("hzGamepad1.gpGamepad1.dpad_up", hzGamepad1.gpGamepad1.dpad_up);
         telemetry.addData("hzGamepad1.getDpad_upPress", hzGamepad1.getDpad_upPress());
         telemetry.addData("hzGamepad1.gpGamepad1.dpad_down", hzGamepad1.gpGamepad1.dpad_down);
         telemetry.addData("hzGamepad1.getDpad_downPress", hzGamepad1.getDpad_downPress());
 
         telemetry.addData("Intake.grip.getPosition", hzIntake.wrist.getPosition());
+        */
+        telemetry.addData("Chassis.touchSensorIsPressed", hzChassis.frontleftChassisTouchSensorIsPressed());
 
     }
 

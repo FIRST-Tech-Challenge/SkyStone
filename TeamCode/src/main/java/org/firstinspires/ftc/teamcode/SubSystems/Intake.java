@@ -109,16 +109,14 @@ public class Intake{
     public void moveWristUp(){
         wristCurrentPosition = wrist.getPosition();
         //if currently in close position, move to vertical position (tolerance 0f +/- 0.05)
-        /*if ((wristCurrentPosition > wristClosePosition - 0.05) &&
-                (wristCurrentPosition < wristClosePosition + 0.05)) {
+        if (wristCurrentPosition == wristClosePosition) {
             moveWristToVertical();
         }
         //if currently in vertical position, move to horizontal position (tolerance 0f +/- 0.05)
-        if ((wristCurrentPosition > wristVerticalPosition - 0.05) &&
-                (wristCurrentPosition < wristVerticalPosition + 0.05)) {
+        if (wristCurrentPosition == wristVerticalPosition) {
             moveWristToHorizontal();
-        }*/
-        moveWristToHorizontal();
+        }
+        //moveWristToHorizontal();
 
     }
 
@@ -128,16 +126,14 @@ public class Intake{
     public void moveWristDown(){
         wristCurrentPosition = wrist.getPosition();
         //if currently in horizontal position, move to vertical position
-        /*if ((wristCurrentPosition > wristHorizontalPosition -0.05) &&
-                (wristHorizontalPosition < wristClosePosition + 0.05)) {
+        if (wristCurrentPosition == wristHorizontalPosition) {
             moveWristToVertical();
         }
         //if currently in vertical position, move to close position
-        if ((wristCurrentPosition > wristVerticalPosition - 0.05) &&
-                (wristCurrentPosition < wristVerticalPosition + 0.05)) {
+        if (wristCurrentPosition == wristVerticalPosition) {
             moveWristToClose();
-        }*/
-        moveWristToClose();
+        }
+        //moveWristToClose();
 
     }
 

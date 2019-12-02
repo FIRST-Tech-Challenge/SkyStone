@@ -33,9 +33,9 @@ public class HazmatTeleOpMode extends LinearOpMode{
         hzGamepad1 = new HzGamepad1(gamepad1);
 
         //Initialize Subsystems - Chassis, Arm, Intake.
-        hzChassis.initChassis();
+        /*hzChassis.initChassis();
         hzArm.initArm();
-        hzIntake.initIntake();
+        hzIntake.initIntake();*/
 
         telemetry.addData("Init", "v:1.0");
 

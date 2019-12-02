@@ -327,12 +327,12 @@ public class HzGamepad1 {
         /*Chassis actions :
         Convert Left Stick and Right Stick motion to power, target Angle and turn for Chassis
          */
-        final double leftStickX = turboMode(getLeftStickX());
-        final double leftStickY = turboMode(getLeftStickY());
-        final double rightStickX = turboMode(getRightStickX());
-        final double power = Math.hypot(leftStickX, leftStickY);
-        final double targetAngle = Math.atan2(leftStickY, leftStickX);
-        final double turn = rightStickX;
+        double leftStickX = turboMode(getLeftStickX());
+        double leftStickY = turboMode(getLeftStickY());
+        double rightStickX = turboMode(getRightStickX());
+        double power = Math.hypot(leftStickX, leftStickY);
+        double targetAngle = Math.atan2(leftStickY, leftStickX);
+        double turn = rightStickX;
         gpChassis.runByGamepadCommand(targetAngle, turn, power);
 
         //Arm Actions :

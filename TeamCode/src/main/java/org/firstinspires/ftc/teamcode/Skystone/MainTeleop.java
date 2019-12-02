@@ -13,17 +13,8 @@ public class MainTeleop extends LinearOpMode {
     double fRPower;
     double bLPower;
     double bRPower;
-    double intakeLeftPower;
-    double intakeRightPower;
-    char outtakeButton;
     long outtakeExecutionTime;
     long currentTime;
-    double outtakePivotExecutePosition;
-    double outtakePivotWaitTime;
-    double outtakeExtenderExecutePosition;
-    double outtakeExtenderWaitTime;
-    double outtakeClampExecutePosition;
-    double outtakeClampWaitTime;
     boolean onSlowDrive, changedSlowDrive = false;
     boolean isRetract = false;
     boolean isExtend = false;
@@ -34,23 +25,27 @@ public class MainTeleop extends LinearOpMode {
     boolean resetfoundation = false;
     boolean hasPushed = false;
     public static double powerScaleFactor = 0.9;
+
     @Override
     public void runOpMode() {
         resetRobot();
-        initServos();
+        robot.initServos();
         waitForStart();
         robot.getOuttakeSpool().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //        Position2D position2D = new Position2D(robot);
 //        position2D.startOdometry();
         while (opModeIsActive()) {
             telemetry.update();
+
             slowDriveLogic();
             driveLogic();
-//            outtakeLogic();
+
             intakeLogic();
-            spoolLogic();
             outtakeLogic();
+            spoolLogic();
+
             foundationLogic();
+
             capStoneLogic();
             teamMarkerLogic();
 
@@ -72,37 +67,15 @@ public class MainTeleop extends LinearOpMode {
     }
     private void resetRobot() {
         robot = new Robot(hardwareMap, telemetry, this);
-        robot.getMarkerServo().setPosition(robot.TEAM_MARKER_RETRACT);
-        robot.getBackStopper().setPosition(robot.BACK_STOPPER_UP);
+
         robot.setMotorMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         robot.getClampPivot().setDirection(Servo.Direction.FORWARD);
         robot.getOuttakeSpool().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         robot.getIntakeLeft().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         robot.getIntakeRight().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        robot.outtakeArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        robot.outtakeArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
-    private void initServos() {
-        robot.foundationMover(false);
 
-        isRetract = true;
-        outtakeExecutionTime = SystemClock.elapsedRealtime();
-
-        robot.getIntakePusher().setPosition(robot.PUSHER_RETRACTED);
-        robot.getClamp().setPosition(robot.CLAW_SERVO_RELEASED);
-
-        while (isRetract) {
-            currentTime = SystemClock.elapsedRealtime();
-            if (currentTime - outtakeExecutionTime >= 250 && isRetract) {
-                robot.getClampPivot().setPosition(robot.OUTTAKE_PIVOT_RETRACTED);
-            }
-            if (currentTime - outtakeExecutionTime >= 950 && isRetract) {
-                robot.getOuttakeExtender().setPosition(robot.OUTTAKE_SLIDE_RETRACTED);
-                isRetract = false;
-            }
-        }
-    }
     //teleop methods
     private void driveLogic() {
         // TODO: change all of this stuff to x, y, and turn movements
@@ -238,7 +211,6 @@ public class MainTeleop extends LinearOpMode {
         } else if (gamepad2.b) { // Deposit and Reset
             robot.getMarkerServo().setPosition(robot.TEAM_MARKER_RETRACT);
             robot.getBackStopper().setPosition(robot.BACK_STOPPER_UP);
-            robot.enableOuttakeExtender();
             robot.getOuttakeExtender().setPosition(robot.OUTTAKE_SLIDE_EXTENDED);
             robot.getIntakePusher().setPosition(robot.PUSHER_RETRACTED); // Reset intake pusher
             isRetract = true;

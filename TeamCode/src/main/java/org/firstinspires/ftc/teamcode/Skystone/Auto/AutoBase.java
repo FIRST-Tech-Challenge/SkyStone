@@ -20,35 +20,12 @@ public class AutoBase extends LinearOpMode {
         vision = new Vision(this);
 
         robot.driveMotorsBreakZeroBehavior();
-        initServos();
+        robot.initServos();
 
         robot.setMotorMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         position2D = new Position2D(robot);
-    }
-
-    private void initServos() {
-        robot.getMarkerServo().setPosition(robot.TEAM_MARKER_RETRACT);
-        robot.getBackStopper().setPosition(robot.BACK_STOPPER_UP);
-        boolean isRetract = true;
-        long outtakeExecutionTime = 0;
-        long currentTime;
-
-        robot.foundationMover(false);
-        robot.getClamp().setPosition(robot.CLAW_SERVO_RELEASED);
-        robot.getIntakePusher().setPosition(robot.PUSHER_RETRACTED);
-
-        while (isRetract && robot.getLinearOpMode().opModeIsActive()) {
-            currentTime = SystemClock.elapsedRealtime();
-            if (currentTime - outtakeExecutionTime >= 250 && isRetract) {
-                robot.getClampPivot().setPosition(robot.OUTTAKE_PIVOT_RETRACTED);
-            }
-            if (currentTime - outtakeExecutionTime >= 950 && isRetract) {
-                robot.getOuttakeExtender().setPosition(robot.OUTTAKE_SLIDE_RETRACTED);
-                isRetract = false;
-            }
-        }
     }
 
     @Override

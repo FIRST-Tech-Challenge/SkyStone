@@ -246,22 +246,34 @@ public class Robot {
         bRight.setMode(runMode);
     }
 
+    public void initServos() {
+        markerServo.setPosition(TEAM_MARKER_RETRACT);
+        backStopper.setPosition(BACK_STOPPER_UP);
+
+        boolean isRetract = true;
+        long outtakeExecutionTime = 0;
+        long currentTime;
+
+        foundationMover(false);
+        clamp.setPosition(CLAW_SERVO_RELEASED);
+        intakePusher.setPosition(PUSHER_RETRACTED);
+
+        while (isRetract && linearOpMode.opModeIsActive()) {
+            currentTime = SystemClock.elapsedRealtime();
+            if (currentTime - outtakeExecutionTime >= 250 && isRetract) {
+                clampPivot.setPosition(OUTTAKE_PIVOT_RETRACTED);
+            }
+            if (currentTime - outtakeExecutionTime >= 950 && isRetract) {
+                outtakeExtender.setPosition(OUTTAKE_SLIDE_RETRACTED);
+                isRetract = false;
+            }
+        }
+    }
+
 //    //normal use method default 2 second kill time
 //    public void finalTurn(double targetHeading, double turnSpeed) {
 //        finalTurn(targetHeading, turnSpeed, 2500);
 //    }
-
-    public void disableOuttakeExtender(){
-//        outtakeExtender.getController().pwmDisable();
-//        clampPivot.getController().pwmEnable();
-//        clamp.getController().pwmEnable();
-    }
-
-    public void enableOuttakeExtender(){
-//        outtakeExtender.getController().pwmEnable();
-//        clampPivot.getController().pwmEnable();
-//        clamp.getController().pwmEnable();
-    }
 
     /**
      * crappy finalTurn, random deceleration

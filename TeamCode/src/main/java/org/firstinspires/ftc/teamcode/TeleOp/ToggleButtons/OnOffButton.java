@@ -1546,127 +1546,127 @@ public class OnOffButton {
                 break;
             case LEFT_TRIGGER:
                 switch (button2) {
-                case A:
-                    if (gamepadSituation1.left_trigger >= 0.5)
-                        twoButtonLogic1();
+                    case A:
+                        if (gamepadSituation1.left_trigger >= 0.5)
+                            twoButtonLogic1();
 
-                    if (gamepadSituation2.a)
-                        twoButtonLogic2();
+                        if (gamepadSituation2.a)
+                            twoButtonLogic2();
 
-                    if (gamepadSituation1.left_trigger < 0.5 && !gamepadSituation2.a)
-                        blocker = false;
-                    break;
-                case B:
-                    if (gamepadSituation1.left_trigger >= 0.5)
-                        twoButtonLogic1();
+                        if (gamepadSituation1.left_trigger < 0.5 && !gamepadSituation2.a)
+                            blocker = false;
+                        break;
+                    case B:
+                        if (gamepadSituation1.left_trigger >= 0.5)
+                            twoButtonLogic1();
 
-                    if (gamepadSituation2.b)
-                        twoButtonLogic2();
+                        if (gamepadSituation2.b)
+                            twoButtonLogic2();
 
-                    if (gamepadSituation1.left_trigger < 0.5 && !gamepadSituation2.b)
-                        blocker = false;
-                    break;
-                case X:
-                    if (gamepadSituation1.left_trigger >= 0.5)
-                        twoButtonLogic1();
+                        if (gamepadSituation1.left_trigger < 0.5 && !gamepadSituation2.b)
+                            blocker = false;
+                        break;
+                    case X:
+                        if (gamepadSituation1.left_trigger >= 0.5)
+                            twoButtonLogic1();
 
-                    if (gamepadSituation2.x)
-                        twoButtonLogic2();
+                        if (gamepadSituation2.x)
+                            twoButtonLogic2();
 
-                    if (gamepadSituation1.left_trigger < 0.5 && !gamepadSituation2.x)
-                        blocker = false;
-                    break;
-                case Y:
-                    if (gamepadSituation1.left_trigger >= 0.5)
-                        twoButtonLogic1();
+                        if (gamepadSituation1.left_trigger < 0.5 && !gamepadSituation2.x)
+                            blocker = false;
+                        break;
+                    case Y:
+                        if (gamepadSituation1.left_trigger >= 0.5)
+                            twoButtonLogic1();
 
-                    if (gamepadSituation2.y)
-                        twoButtonLogic2();
+                        if (gamepadSituation2.y)
+                            twoButtonLogic2();
 
-                    if (gamepadSituation1.left_trigger < 0.5 && !gamepadSituation2.y)
-                        blocker = false;
-                    break;
-                case DPAD_DOWN:
-                    if (gamepadSituation1.left_trigger >= 0.5)
-                        twoButtonLogic1();
+                        if (gamepadSituation1.left_trigger < 0.5 && !gamepadSituation2.y)
+                            blocker = false;
+                        break;
+                    case DPAD_DOWN:
+                        if (gamepadSituation1.left_trigger >= 0.5)
+                            twoButtonLogic1();
 
-                    if (gamepadSituation2.dpad_down)
-                        twoButtonLogic2();
+                        if (gamepadSituation2.dpad_down)
+                            twoButtonLogic2();
 
-                    if (gamepadSituation1.left_trigger < 0.5 && !gamepadSituation2.dpad_down)
-                        blocker = false;
-                    break;
-                case DPAD_LEFT:
-                    if (gamepadSituation1.left_trigger >= 0.5)
-                        twoButtonLogic1();
+                        if (gamepadSituation1.left_trigger < 0.5 && !gamepadSituation2.dpad_down)
+                            blocker = false;
+                        break;
+                    case DPAD_LEFT:
+                        if (gamepadSituation1.left_trigger >= 0.5)
+                            twoButtonLogic1();
 
-                    if (gamepadSituation2.dpad_left)
-                        twoButtonLogic2();
+                        if (gamepadSituation2.dpad_left)
+                            twoButtonLogic2();
 
-                    if (gamepadSituation1.left_trigger < 0.5 && !gamepadSituation2.dpad_left)
-                        blocker = false;
-                    break;
-                case DPAD_RIGHT:
-                    if (gamepadSituation1.left_trigger >= 0.5)
-                        twoButtonLogic1();
+                        if (gamepadSituation1.left_trigger < 0.5 && !gamepadSituation2.dpad_left)
+                            blocker = false;
+                        break;
+                    case DPAD_RIGHT:
+                        if (gamepadSituation1.left_trigger >= 0.5)
+                            twoButtonLogic1();
 
-                    if (gamepadSituation2.dpad_right)
-                        twoButtonLogic2();
+                        if (gamepadSituation2.dpad_right)
+                            twoButtonLogic2();
 
-                    if (gamepadSituation1.left_trigger < 0.5 && !gamepadSituation2.dpad_right)
-                        blocker = false;
-                    break;
-                case DPAD_UP:
-                    if (gamepadSituation1.left_trigger >= 0.5)
-                        twoButtonLogic1();
+                        if (gamepadSituation1.left_trigger < 0.5 && !gamepadSituation2.dpad_right)
+                            blocker = false;
+                        break;
+                    case DPAD_UP:
+                        if (gamepadSituation1.left_trigger >= 0.5)
+                            twoButtonLogic1();
 
-                    if (gamepadSituation2.dpad_up)
-                        twoButtonLogic2();
+                        if (gamepadSituation2.dpad_up)
+                            twoButtonLogic2();
 
-                    if (gamepadSituation1.left_trigger < 0.5 && !gamepadSituation2.dpad_up)
-                        blocker = false;
-                    break;
-                case LEFT_BUMPER:
-                    if (gamepadSituation1.left_trigger >= 0.5)
-                        twoButtonLogic1();
+                        if (gamepadSituation1.left_trigger < 0.5 && !gamepadSituation2.dpad_up)
+                            blocker = false;
+                        break;
+                    case LEFT_BUMPER:
+                        if (gamepadSituation1.left_trigger >= 0.5)
+                            twoButtonLogic1();
 
-                    if (gamepadSituation2.left_bumper)
-                        twoButtonLogic2();
+                        if (gamepadSituation2.left_bumper)
+                            twoButtonLogic2();
 
-                    if (gamepadSituation1.left_trigger < 0.5 && !gamepadSituation2.left_bumper)
-                        blocker = false;
-                    break;
-                case RIGHT_BUMPER:
-                    if (gamepadSituation1.left_trigger >= 0.5)
-                        twoButtonLogic1();
+                        if (gamepadSituation1.left_trigger < 0.5 && !gamepadSituation2.left_bumper)
+                            blocker = false;
+                        break;
+                    case RIGHT_BUMPER:
+                        if (gamepadSituation1.left_trigger >= 0.5)
+                            twoButtonLogic1();
 
-                    if (gamepadSituation2.right_bumper)
-                        twoButtonLogic2();
+                        if (gamepadSituation2.right_bumper)
+                            twoButtonLogic2();
 
-                    if (gamepadSituation1.left_trigger < 0.5 && !gamepadSituation2.right_bumper)
-                        blocker = false;
-                    break;
-                case LEFT_TRIGGER:
-                    if (gamepadSituation1.left_trigger >= 0.5)
-                        twoButtonLogic1();
+                        if (gamepadSituation1.left_trigger < 0.5 && !gamepadSituation2.right_bumper)
+                            blocker = false;
+                        break;
+                    case LEFT_TRIGGER:
+                        if (gamepadSituation1.left_trigger >= 0.5)
+                            twoButtonLogic1();
 
-                    if (gamepadSituation2.left_trigger >= 0.5)
-                        twoButtonLogic2();
+                        if (gamepadSituation2.left_trigger >= 0.5)
+                            twoButtonLogic2();
 
-                    if (gamepadSituation1.left_trigger < 0.5 && gamepadSituation2.left_trigger < 0.5)
-                        blocker = false;
-                    break;
-                case RIGHT_TRIGGER:
-                    if (gamepadSituation1.left_trigger >= 0.5)
-                        twoButtonLogic1();
+                        if (gamepadSituation1.left_trigger < 0.5 && gamepadSituation2.left_trigger < 0.5)
+                            blocker = false;
+                        break;
+                    case RIGHT_TRIGGER:
+                        if (gamepadSituation1.left_trigger >= 0.5)
+                            twoButtonLogic1();
 
-                    if (gamepadSituation2.right_trigger >= 0.5)
-                        twoButtonLogic2();
+                        if (gamepadSituation2.right_trigger >= 0.5)
+                            twoButtonLogic2();
 
-                    if (gamepadSituation1.left_trigger < 0.5 && gamepadSituation2.right_trigger < 0.5)
-                        blocker = false;
-                    break;
-            }
+                        if (gamepadSituation1.left_trigger < 0.5 && gamepadSituation2.right_trigger < 0.5)
+                            blocker = false;
+                        break;
+                }
                 break;
             case RIGHT_TRIGGER:
                 switch (button2) {

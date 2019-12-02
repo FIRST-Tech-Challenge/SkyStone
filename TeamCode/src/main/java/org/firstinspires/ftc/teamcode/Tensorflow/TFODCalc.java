@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Tensorflow;
 
 import android.hardware.Camera;
 
+import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.All.DriveConstant;
 
 import java.util.ArrayList;
@@ -54,7 +55,7 @@ public class TFODCalc {
         return dist;
     }
 
-    public static ArrayList<Double> getAngleOfStone(int objIndex, double objWidthPx, double distance) {
+    public static ArrayList<Double> getAngleOfStone(/*int objIndex,*/ double objWidthPx, double distance) {
         double xIntercept = 307.369;    //Largest X-Intercept of quadratic model equation
         double xAt60 = xIntercept - 197.369;    //Calculating Delta X at lower bounds of domain (x ~= 60°)
         double estimated0DegreeWidth;
@@ -62,20 +63,18 @@ public class TFODCalc {
         ArrayList<Double> widths = new ArrayList<>();
 
         try {
-            distances = (ArrayList<Integer>) DriveConstant.getSerializedObject("/TFOD Data/TFOD_Distances_webcam.txt");
-            widths = (ArrayList<Double>) DriveConstant.getSerializedObject("/TFOD Data/TFOD_Widths_webcam.txt");
+            distances = (ArrayList<Integer>) DriveConstant.getSerializedObject(AppUtil.ROOT_FOLDER + "/TFOD Data/TFOD_Distances_webcam.txt");
+            widths = (ArrayList<Double>) DriveConstant.getSerializedObject(AppUtil.ROOT_FOLDER + "/TFOD Data/TFOD_Widths_wemcam.txt");
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        System.out.println(distances + ", " + widths);
-
-        if (!distances.isEmpty() && !widths.isEmpty() && distances.contains((int) Math.round(distance)))
-            estimated0DegreeWidth = widths.get((int) Math.round(distance));
+        if (distances != null && !distances.isEmpty() && !widths.isEmpty() && distances.contains((int) Math.round(distance)))
+            estimated0DegreeWidth = widths.get(distances.indexOf((int) Math.round(distance)));
         else
             estimated0DegreeWidth = 800.512823871366 * Math.pow(Math.E, -0.0476285053327913 * distance) - 15;    //Estimating 0° width
 
-        double prevCalcOffset = -1;
+        /*double prevCalcOffset = -1;
         int usedIndex = -1;
         if (!autoAdjustedOffset.get(objIndex).isEmpty()) {
             double delta = 9999;
@@ -100,7 +99,7 @@ public class TFODCalc {
             autoAdjustedOffset.get(objIndex).add(0.0);
             autoAdjustedOffset.get(objIndex).add(distance);
             prevCalcOffset = 0;
-        }
+        }*/
 
         /**
          * Calculates "old" X-offset (X-int & other previously calculated offsets), the supposed width
@@ -108,9 +107,12 @@ public class TFODCalc {
          * to better fit the received Tensorflow data.
          */
 
-        double xIntOffset = xIntercept - estimated0DegreeWidth - prevCalcOffset;  //The original x-offset value
-        double newAutoAdjustedOffset = autoAdjustDomain(xIntercept, xAt60, xIntOffset, objWidthPx, objIndex, prevCalcOffset); //Algorithm tunes the value of the offset, gets additional offset
-        xIntOffset = xIntercept - estimated0DegreeWidth - prevCalcOffset - newAutoAdjustedOffset;    //Re-calculates the X-offset
+        double prevCalcOffset = 0;
+
+        //double xIntOffset = xIntercept - estimated0DegreeWidth - prevCalcOffset;  //The original x-offset value
+        //double newAutoAdjustedOffset = autoAdjustDomain(xIntercept, xAt60, xIntOffset, objWidthPx, objIndex, prevCalcOffset); //Algorithm tunes the value of the offset, gets additional offset
+        double newAutoAdjustedOffset = 0;
+        double xIntOffset = xIntercept - estimated0DegreeWidth - prevCalcOffset - newAutoAdjustedOffset;    //Re-calculates the X-offset
 
         /**
          * The model quadratic equation used:
@@ -120,8 +122,8 @@ public class TFODCalc {
         double theta = -0.00402486517332459 * Math.pow((objWidthPx + xIntOffset), 2) + 1.34744719385825 *
                 (objWidthPx + xIntOffset) - 33.9109714390624;  //Calculates angle
 
-        autoAdjustedOffset.get(objIndex).set(usedIndex,
-                prevCalcOffset + newAutoAdjustedOffset);   //The x-offset is saved under its index & will be reaccessed again and used
+        //autoAdjustedOffset.get(objIndex).set(usedIndex,
+        //        prevCalcOffset + newAutoAdjustedOffset);   //The x-offset is saved under its index & will be reaccessed again and used
 
 
         /**
@@ -130,8 +132,10 @@ public class TFODCalc {
          * Unprocessed predicted width at 0°, New predicted width at 0°]
          */
 
+        if(distances == null || widths == null)
+            estimated0DegreeWidth = 0;
         ArrayList<Double> output = new ArrayList<>();
-        output.add(theta);
+        output.add(Math.abs(theta));
         output.add(Math.round((estimated0DegreeWidth - 197.369 + newAutoAdjustedOffset) * 1000.0) / 1000.0);
         output.add(Math.round((estimated0DegreeWidth + newAutoAdjustedOffset) * 1000.0) / 1000.0);
         output.add(Math.round(estimated0DegreeWidth * 1000.0) / 1000.0);

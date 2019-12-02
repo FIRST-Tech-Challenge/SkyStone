@@ -33,9 +33,13 @@ import java.util.ArrayList;
 public class Teleop extends LinearOpMode {
     boolean intake = false;
     boolean outake = false;
-    final double slowSpeed = TeleopConstants.drivePower;
+    final double normalSpeed = TeleopConstants.drivePowerNormal;
+    final double turboSpeed = TeleopConstants.drivePowerTurbo;
+    final double slowSpeed = TeleopConstants.drivePowerSlow;
     final double turnSpeed = TeleopConstants.turnPower;
     boolean runLogic = false;
+    boolean switchBlocker = false;
+    boolean tobyMode = false;
 
     ArrayList<OnOffButton> buttonLogic = new ArrayList<>();
 
@@ -52,9 +56,9 @@ public class Teleop extends LinearOpMode {
 
         drivetrain = new FourWheelMecanumDrivetrain(hwMap);
 
-        drivetrain.setMotorZeroPower(DcMotor.ZeroPowerBehavior.BRAKE);
+        drivetrain.setMotorZeroPower(DcMotor.ZeroPowerBehavior.FLOAT);
 
-        drivetrain.setSpeedMultiplier(slowSpeed);
+        drivetrain.setSpeedMultiplier(normalSpeed);
         drivetrain.resetEncoders();
 
         drivetrain.setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -78,20 +82,22 @@ public class Teleop extends LinearOpMode {
                 new DcMotor[] { hwMap.leftIntake, hwMap.rightIntake },
                 new double[][] { {-TeleopConstants.intakePower, 0}, {TeleopConstants.intakePower, 0} },
                 new double[] { TeleopConstants.intakePower, -TeleopConstants.intakePower }));
-        buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.Y, new Servo[] { hwMap.foundationLock },   //Foundation Lock-Y
-                new double[][] { {TeleopConstants.foundationLockLock, TeleopConstants.foundationLockUnlock} }));
-        buttonLogic.add(new OnOffButton(gamepad2, gamepad2, GamepadButtons.LEFT_BUMPER, GamepadButtons.RIGHT_BUMPER,   //Transfer Lock-L & R Bumpers
-                new Servo[] { hwMap.transferLock }, new double[][] { {TeleopConstants.transferLockPosUp,
-                TeleopConstants.transferLockPosPlatform} },
-                new double[] { TeleopConstants.transferLockPosFoundationGrabing }));
-        buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.DPAD_DOWN, new Servo[] {hwMap.liftOdometer, hwMap.plateLifter},    //Odometer Lock and Plate Lifter-DPAD DOwn
+        buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.Y, new Servo[] { hwMap.foundationLock, hwMap.transferLock },   //Foundation Lock-Y
+                new double[][] { {TeleopConstants.foundationLockLock, TeleopConstants.foundationLockUnlock},
+                        {TeleopConstants.transferLockPosUp, TeleopConstants.transferLockPosOut} }));
+        buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.LEFT_BUMPER,   //Transfer Lock-L & R Bumpers
+                new Servo[] { hwMap.clawServo1, hwMap.clawServo2 }, new double[][] { {TeleopConstants.clawServo1PosOpen,
+                TeleopConstants.clawServo1PosClose}, {TeleopConstants.clawServo2PosOpen, TeleopConstants.clawServo2PosClose} }));
+        buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.X, new Servo[] {hwMap.liftOdometer, hwMap.plateLifter},    //Odometer Lock and Plate Lifter-DPAD DOwn
                 new double[][] { {TeleopConstants.odometerLockPosUp, TeleopConstants.odometerLockPosDown},
                         {TeleopConstants.plateLifterPosUp, TeleopConstants.plateLifterPosDown} }));
         buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.LEFT_BUMPER, new Servo[] {hwMap.clawServo1, hwMap.clawServo2}, //Claw Servos-X
                 new double[][] { {TeleopConstants.clawServo1PosOpen, TeleopConstants.clawServo1PosClose},
                         {TeleopConstants.clawServo2PosOpen, TeleopConstants.clawServo2PosClose} }));
-        buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.X, new Servo[] { hwMap.transferHorn },   //Foundation Lock-Y
+        buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.DPAD_DOWN, new Servo[] { hwMap.transferHorn },   //Foundation Lock-Y
                 new double[][] { {TeleopConstants.transferHornPosPush, TeleopConstants.transferHornPosReady} }));
+        buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.RIGHT_BUMPER, new Servo[] {hwMap.clawInit},
+                new double[][]{ {TeleopConstants.clawInitPosCapstone, TeleopConstants.clawInitPosReset} }));
 
         telemetry.addData("Status", "Ready");
 
@@ -100,11 +106,9 @@ public class Teleop extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            double turn = (-1) * (gamepad1.left_trigger - gamepad1.right_trigger) * turnSpeed;
+            //double turn = (-1) * (gamepad1.left_trigger - gamepad1.right_trigger) * turnSpeed;
 
-            //------------------------------===Intake/Outake===------------------------------------------
-
-            //intakeLogic(hwMap);
+            //------------------------------===Servos & Intake/Outake===------------------------------------------
 
             for(OnOffButton onOffButton : buttonLogic) {
                 onOffButton.getGamepadStateAndRun();
@@ -131,59 +135,94 @@ public class Teleop extends LinearOpMode {
 
             //------------------------------===Driving/Strafing===------------------------------------------
 
-            if (!(gamepad1.left_stick_x == 0 && gamepad1.right_stick_y == 0 && turn == 0)) {
+            if(gamepad1.back && !switchBlocker){
+                if(!tobyMode)
+                    tobyMode = true;
+                else
+                    tobyMode = false;
+            } else if(!gamepad1.back && switchBlocker){
+                switchBlocker = false;
+            }
 
-                double speed;
+            if(tobyMode) {
+                if (!(gamepad1.left_stick_x == 0 && gamepad1.left_stick_y == 0)) {
 
-                if (gamepad1.left_stick_x == 0 && gamepad1.right_stick_y == 0) {
-                    speed = 0;
-                } else if (gamepad1.right_stick_y == 0) {
-                    speed = Math.abs(gamepad1.left_stick_x);
-                } else if (gamepad1.left_stick_x == 0) {
-                    speed = Math.abs(gamepad1.right_stick_y);
+                    double speed;
+
+                    if (gamepad1.left_stick_x == 0 && gamepad1.left_stick_y == 0) {
+                        speed = 0;
+                    } else if (gamepad1.left_stick_y == 0) {
+                        speed = Math.abs(gamepad1.left_stick_x);
+                    } else if (gamepad1.left_stick_x == 0) {
+                        speed = Math.abs(gamepad1.left_stick_y);
+                    } else {
+                        speed = (Math.abs(gamepad1.left_stick_x) + Math.abs(gamepad1.left_stick_y)) / 2;
+                    }
+
+                    double angle = Math.atan2(gamepad1.left_stick_x, -gamepad1.left_stick_y);
+                    drivetrain.MoveAngle(speed, angle, 0);
+                }
+
+                if (gamepad1.right_stick_x != 0) {
+                    if (gamepad1.right_stick_x > 0)
+                        drivetrain.rotate(normalSpeed * gamepad1.right_stick_x, true);
+                    else if (gamepad1.right_stick_x < 0)
+                        drivetrain.rotate(normalSpeed * Math.abs(gamepad1.right_stick_x), false);
+                }
+
+                if (gamepad1.left_trigger >= 0.5) {
+                    drivetrain.setMotorZeroPower(DcMotor.ZeroPowerBehavior.BRAKE);
                 } else {
-                    speed = (Math.abs(gamepad1.left_stick_x) + Math.abs(gamepad1.right_stick_y)) / 2;
+                    drivetrain.setMotorZeroPower(DcMotor.ZeroPowerBehavior.FLOAT);
                 }
 
-                double angle = Math.atan2(gamepad1.left_stick_x, -gamepad1.right_stick_y);
-                drivetrain.MoveAngle(speed, angle, turn);
+                if (gamepad1.right_trigger >= 0.5) {
+                    drivetrain.setSpeedMultiplier(turboSpeed);
+                } else {
+                    drivetrain.setSpeedMultiplier(normalSpeed);
+                }
+
+                if (gamepad1.dpad_up) {
+                    drivetrain.setPowerAll(slowSpeed);
+                } else if (gamepad1.dpad_down) {
+                    drivetrain.setPowerAll(-slowSpeed);
+                } else if (gamepad1.dpad_right) {
+                    drivetrain.strafe(slowSpeed, true);
+                } else if (gamepad1.dpad_left) {
+                    drivetrain.strafe(slowSpeed, false);
+                }
+
+                if (gamepad1.left_stick_x == 0 && gamepad1.right_stick_x == 0 && gamepad1.left_stick_y == 0 &&
+                        gamepad1.right_stick_y == 0 && !gamepad1.dpad_up && !gamepad1.dpad_left && !gamepad1.dpad_right
+                        && !gamepad1.dpad_down) {
+                    drivetrain.stop();
+                }
             } else {
-                drivetrain.stop();
-            }
+                drivetrain.setSpeedMultiplier(normalSpeed);
+                double turn = (-1) * (gamepad1.left_trigger - gamepad1.right_trigger) * turnSpeed;
 
-            //------------------------------===Servos===------------------------------------------
+                if (!(gamepad1.left_stick_x == 0 && gamepad1.right_stick_y == 0 && turn == 0)) {
 
-            if (gamepad1.y)  //Change servo positions in TeleopConstants.java
-                hwMap.clawServo1.setPosition(TeleopConstants.clawServo1PosClose);
-            else if (gamepad1.b)
-                hwMap.clawServo1.setPosition(TeleopConstants.clawServo1PosClose);
+                    double speed;
 
-            if (gamepad1.x)
-                hwMap.clawServo2.setPosition(TeleopConstants.clawServo2PosOpen);
-            else if (gamepad1.a)
-                hwMap.clawServo2.setPosition(TeleopConstants.clawServo2PosClose);
+                    if (gamepad1.left_stick_x == 0 && gamepad1.right_stick_y == 0) {
+                        speed = 0;
+                    }
+                    else if ( gamepad1.right_stick_y == 0 ) {
+                        speed = Math.sqrt(2) * Math.abs(gamepad1.left_stick_x) ;
+                    }
+                    else if ( gamepad1.left_stick_x == 0 ) {
+                        speed = Math.abs(gamepad1.right_stick_y) ;
+                    }
+                    else {
+                        speed = Math.min( Math.abs(gamepad1.left_stick_x) + Math.abs(gamepad1.right_stick_y), 1);
+                    }
 
-            if (gamepad2.left_bumper) {
-                hwMap.liftOdometer.setPosition(TeleopConstants.odometerLockPosUp);
-            } else if (gamepad2.right_bumper) {
-                hwMap.liftOdometer.setPosition(TeleopConstants.odometerLockPosDown);
-            }
-
-            if (gamepad1.left_bumper) {
-                hwMap.transferLock.setPosition(TeleopConstants.transferLockPosUp);
-            } else if (gamepad1.right_bumper) {
-                hwMap.transferLock.setPosition(TeleopConstants.transferLockPosPlatform);
-            }
-
-            if (gamepad1.left_bumper) {
-                StringBuilder sb = new StringBuilder();
-                for (String row : kVData) {
-                    sb.append(row);
-                    sb.append("\n");
+                    double angle = Math.atan2(gamepad1.left_stick_x, -gamepad1.right_stick_y);
+                    drivetrain.MoveAngle(speed, angle, turn);
+                } else {
+                    drivetrain.stop();
                 }
-
-                //DriveConstant.writeFile(AppUtil.ROOT_FOLDER + "/RoadRunner/kV_regression_data_" + System.currentTimeMillis() + ".csv", sb.toString());
-                //break;
             }
 
             telemetry.addData("LeftForwardOdometry", hwMap.leftIntake.getCurrentPosition());
@@ -202,7 +241,7 @@ public class Teleop extends LinearOpMode {
 
     }
 
-    private void intakeLogic(HardwareMap hwMap){
+    private void SAMPLE_TWO_BUTTON_LOGIC(HardwareMap hwMap){
         if (gamepad2.y && !blocker) {
             if (!intake) {
                 intake = true;
@@ -261,5 +300,16 @@ public class Teleop extends LinearOpMode {
             }
         };
         loop.start();
+
+        if (gamepad1.left_bumper) {     //SAMPLE IMPLEMENTATION
+            StringBuilder sb = new StringBuilder();
+            for (String row : kVData) {
+                sb.append(row);
+                sb.append("\n");
+            }
+
+            //DriveConstant.writeFile(AppUtil.ROOT_FOLDER + "/RoadRunner/kV_regression_data_" + System.currentTimeMillis() + ".csv", sb.toString());
+            //break;
+        }
     }
 }

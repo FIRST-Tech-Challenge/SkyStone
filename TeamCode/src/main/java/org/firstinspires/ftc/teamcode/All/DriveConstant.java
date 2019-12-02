@@ -57,7 +57,7 @@ public class DriveConstant {
             outputStreamReader.close();
         }
         catch (Exception e) {
-            Log.e("Exception", "File write failed: " + e.toString());
+            e.printStackTrace();
         }
         return output;
     }

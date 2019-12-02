@@ -14,6 +14,9 @@ public class LimitSwitchTest extends LinearOpMode {
 
         while(opModeIsActive()){
             telemetry.addData("liftReset", hwMap.liftReset.getState());
+            telemetry.addData("foundationDetectLeft", hwMap.foundationDetectLeft.getState());
+            telemetry.addData("foundationDetectRight", hwMap.foundationDetectRight.getState());
+            telemetry.update();
         }
     }
 }

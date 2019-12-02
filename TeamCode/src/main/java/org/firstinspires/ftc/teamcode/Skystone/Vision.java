@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Skystone;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.os.ConditionVariable;
 import android.os.SystemClock;
 import android.util.Log;
 
@@ -24,8 +25,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Vision {
     private final String VUFORIA_KEY = "AbSCRq//////AAAAGYEdTZut2U7TuZCfZGlOu7ZgOzsOlUVdiuQjgLBC9B3dNvrPE1x/REDktOALxt5jBEJJBAX4gM9ofcwMjCzaJKoZQBBlXXxrOscekzvrWkhqs/g+AtWJLkpCOOWKDLSixgH0bF7HByYv4h3fXECqRNGUUCHELf4Uoqea6tCtiGJvee+5K+5yqNfGduJBHcA1juE3kxGMdkqkbfSjfrNgWuolkjXR5z39tRChoOUN24HethAX8LiECiLhlKrJeC4BpdRCRazgJXGLvvI74Tmih9nhCz6zyVurHAHttlrXV17nYLyt6qQB1LtVEuSCkpfLJS8lZWS9ztfC1UEfrQ8m5zA6cYGQXjDMeRumdq9ugMkS";
@@ -55,8 +62,8 @@ public class Vision {
 
     public void initVision(){
         initVuforia();
-        initTfod();
-        tfod.activate();
+//        initTfod();
+//        tfod.activate();
     }
 
     public Location runDetection(){
@@ -206,47 +213,98 @@ public class Vision {
         }));
     }
 
-    public Location runDetection2(boolean deactivated) {
+    public Location runDetection3(final boolean deactiviated) throws  InterruptedException{
+        final ArrayList<Location> resultLocation = new ArrayList<>();
 
-        vuforia.getFrameOnce(Continuation.create(ThreadPool.getDefault(), new Consumer<Frame>()
-        {
+        final long startTime = SystemClock.elapsedRealtime();
 
-            @Override public void accept(Frame frame)
-            {
-                //x = width 1280
-                //y = height 720
+        final ExecutorService executorService = ThreadPool.getDefault();
 
-                Bitmap bitmap = vuforia.convertFrameToBitmap(frame);
-                double left;
-                double center;
-                double right;
 
-                int startX = 344;
-                int starty = 320;
-                int width = 217;
-                int height = 90;
-                int gap = 50;
-                if (bitmap != null) {
+        while(linearOpMode.opModeIsActive() && resultLocation.size() == 0 && SystemClock.elapsedRealtime()-startTime <= 2000) {
 
-                    left = calcAverageYellow(bitmap,startX,starty,width,height);
-                    center = calcAverageYellow(bitmap,startX+width+gap,starty,width,height);
-                    right = calcAverageYellow(bitmap,startX+width*2+gap*2,starty,width,height);
+            final ConditionVariable resultAvaliable = new ConditionVariable(false);
 
-                    Log.d("Vision","Left " + left + " Center: " + center + " Right: " + right);
+            vuforia.getFrameOnce(Continuation.create(executorService, new Consumer<Frame>() {
+                @Override
+                public void accept(Frame frame) {
 
-                    linearOpMode.sleep(1000);
+                    //x = width 1280
+                    //y = height 720
+
+                    LinkedList<BoxDetection> detections = new LinkedList<>();
+
+                    linearOpMode.telemetry.addLine(frame.toString());
+                    linearOpMode.telemetry.update();
+
+                    Bitmap bitmap = vuforia.convertFrameToBitmap(frame);
+
+                    BoxDetection left = new BoxDetection(Location.LEFT);
+                    BoxDetection center = new BoxDetection(Location.CENTER);
+                    BoxDetection right = new BoxDetection(Location.RIGHT);
+
+                    int startX = 344;
+                    int starty = 320;
+                    int width = 217;
+                    int height = 90;
+                    int gap = 50;
+
+                    if (bitmap != null) {
+                        left.averageRedGreen = calcAverageYellow(bitmap, startX, starty, width, height);
+                        center.averageRedGreen = calcAverageYellow(bitmap, startX + width + gap, starty, width, height);
+                        right.averageRedGreen = calcAverageYellow(bitmap, startX + width * 2 + gap * 2, starty, width, height);
+                        Log.d("Vision", "Left " + left.averageRedGreen + " Center: " + center.averageRedGreen + " Right: " + right.averageRedGreen);
+
+                        detections.add(left);
+                        detections.add(center);
+                        detections.add(right);
+
+                        Collections.sort(detections, new Comparator<BoxDetection>() {
+                            @Override
+                            public int compare(BoxDetection boxDetection, BoxDetection t1) {
+                                if (boxDetection.averageRedGreen > t1.averageRedGreen) {
+                                    return 1;
+                                } else if (boxDetection.averageRedGreen < t1.averageRedGreen) {
+                                    return -1;
+                                } else {
+                                    return 0;
+                                }
+                            }
+                        });
+
+                        Location location = detections.get(0).location;
+                        resultLocation.add(location);
+                    }
+
+                    resultAvaliable.open();
                 }
+            }));
+
+            resultAvaliable.block();
+        }
+
+        Log.d("Vision", "Size " + resultLocation.size());
+
+        if(resultLocation.size() > 0){
+            if(resultLocation.get(0) == Location.LEFT){
+                resultLocation.set(0,Location.RIGHT);
+            }else if(resultLocation.get(0) == Location.RIGHT){
+                resultLocation.set(0,Location.LEFT);
             }
+            Log.d("Vision", "RESULT " + resultLocation.get(0).toString());
+            return resultLocation.get(0);
+        }
 
+        return Location.UNKNOWN;
+    }
 
-        }));
-
+    public Location runDetection2(final boolean deactivated) throws InterruptedException{
+        long startTime = SystemClock.elapsedRealtime();
         if(true){
             return Location.CENTER;
         }
 
         ArrayList<DetectionResult> detectionResults = new ArrayList<>();
-        long startTime = SystemClock.elapsedRealtime();
 
         int numOfSkystonesFound = 0;
 
@@ -348,23 +406,34 @@ public class Vision {
 
         this.vuforia = ClassFactory.getInstance().createVuforia(parameters);
 
+        vuforia.enableConvertFrameToBitmap();
+
         //  Instantiate the Vuforia engine
 
         // Loading trackables is not necessary for the TensorFlow Object Detection engine.
     }
 
     private void initTfod() {
-        final String TFOD_MODEL_ASSET = "Skystone.tflite";
-        final String LABEL_FIRST_ELEMENT = "Stone";
-        final String LABEL_SECOND_ELEMENT = "Skystone";
-        int tfodMonitorViewId = linearOpMode.hardwareMap.appContext.getResources().getIdentifier(
-                "tfodMonitorViewId", "id", linearOpMode.hardwareMap.appContext.getPackageName());
-        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minimumConfidence = minConfidenceLevel;
+//        final String TFOD_MODEL_ASSET = "Skystone.tflite";
+//        final String LABEL_FIRST_ELEMENT = "Stone";
+//        final String LABEL_SECOND_ELEMENT = "Skystone";
+//        int tfodMonitorViewId = linearOpMode.hardwareMap.appContext.getResources().getIdentifier(
+//                "tfodMonitorViewId", "id", linearOpMode.hardwareMap.appContext.getPackageName());
+        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters();
+//        tfodParameters.minimumConfidence = minConfidenceLevel;
 
-        this.tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
-        this.tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
+//        this.tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+//        this.tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
     }
 
+}
+
+class BoxDetection{
+    double averageRedGreen;
+    Vision.Location location;
+
+    public BoxDetection(Vision.Location location){
+        this.location = location;
+    }
 }
 

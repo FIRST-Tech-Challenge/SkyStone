@@ -160,7 +160,7 @@ public class MainTeleop extends LinearOpMode {
                 foundationLogic();
             }
 
-            robot.getIntakePusher().setPosition(robot.PUSHER_PUSHED-0.15);
+            robot.getIntakePusher().setPosition(robot.PUSHER_PUSHED-0.12);
 
             robot.getOuttakeSpool().setPower(1);
 

@@ -26,10 +26,17 @@ public class BlueFront extends AutoBase{
         // Positions assuming center Skystone
         int firstSkystoneY = 2;
         int secondSkyStoneY = 20;
-        int secondSkyStoneX = 65;
+        int secondSkyStoneX = 67;
 
-        Vision.Location skystoneLocation = vision.runDetection();
+        Vision.Location skystoneLocation = Vision.Location.UNKNOWN;
 
+        try {
+            skystoneLocation = vision.runDetection3(true);
+        }catch (Exception e){
+
+        }
+        telemetry.addLine("Detection Result: " + skystoneLocation.toString());
+        telemetry.update();
         sleep(250);
 
         position2D.startOdometry();
@@ -106,7 +113,9 @@ public class BlueFront extends AutoBase{
         double[][] toParkAfterThirdStone = {
                 {30,20,10,0},
                 {40,-30,10,0}};
-        HashMap<Point,Robot.Actions> toParkAfterThirdStoneActions = new HashMap<Point,Robot.Actions>();
+        HashMap<Point,Robot.Actions> toParkAfterThirdStoneActions = new HashMap<Point,Robot.Actions>() {{
+            put(new Point(10,40), Robot.Actions.STOP_INTAKE);
+        }};
 
         double[][] toDepositThirdStone = {
                 {55,20,-30,0},

@@ -22,7 +22,7 @@ public class PIDTuningOpMode extends OpMode {
         servo = hardwareMap.servo.get("servo");
         encoder = 0;
     }
-    
+
     public void loop() {
         robot.mecanumDrive(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
         robot.intake(gamepad2.left_trigger, gamepad2.right_trigger);

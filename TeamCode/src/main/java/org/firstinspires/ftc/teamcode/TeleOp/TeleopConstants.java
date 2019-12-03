@@ -18,7 +18,7 @@ public class TeleopConstants {
     public static double odometerLockPosDown = 0.17134;
 
     public static double transferLockPosPlatform = 0.732;
-    public static double transferLockPosUp = 0.0386;
+    public static double transferLockPosUp = 0.386;
     public static double transferLockPosOut = 0;
 
     public static double foundationLockUnlock = 0;
@@ -28,17 +28,18 @@ public class TeleopConstants {
     public static double plateLifterPosDown = 0.763;
 
     public static double transferHornPosReady = 0.5862;
-    public static double transferHornPosPush = 0.0176;
+    public static double transferHornPosPush = 0;
 
-    public static double clawInitPosPush = 0.25;
     public static double clawInitPosReset = 0.808;
     public static double clawInitPosCapstone = 0.02463;
 
     public static double innerTransferPosTucked = 0;
-    public static double innerTransferPosExtended = 0.479;
-    public static double innerTransferPosBlock = 0;     //@TODO Get servo position innerTransfer "block" position
+    public static double innerTransferPosExtended = 0.57411;
+    public static double innerTransferPosBlock = 0.2333;     //@TODO Get servo position innerTransfer "block" position
 
     public static double intakeInitPosLeft = 0;     //@TODO Get intakeInit servo positions
     public static double intakeInitPosRight = 0;
     public static double intakeInitPosReset = 0;
+
+    public static int[] stoneEncoderValues = new int[] {0, -681, -1120, -1428, -1806};
 }

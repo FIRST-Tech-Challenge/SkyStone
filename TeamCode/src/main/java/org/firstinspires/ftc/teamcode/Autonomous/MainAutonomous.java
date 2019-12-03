@@ -60,6 +60,8 @@ public class MainAutonomous extends LinearOpMode {
         drivetrain.setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
         hwMap.liftOne.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         hwMap.liftOne.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        hwMap.liftTwo.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        hwMap.liftOne.setDirection(DcMotorSimple.Direction.REVERSE);
         hwMap.frontRight.setDirection(DcMotorSimple.Direction.REVERSE); //???
         hwMap.backRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -126,6 +128,8 @@ public class MainAutonomous extends LinearOpMode {
             }
             telemetry.update();
         }
+
+        drivetrain.resetEncoders();
 
         while (!isStarted() && (fieldPosition == FieldPosition.BLUE_QUARY || fieldPosition == FieldPosition.RED_QUARY) &&
                 !isStopRequested()) {

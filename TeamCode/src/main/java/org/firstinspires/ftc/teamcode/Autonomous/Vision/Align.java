@@ -11,6 +11,8 @@ import org.firstinspires.ftc.teamcode.TeleOp.TeleopConstants;
 import org.firstinspires.ftc.teamcode.Tensorflow.TFODCalc;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.xml.transform.sax.TemplatesHandler;
@@ -35,32 +37,30 @@ public class Align {
         hwMap.backLeft.setZeroPowerBehavior(zeroPower);
     }
 
-    public void setPower(double approachingPower, double turnPower){
+    public void setPower(double approachingPower, double turnPower) {
         this.approachingPower = approachingPower;
         this.turnPower = turnPower;
     }
 
-    public void foundation(FieldPosition f){
+    public void foundation(FieldPosition f) {
         boolean correctRotation = false;
 
-        while(!opMode.isStopRequested() && opMode.opModeIsActive()) {
-            externalHeading = Math.toDegrees(externalHeading);
-
+        while (!opMode.isStopRequested() && opMode.opModeIsActive()) {
             if ((f == FieldPosition.RED_QUARY || f == FieldPosition.RED_FOUNDATION) && !correctRotation) {
-                if (externalHeading >= 282 || externalHeading < 90) {
+                if (externalHeading >= 285 || externalHeading < 90) {
                     setRightPower(-turnPower);
                     setLeftPower(turnPower);
-                } else if (externalHeading <= 278 && externalHeading >= 90) {
+                } else if (externalHeading <= 275 && externalHeading >= 90) {
                     setRightPower(turnPower);
                     setLeftPower(-turnPower);
                 }
                 opMode.telemetry.addData("Target Heading", 270 + "°");
                 opMode.telemetry.addData("Current Heading", externalHeading);
             } else if ((f == FieldPosition.BLUE_QUARY || f == FieldPosition.BLUE_FOUNDATION) && !correctRotation) {
-                if (externalHeading <= 98 || externalHeading >= 270) {
+                if (externalHeading <= 95 || externalHeading >= 270) {
                     setRightPower(turnPower);
                     setLeftPower(-turnPower);
-                } else if (externalHeading >= 102 && externalHeading < 270) {
+                } else if (externalHeading >= 105 && externalHeading < 270) {
                     setRightPower(-turnPower);
                     setLeftPower(turnPower);
                 }
@@ -68,7 +68,7 @@ public class Align {
                 opMode.telemetry.addData("Current Heading", externalHeading);
             }
 
-            if ((externalHeading > 98 && externalHeading < 102) || (externalHeading < 282 && externalHeading > 278) &&
+            if ((externalHeading > 95 && externalHeading < 105) || (externalHeading < 285 && externalHeading > 275) &&
                     !correctRotation) {
                 stop();
                 correctRotation = true;
@@ -76,13 +76,13 @@ public class Align {
                 opMode.telemetry.addData("Current Heading", externalHeading);
             }
 
-            if(correctRotation && hwMap.foundationDetectLeft.getState() && hwMap.foundationDetectRight.getState()){
+            if (correctRotation && hwMap.foundationDetectLeft.getState() && hwMap.foundationDetectRight.getState()) {
                 setPower(-approachingPower);
                 opMode.telemetry.addData("Target Heading", "AT TARGET (±3°)");
                 opMode.telemetry.addData("Current Heading", externalHeading);
                 opMode.telemetry.addData("LimitSwitchLeft", !hwMap.foundationDetectLeft.getState());
                 opMode.telemetry.addData("LimitSwitchRight", !hwMap.foundationDetectRight.getState());
-            } else if(correctRotation && !hwMap.foundationDetectLeft.getState() && !hwMap.foundationDetectRight.getState()){
+            } else if (correctRotation && !hwMap.foundationDetectLeft.getState() && !hwMap.foundationDetectRight.getState()) {
                 hwMap.transferLock.setPosition(TeleopConstants.transferLockPosUp);
                 hwMap.foundationLock.setPosition(TeleopConstants.foundationLockLock);
                 opMode.telemetry.addData("Target Heading", "AT TARGET (±3°)");
@@ -92,15 +92,18 @@ public class Align {
                 opMode.telemetry.update();
                 stop();
                 break;
-            } else if(correctRotation && (!hwMap.foundationDetectLeft.getState() || !hwMap.foundationDetectRight.getState())){
-                if(!hwMap.foundationDetectLeft.getState()){
+            } else if (correctRotation && (!hwMap.foundationDetectLeft.getState() || !hwMap.foundationDetectRight.getState())) {
+                if (!hwMap.foundationDetectLeft.getState()) {
                     hwMap.foundationLock.setPosition(TeleopConstants.foundationLockLock);
                     opMode.telemetry.addData("Target Heading", "AT TARGET (±3°)");
                     opMode.telemetry.addData("Current Heading", externalHeading);
                     opMode.telemetry.addData("LimitSwitchLeft", "Already Pressed");
-                    try { Thread.sleep(300); } catch (Exception e){}
+                    try {
+                        Thread.sleep(300);
+                    } catch (Exception e) {
+                    }
 
-                    while(hwMap.foundationDetectRight.getState()){
+                    while (hwMap.foundationDetectRight.getState()) {
                         setLeftPower(-turnPower);
                         setRightPower(turnPower);
                     }
@@ -108,14 +111,17 @@ public class Align {
                     hwMap.transferLock.setPosition(TeleopConstants.transferLockPosUp);
                     stop();
                     break;
-                } else if(!hwMap.foundationDetectRight.getState()){
+                } else if (!hwMap.foundationDetectRight.getState()) {
                     hwMap.transferLock.setPosition(TeleopConstants.transferLockPosUp);
                     opMode.telemetry.addData("Target Heading", "AT TARGET (±3°)");
                     opMode.telemetry.addData("Current Heading", externalHeading);
                     opMode.telemetry.addData("LimitSwitchRight", "Already Pressed");
-                    try { Thread.sleep(300); } catch (Exception e){}
+                    try {
+                        Thread.sleep(300);
+                    } catch (Exception e) {
+                    }
 
-                    while(hwMap.foundationDetectRight.getState()){
+                    while (hwMap.foundationDetectLeft.getState()) {
                         setLeftPower(turnPower);
                         setRightPower(-turnPower);
                     }
@@ -131,103 +137,124 @@ public class Align {
 
     }
 
-    public void skystone() {
-        double horizontalMid;
-        double distanceAway;
+    public void skystoneRed(int position) {
+        double distanceAway = -1;
         double theta = -1;
         double initLeft = getOdometry()[0];
         double initRight = getOdometry()[1];
         double initSide = getOdometry()[2];
         boolean isAligned = false;
-        boolean collected = false;
-        int imgWidth;
-        atOriginalPos = false;
+        int imgWidth = -1;
 
-        while (detectedObj != null && !atOriginalPos) {
+        switch (position) {
+            case 4:
+                position = 2;
+                break;
+            case 5:
+                position = 1;
+                break;
+            case 6:
+                position = 0;
+                break;
+        }
+
+        while (!isAligned && !opMode.isStopRequested()) {
+            List<Recognition> detectedObj = this.detectedObj;
             // step through the list of recognitions and display boundary info.
-            for (Recognition recognition : detectedObj) {
-                if (recognition.getLabel().equalsIgnoreCase("skystone")) {
-                    horizontalMid = getMiddleXY(recognition)[0];
+            if (!opMode.isStopRequested() && detectedObj != null) {
+                double[] center = new double[detectedObj.size()];
+                ArrayList<Double> temp = new ArrayList<>();
+                for (int i = 0; i < detectedObj.size(); i++) {
+                    center[i] = detectedObj.get(i).getLeft() + detectedObj.get(i).getWidth() / 2;
+                    temp.add((double) detectedObj.get(i).getLeft());
                     distanceAway = TFODCalc.getDistanceToObj(127,
-                            recognition.getImageHeight(), recognition.getHeight());
-                    theta = TFODCalc.getAngleOfStone(recognition.getWidth(), distanceAway).get(0);
-                    imgWidth = recognition.getImageWidth();
+                            detectedObj.get(i).getImageHeight(), detectedObj.get(i).getHeight());
+                   // theta = TFODCalc.getAngleOfStone(detectedObj.get(i).getWidth(), distanceAway).get(0);
+                    imgWidth = detectedObj.get(i).getImageWidth();
+                }
 
-                    if (!isAligned && !opMode.isStopRequested()) {
-                        if (horizontalMid >= imgWidth / 2d - 75 && horizontalMid <= imgWidth / 2d + 75) {
-                            setPower(approachingPower);
-                        } else if (horizontalMid <= imgWidth / 2d - 75) {
-                            stop();
-                            setRightPower(turnPower);
-                        } else if (horizontalMid >= imgWidth / 2d + 75) {
-                            stop();
-                            setLeftPower(turnPower);
-                        }
+                if(detectedObj.size() != 0) {
+                    Collections.sort(temp);
 
-                        //if(distanceAway < 12 && theta > 35)
-                        //    setPower(-approachingPower);
-
-                        if (distanceAway < 15) {
-                            stop();
-                            isAligned = true;
-                        }
+                    int index = -1;
+                    for (int i = 0; i < center.length; i++) {
+                        if (center[i] == temp.get(position))
+                            index = i;
                     }
 
-                    intake(TeleopConstants.intakePower);
-
-                    double left = getOdometry()[0];
-                    double right = getOdometry()[1];
-
-                    if (!collected && isAligned && !opMode.isStopRequested()) {
-                        double averageDelta = (getOdometry()[0] - left) + (getOdometry()[1] - right) / 2;
-                        double inchesMoved = averageDelta / 1400d * 2 * PI * 2;
-                        //collected = intook();
-
-                        if (inchesMoved > 15 /*|| collected*/) {
-                            intake(0);
-                            stop();
-                            collected = true;
-                        }
-                    }
-
-                    if (!atOriginalPos && collected && !opMode.isStopRequested()) {
-                        double deltaL = getOdometry()[0] - initLeft;
-                        double deltaR = getOdometry()[1] - initRight;
-
-                        if (deltaL > 250)
-                            setLeftPower(-approachingPower);
-                        else if (deltaL < -250)
-                            setLeftPower(approachingPower);
-
-                        if (deltaR > 250)
-                            setRightPower(-approachingPower);
-                        else if (deltaR < -250)
-                            setRightPower(approachingPower);
-
-                        double deltaS = getOdometry()[2] - initSide;
-
-                        if (deltaL <= 250 && deltaL >= -250 && deltaR <= 250 && deltaR >= -250) {
-                            if (deltaS > 250)
-                                strafe(approachingPower, true);
-                            else if(deltaS < -250)
-                                strafe(approachingPower, false);
-
-                            if(deltaS <= 250 && deltaS >= -250) {
-                                stop();
-                                atOriginalPos = true;
-                            }
-                        }
+                    if (center[index] >= imgWidth / 2d - 15 && center[index] <= imgWidth / 2d + 25) {
+                        stop();
+                        isAligned = true;
+                    } else if (center[index] <= imgWidth / 2d - 15) {
+                        setRightPower(turnPower);
+                        setLeftPower(-turnPower);
+                    } else if (center[index] >= imgWidth / 2d + 15) {
+                        setRightPower(-turnPower);
+                        setLeftPower(turnPower);
                     }
                 }
+
+                //if(distanceAway < 12 && theta > 35)
+                //    setPower(-approachingPower);
+
+                /*if (distanceAway < 15) {
+                    stop();
+                    isAligned = true;
+                }*/
             }
+
+           /* intake(TeleopConstants.intakePower);
+
+            double left = getOdometry()[0];
+            double right = getOdometry()[1];
+
+            if (!collected && isAligned && !opMode.isStopRequested()) {
+                double averageDelta = (getOdometry()[0] - left) + (getOdometry()[1] - right) / 2;
+                double inchesMoved = averageDelta / 1400d * 2 * PI * 2;
+
+                if (inchesMoved > 15 ) {
+                    intake(0);
+                    stop();
+                    collected = true;
+                }
+            }
+
+            if (!atOriginalPos && collected && !opMode.isStopRequested()) {
+                double deltaL = getOdometry()[0] - initLeft;
+                double deltaR = getOdometry()[1] - initRight;
+
+                if (deltaL > 250)
+                    setLeftPower(-approachingPower);
+                else if (deltaL < -250)
+                    setLeftPower(approachingPower);
+
+                if (deltaR > 250)
+                    setRightPower(-approachingPower);
+                else if (deltaR < -250)
+                    setRightPower(approachingPower);
+
+                double deltaS = getOdometry()[2] - initSide;
+
+                if (deltaL <= 250 && deltaL >= -250 && deltaR <= 250 && deltaR >= -250) {
+                    if (deltaS > 250)
+                        strafe(approachingPower, true);
+                    else if (deltaS < -250)
+                        strafe(approachingPower, false);
+
+                    if (deltaS <= 250 && deltaS >= -250) {
+                        stop();
+                        atOriginalPos = true;
+                    }
+                }
+            }*/
         }
     }
 
-    public void updateTFOD(List<Recognition> detectedObj){
+    public void updateTFOD(List<Recognition> detectedObj) {
         this.detectedObj = detectedObj;
     }
 
-    public void updateExternalHeading(double externalHeading){
+    public void updateExternalHeading(double externalHeading) {
         this.externalHeading = externalHeading;
     }
 
@@ -244,7 +271,7 @@ public class Align {
         hwMap.backLeft.setPower(power);
     }
 
-    private void stop(){
+    private void stop() {
         hwMap.frontRight.setPower(0);
         hwMap.frontLeft.setPower(0);
         hwMap.backRight.setPower(0);
@@ -271,8 +298,8 @@ public class Align {
         hwMap.rightIntake.setPower(power);
     }
 
-    private void strafe(double power, boolean right){
-        if(!right)
+    private void strafe(double power, boolean right) {
+        if (!right)
             power = -power;
 
         hwMap.frontRight.setPower(-power);

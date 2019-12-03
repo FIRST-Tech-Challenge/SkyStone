@@ -5,6 +5,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import  com.qualcomm.robotcore.hardware.Servo;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 import java.util.EnumMap;
 
 /*
@@ -27,8 +30,8 @@ public class ArmSystem {
     private final double WRIST_HOME = 0;
     private final double ELBOW_HOME = 0;
     private final double PIVOT_HOME = 0;
-    private final double GRIPPER_OPEN = 0.5;
-    private final double GRIPPER_CLOSE = 0.03;
+    private final double GRIPPER_OPEN = 0.7;
+    private final double GRIPPER_CLOSE = 0.3;
     private int origin;
 
     // This is in block positions, not ticks
@@ -58,8 +61,8 @@ public class ArmSystem {
 
     private Direction direction;
 
-    // Don't change this unless in calibrate(), is read in the calculateHeight method
-    private int calibrationDistance = 0;
+    // Don't change this unless in calibrate() or init(), is read in the calculateHeight method
+    private int calibrationDistance;
 
     // This can actually be more, like 5000, but we're not going to stack that high
     // for the first comp and the servo wires aren't long enough yet
@@ -124,6 +127,8 @@ public class ArmSystem {
         this.limitSwitch = limitSwitch;
         if (calibrate) {
             calibrate();
+        } else {
+            this.calibrationDistance = slider.getCurrentPosition();
         }
         this.direction = Direction.UP;
         this.slider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -133,7 +138,7 @@ public class ArmSystem {
         // for example if we want to turn on / off fastmode, that can be done easily.
         // Double values ordered Pivot, elbow, wrist.
         this.positionEnumMap = new EnumMap<Position, double[]>(Position.class);
-        positionEnumMap.put(Position.POSITION_NORTH, new double[] {0.99, 0.22, 0.05});
+        positionEnumMap.put(Position.POSITION_NORTH, new double[] {0.99, 0.58, 0.05});
         positionEnumMap.put(Position.POSITION_EAST, new double[] {0.99, 0.22, 0.37});
         positionEnumMap.put(Position.POSITION_WEST, new double[] {0.99, 0.22, 0.72});
         positionEnumMap.put(Position.POSITION_SOUTH, new double[] {0.99, 0.22, 0.37});
@@ -151,7 +156,7 @@ public class ArmSystem {
         It's a string so we can debug to telemetry, and use queuing if we implement it.
      */
     private boolean m_gripper, m_up, m_down = false;
-    public String run(boolean home, boolean west, boolean east, boolean north, boolean south,
+    public String run(boolean home, boolean capstone, boolean west, boolean east, boolean north, boolean south,
                       boolean up, boolean down, boolean gripperButton, boolean assist,
                       double sliderSpeed, double armSpeed, boolean fastMode) {
 
@@ -165,13 +170,17 @@ public class ArmSystem {
         this.SERVO_SPEED = armSpeed;
 
         if (west) {
-            movePresetPosition(Position.POSITION_WEST, false);
+            toReturn += "Moving west!";
+            movePresetPosition(Position.POSITION_WEST);
         } else if (east) {
-            movePresetPosition(Position.POSITION_EAST, false);
+            movePresetPosition(Position.POSITION_EAST);
+            toReturn += "Moving east!";
         } else if (south) {
-            movePresetPosition(Position.POSITION_SOUTH, false);
+            movePresetPosition(Position.POSITION_SOUTH);
         } else if (north) {
-            movePresetPosition(Position.POSITION_NORTH, false);
+            movePresetPosition(Position.POSITION_NORTH);
+        }  else if (capstone) {
+            movePresetPosition(Position.POSITION_CAPSTONE);
         } else if (home) {
             homing = true;
         }
@@ -263,7 +272,7 @@ public class ArmSystem {
             if (getSliderPos() == calculateHeight(1)) {
                 // We know we can set fastmode to true here because we always want it to go fast
                 // to the home position
-                movePresetPosition(Position.POSITION_HOME, true);
+                movePresetPosition(Position.POSITION_HOME);
                 openGripper();
                 m_homeDirection = Direction.DOWN;
             }
@@ -300,9 +309,9 @@ public class ArmSystem {
         }
     }
 
-    private void movePresetPosition(Position pos, boolean fastmode) {
+    private void movePresetPosition(Position pos) {
         double[] posArray = positionEnumMap.get(pos);
-        if (fastmode) {
+        if (fastMode) {
             pivot.setPosition(posArray[0]);
             elbow.setPosition(posArray[1]);
             wrist.setPosition(posArray[2]);

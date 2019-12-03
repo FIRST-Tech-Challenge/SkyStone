@@ -68,7 +68,7 @@ public class FoundationGrabber extends Subsystem {
     }
 
     public void update(){
-        if(currentPosition.equals(Positions.UP_LEFT)){
+        if(currentPosition.equals(Positions.UP_LEFT) || currentPosition.equals(Positions.UP_RIGHT)){
             rightServo.setPosition(Positions.UP_RIGHT.getPosition());
             leftServo.setPosition(Positions.UP_LEFT.getPosition());
         } else {

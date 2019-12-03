@@ -6,7 +6,10 @@ package org.firstinspires.ftc.robotlib.state;
 public enum ServoState {
     UNKNOWN(-1, -1),
     STOWED(0, 0),
-    DOWN(1, 1);
+    BLOCK3(1, 0),
+    BLOCK2(2, 0),
+    BLOCK1(3, 0),
+    DOWN(4, 1);
 
     private int id;
     private int position;

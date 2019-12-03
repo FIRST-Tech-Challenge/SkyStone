@@ -5,49 +5,42 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 @Autonomous(name="Auto: AutoFullRedTof", group ="Auto")
 public class OmniAutoFullRedTof extends OmniAutoFullToF {
     @Override
-    public void setFirstSkystoneValues(int position) {
+    public void setSkystoneValues(int position) {
         robot.stackFromSide = HardwareOmnibot.RobotSide.LEFT;
         baseAngle = 0.0;
         switch(position) {
             case 1:
-                attackAngle = 40.0;
-                sideDistance = 50.3;
-                flyTime = 1300;
-                flyBackTime = 1200;
+			    // For first Skystone
+                attackAngle1 = 40.0;
+                sideDistance1 = 50.3;
+                flyTime1 = 1300;
+                flyBackTime1 = 1200;
+				// For second Skystone
+				attackAngle2 = 40.0;
+				sideDistance2 = 101.3;
+				flyTime2 = 1300;
                 break;
             case 2:
-                attackAngle = 40.0;
-                sideDistance = 70.6;
-                flyTime = 1400;
+			    // For first Skystone
+                attackAngle1 = 40.0;
+                sideDistance1 = 70.6;
+                flyTime1 = 1400;
+                flyBackTime1 = 1200;
+				// For second Skystone
+				attackAngle2 = -40.0;
+				sideDistance2 = 51.3;
+				flyTime2 = 1500;
                 break;
             case 3:
-                attackAngle = 40.0;
-                sideDistance = 91.0;
-                flyTime = 1500;
-                break;
-        }
-    }
-
-    @Override
-    public void setSecondSkystoneValues(int position) {
-        // Stone 1 come from bridge side and go away.
-        // Stone 2 and 3, come from the away and go to bridge.
-        // This is due to range sensor limits.
-        switch(position) {
-            case 1:
-                attackAngle = 45.0;
-                sideDistance = 101.3;
-                flyTime = 1300;
-                break;
-            case 2:
-                attackAngle = -45.0;
-                sideDistance = 51.3;
-                flyTime = 1500;
-                break;
-            case 3:
-                attackAngle = -45.0;
-                sideDistance = 71.6;
-                flyTime = 1600;
+			    // For first Skystone
+                attackAngle1 = 40.0;
+                sideDistance1 = 91.0;
+                flyTime1 = 1500;
+                flyBackTime1 = 1200;
+				// For second Skystone
+				attackAngle2 = -40.0;
+				sideDistance2 = 71.6;
+				flyTime2 = 1400;
                 break;
         }
     }

@@ -29,6 +29,20 @@ public abstract class OmniAutoClass extends LinearOpMode {
 
     public static final float MM_PER_INCH = 25.4f;
 
+    // This function is called during loops to progress started activities
+    public void performRobotActivities() {
+        robot.performLifting();
+        robot.performReleasing();
+        robot.performStowing();
+        robot.performEjecting();
+        robot.performAligning();
+        robot.performCapstone();
+        robot.performGrabbing();
+        robot.performAcceleration();
+        robot.performDeceleration();
+        robot.performFoundation();
+	}
+
     /**
      * @param newWheelSize  - The size of the wheels, used to calculate encoder clicks per inch
      * @param newMotorRatio - The motor gearbox ratio, used to calculate encoder clicks per inch
@@ -111,11 +125,14 @@ public abstract class OmniAutoClass extends LinearOpMode {
      * @param driveAngle   - The angle of movement to drive the robot
      * @param headingAngle - The heading angle to hold while driving
      */
-    public void driveAtHeadingForTime(double speed, double rotateSpeed, double driveAngle, double headingAngle, int driveTime, boolean stopWhenDone) {
+    public void driveAtHeadingForTime(double speed, double rotateSpeed, double driveAngle, double headingAngle, int driveTime, boolean stopWhenDone, boolean progressActivities) {
         double endTime = timer.milliseconds() + driveTime;
         while (!isStopRequested() && (timer.milliseconds() <= endTime) && (!isStopRequested())) {
-            driveAtHeading(speed, rotateSpeed, driveAngle, headingAngle);
             robot.resetReads();
+            driveAtHeading(speed, rotateSpeed, driveAngle, headingAngle);
+			if(progressActivities) {
+				performRobotActivities();
+			}
         }
         if(stopWhenDone) {
             robot.setAllDriveZero();
@@ -224,30 +241,29 @@ public abstract class OmniAutoClass extends LinearOpMode {
      * @param targetAngle - The 0-360 degree angle to rotate the robot to
      * @param maxTime     - The time to allow before quiting
      */
-    public void rotateRobotToAngle(double speed, double targetAngle, int maxTime) {
+    public void rotateRobotToAngle(double speed, double targetAngle, int maxTime, boolean progressActivities) {
         double endTime = timer.milliseconds() + maxTime;
-        double gyroReading = robot.readIMU();
+        double gyroReading;
         double angleRemaining = 0.0;
         final double SAME_ANGLE = 1.0;
         double rotateSpeed = 0.0;
 
+        robot.resetReads();
+		gyroReading = robot.readIMU();
         angleRemaining = deltaAngle(targetAngle, gyroReading);
         while ((Math.abs(angleRemaining) > SAME_ANGLE && (timer.milliseconds() < endTime) && (!isStopRequested()))) {
-            telemetry.addData("Current Angle: ", gyroReading);
-            telemetry.addData("Destination Angle: ", targetAngle);
-            telemetry.addData("Delta Angle: ", angleRemaining);
-
             rotateSpeed = controlledRotationAngle(angleRemaining, speed);
             if (angleRemaining > 0.0) {
                 // Positive angle, need to rotate right
                 rotateSpeed = -rotateSpeed;
             }
-            telemetry.addData("Rotate Speed: ", rotateSpeed);
             robot.drive(0.0, 0.0, rotateSpeed, 0.0, false);
-            updateTelemetry(telemetry);
 
             gyroReading = robot.readIMU();
             angleRemaining = deltaAngle(targetAngle, gyroReading);
+			if(progressActivities) {
+    			robot.progressActivities();
+			}
             robot.resetReads();
         }
 
@@ -370,7 +386,7 @@ public abstract class OmniAutoClass extends LinearOpMode {
      *                     will slow down as approaching distance.
 	 * @param error      - The allowable error from desired target distance.
 	 */
-	public boolean distanceFromWall(HardwareOmnibot.RobotSide side, double distance, double driveSpeed, double error, int maxTime) {
+	public boolean distanceFromWall(HardwareOmnibot.RobotSide side, double distance, double driveSpeed, double error, int maxTime, boolean progressActivities) {
 		double endTime = timer.milliseconds() + maxTime;
 		boolean foundDistance;
 		double testDistance = 0;
@@ -380,6 +396,9 @@ public abstract class OmniAutoClass extends LinearOpMode {
 		while(timer.milliseconds() < endTime && !foundDistance && (!isStopRequested())) {
 			robot.resetReads();
 			foundDistance = robot.distanceFromWall(side, distance, driveSpeed, error);
+			if(progressActivities) {
+    			performRobotActivities();
+			}
 		}
 
 		return foundDistance;
@@ -395,7 +414,7 @@ public abstract class OmniAutoClass extends LinearOpMode {
 	 * @param spinSpeed         - The maximum speed to rotate the robot.
 	 * @param error             - The allowable error from desired target distance.
 	 */
-	public boolean parallelRearTarget(double backLeftDistance, double backRightDistance, double driveSpeed, double spinSpeed, double error, int maxTime) {
+	public boolean parallelRearTarget(double backLeftDistance, double backRightDistance, double driveSpeed, double spinSpeed, double error, int maxTime, boolean progressActivities) {
 		double endTime = timer.milliseconds() + maxTime;
 		boolean foundDistance;
 		// Allow the robot to read new values from the ToF sensors.
@@ -404,6 +423,9 @@ public abstract class OmniAutoClass extends LinearOpMode {
 		while(timer.milliseconds() < endTime && !foundDistance && (!isStopRequested())) {
 			robot.resetReads();
             foundDistance = robot.parallelRearTarget(backLeftDistance, backRightDistance, driveSpeed, spinSpeed, error);
+			if(progressActivities) {
+				performRobotActivities();
+			}
 		}
 
 		return foundDistance;
@@ -414,20 +436,24 @@ public abstract class OmniAutoClass extends LinearOpMode {
 	    boolean grabbedFoundation = false;
 	    robot.resetReads();
 	    robot.startGrabbing();
-        robot.performGrabbing();
+        performRobotActivities();
 	    while(timer.milliseconds() < endTime && robot.grabState != HardwareOmnibot.GrabFoundationActivity.IDLE && (!isStopRequested())) {
             robot.resetReads();
-            robot.performGrabbing();
+            performRobotActivities();
         }
     }
 
     public void moveFingers(boolean moveUp) {
+	    double endTime = timer.milliseconds() + 500;
 		if(moveUp) {
 			robot.fingersUp();
 		} else {
 			robot.fingersDown();
 		}
-		sleep(500);
+	    while(timer.milliseconds() < endTime && (!isStopRequested())) {
+			robot.resetReads();
+			performRobotActivities();
+		}
 	}
 
     public void endAuto() {

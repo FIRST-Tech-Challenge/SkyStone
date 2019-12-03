@@ -20,12 +20,28 @@ public class OmniTeleTest extends OmniAutoClass {
 
     public HardwareOmnibot robot = new HardwareOmnibot();
 
+	protected float cleanMotionValues(float number) {
+		// apply deadzone
+		if (number < joystickDeadzone && number > -joystickDeadzone) return 0.0f;
+		// apply trim
+		if (number >  MAX_MOTION_RANGE) return  MAX_MOTION_RANGE;
+		if (number < -MAX_MOTION_RANGE) return -MAX_MOTION_RANGE;
+		// scale values "between deadzone and trim" to be "between Min range and Max range"
+		if (number > 0)
+			number = (float)Range.scale(number, joystickDeadzone, MAX_MOTION_RANGE, MIN_MOTION_RANGE, MAX_MOTION_RANGE);
+		else
+			number = (float)Range.scale(number, -joystickDeadzone, -MAX_MOTION_RANGE, -MIN_MOTION_RANGE, -MAX_MOTION_RANGE);
+		
+		return number;
+	}
+
 //    @Override
     public void initRobot() {
         telemetry.addLine("Calling robot.init");
         updateTelemetry(telemetry);
-        gamepad1.setJoystickDeadzone((float)robot.MIN_DRIVE_RATE);
-        gamepad2.setJoystickDeadzone((float)robot.MIN_DRIVE_RATE);
+		// Turn off the SDK deadzone so we can do it ourselves
+        gamepad1.setJoystickDeadzone(0.0f);
+        gamepad2.setJoystickDeadzone(0.0f);
         robot.init(hardwareMap);
         robot.setInputShaping(true);
         telemetry.addLine("Ready");
@@ -33,10 +49,6 @@ public class OmniTeleTest extends OmniAutoClass {
         robot.lifter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.extender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
-
-
-
-
 
     private double driverAngle = 0.0;
     private final double MAX_SPEED = 1.0;
@@ -115,9 +127,9 @@ public class OmniTeleTest extends OmniAutoClass {
             //right joystick is for rotation
             gyroAngle = robot.readIMU();
 
-            yPower = -gamepad1.left_stick_y;
-            xPower = gamepad1.left_stick_x;
-            spin = gamepad1.right_stick_x;
+            yPower = -cleanMotionValues(gamepad1.left_stick_y);
+            xPower = cleanMotionValues(gamepad1.left_stick_x);
+            spin = cleanMotionValues(gamepad1.right_stick_x);
             aPressed = gamepad1.a;
             bPressed = gamepad1.b;
             yPressed = gamepad1.y;

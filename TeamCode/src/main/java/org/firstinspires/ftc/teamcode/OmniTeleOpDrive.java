@@ -23,12 +23,28 @@ public class OmniTeleOpDrive extends OpMode {
 
     public HardwareOmnibotDrive robot = new HardwareOmnibotDrive();
 
+	protected float cleanMotionValues(float number) {
+		// apply deadzone
+		if (number < joystickDeadzone && number > -joystickDeadzone) return 0.0f;
+		// apply trim
+		if (number >  MAX_MOTION_RANGE) return  MAX_MOTION_RANGE;
+		if (number < -MAX_MOTION_RANGE) return -MAX_MOTION_RANGE;
+		// scale values "between deadzone and trim" to be "between Min range and Max range"
+		if (number > 0)
+			number = (float)Range.scale(number, joystickDeadzone, MAX_MOTION_RANGE, MIN_MOTION_RANGE, MAX_MOTION_RANGE);
+		else
+			number = (float)Range.scale(number, -joystickDeadzone, -MAX_MOTION_RANGE, -MIN_MOTION_RANGE, -MAX_MOTION_RANGE);
+		
+		return number;
+	}
+
     @Override
     public void init() {
         telemetry.addLine("Calling robot.init");
         updateTelemetry(telemetry);
-        gamepad1.setJoystickDeadzone((float)robot.MIN_DRIVE_RATE);
-        gamepad2.setJoystickDeadzone((float)robot.MIN_DRIVE_RATE);
+		// Turn off the SDK deadzone so we can do it ourselves
+        gamepad1.setJoystickDeadzone(0.0f);
+        gamepad2.setJoystickDeadzone(0.0f);
         robot.init(hardwareMap);
         telemetry.addLine("Ready");
         updateTelemetry(telemetry);
@@ -56,9 +72,9 @@ public class OmniTeleOpDrive extends OpMode {
 
         //left joystick is for moving
         //right joystick is for rotation
-        yPower = -gamepad1.left_stick_y;
-        xPower = gamepad1.left_stick_x;
-        spin = gamepad1.right_stick_x;
+        yPower = -cleanMotionValues(gamepad1.left_stick_y);
+        xPower = cleanMotionValues(gamepad1.left_stick_x);
+        spin = cleanMotionValues(gamepad1.right_stick_x);
         gyroAngle = robot.readIMU();
 
 

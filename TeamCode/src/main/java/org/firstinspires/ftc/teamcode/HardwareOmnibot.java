@@ -397,7 +397,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public LiftPosition liftTargetHeight = LiftPosition.STONE1;
     // The height the activity was activated to achieve
 	private LiftPosition liftActivityTargetHeight = LiftPosition.STONE1;
-	public IntakePosition intakePosition = IntakePosition.RETRACTED;
+	public static IntakePosition intakePosition = IntakePosition.RETRACTED;
 	public IntakePosition intakeTargetPosition = IntakePosition.RETRACTED;
 
     // Robot Controller Config Strings
@@ -458,8 +458,6 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public StackActivities stackStone = StackActivities.IDLE;
     private boolean clawPinched = false;
     private boolean clawdricopterBack = false;
-    // These are the heights of the stone levels to auto set the lift to
-    protected LiftPosition lastLiftHeight = LiftPosition.STOWED;
     protected static int liftZero = 0;
     protected static int intakeZero = 0;
     public double intakePower = 0.0;

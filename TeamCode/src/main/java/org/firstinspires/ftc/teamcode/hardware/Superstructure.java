@@ -68,6 +68,9 @@ public class Superstructure {
             case PLACING:
                 currentState = SystemState.PLACING;
                 break;
+            case MANUAL:
+                currentState = SystemState.MANUAL;
+                break;
         }
         resetTime();
     }
@@ -77,7 +80,7 @@ public class Superstructure {
     }
 
     public void goToPlacingPosition(){
-        elevator.setPosition(structureConstructor.getNextHeight());
+        elevator.setPosition(structureConstructor.getCurrentHeight());
         handleStateTransition(SystemState.ABOVE_POSITION);
     }
 
@@ -123,6 +126,7 @@ public class Superstructure {
 
             case RELEASING:
                 handleStateTransition(SystemState.EMPTY);
+                structureConstructor.getNextHeight();
                 break;
 
                 default:
@@ -136,6 +140,10 @@ public class Superstructure {
 
     private void resetTime(){
         stateTime = System.currentTimeMillis();
+    }
+
+    public SystemState getCurrentState(){
+        return currentState;
     }
 
 }

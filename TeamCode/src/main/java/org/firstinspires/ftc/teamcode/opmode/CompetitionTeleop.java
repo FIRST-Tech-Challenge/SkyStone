@@ -26,7 +26,7 @@ public class CompetitionTeleop extends LinearOpMode {
     private FoundationGrabber foundationGrabber;
     private Superstructure superstructure;
 
-    public static double angleCorrection = 0.05;
+    public static double angleCorrection = 0.03;
     private double startingAngle = 0;
 
     //If the boolean below is false, then it will attempt to store a new angle for correction. If it is true, then the robot is translating and is referencing the previous angle.
@@ -103,6 +103,7 @@ public class CompetitionTeleop extends LinearOpMode {
         telemetry.addData("Drivetrain Heading: ", Math.toDegrees(driveTrainLocation.getHeading()));
 
         telemetry.addData("Elevator Height: ", elevator.getRelativeHeight());
+        telemetry.addData("Superstructure State: ", superstructure.getCurrentState());
 
         telemetry.update();
     }
@@ -124,52 +125,28 @@ public class CompetitionTeleop extends LinearOpMode {
             ifStartingAngle = false;
         }
 
-        List<Double> translationValues = new ArrayList<>();
-        //Front Left
-        translationValues.add(velocityX + velocityY);
+        //Left Front is Index 0, Left Back is Index 1, Right Front is Index 2, Right Back is Index 3
+        List<Double> powerValues = new ArrayList<>();
 
-        //Front Right
-        translationValues.add(velocityX - velocityY);
+        powerValues.add(velocityX - velocityY - velocityR - anglePowerCorrection);
 
-        //Back Left
-        translationValues.add(velocityX - velocityY);
+        powerValues.add(velocityX + velocityY - velocityR - anglePowerCorrection);
 
-        //Back Right
-        translationValues.add(velocityX + velocityY);
+        powerValues.add(velocityX + velocityY + velocityR + anglePowerCorrection);
 
-        List<Double> rotationValues = new ArrayList<>();
-        //Front Left
-        rotationValues.add(velocityR + anglePowerCorrection);
+        powerValues.add(velocityX - velocityY + velocityR + anglePowerCorrection);
 
-        //Front Right
-        rotationValues.add(-velocityR - anglePowerCorrection);
-
-        //Back Left
-        rotationValues.add(velocityR + anglePowerCorrection);
-
-        //Back Right
-        rotationValues.add(-velocityR - anglePowerCorrection);
-
-        double scaleFactor = 1;
-        double tmpScale = 1;
-
-        for (int i = 0; i < 4; i++) {
-            if (Math.abs(translationValues.get(i) + rotationValues.get(i)) > 1) {
-                tmpScale = (1 - rotationValues.get(i)) / translationValues.get(i);
-            } else if (translationValues.get(i) + rotationValues.get(i) < -1) {
-                tmpScale = (rotationValues.get(i) - 1) / translationValues.get(i);
-            }
-            if (tmpScale < scaleFactor) {
-                scaleFactor = tmpScale;
+        double greatestPower = 0;
+        for(Double d : powerValues){
+            if(Math.abs(d) > greatestPower){
+                greatestPower = Math.abs(d);
             }
         }
 
-
-        List<Double> valuesScaled = new ArrayList<>();
-        for (int i = 0; i < 4; i++) {
-            valuesScaled.add(translationValues.get(i) * scaleFactor + rotationValues.get(i));
+        for(int i = 0; i < powerValues.size(); i++){
+            powerValues.set(i, powerValues.get(i) / greatestPower);
         }
 
-        drive.setMotorPowers(valuesScaled.get(0), valuesScaled.get(2), valuesScaled.get(3), valuesScaled.get(1));
+        drive.setMotorPowers(powerValues.get(0), powerValues.get(1), powerValues.get(3), powerValues.get(2));
     }
 }

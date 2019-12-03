@@ -4,13 +4,8 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 
 public class Stone {
 
-    /* Axes of the stone will be defined with respect to the foundation.
-     * positive x-axis points towards the long side of the foundation on the right defined by looking at the foundation when approaching from the loading zone
-     * positive y-axis points towards the short side of the foundation straight ahead defined by looking at the foundation when approaching from the loading zone
-     * positive z-axis is up with respect to the ground
-     * 0 in any axis is as the bottom left of the foundation
-     * 1 unit in the z-axis is one stone high
-     */
+//  Axes of the Foundation will be defined with respect to the Foundation
+//  The nub closest to the origin will be counted as the origin of the stone
 
     private double xyOrientation;
     private double zOrientation;

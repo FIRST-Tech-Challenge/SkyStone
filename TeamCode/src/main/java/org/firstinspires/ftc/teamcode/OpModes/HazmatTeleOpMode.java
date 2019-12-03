@@ -50,7 +50,10 @@ public class HazmatTeleOpMode extends LinearOpMode{
     public void printDebugMessages(){
         telemetry.setAutoClear(true);
         telemetry.addData("HzDEBUG_FLAG is : ", HzDEBUG_FLAG);
-
+        telemetry.addData("backRightDrive.getCurrentPosition()", hzChassis.backRight.getCurrentPosition());
+        telemetry.addData("backRightDrive.getCurrentPosition()", hzChassis.backLeft.getCurrentPosition());
+        telemetry.addData("backRightDrive.getCurrentPosition()", hzChassis.frontRight.getCurrentPosition());
+        telemetry.addData("backRightDrive.getCurrentPosition()", hzChassis.frontLeft.getCurrentPosition());
         telemetry.addData("armMotor.isBusy : ", hzArm.armMotor.isBusy());
         telemetry.addData("armMotor.getTargetPosition : ", hzArm.armMotor.getTargetPosition());
         telemetry.addData("armMotor.getCurrentPosition : ", hzArm.armMotor.getCurrentPosition());

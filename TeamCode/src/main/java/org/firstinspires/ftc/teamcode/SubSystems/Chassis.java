@@ -6,18 +6,19 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-/** Definition of Robot Chassis.
- *  Chassis has :
- *      4 DC motors connected to Mecanum wheels
- *      1 limit switch on left front bumper to identify hitting to foundation plate or other walls
- *      2 Color sensors pointing down one on left and another on right
- *      (to identify red / blue lines below skybridge for parking
- *
- *      Robot 1 : Chassis Motor : 5201 Series, 26:1 Ratio, 210 RPM Spur Gear Motor w/Encoder
- *      Encoder Countable Events Per Revolution (Output Shaft)	723.24 (Rises & Falls of Ch A & B)
- *
- *      Robot 2 : 5202 Series Yellow Jacket Planetary Gear Motor (19.2:1 Ratio, 312 RPM, 3.3 - 5V Encoder)
- *      Encoder Countable Events Per Revolution (Output Shaft)	537.6 (Rises & Falls of Ch A & B)
+/**
+ * Definition of Robot Chassis.
+ * Chassis has :
+ * 4 DC motors connected to Mecanum wheels
+ * 1 limit switch on left front bumper to identify hitting to foundation plate or other walls
+ * 2 Color sensors pointing down one on left and another on right
+ * (to identify red / blue lines below skybridge for parking
+ * <p>
+ * Robot 1 : Chassis Motor : 5201 Series, 26:1 Ratio, 210 RPM Spur Gear Motor w/Encoder
+ * Encoder Countable Events Per Revolution (Output Shaft)	723.24 (Rises & Falls of Ch A & B)
+ * <p>
+ * Robot 2 : 5202 Series Yellow Jacket Planetary Gear Motor (19.2:1 Ratio, 312 RPM, 3.3 - 5V Encoder)
+ * Encoder Countable Events Per Revolution (Output Shaft)	537.6 (Rises & Falls of Ch A & B)
  *
  * @ChassisMethods : Chassis(HardwareMap) - Constructor
  * @ChassisMethods : initChassis()
@@ -34,7 +35,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * @ChassisAutoMethods : leftColorSensorIsBlue()
  * @ChassisAutoMethods : rightColorSensorIsRed()
  * @ChassisAutoMethods : frontleftBumperSensorIsPressed()
- *
  */
 
 public class Chassis {
@@ -69,6 +69,7 @@ public class Chassis {
      * Sets hardwareMap on hub1 with 4 motors, 2 light sensors, 1 touch sensors
      * Configures Robot for size and mecanum wheel directions
      * Initialize Robot to right component modes.
+     *
      * @param hardwareMap HardwareMap to be setup on Hub1
      */
     public Chassis(HardwareMap hardwareMap) {
@@ -96,7 +97,7 @@ public class Chassis {
     /**
      * Configure Chassis for size and mecanum wheel directions
      */
-    public void configureRobot(){
+    public void configureRobot() {
         wheelRadius = 1.965; //inches
         // Robot width = 17.00 inch, length = 13.75 inch. Hypotensuse = 21.86 inch, radius = hyp/2 = 10.93
         robotRadius = 10.93; //inches - Radius = half of longest diagonal = 0.5*sqrt(sq(17)+sq(18).
@@ -124,7 +125,7 @@ public class Chassis {
      * Reset function for motor encoders to be set to reset state of encoder.
      * Usage of this is typically followed by using setZeroBehaviour and then setting
      * the mode for the motor
-     *
+     * <p>
      * Reset Color Sensors to off for TeleOpMode
      */
     public void resetChassis() {
@@ -151,6 +152,7 @@ public class Chassis {
 
     /**
      * Function to set the behaviour of the motor on passing Zero power to the motor
+     *
      * @param zeroPowerBehavior could be BRAKE or FLOAT. When not defined, it is set
      *                          to UNKNOWN state, which is not desired.
      */
@@ -165,6 +167,7 @@ public class Chassis {
      * Set the mode of the DC motor to RUN_WITHOUT_ENCODER (run at achievable velocity)
      * RUN_USING_ENCODER (run at a targeted velocity) or RUN_TO_POSITION (PID based rotation to
      * achieve the desited encoder count)
+     *
      * @param runMode RUN_WITHOUT_ENCODER
      */
     public void setMotorMode(DcMotor.RunMode runMode) {
@@ -176,29 +179,32 @@ public class Chassis {
 
     /**
      * Method to set the ColorSensor to be enabled or disabled
+     *
      * @param colorSensorEnabled to set the mode of color sensor on
      */
-    public void setLeftColorSensorEnabled(boolean colorSensorEnabled){
+    public void setLeftColorSensorEnabled(boolean colorSensorEnabled) {
         leftColorSensor.enableLed(colorSensorEnabled);
     }
 
     /**
      * Method to set the ColorSensor to be enabled or disabled
+     *
      * @param colorSensorEnabled to set the mode of color sensor on
      */
-    public void setRightColorSensordEnabled(boolean colorSensorEnabled){
-             rightColorSensor.enableLed(colorSensorEnabled);
+    public void setRightColorSensordEnabled(boolean colorSensorEnabled) {
+        rightColorSensor.enableLed(colorSensorEnabled);
     }
 
 
     /**
      * Method to check for left Color Sensor crossing over Red Line
      * Used in Autonomous mode to stop below Red Skybridge after moving foundation to wall.
+     *
      * @return if Color Sensor is red
      */
     public boolean leftColorSensorIsRed() {
         //Logic to detect Red R>200 G<127 B<127
-        if (leftColorSensor.red()>200 && leftColorSensor.green()<127 && leftColorSensor.blue()<127 && leftColorSensor.alpha()>60) {
+        if (leftColorSensor.red() > 200 && leftColorSensor.green() < 127 && leftColorSensor.blue() < 127 && leftColorSensor.alpha() > 60) {
             return true;
         } else {
             return false;
@@ -208,11 +214,12 @@ public class Chassis {
     /**
      * Method to check for right Color Sensor crossing over Red Line
      * Used in Autonomous mode to stop below Red Skybridge after moving blocks (Optional use)
+     *
      * @return if color sensor is red
      */
     public boolean rightColorSensorIsRed() {
         //Logic to detect Red R>200 G<127 B<127
-        if (rightColorSensor.red()>200 && rightColorSensor.green()<127 && rightColorSensor.blue()<127 && rightColorSensor.alpha()>60) {
+        if (rightColorSensor.red() > 200 && rightColorSensor.green() < 127 && rightColorSensor.blue() < 127 && rightColorSensor.alpha() > 60) {
             return true;
         } else {
             return false;
@@ -222,11 +229,12 @@ public class Chassis {
     /**
      * Method to check for right Color Sensor crossing over Blue Line
      * Used in Autonomous mode to stop below Red Skybridge after moving foundation to wall.
+     *
      * @return if color sensor is blue
      */
     public boolean rightColorSensorIsBlue() {
         //Logic to detect Blue R<127 G<127 B>200
-        if (rightColorSensor.red()<127 && rightColorSensor.green()<127 && rightColorSensor.blue()>200 && rightColorSensor.alpha()>60) {
+        if (rightColorSensor.red() < 127 && rightColorSensor.green() < 127 && rightColorSensor.blue() > 200 && rightColorSensor.alpha() > 60) {
             return true;
         } else {
             return false;
@@ -236,11 +244,12 @@ public class Chassis {
     /**
      * Method to check for right Color Sensor crossing over Blue Line
      * Used in Autonomous mode to stop below Red Skybridge after after moving blocks (Optional use)
+     *
      * @return if color sensor is blue
      */
     public boolean leftColorSensorIsBlue() {
         //Logic to detect Blue R<127 G<127 B>200
-        if (leftColorSensor.red()<127 && leftColorSensor.green()<127 && leftColorSensor.blue()>200 && leftColorSensor.alpha()>60) {
+        if (leftColorSensor.red() < 127 && leftColorSensor.green() < 127 && leftColorSensor.blue() > 200 && leftColorSensor.alpha() > 60) {
             return true;
         } else {
             return false;
@@ -249,9 +258,10 @@ public class Chassis {
 
     /**
      * Method to move chassis based on computed vector inputs from Gamepad Joystick inputs
+     *
      * @param targetAngle targetAngle = Math.atan2(leftStickY, leftStickX)
-     * @param turn turn = rightStickX
-     * @param power power = Math.hypot(leftStickX, leftStickY)
+     * @param turn        turn = rightStickX
+     * @param power       power = Math.hypot(leftStickX, leftStickY)
      */
     public void runByGamepadCommand(double targetAngle, double turn, double power) {
         //#TOBEFILLED Why subtract by 90dec?
@@ -269,7 +279,8 @@ public class Chassis {
      * Method to move chassis based on computed vector inputs for a set distance.
      * To be used in Autonomous mode for moving by distance or turning by angle
      * Uses PID loop in motors to ensure motion without errors
-     * @param distance in same unit of measure as wheelRadius
+     *
+     * @param distance    in same unit of measure as wheelRadius
      * @param targetAngle
      * @param turn
      * @param power
@@ -279,8 +290,8 @@ public class Chassis {
         ChassisMotionTimeOut.reset();
         double turnAngle = targetAngle + Math.PI / 4;
         //double wheelDistance = (Math.sqrt(2) / wheelRadius) * distance;
-        double wheelDistance = distance * ChassisMotorEncoderCount/(2*Math.PI*wheelRadius);
-        double robotTurn = robotRadius * turn * ChassisMotorEncoderCount/(2*Math.PI*wheelRadius);
+        double wheelDistance = distance * ChassisMotorEncoderCount / (2 * Math.PI * wheelRadius);
+        double robotTurn = 3350 * (turn / 360);
 
         //#TOBEFILLED
         frontLeft.setTargetPosition((int) (wheelDistance * Math.cos(turnAngle) + robotTurn));
@@ -303,6 +314,7 @@ public class Chassis {
     /**
      * Method to move chassis by rotation.
      * Used in Auto placement of block
+     *
      * @param rotations
      * @param power
      */
@@ -315,7 +327,8 @@ public class Chassis {
             frontRight.setPower(power);
             backLeft.setPower(power);
             backRight.setPower(power);
-        };
+        }
+        ;
         frontLeft.setPower(0.0);
         frontRight.setPower(0.0);
         backLeft.setPower(0.0);
@@ -325,6 +338,7 @@ public class Chassis {
     /**
      * Method to move chassis by rotation.
      * Used in Auto placement of block
+     *
      * @param distance
      * @param power
      */
@@ -333,14 +347,15 @@ public class Chassis {
         resetChassis();
 
         //Total Rotations of wheel = distance / circumference of wheel
-        double targetRotations = distance/(2*Math.PI*wheelRadius);
+        double targetRotations = distance / (2 * Math.PI * wheelRadius);
 
         while (Math.abs(backLeft.getCurrentPosition()) < Math.abs(ChassisMotorEncoderCount * targetRotations)) {
             frontLeft.setPower(power);
             frontRight.setPower(power);
             backLeft.setPower(power);
             backRight.setPower(power);
-        };
+        }
+        ;
         frontLeft.setPower(0.0);
         frontRight.setPower(0.0);
         backLeft.setPower(0.0);
@@ -353,6 +368,7 @@ public class Chassis {
      * Till frontleftChassisTouchSensor is pressed.
      * To be used in Autonomous mode for moving by distance or turning by angle
      * Uses PID loop in motors to ensure motion without errors
+     *
      * @param max_stop_distance in same unit of measure as wheelRadius
      * @param targetAngle
      * @param turn
@@ -363,14 +379,15 @@ public class Chassis {
         resetChassis();
 
         //Max Total Rotations of wheel = distance / circumference of wheel
-        double targetRotations = max_stop_distance/(2*Math.PI*wheelRadius);
+        double targetRotations = max_stop_distance / (2 * Math.PI * wheelRadius);
 
         while (!frontleftChassisTouchSensor.isPressed() && (Math.abs(backLeft.getCurrentPosition()) < Math.abs(ChassisMotorEncoderCount * targetRotations))) {
             frontLeft.setPower(power);
             frontRight.setPower(power);
             backLeft.setPower(power);
             backRight.setPower(power);
-        };
+        }
+        ;
         frontLeft.setPower(0.0);
         frontRight.setPower(0.0);
         backLeft.setPower(0.0);
@@ -382,12 +399,13 @@ public class Chassis {
      * Till team color is identified below Chassis
      * To be used in Autonomous mode for moving by distance or turning by angle
      * Uses PID loop in motors to ensure motion without errors
+     *
      * @param max_stop_distance
      * @param targetAngle
      * @param turn
      * @param power
      */
-    public void runTill_ChassisRightColorSensorIsRed(double max_stop_distance, double targetAngle, double turn, double power){
+    public void runTill_ChassisRightColorSensorIsRed(double max_stop_distance, double targetAngle, double turn, double power) {
         //Color needs to be added to definition
         //********** COPY METHOD FROM runTill_frontleftChassisTouchSensor_Pressed() *****?
         //*********** ADJUST while condistion
@@ -400,14 +418,14 @@ public class Chassis {
     public void turnRobotByAngle(double robotTurn, double power) {
         //#TOBEFILLED
     }
+
     /**
      * Method to identify when frontleftChassisTouchSensor is pressed
      * frontleftChassisTouchSensor.getState() return true when not touched
-     *
      */
-    public boolean frontleftChassisTouchSensorIsPressed(){
+    public boolean frontleftChassisTouchSensorIsPressed() {
         /* Analog Mode */
-        if (frontleftChassisTouchSensor.isPressed()){
+        if (frontleftChassisTouchSensor.isPressed()) {
 
             //function returns tr
             return true;

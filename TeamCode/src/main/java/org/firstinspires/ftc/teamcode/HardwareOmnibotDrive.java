@@ -194,7 +194,15 @@ public class HardwareOmnibotDrive
         } else {
             if (inputShaping) {
                 valueOut = aValue * Math.pow(valueIn, 3) + (1 - aValue) * valueIn;
-                valueOut = Math.copySign(valueOut, Math.max(MIN_DRIVE_RATE, Math.abs(valueOut)));
+                if(Math.abs(valueOut) < MIN_DRIVE_RATE) {
+                    if(valueOut < 0) {
+                        valueOut = -MIN_DRIVE_RATE;
+                    } else {
+                        valueOut = MIN_DRIVE_RATE;
+                    }
+                }
+            } else {
+                valueOut = valueIn;
             }
         }
 
@@ -210,7 +218,15 @@ public class HardwareOmnibotDrive
         } else {
             if (inputShaping) {
                 valueOut = aValue * Math.pow(valueIn, 3) + (1 - aValue) * valueIn;
-                valueOut = Math.copySign(valueOut, Math.max(MIN_SPIN_RATE, Math.abs(valueOut)));
+                if(Math.abs(valueOut) < MIN_SPIN_RATE) {
+                    if(valueOut < 0) {
+                        valueOut = -MIN_SPIN_RATE;
+                    } else {
+                        valueOut = MIN_SPIN_RATE;
+                    }
+                }
+            } else {
+                valueOut = valueIn;
             }
         }
 

@@ -10,20 +10,20 @@ public class OmniAutoFullRedTof extends OmniAutoFullToF {
         baseAngle = 0.0;
         switch(position) {
             case 1:
-                attackAngle = 45.0;
+                attackAngle = 40.0;
                 sideDistance = 50.3;
-                flyTime = 1500;
+                flyTime = 1300;
                 flyBackTime = 1200;
                 break;
             case 2:
-                attackAngle = 45.0;
+                attackAngle = 40.0;
                 sideDistance = 70.6;
-                flyTime = 1600;
+                flyTime = 1400;
                 break;
             case 3:
-                attackAngle = 45.0;
+                attackAngle = 40.0;
                 sideDistance = 91.0;
-                flyTime = 1700;
+                flyTime = 1500;
                 break;
         }
     }

@@ -126,9 +126,8 @@ public abstract class OmniAutoFullToF extends OmniAutoClass
 		// Stop the image pipeline.
 		phoneCam.stopStreaming();
 
-		if(!runThis) {
+		if(runThis) {
             // Start moving intake out, should be done by the time driving is done.
-            robot.moveLift(HardwareOmnibot.LiftPosition.STOWED);
             robot.moveIntake(HardwareOmnibot.IntakePosition.EXTENDED);
 
             // This sets side specific values based on red or blue
@@ -148,6 +147,7 @@ public abstract class OmniAutoFullToF extends OmniAutoClass
             while (!robot.intakeAtPosition(HardwareOmnibot.IntakePosition.EXTENDED) && timer.milliseconds() < endTime) {
                 robot.resetReads();
             }
+            robot.moveLift(HardwareOmnibot.LiftPosition.STOWED);
 
             // Set the zero for the extender for when we start teleop.  We should do this as late
             // as will get reliably called.
@@ -157,8 +157,8 @@ public abstract class OmniAutoFullToF extends OmniAutoClass
             robot.startIntake(false);
 
             // Drive forward to collect the skystone and drive back.
-            driveAtHeadingForTime(slowSpeed, precisionSpin, baseAngle + 90 + attackAngle, baseAngle + attackAngle, 700, true);
-            driveAtHeadingForTime(slowSpeed, precisionSpin, baseAngle + 270 + attackAngle, baseAngle + attackAngle, 700, true);
+            driveAtHeadingForTime(slowSpeed, precisionSpin, baseAngle + 90 + attackAngle, baseAngle + attackAngle, 950, true);
+            driveAtHeadingForTime(slowSpeed, precisionSpin, baseAngle + 270 + attackAngle, baseAngle + attackAngle, 950, true);
 
             // Stop the intake
             robot.stopIntake();
@@ -180,12 +180,9 @@ public abstract class OmniAutoFullToF extends OmniAutoClass
 
             // Rotate to foundation grabbing angle.
             rotateRobotToAngle(rotateSpeed, baseAngle + 180.0, 2000);
-        }
 
-		if(runThis) {
             // Back the robot up to the foundation
             grabFoundation(5000);
-        } else {
 //		parallelRearTarget(0.5, 3.0, precisionSpeed, precisionSpin, precisionDistanceError, 5000);
 
             // Might want to start the process to place the skystone here.
@@ -197,7 +194,7 @@ public abstract class OmniAutoFullToF extends OmniAutoClass
 //      }
 
             // Move the foundation to parallel back wall.
-            driveAtHeadingForTime(maxSpeed, foundationRotateSpeed, baseAngle + 225.0, baseAngle + 90.0, 1000, true);
+            driveAtHeadingForTime(maxSpeed, foundationRotateSpeed, baseAngle + 225.0, baseAngle + 90.0, 1400, true);
 //      robot.performLifting();
 
             // Rotate to parallel back wall.
@@ -205,11 +202,13 @@ public abstract class OmniAutoFullToF extends OmniAutoClass
 //      robot.performLifting();
 
             // Drive the foundation into the back wall.
-            driveAtHeadingForTime(maxSpeed, precisionSpin, baseAngle + 0.0, baseAngle + 90.0, 700, true);
+            driveAtHeadingForTime(maxSpeed, precisionSpin, baseAngle + 0.0, baseAngle + 90.0, 500, true);
 //      robot.performLifting();
 
             // Release the foundation
             moveFingers(true);
+        }
+        if(!runThis) {
 //      robot.performLifting();
 
             // Back the robot up to the foundation for deploying skystone

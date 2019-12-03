@@ -124,20 +124,12 @@ class SSMechRobot {
             this.rightHook?.position = 0.0
         }
 
-        if(gp.left_bumper) { //hook down
-            this.claw?.position = 1.00
-        }
-        else { //default position
-            this.claw?.position = 0.00
-        }
-
-
     }
 
 
 
     fun pinch(gp: Gamepad) {
-        var close = false
+        /*var close = false
         var changed = false
         if(gp.left_bumper and !changed) {
             if(!gp.left_bumper) close = !close
@@ -147,6 +139,12 @@ class SSMechRobot {
         when {
             close -> this.claw?.position = 0.0 //close
             !close -> this.claw?.position = 1.0 //open-default
+        }*/
+        if(gp.left_bumper) { //hook down
+            this.claw?.position = 0.9
+        }
+        else { //default position
+            this.claw?.position = 0.00
         }
     }
 }

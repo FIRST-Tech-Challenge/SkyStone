@@ -55,6 +55,8 @@ class SSMechTeleOp : OpMode() {
          * Gamepad2: Crane: Right Stick Y = Y Slide; Left Bumper = pinch claw; Left Stick Y= X Slide; a = hook
          */
 
+        povMode()
+
         touched = !robot.touch!!.state //true if not pressed
 
         //Vertical Slide Power Calculation
@@ -131,10 +133,10 @@ class SSMechTeleOp : OpMode() {
         // Divide everything by nor (it's positive so we don't need to worry
         // about signs)
         //need to compensate for difference in core hex and 40:1 motors
-        robot.fLDrive?.power = frontLeftPower / slowDown / nor
-        robot.bLDrive?.power = backLeftPower / slowDown / nor
-        robot.fRDrive?.power = frontRightPower / slowDown / nor
-        robot.bRDrive?.power = backRightPower / slowDown / nor
+        robot.fLDrive?.power = frontLeftPower / nor / slowDown
+        robot.bLDrive?.power = backLeftPower /nor / slowDown
+        robot.fRDrive?.power = frontRightPower /nor / slowDown
+        robot.bRDrive?.power = backRightPower /nor / slowDown
         telemetry.addData("front left: $frontLeftPower, front right: $frontRightPower, back left: $backLeftPower, back right: $backRightPower", "")
 
     }

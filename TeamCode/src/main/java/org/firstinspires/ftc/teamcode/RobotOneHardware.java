@@ -99,11 +99,13 @@ public class RobotOneHardware
      * servos, this device is identified using the robot configuration tool in the FTC application.
      */
     WebcamName webcamName = null;
-    public boolean targetVisible = false;
-    public float phoneXRotate    = 0;
-    public float phoneYRotate    = 0;
-    public float phoneZRotate    = 0;
-
+    public boolean targetVisible   = false;
+    public float   phoneXRotate    = 0;
+    public float   phoneYRotate    = 0;
+    public float   phoneZRotate    = 0;
+    public double  leftDriveVolt   = 0;
+    public double  rightDriveVolt  = 0;
+    public double  InAndOutVolt    = 0;
 
 
     /* local OpMode members. */
@@ -124,8 +126,11 @@ public class RobotOneHardware
         leftServo = hwMap.get(Servo.class,"leftServo");
         rightServo = hwMap.get(Servo.class,"rightServo");
         leftDrive  = hwMap.get(DcMotor.class, "leftDrive");
+        //leftDriveVolt = hwMap.voltageSensor.get("leftDrive").getVoltage();
         rightDrive = hwMap.get(DcMotor.class, "rightDrive");
+        //rightDriveVolt = hwMap.voltageSensor.get("rightDrive").getVoltage();
         InAndOut    = hwMap.get(DcMotor.class, "InAndOut");
+        //InAndOutVolt = hwMap.voltageSensor.get("InAndOut").getVoltage();
         leftDrive.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         rightDrive.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
 
@@ -151,5 +156,5 @@ public class RobotOneHardware
         webcamName = hwMap.get(WebcamName.class, "Webcam 1");
 
     }
- }
+}
 

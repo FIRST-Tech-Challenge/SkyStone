@@ -2,6 +2,7 @@ package org.firstinspires.ftc.opmodes.mecanum.drive;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotlib.robot.SiBorgsMecanumRobot;
@@ -25,6 +26,8 @@ public class SiBorgsMecanumTeleOp extends OpMode
     // Buttons and toggles
     private ToggleBoolean driverTwoBrakes;  //freezes robot in place for stacking, prevents stick bumping from driver one
     private ToggleBoolean driveTelemetry; // changes the display output from driver style telemetry to debugging telemetry
+    private Button toggleLimits;
+    private Button limitSetter;
     private Button playSound;
 
     @Override
@@ -43,17 +46,32 @@ public class SiBorgsMecanumTeleOp extends OpMode
         // Buttons and toggles
         driverTwoBrakes = new ToggleBoolean(false);
         driveTelemetry = new ToggleBoolean(true);
+        toggleLimits = new Button();
+        limitSetter = new Button();
         playSound = new Button();
-
-        // Stop the sound cause its buggy
-        robot.sirenSound.stopSound();
     }
 
     @Override
     public void init_loop()
     {
         driveTelemetry.input(gamepad1.x || gamepad2.x);
+        limitSetter.input(gamepad1.b || gamepad2.b);
 
+        robot.armCrane.setVerticalPower(-gamepad2.left_stick_y);
+        robot.armCrane.setHorizontalPower(gamepad2.right_stick_y);
+
+        robot.armCrane.setLimited(false);
+
+        if (limitSetter.onPress())
+        {
+            robot.armCrane.getHorizontalLimitedMotor().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            robot.armCrane.getVerticalLimitedMotor().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+            robot.armCrane.getHorizontalLimitedMotor().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.armCrane.getVerticalLimitedMotor().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+
+        telemetry.addData("Motor Calibration Mode", "Calibrate Slide");
         if (driveTelemetry.output()) { robot.driverTelemetry(); }
         else { robot.informationTelemetry("Init_Loop display"); }
     }
@@ -62,6 +80,8 @@ public class SiBorgsMecanumTeleOp extends OpMode
     public void start()
     {
         elapsedTime.reset();
+
+        robot.armCrane.setLimited(true);
     }
 
     @Override
@@ -94,6 +114,10 @@ public class SiBorgsMecanumTeleOp extends OpMode
         platformServoDown.input(gamepad2.dpad_down);
         armGripServoUp.input(gamepad2.a);
         armGripServoDown.input(gamepad2.y);
+        toggleLimits.input(gamepad2.x);
+
+        // Limit toggler
+        if (toggleLimits.onPress()) { robot.armCrane.setLimited(!robot.armCrane.getHorizontalLimitedMotor().isLimited()); }
 
         // Servo motion
         if (platformServoUp.onPress()) { robot.platformServo.setPosition(ServoState.UP); }
@@ -103,8 +127,8 @@ public class SiBorgsMecanumTeleOp extends OpMode
         else if (armGripServoDown.onPress()) { robot.armGripSlide.setPosition(ServoState.DOWN); }
 
         // Motor powers
-        robot.crane.setVerticalPower(-gamepad2.left_stick_y);
-        robot.crane.setHorizontalPower(gamepad2.right_stick_y);
+        robot.armCrane.setVerticalPower(-gamepad2.left_stick_y);
+        robot.armCrane.setHorizontalPower(gamepad2.right_stick_y);
 
 
         /** TELEMETRY **/

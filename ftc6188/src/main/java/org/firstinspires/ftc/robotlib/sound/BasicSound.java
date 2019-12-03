@@ -3,6 +3,7 @@ package org.firstinspires.ftc.robotlib.sound;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.ftccommon.SoundPlayer;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotlib.state.ToggleBoolean;
 
 public class BasicSound implements Sound
@@ -11,9 +12,13 @@ public class BasicSound implements Sound
     private int soundID;
     private boolean soundFilePresent;
     private ToggleBoolean playSound;
+    private boolean playing = false;
 
     //  HardwareMap reference for the appcontext
     private HardwareMap hwMap;
+
+    // Parameters
+    private SoundPlayer.PlaySoundParams params = null;
 
     public BasicSound(String identifier, HardwareMap hwMap)
     {
@@ -23,31 +28,44 @@ public class BasicSound implements Sound
         setSoundID(identifier);
     }
 
+    public BasicSound(String identifier, HardwareMap hwMap, int loopControl)
+    {
+        this(identifier, hwMap);
+
+        params = new SoundPlayer.PlaySoundParams();
+        params.loopControl = loopControl;
+    }
+
     public void toggleSound()
     {
         playSound.toggle();
-        if (playSound.output()) { playSound(); }
-        else { stopSound(); }
+
+        if (playSound.output())
+        {
+            playSound();
+        }
+        else
+        {
+            stopSound();
+        }
     }
 
     @Override
     public void playSound()
     {
-        if (!SoundPlayer.getInstance().isLocalSoundOn())
+        if (!playing)
         {
-            SoundPlayer.getInstance().startPlaying(hwMap.appContext, soundID, null, null, new Runnable()
-            {
-                @Override
-                public void run()
-                {
-
-                }
-            });
+            playing = true;
+            SoundPlayer.getInstance().startPlaying(hwMap.appContext, soundID, params, null, null);
         }
     }
 
     @Override
-    public void stopSound() { SoundPlayer.getInstance().stopPlayingAll(); }
+    public void stopSound()
+    {
+        playing = false;
+        SoundPlayer.getInstance().stopPlayingAll();
+    }
 
     @Override
     public void setSoundID(String identifier)
@@ -57,11 +75,11 @@ public class BasicSound implements Sound
     }
 
     @Override
-    public int getSoundID(){ return soundID; }
+    public int getSoundID() { return soundID; }
 
     @Override
     public boolean isSoundFilePresent() { return soundFilePresent; }
 
     @Override
-    public boolean isSoundPlaying() { return SoundPlayer.getInstance().isLocalSoundOn(); }
+    public boolean isSoundPlaying() { return playing; }
 }

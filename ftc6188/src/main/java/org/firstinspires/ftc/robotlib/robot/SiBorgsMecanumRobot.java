@@ -136,6 +136,9 @@ public class SiBorgsMecanumRobot
         telemetry.addData("Platform Claw Right\t(^)", servoClawRight.getState());
         telemetry.addData("Arm Grip Slide\t(G2-Y/A)", armGripSlide.getState());
 
+        telemetry.addData("> Sound Info", "-----");
+        telemetry.addData("IsPlaying(G1-X)", sirenSound.isSoundPlaying());
+
         telemetry.update();
     }
 

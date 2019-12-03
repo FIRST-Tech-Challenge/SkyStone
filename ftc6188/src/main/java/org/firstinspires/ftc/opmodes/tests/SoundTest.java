@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.robotlib.sound.BasicSound;
 import org.firstinspires.ftc.robotlib.state.Button;
 
+@Disabled
 @TeleOp(name="Sound Test", group="Test")
 public class SoundTest extends OpMode
 {
@@ -16,7 +17,7 @@ public class SoundTest extends OpMode
     @Override
     public void init()
     {
-        basicSound = new BasicSound("police_siren", this.hardwareMap);
+        basicSound = new BasicSound("police_siren", this.hardwareMap, -1);
         playSound = new Button();
     }
 
@@ -34,8 +35,5 @@ public class SoundTest extends OpMode
     }
 
     @Override
-    public void stop()
-    {
-        basicSound.stopSound();
-    }
+    public void stop() { basicSound.stopSound(); }
 }

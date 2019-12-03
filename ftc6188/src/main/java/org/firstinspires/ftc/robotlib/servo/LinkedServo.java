@@ -5,58 +5,29 @@ import com.qualcomm.robotcore.hardware.Servo;
 This class defines two servos who are intended to operate as one
 it really just simplifies the programming later since we then only have to set one position instead of two
  */
-public class LinkedServo
+public class LinkedServo extends ModifiedServo
 {
-    // Stores the reference to the servos defined in the hardware map
-    private Servo servoOne;
+    // Stores the second servo, the first is already available in modified servo
     private Servo servoTwo;
 
-    // True if the servos are facing at each other or their rotation is opposite
-    private boolean oppositeFace;
-
-    // The positions for servo one and two respectively
-    private double position;
-    private double position2;
-
-    public LinkedServo(Servo servoOne, Servo servoTwo, boolean oppositeFace, double position)
+    LinkedServo(Servo servoOne, Servo servoTwo)
     {
-        this.servoOne = servoOne;
+        super(servoOne);
         this.servoTwo = servoTwo;
-        this.oppositeFace = oppositeFace;
-        this.position = position;
     }
 
-    public LinkedServo(Servo servoOne, Servo servoTwo) { this(servoOne, servoTwo, (servoOne.getDirection() == servoTwo.getDirection()), 0); }
-
-    // Operates just like the servo.setPosition function but does it for both, handles the weird math defining two servos
+    @Override
     public void setPosition(double position)
     {
-        this.position = position;
-        position2 = position;
-
-        // inverts the position2 if the servos rotation is opposite (facing at each other)
-        if (oppositeFace)
-        {
-            position2 = -position;
-            if (servoTwo.getPosition() - position < 0)
-            {
-                position2 += 360;
-            }
-            else if (servoTwo.getPosition() - position > 360)
-            {
-                position2 -= 360;
-            }
-        }
-
-        servoTwo.setPosition(position2);
-        servoOne.setPosition(position);
+        this.servo.setPosition(position);
+        servoTwo.setPosition(position);
     }
 
-    public double getPosition() { return position; }
+    public double getPosition2() { return servoTwo.getPosition(); }
 
-    public double getPosition2() { return position2; }
+    public Direction getDirection2() { return servoTwo.getDirection(); }
 
-    public Servo getServoOne() { return servoOne; }
+    public Servo getServoOne() { return this.servo; }
 
     public Servo getServoTwo() { return servoTwo; }
 }

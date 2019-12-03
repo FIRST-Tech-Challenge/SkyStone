@@ -107,7 +107,7 @@ public class SiBorgsMecanumRobot
         servoClawRight.setPosition(ServoState.STOWED);
         armGripSlide.setPosition(ServoState.STOWED);
 
-        platformServo = new LinkedStateServo(servoClawLeft, servoClawRight, 1, 1, 0, false);
+        platformServo = new LinkedStateServo(servoClawLeft, servoClawRight);
 
         // Sounds init
         sirenSound = new BasicSound("police_siren", hwMap);
@@ -131,10 +131,13 @@ public class SiBorgsMecanumRobot
         telemetry.addData("Horizontal Position\t(G2-RStickY", armHorizontalSlide.getCurrentPosition());
 
         telemetry.addData("> Servo Info", "-----");
-        telemetry.addData("Platform Servos Pos\t(G2-DpadUp/DpadDown)", platformServo.getStateString());
+        telemetry.addData("Platform Servos Pos\t(G2-DpadUp/DpadDown)", platformServo.getServoState());
         telemetry.addData("Platform Claw Left\t(^)", servoClawLeft.getState());
         telemetry.addData("Platform Claw Right\t(^)", servoClawRight.getState());
         telemetry.addData("Arm Grip Slide\t(G2-Y/A)", armGripSlide.getState());
+
+        telemetry.addData("> Sound Info", "-----");
+        telemetry.addData("IsPlaying(G1-X)", sirenSound.isSoundPlaying());
 
         telemetry.update();
     }
@@ -188,10 +191,6 @@ public class SiBorgsMecanumRobot
         telemetry.addData("Velocity Target", drivetrain.getVelocity());
         telemetry.addData("Current Pos", drivetrain.getCurrentPosition());
         telemetry.addData("Is Pos", drivetrain.isPositioning());
-
-        telemetry.addData("> Servo Info", "-----");
-        telemetry.addData("Arm Pos", armGripSlide.getState());
-        telemetry.addData("Linked Pos", platformServo.getStateString());
 
         telemetry.update();
     }

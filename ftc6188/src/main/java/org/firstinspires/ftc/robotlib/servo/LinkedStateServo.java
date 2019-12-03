@@ -1,41 +1,44 @@
 package org.firstinspires.ftc.robotlib.servo;
 
+import com.qualcomm.robotcore.hardware.Servo;
+
 import org.firstinspires.ftc.robotlib.state.ServoState;
 
 /*
 Much like a linked servo only this responds to ServoState enum
  */
-public class LinkedStateServo
+public class LinkedStateServo extends ModifiedServo
 {
-    // StateServos
-    private StateServo servoOne;
-    private StateServo servoTwo;
+    // servo two holder
+    private Servo servoTwo;
 
-    private double[] positions;
-    private boolean oppositeFace;
+    // positional holders
+    private double[] positionsOne;
+    private double[] positionsTwo;
 
-    public LinkedStateServo(StateServo servoOne, StateServo servoTwo, double stowedPosition, double upPosition, double downPosition, boolean oppositeFace)
+    private ServoState servoState;
+
+    public LinkedStateServo(StateServo servo, StateServo servoTwo)
     {
-        this.servoOne = servoOne;
+        super(servo);
         this.servoTwo = servoTwo;
 
-        positions = new double[] {stowedPosition, upPosition, downPosition};
-        this.oppositeFace = oppositeFace;
+        positionsOne = servo.getPositions();
+        positionsTwo = servoTwo.getPositions();
     }
 
     public void setPosition(ServoState servoState)
     {
-        if (oppositeFace)
+        if (servoState != ServoState.UNKNOWN)
         {
-            servoOne.setPosition(positions[servoState.getLevel()]);
-            servoTwo.setPosition(positions[positions.length-servoState.getLevel()]);
-        }
-        else
-        {
-            servoOne.setPosition(positions[servoState.getLevel()]);
-            servoTwo.setPosition(positions[servoState.getLevel()]);
+            this.servo.setPosition(positionsOne[servoState.getStateLevel()]);
+            servoTwo.setPosition(positionsTwo[servoState.getStateLevel()]);
         }
     }
 
-    public String getStateString() { return "Servo One: " + servoOne.getState() + " Servo Two: " + servoTwo.getState(); }
+    public ServoState getServoState() { return servoState; }
+
+    public double[] getPositionsOne() { return positionsOne; }
+
+    public double[] getPositionsTwo() { return positionsTwo; }
 }

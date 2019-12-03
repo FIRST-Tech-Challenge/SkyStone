@@ -5,7 +5,7 @@
   capture resolution for the camera. Note: it is very important when capturing images used to calibrate
   a camera that the image acquisition tool can actually control this capture resolution within the camera
   itself and that you use this setting correctly. Many image acquistion tools do not in fact provide
-  this level of control.
+  this stateLevel of control.
 
   Beyond simply providing additional, new camera calibrations, calibrations provided herein can
   *replace/update* those that are builtin to the SDK. This matching is keyed, of course, by the

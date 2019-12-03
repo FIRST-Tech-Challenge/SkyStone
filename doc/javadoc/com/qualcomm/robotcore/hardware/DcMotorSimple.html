@@ -170,7 +170,7 @@ extends <a href="../../../../com/qualcomm/robotcore/hardware/HardwareDevice.html
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>double</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/DcMotorSimple.html#getPower--">getPower</a></span>()</code>
-<div class="block">Returns the current configured power level of the motor.</div>
+<div class="block">Returns the current configured power stateLevel of the motor.</div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
@@ -182,7 +182,7 @@ extends <a href="../../../../com/qualcomm/robotcore/hardware/HardwareDevice.html
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/DcMotorSimple.html#setPower-double-">setPower</a></span>(double&nbsp;power)</code>
-<div class="block">Sets the power level of the motor, expressed as a fraction of the maximum
+<div class="block">Sets the power stateLevel of the motor, expressed as a fraction of the maximum
  possible power / speed supported according to the run mode in which the
  motor is operating.</div>
 </td>
@@ -248,14 +248,14 @@ extends <a href="../../../../com/qualcomm/robotcore/hardware/HardwareDevice.html
 <li class="blockList">
 <h4>setPower</h4>
 <pre>void&nbsp;setPower(double&nbsp;power)</pre>
-<div class="block">Sets the power level of the motor, expressed as a fraction of the maximum
+<div class="block">Sets the power stateLevel of the motor, expressed as a fraction of the maximum
  possible power / speed supported according to the run mode in which the
  motor is operating.
 
- <p>Setting a power level of zero will brake the motor</p></div>
+ <p>Setting a power stateLevel of zero will brake the motor</p></div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>power</code> - the new power level of the motor, a value in the interval [-1.0, 1.0]</dd>
+<dd><code>power</code> - the new power stateLevel of the motor, a value in the interval [-1.0, 1.0]</dd>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../com/qualcomm/robotcore/hardware/DcMotorSimple.html#getPower--"><code>getPower()</code></a>, 
 <a href="../../../../com/qualcomm/robotcore/hardware/DcMotor.html#setMode-com.qualcomm.robotcore.hardware.DcMotor.RunMode-"><code>DcMotor.setMode(DcMotor.RunMode)</code></a>, 
@@ -270,10 +270,10 @@ extends <a href="../../../../com/qualcomm/robotcore/hardware/HardwareDevice.html
 <li class="blockList">
 <h4>getPower</h4>
 <pre>double&nbsp;getPower()</pre>
-<div class="block">Returns the current configured power level of the motor.</div>
+<div class="block">Returns the current configured power stateLevel of the motor.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>the current level of the motor, a value in the interval [0.0, 1.0]</dd>
+<dd>the current stateLevel of the motor, a value in the interval [0.0, 1.0]</dd>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../com/qualcomm/robotcore/hardware/DcMotorSimple.html#setPower-double-"><code>setPower(double)</code></a></dd>
 </dl>

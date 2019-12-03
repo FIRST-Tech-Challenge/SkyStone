@@ -8,8 +8,8 @@ A modified servo is an abstract class made from the servo interface and is used 
  */
 public abstract class ModifiedServo implements Servo
 {
-    private Servo servo;
-    ModifiedServo (Servo servo) { this.servo = servo;}
+    protected Servo servo;
+    ModifiedServo (Servo servo) { this.servo = servo; }
 
     @Override
     public ServoController getController() {

@@ -17,7 +17,7 @@ public class SoundTest extends OpMode
     @Override
     public void init()
     {
-        basicSound = new BasicSound("police_siren", this.hardwareMap);
+        basicSound = new BasicSound("police_siren", this.hardwareMap, -1);
         playSound = new Button();
     }
 
@@ -35,8 +35,5 @@ public class SoundTest extends OpMode
     }
 
     @Override
-    public void stop()
-    {
-        basicSound.stopSound();
-    }
+    public void stop() { basicSound.stopSound(); }
 }

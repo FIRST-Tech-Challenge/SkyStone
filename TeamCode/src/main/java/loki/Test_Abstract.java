@@ -1,9 +1,11 @@
 package loki;
 
+import android.graphics.Color;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -23,16 +25,11 @@ public abstract class Test_Abstract extends OpMode {
     public Servo clawL, clawR, hook;
     private ElapsedTime runtime = new ElapsedTime();
     private ElapsedTime hookTime = new ElapsedTime();
-    private ElapsedTime slideTime = new ElapsedTime();
-    private ElapsedTime clawTime = new ElapsedTime();
     ColorSensor color_sensor;
     float hsvValues[] = {0F, 0F, 0F};
     boolean up = true;
-    boolean hClosed = false;
     BNO055IMU imu;
     double startOrient;
-    int lMod = 0;
-    int cPos = 0;
 
 
     public void initStuff() {
@@ -130,7 +127,7 @@ public abstract class Test_Abstract extends OpMode {
         telemetry.addData("Robot Angle", Math.toDegrees(robotAngle));
         telemetry.addData("heading", Math.toDegrees(currentHeading));
         telemetry.addData("anglediff", Math.toDegrees(angleDiff));
-
+        telemetry.update();
     }
 
 
@@ -143,15 +140,15 @@ public abstract class Test_Abstract extends OpMode {
     public void Suit_Trig() {
         final double x = gamepad1.left_stick_x;
         final double y = gamepad1.left_stick_y;
-        double speed = Math.sqrt(x * x + y * y); //Pythagorean Theorem
-        //returns hypotenuse (C value in triangle)
+        double speed = Math.sqrt(x * x + y * y);
+        //returns hypotonuse (C value in triangle)
 
 
         double robotAngle = Math.atan2(y, x);
         //return angle x (next to center of circle)
 
-        double rightX = gamepad1.right_stick_x; //reverses rotation?
-        //rotation
+        double rightX = gamepad1.right_stick_x; //reverses rotation
+        //rotiation
 
         final double lfPow = speed * Math.sin(robotAngle - Math.PI / 4.0) - rightX;
         final double rfPow = speed * Math.cos(robotAngle - Math.PI / 4.0) + rightX;
@@ -209,7 +206,7 @@ public abstract class Test_Abstract extends OpMode {
         telemetry.addData("rf", rbPow);
         telemetry.addData("lf", lfPow);
         telemetry.addData("lb", lbPow);
-        //*
+        telemetry.update();//*
     }
 
     public void simpleStrafe() {
@@ -274,77 +271,28 @@ public abstract class Test_Abstract extends OpMode {
     }
 
     public void claw() {
-        /*if (gamepad2.a) {
+        if (gamepad2.a) {
             clawR.setPosition(.1); //open claw
             clawL.setPosition(.9);
         }
         else if (gamepad2.b) {
             clawR.setPosition(.47); // close claw
             clawL.setPosition(.54);
-        }*/
-        if (gamepad2.a && clawTime.milliseconds()>500){
-            cPos++;
-            if (cPos>=3){
-                cPos = 0;
-            }
-            clawTime.reset();
-            if (cPos == 0){
-                clawR.setPosition(.75); // close claw
-                clawL.setPosition(.2);
-                telemetry.addLine("Claw Closed");
-            }else if (cPos == 1){
-                clawR.setPosition(.2); //open claw
-                clawL.setPosition(.75);
-                telemetry.addLine("Claw Open");
-            }else{
-                clawR.setPosition(.6); //partial claw
-                clawL.setPosition(.4);
-                telemetry.addLine("Claw Partial");
-            }
-        }
-        if (cPos == 0){
-            telemetry.addLine("Claw Closed");
-        }else if (cPos == 1){
-            telemetry.addLine("Claw Open");
-        }else {
-            telemetry.addLine("Claw Partial");
         }
     }
 
     public void linearSlide() {
+        boolean active = false;
 
-        if (gamepad2.right_bumper && slideTime.milliseconds()>500){
-            lMod++;
-            slideTime.reset();
-        }
-        if (lMod >=2){ //toggle amount
-            lMod = 0;
-        }
-        if (lMod == 0) {
-            ls.setPower(gamepad2.left_stick_y);
-        }else if (lMod == 1){
-            ls.setPower(gamepad2.left_stick_y * 0.5);
-        }
-        telemetry.addData("State:", lMod);
+        ls.setPower(gamepad2.left_stick_y);
     }
 
     public void hook(){
-        /*if (gamepad2.x){
+        if (gamepad2.x){
             hook.setPosition(0.9);
         }
         if (gamepad2.y){
             hook.setPosition(0.1);
-        }*/
-        if (gamepad2.x){
-            if (up) {
-                hook.setPosition(.9);
-            }else{
-                hook.setPosition(.1);
-            }
-            if (hookTime.milliseconds()>500) {
-                up = !up;
-                hookTime.reset();
-            }
         }
     }
 

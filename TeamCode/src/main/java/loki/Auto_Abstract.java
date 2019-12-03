@@ -310,6 +310,107 @@ public abstract class Auto_Abstract extends LinearOpMode {
 
     }
 
+    public void monoColorDriveSky(double power, double color, int direction, int target) { //parameters: When you use the function, the code will ask for these two variables
+
+        lf.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rf.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        lb.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rb.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        lf.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rf.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        lb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+
+
+
+
+
+
+        double sPower = 0.4;
+        double lfPower = 0;
+        double rfPower = 0;
+        double lbPower = 0;
+        double rbPower = 0;
+
+        switch(direction){
+            case FORWARD:
+
+
+                lfPower = power;
+                rfPower = power;
+                lbPower = power;
+                rbPower = power;
+                break;
+
+
+            case BACKWARDS:
+
+                lfPower = -power;
+                rfPower = -power;
+                lbPower = -power;
+                rbPower = -power;
+                break;
+            case STRAFE_RIGHT:
+
+                lfPower = power;
+                rfPower = -power;
+                lbPower = -power;
+                rbPower = power;
+                break;
+            case STRAFE_LEFT:
+
+                lfPower = -power;
+                rfPower = power;
+                lbPower = power;
+                rbPower = -power;
+                break;
+        }
+
+
+
+        lf.setPower(lfPower);
+        rf.setPower(rfPower);
+        lb.setPower(lbPower);
+        rb.setPower(rbPower);
+
+
+        switch (target) {
+            case RED:
+                while (opModeIsActive() && (skyStoneColor.red() >= color)) {
+                    idle();
+                    telemetry.addData("Red  ", skyStoneColor.red());
+                }
+                break;
+            case GREEN:
+                while (opModeIsActive() && (skyStoneColor.green() >= color)) {
+                    idle();
+                    telemetry.addData("Green", skyStoneColor.green());
+                }
+                break;
+            case BLUE:
+                while (opModeIsActive() && (skyStoneColor.blue() >= color)) {
+                    idle();
+                    telemetry.addData("Blue ", skyStoneColor.blue());
+                }
+                break;
+            case LUM:
+                while (opModeIsActive() && (skyStoneColor.alpha() >= color)) {
+                    idle();
+                    telemetry.addData("Clear", skyStoneColor.alpha());
+                }
+
+        }
+
+        lf.setPower(0);
+        rf.setPower(0);
+        lb.setPower(0);
+        rb.setPower(0);
+
+
+    }
+
     public void hook(int direction){
         switch (direction) {
             case UP:

@@ -47,7 +47,7 @@ public class Auto_SkyStone_Red extends Auto_Abstract{
         waitForStart();
         telemetry.addData("Waiting", "...");
         telemetry.update();
-        //sleep(5000);
+        /*sleep(5000);
         claw(PART);
         drive(0.5,33, FORWARD);
         claw(CLOSE);
@@ -57,7 +57,7 @@ public class Auto_SkyStone_Red extends Auto_Abstract{
         drive(0.4,87,STRAFE_LEFT);
         claw(OPEN);
         drive(0.4,22,STRAFE_RIGHT);
-        //sleep(3000);
+        */
 
         //Skystone & Foundation Theory
         /*Create 2 autonomouses: 1 for left skystone and one for right skystone
@@ -70,7 +70,15 @@ public class Auto_SkyStone_Red extends Auto_Abstract{
          * Park
          * */
 
-
+        claw(OPEN);
+        drive(0.5,30, FORWARD);
+        drive(0.4, 16, STRAFE_RIGHT);
+        monoColorDriveSky(0.5, 7, STRAFE_RIGHT, LUM);
+        claw(PART);
+        drive(0.5, 10, FORWARD);
+        claw(CLOSE);
+        drive(0.5, 27, BACKWARDS);
+        monoColorDrive(0.4, 7, STRAFE_LEFT, RED);
 
 
 

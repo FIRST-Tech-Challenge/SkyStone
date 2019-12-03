@@ -26,7 +26,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 @TeleOp(name = "Color_Reference")
 public class Color_Reference extends LinearOpMode{
 
-    ColorSensor colorSensor;    // Hardware Device Object
+    ColorSensor colorSensor, skyStoneColor;    // Hardware Device Object
 
 
     @Override
@@ -52,9 +52,11 @@ public class Color_Reference extends LinearOpMode{
 
         // get a reference to our ColorSensor object.
         colorSensor = hardwareMap.get(ColorSensor.class, "color");
+        skyStoneColor = hardwareMap.get(ColorSensor.class, "SkyColor");
 
         // Set the LED in the beginning
         colorSensor.enableLed(bLedOn);
+        skyStoneColor.enableLed(bLedOn);
 
         // wait for the start button to be pressed.
         waitForStart();
@@ -88,6 +90,14 @@ public class Color_Reference extends LinearOpMode{
             telemetry.addData("Blue ", colorSensor.blue());
             telemetry.addData("Hue", hsvValues[0]);
 
+            telemetry.addData("LED Sky", bLedOn ? "On" : "Off");
+            telemetry.addData("Clear Sky ", skyStoneColor.alpha());
+            telemetry.addData("Red Sky ", skyStoneColor.red());
+            telemetry.addData("Green Sky ", skyStoneColor.green());
+            telemetry.addData("Blue Sky ", skyStoneColor.blue());
+            telemetry.addData("Hue Sky", hsvValues[0]);
+
+
             // change the background color to match the color detected by the RGB sensor.
             // pass a reference to the hue, saturation, and value array as an argument
             // to the HSVToColor method.
@@ -95,7 +105,8 @@ public class Color_Reference extends LinearOpMode{
                 public void run() {
                     relativeLayout.setBackgroundColor(Color.HSVToColor(0xff, values));
                 }
-            });
+            }
+            );
 
             telemetry.update();
         }

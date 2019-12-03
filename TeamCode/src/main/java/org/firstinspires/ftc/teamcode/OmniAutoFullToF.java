@@ -42,10 +42,15 @@ public abstract class OmniAutoFullToF extends OmniAutoClass
 {
     OpenCvCamera phoneCam;
     public static int position = 0;
-    protected double sideDistance = 0;
-    protected double attackAngle = 45;
-    protected int flyTime = 1500;
-    protected int flyBackTime = 1500;
+    protected double attackAngle1 = 40;
+    protected double sideDistance1 = 50.3;
+    protected int flyTime1 = 1300;
+    protected int flyBackTime1 = 1200;
+
+	protected double attackAngle2 = 40.0;
+    protected double sideDistance2 = 101.3;
+	protected int flyTime2 = 1300;
+	
     protected double baseAngle;
     protected boolean runThis = true;
 

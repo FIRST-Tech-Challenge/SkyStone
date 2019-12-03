@@ -142,7 +142,7 @@ extends <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorSimple.html"
 <tr class="rowColor">
 <td class="colFirst"><code>static class&nbsp;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/DcMotor.ZeroPowerBehavior.html" title="enum in com.qualcomm.robotcore.hardware">DcMotor.ZeroPowerBehavior</a></span></code>
-<div class="block">ZeroPowerBehavior provides an indication as to a motor's behavior when a power level of zero
+<div class="block">ZeroPowerBehavior provides an indication as to a motor's behavior when a power stateLevel of zero
  is applied.</div>
 </td>
 </tr>
@@ -208,7 +208,7 @@ extends <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorSimple.html"
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/DcMotor.html#getPowerFloat--">getPowerFloat</a></span>()</code>
-<div class="block">Returns whether the motor is currently in a float power level.</div>
+<div class="block">Returns whether the motor is currently in a float power stateLevel.</div>
 </td>
 </tr>
 <tr id="i6" class="altColor">
@@ -220,7 +220,7 @@ extends <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorSimple.html"
 <tr id="i7" class="rowColor">
 <td class="colFirst"><code><a href="../../../../com/qualcomm/robotcore/hardware/DcMotor.ZeroPowerBehavior.html" title="enum in com.qualcomm.robotcore.hardware">DcMotor.ZeroPowerBehavior</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/DcMotor.html#getZeroPowerBehavior--">getZeroPowerBehavior</a></span>()</code>
-<div class="block">Returns the current behavior of the motor were a power level of zero to be applied.</div>
+<div class="block">Returns the current behavior of the motor were a power stateLevel of zero to be applied.</div>
 </td>
 </tr>
 <tr id="i8" class="altColor">
@@ -261,7 +261,7 @@ extends <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorSimple.html"
 <tr id="i13" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/DcMotor.html#setZeroPowerBehavior-com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior-">setZeroPowerBehavior</a></span>(<a href="../../../../com/qualcomm/robotcore/hardware/DcMotor.ZeroPowerBehavior.html" title="enum in com.qualcomm.robotcore.hardware">DcMotor.ZeroPowerBehavior</a>&nbsp;zeroPowerBehavior)</code>
-<div class="block">Sets the behavior of the motor when a power level of zero is applied.</div>
+<div class="block">Sets the behavior of the motor when a power stateLevel of zero is applied.</div>
 </td>
 </tr>
 </table>
@@ -365,10 +365,10 @@ extends <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorSimple.html"
 <li class="blockList">
 <h4>setZeroPowerBehavior</h4>
 <pre>void&nbsp;setZeroPowerBehavior(<a href="../../../../com/qualcomm/robotcore/hardware/DcMotor.ZeroPowerBehavior.html" title="enum in com.qualcomm.robotcore.hardware">DcMotor.ZeroPowerBehavior</a>&nbsp;zeroPowerBehavior)</pre>
-<div class="block">Sets the behavior of the motor when a power level of zero is applied.</div>
+<div class="block">Sets the behavior of the motor when a power stateLevel of zero is applied.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>zeroPowerBehavior</code> - the new behavior of the motor when a power level of zero is applied.</dd>
+<dd><code>zeroPowerBehavior</code> - the new behavior of the motor when a power stateLevel of zero is applied.</dd>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../com/qualcomm/robotcore/hardware/DcMotor.ZeroPowerBehavior.html" title="enum in com.qualcomm.robotcore.hardware"><code>DcMotor.ZeroPowerBehavior</code></a>, 
 <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorSimple.html#setPower-double-"><code>DcMotorSimple.setPower(double)</code></a></dd>
@@ -382,10 +382,10 @@ extends <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorSimple.html"
 <li class="blockList">
 <h4>getZeroPowerBehavior</h4>
 <pre><a href="../../../../com/qualcomm/robotcore/hardware/DcMotor.ZeroPowerBehavior.html" title="enum in com.qualcomm.robotcore.hardware">DcMotor.ZeroPowerBehavior</a>&nbsp;getZeroPowerBehavior()</pre>
-<div class="block">Returns the current behavior of the motor were a power level of zero to be applied.</div>
+<div class="block">Returns the current behavior of the motor were a power stateLevel of zero to be applied.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>the current behavior of the motor were a power level of zero to be applied.</dd>
+<dd>the current behavior of the motor were a power stateLevel of zero to be applied.</dd>
 </dl>
 </li>
 </ul>
@@ -431,10 +431,10 @@ void&nbsp;setPowerFloat()</pre>
 <li class="blockList">
 <h4>getPowerFloat</h4>
 <pre>boolean&nbsp;getPowerFloat()</pre>
-<div class="block">Returns whether the motor is currently in a float power level.</div>
+<div class="block">Returns whether the motor is currently in a float power stateLevel.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>whether the motor is currently in a float power level.</dd>
+<dd>whether the motor is currently in a float power stateLevel.</dd>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../com/qualcomm/robotcore/hardware/DcMotor.html#setPowerFloat--"><code>setPowerFloat()</code></a></dd>
 </dl>
@@ -449,7 +449,7 @@ void&nbsp;setPowerFloat()</pre>
 <pre>void&nbsp;setTargetPosition(int&nbsp;position)</pre>
 <div class="block">Sets the desired encoder target position to which the motor should advance or retreat
  and then actively hold thereat. This behavior is similar to the operation of a servo.
- The maximum speed at which this advance or retreat occurs is governed by the power level
+ The maximum speed at which this advance or retreat occurs is governed by the power stateLevel
  currently set on the motor. While the motor is advancing or retreating to the desired
  taget position, <a href="../../../../com/qualcomm/robotcore/hardware/DcMotor.html#isBusy--"><code>isBusy()</code></a> will return true.
 

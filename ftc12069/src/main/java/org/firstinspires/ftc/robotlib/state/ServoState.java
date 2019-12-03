@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.robotlib.state;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Stores the state of Servo(s) for ease of use
  */
@@ -37,5 +39,10 @@ public enum ServoState {
         }
 
         return UNKNOWN; // this shouldn't happen
+    }
+
+    @NotNull
+    public String toString() {
+        return this.toString() + " (" + this.getId() + ")";
     }
 }

@@ -57,9 +57,4 @@ public class ServoManager {
         this.servoState = servoState;
         this.update();
     }
-
-    @NotNull
-    public String toString() {
-        return servoState.toString() + " (" + servoState.getId() + ")";
-    }
 }

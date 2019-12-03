@@ -18,6 +18,9 @@ public class MotorManager {
         this.motors = motors;
     }
 
+    /**
+     * @return Current desired motor velocity
+     */
     public double getVelocity() {
         return velocity;
     }

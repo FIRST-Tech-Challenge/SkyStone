@@ -514,6 +514,9 @@ public class AutonomousRobot {
         }
     }
 
+    /**
+     * Attempts to use a possible robot position to move to the scanning location for Skystone pickup
+     */
     public void gotoLoadingZone() {
         if (alliance == Alliance.BLUE) this.moveToPoint(blueLoadingScanLocation, 0.3, new OrientationInfo(180, 0.7));
         else if (alliance == Alliance.RED) this.moveToPoint(redLoadingScanLocation, 0.3, new OrientationInfo(-180, 0.7));
@@ -617,6 +620,9 @@ public class AutonomousRobot {
         this.move(this.getCourse(robot, point), velocity, null, this.getDistance(robot, point));
     }
 
+    /**
+     * Prints general telemetry for debugging
+     */
     public void printTelemetry() {
         telemetry.addData("Visible Target(s)", this.stringifyVisibleTargets());
 

@@ -101,7 +101,7 @@ public class MecanumTeleOp extends OpMode
         telemetry.addData("Velocity", velocity);
         telemetry.addData("Rotation", rotation);
         telemetry.addData("Driving Mode", rightMotion ? "RIGHT" : "LEFT");
-        telemetry.addData("Servo State", hardware.deliveryServoManager.toString());
+        telemetry.addData("Servo State", hardware.deliveryServoManager.getServoState().toString());
         telemetry.update();
     }
 

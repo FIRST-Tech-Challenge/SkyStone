@@ -23,6 +23,7 @@ import org.firstinspires.ftc.robotlib.navigation.Point3D;
 import org.firstinspires.ftc.robotlib.robot.MecanumHardwareMap;
 import org.firstinspires.ftc.robotlib.state.Alliance;
 import org.firstinspires.ftc.robotlib.navigation.Point;
+import org.firstinspires.ftc.robotlib.util.Helpers;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -429,13 +430,24 @@ public class AutonomousRobot {
     }
 
     /**
-     * Calculates the course between a set "robot" point and an object
+     * Calculates the course between a "robot" point and an object
      * @param robot point of reference
      * @param object object to get course to
      * @return required course to arrive at a point in radians
      */
     public double getCourse(Point robot, Point object) {
-        return -Math.atan2(object.y - robot.y, object.x - robot.x);
+        double c = -Math.atan2(object.y - robot.y, object.x - robot.x) - Math.PI / 2;
+        if (c < -Math.PI) return Math.abs(c) - Math.PI;
+        return c;
+
+        //-Math.atan2(object.y - robot.y, object.x - robot.x);
+        /*if (!Helpers.isTriangle(robot.calculateTriangleSides(object)) {
+            double c = Math.atan2(object.y - robot.y, object.x - robot.x) - Math.PI / 2;
+            if (c == Math.PI || c == -Math.PI) c = 0;
+            return c;
+        }
+
+        return Math.atan2(object.y - robot.y, object.x - robot.x);*/
     }
 
     /**
@@ -503,8 +515,8 @@ public class AutonomousRobot {
     }
 
     public void gotoLoadingZone() {
-        if (alliance == Alliance.BLUE) this.moveToPoint(blueLoadingScanLocation, 0.3, new OrientationInfo(90, 0.7));
-        else if (alliance == Alliance.RED) this.moveToPoint(redLoadingScanLocation, 0.5, new OrientationInfo(-90, 0.7));
+        if (alliance == Alliance.BLUE) this.moveToPoint(blueLoadingScanLocation, 0.3, new OrientationInfo(180, 0.7));
+        else if (alliance == Alliance.RED) this.moveToPoint(redLoadingScanLocation, 0.3, new OrientationInfo(-180, 0.7));
     }
 
     /**
@@ -592,10 +604,8 @@ public class AutonomousRobot {
      * @param orientationInfo The orientation to be at when moving to the point
      */
     public void moveToPoint(Point point, double velocity, OrientationInfo orientationInfo) {
-        Point newRobotPosition = new Point(point.x, point.y);
-        this.move(this.getCourseFromRobot(point), velocity, orientationInfo, this.getDistanceFromRobot(newRobotPosition));
+        this.move(this.getCourseFromRobot(point), velocity, orientationInfo, this.getDistanceFromRobot(point));
     }
-
 
     /**
      * Moves the robot to a point

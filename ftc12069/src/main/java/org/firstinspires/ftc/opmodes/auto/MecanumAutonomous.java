@@ -118,6 +118,8 @@ class MecanumAutonomous {
             telemetry.addData("Position relative to Skystone", "{X, Y, Z} = %.0f, %.0f, %.0f", positionFromSkystone.x, positionFromSkystone.y, positionFromSkystone.z);
             robot.move(robot.getCourse(positionFromSkystone, stonePoint3D), 0.3, null, robot.getDistance(positionFromSkystone, stonePoint3D));
             robot.hardware.intakeMotorManager.setMotorsVelocity(1.0);
+            robot.move(0, 0.3, null, 3);
+            robot.hardware.intakeMotorManager.setMotorsVelocity(0.0);
 
             // Move Skystone back to building zone
             robot.moveToPoint(new Point(robot.buildingZone.getMiddleX(), robot.buildingZone.getMiddleY()), 0.5);

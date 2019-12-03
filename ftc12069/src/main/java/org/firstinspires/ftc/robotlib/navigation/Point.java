@@ -44,4 +44,9 @@ public class Point {
     public Point opponentPoint() {
         return new Point(this.x, -this.y);
     }
+
+    public double[] calculateTriangleSides(Point point) {
+        Point connector = new Point(this.x, point.y);
+        return new double[]{connector.distance(point), connector.distance(this), this.distance(point)};
+    }
 }

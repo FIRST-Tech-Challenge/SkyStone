@@ -30,4 +30,15 @@ public class Helpers {
     public static int getValueFromMatrix(OpenGLMatrix openGLMatrix, int row, int column) {
         return column * openGLMatrix.numRows() + row;
     }
+
+    public static boolean isTriangle(double a, double b, double c) {
+        if (a + b < c) return false;
+        if (a + c < b) return false;
+        if (b + c < a) return false;
+        return true;
+    }
+
+    public static boolean isTriangle(double[] sides) {
+        return isTriangle(sides[0], sides[1], sides[2]);
+    }
 }

@@ -19,7 +19,7 @@ public class MecanumTeleOp extends OpMode
     private Button leftBumper;
     private Button rightBumper;
     private Button rightTrigger;
-    private Button yButton;
+    private Button rightStickButton;
 
     @Override
     public void init()
@@ -30,7 +30,7 @@ public class MecanumTeleOp extends OpMode
         leftBumper = new Button();
         rightBumper = new Button();
         rightTrigger = new Button();
-        yButton = new Button();
+        rightStickButton = new Button();
 
         hardware.deliveryServoManager.reset();
         hardware.intakeMotorManager.stop();
@@ -71,9 +71,9 @@ public class MecanumTeleOp extends OpMode
 
         ServoState deliveryServoState = hardware.deliveryServoManager.getServoState();
         if (leftBumper.isReleased()) {
-            hardware.deliveryServoManager.setServoState(ServoState.getServoStateFromInt(deliveryServoState.getLevel() - 1));
+            hardware.deliveryServoManager.setServoState(ServoState.getServoStateFromInt(deliveryServoState.getId() - 1));
         } else if (rightBumper.isReleased()) {
-            hardware.deliveryServoManager.setServoState(ServoState.getServoStateFromInt(deliveryServoState.getLevel() + 1));
+            hardware.deliveryServoManager.setServoState(ServoState.getServoStateFromInt(deliveryServoState.getId() + 1));
         }
 
         if (rightTrigger.isToggled()) {
@@ -83,7 +83,7 @@ public class MecanumTeleOp extends OpMode
             hardware.intakeMotorManager.setMotorsVelocity(0.0);
         }
 
-        if (yButton.isReleased()) {
+        if (rightStickButton.isReleased()) {
             if (hardware.blockGrabber.getPosition() == 0.0) hardware.blockGrabber.setPosition(1.0);
             else hardware.blockGrabber.setPosition(0.0);
         }
@@ -94,7 +94,7 @@ public class MecanumTeleOp extends OpMode
         leftBumper.input(gamepad1.left_bumper);
         rightBumper.input(gamepad1.right_bumper);
         rightTrigger.input(gamepad1.right_trigger > 0);
-        yButton.input(gamepad1.y);
+        rightStickButton.input(gamepad1.right_stick_button);
 
         telemetry.addData("Status", "Loop: " + elapsedTime.toString());
         telemetry.addData("Course", course);

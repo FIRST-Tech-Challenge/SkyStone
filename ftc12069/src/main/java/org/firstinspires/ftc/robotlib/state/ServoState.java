@@ -8,16 +8,16 @@ public enum ServoState {
     STOWED(0, 0),
     DOWN(1, 1);
 
-    private int level;
+    private int id;
     private int position;
 
-    ServoState(int level, int position) {
-        this.level = level;
+    ServoState(int id, int position) {
+        this.id = id;
         this.position = position;
     }
 
-    public int getLevel() {
-        return level;
+    public int getId() {
+        return id;
     }
 
     public int getPosition() {
@@ -25,12 +25,12 @@ public enum ServoState {
     }
 
     // This auto corrects if the value is too high or low
-    public static ServoState getServoStateFromInt(int level) {
-        if (level > values().length - 1) return getServoStateFromInt(values().length - 1);
-        if (level < 0) return getServoStateFromInt(0);
+    public static ServoState getServoStateFromInt(int id) {
+        if (id > values().length - 1) return getServoStateFromInt(values().length - 1);
+        if (id < 0) return getServoStateFromInt(0);
 
         for (ServoState servoState : values()) {
-            if (servoState.getLevel() == level) return servoState;
+            if (servoState.getId() == id) return servoState;
         }
 
         return UNKNOWN; // this shouldn't happen

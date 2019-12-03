@@ -60,6 +60,6 @@ public class ServoManager {
 
     @NotNull
     public String toString() {
-        return servoState.toString() + " (" + servoState.getLevel() + ")";
+        return servoState.toString() + " (" + servoState.getId() + ")";
     }
 }

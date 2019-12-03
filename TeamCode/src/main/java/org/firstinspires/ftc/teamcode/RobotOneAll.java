@@ -32,22 +32,32 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 
-@TeleOp(name = "ROneAll", group = "R1")
+@TeleOp(name = "ROneAllOnBot", group = "R1")
 //@Disabled
 public class RobotOneAll extends LinearOpMode {
     RobotOneHardware robotOne           = new RobotOneHardware();   // Use a Pushbot's hardware
-
+    double left;
+    double right;
+    double drive;
+    double turn;
+    double max;
+    double armInNew;
+    double armOutNew;
+    double hooverNew;
+    double rDrdv;
+    double lDrdv;
+    double Irdv;
+    double Ordv;
+    double Hrdv;
+    int I;
+    int O;
+    int H;
 
     @Override
     public void runOpMode() {
-        double left;
-        double right;
-        double drive;
-        double turn;
-        double max;
-       //oolean grab;
 
         robotOne.init(hardwareMap);
 
@@ -59,97 +69,191 @@ public class RobotOneAll extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            // Run wheels in POV mode (note: The joystick goes negative when pushed forwards, so negate it)
-            // In this mode the Left stick moves the robot fwd and back, the Right stick turns left and right.
-            // This way it's also easy to just drive straight, or just turn.
-            drive = gamepad1.left_stick_y;
-            turn  = -gamepad1.left_stick_x;
 
-
-            // Combine drive and turn for blended motion.
-            left  = drive + turn;
-            right = drive - turn;
-
-            // Normalize the values so neither exceed +/- 1.0
-            max = Math.max(Math.abs(left), Math.abs(right));
-            if (max > 1.0)
-            {
-                left /= max;
-                right /= max;
-            }
-
-            // Output the safe vales to the motor drives.
-            robotOne.leftDrive.setPower(left);
-            robotOne.rightDrive.setPower(right);
-//
-            // Use gamepad left & right Bumpers to open and close the claw
-            /*if (gamepad1.right_bumper)
-                clawOffset += CLAW_SPEED;
-            else if (gamepad1.left_bumper)
-                clawOffset -= CLAW_SPEED;
-*/
-            // Move both servos to new position.  Assume servos are mirror image of each other.
-            //clawOffset = Range.clip(clawOffset, -0.5, 0.5);
-            //robot.leftClaw.setPosition(robot.MID_SERVO + clawOffset);
-            //robot.rightClaw.setPosition(robot.MID_SERVO - clawOffset);
-
-            // Use gamepad buttons to move arm up (Y) and down (A)
-            if (gamepad1.a) {
-                robotOne.InAndOut.setPower(.1);
-                sleep(1000);
-                robotOne.InAndOut.setPower(.1);
-            }
-            else if (gamepad1.y) {
-                robotOne.InAndOut.setPower(-.05);
-                sleep(100);
-                //robotOne.InAndOut.setPower(-.2);
-                sleep(50);
-                robotOne.InAndOut.setPower(-.1);
-                sleep(1000);
-                robotOne.InAndOut.setPower(1);
-                sleep(200);
-                robotOne.InAndOut.setPower(0);
-                /*sleep(100);
-                robotOne.InAndOut.setPower(.7);
-                sleep(500);*/
-                /*robotOne.InAndOut.setPower(.5);
-                sleep(1000);
-                robotOne.InAndOut.setPower(.4);
-                sleep(2000);*/
-            }
-            else
-                robotOne.InAndOut.setPower(0.0);
-
+            driveIt();
+            hoover();
+            BringArmIn();
+            PutArmOut();
+            grab();
+            LetMehGo();
             // Send telemetry message to signify robot running;
             //telemetry.addData("claw",  "Offset = %.2f", clawOffset);
             telemetry.addData("left",  "%.2f", left);
             telemetry.addData("right", "%.2f", right);
+            telemetry.addData("armInNew", "%.2f", armInNew);
+            telemetry.addData("armOutNew", "%.2f", armOutNew);
+            telemetry.addData("HooverNew", "%.2f", hooverNew);
             telemetry.update();
 
-        grab();
-        LetMehGo();
-
-            // Pace this loop so jaw action is reasonable speed.
-            sleep(50);
-
-        }
 
 
         }
+
+
+    }
 
     public void grab() {
-        if (gamepad1.left_bumper == true) {
+        if (gamepad1.left_trigger == 1) {
             //left 1, right 0
-            robotOne.leftServo.setPosition(0.75);
+            robotOne.leftServo.setPosition(0.77);
             robotOne.rightServo.setPosition(0.22);
         }
     }
 
     public void LetMehGo() {
-        if (gamepad1.right_bumper == true) {
+        if (gamepad1.right_trigger == 1) {
             //left 1, right 0
             robotOne.leftServo.setPosition(1.0);
             robotOne.rightServo.setPosition(0.0);
         }
+    }
+
+    public void driveIt() {
+        drive = gamepad1.left_stick_y;
+        turn  = -gamepad1.left_stick_x;
+
+        // Combine drive and turn for blended motion.
+        left  = drive + turn;
+        right = drive - turn;
+
+        // Normalize the values so neither exceed +/- 1.0
+        max = Math.max(Math.abs(left), Math.abs(right));
+        if (max > 1.0)
+        {
+            right = rDrivetwelveVoltCalc(right);
+            left = lDrivetwelveVoltCalc(left);
+
+            left /= max;
+            right /= max;
+        }
+
+        // Output the safe vales to the motor drives.
+
+        robotOne.leftDrive.setPower(left);
+        robotOne.rightDrive.setPower(right);
+    }
+
+    public void hoover() {
+        if (gamepad1.x) {
+            //.25 and .07 hover low no block
+            //.30 and .05 hover medium no block
+            //.35 and 0 straight up no block
+            hooverNew = HtwelveVoltCalc(0.50);
+            //System.out.println("new power from hoover .1: " + newPower);
+            robotOne.InAndOut.setPower(hooverNew);
+            sleep(900);
+            hooverNew = HtwelveVoltCalc(0.05);
+            robotOne.InAndOut.setPower(hooverNew);
+            //robotOne.InAndOut.setPower(0);
+            H=0;
+            while (H == 0) {
+                if(gamepad1.b) {
+                    H++;
+                }
+                driveIt();
+            }
+            while (H < 120) {
+                robotOne.InAndOut.setPower(0);
+                sleep(5);
+                hooverNew = HtwelveVoltCalc(.06);
+                robotOne.InAndOut.setPower(hooverNew);
+                sleep(15);
+                H++;
+                telemetry.addData("H: ", H);
+            }
+            robotOne.InAndOut.setPower(0);
+        }
+    }
+
+    public void BringArmIn() {
+        if (gamepad1.a) {
+            armInNew = IntwelveVoltCalc(0.5);
+            robotOne.InAndOut.setPower(armInNew);
+            sleep(725);
+            armInNew = IntwelveVoltCalc(0.1);
+            robotOne.InAndOut.setPower(armInNew);
+            sleep(350);
+            robotOne.InAndOut.setPower(0);
+            I=0;
+            while (I < 95) {
+                robotOne.InAndOut.setPower(0);
+                sleep(5);
+                armInNew = IntwelveVoltCalc(-.06);
+                robotOne.InAndOut.setPower(armInNew);
+                sleep(15);
+                I++;
+                telemetry.addData("I: ", I);
+            }
+            robotOne.InAndOut.setPower(0);
+        }
+    }
+
+
+    public void PutArmOut() {
+        if (gamepad1.y) {
+            armOutNew = OuttwelveVoltCalc(-0.5);
+            robotOne.InAndOut.setPower(armOutNew);
+            sleep(700);
+            armOutNew = OuttwelveVoltCalc(-0.3);
+            robotOne.InAndOut.setPower(armOutNew);
+            sleep(250);
+            armOutNew = OuttwelveVoltCalc(-0.1);
+            robotOne.InAndOut.setPower(armOutNew);
+            sleep(100);
+            //armOutNew = OuttwelveVoltCalc(-0.1);
+            //robotOne.InAndOut.setPower(armOutNew);
+            //sleep(800);
+            O=0;
+            while (O < 100) {
+                robotOne.InAndOut.setPower(0);
+                sleep(3);
+                armOutNew = OuttwelveVoltCalc(.09);
+                robotOne.InAndOut.setPower(armOutNew);
+                sleep(15);
+                O++;
+            }
+            robotOne.InAndOut.setPower(0);
+        }
+    }
+
+    public double rDrivetwelveVoltCalc(double y) {
+        rDrdv = getBatteryVoltage();
+        double rDrivePower = (12 / rDrdv) * y;
+        return rDrivePower;
+    }
+
+    public double lDrivetwelveVoltCalc(double y) {
+        lDrdv = getBatteryVoltage();
+        double lDrivePower = (12 / lDrdv) * y;
+        return lDrivePower;
+    }
+
+    public double IntwelveVoltCalc(double y) {
+        Irdv = getBatteryVoltage();
+        double InPower = (12 / Irdv) * y;
+        return InPower;
+    }
+
+    public double OuttwelveVoltCalc(double y) {
+        Ordv = getBatteryVoltage();
+        double OutPower = (12 / Ordv) * y;
+        return OutPower;
+    }
+
+    public double HtwelveVoltCalc(double y) {
+        Hrdv = getBatteryVoltage();
+        double HPower = (12 / Hrdv) * y;
+        return HPower;
+    }
+
+    double getBatteryVoltage() {
+        double result = Double.POSITIVE_INFINITY;
+        for (VoltageSensor sensor : hardwareMap.voltageSensor) {
+            double voltage = sensor.getVoltage();
+            if (voltage > 0) {
+                result = Math.min(result, voltage);
+            }
+        }
+        return result;
     }
 }

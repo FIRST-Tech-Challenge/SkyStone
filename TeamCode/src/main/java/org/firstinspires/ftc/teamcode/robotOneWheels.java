@@ -37,7 +37,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name = "ROneDrive", group = "robotOneWheels")
-//@Disabled
+@Disabled
 public class robotOneWheels extends LinearOpMode {
 
 

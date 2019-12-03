@@ -83,7 +83,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  * is explained below.
  */
 
-@Autonomous(name = "foo", group = "blah")
+@Autonomous(name = "AutoBot", group = "Go")
 
 public class VuforiaSetup extends LinearOpMode {
     RobotOneHardware robotOne           = new RobotOneHardware();
@@ -277,9 +277,9 @@ public class VuforiaSetup extends LinearOpMode {
         final float CAMERA_LEFT_DISPLACEMENT     = 0;     // eg: Camera is ON the robot's center line
 
         OpenGLMatrix robotFromCamera = OpenGLMatrix
-                    .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
-                    .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES,
-                            robotOne.phoneYRotate, robotOne.phoneZRotate, robotOne.phoneXRotate));
+                .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES,
+                        robotOne.phoneYRotate, robotOne.phoneZRotate, robotOne.phoneXRotate));
 
         /**  Let all the trackable listeners know where the phone is.  */
         for (VuforiaTrackable trackable : allTrackables) {
@@ -309,22 +309,22 @@ public class VuforiaSetup extends LinearOpMode {
                     robotOne.targetVisible = true;
 
                     if((trackable.getName().equals("Red Perimeter 1") && quad == null)
-                        || (trackable.getName().equals("Rear Perimeter 1") && quad == null)) {
+                            || (trackable.getName().equals("Rear Perimeter 1") && quad == null)) {
                         //Blue Building
                         quad = "q1";
                         turn = "right";
                     } else if((trackable.getName().equals("Red Perimeter 2") && quad == null)
-                        || (trackable.getName().equals("Front Perimeter 2") && quad == null)) {
+                            || (trackable.getName().equals("Front Perimeter 2") && quad == null)) {
                         //Blue Loading
                         quad = "q2";
                         turn = "left";
                     } else if((trackable.getName().equals("Blue Perimeter 1") && quad == null)
-                        || (trackable.getName().equals("Front Perimeter 1") && quad == null)) {
+                            || (trackable.getName().equals("Front Perimeter 1") && quad == null)) {
                         //Red Loading
                         quad = "q3";
                         turn = "right";
                     } else if((trackable.getName().equals("Blue Perimeter 2") && quad == null)
-                        || (trackable.getName().equals("Rear Perimeter 2") && quad == null)){
+                            || (trackable.getName().equals("Rear Perimeter 2") && quad == null)){
                         //Red Building
                         quad = "q4";
                         turn = "left";

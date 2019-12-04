@@ -10,7 +10,6 @@ import org.firstinspires.ftc.robotlib.armsystem.FieldGoalArmSystem;
 import org.firstinspires.ftc.robotlib.drivetrain.MecanumDrivetrain;
 import org.firstinspires.ftc.robotlib.motor.EncoderMotor;
 import org.firstinspires.ftc.robotlib.motor.LimitedMotor;
-import org.firstinspires.ftc.robotlib.servo.LinkedServo;
 import org.firstinspires.ftc.robotlib.servo.LinkedStateServo;
 import org.firstinspires.ftc.robotlib.servo.StateServo;
 import org.firstinspires.ftc.robotlib.sound.BasicSound;
@@ -36,7 +35,7 @@ public class SiBorgsMecanumRobot
 
     // Arm constants
     private static final int[] VERTICAL_LIMIT = {0, 1270};
-    private static final int[] HORIZONTAL_LIMIT = {-1400, -400};
+    private static final int[] HORIZONTAL_LIMIT = {-1000, 0};
 
     // Servo motors
     private StateServo servoClawLeft;
@@ -53,7 +52,7 @@ public class SiBorgsMecanumRobot
 
     // Movement systems (drivetrain/arm system)
     public MecanumDrivetrain drivetrain;
-    public FieldGoalArmSystem crane;
+    public FieldGoalArmSystem armCrane;
 
     // Class constructor with full systems initialization
     public SiBorgsMecanumRobot (@NotNull HardwareMap hwMap, Telemetry telemetry)
@@ -79,8 +78,8 @@ public class SiBorgsMecanumRobot
         }
 
         // Arm motors init
-        armVerticalSlide = new LimitedMotor(hwMap.get(DcMotor.class, "armVerticalSlide"));
-        armHorizontalSlide = new LimitedMotor(hwMap.get(DcMotor.class, "armHorizontalSlide"));
+        armVerticalSlide = new LimitedMotor(hwMap.get(DcMotor.class, "armVerticalSlide"), VERTICAL_LIMIT[0], VERTICAL_LIMIT[1]);
+        armHorizontalSlide = new LimitedMotor(hwMap.get(DcMotor.class, "armHorizontalSlide"), HORIZONTAL_LIMIT[0], HORIZONTAL_LIMIT[1]);
 
         armVerticalSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         armHorizontalSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -111,10 +110,11 @@ public class SiBorgsMecanumRobot
 
         // Sounds init
         sirenSound = new BasicSound("police_siren", hwMap);
+        sirenSound.stopSound();
 
         // Systems init
         drivetrain = new MecanumDrivetrain(driveMotorList, WHEEL_RADIUS_IN, MOTOR_TO_WHEEL_RATIO);
-        crane = new FieldGoalArmSystem(armVerticalSlide, armHorizontalSlide);
+        armCrane = new FieldGoalArmSystem(armVerticalSlide, armHorizontalSlide);
     }
 
     // Telemetry command useful for drivers
@@ -126,9 +126,11 @@ public class SiBorgsMecanumRobot
         telemetry.addData("Power\t(G1-RStick)", drivetrain.getVelocity());
         telemetry.addData("Rotation\t(G1-LStick)", drivetrain.getRotation());
 
-        telemetry.addData("> Arm Info", "Limited\t(G2-B)? " + armVerticalSlide.isLimited());
+        telemetry.addData("> Arm Info", "Limited\t(G2-X)? " + armVerticalSlide.isLimited());
         telemetry.addData("Vertical Position\t(G2-LStickY)", armVerticalSlide.getCurrentPosition());
         telemetry.addData("Horizontal Position\t(G2-RStickY", armHorizontalSlide.getCurrentPosition());
+        telemetry.addData("Vertical Limits", armVerticalSlide.getLowerLimit() + " " + armVerticalSlide.getUpperLimit());
+        telemetry.addData("Horizontal Position", armHorizontalSlide.getLowerLimit() + " " + armHorizontalSlide.getUpperLimit());
 
         telemetry.addData("> Servo Info", "-----");
         telemetry.addData("Platform Servos Pos\t(G2-DpadUp/DpadDown)", platformServo.getServoState());

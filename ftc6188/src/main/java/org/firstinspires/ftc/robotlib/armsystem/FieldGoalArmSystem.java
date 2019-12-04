@@ -21,6 +21,12 @@ public class FieldGoalArmSystem
 
     public void setHorizontalPower(double power) { armHorizontalSlide.setPower(power); }
 
+    public void setLimited(boolean limited)
+    {
+        armVerticalSlide.setLimited(limited);
+        armHorizontalSlide.setLimited(limited);
+    }
+
     public LimitedMotor getVerticalLimitedMotor() { return armVerticalSlide; }
 
     public LimitedMotor getHorizontalLimitedMotor() { return armHorizontalSlide; }

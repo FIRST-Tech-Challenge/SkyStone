@@ -201,7 +201,7 @@ public class HardwareOmnibotDrive
 //                    } else {
 //                        valueOut = MIN_DRIVE_RATE;
 //                    }
-                }
+//                }
             } else {
                 valueOut = valueIn;
             }
@@ -226,7 +226,7 @@ public class HardwareOmnibotDrive
 //                    } else {
 //                        valueOut = MIN_SPIN_RATE;
 //                    }
-                }
+//                }
             } else {
                 valueOut = valueIn;
             }

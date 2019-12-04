@@ -4,6 +4,7 @@ import android.graphics.Color;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
@@ -17,6 +18,13 @@ import static java.lang.Math.toDegrees;
 
 //@TeleOp(name="Omni: TeleOpDrive", group ="TeleOp")
 public class OmniTeleOpDrive extends OpMode {
+    private static final float MAX_MOTION_RANGE = 1.0f;
+    private static final float MIN_MOTION_RANGE = 0.05f;
+    /**
+     * If the motion value is less than the threshold, the controller will be
+     * considered at rest
+     */
+    protected float joystickDeadzone = 0.15f;
     public OmniTeleOpDrive() {
         msStuckDetectInit = 10000;
     }

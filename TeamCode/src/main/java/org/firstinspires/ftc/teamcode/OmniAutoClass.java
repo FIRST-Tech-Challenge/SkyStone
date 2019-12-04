@@ -34,13 +34,9 @@ public abstract class OmniAutoClass extends LinearOpMode {
         robot.performLifting();
         robot.performReleasing();
         robot.performStowing();
-        robot.performEjecting();
         robot.performAligning();
-        robot.performCapstone();
         robot.performGrabbing();
-        robot.performAcceleration();
-        robot.performDeceleration();
-        robot.performFoundation();
+        robot.performStoneStacking();
 	}
 
     /**
@@ -262,7 +258,7 @@ public abstract class OmniAutoClass extends LinearOpMode {
             gyroReading = robot.readIMU();
             angleRemaining = deltaAngle(targetAngle, gyroReading);
 			if(progressActivities) {
-    			robot.progressActivities();
+                performRobotActivities();
 			}
             robot.resetReads();
         }
@@ -286,7 +282,7 @@ public abstract class OmniAutoClass extends LinearOpMode {
 			targetAngle += 360.0;
 		}
 
-        rotateRobotToAngle(speed, targetAngle, maxTime);
+        rotateRobotToAngle(speed, targetAngle, maxTime, true);
     }
 
     /**

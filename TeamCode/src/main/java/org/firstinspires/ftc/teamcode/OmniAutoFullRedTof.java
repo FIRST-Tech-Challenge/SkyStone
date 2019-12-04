@@ -11,8 +11,8 @@ public class OmniAutoFullRedTof extends OmniAutoFullToF {
         switch(position) {
             case 1:
 			    // For first Skystone
-                attackAngle1 = 40.0;
-                sideDistance1 = 50.3;
+                attackAngle1 = 38.0;
+                sideDistance1 = 55.3;
                 flyTime1 = 1300;
                 flyBackTime1 = 1200;
 				// For second Skystone
@@ -22,8 +22,8 @@ public class OmniAutoFullRedTof extends OmniAutoFullToF {
                 break;
             case 2:
 			    // For first Skystone
-                attackAngle1 = 40.0;
-                sideDistance1 = 70.6;
+                attackAngle1 = 38.0;
+                sideDistance1 = 75.6;
                 flyTime1 = 1400;
                 flyBackTime1 = 1200;
 				// For second Skystone
@@ -33,8 +33,8 @@ public class OmniAutoFullRedTof extends OmniAutoFullToF {
                 break;
             case 3:
 			    // For first Skystone
-                attackAngle1 = 40.0;
-                sideDistance1 = 91.0;
+                attackAngle1 = 38.0;
+                sideDistance1 = 96.0;
                 flyTime1 = 1500;
                 flyBackTime1 = 1200;
 				// For second Skystone

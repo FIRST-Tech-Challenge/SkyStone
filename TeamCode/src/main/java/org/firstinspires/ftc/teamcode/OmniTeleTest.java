@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.Range;
 
 import static java.lang.Math.atan2;
 import static java.lang.Math.toDegrees;
@@ -13,6 +14,13 @@ import static java.lang.Math.toDegrees;
 
 @TeleOp(name="Omni: TeleOpTest", group ="TeleOp")
 public class OmniTeleTest extends OmniAutoClass {
+    private static final float MAX_MOTION_RANGE = 1.0f;
+    private static final float MIN_MOTION_RANGE = 0.05f;
+    /**
+     * If the motion value is less than the threshold, the controller will be
+     * considered at rest
+     */
+    protected float joystickDeadzone = 0.15f;
 
     public OmniTeleTest() {
         msStuckDetectInit = 10000;
@@ -157,7 +165,7 @@ public class OmniTeleTest extends OmniAutoClass {
 
             if (!xHeld && xPressed) {
                 xHeld = true;
-                distanceFromWall(HardwareOmnibot.RobotSide.LEFT, sideDistanceTarget, 1.0, 1.0, 5000);
+                distanceFromWall(HardwareOmnibot.RobotSide.LEFT, sideDistanceTarget, 1.0, 1.0, 5000, true);
             } else if (!xPressed) {
                 xHeld = false;
             }
@@ -169,7 +177,7 @@ public class OmniTeleTest extends OmniAutoClass {
             }
 
             if (!aHeld && aPressed) {
-                distanceFromWall(HardwareOmnibot.RobotSide.BACK, backDistanceTarget, 1.0, 1.0, 5000);
+                distanceFromWall(HardwareOmnibot.RobotSide.BACK, backDistanceTarget, 1.0, 1.0, 5000, true);
                 aHeld = true;
 
             } else if (!aPressed) {
@@ -178,7 +186,7 @@ public class OmniTeleTest extends OmniAutoClass {
 
             if (!bHeld && bPressed) {
                 bHeld = true;
-                distanceFromWall(HardwareOmnibot.RobotSide.RIGHT, sideDistanceTarget, 1.0, 1.0, 5000);
+                distanceFromWall(HardwareOmnibot.RobotSide.RIGHT, sideDistanceTarget, 1.0, 1.0, 5000, true);
             } else if (!bPressed) {
                 bHeld = false;
             }

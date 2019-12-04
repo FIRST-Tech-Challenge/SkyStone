@@ -43,7 +43,7 @@ public class     PickAndPark extends ChassisStandard {
                 encoderDrive(-24);
 
 
-            } else if (stoneconfig == "CENTER") {
+            } else if (stoneconfig =="CENTER") {
 
                 encoderDrive(6);
                 turnRight(45);

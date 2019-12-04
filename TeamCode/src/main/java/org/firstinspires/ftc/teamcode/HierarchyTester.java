@@ -30,6 +30,8 @@ public class HierarchyTester extends LinearOpMode {
 
         trobot = new Trobot(hardwareMap);
 
+        trobot.disable(trobot.component.rightLatch);
+
         waitForStart();
         trobot.runtime.reset();
 

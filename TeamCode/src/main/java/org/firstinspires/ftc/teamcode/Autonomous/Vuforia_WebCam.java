@@ -102,7 +102,11 @@ public class Vuforia_WebCam extends LinearOpMode {
      * and paste it in to your code on the next line, between the double quotes.
      */
     private static final String VUFORIA_KEY =
-            " --- YOUR NEW VUFORIA KEY GOES HERE  --- ";
+    "AajTUIr/////AAABmTctveKXi0VTmgZUbYofbZY5IIpR/SpzsjouDLGX66+4++UAIQ+6IQPwNoFDWU6gyur8sP8/xvr"+
+    "FY7HGIatg1wF1MRWqpigzzNlgrp3JkOQlqwOYP5ajQgSySIAxvdtczqvizg6SNGiEFP3Ojip9fv5tpTHOlc49FhXjEB"+
+    "OmBYAC2PmSljE1YmfNHJqhB5pS7L6j0znwVGrtF3JlqZXF78qZjL/BTXyUtclPNmSsvlEwtA+A9Mber0BOF6OmjiOAm"+
+    "MzrtBSK6ejVEUYjYBDzMnJnth3K9HX0YTAhauighMvnVoBVmdno6S9jxLRpMFtVzts4cF4GRoVl0HEs8u8lpN/XY7OB"+
+    "8Z2meGOzrvEiVE+P";
 
     // Since ImageTarget trackables use mm to specifiy their dimensions, we must use mm for all the physical dimension.
     // We will define some constants and conversions here

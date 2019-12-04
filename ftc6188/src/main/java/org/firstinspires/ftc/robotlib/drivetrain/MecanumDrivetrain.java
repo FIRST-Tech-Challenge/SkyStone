@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.robotlib.drivetrain;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.robot.Robot;
 
 import org.firstinspires.ftc.robotlib.motor.EncoderMotor;
+import org.firstinspires.ftc.robotlib.robot.SiBorgsMecanumRobot;
 
 /*
 The actual final drivetrain used for the robot, just changes the wheel angles and the wheel coefficient math to match our setup

@@ -44,6 +44,7 @@ public class SiBorgsMecanumAuto extends LinearOpMode
         telemetry.addData("AUTO START", elapsedTime.seconds());
         telemetry.update();
 
+        // TODO: autoPosition forever goes forward, does not seemingly pay attention to course variable, check math
         robot.drivetrain.autoPosition(270, 48, VELOCITY, 0);
         robot.platformServo.setPosition(ServoState.DOWN);
         robot.drivetrain.autoPosition(90, 24, VELOCITY, 0);

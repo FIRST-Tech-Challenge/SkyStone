@@ -81,6 +81,7 @@ public class SiBorgsMecanumTeleOp extends OpMode
     {
         elapsedTime.reset();
 
+        driveTelemetry.input(false);
         robot.armCrane.setLimited(true);
     }
 

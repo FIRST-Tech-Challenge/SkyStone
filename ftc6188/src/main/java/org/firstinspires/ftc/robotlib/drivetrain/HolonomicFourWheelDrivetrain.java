@@ -119,7 +119,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     public void position()
     {
         // Essentially mimics the physics equation Xf = Xi + Vi(t) + (1/2)a(t)^2 to solve for time but a = 0 and Xi-Xf = changeX which is what targetPosition is
-        double timeoutTime = (getTargetPosition()/getTicksPerIn())/(motorList[0].getMotorType().getAchieveableMaxTicksPerSecond()*getVelocity()) * 2;
+        double timeoutTime = 10;
 
         // Creates a timer object so the robot will auto stop after 2 times the timeoutTime (seconds)
         ElapsedTime timeoutTimer = new ElapsedTime();
@@ -135,10 +135,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     @Override
     public boolean isPositioning()
     {
-        for (EncoderMotor motor : motorList)
-        {
-            if (motor.isEncoderBusy()) { return true; }
-        }
+        for (EncoderMotor motor : motorList) { if (motor.isEncoderBusy()) { return true; }}
         return false;
     }
 
@@ -178,13 +175,8 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     // returns each motors ticks per in (its not actually ticks per in its really closer to ticks per ft for some reason this is fixed later in the mecanum robot class)
     @Override
     public void setTicksPerIn(double wheelRadius, double motorToWheelRatio)
-    {
-        this.ticksPerIn = (getTicksPerRev()/(wheelRadius * motorToWheelRatio * 2 * Math.PI));
-    }
+    { this.ticksPerIn = (getTicksPerRev()/(wheelRadius * motorToWheelRatio * 2 * Math.PI)); }
 
     @Override
-    public double getTicksPerIn()
-    {
-        return ticksPerIn;
-    }
+    public double getTicksPerIn() { return ticksPerIn; }
 }

@@ -14,9 +14,8 @@ import org.firstinspires.ftc.robotlib.servo.LinkedStateServo;
 import org.firstinspires.ftc.robotlib.servo.StateServo;
 import org.firstinspires.ftc.robotlib.sound.BasicSound;
 import org.firstinspires.ftc.robotlib.state.ServoState;
-import org.jetbrains.annotations.NotNull;
 
-public class SiBorgsMecanumRobot
+public class CataclysmMecanumRobot
 {
     // Drive motors
     private EncoderMotor driveFrontLeft;
@@ -30,32 +29,21 @@ public class SiBorgsMecanumRobot
     private static final double MOTOR_TO_WHEEL_RATIO = 2;
 
     // Arm motors
-    private LimitedMotor armVerticalSlide;
-    private LimitedMotor armHorizontalSlide;
-
-    // Arm constants
-    private static final int[] VERTICAL_LIMIT = {0, 1270};
-    private static final int[] HORIZONTAL_LIMIT = {-1000, 0};
+    public EncoderMotor armIntakeLeft;
+    public EncoderMotor armIntakeRight;
 
     // Servo motors
-    private StateServo servoClawLeft;
-    private StateServo servoClawRight;
-    public StateServo armGripSlide;
-
-    public LinkedStateServo platformServo;
-
-    // Sound objects
-    public BasicSound sirenSound;
+    public StateServo servoDeliveryLeft;
+    public StateServo servoDeliveryRight;
+    public StateServo servoBlockGrabber;
 
     // Telemetry reference
     private final Telemetry telemetry;
 
     // Movement systems (drivetrain/arm system)
     public MecanumDrivetrain drivetrain;
-    public FieldGoalArmSystem armCrane;
 
-    // Class constructor with full systems initialization
-    public SiBorgsMecanumRobot (@NotNull HardwareMap hwMap, Telemetry telemetry)
+    public CataclysmMecanumRobot(HardwareMap hwMap, Telemetry telemetry)
     {
         this.telemetry = telemetry;
 
@@ -74,82 +62,41 @@ public class SiBorgsMecanumRobot
 
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-            motor.setDirection(DcMotor.Direction.FORWARD);
+            motor.setDirection(DcMotorSimple.Direction.FORWARD);
         }
 
         // Arm motors init
-        armVerticalSlide = new LimitedMotor(hwMap.get(DcMotor.class, "armVerticalSlide"), VERTICAL_LIMIT[0], VERTICAL_LIMIT[1]);
-        armHorizontalSlide = new LimitedMotor(hwMap.get(DcMotor.class, "armHorizontalSlide"), HORIZONTAL_LIMIT[0], HORIZONTAL_LIMIT[1]);
+        armIntakeLeft = new EncoderMotor(hwMap.get(DcMotor.class, "intakeLeft"));
+        armIntakeRight = new EncoderMotor(hwMap.get(DcMotor.class, "intakeRight"));
 
-        armVerticalSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        armHorizontalSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        armIntakeLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        armIntakeRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        armVerticalSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        armHorizontalSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        armIntakeLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        armIntakeRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
-        armVerticalSlide.setDirection(DcMotorSimple.Direction.FORWARD);
-        armHorizontalSlide.setDirection(DcMotorSimple.Direction.FORWARD);
-
-        armVerticalSlide.setLimited(false);
-        armHorizontalSlide.setLimited(false);
+        armIntakeLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        armIntakeRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // Servos init
-        servoClawLeft = new StateServo(hwMap.get(Servo.class, "servoClawLeft"), 0, 0, 1);
-        servoClawRight = new StateServo(hwMap.get(Servo.class, "servoClawRight"), 0, 0, 1);
-        armGripSlide = new StateServo(hwMap.get(Servo.class, "armGripSlide"), 1, 1, 0);
+        servoDeliveryLeft = new StateServo(hwMap.get(Servo.class, "deliveryLeft"), 0, 0, 1);
+        servoDeliveryRight = new StateServo(hwMap.get(Servo.class, "deliveryRight"), 1, 1, 0);
+        servoBlockGrabber = new StateServo(hwMap.get(Servo.class, "blockGrabber"), 1, 1, 0);
 
-        servoClawLeft.setDirection(Servo.Direction.FORWARD);
-        servoClawRight.setDirection(Servo.Direction.FORWARD);
-        armGripSlide.setDirection(Servo.Direction.FORWARD);
+        servoDeliveryLeft.setDirection(Servo.Direction.FORWARD);
+        servoDeliveryRight.setDirection(Servo.Direction.FORWARD);
+        servoBlockGrabber.setDirection(Servo.Direction.FORWARD);
 
-        servoClawLeft.setPosition(ServoState.STOWED);
-        servoClawRight.setPosition(ServoState.STOWED);
-        armGripSlide.setPosition(ServoState.STOWED);
-
-        platformServo = new LinkedStateServo(servoClawLeft, servoClawRight);
-
-        // Sounds init
-        sirenSound = new BasicSound("police_siren", hwMap);
-        sirenSound.stopSound();
+        servoDeliveryLeft.setPosition(ServoState.STOWED);
+        servoDeliveryRight.setPosition(ServoState.STOWED);
+        servoBlockGrabber.setPosition(ServoState.STOWED);
 
         // Systems init
         drivetrain = new MecanumDrivetrain(driveMotorList, WHEEL_RADIUS_IN, MOTOR_TO_WHEEL_RATIO);
-        armCrane = new FieldGoalArmSystem(armVerticalSlide, armHorizontalSlide);
     }
 
-    // Telemetry command useful for drivers
-    public void driverTelemetry()
-    {
-        telemetry.addData("> Drive Info", "-----");
-        telemetry.addData("Half Power Mode\t(G1-RStickButton)", drivetrain.getLowPower());
-        telemetry.addData("Course Degrees\t(G1-RStick)", drivetrain.getCourse());
-        telemetry.addData("Power\t(G1-RStick)", drivetrain.getVelocity());
-        telemetry.addData("Rotation\t(G1-LStick)", drivetrain.getRotation());
-
-        telemetry.addData("> Arm Info", "Limited\t(G2-X)? " + armVerticalSlide.isLimited());
-        telemetry.addData("Vertical Position\t(G2-LStickY)", armVerticalSlide.getCurrentPosition());
-        telemetry.addData("Horizontal Position\t(G2-RStickY", armHorizontalSlide.getCurrentPosition());
-        telemetry.addData("Vertical Limits", armVerticalSlide.getLowerLimit() + " " + armVerticalSlide.getUpperLimit());
-        telemetry.addData("Horizontal Position", armHorizontalSlide.getLowerLimit() + " " + armHorizontalSlide.getUpperLimit());
-
-        telemetry.addData("> Servo Info", "-----");
-        telemetry.addData("Platform Servos Pos\t(G2-DpadUp/DpadDown)", platformServo.getServoState());
-        telemetry.addData("Platform Claw Left\t(^)", servoClawLeft.getState());
-        telemetry.addData("Platform Claw Right\t(^)", servoClawRight.getState());
-        telemetry.addData("Arm Grip Slide\t(G2-Y/A)", armGripSlide.getState());
-
-        telemetry.addData("> Sound Info", "-----");
-        telemetry.addData("IsPlaying(G1-X)", sirenSound.isSoundPlaying());
-
-        telemetry.update();
-    }
-
-    // Full output of all basic functions for debugging
     public void informationTelemetry()
     {
-        telemetry.addData("Motor", driveFrontLeft.getMotorType().getTicksPerRev());
-        telemetry.addData("Motor 2", drivetrain.getTicksPerIn());
-        telemetry.addData("Motor 3", drivetrain.getTicksPerIn() * 48);
         telemetry.addData("> Target Positions", "-----");
         telemetry.addData("WheelTarget FL", drivetrain.wheelTargetPositions[0]);
         telemetry.addData("WheelTarget FR", drivetrain.wheelTargetPositions[1]);
@@ -197,13 +144,10 @@ public class SiBorgsMecanumRobot
         telemetry.addData("Current Pos", drivetrain.getCurrentPosition());
         telemetry.addData("Is Pos", drivetrain.isPositioning());
 
-        telemetry.update();
-    }
+        telemetry.addData("Arm RPM", "-----");
+        telemetry.addData("Left", armIntakeLeft.getRevolutionsPerSecond());
+        telemetry.addData("Right", armIntakeRight.getRevolutionsPerSecond());
 
-    // Full information output plus an optional status
-    public void informationTelemetry(String programStatus)
-    {
-        telemetry.addData("> Prog Status", programStatus);
-        informationTelemetry();
+        telemetry.update();
     }
 }

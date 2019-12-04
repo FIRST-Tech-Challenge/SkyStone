@@ -97,7 +97,12 @@ public class Teleop extends LinearOpMode {
         buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.LEFT_BUMPER, new Servo[] {hwMap.clawServo1, hwMap.clawServo2}, //Claw Servos-X
                 new double[][] { {TeleopConstants.clawServo1PosOpen, TeleopConstants.clawServo1PosClose},
                         {TeleopConstants.clawServo2PosOpen, TeleopConstants.clawServo2PosClose} }));
-        buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.RIGHT_BUMPER, new Servo[] {hwMap.clawInit},
+        buttonLogic.add(new OnOffButton(gamepad2, gamepad2, GamepadButtons.LEFT_BUMPER, GamepadButtons.RIGHT_BUMPER, //Intake-A & B
+                new Servo[] { hwMap.clawServo1, hwMap.clawServo2 },
+                new double[][] { {TeleopConstants.clawServo1PosOpen, TeleopConstants.clawServo1PosClose},
+                        {TeleopConstants.clawServo2PosOpen, TeleopConstants.clawServo2PosClose} },
+                new double[] { TeleopConstants.clawServo1PosClose, TeleopConstants.clawServo2PosOpen }));
+        buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.DPAD_DOWN, new Servo[] {hwMap.clawInit},
                 new double[][]{ {TeleopConstants.clawInitPosCapstone, TeleopConstants.clawInitPosReset} }));
 
         telemetry.addData("Status", "Ready");
@@ -111,19 +116,24 @@ public class Teleop extends LinearOpMode {
 
             if(gamepad2.right_trigger >= 0.5 && !manualOverrideBlocker){
                 manualOverrideBlocker = true;
+                buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.LEFT_TRIGGER, new Servo[] { hwMap.transferHorn },
+                        new double[][] { {TeleopConstants.transferHornPosPush, TeleopConstants.transferHornPosReady} }));
                 manualOverride = !manualOverride;
             } else if(gamepad2.right_trigger < 0.5 && manualOverrideBlocker){
                 manualOverrideBlocker = false;
+                OnOffButton transferHornLogic = new OnOffButton(gamepad2, GamepadButtons.LEFT_TRIGGER, new Servo[] { hwMap.transferHorn },
+                        new double[][] { {TeleopConstants.transferHornPosPush, TeleopConstants.transferHornPosReady} });
+                buttonLogic.remove(transferHornLogic);
             }
 
-            if(manualOverride){
+            /*if(manualOverride){
                 buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.LEFT_TRIGGER, new Servo[] { hwMap.transferHorn },
                         new double[][] { {TeleopConstants.transferHornPosPush, TeleopConstants.transferHornPosReady} }));
             } else {
                 OnOffButton transferHornLogic = new OnOffButton(gamepad2, GamepadButtons.LEFT_TRIGGER, new Servo[] { hwMap.transferHorn },
                         new double[][] { {TeleopConstants.transferHornPosPush, TeleopConstants.transferHornPosReady} });
                 buttonLogic.remove(transferHornLogic);
-            }
+            }*/
 
             for(OnOffButton onOffButton : buttonLogic) {
                 onOffButton.getGamepadStateAndRun();
@@ -158,7 +168,10 @@ public class Teleop extends LinearOpMode {
                 switchBlocker = false;
             }
 
+            telemetry.addData("Info", "Press START + BACK on GAMEPAD1 to switch drive modes!");
+
             if(tobyMode) {
+                telemetry.addData("Current Drive Mode", "TOBY MODE");
                 if (!(gamepad1.left_stick_x == 0 && gamepad1.left_stick_y == 0)) {
 
                     double speed;
@@ -212,7 +225,10 @@ public class Teleop extends LinearOpMode {
                     drivetrain.stop();
                 }
             } else {
+                telemetry.addData("Current Drive Mode", "CLASSIC MODE");
                 drivetrain.setSpeedMultiplier(normalSpeed);
+                drivetrain.setMotorZeroPower(DcMotor.ZeroPowerBehavior.BRAKE);
+
                 double turn = (-1) * (gamepad1.left_trigger - gamepad1.right_trigger) * turnSpeed;
 
                 if (!(gamepad1.left_stick_x == 0 && gamepad1.right_stick_y == 0 && turn == 0)) {

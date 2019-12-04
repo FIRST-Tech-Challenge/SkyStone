@@ -166,14 +166,10 @@ public abstract class OmniAutoClass extends LinearOpMode {
             }
         }
 
+        robot.resetReads();
         while ((!reachedClickPosition(position, finalEncoderValue, speed, reverseEncoders) && (timer.milliseconds() < endTime) && (!isStopRequested()))) {
-            String myTelemetry = "Current Encoder: " + position + " Destination Encoder: " + finalEncoderValue;
-            telemetry.addLine(myTelemetry);
-            telemetry.addData("Setting Power: ", speed);
-
             // Since this is a driveForward function, the Y Axis is the only important axis
             driveAtHeading(speed, rotateSpeed, driveAngle, gyroReading);
-            updateTelemetry(telemetry);
 
             position = robot.frontLeft.getCurrentPosition();
             robot.resetReads();
@@ -291,8 +287,8 @@ public abstract class OmniAutoClass extends LinearOpMode {
     public void rotateRobotForTime(double speed, int maxTime) {
         double endTime = timer.milliseconds() + maxTime;
         while(opModeIsActive() && timer.milliseconds() < endTime && (!isStopRequested())) {
-            robot.drive(0.0,0.0,speed,0.0, false);
             robot.resetReads();
+            robot.drive(0.0,0.0,speed,0.0, false);
         }
         robot.setAllDriveZero();
     }
@@ -427,19 +423,20 @@ public abstract class OmniAutoClass extends LinearOpMode {
 		return foundDistance;
 	}
 
-	public void grabFoundation(int maxTime) {
+	public void grabFoundation(int maxTime, boolean progressActivities) {
 	    double endTime = timer.milliseconds() + maxTime;
-	    boolean grabbedFoundation = false;
 	    robot.resetReads();
 	    robot.startGrabbing();
         performRobotActivities();
-	    while(timer.milliseconds() < endTime && robot.grabState != HardwareOmnibot.GrabFoundationActivity.IDLE && (!isStopRequested())) {
-            robot.resetReads();
-            performRobotActivities();
+	    while((timer.milliseconds() < endTime) && (robot.grabState != HardwareOmnibot.GrabFoundationActivity.IDLE) && (!isStopRequested())) {
+	        if(progressActivities) {
+                robot.resetReads();
+                performRobotActivities();
+            }
         }
     }
 
-    public void moveFingers(boolean moveUp) {
+    public void moveFingers(boolean moveUp, boolean progressActivities) {
 	    double endTime = timer.milliseconds() + 500;
 		if(moveUp) {
 			robot.fingersUp();
@@ -447,8 +444,10 @@ public abstract class OmniAutoClass extends LinearOpMode {
 			robot.fingersDown();
 		}
 	    while(timer.milliseconds() < endTime && (!isStopRequested())) {
-			robot.resetReads();
-			performRobotActivities();
+	        if(progressActivities) {
+                robot.resetReads();
+                performRobotActivities();
+            }
 		}
 	}
 
@@ -475,6 +474,7 @@ public abstract class OmniAutoClass extends LinearOpMode {
         final int DELTA_SLEEP = 10;
         double deltaAngle = 0.0;
 
+        robot.resetReads();
         while ((timer.milliseconds() < endTime) && (Math.abs(rotationAngle - angleTraveled) > SAME_ANGLE) && (!isStopRequested())) {
             currentAngle = robot.readIMU();
             if (currentAngle >= lastAngle) {
@@ -482,22 +482,14 @@ public abstract class OmniAutoClass extends LinearOpMode {
             } else {
                 angleTraveled += 360.0 + currentAngle - lastAngle;
             }
-            telemetry.addData("Current Angle: ", currentAngle);
-            telemetry.addData("Last Angle: ", lastAngle);
 
             deltaAngle = angleTraveled - rotationAngle;
-            telemetry.addData("Delta Angle: ", deltaAngle);
             spinRate = controlledRotationAngle(deltaAngle, maxSpeed);
             // We went too far, come back
             if (deltaAngle < 0.0) {
                 robot.drive(0.0, 0.0, -spinRate, 0.0, false);
-                telemetry.addData("Spin Rate: ", -spinRate);
             } else {
                 robot.drive(0.0, 0.0, spinRate, 0.0, false);
-                telemetry.addData("Spin Rate: ", spinRate);
-            }
-            if (isStopRequested()) {
-                break;
             }
             robot.resetReads();
         }
@@ -534,6 +526,7 @@ public abstract class OmniAutoClass extends LinearOpMode {
             normalizedAngle = rotationAngle;
         }
 
+        robot.resetReads();
         while ((timer.milliseconds() < endTime) && ((Math.abs(normalizedAngle - angleTraveled) > SAME_ANGLE) && (!isStopRequested()))
                 && (!isStopRequested())) {
             currentAngle = robot.readIMU();
@@ -550,12 +543,9 @@ public abstract class OmniAutoClass extends LinearOpMode {
                     angleTraveled += 360.0 + lastAngle - currentAngle;
                 }
             }
-            telemetry.addData("Current Angle: ", currentAngle);
-            telemetry.addData("Last Angle: ", lastAngle);
             lastAngle = currentAngle;
 
             deltaAngle = normalizedAngle - angleTraveled;
-            telemetry.addData("Delta Angle: ", deltaAngle);
             spinRate = controlledRotationAngle(deltaAngle, normalizedSpeed);
 
             if (normalizedSpeed < 0.0) {
@@ -563,26 +553,19 @@ public abstract class OmniAutoClass extends LinearOpMode {
                 // We went too far, come back
                 if (deltaAngle < 0.0) {
                     robot.drive(0.0, 0.0, -spinRate, 0.0, false);
-                    telemetry.addData("Spin Rate: ", spinRate);
                 } else {
                     robot.drive(0.0, 0.0, spinRate, 0.0, false);
-                    telemetry.addData("Spin Rate: ", -spinRate);
                 }
             } else {
                 // CW
                 // We went too far, come back
                 if (deltaAngle < 0.0) {
                     robot.drive(0.0, 0.0, -spinRate, 0.0, false);
-                    telemetry.addData("Spin Rate: ", -spinRate);
                 } else {
                     robot.drive(0.0, 0.0, spinRate, 0.0, false);
-                    telemetry.addData("Spin Rate: ", spinRate);
                 }
             }
 
-            telemetry.addData("Destination Angle: ", normalizedAngle);
-            telemetry.addData("Traveled Angle: ", angleTraveled);
-            telemetry.update();
             robot.resetReads();
         }
         robot.setAllDriveZero();

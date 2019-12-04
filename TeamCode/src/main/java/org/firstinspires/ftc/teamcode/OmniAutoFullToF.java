@@ -149,10 +149,10 @@ public abstract class OmniAutoFullToF extends OmniAutoClass
             rotateRobotToAngle(rotateSpeed, baseAngle + attackAngle1, 2000, progressActivities);
 
             // Make sure the intake is out.
+            robot.resetReads();
             double endTime = timer.milliseconds() + 1000;
             while (!robot.intakeAtPosition(HardwareOmnibot.IntakePosition.EXTENDED) && (timer.milliseconds() < endTime) && (!isStopRequested())) {
                 robot.resetReads();
-//                performRobotActivities();
             }
             robot.moveLift(HardwareOmnibot.LiftPosition.STOWED);
 
@@ -187,38 +187,28 @@ public abstract class OmniAutoFullToF extends OmniAutoClass
             rotateRobotToAngle(rotateSpeed, baseAngle + 180.0, 2000, progressActivities);
 
             // Back the robot up to the foundation
-            grabFoundation(5000);
-//		parallelRearTarget(0.5, 3.0, precisionSpeed, precisionSpin, precisionDistanceError, 5000);
-
-            // Might want to start the process to place the skystone here.
-            // We also might want to put the perform function we use in the
-            // loops of the autonomous functions.
-//		if(!isStopRequested()) {
-//    		robot.startLifting();
-//		    robot.performLifiting();
-//      }
+            grabFoundation(5000, false);
 
             // Move the foundation to parallel back wall.
             driveAtHeadingForTime(maxSpeed, slowSpin, baseAngle + 260.0, baseAngle + 170.0, 350, false, true);
             driveAtHeadingForTime(maxSpeed, slowSpin, baseAngle + 250.0, baseAngle + 160.0, 350, false, true);
-//      robot.performLifting();
 
             // Rotate to parallel back wall.
             rotateRobotToAngle(rotateSpeed, baseAngle + 90.0, 2000, true);
-//      robot.performLifting();
 
             // Drive the foundation into the back wall.
             driveAtHeadingForTime(maxSpeed, precisionSpin, baseAngle + 0.0, baseAngle + 90.0, 500, true, true);
-//      robot.performLifting();
 
             // Start delivering Stone
+            robot.resetReads();
             robot.startStoneStacking();
 
             // Release the foundation
-            moveFingers(true);
+            moveFingers(true, true);
 
-            // Make sure the intake is out.
-            endTime = timer.milliseconds() + 5000;
+            // Perform the whole stone placement here for now.  Place at level 2 to make sure it doesn't get caught up.
+            robot.liftTargetHeight = HardwareOmnibot.LiftPosition.STONE2;
+            endTime = timer.milliseconds() + 10000;
             while ((robot.stackStone != HardwareOmnibot.StackActivities.IDLE) && (timer.milliseconds() < endTime) && (!isStopRequested())) {
                 robot.resetReads();
                 performRobotActivities();

@@ -126,7 +126,7 @@ public class SiBorgsMecanumRobot
         telemetry.addData("Power\t(G1-RStick)", drivetrain.getVelocity());
         telemetry.addData("Rotation\t(G1-LStick)", drivetrain.getRotation());
 
-        telemetry.addData("> Arm Info", "Limited\t(G2-B)? " + armVerticalSlide.isLimited());
+        telemetry.addData("> Arm Info", "Limited\t(G2-X)? " + armVerticalSlide.isLimited());
         telemetry.addData("Vertical Position\t(G2-LStickY)", armVerticalSlide.getCurrentPosition());
         telemetry.addData("Horizontal Position\t(G2-RStickY", armHorizontalSlide.getCurrentPosition());
         telemetry.addData("Vertical Limits", armVerticalSlide.getLowerLimit() + " " + armVerticalSlide.getUpperLimit());

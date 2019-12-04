@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.SourceFiles;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class Trobot {
@@ -18,5 +20,13 @@ public class Trobot {
         component = new Component(hardwareMap);
 
         runtime = new ElapsedTime();
+    }
+
+    public void disable(DcMotor dcMotor) {
+        dcMotor = null;
+    }
+
+    public void disable(Servo servo) {
+        servo = null;
     }
 }

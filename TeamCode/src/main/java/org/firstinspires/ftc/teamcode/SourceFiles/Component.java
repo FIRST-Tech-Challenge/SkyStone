@@ -25,16 +25,16 @@ public class Component {
 
         leftLatch = hardwareMap.get(Servo.class, "left latch");
 
-        //rightLatch = hardwareMap.get(Servo.class, "right latch");
+        rightLatch = hardwareMap.get(Servo.class, "right latch");
     }
 
     public void latch(String mode) {
         if (mode.toUpperCase().equals("LATCH")) {
             leftLatch.setPosition(0.5);
-            //rightLatch.setPosition(0.3);
+            rightLatch.setPosition(0.3);
         } else if (mode.toUpperCase().equals("UNLATCH")) {
             leftLatch.setPosition(1);
-            //rightLatch.setPosition(0);
+            rightLatch.setPosition(0);
         }
     }
 

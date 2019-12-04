@@ -40,11 +40,11 @@ public class Component {
 
     public void intake(String mode) {
         if (mode.toUpperCase().equals("INTAKE")) {
-            leftIntake.setPower(-0.5);
-            rightIntake.setPower(0.5);
+            leftIntake.setPower(0.5);
+            rightIntake.setPower(-0.5);
         } else if (mode.toUpperCase().equals("RELEASE")) {
-            leftIntake.setPower(0.2);
-            rightIntake.setPower(-0.2);
+            leftIntake.setPower(-0.2);
+            rightIntake.setPower(0.2);
         } else if (mode.toUpperCase().equals("STOP")){
             leftIntake.setPower(0);
             rightIntake.setPower(0);

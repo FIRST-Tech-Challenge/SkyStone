@@ -32,9 +32,11 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 import static org.firstinspires.ftc.teamcode.Control.Constants.COUNTS_PER_INCH;
 import static org.firstinspires.ftc.teamcode.Control.Constants.COUNTS_PER_MOTOR_REV;
+import static org.firstinspires.ftc.teamcode.Control.Constants.backs;
 import static org.firstinspires.ftc.teamcode.Control.Constants.blimits;
 import static org.firstinspires.ftc.teamcode.Control.Constants.flimits;
 import static org.firstinspires.ftc.teamcode.Control.Constants.foundationServos;
+import static org.firstinspires.ftc.teamcode.Control.Constants.fronts;
 import static org.firstinspires.ftc.teamcode.Control.Constants.leftLinears;
 import static org.firstinspires.ftc.teamcode.Control.Constants.leftServos;
 import static org.firstinspires.ftc.teamcode.Control.Constants.leftsucks;
@@ -63,6 +65,9 @@ public class Crane {
 
         for (setupType type: setup) {
             switch (type) {
+                case ultrasoinc:
+                    setupUltra();
+                    break;
                 case intake:
                     setupIntake();
                     break;
@@ -165,6 +170,8 @@ public class Crane {
     public Servo rotationservo, rightServo, leftServo, foundationServo;
     public CRServo smallRSuck, smallLSuck;
 
+    public ModernRoboticsI2cRangeSensor front, back;
+
     public DigitalChannel flimit;
     public DigitalChannel blimit;
 
@@ -239,6 +246,11 @@ public class Crane {
         encoder(EncoderMode.OFF, rack, leftLinear, rightLinear);
     }
 
+    public void setupUltra() throws InterruptedException{
+        front = ultrasonicSensor(fronts);
+        back = ultrasonicSensor(backs);
+    }
+
     //-----------------------HARDWARE SETUP FUNCTIONS---------------------------------------
     public DcMotor motor(String name, DcMotor.Direction directionm, DcMotor.ZeroPowerBehavior zeroPowerBehavior) throws InterruptedException {
         DcMotor motor = hardwareMap.dcMotor.get(name);
@@ -259,7 +271,7 @@ public class Crane {
         CRServo servo = hardwareMap.crservo.get(name);
         servo.setDirection(direction);
 
-        servo.setPower(0);
+        servo.setPower(startSpeed);
         return servo;
     }
     public ColorSensor colorSensor(String name, boolean ledOn) throws InterruptedException {
@@ -619,7 +631,7 @@ public class Crane {
         ON, OFF;
     }
     public enum setupType{
-        autonomous, teleop, endgame, drive, camera, claw, bSystem, foundation, yellow, intake;
+        autonomous, teleop, endgame, drive, camera, claw, bSystem, foundation, yellow, intake, ultrasoinc;
     }
 
     //-------------------SET FUNCTIONS--------------------------------

@@ -23,18 +23,20 @@ public class JustWheelsTeleOp extends TeleOpControl {
             standardGamepadData();
 
             if(gamepad1.dpad_up){
-                rob.rightSuck.setPower(-0.8);
-                rob.leftSuck.setPower(0.8);
+                rob.rightSuck.setPower(-1);
+                rob.leftSuck.setPower(1);
                 rob.smallRSuck.setPower(-1);
                 rob.smallLSuck.setPower(1);
             }else if(gamepad1.dpad_down){
-                rob.rightSuck.setPower(0.8);
-                rob.leftSuck.setPower(-0.8);
+                rob.rightSuck.setPower(1);
+                rob.leftSuck.setPower(-1);
                 rob.smallRSuck.setPower(1);
                 rob.smallLSuck.setPower(-1);
             }else{
                 rob.rightSuck.setPower(0);
                 rob.leftSuck.setPower(0);
+                rob.smallRSuck.setPower(0);
+                rob.smallLSuck.setPower(0);
             }
 
             if (gamepad1.y){

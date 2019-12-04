@@ -62,6 +62,8 @@ public class Constants {
     public static final String leftsucks = "leftSuck";
     public static final String smallRSucks = "smallRSuck";
     public static final String smallLSucks = "smallLSuck";
+    public static final String fronts = "frontUltra";
+    public static final String backs = "backUltra";
 
 
 

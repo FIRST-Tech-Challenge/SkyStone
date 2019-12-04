@@ -27,9 +27,9 @@ class SSMechAutoOp : LinearOpMode()
         robot.drive(0.50) //Drives Forward to the Foundation
         sleep(2500)
         robot.brake()
-        robot.leftHook?.position = 0.25 // Grabs Onto the Foundation
-        robot.rightHook?.position = -0.25
-        robot.drive(-0.50) //Drives back with teh foundation
+        robot.leftHook?.position = 0.72 // Grabs Onto the Foundation
+        robot.rightHook?.position = 0.72
+        robot.drive(-0.50) //Drives back with the foundation
         sleep(1500)
         robot.brake()
         robot.rightPow(0.50) //Turn 90 degrees and drives it up to the wall in the building zone

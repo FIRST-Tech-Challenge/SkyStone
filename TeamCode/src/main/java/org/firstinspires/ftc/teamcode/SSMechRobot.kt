@@ -2,7 +2,9 @@ package org.firstinspires.ftc.teamcode
 
 import com.qualcomm.robotcore.hardware.*
 
-
+/*
+    TODO: Create abstract class and seperate auto and tele
+ */
 
 
 /**
@@ -68,13 +70,13 @@ class SSMechRobot {
     //METHODS
 
     fun leftPow(pow: Double){
-        bLDrive?.power = pow
-        fLDrive?.power = pow
+        bLDrive?.power = -pow
+        fLDrive?.power = -pow
     }
 
     fun rightPow(pow: Double){
-        bRDrive?.power = pow
-        fRDrive?.power = pow
+        bRDrive?.power = -pow
+        fRDrive?.power = -pow
     }
 
     fun strafe(pow: Double) //Positive Value = Right Strafe || Negative Value = Left Strafe
@@ -85,7 +87,7 @@ class SSMechRobot {
         fRDrive?.power = -pow
     }
 
-    fun drive(leftM: Double, rightM: Double) {
+    fun drive(leftM: Double, rightM: Double) { //used for turning
         leftPow(leftM)
         rightPow(rightM)
     }

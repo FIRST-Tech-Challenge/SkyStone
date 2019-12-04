@@ -1,4 +1,4 @@
-/* Copyright (c) 2017 FIRST. All rights reserved.
+   /* Copyright (c) 2017 FIRST. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted (subject to the limitations in the disclaimer below) provided that
@@ -31,52 +31,46 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 
-/**
- * This file contains basic code to run a 4 wheeled Mecanum wheel setup. The d-pad controls
- * forwards/backwards and turning left and right, and the right stick controls strafing. (working on diff. control setup currently)
- */
+   /**
+    * This file contains basic code to run a 4 wheeled Mecanum wheel setup. The d-pad controls
+    * forwards/backwards and turning left and right, and the right stick controls strafing. (working on diff. control setup currently)
+    */
 
-@Autonomous(name = "Unfold_Autonomous", group = "Linear Opmode")
-@Disabled
-public class Unfold_Autonomous_ExtendBase extends BaseAutoOpMode {
-//@Disabled
-
-
-    float feederServoPosition = 0;
+   @Autonomous(name = "Dash_Platform_Autonomous2", group = "Linear Opmode")
+   @Disabled
+   public class Dash_Platform_Autonomous2 extends BaseAutoOpMode {
 
 
-    @Override
-    public void runOpMode() {
-        telemetry.addData("Status", "Initialized");
-        telemetry.update();
-
-        GetHardware();
 
 
-        // Wait for the game to start (driver presses PLAY)
-        waitForStart();
-        runtime.reset();
+       @Override
+       public void runOpMode() {
+           telemetry.addData("Status", "Initialized");
+           telemetry.update();
+
+           GetHardware();
+
+           // Wait for the game to start (driver presses PLAY)
+           waitForStart();
+           runtime.reset();
+
+           //UnfoldRobot();
+
+           Clamp_Left.setPosition(0.7);
+           Clamp_Right.setPosition(0.2);
+           sleep(1000);
+
+           RunAllMotors();
+           sleep(1000);
+           CutMotors();
+
+           Clamp_Left.setPosition(0.75f);
+           Clamp_Right.setPosition(0.25f);
+           sleep(1000);
 
 
-        front_left.setPower(1);
-        rear_left.setPower(-1);
-        front_right.setPower(-1);
-        rear_right.setPower(1);
+       }
+   }
 
-        sleep(1000);
-
-        front_left.setPower(0);
-        rear_left.setPower(0);
-        front_right.setPower(0);
-        rear_right.setPower(0);
-
-
-    }
-}

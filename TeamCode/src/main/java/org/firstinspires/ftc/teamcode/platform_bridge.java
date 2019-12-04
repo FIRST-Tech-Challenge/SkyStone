@@ -37,15 +37,14 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
-
 /**
  * This file contains basic code to run a 4 wheeled Mecanum wheel setup. The d-pad controls
  * forwards/backwards and turning left and right, and the right stick controls strafing. (working on diff. control setup currently)
  */
 
-@Autonomous(name = "Dash_Unfold_AutonomousAW4", group = "Linear Opmode")
+@Autonomous(name = "platform_bridge", group = "Linear Opmode")
 @Disabled
-public class Dash_Unfold_AutonomousAW4 extends LinearOpMode {
+public class platform_bridge extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -70,8 +69,8 @@ public class Dash_Unfold_AutonomousAW4 extends LinearOpMode {
     private DigitalChannel Top_Sensor_Rear = null;
     private DigitalChannel bottom_touch = null;
     private DigitalChannel top_touch = null;
-    private int front_left_position; //variable to hold encoder position
     private int rear_left_position; //variable to hold encoder position
+    private int front_left_position; //variable to hold encoder position
     private int front_right_position; //variable to hold encoder position
     private int rear_right_position; //variable to hold encoder position
     private int crane_state = 0;
@@ -149,7 +148,6 @@ public class Dash_Unfold_AutonomousAW4 extends LinearOpMode {
         lift_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         lift_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
         front_left.setDirection(DcMotor.Direction.FORWARD);
@@ -162,49 +160,89 @@ public class Dash_Unfold_AutonomousAW4 extends LinearOpMode {
         top_motor.setDirection(DcMotor.Direction.FORWARD);
 
         Clamp_Left.setPosition(0);
-        Clamp_Right.setPosition(.8);
+        Clamp_Right.setPosition(.85);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
 
+        sleep(100);
+
+        //robot moves forward
+
         front_left.setPower(.8);
         front_right.setPower(.8);
         rear_left.setPower(.8);
         rear_right.setPower(.8);
-
-        sleep(400);
+        sleep(1300);
 
         front_left.setPower(0);
         front_right.setPower(0);
         rear_left.setPower(0);
         rear_right.setPower(0);
 
+        //clamps go down
+
+        Clamp_Left.setPosition(0.85f);
+        Clamp_Right.setPosition(0.15f);
         sleep(500);
 
-        lift_left.setPower(1);
-        lift_right.setPower(1);
-        sleep(200);
+        //robot moves backwards
 
-        lift_left.setPower(0);
-        lift_right.setPower(0);
-        sleep(200);
+        front_left.setPower(-.8);
+        front_right.setPower(-.8);
+        rear_left.setPower(-.8);
+        rear_right.setPower(-.8);
+        sleep(800);
 
-        Clamp_Left.setPosition(0.73f);
-        Clamp_Right.setPosition(0.27f);
-        sleep(250);
+        front_left.setPower(0);
+        front_right.setPower(0);
+        rear_left.setPower(0);
+        rear_right.setPower(0);
 
-        lift_left.setPower(-1);
-        lift_right.setPower(-1);
-        sleep(500);
+        //strafes left
 
-        lift_left.setPower(0);
-        lift_right.setPower(0);
-        sleep(200);
+        front_left.setPower(.8);
+        front_right.setPower(-.8);
+        rear_left.setPower(-.8);
+        rear_right.setPower(.8);
+        sleep(1000);
 
-        Release_Servo.setPosition(1);
-        sleep(200);
-        Release_Servo.setPosition(0);
+        front_left.setPower(0);
+        front_right.setPower(0);
+        rear_left.setPower(0);
+        rear_right.setPower(0);
+
+        //robot moves forward
+
+        front_left.setPower(.8);
+        front_right.setPower(.8);
+        rear_left.setPower(.8);
+        rear_right.setPower(.8);
+        sleep(800);
+
+        front_left.setPower(0);
+        front_right.setPower(0);
+        rear_left.setPower(0);
+        rear_right.setPower(0);
+
+        //clamps go up
+
+        Clamp_Left.setPosition(0);
+        Clamp_Right.setPosition(.85);
+
+        //robot moves back
+
+        front_left.setPower(.8);
+        front_right.setPower(.8);
+        rear_left.setPower(.8);
+        rear_right.setPower(.8);
+        sleep(2000);
+
+        front_left.setPower(0);
+        front_right.setPower(0);
+        rear_left.setPower(0);
+        rear_right.setPower(0);
 
     }
 }

@@ -1,4 +1,4 @@
-/* Copyright (c) 2017 FIRST. All rights reserved.
+   /* Copyright (c) 2017 FIRST. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted (subject to the limitations in the disclaimer below) provided that
@@ -43,9 +43,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
  * forwards/backwards and turning left and right, and the right stick controls strafing. (working on diff. control setup currently)
  */
 
-@Autonomous(name = "Dash_Unfold_AutonomousAW4", group = "Linear Opmode")
+@Autonomous(name = "Dash_Unfold_AutonomousAW7", group = "Linear Opmode")
 @Disabled
-public class Dash_Unfold_AutonomousAW4 extends LinearOpMode {
+public class Dash_Unfold_AutonomousAW7 extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -70,8 +70,8 @@ public class Dash_Unfold_AutonomousAW4 extends LinearOpMode {
     private DigitalChannel Top_Sensor_Rear = null;
     private DigitalChannel bottom_touch = null;
     private DigitalChannel top_touch = null;
-    private int front_left_position; //variable to hold encoder position
     private int rear_left_position; //variable to hold encoder position
+    private int front_left_position; //variable to hold encoder position
     private int front_right_position; //variable to hold encoder position
     private int rear_right_position; //variable to hold encoder position
     private int crane_state = 0;
@@ -79,6 +79,13 @@ public class Dash_Unfold_AutonomousAW4 extends LinearOpMode {
     private float rear_left_modifier = 0;
     private float front_right_modifier = 0;
     private float rear_right_modifier = 0;
+    static int FORWARD = 1;
+    static int BACKWARD = 2;
+    static int LEFT = 3;
+    static int RIGHT = 4;
+    static int STOP = 0;
+    static int UP = 5;
+    static int DOWN = 6;
 
 
     float feederServoPosition = 0;
@@ -149,7 +156,6 @@ public class Dash_Unfold_AutonomousAW4 extends LinearOpMode {
         lift_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         lift_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
         front_left.setDirection(DcMotor.Direction.FORWARD);
@@ -168,44 +174,91 @@ public class Dash_Unfold_AutonomousAW4 extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        front_left.setPower(.8);
-        front_right.setPower(.8);
-        rear_left.setPower(.8);
-        rear_right.setPower(.8);
+        drive(FORWARD);
+        sleep(200);
 
-        sleep(400);
-
-        front_left.setPower(0);
-        front_right.setPower(0);
-        rear_left.setPower(0);
-        rear_right.setPower(0);
+        drive(STOP);
+        telemetry.addData("Encoder test", front_left.getCurrentPosition());
+        telemetry.update();
 
         sleep(500);
 
-        lift_left.setPower(1);
-        lift_right.setPower(1);
+        lift(UP);
         sleep(200);
 
-        lift_left.setPower(0);
-        lift_right.setPower(0);
+        lift(STOP);
         sleep(200);
 
         Clamp_Left.setPosition(0.73f);
         Clamp_Right.setPosition(0.27f);
         sleep(250);
 
-        lift_left.setPower(-1);
-        lift_right.setPower(-1);
+        lift(DOWN);
         sleep(500);
 
-        lift_left.setPower(0);
-        lift_right.setPower(0);
+        lift(STOP);
         sleep(200);
 
-        Release_Servo.setPosition(1);
+        lift(DOWN);
+        sleep(300);
+
+        lift(STOP);
         sleep(200);
-        Release_Servo.setPosition(0);
+
+        drive(FORWARD);
+        sleep(200);
+
+        drive(STOP);
+        telemetry.addData("Encoder test", front_left.getCurrentPosition());
+        telemetry.update();
+    }
+
+    private void drive(int direction) {
+        if (direction == STOP) {
+            front_left.setPower(0);
+            front_right.setPower(0);
+            rear_left.setPower(0);
+            rear_right.setPower(0);
+        }
+        if (direction == RIGHT) {
+            front_left.setPower(0.8);
+            front_right.setPower(-0.8);
+            rear_left.setPower(0.8);
+            rear_right.setPower(-0.8);
+        }
+        if (direction == LEFT) {
+            front_left.setPower(-0.8);
+            front_right.setPower(0.8);
+            rear_left.setPower(-0.8);
+            rear_right.setPower(0.8);
+        }
+        if (direction == FORWARD) {
+            front_left.setPower(0.8);
+            front_right.setPower(0.8);
+            rear_left.setPower(0.8);
+            rear_right.setPower(0.8);
+        }
+        if (direction == BACKWARD) {
+            front_left.setPower(-0.8);
+            front_right.setPower(-0.8);
+            rear_left.setPower(-0.8);
+            rear_right.setPower(-0.8);
+        }
+    }
+    private void lift(int direction) {
+        if (direction == STOP) {
+            lift_left.setPower(0);
+            lift_right.setPower(0);
+        }
+        if (direction == UP) {
+            lift_left.setPower(1);
+            lift_right.setPower(1);
+        }
+        if (direction == DOWN) {
+            lift_left.setPower(-1);
+            lift_right.setPower(-1);
+        }
 
     }
-}
 
+}

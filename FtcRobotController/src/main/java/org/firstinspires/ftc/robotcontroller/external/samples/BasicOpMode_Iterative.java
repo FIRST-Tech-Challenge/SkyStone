@@ -99,13 +99,12 @@ public class BasicOpMode_Iterative extends OpMode
     /*
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
-    @Override
-    public void loop() {
-        // Setup a variable for each drive wheel to save power level for telemetry
-        double leftPower;
         double rightPower;
+        public void loop() {
+            // Setup a variable for each drive wheel to save power level for telemetry
+            double leftPower;
 
-        // Choose to drive using either Tank Mode, or POV Mode
+            // Choose to drive using either Tank Mode, or POV Mode
         // Comment out the method that's not used.  The default below is POV.
 
         // POV Mode uses left stick to go forward, and right stick to turn.

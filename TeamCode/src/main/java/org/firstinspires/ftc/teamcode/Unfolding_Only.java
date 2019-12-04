@@ -30,12 +30,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 /**
@@ -43,13 +37,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * forwards/backwards and turning left and right, and the right stick controls strafing. (working on diff. control setup currently)
  */
 
-@Autonomous(name = "Unfold_Autonomous", group = "Linear Opmode")
-@Disabled
-public class Unfold_Autonomous_ExtendBase extends BaseAutoOpMode {
-//@Disabled
+@Autonomous(name = "Unfolding_Only", group = "Linear Opmode")
+public class Unfolding_Only extends BaseAutoOpMode {
 
 
-    float feederServoPosition = 0;
 
 
     @Override
@@ -59,24 +50,18 @@ public class Unfold_Autonomous_ExtendBase extends BaseAutoOpMode {
 
         GetHardware();
 
-
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
 
 
-        front_left.setPower(1);
-        rear_left.setPower(-1);
-        front_right.setPower(-1);
-        rear_right.setPower(1);
+        UnfoldRobot();
 
-        sleep(1000);
 
-        front_left.setPower(0);
-        rear_left.setPower(0);
-        front_right.setPower(0);
-        rear_right.setPower(0);
+
+        Release_Servo.setPosition(0.4);
 
 
     }
 }
+

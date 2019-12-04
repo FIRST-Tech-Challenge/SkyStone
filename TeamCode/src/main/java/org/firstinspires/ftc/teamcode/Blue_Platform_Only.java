@@ -31,52 +31,81 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
-
 
 /**
  * This file contains basic code to run a 4 wheeled Mecanum wheel setup. The d-pad controls
  * forwards/backwards and turning left and right, and the right stick controls strafing. (working on diff. control setup currently)
  */
 
-@Autonomous(name = "Unfold_Autonomous", group = "Linear Opmode")
+@Autonomous(name = "Blue_Platform_Only", group = "Linear Opmode")
 @Disabled
-public class Unfold_Autonomous_ExtendBase extends BaseAutoOpMode {
-//@Disabled
+public class Blue_Platform_Only extends BaseAutoOpMode {
 
-
-    float feederServoPosition = 0;
 
 
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
+        telemetry.addData("Coder Note:", "Good Luck!!! - Simon");
         telemetry.update();
 
         GetHardware();
-
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
 
-
         front_left.setPower(1);
         rear_left.setPower(-1);
         front_right.setPower(-1);
         rear_right.setPower(1);
+        //sleep(200);
+        sleep(500);
+        CutMotors();
 
+        UnfoldRobot();
+
+        Clamp_Left.setPosition(0.5);
+        Clamp_Right.setPosition(0.5);
         sleep(1000);
 
-        front_left.setPower(0);
-        rear_left.setPower(0);
-        front_right.setPower(0);
-        rear_right.setPower(0);
+        RunAllMotors();
+        sleep(210);
+        CutMotors();
+
+        Clamp_Left.setPosition(0.8);
+        Clamp_Right.setPosition(0f);
+        sleep(1000);
+
+        RunAllMotorsBackward();
+        sleep(450);
+
+
+
+        front_left.setPower(-1);
+        rear_left.setPower(1);
+        front_right.setPower(1);
+        rear_right.setPower(-1);
+        sleep(1200);
+
+        front_left.setPower(-1);
+        rear_left.setPower(-1);
+        front_right.setPower(1);
+        rear_right.setPower(1);
+        sleep(1200);
+        //sleep(2500);
+
+        RunAllMotors();
+        sleep(550);
+        CutMotors();
+
+        //End of moving platform
+
+        Clamp_Left.setPosition(0f);
+        Clamp_Right.setPosition(1f);
+        sleep(1000);
 
 
     }
 }
+

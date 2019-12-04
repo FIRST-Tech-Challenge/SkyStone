@@ -32,20 +32,21 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
-
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 /**
  * This file contains basic code to run a 4 wheeled Mecanum wheel setup. The d-pad controls
  * forwards/backwards and turning left and right, and the right stick controls strafing. (working on diff. control setup currently)
  */
 
-@TeleOp(name = "BC Nelms jm", group = "Linear Opmode")
-public class BA_Nelms_jm extends LinearOpMode {
+@TeleOp(name = "Tele-Op 2019 - 2020Increase", group = "Linear Opmode")
+@Disabled
+
+public class TeleOp20192020Increase extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -187,19 +188,14 @@ public class BA_Nelms_jm extends LinearOpMode {
     public void UpdateClamps() {
         //Clamps
         if (gamepad1.left_bumper) {
-            telemetry.addData("Clamps", "Clamp Half");
-            Clamp_Left.setPosition(0.5f);
-            Clamp_Right.setPosition(0.5f);
-
-        } else if (gamepad1.left_trigger > 0) {
             telemetry.addData("Clamps", "Clamp Up");
             Clamp_Left.setPosition(0f);
             Clamp_Right.setPosition(1f);
 
-        } else if (gamepad1.left_stick_button) {
+        } else if (gamepad1.left_trigger > 0) {
             telemetry.addData("Clamps", "Clamp Down");
-            Clamp_Left.setPosition(0.1f);
-            Clamp_Right.setPosition(0.0f);
+            Clamp_Left.setPosition(0.75f);
+            Clamp_Right.setPosition(0f);
 
         } else {
             telemetry.addData("Clamps", "Not Moving");
@@ -208,22 +204,17 @@ public class BA_Nelms_jm extends LinearOpMode {
 
 
     public void UpdateFeeder() {
-        //Feeder in
-        if (gamepad1.x) {
-            telemetry.addData("Feeder", "feeder in on");
+
+        //Feeder in Player 1
+        if (gamepad1.x || gamepad2.left_trigger > 0) {
+            telemetry.addData("Feeder", "feeder out");
             feeder_motor.setPower(1);
 
-        } else if (gamepad1.a) {
+        } else if (gamepad1.a || gamepad2.right_stick_button) {
             telemetry.addData("Feeder", "Not moving");
             feeder_motor.setPower(0);
 
-        } else {
-
-            telemetry.addData("Feeder", "Not moving");
-        }
-
-        //Feeder out
-        if (gamepad1.y) {
+        } else if (gamepad1.y || gamepad2.right_trigger > 0) {
             telemetry.addData("Feeder", "Not moving");
             feeder_motor.setPower(-1);
 
@@ -234,7 +225,9 @@ public class BA_Nelms_jm extends LinearOpMode {
         } else {
             telemetry.addData("Feeder", "Not moving");
         }
+
     }
+
 
     public void UpdateFeederServo() {
         //feeder Servo Open Close
@@ -274,6 +267,7 @@ public class BA_Nelms_jm extends LinearOpMode {
             lift_right.setPower(0);
         }
     }
+
 
     public void UpdateCrane() {
 //Crane
@@ -456,14 +450,7 @@ public class BA_Nelms_jm extends LinearOpMode {
         //release servo
         if (gamepad2.y) {
             telemetry.addData("ReleaseServo", "feeder release");
-            Release_Servo.setPosition(.8);
+            Release_Servo.setPosition(0.6);
         }
     }
 }
-
-
-
-
-
-
-

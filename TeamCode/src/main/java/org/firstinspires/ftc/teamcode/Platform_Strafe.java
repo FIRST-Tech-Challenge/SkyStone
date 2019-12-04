@@ -37,6 +37,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 
 /**
@@ -45,6 +46,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  */
 
 @Autonomous(name = "Platform_Strafe", group = "Linear Opmode")
+@Disabled
 public class Platform_Strafe extends BaseAutoOpMode {
 
     BNO055IMU imu;

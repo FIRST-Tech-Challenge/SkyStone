@@ -49,9 +49,9 @@
   * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
   */
 
- @Autonomous(name = "Unfold_Test3", group = "Linear Opmode")
+ @Autonomous(name = "Larson_Unfold_11_20_2019", group = "Linear Opmode")
  @Disabled
- public class Unfold_Test3 extends LinearOpMode {
+ public class Larson_Unfold_11_20_2019 extends LinearOpMode {
 
      // Declare OpMode members.
      private ElapsedTime runtime = new ElapsedTime();
@@ -144,12 +144,12 @@
          sleep(300);
          liftUp();
 
-         if (lift_left.getCurrentPosition() > 100) {
+       /*lift_left.getCurrentPosition() > 100  {
              Release_Servo.setPosition(.5);
 
-         }
+         }*/
          liftStop();
-
+         
 
          telemetry.addData("Status", "Run Time: " + runtime.toString());
          telemetry.update();

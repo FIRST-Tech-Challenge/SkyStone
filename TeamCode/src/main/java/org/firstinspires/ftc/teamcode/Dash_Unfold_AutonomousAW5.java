@@ -35,6 +35,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 
 /**
@@ -42,8 +43,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * forwards/backwards and turning left and right, and the right stick controls strafing. (working on diff. control setup currently)
  */
 
-@Autonomous(name = "Dash_Unfold_AutonomousAW2", group = "Linear Opmode")
-public class Dash_Unfold_AutonomousAW2 extends LinearOpMode {
+@Autonomous(name = "Dash_Unfold_AutonomousAW5", group = "Linear Opmode")
+@Disabled
+public class Dash_Unfold_AutonomousAW5 extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -68,8 +70,8 @@ public class Dash_Unfold_AutonomousAW2 extends LinearOpMode {
     private DigitalChannel Top_Sensor_Rear = null;
     private DigitalChannel bottom_touch = null;
     private DigitalChannel top_touch = null;
-    private int front_left_position; //variable to hold encoder position
     private int rear_left_position; //variable to hold encoder position
+    private int front_left_position; //variable to hold encoder position
     private int front_right_position; //variable to hold encoder position
     private int rear_right_position; //variable to hold encoder position
     private int crane_state = 0;
@@ -133,6 +135,19 @@ public class Dash_Unfold_AutonomousAW2 extends LinearOpMode {
         bottom_touch.setMode(DigitalChannel.Mode.INPUT);
         top_touch.setMode(DigitalChannel.Mode.INPUT);
 
+        front_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rear_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        front_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rear_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        front_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rear_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        front_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rear_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        lift_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        lift_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        lift_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        lift_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -145,6 +160,8 @@ public class Dash_Unfold_AutonomousAW2 extends LinearOpMode {
         feeder_motor.setDirection(DcMotor.Direction.REVERSE);
         top_motor.setDirection(DcMotor.Direction.FORWARD);
 
+        Clamp_Left.setPosition(0);
+        Clamp_Right.setPosition(.8);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -155,18 +172,20 @@ public class Dash_Unfold_AutonomousAW2 extends LinearOpMode {
         rear_left.setPower(.8);
         rear_right.setPower(.8);
 
-        sleep(300);
+        sleep(200);
 
         front_left.setPower(0);
         front_right.setPower(0);
         rear_left.setPower(0);
         rear_right.setPower(0);
+        telemetry.addData("Encoder test", front_left.getCurrentPosition());
+        telemetry.update();
 
         sleep(500);
 
         lift_left.setPower(1);
         lift_right.setPower(1);
-        sleep(100);
+        sleep(200);
 
         lift_left.setPower(0);
         lift_right.setPower(0);
@@ -184,9 +203,26 @@ public class Dash_Unfold_AutonomousAW2 extends LinearOpMode {
         lift_right.setPower(0);
         sleep(200);
 
-        Release_Servo.setPosition(0);
+        lift_left.setPower(1);
+        lift_right.setPower(1);
+        sleep(700);
 
+        lift_left.setPower(0);
+        lift_right.setPower(0);
+        sleep(200);
 
+        front_left.setPower(.8);
+        front_right.setPower(.8);
+        rear_left.setPower(.8);
+        rear_right.setPower(.8);
+        sleep(500);
+
+        front_left.setPower(0);
+        front_right.setPower(0);
+        rear_left.setPower(0);
+        rear_right.setPower(0);
+        telemetry.addData("Encoder test", front_left.getCurrentPosition());
+        telemetry.update();
     }
 }
 

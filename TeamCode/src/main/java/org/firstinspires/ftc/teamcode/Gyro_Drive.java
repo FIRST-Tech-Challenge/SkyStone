@@ -35,6 +35,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.navigation.*;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 
 /**
@@ -43,6 +44,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.*;
  */
 
 @Autonomous(name = "Gyro_Drive", group = "Linear Opmode")
+@Disabled
 public class Gyro_Drive extends BaseAutoOpMode {
 
     BNO055IMU imu;

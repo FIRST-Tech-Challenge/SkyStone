@@ -58,6 +58,7 @@ public abstract class BaseOpMode extends LinearOpMode {
     public Servo Feeder_Servo = null;
     public Servo Block_Pickup = null;
     public Servo Capstone = null;
+    public Servo Release_Servo = null;
     public DigitalChannel Top_Sensor_Front = null;
     public DigitalChannel Top_Sensor_Rear = null;
     public DigitalChannel bottom_touch = null;
@@ -81,6 +82,7 @@ public abstract class BaseOpMode extends LinearOpMode {
         Feeder_Servo = hardwareMap.get(Servo.class, "Feeder_Servo");
         Block_Pickup = hardwareMap.get(Servo.class, "Block_Pickup");
         Capstone = hardwareMap.get(Servo.class, "Capstone");
+        Release_Servo = hardwareMap.get(Servo.class, "Release_Servo");
         Top_Sensor_Rear = hardwareMap.get(DigitalChannel.class, "Top_Sensor_Rear");
         Top_Sensor_Front = hardwareMap.get(DigitalChannel.class, "Top_Sensor_Front");
         bottom_touch = hardwareMap.get(DigitalChannel.class, "bottom_touch");

@@ -30,12 +30,13 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 /**
@@ -43,40 +44,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * forwards/backwards and turning left and right, and the right stick controls strafing. (working on diff. control setup currently)
  */
 
-@Autonomous(name = "Unfold_Autonomous", group = "Linear Opmode")
-@Disabled
-public class Unfold_Autonomous_ExtendBase extends BaseAutoOpMode {
-//@Disabled
+@Autonomous(name = "Red_Platform_BridgeGYRO", group = "Linear Opmode")
 
+public class Red_Platform_BridgeGYRO extends Blue_Platform_BridgeGYRO {
+    int startingSide = -1;
 
-    float feederServoPosition = 0;
-
-
-    @Override
-    public void runOpMode() {
-        telemetry.addData("Status", "Initialized");
-        telemetry.update();
-
-        GetHardware();
-
-
-        // Wait for the game to start (driver presses PLAY)
-        waitForStart();
-        runtime.reset();
-
-
-        front_left.setPower(1);
-        rear_left.setPower(-1);
-        front_right.setPower(-1);
-        rear_right.setPower(1);
-
-        sleep(1000);
-
-        front_left.setPower(0);
-        rear_left.setPower(0);
-        front_right.setPower(0);
-        rear_right.setPower(0);
-
-
-    }
 }
+

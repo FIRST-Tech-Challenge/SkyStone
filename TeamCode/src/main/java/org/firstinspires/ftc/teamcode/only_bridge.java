@@ -42,8 +42,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * forwards/backwards and turning left and right, and the right stick controls strafing. (working on diff. control setup currently)
  */
 
-@Autonomous(name = "Dash_Unfold_AutonomousAW3", group = "Linear Opmode")
-public class Dash_Unfold_AutonomousAW3 extends LinearOpMode {
+@Autonomous(name = "only_bridge", group = "Linear Opmode")
+public class only_bridge extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -133,6 +133,19 @@ public class Dash_Unfold_AutonomousAW3 extends LinearOpMode {
         bottom_touch.setMode(DigitalChannel.Mode.INPUT);
         top_touch.setMode(DigitalChannel.Mode.INPUT);
 
+        front_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rear_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        front_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rear_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        front_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rear_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        front_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rear_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        lift_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        lift_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        lift_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        lift_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -145,60 +158,32 @@ public class Dash_Unfold_AutonomousAW3 extends LinearOpMode {
         feeder_motor.setDirection(DcMotor.Direction.REVERSE);
         top_motor.setDirection(DcMotor.Direction.FORWARD);
 
+        Clamp_Left.setPosition(0);
+        Clamp_Right.setPosition(.8);
+        Release_Servo.setPosition(0);
 
-        // Wait for the game to start (driver presses PLAY waitForStart();
-        /*runtime.reset();
+        // Wait for the game to start (driver presses PLAY)
+        waitForStart();
+        runtime.reset();
 
         front_left.setPower(.8);
         front_right.setPower(.8);
         rear_left.setPower(.8);
         rear_right.setPower(.8);
 
-        sleep(500);
+        sleep(300);
 
         front_left.setPower(0);
         front_right.setPower(0);
         rear_left.setPower(0);
         rear_right.setPower(0);
 
-        sleep(250);
-
-        lift_left.setPower(1);
-        lift_right.setPower(1);
-        sleep(200);
-
-        lift_left.setPower(0);
-        lift_right.setPower(0);
-        sleep(200);
+        sleep(600);
 
         Clamp_Left.setPosition(0.73f);
         Clamp_Right.setPosition(0.27f);
+        Release_Servo.setPosition(.4f);
         sleep(250);
-
-        lift_left.setPower(-1);
-        lift_right.setPower(-1);
-        sleep(500);
-
-        lift_left.setPower(0);
-        lift_right.setPower(0);
-        sleep(200);
-
-        Release_Servo.setPosition(.8);
-
-        */
-
-        front_left.setPower(-.8);
-        front_right.setPower(.8);
-        rear_left.setPower(-.8);
-        rear_right.setPower(.8);
-
-        sleep (300);
-
-        front_left.setPower(0);
-        front_right.setPower(0);
-        rear_left.setPower(0);
-        rear_right.setPower(0);
-
     }
 }
 

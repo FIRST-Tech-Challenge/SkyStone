@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -22,7 +23,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 @Autonomous(name = "Encoder (beta)", group = "Autonomous")
-
+@Disabled
 public class Auto_Encoder extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private double TPI_F = 1120 / (Math.PI * 4);

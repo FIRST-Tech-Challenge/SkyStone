@@ -42,8 +42,8 @@ public class LiftControl {/* Constants */
         LifterLeftM = hwMap.dcMotor.get("LifterLeftM");
         LifterButtonB = hwMap.touchSensor.get("LifterButtonB");
         LifterButtonT = hwMap.touchSensor.get("LifterButtonT");
-        LifterRightM.setDirection(DcMotor.Direction.REVERSE);
-        LifterLeftM.setDirection(DcMotor.Direction.FORWARD);
+        LifterRightM.setDirection(DcMotor.Direction.FORWARD);
+        LifterLeftM.setDirection(DcMotor.Direction.REVERSE);
         LifterRightM.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         LifterLeftM.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         LifterRightM.setPower(0);

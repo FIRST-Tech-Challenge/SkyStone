@@ -11,6 +11,10 @@ public class Drivetrain {
     public DcMotor rearLeftDrive;
     public DcMotor rearRightDrive;
 
+    // start with full speed
+    public boolean speedReduction = false;
+    public String speedReductionStatus = "Pending";
+
     public Drivetrain(HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
 
@@ -26,10 +30,17 @@ public class Drivetrain {
     }
 
     public void drive(double leftPower, double rightPower) {
-        frontLeftDrive.setPower(leftPower);
-        frontRightDrive.setPower(rightPower);
-        rearLeftDrive.setPower(leftPower);
-        rearRightDrive.setPower(rightPower);
+        if (!speedReduction) {
+            frontLeftDrive.setPower(leftPower);
+            frontRightDrive.setPower(rightPower);
+            rearLeftDrive.setPower(leftPower);
+            rearRightDrive.setPower(rightPower);
+        } else {
+            frontLeftDrive.setPower(leftPower * 0.65);
+            frontRightDrive.setPower(rightPower * 0.65);
+            rearLeftDrive.setPower(leftPower * 0.65);
+            rearRightDrive.setPower(rightPower * 0.65);
+        }
     }
 
     public void autoDrive(double speed, double distance) {

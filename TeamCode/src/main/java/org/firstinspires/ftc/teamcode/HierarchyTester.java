@@ -23,9 +23,6 @@ import org.firstinspires.ftc.teamcode.SourceFiles.Trobot;
 public class HierarchyTester extends LinearOpMode {
     private Trobot trobot;
 
-    private boolean latched = false;
-    private String servoStatus = "Pending";
-
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
@@ -62,25 +59,32 @@ public class HierarchyTester extends LinearOpMode {
                 trobot.component.intake("STOP");
             }
 
+            // Map buttons to speed reduction feature
+            if (gamepad1.a && trobot.drivetrain.speedReduction) {
+                trobot.drivetrain.speedReduction = false;
+            } else if (gamepad1.a) {
+                trobot.drivetrain.speedReduction = true;
+            }
+
             // Map bumpers to foundation latches
             if (gamepad1.left_bumper) {
                 trobot.component.latch("LATCH");
-                latched = true;
+                trobot.component.isLatched = true;
             } else if (gamepad1.right_bumper) {
                 trobot.component.latch("UNLATCH");
-                latched = false;
+                trobot.component.isLatched = false;
             }
 
-            if (latched) {
-                servoStatus = "latched";
+            if (trobot.component.isLatched) {
+                trobot.component.latchStatus = "latched";
             } else {
-                servoStatus = "unlatched";
+                trobot.component.latchStatus = "unlatched";
             }
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + trobot.runtime.toString());
             telemetry.addData("Motors", "left (%.2f), right (%.2f)", -gamepad1.left_stick_y, -gamepad1.right_stick_y);
-            telemetry.addData("Servos", servoStatus);
+            telemetry.addData("Servos", trobot.component.latchStatus);
             telemetry.update();
         }
     }

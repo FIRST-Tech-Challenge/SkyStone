@@ -14,6 +14,9 @@ public class Component {
     public Servo leftLatch;
     public Servo rightLatch;
 
+    public boolean isLatched = false;
+    public String latchStatus = "Pending";
+
     public Component(HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
 

@@ -2,6 +2,9 @@ package org.firstinspires.ftc.teamcode
 
 import com.qualcomm.robotcore.hardware.*
 
+
+
+
 /**
  * Created by KasaiYuki on 9/25/2018.
  */
@@ -116,8 +119,8 @@ class SSMechRobot {
             this.rightHook?.position = 0.7
         }*/
         if(gp.a) { //hook down
-            this.leftHook?.position = 0.7
-            this.rightHook?.position = 0.7
+            this.leftHook?.position = 0.72
+            this.rightHook?.position = 0.72
         }
         else { //default position
             this.leftHook?.position = 0.0
@@ -129,23 +132,29 @@ class SSMechRobot {
 
 
     fun pinch(gp: Gamepad) {
-        /*var close = false
-        var changed = false
-        if(gp.left_bumper and !changed) {
-            if(!gp.left_bumper) close = !close
-            changed = true
-        } else if(!gp.left_bumper) changed = false
-
-        when {
-            close -> this.claw?.position = 0.0 //close
-            !close -> this.claw?.position = 1.0 //open-default
-        }*/
         if(gp.left_bumper) { //hook down
-            this.claw?.position = 0.9
-        }
-        else { //default position
             this.claw?.position = 0.00
         }
+        else { //default position
+            this.claw?.position = 0.28
+        }
+        /*
+        Toggle Function
+         */
+/*        var pushedBefore = false
+        if(gp.left_bumper)
+        {
+            if (pushedBefore)
+            {
+                this.claw?.position = 0.28
+                pushedBefore = false
+            }
+            else if(!pushedBefore)
+            {
+                this.claw?.position = 0.00
+                pushedBefore = true
+            }
+        }*/
     }
 }
 

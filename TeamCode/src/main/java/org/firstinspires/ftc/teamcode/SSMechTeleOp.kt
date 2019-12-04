@@ -55,7 +55,7 @@ class SSMechTeleOp : OpMode() {
          * Gamepad2: Crane: Right Stick Y = Y Slide; Left Bumper = pinch claw; Left Stick Y= X Slide; a = hook
          */
 
-        povMode()
+        tankMode()
 
         touched = !robot.touch!!.state //true if not pressed
 
@@ -110,18 +110,17 @@ class SSMechTeleOp : OpMode() {
         // Put powers in the range of -1 to 1 only if they aren't already (not
         // checking would cause us to always drive at full speed)
 
-        slowDown = if (gamepad1.left_bumper) 3.0 else 1.00 //condensed if else
-
+        slowDown = gamepad1.left_trigger + 2.0
 
         var drive = (gamepad1.left_stick_y).toDouble()
         var turn = -gamepad1.left_stick_x.toDouble() * 1.5
         var strafe = -gamepad1.right_stick_x.toDouble()
         var nor = 0.0
 
-        var frontLeftPower = (drive + turn + strafe)
-        var backLeftPower = (drive - turn + strafe)
-        var frontRightPower = (drive - turn - strafe)
-        var backRightPower = (drive + turn - strafe)
+        var frontLeftPower = (drive + turn + strafe) / 1.5 / slowDown
+        var backLeftPower = (drive - turn + strafe) / 1.5 / slowDown
+        var frontRightPower = (drive - turn - strafe) / 1.5 / slowDown
+        var backRightPower = (drive + turn - strafe) / 1.5 / slowDown
 
         if (abs(frontLeftPower) > 1 || abs(backLeftPower) > 1 ||
                 abs(frontRightPower) > 1 || abs(backRightPower) > 1) { //normalizing values to [-1.0,1.0]
@@ -133,11 +132,37 @@ class SSMechTeleOp : OpMode() {
         // Divide everything by nor (it's positive so we don't need to worry
         // about signs)
         //need to compensate for difference in core hex and 40:1 motors
-        robot.fLDrive?.power = frontLeftPower / nor / slowDown
-        robot.bLDrive?.power = backLeftPower /nor / slowDown
-        robot.fRDrive?.power = frontRightPower /nor / slowDown
-        robot.bRDrive?.power = backRightPower /nor / slowDown
-        telemetry.addData("front left: $frontLeftPower, front right: $frontRightPower, back left: $backLeftPower, back right: $backRightPower", "")
+        robot.fLDrive?.power = frontLeftPower / nor / 1.5
+        robot.bLDrive?.power = backLeftPower / nor / 1.5
+        robot.fRDrive?.power = frontRightPower / nor / 1.5
+        robot.bRDrive?.power = backRightPower / nor / 1.5
+        telemetry.addData("front left: ${robot.fLDrive?.power}, front right: ${robot.fRDrive?.power}, " +
+                "back left: ${robot.bLDrive?.power}, back right: ${robot.bRDrive?.power}", "")
+    }
+    fun tankMode()
+    {
+        slowDown = gamepad1.left_trigger + 2.0
+
+        //Tank Drive-sets power equal to numerical value of joystick positions
+        leftPower = -gamepad1.left_stick_y
+        rightPower = -gamepad1.right_stick_y
+        robot.fLDrive?.power = leftPower.toDouble() / 1.5 / slowDown
+        robot.bLDrive?.power = leftPower.toDouble() / 1.5 / slowDown
+        robot.fRDrive?.power = leftPower.toDouble() / 1.5 / slowDown
+        robot.bRDrive?.power = leftPower.toDouble() / 1.5 / slowDown
+        telemetry.addData("front left: ${robot.fLDrive?.power}, front right: ${robot.fRDrive?.power}, " +
+                "back left: ${robot.bLDrive?.power}, back right: ${robot.bRDrive?.power}", "")
 
     }
+    /*
+        Tank Mode 1: DPad control strafe, right joystick control power and turn
+     */
+
+    /*
+        Tank Mode 2: Old Tank mode with triggers controlling strafe
+     */
+
+    /*
+        Heli Mode: Left Joystick control power, right joystick controls turning, triggers control strafe
+     */
 }

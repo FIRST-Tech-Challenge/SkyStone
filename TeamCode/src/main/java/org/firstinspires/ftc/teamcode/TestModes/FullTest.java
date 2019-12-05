@@ -49,15 +49,23 @@ public class FullTest extends OpMode {
             while (gamepad1.left_bumper){}
         }
 
-        telemetry.addData("smootingValue", smootingValue);
 
         robot.motor_front_left.setPower(result[0]);
         robot.motor_front_right.setPower(result[1]);
         robot.motor_rear_left.setPower(result[2]);
         robot.motor_rear_right.setPower(result[3]);
 
-        robot.motor_lift_left.setPower(gamepad2.right_stick_y*0.5);
-        robot.motor_lift_right.setPower(gamepad2.right_stick_y*0.5);
+
+        telemetry.addData("smootingValue", smootingValue);
+
+        if (gamepad2.left_bumper) { // Auf
+            robot.servo_grab.setPosition(0.1);
+        } else if (gamepad2.right_bumper) { // Zu
+            robot.servo_grab.setPosition(0.5);
+        }
+
+        robot.motor_lift_left.setPower(-gamepad2.right_stick_y*0.5);
+        robot.motor_lift_right.setPower(-gamepad2.right_stick_y*0.5);
         robot.motor_clamp.setPower(gamepad2.left_stick_x);
     }
 }

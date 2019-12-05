@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareClampTest;
+import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassis;
 
 import java.util.function.Supplier;
 
@@ -24,11 +24,11 @@ public class ControlledClamp {
     private Telemetry telemetry;
 
     HardwareMap hardwareMap;
-    HardwareClampTest robot;
+    HardwareChassis robot;
 
     public ControlledClamp(HardwareMap hardwareMap, Telemetry telemetry) {
         this.hardwareMap = hardwareMap;
-        this.robot = new HardwareClampTest(hardwareMap);
+        this.robot = new HardwareChassis(hardwareMap);
 
         this.telemetry = telemetry;
     }

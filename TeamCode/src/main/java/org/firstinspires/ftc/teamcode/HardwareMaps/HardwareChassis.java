@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 public class HardwareChassis {
     //declare all motors as DcMotor to be used furthermore
@@ -21,6 +22,8 @@ public class HardwareChassis {
     public ColorSensor color_right = null;
     public DigitalChannel touch_left = null;
     public DigitalChannel touch_right = null;
+
+    public Servo servo_grab;
 
     // State used for updating telemetry
     private HardwareMap hwMap           =  null;
@@ -42,7 +45,8 @@ public class HardwareChassis {
 
         this.motor_lift_left =   hwMap.get(DcMotor.class, "hub2_motorport0");
         this.motor_lift_right =  hwMap.get(DcMotor.class, "hub2_motorport1");
-        this.motor_clamp =       hwMap.get(DcMotor.class, "hub2_motorport2");
+
+        this.motor_clamp =       hwMap.get(DcMotor.class, "hub2_motorport3");
 
         //set all motors to 0 to stop possible errors caused by not doing this.
         this.motor_front_right.setPower(0);
@@ -77,6 +81,8 @@ public class HardwareChassis {
 
         //this.touch_left =    hwMap.get(DigitalChannel.class, "h2_s2");
         //this.touch_right =   hwMap.get(DigitalChannel.class, "h2_s2");
+
+        this.servo_grab = hwMap.get(Servo.class, "hub1_servoport0");
 
     }
 }

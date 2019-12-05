@@ -12,11 +12,12 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareClampTest;
+import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassis;
 
 import java.util.function.Supplier;
 
 public class ControlledArm {
+
     // Customized for the 435rpm motor
     static final double     COUNTS_PER_MOTOR_REV    = 383.6 ;    // eg: TETRIX Motor Encoder
     static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // This is < 1.0 if geared UP
@@ -26,16 +27,17 @@ public class ControlledArm {
     private Telemetry telemetry;
 
     HardwareMap hardwareMap;
-    HardwareClampTest robot;
+    HardwareChassis robot;
 
     public ControlledArm(HardwareMap hardwareMap, Telemetry telemetry) {
         this.hardwareMap = hardwareMap;
-        this.robot = new HardwareClampTest(hardwareMap);
+        this.robot = new HardwareChassis(hardwareMap);
 
         this.telemetry = telemetry;
     }
 
     public void raiseDistance(double distance, double speed, int timeout) {
+        /*
          // Determine new target position
         double startPositionLeft = robot.motor_clamp_extender_left.getCurrentPosition();
         double startPositionRight = robot.motor_clamp_extender_left.getCurrentPosition();
@@ -78,6 +80,9 @@ public class ControlledArm {
         // Turn off RUN_TO_POSITION
         robot.motor_clamp_extender_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.motor_clamp_extender_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        */
+
+         
     }
 
     // driveCondition(1,1, () -> button.getState() == false);

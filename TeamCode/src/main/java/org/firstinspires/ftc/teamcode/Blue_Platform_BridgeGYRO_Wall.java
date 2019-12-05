@@ -116,8 +116,6 @@ public class Blue_Platform_BridgeGYRO_Wall extends BaseAutoOpMode {
         RunAllMotorsBackward();
         sleep(450);
 
-
-
         front_left.setPower(-1 * startingSide);
         rear_left.setPower(1 * startingSide);
         front_right.setPower(1 * startingSide);

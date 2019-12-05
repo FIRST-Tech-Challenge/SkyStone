@@ -117,7 +117,7 @@ public class RED_Platform_BridgeGYRO_BLOCK_INC extends BaseAutoOpMode {
         //Clamps are down
         Clamp_Left.setPosition(1);
         Clamp_Right.setPosition(0f);
-        sleep(2000);
+        sleep(1500);
 
         //Robot moves backwards
         RunAllMotorsBackward();

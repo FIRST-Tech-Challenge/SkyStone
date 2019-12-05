@@ -38,6 +38,7 @@ import org.firstinspires.ftc.robotcore.internal.system.Deadline;
 
 import java.util.concurrent.TimeUnit;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 /*
  * Display patterns of a REV Robotics Blinkin LED Driver.
@@ -50,7 +51,7 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
  * Displays the first pattern upon init.
  */
 @TeleOp(name="BlinkinExample")
-//@Disabled
+@Disabled
 public class RevBlinkinLedDriver extends OpMode {
 
         /*

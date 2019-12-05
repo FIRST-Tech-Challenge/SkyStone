@@ -13,6 +13,10 @@ public class Trobot {
 
     public ElapsedTime runtime;
 
+    public Trobot() {
+        throw new NullPointerException("Must pass hardwareMap into constructor");
+    }
+
     public Trobot(HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
 
@@ -22,11 +26,7 @@ public class Trobot {
         runtime = new ElapsedTime();
     }
 
-    public void disable(DcMotor dcMotor) {
-        dcMotor = null;
-    }
+    public void disable(DcMotor dcMotor) {dcMotor = null;}
 
-    public void disable(Servo servo) {
-        servo = null;
-    }
+    public void disable(Servo servo) {servo = null;}
 }

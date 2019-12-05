@@ -14,7 +14,9 @@ public class     PickAndPark extends ChassisStandard {
     public PickAndPark() {
         // override the default of vuforia being off.
         useVuforia = true;
-        switchMotorDirection();
+
+        // need this for tyler 2 chassis
+       // switchMotorDirection();
     }
 
     /**

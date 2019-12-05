@@ -32,18 +32,18 @@ public class ServoTesting extends LinearOpMode
                         index++;
                         robotHardware.deliveryServoManager.setPosition(servoPositions[index]);
                     }
-                } else rbUp = true;
-            }
+                }
+            } else rbUp = true;
 
             if (gamepad1.left_bumper) {
                 if (lbUp) {
                     lbUp = false;
-                    if (index - 1 >= 0) {
+                    if (index > 0) {
                         index--;
                         robotHardware.deliveryServoManager.setPosition(servoPositions[index]);
                     }
-                } else lbUp = true;
-            }
+                }
+            } else lbUp = true;
 
             /*for (double i = 0.0; i < 1.0; i += 0.1) {
                 robotHardware.deliveryServoManager.setPosition(i);

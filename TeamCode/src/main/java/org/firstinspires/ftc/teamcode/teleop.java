@@ -24,6 +24,7 @@ public class teleop extends LinearOpMode {
         // display welcome message
         telemetry.setAutoClear(false);
         telemetry.addLine("TeleOp");
+        telemetry.addLine("*** MEET 2 ***");
         telemetry.update();
 
         // create extended gamepads (for press and release options)

@@ -30,6 +30,7 @@ public class TeleOp_Tank extends LinearOpMode {
         telemetry.update();
 
         trobot = new Trobot(hardwareMap);
+        trobot.disable(trobot.component.rightLatch);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();

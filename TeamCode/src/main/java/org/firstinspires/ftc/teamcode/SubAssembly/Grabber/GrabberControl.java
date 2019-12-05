@@ -28,14 +28,17 @@ public class GrabberControl {
 
     // declare servo mapping variables
     private EnumMap<GrabberSetpt, Double> MapGrabber;
+    private EnumMap<WristSetpt, Double> MapWrist;
+    private EnumMap<ExtenderSetpt, Double> MapExtender;
+
     public enum GrabberSetpt implements EnumWrapper<GrabberSetpt> {
         Home, Close, Open;
     }
-    private EnumMap<WristSetpt, Double> MapWrist;
+
     public enum WristSetpt implements EnumWrapper<WristSetpt> {
         Horizontal, Vertical;
     }
-    private EnumMap<ExtenderSetpt, Double> MapExtender;
+
     public enum ExtenderSetpt implements EnumWrapper<ExtenderSetpt> {
         Home, Pos1, Pos2, Pos3;
     }
@@ -77,7 +80,7 @@ public class GrabberControl {
 
         GrabberServo = new ServoControl(grabberS, MapGrabber, GrabberSetpt.Home, true);
         WristServo = new ServoControl(wristS, MapWrist, WristSetpt.Horizontal, true);
-        ExtenderServo = new ServoControl (extenderS, MapExtender, ExtenderSetpt.Home, true);
+        ExtenderServo = new ServoControl(extenderS, MapExtender, ExtenderSetpt.Home, true);
     }
 
     public void open() {
@@ -104,7 +107,7 @@ public class GrabberControl {
         ExtenderServo.nextSetpoint(true);
     }
 
-    public void home(){
+    public void home() {
         ExtenderServo.setSetpoint(ExtenderSetpt.Home);
     }
 }

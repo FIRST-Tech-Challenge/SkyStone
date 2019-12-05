@@ -24,18 +24,23 @@ class SSMechAutoOp : LinearOpMode()
         //robot.vSlide?.mode = DcMotor.RunMode.RUN_USING_ENCODER
         robot.vSlide?.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         waitForStart()
+        robot.leftHook?.position = 0.0
+        robot.rightHook?.position = 0.0
         robot.drive(0.50) //Drives Forward to the Foundation
-        sleep(2500)
+        sleep(2100)
         robot.brake()
+        sleep(1000)
         robot.leftHook?.position = 0.72 // Grabs Onto the Foundation
         robot.rightHook?.position = 0.72
+        sleep(500)
         robot.drive(-0.50) //Drives back with the foundation
         sleep(1500)
         robot.brake()
-        robot.rightPow(0.50) //Turn 90 degrees and drives it up to the wall in the building zone
-        sleep(2000)
+        robot.leftPow(0.25)
+        robot.rightPow(-0.25) //Turn 90 degrees and drives it up to the wall in the building zone
+        sleep(7000)
         robot.drive(0.5)
-        sleep(3000)
+        sleep(1500)
         robot.brake()
         robot.leftHook?.position = 0.0 // Puts the Hooks back
         robot.rightHook?.position = 0.0

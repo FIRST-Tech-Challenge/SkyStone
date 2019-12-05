@@ -89,7 +89,7 @@ class SSMechRobot {
 
     fun drive(leftM: Double, rightM: Double) { //used for turning
         leftPow(leftM)
-        rightPow(rightM)
+        rightPow(rightM* 1.5)
     }
 
     fun drive(pow: Double)//OVERLOAD-both motors run at same velocity

@@ -1,39 +1,47 @@
 package org.firstinspires.ftc.teamcode.teleOp;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import com.qualcomm.robotcore.util.Range;
 
-
-
 import java.lang.Math;
 
 @TeleOp(name = "MechTeleOp")
+//@Disabled
 public class MechTeleOp extends OpMode {
+
+    //declare variables for motors for wheel
     DcMotor motorFL;
     DcMotor motorFR;
     DcMotor motorBL;
     DcMotor motorBR;
 
+    //calibration coefficient (tweak to calibrate the motors (0 <= x <= 1))
     final double calibFL = 1.00f;
     final double calibFR = 1.00f;
     final double calibBL = 1.00f;
     final double calibBR = 1.00f;
 
-    DcMotor liftBottom;
-    DcMotor liftTop;
-    DcMotor claw;
+//    //Other motors
+//    DcMotor liftBottom;
+//    DcMotor liftTop;
+//    DcMotor claw;
 
+    //servo for foundation clip
+    CRServo foundationClip;
 
+    //matrix corresponding to motors
     double[][] motorPowers = {
-        {0.0, 0.0},
-        {0.0, 0.0}
+            {0.0, 0.0},
+            {0.0, 0.0}
     };
 
+    //matrix corresponding to
     double[][] leftXMat = {
             { 0.0,  0.0},
             { 0.0,  0.0}
@@ -58,6 +66,7 @@ public class MechTeleOp extends OpMode {
         super();
     }
 
+    // When the
     @Override
     public void init() {
         setupMotors();
@@ -144,17 +153,19 @@ public class MechTeleOp extends OpMode {
         motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        liftBottom = hardwareMap.get(DcMotor.class, "liftBottom");
-        liftTop = hardwareMap.get(DcMotor.class, "liftTop");
-        claw = hardwareMap.get(DcMotor.class, "claw");
+//        liftBottom = hardwareMap.get(DcMotor.class, "liftBottom");
+//        liftTop = hardwareMap.get(DcMotor.class, "liftTop");
+//        claw = hardwareMap.get(DcMotor.class, "claw");
+//
+//        liftBottom.setDirection(DcMotorSimple.Direction.FORWARD);
+//        liftTop.setDirection(DcMotorSimple.Direction.FORWARD);
+//        claw.setDirection(DcMotorSimple.Direction.FORWARD);
+//
+//        liftBottom.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        liftTop.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        claw.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        liftBottom.setDirection(DcMotorSimple.Direction.FORWARD);
-        liftTop.setDirection(DcMotorSimple.Direction.FORWARD);
-        claw.setDirection(DcMotorSimple.Direction.FORWARD);
-
-        liftBottom.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        liftTop.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        claw.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        foundationClip = hardwareMap.crservo.get("foundationClip");
 
 //        leftServo = hardwareMap.get(CRServo.class, "leftServo");
 //        rightServo = hardwareMap.get(CRServo.class, "rightServo");
@@ -273,29 +284,37 @@ public class MechTeleOp extends OpMode {
 //            rightServo.setPower(0.0);
 //        }
 
-        //arm base (closer to the base of the robot) up and down
-        if (gamepad1.dpad_up)
-            liftBottom.setPower(0.5);
-        else if (gamepad1.dpad_down)
-            liftBottom.setPower(-0.5);
-        else
-            liftBottom.setPower(0.0);
+//        //arm base (closer to the base of the robot) up and down
+//        if (gamepad1.dpad_up)
+//            liftBottom.setPower(0.5);
+//        else if (gamepad1.dpad_down)
+//            liftBottom.setPower(-0.5);
+//        else
+//            liftBottom.setPower(0.0);
+//
+//        //arm base (closer to the hand) up and down
+//        if (gamepad1.dpad_left)
+//            liftTop.setPower(0.5);
+//        else if (gamepad1.dpad_right)
+//            liftTop.setPower(-0.5);
+//        else
+//            liftTop.setPower(0.0);
+//
+//        //hand open close
+//        if (gamepad1.a)
+//            claw.setPower(0.3);
+//        else if (gamepad1.y)
+//            claw.setPower(-0.3);
+//        else
+//            claw.setPower(0.0);
 
-        //arm base (closer to the hand) up and down
-        if (gamepad1.dpad_left)
-            liftTop.setPower(0.5);
-        else if (gamepad1.dpad_right)
-            liftTop.setPower(-0.5);
-        else
-            liftTop.setPower(0.0);
-
-        //hand open close
-        if (gamepad1.a)
-            claw.setPower(0.3);
-        else if (gamepad1.y)
-            claw.setPower(-0.3);
-        else
-            claw.setPower(0.0);
+        if (gamepad1.dpad_down) {
+            foundationClip.setPower(1.0);
+        } else if (gamepad1.dpad_up) {
+            foundationClip.setPower(-1.0);
+        } else {
+            foundationClip.setPower(0.0);
+        }
 
 
     }

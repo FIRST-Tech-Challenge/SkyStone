@@ -27,9 +27,9 @@ public class StructureTester extends OpMode {
         telemetry.addData("servoPos", servoPos);
         telemetry.update();
         if (gamepad1.dpad_down) {
-            crservo.setPower(0.5);
+            crservo.setPower(1.0);
         } else if (gamepad1.dpad_up) {
-            crservo.setPower(-0.5);
+            crservo.setPower(-1.0);
         } else {
             crservo.setPower(0.0);
         }

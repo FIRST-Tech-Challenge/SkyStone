@@ -36,7 +36,7 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
-
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 /**
  * This file contains basic code to run a 4 wheeled Mecanum wheel setup. The d-pad controls
@@ -44,7 +44,7 @@ import com.qualcomm.robotcore.util.Range;
  */
 
 @TeleOp(name = "BC Nelms jmCopy", group = "Linear Opmode")
-
+@Disabled
 public class BA_Nelms_jmCopy extends LinearOpMode {
 
     // Declare OpMode members.

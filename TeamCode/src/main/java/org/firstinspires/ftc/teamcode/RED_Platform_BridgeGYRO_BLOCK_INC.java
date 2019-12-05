@@ -201,13 +201,13 @@ public class RED_Platform_BridgeGYRO_BLOCK_INC extends BaseAutoOpMode {
         //reset gyro and rotate 30
         feeder_motor.setPower(-1);
         resetAngle();
-        rotate(-30, 1);
+        rotate(-40, 1);
 
 
         //turn on feeder and drive backwards
         feeder_motor.setPower(-1);
         RunAllMotorsBackward();
-        sleep(600);
+        sleep(650);
         CutMotors();
 
         //keep feeder on
@@ -215,7 +215,7 @@ public class RED_Platform_BridgeGYRO_BLOCK_INC extends BaseAutoOpMode {
 
         //Drive Forward
         RunAllMotors();
-        sleep(600);
+        sleep(650);
         CutMotors();
 
         //rotate back
@@ -252,13 +252,26 @@ public class RED_Platform_BridgeGYRO_BLOCK_INC extends BaseAutoOpMode {
         }
         top_motor.setPower(0);
 
+        //Open Claw
+        Block_Pickup.setPosition(0.4);
+        sleep(1000);
+
+        //Crane Across
+        top_motor.setPower(-1);
+        while (Top_Sensor_Rear.getState()) {
+            top_motor.setPower(1);
+            telemetry.addData("Status", "Moving Crane");
+            telemetry.update();
+        }
+        top_motor.setPower(0);
+
         //Lift Down
         lift_left.setPower(1);
         lift_right.setPower(1);
-        sleep(750);
+        sleep(900);
 
-        //Open Claw
-        Block_Pickup.setPosition(1);
+        RunAllMotorsBackward();
+        sleep(550);
 
 
     }

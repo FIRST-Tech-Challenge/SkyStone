@@ -31,16 +31,16 @@ public class     PickAndPark extends ChassisStandard {
 
                 encoderDrive(30);
                 sleep(500);
-                dropBackFinger();
+                dropFrontFinger();
                 sleep(2000);
                 encoderDrive(-6);
                 sleep(500);
-                turnRight(85);
+                turnRight(95);
                 sleep(500);
 
                 encoderDrive(60);
                 sleep(500);
-                raiseBackFinger();
+                raiseFrontFinger();
                 sleep(2000);
                 encoderDrive(-24);
 
@@ -55,8 +55,9 @@ public class     PickAndPark extends ChassisStandard {
 
 
                 sleep(500);
-                dropBackFinger();
-                sleep(2000);
+
+                dropFrontFinger();
+                 sleep(2000);
 
                 encoderDrive(-5);
                 sleep(500);
@@ -64,7 +65,7 @@ public class     PickAndPark extends ChassisStandard {
                 sleep(500);
                 encoderDrive(60);
                 sleep(500);
-                raiseBackFinger();
+                raiseFrontFinger();
                 sleep(2000);
                 encoderDrive(-24);
 
@@ -78,7 +79,7 @@ public class     PickAndPark extends ChassisStandard {
 
 
                 sleep(500);
-                dropBackFinger();
+                dropFrontFinger();
                 sleep(2000);
 
                 encoderDrive(-5);
@@ -87,7 +88,7 @@ public class     PickAndPark extends ChassisStandard {
                 sleep(500);
                 encoderDrive(45);
                 sleep(500);
-                raiseBackFinger();
+                raiseFrontFinger();
                 sleep(2000);
                 encoderDrive(-24);
             }

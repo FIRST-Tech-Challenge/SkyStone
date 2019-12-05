@@ -80,8 +80,8 @@ public abstract class ChassisStandard extends OpMode {
     // Fingers
     protected Servo fingerLeft;
     protected Servo fingerRight;
-    private double ffAngleHand;
-    private double bfAngleHand;
+    private double fingerLeftAngle;
+    private double fingerRightAngle;
 
     // Elevator
     private DcMotor elevator;
@@ -192,7 +192,7 @@ public abstract class ChassisStandard extends OpMode {
 
             if (useFingers) {
                 telemetry.addData("Finger", "%02.1f (%02.1f), %02.1f (%02.1f)",
-                        fingerLeft.getPosition(), ffAngleHand, fingerRight.getPosition(), bfAngleHand);
+                       /* fingerLeft.getPosition()*/ -1.0f, fingerLeftAngle, /*fingerRight.getPosition() */ -1.0f, fingerRightAngle);
             } else {
                 telemetry.addData("Finger", "DISABLED");
             }
@@ -533,29 +533,29 @@ public abstract class ChassisStandard extends OpMode {
 
     public void dropFrontFinger() {
         if (useFingers) {
-            ffAngleHand = 0.0;
-            fingerLeft.setPosition(ffAngleHand);
+            fingerLeftAngle = 1.0;
+            fingerLeft.setPosition(fingerLeftAngle);
         }
     }
 
     public void raiseFrontFinger() {
         if (useFingers) {
-            ffAngleHand = 1.0;
-            fingerLeft.setPosition(ffAngleHand);
+            fingerLeftAngle = 0.0;
+            fingerLeft.setPosition(fingerLeftAngle);
         }
     }
     
     public void dropBackFinger() {
         if (useFingers) {
-            bfAngleHand = 0.0;
-            fingerRight.setPosition(bfAngleHand);
+            fingerRightAngle = 0.0;
+            fingerRight.setPosition(fingerRightAngle);
         }
     }
 
     public void raiseBackFinger() {
         if (useFingers) {
-            bfAngleHand = 1.0;
-            fingerRight.setPosition(bfAngleHand);
+            fingerRightAngle = 1.0;
+            fingerRight.setPosition(fingerRightAngle);
         }
     }
 
@@ -723,7 +723,7 @@ public abstract class ChassisStandard extends OpMode {
             ElapsedTime sleepTime = new ElapsedTime();
             while (sleepTime.milliseconds() < milliseconds) {
                 Thread.sleep(1);
-                printStatus();
+                //printStatus();
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();

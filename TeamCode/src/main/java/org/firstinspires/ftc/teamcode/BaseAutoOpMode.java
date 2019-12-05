@@ -51,7 +51,7 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
         rear_left.setPower(.8);
         rear_right.setPower(.8);
 
-        sleep(625);
+        sleep(1000);
 
         front_left.setPower(0);
         front_right.setPower(0);
@@ -79,7 +79,7 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
 
         lift_left.setPower(-1);
         lift_right.setPower(-1);
-        sleep(600);
+        sleep(400);
 
         //Release_Servo.setPosition(1);
         //sleep(200);

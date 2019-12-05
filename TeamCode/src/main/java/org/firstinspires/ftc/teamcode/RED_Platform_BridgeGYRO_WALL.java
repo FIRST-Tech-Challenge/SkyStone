@@ -43,8 +43,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  * forwards/backwards and turning left and right, and the right stick controls strafing. (working on diff. control setup currently)
  */
 
-@Autonomous(name = "RED_Platform_BridgeGYRO_LEA_BLOK", group = "Linear Opmode")
-public class RED_Platform_BridgeGYRO_LEA_BLOCK extends BaseAutoOpMode {
+@Autonomous(name = "RED_Platform_BridgeGYRO_WALL", group = "Linear Opmode")
+public class RED_Platform_BridgeGYRO_WALL extends BaseAutoOpMode {
 
 
     BNO055IMU imu;
@@ -105,12 +105,12 @@ public class RED_Platform_BridgeGYRO_LEA_BLOCK extends BaseAutoOpMode {
         UnfoldRobot();
 
         //Clamps half
-        //Clamp_Left.setPosition(0.5);
-        //Clamp_Right.setPosition(0.5);
-        //sleep(1000);
+        Clamp_Left.setPosition(0.5);
+        Clamp_Right.setPosition(0.5);
+        sleep(1000);
 
-        //Robot Drives Forward
-        //RunAllMotors();
+        //Robot stops
+        //  RunAllMotors();
         //sleep(225);
         //CutMotors();
 
@@ -144,7 +144,15 @@ public class RED_Platform_BridgeGYRO_LEA_BLOCK extends BaseAutoOpMode {
 
         //Robot stops
         RunAllMotors();
-        sleep(650);
+        sleep(700);
+        CutMotors();
+
+        //Strafe to the wall
+        front_left.setPower(1 * startingSide);
+        rear_left.setPower(-0.7 * startingSide);
+        front_right.setPower(-1 * startingSide);
+        rear_right.setPower(1 * startingSide);
+        sleep(1000);
         CutMotors();
 
         //End of moving platform
@@ -152,12 +160,15 @@ public class RED_Platform_BridgeGYRO_LEA_BLOCK extends BaseAutoOpMode {
         //Clamps go up
         Clamp_Left.setPosition(0f);
         Clamp_Right.setPosition(1f);
+        sleep(1000);
+
+        //Servo pushes forward
         Release_Servo.setPosition(0.4);
-       // sleep(500);
+        sleep(1000);
 
         //Pulley system moves backwards
-        //top_motor.setPower(-1);
-        //sleep(200);
+        top_motor.setPower(-1);
+        sleep(200);
 
         //Control system that stops pulley
         while (Top_Sensor_Rear.getState()) {
@@ -190,74 +201,11 @@ public class RED_Platform_BridgeGYRO_LEA_BLOCK extends BaseAutoOpMode {
         lift_right.setPower(0);
 
         RunAllMotorsBackward();
-        sleep(900);
+        sleep(700);
         CutMotors();
-
-        //reset gyro and rotate 30
 
         resetAngle();
-        rotate(-30, 1);
-
-
-        //turn on feeder and drive backwards
-        feeder_motor.setPower(1);
-        RunAllMotorsBackward();
-        sleep(500);
-        CutMotors();
-
-        //Drive Forward
-        RunAllMotors();
-        sleep(500);
-        CutMotors();
-
-        //rotate back
-        resetAngle();
-        rotate(30, 1);
-
-
-        //Drive Forward
-        RunAllMotors();
-        sleep(1100);
-        CutMotors();
-
-        //Drive Backward (to get block in the claw
-        RunAllMotorsBackward();
-        sleep(50);
-        CutMotors();
-
-        //turn off feeder
-        feeder_motor.setPower(0);
-
-        //Close Claw
-        Block_Pickup.setPosition(1);
-
-        //Crane Up
-        lift_left.setPower(1);
-        lift_right.setPower(1);
-        sleep(800);
-
-        //Lift Stop
-        lift_left.setPower(0);
-        lift_right.setPower(0);
-
-        //Crane Across
-        top_motor.setPower(-1);
-        while(Top_Sensor_Front.getState()){
-            top_motor.setPower(-1);
-            telemetry.addData( "Status", "Moving Crane");
-            telemetry.update();
-        }
-        top_motor.setPower(0);
-
-        //Lift Down
-        lift_left.setPower(-1);
-        lift_right.setPower(-1);
-        sleep(500);
-
-        //Open Claw
-        Block_Pickup.setPosition(0.4);
-
-
+        rotate(-5, 1);
     }
 
     /**

@@ -105,9 +105,9 @@ public class Blue_Platform_BridgeGYRO extends BaseAutoOpMode {
         Clamp_Right.setPosition(0.5);
         sleep(1000);
 
-        RunAllMotors();
-        sleep(210);
-        CutMotors();
+        //RunAllMotors();
+        //sleep(210);
+        //CutMotors();
 
         Clamp_Left.setPosition(1);
         Clamp_Right.setPosition(0f);
@@ -122,7 +122,7 @@ public class Blue_Platform_BridgeGYRO extends BaseAutoOpMode {
         rear_left.setPower(1 * startingSide);
         front_right.setPower(1 * startingSide);
         rear_right.setPower(-1 * startingSide);
-        sleep(1200);
+        sleep(900);
 
         //front_left.setPower(1);
         //rear_left.setPower(1);

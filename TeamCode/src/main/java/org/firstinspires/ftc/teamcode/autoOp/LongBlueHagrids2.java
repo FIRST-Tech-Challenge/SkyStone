@@ -22,7 +22,7 @@ public abstract class LongBlueHagrids2 extends ChassisStandard {
 
             encoderDrive(26);
 
-            turnRight(80);
+            turnRight(90);
             encoderDrive(35);
             madeTheRun = true;
         }

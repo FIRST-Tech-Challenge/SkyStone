@@ -67,10 +67,27 @@ public class     PickAndPark extends ChassisStandard {
                 encoderDrive(-24);
 
             } else if (stoneconfig == "RIGHT") {
+
+                encoderDrive(6);
                 turnRight(45);
-                sleep(1000);
-                turnLeft(45);
-                sleep(1000);
+                encoderDrive(20);
+                turnLeft(38);
+                encoderDrive(13);
+
+
+                sleep(500);
+                dropBackFinger();
+                sleep(2000);
+
+                encoderDrive(-5);
+                sleep(500);
+                turnRight(80);
+                sleep(500);
+                encoderDrive(45);
+                sleep(500);
+                raiseBackFinger();
+                sleep(2000);
+                encoderDrive(-24);
             }
 
             madeTheRun = true;

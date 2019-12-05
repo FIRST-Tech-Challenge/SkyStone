@@ -48,7 +48,6 @@ public class Simple15203 extends LinearOpMode {
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Say", "ready");
-        telemetry.update();
 
         int grabberPos;
         int zArmMultiplier;
@@ -65,6 +64,9 @@ public class Simple15203 extends LinearOpMode {
             double left_stick_y = gamepad1.left_stick_y;
             double right_stick_x = gamepad1.right_stick_x;
             double right_stick_y = gamepad1.right_stick_y;
+
+            double right_stick_y_2 = gamepad2.right_stick_y;
+            double left_stick_x_2 = gamepad2.left_stick_x;
             //double orientation = (((double) robot.gyro.getIntegratedZValue()) / 360) * Math.PI * 2;
 
 // wheel commands have two components: drive/strafe and rotation. They have to be weighted.
@@ -116,24 +118,26 @@ public class Simple15203 extends LinearOpMode {
                 robot.allDrive(0.0, 0);
             }
 
+            telemetry.addData("Pad 2 Right Stick Y", right_stick_y_2);
 
 
             //arm controls
-            if(gamepad1.y){
+            /*
+            if(right_stick_y_2 < 0){
                 robot.zArmMotor.setPower(-0.2 * zArmMultiplier);
-            } else if (gamepad1.a) {
+            } else if (right_stick_y_2 > 0 ) {
                 robot.zArmMotor.setPower(0.2 * zArmMultiplier);
             } else {
                 robot.zArmMotor.setPower(0.0);
             }
+             */
 
             //grabber controls
-            if(gamepad1.x){
+            
 
-            } else if (gamepad1.b) {
 
-            }
-
+            telemetry.addData("Grabber Pos", robot.grabberServo.getPosition());
+            telemetry.update();
             // Pause for 40 mS each cycle = update 25 times a second.
             sleep(40);
 

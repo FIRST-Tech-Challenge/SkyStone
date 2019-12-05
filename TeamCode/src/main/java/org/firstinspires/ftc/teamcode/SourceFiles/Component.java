@@ -16,6 +16,8 @@ public class Component {
 
     // TODO: Add claw mechanism
 
+    public ColorSensor colorSensor;
+
     public boolean isLatched = false;
     public String latchStatus = "Pending";
 
@@ -52,4 +54,6 @@ public class Component {
             rightIntake.setPower(0);
         }
     }
+
+    //TODO: add color sensor code
 }

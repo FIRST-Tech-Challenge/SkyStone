@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class Trobot {
-    HardwareMap hardwareMap;
+    private HardwareMap hardwareMap;
 
     public Drivetrain drivetrain;
     public Component component;

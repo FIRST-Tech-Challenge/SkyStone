@@ -154,16 +154,11 @@ public class Blue_Platform_BridgeGYRO extends BaseAutoOpMode {
         sleep(700);
         CutMotors();
 
-
-
-
-
-
-
-
-
-
-
+        //Strafe Right
+        front_left.setPower(-1 * startingSide);
+        rear_left.setPower(.5 * startingSide);
+        front_right.setPower(.5 * startingSide);
+        rear_right.setPower(-.5 * startingSide);
 
     }
 

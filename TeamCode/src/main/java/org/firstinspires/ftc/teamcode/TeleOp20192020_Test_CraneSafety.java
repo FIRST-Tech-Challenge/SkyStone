@@ -29,26 +29,29 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.internal.system.Deadline;
+
 
 /**
  * This file contains basic code to run a 4 wheeled Mecanum wheel setup. The d-pad controls
  * forwards/backwards and turning left and right, and the right stick controls strafing. (working on diff. control setup currently)
  */
 
-@TeleOp(name = "Tele-Op 2019 - 2020", group = "Linear Opmode")
-@Disabled
-public class TeleOp20192020 extends LinearOpMode {
+@TeleOp(name = "Tele-Op 2019 - 2020 Crane Safety", group = "Linear Opmode")
+public class TeleOp20192020_Test_CraneSafety extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
+    private ElapsedTime craneSafetyTimer = new ElapsedTime();
     private DcMotor front_left = null;
     private DcMotor rear_left = null;
     private DcMotor front_right = null;
@@ -83,6 +86,36 @@ public class TeleOp20192020 extends LinearOpMode {
 
     float feederServoPosition = 0;
 
+    //@Disabled
+
+
+    /*
+     * Change the pattern every 10 seconds in AUTO mode.
+     */
+    private final static int LED_PERIOD = 10;
+
+    /*
+     * Rate limit gamepad button presses to every 500ms.
+     */
+    private final static int GAMEPAD_LOCKOUT = 500;
+
+    com.qualcomm.hardware.rev.RevBlinkinLedDriver blinkinLedDriver;
+    com.qualcomm.hardware.rev.RevBlinkinLedDriver.BlinkinPattern pattern;
+
+    Telemetry.Item patternName;
+    Telemetry.Item display;
+    RevBlinkinLedDriver.DisplayKind displayKind;
+    Deadline ledCycleDeadline;
+    Deadline gamepadRateLimit;
+
+    DigitalChannel blockbutton; // Hardware Device Object
+
+
+    protected enum DisplayKind {
+        MANUAL,
+        AUTO
+    }
+
 
     @Override
     public void runOpMode() {
@@ -113,6 +146,7 @@ public class TeleOp20192020 extends LinearOpMode {
         Top_Sensor_Front = hardwareMap.get(DigitalChannel.class, "Top_Sensor_Front");
         bottom_touch = hardwareMap.get(DigitalChannel.class, "bottom_touch");
         top_touch = hardwareMap.get(DigitalChannel.class, "top_touch");
+        blockbutton = hardwareMap.get(DigitalChannel.class, "blockbutton");
 
 
         lift_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -147,13 +181,58 @@ public class TeleOp20192020 extends LinearOpMode {
         feeder_motor.setDirection(DcMotor.Direction.REVERSE);
         top_motor.setDirection(DcMotor.Direction.FORWARD);
 
+        displayKind = RevBlinkinLedDriver.DisplayKind.AUTO;
+
+        blinkinLedDriver = hardwareMap.get(com.qualcomm.hardware.rev.RevBlinkinLedDriver.class, "blinkinLedDriver");
+        pattern = com.qualcomm.hardware.rev.RevBlinkinLedDriver.BlinkinPattern.ORANGE;
+
+
+        blinkinLedDriver.setPattern(pattern);
+
+        display = telemetry.addData("Display Kind: ", displayKind.toString());
+        patternName = telemetry.addData("Pattern: ", pattern.toString());
+
+        // set the digital channel to input.
+        blockbutton.setMode(DigitalChannel.Mode.INPUT);
+
+        telemetry.addData("Single Cycle", "Incomplete");
+        telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
 
+
         // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()) {
+        while (
+
+                opModeIsActive()) {
+
+
+            if (blockbutton.getState() == true) {
+                telemetry.addData("Digital Touch", "Is Not Pressed");
+                //set color black
+                pattern = com.qualcomm.hardware.rev.RevBlinkinLedDriver.BlinkinPattern.BLACK;
+
+            } else {
+                telemetry.addData("Digital Touch", "Is Pressed");
+                ///SET COLOR ORANGE
+                pattern = com.qualcomm.hardware.rev.RevBlinkinLedDriver.BlinkinPattern.ORANGE;
+
+            }
+            blinkinLedDriver.setPattern(pattern);
+            telemetry.update();
+
+        /*
+        if (displayKind == DisplayKind.AUTO) {
+
+            doAutoDisplay();
+        } else {
+
+            // * MANUAL mode: Nothing to do, setting the pattern as a result of a gamepad event.
+
+        }
+        */
 
 
             //Player 1
@@ -178,9 +257,11 @@ public class TeleOp20192020 extends LinearOpMode {
 
             UpdateReleaseServo();
 
+            telemetry.addData("Single Cycle", "Complete");
             telemetry.update();
         }
     }
+
 
     public void UpdateClamps() {
         //Clamps
@@ -268,28 +349,15 @@ public class TeleOp20192020 extends LinearOpMode {
     }
 
 
+    private static int CraneSafetyTimeout = 2000;
     public void UpdateCrane() {
-//Crane
-//            if (gamepad2.dpad_left && Top_Sensor_Rear.getState()) {
-//                telemetry.addData("Crane", "Crane is moving forward");
-//                top_motor.setPower(1);
-//
-//            } else if (gamepad2.dpad_right && Top_Sensor_Front.getState()) {
-//                telemetry.addData("Crane", "Crane is moving backward");
-//                top_motor.setPower(-1);
-//
-//            } else {
-//                telemetry.addData("Crane", "Not Moving");
-//                top_motor.setPower(0);
-//            }
-//
         if (gamepad2.dpad_left) {
             crane_state = 1;
-
+            craneSafetyTimer.reset();
         } else if (gamepad2.dpad_right) {
             crane_state = 2;
-        }
-        else if(gamepad2.dpad_down){
+            craneSafetyTimer.reset();
+        } else if (gamepad2.dpad_down) {
             crane_state = 0;
         }
 
@@ -297,10 +365,10 @@ public class TeleOp20192020 extends LinearOpMode {
         if (crane_state == 0) {
             top_motor.setPower(0);
 
-        } else if (crane_state == 1 && Top_Sensor_Rear.getState()) {
+        } else if (crane_state == 1 && Top_Sensor_Rear.getState() && craneSafetyTimer.milliseconds() < CraneSafetyTimeout) {
             top_motor.setPower(1);
 
-        } else if (crane_state == 2 && Top_Sensor_Front.getState()) {
+        } else if (crane_state == 2 && Top_Sensor_Front.getState() && craneSafetyTimer.milliseconds() < CraneSafetyTimeout) {
             top_motor.setPower(-1);
 
         } else {
@@ -455,7 +523,7 @@ public class TeleOp20192020 extends LinearOpMode {
         //cap stone
         if (gamepad2.a) {
             telemetry.addData("Capstone", "Capstone");
-            Capstone.setPosition(0);
+            Capstone.setPosition(0.3);
         }
     }
 
@@ -475,4 +543,46 @@ public class TeleOp20192020 extends LinearOpMode {
             Release_Servo.setPosition(0.2);
         }
     }
+
+    protected void handleGamepad() {
+        if (!gamepadRateLimit.hasExpired()) {
+            return;
+        }
+
+        if (gamepad1.a) {
+            setDisplayKind(RevBlinkinLedDriver.DisplayKind.MANUAL);
+            gamepadRateLimit.reset();
+        } else if (gamepad1.b) {
+            setDisplayKind(RevBlinkinLedDriver.DisplayKind.AUTO);
+            gamepadRateLimit.reset();
+        } else if ((displayKind == RevBlinkinLedDriver.DisplayKind.MANUAL) && (gamepad1.left_bumper)) {
+            pattern = pattern.previous();
+            displayPattern();
+            gamepadRateLimit.reset();
+        } else if ((displayKind == RevBlinkinLedDriver.DisplayKind.MANUAL) && (gamepad1.right_bumper)) {
+            pattern = pattern.next();
+            displayPattern();
+            gamepadRateLimit.reset();
+
+        }
+    }
+
+    protected void setDisplayKind(RevBlinkinLedDriver.DisplayKind displayKind) {
+        this.displayKind = displayKind;
+        display.setValue(displayKind.toString());
+    }
+
+    protected void doAutoDisplay() {
+        if (ledCycleDeadline.hasExpired()) {
+            pattern = pattern.next();
+            displayPattern();
+            ledCycleDeadline.reset();
+        }
+    }
+
+    protected void displayPattern() {
+        blinkinLedDriver.setPattern(pattern);
+        patternName.setValue(pattern.toString());
+    }
 }
+

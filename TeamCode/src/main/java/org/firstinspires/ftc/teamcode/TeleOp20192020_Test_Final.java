@@ -29,9 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
@@ -42,17 +40,14 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.internal.system.Deadline;
 
-import java.util.concurrent.TimeUnit;
-
 
 /**
  * This file contains basic code to run a 4 wheeled Mecanum wheel setup. The d-pad controls
  * forwards/backwards and turning left and right, and the right stick controls strafing. (working on diff. control setup currently)
  */
 
-@TeleOp(name = "Tele-Op 2019 - 2020 Test 2", group = "Linear Opmode")
-@Disabled
-public class TeleOp20192020_Test_2 extends LinearOpMode {
+@TeleOp(name = "Tele-Op 2019 - 2020 FINAL", group = "Linear Opmode")
+public class TeleOp20192020_Test_Final extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -108,7 +103,7 @@ public class TeleOp20192020_Test_2 extends LinearOpMode {
 
     Telemetry.Item patternName;
     Telemetry.Item display;
-    org.firstinspires.ftc.teamcode.RevBlinkinLedDriver.DisplayKind displayKind;
+    RevBlinkinLedDriver.DisplayKind displayKind;
     Deadline ledCycleDeadline;
     Deadline gamepadRateLimit;
 
@@ -539,7 +534,7 @@ public class TeleOp20192020_Test_2 extends LinearOpMode {
         //cap stone
         if (gamepad2.a) {
             telemetry.addData("Capstone", "Capstone");
-            Capstone.setPosition(0);
+            Capstone.setPosition(0.3);
         }
     }
 

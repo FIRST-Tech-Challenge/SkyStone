@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
 
-@Autonomous(name="Disclaimer: Nate does mechanical.")
+@Autonomous(name="Encoder Auto")
 public class EncoderDriveAuto extends LinearOpMode {
 
 
@@ -38,7 +38,7 @@ public class EncoderDriveAuto extends LinearOpMode {
 
         setMotorModes(DcMotor.RunMode.RUN_TO_POSITION);
 
-        setMotorTargets(1120, 1120, 1120, 1120);
+        setMotorTargets(-112, 112, 112, -112);
 
         tl.setPower(1);
         tr.setPower(1);

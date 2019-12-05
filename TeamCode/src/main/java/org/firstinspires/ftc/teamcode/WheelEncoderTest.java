@@ -95,7 +95,7 @@ public class WheelEncoderTest extends LinearOpMode {
         intake_right = hardwareMap.dcMotor.get("intake_right");
 
         back_left.setDirection(DcMotorSimple.Direction.REVERSE);
-        front_left.setDirection(DcMotorSimple.Direction.REVERSE);
+        front_right.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
         front_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -150,22 +150,25 @@ public class WheelEncoderTest extends LinearOpMode {
      *  2) Move runs out of time
      *  3) Driver stops the opmode running.
      */
-    public void encoderDrive(double speed,
-                             double leftInches, double rightInches,
-                             double timeoutS) {
+    public void encoderDrive(double speed, double leftInches, double rightInches, double timeoutS) {
+        int newLeftTarget2;
         int newLeftTarget;
+        int newRightTarget2;
         int newRightTarget;
 
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
 
             // Determine new target position, and pass to motor controller
+
+            newLeftTarget2 = front_left.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
             newLeftTarget = back_left.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
+            newRightTarget2 = front_right.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
             newRightTarget = back_right.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
             back_left.setTargetPosition(newLeftTarget);
             back_right.setTargetPosition(newRightTarget);
-            front_right.setTargetPosition(newRightTarget);
-            front_left.setTargetPosition(newLeftTarget);
+            front_right.setTargetPosition(newRightTarget2);
+            front_left.setTargetPosition(newLeftTarget2);
 
             // Turn On RUN_TO_POSITION
             back_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -191,7 +194,7 @@ public class WheelEncoderTest extends LinearOpMode {
                     (back_left.isBusy() && back_right.isBusy())) {
 
                 // Display it for the driver.
-                telemetry.addData("Path1",  "Running to %7d :%7d", newLeftTarget,  newRightTarget);
+                telemetry.addData("Path1",  "Running to %7d :%7d", newLeftTarget,  newRightTarget, newLeftTarget2, newRightTarget2);
                 telemetry.addData("Path2",  "Running at %7d :%7d",
                         front_right.getCurrentPosition(),
                         front_left.getCurrentPosition(),

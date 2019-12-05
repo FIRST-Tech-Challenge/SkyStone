@@ -101,20 +101,21 @@ public class Blue_Platform_BridgeGYRO_Wall extends BaseAutoOpMode {
 
         UnfoldRobot();
 
-        Clamp_Left.setPosition(0.5);
-        Clamp_Right.setPosition(0.5);
-        sleep(1000);
+        //Clamp_Left.setPosition(0.5);
+        //Clamp_Right.setPosition(0.5);
+        //sleep(1000);
 
-        RunAllMotors();
-        sleep(210);
-        CutMotors();
+       // RunAllMotors();
+        //sleep(210);
+        //CutMotors();
 
         Clamp_Left.setPosition(1);
         Clamp_Right.setPosition(0f);
-        sleep(1000);
+        sleep(1500);
 
         RunAllMotorsBackward();
         sleep(450);
+
 
         front_left.setPower(-1 * startingSide);
         rear_left.setPower(1 * startingSide);
@@ -130,21 +131,24 @@ public class Blue_Platform_BridgeGYRO_Wall extends BaseAutoOpMode {
 
         rotate(60 * startingSide, 1);
 
-        //RunAllMotors();
-        //sleep(650);
-        //CutMotors();
+        RunAllMotors();
+        sleep(600);
+        CutMotors();
 
         //End of moving platform
 
+        //Clamp Up
         Clamp_Left.setPosition(0f);
         Clamp_Right.setPosition(1f);
         sleep(1000);
 
-        front_left.setPower(-1 * startingSide);
-        rear_left.setPower(1 * startingSide);
-        front_right.setPower(1 * startingSide);
-        rear_right.setPower(-1 * startingSide);
-        sleep(1200);
+        //Strafe Left
+        front_left.setPower(1 * startingSide);
+        rear_left.setPower(-1 * startingSide);
+        front_right.setPower(-1 * startingSide);
+        rear_right.setPower(1 * startingSide);
+        sleep(500);
+
 
         Release_Servo.setPosition(0.4);
         sleep(1000);

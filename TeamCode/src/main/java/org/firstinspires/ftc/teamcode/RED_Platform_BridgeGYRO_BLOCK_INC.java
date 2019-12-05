@@ -201,13 +201,13 @@ public class RED_Platform_BridgeGYRO_BLOCK_INC extends BaseAutoOpMode {
         //reset gyro and rotate 30
         feeder_motor.setPower(-1);
         resetAngle();
-        rotate(-40, 1);
+        rotate(-30, 1);
 
 
         //turn on feeder and drive backwards
         feeder_motor.setPower(-1);
         RunAllMotorsBackward();
-        sleep(650);
+        sleep(625);
         CutMotors();
 
         //keep feeder on
@@ -220,7 +220,7 @@ public class RED_Platform_BridgeGYRO_BLOCK_INC extends BaseAutoOpMode {
 
         //rotate back
         resetAngle();
-        rotate(30, 1);
+        rotate(40, 1);
 
 
         //Drive Forward

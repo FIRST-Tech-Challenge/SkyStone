@@ -2,6 +2,8 @@
 // build.gradle in FtcRobotController
 //
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
 
 android {
 
@@ -22,6 +24,10 @@ repositories {
     flatDir {
         dirs '../libs'
     }
+    mavenCentral()
 }
 
 apply from: 'build.release.gradle'
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+}

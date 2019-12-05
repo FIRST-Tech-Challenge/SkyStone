@@ -88,13 +88,12 @@ public class teleop extends LinearOpMode {
 
             //go player 2-----------------------------------------------
 
-
             if (egamepad2.a.released) {
                 Grabber.open();
             } else if (egamepad2.b.released) {
                 Grabber.close();
             }
-            if (egamepad2.right_stick_button.released) {
+            if (egamepad2.right_bumper.released) {
                 Grabber.wrist();
             }
             if (egamepad2.x.released) {
@@ -104,15 +103,13 @@ public class teleop extends LinearOpMode {
                 Grabber.home();
             }
 
-            //AJB !!!
-            if ((egamepad2.dpad_up.state) && (Lift.LifterButtonT.isPressed())) {
+            if (egamepad2.dpad_up.state && !Lift.isLimitTop()) {
                 Lift.MoveUp();
-            } else if ((egamepad2.dpad_down.state) && (Lift.LifterButtonB.isPressed())) {
+            } else if (egamepad2.dpad_down.state && !Lift.isLimitBottom()) {
                 Lift.MoveDown();
             } else {
                 Lift.Stop();
             }
-
 
             telemetry.addLine("Speed: " + speed);
             telemetry.update();

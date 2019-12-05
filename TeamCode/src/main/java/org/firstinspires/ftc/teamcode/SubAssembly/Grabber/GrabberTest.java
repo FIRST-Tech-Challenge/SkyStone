@@ -37,14 +37,12 @@ public class GrabberTest extends LinearOpMode {
             egamepad1.updateEdge();
             egamepad2.updateEdge();
 
-
             if (egamepad2.a.released) {
                 Grabber.open();
             } else if (egamepad2.b.released) {
                 Grabber.close();
             }
-
-            if (egamepad2.right_stick_button.released) {
+            if (egamepad2.right_bumper.released) {
                 Grabber.wrist();
             }
             if (egamepad2.x.released) {
@@ -53,20 +51,7 @@ public class GrabberTest extends LinearOpMode {
             if (egamepad2.y.released) {
                 Grabber.home();
             }
-            /*else if (egamepad2.dpad_down.state){
-                Grabber.
-            }*/
 
-            if (egamepad2.x.released){
-                Grabber.extend();
-            }
-
-            if (egamepad2.y.released){
-                Grabber.home();
-            }
-
-
-            //SubAssembly.test();
             telemetry.update();
 
             //let the robot have a little rest, sleep is healthy

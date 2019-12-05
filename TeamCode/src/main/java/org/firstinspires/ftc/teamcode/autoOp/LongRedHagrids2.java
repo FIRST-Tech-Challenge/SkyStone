@@ -61,7 +61,7 @@ public abstract class LongRedHagrids2 extends ChassisStandard {
 
             encoderDrive(26);
 
-            turnLeft(80);
+            turnLeft(90);
             encoderDrive(35);
             madeTheRun = true;
         }

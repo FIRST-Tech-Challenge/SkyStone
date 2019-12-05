@@ -8,9 +8,9 @@ import org.jetbrains.annotations.NotNull;
 public enum ServoState {
     UNKNOWN(-1, -1),
     STOWED(0, 0),
-    BLOCK3(1, 0),
+    BLOCK1(1, 0),
     BLOCK2(2, 0),
-    BLOCK1(3, 0),
+    BLOCK3(3, 0),
     DOWN(4, 1);
 
     private int id;

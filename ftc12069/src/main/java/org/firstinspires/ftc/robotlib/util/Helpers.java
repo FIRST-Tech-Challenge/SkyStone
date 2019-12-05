@@ -31,6 +31,13 @@ public class Helpers {
         return column * openGLMatrix.numRows() + row;
     }
 
+    /**
+     * Checks if an array of sides create a valid triangle
+     * @param a Side Length
+     * @param b Side Length
+     * @param c Side Length
+     * @return True if valid triangle
+     */
     public static boolean isTriangle(double a, double b, double c) {
         if (a + b < c) return false;
         if (a + c < b) return false;
@@ -38,7 +45,29 @@ public class Helpers {
         return true;
     }
 
+    /**
+     * Checks if an array of sides create a valid triangle
+     * @see #isTriangle(double, double, double)
+     * @param sides array of doubles with side lengths
+     * @return True if valid triangle
+     */
     public static boolean isTriangle(double[] sides) {
         return isTriangle(sides[0], sides[1], sides[2]);
+    }
+
+    /**
+     * Attempts to increment or decrement in an array
+     * @param array Array to look through
+     * @param current Value to operate off of
+     * @param operator Value to change index by
+     * @return New value
+     */
+    public static <T> T arrayOperate(T[] array, T current, int operator) {
+        for (int i = 0; i < array.length; i++) {
+            if (array[i].equals(current)) {
+                if (i + operator >= 0 && i + operator < array.length) return array[i + operator];
+            }
+        }
+        return current;
     }
 }

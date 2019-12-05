@@ -69,11 +69,10 @@ public class MecanumTeleOp extends OpMode
         hardware.drivetrain.setVelocity(velocity);
         hardware.drivetrain.setRotation(rotation);
 
-        ServoState deliveryServoState = hardware.deliveryServoManager.getServoState();
         if (leftBumper.isReleased()) {
-            hardware.deliveryServoManager.setServoState(ServoState.getServoStateFromInt(deliveryServoState.getId() - 1));
+            hardware.deliveryServoManager.decrement();
         } else if (rightBumper.isReleased()) {
-            hardware.deliveryServoManager.setServoState(ServoState.getServoStateFromInt(deliveryServoState.getId() + 1));
+            hardware.deliveryServoManager.increment();
         }
 
         if (rightTrigger.isToggled()) {

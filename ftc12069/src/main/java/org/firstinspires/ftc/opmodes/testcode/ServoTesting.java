@@ -13,6 +13,7 @@ public class ServoTesting extends LinearOpMode
     private MecanumHardwareMap robotHardware;
     private ElapsedTime elapsedTime;
     private boolean rbUp = true;
+    private boolean lbUp = true;
     private int index = 0;
 
     @Override
@@ -27,9 +28,21 @@ public class ServoTesting extends LinearOpMode
             if (gamepad1.right_bumper) {
                 if (rbUp) {
                     rbUp = false;
-                    index++;
-                    robotHardware.deliveryServoManager.setPosition(servoPositions[index]);
+                    if (index + 1 < servoPositions.length) {
+                        index++;
+                        robotHardware.deliveryServoManager.setPosition(servoPositions[index]);
+                    }
                 } else rbUp = true;
+            }
+
+            if (gamepad1.left_bumper) {
+                if (lbUp) {
+                    lbUp = false;
+                    if (index - 1 >= 0) {
+                        index--;
+                        robotHardware.deliveryServoManager.setPosition(servoPositions[index]);
+                    }
+                } else lbUp = true;
             }
 
             /*for (double i = 0.0; i < 1.0; i += 0.1) {

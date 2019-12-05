@@ -201,7 +201,7 @@ public class BLUE_Platform_BridgeGYRO_BLOCK_INC extends BaseAutoOpMode {
         //reset gyro and rotate 30
         feeder_motor.setPower(-1);
         resetAngle();
-        rotate(30 * startingSide, 1);
+        rotate(40 * startingSide, 1);
 
 
         //turn on feeder and drive backwards
@@ -258,7 +258,7 @@ public class BLUE_Platform_BridgeGYRO_BLOCK_INC extends BaseAutoOpMode {
         sleep(750);
 
         //Open Claw
-        Block_Pickup.setPosition(1);
+        Block_Pickup.setPosition(0.4);
 
 
     }

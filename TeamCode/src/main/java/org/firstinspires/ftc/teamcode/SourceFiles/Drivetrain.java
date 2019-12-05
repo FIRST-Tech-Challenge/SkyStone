@@ -65,9 +65,9 @@ public class Drivetrain {
 
     public void turn(String direction, double degrees) {
         if (direction.toUpperCase().equals("LEFT")) {
-            // TO-DO: implement
+            // TODO: implement function body
         } else if (direction.toUpperCase().equals("RIGHT")) {
-            // TO-DO: implement
+            // TODO: implement function body
         }
     }
 

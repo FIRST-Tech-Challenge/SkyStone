@@ -14,6 +14,8 @@ public class Component {
     public Servo leftLatch;
     public Servo rightLatch;
 
+    // TODO: Add claw mechanism
+
     public boolean isLatched = false;
     public String latchStatus = "Pending";
 

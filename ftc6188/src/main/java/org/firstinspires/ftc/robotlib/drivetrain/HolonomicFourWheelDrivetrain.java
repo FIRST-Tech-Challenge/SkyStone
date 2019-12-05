@@ -119,7 +119,9 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     public void position()
     {
         // Essentially mimics the physics equation Xf = Xi + Vi(t) + (1/2)a(t)^2 to solve for time but a = 0 and Xi-Xf = changeX which is what targetPosition is
-        double timeoutTime = 10;
+        double timeoutTime = getTargetPosition() * motorList[0].getMotorType().getAchieveableMaxTicksPerSecond();
+
+        if (timeoutTime < 5) { timeoutTime = 5; }
 
         // Creates a timer object so the robot will auto stop after 2 times the timeoutTime (seconds)
         ElapsedTime timeoutTimer = new ElapsedTime();

@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.opmodes.mecanum.auto;
 
+import android.drm.DrmStore;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -44,17 +46,22 @@ public class SiBorgsMecanumAuto extends LinearOpMode
         telemetry.addData("AUTO START", elapsedTime.seconds());
         telemetry.update();
 
-        // TODO: autoPosition forever goes forward, does not seemingly pay attention to course variable, check math
-        robot.drivetrain.autoPosition(270, 48, VELOCITY, 0);
-        robot.platformServo.setPosition(ServoState.DOWN);
-        robot.drivetrain.autoPosition(90, 24, VELOCITY, 0);
-        robot.platformServo.setPosition(ServoState.UP);
-        robot.drivetrain.autoPosition(180, 24, VELOCITY, 0);
-        robot.drivetrain.autoPosition(270, 20, VELOCITY, 0);
-        robot.drivetrain.autoPosition(0, 24, VELOCITY, 0);
-        robot.drivetrain.autoPosition(90, 36, VELOCITY, 0);
-        robot.drivetrain.autoPosition(180, 36, VELOCITY, 0);
+        robot.drivetrain.autoPosition(0, 48, VELOCITY, 0);
 
         requestOpModeStop();
     }
+}
+
+enum AutoDirection
+{
+    FRONT(Math.atan2(1, 0) - Math.PI/2),
+    LEFT(Math.atan2(0, -1) - Math.PI/2),
+    RIGHT(Math.atan2(0, 1) - Math.PI/2),
+    REAR(Math.atan2(1, 0) - Math.PI/2);
+
+    private double angle;
+
+    public double getAngle() { return angle; }
+
+    AutoDirection(double angle) { this.angle = angle; }
 }

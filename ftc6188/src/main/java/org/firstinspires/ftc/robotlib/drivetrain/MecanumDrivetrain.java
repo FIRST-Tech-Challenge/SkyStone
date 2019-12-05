@@ -3,6 +3,7 @@ package org.firstinspires.ftc.robotlib.drivetrain;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.robot.Robot;
 
+import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.robotlib.motor.EncoderMotor;
 import org.firstinspires.ftc.robotlib.robot.SiBorgsMecanumRobot;
 
@@ -41,6 +42,16 @@ public class MecanumDrivetrain extends HolonomicFourWheelDrivetrain
         this.setCourse(course * (Math.PI/180.0));
         this.setVelocity(velocity);
         this.setRotation(rotation);
+        this.position();
+    }
+
+    public void autoPosition(double course, double distanceIN, double velocity, SiBorgsMecanumRobot robot)
+    {
+        this.setTargetPosition(distanceIN * getTicksPerIn());
+        this.setCourseDegrees(course);
+        this.setVelocity(velocity);
+        this.setRotation(0);
+        robot.informationTelemetry("Program Drive\tCourse: " + course + " DistanceIN " + distanceIN + " Distance Enc " + (distanceIN * getTicksPerIn()));
         this.position();
     }
 }

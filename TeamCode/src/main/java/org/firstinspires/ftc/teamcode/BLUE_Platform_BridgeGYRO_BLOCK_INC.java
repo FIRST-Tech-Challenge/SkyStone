@@ -89,11 +89,11 @@ public class BLUE_Platform_BridgeGYRO_BLOCK_INC extends BaseAutoOpMode {
         waitForStart();
         runtime.reset();
 
-        //Robot is strafes right then stops
+        //Robot is strafes left then stops
         front_left.setPower(1 * startingSide);
-        rear_left.setPower(-.5 * startingSide);
-        front_right.setPower(-.5 * startingSide);
-        rear_right.setPower(.5 * startingSide);
+        rear_left.setPower(-0.7 * startingSide);
+        front_right.setPower(-1 * startingSide);
+        rear_right.setPower(1 * startingSide);
         //sleep(250);
         sleep(725);
         CutMotors();

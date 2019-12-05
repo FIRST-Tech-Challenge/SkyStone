@@ -63,7 +63,7 @@ Encoder Countable Events Per Revolution (Output Shaft)	723.24 (Rises & Falls of 
 
 Robot 1 : Arm Motor
 5201 Series, 53:1 Ratio, 105 RPM Spur Gear Motor w/Encoder
-ncoder Cycles Per Revolution (Encoder Shaft)	7 (Rises of Ch A)
+Encoder Cycles Per Revolution (Encoder Shaft)	7 (Rises of Ch A)
 Encoder Cycles Per Revolution (Output Shaft)	374.325 (Rises of Ch A)
 Encoder Countable Events Per Revolution (Encoder Shaft)	28 (Rises & Falls of Ch A & B)
 Encoder Countable Events Per Revolution (Output Shaft)	1,497.325 (Rises & Falls of Ch A & B)
@@ -83,3 +83,35 @@ Encoder Cycles Per Revolution (Encoder Shaft)	7 (Rises of Ch A)
 Encoder Cycles Per Revolution (Output Shaft)	188.3 (Rises of Ch A)
 Encoder Countable Events Per Revolution (Encoder Shaft)	28 (Rises & Falls of Ch A & B)
 Encoder Countable Events Per Revolution (Output Shaft)	753.2 (Rises & Falls of Ch A & B)
+
+ColorSensor Values
+Left Color Sensor on Grey Base : GREY : R230 G432 B236 Al:885
+Right Color Sensor on Grey Base : GREY : R232 G431 B230 Al:885
+Left Color Sensor on Red Line : RED : R604 G482 B166 Al: 1280 Hue : 67240192
+Right Color Sensor on Red Line : RED : R637 G480 B165 Al:1254 Hue : 67240192
+Left Color Sensor on Blue Line : BLUE : R146 G382 B482 Al:979 Hue : 50331905
+Right Color Sensor on Blue Line : BLUE : R165 G401 B443 Al:989 Hue : 50331905
+Red Logic : R>400 Blue Logic B>400
+
+detectSkystone on Skystone Edge : R248 G434 B224 Al:894 Hue: 50331904
+
+detectSkystone on Skystone distance 0" : D0.83 A4098 R1242 G2207 B1146
+detectSkystone on Skystone distance 1" : D1.92 A1000 R257 G477 B280
+detectSkystone on Skystone distance 2" : D2.53 A700 R185 G339 B165
+detectSkystone on Skystone distance 3" : D3.22 A615 R162 G299 B164
+detectSkystone on Skystone distance 4" : D3.53 A549 R159 G275 B150
+
+detectSkystone on Stone distance 0" : D0.43 A20807 R772 G1048 B1919
+detectSkystone on Stone distance 1" : D1.56 A2197 R796 G1165 B282
+detectSkystone on Stone distance 2" : D2.10 A1325 R464 G693 B205
+detectSkystone on Stone distance 3" : D2.67 A910 R309 G472 B165
+detectSkystone on Stone distance 4" : D3.00 A730 R237 G373 B150
+
+detectSkystone on Mat not near anything : D4.05 A1480 R135 G240 B126
+
+Logic :
+    Distance goes below D2.75" - stone is nearby - Could be Skystone around 3" away or Stone around 3.3" away
+    R>250 G>400 means stone, else Skystone
+    If stone, go forward 2" - drop arm
+
+

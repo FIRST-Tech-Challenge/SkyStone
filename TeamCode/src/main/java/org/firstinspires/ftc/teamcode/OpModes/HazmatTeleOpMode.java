@@ -56,7 +56,11 @@ public class HazmatTeleOpMode extends LinearOpMode{
         telemetry.addData("armMotor.getCurrentPosition : ", hzArm.armMotor.getCurrentPosition());
         telemetry.addData("armMotor.getMode : ", hzArm.armMotor.getMode());
         telemetry.addData("Arm.currentLevel : ", hzArm.currentLevel);
-        telemetry.addData("Arm.blockLevel[hzArm.currentLevel] : ", hzArm.blockLevel[hzArm.currentLevel]);
+        telemetry.addData("Arm.currentLevelPosition : ", -(hzArm.currentLevel)*50);
+        //telemetry.addData("Arm.blockLevel[hzArm.currentLevel] : ", hzArm.blockLevel[hzArm.currentLevel]); //Arm Test
+        telemetry.addData("Intake.grip.getPosition : ", hzIntake.grip.getPosition());
+        telemetry.addData("Intake.wristCurrentPosition : ", hzIntake.wristCurrentPosition);
+        telemetry.addData("Intake.wrist.getPosition : ", hzIntake.wrist.getPosition());
 
 
 

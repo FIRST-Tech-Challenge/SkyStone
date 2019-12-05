@@ -15,6 +15,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  *              height, used in autonomous mode
  *          aboveFoundationLevel as the arm is just above the foundation, used in autonomous
  *          onFoundationLevel as the arm is holding the foundation
+ *      Arm Motor is 5201 Series, 53:1 Ratio, 105 RPM Spur Gear Motor w/Encoder
+ *      Encoder Countable Events Per Revolution (Output Shaft)	1,497.325 (Rises & Falls of Ch A & B)
+ *      Arm move 90degrees so max level is 1497.325/4 = 374 counts.
  *
  * @ArmMethods : moveArm_groundLevel()
  * @ArmMethods : moveArm_blockLevelUp()
@@ -36,8 +39,12 @@ public class Arm {
     public DcMotor armMotor;
 
     //Declare Arm levels in arm motor encoder values set just above the block level
+    //Arm Motor 5201 Series, 53:1 Ratio, 105 RPM Spur Gear Motor w/Encoder
+    //Encoder Countable Events Per Revolution (Output Shaft)	1,497.325 (Rises & Falls of Ch A & B)
+    //Arm move 90degrees so max level is 1497.325/4 = 374 counts.
+
     public int[] blockLevel = {
-             0, //ground level
+            0, //ground level
             -50, //block level 1
             -95, //block level 2
             -146, //block level 3
@@ -45,6 +52,8 @@ public class Arm {
             -255, //block level 5
             -321 //block level 6
     };
+
+
     int groundLevel = 0;
     int detectSkystoneLevel = -20; //#TOBEFILLED correctly
     int aboveFoundationLevel = -50; //#TOBEFILLED correctly
@@ -52,8 +61,9 @@ public class Arm {
 
     public int currentLevel = 0;
     int MAX_BLOCK_LEVEL = 6;
+    //int MAX_BLOCK_LEVEL = 15; //Test code to caliberate
     int DROP_BLOCK_HEIGHT = 10;
-    int MAX_ARM_HEIGHT = -350;
+    int MAX_ARM_HEIGHT = -370; //Without correction for slippage
 
     //Timer for timing out Arm motion incase targetPosition cannot be achieved
     ElapsedTime ArmMotionTimeOut = new ElapsedTime();
@@ -148,6 +158,7 @@ public class Arm {
         turnArmBrakeModeOn();
         if (currentLevel < MAX_BLOCK_LEVEL) {
             armMotor.setTargetPosition(blockLevel[currentLevel+1]);
+            armMotor.setTargetPosition(-currentLevel*50); //Test code to caliberate
             currentLevel++;
             runArmToLevel();
         }
@@ -162,6 +173,7 @@ public class Arm {
         if (currentLevel > 1) {
             turnArmBrakeModeOn();
             armMotor.setTargetPosition(blockLevel[currentLevel-1]);
+            //armMotor.setTargetPosition(-currentLevel*50); //Test code to caliberate
             currentLevel--;
             runArmToLevel();
         } else {
@@ -179,7 +191,7 @@ public class Arm {
     public void moveArmToPlaceBlockAtLevel(){
         if (currentLevel >=1){
             turnArmBrakeModeOn();
-            armMotor.setTargetPosition(blockLevel[currentLevel] - DROP_BLOCK_HEIGHT);
+            //armMotor.setTargetPosition(blockLevel[currentLevel] - DROP_BLOCK_HEIGHT); //Test COde
             runArmToLevel();
         }
     }
@@ -190,7 +202,7 @@ public class Arm {
     public void moveArmToLiftAfterBlockPlacement(){
         if (currentLevel >=1) {
             turnArmBrakeModeOn();
-            armMotor.setTargetPosition(blockLevel[currentLevel]);
+            //armMotor.setTargetPosition(blockLevel[currentLevel]); //Test Code
             runArmToLevel();
         }
     }

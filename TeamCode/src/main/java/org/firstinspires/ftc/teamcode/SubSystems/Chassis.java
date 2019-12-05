@@ -25,7 +25,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * @ChassisMethods : resetChassis()
  * @ChassisTeleOpMethods : runByGamepadCommand()
  * @ChassisAutoMethods : runDistance()
- * @ChassisAutoMethods : runTill_frontleftBumperSensor_Pressed(
+ * @ChassisAutoMethods : runFwdTill_frontleftChassisTouchSensor_Pressed(
  * @ChassisAutoMethods : runTill_ChassisRightColorSensorIsRed()
  * @ChassisAutoMethods : turnRobotByAngle()
  * @ChassisAutoMethods : resetColorSensorEnabled()
@@ -99,8 +99,8 @@ public class Chassis {
     public void configureRobot(){
         wheelRadius = 1.965; //inches
         // Robot width = 17.00 inch, length = 13.75 inch. Hypotensuse = 21.86 inch, radius = hyp/2 = 10.93
-        robotRadius = 10.93; //inches - Radius = half of longest diagonal = 0.5*sqrt(sq(17)+sq(18).
-
+        //robotRadius = 10.93; //inches - Radius = half of longest diagonal = 0.5*sqrt(sq(17)+sq(18).
+        robotRadius = 9.08; //Based on 3375 for accurate turn 3350* wheelRadius/EncoderCount Thomas
         //Set direction of motors wrt motor drive set up, so that wheels go forward +y power
         frontRight.setDirection(DcMotor.Direction.REVERSE);
         backRight.setDirection(DcMotor.Direction.REVERSE);
@@ -113,7 +113,7 @@ public class Chassis {
      */
     public void initChassis() {
         resetChassis();
-        setZeroBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        setZeroBehavior(DcMotor.ZeroPowerBehavior.FLOAT); // To avoid jerk at start
         setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // set the digital channel Touch Sensor to input.
@@ -130,18 +130,22 @@ public class Chassis {
     public void resetChassis() {
 
         DcMotor.RunMode runMode = frontLeft.getMode();
+        frontLeft.setTargetPosition(0); //Thomas added
         frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontLeft.setMode(runMode);
 
         runMode = frontRight.getMode();
+        frontRight.setTargetPosition(0); // Thomas added
         frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontRight.setMode(runMode);
 
         runMode = backLeft.getMode();
+        backLeft.setTargetPosition(0); //Thomas added
         backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backLeft.setMode(runMode);
 
         runMode = backRight.getMode();
+        backRight.setTargetPosition(0); // Thomas added
         backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backRight.setMode(runMode);
 
@@ -197,8 +201,8 @@ public class Chassis {
      * @return if Color Sensor is red
      */
     public boolean leftColorSensorIsRed() {
-        //Logic to detect Red R>200 G<127 B<127
-        if (leftColorSensor.red()>200 && leftColorSensor.green()<127 && leftColorSensor.blue()<127 && leftColorSensor.alpha()>60) {
+        //Logic to detect Red R>400
+        if (leftColorSensor.red()>400) {
             return true;
         } else {
             return false;
@@ -212,7 +216,7 @@ public class Chassis {
      */
     public boolean rightColorSensorIsRed() {
         //Logic to detect Red R>200 G<127 B<127
-        if (rightColorSensor.red()>200 && rightColorSensor.green()<127 && rightColorSensor.blue()<127 && rightColorSensor.alpha()>60) {
+        if (rightColorSensor.red()>400){
             return true;
         } else {
             return false;
@@ -225,8 +229,8 @@ public class Chassis {
      * @return if color sensor is blue
      */
     public boolean rightColorSensorIsBlue() {
-        //Logic to detect Blue R<127 G<127 B>200
-        if (rightColorSensor.red()<127 && rightColorSensor.green()<127 && rightColorSensor.blue()>200 && rightColorSensor.alpha()>60) {
+        //Logic to detect Blue B>400
+        if (rightColorSensor.blue()>400) {
             return true;
         } else {
             return false;
@@ -239,8 +243,8 @@ public class Chassis {
      * @return if color sensor is blue
      */
     public boolean leftColorSensorIsBlue() {
-        //Logic to detect Blue R<127 G<127 B>200
-        if (leftColorSensor.red()<127 && leftColorSensor.green()<127 && leftColorSensor.blue()>200 && leftColorSensor.alpha()>60) {
+        //Logic to detect Blue B>400
+        if (leftColorSensor.blue()>400) {
             return true;
         } else {
             return false;
@@ -254,7 +258,7 @@ public class Chassis {
      * @param power power = Math.hypot(leftStickX, leftStickY)
      */
     public void runByGamepadCommand(double targetAngle, double turn, double power) {
-        //#TOBEFILLED Why subtract by 90dec?
+        //Rotate angle by 45 degrees to align to diagonal angles on mecannum wheel setup
         double turnAngle = targetAngle - Math.PI / 4;
 
         //Distribute power to wheels a cos and sin of vector.
@@ -263,6 +267,7 @@ public class Chassis {
         frontRight.setPower(power * Math.sin(turnAngle) - turn);
         backLeft.setPower(power * Math.sin(turnAngle) + turn);
         backRight.setPower(power * Math.cos(turnAngle) - turn);
+        setZeroBehavior(DcMotor.ZeroPowerBehavior.BRAKE); //#TOBECHECKED TO AVOID JERK
     }
 
     /**
@@ -270,95 +275,45 @@ public class Chassis {
      * To be used in Autonomous mode for moving by distance or turning by angle
      * Uses PID loop in motors to ensure motion without errors
      * @param distance in same unit of measure as wheelRadius
-     * @param targetAngle
-     * @param turn
-     * @param power
+     * @param targetAngle 0 for forward motion -PI/2 for straving right, + PI/2 for straving left, + PI for backward
+     * @param turn Turn angle PI/2 for clockwise 90 degrees -PI/2 for anticlockwise 90 degrees
+     * @param power Power to be used to run motors.
      */
     public void runDistance(double distance, double targetAngle, double turn, double power) {
-        //#TOBEFILLED
-        ChassisMotionTimeOut.reset();
+        //ChassisMotionTimeOut.reset(); // To protect against uncontrolled runs.
         double turnAngle = targetAngle + Math.PI / 4;
-        //double wheelDistance = (Math.sqrt(2) / wheelRadius) * distance;
+
         double wheelDistance = distance * ChassisMotorEncoderCount/(2*Math.PI*wheelRadius);
         double robotTurn = robotRadius * turn * ChassisMotorEncoderCount/(2*Math.PI*wheelRadius);
 
-        //#TOBEFILLED
+
+        //Distribute power to wheels a cos and sin of vector.
+        // Add turn as input from right stick to add in radiants
         frontLeft.setTargetPosition((int) (wheelDistance * Math.cos(turnAngle) + robotTurn));
         frontRight.setTargetPosition((int) (wheelDistance * Math.sin(turnAngle) - robotTurn));
         backLeft.setTargetPosition((int) (wheelDistance * Math.sin(turnAngle) + robotTurn));
         backRight.setTargetPosition((int) (wheelDistance * Math.cos(turnAngle) - robotTurn));
 
-        //#TOBEFILLED
+        //Run the Motors
         frontLeft.setPower(power);
         frontRight.setPower(power);
         backLeft.setPower(power);
         backRight.setPower(power);
+        setZeroBehavior(DcMotor.ZeroPowerBehavior.BRAKE); //To avoid jerk
         setMotorMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        //wait till motor finishes motion
-        //while(frontLeft.isBusy() && ChassisMotionTimeOut.milliseconds() < 10000);
-
-    }
-
-    /**
-     * Method to move chassis by rotation.
-     * Used in Auto placement of block
-     * @param rotations
-     * @param power
-     */
-    public void runRotations(double rotations, double power) {
-
-        resetChassis();
-        setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        while (Math.abs(backLeft.getCurrentPosition()) < Math.abs(ChassisMotorEncoderCount * rotations)) {
-            frontLeft.setPower(power);
-            frontRight.setPower(power);
-            backLeft.setPower(power);
-            backRight.setPower(power);
-        };
-        frontLeft.setPower(0.0);
-        frontRight.setPower(0.0);
-        backLeft.setPower(0.0);
-        backRight.setPower(0.0);
-    }
-
-    /**
-     * Method to move chassis by rotation.
-     * Used in Auto placement of block
-     * @param distance
-     * @param power
-     */
-    public void runStraightDistanceByRotations(double distance, double power) {
-        setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        resetChassis();
-
-        //Total Rotations of wheel = distance / circumference of wheel
-        double targetRotations = distance/(2*Math.PI*wheelRadius);
-
-        while (Math.abs(backLeft.getCurrentPosition()) < Math.abs(ChassisMotorEncoderCount * targetRotations)) {
-            frontLeft.setPower(power);
-            frontRight.setPower(power);
-            backLeft.setPower(power);
-            backRight.setPower(power);
-        };
-        frontLeft.setPower(0.0);
-        frontRight.setPower(0.0);
-        backLeft.setPower(0.0);
-        backRight.setPower(0.0);
     }
 
 
-    /**
+        /**
      * Method to move chassis based on computed vector inputs for a set max_stop_distance
      * Till frontleftChassisTouchSensor is pressed.
      * To be used in Autonomous mode for moving by distance or turning by angle
      * Uses PID loop in motors to ensure motion without errors
      * @param max_stop_distance in same unit of measure as wheelRadius
-     * @param targetAngle
-     * @param turn
      * @param power
      */
-    public void runTill_frontleftChassisTouchSensor_Pressed(double max_stop_distance, double targetAngle, double turn, double power) {
+    public void runFwdTill_frontleftChassisTouchSensor_Pressed(double max_stop_distance, double power) {
         setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
         resetChassis();
 
@@ -383,14 +338,34 @@ public class Chassis {
      * To be used in Autonomous mode for moving by distance or turning by angle
      * Uses PID loop in motors to ensure motion without errors
      * @param max_stop_distance
-     * @param targetAngle
-     * @param turn
+     * @param strave 0 for forward or backward, 1 for right, -1 for left
      * @param power
      */
-    public void runTill_ChassisRightColorSensorIsRed(double max_stop_distance, double targetAngle, double turn, double power){
-        //Color needs to be added to definition
-        //********** COPY METHOD FROM runTill_frontleftChassisTouchSensor_Pressed() *****?
-        //*********** ADJUST while condistion
+    public void runFwdStraveTill_ChassisRightColorSensorIsRed(double max_stop_distance, double strave, double power){
+        setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        resetChassis();
+
+        //Max Total Rotations of wheel = distance / circumference of wheel
+        double targetRotations = max_stop_distance/(2*Math.PI*wheelRadius);
+
+        while (!rightColorSensorIsRed() && (Math.abs(backLeft.getCurrentPosition()) < Math.abs(ChassisMotorEncoderCount * targetRotations))) {
+            if(strave==0) {
+                //Go forward or backward
+                frontLeft.setPower(power);
+                frontRight.setPower(power);
+                backLeft.setPower(power);
+                backRight.setPower(power);
+            } else {/* #TOBEFIXED FOR STRAVE LOGIC
+                frontLeft.setPower(power * Math.cos(3*Math.PI/4));
+                frontRight.setPower(power * Math.sin(3*Math.PI/4));
+                backLeft.setPower(power * Math.sin(Math.PI/4));
+                backRight.setPower(power * Math.cos(Math.PI/4));
+            */}
+        };
+        frontLeft.setPower(0.0);
+        frontRight.setPower(0.0);
+        backLeft.setPower(0.0);
+        backRight.setPower(0.0);
     }
     //Once completed replicate for other 3 combinations Right-Blue, Left-Red, Left-Blue
 
@@ -414,17 +389,6 @@ public class Chassis {
         } else {
             return false;
         }
-
-
-        /*
-        if (frontleftChassisTouchSensor.getState()){
-                     //function returns true when not touched, so isPressed is false
-            return false;
-        } else {
-            //function returns false when touched, so isPressed is true
-            return true;
-        }
-        */
     }
 
 }

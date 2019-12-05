@@ -77,8 +77,8 @@ public class AutoTestTurnAngle extends LinearOpMode{
         //Run Robot till opMode is Active or 30 seconds
         while (opModeIsActive() && AutonomousTimeOut.milliseconds()<30000) {
             //hzGamepad1.runSubsystemByGamepadInput(hzChassis, hzArm, hzIntake);
-            hzArm.moveArm_aboveFoundationLevel();
-            hzChassis.runDistance(0, 0, -Math.PI/2, 0.25);
+            //hzArm.moveArm_aboveFoundationLevel();
+            hzChassis.runDistance(0, 0, Math.PI/2, 0.25);
             //hzChassis.runDistance(0, 0, Math.PI/4, 0.25);
 
             //hzChassis.runRotations(1, 0.25);

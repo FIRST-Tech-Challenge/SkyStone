@@ -2,8 +2,9 @@ package org.firstinspires.ftc.teamcode.SubSystems;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.I2cDevice;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 /**
  * Definition of Intake Mechanism.
@@ -12,6 +13,35 @@ import com.qualcomm.robotcore.hardware.Servo;
  *          INITIAL, VERITICAL_BLOCK, HORIZONTAL_BLOCK)
  *      1 Linear Actutator which a Servomotor to open and close Grip mechanism
  *      1 Color Sensor for identifying skystone and blocks
+ *
+ *      Experiment to determing Stone vs Skystone logic based on color / distance sensor
+ *      detectSkystone on Skystone Edge : R248 G434 B224 Al:894 Hue: 50331904
+ *
+ *      detectSkystone on Skystone distance 0" : D0.83 A4098 R1242 G2207 B1146
+ *      detectSkystone on Skystone distance 1" : D1.92 A1000 R257 G477 B280
+ *      detectSkystone on Skystone distance 2" : D2.53 A700 R185 G339 B165
+ *      detectSkystone on Skystone distance 3" : D3.22 A615 R162 G299 B164
+ *      detectSkystone on Skystone distance 4" : D3.53 A549 R159 G275 B150
+ *
+ *      detectSkystone on Stone distance 0" : D0.43 A20807 R772 G1048 B1919
+ *      detectSkystone on Stone distance 1" : D1.56 A2197 R796 G1165 B282
+ *      detectSkystone on Stone distance 2" : D2.10 A1325 R464 G693 B205
+ *      detectSkystone on Stone distance 3" : D2.67 A910 R309 G472 B165
+ *      detectSkystone on Stone distance 4" : D3.00 A730 R237 G373 B150
+ *
+ *      detectSkystone on Mat not near anything : D4.05 A1480 R135 G240 B126
+ *
+ *      Logic :
+ *      Distance goes below D2.75" - stone is nearby - Could be Skystone around 3" away or Stone around 3.3" away
+ *      R>250 G>400 means stone, else Skystone
+ *      If stone, go forward 2" - drop arm
+ *
+ *
+ *
+ * Logic :
+ *     Distance goes below D2.75" - stone is nearby - Could be Skystone around 3" away or Stone around 3.3" away
+ *     R>250 G>400 means stone, else Skystone
+ *     If stone, go forward 2" - drop arm
  *
  * @IntakeMethods : moveWristToInitialPosition()
  * @IntakeMethods : moveWristToHorizontalPosition()
@@ -22,52 +52,60 @@ import com.qualcomm.robotcore.hardware.Servo;
  * @IntakeAutoMethods : openGrip()
  * @IntakeAutoMethods : closeGrip()
  * @IntakeAutoMethods : detectSkystoneColorSensorIsYellow()
- * @IntakeAutoMethods : detectSkystoneColorSensorIsBlack()
  */
 
 /**
  * Class Definition
  */
-public class Intake{
+public class Intake {
     public Servo wrist;
     public Servo grip;
-    public ColorSensor detectSkystone;
+    public ColorSensor detectSkystoneColor;
+    public DistanceSensor detectSkystoneDistance;
 
-    //initialize limit positions
-    double wristClosePosition = 0.2; // = 0.7 #TOBEDEFINED
-    double wristVerticalPosition = 0.5; // = 0.5 #TOBEDEFINED
-    double wristHorizontalPosition = 1.0 ; // = 1.0#TOBEDEFINED
-    double wristCurrentPosition;
+    //Wrist position values on servo motor from close to Vertocal to midPositon1 to midPsition2 to Horizontal
+    public int wristCurrentPosition;
+    public double[] wristPosition = {
+            0.2,  //closePosition
+            0.5,  //VerticalPosition
+            0.66, //MidPosition1
+            0.83, //MidPosition2
+            1.0,  //HorizontalPosition
+    };
+    public boolean SkystoneDetected;
 
-    double gripOpenPosition = 0.75; //Value is specific for each grip
-    double gripClosePosition = 0.25; //Value is specific for each grip
+    //Open and close Position for the grip linear actuator
+    double gripOpenPosition = 0.75;
+    double gripClosePosition = 0.25;
 
     //Constructor
     public Intake(HardwareMap hardwareMap) {
         wrist = hardwareMap.servo.get("wrist");
         grip = hardwareMap.servo.get("grip");
 
-        detectSkystone = hardwareMap.get(ColorSensor.class, "detect_skystone");
+        detectSkystoneColor = hardwareMap.get(ColorSensor.class, "detect_skystone");
+        detectSkystoneDistance = hardwareMap.get(DistanceSensor.class, "detect_skystone");
         initIntake();
     }
 
     //#TOBEFILLED Consider initializing position?
     public void initIntake() {
-        detectSkystone.enableLed(false);
+        detectSkystoneColor.enableLed(false);
         moveWristToHorizontal();
+        openGrip();
     }
 
     /**
      * Method to open Grip
      */
-    public void openGrip(){
+    public void openGrip() {
         grip.setPosition(gripOpenPosition);
     }
 
     /**
      * Method to  close Grip
      */
-    public void closeGrip(){
+    public void closeGrip() {
         grip.setPosition(gripClosePosition);
     }
 
@@ -85,139 +123,90 @@ public class Intake{
     /**
      * Method to move wrist to Initial position
      */
-    public void moveWristToClose(){
-        wrist.setPosition(wristClosePosition);
+    public void moveWristToClose() {
+        wrist.setPosition(wristPosition[0]);//close position = 0.2
+        wristCurrentPosition = 0;
     }
 
     /**
      * Method to move wrist to Vertical position
      */
-    public void moveWristToVertical(){
-        wrist.setPosition(wristVerticalPosition);
+    public void moveWristToVertical() {
+        wrist.setPosition(wristPosition[1]); //vertical position = 0.5
+        wristCurrentPosition = 1;
     }
 
     /**
      * Method to move wrist to Horizontal position
      */
-    public void moveWristToHorizontal(){
-        wrist.setPosition(wristHorizontalPosition);
+    public void moveWristToHorizontal() {
+        wrist.setPosition(wristPosition[4]); //Horizontal position = 1.0
+        wristCurrentPosition = 4;
     }
 
     /**
      * Method to manage state of wrist and move based on dpad_up input
+     * from Close to Vertical to MidPosition1 to MidPosition2 to Horizontal
      */
-    public void moveWristUp(){
-        wristCurrentPosition = wrist.getPosition();
-        //if currently in close position, move to vertical position (tolerance 0f +/- 0.05)
-        if (wristCurrentPosition == wristClosePosition) {
-            moveWristToVertical();
-        }
-        //if currently in vertical position, move to horizontal position (tolerance 0f +/- 0.05)
-        if (wristCurrentPosition == wristVerticalPosition) {
-            moveWristToHorizontal();
-        }
-        //********** MODIFY ABOVE METHOD TO MOVE WRIST fROM VERTICAL TO HORIZONTAL POSITION BY
-        //INCREMENTING POSITION by 0.1. DONT INCREMENT AFTER REACHING HORIZONTAL POSITION
 
+    public void moveWristUp() {
+        if (wristCurrentPosition < 4) {
+            wrist.setPosition(wristPosition[wristCurrentPosition + 1]); //move to next higher position
+            wristCurrentPosition++;
+        }
     }
 
     /**
      * Method to manage state of wrist and move based on dpad_down input
+     * from Horizontal to MidPosition2 to MidPosition1 to Vertical to Close
      */
-    public void moveWristDown(){
-        wristCurrentPosition = wrist.getPosition();
-        //if currently in horizontal position, move to vertical position
-        if (wristCurrentPosition == wristHorizontalPosition) {
-            moveWristToVertical();
+    public void moveWristDown() {
+        if (wristCurrentPosition > 0) {
+            wrist.setPosition(wristPosition[wristCurrentPosition - 1]); //move to next higher position
+            wristCurrentPosition--;
         }
-        //********** MODIFY ABOVE METHOD TO MOVE WRIST fROM HORIZONTAL TO VERTICAL  POSITION BY
-        //DECREMENTING POSITION by 0.1. AFTER REACHING VERTICAL POSITION, GO TO CLOSE POSITION
-
-        //if currently in vertical position, move to close position
-        if (wristCurrentPosition == wristVerticalPosition) {
-            moveWristToClose();
-        }
-        //moveWristToClose();
-
     }
-
 
     /**
      * Method to set Intake Color sensor Off
      */
     public void resetIntake() {
-        detectSkystone.enableLed(false);
+        detectSkystoneColor.enableLed(false);
         moveWristToHorizontal();
         openGrip();
     }
 
     /**
-     * Method to check for detectSkystone Color Sensor to sense Yellow block or Skystone black color
+     * Method to check for detectSkystone Color Sensor to sense Yellow Stone or Skystone color
      * Used in Autonomous mode to identify skystone and regular block.
+     * Uses distance and color measurements to make determination.
+     * Logic :
+     *     Distance goes below D2.75" - stone is nearby - Could be Skystone around 3" away or Stone around 3.3" away
+     *     R>250 G>400 means stone, else Skystone
+     *    If stone, go forward 2" - drop arm
+     *
      * @return true if Yellow is detected, else false
      */
-    public boolean detectSkystoneColorSensorIsYellow() {
-        //Logic to detect Yellow R>150 G>150 B<100
-        detectSkystone.enableLed(true);
-        if (detectSkystone.red()>150 && detectSkystone.green()>150 && detectSkystone.blue()<100 && detectSkystone.alpha()>60) {
-            detectSkystone.enableLed(false);
-            return true;
-        } else {
-            detectSkystone.enableLed(false);
-            return false;
+    public boolean detectSkytoneAndType() {
+        SkystoneDetected = false;
+        detectSkystoneColor.enableLed(true);
+        if (detectSkystoneDistance.getDistance(DistanceUnit.INCH) < 2.75){
+            if (detectSkystoneColor.red()>250 && detectSkystoneColor.green() > 400){
+                //Stone is detected, but is not skystone
+                SkystoneDetected = false;
+                detectSkystoneColor.enableLed(false);
+                return true ; //Stone is detected
+            } else {
+                //Stone is detected and is Skystone is detected
+                SkystoneDetected = true;
+                detectSkystoneColor.enableLed(false);
+                return true ; //Stone is detected
+            }
         }
+        return false; // No stone is detected
     }
 
-    /**
-     * Method to check for detectSkystone Color Sensor to sense Yellow block or Skystone black color
-     * Used in Autonomous mode to identify skystone and regular block.
-     * @return true if Black is detected, else false
-     */
-    public boolean detectSkystoneColorSensorIsBlack() {
-        //Logic to detect Black R<64 G<64 B<64
-        detectSkystone.enableLed(true);
-        if (detectSkystone.red()<64 && detectSkystone.green()<64 && detectSkystone.blue()<64) {
-            detectSkystone.enableLed(false);
-            return true;
-        } else {
-            detectSkystone.enableLed(false);
-            return false;
-        }
-    }
 
-    // #TOBEDELETED
-// all below are not finished yet, will do saturday, Ian.
-/*
-    public void setwrist(double position) {
-        wrist.setPosition(position);
-    }
 
-    public void setgrip(double position) {
-        grip.setPosition(position);
-    }
-
-// values need to be tested
-
-    public void setWristToHighPosition() {
-        wrist.setPosition(wristHighPosition);
-    }
-
-// values need to be tested
-
-    public void setWristToLowPosition() {
-        wrist.setPosition(wristLowPosition);
-    }
-
-    // values need to be tested
-    public void setgripToHighPosition() {
-        grip.setPosition(gripHighPosition);
-    }
-
-// values need to be tested
-
-    public void setgripToLowPosition() {
-        grip.setPosition(gripLowPosition);
-    }
-*/
 
 }

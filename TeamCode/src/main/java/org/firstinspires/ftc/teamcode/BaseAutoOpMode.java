@@ -51,7 +51,7 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
         rear_left.setPower(.8);
         rear_right.setPower(.8);
 
-        sleep(200);
+        sleep(625);
 
         front_left.setPower(0);
         front_right.setPower(0);
@@ -60,7 +60,7 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
         telemetry.addData("Encoder test", front_left.getCurrentPosition());
         telemetry.update();
 
-        sleep(500);
+        sleep(50);
 
         /*lift_left.setPower(1);
         lift_right.setPower(1);
@@ -79,31 +79,25 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
 
         lift_left.setPower(-1);
         lift_right.setPower(-1);
-        sleep(500);
-
-        lift_left.setPower(0);
-        lift_right.setPower(0);
-        sleep(200);
+        sleep(600);
 
         //Release_Servo.setPosition(1);
         //sleep(200);
         //Release_Servo.setPosition(0);
         //sleep(100);
 
-        lift_left.setPower(-1);
-        lift_right.setPower(-1);
-        sleep(300);
-
         lift_left.setPower(0);
         lift_right.setPower(0);
-        sleep(200);
+        sleep(50);
 
-        front_left.setPower(.8);
+       /* front_left.setPower(.8);
         front_right.setPower(.8);
         rear_left.setPower(.8);
         rear_right.setPower(.8);
         sleep(200);
 
+
+        */
         front_left.setPower(0);
         front_right.setPower(0);
         rear_left.setPower(0);

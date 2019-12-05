@@ -43,13 +43,13 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  * forwards/backwards and turning left and right, and the right stick controls strafing. (working on diff. control setup currently)
  */
 
-@Autonomous(name = "RED_Platform_Bridge_Block", group = "Linear Opmode")
-public class RED_Platform_Bridge_Block extends BaseAutoOpMode {
+@Autonomous(name = "RED_Platform_BridgeGYRO_LEA_BLOK", group = "Linear Opmode")
+public class RED_Platform_BridgeGYRO_LEA_BLOCK extends BaseAutoOpMode {
 
 
-    BNO055IMU               imu;
-    Orientation             lastAngles = new Orientation();
-    double                  globalAngle, power = 1, correction;
+    BNO055IMU imu;
+    Orientation lastAngles = new Orientation();
+    double globalAngle, power = 1, correction;
 
     int startingSide = -1;  //Set to 1 for blue and -1 for Red
 
@@ -63,10 +63,10 @@ public class RED_Platform_Bridge_Block extends BaseAutoOpMode {
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
-        parameters.mode                = BNO055IMU.SensorMode.IMU;
-        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.loggingEnabled      = false;
+        parameters.mode = BNO055IMU.SensorMode.IMU;
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.loggingEnabled = false;
 
         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
         // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
@@ -79,18 +79,17 @@ public class RED_Platform_Bridge_Block extends BaseAutoOpMode {
         telemetry.update();
 
         // make sure the imu gyro is calibrated before continuing.
-        while (!isStopRequested() && !imu.isGyroCalibrated())
-        {
+        while (!isStopRequested() && !imu.isGyroCalibrated()) {
             sleep(50);
             idle();
         }
-
 
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
 
+        //Robot is turns right then stops
         front_left.setPower(1 * startingSide);
         rear_left.setPower(-.5 * startingSide);
         front_right.setPower(-.5 * startingSide);
@@ -104,28 +103,33 @@ public class RED_Platform_Bridge_Block extends BaseAutoOpMode {
         sleep(100);
 
         UnfoldRobot();
-//Clamps Half
-        Clamp_Left.setPosition(0.5);
-        Clamp_Right.setPosition(0.5);
-        sleep(1000);
-//Drive forward
-        RunAllMotors();
-        sleep(250);
-        CutMotors();
-//clamps down
+
+        //Clamps half
+        //Clamp_Left.setPosition(0.5);
+        //Clamp_Right.setPosition(0.5);
+        //sleep(1000);
+
+        //Robot Drives Forward
+        //RunAllMotors();
+        //sleep(225);
+        //CutMotors();
+
+        //Clamps are down
         Clamp_Left.setPosition(1);
         Clamp_Right.setPosition(0f);
         sleep(1000);
-//drive backward
+
+        //Robot moves backwards
         RunAllMotorsBackward();
         sleep(600);
 
-//strafe right
+
+        //Robot strafes right
         front_left.setPower(-1 * startingSide);
-       rear_left.setPower(.7 * startingSide);
+        rear_left.setPower(.7 * startingSide);
         front_right.setPower(1 * startingSide);
         rear_right.setPower(-1 * startingSide);
-        sleep(1400);
+        sleep(1200);
         CutMotors();
         //sleep(600);
 
@@ -135,46 +139,40 @@ public class RED_Platform_Bridge_Block extends BaseAutoOpMode {
         //rear_right.setPower(-1);
         //sleep(1900);
 
-        // Turn towards right
-        resetAngle();
+        //Turns right
         rotate(55 * startingSide, 1);
 
-        // Robot stops
+        //Robot stops
         RunAllMotors();
         sleep(650);
         CutMotors();
 
         //End of moving platform
 
-        // Clamps go up
+        //Clamps go up
         Clamp_Left.setPosition(0f);
         Clamp_Right.setPosition(1f);
-        sleep(1000);
-
-        // Servo is pushed out
         Release_Servo.setPosition(0.4);
-        sleep(1000);
+       // sleep(500);
 
-        //Moves pulley system back
-        top_motor.setPower(-1);
-        sleep(200);
+        //Pulley system moves backwards
+        //top_motor.setPower(-1);
+        //sleep(200);
 
-        //Controls crane movement to stop
-        while(Top_Sensor_Rear.getState())
-        {
-            top_motor.setPower(1);
-            telemetry.addData("Loop Crane " , Top_Sensor_Rear.getState());
+        //Control system that stops pulley
+        while (Top_Sensor_Rear.getState()) {
+            top_motor.setPower(0.7);
+            telemetry.addData("Loop Crane ", Top_Sensor_Rear.getState());
             telemetry.update();
         }
 
         top_motor.setPower(0);
 
-        //Controls lift going down
-        while(bottom_touch.getState())
-        {
+        //Control system that gets pulley system to go
+        while (bottom_touch.getState()) {
             lift_left.setPower(1);
             lift_right.setPower(1);
-            telemetry.addData("Loop Lift " , bottom_touch.getState());
+            telemetry.addData("Loop Lift ", bottom_touch.getState());
             telemetry.update();
         }
         telemetry.addData("Loop Lift ", "Out Of Loop");
@@ -183,97 +181,92 @@ public class RED_Platform_Bridge_Block extends BaseAutoOpMode {
         //top_motor.setPower(0);
 
 
-      //  lift_left.setPower(1);
-      //  lift_right.setPower(1);
-      //  sleep(1500);
+        //  lift_left.setPower(1);
+        //  lift_right.setPower(1);
+        //  sleep(1500);
 
-        //The lift motors are stopped
+        //Lift
         lift_left.setPower(0);
         lift_right.setPower(0);
 
-        //Robot moves backward
         RunAllMotorsBackward();
-        sleep(2500);
+        sleep(900);
         CutMotors();
 
-        //End Of Bridge, Start Of Block
+        //reset gyro and rotate 30
 
-
-        //rotates robot to the left
         resetAngle();
-        rotate(90, 1);
+        rotate(-30, 1);
 
-        //lift is moved up
-        lift_left.setPower(-1);
-        lift_right.setPower(-1);
-        sleep(400);
+
+        //turn on feeder and drive backwards
+        feeder_motor.setPower(1);
+        RunAllMotorsBackward();
+        sleep(500);
+        CutMotors();
+
+        //Drive Forward
+        RunAllMotors();
+        sleep(500);
+        CutMotors();
+
+        //rotate back
+        resetAngle();
+        rotate(30, 1);
+
+
+        //Drive Forward
+        RunAllMotors();
+        sleep(1100);
+        CutMotors();
+
+        //Drive Backward (to get block in the claw
+        RunAllMotorsBackward();
+        sleep(50);
+        CutMotors();
+
+        //turn off feeder
+        feeder_motor.setPower(0);
+
+        //Close Claw
+        Block_Pickup.setPosition(1);
+
+        //Crane Up
+        lift_left.setPower(1);
+        lift_right.setPower(1);
+        sleep(800);
+
+        //Lift Stop
         lift_left.setPower(0);
         lift_right.setPower(0);
 
-
-        //controls lift movement to stop
-        while(Top_Sensor_Front.getState())
-        {
-            top_motor.setPower(-0.7);
-            telemetry.addData("Loop Crane " , Top_Sensor_Front.getState());
+        //Crane Across
+        top_motor.setPower(-1);
+        while(Top_Sensor_Front.getState()){
+            top_motor.setPower(-1);
+            telemetry.addData( "Status", "Moving Crane");
             telemetry.update();
         }
         top_motor.setPower(0);
 
-        //clamps moved down
-        Clamp_Left.setPosition(0.7);
-        Clamp_Right.setPosition(0.3);
-        sleep(1000);
+        //Lift Down
+        lift_left.setPower(-1);
+        lift_right.setPower(-1);
+        sleep(500);
 
-        //Robot is stopped
-        RunAllMotors();
-        sleep(200);
-        CutMotors();
-
-        //Lift goes down
-        lift_left.setPower(1);
-        lift_right.setPower(1);
-        sleep(150);
-        lift_left.setPower(0);
-        lift_right.setPower(0);
-
-        //Robot moves backwards
-        RunAllMotorsBackward();
-        sleep(250);
-        CutMotors();
-
-        //Turns to the right
-        resetAngle();
-        rotate(-89, 1);
-
-        //Robots stops
-        RunAllMotors();
-        sleep(700);
-        CutMotors();
-
-        //Robot moves backwards
-        RunAllMotorsBackward();
-        sleep(100);
-        CutMotors();
-
-
-
-
-
-
-
-
+        //Open Claw
+        Block_Pickup.setPosition(0.4);
 
 
     }
 
     /**
      * Rotate left or right the number of degrees. Does not support turning more than 180 degrees.
+     *
      * @param degrees Degrees to turn, + is left - is right
      */
-    private void rotate(int degrees, double power)
-    {
-        double  leftPower, rightPower;
+    private void rotate(int degrees, double power) {
+        double leftPower, rightPower;
 
         // restart imu movement tracking.
         resetAngle();
@@ -281,17 +274,13 @@ public class RED_Platform_Bridge_Block extends BaseAutoOpMode {
         // getAngle() returns + when rotating counter clockwise (left) and - when rotating
         // clockwise (right).
 
-        if (degrees < 0)
-        {   // turn right.
+        if (degrees < 0) {   // turn right.
             leftPower = power;
             rightPower = -power;
-        }
-        else if (degrees > 0)
-        {   // turn left.
+        } else if (degrees > 0) {   // turn left.
             leftPower = -power;
             rightPower = power;
-        }
-        else return;
+        } else return;
 
         // set power to rotate.
         front_left.setPower(leftPower);
@@ -300,15 +289,16 @@ public class RED_Platform_Bridge_Block extends BaseAutoOpMode {
         rear_right.setPower(rightPower);
 
         // rotate until turn is completed.
-        if (degrees < 0)
-        {
+        if (degrees < 0) {
             // On right turn we have to get off zero first.
-            while (opModeIsActive() && getAngle() == 0) {}
+            while (opModeIsActive() && getAngle() == 0) {
+            }
 
-            while (opModeIsActive() && getAngle() > degrees) {}
-        }
-        else    // left turn.
-            while (opModeIsActive() && getAngle() < degrees) {}
+            while (opModeIsActive() && getAngle() > degrees) {
+            }
+        } else    // left turn.
+            while (opModeIsActive() && getAngle() < degrees) {
+            }
 
         // turn the motors off.
         front_left.setPower(0);
@@ -322,8 +312,8 @@ public class RED_Platform_Bridge_Block extends BaseAutoOpMode {
         // reset angle tracking on new heading.
         resetAngle();
     }
-    private void resetAngle()
-    {
+
+    private void resetAngle() {
         lastAngles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
         globalAngle = 0;
@@ -331,10 +321,10 @@ public class RED_Platform_Bridge_Block extends BaseAutoOpMode {
 
     /**
      * Get current cumulative angle rotation from last reset.
+     *
      * @return Angle in degrees. + = left, - = right.
      */
-    private double getAngle()
-    {
+    private double getAngle() {
         // We experimentally determined the Z axis is the axis we want to use for heading angle.
         // We have to process the angle because the imu works in euler angles so the Z axis is
         // returned as 0 to +180 or 0 to -180 rolling back to -179 or +179 when rotation passes

@@ -326,6 +326,7 @@ public class Chassis {
             backLeft.setPower(power);
             backRight.setPower(power);
         };
+        setZeroBehavior(DcMotor.ZeroPowerBehavior.BRAKE); //#TOBECHECKED TO AVOID JERK
         frontLeft.setPower(0.0);
         frontRight.setPower(0.0);
         backLeft.setPower(0.0);
@@ -338,10 +339,10 @@ public class Chassis {
      * To be used in Autonomous mode for moving by distance or turning by angle
      * Uses PID loop in motors to ensure motion without errors
      * @param max_stop_distance
-     * @param strave 0 for forward or backward, 1 for right, -1 for left
+     * @param straveDirection 0 for forward or backward, 1 for right, -1 for left
      * @param power
      */
-    public void runFwdStraveTill_ChassisRightColorSensorIsRed(double max_stop_distance, double strave, double power){
+    public void runTill_ChassisRightColorSensorIsRed(double max_stop_distance, double straveDirection, double power){
         setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
         resetChassis();
 
@@ -349,25 +350,54 @@ public class Chassis {
         double targetRotations = max_stop_distance/(2*Math.PI*wheelRadius);
 
         while (!rightColorSensorIsRed() && (Math.abs(backLeft.getCurrentPosition()) < Math.abs(ChassisMotorEncoderCount * targetRotations))) {
-            if(strave==0) {
+            if(straveDirection == 0) {
                 //Go forward or backward
                 frontLeft.setPower(power);
                 frontRight.setPower(power);
                 backLeft.setPower(power);
                 backRight.setPower(power);
-            } else {/* #TOBEFIXED FOR STRAVE LOGIC
-                frontLeft.setPower(power * Math.cos(3*Math.PI/4));
-                frontRight.setPower(power * Math.sin(3*Math.PI/4));
-                backLeft.setPower(power * Math.sin(Math.PI/4));
-                backRight.setPower(power * Math.cos(Math.PI/4));
-            */}
+            } else {
+                frontLeft.setPower(straveDirection* power);
+                frontRight.setPower(-straveDirection* power);
+                backLeft.setPower(-straveDirection* power);
+                backRight.setPower(straveDirection* power);
+            }
+        };
+        setZeroBehavior(DcMotor.ZeroPowerBehavior.BRAKE); //#TOBECHECKED TO AVOID JERK
+        frontLeft.setPower(0.0);
+        frontRight.setPower(0.0);
+        backLeft.setPower(0.0);
+        backRight.setPower(0.0);
+    }
+    
+
+
+
+    //Once completed replicate for other 3 combinations Right-Blue, Left-Red, Left-Blue
+
+    /**
+     * Method to move chassis by rotation.
+     * Used in Auto placement of block
+     * @param rotations
+     * @param power
+     */
+    public void runRotations(double rotations, double power) {
+
+        resetChassis();
+        setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        while (Math.abs(backLeft.getCurrentPosition()) < Math.abs(ChassisMotorEncoderCount * rotations)) {
+            frontLeft.setPower(power);
+            frontRight.setPower(power);
+            backLeft.setPower(power);
+            backRight.setPower(power);
         };
         frontLeft.setPower(0.0);
         frontRight.setPower(0.0);
         backLeft.setPower(0.0);
         backRight.setPower(0.0);
     }
-    //Once completed replicate for other 3 combinations Right-Blue, Left-Red, Left-Blue
+
+
 
     /**
      * Method to turn robot by a specified angle.

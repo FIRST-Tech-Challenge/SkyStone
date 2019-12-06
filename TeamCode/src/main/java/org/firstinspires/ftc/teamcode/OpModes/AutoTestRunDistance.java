@@ -74,14 +74,14 @@ public class AutoTestRunDistance extends LinearOpMode{
         //Comment out the ones not run at the time
 
         //Run Robot till opMode is Active or 30 seconds
-        while (opModeIsActive() && AutonomousTimeOut.milliseconds()<30000) {
+        while (opModeIsActive() /*&& AutonomousTimeOut.milliseconds()<30000*/) {
             //hzGamepad1.runSubsystemByGamepadInput(hzChassis, hzArm, hzIntake);
             //hzArm.moveArm_aboveFoundationLevel();
-            hzChassis.runDistance(9, -Math.PI/2, 0, 0.25);
+
+            //hzChassis.runDistance(9, -Math.PI/2, 0, 0.25);// Strave right
+            hzChassis.runTill_ChassisRightColorSensorIsRed(9, -1, 0.25);
             //hzChassis.runDistance(0, 0, Math.PI/4, 0.25);
 
-            //hzChassis.runRotations(1, 0.25);
-            //hzChassis.runStraightDistanceByRotations(12, 0.25);
 
             if(HzDEBUG_FLAG) printDebugMessages();
             telemetry.update();

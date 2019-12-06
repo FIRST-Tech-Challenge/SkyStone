@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotlib.robot.MecanumHardwareMap;
+import org.firstinspires.ftc.robotlib.state.Button;
 
 @TeleOp(name="Servo Testing", group="Linear Opmode")
 public class ServoTesting extends LinearOpMode
@@ -13,6 +14,9 @@ public class ServoTesting extends LinearOpMode
     private MecanumHardwareMap robotHardware;
     private ElapsedTime elapsedTime;
     private boolean rbUp = true;
+    private boolean lbUp = true;
+    private Button rightTrigger = new Button();
+    private Button yButton = new Button();
     private int index = 0;
 
     @Override
@@ -21,16 +25,49 @@ public class ServoTesting extends LinearOpMode
         robotHardware = new MecanumHardwareMap(this.hardwareMap);
         elapsedTime = new ElapsedTime();
 
-        double[] servoPositions = new double[]{0.3, 0.4, 0.5, 0.6, 0.7};
+        double[] servoPositions = new double[]{0.07, 0.15, 0.73, 0.78, 0.89, 1.0};
+        String[] positionNames = new String[]{"Cradle", "Carry", "Hover2", "Deposit2/Hover1", "Deposit1", "Floor"};
 
         while (!isStopRequested()) {
             if (gamepad1.right_bumper) {
                 if (rbUp) {
                     rbUp = false;
-                    index++;
-                    robotHardware.deliveryServoManager.setPosition(servoPositions[index]);
-                } else rbUp = true;
+                    if (index + 1 < servoPositions.length) {
+                        index++;
+                        robotHardware.deliveryLeft.setPosition(servoPositions[index]);
+                        robotHardware.deliveryRight.setPosition(servoPositions[index] + 0.02);
+                    }
+                }
+            } else rbUp = true;
+
+            if (gamepad1.left_bumper) {
+                if (lbUp) {
+                    lbUp = false;
+                    if (index - 1 >= 0) {
+                        index--;
+                        robotHardware.deliveryLeft.setPosition(servoPositions[index]);
+                        robotHardware.deliveryRight.setPosition(servoPositions[index] + 0.02);
+                    }
+                }
+            } else lbUp = true;
+
+            if (rightTrigger.isToggled()) {
+                robotHardware.intakeMotorManager.setMotorsVelocity(1.0);
             }
+            if (rightTrigger.isReleased()) {
+                robotHardware.intakeMotorManager.setMotorsVelocity(0.0);
+            }
+
+            if (yButton.isReleased()) {
+                if (robotHardware.blockGrabber.getPosition() == 0.0) robotHardware.blockGrabber.setPosition(1.0);
+                else robotHardware.blockGrabber.setPosition(0.0);
+            }
+
+            yButton.input(gamepad1.y);
+            rightTrigger.input(gamepad1.right_trigger > 0);
+
+            telemetry.addData("Info", index + " " + positionNames[index] + " " + servoPositions[index]);
+            telemetry.update();
 
             /*for (double i = 0.0; i < 1.0; i += 0.1) {
                 robotHardware.deliveryServoManager.setPosition(i);

@@ -8,15 +8,15 @@ import org.jetbrains.annotations.NotNull;
 public enum ServoState {
     UNKNOWN(-1, -1),
     STOWED(0, 0),
-    BLOCK3(1, 0),
-    BLOCK2(2, 0),
-    BLOCK1(3, 0),
+    BLOCK3(1, 0.25),
+    BLOCK2(2, 0.5),
+    BLOCK1(3, 0.25),
     DOWN(4, 1);
 
     private int id;
-    private int position;
+    private double position;
 
-    ServoState(int id, int position) {
+    ServoState(int id, double position) {
         this.id = id;
         this.position = position;
     }
@@ -25,7 +25,7 @@ public enum ServoState {
         return id;
     }
 
-    public int getPosition() {
+    public double getPosition() {
         return position;
     }
 

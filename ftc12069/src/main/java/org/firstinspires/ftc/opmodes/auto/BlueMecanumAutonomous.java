@@ -36,12 +36,12 @@ import org.firstinspires.ftc.robotlib.state.Alliance;
 
 @Autonomous(name="Experimental Mecanum AUTO BLUE (12069)", group="Autonomous")
 public class BlueMecanumAutonomous extends LinearOpMode {
-    private MecanumAutonomous mecanumAutonomous;
+    private BasicMecanumAutonomous mecanumAutonomous;
 
     @Override
     public void runOpMode() {
         // Initialize robot
-        mecanumAutonomous = new MecanumAutonomous(this.hardwareMap, this.telemetry, Alliance.BLUE);
+        mecanumAutonomous = new BasicMecanumAutonomous(this.hardwareMap, this.telemetry, Alliance.BLUE);
         mecanumAutonomous.init();
 
         // Wait for driver to press start

@@ -29,6 +29,8 @@
 
 package org.firstinspires.ftc.opmodes.auto;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -40,31 +42,20 @@ import org.firstinspires.ftc.robotlib.navigation.Point3D;
 import org.firstinspires.ftc.robotlib.state.Alliance;
 import org.firstinspires.ftc.robotlib.state.ServoState;
 
-class BasicMecanumAutonomous {
-    private Alliance alliance;
+@Autonomous(name="Bridge Park Autonomous", group="auto")
+public class BridgeParkAutonomous extends OpMode {
+    private Alliance alliance = Alliance.RED;
     private Telemetry telemetry;
-    private HardwareMap hardwareMap;
     private ElapsedTime elapsedTime = new ElapsedTime();
 
     private AutonomousRobot robot;
 
     /**
-     * Creates an autonomous mecanum robot
-     * @param hardwareMap FTC hardware map
-     * @param telemetry FTC Logging
-     * @param alliance Alliance to operate under
-     */
-    BasicMecanumAutonomous(HardwareMap hardwareMap, Telemetry telemetry, Alliance alliance) {
-        this.hardwareMap = hardwareMap;
-        this.telemetry = telemetry;
-        this.alliance = alliance;
-    }
-
-    /**
      * Initializes the robot
      * Ran before the game starts
      */
-    void init() {
+    @Override
+    public void init() {
         telemetry.addData("Status", "Initialized");
         robot = new AutonomousRobot(this.hardwareMap, alliance, telemetry, elapsedTime);
         robot.init();
@@ -73,60 +64,30 @@ class BasicMecanumAutonomous {
     /**
      * Ran after the game starts and before the game loop begins
      */
-    void start() {
+    @Override
+    public void start() {
         elapsedTime.reset();
 
         // Enable Tracking
-        robot.trackables.activate();
+        //robot.trackables.activate();
     }
 
     /**
      * Ran once the game has ended
      */
-    void end() {
+    @Override
+    public void stop() {
         // Disable Tracking
-        robot.trackables.deactivate();
+        //robot.trackables.deactivate();
     }
 
     /**
      * Game Loop Method (runs until stop is requested)
      * @return true - keep looping | false - stop looping
      */
-    boolean loop() {
-        robot.move(0, 0.7, null, 5);
-        robot.move(alliance == Alliance.BLUE ? 90 : -90, 0.5, null, 5);
-
-        // Until the timer has 5 seconds left, deliver stones
-        while (elapsedTime.seconds() < 25) {
-            robot.scanWait(1);
-
-            if (robot.isTrackableVisible() && robot.isSkystoneVisible()) {
-                // Get Skystone
-                Point3D positionFromSkystone = robot.getPositionFromSkystone();
-                Point3D stonePoint3D = new Point3D(robot.getTrackedSkystone().getLocation());
-                telemetry.addData("Position relative to Skystone", "{X, Y, Z} = %.0f, %.0f, %.0f", positionFromSkystone.x, positionFromSkystone.y, positionFromSkystone.z);
-                robot.move(robot.getCourse(positionFromSkystone, stonePoint3D), 0.3, null, robot.getDistance(positionFromSkystone, stonePoint3D));
-            } else robot.move(0, 0.5, null, 5);
-
-            // Intake Stone
-            robot.hardware.intakeMotorManager.setMotorsVelocity(1.0);
-            robot.hardware.blockGrabber.setPosition(0.0);
-            robot.move(0, 0.5, null, 3);
-            robot.hardware.intakeMotorManager.setMotorsVelocity(0.0);
-
-            // Deliver Stone
-            robot.move(0, -0.5, null, 10);
-            robot.move(alliance == Alliance.BLUE ? -90 : 90, 0.5, new OrientationInfo(180, 0.5), 95);
-            robot.hardware.blockGrabber.setPosition(1.0);
-            robot.hardware.deliveryServoManager.setServoState(ServoState.BLOCK1);
-            robot.hardware.blockGrabber.setPosition(0.0);
-            robot.hardware.deliveryServoManager.setServoState(ServoState.STOWED);
-
-            // Move to the loading zone
-            robot.move(alliance == Alliance.BLUE ? 90 : -90, 0.5, null, 10);
-        }
-
-        robot.parkUnderBridge();
-        return false;
+    @Override
+    public void loop() {
+        robot.simpleMove(0, -0.5, 0, 5);
+        robot.simpleMove(90, 0.5, 0, 5);
     }
 }

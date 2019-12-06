@@ -25,10 +25,15 @@ public class MecanumHardwareMap
     private DcMotor intakeLeft;
     private DcMotor intakeRight;
 
+    // Platform Servos
+    private Servo platformServoLeft;
+    private Servo platformServoRight;
+    public ServoManager platformServoManagers;
+
     // Servos
     public Servo blockGrabber;
-    private Servo deliveryLeft;
-    private Servo deliveryRight;
+    public Servo deliveryLeft;
+    public Servo deliveryRight;
 
     // Camera
     public WebcamName webcamName;
@@ -69,6 +74,10 @@ public class MecanumHardwareMap
         deliveryLeft = hwMap.get(Servo.class, "deliveryLeft");
         deliveryRight = hwMap.get(Servo.class, "deliveryRight");
 
+        platformServoLeft = hwMap.get(Servo.class, "platformServoLeft");
+        platformServoRight = hwMap.get(Servo.class, "platformServoRight");
+        platformServoManagers = new ServoManager(new Servo[]{platformServoLeft, platformServoRight});
+
         motorList = new DcMotor[]{driveFrontLeft, driveFrontRight, driveRearLeft, driveRearRight};
 
         driveFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -95,7 +104,7 @@ public class MecanumHardwareMap
 
         webcamName = hwMap.get(WebcamName.class, "Webcam 1");
 
-        BNO055IMU.Parameters imuParameters = new BNO055IMU.Parameters();
+        /*BNO055IMU.Parameters imuParameters = new BNO055IMU.Parameters();
         imuParameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         imuParameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         //imuParameters.calibrationDataFile = "BNO055IMUCalibration.json"; If we find problems manual calibration will be required
@@ -103,7 +112,7 @@ public class MecanumHardwareMap
         imuParameters.loggingTag = "IMU";
 
         imu = hwMap.get(BNO055IMU.class, "imu");
-        imu.initialize(imuParameters);
+        imu.initialize(imuParameters);*/
 
         drivetrain = new MecanumDrivetrain(motorList);
         intakeMotorManager = new MotorManager(new DcMotor[]{intakeLeft, intakeRight});

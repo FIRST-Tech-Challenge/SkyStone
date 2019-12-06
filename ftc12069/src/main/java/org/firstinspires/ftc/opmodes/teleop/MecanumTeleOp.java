@@ -8,7 +8,7 @@ import org.firstinspires.ftc.robotlib.robot.MecanumHardwareMap;
 import org.firstinspires.ftc.robotlib.state.Button;
 import org.firstinspires.ftc.robotlib.state.ServoState;
 
-@TeleOp(name="Experimental Mecanum TELEOP (12069)", group="Linear Opmode")
+@TeleOp(name="Mecanum TELEOP (12069)", group="Linear Opmode")
 public class MecanumTeleOp extends OpMode
 {
     private MecanumHardwareMap hardware;
@@ -16,10 +16,17 @@ public class MecanumTeleOp extends OpMode
 
     // TeleOp States
     private boolean rightMotion = true;
-    private Button leftBumper;
-    private Button rightBumper;
     private Button rightTrigger;
     private Button rightStickButton;
+    private Button yButton;
+    private Button xButton;
+
+    // Servo
+    double[] servoPositions = new double[]{0.07, 0.15, 0.71, 0.78, 0.89, 1.0};
+    String[] positionNames = new String[]{"Cradle", "Carry", "Hover2", "Deposit2/Hover1", "Deposit1", "Floor"};
+    int servoPositionIndex = 0;
+    private Button leftBumper;
+    private Button rightBumper;
 
     @Override
     public void init()
@@ -27,12 +34,15 @@ public class MecanumTeleOp extends OpMode
         hardware = new MecanumHardwareMap(this.hardwareMap);
         elapsedTime = new ElapsedTime();
 
+        yButton = new Button();
+        xButton = new Button();
         leftBumper = new Button();
         rightBumper = new Button();
         rightTrigger = new Button();
         rightStickButton = new Button();
 
-        hardware.deliveryServoManager.reset();
+        //hardware.deliveryServoManager.reset();
+        hardware.platformServoManagers.reset();
         hardware.intakeMotorManager.stop();
     }
 
@@ -69,12 +79,38 @@ public class MecanumTeleOp extends OpMode
         hardware.drivetrain.setVelocity(velocity);
         hardware.drivetrain.setRotation(rotation);
 
-        ServoState deliveryServoState = hardware.deliveryServoManager.getServoState();
+        if (rightBumper.isReleased()) {
+            if (servoPositionIndex + 1 < servoPositions.length) {
+                servoPositionIndex++;
+                hardware.deliveryLeft.setPosition(servoPositions[servoPositionIndex]);
+                hardware.deliveryRight.setPosition(servoPositions[servoPositionIndex] + 0.04);
+            }
+        }
+
+        if (leftBumper.isReleased()) {
+            if (servoPositionIndex > 0) {
+                servoPositionIndex--;
+                hardware.deliveryLeft.setPosition(servoPositions[servoPositionIndex]);
+                hardware.deliveryRight.setPosition(servoPositions[servoPositionIndex] + 0.04);
+            }
+        }
+
+        if (yButton.isReleased()) {
+            if (hardware.blockGrabber.getPosition() == 0.0) hardware.blockGrabber.setPosition(1.0);
+            else hardware.blockGrabber.setPosition(0.0);
+        }
+
+        if (xButton.isReleased()) {
+            if (hardware.platformServoManagers.getPosition() == 0.0) hardware.platformServoManagers.setPosition(0.35);
+            else hardware.platformServoManagers.setPosition(0.0);
+        }
+
+        /*ServoState deliveryServoState = hardware.deliveryServoManager.getServoState();
         if (leftBumper.isReleased()) {
             hardware.deliveryServoManager.setServoState(ServoState.getServoStateFromInt(deliveryServoState.getId() - 1));
         } else if (rightBumper.isReleased()) {
             hardware.deliveryServoManager.setServoState(ServoState.getServoStateFromInt(deliveryServoState.getId() + 1));
-        }
+        }*/
 
         if (rightTrigger.isToggled()) {
             hardware.intakeMotorManager.setMotorsVelocity(1.0);
@@ -84,13 +120,15 @@ public class MecanumTeleOp extends OpMode
         }
 
         if (rightStickButton.isReleased()) {
-            if (hardware.blockGrabber.getPosition() == 0.0) hardware.blockGrabber.setPosition(1.0);
+            if (hardware.blockGrabber.getPosition() == 0.0) hardware.blockGrabber.setPosition(0.5);
             else hardware.blockGrabber.setPosition(0.0);
         }
 
         //if (gamepad1.a) rightMotion = false;
         //if (gamepad1.b) rightMotion = true;
 
+        xButton.input(gamepad1.x);
+        yButton.input(gamepad1.y);
         leftBumper.input(gamepad1.left_bumper);
         rightBumper.input(gamepad1.right_bumper);
         rightTrigger.input(gamepad1.right_trigger > 0);
@@ -101,7 +139,7 @@ public class MecanumTeleOp extends OpMode
         telemetry.addData("Velocity", velocity);
         telemetry.addData("Rotation", rotation);
         telemetry.addData("Driving Mode", rightMotion ? "RIGHT" : "LEFT");
-        telemetry.addData("Servo State", hardware.deliveryServoManager.getServoState().toString());
+        telemetry.addData("Servo State", servoPositionIndex + " " + positionNames[servoPositionIndex] + " " + servoPositions[servoPositionIndex]);
         telemetry.update();
     }
 

@@ -1,3 +1,5 @@
+package loki;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -7,30 +9,24 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp (name = "Telemetry")
-public class Telemetry extends OpMode {
-    DcMotor lf, rf, lb, rb;
+@TeleOp (name = "loki.Working_Tele")
+public class Working_Tele extends OpMode{
+    DcMotor lf, rf, lb, rb, ls; //Define Motors In Code
     public Gamepad g1, g2;
     Servo clawL, clawR;
     private ElapsedTime runtime = new ElapsedTime();
-    //Encoder Setup
-    static final double COUNTS_PER_MOTOR_REV = 1440;    // eg: TETRIX Motor Encoder
-    static final double DRIVE_GEAR_REDUCTION = 2.0;     // This is < 1.0 if geared UP
-    static final double GEAR_DIAMETER_INCHES = 1.5;     // For figuring circumference
-    static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
-            (GEAR_DIAMETER_INCHES * 3.1415926535897932384626433);
-
 
     @Override
     public void init() {
         telemetry.addData("Status", "Initialized");
 
 
-        //Motor Define
+        //Motor Define In Phone
         lf = hardwareMap.dcMotor.get("lf");
         rf = hardwareMap.dcMotor.get("rf");
         lb = hardwareMap.dcMotor.get("lb");
         rb = hardwareMap.dcMotor.get("rb");
+        ls = hardwareMap.dcMotor.get("ls");
         //Servo Define
         clawL = hardwareMap.servo.get("clawL");
         clawR = hardwareMap.servo.get("clawR");
@@ -38,28 +34,11 @@ public class Telemetry extends OpMode {
         rf.setDirection(DcMotor.Direction.REVERSE);
         rb.setDirection(DcMotor.Direction.REVERSE);
 
-        //Encoder Stuff
-        lf.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rf.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        lb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        lf.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rf.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        lb.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rb.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-
-
-
-
     }
 
     @Override
     public void loop() {
-
-
-        /* //Trig
+       /* //Trig
         double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
         //returns hypotonuse (C value in triangle)
 
@@ -97,7 +76,7 @@ public class Telemetry extends OpMode {
 
         drive = -gamepad1.left_stick_y;
 
-        strafe = gamepad1.left_stick_x;
+        strafe = gamepad1.left_stick_x; //add negative
         rotate = gamepad1.right_stick_x * 0.5;
 
         lfPow = drive + strafe + rotate;
@@ -111,14 +90,14 @@ public class Telemetry extends OpMode {
         rb.setPower((rbPow));
         lb.setPower((lbPow));
 
-        /*telemetry.addData("GamepadRx", gamepad1.right_stick_x);
+       /* telemetry.addData("GamepadRx", gamepad1.right_stick_x);
         telemetry.addData("GamepadRy", gamepad1.right_stick_y);
-        telemetry.addData("GamepadLy", gamepad1.left_stick_y);
+        telemetry.addData("GamepadLy", gamepad1.left_stick_y); */
 
         telemetry.addData("rb", lbPow);
         telemetry.addData("rf", rbPow);
         telemetry.addData("lf", lfPow);
-        telemetry.addData("lb", lbPow);*/
+        telemetry.addData("lb", lbPow);
 
         //Move Depot Hooks
         if (gamepad2.a) {
@@ -130,12 +109,40 @@ public class Telemetry extends OpMode {
             clawL.setPosition(1);
         }
 
-        telemetry.addData("LB: ", lb.getCurrentPosition());
-        telemetry.addData("LF: ", lf.getCurrentPosition());
-        telemetry.addData("RB: ", rb.getCurrentPosition());
-        telemetry.addData("RF: ", rf.getCurrentPosition());
+        //Linear Slide
+        ls.setPower(gamepad2.left_stick_y);
 
-        telemetry.update();
 
     }
+
+  /*  public class JoystickCalc
+    {
+        private OpMode opmode;
+
+        double leftStickY;
+        double leftStickX;
+        double rightStickX;
+        double rightStickY;
+        boolean xButton;
+        boolean yButton;
+        boolean aButton;
+        boolean bButton;
+
+        public JoystickCalc(OpMode opmode)
+        {
+            this.opmode = opmode;
+        }
+
+        public void calculate ()
+        {
+            leftStickY = opmode.gamepad1.left_stick_y;
+            leftStickX = opmode.gamepad1.left_stick_x;
+            rightStickX = opmode.gamepad1.right_stick_x;
+            rightStickY = opmode.gamepad1.right_stick_y;
+            xButton = opmode.gamepad1.x;
+            yButton = opmode.gamepad1.y;
+            bButton = opmode.gamepad1.b;
+            aButton = opmode.gamepad1.a;
+        }*/
 }
+

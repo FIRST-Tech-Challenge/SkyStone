@@ -1,11 +1,13 @@
+package loki;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp (name = "Github_Test")
+@TeleOp (name = "loki.Github_Test")
 public class Github_Test extends OpMode {
     @Override
     public void init() {
-        //Heewwo
+        //Hewwo
     }
 
     @Override

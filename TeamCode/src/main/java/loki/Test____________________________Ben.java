@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.robotcontroller;
+package loki;
 
 //imports
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;

@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotlib.robot.SiBorgsMecanumRobot;
 import org.firstinspires.ftc.robotlib.state.Button;
 import org.firstinspires.ftc.robotlib.state.ServoState;
+import org.firstinspires.ftc.robotlib.state.AutoDirection;
 
 @Autonomous(name="Mecanum Auto V-CompetitionReady", group="AutoComp")
 public class SiBorgsMecanumAuto extends LinearOpMode
@@ -40,7 +41,7 @@ public class SiBorgsMecanumAuto extends LinearOpMode
             if (capstoneOpen.onPress()) { robot.armGripSlide.setPosition(ServoState.UP); }
             else if (capstoneClose.onPress()) { robot.armGripSlide.setPosition(ServoState.DOWN); }
 
-            telemetry.addData("ADD CAPSTONE TO SERVO ", robot.armGripSlide.getState());
+            telemetry.addData("ADD CAPSTONE TO SERVO (G1-DPAD)", robot.armGripSlide.getState());
             telemetry.update();
         }
         telemetry.addData("AUTO START", elapsedTime.seconds());
@@ -50,18 +51,4 @@ public class SiBorgsMecanumAuto extends LinearOpMode
 
         requestOpModeStop();
     }
-}
-
-enum AutoDirection
-{
-    FRONT(Math.atan2(1, 0) - Math.PI/2),
-    LEFT(Math.atan2(0, -1) - Math.PI/2),
-    RIGHT(Math.atan2(0, 1) - Math.PI/2),
-    REAR(Math.atan2(1, 0) - Math.PI/2);
-
-    private double angle;
-
-    public double getAngle() { return angle; }
-
-    AutoDirection(double angle) { this.angle = angle; }
 }

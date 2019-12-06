@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.robotlib.drivetrain;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
-
 import org.firstinspires.ftc.robotlib.motor.EncoderMotor;
 import org.firstinspires.ftc.robotlib.state.ToggleBoolean;
 /*
@@ -22,14 +20,6 @@ abstract public class Drivetrain
         lowPower = new ToggleBoolean(false);
     }
 
-    Drivetrain(DcMotor[] motorList)
-    {
-        EncoderMotor[] encoderMotorList = new EncoderMotor[4];
-        for (int motorIndex = 0; motorIndex < encoderMotorList.length; motorIndex++) { encoderMotorList[motorIndex] = new EncoderMotor(motorList[motorIndex]); }
-        this.motorList = encoderMotorList;
-        lowPower = new ToggleBoolean(false);
-    }
-
     public double getVelocity() { return velocity; }
 
     public void setVelocity(double velocity)
@@ -44,7 +34,7 @@ abstract public class Drivetrain
         double[] motorPowers = calculateMotorPowers();
         for (int motorIndex = 0; motorIndex < motorPowers.length; motorIndex++)
         {
-            motorList[motorIndex].setPower(motorPowers[motorIndex] * (getLowPower() ? 0.35 : 1));
+            motorList[motorIndex].setPower(motorPowers[motorIndex] * (isLowPower() ? 0.35 : 1));
         }
     }
 
@@ -53,7 +43,7 @@ abstract public class Drivetrain
         lowPower.input(currentlyPressed);
     }
 	
-	public boolean getLowPower()
+	public boolean isLowPower()
 	{
 		return lowPower.output();
 	}

@@ -121,7 +121,7 @@ public class SiBorgsMecanumRobot
     public void driverTelemetry()
     {
         telemetry.addData("> Drive Info", "-----");
-        telemetry.addData("Half Power Mode\t(G1-RStickButton)", drivetrain.getLowPower());
+        telemetry.addData("Half Power Mode\t(G1-RStickButton)", drivetrain.isLowPower());
         telemetry.addData("Course Degrees\t(G1-RStick)", drivetrain.getCourse());
         telemetry.addData("Power\t(G1-RStick)", drivetrain.getVelocity());
         telemetry.addData("Rotation\t(G1-LStick)", drivetrain.getRotation());

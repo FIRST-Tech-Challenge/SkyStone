@@ -34,9 +34,11 @@ public class Color_Reference extends LinearOpMode{
 
         // hsvValues is an array that will hold the hue, saturation, and value information.
         float hsvValues[] = {0F,0F,0F};
+        final float hsvSky[] = {0F,0F,0F};
 
         // values is a reference to the hsvValues array.
         final float values[] = hsvValues;
+        final float sValues[] = hsvSky;
 
         // get a reference to the RelativeLayout so we can change the background
         // color of the Robot Controller app to match the hue detected by the RGB sensor.
@@ -81,6 +83,7 @@ public class Color_Reference extends LinearOpMode{
 
             // convert the RGB values to HSV values.
             Color.RGBToHSV(colorSensor.red() * 8, colorSensor.green() * 8, colorSensor.blue() * 8, hsvValues);
+            Color.RGBToHSV(skyStoneColor.red() * 8, skyStoneColor.green() * 8, skyStoneColor.blue() * 8, hsvSky);
 
             // send the info back to driver station using telemetry function.
             telemetry.addData("LED", bLedOn ? "On" : "Off");
@@ -95,7 +98,7 @@ public class Color_Reference extends LinearOpMode{
             telemetry.addData("Red Sky ", skyStoneColor.red());
             telemetry.addData("Green Sky ", skyStoneColor.green());
             telemetry.addData("Blue Sky ", skyStoneColor.blue());
-            telemetry.addData("Hue Sky", hsvValues[0]);
+            telemetry.addData("Hue Sky", hsvSky[0]);
 
 
             // change the background color to match the color detected by the RGB sensor.
@@ -104,9 +107,9 @@ public class Color_Reference extends LinearOpMode{
             relativeLayout.post(new Runnable() {
                 public void run() {
                     relativeLayout.setBackgroundColor(Color.HSVToColor(0xff, values));
+                    relativeLayout.setBackgroundColor(Color.HSVToColor(0xff, sValues));
                 }
-            }
-            );
+            });
 
             telemetry.update();
         }

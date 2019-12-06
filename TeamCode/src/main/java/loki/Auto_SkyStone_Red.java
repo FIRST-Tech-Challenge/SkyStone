@@ -73,7 +73,7 @@ public class Auto_SkyStone_Red extends Auto_Abstract{
         claw(OPEN);
         drive(0.5,30, FORWARD);
         drive(0.4, 16, STRAFE_RIGHT);
-        monoColorDriveSky(0.5, 7, STRAFE_RIGHT, LUM);
+        monoColorDriveSky(0.5, 7, STRAFE_RIGHT, RED);
         claw(PART);
         drive(0.5, 10, FORWARD);
         claw(CLOSE);

@@ -132,7 +132,7 @@ public class Blue_Platform_BridgeGYRO_Wall extends BaseAutoOpMode {
         rotate(60 * startingSide, 1);
 
         RunAllMotors();
-        sleep(600);
+        sleep(550);
         CutMotors();
 
         //End of moving platform
@@ -147,8 +147,8 @@ public class Blue_Platform_BridgeGYRO_Wall extends BaseAutoOpMode {
         rear_left.setPower(-1 * startingSide);
         front_right.setPower(-1 * startingSide);
         rear_right.setPower(1 * startingSide);
-        sleep(500);
-
+        sleep(300);
+        CutMotors();
 
         Release_Servo.setPosition(0.4);
         sleep(1000);

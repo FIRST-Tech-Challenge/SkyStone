@@ -66,7 +66,7 @@ import android.view.View;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="ParkWall", group="Linear OpMode")
+@Autonomous(name="TestMechanum", group="Linear OpMode")
 //@Disabled
 public class ParkWall extends LinearOpMode {
 
@@ -107,6 +107,15 @@ public class ParkWall extends LinearOpMode {
     int skystonePosition; // Can equal 1, 2, or 3. This corresponds to the A, B and C patterns.
     boolean Stone1isBlack; // Is the first stone black?
     boolean Stone2isBlack; // Is the second stone black?
+    final int backward = 1;
+    final int forward = -1;
+    final int left = -1;
+    final int right = 1;
+    final int encoderBack = -1;
+    final int encoderForward = 1;
+
+
+
 
 
     @Override
@@ -158,22 +167,121 @@ public class ParkWall extends LinearOpMode {
         if (backRight != null)
             backRight.setDirection(DcMotor.Direction.REVERSE);
 
+        telemetry.addData("Back Left Encoder Value: ", backLeft.getCurrentPosition());
+        telemetry.update();
 
-        foundation.setPosition(0.4);
+        foundation.setPosition(0.0);
 
 
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
+
+
+        telemetry.addData("Back Left Encoder Value: ", backLeft.getCurrentPosition());
+        telemetry.update();
+        sleep(500);
+
+        //ReleaseCollector(-1.0);
+        //AutoMecanumMove(1500*EncoderBack, 0, 0.5, -0.1);
+        //Starfe DiagonalLeftForward
+        AutoMecanumMove(3850 * encoderBack, 0.70 * left, 0.5 * backward, -0.025); //Drive to foundation
+        AutoMecanumMove(50 * encoderBack, 0 * left, 0.25 * backward, 0.035); //Align
+        sleep(1000);
+        MoveHook(1.0); //Grab Foundation
+        sleep(1000);
+        AutoMecanumMove(5300 * encoderForward, 0.2 * right, 0.5 * forward, 0.18); //Backleft clockwise arc rotation
+        MoveHook(0.0);
+        sleep(1000);
+        AutoMecanumMove(4000 * encoderBack, 0.3 * right, 0.5 * backward, 0); //Push into foundation
         ReleaseCollector(-1.0);
-        DriveForward(0.5, 500); // Drive for proper positioning to move foundation
+        sleep(1000);
+        AutoMecanumMove(3000 * encoderForward, 0.77 * left, 0.6 * forward, 0.06); //Strafe Into Wall
+        AutoMecanumMove(800 * encoderForward, 0.0 * left, 0.6 * forward, -0.05); //Park
+
+
+
+
+
+        // AutoMecanumMove(1500, -0.5, 0, 0);
+
+
+
 
 
 
     }
+    private void AutoMecanumMove(int targetVal, double leftStickX, double leftStickY, double rightStickX)
+    {
+        ResetEncoder();
+
+
+        if(targetVal < 0)
+            while (frontLeft.getCurrentPosition() >= targetVal && backLeft.getCurrentPosition() >= targetVal && frontRight.getCurrentPosition() >= targetVal && backRight.getCurrentPosition() >= targetVal)
+            {
+                mecanumMove(leftStickX, leftStickY, rightStickX); //(-0.5, 0.5, -0.02 DiagonalLeft),(-0.5, 0, 0 StrafeLeft), (0.5, 0, 0 StrafeRight), (0, -0.5, 0 Forward)
+
+                telemetry.addData("Back Left Encoder Value: ", backLeft.getCurrentPosition());
+                telemetry.update();
+
+            }
+        if(targetVal >=0 )
+            while (frontLeft.getCurrentPosition() <= targetVal && backLeft.getCurrentPosition() <= targetVal && frontRight.getCurrentPosition() <= targetVal && backRight.getCurrentPosition() <= targetVal)
+            {
+                mecanumMove(leftStickX, leftStickY, rightStickX); //(-0.5, 0.5, -0.02 DiagonalLeft),
+
+                telemetry.addData("Back Left Encoder Value: ", backLeft.getCurrentPosition());
+                telemetry.update();
+
+            }
+        mecanumMove(0, 0, 0);
+    }
+    private void ResetEncoder(){
+
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        telemetry.addLine("" + frontLeft.getMode());
+        backLeft.setMode(DcMotor.RunMode.RESET_ENCODERS);
+        backRight.setMode(DcMotor.RunMode.RESET_ENCODERS);
+        frontRight.setMode(DcMotor.RunMode.RESET_ENCODERS);
+        frontLeft.setMode(DcMotor.RunMode.RESET_ENCODERS);
+
+
+        frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        telemetry.addLine("" + frontLeft.getMode());
+
+    }
+
 
     //Our software coach from last year helped us with this method that uses trigonometry to operate mecanum wheels
+    private void mecanumMove(double leftStickX, double leftStickY, double rightStickX) {
+
+
+        double distanceFromCenter = Math.sqrt(leftStickY * leftStickY + leftStickX * leftStickX);  // might be leftStickY * leftStickX This double uses the pythagorean theorem to find  out the distance from the the joystick center
+
+        double robotAngle = Math.atan2(-1 * leftStickY, leftStickX) - Math.PI / 4;
+
+        final double frontLeftPower = distanceFromCenter * Math.cos(robotAngle) + rightStickX;    //Multiplies the scaling of the joystick to give different speeds based on joystick movement
+        final double frontRightPower = distanceFromCenter * Math.sin(robotAngle) - rightStickX;
+        final double backLeftPower = distanceFromCenter * Math.sin(robotAngle) + rightStickX;
+        final double backRightPower = distanceFromCenter * Math.cos(robotAngle) - rightStickX;
+
+        if(frontLeft != null)
+            frontLeft.setPower(frontLeftPower);
+        if(frontRight != null)
+            frontRight.setPower(frontRightPower);
+        if(backLeft != null)
+            backLeft.setPower(backLeftPower);
+        if(backRight != null)
+            backRight.setPower(backRightPower);
+    }
+
     public void DriveForward(double power, int distance) //Drive Forward
     {
         //resets encoder values

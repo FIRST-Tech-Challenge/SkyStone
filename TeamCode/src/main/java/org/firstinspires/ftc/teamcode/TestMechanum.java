@@ -66,7 +66,7 @@ import android.view.View;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="TestMechanum", group="Linear OpMode")
+@Autonomous(name="BasicRedAuto", group="Linear OpMode")
 //@Disabled
 public class TestMechanum extends LinearOpMode {
 
@@ -107,6 +107,15 @@ public class TestMechanum extends LinearOpMode {
     int skystonePosition; // Can equal 1, 2, or 3. This corresponds to the A, B and C patterns.
     boolean Stone1isBlack; // Is the first stone black?
     boolean Stone2isBlack; // Is the second stone black?
+    final int backward = 1;
+    final int forward = -1;
+    final int left = -1;
+    final int right = 1;
+    final int encoderBack = -1;
+    final int encoderForward = 1;
+
+
+
 
 
     @Override
@@ -161,7 +170,7 @@ public class TestMechanum extends LinearOpMode {
         telemetry.addData("Back Left Encoder Value: ", backLeft.getCurrentPosition());
         telemetry.update();
 
-        foundation.setPosition(0.4);
+        foundation.setPosition(0.0);
 
 
 
@@ -174,8 +183,30 @@ public class TestMechanum extends LinearOpMode {
         telemetry.update();
         sleep(500);
 
+        //ReleaseCollector(-1.0);
+        //AutoMecanumMove(1500*EncoderBack, 0, 0.5, -0.1);
+        //Starfe DiagonalLeftForward
+        AutoMecanumMove(3850 * encoderBack, 0.70 * left, 0.5 * backward, -0.025); //Drive to foundation
+        AutoMecanumMove(50 * encoderBack, 0 * left, 0.25 * backward, 0.035); //Align
+        sleep(1000);
+        MoveHook(1.0); //Grab Foundation
+        sleep(1000);
+        AutoMecanumMove(5300 * encoderForward, 0.2 * right, 0.5 * forward, 0.18); //Backleft clockwise arc rotation
+        MoveHook(0.0);
+        sleep(1000);
+        AutoMecanumMove(4000 * encoderBack, 0.3 * right, 0.5 * backward, 0); //Push into foundation
+        ReleaseCollector(-1.0);
+        sleep(1000);
+        AutoMecanumMove(3000 * encoderForward, 0.77 * left, 0.6 * forward, 0.06); //Strafe Into Wall
+        AutoMecanumMove(800 * encoderForward, 0.0 * left, 0.6 * forward, -0.05); //Park
 
-        AutoMecanumMove(-3000, -0.5, 0.5, -0.02);
+
+
+
+
+        // AutoMecanumMove(1500, -0.5, 0, 0);
+
+
 
 
 
@@ -186,11 +217,10 @@ public class TestMechanum extends LinearOpMode {
         ResetEncoder();
 
 
-
         if(targetVal < 0)
             while (frontLeft.getCurrentPosition() >= targetVal && backLeft.getCurrentPosition() >= targetVal && frontRight.getCurrentPosition() >= targetVal && backRight.getCurrentPosition() >= targetVal)
             {
-                mecanumMove(leftStickX, leftStickY, rightStickX); //(0.5, 0.5, -0.02 DiagonalLeft),
+                mecanumMove(leftStickX, leftStickY, rightStickX); //(-0.5, 0.5, -0.02 DiagonalLeft),(-0.5, 0, 0 StrafeLeft), (0.5, 0, 0 StrafeRight), (0, -0.5, 0 Forward)
 
                 telemetry.addData("Back Left Encoder Value: ", backLeft.getCurrentPosition());
                 telemetry.update();

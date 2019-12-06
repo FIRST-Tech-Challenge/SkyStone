@@ -27,12 +27,6 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
         this.wheelAngles = wheelAngles;
     }
 
-    HolonomicFourWheelDrivetrain(DcMotor[] motorList, double[] wheelAngles)
-    {
-        super(motorList);
-        this.wheelAngles = wheelAngles;
-    }
-
     @Override
     public void setRotation(double rotation)
     {
@@ -85,7 +79,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
         }
         this.targetPosition = targetPosition;
 
-        for (DcMotor motor : this.motorList) motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        for (DcMotor motor : this.motorList) { motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); }
 
         for (int motorIndex = 0; motorIndex < this.motorList.length; motorIndex++)
         {
@@ -93,7 +87,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
             this.motorList[motorIndex].setTargetPosition((int)(wheelTargetPositions[motorIndex]+0.5));
         }
 
-        for (DcMotor motor : this.motorList) motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        for (DcMotor motor : this.motorList) { motor.setMode(DcMotor.RunMode.RUN_TO_POSITION); }
     }
 
     @Override
@@ -118,9 +112,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     @Override
     public void position()
     {
-        // Essentially mimics the physics equation Xf = Xi + Vi(t) + (1/2)a(t)^2 to solve for time but a = 0 and Xi-Xf = changeX which is what targetPosition is
         double timeoutTime = getTargetPosition() * motorList[0].getMotorType().getAchieveableMaxTicksPerSecond();
-
         if (timeoutTime < 5) { timeoutTime = 5; }
 
         // Creates a timer object so the robot will auto stop after 2 times the timeoutTime (seconds)
@@ -161,7 +153,6 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
         setCourse(0);
         setTargetPosition(0);
         setRotation(0);
-        updateMotorPowers();
     }
 
     // returns each motors ticks per full revolution

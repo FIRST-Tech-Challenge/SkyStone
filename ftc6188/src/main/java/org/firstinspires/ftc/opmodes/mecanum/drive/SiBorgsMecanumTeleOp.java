@@ -25,7 +25,6 @@ public class SiBorgsMecanumTeleOp extends OpMode
 
     // Buttons and toggles
     private ToggleBoolean driverTwoBrakes;  //freezes robot in place for stacking, prevents stick bumping from driver one
-    private ToggleBoolean driveTelemetry; // changes the display output from driver style telemetry to debugging telemetry
     private Button toggleLimits;
     private Button limitSetter;
     private Button playSound;
@@ -45,7 +44,6 @@ public class SiBorgsMecanumTeleOp extends OpMode
 
         // Buttons and toggles
         driverTwoBrakes = new ToggleBoolean(false);
-        driveTelemetry = new ToggleBoolean(true);
         toggleLimits = new Button();
         limitSetter = new Button();
         playSound = new Button();
@@ -54,7 +52,6 @@ public class SiBorgsMecanumTeleOp extends OpMode
     @Override
     public void init_loop()
     {
-        driveTelemetry.input(gamepad1.x || gamepad2.x);
         limitSetter.input(gamepad1.b || gamepad2.b);
 
         robot.armCrane.setVerticalPower(-gamepad2.left_stick_y);
@@ -72,16 +69,13 @@ public class SiBorgsMecanumTeleOp extends OpMode
         }
 
         telemetry.addData("Motor Calibration Mode", "Calibrate Slide");
-        if (driveTelemetry.output()) { robot.driverTelemetry(); }
-        else { robot.informationTelemetry("Init_Loop display"); }
+        robot.driverTelemetry();
     }
 
     @Override
     public void start()
     {
         elapsedTime.reset();
-
-        driveTelemetry.input(false);
         robot.armCrane.setLimited(true);
     }
 
@@ -133,8 +127,7 @@ public class SiBorgsMecanumTeleOp extends OpMode
 
 
         /** TELEMETRY **/
-        if (driveTelemetry.output()) { robot.driverTelemetry(); }
-        else { robot.informationTelemetry(); }
+        robot.driverTelemetry();
     }
 
     @Override

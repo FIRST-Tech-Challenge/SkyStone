@@ -49,7 +49,7 @@ public class Simple15203 extends LinearOpMode {
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Say", "ready");
 
-        int grabberPos;
+        double grabberPos = 0;
         int zArmMultiplier;
 
         // Wait for the game to start (driver presses PLAY)
@@ -122,22 +122,44 @@ public class Simple15203 extends LinearOpMode {
 
 
             //arm controls
-            /*
+            //pos < -60 is enough above the "hump" to slow down
+            double speedMultiplier = 0.375;
+
             if(right_stick_y_2 < 0){
-                robot.zArmMotor.setPower(-0.2 * zArmMultiplier);
+                robot.zArmMotor.setPower(-1 * speedMultiplier * zArmMultiplier);
             } else if (right_stick_y_2 > 0 ) {
-                robot.zArmMotor.setPower(0.2 * zArmMultiplier);
+                robot.zArmMotor.setPower(speedMultiplier * zArmMultiplier);
             } else {
-                robot.zArmMotor.setPower(0.0);
+                robot.zArmMotor.setPower(0.2);
             }
-             */
+
 
             //grabber controls
-            
+            double grabberPosMultiplier = 0.025;
 
+            if(gamepad2.y){
+                grabberPos +=  grabberPosMultiplier;
+            } else if (gamepad2.a) {
+                grabberPos -= grabberPosMultiplier;
+            } else {
+                grabberPos = robot.grabberServo.getPosition();
+            }
 
-            telemetry.addData("Grabber Pos", robot.grabberServo.getPosition());
+            //Check to make sure the servo isn't hurting itself
+            if(grabberPos > 0.4 || robot.grabberServo.getPosition() > 0.4 ) {
+                robot.grabberServo.setPosition(0.4);
+                grabberPos = 0.4;
+            }
+
+            telemetry.addData("Grabber Pos Read", robot.grabberServo.getPosition());
+            telemetry.addData("Grabber Pos Var", grabberPos);
+            telemetry.addData("Arm Power", robot.zArmMotor.getPower());
+            telemetry.addData("Arm Position", robot.zArmMotor.getCurrentPosition());
             telemetry.update();
+
+            //Update the grabber position
+            robot.grabberServo.setPosition(grabberPos);
+
             // Pause for 40 mS each cycle = update 25 times a second.
             sleep(40);
 

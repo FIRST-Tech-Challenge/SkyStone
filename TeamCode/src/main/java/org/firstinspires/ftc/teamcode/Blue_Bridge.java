@@ -29,13 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 
 /**
@@ -43,8 +37,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  * forwards/backwards and turning left and right, and the right stick controls strafing. (working on diff. control setup currently)
  */
 
-@Autonomous(name = "Blue_Platform_BridgeGYRO_Wall", group = "Linear Opmode")
-public class Blue_Platform_BridgeGYRO_Wall extends BaseAutoOpMode {
+@Autonomous(name = "Blue_Bridge", group = "Linear Opmode")
+public class Blue_Bridge extends BaseAutoOpMode {
 
 
     double                  globalAngle, power = 1, correction;
@@ -120,7 +114,7 @@ public class Blue_Platform_BridgeGYRO_Wall extends BaseAutoOpMode {
         rear_left.setPower(-1 * startingSide);
         front_right.setPower(-1 * startingSide);
         rear_right.setPower(1 * startingSide);
-        sleep(300);
+        sleep(150);
         CutMotors();
 
         Release_Servo.setPosition(0.4);

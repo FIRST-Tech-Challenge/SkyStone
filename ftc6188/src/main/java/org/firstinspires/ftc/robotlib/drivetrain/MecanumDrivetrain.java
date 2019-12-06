@@ -34,7 +34,7 @@ public class MecanumDrivetrain extends HolonomicFourWheelDrivetrain
     public void autoPosition(double course, double distanceIN, double velocity, SiBorgsMecanumRobot robot)
     {
         this.setTargetPosition(distanceIN * getTicksPerIn());
-        this.setCourse(course * Math.PI/180);
+        this.setCourse(-course * Math.PI/180 - Math.PI/2);
         this.setVelocity(velocity);
         this.setRotation(0);
 
@@ -44,6 +44,5 @@ public class MecanumDrivetrain extends HolonomicFourWheelDrivetrain
             robot.informationTelemetry("Driving");
         }
         while (this.isPositioning());
-
     }
 }

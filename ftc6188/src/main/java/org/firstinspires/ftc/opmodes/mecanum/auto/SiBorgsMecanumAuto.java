@@ -47,7 +47,11 @@ public class SiBorgsMecanumAuto extends LinearOpMode
         telemetry.addData("AUTO START", elapsedTime.seconds());
         telemetry.update();
 
-        robot.drivetrain.autoPosition(0, 48, VELOCITY, 0);
+        // Forward right left back
+        robot.drivetrain.autoPosition(0, 48, VELOCITY, robot);
+        robot.drivetrain.autoPosition(180, 48, VELOCITY, robot);
+        robot.drivetrain.autoPosition(90, 48, VELOCITY, robot);
+        robot.drivetrain.autoPosition(270, 48, VELOCITY, robot);
 
         requestOpModeStop();
     }

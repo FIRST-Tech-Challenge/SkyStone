@@ -113,7 +113,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     public void position()
     {
         double timeoutTime = getTargetPosition() * motorList[0].getMotorType().getAchieveableMaxTicksPerSecond();
-        if (timeoutTime < 5) { timeoutTime = 5; }
+        if (timeoutTime < 5) { timeoutTime *= 5; }
 
         // Creates a timer object so the robot will auto stop after 2 times the timeoutTime (seconds)
         ElapsedTime timeoutTimer = new ElapsedTime();

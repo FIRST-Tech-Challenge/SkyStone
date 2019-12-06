@@ -62,9 +62,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
            Clamp_Right.setPosition(0.2);
            sleep(1000);
 
-           RunAllMotors();
+           Drive(DriveDirection.FORWARD);
            sleep(1000);
-           CutMotors();
+           Drive(DriveDirection.STOP);
 
            Clamp_Left.setPosition(0.75f);
            Clamp_Right.setPosition(0.25f);

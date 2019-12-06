@@ -62,7 +62,7 @@ public class Red_Platform_Bridge extends BaseAutoOpMode {
         rear_right.setPower(-1);
         //sleep(250);
         sleep(500);
-        CutMotors();
+        Drive(DriveDirection.STOP);
 
         UnfoldRobot();
 
@@ -70,15 +70,15 @@ public class Red_Platform_Bridge extends BaseAutoOpMode {
         Clamp_Right.setPosition(0.5);
         sleep(1000);
 
-        RunAllMotors();
+        Drive(DriveDirection.FORWARD);
         sleep(210);
-        CutMotors();
+        Drive(DriveDirection.STOP);
 
         Clamp_Left.setPosition(1);
         Clamp_Right.setPosition(0f);
         sleep(1000);
 
-        RunAllMotorsBackward();
+        Drive(DriveDirection.BACKWARD);
         sleep(450);
 
 
@@ -95,9 +95,9 @@ public class Red_Platform_Bridge extends BaseAutoOpMode {
         rear_right.setPower(-1);
         sleep(1900);
 
-        RunAllMotors();
+        Drive(DriveDirection.FORWARD);
         sleep(550);
-        CutMotors();
+        Drive(DriveDirection.STOP);
 
         //End of moving platform
 
@@ -136,9 +136,9 @@ public class Red_Platform_Bridge extends BaseAutoOpMode {
         lift_left.setPower(0);
         lift_right.setPower(0);
 
-        RunAllMotorsBackward();
+        Drive(DriveDirection.BACKWARD);
         sleep(700);
-        CutMotors();
+        Drive(DriveDirection.STOP);
 
 
 

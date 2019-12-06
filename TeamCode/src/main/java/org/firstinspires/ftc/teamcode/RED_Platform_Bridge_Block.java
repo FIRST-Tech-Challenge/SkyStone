@@ -72,10 +72,10 @@ public class RED_Platform_Bridge_Block extends BaseAutoOpMode {
         rear_right.setPower(.5 * startingSide);
         //sleep(250);
         sleep(725);
-        CutMotors();
+        Drive(DriveDirection.STOP);
 
         // Larson added this. This is added to have the robot move back to the wall to hopefully straighten it.
-        RunAllMotorsBackward();
+        Drive(DriveDirection.BACKWARD);
         sleep(100);
 
         UnfoldRobot();
@@ -84,15 +84,15 @@ public class RED_Platform_Bridge_Block extends BaseAutoOpMode {
         Clamp_Right.setPosition(0.5);
         sleep(1000);
 //Drive forward
-        RunAllMotors();
+        Drive(DriveDirection.FORWARD);
         sleep(250);
-        CutMotors();
+        Drive(DriveDirection.STOP);
 //clamps down
         Clamp_Left.setPosition(1);
         Clamp_Right.setPosition(0f);
         sleep(1000);
 //drive backward
-        RunAllMotorsBackward();
+        Drive(DriveDirection.BACKWARD);
         sleep(600);
 
 //strafe right
@@ -101,7 +101,7 @@ public class RED_Platform_Bridge_Block extends BaseAutoOpMode {
         front_right.setPower(1 * startingSide);
         rear_right.setPower(-1 * startingSide);
         sleep(1400);
-        CutMotors();
+        Drive(DriveDirection.STOP);
         //sleep(600);
 
         //front_left.setPower(1);
@@ -115,9 +115,9 @@ public class RED_Platform_Bridge_Block extends BaseAutoOpMode {
         rotate(55 * startingSide, 1);
 
         // Robot stops
-        RunAllMotors();
+        Drive(DriveDirection.FORWARD);
         sleep(650);
-        CutMotors();
+        Drive(DriveDirection.STOP);
 
         //End of moving platform
 
@@ -167,9 +167,9 @@ public class RED_Platform_Bridge_Block extends BaseAutoOpMode {
         lift_right.setPower(0);
 
         //Robot moves backward
-        RunAllMotorsBackward();
+        Drive(DriveDirection.BACKWARD);
         sleep(2500);
-        CutMotors();
+        Drive(DriveDirection.STOP);
 
         //End Of Bridge, Start Of Block
 
@@ -201,9 +201,9 @@ public class RED_Platform_Bridge_Block extends BaseAutoOpMode {
         sleep(1000);
 
         //Robot is stopped
-        RunAllMotors();
+        Drive(DriveDirection.FORWARD);
         sleep(200);
-        CutMotors();
+        Drive(DriveDirection.STOP);
 
         //Lift goes down
         lift_left.setPower(1);
@@ -213,23 +213,23 @@ public class RED_Platform_Bridge_Block extends BaseAutoOpMode {
         lift_right.setPower(0);
 
         //Robot moves backwards
-        RunAllMotorsBackward();
+        Drive(DriveDirection.BACKWARD);
         sleep(250);
-        CutMotors();
+        Drive(DriveDirection.STOP);
 
         //Turns to the right
         resetAngle();
         rotate(-89, 1);
 
         //Robots stops
-        RunAllMotors();
+        Drive(DriveDirection.FORWARD);
         sleep(700);
-        CutMotors();
+        Drive(DriveDirection.STOP);
 
         //Robot moves backwards
-        RunAllMotorsBackward();
+        Drive(DriveDirection.BACKWARD);
         sleep(100);
-        CutMotors();
+        Drive(DriveDirection.STOP);
 
 
 

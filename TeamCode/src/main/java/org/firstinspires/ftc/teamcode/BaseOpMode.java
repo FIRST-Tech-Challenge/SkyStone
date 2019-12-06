@@ -227,6 +227,85 @@ public abstract class BaseOpMode extends LinearOpMode {
 
         return globalAngle;
     }
+
+    public enum DriveDirection {
+        FORWARD,
+        BACKWARD,
+        LEFT,
+        RIGHT,
+        STOP
+    }
+
+    public enum LiftDirection {
+        STOP,
+        UP,
+        DOWN
+    }
+
+    public void Drive(DriveDirection direction) {
+        if (direction == DriveDirection.STOP) {
+            front_left.setPower(0);
+            front_right.setPower(0);
+            rear_left.setPower(0);
+            rear_right.setPower(0);
+        }
+        if (direction == DriveDirection.RIGHT) {
+            front_left.setPower(0.8);
+            front_right.setPower(-0.8);
+            rear_left.setPower(0.8);
+            rear_right.setPower(-0.8);
+        }
+        if (direction == DriveDirection.LEFT) {
+            front_left.setPower(-0.8);
+            front_right.setPower(0.8);
+            rear_left.setPower(-0.8);
+            rear_right.setPower(0.8);
+        }
+        if (direction == DriveDirection.FORWARD) {
+            front_left.setPower(0.8);
+            front_right.setPower(0.8);
+            rear_left.setPower(0.8);
+            rear_right.setPower(0.8);
+        }
+        if (direction == DriveDirection.BACKWARD) {
+            front_left.setPower(-0.8);
+            front_right.setPower(-0.8);
+            rear_left.setPower(-0.8);
+            rear_right.setPower(-0.8);
+        }
+    }
+
+    public void Strafe(DriveDirection direction) {
+        if (direction == DriveDirection.LEFT) {
+            front_left.setPower(-0.8);
+            front_right.setPower(0.7);
+            rear_left.setPower(0.8);
+            rear_right.setPower(-0.8);
+        }
+        if (direction == DriveDirection.RIGHT) {
+            front_left.setPower(1);
+            front_right.setPower(-0.5);
+            rear_left.setPower(-0.5);
+            rear_right.setPower(0.5);
+        }
+    }
+
+    public void Lift(LiftDirection direction) {
+        if (direction == LiftDirection.STOP) {
+            lift_left.setPower(0);
+            lift_right.setPower(0);
+        }
+        if (direction == LiftDirection.UP) {
+            lift_left.setPower(1);
+            lift_right.setPower(1);
+        }
+        if (direction == LiftDirection.DOWN) {
+            lift_left.setPower(-1);
+            lift_right.setPower(-1);
+        }
+
+    }
+
 }
 
 

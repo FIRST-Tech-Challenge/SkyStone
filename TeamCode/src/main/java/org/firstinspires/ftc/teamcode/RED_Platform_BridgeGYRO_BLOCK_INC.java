@@ -99,7 +99,7 @@ public class RED_Platform_BridgeGYRO_BLOCK_INC extends BaseAutoOpMode {
         sleep(600);
 
 
-        //Robot strafes right
+        //Robot strafes left
         front_left.setPower(-1 * startingSide);
         rear_left.setPower(.7 * startingSide);
         front_right.setPower(1 * startingSide);
@@ -212,7 +212,7 @@ public class RED_Platform_BridgeGYRO_BLOCK_INC extends BaseAutoOpMode {
         //Crane Up
         lift_left.setPower(-1);
         lift_right.setPower(-1);
-        sleep(1000);
+        sleep(800);
 
         //Lift Stop
         lift_left.setPower(0);

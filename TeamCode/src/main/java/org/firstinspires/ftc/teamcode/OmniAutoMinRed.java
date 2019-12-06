@@ -44,6 +44,7 @@ public class OmniAutoMinRed extends OmniAutoClass
 
         robot.stackFromSide = HardwareOmnibot.RobotSide.LEFT;
         // Make sure the intake is out.
+        robot.moveIntake(HardwareOmnibot.IntakePosition.EXTENDED);
         double endTime = timer.milliseconds() + 10000;
         while (!robot.intakeAtPosition(HardwareOmnibot.IntakePosition.EXTENDED) && (timer.milliseconds() < endTime) && (!isStopRequested())) {
             robot.resetReads();

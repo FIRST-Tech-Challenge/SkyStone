@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -65,9 +66,9 @@ import android.view.View;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="BlueAutonomous", group="Linear OpMode")
+@Autonomous(name="BasicBlueAuto", group="Linear OpMode")
 //@Disabled
-public class BlueAutonomous extends LinearOpMode {
+public class BasicBlueAuto extends LinearOpMode {
 
 
     private DcMotor getNewMotor(String motorName) { //these could be made generic using type notation
@@ -93,7 +94,7 @@ public class BlueAutonomous extends LinearOpMode {
     private DcMotor linearSlide = null;
 
     //Attachment Servos
-    private CRServo clamp = null;
+    private Servo clamp = null;
     private Servo rotation = null;
     private Servo foundation = null;
     private Servo release = null;
@@ -141,7 +142,7 @@ public class BlueAutonomous extends LinearOpMode {
         linearSlide = getNewMotor("elevator");
 
         //init servos
-        clamp = hardwareMap.crservo.get("clamp");
+        clamp = hardwareMap.servo.get("clamp");
         foundation = hardwareMap.servo.get("foundation");
         rotation = hardwareMap.servo.get("rotation");
         release = hardwareMap.servo.get("release");
@@ -149,58 +150,30 @@ public class BlueAutonomous extends LinearOpMode {
 
 
         if (frontLeft != null)
-            frontLeft.setDirection(DcMotor.Direction.REVERSE);
+            frontLeft.setDirection(DcMotor.Direction.FORWARD);
         if (frontRight != null)
-            frontRight.setDirection(DcMotor.Direction.FORWARD);
+            frontRight.setDirection(DcMotor.Direction.REVERSE);
         if (backLeft != null)
-            backLeft.setDirection(DcMotor.Direction.REVERSE);
+            backLeft.setDirection(DcMotor.Direction.FORWARD);
         if (backRight != null)
-            backRight.setDirection(DcMotor.Direction.FORWARD);
+            backRight.setDirection(DcMotor.Direction.REVERSE);
+
+
+        foundation.setPosition(1.0);
+
 
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        DriveForward(1.0, -5000); // Back up to stones
-        DetectColorRGB(); // Determines the positions of the Skystone
-        if (skystonePosition == 1) // Pattern A
-        {
-            MoveHook(0.4); // Hook skystone
-            DriveForward(1.0, 500); // Pull skystone out
-            MoveHook(1);// Raise hook out of the way
-            //Collect block by moving forward while running collection device
-            DriveForward(1.0, 5000);  //Move into a path for the alliance bridge
-            TurnRight(1, 1500);
-        } else if (skystonePosition == 2) // Pattern B
-        {
-            StrafeRight(1, -1000); // Align with Skystone
-            MoveHook(0.4); // Hook skystone
-            DriveForward(1.0, 500); // Pull skystone out
-            MoveHook(1);// Raise hook out of the way
-            //Collect block by moving forward while running collection device
-            DriveForward(1.0, 5000);  //Move into a path for the alliance bridge
-            TurnRight(1, 1500);
-            DriveForward(1, 2500); //Meet up with other branches of code
-        } else // Pattern C
-        {
-            StrafeRight(1, -2000); // Align with Skystone
-            MoveHook(0.4); // Hook skystone
-            DriveForward(1.0, 500); // Pull skystone out
-            MoveHook(1);// Raise hook out of the way
-            //Collect block by moving forward while running collection device
-            DriveForward(1.0, 5000);  //Move into a path for the alliance bridge
-            TurnRight(1, 1500);
-            DriveForward(1, 5000); //Meet up with other branches of code
-        }
+        DriveForward(0.5, -2500); // Drive for proper positioning to move foundation
+        TurnRight(0.3, 2500); // Align with Foundation
+        DriveForward(0.5, -2000); // Drive for proper positioning to move foundation
+        MoveHook(0.4); //Hook foundation
+        DriveForward(0.5, 2000); // Move foundation to building site
+        MoveHook(0.4); //Unhook foundation
+        StrafeRight(0.5, -1000); // Park over line
 
-        DriveForward(1, 7500); // Drive to  just before Foundation
-        StrafeRight(1, 1500); // move right under foundation
-        TurnRight(1, 3000); // Do a 180
-        MoveHook(0.4); // Hook foundation
-        StrafeRight(1, 5000); // move foundation into building depot
-        TurnRight(1, -3000); // Do a 180
-        // PLace block in foundation
-        DriveForward(1, 5000); // Park over tape
 
     }
 
@@ -246,6 +219,15 @@ public class BlueAutonomous extends LinearOpMode {
     {
 
         foundation.setPosition(position);
+        double foundationPosition = foundation.getPosition();
+        while(foundationPosition != position)
+        {
+
+            foundationPosition = foundation.getPosition();
+
+        }
+        sleep(500);
+
 
     }
 

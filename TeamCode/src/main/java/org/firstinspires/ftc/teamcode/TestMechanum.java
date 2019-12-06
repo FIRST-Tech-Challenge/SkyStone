@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -65,9 +66,9 @@ import android.view.View;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="BlueAutonomous", group="Linear OpMode")
+@Autonomous(name="TestMechanum", group="Linear OpMode")
 //@Disabled
-public class BlueAutonomous extends LinearOpMode {
+public class TestMechanum extends LinearOpMode {
 
 
     private DcMotor getNewMotor(String motorName) { //these could be made generic using type notation
@@ -93,7 +94,7 @@ public class BlueAutonomous extends LinearOpMode {
     private DcMotor linearSlide = null;
 
     //Attachment Servos
-    private CRServo clamp = null;
+    private Servo clamp = null;
     private Servo rotation = null;
     private Servo foundation = null;
     private Servo release = null;
@@ -141,7 +142,7 @@ public class BlueAutonomous extends LinearOpMode {
         linearSlide = getNewMotor("elevator");
 
         //init servos
-        clamp = hardwareMap.crservo.get("clamp");
+        clamp = hardwareMap.servo.get("clamp");
         foundation = hardwareMap.servo.get("foundation");
         rotation = hardwareMap.servo.get("rotation");
         release = hardwareMap.servo.get("release");
@@ -149,62 +150,108 @@ public class BlueAutonomous extends LinearOpMode {
 
 
         if (frontLeft != null)
-            frontLeft.setDirection(DcMotor.Direction.REVERSE);
+            frontLeft.setDirection(DcMotor.Direction.FORWARD);
         if (frontRight != null)
-            frontRight.setDirection(DcMotor.Direction.FORWARD);
+            frontRight.setDirection(DcMotor.Direction.REVERSE);
         if (backLeft != null)
-            backLeft.setDirection(DcMotor.Direction.REVERSE);
+            backLeft.setDirection(DcMotor.Direction.FORWARD);
         if (backRight != null)
-            backRight.setDirection(DcMotor.Direction.FORWARD);
+            backRight.setDirection(DcMotor.Direction.REVERSE);
+
+        telemetry.addData("Back Left Encoder Value: ", backLeft.getCurrentPosition());
+        telemetry.update();
+
+        foundation.setPosition(0.4);
+
 
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        DriveForward(1.0, -5000); // Back up to stones
-        DetectColorRGB(); // Determines the positions of the Skystone
-        if (skystonePosition == 1) // Pattern A
-        {
-            MoveHook(0.4); // Hook skystone
-            DriveForward(1.0, 500); // Pull skystone out
-            MoveHook(1);// Raise hook out of the way
-            //Collect block by moving forward while running collection device
-            DriveForward(1.0, 5000);  //Move into a path for the alliance bridge
-            TurnRight(1, 1500);
-        } else if (skystonePosition == 2) // Pattern B
-        {
-            StrafeRight(1, -1000); // Align with Skystone
-            MoveHook(0.4); // Hook skystone
-            DriveForward(1.0, 500); // Pull skystone out
-            MoveHook(1);// Raise hook out of the way
-            //Collect block by moving forward while running collection device
-            DriveForward(1.0, 5000);  //Move into a path for the alliance bridge
-            TurnRight(1, 1500);
-            DriveForward(1, 2500); //Meet up with other branches of code
-        } else // Pattern C
-        {
-            StrafeRight(1, -2000); // Align with Skystone
-            MoveHook(0.4); // Hook skystone
-            DriveForward(1.0, 500); // Pull skystone out
-            MoveHook(1);// Raise hook out of the way
-            //Collect block by moving forward while running collection device
-            DriveForward(1.0, 5000);  //Move into a path for the alliance bridge
-            TurnRight(1, 1500);
-            DriveForward(1, 5000); //Meet up with other branches of code
-        }
 
-        DriveForward(1, 7500); // Drive to  just before Foundation
-        StrafeRight(1, 1500); // move right under foundation
-        TurnRight(1, 3000); // Do a 180
-        MoveHook(0.4); // Hook foundation
-        StrafeRight(1, 5000); // move foundation into building depot
-        TurnRight(1, -3000); // Do a 180
-        // PLace block in foundation
-        DriveForward(1, 5000); // Park over tape
+
+        telemetry.addData("Back Left Encoder Value: ", backLeft.getCurrentPosition());
+        telemetry.update();
+        sleep(500);
+
+
+        AutoMecanumMove(-3000, -0.5, 0.5, -0.02);
+
+
+
+
+    }
+    private void AutoMecanumMove(int targetVal, double leftStickX, double leftStickY, double rightStickX)
+    {
+        ResetEncoder();
+
+
+
+        if(targetVal < 0)
+            while (frontLeft.getCurrentPosition() >= targetVal && backLeft.getCurrentPosition() >= targetVal && frontRight.getCurrentPosition() >= targetVal && backRight.getCurrentPosition() >= targetVal)
+            {
+                mecanumMove(leftStickX, leftStickY, rightStickX); //(0.5, 0.5, -0.02 DiagonalLeft),
+
+                telemetry.addData("Back Left Encoder Value: ", backLeft.getCurrentPosition());
+                telemetry.update();
+
+            }
+        if(targetVal >=0 )
+            while (frontLeft.getCurrentPosition() <= targetVal && backLeft.getCurrentPosition() <= targetVal && frontRight.getCurrentPosition() <= targetVal && backRight.getCurrentPosition() <= targetVal)
+            {
+                mecanumMove(leftStickX, leftStickY, rightStickX); //(-0.5, 0.5, -0.02 DiagonalLeft),
+
+                telemetry.addData("Back Left Encoder Value: ", backLeft.getCurrentPosition());
+                telemetry.update();
+
+            }
+        mecanumMove(0, 0, 0);
+    }
+    private void ResetEncoder(){
+
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        telemetry.addLine("" + frontLeft.getMode());
+        backLeft.setMode(DcMotor.RunMode.RESET_ENCODERS);
+        backRight.setMode(DcMotor.RunMode.RESET_ENCODERS);
+        frontRight.setMode(DcMotor.RunMode.RESET_ENCODERS);
+        frontLeft.setMode(DcMotor.RunMode.RESET_ENCODERS);
+
+
+        frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        telemetry.addLine("" + frontLeft.getMode());
 
     }
 
+
     //Our software coach from last year helped us with this method that uses trigonometry to operate mecanum wheels
+    private void mecanumMove(double leftStickX, double leftStickY, double rightStickX) {
+
+
+        double distanceFromCenter = Math.sqrt(leftStickY * leftStickY + leftStickX * leftStickX);  // might be leftStickY * leftStickX This double uses the pythagorean theorem to find  out the distance from the the joystick center
+
+        double robotAngle = Math.atan2(-1 * leftStickY, leftStickX) - Math.PI / 4;
+
+        final double frontLeftPower = distanceFromCenter * Math.cos(robotAngle) + rightStickX;    //Multiplies the scaling of the joystick to give different speeds based on joystick movement
+        final double frontRightPower = distanceFromCenter * Math.sin(robotAngle) - rightStickX;
+        final double backLeftPower = distanceFromCenter * Math.sin(robotAngle) + rightStickX;
+        final double backRightPower = distanceFromCenter * Math.cos(robotAngle) - rightStickX;
+
+        if(frontLeft != null)
+            frontLeft.setPower(frontLeftPower);
+        if(frontRight != null)
+            frontRight.setPower(frontRightPower);
+        if(backLeft != null)
+            backLeft.setPower(backLeftPower);
+        if(backRight != null)
+            backRight.setPower(backRightPower);
+    }
+
     public void DriveForward(double power, int distance) //Drive Forward
     {
         //resets encoder values
@@ -246,6 +293,15 @@ public class BlueAutonomous extends LinearOpMode {
     {
 
         foundation.setPosition(position);
+        double foundationPosition = foundation.getPosition();
+        while(foundationPosition != position)
+        {
+
+            foundationPosition = foundation.getPosition();
+
+        }
+        sleep(500);
+
 
     }
 
@@ -354,7 +410,13 @@ public class BlueAutonomous extends LinearOpMode {
         }
 
     }
+    private void ReleaseCollector(double position) {
 
+        release.setPosition(position);
+
+        sleep(1000);
+
+    }
     public void DetectColorRGB() {
         int blueSensorColorValueRed = blueColorSensor.red(); // red value from 0-255 from the blue color sensor
         int blueSensorColorValueBlue = blueColorSensor.blue(); // blue value from 0-255 from the blue color sensor

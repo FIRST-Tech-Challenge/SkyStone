@@ -35,6 +35,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -87,7 +88,7 @@ public class GyroTest extends LinearOpMode {
     }
 
     /* Declare OpMode members. */
-    ModernRoboticsI2cGyro   gyro    = null;                    // Additional Gyro device
+    private ModernRoboticsI2cGyro   gyro    = null;                    // Additional Gyro device
 
     static final double     COUNTS_PER_MOTOR_REV    = 2240;    // eg: TETRIX Motor Encoder
     static final double     DRIVE_GEAR_REDUCTION    = 0.5;     // This is < 1.0 if geared UP
@@ -125,20 +126,20 @@ public class GyroTest extends LinearOpMode {
          DcMotor linearSlide = null;
 
         //Attachment Servos
-         CRServo clamp = null;
+         Servo clamp = null;
          Servo rotation = null;
          Servo foundation = null;
          Servo release = null;
 
 
         if (frontLeft != null)
-            frontLeft.setDirection(DcMotor.Direction.REVERSE);
+            frontLeft.setDirection(DcMotor.Direction.FORWARD);
         if (frontRight != null)
-            frontRight.setDirection(DcMotor.Direction.FORWARD);
+            frontRight.setDirection(DcMotor.Direction.REVERSE);
         if (backLeft != null)
-            backLeft.setDirection(DcMotor.Direction.REVERSE);
+            backLeft.setDirection(DcMotor.Direction.FORWARD);
         if (backRight != null)
-            backRight.setDirection(DcMotor.Direction.FORWARD);
+            backRight.setDirection(DcMotor.Direction.REVERSE);
         /*
          * Initialize the standard drive system variables.
          * The init() method of the hardware class does most of the work here
@@ -156,7 +157,7 @@ public class GyroTest extends LinearOpMode {
         linearSlide = getNewMotor("elevator");
 
         //init servos
-        clamp = hardwareMap.crservo.get("clamp");
+        clamp = hardwareMap.servo.get("clamp");
         foundation = hardwareMap.servo.get("foundation");
         rotation = hardwareMap.servo.get("rotation");
         release = hardwareMap.servo.get("release");

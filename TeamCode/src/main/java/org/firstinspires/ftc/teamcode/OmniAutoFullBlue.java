@@ -36,7 +36,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 import org.openftc.easyopencv.OpenCvPipeline;
 
-@Autonomous(name="Auto: AutoFullBlue", group ="Auto")
+//@Autonomous(name="Auto: AutoFullBlue", group ="Auto")
 public class OmniAutoFullBlue extends OmniAutoClass
 {
     OpenCvCamera phoneCam;

@@ -12,7 +12,7 @@ import static java.lang.Math.toDegrees;
  * Created by Ethan on 12/2/2016.
  */
 
-@TeleOp(name="Omni: TeleOpTest", group ="TeleOp")
+//@TeleOp(name="Omni: TeleOpTest", group ="TeleOp")
 public class OmniTeleTest extends OmniAutoClass {
     private static final float MAX_MOTION_RANGE = 1.0f;
     private static final float MIN_MOTION_RANGE = 0.05f;

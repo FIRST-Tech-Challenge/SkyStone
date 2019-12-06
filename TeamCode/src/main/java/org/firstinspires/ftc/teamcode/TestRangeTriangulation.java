@@ -11,7 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  * Created by Ethan on 12/2/2016.
  */
 
-@TeleOp(name="Omni: TestRangeTriangulation", group ="TeleOp")
+//@TeleOp(name="Omni: TestRangeTriangulation", group ="TeleOp")
 public class TestRangeTriangulation extends OpMode {
 
     /**

@@ -52,7 +52,8 @@ public class OmniAutoMinRed extends OmniAutoClass
         // Set the zero for the extender for when we start teleop.  We should do this as late
         // as will get reliably called.
 		sleep(1000);
-        robot.setIntakeZero(-robot.getIntakeAbsoluteEncoder());
-		robot.intakePosition = HardwareOmnibot.IntakePosition.EXTENDED;
+        robot.finalAutoIntakePosition = HardwareOmnibot.IntakePosition.EXTENDED;
+        robot.finalAutoIntakeZero = robot.getIntakeAbsoluteEncoder();
+        robot.finalAutoLiftZero = robot.getLifterAbsoluteEncoder();
     }
 }

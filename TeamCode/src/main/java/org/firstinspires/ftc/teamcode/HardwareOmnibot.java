@@ -176,11 +176,14 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 
     public static int MAX_LIFT = 2800;
     public enum LiftPosition {
-		GRABBING(0),
+		GRABBING(10),
         STOWED(15),
         STONE1_RELEASE(126),
         STONE1(176),
         STONE1_ROTATE(226),
+        STONE_AUTO_RELEASE(150),
+        STONE_AUTO(176),
+        STONE_AUTO_ROTATE(226),
         CAPSTONE_GRAB(300),
         STONE2_RELEASE(424),
         STONE2(474),
@@ -237,6 +240,8 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
             {
                 case STONE1:
                     return STONE1_RELEASE;
+                case STONE_AUTO:
+                    return STONE_AUTO_RELEASE;
                 case STONE2:
                     return STONE2_RELEASE;
                 case STONE3:
@@ -272,6 +277,8 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                     return ROTATE;
                 case STONE1:
                     return STONE1_ROTATE;
+                case STONE_AUTO:
+                    return STONE_AUTO_ROTATE;
                 case STONE2:
                     return STONE2_ROTATE;
                 case STONE3:
@@ -373,8 +380,8 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public static double LEFT_FINGER_DOWN = 0.82;
     public static double RIGHT_FINGER_UP = 0.89;
     public static double LEFT_FINGER_UP = 0.25;
-    public static double CLAW_OPEN = 0.4;
-    public static double CLAW_PINCHED = 0.9;
+    public static double CLAW_OPEN = 0.22;
+    public static double CLAW_PINCHED = 0.95;
     public static double CLAWDRICOPTER_FRONT = 0.85;
     public static double CLAWDRICOPTER_CAPSTONE = 0.70;
     public static double CLAWDRICOPTER_BACK = 0.09;
@@ -393,11 +400,16 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     boolean hub2Read = false;
     ExpansionHubEx expansionHub2;
 
+    // Variables to store auto to teleop data.
+    public static IntakePosition finalAutoIntakePosition = IntakePosition.RETRACTED;
+    public static int finalAutoLiftZero = 0;
+    public static int finalAutoIntakeZero = 0;
+
 	// The OpMode set target height for the lift to go.
     public LiftPosition liftTargetHeight = LiftPosition.STONE1;
     // The height the activity was activated to achieve
 	private LiftPosition liftActivityTargetHeight = LiftPosition.STONE1;
-	public static IntakePosition intakePosition = IntakePosition.RETRACTED;
+	public IntakePosition intakePosition = IntakePosition.RETRACTED;
 	public IntakePosition intakeTargetPosition = IntakePosition.RETRACTED;
 
     // Robot Controller Config Strings
@@ -458,8 +470,8 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public StackActivities stackStone = StackActivities.IDLE;
     private boolean clawPinched = false;
     private boolean clawdricopterBack = false;
-    protected static int liftZero = 0;
-    protected static int intakeZero = 0;
+    protected int liftZero = 0;
+    protected int intakeZero = 0;
     public double intakePower = 0.0;
     protected boolean intakeZeroUpdated = false;
     protected boolean stowingLift = false;
@@ -1600,6 +1612,10 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         // RearRight, RearLeft, Lifter, RightIntake
         expansionHub2 = hwMap.get(ExpansionHubEx.class, HUB2);
 
+        // Copy the end results of auto to begin teleop.
+        setIntakeZero(-finalAutoIntakeZero);
+        intakePosition = finalAutoIntakePosition;
+        setLiftZero(-finalAutoLiftZero);
 
         clawTimer = new ElapsedTime();
         clawdricopterTimer = new ElapsedTime();

@@ -72,6 +72,7 @@ public class OmniTeleTest extends OmniAutoClass {
     private boolean rightHeld = false;
     private boolean leftHeld = false;
     private boolean rightBumperHeld = false;
+    private boolean leftBumperHeld = false;
     private boolean a2Held = false;
     private boolean b2Held = false;
     private boolean y2Held = false;
@@ -87,6 +88,7 @@ public class OmniTeleTest extends OmniAutoClass {
     private boolean rightPressed;
     private boolean leftPressed;
     private boolean rightBumperPressed;
+    private boolean leftBumperPressed;
     private boolean a2Pressed;
     private boolean b2Pressed;
     private boolean y2Pressed;
@@ -113,6 +115,7 @@ public class OmniTeleTest extends OmniAutoClass {
     private double backTof;
     private double sideDistanceTarget = 30;
     private double backDistanceTarget = 30;
+    private double clawPosition = 0;
 
 //    @Override
 //    public void start()
@@ -147,6 +150,7 @@ public class OmniTeleTest extends OmniAutoClass {
             rightPressed = gamepad1.dpad_right;
             leftPressed = gamepad1.dpad_left;
             rightBumperPressed = gamepad1.right_bumper;
+            leftBumperPressed = gamepad1.left_bumper;
             a2Pressed = gamepad2.a;
             b2Pressed = gamepad2.b;
             y2Pressed = gamepad2.y;
@@ -160,20 +164,42 @@ public class OmniTeleTest extends OmniAutoClass {
             //leftTof = robot.readLeftTof();
             //rightTof = robot.readRightTof();
             //backTof = robot.readBackTof();
-            backRightTof = robot.readBackRightTof();
-            backLeftTof = robot.readBackLeftTof();
+//            backRightTof = robot.readBackRightTof();
+//            backLeftTof = robot.readBackLeftTof();
 
             if (!xHeld && xPressed) {
                 xHeld = true;
-                distanceFromWall(HardwareOmnibot.RobotSide.LEFT, sideDistanceTarget, 1.0, 1.0, 5000, true);
+                if(clawOpen) {
+                    robot.claw.setPosition(robot.CLAW_PINCHED);
+                    clawPosition = robot.CLAW_PINCHED;
+                    clawOpen = false;
+                } else {
+                    robot.claw.setPosition(robot.CLAW_OPEN);
+                    clawPosition = robot.CLAW_OPEN;
+                    clawOpen = true;
+                }
+//                distanceFromWall(HardwareOmnibot.RobotSide.LEFT, sideDistanceTarget, 1.0, 1.0, 5000, true);
             } else if (!xPressed) {
                 xHeld = false;
             }
 
             if (!rightBumperHeld && rightBumperPressed) {
                 rightBumperHeld = true;
+                clawPosition = robot.claw.getPosition();
+                clawPosition += 0.05;
+                robot.claw.setPosition(clawPosition);
             } else if (!rightBumperPressed) {
                 rightBumperHeld = false;
+            }
+
+            if (!leftBumperHeld && leftBumperPressed) {
+                leftBumperHeld = true;
+                clawPosition = robot.claw.getPosition();
+                clawPosition -= 0.05;
+                robot.claw.setPosition(clawPosition);
+
+            } else if (!leftBumperPressed) {
+                leftBumperHeld = false;
             }
 
             if (!aHeld && aPressed) {
@@ -193,7 +219,8 @@ public class OmniTeleTest extends OmniAutoClass {
 
             if (!yHeld && yPressed) {
                 yHeld = true;
-                if (gamepad1.y) {
+                robot.startStoneStacking();
+//                if (gamepad1.y) {
                 // The driver presses X, then uses the left joystick to say what angle the robot
                 // is aiming.  This will calculate the values as long as X is pressed, and will
                 // not drive the robot using the left stick.  Once X is released, it will use the
@@ -201,11 +228,11 @@ public class OmniTeleTest extends OmniAutoClass {
                 // before stick.  The default behavior of atan2 is 0 to -180 on Y Axis CCW, and 0 to
                 // 180 CW.  This code normalizes that to 0 to 360 CCW from the Y Axis
                 //robot.resetGyro();
-                driverAngle = toDegrees(atan2(yPower, xPower)) - 90.0 - robot.readIMU();
-                xPower = 0.0;
-                yPower = 0.0;
-                spin = 0.0;
-            }
+//                driverAngle = toDegrees(atan2(yPower, xPower)) - 90.0 - robot.readIMU();
+//                xPower = 0.0;
+//                yPower = 0.0;
+//                spin = 0.0;
+//            }
 
         } else if (!yPressed) {
                 yHeld = false;
@@ -240,8 +267,11 @@ public class OmniTeleTest extends OmniAutoClass {
             }
 
 
+            robot.performStoneStacking();
 
-            robot.drive(speedMultiplier * xPower, speedMultiplier * yPower, spinMultiplier * spin, driverAngle, robot.defaultInputShaping);
+            if(robot.stackStone != HardwareOmnibot.StackActivities.IDLE) {
+                robot.drive(speedMultiplier * xPower, speedMultiplier * yPower, spinMultiplier * spin, driverAngle, robot.defaultInputShaping);
+            }
 
             //        if(!xHeld && xPressed)
 //        {
@@ -357,6 +387,7 @@ public class OmniTeleTest extends OmniAutoClass {
             telemetry.addData("Intake Zero: ", robot.intakeZero);
             telemetry.addData("Claw Front: ", clawFront);
             telemetry.addData("Claw Open: ", clawOpen);
+            telemetry.addData("Claw Position: ", clawPosition);
             updateTelemetry(telemetry);
         }
     }

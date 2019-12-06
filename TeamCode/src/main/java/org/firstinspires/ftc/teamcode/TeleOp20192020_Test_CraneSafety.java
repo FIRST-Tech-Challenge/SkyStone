@@ -380,8 +380,8 @@ public class TeleOp20192020_Test_CraneSafety extends LinearOpMode {
     public void UpdateDriveTrain() {
 
         telemetry.addData("front_left Encoder Position", front_left.getCurrentPosition());
-        telemetry.addData("rear_right Encoder Position", rear_left.getCurrentPosition());
-        telemetry.addData("front_left Encoder Position", front_right.getCurrentPosition());
+        telemetry.addData("rear_left Encoder Position", rear_left.getCurrentPosition());
+        telemetry.addData("front_right Encoder Position", front_right.getCurrentPosition());
         telemetry.addData("rear_right Encoder Position", rear_right.getCurrentPosition());
 
         double leftPower;

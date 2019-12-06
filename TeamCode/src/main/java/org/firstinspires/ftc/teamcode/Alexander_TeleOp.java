@@ -97,7 +97,7 @@
         private DcMotor linearSlide = null;
         private DcMotor guidance = null;
         //Attachment Servos
-        private CRServo clamp = null;
+        private Servo clamp = null;
         private Servo rotation = null;
         private Servo foundation = null;
         private Servo release = null;
@@ -132,9 +132,9 @@
             if(backRight != null)
                 backRight.setPower(backRightPower);
         }
-        private void Collector(boolean onOff)
+        private void Collector(boolean collectorIn, boolean collectorOut, boolean guidanceIn, boolean guidanceOut )
         {
-            if(onOff)
+            if(collectorIn)
             {
 
                 if(collectorLeft != null) {
@@ -143,8 +143,32 @@
                 if(collectorRight != null) {
                     collectorRight.setPower(1.0);
                 }
+
+            }
+            else if(collectorOut)
+            {
+                if(collectorLeft != null) {
+                    collectorLeft.setPower(-1.0);
+                }
+                if(collectorRight != null) {
+                    collectorRight.setPower(-1.0);
+                }
+
+            }
+
+            if(guidanceIn)
+            {
+
                 if(guidance != null) {
                     guidance.setPower(1.0);
+                }
+
+            }
+            else if(guidanceOut)
+            {
+
+                if(guidance != null) {
+                    guidance.setPower(-1.0);
                 }
 
             }
@@ -174,20 +198,26 @@
         {
             if (dPadUp) {
 
-                clamp.setPower(1.0);
+                //clamp.setDirection(DcMotorSimple.Direction.FORWARD);
+                clamp.setPosition(0.53);
+                telemetry.addData("Status: ","Up Activated" );
 
             }
             else if (dPadDown)
             {
 
-                clamp.setPower(-1.0);
+                //     clamp.setDirection(DcMotorSimple.Direction.REVERSE);
+                clamp.setPosition(0.63);
+                telemetry.addData("Status: ","Down Activated" );
 
             }
-            else
-            {
-                clamp.setPower(0.3);
-            }
+            //*   else
+            //    {
+            //        clamp.setPower(0.0);
+            //        telemetry.addData("Status: "," Neutral Activated" );
 
+            //    }
+            telemetry.update();
         }
         private void MoveHook(boolean Up, boolean Down) {
             if (Up) {
@@ -197,15 +227,21 @@
             }
             else if (Down) {
 
-                foundation.setPosition(0);
+                foundation.setPosition(0.4);
 
             }
         }
         private void ReleaseCollector(boolean released) {
+
             if (released) {
 
-                release.setPosition(1.0);
+                release.setPosition(-1.0);
 
+            }
+            else
+            {
+
+                release.setPosition(1.0);
 
             }
 
@@ -214,20 +250,16 @@
 
             if (rotateLeft) {
 
-                rotation.setPosition(1.0);
+                rotation.setPosition(0.875);
 
             }
             else if (rotateRight) {
 
-                rotation.setPosition(-1.0);
+                rotation.setPosition(-0.7);
 
 
             }
-            else
-            {
-                rotation.setPosition(0);
 
-            }
         }
         @Override
         public void runOpMode() throws InterruptedException{
@@ -259,7 +291,7 @@
 
 
             //init servos
-            clamp = hardwareMap.crservo.get("clamp");
+            clamp = hardwareMap.servo.get("clamp");
             foundation = hardwareMap.servo.get("foundation");
             rotation = hardwareMap.servo.get("rotation");
             release = hardwareMap.servo.get("release");
@@ -291,20 +323,11 @@
             if(linearSlide != null)
                 linearSlide.setDirection(DcMotor.Direction.FORWARD);
             if(guidance!= null)
-                guidance.setDirection(DcMotor.Direction.REVERSE);
+                guidance.setDirection(DcMotor.Direction.FORWARD);
 
 
-            rotation.setPosition(0.2);
+            rotation.setPosition(0.9);
 
-            frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-            telemetry.addData("Encoder Value Front Left: ",frontLeft.getCurrentPosition());
-            telemetry.addData("Encoder Value Front Right: ",frontRight.getCurrentPosition());
-            telemetry.addData("Encoder Value Back Left: ",backLeft.getCurrentPosition());
-            telemetry.addData("Encoder Value Back Right: ",backRight.getCurrentPosition());
 
             telemetry.addData("Status", "Initialized");                 //Telemetry is the messages displayed on phone
             telemetry.update();
@@ -333,7 +356,11 @@
 
 
                 //gamepad2
-                boolean collectorOn = gamepad2.a;
+                boolean collectorIn = gamepad2.right_trigger > 0.2;
+                boolean collectorOut = gamepad2.right_bumper;
+                boolean guidanceIn = gamepad2.left_trigger > 0.2;
+                boolean guidanceOut = gamepad2.left_bumper;
+
                 double StoneUpDown = gamepad2.right_stick_y;
                 boolean clampsIn = gamepad2.dpad_up;
                 boolean clampsOut = gamepad2.dpad_down;
@@ -346,7 +373,7 @@
 
 
                 if (slowMode) {
-                    speedFactor = 0.8;
+                    speedFactor = 0.25;
                 } else {
                     speedFactor = 1.0;
                 }
@@ -364,17 +391,13 @@
 
                 //Methods
                 mecanumMove(leftStickX, leftStickY, rightStickX);
-                Collector(collectorOn);
+                Collector(collectorIn, collectorOut, guidanceIn, guidanceOut);
                 SkystonePositioner(StoneUpDown);
                 moveClamps(clampsIn, clampsOut);
                 RotateBlock(rotateLeft, rotateRight);
                 MoveHook(hookUp, hookDown);
                 ReleaseCollector(released);
 
-                telemetry.addData("Encoder Value Front Left: ",frontLeft.getCurrentPosition());
-                telemetry.addData("Encoder Value Front Right: ",frontRight.getCurrentPosition());
-                telemetry.addData("Encoder Value Back Left: ",backLeft.getCurrentPosition());
-                telemetry.addData("Encoder Value Back Right: ",backRight.getCurrentPosition());
 
 
                 //Telemetry

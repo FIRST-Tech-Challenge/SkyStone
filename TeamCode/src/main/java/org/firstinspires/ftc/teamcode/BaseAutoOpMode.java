@@ -105,26 +105,6 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
         telemetry.addData("Encoder test", front_left.getCurrentPosition());
         telemetry.update();
     }
-
-
-    public void CutMotors() {
-        front_left.setPower(0);
-        front_right.setPower(0);
-        rear_left.setPower(0);
-        rear_right.setPower(0);
-    }
-    public void RunAllMotors() {
-        front_left.setPower(1);
-        front_right.setPower(1);
-        rear_left.setPower(1);
-        rear_right.setPower(1);
-    }
-    public void RunAllMotorsBackward() {
-        front_left.setPower(-1);
-        front_right.setPower(-1);
-        rear_left.setPower(-1);
-        rear_right.setPower(-1);
-    }
 }
 
 

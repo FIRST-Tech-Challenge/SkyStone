@@ -71,10 +71,10 @@ public class BLUE_Platform_BridgeGYRO_BLOCK_INC extends BaseAutoOpMode {
         rear_right.setPower(1 * startingSide);
         //sleep(250);
         sleep(725);
-        CutMotors();
+        Drive(DriveDirection.STOP);
 
         // Larson added this. This is added to have the robot move back to the wall to hopefully straighten it.
-        RunAllMotorsBackward();
+        Drive(DriveDirection.BACKWARD);
         sleep(100);
 
         UnfoldRobot();
@@ -85,9 +85,9 @@ public class BLUE_Platform_BridgeGYRO_BLOCK_INC extends BaseAutoOpMode {
         //sleep(1000);
 
         //Robot Drives Forward
-        //RunAllMotors();
+        //Drive(DriveDirection.FORWARD);
         //sleep(225);
-        //CutMotors();
+        //Drive(DriveDirection.STOP);
 
         //Clamps are down
         Clamp_Left.setPosition(1);
@@ -95,7 +95,7 @@ public class BLUE_Platform_BridgeGYRO_BLOCK_INC extends BaseAutoOpMode {
         sleep(2000);
 
         //Robot moves backwards
-        RunAllMotorsBackward();
+        Drive(DriveDirection.BACKWARD);
         sleep(600);
 
 
@@ -105,7 +105,7 @@ public class BLUE_Platform_BridgeGYRO_BLOCK_INC extends BaseAutoOpMode {
         front_right.setPower(1 * startingSide);
         rear_right.setPower(-1 * startingSide);
         sleep(1200);
-        CutMotors();
+        Drive(DriveDirection.STOP);
         //sleep(600);
 
         //front_left.setPower(1);
@@ -118,9 +118,9 @@ public class BLUE_Platform_BridgeGYRO_BLOCK_INC extends BaseAutoOpMode {
         rotate(55 * startingSide, 1);
 
         //Robot drives platform
-        RunAllMotors();
+        Drive(DriveDirection.FORWARD);
         sleep(600);
-        CutMotors();
+        Drive(DriveDirection.STOP);
 
         //End of moving platform
 
@@ -169,9 +169,9 @@ public class BLUE_Platform_BridgeGYRO_BLOCK_INC extends BaseAutoOpMode {
         sleep(1000);
 
 
-        RunAllMotorsBackward();
+        Drive(DriveDirection.BACKWARD);
         sleep(1400);
-        CutMotors();
+        Drive(DriveDirection.STOP);
 
         //reset gyro and rotate 30
         feeder_motor.setPower(-1);
@@ -181,17 +181,17 @@ public class BLUE_Platform_BridgeGYRO_BLOCK_INC extends BaseAutoOpMode {
 
         //turn on feeder and drive backwards
         feeder_motor.setPower(-1);
-        RunAllMotorsBackward();
+        Drive(DriveDirection.BACKWARD);
         sleep(600);
-        CutMotors();
+        Drive(DriveDirection.STOP);
 
         //keep feeder on
         feeder_motor.setPower(-1);
 
         //Drive Forward
-        RunAllMotors();
+        Drive(DriveDirection.FORWARD);
         sleep(600);
-        CutMotors();
+        Drive(DriveDirection.STOP);
 
         //rotate back
         resetAngle();
@@ -199,9 +199,9 @@ public class BLUE_Platform_BridgeGYRO_BLOCK_INC extends BaseAutoOpMode {
 
 
         //Drive Forward
-        RunAllMotors();
+        Drive(DriveDirection.FORWARD);
         sleep(1350);
-        CutMotors();
+        Drive(DriveDirection.STOP);
 
         //Close Claw
         Block_Pickup.setPosition(1);

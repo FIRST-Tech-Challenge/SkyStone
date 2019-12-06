@@ -72,10 +72,10 @@ public class RED_Platform_BridgeGYRO_LEA extends BaseAutoOpMode {
         rear_right.setPower(.5 * startingSide);
         //sleep(250);
         sleep(725);
-        CutMotors();
+        Drive(DriveDirection.STOP);
 
         // Larson added this. This is added to have the robot move back to the wall to hopefully straighten it.
-        RunAllMotorsBackward();
+        Drive(DriveDirection.BACKWARD);
         sleep(100);
 
         UnfoldRobot();
@@ -86,9 +86,9 @@ public class RED_Platform_BridgeGYRO_LEA extends BaseAutoOpMode {
         sleep(1000);
 
         //Robot stops
-        RunAllMotors();
+        Drive(DriveDirection.FORWARD);
         sleep(225);
-        CutMotors();
+        Drive(DriveDirection.STOP);
 
         //Clamps are down
         Clamp_Left.setPosition(1);
@@ -96,7 +96,7 @@ public class RED_Platform_BridgeGYRO_LEA extends BaseAutoOpMode {
         sleep(1000);
 
         //Robot moves backwards
-        RunAllMotorsBackward();
+        Drive(DriveDirection.BACKWARD);
         sleep(600);
 
 
@@ -106,7 +106,7 @@ public class RED_Platform_BridgeGYRO_LEA extends BaseAutoOpMode {
         front_right.setPower(1 * startingSide);
         rear_right.setPower(-1 * startingSide);
         sleep(1200);
-        CutMotors();
+        Drive(DriveDirection.STOP);
         //sleep(600);
 
         //front_left.setPower(1);
@@ -119,9 +119,9 @@ public class RED_Platform_BridgeGYRO_LEA extends BaseAutoOpMode {
         rotate(55 * startingSide, 1);
 
         //Robot stops
-        RunAllMotors();
+        Drive(DriveDirection.FORWARD);
         sleep(700);
-        CutMotors();
+        Drive(DriveDirection.STOP);
 
         //End of moving platform
 
@@ -170,9 +170,9 @@ public class RED_Platform_BridgeGYRO_LEA extends BaseAutoOpMode {
         lift_left.setPower(0);
         lift_right.setPower(0);
 
-        RunAllMotorsBackward();
+        Drive(DriveDirection.BACKWARD);
         sleep(700);
-        CutMotors();
+        Drive(DriveDirection.STOP);
 
 
 

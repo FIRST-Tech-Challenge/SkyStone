@@ -36,7 +36,7 @@ public class EncoderMotor extends ModifiedMotor
     {
         // Update state variables to track elapsed time and change encoderTicks
         lastEncoderCheck = newEncoderCheck;
-        newEncoderCheck = (double)motor.getCurrentPosition();
+        newEncoderCheck = (double)this.motor.getCurrentPosition();
         double encoderTime = elapsedTime.seconds();
 
         // Reset the timer for next check and return change in encoderTicks over change in time

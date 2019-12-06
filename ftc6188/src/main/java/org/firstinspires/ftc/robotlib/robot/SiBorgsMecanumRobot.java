@@ -121,7 +121,7 @@ public class SiBorgsMecanumRobot
     public void driverTelemetry()
     {
         telemetry.addData("> Drive Info", "-----");
-        telemetry.addData("Half Power Mode\t(G1-RStickButton)", drivetrain.getLowPower());
+        telemetry.addData("Half Power Mode\t(G1-RStickButton)", drivetrain.isLowPower());
         telemetry.addData("Course Degrees\t(G1-RStick)", drivetrain.getCourse());
         telemetry.addData("Power\t(G1-RStick)", drivetrain.getVelocity());
         telemetry.addData("Rotation\t(G1-LStick)", drivetrain.getRotation());
@@ -147,9 +147,6 @@ public class SiBorgsMecanumRobot
     // Full output of all basic functions for debugging
     public void informationTelemetry()
     {
-        telemetry.addData("Motor", driveFrontLeft.getMotorType().getTicksPerRev());
-        telemetry.addData("Motor 2", drivetrain.getTicksPerIn());
-        telemetry.addData("Motor 3", drivetrain.getTicksPerIn() * 48);
         telemetry.addData("> Target Positions", "-----");
         telemetry.addData("WheelTarget FL", drivetrain.wheelTargetPositions[0]);
         telemetry.addData("WheelTarget FR", drivetrain.wheelTargetPositions[1]);
@@ -191,7 +188,7 @@ public class SiBorgsMecanumRobot
 
         telemetry.addData("> Drivetrain Info", "-----");
         telemetry.addData("Course Radians", drivetrain.getCourse());
-        telemetry.addData("Course Degrees", drivetrain.getCourse() * Math.PI/180);
+        telemetry.addData("Course Degrees", drivetrain.getCourse() * 180/Math.PI);
         telemetry.addData("Rotation Target", drivetrain.getRotation());
         telemetry.addData("Velocity Target", drivetrain.getVelocity());
         telemetry.addData("Current Pos", drivetrain.getCurrentPosition());

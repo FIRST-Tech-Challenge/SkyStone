@@ -92,17 +92,11 @@ public class OnOffButton {
     }
 
     public boolean controllingServos(){
-        if(situation == Situation.ONE_BUTTON_SERVO || situation == Situation.TWO_BUTTON_SERVO)
-            return true;
-        else
-            return false;
+        return situation == Situation.ONE_BUTTON_SERVO || situation == Situation.TWO_BUTTON_SERVO;
     }
 
     public boolean controllingDcMotors(){
-        if(situation == Situation.ONE_BUTTON_SERVO || situation == Situation.TWO_BUTTON_SERVO)
-            return false;
-        else
-            return true;
+        return situation == Situation.ONE_BUTTON_MOTOR || situation == Situation.TWO_BUTTON_MOTOR;
     }
 
     public Servo[] getServos(){
@@ -115,11 +109,8 @@ public class OnOffButton {
 
     private void oneButtonLogic(){
         if(!blocker){
-            if(mvmt1)
-                mvmt1 = false;
-            else
-                mvmt1 = true;
             blocker = true;
+            mvmt1 = !mvmt1;
         }
     }
 

@@ -7,7 +7,7 @@ public class Lift {
     public enum Direction{
         UP, DOWN
     }
-    double speedMultiplier = 1;
+    private double speedMultiplier = 1;
 
     // Constants used to adjust various parameters / characteristics of the drivetrain
     final double rotSpeed = 0.75;
@@ -52,8 +52,20 @@ public class Lift {
         setPower(hwMap.liftTwo, power);
     }
 
+    public void resetLift(double power){
+        Thread thread = new Thread(){
+            public void run(){
+                while(hwMap.liftReset.getState()) { //@TODO Find lift motor directions for up/down
+                    setPower(hwMap.liftOne, power);
+                    setPower(hwMap.liftTwo, -power);
+                }
+            }
+        };
+        thread.start();
+    }
+
     public void detectResetEncoder(){
-        if(hwMap.liftReset.getState())
+        if(!hwMap.liftReset.getState())
             resetEncoders();
     }
 

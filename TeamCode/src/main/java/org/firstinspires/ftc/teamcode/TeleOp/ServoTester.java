@@ -35,7 +35,7 @@ public class ServoTester extends LinearOpMode {
         List<Double> servoPositions = new ArrayList<>();
         double[] pos = new double[] {TeleopConstants.clawServo1PosClose, TeleopConstants.clawServo2PosClose,
                 TeleopConstants.transferLockPosUp, TeleopConstants.odometerLockPosDown, TeleopConstants.transferHornPosReady,
-                TeleopConstants.plateLifterPosDown, TeleopConstants.clawInitPosOpen, TeleopConstants.innerTransferPosTucked,
+                TeleopConstants.plateLifterPosDown, TeleopConstants.clawInitPosCapstone, TeleopConstants.innerTransferPosTucked,
                 TeleopConstants.foundationLockUnlock};
 
         for(int i = 0; i < servos.length; i++) {

@@ -1,31 +1,31 @@
 
 Lift Arm and Open Wrist at initializing autonomous mode
-    Command : hzArm.moveArm
+    Command : autoArm.moveArm
 
 Move arm to foundation Level
-    Command: hzArm.moveArm_aboveFoundationLevel();
+    Command: autoArm.moveArm_aboveFoundationLevel();
 
 Run Chassis till distance
     distance (+ for forward - for backward), strafe right : direction = -Math.PI/2, strafe left : direction = Math.PI/2
     distance calibaration forward/backward : 9.8" vs 10" input. strafe left/right : 9" vs 10" input 13" vs 15" input
-    Command: hzChassis.runDistance(Distance, direction, 0, power);
+    Command: autoChassis.runDistance(Distance, direction, 0, power);
 
 Turn 90 degrees clockwise at power
-    Command: hzChassis.runDistance(0, 0, -Math.PI/2, power);
+    Command: autoChassis.runDistance(0, 0, -Math.PI/2, power);
 
 Turn 90 degrees anti-clockwise at power
-    Command: hzChassis.runDistance(0, 0, Math.PI/2, power);
+    Command: autoChassis.runDistance(0, 0, Math.PI/2, power);
 
 Run chassis left till Red/Blue color is detected on right color sensor or max distance is reached at power
      - till max_distance (+ for forward - for backward)
      - strafe direction 0 for forward / backward, 1 for right, -1 for left
-    Command: hzChassis.strafeTill_ChassisRightColorSensorIsRed(max_distance, strafeDirection, power);
-    Command: hzChassis.strafeTill_ChassisRightColorSensorIsBlue(max_distance, strafeDirection, power);
-    Command: hzChassis.strafeTill_ChassisLeftColorSensorIsRed(max_distance, strafeDirection, power);
-    Command: hzChassis.strafeTill_ChassisLeftColorSensorIsBlue(max_distance, strafeDirection, power);
+    Command: autoChassis.runTill_ChassisRightColorSensorIsRed(max_distance, strafeDirection, power);
+    Command: autoChassis.runTill_ChassisRightColorSensorIsBlue(max_distance, strafeDirection, power);
+    Command: autoChassis.runTill_ChassisLeftColorSensorIsRed(max_distance, strafeDirection, power);
+    Command: autoChassis.runTill_ChassisLeftColorSensorIsBlue(max_distance, strafeDirection, power);
 
 Run forward till front left chassis touch sensor is pressed or max_distance is reached.
     Command : runFwdTill_frontleftChassisTouchSensor_Pressed(double max_stop_distance, double power)
 
 Move left by one block length (to be used to detect skystone and if not, move to next block
-    Command: hzChassis.runDistance(8, Math.PI/2, 0, 0.1);
+    Command: autoChassis.runDistance(8, Math.PI/2, 0, 0.1);

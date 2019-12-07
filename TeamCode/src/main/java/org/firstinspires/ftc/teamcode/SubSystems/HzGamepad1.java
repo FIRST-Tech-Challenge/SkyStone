@@ -325,6 +325,10 @@ public class HzGamepad1 {
         /*Chassis actions :
         Convert Left Stick and Right Stick motion to power, target Angle and turn for Chassis
          */
+        gpChassis.setLeftColorSensorEnabled(false);
+        gpChassis.setLeftColorSensorEnabled(false);
+        gpIntake.detectSkystoneColor.enableLed(false);
+
         double leftStickX = turboMode(getLeftStickX());
         double leftStickY = turboMode(getLeftStickY());
         double rightStickX = turboMode(getRightStickX());

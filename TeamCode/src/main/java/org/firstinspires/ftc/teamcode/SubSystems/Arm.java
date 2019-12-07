@@ -43,7 +43,7 @@ public class Arm {
     //Encoder Countable Events Per Revolution (Output Shaft)	1,497.325 (Rises & Falls of Ch A & B)
     //Arm move 90degrees so max level is 1497.325/4 = 374 counts.
 
-    public int[] blockLevel = {
+    /*public int[] blockLevel = {
             0, //ground level
             -50, //block level 1
             -95, //block level 2
@@ -51,13 +51,24 @@ public class Arm {
             -199, //block level 4
             -255, //block level 5
             -321 //block level 6
+    };Orignial */
+
+        public int[] blockLevel = {
+             0, //ground level
+            -75, //block level 1
+            -145, //block level 2
+            -210, //block level 3
+            -275, //block level 4
+            -340, //block level 5
+            -405 //block level 6
     };
 
-    int groundLevel = 0;
-    int detectSkystoneLevel = -20; //#TOBEFILLED correctly
-    int aboveFoundationLevel = -50; //#TOBEFILLED correctly
-    int onFoundationLevel = -10; //#TOBEFILLED correctly
-    int initLevel = -100;
+    int groundLevel = +20;
+    int detectSkystoneLevel = -75; //#TOBEFILLED correctly
+    int aboveFoundationLevel = -100; //#TOBEFILLED correctly
+    int onFoundationLevel = 0; //#TOBEFILLED correctly
+    int autoBlockPlacement = -150;
+    int initLevel = -75;
 
     public int currentLevel = 0;
     int MAX_BLOCK_LEVEL = 6;
@@ -133,6 +144,7 @@ public class Arm {
         armMotor.setTargetPosition(groundLevel);
         turnArmBrakeModeOff();
         runArmToLevel();
+        resetArm();
     }
 
     /**
@@ -161,6 +173,16 @@ public class Arm {
         turnArmBrakeModeOn();
         runArmToLevel();
     }
+
+    /**
+     * Method to move Arm to onFoundationLevel and turn Brake Mode ON
+     */
+    public void moveArm_AutoPlacementLevel(){
+        armMotor.setTargetPosition(autoBlockPlacement);
+        turnArmBrakeModeOn();
+        runArmToLevel();
+    }
+
 
     /**
      * Method to move arm up by a block level from current level in TeleOp and turn Brake Mode ON

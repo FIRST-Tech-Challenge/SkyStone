@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 
 /**
  * Autonomous Mode Usecase 2
- * Description : Start at Blue side, Grip Foundation with hook, and position it into Building Site.
+ * Description : Start on wall in Building Zone, Grip Foundation with hook, and position it into Building Site.
  *
  * Steps:
  * Robot starts between A4, A5 such that it can slight in front of skybridge neutral zone floor
@@ -30,7 +30,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.Intake;
  * Move right by distance or till Chassis light sensor does not detect Blue line to be under blue skybridge
  */
 
-@Autonomous(name = "HzAutoRunDistance", group = "Autonomous")
+@Autonomous(name = "AutoUseCase2", group = "Autonomous")
 public class AutonomousUC2 extends LinearOpMode {
 
     public Intake autoIntake;
@@ -39,11 +39,21 @@ public class AutonomousUC2 extends LinearOpMode {
 
     public int skystonePosition;
 
+    public int robotDepth = 17; // Ball on wall to Edge of Chassis Touch sensor
+    public int robotWidth = 17; // Wheel edge to wheel edge
+
+    public int playingAlliance = 1; //1 for Blue, -1 for Red
+
+    public boolean finalStateAchieved = false; //1 when reached final parking state
+
     ElapsedTime AutonomousTimeOut = new ElapsedTime();
 
     /**
      * Template runOpMode code. Only change Usecase function and call here.
      * Refer to Autonomous Command Syntax to put right values
+     * <p>
+     * All Usecases written assuming playingAlliance = 1 meaning Blue, -1 for Red.
+     *
      * @throws InterruptedException
      */
     @Override
@@ -55,12 +65,13 @@ public class AutonomousUC2 extends LinearOpMode {
 
         //Robot starts on A2
         waitForStart();
-        while (opModeIsActive()) {
+        while (opModeIsActive() && (!finalStateAchieved)) {
             AutonomousUC2Commands();
+            finalStateAchieved = true;
         }
     }
 
-    public void AutonomousUC2Commands(){
+    public void AutonomousUC2Commands() {
 
         //Robot starts between A4, A5 such that it can slight in front of skybridge neutral zone floor
 
@@ -70,23 +81,67 @@ public class AutonomousUC2 extends LinearOpMode {
         //Lift Arm to AboveFoundation level
         autoArm.moveArm_aboveFoundationLevel();
 
+        if (!opModeIsActive()) return;
+
         //Move robot to in between C5 and C6
+        // istance (+ for forward - for backward), strafe right : direction = -Math.PI/2, strafe left : direction = Math.PI/2
+        //distance calibaration forward/backward : 9.8" vs 10" input. strafe left/right : 9" vs 10" input 13" vs 15" input
+        //robotToFoundation = wall to Foundation (47.5) - bredth of robot + half of foundation (18.5/2)
 
-        //Move forward till Chassis bumber limit swich is pressed.
+        double robotToFoundation = 47.5 - robotWidth + 18.5 / 2;
+        autoChassis.runDistance(robotToFoundation, playingAlliance * (-Math.PI / 2), 0, 0.25);
+        if (!opModeIsActive()) return;
+
+        //Move forward till Chassis bumber limit switch is pressed.
+        autoChassis.runFwdTill_frontleftChassisTouchSensor_Pressed(4, 0.1);
+        if (!opModeIsActive()) return;
+
         //Drop Arm to OnFoundation level
+        autoArm.moveArm_onFoundationLevel();
+        if (!opModeIsActive()) return;
+        //Optional : Move foundation to wall and then turn
+
         //Move Robot Left toward A4 (for XX rotations). Friction will cause Robot to rotate towards A6
+        double foundationTurnDisance = 39.75;
+        autoChassis.runDistance(foundationTurnDisance, playingAlliance * (Math.PI / 2), 0, 0.25);
+        if (!opModeIsActive()) return;
+
         //Pull back till wall is hit (Motor does not move)
+        double foundationBackToWall = 10; // #TOBECORRECTED WITH ENCODER NOT MOVING CODE
+        autoChassis.runDistance(-foundationBackToWall, 0, 0, 0.25);
+        if (!opModeIsActive()) return;
+
         //Slide left till Motor does not move (Foundation corner on Edge)
+        //#TOBEWRITTEN
+
         //Push forward to move foundation to end of line
+        double foundationtoEdgeofBuildingSite = 3;
+        autoChassis.runDistance(foundationtoEdgeofBuildingSite, 0, 0, 0.25);
+        if (!opModeIsActive()) return;
+
         //Lift Arm to Above foundation level
+        autoArm.moveArm_aboveFoundationLevel();
+        if (!opModeIsActive()) return;
+
         //Move back till wall is hit
+        autoChassis.runDistance(-foundationtoEdgeofBuildingSite, 0, 0, 0.25);
+        if (!opModeIsActive()) return;
+
+        //Optional : Move to park near skybridge Neutral
+
+        //Park near wall
         //Move right by distance or till Chassis light sensor does not detect Blue line to be under blue skybridge
-
-
-
-
+        if (playingAlliance == 1) {
+            autoChassis.runTill_ChassisRightColorSensorIsBlue(70, 1, 0.25);
+        } else {
+            autoChassis.runTill_ChassisLeftColorSensorIsRed(70, -1, 0.25);
+        }
     }
 
+
+    /**
+     * Method to move till Skystone is detected using color sensor and distance sensor
+     */
     public void moveTillStoneDetected(){
         //public void runTill_ChassisLeftColorSensorIsBlue(double max_stop_distance, double straveDirection, double power){
 

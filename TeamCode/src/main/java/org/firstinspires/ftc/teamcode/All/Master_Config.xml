@@ -18,6 +18,7 @@
             <goBILDA5202SeriesMotor name="backRight" port="1" />
             <Matrix12vMotor name="rightIntake" port="2" />
             <Matrix12vMotor name="liftTwo" port="3" />
+            <Servo name="intakeInit" port="0" />
             <Servo name="clawInit" port="1" />
             <Servo name="foundationLock" port="2" />
             <Servo name="clawServo1" port="3" />

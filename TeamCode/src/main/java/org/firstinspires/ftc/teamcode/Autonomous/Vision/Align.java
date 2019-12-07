@@ -172,14 +172,14 @@ public class Align {
                         position = temp.size() - 1;
 
                     opMode.telemetry.addData("Current Position", temp.get(position));
-                    opMode.telemetry.addData("Target Bounds", (imgWidth / 2d - 20 - 10) + " - " + (imgWidth / 2d + 20 - 10));
+                    opMode.telemetry.addData("Target Bounds", (imgWidth / 2d - 10 - 10) + " - " + (imgWidth / 2d + 20 - 10));
                     opMode.telemetry.addData("Raw, Sorted Data", temp);
 
-                    if (temp.get(position) >= imgWidth / 2d - 20 - 10 && temp.get(position) <= imgWidth / 2d + 20 - 10) {
+                    if (temp.get(position) >= imgWidth / 2d - 10 - 10 && temp.get(position) <= imgWidth / 2d + 20 - 10) {
                         stop();
                         isAligned = true;
                         opMode.telemetry.addData("Executed Command", "STOP");
-                    } else if (temp.get(position) <= imgWidth / 2d - 20 - 10) {
+                    } else if (temp.get(position) <= imgWidth / 2d - 10 - 10) {
                         setRightPower(turnPower);
                         setLeftPower(-turnPower);
                         opMode.telemetry.addData("Executed Command", "RIGHT");

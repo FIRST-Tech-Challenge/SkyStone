@@ -438,6 +438,14 @@ public class Path {
                     Thread.sleep(200);
                 } catch (Exception e) {
                 }
+
+                drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(68.0, 59.72), Math.toRadians(0)));
+                drive.getLocalizer().update();
+                builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
+                builder = builder.setReversed(false).lineTo(new Vector2d(55.0, 59.72)).strafeTo(new Vector2d(55.0, -6.44))
+                        .lineTo(new Vector2d(-20.552, 36.44));
+                trajectory = builder.build();
+                drive.followTrajectorySync(trajectory);
                 break;
             case 2:
                 break;

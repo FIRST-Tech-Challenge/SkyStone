@@ -73,7 +73,7 @@ public class Elevator extends Subsystem {
     public Elevator(HardwareMap hardwareMap){
         elevatorMotor = (DcMotor) hardwareMap.get("elevatorMotor");
         elevatorMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        elevatorMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        elevatorMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         magneticLimitSwitch = hardwareMap.get(DigitalChannel.class, "elevatorSwitch");
         magneticLimitSwitch.setMode(DigitalChannel.Mode.INPUT);

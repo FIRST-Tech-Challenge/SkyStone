@@ -53,11 +53,11 @@ public class Arm {
             -321 //block level 6
     };
 
-
     int groundLevel = 0;
     int detectSkystoneLevel = -20; //#TOBEFILLED correctly
     int aboveFoundationLevel = -50; //#TOBEFILLED correctly
     int onFoundationLevel = -10; //#TOBEFILLED correctly
+    int initLevel = -100;
 
     public int currentLevel = 0;
     int MAX_BLOCK_LEVEL = 6;
@@ -83,6 +83,8 @@ public class Arm {
         resetArm();
         armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        moveArm_initLevel();
+
     }
 
     /**
@@ -114,6 +116,15 @@ public class Arm {
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armMotor.setMode(runMode);
     }
+
+    /**
+     * Method to move Arm to groundlevel and turn Brake Mode OFF
+     */
+    public void moveArm_initLevel(){
+        armMotor.setTargetPosition(initLevel);
+        runArmToLevel();
+    }
+
 
     /**
      * Method to move Arm to groundlevel and turn Brake Mode OFF

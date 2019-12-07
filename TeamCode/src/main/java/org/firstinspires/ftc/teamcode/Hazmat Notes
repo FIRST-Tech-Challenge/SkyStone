@@ -76,6 +76,13 @@ Encoder Cycles Per Revolution (Output Shaft)	134.4 (Rises of Ch A)
 Encoder Countable Events Per Revolution (Encoder Shaft)	28 (Rises & Falls of Ch A & B)
 Encoder Countable Events Per Revolution (Output Shaft)	537.6 (Rises & Falls of Ch A & B)
 
+5202 Series Yellow Jacket Planetary Gear Motor (139:1 Ratio, 43 RPM, 3.3 - 5V Encoder)
+https://www.gobilda.com/5202-series-yellow-jacket-planetary-gear-motor-139-1-ratio-43-rpm-3-3-5v-encoder/
+Encoder Cycles Per Revolution (Encoder Shaft)	7 (Rises of Ch A)
+Encoder Cycles Per Revolution (Output Shaft)	973 (Rises of Ch A)
+Encoder Countable Events Per Revolution (Encoder Shaft)	28 (Rises & Falls of Ch A & B)
+Encoder Countable Events Per Revolution (Output Shaft)	3,892 (Rises & Falls of Ch A & B)
+
 Robot 2 : Arm Motor
 5202 Series Yellow Jacket Planetary Gear Motor (26.9:1 Ratio, 223 RPM, 3.3 - 5V Encoder)
 https://www.gobilda.com/5202-series-yellow-jacket-planetary-gear-motor-26-9-1-ratio-223-rpm-3-3-5v-encoder/

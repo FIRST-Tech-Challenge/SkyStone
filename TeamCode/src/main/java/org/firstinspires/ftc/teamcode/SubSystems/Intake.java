@@ -43,15 +43,20 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  *     R>250 G>400 means stone, else Skystone
  *     If stone, go forward 2" - drop arm
  *
- * @IntakeMethods : moveWristToInitialPosition()
- * @IntakeMethods : moveWristToHorizontalPosition()
- * @IntakeMethods : moveWristToVerticalPosition()
+ * @IntakeMethods : moveWristToClose()
+ * @IntakeMethods : moveWristToHorizontal()
+ * @IntakeMethods : moveWristToVertical()
  * @IntakeTeleOpMethods : moveWristUp()
  * @IntakeTeleOpMethods : moveWristDown()
  * @IntakeMethods : toggleGrip()
  * @IntakeAutoMethods : openGrip()
  * @IntakeAutoMethods : closeGrip()
- * @IntakeAutoMethods : detectSkystoneColorSensorIsYellow()
+ * @IntakeAutoMethods : detectSkystoneAndType()
+ * @IntakeAutoMethods : detectSkystoneColor()
+ * @IntakeAutoMethods : detectSkystoneDistance()
+ *
+ * @return :skystoneDetected
+ * @return : stoneDetected
  */
 
 /**
@@ -72,7 +77,8 @@ public class Intake {
             0.83, //MidPosition2
             1.0,  //HorizontalPosition
     };
-    public boolean SkystoneDetected;
+    public boolean skystoneDetected;
+    public boolean stoneDetected;
 
     //Open and close Position for the grip linear actuator
     double gripOpenPosition = 0.75;
@@ -188,17 +194,20 @@ public class Intake {
      * @return true if Yellow is detected, else false
      */
     public boolean detectSkytoneAndType() {
-        SkystoneDetected = false;
+        stoneDetected = false;
+        skystoneDetected = false;
         detectSkystoneColor.enableLed(true);
         if (detectSkystoneDistance.getDistance(DistanceUnit.INCH) < 2.75){
             if (detectSkystoneColor.red()>250 && detectSkystoneColor.green() > 400){
                 //Stone is detected, but is not skystone
-                SkystoneDetected = false;
+                stoneDetected = true;
+                skystoneDetected = false;
                 detectSkystoneColor.enableLed(false);
                 return true ; //Stone is detected
             } else {
                 //Stone is detected and is Skystone is detected
-                SkystoneDetected = true;
+                stoneDetected = true;
+                skystoneDetected = true;
                 detectSkystoneColor.enableLed(false);
                 return true ; //Stone is detected
             }

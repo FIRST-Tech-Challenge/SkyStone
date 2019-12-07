@@ -47,8 +47,8 @@ public class SensorCaliberation extends LinearOpMode{
             telemetry.addData("Intake.detectSkystoneColor.Blue", hzIntake.detectSkystoneColor.blue() );
             telemetry.addData("Intake.detectSkystoneColor.Alpha", hzIntake.detectSkystoneColor.alpha() );
             telemetry.addData("Intake.detectSkystonedistance.Distance", String.format(Locale.US, "%.02f", hzIntake.detectSkystoneDistance.getDistance(DistanceUnit.INCH)));
-            telemetry.addData("Intake.detectSkystonedetected", hzIntake.detectSkytoneAndType());
-            telemetry.addData("Intake.detectSkystoneType0Stone1Skystone", hzIntake.SkystoneDetected);
+            telemetry.addData("Intake.detectSkystonedetected", hzIntake.stoneDetected);
+            telemetry.addData("Intake.detectSkystonedetected", hzIntake.skystoneDetected);
 
             //Display RGB Values for hzChassis.leftColorSensor
             telemetry.addData("Chassis.Left.Red ", hzChassis.leftColorSensor.red() );

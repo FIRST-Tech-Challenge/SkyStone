@@ -62,7 +62,7 @@ public class Chassis {
 
     public boolean configureRobot = false;
 
-    double ChassisMotorEncoderCount = 723.24;
+    public double ChassisMotorEncoderCount = 723.24;
 
     /**
      * Constructor of Chassis.
@@ -338,29 +338,29 @@ public class Chassis {
      * Till team color is identified below Chassis
      * To be used in Autonomous mode for moving by distance or turning by angle
      * Uses PID loop in motors to ensure motion without errors
-     * @param max_stop_distance
-     * @param straveDirection 0 for forward or backward, 1 for right, -1 for left
-     * @param power
+     * @param max_stop_distance Max distance to stop
+     * @param strafeDirection 0 for forward or backward, 1 for right, -1 for left
+     * @param power to run motors at
      */
-    public void runTill_ChassisRightColorSensorIsRed(double max_stop_distance, double straveDirection, double power){
+    public void runTill_ChassisLeftColorSensorIsRed(double max_stop_distance, double strafeDirection, double power){
         setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
         resetChassis();
 
         //Max Total Rotations of wheel = distance / circumference of wheel
         double targetRotations = max_stop_distance/(2*Math.PI*wheelRadius);
 
-        while (!rightColorSensorIsRed() && (Math.abs(backLeft.getCurrentPosition()) < Math.abs(ChassisMotorEncoderCount * targetRotations))) {
-            if(straveDirection == 0) {
+        while (!leftColorSensorIsRed() && (Math.abs(backLeft.getCurrentPosition()) < Math.abs(ChassisMotorEncoderCount * targetRotations))) {
+            if(strafeDirection == 0) {
                 //Go forward or backward
                 frontLeft.setPower(power);
                 frontRight.setPower(power);
                 backLeft.setPower(power);
                 backRight.setPower(power);
             } else {
-                frontLeft.setPower(straveDirection* power);
-                frontRight.setPower(-straveDirection* power);
-                backLeft.setPower(-straveDirection* power);
-                backRight.setPower(straveDirection* power);
+                frontLeft.setPower(strafeDirection* power);
+                frontRight.setPower(-strafeDirection* power);
+                backLeft.setPower(-strafeDirection* power);
+                backRight.setPower(strafeDirection* power);
             }
         };
         setZeroBehavior(DcMotor.ZeroPowerBehavior.BRAKE); //#TOBECHECKED TO AVOID JERK
@@ -369,7 +369,45 @@ public class Chassis {
         backLeft.setPower(0.0);
         backRight.setPower(0.0);
     }
-    
+
+    /**
+     * Method to move chassis based on computed vector inputs for a set max_stop_distance
+     * Till team color is identified below Chassis
+     * To be used in Autonomous mode for moving by distance or turning by angle
+     * Uses PID loop in motors to ensure motion without errors
+     * @param max_stop_distance Max distance to stop
+     * @param strafeDirection 0 for forward or backward, 1 for right, -1 for left
+     * @param power to run motors at
+     */
+    public void runTill_ChassisLeftColorSensorIsBlue(double max_stop_distance, double strafeDirection, double power){
+        setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        resetChassis();
+
+        //Max Total Rotations of wheel = distance / circumference of wheel
+        double targetRotations = max_stop_distance/(2*Math.PI*wheelRadius);
+
+        while (!leftColorSensorIsBlue() && (Math.abs(backLeft.getCurrentPosition()) < Math.abs(ChassisMotorEncoderCount * targetRotations))) {
+            if(strafeDirection == 0) {
+                //Go forward or backward
+                frontLeft.setPower(power);
+                frontRight.setPower(power);
+                backLeft.setPower(power);
+                backRight.setPower(power);
+            } else {
+                frontLeft.setPower(strafeDirection* power);
+                frontRight.setPower(-strafeDirection* power);
+                backLeft.setPower(-strafeDirection* power);
+                backRight.setPower(strafeDirection* power);
+            }
+        };
+        setZeroBehavior(DcMotor.ZeroPowerBehavior.BRAKE); //#TOBECHECKED TO AVOID JERK
+        frontLeft.setPower(0.0);
+        frontRight.setPower(0.0);
+        backLeft.setPower(0.0);
+        backRight.setPower(0.0);
+    }
+
+
 
 
 
@@ -397,24 +435,13 @@ public class Chassis {
         backRight.setPower(0.0);
     }
 
-
-
-    /**
-     * Method to turn robot by a specified angle.
-     */
-    public void turnRobotByAngle(double robotTurn, double power) {
-        //#TOBEFILLED
-    }
     /**
      * Method to identify when frontleftChassisTouchSensor is pressed
      * frontleftChassisTouchSensor.getState() return true when not touched
      *
      */
     public boolean frontleftChassisTouchSensorIsPressed(){
-        /* Analog Mode */
         if (frontleftChassisTouchSensor.isPressed()){
-
-            //function returns tr
             return true;
         } else {
             return false;

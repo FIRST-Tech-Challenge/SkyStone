@@ -14,32 +14,33 @@ import org.firstinspires.ftc.teamcode.SubSystems.*;
  * Write test methods as separate functions and call in OpModeisActive().
  * Comment out the ones not run at the time, but dont delete the test methods written.
  * Autonomous commands :
- *  * @ChassisAutoMethods : runDistance()
- *  * @ChassisAutoMethods : runTill_frontleftBumperSensor_Pressed(max stop distance)
- *  * @ChassisAutoMethods : runTill_chassisLocationSensorIdentifiesLine(color)
- *  * @ChassisAutoMethods : turnRobotByAngle()
- *  * @ChassisAutoMethods : resetColorSensorEnabled()
- *  * @ChassisAutoMethods : leftColorSensorIsRed()
- *  * @ChassisAutoMethods : rightColorSensorIsBlue()
- *  * @ChassisAutoMethods : leftColorSensorIsBlue()
- *  * @ChassisAutoMethods : rightColorSensorIsRed()
- *  * @ChassisAutoMethods : frontleftBumperSensorIsPressed()
- *  * @ArmMethods : moveArm_groundLevel()
- *  * @ArmMethods : moveArm_blockLevelUp()
- *  * @ArmMethods : moveArm_blockLevelDown()
- *  * @ArmMethods : moveArmToPlaceBlockAtLevel()
- *  * @ArmMethods : moveArmToLiftAfterBlockPlacement()
- *  * @ArmMethods : runArmToLevel()
- *  * @ArmAutoMethods : moveArm_detectSkystoneLevel()
- *  * @ArmAutoMethods : moveArm_aboveFoundationLevel(()
- *  * @ArmAutoMethods : moveArm_onFoundationLevel()
- *  * @IntakeMethods : moveWristToInitialPosition()
- *  * @IntakeMethods : moveWristToHorizontalPosition()
- *  * @IntakeMethods : moveWristToVerticalPosition()
- *  * @IntakeAutoMethods : openGrip()
- *  * @IntakeAutoMethods : closeGrip()
- *  * @IntakeAutoMethods : detectSkystoneColorSensorIsYellow()
- *  * @IntakeAutoMethods : detectSkystoneColorSensorIsBlack()
+ * @ChassisAutoMethods : runDistance()
+ * @ChassisAutoMethods : runTill_frontleftBumperSensor_Pressed(max stop distance)
+ * @ChassisAutoMethods : runTill_chassisLocationSensorIdentifiesLine(color)
+ * @ChassisAutoMethods : turnRobotByAngle()
+ * @ChassisAutoMethods : resetColorSensorEnabled()
+ * @ChassisAutoMethods : leftColorSensorIsRed()
+ * @ChassisAutoMethods : rightColorSensorIsBlue()
+ * @ChassisAutoMethods : leftColorSensorIsBlue()
+ * @ChassisAutoMethods : rightColorSensorIsRed()
+ * @ChassisAutoMethods : frontleftBumperSensorIsPressed()
+ * @ArmMethods : moveArm_groundLevel()
+ * @ArmMethods : moveArm_blockLevelUp()
+ * @ArmMethods : moveArm_blockLevelDown()
+ * @ArmMethods : moveArmToPlaceBlockAtLevel()
+ * @ArmMethods : moveArmToLiftAfterBlockPlacement()
+ * @ArmMethods : runArmToLevel()
+ * @ArmAutoMethods : moveArm_detectSkystoneLevel()
+ * @ArmAutoMethods : moveArm_aboveFoundationLevel(()
+ * @ArmAutoMethods : moveArm_onFoundationLevel()
+ * @IntakeMethods : moveWristToClose()
+ * @IntakeMethods : moveWristToHorizontal()
+ * @IntakeMethods : moveWristToVertical()
+ * @IntakeAutoMethods : openGrip()
+ * @IntakeAutoMethods : closeGrip()
+ * @IntakeAutoMethods : detectSkystoneAndType()
+ * @IntakeAutoMethods : detectSkystoneColor()
+ * @IntakeAutoMethods : detectSkystoneDistance()
  */
 
 @Autonomous(name = "HzAutoRunDistance", group = "Autonomous")
@@ -79,7 +80,7 @@ public class AutoTestRunDistance extends LinearOpMode{
             //hzArm.moveArm_aboveFoundationLevel();
 
             //hzChassis.runDistance(9, -Math.PI/2, 0, 0.25);// Strave right
-            hzChassis.runTill_ChassisRightColorSensorIsRed(9, -1, 0.25);
+            hzChassis.runTill_ChassisLeftColorSensorIsRed(9, -1, 0.25);
             //hzChassis.runDistance(0, 0, Math.PI/4, 0.25);
 
 

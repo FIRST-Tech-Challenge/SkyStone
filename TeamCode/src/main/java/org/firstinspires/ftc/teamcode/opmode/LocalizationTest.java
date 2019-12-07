@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmode;
 
+import android.widget.Button;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -40,8 +42,6 @@ public class LocalizationTest extends LinearOpMode {
         DcMotor frontEncoder = hardwareMap.dcMotor.get("leftRear");
 
         //Control Mapping
-        Button elevatorUpButton = new Button(gamepad2,Button.ListenButton.A);
-        Button elevatorDownButton = new Button(gamepad2,Button.ListenButton.B);
 
         waitForStart();
         while (!isStopRequested()) {
@@ -60,9 +60,6 @@ public class LocalizationTest extends LinearOpMode {
             } else{
                 foundationGrabber.setCurrentPosition(FoundationGrabber.Positions.UP_LEFT);
             }
-
-            elevatorUpButton.update();
-            elevatorDownButton.update();
 
 
             Pose2d poseEstimate = drive.getPoseEstimate();

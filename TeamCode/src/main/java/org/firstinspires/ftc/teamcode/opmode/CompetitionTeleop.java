@@ -71,11 +71,15 @@ public class CompetitionTeleop extends LinearOpMode {
                 superstructure.setManual();
                 elevator.setMotorPowers(gamepad2.left_stick_y);
             } else {
+                if(superstructure.getCurrentState() == Superstructure.SystemState.MANUAL){
+                    elevator.setMotorPowers(gamepad2.left_stick_y);
+                }
                 if(buttonPad.ifOnceDPadUp()){
                     superstructure.doUpAction();
                 } else if(buttonPad.ifOnceDPadDown()){
                     superstructure.doDownAction();
                 }
+                telemetry.addData("If Button Pressed",buttonPad.ifDPadDown());
             }
             
             //Drive Control
@@ -94,6 +98,8 @@ public class CompetitionTeleop extends LinearOpMode {
             buttonPad.update();
             superstructure.update();
         }
+        elevator.stop();
+        intake.stop();
     }
 
     public void updateTelemetry() {

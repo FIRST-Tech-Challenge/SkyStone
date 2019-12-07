@@ -92,12 +92,12 @@ public class TeleLib {
         }
     }
 
-//    public void processStopIntake() {
-//        if (opMode.gamepad1.y || !isBlockInIntake()) {
-//            robot.setDcMotorPower(MOTOR_LEFT_INTAKE, 0);
-//            robot.setDcMotorPower(MOTOR_RIGHT_INTAKE, 0);
-//        }
-//    }
+    public void processStopIntake() {
+        if (opMode.gamepad1.y) {    //|| !isBlockInIntake()
+            robot.setDcMotorPower(MOTOR_LEFT_INTAKE, 0);
+            robot.setDcMotorPower(MOTOR_RIGHT_INTAKE, 0);
+        }
+    }
 
 //    private boolean isBlockInIntake() {
 //        if (distance <= 2) {

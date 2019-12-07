@@ -11,6 +11,7 @@ import kotlin.math.max
  * Created by KasaiYuki on 9/20/2018.
  */
 
+//TODO: Compute new max VSlide from current position and calibration upward
 @TeleOp(name = "SSMechTeleOp", group = "TeleOp")
 //@Disabled
 class SSMechTeleOp : OpMode() {
@@ -69,8 +70,7 @@ class SSMechTeleOp : OpMode() {
         tooHigh = curPos >= max
         tooLow = curPos < 0
         //if (curPos > 1500) linSlidePow /= 1.2.toFloat() //slow slide if greater than value
-        robot.vSlide?.power = -linSlidePow.toDouble()//controls vertical slide, flips sign
-
+        robot.vSlide?.power = -linSlidePow.toDouble() / 1.5//controls vertical slide, flips sign
         // Horizontal slide calcs
         slideP = (gamepad2.left_stick_y.toDouble() / 2) + 0.5 // horizontal slide
         if (touched) { //toggle controls horizontal slide with the left stick of gp2
@@ -87,7 +87,7 @@ class SSMechTeleOp : OpMode() {
 
         if (tooLow) telemetry.addData("Linear Slide Y Error:", "MIN HEIGHT REACHED")
 
-        if (gamepad1.left_bumper) telemetry.addData("Slowdown:", "Engaged!")
+        if (gamepad1.left_trigger > 0.0) telemetry.addData("Slowdown:", "Engaged!")
 
         telemetry.addData("Linear Slide V: $linSlidePow", "") //kotlin string templates
 
@@ -133,10 +133,10 @@ class SSMechTeleOp : OpMode() {
         // Divide everything by nor (it's positive so we don't need to worry
         // about signs)
         //need to compensate for difference in core hex and 40:1 motors
-        robot.fLDrive?.power = frontLeftPower / slowDown
-        robot.bLDrive?.power = backLeftPower / slowDown
-        robot.fRDrive?.power = frontRightPower / slowDown
-        robot.bRDrive?.power = backRightPower / slowDown
+        robot.fLDrive?.power = (frontLeftPower / slowDown) * 1.05
+        robot.bLDrive?.power = (backLeftPower / slowDown) * 1.05
+        robot.fRDrive?.power = (frontRightPower / slowDown) * 1.05
+        robot.bRDrive?.power = (backRightPower / slowDown) * 1.05
         telemetry.addData("front left: ${robot.fLDrive?.power}, front right: ${robot.fRDrive?.power}, " +
                 "back left: ${robot.bLDrive?.power}, back right: ${robot.bRDrive?.power}; normalized value: $nor", "")
     }

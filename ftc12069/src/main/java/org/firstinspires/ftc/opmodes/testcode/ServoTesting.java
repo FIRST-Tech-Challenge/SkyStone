@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.opmodes.testcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -8,6 +9,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotlib.robot.MecanumHardwareMap;
 
 @TeleOp(name="Servo Testing", group="Linear Opmode")
+@Disabled
 public class ServoTesting extends LinearOpMode
 {
     private MecanumHardwareMap robotHardware;
@@ -28,7 +30,7 @@ public class ServoTesting extends LinearOpMode
                 if (rbUp) {
                     rbUp = false;
                     index++;
-                    robotHardware.deliveryServoManager.setPosition(servoPositions[index]);
+                    //robotHardware.deliveryServoManager.setPosition(servoPositions[index]);
                 } else rbUp = true;
             }
 

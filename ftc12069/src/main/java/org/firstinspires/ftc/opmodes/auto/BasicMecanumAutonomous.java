@@ -118,9 +118,9 @@ class BasicMecanumAutonomous {
             robot.move(0, -0.5, null, 10);
             robot.move(alliance == Alliance.BLUE ? -90 : 90, 0.5, new OrientationInfo(180, 0.5), 95);
             robot.hardware.blockGrabber.setPosition(1.0);
-            robot.hardware.deliveryServoManager.setServoState(ServoState.BLOCK1);
+            robot.hardware.updateDeliveryStates(ServoState.ONEBLOCKDEPOSIT);
             robot.hardware.blockGrabber.setPosition(0.0);
-            robot.hardware.deliveryServoManager.setServoState(ServoState.STOWED);
+            robot.hardware.updateDeliveryStates(ServoState.CRADLE);
 
             // Move to the loading zone
             robot.move(alliance == Alliance.BLUE ? 90 : -90, 0.5, null, 100);

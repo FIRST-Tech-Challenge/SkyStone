@@ -8,6 +8,13 @@ import org.firstinspires.ftc.robotlib.robot.MecanumHardwareMap;
 import org.firstinspires.ftc.robotlib.state.Button;
 import org.firstinspires.ftc.robotlib.state.ServoState;
 
+import static org.firstinspires.ftc.robotlib.state.ServoState.CARRY;
+import static org.firstinspires.ftc.robotlib.state.ServoState.CRADLE;
+import static org.firstinspires.ftc.robotlib.state.ServoState.FLOOR;
+import static org.firstinspires.ftc.robotlib.state.ServoState.ONEBLOCKDEPOSIT;
+import static org.firstinspires.ftc.robotlib.state.ServoState.TWOBLOCKDEPOSIT;
+import static org.firstinspires.ftc.robotlib.state.ServoState.TWOBLOCKHOVER;
+
 @TeleOp(name="Experimental Mecanum TELEOP (12069)", group="Linear Opmode")
 public class MecanumTeleOp extends OpMode
 {
@@ -16,10 +23,14 @@ public class MecanumTeleOp extends OpMode
 
     // TeleOp States
     private boolean rightMotion = true;
+
+    // Buttons
     private Button leftBumper;
     private Button rightBumper;
     private Button rightTrigger;
     private Button rightStickButton;
+    private Button yButton;
+    private Button xButton;
 
     @Override
     public void init()
@@ -32,7 +43,8 @@ public class MecanumTeleOp extends OpMode
         rightTrigger = new Button();
         rightStickButton = new Button();
 
-        hardware.deliveryServoManager.reset();
+        hardware.deliveryLeft.reset();
+        hardware.deliveryRight.reset();
         hardware.intakeMotorManager.stop();
     }
 
@@ -69,11 +81,12 @@ public class MecanumTeleOp extends OpMode
         hardware.drivetrain.setVelocity(velocity);
         hardware.drivetrain.setRotation(rotation);
 
-        ServoState deliveryServoState = hardware.deliveryServoManager.getServoState();
         if (leftBumper.isReleased()) {
-            hardware.deliveryServoManager.setServoState(ServoState.getServoStateFromInt(deliveryServoState.getId() - 1));
+            hardware.deliveryLeft.decrement();
+            hardware.deliveryRight.decrement();
         } else if (rightBumper.isReleased()) {
-            hardware.deliveryServoManager.setServoState(ServoState.getServoStateFromInt(deliveryServoState.getId() + 1));
+            hardware.deliveryLeft.increment();
+            hardware.deliveryRight.increment();
         }
 
         if (rightTrigger.isToggled()) {
@@ -95,13 +108,16 @@ public class MecanumTeleOp extends OpMode
         rightBumper.input(gamepad1.right_bumper);
         rightTrigger.input(gamepad1.right_trigger > 0);
         rightStickButton.input(gamepad1.right_stick_button);
+        yButton.input(gamepad1.y);
+        xButton.input(gamepad1.x);
 
         telemetry.addData("Status", "Loop: " + elapsedTime.toString());
         telemetry.addData("Course", course);
         telemetry.addData("Velocity", velocity);
         telemetry.addData("Rotation", rotation);
         telemetry.addData("Driving Mode", rightMotion ? "RIGHT" : "LEFT");
-        telemetry.addData("Servo State", hardware.deliveryServoManager.getServoState().toString());
+        telemetry.addData("Left Delivery Servo State", hardware.deliveryLeft.getState().toString());
+        telemetry.addData("Right Delivery Servo State", hardware.deliveryRight.getState().toString());
         telemetry.update();
     }
 

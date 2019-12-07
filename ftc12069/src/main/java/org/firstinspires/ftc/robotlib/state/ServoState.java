@@ -6,43 +6,40 @@ import org.jetbrains.annotations.NotNull;
  * Stores the state of Servo(s) for ease of use
  */
 public enum ServoState {
-    UNKNOWN(-1, -1),
-    STOWED(0, 0),
-    BLOCK3(1, 0),
-    BLOCK2(2, 0),
-    BLOCK1(3, 0),
-    DOWN(4, 1);
+    // General States
+    UNKNOWN(-1),
+    STOWED(0),
+    DOWN(1),
 
-    private int id;
-    private int position;
+    // Delivery States
+    CRADLE(0.07),
+    CARRY(0.15),
+    TWOBLOCKHOVER(0.71),
+    TWOBLOCKDEPOSIT(0.78),
+    ONEBLOCKHOVER(0.78),
+    ONEBLOCKDEPOSIT(0.89),
+    FLOOR(1.0);
 
-    ServoState(int id, int position) {
-        this.id = id;
+    private double position;
+
+    ServoState(double position) {
         this.position = position;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public int getPosition() {
+    public double getPosition() {
         return position;
     }
 
-    // This auto corrects if the value is too high or low
-    public static ServoState getServoStateFromInt(int id) {
-        if (id > values().length - 1) return getServoStateFromInt(values().length - 1);
-        if (id < 0) return getServoStateFromInt(0);
-
+    public static ServoState getServoStateFromPosition(double position) {
         for (ServoState servoState : values()) {
-            if (servoState.getId() == id) return servoState;
+            if (servoState.getPosition() == position) return servoState;
         }
 
-        return UNKNOWN; // this shouldn't happen
+        return UNKNOWN;
     }
 
     @NotNull
     public String toString() {
-        return this.toString() + " (" + this.getId() + ")";
+        return this.toString() + " (" + this.getPosition() + ")";
     }
 }

@@ -139,10 +139,6 @@ public class Align {
 
     public void skystoneRed(int position) {
         double distanceAway = -1;
-        double theta = -1;
-        double initLeft = getOdometry()[0];
-        double initRight = getOdometry()[1];
-        double initSide = getOdometry()[2];
         boolean isAligned = false;
         int imgWidth = -1;
 
@@ -160,94 +156,52 @@ public class Align {
 
         while (!isAligned && !opMode.isStopRequested()) {
             List<Recognition> detectedObj = this.detectedObj;
-            // step through the list of recognitions and display boundary info.
             if (!opMode.isStopRequested() && detectedObj != null) {
-                double[] center = new double[detectedObj.size()];
                 ArrayList<Double> temp = new ArrayList<>();
                 for (int i = 0; i < detectedObj.size(); i++) {
-                    center[i] = detectedObj.get(i).getLeft() + detectedObj.get(i).getWidth() / 2;
-                    temp.add((double) detectedObj.get(i).getLeft());
+                    temp.add((double) detectedObj.get(i).getLeft() + detectedObj.get(i).getWidth() / 2);
                     distanceAway = TFODCalc.getDistanceToObj(127,
                             detectedObj.get(i).getImageHeight(), detectedObj.get(i).getHeight());
-                   // theta = TFODCalc.getAngleOfStone(detectedObj.get(i).getWidth(), distanceAway).get(0);
                     imgWidth = detectedObj.get(i).getImageWidth();
                 }
 
-                if(detectedObj.size() != 0) {
+                if(!temp.isEmpty()) {
                     Collections.sort(temp);
 
-                    int index = -1;
-                    for (int i = 0; i < center.length; i++) {
-                        if (center[i] == temp.get(position))
-                            index = i;
-                    }
+                    if(position >= temp.size())
+                        position = temp.size() - 1;
 
-                    if (center[index] >= imgWidth / 2d - 15 && center[index] <= imgWidth / 2d + 25) {
+                    opMode.telemetry.addData("Current Position", temp.get(position));
+                    opMode.telemetry.addData("Target Bounds", (imgWidth / 2d - 20 - 10) + " - " + (imgWidth / 2d + 20 - 10));
+                    opMode.telemetry.addData("Raw, Sorted Data", temp);
+
+                    if (temp.get(position) >= imgWidth / 2d - 20 - 10 && temp.get(position) <= imgWidth / 2d + 20 - 10) {
                         stop();
                         isAligned = true;
-                    } else if (center[index] <= imgWidth / 2d - 15) {
+                        opMode.telemetry.addData("Executed Command", "STOP");
+                    } else if (temp.get(position) <= imgWidth / 2d - 20 - 10) {
                         setRightPower(turnPower);
                         setLeftPower(-turnPower);
-                    } else if (center[index] >= imgWidth / 2d + 15) {
+                        opMode.telemetry.addData("Executed Command", "RIGHT");
+                    } else if (temp.get(position) >= imgWidth / 2d + 20 - 10) {
                         setRightPower(-turnPower);
                         setLeftPower(turnPower);
+                        opMode.telemetry.addData("Executed Command", "LEFT");
                     }
-                }
-
-                //if(distanceAway < 12 && theta > 35)
-                //    setPower(-approachingPower);
-
-                /*if (distanceAway < 15) {
-                    stop();
-                    isAligned = true;
-                }*/
-            }
-
-           /* intake(TeleopConstants.intakePower);
-
-            double left = getOdometry()[0];
-            double right = getOdometry()[1];
-
-            if (!collected && isAligned && !opMode.isStopRequested()) {
-                double averageDelta = (getOdometry()[0] - left) + (getOdometry()[1] - right) / 2;
-                double inchesMoved = averageDelta / 1400d * 2 * PI * 2;
-
-                if (inchesMoved > 15 ) {
-                    intake(0);
-                    stop();
-                    collected = true;
+                    opMode.telemetry.update();
                 }
             }
-
-            if (!atOriginalPos && collected && !opMode.isStopRequested()) {
-                double deltaL = getOdometry()[0] - initLeft;
-                double deltaR = getOdometry()[1] - initRight;
-
-                if (deltaL > 250)
-                    setLeftPower(-approachingPower);
-                else if (deltaL < -250)
-                    setLeftPower(approachingPower);
-
-                if (deltaR > 250)
-                    setRightPower(-approachingPower);
-                else if (deltaR < -250)
-                    setRightPower(approachingPower);
-
-                double deltaS = getOdometry()[2] - initSide;
-
-                if (deltaL <= 250 && deltaL >= -250 && deltaR <= 250 && deltaR >= -250) {
-                    if (deltaS > 250)
-                        strafe(approachingPower, true);
-                    else if (deltaS < -250)
-                        strafe(approachingPower, false);
-
-                    if (deltaS <= 250 && deltaS >= -250) {
-                        stop();
-                        atOriginalPos = true;
-                    }
-                }
-            }*/
         }
+    }
+
+    private ArrayList<Double> iterate(){
+        ArrayList<Double> temp = new ArrayList<>();
+        for (int i = 0; i < detectedObj.size(); i++) {
+            temp.add((double) detectedObj.get(i).getLeft() + detectedObj.get(i).getWidth() / 2);
+            //distanceAway = TFODCalc.getDistanceToObj(127,
+            //        detectedObj.get(i).getImageHeight(), detectedObj.get(i).getHeight());
+        }
+        return temp;
     }
 
     public void updateTFOD(List<Recognition> detectedObj) {

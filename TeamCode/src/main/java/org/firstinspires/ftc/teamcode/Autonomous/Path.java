@@ -325,7 +325,7 @@ public class Path {
                 double init3 = Math.toDegrees(drive.getExternalHeading());
                 hwMap.transferHorn.setPosition(TeleopConstants.transferHornPosPush);
                 drive.turnSync(Math.toRadians(-45));
-                align.setPower(0.2, 0.2);
+                align.setPower(0.27, 0.27);
                 align.skystoneRed(6);
                 intake(1);
                 init3 = init3 - Math.toDegrees(drive.getExternalHeading());

@@ -43,10 +43,7 @@ public class MainAutonomous extends LinearOpMode {
     private Pose2d startingPos;
     private Path path;
     private SampleMecanumDriveBase drive;
-    boolean initialize = false;
-
-
-    double power = 0.4;
+    private boolean initialize = false;
 
     @Override
     public void runOpMode() {
@@ -62,7 +59,7 @@ public class MainAutonomous extends LinearOpMode {
         hwMap.liftOne.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         hwMap.liftTwo.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         hwMap.liftOne.setDirection(DcMotorSimple.Direction.REVERSE);
-        hwMap.frontRight.setDirection(DcMotorSimple.Direction.REVERSE); //???
+        hwMap.frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         hwMap.backRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
         while (!isStarted() && !isStopRequested()) {

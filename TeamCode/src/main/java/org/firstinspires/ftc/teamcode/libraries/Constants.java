@@ -33,7 +33,7 @@ public class Constants {
     //********** Servo Positions **********//
     static final float SERVO_ARM_POS_RECIEVE = .97f;
     static final float SERVO_ARM_POS_SCORE = .27f;
-    static final float SERVO_GRABBER_GRAB = .1f;
+    static final float SERVO_GRABBER_GRAB = 0f;
     static final float SERVO_GRABBER_REST = .44f;
     static final float SERVO_FOUNDATION_GRAB1 = .96f;
     static final float SERVO_FOUNDATION_REST1 = .33f;

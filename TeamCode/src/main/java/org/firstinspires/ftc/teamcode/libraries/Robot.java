@@ -122,6 +122,11 @@ public class Robot {
                 // This makes sure the servo positions are between 0 and 1
                 Range.clip(servos[index].getPosition() + delta, 0, 1));
     }
+    void setDeltaMotorPosition(int index, float delta) {
+        dcMotors[index].setPower(
+                // This makes sure the servo positions are between 0 and 1
+                Range.clip(dcMotors[index].getPower() + delta, 0, 1));
+    }
 
     float getServoPosition(int index) {
         return (float) servos[index].getPosition();

@@ -254,8 +254,8 @@ public class AutoLib {
     public void moveArmUpSeconds()  {
         ElapsedTime time = new ElapsedTime();
 
-        robot.setDcMotorPower(MOTOR_ARM, -.9f);
-        while (time.seconds() <= 1.5) {
+        robot.setDcMotorPower(MOTOR_ARM, -1f);
+        while (time.seconds() <= 2) {
             opMode.idle();
         }
         robot.setDcMotorPower(MOTOR_ARM, 0);

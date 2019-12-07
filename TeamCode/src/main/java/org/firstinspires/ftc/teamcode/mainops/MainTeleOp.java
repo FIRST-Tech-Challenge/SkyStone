@@ -31,11 +31,13 @@ public class MainTeleOp extends LinearOpMode {
             teleLib.processOutakeMinerals();
             teleLib.processFoundation();
 
+
             // Gamepad 2
             teleLib.processMoveArm();
             teleLib.processServoArm();
             teleLib.processServoGrab();
             teleLib.processScoreStone();
+            teleLib.processDrive2();
             idle();
         }
     }

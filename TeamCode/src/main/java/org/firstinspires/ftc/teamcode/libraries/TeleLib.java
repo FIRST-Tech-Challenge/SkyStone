@@ -119,10 +119,9 @@ public class TeleLib {
     //gamepad 2
 
     public void processDrive2() {
-        // Values need to be reversed (up on joystick is -1)
-        double r = Math.hypot(opMode.gamepad2.left_stick_x, opMode.gamepad2.left_stick_y);  //y is changed to positive
-        double robotAngle = Math.atan2(opMode.gamepad2.left_stick_y, opMode.gamepad2.left_stick_x) - Math.PI / 4;
-        double rightX = opMode.gamepad2.right_stick_x;
+        double r = Math.hypot(-opMode.gamepad1.left_stick_x, opMode.gamepad1.left_stick_y);  //y ish changed to positive
+        double robotAngle = Math.atan2(opMode.gamepad1.left_stick_y, -opMode.gamepad1.left_stick_x) - Math.PI / 10;
+        double rightX = opMode.gamepad1.right_stick_x;
         final double v4 = r * Math.cos(robotAngle) - rightX;
 
         robot.setDcMotorPower(MOTOR_FRONT_LEFT_WHEEL, (float) (r * Math.cos(robotAngle) - rightX));

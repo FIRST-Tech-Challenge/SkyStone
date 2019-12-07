@@ -101,7 +101,7 @@ public class MecanumTeleOp extends OpMode
         }
 
         if (xButton.isReleased()) {
-            if (hardware.platformServoManagers.getPosition() == 0.0) hardware.platformServoManagers.setPosition(0.35);
+            if (hardware.platformServoManagers.getPosition() == 0.0) hardware.platformServoManagers.setPosition(1.0);
             else hardware.platformServoManagers.setPosition(0.0);
         }
 

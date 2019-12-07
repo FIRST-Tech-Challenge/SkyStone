@@ -31,8 +31,10 @@ package org.eastsideprep.eps15203;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
-@TeleOp(name = "Teleop Simple 15203", group = "15203")
+
+@TeleOp(name = "Fun, Joy, Happiness, and No Toxicity Whatsoever in Team Number 15203 haha that's a good joke lol", group = "15203")
 
 public class Simple15203 extends LinearOpMode {
 
@@ -50,7 +52,16 @@ public class Simple15203 extends LinearOpMode {
         telemetry.addData("Say", "ready");
 
         double grabberPos = 0;
-        int zArmMultiplier;
+        double fingerPos = 0;
+        boolean dpad_up_state = false;
+        boolean dpad_down_state = false;
+        int z_arm_pos_index = 0;
+        int[] z_arm_pos = {0, -50, -75, -140};
+        double[] z_arm_power = {0.2, 1, 1, 0.4};
+
+        if(z_arm_pos.length != z_arm_power.length) {
+            telemetry.addData("ERROR", "z_arm_pos and z_arm_power arrays are not the same length.");
+        }
 
         // Wait for the game to start (driver presses PLAY)
         //robot.armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -65,8 +76,6 @@ public class Simple15203 extends LinearOpMode {
             double right_stick_x = gamepad1.right_stick_x;
             double right_stick_y = gamepad1.right_stick_y;
 
-            double right_stick_y_2 = gamepad2.right_stick_y;
-            double left_stick_x_2 = gamepad2.left_stick_x;
             //double orientation = (((double) robot.gyro.getIntegratedZValue()) / 360) * Math.PI * 2;
 
 // wheel commands have two components: drive/strafe and rotation. They have to be weighted.
@@ -81,7 +90,7 @@ public class Simple15203 extends LinearOpMode {
 // correct for the orientation
             //dsAngle -= robot.state.orientation;
             //robot.state.heading = dsAngle;
-// rotate more slowly if left bumper pressed
+// rotate more slowly if left trigger pressed
             if (gamepad1.right_bumper) {
                 rotPower *= 0.25;
             }
@@ -95,11 +104,6 @@ public class Simple15203 extends LinearOpMode {
                 dsWeight *= 0.6;
             }
 
-            if (gamepad1.left_bumper) {
-                zArmMultiplier = 3;
-            } else {
-                zArmMultiplier = 2;
-            }
 
 // make sure values are not greater than 1
 
@@ -118,31 +122,80 @@ public class Simple15203 extends LinearOpMode {
                 robot.allDrive(0.0, 0);
             }
 
-            telemetry.addData("Pad 2 Right Stick Y", right_stick_y_2);
+            if(gamepad1.dpad_up && !dpad_up_state) {
+                //if up is pressed, go up a level.
+                dpad_up_state = true;
+                z_arm_pos_index ++;
 
+                if(z_arm_pos_index > z_arm_pos.length -1 ) {
+                    z_arm_pos_index = z_arm_pos.length -1;
+                } else {
+                    robot.setArmPosition(z_arm_pos[z_arm_pos_index], z_arm_power[z_arm_pos_index]);
+                }
 
-            //arm controls
-            //pos < -60 is enough above the "hump" to slow down
-            double speedMultiplier = 0.375;
-
-            if(right_stick_y_2 < 0){
-                robot.zArmMotor.setPower(-1 * speedMultiplier * zArmMultiplier);
-            } else if (right_stick_y_2 > 0 ) {
-                robot.zArmMotor.setPower(speedMultiplier * zArmMultiplier);
-            } else {
-                robot.zArmMotor.setPower(0.2);
             }
 
+            if(gamepad1.dpad_down && !dpad_down_state) {
+                //if down is pressed, go down a level.
+                dpad_down_state = true;
+                z_arm_pos_index --;
+
+                if(z_arm_pos_index < 0) {
+                    z_arm_pos_index = 0;
+                } else {
+                    robot.setArmPosition(z_arm_pos[z_arm_pos_index], z_arm_power[z_arm_pos_index]);
+                }
+            }
+
+            // idea: use array of positions. use the z_arm_pos array. Use up and down buttons to switch between
+            // (keeping count of current index in array with z_arm_pos_index variable.
+
+/* old code
+            if(gamepad1.dpad_down && !dpad_down_state) {
+                //if down is pressed, go back to resting state.
+                dpad_down_state = true;
+                robot.setArmPosition(0, 0.5);
+
+                //wait until done moving
+                while (robot.zArmMotor.isBusy()) {
+                    telemetry.addData("Stuck", "Resetting z-arm position");
+                    telemetry.update();
+                    //Do nothing
+                }
+                robot.zArmMotor.setPower(0.0);
+                robot.zArmMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                z_arm_pos_index = 0;
+
+            }
+*/
+            if(!gamepad1.dpad_up) {
+                dpad_up_state = false;
+            }
+
+            if(!gamepad1.dpad_down) {
+                dpad_down_state = false;
+            }
 
             //grabber controls
             double grabberPosMultiplier = 0.025;
 
-            if(gamepad2.y){
+            if(gamepad1.y){
                 grabberPos +=  grabberPosMultiplier;
-            } else if (gamepad2.a) {
+            } else if (gamepad1.a) {
                 grabberPos -= grabberPosMultiplier;
             } else {
                 grabberPos = robot.grabberServo.getPosition();
+            }
+
+            //finger controls
+            double fingerPosMultiplier = 0.025;
+
+            if(gamepad1.x){
+                fingerPos +=  fingerPosMultiplier;
+            } else if (gamepad1.b) {
+                fingerPos -= fingerPosMultiplier;
+            } else {
+                fingerPos = robot.fingerServo.getPosition();
             }
 
             //Check to make sure the servo isn't hurting itself
@@ -153,12 +206,16 @@ public class Simple15203 extends LinearOpMode {
 
             telemetry.addData("Grabber Pos Read", robot.grabberServo.getPosition());
             telemetry.addData("Grabber Pos Var", grabberPos);
-            telemetry.addData("Arm Power", robot.zArmMotor.getPower());
-            telemetry.addData("Arm Position", robot.zArmMotor.getCurrentPosition());
+            telemetry.addData("Finger Pos Var", fingerPos);
+            telemetry.addData("Z arm position index", z_arm_pos_index);
+            telemetry.addData("Z arm position array length", z_arm_pos.length);
+            telemetry.addData("Z arm position num", robot.zArmMotor.getCurrentPosition());
+
             telemetry.update();
 
-            //Update the grabber position
+            //Update the grabber & finger position
             robot.grabberServo.setPosition(grabberPos);
+            robot.fingerServo.setPosition(fingerPos);
 
             // Pause for 40 mS each cycle = update 25 times a second.
             sleep(40);

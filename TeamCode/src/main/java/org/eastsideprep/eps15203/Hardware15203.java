@@ -53,6 +53,9 @@ public class Hardware15203 {
         rightBackMotor = hwMap.dcMotor.get("RB");
 
         zArmMotor = hwMap.dcMotor.get("ZM");
+        zArmMotor.setPower(0.0);
+        zArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        zArmMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         zArmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         grabberServo = hwMap.servo.get("GS");
@@ -150,6 +153,12 @@ public class Hardware15203 {
         //Back motors
         leftBackMotor.setPower(0);
         rightBackMotor.setPower(0);
+    }
+
+    public void setArmPosition(int pos, double power) {
+        zArmMotor.setTargetPosition(pos);
+        zArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        zArmMotor.setPower(power);
     }
 
 

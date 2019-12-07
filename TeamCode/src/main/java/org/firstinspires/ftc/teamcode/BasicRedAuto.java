@@ -68,7 +68,7 @@ import android.view.View;
 
 @Autonomous(name="BasicRedAuto", group="Linear OpMode")
 //@Disabled
-public class TestMechanum extends LinearOpMode {
+public class BasicRedAuto extends LinearOpMode {
 
 
     private DcMotor getNewMotor(String motorName) { //these could be made generic using type notation

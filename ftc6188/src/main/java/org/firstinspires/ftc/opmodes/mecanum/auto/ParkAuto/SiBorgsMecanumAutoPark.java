@@ -30,12 +30,14 @@ public class SiBorgsMecanumAutoPark extends LinearOpMode
 
     // AutoProgram
     private AutoProgram autoPath;
+    private AutoDirection autoSideDirection;
 
     @Override
     public void runOpMode() throws InterruptedException
     {
         /** INIT **/
         robot = new SiBorgsMecanumRobot(this.hardwareMap, this.telemetry);
+
         // Button init
         capstoneOpen = new Button();
         capstoneClose = new Button();
@@ -45,6 +47,7 @@ public class SiBorgsMecanumAutoPark extends LinearOpMode
         moveRight = new Button();
 
         autoPath = AutoProgram.FORWARD;
+        autoSideDirection = AutoDirection.RIGHT;
 
         /** Adjustments before the auto program starts **/
         while (!isStarted())
@@ -74,37 +77,27 @@ public class SiBorgsMecanumAutoPark extends LinearOpMode
             telemetry.update();
             telemetry.clearAll();
         }
-
-
+        /** AUTO PROGRAM STARTS WITH POS INITS AND VARIABLE DECLARATIONS**/
         telemetry.addData("RUNNING AUTO PATH", autoPath);
         telemetry.update();
-        switch (autoPath)
-        {
-            case LEFT:
-            {
-                robot.drivetrain.autoPosition(AutoDirection.FRONT, 1, VELOCITY, 0);
-                robot.drivetrain.autoPosition(AutoDirection.LEFT, AutoParkConstants.PARK_SIDE_DIST_IN, VELOCITY, 0);
-                break;
-            }
-            case RIGHT:
-            {
-                robot.drivetrain.autoPosition(AutoDirection.FRONT, 1, VELOCITY, 0);
-                robot.drivetrain.autoPosition(AutoDirection.RIGHT, AutoParkConstants.PARK_SIDE_DIST_IN, VELOCITY, 0);
-                break;
-            }
-            case FRONTRIGHT:
-            {
-                robot.drivetrain.autoPosition(AutoDirection.FRONT, AutoParkConstants.PARK_FRONT_DIST_IN, VELOCITY, 0);
-                robot.drivetrain.autoPosition(AutoDirection.RIGHT, AutoParkConstants.PARK_SIDE_DIST_IN, VELOCITY, 0);
-                break;
-            }
-            case FRONTLEFT:
-            {
-                robot.drivetrain.autoPosition(AutoDirection.FRONT, AutoParkConstants.PARK_FRONT_DIST_IN, VELOCITY, 0);
-                robot.drivetrain.autoPosition(AutoDirection.LEFT, AutoParkConstants.PARK_SIDE_DIST_IN, VELOCITY, 0);
-                break;
-            }
-        }
+
+        // define the auto path
+        if (autoPath == AutoProgram.RIGHT || autoPath == AutoProgram.FRONTRIGHT)
+        { autoSideDirection = AutoDirection.RIGHT; }
+        else
+        { autoSideDirection = AutoDirection.LEFT; }
+
+        // re-position the arm crane so that it is out of the way during auto
+        robot.armCrane.armAutoPosition(-40, 60, 0.5);
+
+        /** AUTO PROGRAM STARTS DRIVING **/
+        // drive the forward component of the auto path
+        if (autoPath == AutoProgram.FRONTRIGHT || autoPath == AutoProgram.FRONTLEFT)
+        { robot.drivetrain.autoPosition(AutoDirection.FRONT, AutoParkConstants.PARK_FRONT_DIST_IN, VELOCITY, 0); }
+        else
+        { robot.drivetrain.autoPosition(AutoDirection.FRONT, 1, VELOCITY, 0); }
+        // drive the side component of the auto path
+        robot.drivetrain.autoPosition(autoSideDirection, AutoParkConstants.PARK_SIDE_DIST_IN, VELOCITY, 0);
 
         sleep(1000);
         requestOpModeStop();
@@ -227,4 +220,10 @@ enum AutoProgram
     FORWARD(),
     LEFT(),
     RIGHT()
+}
+
+class AutoParkConstants
+{
+    static final double PARK_FRONT_DIST_IN = 28;
+    static final double PARK_SIDE_DIST_IN = 12;
 }

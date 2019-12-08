@@ -1,18 +1,16 @@
-package org.firstinspires.ftc.opmodes.mecanum.auto;
-
-import android.drm.DrmStore;
+package org.firstinspires.ftc.opmodes.mecanum.auto.ParkAuto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotlib.robot.SiBorgsMecanumRobot;
+import org.firstinspires.ftc.robotlib.state.AutoDirection;
 import org.firstinspires.ftc.robotlib.state.Button;
 import org.firstinspires.ftc.robotlib.state.ServoState;
-import org.firstinspires.ftc.robotlib.state.AutoDirection;
 
-@Autonomous(name="Mecanum Auto V-CompetitionReady", group="AutoComp")
-public class SiBorgsMecanumAuto extends LinearOpMode
+@Autonomous(name="Left Park V-Inside", group="AutoComp")
+public class SiBorgsMecanumAutoLeftParkInside extends LinearOpMode
 {
     // Robot
     private SiBorgsMecanumRobot robot;
@@ -29,10 +27,12 @@ public class SiBorgsMecanumAuto extends LinearOpMode
     public void runOpMode() throws InterruptedException
     {
         robot = new SiBorgsMecanumRobot(this.hardwareMap, this.telemetry);
+
         elapsedTime = new ElapsedTime();
         capstoneOpen = new Button();
         capstoneClose = new Button();
 
+        /** Before the auto period starts the drivers should load a capstone into the arm **/
         while (!isStarted())
         {
             capstoneOpen.input(gamepad1.dpad_up || gamepad2.dpad_down || gamepad1.y || gamepad2.y);
@@ -41,18 +41,23 @@ public class SiBorgsMecanumAuto extends LinearOpMode
             if (capstoneOpen.onPress()) { robot.armGripSlide.setPosition(ServoState.UP); }
             else if (capstoneClose.onPress()) { robot.armGripSlide.setPosition(ServoState.DOWN); }
 
-            telemetry.addData("ADD CAPSTONE TO SERVO (G1-DPAD)", robot.armGripSlide.getState());
+            robot.armCrane.setVerticalPower(-gamepad1.left_stick_y);
+            robot.armCrane.setHorizontalPower(gamepad1.right_stick_y);
+
+            telemetry.addData("ADD CAPSTONE TO SERVO (G1-DPAD) + (G1-LStick)", robot.armGripSlide.getState());
             telemetry.update();
         }
+
         telemetry.addData("AUTO START", elapsedTime.seconds());
         telemetry.update();
+        /** Auto period now starts **/
 
-        // Forward right left back
-        robot.drivetrain.autoPosition(0, 48, VELOCITY, robot);
-        robot.drivetrain.autoPosition(180, 48, VELOCITY, robot);
-        robot.drivetrain.autoPosition(90, 48, VELOCITY, robot);
-        robot.drivetrain.autoPosition(270, 48, VELOCITY, robot);
+        robot.drivetrain.autoPosition(AutoDirection.FRONT, AutoParkConstants.PARK_FRONT_DIST_IN, VELOCITY, 0);
+        robot.drivetrain.autoPosition(AutoDirection.LEFT, AutoParkConstants.PARK_SIDE_DIST_IN, VELOCITY, 0);
 
+
+        // Pause then end the op mode safely
+        sleep(1000);
         requestOpModeStop();
     }
 }

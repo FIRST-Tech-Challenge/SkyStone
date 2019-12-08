@@ -11,15 +11,15 @@ Frame work for a mecanum/omni drive train, the implemented interfaces provide th
 abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements Holonomic, Rotatable, Positionable
 {
     // Movement variables
-    private double rotation = 0; //the robots rotation about its own z axis
-    private double course = 0; //the angle the robot is going to move at relative to its heading
+    protected double rotation = 0; //the robots rotation about its own z axis
+    protected double course = 0; //the angle the robot is going to move at relative to its heading
     private double targetPosition = 0; //distance the robot has to move
     private double ticksPerIn = 0; //the number of encoder ticks needed to move the robot 1 inch
 
     // Motor information variables
     public double[] wheelTargetPositions = new double[4];
-    private DcMotor.RunMode[] runModes = new DcMotor.RunMode[4];
     private final double[] wheelAngles;
+    private DcMotor.RunMode[] runModes = new DcMotor.RunMode[4];
 
     HolonomicFourWheelDrivetrain(EncoderMotor[] motorList, double[] wheelAngles)
     {
@@ -46,8 +46,6 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
         this.course = course;
         updateMotorPowers();
     }
-
-    public void setCourseDegrees(double course) { setCourse(course * Math.PI/180.0); }
 
     // passes the motor powers as calculated under the calculateWheelPower function back to the update motor powers function defined in Drivetrain
     protected double[] calculateMotorPowers()
@@ -120,6 +118,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
         timeoutTimer.reset();
 
         // do runs the inner code before checking against the while conditional this is needed since on first call velocity will be 0
+        updateMotorPowers();
         do { updatePosition(); }
         while (isPositioning() && timeoutTimer.seconds() <= timeoutTime);
         finishPositioning();

@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.robotlib.robot;
 
+import android.app.Activity;
+import android.graphics.Color;
+import android.view.View;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -49,6 +53,7 @@ public class SiBorgsMecanumRobot
 
     // Telemetry reference
     private final Telemetry telemetry;
+    private final HardwareMap hardwareMap;
 
     // Movement systems (drivetrain/arm system)
     public MecanumDrivetrain drivetrain;
@@ -58,6 +63,10 @@ public class SiBorgsMecanumRobot
     public SiBorgsMecanumRobot (@NotNull HardwareMap hwMap, Telemetry telemetry)
     {
         this.telemetry = telemetry;
+        this.hardwareMap = hwMap;
+
+        // Reset the color to white
+        changeBackgroundColor(Color.WHITE);
 
         // Drive motors init
         driveFrontLeft = new EncoderMotor(hwMap.get(DcMotor.class, "driveFrontLeft"));
@@ -115,6 +124,24 @@ public class SiBorgsMecanumRobot
         // Systems init
         drivetrain = new MecanumDrivetrain(driveMotorList, WHEEL_RADIUS_IN, MOTOR_TO_WHEEL_RATIO);
         armCrane = new FieldGoalArmSystem(armVerticalSlide, armHorizontalSlide);
+    }
+
+    public void changeBackgroundColor(final int color)
+    {
+        int relativeLayoutId = hardwareMap.appContext.getResources().getIdentifier("RelativeLayout", "id", hardwareMap.appContext.getPackageName());
+        final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(relativeLayoutId);
+
+        try
+        {
+            relativeLayout.post(new Runnable()
+            {
+                public void run()
+                {
+                    relativeLayout.setBackgroundColor(color);
+                }
+            });
+        }
+        catch (Exception ignored) {}
     }
 
     // Telemetry command useful for drivers

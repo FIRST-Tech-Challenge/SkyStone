@@ -46,4 +46,7 @@ public class EncoderMotor extends ModifiedMotor
 
     // Returns true if the encoder is still running
     public boolean isEncoderBusy() { return getEncoderTicksPerSecond() != 0; }
+
+    @Override
+    public void setPower(double power) { this.motor.setPower(power); }
 }

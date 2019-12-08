@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.robotlib.drivetrain;
 
 import org.firstinspires.ftc.robotlib.motor.EncoderMotor;
-import org.firstinspires.ftc.robotlib.robot.SiBorgsMecanumRobot;
+import org.firstinspires.ftc.robotlib.state.AutoDirection;
 
 /*
 The actual final drivetrain used for the robot, just changes the wheel angles and the wheel coefficient math to match our setup
@@ -23,26 +23,15 @@ public class MecanumDrivetrain extends HolonomicFourWheelDrivetrain
 
     // automatically triggers the motors to produce the desired movement (do not use rotation?)
     public void autoPosition(double course, double distanceIN, double velocity, double rotation)
-    {
-        this.setTargetPosition(distanceIN * getTicksPerIn());
-        this.setCourse(course);
+    { //TODO: Test mecanum drive with regular DcMotor again since auto problems only developed when switching to EncoderMotor
+        this.setCourse(-course * Math.PI/180);
         this.setVelocity(velocity);
         this.setRotation(rotation);
+        this.setTargetPosition(distanceIN * getTicksPerIn());
+        this.updateMotorPowers();
         this.position();
     }
 
-    public void autoPosition(double course, double distanceIN, double velocity, SiBorgsMecanumRobot robot)
-    {
-        this.setTargetPosition(distanceIN * getTicksPerIn());
-        this.setCourse(-course * Math.PI/180 - Math.PI/2);
-        this.setVelocity(velocity);
-        this.setRotation(0);
-
-        do
-        {
-            this.updatePosition();
-            robot.informationTelemetry("Driving");
-        }
-        while (this.isPositioning());
-    }
+    public void autoPosition(AutoDirection course, double distanceIN, double velocity, double rotation)
+    { autoPosition(course.getAngle(), distanceIN, velocity, rotation);}
 }

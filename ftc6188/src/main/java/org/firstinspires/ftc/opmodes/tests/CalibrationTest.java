@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.opmodes.tests;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -8,6 +10,8 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 
 import org.firstinspires.ftc.robotlib.motor.CalibratingMotor;
 
+@Disabled
+@Autonomous(name="Calibration Test", group="Test")
 public class CalibrationTest extends LinearOpMode
 {
     private DcMotor testMotor;

@@ -10,6 +10,15 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotlib.drivetrain.MecanumDrivetrain;
 import org.firstinspires.ftc.robotlib.managers.MotorManager;
 import org.firstinspires.ftc.robotlib.managers.ServoManager;
+import org.firstinspires.ftc.robotlib.servo.CompelledServo;
+import org.firstinspires.ftc.robotlib.state.ServoState;
+
+import static org.firstinspires.ftc.robotlib.state.ServoState.CARRY;
+import static org.firstinspires.ftc.robotlib.state.ServoState.CRADLE;
+import static org.firstinspires.ftc.robotlib.state.ServoState.FLOOR;
+import static org.firstinspires.ftc.robotlib.state.ServoState.ONEBLOCKDEPOSIT;
+import static org.firstinspires.ftc.robotlib.state.ServoState.TWOBLOCKDEPOSIT;
+import static org.firstinspires.ftc.robotlib.state.ServoState.TWOBLOCKHOVER;
 
 public class MecanumHardwareMap
 {
@@ -25,15 +34,11 @@ public class MecanumHardwareMap
     private DcMotor intakeLeft;
     private DcMotor intakeRight;
 
-    // Platform Servos
-    private Servo platformServoLeft;
-    private Servo platformServoRight;
-    public ServoManager platformServoManagers;
-
     // Servos
     public Servo blockGrabber;
-    public Servo deliveryLeft;
-    public Servo deliveryRight;
+    public CompelledServo deliveryLeft;
+    public CompelledServo deliveryRight;
+    private ServoState[] deliveryStates = new ServoState[]{CRADLE, CARRY, TWOBLOCKHOVER, TWOBLOCKDEPOSIT, ONEBLOCKDEPOSIT, FLOOR};
 
     // Camera
     public WebcamName webcamName;
@@ -44,7 +49,7 @@ public class MecanumHardwareMap
     public MecanumDrivetrain drivetrain;
 
     // Managers (for treating a group of objects as one)
-    public ServoManager deliveryServoManager;
+    //public ServoManager deliveryServoManager;
     public MotorManager intakeMotorManager;
 
     public final double wheelRadius = 4; //inches
@@ -71,12 +76,9 @@ public class MecanumHardwareMap
         intakeRight = hwMap.get(DcMotor.class, "intakeRight");
 
         blockGrabber = hwMap.get(Servo.class, "blockGrabber");
-        deliveryLeft = hwMap.get(Servo.class, "deliveryLeft");
-        deliveryRight = hwMap.get(Servo.class, "deliveryRight");
-
-        platformServoLeft = hwMap.get(Servo.class, "platformServoLeft");
-        platformServoRight = hwMap.get(Servo.class, "platformServoRight");
-        platformServoManagers = new ServoManager(new Servo[]{platformServoLeft, platformServoRight});
+        deliveryLeft = new CompelledServo(hwMap.get(Servo.class, "deliveryLeft"), deliveryStates);
+        deliveryRight = new CompelledServo(hwMap.get(Servo.class, "deliveryRight"), deliveryStates);
+        deliveryRight.setOffset(0.04);
 
         motorList = new DcMotor[]{driveFrontLeft, driveFrontRight, driveRearLeft, driveRearRight};
 
@@ -104,7 +106,7 @@ public class MecanumHardwareMap
 
         webcamName = hwMap.get(WebcamName.class, "Webcam 1");
 
-        /*BNO055IMU.Parameters imuParameters = new BNO055IMU.Parameters();
+        BNO055IMU.Parameters imuParameters = new BNO055IMU.Parameters();
         imuParameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         imuParameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         //imuParameters.calibrationDataFile = "BNO055IMUCalibration.json"; If we find problems manual calibration will be required
@@ -112,12 +114,18 @@ public class MecanumHardwareMap
         imuParameters.loggingTag = "IMU";
 
         imu = hwMap.get(BNO055IMU.class, "imu");
-        imu.initialize(imuParameters);*/
+        imu.initialize(imuParameters);
 
         drivetrain = new MecanumDrivetrain(motorList);
         intakeMotorManager = new MotorManager(new DcMotor[]{intakeLeft, intakeRight});
-        deliveryServoManager = new ServoManager(new Servo[] {deliveryLeft, deliveryRight});
+        //deliveryServoManager = new ServoManager(new Servo[] {deliveryLeft, deliveryRight});
 
         motorTicksPerInch = drivetrain.getTicksPerInch(wheelRadius, wheelToMotorRatio);
+    }
+
+    // Hardware Shortcut
+    public void updateDeliveryStates(ServoState newState) {
+        this.deliveryLeft.setState(newState);
+        this.deliveryRight.setState(newState);
     }
 }

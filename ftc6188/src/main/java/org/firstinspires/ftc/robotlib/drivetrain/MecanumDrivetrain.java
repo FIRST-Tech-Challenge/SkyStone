@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.robotlib.drivetrain;
 
 import org.firstinspires.ftc.robotlib.motor.EncoderMotor;
+import org.firstinspires.ftc.robotlib.robot.SiBorgsMecanumRobot;
 
 /*
 The actual final drivetrain used for the robot, just changes the wheel angles and the wheel coefficient math to match our setup
@@ -28,5 +29,20 @@ public class MecanumDrivetrain extends HolonomicFourWheelDrivetrain
         this.setVelocity(velocity);
         this.setRotation(rotation);
         this.position();
+    }
+
+    public void autoPosition(double course, double distanceIN, double velocity, SiBorgsMecanumRobot robot)
+    {
+        this.setTargetPosition(distanceIN * getTicksPerIn());
+        this.setCourse(-course * Math.PI/180 - Math.PI/2);
+        this.setVelocity(velocity);
+        this.setRotation(0);
+
+        do
+        {
+            this.updatePosition();
+            robot.informationTelemetry("Driving");
+        }
+        while (this.isPositioning());
     }
 }

@@ -7,7 +7,6 @@ import org.jetbrains.annotations.NotNull;
 
 public class ServoManager {
     // State of managed servos
-    private double position;
     private ServoState servoState = ServoState.STOWED;
     private Servo[] servos;
 
@@ -19,10 +18,6 @@ public class ServoManager {
         this.servos = servos;
     }
 
-    public double getPosition() {
-        return position;
-    }
-
     /**
      * Sets the position of the servos
      * @param position new position
@@ -31,7 +26,6 @@ public class ServoManager {
         for (Servo servo : servos) {
             servo.setPosition(position);
         }
-        this.position = position;
     }
 
     /**
@@ -42,10 +36,10 @@ public class ServoManager {
     }
 
     /**
-     * Resets the servos to Up (0.0)
+     * Resets the servos to Up (1.0)
      */
     public void reset() {
-        this.setPosition(0.0);
+        this.setPosition(1.0);
     }
 
     /**

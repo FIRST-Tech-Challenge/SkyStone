@@ -122,7 +122,8 @@ public class SiBorgsMecanumRobot
     {
         telemetry.addData("> Drive Info", "-----");
         telemetry.addData("Half Power Mode\t(G1-RStickButton)", drivetrain.isLowPower());
-        telemetry.addData("Course Degrees\t(G1-RStick)", drivetrain.getCourse());
+        telemetry.addData("Course Radians\t(G1-RStick)", drivetrain.getCourse());
+        telemetry.addData("Course Degrees\t(G1-RStick)", drivetrain.getCourse() * 180/Math.PI);
         telemetry.addData("Power\t(G1-RStick)", drivetrain.getVelocity());
         telemetry.addData("Rotation\t(G1-LStick)", drivetrain.getRotation());
 

@@ -75,9 +75,15 @@ public class vuf extends AutonomousControl {
                 telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
 
                 if(translation.get(1)>0) {
-                    telemetry.addData("move right", "none");
+                    while(translation.get(1)>0.2) {
+                        rob.driveTrainMovement(1, Crane.movements.right);
+                        telemetry.addData("move right", "none");
+                    }
                 }else if(translation.get(1)<0){
-                    telemetry.addData("move left", "none");
+                    while(translation.get(1)<0.2) {
+                        rob.driveTrainMovement(1, Crane.movements.left);
+                        telemetry.addData("move left", "none");
+                    }
                 }else{
                     telemetry.addData("move straight", "none");
                 }

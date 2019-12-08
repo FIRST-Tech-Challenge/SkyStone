@@ -22,12 +22,12 @@ public class JustWheelsTeleOp extends TeleOpControl {
         while (opModeIsActive()){
             standardGamepadData();
 
-            if(gamepad1.dpad_up){
+            if(gamepad1.right_trigger>.1){
                 rob.rightSuck.setPower(-1);
                 rob.leftSuck.setPower(1);
                 rob.smallRSuck.setPower(-1);
                 rob.smallLSuck.setPower(1);
-            }else if(gamepad1.dpad_down){
+            }else if(gamepad1.left_trigger>.1){
                 rob.rightSuck.setPower(1);
                 rob.leftSuck.setPower(-1);
                 rob.smallRSuck.setPower(1);
@@ -46,13 +46,13 @@ public class JustWheelsTeleOp extends TeleOpControl {
 
             if (!yToggle) {
                 if (g(0)) {
-                    rob.driveTrainMovement(fb, Crane.movements.forward);
-                } else if (g(2)) {
                     rob.driveTrainMovement(fb, Crane.movements.backward);
+                } else if (g(2)) {
+                    rob.driveTrainMovement(fb, Crane.movements.forward);
                 } else if (g(3)) {
-                    rob.driveTrainMovement(rl, Crane.movements.right);
-                } else if (g(1)) {
                     rob.driveTrainMovement(rl, Crane.movements.left);
+                } else if (g(1)) {
+                    rob.driveTrainMovement(rl, Crane.movements.right);
                 }
                 else if (g(4)) {
                     rob.driveTrainMovement(diagonalSpeed, Crane.movements.tr);

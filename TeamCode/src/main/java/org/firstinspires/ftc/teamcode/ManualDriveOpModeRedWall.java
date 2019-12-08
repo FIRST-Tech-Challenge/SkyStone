@@ -1,10 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 /**
  * Mecanum teleop (with an optional arcade mode)
@@ -15,7 +12,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  * reset the forward heading by pressing "x".
  */
 @TeleOp(name = "Manual Drive Red")
-public class ManualDriveOpMode extends LinearOpMode {
+public class ManualDriveOpModeRedWall extends LinearOpMode {
     private ScoopArmBot robot = new ScoopArmBot(this);
     private boolean arcadeMode = false;
     private int gyroCalibratedCount = 0;

@@ -59,6 +59,7 @@ public class RedAutonomous29Points extends LinearOpMode {
     double xPosition = 0;
     boolean startIdentify = true;
     float distanceToDepot = 170;    //165
+    float distanceToCenterLine = 4.5f;
 
     // Class Members
     private OpenGLMatrix lastLocation = null;
@@ -219,29 +220,55 @@ public class RedAutonomous29Points extends LinearOpMode {
         Thread.sleep(500);
         autoLib.moveArmDownScoreServoArmGrab();
 // go near skystone
-        autoLib.calcMove((float) (-xPosition / 10) + 14.75f, .9f, Constants.Direction.FORWARD);   //when increased-moves back
-        autoLib.calcMove((float) (yPosition / 10) + 12, .9f, Constants.Direction.RIGHT); //when decreased- moves to the left
-        autoLib.calcMove(3, .3f, Constants.Direction.BACKWARD);
+//        autoLib.calcMove((float) (-xPosition / 10) + 14.75f, .9f, Constants.Direction.FORWARD);   //when increased-moves back
+//        autoLib.calcMove((float) (yPosition / 10) + 12, .9f, Constants.Direction.RIGHT); //when decreased- moves to the left
+//        autoLib.calcMove(3, .3f, Constants.Direction.BACKWARD);
+//        autoLib.armGrab();
+//        Thread.sleep(250);
+//        autoLib.calcMove(25, .9f, Constants.Direction.FORWARD);
+//        autoLib.moveArmUpSeconds1();
+//        if(distanceToDepot >195)
+//        {
+//            distanceToDepot=205;
+//        }
+//        autoLib.calcMove(distanceToDepot, .8f, Constants.Direction.RIGHT);
+//        autoLib.moveArmUpSeconds();
+//        autoLib.calcMove(38, .9f, Constants.Direction.BACKWARD);
+//        autoLib.scoreServo();
+//        Thread.sleep(250);
+//        autoLib.calcMove(4,.6f, Constants.Direction.BACKWARD);
+//        autoLib.latchServoFoundation();
+//        Thread.sleep(1000);
+//        autoLib.calcMove(80, .9f, Constants.Direction.FORWARD);
+//        autoLib.restServoFoundation();
+//        autoLib.calcMove(120, 1f, Constants.Direction.LEFT);
+//        startIdentify = false;
+        autoLib.calcMove((float) (yPosition / 10) + distanceToCenterLine, .9f, Constants.Direction.LEFT); //when decreased- moves to the left
+        autoLib.calcMove((float) (-xPosition / 10) + 28f, .6f, Constants.Direction.FORWARD);   //when increased-moves back
+//        distanceToDepot = distanceToDepot + (float) yPosition + 5;
+        autoLib.calcMove(3.5f, .7f, Constants.Direction.BACKWARD);
+        Thread.sleep(500);
         autoLib.armGrab();
-        Thread.sleep(250);
-        autoLib.calcMove(25, .9f, Constants.Direction.FORWARD);
-        autoLib.moveArmUpSeconds1();
-        if(distanceToDepot >195)
-        {
-            distanceToDepot=205;
+        Thread.sleep(500);
+        autoLib.calcMove(17f, .8f, Constants.Direction.FORWARD);    //16
+        autoLib.calcTurn(55, .7f); //53
+        if (distanceToDepot > 120) {//195
+            distanceToDepot = 130;//205
         }
-        autoLib.calcMove(distanceToDepot, .8f, Constants.Direction.RIGHT);
+        autoLib.calcMove(distanceToDepot, 1f, Constants.Direction.BACKWARD);
         autoLib.moveArmUpSeconds();
-        autoLib.calcMove(38, .9f, Constants.Direction.BACKWARD);
+        autoLib.calcTurn(50, .6f);
+        autoLib.calcMove(10, .7f, Constants.Direction.BACKWARD);
         autoLib.scoreServo();
-        Thread.sleep(250);
-        autoLib.calcMove(4,.6f, Constants.Direction.BACKWARD);
+        autoLib.calcMove(5, .15f, Constants.Direction.BACKWARD);
+        Thread.sleep(300);
         autoLib.latchServoFoundation();
         Thread.sleep(1000);
-        autoLib.calcMove(80, .9f, Constants.Direction.FORWARD);
+        autoLib.calcMove(60, 1f, Constants.Direction.FORWARD);
         autoLib.restServoFoundation();
-        autoLib.calcMove(120, 1f, Constants.Direction.LEFT);
+        autoLib.calcMove(77, 1f, Constants.Direction.LEFT);
         startIdentify = false;
+
 
     }
 

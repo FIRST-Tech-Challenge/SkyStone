@@ -57,8 +57,10 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
     double yPosition = 0;
     double xPosition = 0;
     boolean startIdentify = true;
-    float distanceToDepot = 115;    //165
-    float distanceToCenterLine = 4.5f;
+    float distanceToDepot = 110;    //115
+    float distanceToCenterLine = 5.5f;
+    float forwardDistanceSkystone = 28f;
+    float turningDegree = -55;
 
     // Class Members
     private OpenGLMatrix lastLocation = null;
@@ -243,6 +245,8 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
                         positionSkystone = "Center";
                         //if (xPosition <= -25) {
                         distanceToDepot = distanceToDepot + 10f;
+                        forwardDistanceSkystone = forwardDistanceSkystone + 3;
+                        turningDegree = turningDegree + 5;
                         sleep(1000);
                         yPosition = translation.get(1);
                         xPosition = translation.get(0);
@@ -262,6 +266,7 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
 
                     distanceToDepot = distanceToDepot + 30;
                     distanceToDepot = distanceToCenterLine - 2;
+                    forwardDistanceSkystone = forwardDistanceSkystone + 3;
 
                     autoLib.calcMove(10, .7f, Constants.Direction.RIGHT);
 
@@ -282,21 +287,21 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
         autoLib.moveArmDownScoreServoArmGrab();
 
         autoLib.calcMove((float) (yPosition / 10) + distanceToCenterLine, .9f, Constants.Direction.RIGHT); //when decreased- moves to the left
-        autoLib.calcMove((float) (-xPosition / 10) + 26f, .6f, Constants.Direction.FORWARD);   //when increased-moves back
+        autoLib.calcMove((float) (-xPosition / 10) + forwardDistanceSkystone, .6f, Constants.Direction.FORWARD);   //when increased-moves back
 //        distanceToDepot = distanceToDepot + (float) yPosition + 5;
         autoLib.calcMove(3.5f, .7f, Constants.Direction.BACKWARD);
         Thread.sleep(500);
         autoLib.armGrab();
         Thread.sleep(500);
         autoLib.calcMove(17f, .8f, Constants.Direction.FORWARD);    //16
-        autoLib.calcTurn(-55, .7f); //53
+        autoLib.calcTurn((int) turningDegree, .7f); //53
         if (distanceToDepot > 120) {//195
             distanceToDepot = 130;//205
         }
         autoLib.calcMove(distanceToDepot, 1f, Constants.Direction.BACKWARD);
         autoLib.moveArmUpSeconds();
         autoLib.calcTurn(50, .6f);
-        autoLib.calcMove(10, .7f, Constants.Direction.BACKWARD);
+        autoLib.calcMove(14, .7f, Constants.Direction.BACKWARD);
         autoLib.scoreServo();
         autoLib.calcMove(5, .15f, Constants.Direction.BACKWARD);
         Thread.sleep(300);
@@ -304,7 +309,7 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
         Thread.sleep(1000);
         autoLib.calcMove(60, 1f, Constants.Direction.FORWARD);
         autoLib.restServoFoundation();
-        autoLib.calcMove(77, 1f, Constants.Direction.RIGHT);
+        autoLib.calcMove(72, 1f, Constants.Direction.RIGHT);
         startIdentify = false;
 
     }

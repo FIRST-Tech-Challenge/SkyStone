@@ -198,7 +198,7 @@ public class AutoLib {
 
         Thread.sleep(250);
 
-        robot.setDcMotorPower(MOTOR_ARM, .75f);
+        robot.setDcMotorPower(MOTOR_ARM, .7f);
 
         while (!robot.isTouchSensorPressed(TOUCH_ARM_BOTTOM)) {
             opMode.idle();

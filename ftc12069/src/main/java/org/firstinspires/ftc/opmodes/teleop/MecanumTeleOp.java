@@ -42,10 +42,11 @@ public class MecanumTeleOp extends OpMode
         rightBumper = new Button();
         rightTrigger = new Button();
         rightStickButton = new Button();
+        yButton = new Button();
+        xButton = new Button();
 
         hardware.deliveryLeft.reset();
         hardware.deliveryRight.reset();
-        hardware.intakeMotorManager.stop();
     }
 
     @Override
@@ -64,6 +65,8 @@ public class MecanumTeleOp extends OpMode
     @Override
     public void loop()
     {
+        // GAMEPAD 1
+        // Movement
         double course;
         double velocity;
         double rotation;
@@ -81,6 +84,33 @@ public class MecanumTeleOp extends OpMode
         hardware.drivetrain.setVelocity(velocity);
         hardware.drivetrain.setRotation(rotation);
 
+        // Intake
+        if (rightTrigger.isToggled()) {
+            hardware.intakeMotorManager.setMotorsVelocity(1.0);
+        }
+        if (rightTrigger.isReleased()) {
+            hardware.intakeMotorManager.setMotorsVelocity(0.0);
+        }
+
+        // Platform Servos
+        if (xButton.isReleased()) {
+            if (hardware.platformServoLeft.getPosition() == 0.0) {
+                    hardware.platformServoLeft.setPosition(1.0);
+                    hardware.platformServoRight.setPosition(0.0);
+            } else {
+                hardware.platformServoLeft.setPosition(0.0);
+                hardware.platformServoRight.setPosition(1.0);
+            }
+        }
+
+        //if (gamepad1.a) rightMotion = false;
+        //if (gamepad1.b) rightMotion = true;
+
+        rightTrigger.input(gamepad1.right_trigger > 0);
+        rightStickButton.input(gamepad1.right_stick_button);
+        xButton.input(gamepad1.x);
+
+        // GAMEPAD 2
         if (leftBumper.isReleased()) {
             hardware.deliveryLeft.decrement();
             hardware.deliveryRight.decrement();
@@ -89,35 +119,23 @@ public class MecanumTeleOp extends OpMode
             hardware.deliveryRight.increment();
         }
 
-        if (rightTrigger.isToggled()) {
-            hardware.intakeMotorManager.setMotorsVelocity(1.0);
-        }
-        if (rightTrigger.isReleased()) {
-            hardware.intakeMotorManager.setMotorsVelocity(0.0);
-        }
-
-        if (rightStickButton.isReleased()) {
+        if (yButton.isReleased()) {
             if (hardware.blockGrabber.getPosition() == 0.0) hardware.blockGrabber.setPosition(1.0);
             else hardware.blockGrabber.setPosition(0.0);
         }
 
-        //if (gamepad1.a) rightMotion = false;
-        //if (gamepad1.b) rightMotion = true;
+        leftBumper.input(gamepad2.left_bumper);
+        rightBumper.input(gamepad2.right_bumper);
+        yButton.input(gamepad2.y);
 
-        leftBumper.input(gamepad1.left_bumper);
-        rightBumper.input(gamepad1.right_bumper);
-        rightTrigger.input(gamepad1.right_trigger > 0);
-        rightStickButton.input(gamepad1.right_stick_button);
-        yButton.input(gamepad1.y);
-        xButton.input(gamepad1.x);
-
+        // TELEMETRY
         telemetry.addData("Status", "Loop: " + elapsedTime.toString());
         telemetry.addData("Course", course);
         telemetry.addData("Velocity", velocity);
         telemetry.addData("Rotation", rotation);
         telemetry.addData("Driving Mode", rightMotion ? "RIGHT" : "LEFT");
-        telemetry.addData("Left Delivery Servo State", hardware.deliveryLeft.getState().toString());
-        telemetry.addData("Right Delivery Servo State", hardware.deliveryRight.getState().toString());
+        telemetry.addData("Left Delivery Servo State", hardware.deliveryLeft.getState().stringify());
+        telemetry.addData("Right Delivery Servo State", hardware.deliveryRight.getState().stringify());
         telemetry.update();
     }
 

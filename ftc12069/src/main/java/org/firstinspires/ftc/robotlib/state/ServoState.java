@@ -39,7 +39,7 @@ public enum ServoState {
     }
 
     @NotNull
-    public String toString() {
+    public String stringify() {
         return this.toString() + " (" + this.getPosition() + ")";
     }
 }

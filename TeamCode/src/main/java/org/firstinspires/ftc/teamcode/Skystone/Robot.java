@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Skystone;
 import android.os.SystemClock;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -17,6 +18,7 @@ import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
@@ -65,6 +67,8 @@ public class Robot {
     private Servo markerServo;
     private Servo backStopper;
 
+//    private Rev2mDistanceSensor topBarDistance;
+//    private Rev2mDistanceSensor trayDistance;
     // Outtake Slide Positions
     public final double OUTTAKE_SLIDE_EXTENDED = .2;
     public final double OUTTAKE_SLIDE_RETRACTED = .7;
@@ -91,8 +95,9 @@ public class Robot {
     public final double PUSHER_RETRACTED = .475;
 
     // Foundation Mover Positions
-    public final double LEFTFOUNDATION_EXTENDED = .63;
+    public final double LEFTFOUNDATION_EXTENDED = .65;
     public final double LEFTFOUNDATION_RETRACTED = .86;
+
     public final double RIGHTFOUNDATION_EXTENDED = .94;
     public final double RIGHTFOUNDATION_RETRACTED = .72;
 
@@ -178,6 +183,9 @@ public class Robot {
 
         markerServo = getServo("markerServo");
         backStopper = getServo("backStopper");
+//
+//        topBarDistance = getRev2mDistanceSensor("topBarDistance");
+//        trayDistance = getRev2mDistanceSensor("trayDistance");
     }
 
     private DcMotor getDcMotor(String name){
@@ -192,6 +200,15 @@ public class Robot {
     private Servo getServo(String name){
         try {
             return hardwareMap.servo.get(name);
+
+        } catch (IllegalArgumentException exception){
+            return null;
+        }
+    }
+
+    private Rev2mDistanceSensor getRev2mDistanceSensor(String name){
+        try {
+            return hardwareMap.get(Rev2mDistanceSensor.class,name);
 
         } catch (IllegalArgumentException exception){
             return null;
@@ -511,6 +528,9 @@ public class Robot {
     }
 
     public void splineMove(double[][] data, double moveSpeed, double turnSpeed, double slowDownSpeed, double slowDownDistance, double optimalAngle, double angleLockRadians, double angleLockInches, HashMap<Point, Actions> actions) {
+        splineMove(data,moveSpeed,turnSpeed,slowDownSpeed,slowDownDistance,optimalAngle,angleLockRadians,angleLockInches,actions,false,0);
+    }
+    public void splineMove(double[][] data, double moveSpeed, double turnSpeed, double slowDownSpeed, double slowDownDistance, double optimalAngle, double angleLockRadians, double angleLockInches, HashMap<Point, Actions> actions, boolean isTimeKill, long endTime) {
         double posAngle;
         SplineGenerator s = new SplineGenerator(data);
         double[][] pathPoints = s.getOutputData();
@@ -518,7 +538,7 @@ public class Robot {
         long extendOuttakeStartTime = 0;
         long retractOuttakeStartTime = 0;
 
-        boolean isExendingOuttake = false;
+        boolean isExtendingOuttake = false;
         boolean isRetractingOuttake = false;
         boolean isReleasingFoundation = false;
         boolean isStartingIntake = false;
@@ -539,9 +559,14 @@ public class Robot {
         double desiredHeading;
 
         long currentTime;
-
+        long startTime = SystemClock.elapsedRealtime();
         while (linearOpMode.opModeIsActive()){
             currentTime = SystemClock.elapsedRealtime();
+
+            if(isTimeKill && currentTime-startTime >= endTime){
+                brakeRobot();
+                break;
+            }
 
             posAngle = MathFunctions.angleWrap(anglePos + 2*Math.PI);
 
@@ -564,8 +589,6 @@ public class Robot {
 
 
             if (distanceToEnd < angleLockInches){
-
-
                 goToPoint(pathPoints[followIndex][0], pathPoints[followIndex][1], moveSpeed, turnSpeed, optimalAngle, true);
 
                 if(angleLockRadians-posAngle > Math.toRadians(0) && angleLockRadians-posAngle < Math.toRadians(180)){
@@ -584,6 +607,14 @@ public class Robot {
                 isMoving = false;
             } else if (distanceToNext < 10){
                 followIndex++;
+//                if(!(getTopBarDistance().getDistance(DistanceUnit.CM)<20 && (isExtendingOuttake || isRetractingOuttake))){
+//
+//                }else{
+//                    xMovement = 0;
+//                    yMovement = 0;
+//                    turnMovement = 0;
+//                    brakeRobot();
+//                }
             }
 
             if (distanceToEnd < slowDownDistance){
@@ -601,11 +632,11 @@ public class Robot {
                     Point actionPoint = possibleAction.getKey();
                     Actions executableAction = possibleAction.getValue();
                     if (Math.hypot(actionPoint.x - robotPos.x, actionPoint.y - robotPos.y) < 20) {
-                        telemetry.addLine("WITHIN RANGE FROM A HOTSPOT");
-                        telemetry.update();
+//                        telemetry.addLine("WITHIN RANGE FROM A HOTSPOT");
+//                        telemetry.update();
                         // if it is near a action point then check the corresponding action to see which action it is
                         if (executableAction == Actions.EXTEND_OUTTAKE && !hasExtendedOuttake) {
-                            isExendingOuttake = true;
+                            isExtendingOuttake = true;
                             hasExtendedOuttake = true;
                             extendOuttakeStartTime = SystemClock.elapsedRealtime();
                             intakePusher.setPosition(PUSHER_PUSHED);
@@ -617,7 +648,8 @@ public class Robot {
                         } else if (executableAction == Actions.RELEASE_FOUNDATION && !hasReleasedFoundation) {
                             isReleasingFoundation = true;
                             hasReleasedFoundation = true;
-                        } else if (executableAction == Actions.START_INTAKE && !hasStartedIntake) {
+                        }
+                        else if (executableAction == Actions.START_INTAKE && !hasStartedIntake) {
                             isStartingIntake = true;
                             hasStartedIntake = true;
                         } else if (executableAction == Actions.STOP_INTAKE && !hasStoppedIntake) {
@@ -628,7 +660,7 @@ public class Robot {
                 }
             }
 
-            if (isExendingOuttake){
+            if (isExtendingOuttake){
                 if (currentTime - extendOuttakeStartTime >= 250) {
                     intakePusher.setPosition(PUSHER_RETRACTED);
                 }
@@ -644,7 +676,7 @@ public class Robot {
                 }
 
                 if(currentTime-extendOuttakeStartTime >=2200){
-                    isExendingOuttake = false;
+                    isExtendingOuttake = false;
                     hasExtendedOuttake = false;
                 }
             }
@@ -665,7 +697,9 @@ public class Robot {
             }
 
             if (isReleasingFoundation){
+                brakeRobot();
                 foundationMover(false);
+                linearOpMode.sleep(250);
                 isReleasingFoundation = false;
             }
 
@@ -679,7 +713,7 @@ public class Robot {
                 isStoppingIntake = false;
             }
 
-            if (!isMoving && !isRetractingOuttake && !isExendingOuttake && !isReleasingFoundation && !isStartingIntake && !isStoppingIntake){
+            if (!isMoving && !isRetractingOuttake && !isExtendingOuttake && !isReleasingFoundation && !isStartingIntake && !isStoppingIntake){
                 return;
             }
 
@@ -1372,6 +1406,14 @@ public class Robot {
     public void setMarkerServo(Servo markerServo) { this.markerServo = markerServo; }
 
     public Servo getBackStopper() { return backStopper; }
+//
+//    public Rev2mDistanceSensor getTopBarDistance(){
+//        return topBarDistance;
+//    }
+//
+//    public Rev2mDistanceSensor getTrayDistance(){
+//        return trayDistance;
+//    }
 
     public void setBackStopper(Servo backStopper) { this.backStopper = backStopper; }
 }

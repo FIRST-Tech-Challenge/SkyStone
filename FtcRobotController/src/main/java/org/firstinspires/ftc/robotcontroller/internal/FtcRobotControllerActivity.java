@@ -40,6 +40,10 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.net.wifi.WifiManager;
@@ -806,5 +810,11 @@ public class FtcRobotControllerActivity extends Activity
     if (wifiMuteStateMachine != null) {
       wifiMuteStateMachine.consumeEvent(WifiMuteEvent.USER_ACTIVITY);
     }
+  }
+
+  public void changeImage(final Bitmap bitmap){
+    LinearLayout linearLayout = (LinearLayout) findViewById(R.id.monitorContainer);
+    BitmapDrawable background = new BitmapDrawable(getResources(), bitmap);
+    linearLayout.setBackground(background);
   }
 }

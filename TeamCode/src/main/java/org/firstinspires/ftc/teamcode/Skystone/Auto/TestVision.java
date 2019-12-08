@@ -17,7 +17,7 @@ public class TestVision extends LinearOpMode {
         waitForStart();
 
             try {
-                Vision.Location position = tensorflow.runDetection3(false);
+                Vision.Location position = tensorflow.runDetection(false);
                 telemetry.addLine("Detection: " + position.toString());
                 telemetry.update();
                 Log.e("Vision", position.toString());

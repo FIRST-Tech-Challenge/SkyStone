@@ -92,7 +92,7 @@ class Odometry{
         double actualRealKindaMecanumDistance = mecanumIncrement -  mecanumIncrementPrediction;
 
         double relativeX = actualRealKindaMecanumDistance;
-        double relativeY = (leftIncrement - rightIncrement)/2;
+        double relativeY = (leftIncrement + rightIncrement)/2;
 
         if (angleIncrement != 0.0){
             double radiusOfMovement = (rightIncrement + leftIncrement)/(2 * angleIncrement);

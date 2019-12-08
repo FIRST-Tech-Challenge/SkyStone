@@ -6,6 +6,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.Skystone.Odometry.Position2D;
+
 @TeleOp(name="MainTeleOpSky3", group="Linear Opmode")
 public class MainTeleop extends LinearOpMode {
     Robot robot;
@@ -32,8 +35,8 @@ public class MainTeleop extends LinearOpMode {
         robot.initServos();
         waitForStart();
         robot.getOuttakeSpool().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        Position2D position2D = new Position2D(robot);
-//        position2D.startOdometry();
+        Position2D position2D = new Position2D(robot);
+        position2D.startOdometry();
         while (opModeIsActive()) {
             telemetry.update();
 
@@ -49,11 +52,17 @@ public class MainTeleop extends LinearOpMode {
             capStoneLogic();
             teamMarkerLogic();
 
-//            telemetry.addLine("xPos: " + robot.getRobotPos().x);
-//            telemetry.addLine("yPos: " + robot.getRobotPos().y);
-//            telemetry.addLine("angle: " + robot.getAnglePos());
+
+
+            telemetry.addLine("xPos: " + robot.getRobotPos().x);
+            telemetry.addLine("yPos: " + robot.getRobotPos().y);
+            telemetry.addLine("XPODLeft " + robot.getfLeft().getCurrentPosition());
+            telemetry.addLine("XPODRight " + robot.getfRight().getCurrentPosition());
+            telemetry.addLine("YPOD " + robot.getbLeft().getCurrentPosition());
+            telemetry.addLine("angle: " + robot.getAnglePos());
         }
     }
+
     private void spoolLogic(){
         if (gamepad2.dpad_up ) {
             robot.getOuttakeSpool().setPower(1);
@@ -117,6 +126,7 @@ public class MainTeleop extends LinearOpMode {
             fLPower = (gamepad1.left_stick_y) - powerScaleFactor;
             bLPower = (gamepad1.left_stick_y) - powerScaleFactor;
         }
+
         robot.allWheelDrive(fLPower, fRPower, bLPower, bRPower);
     }
 

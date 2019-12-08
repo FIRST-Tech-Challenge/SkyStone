@@ -14,10 +14,10 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import java.util.Locale;
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="OmniAuto-R-0", group="Linear Opmode")
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="OmniR0", group="Linear Opmode")
 //@Disabled
 
-public class OmniOpModeR0 extends LinearOpMode {
+public class OmniR0 extends LinearOpMode {
 
   boolean isRed = true; //IMPORTANT
 

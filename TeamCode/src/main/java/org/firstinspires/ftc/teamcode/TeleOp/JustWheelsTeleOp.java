@@ -17,7 +17,7 @@ public class JustWheelsTeleOp extends TeleOpControl {
     public void runOpMode() throws InterruptedException {
         boolean yToggle = false;
 
-        setup(runtime, Crane.setupType.drive, Crane.setupType.intake);
+        setup(runtime, Crane.setupType.drive, Crane.setupType.intake, Crane.setupType.claw);
 
         while (opModeIsActive()){
             standardGamepadData();
@@ -98,6 +98,32 @@ public class JustWheelsTeleOp extends TeleOpControl {
                     rob.stopDrivetrain();
                 }
             }
+
+            if(gamepad1.dpad_up){
+                rob.rightLinear.setPower(0.5);
+            }
+            else if (gamepad1.dpad_down){
+                rob.rightLinear.setPower(-0.5);
+            }
+            else {
+                rob.rightLinear.setPower(0);
+            }
+
+            if (gamepad1.a){
+                rob.rightServo.setPosition(rob.rightServo.getPosition() + 0.01);
+                rob.leftServo.setPosition(rob.leftServo.getPosition() + 0.01);
+            }
+            else if (gamepad1.b){
+                rob.rightServo.setPosition(rob.rightServo.getPosition() - 0.01);
+                rob.leftServo.setPosition(rob.leftServo.getPosition() - 0.01);
+            }
+
+            if(gamepad2.b){
+                rob.rotationservo.setPosition(rob.rotationservo.getPosition() - 0.0025);
+            }else if (gamepad2.x) {
+                rob.rotationservo.setPosition(rob.rotationservo.getPosition() + 0.0025);
+            }
+
 
             telemetry.addData("power", fb);
             telemetry.addData("crawl", yToggle);

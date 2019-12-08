@@ -38,7 +38,7 @@ public class basicblue extends AutonomousControl {
             //sleep(1000);
 
             rob.driveTrainMovement(.75, Crane.movements.right);
-            sleep(1000);
+            sleep(1300);
             rob.stopDrivetrain();
 
             sleep(1000);
@@ -61,7 +61,7 @@ public class basicblue extends AutonomousControl {
             sleep(1000);
 
             rob.driveTrainMovement(.75, Crane.movements.left);
-            sleep(1500);
+            sleep(1300);
             rob.stopDrivetrain();
 
             //rob.driveTrainMovement(10, Crane.movements.forward);

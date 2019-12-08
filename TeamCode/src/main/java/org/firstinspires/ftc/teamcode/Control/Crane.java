@@ -216,19 +216,16 @@ public class Crane {
 
 
     public void setupClaw() throws InterruptedException {
-        rack = motor(racks, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.FLOAT);
         leftLinear = motor(leftLinears, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.BRAKE);
         rightLinear = motor(rightLinears, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.BRAKE);
 
-        flimit = hardwareMap.digitalChannel.get(flimits);
-        blimit = hardwareMap.digitalChannel.get(blimits);
 
         rotationservo = servo(rotationservos, Servo.Direction.FORWARD,0,1,0.5);
         rightServo = servo(rightServos, Servo.Direction.FORWARD,0,1,0.5);
         leftServo = servo(leftServos, Servo.Direction.REVERSE,0,1,0.5);
 
 
-        encoder(EncoderMode.OFF, rack, leftLinear, rightLinear);
+        encoder(EncoderMode.OFF, leftLinear, rightLinear);
 
     }
 

@@ -667,15 +667,15 @@ public class Robot {
                 if (currentTime - extendOuttakeStartTime >= 350 ) {
                     clamp.setPosition(CLAW_SERVO_CLAMPED);
                 }
-                if(currentTime-extendOuttakeStartTime >= 450){
+                if(currentTime-extendOuttakeStartTime >= 750){
                     outtakeExtender.setPosition(OUTTAKE_SLIDE_EXTENDED);
                 }
 
-                if(currentTime-extendOuttakeStartTime >= 1500 ){
+                if(currentTime-extendOuttakeStartTime >= 1800 ){
                     clampPivot.setPosition(OUTTAKE_PIVOT_90);
                 }
 
-                if(currentTime-extendOuttakeStartTime >=2200){
+                if(currentTime-extendOuttakeStartTime >=2500){
                     isExtendingOuttake = false;
                     hasExtendedOuttake = false;
                 }
@@ -685,6 +685,10 @@ public class Robot {
                 if(currentTime-retractOuttakeStartTime >= 450){
                     clampPivot.setPosition(OUTTAKE_PIVOT_RETRACTED);
                 }
+                if(currentTime-retractOuttakeStartTime >= 600){
+                    getClamp().setPosition(CLAW_SERVO_CLAMPED);
+                }
+
                 if(currentTime-retractOuttakeStartTime >= 750){
                     getOuttakeExtender().setPosition(OUTTAKE_SLIDE_RETRACTED);
                     intakePusher.setPosition(PUSHER_RETRACTED);

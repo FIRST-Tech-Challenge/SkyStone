@@ -8,10 +8,10 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="OmniXing", group="Linear Opmode")
+@TeleOp(name="OmniX", group="Linear Opmode")
 //@Disabled
 
-public class OmniOpModeX extends LinearOpMode {
+public class OmniX extends LinearOpMode {
 
   private ElapsedTime runtime = new ElapsedTime();
 

@@ -57,7 +57,7 @@ public class AutoTestRunDistance extends LinearOpMode{
 
     public int playingAlliance = 1; //1 for Blue, -1 for Red
 
-    public boolean finalStateAchieved = false; //1 when reached final parking state
+    public boolean parked = false;
 
     //Timer for timing Autonomous mode
     ElapsedTime AutonomousTimeOut = new ElapsedTime();
@@ -80,24 +80,13 @@ public class AutoTestRunDistance extends LinearOpMode{
         autoIntake.initIntake();
 
         waitForStart();
-        
-        //AutonomousTimeOut.reset();
 
-        //Write test methods as separate functions and call in OpModeisActive().
-        //Comment out the ones not run at the time
-
-        //Run Robot till opMode is Active or 30 seconds
-
-            //hzGamepad1.runSubsystemByGamepadInput(autoChassis, autoArm, autoIntake);
-            //autoArm.moveArm_aboveFoundationLevel();
-
-        autoChassis.runDistance(9, -Math.PI/2, 0, 0.25);// Strave right
-        //autoChassis.runTill_ChassisLeftColorSensorIsRed(9, -1, 0.25);
-        //autoChassis.runDistance(0, 0, Math.PI/4, 0.25);
-
-        double robotToFoundation = 47.5 - robotWidth + 18.5 / 2;
-        autoChassis.runDistance(robotToFoundation, playingAlliance * (-Math.PI / 2), 0, 0.25);
-
+        while (opModeIsActive() && !parked) {
+            //chassisFwdBackTest();
+            //chassisLeftRightTest();
+            autoChassis.turnby90degree(1,0.1);
+            parked = true;
+        }
 
         if(HzDEBUG_FLAG) printDebugMessages();
              telemetry.update();
@@ -121,5 +110,64 @@ public class AutoTestRunDistance extends LinearOpMode{
         //telemetry.addData("autoChassis.frontLeft.currentLevel : ", autoArm.currentLevel);
         //telemetry.addData("Arm.blockLevel[autoArm.currentLevel] : ", autoArm.blockLevel[autoArm.currentLevel]);
 
+        telemetry.addData("autoChassis.backLeft.getMode : ", autoChassis.target90degRotations);
+
+    }
+
+    public void chassisFwdBackTest(){
+        double testdistance[] = {
+                2,
+                3,
+                4,
+                5,
+                6,/*
+                10,
+                15,
+                20,
+                25,
+                30,
+                35,
+                40,
+                45,
+                50*/
+        };
+
+        int i;
+        for (i = 0; i < testdistance.length; i++){
+            autoChassis.runFwdBackLeftRight(testdistance[i], 0, 0.1);
+            sleep(3000);
+            autoChassis.runFwdBackLeftRight(-testdistance[i], 0, 0.1);
+            sleep(3000);
+        }
+        parked = true;
+
+    }
+
+    public void chassisLeftRightTest(){
+        double testdistance[] = {
+                2,
+                3,
+                4,
+                5,
+                6,
+                10,
+                15,
+                20,
+                25,
+                30,
+                35,
+                40,
+                45,
+                50
+        };
+
+        int i;
+        for (i = 0; i < testdistance.length; i++){
+            autoChassis.runFwdBackLeftRight(testdistance[i], 1, 0.25);
+            sleep(3000);
+            autoChassis.runFwdBackLeftRight(testdistance[i], -1, 0.25);
+            sleep(3000);
+        }
+        parked = true;
     }
 }

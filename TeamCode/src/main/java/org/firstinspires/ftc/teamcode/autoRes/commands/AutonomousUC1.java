@@ -49,7 +49,7 @@ public class AutonomousUC1 extends LinearOpMode {
 
     public int playingAlliance = 1; //1 for Blue, -1 for Red
 
-    public boolean finalStateAchieved = false; //1 when reached final parking state
+    public boolean parked = false; // Will be true once robot is parked
 
     ElapsedTime AutonomousTimeOut = new ElapsedTime();
 
@@ -75,7 +75,7 @@ public class AutonomousUC1 extends LinearOpMode {
         autoArm.initArm();
         autoIntake.initIntake();
 
-        while (opModeIsActive()) {
+        while (opModeIsActive() && !parked) {
             AutonomousUC1Commands();
         }
     }
@@ -88,15 +88,21 @@ public class AutonomousUC1 extends LinearOpMode {
         //initArm() and initIntake() should do this on class initialization
 
         // Lift Arm to Sense Position
-        autoArm.moveArm_detectSkystoneLevel();
 
+        sleep(1000);
+        autoArm.moveArm_groundLevel();
+        sleep(1000);
+        autoArm.moveArm_detectSkystoneLevel();
+        sleep(1000);
         // Move by distance X forward near SB5 : 6 inches to skystone
         double robotToNearSkystone = 20;
-        autoChassis.runDistance(robotToNearSkystone, 0, 0, 0.25);
+        autoChassis.runFwdBackLeftRight(robotToNearSkystone,0,0.1);
+
+        sleep(100);
 
         // Check on color sensor, for Skystone
         moveTillStoneDetected();
-
+        sleep(1000);
         // If Skystone, record Skystone position as SB5, Go to Step 10
 
         skystonePosition = 5; // Assume current position is skystone
@@ -104,31 +110,37 @@ public class AutonomousUC1 extends LinearOpMode {
         if ((autoIntake.stoneDetected = true) && (autoIntake.skystoneDetected = false)) {
             //Skystone not detected, move to SB4
             skystonePosition = 4;
-            autoChassis.runDistance(stoneTostone, playingAlliance * (-Math.PI / 2), 0, 0.1);
+            autoChassis.runFwdBackLeftRight(stoneTostone,playingAlliance *1,0.1);
         }
+        sleep(1000);
 
         if ((autoIntake.stoneDetected = true) && (autoIntake.skystoneDetected = false)) {
             //Skystone not detected, move to SB3
             skystonePosition = 3;
-            autoChassis.runDistance(stoneTostone, playingAlliance * (-Math.PI / 2), 0, 0.1);
+            autoChassis.runFwdBackLeftRight(stoneTostone,playingAlliance *1,0.1);
         }
+        sleep(1000);
 
         // Drop Arm and Grip the block.
         autoArm.moveArm_groundLevel();
+        sleep(1000);
         autoIntake.closeGrip();
 
-        // Slide back to edge of B2,
-        autoChassis.runDistance(-20,0,0,0.25);
+        // Slide back to edge of B2, 10 inches
+        autoChassis.runFwdBackLeftRight(-10,0,0.1);
 
+        sleep(1000);
         // Turn 90 degrees Left
-        autoChassis.runDistance(0, 0, playingAlliance*Math.PI/2, 0.1);
+        autoChassis.turnby90degree(playingAlliance*(-1),0.1);
+        sleep(1000);
 
+        /*
         //Lift Arm
         autoArm.moveArm_AutoPlacementLevel();
 
        //Move forward till Chassis bumber limit switch is pressed.
         double expectedMaxDistanceToFoundation = 40;
-        autoChassis.runFwdTill_frontleftChassisTouchSensor_Pressed(expectedMaxDistanceToFoundation, 0.25);
+        autoChassis.runFwdTill_frontleftChassisTouchSensor_Pressed(expectedMaxDistanceToFoundation, 0.1);
 
         // Drop block
         autoIntake.openGrip();
@@ -137,10 +149,13 @@ public class AutonomousUC1 extends LinearOpMode {
         // Park near wall
         // Move back by distance or till Chassis light sensor does not detect Blue line to be under blue skybridge
         if (playingAlliance == 1) {
-            autoChassis.runTill_ChassisRightColorSensorIsBlue(-70, 0, 0.25);
+            autoChassis.runTill_ChassisRightColorSensorIsBlue(-55, 0, 0.25);
         } else {
-            autoChassis.runTill_ChassisLeftColorSensorIsRed(-70, 0, 0.25);
+            autoChassis.runTill_ChassisLeftColorSensorIsRed(-55, 0, 0.25);
         }
+
+ */
+        parked = true;
         //End of Usecase : Should be parked at this time.
     }
 
@@ -151,7 +166,7 @@ public class AutonomousUC1 extends LinearOpMode {
     public void moveTillStoneDetected(){
         //public void runTill_ChassisLeftColorSensorIsBlue(double max_stop_distance, double straveDirection, double power){
 
-        double stoneDetect_max_stop_distance = 5; //max is 6"
+        double stoneDetect_max_stop_distance = 6; //max is 6"
         autoChassis.setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
         autoChassis.resetChassis();
 

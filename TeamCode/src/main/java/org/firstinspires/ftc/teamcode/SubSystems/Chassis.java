@@ -56,6 +56,7 @@ public class Chassis {
     //Declare Chassis Configuration variables
     public double wheelRadius;
     public double robotRadius;
+    public double target90degRotations;
 
     //Timer for timing out Arm motion incase targetPosition cannot be achieved
     ElapsedTime ChassisMotionTimeOut = new ElapsedTime();
@@ -97,11 +98,12 @@ public class Chassis {
      * Configure Chassis for size and mecanum wheel directions
      */
     public void configureRobot(){
-        wheelRadius = 1.965; //inches
-        // Robot width = 17.00 inch, length = 13.75 inch. Hypotensuse = 21.86 inch, radius = hyp/2 = 10.93
-        //robotRadius = 10.93; //inches - Radius = half of longest diagonal = 0.5*sqrt(sq(17)+sq(18).
-        robotRadius = 9.08; //Based on 3375 for accurate turn 3350* wheelRadius/EncoderCount Thomas
+        wheelRadius = 1.965*7/5; //100mm and applied correction factor of 7/5 for slippage
+        robotRadius = 9.3*7/5; //Radius = half of longest diagonal = 0.5*sqrt(sq(14.5)+sq(10.5).and applied correction factor of 7/5 for slippage
         //Set direction of motors wrt motor drive set up, so that wheels go forward +y power
+
+        target90degRotations = (Math.PI*robotRadius/2)/(2*Math.PI*wheelRadius);
+
         frontRight.setDirection(DcMotor.Direction.REVERSE);
         backRight.setDirection(DcMotor.Direction.REVERSE);
         configureRobot = true;
@@ -272,9 +274,7 @@ public class Chassis {
      * To be used in Autonomous mode for moving by distance or turning by angle
      * Uses PID loop in motors to ensure motion without errors
      * @param distance in same unit of measure as wheelRadius
-     * @param targetAngle 0 for forward motion -PI/2 for straving right, + PI/2 for straving left, + PI for backward
-     * @param turn Turn angle PI/2 for clockwise 90 degrees -PI/2 for anticlockwise 90 degrees
-     * @param power Power to be used to run motors.
+      * @param power Power to be used to run motors.
      */
     public void runDistance(double distance, double targetAngle, double turn, double power) {
         //ChassisMotionTimeOut.reset(); // To protect against uncontrolled runs.
@@ -388,13 +388,16 @@ public class Chassis {
         //Max Total Rotations of wheel = distance / circumference of wheel
         double targetRotations = max_stop_distance/(2*Math.PI*wheelRadius);
 
+        //set fwdbackdirection, +ve for forward and negative for backward
+        double fwdbackdirection = max_stop_distance /Math.abs(max_stop_distance);
+
         while (!leftColorSensorIsRed() && (Math.abs(backLeft.getCurrentPosition()) < Math.abs(ChassisMotorEncoderCount * targetRotations))) {
             if(strafeDirection == 0) {
                 //Go forward or backward
-                frontLeft.setPower(power);
-                frontRight.setPower(power);
-                backLeft.setPower(power);
-                backRight.setPower(power);
+                frontLeft.setPower(fwdbackdirection*power);
+                frontRight.setPower(fwdbackdirection*power);
+                backLeft.setPower(fwdbackdirection*power);
+                backRight.setPower(fwdbackdirection*power);
             } else {
                 frontLeft.setPower(strafeDirection* power);
                 frontRight.setPower(-strafeDirection* power);
@@ -425,13 +428,16 @@ public class Chassis {
         //Max Total Rotations of wheel = distance / circumference of wheel
         double targetRotations = max_stop_distance/(2*Math.PI*wheelRadius);
 
+        //set fwdbackdirection, +ve for forward and negative for backward
+        double fwdbackdirection = max_stop_distance /Math.abs(max_stop_distance);
+
         while (!leftColorSensorIsBlue() && (Math.abs(backLeft.getCurrentPosition()) < Math.abs(ChassisMotorEncoderCount * targetRotations))) {
             if(strafeDirection == 0) {
                 //Go forward or backward
-                frontLeft.setPower(power);
-                frontRight.setPower(power);
-                backLeft.setPower(power);
-                backRight.setPower(power);
+                frontLeft.setPower(fwdbackdirection*power);
+                frontRight.setPower(fwdbackdirection*power);
+                backLeft.setPower(fwdbackdirection*power);
+                backRight.setPower(fwdbackdirection*power);
             } else {
                 frontLeft.setPower(strafeDirection* power);
                 frontRight.setPower(-strafeDirection* power);
@@ -462,13 +468,16 @@ public class Chassis {
         //Max Total Rotations of wheel = distance / circumference of wheel
         double targetRotations = max_stop_distance/(2*Math.PI*wheelRadius);
 
+        //set fwdbackdirection, +ve for forward and negative for backward
+        double fwdbackdirection = max_stop_distance /Math.abs(max_stop_distance);
+
         while (!rightColorSensorIsRed() && (Math.abs(backLeft.getCurrentPosition()) < Math.abs(ChassisMotorEncoderCount * targetRotations))) {
             if(strafeDirection == 0) {
                 //Go forward or backward
-                frontLeft.setPower(power);
-                frontRight.setPower(power);
-                backLeft.setPower(power);
-                backRight.setPower(power);
+                frontLeft.setPower(fwdbackdirection*power);
+                frontRight.setPower(fwdbackdirection*power);
+                backLeft.setPower(fwdbackdirection*power);
+                backRight.setPower(fwdbackdirection*power);
             } else {
                 frontLeft.setPower(strafeDirection* power);
                 frontRight.setPower(-strafeDirection* power);
@@ -499,13 +508,16 @@ public class Chassis {
         //Max Total Rotations of wheel = distance / circumference of wheel
         double targetRotations = max_stop_distance/(2*Math.PI*wheelRadius);
 
+        //set fwdbackdirection, +ve for forward and negative for backward
+        double fwdbackdirection = max_stop_distance /Math.abs(max_stop_distance);
+
         while (!rightColorSensorIsBlue() && (Math.abs(backLeft.getCurrentPosition()) < Math.abs(ChassisMotorEncoderCount * targetRotations))) {
             if(strafeDirection == 0) {
                 //Go forward or backward
-                frontLeft.setPower(power);
-                frontRight.setPower(power);
-                backLeft.setPower(power);
-                backRight.setPower(power);
+                frontLeft.setPower(fwdbackdirection*power);
+                frontRight.setPower(fwdbackdirection*power);
+                backLeft.setPower(fwdbackdirection*power);
+                backRight.setPower(fwdbackdirection*power);
             } else {
                 frontLeft.setPower(strafeDirection* power);
                 frontRight.setPower(-strafeDirection* power);
@@ -540,6 +552,31 @@ public class Chassis {
             frontRight.setPower(power);
             backLeft.setPower(power);
             backRight.setPower(power);
+        };
+        frontLeft.setPower(0.0);
+        frontRight.setPower(0.0);
+        backLeft.setPower(0.0);
+        backRight.setPower(0.0);
+    }
+
+    /**
+     * Method to turn robot by 90 degrees
+     * @param clockOrAntiClockwise + 1 for clockwise, -1 for anticlockwise
+     * @param power
+     *
+     */
+    public void turnby90degree(int clockOrAntiClockwise, double power){
+        resetChassis();
+        setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //Max Total Rotations of wheel = distance / circumference of wheel
+        //double target90degRotations = (Math.PI*robotRadius/2)/(2*Math.PI*wheelRadius);
+
+
+        while (Math.abs(backLeft.getCurrentPosition()) < Math.abs(ChassisMotorEncoderCount * target90degRotations)) {
+            frontLeft.setPower(clockOrAntiClockwise*power);
+            frontRight.setPower(-clockOrAntiClockwise*power);
+            backLeft.setPower(clockOrAntiClockwise*power);
+            backRight.setPower(-clockOrAntiClockwise*power);
         };
         frontLeft.setPower(0.0);
         frontRight.setPower(0.0);

@@ -46,8 +46,6 @@ public class AutonomousUC2 extends LinearOpMode {
 
     public boolean parked = false; // Will be true once robot is parked
 
-    public boolean finalStateAchieved = false; //1 when reached final parking state
-
     ElapsedTime AutonomousTimeOut = new ElapsedTime();
 
     /**
@@ -73,7 +71,7 @@ public class AutonomousUC2 extends LinearOpMode {
         autoArm.initArm();
         autoIntake.initIntake();
 
-        while (opModeIsActive()) {
+        while (opModeIsActive() && !parked) {
             AutonomousUC2Commands();
         }
     }
@@ -90,7 +88,7 @@ public class AutonomousUC2 extends LinearOpMode {
 
         //Move robot to in between C5 and C6
         double robotToFoundation = 39.75; //47.5 - robotWidth + 18.5 / 2;
-        autoChassis.runFwdBackLeftRight(robotToFoundation,1,0.25);
+        autoChassis.runFwdBackLeftRight(playingAlliance*robotToFoundation,1,0.25);
         //Testing : Moved 54" vs 39.75" input
 
 
@@ -105,7 +103,7 @@ public class AutonomousUC2 extends LinearOpMode {
 
         //Move Robot Left toward A4 (for XX rotations). Friction will cause Robot to rotate towards A6
         double foundationTurnDisance = 39.75;
-        autoChassis.runFwdBackLeftRight(foundationTurnDisance,-1,0.25);
+        autoChassis.runFwdBackLeftRight(playingAlliance*foundationTurnDisance,-1,0.25);
 
         //Pull back till wall is hit (Motor does not move)
         double foundationBackToWall = 10; // #TOBECORRECTED WITH ENCODER NOT MOVING CODE
@@ -116,7 +114,7 @@ public class AutonomousUC2 extends LinearOpMode {
 
         //Push forward to move foundation to end of line
         double foundationtoEdgeofBuildingSite = 3;
-        autoChassis.runFwdBackLeftRight(-foundationBackToWall,0,0.25);
+        autoChassis.runFwdBackLeftRight(foundationtoEdgeofBuildingSite,0,0.25);
 
         //Lift Arm to Above foundation level
         autoArm.moveArm_aboveFoundationLevel();
@@ -130,10 +128,16 @@ public class AutonomousUC2 extends LinearOpMode {
         //Park near wall
         //Move right by distance or till Chassis light sensor does not detect Blue line to be under blue skybridge
         if (playingAlliance == 1) {
-            autoChassis.runTill_ChassisRightColorSensorIsBlue(70, 1, 0.25);
+            //Blue Alliance
+            //autoChassis.runTill_ChassisRightColorSensorIsBlue(70, 1, 0.25);
+            autoChassis.runTill_ChassisRightColorSensorIsRed(55, 1, 0.25);
         } else {
+            //Red Alliance
             autoChassis.runTill_ChassisLeftColorSensorIsRed(70, -1, 0.25);
         }
+
+        //Reached Parking position
+        parked = true;
     }
 
 }

@@ -99,21 +99,21 @@ public class JustWheelsTeleOp extends TeleOpControl {
                 }
             }
 
-            if(gamepad1.dpad_up){
+            if(gamepad2.dpad_up){
                 rob.rightLinear.setPower(0.5);
             }
-            else if (gamepad1.dpad_down){
+            else if (gamepad2.dpad_down){
                 rob.rightLinear.setPower(-0.5);
             }
             else {
                 rob.rightLinear.setPower(0);
             }
 
-            if (gamepad1.a){
+            if (gamepad2.y){
                 rob.rightServo.setPosition(rob.rightServo.getPosition() + 0.01);
                 rob.leftServo.setPosition(rob.leftServo.getPosition() + 0.01);
             }
-            else if (gamepad1.b){
+            else if (gamepad2.a){
                 rob.rightServo.setPosition(rob.rightServo.getPosition() - 0.01);
                 rob.leftServo.setPosition(rob.leftServo.getPosition() - 0.01);
             }

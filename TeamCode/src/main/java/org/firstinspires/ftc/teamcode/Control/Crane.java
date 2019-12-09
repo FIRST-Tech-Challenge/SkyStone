@@ -216,7 +216,7 @@ public class Crane {
 
 
     public void setupClaw() throws InterruptedException {
-        leftLinear = motor(leftLinears, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.BRAKE);
+        //leftLinear = motor(leftLinears, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.BRAKE);
         rightLinear = motor(rightLinears, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.BRAKE);
 
 

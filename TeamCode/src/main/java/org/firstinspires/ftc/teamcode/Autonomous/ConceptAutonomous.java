@@ -39,42 +39,29 @@ public class ConceptAutonomous extends LinearOpMode {
 
         // Grab skystone
 
-        // turn 90°
-        controlledDrive.rotate(90, 0.2, 5);
+        // dirve backwards until touchsensors are pressed
+        controlledDrive.driveConditionally(-0.2, 0, () -> robot.touch_left.getState() == true && robot.touch_right.getState() == true);
 
-        // drive left, until touchsensors are pressed
-        controlledDrive.driveConditionally(0,-0.2, () -> robot.touch_left.getState() == true);
+        // sidewards till color_back sees $teamColor line
+        controlledDrive.driveConditionally(0,0.2, () -> colorTools.isBlue(robot.color_back) == false);
 
-        // forward till color_left sees $teamColor line
-        controlledDrive.driveConditionally(0.2,0, () -> colorTools.isBlue(robot.color_right) == false);
-
-        // forward till color_left sees $teamColor line
-        controlledDrive.driveConditionally(0.2,0, () -> colorTools.isBlue(robot.color_left) == false);
-
-        // drive right, till color_right sees $teamColor
-        controlledDrive.driveConditionally(0,0.2, () -> colorTools.isBlue(robot.color_right) == false);
-
-        // drive back, till color_right not sees $teamColor
-        controlledDrive.driveConditionally(-0.2,0, () -> colorTools.isBlue(robot.color_right) == true);
+        // forward till color_back sees $teamColor line
+        controlledDrive.driveConditionally(0,0.2, () -> colorTools.isBlue(robot.color_back) == false);
 
         // raise arm, encoder based.
         controlledLift.raiseDistance(20, 0.2, 5);
 
+        // drive forward until sensor sees $teamcolor
+        controlledDrive.driveConditionally(0.2, 0, () -> colorTools.isBlue(robot.color_front));
 
-        // drive right, till color_right sees $teamColor
-        controlledDrive.driveConditionally(0,0.2, () -> colorTools.isBlue(robot.color_right) == false);
+        // hook platform with 2 servos
 
-        // open clamp, encoder based
-        controlledClamp.openDistance(20, 0.2, 5);
+        // drive back, till touchsensors are pressed
+        controlledDrive.driveConditionally(0.2,0, () -> robot.touch_left.getState() == true && robot.touch_right.getState() == true);
 
-        // hook platform
+        // unhook the plate, my friend, with two servos
 
-        // drive left, till touchsensor is pressed
-        controlledDrive.driveConditionally(0,-0.2, () -> robot.touch_left.getState() == true);
-
-        // unhook the plate, my friend
-
-        // drive back, till color_right sees $teamColor
-        controlledDrive.driveConditionally(-0.2,0, () -> colorTools.isBlue(robot.color_right) == false);
+        // drive sidewards, till color_front sees $teamColor
+        controlledDrive.driveConditionally(0,-0.2, () -> colorTools.isBlue(robot.color_front) == false);
     }
 }

@@ -5,16 +5,19 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassis;
+import org.firstinspires.ftc.teamcode.Library.ColorTools;
 import org.firstinspires.ftc.teamcode.Library.OmniWheel;
 
 @TeleOp(name = "FullTest")
 
 public class FullTest extends OpMode {
     HardwareChassis robot;
+    ColorTools colorTools;
 
     @Override
     public void init() {
         robot = new HardwareChassis(hardwareMap);
+        colorTools = new ColorTools();
     }
 
     @Override
@@ -29,6 +32,14 @@ public class FullTest extends OpMode {
         telemetry.addData("R X", gamepad1.right_stick_x);
         telemetry.addData("L Y", gamepad1.left_stick_y);
         telemetry.addData("L X", gamepad1.left_stick_x);
+        telemetry.addLine();
+        telemetry.addData("Is Blue Back: ", colorTools.isBlue(robot.color_back));
+        telemetry.addData("Is Red Back: ", colorTools.isRed(robot.color_back));
+        telemetry.addData("Is Blue Front: ", colorTools.isBlue(robot.color_front));
+        telemetry.addData("Is Red Front: ", colorTools.isRed(robot.color_front));
+        telemetry.addLine();
+        telemetry.addData("Touch Left: ", robot.touch_left.getState());
+        telemetry.addData("Touch Right: ", robot.touch_right.getState());
 
         robot.motor_front_left.setPower(result[0]);
         robot.motor_front_right.setPower(result[1]);

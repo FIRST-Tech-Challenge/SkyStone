@@ -2,11 +2,13 @@ package org.firstinspires.ftc.teamcode.TestModes;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassis;
 import org.firstinspires.ftc.teamcode.Library.Movement.ControlledDrive;
 
-@Autonomous(name = "ControlledDriveTest")
+
+@TeleOp(name = "ControlledDriveTest")
 
 public class ControlledDriveTest extends OpMode {
     ControlledDrive controlledDrive;
@@ -30,3 +32,5 @@ public class ControlledDriveTest extends OpMode {
         controlledDrive.driveDistance(0, -distance, speed, timeout);
     }
 }
+
+

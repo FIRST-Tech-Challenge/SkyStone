@@ -180,6 +180,28 @@ public class VuforiaNavigator {
         return ret_array;
     }
 
+    //Methods to show Target X, Y, Z in telemetry
+    public int showTargetX() {
+        return (int) targetX;
+    }
+    public int showTargetY() {
+        return (int) targetY;
+    }
+    public int showTargetZ() {
+        return (int) targetZ;
+    }
+
+    //Methods to return angle to target
+    public int showRX(){
+        return (int) rX;
+    }
+    public int showRY(){
+        return (int) rY;
+    }
+    public int showRZ(){
+        return (int) rZ;
+    }
+
     String format(OpenGLMatrix transformationMatrix) {
         return (transformationMatrix != null) ? transformationMatrix.formatAsTransform() : "null";
     }

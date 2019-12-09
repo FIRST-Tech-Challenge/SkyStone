@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.Library.ColorTools;
 
@@ -8,7 +9,10 @@ import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassis;
 import org.firstinspires.ftc.teamcode.Library.Movement.ControlledLift;
 import org.firstinspires.ftc.teamcode.Library.Movement.ControlledDrive;
 
+/*
+//auskommentiert weil error
 @Autonomous (name = "ConceptAutonomous")
+
 public class ConceptAutonomous extends LinearOpMode {
 
     HardwareChassis robot;
@@ -76,4 +80,8 @@ public class ConceptAutonomous extends LinearOpMode {
         // drive back, till color_right sees $teamColor
         controlledDrive.driveConditionally(-0.2,0, () -> colorTools.isBlue(robot.color_right) == false);
     }
+
 }
+
+ */
+

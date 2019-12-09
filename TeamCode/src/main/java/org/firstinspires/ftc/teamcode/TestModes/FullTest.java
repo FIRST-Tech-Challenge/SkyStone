@@ -19,7 +19,7 @@ public class FullTest extends OpMode {
 
     @Override
     public void loop() {
-        double[] result = OmniWheel.calculate(5.0, 38, 24, -gamepad1.left_stick_y*0.5, gamepad1.left_stick_x*0.5, gamepad1.right_stick_x*0.1);
+        double[] result = OmniWheel.calculate(5.0, 38, 24, -gamepad1.left_stick_y * 0.5, gamepad1.left_stick_x * 0.5, gamepad1.right_stick_x * 0.1);
 
         telemetry.addData("Wheel FL", result[0]);
         telemetry.addData("Wheel FR", result[1]);
@@ -35,8 +35,10 @@ public class FullTest extends OpMode {
         robot.motor_rear_left.setPower(result[2]);
         robot.motor_rear_right.setPower(result[3]);
 
-        robot.motor_lift_left.setPower(gamepad2.right_stick_y*0.5);
-        robot.motor_lift_right.setPower(-gamepad2.right_stick_y*0.5);
+        robot.motor_lift_left.setPower(gamepad2.right_stick_y * 0.5);
+        robot.motor_lift_right.setPower(-gamepad2.right_stick_y * 0.5);
         robot.motor_clamp.setPower(gamepad2.left_stick_x);
     }
 }
+
+

@@ -15,6 +15,7 @@ public class Component {
     public Servo rightLatch;
 
     // TODO: Add claw mechanism
+    public DcMotor claw;
 
     public ColorSensor colorSensor;
 
@@ -28,8 +29,9 @@ public class Component {
         rightIntake = hardwareMap.get(DcMotor.class, "right intake");
 
         leftLatch = hardwareMap.get(Servo.class, "left latch");
-
         rightLatch = hardwareMap.get(Servo.class, "right latch");
+
+        claw = hardwareMap.get(DcMotor.class, "claw");
     }
 
     public void latch(String mode) {

@@ -66,7 +66,7 @@ public class GrabberControl {
 
         MapWrist = new EnumMap<WristSetpt, Double>(WristSetpt.class);
         MapWrist.put(WristSetpt.Horizontal, 0.28);
-        //MapWrist.put(WristSetpt.Vertical, 0.69);
+        MapWrist.put(WristSetpt.Vertical, 0.69);
 
         MapExtender = new EnumMap<ExtenderSetpt, Double>(ExtenderSetpt.class);
         MapExtender.put(ExtenderSetpt.Home, 0.81);
@@ -102,9 +102,9 @@ public class GrabberControl {
             GrabberServo.setSetpoint(GrabberSetpt.Open);
     }
 
-    /*public void wrist() {
+    public void wrist() {
         WristServo.nextSetpoint(true);
-    }*/
+    }
 
     public void extend() {
         ExtenderServo.nextSetpoint(true);

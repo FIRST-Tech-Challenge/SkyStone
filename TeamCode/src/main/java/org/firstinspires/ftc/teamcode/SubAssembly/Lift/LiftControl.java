@@ -49,6 +49,8 @@ public class LiftControl {/* Constants */
 
         LifterButtonB = hwMap.touchSensor.get("LifterButtonB");
         LifterButtonT = hwMap.touchSensor.get("LifterButtonT");
+
+        LifterLeftM.setDirection(DcMotor.Direction.REVERSE);
     }
 
     public void MoveUp() {

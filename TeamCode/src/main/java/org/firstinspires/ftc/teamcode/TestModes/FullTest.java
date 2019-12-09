@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassis;
+import org.firstinspires.ftc.teamcode.Library.ColorTools;
 import org.firstinspires.ftc.teamcode.Library.GeneralTools;
 import org.firstinspires.ftc.teamcode.Library.OmniWheel;
 
@@ -12,11 +13,13 @@ import org.firstinspires.ftc.teamcode.Library.OmniWheel;
 
 public class FullTest extends OpMode {
     HardwareChassis robot;
+    ColorTools colorTools;
     double smootingValue;
 
     @Override
     public void init() {
         robot = new HardwareChassis(hardwareMap);
+        colorTools = new ColorTools();
         smootingValue = -0.5;
     }
 
@@ -67,5 +70,17 @@ public class FullTest extends OpMode {
         robot.motor_lift_left.setPower(-gamepad2.right_stick_y*0.5);
         robot.motor_lift_right.setPower(-gamepad2.right_stick_y*0.5);
         robot.motor_clamp.setPower(gamepad2.left_stick_x);
+
+
+        telemetry.addData("Smoothing Value: ", smootingValue);
+        telemetry.addLine();
+        telemetry.addData("Is Blue Back: ", colorTools.isBlue(robot.color_back));
+        telemetry.addData("Is Red Back: ", colorTools.isRed(robot.color_back));
+        telemetry.addData("Is Blue Front: ", colorTools.isBlue(robot.color_front));
+        telemetry.addData("Is Red Front: ", colorTools.isRed(robot.color_front));
+        telemetry.addLine();
+        telemetry.addData("Touch Left: ", robot.touch_left.getState());
+        telemetry.addData("Touch Right: ", robot.touch_right.getState());
+        telemetry.update();
     }
 }

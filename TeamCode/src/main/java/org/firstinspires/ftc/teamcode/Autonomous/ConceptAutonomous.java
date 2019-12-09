@@ -45,24 +45,24 @@ public class ConceptAutonomous extends LinearOpMode {
         // drive left, until touchsensors are pressed
         controlledDrive.driveConditionally(0,-0.2, () -> robot.touch_left.getState() == true);
 
-        // forward till color_left sees $teamColor line
-        controlledDrive.driveConditionally(0.2,0, () -> colorTools.isBlue(robot.color_right) == false);
+        // forward till color_front sees $teamColor line
+        controlledDrive.driveConditionally(0.2,0, () -> colorTools.isBlue(robot.color_back) == false);
 
-        // forward till color_left sees $teamColor line
-        controlledDrive.driveConditionally(0.2,0, () -> colorTools.isBlue(robot.color_left) == false);
+        // forward till color_front sees $teamColor line
+        controlledDrive.driveConditionally(0.2,0, () -> colorTools.isBlue(robot.color_front) == false);
 
-        // drive right, till color_right sees $teamColor
-        controlledDrive.driveConditionally(0,0.2, () -> colorTools.isBlue(robot.color_right) == false);
+        // drive right, till color_back sees $teamColor
+        controlledDrive.driveConditionally(0,0.2, () -> colorTools.isBlue(robot.color_back) == false);
 
-        // drive back, till color_right not sees $teamColor
-        controlledDrive.driveConditionally(-0.2,0, () -> colorTools.isBlue(robot.color_right) == true);
+        // drive back, till color_back not sees $teamColor
+        controlledDrive.driveConditionally(-0.2,0, () -> colorTools.isBlue(robot.color_back) == true);
 
         // raise arm, encoder based.
         controlledArm.raiseDistance(20, 0.2, 5);
 
 
-        // drive right, till color_right sees $teamColor
-        controlledDrive.driveConditionally(0,0.2, () -> colorTools.isBlue(robot.color_right) == false);
+        // drive right, till color_back sees $teamColor
+        controlledDrive.driveConditionally(0,0.2, () -> colorTools.isBlue(robot.color_back) == false);
 
         // open clamp, encoder based
         controlledClamp.openDistance(20, 0.2, 5);
@@ -74,7 +74,7 @@ public class ConceptAutonomous extends LinearOpMode {
 
         // unhook the plate, my friend
 
-        // drive back, till color_right sees $teamColor
-        controlledDrive.driveConditionally(-0.2,0, () -> colorTools.isBlue(robot.color_right) == false);
+        // drive back, till color_back sees $teamColor
+        controlledDrive.driveConditionally(-0.2,0, () -> colorTools.isBlue(robot.color_back) == false);
     }
 }

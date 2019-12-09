@@ -33,18 +33,18 @@ import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 @Autonomous(name = "AutoUseCase2", group = "Autonomous")
 public class AutonomousUC2 extends LinearOpMode {
 
-    public Intake autoIntake;
-    public Arm autoArm;
-    public Chassis autoChassis;
+    Intake autoIntake;
+    Arm autoArm;
+    Chassis autoChassis;
 
     public int skystonePosition;
 
     public int robotDepth = 17; // Ball on wall to Edge of Chassis Touch sensor
     public int robotWidth = 17; // Wheel edge to wheel edge
 
-    public int playingAlliance = 1; //1 for Blue, -1 for Red
+    int playingAlliance = 1; //1 for Blue, -1 for Red
 
-    public boolean parked = false; // Will be true once robot is parked
+    boolean parked = false; // Will be true once robot is parked
 
     ElapsedTime AutonomousTimeOut = new ElapsedTime();
 
@@ -54,7 +54,7 @@ public class AutonomousUC2 extends LinearOpMode {
      * <p>
      * All Usecases written assuming playingAlliance = 1 meaning Blue, -1 for Red.
      *
-     * @throws InterruptedException
+     * throws InterruptedException
      */
     @Override
     public void runOpMode() throws InterruptedException {
@@ -76,7 +76,7 @@ public class AutonomousUC2 extends LinearOpMode {
         }
     }
 
-    public void AutonomousUC2Commands() {
+    void AutonomousUC2Commands() {
 
         //Robot starts between A4, A5 such that it can slight in front of skybridge neutral zone floor
 

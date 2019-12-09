@@ -41,24 +41,24 @@ import java.util.Locale;
 @Autonomous(name = "AutoUseCaseTester", group = "Autonomous")
 public class AutonomousTester extends LinearOpMode {
 
-    public Intake autoIntake;
-    public Arm autoArm;
-    public Chassis autoChassis;
+    Intake autoIntake;
+    Arm autoArm;
+    Chassis autoChassis;
 
-    public int skystonePosition;
+    int skystonePosition;
 
     public double robotDepth = 15.7; // Ball on wall to Edge of Chassis Touch sensor
     public double robotWidth = 17.0; // Wheel edge to wheel edge
 
-    public int playingAlliance = 1; //1 for Blue, -1 for Red
+    int playingAlliance = 1; //1 for Blue, -1 for Red
 
     public boolean finalStateAchieved = false; //1 when reached final parking state
 
     ElapsedTime AutonomousTimeOut = new ElapsedTime();
 
-    public boolean parked = false;
+    boolean parked = false;
 
-    public boolean HzDEBUG_FLAG = true;
+    boolean HzDEBUG_FLAG = true;
 
     /**
      * Template runOpMode code. Only change Usecase function and call here.
@@ -66,7 +66,7 @@ public class AutonomousTester extends LinearOpMode {
      * <p>
      * All Usecases written assuming playingAlliance = 1 meaning Blue, -1 for Red.
      *
-     * @throws InterruptedException
+     * throws InterruptedException
      */
     @Override
     public void runOpMode() throws InterruptedException {
@@ -97,17 +97,26 @@ public class AutonomousTester extends LinearOpMode {
 
     }
 
-    public void AutonomousTester() {
+    void AutonomousTester() {
 
+
+        // Robot starts on SB5
+
+        //On start, Lift arm and robot opens wrist to front position
+        //initArm() and initIntake() should do this on class initialization
+
+        // Lift Arm to Sense Position
+
+        sleep(1000);
         autoArm.moveArm_groundLevel();
         sleep(1000);
         autoArm.moveArm_detectSkystoneLevel();
         sleep(1000);
         // Move by distance X forward near SB5 : 6 inches to skystone
-        //double robotToNearSkystone = 20;
-        //autoChassis.runFwdBackLeftRight(robotToNearSkystone,0,0.1);
+        double robotToNearSkystone = 20;
+        autoChassis.runFwdBackLeftRight(robotToNearSkystone,0,0.1);
 
-        //sleep(100);
+        sleep(100);
 
         // Check on color sensor, for Skystone
         moveTillStoneDetected();
@@ -116,17 +125,21 @@ public class AutonomousTester extends LinearOpMode {
 
         skystonePosition = 5; // Assume current position is skystone
         double stoneTostone = 8;
-        if ((autoIntake.stoneDetected = true) && (autoIntake.skystoneDetected = false)) {
+        if ((autoIntake.stoneDetected) && (!autoIntake.skystoneDetected)) {
             //Skystone not detected, move to SB4
             skystonePosition = 4;
-            autoChassis.runFwdBackLeftRight(stoneTostone,playingAlliance *1,0.1);
+            autoChassis.runFwdBackLeftRight(stoneTostone,playingAlliance,0.1);
         }
         sleep(1000);
 
-        if ((autoIntake.stoneDetected = true) && (autoIntake.skystoneDetected = false)) {
+        // Check on color sensor, for Skystone
+        moveTillStoneDetected();
+        sleep(1000);
+
+        if ((autoIntake.stoneDetected) && (!autoIntake.skystoneDetected)) {
             //Skystone not detected, move to SB3
             skystonePosition = 3;
-            autoChassis.runFwdBackLeftRight(stoneTostone,playingAlliance *1,0.1);
+            autoChassis.runFwdBackLeftRight(stoneTostone,playingAlliance,0.1);
         }
         sleep(1000);
 
@@ -134,6 +147,14 @@ public class AutonomousTester extends LinearOpMode {
         autoArm.moveArm_groundLevel();
         sleep(1000);
         autoIntake.closeGrip();
+
+        // Slide back to edge of B2, 10 inches
+        autoChassis.runFwdBackLeftRight(-10,0,0.1);
+
+        sleep(1000);
+        // Turn 90 degrees Left
+        autoChassis.turnby90degree(playingAlliance*(-1),0.1);
+        sleep(1000);
 
         parked = true;
 
@@ -144,7 +165,7 @@ public class AutonomousTester extends LinearOpMode {
     /**
      * Method to move till Skystone is detected using color sensor and distance sensor
      */
-    public void moveTillStoneDetected(){
+    void moveTillStoneDetected(){
         //public void runTill_ChassisLeftColorSensorIsBlue(double max_stop_distance, double straveDirection, double power){
 
         double stoneDetect_max_stop_distance = 5; //max is 6"
@@ -155,10 +176,10 @@ public class AutonomousTester extends LinearOpMode {
         double targetRotations = stoneDetect_max_stop_distance/(2*Math.PI*autoChassis.wheelRadius);
 
         while (!autoIntake.detectSkytoneAndType() && (Math.abs(autoChassis.backLeft.getCurrentPosition()) < Math.abs(autoChassis.ChassisMotorEncoderCount * targetRotations))) {
-            autoChassis.frontLeft.setPower(0.1);
-            autoChassis.frontRight.setPower(0.1);
-            autoChassis.backLeft.setPower(0.1);
-            autoChassis.backRight.setPower(0.1);
+            autoChassis.frontLeft.setPower(0.05);
+            autoChassis.frontRight.setPower(0.05);
+            autoChassis.backLeft.setPower(0.05);
+            autoChassis.backRight.setPower(0.05);
         }
 
         autoChassis.setZeroBehavior(DcMotor.ZeroPowerBehavior.BRAKE); //#TOBECHECKED TO AVOID JERK
@@ -169,7 +190,7 @@ public class AutonomousTester extends LinearOpMode {
 
     } //return stone detected autoIntake.stoneDetected and if skystone autoIntake.SkystoneDetected
 
-    public void printDebugMessages(){
+    void printDebugMessages(){
         telemetry.setAutoClear(true);
         telemetry.addData("HzDEBUG_FLAG is : ", HzDEBUG_FLAG);
 

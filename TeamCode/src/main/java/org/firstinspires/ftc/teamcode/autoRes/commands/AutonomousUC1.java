@@ -38,18 +38,18 @@ import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 @Autonomous(name = "AutoUseCase1", group = "Autonomous")
 public class AutonomousUC1 extends LinearOpMode {
 
-    public Intake autoIntake;
-    public Arm autoArm;
-    public Chassis autoChassis;
+    Intake autoIntake;
+    Arm autoArm;
+    Chassis autoChassis;
 
-    public int skystonePosition;
+    int skystonePosition;
 
     public int robotDepth = 17; // Ball on wall to Edge of Chassis Touch sensor
     public int robotWidth = 17; // Wheel edge to wheel edge
 
-    public int playingAlliance = 1; //1 for Blue, -1 for Red
+    int playingAlliance = 1; //1 for Blue, -1 for Red
 
-    public boolean parked = false; // Will be true once robot is parked
+    boolean parked = false; // Will be true once robot is parked
 
     ElapsedTime AutonomousTimeOut = new ElapsedTime();
 
@@ -59,7 +59,7 @@ public class AutonomousUC1 extends LinearOpMode {
      * <p>
      * All Usecases written assuming playingAlliance = 1 meaning Blue, -1 for Red.
      *
-     * @throws InterruptedException
+     * throws InterruptedException
      */
     @Override
     public void runOpMode() throws InterruptedException {
@@ -80,7 +80,7 @@ public class AutonomousUC1 extends LinearOpMode {
         }
     }
 
-    public void AutonomousUC1Commands() {
+    void AutonomousUC1Commands() {
 
         // Robot starts on SB5
 
@@ -107,17 +107,21 @@ public class AutonomousUC1 extends LinearOpMode {
 
         skystonePosition = 5; // Assume current position is skystone
         double stoneTostone = 8;
-        if ((autoIntake.stoneDetected = true) && (autoIntake.skystoneDetected = false)) {
+        if ((autoIntake.stoneDetected) && (!autoIntake.skystoneDetected)) {
             //Skystone not detected, move to SB4
             skystonePosition = 4;
-            autoChassis.runFwdBackLeftRight(stoneTostone,playingAlliance *1,0.1);
+            autoChassis.runFwdBackLeftRight(stoneTostone,playingAlliance,0.1);
         }
         sleep(1000);
 
-        if ((autoIntake.stoneDetected = true) && (autoIntake.skystoneDetected = false)) {
+        // Check on color sensor, for Skystone
+        moveTillStoneDetected();
+        sleep(1000);
+
+        if ((autoIntake.stoneDetected) && (!autoIntake.skystoneDetected)) {
             //Skystone not detected, move to SB3
             skystonePosition = 3;
-            autoChassis.runFwdBackLeftRight(stoneTostone,playingAlliance *1,0.1);
+            autoChassis.runFwdBackLeftRight(stoneTostone,playingAlliance,0.1);
         }
         sleep(1000);
 
@@ -163,7 +167,7 @@ public class AutonomousUC1 extends LinearOpMode {
     /**
      * Method to move till Skystone is detected using color sensor and distance sensor
      */
-    public void moveTillStoneDetected(){
+    void moveTillStoneDetected(){
         //public void runTill_ChassisLeftColorSensorIsBlue(double max_stop_distance, double straveDirection, double power){
 
         double stoneDetect_max_stop_distance = 6; //max is 6"

@@ -6,14 +6,15 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassis;
 
 public class GeneralTools {
-    private LinearOpMode opMode;
-    public GeneralTools(LinearOpMode opMode) {
-        this.opMode = opMode;
-    }
-
     HardwareMap hardwareMap;
+    HardwareChassis robot;
 
-    public HardwareChassis hardwareChassis = new HardwareChassis(hardwareMap);
+    private LinearOpMode opMode;
+    public GeneralTools(LinearOpMode opMode, HardwareChassis robot) {
+        this.opMode = opMode;
+
+        this.robot = robot;
+    }
 
 
     /**
@@ -30,11 +31,11 @@ public class GeneralTools {
      * set claw to close
      */
     public void grabSkysstone () {
-        hardwareChassis.servo_grab.setPosition(0.6);
+        robot.servo_grab.setPosition(0.6);
     }
 
     public void openClamp () {
-        hardwareChassis.servo_2.setPosition(0.1);
+        robot.servo_2.setPosition(0.1);
     }
 }
 

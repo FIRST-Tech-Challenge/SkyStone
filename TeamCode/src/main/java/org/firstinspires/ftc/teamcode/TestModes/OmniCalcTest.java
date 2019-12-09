@@ -5,17 +5,18 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassis;
 import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareOmniTest;
 import org.firstinspires.ftc.teamcode.Library.OmniWheel;
 
 @TeleOp(name = "OmniCalc")
 
 public class OmniCalcTest extends OpMode {
-    HardwareOmniTest hwMap;
+    HardwareChassis hwMap;
 
     @Override
     public void init() {
-        hwMap = new HardwareOmniTest(hardwareMap);
+        hwMap = new HardwareChassis(hardwareMap);
     }
 
     @Override

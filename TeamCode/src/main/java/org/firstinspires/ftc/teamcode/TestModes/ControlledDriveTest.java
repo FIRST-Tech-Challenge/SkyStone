@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.TestModes;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
+import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassis;
 import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareOmniTest;
 import org.firstinspires.ftc.teamcode.Library.Movement.ControlledDrive;
 
@@ -10,12 +11,12 @@ import org.firstinspires.ftc.teamcode.Library.Movement.ControlledDrive;
 
 public class ControlledDriveTest extends OpMode {
     ControlledDrive controlledDrive;
-    HardwareOmniTest robot;
+    HardwareChassis robot;
 
     @Override
     public void init() {
-        this.controlledDrive = new ControlledDrive(hardwareMap, telemetry);
-        this.robot = new HardwareOmniTest(hardwareMap);
+        this.controlledDrive = new ControlledDrive(hardwareMap);
+        this.robot = new HardwareChassis(hardwareMap);
     }
 
     @Override

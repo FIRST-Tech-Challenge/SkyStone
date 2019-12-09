@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Library;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -32,6 +33,7 @@ public class VuforiaNavigator {
     private HardwareMap hardwareMap;
     private VuforiaTrackable stoneTarget;
     private ControlledDrive controlledDrive;
+    private Telemetry telemetry;
 
     double targetX;
     double targetY;
@@ -40,10 +42,11 @@ public class VuforiaNavigator {
     double rY;
     double rZ;
 
-    public VuforiaNavigator(HardwareMap hardwareMap, HardwareChassis robot) {
+    public VuforiaNavigator(HardwareMap hardwareMap, HardwareChassis robot, Telemetry telemetry) {
         this.hardwareMap = hardwareMap;
         this.robot = robot;
         this.controlledDrive = new ControlledDrive(hardwareMap);
+        this.telemetry = telemetry;
 
         /*
          * To start up Vuforia, tell it the view that we wish to use for camera monitor (on the RC phone);
@@ -105,56 +108,76 @@ public class VuforiaNavigator {
         return ((VuforiaTrackableDefaultListener)stoneTarget.getListener()).isVisible();
     }
 
-    public void navigateToSklystone() {
-        controlledDrive.driveConditionally(0, 0.5, () -> targetY != 0);
-        controlledDrive.driveConditionally(0.5, 0, () -> targetX != 3);
+    public void navigateToSkystone(double forwardSpeed, double sidewardsSpeed) {
+        double[] result = OmniWheel.calculate(5.0, 38, 24, 0, sidewardsSpeed, 0);
+        robot.motor_front_left.setPower(result[0]);
+        robot.motor_front_right.setPower(result[1]);
+        robot.motor_rear_left.setPower(result[2]);
+        robot.motor_rear_right.setPower(result[3]);
+        telemetry.addData("State", "sidewards till transl/rrient");
+        telemetry.update();
+
+        while (getTranslationAndOrientation()[1] != 0) {}
+
+        result = OmniWheel.calculate(5.0, 38, 24, forwardSpeed, 0, 0);
+        robot.motor_front_left.setPower(result[0]);
+        robot.motor_front_right.setPower(result[1]);
+        robot.motor_rear_left.setPower(result[2]);
+        robot.motor_rear_right.setPower(result[3]);
+        telemetry.addData("State", "forward");
+        telemetry.update();
+
+        while (getTranslationAndOrientation()[0] != 3) {}
+
+        robot.motor_front_left.setPower(0);
+        robot.motor_front_right.setPower(0);
+        robot.motor_rear_left.setPower(0);
+        robot.motor_rear_right.setPower(0);
+
+        //controlledDrive.driveConditionally(0, speed, () -> getTranslationAndOrientation()[1] != 0);
+        //controlledDrive.driveConditionally(speed, 0, () -> getTranslationAndOrientation()[0] != 3);
     }
-    //TODO: method navigateToSkystone() --> void, richte genau auf skystone aus, fahr vorwarts
 
-    public void navigateToSkystone(Supplier<Boolean> opModeActive, double speed) {
+    public double[] getTranslationAndOrientation() {
+        /**
+         * See if any of the instances of {@link targetsSkyStone} are currently visible.
+         * {@link RelicRecoveryVuMark} is an enum which can have the following values:
+         * UNKNOWN, LEFT, CENTER, and RIGHT. When a VuMark is visible, something other than
+         * UNKNOWN will be returned by {@link RelicRecoveryVuMark#from(VuforiaTrackable)}.
+         */
 
+        if (((VuforiaTrackableDefaultListener)stoneTarget.getListener()).isVisible()) {
 
-        while (opModeActive.get()) {
+            /* Found an instance of the template. In the actual game, you will probably
+             * loop until this condition occurs, then move on to act accordingly depending
+             * on which VuMark was visible. */
+            /* For fun, we also exhibit the navigational pose. In the Relic Recovery game,
+             * it is perhaps unlikely that you will actually need to act on this pose information, but
+             * we illustrate it nevertheless, for completeness. */
+            OpenGLMatrix pose = ((VuforiaTrackableDefaultListener)stoneTarget.getListener()).getPose();
 
-            /**
-             * See if any of the instances of {@link targetsSkyStone} are currently visible.
-             * {@link RelicRecoveryVuMark} is an enum which can have the following values:
-             * UNKNOWN, LEFT, CENTER, and RIGHT. When a VuMark is visible, something other than
-             * UNKNOWN will be returned by {@link RelicRecoveryVuMark#from(VuforiaTrackable)}.
-             */
+            /* We further illustrate how to decompose the pose into useful rotational and
+             * translational components */
+            if (pose != null) {
+                VectorF trans = pose.getTranslation();
+                Orientation rot = Orientation.getOrientation(pose, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
 
-            if (((VuforiaTrackableDefaultListener)stoneTarget.getListener()).isVisible()) {
+                // Extract the X, Y, and Z components of the offset of the target relative to the robot
+                targetX = trans.get(0);
+                targetY = trans.get(1);
+                targetZ = trans.get(2);
 
-                /* Found an instance of the template. In the actual game, you will probably
-                 * loop until this condition occurs, then move on to act accordingly depending
-                 * on which VuMark was visible. */
-                /* For fun, we also exhibit the navigational pose. In the Relic Recovery game,
-                 * it is perhaps unlikely that you will actually need to act on this pose information, but
-                 * we illustrate it nevertheless, for completeness. */
-                OpenGLMatrix pose = ((VuforiaTrackableDefaultListener)stoneTarget.getListener()).getPose();
+                // Extract the rotational components of the target relative to the robot
+                rX = rot.firstAngle;
+                rY = rot.secondAngle;
+                rZ = rot.thirdAngle;
 
-                /* We further illustrate how to decompose the pose into useful rotational and
-                 * translational components */
-                if (pose != null) {
-                    VectorF trans = pose.getTranslation();
-                    Orientation rot = Orientation.getOrientation(pose, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
-
-                    // Extract the X, Y, and Z components of the offset of the target relative to the robot
-                    targetX = trans.get(0);
-                    targetY = trans.get(1);
-                    targetZ = trans.get(2);
-
-                    // Extract the rotational components of the target relative to the robot
-                    rX = rot.firstAngle;
-                    rY = rot.secondAngle;
-                    rZ = rot.thirdAngle;
-
-                    // TODO: Navigate to Skystone
-
-
-                }
+                double[] ret_array = {targetX, targetY, targetZ, rX, rY, rZ};
+                return ret_array;
             }
         }
+        double[] ret_array = {0,0,0,0,0,0};
+        return ret_array;
     }
 
     String format(OpenGLMatrix transformationMatrix) {

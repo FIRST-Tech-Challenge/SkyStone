@@ -13,7 +13,7 @@ public class ConceptAutonomous extends LinearOpMode {
 
     HardwareChassis robot;
     ControlledDrive controlledDrive;
-    ControlledClamp controlledClamp;
+    //ControlledClamp controlledClamp;
     ControlledArm controlledArm;
     ColorTools colorTools;
 
@@ -21,8 +21,8 @@ public class ConceptAutonomous extends LinearOpMode {
     public void runOpMode() {
         // --Initialize Robot--
         robot = new HardwareChassis(hardwareMap);
-        controlledDrive = new ControlledDrive(hardwareMap, telemetry);
-        controlledClamp = new ControlledClamp(hardwareMap, telemetry);
+        controlledDrive = new ControlledDrive(hardwareMap);
+        //controlledClamp = new ControlledClamp(hardwareMap, telemetry);
         controlledArm = new ControlledArm(hardwareMap, telemetry);
         colorTools = new ColorTools();
 
@@ -64,7 +64,7 @@ public class ConceptAutonomous extends LinearOpMode {
         controlledDrive.driveConditionally(0,0.2, () -> colorTools.isBlue(robot.color_right) == false);
 
         // open clamp, encoder based
-        controlledClamp.openDistance(20, 0.2, 5);
+        //controlledClamp.openDistance(20, 0.2, 5);
 
         // hook platform
 

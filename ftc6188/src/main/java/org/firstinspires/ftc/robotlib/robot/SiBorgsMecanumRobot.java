@@ -27,7 +27,7 @@ public class SiBorgsMecanumRobot
     private EncoderMotor driveFrontRight;
     private EncoderMotor driveRearLeft;
     private EncoderMotor driveRearRight;
-    private EncoderMotor[] driveMotorList;
+    protected EncoderMotor[] driveMotorList;
 
     // Drive constants
     private static final double WHEEL_RADIUS_IN = 2;
@@ -52,8 +52,8 @@ public class SiBorgsMecanumRobot
     public BasicSound sirenSound;
 
     // Telemetry reference
-    private final Telemetry telemetry;
-    private final HardwareMap hardwareMap;
+    protected final Telemetry telemetry;
+    protected final HardwareMap hardwareMap;
 
     // Movement systems (drivetrain/arm system)
     public MecanumDrivetrain drivetrain;

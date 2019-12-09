@@ -87,9 +87,6 @@ public class SiBorgsMecanumAutoPark extends LinearOpMode
         else
         { autoSideDirection = AutoDirection.LEFT; }
 
-        // re-position the arm crane so that it is out of the way during auto
-        robot.armCrane.armAutoPosition(-40, 60, 0.5);
-
         /** AUTO PROGRAM STARTS DRIVING **/
         // drive the forward component of the auto path
         if (autoPath == AutoProgram.FRONTRIGHT || autoPath == AutoProgram.FRONTLEFT)

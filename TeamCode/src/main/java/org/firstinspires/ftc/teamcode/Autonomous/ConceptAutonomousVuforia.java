@@ -21,8 +21,8 @@ public class ConceptAutonomousVuforia extends LinearOpMode {
 
     @Override public void runOpMode() {
         this.robot = new HardwareChassis(hardwareMap);
-        this.vuforiaNavigator = new VuforiaNavigator(hardwareMap, robot, telemetry);
-        this.controlledDrive= new ControlledDrive(hardwareMap);
+        this.vuforiaNavigator = new VuforiaNavigator(hardwareMap, robot, telemetry, () -> opModeIsActive());
+        this.controlledDrive= new ControlledDrive(hardwareMap, telemetry, () -> opModeIsActive());
         this.generalTools = new GeneralTools(this, robot);
         this.colorTools = new ColorTools();
 

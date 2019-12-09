@@ -11,7 +11,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassis;
-import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareOmniTest;
 import org.firstinspires.ftc.teamcode.Library.OmniWheel;
 
 import java.util.function.Supplier;
@@ -28,9 +27,14 @@ public class ControlledDrive {
     HardwareMap hardwareMap;
     HardwareChassis robot;
 
-    public ControlledDrive(HardwareMap hardwareMap) {
+    Supplier<Boolean> opModeRunning;
+
+    public ControlledDrive(HardwareMap hardwareMap, Telemetry telemetry, Supplier<Boolean> opModeRunning) {
         this.hardwareMap = hardwareMap;
         this.robot = new HardwareChassis(hardwareMap);
+
+        this.telemetry = telemetry;
+        this.opModeRunning = opModeRunning;
     }
 
     public void driveDistance(double distanceForward, double distanceSideways, double speed, int timeout) {
@@ -70,7 +74,7 @@ public class ControlledDrive {
         // However, if you require that BOTH motors have finished their moves before the robot continues
         // onto the next step, use (isBusy() || isBusy()) in the loop test.
         while ((runtime.seconds() < timeout) &&
-                (robot.motor_front_left.isBusy() || robot.motor_front_right.isBusy() || robot.motor_rear_left.isBusy() || robot.motor_rear_right.isBusy())) {
+                (robot.motor_front_left.isBusy() || robot.motor_front_right.isBusy() || robot.motor_rear_left.isBusy() || robot.motor_rear_right.isBusy()) && this.opModeRunning.get()){
             //sleep(1);
         }
 
@@ -96,7 +100,7 @@ public class ControlledDrive {
      * @param condition
      */
     public void driveConditionally(double speedForward, double speedSideways, Supplier<Boolean> condition) {
-        while (condition.get()) {
+        while (condition.get() && this.opModeRunning.get()) {
             //drive
             double[] result = OmniWheel.calculate(5.0, 38, 24, -speedForward, speedSideways, 0);
 

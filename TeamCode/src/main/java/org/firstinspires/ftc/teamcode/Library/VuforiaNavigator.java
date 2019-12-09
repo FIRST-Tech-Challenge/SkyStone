@@ -42,10 +42,10 @@ public class VuforiaNavigator {
     double rY;
     double rZ;
 
-    public VuforiaNavigator(HardwareMap hardwareMap, HardwareChassis robot, Telemetry telemetry) {
+    public VuforiaNavigator(HardwareMap hardwareMap, HardwareChassis robot, Telemetry telemetry, Supplier<Boolean> opModeRunning) {
         this.hardwareMap = hardwareMap;
         this.robot = robot;
-        this.controlledDrive = new ControlledDrive(hardwareMap);
+        this.controlledDrive = new ControlledDrive(hardwareMap, telemetry, () -> opModeRunning.get());
         this.telemetry = telemetry;
 
         /*

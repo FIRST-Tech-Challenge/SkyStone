@@ -19,8 +19,8 @@ public class VuforiaTest extends LinearOpMode {
 
     @Override public void runOpMode() {
         this.robot = new HardwareChassis(hardwareMap);
-        this.vuforiaNavigator = new VuforiaNavigator(hardwareMap, robot, telemetry);
-        this.controlledDrive= new ControlledDrive(hardwareMap);
+        this.vuforiaNavigator = new VuforiaNavigator(hardwareMap, robot, telemetry, () -> this.opModeIsActive());
+        this.controlledDrive= new ControlledDrive(hardwareMap, telemetry, () -> this.opModeIsActive());
         this.generalTools = new GeneralTools(this, robot);
 
         telemetry.addData("State", "sideward");

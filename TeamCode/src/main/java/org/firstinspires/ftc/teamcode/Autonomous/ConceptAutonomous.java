@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.Library.ColorTools;
 
 import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassis;
-import org.firstinspires.ftc.teamcode.Library.Movement.ControlledArm;
+import org.firstinspires.ftc.teamcode.Library.Movement.ControlledLift;
 import org.firstinspires.ftc.teamcode.Library.Movement.ControlledDrive;
 
 @Autonomous (name = "ConceptAutonomous")
@@ -14,16 +14,16 @@ public class ConceptAutonomous extends LinearOpMode {
     HardwareChassis robot;
     ControlledDrive controlledDrive;
     //ControlledClamp controlledClamp;
-    ControlledArm controlledArm;
+    ControlledLift controlledLift;
     ColorTools colorTools;
 
     @Override
     public void runOpMode() {
         // --Initialize Robot--
         robot = new HardwareChassis(hardwareMap);
-        controlledDrive = new ControlledDrive(hardwareMap);
-        //controlledClamp = new ControlledClamp(hardwareMap, telemetry);
-        controlledArm = new ControlledArm(hardwareMap, telemetry);
+        controlledDrive = new ControlledDrive(hardwareMap, telemetry, () -> this.opModeIsActive());
+        controlledLift = new ControlledLift(hardwareMap, telemetry, () -> this.opModeIsActive());
+        //controlledClamp = new ControlledClamp(hardwareMap, telemetry, () -> this.opModeIsActive());
         colorTools = new ColorTools();
 
         // --Main part--
@@ -57,7 +57,7 @@ public class ConceptAutonomous extends LinearOpMode {
         controlledDrive.driveConditionally(-0.2,0, () -> colorTools.isBlue(robot.color_right) == true);
 
         // raise arm, encoder based.
-        controlledArm.raiseDistance(20, 0.2, 5);
+        controlledLift.raiseDistance(20, 0.2, 5);
 
 
         // drive right, till color_right sees $teamColor

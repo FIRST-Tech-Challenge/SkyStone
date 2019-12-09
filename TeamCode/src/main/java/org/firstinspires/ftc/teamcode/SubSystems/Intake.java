@@ -91,7 +91,7 @@ public class Intake {
 
         detectSkystoneColor = hardwareMap.get(ColorSensor.class, "detect_skystone");
         detectSkystoneDistance = hardwareMap.get(DistanceSensor.class, "detect_skystone");
-        initIntake();
+        //initIntake();
     }
 
     //#TOBEFILLED Consider initializing position?

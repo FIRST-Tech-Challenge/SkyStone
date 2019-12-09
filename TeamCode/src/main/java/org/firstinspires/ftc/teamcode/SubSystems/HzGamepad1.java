@@ -378,12 +378,12 @@ public class HzGamepad1 {
            location to place block and touch sensor on frontleft of chassis is pressed
          */
 
-        if (getLeftTrigger()>0.75){
+        /*if (getLeftTrigger()>0.75){
             if (gpChassis.frontleftChassisTouchSensorIsPressed()){
                 autoPlace(gpChassis, gpArm, gpIntake);
             }
 
-        }
+        }*/
 
     }
 }

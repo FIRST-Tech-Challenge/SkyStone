@@ -49,9 +49,15 @@ public class AutoTestRunDistance extends LinearOpMode{
     public boolean HzDEBUG_FLAG = true;
 
     HzGamepad1 hzGamepad1;
-    Chassis hzChassis;
-    Arm hzArm;
-    Intake hzIntake;
+    Chassis autoChassis;
+    Arm autoArm;
+    Intake autoIntake;
+    public int robotDepth = 17; // Ball on wall to Edge of Chassis Touch sensor
+    public int robotWidth = 17; // Wheel edge to wheel edge
+
+    public int playingAlliance = 1; //1 for Blue, -1 for Red
+
+    public boolean finalStateAchieved = false; //1 when reached final parking state
 
     //Timer for timing Autonomous mode
     ElapsedTime AutonomousTimeOut = new ElapsedTime();
@@ -59,36 +65,42 @@ public class AutoTestRunDistance extends LinearOpMode{
     @Override
     public void runOpMode() {
         //Instantiate Subsystems : Chassis, Arm, Intake, Gamepad1
-        hzChassis = new Chassis(hardwareMap);
-        hzArm = new Arm(hardwareMap);
-        hzIntake = new Intake(hardwareMap);
+        autoChassis = new Chassis(hardwareMap);
+        autoArm = new Arm(hardwareMap);
+        autoIntake = new Intake(hardwareMap);
         hzGamepad1 = new HzGamepad1(gamepad1);
 
         telemetry.setAutoClear(false);
         telemetry.addData("Init Autonomous Tests", "v:1.0");
 
         //Wait for pressing Run on controller
+        //Initialize on press of play
+        autoChassis.initChassis();
+        autoArm.initArm();
+        autoIntake.initIntake();
+
         waitForStart();
-        AutonomousTimeOut.reset();
+        
+        //AutonomousTimeOut.reset();
 
         //Write test methods as separate functions and call in OpModeisActive().
         //Comment out the ones not run at the time
 
         //Run Robot till opMode is Active or 30 seconds
-        while (opModeIsActive() /*&& AutonomousTimeOut.milliseconds()<30000*/) {
-            //hzGamepad1.runSubsystemByGamepadInput(hzChassis, hzArm, hzIntake);
-            //hzArm.moveArm_aboveFoundationLevel();
 
-            //hzChassis.runDistance(9, -Math.PI/2, 0, 0.25);// Strave right
-            hzChassis.runTill_ChassisLeftColorSensorIsRed(9, -1, 0.25);
-            //hzChassis.runDistance(0, 0, Math.PI/4, 0.25);
+            //hzGamepad1.runSubsystemByGamepadInput(autoChassis, autoArm, autoIntake);
+            //autoArm.moveArm_aboveFoundationLevel();
+
+        autoChassis.runDistance(9, -Math.PI/2, 0, 0.25);// Strave right
+        //autoChassis.runTill_ChassisLeftColorSensorIsRed(9, -1, 0.25);
+        //autoChassis.runDistance(0, 0, Math.PI/4, 0.25);
+
+        double robotToFoundation = 47.5 - robotWidth + 18.5 / 2;
+        autoChassis.runDistance(robotToFoundation, playingAlliance * (-Math.PI / 2), 0, 0.25);
 
 
-            if(HzDEBUG_FLAG) printDebugMessages();
-            telemetry.update();
-            idle();
-
-        }
+        if(HzDEBUG_FLAG) printDebugMessages();
+             telemetry.update();
 
     }
     /**
@@ -99,15 +111,15 @@ public class AutoTestRunDistance extends LinearOpMode{
         telemetry.setAutoClear(true);
         telemetry.addData("HzDEBUG_FLAG is : ", HzDEBUG_FLAG);
 
-        telemetry.addData("hzChassis.backLeft.isBusy : ", hzChassis.backLeft.isBusy());
-        telemetry.addData("hzChassis.backLeft.getTargetPosition : ", hzChassis.backLeft.getTargetPosition());
-        telemetry.addData("hzChassis.backLeft.getCurrentPosition : ", hzChassis.backLeft.getCurrentPosition());
-        telemetry.addData("hzChassis.backRight.getCurrentPosition : ", hzChassis.backRight.getCurrentPosition());
-        telemetry.addData("hzChassis.frontLeft.getCurrentPosition : ", hzChassis.frontLeft.getCurrentPosition());
-        telemetry.addData("hzChassis.frontRight.getCurrentPosition : ", hzChassis.frontRight.getCurrentPosition());
-        telemetry.addData("hzChassis.backLeft.getMode : ", hzChassis.backLeft.getMode());
-        //telemetry.addData("hzChassis.frontLeft.currentLevel : ", hzArm.currentLevel);
-        //telemetry.addData("Arm.blockLevel[hzArm.currentLevel] : ", hzArm.blockLevel[hzArm.currentLevel]);
+        telemetry.addData("autoChassis.backLeft.isBusy : ", autoChassis.backLeft.isBusy());
+        telemetry.addData("autoChassis.backLeft.getTargetPosition : ", autoChassis.backLeft.getTargetPosition());
+        telemetry.addData("autoChassis.backLeft.getCurrentPosition : ", autoChassis.backLeft.getCurrentPosition());
+        telemetry.addData("autoChassis.backRight.getCurrentPosition : ", autoChassis.backRight.getCurrentPosition());
+        telemetry.addData("autoChassis.frontLeft.getCurrentPosition : ", autoChassis.frontLeft.getCurrentPosition());
+        telemetry.addData("autoChassis.frontRight.getCurrentPosition : ", autoChassis.frontRight.getCurrentPosition());
+        telemetry.addData("autoChassis.backLeft.getMode : ", autoChassis.backLeft.getMode());
+        //telemetry.addData("autoChassis.frontLeft.currentLevel : ", autoArm.currentLevel);
+        //telemetry.addData("Arm.blockLevel[autoArm.currentLevel] : ", autoArm.blockLevel[autoArm.currentLevel]);
 
     }
 }

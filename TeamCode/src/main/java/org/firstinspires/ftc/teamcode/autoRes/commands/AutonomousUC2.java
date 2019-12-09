@@ -44,6 +44,8 @@ public class AutonomousUC2 extends LinearOpMode {
 
     public int playingAlliance = 1; //1 for Blue, -1 for Red
 
+    public boolean parked = false; // Will be true once robot is parked
+
     public boolean finalStateAchieved = false; //1 when reached final parking state
 
     ElapsedTime AutonomousTimeOut = new ElapsedTime();
@@ -65,9 +67,14 @@ public class AutonomousUC2 extends LinearOpMode {
 
         //Robot starts on A2
         waitForStart();
-        while (opModeIsActive() && (!finalStateAchieved)) {
+
+        //Initialize on press of play
+        autoChassis.initChassis();
+        autoArm.initArm();
+        autoIntake.initIntake();
+
+        while (opModeIsActive()) {
             AutonomousUC2Commands();
-            finalStateAchieved = true;
         }
     }
 
@@ -81,51 +88,42 @@ public class AutonomousUC2 extends LinearOpMode {
         //Lift Arm to AboveFoundation level
         autoArm.moveArm_aboveFoundationLevel();
 
-        if (!opModeIsActive()) return;
-
         //Move robot to in between C5 and C6
-        // istance (+ for forward - for backward), strafe right : direction = -Math.PI/2, strafe left : direction = Math.PI/2
-        //distance calibaration forward/backward : 9.8" vs 10" input. strafe left/right : 9" vs 10" input 13" vs 15" input
-        //robotToFoundation = wall to Foundation (47.5) - bredth of robot + half of foundation (18.5/2)
+        double robotToFoundation = 39.75; //47.5 - robotWidth + 18.5 / 2;
+        autoChassis.runFwdBackLeftRight(robotToFoundation,1,0.25);
+        //Testing : Moved 54" vs 39.75" input
 
-        double robotToFoundation = 47.5 - robotWidth + 18.5 / 2;
-        autoChassis.runDistance(robotToFoundation, playingAlliance * (-Math.PI / 2), 0, 0.25);
-        if (!opModeIsActive()) return;
 
         //Move forward till Chassis bumber limit switch is pressed.
         autoChassis.runFwdTill_frontleftChassisTouchSensor_Pressed(4, 0.1);
-        if (!opModeIsActive()) return;
+        //Testing : Move 6.5" vs 4" input, stopped correctly when touch sensor is pressed
 
         //Drop Arm to OnFoundation level
         autoArm.moveArm_onFoundationLevel();
-        if (!opModeIsActive()) return;
+
         //Optional : Move foundation to wall and then turn
 
         //Move Robot Left toward A4 (for XX rotations). Friction will cause Robot to rotate towards A6
         double foundationTurnDisance = 39.75;
-        autoChassis.runDistance(foundationTurnDisance, playingAlliance * (Math.PI / 2), 0, 0.25);
-        if (!opModeIsActive()) return;
+        autoChassis.runFwdBackLeftRight(foundationTurnDisance,-1,0.25);
 
         //Pull back till wall is hit (Motor does not move)
         double foundationBackToWall = 10; // #TOBECORRECTED WITH ENCODER NOT MOVING CODE
-        autoChassis.runDistance(-foundationBackToWall, 0, 0, 0.25);
-        if (!opModeIsActive()) return;
+        autoChassis.runFwdBackLeftRight(-foundationBackToWall,0,0.25);
 
         //Slide left till Motor does not move (Foundation corner on Edge)
         //#TOBEWRITTEN
 
         //Push forward to move foundation to end of line
         double foundationtoEdgeofBuildingSite = 3;
-        autoChassis.runDistance(foundationtoEdgeofBuildingSite, 0, 0, 0.25);
-        if (!opModeIsActive()) return;
+        autoChassis.runFwdBackLeftRight(-foundationBackToWall,0,0.25);
 
         //Lift Arm to Above foundation level
         autoArm.moveArm_aboveFoundationLevel();
-        if (!opModeIsActive()) return;
 
         //Move back till wall is hit
-        autoChassis.runDistance(-foundationtoEdgeofBuildingSite, 0, 0, 0.25);
-        if (!opModeIsActive()) return;
+        autoChassis.runFwdBackLeftRight(-foundationtoEdgeofBuildingSite,0,0.25);
+
 
         //Optional : Move to park near skybridge Neutral
 
@@ -138,32 +136,4 @@ public class AutonomousUC2 extends LinearOpMode {
         }
     }
 
-
-    /**
-     * Method to move till Skystone is detected using color sensor and distance sensor
-     */
-    public void moveTillStoneDetected(){
-        //public void runTill_ChassisLeftColorSensorIsBlue(double max_stop_distance, double straveDirection, double power){
-
-        double stoneDetect_max_stop_distance = 5; //max is 6"
-        autoChassis.setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        autoChassis.resetChassis();
-
-        //Max Total Rotations of wheel = distance / circumference of wheel
-        double targetRotations = stoneDetect_max_stop_distance/(2*Math.PI*autoChassis.wheelRadius);
-
-        while (!autoIntake.detectSkytoneAndType() && (Math.abs(autoChassis.backLeft.getCurrentPosition()) < Math.abs(autoChassis.ChassisMotorEncoderCount * targetRotations))) {
-            autoChassis.frontLeft.setPower(0.1);
-            autoChassis.frontRight.setPower(0.1);
-            autoChassis.backLeft.setPower(0.1);
-            autoChassis.backRight.setPower(0.1);
-        }
-
-        autoChassis.setZeroBehavior(DcMotor.ZeroPowerBehavior.BRAKE); //#TOBECHECKED TO AVOID JERK
-        autoChassis.frontLeft.setPower(0.0);
-        autoChassis.frontRight.setPower(0.0);
-        autoChassis.backLeft.setPower(0.0);
-        autoChassis.backRight.setPower(0.0);
-
-    } //return stone detected autoIntake.stoneDetected and if skystone autoIntake.SkystoneDetected
 }

@@ -36,7 +36,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.Intake;
  */
 
 @Autonomous(name = "AutoUseCase1", group = "Autonomous")
-public class AutonomousUC1 extends LinearOpMode {
+public class AutonomousTester extends LinearOpMode {
 
     public Intake autoIntake;
     public Arm autoArm;
@@ -44,14 +44,16 @@ public class AutonomousUC1 extends LinearOpMode {
 
     public int skystonePosition;
 
-    public int robotDepth = 17; // Ball on wall to Edge of Chassis Touch sensor
-    public int robotWidth = 17; // Wheel edge to wheel edge
+    public double robotDepth = 15.7; // Ball on wall to Edge of Chassis Touch sensor
+    public double robotWidth = 17.0; // Wheel edge to wheel edge
 
     public int playingAlliance = 1; //1 for Blue, -1 for Red
 
     public boolean finalStateAchieved = false; //1 when reached final parking state
 
     ElapsedTime AutonomousTimeOut = new ElapsedTime();
+
+    public boolean parked = false;
 
     /**
      * Template runOpMode code. Only change Usecase function and call here.
@@ -70,77 +72,61 @@ public class AutonomousUC1 extends LinearOpMode {
 
         //Robot starts on A2
         waitForStart();
+
         //Initialize on press of play
         autoChassis.initChassis();
         autoArm.initArm();
         autoIntake.initIntake();
 
-        while (opModeIsActive()) {
-            AutonomousUC1Commands();
+        while (opModeIsActive() && !parked) {
+            AutonomousTester();
         }
+
     }
 
-    public void AutonomousUC1Commands() {
+    public void AutonomousTester() {
 
-        // Robot starts on SB5
+        //Robot starts between A4, A5 such that it can slight in front of skybridge neutral zone floor
 
         //On start, Lift arm and robot opens wrist to front position
         //initArm() and initIntake() should do this on class initialization
 
-        // Lift Arm to Sense Position
-        autoArm.moveArm_detectSkystoneLevel();
+        //Lift Arm to AboveFoundation level
+        autoArm.moveArm_aboveFoundationLevel();
 
-        // Move by distance X forward near SB5 : 6 inches to skystone
-        double robotToNearSkystone = 20;
-        autoChassis.runDistance(robotToNearSkystone, 0, 0, 0.25);
+        //Move robot to in between C5 and C6
+        // istance (+ for forward - for backward), strafe right : direction = -Math.PI/2, strafe left : direction = Math.PI/2
+        //distance calibaration forward/backward : 9.8" vs 10" input. strafe left/right : 9" vs 10" input 13" vs 15" input
+        //robotToFoundation = wall to Foundation (47.5) - bredth of robot + half of foundation (18.5/2)
 
-        // Check on color sensor, for Skystone
-        moveTillStoneDetected();
+        double robotToFoundation = 47.5 - robotWidth + 18.5 / 2;
+        //autoChassis.runDistance(robotToFoundation, playingAlliance * (-Math.PI / 2), 0, 0.25);
+        //while (autoChassis.backLeft.isBusy());
 
-        // If Skystone, record Skystone position as SB5, Go to Step 10
+        //Go right
+        autoChassis.runFwdBackLeftRight(robotToFoundation,1,0.25);
 
-        skystonePosition = 5; // Assume current position is skystone
-        double stoneTostone = 8;
-        if ((autoIntake.stoneDetected = true) && (autoIntake.skystoneDetected = false)) {
-            //Skystone not detected, move to SB4
-            skystonePosition = 4;
-            autoChassis.runDistance(stoneTostone, playingAlliance * (-Math.PI / 2), 0, 0.1);
-        }
+        //Move forward till Chassis bumber limit switch is pressed.
+        autoChassis.runFwdTill_frontleftChassisTouchSensor_Pressed(4, 0.1);
+        //Testing : Move 6.5" vs 4" input, stopped correctly when touch sensor is pressed
 
-        if ((autoIntake.stoneDetected = true) && (autoIntake.skystoneDetected = false)) {
-            //Skystone not detected, move to SB3
-            skystonePosition = 3;
-            autoChassis.runDistance(stoneTostone, playingAlliance * (-Math.PI / 2), 0, 0.1);
-        }
+        //Drop Arm to OnFoundation level
+        autoArm.moveArm_onFoundationLevel();
 
-        // Drop Arm and Grip the block.
-        autoArm.moveArm_groundLevel();
-        autoIntake.closeGrip();
+        //Move Robot Left toward A4 (for XX rotations). Friction will cause Robot to rotate towards A6
+        double foundationTurnDisance = 39.75;
+        autoChassis.runFwdBackLeftRight(foundationTurnDisance,-1,0.25);
+        //autoChassis.runDistance(foundationTurnDisance, playingAlliance * (Math.PI / 2), 0, 0.25);
 
-        // Slide back to edge of B2,
-        autoChassis.runDistance(-20,0,0,0.25);
+        //Pull back till wall is hit (Motor does not move)
+        double foundationBackToWall = 10; // #TOBECORRECTED WITH ENCODER NOT MOVING CODE
+        autoChassis.runFwdBackLeftRight(-foundationBackToWall,0,0.25);
+        //autoChassis.runDistance(-foundationBackToWall, 0, 0, 0.25);
 
-        // Turn 90 degrees Left
-        autoChassis.runDistance(0, 0, playingAlliance*Math.PI/2, 0.1);
+        autoArm.moveArm_onFoundationLevel();
 
-        //Lift Arm
-        autoArm.moveArm_AutoPlacementLevel();
+        parked = true;
 
-       //Move forward till Chassis bumber limit switch is pressed.
-        double expectedMaxDistanceToFoundation = 40;
-        autoChassis.runFwdTill_frontleftChassisTouchSensor_Pressed(expectedMaxDistanceToFoundation, 0.25);
-
-        // Drop block
-        autoIntake.openGrip();
-
-        // Move in between B4 and B3 (Parking)
-        // Park near wall
-        // Move back by distance or till Chassis light sensor does not detect Blue line to be under blue skybridge
-        if (playingAlliance == 1) {
-            autoChassis.runTill_ChassisRightColorSensorIsBlue(-70, 0, 0.25);
-        } else {
-            autoChassis.runTill_ChassisLeftColorSensorIsRed(-70, 0, 0.25);
-        }
         //End of Usecase : Should be parked at this time.
     }
 

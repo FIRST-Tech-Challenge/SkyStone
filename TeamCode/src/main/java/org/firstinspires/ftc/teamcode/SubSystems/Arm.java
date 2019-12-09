@@ -82,7 +82,7 @@ public class Arm {
     //Constructor
     public Arm(HardwareMap hardwareMap) {
         armMotor = hardwareMap.dcMotor.get("arm");
-        initArm();
+        //initArm();
     }
 
     /**
@@ -105,6 +105,7 @@ public class Arm {
      */
     public void turnArmBrakeModeOn(){
         armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        armMotor.setPower(0.0);
     }
 
      /**
@@ -144,7 +145,7 @@ public class Arm {
         armMotor.setTargetPosition(groundLevel);
         turnArmBrakeModeOff();
         runArmToLevel();
-        resetArm();
+        //resetArm();
     }
 
     /**
@@ -191,7 +192,7 @@ public class Arm {
         turnArmBrakeModeOn();
         if (currentLevel < MAX_BLOCK_LEVEL) {
             armMotor.setTargetPosition(blockLevel[currentLevel+1]);
-            armMotor.setTargetPosition(-currentLevel*50); //Test code to caliberate
+            //armMotor.setTargetPosition(-currentLevel*50); //Test code to caliberate
             currentLevel++;
             runArmToLevel();
         }

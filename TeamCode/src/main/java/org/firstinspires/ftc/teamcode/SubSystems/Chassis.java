@@ -90,7 +90,7 @@ public class Chassis {
         configureRobot();
 
         //Initializes Robot to right component modes - Reset, Set Zero Behavior
-        initChassis();
+        //initChassis();
     }
 
     /**
@@ -115,9 +115,6 @@ public class Chassis {
         resetChassis();
         setZeroBehavior(DcMotor.ZeroPowerBehavior.FLOAT); // To avoid jerk at start
         setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        // set the digital channel Touch Sensor to input.
-        //frontleftChassisTouchSensor.setMode(DigitalChannel.Mode.INPUT);
     }
 
     /**
@@ -281,6 +278,7 @@ public class Chassis {
      */
     public void runDistance(double distance, double targetAngle, double turn, double power) {
         //ChassisMotionTimeOut.reset(); // To protect against uncontrolled runs.
+        setMotorMode(DcMotor.RunMode.RUN_TO_POSITION);
         double turnAngle = targetAngle + Math.PI / 4;
 
         double wheelDistance = distance * ChassisMotorEncoderCount/(2*Math.PI*wheelRadius);
@@ -299,13 +297,54 @@ public class Chassis {
         frontRight.setPower(power);
         backLeft.setPower(power);
         backRight.setPower(power);
+
         setZeroBehavior(DcMotor.ZeroPowerBehavior.BRAKE); //To avoid jerk
-        setMotorMode(DcMotor.RunMode.RUN_TO_POSITION);
+
 
     }
 
+    /* Method to move chassis based on computed vector inputs for a set distance
+     * To be used in Autonomous mode for moving by distance or turning by angle
+     * Uses PID loop in motors to ensure motion without errors
+     *
+     * @param distance +ve for forward, -ve for backward
+     * @param strafeDirection 0 for forward or backward, 1 for right, -1 for left
+     * @param power to run motors
+     */
+    public void runFwdBackLeftRight(double distance, double strafeDirection, double power){
+        setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        resetChassis();
 
-        /**
+        //Max Total Rotations of wheel = distance / circumference of wheel
+        double targetRotations = distance/(2*Math.PI*wheelRadius);
+
+        //set fwdbackdirection, +ve for forward and negative for backward
+        double fwdbackdirection = distance /Math.abs(distance);
+
+        while (Math.abs(backLeft.getCurrentPosition()) < Math.abs(ChassisMotorEncoderCount * targetRotations)) {
+            if(strafeDirection == 0) {
+                //Go forward or backward
+                frontLeft.setPower(fwdbackdirection*power);
+                frontRight.setPower(fwdbackdirection*power);
+                backLeft.setPower(fwdbackdirection*power);
+                backRight.setPower(fwdbackdirection*power);
+            } else {
+                frontLeft.setPower(strafeDirection* power);
+                frontRight.setPower(-strafeDirection* power);
+                backLeft.setPower(-strafeDirection* power);
+                backRight.setPower(strafeDirection* power);
+            }
+        };
+        setZeroBehavior(DcMotor.ZeroPowerBehavior.BRAKE); //#TOBECHECKED TO AVOID JERK
+        frontLeft.setPower(0.0);
+        frontRight.setPower(0.0);
+        backLeft.setPower(0.0);
+        backRight.setPower(0.0);
+    }
+
+
+
+    /**
      * Method to move chassis based on computed vector inputs for a set max_stop_distance
      * Till frontleftChassisTouchSensor is pressed.
      * To be used in Autonomous mode for moving by distance or turning by angle

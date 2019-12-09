@@ -35,6 +35,11 @@ public class HazmatTeleOpMode extends LinearOpMode{
         //Wait for pressing plan on controller
         waitForStart();
 
+        //Initialize on press of play
+        hzChassis.initChassis();
+        hzArm.initArm();
+        hzIntake.initIntake();
+
         //Run Robot based on Gamepad1 inputs
         while (opModeIsActive()) {
             hzGamepad1.runSubsystemByGamepadInput(hzChassis, hzArm, hzIntake);

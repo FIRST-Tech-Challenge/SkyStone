@@ -363,9 +363,9 @@ public class ConceptVuforiaSkyStoneNavigationWebcam extends LinearOpMode {
                         translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
                 double yPosition = translation.get(0);
                 //String positionSkystone = "";
-                if (yPosition<-10){
+                if (yPosition<0){
                     PS = positionSkystone.LEFT;
-                }else if (-10<yPosition && yPosition<0){
+                }else if (0<yPosition){
                     PS = positionSkystone.CENTER;
                 }else {
                     PS = positionSkystone.RIGHT;

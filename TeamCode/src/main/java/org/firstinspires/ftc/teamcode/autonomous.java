@@ -38,6 +38,7 @@ public class autonomous extends LinearOpMode {
         DrivetoQuarry,
         GrabSkystone,
         MovetoLine,
+        MovetoLineStart,
         ScoreStone,
         BackupToQuarry,
         GrabSkystone2,
@@ -127,14 +128,14 @@ public class autonomous extends LinearOpMode {
                     telemetry.update();
                     Drive.TimeDelay(5.0);
                     }
-                    newState(State.DrivetoQuarry);
+                    newState(State.MovetoLineStart);
                     break;
                 // The robot drives forward until it reaches the quarry
                 case DrivetoQuarry:
                     telemetry.addLine("Drive to Quarry");
                     telemetry.update();
                     Drive.moveForwardDistance(0.75,71.2);
-                    newState(State.GrabSkystone);
+                    newState(State.MovetoLine);
                     break;
                 // Navigates to where the skystone is and grabs it
                 case GrabSkystone:
@@ -157,8 +158,8 @@ public class autonomous extends LinearOpMode {
                     } else {
                         telemetry.addLine("R1");
                     }
-                    Grabber.open();
-                    //Drive.moveForwardDistance(0.5,5);
+                    Grabber.auto();
+                    Drive.moveForwardDistance(0.5,5);
                     Grabber.close();
                     newState(State.MovetoLine);
                     break;
@@ -174,11 +175,19 @@ public class autonomous extends LinearOpMode {
                         Drive.turnLeftDistance(0.5,50);
                     }
                     Drive.moveForwardDistance(0.75, 76.2);
-                    if (Skystone == SkystonePosition.R3 || Skystone == SkystonePosition.B3){
+                    /*if (Skystone == SkystonePosition.R3 || Skystone == SkystonePosition.B3){
                         Drive.moveForwardDistance(0.75, 20.32);
-                    }
+                    }*/
                     //Drive until sees red or blue line
-                    newState(State.ScoreStone);
+                    newState(State.Stop);
+                    break;
+
+                //moves to line from starting position
+                case MovetoLineStart:
+                    telemetry.addLine("StrafetoLine");
+                    telemetry.update();
+                    Drive.moveForwardDistance(0.5, 45);
+                    newState(State.Stop);
                     break;
 
                 /* Drives into the building zone, leaves the skystone there, and backs up

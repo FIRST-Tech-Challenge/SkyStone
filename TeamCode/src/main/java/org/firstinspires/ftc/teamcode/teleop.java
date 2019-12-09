@@ -39,6 +39,8 @@ public class teleop extends LinearOpMode {
         Grabber.init(this);
         Lift.init(this);
 
+        //Grabber.home();
+
         // wait for PLAY button to be pressed on driver station
         telemetry.addLine(">> Press PLAY to start");
         telemetry.update();
@@ -94,9 +96,9 @@ public class teleop extends LinearOpMode {
             } else if (egamepad2.b.released) {
                 Grabber.close();
             }
-            if (egamepad2.right_bumper.released) {
+             /*if (egamepad2.right_bumper.released) {
                 Grabber.wrist();
-            }
+            }*/
             if (egamepad2.x.released) {
                 Grabber.extend();
             }

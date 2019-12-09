@@ -32,7 +32,7 @@ public class GrabberControl {
     private EnumMap<ExtenderSetpt, Double> MapExtender;
 
     public enum GrabberSetpt implements EnumWrapper<GrabberSetpt> {
-        Home, Close, Open;
+        Home, Close, Open, Auto;
     }
 
     public enum WristSetpt implements EnumWrapper<WristSetpt> {
@@ -60,12 +60,13 @@ public class GrabberControl {
         // create servo mappings
         MapGrabber = new EnumMap<GrabberSetpt, Double>(GrabberSetpt.class);
         MapGrabber.put(GrabberSetpt.Home, 0.06);
-        MapGrabber.put(GrabberSetpt.Close, 0.13);
+        MapGrabber.put(GrabberSetpt.Close, 0.08 );
         MapGrabber.put(GrabberSetpt.Open, 0.32);
+        MapGrabber.put(GrabberSetpt.Auto, 0.68);
 
         MapWrist = new EnumMap<WristSetpt, Double>(WristSetpt.class);
         MapWrist.put(WristSetpt.Horizontal, 0.28);
-        MapWrist.put(WristSetpt.Vertical, 0.69);
+        //MapWrist.put(WristSetpt.Vertical, 0.69);
 
         MapExtender = new EnumMap<ExtenderSetpt, Double>(ExtenderSetpt.class);
         MapExtender.put(ExtenderSetpt.Home, 0.81);
@@ -92,6 +93,8 @@ public class GrabberControl {
         GrabberServo.setSetpoint(GrabberSetpt.Close);
     }
 
+    public void auto () {GrabberServo.setSetpoint(GrabberSetpt.Auto); }
+
     public void grab() {
         if (GrabberServo.getSetpoint() == GrabberSetpt.Open)
             GrabberServo.setSetpoint(GrabberSetpt.Close);
@@ -99,9 +102,9 @@ public class GrabberControl {
             GrabberServo.setSetpoint(GrabberSetpt.Open);
     }
 
-    public void wrist() {
+    /*public void wrist() {
         WristServo.nextSetpoint(true);
-    }
+    }*/
 
     public void extend() {
         ExtenderServo.nextSetpoint(true);

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.SubAssembly.Grabber;
+package org.firstinspires.ftc.teamcode.SubAssembly .Grabber;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -42,9 +42,9 @@ public class GrabberTest extends LinearOpMode {
             } else if (egamepad2.b.released) {
                 Grabber.close();
             }
-            if (egamepad2.right_bumper.released) {
+            /*if (egamepad2.right_bumper.released) {
                 Grabber.wrist();
-            }
+            }*/
             if (egamepad2.x.released) {
                 Grabber.extend();
             }

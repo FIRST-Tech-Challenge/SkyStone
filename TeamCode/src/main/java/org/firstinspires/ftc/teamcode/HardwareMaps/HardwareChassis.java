@@ -76,11 +76,12 @@ public class HardwareChassis {
         this.motor_clamp.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //// SENSORS
-        this.color_front =    hwMap.get(ColorSensor.class, "hub1_I2CBus0_1");
-        this.color_back =   hwMap.get(ColorSensor.class, "hub2_I2Bus0_1");
+        this.color_front =    hwMap.get(ColorSensor.class, "hub1_colorport1");
+        this.color_back =   hwMap.get(ColorSensor.class, "hub2_colorport1");
 
-        this.touch_left =    hwMap.get(DigitalChannel.class, "hub2_digitalpor0");
-        this.touch_right =   hwMap.get(DigitalChannel.class, "hub2_digitalpor32");
+        this.touch_left =    hwMap.get(DigitalChannel.class, "hub2_digitalport1");
+        this.touch_right =   hwMap.get(DigitalChannel.class, "hub2_digitalport3" +
+                "");
 
         this.servo_grab = hwMap.get(Servo.class, "hub1_servoport0");
 

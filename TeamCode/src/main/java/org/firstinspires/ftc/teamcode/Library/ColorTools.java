@@ -58,7 +58,7 @@ public class ColorTools {
     public boolean isBlue(ColorSensor colorSenseBlue) {
         float[] hsvIsBlue = showHSV(colorSenseBlue);
 
-        if (hsvIsBlue[0] >= 120 && hsvIsBlue[0] <= 290 && hsvIsBlue[1] >= 0.27){
+        if (hsvIsBlue[0] >= 120 && hsvIsBlue[0] <= 290 && hsvIsBlue[1] >= 0.27&& hsvIsBlue[2] >= 0.2){
             return true;
         }
 

@@ -75,12 +75,15 @@ public class FullTest extends OpMode {
         telemetry.addData("Smoothing Value: ", smootingValue);
         telemetry.addLine();
         telemetry.addData("Is Blue Back: ", colorTools.isBlue(robot.color_back));
-        telemetry.addData("Is Red Back: ", colorTools.isRed(robot.color_back));
         telemetry.addData("Is Blue Front: ", colorTools.isBlue(robot.color_front));
+        telemetry.addLine();
+        telemetry.addData("Is Red Back: ", colorTools.isRed(robot.color_back));
         telemetry.addData("Is Red Front: ", colorTools.isRed(robot.color_front));
         telemetry.addLine();
         telemetry.addData("Touch Left: ", robot.touch_left.getState());
         telemetry.addData("Touch Right: ", robot.touch_right.getState());
+        telemetry.addLine();
+        telemetry.addData("Hue: ", colorTools.showHSV(robot.color_back)); //TO DO: show Hsv values
         telemetry.update();
     }
 }

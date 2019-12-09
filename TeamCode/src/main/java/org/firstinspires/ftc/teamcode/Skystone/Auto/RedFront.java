@@ -4,10 +4,7 @@ import android.os.SystemClock;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.teamcode.Skystone.MathFunctions;
-import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.PathPoints;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
-import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.SplineGenerator;
 import org.firstinspires.ftc.teamcode.Skystone.Robot;
 import org.firstinspires.ftc.teamcode.Skystone.Vision;
 
@@ -134,7 +131,7 @@ public class RedFront extends AutoBase{
                 toFoundationActions);
 
         // get ready to pull foundation
-        robot.foundationMover(true);
+        robot.foundationMovers(true);
         sleep(250);
 
         robot.splineMove(toSecondStone,1,1, 0.85, 20,0,Math.toRadians(325),anglelock,
@@ -142,7 +139,7 @@ public class RedFront extends AutoBase{
 
         robot.splineMove(toDepositSecondStone,1,1, 0.65, 10, Math.toRadians(180),Math.toRadians(270),20,
                 toDepositSecondStoneActions);
-        robot.getClamp().setPosition(robot.CLAW_SERVO_RELEASED);
+        robot.getClamp().setPosition(robot.CLAMP_SERVO_RELEASED);
 
         sleep(250);
 

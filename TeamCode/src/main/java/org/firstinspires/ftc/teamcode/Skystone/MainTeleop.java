@@ -3,10 +3,8 @@ import android.os.SystemClock;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Skystone.Odometry.Position2D;
 
 @TeleOp(name="MainTeleOpSky3", group="Linear Opmode")
@@ -198,7 +196,7 @@ public class MainTeleop extends LinearOpMode {
         if ((gamepad2.left_stick_y != 0 || gamepad2.right_stick_y != 0) && gamepad2.right_trigger == 0) {
             robot.getIntakePusher().setPosition(robot.PUSHER_RETRACTED);
             robot.getBackStopper().setPosition(robot.BACK_STOPPER_UP);
-            robot.getClamp().setPosition(0.32);
+            robot.getClamp().setPosition(robot.CLAMP_SERVO_INTAKEPOSITION);
         }
 
         if(gamepad2.right_trigger != 0){
@@ -228,7 +226,7 @@ public class MainTeleop extends LinearOpMode {
             isClamp = false;
             is90 = false;
             outtakeExecutionTime = currentTime;
-            robot.getClamp().setPosition(robot.CLAW_SERVO_RELEASED); // Release clamp
+            robot.getClamp().setPosition(robot.CLAMP_SERVO_RELEASED); // Release clamp
         }else if(gamepad2.x){
             robot.getMarkerServo().setPosition(robot.TEAM_MARKER_RETRACT);
             robot.getBackStopper().setPosition(robot.BACK_STOPPER_UP);
@@ -257,7 +255,7 @@ public class MainTeleop extends LinearOpMode {
             robot.getIntakePusher().setPosition(robot.PUSHER_RETRACTED);
         }
         if (currentTime - outtakeExecutionTime >= 850 && isExtend) {
-            robot.getClamp().setPosition(robot.CLAW_SERVO_CLAMPED);
+            robot.getClamp().setPosition(robot.CLAMP_SERVO_CLAMPED);
         }
         if(currentTime-outtakeExecutionTime >= 950 && isExtend){
             robot.getOuttakeExtender().setPosition(robot.OUTTAKE_SLIDE_EXTENDED);
@@ -281,7 +279,7 @@ public class MainTeleop extends LinearOpMode {
             robot.getClampPivot().setPosition(robot.OUTTAKE_PIVOT_RETRACTED);
         }
         if(currentTime-outtakeExecutionTime >= 750 && isRetract){
-            robot.getClamp().setPosition(robot.CLAW_SERVO_CLAMPED);
+            robot.getClamp().setPosition(robot.CLAMP_SERVO_CLAMPED);
         }
         if(currentTime-outtakeExecutionTime >= 1500 && isRetract){
             robot.getOuttakeExtender().setPosition(robot.OUTTAKE_SLIDE_RETRACTED);
@@ -290,7 +288,7 @@ public class MainTeleop extends LinearOpMode {
 
         //clamp only
         if(currentTime-outtakeExecutionTime >= 300 && isClamp){
-            robot.getClamp().setPosition(robot.CLAW_SERVO_CLAMPED);
+            robot.getClamp().setPosition(robot.CLAMP_SERVO_CLAMPED);
             isClamp = false;
             robot.getIntakePusher().setPosition(robot.PUSHER_RETRACTED);
         }
@@ -308,7 +306,7 @@ public class MainTeleop extends LinearOpMode {
             resetfoundation = false;
         }
 
-        robot.foundationMover(foundationToggle);
+        robot.foundationMovers(foundationToggle);
     }
 
     private void capStoneLogic() {

@@ -6,27 +6,18 @@ import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
-import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.CurvePoint;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.PathPoints;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
@@ -70,8 +61,8 @@ public class Robot {
 //    private Rev2mDistanceSensor topBarDistance;
 //    private Rev2mDistanceSensor trayDistance;
     // Outtake Slide Positions
-    public final double OUTTAKE_SLIDE_EXTENDED = .2;
-    public final double OUTTAKE_SLIDE_RETRACTED = .7;
+    public final double OUTTAKE_SLIDE_EXTENDED = .14;
+    public final double OUTTAKE_SLIDE_RETRACTED = .725;
 
     //team marker positions
     public final double TEAM_MARKER_DUMP = 1;
@@ -82,8 +73,9 @@ public class Robot {
     public final double BACK_STOPPER_UP = 0.5;
 
     // Outtake Clamp Positions
-    public final double CLAW_SERVO_CLAMPED = .45;
-    public final double CLAW_SERVO_RELEASED = .335;
+    public final double CLAMP_SERVO_CLAMPED = .43;
+    public final double CLAMP_SERVO_RELEASED = .335;
+    public final double CLAMP_SERVO_INTAKEPOSITION = 0.3;
 
     // Outtake Pivot Positions
     public final double OUTTAKE_PIVOT_EXTENDED = .944;
@@ -272,11 +264,11 @@ public class Robot {
         long outtakeExecutionTime = 0;
         long currentTime;
 
-        foundationMover(false);
-        clamp.setPosition(CLAW_SERVO_RELEASED);
+        foundationMovers(false);
+        clamp.setPosition(CLAMP_SERVO_INTAKEPOSITION);
         intakePusher.setPosition(PUSHER_RETRACTED);
 
-        while (isRetract && linearOpMode.opModeIsActive()) {
+        while (isRetract) {
             currentTime = SystemClock.elapsedRealtime();
             if (currentTime - outtakeExecutionTime >= 250 && isRetract) {
                 clampPivot.setPosition(OUTTAKE_PIVOT_RETRACTED);
@@ -401,7 +393,7 @@ public class Robot {
      * @param toggle if true, intake, if false, stop intake
      */
     public void intake(boolean toggle) {
-        clamp.setPosition(CLAW_SERVO_RELEASED);
+        clamp.setPosition(CLAMP_SERVO_INTAKEPOSITION);
         if (toggle) {
             intakeLeft.setPower(1);
             intakeRight.setPower(1);
@@ -513,7 +505,7 @@ public class Robot {
     /**
      * Toggle foundation moveres
      */
-    public void foundationMover(boolean isExtend) {
+    public void foundationMovers(boolean isExtend) {
         if (isExtend) {
             leftFoundation.setPosition(LEFTFOUNDATION_EXTENDED);
             rightFoundation.setPosition(RIGHTFOUNDATION_EXTENDED);
@@ -524,7 +516,7 @@ public class Robot {
     }
 
     public enum Actions{
-        EXTEND_OUTTAKE, RETRACT_OUTTAKE, RELEASE_FOUNDATION, START_INTAKE, STOP_INTAKE
+        EXTEND_OUTTAKE, RETRACT_OUTTAKE, RELEASE_FOUNDATION, START_INTAKE, STOP_INTAKE, EXTEND_FOUNDATION
     }
 
     public void splineMove(double[][] data, double moveSpeed, double turnSpeed, double slowDownSpeed, double slowDownDistance, double optimalAngle, double angleLockRadians, double angleLockInches, HashMap<Point, Actions> actions) {
@@ -543,12 +535,13 @@ public class Robot {
         boolean isReleasingFoundation = false;
         boolean isStartingIntake = false;
         boolean isStoppingIntake = false;
-
         boolean hasExtendedOuttake = false;
         boolean hasRetractedOuttake = false;
         boolean hasReleasedFoundation = false;
         boolean hasStartedIntake = false;
         boolean hasStoppedIntake = false;
+        boolean isExtendingFoundation = false;
+        boolean hasExtendedFoundation = false;
 
         boolean isMoving = true;
 
@@ -644,7 +637,7 @@ public class Robot {
                             isRetractingOuttake = true;
                             hasRetractedOuttake = true;
                             retractOuttakeStartTime = SystemClock.elapsedRealtime();
-                            clamp.setPosition(CLAW_SERVO_RELEASED);
+                            clamp.setPosition(CLAMP_SERVO_INTAKEPOSITION);
                         } else if (executableAction == Actions.RELEASE_FOUNDATION && !hasReleasedFoundation) {
                             isReleasingFoundation = true;
                             hasReleasedFoundation = true;
@@ -655,6 +648,9 @@ public class Robot {
                         } else if (executableAction == Actions.STOP_INTAKE && !hasStoppedIntake) {
                             isStoppingIntake = true;
                             hasStoppedIntake = true;
+                        } else if (executableAction == Actions.EXTEND_FOUNDATION && !hasExtendedFoundation) {
+                            isExtendingFoundation = true;
+                            hasExtendedFoundation = true;
                         }
                     }
                 }
@@ -665,17 +661,19 @@ public class Robot {
                     intakePusher.setPosition(PUSHER_RETRACTED);
                 }
                 if (currentTime - extendOuttakeStartTime >= 350 ) {
-                    clamp.setPosition(CLAW_SERVO_CLAMPED);
+                    clamp.setPosition(CLAMP_SERVO_CLAMPED);
                 }
                 if(currentTime-extendOuttakeStartTime >= 750){
                     outtakeExtender.setPosition(OUTTAKE_SLIDE_EXTENDED);
                 }
 
-                if(currentTime-extendOuttakeStartTime >= 1800 ){
+                if(currentTime-extendOuttakeStartTime >= 1900 ){
                     clampPivot.setPosition(OUTTAKE_PIVOT_90);
                 }
 
-                if(currentTime-extendOuttakeStartTime >=2500){
+                if(currentTime-extendOuttakeStartTime >= 2100){
+                    rightFoundation.setPosition(RIGHTFOUNDATION_EXTENDED);
+
                     isExtendingOuttake = false;
                     hasExtendedOuttake = false;
                 }
@@ -686,7 +684,7 @@ public class Robot {
                     clampPivot.setPosition(OUTTAKE_PIVOT_RETRACTED);
                 }
                 if(currentTime-retractOuttakeStartTime >= 600){
-                    getClamp().setPosition(CLAW_SERVO_CLAMPED);
+                    getClamp().setPosition(CLAMP_SERVO_CLAMPED);
                 }
 
                 if(currentTime-retractOuttakeStartTime >= 750){
@@ -695,6 +693,7 @@ public class Robot {
                 }
 
                 if(currentTime-retractOuttakeStartTime >= 1500){
+                    clamp.setPosition(CLAMP_SERVO_INTAKEPOSITION);
                     isRetractingOuttake = false;
                     hasRetractedOuttake = false;
                 }
@@ -702,13 +701,17 @@ public class Robot {
 
             if (isReleasingFoundation){
                 brakeRobot();
-                foundationMover(false);
+                foundationMovers(false);
                 linearOpMode.sleep(250);
                 isReleasingFoundation = false;
             }
 
             if (isStartingIntake){
                 intake(true);
+
+                clamp.setPosition(CLAMP_SERVO_INTAKEPOSITION);
+                foundationMovers(false);
+
                 isStartingIntake = false;
             }
 
@@ -723,6 +726,11 @@ public class Robot {
 
             if (isMoving){
                 applyMove();
+            }
+
+            if (isExtendingFoundation) {
+                leftFoundation.setPosition(LEFTFOUNDATION_EXTENDED);
+                isExtendingFoundation = false;
             }
         }
     }
@@ -825,7 +833,7 @@ public class Robot {
                 intakePusher.setPosition(PUSHER_RETRACTED);
             }
             if (currentTime - outtakeExecutionTime >= 950 && isExtend) {
-                clamp.setPosition(CLAW_SERVO_CLAMPED);
+                clamp.setPosition(CLAMP_SERVO_CLAMPED);
             }
             if(currentTime-outtakeExecutionTime >= 1300 && isExtend){
                 outtakeExtender.setPosition(OUTTAKE_SLIDE_EXTENDED);
@@ -856,7 +864,7 @@ public class Robot {
         boolean hasRetracted = false;
 
         // Deposit stone
-        clamp.setPosition(CLAW_SERVO_RELEASED);
+        clamp.setPosition(CLAMP_SERVO_RELEASED);
 
         while (linearOpMode.opModeIsActive()) {
             currentTime = SystemClock.elapsedRealtime();
@@ -882,7 +890,7 @@ public class Robot {
             }
             if(currentTime-outtakeExecutionTime >= 1150 && isRetract){
                 outtakeExtender.setPosition(OUTTAKE_SLIDE_RETRACTED);
-                clamp.setPosition(CLAW_SERVO_RELEASED);
+                clamp.setPosition(CLAMP_SERVO_RELEASED);
                 intakePusher.setPosition(PUSHER_RETRACTED);
                 telemetry.addLine("slide retracted");
                 isRetract = false;
@@ -901,7 +909,7 @@ public class Robot {
         boolean hasRetracted = false;
 
         // Deposit stone
-        clamp.setPosition(CLAW_SERVO_RELEASED);
+        clamp.setPosition(CLAMP_SERVO_RELEASED);
 
         while (linearOpMode.opModeIsActive()) {
 
@@ -914,7 +922,7 @@ public class Robot {
 
             if (Math.hypot(whereYouRetract.x - robotPos.x, whereYouRetract.y - robotPos.y) < 20 && !hasRetracted){
                 hasRetracted = true;
-                foundationMover(false);
+                foundationMovers(false);
             }
 
             if(!isMoving){
@@ -1298,12 +1306,12 @@ public class Robot {
         return OUTTAKE_SLIDE_RETRACTED;
     }
 
-    public double getCLAW_SERVO_CLAMPED() {
-        return CLAW_SERVO_CLAMPED;
+    public double getCLAMP_SERVO_CLAMPED() {
+        return CLAMP_SERVO_CLAMPED;
     }
 
-    public double getCLAW_SERVO_RELEASED() {
-        return CLAW_SERVO_RELEASED;
+    public double getCLAMP_SERVO_RELEASED() {
+        return CLAMP_SERVO_RELEASED;
     }
 
     public double getOUTTAKE_PIVOT_EXTENDED() {

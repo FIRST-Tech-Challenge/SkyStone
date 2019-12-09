@@ -82,4 +82,6 @@ public abstract class ModifiedMotor implements DcMotor
 
     @Override
     public void close() { motor.close(); }
+
+    public DcMotor getMotor() { return motor; }
 }

@@ -7,7 +7,7 @@ Drivetrain is the base class for all other drivetrains, each contain instruction
  */
 abstract public class Drivetrain
 {
-    private double velocity = 0;
+    protected double velocity = 0;
 
     // Toggles the half power drive mode for precision control
     private ToggleBoolean lowPower;

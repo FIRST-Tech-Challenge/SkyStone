@@ -2,6 +2,7 @@ package org.firstinspires.ftc.robotlib.armsystem;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.robotlib.motor.EncoderMotor;
 import org.firstinspires.ftc.robotlib.motor.LimitedMotor;
 
 public class FieldGoalArmSystem
@@ -30,4 +31,21 @@ public class FieldGoalArmSystem
     public LimitedMotor getVerticalLimitedMotor() { return armVerticalSlide; }
 
     public LimitedMotor getHorizontalLimitedMotor() { return armHorizontalSlide; }
+
+    public void armAutoPosition(int horizTarget, int vertTarget, double power)
+    {
+        EncoderMotor armEncoderHorizontalSlide = new EncoderMotor(armHorizontalSlide);
+        EncoderMotor armEncoderVerticalSlide = new EncoderMotor(armVerticalSlide);
+
+        armEncoderHorizontalSlide.setTargetPosition(horizTarget);
+        armEncoderVerticalSlide.setTargetPosition(vertTarget);
+
+        armEncoderHorizontalSlide.setPower(power);
+        armEncoderVerticalSlide.setPower(power);
+
+        while (armEncoderHorizontalSlide.isEncoderBusy() || armEncoderVerticalSlide.isEncoderBusy()) {}
+
+        armEncoderHorizontalSlide.setPower(0);
+        armEncoderVerticalSlide.setPower(0);
+    }
 }

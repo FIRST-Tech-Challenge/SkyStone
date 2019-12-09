@@ -40,14 +40,8 @@ public class BasicSound implements Sound
     {
         playSound.toggle();
 
-        if (playSound.output())
-        {
-            playSound();
-        }
-        else
-        {
-            stopSound();
-        }
+        if (playSound.output()) { playSound(); }
+        else { stopSound(); }
     }
 
     @Override

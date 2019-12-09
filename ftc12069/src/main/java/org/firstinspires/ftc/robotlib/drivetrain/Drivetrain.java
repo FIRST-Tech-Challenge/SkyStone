@@ -8,14 +8,14 @@ abstract public class Drivetrain {
     /**
      * Motors included in the drivetrain.
      */
-    public DcMotor[] motorList;
+    public EncoderMotor[] motorList;
 
     /**
      * The list of powers each of the corresponding motors in the {@link #motorList} array should be set to.
      */
     private double[] motorPowers;
 
-    public Drivetrain(DcMotor[] motorList) { this.motorList = motorList; }
+    public Drivetrain(EncoderMotor[] motorList) { this.motorList = motorList; }
 
     /**
      * Retrieves the velocity of the robot

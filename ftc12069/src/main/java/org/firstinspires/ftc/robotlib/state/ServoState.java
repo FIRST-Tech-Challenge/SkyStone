@@ -12,8 +12,10 @@ public enum ServoState {
     DOWN(1),
 
     // Delivery States
-    CRADLE(0.07),
+    CRADLE(0.0),
     CARRY(0.15),
+    THREEBLOCKHOVER(0.54),
+    THREEBLOCKDEPOSIT(0.59),
     TWOBLOCKHOVER(0.71),
     TWOBLOCKDEPOSIT(0.78),
     ONEBLOCKHOVER(0.78),

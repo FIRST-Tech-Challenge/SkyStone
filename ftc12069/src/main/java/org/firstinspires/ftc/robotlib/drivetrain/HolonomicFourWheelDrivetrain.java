@@ -28,7 +28,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
      * @param motorList The array of motors included in the drivetrain
      * @param wheelAngles A list of four angles corresponding to each wheel related to wheel and drivetrain geometry; these should be defined by the subclass and are passed to {@link #calculateWheelCoefficient} (which also must be defined by the subclass)
      */
-    public HolonomicFourWheelDrivetrain(DcMotor[] motorList, double[] wheelAngles)
+    public HolonomicFourWheelDrivetrain(EncoderMotor[] motorList, double[] wheelAngles)
     {
         super(motorList);
         this.wheelAngles = wheelAngles;
@@ -172,15 +172,17 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     public boolean isPositioning()
     {
         int busyMotors = 0;
-        for (DcMotor motor : this.motorList)
+        for (EncoderMotor motor : this.motorList)
         {
-            if (motor.isBusy())
+            if (motor.isEncoderBusy())
             {
                 busyMotors++;
             }
         }
 
-        return busyMotors <= this.motorList.length / 2;
+        //return busyMotors != 0;
+        return busyMotors != 0;
+        //return busyMotors > 2;
     }
 
     /**
@@ -189,8 +191,13 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     @Override
     public void finishPositioning()
     {
-        for (DcMotor motor : this.motorList) motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        for (int motorIndex = 0; motorIndex < this.motorList.length; motorIndex++) this.motorList[motorIndex].setMode(runModes[motorIndex]);
+        for (int motorIndex = 0; motorIndex < this.motorList.length; motorIndex++) {
+            this.motorList[motorIndex].setPower(0);
+            this.motorList[motorIndex].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            this.motorList[motorIndex].setMode(runModes[motorIndex]);
+        }
+
+        this.setVelocity(0);
     }
 
     /**

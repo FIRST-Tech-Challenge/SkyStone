@@ -7,7 +7,7 @@ public class MecanumDrivetrain extends HolonomicFourWheelDrivetrain {
      * Creates a mecanum drivetrain
      * @param motorList list of motors in the drivetrain
      */
-    public MecanumDrivetrain(DcMotor[] motorList)
+    public MecanumDrivetrain(EncoderMotor[] motorList)
     {
         super(motorList, new double[] {
                 -3*Math.PI/4, 3*Math.PI/4, -Math.PI/4, Math.PI/4

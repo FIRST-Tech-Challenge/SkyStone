@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.opmodes.auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -43,51 +44,25 @@ import org.firstinspires.ftc.robotlib.state.Alliance;
 import org.firstinspires.ftc.robotlib.state.ServoState;
 
 @Autonomous(name="Bridge Park Autonomous", group="auto")
-public class BridgeParkAutonomous extends OpMode {
+public class BridgeParkAutonomous extends LinearOpMode {
     private Alliance alliance = Alliance.RED;
-    private Telemetry telemetry;
     private ElapsedTime elapsedTime = new ElapsedTime();
 
     private AutonomousRobot robot;
 
-    /**
-     * Initializes the robot
-     * Ran before the game starts
-     */
     @Override
-    public void init() {
+    public void runOpMode() {
         telemetry.addData("Status", "Initialized");
+        telemetry.update();
         robot = new AutonomousRobot(this.hardwareMap, alliance, telemetry, elapsedTime);
         robot.init();
-    }
 
-    /**
-     * Ran after the game starts and before the game loop begins
-     */
-    @Override
-    public void start() {
+        // Wait for the game to start
+        waitForStart();
         elapsedTime.reset();
 
-        // Enable Tracking
-        //robot.trackables.activate();
-    }
-
-    /**
-     * Ran once the game has ended
-     */
-    @Override
-    public void stop() {
-        // Disable Tracking
-        //robot.trackables.deactivate();
-    }
-
-    /**
-     * Game Loop Method (runs until stop is requested)
-     * @return true - keep looping | false - stop looping
-     */
-    @Override
-    public void loop() {
-        robot.simpleMove(0, -0.5, 0, 5);
-        robot.simpleMove(90, 0.5, 0, 5);
+        while (elapsedTime.seconds() < 25) {}
+        robot.simpleMove(0, 0.7, 0, 1);
+        robot.simpleMove(-90, 0.7, 0, 20);
     }
 }

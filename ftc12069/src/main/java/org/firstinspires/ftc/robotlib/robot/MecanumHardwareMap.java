@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotlib.drivetrain.EncoderMotor;
 import org.firstinspires.ftc.robotlib.drivetrain.MecanumDrivetrain;
 import org.firstinspires.ftc.robotlib.managers.MotorManager;
 import org.firstinspires.ftc.robotlib.managers.ServoManager;
@@ -17,6 +18,8 @@ import static org.firstinspires.ftc.robotlib.state.ServoState.CARRY;
 import static org.firstinspires.ftc.robotlib.state.ServoState.CRADLE;
 import static org.firstinspires.ftc.robotlib.state.ServoState.FLOOR;
 import static org.firstinspires.ftc.robotlib.state.ServoState.ONEBLOCKDEPOSIT;
+import static org.firstinspires.ftc.robotlib.state.ServoState.THREEBLOCKDEPOSIT;
+import static org.firstinspires.ftc.robotlib.state.ServoState.THREEBLOCKHOVER;
 import static org.firstinspires.ftc.robotlib.state.ServoState.TWOBLOCKDEPOSIT;
 import static org.firstinspires.ftc.robotlib.state.ServoState.TWOBLOCKHOVER;
 
@@ -25,10 +28,10 @@ public class MecanumHardwareMap
     public HardwareMap internalHardwareMap;
 
     // Motors in Mecanum robot
-    private DcMotor driveFrontLeft;
-    private DcMotor driveFrontRight;
-    private DcMotor driveRearRight;
-    private DcMotor driveRearLeft;
+    private EncoderMotor driveFrontLeft;
+    private EncoderMotor driveFrontRight;
+    private EncoderMotor driveRearRight;
+    private EncoderMotor driveRearLeft;
 
     // Intake
     private DcMotor intakeLeft;
@@ -39,6 +42,7 @@ public class MecanumHardwareMap
     public CompelledServo deliveryLeft;
     public CompelledServo deliveryRight;
     private ServoState[] deliveryStates = new ServoState[]{CRADLE, CARRY, TWOBLOCKHOVER, TWOBLOCKDEPOSIT, ONEBLOCKDEPOSIT, FLOOR};
+    private ServoState[] deliveryStatesThreeBlock = new ServoState[]{CRADLE, CARRY, THREEBLOCKHOVER, THREEBLOCKDEPOSIT, TWOBLOCKHOVER, TWOBLOCKDEPOSIT, ONEBLOCKDEPOSIT, FLOOR};
 
     public Servo platformServoLeft;
     public Servo platformServoRight;
@@ -58,7 +62,7 @@ public class MecanumHardwareMap
     public final double wheelRadius = 4; //inches
     private static final double wheelToMotorRatio = 1.0/1.0;
 
-    public DcMotor[] motorList;
+    public EncoderMotor[] motorList;
 
     public final double motorTicksPerInch;
 
@@ -70,23 +74,23 @@ public class MecanumHardwareMap
     {
         this.internalHardwareMap = hwMap;
 
-        driveFrontLeft = hwMap.get(DcMotor.class, "driveFrontLeft");
-        driveFrontRight = hwMap.get(DcMotor.class, "driveFrontRight");
-        driveRearRight = hwMap.get(DcMotor.class, "driveRearRight");
-        driveRearLeft = hwMap.get(DcMotor.class, "driveRearLeft");
+        driveFrontLeft = new EncoderMotor(hwMap.get(DcMotor.class, "driveFrontLeft"));
+        driveFrontRight = new EncoderMotor(hwMap.get(DcMotor.class, "driveFrontRight"));
+        driveRearRight = new EncoderMotor(hwMap.get(DcMotor.class, "driveRearRight"));
+        driveRearLeft = new EncoderMotor(hwMap.get(DcMotor.class, "driveRearLeft"));
 
         intakeLeft = hwMap.get(DcMotor.class, "intakeLeft");
         intakeRight = hwMap.get(DcMotor.class, "intakeRight");
 
         blockGrabber = hwMap.get(Servo.class, "blockGrabber");
-        deliveryLeft = new CompelledServo(hwMap.get(Servo.class, "deliveryLeft"), deliveryStates);
-        deliveryRight = new CompelledServo(hwMap.get(Servo.class, "deliveryRight"), deliveryStates);
+        deliveryLeft = new CompelledServo(hwMap.get(Servo.class, "deliveryLeft"), deliveryStatesThreeBlock);
+        deliveryRight = new CompelledServo(hwMap.get(Servo.class, "deliveryRight"), deliveryStatesThreeBlock);
         deliveryRight.setOffset(0.04);
 
         platformServoLeft = hwMap.get(Servo.class, "platformServoLeft");
         platformServoRight = hwMap.get(Servo.class, "platformServoRight");
 
-        motorList = new DcMotor[]{driveFrontLeft, driveFrontRight, driveRearLeft, driveRearRight};
+        motorList = new EncoderMotor[]{driveFrontLeft, driveFrontRight, driveRearLeft, driveRearRight};
 
         driveFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         driveFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

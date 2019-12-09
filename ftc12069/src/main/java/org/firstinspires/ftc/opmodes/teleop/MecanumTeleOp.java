@@ -15,7 +15,7 @@ import static org.firstinspires.ftc.robotlib.state.ServoState.ONEBLOCKDEPOSIT;
 import static org.firstinspires.ftc.robotlib.state.ServoState.TWOBLOCKDEPOSIT;
 import static org.firstinspires.ftc.robotlib.state.ServoState.TWOBLOCKHOVER;
 
-@TeleOp(name="Experimental Mecanum TELEOP (12069)", group="Linear Opmode")
+@TeleOp(name="Mecanum TELEOP (12069)", group="Linear Opmode")
 public class MecanumTeleOp extends OpMode
 {
     private MecanumHardwareMap hardware;

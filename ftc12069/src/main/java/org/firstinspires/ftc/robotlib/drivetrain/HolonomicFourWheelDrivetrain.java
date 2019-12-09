@@ -157,6 +157,9 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
         return targetPosition;
     }
 
+    /**
+     * Placeholder method for updating motors during movement
+     */
     @Override
     public void updatePosition()
     {
@@ -171,18 +174,13 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     @Override
     public boolean isPositioning()
     {
-        int busyMotors = 0;
-        for (EncoderMotor motor : this.motorList)
-        {
-            if (motor.isEncoderBusy())
-            {
-                busyMotors++;
+        for (EncoderMotor motor : this.motorList) {
+            if (motor.isEncoderBusy()) {
+                return true;
             }
         }
 
-        //return busyMotors != 0;
-        return busyMotors != 0;
-        //return busyMotors > 2;
+        return false;
     }
 
     /**

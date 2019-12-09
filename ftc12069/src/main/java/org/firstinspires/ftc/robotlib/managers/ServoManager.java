@@ -3,7 +3,6 @@ package org.firstinspires.ftc.robotlib.managers;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotlib.state.ServoState;
-import org.jetbrains.annotations.NotNull;
 
 public class ServoManager {
     // State of managed servos

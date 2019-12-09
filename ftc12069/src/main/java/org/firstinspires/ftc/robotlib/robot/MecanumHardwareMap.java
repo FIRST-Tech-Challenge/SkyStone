@@ -116,6 +116,7 @@ public class MecanumHardwareMap
 
         webcamName = hwMap.get(WebcamName.class, "Webcam 1");
 
+        // Configures the REV HUB IMU
         /*BNO055IMU.Parameters imuParameters = new BNO055IMU.Parameters();
         imuParameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         imuParameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
@@ -133,7 +134,10 @@ public class MecanumHardwareMap
         motorTicksPerInch = drivetrain.getTicksPerInch(wheelRadius, wheelToMotorRatio);
     }
 
-    // Hardware Shortcut
+    /**
+     * Shortcut for updating the two delivery servos
+     * @param newState New Servo state (must be in the possible positions)
+     */
     public void updateDeliveryStates(ServoState newState) {
         this.deliveryLeft.setState(newState);
         this.deliveryRight.setState(newState);

@@ -4,10 +4,9 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoController;
 
 /**
- * A modified servo is an abstract class made from the servo interface and is used to create servos with additional functionality
+ * A modified servo is an abstract class made from the servo interface to create servos with additional functionality
  */
-public abstract class ModifiedServo implements Servo
-{
+public abstract class ModifiedServo implements Servo {
     protected Servo servo;
     ModifiedServo (Servo servo) { this.servo = servo; }
 

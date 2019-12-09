@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.robotlib.drivetrain;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
-
 public class MecanumDrivetrain extends HolonomicFourWheelDrivetrain {
     /**
      * Creates a mecanum drivetrain

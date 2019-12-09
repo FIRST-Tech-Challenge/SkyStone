@@ -1,12 +1,10 @@
 package org.firstinspires.ftc.robotlib.drivetrain;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
-
 abstract public class Drivetrain {
     private double velocity = 0;
 
     /**
-     * Motors included in the drivetrain.
+     * Encoder Motors included in the drivetrain
      */
     public EncoderMotor[] motorList;
 

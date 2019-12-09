@@ -61,7 +61,7 @@ public class Robot {
 //    private Rev2mDistanceSensor topBarDistance;
 //    private Rev2mDistanceSensor trayDistance;
     // Outtake Slide Positions
-    public final double OUTTAKE_SLIDE_EXTENDED = .14;
+    public final double OUTTAKE_SLIDE_EXTENDED = .0799999;
     public final double OUTTAKE_SLIDE_RETRACTED = .725;
 
     //team marker positions

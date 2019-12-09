@@ -52,10 +52,6 @@ public class Vision {
         initVuforia();
     }
 
-    public Location runDetection() throws InterruptedException{
-        return runDetection(true);
-    }
-
     public static double calcAverageYellow(Bitmap bitmap, int x, int y, int width, int height){
         double sum = 0;
         int endX = x+width;
@@ -74,17 +70,12 @@ public class Vision {
         return sum/(width*height);
     }
 
-    void captureFrameToFile() {
+    public void captureFrameToFile() {
         vuforia.getFrameOnce(Continuation.create(ThreadPool.getDefault(), new Consumer<Frame>()
         {
             @Override public void accept(Frame frame)
             {
                 Bitmap bitmap = vuforia.convertFrameToBitmap(frame);
-                for(int i = 444;i<444+217;i++){
-                    for(int j = 320;j<320+90;j++){
-                        bitmap.setPixel(i,j,Color.argb(1,0,0,0));
-                    }
-                }
 
                 if (bitmap != null) {
                     File file = new File(captureDirectory, String.format(Locale.getDefault(), "VuforiaFrame-%d.png", captureCounter++));
@@ -119,7 +110,7 @@ public class Vision {
         }
     }
 
-    public Location runDetection(final boolean deactiviated) throws InterruptedException{
+    public Location runDetection(final boolean deactiviated, final boolean isRed) throws InterruptedException{
         if(vuforia != null) {
             final FtcRobotControllerActivity ftcRobotControllerActivity = (FtcRobotControllerActivity) AppUtil.getInstance().getRootActivity();
 
@@ -148,17 +139,24 @@ public class Vision {
                         BoxDetection left = new BoxDetection(Location.LEFT);
                         BoxDetection center = new BoxDetection(Location.CENTER);
                         BoxDetection right = new BoxDetection(Location.RIGHT);
-
-                        int startX = 344;
-                        int starty = 320;
                         int width = 217;
                         int height = 90;
                         int gap = 50;
+                        int startX;
+                        int startY;
+
+                        if(!isRed){
+                            startX = 210;
+                            startY = 245;
+                        }else {
+                            startX = 344;
+                            startY = 320;
+                        }
 
                         if (bitmap != null) {
-                            left.averageRedGreen = calcAverageYellow(bitmap, startX, starty, width, height);
-                            center.averageRedGreen = calcAverageYellow(bitmap, startX + width + gap, starty, width, height);
-                            right.averageRedGreen = calcAverageYellow(bitmap, startX + width * 2 + gap * 2, starty, width, height);
+                            left.averageRedGreen = calcAverageYellow(bitmap, startX, startY, width, height);
+                            center.averageRedGreen = calcAverageYellow(bitmap, startX + width + gap, startY, width, height);
+                            right.averageRedGreen = calcAverageYellow(bitmap, startX + width * 2 + gap * 2, startY, width, height);
 
                             Log.d("Vision", "Left " + left.averageRedGreen + " Center: " + center.averageRedGreen + " Right: " + right.averageRedGreen);
 
@@ -183,9 +181,9 @@ public class Vision {
                             resultLocation.add(location);
                         }
 
-                        updateBitmapWithBoundingBoxes(bitmap, startX, starty, width, height);
-                        updateBitmapWithBoundingBoxes(bitmap, startX + width + gap, starty, width, height);
-                        updateBitmapWithBoundingBoxes(bitmap, startX + width * 2 + gap * 2, starty, width, height);
+//                        updateBitmapWithBoundingBoxes(bitmap, startX, starty, width, height);
+//                        updateBitmapWithBoundingBoxes(bitmap, startX + width + gap, starty, width, height);
+//                        updateBitmapWithBoundingBoxes(bitmap, startX + width * 2 + gap * 2, starty, width, height);
 
 //                    ftcRobotControllerActivity.changeImage(bitmap);
 

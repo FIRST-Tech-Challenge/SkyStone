@@ -25,11 +25,11 @@ public class BlueFront extends AutoBase{
         double secondSkyStoneY = 19;
         double secondSkyStoneX = 69;
 
-        Vision.Location skystoneLocation = Vision.Location.LEFT;
+        Vision.Location skystoneLocation = Vision.Location.UNKNOWN;
 
-//        try {
-//            skystoneLocation = vision.runDetection(true);
-//        }catch (Exception e){}
+        try {
+            skystoneLocation = vision.runDetection(true, false);
+        }catch (Exception e){}
 
         telemetry.addLine("Detection Result: " + skystoneLocation.toString());
         telemetry.update();
@@ -39,10 +39,10 @@ public class BlueFront extends AutoBase{
 
         if (skystoneLocation == Vision.Location.LEFT){
             firstSkystoneY = -5;
-            secondSkyStoneY = 8;
+            secondSkyStoneY = 10.25;
         } else if (skystoneLocation == Vision.Location.RIGHT){
             firstSkystoneY = 10;
-            secondSkyStoneY = 26;
+            secondSkyStoneY = 27;
             secondSkyStoneX = 70.5;
         }
         double[][] toFirstStone = {
@@ -58,7 +58,7 @@ public class BlueFront extends AutoBase{
                 {30,-10,0,-10},
                 {32,-30,0,-10},
                 {33,-80,0,-10},
-                {40,-85,10,0}};
+                {40,-91,10,0}};
         HashMap<Point,Robot.Actions> toFoundationActions = new HashMap<Point,Robot.Actions>() {{
             put(new Point(43,-60), Robot.Actions.EXTEND_OUTTAKE);
             put(new Point(24,-30), Robot.Actions.STOP_INTAKE);
@@ -67,14 +67,14 @@ public class BlueFront extends AutoBase{
 
         double[][] toSecondStone = {
                 {31,-83,-10,0},
-                {9,-70,-10,0},
+                {10,-70,-10,0},
                 {34,-69,10,0},
                 {35,-30,10,0},
                 {40,secondSkyStoneY - 15.5,10,0},
                 {secondSkyStoneX,secondSkyStoneY,30,0}};
         HashMap<Point,Robot.Actions> toSecondStoneActions = new HashMap<Point,Robot.Actions>() {{
             put(new Point(32,-78), Robot.Actions.RETRACT_OUTTAKE);
-            put(new Point(23,-58.25), Robot.Actions.RELEASE_FOUNDATION);
+            put(new Point(23,-57), Robot.Actions.RELEASE_FOUNDATION);
             put(new Point(28,-10), Robot.Actions.START_INTAKE);
         }};
 
@@ -84,7 +84,7 @@ public class BlueFront extends AutoBase{
                 {53,-30,10,-20},
                 {55.5,-50,5,10},
                 {55.5,-65,5,10},
-                {54,-83,5,-10}};
+                {58,-82,5,-10}};
         HashMap<Point,Robot.Actions> toDepositSecondStoneActions = new HashMap<Point,Robot.Actions>() {{
             put(new Point(44,-43), Robot.Actions.EXTEND_OUTTAKE);
             put(new Point(30,0), Robot.Actions.STOP_INTAKE);

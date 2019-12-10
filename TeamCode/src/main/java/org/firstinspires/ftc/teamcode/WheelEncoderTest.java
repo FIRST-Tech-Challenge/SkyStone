@@ -63,11 +63,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Pushbot: Auto Drive By Encoder", group="Pushbot")
+@Autonomous(name="autodrivebasic", group = "Maccabot")
 
 public class WheelEncoderTest extends LinearOpMode {
 
     /* Declare OpMode members. */
+
     private DcMotor front_left, front_right, back_left, back_right, intake_left, intake_right;
     private ElapsedTime     runtime = new ElapsedTime();
 
@@ -79,14 +80,13 @@ public class WheelEncoderTest extends LinearOpMode {
     static final double     DRIVE_SPEED             = 0.1;
     static final double     TURN_SPEED              = 0.5;
 
-
+    @Override
     public void runOpMode() {
 
         /*
          * Initialize the drive system variables.
          * The init() method of the hardware class does all the work here
          */
-
         front_left = hardwareMap.dcMotor.get("front_left"); // Port 0
         front_right = hardwareMap.dcMotor.get("front_right"); // Port 1
         back_left = hardwareMap.dcMotor.get("back_left"); // Port 2
@@ -131,7 +131,7 @@ public class WheelEncoderTest extends LinearOpMode {
 
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
-        encoderDrive(DRIVE_SPEED,  2,  2, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
+        encoderDrive(DRIVE_SPEED,  -2,  2, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
         //encoderDrive(TURN_SPEED,   12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
        // encoderDrive(DRIVE_SPEED, -24, -24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout
 
@@ -220,3 +220,83 @@ public class WheelEncoderTest extends LinearOpMode {
         }
     }
 }
+/*
+JACOB PEARL I SWEAR TO FUCKING CHRIST IF YOU DELETE THIS I WILL MURDER YOUR WHOLE FAMILY!
+
+@Autonomous(name="autodrivebasic")
+
+public class WheelEncoderTest extends LinearOpMode {
+
+       private DcMotor front_left, front_right, back_left, back_right, intake_left, intake_right;
+
+        @Override
+        public void runOpMode() throws InterruptedException {
+
+            // opticalDistanceSensor = hardwareMap.opticalDistanceSensor.get("sensor_ods");
+
+           front_left = hardwareMap.dcMotor.get("front_left"); // Port 0
+        front_right = hardwareMap.dcMotor.get("front_right"); // Port 1
+        back_left = hardwareMap.dcMotor.get("back_left"); // Port 2
+        back_right = hardwareMap.dcMotor.get("back_right"); // Port 3
+        intake_left = hardwareMap.dcMotor.get("intake_left");
+        intake_right = hardwareMap.dcMotor.get("intake_right");
+
+            back_left.setDirection(DcMotorSimple.Direction.REVERSE);
+        front_right.setDirection(DcMotorSimple.Direction.REVERSE);
+
+
+        front_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        front_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        back_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        back_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        // Send telemetry message to signify robot waiting;
+        telemetry.addData("Status", "Resetting Encoders");    //
+        telemetry.update();
+
+        back_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        back_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        front_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        front_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+
+        back_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        back_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        front_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        front_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+
+            motorFrontLeft.setTargetPosition(2440);
+            motorFrontRight.setTargetPosition(2440);
+            motorBackLeft.setTargetPosition(2440);
+            motorBackRight.setTargetPosition(2440);
+
+            leftFrontPos = motorLeftFront.getCurrentPosition();
+            leftBackPos = motorLeftBack.getCurrentPosition();
+            rightFrontPos = motorFrontRight.getCurrentPosition();
+            rightBackPos = motorBackRight.getCurrentPosition();
+
+            motorFrontRight.setMode(DcMotorController.RunMode.RUN_TO_POSITION);
+            motorFrontLeft.setMode(DcMotorController.RunMode.RUN_TO_POSITION);
+            motorBackRight.setMode(DcMotorController.RunMode.RUN_TO_POSITION);
+            motorBackLeft.setMode(DcMotorController.RunMode.RUN_TO_POSITION);
+
+            while(leftBackPos < 2440 && leftFrontPos < 2440 && rightBackPos < 2440 && rightFrontPos < 2440){
+                motorFrontLeft.setPower(-0.5);
+                motorFrontRight.setPower(-0.5);
+                motorBackLeft.setPower(-0.5);
+                motorBackRight.setPower(-0.5);
+
+                leftFrontPos = motorLeftFront.getCurrentPosition();
+                leftBackPos = motorLeftBack.getCurrentPosition();
+                rightFrontPos = motorFrontRight.getCurrentPosition();
+                rightBackPos = motorBackRight.getCurrentPosition();
+            }
+
+            telemetry.addData("2 ", "motorFrontLeft:  " + String.format("%d", motorFrontLeft.getTargetPosition()));
+            telemetry.addData("3 ", "motorFrontRight:  " + String.format("%d", motorFrontRight.getTargetPosition()));
+            telemetry.addData("4 ", "motorBackLeft:  " + String.format("%d", motorBackLeft.getTargetPosition()));
+            telemetry.addData("5 ", "motorBackRight:  " + String.format("%d", motorBackRight.getTargetPosition()));
+        }
+    }
+ */

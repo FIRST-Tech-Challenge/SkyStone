@@ -58,10 +58,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  * @return :skystoneDetected
  * @return : stoneDetected
  */
-
-/**
- * Class Definition
- */
 public class Intake {
     public Servo wrist;
     public Servo grip;
@@ -81,8 +77,8 @@ public class Intake {
     public boolean stoneDetected;
 
     //Open and close Position for the grip linear actuator
-    double gripOpenPosition = 0.75;
-    double gripClosePosition = 0.25;
+    public double gripOpenPosition = 0.75;
+    public double gripClosePosition = 0.25;
 
     //Constructor
     public Intake(HardwareMap hardwareMap) {
@@ -94,7 +90,7 @@ public class Intake {
         //initIntake();
     }
 
-    //#TOBEFILLED Consider initializing position?
+    //On Start Move wrist to horizontal position
     public void initIntake() {
         detectSkystoneColor.enableLed(false);
         moveWristToHorizontal();
@@ -214,8 +210,4 @@ public class Intake {
         }
         return false; // No stone is detected
     }
-
-
-
-
 }

@@ -5,16 +5,13 @@ Lift Arm and Open Wrist at initializing autonomous mode
 Move arm to foundation Level
     Command: autoArm.moveArm_aboveFoundationLevel();
 
-Run Chassis till distance
-    distance (+ for forward - for backward), strafe right : direction = -Math.PI/2, strafe left : direction = Math.PI/2
-    distance calibaration forward/backward : 9.8" vs 10" input. strafe left/right : 9" vs 10" input 13" vs 15" input
-    Command: autoChassis.runDistance(Distance, direction, 0, power);
+Run Chassis forward and backward till :
+    distance (+ve for forward - for backward), strafe (1 for right -1 for left)
+    distance calibaration accurate to inches at 0.1power for 2-10 inches, at 0.25 rpm for 10-60 inches
+    Command: autoChassis.runFwdBackLeftRight(Distance, strafe, power)
 
-Turn 90 degrees clockwise at power
-    Command: autoChassis.runDistance(0, 0, -Math.PI/2, power);
-
-Turn 90 degrees anti-clockwise at power
-    Command: autoChassis.runDistance(0, 0, Math.PI/2, power);
+Turn 90 degrees clockwise(1) or anticlockwise(-1) at power
+    Command: autoChassis.turnby90degree(clockwise / anticlockwise, pwoer);
 
 Run chassis left till Red/Blue color is detected on right color sensor or max distance is reached at power
      - till max_distance (+ for forward - for backward)
@@ -27,5 +24,5 @@ Run chassis left till Red/Blue color is detected on right color sensor or max di
 Run forward till front left chassis touch sensor is pressed or max_distance is reached.
     Command : runFwdTill_frontleftChassisTouchSensor_Pressed(double max_stop_distance, double power)
 
-Move left by one block length (to be used to detect skystone and if not, move to next block
-    Command: autoChassis.runDistance(8, Math.PI/2, 0, 0.1);
+Open Grip / Close Grip
+    Command : autoIntake.openGrip() or autoIntake.closeGrip

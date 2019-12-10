@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.autoRes.commands;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -34,9 +35,9 @@ import org.firstinspires.ftc.teamcode.SubSystems.Intake;
  *
  *
  */
-
-@Autonomous(name = "AutoUseCase1", group = "Autonomous")
-public class AutonomousUC1 extends LinearOpMode {
+@Disabled
+@Autonomous(name = "AutoUseCase1OldCode", group = "Autonomous")
+public class AutonomousUC1OldCode extends LinearOpMode {
 
     Intake autoIntake;
     Arm autoArm;
@@ -141,14 +142,11 @@ public class AutonomousUC1 extends LinearOpMode {
         /*
         //Lift Arm
         autoArm.moveArm_AutoPlacementLevel();
-
        //Move forward till Chassis bumber limit switch is pressed.
         double expectedMaxDistanceToFoundation = 40;
         autoChassis.runFwdTill_frontleftChassisTouchSensor_Pressed(expectedMaxDistanceToFoundation, 0.1);
-
         // Drop block
         autoIntake.openGrip();
-
         // Move in between B4 and B3 (Parking)
         // Park near wall
         // Move back by distance or till Chassis light sensor does not detect Blue line to be under blue skybridge
@@ -157,7 +155,6 @@ public class AutonomousUC1 extends LinearOpMode {
         } else {
             autoChassis.runTill_ChassisLeftColorSensorIsRed(-55, 0, 0.25);
         }
-
  */
         parked = true;
         //End of Usecase : Should be parked at this time.

@@ -30,10 +30,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * @ArmAutoMethods : moveArm_onFoundationLevel()
  *
  */
-
-/**
- * Class Definition
- */
 public class Arm {
     //Declare Arm Motor
     public DcMotor armMotor;
@@ -41,17 +37,7 @@ public class Arm {
     //Declare Arm levels in arm motor encoder values set just above the block level
     //Arm Motor 5201 Series, 53:1 Ratio, 105 RPM Spur Gear Motor w/Encoder
     //Encoder Countable Events Per Revolution (Output Shaft)	1,497.325 (Rises & Falls of Ch A & B)
-    //Arm move 90degrees so max level is 1497.325/4 = 374 counts.
-
-    /*public int[] blockLevel = {
-            0, //ground level
-            -50, //block level 1
-            -95, //block level 2
-            -146, //block level 3
-            -199, //block level 4
-            -255, //block level 5
-            -321 //block level 6
-    };Orignial */
+    //Arm move 90degrees so max level is 1497.325/4 = 374 counts. Add 30 counts for slippage compensation
 
         public int[] blockLevel = {
              0, //ground level
@@ -63,18 +49,15 @@ public class Arm {
             -405 //block level 6
     };
 
-    int groundLevel = +20;
-    int detectSkystoneLevel = -70; //#TOBEFILLED correctly
-    int aboveFoundationLevel = -100; //#TOBEFILLED correctly
-    int onFoundationLevel = 0; //#TOBEFILLED correctly
+    public int groundLevel = +20;
+    public int detectSkystoneLevel = -70;
+    public int aboveFoundationLevel = -130;
+    public int onFoundationLevel = 30;
     int autoBlockPlacement = -150;
     int initLevel = -75;
 
     public int currentLevel = 0;
     int MAX_BLOCK_LEVEL = 6;
-    //int MAX_BLOCK_LEVEL = 15; //Test code to caliberate
-    int DROP_BLOCK_HEIGHT = 10;
-    int MAX_ARM_HEIGHT = -370; //Without correction for slippage
 
     //Timer for timing out Arm motion incase targetPosition cannot be achieved
     ElapsedTime ArmMotionTimeOut = new ElapsedTime();
@@ -82,7 +65,6 @@ public class Arm {
     //Constructor
     public Arm(HardwareMap hardwareMap) {
         armMotor = hardwareMap.dcMotor.get("arm");
-        //initArm();
     }
 
     /**
@@ -95,7 +77,6 @@ public class Arm {
         armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         moveArm_initLevel();
-
     }
 
     /**
@@ -145,7 +126,6 @@ public class Arm {
         armMotor.setTargetPosition(groundLevel);
         turnArmBrakeModeOff();
         runArmToLevel();
-        //resetArm();
     }
 
     /**
@@ -171,7 +151,7 @@ public class Arm {
      */
     public void moveArm_onFoundationLevel(){
         armMotor.setTargetPosition(onFoundationLevel);
-        turnArmBrakeModeOn();
+        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         runArmToLevel();
     }
 
@@ -192,7 +172,6 @@ public class Arm {
         turnArmBrakeModeOn();
         if (currentLevel < MAX_BLOCK_LEVEL) {
             armMotor.setTargetPosition(blockLevel[currentLevel+1]);
-            //armMotor.setTargetPosition(-currentLevel*50); //Test code to caliberate
             currentLevel++;
             runArmToLevel();
         }
@@ -207,7 +186,6 @@ public class Arm {
         if (currentLevel > 1) {
             turnArmBrakeModeOn();
             armMotor.setTargetPosition(blockLevel[currentLevel-1]);
-            //armMotor.setTargetPosition(-currentLevel*50); //Test code to caliberate
             currentLevel--;
             runArmToLevel();
         } else {
@@ -225,7 +203,6 @@ public class Arm {
     public void moveArmToPlaceBlockAtLevel(){
         if (currentLevel >=1){
             turnArmBrakeModeOn();
-            //armMotor.setTargetPosition(blockLevel[currentLevel] - DROP_BLOCK_HEIGHT); //Test COde
             runArmToLevel();
         }
     }
@@ -236,7 +213,6 @@ public class Arm {
     public void moveArmToLiftAfterBlockPlacement(){
         if (currentLevel >=1) {
             turnArmBrakeModeOn();
-            //armMotor.setTargetPosition(blockLevel[currentLevel]); //Test Code
             runArmToLevel();
         }
     }
@@ -244,19 +220,12 @@ public class Arm {
     /**
      * Method to run motor to set to the set position
      */
-
     public void runArmToLevel() {
-        //armMotor.setTargetPosition(blockLevel[level]);;
+
         ArmMotionTimeOut.reset();
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         //Turn Motors on
         armMotor.setPower(1.0);
-        //Move motor till target Position is achieved, or timeout in 3000 milliseconds
-        //while (armMotor.isBusy() && (ArmMotionTimeOut.milliseconds()<3000)) {
-            //Wait
-        //}
-        //Turn Motor to BRAKE
-        //armMotor.setPower(0.0);
     }
 
 }

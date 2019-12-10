@@ -3,43 +3,36 @@ package org.firstinspires.ftc.teamcode.autoRes.commands;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.SubSystems.Arm;
 import org.firstinspires.ftc.teamcode.SubSystems.Chassis;
 import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 
-import java.util.Locale;
-
 /**
- * Autonomous Mode Usecase 1
- *
- * Description : Start on wall in Loading Zone, identify and move 1 skystone to Building zone and park next to skybridge
+ * Autonomous Mode Usecase 2
+ * Description : Start on wall in Building Zone, Grip Foundation with hook, and position it into Building Site.
  *
  * Steps:
- * Robot starts on SB5
+ * Robot starts between A4, A5 such that it can slight in front of skybridge neutral zone floor
  * On start, robot opens wrist to front position
- * Lift Arm to Sense Position
- * Move by distance X forward near SB5
- * Check on color sensor, for Skystone
- * If Skystone, record Skystone position as SB5, Go to Step 10
- * Else move robot to SB4. Check on color sensor for Skystone.
- * If Skystone, record Skystone position as SB4, Go to Step 10
- * Else move robot to SB3. record skystone position as SB3.
- * Grip and pick the block.
- * Lift Arm to Level 2 Tray Height
- * Slide back to edge of B2,
- * Turn 90 degrees Left
- * Move to B4
- * Drop block
- * Move in between B4 and B3 (Parking)
- *
- *
+ * Lift Arm to AboveFoundation level
+ * Move robot to in between C5 and C6
+ * Move forward till Chassis bumber limit switch is pressed.
+ * Drop Arm to OnFoundation level
+ * Move Robot forward till foundation hits wall
+ * Move Robot Left toward A4 (for XX rotations). Friction will cause Robot to rotate towards A6
+ * Pull back till wall is hit (Motor does not move)
+ * Slide left till Motor does not move (Foundation corner on Edge)
+ * Push forward to move foundation to end of line
+ * Lift Arm to Above foundation level
+ * Move back till wall is hit
+ * Move right by distance or till Chassis light sensor does not detect Blue line to be under blue skybridge
  */
 
-@Autonomous(name = "AutoUseCaseTester", group = "Autonomous")
-public class AutonomousTester extends LinearOpMode {
+@Autonomous(name = "BLUE-MoveFdn-ParkWall", group = "Autonomous")
+public class BLUE_MoveFdn_ParkWall extends LinearOpMode {
 
     Intake autoIntake;
     Arm autoArm;
@@ -51,7 +44,7 @@ public class AutonomousTester extends LinearOpMode {
     public int robotWidth = 17; // Wheel edge to wheel edge
 
     int playingAlliance = 1; //1 for Blue, -1 for Red
-    boolean parkingPlaceNearSkyBridge = true;//false for near wall, true for near NeutralSkybridge
+    boolean parkingPlaceNearSkyBridge = false;//false for near wall, true for near NeutralSkybridge
 
     boolean parked = false; // Will be true once robot is parked
 
@@ -80,7 +73,7 @@ public class AutonomousTester extends LinearOpMode {
         autoArm.initArm();
         autoIntake.initIntake();
 
-        while (opModeIsActive() && !isStopRequested() && !parked) {
+        while (opModeIsActive()&& !isStopRequested() && !parked) {
             AutonomousUC2Commands();
         }
     }
@@ -93,28 +86,24 @@ public class AutonomousTester extends LinearOpMode {
         //initArm() and initIntake() should do this on class initialization
 
         //Lift Arm to AboveFoundation level
-        //moveArm_aboveFoundationLevel();
+        moveArm_aboveFoundationLevel();
         //sleep(500);
         //Move robot to in between C5 and C6
-        double robotToFoundation = 15;
+        double robotToFoundation = 50;
         runFwdBackLeftRight(playingAlliance*robotToFoundation,1,0.25);
         sleep(500);
-
-
-
         //Move forward till Chassis bumber limit switch is pressed.
         runFwdTill_frontleftChassisTouchSensor_Pressed(7, 0.1);
         sleep(500);
 
         //Drop Arm to OnFoundation level
-        //moveArm_onFoundationLevel();
+        moveArm_onFoundationLevel();
         sleep(500);
 
         //Move foundation to wall and then turn
         runFwdBackLeftRight(6,0,0.25);
         sleep(500);
 
-        /*
         //Move Robot Left toward A4 (for XX rotations). Friction will cause Robot to rotate towards A6
         double foundationTurnDistance = 85;
         runFwdBackLeftRight(playingAlliance*foundationTurnDistance,-1,0.25);
@@ -169,7 +158,7 @@ public class AutonomousTester extends LinearOpMode {
             //Red Alliance
             runTill_ChassisLeftColorSensorIsRed(40, -1, 0.25);
         }
-    */
+
         //Reached Parking position
         parked = true;
     }
@@ -298,7 +287,7 @@ public class AutonomousTester extends LinearOpMode {
                 autoChassis.backLeft.setPower(-strafeDirection* power);
                 autoChassis.backRight.setPower(strafeDirection* power);
             }
-        };
+        }
         autoChassis.setZeroBehavior(DcMotor.ZeroPowerBehavior.BRAKE); //#TOBECHECKED TO AVOID JERK
         autoChassis.frontLeft.setPower(0.0);
         autoChassis.frontRight.setPower(0.0);

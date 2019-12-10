@@ -17,43 +17,6 @@ Connect Wirelessly to phone
 5. Commands :
     adb connect 192.168.49.1:5555
 
-Pending to do
-Arm.java
-    All block levels and other levels to be filled with correct values
-        Caliberation OpMode to be made
-    BRAKE mode to be tested to avoid shake
-
-Chassis.java
-    Color sensor values to be set
-        Connect to I2C sensor - Need to rework program
-        https://ftc-tricks.com/overview-color-sensor/
-        Caliberation OpMode to be made
-    Decide of Touch sensor to be operated as Analog or Digital
-    Run till touch Sensor pressed to be corrected
-    Run by distance to be caliberated
-        Caliberation OpMOde to be made
-    Turn by angle to be written
-        Caliberation OpMode to be made
-    Remove unused RunMethods
-
-Intake.java
-    Color sensor values to be set
-        https://ftc-tricks.com/overview-color-sensor/
-        https://www.rapidtables.com/web/color/RGB_Color.html
-        Caliberation OpMode to be made
-
-HazmatTeleOpMode.java
-    Class comments to be updated
-
-Autonomous
-    Commands to be listed
-    Use Cases to be written
-
-Logging
-    Currently use telemetry using HzDEBUG_FLAG in HazmatTeleOpMode
-    Consider logging from STEM Robotics https://stemrobotics.cs.pdx.edu/node/5183?root=4196
-    https://github.com/stemrobotics/Tetrix-Exercises/blob/master/Logging.java
-
 Robot 1 : Chassis Motor
 5201 Series, 26:1 Ratio, 210 RPM Spur Gear Motor w/Encoder
 Encoder Cycles Per Revolution (Encoder Shaft)	7 (Rises of Ch A)
@@ -120,5 +83,3 @@ Logic :
     Distance goes below D2.75" - stone is nearby - Could be Skystone around 3" away or Stone around 3.3" away
     R>250 G>400 means stone, else Skystone
     If stone, go forward 2" - drop arm
-
-

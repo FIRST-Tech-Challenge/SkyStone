@@ -30,7 +30,6 @@ Gamepad buttons :
  *      Right Bumper for increasing level of arm by 1 block (gamepad1.right_bumper)
  *      Left Bumper for decreasing level of arm by 1 block (gamepad1.left_bumper)
  *      Right Trigger for increasing speed to double (gamepad1.right_trigger)
- *      Left Trigger for automatic placement of block at level (gamepad1.left_trigger)
  *      Button A to close / pull back linear actuator Intake-Grp (gamepad1.a)
  *      Button Y to open / extend linear actuator Intake-Grip (gamepad1.y)
  *      Button X to move Arm to place block at level (gamepad1.x)

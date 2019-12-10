@@ -16,7 +16,6 @@ import com.qualcomm.robotcore.hardware.Gamepad;
  *      Right Bumper for increasing level of arm by 1 block (gamepad1.right_bumper)
  *      Left Bumper for decreasing level of arm by 1 block (gamepad1.left_bumper)
  *      Right Trigger for increasing speed to double (gamepad1.right_trigger)
- *      Left Trigger for automatic placement of block at level (gamepad1.left_trigger)
  *      Button A to close / pull back linear actuator Intake-Grp (gamepad1.a)
  *      Button Y to open / extend linear actuator Intake-Grip (gamepad1.y)
  *      Button X to move Arm to place block at level (gamepad1.x)
@@ -282,42 +281,6 @@ public class HzGamepad1 {
     }
 
     /**
-     * Method for automatic placement of block at a particular level.
-     *
-     * @param apChassis Chassis object passed for autoPlace
-     * @param apArm Arm object passed for autoPlace
-     * @param apIntake Intake object passed for autoPlace
-     */
-    public void autoPlace(Chassis apChassis, Arm apArm, Intake apIntake) {
-        //Assumption - Arm is holding block right at the holding height of level to place
-        //Robot aligned at location to place. Goes forward and hits frontLeftBumperTouch sensor
-
-        while ((getLeftTrigger() > 0.75) && apChassis.frontleftChassisTouchSensorIsPressed()) {
-            //Move back slightly
-            //#TOBEUPDATED : Need to make motion a function of apArm.currentlevel since different
-            // leves have different distance to go back to.
-            apChassis.runRotations(.25, -.25);
-        }
-
-        //Move Arm to place block at the level
-        while (getLeftTrigger() > 0.75) {
-            apArm.moveArmToPlaceBlockAtLevel();
-        }
-
-        //After block is placed, Open grip to release block on level
-        while (getLeftTrigger() > 0.75) {
-            apIntake.openGrip();
-        }
-
-        //Lift Arm after block is placed
-        while (getLeftTrigger() > 0.75) {
-            apArm.moveArmToLiftAfterBlockPlacement();
-        }
-
-        //#TOBEUPDATED : Could add a move back to ensure Arm does not hit robot
-    }
-
-    /**
      * Method to convert Gamepad commands to actions on Robot
      */
     public void runSubsystemByGamepadInput(Chassis gpChassis, Arm gpArm, Intake gpIntake) {
@@ -372,18 +335,6 @@ public class HzGamepad1 {
         if (getDpad_downPress()){
             gpIntake.moveWristDown();
         }
-
-        /* Combination Auto action - Place block on level
-           Activates when Left Trigger is held pressed and when Robot chassis aligns to front of
-           location to place block and touch sensor on frontleft of chassis is pressed
-         */
-
-        /*if (getLeftTrigger()>0.75){
-            if (gpChassis.frontleftChassisTouchSensorIsPressed()){
-                autoPlace(gpChassis, gpArm, gpIntake);
-            }
-
-        }*/
 
     }
 }

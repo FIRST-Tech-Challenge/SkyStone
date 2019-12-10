@@ -81,9 +81,9 @@ public class AutoTestRunDistance extends LinearOpMode{
 
         waitForStart();
 
-        while (opModeIsActive() && !parked) {
+        while (opModeIsActive()&& !parked) {
             //chassisFwdBackTest();
-            //chassisLeftRightTest();
+            chassisLeftRightTest();
             autoChassis.turnby90degree(1,0.1);
             parked = true;
         }
@@ -116,19 +116,19 @@ public class AutoTestRunDistance extends LinearOpMode{
 
     public void chassisFwdBackTest(){
         double testdistance[] = {
-                2,
+               /* 2,
                 3,
                 4,
                 5,
-                6,/*
+                6,
                 10,
                 15,
-                20,
+                20,*/
                 25,
                 30,
                 35,
                 40,
-                45,
+                /*45,
                 50*/
         };
 

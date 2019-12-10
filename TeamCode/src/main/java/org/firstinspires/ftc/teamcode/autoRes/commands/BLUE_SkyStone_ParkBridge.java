@@ -5,12 +5,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.SubSystems.Arm;
 import org.firstinspires.ftc.teamcode.SubSystems.Chassis;
 import org.firstinspires.ftc.teamcode.SubSystems.Intake;
-
-import java.util.Locale;
 
 /**
  * Autonomous Mode Usecase 1
@@ -34,24 +31,22 @@ import java.util.Locale;
  * Move to B4
  * Drop block
  * Move in between B4 and B3 (Parking)
- *
- *
  */
 
-@Autonomous(name = "AutoUseCaseTester", group = "Autonomous")
-public class AutonomousTester extends LinearOpMode {
+@Autonomous(name = "BLUE-SkyStone-ParkBridge", group = "Autonomous")
+public class BLUE_SkyStone_ParkBridge extends LinearOpMode {
 
     Intake autoIntake;
     Arm autoArm;
     Chassis autoChassis;
 
-    public int skystonePosition;
+    int skystonePosition;
 
     public int robotDepth = 17; // Ball on wall to Edge of Chassis Touch sensor
     public int robotWidth = 17; // Wheel edge to wheel edge
 
     int playingAlliance = 1; //1 for Blue, -1 for Red
-    boolean parkingPlaceNearSkyBridge = true;//false for near wall, true for near NeutralSkybridge
+    boolean parkingPlaceNearSkyBridge = false;//false for near wall, true for near NeutralSkybridge
 
     boolean parked = false; // Will be true once robot is parked
 
@@ -74,106 +69,128 @@ public class AutonomousTester extends LinearOpMode {
 
         //Robot starts on A2
         waitForStart();
-
         //Initialize on press of play
         autoChassis.initChassis();
         autoArm.initArm();
         autoIntake.initIntake();
 
-        while (opModeIsActive() && !isStopRequested() && !parked) {
-            AutonomousUC2Commands();
+        while (isStopRequested() && !parked) {
+            AutonomousUC1Commands();
         }
     }
 
-    void AutonomousUC2Commands() {
+    void AutonomousUC1Commands() {
 
-        //Robot starts between A4, A5 such that it can slight in front of skybridge neutral zone floor
+        // Robot starts on SB5
 
         //On start, Lift arm and robot opens wrist to front position
         //initArm() and initIntake() should do this on class initialization
 
-        //Lift Arm to AboveFoundation level
-        //moveArm_aboveFoundationLevel();
-        //sleep(500);
-        //Move robot to in between C5 and C6
-        double robotToFoundation = 15;
-        runFwdBackLeftRight(playingAlliance*robotToFoundation,1,0.25);
-        sleep(500);
+        // Lift Arm to Sense Position
 
+        sleep(1000);
+        moveArm_groundLevel();
+        sleep(1000);
+        moveArm_detectSkystoneLevel();
+        sleep(1000);
+        // Move by distance X forward near SB5 : 6 inches to skystone
+        double robotToNearSkystone = 20;
+        runFwdBackLeftRight(robotToNearSkystone,0,0.1);
 
-
-        //Move forward till Chassis bumber limit switch is pressed.
-        runFwdTill_frontleftChassisTouchSensor_Pressed(7, 0.1);
-        sleep(500);
-
-        //Drop Arm to OnFoundation level
-        //moveArm_onFoundationLevel();
-        sleep(500);
-
-        //Move foundation to wall and then turn
-        runFwdBackLeftRight(6,0,0.25);
-        sleep(500);
-
-        /*
-        //Move Robot Left toward A4 (for XX rotations). Friction will cause Robot to rotate towards A6
-        double foundationTurnDistance = 85;
-        runFwdBackLeftRight(playingAlliance*foundationTurnDistance,-1,0.25);
-        sleep(500);
-
-        //Drop Arm to OnFoundation level
-        moveArm_onFoundationLevel();
-        sleep(500);
-
-        //Pull back till wall is hit (Motor does not move)
-        double foundationBackToWall = 15; // #TOBECORRECTED WITH ENCODER NOT MOVING CODE
-        runFwdBackLeftRight(-foundationBackToWall,0,0.1);
         sleep(100);
-        //Slide left till Motor does not move (Foundation corner on Edge)
-        //#TOBEWRITTEN
 
-        //Lift Arm to Above foundation level
+        // Check on color sensor, for Skystone
+        moveTillStoneDetected();
+        sleep(1000);
+        // If Skystone, record Skystone position as SB5, Go to Step 10
+
+        skystonePosition = 5; // Assume current position is skystone
+        double stoneTostone = 8;
+        if ((autoIntake.stoneDetected) && (!autoIntake.skystoneDetected)) {
+            //Skystone not detected, move to SB4
+            skystonePosition = 4;
+            runFwdBackLeftRight(stoneTostone,playingAlliance,0.1);
+        }
+        sleep(1000);
+
+        // Check on color sensor, for Skystone
+        moveTillStoneDetected();
+        sleep(1000);
+
+        if ((autoIntake.stoneDetected) && (!autoIntake.skystoneDetected)) {
+            //Skystone not detected, move to SB3
+            skystonePosition = 3;
+            runFwdBackLeftRight(stoneTostone,playingAlliance,0.1);
+        }
+        sleep(1000);
+
+        // Drop Arm and Grip the block.
+        moveArm_groundLevel();
+        sleep(1000);
+        closeGrip();
+
+        // Slide back to edge of B2, 10 inches
+        runFwdBackLeftRight(-10,0,0.1);
+
+        sleep(1000);
+        // Turn 90 degrees Left
+        turnby90degree(playingAlliance*(-1),0.1);
+        sleep(1000);
+
+
+        //Lift Arm
         moveArm_aboveFoundationLevel();
-        sleep(500);
 
-        //Push forward to move foundation to end of line
-        double foundationtoEdgeofBuildingSite = 1;
-        runFwdBackLeftRight(foundationtoEdgeofBuildingSite,0,0.1);
-        sleep(100);
+       //Move forward till Chassis bumber limit switch is pressed.
+        double expectedMaxDistanceToFoundation = 40;
+        runFwdTill_frontleftChassisTouchSensor_Pressed(expectedMaxDistanceToFoundation, 0.1);
 
-        //Move back till wall is hit
-        runFwdBackLeftRight(-foundationtoEdgeofBuildingSite,0,0.25);
-        sleep(500);
+        // Drop block
+        openGrip();
 
-        //Move out of foundation area
-        runTill_ChassisRightColorSensorIsRed(30, playingAlliance, 0.25);
-
-        //Close Grip
-        moveWristToClose();
-        sleep(100);
-
-        turnArmBrakeModeOn();
-        sleep(500);
-
-
-        //Optional : Move to park near skybridge Neutral
-        if (parkingPlaceNearSkyBridge){
-            runFwdBackLeftRight(25,0,0.25);
-        }
-
-        //Park near wall
-        //Move right by distance or till Chassis light sensor does not detect Blue line to be under blue skybridge
+        // Move in between B4 and B3 (Parking)
+        // Park near wall
+        // Move back by distance or till Chassis light sensor does not detect Blue line to be under blue skybridge
         if (playingAlliance == 1) {
-            //Blue Alliance
-            runTill_ChassisRightColorSensorIsBlue(40, 1, 0.25);
+            runTill_ChassisRightColorSensorIsBlue(-55, 0, 0.25);
         } else {
-            //Red Alliance
-            runTill_ChassisLeftColorSensorIsRed(40, -1, 0.25);
+            runTill_ChassisLeftColorSensorIsRed(-55, 0, 0.25);
         }
-    */
-        //Reached Parking position
+
+
         parked = true;
+        //End of Usecase : Should be parked at this time.
     }
 
+
+    /**
+     * Method to move till Skystone is detected using color sensor and distance sensor
+     */
+    void moveTillStoneDetected(){
+        //public void runTill_ChassisLeftColorSensorIsBlue(double max_stop_distance, double straveDirection, double power){
+
+        double stoneDetect_max_stop_distance = 6; //max is 6"
+        autoChassis.setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        autoChassis.resetChassis();
+
+        //Max Total Rotations of wheel = distance / circumference of wheel
+        double targetRotations = stoneDetect_max_stop_distance/(2*Math.PI*autoChassis.wheelRadius);
+
+        while (!isStopRequested() && !autoIntake.detectSkytoneAndType() &&
+                (Math.abs(autoChassis.backLeft.getCurrentPosition()) < Math.abs(autoChassis.ChassisMotorEncoderCount * targetRotations))) {
+            autoChassis.frontLeft.setPower(0.1);
+            autoChassis.frontRight.setPower(0.1);
+            autoChassis.backLeft.setPower(0.1);
+            autoChassis.backRight.setPower(0.1);
+        }
+
+        autoChassis.setZeroBehavior(DcMotor.ZeroPowerBehavior.BRAKE); //#TOBECHECKED TO AVOID JERK
+        autoChassis.frontLeft.setPower(0.0);
+        autoChassis.frontRight.setPower(0.0);
+        autoChassis.backLeft.setPower(0.0);
+        autoChassis.backRight.setPower(0.0);
+
+    } //return stone detected autoIntake.stoneDetected and if skystone autoIntake.SkystoneDetected
 
     /* Method to move chassis based on computed vector inputs for a set distance
      * To be used in Autonomous mode for moving by distance or turning by angle
@@ -298,7 +315,7 @@ public class AutonomousTester extends LinearOpMode {
                 autoChassis.backLeft.setPower(-strafeDirection* power);
                 autoChassis.backRight.setPower(strafeDirection* power);
             }
-        };
+        }
         autoChassis.setZeroBehavior(DcMotor.ZeroPowerBehavior.BRAKE); //#TOBECHECKED TO AVOID JERK
         autoChassis.frontLeft.setPower(0.0);
         autoChassis.frontRight.setPower(0.0);
@@ -448,4 +465,74 @@ public class AutonomousTester extends LinearOpMode {
         autoChassis.backLeft.setPower(0.0);
         autoChassis.backRight.setPower(0.0);
     }
+
+    /**
+     * Method to move Arm to groundlevel and turn Brake Mode OFF
+     */
+    public void moveArm_groundLevel(){
+        while (!isStopRequested()){
+            autoArm.armMotor.setTargetPosition(autoArm.groundLevel);
+        }
+        autoArm.turnArmBrakeModeOff();
+        autoArm.runArmToLevel();
+        //resetArm();
+    }
+
+    /**
+     * Method to move Arm to detectSkystoneLevel and turn Brake Mode ON
+     */
+    public void moveArm_detectSkystoneLevel(){
+        while (!isStopRequested()){
+            autoArm.armMotor.setTargetPosition(autoArm.detectSkystoneLevel);
+        }
+        turnArmBrakeModeOn();
+        autoArm.runArmToLevel();
+    }
+
+    /**
+     * Method to open Grip
+     */
+    public void openGrip() {
+
+        while(!isStopRequested()){
+            autoIntake.grip.setPosition(autoIntake.gripOpenPosition);
+        }
+    }
+
+    /**
+     * Method to  close Grip
+     */
+    public void closeGrip() {
+        while(!isStopRequested()){
+            autoIntake.grip.setPosition(autoIntake.gripClosePosition);
+        }
+    }
+
+    /**
+     * Method to turn robot by 90 degrees
+     * @param clockOrAntiClockwise + 1 for clockwise, -1 for anticlockwise
+     * @param power for motors
+     *
+     */
+    public void turnby90degree(int clockOrAntiClockwise, double power){
+        autoChassis.resetChassis();
+        autoChassis.setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //Max Total Rotations of wheel = distance / circumference of wheel
+        //double target90degRotations = (Math.PI*robotRadius/2)/(2*Math.PI*wheelRadius);
+
+
+        while (!isStopRequested() && Math.abs(autoChassis.backLeft.getCurrentPosition()) < Math.abs(autoChassis.ChassisMotorEncoderCount * autoChassis.target90degRotations)) {
+            autoChassis.frontLeft.setPower(clockOrAntiClockwise*power);
+            autoChassis.frontRight.setPower(-clockOrAntiClockwise*power);
+            autoChassis.backLeft.setPower(clockOrAntiClockwise*power);
+            autoChassis.backRight.setPower(-clockOrAntiClockwise*power);
+        }
+        autoChassis.frontLeft.setPower(0.0);
+        autoChassis.frontRight.setPower(0.0);
+        autoChassis.backLeft.setPower(0.0);
+        autoChassis.backRight.setPower(0.0);
+    }
+
+
+
 }

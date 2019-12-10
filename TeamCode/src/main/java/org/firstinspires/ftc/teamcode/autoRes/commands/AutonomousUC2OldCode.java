@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.autoRes.commands;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -29,9 +30,9 @@ import org.firstinspires.ftc.teamcode.SubSystems.Intake;
  * Move back till wall is hit
  * Move right by distance or till Chassis light sensor does not detect Blue line to be under blue skybridge
  */
-
-@Autonomous(name = "AutoUseCase2", group = "Autonomous")
-public class AutonomousUC2 extends LinearOpMode {
+@Disabled
+@Autonomous(name = "AutoUseCase2OldCode", group = "Autonomous")
+public class AutonomousUC2OldCode extends LinearOpMode {
 
     Intake autoIntake;
     Arm autoArm;

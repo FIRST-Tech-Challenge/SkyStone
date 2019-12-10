@@ -31,7 +31,7 @@ public class FullTest extends OpMode {
                 24,
                 GeneralTools.calculateControllerSmooting(-gamepad1.left_stick_y, smootingValue)*0.5,
                 GeneralTools.calculateControllerSmooting(gamepad1.left_stick_x, smootingValue)*0.5,
-                GeneralTools.calculateControllerSmooting(gamepad1.right_stick_x, smootingValue)*-0.02);
+                GeneralTools.calculateControllerSmooting(-gamepad1.left_trigger + gamepad1.right_trigger, smootingValue)); //gamepad1.right_stick_x*-0.2
 
         /*
         double[] result = OmniWheel.calculate(
@@ -61,16 +61,15 @@ public class FullTest extends OpMode {
 
         telemetry.addData("smootingValue", smootingValue);
 
-        if (gamepad2.left_bumper) { // Auf
-            robot.servo_grab.setPosition(0.1);
-        } else if (gamepad2.right_bumper) { // Zu
-            robot.servo_grab.setPosition(0.5);
-        }
 
         robot.motor_lift_left.setPower(-gamepad2.right_stick_y*0.5);
-        robot.motor_lift_right.setPower(-gamepad2.right_stick_y*0.5);
-        robot.motor_clamp.setPower(gamepad2.left_stick_x);
+        robot.motor_lift_right.setPower(gamepad2.right_stick_y*0.5);
 
+        if(gamepad2.a) {
+            robot.servo_grab.setPosition(1); //close
+        } else if (gamepad2.b) {
+            robot.servo_grab.setPosition(0.8); //open
+        }
 
         telemetry.addData("Smoothing Value: ", smootingValue);
         telemetry.addLine();
@@ -83,7 +82,9 @@ public class FullTest extends OpMode {
         telemetry.addData("Touch Left: ", robot.touch_left.getState());
         telemetry.addData("Touch Right: ", robot.touch_right.getState());
         telemetry.addLine();
-        telemetry.addData("Hue: ", colorTools.showHSV(robot.color_back)); //TO DO: show Hsv values
+        telemetry.addData("H: ", colorTools.showHSV(robot.color_front)[0]);
+        telemetry.addData("S: ", colorTools.showHSV(robot.color_front)[1]);
+        telemetry.addData("V: ", colorTools.showHSV(robot.color_front)[2]);
         telemetry.update();
     }
 }

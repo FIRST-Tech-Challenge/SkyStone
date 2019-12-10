@@ -80,8 +80,7 @@ public class HardwareChassis {
         this.color_back =   hwMap.get(ColorSensor.class, "hub2_colorport1");
 
         this.touch_left =    hwMap.get(DigitalChannel.class, "hub2_digitalport1");
-        this.touch_right =   hwMap.get(DigitalChannel.class, "hub2_digitalport3" +
-                "");
+        this.touch_right =   hwMap.get(DigitalChannel.class, "hub2_digitalport3");
 
         this.servo_grab = hwMap.get(Servo.class, "hub1_servoport0");
 

@@ -9,6 +9,8 @@ import org.firstinspires.ftc.teamcode.Library.ColorTools;
 import org.firstinspires.ftc.teamcode.Library.GeneralTools;
 import org.firstinspires.ftc.teamcode.Library.OmniWheel;
 
+//by Lena and Simeon
+
 @TeleOp(name = "FullTest")
 
 public class FullTest extends OpMode {
@@ -59,17 +61,23 @@ public class FullTest extends OpMode {
         robot.motor_rear_right.setPower(result[3]);
 
 
-        telemetry.addData("smootingValue", smootingValue);
+
+        robot.motor_clamp.setPower(-gamepad2.right_trigger + gamepad2.left_trigger);
 
 
-        robot.motor_lift_left.setPower(-gamepad2.right_stick_y*0.5);
-        robot.motor_lift_right.setPower(gamepad2.right_stick_y*0.5);
-
-        if(gamepad2.a) {
-            robot.servo_grab.setPosition(1); //close
-        } else if (gamepad2.b) {
-            robot.servo_grab.setPosition(0.8); //open
+        if (gamepad2.dpad_up) {
+            robot.motor_lift_left.setPower(-0.2);
+            robot.motor_lift_right.setPower(0.2);
+        } else if (gamepad2.dpad_down) {
+            robot.motor_lift_left.setPower(0.2);
+            robot.motor_lift_right.setPower(-0.2);
         }
+        else if(gamepad2.y) {
+            robot.servo_grab.setPosition(1); //close
+        } else if (gamepad2.x) {
+            robot.servo_grab.setPosition(0.6); //open
+        }
+
 
         telemetry.addData("Smoothing Value: ", smootingValue);
         telemetry.addLine();

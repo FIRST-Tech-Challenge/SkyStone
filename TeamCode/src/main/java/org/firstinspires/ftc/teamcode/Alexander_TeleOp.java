@@ -64,7 +64,7 @@
 
     @TeleOp(name="Alexander_TeleOp", group="Linear OpMode")
     //@Disabled
-    public class Alexander_TeleOp extends LinearOpMode {
+    public class Alexander_Teleop extends LinearOpMode {
 
 
         private DcMotor getNewMotor(String motorName) { //these could be made generic using type notation
@@ -222,12 +222,12 @@
         private void MoveHook(boolean Up, boolean Down) {
             if (Up) {
 
-                foundation.setPosition(1.0);
+                foundation.setPosition(0.0);
 
             }
             else if (Down) {
 
-                foundation.setPosition(0.4);
+                foundation.setPosition(1.0);
 
             }
         }
@@ -358,7 +358,7 @@
                 //gamepad2
                 boolean collectorIn = gamepad2.right_trigger > 0.2;
                 boolean collectorOut = gamepad2.right_bumper;
-                boolean guidanceIn = gamepad2.left_trigger > 0.2;
+                boolean guidanceIn = gamepad2.left_trigger > 0.2 || Math.abs(gamepad2.right_stick_y) > 0.1;
                 boolean guidanceOut = gamepad2.left_bumper;
 
                 double StoneUpDown = gamepad2.right_stick_y;
@@ -373,7 +373,7 @@
 
 
                 if (slowMode) {
-                    speedFactor = 0.25;
+                    speedFactor = 0.5;
                 } else {
                     speedFactor = 1.0;
                 }
@@ -385,7 +385,7 @@
 
                 double leftStickY = forwardBack * speedFactor * direction;
                 double leftStickX = leftRight * speedFactor * direction;
-                double rightStickX = Rotate * speedFactor * direction;
+                double rightStickX = Rotate * speedFactor ;
 
 
 

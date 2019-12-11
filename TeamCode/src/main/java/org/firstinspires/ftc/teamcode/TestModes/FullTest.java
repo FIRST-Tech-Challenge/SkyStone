@@ -66,11 +66,14 @@ public class FullTest extends OpMode {
 
 
         if (gamepad2.dpad_up) {
-            robot.motor_lift_left.setPower(-0.2);
-            robot.motor_lift_right.setPower(0.2);
+            robot.motor_lift_left.setPower(-0.05);
+            robot.motor_lift_right.setPower(0.05);
         } else if (gamepad2.dpad_down) {
-            robot.motor_lift_left.setPower(0.2);
-            robot.motor_lift_right.setPower(-0.2);
+            robot.motor_lift_left.setPower(0.05);
+            robot.motor_lift_right.setPower(-0.05);
+        } else if (!gamepad2.dpad_up && !gamepad2.dpad_down) {
+            robot.motor_lift_right.setPower(0);
+            robot.motor_lift_left.setPower(0);
         }
         else if(gamepad2.y) {
             robot.servo_grab.setPosition(1); //close

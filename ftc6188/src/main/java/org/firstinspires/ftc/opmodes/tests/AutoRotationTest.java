@@ -18,19 +18,23 @@ public class AutoRotationTest extends LinearOpMode
 
         while (!isStarted()) { robot.angleTelemetry(); }
 
-        robot.drivetrain.setTargetHeading(90);
-        sleep(1000);
-        robot.drivetrain.setTargetHeading(180);
-        sleep(1000);
-        robot.drivetrain.setTargetHeading(270);
-        sleep(1000);
-        robot.drivetrain.setTargetHeading(0);
-        sleep(1000);
+        robot.drivetrain.autoRotate(90, 0.25);
+        sleep(5000);
+        robot.drivetrain.autoRotate(180, 0.25);
+        sleep(5000);
+        robot.drivetrain.autoRotate(270, 0.25);
+        sleep(5000);
+        robot.drivetrain.autoRotate(0, 0.25);
+        sleep(5000);
     }
 
     @Override
     public void internalPostLoop()
     {
-        robot.angleTelemetry();
+        try
+        {
+            robot.angleTelemetry();
+        }
+        catch (NullPointerException ignored) { }
     }
 }

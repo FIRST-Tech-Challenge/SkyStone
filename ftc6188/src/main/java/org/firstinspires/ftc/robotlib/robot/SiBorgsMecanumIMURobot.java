@@ -41,6 +41,7 @@ public class SiBorgsMecanumIMURobot extends SiBorgsMecanumRobot
     {
         this.telemetry.addData("Current Angle", drivetrain.getCurrentHeading());
         this.telemetry.addData("Target Angle", drivetrain.getTargetHeading());
+        this.telemetry.addData("IsRotating", drivetrain.isRotating());
         this.telemetry.update();
     }
 }

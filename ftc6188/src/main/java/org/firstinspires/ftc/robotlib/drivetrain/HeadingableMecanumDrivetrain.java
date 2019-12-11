@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.robotlib.drivetrain;
 
 import com.qualcomm.hardware.bosch.BNO055IMUImpl;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -11,16 +13,25 @@ public class HeadingableMecanumDrivetrain extends MecanumDrivetrain implements H
 {
     // Robots current heading
     private double course;
+    private double predictedHeading;
 
     // desired heading
     private double targetHeading = 0;
 
+    // rotation
+    private double rotationPower = 0;
+
+    // IMU
     private BNO055IMUImpl imu;
+
+    // Timer
+    private ElapsedTime elapsedTime;
 
     public HeadingableMecanumDrivetrain(EncoderMotor[] motorList, double wheelRadius, double wheelToMotorRatio, BNO055IMUImpl imu)
     {
         super(motorList, wheelRadius, wheelToMotorRatio);
         this.imu = imu;
+        this.elapsedTime = new ElapsedTime();
     }
 
     @Override
@@ -47,8 +58,11 @@ public class HeadingableMecanumDrivetrain extends MecanumDrivetrain implements H
     @Override
     public void rotate()
     {
-        double direction = Math.signum(getCurrentHeading() - targetHeading);
-        this.setRotation(direction);
+        double direction = Math.signum(targetHeading - getCurrentHeading());
+        this.setRotation(direction * rotationPower);
+
+        elapsedTime.reset();
+        predictedHeading = 0;
 
         updateMotorPowers();
         while (isRotating()) { updateHeading(); }
@@ -59,12 +73,23 @@ public class HeadingableMecanumDrivetrain extends MecanumDrivetrain implements H
     @Override
     public boolean isRotating()
     {
-        return (getTargetHeading() - getCurrentHeading() <= 5);
+        predictedHeading += getCurrentHeading()/elapsedTime.seconds();
+        elapsedTime.reset();
+        return !((int)predictedHeading == (int)targetHeading);
     }
 
     @Override
     public void finishRotating()
     {
-        this.finishPositioning();
+        setVelocity(0);
+        setRotation(0);
+        for (DcMotor motor : motorList) { motor.setPower(0); }
+    }
+
+    public void autoRotate(double targetHeading, double velocity)
+    {
+        setTargetHeading(targetHeading);
+        rotationPower = velocity;
+        rotate();
     }
 }

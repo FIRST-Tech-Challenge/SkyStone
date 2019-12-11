@@ -16,16 +16,14 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import org.firstinspires.ftc.robotlib.Constants;
-import org.firstinspires.ftc.robotlib.navigation.Area;
 import org.firstinspires.ftc.robotlib.information.LocationInfo;
 import org.firstinspires.ftc.robotlib.information.OrientationInfo;
+import org.firstinspires.ftc.robotlib.navigation.Area;
+import org.firstinspires.ftc.robotlib.navigation.Point;
 import org.firstinspires.ftc.robotlib.navigation.Point3D;
 import org.firstinspires.ftc.robotlib.robot.MecanumHardwareMap;
 import org.firstinspires.ftc.robotlib.state.Alliance;
-import org.firstinspires.ftc.robotlib.navigation.Point;
-import org.firstinspires.ftc.robotlib.util.Helpers;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 

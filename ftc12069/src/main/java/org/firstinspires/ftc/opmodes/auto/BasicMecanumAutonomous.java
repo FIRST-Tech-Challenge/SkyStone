@@ -96,8 +96,7 @@ class BasicMecanumAutonomous {
         robot.move(0, 0.7, null, 5);
         robot.move(alliance == Alliance.BLUE ? 90 : -90, 0.5, null, 92);
 
-        // Until the timer has 5 seconds left, deliver stones
-        while (elapsedTime.seconds() < 25) {
+        for (int i = 0; i < 2; i++) {
             robot.scanWait(1);
 
             if (robot.isTrackableVisible() && robot.isSkystoneVisible()) {
@@ -105,19 +104,19 @@ class BasicMecanumAutonomous {
                 Point3D positionFromSkystone = robot.getPositionFromSkystone();
                 Point3D stonePoint3D = new Point3D(robot.getTrackedSkystone().getLocation());
                 telemetry.addData("Position relative to Skystone", "{X, Y, Z} = %.0f, %.0f, %.0f", positionFromSkystone.x, positionFromSkystone.y, positionFromSkystone.z);
-                robot.move(robot.getCourse(positionFromSkystone, stonePoint3D), 0.3, null, robot.getDistance(positionFromSkystone, stonePoint3D));
+                robot.move(robot.getCourse(positionFromSkystone, stonePoint3D), 0.3, null, robot.getDistance(positionFromSkystone, stonePoint3D) - 2);
             } else robot.move(0, 0.5, null, 5);
 
             // Intake Stone
-            robot.hardware.intakeMotorManager.setMotorsVelocity(1.0);
+            robot.hardware.updateDeliveryStates(ServoState.FLOOR);
             robot.hardware.blockGrabber.setPosition(0.0);
             robot.move(0, 0.5, null, 3);
-            robot.hardware.intakeMotorManager.setMotorsVelocity(0.0);
+            robot.hardware.blockGrabber.setPosition(1.0);
+            robot.hardware.updateDeliveryStates(ServoState.CRADLE);
 
             // Deliver Stone
             robot.move(0, -0.5, null, 10);
             robot.move(alliance == Alliance.BLUE ? -90 : 90, 0.5, new OrientationInfo(180, 0.5), 95);
-            robot.hardware.blockGrabber.setPosition(1.0);
             robot.hardware.updateDeliveryStates(ServoState.ONEBLOCKDEPOSIT);
             robot.hardware.blockGrabber.setPosition(0.0);
             robot.hardware.updateDeliveryStates(ServoState.CRADLE);
@@ -126,7 +125,8 @@ class BasicMecanumAutonomous {
             robot.move(alliance == Alliance.BLUE ? 90 : -90, 0.5, null, 100);
         }
 
-        robot.parkUnderBridge();
+        robot.scan();
+        //robot.parkUnderBridge();
         return false;
     }
 }

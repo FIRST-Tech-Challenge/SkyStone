@@ -31,11 +31,11 @@ public class GeneralTools {
      * set claw to close
      */
     public void grabSkysstone () {
-        robot.servo_grab.setPosition(0.6);
+        robot.servo_grab.setPosition(1);
     }
 
     public void openClamp () {
-        robot.servo_2.setPosition(0.1);
+        robot.servo_2.setPosition(0.6);
     }
 }
 

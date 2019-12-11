@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.Library;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+
+import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassis;
 
 public class GeneralTools {
     private LinearOpMode opMode;

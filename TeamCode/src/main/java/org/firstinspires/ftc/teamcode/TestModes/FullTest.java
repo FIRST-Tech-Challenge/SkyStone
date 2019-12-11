@@ -45,37 +45,63 @@ public class FullTest extends OpMode {
                 gamepad1.right_stick_x*0.05);
          */
 
+        //smoothing value
         if (gamepad1.right_bumper) {
             smootingValue = smootingValue+0.05;
             while (gamepad1.right_bumper){}
-        }
-        if (gamepad1.left_bumper) {
+        } else if (gamepad1.left_bumper) {
             smootingValue = smootingValue-0.05;
             while (gamepad1.left_bumper){}
         }
 
-
-        robot.motor_front_left.setPower(result[0]);
-        robot.motor_front_right.setPower(result[1]);
-        robot.motor_rear_left.setPower(result[2]);
-        robot.motor_rear_right.setPower(result[3]);
-
-
-
-        robot.motor_clamp.setPower(-gamepad2.right_trigger + gamepad2.left_trigger);
-
-
-        if (gamepad2.dpad_up) {
-            robot.motor_lift_left.setPower(-0.05);
-            robot.motor_lift_right.setPower(0.05);
-        } else if (gamepad2.dpad_down) {
-            robot.motor_lift_left.setPower(0.05);
-            robot.motor_lift_right.setPower(-0.05);
-        } else if (!gamepad2.dpad_up && !gamepad2.dpad_down) {
-            robot.motor_lift_right.setPower(0);
-            robot.motor_lift_left.setPower(0);
+        //driving
+        else if (gamepad1.left_stick_y > 0 || gamepad1.left_stick_y < 0|| gamepad1.left_stick_x < 0 ||gamepad1.left_stick_x > 0) {
+            robot.motor_front_left.setPower(result[0]);
+            robot.motor_front_right.setPower(result[1]);
+            robot.motor_rear_left.setPower(result[2]);
+            robot.motor_rear_right.setPower(result[3]);
         }
-        else if(gamepad2.y) {
+
+        //turning
+        else if (gamepad1.right_trigger > 0) {
+            robot.motor_rear_right.setPower(-gamepad1.right_trigger*0.5);
+            robot.motor_front_right.setPower(-gamepad1.right_trigger*0.5);
+            robot.motor_rear_left.setPower(-gamepad1.right_trigger*0.5);
+            robot.motor_front_left.setPower(-gamepad1.right_trigger*0.5);
+        } else if (gamepad1.left_trigger > 0) {
+            robot.motor_rear_right.setPower(gamepad1.left_trigger*0.5);
+            robot.motor_front_right.setPower(gamepad1.left_trigger*0.5);
+            robot.motor_rear_left.setPower(gamepad1.left_trigger*0.5);
+            robot.motor_front_left.setPower(gamepad1.left_trigger*0.5);
+        } else {
+            robot.motor_rear_right.setPower(0);
+            robot.motor_rear_left.setPower(0);
+            robot.motor_front_right.setPower(0);
+            robot.motor_front_left.setPower(0);
+        }
+
+        //clamp
+        if (gamepad2.right_trigger > 0 || gamepad2.left_trigger > 0) {
+            robot.motor_clamp.setPower(-gamepad2.right_trigger + gamepad2.left_trigger);
+        }
+        //lift
+        else if (gamepad2.dpad_up) {
+            robot.motor_lift_left.setPower(-0.1);
+            robot.motor_lift_right.setPower(0.1);
+        } else if (gamepad2.dpad_down) {
+            robot.motor_lift_left.setPower(0.1);
+            robot.motor_lift_right.setPower(-0.1);
+        }
+        //set all motors 0 if nothing is pressed
+        else {
+            robot.motor_lift_left.setPower(0);
+            robot.motor_lift_right.setPower(0);
+            robot.motor_clamp.setPower(0);
+        }
+
+
+        //servo
+        if(gamepad2.y) {
             robot.servo_grab.setPosition(1); //close
         } else if (gamepad2.x) {
             robot.servo_grab.setPosition(0.6); //open

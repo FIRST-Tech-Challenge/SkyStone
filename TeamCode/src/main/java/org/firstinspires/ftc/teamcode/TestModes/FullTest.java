@@ -17,12 +17,16 @@ public class FullTest extends OpMode {
     HardwareChassis robot;
     ColorTools colorTools;
     double smootingValue;
+    double[] liftZeros;
 
     @Override
     public void init() {
         robot = new HardwareChassis(hardwareMap);
         colorTools = new ColorTools();
         smootingValue = -0.5;
+
+        liftZeros[0] = robot.motor_lift_left.getCurrentPosition();
+        liftZeros[0] = robot.motor_lift_right.getCurrentPosition();
     }
 
     @Override
@@ -88,7 +92,7 @@ public class FullTest extends OpMode {
         else if (gamepad2.dpad_up) {
             robot.motor_lift_left.setPower(-0.1);
             robot.motor_lift_right.setPower(0.1);
-        } else if (gamepad2.dpad_down) {
+        } else if (gamepad2.dpad_down && (robot.motor_lift_left.getCurrentPosition() >= liftZeros[0] && robot.motor_lift_right.getCurrentPosition() <= liftZeros[1])) {
             robot.motor_lift_left.setPower(0.1);
             robot.motor_lift_right.setPower(-0.1);
         }

@@ -158,7 +158,7 @@ public class autonomous extends LinearOpMode {
                     } else {
                         telemetry.addLine("R1");
                     }
-                    Grabber.auto();
+                    Grabber.open();
                     Drive.moveForwardDistance(0.5,5);
                     Grabber.close();
                     newState(State.MovetoLine);

@@ -96,6 +96,10 @@ public class teleop extends LinearOpMode {
             } else if (egamepad2.b.released) {
                 Grabber.close();
             }
+
+            /*if (egamepad2.b.released){
+                Grabber.grab();
+            }*/
              if (egamepad2.right_bumper.released) {
                 Grabber.wrist();
             }

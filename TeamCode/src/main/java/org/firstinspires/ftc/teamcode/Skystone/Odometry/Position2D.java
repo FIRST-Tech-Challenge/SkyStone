@@ -122,30 +122,38 @@ class Odometry{
         double rightPodNew = -1 * robot.getfRight().getCurrentPosition(); //fix this for new odo config
         double mecanumPodNew = -1 * robot.getbLeft().getCurrentPosition(); // fix this for new odo config
 
-        double leftIncrement = (leftPodNew-leftPodOld) * moveScaleFactor;
-        double rightIncrement = (rightPodNew - rightPodOld) * moveScaleFactor;
-        double mecanumIncrement = (mecanumPodNew - mecanumPodOld) * strafeScaleFactor;
-        double angleIncrement = (leftIncrement - rightIncrement) * turnScaleFactor;
-        double mecanumIncrementPrediction = Math.toDegrees(angleIncrement)*(strafePredictionScalingFactor);
+        double leftDelta = (leftPodNew-leftPodOld) * moveScaleFactor;
+        double rightDelta = (rightPodNew - rightPodOld) * moveScaleFactor;
+
+        double mecanumDelta = (mecanumPodNew - mecanumPodOld) * strafeScaleFactor;
+
+        double angleDelta = (leftDelta - rightDelta) * turnScaleFactor;
+
+        double mecanumIncrementPrediction = Math.toDegrees(angleDelta)*(strafePredictionScalingFactor);
 
         double worldAngleOld = worldAngle;
         worldAngle = (leftPodNew - rightPodNew) * turnScaleFactor;
 
-        double updatedMecanumDistance = mecanumIncrement -  mecanumIncrementPrediction;
+        double updatedMecanumDistance = mecanumDelta - mecanumIncrementPrediction;
 
-        double relativeY = updatedMecanumDistance;
-        double relativeX = (leftIncrement + rightIncrement)/2;
+        double relativeY = mecanumDelta;
+        double relativeX = rightDelta;
 
-        if (angleIncrement != 0.0){
-            double radiusOfMovement = (rightIncrement + leftIncrement)/(2 * angleIncrement);
-            double radiusOfStrafe = updatedMecanumDistance/angleIncrement;
+        if (angleDelta != 0.0){
+//            double radiusOfMovement = (rightDelta + leftDelta)/(2 * angleDelta);
+//            double radiusOfStrafe = updatedMecanumDistance/angleDelta;
 
-            relativeY = radiusOfMovement * (1 - Math.cos(angleIncrement)) + radiusOfStrafe * Math.sin(angleIncrement);
-            relativeX = radiusOfMovement * Math.sin(angleIncrement) + radiusOfStrafe * (1-Math.cos(angleIncrement));
+//            relativeY = radiusOfMovement * (1 - Math.cos(angleDelta)) + radiusOfStrafe * Math.sin(angleDelta); // relative to last location of robot
+//            relativeX = radiusOfMovement * Math.sin(angleDelta) + radiusOfStrafe * (1-Math.cos(angleDelta));
+
+            relativeX = 2 * (Math.sin(angleDelta / 2)) * (rightDelta/angleDelta + 6.9375);
+            relativeY = 2 * (Math.sin(angleDelta / 2)) * (mecanumDelta/angleDelta + .25);
         }
 
-        worldY += (relativeY * Math.cos(worldAngleOld) + relativeX * Math.sin(worldAngleOld));
-        worldX += relativeX * Math.cos(worldAngleOld) - relativeY * Math.sin(worldAngleOld);
+        double vectorRotationAngle = worldAngleOld + (angleDelta / 2);
+
+        worldY += (relativeY * Math.cos(vectorRotationAngle) + relativeX * Math.sin(vectorRotationAngle));
+        worldX += relativeX * Math.cos(vectorRotationAngle) - relativeY * Math.sin(vectorRotationAngle);
 
         leftPodOld = leftPodNew;
         rightPodOld = rightPodNew;

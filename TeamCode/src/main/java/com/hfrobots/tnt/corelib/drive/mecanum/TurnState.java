@@ -25,6 +25,7 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.google.common.base.Ticker;
 import com.hfrobots.tnt.corelib.Constants;
 import com.hfrobots.tnt.corelib.control.DebouncedGamepadButtons;
+import com.hfrobots.tnt.corelib.drive.Turn;
 import com.hfrobots.tnt.corelib.state.State;
 import com.hfrobots.tnt.corelib.state.StopwatchTimeoutSafetyState;
 
@@ -33,24 +34,28 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import lombok.NonNull;
 
 /**
- * A TNT State Machine state that will follow a RoadRunner trajectory
+ * A TNT State Machine state that will turn with RoadRunner
  * using motion profiles for the given MecanumDrive.
  */
-public abstract class TrajectoryFollowerState extends StopwatchTimeoutSafetyState {
+public class TurnState extends StopwatchTimeoutSafetyState {
     protected Trajectory trajectory;
 
     private boolean initialized;
 
     protected final RoadRunnerMecanumDriveBase driveBase;
 
-    public TrajectoryFollowerState(@NonNull String name,
-                                   @NonNull Telemetry telemetry,
-                                   @NonNull RoadRunnerMecanumDriveBase driveBase,
-                                   @NonNull Ticker ticker,
-                                   long safetyTimeoutMillis) {
+    private double angleRadians;
+
+    public TurnState(@NonNull String name,
+                     @NonNull Telemetry telemetry,
+                     Turn turn,
+                     @NonNull RoadRunnerMecanumDriveBase driveBase,
+                     @NonNull Ticker ticker,
+                     long safetyTimeoutMillis) {
         super(name, telemetry, ticker, safetyTimeoutMillis);
 
         this.driveBase = driveBase;
+        this.angleRadians = Math.toRadians(turn.getHeading());
     }
 
     @Override
@@ -62,9 +67,7 @@ public abstract class TrajectoryFollowerState extends StopwatchTimeoutSafetyStat
         }
 
         if (!initialized) {
-            trajectory = createTrajectory();
-
-            driveBase.followTrajectory(trajectory);
+            driveBase.turn(angleRadians);
 
             initialized = true;
         }
@@ -82,6 +85,4 @@ public abstract class TrajectoryFollowerState extends StopwatchTimeoutSafetyStat
     public void liveConfigure(DebouncedGamepadButtons buttons) {
 
     }
-
-    protected abstract Trajectory createTrajectory();
 }

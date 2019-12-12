@@ -24,6 +24,7 @@ import android.util.Log;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.quickstart.util.AxesSigns;
 import com.acmerobotics.roadrunner.quickstart.util.BNO055IMUUtil;
+import com.google.common.base.Optional;
 import com.hfrobots.tnt.corelib.util.LynxModuleUtil;
 import com.hfrobots.tnt.corelib.util.SimplerHardwareMap;
 import com.qualcomm.hardware.bosch.BNO055IMU;
@@ -56,7 +57,17 @@ public class RoadRunnerMecanumDriveREV extends RoadRunnerMecanumDriveBase {
 
     private boolean encodersEnabled = false;
 
-    public RoadRunnerMecanumDriveREV(final DriveConstants driveConstants, SimplerHardwareMap hardwareMap, boolean needImu) {
+    public RoadRunnerMecanumDriveREV(final DriveConstants driveConstants, SimplerHardwareMap hardwareMap,
+                                     boolean needImu) {
+        this(driveConstants, hardwareMap, needImu, Optional.<AxesOrder>absent(), Optional.<AxesSigns>absent());
+
+    }
+
+    public RoadRunnerMecanumDriveREV(final DriveConstants driveConstants,
+                                     SimplerHardwareMap hardwareMap,
+                                     boolean needImu,
+                                     Optional<AxesOrder> optionalAxesOrder,
+                                     Optional<AxesSigns> optionalAxesSigns) {
         super(driveConstants);
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
@@ -68,9 +79,11 @@ public class RoadRunnerMecanumDriveREV extends RoadRunnerMecanumDriveBase {
             parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
             imu.initialize(parameters);
 
-            // TODO: if your hub is mounted vertically, remap the IMU axes so that the z-axis points
-            // upward (normal to the floor) using a command like the following:
-            BNO055IMUUtil.remapAxes(imu, AxesOrder.YXZ, AxesSigns.NPN);
+            if (optionalAxesOrder.isPresent() && optionalAxesSigns.isPresent()) {
+                // TODO: if your hub is mounted vertically, remap the IMU axes so that the z-axis points
+                // upward (normal to the floor) using a command like the following:
+                BNO055IMUUtil.remapAxes(imu, optionalAxesOrder.get(), optionalAxesSigns.get());
+            }
         }
 
         leftFront = hardwareMap.get(DcMotorEx.class, "leftFrontDriveMotor");

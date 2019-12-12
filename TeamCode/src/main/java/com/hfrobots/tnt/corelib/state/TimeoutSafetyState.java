@@ -51,6 +51,10 @@ public abstract class TimeoutSafetyState extends State {
 
     @Override
     public void resetToStart() {
+        resetTimer();
+    }
+
+    protected void resetTimer() {
         timeoutStartMillis = 0;
     }
 }

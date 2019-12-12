@@ -82,7 +82,7 @@ public class OpenLoopDriveBaseControlTest {
         rightRearDriveMotor = new FakeExtendedDcMotor();
         hardwareMap.addDevice("rightRearDriveMotor", rightRearDriveMotor);
 
-        RoadRunnerMecanumDriveREV drivebase = new RoadRunnerMecanumDriveREV(hardwareMap, false);
+        RoadRunnerMecanumDriveREV drivebase = new RoadRunnerMecanumDriveREV(new SkystoneDriveConstants(), hardwareMap, false);
 
         OpenLoopMecanumKinematics kinematics = new OpenLoopMecanumKinematics(drivebase);
 

@@ -22,7 +22,10 @@ package com.hfrobots.tnt.corelib.drive.mecanum;
 import android.util.Log;
 
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
+import com.acmerobotics.roadrunner.quickstart.util.AxesSigns;
+import com.acmerobotics.roadrunner.quickstart.util.BNO055IMUUtil;
 import com.acmerobotics.roadrunner.quickstart.util.LynxOptimizedI2cFactory;
+import com.google.common.base.Optional;
 import com.hfrobots.tnt.corelib.util.LynxModuleUtil;
 import com.hfrobots.tnt.corelib.util.SimplerHardwareMap;
 import com.qualcomm.hardware.bosch.BNO055IMU;
@@ -30,6 +33,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.ExpansionHubMotor;
 import org.openftc.revextensions2.RevBulkData;
@@ -52,7 +56,17 @@ public class RoadRunnerMecanumDriveREVOptimized extends RoadRunnerMecanumDriveBa
     private List<ExpansionHubMotor> motors;
     private BNO055IMU imu;
 
-    public RoadRunnerMecanumDriveREVOptimized(final DriveConstants driveConstants, SimplerHardwareMap hardwareMap, boolean needImu) {
+    public RoadRunnerMecanumDriveREVOptimized(final DriveConstants driveConstants,
+                                              SimplerHardwareMap hardwareMap,
+                                              boolean needImu) {
+        this(driveConstants, hardwareMap, needImu, Optional.<AxesOrder>absent(), Optional.<AxesSigns>absent());
+    }
+
+    public RoadRunnerMecanumDriveREVOptimized(final DriveConstants driveConstants,
+                                              SimplerHardwareMap hardwareMap,
+                                              boolean needImu,
+                                              Optional<AxesOrder> optionalAxesOrder,
+                                              Optional<AxesSigns> optionalAxesSigns) {
         super(driveConstants);
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
@@ -68,9 +82,11 @@ public class RoadRunnerMecanumDriveREVOptimized extends RoadRunnerMecanumDriveBa
             parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
             imu.initialize(parameters);
 
-            // TODO: if your hub is mounted vertically, remap the IMU axes so that the z-axis points
-            // upward (normal to the floor) using a command like the following:
-            // BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
+            if (optionalAxesOrder.isPresent() && optionalAxesSigns.isPresent()) {
+                // TODO: if your hub is mounted vertically, remap the IMU axes so that the z-axis points
+                // upward (normal to the floor) using a command like the following:
+                BNO055IMUUtil.remapAxes(imu, optionalAxesOrder.get(), optionalAxesSigns.get());
+            }
         }
 
         leftFront = hardwareMap.get(ExpansionHubMotor.class, "leftFrontDriveMotor");
@@ -81,7 +97,7 @@ public class RoadRunnerMecanumDriveREVOptimized extends RoadRunnerMecanumDriveBa
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
         for (ExpansionHubMotor motor : motors) {
-            // TODO: decide whether or not to use the built-in velocity PID
+            // TO-DONE: decide whether or not to use the built-in velocity PID
             // if you keep it, then don't tune kStatic or kA
             // otherwise, comment out the following line
             motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

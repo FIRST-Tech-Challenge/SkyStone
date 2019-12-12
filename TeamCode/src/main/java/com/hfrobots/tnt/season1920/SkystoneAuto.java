@@ -21,24 +21,31 @@ package com.hfrobots.tnt.season1920;
 
 import android.util.Log;
 
+import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.path.heading.ConstantInterpolator;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
+import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 import com.google.common.base.Ticker;
 import com.hfrobots.tnt.corelib.Constants;
 import com.hfrobots.tnt.corelib.control.DebouncedButton;
 import com.hfrobots.tnt.corelib.control.DebouncedGamepadButtons;
 import com.hfrobots.tnt.corelib.control.NinjaGamePad;
 import com.hfrobots.tnt.corelib.control.RangeInput;
+import com.hfrobots.tnt.corelib.drive.Turn;
 import com.hfrobots.tnt.corelib.drive.mecanum.DriveConstants;
-import com.hfrobots.tnt.corelib.drive.mecanum.RoadRunnerMecanumDriveREV;
+import com.hfrobots.tnt.corelib.drive.mecanum.RoadRunnerMecanumDriveREVOptimized;
 import com.hfrobots.tnt.corelib.drive.mecanum.TrajectoryFollowerState;
+import com.hfrobots.tnt.corelib.drive.mecanum.TurnState;
 import com.hfrobots.tnt.corelib.state.State;
 import com.hfrobots.tnt.corelib.state.StateMachine;
 import com.hfrobots.tnt.corelib.util.RealSimplerHardwareMap;
 import com.hfrobots.tnt.season1819.TntPose2d;
+import com.hfrobots.tnt.util.jackiebot.JackiebotAuto;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+
+import org.firstinspires.ftc.robotcore.external.navigation.Rotation;
 
 import java.util.concurrent.TimeUnit;
 
@@ -49,16 +56,18 @@ import static com.hfrobots.tnt.corelib.Constants.LOG_TAG;
 public class SkystoneAuto extends OpMode {
     private Ticker ticker;
 
-    private RoadRunnerMecanumDriveREV driveBase;
+    private RoadRunnerMecanumDriveREVOptimized driveBase;
 
     private StateMachine stateMachine;
 
     // The routes our robot knows how to do
     private enum Routes {
+        MOVE_FOUNDATION("Move Foundation"),
+        SCAN_SKYSTONES("Scan Skystones"),
         PARK_LEFT_NEAR_POS("Park from left to near"),
-        PARK_RIGHT_NEAR_POS("Park from right to near");
-        //PARK_LEFT_FAR_POS("Park from left to far"),
-        //PARK_RIGHT_FAR_POS("Park from right to far");
+        PARK_RIGHT_NEAR_POS("Park from right to near"),
+        PARK_LEFT_FAR_POS("Park from left to far"),
+        PARK_RIGHT_FAR_POS("Park from right to far");
 
         final String description;
 
@@ -89,7 +98,7 @@ public class SkystoneAuto extends OpMode {
         setupDriverControls();
 
         RealSimplerHardwareMap simplerHardwareMap = new RealSimplerHardwareMap(this.hardwareMap);
-        driveBase = new RoadRunnerMecanumDriveREV(new SkystoneDriveConstants(), simplerHardwareMap, false);
+        driveBase = new RoadRunnerMecanumDriveREVOptimized(new SkystoneDriveConstants(), simplerHardwareMap, true);
 
         stateMachine = new StateMachine(telemetry);
     }
@@ -205,12 +214,18 @@ public class SkystoneAuto extends OpMode {
                     case PARK_RIGHT_NEAR_POS:
                         setupParkFromRightNear();
                         break;
-//                    case PARK_LEFT_FAR_POS:
-//                        setupParkFromLeftFar();
-//                        break;
-//                    case PARK_RIGHT_FAR_POS:
-//                        setupParkFromRightFar();
-//                        break;
+                    case PARK_LEFT_FAR_POS:
+                        setupParkFromLeftFar();
+                        break;
+                    case PARK_RIGHT_FAR_POS:
+                        setupParkFromRightFar();
+                        break;
+                    case SCAN_SKYSTONES:
+                        setupScanSkytones();
+                        break;
+                    case MOVE_FOUNDATION:
+                        setupMoveFoundation();
+                        break;
                     default:
                         stateMachine.addSequential(newDoneState("Default done"));
                         break;
@@ -246,7 +261,7 @@ public class SkystoneAuto extends OpMode {
     }
 
     protected void setupParkFromLeftFar() {
-        setupParkCommon("Park from the left far", 20, 20);
+        setupParkCommon("Park from the left far", 20, 16);
     }
 
     protected void setupParkFromRightNear() {
@@ -255,7 +270,7 @@ public class SkystoneAuto extends OpMode {
     }
 
     protected void setupParkFromRightFar() {
-        setupParkCommon("Park from the right far", -20, 20);
+        setupParkCommon("Park from the right far", -20, 16);
     }
 
     protected void setupParkCommon(String stateName, final double strafeDistance, final double forwardDistance) {
@@ -265,14 +280,83 @@ public class SkystoneAuto extends OpMode {
                 telemetry, driveBase, ticker, TimeUnit.SECONDS.toMillis(20 * 1000)) {
             @Override
             protected Trajectory createTrajectory() {
-                return driveBase.trajectoryBuilder()
-                        .lineTo(TntPose2d.toVector2d(0, forwardDistance), new ConstantInterpolator(0))
-                        .lineTo(TntPose2d.toVector2d(strafeDistance, forwardDistance), new ConstantInterpolator(0))
-                        .build();
+                TrajectoryBuilder trajectoryBuilder = driveBase.trajectoryBuilder();
+
+                trajectoryBuilder.forward(forwardDistance);
+
+                if (strafeDistance < 0) {
+                    trajectoryBuilder.strafeLeft(Math.abs(strafeDistance));
+                } else {
+                    trajectoryBuilder.strafeRight(Math.abs(strafeDistance));
+                }
+
+                return trajectoryBuilder.build();
             }
         };
 
         stateMachine.addSequential(parkTrajectoryState);
+        stateMachine.addSequential(newDoneState("Done!"));
+    }
+
+    protected void setupScanSkytones() {
+        // Robot starts against wall, depot side of tape line
+
+        State straightTrajectoryState = new TrajectoryFollowerState("Straight",
+                telemetry, driveBase, ticker, TimeUnit.SECONDS.toMillis(20 * 1000)) {
+            @Override
+            protected Trajectory createTrajectory() {
+                return driveBase.trajectoryBuilder().lineTo(TntPose2d.toVector2d(0, 28), new ConstantInterpolator(0))
+                        .lineTo(TntPose2d.toVector2d(-20, 28), new ConstantInterpolator(0))
+                        .build();
+            }
+        };
+
+        stateMachine.addSequential(straightTrajectoryState);
+        stateMachine.addSequential(newDoneState("Done!"));
+    }
+
+    protected void setupMoveFoundation() {
+        // Robot starts against wall, left side on tile seam nearest to tape
+
+        State splineTrajectoryState = new TrajectoryFollowerState("Spline",
+                telemetry, driveBase, ticker, TimeUnit.SECONDS.toMillis(20 * 1000)) {
+            @Override
+            protected Trajectory createTrajectory() {
+                return driveBase.trajectoryBuilder().splineTo(TntPose2d.toPose2d(9, 28))
+                        .build();
+            }
+        };
+
+        // GRIP!
+
+        // Turn 90 degrees clockwise
+        State turnWithBase = new TurnState("Turn with base",
+                telemetry, new Turn(Rotation.CW, 90), driveBase, ticker, TimeUnit.SECONDS.toMillis(20 * 1000));
+
+        // Forward 5-6"
+
+        State forwardTrajectoryState = new TrajectoryFollowerState("Spline",
+                telemetry, driveBase, ticker, TimeUnit.SECONDS.toMillis(20 * 1000)) {
+            @Override
+            protected Trajectory createTrajectory() {
+                return driveBase.trajectoryBuilder().forward(6)
+                        .build();
+            }
+        };
+
+        // UNGRIP
+
+        // Win!
+
+        stateMachine.addSequential(splineTrajectoryState);
+
+        // REMOVE AFTER TESTING
+        {
+            stateMachine.addSequential(newDelayState("wait to turn", 2));
+            stateMachine.addSequential(turnWithBase);
+            stateMachine.addSequential(forwardTrajectoryState);
+        }
+
         stateMachine.addSequential(newDoneState("Done!"));
     }
 

@@ -61,6 +61,10 @@ public abstract class StopwatchTimeoutSafetyState extends State {
 
     @Override
     public void resetToStart() {
+        resetTimer();
+    }
+
+    protected void resetTimer() {
         stopwatch.reset();
     }
 }

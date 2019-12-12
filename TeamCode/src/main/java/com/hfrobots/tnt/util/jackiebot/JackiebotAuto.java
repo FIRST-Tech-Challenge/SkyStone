@@ -32,15 +32,20 @@ import com.hfrobots.tnt.corelib.control.DebouncedButton;
 import com.hfrobots.tnt.corelib.control.DebouncedGamepadButtons;
 import com.hfrobots.tnt.corelib.control.NinjaGamePad;
 import com.hfrobots.tnt.corelib.control.RangeInput;
+import com.hfrobots.tnt.corelib.drive.Turn;
 import com.hfrobots.tnt.corelib.drive.mecanum.DriveConstants;
+import com.hfrobots.tnt.corelib.drive.mecanum.RoadRunnerMecanumDriveREV;
 import com.hfrobots.tnt.corelib.drive.mecanum.RoadRunnerMecanumDriveREVOptimized;
 import com.hfrobots.tnt.corelib.drive.mecanum.TrajectoryFollowerState;
+import com.hfrobots.tnt.corelib.drive.mecanum.TurnState;
 import com.hfrobots.tnt.corelib.state.State;
 import com.hfrobots.tnt.corelib.state.StateMachine;
 import com.hfrobots.tnt.corelib.util.RealSimplerHardwareMap;
 import com.hfrobots.tnt.season1819.TntPose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+
+import org.firstinspires.ftc.robotcore.external.navigation.Rotation;
 
 import java.util.concurrent.TimeUnit;
 
@@ -281,7 +286,7 @@ public class JackiebotAuto extends OpMode {
     }
 
     protected void setupParkFromLeftFar() {
-        setupParkCommon("Park from the left far", 20, 20);
+        setupParkCommon("Park from the left far", 20, 16);
     }
 
     protected void setupParkFromRightNear() {
@@ -290,7 +295,7 @@ public class JackiebotAuto extends OpMode {
     }
 
     protected void setupParkFromRightFar() {
-        setupParkCommon("Park from the right far", -20, 20);
+        setupParkCommon("Park from the right far", -20, 16);
     }
 
     protected void setupParkCommon(String stateName, final double strafeDistance, final double forwardDistance) {
@@ -300,9 +305,17 @@ public class JackiebotAuto extends OpMode {
                 telemetry, driveBase, ticker, TimeUnit.SECONDS.toMillis(20 * 1000)) {
                 @Override
                 protected Trajectory createTrajectory() {
-                    return driveBase.trajectoryBuilder().lineTo(TntPose2d.toVector2d(0, forwardDistance), new ConstantInterpolator(0))
-                            .lineTo(TntPose2d.toVector2d(strafeDistance, forwardDistance), new ConstantInterpolator(0))
-                            .build();
+                    TrajectoryBuilder trajectoryBuilder = driveBase.trajectoryBuilder();
+
+                    trajectoryBuilder.forward(forwardDistance);
+
+                    if (strafeDistance < 0) {
+                        trajectoryBuilder.strafeLeft(Math.abs(strafeDistance));
+                    } else {
+                        trajectoryBuilder.strafeRight(Math.abs(strafeDistance));
+                    }
+
+                    return trajectoryBuilder.build();
                 }
         };
 
@@ -342,14 +355,33 @@ public class JackiebotAuto extends OpMode {
         // GRIP!
 
         // Turn 90 degrees clockwise
+        State turnWithBase = new TurnState("Turn with base",
+                telemetry, new Turn(Rotation.CW, 90), driveBase, ticker, TimeUnit.SECONDS.toMillis(20 * 1000));
 
         // Forward 5-6"
+
+        State forwardTrajectoryState = new TrajectoryFollowerState("Spline",
+                telemetry, driveBase, ticker, TimeUnit.SECONDS.toMillis(20 * 1000)) {
+            @Override
+            protected Trajectory createTrajectory() {
+                return driveBase.trajectoryBuilder().forward(6)
+                        .build();
+            }
+        };
 
         // UNGRIP
 
         // Win!
 
         stateMachine.addSequential(splineTrajectoryState);
+
+        // REMOVE AFTER TESTING
+        {
+            stateMachine.addSequential(newDelayState("wait to turn", 2));
+            stateMachine.addSequential(turnWithBase);
+            stateMachine.addSequential(forwardTrajectoryState);
+        }
+
         stateMachine.addSequential(newDoneState("Done!"));
     }
 

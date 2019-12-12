@@ -28,7 +28,7 @@ SOFTWARE.
             <Motor name="leftRearDriveMotor"  port="2" /> <!-- green -->
             <Motor name="rightRearDriveMotor"  port="3" /> <!-- purple -->
 
-            <DigitalDevice name="deliveryMechLowLimitSwitch" port="7"/>
+            <DigitalDevice name="deliveryMechLowLimitSwitch" port="1"/>
         </LynxModule>
 
         <LynxModule name="Secondary Hub" port="3">
@@ -40,9 +40,9 @@ SOFTWARE.
 
             <Servo name="fingerServo" port="0" />
             <Servo name="wristServo" port="1" />
-            <Servo name="elbowServo" port="2" />
             <Servo name="shoulderServo" port="3" />
         </LynxModule>
     </LynxUsbDevice>
 </Robot>
 
+<!--sans.-->

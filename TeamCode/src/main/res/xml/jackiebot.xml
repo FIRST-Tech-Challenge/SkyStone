@@ -20,6 +20,7 @@ SOFTWARE.
 <Robot type="FirstInspires-FTC">
     <LynxUsbDevice name="Expansion Hub Portal 1" serialNumber="DQ1476N4" parentModuleAddress="2">
         <LynxModule name="Main Hub" port="2">
+            <LynxEmbeddedIMU name="imu" port="0" bus="0" />
             <!-- DC Motors -->
             <Motor name="leftFrontDriveMotor"  port="0" />
             <Motor name="rightFrontDriveMotor" port="1" />

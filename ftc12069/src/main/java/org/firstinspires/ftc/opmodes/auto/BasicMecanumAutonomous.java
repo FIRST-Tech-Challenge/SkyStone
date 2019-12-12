@@ -35,7 +35,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotlib.autonomous.AutonomousRobot;
 import org.firstinspires.ftc.robotlib.information.OrientationInfo;
-import org.firstinspires.ftc.robotlib.navigation.Point;
 import org.firstinspires.ftc.robotlib.navigation.Point3D;
 import org.firstinspires.ftc.robotlib.state.Alliance;
 import org.firstinspires.ftc.robotlib.state.ServoState;
@@ -109,16 +108,16 @@ class BasicMecanumAutonomous {
 
             // Intake Stone
             robot.hardware.updateDeliveryStates(ServoState.FLOOR);
-            robot.hardware.blockGrabber.setPosition(0.0);
+            robot.hardware.blockGrabber.setPosition(ServoState.OPEN);
             robot.move(0, 0.5, null, 3);
-            robot.hardware.blockGrabber.setPosition(1.0);
+            robot.hardware.blockGrabber.setPosition(ServoState.CLOSED);
             robot.hardware.updateDeliveryStates(ServoState.CRADLE);
 
             // Deliver Stone
             robot.move(0, -0.5, null, 10);
             robot.move(alliance == Alliance.BLUE ? -90 : 90, 0.5, new OrientationInfo(180, 0.5), 95);
             robot.hardware.updateDeliveryStates(ServoState.ONEBLOCKDEPOSIT);
-            robot.hardware.blockGrabber.setPosition(0.0);
+            robot.hardware.blockGrabber.setPosition(ServoState.OPEN);
             robot.hardware.updateDeliveryStates(ServoState.CRADLE);
 
             // Move to the loading zone

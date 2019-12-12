@@ -182,7 +182,6 @@ public class AutoTest extends LinearOpMode {
                 .translation(halfField, -quadField, mmTargetHeight)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
 
-
         if (CAMERA_CHOICE == BACK) {
             phoneYRotate = -90;
         } else {
@@ -207,16 +206,17 @@ public class AutoTest extends LinearOpMode {
 
         targetsSkyStone.activate();
         if (startIdentify) {
-            autoLib.calcMove(46, .8f, Constants.Direction.BACKWARD);
+            autoLib.calcMove(44, .8f, Constants.Direction.BACKWARD);
+            autoLib.calcMove(15,.7f, Constants.Direction.LEFT);
             autoLib.calcMove(4, .2f, Constants.Direction.BACKWARD);
             Thread.sleep(300);
             autoLib.latchServoFoundation();
             Thread.sleep(1000);
             autoLib.calcMove(50, 1f, Constants.Direction.FORWARD);
+            autoLib.calcTurn(-90,1f);
             autoLib.restServoFoundation();
-            autoLib.calcMove(200, 1f, Constants.Direction.RIGHT);
-
-            autoLib.calcMove(20, 1f, Constants.Direction.BACKWARD);
+            autoLib.calcMove(100, 1f, Constants.Direction.FORWARD);
+            autoLib.calcTurn(48,1f);
             Thread.sleep(1000);
             while (!isStopRequested() && startIdentify) {
 

@@ -23,9 +23,9 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.VUFORIA_KEY;
 
-@Autonomous(name = "Blue Autonomous 29 Points", group = "Concept")
+@Autonomous(name = "AutoTestRed", group = "Concept")
 
-public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
+public class AutoTestRed extends LinearOpMode {
 
     private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
     private static final boolean PHONE_IS_PORTRAIT = false;
@@ -57,7 +57,7 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
     double yPosition = 0;
     double xPosition = 0;
     boolean startIdentify = true;
-    float distanceToDepot = 110;    //115
+    float distanceToDepot = 95;    //115
     float distanceToCenterLine = 5.5f;
     float forwardDistanceSkystone = 28f;
     float turningDegree = -50;
@@ -241,11 +241,11 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
                         positionSkystone = "Left";
 //                        autoLib.calcMove(1, .7f, Constants.Direction.LEFT);
                         finalMove(-xPosition, yPosition);
-                        distanceToDepot = distanceToCenterLine + 6;
+//                        distanceToDepot = distanceToDepot + 10;
                     } else {
                         positionSkystone = "Center";
                         //if (xPosition <= -25) {
-                        distanceToDepot = distanceToDepot + 20f;
+                        distanceToDepot = distanceToDepot + 10f;
                         forwardDistanceSkystone = forwardDistanceSkystone + 3;
                         foundation = foundation + 8;
 //                        turningDegree = turningDegree - 10f;
@@ -266,11 +266,12 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
                     positionSkystone = "Right";
                     telemetry.addData("Visible Target", "none");
 
-                    distanceToDepot = distanceToDepot + 150;
+                    distanceToDepot = distanceToDepot + 15;
                     distanceToCenterLine = distanceToCenterLine - 2;
                     forwardDistanceSkystone = forwardDistanceSkystone - 1;
 
-                    autoLib.calcMove(10, .7f, Constants.Direction.RIGHT);
+                    autoLib.calcMove(20, .7f, Constants.Direction.LEFT);
+                    Thread.sleep(750);
 
                 }
                 telemetry.addData("Skystone Position", positionSkystone);
@@ -291,18 +292,18 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
         autoLib.calcMove((float) (yPosition / 10) + distanceToCenterLine, .9f, Constants.Direction.RIGHT); //when decreased- moves to the left
         autoLib.calcMove((float) (-xPosition / 10) + forwardDistanceSkystone, .6f, Constants.Direction.FORWARD);   //when increased-moves back
 //        distanceToDepot = distanceToDepot + (float) yPosition + 5;
-        autoLib.calcMove(3.5f, .7f, Constants.Direction.BACKWARD);
+        autoLib.calcMove(5f, .7f, Constants.Direction.BACKWARD);
         Thread.sleep(500);
         autoLib.armGrab();
         Thread.sleep(500);
         autoLib.calcMove(17f, .8f, Constants.Direction.FORWARD);    //16
-        autoLib.calcTurn((int) turningDegree, .7f); //53
+        autoLib.calcTurn((int) -turningDegree, .7f); //53
 //        if (distanceToDepot > 120) {//195
 //            distanceToDepot = 130;//205
 //        }
         autoLib.calcMove(distanceToDepot, 1f, Constants.Direction.BACKWARD);
         autoLib.moveArmUpSeconds();
-        autoLib.calcTurn(50, .6f);
+        autoLib.calcTurn(-50, .6f);
         autoLib.calcMove(foundation, .7f, Constants.Direction.BACKWARD);
         autoLib.scoreServo();
         autoLib.calcMove(5, .15f, Constants.Direction.BACKWARD);
@@ -311,7 +312,7 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
         Thread.sleep(1000);
         autoLib.calcMove(60, 1f, Constants.Direction.FORWARD);
         autoLib.restServoFoundation();
-        autoLib.calcMove(72, 1f, Constants.Direction.RIGHT);
+        autoLib.calcMove(72, 1f, Constants.Direction.LEFT);
         startIdentify = false;
 
     }

@@ -231,14 +231,13 @@ public class AutoLib {
     }
 
     public void distanceSensorMove() {
-        robot.setDcMotorPower(MOTOR_FRONT_LEFT_WHEEL, .4f);
-        robot.setDcMotorPower(MOTOR_FRONT_RIGHT_WHEEL, .4f);
-        robot.setDcMotorPower(MOTOR_BACK_LEFT_WHEEL, .4f);
-        robot.setDcMotorPower(MOTOR_BACK_RIGHT_WHEEL, .4f);
-
         while (robot.getWallDistanceCenti() >= 45) {
-            opMode.idle();
+            robot.setDcMotorPower(MOTOR_FRONT_LEFT_WHEEL, .4f);
+            robot.setDcMotorPower(MOTOR_FRONT_RIGHT_WHEEL, .4f);
+            robot.setDcMotorPower(MOTOR_BACK_LEFT_WHEEL, .4f);
+            robot.setDcMotorPower(MOTOR_BACK_RIGHT_WHEEL, .4f);
         }
+        opMode.idle();
     }
 
     public void moveArmDown() {

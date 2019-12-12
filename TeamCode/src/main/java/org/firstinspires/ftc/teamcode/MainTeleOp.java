@@ -34,11 +34,8 @@ public class MainTeleOp extends OpMode {
             servo.setPosition(-0.35);
 
         }
-        telemetry.addData("encoder value:", servo.getPosition());
         robot.servo(0.35, gamepad2.a, gamepad2.b);
-        telemetry.addData("servo position",servo.getPosition());
-        telemetry.update();
 
-        robot.lift(gamepad2.left_stick_y);
+        robot.lift(gamepad1.left_trigger,gamepad1.right_trigger);
     }
 }

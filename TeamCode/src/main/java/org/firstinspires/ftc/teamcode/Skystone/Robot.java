@@ -658,10 +658,12 @@ public class Robot {
             }
 
             if (isReleasingFoundation){
-                brakeRobot();
-                foundationMovers(false);
-                linearOpMode.sleep(250);
-                isReleasingFoundation = false;
+                if((Math.toDegrees(posAngle) <= 95 && Math.toDegrees(posAngle) >= 85) || (Math.toDegrees(posAngle) >= 265 && Math.toDegrees(posAngle) <= 275)) {
+                    brakeRobot();
+                    foundationMovers(false);
+                    linearOpMode.sleep(250);
+                    isReleasingFoundation = false;
+                }
             }
 
             if (isStartingIntake){

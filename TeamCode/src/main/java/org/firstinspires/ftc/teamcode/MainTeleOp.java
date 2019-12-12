@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.pidBullshit;
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.Maccabot;
 
 @TeleOp(name="MainTeleOp")
 //@Disabled
-public class PIDTuningOpMode extends OpMode {
+public class MainTeleOp extends OpMode {
 
     Maccabot robot;
 
@@ -39,6 +39,6 @@ public class PIDTuningOpMode extends OpMode {
         telemetry.addData("servo position",servo.getPosition());
         telemetry.update();
 
-        //robot.lift(gamepad2.left_stick_y);
+        robot.lift(gamepad2.left_stick_y);
     }
 }

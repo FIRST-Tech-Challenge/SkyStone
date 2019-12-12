@@ -17,7 +17,7 @@ public class Maccabot {
     private double encoder;
 
     // Drive Motor Variables
-    private DcMotor front_left, front_right, back_left, back_right, intake_left, intake_right;
+    private DcMotor front_left, front_right, back_left, back_right, intake_left, intake_right, lift_left, lift_right;
     private Servo servo;
 
     // Intake Motors TBD
@@ -37,8 +37,8 @@ public class Maccabot {
         back_right = hardwareMap.dcMotor.get("back_right"); // Port 3
         intake_left = hardwareMap.dcMotor.get("intake_left");
         intake_right = hardwareMap.dcMotor.get("intake_right");
-        //lift_left = hardwareMap.dcMotor.get("lift_left");
-        //lift_right = hardwareMap.dcMotor.get("lift_right");
+        lift_left = hardwareMap.dcMotor.get("lift_left");
+        lift_right = hardwareMap.dcMotor.get("lift_right");
         servo = hardwareMap.servo.get("servo");
 
         encoder = 0;
@@ -107,7 +107,7 @@ public class Maccabot {
         }
     }
 
-    /*public void lift(double cond1){
+    public void lift(double cond1){
         lift_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         lift_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
@@ -120,7 +120,7 @@ public class Maccabot {
             lift_right.setPower(cond1);
         }
 
-    }*/
+    }
 
 
 }

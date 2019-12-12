@@ -139,7 +139,7 @@ public class BlueFront extends AutoBase{
 
         sleep(250);
 
-        if (false) {
+        if (SystemClock.elapsedRealtime() - startTime < 20000) {
             robot.splineMove(toThirdStone, 0.7,1, 0.65, 20,0,Math.toRadians(90),20,
                     toThirdStoneActions, true, 6000);
 

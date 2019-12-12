@@ -6,9 +6,6 @@ import static org.firstinspires.ftc.teamcode.Skystone.MathFunctions.getArrayOfRo
 import static org.firstinspires.ftc.teamcode.Skystone.MathFunctions.normalize;
 import static org.firstinspires.ftc.teamcode.Skystone.MathFunctions.subtractVectors;
 
-/**
- * Created by sam on 7/20/19.
- */
 public class SplineGenerator {
     double[][] outputData;
 

@@ -58,8 +58,6 @@ public class Robot {
     private Servo markerServo;
     private Servo backStopper;
 
-//    private Rev2mDistanceSensor topBarDistance;
-//    private Rev2mDistanceSensor trayDistance;
     // Outtake Slide Positions
     public final double OUTTAKE_SLIDE_EXTENDED = .0799999;
     public final double OUTTAKE_SLIDE_RETRACTED = .725;
@@ -329,49 +327,6 @@ public class Robot {
 
         // upon "break"
         brakeRobot();
-
-//        targetHeading = Range.clip(targetHeading, -179, 179);
-//
-//        long startTime = SystemClock.elapsedRealtime();
-//
-//        this.setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//
-//        position = imu.getPosition();
-//        angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
-//        double startHeading = angles.firstAngle;
-//        double maxAngle = startHeading - targetHeading;
-//        maxAngle = Math.abs(maxAngle);
-//
-//        int sign = 0;
-//        if(targetHeading > startHeading){
-//            sign = 1;
-//        }else{
-//            sign = -1;
-//        }
-//        if(maxAngle == 0){
-//            return;
-//        }
-//        while(linearOpMode.opModeIsActive()){
-//            angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
-//            double currentDeltatAngle = Math.abs(angles.firstAngle - startHeading);
-//            double scaleFactor = currentDeltatAngle / maxAngle;
-//            double absolutePower = 1-scaleFactor;
-//
-//            if(absolutePower< 0.01){
-//                absolutePower = 0.01;
-//            }
-//            double power = absolutePower * sign;
-//            if(scaleFactor > 1 || ((SystemClock.elapsedRealtime() - startTime) > timeInMilli)){
-//                break;
-//            }
-//            fLeft.setPower(-power * turnSpeed);
-//            fRight.setPower(power * turnSpeed);
-//            bLeft.setPower(-power * turnSpeed);
-//            bRight.setPower(power * turnSpeed);
-//        }
-//        brakeRobot();
-//        linearOpMode.sleep(100);
-//        this.setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     /**
@@ -1418,14 +1373,6 @@ public class Robot {
     public void setMarkerServo(Servo markerServo) { this.markerServo = markerServo; }
 
     public Servo getBackStopper() { return backStopper; }
-//
-//    public Rev2mDistanceSensor getTopBarDistance(){
-//        return topBarDistance;
-//    }
-//
-//    public Rev2mDistanceSensor getTrayDistance(){
-//        return trayDistance;
-//    }
 
     public void setBackStopper(Servo backStopper) { this.backStopper = backStopper; }
 }

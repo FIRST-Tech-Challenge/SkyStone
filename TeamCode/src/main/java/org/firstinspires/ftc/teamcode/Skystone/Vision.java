@@ -180,13 +180,6 @@ public class Vision {
                             Location location = detections.get(0).location;
                             resultLocation.add(location);
                         }
-
-//                        updateBitmapWithBoundingBoxes(bitmap, startX, starty, width, height);
-//                        updateBitmapWithBoundingBoxes(bitmap, startX + width + gap, starty, width, height);
-//                        updateBitmapWithBoundingBoxes(bitmap, startX + width * 2 + gap * 2, starty, width, height);
-
-//                    ftcRobotControllerActivity.changeImage(bitmap);
-
                         resultAvaliable.open();
                     }
                 }));

@@ -30,7 +30,6 @@ import com.hfrobots.tnt.corelib.control.RangeInput;
 import com.hfrobots.tnt.corelib.drive.ExtendedDcMotor;
 import com.hfrobots.tnt.corelib.drive.NinjaMotor;
 import com.hfrobots.tnt.corelib.drive.PidController;
-import com.hfrobots.tnt.corelib.state.DelayState;
 import com.hfrobots.tnt.corelib.state.State;
 import com.hfrobots.tnt.corelib.state.StopwatchDelayState;
 import com.hfrobots.tnt.corelib.state.TimeoutSafetyState;
@@ -52,7 +51,6 @@ import static com.hfrobots.tnt.corelib.Constants.LOG_TAG;
 public class DeliveryMechanism {
 
     Servo shoulderServo;
-    Servo elbowServo;
     Servo wristServo;
     Servo fingerServo;
 
@@ -95,40 +93,26 @@ public class DeliveryMechanism {
 
     protected final Telemetry telemetry;
 
-    public final static double SHOULDER_TURN_CLOSE = 1; // FIXME really really
-    public final static double SHOULDER_TURN_FAR = 1; //see FIXME 2
-    public final static double SHOULDER_STOW = .28222; //see FIXME 2
+    public final static double SHOULDER_OUT = .7361111111; //see FIXME 2
+    public final static double SHOULDER_STOW = 0; //see FIXME 2
     boolean shoulderFar = false;
 
-    public final static double ELBOW_TURN_CLOSE = 1.0;
-    public final static double ELBOW_TURN_FAR = .46888;
-    public final static double ELBOW_STOW = 0.7672; //see FIXME 2
-    boolean elbowFar = false;
-
     public final static double WRIST_TURN_CLOSE_NATURAL = 1.0;
-    public final static double WRIST_TURN_CLOSE_ROTATED = 0.0;
-    public final static double WRIST_TURN_FAR_NATURAL = 0.0;
-    public final static double WRIST_TURN_FAR_ROTATED = 1.0;
+    public final static double WRIST_TURN_CLOSE_ROTATED = 0.666;
+    public final static double WRIST_TURN_FAR_NATURAL = 1.0;
+    public final static double WRIST_TURN_FAR_ROTATED = .666;
     public final static double WRIST_STOW = 1.0; //see FIXME 2
     boolean wristRotated = false;
 
     public final static double FINGER_GRIP = 0.0;
     public final static double FINGER_UNGRIP = 1.0;
 
-    //FIXME constants and variables for lift needed here.
-
-    double liftMaxVelocity = 0.0; //FIXME wrong
-    double liftMinVelocity = 0.0; // FIXME wrong
-    double liftIdleVelocity = 0.0; //FIXME wrong
-    double maxPos = 999999; //FIXME wrong
-    double minPos = -999999; //FIXME wrong
 
     public DeliveryMechanism(SimplerHardwareMap hardwareMap, Telemetry telemetry, Ticker ticker) {
         this.telemetry = telemetry;
         this.ticker = ticker;
 
         shoulderServo = hardwareMap.get(Servo.class, "shoulderServo");
-        elbowServo = hardwareMap.get(Servo.class, "elbowServo");
         wristServo = hardwareMap.get(Servo.class, "wristServo");
         fingerServo = hardwareMap.get(Servo.class, "fingerServo");
 
@@ -151,7 +135,7 @@ public class DeliveryMechanism {
 
         // Move everything to initial physical state
 
-        if (false) {
+        if (true) {
             autoStow();
             ungripblock();
         }
@@ -172,20 +156,8 @@ public class DeliveryMechanism {
         fingerServo.setPosition(FINGER_UNGRIP);
     }
 
-    public void stow() {
-        wristServo.setPosition(WRIST_STOW);
-        sleepNoThrow(1000);
-        elbowServo.setPosition(ELBOW_STOW);
-        sleepNoThrow(1000);
-        shoulderServo.setPosition(SHOULDER_STOW);
-        sleepNoThrow(1000);
-        fingerServo.setPosition(FINGER_UNGRIP);
-
-        stowed();
-    }
 
     private void stowed() {
-        elbowFar = false;
         shoulderFar = true;
     }
 
@@ -194,62 +166,41 @@ public class DeliveryMechanism {
 
         while (currentState != null) {
             currentState = currentState.doStuffAndGetNextState();
+            telemetry.update();
         }
     }
 
     private boolean shouldUseLowerLimit() {
-        return deliveryMechLowLimitSwitch != null;
+        return true;
     }
 
     private boolean isLowerLimitReached() {
-        return !deliveryMechLowLimitSwitch.getState();
+
+        boolean lowerLimitReached = !deliveryMechLowLimitSwitch.getState();
+        Log.d(LOG_TAG, "Delivery mech lower limit reached: " + lowerLimitReached);
+        return lowerLimitReached;
     }
 
-    public void turnClose() {
-        if (wristRotated = false) {
-            wristServo.setPosition(WRIST_TURN_CLOSE_NATURAL);
-            elbowServo.setPosition(ELBOW_TURN_CLOSE);
-            shoulderServo.setPosition(SHOULDER_TURN_CLOSE);
-            elbowFar = false;
-            shoulderFar = false;
-        } else {
-            wristServo.setPosition(WRIST_TURN_CLOSE_ROTATED);
-            elbowServo.setPosition(ELBOW_TURN_CLOSE);
-            shoulderServo.setPosition(SHOULDER_TURN_CLOSE);
-            elbowFar = false;
-            shoulderFar = false;
-        }
-    }
+    // FIXME arm out method goes here
 
     public void turnFar() {
-        if (wristRotated = false){
-            shoulderServo.setPosition(SHOULDER_TURN_FAR);
-            sleepNoThrow(1000);
-            elbowServo.setPosition(ELBOW_TURN_FAR);
-            sleepNoThrow(1000);
+        if (shoulderFar = false){
             wristServo.setPosition(WRIST_TURN_FAR_NATURAL);
-
-            elbowFar = true;
+            sleepNoThrow(1000);
+            shoulderServo.setPosition(SHOULDER_OUT);
             shoulderFar = true;
         } else {
-            wristServo.setPosition(WRIST_TURN_FAR_ROTATED);
-            elbowServo.setPosition(ELBOW_TURN_FAR);
-            shoulderServo.setPosition(SHOULDER_TURN_FAR);
-            elbowFar = true;
-            shoulderFar = true;
+            if (wristRotated)
+            {
+                wristServo.setPosition(WRIST_TURN_FAR_ROTATED);
+            }else{
+                wristServo.setPosition(WRIST_TURN_FAR_NATURAL);
+            }
         }
     }
 
     public void rotateToPos() {
-        if (elbowFar == false && shoulderFar == false) {
-            if (wristRotated == false){
-                wristServo.setPosition(WRIST_TURN_CLOSE_ROTATED);
-                wristRotated = true;
-            } else {
-                wristServo.setPosition(WRIST_TURN_CLOSE_NATURAL);
-                wristRotated = false;
-            }
-        } else if(elbowFar == true && shoulderFar == true){
+         if(shoulderFar == true){
             if (wristRotated == true){
                 wristServo.setPosition(WRIST_TURN_FAR_ROTATED);
                 wristRotated = false;
@@ -261,22 +212,6 @@ public class DeliveryMechanism {
             // assumed it is stowed and should not turn at the moment
             wristServo.setPosition(WRIST_STOW);
             wristRotated = false;
-        }
-    }
-
-    public void liftToMax() {
-        if(liftMotor.getCurrentRelativePosition() <= maxPos) {
-            liftMotor.setPower(liftMaxVelocity);
-        } else {
-            liftMotor.setPower(liftIdleVelocity);
-        }
-    }
-
-    public void liftToMin() {
-        if(liftMotor.getCurrentRelativePosition() >= minPos) {
-            liftMotor.setPower(liftMinVelocity);
-        } else {
-            liftMotor.setPower(0);
         }
     }
 
@@ -367,6 +302,7 @@ public class DeliveryMechanism {
 
         MoveClearState moveClearState = new MoveClearState(telemetry, 60000);
         moveClearState.setArmMovingState(armMovingState);
+        homingState.setMoveClearState(moveClearState);
 
         LowGripState lowGripState = new LowGripState(telemetry, 60000);
         lowGripState.setMoveClearState(moveClearState);
@@ -510,7 +446,7 @@ public class DeliveryMechanism {
 
     private static final double LIFT_POWER_LEVEL = 1;
 
-    public final static int LIFT_CLEAR_SUPERSTRUCTURE_POS = 1069;
+    public final static int LIFT_CLEAR_SUPERSTRUCTURE_POS = 121;
 
     public final static int LIFT_MAX_HEIGHT_POS = 1445;
 
@@ -830,8 +766,18 @@ public class DeliveryMechanism {
         liftMotor.setPower(LIFT_HOLD_FEED_FORWARD);
 
         if (armOutPostion.getRise()) {
-            turnFar();
-            rotateToPos();
+            shoulderServo.setPosition(SHOULDER_OUT);
+            shoulderFar = true;
+        } else if (rotateWrist.getRise()) {
+            if (shoulderFar) {
+                if (wristRotated == true){
+                    wristServo.setPosition(WRIST_TURN_FAR_ROTATED);
+                    wristRotated = false;
+                } else {
+                    wristServo.setPosition(WRIST_TURN_FAR_NATURAL);
+                    wristRotated = true;
+                }
+            }
         } else if (ungrip.getRise()) {
             // FIXME: Prevent dropping block if arm is not out
             ungripblock();
@@ -990,6 +936,9 @@ public class DeliveryMechanism {
                 stowingArmState = null;
             }
 
+            // FIXME: Start looking for timeout at this point, since the we get stuck waiting
+            // for the PID sometimes...
+
             // After arm is stowed, lift moves down to loading position - then transitions to loading state
 
             if (!pidInitialized) {
@@ -1040,6 +989,10 @@ public class DeliveryMechanism {
         @Setter
         private LoadingState loadingState;
 
+        @Setter
+        private MoveClearState moveClearState;
+
+
         public HomingState(Telemetry telemetry) {
             super("Homing", telemetry, TimeUnit.SECONDS.toMillis(10));
 
@@ -1049,20 +1002,31 @@ public class DeliveryMechanism {
             if (loadingState == null) {
                 throw new IllegalArgumentException("loadingState not set");
             }
+
+            if (moveClearState == null) {
+                throw new IllegalArgumentException("moveClearState not set");
+            }
         }
 
         @Override
         public State doStuffAndGetNextState() {
+            // FIXME! FIXME! FIXME: We're accumulating time for every time we enter+exit this
+            // state, which eventually causes it to fail!
+
             if (isTimedOut()) {
                 Log.d(LOG_TAG, "Timed out waiting for limit switch");
 
                 liftMotor.setPower(0);
+
+                resetTimer();
 
                 return loadingState;
             }
 
             if (!shouldUseLowerLimit()) {
                 Log.d(LOG_TAG, "Not sure we have a limit switch, assuming lift is homed");
+
+                resetTimer();
 
                 return loadingState;
             }
@@ -1084,7 +1048,27 @@ public class DeliveryMechanism {
                     liftMotor.resetLogicalEncoderCount();
                 }
 
+                resetTimer();
+
                 return loadingState;
+            }
+
+            if (unsafe.isPressed()) {
+                float liftThrottlePos = getAdjustedLiftThrottlePosition();
+
+                if (liftThrottlePos > 0) {
+                    resetTimer();
+
+                    return moveClearState;
+                } else if (ungrip.getRise()) {
+                    ungripblock();
+
+                    return this;
+                } else if (grip.getRise()) {
+                    gripBlock();
+
+                    return this;
+                }
             }
 
             liftMotor.setPower(-.5);
@@ -1100,17 +1084,11 @@ public class DeliveryMechanism {
 
         StowWristState stowWristState = new StowWristState(waitForWristState, telemetry, 60000);
 
-        StopwatchDelayState waitForElbowState = new StopwatchDelayState("Wait for elbow", telemetry, ticker,1, TimeUnit.SECONDS);
-
-        StowElbowState stowElbowState = new StowElbowState(waitForElbowState, telemetry, 60000);
-
-        waitForWristState.setNextState(stowElbowState);
-
         StopwatchDelayState waitForShoulderState = new StopwatchDelayState("Wait for shoulder", telemetry, ticker,1, TimeUnit.SECONDS);
 
         StowShoulderState stowShoulderState = new StowShoulderState(waitForShoulderState, telemetry, 60000);
 
-        waitForElbowState.setNextState(stowShoulderState);
+        waitForWristState.setNextState(stowShoulderState);
 
         StopwatchDelayState waitForFingerState = new StopwatchDelayState("Wait for finger", telemetry,  ticker, 250, TimeUnit.MILLISECONDS);
 
@@ -1151,33 +1129,6 @@ public class DeliveryMechanism {
         }
     }
 
-    class StowElbowState extends DeliveryMechanismState {
-        private StopwatchDelayState waitForElbowState;
-
-        public StowElbowState(StopwatchDelayState waitForElbowState, Telemetry telemetry,
-                              long safetyTimeoutMillis) {
-            super("stow elbow", telemetry, safetyTimeoutMillis);
-            this.waitForElbowState = waitForElbowState;
-        }
-
-        public void checkReady() {
-            if (waitForElbowState == null) {
-                throw new IllegalArgumentException("waitForElbowState not set");
-            }
-        }
-
-        @Override
-        public State doStuffAndGetNextState() {
-            elbowServo.setPosition(ELBOW_STOW);
-
-            return waitForElbowState;
-        }
-
-        @Override
-        public void liveConfigure(DebouncedGamepadButtons buttons) {
-
-        }
-    }
 
     class StowShoulderState extends DeliveryMechanismState {
         private StopwatchDelayState waitForShoulderState;

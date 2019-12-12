@@ -19,7 +19,11 @@
 
 package com.hfrobots.tnt.season1920;
 
+import android.util.Log;
+
 import com.google.common.base.Ticker;
+import com.hfrobots.tnt.corelib.control.ChaosNinjaLandingState;
+import com.hfrobots.tnt.corelib.control.KonamiCode;
 import com.hfrobots.tnt.corelib.control.NinjaGamePad;
 import com.hfrobots.tnt.corelib.drive.mecanum.DriveConstants;
 import com.hfrobots.tnt.corelib.drive.mecanum.RoadRunnerMecanumDriveREV;
@@ -27,6 +31,8 @@ import com.hfrobots.tnt.corelib.metrics.StatsDMetricSampler;
 import com.hfrobots.tnt.corelib.util.RealSimplerHardwareMap;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+import static com.hfrobots.tnt.corelib.Constants.LOG_TAG;
 
 @TeleOp(name="00 Skystone Teleop")
 @SuppressWarnings("unused")
@@ -45,29 +51,43 @@ public class SkystoneTeleop extends OpMode {
 
     private Ticker ticker;
 
+    private KonamiCode konamiCode;
+
+    private ChaosNinjaLandingState chaosNinja;
+    private NinjaGamePad driversGamepad;
+    private NinjaGamePad operatorsGamepad;
+
     @Override
     public void init() {
         ticker = createAndroidTicker();
 
         RealSimplerHardwareMap simplerHardwareMap = new RealSimplerHardwareMap(this.hardwareMap);
-        driveBase = null; new RoadRunnerMecanumDriveREV(new SkystoneDriveConstants(), simplerHardwareMap, false);
+        driveBase = new RoadRunnerMecanumDriveREV(new SkystoneDriveConstants(), simplerHardwareMap, false);
         kinematics = new OpenLoopMecanumKinematics(driveBase);
 
-        NinjaGamePad driversGamepad = new NinjaGamePad(gamepad1);
+        driversGamepad = new NinjaGamePad(gamepad1);
 
         driverControls = DriverControls.builder().driversGamepad(driversGamepad)
                 .kinematics(kinematics)
                 .build();
         deliveryMechanism = new DeliveryMechanism(simplerHardwareMap, telemetry, ticker);
 
-        NinjaGamePad operatorsGamepad = new NinjaGamePad(gamepad2);
+        operatorsGamepad = new NinjaGamePad(gamepad2);
 
         operatorControls = OperatorControls.builder().operatorsGamepad(operatorsGamepad)
                 .deliveryMechanism(deliveryMechanism)
                 .build();
 
-        //metricSampler = new StatsDMetricSampler(hardwareMap, driversGamepad, operatorsGamepad);
+        //chaosNinja = new ChaosNinjaLandingState(driversGamepad, telemetry);
+        //konamiCode = new KonamiCode(driversGamepad, null, ticker, telemetry);
     }
+
+//    @Override
+//    public void init_loop() {
+//        super.init_loop();
+//
+//        konamiCode.periodicTask();
+//    }
 
     private Ticker createAndroidTicker() {
         return new Ticker() {
@@ -80,6 +100,16 @@ public class SkystoneTeleop extends OpMode {
     @Override
     public void start() {
         super.start();
+
+        if (chaosNinja != null) {
+            if (chaosNinja.isMetricsActivated()) {
+                Log.i(LOG_TAG, "Metrics requested, enabling");
+                metricSampler = new StatsDMetricSampler(hardwareMap, driversGamepad, operatorsGamepad);
+            } else {
+                Log.i(LOG_TAG, "No metrics requested, not enabling");
+                metricSampler = null;
+            }
+        }
     }
 
     @Override

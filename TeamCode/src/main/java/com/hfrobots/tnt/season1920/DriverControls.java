@@ -212,11 +212,11 @@ public class DriverControls {
         // we check both bumpers - because both being pressed is driver 'panic', and we
         // don't want unexpected behavior!
         if (driveBumpStrafeLeftButton.isPressed() && !driveBumpStrafeRightButton.isPressed()) {
-            xScaled = .6;
+            xScaled = -.6;
             yScaled = 0;
             rotateScaled = 0;
         } else if (driveBumpStrafeRightButton.isPressed() && !driveBumpStrafeLeftButton.isPressed()) {
-            xScaled = -.6;
+            xScaled = .6;
             yScaled = 0;
             rotateScaled = 0;
         }

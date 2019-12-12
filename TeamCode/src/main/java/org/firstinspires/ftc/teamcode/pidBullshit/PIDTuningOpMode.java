@@ -38,5 +38,7 @@ public class PIDTuningOpMode extends OpMode {
         robot.servo(0.35, gamepad2.a, gamepad2.b);
         telemetry.addData("servo position",servo.getPosition());
         telemetry.update();
+
+        //robot.lift(gamepad2.left_stick_y);
     }
 }

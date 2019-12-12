@@ -88,15 +88,9 @@ public class Teleop extends LinearOpMode {
         buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.Y, new Servo[] { hwMap.foundationLock, hwMap.transferLock },   //Foundation Lock-Y
                 new double[][] { {TeleopConstants.foundationLockLock, TeleopConstants.foundationLockUnlock},
                         {TeleopConstants.transferLockPosUp, TeleopConstants.transferLockPosOut} }));
-        buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.LEFT_BUMPER,   //Transfer Lock-L & R Bumpers
-                new Servo[] { hwMap.clawServo1, hwMap.clawServo2 }, new double[][] { {TeleopConstants.clawServo1PosOpen,
-                TeleopConstants.clawServo1PosClose}, {TeleopConstants.clawServo2PosOpen, TeleopConstants.clawServo2PosClose} }));
         buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.X, new Servo[] {hwMap.liftOdometer, hwMap.plateLifter},    //Odometer Lock and Plate Lifter-DPAD DOwn
                 new double[][] { {TeleopConstants.odometerLockPosUp, TeleopConstants.odometerLockPosDown},
                         {TeleopConstants.plateLifterPosUp, TeleopConstants.plateLifterPosDown} }));
-        buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.LEFT_BUMPER, new Servo[] {hwMap.clawServo1, hwMap.clawServo2}, //Claw Servos-X
-                new double[][] { {TeleopConstants.clawServo1PosOpen, TeleopConstants.clawServo1PosClose},
-                        {TeleopConstants.clawServo2PosOpen, TeleopConstants.clawServo2PosClose} }));
         buttonLogic.add(new OnOffButton(gamepad2, gamepad2, GamepadButtons.LEFT_BUMPER, GamepadButtons.RIGHT_BUMPER, //Intake-A & B
                 new Servo[] { hwMap.clawServo1, hwMap.clawServo2 },
                 new double[][] { {TeleopConstants.clawServo1PosOpen, TeleopConstants.clawServo1PosClose},
@@ -104,6 +98,8 @@ public class Teleop extends LinearOpMode {
                 new double[] { TeleopConstants.clawServo1PosClose, TeleopConstants.clawServo2PosOpen }));
         buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.DPAD_DOWN, new Servo[] {hwMap.clawInit},
                 new double[][]{ {TeleopConstants.clawInitPosCapstone, TeleopConstants.clawInitPosReset} }));
+        buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.LEFT_TRIGGER, new Servo[] { hwMap.transferHorn },
+                new double[][] { {TeleopConstants.transferHornPosPush, TeleopConstants.transferHornPosReady} }));
 
         telemetry.addData("Status", "Ready");
 
@@ -114,7 +110,7 @@ public class Teleop extends LinearOpMode {
 
             //------------------------------===Servos & Intake/Outake===------------------------------------------
 
-            if(gamepad2.right_trigger >= 0.5 && !manualOverrideBlocker){
+            /*if(gamepad2.right_trigger >= 0.5 && !manualOverrideBlocker){
                 manualOverrideBlocker = true;
                 buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.LEFT_TRIGGER, new Servo[] { hwMap.transferHorn },
                         new double[][] { {TeleopConstants.transferHornPosPush, TeleopConstants.transferHornPosReady} }));
@@ -124,7 +120,7 @@ public class Teleop extends LinearOpMode {
                 OnOffButton transferHornLogic = new OnOffButton(gamepad2, GamepadButtons.LEFT_TRIGGER, new Servo[] { hwMap.transferHorn },
                         new double[][] { {TeleopConstants.transferHornPosPush, TeleopConstants.transferHornPosReady} });
                 buttonLogic.remove(transferHornLogic);
-            }
+            }*/
 
             /*if(manualOverride){
                 buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.LEFT_TRIGGER, new Servo[] { hwMap.transferHorn },
@@ -192,9 +188,9 @@ public class Teleop extends LinearOpMode {
 
                 if (gamepad1.right_stick_x != 0) {
                     if (gamepad1.right_stick_x > 0)
-                        drivetrain.rotate(normalSpeed * gamepad1.right_stick_x, true);
+                        drivetrain.rotate(turnSpeed * gamepad1.right_stick_x, true);
                     else if (gamepad1.right_stick_x < 0)
-                        drivetrain.rotate(normalSpeed * Math.abs(gamepad1.right_stick_x), false);
+                        drivetrain.rotate(turnSpeed * Math.abs(gamepad1.right_stick_x), false);
                 }
 
                 if (gamepad1.left_trigger >= 0.5) {

@@ -151,7 +151,7 @@ public class MainAutonomous extends LinearOpMode {
 
         if (opModeIsActive() && fieldPosition != null) {
             sendData();
-            resetLiftEncoder();
+            //resetLiftEncoder();
             switch (fieldPosition) {
                 case RED_QUARY:
                     path.RedQuary(skystonePositions);

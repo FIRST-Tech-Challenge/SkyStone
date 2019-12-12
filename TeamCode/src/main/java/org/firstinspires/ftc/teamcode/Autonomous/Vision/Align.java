@@ -47,20 +47,20 @@ public class Align {
 
         while (!opMode.isStopRequested() && opMode.opModeIsActive()) {
             if ((f == FieldPosition.RED_QUARY || f == FieldPosition.RED_FOUNDATION) && !correctRotation) {
-                if (externalHeading >= 285 || externalHeading < 90) {
+                if (externalHeading >= 275 || externalHeading < 90) {
                     setRightPower(-turnPower);
                     setLeftPower(turnPower);
-                } else if (externalHeading <= 275 && externalHeading >= 90) {
+                } else if (externalHeading <= 270 && externalHeading >= 90) {
                     setRightPower(turnPower);
                     setLeftPower(-turnPower);
                 }
                 opMode.telemetry.addData("Target Heading", 270 + "°");
                 opMode.telemetry.addData("Current Heading", externalHeading);
             } else if ((f == FieldPosition.BLUE_QUARY || f == FieldPosition.BLUE_FOUNDATION) && !correctRotation) {
-                if (externalHeading <= 95 || externalHeading >= 270) {
+                if (externalHeading <= 90 || externalHeading >= 270) {
                     setRightPower(turnPower);
                     setLeftPower(-turnPower);
-                } else if (externalHeading >= 105 && externalHeading < 270) {
+                } else if (externalHeading >= 95 && externalHeading < 270) {
                     setRightPower(-turnPower);
                     setLeftPower(turnPower);
                 }
@@ -68,7 +68,7 @@ public class Align {
                 opMode.telemetry.addData("Current Heading", externalHeading);
             }
 
-            if ((externalHeading > 95 && externalHeading < 105) || (externalHeading < 285 && externalHeading > 275) &&
+            if ((externalHeading > 90 && externalHeading < 95) || (externalHeading < 275 && externalHeading > 270) &&
                     !correctRotation) {
                 stop();
                 correctRotation = true;
@@ -172,19 +172,19 @@ public class Align {
                         position = temp.size() - 1;
 
                     opMode.telemetry.addData("Current Position", temp.get(position));
-                    opMode.telemetry.addData("Target Bounds", (imgWidth / 2d - 10 - 10) + " - " + (imgWidth / 2d + 20 - 10));
+                    opMode.telemetry.addData("Target Bounds", (imgWidth / 2d - 15) + " - " + (imgWidth / 2d + 15));
                     opMode.telemetry.addData("Raw, Sorted Data", temp);
 
-                    if (temp.get(position) >= imgWidth / 2d - 10 - 10 && temp.get(position) <= imgWidth / 2d + 20 - 10) {
+                    if (temp.get(position) >= imgWidth / 2d - 15 && temp.get(position) <= imgWidth / 2d + 15) {
                         stop();
                         isAligned = true;
                         opMode.telemetry.addData("Executed Command", "STOP");
-                    } else if (temp.get(position) <= imgWidth / 2d - 10 - 10) {
+                    } else if (temp.get(position) <= imgWidth / 2d - 15) {
                         setRightPower(turnPower);
-                        setLeftPower(-turnPower);
+                        setLeftPower(-approachingPower);
                         opMode.telemetry.addData("Executed Command", "RIGHT");
-                    } else if (temp.get(position) >= imgWidth / 2d + 20 - 10) {
-                        setRightPower(-turnPower);
+                    } else if (temp.get(position) >= imgWidth / 2d + 15) {
+                        setRightPower(-approachingPower);
                         setLeftPower(turnPower);
                         opMode.telemetry.addData("Executed Command", "LEFT");
                     }

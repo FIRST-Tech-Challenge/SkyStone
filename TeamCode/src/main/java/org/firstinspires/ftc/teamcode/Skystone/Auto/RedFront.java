@@ -62,45 +62,45 @@ public class RedFront extends AutoBase{
                 {55,firstSkystoneY,-30,0},
                 {28,10,0,10},
                 {27,30,0,10},
-                {26,80,0,10},
-                {35,85,10,0}};
+                {15,75,0,10},
+                {32,75,10,0}};
         HashMap<Point,Robot.Actions> toFoundationActions = new HashMap<Point,Robot.Actions>() {{
             put(new Point(24,45), Robot.Actions.EXTEND_OUTTAKE);
             put(new Point(24,30), Robot.Actions.STOP_INTAKE);
         }};
 
         double[][] toSecondStone = {
-                {31,83,-10,0},
-                {8, 72,0,-10},
-                {32,71,0,10},
-                {35,30,0,10},
+                {32,75,-10,0},
+                {8, 72,-10,0},
+                {27,71,0,-10},
+                {27,30,0,-10},
                 {39,secondSkyStoneY + 15.5,0,10},
                 {secondSkyStoneX,secondSkyStoneY,30,0}};
         HashMap<Point,Robot.Actions> toSecondStoneActions = new HashMap<Point,Robot.Actions>() {{
-            put(new Point(32,80), Robot.Actions.RETRACT_OUTTAKE);
+            put(new Point(30,80), Robot.Actions.RETRACT_OUTTAKE);
             put(new Point(24,58.5), Robot.Actions.RELEASE_FOUNDATION);
             put(new Point(28,-10), Robot.Actions.START_INTAKE);
         }};
 
         double[][] toDepositSecondStone = {
                 {55,secondSkyStoneY,-30,0},
-                {46,-10,10,20},
-                {42,30,5,10},
-                {42,50,5,10},
-                {41,65,5,10},
-                {35,76.5,0,10}};
+                {28,-10,0,20},
+                {28,30,0,10},
+                {28,50,0,10},
+                {28,65,0,10},
+                {20,76.5,0,10}};
         HashMap<Point,Robot.Actions> toDepositSecondStoneActions = new HashMap<Point,Robot.Actions>() {{
-            put(new Point(40,37), Robot.Actions.EXTEND_OUTTAKE);
-            put(new Point(30,-10), Robot.Actions.STOP_INTAKE);
-            put(new Point(30,5), Robot.Actions.START_INTAKE);
+            put(new Point(28,37), Robot.Actions.EXTEND_OUTTAKE);
+            put(new Point(28,-10), Robot.Actions.STOP_INTAKE);
+            put(new Point(27,5), Robot.Actions.START_INTAKE);
         }};
 
         double[][] toPark = {
-                {35,77,0,-10},
-                {38,75,0,-10},
-                {40,35,0,-10}};
+                {8,77,0,-10},
+                {28,75,0,-10},
+                {28,35,0,-10}};
         HashMap<Point,Robot.Actions> toParkActions = new HashMap<Point,Robot.Actions>(){{
-            put(new Point(34,73), Robot.Actions.RETRACT_OUTTAKE);
+            put(new Point(8,77), Robot.Actions.RETRACT_OUTTAKE);
         }};
 
         double[][] toThirdStone = {
@@ -127,7 +127,7 @@ public class RedFront extends AutoBase{
         robot.splineMove(toFirstStone,0.5,1, 0.65,3,0,0,20,
                 toFirstStoneActions);
 
-        robot.splineMove(toFoundation,1,1, 1, 10, Math.toRadians(180),Math.toRadians(180),30,
+        robot.splineMove(toFoundation,1,1, 1, 10, Math.toRadians(180),Math.toRadians(180),0,
                 toFoundationActions);
 
         // get ready to pull foundation

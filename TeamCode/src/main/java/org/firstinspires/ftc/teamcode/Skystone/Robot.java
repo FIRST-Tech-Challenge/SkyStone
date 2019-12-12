@@ -591,7 +591,10 @@ public class Robot {
                 }else{
                     turnMovement = 0;
                 }
-            } else {
+            } else if (distanceToEnd<10){
+                goToPoint(pathPoints[followIndex][0], pathPoints[followIndex][1], moveSpeed, turnSpeed, optimalAngle, true);
+            }
+            else {
                 goToPoint(pathPoints[followIndex][0], pathPoints[followIndex][1], moveSpeed, turnSpeed, optimalAngle, false);
             }
 

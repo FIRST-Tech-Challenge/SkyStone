@@ -4,8 +4,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
- * This motor improves the base motor by using encoders to determine state
- * The base motor has constant issues with moving to a target position
+ * This motor improves the base motor by using encoders to determine state.
+ * The base motor has constant issues with moving to a target position.
  */
 public class EncoderMotor extends ModifiedMotor {
     // Timer
@@ -16,7 +16,7 @@ public class EncoderMotor extends ModifiedMotor {
     private double newEncoderCheck;
 
     /**
-     * Creates an encoder motor based off the base FTC DcMotor
+     * Creates an encoder motor based off the base FTC DcMotor.
      * @param motor FTC DcMotor
      */
     public EncoderMotor(DcMotor motor) {
@@ -32,7 +32,7 @@ public class EncoderMotor extends ModifiedMotor {
     }
 
     /**
-     * Calculates the encoder ticks per second using the last recorded data
+     * Calculates the encoder ticks per second using the last recorded data.
      * @return Double representing an approximation encoder ticks per second
      */
     public double getEncoderTicksPerSecond() {
@@ -47,7 +47,7 @@ public class EncoderMotor extends ModifiedMotor {
     }
 
     /**
-     * Checks if the motor encoder is still detecting movement
+     * Checks if the motor encoder is still detecting movement.
      */
     public boolean isEncoderBusy() {
         return getEncoderTicksPerSecond() != 0;

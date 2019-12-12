@@ -6,7 +6,7 @@ import org.firstinspires.ftc.robotlib.Constants;
 import org.firstinspires.ftc.robotlib.navigation.Point3D;
 
 /**
- * Stores the location info for the autonomous robot
+ * Stores the location info for the autonomous robot.
  */
 public class LocationInfo {
     // This point is the most accurate, but only works when a trackable is visible
@@ -23,7 +23,7 @@ public class LocationInfo {
     }
 
     /**
-     * Retrieves the robot location (based on encoder values and tracking)
+     * Retrieves the robot location (based on encoder values and tracking).
      * @return 3D point
      */
     public Point3D getRobotLocation() {
@@ -32,7 +32,7 @@ public class LocationInfo {
     }
 
     /**
-     * Retrieves the robot location
+     * Retrieves the robot location.
      * @return Raw OpenGLMatrix
      */
     public OpenGLMatrix getRobotLocationMatrix() {
@@ -40,7 +40,7 @@ public class LocationInfo {
     }
 
     /**
-     * Retrieves the last location known (for certain) based on tracking
+     * Retrieves the last location known (for certain) based on tracking.
      * @return 3D point
      */
     public Point3D getLastRobotLocation() {
@@ -48,7 +48,7 @@ public class LocationInfo {
     }
 
     /**
-     * Retrieves the last location relative to a Skystone
+     * Retrieves the last location relative to a Skystone.
      * @return 3D point
      */
     public Point3D getLastRobotLocationFromSkystone() {
@@ -56,7 +56,7 @@ public class LocationInfo {
     }
 
     /**
-     * Translates the local robot location
+     * Translates the local robot location.
      * @param dx x translation
      * @param dy y translation
      * @param dz z translation (should not change)
@@ -67,7 +67,7 @@ public class LocationInfo {
     }
 
     /**
-     * Shortcut for translating robot location with "doubles"
+     * Shortcut for translating robot location with "doubles".
      * @see #translateRobotLocation(float, float, float)
      */
     public void translateRobotLocation(double dx, double dy, double dz) {
@@ -75,7 +75,7 @@ public class LocationInfo {
     }
 
     /**
-     * Translates the local robot location based on a course and distance
+     * Translates the local robot location based on a course and distance.
      * @param heading Heading/Yaw
      * @param distance Distance traveled
      */
@@ -84,7 +84,7 @@ public class LocationInfo {
     }
 
     /**
-     * Sets the last robot location which should be provided by a trackable
+     * Sets the last robot location which should be provided by a trackable.
      * @param lastRobotLocation new location as an OpenGLMatrix
      */
     public void setLastRobotLocation(OpenGLMatrix lastRobotLocation) {
@@ -94,7 +94,7 @@ public class LocationInfo {
     }
 
     /**
-     * Retrieves the timestamp of the last tracked trackable
+     * Retrieves the timestamp of the last tracked trackable.
      * @return Milliseconds (Unix Epoch)
      */
     public long getLastRobotLocationTime() {
@@ -102,7 +102,7 @@ public class LocationInfo {
     }
 
     /**
-     * Sets the last robot location provided by a Skystone
+     * Sets the last robot location provided by a Skystone.
      * @param lastRobotLocationFromSkystone position relative to Skystone
      */
     public void setLastRobotLocationFromSkystone(OpenGLMatrix lastRobotLocationFromSkystone) {
@@ -110,7 +110,7 @@ public class LocationInfo {
     }
 
     /**
-     * Converts an OpenGLMatrix to a 3D point (assuming the values are in millimeters)
+     * Converts an OpenGLMatrix to a 3D point (assuming the values are in millimeters).
      * @param openGLMatrix matrix to convert
      * @return 3D point
      */

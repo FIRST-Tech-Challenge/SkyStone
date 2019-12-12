@@ -3,11 +3,15 @@ package org.firstinspires.ftc.robotlib.navigation;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 
+/**
+ * Represents a point on the FTC field in a 3D space.
+ * Intended for storing 3D points provided by Vuforia.
+ */
 public class Point3D extends Point {
     public float z;
 
     /**
-     * Creates a new point using x, y, and z
+     * Creates a new point using x, y, and z.
      */
     public Point3D(float x, float y, float z) {
         super(x, y);
@@ -15,7 +19,7 @@ public class Point3D extends Point {
     }
 
     /**
-     * Creates a point from an FTC VectorF
+     * Creates a point from an FTC VectorF.
      * @param translation
      */
     public Point3D(VectorF translation) {
@@ -24,7 +28,7 @@ public class Point3D extends Point {
     }
 
     /**
-     * Creates a point from an OpenGLMatrix
+     * Creates a point from an OpenGLMatrix.
      * @param openGLMatrix OpenGLMatrix
      */
     public Point3D(OpenGLMatrix openGLMatrix) {
@@ -34,7 +38,7 @@ public class Point3D extends Point {
     }
 
     /**
-     * Multiplies two points together
+     * Multiplies two points together.
      * @param point3D other point3D
      * @return Product
      */
@@ -43,7 +47,7 @@ public class Point3D extends Point {
     }
 
     /**
-     * Calculates the distance between two 3-Dimensional points
+     * Calculates the distance between two 3-Dimensional points.
      * @param point3D other point3D
      * @return Distance
      */

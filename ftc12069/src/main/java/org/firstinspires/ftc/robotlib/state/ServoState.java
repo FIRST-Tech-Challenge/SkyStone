@@ -3,7 +3,7 @@ package org.firstinspires.ftc.robotlib.state;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Stores the state of Servo(s) for ease of use
+ * Stores the state of Servo(s) for ease of use.
  */
 public enum ServoState {
     // General States

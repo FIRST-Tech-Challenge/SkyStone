@@ -33,6 +33,10 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 
+/**
+ * Class for easily controlling an autonomous robot.
+ * Vuforia is handled internally, providing only important information.
+ */
 public class AutonomousRobot {
     public MecanumHardwareMap hardware;
     private Alliance alliance;
@@ -86,7 +90,7 @@ public class AutonomousRobot {
     private final Point redLoadingScanLocation = blueLoadingScanLocation.opponentPoint();
 
     /**
-     * Creates an instance of an autonomous robot manager
+     * Creates an instance of an autonomous robot manager.
      * @param hwMap FTC hardware map
      * @param alliance Alliance Enum
      * @param telemetry Logging
@@ -100,7 +104,7 @@ public class AutonomousRobot {
     }
 
     /**
-     * Creates an instance of an autonomous robot manager
+     * Creates an instance of an autonomous robot manager.
      * @param hwMap FTC hardware map
      * @param alliance Alliance Enum
      * @param telemetry Logging
@@ -115,7 +119,7 @@ public class AutonomousRobot {
     }
 
     /**
-     * Initializes the robot (specifically Vuforia)
+     * Initializes the robot (specifically Vuforia).
      */
     public void init() {
         /* Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
@@ -264,9 +268,9 @@ public class AutonomousRobot {
     }
 
     /**
-     * Scans the area for Vuforia trackables and saves them in a list
-     * If a trackable is found then the robot will update its position using the trackable
-     * Use this in the game loop to get the most up-to-date information from Vuforia
+     * Scans the area for Vuforia trackables and saves them in a list.
+     * If a trackable is found then the robot will update its position using the trackable.
+     * Use this in the game loop to get the most up-to-date information from Vuforia.
      */
     public void scan() {
         visibleTrackables.clear();
@@ -286,7 +290,7 @@ public class AutonomousRobot {
     }
 
     /**
-     * Scans for x seconds
+     * Scans for x seconds.
      * @param waitTime seconds to scan
      */
     public void scanWait(int waitTime) {
@@ -295,35 +299,35 @@ public class AutonomousRobot {
     }
 
     /**
-     * Checks if the robot knows its approximate location
+     * Checks if the robot knows its approximate location.
      */
     public boolean isLocationKnown() {
         return locationInfo.getRobotLocation() != null;
     }
 
     /**
-     * Checks if there is any visible trackables
+     * Checks if there is any visible trackables.
      */
     public boolean isTrackableVisible() {
         return visibleTrackables.size() > 0;
     }
 
     /**
-     * Checks if there is any visible Skystones
+     * Checks if there is any visible Skystones.
      */
     public boolean isSkystoneVisible() {
         return this.getVisibleTrackable("Stone Target") != null;
     }
 
     /**
-     * Retrieves a tracked Skystone
+     * Retrieves a tracked Skystone.
      */
     public VuforiaTrackable getTrackedSkystone() {
         return this.getVisibleTrackable("Stone Target");
     }
 
     /**
-     * Stringifies visible targets
+     * Stringifies visible targets.
      * @return string separated by a comma
      */
     public String stringifyVisibleTargets() {
@@ -335,7 +339,7 @@ public class AutonomousRobot {
     }
 
     /**
-     * Retrieves the last certain position of the robot (only works if there is a visible trackable)
+     * Retrieves the last certain position of the robot (only works if there is a visible trackable).
      * @return current position on the FTC field
      */
     public Point3D getLastPosition() {
@@ -343,7 +347,7 @@ public class AutonomousRobot {
     }
 
     /**
-     * Retrieves the possible position of the robot (based off of tracking and motor encoders)
+     * Retrieves the possible position of the robot (based off of tracking and motor encoders).
      * @return current position on the FTC field
      */
     public Point3D getPosition() {
@@ -351,7 +355,7 @@ public class AutonomousRobot {
     }
 
     /**
-     * Retrieves the current position of the robot (only works if there is a visible Skystone)
+     * Retrieves the current position of the robot (only works if there is a visible Skystone).
      * @return current position relative to the Skystone
      */
     public Point3D getPositionFromSkystone() {
@@ -359,7 +363,7 @@ public class AutonomousRobot {
     }
 
     /**
-     * Retrieves the orientation of the robot in a 2D space (heading/yaw)
+     * Retrieves the orientation of the robot in a 2D space (heading/yaw).
      * @return current heading in degrees
      */
     public double getOrientation2D() {
@@ -367,7 +371,7 @@ public class AutonomousRobot {
     }
 
     /**
-     * Retrieves the orientation of the robot in a 3D space
+     * Retrieves the orientation of the robot in a 3D space.
      * @return current orientation in degrees
      */
     public Orientation getOrientation() {
@@ -375,8 +379,8 @@ public class AutonomousRobot {
     }
 
     /**
-     * Retrieves the orientation of the robot according to the IMU
-     * The orientation is based off the robot (NOT the FTC field)
+     * Retrieves the orientation of the robot according to the IMU.
+     * The orientation is based off the robot (NOT the FTC field).
      * @return current orientation according to the IMU (in degrees)
      */
     public Orientation getOrientationIMU() {
@@ -384,7 +388,7 @@ public class AutonomousRobot {
     }
 
     /**
-     * Retrieves the orientation of the robot in a 2D space (heading/yaw) according to the IMU
+     * Retrieves the orientation of the robot in a 2D space (heading/yaw) according to the IMU.
      * @return current heading in degrees
      */
     public double getOrientation2DIMU() {
@@ -392,8 +396,8 @@ public class AutonomousRobot {
     }
 
     /**
-     * Turns the robot by an angle
-     * This blocks the current thread
+     * Turns the robot by an angle.
+     * This blocks the current thread.
      * @param angle angle to turn to
      * @param velocity rotation speed (between 0 and 1)
      */
@@ -407,7 +411,7 @@ public class AutonomousRobot {
     }
 
     /**
-     * Checks if a trackable with a certain name is visible
+     * Checks if a trackable with a certain name is visible.
      * @param name trackable name identifier
      * @return Trackable information if visible (else null)
      */
@@ -419,7 +423,7 @@ public class AutonomousRobot {
     }
 
     /**
-     * Calculates the course for the robot to arrive a point in a 2D space
+     * Calculates the course for the robot to arrive a point in a 2D space.
      * @param object Point3D
      * @return required course to arrive at a point in radians
      */
@@ -428,7 +432,7 @@ public class AutonomousRobot {
     }
 
     /**
-     * Calculates the course between a "robot" point and an object
+     * Calculates the course between a "robot" point and an object.
      * @param robot point of reference
      * @param object object to get course to
      * @return required course to arrive at a point in radians
@@ -449,7 +453,7 @@ public class AutonomousRobot {
     }
 
     /**
-     * Calculates the course for the robot to arrive a point in a 3D space
+     * Calculates the course for the robot to arrive a point in a 3D space.
      * @param object Point3D
      * @return required course to arrive at a point
      */
@@ -462,7 +466,7 @@ public class AutonomousRobot {
     }
 
     /**
-     * Calculates the distance between a point on the field and the robot
+     * Calculates the distance between a point on the field and the robot.
      * @param object Point3D
      * @return distance between point and robot center
      */
@@ -471,7 +475,7 @@ public class AutonomousRobot {
     }
 
     /**
-     * Calculates the distance between a point on the field and a supposed robot point
+     * Calculates the distance between a point on the field and a supposed robot point.
      * @param robot supposed robot point
      * @param object object point
      * @return distance between the point and "robot"
@@ -482,7 +486,7 @@ public class AutonomousRobot {
     }
 
     /**
-     * Automatically moves the robot under the bridge
+     * Automatically moves the robot under the bridge.
      */
     public void parkUnderBridge() {
         Point3D robotPosition = this.getPosition();
@@ -496,8 +500,8 @@ public class AutonomousRobot {
     }
 
     /**
-     * Automatically repositions the foundation to the Building Site
-     * This assumes the foundation is in its initial position
+     * Automatically repositions the foundation to the Building Site.
+     * This assumes the foundation is in its initial position.
      */
     public void repositionFoundation() {
         Point3D robotPosition = this.getPosition();
@@ -513,7 +517,7 @@ public class AutonomousRobot {
     }
 
     /**
-     * Attempts to use a possible robot position to move to the scanning location for Skystone pickup
+     * Attempts to use a possible robot position to move to the scanning location for Skystone pickup.
      */
     public void gotoLoadingZone() {
         if (alliance == Alliance.BLUE) this.moveToPoint(blueLoadingScanLocation, 0.3, new OrientationInfo(180, 0.7));
@@ -521,8 +525,8 @@ public class AutonomousRobot {
     }
 
     /**
-     * Moves the robot using a course, velocity, rotation, and distance
-     * This adjusts some values, not including rotation
+     * Moves the robot using a course, velocity, rotation, and distance.
+     * This adjusts some values, not including rotation.
      * @param course Angle (in degrees) of movement
      * @param velocity New velocity (-1 to 1)
      * @param rotation Double (between -1 and 1) -1 - clockwise 0 - no rotation 1 - counterclockwise
@@ -537,7 +541,7 @@ public class AutonomousRobot {
     }
 
     /**
-     * Moves the robot using a course, velocity, rotation, and distance
+     * Moves the robot using a course, velocity, rotation, and distance.
      * @param course Angle (in degrees) of movement
      * @param velocity New velocity (-1 to 1)
      * @param orientationInfo Angle (in degrees) of orientation relative to current orientation
@@ -589,7 +593,7 @@ public class AutonomousRobot {
     }
 
     /**
-     * Moves the robot to a point
+     * Moves the robot to a point.
      * @param point point to move to
      * @param velocity New velocity
      * @see #move(double, double, OrientationInfo, double)
@@ -599,7 +603,7 @@ public class AutonomousRobot {
     }
 
     /**
-     * Moves the robot to a point with orientation info
+     * Moves the robot to a point with orientation info.
      * @param point point to move to
      * @param velocity New velocity
      * @param orientationInfo The orientation to be at when moving to the point
@@ -609,7 +613,7 @@ public class AutonomousRobot {
     }
 
     /**
-     * Moves the robot to a point
+     * Moves the robot to a point.
      * @param robot supposed robot point
      * @param point point to move to
      * @param velocity New velocity
@@ -619,7 +623,7 @@ public class AutonomousRobot {
     }
 
     /**
-     * Prints general telemetry for debugging
+     * Prints general telemetry for debugging.
      */
     public void printTelemetry() {
         telemetry.addData("Visible Target(s)", this.stringifyVisibleTargets());

@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.robotlib.information;
 
 /**
- * Stores an angle and rotation for orientating the robot
+ * Stores an angle and rotation for orientating the robot.
  */
 public class OrientationInfo {
     public double angle;

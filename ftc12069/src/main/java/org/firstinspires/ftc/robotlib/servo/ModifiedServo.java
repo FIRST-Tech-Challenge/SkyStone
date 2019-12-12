@@ -6,9 +6,9 @@ import com.qualcomm.robotcore.hardware.ServoController;
 import org.firstinspires.ftc.robotlib.state.ServoState;
 
 /**
- * A ModifiedServo is a Servo with extended functionality
- * This class can be used to create special types of Servos
- * This class implements Servo so it can still be treated as one
+ * A ModifiedServo is a Servo with extended functionality.
+ * This class can be used to create special types of Servos.
+ * This class implements Servo so it can still be treated as one.
  */
 public class ModifiedServo implements Servo {
     protected Servo servo;

@@ -5,11 +5,11 @@ import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import java.util.ArrayList;
 
 /**
- * Various generic helper methods used throughout the library
+ * Various generic helper methods used throughout the library.
  */
 public class Helpers {
     /**
-     * Averages the doubles in an ArrayList
+     * Averages the doubles in an ArrayList.
      * @param arrayList list to average values
      * @return the average of the values
      */
@@ -20,7 +20,7 @@ public class Helpers {
     }
 
     /**
-     * Retrieves a value from an OpenGLMatrix (OpenGLMatrix is stored in Column-Major)
+     * Retrieves a value from an OpenGLMatrix (OpenGLMatrix is stored in Column-Major).
      * @deprecated
      * @param openGLMatrix OpenGLMatrix
      * @param row desired row
@@ -31,6 +31,13 @@ public class Helpers {
         return column * openGLMatrix.numRows() + row;
     }
 
+    /**
+     * Checks if 3 side lengths make a triangle.
+     * @param a
+     * @param b
+     * @param c
+     * @return true if triangle
+     */
     public static boolean isTriangle(double a, double b, double c) {
         if (a + b < c) return false;
         if (a + c < b) return false;
@@ -38,6 +45,12 @@ public class Helpers {
         return true;
     }
 
+    /**
+     * Checks if an array of 3 side lengths make a triangle.
+     * @param sides Array with size 3 of side lengths
+     * @return true if triangle
+     * @see #isTriangle(double, double, double)
+     */
     public static boolean isTriangle(double[] sides) {
         return isTriangle(sides[0], sides[1], sides[2]);
     }

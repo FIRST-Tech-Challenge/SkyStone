@@ -2,6 +2,9 @@ package org.firstinspires.ftc.robotlib.drivetrain;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+/**
+ * Abstract class for implementing a holonomic four wheel drivetrain.
+ */
 abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements Holonomic, Rotatable, Positionable
 {
     private double rotation = 0;
@@ -9,22 +12,22 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     private double targetPosition = 0;
 
     /**
-     * Stores how far each wheel has to go to get the drivetrain to a specific position
+     * Stores how far each wheel has to go to get the drivetrain to a specific position.
      */
     private double[] wheelTargetPositions = new double[4];
 
     /**
-     * The RunModes of each of the motors (used after changing the RunModes to move to a position)
+     * The RunModes of each of the motors (used after changing the RunModes to move to a position).
      */
     private DcMotor.RunMode[] runModes = new DcMotor.RunMode[4];
 
     /**
-     * A list of angles related to wheel and drivetrain geometry that must be defined by subclasses
+     * A list of angles related to wheel and drivetrain geometry that must be defined by subclasses.
      */
     private final double[] wheelAngles;
 
     /**
-     * Constructor for a generic holonomic four wheel drivetrain
+     * Constructor for a generic holonomic four wheel drivetrain.
      * @param motorList The array of motors included in the drivetrain
      * @param wheelAngles A list of four angles corresponding to each wheel related to wheel and drivetrain geometry; these should be defined by the subclass and are passed to {@link #calculateWheelCoefficient} (which also must be defined by the subclass)
      */
@@ -72,7 +75,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     }
 
     /**
-     * Re-calculate the powers for each of the motors (called after a velocity, rotation, or course change) and update motors
+     * Re-calculate the powers for each of the motors (called after a velocity, rotation, or course change) and update motors.
      * @return an array of motor powers
      */
     protected double[] calculateMotorPowers()
@@ -87,7 +90,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     }
 
     /**
-     * Abstract method for calculating specific wheel velocity percentage
+     * Abstract method for calculating specific wheel velocity percentage.
      * @param course the angle that you want the robot to move
      * @param wheelAngle the array of angles that the actual moving parts of the wheels are at
      * @return a number between zero and one, which says what percentage of the speed a wheel should move at. Is then multiplied by the velocity
@@ -110,7 +113,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     }
 
     /**
-     * Sets target position and handles potentially new motor velocities
+     * Sets target position and handles potentially new motor velocities.
      * @param targetPosition the position that you want the robot to move to
      */
     @Override
@@ -134,7 +137,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     }
 
     /**
-     * Retrieves the current position of the robot relative to the target
+     * Retrieves the current position of the robot relative to the target.
      * @return the current position of the robot
      */
     @Override
@@ -158,7 +161,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     }
 
     /**
-     * Placeholder method for updating motors during movement
+     * Placeholder method for updating motors during movement.
      */
     @Override
     public void updatePosition()
@@ -184,7 +187,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     }
 
     /**
-     * Resets encoders and changes the {@link DcMotor.RunMode RunModes} to what they were before
+     * Resets encoders and changes the {@link DcMotor.RunMode RunModes} to what they were before.
      */
     @Override
     public void finishPositioning()
@@ -199,7 +202,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     }
 
     /**
-     * Blocks the current thread until the robot is done positioning
+     * Blocks the current thread until the robot is done positioning.
      */
     @Override
     public void position()
@@ -222,7 +225,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     }
 
     /**
-     * Provides the number of motor "ticks" required to cover X inches
+     * Provides the number of motor "ticks" required to cover X inches.
      * @param wheelRadius physical wheel radius
      * @param motorToWheelRatio motor to wheel ratio
      * @return number of motor "ticks" for X inches
@@ -233,7 +236,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     }
 
     /**
-     * Provides the wheel rotation values for a velocity
+     * Provides the wheel rotation values for a velocity.
      * @param velocity rotation speed (between 0 and 1)
      * @return Array of wheel rotation velocities
      */

@@ -4,13 +4,16 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotlib.state.ServoState;
 
+/**
+ * Manager for treating a group of Servos as one.
+ */
 public class ServoManager {
     // State of managed servos
     private ServoState servoState = ServoState.STOWED;
     private Servo[] servos;
 
     /**
-     * Creates a manager for a group of servos
+     * Creates a manager for a group of servos.
      * @param servos Array of Servos
      */
     public ServoManager(Servo[] servos) {
@@ -18,7 +21,7 @@ public class ServoManager {
     }
 
     /**
-     * Sets the position of the servos
+     * Sets the position of the servos.
      * @param position new position
      */
     public void setPosition(double position) {
@@ -28,14 +31,14 @@ public class ServoManager {
     }
 
     /**
-     * Updates the servos based on their state
+     * Updates the servos based on their state.
      */
     public void update() {
         this.setPosition(servoState.getPosition());
     }
 
     /**
-     * Resets the servos to Up (1.0)
+     * Resets the servos to Up (1.0).
      */
     public void reset() {
         this.setPosition(1.0);
@@ -49,7 +52,7 @@ public class ServoManager {
     }
 
     /**
-     * Sets the servo state and updates the servos position
+     * Sets the servo state and updates the servos position.
      * @param servoState New state
      */
     public void setServoState(ServoState servoState) {

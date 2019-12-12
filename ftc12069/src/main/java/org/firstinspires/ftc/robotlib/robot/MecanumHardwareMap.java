@@ -24,8 +24,10 @@ import static org.firstinspires.ftc.robotlib.state.ServoState.THREEBLOCKHOVER;
 import static org.firstinspires.ftc.robotlib.state.ServoState.TWOBLOCKDEPOSIT;
 import static org.firstinspires.ftc.robotlib.state.ServoState.TWOBLOCKHOVER;
 
-public class MecanumHardwareMap
-{
+/**
+ * Hardware map with extended functionality using the FTC provided HardwareMap.
+ */
+public class MecanumHardwareMap {
     public HardwareMap internalHardwareMap;
 
     // Motors in Mecanum robot
@@ -68,7 +70,7 @@ public class MecanumHardwareMap
     public final double motorTicksPerInch;
 
     /**
-     * Creates a mecanum hardware map from the FTC given hardware map
+     * Creates a mecanum hardware map from the FTC given hardware map.
      * @param hwMap FTC hardware map
      */
     public MecanumHardwareMap(HardwareMap hwMap)
@@ -136,7 +138,7 @@ public class MecanumHardwareMap
     }
 
     /**
-     * Shortcut for updating the two delivery servos
+     * Shortcut for updating the two delivery servos.
      * @param newState New Servo state (must be in the possible positions)
      */
     public void updateDeliveryStates(ServoState newState) {

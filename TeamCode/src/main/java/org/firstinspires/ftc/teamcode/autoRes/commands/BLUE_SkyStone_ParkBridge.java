@@ -12,16 +12,15 @@ import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 /**
  * Autonomous Mode Usecase 1
  *
- * Description : Start on wall in Loading Zone, identify and move 1 skystone to Building zone and park next to skybridge
+ * Description : Start on wall in Loading Zone, identify and move 1 skystone to Building zone and
+ *                  park near wall or near neutral Skybridge
  *
  * Steps:
  * Robot starts on SB5
  * On start, robot opens wrist to front position
- * Lift Arm to Sense Position
- * Move by distance X forward near SB5
- * Check on color sensor, for Skystone
+ * Lift Arm to Sense Position using Arm Color Sensor
  * If Skystone, record Skystone position as SB5, Go to Step 10
- * Else move robot to SB4. Check on color sensor for Skystone.
+ * Else move robot to SB4. Check on Arm Color Sensor for Skystone.
  * If Skystone, record Skystone position as SB4, Go to Step 10
  * Else move robot to SB3. record skystone position as SB3.
  * Grip and pick the block.
@@ -31,6 +30,9 @@ import org.firstinspires.ftc.teamcode.SubSystems.Intake;
  * Move to B4
  * Drop block
  * Move in between B4 and B3 (Parking)
+ *
+ *  Uses playingAlliance variable to select as 1 for Blue, -1 for Red Alliance
+ *  Uses parkingPlaceNearSkyBridge variable false for near wall, true for near NeutralSkybridge
  */
 
 @Autonomous(name = "BLUE-SkyStone-ParkBridge", group = "Autonomous")

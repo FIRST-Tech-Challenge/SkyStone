@@ -11,8 +11,10 @@ import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 
 /**
  * Autonomous Mode Usecase 2
- * Description : Start on wall in Building Zone, Grip Foundation with hook, and position it into Building Site.
+ * Description : Start on wall in Building Zone, Grip Foundation with arm, and position it into Building Site.
+ *              Using Centrifugal force to hold foundation on its father end and rotate to end position.
  *
+ * Code asssumes Blue Alliance, and at end can park either on wall side or near the neutral skybridge
  * Steps:
  * Robot starts between A4, A5 such that it can slight in front of skybridge neutral zone floor
  * On start, robot opens wrist to front position
@@ -27,7 +29,13 @@ import org.firstinspires.ftc.teamcode.SubSystems.Intake;
  * Push forward to move foundation to end of line
  * Lift Arm to Above foundation level
  * Move back till wall is hit
+ * Move right till outside of foundation
+ * (Alternate usecase) : Move forward to align to parking location near neatural sybridge, else stay
+ * to park along the wall.
  * Move right by distance or till Chassis light sensor does not detect Blue line to be under blue skybridge
+ *
+ * Uses playingAlliance variable to select as 1 for Blue, -1 for Red Alliance
+ * Uses parkingPlaceNearSkyBridge variable false for near wall, true for near NeutralSkybridge
  */
 
 @Autonomous(name = "RED-MoveFdn-ParkBridge", group = "MoveFdn")

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.autoRes.commands;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -37,7 +38,7 @@ import java.util.Locale;
  *
  *
  */
-
+@Disabled
 @Autonomous(name = "AutoUseCaseTester", group = "Autonomous")
 public class AutonomousTester extends LinearOpMode {
 
@@ -298,7 +299,7 @@ public class AutonomousTester extends LinearOpMode {
                 autoChassis.backLeft.setPower(-strafeDirection* power);
                 autoChassis.backRight.setPower(strafeDirection* power);
             }
-        };
+        }
         autoChassis.setZeroBehavior(DcMotor.ZeroPowerBehavior.BRAKE); //#TOBECHECKED TO AVOID JERK
         autoChassis.frontLeft.setPower(0.0);
         autoChassis.frontRight.setPower(0.0);

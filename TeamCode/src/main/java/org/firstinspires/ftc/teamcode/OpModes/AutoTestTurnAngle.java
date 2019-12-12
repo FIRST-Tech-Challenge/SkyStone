@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.OpModes;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -42,7 +43,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.Intake;
  *  * @IntakeAutoMethods : detectSkystoneColorSensorIsYellow()
  *  * @IntakeAutoMethods : detectSkystoneColorSensorIsBlack()
  */
-
+@Disabled
 @Autonomous(name = "HzAutoTurnAngle", group = "Autonomous")
 public class AutoTestTurnAngle extends LinearOpMode{
 

@@ -30,8 +30,8 @@ import org.firstinspires.ftc.teamcode.SubSystems.Intake;
  * Move right by distance or till Chassis light sensor does not detect Blue line to be under blue skybridge
  */
 
-@Autonomous(name = "BLUE-MoveFdn-ParkWall", group = "MoveFdn")
-public class BLUE_MoveFdn_ParkWall extends LinearOpMode {
+@Autonomous(name = "RED-ParkBridge_fromLoadingZone", group = "Park")
+public class RED_ParkBridge_fromLoadingZone extends LinearOpMode {
 
     Intake autoIntake;
     Arm autoArm;
@@ -42,8 +42,9 @@ public class BLUE_MoveFdn_ParkWall extends LinearOpMode {
     public int robotDepth = 17; // Ball on wall to Edge of Chassis Touch sensor
     public int robotWidth = 17; // Wheel edge to wheel edge
 
-    int playingAlliance = 1; //1 for Blue, -1 for Red
-    boolean parkingPlaceNearSkyBridge = false;//false for near wall, true for near NeutralSkybridge
+    int playingAlliance = -1; //1 for Blue, -1 for Red
+    boolean startInBuildingZone = false; // true for building zone, false for loading zone
+    boolean parkingPlaceNearSkyBridge = true;//false for near wall, true for near NeutralSkybridge
 
     boolean parked = false; // Will be true once robot is parked
 
@@ -72,72 +73,20 @@ public class BLUE_MoveFdn_ParkWall extends LinearOpMode {
         autoArm.initArm();
         autoIntake.initIntake();
 
-        autoIntake.closeGrip();
-
         while (opModeIsActive()&& !isStopRequested() && !parked) {
-            AutonomousUC2Commands();
+            AutonomousUC3Commands();
         }
     }
 
-    void AutonomousUC2Commands() {
+    void AutonomousUC3Commands() {
 
         //Robot starts between A4, A5 such that it can slight in front of skybridge neutral zone floor
 
         //On start, Lift arm and robot opens wrist to front position
         //initArm() and initIntake() should do this on class initialization
-
-        //Lift Arm to AboveFoundation level
-        moveArm_aboveFoundationLevel();
-        telemetry.update();
-
-        //Move robot to in between C5 and C6
-        double robotToFoundation = 50;
-        runFwdBackLeftRight(robotToFoundation,playingAlliance,0.25);
-
-        sleep(500);
-        //Move forward till Chassis bumber limit switch is pressed.
-        runFwdTill_frontleftChassisTouchSensor_Pressed(7, 0.1);
-        sleep(500);
-
-        //Drop Arm to OnFoundation level
-        moveArm_onFoundationLevel();
-        sleep(500);
-
-        //Move foundation to wall and then turn
-        runFwdBackLeftRight(6,0,0.25);
-        sleep(500);
-
-        //Move Robot Left toward A4 (for XX rotations). Friction will cause Robot to rotate towards A6
-        double foundationTurnDistance = 85;
-        runFwdBackLeftRight(foundationTurnDistance,playingAlliance*(-1),0.25);
-        sleep(500);
-
-        //Drop Arm to OnFoundation level
-        moveArm_onFoundationLevel();
-        sleep(500);
-
-        //Pull back till wall is hit (Motor does not move)
-        double foundationBackToWall = 15; // #TOBECORRECTED WITH ENCODER NOT MOVING CODE
-        runFwdBackLeftRight(-foundationBackToWall,0,0.1);
-        sleep(100);
-        //Slide left till Motor does not move (Foundation corner on Edge)
-        //#TOBEWRITTEN
-
         //Lift Arm to Above foundation level
         moveArm_aboveFoundationLevel();
         sleep(500);
-
-        //Push forward to move foundation to end of line
-        double foundationtoEdgeofBuildingSite = 1;
-        runFwdBackLeftRight(foundationtoEdgeofBuildingSite,0,0.1);
-        sleep(100);
-
-        //Move back till wall is hit
-        runFwdBackLeftRight(-4,0,0.25);
-        sleep(500);
-
-        //Move out of foundation area
-        runFwdBackLeftRight(30, playingAlliance, 0.25);
 
         //Close Grip
         moveWristToClose();
@@ -154,13 +103,23 @@ public class BLUE_MoveFdn_ParkWall extends LinearOpMode {
 
         //Park near wall
         //Move right by distance or till Chassis light sensor does not detect Blue line to be under blue skybridge
-        if (playingAlliance == 1) {
-            //Blue Alliance
-            runTill_ChassisRightColorSensorIsBlue(30, 1, 0.25);
+        if (startInBuildingZone) {
+            if (playingAlliance == 1) {
+                //Blue Alliance
+                runTill_ChassisRightColorSensorIsBlue(30, 1, 0.2);
+            } else {
+                //Red Alliance
+                runTill_ChassisLeftColorSensorIsRed(30, -1, 0.2);
+            }
         } else {
-            //Red Alliance
-            runTill_ChassisLeftColorSensorIsRed(30, -1, 0.25);
-        }
+            if (playingAlliance == 1) {
+                //Blue Alliance
+                runTill_ChassisLeftColorSensorIsBlue(30, -1, 0.2);
+            } else {
+                //Red Alliance
+                runTill_ChassisRightColorSensorIsRed(30, 1, 0.2);
+            }        }
+
 
         //Reached Parking position
         parked = true;
@@ -239,7 +198,9 @@ public class BLUE_MoveFdn_ParkWall extends LinearOpMode {
      * Method to move Arm to onFoundationLevel and turn Brake Mode ON
      */
     public void moveArm_onFoundationLevel(){
-        autoArm.armMotor.setTargetPosition(autoArm.onFoundationLevel);
+        while (!isStopRequested()){
+            autoArm.armMotor.setTargetPosition(autoArm.onFoundationLevel);
+        }
         autoArm.armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         autoArm.runArmToLevel();
     }
@@ -251,7 +212,6 @@ public class BLUE_MoveFdn_ParkWall extends LinearOpMode {
         autoArm.armMotor.setTargetPosition(autoArm.aboveFoundationLevel);
         turnArmBrakeModeOn();
         autoArm.runArmToLevel();
-        telemetry.addData("Getting out of moveArm_aboveFoundationLevel","");
     }
 
     /**

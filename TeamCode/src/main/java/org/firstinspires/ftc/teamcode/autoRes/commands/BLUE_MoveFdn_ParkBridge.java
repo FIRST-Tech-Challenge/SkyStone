@@ -30,8 +30,8 @@ import org.firstinspires.ftc.teamcode.SubSystems.Intake;
  * Move right by distance or till Chassis light sensor does not detect Blue line to be under blue skybridge
  */
 
-@Autonomous(name = "BLUE-MoveFdn-ParkWall", group = "MoveFdn")
-public class BLUE_MoveFdn_ParkWall extends LinearOpMode {
+@Autonomous(name = "BLUE-MoveFdn-ParkBridge", group = "MoveFdn")
+public class BLUE_MoveFdn_ParkBridge extends LinearOpMode {
 
     Intake autoIntake;
     Arm autoArm;
@@ -43,7 +43,7 @@ public class BLUE_MoveFdn_ParkWall extends LinearOpMode {
     public int robotWidth = 17; // Wheel edge to wheel edge
 
     int playingAlliance = 1; //1 for Blue, -1 for Red
-    boolean parkingPlaceNearSkyBridge = false;//false for near wall, true for near NeutralSkybridge
+    boolean parkingPlaceNearSkyBridge = true;//false for near wall, true for near NeutralSkybridge
 
     boolean parked = false; // Will be true once robot is parked
 

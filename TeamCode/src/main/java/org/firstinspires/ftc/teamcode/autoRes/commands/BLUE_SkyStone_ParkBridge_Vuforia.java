@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.vuforia.CameraDevice;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
@@ -20,6 +21,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.vuforia.CameraDevice.getInstance;
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
@@ -81,21 +83,9 @@ public class BLUE_SkyStone_ParkBridge_Vuforia extends LinearOpMode {
     // Since ImageTarget trackables use mm to specifiy their dimensions, we must use mm for all the physical dimension.
     // We will define some constants and conversions here
     private static final float mmPerInch        = 25.4f;
-    private static final float mmTargetHeight   = (6) * mmPerInch;          // the height of the center of the target image above the floor
 
     // Constant for Stone Target
     private static final float stoneZ = 2.00f * mmPerInch;
-
-    // Constants for the center support targets
-    private static final float bridgeZ = 6.42f * mmPerInch;
-    private static final float bridgeY = 23 * mmPerInch;
-    private static final float bridgeX = 5.18f * mmPerInch;
-    private static final float bridgeRotY = 59;                                 // Units are degrees
-    private static final float bridgeRotZ = 180;
-
-    // Constants for perimeter targets
-    private static final float halfField = 72 * mmPerInch;
-    private static final float quadField  = 36 * mmPerInch;
 
     // Class Members
     private OpenGLMatrix lastLocation = null;
@@ -115,8 +105,8 @@ public class BLUE_SkyStone_ParkBridge_Vuforia extends LinearOpMode {
 
     // Next, translate the camera lens to where it is on the robot.
     // In this example, it is centered (left to right), but forward of the middle of the robot, and above ground level.
-    final float CAMERA_FORWARD_DISPLACEMENT  = -5.0f * mmPerInch;   // eg: Camera is 4 Inches in front of robot center
-    final float CAMERA_VERTICAL_DISPLACEMENT = 12.0f * mmPerInch;   // eg: Camera is 8 Inches above ground
+    final float CAMERA_FORWARD_DISPLACEMENT  =  1.0f * mmPerInch;   // eg: Camera is 4 Inches in front of robot center
+    final float CAMERA_VERTICAL_DISPLACEMENT = 8.0f * mmPerInch;   // eg: Camera is 8 Inches above ground
     final float CAMERA_LEFT_DISPLACEMENT     = 0;     // eg: Camera is ON the robot's center line
 
     //*************Vuforia******************
@@ -172,34 +162,34 @@ public class BLUE_SkyStone_ParkBridge_Vuforia extends LinearOpMode {
 
         // Lift Arm to Sense Position
 
-        sleep(500);
+        sleep(200);
         moveArm_groundLevel();
         openGrip();
-        sleep(500);
+        sleep(100);
         moveArm_detectSkystoneLevel();
         sleep(500);
 
         // Move by distance X forward near SB5 : 6 inches to skystone
-        double robotToNearSkystone = 26;
-        runFwdBackLeftRight(robotToNearSkystone,0,0.1);
+        double robotToNearSkystone = 27;
+        runFwdBackLeftRight(robotToNearSkystone,0,0.2);
 
-        sleep(1000);
+        sleep(500);
 
         telemetry.addData("before viewforia in loop","");
         telemetry.update();
 
         skystonePosition = 5;
         vuforiaFindSkystone();
-        sleep (1000);
+        //sleep (1000);
         telemetry.addData("after viewforia: Target visible: ",targetVisible);
         telemetry.update();
-
+        /*
         if (targetVisible){
-            if(Math.abs(x_translate)>1){
+            /if(Math.abs(x_translate)>1){
                 runFwdBackLeftRight(Math.abs(x_translate), (int) x_translate/Math.abs(x_translate),0.1);
             }
         }
-        sleep(500);
+        sleep(500);*/
         /*if (targetVisible){
             runFwdBackLeftRight(y_translate, 0,0.1);
         }*/
@@ -214,9 +204,9 @@ public class BLUE_SkyStone_ParkBridge_Vuforia extends LinearOpMode {
                 vuforiaFindSkystone();
         }
 
-        if (targetVisible && (skystonePosition == 4)){
+        /*if (targetVisible && (skystonePosition == 4)){
             runFwdBackLeftRight(Math.abs(x_translate), x_translate/Math.abs(x_translate),0.1);
-        }
+        }*/
         /*sleep(500);
         if (targetVisible){
             runFwdBackLeftRight(y_translate, 0,0.1);
@@ -258,16 +248,17 @@ public class BLUE_SkyStone_ParkBridge_Vuforia extends LinearOpMode {
 
         // Drop Arm and Grip the block.
         moveArm_groundLevel();
-        sleep(1000);
+        sleep(500);
         closeGrip();
-        /*
+        sleep(500);
+
         // Slide back to edge of B2, 10 inches
         runFwdBackLeftRight(-10,0,0.1);
 
-        sleep(1000);
+        sleep(200);
         // Turn 90 degrees Left
         turnby90degree(playingAlliance*(-1),0.1);
-        sleep(1000);
+        sleep(500);
 
 
         //Lift Arm
@@ -275,7 +266,7 @@ public class BLUE_SkyStone_ParkBridge_Vuforia extends LinearOpMode {
 
        //Move forward till Chassis bumber limit switch is pressed.
         double expectedMaxDistanceToFoundation = 40;
-        runFwdTill_frontleftChassisTouchSensor_Pressed(expectedMaxDistanceToFoundation, 0.1);
+        runFwdTill_frontleftChassisTouchSensor_Pressed(expectedMaxDistanceToFoundation, 0.25);
 
         // Drop block
         openGrip();
@@ -288,7 +279,7 @@ public class BLUE_SkyStone_ParkBridge_Vuforia extends LinearOpMode {
         } else {
             runTill_ChassisLeftColorSensorIsRed(-55, 0, 0.25);
         }
-        */
+
 
         parked = true;
         //End of Usecase : Should be parked at this time.
@@ -706,7 +697,7 @@ public class BLUE_SkyStone_ParkBridge_Vuforia extends LinearOpMode {
                 .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
 
-        /**  Let all the trackable listeners know where the phone is.  */
+        /*  Let all the trackable listeners know where the phone is.  */
         for (VuforiaTrackable trackable : allTrackables) {
             ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
         }
@@ -718,7 +709,11 @@ public class BLUE_SkyStone_ParkBridge_Vuforia extends LinearOpMode {
         AutonomousTimeOut.reset();
         AutonomousTimeOut.startTime();
         targetVisible = false;
-        while(AutonomousTimeOut.milliseconds()<10000 && !targetVisible) {
+
+        //Turn Camera flash on
+        CameraDevice.getInstance().setFlashTorchMode(true);
+
+        while(AutonomousTimeOut.milliseconds()<3000 && !targetVisible) {
             //**************Vuforia********************
             // check all the trackable targets to see which one (if any) is visible.
             for (VuforiaTrackable trackable : allTrackables) {
@@ -755,6 +750,8 @@ public class BLUE_SkyStone_ParkBridge_Vuforia extends LinearOpMode {
             telemetry.update();
 
         }
+        //Turn Camera flash on
+        CameraDevice.getInstance().setFlashTorchMode(false);
 
         targetsSkyStone.deactivate();
         //***********Vuforia**************

@@ -42,7 +42,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.*;
  * @IntakeAutoMethods : detectSkystoneColor()
  * @IntakeAutoMethods : detectSkystoneDistance()
  */
-
+@Disabled
 @Autonomous(name = "HzAutoRunDistance", group = "Autonomous")
 public class AutoTestRunDistance extends LinearOpMode{
 

@@ -30,7 +30,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.Intake;
  * Move right by distance or till Chassis light sensor does not detect Blue line to be under blue skybridge
  */
 
-@Autonomous(name = "BLUE-ParkWall_fromBuildingZone", group = "Autonomous")
+@Autonomous(name = "BLUE-ParkWall_fromBuildingZone", group = "Park")
 public class BLUE_ParkWall_fromBuildingZone extends LinearOpMode {
 
     Intake autoIntake;
@@ -106,21 +106,20 @@ public class BLUE_ParkWall_fromBuildingZone extends LinearOpMode {
         if (startInBuildingZone) {
             if (playingAlliance == 1) {
                 //Blue Alliance
-                runTill_ChassisRightColorSensorIsBlue(40, 1, 0.25);
+                runTill_ChassisRightColorSensorIsBlue(30, 1, 0.2);
             } else {
                 //Red Alliance
-                runTill_ChassisLeftColorSensorIsRed(40, -1, 0.25);
+                runTill_ChassisLeftColorSensorIsRed(30, -1, 0.2);
             }
         } else {
             if (playingAlliance == 1) {
                 //Blue Alliance
-                runTill_ChassisLeftColorSensorIsBlue(40, -1, 0.25);
+                runTill_ChassisLeftColorSensorIsBlue(30, -1, 0.2);
             } else {
                 //Red Alliance
-                runTill_ChassisRightColorSensorIsRed(40, 1, 0.25);
+                runTill_ChassisRightColorSensorIsRed(30, 1, 0.2);
             }
         }
-
 
         //Reached Parking position
         parked = true;

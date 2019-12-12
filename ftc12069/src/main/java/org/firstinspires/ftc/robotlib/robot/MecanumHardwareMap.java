@@ -116,8 +116,8 @@ public class MecanumHardwareMap
 
         webcamName = hwMap.get(WebcamName.class, "Webcam 1");
 
-        // Configures the REV HUB IMU
-        /*BNO055IMU.Parameters imuParameters = new BNO055IMU.Parameters();
+        // Configure the REV HUB IMU
+        BNO055IMU.Parameters imuParameters = new BNO055IMU.Parameters();
         imuParameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         imuParameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         //imuParameters.calibrationDataFile = "BNO055IMUCalibration.json"; If we find problems manual calibration will be required
@@ -125,7 +125,7 @@ public class MecanumHardwareMap
         imuParameters.loggingTag = "IMU";
 
         imu = hwMap.get(BNO055IMU.class, "imu");
-        imu.initialize(imuParameters);*/
+        imu.initialize(imuParameters);
 
         drivetrain = new MecanumDrivetrain(motorList);
         intakeMotorManager = new MotorManager(new DcMotor[]{intakeLeft, intakeRight});

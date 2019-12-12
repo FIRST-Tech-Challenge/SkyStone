@@ -37,6 +37,8 @@ public class Maccabot {
         back_right = hardwareMap.dcMotor.get("back_right"); // Port 3
         intake_left = hardwareMap.dcMotor.get("intake_left");
         intake_right = hardwareMap.dcMotor.get("intake_right");
+        //lift_left = hardwareMap.dcMotor.get("lift_left");
+        //lift_right = hardwareMap.dcMotor.get("lift_right");
         servo = hardwareMap.servo.get("servo");
 
         encoder = 0;
@@ -47,12 +49,16 @@ public class Maccabot {
         back_right.setDirection(DcMotorSimple.Direction.REVERSE);
 
         intake_left.setDirection(DcMotorSimple.Direction.REVERSE);
+       // lift_left.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // TODO PID!!!
         front_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         front_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         back_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         back_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        //lift_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //lift_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         // Drive Motors Shouldn't Drive
         front_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -100,6 +106,21 @@ public class Maccabot {
             servo.setPosition(-pos);
         }
     }
+
+    /*public void lift(double cond1){
+        lift_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        lift_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        if(lift_right.getCurrentPosition() <= 0){
+            lift_right.setPower(0);
+            lift_left.setPower(0);
+        }
+        else{
+            lift_left.setPower(cond1);
+            lift_right.setPower(cond1);
+        }
+
+    }*/
 
 
 }

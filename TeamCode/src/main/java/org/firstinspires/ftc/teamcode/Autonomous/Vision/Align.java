@@ -46,21 +46,22 @@ public class Align {
         boolean correctRotation = false;
 
         while (!opMode.isStopRequested() && opMode.opModeIsActive()) {
+            double externalHeading = this.externalHeading;
             if ((f == FieldPosition.RED_QUARY || f == FieldPosition.RED_FOUNDATION) && !correctRotation) {
-                if (externalHeading >= 275 || externalHeading < 90) {
+                if (externalHeading >= 270 || externalHeading < 90) {
                     setRightPower(-turnPower);
                     setLeftPower(turnPower);
-                } else if (externalHeading <= 270 && externalHeading >= 90) {
+                } else if (externalHeading <= 268 && externalHeading >= 90) {
                     setRightPower(turnPower);
                     setLeftPower(-turnPower);
                 }
                 opMode.telemetry.addData("Target Heading", 270 + "°");
                 opMode.telemetry.addData("Current Heading", externalHeading);
             } else if ((f == FieldPosition.BLUE_QUARY || f == FieldPosition.BLUE_FOUNDATION) && !correctRotation) {
-                if (externalHeading <= 90 || externalHeading >= 270) {
+                if (externalHeading <= 88 || externalHeading >= 270) {
                     setRightPower(turnPower);
                     setLeftPower(-turnPower);
-                } else if (externalHeading >= 95 && externalHeading < 270) {
+                } else if (externalHeading >= 90 && externalHeading < 270) {
                     setRightPower(-turnPower);
                     setLeftPower(turnPower);
                 }
@@ -68,7 +69,7 @@ public class Align {
                 opMode.telemetry.addData("Current Heading", externalHeading);
             }
 
-            if ((externalHeading > 90 && externalHeading < 95) || (externalHeading < 275 && externalHeading > 270) &&
+            if ((externalHeading > 90 && externalHeading < 92) || (externalHeading < 272 && externalHeading > 270) &&
                     !correctRotation) {
                 stop();
                 correctRotation = true;

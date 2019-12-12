@@ -96,7 +96,7 @@ public class Teleop extends LinearOpMode {
                 new double[][] { {TeleopConstants.clawServo1PosOpen, TeleopConstants.clawServo1PosClose},
                         {TeleopConstants.clawServo2PosOpen, TeleopConstants.clawServo2PosClose} },
                 new double[] { TeleopConstants.clawServo1PosClose, TeleopConstants.clawServo2PosOpen }));
-        buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.DPAD_DOWN, new Servo[] {hwMap.clawInit},
+        buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.RIGHT_TRIGGER, new Servo[] {hwMap.clawInit},
                 new double[][]{ {TeleopConstants.clawInitPosCapstone, TeleopConstants.clawInitPosReset} }));
         buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.LEFT_TRIGGER, new Servo[] { hwMap.transferHorn },
                 new double[][] { {TeleopConstants.transferHornPosPush, TeleopConstants.transferHornPosReady} }));

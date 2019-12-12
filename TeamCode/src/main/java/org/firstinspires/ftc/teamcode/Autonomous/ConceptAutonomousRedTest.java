@@ -43,11 +43,13 @@ public class ConceptAutonomousRedTest extends LinearOpMode {
             generalTools.grabSkysstone();
         }
         */
-        while (!colorTools.isRed(robot.color_back) && opModeIsActive()){
-            robot.motor_front_right.setPower(0.1);
-            robot.motor_front_left.setPower(0.1);
-            robot.motor_rear_right.setPower(0.1);
-            robot.motor_rear_left.setPower(0.1);
+        while (opModeIsActive()){
+            if (!colorTools.isRed(robot.color_back)) {
+                robot.motor_front_right.setPower(0.1);
+                robot.motor_front_left.setPower(0.1);
+                robot.motor_rear_right.setPower(0.1);
+                robot.motor_rear_left.setPower(0.1);
+            }
         }
 
     }

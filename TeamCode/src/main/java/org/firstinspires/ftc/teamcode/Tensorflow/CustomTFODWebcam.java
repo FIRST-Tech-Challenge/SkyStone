@@ -168,13 +168,8 @@ public class CustomTFODWebcam extends LinearOpMode {
                                   "[" + tfodData.get(1) + ", " + tfodData.get(2) + "]");
                           telemetry.addData("Auto-adjusted Domain-Predicted 0° Stone Width Delta",
                                   Math.round((tfodData.get(3)) * 1000.0) / 1000.0);
-<<<<<<< HEAD
-                          //telemetry.addData("Position",
-                          //        Arrays.toString(detect.getPositions(updatedRecognitions)));
-=======
                           telemetry.addData("Position",
                                   Arrays.toString(detect.getSkystonePositionsRed(updatedRecognitions, imgWidth)));
->>>>>>> 54dad6002d010477d957a88e569fbbfb3f221460
                           index += 1;
                       }
                     }

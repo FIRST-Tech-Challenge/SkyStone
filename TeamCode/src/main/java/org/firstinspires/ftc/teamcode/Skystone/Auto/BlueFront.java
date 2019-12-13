@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.Skystone.Vision;
 
 import java.util.HashMap;
 
-@Autonomous(name="BlueFront", group ="LinearOpmode")
+@Autonomous(name="BlueFront3", group ="LinearOpmode")
 public class BlueFront extends AutoBase{
     @Override
     public void runOpMode() {
@@ -23,7 +23,7 @@ public class BlueFront extends AutoBase{
         // Positions assuming center Skystone
         double firstSkystoneY = 5;
         double secondSkyStoneY = 19;
-        double secondSkyStoneX = 69;
+        double secondSkyStoneX = 52;
 
         Vision.Location skystoneLocation = Vision.Location.UNKNOWN;
 
@@ -40,83 +40,85 @@ public class BlueFront extends AutoBase{
         if (skystoneLocation == Vision.Location.LEFT){
             firstSkystoneY = -5;
             secondSkyStoneY = 10.25;
+            secondSkyStoneX = 56;
         } else if (skystoneLocation == Vision.Location.RIGHT){
             firstSkystoneY = 10;
             secondSkyStoneY = 27;
-            secondSkyStoneX = 70.5;
+            secondSkyStoneX = 52;
         }
         double[][] toFirstStone = {
                 {0,0,10,0},
                 {10,firstSkystoneY,10,0},
-                {53,firstSkystoneY,10,0}};
+                {50,firstSkystoneY,10,0}};
         HashMap<Point,Robot.Actions> toFirstStoneActions = new HashMap<Point,Robot.Actions>(){{
             put(new Point(0,0), Robot.Actions.START_INTAKE);
         }};
 
         double[][] toFoundation = {
-                {53,firstSkystoneY,-30,0},
-                {30,-10,0,-10},
-                {32,-30,0,-10},
-                {33,-80,0,-10},
-                {40,-91,10,0}};
+                {50,firstSkystoneY,10,0},
+                {32,firstSkystoneY,10,0},
+                {26,-10,10,0},
+                {25,-30,10,0},
+                {25,-50,10,0},
+                {26,-77,10,0}};
         HashMap<Point,Robot.Actions> toFoundationActions = new HashMap<Point,Robot.Actions>() {{
-            put(new Point(43,-60), Robot.Actions.EXTEND_OUTTAKE);
+            put(new Point(24,-45), Robot.Actions.EXTEND_OUTTAKE);
             put(new Point(24,-30), Robot.Actions.STOP_INTAKE);
-            put(new Point(57.5,-85), Robot.Actions.EXTEND_FOUNDATION);
+            put(new Point(57.5,-63), Robot.Actions.EXTEND_FOUNDATION);
         }};
 
         double[][] toSecondStone = {
-                {31,-83,-10,0},
-                {10,-70,-10,0},
-                {34,-69,10,0},
-                {35,-30,10,0},
-                {40,secondSkyStoneY - 15.5,10,0},
+                {33,-67,-10,0},
+                {4,-59,-10,0},
+                {24,-58.5,0,10},
+                {26,-30,0,10},
+                {29,secondSkyStoneY - 5,0,-10},
                 {secondSkyStoneX,secondSkyStoneY,30,0}};
         HashMap<Point,Robot.Actions> toSecondStoneActions = new HashMap<Point,Robot.Actions>() {{
-            put(new Point(32,-78), Robot.Actions.RETRACT_OUTTAKE);
-            put(new Point(23,-57), Robot.Actions.RELEASE_FOUNDATION);
+            put(new Point(20,-70), Robot.Actions.RETRACT_OUTTAKE);
+            put(new Point(10,-70), Robot.Actions.RELEASE_FOUNDATION);
             put(new Point(28,-10), Robot.Actions.START_INTAKE);
         }};
 
         double[][] toDepositSecondStone = {
-                {55,secondSkyStoneY,-30,0},
-                {51,8,10,0},
-                {53,-30,10,-20},
-                {55.5,-50,5,10},
-                {55.5,-65,5,10},
-                {58,-82,5,-10}};
+                {secondSkyStoneX,secondSkyStoneY,10,0},
+                {38,2,0,-20},
+                {33,-33,10,0},
+                {29,-50,-10,0},
+                {29,-61,10,0},
+                {22,-63.5,10,0}};
         HashMap<Point,Robot.Actions> toDepositSecondStoneActions = new HashMap<Point,Robot.Actions>() {{
-            put(new Point(44,-43), Robot.Actions.EXTEND_OUTTAKE);
-            put(new Point(30,0), Robot.Actions.STOP_INTAKE);
-            put(new Point(30,-10), Robot.Actions.START_INTAKE);
+            put(new Point(28,-37), Robot.Actions.EXTEND_OUTTAKE);
+            put(new Point(35,0), Robot.Actions.STOP_INTAKE);
+            put(new Point(35,-20), Robot.Actions.START_INTAKE);
         }};
 
         double[][] toPark = {
-                {54,-83,10,0},
-                {57,-77,10,0},
-                {58,-75,10,0},
-                {57,-35,0,10}};
+                {22,-63,5,10},
+                {30,-60,0,10},
+                {30,-28,0,10}};
         HashMap<Point,Robot.Actions> toParkActions = new HashMap<Point,Robot.Actions>(){{
-            put(new Point(40,-74), Robot.Actions.RETRACT_OUTTAKE);
+            put(new Point(25,-65), Robot.Actions.RETRACT_OUTTAKE);
         }};
 
         double[][] toThirdStone = {
-                {36,-76,5,10},
-                {42 ,-60, 15,0},
-                {39,30,-10,0},
-                {45,6, 10,0},
-                {70,5, 10,0},
-                {82,20, 30,0}};
+                {22,-63,5,-10},
+                {30 ,-60, 0,10},
+                {30,30,0,10},
+                {35,-6, 0,10},
+                {45,5, 10,0},
+                {55,30, 30,0}};
         HashMap<Point,Robot.Actions> toThirdStoneActions = new HashMap<Point,Robot.Actions>() {{
-            put(new Point(40,-74), Robot.Actions.RETRACT_OUTTAKE);
+            put(new Point(34,-73), Robot.Actions.RETRACT_OUTTAKE);
             put(new Point(28,-30), Robot.Actions.START_INTAKE);
         }};
 
         double[][] toParkAfterThirdStone = {
-                {32,20,10,0},
-                {42,-30,10,0}};
+                {55,30,30,0},
+                {30,10,0,10},
+                {27,-25,0,10}};
         HashMap<Point,Robot.Actions> toParkAfterThirdStoneActions = new HashMap<Point,Robot.Actions>() {{
-            put(new Point(37,17), Robot.Actions.STOP_INTAKE);
+            put(new Point(42,0), Robot.Actions.STOP_INTAKE);
         }};
 
         intake(true);
@@ -124,22 +126,22 @@ public class BlueFront extends AutoBase{
         robot.splineMove(toFirstStone,0.5,1, 0.75,3,0,0,30,
                 toFirstStoneActions);
 
-        robot.splineMove(toFoundation,1,1, 1, 10, Math.toRadians(180),Math.toRadians(180),30,
-                toFoundationActions);
+        robot.splineMove(toFoundation,1,1, 1, 10, Math.toRadians(180),Math.toRadians(180),15,
+                toFoundationActions, true, 5000);
 
         sleep(200);
 
-        robot.splineMove(toSecondStone,1,1, 0.85, 20,0,Math.toRadians(35),38,
-                toSecondStoneActions);
+        robot.splineMove(toSecondStone,1,1, 1, 20,0,Math.toRadians(60),38,
+                toSecondStoneActions,true, 8000);
 
-        robot.splineMove(toDepositSecondStone,0.9,1, 0.5, 10, Math.toRadians(180),Math.toRadians(90),10,
+        robot.splineMove(toDepositSecondStone,0.9,1, 0.65, 10, Math.toRadians(180),Math.toRadians(90),10,
                 toDepositSecondStoneActions);
 
         robot.getClamp().setPosition(robot.CLAMP_SERVO_RELEASED);
 
-        sleep(250);
+        sleep(500);
 
-        if (SystemClock.elapsedRealtime() - startTime < 20000) {
+        if (SystemClock.elapsedRealtime() - startTime < 22000) {
             robot.splineMove(toThirdStone, 0.7,1, 0.65, 20,0,Math.toRadians(90),20,
                     toThirdStoneActions, true, 6000);
 

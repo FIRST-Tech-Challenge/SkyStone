@@ -629,7 +629,7 @@ public class Robot {
                     clampPivot.setPosition(OUTTAKE_PIVOT_90);
                 }
 
-                if(currentTime-extendOuttakeStartTime >= 2100){
+                if(currentTime-extendOuttakeStartTime >= 2500){
                     rightFoundation.setPosition(RIGHTFOUNDATION_EXTENDED);
 
                     isExtendingOuttake = false;

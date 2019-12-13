@@ -31,6 +31,7 @@ import java.util.Set;
  * Enables reflective use of hardware devices and iterating
  * them by type with their name (not part of the FTC SDK)
  */
+@SuppressWarnings("unchecked")
 public class NamedDeviceMap {
     public static class NamedDevice<T> {
         private final T device;

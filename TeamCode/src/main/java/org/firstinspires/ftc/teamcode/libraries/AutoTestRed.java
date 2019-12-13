@@ -238,16 +238,21 @@ public class AutoTestRed extends LinearOpMode {
                     yPosition = translation.get(1);
                     xPosition = translation.get(0);
                     if (yPosition < 0) {
-                        positionSkystone = "Left";
+                        positionSkystone = "Left";  //right*
 //                        autoLib.calcMove(1, .7f, Constants.Direction.LEFT);
                         finalMove(-xPosition, yPosition);
+                        distanceToDepot = distanceToDepot + 50;
+                        distanceToCenterLine = distanceToCenterLine + 3;
+                        turningDegree = turningDegree + 5;
 //                        distanceToDepot = distanceToDepot + 10;
                     } else {
                         positionSkystone = "Center";
                         //if (xPosition <= -25) {
-                        distanceToDepot = distanceToDepot + 10f;
                         forwardDistanceSkystone = forwardDistanceSkystone + 3;
                         foundation = foundation + 8;
+                        distanceToCenterLine = distanceToCenterLine + 3f;
+                        turningDegree = turningDegree - 2;
+                        distanceToDepot = distanceToDepot + 30;
 //                        turningDegree = turningDegree - 10f;
                         sleep(1000);
                         yPosition = translation.get(1);
@@ -263,15 +268,16 @@ public class AutoTestRed extends LinearOpMode {
                     Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
                     telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
                 } else {
-                    positionSkystone = "Right";
+                    positionSkystone = "Right"; //left*
                     telemetry.addData("Visible Target", "none");
 
-                    distanceToDepot = distanceToDepot + 15;
-                    distanceToCenterLine = distanceToCenterLine - 2;
-                    forwardDistanceSkystone = forwardDistanceSkystone - 1;
-
+                    distanceToDepot = distanceToDepot + 45;
+                    distanceToCenterLine = distanceToCenterLine + 4;
+                    turningDegree = turningDegree - 2.5f;
+                    foundation = foundation + 5;
+                    Thread.sleep(1000);
                     autoLib.calcMove(20, .7f, Constants.Direction.LEFT);
-                    Thread.sleep(750);
+                    Thread.sleep(1250);
 
                 }
                 telemetry.addData("Skystone Position", positionSkystone);
@@ -292,7 +298,7 @@ public class AutoTestRed extends LinearOpMode {
         autoLib.calcMove((float) (yPosition / 10) + distanceToCenterLine, .9f, Constants.Direction.RIGHT); //when decreased- moves to the left
         autoLib.calcMove((float) (-xPosition / 10) + forwardDistanceSkystone, .6f, Constants.Direction.FORWARD);   //when increased-moves back
 //        distanceToDepot = distanceToDepot + (float) yPosition + 5;
-        autoLib.calcMove(5f, .7f, Constants.Direction.BACKWARD);
+        autoLib.calcMove(6f, .7f, Constants.Direction.BACKWARD);
         Thread.sleep(500);
         autoLib.armGrab();
         Thread.sleep(500);
@@ -301,16 +307,20 @@ public class AutoTestRed extends LinearOpMode {
 //        if (distanceToDepot > 120) {//195
 //            distanceToDepot = 130;//205
 //        }
+        telemetry.addData("About to move", "");
+        telemetry.update();
         autoLib.calcMove(distanceToDepot, 1f, Constants.Direction.BACKWARD);
+        telemetry.addData("Finished moving", "");
+        telemetry.update();
         autoLib.moveArmUpSeconds();
         autoLib.calcTurn(-50, .6f);
-        autoLib.calcMove(foundation, .7f, Constants.Direction.BACKWARD);
+        autoLib.calcMove(foundation, .55f, Constants.Direction.BACKWARD);
         autoLib.scoreServo();
-        autoLib.calcMove(5, .15f, Constants.Direction.BACKWARD);
+        autoLib.calcMove(9, .15f, Constants.Direction.BACKWARD);
         Thread.sleep(300);
         autoLib.latchServoFoundation();
         Thread.sleep(1000);
-        autoLib.calcMove(60, 1f, Constants.Direction.FORWARD);
+        autoLib.calcMove(62, 1f, Constants.Direction.FORWARD);
         autoLib.restServoFoundation();
         autoLib.calcMove(72, 1f, Constants.Direction.LEFT);
         startIdentify = false;

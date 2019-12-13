@@ -309,7 +309,7 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
         Thread.sleep(300);
         autoLib.latchServoFoundation();
         Thread.sleep(1000);
-        autoLib.calcMove(60, 1f, Constants.Direction.FORWARD);
+        autoLib.calcMove(62, 1f, Constants.Direction.FORWARD);
         autoLib.restServoFoundation();
         autoLib.calcMove(72, 1f, Constants.Direction.RIGHT);
         startIdentify = false;

@@ -30,6 +30,7 @@ import com.hfrobots.tnt.corelib.control.RangeInput;
 import com.hfrobots.tnt.corelib.drive.ExtendedDcMotor;
 import com.hfrobots.tnt.corelib.drive.NinjaMotor;
 import com.hfrobots.tnt.corelib.drive.PidController;
+import com.hfrobots.tnt.corelib.drive.StallDetector;
 import com.hfrobots.tnt.corelib.state.State;
 import com.hfrobots.tnt.corelib.state.StopwatchDelayState;
 import com.hfrobots.tnt.corelib.state.TimeoutSafetyState;
@@ -257,29 +258,29 @@ public class DeliveryMechanism {
     protected void setupStateMachine() {
         HomingState homingState = new HomingState(telemetry);
 
-        StowReturnState stowReturnState = new StowReturnState(telemetry, 60000);
+        StowReturnState stowReturnState = new StowReturnState(telemetry);
 
         stowReturnState.setHomingState(homingState);
 
-        PlaceState placeState = new PlaceState(telemetry, 60000);
+        PlaceState placeState = new PlaceState(telemetry, 6000);
         placeState.setStowReturnState(stowReturnState);
 
-        AtMinState atMinState = new AtMinState(telemetry, 60000);
+        AtMinState atMinState = new AtMinState(telemetry, 6000);
         atMinState.setPlaceState(placeState);
         atMinState.setStowReturnState(stowReturnState);
 
-        AtMaxState atMaxState = new AtMaxState(telemetry, 60000);
+        AtMaxState atMaxState = new AtMaxState(telemetry, 6000);
         atMaxState.setPlaceState(placeState);
         atMaxState.setStowReturnState(stowReturnState);
 
-        ToPlacingDownState toPlacingDownState = new ToPlacingDownState(telemetry,60000);
+        ToPlacingDownState toPlacingDownState = new ToPlacingDownState(telemetry,6000);
         toPlacingDownState.setAtMinState(atMinState);
         toPlacingDownState.setPlaceState(placeState);
         toPlacingDownState.setStowReturnState(stowReturnState);
 
         atMaxState.setToPlacingDownState(toPlacingDownState);
 
-        ToPlacingUpState toPlacingUpState = new ToPlacingUpState(telemetry, 60000);
+        ToPlacingUpState toPlacingUpState = new ToPlacingUpState(telemetry, 6000);
         toPlacingUpState.setToPlacingDownState(toPlacingDownState);
         toPlacingUpState.setAtMaxState(atMaxState);
         toPlacingUpState.setPlaceState(placeState);
@@ -289,7 +290,7 @@ public class DeliveryMechanism {
 
         toPlacingDownState.setToPlacingUpState(toPlacingUpState);
 
-        ArmMovingState armMovingState = new ArmMovingState(telemetry, 60000);
+        ArmMovingState armMovingState = new ArmMovingState(telemetry, 6000);
         armMovingState.setToPlacingDownState(toPlacingDownState);
         armMovingState.setToPlacingUpState(toPlacingUpState);
         armMovingState.setPlaceState(placeState);
@@ -300,14 +301,14 @@ public class DeliveryMechanism {
         atMaxState.setArmMovingState(armMovingState);
         atMinState.setArmMovingState(armMovingState);
 
-        MoveClearState moveClearState = new MoveClearState(telemetry, 60000);
+        MoveClearState moveClearState = new MoveClearState(telemetry, 6000);
         moveClearState.setArmMovingState(armMovingState);
         homingState.setMoveClearState(moveClearState);
 
-        LowGripState lowGripState = new LowGripState(telemetry, 60000);
+        LowGripState lowGripState = new LowGripState(telemetry, 6000);
         lowGripState.setMoveClearState(moveClearState);
 
-        LoadingState loadingState = new LoadingState(telemetry,60000);
+        LoadingState loadingState = new LoadingState(telemetry,6000);
         loadingState.setLowGripState(lowGripState);
         lowGripState.setLoadingState(loadingState);
         stowReturnState.setLoadingState(loadingState);
@@ -889,9 +890,10 @@ public class DeliveryMechanism {
 
         boolean pidInitialized = false;
 
-        public StowReturnState(Telemetry telemetry,
-                               long safetyTimeoutMillis) {
-            super("stow return state", telemetry, safetyTimeoutMillis);
+        private StallDetector stallDetector;
+
+        public StowReturnState(Telemetry telemetry) {
+            super("stow return state", telemetry, TimeUnit.SECONDS.toMillis(3));
 
         }
 
@@ -914,6 +916,7 @@ public class DeliveryMechanism {
 
                 stowingArmState = createStowWristStates(null, telemetry);
                 initialized = true;
+                stallDetector = new StallDetector(ticker, 1, TimeUnit.SECONDS.toMillis(2));
             }
 
             if (unsafe.isPressed()) {
@@ -939,6 +942,30 @@ public class DeliveryMechanism {
             // FIXME: Start looking for timeout at this point, since the we get stuck waiting
             // for the PID sometimes...
 
+            if (isTimedOut()) {
+                Log.d(LOG_TAG, "Error: Timed out while trying to reach bottom");
+
+                liftMotor.setPower(0);
+
+                pidInitialized = false;
+
+                initialized = false;
+
+                return homingState;
+            }
+
+            if (shouldUseLowerLimit() && isLowerLimitReached()) {
+                Log.d(LOG_TAG, "Error: Limit switch reached before encoder count");
+
+                liftMotor.setPower(0);
+
+                pidInitialized = false;
+
+                initialized = false;
+
+                return homingState;
+            }
+
             // After arm is stowed, lift moves down to loading position - then transitions to loading state
 
             if (!pidInitialized) {
@@ -954,7 +981,21 @@ public class DeliveryMechanism {
                 pidInitialized = true;
             }
 
-            double pidOutput = pidController.getOutput(liftMotor.getCurrentPosition());
+            int currentPosition = liftMotor.getCurrentPosition();
+
+            if (stallDetector != null && stallDetector.isStalled(currentPosition)) {
+                Log.d(LOG_TAG, "Stall detected! lethal force engaged");
+
+                liftMotor.setPower(0);
+
+                pidInitialized = false;
+
+                initialized = false;
+
+                return homingState;
+            }
+
+            double pidOutput = pidController.getOutput(currentPosition);
 
             boolean pidOnTarget = pidController.isOnTarget();
 

@@ -615,17 +615,17 @@ public class Robot {
             }
 
             if (isExtendingOuttake){
-                if (currentTime - extendOuttakeStartTime >= 250) {
-                    intakePusher.setPosition(PUSHER_RETRACTED);
-                }
-                if (currentTime - extendOuttakeStartTime >= 350 ) {
+                if (currentTime - extendOuttakeStartTime >= 750) {
                     clamp.setPosition(CLAMP_SERVO_CLAMPED);
                 }
-                if(currentTime-extendOuttakeStartTime >= 750){
+                if (currentTime - extendOuttakeStartTime >= 850 ) {
+                    intakePusher.setPosition(PUSHER_RETRACTED);
+                }
+                if(currentTime-extendOuttakeStartTime >= 1050){
                     outtakeExtender.setPosition(OUTTAKE_SLIDE_EXTENDED);
                 }
 
-                if(currentTime-extendOuttakeStartTime >= 1900 ){
+                if(currentTime-extendOuttakeStartTime >= 2000 ){
                     clampPivot.setPosition(OUTTAKE_PIVOT_90);
                 }
 

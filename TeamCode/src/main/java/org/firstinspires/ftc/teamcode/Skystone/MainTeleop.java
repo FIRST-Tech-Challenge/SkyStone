@@ -257,17 +257,17 @@ public class MainTeleop extends LinearOpMode {
         if (currentTime - outtakeExecutionTime >= 850 && isExtend) {
             robot.getClamp().setPosition(robot.CLAMP_SERVO_CLAMPED);
         }
-        if(currentTime-outtakeExecutionTime >= 950 && isExtend){
+        if(currentTime-outtakeExecutionTime >= 1050 && isExtend){
             robot.getOuttakeExtender().setPosition(robot.OUTTAKE_SLIDE_EXTENDED);
         }
-        if(currentTime-outtakeExecutionTime >= 1650 && isExtend && !is90){
+        if(currentTime-outtakeExecutionTime >= 2000 && isExtend && !is90){
             robot.getClampPivot().setPosition(robot.OUTTAKE_PIVOT_EXTENDED);
             isExtend = false;
             hasPushed = false;
         }
 
         //pivot 90
-        if(currentTime-outtakeExecutionTime >= 1650 && isExtend && is90){
+        if(currentTime-outtakeExecutionTime >= 2000 && isExtend && is90){
             robot.getClampPivot().setPosition(robot.OUTTAKE_PIVOT_90);
             isExtend = false;
             is90 = false;

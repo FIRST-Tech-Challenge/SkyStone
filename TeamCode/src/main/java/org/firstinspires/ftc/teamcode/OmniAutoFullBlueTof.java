@@ -18,41 +18,46 @@ public class OmniAutoFullBlueTof extends OmniAutoFullToF {
 
     @Override
     public void setSkystoneValues(int position) {
-        robot.stackFromSide = HardwareOmnibot.RobotSide.LEFT;
+        robot.stackFromSide = HardwareOmnibot.RobotSide.RIGHT;
+        fudgeAngle = 4;
         baseAngle = 180.0;
+        secondSkystone = false;
         switch(position) {
             case 1:
-			    // For first Skystone
-                attackAngle1 = 38.0;
-                sideDistance1 = 55.3;
-                flyTime1 = 1500;
-                flyBackTime1 = 1200;
-				// For second Skystone
-				attackAngle2 = 38.0;
-				sideDistance2 = 101.3;
-				flyTime2 = 1300;
+                // For first Skystone
+                attackAngle1 = 140.0;
+                sideDistance1 = 52.3;
+                flyTime1 = 1300;
+                flyBackTime1 = 1900;
+                // For second Skystone
+                attackAngle2 = 220.0;
+                sideDistance2 = 40.3;
+                flyTime2 = 1100;
+                flyBackTime2 = 750;
                 break;
             case 2:
-			    // For first Skystone
-                attackAngle1 = 38.0;
+                // For first Skystone
+                attackAngle1 = 140.0;
                 sideDistance1 = 75.6;
-                flyTime1 = 1400;
-                flyBackTime1 = 1550;
-				// For second Skystone
-				attackAngle2 = -40.0;
-				sideDistance2 = 47.3;
-				flyTime2 = 1200;
+                flyTime1 = 1100;
+                flyBackTime1 = 1900;
+                // For second Skystone
+                attackAngle2 = 220.0;
+                sideDistance2 = 40.3;
+                flyTime2 = 1100;
+                flyBackTime2 = 750;
                 break;
             case 3:
-			    // For first Skystone
-                attackAngle1 = 38.0;
-                sideDistance1 = 96.0;
-                flyTime1 = 1300;
-                flyBackTime1 = 1200;
-				// For second Skystone
-				attackAngle2 = -38.0;
-				sideDistance2 = 65.6;
-				flyTime2 = 1400;
+                // For first Skystone
+                attackAngle1 = 140.0;
+                sideDistance1 = 91.9;
+                flyTime1 = 800;
+                flyBackTime1 = 1900;
+                // For second Skystone
+                attackAngle2 = 220.0;
+                sideDistance2 = 40.3;
+                flyTime2 = 1100;
+                flyBackTime2 = 750;
                 break;
         }
     }

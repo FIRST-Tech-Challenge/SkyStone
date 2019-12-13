@@ -17,7 +17,7 @@ import java.util.List;
  * @author Rick Van Smith
  * @version 1.0.0
  */
-@TeleOp(name = "DotStar Pattern Test", group = "Test")
+//@TeleOp(name = "DotStar Pattern Test", group = "Test")
 public class DotStarPatternTester extends OpMode {
     DotStarBridgedLED leds;
 

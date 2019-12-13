@@ -20,39 +20,44 @@ public class OmniAutoFullRedTof extends OmniAutoFullToF {
     public void setSkystoneValues(int position) {
         robot.stackFromSide = HardwareOmnibot.RobotSide.LEFT;
         baseAngle = 0.0;
+        fudgeAngle = 0;
+        secondSkystone = true;
         switch(position) {
             case 1:
-			    // For first Skystone
+                // For first Skystone
                 attackAngle1 = 38.0;
-                sideDistance1 = 55.3;
-                flyTime1 = 1500;
-                flyBackTime1 = 1200;
-				// For second Skystone
-				attackAngle2 = 38.0;
-				sideDistance2 = 101.3;
-				flyTime2 = 1300;
+                sideDistance1 = 52.3;
+                flyTime1 = 1600;
+                flyBackTime1 = 1350;
+                // For second Skystone
+                attackAngle2 = 38.0;
+                sideDistance2 = 101.3;
+                flyTime2 = 1200;
+                flyBackTime2 = 600;
                 break;
             case 2:
 			    // For first Skystone
                 attackAngle1 = 38.0;
                 sideDistance1 = 75.6;
                 flyTime1 = 1400;
-                flyBackTime1 = 1550;
+                flyBackTime1 = 1650;
 				// For second Skystone
-				attackAngle2 = -40.0;
-				sideDistance2 = 47.3;
-				flyTime2 = 1200;
+				attackAngle2 = -39.0;
+				sideDistance2 = 45.3;
+				flyTime2 = 1100;
+				flyBackTime2 = 600;
                 break;
             case 3:
-			    // For first Skystone
+                // For first Skystone
                 attackAngle1 = 38.0;
-                sideDistance1 = 96.0;
-                flyTime1 = 1300;
-                flyBackTime1 = 1200;
-				// For second Skystone
-				attackAngle2 = -38.0;
-				sideDistance2 = 65.6;
-				flyTime2 = 1400;
+                sideDistance1 = 95.9;
+                flyTime1 = 1400;
+                flyBackTime1 = 1550;
+                // For second Skystone
+                attackAngle2 = -39.0;
+                sideDistance2 = 65.6;
+                flyTime2 = 1100;
+                flyBackTime2 = 600;
                 break;
         }
     }

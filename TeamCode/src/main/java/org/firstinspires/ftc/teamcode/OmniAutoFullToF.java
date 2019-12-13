@@ -57,10 +57,13 @@ public abstract class OmniAutoFullToF extends OmniAutoClass
 	protected double attackAngle2 = 40.0;
     protected double sideDistance2 = 101.3;
 	protected int flyTime2 = 1300;
+	protected int flyBackTime2 = 200;
 	
     protected double baseAngle;
-    protected boolean runThis = true;
+    protected double fudgeAngle = 0;
     protected boolean progressActivities = false;
+    protected boolean runLift = true;
+    protected boolean secondSkystone = true;
 
     public abstract void setSkystoneValues(int position);
     public abstract void setVisionPoints();
@@ -138,11 +141,12 @@ public abstract class OmniAutoFullToF extends OmniAutoClass
          */
         waitForStart();
         stonePosition = position;
+        telemetry.addData("Stone Position: ", stonePosition);
+        telemetry.update();
 
 		// Stop the image pipeline.
 		phoneCam.stopStreaming();
 
-		if(runThis) {
             // Start moving intake out, should be done by the time driving is done.
             robot.moveIntake(HardwareOmnibot.IntakePosition.EXTENDED);
 
@@ -182,7 +186,7 @@ public abstract class OmniAutoFullToF extends OmniAutoClass
             robot.stopIntake();
 
             // Rotate to running angle to go to other side of the bridge.
-            rotateRobotToAngle(rotateSpeed, 90.0, 2000, progressActivities);
+            rotateRobotToAngle(rotateSpeed, baseAngle + 90.0 + fudgeAngle, 2000, progressActivities);
 
             // Move robot to center of lane before launching.  Lane defined as
             // skybridge 48 inches and robot width 18 inches, with our robot width
@@ -192,28 +196,37 @@ public abstract class OmniAutoFullToF extends OmniAutoClass
             // Fly to the other side.  Do not put the brakes on, allow the distance
             // from wall function take over.
             // We could turn off encoders to drive faster.
-            driveAtHeadingForTime(maxSpeed, slowSpin, baseAngle + 0.0, baseAngle + 90.0, flyTime1, false, progressActivities);
+            driveAtHeadingForTime(maxSpeed, slowSpin, baseAngle + 0.0 + fudgeAngle, baseAngle + 90.0 + fudgeAngle, flyTime1, false, progressActivities);
 
             // Get to foundation midpoint.
             distanceFromWall(HardwareOmnibot.RobotSide.BACK, 40.0, maxSpeed, standardDistanceError, 5000, progressActivities);
 
             // Start delivering Stone
+        if(runLift) {
             robot.resetReads();
             robot.liftTargetHeight = HardwareOmnibot.LiftPosition.STONE_AUTO;
             robot.startStoneStacking();
+        }
 
             // Rotate to foundation grabbing angle.
-            rotateRobotToAngle(rotateSpeed, baseAngle + 180.0, 2000, true);
+            // Not sure why this doesn't need base angle
+            rotateRobotToAngle(rotateSpeed, 180.0 + fudgeAngle, 2000, true);
 
             // Back the robot up to the foundation
             grabFoundation(5000);
 
             // Move the foundation to parallel back wall.
-            driveAtHeadingForTime(maxSpeed, slowSpin, baseAngle + 260.0, baseAngle + 170.0, 350, false, true);
-            driveAtHeadingForTime(maxSpeed, slowSpin, baseAngle + 250.0, baseAngle + 160.0, 350, false, true);
+            // Not sure why this doesn't need base angle
+            if(baseAngle == 0) {
+                driveAtHeadingForTime(maxSpeed, slowSpin, 260.0, 170.0, 350, false, true);
+                driveAtHeadingForTime(maxSpeed, slowSpin, 250.0, 160.0, 350, false, true);
+            } else {
+                driveAtHeadingForTime(maxSpeed, slowSpin, 290.0+fudgeAngle, 200.0+fudgeAngle, 450, false, true);
+                driveAtHeadingForTime(maxSpeed, slowSpin, 300.0+fudgeAngle, 210.0+fudgeAngle, 450, false, true);
+            }
 
             // Rotate to parallel back wall.
-            rotateRobotToAngle(rotateSpeed, baseAngle + 90.0, 2000, true);
+            rotateRobotToAngle(rotateSpeed, baseAngle + 90.0 + fudgeAngle, 2000, true);
 
             // Drive the foundation into the back wall.
             driveAtHeadingForTime(maxSpeed, precisionSpin, baseAngle + 0.0, baseAngle + 90.0, 500, true, true);
@@ -222,23 +235,28 @@ public abstract class OmniAutoFullToF extends OmniAutoClass
             moveFingers(true, true);
 
             // Perform the whole stone placement here for now.  Place at level 2 to make sure it doesn't get caught up.
+        if(runLift) {
             endTime = timer.milliseconds() + 10000;
             while ((robot.stackStone != HardwareOmnibot.StackActivities.IDLE) && (timer.milliseconds() < endTime) && (!isStopRequested())) {
                 robot.resetReads();
                 performRobotActivities();
             }
+        }
 
-            // Get to running distance from the wall before placing.
-            // Move robot to center of lane before launching.  Lane defined as
-            // skybridge 48 inches and robot width 18 inches, with our robot width
-            // that is 24 inches to 42 inches, leaving 6 inches on either side.
-            distanceFromWall(robot.stackFromSide, 61.0, maxSpeed, standardDistanceError, 5000, false);
+        // Get to running distance from the wall before placing.
+        // Move robot to center of lane before launching.  Lane defined as
+        // skybridge 48 inches and robot width 18 inches, with our robot width
+        // that is 24 inches to 42 inches, leaving 6 inches on either side.
+        distanceFromWall(robot.stackFromSide, 61.0, maxSpeed, standardDistanceError, 5000, false);
+
+        if(secondSkystone) {
 
             // Fly back to the other side to collect second stone.
             driveAtHeadingForTime(maxSpeed, slowSpin, baseAngle + 180.0, baseAngle + 90.0, flyBackTime1, true, false);
 
             // Rotate the robot to line up to collect.
-            rotateRobotToAngle(rotateSpeed, baseAngle + 0.0, 2000, false);
+            // Not sure why we don't use base angle here.
+            rotateRobotToAngle(rotateSpeed, 0.0, 2000, false);
 
             // Drive out to 10cm from the skystones
             distanceFromWall(HardwareOmnibot.RobotSide.BACK, 54.0, maxSpeed, standardDistanceError, 5000, false);
@@ -268,7 +286,10 @@ public abstract class OmniAutoFullToF extends OmniAutoClass
 
             // Fly to the other side.  Do not put the brakes on, allow the distance
             // from wall function take over.
-            driveAtHeadingForTime(maxSpeed, slowSpin, baseAngle + 0.0, baseAngle + 90.0, flyTime2, false, false);
+            driveAtHeadingForTime(maxSpeed, slowSpin, baseAngle + 0.0, baseAngle + 90.0, flyTime2, true, false);
+            driveAtHeadingForTime(maxSpeed, slowSpin, baseAngle + 180.0, baseAngle + 90.0, flyBackTime2, true, false);
+        } else {
+            driveAtHeadingForTime(maxSpeed, slowSpin, baseAngle + 180.0, baseAngle + 90.0, flyBackTime2, true, false);
         }
 
         // Set the zero for the extender for when we start teleop.  We should do this as late

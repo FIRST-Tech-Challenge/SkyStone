@@ -114,8 +114,9 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         GRABBING_CAPSTONE,
         LIFTING_CAPSTONE,
         ROTATING_TO_STONE,
-        LOWERING_TO_STONE,
-        RELEASING_CAPSTONE
+        LOWERING_TO_RELEASE,
+        RELEASING_CAPSTONE,
+        LOWERING_TO_STONE
     }
 
     public static int MAX_EXTENSION = 2375;
@@ -176,50 +177,50 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 
     public static int MAX_LIFT = 2800;
     public enum LiftPosition {
-		GRABBING(10),
-        STOWED(15),
-        STONE1_RELEASE(126),
+		GRABBING(5),
+        STOWED(10),
+        STONE1_RELEASE(108),
         STONE1(176),
-        STONE1_ROTATE(226),
-        STONE_AUTO_RELEASE(150),
+        STONE1_ROTATE(408),
+        STONE_AUTO_RELEASE(170),
         STONE_AUTO(176),
         STONE_AUTO_ROTATE(226),
-        CAPSTONE_GRAB(300),
-        STONE2_RELEASE(424),
+        CAPSTONE_GRAB(360),
+        STONE2_RELEASE(343),
         STONE2(474),
-        STONE2_ROTATE(424),
+        STONE2_ROTATE(643),
         CAPSTONE_ROTATE(650),
-        STONE3_RELEASE(622),
+        STONE3_RELEASE(579),
         STONE3(672),
-        STONE3_ROTATE(722),
+        STONE3_ROTATE(879),
         ROTATE(850),
-        STONE4_RELEASE(847),
+        STONE4_RELEASE(811),
         STONE4(907),
-        STONE4_ROTATE(957),
-        STONE5_RELEASE(1071),
+        STONE4_ROTATE(1111),
+        STONE5_RELEASE(1041),
         STONE5(1131),
-        STONE5_ROTATE(1181),
-        STONE6_RELEASE(1297),
+        STONE5_ROTATE(1341),
+        STONE6_RELEASE(1263),
         STONE6(1357),
-        STONE6_ROTATE(1407),
-        STONE7_RELEASE(1533),
+        STONE6_ROTATE(1563),
+        STONE7_RELEASE(1485),
         STONE7(1593),
-        STONE7_ROTATE(1643),
-        STONE8_RELEASE(1750),
+        STONE7_ROTATE(1785),
+        STONE8_RELEASE(1711),
         STONE8(1810),
-        STONE8_ROTATE(1860),
-        STONE9_RELEASE(1970),
+        STONE8_ROTATE(2011),
+        STONE9_RELEASE(1931),
         STONE9(2030),
-        STONE9_ROTATE(2080),
-        STONE10_RELEASE(2191),
+        STONE9_ROTATE(2231),
+        STONE10_RELEASE(2147),
         STONE10(2251),
-        STONE10_ROTATE(2301),
-        STONE11_RELEASE(2415),
+        STONE10_ROTATE(2447),
+        STONE11_RELEASE(2372),
         STONE11(2475),
-        STONE11_ROTATE(2525),
-        STONE12_RELEASE(2620),
+        STONE11_ROTATE(2672),
+        STONE12_RELEASE(2590),
         STONE12(2680),
-        STONE12_ROTATE(2730),
+        STONE12_ROTATE(2770),
         LIFTMAX(MAX_LIFT);
 
         private final int encoderCount;
@@ -372,8 +373,9 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     /* Public OpMode members. */
     public final static double ACCEL_STEP = 0.007;
     public static double INTAKE_SPEED = 1.0;
+    public static double OUTAKE_SPEED = -0.50;
 	public static double LIFT_MAX_SPEED = 1.0;
-	public static double LIFT_MID_SPEED = 0.5;
+	public static double LIFT_MID_SPEED = 0.4;
 	public static double LIFT_MIN_SPEED = 0.2;
 	public static double EXTEND_SPEED = 1.0;
     public static double RIGHT_FINGER_DOWN = 0.32;
@@ -382,16 +384,16 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public static double LEFT_FINGER_UP = 0.25;
     public static double CLAW_OPEN = 0.22;
     public static double CLAW_PINCHED = 0.95;
-    public static double CLAWDRICOPTER_FRONT = 0.85;
-    public static double CLAWDRICOPTER_CAPSTONE = 0.70;
-    public static double CLAWDRICOPTER_BACK = 0.09;
+    public static double CLAWDRICOPTER_FRONT = 0.87;
+    public static double CLAWDRICOPTER_CAPSTONE = 0.72;
+    public static double CLAWDRICOPTER_BACK = 0.11;
     public static int CLAW_OPEN_TIME = 500;
-    public static int CLAW_CLOSE_TIME = 500;
+    public static int CLAW_CLOSE_TIME = 800;
     public static int CLAW_ROTATE_BACK_TIME = 1000;
     public static int CLAW_ROTATE_CAPSTONE_TIME = 500;
     public static int CLAW_ROTATE_FRONT_TIME = 1000;
     public static int FINGER_ROTATE_TIME = 500;
-	private static int ENCODER_ERROR = 10;
+	private static int ENCODER_ERROR = 15;
     RevBulkData bulkDataHub1;
     RevBulkData bulkDataHub2;
 //    ExpansionHubMotor leftIntakeBd, rightIntakeBd, lifterBd, extenderBd;
@@ -582,13 +584,19 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 
     public void performCapstone() {
         switch(capstoneState) {
-            case RELEASING_CAPSTONE:
-                if(clawTimer.milliseconds() >= CLAW_OPEN_TIME) {
+            case LOWERING_TO_STONE:
+                if(lifterAtPosition(LiftPosition.STOWED)) {
                     capstoneState = CapstoneActivity.IDLE;
                 }
                 break;
-            case LOWERING_TO_STONE:
-                if(lifterAtPosition(LiftPosition.STOWED)) {
+            case RELEASING_CAPSTONE:
+                if(clawTimer.milliseconds() >= CLAW_OPEN_TIME) {
+                    capstoneState = CapstoneActivity.LOWERING_TO_STONE;
+                    moveLift(LiftPosition.STOWED);
+                }
+                break;
+            case LOWERING_TO_RELEASE:
+                if(lifterAtPosition(LiftPosition.STONE1_RELEASE)) {
                     capstoneState = CapstoneActivity.RELEASING_CAPSTONE;
                     claw.setPosition(CLAW_OPEN);
                     clawPinched = false;
@@ -597,8 +605,8 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                 break;
             case ROTATING_TO_STONE:
                 if(clawdricopterTimer.milliseconds() >= CLAW_ROTATE_CAPSTONE_TIME) {
-                    capstoneState = CapstoneActivity.LOWERING_TO_STONE;
-                    moveLift(LiftPosition.releasePosition(LiftPosition.STOWED));
+                    capstoneState = CapstoneActivity.LOWERING_TO_RELEASE;
+                    moveLift(LiftPosition.releasePosition(LiftPosition.STONE1_RELEASE));
                 }
                 break;
             case LIFTING_CAPSTONE:
@@ -729,10 +737,15 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 				}
 			    break;
             case CLEARING_LIFT:
-			    if(intakeAtPosition(IntakePosition.EXTENDED)) {
+                if(!(intakePosition == IntakePosition.EXTENDED)) {
+                    if (intakeAtPosition(IntakePosition.EXTENDED)) {
+                        liftState = LiftActivity.LOWERING_TO_GRAB;
+                        moveLift(LiftPosition.GRABBING);
+                    }
+                } else {
                     liftState = LiftActivity.LOWERING_TO_GRAB;
-					moveLift(LiftPosition.GRABBING);
-				}
+                    moveLift(LiftPosition.GRABBING);
+                }
                 break;
 		    case IDLE:
 			default:
@@ -877,8 +890,10 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                     stackBackLeftFoundationDistance = readBackLeftTof();
                     stowState = StowActivity.RAISING_TO_ROTATE;
                     if(clawdricopterBack) {
-                        if (liftActivityTargetHeight.getEncoderCount() < LiftPosition.ROTATE.getEncoderCount()) {
+                        if (LiftPosition.rotatePosition(liftActivityTargetHeight).getEncoderCount() < LiftPosition.ROTATE.getEncoderCount()) {
                             liftActivityTargetHeight = LiftPosition.ROTATE;
+                        } else {
+                            liftActivityTargetHeight = LiftPosition.rotatePosition(liftActivityTargetHeight);
                         }
                         moveLift(LiftPosition.releasePosition(liftActivityTargetHeight));
                     }
@@ -1039,8 +1054,8 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     // This function backs up to an object
     public boolean gotoRearTarget(double driveSpeed, double spinSpeed) {
         // These are the values we see when it is against the platform.
-        double backLeftTargetDistance = 1.0;
-        double backRightTargetDistance = 3.5;
+        double backLeftTargetDistance = 2.0;
+        double backRightTargetDistance = 4.5;
         double leftTofDistance = readBackLeftTof();
         double rightTofDistance = readBackRightTof();
         double drivePower = 0.0;
@@ -1476,9 +1491,9 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         // Prevent the intake from starting if it isn't extended far enough.
         if(getIntakePosition() >= IntakePosition.SPINMIN.getEncoderCount()) {
             if (reverse) {
-                if(intakePower != -INTAKE_SPEED) {
+                if(intakePower != OUTAKE_SPEED) {
                     stopIntake();
-                    intakePower = -INTAKE_SPEED;
+                    intakePower = OUTAKE_SPEED;
                     leftIntake.setPower(intakePower);
                     rightIntake.setPower(intakePower);
                 }

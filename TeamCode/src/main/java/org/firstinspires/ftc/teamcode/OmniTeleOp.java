@@ -74,11 +74,11 @@ public class OmniTeleOp extends OpMode {
     private double driverAngle = 0.0;
     private final double MAX_SPEED = 1.0;
     private final double MAX_SPIN = 1.0;
-    private final double FOUNDATION_SPEED = 0.20;
-    private final double FOUNDATION_SPIN = 0.20;
+    private final double FOUNDATION_SPEED = 0.50;
+    private final double FOUNDATION_SPIN = 0.50;
     private double speedMultiplier = MAX_SPEED;
     private double spinMultiplier = MAX_SPIN;
-    private int heightIncrement = 20;
+    private int heightIncrement = 10;
     private boolean aHeld = false;
     private boolean bHeld = false;
     private boolean yHeld = false;
@@ -123,6 +123,7 @@ public class OmniTeleOp extends OpMode {
     private double liftPower;
     private double extendPower;
     private double collectPower;
+    private int liftEncoderSetpoint = 0;
 
 
     @Override
@@ -179,11 +180,11 @@ public class OmniTeleOp extends OpMode {
         if(!bHeld && bPressed)
         {
             bHeld = true;
-            if(robot.removeFoundation == HardwareOmnibot.FoundationActivities.IDLE) {
-                robot.startFoundation();
-            } else {
-                robot.stopFoundation();
-            }
+//            if(robot.removeFoundation == HardwareOmnibot.FoundationActivities.IDLE) {
+//                robot.startFoundation();
+//            } else {
+//                robot.stopFoundation();
+//            }
 //            if(robot.alignState == HardwareOmnibot.AlignActivity.IDLE) {
 //                robot.startAligning();
 //            } else {
@@ -342,9 +343,9 @@ public class OmniTeleOp extends OpMode {
 
         if(!rightBumper2Held && rightBumper2Pressed)
         {
-            int newHeight = robot.getLifterAbsoluteEncoder();
-            newHeight += heightIncrement;
-            robot.lifter.setTargetPosition(newHeight);
+            liftEncoderSetpoint = robot.getLifterAbsoluteEncoder();
+            liftEncoderSetpoint += heightIncrement;
+            robot.lifter.setTargetPosition(liftEncoderSetpoint);
             robot.lifter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.lifter.setPower(robot.LIFT_MAX_SPEED);
             rightBumper2Held = true;
@@ -354,9 +355,9 @@ public class OmniTeleOp extends OpMode {
 
         if(!leftBumper2Held && leftBumper2Pressed)
         {
-            int newHeight = robot.getLifterAbsoluteEncoder();
-            newHeight -= heightIncrement;
-            robot.lifter.setTargetPosition(newHeight);
+            liftEncoderSetpoint = robot.getLifterAbsoluteEncoder();
+            liftEncoderSetpoint -= heightIncrement;
+            robot.lifter.setTargetPosition(liftEncoderSetpoint);
             robot.lifter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.lifter.setPower(robot.LIFT_MIN_SPEED);
             leftBumper2Held = true;

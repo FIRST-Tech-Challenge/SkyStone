@@ -203,9 +203,7 @@ public class TeleOp20192020_Test_Final extends LinearOpMode {
 
 
         // run until the end of the match (driver presses STOP)
-        while (
-
-                opModeIsActive()) {
+        while (opModeIsActive()) {
 
 
             if (blockbutton.getState() == true) {
@@ -220,7 +218,7 @@ public class TeleOp20192020_Test_Final extends LinearOpMode {
 
             }
             blinkinLedDriver.setPattern(pattern);
-            telemetry.update();
+            //telemetry.update();
 
         /*
         if (displayKind == DisplayKind.AUTO) {

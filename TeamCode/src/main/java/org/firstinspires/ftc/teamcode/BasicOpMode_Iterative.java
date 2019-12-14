@@ -35,6 +35,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+import java.math.*;
 
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
@@ -102,13 +103,13 @@ public class BasicOpMode_Iterative extends OpMode
         double strafe = gamepad1.left_stick_x * speed;
         double rotate = gamepad1.right_stick_x * speed;
 
-        robot.rightFrontDrive.setPower(drive - strafe - rotate);
-        robot.leftFrontDrive.setPower(drive + strafe + rotate);
-        robot.leftRearDrive.setPower(drive - strafe + rotate);
-        robot.rightRearDrive.setPower(drive + strafe - rotate);
+        robot.rightFrontDrive.setPower(Math.pow(drive - strafe + rotate, 3));
+        robot.leftFrontDrive.setPower(Math.pow(drive + strafe - rotate, 3));
+        robot.leftRearDrive.setPower(Math.pow(drive - strafe - rotate, 3));
+        robot.rightRearDrive.setPower(Math.pow(drive + strafe + rotate, 3));
 
-        robot.leftArm.setPower(gamepad1.right_trigger - gamepad1.left_trigger);
-        robot.rightArm.setPower(gamepad1.left_trigger - gamepad1.right_trigger);
+        robot.leftArm.setPower(Math.pow(gamepad1.right_trigger - gamepad1.left_trigger, 3));
+        robot.rightArm.setPower(Math.pow(gamepad1.left_trigger - gamepad1.right_trigger, 3));
 
         //robot.leftArm.getCurrentPosition();
         //robot.leftArm.setTargetPosition(0);

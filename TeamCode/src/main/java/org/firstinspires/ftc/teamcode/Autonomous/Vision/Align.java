@@ -51,14 +51,14 @@ public class Align {
                 if (externalHeading >= 270 || externalHeading < 90) {
                     setRightPower(-turnPower);
                     setLeftPower(turnPower);
-                } else if (externalHeading <= 268 && externalHeading >= 90) {
+                } else if (externalHeading <= 269 && externalHeading >= 90) {
                     setRightPower(turnPower);
                     setLeftPower(-turnPower);
                 }
                 opMode.telemetry.addData("Target Heading", 270 + "°");
                 opMode.telemetry.addData("Current Heading", externalHeading);
             } else if ((f == FieldPosition.BLUE_QUARY || f == FieldPosition.BLUE_FOUNDATION) && !correctRotation) {
-                if (externalHeading <= 88 || externalHeading >= 270) {
+                if (externalHeading <= 89 || externalHeading >= 270) {
                     setRightPower(turnPower);
                     setLeftPower(-turnPower);
                 } else if (externalHeading >= 90 && externalHeading < 270) {
@@ -69,7 +69,7 @@ public class Align {
                 opMode.telemetry.addData("Current Heading", externalHeading);
             }
 
-            if ((externalHeading > 90 && externalHeading < 92) || (externalHeading < 272 && externalHeading > 270) &&
+            if (((externalHeading > 89 && externalHeading < 90) || (externalHeading < 270 && externalHeading > 269)) &&
                     !correctRotation) {
                 stop();
                 correctRotation = true;

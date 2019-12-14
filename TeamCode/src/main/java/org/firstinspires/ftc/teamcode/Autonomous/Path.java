@@ -172,7 +172,7 @@ public class Path {
                 builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
 
                 builder = builder.lineTo(new Vector2d(drive.getLocalizer().getPoseEstimate().getX(), drive.getLocalizer().getPoseEstimate().getY() + 5))
-                        .splineTo(new Pose2d(new Vector2d(-28.208, -39.672), Math.toRadians(85)))
+                        .splineTo(new Pose2d(new Vector2d(-29.208, -39.672), Math.toRadians(85)))
                 //.lineTo(new Vector2d(-46.728, -11.52));
                 /*.lineTo(new Vector2d(-39.728, -11.52))*/;
                 trajectory = builder.build();
@@ -194,7 +194,7 @@ public class Path {
                 builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
                 builder = builder.setReversed(true).lineTo(new Vector2d(-28.728, -42.672))
                         .setReversed(false).splineTo(new Pose2d(new Vector2d(-5.568, -23.44), Math.toRadians(0)))
-                        .splineTo(new Pose2d(new Vector2d(54.488, -25.296), Math.toRadians(-90)));
+                        .splineTo(new Pose2d(new Vector2d(55.488, -25.296), Math.toRadians(-90)));
                 trajectory = builder.build();
                 drive.followTrajectorySync(trajectory);
 
@@ -225,9 +225,9 @@ public class Path {
                 drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(68.0, -64.72), Math.toRadians(0)));
                 drive.getLocalizer().update();
                 builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
-                builder = builder.setReversed(false).lineTo(new Vector2d(55.0, -64.72)).strafeTo(new Vector2d(55.0, -55.44))
-                        .lineTo(new Vector2d(-5.552, -55.44)).strafeTo(new Vector2d(-5.552, -23.44))  ////
-                        .lineTo(new Vector2d(-15.552, -23.44));
+                builder = builder.setReversed(false).lineTo(new Vector2d(55.0, -64.72)).strafeTo(new Vector2d(55.0, -54.44))
+                        .lineTo(new Vector2d(-5.552, -54.44)).strafeTo(new Vector2d(-5.552, -23.44))  ////
+                        .lineTo(new Vector2d(-14.552, -23.44));
                 trajectory = builder.build();
                 drive.followTrajectorySync(trajectory);
                 //drive.turnSync(Math.toRadians(-45));

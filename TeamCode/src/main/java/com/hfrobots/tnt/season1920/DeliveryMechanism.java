@@ -447,7 +447,7 @@ public class DeliveryMechanism {
 
     private static final double LIFT_POWER_LEVEL = 1;
 
-    public final static int LIFT_CLEAR_SUPERSTRUCTURE_POS = 121;
+    public final static int LIFT_CLEAR_SUPERSTRUCTURE_POS = 0;
 
     public final static int LIFT_MAX_HEIGHT_POS = 1445;
 

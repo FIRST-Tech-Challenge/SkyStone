@@ -56,26 +56,21 @@ public class BasicOpMode_Iterative extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftDrive = null;
-    private DcMotor rightDrive = null;
+    private HardwarePushbot robot = new HardwarePushbot();
+    private double speed = 0.5;
+
+    private double leftPos = 0.0;
+    private double rightPos = 0.0;
+    private double t = 0.0;
+
 
     /*
      * Code to run ONCE when the driver hits INIT
      */
     @Override
     public void init() {
+        robot.init(hardwareMap);
         telemetry.addData("Status", "Initialized");
-
-        // Initialize the hardware variables. Note that the strings used here as parameters
-        // to 'get' must correspond to the names assigned during the robot configuration
-        // step (using the FTC Robot Controller app on the phone).
-        leftDrive  = hardwareMap.get(DcMotor.class, "left_drive");
-        rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
-
-        // Most robots need the motor on one side to be reversed to drive forward
-        // Reverse the motor that runs backwards when connected directly to the battery
-        leftDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightDrive.setDirection(DcMotor.Direction.REVERSE);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -86,6 +81,8 @@ public class BasicOpMode_Iterative extends OpMode
      */
     @Override
     public void init_loop() {
+        robot.rightClaw.setPosition(robot.RIGHT_SERVO_STOWED);
+        robot.leftClaw.setPosition(robot.LEFT_SERVO_STOWED);
     }
 
     /*
@@ -101,32 +98,31 @@ public class BasicOpMode_Iterative extends OpMode
      */
     @Override
     public void loop() {
-        // Setup a variable for each drive wheel to save power level for telemetry
-        double leftPower;
-        double rightPower;
+        double drive = gamepad1.left_stick_y * speed;
+        double strafe = gamepad1.left_stick_x * speed;
+        double rotate = gamepad1.right_stick_x * speed;
 
-        // Choose to drive using either Tank Mode, or POV Mode
-        // Comment out the method that's not used.  The default below is POV.
+        robot.rightFrontDrive.setPower(drive - strafe - rotate);
+        robot.leftFrontDrive.setPower(drive + strafe + rotate);
+        robot.leftRearDrive.setPower(drive - strafe + rotate);
+        robot.rightRearDrive.setPower(drive + strafe - rotate);
 
-        // POV Mode uses left stick to go forward, and right stick to turn.
-        // - This uses basic math to combine motions and is easier to drive straight.
-        double drive = -gamepad1.left_stick_y;
-        double turn  =  gamepad1.right_stick_x;
-        leftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
-        rightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
+        robot.leftArm.setPower(gamepad1.right_trigger - gamepad1.left_trigger);
+        robot.rightArm.setPower(gamepad1.left_trigger - gamepad1.right_trigger);
 
-        // Tank Mode uses one stick to control each wheel.
-        // - This requires no math, but it is hard to drive forward slowly and keep straight.
-        // leftPower  = -gamepad1.left_stick_y ;
-        // rightPower = -gamepad1.right_stick_y ;
+        //robot.leftArm.getCurrentPosition();
+        //robot.leftArm.setTargetPosition(0);
 
-        // Send calculated power to wheels
-        leftDrive.setPower(leftPower);
-        rightDrive.setPower(rightPower);
+        if (gamepad1.right_bumper) {
+            robot.rightClaw.setPosition(robot.RIGHT_SERVO_CLOSED);
+            robot.leftClaw.setPosition(robot.LEFT_SERVO_CLOSED);
+        } else if (gamepad1.left_bumper) {
+            robot.rightClaw.setPosition(robot.RIGHT_SERVO_OPEN);
+            robot.leftClaw.setPosition(robot.LEFT_SERVO_OPEN);
+        }
 
-        // Show the elapsed game time and wheel power.
-        telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+        telemetry.addData("Left claw pos:", robot.leftClaw.getPosition());
+        telemetry.addData("Right claw pos:", robot.rightClaw.getPosition());
     }
 
     /*

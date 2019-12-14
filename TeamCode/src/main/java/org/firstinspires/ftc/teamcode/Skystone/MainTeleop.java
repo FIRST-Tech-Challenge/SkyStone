@@ -193,7 +193,7 @@ public class MainTeleop extends LinearOpMode {
             robot.getIntakeRight().setPower(0);
         }
 
-        if ((gamepad2.left_stick_y != 0 || gamepad2.right_stick_y != 0) && gamepad2.right_trigger == 0) {
+        if ((gamepad2.left_stick_y != 0 || gamepad2.right_stick_y != 0) && gamepad2.right_trigger == 0 && !isExtend && !isClamp && !is90 && !isRetract) {
             robot.getIntakePusher().setPosition(robot.PUSHER_RETRACTED);
             robot.getBackStopper().setPosition(robot.BACK_STOPPER_UP);
             robot.getClamp().setPosition(robot.CLAMP_SERVO_INTAKEPOSITION);
@@ -213,7 +213,6 @@ public class MainTeleop extends LinearOpMode {
             robot.getBackStopper().setPosition(robot.BACK_STOPPER_UP);
             isExtend = true;
             isRetract = false;
-            isClamp = false;
             is90 = false;
             outtakeExecutionTime = currentTime;
         } else if (gamepad2.b) { // Deposit and Reset
@@ -257,7 +256,7 @@ public class MainTeleop extends LinearOpMode {
         if (currentTime - outtakeExecutionTime >= 850 && isExtend) {
             robot.getClamp().setPosition(robot.CLAMP_SERVO_CLAMPED);
         }
-        if(currentTime-outtakeExecutionTime >= 1050 && isExtend){
+        if(currentTime-outtakeExecutionTime >= 1100 && isExtend){
             robot.getOuttakeExtender().setPosition(robot.OUTTAKE_SLIDE_EXTENDED);
         }
         if(currentTime-outtakeExecutionTime >= 2000 && isExtend && !is90){

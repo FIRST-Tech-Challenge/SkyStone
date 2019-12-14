@@ -22,7 +22,7 @@ public class BlueFront extends AutoBase{
 
         // Positions assuming center Skystone
         double firstSkystoneY = 2;
-        double secondSkyStoneY = 16;
+        double secondSkyStoneY = 14;
         double secondSkyStoneX = 52;
 
         Vision.Location skystoneLocation = Vision.Location.UNKNOWN;
@@ -57,7 +57,7 @@ public class BlueFront extends AutoBase{
         double[][] toFoundation = {
                 {50,firstSkystoneY,10,0},
                 {32,firstSkystoneY,10,0},
-                {26,-10,10,0},
+                {30,-10,10,0},
                 {21,-30,10,0},
                 {23,-87,10,0},
                 {41,-99,10,0}};
@@ -84,7 +84,7 @@ public class BlueFront extends AutoBase{
                 {30,2,10,-5},
                 {28,-33,10,0},
                 {28,-50,-10,0},
-                {28,-61,10,0},
+                {29,-61,10,0},
                 {32,-80,10,0}};
         HashMap<Point,Robot.Actions> toDepositSecondStoneActions = new HashMap<Point,Robot.Actions>() {{
             put(new Point(28,-30), Robot.Actions.EXTEND_OUTTAKE);
@@ -126,7 +126,7 @@ public class BlueFront extends AutoBase{
                 toFirstStoneActions);
 
         robot.splineMove(toFoundation,1,1, 1, 10, Math.toRadians(180),Math.toRadians(180),15,
-                toFoundationActions, true, 5000);
+                toFoundationActions, true, 8000);
 
         robot.foundationMovers(true);
         sleep(350);

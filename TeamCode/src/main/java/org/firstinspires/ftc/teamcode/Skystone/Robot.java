@@ -77,7 +77,7 @@ public class Robot {
 
     // Outtake Pivot Positions
     public final double OUTTAKE_PIVOT_EXTENDED = .944;
-    public final double OUTTAKE_PIVOT_RETRACTED = .221;
+    public final double OUTTAKE_PIVOT_RETRACTED = .20;
     public final double OUTTAKE_PIVOT_90 = 0.5825;
 
     // Outtake Pusher Positions
@@ -615,21 +615,21 @@ public class Robot {
             }
 
             if (isExtendingOuttake){
-                if (currentTime - extendOuttakeStartTime >= 750) {
+                if (currentTime - extendOuttakeStartTime >= 500) {
                     clamp.setPosition(CLAMP_SERVO_CLAMPED);
                 }
-                if (currentTime - extendOuttakeStartTime >= 850 ) {
+                if (currentTime - extendOuttakeStartTime >= 650 ) {
                     intakePusher.setPosition(PUSHER_RETRACTED);
                 }
-                if(currentTime-extendOuttakeStartTime >= 1050){
+                if(currentTime-extendOuttakeStartTime >= 1300){
                     outtakeExtender.setPosition(OUTTAKE_SLIDE_EXTENDED);
                 }
 
-                if(currentTime-extendOuttakeStartTime >= 2000 ){
+                if(currentTime-extendOuttakeStartTime >= 2200 ){
                     clampPivot.setPosition(OUTTAKE_PIVOT_90);
                 }
 
-                if(currentTime-extendOuttakeStartTime >= 2500){
+                if(currentTime-extendOuttakeStartTime >= 2700){
                     rightFoundation.setPosition(RIGHTFOUNDATION_EXTENDED);
 
                     isExtendingOuttake = false;

@@ -29,7 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
-        import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
         import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
         import com.qualcomm.robotcore.hardware.DcMotor;
         import com.qualcomm.robotcore.hardware.DigitalChannel;
@@ -42,8 +42,8 @@ package org.firstinspires.ftc.teamcode;
  * forwards/backwards and turning left and right, and the right stick controls strafing. (working on diff. control setup currently)
  */
 
-@Autonomous(name = "platform_bridge_encoder   ", group = "Linear Opmode")
-@Disabled
+@Autonomous(name = "Encoder_Test", group = "Linear Opmode")
+//@Disabled
 public class platform_bridge_encoder extends LinearOpMode {
 
     // Declare OpMode members.
@@ -161,9 +161,13 @@ public class platform_bridge_encoder extends LinearOpMode {
 
         Clamp_Left.setPosition(0);
         Clamp_Right.setPosition(.85);
-        boolean Stage1Complete = false;
+        boolean UnfoldComplete = false;
+        boolean Stage1 = false;
         boolean Stage2 = false;
         boolean Stage3 = false;
+        boolean Stage4 = false;
+        boolean Stage5 = false;
+        boolean Stage6 = false;
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -171,9 +175,12 @@ public class platform_bridge_encoder extends LinearOpMode {
 
         sleep(100);
 
+
         while (opModeIsActive()) {
 
-            if (front_left.getCurrentPosition() <= 1921 && Stage1Complete == false) {
+            //Unfold the robot and move slightly forward
+
+            if (front_left.getCurrentPosition() <= 321 && UnfoldComplete == false) {
 
                 front_left.setPower(.8);
                 front_right.setPower(.8);
@@ -181,32 +188,120 @@ public class platform_bridge_encoder extends LinearOpMode {
                 rear_right.setPower(.8);
 
 
-            } else {
-
-                Clamp_Left.setPosition(0.85f);
-                Clamp_Right.setPosition(0.15f);
-                Stage1Complete = true;
-                Stage2 = true;
-
-            }
-
-            if (front_left.getCurrentPosition() >= 500 && Stage2 == true) {
-
-                front_left.setPower(.8);
-                front_right.setPower(.8);
-                rear_left.setPower(.8);
-                rear_right.setPower(.8);
-
-            } else {
+            } else if(UnfoldComplete == false){
 
                 front_left.setPower(0);
                 front_right.setPower(0);
                 rear_left.setPower(0);
                 rear_right.setPower(0);
+                Feeder_Servo.setPosition(1);
+                UnfoldComplete = true;
+                Stage1 = true;
+
+            }
+
+            //Move forward and clamp the platform
+
+            if (front_left.getCurrentPosition() <= 1921 && Stage1 == true) {
+
+                front_left.setPower(.8);
+                front_right.setPower(.8);
+                rear_left.setPower(.8);
+                rear_right.setPower(.8);
+
+
+            } else if(Stage1 == false){
+
+                front_left.setPower(0);
+                front_right.setPower(0);
+                rear_left.setPower(0);
+                rear_right.setPower(0);
+                Clamp_Left.setPosition(0.85f);
+                Clamp_Right.setPosition(0.15f);
+                Stage1 = false;
+                Stage2 = true;
+                sleep(500);
+
+            }
+
+            //Move backwards
+
+            if (front_left.getCurrentPosition() >= 500 && Stage2 == true) {
+
+                front_left.setPower(-.8);
+                front_right.setPower(-.8);
+                rear_left.setPower(-.8);
+                rear_right.setPower(-.8);
+
+            } else if (Stage2 == false){
+
+                Stage2 = false;
                 Stage3 = true;
 
             }
 
+            //Turn Left
+
+            if (front_left.getCurrentPosition() >= 2000 && Stage3 == true) {
+
+                front_left.setPower(.8);
+                front_right.setPower(-.8);
+                rear_left.setPower(-.8);
+                rear_right.setPower(.8);
+
+            } else if (Stage3 == false) {
+
+                front_left.setPower(0);
+                front_right.setPower(0);
+                rear_left.setPower(0);
+                rear_right.setPower(0);
+                Stage3 = false;
+                Stage4 = true;
+
+            }
+
+            //Move Forward
+
+            if (front_left.getCurrentPosition() >= 3000 && Stage4 == true) {
+
+                front_left.setPower(.8);
+                front_right.setPower(.8);
+                rear_left.setPower(.8);
+                rear_right.setPower(.8);
+
+            } else if (Stage4 == false) {
+
+                front_left.setPower(0);
+                front_right.setPower(0);
+                rear_left.setPower(0);
+                rear_right.setPower(0);
+                Clamp_Left.setPosition(0f);
+                Clamp_Right.setPosition(0.75f);
+                Stage4 = false;
+                Stage5 = true;
+
+            }
+
+            //Move Backwards
+
+            if (front_left.getCurrentPosition() >= 3000 && Stage5 == true) {
+
+                front_left.setPower(-.8);
+                front_right.setPower(-.8);
+                rear_left.setPower(-.8);
+                rear_right.setPower(-.8);
+
+            } else if (Stage5 == false) {
+
+                front_left.setPower(0);
+                front_right.setPower(0);
+                rear_left.setPower(0);
+                rear_right.setPower(0);
+
+                Stage5 = false;
+                Stage6 = true;
+
+            }
 
         }
         //clamps go down

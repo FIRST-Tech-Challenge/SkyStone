@@ -197,6 +197,9 @@ public class platform_bridge_encoder extends LinearOpMode {
                 Feeder_Servo.setPosition(1);
                 UnfoldComplete = true;
                 Stage1 = true;
+                telemetry.addData("Front_Left Encoder Value -", front_left.getCurrentPosition());
+                telemetry.addData("Unfold"," Complete");
+                telemetry.update();
 
             }
 
@@ -221,6 +224,9 @@ public class platform_bridge_encoder extends LinearOpMode {
                 Stage1 = false;
                 Stage2 = true;
                 sleep(500);
+                telemetry.addData("Front_Left Encoder Value -", front_left.getCurrentPosition());
+                telemetry.addData("Stage 1"," Complete");
+                telemetry.update();
 
             }
 
@@ -237,6 +243,9 @@ public class platform_bridge_encoder extends LinearOpMode {
 
                 Stage2 = false;
                 Stage3 = true;
+                telemetry.addData("Front_Left Encoder Value -", front_left.getCurrentPosition());
+                telemetry.addData("Stage 2"," Complete");
+                telemetry.update();
 
             }
 
@@ -257,6 +266,9 @@ public class platform_bridge_encoder extends LinearOpMode {
                 rear_right.setPower(0);
                 Stage3 = false;
                 Stage4 = true;
+                telemetry.addData("Front_Left Encoder Value -", front_left.getCurrentPosition());
+                telemetry.addData("Stage 3"," Complete");
+                telemetry.update();
 
             }
 
@@ -279,6 +291,9 @@ public class platform_bridge_encoder extends LinearOpMode {
                 Clamp_Right.setPosition(0.75f);
                 Stage4 = false;
                 Stage5 = true;
+                telemetry.addData("Front_Left Encoder Value -", front_left.getCurrentPosition());
+                telemetry.addData("Stage 4"," Complete");
+                telemetry.update();
 
             }
 
@@ -300,6 +315,9 @@ public class platform_bridge_encoder extends LinearOpMode {
 
                 Stage5 = false;
                 Stage6 = true;
+                telemetry.addData("Front_Left Encoder Value -", front_left.getCurrentPosition());
+                telemetry.addData("Stage 5"," Complete");
+                telemetry.update();
 
             }
 

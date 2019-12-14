@@ -38,9 +38,9 @@ public class BasicTeleOp extends TeleOpControl {
             }
 
             if(gamepad1.dpad_right){
-                rob.foundationServo.setPosition(0.1);
+                //rob.foundationServo.setPosition(0.1);
             }else if(gamepad1.dpad_left){
-                rob.foundationServo.setPosition(0.5);
+                //rob.foundationServo.setPosition(0.5);
             }
 
             if (gamepad1.y){

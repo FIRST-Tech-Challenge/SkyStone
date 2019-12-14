@@ -57,7 +57,9 @@ public class Constants {
     public static final String leftServos = "leftservo";
     public static final String flimits = "flimit";
     public static final String blimits = "blimit";
-    public static final String foundationServos = "foundationservo";
+    public static final String linearLimits = "linearLimit";
+    public static final String foundationServos1 = "foundationservo1";
+    public static final String foundationServos2 = "foundationservo2";
     public static final String rightsucks = "rightSuck";
     public static final String leftsucks = "leftSuck";
     public static final String smallRSucks = "smallRSuck";

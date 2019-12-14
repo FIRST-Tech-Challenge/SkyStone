@@ -35,11 +35,13 @@ import static org.firstinspires.ftc.teamcode.Control.Constants.COUNTS_PER_MOTOR_
 import static org.firstinspires.ftc.teamcode.Control.Constants.backs;
 import static org.firstinspires.ftc.teamcode.Control.Constants.blimits;
 import static org.firstinspires.ftc.teamcode.Control.Constants.flimits;
-import static org.firstinspires.ftc.teamcode.Control.Constants.foundationServos;
+import static org.firstinspires.ftc.teamcode.Control.Constants.foundationServos1;
+import static org.firstinspires.ftc.teamcode.Control.Constants.foundationServos2;
 import static org.firstinspires.ftc.teamcode.Control.Constants.fronts;
 import static org.firstinspires.ftc.teamcode.Control.Constants.leftLinears;
 import static org.firstinspires.ftc.teamcode.Control.Constants.leftServos;
 import static org.firstinspires.ftc.teamcode.Control.Constants.leftsucks;
+import static org.firstinspires.ftc.teamcode.Control.Constants.linearLimits;
 import static org.firstinspires.ftc.teamcode.Control.Constants.motorBLS;
 import static org.firstinspires.ftc.teamcode.Control.Constants.motorBRS;
 import static org.firstinspires.ftc.teamcode.Control.Constants.motorFLS;
@@ -167,13 +169,14 @@ public class Crane {
 
     public Servo servo;
 
-    public Servo rotationservo, rightServo, leftServo, foundationServo;
+    public Servo rotationservo, rightServo, leftServo, foundationServo1, foundationServo2;
     public CRServo smallRSuck, smallLSuck;
 
     public ModernRoboticsI2cRangeSensor front, back;
 
     public DigitalChannel flimit;
     public DigitalChannel blimit;
+    public DigitalChannel linearLimit;
 
     public double StrafetoTotalPower = 2.0/3.0;
 
@@ -218,19 +221,18 @@ public class Crane {
     public void setupClaw() throws InterruptedException {
         //leftLinear = motor(leftLinears, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.BRAKE);
         rightLinear = motor(rightLinears, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.BRAKE);
-
-
         rotationservo = servo(rotationservos, Servo.Direction.FORWARD,0,1,0.5);
         rightServo = servo(rightServos, Servo.Direction.FORWARD,0,1,0.5);
         leftServo = servo(leftServos, Servo.Direction.REVERSE,0,1,0.5);
-
+        linearLimit = hardwareMap.digitalChannel.get(linearLimits);
 
         encoder(EncoderMode.OFF, leftLinear, rightLinear);
 
     }
 
     public void setupFoundation() throws InterruptedException{
-        foundationServo = servo(foundationServos, Servo.Direction.FORWARD,0,1,0.5);
+        foundationServo1 = servo(foundationServos1, Servo.Direction.FORWARD,0,1,0);
+        foundationServo2 = servo(foundationServos2, Servo.Direction.FORWARD,0,1,.7);
     }
 
     public void setupIntake() throws InterruptedException{
@@ -644,10 +646,10 @@ public class Crane {
 
     //-------------------CHOICE ENUMS-------------------------
     public enum movements {
-        backward(-1, 1, -1, 1),
-        forward(1, -1, 1, -1),
-        left(1, 1, -1, -1),
-        right(-1, -1, 1, 1),
+        left(-1, 1, -1, 1),
+        right(1, -1, 1, -1),
+        backward(1, 1, -1, -1),
+        forward(-1, -1, 1, 1),
         tr(0, -1, 1, 0),
         tl(1, 0, 0, -1),
         bl(0, 1, -1, 0),

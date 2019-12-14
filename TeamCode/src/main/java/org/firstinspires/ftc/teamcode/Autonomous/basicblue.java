@@ -56,7 +56,7 @@ public class basicblue extends AutonomousControl {
 
             //sleep(1000);
 
-            rob.foundationServo.setPosition(0.1);
+            //rob.foundationServo.setPosition(0.1);
 
             sleep(1000);
 
@@ -80,7 +80,7 @@ public class basicblue extends AutonomousControl {
             sleep(1100);
             rob.stopDrivetrain();
 
-            rob.foundationServo.setPosition(0.5);
+            //rob.foundationServo.setPosition(0.5);
 
             sleep(1000);
 

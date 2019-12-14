@@ -17,7 +17,7 @@ public class JustWheelsTeleOp extends TeleOpControl {
     public void runOpMode() throws InterruptedException {
         boolean yToggle = false;
 
-        setup(runtime, Crane.setupType.drive, Crane.setupType.intake, Crane.setupType.claw);
+        setup(runtime, Crane.setupType.drive, Crane.setupType.intake, Crane.setupType.claw, Crane.setupType.foundation);
 
         while (opModeIsActive()){
             standardGamepadData();
@@ -46,13 +46,13 @@ public class JustWheelsTeleOp extends TeleOpControl {
 
             if (!yToggle) {
                 if (g(0)) {
-                    rob.driveTrainMovement(fb, Crane.movements.backward);
-                } else if (g(2)) {
                     rob.driveTrainMovement(fb, Crane.movements.forward);
+                } else if (g(2)) {
+                    rob.driveTrainMovement(fb, Crane.movements.backward);
                 } else if (g(3)) {
-                    rob.driveTrainMovement(rl, Crane.movements.left);
-                } else if (g(1)) {
                     rob.driveTrainMovement(rl, Crane.movements.right);
+                } else if (g(1)) {
+                    rob.driveTrainMovement(rl, Crane.movements.left);
                 }
                 else if (g(4)) {
                     rob.driveTrainMovement(diagonalSpeed, Crane.movements.tr);
@@ -73,13 +73,13 @@ public class JustWheelsTeleOp extends TeleOpControl {
             }
             else {
                 if (g(0)) {
-                    rob.driveTrainMovement(0.1, Crane.movements.forward);
-                } else if (g(2)) {
-                    rob.driveTrainMovement(0.1, Crane.movements.backward);
-                } else if (g(3)) {
-                    rob.driveTrainMovement(0.1, Crane.movements.right);
-                } else if (g(1)) {
                     rob.driveTrainMovement(0.1, Crane.movements.left);
+                } else if (g(2)) {
+                    rob.driveTrainMovement(0.1, Crane.movements.right);
+                } else if (g(3)) {
+                    rob.driveTrainMovement(0.1, Crane.movements.forward);
+                } else if (g(1)) {
+                    rob.driveTrainMovement(0.1, Crane.movements.backward);
                 }
                 else if (g(4)) {
                     rob.driveTrainMovement(0.1, Crane.movements.tr);
@@ -102,7 +102,7 @@ public class JustWheelsTeleOp extends TeleOpControl {
             if(gamepad2.dpad_up){
                 rob.rightLinear.setPower(0.5);
             }
-            else if (gamepad2.dpad_down){
+            else if (gamepad2.dpad_down && !rob.linearLimit.getState()){
                 rob.rightLinear.setPower(-0.5);
             }
             else {
@@ -122,6 +122,14 @@ public class JustWheelsTeleOp extends TeleOpControl {
                 rob.rotationservo.setPosition(rob.rotationservo.getPosition() - 0.0025);
             }else if (gamepad2.x) {
                 rob.rotationservo.setPosition(rob.rotationservo.getPosition() + 0.0025);
+            }
+
+            if(gamepad1.dpad_up){
+                rob.foundationServo1.setPosition(0);
+                rob.foundationServo2.setPosition(.7);
+            }else if (gamepad1.dpad_down) {
+                rob.foundationServo1.setPosition(.6);
+                rob.foundationServo2.setPosition(0);
             }
 
 

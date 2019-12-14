@@ -23,11 +23,11 @@ public class Foundation extends AutonomousControl {
             rob.driveTrainMovement(0.5, Crane.movements.right);
             sleep(2900);
             rob.stopDrivetrain();
-            rob.foundationServo.setPosition(0);
+            //rob.foundationServo.setPosition(0);
             sleep(2000);
             rob.driveTrainMovement(1, Crane.movements.left);
             sleep(2600);
-            rob.foundationServo.setPosition(0.5);
+            //rob.foundationServo.setPosition(0.5);
 
         }
 

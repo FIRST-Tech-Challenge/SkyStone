@@ -28,7 +28,7 @@ import java.util.List;
  * Note: this could be optimized significantly with REV bulk reads
  */
 @Config
-public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer {
+public class  StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer {
     public static double TICKS_PER_REV = 1400.0;
     public static double WHEEL_RADIUS = 1.25; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed

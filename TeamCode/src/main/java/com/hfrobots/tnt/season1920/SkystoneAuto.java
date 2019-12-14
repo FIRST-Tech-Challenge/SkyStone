@@ -58,8 +58,8 @@ public class SkystoneAuto extends OpMode {
 
     // The routes our robot knows how to do
     private enum Routes {
-        MOVE_FOUNDATION("Move Foundation"),
-        SCAN_SKYSTONES("Scan Skystones"),
+        //MOVE_FOUNDATION("Move Foundation"),
+        //SCAN_SKYSTONES("Scan Skystones"),
         PARK_LEFT_NEAR_POS("Park from left to near"),
         PARK_RIGHT_NEAR_POS("Park from right to near"),
         PARK_LEFT_FAR_POS("Park from left to far"),
@@ -216,12 +216,12 @@ public class SkystoneAuto extends OpMode {
                     case PARK_RIGHT_FAR_POS:
                         setupParkFromRightFar();
                         break;
-                    case SCAN_SKYSTONES:
-                        setupScanSkytones();
-                        break;
-                    case MOVE_FOUNDATION:
-                        setupMoveFoundation();
-                        break;
+//                    case SCAN_SKYSTONES:
+//                        setupScanSkytones();
+//                        break;
+//                    case MOVE_FOUNDATION:
+//                        setupMoveFoundation();
+//                        break;
                     default:
                         stateMachine.addSequential(newDoneState("Default done"));
                         break;
@@ -253,20 +253,20 @@ public class SkystoneAuto extends OpMode {
     }
 
     protected void setupParkFromLeftNear() {
-        setupParkCommon("Park from the left near", 20, 2);
+        setupParkCommon("Park from the left near", 22, 1);
     }
 
     protected void setupParkFromLeftFar() {
-        setupParkCommon("Park from the left far", 20, 16);
+        setupParkCommon("Park from the left far", 22, 18);
     }
 
     protected void setupParkFromRightNear() {
         // Robot starts against wall, to right of tape line
-        setupParkCommon("Park from the right near", -20, 2);
+        setupParkCommon("Park from the right near", -22, 1);
     }
 
     protected void setupParkFromRightFar() {
-        setupParkCommon("Park from the right far", -20, 16);
+        setupParkCommon("Park from the right far", -22, 18);
     }
 
     protected void setupParkCommon(String stateName, final double strafeDistance, final double forwardDistance) {

@@ -4,14 +4,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Lift {
-    public enum Direction{
-        UP, DOWN
-    }
     private double speedMultiplier = 1;
 
     // Constants used to adjust various parameters / characteristics of the drivetrain
-    final double rotSpeed = 0.75;
-    final double speedThreshold = 0.05;
     private org.firstinspires.ftc.teamcode.All.HardwareMap hwMap;
 
     public Lift(HardwareMap map){

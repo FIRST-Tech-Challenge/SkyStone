@@ -69,7 +69,7 @@ public class Test extends LinearOpMode {
         waitForStart();
         sendData();
 
-        align.setPower(0.2, 0.2);
+        align.setPower(0, 0.2);
         align.skystoneRed(6);
 
         if (tfod != null) {

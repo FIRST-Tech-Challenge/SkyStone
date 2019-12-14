@@ -44,6 +44,7 @@ public class JustWheelsTeleOp extends TeleOpControl {
             }
 
 
+
             if (!yToggle) {
                 if (g(0)) {
                     rob.driveTrainMovement(fb, Crane.movements.forward);
@@ -64,9 +65,9 @@ public class JustWheelsTeleOp extends TeleOpControl {
                     rob.driveTrainMovement(diagonalSpeed, Crane.movements.br);
                 }
                 else if (g(8)) {
-                    rob.driveTrainMovement(0.4, Crane.movements.ccw);
+                    rob.driveTrainMovement(0.6, Crane.movements.ccw);
                 } else if (g(9)) {
-                    rob.driveTrainMovement(0.4, Crane.movements.cw);
+                    rob.driveTrainMovement(0.6, Crane.movements.cw);
                 } else {
                     rob.stopDrivetrain();
                 }

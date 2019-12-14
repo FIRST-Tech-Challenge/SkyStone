@@ -53,6 +53,7 @@ public abstract class TeleOpControl extends Central {
     public boolean validStick(double x, double y){
         return Math.pow(x, 2) + Math.pow(y, 2) >= Math.pow(DEAD_ZONE_SIZE, 2);
     }
+    //Jittery
     //----------------EXPERIMENTAL RECONSTRUCTION ------------------------
 
 

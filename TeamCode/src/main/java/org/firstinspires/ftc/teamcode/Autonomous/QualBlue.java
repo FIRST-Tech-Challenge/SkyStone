@@ -18,16 +18,28 @@ public class QualBlue extends AutonomousControl {
         telemetry.update();
 
         if (opModeIsActive()){
-            rob.driveTrainMovement(.5, Crane.movements.backward);
-            sleep(3000);
-            rob.driveTrainMovement(.5, Crane.movements.left);
-            sleep(1000);
-            rob.driveTrainMovement(.2, Crane.movements.cw);
+            rob.driveTrainMovement(.3, Crane.movements.backward);
+            sleep(1500);
+            rob.stopDrivetrain();
             sleep(500);
+            rob.foundationServo1.setPosition(.6);
+            rob.foundationServo2.setPosition(0);
+            sleep(1000);
+            rob.driveTrainMovement(.6, Crane.movements.right);
+            sleep(600);
+            rob.stopDrivetrain();
+            sleep(500);
+            rob.driveTrainMovement(.3, Crane.movements.forward);
+            sleep(1000);
+            rob.driveTrainMovement(.6, Crane.movements.ccw);
+            sleep(3000);
+            rob.driveTrainMovement(.6, Crane.movements.backward);
+            sleep(1000);
+            /*
+            rob.driveTrainMovement(.2, Crane.movements.cw);
+            sleep(4000);
             rob.driveTrainMovement(.2, Crane.movements.backward);
             sleep(3000);
-            rob.foundationServo1.setPosition(.5);
-            rob.foundationServo2.setPosition(.3);
             rob.driveTrainMovement(.5, Crane.movements.forward);
             sleep(2000);
             rob.driveTrainMovement(.5, Crane.movements.ccw);
@@ -38,6 +50,8 @@ public class QualBlue extends AutonomousControl {
             rob.foundationServo2.setPosition(0);
             rob.driveTrainMovement(.5, Crane.movements.forward);
             sleep(5000);
+
+             */
         }
 
 

@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -93,7 +94,7 @@ public class BlueAutonomous extends LinearOpMode {
     private DcMotor linearSlide = null;
 
     //Attachment Servos
-    private CRServo clamp = null;
+    private Servo clamp = null;
     private Servo rotation = null;
     private Servo foundation = null;
     private Servo release = null;
@@ -106,6 +107,15 @@ public class BlueAutonomous extends LinearOpMode {
     int skystonePosition; // Can equal 1, 2, or 3. This corresponds to the A, B and C patterns.
     boolean Stone1isBlack; // Is the first stone black?
     boolean Stone2isBlack; // Is the second stone black?
+    final int backward = 1;
+    final int forward = -1;
+    final int left = -1;
+    final int right = 1;
+    final int encoderBack = -1;
+    final int encoderForward = 1;
+
+
+
 
 
     @Override
@@ -141,7 +151,7 @@ public class BlueAutonomous extends LinearOpMode {
         linearSlide = getNewMotor("elevator");
 
         //init servos
-        clamp = hardwareMap.crservo.get("clamp");
+        clamp = hardwareMap.servo.get("clamp");
         foundation = hardwareMap.servo.get("foundation");
         rotation = hardwareMap.servo.get("rotation");
         release = hardwareMap.servo.get("release");
@@ -149,62 +159,146 @@ public class BlueAutonomous extends LinearOpMode {
 
 
         if (frontLeft != null)
-            frontLeft.setDirection(DcMotor.Direction.REVERSE);
+            frontLeft.setDirection(DcMotor.Direction.FORWARD);
         if (frontRight != null)
-            frontRight.setDirection(DcMotor.Direction.FORWARD);
+            frontRight.setDirection(DcMotor.Direction.REVERSE);
         if (backLeft != null)
-            backLeft.setDirection(DcMotor.Direction.REVERSE);
+            backLeft.setDirection(DcMotor.Direction.FORWARD);
         if (backRight != null)
-            backRight.setDirection(DcMotor.Direction.FORWARD);
+            backRight.setDirection(DcMotor.Direction.REVERSE);
+
+        telemetry.addData("Back Left Encoder Value: ", backLeft.getCurrentPosition());
+        telemetry.update();
+
+        foundation.setPosition(0.0);
+
 
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        DriveForward(1.0, -5000); // Back up to stones
-        DetectColorRGB(); // Determines the positions of the Skystone
-        if (skystonePosition == 1) // Pattern A
+
+
+        telemetry.addData("Back Left Encoder Value: ", backLeft.getCurrentPosition());
+        telemetry.update();
+        sleep(500);
+
+        //ReleaseCollector(-1.0);
+        //AutoMecanumMove(1500*EncoderBack, 0, 0.5, -0.1);
+        //Starfe DiagonalLeftForward
+        AutoMecanumMove(3850 * encoderBack, 0.65 * right, 0.5 * backward, 0.025); //Drive to foundation
+        AutoMecanumMove(50 * encoderBack, 0 * right, 0.25 * backward, -0.035); //Align
+        sleep(1000);
+        MoveHook(1.0); //Grab Foundation
+        sleep(1000);
+        AutoMecanumMove(2200 * encoderForward, 0.2 * left, 0.5 * forward, -0.18); //Back left clockwise arc rotation
+        MoveHook(0.0);
+        sleep(1000);
+        AutoMecanumMove(4000 * encoderBack, 0.3 * left, 0.5 * backward, 0); //Push into foundation
+        ReleaseCollector(-1.0);
+        sleep(1000);
+        AutoMecanumMove(3000 * encoderForward, 0.77 * right, 0.6 * forward, -0.06); //Strafe Into Wall
+        AutoMecanumMove(3000 * encoderForward, 0.3 * right, 0.6 * forward, 0.18); //Front left counterclockwise arc rotation
+        DetectColorRGB(); //Determine Skystone Pattern
+        if(skystonePosition == 1)
         {
-            MoveHook(0.4); // Hook skystone
-            DriveForward(1.0, 500); // Pull skystone out
-            MoveHook(1);// Raise hook out of the way
-            //Collect block by moving forward while running collection device
-            DriveForward(1.0, 5000);  //Move into a path for the alliance bridge
-            TurnRight(1, 1500);
-        } else if (skystonePosition == 2) // Pattern B
+
+            CollectorWait(0.0, -1.0, 500); // Move right block out of the way
+            CollectorGo(1.0, 1.0); // Collect SkyStone
+            AutoMecanumMove(500 * encoderForward, 0.0 * right, 0.3 * forward, -0.18); //Align with Blocks
+            CollectorStop(); //Stop collector
+
+
+        }
+        else if(skystonePosition == 2)
         {
-            StrafeRight(1, -1000); // Align with Skystone
-            MoveHook(0.4); // Hook skystone
-            DriveForward(1.0, 500); // Pull skystone out
-            MoveHook(1);// Raise hook out of the way
-            //Collect block by moving forward while running collection device
-            DriveForward(1.0, 5000);  //Move into a path for the alliance bridge
-            TurnRight(1, 1500);
-            DriveForward(1, 2500); //Meet up with other branches of code
-        } else // Pattern C
+
+            CollectorWait(-1.0, 0.0, 500); // Move left block out of the way
+            AutoMecanumMove(500 * encoderForward, 0.0 * right, 0.3 * forward, 0.18); //Align with Blocks
+            CollectorWait(1.0, 1.0, 500); // Collect SkyStone
+
+        }
+        else if(skystonePosition == 3)
         {
-            StrafeRight(1, -2000); // Align with Skystone
-            MoveHook(0.4); // Hook skystone
-            DriveForward(1.0, 500); // Pull skystone out
-            MoveHook(1);// Raise hook out of the way
-            //Collect block by moving forward while running collection device
-            DriveForward(1.0, 5000);  //Move into a path for the alliance bridge
-            TurnRight(1, 1500);
-            DriveForward(1, 5000); //Meet up with other branches of code
+
+
+
         }
 
-        DriveForward(1, 7500); // Drive to  just before Foundation
-        StrafeRight(1, 1500); // move right under foundation
-        TurnRight(1, 3000); // Do a 180
-        MoveHook(0.4); // Hook foundation
-        StrafeRight(1, 5000); // move foundation into building depot
-        TurnRight(1, -3000); // Do a 180
-        // PLace block in foundation
-        DriveForward(1, 5000); // Park over tape
+
+
+
+    }
+    private void AutoMecanumMove(int targetVal, double leftStickX, double leftStickY, double rightStickX)
+    {
+        ResetEncoder();
+
+
+        if(targetVal < 0)
+            while (frontLeft.getCurrentPosition() >= targetVal && backLeft.getCurrentPosition() >= targetVal && frontRight.getCurrentPosition() >= targetVal && backRight.getCurrentPosition() >= targetVal)
+            {
+                mecanumMove(leftStickX, leftStickY, rightStickX); //(-0.5, 0.5, -0.02 DiagonalLeft),(-0.5, 0, 0 StrafeLeft), (0.5, 0, 0 StrafeRight), (0, -0.5, 0 Forward)
+
+                telemetry.addData("Back Left Encoder Value: ", backLeft.getCurrentPosition());
+                telemetry.update();
+
+            }
+        if(targetVal >=0 )
+            while (frontLeft.getCurrentPosition() <= targetVal && backLeft.getCurrentPosition() <= targetVal && frontRight.getCurrentPosition() <= targetVal && backRight.getCurrentPosition() <= targetVal)
+            {
+                mecanumMove(leftStickX, leftStickY, rightStickX); //(-0.5, 0.5, -0.02 DiagonalLeft),
+
+                telemetry.addData("Back Left Encoder Value: ", backLeft.getCurrentPosition());
+                telemetry.update();
+
+            }
+        mecanumMove(0, 0, 0);
+    }
+    private void ResetEncoder(){
+
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        telemetry.addLine("" + frontLeft.getMode());
+        backLeft.setMode(DcMotor.RunMode.RESET_ENCODERS);
+        backRight.setMode(DcMotor.RunMode.RESET_ENCODERS);
+        frontRight.setMode(DcMotor.RunMode.RESET_ENCODERS);
+        frontLeft.setMode(DcMotor.RunMode.RESET_ENCODERS);
+
+
+        frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        telemetry.addLine("" + frontLeft.getMode());
 
     }
 
+
     //Our software coach from last year helped us with this method that uses trigonometry to operate mecanum wheels
+    private void mecanumMove(double leftStickX, double leftStickY, double rightStickX) {
+
+
+        double distanceFromCenter = Math.sqrt(leftStickY * leftStickY + leftStickX * leftStickX);  // might be leftStickY * leftStickX This double uses the pythagorean theorem to find  out the distance from the the joystick center
+
+        double robotAngle = Math.atan2(-1 * leftStickY, leftStickX) - Math.PI / 4;
+
+        final double frontLeftPower = distanceFromCenter * Math.cos(robotAngle) + rightStickX;    //Multiplies the scaling of the joystick to give different speeds based on joystick movement
+        final double frontRightPower = distanceFromCenter * Math.sin(robotAngle) - rightStickX;
+        final double backLeftPower = distanceFromCenter * Math.sin(robotAngle) + rightStickX;
+        final double backRightPower = distanceFromCenter * Math.cos(robotAngle) - rightStickX;
+
+        if(frontLeft != null)
+            frontLeft.setPower(frontLeftPower);
+        if(frontRight != null)
+            frontRight.setPower(frontRightPower);
+        if(backLeft != null)
+            backLeft.setPower(backLeftPower);
+        if(backRight != null)
+            backRight.setPower(backRightPower);
+    }
+
     public void DriveForward(double power, int distance) //Drive Forward
     {
         //resets encoder values
@@ -246,6 +340,15 @@ public class BlueAutonomous extends LinearOpMode {
     {
 
         foundation.setPosition(position);
+        double foundationPosition = foundation.getPosition();
+        while(foundationPosition != position)
+        {
+
+            foundationPosition = foundation.getPosition();
+
+        }
+        sleep(500);
+
 
     }
 
@@ -354,46 +457,81 @@ public class BlueAutonomous extends LinearOpMode {
         }
 
     }
+    private void ReleaseCollector(double position) {
 
+        release.setPosition(position);
+
+        sleep(1000);
+
+    }
     public void DetectColorRGB() {
-        int blueSensorColorValueRed = blueColorSensor.red(); // red value from 0-255 from the blue color sensor
-        int blueSensorColorValueBlue = blueColorSensor.blue(); // blue value from 0-255 from the blue color sensor
-        int blueSensorColorValueGreen = blueColorSensor.green(); // green value from 0-255 from the blue color sensor
+        int leftSensorColorValueRed = blueColorSensor.red(); // red value from 0-255 from the blue color sensor
+        int leftSensorColorValueBlue = blueColorSensor.blue(); // blue value from 0-255 from the blue color sensor
+        int leftSensorColorValueGreen = blueColorSensor.green(); // green value from 0-255 from the blue color sensor
 
-        int redSensorColorValueRed = redColorSensor.red(); // red value from 0-255 from the red color sensor
-        int redSensorColorValueBlue = redColorSensor.blue(); // blue value from 0-255 from the red color sensor
-        int redSensorColorValueGreen = redColorSensor.green(); // green value from 0-255 from the red color sensor
+        int rightSensorColorValueRed = redColorSensor.red(); // red value from 0-255 from the red color sensor
+        int rightSensorColorValueBlue = redColorSensor.blue(); // blue value from 0-255 from the red color sensor
+        int rightSensorColorValueGreen = redColorSensor.green(); // green value from 0-255 from the red color sensor
 
 
-        if (blueSensorColorValueRed == 0 && blueSensorColorValueBlue == 0 && blueSensorColorValueGreen == 0) {
+        if (leftSensorColorValueRed == 0 && leftSensorColorValueBlue == 0 && leftSensorColorValueGreen == 0) {
             skystonePosition = 1;
-            telemetry.addData("Block ", "SkyStone");
+            telemetry.addData("Block 1 is: ", "SkyStone");
             telemetry.addData("Pattern ", "A");
             telemetry.update();
 
         } else {
             Stone1isBlack = false;
-            telemetry.addData("Block: ", "Stone");
+            telemetry.addData("Block 1 is: ", "Stone");
             telemetry.update();
 
         }
-        if (redSensorColorValueRed == 0 && redSensorColorValueBlue == 0 && redSensorColorValueGreen == 0) {
+        if (rightSensorColorValueRed == 0 && rightSensorColorValueBlue == 0 && rightSensorColorValueGreen == 0) {
             skystonePosition = 2;
-            telemetry.addData("Block: ", "SkyStone");
-            telemetry.addData("Position ", "B");
+            telemetry.addData("Block 2 is : ", "SkyStone");
+            telemetry.addData("Pattern ", "B");
             telemetry.update();
         } else {
             Stone2isBlack = false;
-            telemetry.addData("Block: ", "Stone");
+            telemetry.addData("Block 2 is : ", "Stone");
 
         }
 
         if (!Stone1isBlack && !Stone2isBlack) {
             skystonePosition = 3;
+            telemetry.addData("Block 3 is : ", "SkyStone");
             telemetry.addData("Pattern ", "C");
             telemetry.update();
         }
 
     }
+
+    private void CollectorWait(double leftPower, double rightPower, long time) //Wait for collectors to stop
+    {
+
+        collectorLeft.setPower(leftPower);
+        collectorRight.setPower(rightPower);
+
+        sleep(time);
+
+        collectorLeft.setPower(0);
+        collectorRight.setPower(0);
+
+    }
+    private void CollectorGo(double leftPower, double rightPower) //Continue with program
+    {
+
+        collectorLeft.setPower(leftPower);
+        collectorRight.setPower(rightPower);
+
+    }
+    private void CollectorStop() //Stop Collectors
+    {
+
+        collectorLeft.setPower(0);
+        collectorRight.setPower(0);
+
+    }
+
 }
 

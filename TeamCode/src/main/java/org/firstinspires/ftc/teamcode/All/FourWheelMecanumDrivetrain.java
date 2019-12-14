@@ -2,14 +2,10 @@ package org.firstinspires.ftc.teamcode.All;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 import static java.lang.Math.PI;
@@ -167,25 +163,7 @@ public class FourWheelMecanumDrivetrain {
         }
         stop();
     }
-    public void gyroTurn(double angle, double power){
-        double p_turn_coeff = 0.1;
-        double error;
-        double currentAngle = rw.gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
-        while(currentAngle != angle){
-            currentAngle = rw.gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
-            error = getError(angle);
-        }
-    }
-    public double getError(double targetAngle) {
 
-        double robotError;
-
-        // calculate error in -179 to +180 range  (
-        robotError = targetAngle - rw.gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
-        while (robotError > 180)  robotError -= 360;
-        while (robotError <= -180) robotError += 360;
-        return robotError;
-    }
     public void encoderDrive(double power, double inches){
         double counts = inches / (2 * PI * 2) * DriveConstant.WHEEL_ENCODER_COUNTS_PER_REVOLUTION;
         int backLeftStart = rw.backLeft.getCurrentPosition();

@@ -193,13 +193,13 @@ public class Teleop extends LinearOpMode {
                         drivetrain.rotate(turnSpeed * Math.abs(gamepad1.right_stick_x), false);
                 }
 
-                if (gamepad1.left_trigger >= 0.5) {
+                if (gamepad1.left_trigger >= 0.75) {
                     drivetrain.setMotorZeroPower(DcMotor.ZeroPowerBehavior.BRAKE);
                 } else {
                     drivetrain.setMotorZeroPower(DcMotor.ZeroPowerBehavior.FLOAT);
                 }
 
-                if (gamepad1.right_trigger >= 0.5) {
+                if (gamepad1.right_trigger >= 0.75) {
                     drivetrain.setSpeedMultiplier(turboSpeed);
                 } else {
                     drivetrain.setSpeedMultiplier(normalSpeed);

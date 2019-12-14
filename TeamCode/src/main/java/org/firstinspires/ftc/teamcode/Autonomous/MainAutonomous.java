@@ -73,18 +73,20 @@ public class MainAutonomous extends LinearOpMode {
                 telemetry.addData("X", FieldPosition.BLUE_QUARY);
             }
 
-            if (gamepad1.a) {
-                fieldPosition = FieldPosition.BLUE_FOUNDATION;
-                startingPos = new Pose2d(new Vector2d(20.736, 63.936), Math.toRadians(270));
-            } else if (gamepad1.b) {
-                fieldPosition = FieldPosition.RED_FOUNDATION;
-                startingPos = new Pose2d(new Vector2d(20.736, -63.936), Math.toRadians(90));
-            } else if (gamepad1.y) {
-                fieldPosition = FieldPosition.RED_QUARY;
-                startingPos = new Pose2d(new Vector2d(-34.752, -63.936), Math.toRadians(90));
-            } else if (gamepad1.x) {
-                fieldPosition = FieldPosition.BLUE_QUARY;
-                startingPos = new Pose2d(new Vector2d(-34.752, 63.936), Math.toRadians(270));
+            if(!gamepad1.start) {
+                if (gamepad1.a) {
+                    fieldPosition = FieldPosition.BLUE_FOUNDATION;
+                    startingPos = new Pose2d(new Vector2d(20.736, 63.936), Math.toRadians(270));
+                } else if (gamepad1.b) {
+                    fieldPosition = FieldPosition.RED_FOUNDATION;
+                    startingPos = new Pose2d(new Vector2d(20.736, -63.936), Math.toRadians(90));
+                } else if (gamepad1.y) {
+                    fieldPosition = FieldPosition.RED_QUARY;
+                    startingPos = new Pose2d(new Vector2d(-34.752, -63.936), Math.toRadians(90));
+                } else if (gamepad1.x) {
+                    fieldPosition = FieldPosition.BLUE_QUARY;
+                    startingPos = new Pose2d(new Vector2d(-34.752, 63.936), Math.toRadians(270));
+                }
             }
 
             if (fieldPosition != null && !initialize)
@@ -133,9 +135,13 @@ public class MainAutonomous extends LinearOpMode {
             List<Recognition> recognized = recognize();
 
             if (recognized != null && fieldPosition == FieldPosition.BLUE_QUARY)
-                skystonePositions = detect.getSkystonePositionsBlue(recognized, imgWidth);
+                try {
+                    skystonePositions = detect.getSkystonePositionsBlue(recognized, imgWidth);
+                } catch (Exception e){ e.printStackTrace(); }
             else if (recognized != null && fieldPosition == FieldPosition.RED_QUARY)
-                skystonePositions = detect.getSkystonePositionsRed(recognized, imgWidth);
+                try{
+                    skystonePositions = detect.getSkystonePositionsRed(recognized, imgWidth);
+                } catch (Exception e){ e.printStackTrace(); }
 
             telemetry.addData("SKYSTONE POSITIONS", Arrays.toString(skystonePositions));
             telemetry.addData("External Heading",
@@ -208,7 +214,7 @@ public class MainAutonomous extends LinearOpMode {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minimumConfidence = 0.78;
+        tfodParameters.minimumConfidence = 0.75;
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
     }

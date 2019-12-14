@@ -87,7 +87,7 @@ public class Blue_Platform_BridgeGYRO_Wall extends BaseAutoOpMode {
         sleep(1500);
 
         Drive(DriveDirection.BACKWARD);
-        sleep(450);
+        sleep(600);
 
 
         front_left.setPower(-1 * startingSide);
@@ -105,7 +105,7 @@ public class Blue_Platform_BridgeGYRO_Wall extends BaseAutoOpMode {
         rotate(60 * startingSide, 1);
 
         Drive(DriveDirection.FORWARD);
-        sleep(650);
+        sleep(700);
         Drive(DriveDirection.STOP);
 
         //End of moving platform
@@ -120,7 +120,7 @@ public class Blue_Platform_BridgeGYRO_Wall extends BaseAutoOpMode {
         rear_left.setPower(-1 * startingSide);
         front_right.setPower(-1 * startingSide);
         rear_right.setPower(1 * startingSide);
-        sleep(300);
+        sleep(700);
         Drive(DriveDirection.STOP);
 
         Release_Servo.setPosition(0.4);

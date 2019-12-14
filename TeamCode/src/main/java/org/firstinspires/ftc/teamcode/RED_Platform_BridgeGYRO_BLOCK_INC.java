@@ -57,6 +57,8 @@ public class RED_Platform_BridgeGYRO_BLOCK_INC extends BaseAutoOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
+        //Assigns hardware devices names and values
+
         GetHardware();
         GetIMU();
 
@@ -77,6 +79,9 @@ public class RED_Platform_BridgeGYRO_BLOCK_INC extends BaseAutoOpMode {
         Drive(DriveDirection.BACKWARD);
         sleep(100);
 
+        //Unfolds the Robot
+        //DON'T EDIT UnfoldRobot() WITHOUT PERMISSION FROM ALL THE CODERS
+
         UnfoldRobot();
 
         //Clamps half
@@ -96,7 +101,7 @@ public class RED_Platform_BridgeGYRO_BLOCK_INC extends BaseAutoOpMode {
 
         //Robot moves backwards
         Drive(DriveDirection.BACKWARD);
-        sleep(600);
+        sleep(850);
 
 
         //Robot strafes left
@@ -119,7 +124,7 @@ public class RED_Platform_BridgeGYRO_BLOCK_INC extends BaseAutoOpMode {
 
         //Robot drives platform
         Drive(DriveDirection.FORWARD);
-        sleep(600);
+        sleep(700);
         Drive(DriveDirection.STOP);
 
         //End of moving platform
@@ -168,21 +173,21 @@ public class RED_Platform_BridgeGYRO_BLOCK_INC extends BaseAutoOpMode {
         Block_Pickup.setPosition(0.4);
         sleep(1000);
 
-
+        //Robot drives backwards
         Drive(DriveDirection.BACKWARD);
-        sleep(1400);
+        sleep(1800);
         Drive(DriveDirection.STOP);
 
         //reset gyro and rotate 30
         feeder_motor.setPower(-1);
         resetAngle();
-        rotate(-30, 1);
+        rotate(-28, 1);
 
 
         //turn on feeder and drive backwards
         feeder_motor.setPower(-1);
         Drive(DriveDirection.BACKWARD);
-        sleep(625);
+        sleep(850);
         Drive(DriveDirection.STOP);
 
         //keep feeder on
@@ -190,7 +195,7 @@ public class RED_Platform_BridgeGYRO_BLOCK_INC extends BaseAutoOpMode {
 
         //Drive Forward
         Drive(DriveDirection.FORWARD);
-        sleep(650);
+        sleep(875);
         Drive(DriveDirection.STOP);
 
         //rotate back
@@ -200,7 +205,7 @@ public class RED_Platform_BridgeGYRO_BLOCK_INC extends BaseAutoOpMode {
 
         //Drive Forward
         Drive(DriveDirection.FORWARD);
-        sleep(1350);
+        sleep(1800);
         Drive(DriveDirection.STOP);
 
         //Close Claw
@@ -245,8 +250,9 @@ public class RED_Platform_BridgeGYRO_BLOCK_INC extends BaseAutoOpMode {
         lift_right.setPower(1);
         sleep(900);
 
+        //Robot drives backwards
         Drive(DriveDirection.BACKWARD);
-        sleep(550);
+        sleep(650);
 
 
     }

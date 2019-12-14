@@ -64,7 +64,11 @@ public class Blue_Bridge extends BaseAutoOpMode {
         rear_right.setPower(1 * startingSide);
         //sleep(250);
         sleep(500);
-        CutMotors();
+        Drive(DriveDirection.STOP);
+
+        Drive(DriveDirection.BACKWARD);
+        sleep(200);
+        Drive(DriveDirection.STOP);
 
         UnfoldRobot();
 
@@ -72,16 +76,16 @@ public class Blue_Bridge extends BaseAutoOpMode {
         //Clamp_Right.setPosition(0.5);
         //sleep(1000);
 
-       // RunAllMotors();
+       // Drive(DriveDirection.FORWARD);
         //sleep(210);
-        //CutMotors();
+        //Drive(DriveDirection.STOP);
 
         Clamp_Left.setPosition(1);
         Clamp_Right.setPosition(0f);
         sleep(1500);
 
-        RunAllMotorsBackward();
-        sleep(450);
+        Drive(DriveDirection.BACKWARD);
+        sleep(700);
 
 
         front_left.setPower(-1 * startingSide);
@@ -98,9 +102,9 @@ public class Blue_Bridge extends BaseAutoOpMode {
 
         rotate(60 * startingSide, 1);
 
-        RunAllMotors();
+        Drive(DriveDirection.FORWARD);
         sleep(650);
-        CutMotors();
+        Drive(DriveDirection.STOP);
 
         //End of moving platform
 
@@ -115,7 +119,7 @@ public class Blue_Bridge extends BaseAutoOpMode {
         front_right.setPower(-1 * startingSide);
         rear_right.setPower(1 * startingSide);
         sleep(150);
-        CutMotors();
+        Drive(DriveDirection.STOP);
 
         Release_Servo.setPosition(0.4);
         sleep(1000);
@@ -154,9 +158,9 @@ public class Blue_Bridge extends BaseAutoOpMode {
         lift_left.setPower(0);
         lift_right.setPower(0);
 
-        RunAllMotorsBackward();
+        Drive(DriveDirection.BACKWARD);
         sleep(700);
-        CutMotors();
+        Drive(DriveDirection.STOP);
 
 
 

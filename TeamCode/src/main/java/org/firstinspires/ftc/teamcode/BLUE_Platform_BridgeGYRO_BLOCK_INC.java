@@ -37,6 +37,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 
 /**
  * This file contains basic code to run a 4 wheeled Mecanum wheel setup. The d-pad controls
@@ -51,6 +55,17 @@ public class BLUE_Platform_BridgeGYRO_BLOCK_INC extends BaseAutoOpMode {
 
     int startingSide = 1;  //Set to 1 for blue and -1 for Red
 
+    private ElapsedTime     runtime = new ElapsedTime();
+
+    static final double     COUNTS_PER_MOTOR_REV    = 28 ;    // eg: TETRIX Motor Encoder
+    static final double     DRIVE_GEAR_REDUCTION    = 40.0 ;     // This is < 1.0 if geared UP
+    static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
+    static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+            (WHEEL_DIAMETER_INCHES * 3.1415);
+    static final double     DRIVE_SPEED             = 0.6;
+    static final double     TURN_SPEED              = 0.5;
+
+    
 
     @Override
     public void runOpMode() {
@@ -60,10 +75,45 @@ public class BLUE_Platform_BridgeGYRO_BLOCK_INC extends BaseAutoOpMode {
         GetHardware();
         GetIMU();
 
+   /*     // Send telemetry message to signify robot waiting;
+        telemetry.addData("Status", "Resetting Encoders");    //
+        telemetry.update();
+
+        front_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        front_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rear_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rear_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+      front_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+      front_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+      rear_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+      rear_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+      
+        // Send telemetry message to indicate successful Encoder reset
+        telemetry.addData("Path0",  "Starting at Front %7d :%7d Rear %7d: %7d",
+                front_left.getCurrentPosition(),
+                front_right.getCurrentPosition(),
+                rear_left.getCurrentPosition(),
+                rear_right.getCurrentPosition());
+        telemetry.update();
+
+
+
+
+
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
 
+        // Step through each leg of the path,
+        // Note: Reverse movement is obtained by setting a negative distance (not speed)
+        encoderDrive(DRIVE_SPEED,  48,  48, 500.0);  // S1: Forward 47 Inches with 5 Sec timeout
+        //encoderDrive(TURN_SPEED,   12, -12, 5.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
+       // encoderDrive(DRIVE_SPEED, -24, -24, 5.0);  // S3: Reverse 24 Inches with 4 Sec timeout
+*/
+        waitForStart();
+        
+        
         //Robot is strafes left then stops
         front_left.setPower(1 * startingSide);
         rear_left.setPower(-0.7 * startingSide);
@@ -119,7 +169,7 @@ public class BLUE_Platform_BridgeGYRO_BLOCK_INC extends BaseAutoOpMode {
 
         //Robot drives platform
         Drive(DriveDirection.FORWARD);
-        sleep(600);
+        sleep(750);
         Drive(DriveDirection.STOP);
 
         //End of moving platform
@@ -127,8 +177,8 @@ public class BLUE_Platform_BridgeGYRO_BLOCK_INC extends BaseAutoOpMode {
         //Clamps go up
         Clamp_Left.setPosition(0f);
         Clamp_Right.setPosition(1f);
-        Release_Servo.setPosition(0.4);
-        // sleep(500);
+        Release_Servo.setPosition(.2);
+         sleep(500);
 
         //Pulley system moves backwards
         top_motor.setPower(-1);
@@ -165,24 +215,24 @@ public class BLUE_Platform_BridgeGYRO_BLOCK_INC extends BaseAutoOpMode {
         lift_right.setPower(0);
 
         //Open Claw
-        Block_Pickup.setPosition(0.4);
+        Block_Pickup.setPosition(1);
         sleep(1000);
 
 
         Drive(DriveDirection.BACKWARD);
-        sleep(1400);
+        sleep(1700);
         Drive(DriveDirection.STOP);
 
         //reset gyro and rotate 30
         feeder_motor.setPower(-1);
         resetAngle();
-        rotate(40 * startingSide, 1);
+        rotate(30 * startingSide, 1);
 
 
         //turn on feeder and drive backwards
         feeder_motor.setPower(-1);
         Drive(DriveDirection.BACKWARD);
-        sleep(600);
+        sleep(800);
         Drive(DriveDirection.STOP);
 
         //keep feeder on
@@ -190,7 +240,7 @@ public class BLUE_Platform_BridgeGYRO_BLOCK_INC extends BaseAutoOpMode {
 
         //Drive Forward
         Drive(DriveDirection.FORWARD);
-        sleep(600);
+        sleep(800);
         Drive(DriveDirection.STOP);
 
         //rotate back
@@ -238,7 +288,88 @@ public class BLUE_Platform_BridgeGYRO_BLOCK_INC extends BaseAutoOpMode {
 
     }
 
+    /*
+     *  Method to perfmorm a relative move, based on encoder counts.
+     *  Encoders are not reset as the move is based on the current position.
+     *  Move will stop if any of three conditions occur:
+     *  1) Move gets to the desired position
+     *  2) Move runs out of time
+     *  3) Driver stops the opmode running.
+     */
+    public void encoderDrive(double speed,
+                             double leftInches, double rightInches,
+                             double timeoutS) {
+        int newLeftTarget;
+        int newRightTarget;
 
+        // Ensure that the opmode is still active
+        if (opModeIsActive()) {
+
+            // Determine new target position, and pass to motor controller
+            newLeftTarget = front_left.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
+           newRightTarget = front_right.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
+            //newLeftTarget = rear_left.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
+            //newRightTarget = rear_right.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
+          //  front_left.setTargetPosition(newLeftTarget);
+            front_right.setTargetPosition(newRightTarget);
+          //  rear_left.setTargetPosition(newLeftTarget);
+           // rear_right.setTargetPosition(newRightTarget);
+
+            // Turn On RUN_TO_POSITION
+          //  front_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+           front_right.setDirection(DcMotor.Direction.FORWARD);
+            front_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+         //   rear_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+         //   rear_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // reset the timeout time and start motion.
+            runtime.reset();
+          //  front_left.setPower(Math.abs(speed));
+            front_right.setPower(Math.abs(speed));
+         //   rear_left.setPower(Math.abs(speed));
+         //   rear_right.setPower(Math.abs(speed));
+
+
+            // keep looping while we are still active, and there is time left, and both motors are running.
+            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
+            // its target position, the motion will stop.  This is "safer" in the event that the robot will
+            // always end the motion as soon as possible.
+            // However, if you require that BOTH motors have finished their moves before the robot continues
+            // onto the next step, use (isBusy() || isBusy()) in the loop test.
+            //while (opModeIsActive() &&
+            //        (runtime.seconds() < timeoutS) &&
+            //        (front_left.isBusy() && front_right.isBusy())) {
+
+                while (opModeIsActive() &&
+                        (runtime.seconds() < timeoutS) &&
+                        (front_right.isBusy())) {
+
+                    // Display it for the driver.
+                telemetry.addData("Path1",  "Running to %7d :%7d", newLeftTarget,  newRightTarget);
+                telemetry.addData("Path2",  "Running at Front %7d :%7d, Rear %7d : %7d ",
+                        front_left.getCurrentPosition(),
+                        front_right.getCurrentPosition(),
+                        rear_left.getCurrentPosition(),
+                        rear_right.getCurrentPosition());
+                telemetry.update();
+            }
+
+            // Stop all motion;
+            front_left.setPower(0);
+            front_right.setPower(0);
+            rear_left.setPower(0);
+            rear_right.setPower(0);
+
+
+            // Turn off RUN_TO_POSITION
+            front_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            front_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            rear_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            rear_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            //  sleep(250);   // optional pause after each move
+        }
+    }
 
 }
 

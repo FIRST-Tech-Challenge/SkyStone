@@ -15,11 +15,11 @@ public class IMUTest extends AutonomousControl {
         setup(runtime, Crane.setupType.drive, Crane.setupType.imu);
 
         if(opModeIsActive()){
-            rob.turn(90, Crane.turnside.cw, 0.5, Crane.axis.center);
+            rob.turn(90, Crane.turnside.ccw, 0.5, Crane.axis.center);
             sleep(500);
-            rob.turn(180, Crane.turnside.cw, 0.5, Crane.axis.center);
-            sleep(500);
-            rob.turn(270, Crane.turnside.cw, 0.5, Crane.axis.center);
+            //rob.turn(180, Crane.turnside.cw, 0.5, Crane.axis.center);
+            sleep(50000);
+            /*rob.turn(270, Crane.turnside.cw, 0.5, Crane.axis.center);
             sleep(500);
             rob.turn(360, Crane.turnside.cw, 0.5, Crane.axis.center);
             sleep(500);
@@ -32,6 +32,8 @@ public class IMUTest extends AutonomousControl {
             sleep(500);
             rob.turn(360, Crane.turnside.ccw, 0.5, Crane.axis.center);
             sleep(500);
+
+             */
 
 
 

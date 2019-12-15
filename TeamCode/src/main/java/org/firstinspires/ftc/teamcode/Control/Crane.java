@@ -36,6 +36,7 @@ import static org.firstinspires.ftc.teamcode.Control.Constants.COUNTS_PER_INCH;
 import static org.firstinspires.ftc.teamcode.Control.Constants.COUNTS_PER_MOTOR_REV;
 import static org.firstinspires.ftc.teamcode.Control.Constants.backs;
 import static org.firstinspires.ftc.teamcode.Control.Constants.colors;
+import static org.firstinspires.ftc.teamcode.Control.Constants.extendos;
 import static org.firstinspires.ftc.teamcode.Control.Constants.foundationServos1;
 import static org.firstinspires.ftc.teamcode.Control.Constants.foundationServos2;
 import static org.firstinspires.ftc.teamcode.Control.Constants.fronts;
@@ -174,7 +175,7 @@ public class Crane {
     public Servo servo;
 
     public Servo rotationservo, rightServo, leftServo, foundationServo1, foundationServo2;
-    public CRServo smallRSuck, smallLSuck;
+    public CRServo smallRSuck, smallLSuck, extend;
 
     public ModernRoboticsI2cRangeSensor front, back, left, right;
 
@@ -182,7 +183,7 @@ public class Crane {
 
     public DigitalChannel flimit;
     public DigitalChannel blimit;
-    public DigitalChannel linearLimit;
+    public DigitalChannel linearLimit, clawLimit;
 
     public double StrafetoTotalPower = 2.0/3.0;
 
@@ -222,12 +223,15 @@ public class Crane {
     public void setupClaw() throws InterruptedException {
         //leftLinear = motor(leftLinears, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.BRAKE);
         rightLinear = motor(rightLinears, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.BRAKE);
-        rotationservo = servo(rotationservos, Servo.Direction.FORWARD,0,1,0.5);
+        rotationservo = servo(rotationservos, Servo.Direction.FORWARD,0,1,0);
         rightServo = servo(rightServos, Servo.Direction.FORWARD,0,1,0.5);
         leftServo = servo(leftServos, Servo.Direction.REVERSE,0,1,0.5);
-        linearLimit = hardwareMap.digitalChannel.get(linearLimits);
+       // linearLimit = hardwareMap.digitalChannel.get(linearLimits);
+        extend = servo(extendos, DcMotorSimple.Direction.FORWARD, 0);
 
-        encoder(EncoderMode.OFF, leftLinear, rightLinear);
+        clawLimit = hardwareMap.digitalChannel.get("clawLimit");
+
+        encoder(EncoderMode.ON, rightLinear);
 
     }
 
@@ -677,7 +681,63 @@ public class Crane {
         }
 
         while (calculateDifferenceBetweenAngles(end, getDirection()) > 1 && central.opModeIsActive()){
-            driveTrainMovement(0.1, (direction == turnside.cw) ? movements.ccw : movements.cw);
+            driveTrainMovement(0.2, (direction == turnside.cw) ? movements.ccw : movements.cw);
+            central.telemetry.addLine("Correctional Try ");
+            central.telemetry.addData("IMU Inital: ", start);
+            central.telemetry.addData("IMU Final Projection: ", end);
+            central.telemetry.addData("IMU Orient: ", getDirection());
+            central.telemetry.addData("IMU Diffnce: ", end - getDirection());
+            central.telemetry.update();
+        }
+        stopDrivetrain();
+        central.telemetry.addLine("Completed");
+        central.telemetry.addData("IMU Inital: ", start);
+        central.telemetry.addData("IMU Final Projection: ", end);
+        central.telemetry.addData("IMU Orient: ", getDirection());
+        central.telemetry.addData("IMU Diffnce: ", end - getDirection());
+        central.telemetry.update();
+    }
+    public void absturn(float target, turnside direction, double speed, axis rotation_Axis) throws InterruptedException{
+
+        central.telemetry.addData("IMU State: ", imu.getSystemStatus());
+        central.telemetry.update();
+
+        double start = 0;
+
+        double end = (start + ((direction == turnside.cw) ? target : -target) + 360) % 360;
+
+        isnotstopped = true;
+        try {
+            switch (rotation_Axis) {
+                case center:
+                    driveTrainMovement(speed, (direction == turnside.cw) ? movements.cw : movements.ccw);
+                    break;
+                case back:
+                    driveTrainMovement(speed, (direction == turnside.cw) ? movements.cwback : movements.ccwback);
+                    break;
+                case front:
+                    driveTrainMovement(speed, (direction == turnside.cw) ? movements.cwfront : movements.ccwfront);
+                    break;
+            }
+        } catch (InterruptedException e) {
+            isnotstopped = false;
+        }
+
+        while (((calculateDifferenceBetweenAngles(getDirection(), end) > 1 && turnside.cw == direction) || (calculateDifferenceBetweenAngles(getDirection(), end) < -1 && turnside.ccw == direction)) && central.opModeIsActive() ) {
+            central.telemetry.addLine("First Try ");
+            central.telemetry.addData("IMU Inital: ", start);
+            central.telemetry.addData("IMU Final Projection: ", end);
+            central.telemetry.addData("IMU Orient: ", getDirection());
+            central.telemetry.addData("IMU Difference: ", end - getDirection());
+            central.telemetry.update();
+        }
+        try {
+            stopDrivetrain();
+        } catch (InterruptedException e) {
+        }
+
+        while (calculateDifferenceBetweenAngles(end, getDirection()) > 1 && central.opModeIsActive()){
+            driveTrainMovement(0.2, (direction == turnside.cw) ? movements.ccw : movements.cw);
             central.telemetry.addLine("Correctional Try ");
             central.telemetry.addData("IMU Inital: ", start);
             central.telemetry.addData("IMU Final Projection: ", end);
@@ -740,7 +800,9 @@ public class Crane {
         cwback(-1, -1, 0, 0),
         ccwback(1, 1, 0, 0),
         cwfront(0, 0, -1, -1),
-        ccwfront(0, 0, 1, 1);
+        ccwfront(0, 0, 1, 1),
+        linearUp(-1),
+        linearDown(1);
 
 
 

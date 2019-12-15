@@ -7,15 +7,14 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Control.AutonomousControl;
 import org.firstinspires.ftc.teamcode.Control.Crane;
 
-@Autonomous(name="Qual Sensor Blue", group = "AA" +
-        "")
-public class QualSensorBlue extends AutonomousControl {
+@Autonomous(name="Qual Sensor Red", group = "AA")
+public class QualSensorRed extends AutonomousControl {
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
     public void runOpMode() throws InterruptedException {
         int n =1;
-        setup(runtime, Crane.setupType.drive, Crane.setupType.foundation, Crane.setupType.ultrasoinc, Crane.setupType.imu, Crane.setupType.claw);
+        setup(runtime, Crane.setupType.drive, Crane.setupType.foundation, Crane.setupType.ultrasoinc, Crane.setupType.imu);
         telemetry.addLine("Start!");
         telemetry.update();
 
@@ -55,28 +54,28 @@ public class QualSensorBlue extends AutonomousControl {
             rob.driveTrainMovement(.2, Crane.movements.forward);
             sleep(1000);
             do{
-                rob.driveTrainMovement(0.6, Crane.movements.left);
+                rob.driveTrainMovement(0.4, Crane.movements.right);
 
-                dist= rob.right.getDistance(DistanceUnit.INCH);
+                dist= rob.left.getDistance(DistanceUnit.INCH);
                 telemetry.addData("cm front", "%.2f cm", dist);
                 telemetry.update();
 
             }
-            while(dist < 38.5 || Double.compare(dist, Double.NaN) == 0 && opModeIsActive());
+            while(dist < 42 || Double.compare(dist, Double.NaN) == 0 && opModeIsActive());
 
-            rob.turn(90, Crane.turnside.ccw, 0.6, Crane.axis.center);
+            rob.turn(90, Crane.turnside.cw, 0.6, Crane.axis.center);
             rob.driveTrainMovement(.6, Crane.movements.backward);
             sleep(2000);
             rob.foundationServo1.setPosition(0);
             rob.foundationServo2.setPosition(.7);
             rob.driveTrainMovement(.3, Crane.movements.forward);
             sleep(500);
-            rob.absturn(-90, Crane.turnside.cw, 0.6, Crane.axis.center);
+            rob.absturn(90, Crane.turnside.ccw, 0.6, Crane.axis.center);
             sleep(800);
 
 
             do{
-                rob.driveTrainMovement(0.6, Crane.movements.right);
+                rob.driveTrainMovement(0.6, Crane.movements.left);
 
                 dist= rob.right.getDistance(DistanceUnit.INCH);
                 telemetry.addData("cm front", "%.2f cm", dist);

@@ -41,6 +41,8 @@ public class QualRed extends AutonomousControl {
             sleep(500);
             rob.driveTrainMovement(.6, Crane.movements.ccw);
             sleep(500);
+            rob.driveTrainMovement(.6, Crane.movements.left);
+            sleep(1000);
             rob.driveTrainMovement(.3, Crane.movements.forward);
             sleep(2000);
         }

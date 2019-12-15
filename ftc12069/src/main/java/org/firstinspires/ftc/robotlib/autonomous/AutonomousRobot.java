@@ -294,8 +294,18 @@ public class AutonomousRobot {
      * @param waitTime seconds to scan
      */
     public void scanWait(int waitTime) {
-        double initialTime = elapsedTime.milliseconds();
-        while (!this.isTrackableVisible() && elapsedTime.milliseconds() < initialTime + (waitTime * 1000)) this.scan();
+        double initialTime = System.currentTimeMillis();
+        while (!this.isTrackableVisible() && System.currentTimeMillis() < initialTime + (waitTime * 1000)) this.scan();
+    }
+
+    /**
+     * Waits for x seconds.
+     * This should be used for servo movements
+     * @param waitTime seconds to wait
+     */
+    public void wait(double waitTime) {
+        double initialTime = System.currentTimeMillis();
+        while (System.currentTimeMillis() < initialTime + (waitTime * 1000)) {}
     }
 
     /**
@@ -620,6 +630,16 @@ public class AutonomousRobot {
      */
     public void moveToPoint(Point robot, Point point, double velocity) {
         this.move(this.getCourse(robot, point), velocity, null, this.getDistance(robot, point));
+    }
+
+    /**
+     * Corrects the course depending on the Alliance.
+     * @param course The course assuming the movement is based off the Blue Alliance
+     * @return New course depending on alliance
+     */
+    public double correctMovement(double course) {
+        if (alliance == Alliance.RED) return -course;
+        return course;
     }
 
     /**

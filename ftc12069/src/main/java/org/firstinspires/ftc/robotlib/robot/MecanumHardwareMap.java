@@ -12,6 +12,7 @@ import org.firstinspires.ftc.robotlib.drivetrain.MecanumDrivetrain;
 import org.firstinspires.ftc.robotlib.managers.MotorManager;
 import org.firstinspires.ftc.robotlib.managers.ServoManager;
 import org.firstinspires.ftc.robotlib.servo.CompelledServo;
+import org.firstinspires.ftc.robotlib.servo.ModifiedServo;
 import org.firstinspires.ftc.robotlib.state.ServoState;
 
 import static org.firstinspires.ftc.robotlib.state.ServoState.CARRY;
@@ -23,8 +24,10 @@ import static org.firstinspires.ftc.robotlib.state.ServoState.THREEBLOCKHOVER;
 import static org.firstinspires.ftc.robotlib.state.ServoState.TWOBLOCKDEPOSIT;
 import static org.firstinspires.ftc.robotlib.state.ServoState.TWOBLOCKHOVER;
 
-public class MecanumHardwareMap
-{
+/**
+ * Hardware map with extended functionality using the FTC provided HardwareMap.
+ */
+public class MecanumHardwareMap {
     public HardwareMap internalHardwareMap;
 
     // Motors in Mecanum robot
@@ -38,7 +41,7 @@ public class MecanumHardwareMap
     private DcMotor intakeRight;
 
     // Servos
-    public Servo blockGrabber;
+    public ModifiedServo blockGrabber;
     public CompelledServo deliveryLeft;
     public CompelledServo deliveryRight;
     private ServoState[] deliveryStates = new ServoState[]{CRADLE, CARRY, TWOBLOCKHOVER, TWOBLOCKDEPOSIT, ONEBLOCKDEPOSIT, FLOOR};
@@ -67,7 +70,7 @@ public class MecanumHardwareMap
     public final double motorTicksPerInch;
 
     /**
-     * Creates a mecanum hardware map from the FTC given hardware map
+     * Creates a mecanum hardware map from the FTC given hardware map.
      * @param hwMap FTC hardware map
      */
     public MecanumHardwareMap(HardwareMap hwMap)
@@ -82,7 +85,7 @@ public class MecanumHardwareMap
         intakeLeft = hwMap.get(DcMotor.class, "intakeLeft");
         intakeRight = hwMap.get(DcMotor.class, "intakeRight");
 
-        blockGrabber = hwMap.get(Servo.class, "blockGrabber");
+        blockGrabber = new ModifiedServo(hwMap.get(Servo.class, "blockGrabber"));
         deliveryLeft = new CompelledServo(hwMap.get(Servo.class, "deliveryLeft"), deliveryStatesThreeBlock);
         deliveryRight = new CompelledServo(hwMap.get(Servo.class, "deliveryRight"), deliveryStatesThreeBlock);
         deliveryRight.setOffset(0.04);
@@ -135,7 +138,7 @@ public class MecanumHardwareMap
     }
 
     /**
-     * Shortcut for updating the two delivery servos
+     * Shortcut for updating the two delivery servos.
      * @param newState New Servo state (must be in the possible positions)
      */
     public void updateDeliveryStates(ServoState newState) {

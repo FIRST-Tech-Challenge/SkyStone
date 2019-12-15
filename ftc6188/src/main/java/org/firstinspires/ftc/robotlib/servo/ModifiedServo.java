@@ -75,4 +75,6 @@ public abstract class ModifiedServo implements Servo
     public void close() {
         servo.close();
     }
+
+    public Servo getServo() { return servo; }
 }

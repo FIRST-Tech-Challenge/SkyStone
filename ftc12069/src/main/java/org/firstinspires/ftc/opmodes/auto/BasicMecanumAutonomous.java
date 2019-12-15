@@ -35,7 +35,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotlib.autonomous.AutonomousRobot;
 import org.firstinspires.ftc.robotlib.information.OrientationInfo;
-import org.firstinspires.ftc.robotlib.navigation.Point;
 import org.firstinspires.ftc.robotlib.navigation.Point3D;
 import org.firstinspires.ftc.robotlib.state.Alliance;
 import org.firstinspires.ftc.robotlib.state.ServoState;
@@ -93,40 +92,46 @@ class BasicMecanumAutonomous {
      * @return true - keep looping | false - stop looping
      */
     boolean loop() {
-        robot.move(0, 0.7, null, 5);
-        robot.move(alliance == Alliance.BLUE ? 90 : -90, 0.5, null, 92);
+        robot.move(0, 0.7, null, 20);
+        robot.move(robot.correctMovement(90), 0.5, null, 34);
 
-        // Until the timer has 5 seconds left, deliver stones
-        while (elapsedTime.seconds() < 25) {
-            robot.scanWait(1);
+        for (int i = 0; i < 2; i++) {
+            robot.scanWait(2);
 
             if (robot.isTrackableVisible() && robot.isSkystoneVisible()) {
                 // Get Skystone
                 Point3D positionFromSkystone = robot.getPositionFromSkystone();
                 Point3D stonePoint3D = new Point3D(robot.getTrackedSkystone().getLocation());
                 telemetry.addData("Position relative to Skystone", "{X, Y, Z} = %.0f, %.0f, %.0f", positionFromSkystone.x, positionFromSkystone.y, positionFromSkystone.z);
-                robot.move(robot.getCourse(positionFromSkystone, stonePoint3D), 0.3, null, robot.getDistance(positionFromSkystone, stonePoint3D));
+                robot.move(robot.getCourse(positionFromSkystone, stonePoint3D), 0.3, null, robot.getDistance(positionFromSkystone, stonePoint3D) - 2);
             } else robot.move(0, 0.5, null, 5);
 
             // Intake Stone
-            robot.hardware.intakeMotorManager.setMotorsVelocity(1.0);
-            robot.hardware.blockGrabber.setPosition(0.0);
-            robot.move(0, 0.5, null, 3);
-            robot.hardware.intakeMotorManager.setMotorsVelocity(0.0);
+            robot.turn(180, 0.5);
+            robot.hardware.updateDeliveryStates(ServoState.FLOOR);
+            robot.hardware.blockGrabber.setPosition(ServoState.OPEN);
+            robot.wait(2.0);
+
+            robot.hardware.blockGrabber.setPosition(ServoState.CLOSED);
+            robot.wait(0.2);
+            robot.hardware.updateDeliveryStates(ServoState.CRADLE);
+            robot.wait(1.0);
+            robot.move(180, 0.5, null, 8);
 
             // Deliver Stone
-            robot.move(0, -0.5, null, 10);
-            robot.move(alliance == Alliance.BLUE ? -90 : 90, 0.5, new OrientationInfo(180, 0.5), 95);
-            robot.hardware.blockGrabber.setPosition(1.0);
-            robot.hardware.updateDeliveryStates(ServoState.ONEBLOCKDEPOSIT);
-            robot.hardware.blockGrabber.setPosition(0.0);
-            robot.hardware.updateDeliveryStates(ServoState.CRADLE);
+            robot.move(robot.correctMovement(-90), 0.5, null, 71);
+            robot.move(0, 0.5, null, 14);
+            if (i == 0) robot.hardware.updateDeliveryStates(ServoState.ONEBLOCKDEPOSIT);
+            else robot.hardware.updateDeliveryStates(ServoState.TWOBLOCKDEPOSIT);
+            robot.hardware.blockGrabber.setPosition(ServoState.OPEN);
+            robot.wait(2.0);
 
             // Move to the loading zone
-            robot.move(alliance == Alliance.BLUE ? 90 : -90, 0.5, null, 100);
+            robot.move(180, 0.5, null, 14);
+            robot.move(robot.correctMovement(90), 0.5, null, 94);
         }
 
-        robot.parkUnderBridge();
+        robot.move(robot.correctMovement(90), 0.5, null, 46);
         return false;
     }
 }

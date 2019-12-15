@@ -1,12 +1,18 @@
 package org.firstinspires.ftc.robotlib.state;
 
-//This class stores the states for buttons pressed on the controller
+/**
+ * Represents a GamePad button with actions.
+ */
 public class Button {
     private boolean previouslyToggled = false;
     private boolean toggled = false;
     private boolean isPressed = false;
     private boolean isReleased = false;
 
+    /**
+     * Updates the state of the Button using an input.
+     * @param currentlyToggled true if button is pressed
+     */
     public void input(boolean currentlyToggled)
     {
         toggled = currentlyToggled;
@@ -24,6 +30,9 @@ public class Button {
         previouslyToggled = currentlyToggled;
     }
 
+    /**
+     * @return If the button has been pressed (was not toggled on last input)
+     */
     public boolean isPressed()
     {
         if (isPressed)
@@ -34,6 +43,9 @@ public class Button {
         return false;
     }
 
+    /**
+     * @return If the button has been released (was toggled on last input)
+     */
     public boolean isReleased()
     {
         if (isReleased)
@@ -44,6 +56,9 @@ public class Button {
         return false;
     }
 
+    /**
+     * @return If the button is down
+     */
     public boolean isToggled()
     {
         return toggled;

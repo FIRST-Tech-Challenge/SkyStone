@@ -2,7 +2,7 @@ package org.firstinspires.ftc.robotlib.drivetrain;
 
 public class MecanumDrivetrain extends HolonomicFourWheelDrivetrain {
     /**
-     * Creates a mecanum drivetrain
+     * Creates a mecanum drivetrain.
      * @param motorList list of motors in the drivetrain
      */
     public MecanumDrivetrain(EncoderMotor[] motorList)
@@ -13,7 +13,7 @@ public class MecanumDrivetrain extends HolonomicFourWheelDrivetrain {
     }
 
     /**
-     * Method for calculating mecanum wheel velocity percentage
+     * Method for calculating mecanum wheel velocity percentage.
      * @param course the angle that you want the robot to move
      * @param wheelAngle the angle of the actual moving part of the wheel
      * @return a number between zero and one, which says what percentage of the speed a wheel should move at. Is then multiplied by the velocity

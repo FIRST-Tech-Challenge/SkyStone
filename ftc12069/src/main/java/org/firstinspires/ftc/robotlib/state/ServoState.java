@@ -3,7 +3,7 @@ package org.firstinspires.ftc.robotlib.state;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Stores the state of Servo(s) for ease of use
+ * Stores the state of Servo(s) for ease of use.
  */
 public enum ServoState {
     // General States
@@ -20,7 +20,11 @@ public enum ServoState {
     TWOBLOCKDEPOSIT(0.78),
     ONEBLOCKHOVER(0.78),
     ONEBLOCKDEPOSIT(0.89),
-    FLOOR(1.0);
+    FLOOR(1.0),
+
+    // Block Grabber
+    OPEN(0.0),
+    CLOSED(1.0);
 
     private double position;
 

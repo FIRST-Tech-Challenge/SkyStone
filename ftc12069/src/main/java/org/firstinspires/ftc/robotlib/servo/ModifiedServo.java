@@ -3,12 +3,17 @@ package org.firstinspires.ftc.robotlib.servo;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoController;
 
+import org.firstinspires.ftc.robotlib.state.ServoState;
+
 /**
- * A modified servo is an abstract class made from the servo interface to create servos with additional functionality
+ * A ModifiedServo is a Servo with extended functionality.
+ * This class can be used to create special types of Servos.
+ * This class implements Servo so it can still be treated as one.
  */
-public abstract class ModifiedServo implements Servo {
+public class ModifiedServo implements Servo {
     protected Servo servo;
-    ModifiedServo (Servo servo) { this.servo = servo; }
+
+    public ModifiedServo (Servo servo) { this.servo = servo; }
 
     @Override
     public ServoController getController() {
@@ -33,6 +38,10 @@ public abstract class ModifiedServo implements Servo {
     @Override
     public void setPosition(double position) {
         servo.setPosition(position);
+    }
+
+    public void setPosition(ServoState state) {
+        this.setPosition(state.getPosition());
     }
 
     @Override

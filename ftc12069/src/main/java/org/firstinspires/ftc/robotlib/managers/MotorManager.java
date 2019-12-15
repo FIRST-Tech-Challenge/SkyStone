@@ -6,12 +6,15 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotlib.state.ServoState;
 
+/**
+ * Manager for treating a group of motors as one.
+ */
 public class MotorManager {
     private DcMotor[] motors;
     private double velocity;
 
     /**
-     * Creates a manager for a group of motors
+     * Creates a manager for a group of motors.
      * @param motors Array of DcMotors
      */
     public MotorManager(DcMotor[] motors) {
@@ -26,7 +29,7 @@ public class MotorManager {
     }
 
     /**
-     * Sets the velocity of the motors
+     * Sets the velocity of the motors.
      * @param velocity new velocity
      */
     public void setMotorsVelocity(double velocity) {
@@ -37,7 +40,7 @@ public class MotorManager {
     }
 
     /**
-     * Stops the motors
+     * Stops the motors.
      */
     public void stop() {
         this.setMotorsVelocity(0);

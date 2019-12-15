@@ -120,8 +120,8 @@ public class MecanumTeleOp extends OpMode
         }
 
         if (yButton.isReleased()) {
-            if (hardware.blockGrabber.getPosition() == 0.0) hardware.blockGrabber.setPosition(1.0);
-            else hardware.blockGrabber.setPosition(0.0);
+            if (hardware.blockGrabber.getPosition() == ServoState.OPEN.getPosition()) hardware.blockGrabber.setPosition(ServoState.CLOSED);
+            else hardware.blockGrabber.setPosition(ServoState.OPEN);
         }
 
         leftBumper.input(gamepad2.left_bumper);

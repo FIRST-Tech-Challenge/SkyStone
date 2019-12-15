@@ -1,11 +1,15 @@
 package org.firstinspires.ftc.robotlib.navigation;
 
+/**
+ * Represents a point on the FTC field.
+ * Intended for navigation in autonomous.
+ */
 public class Point {
     public float x;
     public float y;
 
     /**
-     * Creates a point on the FTC field
+     * Creates a point on the FTC field.
      */
     public Point(float x, float y) {
         this.x = x;
@@ -13,7 +17,7 @@ public class Point {
     }
 
     /**
-     * Creates a point on the FTC field (loss of data when casting to float)
+     * Creates a point on the FTC field (loss of data when casting to float).
      */
     public Point(double x, double y) {
         this.x = (float) x;
@@ -21,7 +25,7 @@ public class Point {
     }
 
     /**
-     * Multiplies two points together
+     * Multiplies two points together.
      * @param point other point
      * @return Product
      */
@@ -30,7 +34,7 @@ public class Point {
     }
 
     /**
-     * Calculates the distance between two 2-Dimensional points
+     * Calculates the distance between two 2-Dimensional points.
      * @param point other point
      * @return Distance
      */
@@ -39,12 +43,17 @@ public class Point {
     }
 
     /**
-     * Provides the equivalent point for the opposing alliance
+     * Provides the equivalent point for the opposing alliance.
      */
     public Point opponentPoint() {
         return new Point(this.x, -this.y);
     }
 
+    /**
+     * Attempts to calculate the sides of a triangle with two points.
+     * @param point Point to create a triangle with
+     * @return Array of doubles with the side length (Always size 3)
+     */
     public double[] calculateTriangleSides(Point point) {
         Point connector = new Point(this.x, point.y);
         return new double[]{connector.distance(point), connector.distance(this), this.distance(point)};

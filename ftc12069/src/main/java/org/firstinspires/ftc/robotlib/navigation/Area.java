@@ -1,11 +1,15 @@
 package org.firstinspires.ftc.robotlib.navigation;
 
+/**
+ * Represents a rectangular area on the FTC field.
+ * Intended for navigation in autonomous.
+ */
 public class Area {
     private Point cornerPoint;
     private Point cornerPoint2;
 
     /**
-     * Creates a rectangular area on the FTC field
+     * Creates a rectangular area on the FTC field.
      * @param cornerPoint one corner point of the area
      * @param cornerPoint2 other corner point of the area
      */
@@ -15,35 +19,35 @@ public class Area {
     }
 
     /**
-     * Retrieves the first corner point
+     * Retrieves the first corner point.
      */
     public Point getCornerPoint() {
         return cornerPoint;
     }
 
     /**
-     * Retrieves the second corner point
+     * Retrieves the second corner point.
      */
     public Point getCornerPoint2() {
         return cornerPoint2;
     }
 
     /**
-     * Calculates the middle X of the area
+     * Calculates the middle X of the area.
      */
     public double getMiddleX() {
         return (this.cornerPoint.x + this.cornerPoint2.x) / 2;
     }
 
     /**
-     * Calculates the middle Y of the area
+     * Calculates the middle Y of the area.
      */
     public double getMiddleY() {
         return (this.cornerPoint.y + this.cornerPoint2.y) / 2;
     }
 
     /**
-     * Checks if a point is in the area
+     * Checks if a point is in the area.
      * @param point point to check
      * @return boolean (true if point is in area)
      */
@@ -52,7 +56,7 @@ public class Area {
     }
 
     /**
-     * Checks if a value (x or y) is in the area
+     * Checks if a value (x or y) is in the area.
      * @param value value to check
      * @return boolean (true if value is in area)
      */

@@ -68,6 +68,9 @@ public class Crane {
 
         for (setupType type: setup) {
             switch (type) {
+                case imu:
+                    setupIMU();
+                    break;
                 case ultrasoinc:
                     setupUltra();
                     break;
@@ -227,6 +230,7 @@ public class Crane {
 
 
     }
+
     public void setupDrivetrain() throws InterruptedException {
         motorFR = motor(motorFRS, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.BRAKE);
         motorFL = motor(motorFLS, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.BRAKE);
@@ -312,6 +316,7 @@ public class Crane {
 
     public ModernRoboticsI2cColorSensor MRColor(String name) throws InterruptedException{
         return hardwareMap.get(ModernRoboticsI2cColorSensor.class, name);
+
     }
 
     public void encoder(EncoderMode mode, DcMotor... motor) throws InterruptedException {
@@ -721,7 +726,7 @@ public class Crane {
         ON, OFF;
     }
     public enum setupType{
-        autonomous, teleop, endgame, drive, camera, claw, bSystem, foundation, yellow, intake, ultrasoinc;
+        autonomous, teleop, endgame, drive, camera, claw, bSystem, foundation, yellow, intake, ultrasoinc, imu;
     }
 
     //-------------------SET FUNCTIONS--------------------------------

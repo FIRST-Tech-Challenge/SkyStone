@@ -45,7 +45,7 @@ public class Maccabot {
 
 
         // Reverse Right Side
-        front_right.setDirection(DcMotorSimple.Direction.REVERSE);
+        back_left.setDirection(DcMotorSimple.Direction.REVERSE);
         back_right.setDirection(DcMotorSimple.Direction.REVERSE);
 
         intake_left.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -113,11 +113,7 @@ public class Maccabot {
         lift_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
-        if(lift_right.getCurrentPosition() <= 0 && (cond2 > 0) ){
-            lift_right.setPower(0);
-            lift_left.setPower(0);
-        }
-        if(lift_right.getCurrentPosition() <0 && (cond1 > 0)){
+        if((lift_right.getCurrentPosition() <= 0 && (cond2 > 0)) || (lift_right.getCurrentPosition() >= 2030 && (cond1 > 0))){
             lift_right.setPower(0);
             lift_left.setPower(0);
         }
@@ -129,6 +125,35 @@ public class Maccabot {
             parentOpMode.telemetry.update();
         }
 
+    }
+
+    public void auto_forward(int pos, double power){
+        back_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        back_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        front_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        front_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+
+        back_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        back_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        front_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        front_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        back_left.setPower(power);
+        back_left.setTargetPosition(pos);
+        back_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        front_left.setPower(power);
+        front_left.setTargetPosition(-pos);
+        front_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        front_right.setPower(power);
+        front_right.setTargetPosition(-pos);
+        front_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        back_right.setPower(power);
+        back_right.setTargetPosition(pos);
+        back_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
 

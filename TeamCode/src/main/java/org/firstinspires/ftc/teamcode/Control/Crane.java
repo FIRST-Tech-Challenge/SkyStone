@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.Control;
 import com.qualcomm.hardware.bosch.BNO055IMUImpl;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cColorSensor;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
-import com.qualcomm.hardware.motors.Matrix12vMotor;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -16,10 +15,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 import java.util.ArrayList;
@@ -34,13 +35,11 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
 import static org.firstinspires.ftc.teamcode.Control.Constants.COUNTS_PER_INCH;
 import static org.firstinspires.ftc.teamcode.Control.Constants.COUNTS_PER_MOTOR_REV;
 import static org.firstinspires.ftc.teamcode.Control.Constants.backs;
-import static org.firstinspires.ftc.teamcode.Control.Constants.blimits;
 import static org.firstinspires.ftc.teamcode.Control.Constants.colors;
-import static org.firstinspires.ftc.teamcode.Control.Constants.flimits;
 import static org.firstinspires.ftc.teamcode.Control.Constants.foundationServos1;
 import static org.firstinspires.ftc.teamcode.Control.Constants.foundationServos2;
 import static org.firstinspires.ftc.teamcode.Control.Constants.fronts;
-import static org.firstinspires.ftc.teamcode.Control.Constants.leftLinears;
+import static org.firstinspires.ftc.teamcode.Control.Constants.imuS;
 import static org.firstinspires.ftc.teamcode.Control.Constants.leftServos;
 import static org.firstinspires.ftc.teamcode.Control.Constants.lefts;
 import static org.firstinspires.ftc.teamcode.Control.Constants.leftsucks;
@@ -49,13 +48,11 @@ import static org.firstinspires.ftc.teamcode.Control.Constants.motorBLS;
 import static org.firstinspires.ftc.teamcode.Control.Constants.motorBRS;
 import static org.firstinspires.ftc.teamcode.Control.Constants.motorFLS;
 import static org.firstinspires.ftc.teamcode.Control.Constants.motorFRS;
-import static org.firstinspires.ftc.teamcode.Control.Constants.racks;
 import static org.firstinspires.ftc.teamcode.Control.Constants.rightLinears;
 import static org.firstinspires.ftc.teamcode.Control.Constants.rightServos;
 import static org.firstinspires.ftc.teamcode.Control.Constants.rights;
 import static org.firstinspires.ftc.teamcode.Control.Constants.rightsucks;
 import static org.firstinspires.ftc.teamcode.Control.Constants.rotationservos;
-import static org.firstinspires.ftc.teamcode.Control.Constants.servos;
 import static org.firstinspires.ftc.teamcode.Control.Constants.smallLSucks;
 import static org.firstinspires.ftc.teamcode.Control.Constants.smallRSucks;
 
@@ -189,9 +186,10 @@ public class Crane {
     //----       IMU        ----
 
     public BNO055IMUImpl imu;
-    public BNO055IMUImpl.Parameters parameters1 = new BNO055IMUImpl.Parameters();
+    public BNO055IMUImpl.Parameters imuparameters = new BNO055IMUImpl.Parameters();
     public Orientation current;
     public static boolean isnotstopped;
+    public float initorient;
 
     //---- VUFORIA HANDLER  ----
     //public VuforiaHandler vuforia;
@@ -214,6 +212,21 @@ public class Crane {
 
     }
     */
+
+    public void setupIMU() throws InterruptedException{
+        imuparameters.angleUnit = BNO055IMUImpl.AngleUnit.DEGREES;
+        imuparameters.accelUnit = BNO055IMUImpl.AccelUnit.METERS_PERSEC_PERSEC;
+        imuparameters.calibrationDataFile = "AdafruitIMUCalibration.json"; // see the calibration sample opmode
+        imuparameters.loggingEnabled = true; //copypasted from BNO055IMU sample code, no clue what this does
+        imuparameters.loggingTag = "imu"; //copypasted from BNO055IMU sample code, no clue what this does
+        imu = hardwareMap.get(BNO055IMUImpl.class, imuS);
+        imu.initialize(imuparameters);
+        initorient = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+        central.telemetry.addData("IMU status", imu.getSystemStatus());
+        central.telemetry.update();
+
+
+    }
     public void setupDrivetrain() throws InterruptedException {
         motorFR = motor(motorFRS, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.BRAKE);
         motorFL = motor(motorFLS, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.BRAKE);
@@ -640,6 +653,69 @@ public class Crane {
         }
     }
 
+    // IMU Movements
+    public void turn(float target, turnside direction, double speed, axis rotation_Axis) throws InterruptedException{
+
+        central.telemetry.addData("IMU State: ", imu.getSystemStatus());
+        central.telemetry.update();
+
+        double start = getDirection();
+
+        double end = (start + ((direction == turnside.cw) ? target : -target) + 360) % 360;
+
+        isnotstopped = true;
+        try {
+            switch (rotation_Axis) {
+                case center:
+                    driveTrainMovement(speed, (direction == turnside.cw) ? movements.cw : movements.ccw);
+                    break;
+                case back:
+                    driveTrainMovement(speed, (direction == turnside.cw) ? movements.cwback : movements.ccwback);
+                    break;
+                case front:
+                    driveTrainMovement(speed, (direction == turnside.cw) ? movements.cwfront : movements.ccwfront);
+                    break;
+            }
+        } catch (InterruptedException e) {
+            isnotstopped = false;
+        }
+
+        while (((calculateDifferenceBetweenAngles(getDirection(), end) > 1 && turnside.cw == direction) || (calculateDifferenceBetweenAngles(getDirection(), end) < -1 && turnside.ccw == direction)) && central.opModeIsActive() ) {
+            central.telemetry.addData("IMU Inital: ", start);
+            central.telemetry.addData("IMU Final Projection: ", end);
+            central.telemetry.addData("IMU Orient: ", getDirection());
+            central.telemetry.addData("IMU Difference: ", end - getDirection());
+            central.telemetry.update();
+        }
+        try {
+            stopDrivetrain();
+        } catch (InterruptedException e) {
+        }
+
+        while (Math.abs(end - getDirection()) > 1 && central.opModeIsActive()){
+            driveTrainMovement(0.1, (direction == turnside.cw) ? movements.ccw : movements.cw);
+            central.telemetry.addData("IMU Inital: ", start);
+            central.telemetry.addData("IMU Final Projection: ", end);
+            central.telemetry.addData("IMU Orient: ", getDirection());
+            central.telemetry.addData("IMU Diffnce: ", end - getDirection());
+            central.telemetry.update();
+        }
+        stopDrivetrain();
+
+    }
+
+    public double calculateDifferenceBetweenAngles(double firstAngle, double secondAngle)
+    {
+        double difference = secondAngle - firstAngle;
+        while (difference < -180) difference += 360;
+        while (difference > 180) difference -= 360;
+        return difference;
+    }
+
+    public double getDirection(){
+        return (this.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle-initorient+720)%360;
+    }
+
 
     public enum EncoderMode{
         ON, OFF;
@@ -670,7 +746,11 @@ public class Crane {
         bl(0, 1, -1, 0),
         br(-1, 0, 0, 1),
         cw(1, 1, 1, 1),
-        ccw(-1, -1, -1, -1);
+        ccw(-1, -1, -1, -1),
+        cwback(-1, -1, 0, 0),
+        ccwback(1, 1, 0, 0),
+        cwfront(0, 0, -1, -1),
+        ccwfront(0, 0, 1, 1);
 
 
 

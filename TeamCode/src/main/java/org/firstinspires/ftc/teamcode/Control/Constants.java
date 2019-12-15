@@ -69,6 +69,7 @@ public class Constants {
     public static final String lefts = "leftUltra";
     public static final String rights = "rightUltra";
     public static final String colors = "colorSensor";
+    public static final String imuS = "imu";
 
 
 }

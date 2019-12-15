@@ -194,28 +194,6 @@ public class Crane {
     public static boolean isnotstopped;
     public float initorient;
 
-    //---- VUFORIA HANDLER  ----
-    //public VuforiaHandler vuforia;
-
-    //----  POSITIONING
-
-  //  PositionProcessor processor;
-
-
-   /* public void setupVuforia(VuforiaHandler.type s) {
-        vuforia = new VuforiaHandler(central, s);
-    }
-    public void setupPositionProcessing(boolean vuforiaMode){
-        if (vuforiaMode) {
-            processor = new PositionProcessor(vuforia);
-        }
-        else {
-            processor = new PositionProcessor();
-        }
-
-    }
-    */
-
     public void setupIMU() throws InterruptedException{
         imuparameters.angleUnit = BNO055IMUImpl.AngleUnit.DEGREES;
         imuparameters.accelUnit = BNO055IMUImpl.AccelUnit.METERS_PERSEC_PERSEC;

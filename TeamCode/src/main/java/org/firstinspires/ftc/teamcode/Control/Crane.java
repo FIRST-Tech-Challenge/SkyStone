@@ -686,6 +686,12 @@ public class Crane {
             central.telemetry.update();
         }
         stopDrivetrain();
+        central.telemetry.addLine("Completed");
+        central.telemetry.addData("IMU Inital: ", start);
+        central.telemetry.addData("IMU Final Projection: ", end);
+        central.telemetry.addData("IMU Orient: ", getDirection());
+        central.telemetry.addData("IMU Diffnce: ", end - getDirection());
+        central.telemetry.update();
     }
 
     public double calculateDifferenceBetweenAngles(double firstAngle, double secondAngle)

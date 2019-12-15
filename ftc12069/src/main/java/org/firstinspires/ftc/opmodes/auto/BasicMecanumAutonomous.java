@@ -92,11 +92,11 @@ class BasicMecanumAutonomous {
      * @return true - keep looping | false - stop looping
      */
     boolean loop() {
-        robot.move(0, 0.7, null, 5);
-        robot.move(alliance == Alliance.BLUE ? 90 : -90, 0.5, null, 92);
+        robot.move(0, 0.7, null, 20);
+        robot.move(robot.correctMovement(90), 0.5, null, 34);
 
         for (int i = 0; i < 2; i++) {
-            robot.scanWait(1);
+            robot.scanWait(2);
 
             if (robot.isTrackableVisible() && robot.isSkystoneVisible()) {
                 // Get Skystone
@@ -107,25 +107,31 @@ class BasicMecanumAutonomous {
             } else robot.move(0, 0.5, null, 5);
 
             // Intake Stone
+            robot.turn(180, 0.5);
             robot.hardware.updateDeliveryStates(ServoState.FLOOR);
             robot.hardware.blockGrabber.setPosition(ServoState.OPEN);
-            robot.move(0, 0.5, null, 3);
+            robot.wait(2.0);
+
             robot.hardware.blockGrabber.setPosition(ServoState.CLOSED);
+            robot.wait(0.2);
             robot.hardware.updateDeliveryStates(ServoState.CRADLE);
+            robot.wait(1.0);
+            robot.move(180, 0.5, null, 8);
 
             // Deliver Stone
-            robot.move(0, -0.5, null, 10);
-            robot.move(alliance == Alliance.BLUE ? -90 : 90, 0.5, new OrientationInfo(180, 0.5), 95);
-            robot.hardware.updateDeliveryStates(ServoState.ONEBLOCKDEPOSIT);
+            robot.move(robot.correctMovement(-90), 0.5, null, 71);
+            robot.move(0, 0.5, null, 14);
+            if (i == 0) robot.hardware.updateDeliveryStates(ServoState.ONEBLOCKDEPOSIT);
+            else robot.hardware.updateDeliveryStates(ServoState.TWOBLOCKDEPOSIT);
             robot.hardware.blockGrabber.setPosition(ServoState.OPEN);
-            robot.hardware.updateDeliveryStates(ServoState.CRADLE);
+            robot.wait(2.0);
 
             // Move to the loading zone
-            robot.move(alliance == Alliance.BLUE ? 90 : -90, 0.5, null, 100);
+            robot.move(180, 0.5, null, 14);
+            robot.move(robot.correctMovement(90), 0.5, null, 94);
         }
 
-        robot.scan();
-        //robot.parkUnderBridge();
+        robot.move(robot.correctMovement(90), 0.5, null, 46);
         return false;
     }
 }

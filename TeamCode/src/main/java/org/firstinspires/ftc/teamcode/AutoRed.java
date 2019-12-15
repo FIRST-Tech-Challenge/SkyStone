@@ -239,15 +239,11 @@ public class AutoRed extends LinearOpMode {
                 telemetry.addData("Visible Target", "none");
             }
 
-            robot.mecanumDrive(0,0.6,0);
-            sleep(500);
-            robot.mecanumDrive(0,0,0);
-            for(int i = 0; i < 15; i++){
-                robot.intake(Math.random()*2 -1, 0);
-                sleep(500);
-            }
-            robot.intake(1, 0);
-            sleep(10000);
+            robot.auto_forward(500, 0.25);
+
+            sleep(1000);
+
+
             stop();
         }
         targetsSkyStone.deactivate();

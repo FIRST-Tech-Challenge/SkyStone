@@ -239,6 +239,8 @@ public class AutoRed extends LinearOpMode {
                 telemetry.addData("Visible Target", "none");
             }
 
+            telemetry.update();
+
             robot.auto_forward(500, 0.25);
 
             while (opModeIsActive() && robot.encoderIsBusy())

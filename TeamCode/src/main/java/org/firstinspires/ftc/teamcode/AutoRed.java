@@ -241,7 +241,14 @@ public class AutoRed extends LinearOpMode {
 
             robot.auto_forward(500, 0.25);
 
-            sleep(1000);
+            while (opModeIsActive() && robot.encoderIsBusy())
+            {
+                telemetry.addData("encoder-fwd", "  busy=" + robot.encoderIsBusy());
+                telemetry.update();
+                idle();
+            }
+
+            robot.setpower0();
 
 
             stop();

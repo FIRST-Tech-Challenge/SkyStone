@@ -68,6 +68,9 @@ public class Crane {
 
         for (setupType type: setup) {
             switch (type) {
+                case imu:
+                    setupIMU();
+                    break;
                 case ultrasoinc:
                     setupUltra();
                     break;
@@ -191,28 +194,6 @@ public class Crane {
     public static boolean isnotstopped;
     public float initorient;
 
-    //---- VUFORIA HANDLER  ----
-    //public VuforiaHandler vuforia;
-
-    //----  POSITIONING
-
-  //  PositionProcessor processor;
-
-
-   /* public void setupVuforia(VuforiaHandler.type s) {
-        vuforia = new VuforiaHandler(central, s);
-    }
-    public void setupPositionProcessing(boolean vuforiaMode){
-        if (vuforiaMode) {
-            processor = new PositionProcessor(vuforia);
-        }
-        else {
-            processor = new PositionProcessor();
-        }
-
-    }
-    */
-
     public void setupIMU() throws InterruptedException{
         imuparameters.angleUnit = BNO055IMUImpl.AngleUnit.DEGREES;
         imuparameters.accelUnit = BNO055IMUImpl.AccelUnit.METERS_PERSEC_PERSEC;
@@ -227,6 +208,7 @@ public class Crane {
 
 
     }
+
     public void setupDrivetrain() throws InterruptedException {
         motorFR = motor(motorFRS, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.BRAKE);
         motorFL = motor(motorFLS, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.BRAKE);
@@ -312,6 +294,7 @@ public class Crane {
 
     public ModernRoboticsI2cColorSensor MRColor(String name) throws InterruptedException{
         return hardwareMap.get(ModernRoboticsI2cColorSensor.class, name);
+
     }
 
     public void encoder(EncoderMode mode, DcMotor... motor) throws InterruptedException {
@@ -722,7 +705,7 @@ public class Crane {
         ON, OFF;
     }
     public enum setupType{
-        autonomous, teleop, endgame, drive, camera, claw, bSystem, foundation, yellow, intake, ultrasoinc;
+        autonomous, teleop, endgame, drive, camera, claw, bSystem, foundation, yellow, intake, ultrasoinc, imu;
     }
 
     //-------------------SET FUNCTIONS--------------------------------

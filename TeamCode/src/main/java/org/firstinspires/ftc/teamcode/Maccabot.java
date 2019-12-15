@@ -127,6 +127,13 @@ public class Maccabot {
 
     }
 
+    public void setpower0(){
+        front_left.setPower(0);
+        back_left.setPower(0);
+        front_right.setPower(0);
+        back_right.setPower(0);
+    }
+
     public void auto_forward(int pos, double power){
         back_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         back_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -154,6 +161,10 @@ public class Maccabot {
         back_right.setPower(power);
         back_right.setTargetPosition(pos);
         back_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
+    public boolean encoderIsBusy() {
+        return (front_right.isBusy());
     }
 
 

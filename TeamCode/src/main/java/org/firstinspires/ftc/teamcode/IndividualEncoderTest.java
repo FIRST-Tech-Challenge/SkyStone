@@ -21,9 +21,6 @@ public class IndividualEncoderTest extends LinearOpMode {
         intake_left = hardwareMap.dcMotor.get("intake_left");
         intake_right = hardwareMap.dcMotor.get("intake_right");
 
-        back_left.setDirection(DcMotorSimple.Direction.REVERSE);
-        front_left.setDirection(DcMotorSimple.Direction.REVERSE);
-
 
         front_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         front_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -33,6 +30,7 @@ public class IndividualEncoderTest extends LinearOpMode {
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Resetting Encoders");    //
         telemetry.update();
+
 
         back_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         back_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -55,18 +53,57 @@ public class IndividualEncoderTest extends LinearOpMode {
 
         waitForStart();
 
-        back_left.setPower(0.25);
+        while(opModeIsActive()) {
+
+            if (gamepad1.a) {
+                back_left.setPower(0.25);
+                back_left.setTargetPosition(500);
+                back_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            }
+            if (gamepad1.b) {
+                front_left.setPower(0.25);
+                front_left.setTargetPosition(-500);
+                front_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+            if (gamepad1.x) {
+                front_right.setPower(0.25);
+                front_right.setTargetPosition(-500);
+                front_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+            if (gamepad1.y) {
+                back_right.setPower(0.25);
+                back_right.setTargetPosition(500);
+                back_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+
+            if (gamepad2.a) {
+                back_left.setPower(0.25);
+                back_left.setTargetPosition(-500);
+                back_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+            if (gamepad2.b) {
+                front_left.setPower(0.25);
+                front_left.setTargetPosition(-500);
+                front_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+            if (gamepad2.x) {
+                front_right.setPower(0.25);
+                front_right.setTargetPosition(-500);
+                front_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+            if (gamepad2.y) {
+                back_right.setPower(0.25);
+                back_right.setTargetPosition(-500);
+                back_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+
+        /*back_left.setPower(0.25);
         back_left.setTargetPosition(500);
         back_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         sleep(500);
         back_left.setPower(0);
 
-        telemetry.addData("Path0",  "Starting at %7d :%7d",
-                front_right.getCurrentPosition(),
-                front_left.getCurrentPosition(),
-                back_left.getCurrentPosition(),
-                back_right.getCurrentPosition());
-        telemetry.update();
 
         front_left.setPower(0.25);
         front_left.setTargetPosition(500);
@@ -74,12 +111,6 @@ public class IndividualEncoderTest extends LinearOpMode {
         sleep(500);
         front_left.setPower(0);
 
-        telemetry.addData("Path0",  "Starting at %7d :%7d",
-                front_right.getCurrentPosition(),
-                front_left.getCurrentPosition(),
-                back_left.getCurrentPosition(),
-                back_right.getCurrentPosition());
-        telemetry.update();
 
 
         front_right.setPower(0.25);
@@ -88,38 +119,27 @@ public class IndividualEncoderTest extends LinearOpMode {
         sleep(500);
         front_right.setPower(0);
 
-        telemetry.addData("Path0",  "Starting at %7d :%7d",
-                front_right.getCurrentPosition(),
-                front_left.getCurrentPosition(),
-                back_left.getCurrentPosition(),
-                back_right.getCurrentPosition());
-        telemetry.update();
 
         back_right.setPower(0.25);
         back_right.setTargetPosition(500);
         back_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         sleep(500);
-        back_right.setPower(0);
+        back_right.setPower(0);*/
 
-        telemetry.addData("Path0",  "Starting at %7d :%7d",
-                front_right.getCurrentPosition(),
-                front_left.getCurrentPosition(),
-                back_left.getCurrentPosition(),
-                back_right.getCurrentPosition());
-        telemetry.update();
+            telemetry.addData("front-left", front_left.getCurrentPosition());
+            telemetry.addData("back-left", back_left.getCurrentPosition());
+            telemetry.addData("front-right", front_right.getCurrentPosition());
+            telemetry.addData("back-right", back_right.getCurrentPosition());
 
-        back_left.setPower(0.25);
+            telemetry.update();
+
+
+        /*back_left.setPower(0.25);
         back_left.setTargetPosition(-500);
         back_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         sleep(500);
         back_left.setPower(0);
 
-        telemetry.addData("Path0",  "Starting at %7d :%7d",
-                front_right.getCurrentPosition(),
-                front_left.getCurrentPosition(),
-                back_left.getCurrentPosition(),
-                back_right.getCurrentPosition());
-        telemetry.update();
 
         front_left.setPower(0.25);
         front_left.setTargetPosition(-500);
@@ -127,12 +147,6 @@ public class IndividualEncoderTest extends LinearOpMode {
         sleep(500);
         front_left.setPower(0);
 
-        telemetry.addData("Path0",  "Starting at %7d :%7d",
-                front_right.getCurrentPosition(),
-                front_left.getCurrentPosition(),
-                back_left.getCurrentPosition(),
-                back_right.getCurrentPosition());
-        telemetry.update();
 
         front_right.setPower(0.25);
         front_right.setTargetPosition(-500);
@@ -140,24 +154,21 @@ public class IndividualEncoderTest extends LinearOpMode {
         sleep(500);
         front_right.setPower(0);
 
-        telemetry.addData("Path0",  "Starting at %7d :%7d",
-                front_right.getCurrentPosition(),
-                front_left.getCurrentPosition(),
-                back_left.getCurrentPosition(),
-                back_right.getCurrentPosition());
-        telemetry.update();
 
         back_right.setPower(0.25);
         back_right.setTargetPosition(-500);
         back_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         sleep(500);
         back_right.setPower(0);
+         */
 
-        telemetry.addData("Path0",  "Starting at %7d :%7d",
-                front_right.getCurrentPosition(),
-                front_left.getCurrentPosition(),
-                back_left.getCurrentPosition(),
-                back_right.getCurrentPosition());
-        telemetry.update();
+            telemetry.addData("front-left", front_left.getCurrentPosition());
+            telemetry.addData("back-left", back_left.getCurrentPosition());
+            telemetry.addData("front-right", front_right.getCurrentPosition());
+            telemetry.addData("back-right", back_right.getCurrentPosition());
+
+            telemetry.update();
+
+        }
     }
 }

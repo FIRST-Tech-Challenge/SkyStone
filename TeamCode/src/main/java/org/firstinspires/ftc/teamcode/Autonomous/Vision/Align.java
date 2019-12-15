@@ -27,6 +27,8 @@ public class Align {
     private List<Recognition> detectedObj;
     private boolean atOriginalPos = false;
     private double externalHeading = -1;
+    private boolean failsafe = false;
+    private double initPos = 0;
 
     public Align(HardwareMap hwMap, LinearOpMode opMode, DcMotor.ZeroPowerBehavior zeroPower) {
         this.hwMap = hwMap;
@@ -43,7 +45,7 @@ public class Align {
     }
 
     public void foundation(FieldPosition f) {
-        boolean correctRotation = false;
+        boolean correctRotation = false;    //TODO Add failsafe
 
         while (!opMode.isStopRequested() && opMode.opModeIsActive()) {
             double externalHeading = this.externalHeading;
@@ -58,10 +60,10 @@ public class Align {
                 opMode.telemetry.addData("Target Heading", 270 + "°");
                 opMode.telemetry.addData("Current Heading", externalHeading);
             } else if ((f == FieldPosition.BLUE_QUARY || f == FieldPosition.BLUE_FOUNDATION) && !correctRotation) {
-                if (externalHeading <= 89 || externalHeading >= 270) {
+                if (externalHeading <= 94 || externalHeading >= 270) {
                     setRightPower(turnPower);
                     setLeftPower(-turnPower);
-                } else if (externalHeading >= 90 && externalHeading < 270) {
+                } else if (externalHeading >= 95 && externalHeading < 270) {
                     setRightPower(-turnPower);
                     setLeftPower(turnPower);
                 }
@@ -69,12 +71,13 @@ public class Align {
                 opMode.telemetry.addData("Current Heading", externalHeading);
             }
 
-            if (((externalHeading > 89 && externalHeading < 90) || (externalHeading < 270 && externalHeading > 269)) &&
+            if (((externalHeading > 94 && externalHeading < 95) || (externalHeading < 270 && externalHeading > 269)) &&
                     !correctRotation) {
                 stop();
                 correctRotation = true;
                 opMode.telemetry.addData("Target Heading", "AT TARGET (±1°)");
                 opMode.telemetry.addData("Current Heading", externalHeading);
+                initPos = System.currentTimeMillis();
             }
 
             if (correctRotation && hwMap.foundationDetectLeft.getState() && hwMap.foundationDetectRight.getState()) {
@@ -132,6 +135,13 @@ public class Align {
                     break;
                 }
                 opMode.telemetry.update();
+            }
+
+            if(correctRotation && Math.abs(System.currentTimeMillis() - initPos) > 6000){
+                hwMap.transferLock.setPosition(TeleopConstants.transferLockPosUp);
+                hwMap.foundationLock.setPosition(TeleopConstants.foundationLockLock);
+                stop();
+                break;
             }
             opMode.telemetry.update();
         }

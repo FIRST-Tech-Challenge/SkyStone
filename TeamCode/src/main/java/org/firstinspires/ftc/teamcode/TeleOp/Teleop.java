@@ -42,7 +42,7 @@ public class Teleop extends LinearOpMode {
     private boolean tobyMode = false;
     private HardwareMap hwMap;
     private boolean manualOverride = false;
-    private boolean manualOverrideBlocker = false;
+    private boolean blockerCapstone = false;
 
     private ArrayList<OnOffButton> buttonLogic = new ArrayList<>();
 
@@ -96,12 +96,17 @@ public class Teleop extends LinearOpMode {
                 new double[][] { {TeleopConstants.clawServo1PosOpen, TeleopConstants.clawServo1PosClose},
                         {TeleopConstants.clawServo2PosOpen, TeleopConstants.clawServo2PosClose} },
                 new double[] { TeleopConstants.clawServo1PosClose, TeleopConstants.clawServo2PosOpen }));
-        buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.RIGHT_TRIGGER, new Servo[] {hwMap.clawInit},
-                new double[][]{ {TeleopConstants.clawInitPosCapstone, TeleopConstants.clawInitPosReset} }));
+        /*buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.DPAD_UP,
+                new Servo[] {hwMap.clawInit},
+                new double[][]{ {TeleopConstants.clawInitPosCapstoneForReal, TeleopConstants.clawInitPosCapstone} }));*/
+        buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.DPAD_DOWN,
+                new Servo[] {hwMap.innerTransfer},
+                new double[][]{ {TeleopConstants.innerTransferPosBlock, TeleopConstants.innerTransferPosTucked} }));
         buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.LEFT_TRIGGER, new Servo[] { hwMap.transferHorn },
                 new double[][] { {TeleopConstants.transferHornPosPush, TeleopConstants.transferHornPosReady} }));
 
         telemetry.addData("Status", "Ready");
+        hwMap.clawInit.setPosition(TeleopConstants.clawInitPosCapstone);
 
         waitForStart();
 
@@ -155,6 +160,82 @@ public class Teleop extends LinearOpMode {
             }
             lift.detectResetEncoder();
 
+            //------------------------------===Capstone===------------------------------------------
+
+            OnOffButton hornControl = new OnOffButton(gamepad2, GamepadButtons.LEFT_TRIGGER, new Servo[] { hwMap.transferHorn },
+                    new double[][] { {TeleopConstants.transferHornPosPush, TeleopConstants.transferHornPosReady} });
+            OnOffButton clawControl = new OnOffButton(gamepad2, gamepad2, GamepadButtons.LEFT_BUMPER, GamepadButtons.RIGHT_BUMPER, //Intake-A & B
+                    new Servo[] { hwMap.clawServo1, hwMap.clawServo2 },
+                    new double[][] { {TeleopConstants.clawServo1PosOpen, TeleopConstants.clawServo1PosClose},
+                            {TeleopConstants.clawServo2PosOpen, TeleopConstants.clawServo2PosClose} },
+                    new double[] { TeleopConstants.clawServo1PosClose, TeleopConstants.clawServo2PosOpen });
+            OnOffButton intake = new OnOffButton(gamepad2, gamepad2, GamepadButtons.A, GamepadButtons.B, //Intake-A & B
+                    new DcMotor[] { hwMap.leftIntake, hwMap.rightIntake },
+                    new double[][] { {-TeleopConstants.intakePower, 0}, {TeleopConstants.intakePower, 0} },
+                    new double[] { TeleopConstants.intakePower, -TeleopConstants.intakePower });
+            OnOffButton innerTrans = new OnOffButton(gamepad2, GamepadButtons.DPAD_DOWN,
+                    new Servo[] {hwMap.innerTransfer},
+                    new double[][]{ {TeleopConstants.innerTransferPosBlock, TeleopConstants.innerTransferPosTucked} });
+
+            if(gamepad2.dpad_up && !blockerCapstone){
+                blockerCapstone = true;
+
+                /*while(buttonLogic.contains(hornControl) && opModeIsActive())
+                    buttonLogic.remove(hornControl);
+
+                while(buttonLogic.contains(clawControl) && opModeIsActive())
+                    buttonLogic.remove(clawControl);
+
+                while(buttonLogic.contains(innerTrans) && opModeIsActive())
+                    buttonLogic.remove(innerTrans);*/
+
+                hwMap.transferHorn.setPosition(TeleopConstants.transferHornCapstone);
+                hwMap.leftIntake.setPower(0);
+                hwMap.rightIntake.setPower(0);
+
+                try{
+                    Thread.sleep(1000);
+                } catch (Exception e){}
+
+                hwMap.clawInit.setPosition(TeleopConstants.clawInitPosCapstoneForReal);
+
+                try{
+                    Thread.sleep(700);
+                } catch (Exception e){}
+
+                hwMap.transferHorn.setPosition(TeleopConstants.transferHornPosReady);
+                hwMap.innerTransfer.setPosition(TeleopConstants.innerTransferPosTucked);
+                hwMap.clawServo2.setPosition(TeleopConstants.clawServo2PosOpen);
+                hwMap.clawServo1.setPosition(TeleopConstants.clawServo1Block);
+
+                try{
+                    Thread.sleep(700);
+                } catch (Exception e){}
+
+                hwMap.transferHorn.setPosition(TeleopConstants.transferHornPosPush);
+
+                try{
+                    Thread.sleep(1500);
+                } catch (Exception e){}
+            } else if(!gamepad2.dpad_up && blockerCapstone){
+                blockerCapstone = false;
+                hwMap.transferHorn.setPosition(TeleopConstants.transferHornPosReady);
+                hwMap.clawInit.setPosition(TeleopConstants.clawInitPosCapstone);
+                hwMap.clawServo1.setPosition(TeleopConstants.clawServo1PosClose);
+                /*buttonLogic.add(hornControl);
+                buttonLogic.add(clawControl);
+                buttonLogic.add(innerTrans);
+
+                while(buttonLogic.indexOf(hornControl) != buttonLogic.lastIndexOf(hornControl) && opModeIsActive())
+                    buttonLogic.remove(hornControl);
+
+                while(buttonLogic.indexOf(clawControl) != buttonLogic.lastIndexOf(clawControl) && opModeIsActive())
+                    buttonLogic.remove(clawControl);
+
+                while(buttonLogic.indexOf(innerTrans) != buttonLogic.lastIndexOf(innerTrans) && opModeIsActive())
+                    buttonLogic.remove(innerTrans);*/
+            }
+
             //------------------------------===Driving/Strafing===------------------------------------------
 
             if(gamepad1.start && gamepad1.back && !switchBlocker){
@@ -193,7 +274,7 @@ public class Teleop extends LinearOpMode {
                         drivetrain.rotate(turnSpeed * Math.abs(gamepad1.right_stick_x), false);
                 }
 
-                if (gamepad1.left_trigger >= 0.75) {
+                if (gamepad1.left_trigger >= 0.751) {
                     drivetrain.setMotorZeroPower(DcMotor.ZeroPowerBehavior.BRAKE);
                 } else {
                     drivetrain.setMotorZeroPower(DcMotor.ZeroPowerBehavior.FLOAT);
@@ -277,7 +358,7 @@ public class Teleop extends LinearOpMode {
                     hwMap.innerTransfer.setPosition(TeleopConstants.innerTransferPosTucked);
                     try{ Thread.sleep(500); } catch (Exception e){ e.printStackTrace(); }
                     hwMap.transferHorn.setPosition(TeleopConstants.transferHornPosReady);
-                    hwMap.innerTransfer.setPosition(TeleopConstants.innerTransferPosExtended);
+                    //hwMap.innerTransfer.setPosition(TeleopConstants.innerTransferPosExtended);
                     try{ Thread.sleep(300); } catch (Exception e){ e.printStackTrace(); }
                     blocker = false;
                 }

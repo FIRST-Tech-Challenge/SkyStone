@@ -30,7 +30,7 @@ public class ServoTester extends LinearOpMode {
                 rw.innerTransfer,
                 rw.foundationLock,
                 rw.intakeInit
-        };//hardwareMap.getAll(Servo.class);
+        };
 
         List<String> servoNames = new ArrayList<>();
         List<Double> servoPositions = new ArrayList<>();

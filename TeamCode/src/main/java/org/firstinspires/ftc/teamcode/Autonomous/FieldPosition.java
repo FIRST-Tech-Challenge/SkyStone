@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
+/**
+ * Describes the four possible starting positions of the robot
+ */
 public enum FieldPosition {
-    RED_QUARY, RED_FOUNDATION, BLUE_QUARY, BLUE_FOUNDATION
+    RED_QUARRY, RED_FOUNDATION, BLUE_QUARRY, BLUE_FOUNDATION
 }

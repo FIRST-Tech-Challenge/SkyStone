@@ -1,15 +1,13 @@
 package org.firstinspires.ftc.teamcode.All;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Lift {
     private double speedMultiplier = 1;
 
     // Constants used to adjust various parameters / characteristics of the drivetrain
-    private org.firstinspires.ftc.teamcode.All.HardwareMap hwMap;
-
-    public Lift(HardwareMap map){
+    private HardwareMap hwMap;
+    public Lift(com.qualcomm.robotcore.hardware.HardwareMap map){
         hwMap = new org.firstinspires.ftc.teamcode.All.HardwareMap(map);
     }
 

@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.Autonomous.Vision;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.All.HardwareMap;
 import org.firstinspires.ftc.teamcode.Autonomous.FieldPosition;
@@ -11,13 +10,8 @@ import org.firstinspires.ftc.teamcode.TeleOp.TeleopConstants;
 import org.firstinspires.ftc.teamcode.Tensorflow.TFODCalc;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import javax.xml.transform.sax.TemplatesHandler;
-
-import static java.lang.Math.PI;
 
 public class Align {
     HardwareMap hwMap;
@@ -25,12 +19,12 @@ public class Align {
     private double turnPower = 0.3;
     private LinearOpMode opMode;
     private List<Recognition> detectedObj;
-    private boolean atOriginalPos = false;
     private double externalHeading = -1;
 
     public Align(HardwareMap hwMap, LinearOpMode opMode, DcMotor.ZeroPowerBehavior zeroPower) {
         this.hwMap = hwMap;
         this.opMode = opMode;
+
         hwMap.frontRight.setZeroPowerBehavior(zeroPower);
         hwMap.frontLeft.setZeroPowerBehavior(zeroPower);
         hwMap.backRight.setZeroPowerBehavior(zeroPower);
@@ -45,9 +39,11 @@ public class Align {
     public void foundation(FieldPosition f) {
         boolean correctRotation = false;
 
+
+        // bang-bang with imu feedback to turn to precisely 90 degrees - faces foundation
         while (!opMode.isStopRequested() && opMode.opModeIsActive()) {
             double externalHeading = this.externalHeading;
-            if ((f == FieldPosition.RED_QUARY || f == FieldPosition.RED_FOUNDATION) && !correctRotation) {
+            if ((f == FieldPosition.RED_QUARRY || f == FieldPosition.RED_FOUNDATION) && !correctRotation) {
                 if (externalHeading >= 270 || externalHeading < 90) {
                     setRightPower(-turnPower);
                     setLeftPower(turnPower);
@@ -57,7 +53,7 @@ public class Align {
                 }
                 opMode.telemetry.addData("Target Heading", 270 + "°");
                 opMode.telemetry.addData("Current Heading", externalHeading);
-            } else if ((f == FieldPosition.BLUE_QUARY || f == FieldPosition.BLUE_FOUNDATION) && !correctRotation) {
+            } else if ((f == FieldPosition.BLUE_QUARRY || f == FieldPosition.BLUE_FOUNDATION) && !correctRotation) {
                 if (externalHeading <= 89 || externalHeading >= 270) {
                     setRightPower(turnPower);
                     setLeftPower(-turnPower);
@@ -78,12 +74,14 @@ public class Align {
             }
 
             if (correctRotation && hwMap.foundationDetectLeft.getState() && hwMap.foundationDetectRight.getState()) {
+                // neither limit switch has been pressed; move towards foundation
                 setPower(-approachingPower);
                 opMode.telemetry.addData("Target Heading", "AT TARGET (±3°)");
                 opMode.telemetry.addData("Current Heading", externalHeading);
                 opMode.telemetry.addData("LimitSwitchLeft", !hwMap.foundationDetectLeft.getState());
                 opMode.telemetry.addData("LimitSwitchRight", !hwMap.foundationDetectRight.getState());
             } else if (correctRotation && !hwMap.foundationDetectLeft.getState() && !hwMap.foundationDetectRight.getState()) {
+                // at foundation (both limit switches are engaged); move servos to hook onto foundation
                 hwMap.transferLock.setPosition(TeleopConstants.transferLockPosUp);
                 hwMap.foundationLock.setPosition(TeleopConstants.foundationLockLock);
                 opMode.telemetry.addData("Target Heading", "AT TARGET (±3°)");
@@ -94,6 +92,7 @@ public class Align {
                 stop();
                 break;
             } else if (correctRotation && (!hwMap.foundationDetectLeft.getState() || !hwMap.foundationDetectRight.getState())) {
+                // if one is pressed but not the other, turn in such a way that the not-pressed limit switch spins towards foundation
                 if (!hwMap.foundationDetectLeft.getState()) {
                     hwMap.foundationLock.setPosition(TeleopConstants.foundationLockLock);
                     opMode.telemetry.addData("Target Heading", "AT TARGET (±3°)");
@@ -158,33 +157,36 @@ public class Align {
         while (!isAligned && !opMode.isStopRequested()) {
             List<Recognition> detectedObj = this.detectedObj;
             if (!opMode.isStopRequested() && detectedObj != null) {
-                ArrayList<Double> temp = new ArrayList<>();
+
+                // calculate midpoints of all detected objects
+                ArrayList<Double> midpoints = new ArrayList<>();
                 for (int i = 0; i < detectedObj.size(); i++) {
-                    temp.add((double) detectedObj.get(i).getLeft() + detectedObj.get(i).getWidth() / 2);
+                    midpoints.add((double) detectedObj.get(i).getLeft() + detectedObj.get(i).getWidth() / 2);
                     distanceAway = TFODCalc.getDistanceToObj(127,
                             detectedObj.get(i).getImageHeight(), detectedObj.get(i).getHeight());
                     imgWidth = detectedObj.get(i).getImageWidth();
                 }
 
-                if(!temp.isEmpty()) {
-                    Collections.sort(temp);
+                if(!midpoints.isEmpty()) {
+                    Collections.sort(midpoints);
 
-                    if(position >= temp.size())
-                        position = temp.size() - 1;
+                    if(position >= midpoints.size())
+                        position = midpoints.size() - 1;
 
-                    opMode.telemetry.addData("Current Position", temp.get(position));
+                    opMode.telemetry.addData("Current Position", midpoints.get(position));
                     opMode.telemetry.addData("Target Bounds", (imgWidth / 2d - 15) + " - " + (imgWidth / 2d + 15));
-                    opMode.telemetry.addData("Raw, Sorted Data", temp);
+                    opMode.telemetry.addData("Raw, Sorted Data", midpoints);
 
-                    if (temp.get(position) >= imgWidth / 2d - 15 && temp.get(position) <= imgWidth / 2d + 15) {
+                    // bang-bang controller using tfod object detect reported positions (position of skystones in image)
+                    if (midpoints.get(position) >= imgWidth / 2d - 15 && midpoints.get(position) <= imgWidth / 2d + 15) {
                         stop();
                         isAligned = true;
                         opMode.telemetry.addData("Executed Command", "STOP");
-                    } else if (temp.get(position) <= imgWidth / 2d - 15) {
+                    } else if (midpoints.get(position) <= imgWidth / 2d - 15) {
                         setRightPower(turnPower);
                         setLeftPower(-approachingPower);
                         opMode.telemetry.addData("Executed Command", "RIGHT");
-                    } else if (temp.get(position) >= imgWidth / 2d + 15) {
+                    } else if (midpoints.get(position) >= imgWidth / 2d + 15) {
                         setRightPower(-approachingPower);
                         setLeftPower(turnPower);
                         opMode.telemetry.addData("Executed Command", "LEFT");

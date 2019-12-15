@@ -3,9 +3,7 @@ package org.firstinspires.ftc.teamcode.Autonomous;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.vuforia.PIXEL_FORMAT;
@@ -32,6 +30,7 @@ public class MainAutonomous extends LinearOpMode {
     private static final String LABEL_FIRST_ELEMENT = "skystone";
     private static final String LABEL_SECOND_ELEMENT = "stone";
 
+    // TODO : move vuforia key to separate file -- this is pretty i l l e g a l
     private static final String VUFORIA_KEY = "ARjSEzX/////AAABmTyfc/uSOUjluYpQyDMk15tX0Mf3zESzZKo6V7Y0O/qtPvPQOVben+DaABjfl4m5YNOhGW1HuHywuYGMHpJ5/uXY6L8Mu93OdlOYwwVzeYBhHZx9le+rUMr7NtQO/zWEHajiZ6Jmx7K+A+UmRZMpCmr//dMQdlcuyHmPagFERkl4fdP0UKsRxANaHpwfQcY3npBkmgE8XsmK4zuFEmzfN2/FV0Cns/tiTfXtx1WaFD0YWYfkTHRyNwhmuBxY6MXNmaG8VlLwJcoanBFmor2PVBaRYZ9pnJ4TJU5w25h1lAFAFPbLTz1RT/UB3sHT5CeG0bMyM4mTYLi9SHPOUQjmIomxp9D7R39j8g5G7hiKr2JP";
     private VuforiaLocalizer vuforia;
     private TFObjectDetector tfod;
@@ -52,6 +51,7 @@ public class MainAutonomous extends LinearOpMode {
 
         FourWheelMecanumDrivetrain drivetrain = new FourWheelMecanumDrivetrain(hwMap);
 
+        // Setup drive, lift, and intake motors
         drivetrain.setMotorZeroPower(DcMotor.ZeroPowerBehavior.BRAKE);
         drivetrain.resetEncoders();
         drivetrain.setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -63,14 +63,16 @@ public class MainAutonomous extends LinearOpMode {
         hwMap.backRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
         while (!isStarted() && !isStopRequested()) {
+
+            // Select starting position from user input
             if (fieldPosition == null) {
                 telemetry.addData("SELECT STARTING LOCATION", "Press one of the following buttons below to " +
                         "select the autonomous starting position. Once you have selected, press the \"start\" button " +
                         "on gamepad A.");
                 telemetry.addData("A", FieldPosition.BLUE_FOUNDATION);
                 telemetry.addData("B", FieldPosition.RED_FOUNDATION);
-                telemetry.addData("Y", FieldPosition.RED_QUARY);
-                telemetry.addData("X", FieldPosition.BLUE_QUARY);
+                telemetry.addData("Y", FieldPosition.RED_QUARRY);
+                telemetry.addData("X", FieldPosition.BLUE_QUARRY);
             }
 
             if(!gamepad1.start) {
@@ -81,10 +83,10 @@ public class MainAutonomous extends LinearOpMode {
                     fieldPosition = FieldPosition.RED_FOUNDATION;
                     startingPos = new Pose2d(new Vector2d(20.736, -63.936), Math.toRadians(90));
                 } else if (gamepad1.y) {
-                    fieldPosition = FieldPosition.RED_QUARY;
+                    fieldPosition = FieldPosition.RED_QUARRY;
                     startingPos = new Pose2d(new Vector2d(-34.752, -63.936), Math.toRadians(90));
                 } else if (gamepad1.x) {
-                    fieldPosition = FieldPosition.BLUE_QUARY;
+                    fieldPosition = FieldPosition.BLUE_QUARRY;
                     startingPos = new Pose2d(new Vector2d(-34.752, 63.936), Math.toRadians(270));
                 }
             }
@@ -103,7 +105,7 @@ public class MainAutonomous extends LinearOpMode {
                 telemetry.update();
                 path = new Path(hwMap, this, drive, startingPos);
 
-                if (fieldPosition == FieldPosition.RED_QUARY || fieldPosition == FieldPosition.BLUE_QUARY) {
+                if (fieldPosition == FieldPosition.RED_QUARRY || fieldPosition == FieldPosition.BLUE_QUARRY) {
                     telemetry.addData("STATUS", "Initializing TensorFlow...");
                     telemetry.update();
 
@@ -130,15 +132,16 @@ public class MainAutonomous extends LinearOpMode {
 
         drivetrain.resetEncoders();
 
-        while (!isStarted() && (fieldPosition == FieldPosition.BLUE_QUARY || fieldPosition == FieldPosition.RED_QUARY) &&
+        // begin tfod processing before starting -- use it to ascertain the positions of skystones in quarry
+        while (!isStarted() && (fieldPosition == FieldPosition.BLUE_QUARRY || fieldPosition == FieldPosition.RED_QUARRY) &&
                 !isStopRequested()) {
             List<Recognition> recognized = recognize();
 
-            if (recognized != null && fieldPosition == FieldPosition.BLUE_QUARY)
+            if (recognized != null && fieldPosition == FieldPosition.BLUE_QUARRY)
                 try {
                     skystonePositions = detect.getSkystonePositionsBlue(recognized, imgWidth);
                 } catch (Exception e){ e.printStackTrace(); }
-            else if (recognized != null && fieldPosition == FieldPosition.RED_QUARY)
+            else if (recognized != null && fieldPosition == FieldPosition.RED_QUARRY)
                 try{
                     skystonePositions = detect.getSkystonePositionsRed(recognized, imgWidth);
                 } catch (Exception e){ e.printStackTrace(); }
@@ -159,13 +162,13 @@ public class MainAutonomous extends LinearOpMode {
             sendData();
             //resetLiftEncoder();
             switch (fieldPosition) {
-                case RED_QUARY:
+                case RED_QUARRY:
                     path.RedQuary(skystonePositions);
                     break;
                 case RED_FOUNDATION:
                     path.RedFoundation();
                     break;
-                case BLUE_QUARY:
+                case BLUE_QUARRY:
                     path.BlueQuary(skystonePositions);
                     break;
                 case BLUE_FOUNDATION:
@@ -233,6 +236,9 @@ public class MainAutonomous extends LinearOpMode {
     }
 
     private void sendData() {
+
+        // inject imu heading and tfod recognition into currently running path from another thread
+
         Thread update = new Thread() {
             public void run() {
                 while (opModeIsActive()) {

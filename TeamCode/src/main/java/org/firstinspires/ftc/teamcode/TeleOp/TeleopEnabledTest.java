@@ -199,7 +199,7 @@ public class TeleopEnabledTest extends LinearOpMode {
                     sb.append("\n");
                 }
 
-                DriveConstant.writeFile(AppUtil.ROOT_FOLDER + "/RoadRunner/kV_regression_data_" + System.currentTimeMillis() + ".csv", sb.toString());
+                // DriveConstant.writeFile(AppUtil.ROOT_FOLDER + "/RoadRunner/kV_regression_data_" + System.currentTimeMillis() + ".csv", sb.toString());
                 runLogic = false;
                 break;
             }

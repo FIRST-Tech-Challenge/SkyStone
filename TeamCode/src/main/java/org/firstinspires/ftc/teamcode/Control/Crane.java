@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Control;
 
 import com.qualcomm.hardware.bosch.BNO055IMUImpl;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cColorSensor;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.hardware.motors.Matrix12vMotor;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -34,12 +35,14 @@ import static org.firstinspires.ftc.teamcode.Control.Constants.COUNTS_PER_INCH;
 import static org.firstinspires.ftc.teamcode.Control.Constants.COUNTS_PER_MOTOR_REV;
 import static org.firstinspires.ftc.teamcode.Control.Constants.backs;
 import static org.firstinspires.ftc.teamcode.Control.Constants.blimits;
+import static org.firstinspires.ftc.teamcode.Control.Constants.colors;
 import static org.firstinspires.ftc.teamcode.Control.Constants.flimits;
 import static org.firstinspires.ftc.teamcode.Control.Constants.foundationServos1;
 import static org.firstinspires.ftc.teamcode.Control.Constants.foundationServos2;
 import static org.firstinspires.ftc.teamcode.Control.Constants.fronts;
 import static org.firstinspires.ftc.teamcode.Control.Constants.leftLinears;
 import static org.firstinspires.ftc.teamcode.Control.Constants.leftServos;
+import static org.firstinspires.ftc.teamcode.Control.Constants.lefts;
 import static org.firstinspires.ftc.teamcode.Control.Constants.leftsucks;
 import static org.firstinspires.ftc.teamcode.Control.Constants.linearLimits;
 import static org.firstinspires.ftc.teamcode.Control.Constants.motorBLS;
@@ -49,6 +52,7 @@ import static org.firstinspires.ftc.teamcode.Control.Constants.motorFRS;
 import static org.firstinspires.ftc.teamcode.Control.Constants.racks;
 import static org.firstinspires.ftc.teamcode.Control.Constants.rightLinears;
 import static org.firstinspires.ftc.teamcode.Control.Constants.rightServos;
+import static org.firstinspires.ftc.teamcode.Control.Constants.rights;
 import static org.firstinspires.ftc.teamcode.Control.Constants.rightsucks;
 import static org.firstinspires.ftc.teamcode.Control.Constants.rotationservos;
 import static org.firstinspires.ftc.teamcode.Control.Constants.servos;
@@ -172,7 +176,9 @@ public class Crane {
     public Servo rotationservo, rightServo, leftServo, foundationServo1, foundationServo2;
     public CRServo smallRSuck, smallLSuck;
 
-    public ModernRoboticsI2cRangeSensor front, back;
+    public ModernRoboticsI2cRangeSensor front, back, left, right;
+
+    public ModernRoboticsI2cColorSensor color;
 
     public DigitalChannel flimit;
     public DigitalChannel blimit;
@@ -232,7 +238,7 @@ public class Crane {
 
     public void setupFoundation() throws InterruptedException{
         foundationServo1 = servo(foundationServos1, Servo.Direction.FORWARD,0,1,0);
-        foundationServo2 = servo(foundationServos2, Servo.Direction.FORWARD,0,1,.7);
+        foundationServo2 = servo(foundationServos2, Servo.Direction.FORWARD,0,1,.6);
     }
 
     public void setupIntake() throws InterruptedException{
@@ -248,6 +254,10 @@ public class Crane {
     public void setupUltra() throws InterruptedException{
         front = ultrasonicSensor(fronts);
         back = ultrasonicSensor(backs);
+        left = ultrasonicSensor(lefts);
+        right = ultrasonicSensor(rights);
+        color = MRColor(colors);
+
     }
 
     //-----------------------HARDWARE SETUP FUNCTIONS---------------------------------------
@@ -286,6 +296,11 @@ public class Crane {
 
         return hardwareMap.get(ModernRoboticsI2cRangeSensor.class, name);
     }
+
+    public ModernRoboticsI2cColorSensor MRColor(String name) throws InterruptedException{
+        return hardwareMap.get(ModernRoboticsI2cColorSensor.class, name);
+    }
+
     public void encoder(EncoderMode mode, DcMotor... motor) throws InterruptedException {
         switch (mode) {
             case ON:

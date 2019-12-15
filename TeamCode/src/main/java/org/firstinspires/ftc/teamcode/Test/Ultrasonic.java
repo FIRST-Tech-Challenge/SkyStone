@@ -29,6 +29,16 @@ public class Ultrasonic extends AutonomousControl {
             telemetry.addData("cm optical back", "%.2f cm", rob.back.cmOptical());
             telemetry.addData("cm back", "%.2f cm", rob.back.getDistance(DistanceUnit.CM));
 
+            telemetry.addData("raw ultrasonic left", rob.left.rawUltrasonic());
+            telemetry.addData("raw optical left", rob.left.rawOptical());
+            telemetry.addData("cm optical left", "%.2f cm", rob.left.cmOptical());
+            telemetry.addData("cm left", "%.2f cm", rob.left.getDistance(DistanceUnit.CM));
+
+            telemetry.addData("raw ultrasonic right", rob.right.rawUltrasonic());
+            telemetry.addData("raw optical right", rob.right.rawOptical());
+            telemetry.addData("cm optical right", "%.2f cm", rob.right.cmOptical());
+            telemetry.addData("cm right", "%.2f cm", rob.right.getDistance(DistanceUnit.CM));
+
             telemetry.update();
         }
 

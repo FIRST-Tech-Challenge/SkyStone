@@ -66,7 +66,9 @@ public class Constants {
     public static final String smallLSucks = "smallLSuck";
     public static final String fronts = "frontUltra";
     public static final String backs = "backUltra";
-
+    public static final String lefts = "leftUltra";
+    public static final String rights = "rightUltra";
+    public static final String colors = "colorSensor";
 
 
 }

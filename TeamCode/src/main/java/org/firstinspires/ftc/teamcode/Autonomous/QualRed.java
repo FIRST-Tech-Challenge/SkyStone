@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Control.AutonomousControl;
 import org.firstinspires.ftc.teamcode.Control.Crane;
 
-@Autonomous(name="Qual Blue", group = "basic")
-public class QualBlue extends AutonomousControl {
+@Autonomous(name="Qual Red", group = "basic")
+public class QualRed extends AutonomousControl {
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
@@ -23,7 +23,7 @@ public class QualBlue extends AutonomousControl {
             rob.foundationServo1.setPosition(.6);
             rob.foundationServo2.setPosition(0);
             sleep(1000);
-            rob.driveTrainMovement(.6, Crane.movements.left);
+            rob.driveTrainMovement(.6, Crane.movements.right);
             sleep(750);
             rob.stopDrivetrain();
             sleep(500);
@@ -31,7 +31,7 @@ public class QualBlue extends AutonomousControl {
             sleep(500);
             rob.driveTrainMovement(.3, Crane.movements.forward);
             sleep(1000);
-            rob.driveTrainMovement(.6, Crane.movements.ccw);
+            rob.driveTrainMovement(.6, Crane.movements.cw);
             sleep(1750);
             rob.driveTrainMovement(.6, Crane.movements.backward);
             sleep(1500);
@@ -39,7 +39,7 @@ public class QualBlue extends AutonomousControl {
             rob.foundationServo2.setPosition(.7);
             rob.driveTrainMovement(.3, Crane.movements.forward);
             sleep(500);
-            rob.driveTrainMovement(.6, Crane.movements.cw);
+            rob.driveTrainMovement(.6, Crane.movements.ccw);
             sleep(500);
             rob.driveTrainMovement(.3, Crane.movements.forward);
             sleep(2000);

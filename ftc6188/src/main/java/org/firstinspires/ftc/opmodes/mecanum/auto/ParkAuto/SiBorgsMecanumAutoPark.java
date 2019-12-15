@@ -90,11 +90,11 @@ public class SiBorgsMecanumAutoPark extends LinearOpMode
         /** AUTO PROGRAM STARTS DRIVING **/
         // drive the forward component of the auto path
         if (autoPath == AutoProgram.FRONTRIGHT || autoPath == AutoProgram.FRONTLEFT)
-        { robot.drivetrain.autoPosition(AutoDirection.FRONT, AutoParkConstants.PARK_FRONT_DIST_IN, VELOCITY, 0); }
+        { robot.drivetrain.autoPosition(AutoDirection.FRONT, AutoParkConstants.PARK_FRONT_DIST_IN, VELOCITY); }
         else
-        { robot.drivetrain.autoPosition(AutoDirection.FRONT, 1, VELOCITY, 0); }
+        { robot.drivetrain.autoPosition(AutoDirection.FRONT, 1, VELOCITY); }
         // drive the side component of the auto path
-        robot.drivetrain.autoPosition(autoSideDirection, AutoParkConstants.PARK_SIDE_DIST_IN, VELOCITY, 0);
+        robot.drivetrain.autoPosition(autoSideDirection, AutoParkConstants.PARK_SIDE_DIST_IN, VELOCITY);
 
         sleep(1000);
         requestOpModeStop();

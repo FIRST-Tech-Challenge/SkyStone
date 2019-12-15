@@ -22,16 +22,21 @@ public class MecanumDrivetrain extends HolonomicFourWheelDrivetrain
     }
 
     // automatically triggers the motors to produce the desired movement (do not use rotation?)
-    public void autoPosition(double course, double distanceIN, double velocity, double rotation)
-    { //TODO: Test mecanum drive with regular DcMotor again since auto problems only developed when switching to EncoderMotor
+    public void autoPosition(double course, double distanceIN, double velocity)
+    {
+        // attempt to start with a full reset of program since encoder presents odd cary-over issue
+        this.finishPositioning();
+
+        // set all movement variables and finally enter the positioning loop
         this.setCourse(-course * Math.PI/180);
         this.setVelocity(velocity);
-        this.setRotation(rotation);
+        this.setRotation(0);
         this.setTargetPosition(distanceIN * getTicksPerIn());
         this.updateMotorPowers();
         this.position();
     }
 
-    public void autoPosition(AutoDirection course, double distanceIN, double velocity, double rotation)
-    { autoPosition(course.getAngle(), distanceIN, velocity, rotation);}
+    // Alternatives
+    public void autoPosition(AutoDirection course, double distanceIN, double velocity)
+    { autoPosition(course.getAngle(), distanceIN, velocity);}
 }

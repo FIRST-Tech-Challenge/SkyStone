@@ -12,8 +12,7 @@ import org.firstinspires.ftc.robotlib.state.AutoDirection;
 import org.firstinspires.ftc.robotlib.state.Button;
 import org.firstinspires.ftc.robotlib.state.ServoState;
 
-@Disabled
-@Autonomous(name="Blue Full V-Test", group="Auto")
+@Autonomous(name="Auto Full V-AutoComp", group="AutoComp")
 public class SiBorgsMecanumAutoFull extends LinearOpMode
 {
     // Robot
@@ -49,28 +48,24 @@ public class SiBorgsMecanumAutoFull extends LinearOpMode
             robot.armCrane.setVerticalPower(-gamepad1.left_stick_y);
             robot.armCrane.setHorizontalPower(gamepad1.right_stick_y);
 
-            telemetry.addData("ADD CAPSTONE TO SERVO (G1-DPAD) + (G1-LStick)", robot.armGripSlide.getState());
-            telemetry.update();
+            telemetry.addData("ADD CAPSTONE TO SERVO (G1-DPAD) + (G1-LStick)", robot.armGripSlide.getState()); telemetry.update();
         }
-
-        telemetry.addData("AUTO START", elapsedTime.seconds());
-        telemetry.update();
+        telemetry.addData("START OF AUTO PERIOD", ""); telemetry.update();
         /** Auto period now starts **/
 
-        robot.drivetrain.autoPosition(AutoDirection.RIGHT, 2, VELOCITY, 0);
-        robot.drivetrain.autoPosition(AutoDirection.FRONT, 6, VELOCITY, 0);
-        robot.drivetrain.autoPosition(AutoDirection.RIGHT, 40, VELOCITY, 0);
+        /** Commands **/
+        // Plan: forward, grab platform, reverse, left to front of platform, front, right to push, left under bridge, forward
+        robot.drivetrain.autoPosition(AutoDirection.FRONT, 29.5, VELOCITY);
 
         robot.platformServo.setPosition(ServoState.DOWN);
-        sleep(1000);
-
-        robot.drivetrain.autoPosition(AutoDirection.LEFT, 84, VELOCITY, 0);
-
+        robot.drivetrain.autoPosition(AutoDirection.REAR, 29.5, VELOCITY);
         robot.platformServo.setPosition(ServoState.UP);
-        sleep(1000);
 
-        robot.drivetrain.autoPosition(AutoDirection.REAR, 36, VELOCITY, 0);
-
+        robot.drivetrain.autoPosition(AutoDirection.LEFT, 24, VELOCITY);
+        robot.drivetrain.autoPosition(AutoDirection.FRONT, 22, VELOCITY);
+        robot.drivetrain.autoPosition(AutoDirection.RIGHT, 10, VELOCITY);
+        robot.drivetrain.autoPosition(AutoDirection.LEFT, 36, VELOCITY);
+        robot.drivetrain.autoPosition(AutoDirection.FRONT, 9, VELOCITY);
 
         // Pause then end the op mode safely
         sleep(1000);

@@ -128,7 +128,7 @@ public class AutonomousRobot {
          */
         int cameraMonitorViewId = hardware.internalHardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardware.internalHardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-        //parameters.cameraName = hardware.webcamName;
+        parameters.cameraName = hardware.webcamName;
         // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
         parameters.vuforiaLicenseKey = Constants.VUFORIA_KEY;
@@ -251,8 +251,8 @@ public class AutonomousRobot {
         if (PHONE_IS_PORTRAIT) {
             phoneXRotate = 90 ;
         }
-        final float CAMERA_FORWARD_DISPLACEMENT  = -9f * mmPerInch;   // eg: Camera is 0 Inches in front of robot center
-        final float CAMERA_VERTICAL_DISPLACEMENT = 9.5f * mmPerInch;   // eg: Camera is 6.625 Inches above ground
+        final float CAMERA_FORWARD_DISPLACEMENT  = -10f * mmPerInch;   // eg: Camera is 0 Inches in front of robot center
+        final float CAMERA_VERTICAL_DISPLACEMENT = 9.75f * mmPerInch;   // eg: Camera is 6.625 Inches above ground
         final float CAMERA_LEFT_DISPLACEMENT     = 0f * mmPerInch;     // eg: Camera is ON the robot's center line
 
         OpenGLMatrix robotFromCamera = OpenGLMatrix

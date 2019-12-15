@@ -92,7 +92,7 @@ class BasicMecanumAutonomous {
      * @return true - keep looping | false - stop looping
      */
     boolean loop() {
-        robot.move(0, 0.7, null, 20);
+        robot.move(180, 0.7, null, 10);
         robot.move(robot.correctMovement(90), 0.5, null, 34);
 
         for (int i = 0; i < 2; i++) {
@@ -104,7 +104,7 @@ class BasicMecanumAutonomous {
                 Point3D stonePoint3D = new Point3D(robot.getTrackedSkystone().getLocation());
                 telemetry.addData("Position relative to Skystone", "{X, Y, Z} = %.0f, %.0f, %.0f", positionFromSkystone.x, positionFromSkystone.y, positionFromSkystone.z);
                 robot.move(robot.getCourse(positionFromSkystone, stonePoint3D), 0.3, null, robot.getDistance(positionFromSkystone, stonePoint3D) - 2);
-            } else robot.move(0, 0.5, null, 5);
+            } else robot.move(180, 0.5, null, 5);
 
             // Intake Stone
             robot.turn(180, 0.5);

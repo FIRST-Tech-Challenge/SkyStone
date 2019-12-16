@@ -17,12 +17,12 @@ public class FullTest extends OpMode {
     HardwareChassis robot;
     ColorTools colorTools;
     double smootingValue;
-    double[] liftZeros;
+    double[] liftZeros = new double[2];
 
     @Override
     public void init() {
         robot = new HardwareChassis(hardwareMap);
-        colorTools = new ColorTools();
+        //colorTools = new ColorTools();
         smootingValue = -0.5;
 
         liftZeros[0] = robot.motor_lift_left.getCurrentPosition();
@@ -31,14 +31,6 @@ public class FullTest extends OpMode {
 
     @Override
     public void loop() {
-        double[] result = OmniWheel.calculate(
-                5.0,
-                38,
-                24,
-                GeneralTools.calculateControllerSmooting(-gamepad1.left_stick_y, smootingValue)*0.5,
-                GeneralTools.calculateControllerSmooting(gamepad1.left_stick_x, smootingValue)*0.5,
-                GeneralTools.calculateControllerSmooting(-gamepad1.left_trigger + gamepad1.right_trigger, smootingValue)); //gamepad1.right_stick_x*-0.2
-
         /*
         double[] result = OmniWheel.calculate(
                 5.0,
@@ -59,7 +51,15 @@ public class FullTest extends OpMode {
         }
 
         //driving
-        else if (gamepad1.left_stick_y > 0 || gamepad1.left_stick_y < 0|| gamepad1.left_stick_x < 0 ||gamepad1.left_stick_x > 0) {
+        else if (gamepad1.left_stick_y != 0 || gamepad1.left_stick_x !      = 0) {
+            double[] result = OmniWheel.calculate(
+                    5.0,
+                    38,
+                    24,
+                    GeneralTools.calculateControllerSmooting(-gamepad1.left_stick_y, smootingValue)*0.5,
+                    GeneralTools.calculateControllerSmooting(gamepad1.left_stick_x, smootingValue)*0.5,
+                    GeneralTools.calculateControllerSmooting(-gamepad1.left_trigger + gamepad1.right_trigger, smootingValue)); //gamepad1.right_stick_x*-0.2
+
             robot.motor_front_left.setPower(result[0]);
             robot.motor_front_right.setPower(result[1]);
             robot.motor_rear_left.setPower(result[2]);
@@ -87,20 +87,22 @@ public class FullTest extends OpMode {
         //clamp
         if (gamepad2.right_trigger > 0 || gamepad2.left_trigger > 0) {
             robot.motor_clamp.setPower(-gamepad2.right_trigger + gamepad2.left_trigger);
+        } else {
+            robot.motor_clamp.setPower(0);
         }
         //lift
-        else if (gamepad2.dpad_up) {
-            robot.motor_lift_left.setPower(-0.1);
-            robot.motor_lift_right.setPower(0.1);
-        } else if (gamepad2.dpad_down && (robot.motor_lift_left.getCurrentPosition() >= liftZeros[0] && robot.motor_lift_right.getCurrentPosition() <= liftZeros[1])) {
-            robot.motor_lift_left.setPower(0.1);
-            robot.motor_lift_right.setPower(-0.1);
+
+        if (-gamepad2.left_stick_y > 0) {
+            robot.motor_lift_left.setPower(0.1 * gamepad2.left_stick_y);
+            robot.motor_lift_right.setPower(-0.1 * gamepad2.left_stick_y);
+        } else if (-gamepad2.left_stick_y < 0 && (robot.motor_lift_left.getCurrentPosition() >= liftZeros[0] && robot.motor_lift_right.getCurrentPosition() <= liftZeros[1])) {
+            robot.motor_lift_left.setPower(0.1 * gamepad2.left_stick_y);
+            robot.motor_lift_right.setPower(-0.1 * gamepad2.left_stick_y);
         }
         //set all motors 0 if nothing is pressed
         else {
             robot.motor_lift_left.setPower(0);
             robot.motor_lift_right.setPower(0);
-            robot.motor_clamp.setPower(0);
         }
 
 
@@ -111,7 +113,7 @@ public class FullTest extends OpMode {
             robot.servo_grab.setPosition(0.6); //open
         }
 
-
+        /*
         telemetry.addData("Smoothing Value: ", smootingValue);
         telemetry.addLine();
         telemetry.addData("Is Blue Back: ", colorTools.isBlue(robot.color_back));
@@ -127,5 +129,6 @@ public class FullTest extends OpMode {
         telemetry.addData("S: ", colorTools.showHSV(robot.color_front)[1]);
         telemetry.addData("V: ", colorTools.showHSV(robot.color_front)[2]);
         telemetry.update();
+        */
     }
 }

@@ -19,6 +19,7 @@ public class Maccabot {
     // Drive Motor Variables
     private DcMotor front_left, front_right, back_left, back_right, intake_left, intake_right, lift_left, lift_right;
     private Servo servo;
+    private CRServo claw;
 
     // Intake Motors TBD
     // private DcMotor intake_left, intake_right;
@@ -40,11 +41,13 @@ public class Maccabot {
         lift_left = hardwareMap.dcMotor.get("lift_left");
         lift_right = hardwareMap.dcMotor.get("lift_right");
         servo = hardwareMap.servo.get("servo");
+        claw = hardwareMap.crservo.get("bob");
 
         encoder = 0;
 
 
-        // Reverse Right Side
+
+
         back_left.setDirection(DcMotorSimple.Direction.REVERSE);
         back_right.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -98,13 +101,8 @@ public class Maccabot {
         parentOpMode.telemetry.addLine(Double.toString(intake_left.getPower()));*/
     }
 
-    public void servo(double pos, boolean con1, boolean con2){
-        if(con1){
-            servo.setPosition(pos);
-        }
-        if(con2){
-            servo.setPosition(-pos);
-        }
+    public void servo( double cond1){
+        claw.setPower(cond1);
     }
 
     public void lift(double cond1, double cond2){
@@ -146,6 +144,9 @@ public class Maccabot {
         front_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         front_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        back_left.setDirection(DcMotorSimple.Direction.FORWARD);
+        back_right.setDirection(DcMotorSimple.Direction.FORWARD);
+
         back_left.setPower(power);
         back_left.setTargetPosition(pos);
         back_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -161,11 +162,14 @@ public class Maccabot {
         back_right.setPower(power);
         back_right.setTargetPosition(pos);
         back_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
     }
 
     public boolean encoderIsBusy() {
         return (front_right.isBusy());
     }
+
 
 
 }

@@ -9,6 +9,9 @@ import org.firstinspires.ftc.teamcode.Maccabot;
 
 @TeleOp(name="MainTeleOp")
 //@Disabled
+//ADB CONNECT
+//adb tcpip 5555
+//adb connect 192.168.49.1:5555
 public class MainTeleOp extends OpMode {
 
     Maccabot robot;
@@ -34,7 +37,7 @@ public class MainTeleOp extends OpMode {
             servo.setPosition(-0.35);
 
         }
-        robot.servo(0.35, gamepad2.a, gamepad2.b);
+        robot.servo(gamepad2.left_stick_y);
 
         robot.lift(gamepad1.left_trigger,gamepad1.right_trigger);
     }

@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.SubAssembly.DriveTrain.DriveControl;
 import org.firstinspires.ftc.teamcode.SubAssembly.Grabber.GrabberControl;
+import org.firstinspires.ftc.teamcode.SubAssembly.FoundationGrabber.FoundationGrabberControl;
 import org.firstinspires.ftc.teamcode.SubAssembly.Lift.LiftControl;
 import org.firstinspires.ftc.teamcode.Utilities.GamepadWrapper;
 
@@ -34,6 +35,7 @@ public class teleop extends LinearOpMode {
         // create and initialize sub-assemblies
         DriveControl Drive = new DriveControl();
         GrabberControl Grabber = new GrabberControl();
+        FoundationGrabberControl FoundationGrabber = new FoundationGrabberControl();
         LiftControl Lift = new LiftControl();
         Drive.init(this);
         Grabber.init(this);
@@ -108,6 +110,10 @@ public class teleop extends LinearOpMode {
             }
             if (egamepad2.y.released) {
                 Grabber.home();
+            }
+
+            if (egamepad2.left_bumper.released){
+                FoundationGrabber.grab();
             }
 
             if (egamepad2.dpad_up.state && !Lift.isLimitTop()) {

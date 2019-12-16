@@ -1,6 +1,29 @@
 package org.firstinspires.ftc.teamcode.Library;
 
+import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassis;
+
 public class OmniWheel {
+    HardwareChassis robot;
+
+    public OmniWheel(HardwareChassis robot) {
+        this.robot = robot;
+    }
+
+    public void setMotors(double forwardVelocity, double sidewardsVelocity, double rotationVelocity) {
+        double[] result = OmniWheel.calculate(
+                5.0,
+                38,
+                24,
+                forwardVelocity,
+                sidewardsVelocity,
+                rotationVelocity);
+
+        robot.motor_front_left.setPower(result[0]);
+        robot.motor_front_right.setPower(result[1]);
+        robot.motor_rear_left.setPower(result[2]);
+        robot.motor_rear_right.setPower(result[3]);
+    }
+
     public static double[] matrixMultiply(double[][] a, double[] x) {
         int m = a.length;
         int n = a[0].length;

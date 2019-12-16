@@ -21,7 +21,7 @@ public class VuforiaOneMotorReactionTest extends OpMode {
     @Override
     public void init() {
         robot = new HardwareChassis(hardwareMap);
-        vuforiaNavigator = new VuforiaNavigator(hardwareMap, robot, telemetry, () -> true);
+        vuforiaNavigator = new VuforiaNavigator(hardwareMap, robot, telemetry);
         motor_1 = hardwareMap.get(DcMotor.class, "hub2_motorport1");
     }
 

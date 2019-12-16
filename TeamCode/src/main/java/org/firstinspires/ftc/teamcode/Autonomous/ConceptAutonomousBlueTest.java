@@ -7,20 +7,20 @@ import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassis;
 import org.firstinspires.ftc.teamcode.Library.ColorTools;
 import org.firstinspires.ftc.teamcode.Library.GeneralTools;
 import org.firstinspires.ftc.teamcode.Library.Movement.ControlledDrive;
+import org.firstinspires.ftc.teamcode.Library.Movement.ControlledDriveOld;
 import org.firstinspires.ftc.teamcode.Library.VuforiaNavigator;
 
 @Autonomous(name="ConceptAutonomousBlueTest")
 public class ConceptAutonomousBlueTest extends LinearOpMode {
     private VuforiaNavigator vuforiaNavigator;
     private HardwareChassis robot;
-    private ControlledDrive controlledDrive;
+    private ControlledDriveOld controlledDriveOld;
     private GeneralTools generalTools;
     private ColorTools colorTools;
 
     @Override public void runOpMode() {
         this.robot = new HardwareChassis(hardwareMap);
-        this.vuforiaNavigator = new VuforiaNavigator(hardwareMap, robot, telemetry, () -> opModeIsActive());
-        this.controlledDrive= new ControlledDrive(hardwareMap, telemetry, () -> opModeIsActive()); //
+        this.vuforiaNavigator = new VuforiaNavigator(hardwareMap, robot, telemetry);
         this.generalTools = new GeneralTools(this, robot);
         this.colorTools = new ColorTools();
 
@@ -28,37 +28,41 @@ public class ConceptAutonomousBlueTest extends LinearOpMode {
 
 
         //drive method, speed forward, speed sideways
-        //controlledDrive.driveConditionally(0.5, 0, () -> true);
+        //controlledDriveOld.driveConditionally(0.5, 0, () -> true);
 
-        //controlledDrive.driveConditionally(0,0.2*direction, () -> (!vuforiaNavigator.skystoneFound() && opModeIsActive()));
+        //controlledDriveOld.driveConditionally(0,0.2*direction, () -> (!vuforiaNavigator.skystoneFound() && opModeIsActive()));
         //vuforiaNavigator.navigateToSkystone(0.5, 0.5);
-        controlledDrive.driveDistance(80, 0, 0.2, 5);
+        ControlledDrive driveForward = new ControlledDrive(robot, telemetry, 80, 0, 0.2);
+
+        driveForward.start();
+        while(!driveForward.endReached() && !isStopRequested()) {}
+        driveForward.stop();
 
         // TODO: Arm runter
         generalTools.grabSkysstone();
         /*
 
-        controlledDrive.driveConditionally(-0.5,0, () -> robot.touch_left.getState() == true && robot.touch_right.getState() == true);
+        controlledDriveOld.driveConditionally(-0.5,0, () -> robot.touch_left.getState() == true && robot.touch_right.getState() == true);
 
-        controlledDrive.driveConditionally(0,-0.2*direction, () -> colorTools.isRed(robot.color_back) == false);
-        controlledDrive.driveDistance(0, -5*direction, 0.2, 0);
-        controlledDrive.driveConditionally(0,-0.2*direction, () -> colorTools.isRed(robot.color_back) == false);
+        controlledDriveOld.driveConditionally(0,-0.2*direction, () -> colorTools.isRed(robot.color_back) == false);
+        controlledDriveOld.driveDistance(0, -5*direction, 0.2, 0);
+        controlledDriveOld.driveConditionally(0,-0.2*direction, () -> colorTools.isRed(robot.color_back) == false);
         // we are now in the corner
 
         // TODO: arm hoch
-        controlledDrive.driveConditionally(0.5,0, () -> colorTools.isRed(robot.color_front) == false);
+        controlledDriveOld.driveConditionally(0.5,0, () -> colorTools.isRed(robot.color_front) == false);
         // TODO: arm runter
 
-        controlledDrive.driveConditionally(-0.5,0, () -> robot.touch_left.getState() == true && robot.touch_right.getState() == true);
+        controlledDriveOld.driveConditionally(-0.5,0, () -> robot.touch_left.getState() == true && robot.touch_right.getState() == true);
 
         generalTools.openClamp();
         // TODO: arm hoch
 
-        controlledDrive.driveDistance(0, 20*direction, 0.2, 0);
+        controlledDriveOld.driveDistance(0, 20*direction, 0.2, 0);
 
         // TODO: arm runter
 
-        controlledDrive.driveConditionally(0,0.5*direction, () -> colorTools.isRed(robot.color_front) == false);
+        controlledDriveOld.driveConditionally(0,0.5*direction, () -> colorTools.isRed(robot.color_front) == false);
 
          */
     }

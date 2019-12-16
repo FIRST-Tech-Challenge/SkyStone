@@ -17,7 +17,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassis;
-import org.firstinspires.ftc.teamcode.Library.Movement.ControlledDrive;
+import org.firstinspires.ftc.teamcode.Library.Movement.ControlledDriveOld;
 
 import java.util.function.Supplier;
 
@@ -32,7 +32,7 @@ public class VuforiaNavigator {
     private HardwareChassis robot;
     private HardwareMap hardwareMap;
     private VuforiaTrackable stoneTarget;
-    private ControlledDrive controlledDrive;
+    private ControlledDriveOld controlledDriveOld;
     private Telemetry telemetry;
 
     double targetX;
@@ -42,10 +42,9 @@ public class VuforiaNavigator {
     double rY;
     double rZ;
 
-    public VuforiaNavigator(HardwareMap hardwareMap, HardwareChassis robot, Telemetry telemetry, Supplier<Boolean> opModeRunning) {
+    public VuforiaNavigator(HardwareMap hardwareMap, HardwareChassis robot, Telemetry telemetry) {
         this.hardwareMap = hardwareMap;
         this.robot = robot;
-        this.controlledDrive = new ControlledDrive(hardwareMap, telemetry, () -> opModeRunning.get());
         this.telemetry = telemetry;
 
         /*
@@ -134,8 +133,8 @@ public class VuforiaNavigator {
         robot.motor_rear_left.setPower(0);
         robot.motor_rear_right.setPower(0);
 
-        //controlledDrive.driveConditionally(0, speed, () -> getTranslationAndOrientation()[1] != 0);
-        //controlledDrive.driveConditionally(speed, 0, () -> getTranslationAndOrientation()[0] != 3);
+        //controlledDriveOld.driveConditionally(0, speed, () -> getTranslationAndOrientation()[1] != 0);
+        //controlledDriveOld.driveConditionally(speed, 0, () -> getTranslationAndOrientation()[0] != 3);
     }
 
     public double[] getTranslationAndOrientation() {

@@ -1,14 +1,5 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import org.firstinspires.ftc.teamcode.Library.ColorTools;
-
-import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassis;
-import org.firstinspires.ftc.teamcode.Library.Movement.ControlledLift;
-import org.firstinspires.ftc.teamcode.Library.Movement.ControlledDrive;
-
 /*
 //auskommentiert weil error
 @Autonomous (name = "ConceptAutonomous")
@@ -16,7 +7,7 @@ import org.firstinspires.ftc.teamcode.Library.Movement.ControlledDrive;
 public class ConceptAutonomous extends LinearOpMode {
 
     HardwareChassis robot;
-    ControlledDrive controlledDrive;
+    ControlledDriveOld controlledDrive;
     //ControlledClamp controlledClamp;
     ControlledLift controlledLift;
     ColorTools colorTools;
@@ -25,7 +16,7 @@ public class ConceptAutonomous extends LinearOpMode {
     public void runOpMode() {
         // --Initialize Robot--
         robot = new HardwareChassis(hardwareMap);
-        controlledDrive = new ControlledDrive(hardwareMap, telemetry, () -> this.opModeIsActive());
+        controlledDrive = new ControlledDriveOld(hardwareMap, telemetry, () -> this.opModeIsActive());
         controlledLift = new ControlledLift(hardwareMap, telemetry, () -> this.opModeIsActive());
         //controlledClamp = new ControlledClamp(hardwareMap, telemetry, () -> this.opModeIsActive());
         colorTools = new ColorTools();

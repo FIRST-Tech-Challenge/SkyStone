@@ -18,7 +18,7 @@ public class FoundationGrabberControl {
     private LinearOpMode opmode = null;     /* local copy of opmode class */
 
     //initializing motors
-    private Servo foundationS;
+    private Servo foundationMover;
 
 
     public ServoControl<FoundationGrabberSetpt, EnumMap<FoundationGrabberSetpt, Double>> FoundationGrabberServo;
@@ -54,10 +54,10 @@ public class FoundationGrabberControl {
 
 
         /* Map hardware devices */
-        foundationS = hwMap.servo.get("foundationS");
+        foundationMover = hwMap.servo.get("foundationS");
 
 
-        FoundationGrabberServo = new ServoControl(foundationS, MapFoundationGrabber, FoundationGrabberSetpt.Open, true);
+        FoundationGrabberServo = new ServoControl(foundationMover, MapFoundationGrabber, FoundationGrabberSetpt.Open, true);
     }
 
     public void grab() {

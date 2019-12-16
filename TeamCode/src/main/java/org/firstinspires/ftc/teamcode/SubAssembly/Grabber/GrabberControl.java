@@ -63,8 +63,8 @@ public class GrabberControl {
         MapGrabber.put(GrabberSetpt.Open, 0.68);
 
         MapWrist = new EnumMap<WristSetpt, Double>(WristSetpt.class);
-        MapWrist.put(WristSetpt.Horizontal, 0.28);
-        MapWrist.put(WristSetpt.Vertical, 0.69);
+        MapWrist.put(WristSetpt.Horizontal, 0.44);
+        MapWrist.put(WristSetpt.Vertical, 0.85);
 
         MapExtender = new EnumMap<ExtenderSetpt, Double>(ExtenderSetpt.class);
         MapExtender.put(ExtenderSetpt.Home, 0.81);

@@ -99,14 +99,14 @@ public class BasicOpMode_Iterative extends OpMode
      */
     @Override
     public void loop() {
-        double drive = gamepad1.left_stick_y * speed;
-        double strafe = gamepad1.left_stick_x * speed;
-        double rotate = gamepad1.right_stick_x * speed;
+        double drive = Math.pow(gamepad1.left_stick_y, 3) * speed;
+        double strafe = gamepad1.left_stick_x;
+        double rotate = gamepad1.right_stick_x;
 
-        robot.rightFrontDrive.setPower(Math.pow(drive - strafe + rotate, 3));
-        robot.leftFrontDrive.setPower(Math.pow(drive + strafe - rotate, 3));
-        robot.leftRearDrive.setPower(Math.pow(drive - strafe - rotate, 3));
-        robot.rightRearDrive.setPower(Math.pow(drive + strafe + rotate, 3));
+        robot.rightFrontDrive.setPower(drive - strafe + rotate);
+        robot.leftFrontDrive.setPower(drive + strafe - rotate);
+        robot.leftRearDrive.setPower(drive - strafe - rotate);
+        robot.rightRearDrive.setPower(drive + strafe + rotate);
 
         robot.leftArm.setPower(Math.pow(gamepad1.right_trigger - gamepad1.left_trigger, 3));
         robot.rightArm.setPower(Math.pow(gamepad1.left_trigger - gamepad1.right_trigger, 3));
@@ -124,6 +124,8 @@ public class BasicOpMode_Iterative extends OpMode
 
         telemetry.addData("Left claw pos:", robot.leftClaw.getPosition());
         telemetry.addData("Right claw pos:", robot.rightClaw.getPosition());
+        telemetry.addData("Right arm pos:", robot.rightArm.getCurrentPosition());
+        telemetry.addData("left arm pos:", robot.leftArm.getCurrentPosition());
     }
 
     /*

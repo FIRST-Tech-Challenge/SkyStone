@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.opmodes.mecanum.drive;
+package org.firstinspires.ftc.opmodes.competition.drive;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;

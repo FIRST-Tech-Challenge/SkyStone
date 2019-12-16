@@ -142,6 +142,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     {
         for (int motorIndex = 0; motorIndex < this.motorList.length; motorIndex++)
         {
+            runModes[motorIndex] = this.motorList[motorIndex].getMode();
             this.motorList[motorIndex].setPower(0); //Hopefully stops the drift at the end of move commands
             this.motorList[motorIndex].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             this.motorList[motorIndex].setMode(runModes[motorIndex]);

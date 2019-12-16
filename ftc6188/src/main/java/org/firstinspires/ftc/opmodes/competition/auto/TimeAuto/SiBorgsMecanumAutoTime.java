@@ -1,9 +1,8 @@
-package org.firstinspires.ftc.opmodes.mecanum.auto.FullAuto;
+package org.firstinspires.ftc.opmodes.competition.auto.TimeAuto;
 
 import android.graphics.Color;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -12,8 +11,8 @@ import org.firstinspires.ftc.robotlib.state.AutoDirection;
 import org.firstinspires.ftc.robotlib.state.Button;
 import org.firstinspires.ftc.robotlib.state.ServoState;
 
-@Autonomous(name="Auto Full V-AutoComp", group="AutoComp")
-public class SiBorgsMecanumAutoFull extends LinearOpMode
+@Autonomous(name="Time Based Auto", group="CompAuto")
+public class SiBorgsMecanumAutoTime extends LinearOpMode
 {
     // Robot
     private SiBorgsMecanumRobot robot;
@@ -53,22 +52,28 @@ public class SiBorgsMecanumAutoFull extends LinearOpMode
         telemetry.addData("START OF AUTO PERIOD", ""); telemetry.update();
         /** Auto period now starts **/
 
-        /** Commands **/
-        // Plan: forward, grab platform, reverse, left to front of platform, front, right to push, left under bridge, forward
-        robot.drivetrain.autoPosition(AutoDirection.FRONT, 29.5, VELOCITY);
+        telemetry.addData("1 Sec", timePos(AutoDirection.FRONT, 1));
+        sleep(5000);
+        telemetry.addData("2 Sec", timePos(AutoDirection.FRONT, 2));
+        sleep(5000);
+        telemetry.addData("3 Sec", timePos(AutoDirection.FRONT, 3));
+        sleep(5000);
+        telemetry.addData("4 Sec", timePos(AutoDirection.FRONT, 4));
+        sleep(5000);
+        telemetry.addData("5 Sec", timePos(AutoDirection.FRONT, 5));
+    }
 
-        robot.platformServo.setPosition(ServoState.DOWN);
-        robot.drivetrain.autoPosition(AutoDirection.REAR, 29.5, VELOCITY);
-        robot.platformServo.setPosition(ServoState.UP);
+    private double timePos(AutoDirection course, double time)
+    {
+        ElapsedTime elapsedTime = new ElapsedTime();
+        elapsedTime.reset();
+        double startTime = elapsedTime.seconds();
+        robot.drivetrain.autoPositionByTime(course, time, VELOCITY);
+        return elapsedTime.seconds() - startTime;
+    }
 
-        robot.drivetrain.autoPosition(AutoDirection.LEFT, 24, VELOCITY);
-        robot.drivetrain.autoPosition(AutoDirection.FRONT, 22, VELOCITY);
-        robot.drivetrain.autoPosition(AutoDirection.RIGHT, 10, VELOCITY);
-        robot.drivetrain.autoPosition(AutoDirection.LEFT, 36, VELOCITY);
-        robot.drivetrain.autoPosition(AutoDirection.FRONT, 9, VELOCITY);
-
-        // Pause then end the op mode safely
-        sleep(1000);
-        requestOpModeStop();
+    private double convertDistanceInToSeconds(double distanceIn)
+    {
+        return (0.0366599496 * distanceIn) + 0.0851922729;
     }
 }

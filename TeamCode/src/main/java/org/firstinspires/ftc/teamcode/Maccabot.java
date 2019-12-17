@@ -114,10 +114,12 @@ public class Maccabot {
         if((lift_right.getCurrentPosition() <= 0 && (cond2 > 0)) || (lift_right.getCurrentPosition() >= 2030 && (cond1 > 0))){
             lift_right.setPower(0);
             lift_left.setPower(0);
+            lift_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            lift_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
         else{
-            lift_left.setPower(cond1-cond2);
-            lift_right.setPower(cond1-cond2);
+            lift_left.setPower((cond1-cond2) * 0.75);
+            lift_right.setPower((cond1-cond2) * 0.75);
 
             parentOpMode.telemetry.addLine(Double.toString(lift_right.getCurrentPosition()));
             parentOpMode.telemetry.update();

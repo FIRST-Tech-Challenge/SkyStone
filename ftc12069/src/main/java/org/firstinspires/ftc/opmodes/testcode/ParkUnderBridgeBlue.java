@@ -13,7 +13,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotlib.autonomous.AutonomousRobot;
-import org.firstinspires.ftc.robotlib.robot.HeadingableMecanumHardwareMap;
+import org.firstinspires.ftc.robotlib.robot.OdometricalMecanumHardwareMap;
 import org.firstinspires.ftc.robotlib.state.Alliance;
 
 @Autonomous(name="Auto Blue", group="chad")
@@ -25,7 +25,7 @@ public class ParkUnderBridgeBlue extends LinearOpMode {
     private DcMotor backright;
     private static final String VUFORIA_KEY =
             " AaeQZBH/////AAABmdfQDXE5pE4MtzACI8Xt4hFWa0s+iOsMjEia6gHgjNTLJv9GfGVm1eO9HJg1uKBiuJ8O2+jzEP758aHiiC6XHCPrQcWGP8tu18nrXgUgHATBy74yPVv1lNWZq0eWcJjVDAnSpeQiFc4DhbC1F4rLgRpHzzjiIQTmUncitQg9G+l2/BKBQTkhPKEsh4gngyj8qGvyTePsw4DFDNKjf731kblzdzkAQx6cmz6fzrarqo8e4wQdHeD3USTIDDOFAlSdJe5qUmNsB0S7YILvfQE3AesKYd6CZMsyonme915GoicNvDRhsNkdc9pPSY50De/PwILZFgsygSO4jsqnbLzlLDyrPw0Q39Gc47NsVCqdVAaG" ;
-    public HeadingableMecanumHardwareMap hardwareMap;
+    public OdometricalMecanumHardwareMap hardwareMap;
     private HardwareMap hwMap;
     private Integer cpr = 28; //counts per rotation
     private Integer gearratio = 2 / 1;

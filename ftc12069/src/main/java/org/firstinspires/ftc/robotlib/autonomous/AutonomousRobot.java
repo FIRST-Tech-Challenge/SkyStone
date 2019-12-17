@@ -22,6 +22,7 @@ import org.firstinspires.ftc.robotlib.navigation.Area;
 import org.firstinspires.ftc.robotlib.navigation.Point;
 import org.firstinspires.ftc.robotlib.navigation.Point3D;
 import org.firstinspires.ftc.robotlib.robot.MecanumHardwareMap;
+import org.firstinspires.ftc.robotlib.robot.OdometricalMecanumHardwareMap;
 import org.firstinspires.ftc.robotlib.state.Alliance;
 
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  * Vuforia is handled internally, providing only important information.
  */
 public class AutonomousRobot {
-    public MecanumHardwareMap hardware;
+    public OdometricalMecanumHardwareMap hardware;
     private Alliance alliance;
     private Telemetry telemetry;
 
@@ -96,7 +97,7 @@ public class AutonomousRobot {
      * @param telemetry Logging
      */
     public AutonomousRobot(HardwareMap hwMap, Alliance alliance, Telemetry telemetry) {
-        this.hardware = new MecanumHardwareMap(hwMap);
+        this.hardware = new OdometricalMecanumHardwareMap(hwMap);
         this.alliance = alliance;
         this.telemetry = telemetry;
         this.elapsedTime = new ElapsedTime();
@@ -111,11 +112,8 @@ public class AutonomousRobot {
      * @param elapsedTime Game Timer
      */
     public AutonomousRobot(HardwareMap hwMap, Alliance alliance, Telemetry telemetry, ElapsedTime elapsedTime) {
-        this.hardware = new MecanumHardwareMap(hwMap);
-        this.alliance = alliance;
-        this.telemetry = telemetry;
+        this(hwMap, alliance, telemetry);
         this.elapsedTime = elapsedTime;
-        this.locationInfo = new LocationInfo();
     }
 
     /**
@@ -408,19 +406,15 @@ public class AutonomousRobot {
     /**
      * Turns the robot by an angle.
      * This blocks the current thread.
-     * @param angle angle to turn to
+     * @param angle angle to turn to in degrees
      * @param velocity rotation speed (between 0 and 1)
      */
     public void turn(double angle, double velocity) {
         telemetry.addData("TURN EXECUTING", "Angle: %.2f degrees\nVelocity: %.2f", angle, velocity);
         telemetry.update();
 
-        double initialOrientation = this.getOrientation2DIMU();
-        double[] rotationValues = hardware.drivetrain.getWheelRotationValues(velocity);
-
-        while (this.getOrientation2DIMU() - initialOrientation < angle) {
-            hardware.drivetrain.setMotorPowers(rotationValues[0], rotationValues[1], rotationValues[2], rotationValues[3]);
-        }
+        hardware.drivetrain.setTargetHeading(Math.toRadians(angle));
+        hardware.drivetrain.rotate();
     }
 
     /**

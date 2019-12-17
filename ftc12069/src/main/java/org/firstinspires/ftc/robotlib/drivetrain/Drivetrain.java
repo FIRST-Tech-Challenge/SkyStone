@@ -32,20 +32,6 @@ abstract public class Drivetrain {
     }
 
     /**
-     * Special method for manually setting motor velocities
-     * @param frontLeft Front Left Motor
-     * @param frontRight Front Right Motor
-     * @param rearRight Rear Right Motor
-     * @param rearLeft Rear Left Motor
-     */
-    public void setMotorPowers(double frontLeft, double frontRight, double rearRight, double rearLeft) {
-        motorList[0].setPower(frontLeft);
-        motorList[1].setPower(frontRight);
-        motorList[2].setPower(rearRight);
-        motorList[3].setPower(rearLeft);
-    }
-
-    /**
      * Calculates the motor powers, then sets the motor powers to move the robot.
      */
     protected void updateMotorPowers()

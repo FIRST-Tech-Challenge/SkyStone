@@ -53,9 +53,6 @@ public class MecanumHardwareMap {
     // Camera
     public WebcamName webcamName;
 
-    // REV IMU
-    public BNO055IMU imu;
-
     public MecanumDrivetrain drivetrain;
 
     // Managers (for treating a group of objects as one)
@@ -73,8 +70,7 @@ public class MecanumHardwareMap {
      * Creates a mecanum hardware map from the FTC given hardware map.
      * @param hwMap FTC hardware map
      */
-    public MecanumHardwareMap(HardwareMap hwMap)
-    {
+    public MecanumHardwareMap(HardwareMap hwMap) {
         this.internalHardwareMap = hwMap;
 
         driveFrontLeft = new EncoderMotor(hwMap.get(DcMotor.class, "driveFrontLeft"));
@@ -118,17 +114,6 @@ public class MecanumHardwareMap {
         deliveryRight.setDirection(Servo.Direction.REVERSE);
 
         webcamName = hwMap.get(WebcamName.class, "Webcam 1");
-
-        // Configure the REV HUB IMU
-        BNO055IMU.Parameters imuParameters = new BNO055IMU.Parameters();
-        imuParameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
-        imuParameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        //imuParameters.calibrationDataFile = "BNO055IMUCalibration.json"; If we find problems manual calibration will be required
-        imuParameters.loggingEnabled = true;
-        imuParameters.loggingTag = "IMU";
-
-        imu = hwMap.get(BNO055IMU.class, "imu");
-        imu.initialize(imuParameters);
 
         drivetrain = new MecanumDrivetrain(motorList);
         intakeMotorManager = new MotorManager(new DcMotor[]{intakeLeft, intakeRight});

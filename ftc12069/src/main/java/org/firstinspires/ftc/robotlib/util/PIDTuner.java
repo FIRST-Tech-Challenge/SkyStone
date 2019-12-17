@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotlib.controller.PIDController;
-import org.firstinspires.ftc.robotlib.drivetrain.Headingable;
+import org.firstinspires.ftc.robotlib.drivetrain.Odometrical;
 import org.firstinspires.ftc.robotlib.state.Button;
 import org.firstinspires.ftc.robotlib.state.ToggleBoolean;
 import org.firstinspires.ftc.robotlib.state.ToggleInt;
@@ -12,7 +12,7 @@ import org.firstinspires.ftc.robotlib.state.ToggleInt;
 public class PIDTuner
 {
     private static final double ROTATION_POWER = 0.5;
-    private Headingable drivetrain;
+    private Odometrical drivetrain;
     private PIDController controller;
     private Gamepad gamepad;
     private Telemetry telemetry;
@@ -25,7 +25,7 @@ public class PIDTuner
     private ToggleBoolean aButton = new ToggleBoolean();
     private ToggleInt selected = new ToggleInt(3);
 
-    public PIDTuner(Headingable drivetrain, PIDController controller, Gamepad gamepad, Telemetry telemetry)
+    public PIDTuner(Odometrical drivetrain, PIDController controller, Gamepad gamepad, Telemetry telemetry)
     {
         this.drivetrain = drivetrain;
         this.controller = controller;

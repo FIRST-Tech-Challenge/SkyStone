@@ -37,6 +37,7 @@ import org.firstinspires.ftc.robotlib.autonomous.AutonomousRobot;
 import org.firstinspires.ftc.robotlib.information.OrientationInfo;
 import org.firstinspires.ftc.robotlib.navigation.Point3D;
 import org.firstinspires.ftc.robotlib.state.Alliance;
+import org.firstinspires.ftc.robotlib.state.Course;
 import org.firstinspires.ftc.robotlib.state.ServoState;
 
 class BasicMecanumAutonomous {
@@ -92,19 +93,20 @@ class BasicMecanumAutonomous {
      * @return true - keep looping | false - stop looping
      */
     boolean loop() {
-        robot.move(180, 0.7, null, 10);
-        robot.move(robot.correctMovement(90), 0.5, null, 34);
+        robot.move(Course.BACKWARD, 0.7, null, 10);
+        robot.move(robot.correctMovement(Course.RIGHT), 0.5, null, 34);
 
         for (int i = 0; i < 2; i++) {
+            if (i > 0) robot.turn(180, 0.5);
+            
             robot.scanWait(2);
-
             if (robot.isTrackableVisible() && robot.isSkystoneVisible()) {
                 // Get Skystone
                 Point3D positionFromSkystone = robot.getPositionFromSkystone();
                 Point3D stonePoint3D = new Point3D(robot.getTrackedSkystone().getLocation());
                 telemetry.addData("Position relative to Skystone", "{X, Y, Z} = %.0f, %.0f, %.0f", positionFromSkystone.x, positionFromSkystone.y, positionFromSkystone.z);
                 robot.move(robot.getCourse(positionFromSkystone, stonePoint3D), 0.3, null, robot.getDistance(positionFromSkystone, stonePoint3D) - 2);
-            } else robot.move(180, 0.5, null, 5);
+            } else robot.move(Course.BACKWARD, 0.5, null, 5);
 
             // Intake Stone
             robot.turn(180, 0.5);
@@ -116,19 +118,19 @@ class BasicMecanumAutonomous {
             robot.wait(0.2);
             robot.hardware.updateDeliveryStates(ServoState.CRADLE);
             robot.wait(1.0);
-            robot.move(180, 0.5, null, 8);
+            robot.move(Course.BACKWARD, 0.5, null, 8);
 
             // Deliver Stone
-            robot.move(robot.correctMovement(-90), 0.5, null, 71);
-            robot.move(0, 0.5, null, 14);
+            robot.move(robot.correctMovement(Course.LEFT), 0.5, null, 71);
+            robot.move(Course.FORWARD, 0.5, null, 14);
             if (i == 0) robot.hardware.updateDeliveryStates(ServoState.ONEBLOCKDEPOSIT);
             else robot.hardware.updateDeliveryStates(ServoState.TWOBLOCKDEPOSIT);
             robot.hardware.blockGrabber.setPosition(ServoState.OPEN);
             robot.wait(2.0);
 
             // Move to the loading zone
-            robot.move(180, 0.5, null, 14);
-            robot.move(robot.correctMovement(90), 0.5, null, 94);
+            robot.move(Course.BACKWARD, 0.5, null, 14);
+            robot.move(robot.correctMovement(Course.RIGHT), 0.5, null, 94);
         }
 
         robot.move(robot.correctMovement(90), 0.5, null, 46);

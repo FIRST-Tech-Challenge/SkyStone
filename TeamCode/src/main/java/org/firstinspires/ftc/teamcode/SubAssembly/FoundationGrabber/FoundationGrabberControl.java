@@ -49,12 +49,12 @@ public class FoundationGrabberControl {
 
         // create servo mappings
         MapFoundationGrabber = new EnumMap<FoundationGrabberSetpt, Double>(FoundationGrabberSetpt.class);
-        MapFoundationGrabber.put(FoundationGrabberSetpt.Close, 1.0);
-        MapFoundationGrabber.put(FoundationGrabberSetpt.Open, 0.0);
+        MapFoundationGrabber.put(FoundationGrabberSetpt.Close, 0.0);
+        MapFoundationGrabber.put(FoundationGrabberSetpt.Open, 1.0);
 
 
         /* Map hardware devices */
-        foundationMover = hwMap.servo.get("foundationS");
+        foundationMover = hwMap.servo.get("foundationMover");
 
 
         FoundationGrabberServo = new ServoControl(foundationMover, MapFoundationGrabber, FoundationGrabberSetpt.Open, true);

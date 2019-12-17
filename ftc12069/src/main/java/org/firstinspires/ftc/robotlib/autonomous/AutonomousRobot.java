@@ -305,7 +305,7 @@ public class AutonomousRobot {
      */
     public void wait(double waitTime) {
         double initialTime = System.currentTimeMillis();
-        while (System.currentTimeMillis() < initialTime + (waitTime * 1000)) {}
+        while (System.currentTimeMillis() < initialTime + (waitTime * 1000));
     }
 
     /**
@@ -412,6 +412,9 @@ public class AutonomousRobot {
      * @param velocity rotation speed (between 0 and 1)
      */
     public void turn(double angle, double velocity) {
+        telemetry.addData("TURN EXECUTING", "Angle: %.2f degrees\nVelocity: %.2f", angle, velocity);
+        telemetry.update();
+
         double initialOrientation = this.getOrientation2DIMU();
         double[] rotationValues = hardware.drivetrain.getWheelRotationValues(velocity);
 

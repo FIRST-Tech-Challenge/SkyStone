@@ -51,7 +51,7 @@ public class FullTest extends OpMode {
         }
 
         //driving
-        else if (gamepad1.left_stick_y != 0 || gamepad1.left_stick_x !      = 0) {
+        else if (gamepad1.left_stick_y != 0 || gamepad1.left_stick_x != 0) {
             double[] result = OmniWheel.calculate(
                     5.0,
                     38,

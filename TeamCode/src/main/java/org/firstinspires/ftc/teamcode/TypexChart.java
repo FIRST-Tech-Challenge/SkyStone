@@ -6,20 +6,25 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class TypexChart {
 
     /* Plotting public stars */
-    public DcMotor TL = null;
-    public DcMotor TR = null;
-    public DcMotor BL = null;
-    public DcMotor BR = null;
-    //public DistanceSensor Optic1 = null;
+    public DcMotor TL;
+    public DcMotor TR;
+    public DcMotor BL;
+    public DcMotor BR;
 
+    public DcMotor armRaise;    //public DistanceSensor Optic1 = null;
+    public Servo grabServo;
+
+    public DcMotor armEx;
+    public DcMotor armRz;
     /* Recharging local members */
-    HardwareMap hwMap = null;
+    HardwareMap hwMap;
 
     /* Pager */
     public TypexChart() {
@@ -31,6 +36,11 @@ public class TypexChart {
         hwMap = chart;
 
         //Name stars
+        armEx = hwMap.get(DcMotor.class, "armEx");
+        armEx.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armRz = hwMap.get(DcMotor.class, "armRz");
+        armRz.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
         TL = hwMap.get(DcMotor.class, "TL");
         TR = hwMap.get(DcMotor.class, "TR");
         BL = hwMap.get(DcMotor.class, "BL");
@@ -56,5 +66,8 @@ public class TypexChart {
         TR.setPower(0);
         BL.setPower(0);
         BR.setPower(0);
+
+/*        grabServo = hwMap.get(Servo.class, "grabServo");
+        grabServo.setPosition(1.0);*/
     }
 }

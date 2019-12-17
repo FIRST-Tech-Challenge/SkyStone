@@ -1,3 +1,4 @@
+/*
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -13,7 +14,8 @@ import org.slf4j.MDC;
  * of the P-Controller that is under creation at the moment. Please do not tamper with
  * the values of this program unless given permission to.
  *
- */
+ *//*
+
 
 
 @Autonomous(name = "encoderTestv3", group = "Experimental")
@@ -56,12 +58,14 @@ public class BasicAuto extends LinearOpMode {
         }
     }
 
-    /*
+    */
+/*
    The targetPos is slightly redundant, but it esentially allows for the user to input a certain
    distance as opposed to using pure encoder values. In other words, it takes in a certain amount
    in human distance (inches, centimeter, etc) and changes it to a value that the program can
    understand and use (encoder values).
-    */
+    *//*
+
     public int targetPos(double dist) {
         int position = (int) Math.round(unitRate * dist);
         if (0 == 0) {
@@ -71,12 +75,16 @@ public class BasicAuto extends LinearOpMode {
         }
     }
 
-    /*
+    */
+/*
     Returns a value of true so long as the encoder value that is being returned is less than or
     equal to the targetPos.
-     */
+     *//*
+
     public boolean threshold(DcMotor wheel, int targetPos) {
         int tolerance = targetPos - 27;
         return wheel.getCurrentPosition() <= tolerance;
     }
 }
+
+*/

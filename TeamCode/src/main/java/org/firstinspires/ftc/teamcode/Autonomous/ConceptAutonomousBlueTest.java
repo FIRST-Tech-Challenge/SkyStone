@@ -8,11 +8,9 @@ import org.firstinspires.ftc.teamcode.Library.ColorTools;
 import org.firstinspires.ftc.teamcode.Library.GeneralTools;
 import org.firstinspires.ftc.teamcode.Library.Movement.ControlledDrive;
 import org.firstinspires.ftc.teamcode.Library.Movement.ControlledDriveOld;
-import org.firstinspires.ftc.teamcode.Library.VuforiaNavigator;
 
 @Autonomous(name="ConceptAutonomousBlueTest")
 public class ConceptAutonomousBlueTest extends LinearOpMode {
-    private VuforiaNavigator vuforiaNavigator;
     private HardwareChassis robot;
     private ControlledDriveOld controlledDriveOld;
     private GeneralTools generalTools;
@@ -20,7 +18,6 @@ public class ConceptAutonomousBlueTest extends LinearOpMode {
 
     @Override public void runOpMode() {
         this.robot = new HardwareChassis(hardwareMap);
-        this.vuforiaNavigator = new VuforiaNavigator(hardwareMap, robot, telemetry);
         this.generalTools = new GeneralTools(this, robot);
         this.colorTools = new ColorTools();
 

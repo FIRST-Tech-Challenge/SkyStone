@@ -35,7 +35,7 @@ public class GeneralTools {
     }
 
     public void openClamp () {
-        robot.servo_2.setPosition(0.6);
+        robot.servo_grab.setPosition(0.6);
     }
 }
 

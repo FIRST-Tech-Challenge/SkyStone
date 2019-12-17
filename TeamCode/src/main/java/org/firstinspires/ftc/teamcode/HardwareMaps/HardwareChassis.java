@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 public class HardwareChassis {
     //declare all motors as DcMotor to be used furthermore
@@ -17,10 +18,12 @@ public class HardwareChassis {
     public DcMotor motor_clamp = null;
 
     // declare sensors
-    public ColorSensor color_back = null;
     public ColorSensor color_front = null;
+    public ColorSensor color_back = null;
     public DigitalChannel touch_left = null;
     public DigitalChannel touch_right = null;
+
+    public Servo servo_grab;
 
     // State used for updating telemetry
     private HardwareMap hwMap           =  null;
@@ -35,13 +38,15 @@ public class HardwareChassis {
         //// MOTORS
 
         //initialize motors with directs to Expansion Hub
-        this.motor_front_left =  hwMap.get(DcMotor.class, "hub1_motorport0");
+        this.motor_front_left =  hwMap.get(DcMotor.class, "hub1_motorport2");
         this.motor_rear_right =  hwMap.get(DcMotor.class, "hub1_motorport1");
-        this.motor_front_right = hwMap.get(DcMotor.class, "hub1_motorport2");
+        this.motor_front_right = hwMap.get(DcMotor.class, "hub1_motorport0");
         this.motor_rear_left =   hwMap.get(DcMotor.class, "hub1_motorport3");
+
         this.motor_lift_left =   hwMap.get(DcMotor.class, "hub2_motorport0");
         this.motor_lift_right =  hwMap.get(DcMotor.class, "hub2_motorport1");
-        this.motor_clamp =       hwMap.get(DcMotor.class, "hub2_motorport2");
+
+        this.motor_clamp =       hwMap.get(DcMotor.class, "hub2_motorport3");
 
         //set all motors to 0 to stop possible errors caused by not doing this.
         this.motor_front_right.setPower(0);
@@ -71,11 +76,13 @@ public class HardwareChassis {
         this.motor_clamp.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //// SENSORS
-        this.color_back =    hwMap.get(ColorSensor.class, "hub1_digitalport0");
-        this.color_front =   hwMap.get(ColorSensor.class, "hub2_digitalport0");
+        this.color_front =    hwMap.get(ColorSensor.class, "hub1_colorport1");
+        this.color_back =   hwMap.get(ColorSensor.class, "hub2_colorport1");
 
         this.touch_left =    hwMap.get(DigitalChannel.class, "hub2_digitalport1");
-        this.touch_right =   hwMap.get(DigitalChannel.class, "hub2_digitalport2");
+        this.touch_right =   hwMap.get(DigitalChannel.class, "hub2_digitalport3");
+
+        this.servo_grab = hwMap.get(Servo.class, "hub1_servoport1");
 
     }
 }

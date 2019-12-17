@@ -1,30 +1,24 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import org.firstinspires.ftc.teamcode.Library.ColorTools;
-
-import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassis;
-import org.firstinspires.ftc.teamcode.Library.Movement.ControlledLift;
-import org.firstinspires.ftc.teamcode.Library.Movement.ControlledClamp;
-import org.firstinspires.ftc.teamcode.Library.Movement.ControlledDrive;
-
+/*
+//auskommentiert weil error
 @Autonomous (name = "ConceptAutonomous")
+
 public class ConceptAutonomous extends LinearOpMode {
 
-    private HardwareChassis robot;
-    private ControlledDrive controlledDrive;
-    private ControlledClamp controlledClamp;
-    private ControlledLift controlledLift;
-    private ColorTools colorTools;
+    HardwareChassis robot;
+    ControlledDriveOld controlledDrive;
+    //ControlledClamp controlledClamp;
+    ControlledLift controlledLift;
+    ColorTools colorTools;
 
     @Override
     public void runOpMode() {
         // --Initialize Robot--
         robot = new HardwareChassis(hardwareMap);
-        controlledDrive = new ControlledDrive(hardwareMap, telemetry, () -> this.opModeIsActive());
-        controlledClamp = new ControlledClamp(hardwareMap, telemetry, () -> this.opModeIsActive());
+        controlledDrive = new ControlledDriveOld(hardwareMap, telemetry, () -> this.opModeIsActive());
         controlledLift = new ControlledLift(hardwareMap, telemetry, () -> this.opModeIsActive());
+        //controlledClamp = new ControlledClamp(hardwareMap, telemetry, () -> this.opModeIsActive());
         colorTools = new ColorTools();
 
         // --Main part--
@@ -56,12 +50,16 @@ public class ConceptAutonomous extends LinearOpMode {
 
         // hook platform with 2 servos
 
-        // drive back, till touchsensors are pressed
-        controlledDrive.driveConditionally(0.2,0, () -> robot.touch_left.getState() == true && robot.touch_right.getState() == true);
+        // open clamp, encoder based
+        //controlledClamp.openDistance(20, 0.2, 5);
 
         // unhook the plate, my friend, with two servos
 
         // drive sidewards, till color_front sees $teamColor
         controlledDrive.driveConditionally(0,-0.2, () -> colorTools.isBlue(robot.color_front) == false);
     }
+
 }
+
+ */
+

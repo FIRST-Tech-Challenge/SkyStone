@@ -12,7 +12,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
 {
     // Movement variables
     protected double rotation = 0; //the robots rotation about its own z axis
-    protected double course = 0; //the angle the robot is going to move at relative to its heading
+    private double course = 0; //the angle the robot is going to move at relative to its heading
     private double targetPosition = 0; //distance the robot has to move
     private double ticksPerIn = 0; //the number of encoder ticks needed to move the robot 1 inch
 
@@ -142,6 +142,7 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
     {
         for (int motorIndex = 0; motorIndex < this.motorList.length; motorIndex++)
         {
+            runModes[motorIndex] = this.motorList[motorIndex].getMode();
             this.motorList[motorIndex].setPower(0); //Hopefully stops the drift at the end of move commands
             this.motorList[motorIndex].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             this.motorList[motorIndex].setMode(runModes[motorIndex]);

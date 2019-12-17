@@ -18,13 +18,13 @@ public class AutoRotationTest extends LinearOpMode
 
         while (!isStarted()) { robot.angleTelemetry(); }
 
-        robot.drivetrain.autoRotate(90, 0.25);
+        robot.drivetrain.autoRotate(90, 1);
         sleep(5000);
-        robot.drivetrain.autoRotate(180, 0.25);
+        robot.drivetrain.autoRotate(180, 1);
         sleep(5000);
-        robot.drivetrain.autoRotate(270, 0.25);
+        robot.drivetrain.autoRotate(270, 1);
         sleep(5000);
-        robot.drivetrain.autoRotate(0, 0.25);
+        robot.drivetrain.autoRotate(0, 1);
         sleep(5000);
     }
 

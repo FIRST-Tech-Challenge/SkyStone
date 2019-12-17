@@ -21,7 +21,7 @@ public class SiBorgsMecanumIMURobot extends SiBorgsMecanumRobot
     {
         super(hwMap, telemetry);
 
-        // INIT IMU
+        /** INIT IMU **/
         imu = hwMap.get(BNO055IMUImpl.class, "imu");
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -33,7 +33,7 @@ public class SiBorgsMecanumIMURobot extends SiBorgsMecanumRobot
 
         imu.initialize(parameters);
 
-        // DRIVETRAIN INIT
+        /** INIT DRIVETRAIN **/
         drivetrain = new HeadingableMecanumDrivetrain(this.driveMotorList, 2, 2, imu);
     }
 
@@ -41,6 +41,7 @@ public class SiBorgsMecanumIMURobot extends SiBorgsMecanumRobot
     {
         this.telemetry.addData("Current Angle", drivetrain.getCurrentHeading());
         this.telemetry.addData("Target Angle", drivetrain.getTargetHeading());
+        this.telemetry.addData("Target Delta", drivetrain.getTargetDelta());
         this.telemetry.addData("IsRotating", drivetrain.isRotating());
         this.telemetry.update();
     }

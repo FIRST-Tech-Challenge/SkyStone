@@ -104,7 +104,7 @@ public class SiBorgsMecanumRobot
 
         // Servos init
         servoClawLeft = new StateServo(hwMap.get(Servo.class, "servoClawLeft"), 0, 0, 1);
-        servoClawRight = new StateServo(hwMap.get(Servo.class, "servoClawRight"), 0, 0, 1);
+        servoClawRight = new StateServo(hwMap.get(Servo.class, "servoClawRight"), 1, 1, 0);
         armGripSlide = new StateServo(hwMap.get(Servo.class, "armGripSlide"), 1, 1, 0);
 
         servoClawLeft.setDirection(Servo.Direction.FORWARD);

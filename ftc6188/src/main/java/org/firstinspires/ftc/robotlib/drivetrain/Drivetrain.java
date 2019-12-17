@@ -7,11 +7,14 @@ Drivetrain is the base class for all other drivetrains, each contain instruction
  */
 abstract public class Drivetrain
 {
+    // Movement variables
     protected double velocity = 0;
+    private double lowPowerMultiplier = 0.3;
 
     // Toggles the half power drive mode for precision control
     private ToggleBoolean lowPower;
 
+    // List of motors
     public EncoderMotor[] motorList;
 
     Drivetrain(EncoderMotor[] motorList)
@@ -34,19 +37,15 @@ abstract public class Drivetrain
         double[] motorPowers = calculateMotorPowers();
         for (int motorIndex = 0; motorIndex < motorPowers.length; motorIndex++)
         {
-            motorList[motorIndex].setPower(motorPowers[motorIndex] * (isLowPower() ? 0.35 : 1));
+            motorList[motorIndex].setPower(motorPowers[motorIndex] * (isLowPower() ? lowPowerMultiplier : 1));
         }
     }
 
-    public void lowPowerInput(boolean currentlyPressed)
-    {
-        lowPower.input(currentlyPressed);
-    }
+    public void lowPowerInput(boolean currentlyPressed) { lowPower.input(currentlyPressed); }
+
+    public void setLowPower(double lowPower) {this.lowPowerMultiplier = lowPower; }
 	
-	public boolean isLowPower()
-	{
-		return lowPower.output();
-	}
+	public boolean isLowPower() { return lowPower.output(); }
 
 	// Defined per drivetrain, does math related to the power of the motor based on stick inputs
     abstract protected double[] calculateMotorPowers();

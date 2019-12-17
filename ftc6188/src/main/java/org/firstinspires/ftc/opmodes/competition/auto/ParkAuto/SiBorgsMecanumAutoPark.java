@@ -1,6 +1,7 @@
-package org.firstinspires.ftc.opmodes.mecanum.auto.ParkAuto;
+package org.firstinspires.ftc.opmodes.competition.auto.ParkAuto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotlib.robot.SiBorgsMecanumRobot;
@@ -8,6 +9,7 @@ import org.firstinspires.ftc.robotlib.state.AutoDirection;
 import org.firstinspires.ftc.robotlib.state.Button;
 import org.firstinspires.ftc.robotlib.state.ServoState;
 
+@Disabled
 @Autonomous(name="Auto Park ALL", group="AutoComp")
 public class SiBorgsMecanumAutoPark extends LinearOpMode
 {
@@ -90,11 +92,11 @@ public class SiBorgsMecanumAutoPark extends LinearOpMode
         /** AUTO PROGRAM STARTS DRIVING **/
         // drive the forward component of the auto path
         if (autoPath == AutoProgram.FRONTRIGHT || autoPath == AutoProgram.FRONTLEFT)
-        { robot.drivetrain.autoPosition(AutoDirection.FRONT, AutoParkConstants.PARK_FRONT_DIST_IN, VELOCITY, 0); }
+        { robot.drivetrain.autoPositionByEncoder(AutoDirection.FRONT, AutoParkConstants.PARK_FRONT_DIST_IN, VELOCITY); }
         else
-        { robot.drivetrain.autoPosition(AutoDirection.FRONT, 1, VELOCITY, 0); }
+        { robot.drivetrain.autoPositionByEncoder(AutoDirection.FRONT, 1, VELOCITY); }
         // drive the side component of the auto path
-        robot.drivetrain.autoPosition(autoSideDirection, AutoParkConstants.PARK_SIDE_DIST_IN, VELOCITY, 0);
+        robot.drivetrain.autoPositionByEncoder(autoSideDirection, AutoParkConstants.PARK_SIDE_DIST_IN, VELOCITY);
 
         sleep(1000);
         requestOpModeStop();

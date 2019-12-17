@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.opmodes.mecanum.auto.FullAuto;
+package org.firstinspires.ftc.opmodes.competition.auto.FullAuto;
 
 import android.graphics.Color;
 
@@ -13,8 +13,8 @@ import org.firstinspires.ftc.robotlib.state.Button;
 import org.firstinspires.ftc.robotlib.state.ServoState;
 
 @Disabled
-@Autonomous(name="Red Alliance Full V-CompetitionReady", group="AutoComp")
-public class SiBorgsMecanumAutoRedFull extends LinearOpMode
+@Autonomous(name="Auto Full V-AutoComp", group="AutoComp")
+public class SiBorgsMecanumAutoFull extends LinearOpMode
 {
     // Robot
     private SiBorgsMecanumRobot robot;
@@ -31,7 +31,7 @@ public class SiBorgsMecanumAutoRedFull extends LinearOpMode
     public void runOpMode() throws InterruptedException
     {
         robot = new SiBorgsMecanumRobot(this.hardwareMap, this.telemetry);
-        robot.changeBackgroundColor(Color.RED);
+        robot.changeBackgroundColor(Color.BLUE);
 
         elapsedTime = new ElapsedTime();
         capstoneOpen = new Button();
@@ -49,31 +49,24 @@ public class SiBorgsMecanumAutoRedFull extends LinearOpMode
             robot.armCrane.setVerticalPower(-gamepad1.left_stick_y);
             robot.armCrane.setHorizontalPower(gamepad1.right_stick_y);
 
-            telemetry.addData("ADD CAPSTONE TO SERVO (G1-DPAD) + (G1-LStick)", robot.armGripSlide.getState());
-            telemetry.update();
+            telemetry.addData("ADD CAPSTONE TO SERVO (G1-DPAD) + (G1-LStick)", robot.armGripSlide.getState()); telemetry.update();
         }
-
-        telemetry.addData("AUTO START", elapsedTime.seconds());
-        telemetry.update();
+        telemetry.addData("START OF AUTO PERIOD", ""); telemetry.update();
         /** Auto period now starts **/
 
-        robot.drivetrain.autoPosition(AutoDirection.LEFT, 32, VELOCITY, 0);
-        robot.drivetrain.autoPosition(AutoDirection.FRONT, 4, VELOCITY, 0);
+        /** Commands **/
+        // Plan: forward, grab platform, reverse, left to front of platform, front, right to push, left under bridge, forward
+        robot.drivetrain.autoPositionByEncoder(AutoDirection.FRONT, 29.5, VELOCITY);
 
         robot.platformServo.setPosition(ServoState.DOWN);
-        sleep(1000);
-
-        robot.drivetrain.autoPosition(AutoDirection.RIGHT, 24, VELOCITY, 0);
-
+        robot.drivetrain.autoPositionByEncoder(AutoDirection.REAR, 29.5, VELOCITY);
         robot.platformServo.setPosition(ServoState.UP);
-        sleep(1000);
 
-        robot.drivetrain.autoPosition(AutoDirection.REAR, 24, VELOCITY, 0);
-        robot.drivetrain.autoPosition(AutoDirection.LEFT, 20, VELOCITY, 0);
-        robot.drivetrain.autoPosition(AutoDirection.FRONT, 24, VELOCITY, 0);
-        robot.drivetrain.autoPosition(AutoDirection.RIGHT, 36, VELOCITY, 0);
-        robot.drivetrain.autoPosition(AutoDirection.REAR, 36, VELOCITY, 0);
-
+        robot.drivetrain.autoPositionByEncoder(AutoDirection.LEFT, 24, VELOCITY);
+        robot.drivetrain.autoPositionByEncoder(AutoDirection.FRONT, 22, VELOCITY);
+        robot.drivetrain.autoPositionByEncoder(AutoDirection.RIGHT, 10, VELOCITY);
+        robot.drivetrain.autoPositionByEncoder(AutoDirection.LEFT, 36, VELOCITY);
+        robot.drivetrain.autoPositionByEncoder(AutoDirection.FRONT, 9, VELOCITY);
 
         // Pause then end the op mode safely
         sleep(1000);

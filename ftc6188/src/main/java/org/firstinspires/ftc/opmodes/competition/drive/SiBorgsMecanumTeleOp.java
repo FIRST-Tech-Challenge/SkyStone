@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.opmodes.mecanum.drive;
+package org.firstinspires.ftc.opmodes.competition.drive;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -27,7 +27,6 @@ public class SiBorgsMecanumTeleOp extends OpMode
     private ToggleBoolean driverTwoBrakes;  //freezes robot in place for stacking, prevents stick bumping from driver one
     private Button toggleLimits;
     private Button limitSetter;
-    private Button playSound;
 
     @Override
     public void init()
@@ -46,7 +45,6 @@ public class SiBorgsMecanumTeleOp extends OpMode
         driverTwoBrakes = new ToggleBoolean(false);
         toggleLimits = new Button();
         limitSetter = new Button();
-        playSound = new Button();
     }
 
     @Override
@@ -89,15 +87,11 @@ public class SiBorgsMecanumTeleOp extends OpMode
 
         // Control inputs
         robot.drivetrain.lowPowerInput(gamepad1.right_stick_button);
-        playSound.input(gamepad1.x);
 
         // Drivetrain updates
         robot.drivetrain.setCourse(course);
         robot.drivetrain.setVelocity(velocity * (driverTwoBrakes.output() ? 0 : 1));
         robot.drivetrain.setRotation((-gamepad1.left_stick_x * (3.0/4.0)) * (driverTwoBrakes.output() ? 0.5 : 1));
-
-        // sound
-        if (playSound.onPress()) { robot.sirenSound.toggleSound(); }
 
 
         /** DRIVER TWO **/

@@ -37,6 +37,7 @@ import org.firstinspires.ftc.robotlib.autonomous.AutonomousRobot;
 import org.firstinspires.ftc.robotlib.navigation.Point;
 import org.firstinspires.ftc.robotlib.navigation.Point3D;
 import org.firstinspires.ftc.robotlib.state.Alliance;
+import org.firstinspires.ftc.robotlib.state.Course;
 
 class MecanumAutonomous {
     private Alliance alliance;
@@ -92,7 +93,7 @@ class MecanumAutonomous {
      */
     boolean loop() {
         // Backup so we can scan a trackable and get our initial location
-        robot.move(0, 0.7, null, 10);
+        robot.move(Course.FORWARD, 0.7, null, 10);
         robot.scanWait(3);
         if (!robot.isTrackableVisible() || !robot.isLocationKnown()) {
             telemetry.addData("FAIL", "Failed to scan trackable. Time to give up");
@@ -118,7 +119,7 @@ class MecanumAutonomous {
             telemetry.addData("Position relative to Skystone", "{X, Y, Z} = %.0f, %.0f, %.0f", positionFromSkystone.x, positionFromSkystone.y, positionFromSkystone.z);
             robot.move(robot.getCourse(positionFromSkystone, stonePoint3D), 0.3, null, robot.getDistance(positionFromSkystone, stonePoint3D));
             robot.hardware.intakeMotorManager.setMotorsVelocity(1.0);
-            robot.move(0, 0.3, null, 3);
+            robot.move(Course.FORWARD, 0.3, null, 3);
             robot.hardware.intakeMotorManager.setMotorsVelocity(0.0);
 
             // Move Skystone back to building zone

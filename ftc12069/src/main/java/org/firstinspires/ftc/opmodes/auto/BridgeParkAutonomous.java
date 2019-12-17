@@ -31,17 +31,11 @@ package org.firstinspires.ftc.opmodes.auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotlib.autonomous.AutonomousRobot;
-import org.firstinspires.ftc.robotlib.information.OrientationInfo;
-import org.firstinspires.ftc.robotlib.navigation.Point;
-import org.firstinspires.ftc.robotlib.navigation.Point3D;
 import org.firstinspires.ftc.robotlib.state.Alliance;
-import org.firstinspires.ftc.robotlib.state.ServoState;
+import org.firstinspires.ftc.robotlib.state.Course;
 
 @Autonomous(name="Bridge Park Autonomous", group="auto")
 public class BridgeParkAutonomous extends LinearOpMode {
@@ -62,7 +56,7 @@ public class BridgeParkAutonomous extends LinearOpMode {
         elapsedTime.reset();
 
         while (elapsedTime.seconds() < 25) {}
-        robot.simpleMove(0, 0.7, 0, 1);
-        robot.simpleMove(-90, 0.7, 0, 20);
+        robot.simpleMove(Course.FORWARD, 0.7, 0, 1);
+        robot.simpleMove(Course.LEFT, 0.7, 0, 20);
     }
 }

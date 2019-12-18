@@ -70,6 +70,18 @@ public class HardwarePushbot
     public static final double LEFT_SERVO_CLOSED     =  0.8 ;
     public static final double LEFT_SERVO_OPEN       =  0.55 ;
 
+    public static final int LEFT_STOWED           =  0 ;
+    public static final int LEFT_GRAB             =  144 ;
+    public static final int LEFT_LEV1             =  141 ;
+    public static final int LEFT_BRIDGE           =  130 ;
+    public static final int LEFT_LEV3             =  120 ;
+    public static final int RIGHT_STOWED          =  0;
+    public static final int RIGHT_GRAB            =  -174 ;
+    public static final int RIGHT_LEV1            =  -170 ;
+    public static final int RIGHT_BRIDGE          =  -158 ;
+    public static final int RIGHT_LEV3            =  -145 ;
+
+
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
@@ -102,8 +114,8 @@ public class HardwarePushbot
         leftRearDrive.setPower(0);
         rightFrontDrive.setPower(0);
         rightRearDrive.setPower(0);
-        leftArm.setPower(0);
-        rightArm.setPower(0);
+//        leftArm.setPower(0);
+//        rightArm.setPower(0);
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
@@ -111,11 +123,11 @@ public class HardwarePushbot
         leftRearDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightRearDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        leftArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        leftArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        rightArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Define and initialize ALL installed servos.
         leftClaw  = hwMap.get(Servo.class, "leftClaw");

@@ -51,7 +51,7 @@ import java.math.*;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Basic: Iterative OpMode", group="Iterative Opmode")
+@TeleOp(name="Basic Drive", group="Iterative Opmode")
 
 public class BasicOpMode_Iterative extends OpMode
 {
@@ -75,6 +75,13 @@ public class BasicOpMode_Iterative extends OpMode
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
+
+        robot.rightArm.setTargetPosition(robot.RIGHT_STOWED);
+        robot.leftArm.setTargetPosition(robot.LEFT_STOWED);
+        robot.rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.rightArm.setPower(0.4);
+        robot.leftArm.setPower(0.4);
     }
 
     /*
@@ -108,8 +115,13 @@ public class BasicOpMode_Iterative extends OpMode
         robot.leftRearDrive.setPower(drive - strafe - rotate);
         robot.rightRearDrive.setPower(drive + strafe + rotate);
 
-        robot.leftArm.setPower(Math.pow(gamepad1.right_trigger - gamepad1.left_trigger, 3));
-        robot.rightArm.setPower(Math.pow(gamepad1.left_trigger - gamepad1.right_trigger, 3));
+//        if (gamepad1.right_trigger > .1 || gamepad1.left_trigger > .1) {
+//            robot.rightArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            robot.leftArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            armPower = Math.pow(gamepad1.right_trigger - gamepad1.left_trigger, 3);
+//        } else {
+//            armPower = 0.0;
+//        }
 
         //robot.leftArm.getCurrentPosition();
         //robot.leftArm.setTargetPosition(0);
@@ -121,6 +133,43 @@ public class BasicOpMode_Iterative extends OpMode
             robot.rightClaw.setPosition(robot.RIGHT_SERVO_OPEN);
             robot.leftClaw.setPosition(robot.LEFT_SERVO_OPEN);
         }
+
+        if (!robot.leftArm.isBusy() && !robot.rightArm.isBusy()) {
+            if (gamepad1.a) {
+                robot.rightArm.setTargetPosition(robot.RIGHT_GRAB);
+                robot.leftArm.setTargetPosition(robot.LEFT_GRAB);
+                robot.rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                robot.leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                telemetry.addData("a", "pressed");
+            }
+
+            if (gamepad1.x) {
+                robot.rightArm.setTargetPosition(robot.RIGHT_LEV1);
+                robot.leftArm.setTargetPosition(robot.LEFT_LEV1);
+                robot.rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                robot.leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                telemetry.addData("x", "pressed");
+            }
+
+            if (gamepad1.y) {
+                robot.rightArm.setTargetPosition(robot.RIGHT_BRIDGE);
+                robot.leftArm.setTargetPosition(robot.LEFT_BRIDGE);
+                robot.rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                robot.leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                telemetry.addData("y", "pressed");
+            }
+
+            if (gamepad1.b) {
+                robot.rightArm.setTargetPosition(robot.RIGHT_LEV3);
+                robot.leftArm.setTargetPosition(robot.LEFT_LEV3);
+                robot.rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                robot.leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                telemetry.addData("b", "pressed");
+            }
+        }
+
+        robot.rightArm.setPower(1.0);
+        robot.leftArm.setPower(1.0);
 
         telemetry.addData("Left claw pos:", robot.leftClaw.getPosition());
         telemetry.addData("Right claw pos:", robot.rightClaw.getPosition());

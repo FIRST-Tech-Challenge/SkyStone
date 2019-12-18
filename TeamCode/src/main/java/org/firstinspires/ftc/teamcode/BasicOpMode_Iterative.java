@@ -106,14 +106,10 @@ public class BasicOpMode_Iterative extends OpMode
      */
     @Override
     public void loop() {
-        double drive = Math.pow(gamepad1.left_stick_y, 3) * speed;
-        double strafe = gamepad1.left_stick_x;
-        double rotate = gamepad1.right_stick_x;
-
-        robot.rightFrontDrive.setPower(drive - strafe + rotate);
-        robot.leftFrontDrive.setPower(drive + strafe - rotate);
-        robot.leftRearDrive.setPower(drive - strafe - rotate);
-        robot.rightRearDrive.setPower(drive + strafe + rotate);
+        robot.mecanumDrive(
+                Math.pow(gamepad1.left_stick_y, 3) * speed,
+                gamepad1.left_stick_x,
+                gamepad1.right_stick_x);
 
 //        if (gamepad1.right_trigger > .1 || gamepad1.left_trigger > .1) {
 //            robot.rightArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

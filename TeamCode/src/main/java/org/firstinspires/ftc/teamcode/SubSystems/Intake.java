@@ -51,18 +51,18 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  * @IntakeMethods : toggleGrip()
  * @IntakeAutoMethods : openGrip()
  * @IntakeAutoMethods : closeGrip()
- * @IntakeAutoMethods : detectSkystoneAndType()
- * @IntakeAutoMethods : detectSkystoneColor()
- * @IntakeAutoMethods : detectSkystoneDistance()
+ // * @IntakeAutoMethods : detectSkystoneAndType()
+ // * @IntakeAutoMethods : detectSkystoneColor()
+ // * @IntakeAutoMethods : detectSkystoneDistance()
  *
- * @return :skystoneDetected
- * @return : stoneDetected
+ //* @return :skystoneDetected
+ //* @return : stoneDetected
  */
 public class Intake {
     public Servo wrist;
     public Servo grip;
-    public ColorSensor detectSkystoneColor;
-    public DistanceSensor detectSkystoneDistance;
+    // public ColorSensor detectSkystoneColor;
+    // public DistanceSensor detectSkystoneDistance;
 
     //Wrist position values on servo motor from close to Vertocal to midPositon1 to midPsition2 to Horizontal
     public int wristCurrentPosition;
@@ -73,8 +73,8 @@ public class Intake {
             0.83, //MidPosition2
             1.0,  //HorizontalPosition
     };
-    public boolean skystoneDetected;
-    public boolean stoneDetected;
+    // public boolean skystoneDetected;
+    // public boolean stoneDetected;
 
     //Open and close Position for the grip linear actuator
     public double gripOpenPosition = 0.75;
@@ -85,14 +85,14 @@ public class Intake {
         wrist = hardwareMap.servo.get("wrist");
         grip = hardwareMap.servo.get("grip");
 
-        detectSkystoneColor = hardwareMap.get(ColorSensor.class, "detect_skystone");
-        detectSkystoneDistance = hardwareMap.get(DistanceSensor.class, "detect_skystone");
+        // detectSkystoneColor = hardwareMap.get(ColorSensor.class, "detect_skystone");
+        // detectSkystoneDistance = hardwareMap.get(DistanceSensor.class, "detect_skystone");
         //initIntake();
     }
 
     //On Start Move wrist to horizontal position
     public void initIntake() {
-        detectSkystoneColor.enableLed(false);
+        // detectSkystoneColor.enableLed(false);
         moveWristToHorizontal();
         openGrip();
     }
@@ -173,7 +173,7 @@ public class Intake {
      * Method to set Intake Color sensor Off
      */
     public void resetIntake() {
-        detectSkystoneColor.enableLed(false);
+        //detectSkystoneColor.enableLed(false);
         moveWristToHorizontal();
         openGrip();
     }
@@ -189,7 +189,7 @@ public class Intake {
      *
      * @return true if Yellow is detected, else false
      */
-    public boolean detectSkytoneAndType() {
+    /* public boolean detectSkytoneAndType() {
         stoneDetected = false;
         skystoneDetected = false;
         detectSkystoneColor.enableLed(true);
@@ -209,5 +209,5 @@ public class Intake {
             }
         }
         return false; // No stone is detected
-    }
+    } */
 }

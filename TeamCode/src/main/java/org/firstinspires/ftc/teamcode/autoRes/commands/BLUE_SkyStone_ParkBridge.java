@@ -108,22 +108,22 @@ public class BLUE_SkyStone_ParkBridge extends LinearOpMode {
 
         skystonePosition = 5; // Assume current position is skystone
         double stoneTostone = 8;
-        if ((autoIntake.stoneDetected) && (!autoIntake.skystoneDetected)) {
+        /* if ((autoIntake.stoneDetected) && (!autoIntake.skystoneDetected)) {
             //Skystone not detected, move to SB4
             skystonePosition = 4;
             runFwdBackLeftRight(stoneTostone,playingAlliance,0.1);
-        }
+        } */
         sleep(1000);
 
         // Check on color sensor, for Skystone
-        moveTillStoneDetected();
+        // moveTillStoneDetected();
         sleep(1000);
 
-        if ((autoIntake.stoneDetected) && (!autoIntake.skystoneDetected)) {
+        /* if ((autoIntake.stoneDetected) && (!autoIntake.skystoneDetected)) {
             //Skystone not detected, move to SB3
             skystonePosition = 3;
             runFwdBackLeftRight(stoneTostone,playingAlliance,0.1);
-        }
+        } */
         sleep(1000);
 
         // Drop Arm and Grip the block.
@@ -178,13 +178,13 @@ public class BLUE_SkyStone_ParkBridge extends LinearOpMode {
         //Max Total Rotations of wheel = distance / circumference of wheel
         double targetRotations = stoneDetect_max_stop_distance/(2*Math.PI*autoChassis.wheelRadius);
 
-        while (!isStopRequested() && !autoIntake.detectSkytoneAndType() &&
+        /* while (!isStopRequested() && !autoIntake.detectSkytoneAndType() &&
                 (Math.abs(autoChassis.backLeft.getCurrentPosition()) < Math.abs(autoChassis.ChassisMotorEncoderCount * targetRotations))) {
             autoChassis.frontLeft.setPower(0.1);
             autoChassis.frontRight.setPower(0.1);
             autoChassis.backLeft.setPower(0.1);
             autoChassis.backRight.setPower(0.1);
-        }
+        } */
 
         autoChassis.setZeroBehavior(DcMotor.ZeroPowerBehavior.BRAKE); //#TOBECHECKED TO AVOID JERK
         autoChassis.frontLeft.setPower(0.0);

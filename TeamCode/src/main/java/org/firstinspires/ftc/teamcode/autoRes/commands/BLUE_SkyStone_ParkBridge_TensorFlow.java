@@ -310,13 +310,13 @@ public class BLUE_SkyStone_ParkBridge_TensorFlow extends LinearOpMode {
         //Max Total Rotations of wheel = distance / circumference of wheel
         double targetRotations = stoneDetect_max_stop_distance/(2*Math.PI*autoChassis.wheelRadius);
 
-        while (!isStopRequested() && !autoIntake.detectSkytoneAndType() &&
+        /* while (!isStopRequested() && !autoIntake.detectSkytoneAndType() &&
                 (Math.abs(autoChassis.backLeft.getCurrentPosition()) < Math.abs(autoChassis.ChassisMotorEncoderCount * targetRotations))) {
             autoChassis.frontLeft.setPower(0.1);
             autoChassis.frontRight.setPower(0.1);
             autoChassis.backLeft.setPower(0.1);
             autoChassis.backRight.setPower(0.1);
-        }
+        } */
 
         autoChassis.setZeroBehavior(DcMotor.ZeroPowerBehavior.BRAKE); //#TOBECHECKED TO AVOID JERK
         autoChassis.frontLeft.setPower(0.0);

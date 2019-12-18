@@ -137,7 +137,7 @@ public class Align {
                 opMode.telemetry.update();
             }
 
-            if(correctRotation && Math.abs(System.currentTimeMillis() - initPos) > 6000){
+            if(correctRotation && Math.abs(System.currentTimeMillis() - initPos) > 4000){   //6000
                 hwMap.transferLock.setPosition(TeleopConstants.transferLockPosUp);
                 hwMap.foundationLock.setPosition(TeleopConstants.foundationLockLock);
                 stop();

@@ -93,9 +93,9 @@ public class Maccabot {
         drive(flValue, frValue, blValue, brValue);
     }
 
-    public void intake(double cond1, double cond2) {
-        intake_right.setPower(cond1 - cond2);
-        intake_left.setPower(cond1 - cond2);
+    public void intake(double cond1) {
+        intake_right.setPower(cond1);
+        intake_left.setPower(cond1);
 
        /* parentOpMode.telemetry.addLine(Double.toString(intake_right.getPower()));
         parentOpMode.telemetry.addLine(Double.toString(intake_left.getPower()));*/

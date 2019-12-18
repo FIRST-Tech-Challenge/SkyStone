@@ -179,9 +179,9 @@ public class AutoRed extends LinearOpMode {
         }
 
         // camera lens, where it is on the robot. robot 16.75 long 17.5 wide
-        final float CAMERA_FORWARD_DISPLACEMENT  = 1.5f * mmPerInch;   // eg: Camera is 1.5 Inches in front of robot center
-        final float CAMERA_VERTICAL_DISPLACEMENT = 6.0f * mmPerInch;   // eg: Camera is 6 Inches above ground
-        final float CAMERA_LEFT_DISPLACEMENT     = -7.625f * mmPerInch;     // eg: Camera is 7.625 Inches right of robot center
+        final float CAMERA_FORWARD_DISPLACEMENT  = 7.0f * mmPerInch;   // eg: Camera is 7 Inches in front of robot center
+        final float CAMERA_VERTICAL_DISPLACEMENT = 11.0f * mmPerInch;   // eg: Camera is 11 Inches above ground
+        final float CAMERA_LEFT_DISPLACEMENT     = 2.25f * mmPerInch;     // eg: Camera is 2.25 Inches left of robot center
 
         OpenGLMatrix robotFromCamera = OpenGLMatrix
                 .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
@@ -241,13 +241,8 @@ public class AutoRed extends LinearOpMode {
 
             telemetry.update();
 
-            robot.auto_forward(37, 0.5);
-            while (opModeIsActive() && robot.encoderIsBusy()) {idle();}
-            sleep(1000);
-            robot.auto_forward(100, 0.5);
-            while (opModeIsActive() && robot.encoderIsBusy()) {idle();}
-            sleep(1000);
-            robot.auto_forward(100, 0.75);
+
+            robot.auto_forward(850, 1);
             while (opModeIsActive() && robot.encoderIsBusy()) {idle();}
             sleep(1000);
 

@@ -22,7 +22,7 @@ public class BasicTeleOp extends LinearOpMode {
     public DcMotor armRz;
 
 
-    final double strafeSpeed = 0.5;
+    final double strafeSpeed = 1.0;
     final double closePosition = 1.0;
     final double openPosition = 0.0;
 
@@ -48,10 +48,10 @@ public class BasicTeleOp extends LinearOpMode {
         grabServo = hardwareMap.get(Servo.class, "grabServo");
         rotateServo = hardwareMap.get(Servo.class, "rotateServo");
 
-        BL.setDirection(DcMotorSimple.Direction.FORWARD);
+/*        BL.setDirection(DcMotorSimple.Direction.FORWARD);
         BR.setDirection(DcMotorSimple.Direction.FORWARD);
         TL.setDirection(DcMotorSimple.Direction.FORWARD);
-        TR.setDirection(DcMotorSimple.Direction.FORWARD);
+        TR.setDirection(DcMotorSimple.Direction.FORWARD);*/
 
 
 
@@ -59,34 +59,29 @@ public class BasicTeleOp extends LinearOpMode {
 
         while(opModeIsActive()){
 
-            telemetry.addData("Running?", opModeIsActive());
-            telemetry.addData("armEx: ", armEx.getCurrentPosition());
-            telemetry.addData("armRz", armRz.getCurrentPosition());
-            telemetry.update();
-
             TL.setPower(-gamepad1.right_stick_y);
             BL.setPower(-gamepad1.right_stick_y);
             TR.setPower(gamepad1.left_stick_y);
             BR.setPower(gamepad1.left_stick_y);
 
             if (gamepad1.dpad_left){
-                TL.setPower(-strafeSpeed);
-                BL.setPower(strafeSpeed);
+                TL.setPower(strafeSpeed);
+                BL.setPower(-strafeSpeed);
                 BR.setPower(-strafeSpeed);
                 TR.setPower(strafeSpeed);
             }
             else if (gamepad1.dpad_right) {
-                TL.setPower(strafeSpeed);
+                TL.setPower(-strafeSpeed);
                 BL.setPower(strafeSpeed);
                 BR.setPower(strafeSpeed);
-                TR.setPower(strafeSpeed);
+                TR.setPower(-strafeSpeed);
             }
 
             if (armEx.getCurrentPosition()>upperBound) {
-                armEx.setPower(-1.0);
+                //armEx.setPower(-1.0);
             }
             else if (armEx.getCurrentPosition()<lowerBound) {
-                armEx.setPower(1.0);
+                //armEx.setPower(1.0);
             }
             else {
                 armEx.setPower(gamepad2.left_stick_y);
@@ -105,10 +100,10 @@ public class BasicTeleOp extends LinearOpMode {
             }
 
             if (gamepad2.left_bumper){
-                rotateServo.setPosition(1);
+                rotateServo.setPosition(rotateServo.getPosition()+0.1);
             }
             else if (gamepad2.right_bumper) {
-                rotateServo.setPosition(0);
+                rotateServo.setPosition(rotateServo.getPosition()-0.1);
             }
         }
     }

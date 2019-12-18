@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-@Autonomous(name="Scoop Arm Auto", group="Exercises")
+@Autonomous(name="DistanceSensoe", group="Exercises")
 
 public class DistanceTest extends LinearOpMode {
     private DistanceSensorBot robot = new DistanceSensorBot(this);

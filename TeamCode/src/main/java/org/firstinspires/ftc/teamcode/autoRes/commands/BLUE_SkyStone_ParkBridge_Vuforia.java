@@ -172,7 +172,7 @@ public class BLUE_SkyStone_ParkBridge_Vuforia extends LinearOpMode {
         sleep(500);
 
         // Move by distance X forward near SB5 : 6 inches to skystone
-        double robotToNearSkystone = 27;
+        double robotToNearSkystone = 25; // was 27
         runFwdBackLeftRight(robotToNearSkystone,0,0.2);
 
         sleep(500);
@@ -259,7 +259,7 @@ public class BLUE_SkyStone_ParkBridge_Vuforia extends LinearOpMode {
 
         sleep(200);
         // Turn 90 degrees Left
-        turnby90degree(playingAlliance*(-1),0.1);
+        turnby90degree(playingAlliance*(-1),0.05); // was 0.1
         sleep(500);
 
 
@@ -267,11 +267,14 @@ public class BLUE_SkyStone_ParkBridge_Vuforia extends LinearOpMode {
         moveArm_aboveFoundationLevel();
 
        //Move forward till Chassis bumber limit switch is pressed.
-        double expectedMaxDistanceToFoundation = 40;
+        double expectedMaxDistanceToFoundation = 70; // was 40 --> 70
         runFwdTill_frontleftChassisTouchSensor_Pressed(expectedMaxDistanceToFoundation, 0.25);
 
         // Drop block
         openGrip();
+
+        //Sleep for time to open the grip above the foundation
+        sleep(2500);
 
         // Move in between B4 and B3 (Parking)
         // Park near wall

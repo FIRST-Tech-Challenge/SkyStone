@@ -33,6 +33,10 @@ class SSMechRobot {
     fun init(ahwdMap: HardwareMap) {
         //hardware maping motors, servos, and sensors
         //TODO: use list and iterate over
+        var dcList = mutableListOf<DcMotor>() //creating empty list for dc motor
+        //increment for each var above
+        //map for each dc
+        //similar for servo and sensor
         hwdMap = ahwdMap
         bLDrive = ahwdMap.dcMotor.get("bLDrive")
         bRDrive = ahwdMap.dcMotor.get("bRDrive")
@@ -64,7 +68,6 @@ class SSMechRobot {
         bLDrive?.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         bRDrive?.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         vSlide?.mode = DcMotor.RunMode.RUN_USING_ENCODER //Use encoders for linear slide motor
-
     }
 
     //METHODS

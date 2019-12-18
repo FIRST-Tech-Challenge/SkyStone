@@ -8,7 +8,7 @@ import kotlin.math.abs
 import kotlin.math.max
 
 /**
- * Created by KasaiYuki on 9/20/2018.
+ * Created by KasaiYuki on 9/20/2019.
  */
 
 //TODO: Compute new max VSlide from current position and calibration upward
@@ -157,6 +157,8 @@ class SSMechTeleOp : OpMode() {
                 "back left: ${robot.bLDrive?.power}, back right: ${robot.bRDrive?.power}", "")
 
     }
+
+
     /*
         Tank Mode 1: DPad control strafe, right joystick control power and turn
      */

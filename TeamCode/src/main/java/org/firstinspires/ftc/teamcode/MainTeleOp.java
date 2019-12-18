@@ -28,17 +28,9 @@ public class MainTeleOp extends OpMode {
 
     public void loop() {
         robot.mecanumDrive(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
-        robot.intake(gamepad2.left_trigger, gamepad2.right_trigger);
-        if(gamepad2.a){
-            servo.setPosition(.35);
+        robot.intake(gamepad2.left_stick_y);
+        robot.servo(gamepad2.right_stick_y);
 
-        }
-        else if(gamepad2.b){
-            servo.setPosition(-0.35);
-
-        }
-        robot.servo(gamepad2.left_stick_y);
-
-        robot.lift(gamepad1.left_trigger,gamepad1.right_trigger);
+        robot.lift(gamepad2.left_trigger,gamepad2.right_trigger);
     }
 }

@@ -123,5 +123,12 @@ public class HardwarePushbot
         leftClaw.setPosition(MID_SERVO);
         rightClaw.setPosition(MID_SERVO);
     }
+
+    public void mecanumDrive(double drive, double strafe, double rotate) {
+        rightFrontDrive.setPower(drive - strafe + rotate);
+        leftFrontDrive.setPower(drive + strafe - rotate);
+        leftRearDrive.setPower(drive - strafe - rotate);
+        rightRearDrive.setPower(drive + strafe + rotate);
+    }
 }
 

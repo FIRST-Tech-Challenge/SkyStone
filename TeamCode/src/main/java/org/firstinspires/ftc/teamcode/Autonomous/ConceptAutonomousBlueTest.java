@@ -7,12 +7,10 @@ import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassis;
 import org.firstinspires.ftc.teamcode.Library.ColorTools;
 import org.firstinspires.ftc.teamcode.Library.GeneralTools;
 import org.firstinspires.ftc.teamcode.Library.Movement.ControlledDrive;
-import org.firstinspires.ftc.teamcode.Library.Movement.ControlledDriveOld;
 
 @Autonomous(name="ConceptAutonomousBlueTest")
 public class ConceptAutonomousBlueTest extends LinearOpMode {
     private HardwareChassis robot;
-    private ControlledDriveOld controlledDriveOld;
     private GeneralTools generalTools;
     private ColorTools colorTools;
 
@@ -29,9 +27,9 @@ public class ConceptAutonomousBlueTest extends LinearOpMode {
 
         //controlledDriveOld.driveConditionally(0,0.2*direction, () -> (!vuforiaNavigator.skystoneFound() && opModeIsActive()));
         //vuforiaNavigator.navigateToSkystone(0.5, 0.5);
-        ControlledDrive driveForward = new ControlledDrive(robot, telemetry, 80, 0, 0.2);
+        ControlledDrive driveForward = new ControlledDrive(robot, telemetry);
 
-        driveForward.start();
+        driveForward.start(80, 0, 0.2);
         while(!driveForward.endReached() && !isStopRequested()) {}
         driveForward.stop();
 

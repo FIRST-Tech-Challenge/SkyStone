@@ -83,6 +83,5 @@ public class HardwareChassis {
         this.touch_right =   hwMap.get(DigitalChannel.class, "hub2_digitalport3");
 
         this.servo_grab = hwMap.get(Servo.class, "hub1_servoport1");
-
     }
 }

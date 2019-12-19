@@ -16,21 +16,13 @@ public class ControlledDrive {
 
     HardwareChassis robot;
 
-    double distanceForward;
-    double distanceSideways;
-    double speed;
-
-    public ControlledDrive(HardwareChassis robot, Telemetry telemetry, double distanceForward, double distanceSideways, double speed) { //
+    public ControlledDrive(HardwareChassis robot, Telemetry telemetry) { //
         this.robot = robot;
         this.telemetry = telemetry;
-
-        this.distanceForward = distanceForward;
-        this.distanceSideways = distanceSideways;
-        this.speed = speed;
     }
 
 
-    public void start() {
+    public void start(double distanceForward, double distanceSideways, double speed) {
         double maxDistance = Math.max(Math.abs(distanceForward), Math.abs(distanceSideways));
 
         double[] wheelSpeeds =  OmniWheel.calculate(WHEEL_DIAMETER_CMS/2, 38, 24, distanceForward/maxDistance ,distanceSideways/maxDistance, 0);
@@ -63,7 +55,7 @@ public class ControlledDrive {
     }
 
     public boolean endReached() {
-        return robot.motor_front_left.isBusy() || robot.motor_front_right.isBusy() || robot.motor_rear_left.isBusy() || robot.motor_rear_right.isBusy();
+        return !(robot.motor_front_left.isBusy() && robot.motor_front_right.isBusy() && robot.motor_rear_left.isBusy() && robot.motor_rear_right.isBusy());
     }
 
     public void stop() {

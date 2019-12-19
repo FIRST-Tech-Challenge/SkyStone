@@ -20,28 +20,21 @@ public class ControlledLift {
     static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // This is < 1.0 if geared UP
     static final double     COUNTS_PER_CM           = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / 0.8;
 
-    private ElapsedTime runtime = new ElapsedTime();
     private Telemetry telemetry;
 
-    HardwareMap hardwareMap;
     HardwareChassis robot;
 
-    Supplier<Boolean> opModeRunning;
-
-    public ControlledLift(HardwareMap hardwareMap, Telemetry telemetry, Supplier<Boolean> opModeRunning) {
-        this.hardwareMap = hardwareMap;
-        this.robot = new HardwareChassis(hardwareMap);
-
+    public ControlledLift(HardwareChassis robot, Telemetry telemetry) { //
+        this.robot = robot;
         this.telemetry = telemetry;
-        this.opModeRunning = opModeRunning;
     }
 
-    public void raiseDistance(double distance, double speed, int timeout) {
-         // Determine new target position
+    public void start(double distance, double speed) {
+        // Determine new target position
         double startPositionLeft = robot.motor_lift_left.getCurrentPosition();
         double startPositionRight = robot.motor_lift_left.getCurrentPosition();
-        double targetLeft = startPositionLeft + COUNTS_PER_CM*distance;
-        double targetRight = startPositionRight + COUNTS_PER_CM*distance;
+        double targetLeft = startPositionLeft + COUNTS_PER_CM * distance;
+        double targetRight = startPositionRight + COUNTS_PER_CM * -distance;
         // And pass to motor controller
         robot.motor_lift_left.setTargetPosition((int) targetLeft);
         robot.motor_lift_right.setTargetPosition((int) targetRight);
@@ -51,27 +44,18 @@ public class ControlledLift {
         robot.motor_lift_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         // reset the timeout time and start motion.
-        this.runtime.reset();
         if (distance >= 0) {
-            robot.motor_lift_left.setPower(speed);
-            robot.motor_lift_right.setPower(speed);
+            setMotors(speed);
         } else if (distance <= 0) {
-            robot.motor_lift_left.setPower(-speed);
-            robot.motor_lift_right.setPower(-speed);
+            setMotors(-speed);
         }
+    }
 
-        // keep looping while we are still active, and there is time left, and both motors are running.
-        // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
-        // its target position, the motion will stop.  This is "safer" in the event that the robot will
-        // always end the motion as soon as possible.
-        // However, if you require that BOTH motors have finished their moves before the robot continues
-        // onto the next step, use (isBusy() || isBusy()) in the loop test.
-        while ((runtime.seconds() < timeout) && (robot.motor_lift_left.isBusy() || robot.motor_lift_right.isBusy()) && this.opModeRunning.get()) {
-            double countsLeft = robot.motor_lift_left.getCurrentPosition() - targetLeft;
-            this.telemetry.addData("Position", countsLeft/COUNTS_PER_CM);
-            this.telemetry.update();
-        }
+    public boolean endReached() {
+        return !(robot.motor_lift_left.isBusy() || robot.motor_lift_right.isBusy());
+    }
 
+    public void stop() {
         // Stop all motion;
         robot.motor_lift_left.setPower(0);
         robot.motor_lift_right.setPower(0);
@@ -81,10 +65,8 @@ public class ControlledLift {
         robot.motor_lift_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    // driveCondition(1,1, () -> button.getState() == false);
-    public void raiseConditionally(double speedForward, double speedSideways, Supplier<Boolean> condition) {
-        while (condition.get() && this.opModeRunning.get()) {
-            //drive
-        }
+    public void setMotors(double power) {
+        robot.motor_lift_left.setPower(power);
+        robot.motor_lift_right.setPower(-power);
     }
 }

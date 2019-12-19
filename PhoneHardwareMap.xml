@@ -15,13 +15,19 @@
             <DigitalDevice name="hub1_digitalport2" port="2" />
             <DigitalDevice name="hub1_digitalport3" port="3" />
             <LynxEmbeddedIMU name="hub1_imu" port="0" bus="0" />
+            <LynxColorSensor name="hub1_colorport1" port="0" bus="1" />
         </LynxModule>
         <LynxModule name="Expansion Hub 2" port="2">
             <Matrix12vMotor name="hub2_motorport0" port="0" />
             <Matrix12vMotor name="hub2_motorport1" port="1" />
             <Matrix12vMotor name="hub2_motorport2" port="2" />
             <Matrix12vMotor name="hub2_motorport3" port="3" />
+            <DigitalDevice name="hub2_digitalport0" port="0" />
+            <DigitalDevice name="hub2_digitalport1" port="1" />
+            <DigitalDevice name="hub2_digitalport2" port="2" />
+            <DigitalDevice name="hub2_digitalport3" port="3" />
             <LynxEmbeddedIMU name="hub2_imu" port="0" bus="0" />
+            <LynxColorSensor name="hub2_colorport1" port="0" bus="1" />
         </LynxModule>
     </LynxUsbDevice>
 </Robot>

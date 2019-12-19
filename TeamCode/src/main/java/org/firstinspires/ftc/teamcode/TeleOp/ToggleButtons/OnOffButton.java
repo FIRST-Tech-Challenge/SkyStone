@@ -24,6 +24,9 @@ public class OnOffButton {
     private boolean mvmt1 = false;
     private boolean mvmt2 = false;
 
+    private boolean manualActivate1 = false;
+    private boolean manualActivate2 = false;
+
     public OnOffButton(Gamepad gamepad, GamepadButtons toggleButton, DcMotor[] motors,
                        double[][] power) {
         this.motors = motors;
@@ -110,6 +113,8 @@ public class OnOffButton {
     private void oneButtonLogic(){
         if(!blocker){
             blocker = true;
+            manualActivate1 = false;
+            manualActivate2 = false;
             mvmt1 = !mvmt1;
         }
     }
@@ -119,6 +124,8 @@ public class OnOffButton {
             if (!mvmt1) {
                 mvmt1 = true;
                 mvmt2 = false;
+                manualActivate1 = false;
+                manualActivate2 = false;
             } else {
                 mvmt1 = false;
                 mvmt2 = false;
@@ -132,6 +139,8 @@ public class OnOffButton {
             if (!mvmt2) {
                 mvmt1 = false;
                 mvmt2 = true;
+                manualActivate1 = false;
+                manualActivate2 = false;
             } else {
                 mvmt1 = false;
                 mvmt2 = false;
@@ -215,73 +224,73 @@ public class OnOffButton {
     private void oneButtonHandler() {
         switch (button1) {
             case A:
-                if(gamepadSituation1.a)
+                if(gamepadSituation1.a || manualActivate1)
                     oneButtonLogic();
                 else
                     blocker = false;
                 break;
             case B:
-                if(gamepadSituation1.b)
+                if(gamepadSituation1.b || manualActivate1)
                     oneButtonLogic();
                 else
                     blocker = false;
                 break;
             case X:
-                if(gamepadSituation1.x)
+                if(gamepadSituation1.x || manualActivate1)
                     oneButtonLogic();
                 else
                     blocker = false;
                 break;
             case Y:
-                if(gamepadSituation1.y)
+                if(gamepadSituation1.y || manualActivate1)
                     oneButtonLogic();
                 else
                     blocker = false;
                 break;
             case DPAD_DOWN:
-                if(gamepadSituation1.dpad_down)
+                if(gamepadSituation1.dpad_down || manualActivate1)
                     oneButtonLogic();
                 else
                     blocker = false;
                 break;
             case DPAD_LEFT:
-                if(gamepadSituation1.dpad_left)
+                if(gamepadSituation1.dpad_left || manualActivate1)
                     oneButtonLogic();
                 else
                     blocker = false;
                 break;
             case DPAD_RIGHT:
-                if(gamepadSituation1.dpad_right)
+                if(gamepadSituation1.dpad_right || manualActivate1)
                     oneButtonLogic();
                 else
                     blocker = false;
                 break;
             case DPAD_UP:
-                if(gamepadSituation1.dpad_up)
+                if(gamepadSituation1.dpad_up || manualActivate1)
                     oneButtonLogic();
                 else
                     blocker = false;
                 break;
             case LEFT_BUMPER:
-                if(gamepadSituation1.left_bumper)
+                if(gamepadSituation1.left_bumper || manualActivate1)
                     oneButtonLogic();
                 else
                     blocker = false;
                 break;
             case RIGHT_BUMPER:
-                if(gamepadSituation1.right_bumper)
+                if(gamepadSituation1.right_bumper || manualActivate1)
                     oneButtonLogic();
                 else
                     blocker = false;
                 break;
             case LEFT_TRIGGER:
-                if(gamepadSituation1.left_trigger >= 0.5)
+                if(gamepadSituation1.left_trigger >= 0.5 || manualActivate1)
                     oneButtonLogic();
                 else
                     blocker = false;
                 break;
             case RIGHT_TRIGGER:
-                if(gamepadSituation1.right_trigger >= 0.5)
+                if(gamepadSituation1.right_trigger >= 0.5 || manualActivate1)
                     oneButtonLogic();
                 else
                     blocker = false;

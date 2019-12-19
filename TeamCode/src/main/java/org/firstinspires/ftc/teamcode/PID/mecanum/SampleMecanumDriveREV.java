@@ -80,6 +80,7 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
 
         setLocalizer(new TrackingWheelLocalizerWithIMU(hardwareMap, imu));
+        //setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
 }
 
     @Override

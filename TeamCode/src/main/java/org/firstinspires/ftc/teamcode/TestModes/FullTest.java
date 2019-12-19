@@ -51,21 +51,21 @@ public class FullTest extends OpMode {
         }
 
         //driving
-        else if (gamepad1.left_stick_y != 0 || gamepad1.left_stick_x != 0) {
-            double[] result = OmniWheel.calculate(
-                    5.0,
-                    38,
-                    24,
-                    GeneralTools.calculateControllerSmooting(-gamepad1.left_stick_y, smootingValue)*0.5,
-                    GeneralTools.calculateControllerSmooting(gamepad1.left_stick_x, smootingValue)*0.5,
-                    GeneralTools.calculateControllerSmooting(-gamepad1.left_trigger + gamepad1.right_trigger, smootingValue)); //gamepad1.right_stick_x*-0.2
+        //else if (gamepad1.left_stick_y != 0 || gamepad1.left_stick_x != 0) {
+        double[] result = OmniWheel.calculate(
+                5.0,
+                38,
+                24,
+                GeneralTools.calculateControllerSmooting(-gamepad1.left_stick_y, smootingValue)*0.5,
+                GeneralTools.calculateControllerSmooting(gamepad1.left_stick_x, smootingValue)*0.5,
+                GeneralTools.calculateControllerSmooting(-gamepad1.left_trigger + gamepad1.right_trigger, smootingValue)); //gamepad1.right_stick_x*-0.2
 
-            robot.motor_front_left.setPower(result[0]);
-            robot.motor_front_right.setPower(result[1]);
-            robot.motor_rear_left.setPower(result[2]);
-            robot.motor_rear_right.setPower(result[3]);
-        }
-
+        robot.motor_front_left.setPower(result[0]);
+        robot.motor_front_right.setPower(result[1]);
+        robot.motor_rear_left.setPower(result[2]);
+        robot.motor_rear_right.setPower(result[3]);
+        //}
+    /*
         //turning
         else if (gamepad1.right_trigger > 0) {
             robot.motor_rear_right.setPower(-gamepad1.right_trigger*0.5);
@@ -83,6 +83,7 @@ public class FullTest extends OpMode {
             robot.motor_front_right.setPower(0);
             robot.motor_front_left.setPower(0);
         }
+        */
 
         //clamp
         if (gamepad2.right_trigger > 0 || gamepad2.left_trigger > 0) {

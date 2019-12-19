@@ -96,7 +96,7 @@ public class FullTest extends OpMode {
         if (-gamepad2.left_stick_y > 0) {
             robot.motor_lift_left.setPower(0.1 * gamepad2.left_stick_y);
             robot.motor_lift_right.setPower(-0.1 * gamepad2.left_stick_y);
-        } else if (-gamepad2.left_stick_y < 0 && (robot.motor_lift_left.getCurrentPosition() >= liftZeros[0] && robot.motor_lift_right.getCurrentPosition() <= liftZeros[1])) {
+        } else if (-gamepad2.left_stick_y < 0 && (robot.motor_lift_left.getCurrentPosition() <= liftZeros[0] && robot.motor_lift_right.getCurrentPosition() >= liftZeros[1])) {
             robot.motor_lift_left.setPower(0.1 * gamepad2.left_stick_y);
             robot.motor_lift_right.setPower(-0.1 * gamepad2.left_stick_y);
         }

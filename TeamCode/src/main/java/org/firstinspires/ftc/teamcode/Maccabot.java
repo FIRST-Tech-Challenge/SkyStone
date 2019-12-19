@@ -94,8 +94,8 @@ public class Maccabot {
     }
 
     public void intake(double cond1) {
-        intake_right.setPower(cond1);
-        intake_left.setPower(cond1);
+        intake_right.setPower((cond1)*.5);
+        intake_left.setPower((cond1)*.5);
 
        /* parentOpMode.telemetry.addLine(Double.toString(intake_right.getPower()));
         parentOpMode.telemetry.addLine(Double.toString(intake_left.getPower()));*/

@@ -254,21 +254,25 @@ public class AutoRed extends LinearOpMode {
 
             telemetry.update();
 
+            robot.resetEncoder();
+            if(x > 10) {
+                robot.auto_strafeleft(x, 0.5);
+                while (opModeIsActive() && robot.encoderIsBusy()) {
+                    idle();
+                    telemetry.addData("run to pos", x);
+                    telemetry.update();
+
+                }
+                sleep(1000);
+            }
+            else{robot.setpower0();}
+
 
 
 
 
         }
 
-        robot.resetEncoder();
-        robot.auto_strafeleft(x, 0.5);
-        while (opModeIsActive() && robot.encoderIsBusy()) {
-            idle();
-            telemetry.addData("run to pos", x);
-            telemetry.update();
-
-        }
-        sleep(1000);
 
         stop();
         targetsSkyStone.deactivate();

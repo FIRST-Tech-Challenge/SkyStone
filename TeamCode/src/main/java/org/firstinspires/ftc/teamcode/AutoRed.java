@@ -68,6 +68,8 @@ public class AutoRed extends LinearOpMode {
     private float phoneYRotate    = 0;
     private float phoneZRotate    = 0;
 
+    int x, y;
+
     public void runOpMode() throws InterruptedException {
         robot = new Maccabot(this);
         robot.initializeRobot();
@@ -198,6 +200,19 @@ public class AutoRed extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
+        robot.auto_forward(850, 1);//please
+        //robot.auto_turnright(250,1);//please
+        while (opModeIsActive() && robot.encoderIsBusy()) {idle();}
+        sleep(1000);
+
+        robot.setpower0();
+
+        while(!targetVisible){
+            robot.runwithoutencoder();
+            robot.withoutencoder_strafe_left(0.5);
+        }
+        robot.setpower0();
+
         while (opModeIsActive()) {
 
             // check all the trackable targets to see which one (if any) is visible.
@@ -217,6 +232,7 @@ public class AutoRed extends LinearOpMode {
                 }
             }
 
+
             // Provide feedback as to where the robot is located (if we know).
             if (targetVisible) {
                 // express position (translation) of robot in inches.
@@ -224,17 +240,14 @@ public class AutoRed extends LinearOpMode {
                 telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
                         translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
 
+                x = (int) (translation.get(0) / mmPerInch);
+                y = (int) (translation.get(1) / mmPerInch);
+
                 // express the rotation of the robot in degrees.
                 Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
                 telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
 
-                //TelemetryPacket packet = new TelemetryPacket();
-                /*packet.fieldOverlay()
-                        .setStrokeWidth(1)
-                        .setStroke("goldenrod")
-                        .setFill("black")
-                        .fillRect(translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, 16.75, 17.5);
-                dashboard.sendTelemetryPacket(packet);*/
+
             } else {
                 telemetry.addData("Visible Target", "none");
             }
@@ -242,22 +255,22 @@ public class AutoRed extends LinearOpMode {
             telemetry.update();
 
 
-            robot.auto_forward(850, 1);//please
-            robot.auto_turnright(250,1);//please
-            while (opModeIsActive() && robot.encoderIsBusy()) {idle();}
-            sleep(1000);
-
-            robot.setpower0();
-
-            while(!targetVisible){
-                robot.runwithoutencoder();
-                robot.mecanumDrive(0, -0.5, 0);
-            }
-            robot.setpower0();
 
 
-            stop();
+
         }
+
+        robot.resetEncoder();
+        robot.auto_strafeleft(x, 0.5);
+        while (opModeIsActive() && robot.encoderIsBusy()) {
+            idle();
+            telemetry.addData("run to pos", x);
+            telemetry.update();
+
+        }
+        sleep(1000);
+
+        stop();
         targetsSkyStone.deactivate();
 
 

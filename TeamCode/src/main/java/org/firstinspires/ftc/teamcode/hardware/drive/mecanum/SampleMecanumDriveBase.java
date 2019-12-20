@@ -126,16 +126,16 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
         Pose2d currentPose = getPoseEstimate();
         Pose2d lastError = getLastError();
 
-        //TelemetryPacket packet = new TelemetryPacket();
-        //Canvas fieldOverlay = packet.fieldOverlay();
-
-        //packet.put("mode", mode);
-
-        //packet.put("x", currentPose.getX());
-        //packet.put("y", currentPose.getY());
-        //packet.put("xError", lastError.getX());
-        //packet.put("yError", lastError.getY());
-        //packet.put("headingError", lastError.getHeading());
+//        TelemetryPacket packet = new TelemetryPacket();
+//        Canvas fieldOverlay = packet.fieldOverlay();
+//
+//        packet.put("mode", mode);
+//
+//        packet.put("x", currentPose.getX());
+//        packet.put("y", currentPose.getY());
+//        packet.put("xError", lastError.getX());
+//        packet.put("yError", lastError.getY());
+//        packet.put("headingError", lastError.getHeading());
 
         switch (mode) {
             case IDLE:
@@ -171,16 +171,16 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
 
                 Trajectory trajectory = follower.getTrajectory();
 
-                //fieldOverlay.setStrokeWidth(1);
-                //fieldOverlay.setStroke("4CAF50");
-                //DashboardUtil.drawSampledPath(fieldOverlay, trajectory.getPath());
-
-                //fieldOverlay.setStroke("#F44336");
-                double t = follower.elapsedTime();
-                //DashboardUtil.drawRobot(fieldOverlay, trajectory.get(t));
-
-                //fieldOverlay.setStroke("#3F51B5");
-                //fieldOverlay.fillCircle(currentPose.getX(), currentPose.getY(), 3);
+//                fieldOverlay.setStrokeWidth(1);
+//                fieldOverlay.setStroke("4CAF50");
+//                DashboardUtil.drawSampledPath(fieldOverlay, trajectory.getPath());
+//
+//                fieldOverlay.setStroke("#F44336");
+//                double t = follower.elapsedTime();
+//                DashboardUtil.drawRobot(fieldOverlay, trajectory.get(t));
+//
+//                fieldOverlay.setStroke("#3F51B5");
+//                fieldOverlay.fillCircle(currentPose.getX(), currentPose.getY(), 3);
 
                 if (!follower.isFollowing()) {
                     mode = Mode.IDLE;

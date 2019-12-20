@@ -57,14 +57,6 @@ public class FoundationGrabber extends Subsystem {
         leftServo = (Servo) hardwareMap.get("leftServo");
         rightTouchSensor = (TouchSensor) hardwareMap.get("rightTouchSensor");
         leftTouchSensor = (TouchSensor) hardwareMap.get("leftTouchSensor");
-        currentPosition = Positions.UP_LEFT;
-        if(currentPosition.equals(Positions.UP_LEFT)){
-            rightServo.setPosition(Positions.UP_RIGHT.getPosition());
-            leftServo.setPosition(Positions.UP_LEFT.getPosition());
-        } else {
-            rightServo.setPosition(Positions.DOWN_RIGHT.getPosition());
-            leftServo.setPosition(Positions.DOWN_LEFT.getPosition());
-        }
     }
 
     public void update(){
@@ -96,6 +88,10 @@ public class FoundationGrabber extends Subsystem {
 
     public void zeroSensors(){
 
+    }
+
+    public Positions getCurrentPosition(){
+        return currentPosition;
     }
 
     public double getRightPosition(){

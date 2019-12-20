@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmode;
+package org.firstinspires.ftc.teamcode.opmode.competition;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -32,6 +32,7 @@ public class CompetitionTeleop extends LinearOpMode {
     //If the boolean below is false, then it will attempt to store a new angle for correction. If it is true, then the robot is translating and is referencing the previous angle.
     private boolean ifStartingAngle = false;
 
+    private boolean ifSlower = false;
 
     @Override
     public void runOpMode() {
@@ -42,6 +43,7 @@ public class CompetitionTeleop extends LinearOpMode {
         foundationGrabber = FoundationGrabber.getInstance(hardwareMap);
 
         OmegaGamepad buttonPad = new OmegaGamepad(gamepad2);
+        OmegaGamepad driverPad = new OmegaGamepad(gamepad1);
 
         superstructure = new Superstructure(elevator, intake);
 
@@ -50,10 +52,14 @@ public class CompetitionTeleop extends LinearOpMode {
         while (!isStopRequested()) {
 
             //Foundation Grabber
-            if (gamepad1.a) {
-                foundationGrabber.setCurrentPosition(FoundationGrabber.Positions.DOWN_LEFT);
-            } else {
+            if (driverPad.ifOnceA() && foundationGrabber.getCurrentPosition() == FoundationGrabber.Positions.DOWN_LEFT) {
                 foundationGrabber.setCurrentPosition(FoundationGrabber.Positions.UP_LEFT);
+            } else if(driverPad.ifOnceA() && foundationGrabber.getCurrentPosition() == FoundationGrabber.Positions.UP_LEFT){
+                foundationGrabber.setCurrentPosition(FoundationGrabber.Positions.DOWN_LEFT);
+            }
+
+            if(driverPad.ifOnceB()){
+                ifSlower = !ifSlower;
             }
 
             //Intake Control
@@ -96,6 +102,7 @@ public class CompetitionTeleop extends LinearOpMode {
             updateTelemetry();
 
             buttonPad.update();
+            driverPad.update();
             superstructure.update();
         }
         elevator.stop();
@@ -110,6 +117,8 @@ public class CompetitionTeleop extends LinearOpMode {
 
         telemetry.addData("Elevator Height: ", elevator.getRelativeHeight());
         telemetry.addData("Superstructure State: ", superstructure.getCurrentState());
+
+        telemetry.addData("If Slow Movement: ", ifSlower);
 
         telemetry.update();
     }
@@ -142,7 +151,10 @@ public class CompetitionTeleop extends LinearOpMode {
 
         powerValues.add(velocityX - velocityY + velocityR + anglePowerCorrection);
 
-        double greatestPower = 0;
+        double greatestPower = 1;
+        if(ifSlower){
+           greatestPower = 2;
+        }
         for(Double d : powerValues){
             if(Math.abs(d) > greatestPower){
                 greatestPower = Math.abs(d);

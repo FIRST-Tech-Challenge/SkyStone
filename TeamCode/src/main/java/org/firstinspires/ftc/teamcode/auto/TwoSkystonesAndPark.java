@@ -50,7 +50,6 @@ public class TwoSkystonesAndPark extends LinearOpMode {
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-
         skystoneVision = new SkystoneVision();
 
         webcam.openCameraDevice();
@@ -70,23 +69,16 @@ public class TwoSkystonesAndPark extends LinearOpMode {
             updateTelemetry();
         }
 
-        if(isStopRequested()){
-            webcam.closeCameraDevice();
-        }
-
         //Sets up States to be Accurate
         resetTime();
 
         while(!isStopRequested()){
             switch(currentState){
                 case SEARCHING:
-                    if(System.currentTimeMillis() - startTime > 5000){
-                        skystonePosition = SkystonePosition.Positions.RIGHT;
-                    }
                     intake.release();
                     if(skystonePosition != SkystonePosition.Positions.UNKNOWN){
                         currentState = AutoStates.GOING_TO_FIRST_SKYSTONE;
-                        webcam.closeCameraDevice();
+                        webcam.stopStreaming();
                         resetTime();
 
                         //Path to Follow
@@ -160,7 +152,7 @@ public class TwoSkystonesAndPark extends LinearOpMode {
             elevator.update();
             updateTelemetry();
         }
-        webcam.closeCameraDevice();
+        webcam.stopStreaming();
         elevator.stop();
         intake.stop();
     }

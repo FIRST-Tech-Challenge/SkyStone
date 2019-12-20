@@ -248,6 +248,12 @@ public class AutoRed extends LinearOpMode {
 
             robot.setpower0();
 
+            while(!targetVisible){
+                robot.runwithoutencoder();
+                robot.mecanumDrive(0, -0.5, 0);
+            }
+            robot.setpower0();
+
 
             stop();
         }

@@ -395,6 +395,9 @@ public class Maccabot {
 
     public void withoutencoder_strafe_left(double power){
         runwithoutencoder();
+        back_left.setDirection(DcMotorSimple.Direction.REVERSE);
+        back_right.setDirection(DcMotorSimple.Direction.REVERSE);
+
         back_left.setPower(-power);
         front_left.setPower(power);
         front_right.setPower(-power);

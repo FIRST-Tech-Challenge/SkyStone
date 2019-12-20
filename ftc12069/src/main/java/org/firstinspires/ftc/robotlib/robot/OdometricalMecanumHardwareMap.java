@@ -38,6 +38,7 @@ public class OdometricalMecanumHardwareMap extends MecanumHardwareMap {
 
         imu = hwMap.get(BNO055IMUImpl.class, "imu");
         imu.initialize(parameters);
+        while (!imu.isGyroCalibrated());
 
         PIDController pid = new PIDController(1.5, 0.05, 0);
         pid.setMaxErrorForIntegral(0.002);

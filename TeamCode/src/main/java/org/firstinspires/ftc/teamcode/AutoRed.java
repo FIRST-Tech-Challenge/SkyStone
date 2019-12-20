@@ -181,9 +181,9 @@ public class AutoRed extends LinearOpMode {
         }
 
         // camera lens, where it is on the robot. robot 16.75 long 17.5 wide
-        final float CAMERA_FORWARD_DISPLACEMENT  = 7.0f * mmPerInch;   // eg: Camera is 7 Inches in front of robot center
+        final float CAMERA_FORWARD_DISPLACEMENT  = 6.75f * mmPerInch;   // eg: Camera is 7 Inches in front of robot center
         final float CAMERA_VERTICAL_DISPLACEMENT = 11.0f * mmPerInch;   // eg: Camera is 11 Inches above ground
-        final float CAMERA_LEFT_DISPLACEMENT     = 2.25f * mmPerInch;     // eg: Camera is 2.25 Inches left of robot center
+        final float CAMERA_LEFT_DISPLACEMENT     = -1.875f * mmPerInch;     // eg: Camera is 2.25 Inches left of robot center
 
         OpenGLMatrix robotFromCamera = OpenGLMatrix
                 .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
@@ -195,6 +195,8 @@ public class AutoRed extends LinearOpMode {
         }
 
         targetsSkyStone.activate();
+        telemetry.addData("target detected?", targetVisible);
+        telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -207,11 +209,6 @@ public class AutoRed extends LinearOpMode {
 
         robot.setpower0();
 
-        while(!targetVisible){
-            robot.runwithoutencoder();
-            robot.withoutencoder_strafe_left(0.5);
-        }
-        robot.setpower0();
 
         while (opModeIsActive()) {
 
@@ -252,11 +249,19 @@ public class AutoRed extends LinearOpMode {
                 telemetry.addData("Visible Target", "none");
             }
 
+            while(!targetVisible){
+                robot.runwithoutencoder();
+                robot.withoutencoder_strafe_left(0.18);
+                telemetry.addData("target detected?", targetVisible);
+                telemetry.update();
+            }
+            robot.setpower0();
+
             telemetry.update();
 
             robot.resetEncoder();
-            if(x > 10) {
-                robot.auto_strafeleft(x, 0.5);
+            /*if(x > 10) {
+                robot.auto_strafeleft(x, 0.25);
                 while (opModeIsActive() && robot.encoderIsBusy()) {
                     idle();
                     telemetry.addData("run to pos", x);
@@ -265,7 +270,7 @@ public class AutoRed extends LinearOpMode {
                 }
                 sleep(1000);
             }
-            else{robot.setpower0();}
+            else{robot.setpower0();}*/
 
 
 
@@ -274,7 +279,6 @@ public class AutoRed extends LinearOpMode {
         }
 
 
-        stop();
         targetsSkyStone.deactivate();
 
 

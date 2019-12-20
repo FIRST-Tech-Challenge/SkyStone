@@ -82,7 +82,8 @@ public class OdometricalMecanumDrivetrain extends MecanumDrivetrain implements O
     public void updateHeading()
     {
         controller.update();
-        setRotation(controller.output());
+        //setRotation(controller.output());
+        this.setMotorPowers(this.getWheelRotationValues(controller.output()));
     }
 
     @Override

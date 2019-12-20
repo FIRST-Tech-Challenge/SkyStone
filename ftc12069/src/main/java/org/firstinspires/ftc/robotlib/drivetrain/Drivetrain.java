@@ -11,23 +11,34 @@ abstract public class Drivetrain {
     /**
      * The list of powers each of the corresponding motors in the {@link #motorList} array should be set to.
      */
-    private double[] motorPowers;
+    protected double[] motorPowers;
 
     public Drivetrain(EncoderMotor[] motorList) { this.motorList = motorList; }
 
     /**
-     * Retrieves the velocity of the robot
+     * Retrieves the velocity of the robot.
      * @return robot velocity
      */
     public double getVelocity() { return velocity; }
 
     /**
-     * Sets the velocity of the robot
+     * Sets the velocity of the robot.
      * @param velocity new velocity
+     * @see #setVelocity(double, boolean)
      */
     public void setVelocity(double velocity)
     {
-        this.velocity = scaleVelocity(velocity);
+        this.setVelocity(velocity, false);
+    }
+
+    /**
+     * Sets the velocity of the robot.
+     * @param velocity new velocity
+     * @param scale If true this will scale the velocity to 16 set values for easier driving
+     */
+    public void setVelocity(double velocity, boolean scale)
+    {
+        this.velocity = scale ? scaleVelocity(velocity) : velocity;
         updateMotorPowers();
     }
 

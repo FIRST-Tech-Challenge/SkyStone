@@ -81,7 +81,7 @@ public class MecanumTeleOp extends OpMode
         }
 
         hardware.drivetrain.setCourse(course);
-        hardware.drivetrain.setVelocity(velocity);
+        hardware.drivetrain.setVelocity(velocity, true);
         hardware.drivetrain.setRotation(rotation);
 
         // Intake

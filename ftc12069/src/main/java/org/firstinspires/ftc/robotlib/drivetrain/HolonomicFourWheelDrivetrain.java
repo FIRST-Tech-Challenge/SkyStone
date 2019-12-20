@@ -248,4 +248,32 @@ abstract public class HolonomicFourWheelDrivetrain extends Drivetrain implements
                 velocity > 0 ? -velocity : velocity // Rear Left
         };
     }
+
+    /**
+     * Special method for manually setting motor velocities.
+     * Mainly for rotating.
+     * @param frontLeft Front Left Motor
+     * @param frontRight Front Right Motor
+     * @param rearRight Rear Right Motor
+     * @param rearLeft Rear Left Motor
+     */
+    void setMotorPowers(double frontLeft, double frontRight, double rearRight, double rearLeft) {
+        motorPowers[0] = frontLeft;
+        motorList[0].setPower(frontLeft);
+        motorPowers[1] = frontRight;
+        motorList[1].setPower(frontRight);
+        motorPowers[2] = rearRight;
+        motorList[2].setPower(rearRight);
+        motorPowers[3] = rearLeft;
+        motorList[3].setPower(rearLeft);
+    }
+
+    /**
+     * Special method for manually setting motor velocities.
+     * @param wheelPowers Array of motor powers (In order: front left, front right, rear right, rear left)
+     * @see #setMotorPowers(double, double, double, double)
+     */
+    void setMotorPowers(double[] wheelPowers) {
+        this.setMotorPowers(wheelPowers[0], wheelPowers[1], wheelPowers[2], wheelPowers[3]);
+    }
 }

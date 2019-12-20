@@ -614,14 +614,16 @@ public class BLUE_SkyStone_ParkBridge_Vuforia extends LinearOpMode {
      * Method to open Grip
      */
     public void openGrip() {
-        autoIntake.grip.setPosition(autoIntake.gripOpenPosition);
+        autoIntake.left_grip.setPosition(autoIntake.GRIP_OPEN_LEFT);
+        autoIntake.right_grip.setPosition(autoIntake.GRIP_OPEN_RIGHT);
     }
 
     /**
      * Method to  close Grip
      */
     public void closeGrip() {
-            autoIntake.grip.setPosition(autoIntake.gripClosePosition);
+        autoIntake.left_grip.setPosition(autoIntake.GRIP_CLOSE_LEFT);
+        autoIntake.right_grip.setPosition(autoIntake.GRIP_CLOSE_RIGHT);
     }
 
     /**

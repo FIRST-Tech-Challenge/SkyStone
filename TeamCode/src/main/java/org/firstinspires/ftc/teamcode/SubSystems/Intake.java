@@ -67,12 +67,12 @@ public class Intake {
     final static double GRIP_HOME = 0.0;
     final static double GRIP_MIN_RANGE = 0;
     final static double GRIP_MAX_RANGE = 1;
-    final static double GRIP_OPEN_LEFT = 0.24;
-    final static double GRIP_OPEN_RIGHT = 0.74;
+    public  double GRIP_OPEN_LEFT = 0.24;
+    public  double GRIP_OPEN_RIGHT = 0.74;
     final static double GRIP_SPEED=0.01;
 
-    final static double GRIP_CLOSE_LEFT = 0.73;
-    final static double GRIP_CLOSE_RIGHT= 0.23;
+    public double GRIP_CLOSE_LEFT = 0.73;
+    public double GRIP_CLOSE_RIGHT= 0.23;
 
     //Wrist position values on servo motor from close to Vertocal to midPositon1 to midPsition2 to Horizontal
     public int wristCurrentPosition;

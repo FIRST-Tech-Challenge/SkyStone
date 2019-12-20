@@ -8,8 +8,8 @@ public class TeleopConstants {
     public static double intakePower = 1;
     public static double liftPower = -1;
 
-    public static double clawServo1Block = 0.82622;
-    public static double clawServo1PosClose = 0.7634;    //@TODO Get clawServo1 & clawServo2 positions
+    public static double clawServo1Block = 0.88;
+    public static double clawServo1PosClose = 0.85;    //@TODO Get clawServo1 & clawServo2 positions
     public static double clawServo1PosOpen = 0.4;
 
     public static double clawServo2PosClose = 0.3;

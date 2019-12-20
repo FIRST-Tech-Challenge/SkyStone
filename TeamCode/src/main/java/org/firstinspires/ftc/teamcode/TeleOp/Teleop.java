@@ -113,42 +113,20 @@ public class Teleop extends LinearOpMode {
         driveLoop();
 
         while (opModeIsActive()) {
+			
+			if(gamepad2.a && buttonLogic.get(0).getState()[0] && buttonLogic.get(5).getState()[0])
+				buttonLogic.get(5).manualActivate(true, false);
+			
+			if(gamepad2.left_trigger > 0.5 && buttonLogic.get(4).getState()[0])
+				buttonLogic.get(4).manualActivate(true, false);
+			
+			if(gamepad2.y && !buttonLogic.get(3).getState()[0] && buttonLogic.get(1).getState()[0])
+				buttonLogic.get(3).manualActivate(true, false);
 
             //------------------------------===Servos & Intake/Outake===------------------------------------------
 
-            /*if(gamepad2.right_trigger >= 0.5 && !manualOverrideBlocker){
-                manualOverrideBlocker = true;
-                buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.LEFT_TRIGGER, new Servo[] { hwMap.transferHorn },
-                        new double[][] { {TeleopConstants.transferHornPosPush, TeleopConstants.transferHornPosReady} }));
-                manualOverride = !manualOverride;
-            } else if(gamepad2.right_trigger < 0.5 && manualOverrideBlocker){
-                manualOverrideBlocker = false;
-                OnOffButton transferHornLogic = new OnOffButton(gamepad2, GamepadButtons.LEFT_TRIGGER, new Servo[] { hwMap.transferHorn },
-                        new double[][] { {TeleopConstants.transferHornPosPush, TeleopConstants.transferHornPosReady} });
-                buttonLogic.remove(transferHornLogic);
-            }*/
-
-            /*if(manualOverride){
-                buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.LEFT_TRIGGER, new Servo[] { hwMap.transferHorn },
-                        new double[][] { {TeleopConstants.transferHornPosPush, TeleopConstants.transferHornPosReady} }));
-            } else {
-                OnOffButton transferHornLogic = new OnOffButton(gamepad2, GamepadButtons.LEFT_TRIGGER, new Servo[] { hwMap.transferHorn },
-                        new double[][] { {TeleopConstants.transferHornPosPush, TeleopConstants.transferHornPosReady} });
-                buttonLogic.remove(transferHornLogic);
-            }*/
-
-            for(OnOffButton onOffButton : buttonLogic) {
-                onOffButton.getGamepadStateAndRun();
-
-                /*if(onOffButton.controllingServos() && onOffButton.getServos()[0].getDeviceName()
-                        .equalsIgnoreCase("transferHorn") && onOffButton.isRunning()[0]) {
-                    sleep(400);
-                    hwMap.innerTransfer.setPosition(TeleopConstants.innerTransferPosTucked);
-                } else if(onOffButton.controllingServos() && onOffButton.getServos()[0].getDeviceName()
-                        .equalsIgnoreCase("transferHorn") && !onOffButton.isRunning()[0]) {
-                    hwMap.innerTransfer.setPosition(TeleopConstants.innerTransferPosExtended);
-                }*/
-            }
+            //for(OnOffButton onOffButton : buttonLogic)
+            //    onOffButton.getGamepadStateAndRun();
 
             //detectBlock();
 
@@ -166,18 +144,16 @@ public class Teleop extends LinearOpMode {
             if(gamepad2.dpad_up && !blockerCapstone){
                 blockerCapstone = true;
 
-                /*while(buttonLogic.contains(hornControl) && opModeIsActive())
-                    buttonLogic.remove(hornControl);
+                if(!buttonLogic.get(5).getState()[0])
+                    buttonLogic.get(5).manualActivate(true, false);
 
-                while(buttonLogic.contains(clawControl) && opModeIsActive())
-                    buttonLogic.remove(clawControl);
-
-                while(buttonLogic.contains(innerTrans) && opModeIsActive())
-                    buttonLogic.remove(innerTrans);*/
-
-                hwMap.transferHorn.setPosition(TeleopConstants.transferHornCapstone);
-                hwMap.leftIntake.setPower(0);
-                hwMap.rightIntake.setPower(0);
+                if(buttonLogic.get(0).getState()[0])
+				    buttonLogic.get(0).manualActivate(true, false);
+                else if(buttonLogic.get(0).getState()[1])
+                    buttonLogic.get(0).manualActivate(false, true);
+					
+                //hwMap.leftIntake.setPower(0);
+                //hwMap.rightIntake.setPower(0);
 
                 try{
                     Thread.sleep(1000);
@@ -189,38 +165,37 @@ public class Teleop extends LinearOpMode {
                     Thread.sleep(700);
                 } catch (Exception e){}
 
-                hwMap.transferHorn.setPosition(TeleopConstants.transferHornPosReady);
-                hwMap.innerTransfer.setPosition(TeleopConstants.innerTransferPosTucked);
-                hwMap.clawServo2.setPosition(TeleopConstants.clawServo2PosOpen);
-                hwMap.clawServo1.setPosition(TeleopConstants.clawServo1Block);
+                if(buttonLogic.get(5).getState()[0])
+                    buttonLogic.get(5).manualActivate(true, false);
+
+                if(buttonLogic.get(4).getState()[0])
+                    buttonLogic.get(4).manualActivate(true, false);
+
+                if(!buttonLogic.get(3).getState()[1])
+                    buttonLogic.get(3).manualActivate(false, true);
 
                 try{
                     Thread.sleep(700);
                 } catch (Exception e){}
 
-                hwMap.transferHorn.setPosition(TeleopConstants.transferHornPosPush);
+                if(!buttonLogic.get(5).getState()[0])
+                    buttonLogic.get(5).manualActivate(true, false);
 
                 try{
                     Thread.sleep(1500);
                 } catch (Exception e){}
             } else if(!gamepad2.dpad_up && blockerCapstone){
                 blockerCapstone = false;
-                hwMap.transferHorn.setPosition(TeleopConstants.transferHornPosReady);
+
+                if(buttonLogic.get(5).getState()[0])
+                    buttonLogic.get(5).manualActivate(true, false);
+
                 hwMap.clawInit.setPosition(TeleopConstants.clawInitPosCapstone);
-                hwMap.clawServo1.setPosition(TeleopConstants.clawServo1PosClose);
+
+                if(!buttonLogic.get(3).getState()[1])
+                    buttonLogic.get(3).manualActivate(false, true);
+
                 hwMap.innerTransfer.setPosition(TeleopConstants.innerTransferPosTucked);
-                /*buttonLogic.add(hornControl);
-                buttonLogic.add(clawControl);
-                buttonLogic.add(innerTrans);
-
-                while(buttonLogic.indexOf(hornControl) != buttonLogic.lastIndexOf(hornControl) && opModeIsActive())
-                    buttonLogic.remove(hornControl);
-
-                while(buttonLogic.indexOf(clawControl) != buttonLogic.lastIndexOf(clawControl) && opModeIsActive())
-                    buttonLogic.remove(clawControl);
-
-                while(buttonLogic.indexOf(innerTrans) != buttonLogic.lastIndexOf(innerTrans) && opModeIsActive())
-                    buttonLogic.remove(innerTrans);*/
             }
 
             //------------------------------===Driving/Strafing===------------------------------------------
@@ -328,7 +303,7 @@ public class Teleop extends LinearOpMode {
                             } else if (gamepad1.left_stick_x == 0) {
                                 speed = Math.abs(gamepad1.left_stick_y);
                             } else {
-                                speed = (Math.abs(gamepad1.left_stick_x) + Math.abs(gamepad1.left_stick_y)) / 2;
+                                speed = Math.min(Math.abs(gamepad1.left_stick_x) + Math.abs(gamepad1.right_stick_y), 1);
                             }
 
                             double angle = Math.atan2(gamepad1.left_stick_x, -gamepad1.left_stick_y);
@@ -396,6 +371,9 @@ public class Teleop extends LinearOpMode {
                             drivetrain.stop();
                         }
                     }
+
+                    for(OnOffButton onOffButton : buttonLogic)
+                        onOffButton.getGamepadStateAndRun();
 
                     telemetry.addData("LeftForwardOdometry", hwMap.leftIntake.getCurrentPosition());
                     telemetry.addData("RightForwardOdometry", hwMap.liftTwo.getCurrentPosition());

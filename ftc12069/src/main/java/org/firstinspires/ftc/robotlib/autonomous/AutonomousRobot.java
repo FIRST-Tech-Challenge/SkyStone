@@ -407,13 +407,11 @@ public class AutonomousRobot {
      * Turns the robot by an angle.
      * This blocks the current thread.
      * @param angle angle to turn to in degrees
-     * @param velocity rotation speed (between 0 and 1)
      */
-    public void turn(double angle, double velocity) {
-        telemetry.addData("TURN EXECUTING", "Angle: %.2f degrees\nVelocity: %.2f", angle, velocity);
+    public void turn(double angle) {
+        telemetry.addData("TURN EXECUTING", "Angle: %.2f degrees", angle);
         telemetry.update();
 
-        hardware.drivetrain.setVelocity(velocity);
         hardware.drivetrain.setTargetHeading(Math.toRadians(angle));
         hardware.drivetrain.rotate();
     }
@@ -581,7 +579,7 @@ public class AutonomousRobot {
 
             // In case the robot did not finish turning by the time it reached its destination
             if (this.getOrientation2D() - initialOrientation < orientationInfo.angle)
-                this.turn(orientationInfo.angle - (this.getOrientation2D() - initialOrientation), orientationInfo.rotation);
+                this.turn(orientationInfo.angle - (this.getOrientation2D() - initialOrientation));
         } else {
             while (hardware.drivetrain.isPositioning()) {
                 Velocity gyroVelocity = hardware.imu.getVelocity();

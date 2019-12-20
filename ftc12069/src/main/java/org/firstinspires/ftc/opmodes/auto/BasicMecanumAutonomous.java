@@ -97,7 +97,7 @@ class BasicMecanumAutonomous {
         robot.move(robot.correctMovement(Course.RIGHT), 0.5, null, 34);
 
         for (int i = 0; i < 2; i++) {
-            if (i > 0) robot.turn(180, 0.5);
+            if (i > 0) robot.turn(180);
             
             robot.scanWait(2);
             if (robot.isTrackableVisible() && robot.isSkystoneVisible()) {
@@ -109,14 +109,14 @@ class BasicMecanumAutonomous {
             } else robot.move(Course.BACKWARD, 0.5, null, 5);
 
             // Intake Stone
-            robot.turn(180, 0.5);
+            robot.turn(180);
             robot.hardware.updateDeliveryStates(ServoState.FLOOR);
             robot.hardware.blockGrabber.setPosition(ServoState.OPEN);
             robot.wait(2.0);
 
             robot.hardware.blockGrabber.setPosition(ServoState.CLOSED);
             robot.wait(0.2);
-            robot.hardware.updateDeliveryStates(ServoState.CRADLE);
+            robot.hardware.updateDeliveryStates(ServoState.ONEBLOCKHOVER);
             robot.wait(1.0);
             robot.move(Course.BACKWARD, 0.5, null, 8);
 

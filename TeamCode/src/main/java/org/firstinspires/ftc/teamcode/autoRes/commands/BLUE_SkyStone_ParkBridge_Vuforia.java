@@ -99,7 +99,7 @@ public class BLUE_SkyStone_ParkBridge_Vuforia extends LinearOpMode {
 
     private double x_translate = 0;
     private double y_translate = 0;
-    double stoneTostone = 8;
+    double stoneTostone = 10; //was 8
 
     public VuforiaTrackables targetsSkyStone;
     List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
@@ -172,7 +172,7 @@ public class BLUE_SkyStone_ParkBridge_Vuforia extends LinearOpMode {
         sleep(500);
 
         // Move by distance X forward near SB5 : 6 inches to skystone
-        double robotToNearSkystone = 25; // was 27
+        double robotToNearSkystone = 27; // was 27
         runFwdBackLeftRight(robotToNearSkystone,0,0.2);
 
         sleep(500);
@@ -201,6 +201,9 @@ public class BLUE_SkyStone_ParkBridge_Vuforia extends LinearOpMode {
             runFwdBackLeftRight(stoneTostone, playingAlliance, 0.1);
             skystonePosition = 4;
         }
+        targetsSkyStone.deactivate();
+        
+        targetsSkyStone.activate();
 
         if(!targetVisible && (skystonePosition == 4)){
                 vuforiaFindSkystone();

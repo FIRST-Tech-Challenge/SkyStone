@@ -94,8 +94,8 @@ public class Maccabot {
     }
 
     public void intake(double cond1) {
-        intake_right.setPower(cond1);
-        intake_left.setPower(cond1);
+        intake_right.setPower((cond1)*.5);//the multiplication of a decimal reduces the motor speed for the INTAKE
+        intake_left.setPower((cond1)*.5);
 
        /* parentOpMode.telemetry.addLine(Double.toString(intake_right.getPower()));
         parentOpMode.telemetry.addLine(Double.toString(intake_left.getPower()));*/
@@ -118,7 +118,7 @@ public class Maccabot {
             lift_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
         else{
-            lift_left.setPower((cond1-cond2) * 0.75);
+            lift_left.setPower((cond1-cond2) * 0.75);//the multiplication of a decimal reduces the motor speed for the LIFT
             lift_right.setPower((cond1-cond2) * 0.75);
 
             parentOpMode.telemetry.addLine(Double.toString(lift_right.getCurrentPosition()));
@@ -134,7 +134,7 @@ public class Maccabot {
         back_right.setPower(0);
     }
 
-    public void auto_forward(int pos, double power){
+    public void auto_forward(int pos, double power){//method for autored for the robot to go forward
         back_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         back_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         front_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -166,6 +166,166 @@ public class Maccabot {
         back_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
+    }
+
+    public void auto_backward(int pos, double power){//method for autored for the robot to go backward
+        back_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        back_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        front_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        front_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+
+        back_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        back_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        front_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        front_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        back_left.setDirection(DcMotorSimple.Direction.FORWARD);
+        back_right.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        back_left.setPower(-power);//inverted direction for all the motors, so watch out, it goes backwards
+        back_left.setTargetPosition(pos);
+        back_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        front_left.setPower(-power);
+        front_left.setTargetPosition(-pos);
+        front_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        front_right.setPower(-power);
+        front_right.setTargetPosition(-pos);
+        front_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        back_right.setPower(-power);
+        back_right.setTargetPosition(pos);
+        back_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
+    }
+    public void auto_turnright(int pos, double power){//autored method for turn right
+        back_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        back_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        front_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        front_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+
+        back_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        back_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        front_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        front_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        back_left.setDirection(DcMotorSimple.Direction.FORWARD);
+        back_right.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        back_left.setPower(power);
+        back_left.setTargetPosition(pos);
+        back_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        front_left.setPower(power);
+        front_left.setTargetPosition(-pos);
+        front_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        front_right.setPower(-power);
+        front_right.setTargetPosition(-pos);
+        front_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);//negative power for the right side so the robot does a pinpoint turn to the right
+
+        back_right.setPower(-power);
+        back_right.setTargetPosition(pos);
+        back_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+    }
+    public void auto_turnleft(int pos, double power){//autored method for turning left
+        back_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        back_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        front_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        front_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+
+        back_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        back_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        front_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        front_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        back_left.setDirection(DcMotorSimple.Direction.FORWARD);
+        back_right.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        back_left.setPower(-power);//mirror of turn right, but the left motors are negative to pinpoint turn left
+        back_left.setTargetPosition(pos);
+        back_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        front_left.setPower(-power);
+        front_left.setTargetPosition(-pos);
+        front_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        front_right.setPower(power);
+        front_right.setTargetPosition(-pos);
+        front_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        back_right.setPower(power);
+        back_right.setTargetPosition(pos);
+        back_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+    }
+    public void auto_straferight(int pos, double power){//method for strafing right
+        back_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        back_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        front_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        front_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+
+        back_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        back_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        front_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        front_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        back_left.setDirection(DcMotorSimple.Direction.FORWARD);
+        back_right.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        back_left.setPower(power);
+        back_left.setTargetPosition(pos);
+        back_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        front_left.setPower(-power);
+        front_left.setTargetPosition(-pos);//front left inverted to allow for strafing
+        front_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        front_right.setPower(power);
+        front_right.setTargetPosition(-pos);
+        front_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        back_right.setPower(-power);//back left inverted for strafing
+        back_right.setTargetPosition(pos);
+        back_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+    public void auto_strafeleft(int pos, double power){//mirror of strafe right except with back left and front right inverted for a left strafe.
+        back_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        back_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        front_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        front_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+
+        back_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        back_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        front_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        front_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        back_left.setDirection(DcMotorSimple.Direction.FORWARD);
+        back_right.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        back_left.setPower(-power);
+        back_left.setTargetPosition(pos);
+        back_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        front_left.setPower(power);
+        front_left.setTargetPosition(-pos);
+        front_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        front_right.setPower(-power);
+        front_right.setTargetPosition(-pos);
+        front_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        back_right.setPower(power);
+        back_right.setTargetPosition(pos);
+        back_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     public boolean encoderIsBusy() {

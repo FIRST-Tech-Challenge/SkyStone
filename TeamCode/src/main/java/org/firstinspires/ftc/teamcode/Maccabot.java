@@ -165,6 +165,13 @@ public class Maccabot {
         back_right.setTargetPosition(pos);
         back_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+        parentOpMode.telemetry.addData("front-left", front_left.getCurrentPosition());
+        parentOpMode.telemetry.addData("back-left", back_left.getCurrentPosition());
+        parentOpMode.telemetry.addData("front-right", front_right.getCurrentPosition());
+        parentOpMode.telemetry.addData("back-right", back_right.getCurrentPosition());
+
+        parentOpMode.telemetry.update();
+
 
     }
 
@@ -199,6 +206,13 @@ public class Maccabot {
         back_right.setTargetPosition(pos);
         back_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+        parentOpMode.telemetry.addData("front-left", front_left.getCurrentPosition());
+        parentOpMode.telemetry.addData("back-left", back_left.getCurrentPosition());
+        parentOpMode.telemetry.addData("front-right", front_right.getCurrentPosition());
+        parentOpMode.telemetry.addData("back-right", back_right.getCurrentPosition());
+
+        parentOpMode.telemetry.update();
+
 
     }
     public void auto_turnright(int pos, double power){//autored method for turn right
@@ -232,6 +246,13 @@ public class Maccabot {
         back_right.setTargetPosition(pos);
         back_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+        parentOpMode.telemetry.addData("front-left", front_left.getCurrentPosition());
+        parentOpMode.telemetry.addData("back-left", back_left.getCurrentPosition());
+        parentOpMode.telemetry.addData("front-right", front_right.getCurrentPosition());
+        parentOpMode.telemetry.addData("back-right", back_right.getCurrentPosition());
+
+        parentOpMode.telemetry.update();
+
     }
     public void auto_turnleft(int pos, double power){//autored method for turning left
         back_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -264,6 +285,13 @@ public class Maccabot {
         back_right.setTargetPosition(pos);
         back_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+        parentOpMode.telemetry.addData("front-left", front_left.getCurrentPosition());
+        parentOpMode.telemetry.addData("back-left", back_left.getCurrentPosition());
+        parentOpMode.telemetry.addData("front-right", front_right.getCurrentPosition());
+        parentOpMode.telemetry.addData("back-right", back_right.getCurrentPosition());
+
+        parentOpMode.telemetry.update();
+
     }
     public void auto_straferight(int pos, double power){//method for strafing right
         back_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -295,6 +323,13 @@ public class Maccabot {
         back_right.setPower(-power);//back left inverted for strafing
         back_right.setTargetPosition(pos);
         back_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        parentOpMode.telemetry.addData("front-left", front_left.getCurrentPosition());
+        parentOpMode.telemetry.addData("back-left", back_left.getCurrentPosition());
+        parentOpMode.telemetry.addData("front-right", front_right.getCurrentPosition());
+        parentOpMode.telemetry.addData("back-right", back_right.getCurrentPosition());
+
+        parentOpMode.telemetry.update();
     }
     public void auto_strafeleft(int pos, double power){//mirror of strafe right except with back left and front right inverted for a left strafe.
         back_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -326,12 +361,45 @@ public class Maccabot {
         back_right.setPower(power);
         back_right.setTargetPosition(pos);
         back_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        parentOpMode.telemetry.addData("front-left", front_left.getCurrentPosition());
+        parentOpMode.telemetry.addData("back-left", back_left.getCurrentPosition());
+        parentOpMode.telemetry.addData("front-right", front_right.getCurrentPosition());
+        parentOpMode.telemetry.addData("back-right", back_right.getCurrentPosition());
+
+        parentOpMode.telemetry.update();
     }
 
     public boolean encoderIsBusy() {
         return (front_right.isBusy());
     }
+    public void resetEncoder(){
+        back_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        back_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        front_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        front_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 
+        back_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        back_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        front_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        front_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    public void runwithoutencoder(){
+        front_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        front_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        back_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        back_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+
+    public void withoutencoder_strafe_left(double power){
+        runwithoutencoder();
+        back_left.setPower(-power);
+        front_left.setPower(power);
+        front_right.setPower(-power);
+        back_right.setPower(power);
+
+    }
 
 }

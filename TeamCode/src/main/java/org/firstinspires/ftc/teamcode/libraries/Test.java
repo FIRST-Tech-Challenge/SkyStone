@@ -23,9 +23,9 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.VUFORIA_KEY;
 
-@Autonomous(name = "USE FOR BLUE SIDE", group = "Concept")
+@Autonomous(name = "AutoTestRed", group = "Concept")
 
-public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
+public class Test extends LinearOpMode {
 
     private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
     private static final boolean PHONE_IS_PORTRAIT = false;
@@ -57,7 +57,7 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
     double yPosition = 0;
     double xPosition = 0;
     boolean startIdentify = true;
-    float distanceToDepot = 110;    //115
+    float distanceToDepot = 95;    //115
     float distanceToCenterLine = 5.5f;
     float forwardDistanceSkystone = 28f;
     float turningDegree = -50;
@@ -238,24 +238,27 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
                     yPosition = translation.get(1);
                     xPosition = translation.get(0);
                     if (yPosition < 0) {
-                        positionSkystone = "Left";
+                        positionSkystone = "Left";  //right*
 //                        autoLib.calcMove(1, .7f, Constants.Direction.LEFT);
+                        distanceToCenterLine = distanceToCenterLine + 1f;
+                        turningDegree = turningDegree + 7;
+                        foundation = foundation + 5;
                         finalMove(-xPosition, yPosition);
-                        distanceToDepot = distanceToCenterLine + 6;
+//                        distanceToDepot = distanceToDepot + 10;
                     } else {
                         positionSkystone = "Center";
                         //if (xPosition <= -25) {
-                        distanceToDepot = distanceToDepot + 15; //20
                         forwardDistanceSkystone = forwardDistanceSkystone + 3;
-                        distanceToCenterLine = distanceToCenterLine + 1;
-                        turningDegree = turningDegree - 1f;
-                        foundation = foundation + 4;
-                        turningDegree = turningDegree - 1;
-//                        turningDegree = turningDegree - 10f;
-                        sleep(750);
-                        yPosition = translation.get(1);
-                        xPosition = translation.get(0);
+                        foundation = foundation + 8;
+                        distanceToCenterLine = distanceToCenterLine + 7f;
+                        turningDegree = turningDegree + 7;
+                        distanceToDepot = distanceToDepot + 15;
                         finalMove(-xPosition, yPosition);
+//                        turningDegree = turningDegree - 10f;
+                        sleep(1000);
+//                        yPosition = translation.get(1);
+//                        xPosition = translation.get(0);
+//                        finalMove(-xPosition, yPosition);
                         break;
 //                        } else {
 //                            telemetry.addData("Final Position Reached", "none");
@@ -266,16 +269,17 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
                     Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
                     telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
                 } else {
-                    positionSkystone = "Right";
+                    positionSkystone = "Right"; //left*
                     telemetry.addData("Visible Target", "none");
 
-                    distanceToDepot = distanceToDepot + 10;
-                    distanceToCenterLine = distanceToCenterLine + 1;
-                    forwardDistanceSkystone = forwardDistanceSkystone - 1;
-                    foundation = foundation - 3;
-
-                    autoLib.calcMove(20, .7f, Constants.Direction.RIGHT);
+                    distanceToDepot = distanceToDepot + 45;
+                    distanceToCenterLine = distanceToCenterLine + 4;
+                    turningDegree = turningDegree - 2.5f;
+                    foundation = foundation + 5;
+                    finalMove(-xPosition, yPosition);
                     Thread.sleep(1000);
+                    autoLib.calcMove(20, .7f, Constants.Direction.RIGHT);
+                    Thread.sleep(1250);
 
                 }
                 telemetry.addData("Skystone Position", positionSkystone);
@@ -293,30 +297,34 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
 // go near skystone
         autoLib.moveArmDownScoreServoArmGrab();
 
-        autoLib.calcMove((float) (yPosition / 10) + distanceToCenterLine, .9f, Constants.Direction.RIGHT); //when decreased- moves to the left
-        autoLib.calcMove((float) (-xPosition / 10) + forwardDistanceSkystone, .5f, Constants.Direction.FORWARD);   //when increased-moves back
+        autoLib.calcMove((float) (yPosition / 10) + distanceToCenterLine, .9f, Constants.Direction.LEFT); //when decreased- moves to the left
+        autoLib.calcMove((float) (-xPosition / 10) + forwardDistanceSkystone, .6f, Constants.Direction.FORWARD);   //when increased-moves back
 //        distanceToDepot = distanceToDepot + (float) yPosition + 5;
-        autoLib.calcMove(5f, .7f, Constants.Direction.BACKWARD);
+        autoLib.calcMove(6f, .7f, Constants.Direction.BACKWARD);
         Thread.sleep(500);
         autoLib.armGrab();
         Thread.sleep(500);
         autoLib.calcMove(17f, .8f, Constants.Direction.FORWARD);    //16
-        autoLib.calcTurn((int) turningDegree, .7f); //53
+        autoLib.calcTurn((int) -turningDegree, .7f); //53
 //        if (distanceToDepot > 120) {//195
 //            distanceToDepot = 130;//205
 //        }
+        telemetry.addData("About to move", "");
+        telemetry.update();
         autoLib.calcMove(distanceToDepot, 1f, Constants.Direction.BACKWARD);
+        telemetry.addData("Finished moving", "");
+        telemetry.update();
         autoLib.moveArmUpSeconds();
-        autoLib.calcTurn(50, .6f);
-        autoLib.calcMove(foundation, .7f, Constants.Direction.BACKWARD);
+        autoLib.calcTurn(-50, .6f);
+        autoLib.calcMove(foundation, .55f, Constants.Direction.BACKWARD);
         autoLib.scoreServo();
-        autoLib.calcMove(5, .15f, Constants.Direction.BACKWARD);
+        autoLib.calcMove(9, .15f, Constants.Direction.BACKWARD);
         Thread.sleep(300);
         autoLib.latchServoFoundation();
         Thread.sleep(1000);
-        autoLib.calcMove(60, 1f, Constants.Direction.FORWARD);
+        autoLib.calcMove(62, 1f, Constants.Direction.FORWARD);
         autoLib.restServoFoundation();
-        autoLib.calcMove(72, 1f, Constants.Direction.RIGHT);
+        autoLib.calcMove(72, 1f, Constants.Direction.LEFT);
         startIdentify = false;
 
     }

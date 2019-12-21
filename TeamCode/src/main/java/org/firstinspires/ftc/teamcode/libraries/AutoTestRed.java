@@ -240,24 +240,24 @@ public class AutoTestRed extends LinearOpMode {
                     if (yPosition < 0) {
                         positionSkystone = "Left";  //right*
 //                        autoLib.calcMove(1, .7f, Constants.Direction.LEFT);
+                        distanceToCenterLine = distanceToCenterLine + 1f;
+                        turningDegree = turningDegree + 7;
+                        foundation = foundation + 5;
                         finalMove(-xPosition, yPosition);
-                        distanceToDepot = distanceToDepot + 50;
-                        distanceToCenterLine = distanceToCenterLine + 3;
-                        turningDegree = turningDegree + 5;
 //                        distanceToDepot = distanceToDepot + 10;
                     } else {
                         positionSkystone = "Center";
                         //if (xPosition <= -25) {
                         forwardDistanceSkystone = forwardDistanceSkystone + 3;
                         foundation = foundation + 8;
-                        distanceToCenterLine = distanceToCenterLine + 3f;
-                        turningDegree = turningDegree - 2;
-                        distanceToDepot = distanceToDepot + 30;
+                        distanceToCenterLine = distanceToCenterLine + 7f;
+                        turningDegree = turningDegree + 7;
+                        distanceToDepot = distanceToDepot + 15;
 //                        turningDegree = turningDegree - 10f;
                         sleep(1000);
-                        yPosition = translation.get(1);
-                        xPosition = translation.get(0);
-                        finalMove(-xPosition, yPosition);
+//                        yPosition = translation.get(1);
+//                        xPosition = translation.get(0);
+//                        finalMove(-xPosition, yPosition);
                         break;
 //                        } else {
 //                            telemetry.addData("Final Position Reached", "none");
@@ -276,7 +276,7 @@ public class AutoTestRed extends LinearOpMode {
                     turningDegree = turningDegree - 2.5f;
                     foundation = foundation + 5;
                     Thread.sleep(1000);
-                    autoLib.calcMove(20, .7f, Constants.Direction.LEFT);
+                    autoLib.calcMove(20, .7f, Constants.Direction.RIGHT);
                     Thread.sleep(1250);
 
                 }
@@ -295,7 +295,7 @@ public class AutoTestRed extends LinearOpMode {
 // go near skystone
         autoLib.moveArmDownScoreServoArmGrab();
 
-        autoLib.calcMove((float) (yPosition / 10) + distanceToCenterLine, .9f, Constants.Direction.RIGHT); //when decreased- moves to the left
+        autoLib.calcMove((float) (yPosition / 10) + distanceToCenterLine, .9f, Constants.Direction.LEFT); //when decreased- moves to the left
         autoLib.calcMove((float) (-xPosition / 10) + forwardDistanceSkystone, .6f, Constants.Direction.FORWARD);   //when increased-moves back
 //        distanceToDepot = distanceToDepot + (float) yPosition + 5;
         autoLib.calcMove(6f, .7f, Constants.Direction.BACKWARD);

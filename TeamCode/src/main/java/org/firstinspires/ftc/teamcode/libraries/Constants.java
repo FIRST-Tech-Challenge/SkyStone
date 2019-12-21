@@ -37,7 +37,7 @@ public class Constants {
     static final float SERVO_GRABBER_REST = .44f;
     static final float SERVO_FOUNDATION_GRAB1 = .96f;
     static final float SERVO_FOUNDATION_REST1 = .33f;
-    static final float SERVO_FOUNDATION_GRAB2 =.91f;
+    static final float SERVO_FOUNDATION_GRAB2 = .91f;
     static final float SERVO_FOUNDATION_REST2 = .65f;
 
 
@@ -58,8 +58,15 @@ public class Constants {
 
     static final String VUFORIA_KEY = "ARSzhHP/////AAABmQ3dyIKKfkcipjZh0HtnoDEkjuCn18CTNUWRN7PTFoedxZLS+QZmpkyXpQnQXFpQ5ol//l0ZwTejVrGRQ4i/kQBrrFJ8E0C7ckr4lzf5bLCvi1/E9x8anPwt2D0UToZ3MB5jPx4T6s/EOs575BtxjL7uv5jrCbQDsXebm2PROU4zC/Dj7+AYFkKCqD3YYLbGPGV4YoSgp9Ihoe+ZF/eae0FLG8K/o4eyfZj0B3aXkRvYi3dC5LY+c76aU72bKTrQ2PDYSxDG8xCaY1JyEyfDA6XqjHjYMvh0BBbb8bAQvPgG6/G50+5L+c/a8u6sbYJLbvVtXdMtrG1EA4CglbnsDs7GyyJmH5AusSwIDb9DQnTA";
 
-    private static final float mmPerInch = 25.4f;
-    private static final float mmTargetHeight = (6) * mmPerInch;
+    static final Object Coordinates = new Object();
 
-    public enum GoldObjectPosition {LEFT, CENTER, RIGHT}
+    public static class Coordinates {
+        public double xPosition;
+        public double yPosition;
+
+        public Coordinates(double xPosition, double yPosition) {
+            this.xPosition = xPosition;
+            this.yPosition = yPosition;
+        }
+    }
 }

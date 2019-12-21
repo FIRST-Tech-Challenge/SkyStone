@@ -176,7 +176,7 @@ public class RedAutonomous29Points extends LinearOpMode {
                     yPosition = translation.get(1);
                     xPosition = translation.get(0);
                     if (yPosition >0 && yPosition <=10 ) {
-                        positionSkystone = "Left"; //right
+                        positionSkystone = "Right"; //right
                         autoLib.calcMove(3, .5f, Constants.Direction.RIGHT);
 
                     } else {
@@ -193,7 +193,7 @@ public class RedAutonomous29Points extends LinearOpMode {
                     Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
                     telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
                 } else {
-                    positionSkystone = "Right";  //left
+                    positionSkystone = "Left";  //left
                     telemetry.addData("Visible Target", "none");
 
                     distanceToDepot = distanceToDepot + 13.5f;

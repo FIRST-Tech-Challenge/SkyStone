@@ -97,7 +97,7 @@ public class TwoSkystonesAndPark extends LinearOpMode {
                     break;
 
                 case INTAKING:
-                    if(System.currentTimeMillis() - startTime > 500){
+                    if(System.currentTimeMillis() - startTime > 250){
                         resetTime();
                         currentState = AutoStates.BACKING_UP;
                         drive.followTrajectory(drive.trajectoryBuilder().back(20.0).build());

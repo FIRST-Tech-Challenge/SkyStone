@@ -249,8 +249,8 @@ public class Path {
                 drive.getLocalizer().update();
                 builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
                 builder = builder.setReversed(true).lineTo(new Vector2d(-39.728, -42.672))
-                        .setReversed(false).splineTo(new Pose2d(new Vector2d(-5.568, -18.44), Math.toRadians(0)))
-                        .splineTo(new Pose2d(new Vector2d(51.488, -25.296), Math.toRadians(-90)));
+                        .setReversed(false).splineTo(new Pose2d(new Vector2d(-5.568, -24.44), Math.toRadians(0)))
+                        .splineTo(new Pose2d(new Vector2d(51.488, -30.296), Math.toRadians(-90)));
                 trajectory = builder.build();
                 drive.followTrajectorySync(trajectory);
 

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmode;
+package org.firstinspires.ftc.teamcode.opmode.test;
 
 import android.widget.Button;
 
@@ -26,7 +26,6 @@ import org.firstinspires.ftc.teamcode.hardware.FoundationGrabber;
  * encoder localizer heading may be significantly off if the track width has not been tuned).
  */
 @TeleOp(group = "drive")
-@Disabled
 public class LocalizationTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
@@ -45,8 +44,8 @@ public class LocalizationTest extends LinearOpMode {
 
         waitForStart();
         while (!isStopRequested()) {
-            TelemetryPacket packet = new TelemetryPacket();
-            Canvas fieldOverlay = packet.fieldOverlay();
+//            TelemetryPacket packet = new TelemetryPacket();
+//            Canvas fieldOverlay = packet.fieldOverlay();
 
             drive.setDrivePower(new Pose2d(
                     -gamepad1.left_stick_y,
@@ -70,9 +69,9 @@ public class LocalizationTest extends LinearOpMode {
             telemetry.addData("Motor Ticks (Front Encoder): ", frontEncoder.getCurrentPosition());
             telemetry.update();
 
-            fieldOverlay.setStroke("#3F51B5");
-            fieldOverlay.fillCircle(poseEstimate.getX(), poseEstimate.getY(), 3);
-            dashboard.sendTelemetryPacket(packet);
+//            fieldOverlay.setStroke("#3F51B5");
+//            fieldOverlay.fillCircle(poseEstimate.getX(), poseEstimate.getY(), 3);
+//            dashboard.sendTelemetryPacket(packet);
         }
     }
 }

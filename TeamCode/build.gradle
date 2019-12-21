@@ -16,6 +16,6 @@ apply from: '../build.common.gradle'
 
 dependencies {
     implementation 'org.openftc:rev-extensions-2:1.2'
-    implementation 'com.acmerobotics.dashboard:dashboard:0.3.4'
-    implementation 'org.openftc:easyopencv:1.3'
+    implementation 'com.acmerobotics.dashboard:dashboard:0.3.6'
+    implementation 'org.openftc:easyopencv:1.3.1'
 }

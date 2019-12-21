@@ -17,8 +17,8 @@ public class Intake extends Subsystem{
 
     public static double holdPosition = 0;
     public static double releasePosition = 0.3;
-    public static double grabPosition = 0.7;
-    public static double stoneHoldPosition = 1;
+    public static double grabPosition = 0.3;
+    public static double stoneHoldPosition = 0.9;
 
     public enum State {
         RELEASING, GRABBING, OPEN

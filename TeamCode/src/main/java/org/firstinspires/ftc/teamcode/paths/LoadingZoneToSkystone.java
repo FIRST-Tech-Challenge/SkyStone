@@ -20,23 +20,23 @@ public class LoadingZoneToSkystone {
     public Trajectory toTrajectory (SkystonePosition.Positions skystonePosition){
         if(redAlliance){
             if(skystonePosition == SkystonePosition.Positions.LEFT){
-                return drive.trajectoryBuilder().splineTo(new Pose2d(-47,-36,Math.toRadians(90))).build();
+                return drive.trajectoryBuilder().splineTo(new Pose2d(-45,-36,Math.toRadians(90))).build();
             } else if(skystonePosition == SkystonePosition.Positions.MIDDLE){
-                return drive.trajectoryBuilder().splineTo(new Pose2d(-35,-36,Math.toRadians(90))).build();
+                return drive.trajectoryBuilder().splineTo(new Pose2d(-33,-36,Math.toRadians(90))).build();
             } else if(skystonePosition == SkystonePosition.Positions.RIGHT){
-                return drive.trajectoryBuilder().splineTo(new Pose2d(-27,-36,Math.toRadians(90))).build();
+                return drive.trajectoryBuilder().splineTo(new Pose2d(-25,-36,Math.toRadians(90))).build();
             }
 
         } else {
             if(skystonePosition == SkystonePosition.Positions.RIGHT){
-                return drive.trajectoryBuilder().splineTo(new Pose2d(-47,36,Math.toRadians(-90))).build();
+                return drive.trajectoryBuilder().splineTo(new Pose2d(-45,36,Math.toRadians(-90))).build();
             } else if(skystonePosition == SkystonePosition.Positions.MIDDLE){
-                return drive.trajectoryBuilder().splineTo(new Pose2d(-35,36,Math.toRadians(-90))).build();
+                return drive.trajectoryBuilder().splineTo(new Pose2d(-33,36,Math.toRadians(-90))).build();
             } else if(skystonePosition == SkystonePosition.Positions.LEFT){
-                return drive.trajectoryBuilder().splineTo(new Pose2d(-27,36,Math.toRadians(-90))).build();
+                return drive.trajectoryBuilder().splineTo(new Pose2d(-25,36,Math.toRadians(-90))).build();
             }
         }
-        return drive.trajectoryBuilder().splineTo(new Pose2d(-47,-29,Math.toRadians(90))).build();
+        return drive.trajectoryBuilder().splineTo(new Pose2d(-45,-29,Math.toRadians(90))).build();
     }
 }
 

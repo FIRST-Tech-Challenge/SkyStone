@@ -17,10 +17,10 @@ public class LoadingZoneToFarSkybridge {
 
     public Trajectory toTrajectory (){
         if(redAlliance){
-            return drive.trajectoryBuilder().splineTo(new Pose2d(-20,-36,20)).build();
+            return drive.trajectoryBuilder().splineTo(new Pose2d(0,-42,0)).build();
 
         }
-        return drive.trajectoryBuilder().splineTo(new Pose2d(-20,36,-20)).build();
+        return drive.trajectoryBuilder().splineTo(new Pose2d(0,42,0)).build();
     }
 
 }

@@ -45,7 +45,6 @@ public class SkystoneVision extends OpenCvPipeline {
     }
 
     private Stage stageToRenderToViewport = Stage.SKYSTONE_CONTOURS;
-    private Stage[] stages = Stage.values();
 
     @Override
     public Mat processFrame(Mat input){

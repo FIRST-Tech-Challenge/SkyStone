@@ -7,5 +7,5 @@ dependencies {
     implementation (name: 'tfod-release', ext:'aar')
     implementation (name: 'tensorflow-lite-0.0.0-nightly', ext:'aar')
     implementation 'com.acmerobotics.roadrunner:core:0.4.7'
-    implementation 'com.acmerobotics.dashboard:dashboard:0.3.4'
+    implementation 'com.acmerobotics.dashboard:dashboard:0.3.6'
 }

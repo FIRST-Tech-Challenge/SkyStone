@@ -105,6 +105,10 @@ public class Superstructure {
                 grabStone();
                 break;
 
+            case MANUAL:
+                grabStone();
+                break;
+
             case HOLDING:
                 goToPlacingPosition();
                 break;

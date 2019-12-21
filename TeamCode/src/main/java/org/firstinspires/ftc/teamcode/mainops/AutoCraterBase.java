@@ -28,8 +28,8 @@ public class AutoCraterBase extends LinearOpMode {
 
         if (coordinates.yPosition < 0) {
             autoLib.calcMove(5, .1f, Constants.Direction.RIGHT);
-            autoLib.calcMove((float) (coordinates.yPosition / 10) + 5, .9f, Constants.Direction.RIGHT); //when decreased- moves to the left
-            autoLib.calcMove((float) (-coordinates.xPosition / 10) + 5, .5f, Constants.Direction.FORWARD);   //when increased-moves back
+//            autoLib.calcMove((float) (coordinates.yPosition / 10) + 5, .9f, Constants.Direction.RIGHT); //when decreased- moves to the left
+//            autoLib.calcMove((float) (-coordinates.xPosition / 10) + 5, .5f, Constants.Direction.FORWARD);   //when increased-moves back
 
         } else if (coordinates.yPosition < 10) {
             telemetry.addData("pos", "Right");

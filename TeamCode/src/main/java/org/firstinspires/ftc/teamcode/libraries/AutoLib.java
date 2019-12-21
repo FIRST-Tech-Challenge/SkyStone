@@ -148,7 +148,7 @@ public class AutoLib {
         setBaseMotorPowers(0);
     }
 
-    public void calcMoveIntake(float centimeters, float power, Constants.Direction direction) {
+    public void calcMoveDiagonal(float centimeters, float power, Constants.Direction direction) {
         // Calculates target encoder position
         final int targetPosition = (int) ((((centimeters / (Math.PI * WHEEL_DIAMETER)) *
                 NEVEREST_40_REVOLUTION_ENCODER_COUNT)) * WHEEL_GEAR_RATIO);
@@ -363,7 +363,7 @@ public class AutoLib {
 
     //********** Tensor Flow Methods **********//
 
-    public void initVuforia() {
+    private void initVuforia() {
 
         webcamName = opMode.hardwareMap.get(WebcamName.class, "Webcam1");
 

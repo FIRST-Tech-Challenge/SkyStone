@@ -78,8 +78,8 @@ public class Path {
                 drive.getLocalizer().update();
                 builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
                 builder = builder.setReversed(true).lineTo(new Vector2d(-24.728, -49.672))
-                        .setReversed(false).splineTo(new Pose2d(new Vector2d(-5.568, -30.44), Math.toRadians(0)))
-                        .splineTo(new Pose2d(new Vector2d(63.488, -34.296), Math.toRadians(-90)));
+                        .setReversed(false).splineTo(new Pose2d(new Vector2d(-5.568, -35.44), Math.toRadians(0)))
+                        .splineTo(new Pose2d(new Vector2d(63.488, -38.296), Math.toRadians(-90)));
                 trajectory = builder.build();
                 drive.followTrajectorySync(trajectory);
 
@@ -127,12 +127,12 @@ public class Path {
                 trajectory = builder.build();
                 drive.followTrajectorySync(trajectory);
 
-                driveTime(-1, 1300);
+                driveTime(-0.75, 1150);
                 dropStone();
                 try{
                     Thread.sleep(500);
                 } catch (Exception e){}
-                driveTime(1, 800);
+                //driveTime(1, 800);
 
                 intake(0);
                 break;
@@ -163,8 +163,8 @@ public class Path {
                 drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(-27.728, -11.52), Math.toRadians(80)));
                 drive.getLocalizer().update();
                 builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
-                builder = builder.setReversed(true).lineTo(new Vector2d(-34.728, -38.672))
-                        .setReversed(false).splineTo(new Pose2d(new Vector2d(-5.568, -18.44), Math.toRadians(0)))
+                builder = builder.setReversed(true).lineTo(new Vector2d(-34.728, -40.672))
+                        .setReversed(false).splineTo(new Pose2d(new Vector2d(-5.568, -24.44), Math.toRadians(0)))
                         .splineTo(new Pose2d(new Vector2d(55.488, -30.296), Math.toRadians(-90)));
                 trajectory = builder.build();
                 drive.followTrajectorySync(trajectory);
@@ -212,12 +212,12 @@ public class Path {
                 trajectory = builder.build();
                 drive.followTrajectorySync(trajectory);
 
-                driveTime(-1, 1150);
+                driveTime(-0.75, 1150);
                 dropStone();
                 try{
                     Thread.sleep(500);
                 } catch (Exception e){}
-                driveTime(1, 800);
+               // driveTime(1, 800);
 
                 intake(0);
                 break;
@@ -297,12 +297,12 @@ public class Path {
                 trajectory = builder.build();
                 drive.followTrajectorySync(trajectory);
 
-                driveTime(-1, 1150);
+                driveTime(-0.75, 1150);
                 dropStone();
                 try{
                     Thread.sleep(500);
                 } catch (Exception e){}
-                driveTime(1, 800);
+                //driveTime(1, 800);
 
                 intake(0);
                 break;

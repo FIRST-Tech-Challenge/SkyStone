@@ -3,16 +3,16 @@ package org.firstinspires.ftc.teamcode.TeleOp;
 public class TeleopConstants {
     public static double drivePowerNormal = 0.7;
     public static double drivePowerTurbo = 1;
-    public static double drivePowerSlow = 0.3;
+    public static double drivePowerSlow = 0.5;
     public static double turnPower = 0.5;
     public static double intakePower = 1;
     public static double liftPower = -1;
 
-    public static double clawServo1Block = 0.88;
+    public static double clawServo1Block = 0.80;
     public static double clawServo1PosClose = 0.85;    //@TODO Get clawServo1 & clawServo2 positions
     public static double clawServo1PosOpen = 0.4;
 
-    public static double clawServo2PosClose = 0.3;
+    public static double clawServo2PosClose = 0.3209;
     public static double clawServo2PosOpen = 0.687;
 
     public static double odometerLockPosUp = 0.452;

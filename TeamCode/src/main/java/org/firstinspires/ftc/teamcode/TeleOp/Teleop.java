@@ -95,7 +95,7 @@ public class Teleop extends LinearOpMode {
                 new Servo[] { hwMap.clawServo1, hwMap.clawServo2 },
                 new double[][] { {TeleopConstants.clawServo1PosOpen, TeleopConstants.clawServo1PosClose},
                         {TeleopConstants.clawServo2PosOpen, TeleopConstants.clawServo2PosClose} },
-                new double[] { TeleopConstants.clawServo1PosClose, TeleopConstants.clawServo2PosOpen }));
+                new double[] { TeleopConstants.clawServo1Block, TeleopConstants.clawServo2PosOpen }));
         /*buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.DPAD_UP,
                 new Servo[] {hwMap.clawInit},
                 new double[][]{ {TeleopConstants.clawInitPosCapstoneForReal, TeleopConstants.clawInitPosCapstone} }));*/
@@ -114,14 +114,18 @@ public class Teleop extends LinearOpMode {
 
         while (opModeIsActive()) {
 			
-			if(gamepad2.a && buttonLogic.get(0).getState()[0] && buttonLogic.get(5).getState()[0])
-				buttonLogic.get(5).manualActivate(true, false);
+			if(gamepad2.a && buttonLogic.get(0).getState()[0] && buttonLogic.get(5).getState()[0]) {
+                buttonLogic.get(5).manualActivate(true, false);
+
+                if (!buttonLogic.get(3).getState()[1])
+                    buttonLogic.get(5).manualActivate(false, true);
+            }
 			
-			if(gamepad2.left_trigger > 0.5 && buttonLogic.get(4).getState()[0])
+			if(gamepad2.left_trigger >= 0.5 && buttonLogic.get(4).getState()[0])
 				buttonLogic.get(4).manualActivate(true, false);
 			
 			if(gamepad2.y && !buttonLogic.get(3).getState()[0] && buttonLogic.get(1).getState()[0])
-				buttonLogic.get(3).manualActivate(true, false);
+                buttonLogic.get(3).manualActivate(true, false);
 
             //------------------------------===Servos & Intake/Outake===------------------------------------------
 
@@ -311,10 +315,12 @@ public class Teleop extends LinearOpMode {
                         }
 
                         if (gamepad1.right_stick_x != 0) {
+                            drivetrain.setMotorZeroPower(DcMotor.ZeroPowerBehavior.BRAKE);
                             if (gamepad1.right_stick_x > 0)
                                 drivetrain.rotate(turnSpeed * gamepad1.right_stick_x, true);
                             else if (gamepad1.right_stick_x < 0)
                                 drivetrain.rotate(turnSpeed * Math.abs(gamepad1.right_stick_x), false);
+                            drivetrain.setMotorZeroPower(DcMotor.ZeroPowerBehavior.FLOAT);
                         }
 
                         if (gamepad1.left_trigger >= 0.751) {
@@ -330,9 +336,9 @@ public class Teleop extends LinearOpMode {
                         }
 
                         if (gamepad1.dpad_up) {
-                            drivetrain.setPowerAll(slowSpeed);
+                            drivetrain.setPowerAll(slowSpeed - 0.2);
                         } else if (gamepad1.dpad_down) {
-                            drivetrain.setPowerAll(-slowSpeed);
+                            drivetrain.setPowerAll(-(slowSpeed - 0.2));
                         } else if (gamepad1.dpad_right) {
                             drivetrain.strafe(slowSpeed, true);
                         } else if (gamepad1.dpad_left) {

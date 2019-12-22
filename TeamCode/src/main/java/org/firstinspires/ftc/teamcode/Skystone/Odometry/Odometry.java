@@ -86,14 +86,14 @@ public class Odometry {
         oldRightPod = rightPodNew;
         oldMecanumPod = mecanumPodNew;
 
-        circularOdometry(dLeftPod, dRightPod, dMecanumPod, leftPodNew, rightPodNew);
+        circularOdometry(dLeftPod, dRightPod, dMecanumPod);
     }
 
     /* Circular Odometry assumes that the movement that occurred between each update was in the form
        of an arc (except when the robot moves directly forward. Each time the math is run, the
        algorithm uses coordinate system (x',y') where x' is the direct forward direction between the
        last point and the new point. */
-    public void circularOdometry (double dLeftPod, double dRightPod, double dMecanumPod, double absoluteLeftPod, double absoluteRightPod) {
+    public void circularOdometry (double dLeftPod, double dRightPod, double dMecanumPod) {
         double dLeftPodInches = dLeftPod * moveScaleFactor;
         double dRightPodInches = dRightPod * moveScaleFactor;
         double dMecanumPodInches = dMecanumPod * moveScaleFactor;

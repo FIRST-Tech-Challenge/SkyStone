@@ -61,6 +61,7 @@ public class Robot {
     // Outtake Slide Positions
     public final double OUTTAKE_SLIDE_EXTENDED = .0799999;
     public final double OUTTAKE_SLIDE_RETRACTED = .725;
+    public final double OUTTAKE_SLIDE_PARTIAL_EXTEND = .22;
 
     //team marker positions
     public final double TEAM_MARKER_DUMP = 1;
@@ -72,7 +73,7 @@ public class Robot {
 
     // Outtake Clamp Positions
     public final double CLAMP_SERVO_CLAMPED = .43;
-    public final double CLAMP_SERVO_RELEASED = .335;
+    public final double CLAMP_SERVO_RELEASED = .32;
     public final double CLAMP_SERVO_INTAKEPOSITION = 0.3;
 
     // Outtake Pivot Positions

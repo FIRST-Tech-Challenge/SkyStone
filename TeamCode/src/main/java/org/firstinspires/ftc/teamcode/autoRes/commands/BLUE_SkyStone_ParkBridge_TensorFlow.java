@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.autoRes.commands;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -53,7 +52,6 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  *  Uses parkingPlaceNearSkyBridge variable false for near wall, true for near NeutralSkybridge
  */
 
-@Disabled
 @Autonomous(name = "BLUE-SkyStone-ParkBridge-TensorFlow", group = "Autonomous")
 public class BLUE_SkyStone_ParkBridge_TensorFlow extends LinearOpMode {
 
@@ -302,7 +300,7 @@ public class BLUE_SkyStone_ParkBridge_TensorFlow extends LinearOpMode {
     /**
      * Method to move till Skystone is detected using color sensor and distance sensor
      */
-    /*void moveTillStoneDetected(){
+    void moveTillStoneDetected(){
         //public void runTill_ChassisLeftColorSensorIsBlue(double max_stop_distance, double straveDirection, double power){
 
         double stoneDetect_max_stop_distance = 6; //max is 6"
@@ -312,13 +310,13 @@ public class BLUE_SkyStone_ParkBridge_TensorFlow extends LinearOpMode {
         //Max Total Rotations of wheel = distance / circumference of wheel
         double targetRotations = stoneDetect_max_stop_distance/(2*Math.PI*autoChassis.wheelRadius);
 
-        while (!isStopRequested() && !autoIntake.detectSkytoneAndType() &&
+        /* while (!isStopRequested() && !autoIntake.detectSkytoneAndType() &&
                 (Math.abs(autoChassis.backLeft.getCurrentPosition()) < Math.abs(autoChassis.ChassisMotorEncoderCount * targetRotations))) {
             autoChassis.frontLeft.setPower(0.1);
             autoChassis.frontRight.setPower(0.1);
             autoChassis.backLeft.setPower(0.1);
             autoChassis.backRight.setPower(0.1);
-        }
+        } */
 
         autoChassis.setZeroBehavior(DcMotor.ZeroPowerBehavior.BRAKE); //#TOBECHECKED TO AVOID JERK
         autoChassis.frontLeft.setPower(0.0);
@@ -326,7 +324,7 @@ public class BLUE_SkyStone_ParkBridge_TensorFlow extends LinearOpMode {
         autoChassis.backLeft.setPower(0.0);
         autoChassis.backRight.setPower(0.0);
 
-    }*/ //return stone detected autoIntake.stoneDetected and if skystone autoIntake.SkystoneDetected
+    } //return stone detected autoIntake.stoneDetected and if skystone autoIntake.SkystoneDetected
 
     /* Method to move chassis based on computed vector inputs for a set distance
      * To be used in Autonomous mode for moving by distance or turning by angle

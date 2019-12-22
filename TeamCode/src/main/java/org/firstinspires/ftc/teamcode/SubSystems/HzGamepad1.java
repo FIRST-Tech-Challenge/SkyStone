@@ -290,7 +290,7 @@ public class HzGamepad1 {
          */
         gpChassis.setLeftColorSensorEnabled(false);
         gpChassis.setLeftColorSensorEnabled(false);
-        //gpIntake.detectSkystoneColor.enableLed(false);
+        // gpIntake.detectSkystoneColor.enableLed(false);
 
         double leftStickX = turboMode(getLeftStickX());
         double leftStickY = turboMode(getLeftStickY());

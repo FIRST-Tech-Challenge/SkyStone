@@ -49,7 +49,6 @@ public class Arm {
             -405 //block level 6
     };
 
-
     public int groundLevel = +20;
     public int detectSkystoneLevel = -70;
     public int aboveFoundationLevel = -130;

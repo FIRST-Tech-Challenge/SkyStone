@@ -54,7 +54,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  *  Uses parkingPlaceNearSkyBridge variable false for near wall, true for near NeutralSkybridge
  */
 
-@Autonomous(name = "BLUE-SkyStone-ParkBridge-Vuforia", group = "Skystone")
+@Autonomous(name = "BLUE-SkyStone-ParkBridge-Vuforia", group = "Autonomous")
 public class BLUE_SkyStone_ParkBridge_Vuforia extends LinearOpMode {
 
     Intake autoIntake;
@@ -99,7 +99,7 @@ public class BLUE_SkyStone_ParkBridge_Vuforia extends LinearOpMode {
 
     private double x_translate = 0;
     private double y_translate = 0;
-    double stoneTostone = 8;
+    double stoneTostone = 10; //was 8
 
     public VuforiaTrackables targetsSkyStone;
     List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
@@ -164,7 +164,7 @@ public class BLUE_SkyStone_ParkBridge_Vuforia extends LinearOpMode {
 
         // Lift Arm to Sense Position
 
-        //sleep(200);
+        sleep(200);
         moveArm_groundLevel();
         openGrip();
         sleep(100);
@@ -172,10 +172,10 @@ public class BLUE_SkyStone_ParkBridge_Vuforia extends LinearOpMode {
         sleep(500);
 
         // Move by distance X forward near SB5 : 6 inches to skystone
-        double robotToNearSkystone = 25;
+        double robotToNearSkystone = 27; // was 27
         runFwdBackLeftRight(robotToNearSkystone,0,0.2);
 
-        sleep(300);
+        sleep(500);
 
         telemetry.addData("before viewforia in loop","");
         telemetry.update();
@@ -185,22 +185,71 @@ public class BLUE_SkyStone_ParkBridge_Vuforia extends LinearOpMode {
         //sleep (1000);
         telemetry.addData("after viewforia: Target visible: ",targetVisible);
         telemetry.update();
+        /*
+        if (targetVisible){
+            /if(Math.abs(x_translate)>1){
+                runFwdBackLeftRight(Math.abs(x_translate), (int) x_translate/Math.abs(x_translate),0.1);
+            }
+        }
+        sleep(500);*/
+        /*if (targetVisible){
+            runFwdBackLeftRight(y_translate, 0,0.1);
+        }*/
 
         //If target is not visible move to next block
         if(!targetVisible) {
             runFwdBackLeftRight(stoneTostone, playingAlliance, 0.1);
             skystonePosition = 4;
         }
+        targetsSkyStone.deactivate();
+        
+        targetsSkyStone.activate();
 
         if(!targetVisible && (skystonePosition == 4)){
                 vuforiaFindSkystone();
         }
 
+        /*if (targetVisible && (skystonePosition == 4)){
+            runFwdBackLeftRight(Math.abs(x_translate), x_translate/Math.abs(x_translate),0.1);
+        }*/
+        /*sleep(500);
+        if (targetVisible){
+            runFwdBackLeftRight(y_translate, 0,0.1);
+        }*/
+
+        //If target is not visible move to next block
         if(!targetVisible && (skystonePosition == 4)) {
             runFwdBackLeftRight(stoneTostone, playingAlliance, 0.1);
             skystonePosition = 3;
         }
 
+
+        /*****Commented for Vuforia
+        // Check on color sensor, for Skystone
+        moveTillStoneDetected();
+        sleep(1000);
+        // If Skystone, record Skystone position as SB5, Go to Step 10
+
+        skystonePosition = 5; // Assume current position is skystone
+
+        if ((autoIntake.stoneDetected) && (!autoIntake.skystoneDetected)) {
+            //Skystone not detected, move to SB4
+            skystonePosition = 4;
+            runFwdBackLeftRight(stoneTostone,playingAlliance,0.1);
+        }
+        sleep(1000);
+
+        // Check on color sensor, for Skystone
+        moveTillStoneDetected();
+        sleep(1000);
+
+        if ((autoIntake.stoneDetected) && (!autoIntake.skystoneDetected)) {
+            //Skystone not detected, move to SB3
+            skystonePosition = 3;
+            runFwdBackLeftRight(stoneTostone,playingAlliance,0.1);
+        }
+        sleep(1000);
+         Commented for Vuforia************/
 
         // Drop Arm and Grip the block.
         moveArm_groundLevel();
@@ -209,39 +258,36 @@ public class BLUE_SkyStone_ParkBridge_Vuforia extends LinearOpMode {
         sleep(500);
 
         // Slide back to edge of B2, 10 inches
-        runFwdBackLeftRight(-8,0,0.1);
+        runFwdBackLeftRight(-10,0,0.1);
 
         sleep(200);
         // Turn 90 degrees Left
-        turnby90degree(playingAlliance*(-1),0.1);
+        turnby90degree(playingAlliance*(-1),0.05); // was 0.1
         sleep(500);
-
-        //Move closer to neutral skybridge
-        runFwdBackLeftRight(12,playingAlliance,0.1);
-
-        //Move forward till Chassis bumber limit switch is pressed.
-        double crossthebridge = 52 + (5-skystonePosition)*stoneTostone;
-        runFwdTill_frontleftChassisTouchSensor_Pressed(crossthebridge, 0.25);
 
 
         //Lift Arm
         moveArm_aboveFoundationLevel();
 
        //Move forward till Chassis bumber limit switch is pressed.
-        double expectedMaxDistanceToFoundation = 33;
+        double expectedMaxDistanceToFoundation = 70; // was 40 --> 70
         runFwdTill_frontleftChassisTouchSensor_Pressed(expectedMaxDistanceToFoundation, 0.25);
 
         // Drop block
         openGrip();
 
+        //Sleep for time to open the grip above the foundation
+        sleep(2500);
+
         // Move in between B4 and B3 (Parking)
         // Park near wall
         // Move back by distance or till Chassis light sensor does not detect Blue line to be under blue skybridge
         if (playingAlliance == 1) {
-            runTill_ChassisRightColorSensorIsBlue(-60, 0, 0.25);
+            runTill_ChassisRightColorSensorIsBlue(-55, 0, 0.25);
         } else {
-            runTill_ChassisLeftColorSensorIsRed(-60, 0, 0.25);
+            runTill_ChassisLeftColorSensorIsRed(-55, 0, 0.25);
         }
+
 
         parked = true;
         //End of Usecase : Should be parked at this time.
@@ -251,7 +297,7 @@ public class BLUE_SkyStone_ParkBridge_Vuforia extends LinearOpMode {
     /**
      * Method to move till Skystone is detected using color sensor and distance sensor
      */
-    /*void moveTillStoneDetected(){
+    void moveTillStoneDetected(){
         //public void runTill_ChassisLeftColorSensorIsBlue(double max_stop_distance, double straveDirection, double power){
 
         double stoneDetect_max_stop_distance = 6; //max is 6"
@@ -261,13 +307,13 @@ public class BLUE_SkyStone_ParkBridge_Vuforia extends LinearOpMode {
         //Max Total Rotations of wheel = distance / circumference of wheel
         double targetRotations = stoneDetect_max_stop_distance/(2*Math.PI*autoChassis.wheelRadius);
 
-        while (!isStopRequested() && !autoIntake.detectSkytoneAndType() &&
+        /* while (!isStopRequested() && !autoIntake.detectSkytoneAndType() &&
                 (Math.abs(autoChassis.backLeft.getCurrentPosition()) < Math.abs(autoChassis.ChassisMotorEncoderCount * targetRotations))) {
             autoChassis.frontLeft.setPower(0.1);
             autoChassis.frontRight.setPower(0.1);
             autoChassis.backLeft.setPower(0.1);
             autoChassis.backRight.setPower(0.1);
-        }
+        } */
 
         autoChassis.setZeroBehavior(DcMotor.ZeroPowerBehavior.BRAKE); //#TOBECHECKED TO AVOID JERK
         autoChassis.frontLeft.setPower(0.0);
@@ -275,7 +321,7 @@ public class BLUE_SkyStone_ParkBridge_Vuforia extends LinearOpMode {
         autoChassis.backLeft.setPower(0.0);
         autoChassis.backRight.setPower(0.0);
 
-    }*/ //return stone detected autoIntake.stoneDetected and if skystone autoIntake.SkystoneDetected
+    } //return stone detected autoIntake.stoneDetected and if skystone autoIntake.SkystoneDetected
 
     /* Method to move chassis based on computed vector inputs for a set distance
      * To be used in Autonomous mode for moving by distance or turning by angle
@@ -675,7 +721,7 @@ public class BLUE_SkyStone_ParkBridge_Vuforia extends LinearOpMode {
         //Turn Camera flash on
         CameraDevice.getInstance().setFlashTorchMode(true);
 
-        while(AutonomousTimeOut.milliseconds()<2000 && !targetVisible) {
+        while(AutonomousTimeOut.milliseconds()<3000 && !targetVisible) {
             //**************Vuforia********************
             // check all the trackable targets to see which one (if any) is visible.
             for (VuforiaTrackable trackable : allTrackables) {

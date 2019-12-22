@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.OpModes;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -13,7 +12,6 @@ import java.util.Locale;
  * Sensor Calibration TeleOpMode for team Hazmat
  * Displays the RGB Values of Color Sensors and TouchSensor
  */
-@Disabled
 @TeleOp(name = "HzSensorCalib", group = "Teleop")
 public class SensorCaliberation extends LinearOpMode{
 
@@ -44,13 +42,13 @@ public class SensorCaliberation extends LinearOpMode{
         //Run Robot to display color values and touch sensor inputs
         while (opModeIsActive()) {
             //Display RGB Values for hzIntake.detectSkystoneColor
-            telemetry.addData("Intake.detectSkystoneColor.Red ", hzIntake.detectSkystoneColor.red() );
-            telemetry.addData("Intake.detectSkystoneColor.Green", hzIntake.detectSkystoneColor.green() );
-            telemetry.addData("Intake.detectSkystoneColor.Blue", hzIntake.detectSkystoneColor.blue() );
-            telemetry.addData("Intake.detectSkystoneColor.Alpha", hzIntake.detectSkystoneColor.alpha() );
-            telemetry.addData("Intake.detectSkystonedistance.Distance", String.format(Locale.US, "%.02f", hzIntake.detectSkystoneDistance.getDistance(DistanceUnit.INCH)));
-            telemetry.addData("Intake.detectSkystonedetected", hzIntake.stoneDetected);
-            telemetry.addData("Intake.detectSkystonedetected", hzIntake.skystoneDetected);
+            // telemetry.addData("Intake.detectSkystoneColor.Red ", hzIntake.detectSkystoneColor.red() );
+            // telemetry.addData("Intake.detectSkystoneColor.Green", hzIntake.detectSkystoneColor.green() );
+            // telemetry.addData("Intake.detectSkystoneColor.Blue", hzIntake.detectSkystoneColor.blue() );
+            // telemetry.addData("Intake.detectSkystoneColor.Alpha", hzIntake.detectSkystoneColor.alpha() );
+            // telemetry.addData("Intake.detectSkystonedistance.Distance", String.format(Locale.US, "%.02f", hzIntake.detectSkystoneDistance.getDistance(DistanceUnit.INCH)));
+            // telemetry.addData("Intake.detectSkystonedetected", hzIntake.stoneDetected);
+            // telemetry.addData("Intake.detectSkystonedetected", hzIntake.skystoneDetected);
 
             //Display RGB Values for hzChassis.leftColorSensor
             telemetry.addData("Chassis.Left.Red ", hzChassis.leftColorSensor.red() );

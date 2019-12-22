@@ -102,28 +102,28 @@ public class AutonomousUC1OldCode extends LinearOpMode {
         sleep(100);
 
         // Check on color sensor, for Skystone
-        //moveTillStoneDetected();
+        moveTillStoneDetected();
         sleep(1000);
         // If Skystone, record Skystone position as SB5, Go to Step 10
 
         skystonePosition = 5; // Assume current position is skystone
         double stoneTostone = 8;
-        if ((autoIntake.stoneDetected) && (!autoIntake.skystoneDetected)) {
+        /* if ((autoIntake.stoneDetected) && (!autoIntake.skystoneDetected)) {
             //Skystone not detected, move to SB4
             skystonePosition = 4;
             autoChassis.runFwdBackLeftRight(stoneTostone,playingAlliance,0.1);
-        }
+        } */
         sleep(1000);
 
         // Check on color sensor, for Skystone
-        //moveTillStoneDetected();
+        moveTillStoneDetected();
         sleep(1000);
 
-        if ((autoIntake.stoneDetected) && (!autoIntake.skystoneDetected)) {
+        /* if ((autoIntake.stoneDetected) && (!autoIntake.skystoneDetected)) {
             //Skystone not detected, move to SB3
             skystonePosition = 3;
             autoChassis.runFwdBackLeftRight(stoneTostone,playingAlliance,0.1);
-        }
+        } */
         sleep(1000);
 
         // Drop Arm and Grip the block.
@@ -164,7 +164,7 @@ public class AutonomousUC1OldCode extends LinearOpMode {
     /**
      * Method to move till Skystone is detected using color sensor and distance sensor
      */
-    /*void moveTillStoneDetected(){
+    void moveTillStoneDetected(){
         //public void runTill_ChassisLeftColorSensorIsBlue(double max_stop_distance, double straveDirection, double power){
 
         double stoneDetect_max_stop_distance = 6; //max is 6"
@@ -174,12 +174,12 @@ public class AutonomousUC1OldCode extends LinearOpMode {
         //Max Total Rotations of wheel = distance / circumference of wheel
         double targetRotations = stoneDetect_max_stop_distance/(2*Math.PI*autoChassis.wheelRadius);
 
-        while (!autoIntake.detectSkytoneAndType() && (Math.abs(autoChassis.backLeft.getCurrentPosition()) < Math.abs(autoChassis.ChassisMotorEncoderCount * targetRotations))) {
+        /* while (!autoIntake.detectSkytoneAndType() && (Math.abs(autoChassis.backLeft.getCurrentPosition()) < Math.abs(autoChassis.ChassisMotorEncoderCount * targetRotations))) {
             autoChassis.frontLeft.setPower(0.1);
             autoChassis.frontRight.setPower(0.1);
             autoChassis.backLeft.setPower(0.1);
             autoChassis.backRight.setPower(0.1);
-        }
+        } */
 
         autoChassis.setZeroBehavior(DcMotor.ZeroPowerBehavior.BRAKE); //#TOBECHECKED TO AVOID JERK
         autoChassis.frontLeft.setPower(0.0);
@@ -187,5 +187,5 @@ public class AutonomousUC1OldCode extends LinearOpMode {
         autoChassis.backLeft.setPower(0.0);
         autoChassis.backRight.setPower(0.0);
 
-    }*/ //return stone detected autoIntake.stoneDetected and if skystone autoIntake.SkystoneDetected
+    } //return stone detected autoIntake.stoneDetected and if skystone autoIntake.SkystoneDetected
 }

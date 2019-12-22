@@ -1,0 +1,133 @@
+{
+  "stoneScanPoints": {
+    "BLUE_3": [
+      {
+        "x": 262,
+        "y": 348
+      },
+      {
+        "x": 167,
+        "y": 353
+      },
+      {
+        "x": 57,
+        "y": 358
+      }
+    ],
+    "RED_3": [
+      {
+        "x": 249,
+        "y": 346
+      },
+      {
+        "x": 319,
+        "y": 350
+      },
+      {
+        "x": 408,
+        "y": 358
+      }
+    ],
+    "RED_2": [
+      {
+        "x": 238,
+        "y": 343
+      },
+      {
+        "x": 297,
+        "y": 348
+      },
+      {
+        "x": 383,
+        "y": 354
+      }
+    ],
+    "BLUE_2": [
+      {
+        "x": 314,
+        "y": 346
+      },
+      {
+        "x": 221,
+        "y": 349
+      },
+      {
+        "x": 111,
+        "y": 353
+      }
+    ]
+  },
+  "robotStartPoints": {
+    "BLUE_3": {
+      "x": 23.0,
+      "y": 138.0,
+      "heading": 0.0
+    },
+    "RED_3": {
+      "x": 335.0,
+      "y": 144.0,
+      "heading": 1.5707963267948966
+    },
+    "RED_2": {
+      "x": 335.0,
+      "y": 85.0,
+      "heading": 1.5707963267948966
+    },
+    "BLUE_2": {
+      "x": 23.0,
+      "y": 78.0,
+      "heading": 0.0
+    }
+  },
+  "movement": {
+    "strifeStopDist": 17.0,
+    "forwardStopDist": 25.0,
+    "rotateStopAngle": 0.1
+  },
+  "headingPID": {
+    "p": 5.0,
+    "i": 0.05,
+    "d": 0.0
+  },
+  "distancePID": {
+    "p": 0.5,
+    "i": 0.01,
+    "d": 0.0
+  },
+  "hardwareSpec": {
+    "trackWheelDiameter": 3.8,
+    "trackWheelCPR": 4000.0,
+    "leftRightWheelDist": 39.75,
+    "sliderOrigPos": 0,
+    "sliderOutMax": 1825,
+    "sliderOutMin": 1229,
+    "sliderOutMinCM": 3.0,
+    "sliderCountPerCM": 47,
+    "sliderOutPos": 1500,
+    "liftOrigPos": 0,
+    "liftStoneBase": 0,
+    "liftHomeGrabPos": 80,
+    "liftHomeReadyPos": 150,
+    "liftGrabExtra": 127,
+    "liftPerStone": 341,
+    "clampAngleNormal": 0.88,
+    "clampAngleSide": 0.54,
+    "clampAngleBack": 0.25,
+    "clampS1Init": 0.5,
+    "clampS1Open": 0.5,
+    "clampS1Close": 0.585,
+    "clampS2Init": 0.5,
+    "clampS2Open": 0.5,
+    "clampS2Close": 0.415,
+    "hookS0Open": 0.24,
+    "hookS0Close": 0.66,
+    "hookS1Open": 0.65,
+    "hookS1Close": 0.19,
+    "capStoneUp": 0.36,
+    "capStoneDown": 0.8,
+    "capStoneOther": 0.15,
+    "leftEncodeForwardSign": -1,
+    "rightEncoderForwardSign": -1,
+    "horizontalEncoderForwardSign": 1
+  }
+}

@@ -1,240 +1,67 @@
 package org.firstinspires.ftc.teamcode.Skystone.MotionProfiler;
-
 import java.util.Vector;
-
-import static org.firstinspires.ftc.teamcode.Skystone.MathFunctions.getArrayOfRow;
-import static org.firstinspires.ftc.teamcode.Skystone.MathFunctions.normalize;
-import static org.firstinspires.ftc.teamcode.Skystone.MathFunctions.subtractVectors;
 
 public class SplineGenerator {
     double[][] outputData;
-
     public SplineGenerator(double[][] data){
         Profiler v = new Profiler(data);
         v.vehiclePath();
-        outputData = new double[v.xV1.size()+1][3];
-        for(int i = 0;i<v.xV1.size();i++){
-            outputData[i][0] = v.xV1.get(i);
-            outputData[i][1] = v.yV1.get(i);
-            outputData[i][2] = v.heading[i];
+        outputData = new double[v.xValues.size()+1][2];
+        for(int i = 0;i<v.xValues.size();i++){
+            outputData[i][0] = v.xValues.get(i);
+            outputData[i][1] = v.yValues.get(i);
         }
-        outputData[v.xV1.size()][0] = data[data.length-1][0];
-        outputData[v.xV1.size()][1] = data[data.length-1][1];
+        outputData[v.xValues.size()][0] = data[data.length-1][0];
+        outputData[v.xValues.size()][1] = data[data.length-1][1];
     }
-
     public double[][] getOutputData(){
         return outputData;
     }
 }
-
 class Profiler {
-    double[][] data;
-    Vector<Double> uV = new Vector<>();
-    Vector<Double> xV = new Vector<>();
-    Vector<Double> yV = new Vector<>();
-    Vector<Double> dxdu = new Vector<>();
-    Vector<Double> dydu = new Vector<>();
-    Vector<Double> u = new Vector<>();
-    Vector<Double> xV1 = new Vector<>();
-    Vector<Double> yV1 = new Vector<>();
-    Vector<Double> dxdu1 = new Vector<>();
-    Vector<Double> dydu1 = new Vector<>();
-    Vector<Double> t = new Vector<>();
-    double[] vCenter;
-    double[] dCenter;
-    double[][] leftWheel;
-    double[][] rightWheel;
-    double[] distance;
-    double[] leftSpeed;
-    double[] rightSpeed;
-    double[] tV;
-    double[] leftDistance;
-    double[] rightDistance;
-    double[] heading;
-
-    double vMotorMax = 16.875164431332;
-    double vMaxCenter = 16.87; // inch/second
-    double tRamp = 0.5; // seconds
-    double totalDist;
-    double totalTime;
-
+    // field variables
+    private double[][] data;
+    private Vector<Double> u = new Vector<>();
+    Vector<Double> xValues = new Vector<>();
+    Vector<Double> yValues = new Vector<>();
+    /**
+     * Profiler constructor, sets data matrix
+     * @param data waypoints
+     */
     public Profiler(double[][] data){
         this.data = data;
     }
-
+    /**
+     * generates path
+     * called vehiclePath because it will be implemented into
+     * robot navigation
+     */
     public void vehiclePath(){
-        int numData = data.length;
-        int Nu = 100;
-        double distWheels = 14;
-
-        for(double i = 0; i<=numData-1;i+=15){
-            uV.add(i);
-            xV.add(0.0);
-            yV.add(0.0);
-            dxdu.add(0.0);
-            dydu.add(0.0);
-        }
-        xV.add(0.0);
-        yV.add(0.0);
-        dxdu.add(0.0);
-        dydu.add(0.0);
-
-        for(double i = 0;i<=(1-1/Nu);i+=15){
+        // u is an arraylist that starts at 0
+        // increases by 0.01 each index
+        // and ends at 0.
+        // the increments are based off of uIncrement
+        double uIncrement = 0.5;
+        for(double i = 0;i<=(1-uIncrement);i+=uIncrement){
             u.add(i);
         }
-        uV.clear();
-        xV.clear();
-        yV.clear();
-        dxdu.clear();
-        dydu.clear();
-        for(int i = 0;i<numData-1;i++){
-            for(int j = 0;j<u.size();j++){
-                double u2 = Math.pow(u.get(j),2);
-                double u3 = Math.pow(u.get(j),3);
-
-                xV1.add((2 * u3 - 3 * u2 + 1) * data[i][0] + (-2 * u3 + 3 * u2) * data[i+1][0] + (u3 - 2 * u2 + u.get(j)) * data[i][2] + (u3 - u2) * data[i+1][2]);
-                yV1.add((2 * u3 - 3 * u2 + 1) * data[i][1] + (-2 * u3 + 3 * u2) * data[i+1][1] + (u3 - 2 * u2 + u.get(j)) * data[i][3] + (u3 - u2) * data[i+1][3]);
-
-                dxdu1.add((6 * u2 - 6 * u.get(j)) * (data[i][0] - data[i+1][0]) + data[i][2] * (3 * u2 - 4 * u.get(j)+ 1) + data[i+1][2] * (3 * u2 - 2 * u.get(j)));
-                dydu1.add((6 * u2 - 6 * u.get(j)) * (data[i][1] - data[i+1][1]) + data[i][3] * (3 * u2 - 4 * u.get(j)+ 1) + data[i+1][3] * (3 * u2 - 2 * u.get(j)));
-            }
-            Vector<Double> stitchToUV = new Vector<>();
-
-            for(int r = 0; r<u.size();r++){
-                stitchToUV.add(u.get(r)+(i));
-            }
-
-            uV.addAll(stitchToUV);
-            xV.addAll(xV1);
-            yV.addAll(yV1);
-            dxdu.addAll(dxdu1);
-            dydu.addAll(dydu1);
-        }
-
-        heading = new double[uV.size()];
-
-        for (int i = 0; i < uV.size(); i++) {
-            if (dxdu.get(i) > 0) {
-                heading[i] = 90 - Math.toDegrees(Math.atan(dydu.get(i) / dxdu.get(i)));
-            } else if (dxdu.get(i) < 0) {
-                heading[i] = -1 * Math.atan(dydu.get(i) / dxdu.get(i)) - 90;
-            } else {
-                heading[i] = 0;
+        /**
+         * iterates through each 2 adjacent waypoints
+         */
+        for(int i = 0;i<data.length-1;i++){
+            // iterate through each value of u
+            for(int j = 0;j<1/uIncrement-1;j++){
+                // simply used to calculate easier
+                double uSquared = Math.pow(u.get(j),2);
+                double uCubed = Math.pow(u.get(j),3);
+                // plug it into a parametric cubic hermite spline equation
+                xValues.add((2 * uCubed - 3 * uSquared + 1) * data[i][0] + (-2 * uCubed + 3 * uSquared) * data[i+1][0] + (uCubed - 2 * uSquared + u.get(j)) * data[i][2] + (uCubed - uSquared) * data[i+1][2]);
+                yValues.add((2 * uCubed - 3 * uSquared + 1) * data[i][1] + (-2 * uCubed + 3 * uSquared) * data[i+1][1] + (uCubed - 2 * uSquared + u.get(j)) * data[i][3] + (uCubed - uSquared) * data[i+1][3]);
             }
         }
-    }
-
-    public void vehicleTraj() {
-        System.out.println(distance[distance.length-1]);
-        totalDist = distance[distance.length - 1];
-        System.out.println(totalDist);
-        totalTime = totalDist / vMaxCenter + tRamp;
-        System.out.println(totalTime);
-        for (double i = 0; i <= 1; i += 0.001) {
-            t.add(i * totalTime);
-        }
-        vCenter = new double[t.size()];
-        dCenter = new double[t.size()];
-
-        for (int i = 0; i < t.size(); i++) {
-            if (t.get(i) < tRamp) {
-                vCenter[i] = (vMaxCenter / tRamp) * t.get(i);
-            } else if (t.get(i) < totalTime - tRamp) {
-                vCenter[i] = vMaxCenter;
-            } else if (t.get(i) < totalTime) {
-                vCenter[i] = (-1 * vMaxCenter / tRamp) * (t.get(i) - totalTime);
-            } else {
-                vCenter[i] = 0;
-            }
-        }
-
-
-        for (int i = 1; i < t.size(); i++) {
-            dCenter[i] = dCenter[i - 1] + (vCenter[i - 1] + vCenter[i]) / 2 * (t.get(i) - t.get(i - 1));
-        }
-        tV = new double[uV.size()];
-        leftSpeed = new double[uV.size()];
-        rightSpeed = new double[uV.size()];
-        for (int i = 0; i < tV.length - 1; i++) {
-            tV[i] = (dCenter[i + 1] - dCenter[i]) / (t.get(i + 1) - t.get(i)) * (distance[i] - t.get(i)) + dCenter[i];
-        }
-
-        tV[tV.length - 1] = totalTime;
-        double s1;
-        double s2;
-        for (int i = 1; i < tV.length - 1; i++) {
-            Vector<Double> leftI = new Vector<>(getArrayOfRow(leftWheel, i));
-            Vector<Double> leftIMinus1 = new Vector<>(getArrayOfRow(leftWheel, i - 1));
-            Vector<Double> leftIPlus1 = new Vector<>(getArrayOfRow(leftWheel, i + 1));
-
-            Vector<Double> rightI = new Vector<>(getArrayOfRow(rightWheel, i));
-            Vector<Double> rightIMinus1 = new Vector<>(getArrayOfRow(rightWheel, i - 1));
-            Vector<Double> rightIPlus1 = new Vector<>(getArrayOfRow(rightWheel, i + 1));
-
-            s1 = normalize(subtractVectors(leftI, leftIMinus1)) / (tV[i] - tV[i - 1]);
-            s2 = normalize(subtractVectors(leftIPlus1, leftI)) / (tV[i + 1] - tV[i]);
-
-            leftSpeed[i] = (s1 + s2) / 2;
-
-            s1 = normalize(subtractVectors(rightI, rightIMinus1)) / (tV[i] - tV[i - 1]);
-            s2 = normalize(subtractVectors(rightIPlus1, rightI)) / (tV[i + 1] - tV[i]);
-
-            rightSpeed[i] = (s1 + s2) / 2;
-        }
-        leftSpeed[0] = 0;
-        leftSpeed[leftSpeed.length - 1] = 0;
-        rightSpeed[0] = 0;
-        rightSpeed[rightSpeed.length - 1] = 0;
-
-
-        leftDistance = new double[uV.size()];
-        rightDistance = new double[uV.size()];
-        heading = new double[uV.size()];
-
-        for (int i = 1; i < uV.size(); i++) {
-            leftDistance[i] = leftDistance[i - 1] + ((leftSpeed[i] + leftSpeed[i - 1]) / 2 * (tV[i] - tV[i - 1]));
-            rightDistance[i] = rightDistance[i - 1] + ((rightSpeed[i] + rightSpeed[i - 1]) / 2 * (tV[i] - tV[i - 1]));
-
-        }
-
-        for (int i = 0; i < uV.size(); i++) {
-            if (dxdu.get(i) > 0) {
-                heading[i] = 90 - Math.toDegrees(Math.atan(dydu.get(i) / dxdu.get(i)));
-            } else if (dxdu.get(i) < 0) {
-                heading[i] = -1 * Math.atan(dydu.get(i) / dxdu.get(i)) - 90;
-            } else {
-                heading[i] = 0;
-            }
-        }
-        System.out.println(t);
-    }
-
-
-
-    public double[][] generateOutput(){
-        double[][] out = new double[leftSpeed.length][7];
-
-        for(int i = 0;i<leftSpeed.length;i++){
-            out[i][0] = leftSpeed[i];
-        }
-        for(int i = 0;i<leftSpeed.length;i++){
-            out[i][1] = rightSpeed[i];
-        }
-        for(int i = 0;i<leftSpeed.length;i++){
-            out[i][2] = tV[i];
-        }
-        for(int i = 0;i<leftSpeed.length;i++){
-            out[i][3] = distance[i];
-        }
-        for(int i = 0;i<leftSpeed.length;i++){
-            out[i][4] = leftDistance[i];
-        }
-        for(int i = 0;i<leftSpeed.length;i++){
-            out[i][5] = rightDistance[i];
-        }
-        for(int i = 0;i<leftSpeed.length;i++){
-            out[i][6] = heading[i];
-        }
-        return out;
+        // we have not accounted for the last point
+        // the last point is the last waypoint coordinate
+        xValues.add(data[data.length-1][0]);
+        yValues.add(data[data.length-1][1]);
     }
 }

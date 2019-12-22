@@ -23,6 +23,7 @@ import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.PathPoints;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.SplineGenerator;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -69,7 +70,7 @@ public class Robot {
 
     //back stopper positions
     public final double BACK_STOPPER_DOWN = 0.85;
-    public final double BACK_STOPPER_UP = 0.5;
+    public final double BACK_STOPPER_UP = 0.54;
 
     // Outtake Clamp Positions
     public final double CLAMP_SERVO_CLAMPED = .43;
@@ -478,10 +479,20 @@ public class Robot {
     public void splineMove(double[][] data, double moveSpeed, double turnSpeed, double slowDownSpeed, double slowDownDistance, double optimalAngle, double angleLockRadians, double angleLockInches, HashMap<Point, Actions> actions) {
         splineMove(data,moveSpeed,turnSpeed,slowDownSpeed,slowDownDistance,optimalAngle,angleLockRadians,angleLockInches,actions,false,0);
     }
+
+    public void printCoords(double[][] data){
+        telemetry.addLine(Arrays.deepToString(data));
+        telemetry.update();
+    }
+
     public void splineMove(double[][] data, double moveSpeed, double turnSpeed, double slowDownSpeed, double slowDownDistance, double optimalAngle, double angleLockRadians, double angleLockInches, HashMap<Point, Actions> actions, boolean isTimeKill, long endTime) {
         double posAngle;
+
         SplineGenerator s = new SplineGenerator(data);
         double[][] pathPoints = s.getOutputData();
+
+        printCoords(pathPoints);
+        linearOpMode.sleep(5000);
 
         long extendOuttakeStartTime = 0;
         long retractOuttakeStartTime = 0;

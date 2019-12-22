@@ -80,7 +80,7 @@ public class BLUE_MoveFdn_ParkBridge extends LinearOpMode {
         autoArm.initArm();
         autoIntake.initIntake();
 
-        autoIntake.closeGrip();
+        //autoIntake.closeGrip();
 
         while (opModeIsActive()&& !isStopRequested() && !parked) {
             AutonomousUC2Commands();

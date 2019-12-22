@@ -64,15 +64,19 @@ public class Intake {
     public Servo right_grip;    // public ColorSensor detectSkystoneColor;
     // public DistanceSensor detectSkystoneDistance;
 
-    final static double GRIP_HOME = 0.0;
     final static double GRIP_MIN_RANGE = 0;
     final static double GRIP_MAX_RANGE = 1;
-    public  double GRIP_OPEN_LEFT = 0.24;
-    public  double GRIP_OPEN_RIGHT = 0.74;
-    final static double GRIP_SPEED=0.01;
 
-    public double GRIP_CLOSE_LEFT = 0.73;
-    public double GRIP_CLOSE_RIGHT= 0.23;
+    public double GRIP_INIT_LEFT = 0.9;
+    public double GRIP_INIT_RIGHT = 0.1;
+
+    public  double GRIP_OPEN_LEFT = 0.5;
+    public  double GRIP_OPEN_RIGHT = 0.5;
+
+    public double GRIP_CLOSE_LEFT = 0.3;
+    public double GRIP_CLOSE_RIGHT= 0.7;
+
+    public int grip_state=0; // 0-INIT, 1-OPEN, 2-CLOSE
 
     //Wrist position values on servo motor from close to Vertocal to midPositon1 to midPsition2 to Horizontal
     public int wristCurrentPosition;
@@ -86,9 +90,6 @@ public class Intake {
     // public boolean skystoneDetected;
     // public boolean stoneDetected;
 
-    //Open and close Position for the grip linear actuator
-    public double gripOpenPosition = 0.75;
-    public double gripClosePosition = 0.25;
 
     //Constructor
     public Intake(HardwareMap hardwareMap) {
@@ -107,7 +108,16 @@ public class Intake {
     public void initIntake() {
         // detectSkystoneColor.enableLed(false);
         moveWristToHorizontal();
-        openGrip();
+        initGrip();
+    }
+
+    /**
+     * Method to init Grip
+     */
+    public void initGrip() {
+        left_grip.setPosition(GRIP_INIT_LEFT);
+        right_grip.setPosition(GRIP_INIT_RIGHT);
+        grip_state = 0;//INIT
     }
 
     /**
@@ -116,6 +126,7 @@ public class Intake {
     public void openGrip() {
         left_grip.setPosition(GRIP_OPEN_LEFT);
         right_grip.setPosition(GRIP_OPEN_RIGHT);
+        grip_state = 1;//OPEN
     }
 
     /**
@@ -124,17 +135,7 @@ public class Intake {
     public void closeGrip() {
         left_grip.setPosition(GRIP_CLOSE_LEFT);
         right_grip.setPosition(GRIP_CLOSE_RIGHT);
-    }
-
-    /**
-     * Method to open and close grip based on switching from current state.
-     */
-    public void toggleGrip() {
-        if (left_grip.getPosition() == GRIP_OPEN_LEFT) {
-            closeGrip();
-        } else {
-            openGrip();
-        }
+        grip_state = 1;//CLOSE
     }
 
     /**

@@ -321,11 +321,19 @@ public class HzGamepad1 {
         //Intake Actions :
         //If A is pressed, close grip
         if (getButtonAPress()){
-            gpIntake.closeGrip();
+            if(gpIntake.grip_state == 0){
+                gpIntake.openGrip();
+            } else {
+                gpIntake.closeGrip();
+            }
         }
         //If Y is pressed, open grip
         if (getButtonYPress()){
-            gpIntake.openGrip();
+            if (gpIntake.grip_state ==2) {
+                gpIntake.openGrip();
+            } else {
+                gpIntake.initGrip();
+            }
         }
         //If Dpad_up is pressed, open wrist from close to vertical to horizontal
         if (getDpad_upPress()){

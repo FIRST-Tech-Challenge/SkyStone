@@ -19,10 +19,17 @@ Arm Hardware Map :
 Intake Hardware Map :
     Wrist servo:
         wrist : ExHub 1 : Servo : Port 0
-    Grip servo:
+    Grip servo: [Wildcat Qualifier Wrist and Grip]
         grip : ExHub 1 : Servo : Port 1
-    detectSkystone Color Sensor :
+        opengrip :0.75, close : 0.25
+    detectSkystone Color Sensor : [REMOVED]
         detectSkystone : ExHub2 : I2C Port : Port 0
+    Grip Servos :
+        left_grip : ExHub 1 : Servo : Port 1
+        right_grip : ExHub 1 : Servo : Port 2
+        Upright value : Left : 0.9, right 0.1
+        Above block : Left : 0.5, right 0.5
+        Grip block : Left : 0.3, right 0.7
 
 Gamepad buttons :
  *      Left Stick for pan motion (gamepad1.left_stick_x and gamepad1.left_stick_y)

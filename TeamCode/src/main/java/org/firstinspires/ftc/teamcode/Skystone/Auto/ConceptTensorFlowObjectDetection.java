@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode.Skystone.Auto;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import java.util.List;
@@ -8,6 +9,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.Came
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 
+@Disabled
 @TeleOp(name = "Concept: TensorFlow Object Detection", group = "Concept")
 
 public class ConceptTensorFlowObjectDetection extends LinearOpMode {

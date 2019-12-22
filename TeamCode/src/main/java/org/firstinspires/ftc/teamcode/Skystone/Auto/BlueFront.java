@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.Skystone.Vision;
 
 import java.util.HashMap;
 
-@Autonomous(name="BlueFront3", group ="LinearOpmode")
+@Autonomous(name="BlueFront", group ="LinearOpmode")
 public class BlueFront extends AutoBase{
     @Override
     public void runOpMode() {
@@ -43,7 +43,7 @@ public class BlueFront extends AutoBase{
             secondSkyStoneX = 52;
         } else if (skystoneLocation == Vision.Location.RIGHT){
             firstSkystoneY = 10;
-            secondSkyStoneY = 21;
+            secondSkyStoneY = 17;
             secondSkyStoneX = 52;
         }
         double[][] toFirstStone = {
@@ -57,7 +57,7 @@ public class BlueFront extends AutoBase{
         double[][] toFoundation = {
                 {50,firstSkystoneY,10,0},
                 {32,firstSkystoneY,10,0},
-                {30,-10,10,0},
+                {26,-10,10,0},
                 {21,-30,10,0},
                 {23,-87,10,0},
                 {41,-99,10,0}};
@@ -126,7 +126,7 @@ public class BlueFront extends AutoBase{
                 toFirstStoneActions);
 
         robot.splineMove(toFoundation,1,1, 1, 10, Math.toRadians(180),Math.toRadians(180),15,
-                toFoundationActions, true, 8000);
+                toFoundationActions, true, 6000);
 
         robot.foundationMovers(true);
         sleep(350);

@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.Skystone.Auto;
 import android.util.Log;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Skystone.Vision;
 
+@Disabled
 @TeleOp(name="TestVision", group = "Linear Opmode")
 public class TestVision extends LinearOpMode {
 

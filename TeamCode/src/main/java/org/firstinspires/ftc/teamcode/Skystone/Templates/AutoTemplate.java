@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import org.firstinspires.ftc.teamcode.Skystone.Auto.AutoBase;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.PathPoints;
 
+@Disabled
 @Autonomous(name="AutoTemplate ", group="Linear Opmode")
 public class AutoTemplate extends AutoBase
 {

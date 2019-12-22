@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Skystone.Robot;
 
+@Disabled
 @Autonomous(name="Spline test", group="Linear Opmode")
 public class SplineTest extends LinearOpMode
 {

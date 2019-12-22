@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode.Skystone.Auto;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.RoverRuckus.RR2.Auto.TensorFlowMineralDetection;
 
+@Disabled
 @Autonomous(name="PID", group="Linear Opmode") //name of your program on the phone and defines if it is teleop or auto
 public class PID extends AutoBase
 {

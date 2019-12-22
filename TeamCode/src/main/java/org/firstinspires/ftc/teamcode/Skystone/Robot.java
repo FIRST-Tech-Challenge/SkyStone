@@ -492,7 +492,6 @@ public class Robot {
         double[][] pathPoints = s.getOutputData();
 
         printCoords(pathPoints);
-        linearOpMode.sleep(5000);
 
         long extendOuttakeStartTime = 0;
         long retractOuttakeStartTime = 0;
@@ -558,7 +557,7 @@ public class Robot {
                 }else{
                     turnMovement = 0;
                 }
-            } else if (distanceToEnd<10){
+            } else if (distanceToEnd<30){
                 goToPoint(pathPoints[followIndex][0], pathPoints[followIndex][1], moveSpeed, turnSpeed, optimalAngle, true);
             }
             else {
@@ -643,6 +642,7 @@ public class Robot {
 
                 if(currentTime-extendOuttakeStartTime >= 2700){
                     rightFoundation.setPosition(RIGHTFOUNDATION_EXTENDED);
+                    clamp.setPosition(CLAMP_SERVO_INTAKEPOSITION);
 
                     isExtendingOuttake = false;
                     hasExtendedOuttake = false;
@@ -1059,7 +1059,9 @@ public class Robot {
         }
 
         double xPower = relativeXToPoint / (Math.abs(relativeXToPoint) + Math.abs(relativeYToPoint));
-        double yPower = 0;
+
+
+        double yPower = 0.4 * relativeYToPoint / (Math.abs(relativeYToPoint) + Math.abs(relativeXToPoint));
 
         if (willMecanum){
             yPower = relativeYToPoint / (Math.abs(relativeYToPoint) + Math.abs(relativeXToPoint));

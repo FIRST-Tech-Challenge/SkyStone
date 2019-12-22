@@ -8,16 +8,20 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.Skystone.Odometry.Position2D;
 
 
-@TeleOp(name="MainTeleOpSkyTELEOPTEST", group="Linear Opmode")
+@TeleOp(name="MainTeleOpSky", group="Linear Opmode")
 public class MainTeleop extends LinearOpMode {
     Robot robot;
+
     double fLPower;
     double fRPower;
     double bLPower;
     double bRPower;
+
     long outtakeExecutionTime;
     long currentTime;
+
     boolean onSlowDrive, changedSlowDrive = false;
+
     boolean isRetract = false;
     boolean isExtend = false;
     boolean isClamp = false;
@@ -26,7 +30,10 @@ public class MainTeleop extends LinearOpMode {
     boolean foundationToggle = false;
     boolean resetfoundation = false;
     boolean hasPushed = false;
+
     public static double powerScaleFactor = 0.9;
+
+    boolean isIntakeMode = false;
 
     @Override
     public void runOpMode() {
@@ -40,19 +47,25 @@ public class MainTeleop extends LinearOpMode {
         while (opModeIsActive()) {
             telemetry.update();
 
+            robotModeLogic();
+            if (isIntakeMode) {
+                telemetry.addLine("CURRENT ROBOT MODE: INTAKE BOT");
+            } else {
+                telemetry.addLine("CURRENT ROBOT MODE: NORMAL");
+            }
+
             slowDriveLogic();
             driveLogic();
 
             intakeLogic();
-            outtakeLogic();
-            spoolLogic();
 
-            foundationLogic();
-
-            capStoneLogic();
-            teamMarkerLogic();
-
-
+            if (!isIntakeMode) {
+                outtakeLogic();
+                spoolLogic();
+                foundationLogic();
+                capStoneLogic();
+                teamMarkerLogic();
+            }
 
             telemetry.addLine("xPos: " + robot.getRobotPos().x);
             telemetry.addLine("yPos: " + robot.getRobotPos().y);
@@ -74,6 +87,7 @@ public class MainTeleop extends LinearOpMode {
 //        telemetry.addLine("Spool Position " + robot.getOuttakeSpool().getCurrentPosition());
         telemetry.update();
     }
+
     private void resetRobot() {
         robot = new Robot(hardwareMap, telemetry, this);
 
@@ -196,9 +210,14 @@ public class MainTeleop extends LinearOpMode {
         }
 
         if ((gamepad2.left_stick_y != 0 || gamepad2.right_stick_y != 0) && gamepad2.right_trigger == 0 && !isExtend && !isClamp && !is90 && !isRetract) {
-            robot.getIntakePusher().setPosition(robot.PUSHER_RETRACTED);
-            robot.getBackStopper().setPosition(robot.BACK_STOPPER_UP);
-            robot.getClamp().setPosition(robot.CLAMP_SERVO_INTAKEPOSITION);
+            if (isIntakeMode) {
+                robot.getIntakePusher().setPosition(robot.PUSHER_PUSHED);
+                robot.getClamp().setPosition(robot.CLAMP_SERVO_CLAMPED);
+            } else {
+                robot.getIntakePusher().setPosition(robot.PUSHER_RETRACTED);
+                robot.getBackStopper().setPosition(robot.BACK_STOPPER_UP);
+                robot.getClamp().setPosition(robot.CLAMP_SERVO_INTAKEPOSITION);
+            }
         }
 
         if(gamepad2.right_trigger != 0){
@@ -321,6 +340,20 @@ public class MainTeleop extends LinearOpMode {
             robot.getMarkerServo().setPosition(robot.TEAM_MARKER_DUMP);
         } else if (gamepad1.y){
             robot.getMarkerServo().setPosition(robot.TEAM_MARKER_RETRACT);
+        }
+    }
+
+    private boolean toggleMode = true;
+    private void robotModeLogic() {
+        if (gamepad1.a && gamepad1.y && toggleMode) {
+            if (isIntakeMode) {
+                isIntakeMode = false;
+            } else {
+                isIntakeMode = true;
+            }
+            toggleMode = false;
+        } else if (!toggleMode && !(gamepad1.a || gamepad1.y)) {
+            toggleMode = true;
         }
     }
 }

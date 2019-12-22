@@ -7,7 +7,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Skystone.Odometry.Position2D;
 
-@TeleOp(name="MainTeleOpSky3", group="Linear Opmode")
+
+@TeleOp(name="MainTeleOpSkyTELEOPTEST", group="Linear Opmode")
 public class MainTeleop extends LinearOpMode {
     Robot robot;
     double fLPower;
@@ -35,6 +36,7 @@ public class MainTeleop extends LinearOpMode {
         robot.getOuttakeSpool().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         Position2D position2D = new Position2D(robot);
         position2D.startOdometry();
+
         while (opModeIsActive()) {
             telemetry.update();
 
@@ -205,6 +207,10 @@ public class MainTeleop extends LinearOpMode {
             robot.getBackStopper().setPosition(robot.BACK_STOPPER_UP);
         }
     }
+
+    double xDump;
+    double yDump;
+    boolean hasRetracted = false;
     private void outtakeLogic() {
         currentTime = SystemClock.elapsedRealtime();
         // Logic to control outtake; with a delay on the pivot so that the slides can extend before pivot rotation
@@ -215,12 +221,17 @@ public class MainTeleop extends LinearOpMode {
             isRetract = false;
             is90 = false;
             outtakeExecutionTime = currentTime;
+            robot.getClamp().setPosition(robot.CLAMP_SERVO_CLAMPED);
+            robot.getOuttakeExtender().setPosition(robot.OUTTAKE_SLIDE_EXTENDED);
         } else if (gamepad2.b) { // Deposit and Reset
+            xDump = robot.getRobotPos().x;
+            yDump = robot.getRobotPos().y;
             robot.getMarkerServo().setPosition(robot.TEAM_MARKER_RETRACT);
             robot.getBackStopper().setPosition(robot.BACK_STOPPER_UP);
-            robot.getOuttakeExtender().setPosition(robot.OUTTAKE_SLIDE_EXTENDED);
-            robot.getIntakePusher().setPosition(robot.PUSHER_RETRACTED); // Reset intake pusher
+
+//            robot.getIntakePusher().setPosition(robot.PUSHER_RETRACTED); // Reset intake pusher
             isRetract = true;
+            hasRetracted = false;
             isExtend = false;
             isClamp = false;
             is90 = false;
@@ -235,6 +246,7 @@ public class MainTeleop extends LinearOpMode {
             is90 = false;
             outtakeExecutionTime = currentTime;
             robot.getIntakePusher().setPosition(robot.PUSHER_PUSHED);
+            hasPushed = true;
         }else if(gamepad2.y){
             robot.getMarkerServo().setPosition(robot.TEAM_MARKER_RETRACT);
             robot.getBackStopper().setPosition(robot.BACK_STOPPER_UP);
@@ -244,23 +256,13 @@ public class MainTeleop extends LinearOpMode {
             is90 = true;
             outtakeExecutionTime = currentTime;
         }
-        //extend
-        if(currentTime - outtakeExecutionTime >= 250 && isExtend && !hasPushed){
-            robot.getIntakePusher().setPosition(robot.PUSHER_PUSHED); // Push block all the way to clamp
-            hasPushed = true;
+
+        if(currentTime-outtakeExecutionTime >= 700 && isExtend){
+            robot.getClampPivot().setPosition(robot.OUTTAKE_PIVOT_EXTENDED);
         }
 
-        if (currentTime - outtakeExecutionTime >= 750 && isExtend) {
-            robot.getIntakePusher().setPosition(robot.PUSHER_RETRACTED);
-        }
-        if (currentTime - outtakeExecutionTime >= 850 && isExtend) {
-            robot.getClamp().setPosition(robot.CLAMP_SERVO_CLAMPED);
-        }
-        if(currentTime-outtakeExecutionTime >= 1100 && isExtend){
-            robot.getOuttakeExtender().setPosition(robot.OUTTAKE_SLIDE_EXTENDED);
-        }
-        if(currentTime-outtakeExecutionTime >= 2000 && isExtend && !is90){
-            robot.getClampPivot().setPosition(robot.OUTTAKE_PIVOT_EXTENDED);
+        if(currentTime-outtakeExecutionTime >= 1200 && isExtend && !is90){
+            robot.getOuttakeExtender().setPosition(robot.OUTTAKE_SLIDE_PARTIAL_EXTEND);
             isExtend = false;
             hasPushed = false;
         }
@@ -274,13 +276,19 @@ public class MainTeleop extends LinearOpMode {
         }
 
         //retract
-        if(currentTime-outtakeExecutionTime >= 450 && isRetract){
+        if(isRetract && Math.hypot(robot.getRobotPos().x-xDump, robot.getRobotPos().y-yDump) > 5 && !hasRetracted){
+            robot.getOuttakeExtender().setPosition(robot.OUTTAKE_SLIDE_EXTENDED);
+            outtakeExecutionTime = SystemClock.elapsedRealtime();
+            hasRetracted = true;
+        }
+
+        if(currentTime-outtakeExecutionTime >= 450 && isRetract && hasRetracted){
             robot.getClampPivot().setPosition(robot.OUTTAKE_PIVOT_RETRACTED);
         }
-        if(currentTime-outtakeExecutionTime >= 750 && isRetract){
+        if(currentTime-outtakeExecutionTime >= 750 && isRetract && hasRetracted){
             robot.getClamp().setPosition(robot.CLAMP_SERVO_CLAMPED);
         }
-        if(currentTime-outtakeExecutionTime >= 1500 && isRetract){
+        if(currentTime-outtakeExecutionTime >= 1200 && isRetract && hasRetracted){
             robot.getOuttakeExtender().setPosition(robot.OUTTAKE_SLIDE_RETRACTED);
             isRetract = false;
         }

@@ -86,7 +86,7 @@ public class TestPIDTeleOp extends LinearOpMode {
             leftEncoderCounts = robotHardware.getEncoderCounts(RobotHardware.EncoderType.LEFT);
             rightEncoderCounts = robotHardware.getEncoderCounts(RobotHardware.EncoderType.RIGHT);
             horizontalEncoderCounts = robotHardware.getEncoderCounts(RobotHardware.EncoderType.HORIZONTAL);
-            navigator.updateAllPositions(leftEncoderCounts, rightEncoderCounts, horizontalEncoderCounts);
+            navigator.updateEncoderPos(leftEncoderCounts, rightEncoderCounts, horizontalEncoderCounts);
 
             if (taskList.size() > 0) {
                 taskList.get(0).execute();

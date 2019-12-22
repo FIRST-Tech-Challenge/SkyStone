@@ -1,10 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
-import android.util.Log;
+import java.text.DecimalFormat;
 
 public class RobotNavigator {
-    private  int ENCODER_COUNTS_PER_ROTATION = 1440;
-
     private  double heading;
     private  double worldX, worldY, worldAngle;
     private  int previousLE;
@@ -15,6 +13,7 @@ public class RobotNavigator {
     private  double deltaRE;
     private  double deltaHE;
     RobotProfile profile;
+    DecimalFormat df = new DecimalFormat("#.##");
 
     public RobotNavigator(RobotProfile profile) {
         this.profile = profile;
@@ -30,12 +29,15 @@ public class RobotNavigator {
     public  double getWorldY(){ return worldY; }
     public  double getWorldX(){ return worldX; }
     public  double getHeading(){return heading;}
-    public  double getWorldAngle(){ return  worldAngle; }
+
+    public String getLocationString() {
+        return "(" + df.format(worldX) + ", " + df.format(worldY) + ") : " + df.format(Math.toDegrees(heading));
+    }
 
     double center_radius;
     //10/5 & 10/11 Athena, Alejandra, Claire, Marianna implemented and calculated displacement for robot
     //William Gutrich 10/13/19, refactor code to a method to set all positions
-    public  void updateAllPositions(int leftEncoder, int rightEncoder, int horEncoder) {
+    public  void updateAllPositionsOld(int leftEncoder, int rightEncoder, int horEncoder) {
         double x=0,y = 0;
         double angle = 0;
         double tempY=0, tempX=0;
@@ -91,7 +93,53 @@ public class RobotNavigator {
         worldX  += tempX;
 //        Logger.logFile("heading = " + heading);
         //worldAngle = -Math.toDegrees(Math.atan2(worldY,worldX) - Math.PI/2);
-        setLastEncoderPosition(leftEncoder,rightEncoder,horEncoder);
+        setEncoderCounts(leftEncoder,rightEncoder,horEncoder);
+    }
+
+    /**
+     * Haifeng's Math function to calculate the new position and heading
+     * @param leftEncoder
+     * @param rightEncoder
+     * @param horEncoder
+     */
+    public void updateEncoderPos(int leftEncoder, int rightEncoder, int horEncoder) {
+        double turnAngle;
+        double innerRadius;
+        double turnRadius;  // consider the center point between left/right track wheel
+        double xDelta, yDelta;  // heading based coordinate position change
+
+        double rightDelta = convertEncoderCountsToCentimeters(rightEncoder - previousRE);
+        double leftDelta = convertEncoderCountsToCentimeters(leftEncoder - previousLE);
+        double horizDelta = convertEncoderCountsToCentimeters(horEncoder - previousHE);
+
+        if (leftDelta != rightDelta) {
+            double leftRadius = profile.hardwareSpec.leftRightWheelDist*leftDelta/(leftDelta-rightDelta);
+            turnRadius = leftRadius - profile.hardwareSpec.leftRightWheelDist/2;
+            if (leftDelta==0) {
+                turnAngle = -rightDelta/profile.hardwareSpec.leftRightWheelDist;
+            }
+            else {
+                turnAngle = leftDelta / leftRadius;
+            }
+            xDelta = turnRadius*(1-Math.cos(turnAngle)) + horizDelta*Math.cos(turnAngle);
+            yDelta = turnRadius*Math.sin(turnAngle)-horizDelta*Math.sin(turnAngle);
+            // Now need to translate the heading coordinate into actual coordinate.
+            double xTemp = yDelta * Math.sin(heading) + xDelta * Math.cos(heading);
+            double yTemp = yDelta * Math.cos(heading) - xDelta * Math.sin(heading);
+            xDelta = xTemp;
+            yDelta = yTemp;
+        }
+        else {
+            xDelta = leftDelta * Math.sin(heading) + horizDelta * Math.cos(heading);
+            yDelta = leftDelta * Math.cos(heading) + horizDelta * Math.sin(heading);
+            turnAngle = 0.0;
+        }
+        worldX += xDelta;
+        worldY += yDelta;
+        heading += turnAngle;
+        previousLE = leftEncoder;
+        previousRE = rightEncoder;
+        previousHE = horEncoder;
     }
 
     public  double toDegree(double radian){
@@ -104,11 +152,11 @@ public class RobotNavigator {
 
     // October 6th: Lucas and Marianna
     public  double convertEncoderCountsToCentimeters(double encoderCounts) {
-        return encoderCounts*((profile.hardwareSpec.trackWheelDiameter*Math.PI)/ENCODER_COUNTS_PER_ROTATION);
+        return encoderCounts*((profile.hardwareSpec.trackWheelDiameter*Math.PI)/profile.hardwareSpec.trackWheelCPR);
     }
 
     public  double convertCMToEncoderCounts(double cm){
-        return cm * ENCODER_COUNTS_PER_ROTATION / (Math.PI * profile.hardwareSpec.trackWheelDiameter);
+        return cm * profile.hardwareSpec.trackWheelCPR / (Math.PI * profile.hardwareSpec.trackWheelDiameter);
     }
 
     //10/14 Gabriel, limit angle range -180 to 180
@@ -126,25 +174,9 @@ public class RobotNavigator {
         worldAngle = 0;
     }
 
-    public  void setInitEncoderCount(int LE, int RE, int HE){
+    public  void setEncoderCounts(int LE, int RE, int HE){
         previousLE = LE;
         previousRE = RE;
         previousHE = HE;
     }
-
-    public  void setLastEncoderPosition (int leftEncoder, int rightEncoder, int middleEncoder){
-        previousLE = leftEncoder;
-        previousRE = rightEncoder;
-        previousHE = middleEncoder;
-    }
-
-    public  void setWorldPosition(double x, double y) {
-        worldX = x;
-        worldY = y;
-    }
-
-    public  void setEncoderCountPerRotation (int cpr){
-        ENCODER_COUNTS_PER_ROTATION = cpr;
-    }
-
 }

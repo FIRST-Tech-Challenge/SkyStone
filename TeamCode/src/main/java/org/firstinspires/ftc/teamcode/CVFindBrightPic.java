@@ -30,6 +30,7 @@ public class CVFindBrightPic extends LinearOpMode {
 
     private int skystonePosition = -1;
     private boolean snappedPic = false;
+    private boolean pressedA = false;
 
     RobotProfile.StartPosition startPosition = RobotProfile.StartPosition.RED_2;
     ArrayList<RobotControl> taskList = new ArrayList<>();
@@ -47,7 +48,7 @@ public class CVFindBrightPic extends LinearOpMode {
         OpenCvCamera phoneCam = new OpenCvInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
         phoneCam.openCameraDevice();
         phoneCam.setPipeline(new Pipeline());
-        phoneCam.startStreaming(640, 480, OpenCvCameraRotation.SIDEWAYS_LEFT);
+        phoneCam.startStreaming(640, 480, OpenCvCameraRotation.UPRIGHT);
 
         waitForStart();
 
@@ -64,7 +65,13 @@ public class CVFindBrightPic extends LinearOpMode {
             telemetry.update();
 
             if (gamepad1.a) {
-                snappedPic = true;
+                if (!pressedA) {
+                    snappedPic = true;
+                }
+                pressedA = true;
+            }
+            else {
+                pressedA = false;
             }
         }
     }

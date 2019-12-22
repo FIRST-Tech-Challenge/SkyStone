@@ -1,58 +1,49 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
+//import com.qualcomm.robotcore.hardware.TouchSensor; Use DigitalChannel instead because BulkData read
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.ExpansionHubMotor;
 import org.openftc.revextensions2.ExpansionHubServo;
 import org.openftc.revextensions2.RevBulkData;
 
 public class RobotHardware {
-//    final double DEFAULT_INTAKE_ROTATION_SERVO = 0.86;
-//    final double STRAIGHT_INTAKE_ROTATION_SERVO = 0.53;
-//    final double OPEN_BLOCK_HOLDER_SERVO_S1 = 0.695;
-//    final double CLOSE_BLOCK_HOLDER_SERVO_S1 = 0.595;
-//    final double OPEN_BLOCK_HOLDER_SERVO_S2 = 0.40;
-//    final double CLOSE_BLOCK_HOLDER_SERVO_S2 = 0.50;
-//    final double PARK_FOUNDATION_SERVO_S0 = 0.50;
-//    final double LOCK_FOUNDATION_SERVO_S0 = 0.83;
-//    final double PARK_FOUNDATION_SERVO_S1 = 0.50;
-//    final double LOCK_FOUNDATION_SERVO_S1 = 0.18;
-
     ExpansionHubMotor rrMotor, rlMotor, frMotor, flMotor, intakeMotorLeft, intakeMotorRight, liftMotor, sliderMotor;
     ExpansionHubEx expansionHub1, expansionHub2;
     RevBulkData bulkData1, bulkData2;
-    ExpansionHubServo clampRotationServo, blockHolderServo1, blockHolderServo2, leftFoundationServo, rightFoundationServo;
+    ExpansionHubServo clampRotationServo, blockHolderServo1, blockHolderServo2, leftFoundationServo, rightFoundationServo, capStoneServo;
+    DigitalChannel sliderTouchChannel;
+    Rev2mDistanceSensor rightDistanceSensor;
+    //AnalogInput rightDistanceSensor, leftBackDistanceSensor, rightBackDistanceSensor;
     RobotProfile profile;
+    boolean isPrototype = false;
     BNO055IMU imu1, imu2;
 
     public void init(HardwareMap hardwareMap, RobotProfile profile) {
         this.profile = profile;
+        try {
+            if (hardwareMap.get("LiftMotor")!=null) {
+                isPrototype = false;
+            }
+        }
+        catch (IllegalArgumentException ex) {
+            isPrototype = true;
+        }
         expansionHub1 = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 1");
-        expansionHub2 = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 2");
         rrMotor = (ExpansionHubMotor) hardwareMap.dcMotor.get("RRMotor");
         rlMotor = (ExpansionHubMotor) hardwareMap.dcMotor.get("RLMotor");
         frMotor = (ExpansionHubMotor) hardwareMap.dcMotor.get("FRMotor");
         flMotor = (ExpansionHubMotor) hardwareMap.dcMotor.get("FLMotor");
-        intakeMotorLeft = (ExpansionHubMotor) hardwareMap.dcMotor.get("LeftIntakeMotor");
-        intakeMotorRight = (ExpansionHubMotor) hardwareMap.dcMotor.get("RightIntakeMotor");
-        liftMotor = (ExpansionHubMotor) hardwareMap.dcMotor.get("LiftMotor");
-        sliderMotor = (ExpansionHubMotor) hardwareMap.dcMotor.get("LiftSliderMotor");
-        clampRotationServo = (ExpansionHubServo) hardwareMap.servo.get("ClampRotationServo");
-        blockHolderServo1 = (ExpansionHubServo) hardwareMap.servo.get("BlockHolderServo1");
-        blockHolderServo2 = (ExpansionHubServo) hardwareMap.servo.get("BlockHolderServo2");
-        leftFoundationServo = (ExpansionHubServo) hardwareMap.servo.get("LeftFoundationServo");
-        rightFoundationServo = (ExpansionHubServo) hardwareMap.servo.get("RightFoundationServo");
-        //imu1 = hardwareMap.get(BNO055IMU.class, "imu1");
-        //imu2 = hardwareMap.get(BNO055IMU.class, "imu2");
-       // imu1 = (BNO055IMU) hardwareMap.("imu1");
-       // imu2 =(BNO055IMU) hardwareMap.i2cDevice.get("imu2");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.mode = BNO055IMU.SensorMode.IMU;
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
@@ -60,8 +51,7 @@ public class RobotHardware {
         parameters.loggingEnabled = false;
         imu1 = hardwareMap.get(BNO055IMU.class, "imu1");
         imu1.initialize(parameters);
-
-
+        capStoneServo = (ExpansionHubServo) hardwareMap.servo.get("CapStoneServo");
         frMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         rrMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -74,25 +64,36 @@ public class RobotHardware {
         rlMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         flMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        if (!isPrototype) {
+            expansionHub2 = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 2");
+            intakeMotorLeft = (ExpansionHubMotor) hardwareMap.dcMotor.get("LeftIntakeMotor");
+            intakeMotorRight = (ExpansionHubMotor) hardwareMap.dcMotor.get("RightIntakeMotor");
+            liftMotor = (ExpansionHubMotor) hardwareMap.dcMotor.get("LiftMotor");
+            sliderMotor = (ExpansionHubMotor) hardwareMap.dcMotor.get("LiftSliderMotor");
+            clampRotationServo = (ExpansionHubServo) hardwareMap.servo.get("ClampRotationServo");
+            blockHolderServo1 = (ExpansionHubServo) hardwareMap.servo.get("BlockHolderServo1");
+            blockHolderServo2 = (ExpansionHubServo) hardwareMap.servo.get("BlockHolderServo2");
+            leftFoundationServo = (ExpansionHubServo) hardwareMap.servo.get("LeftFoundationServo");
+            rightFoundationServo = (ExpansionHubServo) hardwareMap.servo.get("RightFoundationServo");
+            rightDistanceSensor = hardwareMap.get(Rev2mDistanceSensor.class, "RightDistanceSensor");
+            //leftBackDistanceSensor = hardwareMap.analogInput.get("LeftBackDistanceSensor");
+            //rightBackDistanceSensor = hardwareMap.analogInput.get("RightBackDistanceSensor");
+            // We use BulkData read, so can't use touch sensor object
+            //slideTouchSensor = hardwareMap.touchSensor.get("SlideTouchSensor");
+            sliderTouchChannel = hardwareMap.digitalChannel.get("SlideTouchSensor");
+            sliderTouchChannel.setMode(DigitalChannel.Mode.INPUT);
 
-        liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        sliderMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            sliderMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
-        liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        sliderMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            sliderMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        liftMotor.setTargetPosition(0);
-        sliderMotor.setTargetPosition(0);
-
-
-        Logger.logFile("lfMotor = "+ flMotor);
-        Logger.logFile("frMotor = "+ frMotor);
-        Logger.logFile("rlMotor = "+ rlMotor);
-        Logger.logFile("rrMotor = "+ rrMotor);
-        Logger.logFile("intake motorR=" + intakeMotorRight);
-        Logger.logFile("intake motorL=" + intakeMotorLeft);
+            liftMotor.setTargetPosition(0);
+            sliderMotor.setTargetPosition(0);
+        }
     }
 
     public void getBulkData1() {
@@ -100,7 +101,13 @@ public class RobotHardware {
     }
 
     public void getBulkData2() {
-        bulkData2 = expansionHub2.getBulkInputData();
+        if (!isPrototype) {
+            bulkData2 = expansionHub2.getBulkInputData();
+        }
+        else {
+            // so we have something
+            bulkData2 = expansionHub1.getBulkInputData();
+        }
     }
 
     public int getEncoderCounts(EncoderType encoder) {
@@ -114,26 +121,38 @@ public class RobotHardware {
             return profile.hardwareSpec.horizontalEncoderForwardSign * bulkData1.getMotorCurrentPosition(frMotor);
         }
         else if(encoder == EncoderType.LIFT) {
-            return liftMotor.getCurrentPosition();
-            //return bulkData2.getMotorCurrentPosition(liftMotor);
+            return bulkData2.getMotorCurrentPosition(liftMotor);
         }
         else if(encoder == EncoderType.SLIDER) {
-             return sliderMotor.getCurrentPosition();
-            //return bulkData2bulkData2.getMotorCurrentPosition(liftMotor);
+            return bulkData2.getMotorCurrentPosition(sliderMotor);
         } else {
             return 0;
         }
     }
 
-    public void mecanumDrive(double power, double angle, double rotation){
-
+    public void mecanumDriveTest(double power, double angle, double rotation, int sign){
+        double frontLeft = 0;
+        double frontRight = 0;
+        double rearLeft = 0;
+        double rearRight = 0;
         //10/28/2019, Will, Ian Athena implemented and tested the drive method
         //double robotAngle = Math.PI / 2 - angle - Math.PI / 4;
-        double frontLeft = power * Math.cos(angle) + rotation;
-        double frontRight = power * Math.sin(angle) - rotation;
-        double rearLeft = power * Math.sin(angle) + rotation;
-        double rearRight = power * Math.cos(angle) - rotation;
-
+        if(sign == 0) {
+            frontLeft = power * Math.cos(angle) + rotation;
+            frontRight = power * Math.sin(angle) - rotation;
+            rearLeft = power * Math.sin(angle) + rotation;
+            rearRight = power * Math.cos(angle) - rotation;
+        }else if(sign ==1){  //left side less encoder counts
+            frontLeft = power *0.88 * Math.cos(angle) + rotation;
+            frontRight = power * Math.sin(angle) - rotation;
+            rearLeft = power * 0.88 * Math.sin(angle) + rotation;
+            rearRight = power * Math.cos(angle) - rotation;
+        }else if(sign == 2){   //right side less encoder counts
+            frontLeft = power * Math.cos(angle) + rotation;
+            frontRight = power * 0.88 * Math.sin(angle) - rotation;
+            rearLeft = power * Math.sin(angle) + rotation;
+            rearRight = power * 0.88 * Math.cos(angle) - rotation;
+        }
 
         double biggest = 0.1;
         if (Math.abs(frontRight) > biggest){
@@ -182,7 +201,7 @@ public class RobotHardware {
             biggest = Math.abs(frontLeft);
         }
 
-        power = (power == 0 && rotation !=0) ? 1 : power;
+        power = Math.max(power, Math.abs(rotation));
         frontLeft = frontLeft/biggest*power;
         frontRight = frontRight/biggest*power;
         rearLeft = rearLeft/biggest*power;
@@ -205,34 +224,36 @@ public class RobotHardware {
         rrMotor.setZeroPowerBehavior(brake?DcMotor.ZeroPowerBehavior.BRAKE:DcMotor.ZeroPowerBehavior.FLOAT);
     }
 
-    //10/14/2019 Reily refactor field oriented to new method
-    public void switchToFieldOrientated(double forward, double strafe, double heading) {
-        //double power = Math.hypot(forward,strafe);
-        //double angle = Math.atan2(forward,strafe)- Math.PI / 4;
-
-        double temp = forward * Math.cos(heading) + strafe * Math.sin(heading);
-        strafe = -forward * Math.sin(heading) + strafe * Math.cos(heading);
-        forward = temp;
-    }
-
-    public void rotateGrabberForPickup() {
-        clampRotationServo.setPosition(profile.hardwareSpec.clampAngleReady);
-    }
+//    public void rotateGrabberOriginPos() {
+//        clampRotationServo.setPosition(profile.hardwareSpec.clampAngleNormal);
+//    }
 
     public void rotateGrabberOriginPos() {
-        clampRotationServo.setPosition(profile.hardwareSpec.clampAngleInit);
+        clampRotationServo.setPosition(profile.hardwareSpec.clampAngleNormal);
     }
 
     public void setLiftPosition(int liftPosition){
+        setLiftPosition(liftPosition, 0.5);
+    }
+
+    public void setLiftPosition(int liftPosition, double power){
         // Make sure the lift position >0 and < 4000 (around 11 bricks)
-        liftMotor.setTargetPosition(Math.max(0, Math.min(liftPosition, 4000)));
-        liftMotor.setPower(0.5);
+        liftMotor.setTargetPosition(Math.max(0, Math.min(liftPosition, 2000)));
+        liftMotor.setPower(power);
         liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
+    public void resetSlideToZero() {
+        sliderMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     public void setSliderPosition(int sliderPosition) {
         sliderMotor.setTargetPosition(sliderPosition);
-        sliderMotor.setPower(0.3);
+        //sliderMotor.setPower(0.5);
+
+        //12/12, increase slide speed, so lift can come down quickly
+        sliderMotor.setPower(0.8);
+
         sliderMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
@@ -269,8 +290,8 @@ public class RobotHardware {
     }
 
     public void startIntakeWheel() {
-        intakeMotorLeft.setPower(0.3);
-        intakeMotorRight.setPower(-0.3);
+        intakeMotorLeft.setPower(0.5);
+        intakeMotorRight.setPower(-0.5);
     }
 
     public void stopIntakeWheel() {
@@ -279,13 +300,52 @@ public class RobotHardware {
     }
 
     public void reverseIntakeWheels(){
-        intakeMotorLeft.setPower(-0.3);
-        intakeMotorRight.setPower(0.3);
+        intakeMotorLeft.setPower(-0.5);
+        intakeMotorRight.setPower(0.5);
     }
 
+    public void setCapStoneServo(CapPosition capPosition){
+        if(capPosition == CapPosition.CAP_UP){
+            capStoneServo.setPosition(profile.hardwareSpec.capStoneUp);
+        }
+        else if(capPosition == CapPosition.CAP_DOWN){
+            capStoneServo.setPosition(profile.hardwareSpec.capStoneDown);
+        }
+        else if(capPosition == CapPosition.CAP_OTHER){
+            capStoneServo.setPosition(profile.hardwareSpec.capStoneOther);
+        }
+    }
+
+    public boolean sliderTouched() {
+        // digital channel: low - touched, high - not touch
+        return !bulkData2.getDigitalInputState(sliderTouchChannel);
+    }
+
+    public void setClampAnglePosition(ClampAnglePosition clampAnglePosition){
+        if(clampAnglePosition ==ClampAnglePosition.NORMAL)
+            clampRotationServo.setPosition(profile.hardwareSpec.clampAngleNormal);
+        else if(clampAnglePosition == ClampAnglePosition.SIDE)
+            clampRotationServo.setPosition(profile.hardwareSpec.clampAngleSide);
+        else if(clampAnglePosition == ClampAnglePosition.BACK)
+            clampRotationServo.setPosition(profile.hardwareSpec.clampAngleBack);
+    }
+
+    /**
+     * WARNING WARNING WARNING ****
+     * Sensor distance call not supported by BulkData read, this call takes 33ms to complete
+     * do not call as part of the loop constantly.
+     * @return
+     */
+    public double getRightDistance() {
+        return rightDistanceSensor.getDistance(DistanceUnit.CM);
+    }
+
+
     public enum EncoderType {LEFT, RIGHT, HORIZONTAL, LIFT, SLIDER}
+    public enum ClampAnglePosition{NORMAL, SIDE, BACK}
 
     public enum ClampPosition {OPEN, CLOSE, INITIAL}
     public enum HookPosition {HOOK_ON, HOOK_OFF}
+    public enum CapPosition {CAP_UP, CAP_DOWN, CAP_OTHER}
 
 }

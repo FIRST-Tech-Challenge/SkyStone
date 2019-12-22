@@ -22,7 +22,7 @@ public class Logger {
 
     public static void init() {
         try {
-            String timestamp = new SimpleDateFormat("yyyyMMdd", Locale.US).format(new Date());
+            String timestamp = new SimpleDateFormat("yyyyMMdd-hhmm", Locale.US).format(new Date());
             File file = new File(Environment.getExternalStorageDirectory().getPath() + "/FIRST/driver_" + timestamp + ".txt");
 
             pw = new PrintWriter(new BufferedWriter(new FileWriter(file)));
@@ -38,12 +38,14 @@ public class Logger {
             String timestamp = new SimpleDateFormat("HH:mm:ss.SSS", Locale.US).format(new Date());
 
             pw.println(timestamp + " " + message);
+            //pw.flush();     // for now
         } catch (Exception e) {
             throw new RuntimeException("cannot write to file");
         }
     }
 
-    public static void flushToFile() throws IOException {
+    public static void flushToFile()
+    {
         try {
             pw.flush();
         } catch(Exception e) {

@@ -18,17 +18,13 @@ public class RotateGrabberTask implements RobotControl {
 
     public void prepare(){
         timeStart = System.currentTimeMillis();
-        //startPosition = robot.getEncoderCounts(RobotHardware.EncoderType.LIFT);
     }
 
     public void execute() {
         if (this.hookPosition== RobotHardware.HookPosition.HOOK_ON && System.currentTimeMillis() - timeStart < timeDuration){
-            robot.rotateGrabberForPickup();
-            //percentComplete = (System.currentTimeMillis() - timeStart)/timeDuration;
-            //robot.setLiftPosition((int)((liftPosition - startPosition)*percentComplete)+startPosition);
+            robot.rotateGrabberOriginPos();
         }
         else if(this.hookPosition == RobotHardware.HookPosition.HOOK_OFF){
-            //robot.setLiftPosition(liftPosition);
             robot.rotateGrabberOriginPos();
         }
     }
@@ -39,7 +35,6 @@ public class RotateGrabberTask implements RobotControl {
     }
 
     public boolean isDone() {
-        //return Math.abs(robot.getEncoderCounts(RobotHardware.EncoderType.LIFT) - liftPosition) < 5;
         return System.currentTimeMillis() > timeStart + 250;
     }
 }

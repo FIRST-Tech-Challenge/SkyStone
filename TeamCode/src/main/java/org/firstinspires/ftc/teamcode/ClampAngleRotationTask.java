@@ -1,21 +1,20 @@
 package org.firstinspires.ftc.teamcode;
 
-// Steps: Lift arm, rotate grabber 90 degrees, extend delivery slide, lower block onto skystone
-public class ClampOpenCloseTask implements RobotControl {
+public class ClampAngleRotationTask implements RobotControl {
 
     transient RobotHardware robot;
     transient RobotProfile profile;
-    RobotHardware.ClampPosition position;
+    RobotHardware.ClampAnglePosition position;
     transient long timeStart;
 
-    public ClampOpenCloseTask(RobotHardware robot, RobotProfile profile, RobotHardware.ClampPosition position) {
+    public ClampAngleRotationTask(RobotHardware robot, RobotProfile profile, RobotHardware.ClampAnglePosition position) {
         this.robot = robot;
         this.profile = profile;
         this.position = position;
     }
 
     public String toString() {
-        return "Clamp to " + position;
+        return "Clamp angle rotates to " + position;
     }
 
     public void prepare(){
@@ -23,7 +22,7 @@ public class ClampOpenCloseTask implements RobotControl {
     }
 
     public void execute() {
-        robot.setClampPosition(position);
+        robot.setClampAnglePosition(position);
     }
 
     public void cleanUp(){

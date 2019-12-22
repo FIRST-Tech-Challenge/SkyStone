@@ -30,63 +30,64 @@ public class RobotProfile {
 
     public void populateInitValue() {
         headingPID = new PIDParam();
-        headingPID.p = -0.5;
-        headingPID.i = 0.0;
+        headingPID.p = 5;
+        headingPID.i = 0.05;
         headingPID.d = 0.0;
         distancePID = new PIDParam();
-        distancePID.p = 0.1;
-        distancePID.i = 0.0;
+        distancePID.p = 0.5;
+        distancePID.i = 0.01;
         distancePID.d = 0.0;
         movement = new Movement();
         movement.forwardStopDist = 25;
         movement.strifeStopDist = 17;
+        movement.rotateStopAngle = .1;
         Point[] p = new Point[3];
         p[0] = new Point();
-        p[0].x= 96;
-        p[0].y = 235;
+        p[0].x= 238;
+        p[0].y = 343;
         p[1] = new Point();
-        p[1].x= 184;
-        p[1].y = 235;
+        p[1].x= 297;
+        p[1].y = 348;
         p[2] = new Point();
-        p[2].x= 275;
-        p[2].y = 235;
+        p[2].x= 383;
+        p[2].y = 354;
         this.stoneScanPoints = new HashMap<RobotProfile.StartPosition, Point[]>();
         this.stoneScanPoints.put(RobotProfile.StartPosition.RED_2, p);  //leftMost 1st block is [0], 3rd block is[2]
 
         Point[] p2 = new Point[3];
         p2[0] = new Point();
-        p2[0].x= 112;
-        p2[0].y = 236;
+        p2[0].x= 249;
+        p2[0].y = 346;
         p2[1] = new Point();
-        p2[1].x= 197;
-        p2[1].y = 236;
+        p2[1].x= 319;
+        p2[1].y = 350;
         p2[2] = new Point();
-        p2[2].x= 296;
-        p2[2].y = 236;
+        p2[2].x= 408;
+        p2[2].y = 358;
         this.stoneScanPoints.put(RobotProfile.StartPosition.RED_3, p2);
 
         Point[] p3 = new Point[3];
         p3[0] = new Point();
-        p3[0].x= 536;
-        p3[0].y = 231;
+        p3[0].x= 314;
+        p3[0].y = 346;
         p3[1] = new Point();
-        p3[1].x= 441;
-        p3[1].y = 231;
+        p3[1].x= 221;
+        p3[1].y = 349;
         p3[2] = new Point();
-        p3[2].x= 338;
-        p3[2].y = 231;
+        p3[2].x= 111;
+        p3[2].y = 353;
         this.stoneScanPoints.put(RobotProfile.StartPosition.BLUE_2, p3);
 
         Point[] p4 = new Point[3];
         p4[0] = new Point();
-        p4[0].x= 527;
-        p4[0].y = 231;
+        p4[0].x= 262;
+        p4[0].y = 348;
         p4[1] = new Point();
-        p4[1].x= 430;
-        p4[1].y = 231;
+        p4[1].x= 167;
+        p4[1].y = 353;
         p4[2] = new Point();
-        p4[2].x= 326;
-        p4[2].y = 231;
+        p4[2].x= 57;
+        p4[2].y = 358;
         this.stoneScanPoints.put(StartPosition.BLUE_3, p4);
 
         this.robotStartPoints = new HashMap<StartPosition, RobotPosition>();
@@ -114,32 +115,42 @@ public class RobotProfile {
         B3_start.setHeading(0);
         this.robotStartPoints.put(StartPosition.BLUE_3,B3_start);
 
-
         hardwareSpec = new HardwareSpec();
         hardwareSpec.trackWheelDiameter = 3.8;   //cm diameter
-        hardwareSpec.leftRightWheelDist = 37.465;  // cm left right dist
+        hardwareSpec.trackWheelCPR = 4000;
+        hardwareSpec.leftRightWheelDist = 39.75;  // cm left right dist
         hardwareSpec.sliderOrigPos = 0;
-        hardwareSpec.sliderOutPos = -1450;
+        hardwareSpec.sliderOutPos = 1500;
+        hardwareSpec.sliderOutMax = 1825;
+        hardwareSpec.sliderOutMin = 1229;
+        hardwareSpec.sliderOutMinCM = 3.0;
+        hardwareSpec.sliderCountPerCM = 47;
         hardwareSpec.liftOrigPos = 0;
-        hardwareSpec.liftStoneBase = 133;
+        hardwareSpec.liftStoneBase = 0;
+        hardwareSpec.liftHomeReadyPos = 150;
+        hardwareSpec.liftHomeGrabPos = 60;
         hardwareSpec.liftGrabExtra = 127;    // addition high above base before open and lower for grab
         hardwareSpec.liftPerStone = 341;     // addition high per stone
-        hardwareSpec.clampAngleInit = 0.86;
-        hardwareSpec.clampAngleReady = 0.53;
-        hardwareSpec.clampS1Init = 0.615;
-        hardwareSpec.clampS1Open = 0.695;
-        hardwareSpec.clampS1Close = 0.595;
-        hardwareSpec.clampS2Init = 0.48;
-        hardwareSpec.clampS2Open = 0.40;
-        hardwareSpec.clampS2Close = 0.50;
-        hardwareSpec.hookS0Open = 0.50;
-        hardwareSpec.hookS0Close = 0.85;
-        hardwareSpec.hookS1Open = 0.5;
-        hardwareSpec.hookS1Close = 0.15;
+        hardwareSpec.clampAngleNormal = 0.88;
+        hardwareSpec.clampAngleSide = 0.54;
+        hardwareSpec.clampAngleBack = 0; //0.25
+        hardwareSpec.clampS1Init = 0.5;
+        hardwareSpec.clampS1Open = 0.5; //was open, 0.5
+        hardwareSpec.clampS1Close = 0.585; //was close
+        hardwareSpec.clampS2Init = 0.5;
+        hardwareSpec.clampS2Open= 0.5; //was open, 0.5
+        hardwareSpec.clampS2Close = 0.415; //was close
+        hardwareSpec.hookS0Open = 0.24;
+        hardwareSpec.hookS0Close = 0.66;
+        hardwareSpec.hookS1Open = 0.65;
+        hardwareSpec.hookS1Close = 0.19;
+        hardwareSpec.capStoneUp = 0.34;
+        hardwareSpec.capStoneDown = 0.800;
+        hardwareSpec.capStoneOther = 0.15;
 
         hardwareSpec.leftEncodeForwardSign = -1;
         hardwareSpec.rightEncoderForwardSign = -1;
-        hardwareSpec.horizontalEncoderForwardSign = -1;
+        hardwareSpec.horizontalEncoderForwardSign = 1;
 
 //        //for starting at R2, the starting point is [0], the 3 possible sky stone position from left to right are in [1],[2],[3]
 //        RED_2[0] = new RobotPosition(335, 82, Math.PI/2);
@@ -188,6 +199,7 @@ public class RobotProfile {
     class Movement {
         double strifeStopDist;
         double forwardStopDist;
+        double rotateStopAngle;
     }
 
     class PIDParam {
@@ -196,17 +208,42 @@ public class RobotProfile {
         double d;
     }
 
+    class SkyStonePosition {
+
+        double red2SkyStonePosition0_y = 70;
+        double red2SkyStonePosition1_y = 56;
+        double red2SkyStonePosition2_y = 28;
+        double red3SkyStonePosition0_y = 60;
+        double red3SkyStonePosition1_y = 40;
+        double red3SkyStonePosition2_y = 20;
+        double blue2SkyStonePosition0_y = -33;
+        double blue2SkyStonePosition1_y = -33;
+        double blue2SkyStonePosition2_y = -13;
+        double blue3SkyStonePosition0_y = -53;
+        double blue3SkyStonePosition1_y = -33;
+        double blue3SkyStonePosition2_y = -13;
+
+    }
+
     class HardwareSpec {
         double trackWheelDiameter;   //cm diameter
+        double trackWheelCPR;
         double leftRightWheelDist;
         int sliderOrigPos;
+        int sliderOutMax;
+        int sliderOutMin;
+        double sliderOutMinCM;
+        int sliderCountPerCM;
         int sliderOutPos;
         int liftOrigPos;
         int liftStoneBase;
+        int liftHomeGrabPos;
+        int liftHomeReadyPos;
         int liftGrabExtra;    // addition high above base before open and lower for grab
         int liftPerStone;     // addition high per stone
-        double clampAngleInit;
-        double clampAngleReady;
+        double clampAngleNormal;
+        double clampAngleSide;
+        double clampAngleBack;
         double clampS1Init;
         double clampS1Open;
         double clampS1Close;
@@ -217,6 +254,9 @@ public class RobotProfile {
         double hookS0Close;
         double hookS1Open;
         double hookS1Close;
+        double capStoneUp; //Original position of the CapStoneServo
+        double capStoneDown; //Places the Cap Stone on current stone in the intake
+        double capStoneOther; //Delivers the Cap Stone by itself
         int leftEncodeForwardSign;
         int rightEncoderForwardSign;
         int horizontalEncoderForwardSign;

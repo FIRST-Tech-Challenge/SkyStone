@@ -17,6 +17,10 @@ public class SetLiftPositionTask implements RobotControl {
         liftPosition = targetPosition;
         this.timeDuration =  timeDuration;
     }
+    
+    public String toString() {
+        return "LiftPos to " + liftPosition;
+    }
 
     public void prepare(){
         timeStart = System.currentTimeMillis();
@@ -24,9 +28,10 @@ public class SetLiftPositionTask implements RobotControl {
     }
 
     public void execute() {
-        if (System.currentTimeMillis() - timeStart < timeDuration){
+        if ((System.currentTimeMillis() - timeStart) < timeDuration){
             percentComplete = (System.currentTimeMillis() - timeStart)/timeDuration;
             robot.setLiftPosition((int)((liftPosition - startPosition)*percentComplete)+startPosition);
+            //Logger.logFile("Lift Position: " + robot.getEncoderCounts(RobotHardware.EncoderType.LIFT));
         }
         else{
             robot.setLiftPosition(liftPosition);
@@ -39,7 +44,9 @@ public class SetLiftPositionTask implements RobotControl {
     }
 
     public boolean isDone() {
+        //Logger.logFile("Lift Position isDone:" + robot.getEncoderCounts(RobotHardware.EncoderType.LIFT));
         return Math.abs(robot.getEncoderCounts(RobotHardware.EncoderType.LIFT) - liftPosition) < 5;
+
     }
 
 }

@@ -20,11 +20,23 @@ import java.util.Map;
         public static final String DELAY_PREF = "delay";
         public static final String  PARKING_PREF = "parking";
         private static final String NONE = "none";
-       // ADD preference values here
-        private static final String[] START_POS_MODES = {"BLUE_2", "BLUE_3", "RED_2", "RED_3"};
-        private static final String[] DELAYS = {"0 sec", "1 sec", "2 sec", "3 sec", "4 sec", "5 sec"};
-        private static final String[] PARKING_LOCATION = {"underBridge", "buildingZone"};
-        private static Map<String, String[]> prefMap = new HashMap<>();
+        public static final String FOUNDATION_PREF = "foundation";
+        public static final String DELIVER_ROUTE_PREF = "deliver mode";
+        public static final String PARKING_ONLY_PREF = "only park";
+        public static final String STONE_PREF = "two skystones";
+        public static final String FIRST_BLOCK_BY_WALL_PREF = "first block by wall";
+
+        // ADD preference values here
+        public static final String[] START_POS_MODES = {"BLUE_2", "BLUE_3", "BLUE_5", "RED_2", "RED_3", "RED_5"};
+        public static final String[] DELAYS = {"0 " + "sec", "1 sec", "2 sec", "3 sec", "4 sec", "5 sec"};
+        public static final String[] PARKING_LOCATION = {"BridgeWall", "BridgeNeutral"};
+        public static final String[] MOVE_FOUNDATION = {"move", "no move", "move only"};
+        public static final String[] DELIVER_ROUTE = {"BridgeWall", "BridgeNeutral"};
+        public static final String[] PARKING_ONLY = {"yes", "no"};
+        public static final String[] TWO_SKYSTONES = {"yes", "no"};
+        public static final String[] PICK_FIRST_BLOCK_BY_WALL ={"yes", "no"};
+
+        public static Map<String, String[]> prefMap = new HashMap<>();
         private static String[] prefKeys = prefMap.keySet().toArray(new String[prefMap.keySet().size()]);
         private static int keyIdx = 0;
 
@@ -33,7 +45,14 @@ import java.util.Map;
             prefMap.put(DELAY_PREF, DELAYS);
             prefMap.put(START_POS_MODES_PREF, START_POS_MODES);
             prefMap.put(PARKING_PREF, PARKING_LOCATION);
+            prefMap.put(FOUNDATION_PREF, MOVE_FOUNDATION);
+            prefMap.put(DELIVER_ROUTE_PREF, DELIVER_ROUTE);
+            prefMap.put(PARKING_ONLY_PREF, PARKING_ONLY);
+            prefMap.put(STONE_PREF, TWO_SKYSTONES);
+            prefMap.put(FIRST_BLOCK_BY_WALL_PREF, PICK_FIRST_BLOCK_BY_WALL);
+
         }
+
 
         static {
             Arrays.sort(prefKeys);
@@ -76,10 +95,8 @@ import java.util.Map;
             switch (menuState) {
                 case DisplayAll:
                     displayAll();
-                    Logger.logFile("in loop with DisplayAll");
                     break;
                 case DisplaySingle:
-                    Logger.logFile("in loop with Display single");
                     displaySingle();
                     break;
             }
@@ -96,7 +113,6 @@ import java.util.Map;
             }
             if (gamepad1.y && !isYPressed) {
                 isYPressed = true;
-                Logger.logFile("in display all, y is pressed, try to display single ");
                 menuState = State.DisplaySingle;
             }
             if (!gamepad1.y) {
@@ -108,33 +124,23 @@ import java.util.Map;
             telemetry.clear();
             telemetry.addData("Choose", "X - accept Y - change");
             String key = prefKeys[keyIdx];
-            Logger.logFile("here key = " + key);
             String[] array = prefMap.get(key);
-            Logger.logFile("here, value[0] ="+array[0]);
 
             if (key != null) {
                 String prefValue = prefs.getString(key, NONE);
                 selectionIdx = getIndex(prefValue, array);
                 telemetry.addData(key, "***" + prefValue);
                 updateTelemetry(telemetry);
-                Logger.logFile("key = ***" + prefValue);
-                Logger.logFile("in display single, try to get key = " + key + " and prefValue = " + prefValue);
             }
             //accept and no change in current key, move to next key
             if (gamepad1.x && !isXPressed) {
-                Logger.logFile("in display single, x is pressed, try to increase idx by 1. keyIdx = "+ keyIdx);
-                Logger.logFile("gamepad1.x = "+gamepad1.x);
                 int nextKeyIdx = keyIdx+1;
-                Logger.logFile("now nextKeyIdx = " + nextKeyIdx);
-                Logger.logFile("prefKeys.length = "+prefKeys.length);
                 if (nextKeyIdx >= prefKeys.length && gamepad1.x) {
                     keyIdx = 0;
                     menuState = State.DisplayAll;
                 }else {
                     keyIdx = nextKeyIdx;
-                    Logger.logFile("I am surprise I am here but I suppose to be here");
                 }
-                Logger.logFile("I think keyIdx = " + keyIdx);
                 isXPressed = true;
             }
             if (!gamepad1.x) {
@@ -143,15 +149,10 @@ import java.util.Map;
 
             //change to next idx in array
            if (gamepad1.y && !isYPressed) {
-                Logger.logFile("in display single, y is pressed, try to move down selection list");
-                Logger.logFile("gamepad1.y = "+ gamepad1.y);
-                Logger.logFile("selectionIdx = " + selectionIdx);
                 selectionIdx++;  //value[] idx
-//                Logger.logFile(prefKeys[keyIdx+1]+" aaa");  //key idx
                 if (selectionIdx >= array.length && gamepad1.y) {
                     selectionIdx = 0;
                 }
-                Logger.logFile("selectionIdx of key "+key +" is "+ selectionIdx);
                 editor.putString(key, array[selectionIdx]);
                 editor.apply();
                 isYPressed = true;

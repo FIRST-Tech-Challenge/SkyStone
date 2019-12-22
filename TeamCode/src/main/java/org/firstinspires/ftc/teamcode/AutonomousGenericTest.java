@@ -4,9 +4,10 @@ import android.content.SharedPreferences;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.robot.Robot;
 
-import org.opencv.core.Mat;
 import org.opencv.core.Core;
+import org.opencv.core.Mat;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
@@ -20,21 +21,21 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 import static org.firstinspires.ftc.teamcode.AutonomousOptions.DELAY_PREF;
-import static org.firstinspires.ftc.teamcode.AutonomousOptions.FIRST_BLOCK_BY_WALL_PREF;
-import static org.firstinspires.ftc.teamcode.AutonomousOptions.START_POS_MODES_PREF;
-//import static org.firstinspires.ftc.teamcode.AutonomousOptions.getSharedPrefs;
-import static org.firstinspires.ftc.teamcode.AutonomousOptions.PARKING_PREF;
-import static org.firstinspires.ftc.teamcode.AutonomousOptions.FOUNDATION_PREF;
 import static org.firstinspires.ftc.teamcode.AutonomousOptions.DELIVER_ROUTE_PREF;
+import static org.firstinspires.ftc.teamcode.AutonomousOptions.FOUNDATION_PREF;
 import static org.firstinspires.ftc.teamcode.AutonomousOptions.PARKING_ONLY_PREF;
+import static org.firstinspires.ftc.teamcode.AutonomousOptions.PARKING_PREF;
+import static org.firstinspires.ftc.teamcode.AutonomousOptions.START_POS_MODES_PREF;
 import static org.firstinspires.ftc.teamcode.AutonomousOptions.STONE_PREF;
+
+//import static org.firstinspires.ftc.teamcode.AutonomousOptions.getSharedPrefs;
 
 /**
  * 2019.10.26
  * Created by Ian Q.
  */
-@TeleOp(name="SKYSTONE Autonomous", group="Main")
-public class AutonomousGeneric extends LinearOpMode {
+@TeleOp(name="AutonomousTest", group="Test")
+public class AutonomousGenericTest extends LinearOpMode {
 
     RobotHardware robotHardware;
     RobotNavigator navigator;
@@ -49,7 +50,7 @@ public class AutonomousGeneric extends LinearOpMode {
 
     long loopCount = 0;
     int countTasks = 0;
-    int skystonePosition = 2;
+    int skystonePosition = -1;
     RobotProfile.StartPosition startPosition;
     String startingPositionModes;
     String parkingLocation;
@@ -65,22 +66,15 @@ public class AutonomousGeneric extends LinearOpMode {
         Logger.init();
         robotHardware = new RobotHardware();
         robotHardware.init(hardwareMap, robotProfile);
-        robotHardware.setMotorStopBrake(true);
         navigator = new RobotNavigator(robotProfile);
         navigator.reset();
         navigator.setInitPosition(0, 0, 0);
         robotHardware.setClampPosition(RobotHardware.ClampPosition.INITIAL);
-        robotHardware.getBulkData1();
-        robotHardware.getBulkData2();
-        robotHardware.rotateGrabberOriginPos();
-        robotHardware.setHookPosition(RobotHardware.HookPosition.HOOK_OFF);
-        robotHardware.setCapStoneServo(RobotHardware.CapPosition.CAP_UP);
         driverOptions = new DriverOptions();
         Logger.logFile("Init completed");
         Logger.logFile("DistancePID:" + robotProfile.distancePID.p + ", " + robotProfile.distancePID.i + ", " + robotProfile.distancePID.d);
         Logger.logFile("DistancePID:" + robotProfile.headingPID.p + ", " + robotProfile.headingPID.i + ", " + robotProfile.headingPID.d);
         SharedPreferences prefs = AutonomousOptions.getSharedPrefs(hardwareMap);
-
         try {
             String delaystring = prefs.getString(DELAY_PREF, "");
             delaystring = delaystring.replace(" sec", "");
@@ -92,7 +86,6 @@ public class AutonomousGeneric extends LinearOpMode {
             driverOptions.setMoveFoundation(prefs.getString(FOUNDATION_PREF,""));
             driverOptions.setIsParkOnly(prefs.getString(PARKING_ONLY_PREF,""));
             driverOptions.setIsTwoSkystones(prefs.getString(STONE_PREF,""));
-            driverOptions.setIsFirstBlockByWall(prefs.getString(FIRST_BLOCK_BY_WALL_PREF, ""));
             Logger.logFile("parking: "+ driverOptions.getParking());
             Logger.logFile("startingPositionModes: "+ driverOptions.getStartingPositionModes());
             Logger.logFile("deliverRoute: " + driverOptions.getDeliverRoute());
@@ -126,11 +119,10 @@ public class AutonomousGeneric extends LinearOpMode {
         Logger.logFile("init y: " + robotProfile.robotStartPoints.get(startPosition).getY());
         Logger.logFile("heading" + heading );
 
-        //commented out because we only need to retrieve the option and no need to modify the editor in here.
-        //SharedPreferences.Editor editor = prefs.edit();
-        //editor.putString(START_POS_MODES_PREF, driverOptions.getStartingPositionModes());
-        //editor.putString(PARKING_PREF, driverOptions.getParking());
-        //editor.apply();
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(START_POS_MODES_PREF, driverOptions.getStartingPositionModes());
+        editor.putString(PARKING_PREF, driverOptions.getParking());
+        editor.apply();
     }
 
     @Override
@@ -140,36 +132,22 @@ public class AutonomousGeneric extends LinearOpMode {
         OpenCvCamera phoneCam = new OpenCvInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
         phoneCam.openCameraDevice();
         phoneCam.setPipeline(new Pipeline());
-        phoneCam.startStreaming(640, 480, OpenCvCameraRotation.UPRIGHT);
-        //setUpTaskList();
+        phoneCam.startStreaming(640, 480, OpenCvCameraRotation.SIDEWAYS_LEFT);
+        setUpTaskList();
+
+        //
+        //addMovementAndSlide(new RobotPosition(0, 0, 0), new RobotPosition(70, 20, 0));
+        taskList.add(new RobotSleep(10000));
+        double origImu = robotHardware.getGyroAngle();
 
         waitForStart();
-         phoneCam.closeCameraDevice();
-        //robotHardware.setClampPosition(RobotHardware.ClampPosition.CLOSE);
+        phoneCam.closeCameraDevice();
 
-        // do the task list building after click start, which we should have the skystone position
-       // skystonePosition = 1;   // until we have the phone camera pointing correctly
-        Logger.logFile("SkyStone Position: " + skystonePosition);
-        AutonomousTaskBuilder builder = new AutonomousTaskBuilder(driverOptions, skystonePosition, robotHardware, navigator, robotProfile);
-        if(driverOptions.getIsParkOnly().contains("yes")) {                         //5 points - do nothing but parking
-            taskList = builder.buildParkingOnlyTask(driverOptions.getParking());
-        }else if(driverOptions.getIsTwoSkystones().contains("yes")) {               //25 points - pick up and drop off two stones across bridge line plus parking
-            taskList = builder.buildDropTwoStoneTask();
-        }else if(driverOptions.getIsFirstBlockByWall()) {                           //15 points - pick up closest block by the wall and then park
-            taskList = builder.buildPickUpFirstBlockAndPark();
-        }else if(driverOptions.getMoveFoundation().equals("move only")){             //15 points - only do the platform movement and parking
-            taskList = builder.buildMovePlatformAndParkTask();
-        }else if(driverOptions.getMoveFoundation().equals("no move")){               //15 points - no platform movement, pick up only one stone, drop after bridge line and parking only
-            taskList = builder.buildDeliverOneStoneOnlyTask();
-        }else{
-            taskList = builder.buildDeliverOneStoneCompleteTask();                   //29 points, pick up sky stone, deliver and relocate platform, parking
-        }
-        Logger.logFile("Task list items: " + taskList.size());
-
+        robotHardware.setClampPosition(RobotHardware.ClampPosition.CLOSE);
         if (taskList.size()>0) {
             taskList.get(0).prepare();
         }
-
+        // run until the end of the match (driver presses STOP)
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             loopCount++;
@@ -183,7 +161,7 @@ public class AutonomousGeneric extends LinearOpMode {
             if (taskList.size() > 0) {
                 taskList.get(0).execute();
                 if (taskList.get(0).isDone()) {
-                    Logger.logFile("MainTaskComplete: " + taskList.get(0) + " Position:" + navigator.getWorldX() + "," + navigator.getWorldY() + " :" + navigator.getHeading());
+                    Logger.logFile("TaskComplete: " + taskList.get(0) + " Position:" + navigator.getWorldX() + "," + navigator.getWorldY() + " :" + navigator.getHeading());
                     Logger.flushToFile();
                     taskList.get(0).cleanUp();
                     taskList.remove(0);
@@ -198,7 +176,6 @@ public class AutonomousGeneric extends LinearOpMode {
 
         // Regardless, open the clamp to save the servo
         try {
-            Logger.logFile("Autonomous - Final Location:" + navigator.getLocationString());
             Logger.flushToFile();
         }
         catch (Exception ex) {
@@ -207,46 +184,74 @@ public class AutonomousGeneric extends LinearOpMode {
         robotHardware.setClampPosition(RobotHardware.ClampPosition.OPEN);
     }
 
-    void setUpTaskList() {
-        taskList = new ArrayList<RobotControl>();
-        taskList.add(new RobotSleep(3000));
-//        ArrayList<RobotControl> comboList = new ArrayList<RobotControl>();
-//
-//        comboList.add(new RobotSleep(1000));
-//        comboList.add(new SetLiftPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.liftStoneBase + robotProfile.hardwareSpec.liftGrabExtra, 2000));
-//        comboList.add(new RobotSleep(1000));
-//        comboList.add(new ClampStraightAngleTask(robotHardware, robotProfile));
-//        comboList.add(new RobotSleep(1000));
-//        comboList.add(new SetSliderPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.sliderOutPos, 2000));
-//        comboList.add(new RobotSleep(1000));
-//        comboList.add(new ClampOpenCloseTask(robotHardware, robotProfile, RobotHardware.ClampPosition.OPEN));
-//        comboList.add(new RobotSleep(1000));
-//        comboList.add(new SetLiftPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.liftStoneBase, 2000));
-//        comboList.add(new RobotSleep(1000));
-//        comboList.add(new ClampOpenCloseTask(robotHardware, robotProfile, RobotHardware.ClampPosition.CLOSE));
-//        comboList.add(new RobotSleep(1000));
-//        comboList.add(new SetLiftPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.liftStoneBase + robotProfile.hardwareSpec.liftPerStone, 2000));
-//        comboList.add(new RobotSleep(1000));
-//
-//        SequentialComboTask comboTask = new SequentialComboTask();
-//
-//        comboTask.setTaskList(comboList);
-//        taskList.add(comboTask);
-    }
 
-//    void setupCombos() {
-//        ArrayList<RobotControl> comboList = new ArrayList<RobotControl>();
-//        comboList.add(new SetLiftPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.liftStoneBase +
-//                robotProfile.hardwareSpec.liftPerStone + robotProfile.hardwareSpec.liftGrabExtra, 1000));
-//        comboList.add(new ClampStraightAngleTask(robotHardware, robotProfile));
-//        comboList.add(new SetSliderPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.sliderOutPos, 1000));
-//        comboList.add(new ClampOpenCloseTask(robotHardware, robotProfile, RobotHardware.ClampPosition.OPEN));
-//        comboList.add(new SetLiftPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.liftStoneBase +
-//                robotProfile.hardwareSpec.liftGrabExtra, 1000));
-//        comboList.add(new ClampOpenCloseTask(robotHardware, robotProfile, RobotHardware.ClampPosition.CLOSE));
-//        comboList.add(new SetLiftPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.liftGrabExtra, 1000));
-//        pickUpTask = new SequentialComboTask();
-//    }
+    void setUpTaskList() {
+        navigator.reset();
+        //navigator.setInitPosition(0, 0, -Math.PI/2);
+        RobotPosition lastPos ;
+
+        taskList = new ArrayList<RobotControl>();
+        taskList.add(new ClampOpenCloseTask(robotHardware, robotProfile, RobotHardware.ClampPosition.OPEN));
+        taskList.add(new RobotSleep(200));
+        taskList.add(new ClampOpenCloseTask(robotHardware, robotProfile, RobotHardware.ClampPosition.CLOSE));
+        PIDMecanumMoveTask move = new PIDMecanumMoveTask(robotHardware, robotProfile, navigator);
+        move.setPath(new RobotPosition(0, 0, 0), new RobotPosition(0, 20, 0));
+        taskList.add(move);
+        taskList.add(new ClampOpenCloseTask(robotHardware, robotProfile, RobotHardware.ClampPosition.OPEN));
+        taskList.add(new RobotSleep(200));
+//        seqList.add(new ClampOpenCloseTask(robotHardware, robotProfile, RobotHardware.ClampPosition.OPEN));
+
+
+        //        taskList = new ArrayList<RobotControl>();
+//        taskList.add(new RobotSleep(1000));
+//
+//        SequentialComboTask seqTask = new SequentialComboTask();
+//        ArrayList<RobotControl> seqList = new ArrayList<RobotControl>();
+//        seqList.add(new WaitForNavigationTask(navigator, new RobotPosition(10, 300, 1),
+//                        new RobotPosition(-10, 30, -1)));
+//        seqList.add(new ClampOpenCloseTask(robotHardware, robotProfile, RobotHardware.ClampPosition.CLOSE));
+//        seqList.add(new RobotSleep(200));
+//        seqList.add(new ClampOpenCloseTask(robotHardware, robotProfile, RobotHardware.ClampPosition.OPEN));
+//        seqList.add(new RobotSleep(200));
+//        seqList.add(new ClampOpenCloseTask(robotHardware, robotProfile, RobotHardware.ClampPosition.CLOSE));
+//        seqList.add(new RobotSleep(200));
+//        seqList.add(new ClampOpenCloseTask(robotHardware, robotProfile, RobotHardware.ClampPosition.OPEN));
+//        seqTask.setTaskList(seqList);
+//
+//        ParallelComboTask ptask = new ParallelComboTask();
+//        ArrayList<RobotControl> parList = new ArrayList<RobotControl>();
+//        PIDMecanumMoveTask lastMove = new PIDMecanumMoveTask(robotHardware, robotProfile, navigator);
+//        lastMove.setPath(new RobotPosition(0,0,0), new RobotPosition(0, 200, 0));
+//        parList.add(lastMove);
+//        parList.add(seqTask);
+//        ptask.setTaskList(parList);
+//        taskList.add(ptask);
+//
+//
+
+
+//        taskList.add(new HookPositionTask(robotHardware, robotProfile, RobotHardware.HookPosition.HOOK_ON));
+//        taskList.add(new RobotSleep(500));
+//        PIDMecanumMoveTask move1 = new PIDMecanumMoveTask(robotHardware, robotProfile, navigator);
+//        move1.setPath(new RobotPosition(0,0,0), new RobotPosition(0, 45, 0));
+//        taskList.add(move1);
+//        taskList.add(new RobotSleep(2000));
+//        MecanumRotateTask mecanumRotateBack = new MecanumRotateTask(robotHardware, robotProfile,navigator);
+//        mecanumRotateBack.setRotateHeading(new RobotPosition(0, 55, 0), new RobotPosition(15, 55, Math.PI/2));
+//        taskList.add(mecanumRotateBack);
+//        taskList.add(new HookPositionTask(robotHardware, robotProfile, RobotHardware.HookPosition.HOOK_OFF));
+
+//        MecanumRotateTask mecanumRotate = new MecanumRotateTask(robotHardware, robotProfile,navigator);
+//        mecanumRotate.setRotateHeading(new RobotPosition(0,0,0), new RobotPosition(10,10,0.5*Math.PI));
+//        taskList.add(mecanumRotate);
+//        taskList.add(new RobotSleep(5000));
+//        MecanumRotateTask mecanumRotateBack = new MecanumRotateTask(robotHardware, robotProfile,navigator);
+//        mecanumRotateBack.setRotateHeading(new RobotPosition(10,10,0.5*Math.PI), new RobotPosition(0,20,0));
+//        taskList.add(mecanumRotateBack);
+//        MecanumRotateTask move = new MecanumRotateTask(robotHardware, robotProfile, navigator);
+//        move.setRotateHeading(new RobotPosition(0,20,0), new RobotPosition(0,-50,-0.5*Math.PI));
+//        taskList.add(move);
+    }
 
         class Pipeline extends OpenCvPipeline {
 

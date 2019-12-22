@@ -66,7 +66,7 @@ public class ProfileStopDistance extends LinearOpMode {
         navigator = new RobotNavigator(null);
         navigator.reset();
         navigator.setInitPosition(0,0,0);
-        navigator.setInitEncoderCount(robot.getEncoderCounts(RobotHardware.EncoderType.LEFT),
+        navigator.setEncoderCounts(robot.getEncoderCounts(RobotHardware.EncoderType.LEFT),
                 robot.getEncoderCounts(RobotHardware.EncoderType.RIGHT),
                 robot.getEncoderCounts(RobotHardware.EncoderType.HORIZONTAL));
 
@@ -77,7 +77,7 @@ public class ProfileStopDistance extends LinearOpMode {
         int leftEncoder = robot.getEncoderCounts(RobotHardware.EncoderType.LEFT);
         int rightEncoder = robot.getEncoderCounts(RobotHardware.EncoderType.RIGHT);
         int middleEncoder = - robot.getEncoderCounts(RobotHardware.EncoderType.HORIZONTAL);
-        navigator.updateAllPositions(leftEncoder, rightEncoder, middleEncoder);
+        navigator.updateEncoderPos(leftEncoder, rightEncoder, middleEncoder);
         robot.setMotorPower(1,-1,-1,1);
         try {
             Thread.sleep(2000);
@@ -88,7 +88,7 @@ public class ProfileStopDistance extends LinearOpMode {
         leftEncoder = robot.getEncoderCounts(RobotHardware.EncoderType.LEFT);
         rightEncoder = robot.getEncoderCounts(RobotHardware.EncoderType.RIGHT);
         middleEncoder = - robot.getEncoderCounts(RobotHardware.EncoderType.HORIZONTAL);
-        navigator.updateAllPositions(leftEncoder, rightEncoder, middleEncoder);
+        navigator.updateEncoderPos(leftEncoder, rightEncoder, middleEncoder);
         double currentDistance = navigator.getWorldX();
         robot.setMotorPower(0,0,0,0);
         try {
@@ -100,7 +100,7 @@ public class ProfileStopDistance extends LinearOpMode {
         leftEncoder = robot.getEncoderCounts(RobotHardware.EncoderType.LEFT);
         rightEncoder = robot.getEncoderCounts(RobotHardware.EncoderType.RIGHT);
         middleEncoder = - robot.getEncoderCounts(RobotHardware.EncoderType.HORIZONTAL);
-        navigator.updateAllPositions(leftEncoder, rightEncoder, middleEncoder);
+        navigator.updateEncoderPos(leftEncoder, rightEncoder, middleEncoder);
         double latestDistance = navigator.getWorldX();
         telemetry.addData("Stop Distance", latestDistance - currentDistance);
         telemetry.addData("Start Distance", latestDistance);

@@ -14,6 +14,10 @@ public class RobotSleep implements RobotControl {
         this.timeSleep = timeSleep;
     }
 
+    public String toString() {
+        return "Sleep for " + timeSleep;
+    }
+
     @Override
     public void prepare() {
         timeStart = System.currentTimeMillis();

@@ -13,12 +13,16 @@ public class ClampStraightAngleTask implements RobotControl {
         this.profile = profile;
     }
 
+    public String toString() {
+        return "Clamp to pickup angle";
+    }
+
     public void prepare(){
         timeStart = System.currentTimeMillis();
     }
 
     public void execute() {
-        robot.rotateGrabberForPickup();
+        robot.rotateGrabberOriginPos();
     }
 
     public void cleanUp(){

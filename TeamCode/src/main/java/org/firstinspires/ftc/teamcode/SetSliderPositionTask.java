@@ -18,6 +18,10 @@ public class SetSliderPositionTask implements RobotControl {
         this.timeDuration =  timeDuration;
     }
 
+    public String toString() {
+        return "SliderPos to: " + sliderPosition;
+    }
+
     public void prepare(){
         timeStart = System.currentTimeMillis();
         startPosition = robot.getEncoderCounts(RobotHardware.EncoderType.SLIDER);

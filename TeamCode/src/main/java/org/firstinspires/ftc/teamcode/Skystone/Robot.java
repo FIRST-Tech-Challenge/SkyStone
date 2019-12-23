@@ -1,6 +1,10 @@
 package org.firstinspires.ftc.teamcode.Skystone;
 
+import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.SystemClock;
+import android.util.Log;
+
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
@@ -9,6 +13,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -18,14 +23,21 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
+import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.CurvePoint;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.PathPoints;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.SplineGenerator;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Vector;
 
@@ -115,6 +127,8 @@ public class Robot {
 
     public final String VUFORIA_KEY = "AbSCRq//////AAAAGYEdTZut2U7TuZCfZGlOu7ZgOzsOlUVdiuQjgLBC9B3dNvrPE1x/REDktOALxt5jBEJJBAX4gM9ofcwMjCzaJKoZQBBlXXxrOscekzvrWkhqs/g+AtWJLkpCOOWKDLSixgH0bF7HByYv4h3fXECqRNGUUCHELf4Uoqea6tCtiGJvee+5K+5yqNfGduJBHcA1juE3kxGMdkqkbfSjfrNgWuolkjXR5z39tRChoOUN24HethAX8LiECiLhlKrJeC4BpdRCRazgJXGLvvI74Tmih9nhCz6zyVurHAHttlrXV17nYLyt6qQB1LtVEuSCkpfLJS8lZWS9ztfC1UEfrQ8m5zA6cYGQXjDMeRumdq9ugMkS";
 
+    private ArrayList<Double[]> odometryPoints = new ArrayList<>();
+    private ArrayList<Double[]> splinePoints = new ArrayList<>();
     /**
      * robot constructor, does the hardwareMaps
      * @param hardwareMap
@@ -492,6 +506,7 @@ public class Robot {
         double[][] pathPoints = s.getOutputData();
 
         printCoords(pathPoints);
+        addSplinePoints(pathPoints);
 
         long extendOuttakeStartTime = 0;
         long retractOuttakeStartTime = 0;
@@ -1171,6 +1186,41 @@ public class Robot {
         brakeRobot();
     }
 
+    public void dumpOdometryPoints(){
+        StringBuilder formattedString = new StringBuilder();
+        for (int i = 0; i<odometryPoints.size(); i++){
+            Double[] location = odometryPoints.get(i);
+            formattedString.append(location[0] + " " + location[1] + " " + location[2]);
+        }
+        writeToFile("odometryPoints" + SystemClock.elapsedRealtime() + ".txt", formattedString.toString());
+    }
+
+    public void dumpSplinePoints(){
+        StringBuilder formattedString = new StringBuilder();
+        for (int i = 0; i<splinePoints.size(); i++){
+            Double[] location = splinePoints.get(i);
+            formattedString.append(location[0] + " " + location[1]);
+        }
+        writeToFile("splinePoints" + SystemClock.elapsedRealtime() + ".txt", formattedString.toString());
+    }
+
+    private void writeToFile(String fileName, String data){
+        File captureDirectory = AppUtil.ROBOT_DATA_DIR;
+        File file = new File(captureDirectory, fileName);
+        try {
+            FileOutputStream outputStream = new FileOutputStream(file);
+            OutputStreamWriter writer = new OutputStreamWriter(outputStream);
+            try {
+                writer.write(data);
+            } finally {
+                outputStream.close();
+                Log.d("DumpToFile",file.getAbsolutePath());
+            }
+        } catch (IOException e) {
+            RobotLog.ee("TAG", e, "exception in captureFrameToFile()");
+        }
+    }
+
 
     /**
      * GETTERS AND SETTERS SECTION
@@ -1394,4 +1444,26 @@ public class Robot {
     public Servo getBackStopper() { return backStopper; }
 
     public void setBackStopper(Servo backStopper) { this.backStopper = backStopper; }
+
+    public ArrayList<Double[]> getOdometryPoints() {
+        return odometryPoints;
+    }
+
+    public ArrayList<Double[]> getSplinePoints() {
+        return splinePoints;
+    }
+
+    public void addSplinePoints(double[][] data){
+        for (double[] p : data){
+            addSplinePoints(p[0], p[1]);
+        }
+    }
+
+    public void addSplinePoints(double x, double y){
+        splinePoints.add(new Double[]{x,y});
+    }
+
+    public void addOdometryPoints(double x, double y, double angle){
+        odometryPoints.add(new Double[]{x,y,angle});
+    }
 }

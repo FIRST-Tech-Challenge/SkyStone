@@ -170,5 +170,8 @@ public class RedFront extends AutoBase{
         } else {
             robot.splineMove(toPark, 0.6, 1, 0.4, 5, 0, Math.toRadians(270), 5, toParkActions);
         }
+
+        robot.dumpOdometryPoints();
+        robot.dumpSplinePoints();
     }
 }

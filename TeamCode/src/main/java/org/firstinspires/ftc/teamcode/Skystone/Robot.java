@@ -1204,8 +1204,11 @@ public class Robot {
         writeToFile("splinePoints" + SystemClock.elapsedRealtime() + ".txt", formattedString.toString());
     }
 
-    private void writeToFile(String fileName, String data){
+    public static void writeToFile(String fileName, String data){
         File captureDirectory = AppUtil.ROBOT_DATA_DIR;
+        if (!captureDirectory.exists()){
+            captureDirectory.mkdir();
+        }
         File file = new File(captureDirectory, fileName);
         try {
             FileOutputStream outputStream = new FileOutputStream(file);

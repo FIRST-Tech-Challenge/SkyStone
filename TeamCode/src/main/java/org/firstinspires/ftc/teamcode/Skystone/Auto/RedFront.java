@@ -18,7 +18,6 @@ public class RedFront extends AutoBase{
         initLogic();
 
         waitForStart();
-
         startTime = SystemClock.elapsedRealtime();
 
         // Positions assuming center Skystone
@@ -151,8 +150,12 @@ public class RedFront extends AutoBase{
         robot.splineMove(toFirstStone, 0.5, 1, 0.4, 20, 0, 0, 20,
                 toFirstStoneActions, true, 2000);
 
+        robot.dumpPoints("" + startTime,"toFirstStone");
+
         robot.splineMove(toFoundation, 1, 1, 0.4, 20, Math.toRadians(180), Math.toRadians(180), 25,
                 toFoundationActions, true, 4250);
+
+        robot.dumpPoints("" + startTime,"toFoundation");
 
         // get ready to pull foundation
         telemetry.addLine("X: " + robot.getRobotPos().x);
@@ -166,8 +169,12 @@ public class RedFront extends AutoBase{
         robot.splineMove(toSecondStone, 1, 1, 0.7, 20, 0, Math.toRadians(290), anglelock,
                 toSecondStoneActions, true, 8000);
 
+        robot.dumpPoints("" + startTime,"toSecondStone");
+
         robot.splineMove(toDepositSecondStone, 1, 1, 0.4, 30, Math.toRadians(180), Math.toRadians(270), 18,
                 toDepositSecondStoneActions, true, 4500);
+
+        robot.dumpPoints("" + startTime,"toDepositSecondStone");
 
         robot.foundationMovers(false);
         robot.getClamp().setPosition(robot.CLAMP_SERVO_RELEASED);
@@ -176,12 +183,21 @@ public class RedFront extends AutoBase{
         if (SystemClock.elapsedRealtime() - startTime < 25000) {
             robot.splineMove(toThirdStone, 0.6, 1, 0.6, 20, 0, Math.toRadians(270), 20,
                     toThirdStoneActions, true, 6500);
+
+            robot.dumpPoints("" + startTime,"toThirdStone");
+
             robot.splineMove(toDepositThirdStone, 1, 1, 0.3, 10, Math.toRadians(180), Math.toRadians(270), 20, toParkAfterThirdStoneActions, true, 4250);
+
+            robot.dumpPoints("" + startTime,"toDepositThirdStone");
+
             robot.foundationMovers(false);
             robot.splineMove(toPark, 0.6, 1, 0.3, 10, 0, Math.toRadians(270), 5, toParkActions);
+
+            robot.dumpPoints("" + startTime,"toPark");
         } else {
             robot.splineMove(toPark, 0.6, 1, 0.3, 10, 0, Math.toRadians(270), 5, toParkActions);
+
+            robot.dumpPoints("" + startTime,"toPark");
         }
-        robot.dumpPoints();
     }
 }

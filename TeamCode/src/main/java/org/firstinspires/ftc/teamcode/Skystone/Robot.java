@@ -131,6 +131,7 @@ public class Robot {
 
     private StringBuilder odometryPoints = new StringBuilder();
     private StringBuilder splinePoints = new StringBuilder();
+    private StringBuilder waypoints = new StringBuilder();
     /**
      * robot constructor, does the hardwareMaps
      * @param hardwareMap
@@ -508,6 +509,7 @@ public class Robot {
         double[][] pathPoints = s.getOutputData();
 
         addSplinePoints(pathPoints);
+        addWaypoints(data);
 
         long extendOuttakeStartTime = 0;
         long retractOuttakeStartTime = 0;
@@ -1187,21 +1189,21 @@ public class Robot {
         brakeRobot();
     }
 
-    public void dumpPoints(){
-        dumpSplinePoints();
-        dumpOdometryPoints();
+    public void dumpPoints(String directoryName, String tripName){
+        writeToFile("" + directoryName, tripName + "_wayPoints.txt", getOdometryPoints());
+        writeToFile("" + directoryName,tripName + "_odometry.txt", getOdometryPoints());
+        writeToFile("" + directoryName,tripName + "_spline.txt", getSplinePoints());
+        clearPoints();
     }
 
-    public void dumpOdometryPoints(){
-        writeToFile("odometryPoints" + SystemClock.currentThreadTimeMillis() + ".txt", getOdometryPoints());
+    public void clearPoints(){
+        splinePoints = new StringBuilder();
+        odometryPoints = new StringBuilder();
+        waypoints = new StringBuilder();
     }
 
-    public void dumpSplinePoints(){
-        writeToFile("splinePoints" + SystemClock.currentThreadTimeMillis() + ".txt", getSplinePoints());
-    }
-
-    public static void writeToFile(String fileName, String data){
-        File captureDirectory = AppUtil.ROBOT_DATA_DIR;
+    public static void writeToFile(String directoryName, String fileName, String data){
+        File captureDirectory = new File(AppUtil.ROBOT_DATA_DIR,"/" + directoryName + "/");
         if (!captureDirectory.exists()){
             captureDirectory.mkdir();
         }
@@ -1460,6 +1462,23 @@ public class Robot {
         }
     }
 
+    public void addWaypoints(double[][] data){
+        for (int i = 0; i < data.length; i++){
+            addWaypoints(data[i][0], data[i][1], data[i][2], data[i][3]);
+        }
+    }
+
+    public void addWaypoints(double x, double y, double vectorX, double vectorY){
+        waypoints.append(x);
+        waypoints.append(" ");
+        waypoints.append(y);
+        waypoints.append(" ");
+        waypoints.append(vectorX);
+        waypoints.append(" ");
+        waypoints.append(vectorY);
+        waypoints.append("\n");
+    }
+
     public void addSplinePoints(double x, double y){
         splinePoints.append(x);
         splinePoints.append(" ");
@@ -1471,5 +1490,6 @@ public class Robot {
         odometryPoints.append(x);
         odometryPoints.append(" ");
         odometryPoints.append(y);
-        odometryPoints.append("\n");    }
+        odometryPoints.append("\n");
+    }
 }

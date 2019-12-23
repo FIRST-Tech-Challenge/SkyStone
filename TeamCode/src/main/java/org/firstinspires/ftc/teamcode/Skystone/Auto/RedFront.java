@@ -52,7 +52,7 @@ public class RedFront extends AutoBase{
         } else if (skystoneLocation == Vision.Location.RIGHT){
             firstSkystoneY = 4.5;
             secondSkyStoneY = -13;
-            secondSkyStoneX = 56;
+            secondSkyStoneX = 45;
         }
 
         double[][] toFirstStone = {
@@ -131,7 +131,7 @@ public class RedFront extends AutoBase{
                 {20,61,0,10},
                 {15,66,0,10}};
         HashMap<Point,Robot.Actions> toParkAfterThirdStoneActions = new HashMap<Point,Robot.Actions>(){{
-            put(new Point(23,5), Robot.Actions.EXTEND_OUTTAKE);
+            put(new Point(23,0), Robot.Actions.EXTEND_OUTTAKE);
             put(new Point(42,8), Robot.Actions.STOP_INTAKE);
         }};
 

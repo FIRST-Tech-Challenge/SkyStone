@@ -60,9 +60,9 @@ public class Robot {
     private Servo backStopper;
 
     // Outtake Slide Positions
-    public final double OUTTAKE_SLIDE_EXTENDED = .0799999;
-    public final double OUTTAKE_SLIDE_RETRACTED = .725;
-    public final double OUTTAKE_SLIDE_PARTIAL_EXTEND = .22;
+    public final double OUTTAKE_SLIDE_EXTENDED = .0799999-0.0549999;
+    public final double OUTTAKE_SLIDE_RETRACTED = .725-0.0549999;
+    public final double OUTTAKE_SLIDE_PARTIAL_EXTEND = .22-0.0549999;
 
     //team marker positions
     public final double TEAM_MARKER_DUMP = 1;

@@ -66,15 +66,15 @@ public class RedFront extends AutoBase{
 
         double[][] toFoundation = {
                 toFirstStone[toFirstStone.length-1],
-                {27,firstSkystoneY,0,10},
-                {24,17,-10,20},
-                {24,20,-10,20},
+                {31,firstSkystoneY,0,10},
+                {27,17,-10,20},
+                {25,20,-10,20},
                 {24,30,-10,20},
-                {24,43,-10,20},
-                {24,55,0,20},
-                {24,67,0,20},
-                {24,68,0,20},
-                {24,74,0,20},
+                {22,43,-10,20},
+                {22,55,0,20},
+                {22,67,0,20},
+                {22,68,0,20},
+                {21,74,0,20},
                 {31,83,0,10}};
         HashMap<Point,Robot.Actions> toFoundationActions = new HashMap<Point,Robot.Actions>() {{
             put(new Point(24,30), Robot.Actions.EXTEND_OUTTAKE);
@@ -124,8 +124,8 @@ public class RedFront extends AutoBase{
 
         double[][] toDepositThirdStone = {
                 toThirdStone[toThirdStone.length-1],
-                {24,-10,0,-10},
-                {24,29,0,20},
+                {21,-10,0,-10},
+                {21,29,0,20},
                 {20,61,0,10},
                 {15,66,0,10}};
         HashMap<Point,Robot.Actions> toParkAfterThirdStoneActions = new HashMap<Point,Robot.Actions>(){{

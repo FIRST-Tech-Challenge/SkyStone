@@ -1192,6 +1192,7 @@ public class Robot {
             Double[] location = odometryPoints.get(i);
             formattedString.append(location[0] + " " + location[1] + " " + location[2]);
         }
+
         writeToFile("odometryPoints" + SystemClock.elapsedRealtime() + ".txt", formattedString.toString());
     }
 

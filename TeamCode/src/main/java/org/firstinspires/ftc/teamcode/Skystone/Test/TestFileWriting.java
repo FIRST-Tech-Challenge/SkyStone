@@ -15,10 +15,10 @@ public class TestFileWriting extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         waitForStart();
         try {
-            Robot.writeToFile("hi" + SystemClock.elapsedRealtime() + ".txt", "hi");
+            Robot.writeToFile("test","hi" + SystemClock.elapsedRealtime() + ".txt", "hi");
             sleep(3000);
         } catch (Exception e){
-            Robot.writeToFile("bye" + SystemClock.elapsedRealtime() + ".txt", "bye");
+            Robot.writeToFile("test", "bye" + SystemClock.elapsedRealtime() + ".txt", "bye");
         }
     }
 

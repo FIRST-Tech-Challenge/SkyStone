@@ -598,9 +598,15 @@ public class Robot {
             }
 
             if (distanceToEnd < slowDownDistance){
-                xMovement *= slowDownSpeed;
-                yMovement *= slowDownSpeed;
-                turnMovement *= slowDownSpeed;
+                if(slowDownSpeed > moveSpeed){
+                    xMovement *= slowDownSpeed * (slowDownSpeed/moveSpeed);
+                    yMovement *= slowDownSpeed * (slowDownSpeed/moveSpeed);
+                    turnMovement *= slowDownSpeed * (slowDownSpeed/moveSpeed);
+                }else{
+                    xMovement *= slowDownSpeed;
+                    yMovement *= slowDownSpeed;
+                    turnMovement *= slowDownSpeed;
+                }
             }
 
             // go through all actionpoints and see if the robot is near one
@@ -680,7 +686,7 @@ public class Robot {
                     intakePusher.setPosition(PUSHER_RETRACTED);
                 }
 
-                if(currentTime-retractOuttakeStartTime >= 1500){
+                if(currentTime-retractOuttakeStartTime >= 1700){
                     clamp.setPosition(CLAMP_SERVO_INTAKEPOSITION);
                     isRetractingOuttake = false;
                     hasRetractedOuttake = false;
@@ -691,7 +697,7 @@ public class Robot {
                 if((Math.toDegrees(posAngle) <= 95 && Math.toDegrees(posAngle) >= 85) || (Math.toDegrees(posAngle) >= 265 && Math.toDegrees(posAngle) <= 275)) {
                     brakeRobot();
                     foundationMovers(false);
-                    linearOpMode.sleep(250);
+                    linearOpMode.sleep(150);
                     isReleasingFoundation = false;
                 }
             }

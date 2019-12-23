@@ -21,12 +21,11 @@ public class RedFront extends AutoBase{
 
         waitForStart();
 
-
         startTime = SystemClock.elapsedRealtime();
 
-            // Positions assuming center Skystone
+        // Positions assuming center Skystone
         double firstSkystoneY = -2;
-        double secondSkyStoneY = -18;
+        double secondSkyStoneY = -17.5;
         double secondSkyStoneX = 45;
         double thirdStoneY = -25;
         double thirdStoneX = 34.75;

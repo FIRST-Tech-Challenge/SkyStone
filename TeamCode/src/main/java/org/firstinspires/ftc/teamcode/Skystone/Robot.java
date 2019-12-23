@@ -35,6 +35,8 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
@@ -127,8 +129,8 @@ public class Robot {
 
     public final String VUFORIA_KEY = "AbSCRq//////AAAAGYEdTZut2U7TuZCfZGlOu7ZgOzsOlUVdiuQjgLBC9B3dNvrPE1x/REDktOALxt5jBEJJBAX4gM9ofcwMjCzaJKoZQBBlXXxrOscekzvrWkhqs/g+AtWJLkpCOOWKDLSixgH0bF7HByYv4h3fXECqRNGUUCHELf4Uoqea6tCtiGJvee+5K+5yqNfGduJBHcA1juE3kxGMdkqkbfSjfrNgWuolkjXR5z39tRChoOUN24HethAX8LiECiLhlKrJeC4BpdRCRazgJXGLvvI74Tmih9nhCz6zyVurHAHttlrXV17nYLyt6qQB1LtVEuSCkpfLJS8lZWS9ztfC1UEfrQ8m5zA6cYGQXjDMeRumdq9ugMkS";
 
-    private ArrayList<Double[]> odometryPoints = new ArrayList<>();
-    private ArrayList<Double[]> splinePoints = new ArrayList<>();
+    private StringBuilder odometryPoints = new StringBuilder();
+    private StringBuilder splinePoints = new StringBuilder();
     /**
      * robot constructor, does the hardwareMaps
      * @param hardwareMap
@@ -1186,23 +1188,17 @@ public class Robot {
         brakeRobot();
     }
 
-    public void dumpOdometryPoints(){
-        StringBuilder formattedString = new StringBuilder();
-        for (int i = 0; i<odometryPoints.size(); i++){
-            Double[] location = odometryPoints.get(i);
-            formattedString.append(location[0] + " " + location[1] + " " + location[2]);
-        }
+    public void dumpPoints(){
+        dumpSplinePoints();
+        dumpOdometryPoints();
+    }
 
-        writeToFile("odometryPoints" + SystemClock.elapsedRealtime() + ".txt", formattedString.toString());
+    public void dumpOdometryPoints(){
+        writeToFile("odometryPoints" + SystemClock.currentThreadTimeMillis() + ".txt", getOdometryPoints());
     }
 
     public void dumpSplinePoints(){
-        StringBuilder formattedString = new StringBuilder();
-        for (int i = 0; i<splinePoints.size(); i++){
-            Double[] location = splinePoints.get(i);
-            formattedString.append(location[0] + " " + location[1]);
-        }
-        writeToFile("splinePoints" + SystemClock.elapsedRealtime() + ".txt", formattedString.toString());
+        writeToFile("splinePoints" + SystemClock.currentThreadTimeMillis() + ".txt", getSplinePoints());
     }
 
     public static void writeToFile(String fileName, String data){
@@ -1216,6 +1212,8 @@ public class Robot {
             OutputStreamWriter writer = new OutputStreamWriter(outputStream);
             try {
                 writer.write(data);
+                writer.flush();
+                Log.d("DumpToFile",data);
             } finally {
                 outputStream.close();
                 Log.d("DumpToFile",file.getAbsolutePath());
@@ -1449,25 +1447,30 @@ public class Robot {
 
     public void setBackStopper(Servo backStopper) { this.backStopper = backStopper; }
 
-    public ArrayList<Double[]> getOdometryPoints() {
-        return odometryPoints;
+    public String getOdometryPoints() {
+        return odometryPoints.toString();
     }
 
-    public ArrayList<Double[]> getSplinePoints() {
-        return splinePoints;
+    public String getSplinePoints() {
+        return splinePoints.toString();
     }
 
     public void addSplinePoints(double[][] data){
-        for (double[] p : data){
-            addSplinePoints(p[0], p[1]);
+        for (int i = 0; i < data.length; i++){
+            addSplinePoints(data[i][0], data[i][1]);
         }
     }
 
     public void addSplinePoints(double x, double y){
-        splinePoints.add(new Double[]{x,y});
+        splinePoints.append(x);
+        splinePoints.append(" ");
+        splinePoints.append(y);
+        splinePoints.append("\n");
     }
 
-    public void addOdometryPoints(double x, double y, double angle){
-        odometryPoints.add(new Double[]{x,y,angle});
-    }
+    public void addOdometryPoints(double x, double y){
+        odometryPoints.append(x);
+        odometryPoints.append(" ");
+        odometryPoints.append(y);
+        odometryPoints.append("\n");    }
 }

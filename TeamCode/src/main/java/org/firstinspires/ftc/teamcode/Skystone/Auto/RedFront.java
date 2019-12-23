@@ -14,20 +14,23 @@ import java.util.HashMap;
 public class RedFront extends AutoBase{
     @Override
     public void runOpMode() {
+
+
         long startTime;
         initLogic();
 
         waitForStart();
-        try {
+
+
             startTime = SystemClock.elapsedRealtime();
 
             // Positions assuming center Skystone
-            double firstSkystoneY = -2;
-            double secondSkyStoneY = -19;
-            double secondSkyStoneX = 45;
-            double thirdStoneY = -24.5;
-            double thirdStoneX = 33;
-            double anglelock = 36;
+        double firstSkystoneY = -2;
+        double secondSkyStoneY = -19;
+        double secondSkyStoneX = 45;
+        double thirdStoneY = -24.5;
+        double thirdStoneX = 33;
+        double anglelock = 20;
             Vision.Location skystoneLocation = Vision.Location.UNKNOWN;
             try {
                 skystoneLocation = vision.runDetection(true, true);
@@ -47,12 +50,12 @@ public class RedFront extends AutoBase{
                 firstSkystoneY = -7;
                 secondSkyStoneY = -32;
                 secondSkyStoneX = 52;
-                anglelock = 36;
+                anglelock = 20;
                 thirdStoneX = 45;
                 thirdStoneY = 2;
             } else if (skystoneLocation == Vision.Location.RIGHT) {
                 firstSkystoneY = 4.5;
-                secondSkyStoneY = -12.5;
+                secondSkyStoneY = -10;
                 secondSkyStoneX = 45;
                 thirdStoneY = -22;
             }
@@ -68,8 +71,8 @@ public class RedFront extends AutoBase{
             double[][] toFoundation = {
                     toFirstStone[toFirstStone.length - 1],
                     {31, firstSkystoneY, 0, 10},
-                    {27, 17, -10, 20},
-                    {25, 20, -10, 20},
+                    {29, 17, -10, 20},
+                    {26, 20, -10, 20},
                     {24, 30, -10, 20},
                     {22, 43, -10, 20},
                     {22, 55, 0, 20},
@@ -86,7 +89,7 @@ public class RedFront extends AutoBase{
                     {toFoundation[toFoundation.length - 1][0], toFoundation[toFoundation.length - 1][1], -10, 0},
                     {9, 63, 10, 0},
                     {5, 60, 10, 0},
-                    {18, 60, 0, -10},
+                    {22, 61, -10, 0},
                     {20, 29, 0, -10},
                     {20, secondSkyStoneY + 5, 0, 10},
                     {secondSkyStoneX, secondSkyStoneY, 30, 0}};
@@ -97,25 +100,25 @@ public class RedFront extends AutoBase{
             }};
 
             double[][] toDepositSecondStone = {
-                    toSecondStone[toSecondStone.length - 1],
-                    {secondSkyStoneX - 18, secondSkyStoneY + 10, 10, 0},
-                    {secondSkyStoneX - 10, secondSkyStoneY + 8, 10, 0},
-                    {27, 29, 0, 20},
-                    {28, 60, 0, 10},
-                    {19, 62, 0, 10},
-                    {12, 66, 0, 10}};
+                    {toSecondStone[toSecondStone.length - 1][0],toSecondStone[toSecondStone.length - 1][1], -10,0},
+                    {secondSkyStoneX - 10, secondSkyStoneY + 10, -10, 0},
+                    {secondSkyStoneX - 5, secondSkyStoneY + 8, -10, 0},
+                    {25, 29, 0, 20},
+                    {23, 60, 0, 10},
+                    {23, 62, 0, 10},
+                    {14, 66, 0, 10}};
             HashMap<Point, Robot.Actions> toDepositSecondStoneActions = new HashMap<Point, Robot.Actions>() {{
                 put(new Point(28, 20), Robot.Actions.EXTEND_OUTTAKE);
-                put(new Point(35, 0), Robot.Actions.STOP_INTAKE);
-                put(new Point(35, 10), Robot.Actions.START_INTAKE);
+                put(new Point(35, -3), Robot.Actions.STOP_INTAKE);
+                put(new Point(35, 15), Robot.Actions.START_INTAKE);
             }};
 
             double[][] toThirdStone = {
                     toDepositSecondStone[toDepositSecondStone.length - 1],
-                    {22, 63, 5, 10},
-                    {22, 60, 0, -10},
-                    {22, 30, 0, -10},
-                    {22, 10, 0, -10},
+                    {21, 63, 5, 10},
+                    {21, 60, 0, -10},
+                    {21, 30, 0, -10},
+                    {21, 10, 0, -10},
                     {32, 6, 0, -10},
                     {thirdStoneX, thirdStoneY, 10, 0}};
             HashMap<Point, Robot.Actions> toThirdStoneActions = new HashMap<Point, Robot.Actions>() {{
@@ -125,19 +128,20 @@ public class RedFront extends AutoBase{
 
             double[][] toDepositThirdStone = {
                     toThirdStone[toThirdStone.length - 1],
-                    {21, -10, 0, -10},
-                    {21, 29, 0, 20},
-                    {20, 61, 0, 10},
-                    {15, 66, 0, 10}};
+                    {27, -15, 0, -10},
+                    {25, 29, 0, 20},
+                    {25, 61, 0, 10},
+                    {18, 66, 0, 10}};
             HashMap<Point, Robot.Actions> toParkAfterThirdStoneActions = new HashMap<Point, Robot.Actions>() {{
                 put(new Point(23, 15), Robot.Actions.EXTEND_OUTTAKE);
-                put(new Point(42, 13), Robot.Actions.STOP_INTAKE);
+                put(new Point(25, 0), Robot.Actions.STOP_INTAKE);
+                put(new Point(25, 15), Robot.Actions.START_INTAKE);
             }};
 
 
             double[][] toPark = {
                     {toDepositThirdStone[toDepositThirdStone.length - 1][0], toDepositThirdStone[toDepositThirdStone.length - 1][1], 0, -10},
-                    {20, 29, 0, -10}};
+                    {22, 29, 0, -10}};
             HashMap<Point, Robot.Actions> toParkActions = new HashMap<Point, Robot.Actions>() {{
                 put(new Point(25, 65), Robot.Actions.RETRACT_OUTTAKE);
             }};
@@ -177,12 +181,5 @@ public class RedFront extends AutoBase{
             } else {
                 robot.splineMove(toPark, 0.6, 1, 0.4, 5, 0, Math.toRadians(270), 5, toParkActions);
             }
-
-            robot.dumpOdometryPoints();
-            robot.dumpSplinePoints();
-        } catch (Exception e){
-            robot.dumpOdometryPoints();
-            robot.dumpSplinePoints();
-        }
     }
 }

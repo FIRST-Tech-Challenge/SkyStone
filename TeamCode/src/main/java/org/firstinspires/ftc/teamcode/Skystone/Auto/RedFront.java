@@ -22,10 +22,10 @@ public class RedFront extends AutoBase{
 
         // Positions assuming center Skystone
         double firstSkystoneY = -2;
-        double secondSkyStoneY = -25;
-        double secondSkyStoneX = 55;
-        double thirdStoneY = -20;
-        double thirdStoneX = 32;
+        double secondSkyStoneY = -19;
+        double secondSkyStoneX = 45;
+        double thirdStoneY = -24.5;
+        double thirdStoneX = 33;
         double anglelock = 36;
         Vision.Location skystoneLocation = Vision.Location.UNKNOWN;
         try {
@@ -51,8 +51,9 @@ public class RedFront extends AutoBase{
             thirdStoneY = 2;
         } else if (skystoneLocation == Vision.Location.RIGHT){
             firstSkystoneY = 4.5;
-            secondSkyStoneY = -13;
-            secondSkyStoneX = 56;
+            secondSkyStoneY = -12.5;
+            secondSkyStoneX = 45;
+            thirdStoneY = -22;
         }
 
         double[][] toFirstStone = {
@@ -65,25 +66,26 @@ public class RedFront extends AutoBase{
 
         double[][] toFoundation = {
                 {31,firstSkystoneY,-10,0},
-                {26,17,0,10},
-                {26,20,0,10},
-                {26,30,0,10},
-                {25,67,0,10},
-                {21,72,0,10},
-                {21,80,0,10},
-                {30,82,0,10}};
+                {28,17,-10,10},
+                {26,20,-10,10},
+                {22,30,-10,10},
+                {22,43,-10,10},
+                {20,67,0,10},
+                {18,68,0,10},
+                {15,74,0,10},
+                {31,82,0,10}};
         HashMap<Point,Robot.Actions> toFoundationActions = new HashMap<Point,Robot.Actions>() {{
             put(new Point(24,30), Robot.Actions.EXTEND_OUTTAKE);
             put(new Point(24,30), Robot.Actions.STOP_INTAKE);
         }};
 
         double[][] toSecondStone = {
-                {30,83,-10,0},
+                {31,83,-10,0},
                 {9, 63,10,0},
                 {5,60,10,0},
                 {20,60,0,-10},
-                {21,29,0,-10},
-                {23,secondSkyStoneY + 5,0,10},
+                {20,29,0,-10},
+                {20,secondSkyStoneY + 5,0,10},
                 {secondSkyStoneX,secondSkyStoneY,30,0}};
         HashMap<Point,Robot.Actions> toSecondStoneActions = new HashMap<Point,Robot.Actions>() {{
             put(new Point(22,73), Robot.Actions.RETRACT_OUTTAKE);
@@ -100,24 +102,24 @@ public class RedFront extends AutoBase{
                 {19,62,0,10},
                 {12,66,0,10}};
         HashMap<Point,Robot.Actions> toDepositSecondStoneActions = new HashMap<Point,Robot.Actions>() {{
-            put(new Point(28,26), Robot.Actions.EXTEND_OUTTAKE);
-            put(new Point(35,-10), Robot.Actions.STOP_INTAKE);
+            put(new Point(28,20), Robot.Actions.EXTEND_OUTTAKE);
+            put(new Point(35,0), Robot.Actions.STOP_INTAKE);
             put(new Point(35,10), Robot.Actions.START_INTAKE);
         }};
 
         double[][] toPark = {
-                {23,65,0,-10},
-                {19,29,0,-10}};
+                {15,65,0,-10},
+                {20,29,0,-10}};
         HashMap<Point,Robot.Actions> toParkActions = new HashMap<Point,Robot.Actions>(){{
             put(new Point(25,65), Robot.Actions.RETRACT_OUTTAKE);
         }};
 
         double[][] toThirdStone = {
                 {22,63,5,10},
-                {23,60,0,-10},
-                {23, 30, 0,-10},
-                {23,10,0,-10},
-                {33,6,0,-10},
+                {22,60,0,-10},
+                {22, 30, 0,-10},
+                {22,10,0,-10},
+                {32,6,0,-10},
                 {thirdStoneX, thirdStoneY, 10,0}};
         HashMap<Point,Robot.Actions> toThirdStoneActions = new HashMap<Point,Robot.Actions>() {{
             put(new Point(22,58), Robot.Actions.RETRACT_OUTTAKE);
@@ -131,16 +133,16 @@ public class RedFront extends AutoBase{
                 {20,61,0,10},
                 {15,66,0,10}};
         HashMap<Point,Robot.Actions> toParkAfterThirdStoneActions = new HashMap<Point,Robot.Actions>(){{
-            put(new Point(23,5), Robot.Actions.EXTEND_OUTTAKE);
-            put(new Point(42,8), Robot.Actions.STOP_INTAKE);
+            put(new Point(23,15), Robot.Actions.EXTEND_OUTTAKE);
+            put(new Point(42,13), Robot.Actions.STOP_INTAKE);
         }};
 
         intake(true);
-        robot.splineMove(toFirstStone,0.5,1, 0.65,3,0,0,20,
-                toFirstStoneActions, true, 5000);
+        robot.splineMove(toFirstStone,0.5,1, 0.4,3,0,0,20,
+                toFirstStoneActions, true, 2000);
 
-        robot.splineMove(toFoundation,1,1, 0.4, 14, Math.toRadians(180),Math.toRadians(180),25,
-                toFoundationActions, true, 4500);
+        robot.splineMove(toFoundation,1,1, 0.5, 14, Math.toRadians(180),Math.toRadians(180),25,
+                toFoundationActions, true, 4250);
 
         // get ready to pull foundation
         telemetry.addLine("X: " + robot.getRobotPos().x);
@@ -155,7 +157,7 @@ public class RedFront extends AutoBase{
                 toSecondStoneActions, true, 8000);
 
         robot.splineMove(toDepositSecondStone,1,1, 0.5, 14, Math.toRadians(180),Math.toRadians(270),18,
-                toDepositSecondStoneActions, true, 5000);
+                toDepositSecondStoneActions, true, 4000);
 
         robot.foundationMovers(false);
         robot.getClamp().setPosition(robot.CLAMP_SERVO_RELEASED);
@@ -164,7 +166,7 @@ public class RedFront extends AutoBase{
         if (SystemClock.elapsedRealtime() - startTime < 25000){
             robot.splineMove(toThirdStone, 0.7,1, 0.65, 20,0,Math.toRadians(270),20,
                     toThirdStoneActions,true,6000);
-            robot.splineMove(toDepositThirdStone, 1, 1, 0.3, 10, Math.toRadians(180), Math.toRadians(270), 20, toParkAfterThirdStoneActions);
+            robot.splineMove(toDepositThirdStone, 1, 1, 0.3, 10, Math.toRadians(180), Math.toRadians(270), 20, toParkAfterThirdStoneActions, true, 4000);
             robot.foundationMovers(false);
             robot.splineMove(toPark, 0.6, 1, 0.4, 5, 0, Math.toRadians(270), 5, toParkActions);
         } else {

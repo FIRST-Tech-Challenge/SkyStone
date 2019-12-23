@@ -14,8 +14,6 @@ import java.util.HashMap;
 public class RedFront extends AutoBase{
     @Override
     public void runOpMode() {
-
-
         long startTime;
         initLogic();
 
@@ -130,9 +128,9 @@ public class RedFront extends AutoBase{
 
         double[][] toDepositThirdStone = {
                 toThirdStone[toThirdStone.length - 1],
-                {26, -15, 0, -10},
-                {24, 29, 0, 20},
-                {24, 61, 0, 10},
+                {25, -15, 0, -10},
+                {23, 29, 0, 20},
+                {23, 61, 0, 10},
                 {24, 65, 0, 10}};
         HashMap<Point, Robot.Actions> toParkAfterThirdStoneActions = new HashMap<Point, Robot.Actions>() {{
             put(new Point(23, 10), Robot.Actions.EXTEND_OUTTAKE);
@@ -168,7 +166,7 @@ public class RedFront extends AutoBase{
         robot.splineMove(toSecondStone, 1, 1, 0.7, 20, 0, Math.toRadians(290), anglelock,
                 toSecondStoneActions, true, 8000);
 
-        robot.splineMove(toDepositSecondStone, 1, 1, 0.6, 20, Math.toRadians(180), Math.toRadians(270), 18,
+        robot.splineMove(toDepositSecondStone, 1, 1, 0.4, 30, Math.toRadians(180), Math.toRadians(270), 18,
                 toDepositSecondStoneActions, true, 4500);
 
         robot.foundationMovers(false);
@@ -176,7 +174,7 @@ public class RedFront extends AutoBase{
         robot.brakeRobot();
 
         if (SystemClock.elapsedRealtime() - startTime < 25000) {
-            robot.splineMove(toThirdStone, 0.65, 1, 0.65, 20, 0, Math.toRadians(270), 20,
+            robot.splineMove(toThirdStone, 0.6, 1, 0.6, 20, 0, Math.toRadians(270), 20,
                     toThirdStoneActions, true, 6500);
             robot.splineMove(toDepositThirdStone, 1, 1, 0.3, 10, Math.toRadians(180), Math.toRadians(270), 20, toParkAfterThirdStoneActions, true, 4250);
             robot.foundationMovers(false);

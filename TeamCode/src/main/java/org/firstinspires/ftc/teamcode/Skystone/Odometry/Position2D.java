@@ -34,7 +34,7 @@ class NewThread extends AsyncTask<Void, Boolean, Boolean> {
             o.circularOdometry(robot);
             robot.setRobotPos(new Point(o.worldX, o.worldY));
             robot.setAnglePos(o.worldAngle);
-            if ((count%100) == 0){
+            if ((count%5) == 0){
                 robot.addOdometryPoints(o.worldX, o.worldY);
             }
             count++;

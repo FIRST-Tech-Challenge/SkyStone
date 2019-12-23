@@ -507,7 +507,7 @@ public class Robot {
         SplineGenerator s = new SplineGenerator(data);
         double[][] pathPoints = s.getOutputData();
 
-//        addSplinePoints(pathPoints);
+        addSplinePoints(pathPoints);
 
         long extendOuttakeStartTime = 0;
         long retractOuttakeStartTime = 0;

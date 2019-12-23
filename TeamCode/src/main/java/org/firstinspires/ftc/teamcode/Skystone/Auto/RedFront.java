@@ -26,11 +26,11 @@ public class RedFront extends AutoBase{
 
             // Positions assuming center Skystone
         double firstSkystoneY = -2;
-        double secondSkyStoneY = -19;
+        double secondSkyStoneY = -18;
         double secondSkyStoneX = 45;
         double thirdStoneY = -25;
-        double thirdStoneX = 33;
-        double anglelock = 39;
+        double thirdStoneX = 34.75;
+        double anglelock = 35;
 
         Vision.Location skystoneLocation = Vision.Location.UNKNOWN;
         try {
@@ -48,23 +48,24 @@ public class RedFront extends AutoBase{
 
         // Change Skystone positions if detected left or right
         if (skystoneLocation == Vision.Location.LEFT) {
-            firstSkystoneY = -7;
-            secondSkyStoneY = -32;
-            secondSkyStoneX = 52;
-            anglelock = 30;
-            thirdStoneX = 45;
-            thirdStoneY = 2;
+            firstSkystoneY = -6;
+            secondSkyStoneY = -27;
+            secondSkyStoneX = 45;
+            anglelock = 45;
+            thirdStoneX = 58;
+            thirdStoneY = -23;
         } else if (skystoneLocation == Vision.Location.RIGHT) {
             firstSkystoneY = 4.5;
-            secondSkyStoneY = -10;
+            secondSkyStoneY = -9.75;
             secondSkyStoneX = 45;
+            anglelock = 45;
             thirdStoneY = -21;
         }
 
         double[][] toFirstStone = {
                 {0, 0, 10, 0},
                 {10, firstSkystoneY, 10, 0},
-                {45, firstSkystoneY, 10, 0}};
+                {55, firstSkystoneY, 10, 0}};
         HashMap<Point, Robot.Actions> toFirstStoneActions = new HashMap<Point, Robot.Actions>() {{
             put(new Point(0, 0), Robot.Actions.START_INTAKE);
         }};
@@ -75,23 +76,23 @@ public class RedFront extends AutoBase{
                 {28, 17, -10, 20},
                 {24, 20, -10, 20},
                 {23, 30, -10, 20},
-                {22, 43, -10, 20},
-                {22, 55, 0, 20},
+                {23, 43, -10, 20},
+                {23, 55, 0, 20},
                 {22, 67, 0, 20},
                 {22, 68, 0, 20},
                 {21, 74, 0, 20},
                 {31, 83, 0, 10}};
         HashMap<Point, Robot.Actions> toFoundationActions = new HashMap<Point, Robot.Actions>() {{
-            put(new Point(24, 30), Robot.Actions.EXTEND_OUTTAKE);
-            put(new Point(24, 30), Robot.Actions.STOP_INTAKE);
+            put(new Point(24, 23), Robot.Actions.EXTEND_OUTTAKE);
+            put(new Point(24, 45), Robot.Actions.STOP_INTAKE);
         }};
 
         double[][] toSecondStone = {
                 {toFoundation[toFoundation.length - 1][0], toFoundation[toFoundation.length - 1][1], -10, 0},
                 {9, 63, 10, 0},
                 {5, 60, 10, 0},
-                {24, 61, -10, 0},
-                {22, 29, 0, -10},
+                {22, 61, -10, 0},
+                {21, 29, 0, -10},
                 {20, secondSkyStoneY + 5, 0, 10},
                 {secondSkyStoneX, secondSkyStoneY, 30, 0}};
         HashMap<Point, Robot.Actions> toSecondStoneActions = new HashMap<Point, Robot.Actions>() {{
@@ -104,23 +105,23 @@ public class RedFront extends AutoBase{
                 {toSecondStone[toSecondStone.length - 1][0],toSecondStone[toSecondStone.length - 1][1], -10,0},
                 {secondSkyStoneX - 10, secondSkyStoneY + 10, -10, 0},
                 {secondSkyStoneX - 5, secondSkyStoneY + 8, -10, 0},
-                {30, 0, 0, 20},
-                {29, 29, 0, 20},
-                {25, 60, 0, 10},
-                {19, 62, 0, 10},
+                {29, 0, 0, 20},
+                {25, 29, 0, 20},
+                {21, 60, 0, 10},
+                {20, 62, 0, 10},
                 {14, 66, 0, 10}};
         HashMap<Point, Robot.Actions> toDepositSecondStoneActions = new HashMap<Point, Robot.Actions>() {{
-            put(new Point(28, 20), Robot.Actions.EXTEND_OUTTAKE);
-            put(new Point(35, 7), Robot.Actions.STOP_INTAKE);
-            put(new Point(35, 20), Robot.Actions.START_INTAKE);
+            put(new Point(28, 10), Robot.Actions.EXTEND_OUTTAKE);
+            put(new Point(35, 15), Robot.Actions.STOP_INTAKE);
+            put(new Point(35, 25), Robot.Actions.START_INTAKE);
         }};
 
         double[][] toThirdStone = {
                 toDepositSecondStone[toDepositSecondStone.length - 1],
                 {22, 63, 5, 10},
-                {22, 60, 0, -10},
-                {22, 30, 0, -10},
-                {22, 10, 0, -10},
+                {21, 60, 0, -10},
+                {21, 30, 0, -10},
+                {21, 10, 0, -10},
                 {32, 6, 0, -10},
                 {thirdStoneX, thirdStoneY, 10, 0}};
         HashMap<Point, Robot.Actions> toThirdStoneActions = new HashMap<Point, Robot.Actions>() {{
@@ -130,13 +131,13 @@ public class RedFront extends AutoBase{
 
         double[][] toDepositThirdStone = {
                 toThirdStone[toThirdStone.length - 1],
-                {27, -15, 0, -10},
-                {25, 29, 0, 20},
-                {25, 61, 0, 10},
-                {28, 65, 0, 10}};
+                {26, -15, 0, -10},
+                {24, 29, 0, 20},
+                {24, 61, 0, 10},
+                {24, 65, 0, 10}};
         HashMap<Point, Robot.Actions> toParkAfterThirdStoneActions = new HashMap<Point, Robot.Actions>() {{
-            put(new Point(23, 15), Robot.Actions.EXTEND_OUTTAKE);
-            put(new Point(25, -10), Robot.Actions.STOP_INTAKE);
+            put(new Point(23, 10), Robot.Actions.EXTEND_OUTTAKE);
+            put(new Point(25, 5), Robot.Actions.STOP_INTAKE);
             put(new Point(25, 20), Robot.Actions.START_INTAKE);
         }};
 
@@ -150,10 +151,10 @@ public class RedFront extends AutoBase{
         }};
 
         intake(true);
-        robot.splineMove(toFirstStone, 0.5, 1, 0.4, 3, 0, 0, 20,
+        robot.splineMove(toFirstStone, 0.5, 1, 0.4, 20, 0, 0, 20,
                 toFirstStoneActions, true, 2000);
 
-        robot.splineMove(toFoundation, 1, 1, 0.5, 14, Math.toRadians(180), Math.toRadians(180), 25,
+        robot.splineMove(toFoundation, 1, 1, 0.4, 20, Math.toRadians(180), Math.toRadians(180), 25,
                 toFoundationActions, true, 4250);
 
         // get ready to pull foundation
@@ -165,11 +166,11 @@ public class RedFront extends AutoBase{
         robot.foundationMovers(true);
         sleep(350);
 
-        robot.splineMove(toSecondStone, 1, 1, 1, 20, 0, Math.toRadians(290), anglelock,
+        robot.splineMove(toSecondStone, 1, 1, 0.7, 20, 0, Math.toRadians(290), anglelock,
                 toSecondStoneActions, true, 8000);
 
-        robot.splineMove(toDepositSecondStone, 1, 1, 0.5, 14, Math.toRadians(180), Math.toRadians(270), 18,
-                toDepositSecondStoneActions, true, 4000);
+        robot.splineMove(toDepositSecondStone, 1, 1, 0.6, 20, Math.toRadians(180), Math.toRadians(270), 18,
+                toDepositSecondStoneActions, true, 4500);
 
         robot.foundationMovers(false);
         robot.getClamp().setPosition(robot.CLAMP_SERVO_RELEASED);
@@ -177,12 +178,12 @@ public class RedFront extends AutoBase{
 
         if (SystemClock.elapsedRealtime() - startTime < 25000) {
             robot.splineMove(toThirdStone, 0.65, 1, 0.65, 20, 0, Math.toRadians(270), 20,
-                    toThirdStoneActions, true, 6000);
-            robot.splineMove(toDepositThirdStone, 1, 1, 0.3, 10, Math.toRadians(180), Math.toRadians(270), 20, toParkAfterThirdStoneActions, true, 4000);
+                    toThirdStoneActions, true, 6500);
+            robot.splineMove(toDepositThirdStone, 1, 1, 0.3, 10, Math.toRadians(180), Math.toRadians(270), 20, toParkAfterThirdStoneActions, true, 4250);
             robot.foundationMovers(false);
-            robot.splineMove(toPark, 0.6, 1, 0.3, 7, 0, Math.toRadians(270), 5, toParkActions);
+            robot.splineMove(toPark, 0.6, 1, 0.3, 10, 0, Math.toRadians(270), 5, toParkActions);
         } else {
-            robot.splineMove(toPark, 0.6, 1, 0.3, 7, 0, Math.toRadians(270), 5, toParkActions);
+            robot.splineMove(toPark, 0.6, 1, 0.3, 10, 0, Math.toRadians(270), 5, toParkActions);
         }
     }
 }

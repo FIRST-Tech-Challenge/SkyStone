@@ -164,7 +164,7 @@ public class BlueFront extends AutoBase {
         double[][] toParkDitch = {
                 {toThirdStone[toThirdStone.length - 1][0], toThirdStone[toThirdStone.length - 1][1], -10, -10},
                 {37, toThirdStone[toThirdStone.length - 1][1] - 20, -10, -10},
-                {37, -36, -10, -10}};
+                {37, -30, -10, -10}};
         HashMap<Point, Robot.Actions> toParkDitchActions = new HashMap<Point, Robot.Actions>() {{
             put(new Point(25, -65), Robot.Actions.RETRACT_OUTTAKE);
         }};
@@ -202,7 +202,7 @@ public class BlueFront extends AutoBase {
                 toThirdStoneActions, true, 4250);
         //to thrid stone is 5
         robot.dumpPoints("" + startTime, "5");
-        if (false && SystemClock.elapsedRealtime() - startTime < 26000) {
+        if (SystemClock.elapsedRealtime() - startTime < 26000) {
             if(skystoneLocation == Vision.Location.RIGHT) {
                 robot.splineMove(toDepositThirdStone, 1, 1, 0.3, 30, Math.toRadians(180), Math.toRadians(90), 20, toParkAfterThirdStoneActions, true, 4000);
             }else{

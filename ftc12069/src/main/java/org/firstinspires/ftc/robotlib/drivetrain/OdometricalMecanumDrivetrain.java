@@ -92,7 +92,7 @@ public class OdometricalMecanumDrivetrain extends MecanumDrivetrain implements O
         while (isRotating())
         {
             updateHeading();
-            updateCourse();
+            //updateCourse();
         }
         finishRotating();
     }

@@ -1,12 +1,15 @@
 package org.firstinspires.ftc.teamcode.Skystone.MotionProfiler;
+import org.firstinspires.ftc.teamcode.Skystone.Robot;
+
 import java.util.Vector;
 
 public class SplineGenerator {
     double[][] outputData;
-    public SplineGenerator(double[][] data){
-        Profiler v = new Profiler(data);
+    public SplineGenerator(double[][] data, Robot robot){
+        Profiler v = new Profiler(data, robot);
         v.vehiclePath();
         outputData = new double[v.xValues.size()+1][2];
+
         for(int i = 0;i<v.xValues.size();i++){
             outputData[i][0] = v.xValues.get(i);
             outputData[i][1] = v.yValues.get(i);
@@ -28,8 +31,10 @@ class Profiler {
      * Profiler constructor, sets data matrix
      * @param data waypoints
      */
-    public Profiler(double[][] data){
+    public Profiler(double[][] data, Robot robot){
         this.data = data;
+        data[0][0] = robot.getRobotPos().x;
+        data[0][1] =robot.getRobotPos().y;
     }
     /**
      * generates path

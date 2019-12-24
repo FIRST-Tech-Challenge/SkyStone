@@ -127,6 +127,7 @@ public class Robot {
     private double yMovement;
     private double turnMovement;
 
+    private boolean isDebug = true;
     public final String VUFORIA_KEY = "AbSCRq//////AAAAGYEdTZut2U7TuZCfZGlOu7ZgOzsOlUVdiuQjgLBC9B3dNvrPE1x/REDktOALxt5jBEJJBAX4gM9ofcwMjCzaJKoZQBBlXXxrOscekzvrWkhqs/g+AtWJLkpCOOWKDLSixgH0bF7HByYv4h3fXECqRNGUUCHELf4Uoqea6tCtiGJvee+5K+5yqNfGduJBHcA1juE3kxGMdkqkbfSjfrNgWuolkjXR5z39tRChoOUN24HethAX8LiECiLhlKrJeC4BpdRCRazgJXGLvvI74Tmih9nhCz6zyVurHAHttlrXV17nYLyt6qQB1LtVEuSCkpfLJS8lZWS9ztfC1UEfrQ8m5zA6cYGQXjDMeRumdq9ugMkS";
 
     private StringBuilder odometryPoints = new StringBuilder();
@@ -1196,7 +1197,10 @@ public class Robot {
     }
 
     public void dumpPoints(String directoryName, String tripName){
-        writeToFile("" + directoryName, tripName + "_wayPoints.txt", getOdometryPoints());
+        if(!isDebug){
+            return;
+        }
+        writeToFile("" + directoryName, tripName + "_wayPoints.txt", getWayPoints());
         writeToFile("" + directoryName,tripName + "_odometry.txt", getOdometryPoints());
         writeToFile("" + directoryName,tripName + "_spline.txt", getSplinePoints());
         clearPoints();
@@ -1455,26 +1459,42 @@ public class Robot {
     public void setBackStopper(Servo backStopper) { this.backStopper = backStopper; }
 
     public String getOdometryPoints() {
+        odometryPoints.insert(0,"x y\n");
         return odometryPoints.toString();
     }
 
+    public String getWayPoints(){
+        waypoints.insert(0,"x y vX vY\n");
+        return waypoints.toString();
+    }
+
     public String getSplinePoints() {
+        splinePoints.insert(0,"x y\n");
         return splinePoints.toString();
     }
 
     public void addSplinePoints(double[][] data){
+        if(!isDebug){
+            return;
+        }
         for (int i = 0; i < data.length; i++){
             addSplinePoints(data[i][0], data[i][1]);
         }
     }
 
     public void addWaypoints(double[][] data){
+        if(!isDebug){
+            return;
+        }
         for (int i = 0; i < data.length; i++){
             addWaypoints(data[i][0], data[i][1], data[i][2], data[i][3]);
         }
     }
 
     public void addWaypoints(double x, double y, double vectorX, double vectorY){
+        if(!isDebug){
+            return;
+        }
         waypoints.append(x);
         waypoints.append(" ");
         waypoints.append(y);
@@ -1486,6 +1506,9 @@ public class Robot {
     }
 
     public void addSplinePoints(double x, double y){
+        if(!isDebug){
+            return;
+        }
         splinePoints.append(x);
         splinePoints.append(" ");
         splinePoints.append(y);
@@ -1493,6 +1516,9 @@ public class Robot {
     }
 
     public void addOdometryPoints(double x, double y){
+        if(!isDebug){
+            return;
+        }
         odometryPoints.append(x);
         odometryPoints.append(" ");
         odometryPoints.append(y);

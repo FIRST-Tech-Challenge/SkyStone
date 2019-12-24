@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.Skystone.Vision;
 
 import java.util.HashMap;
 
-@Autonomous(name="RedFront4", group ="LinearOpmode")
+@Autonomous(name="RedFront5", group ="LinearOpmode")
 public class RedFront extends AutoBase{
     @Override
     public void runOpMode() {
@@ -26,7 +26,7 @@ public class RedFront extends AutoBase{
         double secondSkyStoneX = 45;
         double thirdStoneY = -25;
         double thirdStoneX = 35.5;
-        double anglelock = 45;
+        double anglelock = 41;
 
         Vision.Location skystoneLocation = Vision.Location.UNKNOWN;
         try {
@@ -44,17 +44,18 @@ public class RedFront extends AutoBase{
 
         // Change Skystone positions if detected left or right
         if (skystoneLocation == Vision.Location.LEFT) {
-            firstSkystoneY = -6;
-            secondSkyStoneY = -25.5;
+            firstSkystoneY = -4;
+            secondSkyStoneY = -26;
             secondSkyStoneX = 45;
             anglelock = 45;
-            thirdStoneX = 58;
+            thirdStoneX = 59;
             thirdStoneY = -26;
         } else if (skystoneLocation == Vision.Location.RIGHT) {
             firstSkystoneY = 4.5;
             secondSkyStoneY = -9.75;
             secondSkyStoneX = 45;
             anglelock = 45;
+            thirdStoneX = 33;
             thirdStoneY = -21;
         }
 
@@ -79,7 +80,7 @@ public class RedFront extends AutoBase{
                 {21, 74, 0, 20},
                 {31, 83, 0, 10}};
         HashMap<Point, Robot.Actions> toFoundationActions = new HashMap<Point, Robot.Actions>() {{
-            put(new Point(24, 23), Robot.Actions.EXTEND_OUTTAKE);
+            put(new Point(24, 22), Robot.Actions.EXTEND_OUTTAKE);
             put(new Point(24, 45), Robot.Actions.STOP_INTAKE);
         }};
 
@@ -87,7 +88,7 @@ public class RedFront extends AutoBase{
                 {toFoundation[toFoundation.length - 1][0], toFoundation[toFoundation.length - 1][1], -10, 0},
                 {9, 63, 10, 0},
                 {5, 60, 10, 0},
-                {22, 61, -10, 0},
+                {21, 61, -10, 0},
                 {21, 29, 0, -10},
                 {19, secondSkyStoneY + 5, 0, 10},
                 {secondSkyStoneX, secondSkyStoneY, 30, 0}};
@@ -99,20 +100,20 @@ public class RedFront extends AutoBase{
 
         double[][] toDepositSecondStone = {
                 {toSecondStone[toSecondStone.length - 1][0],toSecondStone[toSecondStone.length - 1][1], -10,0},
-                {secondSkyStoneX - 10, secondSkyStoneY + 10, -10, 0},
-                {secondSkyStoneX - 5, secondSkyStoneY + 8, -10, 0},
+                {secondSkyStoneX - 5, secondSkyStoneY + 10, -10, 0},
+                {secondSkyStoneX - 12, secondSkyStoneY + 8, -10, 0},
                 {29, 0, 0, 20},
-                {27, 29, 0, 20},
-                {23, 60, 0, 10},
-                {20, 62, 0, 10},
+                {26, 29, 0, 20},
+                {22, 60, 0, 10},
+                {21, 62, 0, 10},
                 {14, 68, 0, 10}};
         HashMap<Point, Robot.Actions> toDepositSecondStoneActions = new HashMap<Point, Robot.Actions>() {{
-            put(new Point(28, 10), Robot.Actions.EXTEND_OUTTAKE);
+            put(new Point(28, 20), Robot.Actions.EXTEND_OUTTAKE);
             put(new Point(35, 15), Robot.Actions.STOP_INTAKE);
             put(new Point(35, 25), Robot.Actions.START_INTAKE);
         }};
 
-        double[][] toThirdStone = {
+        final double[][] toThirdStone = {
                 toDepositSecondStone[toDepositSecondStone.length - 1],
                 {22, 63, 5, 10},
                 {21, 60, 0, -10},
@@ -127,77 +128,83 @@ public class RedFront extends AutoBase{
 
         double[][] toDepositThirdStone = {
                 toThirdStone[toThirdStone.length - 1],
-                {25, -15, 0, -10},
-                {24, 29, 0, 20},
-                {25, 61, 0, 10},
+                {27, -15, 0, -10},
+                {23, 29, 0, 20},
+                {23, 61, 0, 10},
                 {24, 65, 0, 10}};
         HashMap<Point, Robot.Actions> toParkAfterThirdStoneActions = new HashMap<Point, Robot.Actions>() {{
             put(new Point(23, 10), Robot.Actions.EXTEND_OUTTAKE);
-            put(new Point(25, 5), Robot.Actions.STOP_INTAKE);
-            put(new Point(25, 20), Robot.Actions.START_INTAKE);
-        }};
+            put(new Point(toThirdStone[toThirdStone.length-1][0]-15, toThirdStone[toThirdStone.length-1][1]+25), Robot.Actions.STOP_INTAKE);
+            put(new Point(21, 20), Robot.Actions.START_INTAKE);
 
+        }};
 
         double[][] toPark = {
                 {toDepositThirdStone[toDepositThirdStone.length - 1][0], toDepositThirdStone[toDepositThirdStone.length - 1][1], 0, -10},
-                {21, 55, 0, -10},
-                {20, 34, 0, -10}};
+                {20, 55, 0, -10},
+                {19, 34, 0, -10}};
         HashMap<Point, Robot.Actions> toParkActions = new HashMap<Point, Robot.Actions>() {{
             put(new Point(25, 65), Robot.Actions.RETRACT_OUTTAKE);
         }};
 
-        intake(true);
-        robot.splineMove(toFirstStone, 0.6, 1, 0.5, 35, 0, 0, 20,
-                toFirstStoneActions, true, 3000);
+        double[][] toParkDitch = {
+                {toThirdStone[toThirdStone.length - 1][0], toThirdStone[toThirdStone.length - 1][1], -10, 10},
+                {26, toThirdStone[toThirdStone.length - 1][1]+20, -10, 10},
+                {26, 30, -10, 10}};
+        HashMap<Point, Robot.Actions> toParkDitchActions = new HashMap<Point, Robot.Actions>() {{
+            put(new Point(25, 65), Robot.Actions.RETRACT_OUTTAKE);
+        }};
 
-        robot.dumpPoints("" + startTime,"toFirstStone");
+        intake(true);
+        robot.splineMove(toFirstStone, 0.6, 1, 0.55, 35, 0, 0, 20,
+                toFirstStoneActions, true, 3000);
+        //to first stone is 1
+        robot.dumpPoints("" + startTime,"1");
 
         robot.splineMove(toFoundation, 1, 1, 0.4, 20, Math.toRadians(180), Math.toRadians(180), 25,
-                toFoundationActions, true, 3500);
-
-        robot.dumpPoints("" + startTime,"toFoundation");
+                toFoundationActions, true, 4750);
+        // to foundation is 2
+        robot.dumpPoints("" + startTime,"2");
 
         // get ready to pull foundation
-        telemetry.addLine("X: " + robot.getRobotPos().x);
-        telemetry.addLine("X: " + robot.getRobotPos().y);
-        telemetry.addLine("Angle: " + robot.getAnglePos());
-        telemetry.update();
-
         robot.foundationMovers(true);
         sleep(350);
 
         robot.splineMove(toSecondStone, 1, 1, 0.7, 20, 0, Math.toRadians(290), anglelock,
-                toSecondStoneActions, true, 8000);
-
-        robot.dumpPoints("" + startTime,"toSecondStone");
+                toSecondStoneActions, true, 6500);
+        //to second stone is 3
+        robot.dumpPoints("" + startTime,"3");
 
         robot.splineMove(toDepositSecondStone, 1, 1, 0.6, 30, Math.toRadians(180), Math.toRadians(270), 18,
                 toDepositSecondStoneActions, true, 4500);
-
-        robot.dumpPoints("" + startTime,"toDepositSecondStone");
+        //to deposit second stone is 4
+        robot.dumpPoints("" + startTime,"4");
 
         robot.foundationMovers(false);
         robot.getClamp().setPosition(robot.CLAMP_SERVO_RELEASED);
         robot.brakeRobot();
 
-        if (SystemClock.elapsedRealtime() - startTime < 25000) {
-            robot.splineMove(toThirdStone, 0.5, 1, 0.8, 65, 0, Math.toRadians(270), 20,
-                    toThirdStoneActions, true, 6500);
 
-            robot.dumpPoints("" + startTime,"toThirdStone");
-
+            robot.splineMove(toThirdStone, 0.5, 1, 1, 70, 0, Math.toRadians(270), 20,
+                    toThirdStoneActions, true, 4500);
+            //to thrid stone is 5
+            robot.dumpPoints("" + startTime,"5");
+        if (SystemClock.elapsedRealtime() - startTime < 26000) {
             robot.splineMove(toDepositThirdStone, 1, 1, 0.3, 30, Math.toRadians(180), Math.toRadians(270), 20, toParkAfterThirdStoneActions, true, 4250);
 
-            robot.dumpPoints("" + startTime,"toDepositThirdStone");
+            //to deposit third stone is 6
+            robot.dumpPoints("" + startTime,"6");
 
             robot.foundationMovers(false);
-            robot.splineMove(toPark, 0.6, 1, 0.3, 10, 0, Math.toRadians(270), 5, toParkActions);
+            robot.splineMove(toPark, 0.5, 1, 0.3, 10, 0, Math.toRadians(270), 5, toParkActions);
 
-            robot.dumpPoints("" + startTime,"toPark");
+            //to park is 7
+            robot.dumpPoints("" + startTime,"7");
         } else {
-            robot.splineMove(toPark, 0.6, 1, 0.3, 10, 0, Math.toRadians(270), 5, toParkActions);
+            robot.splineMove(toParkDitch, 0.6, 1, 0.55, 17, Math.toRadians(180), Math.toRadians(270), 5, toParkDitchActions);
 
-            robot.dumpPoints("" + startTime,"toPark");
+            //to park is 7
+            robot.dumpPoints("" + startTime,"7");
         }
     }
 }

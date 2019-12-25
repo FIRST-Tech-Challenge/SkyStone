@@ -45,11 +45,11 @@ public class RedFront extends AutoBase {
         // Change Skystone positions if detected left or right
         if (skystoneLocation == Vision.Location.LEFT) {
             firstSkystoneY = -4;
-            secondSkyStoneY = -24;
-            secondSkyStoneX = 41;
+            secondSkyStoneY = -25;
+            secondSkyStoneX = 43;
             anglelock = 30;
-            thirdStoneX = 59;
-            thirdStoneY = -26;
+            thirdStoneX = 45;
+            thirdStoneY = -27.5;
         } else if (skystoneLocation == Vision.Location.RIGHT) {
             firstSkystoneY = 4.5;
             secondSkyStoneY = -8;
@@ -72,7 +72,7 @@ public class RedFront extends AutoBase {
                 {34, firstSkystoneY+5, 0, 10},
                 {28, 17, -10, 20},
                 {24, 20, -10, 20},
-                {23, 30, -10, 20},
+                {24, 30, -10, 20},
                 {23, 43, -10, 20},
                 {22, 55, 0, 20},
                 {22, 67, 0, 20},
@@ -80,7 +80,7 @@ public class RedFront extends AutoBase {
                 {21, 74, 0, 20},
                 {31, 83, 0, 10}};
         HashMap<Point, Robot.Actions> toFoundationActions = new HashMap<Point, Robot.Actions>() {{
-            put(new Point(24, 22), Robot.Actions.EXTEND_OUTTAKE);
+            put(new Point(24, 20), Robot.Actions.EXTEND_OUTTAKE);
             put(new Point(24, 45), Robot.Actions.STOP_INTAKE);
         }};
 
@@ -103,9 +103,9 @@ public class RedFront extends AutoBase {
                 {toSecondStone[toSecondStone.length - 1][0], toSecondStone[toSecondStone.length - 1][1], -10, 0},
                 {secondSkyStoneX - 7, secondSkyStoneY + 10, -10, 0},
                 {secondSkyStoneX - 14, secondSkyStoneY + 8, -10, 0},
-                {28, 0, 0, 20},
-                {27, 29, 0, 20},
-                {21, 64, 0, 10},
+                {27, 0, 0, 20},
+                {26, 29, 0, 20},
+                {24, 64, 0, 10},
                 {20, 62, 0, 10},
                 {10, 65, 0, 10}};
         HashMap<Point, Robot.Actions> toDepositSecondStoneActions = new HashMap<Point, Robot.Actions>() {{
@@ -129,13 +129,13 @@ public class RedFront extends AutoBase {
 
         double[][] toDepositThirdStone = {
                 toThirdStone[toThirdStone.length - 1],
-                {26, -15, 0, -10},
-                {24, 29, 0, 20},
-                {20, 61, 0, 10},
+                {27, -15, 0, -10},
+                {22, 29, 0, 20},
+                {19, 61, 0, 10},
                 {19, 65, 0, 10}};
         HashMap<Point, Robot.Actions> toParkAfterThirdStoneActions = new HashMap<Point, Robot.Actions>() {{
             put(new Point(23, 10), Robot.Actions.EXTEND_OUTTAKE);
-            put(new Point(toThirdStone[toThirdStone.length - 1][0] - 15, toThirdStone[toThirdStone.length - 1][1] + 15), Robot.Actions.STOP_INTAKE);
+            put(new Point(toThirdStone[toThirdStone.length - 1][0] - 15, toThirdStone[toThirdStone.length - 1][1] + 20), Robot.Actions.STOP_INTAKE);
             put(new Point(21, 20), Robot.Actions.START_INTAKE);
         }};
 
@@ -187,7 +187,7 @@ public class RedFront extends AutoBase {
 
 
         robot.splineMove(toThirdStone, 0.5, 1, 1, 70, 0, Math.toRadians(270), 20,
-                toThirdStoneActions, true, 4500);
+                toThirdStoneActions, true, 4750);
 
         //to third stone is 5 trip
         robot.dumpPoints("" + startTime, "5");

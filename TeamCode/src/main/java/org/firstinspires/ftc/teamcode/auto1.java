@@ -71,9 +71,9 @@ public class auto1 extends LinearOpMode {
                 drive forward for x time
                  */
                 while (timeStart<=time){
-                    TL.setPower(-0.5);
+                    TL.setPower(0.5);
                     TR.setPower(0.5);
-                    BL.setPower(-0.5);
+                    BL.setPower(0.5);
                     BR.setPower(0.5);
                 }
             case 2 :

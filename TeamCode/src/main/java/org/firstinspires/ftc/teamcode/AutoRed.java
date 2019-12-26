@@ -221,7 +221,7 @@ public class AutoRed extends LinearOpMode {
             //////////////////////////////
 
 
-            while (!isVisibile(allTrackables)) {
+            while (!isVisible(allTrackables)) {
                 robot.runwithoutencoder();
                 robot.withoutencoder_strafe_left(0.18);
                 telemetry.addData("target detected?", targetVisible);
@@ -280,7 +280,7 @@ public class AutoRed extends LinearOpMode {
 
 
 
-    public boolean isVisibile(List<VuforiaTrackable> allTrackables) {
+    public boolean isVisible(List<VuforiaTrackable> allTrackables) {
         targetVisible = false;
         for (VuforiaTrackable trackable : allTrackables) {
             if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {

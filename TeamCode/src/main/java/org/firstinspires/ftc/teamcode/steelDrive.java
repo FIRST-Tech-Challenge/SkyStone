@@ -13,7 +13,7 @@ public class steelDrive extends LinearOpMode {
     public DcMotor BR;
 
     public Servo grabRectServo1;
-    public Servo grabRectServo2;
+    //public Servo grabRectServo2;
 
     public double closePosition = 0.0;
     public double openPosition = 1.0;
@@ -26,7 +26,7 @@ public class steelDrive extends LinearOpMode {
         BR = hardwareMap.get(DcMotor.class, "BR");
 
         grabRectServo1 = hardwareMap.get(Servo.class, "grabRectangle1");
-        grabRectServo2 = hardwareMap.get(Servo.class, "grabRectangle2");
+        //grabRectServo2 = hardwareMap.get(Servo.class, "grabRectangle2");
 
 
 
@@ -41,15 +41,15 @@ public class steelDrive extends LinearOpMode {
 
             if (gamepad1.right_bumper) {
                 grabRectServo1.setPosition(.9);
-                grabRectServo2.setPosition(.1);
+                //grabRectServo2.setPosition(.1);
             }
             else if (gamepad1.left_bumper){
                 grabRectServo1.setPosition(0.1);
-                grabRectServo2.setPosition(0.9);
+                //grabRectServo2.setPosition(0.9);
             }
 
             telemetry.addData("Position of grabber: ", grabRectServo1.getPosition());
-            telemetry.addData("Position of grabber: ", grabRectServo2.getPosition());
+            //telemetry.addData("Position of grabber: ", grabRectServo2.getPosition());
             telemetry.update();
 
         }

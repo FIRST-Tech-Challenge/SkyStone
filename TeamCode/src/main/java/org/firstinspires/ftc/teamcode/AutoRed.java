@@ -263,7 +263,7 @@ public class AutoRed extends LinearOpMode {
             robot.auto_strafeleft(35 * x, 0.25); //35 is ticks per inch
             while (opModeIsActive() && robot.encoderIsBusy()) {
                 idle();
-                telemetry.addData("run to pos", x);
+                telemetry.addData("run to pos", 35*x);
                 telemetry.update();
 
             }

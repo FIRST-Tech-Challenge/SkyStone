@@ -343,8 +343,9 @@ public class Maccabot {
         front_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         front_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        back_left.setDirection(DcMotorSimple.Direction.FORWARD);
-        back_right.setDirection(DcMotorSimple.Direction.FORWARD);
+        back_left.setDirection(DcMotorSimple.Direction.REVERSE);
+        back_right.setDirection(DcMotorSimple.Direction.REVERSE);
+        
 
         back_left.setPower(-power);
         back_left.setTargetPosition(pos);

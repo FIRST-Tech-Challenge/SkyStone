@@ -17,6 +17,8 @@ public class MainTeleop extends LinearOpMode {
     double bLPower;
     double bRPower;
 
+    double spoolPower;
+
     long outtakeExecutionTime;
     long currentTime;
 
@@ -30,6 +32,7 @@ public class MainTeleop extends LinearOpMode {
     boolean foundationToggle = false;
     boolean resetfoundation = false;
     boolean hasPushed = false;
+    boolean isRetractingSlides = false;
 
     public static double powerScaleFactor = 0.9;
 
@@ -40,6 +43,7 @@ public class MainTeleop extends LinearOpMode {
         resetRobot();
         robot.initServos();
         waitForStart();
+        robot.getOuttakeSpool().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.getOuttakeSpool().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         Position2D position2D = new Position2D(robot);
         position2D.startOdometry();
@@ -48,11 +52,11 @@ public class MainTeleop extends LinearOpMode {
             telemetry.update();
 
             robotModeLogic();
-            if (isIntakeMode) {
-                telemetry.addLine("CURRENT ROBOT MODE: INTAKE BOT");
-            } else {
-                telemetry.addLine("CURRENT ROBOT MODE: NORMAL");
-            }
+//            if (isIntakeMode) {
+//                telemetry.addLine("CURRENT ROBOT MODE: INTAKE BOT");
+//            } else {
+//                telemetry.addLine("CURRENT ROBOT MODE: NORMAL");
+//            }
 
             slowDriveLogic();
             driveLogic();
@@ -61,31 +65,51 @@ public class MainTeleop extends LinearOpMode {
 
             if (!isIntakeMode) {
                 outtakeLogic();
-                spoolLogic();
                 foundationLogic();
                 capStoneLogic();
                 teamMarkerLogic();
             }
 
-            telemetry.addLine("xPos: " + robot.getRobotPos().x);
-            telemetry.addLine("yPos: " + robot.getRobotPos().y);
-            telemetry.addLine("angle: " + Math.toDegrees(robot.getAnglePos()));
-            telemetry.addLine("XPODLeft " + robot.getfLeft().getCurrentPosition());
-            telemetry.addLine("XPODRight " + robot.getfRight().getCurrentPosition());
-            telemetry.addLine("YPOD " + robot.getbLeft().getCurrentPosition());
+            if(gamepad2.right_bumper){
+                isRetractingSlides = true;
+            }
+
+            if(isRetractingSlides){
+                spoolPower =-1;
+            }
+
+
+
+            if(isRetractingSlides && (robot.getOuttakeSpool().getCurrentPosition()>=0) ){
+                spoolPower = 0;
+                isRetractingSlides = false;
+            }
+
+            spoolLogic();
+
+//            telemetry.addLine("xPos: " + robot.getRobotPos().x);
+//            telemetry.addLine("yPos: " + robot.getRobotPos().y);
+//            telemetry.addLine("angle: " + Math.toDegrees(robot.getAnglePos()));
+//            telemetry.addLine("XPODLeft " + robot.getfLeft().getCurrentPosition());
+//            telemetry.addLine("XPODRight " + robot.getfRight().getCurrentPosition());
+//            telemetry.addLine("YPOD " + robot.getbLeft().getCurrentPosition());
         }
     }
 
     private void spoolLogic(){
-        if (gamepad2.dpad_up ) {
-            robot.getOuttakeSpool().setPower(1);
-        }else if(gamepad2.dpad_down  ){
-            robot.getOuttakeSpool().setPower(-1);
-        }else{
-            robot.getOuttakeSpool().setPower(0);
+        if (gamepad2.dpad_up) {
+            isRetractingSlides = false;
+            spoolPower = 1;
+        }else if(gamepad2.dpad_down){
+            isRetractingSlides = false;
+            spoolPower = -1;
+        }else if(!isRetractingSlides){
+            spoolPower = 0;
         }
-//        telemetry.addLine("Spool Position " + robot.getOuttakeSpool().getCurrentPosition());
-        telemetry.update();
+        robot.getOuttakeSpool().setPower(spoolPower);
+
+        telemetry.addLine("Spool Position " + robot.getOuttakeSpool().getCurrentPosition());
+
     }
 
     private void resetRobot() {
@@ -182,8 +206,6 @@ public class MainTeleop extends LinearOpMode {
 
             robot.getMarkerServo().setPosition(robot.TEAM_MARKER_RETRACT);
         }
-
-        robot.getOuttakeSpool().setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
     private void slowDriveLogic() {
         //toggle driving speed

@@ -92,6 +92,9 @@ public class Crane {
                 case foundation:
                     setupFoundation();
                     break;
+                case encoder:
+                    setupEncoder();
+                    break;
                 case bSystem:
                     //setupRack();
                     //setupLinearSlides();
@@ -162,6 +165,8 @@ public class Crane {
 
     public DcMotor rightSuck;
     public DcMotor leftSuck;
+
+    public DcMotor encoderup;
 
     public  List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
     public VuforiaTrackables targetsSkyStone;
@@ -237,13 +242,21 @@ public class Crane {
     }
 
     public void setupIntake() throws InterruptedException{
-        rightSuck = motor(rightsucks, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.BRAKE);
-        leftSuck = motor(leftsucks, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.BRAKE);
+        rightSuck = motor(rightsucks, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.FLOAT);
+        leftSuck = motor(leftsucks, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.FLOAT);
 
         smallRSuck = servo(smallRSucks, DcMotorSimple.Direction.FORWARD, 0);
         smallLSuck = servo(smallLSucks, DcMotorSimple.Direction.FORWARD, 0);
 
-        encoder(EncoderMode.OFF, rack, leftLinear, rightLinear);
+        encoder(EncoderMode.ON, rightSuck, leftSuck);
+    }
+
+    public void setupEncoder() throws InterruptedException{
+        encoderup = motor(rightsucks, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.FLOAT);
+        rightSuck = motor(rightsucks, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.FLOAT);
+        leftSuck = motor(leftsucks, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.FLOAT);
+
+        encoder(EncoderMode.ON, rightSuck, leftSuck, encoderup);
     }
 
     public void setupUltra() throws InterruptedException{
@@ -677,7 +690,7 @@ public class Crane {
         }
 
         while (calculateDifferenceBetweenAngles(end, getDirection()) > 1 && central.opModeIsActive()){
-            driveTrainMovement(0.1, (direction == turnside.cw) ? movements.ccw : movements.cw);
+            driveTrainMovement(0.2, (direction == turnside.cw) ? movements.ccw : movements.cw);
             central.telemetry.addLine("Correctional Try ");
             central.telemetry.addData("IMU Inital: ", start);
             central.telemetry.addData("IMU Final Projection: ", end);
@@ -711,7 +724,7 @@ public class Crane {
         ON, OFF;
     }
     public enum setupType{
-        autonomous, teleop, endgame, drive, camera, claw, bSystem, foundation, yellow, intake, ultrasoinc, imu;
+        autonomous, teleop, endgame, drive, camera, claw, bSystem, foundation, yellow, encoder, intake, ultrasoinc, imu;
     }
 
     //-------------------SET FUNCTIONS--------------------------------

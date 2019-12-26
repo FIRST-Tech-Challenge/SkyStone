@@ -37,14 +37,14 @@ public class AutoRed extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
-    private static final boolean PHONE_IS_PORTRAIT = false  ;
+    private static final boolean PHONE_IS_PORTRAIT = false;
 
     private static final String VUFORIA_KEY =
             "ARu5ZM3/////AAABmcGiY9yUyEAsnf3dcn+gux+E9X/ji5wR1QEra3aJBAbIFoL8BPmzx+eUt8sZ7bEwE4IRvwNm32oB/EDVFrGwZtkyOiSR+GKIbM+0G5VYQGwoFNxxGwuUrvpKDS3ktLAuUWmZ0/p/f7ZGwr9di1s4JkzDwr9Hq2B1g16a5F2jf7te3PhLDYaeauXee+WNxv0hp2w64Q91mYwiI+dI9JKsvyruF/FVKVV5Dnf0IGn9mFDGhqSGfkXTOGNpBnjZes5rxndN0PVhvJD+nf1ohsL37m8ORe9zXJqAUJ+vBCaJn7tCtsBJpKgBXYLpWrm05PVXex5cGQsgNc++80BpymExMMCpi6woERNjR86v/cyL+gqg";
     // Since ImageTarget trackables use mm to specifiy their dimensions, we must use mm for all the physical dimension.
     // We will define some constants and conversions here
-    private static final float mmPerInch        = 25.4f;
-    private static final float mmTargetHeight   = (6) * mmPerInch;          // the height of the center of the target image above the floor
+    private static final float mmPerInch = 25.4f;
+    private static final float mmTargetHeight = (6) * mmPerInch;          // the height of the center of the target image above the floor
 
     // Constant for Stone Target
     private static final float stoneZ = 2.00f * mmPerInch;
@@ -58,15 +58,15 @@ public class AutoRed extends LinearOpMode {
 
     // Constants for perimeter targets
     private static final float halfField = 72 * mmPerInch;
-    private static final float quadField  = 36 * mmPerInch;
+    private static final float quadField = 36 * mmPerInch;
 
     // Class Members
     private OpenGLMatrix lastLocation = null;
     private VuforiaLocalizer vuforia = null;
     private boolean targetVisible = false;
-    private float phoneXRotate    = 0;
-    private float phoneYRotate    = 0;
-    private float phoneZRotate    = 0;
+    private float phoneXRotate = 0;
+    private float phoneYRotate = 0;
+    private float phoneZRotate = 0;
 
     int x, y;
 
@@ -77,7 +77,7 @@ public class AutoRed extends LinearOpMode {
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        parameters.cameraDirection   = CAMERA_CHOICE;
+        parameters.cameraDirection = CAMERA_CHOICE;
 
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
         //FtcDashboard.getInstance().startCameraStream(vuforia, 0);
@@ -148,7 +148,7 @@ public class AutoRed extends LinearOpMode {
 
         front1.setLocation(OpenGLMatrix
                 .translation(-halfField, -quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , 90)));
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 90)));
 
         front2.setLocation(OpenGLMatrix
                 .translation(-halfField, quadField, mmTargetHeight)
@@ -164,7 +164,7 @@ public class AutoRed extends LinearOpMode {
 
         rear1.setLocation(OpenGLMatrix
                 .translation(halfField, quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , -90)));
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
 
         rear2.setLocation(OpenGLMatrix
                 .translation(halfField, -quadField, mmTargetHeight)
@@ -177,13 +177,13 @@ public class AutoRed extends LinearOpMode {
         }
 
         if (PHONE_IS_PORTRAIT) {
-            phoneXRotate = 90 ;
+            phoneXRotate = 90;
         }
 
         // camera lens, where it is on the robot. robot 16.75 long 17.5 wide
-        final float CAMERA_FORWARD_DISPLACEMENT  = 6.75f * mmPerInch;   // eg: Camera is 7 Inches in front of robot center
+        final float CAMERA_FORWARD_DISPLACEMENT = 6.75f * mmPerInch;   // eg: Camera is 7 Inches in front of robot center
         final float CAMERA_VERTICAL_DISPLACEMENT = 11.0f * mmPerInch;   // eg: Camera is 11 Inches above ground
-        final float CAMERA_LEFT_DISPLACEMENT     = -1.875f * mmPerInch;     // eg: Camera is 2.25 Inches left of robot center
+        final float CAMERA_LEFT_DISPLACEMENT = -1.875f * mmPerInch;     // eg: Camera is 2.25 Inches left of robot center
 
         OpenGLMatrix robotFromCamera = OpenGLMatrix
                 .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
@@ -199,89 +199,95 @@ public class AutoRed extends LinearOpMode {
         telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
+        //////////////////////////////////////////////////////////////////////////
+
+
+
         waitForStart();
         runtime.reset();
-
-        robot.auto_forward(850, 1);//please
-        //robot.auto_turnright(250,1);//please
-        while (opModeIsActive() && robot.encoderIsBusy()) {idle();}
-        sleep(1000);
-
-        robot.setpower0();
 
 
         while (opModeIsActive()) {
 
-            // check all the trackable targets to see which one (if any) is visible.
-            targetVisible = false;
-            for (VuforiaTrackable trackable : allTrackables) {
-                if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
-                    telemetry.addData("Visible Target", trackable.getName());
-                    targetVisible = true;
-
-                    // getUpdatedRobotLocation() will return null if no new information is available since
-                    // the last time that call was made, or if the trackable is not currently visible.
-                    OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
-                    if (robotLocationTransform != null) {
-                        lastLocation = robotLocationTransform;
-                    }
-                    break;
-                }
+            robot.auto_forward(850, 1);//please
+            //robot.auto_turnright(250,1);//please
+            while (opModeIsActive() && robot.encoderIsBusy()) {
+                idle();
             }
+            sleep(1000);
+
+            robot.setpower0();
+
+            //////////////////////////////
 
 
-            // Provide feedback as to where the robot is located (if we know).
-            if (targetVisible) {
-                // express position (translation) of robot in inches.
-                VectorF translation = lastLocation.getTranslation();
-                telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
-                        translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
-
-                x = (int) (translation.get(0) / mmPerInch);
-                y = (int) (translation.get(1) / mmPerInch);
-
-                // express the rotation of the robot in degrees.
-                Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
-                telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
-
-
-            } else {
-                telemetry.addData("Visible Target", "none");
-            }
-
-            while(!targetVisible){
+            while (!isVisibile(allTrackables)) {
                 robot.runwithoutencoder();
                 robot.withoutencoder_strafe_left(0.18);
                 telemetry.addData("target detected?", targetVisible);
                 telemetry.update();
             }
+
             robot.setpower0();
 
             telemetry.update();
 
             robot.resetEncoder();
-            /*if(x > 10) {
-                robot.auto_strafeleft(x, 0.25);
-                while (opModeIsActive() && robot.encoderIsBusy()) {
-                    idle();
-                    telemetry.addData("run to pos", x);
-                    telemetry.update();
 
+            ////////////////
+
+            for (VuforiaTrackable trackable : allTrackables) {
+                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
+                if (robotLocationTransform != null) {
+                    lastLocation = robotLocationTransform;
+                    break;
                 }
-                sleep(1000);
             }
-            else{robot.setpower0();}*/
+
+            VectorF translation = lastLocation.getTranslation();
+            telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
+                    translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
+
+            x = (int) (translation.get(0) / mmPerInch);
+            y = (int) (translation.get(1) / mmPerInch);
+
+            // express the rotation of the robot in degrees.
+            Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
+            telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
 
 
+            ////////////////////
 
+            robot.auto_strafeleft(35 * x, 0.25); //35 is ticks per inch
+            while (opModeIsActive() && robot.encoderIsBusy()) {
+                idle();
+                telemetry.addData("run to pos", x);
+                telemetry.update();
 
+            }
+            sleep(1000);
 
+            targetsSkyStone.deactivate();
+            stop();
         }
 
-
-        targetsSkyStone.deactivate();
-
+    }
 
 
+
+
+
+
+
+
+    public boolean isVisibile(List<VuforiaTrackable> allTrackables) {
+        targetVisible = false;
+        for (VuforiaTrackable trackable : allTrackables) {
+            if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
+                telemetry.addData("Visible Target", trackable.getName());
+                targetVisible = true;
+            }
+        }
+        return targetVisible;
     }
 }

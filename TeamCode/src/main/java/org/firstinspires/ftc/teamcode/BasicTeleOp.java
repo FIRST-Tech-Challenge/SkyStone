@@ -43,7 +43,7 @@ public class BasicTeleOp extends LinearOpMode {
         armEx.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         armRz = hardwareMap.get(DcMotor.class, "armRz");
         armRz.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        armRz.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armRz.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         grabServo = hardwareMap.get(Servo.class, "grabServo");
         rotateServo = hardwareMap.get(Servo.class, "rotateServo");
@@ -87,7 +87,7 @@ public class BasicTeleOp extends LinearOpMode {
                 armEx.setPower(gamepad2.left_stick_y);
             }
 
-            armEx.setPower(gamepad2.left_stick_y);
+            armEx.setPower(-gamepad2.left_stick_y);
             //Set loop for controller to stop at minimum limit and maximum limit
             armRz.setPower(gamepad2.right_stick_y);
             //Set loop for controller to stop at minimum limit and maximum limit
@@ -100,10 +100,10 @@ public class BasicTeleOp extends LinearOpMode {
             }
 
             if (gamepad2.left_bumper){
-                rotateServo.setPosition(rotateServo.getPosition()+0.1);
+                rotateServo.setPosition(rotateServo.getPosition()+0.025);
             }
             else if (gamepad2.right_bumper) {
-                rotateServo.setPosition(rotateServo.getPosition()-0.1);
+                rotateServo.setPosition(rotateServo.getPosition()-0.025);
             }
         }
     }

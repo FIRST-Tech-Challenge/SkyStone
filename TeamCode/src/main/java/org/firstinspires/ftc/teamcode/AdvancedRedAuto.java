@@ -66,9 +66,9 @@ import android.view.View;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="BlueAutonomous", group="Linear OpMode")
+@Autonomous(name="AdvancedRedAuto", group="Linear OpMode")
 //@Disabled
-public class BlueAutonomous extends LinearOpMode {
+public class AdvancedRedAuto extends LinearOpMode {
 
 
     private DcMotor getNewMotor(String motorName) { //these could be made generic using type notation
@@ -186,28 +186,27 @@ public class BlueAutonomous extends LinearOpMode {
         //ReleaseCollector(-1.0);
         //AutoMecanumMove(1500*EncoderBack, 0, 0.5, -0.1);
         //Strafe DiagonalLeftForward
-        AutoMecanumMove(3850 * encoderBack, 0.65 * right, 0.5 * backward, 0.025); //Drive to foundation
-        AutoMecanumMove(50 * encoderBack, 0 * right, 0.25 * backward, -0.035); //Align
+        AutoMecanumMove(3850 * encoderBack, 0.70 * left, 0.5 * backward, -0.025); //Drive to foundation
+        AutoMecanumMove(50 * encoderBack, 0 * left, 0.25 * backward, 0.035); //Align
         sleep(1000);
         MoveHook(1.0); //Grab Foundation
         sleep(1000);
-        AutoMecanumMove(2200 * encoderForward, 0.2 * left, 0.5 * forward, -0.18); //Back left clockwise arc rotation
+        AutoMecanumMove(5300 * encoderForward, 0.2 * right, 0.5 * forward, 0.18); //Backleft clockwise arc rotation
         MoveHook(0.0);
         sleep(1000);
-        AutoMecanumMove(4000 * encoderBack, 0.3 * left, 0.5 * backward, 0); //Push into foundation
+        AutoMecanumMove(4000 * encoderBack, 0.3 * right, 0.5 * backward, 0); //Push into foundation
         ReleaseCollector(-1.0);
         sleep(1000);
-        AutoMecanumMove(3000 * encoderForward, 0.77 * right, 0.6 * forward, -0.06); //Strafe Into Wall
-        AutoMecanumMove(3000 * encoderForward, 0.3 * right, 0.6 * forward, 0.18); //Front left counterclockwise arc rotation
-        DetectColorRGB(); //Determine Skystone Pattern
+        AutoMecanumMove(3000 * encoderForward, 0.77 * left, 0.6 * forward, 0.06); //Strafe Into Wall
+        AutoMecanumMove(800 * encoderForward, 0.0 * left, 0.6 * forward, -0.05); //Park
         if(skystonePosition == 1)
         {
 
             CollectorWait(0.0, -1.0, 500); // Move right block out of the way
             CollectorGo(1.0, 1.0); // Collect SkyStone
-            AutoMecanumMove(500 * encoderForward, 0.0 * right, 0.3 * forward, -0.18); //Align with Blocks
+            AutoMecanumMove(500 * encoderForward, 0.0 * left, 0.3 * forward, 0.18); //Align with Blocks
             CollectorStop(); //Stop collector
-            AutoMecanumMove(3850 * encoderBack, 0.65 * left, 0.5 * forward, 0.025); //Strafe left to parl
+            AutoMecanumMove(3850 * encoderBack, 0.65 * right, 0.5 * forward, -0.025); //Strafe left to parl
             CollectorGo(-1.0, -1.0); // Eject SkyStone
             sleep(1000);
             CollectorStop();
@@ -220,9 +219,9 @@ public class BlueAutonomous extends LinearOpMode {
 
             CollectorWait(-1.0, 0.0, 500); // Move left block out of the way
             CollectorGo(1.0, 1.0); // Collect SkyStone
-            AutoMecanumMove(500 * encoderForward, 0.0 * right, 0.3 * forward, 0.18); //Align with Blocks
+            AutoMecanumMove(500 * encoderForward, 0.0 * left, 0.3 * forward, -0.18); //Align with Blocks
             CollectorStop(); //Stop collector
-            AutoMecanumMove(3850 * encoderBack, 0.65 * left, 0.5 * forward, 0.025); //Strafe left to parl
+            AutoMecanumMove(3850 * encoderBack, 0.65 * right, 0.5 * forward, -0.025); //Strafe left to parl
             CollectorGo(-1.0, -1.0); // Eject SkyStone
             sleep(1000);
             CollectorStop();
@@ -230,12 +229,12 @@ public class BlueAutonomous extends LinearOpMode {
         }
         else if(skystonePosition == 3)
         {
-            AutoMecanumMove(500 * encoderForward, 0.5 * right, 0.0 * forward, 0.03); //Strafe Right to Skystone
+            AutoMecanumMove(500 * encoderForward, 0.5 * left, 0.0 * forward, -0.03); //Strafe Right to Skystone
             CollectorWait(-1.0, 0.0, 500); // Move left block out of the way
             CollectorGo(1.0, 1.0); // Collect SkyStone
-            AutoMecanumMove(500 * encoderForward, 0.0 * right, 0.3 * forward, 0.18); //Align with Blocks
+            AutoMecanumMove(500 * encoderForward, 0.0 * left, 0.3 * forward, -0.18); //Align with Blocks
             CollectorStop(); //Stop collector
-            AutoMecanumMove(3850 * encoderBack, 0.65 * left, 0.5 * forward, 0.025); //Strafe left to parl
+            AutoMecanumMove(3850 * encoderBack, 0.65 * right, 0.5 * forward, -0.025); //Strafe left to parl
             CollectorGo(-1.0, -1.0); // Eject SkyStone
             sleep(1000);
             CollectorStop();

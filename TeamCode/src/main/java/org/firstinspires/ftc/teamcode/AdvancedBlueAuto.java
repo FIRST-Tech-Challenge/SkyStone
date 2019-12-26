@@ -66,9 +66,9 @@ import android.view.View;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="BlueAutonomous", group="Linear OpMode")
+@Autonomous(name="AdvancedBlueAuto", group="Linear OpMode")
 //@Disabled
-public class BlueAutonomous extends LinearOpMode {
+public class AdvancedBlueAuto extends LinearOpMode {
 
 
     private DcMotor getNewMotor(String motorName) { //these could be made generic using type notation

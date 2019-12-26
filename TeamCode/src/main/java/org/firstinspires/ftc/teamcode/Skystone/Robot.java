@@ -74,7 +74,7 @@ public class Robot {
     private Servo backStopper;
 
     // Outtake Slide Positions
-    public final double OUTTAKE_SLIDE_EXTENDED = .0799999-0.0549999;
+    public final double OUTTAKE_SLIDE_EXTENDED = .0799999-0.06;
     public final double OUTTAKE_SLIDE_RETRACTED = .725-0.0549999;
     public final double OUTTAKE_SLIDE_PARTIAL_EXTEND = .22;
 
@@ -93,7 +93,7 @@ public class Robot {
 
     // Outtake Pivot Positions
     public final double OUTTAKE_PIVOT_EXTENDED = .944;
-    public final double OUTTAKE_PIVOT_RETRACTED = .20;
+    public final double OUTTAKE_PIVOT_RETRACTED = .22;
     public final double OUTTAKE_PIVOT_90 = 0.5825;
 
     // Outtake Pusher Positions

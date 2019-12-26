@@ -52,11 +52,6 @@ public class MainTeleop extends LinearOpMode {
             telemetry.update();
 
             robotModeLogic();
-//            if (isIntakeMode) {
-//                telemetry.addLine("CURRENT ROBOT MODE: INTAKE BOT");
-//            } else {
-//                telemetry.addLine("CURRENT ROBOT MODE: NORMAL");
-//            }
 
             slowDriveLogic();
             driveLogic();
@@ -68,6 +63,8 @@ public class MainTeleop extends LinearOpMode {
                 foundationLogic();
                 capStoneLogic();
                 teamMarkerLogic();
+                spoolLogic();
+
             }
 
             if(gamepad2.right_bumper){
@@ -85,14 +82,17 @@ public class MainTeleop extends LinearOpMode {
                 isRetractingSlides = false;
             }
 
-            spoolLogic();
-
-//            telemetry.addLine("xPos: " + robot.getRobotPos().x);
-//            telemetry.addLine("yPos: " + robot.getRobotPos().y);
-//            telemetry.addLine("angle: " + Math.toDegrees(robot.getAnglePos()));
-//            telemetry.addLine("XPODLeft " + robot.getfLeft().getCurrentPosition());
-//            telemetry.addLine("XPODRight " + robot.getfRight().getCurrentPosition());
-//            telemetry.addLine("YPOD " + robot.getbLeft().getCurrentPosition());
+            telemetry.addLine("xPos: " + robot.getRobotPos().x);
+            telemetry.addLine("yPos: " + robot.getRobotPos().y);
+            telemetry.addLine("angle: " + Math.toDegrees(robot.getAnglePos()));
+            telemetry.addLine("XPODLeft " + robot.getfLeft().getCurrentPosition());
+            telemetry.addLine("XPODRight " + robot.getfRight().getCurrentPosition());
+            telemetry.addLine("YPOD " + robot.getbLeft().getCurrentPosition());
+            if (isIntakeMode) {
+                telemetry.addLine("CURRENT ROBOT MODE: INTAKE BOT");
+            } else {
+                telemetry.addLine("CURRENT ROBOT MODE: NORMAL");
+            }
         }
     }
 
@@ -171,7 +171,7 @@ public class MainTeleop extends LinearOpMode {
     private void teamMarkerLogic(){
         if(gamepad2.left_bumper){
             long startTime = SystemClock.elapsedRealtime();
-
+            robot.getClamp().setPosition(robot.CLAMP_SERVO_INTAKEPOSITION);
             robot.getBackStopper().setPosition(robot.BACK_STOPPER_DOWN);
 
             while(opModeIsActive() && SystemClock.elapsedRealtime() - startTime <250){
@@ -205,6 +205,40 @@ public class MainTeleop extends LinearOpMode {
             }
 
             robot.getMarkerServo().setPosition(robot.TEAM_MARKER_RETRACT);
+            while(SystemClock.elapsedRealtime()-startTime <1000){
+                driveLogic();
+                slowDriveLogic();
+                intakeLogic();
+                foundationLogic();
+            }
+            while(robot.getOuttakeSpool().getCurrentPosition() <= 0){
+                driveLogic();
+                slowDriveLogic();
+                intakeLogic();
+                foundationLogic();
+                robot.getOuttakeSpool().setPower(-1);
+            }
+            startTime = SystemClock.elapsedRealtime();
+            robot.getOuttakeSpool().setPower(0);
+            robot.getBackStopper().setPosition(robot.BACK_STOPPER_UP);
+
+            while(SystemClock.elapsedRealtime()-startTime< 250){
+                driveLogic();
+                slowDriveLogic();
+                intakeLogic();
+                foundationLogic();
+            }
+
+            robot.getIntakePusher().setPosition(robot.PUSHER_PUSHED);
+
+            while(SystemClock.elapsedRealtime()-startTime< 500){
+                driveLogic();
+                slowDriveLogic();
+                intakeLogic();
+                foundationLogic();
+            }
+            robot.getIntakePusher().setPosition(robot.PUSHER_RETRACTED);
+            robot.getClamp().setPosition(robot.CLAMP_SERVO_CLAMPED);
         }
     }
     private void slowDriveLogic() {
@@ -227,6 +261,16 @@ public class MainTeleop extends LinearOpMode {
             robot.getIntakeLeft().setPower(gamepad2.left_stick_y);
             robot.getIntakeRight().setPower(gamepad2.right_stick_y);
         } else {
+            robot.getIntakeLeft().setPower(0);
+            robot.getIntakeRight().setPower(0);
+        }
+
+        if(robot.getClamp().getPosition() == robot.CLAMP_SERVO_CLAMPED){
+            robot.getIntakeLeft().setPower(0);
+            robot.getIntakeRight().setPower(0);
+        }
+
+        if(robot.getClamp().getPosition() != robot.CLAMP_SERVO_INTAKEPOSITION){
             robot.getIntakeLeft().setPower(0);
             robot.getIntakeRight().setPower(0);
         }
@@ -298,7 +342,7 @@ public class MainTeleop extends LinearOpMode {
             outtakeExecutionTime = currentTime;
         }
 
-        if(currentTime-outtakeExecutionTime >= 700 && isExtend){
+        if(currentTime-outtakeExecutionTime >= 900 && isExtend){
             robot.getClampPivot().setPosition(robot.OUTTAKE_PIVOT_EXTENDED);
         }
 

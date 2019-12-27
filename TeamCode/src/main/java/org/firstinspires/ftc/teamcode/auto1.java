@@ -23,14 +23,15 @@ public class auto1 extends LinearOpMode {
     public DcMotor BL;
     public DcMotor BR;
 
-    public Servo hooker;\
+    public Servo hooker;
 
     public DistanceSensor distanceSensor;
     
     private double TURNSPEED = 0.4;
     private double STRAFESPEED = 0.7;
-    private double STALKSPEED = 0.3;
-    double triggerDist = 10.5;
+    private double STALKSPEED = 0.2;
+    private double PULLOUT = 0.3;
+    double triggerDist = 11.2;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -50,16 +51,18 @@ public class auto1 extends LinearOpMode {
         ElapsedTime runtime = new ElapsedTime();
         ElapsedTime backgroundTime = new ElapsedTime();
 
+        hooker.setPosition(0.9);
+
         waitForStart();
 
         //Go forward until waffle is within proximity
         driveForward();
 
-        while(!tripWireActive(triggerDist)){
+        while(opModeIsActive()&&(!tripWireActive(triggerDist))){
             telemetry.addData("Closing in on target", !tripWireActive(triggerDist));
             telemetry.update();
-            sleep(3000);
             }
+        rest();
 
         dropDL();
 
@@ -67,8 +70,13 @@ public class auto1 extends LinearOpMode {
 
         driveBackward();
 
-        while()
+        runtime.reset();
+        while(opModeIsActive() && (runtime.seconds()<3)){
+            telemetry.addData("Relocating Package", true);
+            telemetry.update();
         }
+
+        rest();
 
 
 
@@ -100,14 +108,14 @@ public class auto1 extends LinearOpMode {
         hooker.setPosition(0.9);
     }
 
-    public void driveForward(){
-        TL.setPower(STALKSPEED);
-        TR.setPower(STALKSPEED);
-        BL.setPower(STALKSPEED);
-        BR.setPower(STALKSPEED);
+    public void driveBackward(){
+        TL.setPower(PULLOUT);
+        TR.setPower(PULLOUT);
+        BL.setPower(PULLOUT);
+        BR.setPower(PULLOUT);
     }
 
-    public void driveBackward() {
+    public void driveForward() {
         TL.setPower(-STALKSPEED);
         BL.setPower(-STALKSPEED);
         TR.setPower(-STALKSPEED);

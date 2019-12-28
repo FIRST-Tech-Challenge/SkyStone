@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.configuration.annotations.MotorType;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -32,7 +33,11 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
+import static org.firstinspires.ftc.teamcode.Control.Constants.COUNTS_PER_COREHEXMOTOR_INCH;
+import static org.firstinspires.ftc.teamcode.Control.Constants.COUNTS_PER_GOBUILDA312RPM_INCH;
+import static org.firstinspires.ftc.teamcode.Control.Constants.COUNTS_PER_GOBUILDA312RPM_ROT;
 import static org.firstinspires.ftc.teamcode.Control.Constants.COUNTS_PER_INCH;
+import static org.firstinspires.ftc.teamcode.Control.Constants.COUNTS_PER_MOTOR_GOBUILDA312RPM;
 import static org.firstinspires.ftc.teamcode.Control.Constants.COUNTS_PER_MOTOR_REV;
 import static org.firstinspires.ftc.teamcode.Control.Constants.backs;
 import static org.firstinspires.ftc.teamcode.Control.Constants.colors;
@@ -216,7 +221,7 @@ public class Crane {
         motorBR = motor(motorBRS, DcMotorSimple.Direction.REVERSE, DcMotor.ZeroPowerBehavior.BRAKE);
         motorBL = motor(motorBLS, DcMotorSimple.Direction.REVERSE, DcMotor.ZeroPowerBehavior.BRAKE);
 
-        motorDriveMode(EncoderMode.OFF, motorFR, motorFL, motorBR, motorBL);
+        motorDriveMode(EncoderMode.ON, motorFR, motorFL, motorBR, motorBL);
     }
 
 
@@ -349,7 +354,7 @@ public class Crane {
 
             for (DcMotor motor : drivetrain){
                 int x = Arrays.asList(drivetrain).indexOf(motor);
-                targets[x] = motor.getCurrentPosition() + (int) (signs[x] * wheelAdjust[x] * distance * COUNTS_PER_MOTOR_REV);
+                targets[x] = motor.getCurrentPosition() + (int) (signs[x] * wheelAdjust[x] * distance * COUNTS_PER_GOBUILDA312RPM_ROT);
             }
             for (DcMotor motor: drivetrain){
                 int x = Arrays.asList(drivetrain).indexOf(motor);
@@ -407,7 +412,63 @@ public class Crane {
 
             for (DcMotor motor : motors){
                 int x = Arrays.asList(motors).indexOf(motor);
-                targets[x] = motor.getCurrentPosition() + (int) (signs[x] * wheelAdjust[x] * distance * 4.0 * 3.14165 * COUNTS_PER_INCH);
+                targets[x] = motor.getCurrentPosition() + (int) (signs[x] * wheelAdjust[x] * distance * COUNTS_PER_GOBUILDA312RPM_INCH);
+            }
+            for (DcMotor motor: motors){
+                int x = Arrays.asList(motors).indexOf(motor);
+                motor.setTargetPosition(targets[x]);
+            }
+            for (DcMotor motor: motors){
+                motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+            runtime.reset();
+
+            for (DcMotor motor:motors){
+                motor.setPower(Math.abs(speed));
+            }
+
+            // keep looping while we are still active, and there is time left, and both motors are running.
+            boolean x = true;
+            while (central.opModeIsActive() &&
+                    (runtime.seconds() < timeoutS) &&
+                    (x)) {
+
+                // Display it for the driver.
+                // Allow time for other processes to run.
+                central.idle();
+                for (DcMotor motor: motors){
+                    if (!motor.isBusy()){
+                        x =false;
+                    }
+                }
+            }
+
+            // Stop all motion;
+            for (DcMotor motor: motors){
+                motor.setPower(0);
+            }
+
+            // Turn off RUN_TO_POSITION
+            for (DcMotor motor: motors){
+                motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            }
+            central.sleep(waitAfter);
+
+
+        }
+    }
+    public void encodeCoreHexMovement(double speed, double distance, double timeoutS, long waitAfter, movements movement, DcMotor... motors) throws  InterruptedException{
+
+        int[] targets = new int[motors.length];
+        double[] signs = movement.getDirections();
+
+        // Ensure that the opmode is still active
+        if (central.opModeIsActive()) {
+            // Determine new target position, and pass to motor controller
+
+            for (DcMotor motor : motors){
+                int x = Arrays.asList(motors).indexOf(motor);
+                targets[x] = motor.getCurrentPosition() + (int) (signs[x] * wheelAdjust[x] * distance * COUNTS_PER_COREHEXMOTOR_INCH);
             }
             for (DcMotor motor: motors){
                 int x = Arrays.asList(motors).indexOf(motor);
@@ -787,10 +848,10 @@ public class Crane {
 
     //-------------------CHOICE ENUMS-------------------------
     public enum movements {
-        left(-1, 1, -1, 1),
-        right(1, -1, 1, -1),
-        backward(1, 1, -1, -1),
-        forward(-1, -1, 1, 1),
+        right(1, 1, -1, -1),
+        left(-1, -1, 1, 1),
+        backward(1, -1, 1, -1),
+        forward(-1, 1, -1, 1),
         tr(0, -1, 1, 0),
         tl(1, 0, 0, -1),
         bl(0, 1, -1, 0),

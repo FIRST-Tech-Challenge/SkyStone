@@ -21,7 +21,7 @@ public class singlevalueVuf extends AutonomousControl {
     private ElapsedTime runtime = new ElapsedTime();
     private boolean target = false;
 
-    public void identify(){
+    public void identify() throws InterruptedException{
         for (VuforiaTrackable trackable : rob.allTrackables) {
             ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(rob.robotFromCamera, rob.parameters.cameraDirection);
         }
@@ -38,6 +38,8 @@ public class singlevalueVuf extends AutonomousControl {
                         telemetry.addData("bad", "none");
                     }
                     break;
+                }else{
+                    telemetry.addData("nothing seen", "none");
                 }
             }
 
@@ -45,16 +47,16 @@ public class singlevalueVuf extends AutonomousControl {
         }
     }
 
-    public void move(){
+    public void move() throws InterruptedException {
         rob.targetVisible = false;
         for (VuforiaTrackable trackable : rob.allTrackables) {
-            if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
+            if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
                 telemetry.addData("Visible Target", trackable.getName());
                 rob.targetVisible = true;
 
                 // getUpdatedRobotLocation() will return null if no new information is available since
                 // the last time that call was made, or if the trackable is not currently visible.
-                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
+                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
                 if (robotLocationTransform != null) {
                     rob.lastLocation = robotLocationTransform;
                 }
@@ -73,31 +75,41 @@ public class singlevalueVuf extends AutonomousControl {
             Orientation rotation = Orientation.getOrientation(rob.lastLocation, EXTRINSIC, XYZ, DEGREES);
             telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
 
-            if(translation.get(1)>0) {
+            while((translation.get(1) / rob.mmPerInch) > 1) {
                 telemetry.addData("move left", "none");
-            }else if(translation.get(1)<0){
+                rob.driveTrainMovement(0.6, Crane.movements.left);
+            }
+            /*else if((translation.get(1)/rob.mmPerInch)<-1){
                 telemetry.addData("move right", "none");
+                rob.driveTrainMovement(0.6, Crane.movements.right);
+                sleep(5);
             }else{
-                telemetry.addData("move straight", "none");
+                telemetry.addData("move direction", "none");
+                rob.stopDrivetrain();
             }
 
-            if(translation.get(0)<-1) {
-                telemetry.addData("move up", "none");
+            if((translation.get(0)/rob.mmPerInch)<-7 && (translation.get(1)/rob.mmPerInch)<1 && (translation.get(1)/rob.mmPerInch)>-1) {
+                telemetry.addData("move back", "none");
+                rob.driveTrainMovement(0.5, Crane.movements.backward);
             }else{
                 telemetry.addData("move nothing", "none");
+                rob.stopDrivetrain();
             }
-        }
-        else {
+        }else {
             telemetry.addData("Visible Target", "none");
         }
-        telemetry.update();
+        rob.stopDrivetrain();
+
+             */
+            telemetry.update();
+        }
     }
 
 
     @Override
     public void runOpMode() throws InterruptedException {
 
-        setup(runtime, Crane.setupType.camera);
+        setup(runtime, Crane.setupType.camera, Crane.setupType.drive);
         telemetry.addLine("Start!");
         telemetry.update();
 

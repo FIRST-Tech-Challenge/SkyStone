@@ -15,13 +15,14 @@ public class WheelsTest extends AutonomousControl {
         setup(runtime, Crane.setupType.autonomous);
 
         if(opModeIsActive()){
-            rob.driveTrainEncoderMovement(0.01, 10, 10, 2, Crane.movements.right);
+            rob.driveTrainEncoderMovement(.1, 1,30,0, Crane.movements.forward);
 
-            //rob.driveTrainEncoderMovement(0.001, 3, 3, 2, Crane.movements.backward);
+            sleep(10000);
+            rob.driveTrainEncoderMovement(.1, 1,10,0, Crane.movements.backward);
 
-            //rob.driveTrainEncoderMovement(0.001, 3, 3, 2, Crane.movements.left);
+            rob.driveTrainEncoderMovement(.1, 1,10,0, Crane.movements.left);
 
-            //rob.driveTrainEncoderMovement(0.001, 3, 3, 2, Crane.movements.right);
+            rob.driveTrainEncoderMovement(.1, 1,10,0, Crane.movements.right);
 
         }
     }

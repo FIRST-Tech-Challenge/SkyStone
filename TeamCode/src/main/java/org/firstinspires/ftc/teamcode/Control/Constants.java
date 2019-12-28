@@ -14,13 +14,21 @@ public class Constants {
 
     public static final double COUNTS_PER_MOTOR_REV = 1120;
     public static final double COUNTS_PER_MOTOR_TETRIX = 1440;
+    public static final double COUNTS_PER_MOTOR_GOBUILDA312RPM = 537.6;
+    public static final double COUNTS_PER_MOTOR_COREHEXMOTOR = 288;
     public static final double DRIVE_GEAR_REDUCTION = 1.0;
+    public static final double DRIVE_GEAR_REDUCTION_NEW = 2.0/3.0;
     public static final double WHEEL_DIAMETER_INCHES = 4.0;
+    public static final double SPOOL_DIAMETER_INCHES = 1.25;
     public static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);                   // Conversion: Encoder Count to Inches
     public static final double COUNTS_PER_TETRIX_INCH = (COUNTS_PER_MOTOR_TETRIX * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);               // Conversion: Encoder Counts Motor Tetrix to Inches
-
+    public static final double COUNTS_PER_GOBUILDA312RPM_INCH = (COUNTS_PER_MOTOR_GOBUILDA312RPM * DRIVE_GEAR_REDUCTION_NEW) /
+            (WHEEL_DIAMETER_INCHES * 3.1415);
+    public static final double COUNTS_PER_COREHEXMOTOR_INCH = (COUNTS_PER_MOTOR_COREHEXMOTOR * DRIVE_GEAR_REDUCTION) /
+            (SPOOL_DIAMETER_INCHES * 3.1415);
+    public static final double COUNTS_PER_GOBUILDA312RPM_ROT = (COUNTS_PER_MOTOR_GOBUILDA312RPM * DRIVE_GEAR_REDUCTION_NEW);
 
     //--------------------------------TELE-OP VALUES--------------------
     public static final double DEAD_ZONE_SIZE = 0.1;

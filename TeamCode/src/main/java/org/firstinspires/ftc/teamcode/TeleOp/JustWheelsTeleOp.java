@@ -131,7 +131,7 @@ public class JustWheelsTeleOp extends TeleOpControl {
             if (gamepad1.a){
                 rob.foundationServo1.setPosition(.6);
                 rob.foundationServo2.setPosition(0);
-                rob.encoderMovement(0.8, 0.2, 3, 200, Crane.movements.linearUp, rob.rightLinear);
+                rob.encodeCoreHexMovement(0.8, 0.2, 3, 200, Crane.movements.linearUp, rob.rightLinear);
                 sleep(300);
                 rob.rotationservo.setPosition(.5);
             }

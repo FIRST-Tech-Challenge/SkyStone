@@ -35,7 +35,6 @@ public class StraightTest extends LinearOpMode {
         PIDCoefficients oldPID = new PIDCoefficients(DriveConstantsPID.MOTOR_VELO_PID.kP, DriveConstantsPID.MOTOR_VELO_PID.kI,
                 DriveConstantsPID.MOTOR_VELO_PID.kD);
         double oldkV = DriveConstantsPID.kV;
-        ;
 
         coefficients = new PIDCoefficients(DriveConstantsPID.MOTOR_VELO_PID.kP, DriveConstantsPID.MOTOR_VELO_PID.kI,
                 DriveConstantsPID.MOTOR_VELO_PID.kD);
@@ -46,6 +45,54 @@ public class StraightTest extends LinearOpMode {
         boolean blocker1 = false;
         boolean blocker2 = false;
         boolean blocker3 = false;
+
+        while (!isStarted()) {
+            if (gamepad1.left_stick_y >= 0.5) {
+                DISTANCE -= 1;
+                try {
+                    Thread.sleep(100);
+                } catch (Exception e) {
+                }
+            } else if (gamepad1.left_stick_y <= -0.5) {
+                DISTANCE += 1;
+                try {
+                    Thread.sleep(100);
+                } catch (Exception e) {
+                }
+            }
+
+            if (DISTANCE < 0)
+                DISTANCE = 0;
+
+            if (gamepad1.right_stick_y >= 0.5) {
+                kV -= 0.001;
+                try {
+                    Thread.sleep(100);
+                } catch (Exception e) {
+                }
+            } else if (gamepad1.right_stick_y <= -0.5) {
+                kV += 0.001;
+                try {
+                    Thread.sleep(100);
+                } catch (Exception e) {
+                }
+            }
+
+            if (gamepad1.left_bumper) {
+                DriveConstantsPID.kV = kV;
+                trajectory = drive.trajectoryBuilder()
+                        .forward(DISTANCE)
+                        .build();
+                drive = new SampleMecanumDriveREV(hardwareMap);
+            }
+
+            telemetry.addData("Instructions", "L stick to change distance. R stick to " +
+                    "change kV. L bumper to save values.");
+
+            telemetry.addData("DISTANCE", DISTANCE);
+            telemetry.addData("kV", kV);
+            telemetry.update();
+        }
 
         waitForStart();
 
@@ -80,57 +127,53 @@ public class StraightTest extends LinearOpMode {
                 }
             }
 
-            if(DISTANCE < 0)
+            if (DISTANCE < 0)
                 DISTANCE = 0;
 
             if (gamepad1.right_stick_y >= 0.5) {
                 if (selected == 0) {
                     coefficients.kP -= 0.5;
-                    try{
+                    try {
                         Thread.sleep(100);
-                    } catch (Exception e){}
-                }else if (selected == 1) {
+                    } catch (Exception e) {
+                    }
+                } else if (selected == 1) {
                     coefficients.kI -= 0.5;
-                    try{
+                    try {
                         Thread.sleep(100);
-                    } catch (Exception e){}
-                }else if (selected == 2) {
+                    } catch (Exception e) {
+                    }
+                } else if (selected == 2) {
                     coefficients.kD -= 0.5;
-                    try{
+                    try {
                         Thread.sleep(100);
-                    } catch (Exception e){}
-                }else if (selected == 3) {
-                    kV -= 0.001;
-                    try{
-                        Thread.sleep(100);
-                    } catch (Exception e){}
+                    } catch (Exception e) {
+                    }
                 }
             } else if (gamepad1.right_stick_y <= -0.5) {
                 if (selected == 0) {
                     coefficients.kP += 0.5;
-                    try{
+                    try {
                         Thread.sleep(100);
-                    } catch (Exception e){}
-                }else if (selected == 1) {
+                    } catch (Exception e) {
+                    }
+                } else if (selected == 1) {
                     coefficients.kI += 0.5;
-                    try{
+                    try {
                         Thread.sleep(100);
-                    } catch (Exception e){}
-                }else if (selected == 2) {
+                    } catch (Exception e) {
+                    }
+                } else if (selected == 2) {
                     coefficients.kD += 0.5;
-                    try{
+                    try {
                         Thread.sleep(100);
-                    } catch (Exception e){}
-                }else if (selected == 3) {
-                    kV += 0.001;
-                    try{
-                        Thread.sleep(100);
-                    } catch (Exception e){}
+                    } catch (Exception e) {
+                    }
                 }
             }
 
             if (gamepad1.dpad_right && !blocker1) {
-                if (selected < 3)
+                if (selected < 2)
                     selected += 1;
                 blocker1 = true;
             } else if (!gamepad1.dpad_right && blocker1) {
@@ -156,18 +199,15 @@ public class StraightTest extends LinearOpMode {
             telemetry.addData("Instructions", "A to begin moving. Press R bumper to save data. " + "DPAD L & R to select. L stick to change distance. R stick to " +
                     "change selected value. L bumper to save values.");
 
-            if(selected == 0)
+            if (selected == 0)
                 telemetry.addData("SELECTED", "P");
-            else if(selected == 1)
+            else if (selected == 1)
                 telemetry.addData("SELECTED", "I");
-            else if(selected == 2)
+            else if (selected == 2)
                 telemetry.addData("SELECTED", "D");
-            else if(selected == 3)
-                telemetry.addData("SELECTED", "kV");
 
             telemetry.addData("DISTANCE", DISTANCE);
             telemetry.addData("PID", coefficients);
-            telemetry.addData("kV", kV);
             telemetry.addData("ERROR", drive.getLastError());
             telemetry.update();
         }

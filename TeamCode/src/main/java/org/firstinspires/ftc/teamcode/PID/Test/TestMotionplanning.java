@@ -28,9 +28,9 @@ public class TestMotionplanning extends LinearOpMode {
             add(new Vector(0.75, 0, 12, MoveBehavior.LineTo));
             //add(new Vector(0.75, 0, 12, Math.PI / 2, MoveBehavior.RotateTo));
             //add(new Vector(1, 12, 12, MoveBehavior.StrafeTo));
-            add(new Vector(intakeAction(1)));
-            add(new Vector(sleepAction(3000)));
-            add(new Vector(intakeAction(0)));
+            //add(new Vector(intakeAction(1)));
+            //add(new Vector(sleepAction(3000)));
+            //add(new Vector(intakeAction(0)));
         }};
         traj = new Trajectory(initPos, vectors);
 

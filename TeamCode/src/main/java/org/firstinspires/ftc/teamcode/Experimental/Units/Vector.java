@@ -48,6 +48,11 @@ public class Vector {
         paramType = 4;
     }
 
+    @Override
+    public String toString(){
+        return "(" + posX + ", " + posY + ", " + heading + ")";
+    }
+
     public double getX() { return posX; }
 
     public double getY() { return posY; }

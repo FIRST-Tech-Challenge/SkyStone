@@ -56,6 +56,7 @@ public class OdometryDrive {
     }
 
     public void runTrajectory(Trajectory trajectory) {
+        debug.add(System.currentTimeMillis() + ": \"StartingPos\" = " + trajectory.getStartingVector() + "\n");
         Vector estimatedPos = trajectory.getStartingVector();
         if (estimatedPos == null)
             throw new NullPointerException("Initial Estimated Vector is null.");
@@ -78,6 +79,7 @@ public class OdometryDrive {
             if (v.getParamType() == 4) {
                 throw new IllegalArgumentException("All trajectory vectors must contain a power and MovementBehavior.");
             } else {
+                debug.add(System.currentTimeMillis() + ": \"CurrentPos\" = " + currentPos + "\n");
                 switch (v.getParamType()) {
                     case 0:
                         break;
@@ -104,7 +106,7 @@ public class OdometryDrive {
         renewedPos = true;
 
         try {
-            Thread.sleep(20);
+            Thread.sleep(50);
         } catch (Exception e) {
         }
 
@@ -117,7 +119,9 @@ public class OdometryDrive {
         } else {
             double deltaX = endPos.getX() - currentPos.getX();
             double deltaY = endPos.getY() - currentPos.getY();
-            if (deltaX != 0 && deltaY != 0) {
+            debug.add(System.currentTimeMillis() + ": \"LineTo DeltaXY\" -- DeltaX & DeltaY = (" + deltaX + " // " +
+                    deltaY + ")" + "\n");
+            if (deltaX != 0 || deltaY != 0) {
                 double theta;
                 try {
                     theta = Math.atan(deltaY / deltaX);
@@ -138,7 +142,7 @@ public class OdometryDrive {
 
                 double distance = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
 
-                debug.add(System.currentTimeMillis() + ": \"LineTo\" -- DeltaX & DeltaY = (" + deltaX + " // " +
+                debug.add(System.currentTimeMillis() + ": \"LineTo\" -- DeltaX & DeltaY = (" + deltaX + " " +
                         deltaY + ") // Theta = " + theta + " // Distance = " + distance + "\n");
 
                 encoderDrive(endPos.getPower(), distance);
@@ -154,7 +158,7 @@ public class OdometryDrive {
         } else {
             double deltaX = endPos.getX() - currentPos.getX();
             double deltaY = endPos.getY() - currentPos.getY();
-            if (deltaX != 0 && deltaY != 0) {
+            if (deltaX != 0 || deltaY != 0) {
                 double theta;
                 try {
                     theta = Math.atan(deltaY / deltaX);
@@ -253,8 +257,6 @@ public class OdometryDrive {
         double topRbotL = avg(new double[]{constants.frontRight.getCurrentPosition(), constants.backLeft.getCurrentPosition()});
         double counts = constants.motorEncoderTicksPerRev * (inches / 2 * Math.PI * constants.wheelRadius) *
                 constants.motorGearRatio;
-
-        debug.add(System.currentTimeMillis() + ": \"EncoderStrafe\" -- TargetCounts = " + counts + "\n");
 
         if (inches > 0) {
             constants.accelerationProperties.accelerate(constants, getCurrentPositionAll(),

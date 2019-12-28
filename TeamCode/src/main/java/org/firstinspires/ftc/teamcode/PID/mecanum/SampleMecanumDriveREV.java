@@ -79,7 +79,7 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
 
-        setLocalizer(new TrackingWheelLocalizerWithIMU(hardwareMap, imu));
+        //setLocalizer(new TrackingWheelLocalizerWithIMU(hardwareMap, imu));
         //setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
 }
 

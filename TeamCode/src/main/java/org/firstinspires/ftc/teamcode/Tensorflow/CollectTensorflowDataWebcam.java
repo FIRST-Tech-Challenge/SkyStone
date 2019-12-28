@@ -66,6 +66,7 @@ import java.util.List;
  */
 
 @TeleOp(name = "Collect Tensorflow Data Webcam", group = "Linear Opmode")
+@Disabled
 public class CollectTensorflowDataWebcam extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "skystoneTFOD_v2_[105-15].tflite";
     private static final String LABEL_FIRST_ELEMENT = "skystone";

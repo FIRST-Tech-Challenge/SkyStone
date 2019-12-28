@@ -225,7 +225,7 @@ public class FourWheelMecanumDrivetrain {
     }
 
     public void odometryStrafe(double power, double inches, boolean right){
-        double counts = inches / (2 * PI * 2) * DriveConstant.WHEEL_ENCODER_COUNTS_PER_REVOLUTION;
+        double counts = inches / (2 * PI * 1.25) * 1400.0;
         int sidewaysStart = rw.rightIntake.getCurrentPosition();
 
         if(!right)
@@ -248,6 +248,45 @@ public class FourWheelMecanumDrivetrain {
             }
 
             if (sidewaysDiff >= counts) {
+                break;
+            }
+        }
+        stop();
+    }
+
+    public void odometryDrive(double power, double inches){
+        double counts = inches / (2 * PI * 1.25) * 1400.0;
+        int leftStart = rw.leftIntake.getCurrentPosition();
+        int rightStart = rw.liftTwo.getCurrentPosition();
+
+        rw.frontRight.setPower(power);
+        rw.frontLeft.setPower(power);
+        rw.backRight.setPower(power);
+        rw.backLeft.setPower(power);
+
+        while (runningOpMode.opModeIsActive()) {
+            int leftV = rw.leftIntake.getCurrentPosition();
+            int rightV = rw.liftTwo.getCurrentPosition();
+
+            int diff = Math.abs((leftV + rightV) / 2 - (leftStart + rightStart) / 2);
+
+            if (runningOpMode != null) {
+                runningOpMode.telemetry.addData("Drive", diff);
+                runningOpMode.telemetry.addData("Target", counts);
+
+                runningOpMode.telemetry.addData("LeftForwardOdometry", rw.leftIntake.getCurrentPosition());
+                runningOpMode.telemetry.addData("RightForwardOdometry", rw.liftTwo.getCurrentPosition());
+                runningOpMode.telemetry.addData("SidewaysOdometry", rw.rightIntake.getCurrentPosition());
+
+                runningOpMode.telemetry.addData("FrontLeft", rw.frontLeft.getCurrentPosition());
+                runningOpMode.telemetry.addData("BackLeft", rw.backLeft.getCurrentPosition());
+                runningOpMode.telemetry.addData("FrontRight", rw.frontRight.getCurrentPosition());
+                runningOpMode.telemetry.addData("BackRight", rw.backRight.getCurrentPosition());
+                runningOpMode.telemetry.update();
+            }
+
+            if (diff >= counts ) {
+                stop();
                 break;
             }
         }

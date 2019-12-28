@@ -39,7 +39,7 @@ import java.util.List;
  */
 
 @TeleOp(name = "Collect TFOD Data Phone", group = "Linear Opmode")
-//@Disabled
+@Disabled
 public class CollectTensorflowDataPhone extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "skystoneTFOD_v2_[105-15].tflite";    //Set model (see above for file names)
     private static final String LABEL_FIRST_ELEMENT = "skystone";

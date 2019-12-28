@@ -14,7 +14,6 @@ import org.firstinspires.ftc.teamcode.robots.Robot;
 
 public class JudgingInterview extends LinearTeleOpMode implements TextToSpeech.OnInitListener{
 
-
     TextToSpeech text;
     Fermion fermion;
     

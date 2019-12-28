@@ -98,6 +98,9 @@ public class Crane {
                 case foundation:
                     setupFoundation();
                     break;
+                case encoder:
+                    setupEncoder();
+                    break;
                 case bSystem:
                     //setupRack();
                     //setupLinearSlides();
@@ -168,6 +171,8 @@ public class Crane {
 
     public DcMotor rightSuck;
     public DcMotor leftSuck;
+
+    public DcMotor encoderup;
 
     public  List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
     public VuforiaTrackables targetsSkyStone;
@@ -252,7 +257,15 @@ public class Crane {
         smallRSuck = servo(smallRSucks, DcMotorSimple.Direction.FORWARD, 0);
         smallLSuck = servo(smallLSucks, DcMotorSimple.Direction.FORWARD, 0);
 
-        encoder(EncoderMode.OFF, rack, leftLinear, rightLinear);
+        encoder(EncoderMode.OFF, rightSuck, leftSuck);
+    }
+
+    public void setupEncoder() throws InterruptedException{
+        encoderup = motor(rightsucks, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.FLOAT);
+        rightSuck = motor(rightsucks, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.FLOAT);
+        leftSuck = motor(leftsucks, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.FLOAT);
+
+        encoder(EncoderMode.ON, rightSuck, leftSuck, encoderup);
     }
 
     public void setupUltra() throws InterruptedException{
@@ -832,7 +845,7 @@ public class Crane {
         ON, OFF;
     }
     public enum setupType{
-        autonomous, teleop, endgame, drive, camera, claw, bSystem, foundation, yellow, intake, ultrasoinc, imu;
+        autonomous, teleop, endgame, drive, camera, claw, bSystem, foundation, yellow, encoder, intake, ultrasoinc, imu;
     }
 
     //-------------------SET FUNCTIONS--------------------------------

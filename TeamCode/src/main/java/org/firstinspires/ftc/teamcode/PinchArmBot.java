@@ -37,8 +37,6 @@ public class PinchArmBot extends FourWheelsDriveBot {
         servoArm = hwMap.servo.get("servoArm");
         servoPinch = hwMap.servo.get("servoPinch");
 
-        print(String.format("Before Init : ARM POS : %f, PINCH POS : %f", servoArm.getPosition(), servoPinch.getPosition()));
-
         servoArm.setPosition(PINCH_ARM_FOLD);
         servoPinch.setPosition(PINCH_RELEASE);
         print(String.format("After Init : ARM POS : %f, PINCH POS : %f", servoArm.getPosition(), servoPinch.getPosition()));

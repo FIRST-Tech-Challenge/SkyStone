@@ -34,7 +34,7 @@ public class ManualDriveOpModeBlueWall extends LinearOpMode {
             robot.manualDropSkystone(gamepad1.dpad_right);
             robot.toggleButtArm(gamepad1.right_stick_button, gamepad1.left_stick_button);
 
-        }   
+        }
     }
 }
 

@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.Skystone.Odometry.Position2D;
 
 
-@TeleOp(name="MainTeleOpSky", group="Linear Opmode")
+@TeleOp(name="MainTeleOpSkyAS", group="Linear Opmode")
 public class MainTeleop extends LinearOpMode {
     Robot robot;
 
@@ -33,10 +33,15 @@ public class MainTeleop extends LinearOpMode {
     boolean resetfoundation = false;
     boolean hasPushed = false;
     boolean isRetractingSlides = false;
+    boolean hasRetracted = false;
 
     public static double powerScaleFactor = 0.9;
 
     boolean isIntakeMode = false;
+
+
+    // Booleans for debugging
+    boolean isTelemetryPosition = true;
 
     @Override
     public void runOpMode() {
@@ -64,30 +69,17 @@ public class MainTeleop extends LinearOpMode {
                 capStoneLogic();
                 teamMarkerLogic();
                 spoolLogic();
-
             }
 
-            if(gamepad2.right_bumper){
-                isRetractingSlides = true;
+            if (isTelemetryPosition) {
+                telemetry.addLine("xPos: " + robot.getRobotPos().x);
+                telemetry.addLine("yPos: " + robot.getRobotPos().y);
+                telemetry.addLine("angle: " + Math.toDegrees(robot.getAnglePos()));
+                telemetry.addLine("XPODLeft " + robot.getfLeft().getCurrentPosition());
+                telemetry.addLine("XPODRight " + robot.getfRight().getCurrentPosition());
+                telemetry.addLine("YPOD " + robot.getbLeft().getCurrentPosition());
             }
 
-            if(isRetractingSlides){
-                spoolPower =-1;
-            }
-
-
-
-            if(isRetractingSlides && (robot.getOuttakeSpool().getCurrentPosition()>=0) ){
-                spoolPower = 0;
-                isRetractingSlides = false;
-            }
-
-            telemetry.addLine("xPos: " + robot.getRobotPos().x);
-            telemetry.addLine("yPos: " + robot.getRobotPos().y);
-            telemetry.addLine("angle: " + Math.toDegrees(robot.getAnglePos()));
-            telemetry.addLine("XPODLeft " + robot.getfLeft().getCurrentPosition());
-            telemetry.addLine("XPODRight " + robot.getfRight().getCurrentPosition());
-            telemetry.addLine("YPOD " + robot.getbLeft().getCurrentPosition());
             if (isIntakeMode) {
                 telemetry.addLine("CURRENT ROBOT MODE: INTAKE BOT");
             } else {
@@ -96,6 +88,7 @@ public class MainTeleop extends LinearOpMode {
         }
     }
 
+    boolean isToggleRetractingSlides = false;
     private void spoolLogic(){
         if (gamepad2.dpad_up) {
             isRetractingSlides = false;
@@ -106,10 +99,29 @@ public class MainTeleop extends LinearOpMode {
         }else if(!isRetractingSlides){
             spoolPower = 0;
         }
+
+        if(gamepad2.right_bumper && !isToggleRetractingSlides){
+            if (isRetractingSlides) {
+                isRetractingSlides = false;
+            } else {
+                isRetractingSlides = true;
+            }
+            isToggleRetractingSlides = true;
+        } else if (!gamepad2.right_bumper && isToggleRetractingSlides) {
+            isToggleRetractingSlides = false;
+        }
+
+        if(isRetractingSlides){
+            spoolPower = -1;
+        }
+
+        if(isRetractingSlides && (robot.getOuttakeSpool().getCurrentPosition()>=0)){
+            spoolPower = 0;
+            isRetractingSlides = false;
+        }
+
         robot.getOuttakeSpool().setPower(spoolPower);
-
-        telemetry.addLine("Spool Position " + robot.getOuttakeSpool().getCurrentPosition());
-
+//        telemetry.addLine("Spool Position " + robot.getOuttakeSpool().getCurrentPosition());
     }
 
     private void resetRobot() {
@@ -295,7 +307,6 @@ public class MainTeleop extends LinearOpMode {
 
     double xDump;
     double yDump;
-    boolean hasRetracted = false;
     private void outtakeLogic() {
         currentTime = SystemClock.elapsedRealtime();
         // Logic to control outtake; with a delay on the pivot so that the slides can extend before pivot rotation
@@ -361,7 +372,7 @@ public class MainTeleop extends LinearOpMode {
         }
 
         //retract
-        if(isRetract && Math.hypot(robot.getRobotPos().x-xDump, robot.getRobotPos().y-yDump) > 5 && !hasRetracted){
+        if(isRetract && (Math.hypot(robot.getRobotPos().x-xDump, robot.getRobotPos().y-yDump) > 5 || gamepad1.b) && !hasRetracted){
             robot.getOuttakeExtender().setPosition(robot.OUTTAKE_SLIDE_EXTENDED);
             outtakeExecutionTime = SystemClock.elapsedRealtime();
             hasRetracted = true;

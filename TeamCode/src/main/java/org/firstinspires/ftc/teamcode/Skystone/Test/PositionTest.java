@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.Skystone.Odometry.Position2D;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.PathPoints;
 import org.firstinspires.ftc.teamcode.Skystone.Robot;
 
+@Disabled
 @Autonomous(name="PositionTest ", group="Linear Opmode")
 public class PositionTest  extends LinearOpMode {
 

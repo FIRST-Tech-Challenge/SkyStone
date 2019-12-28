@@ -279,11 +279,11 @@ public class Robot {
         backStopper.setPosition(BACK_STOPPER_UP);
 
         boolean isRetract = true;
-        long outtakeExecutionTime = 0;
+        long outtakeExecutionTime = SystemClock.elapsedRealtime();
         long currentTime;
 
         foundationMovers(false);
-        clamp.setPosition(CLAMP_SERVO_INTAKEPOSITION);
+        clamp.setPosition(CLAMP_SERVO_CLAMPED);
         intakePusher.setPosition(PUSHER_RETRACTED);
 
         while (isRetract) {
@@ -291,7 +291,8 @@ public class Robot {
             if (currentTime - outtakeExecutionTime >= 250 && isRetract) {
                 clampPivot.setPosition(OUTTAKE_PIVOT_RETRACTED);
             }
-            if (currentTime - outtakeExecutionTime >= 950 && isRetract) {
+            if (currentTime - outtakeExecutionTime >= 1000 && isRetract) {
+                clamp.setPosition(CLAMP_SERVO_INTAKEPOSITION);
                 outtakeExtender.setPosition(OUTTAKE_SLIDE_RETRACTED);
                 isRetract = false;
             }

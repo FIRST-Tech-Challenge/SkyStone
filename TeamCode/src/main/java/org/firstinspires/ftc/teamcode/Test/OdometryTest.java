@@ -12,7 +12,7 @@ public class OdometryTest extends AutonomousControl {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        setup(runtime, Crane.setupType.encoder);
+        //setup(runtime, Crane.setupType.encoder);
 
         int startPosition = rob.rightSuck.getCurrentPosition();
         while(opModeIsActive()){

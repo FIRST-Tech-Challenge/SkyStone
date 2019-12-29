@@ -27,14 +27,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.robotcontroller.external.samples;
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
@@ -52,8 +54,18 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 
-/**From the Audience perspective, the Red Alliance station is on the right and the
+/**
+ * This 2019-2020 OpMode illustrates the basics of using the Vuforia localizer to determine
+ * positioning and orientation of robot on the SKYSTONE FTC field.
+ * The code is structured as a LinearOpMode
+ *
+ * When images are located, Vuforia is able to determine the position and orientation of the
+ * image relative to the camera.  This sample code then combines that information with a
+ * knowledge of where the target images are on the field, to determine the location of the camera.
+ *
+ * From the Audience perspective, the Red Alliance station is on the right and the
  * Blue Alliance Station is on the left.
+
  * Eight perimeter targets are distributed evenly around the four perimeter walls
  * Four Bridge targets are located on the bridge uprights.
  * Refer to the Field Setup manual for more specific location details
@@ -73,34 +85,47 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  */
 
 
-@TeleOp(name="SKYSTONE Vuforia Nav", group ="Concept")
+@TeleOp(name="So Chubby", group ="Concept")
 //@Disabled
-public class ConceptVuforiaSkyStoneNavigation extends LinearOpMode {
+public class detectingSkystone extends LinearOpMode {
 
-    //using the back camera in landscape mode
+    // IMPORTANT:  For Phone Camera, set 1) the camera source and 2) the orientation, based on how your phone is mounted:
+    // 1) Camera Source.  Valid choices are:  BACK (behind screen) or FRONT (selfie side)
+    // 2) Phone Orientation. Choices are: PHONE_IS_PORTRAIT = true (portrait) or PHONE_IS_PORTRAIT = false (landscape)
+    //
+    // NOTE: If you are running on a CONTROL HUB, with only one USB WebCam, you must select CAMERA_CHOICE = BACK; and PHONE_IS_PORTRAIT = false;
+    //
     private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
     private static final boolean PHONE_IS_PORTRAIT = false  ;
 
-    //our Vuforia key               
-    private static final String VUFORIA_KEY =               
+    /*
+     * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
+     * 'parameters.vuforiaLicenseKey' is initialized is for illustration only, and will not function.
+     * A Vuforia 'Development' license key, can be obtained free of charge from the Vuforia developer
+     * web site at https://developer.vuforia.com/license-manager.
+     *
+     * Vuforia license keys are always 380 characters long, and look as if they contain mostly
+     * random data. As an example, here is a example of a fragment of a valid key:
+     *      ... yIgIzTqZ4mWjk9wd3cZO9T1axEqzuhxoGlfOOI2dRzKS4T0hQ8kT ...
+     * Once you've obtained a license key, copy the string from the Vuforia web site
+     * and paste it in to your code on the next line, between the double quotes.
+     */
+    private static final String VUFORIA_KEY =
             "AeCml+H/////AAABmQkp7T1yW0ycnJcos9JyE6klQCYs9OdJemS15L9P/b/uo4ls9OeXiUAmfVqtyoDM4G4Gn9IAawF1vJPBpvKu/caGjO/tYIk1ikpfkLPKrSz/w5O1txZgkYDPAaLsSPMCTJMnKJwS2Z34D/nDdB65XJ8UFBuNjZSwixZFEFB0JwL14CH1YhFSjoQlyZJ+2MJGbqsL1ZlUSAOtPQz6kox+fTm2UtTyXDLdsJ1Ps6/BWH2YD1QyC7AeU8UwgAqiF5kUxtmZUfd5KWg4VfKzg7eSsBNliUr/LnxL9QLkgYBo6pSoE7kOtJ8dWQG0p7LO3OrH9QtJWZtuta+BCYYi6MYTl62kZ+Da/7zZs2W9TSQr1jk+";
 
-    //conversions to mm
+    // Since ImageTarget trackables use mm to specifiy their dimensions, we must use mm for all the physical dimension.
+    // We will define some constants and conversions here
     private static final float mmPerInch        = 25.4f;
+    private static final float mmTargetHeight   = (6) * mmPerInch;          // the height of the center of the target image above the floor
 
-    //height of the center of the target image above the floor
-    private static final float mmTargetHeight   = (6) * mmPerInch;
-
-    // stone target constants
+    // Constant for Stone Target
     private static final float stoneZ = 2.00f * mmPerInch;
 
     // Constants for the center support targets
     private static final float bridgeZ = 6.42f * mmPerInch;
     private static final float bridgeY = 23 * mmPerInch;
     private static final float bridgeX = 5.18f * mmPerInch;
-
-    //in degrees
-    private static final float bridgeRotY = 59;
+    private static final float bridgeRotY = 59;                                 // Units are degrees
     private static final float bridgeRotZ = 180;
 
     // Constants for perimeter targets
@@ -115,7 +140,71 @@ public class ConceptVuforiaSkyStoneNavigation extends LinearOpMode {
     private float phoneYRotate    = 0;
     private float phoneZRotate    = 0;
 
+    //Dcmotor configuration stuff
+    private ElapsedTime runtime = new ElapsedTime();
+    private DcMotor leftfront = null;
+    private DcMotor rightfront = null;
+    private DcMotor leftback = null;
+    //private DcMotor Arm = null;
+    private DcMotor rightback = null;
+
+    private double drivepower = 0.0;
+    private double right = 0.0;
+    private double left = 0.0;
+
+
+    private void lateralmovement() {
+        leftfront.setPower(drivepower);
+        rightfront.setPower(drivepower);
+        rightback.setPower(drivepower);
+        leftback.setPower(drivepower);
+    }
+
+    private void lateralright() {
+        leftfront.setPower(-right);
+        rightfront.setPower(right);
+        rightback.setPower(-right);
+        leftback.setPower(right);
+    }
+
+    private void lateralleft() {
+        leftfront.setPower(-left);
+        rightfront.setPower(left);
+        rightback.setPower(-left);
+        leftback.setPower(left);
+    }
+
+
+    //Define class members
+    Servo servo;
+    double  servoPosition = 0.4; // Start at halfway position
+    boolean rampUp = true;
+
+
     @Override public void runOpMode() {
+
+        Servo   servo;
+        double  servoPosition = 0.4; // Start at halfway position
+
+        servo = hardwareMap.servo.get("servo");
+        servo.setPosition(servoPosition);
+
+        // Initialize the hardware variables. Note that the strings used here as parameters
+        leftfront  = hardwareMap.get(DcMotor.class, "leftfront");
+        rightfront = hardwareMap.get(DcMotor.class, "rightfront");
+        rightback = hardwareMap.get(DcMotor.class, "rightback");
+        leftback = hardwareMap.get(DcMotor.class, "leftback");
+        // Arm  = hardwareMap.get(DcMotor.class, "Arm");
+        // boxmotor = hardwareMap.get(Servo.class, "boxmotor");
+
+        // Most robots need the motor on one side to be reversed to drive forward
+        // Reverse the motor that runs backwards when connected directly to the battery
+        leftfront.setDirection(DcMotor.Direction.FORWARD);
+        rightfront.setDirection(DcMotor.Direction.REVERSE);
+        leftback.setDirection(DcMotor.Direction.FORWARD);
+        //Arm.setDirection(DcMotor.Direction.FORWARD);
+        rightback.setDirection(DcMotor.Direction.REVERSE);
+
         /*
          * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
          * We can pass Vuforia the handle to a camera preview resource (on the RC phone);
@@ -275,8 +364,8 @@ public class ConceptVuforiaSkyStoneNavigation extends LinearOpMode {
         final float CAMERA_LEFT_DISPLACEMENT     = 0;     // eg: Camera is ON the robot's center line
 
         OpenGLMatrix robotFromCamera = OpenGLMatrix
-                .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
+                    .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
+                    .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
 
         /**  Let all the trackable listeners know where the phone is.  */
         for (VuforiaTrackable trackable : allTrackables) {
@@ -305,6 +394,7 @@ public class ConceptVuforiaSkyStoneNavigation extends LinearOpMode {
                     telemetry.addData("Visible Target", trackable.getName());
                     targetVisible = true;
 
+
                     // getUpdatedRobotLocation() will return null if no new information is available since
                     // the last time that call was made, or if the trackable is not currently visible.
                     OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
@@ -325,13 +415,29 @@ public class ConceptVuforiaSkyStoneNavigation extends LinearOpMode {
                 // express the rotation of the robot in degrees.
                 Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
                 telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
+                drivepower = -0.5;
+                lateralmovement();
+                telemetry.addData("Status", "Moving Backword");
+                telemetry.update();
+                sleep(1000);
+                telemetry.update();
             }
+
             else {
-                telemetry.addData("Visible Target", "none");
+                while (1 < 2) {
+                    telemetry.addData("Visible Target", "none");
+                    telemetry.addData("No Yellow Brick", "none");
+                    drivepower = 0.5;
+                    lateralright();
+                    telemetry.addData("Status", "Moving Forward");
+                    telemetry.update();
+                    sleep(1000);
+                    telemetry.update();
             }
-            telemetry.update();
         }
 
         // Disable Tracking when we are done;
         targetsSkyStone.deactivate();
     }
+
+}}

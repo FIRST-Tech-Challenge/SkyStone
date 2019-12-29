@@ -47,7 +47,7 @@ public class DriverControl extends Movement {
                 // Gamepad 2 Controls
 
                 // Left stick y - to move arm up or down
-                arm.setPower(-gamepad2.left_stick_y * 0.35);
+                arm.setPower(-gamepad2.left_stick_y*0.66);
 
                 // left bumper - to close claw (front servo)
                 if (gamepad2.left_bumper) {
@@ -73,12 +73,14 @@ public class DriverControl extends Movement {
                 // x - to move back servo down
                 if (gamepad2.x) {
 
-                    backServo.setPosition(0.4);
+                    leftConstruction.setPosition(0.4);
+                    rightConstruction.setPosition(0.4);
                 }
 
                 // y - to move back servo up
                 if (gamepad2.y) {
-                    backServo.setPosition(0.95);
+                    leftConstruction.setPosition(0.95);
+                    rightConstruction.setPosition(0.95);
                 }
 
                 telemetry.addData("Status", "Run Time: " + runtime.toString());

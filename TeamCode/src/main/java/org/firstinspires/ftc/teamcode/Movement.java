@@ -17,7 +17,8 @@ abstract class Movement extends LinearOpMode
     protected DcMotor arm;
 
     protected Servo frontServo;
-    protected Servo backServo;
+    protected Servo rightConstruction;
+    protected Servo leftConstruction;
 
     public void runOpMode() {
         setupDriveMotors();
@@ -49,7 +50,8 @@ abstract class Movement extends LinearOpMode
         arm.setDirection(DcMotor.Direction.FORWARD);
 
         frontServo = hardwareMap.servo.get("frontServo");
-        backServo =  hardwareMap.servo.get("servo");
+        leftConstruction =  hardwareMap.servo.get("leftConstruction");
+        rightConstruction = hardwareMap.servo.get("rightConstruction");
     }
 
     public void stop(final String message) {

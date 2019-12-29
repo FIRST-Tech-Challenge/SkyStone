@@ -63,9 +63,10 @@ public class MainTeleop extends LinearOpMode {
 
             intakeLogic();
 
+            foundationLogic();
+
             if (!isIntakeMode) {
                 outtakeLogic();
-                foundationLogic();
                 capStoneLogic();
                 teamMarkerLogic();
                 spoolLogic();
@@ -74,7 +75,7 @@ public class MainTeleop extends LinearOpMode {
             if (isTelemetryPosition) {
                 telemetry.addLine("xPos: " + robot.getRobotPos().x);
                 telemetry.addLine("yPos: " + robot.getRobotPos().y);
-                telemetry.addLine("angle: " + Math.toDegrees(robot.getAnglePos()));
+                telemetry.addLine("angle: " + Math.toDegrees(MathFunctions.angleWrap(robot.getAnglePos())));
                 telemetry.addLine("XPODLeft " + robot.getfLeft().getCurrentPosition());
                 telemetry.addLine("XPODRight " + robot.getfRight().getCurrentPosition());
                 telemetry.addLine("YPOD " + robot.getbLeft().getCurrentPosition());
@@ -277,12 +278,7 @@ public class MainTeleop extends LinearOpMode {
             robot.getIntakeRight().setPower(0);
         }
 
-        if(robot.getClamp().getPosition() == robot.CLAMP_SERVO_CLAMPED){
-            robot.getIntakeLeft().setPower(0);
-            robot.getIntakeRight().setPower(0);
-        }
-
-        if(robot.getClamp().getPosition() != robot.CLAMP_SERVO_INTAKEPOSITION){
+        if(robot.getClamp().getPosition() != robot.CLAMP_SERVO_INTAKEPOSITION && !isIntakeMode){
             robot.getIntakeLeft().setPower(0);
             robot.getIntakeRight().setPower(0);
         }

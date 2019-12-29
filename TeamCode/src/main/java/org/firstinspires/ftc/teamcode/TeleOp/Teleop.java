@@ -42,7 +42,7 @@ public class Teleop extends LinearOpMode {
     private boolean tobyMode = false;
     private HardwareMap hwMap;
     private boolean manualOverride = false;
-    private boolean manualOverrideBlocker = false;
+    private boolean blockerCapstone = false;
 
     private ArrayList<OnOffButton> buttonLogic = new ArrayList<>();
 
@@ -95,54 +95,42 @@ public class Teleop extends LinearOpMode {
                 new Servo[] { hwMap.clawServo1, hwMap.clawServo2 },
                 new double[][] { {TeleopConstants.clawServo1PosOpen, TeleopConstants.clawServo1PosClose},
                         {TeleopConstants.clawServo2PosOpen, TeleopConstants.clawServo2PosClose} },
-                new double[] { TeleopConstants.clawServo1PosClose, TeleopConstants.clawServo2PosOpen }));
-        buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.RIGHT_TRIGGER, new Servo[] {hwMap.clawInit},
-                new double[][]{ {TeleopConstants.clawInitPosCapstone, TeleopConstants.clawInitPosReset} }));
+                new double[] { TeleopConstants.clawServo1Block, TeleopConstants.clawServo2PosOpen }));
+        /*buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.DPAD_UP,
+                new Servo[] {hwMap.clawInit},
+                new double[][]{ {TeleopConstants.clawInitPosCapstoneForReal, TeleopConstants.clawInitPosCapstone} }));*/
+        buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.DPAD_DOWN,
+                new Servo[] {hwMap.innerTransfer},
+                new double[][]{ {TeleopConstants.innerTransferPosBlock, TeleopConstants.innerTransferPosTucked} }));
         buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.LEFT_TRIGGER, new Servo[] { hwMap.transferHorn },
                 new double[][] { {TeleopConstants.transferHornPosPush, TeleopConstants.transferHornPosReady} }));
 
         telemetry.addData("Status", "Ready");
+        hwMap.clawInit.setPosition(TeleopConstants.clawInitPosCapstone);
 
         waitForStart();
 
+        driveLoop();
 
         while (opModeIsActive()) {
+			
+			if(gamepad2.a && buttonLogic.get(0).getState()[0] && buttonLogic.get(5).getState()[0]) {
+                buttonLogic.get(5).manualActivate(true, false);
+
+                if (!buttonLogic.get(3).getState()[1])
+                    buttonLogic.get(5).manualActivate(false, true);
+            }
+			
+			if(gamepad2.left_trigger >= 0.5 && buttonLogic.get(4).getState()[0])
+				buttonLogic.get(4).manualActivate(true, false);
+			
+			if(gamepad2.y && !buttonLogic.get(3).getState()[0] && buttonLogic.get(1).getState()[0])
+                buttonLogic.get(3).manualActivate(true, false);
 
             //------------------------------===Servos & Intake/Outake===------------------------------------------
 
-            /*if(gamepad2.right_trigger >= 0.5 && !manualOverrideBlocker){
-                manualOverrideBlocker = true;
-                buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.LEFT_TRIGGER, new Servo[] { hwMap.transferHorn },
-                        new double[][] { {TeleopConstants.transferHornPosPush, TeleopConstants.transferHornPosReady} }));
-                manualOverride = !manualOverride;
-            } else if(gamepad2.right_trigger < 0.5 && manualOverrideBlocker){
-                manualOverrideBlocker = false;
-                OnOffButton transferHornLogic = new OnOffButton(gamepad2, GamepadButtons.LEFT_TRIGGER, new Servo[] { hwMap.transferHorn },
-                        new double[][] { {TeleopConstants.transferHornPosPush, TeleopConstants.transferHornPosReady} });
-                buttonLogic.remove(transferHornLogic);
-            }*/
-
-            /*if(manualOverride){
-                buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.LEFT_TRIGGER, new Servo[] { hwMap.transferHorn },
-                        new double[][] { {TeleopConstants.transferHornPosPush, TeleopConstants.transferHornPosReady} }));
-            } else {
-                OnOffButton transferHornLogic = new OnOffButton(gamepad2, GamepadButtons.LEFT_TRIGGER, new Servo[] { hwMap.transferHorn },
-                        new double[][] { {TeleopConstants.transferHornPosPush, TeleopConstants.transferHornPosReady} });
-                buttonLogic.remove(transferHornLogic);
-            }*/
-
-            for(OnOffButton onOffButton : buttonLogic) {
-                onOffButton.getGamepadStateAndRun();
-
-                /*if(onOffButton.controllingServos() && onOffButton.getServos()[0].getDeviceName()
-                        .equalsIgnoreCase("transferHorn") && onOffButton.isRunning()[0]) {
-                    sleep(400);
-                    hwMap.innerTransfer.setPosition(TeleopConstants.innerTransferPosTucked);
-                } else if(onOffButton.controllingServos() && onOffButton.getServos()[0].getDeviceName()
-                        .equalsIgnoreCase("transferHorn") && !onOffButton.isRunning()[0]) {
-                    hwMap.innerTransfer.setPosition(TeleopConstants.innerTransferPosExtended);
-                }*/
-            }
+            //for(OnOffButton onOffButton : buttonLogic)
+            //    onOffButton.getGamepadStateAndRun();
 
             //detectBlock();
 
@@ -155,6 +143,65 @@ public class Teleop extends LinearOpMode {
             }
             lift.detectResetEncoder();
 
+            //------------------------------===Capstone===------------------------------------------
+
+            if(gamepad2.dpad_up && !blockerCapstone){
+                blockerCapstone = true;
+
+                if(!buttonLogic.get(5).getState()[0])
+                    buttonLogic.get(5).manualActivate(true, false);
+
+                if(buttonLogic.get(0).getState()[0])
+				    buttonLogic.get(0).manualActivate(true, false);
+                else if(buttonLogic.get(0).getState()[1])
+                    buttonLogic.get(0).manualActivate(false, true);
+					
+                //hwMap.leftIntake.setPower(0);
+                //hwMap.rightIntake.setPower(0);
+
+                try{
+                    Thread.sleep(1000);
+                } catch (Exception e){}
+
+                hwMap.clawInit.setPosition(TeleopConstants.clawInitPosCapstoneForReal);
+
+                try{
+                    Thread.sleep(700);
+                } catch (Exception e){}
+
+                if(buttonLogic.get(5).getState()[0])
+                    buttonLogic.get(5).manualActivate(true, false);
+
+                if(buttonLogic.get(4).getState()[0])
+                    buttonLogic.get(4).manualActivate(true, false);
+
+                if(!buttonLogic.get(3).getState()[1])
+                    buttonLogic.get(3).manualActivate(false, true);
+
+                try{
+                    Thread.sleep(700);
+                } catch (Exception e){}
+
+                if(!buttonLogic.get(5).getState()[0])
+                    buttonLogic.get(5).manualActivate(true, false);
+
+                try{
+                    Thread.sleep(1500);
+                } catch (Exception e){}
+            } else if(!gamepad2.dpad_up && blockerCapstone){
+                blockerCapstone = false;
+
+                if(buttonLogic.get(5).getState()[0])
+                    buttonLogic.get(5).manualActivate(true, false);
+
+                hwMap.clawInit.setPosition(TeleopConstants.clawInitPosCapstone);
+
+                if(!buttonLogic.get(3).getState()[1])
+                    buttonLogic.get(3).manualActivate(false, true);
+
+                hwMap.innerTransfer.setPosition(TeleopConstants.innerTransferPosTucked);
+            }
+
             //------------------------------===Driving/Strafing===------------------------------------------
 
             if(gamepad1.start && gamepad1.back && !switchBlocker){
@@ -163,105 +210,6 @@ public class Teleop extends LinearOpMode {
             } else if(!gamepad1.back && !gamepad1.start && switchBlocker){
                 switchBlocker = false;
             }
-
-            telemetry.addData("Info", "Press START + BACK on GAMEPAD1 to switch drive modes!");
-
-            if(tobyMode) {
-                telemetry.addData("Current Drive Mode", "TOBY MODE");
-                if (!(gamepad1.left_stick_x == 0 && gamepad1.left_stick_y == 0)) {
-
-                    double speed;
-
-                    if (gamepad1.left_stick_x == 0 && gamepad1.left_stick_y == 0) {
-                        speed = 0;
-                    } else if (gamepad1.left_stick_y == 0) {
-                        speed = Math.abs(gamepad1.left_stick_x);
-                    } else if (gamepad1.left_stick_x == 0) {
-                        speed = Math.abs(gamepad1.left_stick_y);
-                    } else {
-                        speed = (Math.abs(gamepad1.left_stick_x) + Math.abs(gamepad1.left_stick_y)) / 2;
-                    }
-
-                    double angle = Math.atan2(gamepad1.left_stick_x, -gamepad1.left_stick_y);
-                    drivetrain.MoveAngle(speed, angle, 0);
-                }
-
-                if (gamepad1.right_stick_x != 0) {
-                    if (gamepad1.right_stick_x > 0)
-                        drivetrain.rotate(turnSpeed * gamepad1.right_stick_x, true);
-                    else if (gamepad1.right_stick_x < 0)
-                        drivetrain.rotate(turnSpeed * Math.abs(gamepad1.right_stick_x), false);
-                }
-
-                if (gamepad1.left_trigger >= 0.75) {
-                    drivetrain.setMotorZeroPower(DcMotor.ZeroPowerBehavior.BRAKE);
-                } else {
-                    drivetrain.setMotorZeroPower(DcMotor.ZeroPowerBehavior.FLOAT);
-                }
-
-                if (gamepad1.right_trigger >= 0.75) {
-                    drivetrain.setSpeedMultiplier(turboSpeed);
-                } else {
-                    drivetrain.setSpeedMultiplier(normalSpeed);
-                }
-
-                if (gamepad1.dpad_up) {
-                    drivetrain.setPowerAll(slowSpeed);
-                } else if (gamepad1.dpad_down) {
-                    drivetrain.setPowerAll(-slowSpeed);
-                } else if (gamepad1.dpad_right) {
-                    drivetrain.strafe(slowSpeed, true);
-                } else if (gamepad1.dpad_left) {
-                    drivetrain.strafe(slowSpeed, false);
-                }
-
-                if (gamepad1.left_stick_x == 0 && gamepad1.right_stick_x == 0 && gamepad1.left_stick_y == 0 &&
-                        gamepad1.right_stick_y == 0 && !gamepad1.dpad_up && !gamepad1.dpad_left && !gamepad1.dpad_right
-                        && !gamepad1.dpad_down) {
-                    drivetrain.stop();
-                }
-            } else {
-                telemetry.addData("Current Drive Mode", "CLASSIC MODE");
-                drivetrain.setSpeedMultiplier(normalSpeed);
-                drivetrain.setMotorZeroPower(DcMotor.ZeroPowerBehavior.BRAKE);
-
-                double turn = (-1) * (gamepad1.left_trigger - gamepad1.right_trigger) * turnSpeed;
-
-                if (!(gamepad1.left_stick_x == 0 && gamepad1.right_stick_y == 0 && turn == 0)) {
-
-                    double speed;
-
-                    if (gamepad1.left_stick_x == 0 && gamepad1.right_stick_y == 0) {
-                        speed = 0;
-                    }
-                    else if ( gamepad1.right_stick_y == 0 ) {
-                        speed = Math.sqrt(2) * Math.abs(gamepad1.left_stick_x) ;
-                    }
-                    else if ( gamepad1.left_stick_x == 0 ) {
-                        speed = Math.abs(gamepad1.right_stick_y) ;
-                    }
-                    else {
-                        speed = Math.min( Math.abs(gamepad1.left_stick_x) + Math.abs(gamepad1.right_stick_y), 1);
-                    }
-
-                    double angle = Math.atan2(gamepad1.left_stick_x, -gamepad1.right_stick_y);
-                    drivetrain.MoveAngle(speed, angle, turn);
-                } else {
-                    drivetrain.stop();
-                }
-            }
-
-            telemetry.addData("LeftForwardOdometry", hwMap.leftIntake.getCurrentPosition());
-            telemetry.addData("RightForwardOdometry", hwMap.liftTwo.getCurrentPosition());
-            telemetry.addData("SidewaysOdometry", hwMap.rightIntake.getCurrentPosition());
-
-            telemetry.addData("FrontLeft", hwMap.frontLeft.getCurrentPosition());
-            telemetry.addData("BackLeft", hwMap.backLeft.getCurrentPosition());
-            telemetry.addData("FrontRight", hwMap.frontRight.getCurrentPosition());
-            telemetry.addData("BackRight", hwMap.backRight.getCurrentPosition());
-
-            telemetry.addData("LiftOne", hwMap.liftOne.getCurrentPosition());
-            telemetry.update();
         }
 
 
@@ -277,7 +225,7 @@ public class Teleop extends LinearOpMode {
                     hwMap.innerTransfer.setPosition(TeleopConstants.innerTransferPosTucked);
                     try{ Thread.sleep(500); } catch (Exception e){ e.printStackTrace(); }
                     hwMap.transferHorn.setPosition(TeleopConstants.transferHornPosReady);
-                    hwMap.innerTransfer.setPosition(TeleopConstants.innerTransferPosExtended);
+                    //hwMap.innerTransfer.setPosition(TeleopConstants.innerTransferPosExtended);
                     try{ Thread.sleep(300); } catch (Exception e){ e.printStackTrace(); }
                     blocker = false;
                 }
@@ -338,6 +286,116 @@ public class Teleop extends LinearOpMode {
             hwMap.rightIntake.setPower(0);
             hwMap.leftIntake.setPower(0);
         }
+    }
+
+    private void driveLoop(){
+        Thread drive = new Thread(){
+            public void run(){
+                while(opModeIsActive()) {
+                    telemetry.addData("Info", "Press START + BACK on GAMEPAD1 to switch drive modes!");
+
+                    if (tobyMode) {
+                        telemetry.addData("Current Drive Mode", "TOBY MODE");
+                        if (!(gamepad1.left_stick_x == 0 && gamepad1.left_stick_y == 0)) {
+
+                            double speed;
+
+                            if (gamepad1.left_stick_x == 0 && gamepad1.left_stick_y == 0) {
+                                speed = 0;
+                            } else if (gamepad1.left_stick_y == 0) {
+                                speed = Math.abs(gamepad1.left_stick_x);
+                            } else if (gamepad1.left_stick_x == 0) {
+                                speed = Math.abs(gamepad1.left_stick_y);
+                            } else {
+                                speed = Math.min(Math.abs(gamepad1.left_stick_x) + Math.abs(gamepad1.right_stick_y), 1);
+                            }
+
+                            double angle = Math.atan2(gamepad1.left_stick_x, -gamepad1.left_stick_y);
+                            drivetrain.MoveAngle(speed, angle, 0);
+                        }
+
+                        if (gamepad1.right_stick_x != 0) {
+                            drivetrain.setMotorZeroPower(DcMotor.ZeroPowerBehavior.BRAKE);
+                            if (gamepad1.right_stick_x > 0)
+                                drivetrain.rotate(turnSpeed * gamepad1.right_stick_x, true);
+                            else if (gamepad1.right_stick_x < 0)
+                                drivetrain.rotate(turnSpeed * Math.abs(gamepad1.right_stick_x), false);
+                            drivetrain.setMotorZeroPower(DcMotor.ZeroPowerBehavior.FLOAT);
+                        }
+
+                        if (gamepad1.left_trigger >= 0.751) {
+                            drivetrain.setMotorZeroPower(DcMotor.ZeroPowerBehavior.BRAKE);
+                        } else {
+                            drivetrain.setMotorZeroPower(DcMotor.ZeroPowerBehavior.FLOAT);
+                        }
+
+                        if (gamepad1.right_trigger >= 0.75) {
+                            drivetrain.setSpeedMultiplier(turboSpeed);
+                        } else {
+                            drivetrain.setSpeedMultiplier(normalSpeed);
+                        }
+
+                        if (gamepad1.dpad_up) {
+                            drivetrain.setPowerAll(slowSpeed - 0.2);
+                        } else if (gamepad1.dpad_down) {
+                            drivetrain.setPowerAll(-(slowSpeed - 0.2));
+                        } else if (gamepad1.dpad_right) {
+                            drivetrain.strafe(slowSpeed, true);
+                        } else if (gamepad1.dpad_left) {
+                            drivetrain.strafe(slowSpeed, false);
+                        }
+
+                        if (gamepad1.left_stick_x == 0 && gamepad1.right_stick_x == 0 && gamepad1.left_stick_y == 0 &&
+                                gamepad1.right_stick_y == 0 && !gamepad1.dpad_up && !gamepad1.dpad_left && !gamepad1.dpad_right
+                                && !gamepad1.dpad_down) {
+                            drivetrain.stop();
+                        }
+                    } else {
+                        telemetry.addData("Current Drive Mode", "CLASSIC MODE");
+                        drivetrain.setSpeedMultiplier(normalSpeed);
+                        drivetrain.setMotorZeroPower(DcMotor.ZeroPowerBehavior.BRAKE);
+
+                        double turn = (-1) * (gamepad1.left_trigger - gamepad1.right_trigger) * turnSpeed;
+
+                        if (!(gamepad1.left_stick_x == 0 && gamepad1.right_stick_y == 0 && turn == 0)) {
+
+                            double speed;
+
+                            if (gamepad1.left_stick_x == 0 && gamepad1.right_stick_y == 0) {
+                                speed = 0;
+                            } else if (gamepad1.right_stick_y == 0) {
+                                speed = Math.sqrt(2) * Math.abs(gamepad1.left_stick_x);
+                            } else if (gamepad1.left_stick_x == 0) {
+                                speed = Math.abs(gamepad1.right_stick_y);
+                            } else {
+                                speed = Math.min(Math.abs(gamepad1.left_stick_x) + Math.abs(gamepad1.right_stick_y), 1);
+                            }
+
+                            double angle = Math.atan2(gamepad1.left_stick_x, -gamepad1.right_stick_y);
+                            drivetrain.MoveAngle(speed, angle, turn);
+                        } else {
+                            drivetrain.stop();
+                        }
+                    }
+
+                    for(OnOffButton onOffButton : buttonLogic)
+                        onOffButton.getGamepadStateAndRun();
+
+                    telemetry.addData("LeftForwardOdometry", hwMap.leftIntake.getCurrentPosition());
+                    telemetry.addData("RightForwardOdometry", hwMap.liftTwo.getCurrentPosition());
+                    telemetry.addData("SidewaysOdometry", hwMap.rightIntake.getCurrentPosition());
+
+                    telemetry.addData("FrontLeft", hwMap.frontLeft.getCurrentPosition());
+                    telemetry.addData("BackLeft", hwMap.backLeft.getCurrentPosition());
+                    telemetry.addData("FrontRight", hwMap.frontRight.getCurrentPosition());
+                    telemetry.addData("BackRight", hwMap.backRight.getCurrentPosition());
+
+                    telemetry.addData("LiftOne", hwMap.liftOne.getCurrentPosition());
+                    telemetry.update();
+                }
+            }
+        };
+        drive.start();
     }
 
     private void saveDataLoop(HardwareMap hw) {

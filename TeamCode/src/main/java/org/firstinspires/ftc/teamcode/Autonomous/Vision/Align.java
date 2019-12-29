@@ -20,6 +20,8 @@ public class Align {
     private LinearOpMode opMode;
     private List<Recognition> detectedObj;
     private double externalHeading = -1;
+    private boolean failsafe = false;
+    private double initPos = 0;
 
     public Align(HardwareMap hwMap, LinearOpMode opMode, DcMotor.ZeroPowerBehavior zeroPower) {
         this.hwMap = hwMap;
@@ -37,13 +39,14 @@ public class Align {
     }
 
     public void foundation(FieldPosition f) {
-        boolean correctRotation = false;
+        boolean correctRotation = false;    //TODO Add failsafe
 
 
         // bang-bang with imu feedback to turn to precisely 90 degrees - faces foundation
         while (!opMode.isStopRequested() && opMode.opModeIsActive()) {
             double externalHeading = this.externalHeading;
-            if ((f == FieldPosition.RED_QUARRY || f == FieldPosition.RED_FOUNDATION) && !correctRotation) {
+            if ((f == FieldPosition.RED_QUARY || f == FieldPosition.RED_FOUNDATION_PARK || f == FieldPosition.RED_FOUNDATION_DRAG)
+                    && !correctRotation) {
                 if (externalHeading >= 270 || externalHeading < 90) {
                     setRightPower(-turnPower);
                     setLeftPower(turnPower);
@@ -53,11 +56,12 @@ public class Align {
                 }
                 opMode.telemetry.addData("Target Heading", 270 + "°");
                 opMode.telemetry.addData("Current Heading", externalHeading);
-            } else if ((f == FieldPosition.BLUE_QUARRY || f == FieldPosition.BLUE_FOUNDATION) && !correctRotation) {
-                if (externalHeading <= 89 || externalHeading >= 270) {
+            } else if ((f == FieldPosition.BLUE_QUARY || f == FieldPosition.BLUE_FOUNDATION_PARK || f == FieldPosition.BLUE_FOUNDATION_DRAG)
+                    && !correctRotation) {
+                if (externalHeading <= 96 || externalHeading >= 270) {
                     setRightPower(turnPower);
                     setLeftPower(-turnPower);
-                } else if (externalHeading >= 90 && externalHeading < 270) {
+                } else if (externalHeading >= 97 && externalHeading < 270) {
                     setRightPower(-turnPower);
                     setLeftPower(turnPower);
                 }
@@ -65,12 +69,13 @@ public class Align {
                 opMode.telemetry.addData("Current Heading", externalHeading);
             }
 
-            if (((externalHeading > 89 && externalHeading < 90) || (externalHeading < 270 && externalHeading > 269)) &&
+            if (((externalHeading > 96 && externalHeading < 97) || (externalHeading < 270 && externalHeading > 269)) &&
                     !correctRotation) {
                 stop();
                 correctRotation = true;
                 opMode.telemetry.addData("Target Heading", "AT TARGET (±1°)");
                 opMode.telemetry.addData("Current Heading", externalHeading);
+                initPos = System.currentTimeMillis();
             }
 
             if (correctRotation && hwMap.foundationDetectLeft.getState() && hwMap.foundationDetectRight.getState()) {
@@ -131,6 +136,13 @@ public class Align {
                     break;
                 }
                 opMode.telemetry.update();
+            }
+
+            if(correctRotation && Math.abs(System.currentTimeMillis() - initPos) > 4000){   //6000
+                hwMap.transferLock.setPosition(TeleopConstants.transferLockPosUp);
+                hwMap.foundationLock.setPosition(TeleopConstants.foundationLockLock);
+                stop();
+                break;
             }
             opMode.telemetry.update();
         }

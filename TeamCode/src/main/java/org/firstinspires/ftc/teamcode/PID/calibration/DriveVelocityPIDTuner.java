@@ -12,15 +12,21 @@ import com.acmerobotics.roadrunner.profile.MotionProfile;
 import com.acmerobotics.roadrunner.profile.MotionProfileGenerator;
 import com.acmerobotics.roadrunner.profile.MotionState;
 import com.acmerobotics.roadrunner.util.NanoClock;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.RobotLog;
 
+import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
+import org.firstinspires.ftc.teamcode.All.DriveConstant;
+import org.firstinspires.ftc.teamcode.All.HardwareMap;
+import org.firstinspires.ftc.teamcode.PID.DriveConstantsPID;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveBase;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveREV;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.BASE_CONSTRAINTS;
@@ -40,9 +46,11 @@ import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.kV;
  */
 @Config
 @Autonomous(name = "DriveVelocityPIDTuner", group = "drive")
-@Disabled
 public class DriveVelocityPIDTuner extends LinearOpMode {
     public static double DISTANCE = 72;
+    private BNO055IMU imu;
+    private PIDCoefficients coefficients;
+    private double kV;
 
     private static final String PID_VAR_NAME = "VELO_PID";
 
@@ -51,6 +59,18 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
     private CustomVariable catVar;
 
     private SampleMecanumDriveBase drive;
+
+    private ArrayList<String> savedData = new ArrayList<>();
+
+    private ArrayList<String> odometryLR = new ArrayList<>();
+    private ArrayList<String> wheelLR = new ArrayList<>();
+    private ArrayList<String> odometryCenter = new ArrayList<>();
+    private ArrayList<String> imuAngle = new ArrayList<>();
+    private ArrayList<String> targetAndError = new ArrayList<>();
+
+    private int index = 0;
+
+    private HardwareMap hwMap;
 
     private static MotionProfile generateProfile(boolean movingForward) {
         MotionState start = new MotionState(movingForward ? 0 : DISTANCE, 0, 0, 0);
@@ -128,10 +148,32 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        hwMap = new HardwareMap(hardwareMap);
+
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+        imu.initialize(parameters);
+
         if (!RUN_USING_ENCODER) {
             RobotLog.setGlobalErrorMsg("%s does not need to be run if the built-in motor velocity" +
                     "PID is not in use", getClass().getSimpleName());
         }
+
+        PIDCoefficients oldPID = new PIDCoefficients(DriveConstantsPID.MOTOR_VELO_PID.kP, DriveConstantsPID.MOTOR_VELO_PID.kI,
+                DriveConstantsPID.MOTOR_VELO_PID.kD);
+        double oldkV = DriveConstantsPID.kV;
+        ;
+
+        coefficients = new PIDCoefficients(DriveConstantsPID.MOTOR_VELO_PID.kP, DriveConstantsPID.MOTOR_VELO_PID.kI,
+                DriveConstantsPID.MOTOR_VELO_PID.kD);
+        kV = DriveConstantsPID.kV;
+
+
+        int selected = 0;
+        boolean blocker1 = false;
+        boolean blocker2 = false;
+        boolean blocker3 = false;
 
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
 
@@ -177,8 +219,205 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
                 telemetry.addData("velocity" + i, velocities.get(i));
                 telemetry.addData("error" + i, motionState.getV() - velocities.get(i));
             }
+
+            targetAndError.add(System.currentTimeMillis() + ": Distance: " + DISTANCE + ", PID: " + coefficients + ", kV: "
+                    + kV + " ---====--- TargetVelocity: " +  motionState.getV() + " || CurrentVelocities:");
+            for (int i = 0; i < velocities.size(); i++) {
+                targetAndError.set(index, targetAndError.get(index) + " " + i + ": " + velocities.get(i));
+            }
+
+            targetAndError.set(index, targetAndError.get(index) + " || Errors:");
+
+            for(int i = 0; i < velocities.size(); i++){
+                targetAndError.set(index, targetAndError.get(index) + " " + i + ": " + (motionState.getV() - velocities.get(i)));
+            }
+
+            targetAndError.set(index, targetAndError.get(index) + "\n");
+
+            index += 1;
+
+            /*savedData.add("\n" + "FrontLeftWheel: " + hwMap.frontLeft.getCurrentPosition() + ", FrontRightWheel: " +
+                    hwMap.frontRight.getCurrentPosition() + ", BackLeftWheel: " + hwMap.backLeft.getCurrentPosition() +
+                    ", BackRightWheel: " + hwMap.backRight.getCurrentPosition() + ", FrontLeftOdo: " +
+                    hwMap.leftIntake.getCurrentPosition() + ", FrontRightOdo: " + hwMap.liftTwo.getCurrentPosition() +
+                    ", BackMiddleOdo: " + hwMap.rightIntake.getCurrentPosition() + ", IMU Angle (Rad): " +
+                    imu.getAngularOrientation().firstAngle + ", IMU Angle (Deg): " +
+                    Math.toDegrees(imu.getAngularOrientation().firstAngle) +
+                    " || CurrentVelocities: " + velocities + ", TargetVelocities: " + motionState.getV() + " || MotorVeloPID: " +
+                    DriveConstantsPID.MOTOR_VELO_PID);
+
+            odometryCenter.add(hwMap.rightIntake.getCurrentPosition() + "\n");
+            imuAngle.add(imu.getAngularOrientation().firstAngle + "\n");
+            odometryLR.add(hwMap.leftIntake.getCurrentPosition() + "," + hwMap.liftTwo.getCurrentPosition() + "\n");
+            wheelLR.add(hwMap.frontLeft.getCurrentPosition() + "," + hwMap.backLeft.getCurrentPosition() + "," +
+                    hwMap.frontRight.getCurrentPosition() + "," + hwMap.backRight.getCurrentPosition() + "\n");*/
+
+            if (gamepad1.right_bumper) {
+                DriveConstant.writeFile(AppUtil.ROOT_FOLDER + "/RoadRunner/DriveVelocityPIDTunerConstants_" +
+                        System.currentTimeMillis() + ".txt", "Distance: " + DISTANCE + ", PID: " + coefficients + ", kV: "
+                        + kV);
+
+                String targetError = targetAndError.toString();
+                targetError = targetError.replaceAll("]", "");
+                targetError = targetError.replaceAll("\\[", "");
+
+                DriveConstant.writeFile(AppUtil.ROOT_FOLDER + "/RoadRunner/DriveVelocityPIDTunerTargetsAndErrors_" +
+                        System.currentTimeMillis() + ".txt", targetError);
+                break;
+            }
+
+            if (gamepad1.left_stick_y >= 0.5) {
+                DISTANCE -= 1;
+                try {
+                    Thread.sleep(100);
+                } catch (Exception e) {
+                }
+            } else if (gamepad1.left_stick_y <= -0.5) {
+                DISTANCE += 1;
+                try {
+                    Thread.sleep(100);
+                } catch (Exception e) {
+                }
+            }
+
+            if(DISTANCE < 0)
+                DISTANCE = 0;
+
+            if (gamepad1.right_stick_y >= 0.5) {
+                if (selected == 0) {
+                    coefficients.kP -= 0.5;
+                    try{
+                        Thread.sleep(100);
+                    } catch (Exception e){}
+                }else if (selected == 1) {
+                    coefficients.kI -= 0.5;
+                    try{
+                        Thread.sleep(100);
+                    } catch (Exception e){}
+                }else if (selected == 2) {
+                    coefficients.kD -= 0.5;
+                    try{
+                        Thread.sleep(100);
+                    } catch (Exception e){}
+                }else if (selected == 3) {
+                    kV -= 0.001;
+                    try{
+                        Thread.sleep(100);
+                    } catch (Exception e){}
+                }
+            } else if (gamepad1.right_stick_y <= -0.5) {
+                if (selected == 0) {
+                    coefficients.kP += 0.5;
+                    try{
+                        Thread.sleep(100);
+                    } catch (Exception e){}
+                }else if (selected == 1) {
+                    coefficients.kI += 0.5;
+                    try{
+                        Thread.sleep(100);
+                    } catch (Exception e){}
+                }else if (selected == 2) {
+                    coefficients.kD += 0.5;
+                    try{
+                        Thread.sleep(100);
+                    } catch (Exception e){}
+                }else if (selected == 3) {
+                    kV += 0.001;
+                    try{
+                        Thread.sleep(100);
+                    } catch (Exception e){}
+                }
+            }
+
+            if (gamepad1.dpad_right && !blocker1) {
+                if (selected < 3)
+                    selected += 1;
+                blocker1 = true;
+            } else if (!gamepad1.dpad_right && blocker1) {
+                blocker1 = false;
+            }
+
+            if (gamepad1.dpad_left && !blocker2) {
+                if (selected > 0)
+                    selected -= 1;
+                blocker2 = true;
+            } else if (!gamepad1.dpad_right && blocker2) {
+                blocker2 = false;
+            }
+
+            if (gamepad1.left_bumper) {
+                drive.setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, coefficients);
+                DriveConstantsPID.kV = kV;
+            }
+
+            telemetry.addData("Instructions", "A to begin moving. Press R bumper to save data. " + "DPAD L & R to select. L stick to change distance. R stick to " +
+                    "change selected value. L bumper to save values.");
+
+            if(selected == 0)
+                telemetry.addData("SELECTED", "P");
+            else if(selected == 1)
+                telemetry.addData("SELECTED", "I");
+            else if(selected == 2)
+                telemetry.addData("SELECTED", "D");
+            else if(selected == 3)
+                telemetry.addData("SELECTED", "kV");
+
+            telemetry.addData("DISTANCE", DISTANCE);
+            telemetry.addData("PID", coefficients);
+            telemetry.addData("kV", kV);
+            telemetry.addData("ERROR", drive.getLastError());
             telemetry.update();
         }
+
+        /*String temp = odometryCenter.toString().replaceAll(",","");
+        temp = temp.replaceAll("\\[","");
+        temp = temp.replaceAll("]","");
+        DriveConstant.writeFile(AppUtil.ROOT_FOLDER + "/RoadRunner/OdometryCenter_" +
+                System.currentTimeMillis() + ".csv", temp);
+
+        temp = imuAngle.toString().replaceAll(",","");
+        temp = temp.replaceAll("\\[","");
+        temp = temp.replaceAll("]","");
+        DriveConstant.writeFile(AppUtil.ROOT_FOLDER + "/RoadRunner/ImuAngle_" +
+                System.currentTimeMillis() + ".csv", temp);
+
+        temp = odometryLR.toString().replaceAll("\\[","");
+        temp = temp.replaceAll("]","");
+        int counter = 0;
+        for(int i = 0; i < temp.length(); i++){
+            if(temp.charAt(i) == ','){
+                counter += 1;
+            }
+
+            if(counter == 2) {
+                temp = temp.substring(0, i) + temp.substring(i + 1);
+                counter = 0;
+            }
+        }
+        DriveConstant.writeFile(AppUtil.ROOT_FOLDER + "/RoadRunner/OdometryLR_" +
+                System.currentTimeMillis() + ".csv", temp);
+
+        temp = wheelLR.toString().replaceAll("\\[","");
+        temp = temp.replaceAll("]","");
+        counter = 0;
+        for(int i = 0; i < temp.length(); i++){
+            if(temp.charAt(i) == ','){
+                counter += 1;
+            }
+
+            if(counter == 4) {
+                temp = temp.substring(0, i) + temp.substring(i + 1);
+                counter = 0;
+            }
+        }
+        DriveConstant.writeFile(AppUtil.ROOT_FOLDER + "/RoadRunner/WheelLR_" +
+                System.currentTimeMillis() + ".csv", temp);
+
+        DriveConstant.writeFile(AppUtil.ROOT_FOLDER + "/RoadRunner/DriveVelRAWData_" +
+                System.currentTimeMillis() + ".txt", savedData.toString());*/
+
+        drive.setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, oldPID);
+        DriveConstantsPID.kV = oldkV;
 
         removePidVariable();
     }

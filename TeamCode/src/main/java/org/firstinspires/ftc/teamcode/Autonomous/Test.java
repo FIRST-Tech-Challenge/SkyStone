@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -19,6 +20,7 @@ import org.firstinspires.ftc.teamcode.Autonomous.Vision.Align;
 import java.util.List;
 
 @Autonomous(name = "TestAlign", group = "LinearOpMode")
+@Disabled
 public class Test extends LinearOpMode {
     private Align align;
     private VuforiaLocalizer vuforia;

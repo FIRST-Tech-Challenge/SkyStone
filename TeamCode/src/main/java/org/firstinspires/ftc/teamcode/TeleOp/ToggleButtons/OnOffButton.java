@@ -24,6 +24,9 @@ public class OnOffButton {
     private boolean mvmt1 = false;
     private boolean mvmt2 = false;
 
+    private boolean manualActivate1 = false;
+    private boolean manualActivate2 = false;
+
     public OnOffButton(Gamepad gamepad, GamepadButtons toggleButton, DcMotor[] motors,
                        double[][] power) {
         this.motors = motors;
@@ -77,7 +80,7 @@ public class OnOffButton {
             twoButtonHandler();
     }
 
-    public boolean[] isRunning(){
+    public boolean[] getState(){
         if(situation == Situation.ONE_BUTTON_MOTOR || situation == Situation.ONE_BUTTON_SERVO)
             return new boolean[] { mvmt1 };
         else
@@ -91,11 +94,11 @@ public class OnOffButton {
             return new GamepadButtons[] { button1, button2 };
     }
 
-    public boolean controllingServos(){
+    public boolean isControllingServos(){
         return situation == Situation.ONE_BUTTON_SERVO || situation == Situation.TWO_BUTTON_SERVO;
     }
 
-    public boolean controllingDcMotors(){
+    public boolean isControllingDcMotors(){
         return situation == Situation.ONE_BUTTON_MOTOR || situation == Situation.TWO_BUTTON_MOTOR;
     }
 
@@ -106,10 +109,17 @@ public class OnOffButton {
     public DcMotor[] getMotors(){
         return motors;
     }
+	
+	public void manualActivate(boolean manualActivate1, boolean manualActivate2){
+		this.manualActivate1 = manualActivate1;
+		this.manualActivate2 = manualActivate2;
+	}
 
     private void oneButtonLogic(){
         if(!blocker){
             blocker = true;
+            manualActivate1 = false;
+            manualActivate2 = false;
             mvmt1 = !mvmt1;
         }
     }
@@ -119,6 +129,8 @@ public class OnOffButton {
             if (!mvmt1) {
                 mvmt1 = true;
                 mvmt2 = false;
+                manualActivate1 = false;
+                manualActivate2 = false;
             } else {
                 mvmt1 = false;
                 mvmt2 = false;
@@ -132,6 +144,8 @@ public class OnOffButton {
             if (!mvmt2) {
                 mvmt1 = false;
                 mvmt2 = true;
+                manualActivate1 = false;
+                manualActivate2 = false;
             } else {
                 mvmt1 = false;
                 mvmt2 = false;
@@ -215,75 +229,75 @@ public class OnOffButton {
     private void oneButtonHandler() {
         switch (button1) {
             case A:
-                if(gamepadSituation1.a)
+                if(gamepadSituation1.a || manualActivate1)
                     oneButtonLogic();
-                else
+                else if(!gamepadSituation1.a && !manualActivate1)
                     blocker = false;
                 break;
             case B:
-                if(gamepadSituation1.b)
+                if(gamepadSituation1.b || manualActivate1)
                     oneButtonLogic();
-                else
+                else if(!gamepadSituation1.b && !manualActivate1)
                     blocker = false;
                 break;
             case X:
-                if(gamepadSituation1.x)
+                if(gamepadSituation1.x || manualActivate1)
                     oneButtonLogic();
-                else
+                else if(!gamepadSituation1.x && !manualActivate1)
                     blocker = false;
                 break;
             case Y:
-                if(gamepadSituation1.y)
+                if(gamepadSituation1.y || manualActivate1)
                     oneButtonLogic();
-                else
+                else if(!gamepadSituation1.y && !manualActivate1)
                     blocker = false;
                 break;
             case DPAD_DOWN:
-                if(gamepadSituation1.dpad_down)
+                if(gamepadSituation1.dpad_down || manualActivate1)
                     oneButtonLogic();
-                else
+                else if(!gamepadSituation1.dpad_down && !manualActivate1)
                     blocker = false;
                 break;
             case DPAD_LEFT:
-                if(gamepadSituation1.dpad_left)
+                if(gamepadSituation1.dpad_left || manualActivate1)
                     oneButtonLogic();
-                else
+                else if(!gamepadSituation1.dpad_left && !manualActivate1)
                     blocker = false;
                 break;
             case DPAD_RIGHT:
-                if(gamepadSituation1.dpad_right)
+                if(gamepadSituation1.dpad_right || manualActivate1)
                     oneButtonLogic();
-                else
+                else if(!gamepadSituation1.dpad_right && !manualActivate1)
                     blocker = false;
                 break;
             case DPAD_UP:
-                if(gamepadSituation1.dpad_up)
+                if(gamepadSituation1.dpad_up || manualActivate1)
                     oneButtonLogic();
-                else
+                else if(!gamepadSituation1.dpad_up && !manualActivate1)
                     blocker = false;
                 break;
             case LEFT_BUMPER:
-                if(gamepadSituation1.left_bumper)
+                if(gamepadSituation1.left_bumper || manualActivate1)
                     oneButtonLogic();
-                else
+                else if(!gamepadSituation1.left_bumper && !manualActivate1)
                     blocker = false;
                 break;
             case RIGHT_BUMPER:
-                if(gamepadSituation1.right_bumper)
+                if(gamepadSituation1.right_bumper || manualActivate1)
                     oneButtonLogic();
-                else
+                else if(!gamepadSituation1.right_bumper && !manualActivate1)
                     blocker = false;
                 break;
             case LEFT_TRIGGER:
-                if(gamepadSituation1.left_trigger >= 0.5)
+                if(gamepadSituation1.left_trigger >= 0.5 || manualActivate1)
                     oneButtonLogic();
-                else
+                else if(gamepadSituation1.left_trigger < 0.5 && !manualActivate1)
                     blocker = false;
                 break;
             case RIGHT_TRIGGER:
-                if(gamepadSituation1.right_trigger >= 0.5)
+                if(gamepadSituation1.right_trigger >= 0.5 || manualActivate1)
                     oneButtonLogic();
-                else
+                else if(gamepadSituation1.right_trigger < 0.5 && !manualActivate1)
                     blocker = false;
                 break;
         }
@@ -298,123 +312,123 @@ public class OnOffButton {
             case A:
                 switch (button2) {
                     case A:
-                        if (gamepadSituation1.a)
+                        if (gamepadSituation1.a || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.a)
+                        if (gamepadSituation2.a || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.a && !gamepadSituation2.a)
+                        if (!gamepadSituation1.a && !gamepadSituation2.a && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case B:
-                        if (gamepadSituation1.a)
+                        if (gamepadSituation1.a || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.b)
+                        if (gamepadSituation2.b || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.a && !gamepadSituation2.b)
+                        if (!gamepadSituation1.a && !gamepadSituation2.b && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case X:
-                        if (gamepadSituation1.a)
+                        if (gamepadSituation1.a || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.x)
+                        if (gamepadSituation2.x || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.a && !gamepadSituation2.x)
+                        if (!gamepadSituation1.a && !gamepadSituation2.x && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case Y:
-                        if (gamepadSituation1.a)
+                        if (gamepadSituation1.a || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.y)
+                        if (gamepadSituation2.y || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.a && !gamepadSituation2.y)
+                        if (!gamepadSituation1.a && !gamepadSituation2.y && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_DOWN:
-                        if (gamepadSituation1.a)
+                        if (gamepadSituation1.a || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_down)
+                        if (gamepadSituation2.dpad_down || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.a && !gamepadSituation2.dpad_down)
+                        if (!gamepadSituation1.a && !gamepadSituation2.dpad_down && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_LEFT:
-                        if (gamepadSituation1.a)
+                        if (gamepadSituation1.a || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_left)
+                        if (gamepadSituation2.dpad_left || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.a && !gamepadSituation2.dpad_left)
+                        if (!gamepadSituation1.a && !gamepadSituation2.dpad_left && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_RIGHT:
-                        if (gamepadSituation1.a)
+                        if (gamepadSituation1.a || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_right)
+                        if (gamepadSituation2.dpad_right || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.a && !gamepadSituation2.dpad_right)
+                        if (!gamepadSituation1.a && !gamepadSituation2.dpad_right && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_UP:
-                        if (gamepadSituation1.a)
+                        if (gamepadSituation1.a || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_up)
+                        if (gamepadSituation2.dpad_up || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.a && !gamepadSituation2.dpad_up)
+                        if (!gamepadSituation1.a && !gamepadSituation2.dpad_up && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case LEFT_BUMPER:
-                        if (gamepadSituation1.a)
+                        if (gamepadSituation1.a || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.left_bumper)
+                        if (gamepadSituation2.left_bumper || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.a && !gamepadSituation2.left_bumper)
+                        if (!gamepadSituation1.a && !gamepadSituation2.left_bumper && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case RIGHT_BUMPER:
-                        if (gamepadSituation1.a)
+                        if (gamepadSituation1.a || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.right_bumper)
+                        if (gamepadSituation2.right_bumper || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.a && !gamepadSituation2.right_bumper)
+                        if (!gamepadSituation1.a && !gamepadSituation2.right_bumper && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case LEFT_TRIGGER:
-                        if (gamepadSituation1.a)
+                        if (gamepadSituation1.a || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.left_trigger >= 0.5)
+                        if (gamepadSituation2.left_trigger >= 0.5 || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.a && gamepadSituation2.left_trigger < 0.5)
+                        if (!gamepadSituation1.a && gamepadSituation2.left_trigger < 0.5 && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case RIGHT_TRIGGER:
-                        if (gamepadSituation1.a)
+                        if (gamepadSituation1.a || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.right_trigger >= 0.5)
+                        if (gamepadSituation2.right_trigger >= 0.5 || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.a && gamepadSituation2.right_trigger < 0.5)
+                        if (!gamepadSituation1.a && gamepadSituation2.right_trigger < 0.5 && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                 }
@@ -422,123 +436,123 @@ public class OnOffButton {
             case B:
                 switch (button2) {
                     case A:
-                        if (gamepadSituation1.b)
+                        if (gamepadSituation1.b || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.a)
+                        if (gamepadSituation2.a || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.b && !gamepadSituation2.a)
+                        if (!gamepadSituation1.b && !gamepadSituation2.a && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case B:
-                        if (gamepadSituation1.b)
+                        if (gamepadSituation1.b || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.b)
+                        if (gamepadSituation2.b || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.b && !gamepadSituation2.b)
+                        if (!gamepadSituation1.b && !gamepadSituation2.b && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case X:
-                        if (gamepadSituation1.b)
+                        if (gamepadSituation1.b || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.x)
+                        if (gamepadSituation2.x || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.b && !gamepadSituation2.x)
+                        if (!gamepadSituation1.b && !gamepadSituation2.x && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case Y:
-                        if (gamepadSituation1.b)
+                        if (gamepadSituation1.b || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.y)
+                        if (gamepadSituation2.y || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.b && !gamepadSituation2.y)
+                        if (!gamepadSituation1.b && !gamepadSituation2.y && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_DOWN:
-                        if (gamepadSituation1.b)
+                        if (gamepadSituation1.b || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_down)
+                        if (gamepadSituation2.dpad_down || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.b && !gamepadSituation2.dpad_down)
+                        if (!gamepadSituation1.b && !gamepadSituation2.dpad_down && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_LEFT:
-                        if (gamepadSituation1.b)
+                        if (gamepadSituation1.b || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_left)
+                        if (gamepadSituation2.dpad_left || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.b && !gamepadSituation2.dpad_left)
+                        if (!gamepadSituation1.b && !gamepadSituation2.dpad_left && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_RIGHT:
-                        if (gamepadSituation1.b)
+                        if (gamepadSituation1.b || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_right)
+                        if (gamepadSituation2.dpad_right || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.b && !gamepadSituation2.dpad_right)
+                        if (!gamepadSituation1.b && !gamepadSituation2.dpad_right && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_UP:
-                        if (gamepadSituation1.b)
+                        if (gamepadSituation1.b || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_up)
+                        if (gamepadSituation2.dpad_up || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.b && !gamepadSituation2.dpad_up)
+                        if (!gamepadSituation1.b && !gamepadSituation2.dpad_up && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case LEFT_BUMPER:
-                        if (gamepadSituation1.b)
+                        if (gamepadSituation1.b || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.left_bumper)
+                        if (gamepadSituation2.left_bumper || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.b && !gamepadSituation2.left_bumper)
+                        if (!gamepadSituation1.b && !gamepadSituation2.left_bumper && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case RIGHT_BUMPER:
-                        if (gamepadSituation1.b)
+                        if (gamepadSituation1.b || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.right_bumper)
+                        if (gamepadSituation2.right_bumper || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.b && !gamepadSituation2.right_bumper)
+                        if (!gamepadSituation1.b && !gamepadSituation2.right_bumper && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case LEFT_TRIGGER:
-                        if (gamepadSituation1.b)
+                        if (gamepadSituation1.b || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.left_trigger >= 0.5)
+                        if (gamepadSituation2.left_trigger >= 0.5 || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.b && gamepadSituation2.left_trigger < 0.5)
+                        if (!gamepadSituation1.b && gamepadSituation2.left_trigger < 0.5 && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case RIGHT_TRIGGER:
-                        if (gamepadSituation1.b)
+                        if (gamepadSituation1.b || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.right_trigger >= 0.5)
+                        if (gamepadSituation2.right_trigger >= 0.5 || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.b && gamepadSituation2.right_trigger < 0.5)
+                        if (!gamepadSituation1.b && gamepadSituation2.right_trigger < 0.5 && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                 }
@@ -546,123 +560,123 @@ public class OnOffButton {
             case X:
                 switch (button2) {
                     case A:
-                        if (gamepadSituation1.x)
+                        if (gamepadSituation1.x || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.a)
+                        if (gamepadSituation2.a || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.x && !gamepadSituation2.a)
+                        if (!gamepadSituation1.x && !gamepadSituation2.a && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case B:
-                        if (gamepadSituation1.x)
+                        if (gamepadSituation1.x || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.b)
+                        if (gamepadSituation2.b || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.x && !gamepadSituation2.b)
+                        if (!gamepadSituation1.x && !gamepadSituation2.b && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case X:
-                        if (gamepadSituation1.x)
+                        if (gamepadSituation1.x || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.x)
+                        if (gamepadSituation2.x || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.x && !gamepadSituation2.x)
+                        if (!gamepadSituation1.x && !gamepadSituation2.x && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case Y:
-                        if (gamepadSituation1.x)
+                        if (gamepadSituation1.x || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.y)
+                        if (gamepadSituation2.y || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.x && !gamepadSituation2.y)
+                        if (!gamepadSituation1.x && !gamepadSituation2.y && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_DOWN:
-                        if (gamepadSituation1.x)
+                        if (gamepadSituation1.x || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_down)
+                        if (gamepadSituation2.dpad_down || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.x && !gamepadSituation2.dpad_down)
+                        if (!gamepadSituation1.x && !gamepadSituation2.dpad_down && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_LEFT:
-                        if (gamepadSituation1.x)
+                        if (gamepadSituation1.x || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_left)
+                        if (gamepadSituation2.dpad_left || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.x && !gamepadSituation2.dpad_left)
+                        if (!gamepadSituation1.x && !gamepadSituation2.dpad_left && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_RIGHT:
-                        if (gamepadSituation1.x)
+                        if (gamepadSituation1.x || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_right)
+                        if (gamepadSituation2.dpad_right || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.x && !gamepadSituation2.dpad_right)
+                        if (!gamepadSituation1.x && !gamepadSituation2.dpad_right && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_UP:
-                        if (gamepadSituation1.x)
+                        if (gamepadSituation1.x || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_up)
+                        if (gamepadSituation2.dpad_up || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.x && !gamepadSituation2.dpad_up)
+                        if (!gamepadSituation1.x && !gamepadSituation2.dpad_up && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case LEFT_BUMPER:
-                        if (gamepadSituation1.x)
+                        if (gamepadSituation1.x || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.left_bumper)
+                        if (gamepadSituation2.left_bumper || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.x && !gamepadSituation2.left_bumper)
+                        if (!gamepadSituation1.x && !gamepadSituation2.left_bumper && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case RIGHT_BUMPER:
-                        if (gamepadSituation1.x)
+                        if (gamepadSituation1.x || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.right_bumper)
+                        if (gamepadSituation2.right_bumper || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.x && !gamepadSituation2.right_bumper)
+                        if (!gamepadSituation1.x && !gamepadSituation2.right_bumper && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case LEFT_TRIGGER:
-                        if (gamepadSituation1.x)
+                        if (gamepadSituation1.x || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.left_trigger >= 0.5)
+                        if (gamepadSituation2.left_trigger >= 0.5 || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.x && gamepadSituation2.left_trigger < 0.5)
+                        if (!gamepadSituation1.x && gamepadSituation2.left_trigger < 0.5 && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case RIGHT_TRIGGER:
-                        if (gamepadSituation1.x)
+                        if (gamepadSituation1.x || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.right_trigger >= 0.5)
+                        if (gamepadSituation2.right_trigger >= 0.5 || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.x && gamepadSituation2.right_trigger < 0.5)
+                        if (!gamepadSituation1.x && gamepadSituation2.right_trigger < 0.5 && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                 }
@@ -670,123 +684,123 @@ public class OnOffButton {
             case Y:
                 switch (button2) {
                     case A:
-                        if (gamepadSituation1.y)
+                        if (gamepadSituation1.y || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.a)
+                        if (gamepadSituation2.a || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.y && !gamepadSituation2.a)
+                        if (!gamepadSituation1.y && !gamepadSituation2.a && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case B:
-                        if (gamepadSituation1.y)
+                        if (gamepadSituation1.y || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.b)
+                        if (gamepadSituation2.b || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.y && !gamepadSituation2.b)
+                        if (!gamepadSituation1.y && !gamepadSituation2.b && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case X:
-                        if (gamepadSituation1.y)
+                        if (gamepadSituation1.y || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.x)
+                        if (gamepadSituation2.x || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.y && !gamepadSituation2.x)
+                        if (!gamepadSituation1.y && !gamepadSituation2.x && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case Y:
-                        if (gamepadSituation1.y)
+                        if (gamepadSituation1.y || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.y)
+                        if (gamepadSituation2.y || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.y && !gamepadSituation2.y)
+                        if (!gamepadSituation1.y && !gamepadSituation2.y && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_DOWN:
-                        if (gamepadSituation1.y)
+                        if (gamepadSituation1.y || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_down)
+                        if (gamepadSituation2.dpad_down || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.y && !gamepadSituation2.dpad_down)
+                        if (!gamepadSituation1.y && !gamepadSituation2.dpad_down && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_LEFT:
-                        if (gamepadSituation1.y)
+                        if (gamepadSituation1.y || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_left)
+                        if (gamepadSituation2.dpad_left || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.y && !gamepadSituation2.dpad_left)
+                        if (!gamepadSituation1.y && !gamepadSituation2.dpad_left && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_RIGHT:
-                        if (gamepadSituation1.y)
+                        if (gamepadSituation1.y || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_right)
+                        if (gamepadSituation2.dpad_right || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.y && !gamepadSituation2.dpad_right)
+                        if (!gamepadSituation1.y && !gamepadSituation2.dpad_right && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_UP:
-                        if (gamepadSituation1.y)
+                        if (gamepadSituation1.y || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_up)
+                        if (gamepadSituation2.dpad_up || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.y && !gamepadSituation2.dpad_up)
+                        if (!gamepadSituation1.y && !gamepadSituation2.dpad_up && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case LEFT_BUMPER:
-                        if (gamepadSituation1.y)
+                        if (gamepadSituation1.y || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.left_bumper)
+                        if (gamepadSituation2.left_bumper || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.y && !gamepadSituation2.left_bumper)
+                        if (!gamepadSituation1.y && !gamepadSituation2.left_bumper && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case RIGHT_BUMPER:
-                        if (gamepadSituation1.y)
+                        if (gamepadSituation1.y || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.right_bumper)
+                        if (gamepadSituation2.right_bumper || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.y && !gamepadSituation2.right_bumper)
+                        if (!gamepadSituation1.y && !gamepadSituation2.right_bumper && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case LEFT_TRIGGER:
-                        if (gamepadSituation1.y)
+                        if (gamepadSituation1.y || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.left_trigger >= 0.5)
+                        if (gamepadSituation2.left_trigger >= 0.5 || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.y && gamepadSituation2.left_trigger < 0.5)
+                        if (!gamepadSituation1.y && gamepadSituation2.left_trigger < 0.5 && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case RIGHT_TRIGGER:
-                        if (gamepadSituation1.y)
+                        if (gamepadSituation1.y || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.right_trigger >= 0.5)
+                        if (gamepadSituation2.right_trigger >= 0.5 || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.y && gamepadSituation2.right_trigger < 0.5)
+                        if (!gamepadSituation1.y && gamepadSituation2.right_trigger < 0.5 && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                 }
@@ -794,123 +808,123 @@ public class OnOffButton {
             case DPAD_DOWN:
                 switch (button2) {
                     case A:
-                        if (gamepadSituation1.dpad_down)
+                        if (gamepadSituation1.dpad_down || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.a)
+                        if (gamepadSituation2.a || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_down && !gamepadSituation2.a)
+                        if (!gamepadSituation1.dpad_down && !gamepadSituation2.a && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case B:
-                        if (gamepadSituation1.dpad_down)
+                        if (gamepadSituation1.dpad_down || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.b)
+                        if (gamepadSituation2.b || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_down && !gamepadSituation2.b)
+                        if (!gamepadSituation1.dpad_down && !gamepadSituation2.b && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case X:
-                        if (gamepadSituation1.dpad_down)
+                        if (gamepadSituation1.dpad_down || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.x)
+                        if (gamepadSituation2.x || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_down && !gamepadSituation2.x)
+                        if (!gamepadSituation1.dpad_down && !gamepadSituation2.x && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case Y:
-                        if (gamepadSituation1.dpad_down)
+                        if (gamepadSituation1.dpad_down || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.y)
+                        if (gamepadSituation2.y || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_down && !gamepadSituation2.y)
+                        if (!gamepadSituation1.dpad_down && !gamepadSituation2.y && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_DOWN:
-                        if (gamepadSituation1.dpad_down)
+                        if (gamepadSituation1.dpad_down || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_down)
+                        if (gamepadSituation2.dpad_down || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_down && !gamepadSituation2.dpad_down)
+                        if (!gamepadSituation1.dpad_down && !gamepadSituation2.dpad_down && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_LEFT:
-                        if (gamepadSituation1.dpad_down)
+                        if (gamepadSituation1.dpad_down || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_left)
+                        if (gamepadSituation2.dpad_left || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_down && !gamepadSituation2.dpad_left)
+                        if (!gamepadSituation1.dpad_down && !gamepadSituation2.dpad_left && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_RIGHT:
-                        if (gamepadSituation1.dpad_down)
+                        if (gamepadSituation1.dpad_down || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_right)
+                        if (gamepadSituation2.dpad_right || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_down && !gamepadSituation2.dpad_right)
+                        if (!gamepadSituation1.dpad_down && !gamepadSituation2.dpad_right && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_UP:
-                        if (gamepadSituation1.dpad_down)
+                        if (gamepadSituation1.dpad_down || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_up)
+                        if (gamepadSituation2.dpad_up || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_down && !gamepadSituation2.dpad_up)
+                        if (!gamepadSituation1.dpad_down && !gamepadSituation2.dpad_up && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case LEFT_BUMPER:
-                        if (gamepadSituation1.dpad_down)
+                        if (gamepadSituation1.dpad_down || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.left_bumper)
+                        if (gamepadSituation2.left_bumper || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_down && !gamepadSituation2.left_bumper)
+                        if (!gamepadSituation1.dpad_down && !gamepadSituation2.left_bumper && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case RIGHT_BUMPER:
-                        if (gamepadSituation1.dpad_down)
+                        if (gamepadSituation1.dpad_down || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.right_bumper)
+                        if (gamepadSituation2.right_bumper || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_down && !gamepadSituation2.right_bumper)
+                        if (!gamepadSituation1.dpad_down && !gamepadSituation2.right_bumper && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case LEFT_TRIGGER:
-                        if (gamepadSituation1.dpad_down)
+                        if (gamepadSituation1.dpad_down || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.left_trigger >= 0.5)
+                        if (gamepadSituation2.left_trigger >= 0.5 || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_down && gamepadSituation2.left_trigger < 0.5)
+                        if (!gamepadSituation1.dpad_down && gamepadSituation2.left_trigger < 0.5 && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case RIGHT_TRIGGER:
-                        if (gamepadSituation1.dpad_down)
+                        if (gamepadSituation1.dpad_down || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.right_trigger >= 0.5)
+                        if (gamepadSituation2.right_trigger >= 0.5 || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_down && gamepadSituation2.right_trigger < 0.5)
+                        if (!gamepadSituation1.dpad_down && gamepadSituation2.right_trigger < 0.5 && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                 }
@@ -918,123 +932,123 @@ public class OnOffButton {
             case DPAD_LEFT:
                 switch (button2) {
                     case A:
-                        if (gamepadSituation1.dpad_left)
+                        if (gamepadSituation1.dpad_left || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.a)
+                        if (gamepadSituation2.a || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_left && !gamepadSituation2.a)
+                        if (!gamepadSituation1.dpad_left && !gamepadSituation2.a && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case B:
-                        if (gamepadSituation1.dpad_left)
+                        if (gamepadSituation1.dpad_left || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.b)
+                        if (gamepadSituation2.b || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_left && !gamepadSituation2.b)
+                        if (!gamepadSituation1.dpad_left && !gamepadSituation2.b && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case X:
-                        if (gamepadSituation1.dpad_left)
+                        if (gamepadSituation1.dpad_left || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.x)
+                        if (gamepadSituation2.x || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_left && !gamepadSituation2.x)
+                        if (!gamepadSituation1.dpad_left && !gamepadSituation2.x && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case Y:
-                        if (gamepadSituation1.dpad_left)
+                        if (gamepadSituation1.dpad_left || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.y)
+                        if (gamepadSituation2.y || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_left && !gamepadSituation2.y)
+                        if (!gamepadSituation1.dpad_left && !gamepadSituation2.y && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_DOWN:
-                        if (gamepadSituation1.dpad_left)
+                        if (gamepadSituation1.dpad_left || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_down)
+                        if (gamepadSituation2.dpad_down || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_left && !gamepadSituation2.dpad_down)
+                        if (!gamepadSituation1.dpad_left && !gamepadSituation2.dpad_down && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_LEFT:
-                        if (gamepadSituation1.dpad_left)
+                        if (gamepadSituation1.dpad_left || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_left)
+                        if (gamepadSituation2.dpad_left || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_left && !gamepadSituation2.dpad_left)
+                        if (!gamepadSituation1.dpad_left && !gamepadSituation2.dpad_left && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_RIGHT:
-                        if (gamepadSituation1.dpad_left)
+                        if (gamepadSituation1.dpad_left || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_right)
+                        if (gamepadSituation2.dpad_right || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_left && !gamepadSituation2.dpad_right)
+                        if (!gamepadSituation1.dpad_left && !gamepadSituation2.dpad_right && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_UP:
-                        if (gamepadSituation1.dpad_left)
+                        if (gamepadSituation1.dpad_left || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_up)
+                        if (gamepadSituation2.dpad_up || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_left && !gamepadSituation2.dpad_up)
+                        if (!gamepadSituation1.dpad_left && !gamepadSituation2.dpad_up && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case LEFT_BUMPER:
-                        if (gamepadSituation1.dpad_left)
+                        if (gamepadSituation1.dpad_left || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.left_bumper)
+                        if (gamepadSituation2.left_bumper || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_left && !gamepadSituation2.left_bumper)
+                        if (!gamepadSituation1.dpad_left && !gamepadSituation2.left_bumper && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case RIGHT_BUMPER:
-                        if (gamepadSituation1.dpad_left)
+                        if (gamepadSituation1.dpad_left || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.right_bumper)
+                        if (gamepadSituation2.right_bumper || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_left && !gamepadSituation2.right_bumper)
+                        if (!gamepadSituation1.dpad_left && !gamepadSituation2.right_bumper && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case LEFT_TRIGGER:
-                        if (gamepadSituation1.dpad_left)
+                        if (gamepadSituation1.dpad_left || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.left_trigger >= 0.5)
+                        if (gamepadSituation2.left_trigger >= 0.5 || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_left && gamepadSituation2.left_trigger < 0.5)
+                        if (!gamepadSituation1.dpad_left && gamepadSituation2.left_trigger < 0.5 && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case RIGHT_TRIGGER:
-                        if (gamepadSituation1.dpad_left)
+                        if (gamepadSituation1.dpad_left || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.right_trigger >= 0.5)
+                        if (gamepadSituation2.right_trigger >= 0.5 || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_left && gamepadSituation2.right_trigger < 0.5)
+                        if (!gamepadSituation1.dpad_left && gamepadSituation2.right_trigger < 0.5 && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                 }
@@ -1042,123 +1056,123 @@ public class OnOffButton {
             case DPAD_RIGHT:
                 switch (button2) {
                     case A:
-                        if (gamepadSituation1.dpad_right)
+                        if (gamepadSituation1.dpad_right || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.a)
+                        if (gamepadSituation2.a || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_right && !gamepadSituation2.a)
+                        if (!gamepadSituation1.dpad_right && !gamepadSituation2.a && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case B:
-                        if (gamepadSituation1.dpad_right)
+                        if (gamepadSituation1.dpad_right || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.b)
+                        if (gamepadSituation2.b || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_right && !gamepadSituation2.b)
+                        if (!gamepadSituation1.dpad_right && !gamepadSituation2.b && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case X:
-                        if (gamepadSituation1.dpad_right)
+                        if (gamepadSituation1.dpad_right || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.x)
+                        if (gamepadSituation2.x || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_right && !gamepadSituation2.x)
+                        if (!gamepadSituation1.dpad_right && !gamepadSituation2.x && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case Y:
-                        if (gamepadSituation1.dpad_right)
+                        if (gamepadSituation1.dpad_right || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.y)
+                        if (gamepadSituation2.y || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_right && !gamepadSituation2.y)
+                        if (!gamepadSituation1.dpad_right && !gamepadSituation2.y && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_DOWN:
-                        if (gamepadSituation1.dpad_right)
+                        if (gamepadSituation1.dpad_right || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_down)
+                        if (gamepadSituation2.dpad_down || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_right && !gamepadSituation2.dpad_down)
+                        if (!gamepadSituation1.dpad_right && !gamepadSituation2.dpad_down && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_LEFT:
-                        if (gamepadSituation1.dpad_right)
+                        if (gamepadSituation1.dpad_right || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_left)
+                        if (gamepadSituation2.dpad_left || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_right && !gamepadSituation2.dpad_left)
+                        if (!gamepadSituation1.dpad_right && !gamepadSituation2.dpad_left && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_RIGHT:
-                        if (gamepadSituation1.dpad_right)
+                        if (gamepadSituation1.dpad_right || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_right)
+                        if (gamepadSituation2.dpad_right || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_right && !gamepadSituation2.dpad_right)
+                        if (!gamepadSituation1.dpad_right && !gamepadSituation2.dpad_right && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_UP:
-                        if (gamepadSituation1.dpad_right)
+                        if (gamepadSituation1.dpad_right || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_up)
+                        if (gamepadSituation2.dpad_up || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_right && !gamepadSituation2.dpad_up)
+                        if (!gamepadSituation1.dpad_right && !gamepadSituation2.dpad_up && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case LEFT_BUMPER:
-                        if (gamepadSituation1.dpad_right)
+                        if (gamepadSituation1.dpad_right || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.left_bumper)
+                        if (gamepadSituation2.left_bumper || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_right && !gamepadSituation2.left_bumper)
+                        if (!gamepadSituation1.dpad_right && !gamepadSituation2.left_bumper && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case RIGHT_BUMPER:
-                        if (gamepadSituation1.dpad_right)
+                        if (gamepadSituation1.dpad_right || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.right_bumper)
+                        if (gamepadSituation2.right_bumper || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_right && !gamepadSituation2.right_bumper)
+                        if (!gamepadSituation1.dpad_right && !gamepadSituation2.right_bumper && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case LEFT_TRIGGER:
-                        if (gamepadSituation1.dpad_right)
+                        if (gamepadSituation1.dpad_right || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.left_trigger >= 0.5)
+                        if (gamepadSituation2.left_trigger >= 0.5 || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_right && gamepadSituation2.left_trigger < 0.5)
+                        if (!gamepadSituation1.dpad_right && gamepadSituation2.left_trigger < 0.5 && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case RIGHT_TRIGGER:
-                        if (gamepadSituation1.dpad_right)
+                        if (gamepadSituation1.dpad_right || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.right_trigger >= 0.5)
+                        if (gamepadSituation2.right_trigger >= 0.5 || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_right && gamepadSituation2.right_trigger < 0.5)
+                        if (!gamepadSituation1.dpad_right && gamepadSituation2.right_trigger < 0.5 && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                 }
@@ -1169,120 +1183,120 @@ public class OnOffButton {
                         if (gamepadSituation1.dpad_up)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.a)
+                        if (gamepadSituation2.a || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_up && !gamepadSituation2.a)
+                        if (!gamepadSituation1.dpad_up && !gamepadSituation2.a && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case B:
-                        if (gamepadSituation1.dpad_up)
+                        if (gamepadSituation1.dpad_up || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.b)
+                        if (gamepadSituation2.b || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_up && !gamepadSituation2.b)
+                        if (!gamepadSituation1.dpad_up && !gamepadSituation2.b && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case X:
-                        if (gamepadSituation1.dpad_up)
+                        if (gamepadSituation1.dpad_up || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.x)
+                        if (gamepadSituation2.x || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_up && !gamepadSituation2.x)
+                        if (!gamepadSituation1.dpad_up && !gamepadSituation2.x && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case Y:
-                        if (gamepadSituation1.dpad_up)
+                        if (gamepadSituation1.dpad_up || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.y)
+                        if (gamepadSituation2.y || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_up && !gamepadSituation2.y)
+                        if (!gamepadSituation1.dpad_up && !gamepadSituation2.y && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_DOWN:
-                        if (gamepadSituation1.dpad_up)
+                        if (gamepadSituation1.dpad_up || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_down)
+                        if (gamepadSituation2.dpad_down || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_up && !gamepadSituation2.dpad_down)
+                        if (!gamepadSituation1.dpad_up && !gamepadSituation2.dpad_down && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_LEFT:
-                        if (gamepadSituation1.dpad_up)
+                        if (gamepadSituation1.dpad_up || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_left)
+                        if (gamepadSituation2.dpad_left || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_up && !gamepadSituation2.dpad_left)
+                        if (!gamepadSituation1.dpad_up && !gamepadSituation2.dpad_left && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_RIGHT:
-                        if (gamepadSituation1.dpad_up)
+                        if (gamepadSituation1.dpad_up || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_right)
+                        if (gamepadSituation2.dpad_right || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_up && !gamepadSituation2.dpad_right)
+                        if (!gamepadSituation1.dpad_up && !gamepadSituation2.dpad_right && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_UP:
-                        if (gamepadSituation1.dpad_up)
+                        if (gamepadSituation1.dpad_up || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_up)
+                        if (gamepadSituation2.dpad_up || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_up && !gamepadSituation2.dpad_up)
+                        if (!gamepadSituation1.dpad_up && !gamepadSituation2.dpad_up && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case LEFT_BUMPER:
-                        if (gamepadSituation1.dpad_up)
+                        if (gamepadSituation1.dpad_up || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.left_bumper)
+                        if (gamepadSituation2.left_bumper || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_up && !gamepadSituation2.left_bumper)
+                        if (!gamepadSituation1.dpad_up && !gamepadSituation2.left_bumper && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case RIGHT_BUMPER:
-                        if (gamepadSituation1.dpad_up)
+                        if (gamepadSituation1.dpad_up || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.right_bumper)
+                        if (gamepadSituation2.right_bumper || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_up && !gamepadSituation2.right_bumper)
+                        if (!gamepadSituation1.dpad_up && !gamepadSituation2.right_bumper && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case LEFT_TRIGGER:
-                        if (gamepadSituation1.dpad_up)
+                        if (gamepadSituation1.dpad_up || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.left_trigger >= 0.5)
+                        if (gamepadSituation2.left_trigger >= 0.5 || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_up && gamepadSituation2.left_trigger < 0.5)
+                        if (!gamepadSituation1.dpad_up && gamepadSituation2.left_trigger < 0.5 && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case RIGHT_TRIGGER:
-                        if (gamepadSituation1.dpad_up)
+                        if (gamepadSituation1.dpad_up || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.right_trigger >= 0.5)
+                        if (gamepadSituation2.right_trigger >= 0.5 || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.dpad_up && gamepadSituation2.right_trigger < 0.5)
+                        if (!gamepadSituation1.dpad_up && gamepadSituation2.right_trigger < 0.5 && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                 }
@@ -1290,123 +1304,123 @@ public class OnOffButton {
             case LEFT_BUMPER:
                 switch (button2) {
                     case A:
-                        if (gamepadSituation1.left_bumper)
+                        if (gamepadSituation1.left_bumper || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.a)
+                        if (gamepadSituation2.a || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.left_bumper && !gamepadSituation2.a)
+                        if (!gamepadSituation1.left_bumper && !gamepadSituation2.a && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case B:
-                        if (gamepadSituation1.left_bumper)
+                        if (gamepadSituation1.left_bumper || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.b)
+                        if (gamepadSituation2.b || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.left_bumper && !gamepadSituation2.b)
+                        if (!gamepadSituation1.left_bumper && !gamepadSituation2.b && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case X:
-                        if (gamepadSituation1.left_bumper)
+                        if (gamepadSituation1.left_bumper || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.x)
+                        if (gamepadSituation2.x || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.left_bumper && !gamepadSituation2.x)
+                        if (!gamepadSituation1.left_bumper && !gamepadSituation2.x && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case Y:
-                        if (gamepadSituation1.left_bumper)
+                        if (gamepadSituation1.left_bumper || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.y)
+                        if (gamepadSituation2.y || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.left_bumper && !gamepadSituation2.y)
+                        if (!gamepadSituation1.left_bumper && !gamepadSituation2.y && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_DOWN:
-                        if (gamepadSituation1.left_bumper)
+                        if (gamepadSituation1.left_bumper || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_down)
+                        if (gamepadSituation2.dpad_down || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.left_bumper && !gamepadSituation2.dpad_down)
+                        if (!gamepadSituation1.left_bumper && !gamepadSituation2.dpad_down && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_LEFT:
-                        if (gamepadSituation1.left_bumper)
+                        if (gamepadSituation1.left_bumper || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_left)
+                        if (gamepadSituation2.dpad_left || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.left_bumper && !gamepadSituation2.dpad_left)
+                        if (!gamepadSituation1.left_bumper && !gamepadSituation2.dpad_left && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_RIGHT:
-                        if (gamepadSituation1.left_bumper)
+                        if (gamepadSituation1.left_bumper || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_right)
+                        if (gamepadSituation2.dpad_right || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.left_bumper && !gamepadSituation2.dpad_right)
+                        if (!gamepadSituation1.left_bumper && !gamepadSituation2.dpad_right && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_UP:
-                        if (gamepadSituation1.left_bumper)
+                        if (gamepadSituation1.left_bumper || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_up)
+                        if (gamepadSituation2.dpad_up || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.left_bumper && !gamepadSituation2.dpad_up)
+                        if (!gamepadSituation1.left_bumper && !gamepadSituation2.dpad_up && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case LEFT_BUMPER:
-                        if (gamepadSituation1.left_bumper)
+                        if (gamepadSituation1.left_bumper || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.left_bumper)
+                        if (gamepadSituation2.left_bumper || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.left_bumper && !gamepadSituation2.left_bumper)
+                        if (!gamepadSituation1.left_bumper && !gamepadSituation2.left_bumper && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case RIGHT_BUMPER:
-                        if (gamepadSituation1.left_bumper)
+                        if (gamepadSituation1.left_bumper || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.right_bumper)
+                        if (gamepadSituation2.right_bumper || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.left_bumper && !gamepadSituation2.right_bumper)
+                        if (!gamepadSituation1.left_bumper && !gamepadSituation2.right_bumper && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case LEFT_TRIGGER:
-                        if (gamepadSituation1.left_bumper)
+                        if (gamepadSituation1.left_bumper || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.left_trigger >= 0.5)
+                        if (gamepadSituation2.left_trigger >= 0.5 || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.left_bumper && gamepadSituation2.left_trigger < 0.5)
+                        if (!gamepadSituation1.left_bumper && gamepadSituation2.left_trigger < 0.5 && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case RIGHT_TRIGGER:
-                        if (gamepadSituation1.left_bumper)
+                        if (gamepadSituation1.left_bumper || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.right_trigger >= 0.5)
+                        if (gamepadSituation2.right_trigger >= 0.5 || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.left_bumper && gamepadSituation2.right_trigger < 0.5)
+                        if (!gamepadSituation1.left_bumper && gamepadSituation2.right_trigger < 0.5 && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                 }
@@ -1414,123 +1428,123 @@ public class OnOffButton {
             case RIGHT_BUMPER:
                 switch (button2) {
                     case A:
-                        if (gamepadSituation1.right_bumper)
+                        if (gamepadSituation1.right_bumper || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.a)
+                        if (gamepadSituation2.a || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.right_bumper && !gamepadSituation2.a)
+                        if (!gamepadSituation1.right_bumper && !gamepadSituation2.a && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case B:
-                        if (gamepadSituation1.right_bumper)
+                        if (gamepadSituation1.right_bumper || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.b)
+                        if (gamepadSituation2.b || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.right_bumper && !gamepadSituation2.b)
+                        if (!gamepadSituation1.right_bumper && !gamepadSituation2.b && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case X:
-                        if (gamepadSituation1.right_bumper)
+                        if (gamepadSituation1.right_bumper || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.x)
+                        if (gamepadSituation2.x || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.right_bumper && !gamepadSituation2.x)
+                        if (!gamepadSituation1.right_bumper && !gamepadSituation2.x && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case Y:
-                        if (gamepadSituation1.right_bumper)
+                        if (gamepadSituation1.right_bumper || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.y)
+                        if (gamepadSituation2.y || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.right_bumper && !gamepadSituation2.y)
+                        if (!gamepadSituation1.right_bumper && !gamepadSituation2.y && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_DOWN:
-                        if (gamepadSituation1.right_bumper)
+                        if (gamepadSituation1.right_bumper || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_down)
+                        if (gamepadSituation2.dpad_down || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.right_bumper && !gamepadSituation2.dpad_down)
+                        if (!gamepadSituation1.right_bumper && !gamepadSituation2.dpad_down && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_LEFT:
-                        if (gamepadSituation1.right_bumper)
+                        if (gamepadSituation1.right_bumper || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_left)
+                        if (gamepadSituation2.dpad_left || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.right_bumper && !gamepadSituation2.dpad_left)
+                        if (!gamepadSituation1.right_bumper && !gamepadSituation2.dpad_left && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_RIGHT:
-                        if (gamepadSituation1.right_bumper)
+                        if (gamepadSituation1.right_bumper || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_right)
+                        if (gamepadSituation2.dpad_right || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.right_bumper && !gamepadSituation2.dpad_right)
+                        if (!gamepadSituation1.right_bumper && !gamepadSituation2.dpad_right && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_UP:
-                        if (gamepadSituation1.right_bumper)
+                        if (gamepadSituation1.right_bumper || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_up)
+                        if (gamepadSituation2.dpad_up || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.right_bumper && !gamepadSituation2.dpad_up)
+                        if (!gamepadSituation1.right_bumper && !gamepadSituation2.dpad_up && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case LEFT_BUMPER:
-                        if (gamepadSituation1.right_bumper)
+                        if (gamepadSituation1.right_bumper || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.left_bumper)
+                        if (gamepadSituation2.left_bumper || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.right_bumper && !gamepadSituation2.left_bumper)
+                        if (!gamepadSituation1.right_bumper && !gamepadSituation2.left_bumper && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case RIGHT_BUMPER:
-                        if (gamepadSituation1.right_bumper)
+                        if (gamepadSituation1.right_bumper || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.right_bumper)
+                        if (gamepadSituation2.right_bumper || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.right_bumper && !gamepadSituation2.right_bumper)
+                        if (!gamepadSituation1.right_bumper && !gamepadSituation2.right_bumper && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case LEFT_TRIGGER:
-                        if (gamepadSituation1.right_bumper)
+                        if (gamepadSituation1.right_bumper || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.left_trigger >= 0.5)
+                        if (gamepadSituation2.left_trigger >= 0.5 || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.right_bumper && gamepadSituation2.left_trigger < 0.5)
+                        if (!gamepadSituation1.right_bumper && gamepadSituation2.left_trigger < 0.5 && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case RIGHT_TRIGGER:
                         if (gamepadSituation1.right_bumper)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.right_trigger >= 0.5)
+                        if (gamepadSituation2.right_trigger >= 0.5 || manualActivate2)
                             twoButtonLogic2();
 
-                        if (!gamepadSituation1.right_bumper && gamepadSituation2.right_trigger < 0.5)
+                        if (!gamepadSituation1.right_bumper && gamepadSituation2.right_trigger < 0.5 && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                 }
@@ -1538,123 +1552,123 @@ public class OnOffButton {
             case LEFT_TRIGGER:
                 switch (button2) {
                     case A:
-                        if (gamepadSituation1.left_trigger >= 0.5)
+                        if (gamepadSituation1.left_trigger >= 0.5 || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.a)
+                        if (gamepadSituation2.a || manualActivate2)
                             twoButtonLogic2();
 
-                        if (gamepadSituation1.left_trigger < 0.5 && !gamepadSituation2.a)
+                        if (gamepadSituation1.left_trigger < 0.5 && !gamepadSituation2.a && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case B:
-                        if (gamepadSituation1.left_trigger >= 0.5)
+                        if (gamepadSituation1.left_trigger >= 0.5 || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.b)
+                        if (gamepadSituation2.b || manualActivate2)
                             twoButtonLogic2();
 
-                        if (gamepadSituation1.left_trigger < 0.5 && !gamepadSituation2.b)
+                        if (gamepadSituation1.left_trigger < 0.5 && !gamepadSituation2.b && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case X:
-                        if (gamepadSituation1.left_trigger >= 0.5)
+                        if (gamepadSituation1.left_trigger >= 0.5 || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.x)
+                        if (gamepadSituation2.x || manualActivate2)
                             twoButtonLogic2();
 
-                        if (gamepadSituation1.left_trigger < 0.5 && !gamepadSituation2.x)
+                        if (gamepadSituation1.left_trigger < 0.5 && !gamepadSituation2.x && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case Y:
-                        if (gamepadSituation1.left_trigger >= 0.5)
+                        if (gamepadSituation1.left_trigger >= 0.5 || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.y)
+                        if (gamepadSituation2.y || manualActivate2)
                             twoButtonLogic2();
 
-                        if (gamepadSituation1.left_trigger < 0.5 && !gamepadSituation2.y)
+                        if (gamepadSituation1.left_trigger < 0.5 && !gamepadSituation2.y && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_DOWN:
-                        if (gamepadSituation1.left_trigger >= 0.5)
+                        if (gamepadSituation1.left_trigger >= 0.5 || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_down)
+                        if (gamepadSituation2.dpad_down || manualActivate2)
                             twoButtonLogic2();
 
-                        if (gamepadSituation1.left_trigger < 0.5 && !gamepadSituation2.dpad_down)
+                        if (gamepadSituation1.left_trigger < 0.5 && !gamepadSituation2.dpad_down && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_LEFT:
-                        if (gamepadSituation1.left_trigger >= 0.5)
+                        if (gamepadSituation1.left_trigger >= 0.5 || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_left)
+                        if (gamepadSituation2.dpad_left || manualActivate2)
                             twoButtonLogic2();
 
-                        if (gamepadSituation1.left_trigger < 0.5 && !gamepadSituation2.dpad_left)
+                        if (gamepadSituation1.left_trigger < 0.5 && !gamepadSituation2.dpad_left && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_RIGHT:
-                        if (gamepadSituation1.left_trigger >= 0.5)
+                        if (gamepadSituation1.left_trigger >= 0.5 || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_right)
+                        if (gamepadSituation2.dpad_right || manualActivate2)
                             twoButtonLogic2();
 
-                        if (gamepadSituation1.left_trigger < 0.5 && !gamepadSituation2.dpad_right)
+                        if (gamepadSituation1.left_trigger < 0.5 && !gamepadSituation2.dpad_right && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_UP:
-                        if (gamepadSituation1.left_trigger >= 0.5)
+                        if (gamepadSituation1.left_trigger >= 0.5 || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_up)
+                        if (gamepadSituation2.dpad_up || manualActivate2)
                             twoButtonLogic2();
 
-                        if (gamepadSituation1.left_trigger < 0.5 && !gamepadSituation2.dpad_up)
+                        if (gamepadSituation1.left_trigger < 0.5 && !gamepadSituation2.dpad_up && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case LEFT_BUMPER:
-                        if (gamepadSituation1.left_trigger >= 0.5)
+                        if (gamepadSituation1.left_trigger >= 0.5 || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.left_bumper)
+                        if (gamepadSituation2.left_bumper || manualActivate2)
                             twoButtonLogic2();
 
-                        if (gamepadSituation1.left_trigger < 0.5 && !gamepadSituation2.left_bumper)
+                        if (gamepadSituation1.left_trigger < 0.5 && !gamepadSituation2.left_bumper && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case RIGHT_BUMPER:
-                        if (gamepadSituation1.left_trigger >= 0.5)
+                        if (gamepadSituation1.left_trigger >= 0.5 || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.right_bumper)
+                        if (gamepadSituation2.right_bumper || manualActivate2)
                             twoButtonLogic2();
 
-                        if (gamepadSituation1.left_trigger < 0.5 && !gamepadSituation2.right_bumper)
+                        if (gamepadSituation1.left_trigger < 0.5 && !gamepadSituation2.right_bumper && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case LEFT_TRIGGER:
-                        if (gamepadSituation1.left_trigger >= 0.5)
+                        if (gamepadSituation1.left_trigger >= 0.5 || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.left_trigger >= 0.5)
+                        if (gamepadSituation2.left_trigger >= 0.5 || manualActivate2)
                             twoButtonLogic2();
 
-                        if (gamepadSituation1.left_trigger < 0.5 && gamepadSituation2.left_trigger < 0.5)
+                        if (gamepadSituation1.left_trigger < 0.5 && gamepadSituation2.left_trigger < 0.5 && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case RIGHT_TRIGGER:
-                        if (gamepadSituation1.left_trigger >= 0.5)
+                        if (gamepadSituation1.left_trigger >= 0.5 || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.right_trigger >= 0.5)
+                        if (gamepadSituation2.right_trigger >= 0.5 || manualActivate2)
                             twoButtonLogic2();
 
-                        if (gamepadSituation1.left_trigger < 0.5 && gamepadSituation2.right_trigger < 0.5)
+                        if (gamepadSituation1.left_trigger < 0.5 && gamepadSituation2.right_trigger < 0.5 && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                 }
@@ -1662,123 +1676,123 @@ public class OnOffButton {
             case RIGHT_TRIGGER:
                 switch (button2) {
                     case A:
-                        if (gamepadSituation1.right_trigger >= 0.5)
+                        if (gamepadSituation1.right_trigger >= 0.5 || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.a)
+                        if (gamepadSituation2.a || manualActivate2)
                             twoButtonLogic2();
 
-                        if (gamepadSituation1.right_trigger < 0.5 && !gamepadSituation2.a)
+                        if (gamepadSituation1.right_trigger < 0.5 && !gamepadSituation2.a && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case B:
-                        if (gamepadSituation1.right_trigger >= 0.5)
+                        if (gamepadSituation1.right_trigger >= 0.5 || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.b)
+                        if (gamepadSituation2.b || manualActivate2)
                             twoButtonLogic2();
 
-                        if (gamepadSituation1.right_trigger < 0.5 && !gamepadSituation2.b)
+                        if (gamepadSituation1.right_trigger < 0.5 && !gamepadSituation2.b && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case X:
-                        if (gamepadSituation1.right_trigger >= 0.5)
+                        if (gamepadSituation1.right_trigger >= 0.5 || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.x)
+                        if (gamepadSituation2.x || manualActivate2)
                             twoButtonLogic2();
 
-                        if (gamepadSituation1.right_trigger < 0.5 && !gamepadSituation2.x)
+                        if (gamepadSituation1.right_trigger < 0.5 && !gamepadSituation2.x && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case Y:
-                        if (gamepadSituation1.right_trigger >= 0.5)
+                        if (gamepadSituation1.right_trigger >= 0.5 || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.y)
+                        if (gamepadSituation2.y || manualActivate2)
                             twoButtonLogic2();
 
-                        if (gamepadSituation1.right_trigger < 0.5 && !gamepadSituation2.y)
+                        if (gamepadSituation1.right_trigger < 0.5 && !gamepadSituation2.y && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_DOWN:
-                        if (gamepadSituation1.right_trigger >= 0.5)
+                        if (gamepadSituation1.right_trigger >= 0.5 || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_down)
+                        if (gamepadSituation2.dpad_down || manualActivate2)
                             twoButtonLogic2();
 
-                        if (gamepadSituation1.right_trigger < 0.5 && !gamepadSituation2.dpad_down)
+                        if (gamepadSituation1.right_trigger < 0.5 && !gamepadSituation2.dpad_down && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_LEFT:
-                        if (gamepadSituation1.right_trigger >= 0.5)
+                        if (gamepadSituation1.right_trigger >= 0.5 || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_left)
+                        if (gamepadSituation2.dpad_left || manualActivate2)
                             twoButtonLogic2();
 
-                        if (gamepadSituation1.right_trigger < 0.5 && !gamepadSituation2.dpad_left)
+                        if (gamepadSituation1.right_trigger < 0.5 && !gamepadSituation2.dpad_left && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_RIGHT:
-                        if (gamepadSituation1.right_trigger >= 0.5)
+                        if (gamepadSituation1.right_trigger >= 0.5 || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_right)
+                        if (gamepadSituation2.dpad_right || manualActivate2)
                             twoButtonLogic2();
 
-                        if (gamepadSituation1.right_trigger < 0.5 && !gamepadSituation2.dpad_right)
+                        if (gamepadSituation1.right_trigger < 0.5 && !gamepadSituation2.dpad_right && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case DPAD_UP:
-                        if (gamepadSituation1.right_trigger >= 0.5)
+                        if (gamepadSituation1.right_trigger >= 0.5 || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.dpad_up)
+                        if (gamepadSituation2.dpad_up || manualActivate2)
                             twoButtonLogic2();
 
-                        if (gamepadSituation1.right_trigger < 0.5 && !gamepadSituation2.dpad_up)
+                        if (gamepadSituation1.right_trigger < 0.5 && !gamepadSituation2.dpad_up && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case LEFT_BUMPER:
-                        if (gamepadSituation1.right_trigger >= 0.5)
+                        if (gamepadSituation1.right_trigger >= 0.5 || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.left_bumper)
+                        if (gamepadSituation2.left_bumper || manualActivate2)
                             twoButtonLogic2();
 
-                        if (gamepadSituation1.right_trigger < 0.5 && !gamepadSituation2.left_bumper)
+                        if (gamepadSituation1.right_trigger < 0.5 && !gamepadSituation2.left_bumper && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case RIGHT_BUMPER:
-                        if (gamepadSituation1.right_trigger >= 0.5)
+                        if (gamepadSituation1.right_trigger >= 0.5 || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.right_bumper)
+                        if (gamepadSituation2.right_bumper || manualActivate2)
                             twoButtonLogic2();
 
-                        if (gamepadSituation1.right_trigger < 0.5 && !gamepadSituation2.right_bumper)
+                        if (gamepadSituation1.right_trigger < 0.5 && !gamepadSituation2.right_bumper && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case LEFT_TRIGGER:
-                        if (gamepadSituation1.right_trigger >= 0.5)
+                        if (gamepadSituation1.right_trigger >= 0.5 || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.left_trigger >= 0.5)
+                        if (gamepadSituation2.left_trigger >= 0.5 || manualActivate2)
                             twoButtonLogic2();
 
-                        if (gamepadSituation1.right_trigger < 0.5 && gamepadSituation2.left_trigger < 0.5)
+                        if (gamepadSituation1.right_trigger < 0.5 && gamepadSituation2.left_trigger < 0.5 && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                     case RIGHT_TRIGGER:
-                        if (gamepadSituation1.right_trigger >= 0.5)
+                        if (gamepadSituation1.right_trigger >= 0.5 || manualActivate1)
                             twoButtonLogic1();
 
-                        if (gamepadSituation2.right_trigger >= 0.5)
+                        if (gamepadSituation2.right_trigger >= 0.5 || manualActivate2)
                             twoButtonLogic2();
 
-                        if (gamepadSituation1.right_trigger < 0.5 && gamepadSituation2.right_trigger < 0.5)
+                        if (gamepadSituation1.right_trigger < 0.5 && gamepadSituation2.right_trigger < 0.5 && !manualActivate1 && !manualActivate2)
                             blocker = false;
                         break;
                 }

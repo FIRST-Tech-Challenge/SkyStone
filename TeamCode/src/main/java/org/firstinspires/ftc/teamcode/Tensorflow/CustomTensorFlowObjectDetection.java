@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Tensorflow;
 import android.content.Context;
 import android.util.Log;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.vuforia.PIXEL_FORMAT;
@@ -37,6 +38,7 @@ import java.util.List;
  */
 
 @TeleOp(name = "RetrainedSkystoneDetection", group = "Linear Opmode")
+@Disabled
 public class CustomTensorFlowObjectDetection extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "melanoma.tflite";  //"skystoneTFOD_v2_[105-15].tflite";    //Set model (see above for file names)
     private static final String LABEL_FIRST_ELEMENT = "benign";   //"skystone";

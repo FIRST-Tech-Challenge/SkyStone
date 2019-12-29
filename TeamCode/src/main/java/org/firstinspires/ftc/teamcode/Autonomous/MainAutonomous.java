@@ -69,18 +69,18 @@ public class MainAutonomous extends LinearOpMode {
                 telemetry.addData("SELECT STARTING LOCATION", "Press one of the following buttons below to " +
                         "select the autonomous starting position. Once you have selected, press the \"start\" button " +
                         "on gamepad A.");
-                telemetry.addData("A", FieldPosition.BLUE_FOUNDATION);
-                telemetry.addData("B", FieldPosition.RED_FOUNDATION);
-                telemetry.addData("Y", FieldPosition.RED_QUARRY);
-                telemetry.addData("X", FieldPosition.BLUE_QUARRY);
+                telemetry.addData("A", FieldPosition.BLUE_FOUNDATION_PARK);
+                telemetry.addData("B", FieldPosition.RED_FOUNDATION_PARK);
+                telemetry.addData("Y", FieldPosition.RED_QUARY);
+                telemetry.addData("X", FieldPosition.BLUE_QUARY);
             }
 
             if(!gamepad1.start) {
                 if (gamepad1.a) {
-                    fieldPosition = FieldPosition.BLUE_FOUNDATION;
+                    fieldPosition = FieldPosition.BLUE_FOUNDATION_PARK;
                     startingPos = new Pose2d(new Vector2d(20.736, 63.936), Math.toRadians(270));
                 } else if (gamepad1.b) {
-                    fieldPosition = FieldPosition.RED_FOUNDATION;
+                    fieldPosition = FieldPosition.RED_FOUNDATION_PARK;
                     startingPos = new Pose2d(new Vector2d(20.736, -63.936), Math.toRadians(90));
                 } else if (gamepad1.y) {
                     fieldPosition = FieldPosition.RED_QUARRY;
@@ -88,6 +88,12 @@ public class MainAutonomous extends LinearOpMode {
                 } else if (gamepad1.x) {
                     fieldPosition = FieldPosition.BLUE_QUARRY;
                     startingPos = new Pose2d(new Vector2d(-34.752, 63.936), Math.toRadians(270));
+                } else if(gamepad1.right_bumper){
+                    fieldPosition = FieldPosition.BLUE_FOUNDATION_DRAG;
+                    startingPos = new Pose2d(new Vector2d(20.736, 63.936), Math.toRadians(270));
+                } else if(gamepad1.left_bumper){
+                    fieldPosition = FieldPosition.RED_FOUNDATION_DRAG;
+                    startingPos = new Pose2d(new Vector2d(20.736, -63.936), Math.toRadians(90));
                 }
             }
 
@@ -165,14 +171,19 @@ public class MainAutonomous extends LinearOpMode {
                 case RED_QUARRY:
                     path.RedQuary(skystonePositions);
                     break;
-                case RED_FOUNDATION:
-                    path.RedFoundation();
+                case RED_FOUNDATION_PARK:
+                    path.RedFoundationPark();
                     break;
                 case BLUE_QUARRY:
                     path.BlueQuary(skystonePositions);
                     break;
-                case BLUE_FOUNDATION:
-                    path.BlueFoundation();
+                case BLUE_FOUNDATION_PARK:
+                    path.BlueFoundationPark();
+                    break;
+                case BLUE_FOUNDATION_DRAG:
+                    path.BlueFoundationDrag();
+                    break;
+                case RED_FOUNDATION_DRAG:
                     break;
             }
         } else {

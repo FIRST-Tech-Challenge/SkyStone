@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class ButtArmBot extends ScoopArmBot{
     public Servo buttArm = null;
-    double  position = 0.1; // Start at halfway position
+    double  position = 0.42;
 
     public ButtArmBot(LinearOpMode opMode) {
         super(opMode);
@@ -23,10 +23,10 @@ public class ButtArmBot extends ScoopArmBot{
 
     public void toggleButtArm(boolean rightStickButton, boolean leftStickButton) {
         if (rightStickButton) {
-            buttArm.setPosition(0.2);
+            buttArm.setPosition(position-0.12);
         }
         if (leftStickButton) {
-            buttArm.setPosition(0.1);
+            buttArm.setPosition(position);
         }
 
 

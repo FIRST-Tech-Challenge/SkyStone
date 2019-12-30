@@ -37,7 +37,7 @@ abstract class Movement extends LinearOpMode
         rightback = hardwareMap.get(DcMotor.class, "rightback");
         leftback = hardwareMap.get(DcMotor.class, "leftback");
 
-        // Most robots need the motor on one side to be reversed to drive goForward
+        // Most robots need the motor on one side to be reve`rsed to drive goForward
         // Reverse the motor that runs backwards when connected directly to the battery
         leftfront.setDirection(DcMotor.Direction.FORWARD);
         rightfront.setDirection(DcMotor.Direction.REVERSE);
@@ -68,19 +68,19 @@ abstract class Movement extends LinearOpMode
         sleep(duration);
     }
 
-    public void goForward(final double power, final int duration, final String message) {
+    public void goForward(final double power, final int duration) {
         leftfront.setPower(power);
         rightfront.setPower(power);
         rightback.setPower(power);
         leftback.setPower(power);
         sleep(duration);
 
-        updateTelemetryMessage(message);
+        updateTelemetryMessage("Going Forward");
     }
 
     // Backward is same as forward with reverse power
-    public void goBackward(final double power, final int duration, final String message) {
-        goForward(-power, duration, message);
+    public void goBackward(final double power, final int duration) {
+        goForward(-power, duration);
     }
 
     public void goLeft(final double power, final int duration, final String message) {

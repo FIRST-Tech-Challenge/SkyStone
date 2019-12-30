@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -85,31 +86,14 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  */
 
 
-@TeleOp(name="So Chubby", group ="Concept")
+@Autonomous(name="detectingSkystones", group ="Concept")
 //@Disabled
-public class detectingSkystone extends LinearOpMode {
+public class detectingSkystone extends Movement {
 
-    // IMPORTANT:  For Phone Camera, set 1) the camera source and 2) the orientation, based on how your phone is mounted:
-    // 1) Camera Source.  Valid choices are:  BACK (behind screen) or FRONT (selfie side)
-    // 2) Phone Orientation. Choices are: PHONE_IS_PORTRAIT = true (portrait) or PHONE_IS_PORTRAIT = false (landscape)
-    //
-    // NOTE: If you are running on a CONTROL HUB, with only one USB WebCam, you must select CAMERA_CHOICE = BACK; and PHONE_IS_PORTRAIT = false;
-    //
+
     private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
     private static final boolean PHONE_IS_PORTRAIT = false  ;
 
-    /*
-     * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
-     * 'parameters.vuforiaLicenseKey' is initialized is for illustration only, and will not function.
-     * A Vuforia 'Development' license key, can be obtained free of charge from the Vuforia developer
-     * web site at https://developer.vuforia.com/license-manager.
-     *
-     * Vuforia license keys are always 380 characters long, and look as if they contain mostly
-     * random data. As an example, here is a example of a fragment of a valid key:
-     *      ... yIgIzTqZ4mWjk9wd3cZO9T1axEqzuhxoGlfOOI2dRzKS4T0hQ8kT ...
-     * Once you've obtained a license key, copy the string from the Vuforia web site
-     * and paste it in to your code on the next line, between the double quotes.
-     */
     private static final String VUFORIA_KEY =
             "AeCml+H/////AAABmQkp7T1yW0ycnJcos9JyE6klQCYs9OdJemS15L9P/b/uo4ls9OeXiUAmfVqtyoDM4G4Gn9IAawF1vJPBpvKu/caGjO/tYIk1ikpfkLPKrSz/w5O1txZgkYDPAaLsSPMCTJMnKJwS2Z34D/nDdB65XJ8UFBuNjZSwixZFEFB0JwL14CH1YhFSjoQlyZJ+2MJGbqsL1ZlUSAOtPQz6kox+fTm2UtTyXDLdsJ1Ps6/BWH2YD1QyC7AeU8UwgAqiF5kUxtmZUfd5KWg4VfKzg7eSsBNliUr/LnxL9QLkgYBo6pSoE7kOtJ8dWQG0p7LO3OrH9QtJWZtuta+BCYYi6MYTl62kZ+Da/7zZs2W9TSQr1jk+";
 
@@ -142,87 +126,19 @@ public class detectingSkystone extends LinearOpMode {
 
     //Dcmotor configuration stuff
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftfront = null;
-    private DcMotor rightfront = null;
-    private DcMotor leftback = null;
-    //private DcMotor Arm = null;
-    private DcMotor rightback = null;
-
-    private double drivepower = 0.0;
-    private double right = 0.0;
-    private double left = 0.0;
-
-
-    private void lateralmovement() {
-        leftfront.setPower(drivepower);
-        rightfront.setPower(drivepower);
-        rightback.setPower(drivepower);
-        leftback.setPower(drivepower);
-    }
-
-    private void lateralright() {
-        leftfront.setPower(-right);
-        rightfront.setPower(right);
-        rightback.setPower(-right);
-        leftback.setPower(right);
-    }
-
-    private void lateralleft() {
-        leftfront.setPower(-left);
-        rightfront.setPower(left);
-        rightback.setPower(-left);
-        leftback.setPower(left);
-    }
-
-
-    //Define class members
-    Servo servo;
-    double  servoPosition = 0.4; // Start at halfway position
-    boolean rampUp = true;
-
 
     @Override public void runOpMode() {
 
         Servo   servo;
-        double  servoPosition = 0.4; // Start at halfway position
+        double  servoPosition = 0.4;
 
-        servo = hardwareMap.servo.get("servo");
-        servo.setPosition(servoPosition);
-
-        // Initialize the hardware variables. Note that the strings used here as parameters
-        leftfront  = hardwareMap.get(DcMotor.class, "leftfront");
-        rightfront = hardwareMap.get(DcMotor.class, "rightfront");
-        rightback = hardwareMap.get(DcMotor.class, "rightback");
-        leftback = hardwareMap.get(DcMotor.class, "leftback");
-        // Arm  = hardwareMap.get(DcMotor.class, "Arm");
-        // boxmotor = hardwareMap.get(Servo.class, "boxmotor");
-
-        // Most robots need the motor on one side to be reversed to drive forward
-        // Reverse the motor that runs backwards when connected directly to the battery
-        leftfront.setDirection(DcMotor.Direction.FORWARD);
-        rightfront.setDirection(DcMotor.Direction.REVERSE);
-        leftback.setDirection(DcMotor.Direction.FORWARD);
-        //Arm.setDirection(DcMotor.Direction.FORWARD);
-        rightback.setDirection(DcMotor.Direction.REVERSE);
-
-        /*
-         * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
-         * We can pass Vuforia the handle to a camera preview resource (on the RC phone);
-         * If no camera monitor is desired, use the parameter-less constructor instead (commented out below).
-         */
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-
-        // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
         parameters.cameraDirection   = CAMERA_CHOICE;
 
-        //  Instantiate the Vuforia engine
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
 
-        // Load the data sets for the trackable objects. These particular data
-        // sets are stored in the 'assets' part of our application.
         VuforiaTrackables targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
 
         VuforiaTrackable stoneTarget = targetsSkyStone.get(0);
@@ -235,35 +151,11 @@ public class detectingSkystone extends LinearOpMode {
         redFrontBridge.setName("Red Front Bridge");
         VuforiaTrackable blueFrontBridge = targetsSkyStone.get(4);
         blueFrontBridge.setName("Blue Front Bridge");
-        VuforiaTrackable red1 = targetsSkyStone.get(5);
-        red1.setName("Red Perimeter 1");
-        VuforiaTrackable red2 = targetsSkyStone.get(6);
-        red2.setName("Red Perimeter 2");
-        VuforiaTrackable front1 = targetsSkyStone.get(7);
-        front1.setName("Front Perimeter 1");
-        VuforiaTrackable front2 = targetsSkyStone.get(8);
-        front2.setName("Front Perimeter 2");
-        VuforiaTrackable blue1 = targetsSkyStone.get(9);
-        blue1.setName("Blue Perimeter 1");
-        VuforiaTrackable blue2 = targetsSkyStone.get(10);
-        blue2.setName("Blue Perimeter 2");
-        VuforiaTrackable rear1 = targetsSkyStone.get(11);
-        rear1.setName("Rear Perimeter 1");
-        VuforiaTrackable rear2 = targetsSkyStone.get(12);
-        rear2.setName("Rear Perimeter 2");
 
-        // For convenience, gather together all the trackable objects in one easily-iterable collection */
         List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
         allTrackables.addAll(targetsSkyStone);
 
-        /**
-         * In order for localization to work, we need to tell the system where each target is on the field, and
-         * where the phone resides on the robot.  These specifications are in the form of <em>transformation matrices.</em>
-         * Transformation matrices are a central, important concept in the math here involved in localization.
-         * See <a href="https://en.wikipedia.org/wiki/Transformation_matrix">Transformation Matrix</a>
-         * for detailed information. Commonly, you'll encounter transformation matrices as instances
-         * of the {@link OpenGLMatrix} class.
-         *
+        /*
          * If you are standing in the Red Alliance Station looking towards the center of the field,
          *     - The X axis runs from your left to the right. (positive from the center to the right)
          *     - The Y axis runs from the Red Alliance Station towards the other side of the field
@@ -298,44 +190,7 @@ public class detectingSkystone extends LinearOpMode {
                 .translation(bridgeX, -bridgeY, bridgeZ)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 0, bridgeRotY, 0)));
 
-        //Set the position of the perimeter targets with relation to origin (center of field)
-        red1.setLocation(OpenGLMatrix
-                .translation(quadField, -halfField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 180)));
 
-        red2.setLocation(OpenGLMatrix
-                .translation(-quadField, -halfField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 180)));
-
-        front1.setLocation(OpenGLMatrix
-                .translation(-halfField, -quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , 90)));
-
-        front2.setLocation(OpenGLMatrix
-                .translation(-halfField, quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 90)));
-
-        blue1.setLocation(OpenGLMatrix
-                .translation(-quadField, halfField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 0)));
-
-        blue2.setLocation(OpenGLMatrix
-                .translation(quadField, halfField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 0)));
-
-        rear1.setLocation(OpenGLMatrix
-                .translation(halfField, quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , -90)));
-
-        rear2.setLocation(OpenGLMatrix
-                .translation(halfField, -quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
-
-        //
-        // Create a transformation matrix describing where the phone is on the robot.
-        //
-        // NOTE !!!!  It's very important that you turn OFF your phone's Auto-Screen-Rotation option.
-        // Lock it into Portrait for these numbers to work.
         //
         // Info:  The coordinate frame for the robot looks the same as the field.
         // The robot's "forward" direction is facing out along X axis, with the LEFT side facing out along the Y axis.
@@ -352,10 +207,6 @@ public class detectingSkystone extends LinearOpMode {
             phoneYRotate = 90;
         }
 
-        // Rotate the phone vertical about the X axis if it's in portrait mode
-        if (PHONE_IS_PORTRAIT) {
-            phoneXRotate = 90 ;
-        }
 
         // Next, translate the camera lens to where it is on the robot.
         // In this example, it is centered (left to right), but forward of the middle of the robot, and above ground level.
@@ -378,13 +229,14 @@ public class detectingSkystone extends LinearOpMode {
         // CONSEQUENTLY do not put any driving commands in this loop.
         // To restore the normal opmode structure, just un-comment the following line:
 
-        // waitForStart();
+        waitForStart();
 
         // Note: To use the remote camera preview:
         // AFTER you hit Init on the Driver Station, use the "options menu" to select "Camera Stream"
         // Tap the preview window to receive a fresh image.
 
         targetsSkyStone.activate();
+
         while (!isStopRequested()) {
 
             // check all the trackable targets to see which one (if any) is visible.
@@ -414,25 +266,19 @@ public class detectingSkystone extends LinearOpMode {
 
                 // express the rotation of the robot in degrees.
                 Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
-                telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
-                drivepower = -0.5;
-                lateralmovement();
-                telemetry.addData("Status", "Moving Backword");
-                telemetry.update();
-                sleep(1000);
-                telemetry.update();
+                goForward(1,100);
+
             }
 
             else {
-                while (1 < 2) {
-                    telemetry.addData("Visible Target", "none");
-                    telemetry.addData("No Yellow Brick", "none");
-                    drivepower = 0.5;
-                    lateralright();
-                    telemetry.addData("Status", "Moving Forward");
-                    telemetry.update();
-                    sleep(1000);
-                    telemetry.update();
+                telemetry.addData("Visible Target", "none");
+                telemetry.addData("No Yellow Brick", "none");
+                drivepower = 0.5;
+                lateralright();
+                telemetry.addData("Status", "Moving Forward");
+                telemetry.update();
+                sleep(1000);
+                telemetry.update();
             }
         }
 
@@ -440,4 +286,4 @@ public class detectingSkystone extends LinearOpMode {
         targetsSkyStone.deactivate();
     }
 
-}}
+}

@@ -81,11 +81,11 @@ public class Intake {
     //Wrist position values on servo motor from close to Vertocal to midPositon1 to midPsition2 to Horizontal
     public int wristCurrentPosition;
     public double[] wristPosition = {
-            0.2,  //closePosition
+            0.26,  //closePosition
             0.5,  //VerticalPosition
             0.66, //MidPosition1
             0.83, //MidPosition2
-            1.0,  //HorizontalPosition
+            0.97,  //HorizontalPosition
     };
     // public boolean skystoneDetected;
     // public boolean stoneDetected;
@@ -135,7 +135,7 @@ public class Intake {
     public void closeGrip() {
         left_grip.setPosition(GRIP_CLOSE_LEFT);
         right_grip.setPosition(GRIP_CLOSE_RIGHT);
-        grip_state = 1;//CLOSE
+        grip_state = 2;//CLOSE
     }
 
     /**

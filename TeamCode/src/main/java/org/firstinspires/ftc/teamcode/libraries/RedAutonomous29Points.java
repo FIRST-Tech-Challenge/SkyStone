@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.libraries;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -175,7 +174,7 @@ public class RedAutonomous29Points extends LinearOpMode {
 
                     yPosition = translation.get(1);
                     xPosition = translation.get(0);
-                    if (yPosition >0 && yPosition <=10 ) {
+                    if (yPosition > 0 && yPosition <= 10) {
                         positionSkystone = "Right"; //right
                         autoLib.calcMove(3, .5f, Constants.Direction.RIGHT);
 
@@ -218,7 +217,7 @@ public class RedAutonomous29Points extends LinearOpMode {
         telemetry.update();
         //lower arm
         Thread.sleep(500);
-        autoLib.moveArmDownScoreServoArmGrab();
+//        autoLib.moveArmDownScoreServoArmGrab();
 // go near skystone
 //        autoLib.calcMove((float) (-xPosition / 10) + 14.75f, .9f, Constants.Direction.FORWARD);   //when increased-moves back
 //        autoLib.calcMove((float) (yPosition / 10) + 12, .9f, Constants.Direction.RIGHT); //when decreased- moves to the left
@@ -248,7 +247,7 @@ public class RedAutonomous29Points extends LinearOpMode {
 //        distanceToDepot = distanceToDepot + (float) yPosition + 5;
         autoLib.calcMove(3.5f, .7f, Constants.Direction.BACKWARD);
         Thread.sleep(500);
-        autoLib.armGrab();
+//        autoLib.armGrab();
         Thread.sleep(500);
         autoLib.calcMove(17f, .8f, Constants.Direction.FORWARD);    //16
         autoLib.calcTurn(55, .7f); //53
@@ -256,13 +255,13 @@ public class RedAutonomous29Points extends LinearOpMode {
             distanceToDepot = 130;//205
         }
         autoLib.calcMove(distanceToDepot, 1f, Constants.Direction.BACKWARD);
-        autoLib.moveArmUpSeconds();
+//        autoLib.moveArmUpSeconds();
         autoLib.calcTurn(50, .6f);
         autoLib.calcMove(10, .7f, Constants.Direction.BACKWARD);
-        autoLib.scoreServo();
+//        autoLib.scoreServo();
         autoLib.calcMove(5, .15f, Constants.Direction.BACKWARD);
         Thread.sleep(300);
-        autoLib.latchServoFoundation();
+//        autoLib.latchServoFoundation();
         Thread.sleep(1000);
         autoLib.calcMove(60, 1f, Constants.Direction.FORWARD);
         autoLib.restServoFoundation();

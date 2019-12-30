@@ -29,8 +29,8 @@ public class TestCalcMove extends LinearOpMode {
         telemetry.update();
         Thread.sleep(2000);
 
-       autoLib.latchServoFoundation();
-       autoLib.grabServo();
+//       autoLib.latchServoFoundation();
+//       autoLib.grabServo();
 
        Thread.sleep(1000);
 

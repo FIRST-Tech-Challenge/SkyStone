@@ -11,7 +11,8 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_ARM;
+import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_ARM_LEFT;
+import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_ARM_RIGHT;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_BACK_LEFT_WHEEL;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_BACK_RIGHT_WHEEL;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_FRONT_LEFT_WHEEL;
@@ -19,9 +20,12 @@ import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_FRONT_RIG
 import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_LEFT_INTAKE;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_RIGHT_INTAKE;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_ARM;
+import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_AUTONOMOUS_ARM;
+import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_AUTONOMOUS_GRABBER;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_FOUNDATION1;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_FOUNDATION2;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_GRABBER;
+import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_SCORING_ARM;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.TOUCH_ARM_BOTTOM;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.TOUCH_ARM_TOP;
 
@@ -40,14 +44,14 @@ public class Robot {
     private LinearOpMode opMode;
 
     // Motors
-    private DcMotor[] dcMotors = new DcMotor[7];
+    private DcMotor[] dcMotors = new DcMotor[8];
 
     //Servos
-    private Servo[] servos = new Servo[4];
+    private Servo[] servos = new Servo[8];
 
     // Sensors
-    private Rev2mDistanceSensor frontDistanceSensor;
-    private RevTouchSensor[] touchSensors = new RevTouchSensor[2];
+//    private Rev2mDistanceSensor frontDistanceSensor;
+//    private RevTouchSensor[] touchSensors = new RevTouchSensor[2];
 
     Robot(LinearOpMode opMode) {
         this.opMode = opMode;
@@ -66,12 +70,10 @@ public class Robot {
         dcMotors[MOTOR_BACK_RIGHT_WHEEL] = opMode.hardwareMap.get(DcMotor.class, "backRightWheel");
         dcMotors[MOTOR_RIGHT_INTAKE] = opMode.hardwareMap.get(DcMotor.class, "rightIntake");
         dcMotors[MOTOR_LEFT_INTAKE] = opMode.hardwareMap.get(DcMotor.class, "leftIntake");
-        dcMotors[MOTOR_ARM] = opMode.hardwareMap.get(DcMotor.class, "motorArm");
+        dcMotors[MOTOR_ARM_LEFT] = opMode.hardwareMap.get(DcMotor.class, "motorArmLeft");
+        dcMotors[MOTOR_ARM_RIGHT] = opMode.hardwareMap.get(DcMotor.class, "motorArmRight");
 
-//        dcMotors[MOTOR_LATCHER] = opMode.hardwareMap.get(DcMotor.class, "latcher");
-//        dcMotors[MOTOR_SCORING_SLIDE] = opMode.hardwareMap.get(DcMotor.class, "scoring");
-//        dcMotors[MOTOR_INTAKE_SLIDE] = opMode.hardwareMap.get(DcMotor.class, "intakeSlide");
-//        dcMotors[MOTOR_INTAKE] = opMode.hardwareMap.get(DcMotor.class, "intakeRollers");
+
 
         dcMotors[MOTOR_FRONT_RIGHT_WHEEL].setDirection(DcMotorSimple.Direction.REVERSE);
         dcMotors[MOTOR_BACK_RIGHT_WHEEL].setDirection(DcMotorSimple.Direction.REVERSE);
@@ -79,17 +81,20 @@ public class Robot {
 
 
     private void initServos() {
-        servos[SERVO_ARM] = opMode.hardwareMap.get(Servo.class, "servoArm");
+//        servos[SERVO_ARM] = opMode.hardwareMap.get(Servo.class, "servoArm");
         servos[SERVO_FOUNDATION1] = opMode.hardwareMap.get(Servo.class, "servoFoundation1");
         servos[SERVO_FOUNDATION2] = opMode.hardwareMap.get(Servo.class, "servoFoundation2");
-        servos[SERVO_GRABBER] = opMode.hardwareMap.get(Servo.class, "servoGrabber");
+        servos[SERVO_AUTONOMOUS_ARM] = opMode.hardwareMap.get(Servo.class, "servoAutonomousArm");
+        servos[SERVO_AUTONOMOUS_GRABBER] = opMode.hardwareMap.get(Servo.class, "servoAutonomousGrabber");
+//        servos[SERVO_GRABBER] = opMode.hardwareMap.get(Servo.class, "servoGrabber");
+//        servos[SERVO_SCORING_ARM] = opMode.hardwareMap.get(Servo.class, "servoScoringArm");
 
     }
 
     private void initSensors() {
-        frontDistanceSensor = opMode.hardwareMap.get(Rev2mDistanceSensor.class, "frontDistanceSensor");
-        touchSensors[TOUCH_ARM_TOP] = opMode.hardwareMap.get(RevTouchSensor.class, "touchArmTop");
-        touchSensors[TOUCH_ARM_BOTTOM] = opMode.hardwareMap.get(RevTouchSensor.class, "touchArmBottom");
+//        frontDistanceSensor = opMode.hardwareMap.get(Rev2mDistanceSensor.class, "frontDistanceSensor");
+//        touchSensors[TOUCH_ARM_TOP] = opMode.hardwareMap.get(RevTouchSensor.class, "touchArmTop");
+//        touchSensors[TOUCH_ARM_BOTTOM] = opMode.hardwareMap.get(RevTouchSensor.class, "touchArmBottom");
     }
 
     // Motor methods
@@ -128,11 +133,11 @@ public class Robot {
         return (float) servos[index].getPosition();
     }
 
-    boolean isTouchSensorPressed(int index) {
-        return touchSensors[index].isPressed();
-    }
+//    boolean isTouchSensorPressed(int index) {
+//        return touchSensors[index].isPressed();
+//    }
 
-    double getWallDistanceCenti() {
-        return (frontDistanceSensor.getDistance(DistanceUnit.METER) * 100);
-    }
+//    double getWallDistanceCenti() {
+//        return (frontDistanceSensor.getDistance(DistanceUnit.METER) * 100);
+//    }
 }

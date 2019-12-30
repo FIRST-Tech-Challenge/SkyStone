@@ -24,7 +24,6 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
-import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_ARM;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_BACK_LEFT_WHEEL;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_BACK_RIGHT_WHEEL;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.MOTOR_FRONT_LEFT_WHEEL;
@@ -35,6 +34,12 @@ import static org.firstinspires.ftc.teamcode.libraries.Constants.NEVEREST_40_REV
 import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_ARM;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_ARM_POS_RECIEVE;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_ARM_POS_SCORE;
+import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_AUTONOMOUS_ARM;
+import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_AUTONOMOUS_DOWN_ARM;
+import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_AUTONOMOUS_GRABBER;
+import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_AUTONOMOUS_GRABBER_GRAB;
+import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_AUTONOMOUS_GRABBER_SCORE;
+import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_AUTONOMOUS_UP_ARM;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_FOUNDATION1;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_FOUNDATION2;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_FOUNDATION_GRAB1;
@@ -44,8 +49,6 @@ import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_FOUNDATIO
 import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_GRABBER;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_GRABBER_GRAB;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.SERVO_GRABBER_REST;
-import static org.firstinspires.ftc.teamcode.libraries.Constants.TOUCH_ARM_BOTTOM;
-import static org.firstinspires.ftc.teamcode.libraries.Constants.TOUCH_ARM_TOP;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.TRACK_DISTANCE;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.VUFORIA_KEY;
 import static org.firstinspires.ftc.teamcode.libraries.Constants.WHEEL_DIAMETER;
@@ -64,9 +67,9 @@ import static org.firstinspires.ftc.teamcode.libraries.Constants.WHEEL_GEAR_RATI
 public class AutoLib {
     private Robot robot;
     private LinearOpMode opMode;
-    List<VuforiaTrackable> allTrackables;
-    VuforiaLocalizer.Parameters parameters;
-    VuforiaTrackables targetsSkyStone;
+    private List<VuforiaTrackable> allTrackables;
+    private VuforiaLocalizer.Parameters parameters;
+    private VuforiaTrackables targetsSkyStone;
 
 
     // Declaring TensorFlow detection
@@ -148,14 +151,11 @@ public class AutoLib {
         setBaseMotorPowers(0);
     }
 
-    public void calcMoveDiagonal(float centimeters, float power, Constants.Direction direction) {
+    public void calcMoveOdometer(float centimeters, float power, Constants.Direction direction) {
         // Calculates target encoder position
         final int targetPosition = (int) ((((centimeters / (Math.PI * WHEEL_DIAMETER)) *
                 NEVEREST_40_REVOLUTION_ENCODER_COUNT)) * WHEEL_GEAR_RATIO);
 
-//        robot.setDcMotorPower(MOTOR_RIGHT_INTAKE, -.5f);
-//        robot.setDcMotorPower(MOTOR_LEFT_INTAKE, .5f);
-        robot.setServoPosition(SERVO_GRABBER, SERVO_GRABBER_REST);
         switch (direction) {
             case BACKWARD:
                 prepMotorsForCalcMove(targetPosition, targetPosition, targetPosition, targetPosition);
@@ -244,124 +244,137 @@ public class AutoLib {
         }
     }
 
-    public void moveArmDownScoreServoArmGrab() throws InterruptedException {
-
-        robot.setServoPosition(SERVO_ARM, SERVO_ARM_POS_SCORE);
-
-        Thread.sleep(300);
-
-        robot.setDcMotorPower(MOTOR_ARM, .6f);
-
-        while (!robot.isTouchSensorPressed(TOUCH_ARM_BOTTOM)) {
-            opMode.idle();
-            opMode.telemetry.addData("Status", robot.isTouchSensorPressed(TOUCH_ARM_BOTTOM));
-            opMode.telemetry.update();
-        }
-        opMode.telemetry.addData("Status", "Pressed");
-        opMode.telemetry.update();
-
-        robot.setDcMotorPower(MOTOR_ARM, 0);
-
+//    public void moveArmDownScoreServoArmGrab() throws InterruptedException {
+//
+//        robot.setServoPosition(SERVO_ARM, SERVO_ARM_POS_SCORE);
+//
+//        Thread.sleep(300);
+//
+//        robot.setDcMotorPower(MOTOR_ARM, .6f);
+//
+//        while (!robot.isTouchSensorPressed(TOUCH_ARM_BOTTOM)) {
+//            opMode.idle();
+//            opMode.telemetry.addData("Status", robot.isTouchSensorPressed(TOUCH_ARM_BOTTOM));
+//            opMode.telemetry.update();
+//        }
+//        opMode.telemetry.addData("Status", "Pressed");
+//        opMode.telemetry.update();
+//
+//        robot.setDcMotorPower(MOTOR_ARM, 0);
+//
 //        Thread.sleep(1000);
 //        robot.setServoPosition(SERVO_GRABBER, SERVO_GRABBER_GRAB);
-    }
+//    }
 
-    public void armGrab() throws InterruptedException {
+//    public void armGrab() throws InterruptedException {
 
 
         // Thread.sleep(100);
-        robot.setServoPosition(SERVO_GRABBER, SERVO_GRABBER_GRAB);
+//        robot.setServoPosition(SERVO_GRABBER, SERVO_GRABBER_GRAB);
+//    }
+
+//    public void moveArmUp() {
+//        robot.setDcMotorPower(MOTOR_ARM, -0.5f);
+//
+//        while (!robot.isTouchSensorPressed(TOUCH_ARM_TOP)) {
+//            opMode.idle();
+//            opMode.telemetry.addData("Status", robot.isTouchSensorPressed(TOUCH_ARM_TOP));
+//            opMode.telemetry.update();
+//        }
+//    }
+
+//    public void distanceSensorMove() {
+//        while (robot.getWallDistanceCenti() >= 45) {
+//            robot.setDcMotorPower(MOTOR_FRONT_LEFT_WHEEL, .4f);
+//            robot.setDcMotorPower(MOTOR_FRONT_RIGHT_WHEEL, .4f);
+//            robot.setDcMotorPower(MOTOR_BACK_LEFT_WHEEL, .4f);
+//            robot.setDcMotorPower(MOTOR_BACK_RIGHT_WHEEL, .4f);
+//        }
+//        opMode.idle();
+//    }
+
+//    public void moveArmDown() {
+//        robot.setDcMotorPower(MOTOR_ARM, 0.7f);
+//
+//        while (!robot.isTouchSensorPressed(TOUCH_ARM_BOTTOM)) {
+//            opMode.idle();
+//            opMode.telemetry.addData("Status", robot.isTouchSensorPressed(TOUCH_ARM_BOTTOM));
+//            opMode.telemetry.update();
+//        }
+//    }
+
+//    public void moveArmUpSeconds() {
+//        ElapsedTime time = new ElapsedTime();
+//
+//        robot.setDcMotorPower(MOTOR_ARM_, -1f);
+//        while (time.seconds() <= 1) {
+//            opMode.idle();
+//        }
+//        robot.setDcMotorPower(MOTOR_ARM, 0);
+//    }
+//
+//    public void moveArmUpSeconds1() {
+//        ElapsedTime time = new ElapsedTime();
+//
+//        robot.setDcMotorPower(MOTOR_ARM, -.9f);
+//        while (time.seconds() <= .5) {
+//            opMode.idle();
+//        }
+//        robot.setDcMotorPower(MOTOR_ARM, 0);
+//    }
+//
+//    public void moveArmDownSeconds() throws InterruptedException {
+//        ElapsedTime time = new ElapsedTime();
+//
+//        robot.setDcMotorPower(MOTOR_ARM, .7f);
+//        while (time.seconds() <= 1.25) {
+//            opMode.idle();
+//        }
+//        robot.setDcMotorPower(MOTOR_ARM, 0);
+//    }
+
+        //********** Servo Methods **********//
+
+//    public void recieveServoArm() {
+//        robot.setServoPosition(SERVO_ARM, SERVO_ARM_POS_RECIEVE);
+//    }
+    public void grabStoneAutonomous() {
+        robot.setServoPosition(SERVO_AUTONOMOUS_GRABBER,SERVO_AUTONOMOUS_GRABBER_GRAB);
     }
-
-    public void moveArmUp() {
-        robot.setDcMotorPower(MOTOR_ARM, -0.5f);
-
-        while (!robot.isTouchSensorPressed(TOUCH_ARM_TOP)) {
-            opMode.idle();
-            opMode.telemetry.addData("Status", robot.isTouchSensorPressed(TOUCH_ARM_TOP));
-            opMode.telemetry.update();
-        }
+    public void scoreStoneAutonomous() {
+        robot.setServoPosition(SERVO_AUTONOMOUS_GRABBER,SERVO_AUTONOMOUS_GRABBER_SCORE);
     }
-
-    public void distanceSensorMove() {
-        while (robot.getWallDistanceCenti() >= 45) {
-            robot.setDcMotorPower(MOTOR_FRONT_LEFT_WHEEL, .4f);
-            robot.setDcMotorPower(MOTOR_FRONT_RIGHT_WHEEL, .4f);
-            robot.setDcMotorPower(MOTOR_BACK_LEFT_WHEEL, .4f);
-            robot.setDcMotorPower(MOTOR_BACK_RIGHT_WHEEL, .4f);
-        }
-        opMode.idle();
+    public void autonomousArmUp() {
+        robot.setServoPosition(SERVO_AUTONOMOUS_ARM, SERVO_AUTONOMOUS_UP_ARM);
     }
-
-    public void moveArmDown() {
-        robot.setDcMotorPower(MOTOR_ARM, 0.7f);
-
-        while (!robot.isTouchSensorPressed(TOUCH_ARM_BOTTOM)) {
-            opMode.idle();
-            opMode.telemetry.addData("Status", robot.isTouchSensorPressed(TOUCH_ARM_BOTTOM));
-            opMode.telemetry.update();
-        }
+    public void autonomousArmDown() {
+        robot.setServoPosition(SERVO_AUTONOMOUS_ARM, SERVO_AUTONOMOUS_DOWN_ARM);
     }
+//
+//    public void scoreServoArm() {
+//        robot.setServoPosition(SERVO_ARM, SERVO_ARM_POS_SCORE);
+//    }
+//
+//    public void grabServo() {
+//        robot.setServoPosition(SERVO_GRABBER, SERVO_GRABBER_GRAB);
+//    }
+//
+//    public void scoreServo() {
+//        robot.setServoPosition(SERVO_GRABBER, SERVO_GRABBER_REST);
+//    }
+//
+//    public void latchServoFoundation() {
+//        robot.setServoPosition(SERVO_FOUNDATION1, -SERVO_FOUNDATION_GRAB1);
+//        robot.setServoPosition(SERVO_FOUNDATION2, SERVO_FOUNDATION_GRAB2);
+//    }
 
-    public void moveArmUpSeconds() {
-        ElapsedTime time = new ElapsedTime();
-
-        robot.setDcMotorPower(MOTOR_ARM, -1f);
-        while (time.seconds() <= 1) {
-            opMode.idle();
-        }
-        robot.setDcMotorPower(MOTOR_ARM, 0);
-    }
-
-    public void moveArmUpSeconds1() {
-        ElapsedTime time = new ElapsedTime();
-
-        robot.setDcMotorPower(MOTOR_ARM, -.9f);
-        while (time.seconds() <= .5) {
-            opMode.idle();
-        }
-        robot.setDcMotorPower(MOTOR_ARM, 0);
-    }
-
-    public void moveArmDownSeconds() throws InterruptedException {
-        ElapsedTime time = new ElapsedTime();
-
-        robot.setDcMotorPower(MOTOR_ARM, .7f);
-        while (time.seconds() <= 1.25) {
-            opMode.idle();
-        }
-        robot.setDcMotorPower(MOTOR_ARM, 0);
-    }
-
-    //********** Servo Methods **********//
-
-    public void recieveServoArm() {
-        robot.setServoPosition(SERVO_ARM, SERVO_ARM_POS_RECIEVE);
-    }
-
-    public void scoreServoArm() {
-        robot.setServoPosition(SERVO_ARM, SERVO_ARM_POS_SCORE);
-    }
-
-    public void grabServo() {
-        robot.setServoPosition(SERVO_GRABBER, SERVO_GRABBER_GRAB);
-    }
-
-    public void scoreServo() {
-        robot.setServoPosition(SERVO_GRABBER, SERVO_GRABBER_REST);
-    }
-
-    public void latchServoFoundation() {
-        robot.setServoPosition(SERVO_FOUNDATION1, -SERVO_FOUNDATION_GRAB1);
-        robot.setServoPosition(SERVO_FOUNDATION2, SERVO_FOUNDATION_GRAB2);
-    }
 
     public void restServoFoundation() {
         robot.setServoPosition(SERVO_FOUNDATION1, SERVO_FOUNDATION_REST1);
         robot.setServoPosition(SERVO_FOUNDATION2, SERVO_FOUNDATION_REST2);
     }
 
-    //********** Tensor Flow Methods **********//
+    //********** Vuforia Methods **********//
 
     private void initVuforia() {
 

@@ -210,7 +210,7 @@ public class AutoTest extends LinearOpMode {
             autoLib.calcMove(15,.7f, Constants.Direction.LEFT);
             autoLib.calcMove(4, .2f, Constants.Direction.BACKWARD);
             Thread.sleep(300);
-            autoLib.latchServoFoundation();
+//            autoLib.latchServoFoundation();
             Thread.sleep(1000);
             autoLib.calcMove(50, 1f, Constants.Direction.FORWARD);
             autoLib.calcTurn(-90,1f);
@@ -298,16 +298,16 @@ public class AutoTest extends LinearOpMode {
         autoLib.calcMove((float) (-xPosition / 10) + forwardDistanceSkystone, .6f, Constants.Direction.FORWARD);   //when increased-moves back
         autoLib.calcMove(3.5f, .7f, Constants.Direction.BACKWARD);
         Thread.sleep(500);
-        autoLib.armGrab();
+//        autoLib.armGrab();
         Thread.sleep(500);
         autoLib.calcMove(30f, .8f, Constants.Direction.FORWARD);    //16
         autoLib.calcTurn((int) turningDegree, .7f); //53
 //        if (distanceToDepot > 120) {//195
 //            distanceToDepot = 130;//205
 //        }
-        autoLib.moveArmUpSeconds();
+//        autoLib.moveArmUpSeconds();
         autoLib.calcMove(distanceToDepot, 1f, Constants.Direction.BACKWARD);
-        autoLib.scoreServo();
+//        autoLib.scoreServo();
         autoLib.calcMove(50, .15f, Constants.Direction.BACKWARD);
     }
 

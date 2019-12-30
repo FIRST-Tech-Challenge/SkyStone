@@ -22,13 +22,17 @@ public class Constants {
     static final int MOTOR_BACK_RIGHT_WHEEL = 3;
     static final int MOTOR_RIGHT_INTAKE = 4;
     static final int MOTOR_LEFT_INTAKE = 5;
-    static final int MOTOR_ARM = 6;
+    static final int MOTOR_ARM_LEFT = 6;
+    static final int MOTOR_ARM_RIGHT = 7;
 
     //********** Servo Indexes **********//
     static final int SERVO_ARM = 0;
     static final int SERVO_GRABBER = 1;
     static final int SERVO_FOUNDATION1 = 2;
     static final int SERVO_FOUNDATION2 = 3;
+    static final int SERVO_SCORING_ARM = 4;
+    static final int SERVO_AUTONOMOUS_GRABBER = 5;
+    static final int SERVO_AUTONOMOUS_ARM = 6;
 
     //********** Servo Positions **********//
     static final float SERVO_ARM_POS_RECIEVE = .97f;
@@ -39,7 +43,11 @@ public class Constants {
     static final float SERVO_FOUNDATION_REST1 = .33f;
     static final float SERVO_FOUNDATION_GRAB2 = .91f;
     static final float SERVO_FOUNDATION_REST2 = .65f;
-
+    static final float SERVO_AUTONOMOUS_GRABBER_GRAB = .75f;
+    static final float SERVO_AUTONOMOUS_GRABBER_SCORE = 0f;
+    static final float SERVO_AUTONOMOUS_UP_ARM = .32f;
+    static final float SERVO_AUTONOMOUS_DOWN_ARM = .77f;
+    static final float SERVO_TELEOP_ARM_POSITION = .15f;
 
     //********** Touch Sensor Indexes **********//
     static final int TOUCH_ARM_BOTTOM = 0;
@@ -54,7 +62,6 @@ public class Constants {
     public enum Direction {FORWARD, BACKWARD, LEFT, RIGHT}
 
     //********** TensorFlow **********//
-    static final float TENSOR_READING_TIME = 3f;
 
     static final String VUFORIA_KEY = "ARSzhHP/////AAABmQ3dyIKKfkcipjZh0HtnoDEkjuCn18CTNUWRN7PTFoedxZLS+QZmpkyXpQnQXFpQ5ol//l0ZwTejVrGRQ4i/kQBrrFJ8E0C7ckr4lzf5bLCvi1/E9x8anPwt2D0UToZ3MB5jPx4T6s/EOs575BtxjL7uv5jrCbQDsXebm2PROU4zC/Dj7+AYFkKCqD3YYLbGPGV4YoSgp9Ihoe+ZF/eae0FLG8K/o4eyfZj0B3aXkRvYi3dC5LY+c76aU72bKTrQ2PDYSxDG8xCaY1JyEyfDA6XqjHjYMvh0BBbb8bAQvPgG6/G50+5L+c/a8u6sbYJLbvVtXdMtrG1EA4CglbnsDs7GyyJmH5AusSwIDb9DQnTA";
 

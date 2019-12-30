@@ -295,14 +295,14 @@ public class Test extends LinearOpMode {
         telemetry.addData("X Position ", xPosition);
         telemetry.addData("Y Position ", yPosition);
 // go near skystone
-        autoLib.moveArmDownScoreServoArmGrab();
+//        autoLib.moveArmDownScoreServoArmGrab();
 
         autoLib.calcMove((float) (yPosition / 10) + distanceToCenterLine, .9f, Constants.Direction.LEFT); //when decreased- moves to the left
         autoLib.calcMove((float) (-xPosition / 10) + forwardDistanceSkystone, .6f, Constants.Direction.FORWARD);   //when increased-moves back
 //        distanceToDepot = distanceToDepot + (float) yPosition + 5;
         autoLib.calcMove(6f, .7f, Constants.Direction.BACKWARD);
         Thread.sleep(500);
-        autoLib.armGrab();
+//        autoLib.armGrab();
         Thread.sleep(500);
         autoLib.calcMove(17f, .8f, Constants.Direction.FORWARD);    //16
         autoLib.calcTurn((int) -turningDegree, .7f); //53
@@ -314,13 +314,13 @@ public class Test extends LinearOpMode {
         autoLib.calcMove(distanceToDepot, 1f, Constants.Direction.BACKWARD);
         telemetry.addData("Finished moving", "");
         telemetry.update();
-        autoLib.moveArmUpSeconds();
+//        autoLib.moveArmUpSeconds();
         autoLib.calcTurn(-50, .6f);
         autoLib.calcMove(foundation, .55f, Constants.Direction.BACKWARD);
-        autoLib.scoreServo();
+//        autoLib.scoreServo();
         autoLib.calcMove(9, .15f, Constants.Direction.BACKWARD);
         Thread.sleep(300);
-        autoLib.latchServoFoundation();
+//        autoLib.latchServoFoundation();
         Thread.sleep(1000);
         autoLib.calcMove(62, 1f, Constants.Direction.FORWARD);
         autoLib.restServoFoundation();

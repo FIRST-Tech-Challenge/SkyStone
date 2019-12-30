@@ -18,6 +18,9 @@ public class BasicTeleOp extends LinearOpMode {
     public DcMotor TR;
     public DcMotor TL;
 
+    public Servo hooker1;
+    public Servo hooker2;
+
 //    public DcMotor armEx;
 //    public DcMotor armRz;
 
@@ -34,6 +37,9 @@ public class BasicTeleOp extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+        hooker1 = hardwareMap.get(Servo.class, "hook");
+        hooker2 = hardwareMap.get(Servo.class, "hooke");
+
         BL = hardwareMap.get(DcMotor.class, "BL");
         BR = hardwareMap.get(DcMotor.class, "BR");
         TR = hardwareMap.get(DcMotor.class, "TR");
@@ -75,6 +81,16 @@ public class BasicTeleOp extends LinearOpMode {
                 BL.setPower(strafeSpeed);
                 BR.setPower(strafeSpeed);
                 TR.setPower(-strafeSpeed);
+            }
+
+            if (gamepad1.left_bumper) {
+                hooker1.setPosition(0.1);
+                hooker2.setPosition(0.1);
+            }
+
+            if (gamepad1.right_bumper) {
+                hooker1.setPosition(0.9);
+                hooker2.setPosition(0.9);
             }
 
 //            if (armEx.getCurrentPosition()>upperBound) {

@@ -13,7 +13,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class TypexChart {
     public DcMotor TL, TR, BL, BR;
-    public BNO055IMU imu;
+    //public BNO055IMU imu;
     public Servo hookLeft, hookRight;
 
     public DistanceSensor distanceSensor;
@@ -40,7 +40,7 @@ public class TypexChart {
         TL.setDirection(DcMotorSimple.Direction.REVERSE);
         BL.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        imu = ahwMap.get(BNO055IMU.class, "imu");
+        //imu = ahwMap.get(BNO055IMU.class, "imu");
 
         hookLeft = ahwMap.get(Servo.class, "hookLeft");
         hookRight = ahwMap.get(Servo.class, "hookRight");

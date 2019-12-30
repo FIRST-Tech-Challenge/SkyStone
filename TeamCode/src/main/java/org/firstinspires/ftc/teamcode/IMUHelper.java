@@ -12,7 +12,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
-@TeleOp(name = "LoudGoesTheBoom", group = "nameCalling")
+@TeleOp(name = "IMUHelper", group = "nameCalling")
 public class IMUHelper extends LinearOpMode {
     public BNO055IMU imu;
     public Orientation angles;

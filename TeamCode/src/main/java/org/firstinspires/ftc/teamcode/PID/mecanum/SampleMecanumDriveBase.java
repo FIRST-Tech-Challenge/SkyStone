@@ -39,7 +39,8 @@ import static org.firstinspires.ftc.teamcode.PID.util.DashboardUtil.drawSampledP
  */
 @Config
 public abstract class SampleMecanumDriveBase extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(DriveConstantsPID.tP, DriveConstantsPID.tI, DriveConstantsPID.tD);
+    public static PIDCoefficients xTRANSLATIONAL_PID = new PIDCoefficients(DriveConstantsPID.txP, DriveConstantsPID.txI, DriveConstantsPID.txD);
+    public static PIDCoefficients yTRANSLATIONAL_PID = new PIDCoefficients(DriveConstantsPID.tyP, DriveConstantsPID.tyI, DriveConstantsPID.tyD);
     public static PIDCoefficients HEADING_PID  = new PIDCoefficients(DriveConstantsPID.hP, DriveConstantsPID.hI, DriveConstantsPID.hD);    //3, 0, 0
 
 
@@ -75,14 +76,15 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
 
         mode = Mode.IDLE;
 
-        TRANSLATIONAL_PID = new PIDCoefficients(DriveConstantsPID.tP, DriveConstantsPID.tI, DriveConstantsPID.tD);;
-        HEADING_PID = new PIDCoefficients(DriveConstantsPID.hP, DriveConstantsPID.hI, DriveConstantsPID.hD);;
+        xTRANSLATIONAL_PID = new PIDCoefficients(DriveConstantsPID.txP, DriveConstantsPID.txI, DriveConstantsPID.txD);
+        yTRANSLATIONAL_PID = new PIDCoefficients(DriveConstantsPID.tyP, DriveConstantsPID.tyI, DriveConstantsPID.tyD);
+        HEADING_PID = new PIDCoefficients(DriveConstantsPID.hP, DriveConstantsPID.hI, DriveConstantsPID.hD);
 
         turnController = new PIDFController(HEADING_PID);
         turnController.setInputBounds(0, 2 * Math.PI);
 
         constraints = new MecanumConstraints(BASE_CONSTRAINTS, TRACK_WIDTH);
-        follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID);
+        follower = new HolonomicPIDVAFollower(xTRANSLATIONAL_PID, yTRANSLATIONAL_PID, HEADING_PID);
     }
 
     public TrajectoryBuilder trajectoryBuilder() {

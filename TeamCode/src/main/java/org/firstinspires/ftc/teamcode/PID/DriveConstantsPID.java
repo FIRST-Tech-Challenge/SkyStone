@@ -32,9 +32,12 @@ public class DriveConstantsPID {
     public static boolean RUN_USING_IMU_LOCALIZER = false;
     public static double odoEncoderTicksPerRev = 1540.0;
     private static String TAG = "DriveConstants";
-    public static double tP = 0.5; //0.5;
-    public static double tI = 0; //0.5;
-    public static double tD = 0.12; //0.5;
+    public static double txP = 0.5; //0.5;
+    public static double txI = 0; //0.5;
+    public static double txD = 0.12; //0.5;
+    public static double tyP = 0.5; //0.5;
+    public static double tyI = 0; //0.5;
+    public static double tyD = 0.12; //0.5;
     public static double hP = 2; //3.5; // heading co-efficiencies;
     public static double hI = 0; //0;
     public static double hD = 0.22; //0;
@@ -167,7 +170,8 @@ public class DriveConstantsPID {
             RobotLog.dd(TAG, "Velocity PID    kP: "  + Double.toString(MOTOR_VELO_PID.kP) + ", kI: "  + Double.toString(MOTOR_VELO_PID.kI) + ", kD: "  + Double.toString(MOTOR_VELO_PID.kD));
         }
 
-        RobotLog.dd(TAG, "Transitional PID   tP: "+Double.toString(tP) + " tI: "+Double.toString(tI) + " tD: " + Double.toString(tD));
+        RobotLog.dd(TAG, "xTransitional PID   txP: "+Double.toString(txP) + " txI: "+Double.toString(txI) + " txD: " + Double.toString(txD));
+        RobotLog.dd(TAG, "yTransitional PID   tyP: "+Double.toString(tyP) + " tyI: "+Double.toString(tyI) + " tyD: " + Double.toString(tyD));
         RobotLog.dd(TAG, "Heading PID   hP: "+Double.toString(hP) + " hI: "+Double.toString(hI) + " hD: " + Double.toString(hD));
         RobotLog.dd(TAG, "using IMU in localizer? : " + Integer.toString(RUN_USING_IMU_LOCALIZER?1:0));
         RobotLog.dd(TAG, "Driving wheel width? : " + Double.toString(TRACK_WIDTH));
@@ -224,15 +228,24 @@ public class DriveConstantsPID {
         if (v_double != 0 && v_double != Double.MAX_VALUE)
             TRACK_WIDTH = v_double;
 
-        v_double = getTeamCodePropertyValue("debug.ftc.tP");
+        v_double = getTeamCodePropertyValue("debug.ftc.txP");
         if (v_double != Double.MAX_VALUE)
-            tP = v_double;
-        v_double = getTeamCodePropertyValue("debug.ftc.tI");
+            txP = v_double;
+        v_double = getTeamCodePropertyValue("debug.ftc.txI");
         if (v_double != Double.MAX_VALUE)
-            tI = v_double;
-        v_double = getTeamCodePropertyValue("debug.ftc.tD");
+            txI = v_double;
+        v_double = getTeamCodePropertyValue("debug.ftc.txD");
         if (v_double != Double.MAX_VALUE)
-            tD = v_double;
+            txD = v_double;
+        v_double = getTeamCodePropertyValue("debug.ftc.tyP");
+        if (v_double != Double.MAX_VALUE)
+            tyP = v_double;
+        v_double = getTeamCodePropertyValue("debug.ftc.tyI");
+        if (v_double != Double.MAX_VALUE)
+            tyI = v_double;
+        v_double = getTeamCodePropertyValue("debug.ftc.tyD");
+        if (v_double != Double.MAX_VALUE)
+            tyD = v_double;
 
         v_double = getTeamCodePropertyValue("debug.ftc.hP");
         if (v_double != Double.MAX_VALUE)

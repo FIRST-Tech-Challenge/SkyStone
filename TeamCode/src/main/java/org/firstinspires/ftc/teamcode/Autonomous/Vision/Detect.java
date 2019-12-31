@@ -14,8 +14,10 @@ public class Detect {
         TFODCalc.init();
         TFODCalc.setHardwareProperties(43.30, 3.67f);
     }
-
+    // TODO : consider using enum, or a single int - there are only three possibilities!
     public int[] getSkystonePositionsBlue(List<Recognition> updatedRecognitions, double imageWidthPx) {    //Stones left -> right
+        // TODO : consider using an associative array of some sort here - this is not the ideal data structure
+
         if (updatedRecognitions != null) {
             int index = 0;
             double[] left = new double[updatedRecognitions.size()];
@@ -32,6 +34,8 @@ public class Detect {
 
             switch (updatedRecognitions.size()) {
                 case 1:
+                    // if only one skystone is detected, segment image like |1|2|3-|
+                    // if midpoint of skystone is in one of these "regions", assume the positions of remaining stones
                     if (skystoneIndex.get(0).equalsIgnoreCase("skystone")) {
                         double horizontalMid = updatedRecognitions.get(0).getLeft() + updatedRecognitions.get(0).getWidth() / 2;
                         double dividedImg = imageWidthPx / 4;
@@ -45,6 +49,10 @@ public class Detect {
                     } else
                         return new int[]{1, 4};
                 case 2:
+                    // if only see two, and neither are skystones, assume that the skystone is out of view and predict position
+                    // based on that
+
+                    // if one is a skystone and one is not, predict position based on their relative positions
                     if (!skystoneIndex.contains("skystone")) {
                         return new int[]{3, 6};
                     } else {
@@ -57,6 +65,8 @@ public class Detect {
             }
 
             if (skystoneIndex.contains("skystone")) {
+
+                // TODO : consider using indexof or something similar - this is inelegant
                 double minPos = 9999;
                 if (updatedRecognitions.size() >= 3) {
                     for (int x = 0; x < skystoneIndex.size(); x++) {

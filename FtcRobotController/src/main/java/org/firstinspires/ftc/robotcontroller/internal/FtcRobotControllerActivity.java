@@ -40,6 +40,7 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.hardware.SensorManager;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.net.wifi.WifiManager;
@@ -176,6 +177,8 @@ public class FtcRobotControllerActivity extends Activity
 
   private WifiDirectChannelChanger wifiDirectChannelChanger;
 
+  public static SensorManager sensors;
+
   protected class RobotRestarter implements Restarter {
 
     public void requestRestart() {
@@ -261,6 +264,8 @@ public class FtcRobotControllerActivity extends Activity
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+
+    sensors = (SensorManager) getSystemService(SENSOR_SERVICE);
 
     if (enforcePermissionValidator()) {
       return;

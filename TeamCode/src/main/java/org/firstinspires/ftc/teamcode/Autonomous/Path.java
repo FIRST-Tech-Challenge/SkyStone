@@ -6,16 +6,13 @@ import com.acmerobotics.roadrunner.trajectory.BaseTrajectoryBuilder;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.apache.commons.math3.geometry.euclidean.twod.Line;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.All.HardwareMap;
 import org.firstinspires.ftc.teamcode.Autonomous.Vision.Align;
 import org.firstinspires.ftc.teamcode.PID.DriveConstantsPID;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveBase;
-import org.firstinspires.ftc.teamcode.TeleOp.Teleop;
 import org.firstinspires.ftc.teamcode.TeleOp.TeleopConstants;
 
 import java.util.List;
@@ -694,7 +691,7 @@ public class Path {
     public void updateHeading() {
         align.updateExternalHeading(Math.toDegrees(drive.getExternalHeading()));
     }
-
+    // TODO : servo updates are non-blocking, this is unnecessary
     private void transferReset() {
         Thread thread = new Thread() {
             public void run() {
@@ -704,7 +701,7 @@ public class Path {
         };
         thread.start();
     }
-
+    // TODO: see above
     private void openPlatform(){
         Thread thread = new Thread(){
             public void run(){

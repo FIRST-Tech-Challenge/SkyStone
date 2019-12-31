@@ -95,7 +95,8 @@ public class detectingSkystone extends Movement {
     private static final boolean PHONE_IS_PORTRAIT = false  ;
 
     private static final String VUFORIA_KEY =
-            "AeCml+H/////AAABmQkp7T1yW0ycnJcos9JyE6klQCYs9OdJemS15L9P/b/uo4ls9OeXiUAmfVqtyoDM4G4Gn9IAawF1vJPBpvKu/caGjO/tYIk1ikpfkLPKrSz/w5O1txZgkYDPAaLsSPMCTJMnKJwS2Z34D/nDdB65XJ8UFBuNjZSwixZFEFB0JwL14CH1YhFSjoQlyZJ+2MJGbqsL1ZlUSAOtPQz6kox+fTm2UtTyXDLdsJ1Ps6/BWH2YD1QyC7AeU8UwgAqiF5kUxtmZUfd5KWg4VfKzg7eSsBNliUr/LnxL9QLkgYBo6pSoE7kOtJ8dWQG0p7LO3OrH9QtJWZtuta+BCYYi6MYTl62kZ+Da/7zZs2W9TSQr1jk+";
+
+            "Acb+W7P/////AAABmQi/NsuJ7kjnr7uhGM4oRFVKne6Cb6AiWhmKA4Z/is1/Ecpi0VRxI+bAtTQDRFT42HMUbTNV7109rlTUAbJknxi51kWI0E2RDAPb2Ohc9NlA+qnhHX7Inwgy0Gft+sI7CX2vt0lbukqyvjt3MkwYKtmnHou/UXRkbjQmpl1g8MM62h6IYaZEL27hCsnEIvGzQEi+PgVVng8hPeomjQ7lJO8BOUgcWQR3RG5iwQor0lbwADBYJm3X/+ZnE+nC9ef4g42IrTZhdnHfIpisC8ZnTYmllB6WOBsOD0u4GyeiRyVPBtU+hlhzRRpsihr6yugms29vpMKDUsPu1czDeBN5U5OJZAalMo5ET1V1IS0PWioD";
 
     // Since ImageTarget trackables use mm to specifiy their dimensions, we must use mm for all the physical dimension.
     // We will define some constants and conversions here
@@ -127,7 +128,7 @@ public class detectingSkystone extends Movement {
     //Dcmotor configuration stuff
     private ElapsedTime runtime = new ElapsedTime();
 
-    @Override public void runOpMode() {
+    @Override public void runOpModeImpl() {
 
         Servo   servo;
         double  servoPosition = 0.4;
@@ -151,6 +152,7 @@ public class detectingSkystone extends Movement {
         redFrontBridge.setName("Red Front Bridge");
         VuforiaTrackable blueFrontBridge = targetsSkyStone.get(4);
         blueFrontBridge.setName("Blue Front Bridge");
+
 
         List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
         allTrackables.addAll(targetsSkyStone);
@@ -264,20 +266,28 @@ public class detectingSkystone extends Movement {
                 telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
                         translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
 
+                goForward(0,10000);
+
                 // express the rotation of the robot in degrees.
-                Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
-                goForward(1,100);
+         /*       Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
+                Turnleft(-1,1,500);
+                armrelease();
+                goForward(1,400);
+                armclamp();
+                goBackward(1, 1000);
+                goLeft(1, 1000, "goingleft");
+
+          */
+
+
+
 
             }
 
             else {
                 telemetry.addData("Visible Target", "none");
                 telemetry.addData("No Yellow Brick", "none");
-                drivepower = 0.5;
-                lateralright();
-                telemetry.addData("Status", "Moving Forward");
-                telemetry.update();
-                sleep(1000);
+                goForward(0.1,10    );
                 telemetry.update();
             }
         }

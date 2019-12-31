@@ -112,5 +112,37 @@ abstract class Movement extends LinearOpMode
         telemetry.addData("Status", message);
         telemetry.update();
     }
+    protected void Turnright(final double leftwheelsforwardpower, final double rightwheelsbackwardpower,  final int duration) {
+        leftfront.setPower(leftwheelsforwardpower);
+        rightfront.setPower(rightwheelsbackwardpower);
+        rightback.setPower(leftwheelsforwardpower);
+        leftback.setPower(rightwheelsbackwardpower);
+        sleep(duration);
+    }
 
+    protected void Turnleft(final double leftwheelsbackwardpower, final double rightwheelsforwardpower,  final int duration) {
+        leftfront.setPower(leftwheelsbackwardpower);
+        rightfront.setPower(rightwheelsforwardpower);
+        rightback.setPower(leftwheelsbackwardpower);
+        leftback.setPower(rightwheelsforwardpower);
+        sleep(duration);
+    }
+
+    public void Armup(final double armpower, final int duration) {
+        arm.setPower(armpower);
+        sleep(duration);
+        updateTelemetryMessage("Arm going up");
+    }
+
+    public void Armdown(final double armpower, final int duration) {
+        Armup(-armpower, duration);
+    }
+
+    public void armclamp() {
+        frontServo.setPosition(0.4);
+    }
+
+    public void armrelease() {
+        frontServo.setPosition(0.95);
+    }
 }

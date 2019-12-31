@@ -14,7 +14,9 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import com.qualcomm.robotcore.util.RobotLog;
 
+import org.firstinspires.ftc.teamcode.PID.DriveConstantsPID;
 import org.firstinspires.ftc.teamcode.PID.localizer.StandardTrackingWheelLocalizer;
 import org.firstinspires.ftc.teamcode.PID.localizer.TrackingWheelLocalizerWithIMU;
 import org.firstinspires.ftc.teamcode.PID.util.DashboardUtil;
@@ -37,6 +39,7 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
     private DcMotorEx leftFront, leftRear, rightRear, rightFront;
     private List<DcMotorEx> motors;
     private BNO055IMU imu;
+    private static String TAG = "REVClass";
 
     public SampleMecanumDriveREV(HardwareMap hardwareMap) {
         super();
@@ -80,7 +83,19 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
 
         //setLocalizer(new TrackingWheelLocalizerWithIMU(hardwareMap, imu));
-        //setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
+        if (DriveConstantsPID.RUN_USING_IMU_LOCALIZER) {
+            RobotLog.dd(TAG, "to setLocalizer to imu");
+            setLocalizer(new TrackingWheelLocalizerWithIMU(hardwareMap, imu));
+        }
+        else
+            RobotLog.dd(TAG, "not using imu");
+
+        if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
+            RobotLog.dd(TAG, "to setLocalizer to StandardTrackingWheelLocalizer");
+            setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
+        }
+        else
+            RobotLog.dd(TAG, "not using Odometry localizer");
 }
 
     @Override
@@ -103,6 +118,11 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
     public List<Double> getWheelPositions() {
         List<Double> wheelPositions = new ArrayList<>();
         for (DcMotorEx motor : motors) {
+            double t1 = motor.getCurrentPosition();
+            double t2 = encoderTicksToInches(t1);
+            RobotLog.dd(TAG, motor.getDeviceName() + "--getWheelPositions: " + "position: " + Double.toString(t1) +
+                    " inches: " + Double.toString(t2));
+
             wheelPositions.add(encoderTicksToInches(motor.getCurrentPosition()));
         }
         return wheelPositions;
@@ -119,6 +139,10 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
 
     @Override
     public void setMotorPowers(double v, double v1, double v2, double v3) {
+        RobotLog.dd(TAG, "setMotorPowers "+"leftFront: " + Double.toString(v));
+        RobotLog.dd(TAG, "setMotorPowers "+"leftRear: "+Double.toString(v1));
+        RobotLog.dd(TAG, "setMotorPowers "+"rightRear: "+Double.toString(v2));
+        RobotLog.dd(TAG, "setMotorPowers"+"rightFront: "+Double.toString(v3));
         leftFront.setPower(v);
         leftRear.setPower(v1);
         rightRear.setPower(v2);

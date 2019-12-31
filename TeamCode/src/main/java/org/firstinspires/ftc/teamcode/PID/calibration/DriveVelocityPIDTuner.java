@@ -150,6 +150,8 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
     public void runOpMode() {
         hwMap = new HardwareMap(hardwareMap);
 
+        DriveConstantsPID.updateConstantsFromProperties();
+
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;

@@ -26,6 +26,7 @@ public class TurnTest extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+        DriveConstantsPID.updateConstantsFromProperties();
         SampleMecanumDriveBase drive = new SampleMecanumDriveREV(hardwareMap);
 
         int selected = 0;

@@ -119,14 +119,12 @@ public class OdometryDrive {
         } else {
             double deltaX = endPos.getX() - currentPos.getX();
             double deltaY = endPos.getY() - currentPos.getY();
-            debug.add(System.currentTimeMillis() + ": \"LineTo DeltaXY\" -- DeltaX & DeltaY = (" + deltaX + " // " +
-                    deltaY + ")" + "\n");
             if (deltaX != 0 || deltaY != 0) {
                 double theta;
                 try {
-                    theta = Math.atan(deltaY / deltaX);
+                    theta = Math.atan(deltaX / deltaY);
                 } catch (Exception e) {
-                    if (deltaY > 0)
+                    if (deltaX > 0)
                         theta = Math.PI / 2;
                     else
                         theta = (3 * Math.PI) / 2;
@@ -202,17 +200,19 @@ public class OdometryDrive {
         double imuData = constants.imu.getAngularOrientation().firstAngle;
         boolean atTarget = false;
 
-        if (theta > 0) {
+        if (theta >= 0) {
+            if(imuData > 0.5)
+                theta = Math.PI * 2 - imuData;
             setPowerLeft(turnPower);
             setPowerRight(-turnPower);
         } else if (theta < 0) {
+            theta = -imuData;
             setPowerLeft(-turnPower);
             setPowerRight(turnPower);
-        } else {
-            atTarget = true;
         }
 
         while (!atTarget) {
+            imuData = constants.imu.getAngularOrientation().firstAngle;
             if (theta + rad(0.5) > 2 * Math.PI) {
                 if (imuData > theta - rad(0.5) || imuData < theta + rad(0.5) - Math.PI * 2)
                     atTarget = true;
@@ -385,8 +385,7 @@ public class OdometryDrive {
                 !isBetween(targetPos.getY(), currentPos.getY() + dt, currentPos.getY() - dt) ||
                 !isBetween(targetPos.getHeading(), currentPos.getHeading() + rt,
                         currentPos.getHeading() - rt)) {
-
-            if(!xyAligned)
+            if (!xyAligned)
                 turnTo(0, drivePow);
 
             if (targetPos.getX() >= currentPos.getX() + dt || targetPos.getX() <= currentPos.getX() - dt && !xyAligned) {
@@ -413,7 +412,7 @@ public class OdometryDrive {
                     constants.frontRight.setPower(drivePow);
                     constants.backLeft.setPower(drivePow);
                 }
-            } else if(targetPos.getX() <= currentPos.getX() + dt && targetPos.getX() >= currentPos.getX() - dt &&
+            } else if (targetPos.getX() <= currentPos.getX() + dt && targetPos.getX() >= currentPos.getX() - dt &&
                     targetPos.getY() <= currentPos.getY() + dt && targetPos.getY() >= currentPos.getY() - dt)
                 xyAligned = true;
 
@@ -505,7 +504,7 @@ public class OdometryDrive {
         return constants.imu != null ? constants.imu.getAngularOrientation().firstAngle : 0.0;
     }
 
-    public String getDebug(){
+    public String getDebug() {
         String log = debug.toString();
         log = log.replaceAll("]", "");
         log = log.replaceAll("\\[", "");
@@ -513,23 +512,32 @@ public class OdometryDrive {
         return log;
     }
 
-    public void saveLog(){
+    public void saveLogPrompt() {
         String log = debug.toString();
         log = log.replaceAll("]", "");
         log = log.replaceAll("\\[", "");
         log = log.replaceAll(",", "");
-        while(!constants.currentOpMode.isStopRequested()) {
-            if(constants.currentOpMode.gamepad1.a) {
+        while (!constants.currentOpMode.isStopRequested()) {
+            if (constants.currentOpMode.gamepad1.a) {
                 writeFile(AppUtil.ROOT_FOLDER + "/CustomMotionPlanning/OdometryDrive_" +
                         System.currentTimeMillis() + ".txt", log);
                 break;
-            } else if(constants.currentOpMode.gamepad1.b)
+            } else if (constants.currentOpMode.gamepad1.b)
                 break;
 
-            constants.currentOpMode.telemetry.addData("OdometryDrive","Press A to save logs. Press B " +
+            constants.currentOpMode.telemetry.addData("OdometryDrive", "Press A to save logs. Press B " +
                     "or stop OpMode to cancel.");
             constants.currentOpMode.telemetry.update();
         }
+    }
+
+    public void saveLogNow() {
+        String log = debug.toString();
+        log = log.replaceAll("]", "");
+        log = log.replaceAll("\\[", "");
+        log = log.replaceAll(",", "");
+        writeFile(AppUtil.ROOT_FOLDER + "/CustomMotionPlanning/OdometryDrive_" +
+                System.currentTimeMillis() + ".txt", log);
     }
 
     private void writeFile(String filePath, String data) {
@@ -539,8 +547,7 @@ public class OdometryDrive {
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(new FileOutputStream(new File(filePath), true));
             outputStreamWriter.write(data);
             outputStreamWriter.close();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             Log.e("Exception", "File write failed: " + e.toString());
         }
     }

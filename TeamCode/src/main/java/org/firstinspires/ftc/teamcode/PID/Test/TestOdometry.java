@@ -54,6 +54,8 @@ public class TestOdometry extends LinearOpMode {
         hwMap.frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         hwMap.backRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
+        DriveConstantsPID.updateConstantsFromProperties();
+
         drive = new SampleMecanumDriveREV(hardwareMap);
 
         waitForStart();
@@ -67,7 +69,7 @@ public class TestOdometry extends LinearOpMode {
         collectData();
 
         while(opModeIsActive()){
-            /*drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(0,0),0));    //Straight Test
+            drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(0,0),0));    //Straight Test
             drive.getLocalizer().update();
             builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
             builder = builder.setReversed(false).lineTo(new Vector2d(72,0));
@@ -83,7 +85,7 @@ public class TestOdometry extends LinearOpMode {
             builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
             builder = builder.setReversed(true).lineTo(new Vector2d(0,0));
             trajectory = builder.build();
-            drive.followTrajectorySync(trajectory);*/
+            drive.followTrajectorySync(trajectory);
 
             /*drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(0,0), Math.toRadians(90)));    //Strafe Test
             drive.getLocalizer().update();
@@ -103,7 +105,7 @@ public class TestOdometry extends LinearOpMode {
             trajectory = builder.build();
             drive.followTrajectorySync(trajectory);*/
 
-            drive.turnSync(Math.PI);
+            //drive.turnSync(Math.PI);  //Rotation Test
 
             try{
                 Thread.sleep(500);

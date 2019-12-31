@@ -20,6 +20,7 @@ import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 import com.acmerobotics.roadrunner.trajectory.constraints.MecanumConstraints;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.teamcode.PID.DriveConstantsPID;
 import org.firstinspires.ftc.teamcode.PID.util.DashboardUtil;
@@ -38,8 +39,8 @@ import static org.firstinspires.ftc.teamcode.PID.util.DashboardUtil.drawSampledP
  */
 @Config
 public abstract class SampleMecanumDriveBase extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0,0,0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(3,0,0);    //3, 0, 0
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(DriveConstantsPID.tP, DriveConstantsPID.tI, DriveConstantsPID.tD);
+    public static PIDCoefficients HEADING_PID  = new PIDCoefficients(DriveConstantsPID.hP, DriveConstantsPID.hI, DriveConstantsPID.hD);    //3, 0, 0
 
 
     public enum Mode {
@@ -62,6 +63,7 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
 
     private List<Double> lastWheelPositions;
     private double lastTimestamp;
+    private static String TAG = "BaseClass";
 
     public SampleMecanumDriveBase() {
         super(DriveConstantsPID.kV, DriveConstantsPID.kA, DriveConstantsPID.kStatic, TRACK_WIDTH);
@@ -72,6 +74,9 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
         clock = NanoClock.system();
 
         mode = Mode.IDLE;
+
+        TRANSLATIONAL_PID = new PIDCoefficients(DriveConstantsPID.tP, DriveConstantsPID.tI, DriveConstantsPID.tD);;
+        HEADING_PID = new PIDCoefficients(DriveConstantsPID.hP, DriveConstantsPID.hI, DriveConstantsPID.hD);;
 
         turnController = new PIDFController(HEADING_PID);
         turnController.setInputBounds(0, 2 * Math.PI);
@@ -142,6 +147,14 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
         packet.put("xError", lastError.getX());
         packet.put("yError", lastError.getY());
         packet.put("headingError", lastError.getHeading());
+
+        RobotLog.dd(TAG, "update: x " + currentPose.getX());
+        RobotLog.dd(TAG, "y " + currentPose.getY());
+        RobotLog.dd(TAG, "heading " + Double.toString(currentPose.getHeading()));
+
+        RobotLog.dd(TAG, "xError " + lastError.getX());
+        RobotLog.dd(TAG, "yError " + lastError.getY());
+        RobotLog.dd(TAG, "headingError "  + lastError.getHeading());
 
         drawPosition(packet, currentPose);
 

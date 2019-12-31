@@ -10,6 +10,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.All.DriveConstant;
+import org.firstinspires.ftc.teamcode.All.FourWheelMecanumDrivetrain;
+import org.firstinspires.ftc.teamcode.All.HardwareMap;
 import org.firstinspires.ftc.teamcode.PID.DriveConstantsPID;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveBase;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveREV;
@@ -27,7 +29,16 @@ public class StraightTest extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        DriveConstantsPID.updateConstantsFromProperties();
         SampleMecanumDriveBase drive = new SampleMecanumDriveREV(hardwareMap);
+
+        HardwareMap hwMap = new HardwareMap(hardwareMap);
+
+        FourWheelMecanumDrivetrain drivetrain = new FourWheelMecanumDrivetrain(hwMap);
+
+        drivetrain.setMotorZeroPower(DcMotor.ZeroPowerBehavior.BRAKE);
+        drivetrain.resetEncoders();
+        drivetrain.setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         Trajectory trajectory = drive.trajectoryBuilder()
                 .forward(DISTANCE)
@@ -81,7 +92,7 @@ public class StraightTest extends LinearOpMode {
             if (gamepad1.left_bumper) {
                 DriveConstantsPID.kV = kV;
                 trajectory = drive.trajectoryBuilder()
-                        .forward(DISTANCE)
+                        .back(DISTANCE)
                         .build();
                 drive = new SampleMecanumDriveREV(hardwareMap);
             }

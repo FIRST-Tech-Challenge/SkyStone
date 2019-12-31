@@ -33,7 +33,7 @@ public class ConstraintsAndConstants {
     //0 - 1: Allowed Drive or Rotational Error, 1 = OFF, 0 = 100% Accuracy Required
 
 
-    public double motorGearRatio = 3.0 / 2.0;
+    public double motorGearRatio = (99.5 / 13.7) * 1.0 / 1.0;
     public double wheelRadius = 2.0;
     public double motorEncoderTicksPerRev = 383.6;
 
@@ -43,7 +43,7 @@ public class ConstraintsAndConstants {
     public DcMotorEx xRightOdo;
     public DcMotorEx yMiddleOdo;
 
-    public double odometryEncoderTicksPerRev = 1400.0;
+    public double odometryEncoderTicksPerRev = 1560.0;
     public double odometryGearRatio = 1.0 / 1.0;
     public double odometryWheelRadius = 1.25;
 
@@ -83,7 +83,7 @@ public class ConstraintsAndConstants {
     }
 
     public double wheelInchesToEncoderTicks(double inches){
-        return inches * MOTOR_CONFIG.getTicksPerRev() / (wheelRadius * 2 * Math.PI * motorGearRatio);
+        return (inches * MOTOR_CONFIG.getTicksPerRev()) / (wheelRadius * 2 * Math.PI * motorGearRatio);
     }
 
     public double odometryEncoderTicksToInches(double ticks){

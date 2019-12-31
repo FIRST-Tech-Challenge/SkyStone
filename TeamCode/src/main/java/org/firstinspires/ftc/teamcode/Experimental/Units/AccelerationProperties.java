@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class AccelerationProperties {
     private double accelerationProportion;  //AccProportion: % of movement which the robot accelerates/decelerates (0 - 0.5)
-    private double accelerationRate;    //AccRate: Accelerates by this much motor power per increment (0 - 1)
+    private double accelerationRate;    //AccRate: Accelerates by this much motor power % per increment (0 - 1)
     private String debug;
 
     public AccelerationProperties(double proportion, double rate) {
@@ -25,7 +25,8 @@ public class AccelerationProperties {
         debug = System.currentTimeMillis() + ": \"Accelerate\" -- RateOfMotorPowerIncrease = " + accelerationFactor +
                 " // EncoderCountsPerAcceleration = " +
                 encoderCountsPerAcceleration(constants.wheelInchesToEncoderTicks(targetDistanceInches)) +
-                " // NumOfAccSegments = " + getNumOfAccelerationSegments() + "\n";
+                " // NumOfAccSegments = " + getNumOfAccelerationSegments() + " // TotalEncoderTicks = " +
+                constants.wheelInchesToEncoderTicks(targetDistanceInches) + "\n";
 
         while (!atTargetDistance) {
             double currAvg = (constants.frontLeft.getCurrentPosition() + constants.frontRight.getCurrentPosition() + constants.backLeft.getCurrentPosition() +
@@ -38,7 +39,7 @@ public class AccelerationProperties {
 
             if (Math.abs(currAvg - initEncoderAvg) >=
                     encoderCountsPerAcceleration(constants.wheelInchesToEncoderTicks(targetDistanceInches)) * segmentCounter) {
-                if (segmentCounter == getNumOfAccelerationSegments())
+                if (segmentCounter >= getNumOfAccelerationSegments())
                     atTargetDistance = true;
                 else {
                     segmentCounter += 1;
@@ -54,14 +55,15 @@ public class AccelerationProperties {
         double currentMotorPower = getAccelerationPower(currentPower);
         double decelerationFactor = getAccelerationPower(currentPower);
         double segmentCounter = 1;
-        double decelerateInitPoint = constants.wheelInchesToEncoderTicks((accelerationProportion +
-                (1 - accelerationProportion * 2)) * targetDistanceInches);
+        double decelerateInitPoint = constants.wheelInchesToEncoderTicks(accelerationProportion * 3
+                * targetDistanceInches);
 
         debug = System.currentTimeMillis() + ": \"Decelerate\" -- RateOfMotorPowerIncrease = " + decelerationFactor +
                 " // EncoderCountsPerAcceleration = " +
                 encoderCountsPerAcceleration(constants.wheelInchesToEncoderTicks(targetDistanceInches)) +
                 " // NumOfDecSegments = " + getNumOfAccelerationSegments() + " // decelerateInitPoint = " +
-                decelerateInitPoint + "\n";
+                decelerateInitPoint + " // TotalEncoderTicks = " +
+                constants.wheelInchesToEncoderTicks(targetDistanceInches) + "\n";
 
         while (!atTargetDistance) {
             double currAvg = (constants.frontLeft.getCurrentPosition() + constants.frontRight.getCurrentPosition() + constants.backLeft.getCurrentPosition() +
@@ -74,7 +76,7 @@ public class AccelerationProperties {
 
             if (Math.abs(currAvg - initEncoderAvg) >= decelerateInitPoint +
                     encoderCountsPerAcceleration(constants.wheelInchesToEncoderTicks(targetDistanceInches)) * segmentCounter) {
-                if (segmentCounter == getNumOfAccelerationSegments()) {
+                if (segmentCounter >= getNumOfAccelerationSegments()) {
                     atTargetDistance = true;
                     constants.frontLeft.setPower(0);
                     constants.frontRight.setPower(0);
@@ -122,7 +124,7 @@ public class AccelerationProperties {
             for (int i = 0; i < currEncoderCounts.length; i++) {
                 if (Math.abs(currEncoderCounts[i] - initEncoderCounts[i]) >=
                         encoderCountsPerAcceleration(constants.wheelInchesToEncoderTicks(targetDistanceInches[i])) * segmentCounter[i]) {
-                    if (segmentCounter[i] == getNumOfAccelerationSegments())
+                    if (segmentCounter[i] >= getNumOfAccelerationSegments())
                         atTargetDistance = true;
                     else {
                         segmentCounter[i] += 1;
@@ -147,8 +149,8 @@ public class AccelerationProperties {
         double[] decelerationFactor = new double[currentPower.length];
 
         for (int i = 0; i < targetDistanceInches.length; i++) {
-            decelerateInitPoint[i] = constants.wheelInchesToEncoderTicks((accelerationProportion +
-                    (1 - accelerationProportion * 2)) * targetDistanceInches[i]);
+            decelerateInitPoint[i] = constants.wheelInchesToEncoderTicks(accelerationProportion * 3
+                    * targetDistanceInches[i]);
         }
 
         for (int i = 0; i < currentMotorPower.length; i++) {
@@ -173,7 +175,7 @@ public class AccelerationProperties {
             for (int i = 0; i < currEncoderCounts.length; i++) {
                 if (Math.abs(currEncoderCounts[i] - initEncoderCounts[i]) >= decelerateInitPoint[i] +
                         encoderCountsPerAcceleration(constants.wheelInchesToEncoderTicks(targetDistanceInches[i])) * segmentCounter[i]) {
-                    if (segmentCounter[i] == getNumOfAccelerationSegments()) {
+                    if (segmentCounter[i] >= getNumOfAccelerationSegments()) {
                         atTargetDistance = true;
                         constants.frontLeft.setPower(0);
                         constants.frontRight.setPower(0);

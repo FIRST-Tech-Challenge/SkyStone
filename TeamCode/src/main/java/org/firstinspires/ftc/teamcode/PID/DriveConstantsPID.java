@@ -26,7 +26,7 @@ import java.io.InputStreamReader;
 @Config
 public class DriveConstantsPID {
 
-    public static final boolean RUN_USING_PARAMTER_FROM_PROPERTIES = false;
+    public static final boolean RUN_USING_PARAMTER_FROM_PROPERTIES = true;
 
     public static boolean RUN_USING_ODOMETRY_WHEEL = true;
     public static boolean RUN_USING_IMU_LOCALIZER = false;
@@ -35,15 +35,15 @@ public class DriveConstantsPID {
     public static double txP = 0.5; //0.5;
     public static double txI = 0; //0.5;
     public static double txD = 0.12; //0.5;
-    public static double tyP = 0.5; //0.5;
+    public static double tyP = 1.2; //0.5;
     public static double tyI = 0; //0.5;
-    public static double tyD = 0.12; //0.5;
+    public static double tyD = 1.1; //0.5;
     public static double hP = 2; //3.5; // heading co-efficiencies;
     public static double hI = 0; //0;
     public static double hD = 0.22; //0;
 
     public static double ODOMETRY_TRACK_WIDTH = 14.8;
-    public static double ODOMERY_FORWARD_OFFSET = 5.5;
+    public static double ODOMERY_FORWARD_OFFSET = -5.5;
     public static double HARDCODED_TICKS_PER_REV = 383.6; //MOTOR_CONFIG.getTicksPerRev();
     public static double MAX_RPM_FROM_SPEC = 435.0;
     public static double HARDCODED_RPM_RATIO = 0.683; //0.72215; // 0.666;///0.6514;//*MAX_RPM_FROM_SPEC; //283.4; //MOTOR_CONFIG.getMaxRPM();
@@ -85,7 +85,7 @@ public class DriveConstantsPID {
      * motor encoders or have elected not to use them for velocity control, these values should be
      * empirically tuned.
      */
-    public static double kV = 0.0168;   //0.0115
+    public static double kV = 0.0166;   //0.0115
     public static double kA = 0;
     public static double kStatic = 0;
 

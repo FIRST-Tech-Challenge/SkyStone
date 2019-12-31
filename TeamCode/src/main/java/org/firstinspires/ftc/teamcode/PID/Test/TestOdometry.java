@@ -38,6 +38,7 @@ public class TestOdometry extends LinearOpMode {
     private ArrayList<String> odometryCenter = new ArrayList<>();
     private ArrayList<String> imuAngle = new ArrayList<>();
     private ArrayList<String> error = new ArrayList<>();
+    private int counter = 0;
 
     public void runOpMode(){
         hwMap = new HardwareMap(hardwareMap);
@@ -64,12 +65,16 @@ public class TestOdometry extends LinearOpMode {
 
         builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
 
-        int counter = 0;
+        counter = 0;
 
         collectData();
 
+        drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(0,0),0));
+        drive.getLocalizer().update();
+
         while(opModeIsActive()){
-            drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(0,0),0));    //Straight Test
+            drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(drive.getPoseEstimate().getX(),
+                    drive.getPoseEstimate().getY()), drive.getPoseEstimate().getHeading()));    //Straight Test
             drive.getLocalizer().update();
             builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
             builder = builder.setReversed(false).lineTo(new Vector2d(72,0));
@@ -80,7 +85,8 @@ public class TestOdometry extends LinearOpMode {
                 Thread.sleep(500);
             } catch(Exception e){}
 
-            drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(72,0), Math.toRadians(0)));
+            drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(drive.getPoseEstimate().getX(),
+                    drive.getPoseEstimate().getY()), drive.getPoseEstimate().getHeading()));
             drive.getLocalizer().update();
             builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
             builder = builder.setReversed(true).lineTo(new Vector2d(0,0));
@@ -137,68 +143,70 @@ public class TestOdometry extends LinearOpMode {
                             hwMap.frontRight.getCurrentPosition() + "," + hwMap.backRight.getCurrentPosition() + "\n");
                     error.add(drive.getLastError().getX() + "," + drive.getLastError().getY() + "," + drive.getLastError().getHeading() + "\n");
                 }
-                String temp = odometryCenter.toString().replaceAll(",", "");
-                temp = temp.replaceAll("\\[", "");
-                temp = temp.replaceAll("]", "");
-                DriveConstant.writeFile(AppUtil.ROOT_FOLDER + "/RoadRunner/OdometryCenter_" +
-                        System.currentTimeMillis() + ".csv", temp);
+                if(counter == 6) {
+                    String temp = odometryCenter.toString().replaceAll(",", "");
+                    temp = temp.replaceAll("\\[", "");
+                    temp = temp.replaceAll("]", "");
+                    DriveConstant.writeFile(AppUtil.ROOT_FOLDER + "/RoadRunner/OdometryCenter_" +
+                            System.currentTimeMillis() + ".csv", temp);
 
-                temp = imuAngle.toString().replaceAll(",", "");
-                temp = temp.replaceAll("\\[", "");
-                temp = temp.replaceAll("]", "");
-                DriveConstant.writeFile(AppUtil.ROOT_FOLDER + "/RoadRunner/ImuAngle_" +
-                        System.currentTimeMillis() + ".csv", temp);
+                    temp = imuAngle.toString().replaceAll(",", "");
+                    temp = temp.replaceAll("\\[", "");
+                    temp = temp.replaceAll("]", "");
+                    DriveConstant.writeFile(AppUtil.ROOT_FOLDER + "/RoadRunner/ImuAngle_" +
+                            System.currentTimeMillis() + ".csv", temp);
 
-                temp = odometryLR.toString().replaceAll("\\[", "");
-                temp = temp.replaceAll("]", "");
-                int counter = 0;
-                for (int i = 0; i < temp.length(); i++) {
-                    if (temp.charAt(i) == ',') {
-                        counter += 1;
+                    temp = odometryLR.toString().replaceAll("\\[", "");
+                    temp = temp.replaceAll("]", "");
+                    int counter = 0;
+                    for (int i = 0; i < temp.length(); i++) {
+                        if (temp.charAt(i) == ',') {
+                            counter += 1;
+                        }
+
+                        if (counter == 2) {
+                            temp = temp.substring(0, i) + temp.substring(i + 1);
+                            counter = 0;
+                        }
                     }
+                    DriveConstant.writeFile(AppUtil.ROOT_FOLDER + "/RoadRunner/OdometryLR_" +
+                            System.currentTimeMillis() + ".csv", temp);
 
-                    if (counter == 2) {
-                        temp = temp.substring(0, i) + temp.substring(i + 1);
-                        counter = 0;
+                    temp = wheelLR.toString().replaceAll("\\[", "");
+                    temp = temp.replaceAll("]", "");
+                    counter = 0;
+                    for (int i = 0; i < temp.length(); i++) {
+                        if (temp.charAt(i) == ',') {
+                            counter += 1;
+                        }
+
+                        if (counter == 4) {
+                            temp = temp.substring(0, i) + temp.substring(i + 1);
+                            counter = 0;
+                        }
                     }
+                    DriveConstant.writeFile(AppUtil.ROOT_FOLDER + "/RoadRunner/WheelLR_" +
+                            System.currentTimeMillis() + ".csv", temp);
+
+                    temp = error.toString().replaceAll("\\[", "");
+                    temp = temp.replaceAll("]", "");
+                    counter = 0;
+                    for (int i = 0; i < temp.length(); i++) {
+                        if (temp.charAt(i) == ',') {
+                            counter += 1;
+                        }
+
+                        if (counter == 3) {
+                            temp = temp.substring(0, i) + temp.substring(i + 1);
+                            counter = 0;
+                        }
+                    }
+                    DriveConstant.writeFile(AppUtil.ROOT_FOLDER + "/RoadRunner/EstimatedError_" +
+                            System.currentTimeMillis() + ".csv", temp);
+
+                    DriveConstant.writeFile(AppUtil.ROOT_FOLDER + "/RoadRunner/DriveVelRAWData_" +
+                            System.currentTimeMillis() + ".txt", savedData.toString());
                 }
-                DriveConstant.writeFile(AppUtil.ROOT_FOLDER + "/RoadRunner/OdometryLR_" +
-                        System.currentTimeMillis() + ".csv", temp);
-
-                temp = wheelLR.toString().replaceAll("\\[", "");
-                temp = temp.replaceAll("]", "");
-                counter = 0;
-                for (int i = 0; i < temp.length(); i++) {
-                    if (temp.charAt(i) == ',') {
-                        counter += 1;
-                    }
-
-                    if (counter == 4) {
-                        temp = temp.substring(0, i) + temp.substring(i + 1);
-                        counter = 0;
-                    }
-                }
-                DriveConstant.writeFile(AppUtil.ROOT_FOLDER + "/RoadRunner/WheelLR_" +
-                        System.currentTimeMillis() + ".csv", temp);
-
-                temp = error.toString().replaceAll("\\[", "");
-                temp = temp.replaceAll("]", "");
-                counter = 0;
-                for (int i = 0; i < temp.length(); i++) {
-                    if (temp.charAt(i) == ',') {
-                        counter += 1;
-                    }
-
-                    if (counter == 3) {
-                        temp = temp.substring(0, i) + temp.substring(i + 1);
-                        counter = 0;
-                    }
-                }
-                DriveConstant.writeFile(AppUtil.ROOT_FOLDER + "/RoadRunner/EstimatedError_" +
-                        System.currentTimeMillis() + ".csv", temp);
-
-                DriveConstant.writeFile(AppUtil.ROOT_FOLDER + "/RoadRunner/DriveVelRAWData_" +
-                        System.currentTimeMillis() + ".txt", savedData.toString());
             }
         };
         thread.start();

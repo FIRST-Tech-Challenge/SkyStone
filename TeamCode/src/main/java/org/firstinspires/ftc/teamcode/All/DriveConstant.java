@@ -21,6 +21,20 @@ public class DriveConstant {
     public static double MOTOR_GEAR_RATIO = 2.0 / 1.0;     //@TODO Change the gear ratios [Encoder gear / Wheel gear] 24/40?
     public static double ODOMETRY_GEAR_RATIO = 1.0 / 1.0;
 
+
+    public static void writeFile(String filePath, String data) {
+        try {
+            File folder = new File(filePath.substring(0,filePath.lastIndexOf("/") + 1));
+            folder.mkdirs();
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(new FileOutputStream(new File(filePath), true));
+            outputStreamWriter.write(data);
+            outputStreamWriter.close();
+        }
+        catch (IOException e) {
+            Log.e("Exception", "File write failed: " + e.toString());
+        }
+    }
+
     public static void writeSerializedObject(String filePath, Object data) {
         try {
             File folder = new File(filePath.substring(0, filePath.lastIndexOf("/") + 1));

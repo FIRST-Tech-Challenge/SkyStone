@@ -83,10 +83,10 @@ public class MainAutonomous extends LinearOpMode {
                     fieldPosition = FieldPosition.RED_FOUNDATION_PARK;
                     startingPos = new Pose2d(new Vector2d(20.736, -63.936), Math.toRadians(90));
                 } else if (gamepad1.y) {
-                    fieldPosition = FieldPosition.RED_QUARRY;
+                    fieldPosition = FieldPosition.RED_QUARY;
                     startingPos = new Pose2d(new Vector2d(-34.752, -63.936), Math.toRadians(90));
                 } else if (gamepad1.x) {
-                    fieldPosition = FieldPosition.BLUE_QUARRY;
+                    fieldPosition = FieldPosition.BLUE_QUARY;
                     startingPos = new Pose2d(new Vector2d(-34.752, 63.936), Math.toRadians(270));
                 } else if(gamepad1.right_bumper){
                     fieldPosition = FieldPosition.BLUE_FOUNDATION_DRAG;
@@ -111,7 +111,7 @@ public class MainAutonomous extends LinearOpMode {
                 telemetry.update();
                 path = new Path(hwMap, this, drive, startingPos);
 
-                if (fieldPosition == FieldPosition.RED_QUARRY || fieldPosition == FieldPosition.BLUE_QUARRY) {
+                if (fieldPosition == FieldPosition.RED_QUARY || fieldPosition == FieldPosition.BLUE_QUARY) {
                     telemetry.addData("STATUS", "Initializing TensorFlow...");
                     telemetry.update();
 
@@ -139,15 +139,15 @@ public class MainAutonomous extends LinearOpMode {
         drivetrain.resetEncoders();
 
         // begin tfod processing before starting -- use it to ascertain the positions of skystones in quarry
-        while (!isStarted() && (fieldPosition == FieldPosition.BLUE_QUARRY || fieldPosition == FieldPosition.RED_QUARRY) &&
+        while (!isStarted() && (fieldPosition == FieldPosition.BLUE_QUARY || fieldPosition == FieldPosition.RED_QUARY) &&
                 !isStopRequested()) {
             List<Recognition> recognized = recognize();
 
-            if (recognized != null && fieldPosition == FieldPosition.BLUE_QUARRY)
+            if (recognized != null && fieldPosition == FieldPosition.BLUE_QUARY)
                 try {
                     skystonePositions = detect.getSkystonePositionsBlue(recognized, imgWidth);
                 } catch (Exception e){ e.printStackTrace(); }
-            else if (recognized != null && fieldPosition == FieldPosition.RED_QUARRY)
+            else if (recognized != null && fieldPosition == FieldPosition.RED_QUARY)
                 try{
                     skystonePositions = detect.getSkystonePositionsRed(recognized, imgWidth);
                 } catch (Exception e){ e.printStackTrace(); }
@@ -168,13 +168,13 @@ public class MainAutonomous extends LinearOpMode {
             sendData();
             //resetLiftEncoder();
             switch (fieldPosition) {
-                case RED_QUARRY:
+                case RED_QUARY:
                     path.RedQuary(skystonePositions);
                     break;
                 case RED_FOUNDATION_PARK:
                     path.RedFoundationPark();
                     break;
-                case BLUE_QUARRY:
+                case BLUE_QUARY:
                     path.BlueQuary(skystonePositions);
                     break;
                 case BLUE_FOUNDATION_PARK:

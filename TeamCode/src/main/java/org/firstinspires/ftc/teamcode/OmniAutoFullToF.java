@@ -147,94 +147,94 @@ public abstract class OmniAutoFullToF extends OmniAutoClass
 		// Stop the image pipeline.
 		phoneCam.stopStreaming();
 
-            // Start moving intake out, should be done by the time driving is done.
-            robot.moveIntake(HardwareOmnibot.IntakePosition.EXTENDED);
+		// Start moving intake out, should be done by the time driving is done.
+        robot.moveIntake(HardwareOmnibot.IntakePosition.EXTENDED);
 
-            // This sets side specific values based on red or blue
-            setSkystoneValues(stonePosition);
+        // This sets side specific values based on red or blue
+        setSkystoneValues(stonePosition);
 
-            // Drive out from the starting position, 10cm from the skystones
-            distanceFromWall(HardwareOmnibot.RobotSide.BACK, 54.0, maxSpeed, standardDistanceError, 5000, progressActivities);
+        // Drive out from the starting position, 10cm from the skystones
+        distanceFromWall(HardwareOmnibot.RobotSide.BACK, 54.0, maxSpeed, standardDistanceError, 5000, progressActivities);
 
-            // Drive from the side wall to the collection identified stone position.
-            distanceFromWall(robot.stackFromSide, sideDistance1, maxSpeed, standardDistanceError, 5000, progressActivities);
+        // Drive from the side wall to the collection identified stone position.
+        distanceFromWall(robot.stackFromSide, sideDistance1, maxSpeed, standardDistanceError, 5000, progressActivities);
 
-            // Rotate the robot to collection angle.
-            rotateRobotToAngle(rotateSpeed, baseAngle + attackAngle1, 2000, progressActivities);
+        // Rotate the robot to collection angle.
+        rotateRobotToAngle(rotateSpeed, baseAngle + attackAngle1, 2000, progressActivities);
 
-            // Make sure the intake is out.
+        // Make sure the intake is out.
+        robot.resetReads();
+        double endTime = timer.milliseconds() + 1000;
+        while (!robot.intakeAtPosition(HardwareOmnibot.IntakePosition.EXTENDED) && (timer.milliseconds() < endTime) && (!isStopRequested())) {
             robot.resetReads();
-            double endTime = timer.milliseconds() + 1000;
-            while (!robot.intakeAtPosition(HardwareOmnibot.IntakePosition.EXTENDED) && (timer.milliseconds() < endTime) && (!isStopRequested())) {
-                robot.resetReads();
-            }
-            robot.moveLift(HardwareOmnibot.LiftPosition.STOWED);
+        }
+        robot.moveLift(HardwareOmnibot.LiftPosition.STOWED);
 
-            // Set the zero for the extender for when we start teleop.  We should do this as late
-            // as will get reliably called.
-            robot.finalAutoIntakePosition = HardwareOmnibot.IntakePosition.EXTENDED;
-    		robot.finalAutoIntakeZero = robot.getIntakeAbsoluteEncoder();
+        // Set the zero for the extender for when we start teleop.  We should do this as late
+        // as will get reliably called.
+        robot.finalAutoIntakePosition = HardwareOmnibot.IntakePosition.EXTENDED;
+        robot.finalAutoIntakeZero = robot.getIntakeAbsoluteEncoder();
 
-            // Start the intake to collect.
-            robot.startIntake(false);
+        // Start the intake to collect.
+        robot.startIntake(false);
 
-            // Drive forward to collect the skystone and drive back.
-            driveAtHeadingForTime(slowSpeed, precisionSpin, baseAngle + 90 + attackAngle1, baseAngle + attackAngle1, stoneGrabTime, true, progressActivities);
-            driveAtHeadingForTime(slowSpeed, precisionSpin, baseAngle + 270 + attackAngle1, baseAngle + attackAngle1, stoneGrabTime, true, progressActivities);
+        // Drive forward to collect the skystone and drive back.
+        driveAtHeadingForTime(slowSpeed, precisionSpin, baseAngle + 90 + attackAngle1, baseAngle + attackAngle1, stoneGrabTime, true, progressActivities);
+        driveAtHeadingForTime(slowSpeed, precisionSpin, baseAngle + 270 + attackAngle1, baseAngle + attackAngle1, stoneGrabTime, true, progressActivities);
 
-            // Stop the intake
-            robot.stopIntake();
+        // Stop the intake
+        robot.stopIntake();
 
-            // Rotate to running angle to go to other side of the bridge.
-            rotateRobotToAngle(rotateSpeed, baseAngle + 90.0 + fudgeAngle, 2000, progressActivities);
+        // Rotate to running angle to go to other side of the bridge.
+        rotateRobotToAngle(rotateSpeed, baseAngle + 90.0 + fudgeAngle, 2000, progressActivities);
 
-            // Move robot to center of lane before launching.  Lane defined as
-            // skybridge 48 inches and robot width 18 inches, with our robot width
-            // that is 24 inches to 42 inches, leaving 6 inches on either side.
-            distanceFromWall(robot.stackFromSide, 61.0, maxSpeed, standardDistanceError, 5000, progressActivities);
+        // Move robot to center of lane before launching.  Lane defined as
+        // skybridge 48 inches and robot width 18 inches, with our robot width
+        // that is 24 inches to 42 inches, leaving 6 inches on either side.
+        distanceFromWall(robot.stackFromSide, 61.0, maxSpeed, standardDistanceError, 5000, progressActivities);
 
-            // Fly to the other side.  Do not put the brakes on, allow the distance
-            // from wall function take over.
-            // We could turn off encoders to drive faster.
-            driveAtHeadingForTime(maxSpeed, slowSpin, baseAngle + 0.0 + fudgeAngle, baseAngle + 90.0 + fudgeAngle, flyTime1, false, progressActivities);
+        // Fly to the other side.  Do not put the brakes on, allow the distance
+        // from wall function take over.
+        // We could turn off encoders to drive faster.
+        driveAtHeadingForTime(maxSpeed, slowSpin, baseAngle + 0.0 + fudgeAngle, baseAngle + 90.0 + fudgeAngle, flyTime1, false, progressActivities);
 
-            // Get to foundation midpoint.
-            distanceFromWall(HardwareOmnibot.RobotSide.BACK, 40.0, maxSpeed, standardDistanceError, 5000, progressActivities);
+        // Get to foundation midpoint.
+        distanceFromWall(HardwareOmnibot.RobotSide.BACK, 40.0, maxSpeed, standardDistanceError, 5000, progressActivities);
 
-            // Start delivering Stone
+        // Start delivering Stone
         if(runLift) {
             robot.resetReads();
             robot.liftTargetHeight = HardwareOmnibot.LiftPosition.STONE_AUTO;
             robot.startStoneStacking();
         }
 
-            // Rotate to foundation grabbing angle.
-            // Not sure why this doesn't need base angle
-            rotateRobotToAngle(rotateSpeed, 180.0 + fudgeAngle, 2000, true);
+        // Rotate to foundation grabbing angle.
+        // Not sure why this doesn't need base angle
+        rotateRobotToAngle(rotateSpeed, 180.0 + fudgeAngle, 2000, true);
 
-            // Back the robot up to the foundation
-            grabFoundation(5000);
+        // Back the robot up to the foundation
+        grabFoundation(5000);
 
-            // Move the foundation to parallel back wall.
-            // Not sure why this doesn't need base angle
-            if(baseAngle == 0) {
-                driveAtHeadingForTime(maxSpeed, slowSpin, 260.0, 170.0, 350, false, true);
-                driveAtHeadingForTime(maxSpeed, slowSpin, 250.0, 160.0, 350, false, true);
-            } else {
-                driveAtHeadingForTime(maxSpeed, slowSpin, 290.0+fudgeAngle, 200.0+fudgeAngle, 450, false, true);
-                driveAtHeadingForTime(maxSpeed, slowSpin, 300.0+fudgeAngle, 210.0+fudgeAngle, 450, false, true);
-            }
+        // Move the foundation to parallel back wall.
+        // Not sure why this doesn't need base angle
+        if(baseAngle == 0) {
+            driveAtHeadingForTime(maxSpeed, slowSpin, 260.0, 170.0, 350, false, true);
+            driveAtHeadingForTime(maxSpeed, slowSpin, 250.0, 160.0, 350, false, true);
+        } else {
+            driveAtHeadingForTime(maxSpeed, slowSpin, 290.0+fudgeAngle, 200.0+fudgeAngle, 450, false, true);
+            driveAtHeadingForTime(maxSpeed, slowSpin, 300.0+fudgeAngle, 210.0+fudgeAngle, 450, false, true);
+        }
 
-            // Rotate to parallel back wall.
-            rotateRobotToAngle(rotateSpeed, baseAngle + 90.0 + fudgeAngle, 2000, true);
+        // Rotate to parallel back wall.
+        rotateRobotToAngle(rotateSpeed, baseAngle + 90.0 + fudgeAngle, 2000, true);
 
-            // Drive the foundation into the back wall.
-            driveAtHeadingForTime(maxSpeed, precisionSpin, baseAngle + 0.0, baseAngle + 90.0, 500, true, true);
+        // Drive the foundation into the back wall.
+        driveAtHeadingForTime(maxSpeed, precisionSpin, baseAngle + 0.0, baseAngle + 90.0, 500, true, true);
 
-            // Release the foundation
-            moveFingers(true, true);
+        // Release the foundation
+        moveFingers(true, true);
 
-            // Perform the whole stone placement here for now.  Place at level 2 to make sure it doesn't get caught up.
+        // Perform the whole stone placement here for now.  Place at level 2 to make sure it doesn't get caught up.
         if(runLift) {
             endTime = timer.milliseconds() + 10000;
             while ((robot.stackStone != HardwareOmnibot.StackActivities.IDLE) && (timer.milliseconds() < endTime) && (!isStopRequested())) {
@@ -250,7 +250,6 @@ public abstract class OmniAutoFullToF extends OmniAutoClass
         distanceFromWall(robot.stackFromSide, 61.0, maxSpeed, standardDistanceError, 5000, false);
 
         if(secondSkystone) {
-
             // Fly back to the other side to collect second stone.
             driveAtHeadingForTime(maxSpeed, slowSpin, baseAngle + 180.0, baseAngle + 90.0, flyBackTime1, true, false);
 

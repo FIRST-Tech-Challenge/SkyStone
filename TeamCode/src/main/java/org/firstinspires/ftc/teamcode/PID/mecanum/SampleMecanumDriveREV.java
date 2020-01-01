@@ -99,8 +99,15 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
         }
         else
             RobotLog.dd(TAG, "not using Odometry localizer");
-}
-
+    }
+    public void setBrakeonZeroPower(boolean flag) {
+        for (DcMotorEx motor : motors) {
+            if (flag == true)
+                motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            else
+                motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        }
+    }
     @Override
     public PIDCoefficients getPIDCoefficients(DcMotor.RunMode runMode) {
         PIDFCoefficients coefficients = leftFront.getPIDFCoefficients(runMode);

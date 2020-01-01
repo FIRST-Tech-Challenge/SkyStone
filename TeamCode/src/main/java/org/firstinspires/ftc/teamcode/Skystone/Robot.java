@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.Skystone;
 
-import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.SystemClock;
 import android.util.Log;
 
@@ -33,13 +31,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Vector;
 
@@ -59,6 +53,7 @@ public class Robot {
 
     // Outtake Motors
     private DcMotor outtakeSpool;
+    private DcMotor outtakeSpool2;
 
     // Outtake Servos
     private Servo outtakeExtender;
@@ -183,6 +178,11 @@ public class Robot {
             outtakeSpool.setDirection(DcMotor.Direction.FORWARD);
         }
 
+        outtakeSpool2 = getDcMotor("outtakeSpool2");
+        if (outtakeSpool2 != null){
+            outtakeSpool2.setDirection(DcMotor.Direction.FORWARD);
+        }
+
         outtakeExtender = getServo("outtakeExtender");
         clamp = getServo("clamp");
         clampPivot = getServo("clampPivot");
@@ -267,7 +267,7 @@ public class Robot {
      * sets drive motors mode to whatever
      * @param runMode what to set all the motors to
      */
-    public void setMotorMode(DcMotor.RunMode runMode) {
+    public void setDrivetrainMotorModes(DcMotor.RunMode runMode) {
         fLeft.setMode(runMode);
         fRight.setMode(runMode);
         bLeft.setMode(runMode);
@@ -313,7 +313,7 @@ public class Robot {
 
         targetHeadingRadians = angleWrap(targetHeadingRadians);
 
-        this.setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        this.setDrivetrainMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         double power = 1;
 
@@ -415,9 +415,9 @@ public class Robot {
      */
     public void moveRobot(double speed, int targetPosition) {
         //called by final move - bare bones move function
-        this.setMotorMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        this.setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        this.setMotorMode(DcMotor.RunMode.RUN_TO_POSITION);
+        this.setDrivetrainMotorModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.setDrivetrainMotorModes(DcMotor.RunMode.RUN_USING_ENCODER);
+        this.setDrivetrainMotorModes(DcMotor.RunMode.RUN_TO_POSITION);
         double newSpeed = speed;
         if (targetPosition < 0) {
             newSpeed = newSpeed * -1;
@@ -440,8 +440,8 @@ public class Robot {
         }
         brakeRobot();
         telemetry.addLine("finished sleeping");
-        this.setMotorMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        this.setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        this.setDrivetrainMotorModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.setDrivetrainMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     /**
@@ -1148,7 +1148,7 @@ public class Robot {
         double totalTimeSeconds = totalDistanceToTarget/20;
 
         // so deceleration works
-        this.setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        this.setDrivetrainMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // start a timer
         long startTime = SystemClock.elapsedRealtime();
@@ -1297,6 +1297,10 @@ public class Robot {
 
     public void setOuttakeSpool(DcMotor outtakeSpool) {
         this.outtakeSpool = outtakeSpool;
+    }
+
+    public DcMotor getOuttakeSpool2() {
+        return outtakeSpool2;
     }
 
     public Servo getOuttakeExtender() {

@@ -48,8 +48,10 @@ public class MainTeleop extends LinearOpMode {
         resetRobot();
         robot.initServos();
         waitForStart();
+
         robot.getOuttakeSpool().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.getOuttakeSpool().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         Position2D position2D = new Position2D(robot);
         position2D.startOdometry();
 
@@ -122,16 +124,18 @@ public class MainTeleop extends LinearOpMode {
         }
 
         robot.getOuttakeSpool().setPower(spoolPower);
+        robot.getOuttakeSpool2().setPower(spoolPower);
 //        telemetry.addLine("Spool Position " + robot.getOuttakeSpool().getCurrentPosition());
     }
 
     private void resetRobot() {
         robot = new Robot(hardwareMap, telemetry, this);
 
-        robot.setMotorMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.setDrivetrainMotorModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.setDrivetrainMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         robot.getClampPivot().setDirection(Servo.Direction.FORWARD);
         robot.getOuttakeSpool().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        robot.getOuttakeSpool2().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         robot.getIntakeLeft().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         robot.getIntakeRight().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
@@ -197,6 +201,7 @@ public class MainTeleop extends LinearOpMode {
             robot.getIntakePusher().setPosition(robot.PUSHER_PUSHED-0.12);
 
             robot.getOuttakeSpool().setPower(1);
+            robot.getOuttakeSpool2().setPower(1);
 
             while(SystemClock.elapsedRealtime() - startTime < 1000 && opModeIsActive() && !gamepad1.x){
                 driveLogic();
@@ -206,11 +211,12 @@ public class MainTeleop extends LinearOpMode {
             }
 
             robot.getOuttakeSpool().setPower(0);
+            robot.getOuttakeSpool2().setPower(0);
 
             startTime = SystemClock.elapsedRealtime();
             robot.getMarkerServo().setPosition(robot.TEAM_MARKER_DUMP);
 
-            while(SystemClock.elapsedRealtime()- startTime < 750){
+            while(SystemClock.elapsedRealtime() - startTime < 750){
                 driveLogic();
                 slowDriveLogic();
                 intakeLogic();
@@ -218,24 +224,31 @@ public class MainTeleop extends LinearOpMode {
             }
 
             robot.getMarkerServo().setPosition(robot.TEAM_MARKER_RETRACT);
-            while(SystemClock.elapsedRealtime()-startTime <1000){
+
+            while(SystemClock.elapsedRealtime() - startTime < 1000){
                 driveLogic();
                 slowDriveLogic();
                 intakeLogic();
                 foundationLogic();
             }
+
             while(robot.getOuttakeSpool().getCurrentPosition() <= 0){
                 driveLogic();
                 slowDriveLogic();
                 intakeLogic();
                 foundationLogic();
                 robot.getOuttakeSpool().setPower(-1);
+                robot.getOuttakeSpool2().setPower(-1);
             }
+
             startTime = SystemClock.elapsedRealtime();
+
             robot.getOuttakeSpool().setPower(0);
+            robot.getOuttakeSpool2().setPower(0);
+
             robot.getBackStopper().setPosition(robot.BACK_STOPPER_UP);
 
-            while(SystemClock.elapsedRealtime()-startTime< 250){
+            while(SystemClock.elapsedRealtime() - startTime < 250){
                 driveLogic();
                 slowDriveLogic();
                 intakeLogic();
@@ -244,23 +257,20 @@ public class MainTeleop extends LinearOpMode {
 
             robot.getIntakePusher().setPosition(robot.PUSHER_PUSHED);
 
-            while(SystemClock.elapsedRealtime()-startTime< 500){
+            while(SystemClock.elapsedRealtime()- startTime < 500){
                 driveLogic();
                 slowDriveLogic();
                 intakeLogic();
                 foundationLogic();
             }
+
             robot.getIntakePusher().setPosition(robot.PUSHER_RETRACTED);
             robot.getClamp().setPosition(robot.CLAMP_SERVO_CLAMPED);
         }
     }
+
     private void slowDriveLogic() {
         //toggle driving speed
-        if (powerScaleFactor == 0.4) {
-//            telemetry.addData("Driving Mode","Slow");
-        } else {
-//            telemetry.addData("Driving Mode","Normal");
-        }
         if (gamepad1.left_bumper && !changedSlowDrive) {
             powerScaleFactor = (onSlowDrive) ? 0.9 : 0.4;
             onSlowDrive = !onSlowDrive;
@@ -268,7 +278,14 @@ public class MainTeleop extends LinearOpMode {
         } else if (!gamepad1.left_bumper) {
             changedSlowDrive = false;
         }
+
+//        if (powerScaleFactor == 0.4) {
+////            telemetry.addData("Driving Mode","Slow");
+//        } else {
+////            telemetry.addData("Driving Mode","Normal");
+//        }
     }
+
     private void intakeLogic() {
         if (!outtakeExtended) {
             robot.getIntakeLeft().setPower(gamepad2.left_stick_y);

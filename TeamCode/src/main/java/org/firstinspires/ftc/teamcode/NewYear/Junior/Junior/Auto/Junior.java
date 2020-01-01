@@ -83,7 +83,7 @@
 //        rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //    }
 //
-//    public void setMotorMode(DcMotor.RunMode runMode){
+//    public void setDrivetrainMotorModes(DcMotor.RunMode runMode){
 //        leftDrive.setMode(runMode);
 //        rightDrive.setMode(runMode);
 //    }
@@ -118,8 +118,8 @@
 //        double power;
 //        long startTime = SystemClock.elapsedRealtime();
 //
-//        this.setMotorMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        this.setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        this.setDrivetrainMotorModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        this.setDrivetrainMotorModes(DcMotor.RunMode.RUN_USING_ENCODER);
 //
 //        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 //        double startHeading = angles.firstAngle;
@@ -149,7 +149,7 @@
 //        }
 //        brakeRobot();
 //        linearOpMode.sleep(100);
-//        this.setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        this.setDrivetrainMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 //    }
 //
 //    public void splineCalculation(double[][] waypoints){
@@ -216,7 +216,7 @@
 //        final String TAG = "splineMove";
 //
 //        resetEncoders();
-//        setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        setDrivetrainMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 //        long startTime = SystemClock.elapsedRealtime();
 //        double refLeftSpeed, refRightSpeed;
 //        double refLeftDistance, refRightDistance;

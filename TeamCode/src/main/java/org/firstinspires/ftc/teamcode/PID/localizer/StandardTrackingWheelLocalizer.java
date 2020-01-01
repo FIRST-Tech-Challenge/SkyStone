@@ -7,6 +7,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.localization.ThreeTrackingWheelLocalizer;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.RobotLog;
@@ -15,6 +16,8 @@ import org.firstinspires.ftc.teamcode.PID.DriveConstantsPID;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.RUN_USING_ENCODER;
 
 /*
  * Sample tracking wheel localizer implementation assuming the standard configuration:
@@ -39,7 +42,7 @@ public class  StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer
     public static double LATERAL_DISTANCE = 15.5; // in; distance between the left and right wheels
     public static double FORWARD_OFFSET = -5.49; // in; offset of the lateral wheel
     private String TAG = "StandardTrackingWheelLocalizer";
-
+    private List<DcMotor> motors;
     private DcMotor leftEncoder, rightEncoder, frontEncoder;
 
 
@@ -56,6 +59,11 @@ public class  StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer
         rightEncoder = hardwareMap.dcMotor.get("liftTwo");
         frontEncoder = hardwareMap.dcMotor.get("rightIntake");
         RobotLog.dd(TAG, "StandardTrackingWheelLocalizer created");
+        motors = Arrays.asList(leftEncoder, rightEncoder, frontEncoder);
+
+        for (DcMotor motor : motors) {
+            motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        }
     }
 
     public static double encoderTicksToInches(int ticks) {

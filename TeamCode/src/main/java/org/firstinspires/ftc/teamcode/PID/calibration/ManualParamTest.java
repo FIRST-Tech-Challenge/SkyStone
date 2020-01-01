@@ -36,10 +36,10 @@ public class ManualParamTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         DriveConstantsPID.updateConstantsFromProperties();
         SampleMecanumDriveBase drive = new SampleMecanumDriveREV(hardwareMap);
-        leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
-        leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
-        rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
-        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
+        leftFront = hardwareMap.get(DcMotorEx.class, "frontLeft");
+        leftRear = hardwareMap.get(DcMotorEx.class, "backLeft");
+        rightRear = hardwareMap.get(DcMotorEx.class, "backRight");
+        rightFront = hardwareMap.get(DcMotorEx.class, "frontRight");
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
         for (DcMotorEx motor : motors) {

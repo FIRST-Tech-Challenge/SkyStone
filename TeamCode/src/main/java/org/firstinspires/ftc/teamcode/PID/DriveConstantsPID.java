@@ -88,6 +88,7 @@ public class DriveConstantsPID {
     public static double kV = 0.0166;   //0.0115
     public static double kA = 0;
     public static double kStatic = 0;
+	public static double TEST_DISTANCE = 48;
 
     /*
      * These values are used to generate the trajectories for you robot. To ensure proper operation,
@@ -173,6 +174,7 @@ public class DriveConstantsPID {
         RobotLog.dd(TAG, "xTransitional PID   txP: "+Double.toString(txP) + " txI: "+Double.toString(txI) + " txD: " + Double.toString(txD));
         RobotLog.dd(TAG, "yTransitional PID   tyP: "+Double.toString(tyP) + " tyI: "+Double.toString(tyI) + " tyD: " + Double.toString(tyD));
         RobotLog.dd(TAG, "Heading PID   hP: "+Double.toString(hP) + " hI: "+Double.toString(hI) + " hD: " + Double.toString(hD));
+        RobotLog.dd(TAG, "test distance: " + Double.toString(TEST_DISTANCE));
         RobotLog.dd(TAG, "using IMU in localizer? : " + Integer.toString(RUN_USING_IMU_LOCALIZER?1:0));
         RobotLog.dd(TAG, "Driving wheel width? : " + Double.toString(TRACK_WIDTH));
         RobotLog.dd(TAG, "using Odometry? : " + Integer.toString(RUN_USING_ODOMETRY_WHEEL?1:0));
@@ -259,6 +261,11 @@ public class DriveConstantsPID {
         v_double = getTeamCodePropertyValue("debug.ftc.odoTicksPerRev");
         if (v_double != Double.MAX_VALUE)
             odoEncoderTicksPerRev = v_double;
+        v_double = getTeamCodePropertyValue("debug.ftc.distance");
+        if (v_double != 0 && v_double != Double.MAX_VALUE)
+        {
+            TEST_DISTANCE = v_double;
+        }
 
         if (MOTOR_VELO_PID == null)
             MOTOR_VELO_PID = new PIDCoefficients(kP, kI, kD);

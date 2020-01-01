@@ -87,13 +87,13 @@ public class Robot {
     public final double BACK_STOPPER_UP = 0.54;
 
     // Outtake Clamp Positions
-    public final double CLAMP_SERVO_CLAMPED = .43;
-    public final double CLAMP_SERVO_RELEASED = .32;
-    public final double CLAMP_SERVO_INTAKEPOSITION = 0.3;
+    public final double CLAMP_SERVO_CLAMPED = .5;
+    public final double CLAMP_SERVO_RELEASED = .33;
+    public final double CLAMP_SERVO_INTAKEPOSITION = 0.33;
 
     // Outtake Pivot Positions
     public final double OUTTAKE_PIVOT_EXTENDED = .944;
-    public final double OUTTAKE_PIVOT_RETRACTED = .22;
+    public final double OUTTAKE_PIVOT_RETRACTED = .21;
     public final double OUTTAKE_PIVOT_90 = 0.5825;
 
     // Outtake Pusher Positions

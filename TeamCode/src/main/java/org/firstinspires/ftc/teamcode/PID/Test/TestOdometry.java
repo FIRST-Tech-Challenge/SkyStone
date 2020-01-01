@@ -44,7 +44,7 @@ public class TestOdometry extends LinearOpMode {
         hwMap = new HardwareMap(hardwareMap);
         dt = new FourWheelMecanumDrivetrain(hwMap);
 
-        dt.setMotorZeroPower(DcMotor.ZeroPowerBehavior.BRAKE);
+        //dt.setMotorZeroPower(DcMotor.ZeroPowerBehavior.BRAKE);
         dt.resetEncoders();
         dt.setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
         dt.setRunningOpMode(this);

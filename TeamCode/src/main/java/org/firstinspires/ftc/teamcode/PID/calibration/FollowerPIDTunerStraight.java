@@ -43,6 +43,10 @@ public class FollowerPIDTunerStraight extends LinearOpMode {
             );
             RobotLog.dd(TAG, "move back: "+Double.toString(DISTANCE));
             //drive.turnSync(Math.toRadians(90));
+            try{
+                Thread.sleep(500);
+            } catch(Exception e){}
+
             drive.followTrajectorySync(
                     drive.trajectoryBuilder()
                             .back(DISTANCE)

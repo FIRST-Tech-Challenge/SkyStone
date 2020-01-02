@@ -223,9 +223,13 @@ public class AutoRed extends LinearOpMode {
 
             while (!isVisible(allTrackables)) {
                 robot.runwithoutencoder();
-                robot.withoutencoder_strafe_left(0.18);
+                robot.withoutencoder_strafe_left(0.25);
+                Thread.sleep(1000);
+                robot.setpower0();
                 telemetry.addData("target detected?", targetVisible);
                 telemetry.update();
+                Thread.sleep(200);
+
             }
 
             telemetry.addData("target detected?", targetVisible);
@@ -260,13 +264,13 @@ public class AutoRed extends LinearOpMode {
 
             ////////////////////
 
-            robot.auto_strafeleft(35 * x, 0.25); //35 is ticks per inch
+            /*robot.auto_strafeleft(35 * x, 0.25); //35 is ticks per inch
             while (opModeIsActive() && robot.encoderIsBusy()) {
                 idle();
                 telemetry.addData("run to pos", 35*x);
                 telemetry.update();
 
-            }
+            }*/
             sleep(1000);
 
             targetsSkyStone.deactivate();

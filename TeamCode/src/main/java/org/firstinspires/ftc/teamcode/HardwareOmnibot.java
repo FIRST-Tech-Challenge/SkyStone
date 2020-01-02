@@ -429,15 +429,21 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 	// Variables so we only read encoders once per loop
 	protected boolean leftTofRead = false;
 	protected boolean rightTofRead = false;
+//	protected boolean leftTofRead = false;
+//	protected boolean rightTofRead = false;
 	protected boolean backRightTofRead = false;
 	protected boolean backLeftTofRead = false;
     protected boolean backTofRead = false;
+//  protected boolean backTofRead = false;
 	protected int lifterEncoderValue = 0;
 	protected double leftTofValue = 0.0;
 	protected double rightTofValue = 0.0;
+//	protected double leftTofValue = 0.0;
+//	protected double rightTofValue = 0.0;
 	protected double backRightTofValue = 0.0;
 	protected double backLeftTofValue = 0.0;
 	protected double backTofValue = 0.0;
+//	protected double backTofValue = 0.0;
 	protected double accelerationFinal = 0.0;
 	protected double accelerationCurrent = 0.0;
 	protected RobotSide accelerationSide = RobotSide.FRONT;
@@ -447,8 +453,10 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 
     // Keeps the sensor from initializing more than once.
     public static boolean tofInitialized = false;
+//    public static boolean tofInitialized = false;
     // We can set this in Auto
     protected static RobotSide stackFromSide = RobotSide.RIGHT;
+//    protected static RobotSide stackFromSide = RobotSide.RIGHT;
 
     /* Constructor */
     public HardwareOmnibot(){
@@ -463,9 +471,12 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 
 		leftTofRead = false;
 		rightTofRead = false;
+//		leftTofRead = false;
+//		rightTofRead = false;
 		backRightTofRead = false;
 		backLeftTofRead = false;
 		backTofRead = false;
+//		backTofRead = false;
 	}
 
     public void initGroundEffects()
@@ -859,6 +870,12 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                     } else {
 					    stackWallDistance = readLeftTof();
                     }
+//					if(stackFromSide == RobotSide.RIGHT)
+//                    {
+//                        stackWallDistance = readRightTof();
+//                    } else {
+//					    stackWallDistance = readLeftTof();
+//                    }
                     stackBackRightFoundationDistance = readBackRightTof();
                     stackBackLeftFoundationDistance = readBackLeftTof();
                     stowState = StowActivity.RAISING_TO_ROTATE;

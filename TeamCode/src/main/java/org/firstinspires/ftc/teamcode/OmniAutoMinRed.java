@@ -42,7 +42,6 @@ public class OmniAutoMinRed extends OmniAutoClass
          */
         waitForStart();
 
-        robot.stackFromSide = HardwareOmnibot.RobotSide.LEFT;
         // Make sure the intake is out.
         robot.startExtendingIntake();
         double endTime = timer.milliseconds() + 10000;

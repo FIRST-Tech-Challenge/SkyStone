@@ -381,13 +381,16 @@ public abstract class OmniAutoClass extends LinearOpMode {
 	public boolean distanceFromWall(HardwareOmnibot.RobotSide side, double distance, double driveSpeed, double error, int maxTime, boolean progressActivities) {
 		double endTime = timer.milliseconds() + maxTime;
 		boolean foundDistance;
+		boolean foundDistance = false;
 		double testDistance = 0;
 		// Allow the robot to read new values from the ToF sensors.
 		robot.resetReads();
 		foundDistance = robot.distanceFromWall(side, distance, driveSpeed, error);
+//		foundDistance = robot.distanceFromWall(side, distance, driveSpeed, error);
 		while(timer.milliseconds() < endTime && !foundDistance && (!isStopRequested())) {
 			robot.resetReads();
 			foundDistance = robot.distanceFromWall(side, distance, driveSpeed, error);
+//			foundDistance = robot.distanceFromWall(side, distance, driveSpeed, error);
 			if(progressActivities) {
     			performRobotActivities();
 			}

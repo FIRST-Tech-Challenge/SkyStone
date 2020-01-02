@@ -18,7 +18,6 @@ public class OmniAutoFullRedTof extends OmniAutoFullToF {
 
     @Override
     public void setSkystoneValues(int position) {
-        robot.stackFromSide = HardwareOmnibot.RobotSide.LEFT;
         baseAngle = 0.0;
         fudgeAngle = 0;
         secondSkystone = true;

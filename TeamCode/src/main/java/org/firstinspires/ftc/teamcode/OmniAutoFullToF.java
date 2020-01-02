@@ -157,7 +157,6 @@ public abstract class OmniAutoFullToF extends OmniAutoClass
         distanceFromWall(HardwareOmnibot.RobotSide.BACK, 54.0, maxSpeed, standardDistanceError, 5000, progressActivities);
 
         // Drive from the side wall to the collection identified stone position.
-        distanceFromWall(robot.stackFromSide, sideDistance1, maxSpeed, standardDistanceError, 5000, progressActivities);
 
         // Rotate the robot to collection angle.
         rotateRobotToAngle(rotateSpeed, baseAngle + attackAngle1, 2000, progressActivities);
@@ -186,7 +185,6 @@ public abstract class OmniAutoFullToF extends OmniAutoClass
         // Move robot to center of lane before launching.  Lane defined as
         // skybridge 48 inches and robot width 18 inches, with our robot width
         // that is 24 inches to 42 inches, leaving 6 inches on either side.
-        distanceFromWall(robot.stackFromSide, 61.0, maxSpeed, standardDistanceError, 5000, progressActivities);
 
         // Fly to the other side.  Do not put the brakes on, allow the distance
         // from wall function take over.
@@ -242,7 +240,6 @@ public abstract class OmniAutoFullToF extends OmniAutoClass
         // Move robot to center of lane before launching.  Lane defined as
         // skybridge 48 inches and robot width 18 inches, with our robot width
         // that is 24 inches to 42 inches, leaving 6 inches on either side.
-        distanceFromWall(robot.stackFromSide, 61.0, maxSpeed, standardDistanceError, 5000, false);
 
         if(secondSkystone) {
             // Fly back to the other side to collect second stone.
@@ -256,7 +253,6 @@ public abstract class OmniAutoFullToF extends OmniAutoClass
             distanceFromWall(HardwareOmnibot.RobotSide.BACK, 54.0, maxSpeed, standardDistanceError, 5000, false);
 
             // Drive from the side wall to the collection identified stone position.
-            distanceFromWall(robot.stackFromSide, sideDistance2, maxSpeed, standardDistanceError, 5000, false);
 
             // Rotate the robot to collection angle.
             rotateRobotToAngle(rotateSpeed, baseAngle + attackAngle2, 2000, false);
@@ -276,7 +272,6 @@ public abstract class OmniAutoFullToF extends OmniAutoClass
             // Move robot to center of lane before launching.  Lane defined as
             // skybridge 48 inches and robot width 18 inches, with our robot width
             // that is 24 inches to 42 inches, leaving 6 inches on either side.
-            distanceFromWall(robot.stackFromSide, 61.0, maxSpeed, standardDistanceError, 5000, false);
 
             // Fly to the other side.  Do not put the brakes on, allow the distance
             // from wall function take over.

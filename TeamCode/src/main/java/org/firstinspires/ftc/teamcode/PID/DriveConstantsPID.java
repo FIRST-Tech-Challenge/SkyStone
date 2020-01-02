@@ -273,10 +273,13 @@ public class DriveConstantsPID {
         }
 
         if (MOTOR_VELO_PID == null)
-            MOTOR_VELO_PID = new PIDCoefficients(kP, kI, kD);
-        else
-            RobotLog.dd(TAG, "kP, kI, kD has been set, not updated this time");
-
+        {
+        }
+        else {
+            MOTOR_VELO_PID = null;
+            RobotLog.dd(TAG, "kP, kI, kD has been set, updated this time");
+        }
+        MOTOR_VELO_PID = new PIDCoefficients(kP, kI, kD);
         printConstants();
     }
 }

@@ -80,7 +80,10 @@ public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
     }
-
+    @Override
+    public void setBrakeonZeroPower(boolean flag) {
+        // TBD
+    }
     @Override
     public PIDCoefficients getPIDCoefficients(DcMotor.RunMode runMode) {
         PIDFCoefficients coefficients = leftFront.getPIDFCoefficients(runMode);

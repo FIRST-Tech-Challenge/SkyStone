@@ -90,6 +90,10 @@ public class SampleMecanumDriveMR extends SampleMecanumDriveBase {
             ));
         }
     }
+    @Override
+    public void setBrakeonZeroPower(boolean flag) {
+        // TBD
+    }
 
     @NonNull
     @Override

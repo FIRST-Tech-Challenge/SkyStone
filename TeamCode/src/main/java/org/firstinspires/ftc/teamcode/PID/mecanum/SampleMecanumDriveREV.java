@@ -73,7 +73,8 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
         }
 
         if (RUN_USING_ENCODER && MOTOR_VELO_PID != null) {
-            RobotLog.dd(TAG,"MOTOR_VELO_PID!=0, to setPIDCoefficients");
+            RobotLog.dd(TAG,"MOTOR_VELO_PID!=0, to setPIDCoefficients " + Double.toString(MOTOR_VELO_PID.kP)
+            + " " + Double.toString(MOTOR_VELO_PID.kI) + " " + Double.toString(MOTOR_VELO_PID.kD));
             setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
         }
 
@@ -100,6 +101,7 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
         else
             RobotLog.dd(TAG, "not using Odometry localizer");
     }
+    @Override
     public void setBrakeonZeroPower(boolean flag) {
         for (DcMotorEx motor : motors) {
             if (flag == true)
@@ -107,6 +109,7 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
             else
                 motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         }
+        RobotLog.dd(TAG, "setBrakeonZeroPower " + flag);
     }
     @Override
     public PIDCoefficients getPIDCoefficients(DcMotor.RunMode runMode) {

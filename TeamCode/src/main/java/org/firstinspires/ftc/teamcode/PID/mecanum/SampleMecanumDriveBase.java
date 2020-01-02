@@ -225,6 +225,7 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
     }
     /// new function added;
     public abstract List<Double> getMotorPowers(List<DcMotorEx> motors);
+    public abstract void setBrakeonZeroPower(boolean flag);
 
     public void waitForIdle() {
         while (!Thread.currentThread().isInterrupted() && isBusy()) {

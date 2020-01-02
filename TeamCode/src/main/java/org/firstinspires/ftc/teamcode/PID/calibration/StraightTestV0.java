@@ -1,5 +1,5 @@
-package org.firstinspires.ftc.teamcode.drive.opmode;
 
+package org.firstinspires.ftc.teamcode.PID.calibration;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.localization.Localizer;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
@@ -27,6 +27,7 @@ public class StraightTestV0 extends LinearOpMode {
         DriveConstantsPID.updateConstantsFromProperties();
         DISTANCE = DriveConstantsPID.TEST_DISTANCE;
         SampleMecanumDriveBase drive = new SampleMecanumDriveREV(hardwareMap);
+        drive.setBrakeonZeroPower(false);
         RobotLog.dd(TAG, "trajectoryBuilder forward, DISTANCE: "+Double.toString(DISTANCE));
         Trajectory trajectory = drive.trajectoryBuilder()
                 .forward(DISTANCE)

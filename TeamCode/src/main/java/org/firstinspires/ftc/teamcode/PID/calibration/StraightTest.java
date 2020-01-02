@@ -21,7 +21,7 @@ import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveREV;
  */
 @Config
 @Autonomous(name = "StraightTest", group = "drive")
-//@Disabled
+@Disabled
 public class StraightTest extends LinearOpMode {
     public static double DISTANCE = 72;
     private PIDCoefficients coefficients;
@@ -36,7 +36,7 @@ public class StraightTest extends LinearOpMode {
 
         FourWheelMecanumDrivetrain drivetrain = new FourWheelMecanumDrivetrain(hwMap);
 
-        drivetrain.setMotorZeroPower(DcMotor.ZeroPowerBehavior.BRAKE);
+        //drivetrain.setMotorZeroPower(DcMotor.ZeroPowerBehavior.BRAKE);
         drivetrain.resetEncoders();
         drivetrain.setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
 

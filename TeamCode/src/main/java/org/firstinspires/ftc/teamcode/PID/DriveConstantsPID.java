@@ -26,10 +26,11 @@ import java.io.InputStreamReader;
 @Config
 public class DriveConstantsPID {
 
-    public static final boolean RUN_USING_PARAMTER_FROM_PROPERTIES = false;
+    public static final boolean RUN_USING_PARAMTER_FROM_PROPERTIES = true;
 
     public static boolean RUN_USING_ODOMETRY_WHEEL = true;
     public static boolean RUN_USING_IMU_LOCALIZER = false;
+    public static boolean BRAKE_ON_ZERO = false;
     public static double odoEncoderTicksPerRev = 1540.0;
     private static String TAG = "DriveConstants";
     public static double txP = 0.5; //translational x/y co-efficients
@@ -76,7 +77,7 @@ public class DriveConstantsPID {
      * convenience. Make sure to exclude any gear ratio included in MOTOR_CONFIG from GEAR_RATIO.
      */
     public static double WHEEL_RADIUS = 2;
-    public static double GEAR_RATIO = (99.5 / 13.7) * (16 / 16); // output (wheel) speed / input (motor) speed
+    public static double GEAR_RATIO = 1.0;//(99.5 / 13.7) * (16 / 16); // output (wheel) speed / input (motor) speed
     public static double TRACK_WIDTH = 14.2;   //17
 
     /*
@@ -88,6 +89,7 @@ public class DriveConstantsPID {
     public static double kV = 0.0166;   //0.0115
     public static double kA = 0;
     public static double kStatic = 0;
+	public static double TEST_DISTANCE = 48;
 
     /*
      * These values are used to generate the trajectories for you robot. To ensure proper operation,
@@ -104,30 +106,35 @@ public class DriveConstantsPID {
 
 
     public static double encoderTicksToInches(double ticks) {
-        double s = WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO * ticks / MOTOR_CONFIG.getTicksPerRev(); //2786 ticks per rev
+        //double s = WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO * ticks / MOTOR_CONFIG.getTicksPerRev();
+        double s = WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO * ticks / HARDCODED_TICKS_PER_REV; //MOTOR_CONFIG.getTicksPerRev();
         RobotLog.dd(TAG, "encoderTicksToInches: " + "ticks: " + Double.toString(ticks) + " inches: " + Double.toString(s));
         return s;
     }
 
     public static double rpmToVelocity(double rpm) {
-        RobotLog.dd(TAG, "rpmToVelocity: " + "rpm " + Double.toString(rpm) +
-                " v " + Double.toString(rpm * GEAR_RATIO * 2 * Math.PI * WHEEL_RADIUS / 60.0));
-        return rpm * GEAR_RATIO * 2 * Math.PI * WHEEL_RADIUS / 60.0;
+        double s = rpm * GEAR_RATIO * 2 * Math.PI * WHEEL_RADIUS / 60.0;
+        RobotLog.dd(TAG, "rpmToVelocity: " + "rpm " + Double.toString(rpm) + " v " + Double.toString(s));
+        return s;
     }
 
     public static double getMaxRpm() {
         RobotLog.dd(TAG, "MOTOR_CONFIG.getAchieveableMaxRPMFraction(): " + Double.toString(MOTOR_CONFIG.getAchieveableMaxRPMFraction()));
         RobotLog.dd(TAG, "MOTOR_CONFIG.getMaxRPM(): " + Double.toString(MOTOR_CONFIG.getMaxRPM()));
-        RobotLog.dd(TAG, "getMaxRpm: hardcoded to: "+Double.toString((435.0 *
-                (RUN_USING_ENCODER ? 0.683 : 1.0)))+" from: "+Double.toString(435.0));
-        return 435.0 *
-                (RUN_USING_ENCODER ? 0.683 : 1.0);
+        double t = MOTOR_CONFIG.getMaxRPM() *
+                (RUN_USING_ENCODER ? MOTOR_CONFIG.getAchieveableMaxRPMFraction() : 1.0);
+        t = MAX_RPM_FROM_SPEC * (RUN_USING_ENCODER ? HARDCODED_RPM_RATIO : 1.0);
+        RobotLog.dd(TAG, "getMaxRpm: hardcoded to: "+Double.toString((t))+" from: "+Double.toString(MAX_RPM_FROM_SPEC));
+        return t;
     }
 
     public static double getTicksPerSec() {
         // note: MotorConfigurationType#getAchieveableMaxTicksPerSecond() isn't quite what we want
-        RobotLog.dd(TAG,  "getTicksPerSec "+Double.toString(435.0 * MOTOR_CONFIG.getTicksPerRev() * GEAR_RATIO / 60.0));
-        return (435.0 * MOTOR_CONFIG.getTicksPerRev() * GEAR_RATIO / 60.0);
+        //double t = MOTOR_CONFIG.getMaxRPM() * MOTOR_CONFIG.getTicksPerRev() / 60.0;
+        //double t = MOTOR_CONFIG.getMaxRPM() * HARDCODED_TICKS_PER_REV / 60.0;
+        double t = getMaxRpm() * HARDCODED_TICKS_PER_REV / 60.0;
+        RobotLog.dd(TAG,  "getTicksPerSec "+Double.toString(t));
+        return t;
     }
 
     public static double getMotorVelocityF() {
@@ -173,6 +180,7 @@ public class DriveConstantsPID {
         RobotLog.dd(TAG, "xTransitional PID   txP: "+Double.toString(txP) + " txI: "+Double.toString(txI) + " txD: " + Double.toString(txD));
         RobotLog.dd(TAG, "yTransitional PID   tyP: "+Double.toString(tyP) + " tyI: "+Double.toString(tyI) + " tyD: " + Double.toString(tyD));
         RobotLog.dd(TAG, "Heading PID   hP: "+Double.toString(hP) + " hI: "+Double.toString(hI) + " hD: " + Double.toString(hD));
+        RobotLog.dd(TAG, "test distance: " + Double.toString(TEST_DISTANCE));
         RobotLog.dd(TAG, "using IMU in localizer? : " + Integer.toString(RUN_USING_IMU_LOCALIZER?1:0));
         RobotLog.dd(TAG, "Driving wheel width? : " + Double.toString(TRACK_WIDTH));
         RobotLog.dd(TAG, "using Odometry? : " + Integer.toString(RUN_USING_ODOMETRY_WHEEL?1:0));
@@ -202,6 +210,13 @@ public class DriveConstantsPID {
             v_int = (int) v_double;
             RUN_USING_ODOMETRY_WHEEL = (v_int==0)?false:true;
         }
+        v_double = getTeamCodePropertyValue("debug.ftc.brake");
+        if (v_double != Double.MAX_VALUE)
+        {
+            v_int = (int) v_double;
+            BRAKE_ON_ZERO = (v_int==0)?false:true;
+        }
+
         v_double = getTeamCodePropertyValue("debug.ftc.kV");
         if (v_double != 0 && v_double != Double.MAX_VALUE)
             kV = v_double;
@@ -259,13 +274,20 @@ public class DriveConstantsPID {
         v_double = getTeamCodePropertyValue("debug.ftc.odoTicksPerRev");
         if (v_double != Double.MAX_VALUE)
             odoEncoderTicksPerRev = v_double;
+        v_double = getTeamCodePropertyValue("debug.ftc.distance");
+        if (v_double != 0 && v_double != Double.MAX_VALUE)
+        {
+            TEST_DISTANCE = v_double;
+        }
 
-        if (MOTOR_VELO_PID != null) {
+        if (MOTOR_VELO_PID == null)
+        {
+        }
+        else {
             MOTOR_VELO_PID = null;
             RobotLog.dd(TAG, "kP, kI, kD has been set, updated this time");
         }
         MOTOR_VELO_PID = new PIDCoefficients(kP, kI, kD);
-
         printConstants();
     }
 }

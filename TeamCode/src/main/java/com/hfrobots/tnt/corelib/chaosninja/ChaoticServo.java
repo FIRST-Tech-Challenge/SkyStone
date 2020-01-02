@@ -25,15 +25,25 @@ import com.qualcomm.robotcore.hardware.ServoController;
 
 public class ChaoticServo implements Servo {
 
+    public double actualPosition;
+
     public enum ServoFailureMode {
         DEAD,
-        REVERSED
+        REVERSED,
+        HEALTHY
     }
+
+    private ServoFailureMode failureMode = ServoFailureMode.HEALTHY;
 
     private final Servo actualServo;
 
     public ChaoticServo(final Servo actualServo) {
         this.actualServo = actualServo;
+        this.actualPosition = actualServo.getPosition();
+    }
+
+    protected void setFailureMode(ServoFailureMode failureMode) {
+        this.failureMode = failureMode;
     }
 
     @Override
@@ -58,6 +68,12 @@ public class ChaoticServo implements Servo {
 
     @Override
     public void setPosition(double position) {
+        actualPosition = position;
+
+        if (failureMode == ServoFailureMode.DEAD) {
+            return;
+        }
+
         actualServo.setPosition(position);
     }
 

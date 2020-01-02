@@ -49,7 +49,7 @@ public class KonamiCode {
                 upButton,
                 null, // FIXME: There's a circular dependency here....
                 telemetry,
-                ticker, 750);
+                ticker, 1750);
 
         firstUp.setWhenTimedOutState(firstUp);
 
@@ -57,54 +57,54 @@ public class KonamiCode {
                 upButton,
                 firstUp,
                 telemetry,
-                ticker, 750);
+                ticker, 1750);
 
         State firstDown = new ButtonPressWithTimeoutState("Konami - down_1",
                 downButton,
                 secondUp,
                 telemetry,
-                ticker, 750);
+                ticker, 1750);
 
         State secondDown = new ButtonPressWithTimeoutState("Konami - down_2",
                 downButton,
                 firstDown,
                 telemetry,
-                ticker, 750);
+                ticker, 1750);
 
         State firstLeft = new ButtonPressWithTimeoutState("Konami - left_1",
                 leftButton,
                 secondDown,
                 telemetry,
-                ticker, 750);
+                ticker, 1750);
 
         State firstRight = new ButtonPressWithTimeoutState("Konami - right_1",
                 rightButton,
                 firstLeft,
                 telemetry,
-                ticker, 750);
+                ticker, 1750);
 
         State secondLeft = new ButtonPressWithTimeoutState("Konami - left_2",
                 leftButton,
                 firstRight,
                 telemetry,
-                ticker, 750);
+                ticker, 1750);
 
         State secondRight = new ButtonPressWithTimeoutState("Konami - right_2",
                 rightButton,
                 secondLeft,
                 telemetry,
-                ticker, 750);
+                ticker, 1750);
         State b = new ButtonPressWithTimeoutState("Konami - b",
                 bButton,
                 secondRight,
                 telemetry,
-                ticker, 750);
+                ticker, 1750);
 
         State a = new ButtonPressWithTimeoutState("Konami - a",
                 aButton,
                 b,
                 telemetry,
-                ticker, 750);
+                ticker, 1750);
 
         stateMachine.addSequential(firstUp);
         stateMachine.addSequential(secondUp);

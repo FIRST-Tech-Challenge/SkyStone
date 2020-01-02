@@ -20,7 +20,9 @@
 
 package com.hfrobots.tnt.corelib.chaosninja;
 
+import com.google.common.collect.Lists;
 import com.hfrobots.tnt.corelib.util.RealSimplerHardwareMap;
+import com.hfrobots.tnt.util.NamedDeviceMap;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -37,13 +39,30 @@ import java.util.Map;
 public class ChaosSimplerHardwareMap extends RealSimplerHardwareMap {
     private final Map<String, HardwareDevice> chaoticHardware = new HashMap<>();
 
+    private final NamedDeviceMap namedDeviceMap;
+
     public ChaosSimplerHardwareMap(HardwareMap realMap) {
         super(realMap);
+        namedDeviceMap = new NamedDeviceMap(realMap);
     }
 
     @Override
     public <T> List<T> getAll(Class<? extends T> classOrInterface) {
-        return super.getAll(classOrInterface);
+        if (classOrInterface.isAssignableFrom(DcMotorEx.class)) {
+            List<T> chaoticList = Lists.newLinkedList();
+
+            for (NamedDeviceMap.NamedDevice<T> namedDevice : namedDeviceMap.getAll(classOrInterface)) {
+                DcMotorEx dcMotorEx = (DcMotorEx)namedDevice.getDevice();
+
+                final ChaoticMotor chaoticMotor = getOrCreateChaoticMotor(namedDevice.getName(), dcMotorEx);
+
+                chaoticList.add((T)chaoticMotor);
+            }
+
+            return chaoticList;
+        }
+
+       return super.getAll(classOrInterface);
     }
 
     @Override
@@ -57,18 +76,23 @@ public class ChaosSimplerHardwareMap extends RealSimplerHardwareMap {
         // Fixme: Should be able to send in a ChaoticMotor to an ExpansionHubMotor for REVOptimized!
         if (classOrInterface.isAssignableFrom(DcMotorEx.class)) {
 
-            final ChaoticMotor chaoticMotor;
-
-            if (!chaoticHardware.containsKey(deviceName)) {
-                chaoticMotor = new ChaoticMotor((DcMotorEx)originalDevice);
-                chaoticHardware.put(deviceName, chaoticMotor);
-            } else {
-                chaoticMotor = (ChaoticMotor) chaoticHardware.get(deviceName);
-            }
+            final ChaoticMotor chaoticMotor = getOrCreateChaoticMotor(deviceName, (DcMotorEx) originalDevice);
 
             return classOrInterface.cast(chaoticMotor);
         }
 
         return originalDevice;
+    }
+
+    private <T> ChaoticMotor getOrCreateChaoticMotor(String deviceName, DcMotorEx originalDevice) {
+        final ChaoticMotor chaoticMotor;
+
+        if (!chaoticHardware.containsKey(deviceName)) {
+            chaoticMotor = new ChaoticMotor(originalDevice);
+            chaoticHardware.put(deviceName, chaoticMotor);
+        } else {
+            chaoticMotor = (ChaoticMotor) chaoticHardware.get(deviceName);
+        }
+        return chaoticMotor;
     }
 }

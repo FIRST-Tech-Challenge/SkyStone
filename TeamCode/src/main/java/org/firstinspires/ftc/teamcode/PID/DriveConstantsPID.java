@@ -32,17 +32,17 @@ public class DriveConstantsPID {
     public static boolean RUN_USING_IMU_LOCALIZER = false;
     public static double odoEncoderTicksPerRev = 1540.0;
     private static String TAG = "DriveConstants";
-    public static double txP = 0.5; //0.5;
-    public static double txI = 0; //0.5;
-    public static double txD = 0.12; //0.5;
-    public static double tyP = 1.2; //0.5;
-    public static double tyI = 0; //0.5;
-    public static double tyD = 1.1; //0.5;
-    public static double hP = 2; //3.5; // heading co-efficiencies;
-    public static double hI = 0; //0;
-    public static double hD = 0.22; //0;
+    public static double txP = 0.5; //translational x/y co-efficients
+    public static double txI = 0;
+    public static double txD = 0.11;
+    public static double tyP = 1;
+    public static double tyI = 0;
+    public static double tyD = 0.3;
+    public static double hP = 2;    // heading co-efficients;
+    public static double hI = 0;
+    public static double hD = 0.22;
 
-    public static double ODOMETRY_TRACK_WIDTH = 14.8;
+    public static double ODOMETRY_TRACK_WIDTH = 14.6;
     public static double ODOMERY_FORWARD_OFFSET = -5.5;
     public static double HARDCODED_TICKS_PER_REV = 383.6; //MOTOR_CONFIG.getTicksPerRev();
     public static double MAX_RPM_FROM_SPEC = 435.0;
@@ -63,7 +63,7 @@ public class DriveConstantsPID {
      */
     public static final boolean RUN_USING_ENCODER = true;
     public static PIDCoefficients MOTOR_VELO_PID = null;   //35, 0.5, 2.5
-    public static double kP = 35;
+    public static double kP = 23.0;
     public static double kI = 0.5;
     public static double kD = 3.0;
 
@@ -126,8 +126,8 @@ public class DriveConstantsPID {
 
     public static double getTicksPerSec() {
         // note: MotorConfigurationType#getAchieveableMaxTicksPerSecond() isn't quite what we want
-        RobotLog.dd(TAG,  "getTicksPerSec "+Double.toString(435.0 * MOTOR_CONFIG.getTicksPerRev() / 60.0));
-        return (435.0 * MOTOR_CONFIG.getTicksPerRev() / 60.0);
+        RobotLog.dd(TAG,  "getTicksPerSec "+Double.toString(435.0 * MOTOR_CONFIG.getTicksPerRev() * GEAR_RATIO / 60.0));
+        return (435.0 * MOTOR_CONFIG.getTicksPerRev() * GEAR_RATIO / 60.0);
     }
 
     public static double getMotorVelocityF() {
@@ -260,10 +260,11 @@ public class DriveConstantsPID {
         if (v_double != Double.MAX_VALUE)
             odoEncoderTicksPerRev = v_double;
 
-        if (MOTOR_VELO_PID == null)
-            MOTOR_VELO_PID = new PIDCoefficients(kP, kI, kD);
-        else
-            RobotLog.dd(TAG, "kP, kI, kD has been set, not updated this time");
+        if (MOTOR_VELO_PID != null) {
+            MOTOR_VELO_PID = null;
+            RobotLog.dd(TAG, "kP, kI, kD has been set, updated this time");
+        }
+        MOTOR_VELO_PID = new PIDCoefficients(kP, kI, kD);
 
         printConstants();
     }

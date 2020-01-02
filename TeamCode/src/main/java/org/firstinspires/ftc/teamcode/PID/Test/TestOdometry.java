@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.PID.Test;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.path.heading.HeadingInterpolator;
 import com.acmerobotics.roadrunner.trajectory.BaseTrajectoryBuilder;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
@@ -30,6 +31,7 @@ public class TestOdometry extends LinearOpMode {
     SampleMecanumDriveBase drive;
     private BaseTrajectoryBuilder builder;
     private Trajectory trajectory;
+    private static double driftRemoverConstant = 1.3;   //inches
 
     private ArrayList<String> savedData = new ArrayList<>();
 
@@ -72,9 +74,12 @@ public class TestOdometry extends LinearOpMode {
         drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(0,0),0));
         drive.getLocalizer().update();
 
+        double driftRemover = 0.0;
+
         while(opModeIsActive()){
+            drive.turnSync(Math.toRadians(-1));
             drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(drive.getPoseEstimate().getX(),
-                    drive.getPoseEstimate().getY()), drive.getPoseEstimate().getHeading()));    //Straight Test
+                    0), 0));    //Straight Test
             drive.getLocalizer().update();
             builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
             builder = builder.setReversed(false).lineTo(new Vector2d(72,0));
@@ -85,11 +90,12 @@ public class TestOdometry extends LinearOpMode {
                 Thread.sleep(500);
             } catch(Exception e){}
 
+            drive.turnSync(Math.toRadians(-1));
             drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(drive.getPoseEstimate().getX(),
-                    drive.getPoseEstimate().getY()), drive.getPoseEstimate().getHeading()));
+                   0), 0));
             drive.getLocalizer().update();
             builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
-            builder = builder.setReversed(true).lineTo(new Vector2d(0,0));
+            builder = builder.setReversed(true).lineTo(new Vector2d(0, 0));
             trajectory = builder.build();
             drive.followTrajectorySync(trajectory);
 

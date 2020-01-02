@@ -44,6 +44,10 @@ public class MainAutonomous extends LinearOpMode {
     private SampleMecanumDriveBase drive;
     private boolean initialize = false;
 
+    private enum CameraController{
+        WEBCAM, PHONECAM
+    }
+
     @Override
     public void runOpMode() {
         hwMap = new HardwareMap(hardwareMap);
@@ -84,10 +88,10 @@ public class MainAutonomous extends LinearOpMode {
                     startingPos = new Pose2d(new Vector2d(20.736, -63.936), Math.toRadians(90));
                 } else if (gamepad1.y) {
                     fieldPosition = FieldPosition.RED_QUARY;
-                    startingPos = new Pose2d(new Vector2d(-34.752, -63.936), Math.toRadians(90));
+                    startingPos = new Pose2d(new Vector2d(-34.752, -63.936), Math.toRadians(0));
                 } else if (gamepad1.x) {
                     fieldPosition = FieldPosition.BLUE_QUARY;
-                    startingPos = new Pose2d(new Vector2d(-34.752, 63.936), Math.toRadians(270));
+                    startingPos = new Pose2d(new Vector2d(-34.752, 63.936), Math.toRadians(0));
                 } else if(gamepad1.right_bumper){
                     fieldPosition = FieldPosition.BLUE_FOUNDATION_DRAG;
                     startingPos = new Pose2d(new Vector2d(20.736, 63.936), Math.toRadians(270));
@@ -116,7 +120,11 @@ public class MainAutonomous extends LinearOpMode {
                     telemetry.update();
 
                     drivetrain.resetEncoders();
-                    initVuforia();
+
+                    if(fieldPosition == FieldPosition.RED_QUARY)
+                        initVuforia(CameraController.WEBCAM);
+                    else if(fieldPosition == FieldPosition.BLUE_QUARY)
+                        initVuforia(CameraController.PHONECAM);
 
                     if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
                         initTfod();
@@ -194,14 +202,16 @@ public class MainAutonomous extends LinearOpMode {
         }
     }
 
-    private void initVuforia() {
+    private void initVuforia(CameraController controller) {
         /*
          * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
          */
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        parameters.cameraName = hardwareMap.get(WebcamName.class, "WebcamFront");
+
+        if(controller == CameraController.WEBCAM)
+            parameters.cameraName = hardwareMap.get(WebcamName.class, "WebcamFront");
 
         //  Instantiate the Vuforia engine
         vuforia = ClassFactory.getInstance().createVuforia(parameters);

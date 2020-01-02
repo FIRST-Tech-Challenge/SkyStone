@@ -70,7 +70,9 @@ public class RoadRunnerMecanumDriveREV extends RoadRunnerMecanumDriveBase {
                                      Optional<AxesSigns> optionalAxesSigns) {
         super(driveConstants);
 
-        LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
+        if (false) { // We don't need this for tele-op and it can't (yet) be fake for unit tests
+            LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
+        }
 
         if (needImu) {
             // TODO: adjust the names of the following hardware devices to match your configuration

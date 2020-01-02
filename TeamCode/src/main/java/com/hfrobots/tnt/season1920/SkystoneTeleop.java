@@ -22,15 +22,18 @@ package com.hfrobots.tnt.season1920;
 import android.util.Log;
 
 import com.google.common.base.Ticker;
+import com.google.common.collect.ImmutableSet;
+import com.hfrobots.tnt.corelib.chaosninja.ChaosController;
+import com.hfrobots.tnt.corelib.chaosninja.ChaosSimplerHardwareMap;
 import com.hfrobots.tnt.corelib.control.ChaosNinjaLandingState;
 import com.hfrobots.tnt.corelib.control.KonamiCode;
 import com.hfrobots.tnt.corelib.control.NinjaGamePad;
-import com.hfrobots.tnt.corelib.drive.mecanum.DriveConstants;
 import com.hfrobots.tnt.corelib.drive.mecanum.RoadRunnerMecanumDriveREV;
 import com.hfrobots.tnt.corelib.metrics.StatsDMetricSampler;
-import com.hfrobots.tnt.corelib.util.RealSimplerHardwareMap;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+import java.util.Set;
 
 import static com.hfrobots.tnt.corelib.Constants.LOG_TAG;
 
@@ -54,14 +57,18 @@ public class SkystoneTeleop extends OpMode {
     private KonamiCode konamiCode;
 
     private ChaosNinjaLandingState chaosNinja;
+    private ChaosController chaosController;
+
     private NinjaGamePad driversGamepad;
     private NinjaGamePad operatorsGamepad;
+
+    private ChaosSimplerHardwareMap simplerHardwareMap;
 
     @Override
     public void init() {
         ticker = createAndroidTicker();
 
-        RealSimplerHardwareMap simplerHardwareMap = new RealSimplerHardwareMap(this.hardwareMap);
+        simplerHardwareMap = new ChaosSimplerHardwareMap(this.hardwareMap);
         driveBase = new RoadRunnerMecanumDriveREV(new SkystoneDriveConstants(), simplerHardwareMap, false);
         kinematics = new OpenLoopMecanumKinematics(driveBase);
 
@@ -78,16 +85,18 @@ public class SkystoneTeleop extends OpMode {
                 .deliveryMechanism(deliveryMechanism)
                 .build();
 
-        //chaosNinja = new ChaosNinjaLandingState(driversGamepad, telemetry);
-        //konamiCode = new KonamiCode(driversGamepad, null, ticker, telemetry);
+        chaosNinja = new ChaosNinjaLandingState(driversGamepad, telemetry);
+        konamiCode = new KonamiCode(driversGamepad, chaosNinja, ticker, telemetry);
     }
 
-//    @Override
-//    public void init_loop() {
-//        super.init_loop();
-//
-//        konamiCode.periodicTask();
-//    }
+    @Override
+    public void init_loop() {
+        super.init_loop();
+
+        konamiCode.periodicTask();
+
+        telemetry.update();
+    }
 
     private Ticker createAndroidTicker() {
         return new Ticker() {
@@ -109,6 +118,25 @@ public class SkystoneTeleop extends OpMode {
                 Log.i(LOG_TAG, "No metrics requested, not enabling");
                 metricSampler = null;
             }
+
+            if (chaosNinja.getChallengeLevel() > 0) {
+                Set<String> intakeMotors = ImmutableSet.of("leftIntakeMotor", "rightIntakeMotor");
+                Set<String> liftMotor = ImmutableSet.of("liftMotor");
+
+                Set<String> servos = ImmutableSet.of("fingerServo");
+
+                chaosController = new ChaosController(
+                        chaosNinja.getChallengeLevel(),
+                        ImmutableSet.of(
+                                "leftFrontDriveMotor",
+                                "rightFrontDriveMotor",
+                                "leftRearDriveMotor",
+                                "rightRearDriveMotor"),
+                        ImmutableSet.of(intakeMotors, liftMotor),
+                        servos,
+                        ticker,
+                        simplerHardwareMap, telemetry);
+            }
         }
     }
 
@@ -119,11 +147,17 @@ public class SkystoneTeleop extends OpMode {
 
     @Override
     public void loop() {
+        if (chaosController != null) {
+            chaosController.periodicTask();
+        }
+
         driverControls.periodicTask();
         operatorControls.periodicTask();
 
         if (metricSampler != null) {
             metricSampler.doSamples();
         }
+
+        updateTelemetry(telemetry);
     }
 }

@@ -78,31 +78,33 @@ public class autoStackTest extends AutoBase {
                 {22, 67, 0, 20},
                 {22, 68, 0, 20},
                 {21, 74, 0, 20},
-                {31, 85, 0, 10}};
+                {31, 80, 0, 10}};
         HashMap<Point, Robot.Actions> toFoundationActions = new HashMap<Point, Robot.Actions>() {{
-            put(new Point(24, 20), Robot.Actions.RAISE_OUTTAKE_LEVEL1);
+            put(new Point(24, 55), Robot.Actions.RAISE_OUTTAKE_LEVEL1);
             put(new Point(24, 45), Robot.Actions.STOP_INTAKE);
         }};
-
+        robot.getClamp().setPosition(robot.CLAMP_SERVO_RELEASED);
+        sleep(250);
         double[][] toSecondStone = {
                 {toFoundation[toFoundation.length - 1][0], toFoundation[toFoundation.length - 1][1], -10, 0},
-                {9, 63, 10, 0},
-                {5, 60, 10, 0},
+                {20, 63, 10, 0},
+                {20, 60, 10, 0},
                 {20, 61, -10, 0},
                 {20, 29, 0, -10},
                 {18, secondSkyStoneY + 5, 0, 10},
                 {secondSkyStoneX, secondSkyStoneY, 30, 0},
                 {secondSkyStoneX-5, secondSkyStoneY-5, 30, 0}};
         HashMap<Point, Robot.Actions> toSecondStoneActions = new HashMap<Point, Robot.Actions>() {{
-            put(new Point(22, 65), Robot.Actions.LOWER_OUTTAKE);
-            put(new Point(10, 70), Robot.Actions.RELEASE_FOUNDATION);
+            put(new Point(23, 65), Robot.Actions.LOWER_OUTTAKE);
             put(new Point(28, -10), Robot.Actions.START_INTAKE);
         }};
 
         double[][] toDepositSecondStone = {
-                toFirstStone[toFirstStone.length - 1],
-                {34, firstSkystoneY+5, 0, 10},
-                {28, 17, -10, 20},
+                {toSecondStone[toSecondStone.length - 1][0], toSecondStone[toSecondStone.length - 1][1], -10, 0},
+                {secondSkyStoneX - 7, secondSkyStoneY + 10, -10, 0},
+                {secondSkyStoneX - 14, secondSkyStoneY + 8, -10, 0},
+                {24, 0, 0, 20},
+                {24, 17, -10, 20},
                 {24, 20, -10, 20},
                 {24, 30, -10, 20},
                 {23, 43, -10, 20},
@@ -110,9 +112,9 @@ public class autoStackTest extends AutoBase {
                 {22, 67, 0, 20},
                 {22, 68, 0, 20},
                 {21, 74, 0, 20},
-                {31, 85, 0, 10}};
+                {35, 78, 0, 10}};
         HashMap<Point, Robot.Actions> toDepositSecondStoneActions = new HashMap<Point, Robot.Actions>() {{
-            put(new Point(24, 20), Robot.Actions.RAISE_OUTTAKE_LEVEL2);
+            put(new Point(24, 30), Robot.Actions.RAISE_OUTTAKE_LEVEL2);
             put(new Point(24, 45), Robot.Actions.STOP_INTAKE);
         }};
 
@@ -164,17 +166,17 @@ public class autoStackTest extends AutoBase {
         robot.dumpPoints("" + startTime, "1");
 
         robot.splineMove(toFoundation, 1, 1, 0.4, 20, Math.toRadians(180), Math.toRadians(180), 25,
-                toFoundationActions, true, 9000);
+                toFoundationActions, true, 5000);
         // to foundation is 2
         robot.dumpPoints("" + startTime, "2");
 
         robot.splineMove(toSecondStone, 1, 1, 0.6, 25, 0, Math.toRadians(297), anglelock,
-                toSecondStoneActions);
+                toSecondStoneActions, true, 8000);
         //to second stone is 3 trip
         robot.dumpPoints("" + startTime, "3");
 
         robot.splineMove(toDepositSecondStone, 1, 1, 0.4, 20, Math.toRadians(180), Math.toRadians(180), 25,
-                toDepositSecondStoneActions);
+                toDepositSecondStoneActions, true, 6000);
         // to foundation is 2
         robot.dumpPoints("" + startTime, "4");
 

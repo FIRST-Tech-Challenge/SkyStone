@@ -399,43 +399,34 @@ public class Robot {
     private final int STONE_LEVEL_INCREMENT_TICKS = 600;
     private final int SPOOL_OVERSHOOT_AMOUNT = 500;
 
+    boolean isMovingLift = false;
     /**
      * Raise outtake to a specific stone-stack level
      */
     public void moveOuttakeToStoneLevel(int stoneLevel) {
         int outtakeSpoolTargetEncoderPosition = -(STONE_FIRSTLEVEL_POSITION + (stoneLevel * STONE_LEVEL_INCREMENT_TICKS));
+        long startTime = SystemClock.elapsedRealtime();
 
-        if (stoneLevel == 0) {
-            retractOuttake = true;
-            extendOuttake = false;
+        isMovingLift = true;
+        moveLift(outtakeSpoolTargetEncoderPosition);
 
-            startOuttakeMovementTime = SystemClock.elapsedRealtime();
+    }
 
-            moveOuttake(0);
-        } else if (outtakeSpoolTargetEncoderPosition > outtakeSpool.getCurrentPosition()) {
-            // If target level is lower than the spool's current position
-
-            // Retract the outtake
-            retractOuttake = true;
-            extendOuttake = false;
-            startOuttakeMovementTime = SystemClock.elapsedRealtime();
-
-            isMovingSpool = true;
-
-            moveOuttake(outtakeSpoolTargetEncoderPosition);
-        } else if (outtakeSpoolTargetEncoderPosition == outtakeSpool.getCurrentPosition()) {
-            // do nothing
-        } else { // If target level is above spool's current position
-            retractOuttake = false;
-            extendOuttake = false;
-            clampBeforeSpool = true;
-
-            spoolOvershoot = true;
-
-            isMovingSpool = true;
-
-            startOuttakeMovementTime = SystemClock.elapsedRealtime();
-            moveOuttake(outtakeSpoolTargetEncoderPosition);
+    public void moveLift(int target){
+        if(Math.abs(outtakeSpool.getCurrentPosition()-target)<50){
+            isMovingLift = false;
+            outtakeSpool.setPower(0.05);
+            outtakeSpool2.setPower(0.05);
+        }else if(outtakeSpool.getCurrentPosition()>target && isMovingLift){
+            outtakeSpool.setPower(1);
+            outtakeSpool2.setPower(1);
+        }else if(isMovingLift){
+            outtakeSpool.setPower(-1);
+            outtakeSpool2.setPower(-1);
+        }else{
+            isMovingLift = false;
+            outtakeSpool.setPower(0.05);
+            outtakeSpool2.setPower(0.05);
         }
     }
 
@@ -455,17 +446,20 @@ public class Robot {
     /**
      * Move outtake using specified positions + actions
      */
+
+    boolean hasExtendedOuttake = false;
+    boolean hasRetractedOuttake = false;
     public void moveOuttake() {
         // Move outtake spool motors
         outtakeSpool.setTargetPosition(spoolTargetEncoderTick);
         outtakeSpool2.setTargetPosition(spoolTargetEncoderTick);
 
         if (extendOuttake || retractOuttake || clampBeforeSpool || !isMovingSpool) { // If extending or retracting outtake, or if not moving spool
-            outtakeSpool.setPower(0);
-            outtakeSpool2.setPower(0);
+            outtakeSpool.setPower(0.025);
+            outtakeSpool2.setPower(0.025);
         } else if (returningToPosition && outtakeSpool.getCurrentPosition() > spoolTargetEncoderTick ){
-            outtakeSpool.setPower(0);
-            outtakeSpool2.setPower(0);
+            outtakeSpool.setPower(0.025);
+            outtakeSpool2.setPower(0.025);
             isMovingSpool = false;
             returningToPosition = false;
             releaseClamp = true;
@@ -482,8 +476,8 @@ public class Robot {
                 hasRaisedOuttake = false;
             }
 
-            outtakeSpool.setPower(0);
-            outtakeSpool2.setPower(0);
+            outtakeSpool.setPower(0.025);
+            outtakeSpool2.setPower(0.025);
 
             spoolOvershoot = false; // Reset overshoot toggle
         } else if (outtakeSpool.getCurrentPosition() < spoolTargetEncoderTick) {
@@ -521,20 +515,22 @@ public class Robot {
         if (extendOuttake) {
             long currentTime = SystemClock.elapsedRealtime();
 
-            if (currentTime - startOuttakeMovementTime >= 0) {
-                clamp.setPosition(CLAMP_SERVO_CLAMPED);
+            if(currentTime-startOuttakeMovementTime >= 200){
                 intakePusher.setPosition(PUSHER_RETRACTED);
             }
-            if (currentTime - startOuttakeMovementTime >= 100) {
+            if (currentTime - startOuttakeMovementTime >= 450) {
+                clamp.setPosition(CLAMP_SERVO_CLAMPED);
+            }
+            if (currentTime - startOuttakeMovementTime >= 550) {
                 outtakeExtender.setPosition(OUTTAKE_SLIDE_EXTENDED);
             }
-            if (currentTime - startOuttakeMovementTime >= 800) {
+            if (currentTime - startOuttakeMovementTime >= 1550) {
                 clampPivot.setPosition(OUTTAKE_PIVOT_EXTENDED);
             }
-            if(currentTime - startOuttakeMovementTime >= 1100){
+            if(currentTime - startOuttakeMovementTime >= 1850){
                 outtakeExtender.setPosition(OUTTAKE_SLIDE_PARTIAL_EXTEND);
             }
-            if(currentTime - startOuttakeMovementTime >= 1400){
+            if(currentTime - startOuttakeMovementTime >= 2150){
                 extendOuttake = false;
             }
         }
@@ -559,6 +555,8 @@ public class Robot {
                 clamp.setPosition(CLAMP_SERVO_INTAKEPOSITION);
 
                 retractOuttake = false;
+                isRaisingOuttake = false;
+                hasRaisedOuttake = false;
             }
         }
     }
@@ -718,14 +716,20 @@ public class Robot {
         boolean hasStoppedIntake = false;
         boolean isExtendingFoundation = false;
         boolean hasExtendedFoundation = false;
+        boolean hasLoweredOuttake = false;
+        boolean isLoweredOuttake = false;
 
+        long doneWithLift = Long.MAX_VALUE;
         boolean isMoving = true;
+
+        boolean nextStep = false;
 
         int followIndex = 1;
         double angleLockScale;
         double distanceToEnd;
         double distanceToNext;
         double desiredHeading;
+        int level = 0;
 
         long currentTime;
         long startTime = SystemClock.elapsedRealtime();
@@ -800,8 +804,6 @@ public class Robot {
                 }
             }
 
-            moveOuttake();
-
             // go through all actionpoints and see if the robot is near one
             if (actions.size() != 0) {
                 Iterator actionIterator = actions.entrySet().iterator();
@@ -837,19 +839,82 @@ public class Robot {
                             isExtendingFoundation = true;
                             hasExtendedFoundation = true;
                         } else if (executableAction == Actions.RAISE_OUTTAKE_LEVEL1 && !hasRaisedOuttake) {
-                            moveOuttakeToStoneLevel(1);
+                            extendOuttakeStartTime = SystemClock.elapsedRealtime();
+
+                            intakePusher.setPosition(PUSHER_PUSHED);
+                            level = 1;
                             isRaisingOuttake = true;
                             hasRaisedOuttake = true;
                         } else if (executableAction == Actions.RAISE_OUTTAKE_LEVEL2 && !hasRaisedOuttake) {
-                            moveOuttakeToStoneLevel(2);
+                            extendOuttakeStartTime = SystemClock.elapsedRealtime();
+
+                            intakePusher.setPosition(PUSHER_PUSHED);
+                            level = 2;
                             isRaisingOuttake = true;
                             hasRaisedOuttake = true;
-                        } else if (executableAction == Actions.LOWER_OUTTAKE && !hasRaisedOuttake) {
-                            moveOuttakeToStoneLevel(0);
-                            isRaisingOuttake = true;
-                            hasRaisedOuttake = true;
+                        } else if (executableAction == Actions.LOWER_OUTTAKE && !hasLoweredOuttake && !hasRetractedOuttake) {
+
+                            isRetractingOuttake = true;
+                            hasRetractedOuttake = true;
+
+                            retractOuttakeStartTime = SystemClock.elapsedRealtime();
+                            clamp.setPosition(CLAMP_SERVO_INTAKEPOSITION);
+                            outtakeExtender.setPosition(OUTTAKE_SLIDE_EXTENDED);
+
+                            intakePusher.setPosition(PUSHER_PUSHED);
+                            level = 0;
+                            isLoweredOuttake = true;
+                            hasLoweredOuttake = true;
                         }
                     }
+                }
+            }
+
+            if(isLoweredOuttake){
+                moveOuttakeToStoneLevel(0);
+                if(!isMovingLift){
+                    isLoweredOuttake = false;
+                    hasLoweredOuttake = false;
+                }
+            }
+
+            if(isRaisingOuttake){
+                if (currentTime - extendOuttakeStartTime >= 300) {
+                    clamp.setPosition(CLAMP_SERVO_CLAMPED);
+                }
+                if (currentTime - extendOuttakeStartTime >= 650) {
+                    intakePusher.setPosition(PUSHER_RETRACTED);
+
+
+                    moveOuttakeToStoneLevel(level);
+
+                    if(!isMovingLift){
+                        doneWithLift = Math.min(doneWithLift,SystemClock.elapsedRealtime());
+
+                        if(SystemClock.elapsedRealtime()-doneWithLift >=0){
+                            outtakeExtender.setPosition(OUTTAKE_SLIDE_EXTENDED);
+                        }
+
+                        if(SystemClock.elapsedRealtime()-doneWithLift >= 900){
+                            clampPivot.setPosition(OUTTAKE_PIVOT_EXTENDED);
+                        }
+
+                        if(SystemClock.elapsedRealtime()-doneWithLift>=1500){
+                            outtakeExtender.setPosition(OUTTAKE_SLIDE_PARTIAL_EXTEND);
+
+                            isRaisingOuttake = false;
+                            hasRaisedOuttake = false;
+                            nextStep = true;
+                        }
+                    }
+                }
+
+            }
+
+            if(nextStep && !isRaisingOuttake && !hasRaisedOuttake){
+                moveOuttakeToStoneLevel(level-1);
+                if(!isMovingLift){
+                    nextStep = false;
                 }
             }
 
@@ -882,7 +947,7 @@ public class Robot {
                     clampPivot.setPosition(OUTTAKE_PIVOT_RETRACTED);
                 }
                 if (currentTime - retractOuttakeStartTime >= 600) {
-                    getClamp().setPosition(CLAMP_SERVO_CLAMPED);
+                    getClamp().setPosition(CLAMP_SERVO_RELEASED);
                 }
 
                 if (currentTime - retractOuttakeStartTime >= 750) {
@@ -922,7 +987,7 @@ public class Robot {
                 isStoppingIntake = false;
             }
 
-            if (!isMoving && !isRetractingOuttake && !isExtendingOuttake && !isReleasingFoundation && !isStartingIntake && !isStoppingIntake && !isRaisingOuttake) {
+            if (!nextStep && !isMoving && !isRetractingOuttake && !isExtendingOuttake && !isReleasingFoundation && !isStartingIntake && !isStoppingIntake && !isRaisingOuttake && !isLoweredOuttake) {
                 return;
             }
 

@@ -54,7 +54,7 @@ public class Arm {
     public int aboveFoundationLevel = -130;
     public int onFoundationLevel = 30;
     int autoBlockPlacement = -150;
-    int initLevel = -75;
+    int initLevel = -150;
 
     public int currentLevel = 0;
     int MAX_BLOCK_LEVEL = 6;
@@ -77,6 +77,18 @@ public class Arm {
         armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         moveArm_initLevel();
+    }
+
+    /**
+     * Initialize Arm for TeleOp- Reset, Set Zero Behavior to FLOAT (instead of BRAKE),
+     * and mode to RUN_TO_POSITION (PID based rotation to
+     * achieve the desire ed encoder count
+     */
+    public void initArmTeleOp() {
+        resetArm();
+        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        //moveArm_initLevel();
     }
 
     /**

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.OpModes;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.SubSystems.*;
@@ -12,6 +13,7 @@ import java.util.Locale;
  * Sensor Calibration TeleOpMode for team Hazmat
  * Displays the RGB Values of Color Sensors and TouchSensor
  */
+@Disabled
 @TeleOp(name = "HzSensorCalib", group = "Teleop")
 public class SensorCaliberation extends LinearOpMode{
 

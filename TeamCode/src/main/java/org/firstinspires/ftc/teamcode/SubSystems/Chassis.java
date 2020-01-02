@@ -33,7 +33,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * @ChassisAutoMethods : rightColorSensorIsBlue()
  * @ChassisAutoMethods : leftColorSensorIsBlue()
  * @ChassisAutoMethods : rightColorSensorIsRed()
- * @ChassisAutoMethods : frontleftBumperSensorIsPressed()
+ * @ChassisAutoMethods : frontleftChassisTouchSensorIsPressed()
  *
  */
 

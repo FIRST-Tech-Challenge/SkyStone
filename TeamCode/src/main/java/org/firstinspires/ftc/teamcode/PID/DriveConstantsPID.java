@@ -30,6 +30,7 @@ public class DriveConstantsPID {
 
     public static boolean RUN_USING_ODOMETRY_WHEEL = true;
     public static boolean RUN_USING_IMU_LOCALIZER = false;
+    public static boolean BRAKE_ON_ZERO = false;
     public static double odoEncoderTicksPerRev = 1540.0;
     private static String TAG = "DriveConstants";
     public static double txP = 0.5; //0.5;
@@ -209,6 +210,13 @@ public class DriveConstantsPID {
             v_int = (int) v_double;
             RUN_USING_ODOMETRY_WHEEL = (v_int==0)?false:true;
         }
+        v_double = getTeamCodePropertyValue("debug.ftc.brake");
+        if (v_double != Double.MAX_VALUE)
+        {
+            v_int = (int) v_double;
+            BRAKE_ON_ZERO = (v_int==0)?false:true;
+        }
+
         v_double = getTeamCodePropertyValue("debug.ftc.kV");
         if (v_double != 0 && v_double != Double.MAX_VALUE)
             kV = v_double;

@@ -18,10 +18,10 @@ import java.util.List;
  * This is a simple routine to test translational drive capabilities.
  */
 @Config
-@Autonomous(name = "StraightTestV0", group = "drive")
-public class StraightTestV0 extends LinearOpMode {
+@Autonomous(name = "StrafeTest", group = "drive")
+public class StrafeTest extends LinearOpMode {
     public static double DISTANCE = DriveConstantsPID.TEST_DISTANCE;
-    private String TAG = "StraightTest";
+    private String TAG = "StrafeTest";
     @Override
     public void runOpMode() throws InterruptedException {
         DriveConstantsPID.updateConstantsFromProperties();
@@ -30,7 +30,7 @@ public class StraightTestV0 extends LinearOpMode {
         drive.setBrakeonZeroPower(DriveConstantsPID.BRAKE_ON_ZERO);
         RobotLog.dd(TAG, "trajectoryBuilder forward, DISTANCE: "+Double.toString(DISTANCE));
         Trajectory trajectory = drive.trajectoryBuilder()
-                .forward(DISTANCE)
+                .strafeLeft(DISTANCE)
                 .build();
 
         waitForStart();

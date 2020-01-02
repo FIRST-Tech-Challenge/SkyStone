@@ -27,7 +27,7 @@ public class FollowerPIDTunerStraight extends LinearOpMode {
         DriveConstantsPID.updateConstantsFromProperties();  // Transitional PID is used in base class;;
         DISTANCE = DriveConstantsPID.TEST_DISTANCE;
         SampleMecanumDriveBase drive = new SampleMecanumDriveREV(hardwareMap);
-
+        drive.setBrakeonZeroPower(DriveConstantsPID.BRAKE_ON_ZERO);
         drive.setPoseEstimate(new Pose2d(0, 0, 0));
 
         waitForStart();

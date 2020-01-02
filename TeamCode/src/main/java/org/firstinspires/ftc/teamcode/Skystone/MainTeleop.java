@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.Skystone.Odometry.Position2D;
 
 
-@TeleOp(name="MainTeleOpSkyAS", group="Linear Opmode")
+@TeleOp(name="MainTeleOpSky", group="Linear Opmode")
 public class MainTeleop extends LinearOpMode {
     Robot robot;
 
@@ -49,9 +49,6 @@ public class MainTeleop extends LinearOpMode {
         robot.initServos();
         waitForStart();
 
-        robot.getOuttakeSpool().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.getOuttakeSpool().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
         Position2D position2D = new Position2D(robot);
         position2D.startOdometry();
 
@@ -88,6 +85,8 @@ public class MainTeleop extends LinearOpMode {
             } else {
                 telemetry.addLine("CURRENT ROBOT MODE: NORMAL");
             }
+
+            telemetry.addLine("outtake spool: " + robot.getOuttakeSpool().getCurrentPosition());
         }
     }
 
@@ -133,9 +132,15 @@ public class MainTeleop extends LinearOpMode {
 
         robot.setDrivetrainMotorModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.setDrivetrainMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         robot.getClampPivot().setDirection(Servo.Direction.FORWARD);
+
         robot.getOuttakeSpool().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         robot.getOuttakeSpool2().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        robot.getOuttakeSpool().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.getOuttakeSpool().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.getOuttakeSpool2().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         robot.getIntakeLeft().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         robot.getIntakeRight().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }

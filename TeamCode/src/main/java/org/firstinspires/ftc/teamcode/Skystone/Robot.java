@@ -69,8 +69,8 @@ public class Robot {
     private Servo backStopper;
 
     // Outtake Slide Positions
-    public final double OUTTAKE_SLIDE_EXTENDED = .0799999-0.06;
-    public final double OUTTAKE_SLIDE_RETRACTED = .725-0.0549999;
+    public final double OUTTAKE_SLIDE_EXTENDED = .0799999 - 0.06;
+    public final double OUTTAKE_SLIDE_RETRACTED = .725 - 0.0549999;
     public final double OUTTAKE_SLIDE_PARTIAL_EXTEND = .22;
 
     //team marker positions
@@ -128,8 +128,10 @@ public class Robot {
     private StringBuilder odometryPoints = new StringBuilder();
     private StringBuilder splinePoints = new StringBuilder();
     private StringBuilder waypoints = new StringBuilder();
+
     /**
      * robot constructor, does the hardwareMaps
+     *
      * @param hardwareMap
      * @param telemetry
      * @param linearOpMode
@@ -144,42 +146,42 @@ public class Robot {
 
         //Map drive motors
         fLeft = getDcMotor("fLeft");
-        if (fLeft != null){
+        if (fLeft != null) {
             fLeft.setDirection(DcMotor.Direction.FORWARD);
         }
 
         fRight = getDcMotor("fRight");
-        if (fRight != null){
+        if (fRight != null) {
             fRight.setDirection(DcMotor.Direction.REVERSE);
         }
 
         bLeft = getDcMotor("bLeft");
-        if (bLeft != null){
+        if (bLeft != null) {
             bLeft.setDirection(DcMotor.Direction.FORWARD);
         }
 
         bRight = getDcMotor("bRight");
-        if (bRight != null){
+        if (bRight != null) {
             bRight.setDirection(DcMotor.Direction.REVERSE);
         }
 
         intakeLeft = getDcMotor("intakeLeft");
-        if (intakeLeft != null){
+        if (intakeLeft != null) {
             intakeLeft.setDirection(DcMotor.Direction.REVERSE);
         }
 
         intakeRight = getDcMotor("intakeRight");
-        if (intakeRight != null){
+        if (intakeRight != null) {
             intakeRight.setDirection(DcMotor.Direction.FORWARD);
         }
 
         outtakeSpool = getDcMotor("outtakeSpool");
-        if (outtakeSpool != null){
-            outtakeSpool.setDirection(DcMotor.Direction.FORWARD);
+        if (outtakeSpool != null) {
+            outtakeSpool.setDirection(DcMotor.Direction.REVERSE);
         }
 
         outtakeSpool2 = getDcMotor("outtakeSpool2");
-        if (outtakeSpool2 != null){
+        if (outtakeSpool2 != null) {
             outtakeSpool2.setDirection(DcMotor.Direction.FORWARD);
         }
 
@@ -198,29 +200,29 @@ public class Robot {
 //        trayDistance = getRev2mDistanceSensor("trayDistance");
     }
 
-    private DcMotor getDcMotor(String name){
+    private DcMotor getDcMotor(String name) {
         try {
             return hardwareMap.dcMotor.get(name);
 
-        } catch (IllegalArgumentException exception){
+        } catch (IllegalArgumentException exception) {
             return null;
         }
     }
 
-    private Servo getServo(String name){
+    private Servo getServo(String name) {
         try {
             return hardwareMap.servo.get(name);
 
-        } catch (IllegalArgumentException exception){
+        } catch (IllegalArgumentException exception) {
             return null;
         }
     }
 
-    private Rev2mDistanceSensor getRev2mDistanceSensor(String name){
+    private Rev2mDistanceSensor getRev2mDistanceSensor(String name) {
         try {
-            return hardwareMap.get(Rev2mDistanceSensor.class,name);
+            return hardwareMap.get(Rev2mDistanceSensor.class, name);
 
-        } catch (IllegalArgumentException exception){
+        } catch (IllegalArgumentException exception) {
             return null;
         }
     }
@@ -265,6 +267,7 @@ public class Robot {
 
     /**
      * sets drive motors mode to whatever
+     *
      * @param runMode what to set all the motors to
      */
     public void setDrivetrainMotorModes(DcMotor.RunMode runMode) {
@@ -307,9 +310,10 @@ public class Robot {
     /**
      * crappy finalTurn, random deceleration
      * turns to the absolute heading using odometry
+     *
      * @param targetHeadingRadians
      */
-    public void finalTurn(double targetHeadingRadians){
+    public void finalTurn(double targetHeadingRadians) {
 
         targetHeadingRadians = angleWrap(targetHeadingRadians);
 
@@ -319,23 +323,23 @@ public class Robot {
 
         double direction = 0;
 
-        while (linearOpMode.opModeIsActive()){
+        while (linearOpMode.opModeIsActive()) {
 
             // find which direction to turn
-            if (targetHeadingRadians > anglePos){
+            if (targetHeadingRadians > anglePos) {
                 direction = 1;
-            } else if (targetHeadingRadians < anglePos){
+            } else if (targetHeadingRadians < anglePos) {
                 direction = -1;
             }
 
             // lol deceleration
-            if (Math.abs(targetHeadingRadians - anglePos) < Math.toRadians(0.15)){
+            if (Math.abs(targetHeadingRadians - anglePos) < Math.toRadians(0.15)) {
                 break;
-            } else if (Math.abs(targetHeadingRadians - anglePos) < Math.toRadians(5)){
+            } else if (Math.abs(targetHeadingRadians - anglePos) < Math.toRadians(5)) {
                 power = 0.15;
-            } else if (Math.abs(targetHeadingRadians - anglePos) < Math.toRadians(30)){
+            } else if (Math.abs(targetHeadingRadians - anglePos) < Math.toRadians(30)) {
                 power = 0.2;
-            } else if (Math.abs(targetHeadingRadians - anglePos) < Math.toRadians(45)){
+            } else if (Math.abs(targetHeadingRadians - anglePos) < Math.toRadians(45)) {
                 power = 0.4;
             }
 
@@ -352,6 +356,7 @@ public class Robot {
 
     /**
      * sets all the motor speeds independently
+     *
      * @param fLpower
      * @param fRpower
      * @param bLpower
@@ -366,21 +371,201 @@ public class Robot {
 
     /**
      * allows to toggle intake
+     *
      * @param toggle if true, intake, if false, stop intake
      */
     public void intake(boolean toggle) {
-        clamp.setPosition(CLAMP_SERVO_INTAKEPOSITION);
         if (toggle) {
             intakeLeft.setPower(1);
             intakeRight.setPower(1);
+            clamp.setPosition(CLAMP_SERVO_INTAKEPOSITION);
         } else {
             intakeLeft.setPower(-1);
             intakeRight.setPower(-1);
         }
     }
 
+    private boolean retractOuttake = false;
+    private boolean extendOuttake = false;
+    private boolean clampBeforeSpool = false;
+    private boolean releaseClamp = false;
+    private boolean spoolOvershoot = false;
+    private boolean isMovingSpool = false;
+    private boolean returningToPosition = false;
+
+    private long startOuttakeMovementTime = 0;
+
+    private final int STONE_FIRSTLEVEL_POSITION = -300;
+    private final int STONE_LEVEL_INCREMENT_TICKS = 600;
+    private final int SPOOL_OVERSHOOT_AMOUNT = 500;
+
+    /**
+     * Raise outtake to a specific stone-stack level
+     */
+    public void moveOuttakeToStoneLevel(int stoneLevel) {
+        int outtakeSpoolTargetEncoderPosition = -(STONE_FIRSTLEVEL_POSITION + (stoneLevel * STONE_LEVEL_INCREMENT_TICKS));
+
+        if (stoneLevel == 0) {
+            retractOuttake = true;
+            extendOuttake = false;
+
+            startOuttakeMovementTime = SystemClock.elapsedRealtime();
+
+            moveOuttake(0);
+        } else if (outtakeSpoolTargetEncoderPosition > outtakeSpool.getCurrentPosition()) {
+            // If target level is lower than the spool's current position
+
+            // Retract the outtake
+            retractOuttake = true;
+            extendOuttake = false;
+            startOuttakeMovementTime = SystemClock.elapsedRealtime();
+
+            isMovingSpool = true;
+
+            moveOuttake(outtakeSpoolTargetEncoderPosition);
+        } else if (outtakeSpoolTargetEncoderPosition == outtakeSpool.getCurrentPosition()) {
+            // do nothing
+        } else { // If target level is above spool's current position
+            retractOuttake = false;
+            extendOuttake = false;
+            clampBeforeSpool = true;
+
+            spoolOvershoot = true;
+
+            isMovingSpool = true;
+
+            startOuttakeMovementTime = SystemClock.elapsedRealtime();
+            moveOuttake(outtakeSpoolTargetEncoderPosition);
+        }
+    }
+
+    public int spoolTargetEncoderTick = 0;
+    /**
+     * Move outtake to a specified encoder position
+     */
+    public void moveOuttake(int encoderTick) {
+        if (!spoolOvershoot) {
+            spoolTargetEncoderTick = encoderTick;
+        } else {
+            spoolTargetEncoderTick = encoderTick - SPOOL_OVERSHOOT_AMOUNT;
+        }
+        moveOuttake();
+    }
+
+    /**
+     * Move outtake using specified positions + actions
+     */
+    public void moveOuttake() {
+        // Move outtake spool motors
+        outtakeSpool.setTargetPosition(spoolTargetEncoderTick);
+        outtakeSpool2.setTargetPosition(spoolTargetEncoderTick);
+
+        if (extendOuttake || retractOuttake || clampBeforeSpool || !isMovingSpool) { // If extending or retracting outtake, or if not moving spool
+            outtakeSpool.setPower(0);
+            outtakeSpool2.setPower(0);
+        } else if (returningToPosition && outtakeSpool.getCurrentPosition() > spoolTargetEncoderTick ){
+            outtakeSpool.setPower(0);
+            outtakeSpool2.setPower(0);
+            isMovingSpool = false;
+            returningToPosition = false;
+            releaseClamp = true;
+        } else if (Math.abs(outtakeSpool.getCurrentPosition() - spoolTargetEncoderTick) <= 50) {
+            if (spoolOvershoot) {
+                extendOuttake = true;
+                startOuttakeMovementTime = SystemClock.elapsedRealtime();
+
+                returningToPosition = true;
+                spoolTargetEncoderTick += SPOOL_OVERSHOOT_AMOUNT;
+            } else {
+                isMovingSpool = false;
+                isRaisingOuttake = false;
+                hasRaisedOuttake = false;
+            }
+
+            outtakeSpool.setPower(0);
+            outtakeSpool2.setPower(0);
+
+            spoolOvershoot = false; // Reset overshoot toggle
+        } else if (outtakeSpool.getCurrentPosition() < spoolTargetEncoderTick) {
+            outtakeSpool.setPower(-1);
+            outtakeSpool2.setPower(-1);
+        } else {
+            outtakeSpool.setPower(1);
+            outtakeSpool2.setPower(1);
+        }
+
+        // Extend/retract outtake as needed
+        if (clampBeforeSpool) {
+            long currentTime = SystemClock.elapsedRealtime();
+            if (currentTime - startOuttakeMovementTime >= 700) {
+                intakePusher.setPosition(PUSHER_RETRACTED);
+            } else {
+                intakePusher.setPosition(PUSHER_PUSHED);
+            }
+            if (currentTime - startOuttakeMovementTime >= 800){
+                clamp.setPosition(CLAMP_SERVO_CLAMPED);
+            }
+            if (currentTime - startOuttakeMovementTime >= 1500) {
+                clampBeforeSpool = false;
+            }
+        }
+        if (releaseClamp) {
+            long currentTime = SystemClock.elapsedRealtime();
+            if (currentTime - startOuttakeMovementTime >= 2300) {
+                clamp.setPosition(CLAMP_SERVO_INTAKEPOSITION);
+                releaseClamp = false;
+                isRaisingOuttake = false;
+                hasRaisedOuttake = false;
+            }
+        }
+        if (extendOuttake) {
+            long currentTime = SystemClock.elapsedRealtime();
+
+            if (currentTime - startOuttakeMovementTime >= 0) {
+                clamp.setPosition(CLAMP_SERVO_CLAMPED);
+                intakePusher.setPosition(PUSHER_RETRACTED);
+            }
+            if (currentTime - startOuttakeMovementTime >= 100) {
+                outtakeExtender.setPosition(OUTTAKE_SLIDE_EXTENDED);
+            }
+            if (currentTime - startOuttakeMovementTime >= 800) {
+                clampPivot.setPosition(OUTTAKE_PIVOT_EXTENDED);
+            }
+            if(currentTime - startOuttakeMovementTime >= 1100){
+                outtakeExtender.setPosition(OUTTAKE_SLIDE_PARTIAL_EXTEND);
+            }
+            if(currentTime - startOuttakeMovementTime >= 1400){
+                extendOuttake = false;
+            }
+        }
+        if (retractOuttake) {
+            long currentTime = SystemClock.elapsedRealtime();
+
+            if (currentTime - startOuttakeMovementTime >= 0) {
+                outtakeExtender.setPosition(OUTTAKE_SLIDE_EXTENDED);
+                getClamp().setPosition(CLAMP_SERVO_CLAMPED);
+                intakePusher.setPosition(PUSHER_RETRACTED);
+            }
+            if (currentTime - startOuttakeMovementTime >= 850) {
+                clampPivot.setPosition(OUTTAKE_PIVOT_RETRACTED);
+            }
+            if (currentTime - startOuttakeMovementTime >= 1400) {
+                getOuttakeExtender().setPosition(OUTTAKE_SLIDE_RETRACTED);
+            }
+            if (currentTime - startOuttakeMovementTime >= 1550) {
+                clamp.setPosition(CLAMP_SERVO_INTAKEPOSITION);
+            }
+            if (currentTime - startOuttakeMovementTime >= 2100) {
+                clamp.setPosition(CLAMP_SERVO_INTAKEPOSITION);
+
+                retractOuttake = false;
+            }
+        }
+    }
+
     /**
      * idk
+     *
      * @param motor the motor you want to reset
      */
     public void resetMotor(DcMotor motor) {
@@ -391,7 +576,8 @@ public class Robot {
 
     /**
      * move straight forwards or backwards
-     * @param speed speed to move, >0, <1
+     *
+     * @param speed           speed to move, >0, <1
      * @param targetDistance, target distance, -infinity to infinity
      */
     public void finalMove(double speed, double targetDistance) {
@@ -410,7 +596,8 @@ public class Robot {
 
     /**
      * bare bones move function using encoders
-     * @param speed speed to move
+     *
+     * @param speed          speed to move
      * @param targetPosition target distance
      */
     public void moveRobot(double speed, int targetPosition) {
@@ -491,19 +678,21 @@ public class Robot {
         }
     }
 
-    public enum Actions{
-        EXTEND_OUTTAKE, RETRACT_OUTTAKE, RELEASE_FOUNDATION, START_INTAKE, STOP_INTAKE, EXTEND_FOUNDATION
+    public enum Actions {
+        EXTEND_OUTTAKE, RETRACT_OUTTAKE, RELEASE_FOUNDATION, START_INTAKE, STOP_INTAKE, EXTEND_FOUNDATION, LOWER_OUTTAKE, RAISE_OUTTAKE_LEVEL1, RAISE_OUTTAKE_LEVEL2
     }
 
     public void splineMove(double[][] data, double moveSpeed, double turnSpeed, double slowDownSpeed, double slowDownDistance, double optimalAngle, double angleLockRadians, double angleLockInches, HashMap<Point, Actions> actions) {
-        splineMove(data,moveSpeed,turnSpeed,slowDownSpeed,slowDownDistance,optimalAngle,angleLockRadians,angleLockInches,actions,false,0);
+        splineMove(data, moveSpeed, turnSpeed, slowDownSpeed, slowDownDistance, optimalAngle, angleLockRadians, angleLockInches, actions, false, 0);
     }
 
-    public void printCoords(double[][] data){
+    public void printCoords(double[][] data) {
         telemetry.addLine(Arrays.deepToString(data));
         telemetry.update();
     }
 
+    private boolean hasRaisedOuttake = false;
+    private boolean isRaisingOuttake = false;
     public void splineMove(double[][] data, double moveSpeed, double turnSpeed, double slowDownSpeed, double slowDownDistance, double optimalAngle, double angleLockRadians, double angleLockInches, HashMap<Point, Actions> actions, boolean isTimeKill, long endTime) {
         double posAngle;
 
@@ -540,55 +729,54 @@ public class Robot {
 
         long currentTime;
         long startTime = SystemClock.elapsedRealtime();
-        while (linearOpMode.opModeIsActive()){
+        while (linearOpMode.opModeIsActive()) {
             currentTime = SystemClock.elapsedRealtime();
 
-            if(isTimeKill && currentTime-startTime >= endTime){
+            if (isTimeKill && currentTime - startTime >= endTime) {
                 brakeRobot();
                 break;
             }
 
-            posAngle = MathFunctions.angleWrap(anglePos + 2*Math.PI);
+            posAngle = MathFunctions.angleWrap(anglePos + 2 * Math.PI);
 
-            if(followIndex == pathPoints.length){
-                followIndex --;
+            if (followIndex == pathPoints.length) {
+                followIndex--;
             }
 
-            distanceToEnd = Math.hypot(robotPos.x - data[data.length-1][0], robotPos.y - data[data.length - 1][1]);
+            distanceToEnd = Math.hypot(robotPos.x - data[data.length - 1][0], robotPos.y - data[data.length - 1][1]);
             distanceToNext = Math.hypot(robotPos.x - pathPoints[followIndex][0], robotPos.y - pathPoints[followIndex][1]);
             desiredHeading = angleWrap(Math.atan2(pathPoints[followIndex][1] - pathPoints[followIndex - 1][1], pathPoints[followIndex][0] - pathPoints[followIndex - 1][0]) + 2 * Math.PI);
 
-            if(desiredHeading == 0){
+            if (desiredHeading == 0) {
                 desiredHeading = Math.toRadians(360);
             }
-            if(angleLockRadians  == 0){
+            if (angleLockRadians == 0) {
                 angleLockRadians = Math.toRadians(360);
             }
 
-            angleLockScale = Math.abs(angleLockRadians-posAngle) * Math.abs(desiredHeading-angleLockRadians) * 1.8;
+            angleLockScale = Math.abs(angleLockRadians - posAngle) * Math.abs(desiredHeading - angleLockRadians) * 1.8;
 
 
-            if (distanceToEnd < angleLockInches){
+            if (distanceToEnd < angleLockInches) {
                 goToPoint(pathPoints[followIndex][0], pathPoints[followIndex][1], moveSpeed, turnSpeed, optimalAngle, true);
 
-                if(angleLockRadians-posAngle > Math.toRadians(0) && angleLockRadians-posAngle < Math.toRadians(180)){
+                if (angleLockRadians - posAngle > Math.toRadians(0) && angleLockRadians - posAngle < Math.toRadians(180)) {
                     turnMovement = 1 * angleLockScale;
-                }else if(angleLockRadians-posAngle < Math.toRadians(0) || angleLockRadians-posAngle > Math.toRadians(180)){
+                } else if (angleLockRadians - posAngle < Math.toRadians(0) || angleLockRadians - posAngle > Math.toRadians(180)) {
                     turnMovement = -1 * angleLockScale;
-                }else{
+                } else {
                     turnMovement = 0;
                 }
-            } else if (distanceToEnd<30){
+            } else if (distanceToEnd < 30) {
                 goToPoint(pathPoints[followIndex][0], pathPoints[followIndex][1], moveSpeed, turnSpeed, optimalAngle, true);
-            }
-            else {
+            } else {
                 goToPoint(pathPoints[followIndex][0], pathPoints[followIndex][1], moveSpeed, turnSpeed, optimalAngle, false);
             }
 
-            if (distanceToEnd < 1){
+            if (distanceToEnd < 1) {
                 brakeRobot();
                 isMoving = false;
-            } else if (distanceToNext < 10){
+            } else if (distanceToNext < 10) {
                 followIndex++;
 //                if(!(getTopBarDistance().getDistance(DistanceUnit.CM)<20 && (isExtendingOuttake || isRetractingOuttake))){
 //
@@ -600,23 +788,25 @@ public class Robot {
 //                }
             }
 
-            if (distanceToEnd < slowDownDistance){
-                if(slowDownSpeed > moveSpeed){
-                    xMovement *= slowDownSpeed * (slowDownSpeed/moveSpeed);
-                    yMovement *= slowDownSpeed * (slowDownSpeed/moveSpeed);
-                    turnMovement *= slowDownSpeed * (slowDownSpeed/moveSpeed);
-                }else{
+            if (distanceToEnd < slowDownDistance) {
+                if (slowDownSpeed > moveSpeed) {
+                    xMovement *= slowDownSpeed * (slowDownSpeed / moveSpeed);
+                    yMovement *= slowDownSpeed * (slowDownSpeed / moveSpeed);
+                    turnMovement *= slowDownSpeed * (slowDownSpeed / moveSpeed);
+                } else {
                     xMovement *= slowDownSpeed;
                     yMovement *= slowDownSpeed;
                     turnMovement *= slowDownSpeed;
                 }
             }
 
+            moveOuttake();
+
             // go through all actionpoints and see if the robot is near one
             if (actions.size() != 0) {
                 Iterator actionIterator = actions.entrySet().iterator();
                 for (int i = 0; i < actions.size(); i++) {
-                    Map.Entry<Point,Robot.Actions> possibleAction = (Map.Entry<Point, Actions>) actionIterator.next();
+                    Map.Entry<Point, Robot.Actions> possibleAction = (Map.Entry<Point, Actions>) actionIterator.next();
 
                     Point actionPoint = possibleAction.getKey();
                     Actions executableAction = possibleAction.getValue();
@@ -637,8 +827,7 @@ public class Robot {
                         } else if (executableAction == Actions.RELEASE_FOUNDATION && !hasReleasedFoundation) {
                             isReleasingFoundation = true;
                             hasReleasedFoundation = true;
-                        }
-                        else if (executableAction == Actions.START_INTAKE && !hasStartedIntake) {
+                        } else if (executableAction == Actions.START_INTAKE && !hasStartedIntake) {
                             isStartingIntake = true;
                             hasStartedIntake = true;
                         } else if (executableAction == Actions.STOP_INTAKE && !hasStoppedIntake) {
@@ -647,27 +836,39 @@ public class Robot {
                         } else if (executableAction == Actions.EXTEND_FOUNDATION && !hasExtendedFoundation) {
                             isExtendingFoundation = true;
                             hasExtendedFoundation = true;
+                        } else if (executableAction == Actions.RAISE_OUTTAKE_LEVEL1 && !hasRaisedOuttake) {
+                            moveOuttakeToStoneLevel(1);
+                            isRaisingOuttake = true;
+                            hasRaisedOuttake = true;
+                        } else if (executableAction == Actions.RAISE_OUTTAKE_LEVEL2 && !hasRaisedOuttake) {
+                            moveOuttakeToStoneLevel(2);
+                            isRaisingOuttake = true;
+                            hasRaisedOuttake = true;
+                        } else if (executableAction == Actions.LOWER_OUTTAKE && !hasRaisedOuttake) {
+                            moveOuttakeToStoneLevel(0);
+                            isRaisingOuttake = true;
+                            hasRaisedOuttake = true;
                         }
                     }
                 }
             }
 
-            if (isExtendingOuttake){
+            if (isExtendingOuttake) {
                 if (currentTime - extendOuttakeStartTime >= 500) {
                     clamp.setPosition(CLAMP_SERVO_CLAMPED);
                 }
-                if (currentTime - extendOuttakeStartTime >= 650 ) {
+                if (currentTime - extendOuttakeStartTime >= 650) {
                     intakePusher.setPosition(PUSHER_RETRACTED);
                 }
-                if(currentTime-extendOuttakeStartTime >= 1300){
+                if (currentTime - extendOuttakeStartTime >= 1300) {
                     outtakeExtender.setPosition(OUTTAKE_SLIDE_EXTENDED);
                 }
 
-                if(currentTime-extendOuttakeStartTime >= 2200 ){
+                if (currentTime - extendOuttakeStartTime >= 2200) {
                     clampPivot.setPosition(OUTTAKE_PIVOT_90);
                 }
 
-                if(currentTime-extendOuttakeStartTime >= 2700){
+                if (currentTime - extendOuttakeStartTime >= 2700) {
                     rightFoundation.setPosition(RIGHTFOUNDATION_EXTENDED);
                     clamp.setPosition(CLAMP_SERVO_INTAKEPOSITION);
 
@@ -676,30 +877,30 @@ public class Robot {
                 }
             }
 
-            if (isRetractingOuttake){
-                if(currentTime-retractOuttakeStartTime >= 450){
+            if (isRetractingOuttake) {
+                if (currentTime - retractOuttakeStartTime >= 450) {
                     clampPivot.setPosition(OUTTAKE_PIVOT_RETRACTED);
                 }
-                if(currentTime-retractOuttakeStartTime >= 600){
+                if (currentTime - retractOuttakeStartTime >= 600) {
                     getClamp().setPosition(CLAMP_SERVO_CLAMPED);
                 }
 
-                if(currentTime-retractOuttakeStartTime >= 750){
+                if (currentTime - retractOuttakeStartTime >= 750) {
                     getOuttakeExtender().setPosition(OUTTAKE_SLIDE_RETRACTED);
                     intakePusher.setPosition(PUSHER_RETRACTED);
                 }
-                if(currentTime-retractOuttakeStartTime >=1150){
+                if (currentTime - retractOuttakeStartTime >= 1150) {
                     clamp.setPosition(CLAMP_SERVO_INTAKEPOSITION);
                 }
-                if(currentTime-retractOuttakeStartTime >= 1700){
+                if (currentTime - retractOuttakeStartTime >= 1700) {
                     clamp.setPosition(CLAMP_SERVO_INTAKEPOSITION);
                     isRetractingOuttake = false;
                     hasRetractedOuttake = false;
                 }
             }
 
-            if (isReleasingFoundation){
-                if((Math.toDegrees(posAngle) <= 95 && Math.toDegrees(posAngle) >= 85) || (Math.toDegrees(posAngle) >= 265 && Math.toDegrees(posAngle) <= 275)) {
+            if (isReleasingFoundation) {
+                if ((Math.toDegrees(posAngle) <= 95 && Math.toDegrees(posAngle) >= 85) || (Math.toDegrees(posAngle) >= 265 && Math.toDegrees(posAngle) <= 275)) {
                     brakeRobot();
                     foundationMovers(false);
                     linearOpMode.sleep(150);
@@ -707,7 +908,7 @@ public class Robot {
                 }
             }
 
-            if (isStartingIntake){
+            if (isStartingIntake) {
                 intake(true);
 
                 clamp.setPosition(CLAMP_SERVO_INTAKEPOSITION);
@@ -716,16 +917,16 @@ public class Robot {
                 isStartingIntake = false;
             }
 
-            if (isStoppingIntake){
+            if (isStoppingIntake) {
                 intake(false);
                 isStoppingIntake = false;
             }
 
-            if (!isMoving && !isRetractingOuttake && !isExtendingOuttake && !isReleasingFoundation && !isStartingIntake && !isStoppingIntake){
+            if (!isMoving && !isRetractingOuttake && !isExtendingOuttake && !isReleasingFoundation && !isStartingIntake && !isStoppingIntake && !isRaisingOuttake) {
                 return;
             }
 
-            if (isMoving){
+            if (isMoving) {
                 applyMove();
             }
 
@@ -743,13 +944,13 @@ public class Robot {
 
     public boolean followCurve(double[][] points, double followAngle, double followDistance, double angleLockRadians, double angleLockDistance) {
 
-        PathPoints path = new PathPoints(points,followDistance);
+        PathPoints path = new PathPoints(points, followDistance);
 
         Vector<CurvePoint> allPoints = path.targetPoints;
 
         // for angle locking
-        Point secondToLastPoint = new Point(points[points.length-2][0],points[points.length-2][1]);
-        Point lastPoint = new Point(points[points.length-1][0],points[points.length-1][1]);
+        Point secondToLastPoint = new Point(points[points.length - 2][0], points[points.length - 2][1]);
+        Point lastPoint = new Point(points[points.length - 1][0], points[points.length - 1][1]);
         double lastAngle = Math.atan2(lastPoint.y - secondToLastPoint.y, lastPoint.x - secondToLastPoint.x);
 
         Vector<CurvePoint> pathExtended = (Vector<CurvePoint>) allPoints.clone();
@@ -776,14 +977,14 @@ public class Robot {
         goToPoint(followMe.x, followMe.y, followMe.moveSpeed, followMe.turnSpeed, followAngle, true);
 
         // angle lock
-        if (distanceToEnd < angleLockDistance){
-            telemetry.addLine("TURNMOVEMENT: "+turnMovement);
-            telemetry.addLine("go: " +anglePos);
+        if (distanceToEnd < angleLockDistance) {
+            telemetry.addLine("TURNMOVEMENT: " + turnMovement);
+            telemetry.addLine("go: " + anglePos);
             telemetry.update();
-            if (Math.abs(anglePos-angleLockRadians) < Math.toRadians(2)){
+            if (Math.abs(anglePos - angleLockRadians) < Math.toRadians(2)) {
                 followAngle = 0;
             } else {
-                turnMovement = (angleLockRadians - angleWrap(anglePos + 2*Math.PI))/ Math.PI;
+                turnMovement = (angleLockRadians - angleWrap(anglePos + 2 * Math.PI)) / Math.PI;
             }
         }
 
@@ -792,151 +993,23 @@ public class Robot {
         return true;
     }
 
-    public void moveFollowCurve(double [][] points, double followAngle, double followDistance, double angleLockRadians, double angleLockDistance) {
+    public void moveFollowCurve(double[][] points, double followAngle, double followDistance, double angleLockRadians, double angleLockDistance) {
         //pathDistance = Math.hypot(points.get(points.size() - 1).x, points.get(points.size() - 1).y);
         while (linearOpMode.opModeIsActive()) {
 
             // if followCurve returns false then it is ready to stop
             // else, it moves
 
-            if (!followCurve(points, followAngle, followDistance,angleLockRadians, angleLockDistance)) {
+            if (!followCurve(points, followAngle, followDistance, angleLockRadians, angleLockDistance)) {
                 brakeRobot();
                 return;
             }
         }
     }
-
-    public void moveFollowCurveWithExtend(double [][] points, double followAngle, double followDistance, double angleLockRadians, double angleLockDistance, Point whereYouExtend) {
-
-        long outtakeExecutionTime = 0;
-        long currentTime;
-        boolean hasExtended = false;
-        boolean isExtend = false;
-        boolean isMoving = true;
-        while (linearOpMode.opModeIsActive()) {
-            currentTime = SystemClock.elapsedRealtime();
-
-            // if followCurve returns false then it is ready to stop
-            // else, it moves
-            if (isMoving && !followCurve(points, followAngle, followDistance,angleLockRadians, angleLockDistance)) {
-                brakeRobot();
-                isMoving = false;
-            }
-
-            if (Math.hypot(whereYouExtend.x - robotPos.x, whereYouExtend.y - robotPos.y) < 40 && !hasExtended){
-                hasExtended = true;
-                isExtend = true;
-                outtakeExecutionTime = SystemClock.elapsedRealtime();
-                intakePusher.setPosition(PUSHER_PUSHED); // Push block all the way to clamp
-            }
-
-            if (currentTime - outtakeExecutionTime >= 600 && isExtend) {
-                intakePusher.setPosition(PUSHER_RETRACTED);
-            }
-            if (currentTime - outtakeExecutionTime >= 950 && isExtend) {
-                clamp.setPosition(CLAMP_SERVO_CLAMPED);
-            }
-            if(currentTime-outtakeExecutionTime >= 1300 && isExtend){
-                outtakeExtender.setPosition(OUTTAKE_SLIDE_EXTENDED);
-            }
-
-            if(currentTime-outtakeExecutionTime >= 2200 && isExtend){
-                telemetry.addLine("EXTENDING CLAMP");
-                telemetry.update();
-                clampPivot.setPosition(OUTTAKE_PIVOT_90);
-            }
-
-            if(currentTime-outtakeExecutionTime >=2500){
-                isExtend = false;
-            }
-
-            if(!isMoving && !isExtend){
-                return;
-            }
-        }
-    }
-
-    public void moveFollowCurveWithDepositandRetract(double [][] points, double followAngle, double followDistance, double angleLockRadians, double angleLockDistance, Point whereYouRetract) {
-
-        long outtakeExecutionTime = 0;
-        long currentTime;
-        boolean isRetract = false;
-        boolean isMoving = true;
-        boolean hasRetracted = false;
-
-        // Deposit stone
-        clamp.setPosition(CLAMP_SERVO_RELEASED);
-
-        while (linearOpMode.opModeIsActive()) {
-            currentTime = SystemClock.elapsedRealtime();
-
-            // if followCurve returns false then it is ready to stop
-            // else, it moves
-            if (isMoving && !followCurve(points, followAngle, followDistance,angleLockRadians, angleLockDistance)) {
-                brakeRobot();
-                isMoving = false;
-            }
-
-            if (Math.hypot(whereYouRetract.x - robotPos.x, whereYouRetract.y - robotPos.y) < 40 && !hasRetracted){
-                outtakeExecutionTime = SystemClock.elapsedRealtime();
-                intakePusher.setPosition(PUSHER_RETRACTED); // Retract pusher
-                hasRetracted = true;
-                telemetry.addLine("in range");
-                isRetract = true;
-            }
-
-            if(currentTime-outtakeExecutionTime >= 450 && isRetract){
-                clampPivot.setPosition(OUTTAKE_PIVOT_RETRACTED);
-                telemetry.addLine("pivot retracted");
-            }
-            if(currentTime-outtakeExecutionTime >= 1150 && isRetract){
-                outtakeExtender.setPosition(OUTTAKE_SLIDE_RETRACTED);
-                clamp.setPosition(CLAMP_SERVO_RELEASED);
-                intakePusher.setPosition(PUSHER_RETRACTED);
-                telemetry.addLine("slide retracted");
-                isRetract = false;
-            }
-
-            if(!isMoving && !isRetract){
-                telemetry.addLine("done with movefollowcurve");
-                return;
-            }
-        }
-    }
-
-    public void moveFollowCurveWithFoundationMover(double [][] points, double followAngle, double followDistance, double angleLockRadians, double angleLockDistance, Point whereYouRetract) {
-
-        boolean isMoving = true;
-        boolean hasRetracted = false;
-
-        // Deposit stone
-        clamp.setPosition(CLAMP_SERVO_RELEASED);
-
-        while (linearOpMode.opModeIsActive()) {
-
-            // if followCurve returns false then it is ready to stop
-            // else, it moves
-            if (isMoving && !followCurve(points, followAngle, followDistance,angleLockRadians, angleLockDistance)) {
-                brakeRobot();
-                isMoving = false;
-            }
-
-            if (Math.hypot(whereYouRetract.x - robotPos.x, whereYouRetract.y - robotPos.y) < 20 && !hasRetracted){
-                hasRetracted = true;
-                foundationMovers(false);
-            }
-
-            if(!isMoving){
-                telemetry.addLine("done with movefollowcurve");
-                return;
-            }
-        }
-    }
-
 
     public boolean followCurve(double[][] points, double followAngle, double followDistance) {
 
-        PathPoints path = new PathPoints(points,followDistance);
+        PathPoints path = new PathPoints(points, followDistance);
 
         Vector<CurvePoint> allPoints = path.targetPoints;
 
@@ -955,7 +1028,7 @@ public class Robot {
             followMe.setPoint(allPoints.get(allPoints.size() - 1).toPoint());
         }
 
-        double decelerationScaleFactor = Range.clip(distanceToEnd/12,-1,1);
+        double decelerationScaleFactor = Range.clip(distanceToEnd / 12, -1, 1);
 
         goToPoint(followMe.x, followMe.y, followMe.moveSpeed * decelerationScaleFactor, followMe.turnSpeed * decelerationScaleFactor, followAngle, true);
         if ((distanceToEnd < 0.5)) {
@@ -966,7 +1039,7 @@ public class Robot {
         return true;
     }
 
-    public void moveFollowCurve(double [][] points, double followAngle, double followDistance) {
+    public void moveFollowCurve(double[][] points, double followAngle, double followDistance) {
         //pathDistance = Math.hypot(points.get(points.size() - 1).x, points.get(points.size() - 1).y);
         while (linearOpMode.opModeIsActive()) {
 
@@ -1083,8 +1156,8 @@ public class Robot {
         double relativeYToPoint = Math.sin(relativeAngleToPoint) * distanceToTarget;
         double relativeTurnAngle = relativeAngleToPoint + optimalAngle;
 
-        if (relativeTurnAngle > Math.PI){
-            relativeTurnAngle -= 2*Math.PI;
+        if (relativeTurnAngle > Math.PI) {
+            relativeTurnAngle -= 2 * Math.PI;
         }
 
         double xPower = relativeXToPoint / (Math.abs(relativeXToPoint) + Math.abs(relativeYToPoint));
@@ -1092,7 +1165,7 @@ public class Robot {
 
         double yPower = 0.4 * relativeYToPoint / (Math.abs(relativeYToPoint) + Math.abs(relativeXToPoint));
 
-        if (willMecanum){
+        if (willMecanum) {
             yPower = relativeYToPoint / (Math.abs(relativeYToPoint) + Math.abs(relativeXToPoint));
         }
 
@@ -1100,7 +1173,7 @@ public class Robot {
         yMovement = yPower * moveSpeed;
         turnMovement = 5 * Range.clip(relativeTurnAngle / Math.toRadians(360), -1, 1) * turnSpeed;
 
-        if (willMecanum){
+        if (willMecanum) {
             turnMovement = Range.clip(relativeTurnAngle / Math.toRadians(360), -1, 1) * turnSpeed;
         }
     }
@@ -1145,7 +1218,7 @@ public class Robot {
         // find the total distance from the start point to the end point
         double totalDistanceToTarget = Math.hypot(x - robotPos.x, y - robotPos.y);
 
-        double totalTimeSeconds = totalDistanceToTarget/20;
+        double totalTimeSeconds = totalDistanceToTarget / 20;
 
         // so deceleration works
         this.setDrivetrainMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -1185,7 +1258,7 @@ public class Robot {
             double yPower = relativeYToPoint / (Math.abs(relativeYToPoint) + Math.abs(relativeXToPoint));
 
             // find the deceleration
-            double decelerationScaleFactor = Range.clip(2 * Math.sqrt(Math.pow(totalDistanceToTarget,2) - Math.pow(totalDistanceToTarget - distanceToTarget,2)) / totalDistanceToTarget,-1,1);
+            double decelerationScaleFactor = Range.clip(2 * Math.sqrt(Math.pow(totalDistanceToTarget, 2) - Math.pow(totalDistanceToTarget - distanceToTarget, 2)) / totalDistanceToTarget, -1, 1);
 
             // get everything into x, y, and turn movements for applyMove
             // the robot can be viewed as something that moves on a coordinate plane
@@ -1200,25 +1273,25 @@ public class Robot {
         brakeRobot();
     }
 
-    public void dumpPoints(String directoryName, String tripName){
-        if(!isDebug){
+    public void dumpPoints(String directoryName, String tripName) {
+        if (!isDebug) {
             return;
         }
         writeToFile("" + directoryName, tripName + "_wayPoints.txt", getWayPoints());
-        writeToFile("" + directoryName,tripName + "_odometry.txt", getOdometryPoints());
-        writeToFile("" + directoryName,tripName + "_spline.txt", getSplinePoints());
+        writeToFile("" + directoryName, tripName + "_odometry.txt", getOdometryPoints());
+        writeToFile("" + directoryName, tripName + "_spline.txt", getSplinePoints());
         clearPoints();
     }
 
-    public void clearPoints(){
+    public void clearPoints() {
         splinePoints = new StringBuilder();
         odometryPoints = new StringBuilder();
         waypoints = new StringBuilder();
     }
 
-    public static void writeToFile(String directoryName, String fileName, String data){
-        File captureDirectory = new File(AppUtil.ROBOT_DATA_DIR,"/" + directoryName + "/");
-        if (!captureDirectory.exists()){
+    public static void writeToFile(String directoryName, String fileName, String data) {
+        File captureDirectory = new File(AppUtil.ROBOT_DATA_DIR, "/" + directoryName + "/");
+        if (!captureDirectory.exists()) {
             captureDirectory.mkdir();
         }
         File file = new File(captureDirectory, fileName);
@@ -1228,10 +1301,10 @@ public class Robot {
             try {
                 writer.write(data);
                 writer.flush();
-                Log.d("DumpToFile",data);
+                Log.d("DumpToFile", data);
             } finally {
                 outputStream.close();
-                Log.d("DumpToFile",file.getAbsolutePath());
+                Log.d("DumpToFile", file.getAbsolutePath());
             }
         } catch (IOException e) {
             RobotLog.ee("TAG", e, "exception in captureFrameToFile()");
@@ -1335,13 +1408,21 @@ public class Robot {
         this.intakePusher = intakePusher;
     }
 
-    public Servo getLeftFoundation() {return leftFoundation;}
+    public Servo getLeftFoundation() {
+        return leftFoundation;
+    }
 
-    public void setLeftFoundation(Servo leftFoundation) {this.leftFoundation = leftFoundation;}
+    public void setLeftFoundation(Servo leftFoundation) {
+        this.leftFoundation = leftFoundation;
+    }
 
-    public Servo getRightFoundation() {return rightFoundation;}
+    public Servo getRightFoundation() {
+        return rightFoundation;
+    }
 
-    public void setRightFoundation(Servo rightFoundation) {this.rightFoundation = rightFoundation;}
+    public void setRightFoundation(Servo rightFoundation) {
+        this.rightFoundation = rightFoundation;
+    }
 
     public double getOUTTAKE_SLIDE_EXTENDED() {
         return OUTTAKE_SLIDE_EXTENDED;
@@ -1458,49 +1539,58 @@ public class Robot {
     public void setPosition(Position position) {
         this.position = position;
     }
-    public Servo getMarkerServo() { return markerServo; }
 
-    public void setMarkerServo(Servo markerServo) { this.markerServo = markerServo; }
+    public Servo getMarkerServo() {
+        return markerServo;
+    }
 
-    public Servo getBackStopper() { return backStopper; }
+    public void setMarkerServo(Servo markerServo) {
+        this.markerServo = markerServo;
+    }
 
-    public void setBackStopper(Servo backStopper) { this.backStopper = backStopper; }
+    public Servo getBackStopper() {
+        return backStopper;
+    }
+
+    public void setBackStopper(Servo backStopper) {
+        this.backStopper = backStopper;
+    }
 
     public String getOdometryPoints() {
-        odometryPoints.insert(0,"x y\n");
+        odometryPoints.insert(0, "x y\n");
         return odometryPoints.toString();
     }
 
-    public String getWayPoints(){
-        waypoints.insert(0,"x y vX vY\n");
+    public String getWayPoints() {
+        waypoints.insert(0, "x y vX vY\n");
         return waypoints.toString();
     }
 
     public String getSplinePoints() {
-        splinePoints.insert(0,"x y\n");
+        splinePoints.insert(0, "x y\n");
         return splinePoints.toString();
     }
 
-    public void addSplinePoints(double[][] data){
-        if(!isDebug){
+    public void addSplinePoints(double[][] data) {
+        if (!isDebug) {
             return;
         }
-        for (int i = 0; i < data.length; i++){
+        for (int i = 0; i < data.length; i++) {
             addSplinePoints(data[i][0], data[i][1]);
         }
     }
 
-    public void addWaypoints(double[][] data){
-        if(!isDebug){
+    public void addWaypoints(double[][] data) {
+        if (!isDebug) {
             return;
         }
-        for (int i = 0; i < data.length; i++){
+        for (int i = 0; i < data.length; i++) {
             addWaypoints(data[i][0], data[i][1], data[i][2], data[i][3]);
         }
     }
 
-    public void addWaypoints(double x, double y, double vectorX, double vectorY){
-        if(!isDebug){
+    public void addWaypoints(double x, double y, double vectorX, double vectorY) {
+        if (!isDebug) {
             return;
         }
         waypoints.append(x);
@@ -1513,8 +1603,8 @@ public class Robot {
         waypoints.append("\n");
     }
 
-    public void addSplinePoints(double x, double y){
-        if(!isDebug){
+    public void addSplinePoints(double x, double y) {
+        if (!isDebug) {
             return;
         }
         splinePoints.append(x);
@@ -1523,8 +1613,8 @@ public class Robot {
         splinePoints.append("\n");
     }
 
-    public void addOdometryPoints(double x, double y){
-        if(!isDebug){
+    public void addOdometryPoints(double x, double y) {
+        if (!isDebug) {
             return;
         }
         odometryPoints.append(x);

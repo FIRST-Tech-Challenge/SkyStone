@@ -148,7 +148,7 @@ public abstract class OmniAutoFullToF extends OmniAutoClass
 		phoneCam.stopStreaming();
 
 		// Start moving intake out, should be done by the time driving is done.
-        robot.moveIntake(HardwareOmnibot.IntakePosition.EXTENDED);
+        robot.startExtendingIntake();
 
         // This sets side specific values based on red or blue
         setSkystoneValues(stonePosition);
@@ -165,15 +165,10 @@ public abstract class OmniAutoFullToF extends OmniAutoClass
         // Make sure the intake is out.
         robot.resetReads();
         double endTime = timer.milliseconds() + 1000;
-        while (!robot.intakeAtPosition(HardwareOmnibot.IntakePosition.EXTENDED) && (timer.milliseconds() < endTime) && (!isStopRequested())) {
+        while (!robot.intakeExtended() && (timer.milliseconds() < endTime) && (!isStopRequested())) {
             robot.resetReads();
         }
         robot.moveLift(HardwareOmnibot.LiftPosition.STOWED);
-
-        // Set the zero for the extender for when we start teleop.  We should do this as late
-        // as will get reliably called.
-        robot.finalAutoIntakePosition = HardwareOmnibot.IntakePosition.EXTENDED;
-        robot.finalAutoIntakeZero = robot.getIntakeAbsoluteEncoder();
 
         // Start the intake to collect.
         robot.startIntake(false);
@@ -293,8 +288,6 @@ public abstract class OmniAutoFullToF extends OmniAutoClass
 
         // Set the zero for the extender for when we start teleop.  We should do this as late
         // as will get reliably called.
-        robot.finalAutoIntakePosition = HardwareOmnibot.IntakePosition.EXTENDED;
-        robot.finalAutoIntakeZero = robot.getIntakeAbsoluteEncoder();
         robot.finalAutoLiftZero = robot.getLifterAbsoluteEncoder();
     }
 

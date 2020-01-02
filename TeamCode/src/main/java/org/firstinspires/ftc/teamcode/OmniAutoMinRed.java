@@ -44,17 +44,15 @@ public class OmniAutoMinRed extends OmniAutoClass
 
         robot.stackFromSide = HardwareOmnibot.RobotSide.LEFT;
         // Make sure the intake is out.
-        robot.moveIntake(HardwareOmnibot.IntakePosition.EXTENDED);
+        robot.startExtendingIntake();
         double endTime = timer.milliseconds() + 10000;
-        while (!robot.intakeAtPosition(HardwareOmnibot.IntakePosition.EXTENDED) && (timer.milliseconds() < endTime) && (!isStopRequested())) {
+        while (!robot.intakeExtended() && (timer.milliseconds() < endTime) && (!isStopRequested())) {
             robot.resetReads();
         }
 
         // Set the zero for the extender for when we start teleop.  We should do this as late
         // as will get reliably called.
 		sleep(1000);
-        robot.finalAutoIntakePosition = HardwareOmnibot.IntakePosition.EXTENDED;
-        robot.finalAutoIntakeZero = robot.getIntakeAbsoluteEncoder();
         robot.finalAutoLiftZero = robot.getLifterAbsoluteEncoder();
     }
 }

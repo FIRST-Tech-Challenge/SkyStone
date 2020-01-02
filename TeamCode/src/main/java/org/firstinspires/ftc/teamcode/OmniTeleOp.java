@@ -180,16 +180,6 @@ public class OmniTeleOp extends OpMode {
         if(!bHeld && bPressed)
         {
             bHeld = true;
-//            if(robot.removeFoundation == HardwareOmnibot.FoundationActivities.IDLE) {
-//                robot.startFoundation();
-//            } else {
-//                robot.stopFoundation();
-//            }
-//            if(robot.alignState == HardwareOmnibot.AlignActivity.IDLE) {
-//                robot.startAligning();
-//            } else {
-//                robot.stopAligning();
-//            }
         } else if(!bPressed) {
             bHeld = false;
         }
@@ -223,7 +213,6 @@ public class OmniTeleOp extends OpMode {
         if(!rightHeld && rightPressed)
         {
             rightHeld = true;
-			robot.intakeOut();
         } else if(!rightPressed) {
             rightHeld = false;
         }
@@ -231,14 +220,13 @@ public class OmniTeleOp extends OpMode {
         if(!leftHeld && leftPressed)
         {
             leftHeld = true;
-			robot.intakeIn();
         } else if(!leftPressed) {
             leftHeld = false;
         }
 
         if(!rightBumperHeld && rightBumperPressed)
         {
-            robot.moveIntake(robot.intakeTargetPosition);
+            robot.startExtendingIntake();
             rightBumperHeld = true;
         } else if(!rightBumperPressed) {
             rightBumperHeld = false;
@@ -372,6 +360,7 @@ public class OmniTeleOp extends OpMode {
         robot.performStowing();
         robot.performEjecting();
         robot.performAligning();
+        robot.performExtendingIntake();
         robot.performCapstone();
         robot.performGrabbing();
         robot.performAcceleration();
@@ -385,7 +374,6 @@ public class OmniTeleOp extends OpMode {
         }
 
 		telemetry.addData("Lift Target Height: ", robot.liftTargetHeight);
-        telemetry.addData("Intake Target: ", robot.intakeTargetPosition);
         telemetry.addData("Stack Distance: ", robot.stackWallDistance);
         telemetry.addData("Offset Angle: ", driverAngle);
         telemetry.addData("Acceleration State: ", robot.accelerationState);

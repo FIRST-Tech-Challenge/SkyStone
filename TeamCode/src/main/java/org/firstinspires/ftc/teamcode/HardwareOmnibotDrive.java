@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.os.SystemClock;
+
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -10,6 +12,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.openftc.revextensions2.ExpansionHubMotor;
+
+import org.firstinspires.ftc.teamcode.RobotUtilities.MovementVars;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.atan2;
@@ -59,6 +63,35 @@ public class HardwareOmnibotDrive
 
     /* Constructor */
     public HardwareOmnibotDrive(){
+    }
+
+    /* Initialize standard Hardware interfaces */
+    public void init(HardwareMap ahwMap) {
+        // Save reference to Hardware map
+        hwMap = ahwMap;
+
+        // Define and Initialize Motors
+        frontLeft = (ExpansionHubMotor) hwMap.dcMotor.get(FRONT_LEFT_MOTOR);
+        frontRight = (ExpansionHubMotor) hwMap.dcMotor.get(FRONT_RIGHT_MOTOR);
+        rearLeft = (ExpansionHubMotor) hwMap.dcMotor.get(REAR_LEFT_MOTOR);
+        rearRight = (ExpansionHubMotor) hwMap.dcMotor.get(REAR_RIGHT_MOTOR);
+
+
+        frontLeft.setDirection(DcMotor.Direction.FORWARD);
+        frontRight.setDirection(DcMotor.Direction.FORWARD);
+        rearLeft.setDirection(DcMotor.Direction.FORWARD);
+        rearRight.setDirection(DcMotor.Direction.FORWARD);
+
+        // Set all motors to zero power
+        setAllDriveZero();
+
+        frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rearLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rearRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        resetDriveEncoders();
+
+        initIMU();
     }
 
     public void setInputShaping(boolean inputShapingEnabled) {
@@ -195,13 +228,6 @@ public class HardwareOmnibotDrive
             if (inputShaping) {
                 valueOut = aValue * Math.pow(valueIn, 3) + (1 - aValue) * valueIn;
                 valueOut = Math.copySign(Math.max(MIN_DRIVE_RATE, Math.abs(valueOut)), valueOut);
-//                if(Math.abs(valueOut) < MIN_DRIVE_RATE) {
-//                    if(valueOut < 0) {
-//                        valueOut = -MIN_DRIVE_RATE;
-//                    } else {
-//                        valueOut = MIN_DRIVE_RATE;
-//                    }
-//                }
             } else {
                 valueOut = valueIn;
             }
@@ -220,13 +246,6 @@ public class HardwareOmnibotDrive
             if (inputShaping) {
                 valueOut = aValue * Math.pow(valueIn, 3) + (1 - aValue) * valueIn;
                 valueOut = Math.copySign(Math.max(MIN_SPIN_RATE, Math.abs(valueOut)), valueOut);
-//                if(Math.abs(valueOut) < MIN_SPIN_RATE) {
-//                    if(valueOut < 0) {
-//                        valueOut = -MIN_SPIN_RATE;
-//                    } else {
-//                        valueOut = MIN_SPIN_RATE;
-//                    }
-//                }
             } else {
                 valueOut = valueIn;
             }
@@ -273,33 +292,44 @@ public class HardwareOmnibotDrive
         rearRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
-    /* Initialize standard Hardware interfaces */
-    public void init(HardwareMap ahwMap) {
-        // Save reference to Hardware map
-        hwMap = ahwMap;
+    // Odometry updates
+    private long lastUpdateTime = 0;
 
-        // Define and Initialize Motors
-        frontLeft = (ExpansionHubMotor) hwMap.dcMotor.get(FRONT_LEFT_MOTOR);
-        frontRight = (ExpansionHubMotor) hwMap.dcMotor.get(FRONT_RIGHT_MOTOR);
-        rearLeft = (ExpansionHubMotor) hwMap.dcMotor.get(REAR_LEFT_MOTOR);
-        rearRight = (ExpansionHubMotor) hwMap.dcMotor.get(REAR_RIGHT_MOTOR);
+    /**converts movement_y, movement_x, movement_turn into motor powers */
+    public void ApplyMovement() {
+        long currTime = SystemClock.uptimeMillis();
+        if(currTime - lastUpdateTime < 16){
+            return;
+        }
+        lastUpdateTime = currTime;
 
+        double tl_power_raw = MovementVars.movement_y-MovementVars.movement_turn+MovementVars.movement_x*1.5;
+        double bl_power_raw = MovementVars.movement_y-MovementVars.movement_turn-MovementVars.movement_x*1.5;
+        double br_power_raw = -MovementVars.movement_y-MovementVars.movement_turn-MovementVars.movement_x*1.5;
+        double tr_power_raw = -MovementVars.movement_y-MovementVars.movement_turn+MovementVars.movement_x*1.5;
 
-        frontLeft.setDirection(DcMotor.Direction.FORWARD);
-        frontRight.setDirection(DcMotor.Direction.FORWARD);
-        rearLeft.setDirection(DcMotor.Direction.FORWARD);
-        rearRight.setDirection(DcMotor.Direction.FORWARD);
+        //find the maximum of the powers
+        double maxRawPower = Math.abs(tl_power_raw);
+        if(Math.abs(bl_power_raw) > maxRawPower){ maxRawPower = Math.abs(bl_power_raw);}
+        if(Math.abs(br_power_raw) > maxRawPower){ maxRawPower = Math.abs(br_power_raw);}
+        if(Math.abs(tr_power_raw) > maxRawPower){ maxRawPower = Math.abs(tr_power_raw);}
 
-        // Set all motors to zero power
-        setAllDriveZero();
+        //if the maximum is greater than 1, scale all the powers down to preserve the shape
+        double scaleDownAmount = 1.0;
+        if(maxRawPower > 1.0){
+            //when max power is multiplied by this ratio, it will be 1.0, and others less
+            scaleDownAmount = 1.0/maxRawPower;
+        }
+        tl_power_raw *= scaleDownAmount;
+        bl_power_raw *= scaleDownAmount;
+        br_power_raw *= scaleDownAmount;
+        tr_power_raw *= scaleDownAmount;
 
-        frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rearLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rearRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        resetDriveEncoders();
-
-        initIMU();
+        //now we can set the powers ONLY IF THEY HAVE CHANGED TO AVOID SPAMMING USB COMMUNICATIONS
+        frontLeft.setPower(tl_power_raw);
+        rearLeft.setPower(bl_power_raw);
+        rearRight.setPower(br_power_raw);
+        frontRight.setPower(tr_power_raw);
     }
 }
 

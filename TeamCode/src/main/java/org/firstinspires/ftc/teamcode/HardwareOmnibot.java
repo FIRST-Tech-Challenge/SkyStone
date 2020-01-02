@@ -21,6 +21,12 @@ import java.util.List;
  */
 public class HardwareOmnibot extends HardwareOmnibotDrive
 {
+    public enum ExtendIntakeActivities {
+        IDLE,
+        GOTO_LIMIT_SWITCH,
+        MAX_EXTEND
+    }
+
     public enum StackActivities {
         IDLE,
         LIFT,
@@ -86,7 +92,6 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public enum ReleaseActivity {
         IDLE,
         LOWER_TO_RELEASE
-//        RELEASE_STONE
     }
 
     public enum StowActivity {
@@ -100,9 +105,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 
     public enum EjectActivity {
         IDLE,
-        EJECT,
-        RESET,
-        STOPPING
+        EJECT
     }
 
     public enum CapstoneActivity {
@@ -118,62 +121,6 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         RELEASING_CAPSTONE,
         LOWERING_TO_STONE
     }
-
-    public static int MAX_EXTENSION = 2375;
-    public enum IntakePosition {
-        RETRACTED(7),
-		CAPSTONE(425),
-		SPINMIN(1670),
-		EJECT(2161),
-		EXTENDED(MAX_EXTENSION);
-        private final int encoderCount;
-
-        IntakePosition(int encoderCount)
-		{
-			this.encoderCount = encoderCount;
-		}
-
-        public int getEncoderCount()
-		{
-			return encoderCount;
-		}
-
-		public static IntakePosition moveIn(IntakePosition currentPosition)
-		{
-			switch(currentPosition)
-			{
-				case RETRACTED:
-				case CAPSTONE:
-					return RETRACTED;
-				case SPINMIN:
-					return CAPSTONE;
-				case EJECT:
-					return SPINMIN;
-				case EXTENDED:
-					return EJECT;
-				default:
-					return currentPosition;
-			}
-		}
-
-		public static IntakePosition moveOut(IntakePosition currentPosition)
-		{
-			switch(currentPosition)
-			{
-				case RETRACTED:
-					return CAPSTONE;
-				case CAPSTONE:
-					return SPINMIN;
-				case SPINMIN:
-					return EJECT;
-				case EJECT:
-				case EXTENDED:
-					return EXTENDED;
-				default:
-					return currentPosition;
-			}
-		}
-	}
 
     public static int MAX_LIFT = 2800;
     public enum LiftPosition {
@@ -377,7 +324,6 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 	public static double LIFT_MAX_SPEED = 1.0;
 	public static double LIFT_MID_SPEED = 0.4;
 	public static double LIFT_MIN_SPEED = 0.2;
-	public static double EXTEND_SPEED = 1.0;
     public static double RIGHT_FINGER_DOWN = 0.32;
     public static double LEFT_FINGER_DOWN = 0.82;
     public static double RIGHT_FINGER_UP = 0.89;
@@ -392,6 +338,8 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public static int CLAW_ROTATE_BACK_TIME = 1000;
     public static int CLAW_ROTATE_CAPSTONE_TIME = 500;
     public static int CLAW_ROTATE_FRONT_TIME = 1000;
+    public static int MAX_EXTEND_TIME = 300;
+    public static int EJECT_EXTEND_TIME = 700;
     public static int FINGER_ROTATE_TIME = 500;
 	private static int ENCODER_ERROR = 15;
     RevBulkData bulkDataHub1;
@@ -403,16 +351,12 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     ExpansionHubEx expansionHub2;
 
     // Variables to store auto to teleop data.
-    public static IntakePosition finalAutoIntakePosition = IntakePosition.RETRACTED;
     public static int finalAutoLiftZero = 0;
-    public static int finalAutoIntakeZero = 0;
 
 	// The OpMode set target height for the lift to go.
     public LiftPosition liftTargetHeight = LiftPosition.STONE1;
     // The height the activity was activated to achieve
 	private LiftPosition liftActivityTargetHeight = LiftPosition.STONE1;
-	public IntakePosition intakePosition = IntakePosition.RETRACTED;
-	public IntakePosition intakeTargetPosition = IntakePosition.RETRACTED;
 
     // Robot Controller Config Strings
     public final static String RIGHT_FINGER = "RightFinger";
@@ -459,6 +403,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     private ElapsedTime fingerTimer;
     private ElapsedTime settleTimer;
     private ElapsedTime clawdricopterTimer;
+    private ElapsedTime intakeExtendTimer;
     public LiftActivity liftState = LiftActivity.IDLE;
     public ReleaseActivity releaseState = ReleaseActivity.IDLE;
     public StowActivity stowState = StowActivity.IDLE;
@@ -470,13 +415,12 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public CapstoneActivity capstoneState = CapstoneActivity.IDLE;
     public FoundationActivities removeFoundation = FoundationActivities.IDLE;
     public StackActivities stackStone = StackActivities.IDLE;
+    public ExtendIntakeActivities extendState = ExtendIntakeActivities.IDLE;
     private boolean clawPinched = false;
     private boolean clawdricopterBack = false;
     protected int liftZero = 0;
-    protected int intakeZero = 0;
-    public double intakePower = 0.0;
-    protected boolean intakeZeroUpdated = false;
     protected boolean stowingLift = false;
+    protected double intakePower = 0.0;
 
     protected double stackWallDistance = 0.0;
     protected double stackBackRightFoundationDistance = 0.0;
@@ -489,7 +433,6 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 	protected boolean backLeftTofRead = false;
     protected boolean backTofRead = false;
 	protected int lifterEncoderValue = 0;
-	protected int extenderEncoderValue = 0;
 	protected double leftTofValue = 0.0;
 	protected double rightTofValue = 0.0;
 	protected double backRightTofValue = 0.0;
@@ -561,6 +504,35 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         leftFinger.setPosition(LEFT_FINGER_UP);
     }
 
+    public boolean startExtendingIntake() {
+        boolean isExtending = false;
+        if(extendState == ExtendIntakeActivities.IDLE) {
+            extendState = ExtendIntakeActivities.GOTO_LIMIT_SWITCH;
+            extender.setPower(1.0);
+        }
+
+        return isExtending;
+    }
+
+    public void performExtendingIntake() {
+        switch(extendState) {
+            case GOTO_LIMIT_SWITCH:
+                // Go to the limit switch, meaning mostly extended.
+                if(intakeExtended()) {
+                    intakeExtendTimer.reset();
+                    extendState = ExtendIntakeActivities.MAX_EXTEND;
+                }
+                break;
+            case MAX_EXTEND:
+                if(intakeExtendTimer.milliseconds() >= MAX_EXTEND_TIME) {
+                    extendState = ExtendIntakeActivities.IDLE;
+                }
+                break;
+            case IDLE:
+                break;
+        }
+    }
+
     public boolean startCapstone() {
         boolean isCapping;
         if(capstoneState == CapstoneActivity.IDLE) {
@@ -570,7 +542,9 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
             } else {
                 isCapping = true;
                 // Extend the intake to make sure it isn't in the way.
-                moveIntake(IntakePosition.EXTENDED);
+                if(!intakeExtended()) {
+                    startExtendingIntake();
+                }
                 // We don't want the intake spinning while we are trying to lift the stone.
                 // stopIntake();
                 capstoneState = CapstoneActivity.CLEARING_LIFT;
@@ -645,7 +619,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                 }
                 break;
             case CLEARING_LIFT:
-                if(intakeAtPosition(IntakePosition.EXTENDED)) {
+                if(intakeExtended()) {
                     capstoneState = CapstoneActivity.LIFTING_TO_GRAB;
                     moveLift(LiftPosition.CAPSTONE_ROTATE);
                 }
@@ -664,7 +638,9 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
             } else {
                 isLifting = true;
                 // Extend the intake to make sure it isn't in the way.
-                moveIntake(IntakePosition.EXTENDED);
+                if(!intakeExtended()) {
+                    startExtendingIntake();
+                }
 
                 // We don't want the intake spinning while we are trying to lift the stone.
                 stopIntake();
@@ -737,12 +713,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 				}
 			    break;
             case CLEARING_LIFT:
-                if(!(intakePosition == IntakePosition.EXTENDED)) {
-                    if (intakeAtPosition(IntakePosition.EXTENDED)) {
-                        liftState = LiftActivity.LOWERING_TO_GRAB;
-                        moveLift(LiftPosition.GRABBING);
-                    }
-                } else {
+                if(intakeExtended()) {
                     liftState = LiftActivity.LOWERING_TO_GRAB;
                     moveLift(LiftPosition.GRABBING);
                 }
@@ -820,7 +791,9 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                 stowingLift = true;
 
                 // Extend the intake to make sure it isn't in the way.
-                moveIntake(IntakePosition.EXTENDED);
+                if(!intakeExtended()) {
+                    startExtendingIntake();
+                }
 
                 // We don't want the intake spinning while we are trying to stow the
                 // lift.
@@ -900,7 +873,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                 }
                 break;
             case CLEARING_LIFT:
-			    if(intakeAtPosition(IntakePosition.EXTENDED)) {
+			    if(intakeExtended()) {
                     stowState = StowActivity.OPENING_CLAW;
                 }
                 break;
@@ -908,35 +881,6 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 		    default:
 			    break;
         }
-    }
-
-    // Maybe we will eventually get this virtual limit switch working.
-    public boolean maxExtensionSetZero() {
-        boolean maxExtended = false;
-        // Have to make sure it is trying to extend fully.
-        moveIntake(IntakePosition.EXTENDED);
-        double extenderCurrentVelocity = extender.getVelocity();
-        int intakeCurrentPosition = getIntakePosition();
-
-        // The motor is stalled or we have finished
-        if(extenderCurrentVelocity < 250) {
-            int newZero = intakeCurrentPosition - MAX_EXTENSION;
-            // We have reached target
-            if(Math.abs(newZero) <= ENCODER_ERROR) {
-                maxExtended = true;
-            } else {
-                // We missed our target
-                maxExtended = false;
-                setIntakeZero(newZero);
-                moveIntake(IntakePosition.EXTENDED);
-            }
-
-        } else {
-            // We are still running to position
-            maxExtended = false;
-        }
-
-        return maxExtended;
     }
 
     public boolean distanceFromWall(RobotSide side, double distance, double driveSpeed, double error) {
@@ -1410,7 +1354,8 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         if (ejectState == EjectActivity.IDLE) {
             ejectState = EjectActivity.EJECT;
             startIntake(true);
-            moveIntake(IntakePosition.EJECT);
+            extender.setPower(-1.0);
+            intakeExtendTimer.reset();
         }
     }
 
@@ -1418,20 +1363,12 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         switch(ejectState)
         {
             case EJECT:
-                if(intakeAtPosition(IntakePosition.EJECT)) {
-                    ejectState = EjectActivity.RESET;
+                if(intakeExtendTimer.milliseconds() > EJECT_EXTEND_TIME) {
                     startIntake(false);
-                    moveIntake(IntakePosition.EXTENDED);
+                    startExtendingIntake();
                 }
-                break;
-            case RESET:
-                if(intakeAtPosition(IntakePosition.EXTENDED)) {
-                    ejectState = EjectActivity.IDLE;
-                }
-                break;
-            case STOPPING:
-                ejectState = EjectActivity.IDLE;
             case IDLE:
+                break;
             default:
                 break;
         }
@@ -1445,30 +1382,8 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         liftTargetHeight = LiftPosition.removeStone(liftTargetHeight);
     }
 
-    public void intakeOut() {
-        intakeTargetPosition = IntakePosition.moveOut(intakeTargetPosition);
-    }
-
-    public void intakeIn() {
-        intakeTargetPosition = IntakePosition.moveIn(intakeTargetPosition);
-    }
-
-    public void moveIntake(IntakePosition targetIntakePosition) {
-		if((targetIntakePosition != intakePosition) || (intakeZeroUpdated)) {
-		    int targetPosition = targetIntakePosition.getEncoderCount();
-		    // Make sure the intake isn't spinning if we retract too far.
-		    if(targetPosition < IntakePosition.SPINMIN.getEncoderCount()) {
-		        stopIntake();
-            }
-            setIntakePosition(targetPosition);
-            extender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            extender.setPower(EXTEND_SPEED);
-			intakePosition = targetIntakePosition;
-		}
-    }
-
     public void moveLift(LiftPosition targetHeight) {
-        if(getIntakePosition() >= IntakePosition.CAPSTONE.getEncoderCount()) {
+        if(intakeExtended()) {
             int liftPosition = getLifterPosition();
             int targetPosition = targetHeight.getEncoderCount();
             double lifterSpeed;
@@ -1489,21 +1404,19 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 
     public void startIntake(boolean reverse) {
         // Prevent the intake from starting if it isn't extended far enough.
-        if(getIntakePosition() >= IntakePosition.SPINMIN.getEncoderCount()) {
-            if (reverse) {
-                if(intakePower != OUTAKE_SPEED) {
-                    stopIntake();
-                    intakePower = OUTAKE_SPEED;
-                    leftIntake.setPower(intakePower);
-                    rightIntake.setPower(intakePower);
-                }
-            } else {
-                if(intakePower != INTAKE_SPEED) {
-                    stopIntake();
-                    intakePower = INTAKE_SPEED;
-                    leftIntake.setPower(intakePower);
-                    rightIntake.setPower(intakePower);
-                }
+        if (reverse) {
+            if(intakePower != OUTAKE_SPEED) {
+                stopIntake();
+                intakePower = OUTAKE_SPEED;
+                leftIntake.setPower(intakePower);
+                rightIntake.setPower(intakePower);
+            }
+        } else {
+            if(intakePower != INTAKE_SPEED) {
+                stopIntake();
+                intakePower = INTAKE_SPEED;
+                leftIntake.setPower(intakePower);
+                rightIntake.setPower(intakePower);
             }
         }
     }
@@ -1524,12 +1437,20 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         liftZero = value;
     }
 
-    public int getLifterAbsoluteEncoder() {
-        if(!hub2Read) {
-            bulkDataHub2 = expansionHub2.getBulkInputData();
-            hub2Read = true;
+    public boolean intakeExtended() {
+        if(!hub1Read) {
+            bulkDataHub1 = expansionHub1.getBulkInputData();
+            hub1Read = true;
         }
-        lifterEncoderValue = bulkDataHub2.getMotorCurrentPosition(lifter);
+        return bulkDataHub1.getDigitalInputState(7);
+    }
+
+    public int getLifterAbsoluteEncoder() {
+        if(!hub1Read) {
+            bulkDataHub1 = expansionHub1.getBulkInputData();
+            hub1Read = true;
+        }
+        lifterEncoderValue = bulkDataHub1.getMotorCurrentPosition(lifter);
 
         return lifterEncoderValue;
     }
@@ -1542,35 +1463,6 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 
     public void setLifterPosition(int targetPosition) {
         lifter.setTargetPosition(targetPosition + liftZero);
-    }
-
-	public boolean intakeAtPosition(IntakePosition targetPosition) {
-		return Math.abs(getIntakePosition() - targetPosition.getEncoderCount()) < ENCODER_ERROR;
-	}
-
-    public void setIntakeZero(int value) {
-        intakeZeroUpdated = true;
-        intakeZero = value;
-    }
-
-    public int getIntakeAbsoluteEncoder() {
-        if(!hub1Read) {
-            bulkDataHub1 = expansionHub1.getBulkInputData();
-            hub1Read = true;
-        }
-        extenderEncoderValue = bulkDataHub1.getMotorCurrentPosition(extender);
-
-        return extenderEncoderValue;
-    }
-
-    public int getIntakePosition() {
-        getIntakeAbsoluteEncoder();
-
-        return extenderEncoderValue - intakeZero;
-    }
-
-    public void setIntakePosition(int targetPosition) {
-		extender.setTargetPosition(targetPosition + intakeZero);
     }
 
     public double readLeftTof() {
@@ -1622,20 +1514,20 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public void init(HardwareMap ahwMap) {
         // Save reference to Hardware map
         super.init(ahwMap);
-        // FrontLeft, FrontRight, Extender, LeftIntake
+        // Motor: Lifter, RightIntake, Extender, LeftIntake
+        // Encoder: Lifter, LeftEncoder, CenterEncoder, RightEncoder
         expansionHub1 = hwMap.get(ExpansionHubEx.class, HUB1);
-        // RearRight, RearLeft, Lifter, RightIntake
+        // RearRight, RearLeft, FrontLeft, FrontRight
         expansionHub2 = hwMap.get(ExpansionHubEx.class, HUB2);
 
         // Copy the end results of auto to begin teleop.
-        setIntakeZero(-finalAutoIntakeZero);
-        intakePosition = finalAutoIntakePosition;
         setLiftZero(-finalAutoLiftZero);
 
         clawTimer = new ElapsedTime();
         clawdricopterTimer = new ElapsedTime();
         fingerTimer = new ElapsedTime();
         settleTimer = new ElapsedTime();
+        intakeExtendTimer = new ElapsedTime();
         rightFinger = hwMap.get(Servo.class, RIGHT_FINGER);
         leftFinger = hwMap.get(Servo.class, LEFT_FINGER);
         claw = hwMap.get(Servo.class, CLAW);
@@ -1671,8 +1563,11 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         // Set motor encoder usage
         // Lifter encoder allows us to go to specific heights.
         lifter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        // Extender encoder allows us to extend to specific positions.
-        extender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        // Without encoder makes the motor run faster, and we are using a limit
+        // switch to determine position.
+        extender.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         // The intake should just run as fast as it can.
         leftIntake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightIntake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -1682,7 +1577,6 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         int encoderCount = lifter.getCurrentPosition();
 
         lifter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        extender.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         while((encoderCount != 0) && (sleepTime < 1000)) {
             try {
@@ -1693,7 +1587,6 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         }
 
         lifter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        extender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         // Set the stop mode
         lifter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         extender.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

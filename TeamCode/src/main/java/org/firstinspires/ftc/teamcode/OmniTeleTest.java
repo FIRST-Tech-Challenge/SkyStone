@@ -104,7 +104,6 @@ public class OmniTeleTest extends OmniAutoClass {
     private double collectPower;
     private boolean reverse = false;
     private boolean spinning = false;
-    private HardwareOmnibot.IntakePosition intakePosition = HardwareOmnibot.IntakePosition.RETRACTED;
     private boolean doneExtending = true;
     private boolean clawOpen = true;
     private boolean clawFront = true;
@@ -366,7 +365,6 @@ public class OmniTeleTest extends OmniAutoClass {
             telemetry.addData("Back Left TOF: ", backLeftTof);
             telemetry.addData("Back Right TOF: ", backRightTof);
             telemetry.addData("Lift Target Height: ", robot.liftTargetHeight.toString());
-            telemetry.addData("Intake Target: ", robot.intakeTargetPosition.toString());
             telemetry.addData("Lift State: ", robot.liftState);
             telemetry.addData("Release State: ", robot.releaseState);
             telemetry.addData("Stow State: ", robot.stowState);
@@ -384,7 +382,6 @@ public class OmniTeleTest extends OmniAutoClass {
             telemetry.addData("Rear Right Encoder: ", robot.rearRight.getCurrentPosition());
             telemetry.addData("Lifter Encoder: ", robot.lifter.getCurrentPosition());
             telemetry.addData("Extender Encoder: ", robot.extender.getCurrentPosition());
-            telemetry.addData("Intake Zero: ", robot.intakeZero);
             telemetry.addData("Claw Front: ", clawFront);
             telemetry.addData("Claw Open: ", clawOpen);
             telemetry.addData("Claw Position: ", clawPosition);

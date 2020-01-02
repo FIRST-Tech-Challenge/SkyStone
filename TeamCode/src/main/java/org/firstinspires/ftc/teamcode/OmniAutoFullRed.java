@@ -102,14 +102,14 @@ public class OmniAutoFullRed extends OmniAutoClass
             case 1:
                 // Start moving intake out, should be done when done driving.
                 robot.moveLift(HardwareOmnibot.LiftPosition.STOWED);
-                robot.moveIntake(HardwareOmnibot.IntakePosition.EXTENDED);
+                robot.startExtendingIntake();
 //                driveAtHeadingForTime(0.3, 0.1, 90.0, 0.0, 1100, true);
 //                driveAtHeadingForTime(0.3, 0.1, 180.0, 0.0, 700, true);
 //                rotateRobotToAngle(0.3, 40, 2000);
 
                 // Make sure the intake is out.
                 timeout = 0;
-                while(!robot.intakeAtPosition(HardwareOmnibot.IntakePosition.EXTENDED) && timeout < 100) {
+                while(!robot.intakeExtended() && timeout < 100) {
                     robot.resetReads();
                     timeout++;
                     sleep(20);
@@ -149,19 +149,17 @@ public class OmniAutoFullRed extends OmniAutoClass
 
                 // Retract the intake.
                 robot.stopIntake();
-                robot.moveIntake(HardwareOmnibot.IntakePosition.RETRACTED);
-                sleep(5000);
                 break;
             case 2:
                 // Start moving intake out, should be done when done driving.
                 robot.moveLift(HardwareOmnibot.LiftPosition.STOWED);
-                robot.moveIntake(HardwareOmnibot.IntakePosition.EXTENDED);
+                robot.startExtendingIntake();
 //                driveAtHeadingForTime(0.3, 0.1, 90.0, 0.0, 1100, true);
 //                rotateRobotToAngle(0.3, 40, 2000);
 
                 // Make sure the intake is out.
                 timeout = 0;
-                while(!robot.intakeAtPosition(HardwareOmnibot.IntakePosition.EXTENDED) && timeout < 100) {
+                while(!robot.intakeExtended() && timeout < 100) {
                     robot.resetReads();
                     timeout++;
                     sleep(20);
@@ -201,20 +199,19 @@ public class OmniAutoFullRed extends OmniAutoClass
 
                 // Retract the intake.
                 robot.stopIntake();
-                robot.moveIntake(HardwareOmnibot.IntakePosition.RETRACTED);
                 sleep(5000);
                 break;
             case 3:
                 // Start moving intake out, should be done when done driving.
                 robot.moveLift(HardwareOmnibot.LiftPosition.STOWED);
-                robot.moveIntake(HardwareOmnibot.IntakePosition.EXTENDED);
+                robot.startExtendingIntake();
 //                driveAtHeadingForTime(0.3, 0.1, 90.0, 0.0, 1100, true);
 //                driveAtHeadingForTime(0.3, 0.1, 0.0, 0.0, 600, true);
 //                rotateRobotToAngle(0.3, 40, 2000);
 
                 // Make sure the intake is out.
                 timeout = 0;
-                while(!robot.intakeAtPosition(HardwareOmnibot.IntakePosition.EXTENDED) && timeout < 100) {
+                while(!robot.intakeExtended() && timeout < 100) {
                     robot.resetReads();
                     timeout++;
                     sleep(20);
@@ -254,8 +251,6 @@ public class OmniAutoFullRed extends OmniAutoClass
 
                 // Retract the intake.
                 robot.stopIntake();
-                robot.moveIntake(HardwareOmnibot.IntakePosition.RETRACTED);
-                sleep(5000);
                 break;
             default:
                 break;

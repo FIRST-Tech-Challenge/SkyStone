@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Maccabot;
@@ -18,18 +19,28 @@ public class MainTeleOp extends OpMode {
 
     private Servo servo;
     private double encoder;
+    private Servo chad;
 
     public void init() {
         robot = new Maccabot(this);
         robot.initializeRobot();
         servo = hardwareMap.servo.get("servo");
         encoder = 0;
+        chad = hardwareMap.servo.get("chad");
     }
 
     public void loop() {
         robot.mecanumDrive(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
         robot.intake(gamepad2.left_stick_y);
         robot.servo(gamepad2.right_stick_y);
+        if (gamepad2.a){
+            chad.setPosition(-13);
+            chad.setPosition(0);
+        }
+        if (gamepad2.b){
+            chad.setPosition(10);
+            chad.setPosition(0);
+        }
 
         robot.lift(gamepad2.left_trigger,gamepad2.right_trigger);
     }

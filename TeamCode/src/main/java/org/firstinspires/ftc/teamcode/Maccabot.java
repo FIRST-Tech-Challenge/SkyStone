@@ -19,7 +19,8 @@ public class Maccabot {
     // Drive Motor Variables
     private DcMotor front_left, front_right, back_left, back_right, intake_left, intake_right, lift_left, lift_right;
     private Servo servo;
-    private CRServo claw;
+    private CRServo rack;
+    private Servo chad;
 
     // Intake Motors TBD
     // private DcMotor intake_left, intake_right;
@@ -41,7 +42,8 @@ public class Maccabot {
         lift_left = hardwareMap.dcMotor.get("lift_left");
         lift_right = hardwareMap.dcMotor.get("lift_right");
         servo = hardwareMap.servo.get("servo");
-        claw = hardwareMap.crservo.get("bob");
+        rack = hardwareMap.crservo.get("bob");
+        chad = hardwareMap.servo.get("chad");
 
         encoder = 0;
 
@@ -102,8 +104,11 @@ public class Maccabot {
     }
 
     public void servo( double cond1){
-        claw.setPower(cond1);
+        rack.setPower(cond1);
     }
+   // public void chad(int cond1){
+    //    if ()
+    //    }
 
     public void lift(double cond1, double cond2){
 

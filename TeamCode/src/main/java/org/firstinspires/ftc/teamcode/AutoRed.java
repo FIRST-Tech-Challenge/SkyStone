@@ -228,7 +228,7 @@ public class AutoRed extends LinearOpMode {
                 robot.setpower0();
                 telemetry.addData("target detected?", targetVisible);
                 telemetry.update();
-                Thread.sleep(200);
+                Thread.sleep(400);
 
             }
 

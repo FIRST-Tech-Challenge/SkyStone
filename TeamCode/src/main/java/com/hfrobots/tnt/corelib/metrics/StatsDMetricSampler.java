@@ -21,20 +21,23 @@ package com.hfrobots.tnt.corelib.metrics;
 
 import android.util.Log;
 
-import com.hfrobots.tnt.corelib.Constants;
 import com.hfrobots.tnt.corelib.control.NinjaGamePad;
 import com.hfrobots.tnt.corelib.control.OnOffButton;
 import com.hfrobots.tnt.corelib.control.RangeInput;
 import com.hfrobots.tnt.corelib.metrics.sources.DcMotorCurrentMetricSource;
 import com.hfrobots.tnt.corelib.metrics.sources.DcMotorPowerMetricSource;
+import com.hfrobots.tnt.corelib.metrics.sources.DigitalChannelMetricSource;
 import com.hfrobots.tnt.corelib.metrics.sources.MotorVelocityMetricSource;
 import com.hfrobots.tnt.corelib.metrics.sources.OnOffButtonMetricSource;
 import com.hfrobots.tnt.corelib.metrics.sources.RangeInputMetricSource;
+import com.hfrobots.tnt.corelib.metrics.sources.ServoMetricSource;
 import com.hfrobots.tnt.corelib.metrics.sources.Voltage12VMetricSource;
 import com.hfrobots.tnt.corelib.metrics.sources.Voltage5VMetricSource;
 import com.hfrobots.tnt.util.NamedDeviceMap;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.timgroup.statsd.NonBlockingStatsDClient;
 
 import org.openftc.revextensions2.ExpansionHubEx;
@@ -44,6 +47,8 @@ import java.util.List;
 import java.util.Set;
 
 import lombok.NonNull;
+
+import static com.hfrobots.tnt.corelib.Constants.LOG_TAG;
 
 public class StatsDMetricSampler implements MetricsSampler {
     private final Set<GaugeMetricSource> gaugeSources = new LinkedHashSet<>();
@@ -95,7 +100,7 @@ public class StatsDMetricSampler implements MetricsSampler {
             statsDClient.gauge("metric_sample_time_ms", (endSamplingTimeMs - beginSamplingTimeMs));
         } catch (Throwable t) {
             // metrics should do no harm
-            Log.e(Constants.LOG_TAG, "Caught exception while sampling for metrics", t);
+            Log.e(LOG_TAG, "Caught exception while sampling for metrics", t);
         }
     }
 
@@ -108,6 +113,8 @@ public class StatsDMetricSampler implements MetricsSampler {
         addDcMotors();
         addDcMotorCurrents();
         addVoltages();
+        addDigitalChannels();
+        addServos();
     }
 
     @Override
@@ -178,6 +185,24 @@ public class StatsDMetricSampler implements MetricsSampler {
             addSource(metricSource);
 
             metricSource = new Voltage12VMetricSource(hub);
+            addSource(toInterestingValues(metricSource));
+        }
+    }
+
+    private void addDigitalChannels() {
+        List<NamedDeviceMap.NamedDevice<DigitalChannel>> allDigitalChannels = namedDeviceMap.getAll(DigitalChannel.class);
+
+        for (NamedDeviceMap.NamedDevice<DigitalChannel> namedDigitalChannel : allDigitalChannels) {
+            GaugeMetricSource metricSource = new DigitalChannelMetricSource(namedDigitalChannel);
+            addSource(toInterestingValues(metricSource));
+        }
+    }
+
+    private void addServos() {
+        List<NamedDeviceMap.NamedDevice<Servo>> allServos = namedDeviceMap.getAll(Servo.class);
+
+        for (NamedDeviceMap.NamedDevice<Servo> namedServo : allServos) {
+            GaugeMetricSource metricSource = new ServoMetricSource(namedServo);
             addSource(toInterestingValues(metricSource));
         }
     }

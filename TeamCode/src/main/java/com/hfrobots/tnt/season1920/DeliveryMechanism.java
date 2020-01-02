@@ -30,6 +30,7 @@ import com.hfrobots.tnt.corelib.control.RangeInput;
 import com.hfrobots.tnt.corelib.drive.ExtendedDcMotor;
 import com.hfrobots.tnt.corelib.drive.NinjaMotor;
 import com.hfrobots.tnt.corelib.drive.PidController;
+import com.hfrobots.tnt.corelib.drive.ServoUtil;
 import com.hfrobots.tnt.corelib.drive.StallDetector;
 import com.hfrobots.tnt.corelib.state.State;
 import com.hfrobots.tnt.corelib.state.StopwatchDelayState;
@@ -114,6 +115,8 @@ public class DeliveryMechanism {
         this.ticker = ticker;
 
         shoulderServo = hardwareMap.get(Servo.class, "shoulderServo");
+        ServoUtil.setupPwmForRevSmartServo(shoulderServo);
+
         wristServo = hardwareMap.get(Servo.class, "wristServo");
         fingerServo = hardwareMap.get(Servo.class, "fingerServo");
 

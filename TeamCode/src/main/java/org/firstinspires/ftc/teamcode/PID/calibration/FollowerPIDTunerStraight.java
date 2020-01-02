@@ -16,19 +16,19 @@ import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveREV;
  * drives in a DISTANCE-by-DISTANCE square indefinitely.
  */
 @Config
-@Autonomous(name = "FollowerPIDTuner", group = "drive")
+@Autonomous(name = "FollowerPIDTunerStraight", group = "drive")
 //@Disabled
-public class FollowerPIDTuner extends LinearOpMode {
+public class FollowerPIDTunerStraight extends LinearOpMode {
     public static double DISTANCE = 0; // update later;
-    private String TAG = "FollowerPIDTuner";
+    private String TAG = "FollowerPIDTunerStraightsss";
 
     @Override
     public void runOpMode() throws InterruptedException {
         DriveConstantsPID.updateConstantsFromProperties();  // Transitional PID is used in base class;;
         DISTANCE = DriveConstantsPID.TEST_DISTANCE;
         SampleMecanumDriveBase drive = new SampleMecanumDriveREV(hardwareMap);
-
-        drive.setPoseEstimate(new Pose2d(DISTANCE / 2, DISTANCE / 2, 0));
+        drive.setBrakeonZeroPower(DriveConstantsPID.BRAKE_ON_ZERO);
+        drive.setPoseEstimate(new Pose2d(0, 0, 0));
 
         waitForStart();
 
@@ -41,8 +41,17 @@ public class FollowerPIDTuner extends LinearOpMode {
                             .forward(DISTANCE)
                             .build()
             );
-            RobotLog.dd(TAG, "turn: 90");
-            drive.turnSync(Math.toRadians(90));
+            RobotLog.dd(TAG, "move back: "+Double.toString(DISTANCE));
+            //drive.turnSync(Math.toRadians(90));
+            try{
+                Thread.sleep(500);
+            } catch(Exception e){}
+
+            drive.followTrajectorySync(
+                    drive.trajectoryBuilder()
+                            .back(DISTANCE)
+                            .build()
+            );
         }
     }
 }

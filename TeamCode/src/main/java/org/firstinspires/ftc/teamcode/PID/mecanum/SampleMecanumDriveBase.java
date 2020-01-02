@@ -20,6 +20,7 @@ import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 import com.acmerobotics.roadrunner.trajectory.constraints.MecanumConstraints;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.teamcode.PID.DriveConstantsPID;
@@ -68,6 +69,11 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
 
     public SampleMecanumDriveBase() {
         super(DriveConstantsPID.kV, DriveConstantsPID.kA, DriveConstantsPID.kStatic, TRACK_WIDTH);
+        RobotLog.dd(TAG, "kV "+Double.toString(DriveConstantsPID.kV)+" kA "+Double.toString(DriveConstantsPID.kA)+" kStatic "+Double.toString(DriveConstantsPID.kStatic));
+        RobotLog.dd(TAG, "TRACK_WIDTH "+Double.toString(DriveConstantsPID.TRACK_WIDTH));
+        RobotLog.dd(TAG, "txP "+Double.toString(DriveConstantsPID.txP)+" txI "+Double.toString(DriveConstantsPID.txI)+" txD "+Double.toString(DriveConstantsPID.txD));
+        RobotLog.dd(TAG, "tyP "+Double.toString(DriveConstantsPID.tyP)+" tyI "+Double.toString(DriveConstantsPID.tyI)+" tyD "+Double.toString(DriveConstantsPID.tyD));
+        RobotLog.dd(TAG, "hP "+Double.toString(DriveConstantsPID.hP)+" hI "+Double.toString(DriveConstantsPID.hI)+" hD "+Double.toString(DriveConstantsPID.hD));
 
         dashboard = FtcDashboard.getInstance();
         dashboard.setTelemetryTransmissionInterval(25);
@@ -93,6 +99,7 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
 
     public void turn(double angle) {
         double heading = getPoseEstimate().getHeading();
+        RobotLog.dd(TAG, "turn: current heading "+Double.toString(heading)+" angle "+Double.toString(angle));
         turnProfile = MotionProfileGenerator.generateSimpleMotionProfile(
                 new MotionState(heading, 0, 0, 0),
                 new MotionState(heading + angle, 0, 0, 0),
@@ -174,7 +181,8 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
                 double targetOmega = targetState.getV();
                 double targetAlpha = targetState.getA();
                 double correction = turnController.update(currentPose.getHeading(), targetOmega);
-
+                RobotLog.dd(TAG, "TURN: targetOmega "+Double.toString(targetOmega)+" targetAlpha "+Double.toString(targetAlpha));
+                RobotLog.dd(TAG, "correction "+Double.toString(correction));
                 setDriveSignal(new DriveSignal(new Pose2d(
                         0, 0, targetOmega + correction
                 ), new Pose2d(
@@ -215,6 +223,9 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
 
         dashboard.sendTelemetryPacket(packet);
     }
+    /// new function added;
+    public abstract List<Double> getMotorPowers(List<DcMotorEx> motors);
+    public abstract void setBrakeonZeroPower(boolean flag);
 
     public void waitForIdle() {
         while (!Thread.currentThread().isInterrupted() && isBusy()) {
@@ -241,6 +252,24 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
                 velocities.add(0.0);
             }
         }
+        String t="";
+        for (int i = 0; i < lastWheelPositions.size(); i ++)
+        {
+            t=t+Double.toString(lastWheelPositions.get(i)) + "\t";
+        }
+        RobotLog.dd(TAG,"last ts: "+Double.toString(lastTimestamp)+" last wheel position: "+t);
+        t="";
+        for (int i = 0; i < positions.size(); i ++)
+        {
+            t=t+Double.toString(positions.get(i)) + "\t";
+        }
+        RobotLog.dd(TAG,"current ts: "+Double.toString(currentTimestamp)+" current wheel position: "+t);
+        t="";
+        for (int i = 0; i < velocities.size(); i ++)
+        {
+            t=t+Double.toString(velocities.get(i)) + "\t";
+        }
+        RobotLog.dd(TAG, "velocity: "+t);
 
         lastTimestamp = currentTimestamp;
         lastWheelPositions = positions;
@@ -251,6 +280,25 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
     public abstract PIDCoefficients getPIDCoefficients(DcMotor.RunMode runMode);
 
     public abstract void setPIDCoefficients(DcMotor.RunMode runMode, PIDCoefficients coefficients);
+    public void print_list_double(List<Double> list){
+        //motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
+        for (int i = 0; i < list.size(); i ++)
+        {
+            String wheel_name="";
+            if (i==0)
+                wheel_name = "leftFront";
+            else if (i==1)
+                wheel_name = "leftRear";
+            else if (i==2)
+                wheel_name = "rightRear";
+            else if (i==3)
+                wheel_name = "rightFront";
+            else
+                wheel_name = "unexpected wheel name";
+
+            RobotLog.dd(TAG, wheel_name+"  " +Double.toString(list.get(i)));
+        }
+    }
 
     public static void drawSampledTrajectory(Trajectory trajectory) {
         FtcDashboard dashboard = FtcDashboard.getInstance();

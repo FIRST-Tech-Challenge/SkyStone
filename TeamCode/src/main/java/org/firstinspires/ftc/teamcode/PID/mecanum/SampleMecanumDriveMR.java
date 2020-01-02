@@ -6,8 +6,10 @@ import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsUsbDcMotorController;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.DifferentialControlLoopCoefficients;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,7 +32,7 @@ public class SampleMecanumDriveMR extends SampleMecanumDriveBase {
      * to decrease this number and increase your control loop frequency, do so at your own risk.
      */
     private static final int MOTOR_WRITE_DELAY = 20;
-
+    private String TAG = "SampleMecanumDriveMR";
     private DcMotor leftFront, leftRear, rightRear, rightFront;
     private List<DcMotor> motors;
     private BNO055IMU imu;
@@ -88,6 +90,10 @@ public class SampleMecanumDriveMR extends SampleMecanumDriveBase {
             ));
         }
     }
+    @Override
+    public void setBrakeonZeroPower(boolean flag) {
+        // TBD
+    }
 
     @NonNull
     @Override
@@ -98,7 +104,18 @@ public class SampleMecanumDriveMR extends SampleMecanumDriveBase {
         }
         return wheelPositions;
     }
+    @Override
+    public List<Double> getMotorPowers(List<DcMotorEx> motors) {
+        List<Double> wheelPowers = new ArrayList<>();
+        for (DcMotorEx motor : motors) {
+            double t = motor.getPower();
 
+            RobotLog.dd(TAG, "getMotorPowers: " + "power: " + Double.toString(t));
+
+            wheelPowers.add(t);
+        }
+        return wheelPowers;
+    }
     @Override
     public void setMotorPowers(double v, double v1, double v2, double v3) {
         leftFront.setPower(v);

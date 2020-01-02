@@ -345,7 +345,7 @@ public class Maccabot {
 
         back_left.setDirection(DcMotorSimple.Direction.REVERSE);
         back_right.setDirection(DcMotorSimple.Direction.REVERSE);
-        
+
 
         back_left.setPower(-power);
         back_left.setTargetPosition(pos);

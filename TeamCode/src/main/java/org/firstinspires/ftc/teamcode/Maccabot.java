@@ -65,6 +65,8 @@ public class Maccabot {
         lift_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         lift_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+
+
         // Drive Motors Shouldn't Drive
         front_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         front_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -107,7 +109,8 @@ public class Maccabot {
         rack.setPower(cond1);
     }
     public void chad(boolean cond1, boolean cond2){
-        if (cond1) 
+        if (cond1) chad.setPosition(-15);
+        else if (cond2) chad.setPosition(-5);
     }
 
 

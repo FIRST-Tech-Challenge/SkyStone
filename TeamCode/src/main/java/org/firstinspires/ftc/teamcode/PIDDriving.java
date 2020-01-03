@@ -1,3 +1,5 @@
+//code courtesy of https://stemrobotics.cs.pdx.edu/node/7774
+
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
@@ -59,7 +61,7 @@ public class PIDDriving extends LinearOpMode {
         // Set PID proportional value to start reducing power at about 50 degrees of rotation.
         // P by itself may stall before turn completed so we add a bit of I (integral) which
         // causes the PID controller to gently increase power if the turn is not completed.
-        pidRotate = new PIDController(.003, .00003, 0);
+        pidRotate = new PIDController(.004, .00004, 0);
 
         // Set PID proportional value to produce non-zero correction value when robot veers off
         // straight line. P value controls how sensitive the correction is.

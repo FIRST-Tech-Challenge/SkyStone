@@ -1,56 +1,64 @@
 package org.firstinspires.ftc.teamcode;
 
-//import com.qualcomm.hardware.modernrobotics.ModernRoboticsAnalogOpticalDistanceSensor;
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class TypexChart {
+    public DcMotor TL, TR, BL, BR;
+    //public BNO055IMU imu;
+    public Servo hookLeft, hookRight;
 
-    /* Plotting public stars */
-    public DcMotor TL = null;
-    public DcMotor TR = null;
-    public DcMotor BL = null;
-    public DcMotor BR = null;
-    //public DistanceSensor Optic1 = null;
+    public DistanceSensor distanceSensor;
 
-    /* Recharging local members */
-    HardwareMap hwMap = null;
+    HardwareMap chart;
+    ElapsedTime runtime = new ElapsedTime();
 
-    /* Pager */
-    public TypexChart() {
+    public TypexChart()
+    {
 
     }
 
-    /* Initializing binaryChart Mainframe */
-    public void init (HardwareMap chart) {
-        hwMap = chart;
+    public void init(HardwareMap ahwMap) {
+        // Save reference to Hardware map
+        CONSTANTS constants = new CONSTANTS();
+        chart = ahwMap;
 
-        //Name stars
-        TL = hwMap.get(DcMotor.class, "TL");
-        TR = hwMap.get(DcMotor.class, "TR");
-        BL = hwMap.get(DcMotor.class, "BL");
-        BR = hwMap.get(DcMotor.class, "BR");
-        //Optic1 = hwMap.get(ModernRoboticsI2cRangeSensor.class, "Optic1");
+        // Define and Initialize Motors
+        TL = ahwMap.get(DcMotor.class, "TL");
+        TR = ahwMap.get(DcMotor.class, "TR");
+        BL = ahwMap.get(DcMotor.class, "BL");
+        BR = ahwMap.get(DcMotor.class, "BR");
 
-        /* Setting Quantum Harmonizer */
-        TL.setDirection(DcMotorSimple.Direction.FORWARD);
-        BL.setDirection(DcMotorSimple.Direction.FORWARD);
-        TR.setDirection(DcMotorSimple.Direction.REVERSE);
-        BR.setDirection(DcMotorSimple.Direction.REVERSE);
+        TL.setDirection(DcMotorSimple.Direction.REVERSE);
+        BL.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        /* Setting Power Modes */
-        TL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        TR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        BL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        BR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //imu = ahwMap.get(BNO055IMU.class, "imu");
 
-        /* Securing Brake Field */
+        hookLeft = ahwMap.get(Servo.class, "hookLeft");
+        hookRight = ahwMap.get(Servo.class, "hookRight");
+
+        // Set all motors to zero power
         TL.setPower(0);
         TR.setPower(0);
         BL.setPower(0);
         BR.setPower(0);
+
+        hookLeft.setPosition(constants.OPENPOSITION);
+        hookRight.setPosition(constants.OPENPOSITION);
+
+        TL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        BL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        TR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        BR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        distanceSensor = ahwMap.get(DistanceSensor.class, "dist");
     }
 }

@@ -1,0 +1,137 @@
+package org.firstinspires.ftc.teamcode.Skystone.Auto;
+
+import android.os.SystemClock;
+
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
+import org.firstinspires.ftc.teamcode.Skystone.Auto.Actions.Action;
+import org.firstinspires.ftc.teamcode.Skystone.Auto.Actions.Enums.ActionType;
+import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
+import org.firstinspires.ftc.teamcode.Skystone.Robot;
+import org.firstinspires.ftc.teamcode.Skystone.Vision;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+@Autonomous(name = "ActionsTest", group = "LinearOpmode")
+public class ActionsTest extends AutoBase {
+    @Override
+    public void runOpMode() {
+        long startTime;
+        initLogic();
+
+        waitForStart();
+        startTime = SystemClock.elapsedRealtime();
+
+        // Positions assuming center Skystone
+        double firstSkystoneY = -2;
+        double secondSkyStoneY = -16;
+        double secondSkyStoneX = 41;
+        double thirdStoneY = -25;
+        double thirdStoneX = 35.5;
+        double anglelock = 33;
+
+        Vision.Location skystoneLocation = Vision.Location.UNKNOWN;
+        try {
+            skystoneLocation = vision.runDetection(true, true);
+        } catch (Exception e) {
+
+        }
+
+        telemetry.addLine("Detection Result: " + skystoneLocation.toString());
+        telemetry.update();
+
+        sleep(250);
+
+        position2D.startOdometry();
+
+        // Change Skystone positions if detected left or right
+        if (skystoneLocation == Vision.Location.LEFT) {
+            firstSkystoneY = -4;
+            secondSkyStoneY = -25;
+            secondSkyStoneX = 43;
+            anglelock = 30;
+            thirdStoneX = 45;
+            thirdStoneY = -27.5;
+        } else if (skystoneLocation == Vision.Location.RIGHT) {
+            firstSkystoneY = 4.5;
+            secondSkyStoneY = -8;
+            secondSkyStoneX = 41;
+            anglelock = 33;
+            thirdStoneX = 33;
+            thirdStoneY = -21;
+        }
+
+        double[][] toFirstStone = {
+                {0, 0, 10, 0},
+                {10, firstSkystoneY, 10, 0},
+                {48, firstSkystoneY, 10, 0}};
+        ArrayList<Action> toFirstStoneActions = new ArrayList<Action>();
+        toFirstStoneActions.add(new Action(ActionType.START_INTAKE, new Point(0,0), robot));
+
+        double[][] toFoundation = {
+                toFirstStone[toFirstStone.length - 1],
+                {34, firstSkystoneY + 5, 0, 10},
+                {28, 17, -10, 20},
+                {24, 20, -10, 20},
+                {24, 30, -10, 20},
+                {23, 43, -10, 20},
+                {22, 55, 0, 20},
+                {22, 67, 0, 20},
+                {22, 68, 0, 20},
+                {21, 74, 0, 20},
+                {31, 83, 0, 10}};
+        ArrayList<Action> toFoundationActions = new ArrayList<Action>();
+        toFoundationActions.add(new Action(ActionType.EXTEND_OUTTAKE, new Point(24,20), robot));
+        toFoundationActions.add(new Action(ActionType.EXTEND_FOUNDATION, robot, true));
+        toFoundationActions.add(new Action(ActionType.STOP_INTAKE, new Point(24,45), robot));
+
+        double[][] toReleaseFoundation = {
+                {toFoundation[toFoundation.length - 1][0], toFoundation[toFoundation.length - 1][1], -10, 0},
+                {9, 63, 10, 0},
+                {5, 60, 10, 0},
+        };
+        ArrayList<Action> toReleaseFoundationActions = new ArrayList<Action>();
+        toReleaseFoundationActions.add(new Action(ActionType.DROPSTONE_AND_RETRACT_OUTTAKE, new Point (22,73), robot));
+        toReleaseFoundationActions.add(new Action(ActionType.RELEASE_FOUNDATION, robot, true));
+
+        double[][] toSecondStone = {
+                {toReleaseFoundation[toReleaseFoundation.length - 1][0], toReleaseFoundation[toReleaseFoundation.length - 1][1], -10, 0},
+                {20, 61, -10, 0},
+                {20, 29, 0, -10},
+                {18, secondSkyStoneY + 5, 0, 10},
+                {secondSkyStoneX, secondSkyStoneY, 30, 0},
+                {secondSkyStoneX-5, secondSkyStoneY-5, 30, 0}};
+        ArrayList<Action> toSecondStoneActions = new ArrayList<Action>();
+
+        double[][] toDepositSecondStone = {
+                {toSecondStone[toSecondStone.length - 1][0], toSecondStone[toSecondStone.length - 1][1], -10, 0},
+                {secondSkyStoneX - 7, secondSkyStoneY + 10, -10, 0},
+                {secondSkyStoneX - 14, secondSkyStoneY + 8, -10, 0},
+                {27, 0, 0, 20},
+                {26, 29, 0, 20},
+                {24, 64, 0, 10},
+                {20, 62, 0, 10},
+                {10, 65, 0, 10}};
+        HashMap<Point, Robot.Actions> toDepositSecondStoneActions = new HashMap<Point, Robot.Actions>() {{
+            put(new Point(28, 20), Robot.Actions.EXTEND_OUTTAKE);
+            put(new Point(35, 15), Robot.Actions.STOP_INTAKE);
+            put(new Point(35, 25), Robot.Actions.START_INTAKE);
+        }};
+
+        robot.splineMove2(toFirstStone, 0.6, 1, 0.55, 35, 0, 0, 20,
+                toFirstStoneActions, true, 3000);
+
+        robot.splineMove2(toFoundation, 1, 1, 0.4, 20, Math.toRadians(180), Math.toRadians(180), 25,
+                toFoundationActions, true, 4000);
+
+        robot.splineMove2(toReleaseFoundation, 1, 1, 0.6, 5, 0, Math.toRadians(270), anglelock,
+                toReleaseFoundationActions, true, 6750);
+
+        robot.getLinearOpMode().sleep(150); // Wait to finish releasing foundation
+
+        robot.splineMove2(toSecondStone, 1, 1, 0.6, 25, 0, Math.toRadians(297), anglelock,
+                toSecondStoneActions, true, 6750);
+    }
+}

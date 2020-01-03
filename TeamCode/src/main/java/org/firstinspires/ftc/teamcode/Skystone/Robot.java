@@ -22,6 +22,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
+import org.firstinspires.ftc.teamcode.Skystone.Auto.Actions.Action;
+import org.firstinspires.ftc.teamcode.Skystone.Auto.Actions.Enums.ActionState;
+import org.firstinspires.ftc.teamcode.Skystone.Auto.Actions.Enums.ActionType;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.CurvePoint;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.PathPoints;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
@@ -31,6 +34,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -400,6 +404,7 @@ public class Robot {
     private final int SPOOL_OVERSHOOT_AMOUNT = 500;
 
     boolean isMovingLift = false;
+
     /**
      * Raise outtake to a specific stone-stack level
      */
@@ -412,18 +417,18 @@ public class Robot {
 
     }
 
-    public void moveLift(int target){
-        if(Math.abs(outtakeSpool.getCurrentPosition()-target)<50){
+    public void moveLift(int target) {
+        if (Math.abs(outtakeSpool.getCurrentPosition() - target) < 50) {
             isMovingLift = false;
             outtakeSpool.setPower(0.05);
             outtakeSpool2.setPower(0.05);
-        }else if(outtakeSpool.getCurrentPosition()>target && isMovingLift){
+        } else if (outtakeSpool.getCurrentPosition() > target && isMovingLift) {
             outtakeSpool.setPower(1);
             outtakeSpool2.setPower(1);
-        }else if(isMovingLift){
+        } else if (isMovingLift) {
             outtakeSpool.setPower(-1);
             outtakeSpool2.setPower(-1);
-        }else{
+        } else {
             isMovingLift = false;
             outtakeSpool.setPower(0.05);
             outtakeSpool2.setPower(0.05);
@@ -431,6 +436,7 @@ public class Robot {
     }
 
     public int spoolTargetEncoderTick = 0;
+
     /**
      * Move outtake to a specified encoder position
      */
@@ -449,6 +455,7 @@ public class Robot {
 
     boolean hasExtendedOuttake = false;
     boolean hasRetractedOuttake = false;
+
     public void moveOuttake() {
         // Move outtake spool motors
         outtakeSpool.setTargetPosition(spoolTargetEncoderTick);
@@ -457,7 +464,7 @@ public class Robot {
         if (extendOuttake || retractOuttake || clampBeforeSpool || !isMovingSpool) { // If extending or retracting outtake, or if not moving spool
             outtakeSpool.setPower(0.025);
             outtakeSpool2.setPower(0.025);
-        } else if (returningToPosition && outtakeSpool.getCurrentPosition() > spoolTargetEncoderTick ){
+        } else if (returningToPosition && outtakeSpool.getCurrentPosition() > spoolTargetEncoderTick) {
             outtakeSpool.setPower(0.025);
             outtakeSpool2.setPower(0.025);
             isMovingSpool = false;
@@ -496,7 +503,7 @@ public class Robot {
             } else {
                 intakePusher.setPosition(PUSHER_PUSHED);
             }
-            if (currentTime - startOuttakeMovementTime >= 800){
+            if (currentTime - startOuttakeMovementTime >= 800) {
                 clamp.setPosition(CLAMP_SERVO_CLAMPED);
             }
             if (currentTime - startOuttakeMovementTime >= 1500) {
@@ -515,7 +522,7 @@ public class Robot {
         if (extendOuttake) {
             long currentTime = SystemClock.elapsedRealtime();
 
-            if(currentTime-startOuttakeMovementTime >= 200){
+            if (currentTime - startOuttakeMovementTime >= 200) {
                 intakePusher.setPosition(PUSHER_RETRACTED);
             }
             if (currentTime - startOuttakeMovementTime >= 450) {
@@ -527,10 +534,10 @@ public class Robot {
             if (currentTime - startOuttakeMovementTime >= 1550) {
                 clampPivot.setPosition(OUTTAKE_PIVOT_EXTENDED);
             }
-            if(currentTime - startOuttakeMovementTime >= 1850){
+            if (currentTime - startOuttakeMovementTime >= 1850) {
                 outtakeExtender.setPosition(OUTTAKE_SLIDE_PARTIAL_EXTEND);
             }
-            if(currentTime - startOuttakeMovementTime >= 2150){
+            if (currentTime - startOuttakeMovementTime >= 2150) {
                 extendOuttake = false;
             }
         }
@@ -691,6 +698,143 @@ public class Robot {
 
     private boolean hasRaisedOuttake = false;
     private boolean isRaisingOuttake = false;
+
+    public void splineMove2(double[][] data, double moveSpeed, double turnSpeed, double slowDownSpeed, double slowDownDistance, double optimalAngle, double angleLockRadians, double angleLockInches, ArrayList<Action> actions, boolean isTimeKill, long endTime) {
+        double posAngle;
+
+        SplineGenerator s = new SplineGenerator(data, this);
+        double[][] pathPoints = s.getOutputData();
+
+
+        addSplinePoints(pathPoints);
+        addWaypoints(data);
+
+        long extendOuttakeStartTime = 0;
+        long retractOuttakeStartTime = 0;
+
+        boolean isExtendingOuttake = false;
+        boolean isRetractingOuttake = false;
+        boolean isReleasingFoundation = false;
+        boolean isStartingIntake = false;
+        boolean isStoppingIntake = false;
+        boolean hasExtendedOuttake = false;
+        boolean hasRetractedOuttake = false;
+        boolean hasReleasedFoundation = false;
+        boolean hasStartedIntake = false;
+        boolean hasStoppedIntake = false;
+        boolean isExtendingFoundation = false;
+        boolean hasExtendedFoundation = false;
+        boolean hasLoweredOuttake = false;
+        boolean isLoweredOuttake = false;
+
+        long doneWithLift = Long.MAX_VALUE;
+        boolean isMoving = true;
+
+        boolean nextStep = false;
+
+        int followIndex = 1;
+        double angleLockScale;
+        double distanceToEnd;
+        double distanceToNext;
+        double desiredHeading;
+        int level = 0;
+
+        long currentTime;
+        long startTime = SystemClock.elapsedRealtime();
+        while (linearOpMode.opModeIsActive()) {
+            currentTime = SystemClock.elapsedRealtime();
+
+            if (isTimeKill && currentTime - startTime >= endTime) {
+                brakeRobot();
+                break;
+            }
+
+            posAngle = MathFunctions.angleWrap(anglePos + 2 * Math.PI);
+
+            if (followIndex == pathPoints.length) {
+                followIndex--;
+            }
+
+            distanceToEnd = Math.hypot(robotPos.x - data[data.length - 1][0], robotPos.y - data[data.length - 1][1]);
+            distanceToNext = Math.hypot(robotPos.x - pathPoints[followIndex][0], robotPos.y - pathPoints[followIndex][1]);
+            desiredHeading = angleWrap(Math.atan2(pathPoints[followIndex][1] - pathPoints[followIndex - 1][1], pathPoints[followIndex][0] - pathPoints[followIndex - 1][0]) + 2 * Math.PI);
+
+            if (desiredHeading == 0) {
+                desiredHeading = Math.toRadians(360);
+            }
+            if (angleLockRadians == 0) {
+                angleLockRadians = Math.toRadians(360);
+            }
+
+            angleLockScale = Math.abs(angleLockRadians - posAngle) * Math.abs(desiredHeading - angleLockRadians) * 1.8;
+
+
+            if (distanceToEnd < angleLockInches) {
+                goToPoint(pathPoints[followIndex][0], pathPoints[followIndex][1], moveSpeed, turnSpeed, optimalAngle, true);
+
+                if (angleLockRadians - posAngle > Math.toRadians(0) && angleLockRadians - posAngle < Math.toRadians(180)) {
+                    turnMovement = 1 * angleLockScale;
+                } else if (angleLockRadians - posAngle < Math.toRadians(0) || angleLockRadians - posAngle > Math.toRadians(180)) {
+                    turnMovement = -1 * angleLockScale;
+                } else {
+                    turnMovement = 0;
+                }
+            } else if (distanceToEnd < 30) {
+                goToPoint(pathPoints[followIndex][0], pathPoints[followIndex][1], moveSpeed, turnSpeed, optimalAngle, true);
+            } else {
+                goToPoint(pathPoints[followIndex][0], pathPoints[followIndex][1], moveSpeed, turnSpeed, optimalAngle, false);
+            }
+
+            if (distanceToEnd < 1) {
+                brakeRobot();
+                isMoving = false;
+            } else if (distanceToNext < 10) {
+                followIndex++;
+//                if(!(getTopBarDistance().getDistance(DistanceUnit.CM)<20 && (isExtendingOuttake || isRetractingOuttake))){
+//
+//                }else{
+//                    xMovement = 0;
+//                    yMovement = 0;
+//                    turnMovement = 0;
+//                    brakeRobot();
+//                }
+            }
+
+            if (distanceToEnd < slowDownDistance) {
+                if (slowDownSpeed > moveSpeed) {
+                    xMovement *= slowDownSpeed * (slowDownSpeed / moveSpeed);
+                    yMovement *= slowDownSpeed * (slowDownSpeed / moveSpeed);
+                    turnMovement *= slowDownSpeed * (slowDownSpeed / moveSpeed);
+                } else {
+                    xMovement *= slowDownSpeed;
+                    yMovement *= slowDownSpeed;
+                    turnMovement *= slowDownSpeed;
+                }
+            }
+
+            // go through all actionpoints and see if the robot is near one
+            if (actions.size() != 0) {
+                currentTime = SystemClock.elapsedRealtime();
+                for (int i = 0; i < actions.size(); i++) {
+                    Action action = actions.get(i);
+
+                    Point actionPoint = action.getActionPoint();
+                    if (action.isExecuteOnEndOfPath()) {
+                        if (!isMoving) {
+                            action.executeAction(currentTime);
+                        }
+                    } else if ((Math.hypot(actionPoint.x - robotPos.x, actionPoint.y - robotPos.y) < 20) || (action.getActionState() == ActionState.PROCESSING)) {
+                        action.executeAction(currentTime);
+                    }
+                }
+            }
+
+            if (isMoving) {
+                applyMove();
+            }
+        }
+    }
+
     public void splineMove(double[][] data, double moveSpeed, double turnSpeed, double slowDownSpeed, double slowDownDistance, double optimalAngle, double angleLockRadians, double angleLockInches, HashMap<Point, Actions> actions, boolean isTimeKill, long endTime) {
         double posAngle;
 
@@ -870,15 +1014,15 @@ public class Robot {
                 }
             }
 
-            if(isLoweredOuttake){
+            if (isLoweredOuttake) {
                 moveOuttakeToStoneLevel(0);
-                if(!isMovingLift){
+                if (!isMovingLift) {
                     isLoweredOuttake = false;
                     hasLoweredOuttake = false;
                 }
             }
 
-            if(isRaisingOuttake){
+            if (isRaisingOuttake) {
                 if (currentTime - extendOuttakeStartTime >= 300) {
                     clamp.setPosition(CLAMP_SERVO_CLAMPED);
                 }
@@ -888,18 +1032,18 @@ public class Robot {
 
                     moveOuttakeToStoneLevel(level);
 
-                    if(!isMovingLift){
-                        doneWithLift = Math.min(doneWithLift,SystemClock.elapsedRealtime());
+                    if (!isMovingLift) {
+                        doneWithLift = Math.min(doneWithLift, SystemClock.elapsedRealtime());
 
-                        if(SystemClock.elapsedRealtime()-doneWithLift >=0){
+                        if (SystemClock.elapsedRealtime() - doneWithLift >= 0) {
                             outtakeExtender.setPosition(OUTTAKE_SLIDE_EXTENDED);
                         }
 
-                        if(SystemClock.elapsedRealtime()-doneWithLift >= 900){
+                        if (SystemClock.elapsedRealtime() - doneWithLift >= 900) {
                             clampPivot.setPosition(OUTTAKE_PIVOT_EXTENDED);
                         }
 
-                        if(SystemClock.elapsedRealtime()-doneWithLift>=1500){
+                        if (SystemClock.elapsedRealtime() - doneWithLift >= 1500) {
                             outtakeExtender.setPosition(OUTTAKE_SLIDE_PARTIAL_EXTEND);
 
                             isRaisingOuttake = false;
@@ -911,9 +1055,9 @@ public class Robot {
 
             }
 
-            if(nextStep && !isRaisingOuttake && !hasRaisedOuttake){
-                moveOuttakeToStoneLevel(level-1);
-                if(!isMovingLift){
+            if (nextStep && !isRaisingOuttake && !hasRaisedOuttake) {
+                moveOuttakeToStoneLevel(level - 1);
+                if (!isMovingLift) {
                     nextStep = false;
                 }
             }

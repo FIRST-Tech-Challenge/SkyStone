@@ -69,6 +69,12 @@ public class TestBot extends Bot {
         webCamera = new WebCamera(logger, aOpMode, "Webcam 1");
         webCamNavigator = new WebCamNavigator(logger, aOpMode, webCamera);
 
+        grapple = new Grapple(logger, aOpMode, "servo1", "servo2");
+        //colorDetection = new ColorDetection();
+        skystoneFinder = new SkystoneFinder(logger, aOpMode);
+        intake = new Intake(logger, aOpMode, "Right_Intake", "Left_Intake");
+        ramp = new Ramp(logger, aOpMode, "rampServo", "rampServo2");
+
     }
 
     public void initAll() {
@@ -76,6 +82,7 @@ public class TestBot extends Bot {
         driveTrain.init(DriveTrain.InitType.INIT_4WD);
         webCamera.init(WebCamera.InitType.INIT_FOR_FIND_GOLD);
         // webCamNavigator.init();
+        skystoneFinder.init();
     }
 
 }

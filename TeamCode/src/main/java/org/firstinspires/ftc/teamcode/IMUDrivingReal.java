@@ -43,15 +43,15 @@ public class IMUDrivingReal extends LinearOpMode {
 
         imu.initialize(parameters);
 
-        telemetry.addData("Mode", "calibrating...");
+        telemetry.addData("Mode:", "calibrating...");
         telemetry.update();
 
         while (!isStopRequested() && !imu.isGyroCalibrated()) {
             sleep(50);
             idle();
         }
-        telemetry.addData("Mode", "waiting for start");
-        telemetry.addData("imu calib status", imu.getCalibrationStatus().toString());
+        telemetry.addData("Mode:", "waiting for start");
+        telemetry.addData("IMU Calibration:", imu.getCalibrationStatus().toString());
         telemetry.update();
 
         waitForStart(); //-----------------------------------------------------------------------
@@ -61,9 +61,9 @@ public class IMUDrivingReal extends LinearOpMode {
         while (opModeIsActive()) {
             correction = checkDirection();
 
-            telemetry.addData("1 imu heading", lastAngles.firstAngle);
-            telemetry.addData("2 global heading", globalAngle);
-            telemetry.addData("3 correction", correction);
+            telemetry.addData("IMU Heading:", lastAngles.firstAngle);
+            telemetry.addData("Global Heading:", globalAngle);
+            telemetry.addData("Correction:", correction);
             telemetry.update();
 
             TL.setPower(-correction);

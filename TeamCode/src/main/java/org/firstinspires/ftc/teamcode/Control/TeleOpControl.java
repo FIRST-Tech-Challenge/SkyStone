@@ -39,11 +39,11 @@ public abstract class TeleOpControl extends Central {
         yAxis2 = Range.clip(yAxis2, -1, 1);
         xAxis2 = Range.clip(xAxis2, -1, 1);
 
-        fb = Math.abs(yAxis1)/2;
-        rl = Math.abs(xAxis1)/2;
+        fb = Math.abs(yAxis1)/3;
+        rl = Math.abs(xAxis1)/3;
 
-        fb2 = Math.abs(yAxis2)/2;
-        rl2 = Math.abs(xAxis2)/2;
+        fb2 = Math.abs(yAxis2)/3;
+        rl2 = Math.abs(xAxis2)/3;
         diagonalSpeed = Math.hypot(xAxis2, yAxis2)/2;
 
         rightStickButtonPressed = gamepad1.right_stick_button;

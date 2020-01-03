@@ -61,7 +61,7 @@ public class Constants {
     public static final String racks = "rack";
     public static final String servos = "servo";
     public static final String rotationservos = "rotservo";
-    public static final String extendos = "extendServo";
+    public static final String extendos = "extend";
     public static final String rightServos = "rightservo";
     public static final String leftServos = "leftservo";
     public static final String flimits = "flimit";

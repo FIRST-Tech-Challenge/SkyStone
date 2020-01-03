@@ -185,7 +185,9 @@ public class Crane {
     public Servo servo;
 
     public Servo rotationservo, rightServo, leftServo, foundationServo1, foundationServo2;
-    public CRServo smallRSuck, smallLSuck, extend;
+    public CRServo smallRSuck, smallLSuck;
+
+    public DcMotor extend;
 
     public ModernRoboticsI2cRangeSensor front, back, left, right;
 
@@ -233,21 +235,20 @@ public class Crane {
     public void setupClaw() throws InterruptedException {
         //leftLinear = motor(leftLinears, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.BRAKE);
         rightLinear = motor(rightLinears, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.BRAKE);
-        rotationservo = servo(rotationservos, Servo.Direction.FORWARD,0,1,0);
-        rightServo = servo(rightServos, Servo.Direction.FORWARD,0,1,0.5);
-        leftServo = servo(leftServos, Servo.Direction.REVERSE,0,1,0.5);
+        encoder(EncoderMode.ON, rightLinear);
+        //leftServo = servo(leftServos, Servo.Direction.REVERSE,0,1,0.5);
        // linearLimit = hardwareMap.digitalChannel.get(linearLimits);
-        extend = servo(extendos, DcMotorSimple.Direction.FORWARD, 0);
-
+        extend = motor(extendos, DcMotorSimple.Direction.FORWARD, DcMotor.ZeroPowerBehavior.BRAKE);
+        rightServo = servo(rightServos, Servo.Direction.FORWARD,0,1,.2);
+        rotationservo = servo(rotationservos, Servo.Direction.FORWARD,0,1,1);
         clawLimit = hardwareMap.digitalChannel.get("clawLimit");
 
-        encoder(EncoderMode.ON, rightLinear);
 
     }
 
     public void setupFoundation() throws InterruptedException{
-        foundationServo1 = servo(foundationServos1, Servo.Direction.FORWARD,0,1,0);
-        foundationServo2 = servo(foundationServos2, Servo.Direction.FORWARD,0,1,.6);
+        foundationServo1 = servo(foundationServos2, Servo.Direction.FORWARD,0,1,0);
+        foundationServo2 = servo(foundationServos1, Servo.Direction.FORWARD,0,1,.6);
     }
 
     public void setupIntake() throws InterruptedException{
@@ -367,7 +368,7 @@ public class Crane {
 
             for (DcMotor motor : drivetrain){
                 int x = Arrays.asList(drivetrain).indexOf(motor);
-                targets[x] = motor.getCurrentPosition() + (int) (signs[x] * wheelAdjust[x] * distance * COUNTS_PER_GOBUILDA312RPM_ROT);
+                targets[x] = motor.getCurrentPosition() + (int) (signs[x] * wheelAdjust[x] * distance * COUNTS_PER_GOBUILDA312RPM_INCH);
             }
             for (DcMotor motor: drivetrain){
                 int x = Arrays.asList(drivetrain).indexOf(motor);
@@ -875,8 +876,10 @@ public class Crane {
         ccwback(1, 1, 0, 0),
         cwfront(0, 0, -1, -1),
         ccwfront(0, 0, 1, 1),
-        linearUp(-1),
-        linearDown(1);
+        linearUp(1),
+        linearDown(-1),
+        clawOut(1),
+        clawIn(-1);
 
 
 

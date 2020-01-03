@@ -1,8 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -21,6 +19,8 @@ public class Maccabot {
     private Servo servo;
     private CRServo rack;
     private Servo chad;
+
+    private double liftTargetPos = 0;
 
     // Intake Motors TBD
     // private DcMotor intake_left, intake_right;
@@ -65,7 +65,8 @@ public class Maccabot {
         lift_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         lift_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-
+        lift_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        lift_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Drive Motors Shouldn't Drive
         front_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -97,43 +98,51 @@ public class Maccabot {
         drive(flValue, frValue, blValue, brValue);
     }
 
-    public void intake(double cond1) {
-        intake_right.setPower((cond1)*.5);//the multiplication of a decimal reduces the motor speed for the INTAKE
-        intake_left.setPower((cond1)*.5);
+    public void intake(double speed) {
+        intake_right.setPower((speed)*.5);//the multiplication of a decimal reduces the motor speed for the INTAKE
+        intake_left.setPower((speed)*.5);
 
        /* parentOpMode.telemetry.addLine(Double.toString(intake_right.getPower()));
         parentOpMode.telemetry.addLine(Double.toString(intake_left.getPower()));*/
     }
 
-    public void servo( double cond1){
+    public void servo(double cond1){
         rack.setPower(cond1);
     }
+
     public void chad(boolean cond1, boolean cond2){
-        if (cond1) chad.setPosition(-15);
-        else if (cond2) chad.setPosition(-5);
+        if (cond1) chad.setPosition(1);
+        else if (cond2) chad.setPosition(0);
     }
 
 
-    public void lift(double cond1, double cond2){
+    public void lift(double lift_up, double lift_down){
+        liftTargetPos += 25*lift_up;
+        liftTargetPos -= 25*lift_down;
+        lift_backend(liftTargetPos, 0.7, 0.004);
+    }
 
-        lift_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        lift_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-
-        if((lift_right.getCurrentPosition() <= 0 && (cond2 > 0)) || (lift_right.getCurrentPosition() >= 2030 && (cond1 > 0))){
+    public void lift_backend(double desiredPosition, double maxSpeed, double kP) {
+        double currentPosition = lift_right.getCurrentPosition();
+        double error = desiredPosition - currentPosition;
+        /*if (currentPosition >= 2030 || currentPosition < 0) {
+            error = 0;
+        }*/
+        parentOpMode.telemetry.addData("Current Position", currentPosition);
+        parentOpMode.telemetry.addData("Error", error);
+        if (currentPosition <= 2020 && currentPosition >= 0) {
+            lift_right.setPower(kP*error);
+            lift_left.setPower(kP*error);
+        } else if (currentPosition > 2020 && error < 0) {
+            lift_right.setPower(kP*error);
+            lift_left.setPower(kP*error);
+        } else if (currentPosition < 0 && error > 0) {
+            lift_right.setPower(kP*error);
+            lift_left.setPower(kP*error);
+        } else {
             lift_right.setPower(0);
             lift_left.setPower(0);
-            lift_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            lift_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
-        else{
-            lift_left.setPower((cond1-cond2) * 0.75);//the multiplication of a decimal reduces the motor speed for the LIFT
-            lift_right.setPower((cond1-cond2) * 0.75);
-
-            parentOpMode.telemetry.addLine(Double.toString(lift_right.getCurrentPosition()));
-            parentOpMode.telemetry.update();
-        }
-
     }
 
     public void setpower0(){

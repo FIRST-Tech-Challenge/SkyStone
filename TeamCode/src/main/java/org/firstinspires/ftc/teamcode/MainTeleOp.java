@@ -25,22 +25,25 @@ public class MainTeleOp extends OpMode {
         robot = new Maccabot(this);
         robot.initializeRobot();
         servo = hardwareMap.servo.get("servo");
-        encoder = 0;
         chad = hardwareMap.servo.get("chad");
+        encoder = 0;
+
     }
 
     public void loop() {
         robot.mecanumDrive(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
         robot.intake(gamepad2.left_stick_y);
         robot.servo(gamepad2.right_stick_y);
-        if (gamepad2.a){
-            chad.setPosition(-13);
-            chad.setPosition(0);
+      /*  robot.chad(gamepad2.a);
+        robot.chad(gamepad2.b);*/
+        /*if (gamepad2.a){
+            chad.setPosition(-1);
+
         }
-        if (gamepad2.b){
-            chad.setPosition(10);
+       // chad.break;
+        else if (gamepad2.b){
             chad.setPosition(0);
-        }
+        }*/
 
         robot.lift(gamepad2.left_trigger,gamepad2.right_trigger);
     }

@@ -106,9 +106,10 @@ public class Maccabot {
     public void servo( double cond1){
         rack.setPower(cond1);
     }
-   // public void chad(int cond1){
-    //    if ()
-    //    }
+    public void chad(boolean cond1, boolean cond2){
+        if (cond1) 
+    }
+
 
     public void lift(double cond1, double cond2){
 

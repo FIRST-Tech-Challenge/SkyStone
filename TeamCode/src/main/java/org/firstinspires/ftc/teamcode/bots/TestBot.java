@@ -31,11 +31,7 @@ package org.firstinspires.ftc.teamcode.bots;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import org.firstinspires.ftc.teamcode.components.GyroNavigator;
-import org.firstinspires.ftc.teamcode.components.WebCamera;
-import org.firstinspires.ftc.teamcode.components.DriveTrain;
-import org.firstinspires.ftc.teamcode.components.Logger;
-import org.firstinspires.ftc.teamcode.components.WebCamNavigator;
+import org.firstinspires.ftc.teamcode.components.*;
 
 public class TestBot extends Bot {
 
@@ -46,6 +42,12 @@ public class TestBot extends Bot {
     public DriveTrain driveTrain = null;
     public GyroNavigator gyroNavigator = null;
     public WebCamNavigator webCamNavigator = null;
+
+    public Grapple grapple = null;
+    //public ColorSensor colorDetection = null;
+    public SkystoneFinder skystoneFinder = null;
+    public Intake intake = null;
+    public Ramp ramp = null;
 
     /* Constructor */
     public TestBot() {

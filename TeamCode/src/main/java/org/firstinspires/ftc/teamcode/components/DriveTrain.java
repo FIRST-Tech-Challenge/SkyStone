@@ -143,7 +143,7 @@ public class DriveTrain extends BotComponent {
         }
     }
 
-    /*
+
     public void move(double seconds, double leftPower, double rightPower) {
 
         ElapsedTime runtime = new ElapsedTime();
@@ -170,7 +170,7 @@ public class DriveTrain extends BotComponent {
         // move forwards with negative power
         move(seconds, -power, -power);
     }
-*/
+
     public void updateMotorsTankDrive(double leftY, double rightY) {
 
         double left;

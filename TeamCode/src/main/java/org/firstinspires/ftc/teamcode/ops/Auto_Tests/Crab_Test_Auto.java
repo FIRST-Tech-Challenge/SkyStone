@@ -96,11 +96,13 @@ public class Crab_Test_Auto extends LinearOpMode {
            robot.grapple.servoMoveUp();
            robot.grapple.servo2MoveUp();
            robot.driveTrain.moveForward(0.8, 0.5); */
+
+/*
         runtime.reset();
         while(runtime.seconds() < 2 && opModeIsActive()) {
             robot.driveTrain.mechanumMotorDiagonalPower(0.25, -0.25);
         }
-
+*/
 
 
 

@@ -40,7 +40,7 @@ import org.firstinspires.ftc.teamcode.components.DriveTrain;
 import org.firstinspires.ftc.teamcode.components.WebCamera;
 
 
-@Autonomous(name="Template_TeleOp", group="template")
+@TeleOp(name="Template_TeleOp", group="template")
 @Disabled
 public class Template_TeleOp extends LinearOpMode {
 

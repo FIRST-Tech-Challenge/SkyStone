@@ -12,8 +12,8 @@ import org.firstinspires.ftc.teamcode.Skystone.Vision;
 
 import java.util.ArrayList;
 
-@Autonomous(name = "BlueFrontAction", group = "LinearOpmode")
-public class BlueFrontAction extends AutoBase {
+@Autonomous(name = "BlueFront", group = "LinearOpmode")
+public class BlueFront extends AutoBase {
     @Override
     public void runOpMode() {
         long startTime;

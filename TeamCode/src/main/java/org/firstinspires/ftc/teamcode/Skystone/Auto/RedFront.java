@@ -14,8 +14,8 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-@Autonomous(name = "ActionsTest", group = "LinearOpmode")
-public class ActionsTest extends AutoBase {
+@Autonomous(name = "RedFront", group = "LinearOpmode")
+public class RedFront extends AutoBase {
     @Override
     public void runOpMode() {
         long startTime;

@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.Skystone.Auto.Actions.Action;
 import org.firstinspires.ftc.teamcode.Skystone.Auto.Actions.Enums.ActionType;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
-import org.firstinspires.ftc.teamcode.Skystone.Robot;
 import org.firstinspires.ftc.teamcode.Skystone.Vision;
 
 import java.util.ArrayList;
@@ -174,12 +173,12 @@ public class BlueFront extends AutoBase {
         toParkDitchActions.add(new Action(ActionType.DROPSTONE_AND_RETRACT_OUTTAKE, new Point(37,-70), robot));
 
         intake(true);
-        robot.splineMove2(toFirstStone, 0.6, 1, 0.55, 35, 0, 0, 20,
+        robot.splineMove(toFirstStone, 0.6, 1, 0.55, 35, 0, 0, 20,
                 toFirstStoneActions, true, 3000);
         //to first stone is 1
         robot.dumpPoints("" + startTime, "1");
 
-        robot.splineMove2(toFoundation, 1, 1, 0.45, 25, Math.toRadians(180), Math.toRadians(180), 25,
+        robot.splineMove(toFoundation, 1, 1, 0.45, 25, Math.toRadians(180), Math.toRadians(180), 25,
                 toFoundationActions, true, 3750);
         // to foundation is 2
         robot.dumpPoints("" + startTime, "2");
@@ -187,15 +186,15 @@ public class BlueFront extends AutoBase {
         // get ready to pull foundation
         robot.getLinearOpMode().sleep(150); // Allow foundation movers to deploy
 
-        robot.splineMove2(toReleaseFoundation, 1, 1, .8, 5, 0, Math.toRadians(90), 11,
+        robot.splineMove(toReleaseFoundation, 1, 1, .8, 5, 0, Math.toRadians(90), 11,
                 toReleaseFoundationActions, true, 2500);
 
-        robot.splineMove2(toSecondStone, 1, 1, 0.9, 25, 0, angleLockAngle, anglelock,
+        robot.splineMove(toSecondStone, 1, 1, 0.9, 25, 0, angleLockAngle, anglelock,
                 toSecondStoneActions, true, 4500);
         //to second stone is 3
         robot.dumpPoints("" + startTime, "3");
 
-        robot.splineMove2(toDepositSecondStone, 1, 1, 0.45, 40, Math.toRadians(180), Math.toRadians(90), 18,
+        robot.splineMove(toDepositSecondStone, 1, 1, 0.45, 40, Math.toRadians(180), Math.toRadians(90), 18,
                 toDepositSecondStoneActions, true, 3250);
 
         //to deposit second stone is 4
@@ -205,27 +204,27 @@ public class BlueFront extends AutoBase {
         robot.getClamp().setPosition(robot.CLAMP_SERVO_RELEASED);
         robot.brakeRobot();
 
-        robot.splineMove2(toThirdStone, 0.5, 1, 0.8, 70, 0, Math.toRadians(90), 20,
+        robot.splineMove(toThirdStone, 0.5, 1, 0.8, 70, 0, Math.toRadians(90), 20,
                 toThirdStoneActions, true, 4500);
         //to thrid stone is 5
         robot.dumpPoints("" + startTime, "5");
         if (SystemClock.elapsedRealtime() - startTime < 26000) {
             if(skystoneLocation == Vision.Location.RIGHT) {
-                robot.splineMove2(toDepositThirdStone, 1, 1, 0.45, 40, Math.toRadians(180), Math.toRadians(90), 20, toParkAfterThirdStoneActions, true, 4000);
+                robot.splineMove(toDepositThirdStone, 1, 1, 0.45, 40, Math.toRadians(180), Math.toRadians(90), 20, toParkAfterThirdStoneActions, true, 4000);
             }else{
-                robot.splineMove2(toDepositThirdStoneOtherwise, 1, 1, 0.45, 40, Math.toRadians(180), Math.toRadians(90), 20, toParkAfterThirdStoneActionsOtherwise, true, 4000);
+                robot.splineMove(toDepositThirdStoneOtherwise, 1, 1, 0.45, 40, Math.toRadians(180), Math.toRadians(90), 20, toParkAfterThirdStoneActionsOtherwise, true, 4000);
             }
             //to deposit third stone is 6
             robot.dumpPoints("" + startTime, "6");
 
             robot.foundationMovers(false);
 
-            robot.splineMove2(toPark, 0.5, 1, 0.3, 10, 0, Math.toRadians(90), 5, toParkActions);
+            robot.splineMove(toPark, 0.5, 1, 0.3, 10, 0, Math.toRadians(90), 5, toParkActions);
 
             //to park is 7
             robot.dumpPoints("" + startTime, "7");
         } else {
-            robot.splineMove2(toParkDitch, 0.6, 1, 0.55, 17, Math.toRadians(180), Math.toRadians(90), 5, toParkDitchActions);
+            robot.splineMove(toParkDitch, 0.6, 1, 0.55, 17, Math.toRadians(180), Math.toRadians(90), 5, toParkDitchActions);
 
             //to park is 7
             robot.dumpPoints("" + startTime, "7");

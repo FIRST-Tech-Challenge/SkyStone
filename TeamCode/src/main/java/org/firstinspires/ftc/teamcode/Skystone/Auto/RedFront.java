@@ -7,12 +7,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.Skystone.Auto.Actions.Action;
 import org.firstinspires.ftc.teamcode.Skystone.Auto.Actions.Enums.ActionType;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
-import org.firstinspires.ftc.teamcode.Skystone.Robot;
 import org.firstinspires.ftc.teamcode.Skystone.Vision;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 @Autonomous(name = "RedFront", group = "LinearOpmode")
 public class RedFront extends AutoBase {
@@ -157,49 +154,49 @@ public class RedFront extends AutoBase {
         ArrayList<Action> toParkDitchActions = new ArrayList<Action>();
         toParkDitchActions.add(new Action(ActionType.DROPSTONE_AND_RETRACT_OUTTAKE, new Point(25,65), robot));
 
-        robot.splineMove2(toFirstStone, 0.6, 1, 0.55, 35, 0, 0, 20,
+        robot.splineMove(toFirstStone, 0.6, 1, 0.55, 35, 0, 0, 20,
                 toFirstStoneActions, true, 3000);
 
         robot.dumpPoints("" + startTime, "1");
 
-        robot.splineMove2(toFoundation, 1, 1, 0.4, 20, Math.toRadians(180), Math.toRadians(180), 25,
+        robot.splineMove(toFoundation, 1, 1, 0.4, 20, Math.toRadians(180), Math.toRadians(180), 25,
                 toFoundationActions, true, 3750);
 
         robot.getLinearOpMode().sleep(150); // Allow foundation movers to deploy
 
         robot.dumpPoints("" + startTime, "2");
 
-        robot.splineMove2(toReleaseFoundation, 1, 1, .8, 5, 0, Math.toRadians(270), 11,
+        robot.splineMove(toReleaseFoundation, 1, 1, .8, 5, 0, Math.toRadians(270), 11,
                 toReleaseFoundationActions, true, 2500);
 
         robot.dumpPoints("" + startTime, "3");
 
 //        robot.getLinearOpMode().sleep(150); // Wait to finish releasing foundation
 
-        robot.splineMove2(toSecondStone, 1, 1, 0.6, 25, 0, Math.toRadians(297), anglelock,
+        robot.splineMove(toSecondStone, 1, 1, 0.6, 25, 0, Math.toRadians(297), anglelock,
                 toSecondStoneActions, true, 4500);
 
         robot.dumpPoints("" + startTime, "4");
 
-        robot.splineMove2(toDepositSecondStone, 1, 1, 0.8, 30, Math.toRadians(180), Math.toRadians(270), 18,
+        robot.splineMove(toDepositSecondStone, 1, 1, 0.8, 30, Math.toRadians(180), Math.toRadians(270), 18,
                 toDepositSecondStoneActions, true, 3500);
 
         robot.dumpPoints("" + startTime, "5");
 
-        robot.splineMove2(toThirdStone, 1, 1, 0.8, 15, 0, Math.toRadians(270), 20,
+        robot.splineMove(toThirdStone, 1, 1, 0.8, 15, 0, Math.toRadians(270), 20,
                 toThirdStoneActions, true, 3750);
 
         robot.dumpPoints("" + startTime, "6");
         if (SystemClock.elapsedRealtime() - startTime < 26000) {
-            robot.splineMove2(toDepositThirdStone, 1, 1, .5, 30, Math.toRadians(180), Math.toRadians(270), 20, toParkAfterThirdStoneActions, true, 3500);
+            robot.splineMove(toDepositThirdStone, 1, 1, .5, 30, Math.toRadians(180), Math.toRadians(270), 20, toParkAfterThirdStoneActions, true, 3500);
 
             robot.dumpPoints("" + startTime, "7");
 
-            robot.splineMove2(toPark, .6, 1, 0.3, 10, 0, Math.toRadians(270), 5, toParkActions, false, 5000);
+            robot.splineMove(toPark, .6, 1, 0.3, 10, 0, Math.toRadians(270), 5, toParkActions, false, 5000);
 
             robot.dumpPoints("" + startTime, "8");
         } else {
-            robot.splineMove2(toParkDitch, .7, 1, 0.55, 17, Math.toRadians(180), Math.toRadians(270), 5, toParkDitchActions, false, 5000);
+            robot.splineMove(toParkDitch, .7, 1, 0.55, 17, Math.toRadians(180), Math.toRadians(270), 5, toParkDitchActions, false, 5000);
 
             robot.dumpPoints("" + startTime, "8");
         }

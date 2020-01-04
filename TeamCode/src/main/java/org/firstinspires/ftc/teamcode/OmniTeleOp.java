@@ -21,7 +21,7 @@ public class OmniTeleOp extends OpMode {
 	* If the motion value is less than the threshold, the controller will be
 	* considered at rest
 	*/
-	protected float joystickDeadzone = 0.15f;
+	protected float joystickDeadzone = 0.0f;
 
     public OmniTeleOp() {
         msStuckDetectInit = 10000;
@@ -39,7 +39,7 @@ public class OmniTeleOp extends OpMode {
         RELEASE,
         STOW
     }
-	
+
 	protected float cleanMotionValues(float number) {
 		// apply deadzone
 		if (number < joystickDeadzone && number > -joystickDeadzone) return 0.0f;
@@ -51,7 +51,7 @@ public class OmniTeleOp extends OpMode {
 			number = (float)Range.scale(number, joystickDeadzone, MAX_MOTION_RANGE, MIN_MOTION_RANGE, MAX_MOTION_RANGE);
 		else
 			number = (float)Range.scale(number, -joystickDeadzone, -MAX_MOTION_RANGE, -MIN_MOTION_RANGE, -MAX_MOTION_RANGE);
-		
+
 		return number;
 	}
 

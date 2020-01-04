@@ -11,9 +11,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.ExpansionHubMotor;
 
 import org.firstinspires.ftc.teamcode.RobotUtilities.MovementVars;
+import org.openftc.revextensions2.RevBulkData;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.atan2;
@@ -38,9 +40,29 @@ public class HardwareOmnibotDrive
     public final static String FRONT_RIGHT_MOTOR = "FrontRight";
     public final static String REAR_LEFT_MOTOR = "RearLeft";
     public final static String REAR_RIGHT_MOTOR = "RearRight";
+    public final static String LEFT_INTAKE = "LeftIntake";
+    public final static String RIGHT_INTAKE = "RightIntake";
+    public final static String EXTENDER = "Extender";
+    // We need both hubs here because one has the motors, and the other has the
+    // odometry encoders.
+    public final static String HUB1 = "Expansion Hub 2";
+    public final static String HUB2 = "Expansion Hub 3";
 
 
     // Hardware objects
+    RevBulkData bulkDataHub1;
+    //    ExpansionHubMotor leftIntakeBd, rightIntakeBd, lifterBd, extenderBd;
+    boolean hub1Read = false;
+    ExpansionHubEx expansionHub1;
+    RevBulkData bulkDataHub2;
+    boolean hub2Read = false;
+    ExpansionHubEx expansionHub2;
+
+    // These motors have the odometry encoders attached
+    protected ExpansionHubMotor leftIntake = null;
+    protected ExpansionHubMotor rightIntake = null;
+    protected ExpansionHubMotor extender = null;
+
     protected DcMotor frontLeft = null;
     protected DcMotor frontRight = null;
     protected DcMotor rearLeft = null;
@@ -56,6 +78,9 @@ public class HardwareOmnibotDrive
     public boolean defaultInputShaping = true;
     protected boolean imuRead = false;
     protected double imuValue = 0.0;
+    protected int leftEncoderWheelPosition = 0;
+    protected int strafeEncoderWheelPosition = 0;
+    protected int rightEncoderWheelPosition = 0;
 
     public double xAngle, yAngle, zAngle;
     /* local OpMode members. */
@@ -65,16 +90,49 @@ public class HardwareOmnibotDrive
     public HardwareOmnibotDrive(){
     }
 
+    public int getLeftEncoderWheelPosition() {
+        if(!hub1Read) {
+            bulkDataHub1 = expansionHub1.getBulkInputData();
+            hub1Read = true;
+        }
+        return bulkDataHub1.getMotorCurrentPosition(leftIntake);
+    }
+
+    public int getRightEncoderWheelPosition() {
+        if(!hub1Read) {
+            bulkDataHub1 = expansionHub1.getBulkInputData();
+            hub1Read = true;
+        }
+        return bulkDataHub1.getMotorCurrentPosition(rightIntake);
+    }
+
+    public int getStrafeEncoderWheelPosition() {
+        if(!hub1Read) {
+            bulkDataHub1 = expansionHub1.getBulkInputData();
+            hub1Read = true;
+        }
+        return bulkDataHub1.getMotorCurrentPosition(extender);
+    }
+
     /* Initialize standard Hardware interfaces */
     public void init(HardwareMap ahwMap) {
         // Save reference to Hardware map
         hwMap = ahwMap;
 
+        // Motor: Lifter, RightIntake, Extender, LeftIntake
+        // Encoder: Lifter, LeftEncoder, CenterEncoder, RightEncoder
+        expansionHub1 = hwMap.get(ExpansionHubEx.class, HUB1);
+        // RearRight, RearLeft, FrontLeft, FrontRight
+//        expansionHub2 = hwMap.get(ExpansionHubEx.class, HUB2);
+
         // Define and Initialize Motors
-        frontLeft = (ExpansionHubMotor) hwMap.dcMotor.get(FRONT_LEFT_MOTOR);
-        frontRight = (ExpansionHubMotor) hwMap.dcMotor.get(FRONT_RIGHT_MOTOR);
-        rearLeft = (ExpansionHubMotor) hwMap.dcMotor.get(REAR_LEFT_MOTOR);
-        rearRight = (ExpansionHubMotor) hwMap.dcMotor.get(REAR_RIGHT_MOTOR);
+        frontLeft = hwMap.dcMotor.get(FRONT_LEFT_MOTOR);
+        frontRight = hwMap.dcMotor.get(FRONT_RIGHT_MOTOR);
+        rearLeft = hwMap.dcMotor.get(REAR_LEFT_MOTOR);
+        rearRight = hwMap.dcMotor.get(REAR_RIGHT_MOTOR);
+        leftIntake = (ExpansionHubMotor) hwMap.dcMotor.get(LEFT_INTAKE);
+        rightIntake = (ExpansionHubMotor) hwMap.dcMotor.get(RIGHT_INTAKE);
+        extender = (ExpansionHubMotor) hwMap.dcMotor.get(EXTENDER);
 
 
         frontLeft.setDirection(DcMotor.Direction.FORWARD);
@@ -115,6 +173,10 @@ public class HardwareOmnibotDrive
 
     public void resetReads() {
         imuRead = false;
+
+        // Bulk data items
+        hub1Read = false;
+        hub2Read = false;
     }
 
     public double readIMU()

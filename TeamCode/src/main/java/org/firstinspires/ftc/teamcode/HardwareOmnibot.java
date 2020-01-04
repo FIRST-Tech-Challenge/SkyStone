@@ -7,11 +7,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.ExpansionHubMotor;
-import org.openftc.revextensions2.RevBulkData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -342,13 +339,6 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public static int EJECT_EXTEND_TIME = 700;
     public static int FINGER_ROTATE_TIME = 500;
 	private static int ENCODER_ERROR = 15;
-    RevBulkData bulkDataHub1;
-    RevBulkData bulkDataHub2;
-//    ExpansionHubMotor leftIntakeBd, rightIntakeBd, lifterBd, extenderBd;
-    boolean hub1Read = false;
-    ExpansionHubEx expansionHub1;
-    boolean hub2Read = false;
-    ExpansionHubEx expansionHub2;
 
     // Variables to store auto to teleop data.
     public static int finalAutoLiftZero = 0;
@@ -363,27 +353,19 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public final static String LEFT_FINGER = "LeftFinger";
     public final static String CLAW = "Claw";
     public final static String CLAWDRICTOPTER = "Clawdricopter";
-    public final static String LEFT_INTAKE = "LeftIntake";
-    public final static String RIGHT_INTAKE = "RightIntake";
     public final static String LIFTER = "Lifter";
-    public final static String EXTENDER = "Extender";
     public final static String RIGHT_RANGE = "RightTof";
     public final static String LEFT_RANGE = "LeftTof";
     public final static String BACK_RIGHT_RANGE = "BackRightTof";
     public final static String BACK_LEFT_RANGE = "BackLeftTof";
     public final static String BACK_RANGE = "BackTof";
-    public final static String HUB1 = "Expansion Hub 2";
-    public final static String HUB2 = "Expansion Hub 3";
 
     // Hardware objects
     protected Servo rightFinger = null;
     protected Servo leftFinger = null;
     protected Servo claw = null;
     protected Servo clawdricopter = null;
-    protected ExpansionHubMotor leftIntake = null;
-    protected ExpansionHubMotor rightIntake = null;
     protected ExpansionHubMotor lifter = null;
-    protected ExpansionHubMotor extender = null;
     protected Rev2mDistanceSensor rightTof = null;
     protected Rev2mDistanceSensor leftTof = null;
     protected Rev2mDistanceSensor backRightTof = null;
@@ -429,21 +411,15 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 	// Variables so we only read encoders once per loop
 	protected boolean leftTofRead = false;
 	protected boolean rightTofRead = false;
-//	protected boolean leftTofRead = false;
-//	protected boolean rightTofRead = false;
 	protected boolean backRightTofRead = false;
 	protected boolean backLeftTofRead = false;
     protected boolean backTofRead = false;
-//  protected boolean backTofRead = false;
 	protected int lifterEncoderValue = 0;
 	protected double leftTofValue = 0.0;
 	protected double rightTofValue = 0.0;
-//	protected double leftTofValue = 0.0;
-//	protected double rightTofValue = 0.0;
 	protected double backRightTofValue = 0.0;
 	protected double backLeftTofValue = 0.0;
 	protected double backTofValue = 0.0;
-//	protected double backTofValue = 0.0;
 	protected double accelerationFinal = 0.0;
 	protected double accelerationCurrent = 0.0;
 	protected RobotSide accelerationSide = RobotSide.FRONT;
@@ -453,10 +429,8 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 
     // Keeps the sensor from initializing more than once.
     public static boolean tofInitialized = false;
-//    public static boolean tofInitialized = false;
     // We can set this in Auto
     protected static RobotSide stackFromSide = RobotSide.RIGHT;
-//    protected static RobotSide stackFromSide = RobotSide.RIGHT;
 
     /* Constructor */
     public HardwareOmnibot(){
@@ -465,18 +439,12 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 
 	public void resetReads() {
         super.resetReads();
-        // Bulk data items
-        hub1Read = false;
-        hub2Read = false;
 
 		leftTofRead = false;
 		rightTofRead = false;
-//		leftTofRead = false;
-//		rightTofRead = false;
 		backRightTofRead = false;
 		backLeftTofRead = false;
 		backTofRead = false;
-//		backTofRead = false;
 	}
 
     public void initGroundEffects()
@@ -557,7 +525,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                     startExtendingIntake();
                 }
                 // We don't want the intake spinning while we are trying to lift the stone.
-                // stopIntake();
+                stopIntake();
                 capstoneState = CapstoneActivity.CLEARING_LIFT;
             }
         } else {
@@ -870,12 +838,6 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                     } else {
 					    stackWallDistance = readLeftTof();
                     }
-//					if(stackFromSide == RobotSide.RIGHT)
-//                    {
-//                        stackWallDistance = readRightTof();
-//                    } else {
-//					    stackWallDistance = readLeftTof();
-//                    }
                     stackBackRightFoundationDistance = readBackRightTof();
                     stackBackLeftFoundationDistance = readBackLeftTof();
                     stowState = StowActivity.RAISING_TO_ROTATE;
@@ -1531,11 +1493,6 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public void init(HardwareMap ahwMap) {
         // Save reference to Hardware map
         super.init(ahwMap);
-        // Motor: Lifter, RightIntake, Extender, LeftIntake
-        // Encoder: Lifter, LeftEncoder, CenterEncoder, RightEncoder
-        expansionHub1 = hwMap.get(ExpansionHubEx.class, HUB1);
-        // RearRight, RearLeft, FrontLeft, FrontRight
-        expansionHub2 = hwMap.get(ExpansionHubEx.class, HUB2);
 
         // Copy the end results of auto to begin teleop.
         setLiftZero(-finalAutoLiftZero);
@@ -1549,10 +1506,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         leftFinger = hwMap.get(Servo.class, LEFT_FINGER);
         claw = hwMap.get(Servo.class, CLAW);
         clawdricopter = hwMap.get(Servo.class, CLAWDRICTOPTER);
-        leftIntake = (ExpansionHubMotor) hwMap.dcMotor.get(LEFT_INTAKE);
-        rightIntake = (ExpansionHubMotor) hwMap.dcMotor.get(RIGHT_INTAKE);
         lifter = (ExpansionHubMotor) hwMap.dcMotor.get(LIFTER);
-        extender = (ExpansionHubMotor) hwMap.dcMotor.get(EXTENDER);
 
         rightTof = (Rev2mDistanceSensor)hwMap.get(DistanceSensor.class, RIGHT_RANGE);
         leftTof = (Rev2mDistanceSensor)hwMap.get(DistanceSensor.class, LEFT_RANGE);

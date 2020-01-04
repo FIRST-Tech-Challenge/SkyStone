@@ -4,10 +4,13 @@ import android.os.SystemClock;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import org.firstinspires.ftc.teamcode.Skystone.Auto.Actions.Action;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
 import org.firstinspires.ftc.teamcode.Skystone.Robot;
 import org.firstinspires.ftc.teamcode.Skystone.Vision;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 @Autonomous(name="BackSideAuto", group ="LinearOpmode")
@@ -39,9 +42,9 @@ public class BackSideAuto extends AutoBase{
         double[][] toPark = {
                 {0,0,10,0},
                 {10,0,10,0}};
-        HashMap<Point,Robot.Actions> toParkActions = new HashMap<Point,Robot.Actions>();
+        ArrayList<Action> toParkActions = new ArrayList<Action>();
 
-        robot.splineMove(toPark,1,1,1,0,0,Math.toRadians(0),10,toParkActions);
+        robot.splineMove2(toPark,1,1,1,0,0,Math.toRadians(0),10,toParkActions);
 
     }
 

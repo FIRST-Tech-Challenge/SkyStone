@@ -5,12 +5,17 @@ import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 import com.qualcomm.hardware.motors.GoBILDA5202Series;
 import com.qualcomm.hardware.motors.NeveRest20Gearmotor;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.List;
 
 /*
  * Constants shared between multiple drive types.
@@ -26,7 +31,7 @@ import java.io.InputStreamReader;
 @Config
 public class DriveConstantsPID {
 
-    public static final boolean RUN_USING_PARAMTER_FROM_PROPERTIES = false;
+    public static final boolean RUN_USING_PARAMTER_FROM_PROPERTIES = true;
 
     public static boolean RUN_USING_ODOMETRY_WHEEL = true;
     public static boolean RUN_USING_IMU_LOCALIZER = false;
@@ -42,6 +47,9 @@ public class DriveConstantsPID {
     public static double hP = 6;    // heading co-efficients;
     public static double hI = 2;
     public static double hD = 0.4;
+    public static double strafeTimeDistanceRatio = 0.01; // duration for power to achieve strafe distance;
+    public static double strafeMotorPower = 0.5;
+    public static double rear_ratio = 1.0;
 
     public static double ODOMETRY_TRACK_WIDTH = 14.8;
     public static double ODOMERY_FORWARD_OFFSET = -5.5;
@@ -187,6 +195,9 @@ public class DriveConstantsPID {
         RobotLog.dd(TAG, "Odometry wheel width? : " + Double.toString(ODOMETRY_TRACK_WIDTH));
         RobotLog.dd(TAG, "Odometry forward offset? " + Double.toString(ODOMERY_FORWARD_OFFSET));
         RobotLog.dd(TAG, "Odometry EncoderTicksPerRev? " + Double.toString(odoEncoderTicksPerRev));
+        RobotLog.dd(TAG, "strafeTimeDistanceRatio: " + Double.toString(strafeTimeDistanceRatio));
+        RobotLog.dd(TAG, "strafeMotorPower:  " + Double.toString(strafeMotorPower));
+        RobotLog.dd(TAG, "rear_ratio:  " + Double.toString(rear_ratio));
     }
     public static void updateConstantsFromProperties()
     {
@@ -271,6 +282,15 @@ public class DriveConstantsPID {
         v_double = getTeamCodePropertyValue("debug.ftc.hD");
         if (v_double != Double.MAX_VALUE)
             hD = v_double;
+        v_double = getTeamCodePropertyValue("debug.ftc.strafeMotorPower");
+        if (v_double != Double.MAX_VALUE)
+            strafeMotorPower = v_double;
+        v_double = getTeamCodePropertyValue("debug.ftc.strafeTimeDistanceRatio");
+        if (v_double != Double.MAX_VALUE)
+            strafeTimeDistanceRatio = v_double;
+        v_double = getTeamCodePropertyValue("debug.ftc.rear_ratio");
+        if (v_double != Double.MAX_VALUE)
+            rear_ratio = v_double;
         v_double = getTeamCodePropertyValue("debug.ftc.odoTicksPerRev");
         if (v_double != Double.MAX_VALUE)
             odoEncoderTicksPerRev = v_double;
@@ -323,5 +343,45 @@ public class DriveConstantsPID {
         }
         MOTOR_VELO_PID = new PIDCoefficients(kP, kI, kD);
         printConstants();
+    }
+    // duration in milli-seconds;
+    public static void moveStrafeLeft(HardwareMap hardwareMap, double distance)
+    {
+        DcMotorEx leftFront, leftRear, rightRear, rightFront;
+        List<DcMotorEx> motors;
+        leftFront = hardwareMap.get(DcMotorEx.class, "frontLeft");
+        leftRear = hardwareMap.get(DcMotorEx.class, "backLeft");
+        rightRear = hardwareMap.get(DcMotorEx.class, "backRight");
+        rightFront = hardwareMap.get(DcMotorEx.class, "frontRight");
+
+        motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
+        RobotLog.dd(TAG, "set power for strafe: " + Double.toString(strafeMotorPower) + " distance: " + Double.toString(distance));
+
+        long duration = (long) (1000 * distance * strafeTimeDistanceRatio);
+        RobotLog.dd(TAG, "set power for strafe: " + Double.toString(strafeMotorPower) + " duration: " + Double.toString(duration));
+
+        for (DcMotorEx motor : motors) {
+            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        }
+        leftFront.setPower(-1 * strafeMotorPower);
+        leftRear.setPower(strafeMotorPower*rear_ratio);
+        rightRear.setPower(-1 * strafeMotorPower*rear_ratio);
+        rightFront.setPower(strafeMotorPower);
+        try {
+            Thread.sleep(duration);
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Prints what exception has been thrown
+            System.out.println(e);
+        }
+        for (DcMotorEx motor : motors) {
+            motor.setPower(0);
+        }
+        for (DcMotorEx motor : motors) {
+            if (BRAKE_ON_ZERO == true)
+                motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            else
+                motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        }
     }
 }

@@ -60,12 +60,15 @@ public class Path {
 
                 builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);   //-34.752, -63.936
                 if(DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
+                    /*
                     builder = builder.strafeTo(new Vector2d(drive.getPoseEstimate().getX(), -63.936 + 5.0))
                             .strafeTo(new Vector2d(drive.getPoseEstimate().getX(), -63.936 + 5.0 * 2))
                             .strafeTo(new Vector2d(drive.getPoseEstimate().getX(), -63.936 + 5.0 * 3))
                             .strafeTo(new Vector2d(drive.getPoseEstimate().getX(), -63.936 + 5.0 * 4))
                             .strafeTo(new Vector2d(drive.getPoseEstimate().getX(), -63.936 + 5.0 * 5))
                             .setReversed(true).lineTo(new Vector2d(-42, -63.936 + 5.0 * 5));
+                     */
+                    DriveConstantsPID.moveStrafeLeft(hwMap.hardwareMap, 25);
                 } else {
                     builder = builder.strafeTo(new Vector2d(drive.getPoseEstimate().getX(),-30)).setReversed(true)
                             .lineTo(new Vector2d(-50, -30));

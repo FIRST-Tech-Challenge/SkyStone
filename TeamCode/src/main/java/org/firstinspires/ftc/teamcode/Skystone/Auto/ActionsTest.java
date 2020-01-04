@@ -26,7 +26,7 @@ public class ActionsTest extends AutoBase {
 
         // Positions assuming center Skystone
         double firstSkystoneY = -2;
-        double secondSkyStoneY = -16;
+        double secondSkyStoneY = -15;
         double secondSkyStoneX = 41;
         double thirdStoneY = -25;
         double thirdStoneX = 35.5;
@@ -57,7 +57,7 @@ public class ActionsTest extends AutoBase {
         } else if (skystoneLocation == Vision.Location.RIGHT) {
             firstSkystoneY = 4.5;
             secondSkyStoneY = -8;
-            secondSkyStoneX = 41;
+            secondSkyStoneX = 42;
             anglelock = 33;
             thirdStoneX = 33;
             thirdStoneY = -21;
@@ -81,7 +81,7 @@ public class ActionsTest extends AutoBase {
                 {22, 67, 0, 20},
                 {22, 68, 0, 20},
                 {21, 74, 0, 20},
-                {35, 83, 0, 10}};
+                {33, 79, 0, 10}};
         ArrayList<Action> toFoundationActions = new ArrayList<Action>();
         toFoundationActions.add(new Action(ActionType.EXTEND_OUTTAKE, new Point(24,20), robot));
         toFoundationActions.add(new Action(ActionType.EXTEND_FOUNDATION, robot, true));
@@ -98,8 +98,8 @@ public class ActionsTest extends AutoBase {
 
         double[][] toSecondStone = {
                 {toReleaseFoundation[toReleaseFoundation.length - 1][0], toReleaseFoundation[toReleaseFoundation.length - 1][1], -10, 0},
-                {20, 61, -10, 0},
-                {20, 29, 0, -10},
+                {19, 61, -10, 0},
+                {19, 29, 0, -10},
                 {18, secondSkyStoneY + 5, 0, 10},
                 {secondSkyStoneX, secondSkyStoneY, 30, 0},
                 {secondSkyStoneX-5, secondSkyStoneY-5, 30, 0}};
@@ -112,9 +112,9 @@ public class ActionsTest extends AutoBase {
                 {secondSkyStoneX - 14, secondSkyStoneY + 8, -10, 0},
                 {27, 0, 0, 20},
                 {26, 29, 0, 20},
-                {24, 64, 0, 10},
-                {20, 62, 0, 10},
-                {18, 65, 0, 10}};
+                {19, 64, 0, 10},
+                {19, 62, 0, 10},
+                {14, 65, 0, 10}};
         ArrayList<Action> toDepositSecondStoneActions = new ArrayList<Action>();
         toDepositSecondStoneActions.add(new Action(ActionType.EXTEND_OUTTAKE, new Point(28,17), robot));
         toDepositSecondStoneActions.add(new Action(ActionType.STOP_INTAKE, new Point(35,15), robot));
@@ -123,9 +123,9 @@ public class ActionsTest extends AutoBase {
         final double[][] toThirdStone = {
                 toDepositSecondStone[toDepositSecondStone.length - 1],
                 {22, 63, 5, 10},
-                {21, 60, 0, -10},
-                {21, 30, 0, -10},
-                {21, 10, 0, -10},
+                {20, 60, 0, -10},
+                {20, 30, 0, -10},
+                {20, 10, 0, -10},
                 {32, 6, 0, -10},
                 {thirdStoneX, thirdStoneY, 10, 0}};
         ArrayList<Action> toThirdStoneActions = new ArrayList<Action>();
@@ -137,7 +137,7 @@ public class ActionsTest extends AutoBase {
                 {27, -15, 0, -10},
                 {22, 29, 0, 20},
                 {19, 61, 0, 10},
-                {19, 63, 0, 10}};
+                {19, 66, 0, 10}};
         ArrayList<Action> toParkAfterThirdStoneActions = new ArrayList<Action>();
         toParkAfterThirdStoneActions.add(new Action(ActionType.EXTEND_OUTTAKE, new Point(23,7), robot));
         toParkAfterThirdStoneActions.add(new Action(ActionType.STOP_INTAKE, new Point(toThirdStone[toThirdStone.length - 1][0] - 15, toThirdStone[toThirdStone.length - 1][1] + 20), robot));
@@ -163,13 +163,13 @@ public class ActionsTest extends AutoBase {
         robot.dumpPoints("" + startTime, "1");
 
         robot.splineMove2(toFoundation, 1, 1, 0.4, 20, Math.toRadians(180), Math.toRadians(180), 25,
-                toFoundationActions, true, 4000);
+                toFoundationActions, true, 3750);
 
         robot.getLinearOpMode().sleep(150); // Allow foundation movers to deploy
 
         robot.dumpPoints("" + startTime, "2");
 
-        robot.splineMove2(toReleaseFoundation, 1, 1, .8, 5, 0, Math.toRadians(270), 15,
+        robot.splineMove2(toReleaseFoundation, 1, 1, .8, 5, 0, Math.toRadians(270), 11,
                 toReleaseFoundationActions, true, 2500);
 
         robot.dumpPoints("" + startTime, "3");
@@ -181,17 +181,17 @@ public class ActionsTest extends AutoBase {
 
         robot.dumpPoints("" + startTime, "4");
 
-        robot.splineMove2(toDepositSecondStone, 1, 1, 0.7, 30, Math.toRadians(180), Math.toRadians(270), 18,
+        robot.splineMove2(toDepositSecondStone, 1, 1, 0.8, 30, Math.toRadians(180), Math.toRadians(270), 18,
                 toDepositSecondStoneActions, true, 3500);
 
         robot.dumpPoints("" + startTime, "5");
 
-        robot.splineMove2(toThirdStone, 1, 1, 1, 70, 0, Math.toRadians(270), 20,
+        robot.splineMove2(toThirdStone, 1, 1, 0.8, 15, 0, Math.toRadians(270), 20,
                 toThirdStoneActions, true, 3750);
 
         robot.dumpPoints("" + startTime, "6");
         if (SystemClock.elapsedRealtime() - startTime < 26000) {
-            robot.splineMove2(toDepositThirdStone, 1, 1, .6, 15, Math.toRadians(180), Math.toRadians(270), 20, toParkAfterThirdStoneActions, true, 3750);
+            robot.splineMove2(toDepositThirdStone, 1, 1, .5, 30, Math.toRadians(180), Math.toRadians(270), 20, toParkAfterThirdStoneActions, true, 3500);
 
             robot.dumpPoints("" + startTime, "7");
 

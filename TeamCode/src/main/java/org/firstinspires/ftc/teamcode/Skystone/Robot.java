@@ -75,7 +75,7 @@ public class Robot {
     // Outtake Slide Positions
     public final double OUTTAKE_SLIDE_EXTENDED = .85;
     public final double OUTTAKE_SLIDE_RETRACTED = .07;
-    public final double OUTTAKE_SLIDE_PARTIAL_EXTEND = .755;
+    public final double OUTTAKE_SLIDE_PARTIAL_EXTEND = .66;
 
     //team marker positions
     public final double TEAM_MARKER_DUMP = 1;
@@ -87,8 +87,8 @@ public class Robot {
 
     // Outtake Clamp Positions
     public final double CLAMP_SERVO_CLAMPED = 1;
-    public final double CLAMP_SERVO_RELEASED = .86;
-    public final double CLAMP_SERVO_INTAKEPOSITION = 0.86;
+    public final double CLAMP_SERVO_RELEASED = .87;
+    public final double CLAMP_SERVO_INTAKEPOSITION = 0.87;
 
     // Outtake Pivot Positions
     public final double OUTTAKE_PIVOT_EXTENDED = 1;
@@ -293,7 +293,7 @@ public class Robot {
         clamp.setPosition(CLAMP_SERVO_CLAMPED);
         intakePusher.setPosition(PUSHER_RETRACTED);
 
-        while (isRetract) {
+        while (isRetract && !linearOpMode.isStopRequested()) {
             currentTime = SystemClock.elapsedRealtime();
             if (currentTime - outtakeExecutionTime >= 250 && isRetract) {
                 clampPivot.setPosition(OUTTAKE_PIVOT_RETRACTED);
@@ -699,6 +699,10 @@ public class Robot {
     private boolean hasRaisedOuttake = false;
     private boolean isRaisingOuttake = false;
 
+    public void splineMove2(double[][] data, double moveSpeed, double turnSpeed, double slowDownSpeed, double slowDownDistance, double optimalAngle, double angleLockRadians, double angleLockInches, ArrayList<Action> actions) {
+        splineMove2(data, moveSpeed, turnSpeed, slowDownSpeed, slowDownDistance, optimalAngle, angleLockRadians, angleLockInches, actions, false, 0);
+    }
+
     public void splineMove2(double[][] data, double moveSpeed, double turnSpeed, double slowDownSpeed, double slowDownDistance, double optimalAngle, double angleLockRadians, double angleLockInches, ArrayList<Action> actions, boolean isTimeKill, long endTime) {
         double posAngle;
 
@@ -709,35 +713,14 @@ public class Robot {
         addSplinePoints(pathPoints);
         addWaypoints(data);
 
-        long extendOuttakeStartTime = 0;
-        long retractOuttakeStartTime = 0;
-
-        boolean isExtendingOuttake = false;
-        boolean isRetractingOuttake = false;
-        boolean isReleasingFoundation = false;
-        boolean isStartingIntake = false;
-        boolean isStoppingIntake = false;
-        boolean hasExtendedOuttake = false;
-        boolean hasRetractedOuttake = false;
-        boolean hasReleasedFoundation = false;
-        boolean hasStartedIntake = false;
-        boolean hasStoppedIntake = false;
-        boolean isExtendingFoundation = false;
-        boolean hasExtendedFoundation = false;
-        boolean hasLoweredOuttake = false;
-        boolean isLoweredOuttake = false;
-
-        long doneWithLift = Long.MAX_VALUE;
         boolean isMoving = true;
 
-        boolean nextStep = false;
 
         int followIndex = 1;
         double angleLockScale;
         double distanceToEnd;
         double distanceToNext;
         double desiredHeading;
-        int level = 0;
 
         long currentTime;
         long startTime = SystemClock.elapsedRealtime();
@@ -790,14 +773,6 @@ public class Robot {
                 isMoving = false;
             } else if (distanceToNext < 10) {
                 followIndex++;
-//                if(!(getTopBarDistance().getDistance(DistanceUnit.CM)<20 && (isExtendingOuttake || isRetractingOuttake))){
-//
-//                }else{
-//                    xMovement = 0;
-//                    yMovement = 0;
-//                    turnMovement = 0;
-//                    brakeRobot();
-//                }
             }
 
             if (distanceToEnd < slowDownDistance) {

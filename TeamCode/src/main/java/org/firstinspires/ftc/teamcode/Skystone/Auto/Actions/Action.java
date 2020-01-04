@@ -119,8 +119,8 @@ public class Action {
     private void generateStopIntakeActions() {
         motionActions.add(new MotionAction(robot.getIntakeLeft(), -1, 0));
         motionActions.add(new MotionAction(robot.getIntakeRight(), -1, 0));
-        motionActions.add(new MotionAction(robot.getIntakeLeft(), 0, 1000));
-        motionActions.add(new MotionAction(robot.getIntakeRight(), 0, 1000));
+        motionActions.add(new MotionAction(robot.getIntakeLeft(), 1, 500));
+        motionActions.add(new MotionAction(robot.getIntakeRight(), 1, 500));
     }
 
     public Point getActionPoint() {

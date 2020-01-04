@@ -55,7 +55,7 @@ public class DriveTrain extends BotComponent {
     private boolean frontMotorsEnabled = false;
     private boolean backMotorsEnabled   = false;
 
-    private double COUNTS_PER_MOTOR_REV    = 1120 ;    // eg: TETRIX Motor Encoder
+    private double COUNTS_PER_MOTOR_REV    = 560 ;    // eg: TETRIX Motor Encoder
     private double DRIVE_GEAR_REDUCTION    = 1.0 ;     // This is < 1.0 if geared UP
     private double WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
     private double COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /

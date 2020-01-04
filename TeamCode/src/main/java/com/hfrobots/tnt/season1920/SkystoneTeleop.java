@@ -50,6 +50,8 @@ public class SkystoneTeleop extends OpMode {
 
     private DeliveryMechanism deliveryMechanism;
 
+    private FoundationGripMechanism foundationGripMechanism;
+
     private StatsDMetricSampler metricSampler;
 
     private Ticker ticker;
@@ -72,10 +74,13 @@ public class SkystoneTeleop extends OpMode {
         driveBase = new RoadRunnerMecanumDriveREV(new SkystoneDriveConstants(), simplerHardwareMap, false);
         kinematics = new OpenLoopMecanumKinematics(driveBase);
 
+        foundationGripMechanism = new FoundationGripMechanism(simplerHardwareMap);
+
         driversGamepad = new NinjaGamePad(gamepad1);
 
         driverControls = DriverControls.builder().driversGamepad(driversGamepad)
                 .kinematics(kinematics)
+                .foundationGripMechanism(foundationGripMechanism)
                 .build();
         deliveryMechanism = new DeliveryMechanism(simplerHardwareMap, telemetry, ticker);
 

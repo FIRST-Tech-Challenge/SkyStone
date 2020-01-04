@@ -7,6 +7,7 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
@@ -58,14 +59,21 @@ public class Path {
                 hwMap.transferLock.setPosition(TeleopConstants.transferLockPosPlatform);
 
                 builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);   //-34.752, -63.936
-                builder = builder.strafeTo(new Vector2d(drive.getPoseEstimate().getX(), -63.936 + 5.3))
-                        .strafeTo(new Vector2d(drive.getPoseEstimate().getX(), -63.936 + 5.3 * 2))
-                        .strafeTo(new Vector2d(drive.getPoseEstimate().getX(), -63.936 + 5.3 * 3))
-                        .strafeTo(new Vector2d(drive.getPoseEstimate().getX(), -63.936 + 5.3 * 4))
-                        .strafeTo(new Vector2d(drive.getPoseEstimate().getX(), -63.936 + 5.3 * 5))
-                        .setReversed(true).lineTo(new Vector2d(-42, -63.936 + 5.3 * 5));
+                if(DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
+                    builder = builder.strafeTo(new Vector2d(drive.getPoseEstimate().getX(), -63.936 + 5.0))
+                            .strafeTo(new Vector2d(drive.getPoseEstimate().getX(), -63.936 + 5.0 * 2))
+                            .strafeTo(new Vector2d(drive.getPoseEstimate().getX(), -63.936 + 5.0 * 3))
+                            .strafeTo(new Vector2d(drive.getPoseEstimate().getX(), -63.936 + 5.0 * 4))
+                            .strafeTo(new Vector2d(drive.getPoseEstimate().getX(), -63.936 + 5.0 * 5))
+                            .setReversed(true).lineTo(new Vector2d(-42, -63.936 + 5.0 * 5));
+                } else {
+                    builder = builder.strafeTo(new Vector2d(drive.getPoseEstimate().getX(),-30)).setReversed(true)
+                            .lineTo(new Vector2d(-50, -30));
+                }
                 trajectory = builder.build();   //x - 2.812, y + 7.984
                 drive.followTrajectorySync(trajectory);
+
+                RobotLog.dd("STATUS", "Strafe #1 Done");
 
                 try{
                     Thread.sleep(500);
@@ -77,10 +85,17 @@ public class Path {
                         drive.getPoseEstimate().getY()), drive.getPoseEstimate().getHeading()));
                 drive.getLocalizer().update();
                 builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
-                builder = builder.setReversed(false).strafeTo(new Vector2d(-42, -35))
-                        .lineTo(new Vector2d(46, -32)).strafeTo(new Vector2d(46,-24));
+                if(DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
+                    builder = builder.setReversed(false).strafeTo(new Vector2d(-42, -45))
+                            .lineTo(new Vector2d(42, -45)).strafeTo(new Vector2d(46,-35));
+                } else {
+                    builder = builder.setReversed(false).strafeTo(new Vector2d(-50, -40))
+                            .lineTo(new Vector2d(50, -40)).strafeTo(new Vector2d(50, -30));
+                }
                 trajectory = builder.build();
                 drive.followTrajectorySync(trajectory);
+
+                RobotLog.dd("STATUS", "Strafe #2 Done");
 
                 try{
                     Thread.sleep(500);
@@ -92,10 +107,17 @@ public class Path {
                         drive.getPoseEstimate().getY()), drive.getPoseEstimate().getHeading()));
                 drive.getLocalizer().update();
                 builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
-                builder = builder.strafeTo(new Vector2d(46, -35)).setReversed(true).lineTo(new Vector2d(-5, -35))
-                        .strafeTo(new Vector2d(-5, -25));
+                if(DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
+                    builder = builder.strafeTo(new Vector2d(46, -40)).setReversed(true).lineTo(new Vector2d(-24, -40))
+                            .strafeTo(new Vector2d(-24, -30));
+                } else {
+                    builder = builder.strafeTo(new Vector2d(50, -40)).setReversed(true).lineTo(new Vector2d(-20, -40))
+                            .strafeTo(new Vector2d(-20, -28));
+                }
                 trajectory = builder.build();
                 drive.followTrajectorySync(trajectory);
+
+                RobotLog.dd("STATUS", "Strafe #3 Done");
 
                 try{
                     Thread.sleep(500);
@@ -107,10 +129,17 @@ public class Path {
                         drive.getPoseEstimate().getY()), drive.getPoseEstimate().getHeading()));
                 drive.getLocalizer().update();
                 builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
-                builder = builder.setReversed(false).strafeTo(new Vector2d(-5, -35)).lineTo(new Vector2d(42, -32))
-                        .strafeTo(new Vector2d(42, -22));
+                if(DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
+                    builder = builder.setReversed(false).strafeTo(new Vector2d(-24, -40)).lineTo(new Vector2d(42, -40))
+                            .strafeTo(new Vector2d(42, -30));
+                } else {
+                    builder = builder.setReversed(false).strafeTo(new Vector2d(-20, -40)).lineTo(new Vector2d(50, -40))
+                            .strafeTo(new Vector2d(50, -30));
+                }
                 trajectory = builder.build();
                 drive.followTrajectorySync(trajectory);
+
+                RobotLog.dd("STATUS", "Strafe #4 Done");
 
                 try{
                     Thread.sleep(500);

@@ -88,9 +88,6 @@ public class Teleop extends LinearOpMode {
         buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.Y, new Servo[]{hwMap.foundationLock, hwMap.transferLock},   //Foundation Lock-Y
                 new double[][]{{TeleopConstants.foundationLockLock, TeleopConstants.foundationLockUnlock},
                         {TeleopConstants.transferLockPosUp, TeleopConstants.transferLockPosOut}}));
-        buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.X, new Servo[]{hwMap.liftOdometer, hwMap.plateLifter},    //Odometer Lock and Plate Lifter-DPAD DOwn
-                new double[][]{{TeleopConstants.odometerLockPosUp, TeleopConstants.odometerLockPosDown},
-                        {TeleopConstants.plateLifterPosUp, TeleopConstants.plateLifterPosDown}}));
         buttonLogic.add(new OnOffButton(gamepad2, gamepad2, GamepadButtons.LEFT_BUMPER, GamepadButtons.RIGHT_BUMPER, //Intake-A & B
                 new Servo[]{hwMap.clawServo1, hwMap.clawServo2},
                 new double[][]{{TeleopConstants.clawServo1PosOpen, TeleopConstants.clawServo1PosClose},
@@ -353,7 +350,7 @@ public class Teleop extends LinearOpMode {
                         if (gamepad1.right_trigger >= 0.75) {
                             drivetrain.setSpeedMultiplier(turboSpeed);
                         } else {
-                            drivetrain.setSpeedMultiplier(normalSpeed);
+                            drivetrain.setSpeedMultiplier(normalSpeed + 0.1);
                         }
 
                         if (gamepad1.dpad_up) {

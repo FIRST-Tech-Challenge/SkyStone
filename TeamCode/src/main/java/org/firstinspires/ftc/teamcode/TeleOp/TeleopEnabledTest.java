@@ -170,29 +170,7 @@ public class TeleopEnabledTest extends LinearOpMode {
 
             //------------------------------===Servos===------------------------------------------
 
-            if(gamepad1.y)  //Change servo positions in TeleopConstants.java
-                hwMap.clawServo1.setPosition(TeleopConstants.clawServo1PosClose);
-            else if(gamepad1.b)
-                hwMap.clawServo1.setPosition(TeleopConstants.clawServo1PosClose);
-
-            if(gamepad1.x)
-                hwMap.clawServo2.setPosition(TeleopConstants.clawServo2PosOpen);
-            else if(gamepad1.a)
-                hwMap.clawServo2.setPosition(TeleopConstants.clawServo2PosClose);
-
-            if(gamepad2.left_bumper) {
-                hwMap.liftOdometer.setPosition(TeleopConstants.odometerLockPosUp);
-            } else if(gamepad2.right_bumper) {
-                hwMap.liftOdometer.setPosition(TeleopConstants.odometerLockPosDown);
-            }
-
-            if(gamepad1.left_bumper) {
-                hwMap.transferLock.setPosition(TeleopConstants.transferLockPosUp);
-            } else if(gamepad1.right_bumper) {
-                hwMap.transferLock.setPosition(TeleopConstants.transferLockPosPlatform);
-            }
-
-            if(gamepad1.left_bumper) {
+            /*if(gamepad1.left_bumper) {
                 StringBuilder sb = new StringBuilder();
                 for (String row : kVData) {
                     sb.append(row);
@@ -202,7 +180,7 @@ public class TeleopEnabledTest extends LinearOpMode {
                 // DriveConstant.writeFile(AppUtil.ROOT_FOLDER + "/RoadRunner/kV_regression_data_" + System.currentTimeMillis() + ".csv", sb.toString());
                 runLogic = false;
                 break;
-            }
+            }*/
 
             telemetry.addData("LeftForwardOdometry", hwMap.leftIntake.getCurrentPosition());
             telemetry.addData("RightForwardOdometry", hwMap.liftTwo.getCurrentPosition());

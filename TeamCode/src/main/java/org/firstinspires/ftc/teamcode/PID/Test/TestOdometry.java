@@ -77,7 +77,9 @@ public class TestOdometry extends LinearOpMode {
         double driftRemover = 0.0;
 
         while(opModeIsActive()){
-            /*drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(drive.getPoseEstimate().getX(),
+            /*
+            drive.turnSync(-drive.getPoseEstimate().getHeading());
+            drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(drive.getPoseEstimate().getX(),
                     drive.getPoseEstimate().getY()), drive.getPoseEstimate().getHeading()));    //Straight Test
             drive.getLocalizer().update();
             builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
@@ -89,26 +91,29 @@ public class TestOdometry extends LinearOpMode {
                 Thread.sleep(500);
             } catch(Exception e){}
 
-            drive.turnSync(Math.toRadians(-1));
+            drive.turnSync(-drive.getPoseEstimate().getHeading());
             drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(drive.getPoseEstimate().getX(),
-                   0), 0));
+                    drive.getPoseEstimate().getY()), drive.getPoseEstimate().getHeading()));
             drive.getLocalizer().update();
             builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
             builder = builder.setReversed(true).lineTo(new Vector2d(0, 0));
             trajectory = builder.build();
             drive.followTrajectorySync(trajectory);*/
 
+
             drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(drive.getPoseEstimate().getX(),
                     drive.getPoseEstimate().getY()), drive.getPoseEstimate().getHeading()));    //Strafe Test
             drive.getLocalizer().update();
             builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
-            builder = builder.setReversed(false).strafeTo(new Vector2d(0,72));
+            builder = builder.setReversed(false).strafeTo(new Vector2d(0,48));
             trajectory = builder.build();
             drive.followTrajectorySync(trajectory);
 
             try{
                 Thread.sleep(500);
             } catch(Exception e){}
+
+            stop();
 
             drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(drive.getPoseEstimate().getX(),
                     drive.getPoseEstimate().getY()), drive.getPoseEstimate().getHeading()));
@@ -150,7 +155,6 @@ public class TestOdometry extends LinearOpMode {
                             hwMap.frontRight.getCurrentPosition() + "," + hwMap.backRight.getCurrentPosition() + "\n");
                     error.add(drive.getLastError().getX() + "," + drive.getLastError().getY() + "," + drive.getLastError().getHeading() + "\n");
                 }
-                if(counter == 6) {
                     String temp = odometryCenter.toString().replaceAll(",", "");
                     temp = temp.replaceAll("\\[", "");
                     temp = temp.replaceAll("]", "");
@@ -213,7 +217,6 @@ public class TestOdometry extends LinearOpMode {
 
                     DriveConstant.writeFile(AppUtil.ROOT_FOLDER + "/RoadRunner/DriveVelRAWData_" +
                             System.currentTimeMillis() + ".txt", savedData.toString());
-                }
             }
         };
         thread.start();

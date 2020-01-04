@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.teamcode.All.HardwareMap;
 
@@ -23,21 +24,24 @@ public class ServoTester extends LinearOpMode {
                 rw.clawServo1,
                 rw.clawServo2,
                 rw.transferLock,
-                rw.liftOdometer,
                 rw.transferHorn,
-                rw.plateLifter,
                 rw.clawInit,
                 rw.innerTransfer,
                 rw.foundationLock,
-                rw.intakeInit
+                rw.intakeInit,
+                rw.redAutoClawJoint1,
+                rw.redAutoClawJoint2
+                //rw.blueAutoClawJoint1
+                //rw.blueAutoClawJoint2
         };
 
         List<String> servoNames = new ArrayList<>();
         List<Double> servoPositions = new ArrayList<>();
         double[] pos = new double[] {TeleopConstants.clawServo1PosClose, TeleopConstants.clawServo2PosClose,
-                TeleopConstants.transferLockPosUp, TeleopConstants.odometerLockPosDown, TeleopConstants.transferHornPosReady,
-                TeleopConstants.plateLifterPosDown, TeleopConstants.clawInitPosCapstone, TeleopConstants.innerTransferPosTucked,
-                TeleopConstants.foundationLockUnlock, 0};
+                TeleopConstants.transferLockPosUp, TeleopConstants.transferHornPosReady,
+                TeleopConstants.clawInitPosCapstone, TeleopConstants.innerTransferPosTucked,
+                TeleopConstants.foundationLockUnlock, TeleopConstants.intakeInitPosReset, TeleopConstants.autoClaw1Init,
+                TeleopConstants.autoClaw2Init};
 
         for(int i = 0; i < servos.length; i++) {
             servoPositions.add(pos[i]);
@@ -68,6 +72,9 @@ public class ServoTester extends LinearOpMode {
             telemetry.addData("Number of servos: ", servos.length);
             telemetry.addData("Name of selected servo: ", servoNames.get(index));
             telemetry.addData("Servo position", servoPositions.get(index));
+            RobotLog.dd("Number of Servos", String.valueOf(servos.length));
+            RobotLog.dd("Name of Selected Servo", servoNames.get(index));
+            RobotLog.dd("Servo position", String.valueOf(servoPositions.get(index)));
             telemetry.update();
         }
     }

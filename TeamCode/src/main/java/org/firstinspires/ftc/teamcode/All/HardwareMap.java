@@ -16,8 +16,8 @@ import java.util.ArrayList;
 
 public class HardwareMap {
     public DcMotorEx backLeft, backRight, frontLeft, frontRight, leftIntake, rightIntake, liftOne, liftTwo;
-    public Servo clawServo1, clawServo2, foundationLock, plateLifter, liftOdometer, transferLock, transferHorn,
-            clawInit, innerTransfer, intakeInit;
+    public Servo clawServo1, clawServo2, foundationLock, transferLock, transferHorn,
+            clawInit, innerTransfer, intakeInit, redAutoClawJoint1, redAutoClawJoint2, blueAutoClawJoint1, blueAutoClawJoint2;
     public DigitalChannel liftReset, intakeDetect, foundationDetectLeft, foundationDetectRight;
     public BNO055IMU gyro;
     public IntegratingGyroscope imu;
@@ -53,8 +53,10 @@ public class HardwareMap {
         clawServo1 = hwMap.get(Servo.class, "clawServo1");
         clawServo2 = hwMap.get(Servo.class, "clawServo2");
         foundationLock = hwMap.get(Servo.class, "foundationLock");
-        plateLifter = hwMap.get(Servo.class, "plateLifter");
-        liftOdometer = hwMap.get(Servo.class, "liftOdometer");
+        redAutoClawJoint1 = hwMap.get(Servo.class, "redAutoClawJoint1");
+        redAutoClawJoint2 = hwMap.get(Servo.class, "redAutoClawJoint2");
+        //blueAutoClawJoint1 = hwMap.get(Servo.class, "blueAutoClawJoint1");
+        //blueAutoClawJoint2 = hwMap.get(Servo.class, "blueAutoClawJoint2");
         transferLock = hwMap.get(Servo.class, "transferLock");
         transferHorn = hwMap.get(Servo.class, "transferHorn");
         clawInit = hwMap.get(Servo.class, "clawInit");

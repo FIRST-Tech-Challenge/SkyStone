@@ -26,24 +26,24 @@ import java.io.InputStreamReader;
 @Config
 public class DriveConstantsPID {
 
-    public static final boolean RUN_USING_PARAMTER_FROM_PROPERTIES = true;
+    public static final boolean RUN_USING_PARAMTER_FROM_PROPERTIES = false;
 
     public static boolean RUN_USING_ODOMETRY_WHEEL = true;
     public static boolean RUN_USING_IMU_LOCALIZER = false;
     public static boolean BRAKE_ON_ZERO = false;
-    public static double odoEncoderTicksPerRev = 1540.0;
+    public static double odoEncoderTicksPerRev = 1550.0;
     private static String TAG = "DriveConstants";
-    public static double txP = 0.5; //translational x/y co-efficients
-    public static double txI = 0;
-    public static double txD = 0.11;
-    public static double tyP = 1;
-    public static double tyI = 0;
-    public static double tyD = 0.3;
-    public static double hP = 2;    // heading co-efficients;
-    public static double hI = 0;
-    public static double hD = 0.22;
+    public static double txP = 8; //translational x/y co-efficients
+    public static double txI = 0.6;
+    public static double txD = 0.75;
+    public static double tyP = 10;
+    public static double tyI = 0.5;
+    public static double tyD = 1.1;
+    public static double hP = 6;    // heading co-efficients;
+    public static double hI = 2;
+    public static double hD = 0.4;
 
-    public static double ODOMETRY_TRACK_WIDTH = 14.6;
+    public static double ODOMETRY_TRACK_WIDTH = 14.8;
     public static double ODOMERY_FORWARD_OFFSET = -5.5;
     public static double HARDCODED_TICKS_PER_REV = 383.6; //MOTOR_CONFIG.getTicksPerRev();
     public static double MAX_RPM_FROM_SPEC = 435.0;
@@ -62,10 +62,10 @@ public class DriveConstantsPID {
      * Set the first flag appropriately. If using the built-in motor velocity PID, update
      * MOTOR_VELO_PID with the tuned coefficients from DriveVelocityPIDTuner.
      */
-    public static final boolean RUN_USING_ENCODER = true;
+    public static boolean RUN_USING_ENCODER = true;
     public static PIDCoefficients MOTOR_VELO_PID = null;   //35, 0.5, 2.5
-    public static double kP = 23.0;
-    public static double kI = 0.5;
+    public static double kP = 0.1;
+    public static double kI = 1.52;
     public static double kD = 3.0;
 
     /*
@@ -86,7 +86,7 @@ public class DriveConstantsPID {
      * motor encoders or have elected not to use them for velocity control, these values should be
      * empirically tuned.
      */
-    public static double kV = 0.0166;   //0.0115
+    public static double kV = 0.0111;   //0.0115
     public static double kA = 0;
     public static double kStatic = 0;
 	public static double TEST_DISTANCE = 48;
@@ -100,7 +100,7 @@ public class DriveConstantsPID {
      * forces acceleration-limited profiling).
      */
     public static DriveConstraints BASE_CONSTRAINTS = new DriveConstraints(
-            65.0, 40.0, 0.0,
+            55.0, 30.0, 0.0,
             Math.toRadians(180.0), Math.toRadians(180.0), 0.0
     );
 
@@ -286,6 +286,40 @@ public class DriveConstantsPID {
         else {
             MOTOR_VELO_PID = null;
             RobotLog.dd(TAG, "kP, kI, kD has been set, updated this time");
+        }
+
+        v_double = getTeamCodePropertyValue("debug.ftc.useOld");
+        if (v_double == 1.0)
+        {
+            RUN_USING_ODOMETRY_WHEEL = true;
+            RUN_USING_IMU_LOCALIZER = false;
+            BRAKE_ON_ZERO = false;
+            odoEncoderTicksPerRev = 1540.0;
+            txP = 0.5; //translational x/y co-efficients
+            txI = 0;
+            txD = 0.11;
+            tyP = 1.2;
+            tyI = 0;
+            tyD = 1.0;
+            hP = 2;    // heading co-efficients;
+            hI = 0;
+            hD = 0.22;
+            ODOMETRY_TRACK_WIDTH = 14.6;
+            ODOMERY_FORWARD_OFFSET = -5.5;
+            HARDCODED_TICKS_PER_REV = 383.6; //MOTOR_CONFIG.getTicksPerRev();
+            MAX_RPM_FROM_SPEC = 435.0;
+            HARDCODED_RPM_RATIO = 0.683; //0.72215; // 0.666;///0.6514;//*MAX_RPM_FROM_SPEC; //283.4; //MOTOR_CONFIG.getMaxRPM();
+            RUN_USING_ENCODER = true;
+            kP = 23.0;
+            kI = 0.5;
+            kD = 3.0;
+            WHEEL_RADIUS = 2;
+            GEAR_RATIO = 1.0;//(99.5 / 13.7) * (16 / 16); // output (wheel) speed / input (motor) speed
+            TRACK_WIDTH = 14.2;   //17
+            kV = 0.0166;   //0.0115
+            kA = 0;
+            kStatic = 0;
+            TEST_DISTANCE = 72;
         }
         MOTOR_VELO_PID = new PIDCoefficients(kP, kI, kD);
         printConstants();

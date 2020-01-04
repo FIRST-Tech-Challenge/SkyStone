@@ -73,9 +73,9 @@ public class Robot {
     private Servo backStopper;
 
     // Outtake Slide Positions
-    public final double OUTTAKE_SLIDE_EXTENDED = .0799999 - 0.06;
-    public final double OUTTAKE_SLIDE_RETRACTED = .725 - 0.0549999;
-    public final double OUTTAKE_SLIDE_PARTIAL_EXTEND = .22;
+    public final double OUTTAKE_SLIDE_EXTENDED = .85;
+    public final double OUTTAKE_SLIDE_RETRACTED = .07;
+    public final double OUTTAKE_SLIDE_PARTIAL_EXTEND = .755;
 
     //team marker positions
     public final double TEAM_MARKER_DUMP = 1;
@@ -86,14 +86,14 @@ public class Robot {
     public final double BACK_STOPPER_UP = 0.54;
 
     // Outtake Clamp Positions
-    public final double CLAMP_SERVO_CLAMPED = .5;
-    public final double CLAMP_SERVO_RELEASED = .33;
-    public final double CLAMP_SERVO_INTAKEPOSITION = 0.33;
+    public final double CLAMP_SERVO_CLAMPED = 1;
+    public final double CLAMP_SERVO_RELEASED = .86;
+    public final double CLAMP_SERVO_INTAKEPOSITION = 0.86;
 
     // Outtake Pivot Positions
-    public final double OUTTAKE_PIVOT_EXTENDED = .944;
-    public final double OUTTAKE_PIVOT_RETRACTED = .21;
-    public final double OUTTAKE_PIVOT_90 = 0.5825;
+    public final double OUTTAKE_PIVOT_EXTENDED = 1;
+    public final double OUTTAKE_PIVOT_RETRACTED = 0.01;
+    public final double OUTTAKE_PIVOT_90 = .5;
 
     // Outtake Pusher Positions
     public final double PUSHER_PUSHED = .75;
@@ -746,7 +746,7 @@ public class Robot {
 
             if (isTimeKill && currentTime - startTime >= endTime) {
                 brakeRobot();
-                break;
+                isMoving = false;
             }
 
             posAngle = MathFunctions.angleWrap(anglePos + 2 * Math.PI);
@@ -827,6 +827,10 @@ public class Robot {
                         action.executeAction(currentTime);
                     }
                 }
+            }
+
+            if (isTimeKill && currentTime - startTime >= endTime) {
+                break;
             }
 
             if (isMoving) {

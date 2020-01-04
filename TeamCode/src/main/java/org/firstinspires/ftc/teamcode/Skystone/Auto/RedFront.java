@@ -69,7 +69,7 @@ public class RedFront extends AutoBase {
 
         double[][] toFoundation = {
                 toFirstStone[toFirstStone.length - 1],
-                {34, firstSkystoneY+5, 0, 10},
+                {34, firstSkystoneY + 5, 0, 10},
                 {28, 17, -10, 20},
                 {24, 20, -10, 20},
                 {24, 30, -10, 20},
@@ -92,8 +92,8 @@ public class RedFront extends AutoBase {
                 {20, 29, 0, -10},
                 {18, secondSkyStoneY + 5, 0, 10},
                 {secondSkyStoneX, secondSkyStoneY, 30, 0},
-                {secondSkyStoneX-5, secondSkyStoneY-5, 30, 0}};
-    HashMap<Point, Robot.Actions> toSecondStoneActions = new HashMap<Point, Robot.Actions>() {{
+                {secondSkyStoneX - 5, secondSkyStoneY - 5, 30, 0}};
+        HashMap<Point, Robot.Actions> toSecondStoneActions = new HashMap<Point, Robot.Actions>() {{
             put(new Point(22, 73), Robot.Actions.RETRACT_OUTTAKE);
             put(new Point(10, 70), Robot.Actions.RELEASE_FOUNDATION);
             put(new Point(28, -10), Robot.Actions.START_INTAKE);

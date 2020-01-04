@@ -122,8 +122,10 @@ public class MainTeleop extends LinearOpMode {
             isRetractingSlides = false;
         }
 
-        robot.getOuttakeSpool().setPower(spoolPower);
-        robot.getOuttakeSpool2().setPower(spoolPower);
+        if (!robot.isMovingLift) {
+            robot.getOuttakeSpool().setPower(spoolPower);
+            robot.getOuttakeSpool2().setPower(spoolPower);
+        }
 //        telemetry.addLine("Spool Position " + robot.getOuttakeSpool().getCurrentPosition());
     }
 
@@ -371,11 +373,11 @@ public class MainTeleop extends LinearOpMode {
             outtakeExecutionTime = currentTime;
         }
 
-        if(currentTime-outtakeExecutionTime >= 900 && isExtend){
+        if(currentTime-outtakeExecutionTime >= 400 && isExtend){
             robot.getClampPivot().setPosition(robot.OUTTAKE_PIVOT_EXTENDED);
         }
 
-        if(currentTime-outtakeExecutionTime >= 1200 && isExtend && !is90){
+        if(currentTime-outtakeExecutionTime >= 700 && isExtend && !is90){
             robot.getOuttakeExtender().setPosition(robot.OUTTAKE_SLIDE_PARTIAL_EXTEND);
             isExtend = false;
             hasPushed = false;
@@ -396,22 +398,24 @@ public class MainTeleop extends LinearOpMode {
             hasRetracted = true;
         }
 
-        if(currentTime-outtakeExecutionTime >= 450 && isRetract && hasRetracted){
+        if(currentTime-outtakeExecutionTime >= 100 && isRetract && hasRetracted){
             robot.getClampPivot().setPosition(robot.OUTTAKE_PIVOT_RETRACTED);
         }
-        if(currentTime-outtakeExecutionTime >= 750 && isRetract && hasRetracted){
+        if(currentTime-outtakeExecutionTime >= 400 && isRetract && hasRetracted){
             robot.getClamp().setPosition(robot.CLAMP_SERVO_CLAMPED);
         }
-        if(currentTime-outtakeExecutionTime >= 1200 && isRetract && hasRetracted){
+        if(currentTime-outtakeExecutionTime >= 850 && isRetract && hasRetracted){
             robot.getOuttakeExtender().setPosition(robot.OUTTAKE_SLIDE_RETRACTED);
             isRetract = false;
         }
 
         //clamp only
-        if(currentTime-outtakeExecutionTime >= 300 && isClamp){
+        if(currentTime-outtakeExecutionTime >= 350 && isClamp){
+            robot.getIntakePusher().setPosition(robot.PUSHER_RETRACTED);
+        }
+        if(currentTime-outtakeExecutionTime >= 400 && isClamp){
             robot.getClamp().setPosition(robot.CLAMP_SERVO_CLAMPED);
             isClamp = false;
-            robot.getIntakePusher().setPosition(robot.PUSHER_RETRACTED);
         }
     }
 

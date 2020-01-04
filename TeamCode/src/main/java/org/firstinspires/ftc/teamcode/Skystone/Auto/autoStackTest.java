@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Skystone.Auto;
 import android.os.SystemClock;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
 import org.firstinspires.ftc.teamcode.Skystone.Robot;
@@ -10,6 +11,7 @@ import org.firstinspires.ftc.teamcode.Skystone.Vision;
 
 import java.util.HashMap;
 
+@Disabled
 @Autonomous(name = "autoStackTest", group = "LinearOpmode")
 public class autoStackTest extends AutoBase {
     @Override

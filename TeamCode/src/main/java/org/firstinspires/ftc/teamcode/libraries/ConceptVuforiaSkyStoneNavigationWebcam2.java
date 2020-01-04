@@ -306,13 +306,13 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
 //            distanceToDepot = 130;//205
 //        }
         autoLib.calcMove(distanceToDepot, 1f, Constants.Direction.BACKWARD);
-//        autoLib.moveArmUpSeconds();
+        autoLib.moveArmUpSeconds();
         autoLib.calcTurn(50, .6f);
         autoLib.calcMove(foundation, .7f, Constants.Direction.BACKWARD);
-//        autoLib.scoreServo();
+        autoLib.scoreServo();
         autoLib.calcMove(5, .15f, Constants.Direction.BACKWARD);
         Thread.sleep(300);
-//        autoLib.latchServoFoundation();
+        autoLib.latchServoFoundation();
         Thread.sleep(1000);
         autoLib.calcMove(60, 1f, Constants.Direction.FORWARD);
         autoLib.restServoFoundation();

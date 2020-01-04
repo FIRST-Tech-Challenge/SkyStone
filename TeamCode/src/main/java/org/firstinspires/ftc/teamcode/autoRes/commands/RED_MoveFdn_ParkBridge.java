@@ -107,8 +107,9 @@ public class RED_MoveFdn_ParkBridge extends LinearOpMode {
         runFwdTill_frontleftChassisTouchSensor_Pressed(7, 0.1);
         sleep(500);
 
-        //Drop Arm to OnFoundation level
+        //Drop Arm and Hook to OnFoundation level
         moveArm_onFoundationLevel();
+        moveHook_holdFoundation();
         sleep(500);
 
         //Move foundation to wall and then turn
@@ -120,8 +121,9 @@ public class RED_MoveFdn_ParkBridge extends LinearOpMode {
         runFwdBackLeftRight(foundationTurnDistance,playingAlliance*(-1),0.25);
         sleep(500);
 
-        //Drop Arm to OnFoundation level
+        //Drop Arm and Hook to OnFoundation level
         moveArm_onFoundationLevel();
+        moveHook_holdFoundation();
         sleep(500);
 
         //Pull back till wall is hit (Motor does not move)
@@ -131,8 +133,9 @@ public class RED_MoveFdn_ParkBridge extends LinearOpMode {
         //Slide left till Motor does not move (Foundation corner on Edge)
         //#TOBEWRITTEN
 
-        //Lift Arm to Above foundation level
+        //Lift Arm to Above foundation level and release hook
         moveArm_aboveFoundationLevel();
+        moveHook_Released();
         sleep(500);
 
         //Push forward to move foundation to end of line
@@ -147,10 +150,11 @@ public class RED_MoveFdn_ParkBridge extends LinearOpMode {
         //Move out of foundation area
         runFwdBackLeftRight(30, playingAlliance, 0.25);
 
-        //Close Grip
-        moveWristToClose();
-        sleep(100);
+        //Close Grip //REMOVED SINCE WRIST DOES NOT CLOSE
+        //moveWristToClose();
+        //sleep(100);
 
+        //Move Arm to ground Level
         turnArmBrakeModeOn();
         sleep(500);
 
@@ -160,14 +164,19 @@ public class RED_MoveFdn_ParkBridge extends LinearOpMode {
             runFwdBackLeftRight(25,0,0.25);
         }
 
+        //Turn by 90 degrees to point arm forward
+        turnby90degree(-playingAlliance,0.25);
+
         //Park near wall
         //Move right by distance or till Chassis light sensor does not detect Blue line to be under blue skybridge
         if (playingAlliance == 1) {
             //Blue Alliance
-            runTill_ChassisRightColorSensorIsBlue(30, 1, 0.25);
+            //runTill_ChassisRightColorSensorIsBlue(30, 1, 0.25);
+            runTill_ChassisRightColorSensorIsBlue(-30, 0, 0.25);
         } else {
             //Red Alliance
-            runTill_ChassisLeftColorSensorIsRed(30, -1, 0.25);
+            //runTill_ChassisLeftColorSensorIsRed(30, -1, 0.25);
+            runTill_ChassisRightColorSensorIsRed(-30, 0, 0.25);
         }
 
         //Reached Parking position
@@ -312,6 +321,20 @@ public class RED_MoveFdn_ParkBridge extends LinearOpMode {
     }
 
     /**
+     * Method to move hook  to hold on foundation
+     */
+    public void moveHook_holdFoundation(){
+        autoChassis.moveHookServo(autoChassis.HOOK_HOLD);
+    }
+
+    /**
+     * Method to move hold to released default state
+     */
+    public void moveHook_Released(){
+        autoChassis.moveHookServo(autoChassis.HOOK_RELEASED);
+    }
+
+    /**
      * Method to set Arm brake mode to ON when Zero (0.0) power is applied.
      * To be used when arm is above groundlevel
      * setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE)
@@ -443,4 +466,30 @@ public class RED_MoveFdn_ParkBridge extends LinearOpMode {
         autoChassis.backLeft.setPower(0.0);
         autoChassis.backRight.setPower(0.0);
     }
+
+    /**
+     * Method to turn robot by 90 degrees
+     * @param clockOrAntiClockwise + 1 for clockwise, -1 for anticlockwise
+     * @param power for motors
+     *
+     */
+    public void turnby90degree(int clockOrAntiClockwise, double power){
+        autoChassis.resetChassis();
+        autoChassis.setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //Max Total Rotations of wheel = distance / circumference of wheel
+        //double target90degRotations = (Math.PI*robotRadius/2)/(2*Math.PI*wheelRadius);
+
+
+        while (!isStopRequested() && Math.abs(autoChassis.backLeft.getCurrentPosition()) < Math.abs(autoChassis.ChassisMotorEncoderCount * autoChassis.target90degRotations)) {
+            autoChassis.frontLeft.setPower(clockOrAntiClockwise*power);
+            autoChassis.frontRight.setPower(-clockOrAntiClockwise*power);
+            autoChassis.backLeft.setPower(clockOrAntiClockwise*power);
+            autoChassis.backRight.setPower(-clockOrAntiClockwise*power);
+        }
+        autoChassis.frontLeft.setPower(0.0);
+        autoChassis.frontRight.setPower(0.0);
+        autoChassis.backLeft.setPower(0.0);
+        autoChassis.backRight.setPower(0.0);
+    }
+
 }

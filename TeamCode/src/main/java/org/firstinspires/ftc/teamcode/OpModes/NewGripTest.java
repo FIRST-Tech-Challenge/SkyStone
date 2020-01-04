@@ -67,7 +67,7 @@ public class NewGripTest extends LinearOpMode{
         hzGamepad1 = new HzGamepad1(gamepad1);
 
         telemetry.setAutoClear(false);
-        telemetry.addData("Init Autonomous Tests", "v:1.0");
+        telemetry.addData("New Grip Test", "v:1.0");
 
         //Wait for pressing Run on controller
         waitForStart();

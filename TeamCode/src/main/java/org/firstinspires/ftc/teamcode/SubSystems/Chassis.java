@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /** Definition of Robot Chassis.
@@ -52,6 +53,8 @@ public class Chassis {
     public ColorSensor leftColorSensor;
     public ColorSensor rightColorSensor;
 
+    public Servo hook;
+
     //Declare Chassis Configuration variables
     public double wheelRadius;
     public double robotRadius;
@@ -63,6 +66,9 @@ public class Chassis {
     public boolean configureRobot = false;
 
     public double ChassisMotorEncoderCount = 723.24;
+
+    public double HOOK_HOLD = 0.87;
+    public double HOOK_RELEASED = 0.22;
 
     /**
      * Constructor of Chassis.
@@ -84,6 +90,8 @@ public class Chassis {
         //Map ColorSensors from configuration
         leftColorSensor = hardwareMap.get(ColorSensor.class, "ch_left_color");
         rightColorSensor = hardwareMap.get(ColorSensor.class, "ch_right_color");
+
+        hook = hardwareMap.servo.get("hook");
 
         //Configure Robot to dimensions and modified for wheel type
         configureRobot();
@@ -112,6 +120,7 @@ public class Chassis {
         resetChassis();
         setZeroBehavior(DcMotor.ZeroPowerBehavior.FLOAT); // To avoid jerk at start
         setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        hook.setPosition(HOOK_RELEASED);
     }
 
     /**
@@ -525,6 +534,22 @@ public class Chassis {
         } else {
             return false;
         }
+    }
+
+    /**
+     * Mothod to move the hook to the set level
+     * @param hookLevel
+     */
+    public void moveHookServo(double hookLevel){
+        if (hookLevel <= HOOK_RELEASED){
+            hookLevel = HOOK_RELEASED;
+        }
+
+        if (hookLevel >= HOOK_HOLD){
+            hookLevel = HOOK_HOLD;
+        }
+
+        hook.setPosition(hookLevel);
     }
 
 }

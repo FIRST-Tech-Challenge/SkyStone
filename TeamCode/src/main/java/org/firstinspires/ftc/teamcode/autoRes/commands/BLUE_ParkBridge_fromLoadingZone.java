@@ -81,39 +81,57 @@ public class BLUE_ParkBridge_fromLoadingZone extends LinearOpMode {
         //On start, Lift arm and robot opens wrist to front position
         //initArm() and initIntake() should do this on class initialization
         //Lift Arm to Above foundation level
-        moveArm_aboveFoundationLevel();
-        sleep(500);
+        //moveArm_aboveFoundationLevel();
+        //sleep(500);
 
         //Close Grip
-        moveWristToClose();
-        sleep(100);
+        //moveWristToClose();
+        //sleep(100);
 
+        //Move Arm to ground Level
         turnArmBrakeModeOn();
         sleep(500);
 
 
-        //Optional : Move to park near skybridge Neutral
-        if (parkingPlaceNearSkyBridge){
-            runFwdBackLeftRight(25,0,0.25);
-        }
+
 
         //Park near wall
-        //Move right by distance or till Chassis light sensor does not detect Blue line to be under blue skybridge
+        //Move back by distance or till Chassis light sensor does not detect Blue line to be under blue skybridge
         if (startInBuildingZone) {
             if (playingAlliance == 1) {
+                //Optional : Move to park near skybridge Neutral
+                if (parkingPlaceNearSkyBridge){
+                    runFwdBackLeftRight(25, playingAlliance,0.25);
+                }
                 //Blue Alliance
-                runTill_ChassisRightColorSensorIsBlue(30, 1, 0.2);
+                //runTill_ChassisRightColorSensorIsBlue(30, 1, 0.2);
+                runTill_ChassisRightColorSensorIsBlue(-30, 0, 0.25);
             } else {
+                //Optional : Move to park near skybridge Neutral
+                if (parkingPlaceNearSkyBridge){
+                    runFwdBackLeftRight(25, playingAlliance,0.25);
+                }
                 //Red Alliance
-                runTill_ChassisLeftColorSensorIsRed(30, -1, 0.2);
+                //runTill_ChassisLeftColorSensorIsRed(30, -1, 0.2);
+                runTill_ChassisRightColorSensorIsRed(-30, 0, 0.25);
             }
         } else {
             if (playingAlliance == 1) {
+                //Optional : Move to park near skybridge Neutral
+                if (parkingPlaceNearSkyBridge){
+                    runFwdBackLeftRight(25, -playingAlliance,0.25);
+                }
                 //Blue Alliance
-                runTill_ChassisLeftColorSensorIsBlue(30, -1, 0.2);
+                //runTill_ChassisLeftColorSensorIsBlue(30, -1, 0.2);
+                runTill_ChassisRightColorSensorIsBlue(-30, 0, 0.25);
             } else {
+                //Optional : Move to park near skybridge Neutral
+                if (parkingPlaceNearSkyBridge){
+                    runFwdBackLeftRight(25, -playingAlliance,0.25);
+                }
                 //Red Alliance
-                runTill_ChassisRightColorSensorIsRed(30, 1, 0.2);
+                //runTill_ChassisRightColorSensorIsRed(30, 1, 0.2);
+                runTill_ChassisRightColorSensorIsRed(-30, 0, 0.25);
             }
         }
 

@@ -39,7 +39,7 @@ public class Arm {
     //Encoder Countable Events Per Revolution (Output Shaft)	1,497.325 (Rises & Falls of Ch A & B)
     //Arm move 90degrees so max level is 1497.325/4 = 374 counts. Add 30 counts for slippage compensation
 
-        public int[] blockLevel = {
+    /*public int[] blockLevel = {
              0, //ground level
             -75, //block level 1
             -145, //block level 2
@@ -47,17 +47,29 @@ public class Arm {
             -275, //block level 4
             -340, //block level 5
             -405 //block level 6
+    };*/
+
+    public int[] blockLevel = {
+            +20, //ground level
+            -130, //block level 1
+            -220, //block level 2
+            -310, //block level 3
+            -400, //block level 4
+            -490, //block level 5
+            -580, //block level 6
+            -600 //End Level 7
     };
 
     public int groundLevel = +20;
-    public int detectSkystoneLevel = -70;
+    public int detectSkystoneLevel = -150;//-70;
     public int aboveFoundationLevel = -130;
-    public int onFoundationLevel = 30;
+    public int onFoundationLevel = +30;
     int autoBlockPlacement = -150;
     int initLevel = -150;
+    int initTeleOpLevel = +20;
 
     public int currentLevel = 0;
-    int MAX_BLOCK_LEVEL = 6;
+    int MAX_BLOCK_LEVEL = 7;
 
     //Timer for timing out Arm motion incase targetPosition cannot be achieved
     ElapsedTime ArmMotionTimeOut = new ElapsedTime();
@@ -88,7 +100,7 @@ public class Arm {
         resetArm();
         armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        //moveArm_initLevel();
+        moveArm_initTeleOpLevel();
     }
 
     /**
@@ -130,6 +142,13 @@ public class Arm {
         runArmToLevel();
     }
 
+    /**
+     * Method to move Arm to groundlevel and turn Brake Mode OFF
+     */
+    public void moveArm_initTeleOpLevel(){
+        armMotor.setTargetPosition(initTeleOpLevel);
+        runArmToLevel();
+    }
 
     /**
      * Method to move Arm to groundlevel and turn Brake Mode OFF

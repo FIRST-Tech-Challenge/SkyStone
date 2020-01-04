@@ -112,18 +112,18 @@ public class Teleop extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            if (gamepad2.a && buttonLogic.get(0).getState()[0] && buttonLogic.get(5).getState()[0]) {
-                buttonLogic.get(5).manualActivate(true, false);
-
-                if (!buttonLogic.get(3).getState()[1])
-                    buttonLogic.get(5).manualActivate(false, true);
-            }
-
-            if (gamepad2.left_trigger >= 0.5 && buttonLogic.get(4).getState()[0])
+            if (gamepad2.a && buttonLogic.get(0).getState()[0] && buttonLogic.get(4).getState()[0]) {
                 buttonLogic.get(4).manualActivate(true, false);
 
-            if (gamepad2.y && !buttonLogic.get(3).getState()[0] && buttonLogic.get(1).getState()[0])
+                if (!buttonLogic.get(2).getState()[1])
+                    buttonLogic.get(4).manualActivate(false, true);
+            }
+
+            if (gamepad2.left_trigger >= 0.5 && buttonLogic.get(3).getState()[0])
                 buttonLogic.get(3).manualActivate(true, false);
+
+            if (gamepad2.y && !buttonLogic.get(2).getState()[0] && buttonLogic.get(1).getState()[0])
+                buttonLogic.get(2).manualActivate(true, false);
 
             //------------------------------===Servos & Intake/Outake===------------------------------------------
 
@@ -146,8 +146,8 @@ public class Teleop extends LinearOpMode {
             if (gamepad2.dpad_up && !blockerCapstone) {
                 blockerCapstone = true;
 
-                if (!buttonLogic.get(5).getState()[0])
-                    buttonLogic.get(5).manualActivate(true, false);
+                if (!buttonLogic.get(4).getState()[0])
+                    buttonLogic.get(4).manualActivate(true, false);
 
                 if (buttonLogic.get(0).getState()[0])
                     buttonLogic.get(0).manualActivate(true, false);
@@ -169,22 +169,22 @@ public class Teleop extends LinearOpMode {
                 } catch (Exception e) {
                 }
 
-                if (buttonLogic.get(5).getState()[0])
-                    buttonLogic.get(5).manualActivate(true, false);
-
                 if (buttonLogic.get(4).getState()[0])
                     buttonLogic.get(4).manualActivate(true, false);
 
-                if (!buttonLogic.get(3).getState()[1])
-                    buttonLogic.get(3).manualActivate(false, true);
+                if (buttonLogic.get(3).getState()[0])
+                    buttonLogic.get(3).manualActivate(true, false);
+
+                if (!buttonLogic.get(2).getState()[1])
+                    buttonLogic.get(2).manualActivate(false, true);
 
                 try {
                     Thread.sleep(700);
                 } catch (Exception e) {
                 }
 
-                if (!buttonLogic.get(5).getState()[0])
-                    buttonLogic.get(5).manualActivate(true, false);
+                if (!buttonLogic.get(4).getState()[0])
+                    buttonLogic.get(4).manualActivate(true, false);
 
                 try {
                     Thread.sleep(1500);
@@ -193,13 +193,13 @@ public class Teleop extends LinearOpMode {
             } else if (!gamepad2.dpad_up && blockerCapstone) {
                 blockerCapstone = false;
 
-                if (buttonLogic.get(5).getState()[0])
-                    buttonLogic.get(5).manualActivate(true, false);
+                if (buttonLogic.get(4).getState()[0])
+                    buttonLogic.get(4).manualActivate(true, false);
 
                 hwMap.clawInit.setPosition(TeleopConstants.clawInitPosCapstone);
 
-                if (!buttonLogic.get(3).getState()[1])
-                    buttonLogic.get(3).manualActivate(false, true);
+                if (!buttonLogic.get(2).getState()[1])
+                    buttonLogic.get(2).manualActivate(false, true);
 
                 hwMap.innerTransfer.setPosition(TeleopConstants.innerTransferPosTucked);
             }

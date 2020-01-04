@@ -17,6 +17,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.All.FourWheelMecanumDrivetrain;
 import org.firstinspires.ftc.teamcode.All.HardwareMap;
 import org.firstinspires.ftc.teamcode.Autonomous.Vision.Detect;
+import org.firstinspires.ftc.teamcode.PID.DriveConstantsPID;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveBase;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveREV;
 
@@ -66,6 +67,8 @@ public class MainAutonomous extends LinearOpMode {
         hwMap.frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         hwMap.backRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
+        DriveConstantsPID.updateConstantsFromProperties();
+
         while (!isStarted() && !isStopRequested()) {
 
             // Select starting position from user input
@@ -113,7 +116,7 @@ public class MainAutonomous extends LinearOpMode {
                 drive = new SampleMecanumDriveREV(hardwareMap);
                 telemetry.addData("STATUS", "Done!");
                 telemetry.update();
-                path = new Path(hwMap, this, drive, startingPos);
+                path = new Path(hwMap, this, drive, startingPos, hardwareMap);
 
                 if (fieldPosition == FieldPosition.RED_QUARY || fieldPosition == FieldPosition.BLUE_QUARY) {
                     telemetry.addData("STATUS", "Initializing TensorFlow...");

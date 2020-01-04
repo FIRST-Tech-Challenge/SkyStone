@@ -31,7 +31,7 @@ import java.util.List;
 @Config
 public class DriveConstantsPID {
 
-    public static final boolean RUN_USING_PARAMTER_FROM_PROPERTIES = true;
+    public static final boolean RUN_USING_PARAMTER_FROM_PROPERTIES = false;
 
     public static boolean RUN_USING_ODOMETRY_WHEEL = true;
     public static boolean RUN_USING_IMU_LOCALIZER = false;
@@ -47,9 +47,9 @@ public class DriveConstantsPID {
     public static double hP = 6;    // heading co-efficients;
     public static double hI = 2;
     public static double hD = 0.4;
-    public static double strafeTimeDistanceRatio = 0.01; // duration for power to achieve strafe distance;
-    public static double strafeMotorPower = 0.5;
-    public static double rear_ratio = 1.0;
+    public static double strafeTimeDistanceRatio = 0.093; // duration for power to achieve strafe distance;
+    public static double strafeMotorPower = 0.19;
+    public static double rear_ratio = 1.105;
 
     public static double ODOMETRY_TRACK_WIDTH = 14.8;
     public static double ODOMERY_FORWARD_OFFSET = -5.5;
@@ -195,7 +195,7 @@ public class DriveConstantsPID {
         RobotLog.dd(TAG, "Odometry wheel width? : " + Double.toString(ODOMETRY_TRACK_WIDTH));
         RobotLog.dd(TAG, "Odometry forward offset? " + Double.toString(ODOMERY_FORWARD_OFFSET));
         RobotLog.dd(TAG, "Odometry EncoderTicksPerRev? " + Double.toString(odoEncoderTicksPerRev));
-        RobotLog.dd(TAG, "strafeTimeDistanceRatio: " + Double.toString(strafeTimeDistanceRatio));
+        RobotLog.dd(TAG, "strafeTimeDistanceRat: " + Double.toString(strafeTimeDistanceRatio));
         RobotLog.dd(TAG, "strafeMotorPower:  " + Double.toString(strafeMotorPower));
         RobotLog.dd(TAG, "rear_ratio:  " + Double.toString(rear_ratio));
     }
@@ -285,7 +285,7 @@ public class DriveConstantsPID {
         v_double = getTeamCodePropertyValue("debug.ftc.strafeMotorPower");
         if (v_double != Double.MAX_VALUE)
             strafeMotorPower = v_double;
-        v_double = getTeamCodePropertyValue("debug.ftc.strafeTimeDistanceRatio");
+        v_double = getTeamCodePropertyValue("debug.ftc.strafeTimeDistanceRat");
         if (v_double != Double.MAX_VALUE)
             strafeTimeDistanceRatio = v_double;
         v_double = getTeamCodePropertyValue("debug.ftc.rear_ratio");

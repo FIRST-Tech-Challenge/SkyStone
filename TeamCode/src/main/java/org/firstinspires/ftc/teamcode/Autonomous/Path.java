@@ -34,12 +34,15 @@ public class Path {
     private HardwareMap hwMap;
     private LinearOpMode opMode;
     private List<Recognition> tfod;
+    private com.qualcomm.robotcore.hardware.HardwareMap hardwareMap;
 
-    public Path(HardwareMap hwMap, LinearOpMode opMode, SampleMecanumDriveBase drive, Pose2d startingPos) {
+    public Path(HardwareMap hwMap, LinearOpMode opMode, SampleMecanumDriveBase drive, Pose2d startingPos,
+                com.qualcomm.robotcore.hardware.HardwareMap hardwareMap) {
         this.drive = drive;
         this.startingPos = startingPos;
         this.hwMap = hwMap;
         this.opMode = opMode;
+        this.hardwareMap = hardwareMap;
         align = new Align(hwMap, opMode, DcMotor.ZeroPowerBehavior.BRAKE);
         this.drive.getLocalizer().setPoseEstimate(startingPos);
         this.drive.getLocalizer().update();
@@ -58,17 +61,26 @@ public class Path {
                 hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
                 hwMap.transferLock.setPosition(TeleopConstants.transferLockPosPlatform);
 
+                DriveConstantsPID.moveStrafeLeft(hardwareMap, 25);
+
+                RobotLog.dd("Current Position", drive.getPoseEstimate().toString());
+
+                drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(drive.getPoseEstimate().getX(),
+                        drive.getPoseEstimate().getY() + 25), drive.getExternalHeading()));
+                drive.getLocalizer().update();
+
+                RobotLog.dd("Current Position", drive.getPoseEstimate().toString());
+
                 builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);   //-34.752, -63.936
                 if(DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
-                    /*
-                    builder = builder.strafeTo(new Vector2d(drive.getPoseEstimate().getX(), -63.936 + 5.0))
-                            .strafeTo(new Vector2d(drive.getPoseEstimate().getX(), -63.936 + 5.0 * 2))
+
+                    builder = builder//.strafeTo(new Vector2d(drive.getPoseEstimate().getX(), -63.936 + 5.0))
+                            /*.strafeTo(new Vector2d(drive.getPoseEstimate().getX(), -63.936 + 5.0 * 2))
                             .strafeTo(new Vector2d(drive.getPoseEstimate().getX(), -63.936 + 5.0 * 3))
                             .strafeTo(new Vector2d(drive.getPoseEstimate().getX(), -63.936 + 5.0 * 4))
-                            .strafeTo(new Vector2d(drive.getPoseEstimate().getX(), -63.936 + 5.0 * 5))
-                            .setReversed(true).lineTo(new Vector2d(-42, -63.936 + 5.0 * 5));
-                     */
-                    DriveConstantsPID.moveStrafeLeft(hwMap.hardwareMap, 25);
+                            .strafeTo(new Vector2d(drive.getPoseEstimate().getX(), -63.936 + 5.0 * 5))*/
+                            .setReversed(true).lineTo(new Vector2d(-51, -39));
+
                 } else {
                     builder = builder.strafeTo(new Vector2d(drive.getPoseEstimate().getX(),-30)).setReversed(true)
                             .lineTo(new Vector2d(-50, -30));
@@ -78,7 +90,7 @@ public class Path {
 
                 RobotLog.dd("STATUS", "Strafe #1 Done");
 
-                try{
+                /*try{
                     Thread.sleep(500);
                 } catch (Exception e){}
 
@@ -148,7 +160,7 @@ public class Path {
                     Thread.sleep(500);
                 } catch (Exception e){}
 
-                dropStone(FieldPosition.RED_QUARY);
+                dropStone(FieldPosition.RED_QUARY);*/
 
                 break;
             case 2:

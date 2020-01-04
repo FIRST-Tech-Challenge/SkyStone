@@ -24,7 +24,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.Skystone.Auto.Actions.Action;
 import org.firstinspires.ftc.teamcode.Skystone.Auto.Actions.Enums.ActionState;
-import org.firstinspires.ftc.teamcode.Skystone.Auto.Actions.Enums.ActionType;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.CurvePoint;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.PathPoints;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
@@ -69,17 +68,17 @@ public class Robot {
     private Servo leftFoundation;
     private Servo rightFoundation;
 
-    private Servo markerServo;
+    private Servo capstoneServo;
     private Servo backStopper;
 
     // Outtake Slide Positions
-    public final double OUTTAKE_SLIDE_EXTENDED = .85;
+    public final double OUTTAKE_SLIDE_EXTENDED = .8;
     public final double OUTTAKE_SLIDE_RETRACTED = .07;
     public final double OUTTAKE_SLIDE_PARTIAL_EXTEND = .66;
 
     //team marker positions
-    public final double TEAM_MARKER_DUMP = 1;
-    public final double TEAM_MARKER_RETRACT = .24;
+    public final double CAPSTONE_DUMP = 1;
+    public final double CAPSTONE_RETRACT = .24;
 
     //back stopper positions
     public final double BACK_STOPPER_DOWN = 0.85;
@@ -105,6 +104,26 @@ public class Robot {
 
     public final double RIGHTFOUNDATION_EXTENDED = .94;
     public final double RIGHTFOUNDATION_RETRACTED = .72;
+
+    // Timer delays for outtake actions. All in ms
+    public final long DELAY_CAPSTONE = 0; // Capstone and backstopper always have delay of 0
+    public final long DELAY_BACKSTOPPER = 0; // for all outtake actions
+
+    public final long DELAY_CLAMP_ON_EXTEND = 0;
+    public final long DELAY_SLIDE_ON_EXTEND = 0;
+    public final long DELAY_PIVOT_ON_EXTEND = 650;
+    public final long DELAY_PARTIAL_SLIDE_ON_EXTEND = 950;
+
+    public final long DELAY_RELEASE_CLAMP_ON_RETRACT = 0;
+    public final long DELAY_PUSHER_ON_RETRACT = 0;
+    public final long DELAY_EXTEND_SLIDE_ON_RETRACT = 0;
+    public final long DELAY_PIVOT_ON_RETRACT = 100;
+    public final long DELAY_CLAMP_ON_RETRACT = 400;
+    public final long DELAY_SLIDE_ON_RETRACT = 850;
+
+    public final long DELAY_PUSHER_ON_CLAMP = 0;
+    public final long DELAY_RETRACT_PUSHER_ON_CLAMP = 350;
+    public final long DELAY_CLAMP_ON_CLAMP = 400;
 
     //robots position
     private Point robotPos = new Point();
@@ -197,7 +216,7 @@ public class Robot {
         leftFoundation = getServo("leftFoundation");
         rightFoundation = getServo("rightFoundation");
 
-        markerServo = getServo("markerServo");
+        capstoneServo = getServo("markerServo");
         backStopper = getServo("backStopper");
 //
 //        topBarDistance = getRev2mDistanceSensor("topBarDistance");
@@ -282,7 +301,7 @@ public class Robot {
     }
 
     public void initServos() {
-        markerServo.setPosition(TEAM_MARKER_RETRACT);
+        capstoneServo.setPosition(CAPSTONE_RETRACT);
         backStopper.setPosition(BACK_STOPPER_UP);
 
         boolean isRetract = true;
@@ -1728,12 +1747,12 @@ public class Robot {
         this.position = position;
     }
 
-    public Servo getMarkerServo() {
-        return markerServo;
+    public Servo getCapstoneServo() {
+        return capstoneServo;
     }
 
-    public void setMarkerServo(Servo markerServo) {
-        this.markerServo = markerServo;
+    public void setCapstoneServo(Servo capstoneServo) {
+        this.capstoneServo = capstoneServo;
     }
 
     public Servo getBackStopper() {

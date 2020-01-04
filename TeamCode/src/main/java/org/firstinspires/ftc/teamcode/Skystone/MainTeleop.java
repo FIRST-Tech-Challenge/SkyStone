@@ -1,14 +1,20 @@
 package org.firstinspires.ftc.teamcode.Skystone;
+
 import android.os.SystemClock;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.Skystone.Auto.Actions.MotionAction;
 import org.firstinspires.ftc.teamcode.Skystone.Odometry.Position2D;
 
+import java.util.LinkedList;
+import java.util.Queue;
 
-@TeleOp(name="MainTeleOpSky", group="Linear Opmode")
+
+@TeleOp(name = "MainTeleOpSky", group = "Linear Opmode")
 public class MainTeleop extends LinearOpMode {
     Robot robot;
 
@@ -91,18 +97,19 @@ public class MainTeleop extends LinearOpMode {
     }
 
     boolean isToggleRetractingSlides = false;
-    private void spoolLogic(){
+
+    private void spoolLogic() {
         if (gamepad2.dpad_up) {
             isRetractingSlides = false;
             spoolPower = 1;
-        }else if(gamepad2.dpad_down){
+        } else if (gamepad2.dpad_down) {
             isRetractingSlides = false;
             spoolPower = -1;
-        }else if(!isRetractingSlides){
+        } else if (!isRetractingSlides) {
             spoolPower = 0;
         }
 
-        if(gamepad2.right_bumper && !isToggleRetractingSlides){
+        if (gamepad2.right_bumper && !isToggleRetractingSlides) {
             if (isRetractingSlides) {
                 isRetractingSlides = false;
             } else {
@@ -113,11 +120,11 @@ public class MainTeleop extends LinearOpMode {
             isToggleRetractingSlides = false;
         }
 
-        if(isRetractingSlides){
+        if (isRetractingSlides) {
             spoolPower = -1;
         }
 
-        if(isRetractingSlides && (robot.getOuttakeSpool().getCurrentPosition()>=0)){
+        if (isRetractingSlides && (robot.getOuttakeSpool().getCurrentPosition() >= 0)) {
             spoolPower = 0;
             isRetractingSlides = false;
         }
@@ -192,25 +199,25 @@ public class MainTeleop extends LinearOpMode {
         robot.allWheelDrive(fLPower, fRPower, bLPower, bRPower);
     }
 
-    private void teamMarkerLogic(){
-        if(gamepad2.left_bumper){
+    private void teamMarkerLogic() {
+        if (gamepad2.left_bumper) {
             long startTime = SystemClock.elapsedRealtime();
             robot.getClamp().setPosition(robot.CLAMP_SERVO_INTAKEPOSITION);
             robot.getBackStopper().setPosition(robot.BACK_STOPPER_DOWN);
 
-            while(opModeIsActive() && SystemClock.elapsedRealtime() - startTime <250){
+            while (opModeIsActive() && SystemClock.elapsedRealtime() - startTime < 250) {
                 driveLogic();
                 slowDriveLogic();
                 intakeLogic();
                 foundationLogic();
             }
 
-            robot.getIntakePusher().setPosition(robot.PUSHER_PUSHED-0.12);
+            robot.getIntakePusher().setPosition(robot.PUSHER_PUSHED - 0.12);
 
             robot.getOuttakeSpool().setPower(1);
             robot.getOuttakeSpool2().setPower(1);
 
-            while(SystemClock.elapsedRealtime() - startTime < 1000 && opModeIsActive() && !gamepad1.x){
+            while (SystemClock.elapsedRealtime() - startTime < 1000 && opModeIsActive() && !gamepad1.x) {
                 driveLogic();
                 slowDriveLogic();
                 intakeLogic();
@@ -221,25 +228,25 @@ public class MainTeleop extends LinearOpMode {
             robot.getOuttakeSpool2().setPower(0);
 
             startTime = SystemClock.elapsedRealtime();
-            robot.getMarkerServo().setPosition(robot.TEAM_MARKER_DUMP);
+            robot.getCapstoneServo().setPosition(robot.CAPSTONE_DUMP);
 
-            while(SystemClock.elapsedRealtime() - startTime < 750){
+            while (SystemClock.elapsedRealtime() - startTime < 750) {
                 driveLogic();
                 slowDriveLogic();
                 intakeLogic();
                 foundationLogic();
             }
 
-            robot.getMarkerServo().setPosition(robot.TEAM_MARKER_RETRACT);
+            robot.getCapstoneServo().setPosition(robot.CAPSTONE_RETRACT);
 
-            while(SystemClock.elapsedRealtime() - startTime < 1000){
+            while (SystemClock.elapsedRealtime() - startTime < 1000) {
                 driveLogic();
                 slowDriveLogic();
                 intakeLogic();
                 foundationLogic();
             }
 
-            while(robot.getOuttakeSpool().getCurrentPosition() <= 0){
+            while (robot.getOuttakeSpool().getCurrentPosition() <= 0) {
                 driveLogic();
                 slowDriveLogic();
                 intakeLogic();
@@ -255,7 +262,7 @@ public class MainTeleop extends LinearOpMode {
 
             robot.getBackStopper().setPosition(robot.BACK_STOPPER_UP);
 
-            while(SystemClock.elapsedRealtime() - startTime < 250){
+            while (SystemClock.elapsedRealtime() - startTime < 250) {
                 driveLogic();
                 slowDriveLogic();
                 intakeLogic();
@@ -264,7 +271,7 @@ public class MainTeleop extends LinearOpMode {
 
             robot.getIntakePusher().setPosition(robot.PUSHER_PUSHED);
 
-            while(SystemClock.elapsedRealtime()- startTime < 500){
+            while (SystemClock.elapsedRealtime() - startTime < 500) {
                 driveLogic();
                 slowDriveLogic();
                 intakeLogic();
@@ -302,7 +309,7 @@ public class MainTeleop extends LinearOpMode {
             robot.getIntakeRight().setPower(0);
         }
 
-        if(robot.getClamp().getPosition() != robot.CLAMP_SERVO_INTAKEPOSITION && !isIntakeMode){
+        if (robot.getClamp().getPosition() != robot.CLAMP_SERVO_INTAKEPOSITION && !isIntakeMode) {
             robot.getIntakeLeft().setPower(0);
             robot.getIntakeRight().setPower(0);
         }
@@ -318,104 +325,112 @@ public class MainTeleop extends LinearOpMode {
             }
         }
 
-        if(gamepad2.right_trigger != 0){
+        if (gamepad2.right_trigger != 0) {
             robot.getBackStopper().setPosition(robot.BACK_STOPPER_DOWN);
-        }else if(gamepad2.left_trigger != 0){
+        } else if (gamepad2.left_trigger != 0) {
             robot.getBackStopper().setPosition(robot.BACK_STOPPER_UP);
         }
     }
 
+    Queue<MotionAction> outtakeActions = new LinkedList<>();
+
     double xDump;
     double yDump;
+
+    private boolean isTogglingG2A = false;
+    private boolean isTogglingG2B = false;
+    private boolean isTogglingG2X = false;
+    private boolean isTogglingG2Y = false;
     private void outtakeLogic() {
         currentTime = SystemClock.elapsedRealtime();
         // Logic to control outtake; with a delay on the pivot so that the slides can extend before pivot rotation
-        if (gamepad2.a) { // Clamp and Extend
-            robot.getMarkerServo().setPosition(robot.TEAM_MARKER_RETRACT);
-            robot.getBackStopper().setPosition(robot.BACK_STOPPER_UP);
-            isExtend = true;
-            isRetract = false;
-            is90 = false;
-            outtakeExecutionTime = currentTime;
-            robot.getClamp().setPosition(robot.CLAMP_SERVO_CLAMPED);
-            robot.getOuttakeExtender().setPosition(robot.OUTTAKE_SLIDE_EXTENDED);
-        } else if (gamepad2.b) { // Deposit and Reset
+        if (gamepad2.a && !isTogglingG2A) { // Clamp and Extend
+            isTogglingG2A = true;
+
+            outtakeActions.clear();
+
+            outtakeActions.add(new MotionAction(robot.getCapstoneServo(), robot.CAPSTONE_RETRACT, currentTime + robot.DELAY_CAPSTONE));
+            outtakeActions.add(new MotionAction(robot.getBackStopper(), robot.BACK_STOPPER_UP, currentTime + robot.DELAY_BACKSTOPPER));
+            outtakeActions.add(new MotionAction(robot.getClamp(), robot.CLAMP_SERVO_CLAMPED, currentTime + robot.DELAY_CLAMP_ON_EXTEND));
+            outtakeActions.add(new MotionAction(robot.getOuttakeExtender(), robot.OUTTAKE_SLIDE_EXTENDED, currentTime + robot.DELAY_SLIDE_ON_EXTEND));
+            outtakeActions.add(new MotionAction(robot.getClampPivot(), robot.OUTTAKE_PIVOT_EXTENDED, currentTime + robot.DELAY_PIVOT_ON_EXTEND));
+            outtakeActions.add(new MotionAction(robot.getOuttakeExtender(), robot.OUTTAKE_SLIDE_PARTIAL_EXTEND, currentTime + robot.DELAY_PARTIAL_SLIDE_ON_EXTEND));
+        } else if (!gamepad2.a){
+            isTogglingG2A = false;
+        }
+        if (gamepad2.b && !isTogglingG2B) { // Deposit and Reset
+            isTogglingG2B = true;
+
             xDump = robot.getRobotPos().x;
             yDump = robot.getRobotPos().y;
-            robot.getMarkerServo().setPosition(robot.TEAM_MARKER_RETRACT);
-            robot.getBackStopper().setPosition(robot.BACK_STOPPER_UP);
 
-//            robot.getIntakePusher().setPosition(robot.PUSHER_RETRACTED); // Reset intake pusher
-            isRetract = true;
-            hasRetracted = false;
-            isExtend = false;
-            isClamp = false;
-            is90 = false;
-            outtakeExecutionTime = currentTime;
-            robot.getClamp().setPosition(robot.CLAMP_SERVO_RELEASED); // Release clamp
-        }else if(gamepad2.x){
-            robot.getMarkerServo().setPosition(robot.TEAM_MARKER_RETRACT);
-            robot.getBackStopper().setPosition(robot.BACK_STOPPER_UP);
-            isClamp = true;
-            isExtend = false;
-            isRetract = false;
-            is90 = false;
-            outtakeExecutionTime = currentTime;
-            robot.getIntakePusher().setPosition(robot.PUSHER_PUSHED);
-            hasPushed = true;
-        }else if(gamepad2.y){
-            robot.getMarkerServo().setPosition(robot.TEAM_MARKER_RETRACT);
-            robot.getBackStopper().setPosition(robot.BACK_STOPPER_UP);
-            isExtend = true;
-            isRetract = false;
-            isClamp = false;
-            is90 = true;
-            outtakeExecutionTime = currentTime;
+            outtakeActions.clear();
+
+            outtakeActions.add(new MotionAction(robot.getCapstoneServo(), robot.CAPSTONE_RETRACT, currentTime + robot.DELAY_CAPSTONE));
+            outtakeActions.add(new MotionAction(robot.getBackStopper(), robot.BACK_STOPPER_UP, currentTime + robot.DELAY_BACKSTOPPER));
+            outtakeActions.add(new MotionAction(robot.getIntakePusher(), robot.PUSHER_RETRACTED, currentTime + robot.DELAY_PUSHER_ON_RETRACT));
+            outtakeActions.add(new MotionAction(robot.getClamp(), robot.CLAMP_SERVO_RELEASED, currentTime + robot.DELAY_RELEASE_CLAMP_ON_RETRACT));
+            outtakeActions.add(new MotionAction(robot.getOuttakeExtender(), robot.OUTTAKE_SLIDE_EXTENDED, currentTime + robot.DELAY_EXTEND_SLIDE_ON_RETRACT, true));
+        } else if (!gamepad2.b) {
+            isTogglingG2B = false;
         }
+        if (gamepad2.x && !isTogglingG2X) {
+            isTogglingG2X = true;
 
-        if(currentTime-outtakeExecutionTime >= 650 && isExtend){
-            robot.getClampPivot().setPosition(robot.OUTTAKE_PIVOT_EXTENDED);
+            outtakeActions.clear();
+
+            outtakeActions.add(new MotionAction(robot.getCapstoneServo(), robot.CAPSTONE_RETRACT, currentTime + robot.DELAY_CAPSTONE));
+            outtakeActions.add(new MotionAction(robot.getBackStopper(), robot.BACK_STOPPER_UP, currentTime + robot.DELAY_BACKSTOPPER));
+            outtakeActions.add(new MotionAction(robot.getIntakePusher(), robot.PUSHER_PUSHED, currentTime + robot.DELAY_PUSHER_ON_CLAMP));
+            outtakeActions.add(new MotionAction(robot.getIntakePusher(), robot.PUSHER_RETRACTED, currentTime + robot.DELAY_RETRACT_PUSHER_ON_CLAMP));
+            outtakeActions.add(new MotionAction(robot.getClamp(), robot.CLAMP_SERVO_CLAMPED, currentTime + robot.DELAY_CLAMP_ON_CLAMP));
+        } else if (!gamepad2.x) {
+            isTogglingG2X = false;
         }
+        if (gamepad2.y && !isTogglingG2Y) {
+            isTogglingG2Y = true;
 
-        if(currentTime-outtakeExecutionTime >= 950 && isExtend && !is90){
-            robot.getOuttakeExtender().setPosition(robot.OUTTAKE_SLIDE_PARTIAL_EXTEND);
-            isExtend = false;
-            hasPushed = false;
+            outtakeActions.clear();
+
+            outtakeActions.add(new MotionAction(robot.getCapstoneServo(), robot.CAPSTONE_RETRACT, currentTime + robot.DELAY_CAPSTONE));
+            outtakeActions.add(new MotionAction(robot.getBackStopper(), robot.BACK_STOPPER_UP, currentTime + robot.DELAY_BACKSTOPPER));
+            outtakeActions.add(new MotionAction(robot.getClamp(), robot.CLAMP_SERVO_CLAMPED, currentTime + robot.DELAY_CLAMP_ON_EXTEND));
+            outtakeActions.add(new MotionAction(robot.getOuttakeExtender(), robot.OUTTAKE_SLIDE_EXTENDED, currentTime + robot.DELAY_SLIDE_ON_EXTEND));
+            outtakeActions.add(new MotionAction(robot.getClampPivot(), robot.OUTTAKE_PIVOT_90, currentTime + robot.DELAY_PIVOT_ON_EXTEND));
+            outtakeActions.add(new MotionAction(robot.getOuttakeExtender(), robot.OUTTAKE_SLIDE_PARTIAL_EXTEND, currentTime + robot.DELAY_PARTIAL_SLIDE_ON_EXTEND));
+        } else if (!gamepad2.y) {
+            isTogglingG2Y = false;
         }
 
-        //pivot 90
-        if(currentTime-outtakeExecutionTime >= 2000 && isExtend && is90){
-            robot.getClampPivot().setPosition(robot.OUTTAKE_PIVOT_90);
-            isExtend = false;
-            is90 = false;
-            hasPushed = false;
-        }
+        boolean motionExecuted = true;
+        while (motionExecuted) {
+            currentTime = SystemClock.elapsedRealtime();
+            MotionAction currentMotion = outtakeActions.peek();
 
-        //retract
-        if(isRetract && (Math.hypot(robot.getRobotPos().x-xDump, robot.getRobotPos().y-yDump) > 5 || gamepad1.b) && !hasRetracted){
-            robot.getOuttakeExtender().setPosition(robot.OUTTAKE_SLIDE_EXTENDED);
-            outtakeExecutionTime = SystemClock.elapsedRealtime();
-            hasRetracted = true;
-        }
+            if (currentMotion != null) {
+                if (currentMotion.getDelayStartTime() <= currentTime) {
+                    if (currentMotion.isLocationToggle()) {
+                        if ((Math.hypot(robot.getRobotPos().x - xDump, robot.getRobotPos().y - yDump) > 5) || gamepad1.b) {
+                            currentMotion.executeMotion();
 
-        if(currentTime-outtakeExecutionTime >= 100 && isRetract && hasRetracted){
-            robot.getClampPivot().setPosition(robot.OUTTAKE_PIVOT_RETRACTED);
-        }
-        if(currentTime-outtakeExecutionTime >= 400 && isRetract && hasRetracted){
-            robot.getClamp().setPosition(robot.CLAMP_SERVO_CLAMPED);
-        }
-        if(currentTime-outtakeExecutionTime >= 850 && isRetract && hasRetracted){
-            robot.getOuttakeExtender().setPosition(robot.OUTTAKE_SLIDE_RETRACTED);
-            isRetract = false;
-        }
+                            outtakeActions.add(new MotionAction(robot.getClampPivot(), robot.OUTTAKE_PIVOT_RETRACTED, currentTime + robot.DELAY_PIVOT_ON_RETRACT));
+                            outtakeActions.add(new MotionAction(robot.getClamp(), robot.CLAMP_SERVO_CLAMPED, currentTime + robot.DELAY_CLAMP_ON_RETRACT));
+                            outtakeActions.add(new MotionAction(robot.getOuttakeExtender(), robot.OUTTAKE_SLIDE_RETRACTED, currentTime + robot.DELAY_SLIDE_ON_RETRACT));
 
-        //clamp only
-        if(currentTime-outtakeExecutionTime >= 350 && isClamp){
-            robot.getIntakePusher().setPosition(robot.PUSHER_RETRACTED);
-        }
-        if(currentTime-outtakeExecutionTime >= 400 && isClamp){
-            robot.getClamp().setPosition(robot.CLAMP_SERVO_CLAMPED);
-            isClamp = false;
+                            outtakeActions.remove();
+                        } else {
+                            motionExecuted = false;
+                        }
+                    } else {
+                        currentMotion.executeMotion();
+                        outtakeActions.remove();
+                    }
+                } else {
+                    motionExecuted = false;
+                }
+            } else {
+                motionExecuted = false;
+            }
         }
     }
 
@@ -423,7 +438,7 @@ public class MainTeleop extends LinearOpMode {
         if (gamepad1.right_bumper) {
             if (foundationToggle && !resetfoundation) {
                 foundationToggle = false;
-            } else if (!foundationToggle && !resetfoundation){
+            } else if (!foundationToggle && !resetfoundation) {
                 foundationToggle = true;
             }
             resetfoundation = true;
@@ -435,14 +450,15 @@ public class MainTeleop extends LinearOpMode {
     }
 
     private void capStoneLogic() {
-        if (gamepad1.x){
-            robot.getMarkerServo().setPosition(robot.TEAM_MARKER_DUMP);
-        } else if (gamepad1.y){
-            robot.getMarkerServo().setPosition(robot.TEAM_MARKER_RETRACT);
+        if (gamepad1.x) {
+            robot.getCapstoneServo().setPosition(robot.CAPSTONE_DUMP);
+        } else if (gamepad1.y) {
+            robot.getCapstoneServo().setPosition(robot.CAPSTONE_RETRACT);
         }
     }
 
     private boolean toggleMode = true;
+
     private void robotModeLogic() {
         if (gamepad1.a && gamepad1.y && toggleMode) {
             if (isIntakeMode) {

@@ -30,19 +30,16 @@
 package org.firstinspires.ftc.teamcode.ops.rex;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.bots.*;
+import org.firstinspires.ftc.teamcode.bots.SimpleBot;
 import org.firstinspires.ftc.teamcode.components.DriveTrain;
-import org.firstinspires.ftc.teamcode.components.WebCamera;
 
 
-@Autonomous(name="Rex_Auto_Mechanum_Test", group="rex")
+@Autonomous(name="Rex_Auto_Encoder_Test", group="rex")
 //@Disabled
-public class Rex_Auto_Mechanum_Test extends LinearOpMode {
+public class Rex_Auto_Encoder_Test extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -74,18 +71,12 @@ public class Rex_Auto_Mechanum_Test extends LinearOpMode {
         /********** Put Your Code Here **********/
 
         robot.logger.logInfo("runOpMode", "===== [ Run Forward ]");
-        robot.driveTrain.encoderDrive(0.5, 10);
-        waitForButton();
-        robot.logger.logInfo("runOpMode", "===== [ Run Back ]");
-        robot.driveTrain.encoderDrive(-0.5, 10);
-        waitForButton();
+        robot.driveTrain.encoderDrive(0.5, 5);
 
-        robot.logger.logInfo("runOpMode", "===== [ Crab Right ]");
-        robot.driveTrain.crabEncoderRight(0.5, 10);
-        waitForButton();
-        robot.logger.logInfo("runOpMode", "===== [ Crab Left ]");
-        robot.driveTrain.crabEncoderLeft(0.5, 10);
-        waitForButton();
+        robot.driveTrain.pause(1);
+
+        robot.logger.logInfo("runOpMode", "===== [ Run Back ]");
+        robot.driveTrain.encoderDrive(0.5, -5);
 
         // Show the elapsed game time.
         robot.logger.logInfo("runOpMode", "===== [ Autonomous Complete ] Run Time: %s", runtime.toString());

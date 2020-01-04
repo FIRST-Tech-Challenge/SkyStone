@@ -18,29 +18,24 @@ import java.util.List;
  * This is a simple routine to test translational drive capabilities.
  */
 @Config
-@Autonomous(name = "StrafeTest", group = "drive")
-public class StrafeTest extends LinearOpMode {
+@Autonomous(name = "ManualStrafeTest", group = "drive")
+public class ManualStrafeTest extends LinearOpMode {
     public static double DISTANCE = DriveConstantsPID.TEST_DISTANCE;
-    private String TAG = "StrafeTest";
+    private String TAG = "ManualStrafeTest";
     @Override
     public void runOpMode() throws InterruptedException {
         DriveConstantsPID.updateConstantsFromProperties();
         DISTANCE = DriveConstantsPID.TEST_DISTANCE;
         SampleMecanumDriveBase drive = new SampleMecanumDriveREV(hardwareMap);
         drive.setBrakeonZeroPower(DriveConstantsPID.BRAKE_ON_ZERO);
-
-        DriveConstantsPID.moveStrafeLeft(hardwareMap, 24);
-
         RobotLog.dd(TAG, "trajectoryBuilder forward, DISTANCE: "+Double.toString(DISTANCE));
-        Trajectory trajectory = drive.trajectoryBuilder()
-                .strafeLeft(DISTANCE)
-                .build();
 
         waitForStart();
 
         if (isStopRequested()) return;
 
-        drive.followTrajectorySync(trajectory);
+        DriveConstantsPID.moveStrafeLeft(hardwareMap, DISTANCE);
+
         Localizer localizer = drive.getLocalizer();
         if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL && (localizer!=null)) {
             StandardTrackingWheelLocalizer t = (StandardTrackingWheelLocalizer)localizer; // @TODO
@@ -53,6 +48,5 @@ public class StrafeTest extends LinearOpMode {
         List<Double> positions = drive.getWheelPositions();
         RobotLog.dd(TAG, "wheel positions");
         drive.print_list_double(positions);
-
     }
 }

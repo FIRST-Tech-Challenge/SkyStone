@@ -72,7 +72,7 @@ public class Robot {
     private Servo backStopper;
 
     // Outtake Slide Positions
-    public final double OUTTAKE_SLIDE_EXTENDED = .8;
+    public final double OUTTAKE_SLIDE_EXTENDED = .83;
     public final double OUTTAKE_SLIDE_RETRACTED = .07;
     public final double OUTTAKE_SLIDE_PARTIAL_EXTEND = .66;
 
@@ -323,6 +323,8 @@ public class Robot {
                 isRetract = false;
             }
         }
+
+        clamp.setPosition(CLAMP_SERVO_INTAKEPOSITION);
     }
 
 //    //normal use method default 2 second kill time

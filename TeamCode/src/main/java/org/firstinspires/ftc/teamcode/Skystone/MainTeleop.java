@@ -301,20 +301,28 @@ public class MainTeleop extends LinearOpMode {
     }
 
     private void intakeLogic() {
+        double intakeLeftPower = 0;
+        double intakeRightPower = 0;
         if (!outtakeExtended) {
-            robot.getIntakeLeft().setPower(gamepad2.left_stick_y);
-            robot.getIntakeRight().setPower(gamepad2.right_stick_y);
+            intakeLeftPower = gamepad2.left_stick_y;
+            intakeRightPower = gamepad2.right_stick_y;
         } else {
-            robot.getIntakeLeft().setPower(0);
-            robot.getIntakeRight().setPower(0);
+            intakeLeftPower = 0;
+            intakeRightPower = 0;
         }
 
-        if (robot.getClamp().getPosition() != robot.CLAMP_SERVO_INTAKEPOSITION && !isIntakeMode) {
-            robot.getIntakeLeft().setPower(0);
-            robot.getIntakeRight().setPower(0);
+        if ((robot.getOuttakeExtender().getPosition() != robot.OUTTAKE_SLIDE_RETRACTED) || (robot.getOuttakeSpool().getCurrentPosition() <= -50)) {
+            intakeLeftPower = 0;
+            intakeRightPower = 0;
         }
 
-        if ((gamepad2.left_stick_y != 0 || gamepad2.right_stick_y != 0) && gamepad2.right_trigger == 0 && !isExtend && !isClamp && !is90 && !isRetract) {
+        telemetry.addLine("intake left power: " + intakeLeftPower);
+        telemetry.addLine("intake right power: " + intakeRightPower);
+
+        robot.getIntakeLeft().setPower(intakeLeftPower);
+        robot.getIntakeRight().setPower(intakeRightPower);
+
+        if ((gamepad2.left_stick_y != 0 || gamepad2.right_stick_y != 0) && gamepad2.right_trigger == 0 && !isExtend && !isClamp && !is90 && !isRetract && !(robot.getOuttakeSpool().getCurrentPosition() <= -50) && !(robot.getOuttakeExtender().getPosition() != robot.OUTTAKE_SLIDE_RETRACTED)) {
             if (isIntakeMode) {
                 robot.getIntakePusher().setPosition(robot.PUSHER_PUSHED);
                 robot.getClamp().setPosition(robot.CLAMP_SERVO_CLAMPED);

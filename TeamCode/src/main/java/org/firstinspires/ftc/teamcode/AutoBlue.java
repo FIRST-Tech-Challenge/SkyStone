@@ -63,8 +63,10 @@ public class AutoBlue extends LinearOpMode {
             }
             sleep(1000);
             robot.setpower0();
-            robot.rotate(90, 0.65);
+            robot.runwithoutencoder();
+            robot.rotate(-90, 0.65);
         }
+        stop();
 
     }
 

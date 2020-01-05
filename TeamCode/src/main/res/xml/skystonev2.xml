@@ -30,10 +30,14 @@ SOFTWARE.
 
             <!-- Limit Switch -->
             <DigitalDevice name="deliveryMechLowLimitSwitch" port="1"/>
+
+            <!-- Intake-side mounted distance sensors -->
+            <REV_VL53L0X_RANGE_SENSOR name="distance-left" port="0" bus="1" />
+            <REV_VL53L0X_RANGE_SENSOR name="distance-right" port="0" bus="2" />
         </LynxModule>
 
         <LynxModule name="Secondary Hub" port="2">
-            <LynxEmbeddedIMU name="imu 1" port="0" bus="0" />
+            <!-- <LynxEmbeddedIMU name="imu 1" port="0" bus="0" /> -->
 
             <!-- DC Motors -->
             <Motor name="liftMotor" port="0" />
@@ -44,14 +48,9 @@ SOFTWARE.
             <Servo name="fingerServo" port="0" />
             <Servo name="wristServo" port="1" />
             <Servo name="shoulderServo" port="3" />
+
             <Servo name="leftGripServo" port="2" />
             <Servo name="rightGripServo" port="4" />
-
-            <!-- ToF Sensors **check ports** -->
-            <!-- This one should be plugged into the I2C port labeled "0" -->
-            <REV_VL53L0X_RANGE_SENSOR name="leftDistanceSensor" port="1" bus="0" />
-            <!-- This one should be plugged into the I2C port labeled "1" -->
-            <REV_VL53L0X_RANGE_SENSOR name="rightDistanceSensor" port="0" bus="1" />
         </LynxModule>
     </LynxUsbDevice>
 </Robot>

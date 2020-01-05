@@ -86,9 +86,9 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  */
 
 
-@Autonomous(name="detectingSkystones", group ="Concept")
+@Autonomous(name="DetectingSkystones", group ="Concept")
 //@Disabled
-public class detectingSkystone extends Movement {
+public class DetectingSkystone extends Movement {
 
 
     private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;

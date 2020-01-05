@@ -120,8 +120,8 @@ public class Maccabot {
     }
 
     public void intake(double speed) {
-        intake_right.setPower((speed)*.5);//the multiplication of a decimal reduces the motor speed for the INTAKE
-        intake_left.setPower((speed)*.5);
+        intake_right.setPower(speed);//the multiplication of a decimal reduces the motor speed for the INTAKE
+        intake_left.setPower(speed);
 
        /* parentOpMode.telemetry.addLine(Double.toString(intake_right.getPower()));
         parentOpMode.telemetry.addLine(Double.toString(intake_left.getPower()));*/
@@ -132,8 +132,10 @@ public class Maccabot {
     }
 
     public void moveChad(boolean cond1, boolean cond2){
-        if (cond1) chad.setPosition(1);
-        else if (cond2) chad.setPosition(0);
+        chad.getController().pwmEnable();
+        if (cond1) { chad.setPosition(1); }
+        else if (cond2) { chad.setPosition(0); }
+        else { chad.setPosition(chad.getPosition()); }
     }
 
 

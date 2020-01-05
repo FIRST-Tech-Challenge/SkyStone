@@ -405,7 +405,6 @@ public class MainTeleop extends LinearOpMode {
             outtakeActions.add(new MotionAction(robot.getClamp(), robot.CLAMP_SERVO_CLAMPED, currentTime + robot.DELAY_CLAMP_ON_EXTEND));
             outtakeActions.add(new MotionAction(robot.getOuttakeExtender(), robot.OUTTAKE_SLIDE_EXTENDED, currentTime + robot.DELAY_SLIDE_ON_EXTEND));
             outtakeActions.add(new MotionAction(robot.getClampPivot(), robot.OUTTAKE_PIVOT_90, currentTime + robot.DELAY_PIVOT_ON_EXTEND));
-            outtakeActions.add(new MotionAction(robot.getOuttakeExtender(), robot.OUTTAKE_SLIDE_PARTIAL_EXTEND, currentTime + robot.DELAY_PARTIAL_SLIDE_ON_EXTEND));
         } else if (!gamepad2.y) {
             isTogglingG2Y = false;
         }

@@ -85,6 +85,12 @@ public class DriverControls {
 
     private OpenLoopMecanumKinematics kinematics;
 
+    private FoundationGripMechanism foundationGripMechanism;
+
+    protected DebouncedButton foundationGripButton;
+
+    protected DebouncedButton foundationUngripButton;
+
     private final float throttleGain = 0.7F;
 
     private final float throttleExponent = 5; // MUST BE AN ODD NUMBER!
@@ -111,7 +117,8 @@ public class DriverControls {
                            RangeInput leftTrigger,
                            RangeInput rightTrigger,
                            NinjaGamePad driversGamepad,
-                           OpenLoopMecanumKinematics kinematics) {
+                           OpenLoopMecanumKinematics kinematics,
+                           FoundationGripMechanism foundationGripMechanism) {
         if (driversGamepad != null) {
             this.driversGamepad = driversGamepad;
             setupFromGamepad();
@@ -138,6 +145,7 @@ public class DriverControls {
         setupCurvesAndFilters();
 
         this.kinematics = kinematics;
+        this.foundationGripMechanism = foundationGripMechanism;
     }
 
     private void setupCurvesAndFilters() {
@@ -181,6 +189,8 @@ public class DriverControls {
         driveInvertedButton = new RangeInputButton(rightTrigger, 0.65f);
         driveBumpStrafeLeftButton = leftBumper;
         driveBumpStrafeRightButton = rightBumper;
+        foundationGripButton = aGreenButton;
+        foundationUngripButton = bRedButton;
     }
 
     public void periodicTask() {
@@ -222,6 +232,12 @@ public class DriverControls {
         }
 
         kinematics.driveCartesian(xScaled, yScaled, rotateScaled, driveInverted, 0.0, useEncoders);
+
+        if (foundationGripButton.getRise()) {
+            foundationGripMechanism.down();
+        } else if (foundationUngripButton.getRise()) {
+            foundationGripMechanism.up();
+        }
     }
 
 }

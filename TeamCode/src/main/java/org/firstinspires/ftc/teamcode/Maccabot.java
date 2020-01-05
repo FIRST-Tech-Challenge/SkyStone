@@ -24,7 +24,6 @@ public class Maccabot {
 
     // Drive Motor Variables
     private DcMotor front_left, front_right, back_left, back_right, intake_left, intake_right, lift_left, lift_right;
-    private Servo servo;
     private CRServo rack;
     private Servo chad;
 
@@ -53,9 +52,8 @@ public class Maccabot {
         intake_right = hardwareMap.dcMotor.get("intake_right");
         lift_left = hardwareMap.dcMotor.get("lift_left");
         lift_right = hardwareMap.dcMotor.get("lift_right");
-        servo = hardwareMap.servo.get("servo");
         rack = hardwareMap.crservo.get("bob");
-        chad = hardwareMap.servo.get("chad");
+        chad = hardwareMap.servo.get("moveChad");
 
         encoder = 0;
 
@@ -129,11 +127,11 @@ public class Maccabot {
         parentOpMode.telemetry.addLine(Double.toString(intake_left.getPower()));*/
     }
 
-    public void servo(double cond1){
+    public void moveServo(double cond1){
         rack.setPower(cond1);
     }
 
-    public void chad(boolean cond1, boolean cond2){
+    public void moveChad(boolean cond1, boolean cond2){
         if (cond1) chad.setPosition(1);
         else if (cond2) chad.setPosition(0);
     }
@@ -392,6 +390,7 @@ public class Maccabot {
         back_right.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
+
         back_left.setPower(-power);
         back_left.setTargetPosition(pos);
         back_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -479,7 +478,7 @@ public class Maccabot {
         // The gain value determines how sensitive the correction is to direction changes.
         // You will have to experiment with your robot to get small smooth direction changes
         // to stay on a straight line.
-        double correction, angle, gain = .10;
+        double correction, angle, gain = .20;
 
         angle = getAngle();
 
@@ -521,18 +520,27 @@ public class Maccabot {
         else return;
 
         // set power to rotate.
-        drive(leftPower, rightPower, leftPower, rightPower);
+        drive(leftPower, rightPower, -leftPower, -rightPower);
 
         // rotate until turn is completed.
         if (degrees < 0)
         {
             // On right turn we have to get off zero first.
-            while (getAngle() == 0) {}
+            while (getAngle() == 0) {
+                parentOpMode.telemetry.addData("angle", getAngle());
+                parentOpMode.telemetry.update();
+            }
 
-            while (getAngle() > degrees) {}
+            while (getAngle() > degrees) {
+                parentOpMode.telemetry.addData("angle", getAngle());
+                parentOpMode.telemetry.update();
+            }
         }
         else    // left turn.
-            while (getAngle() < degrees) {}
+            while (getAngle() < degrees) {
+                parentOpMode.telemetry.addData("angle", getAngle());
+                parentOpMode.telemetry.update();
+            }
 
         // turn the motors off.
         setpower0();

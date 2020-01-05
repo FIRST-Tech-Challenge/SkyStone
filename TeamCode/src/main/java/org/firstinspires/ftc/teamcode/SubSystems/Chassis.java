@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  *      1 limit switch on left front bumper to identify hitting to foundation plate or other walls
  *      2 Color sensors pointing down one on left and another on right
  *      (to identify red / blue lines below skybridge for parking
+ *      1 Hook servomotor to move base
  *
  *      Robot 1 : Chassis Motor : 5201 Series, 26:1 Ratio, 210 RPM Spur Gear Motor w/Encoder
  *      Encoder Countable Events Per Revolution (Output Shaft)	723.24 (Rises & Falls of Ch A & B)
@@ -24,6 +25,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * @ChassisMethods : initChassis()
  * @ChassisMethods : configureChassis()
  * @ChassisMethods : resetChassis()
+ * @ChassisMethods : moveHookServo()
  * @ChassisTeleOpMethods : runByGamepadCommand()
  * @ChassisAutoMethods : runDistance()
  * @ChassisAutoMethods : runFwdTill_frontleftChassisTouchSensor_Pressed(
@@ -91,6 +93,7 @@ public class Chassis {
         leftColorSensor = hardwareMap.get(ColorSensor.class, "ch_left_color");
         rightColorSensor = hardwareMap.get(ColorSensor.class, "ch_right_color");
 
+        //Map Hook from configuration
         hook = hardwareMap.servo.get("hook");
 
         //Configure Robot to dimensions and modified for wheel type

@@ -38,7 +38,7 @@ public class JoystickTest extends OpMode {
     public static double deadzone = 0.2;
     //    //remember, has to be float
 
-    //servo minmax
+    //moveServo minmax
     @Override
     public void init() {
         frontleft = hardwareMap.dcMotor.get("front_left");

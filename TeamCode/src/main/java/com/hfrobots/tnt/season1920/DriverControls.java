@@ -233,9 +233,9 @@ public class DriverControls {
 
         kinematics.driveCartesian(xScaled, yScaled, rotateScaled, driveInverted, 0.0, useEncoders);
 
-        if (foundationGripButton.getRise()) {
+        if (foundationGripButton != null && foundationGripButton.getRise()) {
             foundationGripMechanism.down();
-        } else if (foundationUngripButton.getRise()) {
+        } else if (foundationUngripButton != null && foundationUngripButton.getRise()) {
             foundationGripMechanism.up();
         }
     }

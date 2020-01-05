@@ -155,10 +155,10 @@ public class OpenLoopDriveBaseControlTest {
         rightFrontPower = rightFrontDriveMotor.getPower();
         rightRearPower = rightRearDriveMotor.getPower();
 
-        Assert.assertTrue(leftFrontPower > 0);
-        Assert.assertTrue(leftRearPower > 0);
-        Assert.assertTrue(rightFrontPower < 0);
-        Assert.assertTrue(rightRearPower < 0);
+        Assert.assertTrue(leftFrontPower < 0);
+        Assert.assertTrue(leftRearPower < 0);
+        Assert.assertTrue(rightFrontPower > 0);
+        Assert.assertTrue(rightRearPower > 0);
 
         leftStickY.setCurrentPosition(0);
         leftStickX.setCurrentPosition(-1);
@@ -170,10 +170,10 @@ public class OpenLoopDriveBaseControlTest {
         rightFrontPower = rightFrontDriveMotor.getPower();
         rightRearPower = rightRearDriveMotor.getPower();
 
-        Assert.assertTrue(leftFrontPower > 0);
-        Assert.assertTrue(leftRearPower < 0);
-        Assert.assertTrue(rightFrontPower < 0);
-        Assert.assertTrue(rightRearPower > 0);
+        Assert.assertTrue(leftFrontPower < 0);
+        Assert.assertTrue(leftRearPower > 0);
+        Assert.assertTrue(rightFrontPower > 0);
+        Assert.assertTrue(rightRearPower < 0);
 
     }
 }

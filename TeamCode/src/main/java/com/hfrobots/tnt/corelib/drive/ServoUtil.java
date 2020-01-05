@@ -39,15 +39,19 @@ public class ServoUtil {
      */
     public static void setupPwmForRevSmartServo(@NonNull final Servo servo) {
         int portNumber = servo.getPortNumber();
-        ServoController servoController = servo.getController();
+        try {
+            ServoController servoController = servo.getController();
 
-        if (servoController instanceof ServoControllerEx) {
-            Log.d(LOG_TAG, "Setting REV PWM range for servo at port " + portNumber
-                    + " on controller " + servoController.getConnectionInfo());
+            if (servoController instanceof ServoControllerEx) {
+                Log.d(LOG_TAG, "Setting REV PWM range for servo at port " + portNumber
+                        + " on controller " + servoController.getConnectionInfo());
 
-            PwmControl.PwmRange revPwmRange = new PwmControl.PwmRange(500, 2500);
+                PwmControl.PwmRange revPwmRange = new PwmControl.PwmRange(500, 2500);
 
-            ((ServoControllerEx)servoController).setServoPwmRange(portNumber, revPwmRange);
+                ((ServoControllerEx) servoController).setServoPwmRange(portNumber, revPwmRange);
+            }
+        } catch (IllegalArgumentException iae) {
+            Log.e(LOG_TAG, "Servo does not have a controller");
         }
     }
 }

@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-@Autonomous(name="DistanceSensoe", group="Exercises")
+@Autonomous(name="DistanceSensor Test", group="Exercises")
 
 public class DistanceTest extends LinearOpMode {
     private DistanceSensorBot robot = new DistanceSensorBot(this);
@@ -13,7 +13,7 @@ public class DistanceTest extends LinearOpMode {
         robot.init(hardwareMap);
         waitForStart();
         while (opModeIsActive()) {
-
+            robot.getDistanceToStoneQuarry();
 
         }
     }

@@ -40,54 +40,39 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 
 
 public class DistanceSensorBot extends PinchArmBot {
+
+    protected DistanceSensor sensorSkyStoneQuarry = null;
+
     public DistanceSensorBot(LinearOpMode opMode) {
         super(opMode);
     }
 
-    private DistanceSensor sensorRange;
+    @Override
+    public void init(HardwareMap ahwMap) {
+        super.init(ahwMap);
 
-    //@Override
-    public void runOpMode() {
-        // you can use this as a regular DistanceSensor.
-        sensorRange = hwMap.get(DistanceSensor.class, "sensor_range");
+        // initialize the sensor for skystone quarry detection
+        sensorSkyStoneQuarry = hwMap.get(DistanceSensor.class, "sensor_range");
+    }
+
+    public double getDistanceToStoneQuarry() {
+        opMode.telemetry.addData("range", String.format("%.01f in", sensorSkyStoneQuarry.getDistance(DistanceUnit.INCH)));
 
         // you can also cast this to a Rev2mDistanceSensor if you want to use added
         // methods associated with the Rev2mDistanceSensor class.
-        Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor) sensorRange;
+        Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor) sensorSkyStoneQuarry;
+        // Rev2mDistanceSensor specific methods.
+        opMode.telemetry.addData("ID", String.format("%x", sensorTimeOfFlight.getModelID()));
+        opMode.telemetry.addData("did time out", Boolean.toString(sensorTimeOfFlight.didTimeoutOccur()));
 
-        opMode.telemetry.addData(">>", "Press start to continue");
         opMode.telemetry.update();
-
-        opMode.waitForStart();
-
-        while (this.opMode.opModeIsActive()) {
-            // generic DistanceSensor methods.
-            opMode.telemetry.addData("deviceName", sensorRange.getDeviceName());
-            opMode.telemetry.addData("range", String.format("%.01f mm", sensorRange.getDistance(DistanceUnit.MM)));
-            opMode.telemetry.addData("range", String.format("%.01f cm", sensorRange.getDistance(DistanceUnit.CM)));
-            opMode.telemetry.addData("range", String.format("%.01f m", sensorRange.getDistance(DistanceUnit.METER)));
-            opMode.telemetry.addData("range", String.format("%.01f in", sensorRange.getDistance(DistanceUnit.INCH)));
-
-            // Rev2mDistanceSensor specific methods.
-            opMode.telemetry.addData("ID", String.format("%x", sensorTimeOfFlight.getModelID()));
-            opMode.telemetry.addData("did time out", Boolean.toString(sensorTimeOfFlight.didTimeoutOccur()));
-
-            opMode.telemetry.update();
-        }
-
-
-
+        return sensorSkyStoneQuarry.getDistance(DistanceUnit.INCH);
     }
-    public void DistanceToStoneQuarry(){
-        while (sensorRange.getDistance(DistanceUnit.MM)> 127){
-            opMode.telemetry.addData("Path", "Distance", "2.5f MMs", sensorRange.getDistance(DistanceUnit.MM));
-            opMode.telemetry.update();
-        }
-    }
-    }
+}

@@ -30,10 +30,12 @@ import com.hfrobots.tnt.corelib.metrics.sources.DigitalChannelMetricSource;
 import com.hfrobots.tnt.corelib.metrics.sources.MotorVelocityMetricSource;
 import com.hfrobots.tnt.corelib.metrics.sources.OnOffButtonMetricSource;
 import com.hfrobots.tnt.corelib.metrics.sources.RangeInputMetricSource;
+import com.hfrobots.tnt.corelib.metrics.sources.Rev2MDistanceSensorMetricSource;
 import com.hfrobots.tnt.corelib.metrics.sources.ServoMetricSource;
 import com.hfrobots.tnt.corelib.metrics.sources.Voltage12VMetricSource;
 import com.hfrobots.tnt.corelib.metrics.sources.Voltage5VMetricSource;
 import com.hfrobots.tnt.util.NamedDeviceMap;
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -115,6 +117,7 @@ public class StatsDMetricSampler implements MetricsSampler {
         addVoltages();
         addDigitalChannels();
         addServos();
+        addDistanceSensors();
     }
 
     @Override
@@ -203,6 +206,15 @@ public class StatsDMetricSampler implements MetricsSampler {
 
         for (NamedDeviceMap.NamedDevice<Servo> namedServo : allServos) {
             GaugeMetricSource metricSource = new ServoMetricSource(namedServo);
+            addSource(toInterestingValues(metricSource));
+        }
+    }
+
+    private void addDistanceSensors() {
+        List<NamedDeviceMap.NamedDevice<Rev2mDistanceSensor>> allRev2mDistanceSensors = namedDeviceMap.getAll(Rev2mDistanceSensor.class);
+
+        for (NamedDeviceMap.NamedDevice<Rev2mDistanceSensor> namedDistanceSensor : allRev2mDistanceSensors) {
+            GaugeMetricSource metricSource = new Rev2MDistanceSensorMetricSource(namedDistanceSensor);
             addSource(toInterestingValues(metricSource));
         }
     }

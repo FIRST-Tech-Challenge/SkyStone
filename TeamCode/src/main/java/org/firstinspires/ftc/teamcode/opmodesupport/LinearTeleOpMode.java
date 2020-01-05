@@ -53,7 +53,7 @@ public abstract class LinearTeleOpMode extends LinearOpMode {
 
             try{
 
-            RC.t.addData("OpMode", "Initialization Complete");
+           // RC.t.addData("OpMode", "Initialization Complete");
 
             waitForStart();
             clearTimer();
@@ -99,33 +99,33 @@ public abstract class LinearTeleOpMode extends LinearOpMode {
          * @param overWrite whether or not to overwrite the data there
          */
         public void setDataLogFile (String fileName, boolean overWrite) {
-            RC.t.setDataLogFile(fileName, overWrite);
+           // RC.t.setDataLogFile(fileName, overWrite);
             this.dataLogFileName = fileName;
         }//setDataLogFile
 
         public void dataLogData(String key, String data) {
-            RC.t.dataLogData(dataLogFileName, key, data);
+            //RC.t.dataLogData(dataLogFileName, key, data);
         }
 
         public void dataLogData(String data) {
-            RC.t.dataLogData(dataLogFileName, data);
+            //RC.t.dataLogData(dataLogFileName, data);
         }
 
         public void dataLogData(String key, double data) {
-            RC.t.dataLogData(dataLogFileName, key, data);
+            //RC.t.dataLogData(dataLogFileName, key, data);
         }
 
         public void dataLogData(double data) {
-            RC.t.dataLogData(dataLogFileName, data);
+            //RC.t.dataLogData(dataLogFileName, data);
         }
 
         public void dataLogData(String key, int data) {
-            RC.t.dataLogData(dataLogFileName, key, data);
+           // RC.t.dataLogData(dataLogFileName, key, data);
         }
 
-        public void dataLogData(int data) {
-            RC.t.dataLogData(dataLogFileName, data);
-        }
+//        public void dataLogData(int data) {
+//            RC.t.dataLogData(dataLogFileName, data);
+//        }
 
 
         /**

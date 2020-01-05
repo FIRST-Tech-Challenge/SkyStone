@@ -50,7 +50,7 @@ public class CopyCatRecorder {
 
     public void writeToFile() {
 
-        RC.t.setDataLogFile(fileName, true);
+       // RC.t.setDataLogFile(fileName, true);
 
         for (int i = 0; i < actions.size(); i++) {
 
@@ -86,10 +86,10 @@ public class CopyCatRecorder {
                 e.printStackTrace();
             }//catch
 
-            RC.t.dataLogData(fileName, obj.toString());
+            //RC.t.dataLogData(fileName, obj.toString());
         }//for
 
-        RC.t.close();
+       // RC.t.close();
     }//writeToFile
 
 }

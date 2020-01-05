@@ -132,7 +132,7 @@ public class    ImageAnalysis {
         int[] pixels = new int [img.getWidth() * img.getHeight()];
         img.getPixels(pixels, 0, img.getWidth(), 0, 0, img.getWidth(), img.getHeight());
         chromatize(pixels, chrome);
-        RC.t.addData("Right", getSideOfColour(pixels, Color.parseColor("#FE0000")));
+        //RC.t.addData("Right", getSideOfColour(pixels, Color.parseColor("#FE0000")));
         return Bitmap.createBitmap(pixels, img.getWidth(), img.getHeight(), Bitmap.Config.ARGB_8888);
     }
 

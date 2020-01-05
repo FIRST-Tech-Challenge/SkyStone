@@ -41,9 +41,9 @@ public class GlobalValuesActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_global_values);
+       // setContentView(R.layout.activity_global_values); remvoed
 
-        RelativeLayout insert = (RelativeLayout) findViewById(R.id.globalsettings);
+       // RelativeLayout insert = (RelativeLayout) findViewById(R.id.globalsettings); revmoed
 
         if (!globals.isEmpty()) {
 
@@ -60,7 +60,7 @@ public class GlobalValuesActivity extends Activity {
                     params.addRule(RelativeLayout.BELOW, idCount - 1);
                     line.setLayoutParams(params);
 
-                    insert.addView(line);
+                   // insert.addView(line); revmoed
                 }//if
 
                 Map.Entry<String, Object> entry = globIter.next();
@@ -84,7 +84,7 @@ public class GlobalValuesActivity extends Activity {
 
                 label.setLayoutParams(labelParams);
 
-                insert.addView(label);
+               // insert.addView(label);removed
 
                 if (value instanceof Double) {
                     EditText field = new EditText(this);
@@ -103,7 +103,7 @@ public class GlobalValuesActivity extends Activity {
                     }//if
 
                     field.setLayoutParams(params);
-                    insert.addView(field);
+                    //insert.addView(field);re
                 } else if (value instanceof Boolean) {
                     ToggleButton field = new ToggleButton(this);
                     field.setId(idCount++);
@@ -128,7 +128,7 @@ public class GlobalValuesActivity extends Activity {
                     }//if
 
                     field.setLayoutParams(params);
-                    insert.addView(field);
+                    //insert.addView(field);re
                 } else if (value instanceof String) {
                     EditText field = new EditText(this);
                     field.setSingleLine(true);
@@ -144,7 +144,7 @@ public class GlobalValuesActivity extends Activity {
                     }//if
 
                     field.setLayoutParams(params);
-                    insert.addView(field);
+                    //insert.addView(field);re
                 }//else
 
             }//for
@@ -188,7 +188,7 @@ public class GlobalValuesActivity extends Activity {
             params.setMargins(0, 100, 0, 0);
             submit.setLayoutParams(params);
 
-            insert.addView(submit);
+           // insert.addView(submit);re
         } else {
 
             TextView txt = new TextView(this);
@@ -199,7 +199,7 @@ public class GlobalValuesActivity extends Activity {
             params.setMargins(10, 20, 10, 0);
             txt.setLayoutParams(params);
 
-            insert.addView(txt);
+            //insert.addView(txt);re
 
         }//else
 
@@ -277,7 +277,7 @@ public class GlobalValuesActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_global_values, menu);
+       // getMenuInflater().inflate(R.menu.menu_global_values, menu);removed
         return true;
     }
 

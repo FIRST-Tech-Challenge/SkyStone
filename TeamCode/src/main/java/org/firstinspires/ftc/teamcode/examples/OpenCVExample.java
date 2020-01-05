@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.examples;
 
 import org.firstinspires.ftc.teamcode.opmodesupport.AutoOpMode;
 import org.firstinspires.ftc.teamcode.roboticslibrary.FXTCamera;
-import org.firstinspires.ftc.teamcode.util.OCVUtils;
+//import org.firstinspires.ftc.teamcode.util.OCVUtils;
 //import org.opencv.core.CvType; removed for compile
 
 /**

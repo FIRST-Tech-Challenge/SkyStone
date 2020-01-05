@@ -20,7 +20,7 @@ public class OCanada extends TeleOpMode {
 
     @Override
     public void initialize() {
-        mediaPlayer = MediaPlayer.create(RC.a(), R.raw.can);
+        //mediaPlayer = MediaPlayer.create(RC.a(), R.raw.can); revomed :(
 
     }
 

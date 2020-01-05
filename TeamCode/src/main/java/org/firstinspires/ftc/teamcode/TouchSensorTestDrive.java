@@ -43,7 +43,7 @@ public class TouchSensorTestDrive extends AutoOpMode {
                 armstrong.lifterUp();
                 armstrong.collectServoLeftSlow();
                 armstrong.collectServoRightSlow();
-                RC.t.addData(getSeconds(2));
+                //RC.t.addData(getSeconds(2));
             }
             armstrong.lifterStop();
             armstrong.unlatch();

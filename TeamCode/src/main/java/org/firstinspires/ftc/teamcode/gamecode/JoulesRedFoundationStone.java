@@ -107,15 +107,15 @@ public class JoulesRedFoundationStone extends AutoOpMode {
                 joules.DriveBackward(0.5); //go fast
                 if (colorSensorDown.red() > redline) {// if detect red line
                     STONESTATE = 1;
-                    RC.t.addData("Detected Red Line");
+                    //RC.t.addData("Detected Red Line");
                 }
             }
 
             if (STONESTATE == 1) {// if detect red line
-                RC.t.addData("Stone State", STONESTATE);
+                //RC.t.addData("Stone State", STONESTATE);
                 //drive backwards fast
                 if (a == 1) {
-                    RC.t.addData("little forwards");
+                    //RC.t.addData("little forwards");
                     joules.DriveBackward(0.5);
                     sleep(1000);
                     a = a + 1; //makes this loop happen once
@@ -128,7 +128,7 @@ public class JoulesRedFoundationStone extends AutoOpMode {
 
             }
             if (STONESTATE == 2) { //if detect row  of stones
-                RC.t.addData("Row of stones detected Stone State", STONESTATE);
+               // RC.t.addData("Row of stones detected Stone State", STONESTATE);
                 clearTimer(1);
                 joules.Stop();
                 //drive backwards medium
@@ -174,7 +174,6 @@ public class JoulesRedFoundationStone extends AutoOpMode {
                  if (STONESTATE == 4){
                     joules.StoneDown();
                     sleep(3300);
-                    joules.StoneStop();
                     joules.StrafeLeft(0.3);
                     sleep(1600);
                     joules.Stop();
@@ -187,7 +186,7 @@ public class JoulesRedFoundationStone extends AutoOpMode {
                     STONESTATE = 5;}
 
                 if (STONESTATE == 5) {
-                    RC.t.addData("red", colorSensorDown.red());
+                    //RC.t.addData("red", colorSensorDown.red());
                     joules.DriveForward(0.2);
                     STONESTATE = 6;
 //                    if (colorSensorDown.blue() > 40) {// if detect blue line
@@ -204,7 +203,6 @@ public class JoulesRedFoundationStone extends AutoOpMode {
                         joules.Stop();
                         joules.StoneUp();
                         sleep(2000);
-                        joules.StoneStop();
                         joules.DriveBackward(0.5);
                         sleep(1500);
                         joules.Stop();

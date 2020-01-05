@@ -26,21 +26,14 @@ public class JoulesTeleOp extends TeleOpMode {
             joules.TurnLeft(gamepad1.right_stick_x*2);
         }
         else {
-            if (gamepad1.left_stick_y > 0) {
-                joules.DriveBackward(gamepad1.left_stick_y * 2);
-            } else if (gamepad1.left_stick_x > 0) {
-                joules.StrafeRight(gamepad1.left_stick_x * 2);
-            } else if (gamepad1.right_stick_x > 0) {
-                joules.TurnLeft(gamepad1.right_stick_x * 2);
-            } else if (gamepad1.left_stick_y < 0) {
-                joules.DriveForward(gamepad1.left_stick_y * -2);
-            } else if (gamepad1.left_stick_x < 0) {
-                joules.StrafeLeft(gamepad1.left_stick_x * -2);
-            } else if (gamepad1.right_stick_x < 0) {
-                joules.TurnRight(gamepad1.right_stick_x * -2);
-            } else {
-                joules.Stop();
-            }
+            float vertical = -gamepad1.right_stick_y;
+            float horizontal = gamepad1.right_stick_x;
+            float pivot = gamepad1.left_stick_x;
+
+           // Joules.FrontRight.setPower(-pivot + (vertical - horizontal));
+          //  Joules.BackRight.setPower(-pivot + vertical + horizontal);
+        //    Joules.FrontLeft.setPower(pivot + vertical + horizontal);
+        //    Joules.BackLeft.setPower(pivot + (vertical - horizontal));
         }
 
 
@@ -50,28 +43,46 @@ public class JoulesTeleOp extends TeleOpMode {
 
 
         if (joy2.buttonX()){
-            joules.CapUp();
+            joules.StoneUp();
         }
         if (joy2.buttonB()){
+            joules.StoneDown();
+        }
+
+        if (joy2.buttonUp()){
             joules.CapDown();
+        }
+        else if (joy2.buttonDown()){
+            joules.CapUp();
         }
 
         if (joy2.leftTrigger()){
-            joules.FoundationGrab();
+            joules.DaffyGrab();
+
         }
         else if (joy2.leftBumper()){
-            joules.FoundationDrop();
+            joules.DaffyUp();
         }
 
         if (joy2.rightTrigger()){
-            joules.StoneDown();
+            joules.SlidesDown();
         }
         else if (joy2.rightBumper()){
-            joules.StoneUp();
+            joules.SlidesUp();
         }
         else{
-            joules.StoneStop();
+            joules.SlidesStop();
         }
+
+        if (joy2.buttonY()){
+            joules.FoundationGrab();
+
+        }
+        else if (joy2.buttonA()){
+            joules.FoundationDrop();
+
+        }
+
 
     }
 }

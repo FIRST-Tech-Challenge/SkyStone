@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
 import org.firstinspires.ftc.robotcontroller.internal.GlobalValuesActivity;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
-import org.firstinspires.ftc.teamcode.roboticslibrary.FXTTelemetry;
+//import org.firstinspires.ftc.teamcode.roboticslibrary.FXTTelemetry;
 
 /**
  * Created by FIXIT on 15-08-21.
@@ -18,7 +18,7 @@ public class RC {
 
     public static OpMode o;
     public static LinearOpMode l;
-    public static FXTTelemetry t;
+    //public static FXTTelemetry t;
     public static HardwareMap h;
     public static int runNum = 0;
     public final static String VUFORIA_LICENSE_KEY = "Ad0I0ir/////AAAAAfR3NIO1HkxSqM8NPhlEftFXtFAm6DC5w4Cjcy30" +
@@ -33,8 +33,8 @@ public class RC {
     public static void setOpMode(OpMode op) {
         o = op;
         h = op.hardwareMap;
-        t = new FXTTelemetry();
-        t.setTelemetry(op.telemetry);
+        //t = new FXTTelemetry();
+        //t.setTelemetry(op.telemetry);
 
         if (op instanceof LinearOpMode) {
             l = (LinearOpMode) op;
@@ -98,7 +98,7 @@ public class RC {
     }//activity
 
     public static void stop() {
-        t.close();
+        //t.close();
     }//stop
 
 

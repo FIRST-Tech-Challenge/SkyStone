@@ -10,7 +10,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.teamcode.R;
 import org.firstinspires.ftc.teamcode.RC;
 import org.firstinspires.ftc.teamcode.opmodesupport.AutoOpMode;
-import org.firstinspires.ftc.teamcode.util.OCVUtils;
+//import org.firstinspires.ftc.teamcode.util.OCVUtils;
 //import org.opencv.core.CvType;
 
 /**
@@ -31,11 +31,11 @@ public class OpenCVVuforiaExample extends AutoOpMode {
 
         waitForStart();
 
-        Bitmap b = OCVUtils.getVuforiaImage(locale.getFrameQueue().take(), PIXEL_FORMAT.RGB565);
-        if(b != null){
+       // Bitmap b = OCVUtils.getVuforiaImage(locale.getFrameQueue().take(), PIXEL_FORMAT.RGB565);
+      //  if(b != null){
             //Do openCV
             //OCVUtils.bitmapToMat(b, CvType.CV_8UC3); remvoed for complie
-        }
+     //   }
 
     }
 }

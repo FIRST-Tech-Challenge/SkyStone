@@ -22,42 +22,49 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 
 
 public class Joules  {
-    private Motor FrontRight;
-    private Motor FrontLeft;
-    private Motor BackRight;
-    private Motor BackLeft;
+    public Motor FrontRight;
+    public Motor FrontLeft;
+    public Motor BackRight;
+    public Motor BackLeft;
     private String VEER_CHECK_TASK_KEY = "Joules.VEERCHECK";
 
     //arm servoes
-    private FXTServo Foundation1;
-    private FXTServo Foundation2;
+    private FXTServo Foundation;
 
-    private Motor StoneMover;
+    private FXTServo StoneMover;
     //arm motoraaa  a
 
     //Capstone
     private FXTServo Capstone;
+    private FXTServo Daffy;
+    private FXTCRServo ChainArm;
 
     public static int STONESTATE;
     private float GEAR_RATIO = 1/2;
 
+    public void init(){
+        Foundation.setPosition(0.2);
+        Capstone.setPosition(0.05);
+   }
 
     public Joules(){
         // don't know if we need super();
         //Motors!!
-        FrontRight = new Motor("FrontRight");
-        FrontLeft = new Motor("FrontLeft");
-        BackRight = new Motor("BackRight");
-        BackLeft = new Motor("BackLeft");
+        FrontRight = new Motor("frontR");
+        FrontLeft = new Motor("frontL");
+        BackRight = new Motor("backR");
+        BackLeft = new Motor("backL");
 
 
-        Foundation1 = new FXTServo("Foundation1");
-        Foundation2 = new FXTServo("Foundation2");
+        Foundation = new FXTServo("Foundation mover");
+
+        Daffy = new FXTServo("Box grabber");
 
         Capstone = new FXTServo("Capstone");
 
-        StoneMover = new Motor("StoneMover");
+        StoneMover = new FXTServo("Stone mover");
 
+        ChainArm =  new FXTCRServo("Scoring arm");
 
         FrontRight.setMinimumSpeed(0.1);
         FrontLeft.setMinimumSpeed(0.1);
@@ -68,17 +75,17 @@ public class Joules  {
     //Robot driving
     public void DriveForward(double speed){
         TaskHandler.pauseTask(VEER_CHECK_TASK_KEY);
-        FrontLeft.setPower(-speed);
-        FrontRight.setPower(speed);
-        BackLeft.setPower(-speed);
-        BackRight.setPower(speed);
-    }
-    public void DriveBackward(double speed){
-        TaskHandler.pauseTask(VEER_CHECK_TASK_KEY);
         FrontLeft.setPower(speed);
         FrontRight.setPower(-speed);
         BackLeft.setPower(speed);
         BackRight.setPower(-speed);
+    }
+    public void DriveBackward(double speed){
+        TaskHandler.pauseTask(VEER_CHECK_TASK_KEY);
+        FrontLeft.setPower(-speed);
+        FrontRight.setPower(speed);
+        BackLeft.setPower(-speed);
+        BackRight.setPower(speed);
 
     }
     public void StrafeLeft(double speed){
@@ -119,33 +126,48 @@ public class Joules  {
 
     //Capstone
     public void CapDown(){
-        Capstone.setPosition(0.1);
+        Capstone.setPosition(0.05);
     }
     public void CapUp(){
-        Capstone.setPosition(0.9);
+        Capstone.setPosition(1);
     }
 
 
     //foundation
     public void FoundationDrop(){
-        Foundation1.setPosition(0.2);
-        Foundation2.setPosition(0.2);
+        Foundation.setPosition(0.2);
     }
     public void FoundationGrab(){
-        Foundation1.setPosition(0.44);
-        Foundation2.setPosition(0.44);
+        Foundation.setPosition(0.35);
     }
 
     public void StoneDown(){
-        StoneMover.setPower(-0.2);
+        StoneMover.setPosition(0.1);
 
     }
     public void StoneUp(){
-        StoneMover.setPower(0.3);
+        StoneMover.setPosition(0.55);
 
     }
-    public void StoneStop(){
-        StoneMover.setPower(0);
+   // public void StoneStop(){
+       // StoneMover.Po(0);
+  //  }
+
+    public void DaffyUp(){
+        Daffy.setPosition(0);
+    }
+    public void DaffyGrab(){
+        Daffy.setPosition(1);
+    }
+
+    public void SlidesUp(){
+        ChainArm.setPower(-0.7);
+    }
+    public void SlidesDown(){
+        ChainArm.setPower(0.7);
+    }
+    public void SlidesStop(){
+        ChainArm.setPower(0);
     }
 
     public void DriveForwardEnc(double speed, int distance){
@@ -160,16 +182,16 @@ public class Joules  {
         BackLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         BackRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        RC.t.addData("abs1", FrontLeft.getAbsolutePosition());
-        RC.t.addData("current1", FrontLeft.getBaseCurrentPosition());
+//        RC.t.addData("abs1", FrontLeft.getAbsolutePosition());
+//        RC.t.addData("current1", FrontLeft.getBaseCurrentPosition());
 
         FrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         FrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         BackLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         BackRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        RC.t.addData("abs2", FrontLeft.getAbsolutePosition());
-        RC.t.addData("curren2t", FrontLeft.getBaseCurrentPosition());
+//
+//        RC.t.addData("abs2", FrontLeft.getAbsolutePosition());
+//        RC.t.addData("curren2t", FrontLeft.getBaseCurrentPosition());
 
         FrontLeft.setTarget(-distance);
         FrontRight.setAbsoluteTarget(distance);
@@ -178,8 +200,8 @@ public class Joules  {
 
         DriveForward(speed);
 
-        RC.t.addData("abs", FrontLeft.getAbsolutePosition());
-        RC.t.addData("current", FrontLeft.getBaseCurrentPosition());
+//        RC.t.addData("abs", FrontLeft.getAbsolutePosition());
+//        RC.t.addData("current", FrontLeft.getBaseCurrentPosition());
 
         FrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         FrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

@@ -19,6 +19,9 @@
 
 package com.hfrobots.tnt.util;
 
+import com.qualcomm.hardware.lynx.LynxEmbeddedIMU;
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
+import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import java.util.ArrayList;
@@ -59,6 +62,7 @@ public class NamedDeviceMap {
 
     public NamedDeviceMap(HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
+
         buildDeviceToNameMapping(hardwareMap.dcMotorController);
 
         buildDeviceToNameMapping(hardwareMap.dcMotor);
@@ -89,6 +93,18 @@ public class NamedDeviceMap {
         buildDeviceToNameMapping(hardwareMap.lightSensor);
         buildDeviceToNameMapping(hardwareMap.ultrasonicSensor);
         buildDeviceToNameMapping(hardwareMap.voltageSensor);
+
+        buildSensorNameMappings(Rev2mDistanceSensor.class);
+        buildSensorNameMappings(LynxEmbeddedIMU.class);
+    }
+
+    private void buildSensorNameMappings(Class<? extends HardwareDevice> classOrInterface) {
+        for (HardwareDevice sensor : hardwareMap.getAll(classOrInterface)) {
+            Set<String> names = hardwareMap.getNamesOf(sensor);
+            for (String name : names) {
+                namesToHardwareMap.put(sensor, name);
+            }
+        }
     }
 
     private void buildDeviceToNameMapping(HardwareMap.DeviceMapping deviceMapping) {

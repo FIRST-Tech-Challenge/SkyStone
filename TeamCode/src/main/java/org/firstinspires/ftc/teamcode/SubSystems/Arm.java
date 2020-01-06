@@ -17,13 +17,19 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  *          onFoundationLevel as the arm is holding the foundation
  *      Arm Motor is 5201 Series, 53:1 Ratio, 105 RPM Spur Gear Motor w/Encoder
  *      Encoder Countable Events Per Revolution (Output Shaft)	1,497.325 (Rises & Falls of Ch A & B)
- *      Arm move 90degrees so max level is 1497.325/4 = 374 counts.
+ *      Arm move 90-95 degrees and geared on a 2:3 Gear ration for torque,
+ *           so max level is (1497.325/4) *(3/2) = 561 counts.
+ *           Actual by experiment is 600 counts
  *
+ *
+ * @ArmMethods : initArm()
+ * @ArmMethods : initArmTeleOp()
+ * @ArmMethods : turnArmBrakeModeOn()
+ * @ArmMethods : turnArmBrakeModeOff()
  * @ArmMethods : moveArm_groundLevel()
  * @ArmMethods : moveArm_blockLevelUp()
  * @ArmMethods : moveArm_blockLevelDown()
  * @ArmMethods : moveArmToPlaceBlockAtLevel()
- * @ArmMethods : moveArmToLiftAfterBlockPlacement()
  * @ArmMethods : runArmToLevel()
  * @ArmAutoMethods : moveArm_detectSkystoneLevel()
  * @ArmAutoMethods : moveArm_aboveFoundationLevel(()
@@ -205,15 +211,19 @@ public class Arm {
      */
     public void moveArm_blockLevelDown(){
         if (currentLevel > 1) {
-            turnArmBrakeModeOn();
+            turnArmBrakeModeOn(); //SHOULD THIS BE SET POWER BECOMES 0 momentarily
             armMotor.setTargetPosition(blockLevel[currentLevel-1]);
             currentLevel--;
             runArmToLevel();
         } else {
-            turnArmBrakeModeOff();
+            //turnArmBrakeModeOff(); //TOTEST
+            turnArmBrakeModeOn();
             moveArm_groundLevel();
             currentLevel = 0;
-            armMotor.setPower(0.0);
+            runArmToLevel(); //TOTEST
+            turnArmBrakeModeOn(); //TOTEST
+            //armMotor.setPower(0.0); //TOTEST
+
         }
 
     }

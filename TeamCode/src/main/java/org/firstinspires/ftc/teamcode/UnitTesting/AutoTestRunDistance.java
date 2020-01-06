@@ -43,7 +43,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.*;
  * @IntakeAutoMethods : detectSkystoneDistance()
  */
 @Disabled
-@Autonomous(name = "HzAutoRunDistance", group = "Autonomous")
+@Autonomous(name = "HzAutoRunDistance", group = "AutoTest")
 public class AutoTestRunDistance extends LinearOpMode{
 
     public boolean HzDEBUG_FLAG = true;
@@ -84,7 +84,7 @@ public class AutoTestRunDistance extends LinearOpMode{
         while (opModeIsActive()&& !parked) {
             //chassisFwdBackTest();
             chassisLeftRightTest();
-            autoChassis.turnby90degree(1,0.1);
+            autoChassis.turnby90degree(1,0.1, this);
             parked = true;
         }
 
@@ -134,9 +134,9 @@ public class AutoTestRunDistance extends LinearOpMode{
 
         int i;
         for (i = 0; i < testdistance.length; i++){
-            autoChassis.runFwdBackLeftRight(testdistance[i], 0, 0.1);
+            autoChassis.runFwdBackLeftRight(testdistance[i], 0, 0.1, this);
             sleep(3000);
-            autoChassis.runFwdBackLeftRight(-testdistance[i], 0, 0.1);
+            autoChassis.runFwdBackLeftRight(-testdistance[i], 0, 0.1, this );
             sleep(3000);
         }
         parked = true;
@@ -163,9 +163,9 @@ public class AutoTestRunDistance extends LinearOpMode{
 
         int i;
         for (i = 0; i < testdistance.length; i++){
-            autoChassis.runFwdBackLeftRight(testdistance[i], 1, 0.25);
+            autoChassis.runFwdBackLeftRight(testdistance[i], 1, 0.25, this);
             sleep(3000);
-            autoChassis.runFwdBackLeftRight(testdistance[i], -1, 0.25);
+            autoChassis.runFwdBackLeftRight(testdistance[i], -1, 0.25, this );
             sleep(3000);
         }
         parked = true;

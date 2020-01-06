@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 /**
  * TeleOpMode for team Hazmat
  */
-@TeleOp(name = "NewArmConfiguration", group = "Teleop")
+@TeleOp(name = "NewArmConfiguration", group = "TeleopTest")
 public class NewArmConfiguration extends LinearOpMode{
 
     public boolean HzDEBUG_FLAG = true;

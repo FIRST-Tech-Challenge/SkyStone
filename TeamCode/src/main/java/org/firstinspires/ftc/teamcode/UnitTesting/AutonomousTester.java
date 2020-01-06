@@ -39,7 +39,7 @@ import java.util.Locale;
  *
  */
 @Disabled
-@Autonomous(name = "AutoUseCaseTester", group = "Autonomous")
+@Autonomous(name = "AutoUseCaseTester", group = "AutoTest")
 public class AutonomousTester extends LinearOpMode {
 
     Intake autoIntake;

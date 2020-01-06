@@ -45,7 +45,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.Intake;
  *  * @IntakeAutoMethods : detectSkystoneColorSensorIsBlack()
  */
 
-@TeleOp(name = "NewGripTest", group = "Teleop")
+@TeleOp(name = "NewGripTest", group = "TeleopTest")
 public class NewGripTest extends LinearOpMode{
 
     public boolean HzDEBUG_FLAG = true;

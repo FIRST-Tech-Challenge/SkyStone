@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.autoRes.commands;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -37,7 +38,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.Intake;
  * Uses playingAlliance variable to select as 1 for Blue, -1 for Red Alliance
  * Uses parkingPlaceNearSkyBridge variable false for near wall, true for near NeutralSkybridge
  */
-
+@Disabled
 @Autonomous(name = "BLUE-MoveFdn-ParkBridge", group = "MoveFdn")
 public class BLUE_MoveFdn_ParkBridge extends LinearOpMode {
 

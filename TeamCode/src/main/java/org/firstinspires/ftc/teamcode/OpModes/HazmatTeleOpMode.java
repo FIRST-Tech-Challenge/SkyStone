@@ -30,7 +30,7 @@ public class HazmatTeleOpMode extends LinearOpMode{
         hzIntake = new Intake(hardwareMap);
         hzGamepad1 = new HzGamepad1(gamepad1);
 
-        telemetry.addData("Init", "v:1.0");
+        telemetry.addData("Hazmat TeleOp Mode", "v:1.0");
 
         //Wait for pressing plan on controller
         waitForStart();

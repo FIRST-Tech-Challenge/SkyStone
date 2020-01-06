@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.autoRes.commands;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -25,7 +26,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.Intake;
  * Uses parkingPlaceNearSkyBridge variable false for near wall, true for near NeutralSkybridge
  * Uses startInBuildingZone variable as true for building zone, false for loading zone
  */
-
+@Disabled
 @Autonomous(name = "BLUE-ParkBridge_fromLoadingZone", group = "Park")
 public class BLUE_ParkBridge_fromLoadingZone extends LinearOpMode {
 

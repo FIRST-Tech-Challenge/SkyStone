@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.autoRes.commands;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -53,7 +54,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  *  Uses playingAlliance variable to select as 1 for Blue, -1 for Red Alliance
  *  Uses parkingPlaceNearSkyBridge variable false for near wall, true for near NeutralSkybridge
  */
-
+@Disabled
 @Autonomous(name = "BLUE-SkyStone-ParkBridge-Vuforia", group = "Autonomous")
 public class BLUE_SkyStone_ParkBridge_Vuforia extends LinearOpMode {
 

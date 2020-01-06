@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.autoRes.commands;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -26,7 +27,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.Intake;
  * Uses startInBuildingZone variable as true for building zone, false for loading zone
 
  */
-
+@Disabled
 @Autonomous(name = "RED-ParkWall_fromBuildingZone", group = "Park")
 public class RED_ParkWall_fromBuildingZone extends LinearOpMode {
 

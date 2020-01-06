@@ -14,7 +14,7 @@ import java.util.Locale;
  * Displays the RGB Values of Color Sensors and TouchSensor
  */
 @Disabled
-@TeleOp(name = "HzSensorCalib", group = "Teleop")
+@TeleOp(name = "HzSensorCalib", group = "TeleopTest")
 public class SensorCaliberation extends LinearOpMode{
 
     HzGamepad1 hzGamepad1;

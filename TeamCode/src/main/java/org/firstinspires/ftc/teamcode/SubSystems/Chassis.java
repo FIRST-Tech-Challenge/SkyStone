@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.SubSystems;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.TouchSensor;
@@ -37,6 +38,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * @ChassisAutoMethods : leftColorSensorIsBlue()
  * @ChassisAutoMethods : rightColorSensorIsRed()
  * @ChassisAutoMethods : frontleftChassisTouchSensorIsPressed()
+ * @ChassisAutoMethods : moveHook_holdFoundation
+ * @ChassisAutoMethods : moveHook_Released
  *
  */
 
@@ -196,7 +199,7 @@ public class Chassis {
      * Method to set the ColorSensor to be enabled or disabled
      * @param colorSensorEnabled to set the mode of color sensor on
      */
-    public void setRightColorSensordEnabled(boolean colorSensorEnabled){
+    public void setRightColorSensorEnabled(boolean colorSensorEnabled){
              rightColorSensor.enableLed(colorSensorEnabled);
     }
 
@@ -273,7 +276,7 @@ public class Chassis {
         frontRight.setPower(power * Math.sin(turnAngle) - turn);
         backLeft.setPower(power * Math.sin(turnAngle) + turn);
         backRight.setPower(power * Math.cos(turnAngle) - turn);
-        setZeroBehavior(DcMotor.ZeroPowerBehavior.BRAKE); //#TOBECHECKED TO AVOID JERK
+        setZeroBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     /* Method to move chassis based on computed vector inputs for a set distance
@@ -283,8 +286,13 @@ public class Chassis {
      * @param distance +ve for forward, -ve for backward
      * @param strafeDirection 0 for forward or backward, 1 for right, -1 for left
      * @param power to run motors
+     * @param callingOpMode passed for checking for isStopRequested()
      */
-    public void runFwdBackLeftRight(double distance, double strafeDirection, double power){
+    public void runFwdBackLeftRight(
+            double distance,
+            double strafeDirection,
+            double power,
+            LinearOpMode callingOpMode){
         setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
         resetChassis();
 
@@ -294,7 +302,10 @@ public class Chassis {
         //set fwdbackdirection, +ve for forward and negative for backward
         double fwdbackdirection = distance /Math.abs(distance);
 
-        while (Math.abs(backLeft.getCurrentPosition()) < Math.abs(ChassisMotorEncoderCount * targetRotations)) {
+        while (!callingOpMode.isStopRequested() &&
+                (Math.abs(backLeft.getCurrentPosition()) < Math.abs(ChassisMotorEncoderCount * targetRotations)
+                )
+              ){
             if(strafeDirection == 0) {
                 //Go forward or backward
                 frontLeft.setPower(fwdbackdirection*power);
@@ -324,15 +335,24 @@ public class Chassis {
      * Uses PID loop in motors to ensure motion without errors
      * @param max_stop_distance in same unit of measure as wheelRadius
      * @param power to run motors
+     * @param callingOpMode passed for checking for isStopRequested()
      */
-    public void runFwdTill_frontleftChassisTouchSensor_Pressed(double max_stop_distance, double power) {
+    public void runFwdTill_frontleftChassisTouchSensor_Pressed(
+            double max_stop_distance,
+            double power,
+            LinearOpMode callingOpMode) {
         setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
         resetChassis();
 
         //Max Total Rotations of wheel = distance / circumference of wheel
         double targetRotations = max_stop_distance/(2*Math.PI*wheelRadius);
 
-        while (!frontleftChassisTouchSensor.isPressed() && (Math.abs(backLeft.getCurrentPosition()) < Math.abs(ChassisMotorEncoderCount * targetRotations))) {
+        while (!callingOpMode.isStopRequested() &&
+                (!frontleftChassisTouchSensor.isPressed() &&
+                        (Math.abs(backLeft.getCurrentPosition()) < Math.abs(ChassisMotorEncoderCount * targetRotations)
+                        )
+                )
+              ) {
             frontLeft.setPower(power);
             frontRight.setPower(power);
             backLeft.setPower(power);
@@ -353,8 +373,13 @@ public class Chassis {
      * @param max_stop_distance Max distance to stop
      * @param strafeDirection 0 for forward or backward, 1 for right, -1 for left
      * @param power to run motors
+     * @param callingOpMode passed for checking for isStopRequested()
      */
-    public void runTill_ChassisLeftColorSensorIsRed(double max_stop_distance, double strafeDirection, double power){
+    public void runTill_ChassisLeftColorSensorIsRed(
+            double max_stop_distance,
+            double strafeDirection,
+            double power,
+            LinearOpMode callingOpMode){
         setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
         resetChassis();
 
@@ -364,7 +389,10 @@ public class Chassis {
         //set fwdbackdirection, +ve for forward and negative for backward
         double fwdbackdirection = max_stop_distance /Math.abs(max_stop_distance);
 
-        while (!leftColorSensorIsRed() && (Math.abs(backLeft.getCurrentPosition()) < Math.abs(ChassisMotorEncoderCount * targetRotations))) {
+        while ( !callingOpMode.isStopRequested() &&
+                !leftColorSensorIsRed() &&
+                (Math.abs(backLeft.getCurrentPosition()) < Math.abs(ChassisMotorEncoderCount * targetRotations))
+              ) {
             if(strafeDirection == 0) {
                 //Go forward or backward
                 frontLeft.setPower(fwdbackdirection*power);
@@ -393,8 +421,13 @@ public class Chassis {
      * @param max_stop_distance Max distance to stop
      * @param strafeDirection 0 for forward or backward, 1 for right, -1 for left
      * @param power to run motors
+     * @param callingOpMode passed for checking for isStopRequested()
      */
-    public void runTill_ChassisLeftColorSensorIsBlue(double max_stop_distance, double strafeDirection, double power){
+    public void runTill_ChassisLeftColorSensorIsBlue(
+            double max_stop_distance,
+            double strafeDirection,
+            double power,
+            LinearOpMode callingOpMode){
         setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
         resetChassis();
 
@@ -404,7 +437,10 @@ public class Chassis {
         //set fwdbackdirection, +ve for forward and negative for backward
         double fwdbackdirection = max_stop_distance /Math.abs(max_stop_distance);
 
-        while (!leftColorSensorIsBlue() && (Math.abs(backLeft.getCurrentPosition()) < Math.abs(ChassisMotorEncoderCount * targetRotations))) {
+        while (!callingOpMode.isStopRequested() &&
+                !leftColorSensorIsBlue() &&
+                (Math.abs(backLeft.getCurrentPosition()) < Math.abs(ChassisMotorEncoderCount * targetRotations))
+              ) {
             if(strafeDirection == 0) {
                 //Go forward or backward
                 frontLeft.setPower(fwdbackdirection*power);
@@ -433,8 +469,13 @@ public class Chassis {
      * @param max_stop_distance Max distance to stop
      * @param strafeDirection 0 for forward or backward, 1 for right, -1 for left
      * @param power to run motors
+     * @param callingOpMode passed for checking for isStopRequested()
      */
-    public void runTill_ChassisRightColorSensorIsRed(double max_stop_distance, double strafeDirection, double power){
+    public void runTill_ChassisRightColorSensorIsRed(
+            double max_stop_distance,
+            double strafeDirection,
+            double power,
+            LinearOpMode callingOpMode){
         setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
         resetChassis();
 
@@ -444,7 +485,10 @@ public class Chassis {
         //set fwdbackdirection, +ve for forward and negative for backward
         double fwdbackdirection = max_stop_distance /Math.abs(max_stop_distance);
 
-        while (!rightColorSensorIsRed() && (Math.abs(backLeft.getCurrentPosition()) < Math.abs(ChassisMotorEncoderCount * targetRotations))) {
+        while ( !callingOpMode.isStopRequested() &&
+                !rightColorSensorIsRed() &&
+                (Math.abs(backLeft.getCurrentPosition()) < Math.abs(ChassisMotorEncoderCount * targetRotations))
+              ) {
             if(strafeDirection == 0) {
                 //Go forward or backward
                 frontLeft.setPower(fwdbackdirection*power);
@@ -473,8 +517,13 @@ public class Chassis {
      * @param max_stop_distance Max distance to stop
      * @param strafeDirection 0 for forward or backward, 1 for right, -1 for left
      * @param power to run motors
+     * @param callingOpMode passed for checking for isStopRequested()
      */
-    public void runTill_ChassisRightColorSensorIsBlue(double max_stop_distance, double strafeDirection, double power){
+    public void runTill_ChassisRightColorSensorIsBlue(
+            double max_stop_distance,
+            double strafeDirection,
+            double power,
+            LinearOpMode callingOpMode){
         setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
         resetChassis();
 
@@ -484,7 +533,10 @@ public class Chassis {
         //set fwdbackdirection, +ve for forward and negative for backward
         double fwdbackdirection = max_stop_distance /Math.abs(max_stop_distance);
 
-        while (!rightColorSensorIsBlue() && (Math.abs(backLeft.getCurrentPosition()) < Math.abs(ChassisMotorEncoderCount * targetRotations))) {
+        while (!callingOpMode.isStopRequested() &&
+                !rightColorSensorIsBlue() &&
+                (Math.abs(backLeft.getCurrentPosition()) < Math.abs(ChassisMotorEncoderCount * targetRotations))
+              ) {
             if(strafeDirection == 0) {
                 //Go forward or backward
                 frontLeft.setPower(fwdbackdirection*power);
@@ -509,12 +561,18 @@ public class Chassis {
      * Method to turn robot by 90 degrees
      * @param clockOrAntiClockwise + 1 for clockwise, -1 for anticlockwise
      * @param power to run motors
+     * @param callingOpMode passed for checking for isStopRequested()
      */
-    public void turnby90degree(int clockOrAntiClockwise, double power){
+    public void turnby90degree(
+            int clockOrAntiClockwise,
+            double power,
+            LinearOpMode callingOpMode){
         resetChassis();
         setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        while (Math.abs(backLeft.getCurrentPosition()) < Math.abs(ChassisMotorEncoderCount * target90degRotations)) {
+        while (!callingOpMode.isStopRequested() &&
+                (Math.abs(backLeft.getCurrentPosition()) < Math.abs(ChassisMotorEncoderCount * target90degRotations))
+              ) {
             frontLeft.setPower(clockOrAntiClockwise*power);
             frontRight.setPower(-clockOrAntiClockwise*power);
             backLeft.setPower(clockOrAntiClockwise*power);
@@ -538,6 +596,21 @@ public class Chassis {
             return false;
         }
     }
+
+    /**
+     * Method to move hook  to hold on foundation
+     */
+    public void moveHook_holdFoundation(){
+        moveHookServo(HOOK_HOLD);
+    }
+
+    /**
+     * Method to move hold to released default state
+     */
+    public void moveHook_Released(){
+        moveHookServo(HOOK_RELEASED);
+    }
+
 
     /**
      * Mothod to move the hook to the set level

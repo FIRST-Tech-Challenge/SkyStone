@@ -11,8 +11,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.MovingStatistics;
 
 import org.firstinspires.ftc.robotcore.internal.system.Misc;
+import org.firstinspires.ftc.teamcode.PID.DriveConstantsPID;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveBase;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveREV;
+import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveREVOptimized;
 
 import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.TRACK_WIDTH;
 
@@ -36,8 +38,14 @@ public class TrackWidthTuner extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        //RUN_USING_ODOMETRY_WHEEL = true; //???
+        SampleMecanumDriveBase drive = null;
+        if (DriveConstantsPID.USING_BULK_READ == false)
+            drive = new SampleMecanumDriveREV(hardwareMap);
+        else
+            drive = new SampleMecanumDriveREVOptimized((hardwareMap));
 
-        SampleMecanumDriveBase drive = new SampleMecanumDriveREV(hardwareMap);
+
         // TODO: if you haven't already, set the localizer to something that doesn't depend on
         // drive encoders for computing the heading
 

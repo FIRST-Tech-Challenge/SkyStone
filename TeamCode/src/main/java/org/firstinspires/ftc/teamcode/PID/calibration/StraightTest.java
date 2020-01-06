@@ -15,6 +15,7 @@ import org.firstinspires.ftc.teamcode.All.HardwareMap;
 import org.firstinspires.ftc.teamcode.PID.DriveConstantsPID;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveBase;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveREV;
+import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveREVOptimized;
 
 /*
  * This is a simple routine to test translational drive capabilities.
@@ -30,7 +31,11 @@ public class StraightTest extends LinearOpMode {
     @Override
     public void runOpMode() {
         DriveConstantsPID.updateConstantsFromProperties();
-        SampleMecanumDriveBase drive = new SampleMecanumDriveREV(hardwareMap);
+        SampleMecanumDriveBase drive = null;
+        if (DriveConstantsPID.USING_BULK_READ == false)
+            drive = new SampleMecanumDriveREV(hardwareMap);
+        else
+            drive = new SampleMecanumDriveREVOptimized(hardwareMap);
 
         HardwareMap hwMap = new HardwareMap(hardwareMap);
 

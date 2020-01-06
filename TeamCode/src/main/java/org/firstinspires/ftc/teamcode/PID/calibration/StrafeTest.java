@@ -10,6 +10,8 @@ import org.firstinspires.ftc.teamcode.PID.DriveConstantsPID;
 import org.firstinspires.ftc.teamcode.PID.localizer.StandardTrackingWheelLocalizer;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveBase;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveREV;
+import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveREVOptimized;
+
 import com.qualcomm.robotcore.util.RobotLog;
 
 import java.util.List;
@@ -26,7 +28,11 @@ public class StrafeTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         DriveConstantsPID.updateConstantsFromProperties();
         DISTANCE = DriveConstantsPID.TEST_DISTANCE;
-        SampleMecanumDriveBase drive = new SampleMecanumDriveREV(hardwareMap);
+        SampleMecanumDriveBase drive = null;
+        if (DriveConstantsPID.USING_BULK_READ == false)
+            drive = new SampleMecanumDriveREV(hardwareMap);
+        else
+            drive = new SampleMecanumDriveREVOptimized(hardwareMap);
         drive.setBrakeonZeroPower(DriveConstantsPID.BRAKE_ON_ZERO);
 
         DriveConstantsPID.moveStrafeLeft(hardwareMap, 24);

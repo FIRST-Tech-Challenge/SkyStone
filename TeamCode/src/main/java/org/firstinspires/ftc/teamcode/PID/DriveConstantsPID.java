@@ -36,6 +36,7 @@ public class DriveConstantsPID {
     public static boolean RUN_USING_ODOMETRY_WHEEL = true;
     public static boolean RUN_USING_IMU_LOCALIZER = false;
     public static boolean BRAKE_ON_ZERO = false;
+    public static boolean USING_BULK_READ = false;
     public static double odoEncoderTicksPerRev = 1550.0;
     private static String TAG = "DriveConstants";
     public static double txP = 8; //translational x/y co-efficients
@@ -192,6 +193,7 @@ public class DriveConstantsPID {
         RobotLog.dd(TAG, "using IMU in localizer? : " + Integer.toString(RUN_USING_IMU_LOCALIZER?1:0));
         RobotLog.dd(TAG, "Driving wheel width? : " + Double.toString(TRACK_WIDTH));
         RobotLog.dd(TAG, "using Odometry? : " + Integer.toString(RUN_USING_ODOMETRY_WHEEL?1:0));
+        RobotLog.dd(TAG, "using Bulk read? : " + Integer.toString(USING_BULK_READ?1:0));
         RobotLog.dd(TAG, "Odometry wheel width? : " + Double.toString(ODOMETRY_TRACK_WIDTH));
         RobotLog.dd(TAG, "Odometry forward offset? " + Double.toString(ODOMERY_FORWARD_OFFSET));
         RobotLog.dd(TAG, "Odometry EncoderTicksPerRev? " + Double.toString(odoEncoderTicksPerRev));
@@ -220,6 +222,11 @@ public class DriveConstantsPID {
         if (v_double != Double.MAX_VALUE) {
             v_int = (int) v_double;
             RUN_USING_ODOMETRY_WHEEL = (v_int==0)?false:true;
+        }
+        v_double = (int) getTeamCodePropertyValue("debug.ftc.bulk");
+        if (v_double != Double.MAX_VALUE) {
+            v_int = (int) v_double;
+            USING_BULK_READ = (v_int==0)?false:true;
         }
         v_double = getTeamCodePropertyValue("debug.ftc.brake");
         if (v_double != Double.MAX_VALUE)

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.SubAssembly.DriveTrain;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -16,6 +17,7 @@ public class DriveControl {
     private double ENCODER_LINES = 1120;
     private double WHEEL_CIRCUMFERENCE_CM = 3.1415 * (4 * 2.54);
     private double CONVERT_CM_TO_ENCODER = GEARING * ENCODER_LINES / WHEEL_CIRCUMFERENCE_CM;
+    private double RUN_TO_TOLERANCE_CM = 1.0;
     private ElapsedTime runtime = new ElapsedTime();
 
     public void init(LinearOpMode opMode) {
@@ -53,6 +55,14 @@ public class DriveControl {
         FrontLeftM.setPower(0);
         BackRightM.setPower(0);
         BackLeftM.setPower(0);
+
+        /* change tolerance for RUN_TO_POSITION */
+        int tolerance = (int) (RUN_TO_TOLERANCE_CM * CONVERT_CM_TO_ENCODER);
+        opmode.telemetry.addData("Motor tolerance ", tolerance);
+        ((DcMotorEx) FrontLeftM).setTargetPositionTolerance(tolerance);
+        ((DcMotorEx) FrontRightM).setTargetPositionTolerance(tolerance);
+        ((DcMotorEx) BackLeftM).setTargetPositionTolerance(tolerance);
+        ((DcMotorEx) BackRightM).setTargetPositionTolerance(tolerance);
     }
 
     // delays for a fixed number of seconds
@@ -180,8 +190,6 @@ public class DriveControl {
         int startBL, targetBL;
         int startBR, targetBR;
         int distance;
-        double startTime = 0;
-        double elapsedTime = 0;
 
         // convert distance in cm to encoder value
         distance = (int) (distCM * CONVERT_CM_TO_ENCODER);
@@ -230,12 +238,21 @@ public class DriveControl {
         // always end the motion as soon as possible.
         // However, if you require that BOTH motors have finished their moves before the robot continues
         // onto the next step, use (isBusy() || isBusy()) in the loop test.
-        startTime = runtime.seconds();
+        boolean isBusy;
         do {
-            elapsedTime = runtime.seconds() - startTime;
+            // if 3 or more motors are busy, then we are busy
+            if ((FrontLeftM.isBusy() ? 1 : 0) + (FrontRightM.isBusy() ? 1 : 0) +
+                    (BackLeftM.isBusy() ? 1 : 0) + (BackRightM.isBusy() ? 1 : 0) >= 3)
+                isBusy = true;
+            else
+                isBusy = false;
+            opmode.telemetry.addData("FL error ", FrontLeftM.getCurrentPosition() - FrontLeftM.getTargetPosition());
+            opmode.telemetry.addData("FR error ", FrontRightM.getCurrentPosition() - FrontRightM.getTargetPosition());
+            opmode.telemetry.addData("BL error ", BackLeftM.getCurrentPosition() - BackLeftM.getTargetPosition());
+            opmode.telemetry.addData("BR error ", BackRightM.getCurrentPosition() - BackRightM.getTargetPosition());
+            opmode.telemetry.update();
             opmode.sleep(40);
-        } while (!opmode.isStopRequested() &&
-                (FrontLeftM.isBusy() || FrontRightM.isBusy() || BackLeftM.isBusy() || BackRightM.isBusy()));
+        } while (!opmode.isStopRequested() && isBusy);
 
         // Stop all motion
         FrontLeftM.setPower(0);

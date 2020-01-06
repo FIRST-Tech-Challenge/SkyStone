@@ -52,6 +52,8 @@ public class SkystoneTeleop extends OpMode {
 
     private FoundationGripMechanism foundationGripMechanism;
 
+    private StationKeeping stationKeeping;
+
     private StatsDMetricSampler metricSampler;
 
     private Ticker ticker;
@@ -74,6 +76,8 @@ public class SkystoneTeleop extends OpMode {
         driveBase = new RoadRunnerMecanumDriveREV(new SkystoneDriveConstants(), simplerHardwareMap, false);
         kinematics = new OpenLoopMecanumKinematics(driveBase);
 
+        stationKeeping = new StationKeeping(simplerHardwareMap);
+
         foundationGripMechanism = new FoundationGripMechanism(simplerHardwareMap);
 
         driversGamepad = new NinjaGamePad(gamepad1);
@@ -81,7 +85,9 @@ public class SkystoneTeleop extends OpMode {
         driverControls = DriverControls.builder().driversGamepad(driversGamepad)
                 .kinematics(kinematics)
                 .foundationGripMechanism(foundationGripMechanism)
+                .stationKeeping(stationKeeping)
                 .build();
+
         deliveryMechanism = new DeliveryMechanism(simplerHardwareMap, telemetry, ticker);
 
         operatorsGamepad = new NinjaGamePad(gamepad2);
@@ -119,8 +125,10 @@ public class SkystoneTeleop extends OpMode {
             if (chaosNinja.isMetricsActivated()) {
                 Log.i(LOG_TAG, "Metrics requested, enabling");
                 metricSampler = new StatsDMetricSampler(hardwareMap, driversGamepad, operatorsGamepad);
+
             } else {
                 Log.i(LOG_TAG, "No metrics requested, not enabling");
+
                 metricSampler = null;
             }
 

@@ -46,7 +46,7 @@ public class DriverControls {
 
     protected DebouncedButton dpadRight;
 
-    protected DebouncedButton xBlueButton;
+    protected OnOffButton xBlueButton;
 
     protected DebouncedButton bRedButton;
 
@@ -61,6 +61,8 @@ public class DriverControls {
     protected RangeInput leftTrigger;
 
     protected RangeInput rightTrigger;
+
+    protected OnOffButton useStationKeeping;
 
     // Derived
     protected RangeInput driveForwardReverse;
@@ -87,6 +89,8 @@ public class DriverControls {
 
     private FoundationGripMechanism foundationGripMechanism;
 
+    private StationKeeping stationKeeping;
+
     protected DebouncedButton foundationGripButton;
 
     protected DebouncedButton foundationUngripButton;
@@ -108,7 +112,7 @@ public class DriverControls {
                            DebouncedButton dpadDown,
                            DebouncedButton dpadLeft,
                            DebouncedButton dpadRight,
-                           DebouncedButton xBlueButton,
+                           OnOffButton xBlueButton,
                            DebouncedButton bRedButton,
                            DebouncedButton yYellowButton,
                            DebouncedButton aGreenButton,
@@ -118,7 +122,8 @@ public class DriverControls {
                            RangeInput rightTrigger,
                            NinjaGamePad driversGamepad,
                            OpenLoopMecanumKinematics kinematics,
-                           FoundationGripMechanism foundationGripMechanism) {
+                           FoundationGripMechanism foundationGripMechanism,
+                           StationKeeping stationKeeping) {
         if (driversGamepad != null) {
             this.driversGamepad = driversGamepad;
             setupFromGamepad();
@@ -146,6 +151,7 @@ public class DriverControls {
 
         this.kinematics = kinematics;
         this.foundationGripMechanism = foundationGripMechanism;
+        this.stationKeeping = stationKeeping;
     }
 
     private void setupCurvesAndFilters() {
@@ -172,7 +178,7 @@ public class DriverControls {
         dpadRight = new DebouncedButton(driversGamepad.getDpadRight());
         aGreenButton = new DebouncedButton(driversGamepad.getAButton());
         bRedButton = new DebouncedButton(driversGamepad.getBButton());
-        xBlueButton = new DebouncedButton(driversGamepad.getXButton());
+        xBlueButton = driversGamepad.getXButton();
         yYellowButton = new DebouncedButton(driversGamepad.getYButton());
         leftBumper = driversGamepad.getLeftBumper();
         rightBumper = driversGamepad.getRightBumper();
@@ -191,7 +197,10 @@ public class DriverControls {
         driveBumpStrafeRightButton = rightBumper;
         foundationGripButton = aGreenButton;
         foundationUngripButton = bRedButton;
+        useStationKeeping = xBlueButton;
     }
+
+    private boolean gripUpFirstTime = false;
 
     public void periodicTask() {
         double x = driveStrafe.getPosition();
@@ -231,7 +240,35 @@ public class DriverControls {
             rotateScaled = 0;
         }
 
+        if (xBlueButton.isPressed() && stationKeeping != null) {
+            StationKeeping.StationKeepingSignals signals = stationKeeping.calculateSignals();
+
+            switch (signals.getState()) {
+                case ACTIVE:
+                case ON_STATION:
+                    rotateScaled = signals.getTurnPower();
+                    break;
+                case TOO_CLOSE:
+                case TOO_FAR:
+                    break;
+
+            }
+        } else {
+
+        }
+
         kinematics.driveCartesian(xScaled, yScaled, rotateScaled, driveInverted, 0.0, useEncoders);
+
+        handleFoundationGripper();
+    }
+
+    private void handleFoundationGripper() {
+        // Tricky - tri-state, at init, inside 18" constraints, at tele-op start, deployed forward
+        // to avoid lift coiled cable
+        if (!gripUpFirstTime) {
+            foundationGripMechanism.up();
+            gripUpFirstTime = true;
+        }
 
         if (foundationGripButton != null && foundationGripButton.getRise()) {
             foundationGripMechanism.down();
@@ -239,5 +276,4 @@ public class DriverControls {
             foundationGripMechanism.up();
         }
     }
-
 }

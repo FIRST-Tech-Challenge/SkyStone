@@ -70,6 +70,9 @@ public class MyPosition {
         PositioningCalculations();
     }
 
+    public static float AngleWrap(float angle){
+		return (float)AngleWrap((double)angle);
+    }
 
     /**
      * Makes sure an angle is in the range of -180 to 180
@@ -270,18 +273,5 @@ public class MyPosition {
         wheelLeftInitialReading = currPos_l;
         wheelRightInitialReading = currPos_r;
         lastResetAngle = angle;
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////
-
-
-    public static float AngleWrap(float angle){
-        while (angle<-Math.PI){
-            angle += 2* Math.PI;
-        }
-        while (angle> Math.PI){
-            angle -= 2* Math.PI;
-        }
-        return angle;
     }
 }

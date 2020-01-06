@@ -129,34 +129,34 @@ public class newAutonomous extends LinearOpMode{
                     telemetry.update();
                     Grabber.open();
                     Grabber.Pos1();
-                    Drive.moveForwardDistance(0.8, 80, 0.0);
+                    Drive.moveForwardDistance(0.8, 80);
                     Grabber.close();
                     Drive.TimeDelay(0.5);
-                    Drive.moveBackwardDistance(0.8,40, 0.0);
+                    Drive.moveBackwardDistance(0.8,40);
                     if (AllianceColor == true) {
-                        Drive.turnRightDistance(0.5, 50, 0.0);
+                        Drive.turnRightDistance(0.5, 50);
                     }
                     else {
-                        Drive.turnLeftDistance(0.5,50, 0.0);
+                        Drive.turnLeftDistance(0.5,50);
                     }
-                    Drive.moveForwardDistance(0.8, 175, 0.0);
+                    Drive.moveForwardDistance(0.8, 175);
                     if (AllianceColor == true) {
-                        Drive.turnRightDistance(0.5, 50, 0.0);
+                        Drive.turnRightDistance(0.5, 50);
                     }
                     else {
-                        Drive.turnLeftDistance(0.5,50, 0.0);
+                        Drive.turnLeftDistance(0.5,50);
                     }
-                    Drive.moveBackwardDistance(0.8, 45, 2.0);
+                    Drive.moveBackwardDistance(0.8, 45);
                     FoundationGrabber.close();
                     Drive.TimeDelay(1.0);
-                    Drive.moveForwardDistance(0.8, 40, 0.0);
+                    Drive.moveForwardDistance(0.8, 40);
                     if (AllianceColor == true) {
-                        Drive.turnRightDistance(0.5, 50, 0.0);
+                        Drive.turnRightDistance(0.5, 50);
                     }
                     else {
-                        Drive.turnLeftDistance(0.5,50, 0.0);
+                        Drive.turnLeftDistance(0.5,50);
                     }
-                    Drive.moveForwardDistance(0.8, 10.0, 0.0);
+                    Drive.moveForwardDistance(0.8, 10.0);
                     newState(State.Stop);
                     break;
 

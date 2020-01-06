@@ -12,7 +12,7 @@ public class DriveControl {
     private DcMotor BackRightM = null;
     private DcMotor BackLeftM = null;
     private double MAX_SPEED = 0.8;
-    private double GEARING = 2.0/3.0;
+    private double GEARING = 2.0 / 3.0;
     private double ENCODER_LINES = 1120;
     private double WHEEL_CIRCUMFERENCE_CM = 3.1415 * (4 * 2.54);
     private double CONVERT_CM_TO_ENCODER = GEARING * ENCODER_LINES / WHEEL_CIRCUMFERENCE_CM;
@@ -174,7 +174,7 @@ public class DriveControl {
     // starts all motors at specified speeds
     // waits until motors move specified distance then stops motors
     public void moveMotorsDistance(double speedFL, double speedFR,
-                                   double speedBL, double speedBR, double distCM, double timeDelay) {
+                                   double speedBL, double speedBR, double distCM) {
         int startFL, targetFL;
         int startFR, targetFR;
         int startBL, targetBL;
@@ -234,7 +234,7 @@ public class DriveControl {
         do {
             elapsedTime = runtime.seconds() - startTime;
             opmode.sleep(40);
-        } while ((elapsedTime < timeDelay) && !opmode.isStopRequested() &&
+        } while (!opmode.isStopRequested() &&
                 (FrontLeftM.isBusy() || FrontRightM.isBusy() || BackLeftM.isBusy() || BackRightM.isBusy()));
 
         // Stop all motion
@@ -250,33 +250,33 @@ public class DriveControl {
         BackRightM.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    public void moveForwardDistance(double speed, double distCM, double timeDelay) {
+    public void moveForwardDistance(double speed, double distCM) {
         moveMotorsDistance(speed, speed,
-                speed, speed, distCM, timeDelay);
+                speed, speed, distCM);
     }
 
-    public void moveBackwardDistance(double speed, double distCM, double timeDelay) {
+    public void moveBackwardDistance(double speed, double distCM) {
         moveMotorsDistance(-speed, -speed,
-                -speed, -speed, distCM, timeDelay);
+                -speed, -speed, distCM);
     }
 
-    public void strafeLeftDistance(double speed, double distCM, double timeDelay) {
+    public void strafeLeftDistance(double speed, double distCM) {
         moveMotorsDistance(-speed, speed,
-                speed, -speed, distCM, timeDelay);
+                speed, -speed, distCM);
     }
 
-    public void strafeRightDistance(double speed, double distCM, double timeDelay) {
+    public void strafeRightDistance(double speed, double distCM) {
         moveMotorsDistance(speed, -speed,
-                -speed, speed, distCM, timeDelay);
+                -speed, speed, distCM);
     }
 
-    public void turnLeftDistance(double speed, double distCM, double timeDelay) {
+    public void turnLeftDistance(double speed, double distCM) {
         moveMotorsDistance(-speed, speed,
-                -speed, speed, distCM, timeDelay);
+                -speed, speed, distCM);
     }
 
-    public void turnRightDistance(double speed, double distCM, double timeDelay) {
+    public void turnRightDistance(double speed, double distCM) {
         moveMotorsDistance(speed, -speed,
-                speed, -speed, distCM, timeDelay);
+                speed, -speed, distCM);
     }
 }

@@ -111,4 +111,6 @@ public class GrabberControl {
     public void home() {
         ExtenderServo.setSetpoint(ExtenderSetpt.Home);
     }
+
+    public void Pos1 () { ExtenderServo.setSetpoint(ExtenderSetpt.Pos1);}
 }

@@ -40,6 +40,7 @@ public class teleop extends LinearOpMode {
         Drive.init(this);
         Grabber.init(this);
         Lift.init(this);
+        FoundationGrabber.init(this);
 
         //Grabber.home();
 
@@ -93,15 +94,14 @@ public class teleop extends LinearOpMode {
 
             //go player 2-----------------------------------------------
 
-            if (egamepad2.a.released) {
-                Grabber.open();
-            } else if (egamepad2.b.released) {
-                Grabber.close();
-            }
-
-            /*if (egamepad2.b.released){
+            /*if (egamepad2.a.released) {
+                if ()
                 Grabber.grab();
             }*/
+
+            if (egamepad2.b.released){
+                Grabber.grab();
+            }
              if (egamepad2.right_bumper.released) {
                 Grabber.wrist();
             }
@@ -109,11 +109,15 @@ public class teleop extends LinearOpMode {
                 Grabber.extend();
             }
             if (egamepad2.y.released) {
-                Grabber.home();
+                Grabber.Pos1();
             }
 
             if (egamepad2.left_bumper.released){
-                FoundationGrabber.grab();
+                FoundationGrabber.close();
+            }
+
+            if (egamepad2.left_trigger.released){
+                FoundationGrabber.open();
             }
 
             if (egamepad2.dpad_up.state && !Lift.isLimitTop()) {

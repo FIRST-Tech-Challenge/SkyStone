@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+
 public class LiftControl {/* Constants */
     final double LIFT_SPEED = 1.0;
 
@@ -20,6 +21,7 @@ public class LiftControl {/* Constants */
     private TouchSensor LifterButtonB;
 
     /* Declare public class object */
+
 
     /* Subassembly constructor */
     public LiftControl() {
@@ -54,6 +56,11 @@ public class LiftControl {/* Constants */
     }
 
     public void MoveUp() {
+        LifterLeftM.setPower(LIFT_SPEED);
+        LifterRightM.setPower(LIFT_SPEED);
+    }
+
+    public void MoveUpTime (double time){
         LifterLeftM.setPower(LIFT_SPEED);
         LifterRightM.setPower(LIFT_SPEED);
     }

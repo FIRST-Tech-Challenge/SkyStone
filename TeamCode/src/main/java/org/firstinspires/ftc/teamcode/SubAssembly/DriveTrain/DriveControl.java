@@ -174,12 +174,14 @@ public class DriveControl {
     // starts all motors at specified speeds
     // waits until motors move specified distance then stops motors
     public void moveMotorsDistance(double speedFL, double speedFR,
-                                   double speedBL, double speedBR, double distCM) {
+                                   double speedBL, double speedBR, double distCM, double timeDelay) {
         int startFL, targetFL;
         int startFR, targetFR;
         int startBL, targetBL;
         int startBR, targetBR;
         int distance;
+        double startTime = 0;
+        double elapsedTime = 0;
 
         // convert distance in cm to encoder value
         distance = (int) (distCM * CONVERT_CM_TO_ENCODER);
@@ -228,11 +230,12 @@ public class DriveControl {
         // always end the motion as soon as possible.
         // However, if you require that BOTH motors have finished their moves before the robot continues
         // onto the next step, use (isBusy() || isBusy()) in the loop test.
-        while (!opmode.isStopRequested() &&
-                (FrontLeftM.isBusy() || FrontRightM.isBusy() ||
-                        BackLeftM.isBusy() || BackRightM.isBusy())) {
+        startTime = runtime.seconds();
+        do {
+            elapsedTime = runtime.seconds() - startTime;
             opmode.sleep(40);
-        }
+        } while ((elapsedTime < timeDelay) && !opmode.isStopRequested() &&
+                (FrontLeftM.isBusy() || FrontRightM.isBusy() || BackLeftM.isBusy() || BackRightM.isBusy()));
 
         // Stop all motion
         FrontLeftM.setPower(0);
@@ -247,33 +250,33 @@ public class DriveControl {
         BackRightM.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    public void moveForwardDistance(double speed, double distCM) {
+    public void moveForwardDistance(double speed, double distCM, double timeDelay) {
         moveMotorsDistance(speed, speed,
-                speed, speed, distCM);
+                speed, speed, distCM, timeDelay);
     }
 
-    public void moveBackwardDistance(double speed, double distCM) {
+    public void moveBackwardDistance(double speed, double distCM, double timeDelay) {
         moveMotorsDistance(-speed, -speed,
-                -speed, -speed, distCM);
+                -speed, -speed, distCM, timeDelay);
     }
 
-    public void strafeLeftDistance(double speed, double distCM) {
+    public void strafeLeftDistance(double speed, double distCM, double timeDelay) {
         moveMotorsDistance(-speed, speed,
-                speed, -speed, distCM);
+                speed, -speed, distCM, timeDelay);
     }
 
-    public void strafeRightDistance(double speed, double distCM) {
+    public void strafeRightDistance(double speed, double distCM, double timeDelay) {
         moveMotorsDistance(speed, -speed,
-                -speed, speed, distCM);
+                -speed, speed, distCM, timeDelay);
     }
 
-    public void turnLeftDistance(double speed, double distCM) {
+    public void turnLeftDistance(double speed, double distCM, double timeDelay) {
         moveMotorsDistance(-speed, speed,
-                -speed, speed, distCM);
+                -speed, speed, distCM, timeDelay);
     }
 
-    public void turnRightDistance(double speed, double distCM) {
+    public void turnRightDistance(double speed, double distCM, double timeDelay) {
         moveMotorsDistance(speed, -speed,
-                speed, -speed, distCM);
+                speed, -speed, distCM, timeDelay);
     }
 }

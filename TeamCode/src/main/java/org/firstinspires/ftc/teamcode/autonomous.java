@@ -134,7 +134,7 @@ public class autonomous extends LinearOpMode {
                 case DrivetoQuarry:
                     telemetry.addLine("Drive to Quarry");
                     telemetry.update();
-                    Drive.moveForwardDistance(0.75,71.2);
+                    Drive.moveForwardDistance(0.75,71.2, 10.0);
                     newState(State.MovetoLine);
                     break;
                 // Navigates to where the skystone is and grabs it
@@ -143,23 +143,23 @@ public class autonomous extends LinearOpMode {
                     telemetry.update();
                     if (Skystone == SkystonePosition.R2){
                         telemetry.addLine("R2");
-                        Drive.strafeLeftDistance(0.75, 20.32);
+                        Drive.strafeLeftDistance(0.75, 20.32, 10.0);
                     } else if (Skystone == SkystonePosition.R3){
                         telemetry.addLine("R3");
-                        Drive.strafeLeftDistance(0.75, 40.64);
+                        Drive.strafeLeftDistance(0.75, 40.64, 10.0);
                     } else if (Skystone == SkystonePosition.B2){
                         telemetry.addLine("B2");
-                        Drive.strafeRightDistance(0.75, 20.32);
+                        Drive.strafeRightDistance(0.75, 20.32, 10.0);
                     } else if (Skystone == SkystonePosition.B3){
                         telemetry.addLine("B3");
-                        Drive.strafeRightDistance(0.75, 40.64);
+                        Drive.strafeRightDistance(0.75, 40.64, 10.0);
                     } else if (Skystone == SkystonePosition.B1){
                         telemetry.addLine("B1");
                     } else {
                         telemetry.addLine("R1");
                     }
                     Grabber.open();
-                    Drive.moveForwardDistance(0.5,5);
+                    Drive.moveForwardDistance(0.5,5, 10.0);
                     Grabber.close();
                     newState(State.MovetoLine);
                     break;
@@ -167,14 +167,14 @@ public class autonomous extends LinearOpMode {
                 case MovetoLine:
                     telemetry.addLine("MovetoLine");
                     telemetry.update();
-                    Drive.moveBackwardDistance(0.5,10.16);
+                    Drive.moveBackwardDistance(0.5,10.16, 10.0);
                     if (AllianceColor == true) {
-                        Drive.turnRightDistance(0.5, 50);
+                        Drive.turnRightDistance(0.5, 50, 10.0);
                     }
                     else {
-                        Drive.turnLeftDistance(0.5,50);
+                        Drive.turnLeftDistance(0.5,50, 10.0);
                     }
-                    Drive.moveForwardDistance(0.75, 76.2);
+                    Drive.moveForwardDistance(0.75, 76.2, 10.0);
                     /*if (Skystone == SkystonePosition.R3 || Skystone == SkystonePosition.B3){
                         Drive.moveForwardDistance(0.75, 20.32);
                     }*/
@@ -186,28 +186,29 @@ public class autonomous extends LinearOpMode {
                 case MovetoLineStart:
                     telemetry.addLine("StrafetoLine");
                     telemetry.update();
-                    Drive.moveForwardDistance(0.5, 45);
+                    Grabber.open();
+                    Drive.moveForwardDistance(0.5, 85, 10.0);
                     newState(State.Stop);
                     break;
 
                 /* Drives into the building zone, leaves the skystone there, and backs up
                 until under the skybridge again*/
                 case ScoreStone:
-                    Drive.moveForwardDistance(0.75,90);
+                    Drive.moveForwardDistance(0.75,90, 10.0);
                     Grabber.open();
-                    Drive.moveBackwardDistance(0.75,90);
+                    Drive.moveBackwardDistance(0.75,90, 10.0);
                     newState(State.Stop);
                     break;
 
                 case BackupToQuarry:
                     telemetry.addLine("Backup to quarry");
                     telemetry.update();
-                    Drive.moveBackwardDistance(0.5,95.2);
+                    Drive.moveBackwardDistance(0.5,95.2, 10.0);
                     if (AllianceColor == true){
-                        Drive.turnLeftDistance(0.5,50);
+                        Drive.turnLeftDistance(0.5,50, 10.0);
                     }
                     else {
-                        Drive.turnRightDistance(0.75,50);
+                        Drive.turnRightDistance(0.75,50, 10.0);
                     }
                     newState(State.GrabSkystone2);
                     break;
@@ -223,21 +224,21 @@ public class autonomous extends LinearOpMode {
                 case MovetoLine2:
                     telemetry.addLine("Move to line");
                     telemetry.update();
-                    Drive.moveBackwardDistance(0.5,10.16);
+                    Drive.moveBackwardDistance(0.5,10.16, 10.0);
                     if (AllianceColor == true)
-                        Drive.turnRightDistance(0.5,50);
+                        Drive.turnRightDistance(0.5,50, 10.0);
                     else{
-                        Drive.turnLeftDistance(0.5,50);
+                        Drive.turnLeftDistance(0.5,50, 10.0);
                     }
-                    Drive.moveForwardDistance(0.75, 95.2);
+                    Drive.moveForwardDistance(0.75, 95.2, 10.0);
                     //Drive until sees red or blue line
                     newState(State.ScoreStone2);
                     break;
 
                 case ScoreStone2:
-                    Drive.moveForwardDistance(0.75,91.44);
+                    Drive.moveForwardDistance(0.75,91.44, 10.0);
                     Grabber.open();
-                    Drive.moveBackwardDistance(0.75,91.44);
+                    Drive.moveBackwardDistance(0.75,91.44, 10.0);
                     newState(State.Stop);
                     break;
                 case Stop:

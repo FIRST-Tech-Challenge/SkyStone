@@ -38,7 +38,10 @@ public class FoundationGrabberTest extends LinearOpMode {
             egamepad2.updateEdge();
 
             if (egamepad2.left_bumper.released) {
-                FoundationGrabber.grab();
+                FoundationGrabber.close();
+            }
+            if (egamepad2.left_trigger.released){
+                FoundationGrabber.open();
             }
 
 

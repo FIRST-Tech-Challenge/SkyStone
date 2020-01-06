@@ -48,7 +48,7 @@ public class FoundationGrabberControl {
         hwMap = opMode.hardwareMap;
 
         // create servo mappings
-        MapFoundationGrabber = new EnumMap<FoundationGrabberSetpt, Double>(FoundationGrabberSetpt.class);
+       /* MapFoundationGrabber = new EnumMap<FoundationGrabberSetpt, Double>(FoundationGrabberSetpt.class);
         MapFoundationGrabber.put(FoundationGrabberSetpt.Close, 0.0);
         MapFoundationGrabber.put(FoundationGrabberSetpt.Open, 1.0);
 
@@ -57,11 +57,16 @@ public class FoundationGrabberControl {
         foundationMover = hwMap.servo.get("foundationMover");
 
 
-        FoundationGrabberServo = new ServoControl(foundationMover, MapFoundationGrabber, FoundationGrabberSetpt.Open, true);
+      //  FoundationGrabberServo = new ServoControl(foundationMover, MapFoundationGrabber, FoundationGrabberSetpt.Open, true);
+
+        foundationMover.setPosition(1.0);
     }
 
-    public void grab() {
-        FoundationGrabberServo.nextSetpoint(true);
+    public void close() {
+        foundationMover.setPosition(0.0);
+    }
+    public void open(){
+        foundationMover.setPosition(1.0);
     }
 
 }

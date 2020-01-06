@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import org.firstinspires.ftc.teamcode.RobotUtilities.MyPosition;
 
 /**
  * Created by 12090 STEM Punk
@@ -25,7 +26,7 @@ public abstract class OmniAutoXYOdoClass extends LinearOpMode {
     // 40:1 motor = 1120
     // 60:1 motor = 1680
     private static final double encoderClicksPerRev = 28;
-    private static double clicksPerInch = (myMotorRatio * encoderClicksPerRev) / (Math.PI * myWheelSize);
+    private static double clicksPerCm = (myMotorRatio * encoderClicksPerRev) / (Math.PI * myWheelSize *2.54);
 
     public static final float MM_PER_INCH = 25.4f;
 
@@ -52,7 +53,24 @@ public abstract class OmniAutoXYOdoClass extends LinearOpMode {
         myWheelSize = newWheelSize;
         myMotorRatio = newMotorRatio;
 
-        clicksPerInch = (myMotorRatio * encoderClicksPerRev) / (Math.PI * myWheelSize);
+        clicksPerCm = (myMotorRatio * encoderClicksPerRev) / (Math.PI * myWheelSize * 2.54);
+    }
+
+    public boolean driveToXY(double x, double y, double robotAngle) {
+        double deltaX = x - MyPosition.worldXPosition;
+        double deltaY = y - MyPosition.worldYPosition;
+        double driveAngle = Math.atan2(deltaY, deltaX);
+        double magnitude = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+        double driveSpeed = magnitude * 0.014;
+        driveSpeed = Math.min(1, driveSpeed);
+        double joystickX = driveSpeed * Math.cos(driveAngle);
+        double joystickY = driveSpeed * Math.sin(driveAngle);
+        // TBD
+
+        // Calculate the speeds
+        double max = Math.max(Math.abs(deltaX), Math.abs(deltaY));
+
+        return true;
     }
 
     /**

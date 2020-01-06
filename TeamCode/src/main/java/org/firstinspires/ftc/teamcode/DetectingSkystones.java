@@ -29,12 +29,10 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
@@ -83,7 +81,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  */
 
 
-@TeleOp(name="DetectingSkystones", group ="Concept")
+@Autonomous(name="DetectingSkystones", group ="Concept")
 //@Disabled
 public class DetectingSkystones extends Movement {
 
@@ -137,6 +135,10 @@ public class DetectingSkystones extends Movement {
     private float phoneXRotate    = 0;
     private float phoneYRotate    = 0;
     private float phoneZRotate    = 0;
+
+    private int blockdistance = 0;
+    private boolean skystone1Detected = true;
+
 
     @Override public void runOpModeImpl() {
 
@@ -293,12 +295,16 @@ public class DetectingSkystones extends Movement {
 
         waitForStart();
 
+
+
         // Note: To use the remote camera preview:
         // AFTER you hit Init on the Driver Station, use the "options menu" to select "Camera Stream"
         // Tap the preview window to receive a fresh image.
 
+        goLeft(1,1000, "1. Going Right");
+
         targetsSkyStone.activate();
-        while (!isStopRequested()) {
+        while (skystone1Detected) {
 
             // check all the trackable targets to see which one (if any) is visible.
             targetVisible = false;
@@ -319,7 +325,7 @@ public class DetectingSkystones extends Movement {
 
             // Provide feedback as to where the robot is located (if we know).
             if (targetVisible) {
-                // express position (translation) of robot in inches.
+                // express position (translationvc) of robot in inches.
                 VectorF translation = lastLocation.getTranslation();
                 telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
                         translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
@@ -327,12 +333,45 @@ public class DetectingSkystones extends Movement {
                 // express the rotation of the robot in degrees.
                 Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
                 telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
+                stopWithSleep("Wahoo", 10);
+                goForward(0.5, 50);
+                Turnleft(1, 1,575);
+                frontServo.setPosition(0.4);
+                goForward(0.4, 475);
+                stopWithSleep("stop", 100);
+                armclamp();
+                stopWithSleep("stopafterarmclamp", 200);
+                goBackward(0.6, 525);
+                stopWithSleep("stop", 200);
+                Turnleft(1,1, 525);
+                stopWithSleep("stop", 200);
+                goForward(0.4, (int) (0.25 *blockdistance));
+                goForward(1, 1250);
+                armrelease();
+
+
+                // Turning back for 2nd skystone
+                stopWithSleep(50);
+                goBackward(1, 1250);
+                stopWithSleep(50);
+                Turnright(1, 1, 1175);
+                stopWithSleep(50);
+                goForward(0.4, (int) (0.25 *blockdistance));
+
+                // Detect second skystone
+                skystone1Detected = false;
+                break;
             }
             else {
                 telemetry.addData("Visible Target", "none");
+                goForward(0.1, 1);
+                blockdistance += 1;
+                telemetry.addData("blockdistance",  String.valueOf(blockdistance));
             }
             telemetry.update();
         }
+
+        // Scan for 2nd skystone
 
         // Disable Tracking when we are done;
         targetsSkyStone.deactivate();

@@ -47,7 +47,7 @@ public class MainTeleop extends LinearOpMode {
 
 
     // Booleans for debugging
-    boolean isTelemetryPosition = true;
+    final boolean isTelemetryPosition = false;
 
     @Override
     public void runOpMode() {
@@ -91,8 +91,6 @@ public class MainTeleop extends LinearOpMode {
             } else {
                 telemetry.addLine("CURRENT ROBOT MODE: NORMAL");
             }
-
-            telemetry.addLine("outtake spool: " + robot.getOuttakeSpool().getCurrentPosition());
         }
     }
 

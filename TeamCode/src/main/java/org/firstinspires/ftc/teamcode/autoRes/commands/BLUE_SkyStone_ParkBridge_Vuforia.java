@@ -102,7 +102,8 @@ public class BLUE_SkyStone_ParkBridge_Vuforia extends LinearOpMode {
     double stoneTostone = 8;
 
     public VuforiaTrackables targetsSkyStone;
-    List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
+    public VuforiaTrackable stoneTarget;
+    //List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
     int cameraMonitorViewId;
 
     // Next, translate the camera lens to where it is on the robot.
@@ -673,12 +674,13 @@ public class BLUE_SkyStone_ParkBridge_Vuforia extends LinearOpMode {
         // sets are stored in the 'assets' part of our application.
         targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
 
-        VuforiaTrackable stoneTarget = targetsSkyStone.get(0);
+        stoneTarget = targetsSkyStone.get(0);
         stoneTarget.setName("Stone Target");
 
-        // For convenience, gather together all the trackable objects in one easily-iterable collection */
+        /* For convenience, gather together all the trackable objects in one easily-iterable collection
         allTrackables = new ArrayList<VuforiaTrackable>();
         allTrackables.addAll(targetsSkyStone);
+        */
 
         VectorF translation;
 
@@ -704,28 +706,29 @@ public class BLUE_SkyStone_ParkBridge_Vuforia extends LinearOpMode {
                 .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
 
-        /*  Let all the trackable listeners know where the phone is.  */
+        /*  Let all the trackable listeners know where the phone is.
         for (VuforiaTrackable trackable : allTrackables) {
             ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
         }
+        */
         //*************Vuforia************************
 
     }
+
 
     public void vuforiaFindSkystone(){
         AutonomousTimeOut.reset();
         AutonomousTimeOut.startTime();
         targetVisible = false;
 
+        targetsSkyStone.activate();
         //Turn Camera flash on
         CameraDevice.getInstance().setFlashTorchMode(true);
-
-        targetsSkyStone.activate();
 
         while(AutonomousTimeOut.milliseconds()<3000 && !targetVisible) {
             //**************Vuforia********************
             // check all the trackable targets to see which one (if any) is visible.
-            for (VuforiaTrackable trackable : allTrackables) {
+            /*/TESTCOMMENT for (VuforiaTrackable trackable : allTrackables) {
                 if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
                     telemetry.addData("Visible Target", trackable.getName());
                     targetVisible = true;
@@ -737,8 +740,20 @@ public class BLUE_SkyStone_ParkBridge_Vuforia extends LinearOpMode {
                         lastLocation = robotLocationTransform;
                     }
                     break;
+                }*/
+            //TESTCOMMENT ADD START
+            if (((VuforiaTrackableDefaultListener) stoneTarget.getListener()).isVisible()) {
+                telemetry.addData("Visible Target", stoneTarget.getName());
+                targetVisible = true;
+
+                // getUpdatedRobotLocation() will return null if no new information is available since
+                // the last time that call was made, or if the trackable is not currently visible.
+                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) stoneTarget.getListener()).getUpdatedRobotLocation();
+                if (robotLocationTransform != null) {
+                    lastLocation = robotLocationTransform;
                 }
             }
+            //TESTCOMMENT ADD END
 
             // Provide feedback as to where the robot is located (if we know).
             if (targetVisible) {
@@ -766,6 +781,4 @@ public class BLUE_SkyStone_ParkBridge_Vuforia extends LinearOpMode {
         //***********Vuforia**************
 
     }
-
-
 }

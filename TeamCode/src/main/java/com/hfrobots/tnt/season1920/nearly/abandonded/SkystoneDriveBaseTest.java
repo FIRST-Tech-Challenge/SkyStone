@@ -17,17 +17,21 @@
  SOFTWARE.
  **/
 
-package com.hfrobots.tnt.season1920;
+package com.hfrobots.tnt.season1920.nearly.abandonded;
 
 import com.hfrobots.tnt.corelib.control.NinjaGamePad;
 import com.hfrobots.tnt.corelib.drive.mecanum.DriveConstants;
 import com.hfrobots.tnt.corelib.drive.mecanum.RoadRunnerMecanumDriveREV;
 import com.hfrobots.tnt.corelib.metrics.StatsDMetricSampler;
 import com.hfrobots.tnt.corelib.util.RealSimplerHardwareMap;
+import com.hfrobots.tnt.season1920.OpenLoopMecanumKinematics;
+import com.hfrobots.tnt.season1920.SkystoneDriveConstants;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp(name="Skystone Drive Test",  group="Utilities")
+@Disabled
 @SuppressWarnings("unused")
 public class SkystoneDriveBaseTest extends OpMode {
     private OpenLoopMecanumKinematics kinematics;

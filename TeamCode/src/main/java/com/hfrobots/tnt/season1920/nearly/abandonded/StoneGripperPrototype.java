@@ -17,7 +17,7 @@
  SOFTWARE.
  **/
 
-package com.hfrobots.tnt.season1920;
+package com.hfrobots.tnt.season1920.nearly.abandonded;
 
 import com.hfrobots.tnt.corelib.control.DebouncedButton;
 import com.hfrobots.tnt.corelib.control.NinjaGamePad;

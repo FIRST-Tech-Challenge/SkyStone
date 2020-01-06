@@ -78,9 +78,9 @@ public class HardwareOmnibotDrive
     public boolean defaultInputShaping = true;
     protected boolean imuRead = false;
     protected double imuValue = 0.0;
-    protected int leftEncoderWheelPosition = 0;
-    protected int strafeEncoderWheelPosition = 0;
-    protected int rightEncoderWheelPosition = 0;
+
+    public static boolean encodersReset = false;
+    public boolean forceReset = false;
 
     public double xAngle, yAngle, zAngle;
     /* local OpMode members. */
@@ -147,7 +147,12 @@ public class HardwareOmnibotDrive
         frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rearLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rearRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        resetDriveEncoders();
+
+        // Set the stop mode
+        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rearRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         initIMU();
     }
@@ -324,10 +329,15 @@ public class HardwareOmnibotDrive
         rearRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
-    public void resetDriveEncoders()
+    public void resetEncoders()
     {
         int sleepTime = 0;
         int encoderCount = frontLeft.getCurrentPosition();
+
+        // The Odometry Encoders
+        extender.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftIntake.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightIntake.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rearLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -342,16 +352,15 @@ public class HardwareOmnibotDrive
             encoderCount = frontLeft.getCurrentPosition();
         }
 
+        // The Odometry Encoders
+        extender.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftIntake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightIntake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        // Set the stop mode
-        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rearRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     // Odometry updates

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
+import org.firstinspires.ftc.teamcode.HelperClasses.FloatPoint;
 
 public class MyMath {
 

@@ -5,9 +5,13 @@ package org.firstinspires.ftc.teamcode.RobotUtilities;
 public class MyPosition {
 
 //    public static Robot myRobot;
-    public static double moveScalingFactor = 12.56064392;
-    public static double turnScalingFactor = 35.694;
-    public static double auxScalingFactor = 12.48;//12.6148;
+//    public static double moveScalingFactor = 12.56064392;
+//    public static double auxScalingFactor = 12.48;//12.6148;
+    // Is this the wheel base?
+//    public static double turnScalingFactor = 35.694;
+    public static double moveScalingFactor = 4.1146937;
+    public static double auxScalingFactor = 4.08827586;
+    public static double turnScalingFactor = 11.6928621;
     public static double auxPredictionScalingFactor = 0.92;
 
 
@@ -45,7 +49,9 @@ public class MyPosition {
         currPos_a = a;
         update();
     }
-//    public static void initialize(double l, double r,double a, Robot myRobot){
+
+    // myRobot was passed in just for telemetry printing.
+    //    public static void initialize(double l, double r,double a, Robot myRobot){
 //        MyPosition.myRobot = myRobot;
 //        currPos_l = l;
 //        currPos_r = r;
@@ -80,18 +86,13 @@ public class MyPosition {
         return angle;
     }
 
-
-
-
-
-
-
-
     /**
      * Updates our position on the field using the change from the encoders
      */
     public static void PositioningCalculations(){
-        double wheelLeftCurrent = -currPos_l;
+        // This was due to GF encoder must have been reverse.
+//        double wheelLeftCurrent = -currPos_l;
+        double wheelLeftCurrent = currPos_l;
         double wheelRightCurrent= currPos_r;
         double wheelAuxCurrent = currPos_a;
 
@@ -114,7 +115,9 @@ public class MyPosition {
 
         //but use absolute for our actual angle
         double wheelRightTotal = currPos_r-wheelRightInitialReading;
-        double wheelLeftTotal = -(currPos_l-wheelLeftInitialReading);
+        // This was due to GF encoder must have been reverse.
+//        double wheelLeftTotal = -(currPos_l-wheelLeftInitialReading);
+        double wheelLeftTotal = currPos_l-wheelLeftInitialReading;
 
         double worldAngleLast = worldAngle_rad;
         worldAngle_rad = AngleWrap(((wheelLeftTotal-wheelRightTotal)*turnScalingFactor/100000.0) + lastResetAngle);

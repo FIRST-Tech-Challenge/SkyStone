@@ -1,11 +1,11 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.openftc.revextensions2.ExpansionHubMotor;
@@ -314,6 +314,31 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 		}
     }
 
+    /**
+     * If the motion value is less than the threshold, the controller will be
+     * considered at rest
+     */
+    protected static float joystickDeadzone = 0.1f;
+    private static final float MAX_MOTION_RANGE = 1.0f;
+    private static final float MIN_MOTION_RANGE = 0.05f;
+
+    // Used to clean up the slop in the joysticks.
+    protected static float cleanMotionValues(float number) {
+        // apply deadzone
+        if (number < joystickDeadzone && number > -joystickDeadzone) return 0.0f;
+        // apply trim
+        if (number >  MAX_MOTION_RANGE) return  MAX_MOTION_RANGE;
+        if (number < -MAX_MOTION_RANGE) return -MAX_MOTION_RANGE;
+        // scale values "between deadzone and trim" to be "between Min range and Max range"
+        if (number > 0)
+            number = (float) Range.scale(number, joystickDeadzone, MAX_MOTION_RANGE, MIN_MOTION_RANGE, MAX_MOTION_RANGE);
+        else
+            number = (float)Range.scale(number, -joystickDeadzone, -MAX_MOTION_RANGE, -MIN_MOTION_RANGE, -MAX_MOTION_RANGE);
+
+        return number;
+    }
+
+
     /* Public OpMode members. */
     public final static double ACCEL_STEP = 0.007;
     public static double INTAKE_SPEED = 1.0;
@@ -325,11 +350,14 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public static double LEFT_FINGER_DOWN = 0.82;
     public static double RIGHT_FINGER_UP = 0.89;
     public static double LEFT_FINGER_UP = 0.25;
-    public static double CLAW_OPEN = 0.22;
-    public static double CLAW_PINCHED = 0.95;
-    public static double CLAWDRICOPTER_FRONT = 0.87;
-    public static double CLAWDRICOPTER_CAPSTONE = 0.72;
-    public static double CLAWDRICOPTER_BACK = 0.11;
+//    public static double CLAW_OPEN = 0.22;
+//    public static double CLAW_PINCHED = 0.95;
+    public static double CLAW_OPEN = 1.0;
+    public static double CLAW_PINCHED = 0.21;
+    public static double CLAW_CAPSTONE = 0.20;
+    public static double CLAWDRICOPTER_FRONT = 0.865;
+    public static double CLAWDRICOPTER_CAPSTONE = 0.725;
+    public static double CLAWDRICOPTER_BACK = 0.20;
     public static int CLAW_OPEN_TIME = 500;
     public static int CLAW_CLOSE_TIME = 800;
     public static int CLAW_ROTATE_BACK_TIME = 1000;
@@ -366,11 +394,11 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     protected Servo claw = null;
     protected Servo clawdricopter = null;
     protected ExpansionHubMotor lifter = null;
-    protected Rev2mDistanceSensor rightTof = null;
-    protected Rev2mDistanceSensor leftTof = null;
-    protected Rev2mDistanceSensor backRightTof = null;
-    protected Rev2mDistanceSensor backLeftTof = null;
-    protected Rev2mDistanceSensor backTof = null;
+    protected Rev2mTurbo rightTof = null;
+    protected Rev2mTurbo leftTof = null;
+    protected Rev2mTurbo backRightTof = null;
+    protected Rev2mTurbo backLeftTof = null;
+    protected Rev2mTurbo backTof = null;
 
 
     /* LEDs: Use this line if you drive the LEDs using an I2C/SPI bridge. */
@@ -429,6 +457,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 
     // Keeps the sensor from initializing more than once.
     public static boolean tofInitialized = false;
+
     // We can set this in Auto
     protected static RobotSide stackFromSide = RobotSide.RIGHT;
 
@@ -484,13 +513,10 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     }
 
     public boolean startExtendingIntake() {
-        boolean isExtending = false;
-        if(extendState == ExtendIntakeActivities.IDLE) {
-            extendState = ExtendIntakeActivities.GOTO_LIMIT_SWITCH;
-            extender.setPower(1.0);
-        }
+        extendState = ExtendIntakeActivities.GOTO_LIMIT_SWITCH;
+        extender.setPower(1.0);
 
-        return isExtending;
+        return true;
     }
 
     public void performExtendingIntake() {
@@ -504,6 +530,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                 break;
             case MAX_EXTEND:
                 if(intakeExtendTimer.milliseconds() >= MAX_EXTEND_TIME) {
+                    extender.setPower(0.0);
                     extendState = ExtendIntakeActivities.IDLE;
                 }
                 break;
@@ -579,7 +606,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
             case LOWERING_TO_GRAB:
                 if(lifterAtPosition(LiftPosition.CAPSTONE_GRAB)) {
                     capstoneState = CapstoneActivity.GRABBING_CAPSTONE;
-                    claw.setPosition(CLAW_PINCHED);
+                    claw.setPosition(CLAW_CAPSTONE);
                     clawTimer.reset();
                 }
                 break;
@@ -1370,7 +1397,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                 lifterSpeed = LIFT_MAX_SPEED;
             } else {
                 if(stowingLift) {
-                    lifterSpeed = LIFT_MID_SPEED;
+                    lifterSpeed = LIFT_MIN_SPEED;
                 } else {
                     lifterSpeed = LIFT_MIN_SPEED;
                 }
@@ -1417,18 +1444,13 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     }
 
     public boolean intakeExtended() {
-        if(!hub1Read) {
-            bulkDataHub1 = expansionHub1.getBulkInputData();
-            hub1Read = true;
-        }
-        return bulkDataHub1.getDigitalInputState(7);
+        readHub1BulkData();
+
+        return !bulkDataHub1.getDigitalInputState(7);
     }
 
     public int getLifterAbsoluteEncoder() {
-        if(!hub1Read) {
-            bulkDataHub1 = expansionHub1.getBulkInputData();
-            hub1Read = true;
-        }
+        readHub1BulkData();
         lifterEncoderValue = bulkDataHub1.getMotorCurrentPosition(lifter);
 
         return lifterEncoderValue;
@@ -1489,6 +1511,38 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         return backTofValue;
     }
 
+    // This hub has all the information we need.
+    public void readHub1BulkData() {
+        if(!hub1Read) {
+            bulkDataHub1 = expansionHub1.getBulkInputData();
+            hub1Read = true;
+        }
+    }
+
+    public void resetEncoders() {
+        if (!encodersReset || forceReset) {
+            super.resetEncoders();
+            // Reset the encoders that are used.
+            int sleepTime = 0;
+            int encoderCount = lifter.getCurrentPosition();
+
+            lifter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+            while ((encoderCount != 0) && (sleepTime < 1000)) {
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    break;
+                }
+                sleepTime += 10;
+                encoderCount = lifter.getCurrentPosition();
+            }
+            encodersReset = true;
+
+            lifter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+    }
+
     /* Initialize standard Hardware interfaces */
     public void init(HardwareMap ahwMap) {
         // Save reference to Hardware map
@@ -1508,19 +1562,19 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         clawdricopter = hwMap.get(Servo.class, CLAWDRICTOPTER);
         lifter = (ExpansionHubMotor) hwMap.dcMotor.get(LIFTER);
 
-        rightTof = (Rev2mDistanceSensor)hwMap.get(DistanceSensor.class, RIGHT_RANGE);
-        leftTof = (Rev2mDistanceSensor)hwMap.get(DistanceSensor.class, LEFT_RANGE);
-        backRightTof = (Rev2mDistanceSensor)hwMap.get(DistanceSensor.class, BACK_RIGHT_RANGE);
-        backLeftTof = (Rev2mDistanceSensor)hwMap.get(DistanceSensor.class, BACK_LEFT_RANGE);
-        backTof = (Rev2mDistanceSensor)hwMap.get(DistanceSensor.class, BACK_RANGE);
-//        if(!tofInitialized) {
-//            rightTof.initVL53L0X(false);
-//            leftTof.initVL53L0X(false);
-//            backRightTof.initVL53L0X(false);
-//            backLeftTof.initVL53L0X(false);
-//            backTof.initVL53L0X(false);
-//            tofInitialized = true;
-//        }
+        rightTof = (Rev2mTurbo)hwMap.get(DistanceSensor.class, RIGHT_RANGE);
+        leftTof = (Rev2mTurbo)hwMap.get(DistanceSensor.class, LEFT_RANGE);
+        backRightTof = (Rev2mTurbo)hwMap.get(DistanceSensor.class, BACK_RIGHT_RANGE);
+        backLeftTof = (Rev2mTurbo)hwMap.get(DistanceSensor.class, BACK_LEFT_RANGE);
+        backTof = (Rev2mTurbo)hwMap.get(DistanceSensor.class, BACK_RANGE);
+        if(!tofInitialized || forceReset) {
+            rightTof.initVL53L0X(false);
+            leftTof.initVL53L0X(false);
+            backRightTof.initVL53L0X(false);
+            backLeftTof.initVL53L0X(false);
+            backTof.initVL53L0X(false);
+            tofInitialized = true;
+        }
 
         // Set motor rotation
         // This makes lift go up with positive encoder values and power
@@ -1543,21 +1597,6 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
         leftIntake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightIntake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        // Reset the encoders that are used.
-        int sleepTime = 0;
-        int encoderCount = lifter.getCurrentPosition();
-
-        lifter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        while((encoderCount != 0) && (sleepTime < 1000)) {
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) { break; }
-            sleepTime += 10;
-            encoderCount = lifter.getCurrentPosition();
-        }
-
-        lifter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         // Set the stop mode
         lifter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         extender.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

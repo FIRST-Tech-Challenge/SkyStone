@@ -47,7 +47,7 @@ public abstract class OmniAutoClass extends LinearOpMode {
         robot.init(hardwareMap);
         timer = new ElapsedTime();
 
-        robot.resetDriveEncoders();
+        robot.resetEncoders();
         robot.setInputShaping(false);
         myWheelSize = newWheelSize;
         myMotorRatio = newMotorRatio;

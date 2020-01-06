@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.teamcode.RobotUtilities.MyPosition;
+
 import static java.lang.Math.*;
 
 /**
@@ -15,14 +17,6 @@ import static java.lang.Math.*;
 public class OmniTeleOp extends OpMode {
 
     public HardwareOmnibot robot = new HardwareOmnibot();
-	private static final float MAX_MOTION_RANGE = 1.0f;
-	private static final float MIN_MOTION_RANGE = 0.05f;
-	/**
-	* If the motion value is less than the threshold, the controller will be
-	* considered at rest
-	*/
-	protected float joystickDeadzone = 0.0f;
-
     public OmniTeleOp() {
         msStuckDetectInit = 10000;
     }
@@ -40,33 +34,23 @@ public class OmniTeleOp extends OpMode {
         STOW
     }
 
-	protected float cleanMotionValues(float number) {
-		// apply deadzone
-		if (number < joystickDeadzone && number > -joystickDeadzone) return 0.0f;
-		// apply trim
-		if (number >  MAX_MOTION_RANGE) return  MAX_MOTION_RANGE;
-		if (number < -MAX_MOTION_RANGE) return -MAX_MOTION_RANGE;
-		// scale values "between deadzone and trim" to be "between Min range and Max range"
-		if (number > 0)
-			number = (float)Range.scale(number, joystickDeadzone, MAX_MOTION_RANGE, MIN_MOTION_RANGE, MAX_MOTION_RANGE);
-		else
-			number = (float)Range.scale(number, -joystickDeadzone, -MAX_MOTION_RANGE, -MIN_MOTION_RANGE, -MAX_MOTION_RANGE);
-
-		return number;
-	}
-
     @Override
     public void init() {
         telemetry.addLine("Calling robot.init");
         updateTelemetry(telemetry);
         robot.init(hardwareMap);
-		// Turn off the SDK deadzone so we can do it ourselves
-        gamepad1.setJoystickDeadzone(0.0f);
-        gamepad2.setJoystickDeadzone(0.0f);
 //        robot.disableDriveEncoders();
         robot.setInputShaping(true);
         telemetry.addLine("Ready");
         updateTelemetry(telemetry);
+    }
+
+    @Override
+    public void init_loop() {
+        telemetry.addLine("Press A on driver controller to reset encoders.");
+        if(gamepad1.a) {
+            robot.forceReset = true;
+        }
     }
 
     private CapstoneState capstoneState = CapstoneState.ALIGN;
@@ -129,19 +113,35 @@ public class OmniTeleOp extends OpMode {
     @Override
     public void start()
     {
+        robot.resetEncoders();
+
+        //give MyPosition our current positions so that it saves the last positions of the wheels
+        //this means we won't teleport when we start the match. Just in case, run this twice
+        for(int i = 0; i < 2 ; i ++){
+            robot.resetReads();
+            MyPosition.initialize(robot.getLeftEncoderWheelPosition(),
+                    robot.getRightEncoderWheelPosition(),
+                    robot.getStrafeEncoderWheelPosition());
+        }
+        MyPosition.setPosition(0, 0, Math.toRadians(90));
     }
 
     @Override
     public void loop() {
         // Allow the robot to read sensors again
         robot.resetReads();
+        robot.readHub1BulkData();
+        MyPosition.giveMePositions(robot.getLeftEncoderWheelPosition(),
+                robot.getRightEncoderWheelPosition(),
+                robot.getStrafeEncoderWheelPosition());
+
         //left joystick is for moving
         //right joystick is for rotation
         gyroAngle = robot.readIMU();
 
-        yPower = -cleanMotionValues(gamepad1.left_stick_y);
-        xPower = cleanMotionValues(gamepad1.left_stick_x);
-        spin = cleanMotionValues(gamepad1.right_stick_x);
+        yPower = -HardwareOmnibot.cleanMotionValues(gamepad1.left_stick_y);
+        xPower = HardwareOmnibot.cleanMotionValues(gamepad1.left_stick_x);
+        spin = HardwareOmnibot.cleanMotionValues(gamepad1.right_stick_x);
         aPressed = gamepad1.a;
         bPressed = gamepad1.b;
         yPressed = gamepad1.y;
@@ -179,6 +179,13 @@ public class OmniTeleOp extends OpMode {
 		// ********************************************************************
         if(!bHeld && bPressed)
         {
+            if(speedMultiplier == MAX_SPEED) {
+                speedMultiplier = FOUNDATION_SPEED;
+                spinMultiplier = FOUNDATION_SPIN;
+            } else {
+                speedMultiplier = MAX_SPEED;
+                spinMultiplier = MAX_SPIN;
+            }
             bHeld = true;
         } else if(!bPressed) {
             bHeld = false;
@@ -234,15 +241,13 @@ public class OmniTeleOp extends OpMode {
 
         if(!leftBumperHeld && leftBumperPressed)
         {
-			if(speedMultiplier == MAX_SPEED) {
-				speedMultiplier = FOUNDATION_SPEED;
-				spinMultiplier = FOUNDATION_SPIN;
-			} else {
-				speedMultiplier = MAX_SPEED;
-				spinMultiplier = MAX_SPIN;
-			}
+            robot.extender.setPower(-1.0);
             leftBumperHeld = true;
-        } else if(!leftBumperPressed) {
+        } else if (leftBumperHeld && !leftBumperPressed) {
+            robot.extender.setPower(0.0);
+            leftBumperHeld = false;
+        }
+        else if(!leftBumperPressed) {
             leftBumperHeld = false;
         }
 
@@ -359,13 +364,8 @@ public class OmniTeleOp extends OpMode {
         robot.performReleasing();
         robot.performStowing();
         robot.performEjecting();
-        robot.performAligning();
         robot.performExtendingIntake();
         robot.performCapstone();
-        robot.performGrabbing();
-        robot.performAcceleration();
-        robot.performDeceleration();
-        robot.performFoundation();
 
         if((robot.alignState == HardwareOmnibot.AlignActivity.IDLE) && (robot.grabState == HardwareOmnibot.GrabFoundationActivity.IDLE) &&
                 (robot.accelerationState == HardwareOmnibot.ControlledAcceleration.IDLE) &&
@@ -374,25 +374,26 @@ public class OmniTeleOp extends OpMode {
         }
 
 		telemetry.addData("Lift Target Height: ", robot.liftTargetHeight);
-        telemetry.addData("Stack Distance: ", robot.stackWallDistance);
         telemetry.addData("Offset Angle: ", driverAngle);
-        telemetry.addData("Acceleration State: ", robot.accelerationState);
-        telemetry.addData("Align State:", robot.alignState);
-        telemetry.addData("Grab State: ", robot.grabState);
-        telemetry.addData("Left Range: ", robot.leftTofValue);
-        telemetry.addData("Right Range: ", robot.rightTofValue);
-        telemetry.addData("Back Range: ", robot.backTofValue);
-        telemetry.addData("Back Left Range: ", robot.backLeftTofValue);
-        telemetry.addData("Back Right Range: ", robot.backRightTofValue);
         telemetry.addData("Lift State: ", robot.liftState);
         telemetry.addData("Release State: ", robot.releaseState);
         telemetry.addData("Stow State: ", robot.stowState);
         telemetry.addData("Eject State: ", robot.ejectState);
         telemetry.addData("Capstone State: ", robot.capstoneState);
+        telemetry.addData("Extend State: ", robot.extendState);
+        telemetry.addData("Lift Position: ", robot.getLifterAbsoluteEncoder());
+        telemetry.addData("Lift Zero: ", robot.liftZero);
+        telemetry.addData("Left Encoder: ", robot.getLeftEncoderWheelPosition());
+        telemetry.addData("Strafe Encoder: ", robot.getStrafeEncoderWheelPosition());
+        telemetry.addData("Right Encoder: ", robot.getRightEncoderWheelPosition());
+        telemetry.addData("Extender Limit Switch: ", robot.bulkDataHub1.getDigitalInputState(7));
         telemetry.addData("Y Power: ", yPower);
         telemetry.addData("X Power: ", xPower);
         telemetry.addData("Spin: ", spin);
         telemetry.addData("Gyro Angle: ", gyroAngle);
+        telemetry.addData("World X Position: ", MyPosition.worldXPosition);
+        telemetry.addData("World Y Position: ", MyPosition.worldYPosition);
+        telemetry.addData("World Angle: ", Math.toDegrees(MyPosition.worldAngle_rad));
         updateTelemetry(telemetry);
     }
 

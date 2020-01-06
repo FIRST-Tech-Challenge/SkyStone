@@ -47,7 +47,7 @@ public abstract class OmniAutoOdometryClass extends OpMode {
         robot.init(hardwareMap);
         timer = new ElapsedTime();
 
-        robot.resetDriveEncoders();
+        robot.resetEncoders();
         robot.setInputShaping(false);
         myWheelSize = newWheelSize;
         myMotorRatio = newMotorRatio;

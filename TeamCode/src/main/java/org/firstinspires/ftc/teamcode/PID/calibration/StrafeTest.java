@@ -35,8 +35,6 @@ public class StrafeTest extends LinearOpMode {
             drive = new SampleMecanumDriveREVOptimized(hardwareMap, false);
         drive.setBrakeonZeroPower(DriveConstantsPID.BRAKE_ON_ZERO);
 
-        DriveConstantsPID.moveStrafeLeft(hardwareMap, 24);
-
         RobotLog.dd(TAG, "trajectoryBuilder forward, DISTANCE: "+Double.toString(DISTANCE));
         Trajectory trajectory = drive.trajectoryBuilder()
                 .strafeLeft(DISTANCE)

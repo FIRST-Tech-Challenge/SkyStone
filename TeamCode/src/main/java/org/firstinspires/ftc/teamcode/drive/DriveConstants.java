@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.drive;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
-import com.qualcomm.hardware.motors.NeveRest20Gearmotor;
+import com.qualcomm.hardware.motors.Matrix12vMotor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 /*
@@ -27,26 +27,27 @@ public class DriveConstants {
      * @DeviceProperties and @MotorType annotations.
      */
     private static final MotorConfigurationType MOTOR_CONFIG =
-            MotorConfigurationType.getMotorType(NeveRest20Gearmotor.class);
+            MotorConfigurationType.getMotorType(Matrix12vMotor.class);
+            // goBILDA 5202 5.2:1 Planetary
 
     /*
      * Set the first flag appropriately. If using the built-in motor velocity PID, update
      * MOTOR_VELO_PID with the tuned coefficients from DriveVelocityPIDTuner.
      */
     public static final boolean RUN_USING_ENCODER = true;
-    public static final PIDCoefficients MOTOR_VELO_PID = null;
+    // TODO tune internal velo PID
+    public static final PIDCoefficients MOTOR_VELO_PID = new PIDCoefficients(0.04, 0.04, 0.69);
 
     /*
      * These are physical constants that can be determined from your robot (including the track
-     * width; it will be tune empirically later although a rough estimate is important). Users are
-     * free to chose whichever linear distance unit they would like so long as it is consistently
-     * used. The default values were selected with inches in mind. Road runner uses radians for
-     * angular distances although most angular parameters are wrapped in Math.toRadians() for
+     * width; it will be tune empirically later although a rough estimate is important). The unit
+     * used across all measurements in this implementation is inches. Road runner uses radians
+     * for angular distances although most angular parameters are wrapped in Math.toRadians() for
      * convenience. Make sure to exclude any gear ratio included in MOTOR_CONFIG from GEAR_RATIO.
      */
-    public static double WHEEL_RADIUS = 2;
-    public static double GEAR_RATIO = 1; // output (wheel) speed / input (motor) speed
-    public static double TRACK_WIDTH = 1;
+    public static double WHEEL_RADIUS = 1.9685; // inches
+    public static double GEAR_RATIO = 5.2*2*1.25; // gear reduction from bare motor
+    public static double TRACK_WIDTH = 13.3858; // inches
 
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using
@@ -54,6 +55,7 @@ public class DriveConstants {
      * motor encoders or have elected not to use them for velocity control, these values should be
      * empirically tuned.
      */
+    // Because we are using internal velo PID, DO NOT CHANGE.
     public static double kV = 1.0 / rpmToVelocity(getMaxRpm());
     public static double kA = 0;
     public static double kStatic = 0;

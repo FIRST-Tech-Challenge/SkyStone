@@ -198,7 +198,7 @@ public class HardwareOmnibotDrive
 
     public void setFrontLeftMotorPower(double power)
     {
-        if(power != frontLeftMotorPower)
+        if(Math.abs(power - frontLeftMotorPower) > 0.005)
         {
             frontLeftMotorPower = power;
             frontLeft.setPower(power);
@@ -207,7 +207,7 @@ public class HardwareOmnibotDrive
 
     public void setRearLeftMotorPower(double power)
     {
-        if(power != rearLeftMotorPower)
+        if(Math.abs(power - rearLeftMotorPower) > 0.005)
         {
             rearLeftMotorPower = power;
             rearLeft.setPower(power);
@@ -216,7 +216,7 @@ public class HardwareOmnibotDrive
 
     public void setFrontRightMotorPower(double power)
     {
-        if(power != frontRightMotorPower)
+        if(Math.abs(power - frontRightMotorPower) > 0.005)
         {
             frontRightMotorPower = power;
             frontRight.setPower(power);
@@ -225,7 +225,7 @@ public class HardwareOmnibotDrive
 
     public void setRearRightMotorPower(double power)
     {
-        if(power != rearRightMotorPower)
+        if(Math.abs(power - rearRightMotorPower) > 0.005)
         {
             rearRightMotorPower = power;
             rearRight.setPower(power);
@@ -397,10 +397,10 @@ public class HardwareOmnibotDrive
         tr_power_raw *= scaleDownAmount;
 
         //now we can set the powers ONLY IF THEY HAVE CHANGED TO AVOID SPAMMING USB COMMUNICATIONS
-        frontLeft.setPower(tl_power_raw);
-        rearLeft.setPower(bl_power_raw);
-        rearRight.setPower(br_power_raw);
-        frontRight.setPower(tr_power_raw);
+        setFrontLeftMotorPower(tl_power_raw);
+        setFrontRightMotorPower(tr_power_raw);
+        setRearRightMotorPower(br_power_raw);
+        setRearLeftMotorPower(bl_power_raw);
     }
 }
 

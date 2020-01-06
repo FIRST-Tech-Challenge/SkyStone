@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.RobotUtilities.MyPosition;
+import org.firstinspires.ftc.teamcode.RobotUtilities.MovementVars;
 
 /**
  * Created by 12090 STEM Punk
@@ -26,9 +27,12 @@ public abstract class OmniAutoXYOdoClass extends LinearOpMode {
     // 40:1 motor = 1120
     // 60:1 motor = 1680
     private static final double encoderClicksPerRev = 28;
-    private static double clicksPerCm = (myMotorRatio * encoderClicksPerRev) / (Math.PI * myWheelSize *2.54);
+    private static double clicksPerCm = (myMotorRatio * encoderClicksPerRev) / (Math.PI * myWheelSize * 2.54);
 
     public static final float MM_PER_INCH = 25.4f;
+
+	// Have to set this when we start motions
+	public double lastDriveAngle;
 
     // This function is called during loops to progress started activities
     public void performRobotActivities() {
@@ -56,21 +60,87 @@ public abstract class OmniAutoXYOdoClass extends LinearOpMode {
         clicksPerCm = (myMotorRatio * encoderClicksPerRev) / (Math.PI * myWheelSize * 2.54);
     }
 
-    public boolean driveToXY(double x, double y, double robotAngle) {
+    /**
+     * @param robotAngle  - The angle the robot should try to face when reaching destination.
+     * @return - Boolean true we have reached destination, false we have not
+     */
+    public boolean rotateToAngle(double robotAngle) {
+		boolean reachedDestination = false;
+		double deltaAngle = MyPosition.AngleWrap(robotAngle - MyPosition.worldAngle_rad);
+		double turnSpeed = Math.toDegrees(deltaAngle) * 0.014;
+		// We are done when we flip signs.
+		if(lastDriveAngle < 0) {
+			// We have reached our destination
+			if(deltaAngle >= 0) {
+				robot.setAllDriveZero();
+				reachedDestination = true;
+			} else {
+				// We still have some turning to do.
+                MovementVars.movement_x = 0;
+		        MovementVars.movement_y = 0;
+        		MovementVars.movement_turn = turnSpeed;
+				robot.applyMovement();
+			}
+		} else {
+			// We have reached out destination
+			if(deltaAngle < 0) {
+				robot.setAllDriveZero();
+				reachedDestination = true;
+			} else {
+				// We still have some turning to do.
+                MovementVars.movement_x = 0;
+		        MovementVars.movement_y = 0;
+        		MovementVars.movement_turn = turnSpeed;
+				robot.applyMovement();
+			}
+		}
+		lastDriveAngle = deltaAngle;
+
+		return reachedDestination;
+	}
+
+    /**
+     * @param x           - The X field coordinate to go to.
+     * @param y           - The Y field coordinate to go to.
+     * @param robotAngle  - The angle the robot should try to face when reaching destination.
+	 * @param passThrough - Slows the robot down to stop at destination coordinate.
+     * @return - Boolean true we have reached destination, false we have not
+     */
+    public boolean driveToXY(double x, double y, double robotAngle, boolean passThrough) {
+		boolean reachedDestination = false;
         double deltaX = x - MyPosition.worldXPosition;
         double deltaY = y - MyPosition.worldYPosition;
         double driveAngle = Math.atan2(deltaY, deltaX);
+		double deltaAngle = MyPosition.AngleWrap(robotAngle - MyPosition.worldAngle_rad);
         double magnitude = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-        double driveSpeed = magnitude * 0.014;
-        driveSpeed = Math.min(1, driveSpeed);
-        double joystickX = driveSpeed * Math.cos(driveAngle);
-        double joystickY = driveSpeed * Math.sin(driveAngle);
-        // TBD
+		double driveSpeed;
+		double turnSpeed = Math.toDegrees(deltaAngle) * 0.014;
 
-        // Calculate the speeds
-        double max = Math.max(Math.abs(deltaX), Math.abs(deltaY));
+		// This will allow us to do multi-point routes without huge slowdowns.
+		// Such use cases will be changing angles, or triggering activities at
+		// certain points.
+		if(!passThrough) {
+            driveSpeed = magnitude * 0.014;
+		} else {
+			driveSpeed = 1.0;
+		}
 
-        return true;
+		// Check if we passed through our point
+		if(Math.toDegrees(Math.abs(lastDriveAngle - driveAngle)) > 120) {
+			reachedDestination = true;
+			lastDriveAngle = driveAngle;
+            if(passThrough) {
+                MovementVars.movement_x = driveSpeed * Math.cos(driveAngle);
+		        MovementVars.movement_y = driveSpeed * Math.sin(driveAngle);
+        		MovementVars.movement_turn = turnSpeed;
+				robot.applyMovement();
+			} else {
+				robot.setAllDriveZero();
+			}		
+		}
+		lastDriveAngle = driveAngle;
+
+        return reachedDestination;
     }
 
     /**

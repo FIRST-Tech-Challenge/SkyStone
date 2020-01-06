@@ -21,7 +21,6 @@ import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.vuforia.CameraDevice.getInstance;
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
@@ -54,8 +53,8 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  *  Uses parkingPlaceNearSkyBridge variable false for near wall, true for near NeutralSkybridge
  */
 
-@Autonomous(name = "BLUE-SkyStone-ParkBridge-Vuforia", group = "Autonomous")
-public class BLUE_SkyStone_ParkBridge_Vuforia extends LinearOpMode {
+@Autonomous(name = "TEST_BLUE-SkyStone-ParkBridge-Vuforia", group = "Autonomous")
+public class BLUE_SkyStone_ParkBridge_Vuforia_TEST extends LinearOpMode {
 
     Intake autoIntake;
     Arm autoArm;
@@ -102,6 +101,7 @@ public class BLUE_SkyStone_ParkBridge_Vuforia extends LinearOpMode {
     double stoneTostone = 8;
 
     public VuforiaTrackables targetsSkyStone;
+    public VuforiaTrackable stoneTarget;
     List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
     int cameraMonitorViewId;
 
@@ -125,7 +125,7 @@ public class BLUE_SkyStone_ParkBridge_Vuforia extends LinearOpMode {
      */
     @Override
     public void runOpMode() throws InterruptedException {
-        telemetry.setAutoClear(false);
+        telemetry.setAutoClear(true);
 
         autoIntake = new Intake(hardwareMap);
         autoArm = new Arm(hardwareMap);
@@ -143,10 +143,6 @@ public class BLUE_SkyStone_ParkBridge_Vuforia extends LinearOpMode {
         autoChassis.initChassis();
         autoArm.initArm();
         autoIntake.initIntake();
-
-        //*************Vuforia************************
-        targetsSkyStone.activate();
-        //*************Vuforia************************
 
         telemetry.addData("before loop","");
         telemetry.update();
@@ -182,7 +178,7 @@ public class BLUE_SkyStone_ParkBridge_Vuforia extends LinearOpMode {
 
         skystonePosition = 5;
         vuforiaFindSkystone();
-        //sleep (1000);
+        sleep (1000);
         telemetry.addData("after viewforia: Target visible: ",targetVisible);
         telemetry.update();
         /*
@@ -257,7 +253,7 @@ public class BLUE_SkyStone_ParkBridge_Vuforia extends LinearOpMode {
         // Slide back to edge of B2, 10 inches
         runFwdBackLeftRight(-10,0,0.1);
 
-        sleep(200);
+        /*sleep(200);
         // Turn 90 degrees Left
         turnby90degree(playingAlliance*(-1),0.05); // was 0.1
         sleep(500);
@@ -284,7 +280,7 @@ public class BLUE_SkyStone_ParkBridge_Vuforia extends LinearOpMode {
         } else {
             runTill_ChassisLeftColorSensorIsRed(-55, 0, 0.25);
         }
-
+        */
 
         parked = true;
         //End of Usecase : Should be parked at this time.
@@ -673,12 +669,12 @@ public class BLUE_SkyStone_ParkBridge_Vuforia extends LinearOpMode {
         // sets are stored in the 'assets' part of our application.
         targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
 
-        VuforiaTrackable stoneTarget = targetsSkyStone.get(0);
+        stoneTarget = targetsSkyStone.get(0);
         stoneTarget.setName("Stone Target");
 
         // For convenience, gather together all the trackable objects in one easily-iterable collection */
-        allTrackables = new ArrayList<VuforiaTrackable>();
-        allTrackables.addAll(targetsSkyStone);
+        //TESTCOMMENT allTrackables = new ArrayList<VuforiaTrackable>();
+        //TESTCOMMENT allTrackables.addAll(targetsSkyStone);
 
         VectorF translation;
 
@@ -705,9 +701,9 @@ public class BLUE_SkyStone_ParkBridge_Vuforia extends LinearOpMode {
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
 
         /*  Let all the trackable listeners know where the phone is.  */
-        for (VuforiaTrackable trackable : allTrackables) {
-            ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
-        }
+        //TESTCOMMENT for (VuforiaTrackable trackable : allTrackables) {
+        //TESTCOMMENT ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
+        //TESTCOMMENT }
         //*************Vuforia************************
 
     }
@@ -717,15 +713,14 @@ public class BLUE_SkyStone_ParkBridge_Vuforia extends LinearOpMode {
         AutonomousTimeOut.startTime();
         targetVisible = false;
 
+        targetsSkyStone.activate();
         //Turn Camera flash on
         CameraDevice.getInstance().setFlashTorchMode(true);
-
-        targetsSkyStone.activate();
 
         while(AutonomousTimeOut.milliseconds()<3000 && !targetVisible) {
             //**************Vuforia********************
             // check all the trackable targets to see which one (if any) is visible.
-            for (VuforiaTrackable trackable : allTrackables) {
+            /*/TESTCOMMENT for (VuforiaTrackable trackable : allTrackables) {
                 if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
                     telemetry.addData("Visible Target", trackable.getName());
                     targetVisible = true;
@@ -737,8 +732,20 @@ public class BLUE_SkyStone_ParkBridge_Vuforia extends LinearOpMode {
                         lastLocation = robotLocationTransform;
                     }
                     break;
+                }*/
+            //TESTCOMMENT ADD START
+            if (((VuforiaTrackableDefaultListener) stoneTarget.getListener()).isVisible()) {
+                telemetry.addData("Visible Target", stoneTarget.getName());
+                targetVisible = true;
+
+                // getUpdatedRobotLocation() will return null if no new information is available since
+                // the last time that call was made, or if the trackable is not currently visible.
+                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) stoneTarget.getListener()).getUpdatedRobotLocation();
+                if (robotLocationTransform != null) {
+                    lastLocation = robotLocationTransform;
                 }
             }
+            //TESTCOMMENT ADD END
 
             // Provide feedback as to where the robot is located (if we know).
             if (targetVisible) {
@@ -766,6 +773,5 @@ public class BLUE_SkyStone_ParkBridge_Vuforia extends LinearOpMode {
         //***********Vuforia**************
 
     }
-
 
 }

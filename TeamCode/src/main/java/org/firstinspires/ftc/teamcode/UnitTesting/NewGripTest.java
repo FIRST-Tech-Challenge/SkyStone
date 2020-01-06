@@ -1,8 +1,9 @@
-package org.firstinspires.ftc.teamcode.OpModes;
+package org.firstinspires.ftc.teamcode.UnitTesting;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.SubSystems.Arm;
@@ -43,9 +44,9 @@ import org.firstinspires.ftc.teamcode.SubSystems.Intake;
  *  * @IntakeAutoMethods : detectSkystoneColorSensorIsYellow()
  *  * @IntakeAutoMethods : detectSkystoneColorSensorIsBlack()
  */
-@Disabled
-@Autonomous(name = "HzAutoTurnAngle", group = "Autonomous")
-public class AutoTestTurnAngle extends LinearOpMode{
+
+@TeleOp(name = "NewGripTest", group = "Teleop")
+public class NewGripTest extends LinearOpMode{
 
     public boolean HzDEBUG_FLAG = true;
 
@@ -66,7 +67,7 @@ public class AutoTestTurnAngle extends LinearOpMode{
         hzGamepad1 = new HzGamepad1(gamepad1);
 
         telemetry.setAutoClear(false);
-        telemetry.addData("Init Autonomous Tests", "v:1.0");
+        telemetry.addData("New Grip Test", "v:1.0");
 
         //Wait for pressing Run on controller
         waitForStart();
@@ -77,7 +78,34 @@ public class AutoTestTurnAngle extends LinearOpMode{
 
 
         while (opModeIsActive()) {
-            hzChassis.turnby90degree(1,0.1);
+            //If A is pressed, close grip
+            if (hzGamepad1.getButtonAPress()){
+                //hzIntake.closeGrip();
+                hzIntake.left_grip.setPosition(0.5);
+                hzIntake.right_grip.setPosition(0.5);
+            }
+            //If Y is pressed, open grip
+            if (hzGamepad1.getButtonYPress()){
+                hzIntake.left_grip.setPosition(1);
+                hzIntake.right_grip.setPosition(0);
+            }
+
+            //If Y is pressed, open grip
+            if (hzGamepad1.getButtonBPress()){
+                double current_left = hzIntake.left_grip.getPosition();
+                hzIntake.left_grip.setPosition(current_left-0.05);
+                double current_right = hzIntake.right_grip.getPosition();
+                hzIntake.right_grip.setPosition(current_right+0.05);
+            }
+
+            //If Y is pressed, open grip
+            if (hzGamepad1.getButtonXPress()){
+                double current_left = hzIntake.left_grip.getPosition();
+                hzIntake.left_grip.setPosition(current_left+0.05);
+                double current_right = hzIntake.right_grip.getPosition();
+                hzIntake.right_grip.setPosition(current_right-0.05);
+            }
+
             if(HzDEBUG_FLAG) printDebugMessages();
             telemetry.update();
             idle();
@@ -92,8 +120,11 @@ public class AutoTestTurnAngle extends LinearOpMode{
     public void printDebugMessages(){
         telemetry.setAutoClear(true);
         telemetry.addData("HzDEBUG_FLAG is : ", HzDEBUG_FLAG);
+        telemetry.addData("hzIntake.left_grip.getPosition(): ",hzIntake.left_grip.getPosition());
+        telemetry.addData("hzIntake.right_grip.getPosition(): ",hzIntake.right_grip.getPosition());
 
-        telemetry.addData("hzChassis.backLeft.isBusy : ", hzChassis.backLeft.isBusy());
+
+/*        telemetry.addData("hzChassis.backLeft.isBusy : ", hzChassis.backLeft.isBusy());
         telemetry.addData("hzChassis.backLeft.getTargetPosition : ", hzChassis.backLeft.getTargetPosition());
         telemetry.addData("hzChassis.backLeft.getCurrentPosition : ", hzChassis.backLeft.getCurrentPosition());
         telemetry.addData("hzChassis.backRight.getCurrentPosition : ", hzChassis.backRight.getCurrentPosition());
@@ -102,6 +133,6 @@ public class AutoTestTurnAngle extends LinearOpMode{
         telemetry.addData("hzChassis.backLeft.getMode : ", hzChassis.backLeft.getMode());
         //telemetry.addData("hzChassis.frontLeft.currentLevel : ", hzArm.currentLevel);
         //telemetry.addData("Arm.blockLevel[hzArm.currentLevel] : ", hzArm.blockLevel[hzArm.currentLevel]);
-
+*/
     }
 }

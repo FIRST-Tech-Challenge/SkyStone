@@ -45,7 +45,7 @@ public class Arm {
     //Encoder Countable Events Per Revolution (Output Shaft)	1,497.325 (Rises & Falls of Ch A & B)
     //Arm move 90degrees so max level is 1497.325/4 = 374 counts. Add 30 counts for slippage compensation
 
-    public int[] blockLevel = {
+    int[] blockLevel = {
             +20, //ground level
             -130, //block level 1
             -220, //block level 2
@@ -57,7 +57,7 @@ public class Arm {
     };
 
     public int groundLevel = +20;
-    public int detectSkystoneLevel = -310;//-70;
+    int detectSkystoneLevel = -310;//-70;
     public int aboveFoundationLevel = -130;
     public int onFoundationLevel = +30;
     int autoBlockPlacement = -150;
@@ -123,7 +123,7 @@ public class Arm {
      * Usage of this is typically followed by using setZeroBehaviour and then setting
      * the mode for the motor
      */
-    public void resetArm() {
+    void resetArm() {
 
         DcMotor.RunMode runMode = armMotor.getMode();
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -133,7 +133,7 @@ public class Arm {
     /**
      * Method to move Arm to groundlevel and turn Brake Mode OFF
      */
-    public void moveArm_initLevel(){
+    void moveArm_initLevel(){
         armMotor.setTargetPosition(initLevel);
         runArmToLevel();
     }
@@ -141,7 +141,7 @@ public class Arm {
     /**
      * Method to move Arm to groundlevel and turn Brake Mode OFF
      */
-    public void moveArm_initTeleOpLevel(){
+    void moveArm_initTeleOpLevel(){
         armMotor.setTargetPosition(initTeleOpLevel);
         runArmToLevel();
     }

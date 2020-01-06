@@ -43,6 +43,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  *
  */
 
+@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 public class Chassis {
 
     //Declare Chassis Motor and configurations
@@ -209,6 +210,7 @@ public class Chassis {
      * Used in Autonomous mode to stop below Red Skybridge after moving foundation to wall.
      * @return if Color Sensor is red
      */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean leftColorSensorIsRed() {
         //Logic to detect Red R>400
         if (leftColorSensor.red()>400) {
@@ -223,6 +225,7 @@ public class Chassis {
      * Used in Autonomous mode to stop below Red Skybridge after moving blocks (Optional use)
      * @return if color sensor is red
      */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean rightColorSensorIsRed() {
         //Logic to detect Red R>200 G<127 B<127
         if (rightColorSensor.red()>400){

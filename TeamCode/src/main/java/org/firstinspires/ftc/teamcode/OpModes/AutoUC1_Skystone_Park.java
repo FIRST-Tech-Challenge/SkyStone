@@ -87,8 +87,8 @@ public class AutoUC1_Skystone_Park{
     private double y_translate = 0;
     double stoneTostone = 8;
 
-    public VuforiaTrackables targetsSkyStone;
-    public VuforiaTrackable stoneTarget;
+    VuforiaTrackables targetsSkyStone;
+    VuforiaTrackable stoneTarget;
     //List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
     int cameraMonitorViewId;
 
@@ -273,7 +273,7 @@ public class AutoUC1_Skystone_Park{
     }
 
 
-    public void vuforiaFindSkystone(LinearOpMode callingOpMode){
+    void vuforiaFindSkystone(LinearOpMode callingOpMode){
         AutonomousTimeOut.reset();
         AutonomousTimeOut.startTime();
         targetVisible = false;

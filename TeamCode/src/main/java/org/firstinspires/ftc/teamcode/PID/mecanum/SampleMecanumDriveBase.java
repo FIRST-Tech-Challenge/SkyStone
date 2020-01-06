@@ -282,21 +282,43 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
     public abstract void setPIDCoefficients(DcMotor.RunMode runMode, PIDCoefficients coefficients);
     public void print_list_double(List<Double> list){
         //motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
-        for (int i = 0; i < list.size(); i ++)
-        {
-            String wheel_name="";
-            if (i==0)
-                wheel_name = "leftFront";
-            else if (i==1)
-                wheel_name = "leftRear";
-            else if (i==2)
-                wheel_name = "rightRear";
-            else if (i==3)
-                wheel_name = "rightFront";
-            else
-                wheel_name = "unexpected wheel name";
+        int wheel_num = list.size();
+        if (wheel_num == 4) {
+            for (int i = 0; i < list.size(); i++) {
+                String wheel_name = "";
+                if (i == 0)
+                    wheel_name = "leftFront";
+                else if (i == 1)
+                    wheel_name = "leftRear";
+                else if (i == 2)
+                    wheel_name = "rightRear";
+                else if (i == 3)
+                    wheel_name = "rightFront";
+                else
+                    wheel_name = "unexpected wheel name";
 
-            RobotLog.dd(TAG, wheel_name+"  " +Double.toString(list.get(i)));
+                RobotLog.dd(TAG, wheel_name + "  " + Double.toString(list.get(i)));
+            }
+        } else if (wheel_num == 3)
+        {
+            for (int i = 0; i < list.size(); i++) {
+                String wheel_name = "";
+                if (i == 0)
+                    wheel_name = "leftOdom";
+                else if (i == 1)
+                    wheel_name = "rightOdom";
+                else if (i == 2)
+                    wheel_name = "frontOdom";
+
+                RobotLog.dd(TAG, wheel_name + "  " + Double.toString(list.get(i)));
+            }
+        }
+        else
+        {
+            for (int i = 0; i < list.size(); i++) {
+                String wheel_name = "";
+                RobotLog.dd(TAG, wheel_name + "  " + Double.toString(list.get(i)));
+            }
         }
     }
 

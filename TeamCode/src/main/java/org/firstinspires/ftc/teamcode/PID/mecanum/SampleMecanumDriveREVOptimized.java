@@ -37,8 +37,8 @@ public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
     private List<ExpansionHubMotor> motors, motorsLeft, motorsRight;
     private BNO055IMU imu;
     private String TAG = "SampleMecanumDriveREVOptimized";
-    public SampleMecanumDriveREVOptimized(HardwareMap hardwareMap) {
-        super();
+    public SampleMecanumDriveREVOptimized(HardwareMap hardwareMap, boolean strafe) {
+        super(strafe);
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
@@ -92,7 +92,7 @@ public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
         else
             RobotLog.dd(TAG, "not using imu");
 
-        if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
+        if ((DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) && (strafe != true)) {
             RobotLog.dd(TAG, "to setLocalizer to StandardTrackingWheelLocalizer");
             setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
         }

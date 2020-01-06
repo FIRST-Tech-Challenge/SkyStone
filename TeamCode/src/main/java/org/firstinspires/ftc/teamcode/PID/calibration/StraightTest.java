@@ -33,9 +33,9 @@ public class StraightTest extends LinearOpMode {
         DriveConstantsPID.updateConstantsFromProperties();
         SampleMecanumDriveBase drive = null;
         if (DriveConstantsPID.USING_BULK_READ == false)
-            drive = new SampleMecanumDriveREV(hardwareMap);
+            drive = new SampleMecanumDriveREV(hardwareMap, false);
         else
-            drive = new SampleMecanumDriveREVOptimized(hardwareMap);
+            drive = new SampleMecanumDriveREVOptimized(hardwareMap, false);
 
         HardwareMap hwMap = new HardwareMap(hardwareMap);
 
@@ -99,7 +99,7 @@ public class StraightTest extends LinearOpMode {
                 trajectory = drive.trajectoryBuilder()
                         .back(DISTANCE)
                         .build();
-                drive = new SampleMecanumDriveREV(hardwareMap);
+                drive = new SampleMecanumDriveREV(hardwareMap, false);
             }
 
             telemetry.addData("Instructions", "L stick to change distance. R stick to " +

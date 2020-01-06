@@ -30,9 +30,9 @@ public class StraightTestV0 extends LinearOpMode {
         DISTANCE = DriveConstantsPID.TEST_DISTANCE;
         SampleMecanumDriveBase drive = null;
         if (DriveConstantsPID.USING_BULK_READ == false)
-            drive = new SampleMecanumDriveREV(hardwareMap);
+            drive = new SampleMecanumDriveREV(hardwareMap, false);
         else
-            drive = new SampleMecanumDriveREVOptimized(hardwareMap);
+            drive = new SampleMecanumDriveREVOptimized(hardwareMap, false);
         drive.setBrakeonZeroPower(DriveConstantsPID.BRAKE_ON_ZERO);
         RobotLog.dd(TAG, "trajectoryBuilder forward, DISTANCE: "+Double.toString(DISTANCE));
         Trajectory trajectory = drive.trajectoryBuilder()

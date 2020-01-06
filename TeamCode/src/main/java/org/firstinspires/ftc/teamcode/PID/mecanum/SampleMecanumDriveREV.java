@@ -41,8 +41,8 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
     private BNO055IMU imu;
     private static String TAG = "REVClass";
 
-    public SampleMecanumDriveREV(HardwareMap hardwareMap) {
-        super();
+    public SampleMecanumDriveREV(HardwareMap hardwareMap, boolean strafe) {
+        super(strafe);
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
@@ -94,7 +94,7 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
         else
             RobotLog.dd(TAG, "not using imu");
 
-        if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
+        if ((DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) && (strafe != true)) {
             RobotLog.dd(TAG, "to setLocalizer to StandardTrackingWheelLocalizer");
             setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
         }

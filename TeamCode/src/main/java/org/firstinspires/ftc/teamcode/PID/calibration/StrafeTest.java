@@ -30,9 +30,9 @@ public class StrafeTest extends LinearOpMode {
         DISTANCE = DriveConstantsPID.TEST_DISTANCE;
         SampleMecanumDriveBase drive = null;
         if (DriveConstantsPID.USING_BULK_READ == false)
-            drive = new SampleMecanumDriveREV(hardwareMap);
+            drive = new SampleMecanumDriveREV(hardwareMap, false);
         else
-            drive = new SampleMecanumDriveREVOptimized(hardwareMap);
+            drive = new SampleMecanumDriveREVOptimized(hardwareMap, false);
         drive.setBrakeonZeroPower(DriveConstantsPID.BRAKE_ON_ZERO);
 
         DriveConstantsPID.moveStrafeLeft(hardwareMap, 24);

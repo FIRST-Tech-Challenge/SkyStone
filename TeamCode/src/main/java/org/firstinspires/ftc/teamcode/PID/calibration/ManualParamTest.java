@@ -38,9 +38,9 @@ public class ManualParamTest extends LinearOpMode {
         DriveConstantsPID.updateConstantsFromProperties();
         SampleMecanumDriveBase drive = null;
         if (DriveConstantsPID.USING_BULK_READ == false)
-            drive = new SampleMecanumDriveREV(hardwareMap);
+            drive = new SampleMecanumDriveREV(hardwareMap, false);
         else
-            drive = new SampleMecanumDriveREVOptimized((hardwareMap));
+            drive = new SampleMecanumDriveREVOptimized(hardwareMap, false);
 
         leftFront = hardwareMap.get(DcMotorEx.class, "frontLeft");
         leftRear = hardwareMap.get(DcMotorEx.class, "backLeft");

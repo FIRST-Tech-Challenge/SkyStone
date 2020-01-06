@@ -39,6 +39,7 @@ public class DriveConstantsPID {
     public static boolean USING_BULK_READ = false;
     public static double odoEncoderTicksPerRev = 1550.0;
     private static String TAG = "DriveConstants";
+
     public static double txP = 8; //translational x/y co-efficients
     public static double txI = 0.6;
     public static double txD = 0.75;
@@ -48,6 +49,16 @@ public class DriveConstantsPID {
     public static double hP = 6;    // heading co-efficients;
     public static double hI = 2;
     public static double hD = 0.4;
+
+    public static double stxP = 8; //translational x/y co-efficients
+    public static double stxI = 0.6;
+    public static double stxD = 0.75;
+    public static double styP = 10;
+    public static double styI = 0.5;
+    public static double styD = 1.1;
+    public static double shP = 6;    // heading co-efficients;
+    public static double shI = 2;
+    public static double shD = 0.4;
     public static double strafeTimeDistanceRatio = 0.093; // duration for power to achieve strafe distance;
     public static double strafeMotorPower = 0.19;
     public static double rear_ratio = 1.105;
@@ -197,6 +208,10 @@ public class DriveConstantsPID {
         RobotLog.dd(TAG, "Odometry wheel width? : " + Double.toString(ODOMETRY_TRACK_WIDTH));
         RobotLog.dd(TAG, "Odometry forward offset? " + Double.toString(ODOMERY_FORWARD_OFFSET));
         RobotLog.dd(TAG, "Odometry EncoderTicksPerRev? " + Double.toString(odoEncoderTicksPerRev));
+        RobotLog.dd(TAG, "Strafing paramters: ");
+        RobotLog.dd(TAG, "xTransitional PID   txP: "+Double.toString(stxP) + " txI: "+Double.toString(stxI) + " txD: " + Double.toString(stxD));
+        RobotLog.dd(TAG, "yTransitional PID   tyP: "+Double.toString(styP) + " tyI: "+Double.toString(styI) + " tyD: " + Double.toString(styD));
+        RobotLog.dd(TAG, "Heading PID   hP: "+Double.toString(shP) + " hI: "+Double.toString(shI) + " hD: " + Double.toString(shD));
         RobotLog.dd(TAG, "strafeTimeDistanceRat: " + Double.toString(strafeTimeDistanceRatio));
         RobotLog.dd(TAG, "strafeMotorPower:  " + Double.toString(strafeMotorPower));
         RobotLog.dd(TAG, "rear_ratio:  " + Double.toString(rear_ratio));
@@ -289,6 +304,37 @@ public class DriveConstantsPID {
         v_double = getTeamCodePropertyValue("debug.ftc.hD");
         if (v_double != Double.MAX_VALUE)
             hD = v_double;
+
+
+        v_double = getTeamCodePropertyValue("debug.ftc.stxP");
+        if (v_double != Double.MAX_VALUE)
+            stxP = v_double;
+        v_double = getTeamCodePropertyValue("debug.ftc.stxI");
+        if (v_double != Double.MAX_VALUE)
+            stxI = v_double;
+        v_double = getTeamCodePropertyValue("debug.ftc.stxD");
+        if (v_double != Double.MAX_VALUE)
+            stxD = v_double;
+        v_double = getTeamCodePropertyValue("debug.ftc.styP");
+        if (v_double != Double.MAX_VALUE)
+            styP = v_double;
+        v_double = getTeamCodePropertyValue("debug.ftc.styI");
+        if (v_double != Double.MAX_VALUE)
+            styI = v_double;
+        v_double = getTeamCodePropertyValue("debug.ftc.styD");
+        if (v_double != Double.MAX_VALUE)
+            styD = v_double;
+
+        v_double = getTeamCodePropertyValue("debug.ftc.shP");
+        if (v_double != Double.MAX_VALUE)
+            shP = v_double;
+        v_double = getTeamCodePropertyValue("debug.ftc.shI");
+        if (v_double != Double.MAX_VALUE)
+            shI = v_double;
+        v_double = getTeamCodePropertyValue("debug.ftc.shD");
+        if (v_double != Double.MAX_VALUE)
+            shD = v_double;
+
         v_double = getTeamCodePropertyValue("debug.ftc.strafeMotorPower");
         if (v_double != Double.MAX_VALUE)
             strafeMotorPower = v_double;

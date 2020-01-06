@@ -66,15 +66,19 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
     private List<Double> lastWheelPositions;
     private double lastTimestamp;
     private static String TAG = "BaseClass";
+    private boolean strafe = false;
 
     public SampleMecanumDriveBase() {
         super(DriveConstantsPID.kV, DriveConstantsPID.kA, DriveConstantsPID.kStatic, TRACK_WIDTH);
-        RobotLog.dd(TAG, "kV "+Double.toString(DriveConstantsPID.kV)+" kA "+Double.toString(DriveConstantsPID.kA)+" kStatic "+Double.toString(DriveConstantsPID.kStatic));
-        RobotLog.dd(TAG, "TRACK_WIDTH "+Double.toString(DriveConstantsPID.TRACK_WIDTH));
-        RobotLog.dd(TAG, "txP "+Double.toString(DriveConstantsPID.txP)+" txI "+Double.toString(DriveConstantsPID.txI)+" txD "+Double.toString(DriveConstantsPID.txD));
-        RobotLog.dd(TAG, "tyP "+Double.toString(DriveConstantsPID.tyP)+" tyI "+Double.toString(DriveConstantsPID.tyI)+" tyD "+Double.toString(DriveConstantsPID.tyD));
-        RobotLog.dd(TAG, "hP "+Double.toString(DriveConstantsPID.hP)+" hI "+Double.toString(DriveConstantsPID.hI)+" hD "+Double.toString(DriveConstantsPID.hD));
-
+        createControllers();
+    }
+    public SampleMecanumDriveBase(boolean s){
+        super(DriveConstantsPID.kV, DriveConstantsPID.kA, DriveConstantsPID.kStatic, TRACK_WIDTH);
+        strafe = s;
+        createControllers();
+    }
+    public void createControllers()
+    {
         dashboard = FtcDashboard.getInstance();
         dashboard.setTelemetryTransmissionInterval(25);
 
@@ -82,10 +86,18 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
 
         mode = Mode.IDLE;
 
-        xTRANSLATIONAL_PID = new PIDCoefficients(DriveConstantsPID.txP, DriveConstantsPID.txI, DriveConstantsPID.txD);
-        yTRANSLATIONAL_PID = new PIDCoefficients(DriveConstantsPID.tyP, DriveConstantsPID.tyI, DriveConstantsPID.tyD);
-        HEADING_PID = new PIDCoefficients(DriveConstantsPID.hP, DriveConstantsPID.hI, DriveConstantsPID.hD);
+        if (strafe == false) {
+            xTRANSLATIONAL_PID = new PIDCoefficients(DriveConstantsPID.txP, DriveConstantsPID.txI, DriveConstantsPID.txD);
+            yTRANSLATIONAL_PID = new PIDCoefficients(DriveConstantsPID.tyP, DriveConstantsPID.tyI, DriveConstantsPID.tyD);
+            HEADING_PID = new PIDCoefficients(DriveConstantsPID.hP, DriveConstantsPID.hI, DriveConstantsPID.hD);
+        }
+        else
+        {
+            xTRANSLATIONAL_PID = new PIDCoefficients(DriveConstantsPID.stxP, DriveConstantsPID.stxI, DriveConstantsPID.stxD);
+            yTRANSLATIONAL_PID = new PIDCoefficients(DriveConstantsPID.styP, DriveConstantsPID.styI, DriveConstantsPID.styD);
+            HEADING_PID = new PIDCoefficients(DriveConstantsPID.shP, DriveConstantsPID.shI, DriveConstantsPID.shD);
 
+        }
         turnController = new PIDFController(HEADING_PID);
         turnController.setInputBounds(0, 2 * Math.PI);
 

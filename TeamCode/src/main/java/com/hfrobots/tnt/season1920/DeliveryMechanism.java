@@ -95,15 +95,15 @@ public class DeliveryMechanism {
 
     protected final Telemetry telemetry;
 
-    public final static double SHOULDER_OUT = .7361111111; //see FIXME 2
-    public final static double SHOULDER_STOW = 0; //see FIXME 2
+    public final static double SHOULDER_OUT = 1.0;
+    public final static double SHOULDER_STOW = 0;
     boolean shoulderFar = false;
 
     public final static double WRIST_TURN_CLOSE_NATURAL = 1.0;
     public final static double WRIST_TURN_CLOSE_ROTATED = 0.666;
     public final static double WRIST_TURN_FAR_NATURAL = 1.0;
     public final static double WRIST_TURN_FAR_ROTATED = .666;
-    public final static double WRIST_STOW = 1.0; //see FIXME 2
+    public final static double WRIST_STOW = 1.0;
     boolean wristRotated = false;
 
     public final static double FINGER_GRIP = 0.0;

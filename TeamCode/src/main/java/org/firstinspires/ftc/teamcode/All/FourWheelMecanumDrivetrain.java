@@ -226,7 +226,7 @@ public class FourWheelMecanumDrivetrain {
     }
 
     public void odometryStrafe(double power, double inches, boolean right){
-        double counts = inches / (2 * PI * 1.25) * 1400.0;
+        double counts = inches / (2 * PI * 1.25) * 1550.0;
         int sidewaysStart = rw.rightIntake.getCurrentPosition();
 
         if(!right)

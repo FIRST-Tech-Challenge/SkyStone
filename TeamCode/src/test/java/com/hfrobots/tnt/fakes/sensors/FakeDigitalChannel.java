@@ -17,17 +17,65 @@
  SOFTWARE.
  **/
 
-package com.hfrobots.tnt.corelib.control;
+package com.hfrobots.tnt.fakes.sensors;
 
-public class FakeOnOffButton implements OnOffButton {
-    private boolean isPressed;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
+import com.qualcomm.robotcore.hardware.DigitalChannelController;
 
+public class FakeDigitalChannel implements DigitalChannel {
     @Override
-    public boolean isPressed() {
-        return isPressed;
+    public Mode getMode() {
+        return null;
     }
 
-    public void setPressed(boolean val) {
-        isPressed = val;
+    @Override
+    public void setMode(Mode mode) {
+
+    }
+
+    // IMPLEMENT ME
+    @Override
+    public boolean getState() {
+        return false;
+    }
+
+    @Override
+    public void setState(boolean state) {
+
+    }
+
+    @Override
+    public void setMode(DigitalChannelController.Mode mode) {
+
+    }
+
+    @Override
+    public Manufacturer getManufacturer() {
+        return null;
+    }
+
+    @Override
+    public String getDeviceName() {
+        return null;
+    }
+
+    @Override
+    public String getConnectionInfo() {
+        return null;
+    }
+
+    @Override
+    public int getVersion() {
+        return 0;
+    }
+
+    @Override
+    public void resetDeviceConfigurationForOpMode() {
+
+    }
+
+    @Override
+    public void close() {
+
     }
 }

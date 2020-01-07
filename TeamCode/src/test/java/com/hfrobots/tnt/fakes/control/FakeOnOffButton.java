@@ -1,5 +1,5 @@
 /**
- Copyright (c) 2018 HF Robotics (http://www.hfrobots.com)
+ Copyright (c) 2019 HF Robotics (http://www.hfrobots.com)
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
  in the Software without restriction, including without limitation the rights
@@ -17,27 +17,19 @@
  SOFTWARE.
  **/
 
-package com.hfrobots.tnt.corelib.control;
+package com.hfrobots.tnt.fakes.control;
 
-public class FakeRangeInput implements RangeInput {
-    private float currentPosition = 0;
+import com.hfrobots.tnt.corelib.control.OnOffButton;
 
-    public void setCurrentPosition(float currentPosition) {
-        this.currentPosition = currentPosition;
-    }
+public class FakeOnOffButton implements OnOffButton {
+    private boolean isPressed;
 
     @Override
-    public float getPosition() {
-        return currentPosition;
+    public boolean isPressed() {
+        return isPressed;
     }
 
-    @Override
-    public float getMaxPosition() {
-        return Float.MAX_VALUE;
-    }
-
-    @Override
-    public float getMinPosition() {
-        return Float.MIN_VALUE;
+    public void setPressed(boolean val) {
+        isPressed = val;
     }
 }

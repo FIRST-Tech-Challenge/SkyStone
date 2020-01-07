@@ -1,5 +1,5 @@
-/**
- Copyright (c) 2019 HF Robotics (http://www.hfrobots.com)
+/*
+ Copyright (c) 2020 HF Robotics (http://www.hfrobots.com)
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
  in the Software without restriction, including without limitation the rights
@@ -15,53 +15,40 @@
  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
- **/
+ */
 
-package com.hfrobots.tnt.corelib.sensors;
+package com.hfrobots.tnt.fakes.sensors;
 
-import com.qualcomm.robotcore.hardware.DigitalChannel;
-import com.qualcomm.robotcore.hardware.DigitalChannelController;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 
-public class FakeDigitalChannel implements DigitalChannel {
-    @Override
-    public Mode getMode() {
-        return null;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
+public class FakeDistanceSensor implements DistanceSensor {
+
+    private double distance;
+
+    public void setDistance(double distance) {
+        this.distance = distance;
     }
 
     @Override
-    public void setMode(Mode mode) {
-
-    }
-
-    // IMPLEMENT ME
-    @Override
-    public boolean getState() {
-        return false;
-    }
-
-    @Override
-    public void setState(boolean state) {
-
-    }
-
-    @Override
-    public void setMode(DigitalChannelController.Mode mode) {
-
+    public double getDistance(DistanceUnit unit) {
+        return distance;
     }
 
     @Override
     public Manufacturer getManufacturer() {
-        return null;
+        return Manufacturer.Other;
     }
 
     @Override
     public String getDeviceName() {
-        return null;
+        return "";
     }
 
     @Override
     public String getConnectionInfo() {
-        return null;
+        return "";
     }
 
     @Override

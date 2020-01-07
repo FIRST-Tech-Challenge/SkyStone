@@ -1,4 +1,4 @@
-package com.hfrobots.tnt.corelib.sensors;
+package com.hfrobots.tnt.fakes.sensors;
 
 import android.support.annotation.NonNull;
 

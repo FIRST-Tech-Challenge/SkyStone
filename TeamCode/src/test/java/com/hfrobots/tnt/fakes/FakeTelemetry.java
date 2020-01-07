@@ -23,7 +23,7 @@ public class FakeTelemetry implements Telemetry {
     @Override
     public Item addData(String caption, Object value) {
         if (outputTelemetry) {
-            String telemetryLine = (caption != null ? caption : "") + " " + value != null ? value.toString() : "";
+            String telemetryLine = (caption != null ? caption : "") + " " + (value != null ? value.toString() : "");
             System.out.println("Telemetry: " + telemetryLine);
         }
 

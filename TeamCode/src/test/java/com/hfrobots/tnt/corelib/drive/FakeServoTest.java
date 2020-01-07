@@ -18,6 +18,8 @@
  **/
 package com.hfrobots.tnt.corelib.drive;
 
+import com.hfrobots.tnt.fakes.drive.FakeServo;
+
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -19,13 +19,12 @@
 
 package com.hfrobots.tnt.season1920;
 
-import com.google.common.base.Ticker;
 import com.google.common.testing.FakeTicker;
-import com.hfrobots.tnt.corelib.control.FakeOnOffButton;
-import com.hfrobots.tnt.corelib.control.FakeRangeInput;
-import com.hfrobots.tnt.corelib.drive.FakeExtendedDcMotor;
-import com.hfrobots.tnt.corelib.drive.FakeServo;
-import com.hfrobots.tnt.corelib.sensors.FakeDigitalChannel;
+import com.hfrobots.tnt.fakes.control.FakeOnOffButton;
+import com.hfrobots.tnt.fakes.control.FakeRangeInput;
+import com.hfrobots.tnt.fakes.drive.FakeExtendedDcMotor;
+import com.hfrobots.tnt.fakes.drive.FakeServo;
+import com.hfrobots.tnt.fakes.sensors.FakeDigitalChannel;
 import com.hfrobots.tnt.fakes.FakeHardwareMap;
 import com.hfrobots.tnt.fakes.FakeNinjaGamePad;
 import com.hfrobots.tnt.fakes.FakeTelemetry;

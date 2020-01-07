@@ -19,13 +19,13 @@
 
 package com.hfrobots.tnt.season1920;
 
-import com.hfrobots.tnt.corelib.control.FakeOnOffButton;
-import com.hfrobots.tnt.corelib.control.FakeRangeInput;
+import com.hfrobots.tnt.fakes.control.FakeOnOffButton;
+import com.hfrobots.tnt.fakes.control.FakeRangeInput;
 import com.hfrobots.tnt.corelib.control.OnOffButton;
 import com.hfrobots.tnt.corelib.control.RangeInput;
-import com.hfrobots.tnt.corelib.drive.FakeExtendedDcMotor;
+import com.hfrobots.tnt.fakes.drive.FakeExtendedDcMotor;
 import com.hfrobots.tnt.corelib.drive.mecanum.RoadRunnerMecanumDriveREV;
-import com.hfrobots.tnt.corelib.sensors.FakeBNO055IMU;
+import com.hfrobots.tnt.fakes.sensors.FakeBNO055IMU;
 import com.hfrobots.tnt.fakes.FakeHardwareMap;
 
 import org.junit.Assert;

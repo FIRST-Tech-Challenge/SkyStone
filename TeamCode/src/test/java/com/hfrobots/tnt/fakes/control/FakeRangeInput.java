@@ -1,5 +1,5 @@
-/*
- Copyright (c) 2020 HF Robotics (http://www.hfrobots.com)
+/**
+ Copyright (c) 2018 HF Robotics (http://www.hfrobots.com)
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
  in the Software without restriction, including without limitation the rights
@@ -15,54 +15,31 @@
  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
- */
+ **/
 
-package com.hfrobots.tnt.fakes;
+package com.hfrobots.tnt.fakes.control;
 
-import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.hfrobots.tnt.corelib.control.RangeInput;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+public class FakeRangeInput implements RangeInput {
+    private float currentPosition = 0;
 
-public class FakeDistanceSensor implements DistanceSensor {
-
-    private double distance;
-
-    public void setDistance(double distance) {
-        this.distance = distance;
+    public void setCurrentPosition(float currentPosition) {
+        this.currentPosition = currentPosition;
     }
 
     @Override
-    public double getDistance(DistanceUnit unit) {
-        return distance;
+    public float getPosition() {
+        return currentPosition;
     }
 
     @Override
-    public Manufacturer getManufacturer() {
-        return Manufacturer.Other;
+    public float getMaxPosition() {
+        return Float.MAX_VALUE;
     }
 
     @Override
-    public String getDeviceName() {
-        return "";
-    }
-
-    @Override
-    public String getConnectionInfo() {
-        return "";
-    }
-
-    @Override
-    public int getVersion() {
-        return 0;
-    }
-
-    @Override
-    public void resetDeviceConfigurationForOpMode() {
-
-    }
-
-    @Override
-    public void close() {
-
+    public float getMinPosition() {
+        return Float.MIN_VALUE;
     }
 }

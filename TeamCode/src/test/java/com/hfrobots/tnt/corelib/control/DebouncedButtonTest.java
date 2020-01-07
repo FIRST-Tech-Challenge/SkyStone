@@ -19,6 +19,8 @@
 
 package com.hfrobots.tnt.corelib.control;
 
+import com.hfrobots.tnt.fakes.control.FakeOnOffButton;
+
 import org.junit.Assert;
 import org.junit.Test;
 

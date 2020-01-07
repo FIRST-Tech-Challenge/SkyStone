@@ -19,6 +19,8 @@
 
 package com.hfrobots.tnt.corelib.control;
 
+import com.hfrobots.tnt.fakes.control.FakeRangeInput;
+
 import junit.framework.TestCase;
 
 public class LowPassFilteredRangeInputTest extends TestCase {

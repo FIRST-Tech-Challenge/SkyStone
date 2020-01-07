@@ -17,8 +17,10 @@
  SOFTWARE.
  **/
 
-package com.hfrobots.tnt.corelib.drive;
+package com.hfrobots.tnt.fakes.drive;
 
+import com.hfrobots.tnt.corelib.drive.ExtendedDcMotor;
+import com.hfrobots.tnt.corelib.drive.NinjaMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;

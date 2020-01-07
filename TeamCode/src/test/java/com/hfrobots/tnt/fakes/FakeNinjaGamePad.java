@@ -19,8 +19,8 @@
 
 package com.hfrobots.tnt.fakes;
 
-import com.hfrobots.tnt.corelib.control.FakeOnOffButton;
-import com.hfrobots.tnt.corelib.control.FakeRangeInput;
+import com.hfrobots.tnt.fakes.control.FakeOnOffButton;
+import com.hfrobots.tnt.fakes.control.FakeRangeInput;
 import com.hfrobots.tnt.corelib.control.NinjaGamePad;
 import com.hfrobots.tnt.corelib.control.OnOffButton;
 import com.hfrobots.tnt.corelib.control.RangeInput;

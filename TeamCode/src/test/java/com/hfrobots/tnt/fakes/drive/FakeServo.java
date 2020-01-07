@@ -17,7 +17,7 @@
  SOFTWARE.
  **/
 
-package com.hfrobots.tnt.corelib.drive;
+package com.hfrobots.tnt.fakes.drive;
 
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoController;

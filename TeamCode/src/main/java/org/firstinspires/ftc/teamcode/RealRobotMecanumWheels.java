@@ -81,7 +81,7 @@ public class RealRobotMecanumWheels extends LinearOpMode {
         while (opModeIsActive()) {
 
             //if ( move >= -1 && move < 0 ) {
-            if (d_left) {
+            if (d_left == true) {
             leftFront.setDirection(DcMotor.Direction.REVERSE);
             leftBack.setDirection(DcMotor.Direction.REVERSE);
             rightFront.setDirection(DcMotor.Direction.FORWARD);

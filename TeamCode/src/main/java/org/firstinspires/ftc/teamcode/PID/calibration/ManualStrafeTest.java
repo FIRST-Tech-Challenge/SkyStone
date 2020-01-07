@@ -41,7 +41,7 @@ public class ManualStrafeTest extends LinearOpMode {
 
         if (isStopRequested()) return;
 
-        DriveConstantsPID.moveStrafeLeft(hardwareMap, DISTANCE);
+        DriveConstantsPID.strafeDistance(hardwareMap, DISTANCE, true);
 
         Localizer localizer = drive.getLocalizer();
         if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL && (localizer!=null)) {

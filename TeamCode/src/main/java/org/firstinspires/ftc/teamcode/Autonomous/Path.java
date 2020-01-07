@@ -10,13 +10,11 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
-import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
-import org.firstinspires.ftc.teamcode.All.DriveConstant;
 import org.firstinspires.ftc.teamcode.All.HardwareMap;
 import org.firstinspires.ftc.teamcode.Autonomous.Vision.Align;
 import org.firstinspires.ftc.teamcode.PID.DriveConstantsPID;
+import org.firstinspires.ftc.teamcode.PID.localizer.StandardTrackingWheelLocalizer;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveBase;
-import org.firstinspires.ftc.teamcode.TeleOp.Teleop;
 import org.firstinspires.ftc.teamcode.TeleOp.TeleopConstants;
 
 import java.lang.reflect.Field;
@@ -24,6 +22,9 @@ import java.util.List;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function0;
+
+import static java.lang.Math.PI;
+import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.rear_ratio;
 
 public class Path {
     private Pose2d startingPos;
@@ -51,35 +52,36 @@ public class Path {
     public void RedQuary(int[] skystonePositions) {
         switch (skystonePositions[0]) {
             case 1:
+                double initStrafeDistance = 26.0;
+                double yCoordMvmtPlane = -63.936 + initStrafeDistance;
+                double wallSkyStoneX = -48.0;
+                double furtherMostSkyStoneX = -35.0;
+                double firstRegularStoneX = -44.0;
+                double foundationX = 45.0;
+                double strafeDistance = 10.0;
+                double rightStrafeCorrection = -2.2;
+
                 transferReset();
                 initIntakeClaw();
-
-                try{
-                    Thread.sleep(500);
-                } catch (Exception e){}
 
                 hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
                 hwMap.transferLock.setPosition(TeleopConstants.transferLockPosPlatform);
 
-                DriveConstantsPID.moveStrafeLeft(hardwareMap, 25);
-
-                RobotLog.dd("Current Position", drive.getPoseEstimate().toString());
-
-                drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(drive.getPoseEstimate().getX(),
-                        drive.getPoseEstimate().getY() + 25), drive.getExternalHeading()));
-                drive.getLocalizer().update();
-
-                RobotLog.dd("Current Position", drive.getPoseEstimate().toString());
+                double initPos = hwMap.rightIntake.getCurrentPosition();
+                //odometryStrafe(0.2, initStrafeDistance, false);
+                DriveConstantsPID.strafeDistance(hardwareMap, initStrafeDistance, true);
+                updatePoseFromStrafe(initPos, true);
 
                 builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);   //-34.752, -63.936
-                if(DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
+                if(!DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
 
                     builder = builder//.strafeTo(new Vector2d(drive.getPoseEstimate().getX(), -63.936 + 5.0))
                             /*.strafeTo(new Vector2d(drive.getPoseEstimate().getX(), -63.936 + 5.0 * 2))
                             .strafeTo(new Vector2d(drive.getPoseEstimate().getX(), -63.936 + 5.0 * 3))
                             .strafeTo(new Vector2d(drive.getPoseEstimate().getX(), -63.936 + 5.0 * 4))
                             .strafeTo(new Vector2d(drive.getPoseEstimate().getX(), -63.936 + 5.0 * 5))*/
-                            .setReversed(true).lineTo(new Vector2d(-51, -39));
+                           // .strafeTo(new Vector2d(drive.getPoseEstimate().getX(), yCoordMvmtPlane + strafeDistance))
+                            .setReversed(true).lineTo(new Vector2d(wallSkyStoneX, yCoordMvmtPlane + strafeDistance));
 
                 } else {
                     builder = builder.strafeTo(new Vector2d(drive.getPoseEstimate().getX(),-30)).setReversed(true)
@@ -87,22 +89,23 @@ public class Path {
                 }
                 trajectory = builder.build();   //x - 2.812, y + 7.984
                 drive.followTrajectorySync(trajectory);
-
                 RobotLog.dd("STATUS", "Strafe #1 Done");
-
-                /*try{
-                    Thread.sleep(500);
-                } catch (Exception e){}
 
                 grabStone(FieldPosition.RED_QUARY);
 
+                initPos = hwMap.rightIntake.getCurrentPosition();
+                //odometryStrafe(0.2, strafeDistance, false);
+                DriveConstantsPID.strafeDistance(hardwareMap, strafeDistance + rightStrafeCorrection, false);
+                updatePoseFromStrafe(initPos, false);
+
                 drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(drive.getPoseEstimate().getX(),
-                        drive.getPoseEstimate().getY()), drive.getPoseEstimate().getHeading()));
+                        drive.getPoseEstimate().getY()), drive.getExternalHeading()));
                 drive.getLocalizer().update();
                 builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
-                if(DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
-                    builder = builder.setReversed(false).strafeTo(new Vector2d(-42, -45))
-                            .lineTo(new Vector2d(42, -45)).strafeTo(new Vector2d(46,-35));
+                if(!DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
+                    builder = builder.setReversed(false).strafeTo(new Vector2d(wallSkyStoneX, yCoordMvmtPlane))
+                            .lineTo(new Vector2d(foundationX, yCoordMvmtPlane))
+                            .strafeTo(new Vector2d(foundationX,yCoordMvmtPlane + strafeDistance));  //-52, -39
                 } else {
                     builder = builder.setReversed(false).strafeTo(new Vector2d(-50, -40))
                             .lineTo(new Vector2d(50, -40)).strafeTo(new Vector2d(50, -30));
@@ -112,19 +115,26 @@ public class Path {
 
                 RobotLog.dd("STATUS", "Strafe #2 Done");
 
-                try{
-                    Thread.sleep(500);
-                } catch (Exception e){}
+                initPos = hwMap.rightIntake.getCurrentPosition();
+                //DriveConstantsPID.strafeDistance(hardwareMap, strafeDistance, true);
+                odometryStrafe(0.2, strafeDistance, false);
+                updatePoseFromStrafe(initPos, true);
 
                 dropStone(FieldPosition.RED_QUARY);
 
+                initPos = hwMap.rightIntake.getCurrentPosition();
+                //odometryStrafe(0.2, strafeDistance, true);
+                DriveConstantsPID.strafeDistance(hardwareMap, strafeDistance + rightStrafeCorrection, false);
+                updatePoseFromStrafe(initPos, false);
+
                 drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(drive.getPoseEstimate().getX(),
-                        drive.getPoseEstimate().getY()), drive.getPoseEstimate().getHeading()));
+                        drive.getPoseEstimate().getY()), drive.getExternalHeading()));
                 drive.getLocalizer().update();
                 builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
-                if(DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
-                    builder = builder.strafeTo(new Vector2d(46, -40)).setReversed(true).lineTo(new Vector2d(-24, -40))
-                            .strafeTo(new Vector2d(-24, -30));
+                if(!DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
+                    builder = builder//.strafeTo(new Vector2d(foundationX, yCoordMvmtPlane))
+                            .setReversed(true).lineTo(new Vector2d(furtherMostSkyStoneX, yCoordMvmtPlane));
+                            //.strafeTo(new Vector2d(furtherMostSkyStoneX, yCoordMvmtPlane + strafeDistance));
                 } else {
                     builder = builder.strafeTo(new Vector2d(50, -40)).setReversed(true).lineTo(new Vector2d(-20, -40))
                             .strafeTo(new Vector2d(-20, -28));
@@ -134,19 +144,26 @@ public class Path {
 
                 RobotLog.dd("STATUS", "Strafe #3 Done");
 
-                try{
-                    Thread.sleep(500);
-                } catch (Exception e){}
+                initPos = hwMap.rightIntake.getCurrentPosition();
+                //odometryStrafe(0.2, strafeDistance, false);
+                DriveConstantsPID.strafeDistance(hardwareMap, strafeDistance, true);
+                updatePoseFromStrafe(initPos, true);
 
                 grabStone(FieldPosition.RED_QUARY);
 
+                initPos = hwMap.rightIntake.getCurrentPosition();
+                //odometryStrafe(0.2, strafeDistance, true);
+                DriveConstantsPID.strafeDistance(hardwareMap, strafeDistance + rightStrafeCorrection, false);
+                updatePoseFromStrafe(initPos, false);
+
                 drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(drive.getPoseEstimate().getX(),
-                        drive.getPoseEstimate().getY()), drive.getPoseEstimate().getHeading()));
+                        drive.getPoseEstimate().getY()), drive.getExternalHeading()));
                 drive.getLocalizer().update();
                 builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
-                if(DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
-                    builder = builder.setReversed(false).strafeTo(new Vector2d(-24, -40)).lineTo(new Vector2d(42, -40))
-                            .strafeTo(new Vector2d(42, -30));
+                if(!DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
+                    builder = builder.setReversed(false)//.strafeTo(new Vector2d(-24, -40))
+                            .lineTo(new Vector2d(foundationX, yCoordMvmtPlane));
+                            //.strafeTo(new Vector2d(42, -30));
                 } else {
                     builder = builder.setReversed(false).strafeTo(new Vector2d(-20, -40)).lineTo(new Vector2d(50, -40))
                             .strafeTo(new Vector2d(50, -30));
@@ -156,182 +173,483 @@ public class Path {
 
                 RobotLog.dd("STATUS", "Strafe #4 Done");
 
-                try{
-                    Thread.sleep(500);
-                } catch (Exception e){}
+                initPos = hwMap.rightIntake.getCurrentPosition();
+                //odometryStrafe(0.2, strafeDistance, false);
+                DriveConstantsPID.strafeDistance(hardwareMap, strafeDistance, true);
+                updatePoseFromStrafe(initPos, true);
 
-                dropStone(FieldPosition.RED_QUARY);*/
+                dropStone(FieldPosition.RED_QUARY);
 
+                initPos = hwMap.rightIntake.getCurrentPosition();
+                //odometryStrafe(0.2, strafeDistance, true);
+                DriveConstantsPID.strafeDistance(hardwareMap, strafeDistance + rightStrafeCorrection, false);
+                updatePoseFromStrafe(initPos, false);
+
+                drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(drive.getPoseEstimate().getX(),
+                        drive.getPoseEstimate().getY()), drive.getExternalHeading()));
+                drive.getLocalizer().update();
+                builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
+                if(!DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
+                    builder = builder//.strafeTo(new Vector2d(46, -40))
+                            .setReversed(true).lineTo(new Vector2d(firstRegularStoneX, yCoordMvmtPlane));
+                    //.strafeTo(new Vector2d(-24, -30));
+                }
+                trajectory = builder.build();
+                drive.followTrajectorySync(trajectory);
+
+                RobotLog.dd("STATUS", "Strafe #3 Done");
+
+                initPos = hwMap.rightIntake.getCurrentPosition();
+                //odometryStrafe(0.2, strafeDistance, false);
+                DriveConstantsPID.strafeDistance(hardwareMap, strafeDistance, true);
+                updatePoseFromStrafe(initPos, true);
+
+                grabStone(FieldPosition.RED_QUARY);
+
+                initPos = hwMap.rightIntake.getCurrentPosition();
+                //odometryStrafe(0.2, strafeDistance, true);
+                DriveConstantsPID.strafeDistance(hardwareMap, strafeDistance + rightStrafeCorrection, false);
+                updatePoseFromStrafe(initPos, false);
+
+                drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(drive.getPoseEstimate().getX(),
+                        drive.getPoseEstimate().getY()), drive.getExternalHeading()));
+                drive.getLocalizer().update();
+                builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
+                if(!DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
+                    builder = builder.setReversed(false)//.strafeTo(new Vector2d(-24, -40))
+                            .lineTo(new Vector2d(foundationX, yCoordMvmtPlane));
+                    //.strafeTo(new Vector2d(42, -30));
+                }
+                trajectory = builder.build();
+                drive.followTrajectorySync(trajectory);
+
+                RobotLog.dd("STATUS", "Strafe #4 Done");
+
+                initPos = hwMap.rightIntake.getCurrentPosition();
+                DriveConstantsPID.strafeDistance(hardwareMap, strafeDistance, true);
+                //odometryStrafe(0.2, strafeDistance, false);
+                updatePoseFromStrafe(initPos, true);
+
+                dropStone(FieldPosition.RED_QUARY);
+
+                initPos = hwMap.rightIntake.getCurrentPosition();
+                DriveConstantsPID.strafeDistance(hardwareMap, 16 + rightStrafeCorrection, false);
+                //odometryStrafe(0.2, 16, true);
+                updatePoseFromStrafe(initPos, false);
+
+                if(drive.getExternalHeading() < Math.PI)
+                    drive.turnSync(-((drive.getExternalHeading() + 2 * Math.PI) - 3 * Math.PI / 2));
+                else
+                    drive.turnSync(-(drive.getExternalHeading() - 3 * Math.PI / 2));
+
+                drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(drive.getPoseEstimate().getX(),
+                        drive.getPoseEstimate().getY()), drive.getExternalHeading()));
+                drive.getLocalizer().update();
+                builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
+                if(!DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
+                    builder = builder.setReversed(false)//.strafeTo(new Vector2d(-24, -40))
+                            .setReversed(true).lineTo(new Vector2d(drive.getPoseEstimate().getX(), -20));
+                    //.strafeTo(new Vector2d(42, -30));
+                }
+                trajectory = builder.build();
+                drive.followTrajectorySync(trajectory);
+
+                hwMap.foundationLock.setPosition(TeleopConstants.foundationLockLock);
+                hwMap.transferLock.setPosition(TeleopConstants.transferLockPosUp);
+
+                drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(drive.getPoseEstimate().getX(),
+                        drive.getPoseEstimate().getY()), drive.getExternalHeading()));
+                drive.getLocalizer().update();
+                builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
+                if(!DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
+                    builder = builder.setReversed(false)//.strafeTo(new Vector2d(-24, -40))
+                            .setReversed(false).lineTo(new Vector2d(drive.getPoseEstimate().getX() - 15, -52));
+                    //.strafeTo(new Vector2d(42, -30));
+                }
+                trajectory = builder.build();
+                drive.followTrajectorySync(trajectory);
+
+                drive.turnSync(-(drive.getExternalHeading() - Math.PI) + Math.toRadians(20));
                 break;
             case 2:
+                initStrafeDistance = 27.0;
+                yCoordMvmtPlane = -63.936 + initStrafeDistance;
+                wallSkyStoneX = -61.0;
+                furtherMostSkyStoneX = -33.0;
+                firstRegularStoneX = -24.0;
+                foundationX = 45.0;
+                strafeDistance = 12.0;
+                rightStrafeCorrection = -2.0;
+
                 transferReset();
                 initIntakeClaw();
-                hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
-                hwMap.transferLock.setPosition(TeleopConstants.transferLockPosPlatform);
 
-                builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
+                DriveConstantsPID.strafeDistance(hardwareMap, initStrafeDistance, true);
+                updatePoseFromStrafe(initStrafeDistance, true);
 
-                builder = builder.lineTo(new Vector2d(drive.getLocalizer().getPoseEstimate().getX(), drive.getLocalizer().getPoseEstimate().getY() + 5))
-                        .splineTo(new Pose2d(new Vector2d(-33.208, -39.672), Math.toRadians(80)));
-                trajectory = builder.build();
-                drive.followTrajectorySync(trajectory);
+                builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);   //-34.752, -63.936
+                if(DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
 
-                openPlatform();
+                    builder = builder//.strafeTo(new Vector2d(drive.getPoseEstimate().getX(), -63.936 + 5.0))
+                            /*.strafeTo(new Vector2d(drive.getPoseEstimate().getX(), -63.936 + 5.0 * 2))
+                            .strafeTo(new Vector2d(drive.getPoseEstimate().getX(), -63.936 + 5.0 * 3))
+                            .strafeTo(new Vector2d(drive.getPoseEstimate().getX(), -63.936 + 5.0 * 4))
+                            .strafeTo(new Vector2d(drive.getPoseEstimate().getX(), -63.936 + 5.0 * 5))*/
+                            .setReversed(true).lineTo(new Vector2d(wallSkyStoneX, yCoordMvmtPlane));
 
-                drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(-33.728, -39.672), Math.toRadians(80)));
-                drive.getLocalizer().update();
-                builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
-                builder = builder.lineTo(new Vector2d(-27.728, -11.52));
-                trajectory = builder.build();
-                drive.followTrajectorySync(trajectory);
-
-                prepStone(TeleopConstants.stoneEncoderValues[0] - 300);
-
-                drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(-27.728, -11.52), Math.toRadians(80)));
-                drive.getLocalizer().update();
-                builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
-                builder = builder.setReversed(true).lineTo(new Vector2d(-34.728, -40.672))
-                        .setReversed(false).splineTo(new Pose2d(new Vector2d(-5.568, -24.44), Math.toRadians(0)))
-                        .splineTo(new Pose2d(new Vector2d(55.488, -30.296), Math.toRadians(-90)));
-                trajectory = builder.build();
-                drive.followTrajectorySync(trajectory);
-
-                align.setPower(0.13, 0.25);
-                align.foundation(FieldPosition.RED_QUARY);
-                intake(0);
-                transferReset();
-
-                drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(58.144, -18.128), drive.getExternalHeading()));
-                drive.getLocalizer().update();
-                builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
-                builder = builder.splineTo(new Pose2d(new Vector2d(45.064, -53.72), Math.toRadians(220)))
-                        .setReversed(true).lineTo(new Vector2d(71.0, -53.72)).setReversed(false);
-                trajectory = builder.build();
-                drive.followTrajectorySync(trajectory);
-
-                dropStone(TeleopConstants.stoneEncoderValues[0]);
-                hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
-                hwMap.transferLock.setPosition(TeleopConstants.transferLockPosPlatform);
-
-                try {
-                    Thread.sleep(300);
-                } catch (Exception e) {
+                } else {
+                    builder = builder.strafeTo(new Vector2d(drive.getPoseEstimate().getX(),-30)).setReversed(true)
+                            .lineTo(new Vector2d(-50, -30));
                 }
-                transferReset();
-                intake(1);
+                trajectory = builder.build();   //x - 2.812, y + 7.984
+                drive.followTrajectorySync(trajectory);
+                RobotLog.dd("STATUS", "Strafe #1 Done");
 
-                drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(71.0, -53.72), Math.toRadians(180)));
+                grabStone(FieldPosition.RED_QUARY);
+
+                DriveConstantsPID.strafeDistance(hardwareMap, strafeDistance + rightStrafeCorrection, false);
+                updatePoseFromStrafe(strafeDistance, false);
+
+                drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(drive.getPoseEstimate().getX(),
+                        drive.getPoseEstimate().getY()), drive.getPoseEstimate().getHeading()));
                 drive.getLocalizer().update();
                 builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
-                builder = builder.setReversed(false).lineTo(new Vector2d(67.0, -53.72)).strafeTo(new Vector2d(67.0, -31.44))
-                        .lineTo(new Vector2d(-8.552, -31.44)).strafeTo(new Vector2d(-8.552, -3.44))  ////
-                        .lineTo(new Vector2d(-16.552, -3.44));
+                if(DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
+                    builder = builder.setReversed(false)//.strafeTo(new Vector2d(-42, -45))
+                            .lineTo(new Vector2d(foundationX, yCoordMvmtPlane));//.strafeTo(new Vector2d(46,-35));  //-52, -39
+                } else {
+                    builder = builder.setReversed(false).strafeTo(new Vector2d(-50, -40))
+                            .lineTo(new Vector2d(50, -40)).strafeTo(new Vector2d(50, -30));
+                }
                 trajectory = builder.build();
                 drive.followTrajectorySync(trajectory);
 
-                prepStone();
+                RobotLog.dd("STATUS", "Strafe #2 Done");
 
-                drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(-16.552, -3.44), drive.getExternalHeading()));
+                DriveConstantsPID.strafeDistance(hardwareMap, strafeDistance, true);
+                updatePoseFromStrafe(strafeDistance, true);
+
+                dropStone(FieldPosition.RED_QUARY);
+
+                DriveConstantsPID.strafeDistance(hardwareMap, strafeDistance + rightStrafeCorrection, false);
+                updatePoseFromStrafe(strafeDistance, false);
+
+                drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(drive.getPoseEstimate().getX(),
+                        drive.getPoseEstimate().getY()), drive.getPoseEstimate().getHeading()));
                 drive.getLocalizer().update();
                 builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
-                builder = builder.setReversed(true).strafeTo(new Vector2d(-16.552, -40.44));
-                        //.lineTo(new Vector2d(77.0, -48.44));
+                if(DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
+                    builder = builder//.strafeTo(new Vector2d(46, -40))
+                            .setReversed(true).lineTo(new Vector2d(furtherMostSkyStoneX, yCoordMvmtPlane));
+                    //.strafeTo(new Vector2d(-24, -30));
+                } else {
+                    builder = builder.strafeTo(new Vector2d(50, -40)).setReversed(true).lineTo(new Vector2d(-20, -40))
+                            .strafeTo(new Vector2d(-20, -28));
+                }
                 trajectory = builder.build();
                 drive.followTrajectorySync(trajectory);
 
-                driveTime(-0.75, 1150);
-                dropStone();
-                try{
-                    Thread.sleep(500);
-                } catch (Exception e){}
-               // driveTime(1, 800);
+                RobotLog.dd("STATUS", "Strafe #3 Done");
 
-                intake(0);
+                DriveConstantsPID.strafeDistance(hardwareMap, strafeDistance, true);
+                updatePoseFromStrafe(strafeDistance, true);
+
+                grabStone(FieldPosition.RED_QUARY);
+
+                DriveConstantsPID.strafeDistance(hardwareMap, strafeDistance + rightStrafeCorrection, false);
+                updatePoseFromStrafe(strafeDistance, false);
+
+                drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(drive.getPoseEstimate().getX(),
+                        drive.getPoseEstimate().getY()), drive.getPoseEstimate().getHeading()));
+                drive.getLocalizer().update();
+                builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
+                if(DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
+                    builder = builder.setReversed(false)//.strafeTo(new Vector2d(-24, -40))
+                            .lineTo(new Vector2d(foundationX, yCoordMvmtPlane));
+                    //.strafeTo(new Vector2d(42, -30));
+                } else {
+                    builder = builder.setReversed(false).strafeTo(new Vector2d(-20, -40)).lineTo(new Vector2d(50, -40))
+                            .strafeTo(new Vector2d(50, -30));
+                }
+                trajectory = builder.build();
+                drive.followTrajectorySync(trajectory);
+
+                RobotLog.dd("STATUS", "Strafe #4 Done");
+
+                DriveConstantsPID.strafeDistance(hardwareMap, strafeDistance, true);
+                updatePoseFromStrafe(strafeDistance, true);
+
+                dropStone(FieldPosition.RED_QUARY);
+
+                DriveConstantsPID.strafeDistance(hardwareMap, strafeDistance + rightStrafeCorrection, false);
+                updatePoseFromStrafe(strafeDistance, false);
+
+                drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(drive.getPoseEstimate().getX(),
+                        drive.getPoseEstimate().getY()), drive.getPoseEstimate().getHeading()));
+                drive.getLocalizer().update();
+                builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
+                if(DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
+                    builder = builder//.strafeTo(new Vector2d(46, -40))
+                            .setReversed(true).lineTo(new Vector2d(firstRegularStoneX, yCoordMvmtPlane));
+                    //.strafeTo(new Vector2d(-24, -30));
+                }
+                trajectory = builder.build();
+                drive.followTrajectorySync(trajectory);
+
+                RobotLog.dd("STATUS", "Strafe #3 Done");
+
+                DriveConstantsPID.strafeDistance(hardwareMap, strafeDistance, true);
+                updatePoseFromStrafe(strafeDistance, true);
+
+                grabStone(FieldPosition.RED_QUARY);
+
+                DriveConstantsPID.strafeDistance(hardwareMap, strafeDistance + rightStrafeCorrection, false);
+                updatePoseFromStrafe(strafeDistance, false);
+
+                drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(drive.getPoseEstimate().getX(),
+                        drive.getPoseEstimate().getY()), drive.getPoseEstimate().getHeading()));
+                drive.getLocalizer().update();
+                builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
+                if(DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
+                    builder = builder.setReversed(false)//.strafeTo(new Vector2d(-24, -40))
+                            .lineTo(new Vector2d(foundationX, yCoordMvmtPlane));
+                    //.strafeTo(new Vector2d(42, -30));
+                }
+                trajectory = builder.build();
+                drive.followTrajectorySync(trajectory);
+
+                RobotLog.dd("STATUS", "Strafe #4 Done");
+
+                DriveConstantsPID.strafeDistance(hardwareMap, strafeDistance, true);
+                updatePoseFromStrafe(strafeDistance, true);
+
+                dropStone(FieldPosition.RED_QUARY);
+
+                DriveConstantsPID.strafeDistance(hardwareMap, 16 + rightStrafeCorrection, false);
+                updatePoseFromStrafe(16.0, false);
+
+                drive.turnSync(-Math.toRadians((drive.getExternalHeading() + 2 * Math.PI) - 3 * Math.PI / 2));
+
+                drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(drive.getPoseEstimate().getX(),
+                        drive.getPoseEstimate().getY()), drive.getPoseEstimate().getHeading()));
+                drive.getLocalizer().update();
+                builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
+                if(DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
+                    builder = builder.setReversed(false)//.strafeTo(new Vector2d(-24, -40))
+                            .setReversed(true).lineTo(new Vector2d(drive.getPoseEstimate().getX(), -20));
+                    //.strafeTo(new Vector2d(42, -30));
+                }
+                trajectory = builder.build();
+                drive.followTrajectorySync(trajectory);
+
+                hwMap.foundationLock.setPosition(TeleopConstants.foundationLockLock);
+                hwMap.transferLock.setPosition(TeleopConstants.transferLockPosUp);
+
+                drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(drive.getPoseEstimate().getX(),
+                        drive.getPoseEstimate().getY()), drive.getPoseEstimate().getHeading()));
+                drive.getLocalizer().update();
+                builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
+                if(DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
+                    builder = builder.setReversed(false)//.strafeTo(new Vector2d(-24, -40))
+                            .setReversed(false).lineTo(new Vector2d(drive.getPoseEstimate().getX() - 15, -53));
+                    //.strafeTo(new Vector2d(42, -30));
+                }
+                trajectory = builder.build();
+                drive.followTrajectorySync(trajectory);
+
+                drive.turnSync(-Math.toRadians(drive.getExternalHeading() - Math.PI));
                 break;
             case 3:
+                initStrafeDistance = 27.0;
+                yCoordMvmtPlane = -63.936 + initStrafeDistance;
+                wallSkyStoneX = -70.0;
+                furtherMostSkyStoneX = -42.0;
+                firstRegularStoneX = -24.0;
+                foundationX = 45.0;
+                strafeDistance = 12.0;
+                rightStrafeCorrection = -2.0;
+
                 transferReset();
                 initIntakeClaw();
-                hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
-                hwMap.transferLock.setPosition(TeleopConstants.transferLockPosPlatform);
 
-                builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
-
-                builder = builder.lineTo(new Vector2d(drive.getLocalizer().getPoseEstimate().getX(), drive.getLocalizer().getPoseEstimate().getY() + 5))
-                        .splineTo(new Pose2d(new Vector2d(-42.728, -39.672), Math.toRadians(85)));
-                trajectory = builder.build();
-                drive.followTrajectorySync(trajectory);
-
-                openPlatform();
-
-                drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(-42.728, -39.672), Math.toRadians(85)));
-                drive.getLocalizer().update();
-                builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
-                builder = builder.lineTo(new Vector2d(-37.728, -11.52));
-                trajectory = builder.build();
-                drive.followTrajectorySync(trajectory);
-
-                prepStone(TeleopConstants.stoneEncoderValues[0] - 300);
-
-                drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(-35.728, -11.52), Math.toRadians(85)));
-                drive.getLocalizer().update();
-                builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
-                builder = builder.setReversed(true).lineTo(new Vector2d(-39.728, -42.672))
-                        .setReversed(false).splineTo(new Pose2d(new Vector2d(-5.568, -24.44), Math.toRadians(0)))
-                        .splineTo(new Pose2d(new Vector2d(51.488, -30.296), Math.toRadians(-90)));
-                trajectory = builder.build();
-                drive.followTrajectorySync(trajectory);
-
-                align.setPower(0.13, 0.25);
-                align.foundation(FieldPosition.RED_QUARY);
-                intake(0);
-                transferReset();
-
-                drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(51.144, -25.128), drive.getExternalHeading()));
-                drive.getLocalizer().update();
-                builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
-                builder = builder.splineTo(new Pose2d(new Vector2d(29.064, -55.72), Math.toRadians(220)))
-                        .setReversed(true).lineTo(new Vector2d(68.0, -55.72)).setReversed(false);
-                trajectory = builder.build();
-                drive.followTrajectorySync(trajectory);
-
-                dropStone(TeleopConstants.stoneEncoderValues[0]);
-                hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
-                hwMap.transferLock.setPosition(TeleopConstants.transferLockPosPlatform);
-
-                try {
-                    Thread.sleep(300);
-                } catch (Exception e) {
-                }
-                transferReset();
-                intake(1);
-
-                drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(68.0, -55.72), Math.toRadians(180)));
-                drive.getLocalizer().update();
-                builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
-                builder = builder.setReversed(false).lineTo(new Vector2d(64.0, -55.72)).strafeTo(new Vector2d(64.0, -47.44))
-                        .lineTo(new Vector2d(-18.552, -47.44)).strafeTo(new Vector2d(-18.552, -28.44))
-                        .lineTo(new Vector2d(-26.552, -28.44));
-                trajectory = builder.build();
-                drive.followTrajectorySync(trajectory);
-
-                prepStone();
-
-                drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(-26.552, -28.44), drive.getExternalHeading()));
-                drive.getLocalizer().update();
-                builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
-                builder = builder.setReversed(true).strafeTo(new Vector2d(-26.552, -55.44));
-                        //.lineTo(new Vector2d(77.0, -55.44));
-                trajectory = builder.build();
-                drive.followTrajectorySync(trajectory);
-
-                driveTime(-0.75, 1150);
-                dropStone();
                 try{
                     Thread.sleep(500);
                 } catch (Exception e){}
-                //driveTime(1, 800);
 
-                intake(0);
+                DriveConstantsPID.strafeDistance(hardwareMap, initStrafeDistance, true);
+                updatePoseFromStrafe(initStrafeDistance, true);
+
+                builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);   //-34.752, -63.936
+                if(DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
+
+                    builder = builder//.strafeTo(new Vector2d(drive.getPoseEstimate().getX(), -63.936 + 5.0))
+                            /*.strafeTo(new Vector2d(drive.getPoseEstimate().getX(), -63.936 + 5.0 * 2))
+                            .strafeTo(new Vector2d(drive.getPoseEstimate().getX(), -63.936 + 5.0 * 3))
+                            .strafeTo(new Vector2d(drive.getPoseEstimate().getX(), -63.936 + 5.0 * 4))
+                            .strafeTo(new Vector2d(drive.getPoseEstimate().getX(), -63.936 + 5.0 * 5))*/
+                            .setReversed(true).lineTo(new Vector2d(wallSkyStoneX, yCoordMvmtPlane));
+
+                } else {
+                    builder = builder.strafeTo(new Vector2d(drive.getPoseEstimate().getX(),-30)).setReversed(true)
+                            .lineTo(new Vector2d(-50, -30));
+                }
+                trajectory = builder.build();   //x - 2.812, y + 7.984
+                drive.followTrajectorySync(trajectory);
+                RobotLog.dd("STATUS", "Strafe #1 Done");
+
+                grabStone(FieldPosition.RED_QUARY);
+
+                DriveConstantsPID.strafeDistance(hardwareMap, strafeDistance + rightStrafeCorrection, false);
+                updatePoseFromStrafe(strafeDistance, false);
+
+                drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(drive.getPoseEstimate().getX(),
+                        drive.getPoseEstimate().getY()), drive.getPoseEstimate().getHeading()));
+                drive.getLocalizer().update();
+                builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
+                if(DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
+                    builder = builder.setReversed(false)//.strafeTo(new Vector2d(-42, -45))
+                            .lineTo(new Vector2d(foundationX, yCoordMvmtPlane));//.strafeTo(new Vector2d(46,-35));  //-52, -39
+                } else {
+                    builder = builder.setReversed(false).strafeTo(new Vector2d(-50, -40))
+                            .lineTo(new Vector2d(50, -40)).strafeTo(new Vector2d(50, -30));
+                }
+                trajectory = builder.build();
+                drive.followTrajectorySync(trajectory);
+
+                RobotLog.dd("STATUS", "Strafe #2 Done");
+
+                DriveConstantsPID.strafeDistance(hardwareMap, strafeDistance, true);
+                updatePoseFromStrafe(strafeDistance, true);
+
+                dropStone(FieldPosition.RED_QUARY);
+
+                DriveConstantsPID.strafeDistance(hardwareMap, strafeDistance + rightStrafeCorrection, false);
+                updatePoseFromStrafe(strafeDistance, false);
+
+                drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(drive.getPoseEstimate().getX(),
+                        drive.getPoseEstimate().getY()), drive.getPoseEstimate().getHeading()));
+                drive.getLocalizer().update();
+                builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
+                if(DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
+                    builder = builder//.strafeTo(new Vector2d(46, -40))
+                            .setReversed(true).lineTo(new Vector2d(furtherMostSkyStoneX, yCoordMvmtPlane));
+                    //.strafeTo(new Vector2d(-24, -30));
+                } else {
+                    builder = builder.strafeTo(new Vector2d(50, -40)).setReversed(true).lineTo(new Vector2d(-20, -40))
+                            .strafeTo(new Vector2d(-20, -28));
+                }
+                trajectory = builder.build();
+                drive.followTrajectorySync(trajectory);
+
+                RobotLog.dd("STATUS", "Strafe #3 Done");
+
+                DriveConstantsPID.strafeDistance(hardwareMap, strafeDistance, true);
+                updatePoseFromStrafe(strafeDistance, true);
+
+                grabStone(FieldPosition.RED_QUARY);
+
+                DriveConstantsPID.strafeDistance(hardwareMap, strafeDistance + rightStrafeCorrection, false);
+                updatePoseFromStrafe(strafeDistance, false);
+
+                drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(drive.getPoseEstimate().getX(),
+                        drive.getPoseEstimate().getY()), drive.getPoseEstimate().getHeading()));
+                drive.getLocalizer().update();
+                builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
+                if(DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
+                    builder = builder.setReversed(false)//.strafeTo(new Vector2d(-24, -40))
+                            .lineTo(new Vector2d(foundationX, yCoordMvmtPlane));
+                    //.strafeTo(new Vector2d(42, -30));
+                } else {
+                    builder = builder.setReversed(false).strafeTo(new Vector2d(-20, -40)).lineTo(new Vector2d(50, -40))
+                            .strafeTo(new Vector2d(50, -30));
+                }
+                trajectory = builder.build();
+                drive.followTrajectorySync(trajectory);
+
+                RobotLog.dd("STATUS", "Strafe #4 Done");
+
+                DriveConstantsPID.strafeDistance(hardwareMap, strafeDistance, true);
+                updatePoseFromStrafe(strafeDistance, true);
+
+                dropStone(FieldPosition.RED_QUARY);
+
+                DriveConstantsPID.strafeDistance(hardwareMap, strafeDistance + rightStrafeCorrection, false);
+                updatePoseFromStrafe(strafeDistance, false);
+
+                drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(drive.getPoseEstimate().getX(),
+                        drive.getPoseEstimate().getY()), drive.getPoseEstimate().getHeading()));
+                drive.getLocalizer().update();
+                builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
+                if(DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
+                    builder = builder//.strafeTo(new Vector2d(46, -40))
+                            .setReversed(true).lineTo(new Vector2d(firstRegularStoneX, yCoordMvmtPlane));
+                    //.strafeTo(new Vector2d(-24, -30));
+                }
+                trajectory = builder.build();
+                drive.followTrajectorySync(trajectory);
+
+                RobotLog.dd("STATUS", "Strafe #3 Done");
+
+                DriveConstantsPID.strafeDistance(hardwareMap, strafeDistance, true);
+                updatePoseFromStrafe(strafeDistance, true);
+
+                grabStone(FieldPosition.RED_QUARY);
+
+                DriveConstantsPID.strafeDistance(hardwareMap, strafeDistance + rightStrafeCorrection, false);
+                updatePoseFromStrafe(strafeDistance, false);
+
+                drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(drive.getPoseEstimate().getX(),
+                        drive.getPoseEstimate().getY()), drive.getPoseEstimate().getHeading()));
+                drive.getLocalizer().update();
+                builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
+                if(DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
+                    builder = builder.setReversed(false)//.strafeTo(new Vector2d(-24, -40))
+                            .lineTo(new Vector2d(foundationX, yCoordMvmtPlane));
+                    //.strafeTo(new Vector2d(42, -30));
+                }
+                trajectory = builder.build();
+                drive.followTrajectorySync(trajectory);
+
+                RobotLog.dd("STATUS", "Strafe #4 Done");
+
+                DriveConstantsPID.strafeDistance(hardwareMap, strafeDistance, true);
+                updatePoseFromStrafe(strafeDistance, true);
+
+                dropStone(FieldPosition.RED_QUARY);
+
+                DriveConstantsPID.strafeDistance(hardwareMap, 16 + rightStrafeCorrection, false);
+                updatePoseFromStrafe(16.0, false);
+
+                drive.turnSync(-Math.toRadians((drive.getExternalHeading() + 2 * Math.PI) - 3 * Math.PI / 2));
+
+                drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(drive.getPoseEstimate().getX(),
+                        drive.getPoseEstimate().getY()), drive.getPoseEstimate().getHeading()));
+                drive.getLocalizer().update();
+                builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
+                if(DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
+                    builder = builder.setReversed(false)//.strafeTo(new Vector2d(-24, -40))
+                            .setReversed(true).lineTo(new Vector2d(drive.getPoseEstimate().getX(), -26));
+                    //.strafeTo(new Vector2d(42, -30));
+                }
+                trajectory = builder.build();
+                drive.followTrajectorySync(trajectory);
+
+                hwMap.foundationLock.setPosition(TeleopConstants.foundationLockLock);
+                hwMap.transferLock.setPosition(TeleopConstants.transferLockPosUp);
+
+                drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(drive.getPoseEstimate().getX(),
+                        drive.getPoseEstimate().getY()), drive.getPoseEstimate().getHeading()));
+                drive.getLocalizer().update();
+                builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
+                if(DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
+                    builder = builder.setReversed(false)//.strafeTo(new Vector2d(-24, -40))
+                            .setReversed(false).lineTo(new Vector2d(drive.getPoseEstimate().getX() - 10, -56));
+                    //.strafeTo(new Vector2d(42, -30));
+                }
+                trajectory = builder.build();
+                drive.followTrajectorySync(trajectory);
+
+                drive.turnSync(-Math.toRadians(drive.getExternalHeading() - Math.PI));
                 break;
         }
     }
@@ -345,7 +663,7 @@ public class Path {
         drive.getLocalizer().setPoseEstimate(startingPos);
         drive.getLocalizer().update();
         builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
-        builder = builder.strafeRight(9).setReversed(false).forward(36);
+        builder = builder.strafeRight(6).setReversed(false).forward(28);
         trajectory = builder.build();
         drive.followTrajectorySync(trajectory);
 
@@ -650,7 +968,7 @@ public class Path {
         drive.getLocalizer().setPoseEstimate(startingPos);
         drive.getLocalizer().update();
         builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
-        builder = builder.strafeLeft(9).setReversed(false).forward(36);
+        builder = builder.strafeLeft(6).setReversed(false).forward(28);
         trajectory = builder.build();
         drive.followTrajectorySync(trajectory);
 
@@ -840,31 +1158,13 @@ public class Path {
         if(fieldPosition == FieldPosition.RED_QUARY || fieldPosition == FieldPosition.RED_FOUNDATION_PARK ||
             fieldPosition == FieldPosition.RED_FOUNDATION_DRAG) {
             hwMap.redAutoClawJoint2.setPosition(TeleopConstants.autoClaw2Open);
-            try{
-                Thread.sleep(300);
-            } catch(Exception e){}
             hwMap.redAutoClawJoint1.setPosition(TeleopConstants.autoClaw1Down);
-            try{
-                Thread.sleep(500);
-            } catch(Exception e){}
             hwMap.redAutoClawJoint2.setPosition(TeleopConstants.autoClaw2Close);
-            try{
-                Thread.sleep(300);
-            } catch(Exception e){}
             hwMap.redAutoClawJoint1.setPosition(TeleopConstants.autoClaw1Up);
         } else {
             hwMap.blueAutoClawJoint2.setPosition(TeleopConstants.autoClaw2Open);
-            try{
-                Thread.sleep(300);
-            } catch(Exception e){}
             hwMap.blueAutoClawJoint1.setPosition(TeleopConstants.autoClaw1Down);
-            try{
-                Thread.sleep(500);
-            } catch(Exception e){}
             hwMap.blueAutoClawJoint2.setPosition(TeleopConstants.autoClaw2Close);
-            try{
-                Thread.sleep(300);
-            } catch(Exception e){}
             hwMap.redAutoClawJoint1.setPosition(TeleopConstants.autoClaw1Up);
         }
     }
@@ -874,16 +1174,10 @@ public class Path {
                 fieldPosition == FieldPosition.RED_FOUNDATION_DRAG) {
             hwMap.redAutoClawJoint1.setPosition(TeleopConstants.autoClaw1Down);
             hwMap.redAutoClawJoint2.setPosition(TeleopConstants.autoClaw2Open);
-            try{
-                Thread.sleep(300);
-            } catch(Exception e){}
             hwMap.redAutoClawJoint1.setPosition(TeleopConstants.autoClaw1Up);
         } else {
             hwMap.blueAutoClawJoint1.setPosition(TeleopConstants.autoClaw1Down);
             hwMap.blueAutoClawJoint2.setPosition(TeleopConstants.autoClaw2Open);
-            try{
-                Thread.sleep(300);
-            } catch(Exception e){}
             hwMap.blueAutoClawJoint1.setPosition(TeleopConstants.autoClaw1Up);
         }
     }
@@ -989,6 +1283,58 @@ public class Path {
             Thread.sleep(milisecs);
         } catch (Exception e){}
 
+        hwMap.frontRight.setPower(0);
+        hwMap.frontLeft.setPower(0);
+        hwMap.backRight.setPower(0);
+        hwMap.backLeft.setPower(0);
+    }
+
+    private void updatePoseFromStrafe(double yOdoInitPos, boolean left){
+        double strafeDistance = Math.abs(hwMap.rightIntake.getCurrentPosition() - yOdoInitPos) /
+                DriveConstantsPID.odoEncoderTicksPerRev * StandardTrackingWheelLocalizer.GEAR_RATIO *
+                2 * Math.PI * StandardTrackingWheelLocalizer.WHEEL_RADIUS;
+
+        RobotLog.dd("Current Position (X, Y, Heading)", drive.getPoseEstimate().toString());
+        RobotLog.dd("Strafe Distance", String.valueOf(strafeDistance));
+        RobotLog.dd("Direction", left ? "Left" : "Right");
+        if(!left)
+            strafeDistance = -strafeDistance;
+
+        double heading = drive.getExternalHeading() < 0 ? Math.PI * 2 - drive.getExternalHeading() : drive.getExternalHeading();
+
+        drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(drive.getPoseEstimate().getX(),
+                drive.getPoseEstimate().getY() + strafeDistance), heading));
+        drive.getLocalizer().update();
+        RobotLog.dd("Updated Position (X, Y, Heading)", drive.getPoseEstimate().toString());
+    }
+
+    public void odometryStrafe(double power, double inches, boolean right){
+        double counts = inches / (2 * PI * 1.25) * 1550.0;
+        int sidewaysStart = hwMap.rightIntake.getCurrentPosition();
+
+        if(!right)
+            power = -power;
+
+        hwMap.frontRight.setPower(-power);
+        hwMap.frontLeft.setPower(power);
+        hwMap.backRight.setPower(power * rear_ratio);
+        hwMap.backLeft.setPower(-power * rear_ratio);
+
+        while (opMode.opModeIsActive()) {
+            int sideways = hwMap.rightIntake.getCurrentPosition();
+
+            int sidewaysDiff = Math.abs(sideways - sidewaysStart);
+
+            if (opMode != null) {
+                opMode.telemetry.addData("Side", sidewaysDiff);
+                opMode.telemetry.addData("Target", counts);
+                opMode.telemetry.update();
+            }
+
+            if (sidewaysDiff >= counts) {
+                break;
+            }
+        }
         hwMap.frontRight.setPower(0);
         hwMap.frontLeft.setPower(0);
         hwMap.backRight.setPower(0);

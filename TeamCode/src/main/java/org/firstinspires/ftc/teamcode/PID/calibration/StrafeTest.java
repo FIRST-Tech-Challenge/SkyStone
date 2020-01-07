@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.All.HardwareMap;
 import org.firstinspires.ftc.teamcode.PID.DriveConstantsPID;
 import org.firstinspires.ftc.teamcode.PID.localizer.StandardTrackingWheelLocalizer;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveBase;
@@ -16,6 +17,9 @@ import com.qualcomm.robotcore.util.RobotLog;
 
 import java.util.List;
 
+import static java.lang.Math.PI;
+import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.rear_ratio;
+
 /*
  * This is a simple routine to test translational drive capabilities.
  */
@@ -23,18 +27,29 @@ import java.util.List;
 @Autonomous(name = "StrafeTest", group = "drive")
 public class StrafeTest extends LinearOpMode {
     public static double DISTANCE = DriveConstantsPID.TEST_DISTANCE;
+    private HardwareMap hwMap;
     private String TAG = "StrafeTest";
     @Override
     public void runOpMode() throws InterruptedException {
+        hwMap = new HardwareMap(hardwareMap);
         DriveConstantsPID.updateConstantsFromProperties();
         DISTANCE = DriveConstantsPID.TEST_DISTANCE;
         SampleMecanumDriveBase drive = null;
-        if (DriveConstantsPID.USING_BULK_READ == false)
+        if (DriveConstantsPID.USING_BULK_READ == false) //NEW Bulk Read Code
             drive = new SampleMecanumDriveREV(hardwareMap, false);
         else
             drive = new SampleMecanumDriveREVOptimized(hardwareMap, false);
         drive.setBrakeonZeroPower(DriveConstantsPID.BRAKE_ON_ZERO);
 
+/*
+        DISTANCE = 72;  //Non-Bulk Read Code
+        SampleMecanumDriveBase drive = new SampleMecanumDriveREV(hardwareMap);
+        drive.setBrakeonZeroPower(DriveConstantsPID.BRAKE_ON_ZERO);
+
+        DriveConstantsPID.strafeDistance(hardwareMap, 24, false);
+        //odometryStrafe(0.2, 24, false);
+
+*/
         RobotLog.dd(TAG, "trajectoryBuilder forward, DISTANCE: "+Double.toString(DISTANCE));
         Trajectory trajectory = drive.trajectoryBuilder()
                 .strafeLeft(DISTANCE)
@@ -58,5 +73,35 @@ public class StrafeTest extends LinearOpMode {
         RobotLog.dd(TAG, "wheel positions");
         drive.print_list_double(positions);
 
+    }
+
+    public void odometryStrafe(double power, double inches, boolean right){
+        double counts = inches / (2 * PI * 1.25) * 1550.0;
+        int sidewaysStart = hwMap.rightIntake.getCurrentPosition();
+
+        if(!right)
+            power = -power;
+
+        hwMap.frontRight.setPower(-power);
+        hwMap.frontLeft.setPower(power);
+        hwMap.backRight.setPower(power * rear_ratio);
+        hwMap.backLeft.setPower(-power * rear_ratio);
+
+        while (opModeIsActive() || !isStarted()) {
+            int sideways = hwMap.rightIntake.getCurrentPosition();
+
+            int sidewaysDiff = Math.abs(sideways - sidewaysStart);
+                telemetry.addData("Side", sidewaysDiff);
+                telemetry.addData("Target", counts);
+                telemetry.update();
+
+            if (sidewaysDiff >= counts) {
+                break;
+            }
+        }
+        hwMap.frontRight.setPower(0);
+        hwMap.frontLeft.setPower(0);
+        hwMap.backRight.setPower(0);
+        hwMap.backLeft.setPower(0);
     }
 }

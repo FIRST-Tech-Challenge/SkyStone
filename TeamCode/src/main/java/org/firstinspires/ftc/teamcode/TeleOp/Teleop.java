@@ -370,7 +370,7 @@ public class Teleop extends LinearOpMode {
                         }
                     } else {
                         telemetry.addData("Current Drive Mode", "CLASSIC MODE");
-                        drivetrain.setSpeedMultiplier(normalSpeed);
+                        drivetrain.setSpeedMultiplier(turboSpeed);
                         drivetrain.setMotorZeroPower(DcMotor.ZeroPowerBehavior.BRAKE);
 
                         double turn = (-1) * (gamepad1.left_trigger - gamepad1.right_trigger) * turnSpeed;

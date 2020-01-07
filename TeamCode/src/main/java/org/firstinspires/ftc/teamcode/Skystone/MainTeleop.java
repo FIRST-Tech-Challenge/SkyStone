@@ -38,7 +38,6 @@ public class MainTeleop extends LinearOpMode {
     boolean foundationToggle = false;
     boolean resetfoundation = false;
     boolean hasPushed = false;
-    boolean isRetractingSlides = false;
     boolean hasRetracted = false;
 
     public static double powerScaleFactor = 0.9;
@@ -94,37 +93,11 @@ public class MainTeleop extends LinearOpMode {
         }
     }
 
-    boolean isToggleRetractingSlides = false;
-
     private void spoolLogic() {
-        if (gamepad2.dpad_up) {
-            isRetractingSlides = false;
-            spoolPower = 1;
-        } else if (gamepad2.dpad_down) {
-            isRetractingSlides = false;
-            spoolPower = -1;
-        } else if (!isRetractingSlides) {
-            spoolPower = 0;
-        }
+        spoolPower = gamepad2.left_stick_y;
 
-        if (gamepad2.right_bumper && !isToggleRetractingSlides) {
-            if (isRetractingSlides) {
-                isRetractingSlides = false;
-            } else {
-                isRetractingSlides = true;
-            }
-            isToggleRetractingSlides = true;
-        } else if (!gamepad2.right_bumper && isToggleRetractingSlides) {
-            isToggleRetractingSlides = false;
-        }
-
-        if (isRetractingSlides) {
-            spoolPower = -1;
-        }
-
-        if (isRetractingSlides && (robot.getOuttakeSpool().getCurrentPosition() >= 0)) {
-            spoolPower = 0;
-            isRetractingSlides = false;
+        if (gamepad2.left_trigger != 0) {
+            spoolPower = -.15;
         }
 
         if (!robot.isMovingLift) {
@@ -144,9 +117,8 @@ public class MainTeleop extends LinearOpMode {
 
         robot.getOuttakeSpool().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         robot.getOuttakeSpool2().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        robot.getOuttakeSpool().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.getOuttakeSpool().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.getOuttakeSpool2().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.getOuttakeSpool().setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.getOuttakeSpool2().setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         robot.getIntakeLeft().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         robot.getIntakeRight().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -298,43 +270,54 @@ public class MainTeleop extends LinearOpMode {
 //        }
     }
 
+    private boolean isTogglingBackStopper = false;
+    private boolean isBackStopperDown = true;
+
     private void intakeLogic() {
-        double intakeLeftPower = 0;
-        double intakeRightPower = 0;
-        if (!outtakeExtended) {
-            intakeLeftPower = gamepad2.left_stick_y;
-            intakeRightPower = gamepad2.right_stick_y;
-        } else {
-            intakeLeftPower = 0;
-            intakeRightPower = 0;
-        }
-
-        if ((robot.getOuttakeExtender().getPosition() != robot.OUTTAKE_SLIDE_RETRACTED) || (robot.getOuttakeSpool().getCurrentPosition() <= -50)) {
-            intakeLeftPower = 0;
-            intakeRightPower = 0;
-        }
-
-        telemetry.addLine("intake left power: " + intakeLeftPower);
-        telemetry.addLine("intake right power: " + intakeRightPower);
-
-        robot.getIntakeLeft().setPower(intakeLeftPower);
-        robot.getIntakeRight().setPower(intakeRightPower);
-
-        if ((gamepad2.left_stick_y != 0 || gamepad2.right_stick_y != 0) && gamepad2.right_trigger == 0 && !isExtend && !isClamp && !is90 && !isRetract && !(robot.getOuttakeSpool().getCurrentPosition() <= -50) && !(robot.getOuttakeExtender().getPosition() != robot.OUTTAKE_SLIDE_RETRACTED)) {
-            if (isIntakeMode) {
-                robot.getIntakePusher().setPosition(robot.PUSHER_PUSHED);
-                robot.getClamp().setPosition(robot.CLAMP_SERVO_CLAMPED);
+        if (gamepad2.left_stick_y == 0) {
+            double intakeLeftPower = 0;
+            double intakeRightPower = 0;
+            if (!outtakeExtended) {
+                intakeLeftPower = gamepad2.right_stick_y - gamepad2.right_stick_x;
+                intakeRightPower = gamepad2.right_stick_y + gamepad2.right_stick_x;
             } else {
-                robot.getIntakePusher().setPosition(robot.PUSHER_RETRACTED);
-                robot.getBackStopper().setPosition(robot.BACK_STOPPER_UP);
-                robot.getClamp().setPosition(robot.CLAMP_SERVO_INTAKEPOSITION);
+                intakeLeftPower = 0;
+                intakeRightPower = 0;
+            }
+
+            if (robot.getOuttakeExtender().getPosition() != robot.OUTTAKE_SLIDE_RETRACTED) {
+                intakeLeftPower = 0;
+                intakeRightPower = 0;
+            }
+
+            telemetry.addLine("intake left power: " + intakeLeftPower);
+            telemetry.addLine("intake right power: " + intakeRightPower);
+
+            robot.getIntakeLeft().setPower(intakeLeftPower);
+            robot.getIntakeRight().setPower(intakeRightPower);
+
+            if ((gamepad2.right_stick_y != 0) && gamepad2.right_trigger == 0 && !isExtend && !isClamp && !is90 && !isRetract && !(robot.getOuttakeExtender().getPosition() != robot.OUTTAKE_SLIDE_RETRACTED)) {
+                if (isIntakeMode) {
+                    robot.getIntakePusher().setPosition(robot.PUSHER_PUSHED);
+                    robot.getClamp().setPosition(robot.CLAMP_SERVO_CLAMPED);
+                } else {
+                    robot.getIntakePusher().setPosition(robot.PUSHER_RETRACTED);
+                    robot.getClamp().setPosition(robot.CLAMP_SERVO_INTAKEPOSITION);
+                }
             }
         }
 
-        if (gamepad2.right_trigger != 0) {
-            robot.getBackStopper().setPosition(robot.BACK_STOPPER_DOWN);
-        } else if (gamepad2.left_trigger != 0) {
-            robot.getBackStopper().setPosition(robot.BACK_STOPPER_UP);
+        if (gamepad2.right_trigger != 0 && !isTogglingBackStopper) {
+            if (isBackStopperDown) {
+                robot.getBackStopper().setPosition(robot.BACK_STOPPER_UP);
+                isBackStopperDown = false;
+            } else {
+                robot.getBackStopper().setPosition(robot.BACK_STOPPER_DOWN);
+                isBackStopperDown = true;
+            }
+            isTogglingBackStopper = true;
+        } else if (gamepad2.right_trigger == 0) {
+            isTogglingBackStopper = false;
         }
     }
 

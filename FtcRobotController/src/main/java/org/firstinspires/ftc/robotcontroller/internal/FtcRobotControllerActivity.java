@@ -61,9 +61,6 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.google.blocks.ftcrobotcontroller.BlocksActivity;
-import com.google.blocks.ftcrobotcontroller.ProgrammingModeActivity;
-import com.google.blocks.ftcrobotcontroller.ProgrammingModeControllerImpl;
 import com.google.blocks.ftcrobotcontroller.ProgrammingWebHandlers;
 import com.google.blocks.ftcrobotcontroller.runtime.BlocksOpMode;
 import com.qualcomm.ftccommon.ClassManagerFactory;
@@ -125,6 +122,7 @@ import org.firstinspires.inspection.RcInspectionActivity;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+
 
 @SuppressWarnings("WeakerAccess")
 public class FtcRobotControllerActivity extends Activity

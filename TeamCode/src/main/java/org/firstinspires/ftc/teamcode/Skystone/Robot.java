@@ -72,7 +72,7 @@ public class Robot {
     // Outtake Slide Positions
     public final double OUTTAKE_SLIDE_EXTENDED = .04;
     public final double OUTTAKE_SLIDE_RETRACTED = .67;
-    public final double OUTTAKE_SLIDE_PARTIAL_EXTEND = .185;
+    public final double OUTTAKE_SLIDE_PARTIAL_EXTEND = 0.11;
 
     //team marker positions
     public final double CAPSTONE_DUMP = 1;
@@ -84,16 +84,16 @@ public class Robot {
 
     // Outtake Clamp Positions
     public final double CLAMP_SERVO_CLAMPED = 1;
-    public final double CLAMP_SERVO_RELEASED = .85;
-    public final double CLAMP_SERVO_INTAKEPOSITION = .85;
+    public final double CLAMP_SERVO_RELEASED = .86;
+    public final double CLAMP_SERVO_INTAKEPOSITION = .86;
 
     // Outtake Pivot Positions
-    public final double OUTTAKE_PIVOT_EXTENDED = 1;
-    public final double OUTTAKE_PIVOT_RETRACTED = 0.01;
+    public final double OUTTAKE_PIVOT_EXTENDED = 1.05;
+    public final double OUTTAKE_PIVOT_RETRACTED = 0.005;
     public final double OUTTAKE_PIVOT_90 = .5;
 
     // Outtake Pusher Positions
-    public final double PUSHER_PUSHED = .8;
+    public final double PUSHER_PUSHED = 0.91;
     public final double PUSHER_RETRACTED = .475;
 
     // Foundation Mover Positions
@@ -109,7 +109,7 @@ public class Robot {
 
     public final long DELAY_CLAMP_ON_EXTEND = 0;
     public final long DELAY_SLIDE_ON_EXTEND = 0;
-    public final long DELAY_PIVOT_ON_EXTEND = 900;
+    public final long DELAY_PIVOT_ON_EXTEND = 1100;
     public final long DELAY_PARTIAL_SLIDE_ON_EXTEND = 1200;
 
     public final long DELAY_RELEASE_CLAMP_ON_RETRACT = 0;
@@ -119,8 +119,8 @@ public class Robot {
     public final long DELAY_SLIDE_ON_RETRACT = 1000;
 
     public final long DELAY_PUSHER_ON_CLAMP = 0;
-    public final long DELAY_RETRACT_PUSHER_ON_CLAMP = 350;
-    public final long DELAY_CLAMP_ON_CLAMP = 400;
+    public final long DELAY_RETRACT_PUSHER_ON_CLAMP = 550;
+    public final long DELAY_CLAMP_ON_CLAMP = 300;
 
     //robots position
     private Point robotPos = new Point();

@@ -86,7 +86,7 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
 
         mode = Mode.IDLE;
 
-        if (strafe == false) {
+        if (!strafe) {
             xTRANSLATIONAL_PID = new PIDCoefficients(DriveConstantsPID.txP, DriveConstantsPID.txI, DriveConstantsPID.txD);
             yTRANSLATIONAL_PID = new PIDCoefficients(DriveConstantsPID.tyP, DriveConstantsPID.tyI, DriveConstantsPID.tyD);
             HEADING_PID = new PIDCoefficients(DriveConstantsPID.hP, DriveConstantsPID.hI, DriveConstantsPID.hD);

@@ -34,7 +34,7 @@ public class DriveConstantsPID {
 
     public static final boolean RUN_USING_PARAMTER_FROM_PROPERTIES = false;
 
-    public static boolean RUN_USING_ODOMETRY_WHEEL = false;
+    public static boolean RUN_USING_ODOMETRY_WHEEL = true;
     public static boolean RUN_USING_IMU_LOCALIZER = false;
     public static boolean BRAKE_ON_ZERO = false;
     public static boolean USING_BULK_READ = false;
@@ -121,8 +121,8 @@ public class DriveConstantsPID {
      * forces acceleration-limited profiling).
      */
     public static DriveConstraints BASE_CONSTRAINTS = new DriveConstraints(
-            24.0, 12.0, 0.0,
-            Math.toRadians(180.0), Math.toRadians(180.0), 0.0
+            24.0, 12.0, 0,
+            Math.toRadians(90.0) + 0, Math.toRadians(45.0) + 0, 0.0
     );
 
 

@@ -108,6 +108,7 @@ public class Teleop extends LinearOpMode {
         waitForStart();
 
         driveLoop();
+        liftLoop();
         toggleLoop();
 
         while (opModeIsActive()) {
@@ -124,22 +125,6 @@ public class Teleop extends LinearOpMode {
 
             if (gamepad2.y && !buttonLogic.get(2).getState()[0] && buttonLogic.get(1).getState()[0])
                 buttonLogic.get(2).manualActivate(true, false);
-
-            //------------------------------===Servos & Intake/Outake===------------------------------------------
-
-            //for(OnOffButton onOffButton : buttonLogic)
-            //    onOffButton.getGamepadStateAndRun();
-
-            //detectBlock();
-
-            //------------------------------===Linear Sliders===------------------------------------------
-
-            if (gamepad2.right_stick_y != 0) {
-                lift.moveLift(gamepad2.right_stick_y);
-            } else {
-                lift.stop();
-            }
-            lift.detectResetEncoder();
 
             //------------------------------===Capstone===------------------------------------------
 
@@ -212,6 +197,18 @@ public class Teleop extends LinearOpMode {
             } else if (!gamepad1.back && !gamepad1.start && switchBlocker) {
                 switchBlocker = false;
             }
+
+            telemetry.addData("LeftForwardOdometry", hwMap.leftIntake.getCurrentPosition());
+            telemetry.addData("RightForwardOdometry", hwMap.liftTwo.getCurrentPosition());
+            telemetry.addData("SidewaysOdometry", hwMap.rightIntake.getCurrentPosition());
+
+            telemetry.addData("FrontLeft", hwMap.frontLeft.getCurrentPosition());
+            telemetry.addData("BackLeft", hwMap.backLeft.getCurrentPosition());
+            telemetry.addData("FrontRight", hwMap.frontRight.getCurrentPosition());
+            telemetry.addData("BackRight", hwMap.backRight.getCurrentPosition());
+
+            telemetry.addData("LiftOne", hwMap.liftOne.getCurrentPosition());
+            telemetry.update();
         }
 
 
@@ -395,18 +392,22 @@ public class Teleop extends LinearOpMode {
                             drivetrain.stop();
                         }
                     }
+                }
+            }
+        };
+        drive.start();
+    }
 
-                    telemetry.addData("LeftForwardOdometry", hwMap.leftIntake.getCurrentPosition());
-                    telemetry.addData("RightForwardOdometry", hwMap.liftTwo.getCurrentPosition());
-                    telemetry.addData("SidewaysOdometry", hwMap.rightIntake.getCurrentPosition());
-
-                    telemetry.addData("FrontLeft", hwMap.frontLeft.getCurrentPosition());
-                    telemetry.addData("BackLeft", hwMap.backLeft.getCurrentPosition());
-                    telemetry.addData("FrontRight", hwMap.frontRight.getCurrentPosition());
-                    telemetry.addData("BackRight", hwMap.backRight.getCurrentPosition());
-
-                    telemetry.addData("LiftOne", hwMap.liftOne.getCurrentPosition());
-                    telemetry.update();
+    private void liftLoop() {
+        Thread drive = new Thread() {
+            public void run() {
+                while (opModeIsActive()) {
+                    if (gamepad2.right_stick_y != 0) {
+                        lift.moveLift(gamepad2.right_stick_y);
+                    } else {
+                        lift.stop();
+                    }
+                    lift.detectResetEncoder();
                 }
             }
         };

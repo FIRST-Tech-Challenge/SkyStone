@@ -6,7 +6,7 @@ public class TeleopConstants {
     public static double drivePowerSlow = 0.5;
     public static double turnPower = 0.5;
     public static double intakePower = 1;
-    public static double liftPower = -1;
+    public static double liftPower = 1;
 
     public static double clawServo1Block = 0.80;
     public static double clawServo1PosClose = 0.85;    //@TODO Get clawServo1 & clawServo2 positions
@@ -33,8 +33,8 @@ public class TeleopConstants {
     public static double innerTransferPosTucked = 0.4316;
     public static double innerTransferPosBlock = 0.01632;     //@TODO Get servo position innerTransfer "block" position
 
-    public static double intakeInitPosLeft = 0.55953;     //@TODO Get intakeInit servo positions
-    public static double intakeInitPosRight = 0.08368;
+    public static double intakeInitPosLeft = 0.65953;     //@TODO Get intakeInit servo positions
+    public static double intakeInitPosRight = 0;
     public static double intakeInitPosReset = 0.30124;
 
     public static double autoClaw1Init = 0.33622089656588355;

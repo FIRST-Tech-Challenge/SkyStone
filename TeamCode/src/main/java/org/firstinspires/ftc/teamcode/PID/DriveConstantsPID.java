@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.PID;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 import com.qualcomm.hardware.motors.GoBILDA5202Series;
 import com.qualcomm.hardware.motors.NeveRest20Gearmotor;
@@ -33,7 +34,7 @@ public class DriveConstantsPID {
 
     public static final boolean RUN_USING_PARAMTER_FROM_PROPERTIES = false;
 
-    public static boolean RUN_USING_ODOMETRY_WHEEL = true;
+    public static boolean RUN_USING_ODOMETRY_WHEEL = false;
     public static boolean RUN_USING_IMU_LOCALIZER = false;
     public static boolean BRAKE_ON_ZERO = false;
     public static double odoEncoderTicksPerRev = 1550.0;
@@ -97,7 +98,7 @@ public class DriveConstantsPID {
     public static double kV = 0.0111;   //0.0115
     public static double kA = 0;
     public static double kStatic = 0;
-	public static double TEST_DISTANCE = 48;
+	public static double TEST_DISTANCE = 96;
 
     /*
      * These values are used to generate the trajectories for you robot. To ensure proper operation,
@@ -108,7 +109,7 @@ public class DriveConstantsPID {
      * forces acceleration-limited profiling).
      */
     public static DriveConstraints BASE_CONSTRAINTS = new DriveConstraints(
-            45.0, 20.0, 0.0,
+            24.0, 12.0, 0.0,
             Math.toRadians(180.0), Math.toRadians(180.0), 0.0
     );
 
@@ -345,8 +346,7 @@ public class DriveConstantsPID {
         printConstants();
     }
     // duration in milli-seconds;
-    public static void moveStrafeLeft(HardwareMap hardwareMap, double distance)
-    {
+    public static void strafeDistance(HardwareMap hardwareMap, double distance, boolean left) {
         DcMotorEx leftFront, leftRear, rightRear, rightFront;
         List<DcMotorEx> motors;
         leftFront = hardwareMap.get(DcMotorEx.class, "frontLeft");
@@ -363,10 +363,19 @@ public class DriveConstantsPID {
         for (DcMotorEx motor : motors) {
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
-        leftFront.setPower(-1 * strafeMotorPower);
-        leftRear.setPower(strafeMotorPower*rear_ratio);
-        rightRear.setPower(-1 * strafeMotorPower*rear_ratio);
-        rightFront.setPower(strafeMotorPower);
+
+        if (left) {
+            leftFront.setPower(-1 * strafeMotorPower);
+            leftRear.setPower(strafeMotorPower * rear_ratio);
+            rightRear.setPower(-1 * strafeMotorPower * rear_ratio);
+            rightFront.setPower(strafeMotorPower);
+        } else {
+            leftFront.setPower(strafeMotorPower);
+            leftRear.setPower(-1 * strafeMotorPower * rear_ratio);
+            rightRear.setPower(strafeMotorPower * rear_ratio);
+            rightFront.setPower(-1 * strafeMotorPower);
+        }
+
         try {
             Thread.sleep(duration);
         } catch (Exception e) {

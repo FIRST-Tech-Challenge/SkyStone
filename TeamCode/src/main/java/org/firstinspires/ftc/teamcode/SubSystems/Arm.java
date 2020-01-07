@@ -216,13 +216,12 @@ public class Arm {
             currentLevel--;
             runArmToLevel();
         } else {
-            //turnArmBrakeModeOff(); //TOTEST
             turnArmBrakeModeOn();
             moveArm_groundLevel();
             currentLevel = 0;
-            runArmToLevel(); //TOTEST
-            turnArmBrakeModeOn(); //TOTEST
-            //armMotor.setPower(0.0); //TOTEST
+            runArmToLevel();
+            turnArmBrakeModeOn();
+            //armMotor.setPower(0.0);
 
         }
 

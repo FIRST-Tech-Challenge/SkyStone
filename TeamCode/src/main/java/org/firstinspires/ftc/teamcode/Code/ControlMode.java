@@ -1,16 +1,21 @@
-//Jun Park
+// Jun Park
+// Last Update: 11/18/2019
+
 package org.firstinspires.ftc.teamcode.Code;
 
+// Import
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.util.Range;
 
 //This class will include all of the action functions such as Movement
 @TeleOp(name = "Control Mode", group = "Jun")
 public class ControlMode extends OpMode {
-    DcMotor motorFL, motorFR, motorBL, motorBR, motorAL, motorAR; //, motorArm1, motorArm2, motorArm3;
+    //, Set the motor variable name that the program will use.
+    DcMotor motorFL, motorFR; // Front Left / Right motor
+    DcMotor motorBL, motorBR; // Back Left / Right motor
+    DcMotor motorArmVertical, motorArmHorizontal, motorArmGrab; // Arm movement motor
 
     public ControlMode() {
         super();
@@ -19,17 +24,14 @@ public class ControlMode extends OpMode {
     @Override
     public void init() { // This code will executes when player pressed the button "init" on the phone.
         // Use the same motor name when you sets on configuration.
-        motorFL = hardwareMap.dcMotor.get("FL");
-        motorFR = hardwareMap.dcMotor.get("FR");
-        motorBL = hardwareMap.dcMotor.get("BL");
-        motorBR = hardwareMap.dcMotor.get("BR");
+        motorFL = hardwareMap.dcMotor.get("FL"); // Front Left
+        motorFR = hardwareMap.dcMotor.get("FR"); // Front Right
+        motorBL = hardwareMap.dcMotor.get("BL"); // Back Left
+        motorBR = hardwareMap.dcMotor.get("BR"); // Back Right
 
-        motorAL = hardwareMap.dcMotor.get("AL");
-        motorAR = hardwareMap.dcMotor.get("AR");
-
-//        motorArm1 = hardwareMap.dcMotor.get("A1");
-//        motorArm2 = hardwareMap.dcMotor.get("A2");
-//        motorArm3 = hardwareMap.dcMotor.get("A3");
+        motorArmVertical = hardwareMap.dcMotor.get("AV"); // Arm Vertical Movement
+        motorArmHorizontal = hardwareMap.dcMotor.get("AH"); // Arm Horizontal Movement
+        motorArmGrab = hardwareMap.dcMotor.get("AG"); // Arm Grab
 
         // This code is used set the directions of the motors.
         motorFL.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -37,12 +39,9 @@ public class ControlMode extends OpMode {
         motorBL.setDirection(DcMotorSimple.Direction.FORWARD);
         motorBR.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        motorAL.setDirection(DcMotorSimple.Direction.REVERSE);
-        motorAR.setDirection(DcMotorSimple.Direction.FORWARD);
-
-//        motorArm1.setDirection(DcMotorSimple.Direction.FORWARD);
-//        motorArm2.setDirection(DcMotorSimple.Direction.FORWARD);
-//        motorArm3.setDirection(DcMotorSimple.Direction.FORWARD);
+        motorArmVertical.setDirection(DcMotorSimple.Direction.FORWARD);
+        motorArmHorizontal.setDirection(DcMotorSimple.Direction.FORWARD);
+        motorArmGrab.setDirection(DcMotorSimple.Direction.FORWARD);
     }
 
     @Override
@@ -54,95 +53,61 @@ public class ControlMode extends OpMode {
     boolean grab = false;
     public void controlMovement() {
         //left joystick of the first controller will control the movement of the robot.
-        if (gamepad1.left_stick_y != 0 || gamepad1.left_stick_x != 0) {
-            if (Math.abs(gamepad1.left_stick_x) > Math.abs(gamepad1.left_stick_y))
-                rotate((double) gamepad1.left_stick_x * 0.5);
-            else if (Math.abs(gamepad1.left_stick_x) < Math.abs(gamepad1.left_stick_y))
-                moveForward((double) gamepad1.left_stick_y);
+        if (gamepad1.left_stick_y != 0 || gamepad1.left_stick_x != 0) { // If left stick is moving
+
+            // Determine which Vertical value or Horizontal value has a bigger value
+            if (Math.abs(gamepad1.left_stick_x) > Math.abs(gamepad1.left_stick_y)) // If Vertical value is greater than Horizontal value
+                rotate((double) gamepad1.left_stick_x * 0.5); // Rotate the robot to that direction.
+            else if (Math.abs(gamepad1.left_stick_x) < Math.abs(gamepad1.left_stick_y)) // If Horizontal value is greater than Vertical value
+                moveForward((double) gamepad1.left_stick_y); // Move forward or backward.
         } else {
             moveForward(0.0);
         }
 
-        if (gamepad1.dpad_down) {
-            motorAL.setPower(0.5);
-            motorAR.setPower(0.5);
-        } else {
-            motorAL.setPower(0);
-            motorAR.setPower(0);
-        }
+        // Arm Vertical movement.
+        if (gamepad1.dpad_up)  // Move up when dpad up pressed.
+            motorArmVertical.setPower(0.5);
+        else if (gamepad1.dpad_down) // Move down when dpad up pressed.
+            motorArmVertical.setPower(-0.5);
+        else // Stop when dpad is not pressed anymore.
+            motorArmVertical.setPower(0);
 
-        /*else if (gamepad1.right_stick_y != 0 || gamepad1.right_stick_x != 0 ) {
-            double power = Math.abs(gamepad1.right_stick_x);
-            if (Math.abs(gamepad1.right_stick_x) > Math.abs(gamepad1.right_stick_y)) {
-                if (gamepad1.right_stick_x < 0) { // Wheels rotate outside to move the vehicle left vertically
-                    motorFL.setPower(power);
-                    motorFR.setPower(power);
-                    motorBL.setPower(-power);
-                    motorBR.setPower(-power);
-                } else { // Wheels rotate inside to move the vehicle right vertically
-                    motorFL.setPower(-power);
-                    motorFR.setPower(-power);
-                    motorBL.setPower(power);
-                    motorBR.setPower(power);
-                }
-            }
-        } else if (Math.abs(gamepad1.left_stick_x) < Math.abs(gamepad1.left_stick_y)) {
-            moveForward((double) -gamepad1.left_stick_y);
-        } else {
-            double leftPower = -gamepad1.right_stick_y;
-            double rightPower = -gamepad1.right_stick_y;
+        // Arm Horizontal movement.
+        if (gamepad1.dpad_up)  // Move left when dpad left pressed.
+            motorArmHorizontal.setPower(0.5);
+        else if (gamepad1.dpad_down) // Move right when dpad right pressed.
+            motorArmHorizontal.setPower(-0.5);
+        else // Stop when dpad is not pressed anymore.
+            motorArmHorizontal.setPower(0);
 
-            leftPower += (gamepad1.right_stick_x);
-            rightPower -= (gamepad1.right_stick_x);
-
-            motorFL.setPower(leftPower);
-            motorFR.setPower(rightPower);
-            motorBL.setPower(leftPower);
-            motorBR.setPower(rightPower);
-        } */
-
-//        if (gamepad1.left_stick_y == 0 && gamepad1.left_stick_x == 0)
-//            moveForward((0));
-
-//        if (gamepad1.dpad_up)
-//            motorArm1.setPower(0.5);
-//        else if (gamepad1.dpad_down)
-//            motorArm1.setPower(-0.5);
-//        else
-//            motorArm1.setPower(0);
-//
-//        if (gamepad1.dpad_left)
-//            motorArm3.setPower(0.5);
-//        else if (gamepad1.dpad_right)
-//            motorArm3.setPower(-0.5);
-//        else
-//            motorArm3.setPower(0);
-//
-//        if (gamepad1.b)
-//            motorArm2.setPower(0.25);
-//        else if (gamepad1.a)
-//            motorArm2.setPower(-0.25);
-//        else
-//            motorArm2.setPower(0.0);
+        // Arm Grab movement.
+        if (gamepad1.a)  // Grab the block when 'a' button pressed.
+            motorArmGrab.setPower(0.5);
+        else if (gamepad1.b) // Release the block when'b' button pressed.
+            motorArmGrab.setPower(-0.5);
+        else // Stop when button is not pressed anymore.
+            motorArmGrab.setPower(0);
     }
 
     //helper method to report data to controller phone.
     public void reportData() {
-        //report gamepad1 left joystick data
-        telemetry.addData("gamepad1 leftX", gamepad1.left_stick_x);
-        telemetry.addData("gamepad1 leftY", gamepad1.left_stick_y);
-        telemetry.addData("gamepad1 dpad a", gamepad1.a);
-        telemetry.addData("gamepad1 dpad b", gamepad1.b);
+        //report Gamepad data
+        telemetry.addData("Gamepad leftX", gamepad1.left_stick_x);
+        telemetry.addData("Gamepad leftY", gamepad1.left_stick_y);
+        telemetry.addData("Gamepad dpad up/down", motorArmVertical.getPower());
+        telemetry.addData("Gamepad dpad left/right", motorArmHorizontal.getPower());
+        telemetry.addData("Gamepad a (Grab)", gamepad1.a);
+        telemetry.addData("Gamepad b (Release)", gamepad1.b);
 
         //report motors' power
         telemetry.addData("motorFL", motorFL.getPower());
         telemetry.addData("motorFR", motorFR.getPower());
         telemetry.addData("motorBL", motorBL.getPower());
         telemetry.addData("motorBR", motorBR.getPower());
+        telemetry.addData("motorArmVertical", motorArmVertical.getPower());
+        telemetry.addData("motorArmHorizontal", motorArmHorizontal.getPower());
+        telemetry.addData("motorArmGrab", motorArmGrab.getPower());
 
-//        telemetry.addData("A1", motorArm1.getPower());
-//        telemetry.addData("A2", motorArm2.getPower());
-//        telemetry.addData("A3", motorArm3.getPower());
         //update the data screen.
         telemetry.update();
     }

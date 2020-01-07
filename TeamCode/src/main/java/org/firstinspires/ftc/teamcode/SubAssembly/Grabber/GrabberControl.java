@@ -85,7 +85,6 @@ public class GrabberControl {
 
     public void open() {
         GrabberServo.setSetpoint(GrabberSetpt.Open);
-
     }
 
     public void close() {
@@ -112,5 +111,7 @@ public class GrabberControl {
         ExtenderServo.setSetpoint(ExtenderSetpt.Home);
     }
 
-    public void Pos1 () { ExtenderServo.setSetpoint(ExtenderSetpt.Pos1);}
+    public void Pos1() {
+        ExtenderServo.setSetpoint(ExtenderSetpt.Pos1);
+    }
 }

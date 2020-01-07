@@ -70,9 +70,9 @@ public class Robot {
     private Servo backStopper;
 
     // Outtake Slide Positions
-    public final double OUTTAKE_SLIDE_EXTENDED = .83;
-    public final double OUTTAKE_SLIDE_RETRACTED = .07;
-    public final double OUTTAKE_SLIDE_PARTIAL_EXTEND = .66;
+    public final double OUTTAKE_SLIDE_EXTENDED = .04;
+    public final double OUTTAKE_SLIDE_RETRACTED = .67;
+    public final double OUTTAKE_SLIDE_PARTIAL_EXTEND = .185;
 
     //team marker positions
     public final double CAPSTONE_DUMP = 1;
@@ -84,8 +84,8 @@ public class Robot {
 
     // Outtake Clamp Positions
     public final double CLAMP_SERVO_CLAMPED = 1;
-    public final double CLAMP_SERVO_RELEASED = .87;
-    public final double CLAMP_SERVO_INTAKEPOSITION = 0.87;
+    public final double CLAMP_SERVO_RELEASED = .85;
+    public final double CLAMP_SERVO_INTAKEPOSITION = .85;
 
     // Outtake Pivot Positions
     public final double OUTTAKE_PIVOT_EXTENDED = 1;
@@ -93,7 +93,7 @@ public class Robot {
     public final double OUTTAKE_PIVOT_90 = .5;
 
     // Outtake Pusher Positions
-    public final double PUSHER_PUSHED = .75;
+    public final double PUSHER_PUSHED = .8;
     public final double PUSHER_RETRACTED = .475;
 
     // Foundation Mover Positions
@@ -109,15 +109,14 @@ public class Robot {
 
     public final long DELAY_CLAMP_ON_EXTEND = 0;
     public final long DELAY_SLIDE_ON_EXTEND = 0;
-    public final long DELAY_PIVOT_ON_EXTEND = 650;
-    public final long DELAY_PARTIAL_SLIDE_ON_EXTEND = 950;
+    public final long DELAY_PIVOT_ON_EXTEND = 900;
+    public final long DELAY_PARTIAL_SLIDE_ON_EXTEND = 1200;
 
     public final long DELAY_RELEASE_CLAMP_ON_RETRACT = 0;
     public final long DELAY_PUSHER_ON_RETRACT = 0;
     public final long DELAY_EXTEND_SLIDE_ON_RETRACT = 0;
-    public final long DELAY_PIVOT_ON_RETRACT = 100;
-    public final long DELAY_CLAMP_ON_RETRACT = 400;
-    public final long DELAY_SLIDE_ON_RETRACT = 850;
+    public final long DELAY_PIVOT_ON_RETRACT = 450;
+    public final long DELAY_SLIDE_ON_RETRACT = 1000;
 
     public final long DELAY_PUSHER_ON_CLAMP = 0;
     public final long DELAY_RETRACT_PUSHER_ON_CLAMP = 350;
@@ -198,12 +197,12 @@ public class Robot {
 
         outtakeSpool = getDcMotor("outtakeSpool");
         if (outtakeSpool != null) {
-            outtakeSpool.setDirection(DcMotor.Direction.FORWARD);
+            outtakeSpool.setDirection(DcMotor.Direction.REVERSE);
         }
 
         outtakeSpool2 = getDcMotor("outtakeSpool2");
         if (outtakeSpool2 != null) {
-            outtakeSpool2.setDirection(DcMotor.Direction.FORWARD);
+            outtakeSpool2.setDirection(DcMotor.Direction.REVERSE);
         }
 
         outtakeExtender = getServo("outtakeExtender");

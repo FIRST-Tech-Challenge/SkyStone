@@ -183,8 +183,8 @@ public class RedFront extends AutoBase {
 
         robot.dumpPoints("" + startTime, "5");
 
-        robot.splineMove(toThirdStone, 1, 1, 0.8, 15, 0, Math.toRadians(270), 20,
-                toThirdStoneActions, true, 3750);
+        robot.splineMove(toThirdStone, 0.5, 1, 1, 70, 0, Math.toRadians(270), 20,
+                toThirdStoneActions, true, 4750);
 
         robot.dumpPoints("" + startTime, "6");
         if (SystemClock.elapsedRealtime() - startTime < 26000) {

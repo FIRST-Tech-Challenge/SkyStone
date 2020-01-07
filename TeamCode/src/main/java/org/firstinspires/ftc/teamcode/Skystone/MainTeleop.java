@@ -94,10 +94,10 @@ public class MainTeleop extends LinearOpMode {
     }
 
     private void spoolLogic() {
-        spoolPower = gamepad2.left_stick_y;
+        spoolPower = -gamepad2.left_stick_y;
 
         if (gamepad2.left_trigger != 0) {
-            spoolPower = -.15;
+            spoolPower = .15;
         }
 
         if (!robot.isMovingLift) {
@@ -216,7 +216,7 @@ public class MainTeleop extends LinearOpMode {
                 foundationLogic();
             }
 
-            while (robot.getOuttakeSpool().getCurrentPosition() <= 0) {
+            while (SystemClock.elapsedRealtime() - startTime < 1800) {
                 driveLogic();
                 slowDriveLogic();
                 intakeLogic();
@@ -271,27 +271,17 @@ public class MainTeleop extends LinearOpMode {
     }
 
     private boolean isTogglingBackStopper = false;
-    private boolean isBackStopperDown = true;
+    private boolean isBackStopperDown = false;
 
     private void intakeLogic() {
-        if (gamepad2.left_stick_y == 0) {
+        if (Math.abs(gamepad2.left_stick_y) <= 0.5) {
             double intakeLeftPower = 0;
             double intakeRightPower = 0;
-            if (!outtakeExtended) {
-                intakeLeftPower = gamepad2.right_stick_y - gamepad2.right_stick_x;
-                intakeRightPower = gamepad2.right_stick_y + gamepad2.right_stick_x;
-            } else {
-                intakeLeftPower = 0;
-                intakeRightPower = 0;
-            }
 
-            if (robot.getOuttakeExtender().getPosition() != robot.OUTTAKE_SLIDE_RETRACTED) {
-                intakeLeftPower = 0;
-                intakeRightPower = 0;
-            }
+            intakeLeftPower = gamepad2.right_stick_y;
+            intakeRightPower = gamepad2.right_stick_y;
 
-            telemetry.addLine("intake left power: " + intakeLeftPower);
-            telemetry.addLine("intake right power: " + intakeRightPower);
+            telemetry.addLine("gamepad2.rightsticky is: " + gamepad2.right_stick_y);
 
             robot.getIntakeLeft().setPower(intakeLeftPower);
             robot.getIntakeRight().setPower(intakeRightPower);
@@ -330,6 +320,7 @@ public class MainTeleop extends LinearOpMode {
     private boolean isTogglingG2B = false;
     private boolean isTogglingG2X = false;
     private boolean isTogglingG2Y = false;
+
     private void outtakeLogic() {
         currentTime = SystemClock.elapsedRealtime();
         // Logic to control outtake; with a delay on the pivot so that the slides can extend before pivot rotation
@@ -344,7 +335,7 @@ public class MainTeleop extends LinearOpMode {
             outtakeActions.add(new MotionAction(robot.getOuttakeExtender(), robot.OUTTAKE_SLIDE_EXTENDED, currentTime + robot.DELAY_SLIDE_ON_EXTEND));
             outtakeActions.add(new MotionAction(robot.getClampPivot(), robot.OUTTAKE_PIVOT_EXTENDED, currentTime + robot.DELAY_PIVOT_ON_EXTEND));
             outtakeActions.add(new MotionAction(robot.getOuttakeExtender(), robot.OUTTAKE_SLIDE_PARTIAL_EXTEND, currentTime + robot.DELAY_PARTIAL_SLIDE_ON_EXTEND));
-        } else if (!gamepad2.a){
+        } else if (!gamepad2.a) {
             isTogglingG2A = false;
         }
         if (gamepad2.b && !isTogglingG2B) { // Deposit and Reset
@@ -402,7 +393,6 @@ public class MainTeleop extends LinearOpMode {
                             currentMotion.executeMotion();
 
                             outtakeActions.add(new MotionAction(robot.getClampPivot(), robot.OUTTAKE_PIVOT_RETRACTED, currentTime + robot.DELAY_PIVOT_ON_RETRACT));
-                            outtakeActions.add(new MotionAction(robot.getClamp(), robot.CLAMP_SERVO_CLAMPED, currentTime + robot.DELAY_CLAMP_ON_RETRACT));
                             outtakeActions.add(new MotionAction(robot.getOuttakeExtender(), robot.OUTTAKE_SLIDE_RETRACTED, currentTime + robot.DELAY_SLIDE_ON_RETRACT));
 
                             outtakeActions.remove();

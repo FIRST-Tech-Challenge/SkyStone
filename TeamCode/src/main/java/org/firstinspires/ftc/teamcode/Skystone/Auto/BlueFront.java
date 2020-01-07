@@ -26,7 +26,7 @@ public class BlueFront extends AutoBase {
         double secondSkyStoneY = 7;
         double secondSkyStoneX = 50;
         double thirdStoneY = 25;
-        double thirdStoneX = 56;
+        double thirdStoneX = 50;
         double anglelock = 37;
         double angleLockAngle = Math.toRadians(65);
 
@@ -50,7 +50,7 @@ public class BlueFront extends AutoBase {
             secondSkyStoneY = -2.5;
             secondSkyStoneX = 49;
             anglelock = 34;
-            thirdStoneX = 56;
+            thirdStoneX = 50;
             thirdStoneY = 17;
         } else if (skystoneLocation == Vision.Location.RIGHT) {
             firstSkystoneY = 4;
@@ -98,9 +98,9 @@ public class BlueFront extends AutoBase {
 
         double[][] toSecondStone = {
                 {toFoundation[toFoundation.length - 1][0], toFoundation[toFoundation.length - 1][1], -10, 0},
-                {26, -61, -10, 0},
-                {26, -29, 0, 10},
-                {26, secondSkyStoneY - 10, 0, -10},
+                {24, -61, -10, 0},
+                {24, -29, 0, 10},
+                {24, secondSkyStoneY - 10, 0, -10},
                 {secondSkyStoneX, secondSkyStoneY, 30, 0},
                 {secondSkyStoneX-5, secondSkyStoneY+12, 30, 0}};
         ArrayList<Action> toSecondStoneActions = new ArrayList<>();
@@ -111,8 +111,8 @@ public class BlueFront extends AutoBase {
                 {toSecondStone[toSecondStone.length - 1][0], toSecondStone[toSecondStone.length - 1][1], -10, 0},
                 {secondSkyStoneX - 8, secondSkyStoneY - 8, -10, 0},
                 {secondSkyStoneX - 12, secondSkyStoneY - 10, -10, 0},
-                {36, -2, 0, -20},
-                {35, -29, 0, -20},
+                {34, -2, 0, -20},
+                {33, -29, 0, -20},
                 {30, -63, 0, -10},
                 {30, -64, 0, -10},
                 {24, -66, 0, -10}};
@@ -123,11 +123,11 @@ public class BlueFront extends AutoBase {
 
         final double[][] toThirdStone = {
                 toDepositSecondStone[toDepositSecondStone.length - 1],
-                {28, -58, 0, 10},
-                {33, -52, 5, -10},
-                {33, -49, 0, 10},
-                {33, -30, 0, 10},
-                {34, -10, 0, -10},
+                {36, -58, 0, 10},
+                {31, -52, 5, -10},
+                {31, -49, 0, 10},
+                {31, -30, 0, 10},
+                {32, -10, 0, -10},
                 {43, -6, 0, 10},
                 {thirdStoneX, thirdStoneY, 10, 0}};
         ArrayList<Action> toThirdStoneActions = new ArrayList<>();
@@ -137,10 +137,10 @@ public class BlueFront extends AutoBase {
 
         double[][] toDepositThirdStone = {
                 toThirdStone[toThirdStone.length - 1],
-                {38, 15, 0, 10},
-                {37, -29, 0, -20},
-                {37, -61, 0, -10},
-                {38, -73, 0, -10}};
+                {36, 15, 0, 10},
+                {35, -29, 0, -20},
+                {35, -61, 0, -10},
+                {36, -73, 0, -10}};
         ArrayList<Action> toParkAfterThirdStoneActions = new ArrayList<>();
         toParkAfterThirdStoneActions.add(new Action(ActionType.EXTEND_OUTTAKE, new Point(23,-8), robot));
         toParkAfterThirdStoneActions.add(new Action(ActionType.STOP_INTAKE, new Point(toThirdStone[toThirdStone.length - 1][0] - 5, toThirdStone[toThirdStone.length - 1][1] - 20), robot));
@@ -148,10 +148,10 @@ public class BlueFront extends AutoBase {
         
         double[][] toDepositThirdStoneOtherwise = {
                 toThirdStone[toThirdStone.length - 1],
-                {38, 15, 0, 10},
-                {37, -29, 0, -20},
-                {37, -61, 0, -10},
-                {38, -73, 0, -10}};
+                {36, 15, 0, 10},
+                {35, -29, 0, -20},
+                {35, -61, 0, -10},
+                {36, -73, 0, -10}};
         ArrayList<Action> toParkAfterThirdStoneActionsOtherwise = new ArrayList<>();
         toParkAfterThirdStoneActionsOtherwise.add(new Action(ActionType.EXTEND_OUTTAKE, new Point(23,-5), robot));
         toParkAfterThirdStoneActionsOtherwise.add(new Action(ActionType.STOP_INTAKE, new Point(toThirdStone[toThirdStone.length - 1][0] - 5, toThirdStone[toThirdStone.length - 1][1] - 20), robot));
@@ -159,8 +159,8 @@ public class BlueFront extends AutoBase {
 
         double[][] toPark = {
                 {toDepositThirdStone[toDepositThirdStone.length - 1][0], toDepositThirdStone[toDepositThirdStone.length - 1][1], 0, 10},
-                {37, -55, 0, 10},
-                {38.5, -36, 0, 10}};
+                {36, -55, 0, 10},
+                {37, -36, 0, 10}};
 
         ArrayList<Action> toParkActions = new ArrayList<>();
         toParkActions.add(new Action(ActionType.DROPSTONE_AND_RETRACT_OUTTAKE, new Point(37,-70), robot));
@@ -204,7 +204,7 @@ public class BlueFront extends AutoBase {
         robot.getClamp().setPosition(robot.CLAMP_SERVO_RELEASED);
         robot.brakeRobot();
 
-        robot.splineMove(toThirdStone, 0.5, 1, 0.8, 70, 0, Math.toRadians(90), 20,
+        robot.splineMove(toThirdStone, 0.5, 1, 1, 70, 0, Math.toRadians(90), 20,
                 toThirdStoneActions, true, 4500);
         //to thrid stone is 5
         robot.dumpPoints("" + startTime, "5");

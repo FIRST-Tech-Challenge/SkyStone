@@ -70,7 +70,7 @@ public class RealRobotMecanumWheels extends LinearOpMode {
         leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        //double move = gamepad1.left_stick_y;
+        double move = gamepad1.left_stick_y;
         boolean d_left = gamepad1.dpad_left;
         double tank = gamepad1.right_stick_x;
         double slide = gamepad1.left_stick_x;
@@ -81,16 +81,16 @@ public class RealRobotMecanumWheels extends LinearOpMode {
         while (opModeIsActive()) {
 
             //if ( move >= -1 && move < 0 ) {
-            if (d_left)
-                leftFront.setDirection(DcMotor.Direction.REVERSE);
-                leftBack.setDirection(DcMotor.Direction.REVERSE);
-                rightFront.setDirection(DcMotor.Direction.FORWARD);
-                rightBack.setDirection(DcMotor.Direction.FORWARD);
-                leftFront.setPower(1);
-                rightFront.setPower(1);
-                leftBack.setPower(1);
-                rightBack.setPower(1);
-            } else if ( move >0 && move <= 1) {
+            if (d_left) {
+            leftFront.setDirection(DcMotor.Direction.REVERSE);
+            leftBack.setDirection(DcMotor.Direction.REVERSE);
+            rightFront.setDirection(DcMotor.Direction.FORWARD);
+            rightBack.setDirection(DcMotor.Direction.FORWARD);
+            leftFront.setPower(1);
+            rightFront.setPower(1);
+            leftBack.setPower(1);
+            rightBack.setPower(1);
+        }   else if ( move >0 && move <= 1) {
                 leftFront.setDirection(DcMotor.Direction.FORWARD);
                 leftBack.setDirection(DcMotor.Direction.FORWARD);
                 rightFront.setDirection(DcMotor.Direction.REVERSE);

@@ -92,7 +92,7 @@ public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
         else
             RobotLog.dd(TAG, "not using imu");
 
-        if ((DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) && (strafe != true)) {
+        if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
             RobotLog.dd(TAG, "to setLocalizer to StandardTrackingWheelLocalizer");
             setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
         }

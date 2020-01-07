@@ -39,8 +39,18 @@ public class GeneralTools {
         robot.servo_grab.setPosition(0.6);
     }
 
-    public void grabSkysstone () {
+    public void closeClamp() {
         robot.servo_grab.setPosition(1);
+    }
+
+    public void grabFoundation() {
+        robot.servo_claw_left.setPosition(0.3);
+        robot.servo_claw_right.setPosition(0.7);
+    }
+
+    public void releaseFoundation() {
+        robot.servo_claw_left.setPosition(0.5);
+        robot.servo_claw_right.setPosition(0.5);
     }
 }
 

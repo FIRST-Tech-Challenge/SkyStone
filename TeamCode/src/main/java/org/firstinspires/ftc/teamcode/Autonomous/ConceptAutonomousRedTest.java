@@ -7,6 +7,8 @@ import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassis;
 import org.firstinspires.ftc.teamcode.Library.ColorTools;
 import org.firstinspires.ftc.teamcode.Library.GeneralTools;
 import org.firstinspires.ftc.teamcode.Library.Movement.ControlledDrive;
+import org.firstinspires.ftc.teamcode.Library.Movement.ControlledExtender;
+import org.firstinspires.ftc.teamcode.Library.Movement.ControlledLift;
 import org.firstinspires.ftc.teamcode.Library.OmniWheel;
 
 @Autonomous (name = "C_Autonomous_RedTest")
@@ -18,6 +20,8 @@ public class ConceptAutonomousRedTest extends LinearOpMode {
     ControlledDrive controlledDrive;
     GeneralTools generalTools;
     OmniWheel omniWheel;
+    ControlledLift controlledLift;
+    ControlledExtender controlledExtender;
 
     @Override
     public void runOpMode() {
@@ -26,8 +30,11 @@ public class ConceptAutonomousRedTest extends LinearOpMode {
         controlledDrive = new ControlledDrive(robot, telemetry);
         generalTools = new GeneralTools(this, robot);
         omniWheel = new OmniWheel(robot);
+        controlledLift = new ControlledLift(robot, telemetry);
+        controlledExtender = new ControlledExtender(robot, telemetry);
 
-        robot.servo_grab.setPosition(0.6);
+        generalTools.openClamp();
+        generalTools.releaseFoundation();
 
         waitForStart();
 
@@ -37,7 +44,7 @@ public class ConceptAutonomousRedTest extends LinearOpMode {
             controlledDrive.stop();
 
             generalTools.stopForMilliSeconds(500);
-            robot.servo_grab.setPosition(1);
+            generalTools.closeClamp();
         }
 
         // hey... you should have grabbed a stone now...
@@ -77,11 +84,88 @@ public class ConceptAutonomousRedTest extends LinearOpMode {
             }
             omniWheel.setMotors(0, 0, 0);
         }
+
+            // you are now in the corner
+            // you are now as much as possible close to the wall
+        if (opModeIsActive()) {
+            controlledLift.start(15, 0.2);
+        }
+
+            // you have now lifted the lift up
+
+        if (opModeIsActive()) {
+            controlledExtender.start(15, 0.2);
+        }
+
+            // you have now your arm out
+
+
+        if (opModeIsActive()) {
+            while (!colorTools.isRed(robot.color_front)) {
+                omniWheel.setMotors(0.2, 0, 0);
+            }
+        }
+
+            // you are now standing right in front of the foundation
+
+        if (opModeIsActive()) {
+            generalTools.openClamp();
+        }
+
+            // you have now released the stone on the foundation
+
+        if (opModeIsActive()) {
+            generalTools.grabFoundation();
+        }
+
+            //you have now grabbed the foundation
+
+        if (opModeIsActive()) {
+            backTillButtons();
+        }
+
+            // you have now dragged the foundation into the corner (in best case)
+
+        if (opModeIsActive()){
+            generalTools.releaseFoundation();
+        }
+
+            // you have nor released the corner
+
+        if (opModeIsActive()) {
+            controlledExtender.start(-15, 0.2);
+        }
+
+            // you have now put the arm back in
+
+        if (opModeIsActive()) {
+            controlledLift.start(-15, 0.2);
+        }
+
+            // you have now lifted the lift down
+
+        if (opModeIsActive()) {
+            while (!colorTools.isRed(robot.color_back)){
+                omniWheel.setMotors(0, -0.2, 0);
+            }
+            omniWheel.setMotors(0, 0, 0);
+        }
+
+            //you are now parked under the bridge
     }
 
+
+
+
+
+
     private void backTillButtons() {
-        omniWheel.setMotors(-0.2, 0, 0);
-        while(robot.touch_right.getState() && robot.touch_left.getState()) {}
+        while(robot.touch_right.getState() && robot.touch_left.getState()) {
+            omniWheel.setMotors(-0.2, 0, 0);
+        }
         omniWheel.setMotors(0, 0, 0);
     }
 }
+
+
+

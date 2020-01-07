@@ -35,7 +35,7 @@ public class ConceptAutonomousBlueTest extends LinearOpMode {
         driveForward.stop();
 
         // TODO: Arm runter
-        generalTools.grabSkysstone();
+        generalTools.closeClamp();
         /*
 
         controlledDriveOld.driveConditionally(-0.5,0, () -> robot.touch_left.getState() == true && robot.touch_right.getState() == true);

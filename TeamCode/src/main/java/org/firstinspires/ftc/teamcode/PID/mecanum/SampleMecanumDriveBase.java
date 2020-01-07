@@ -66,15 +66,19 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
     private List<Double> lastWheelPositions;
     private double lastTimestamp;
     private static String TAG = "BaseClass";
+    private boolean strafe = false;
 
     public SampleMecanumDriveBase() {
         super(DriveConstantsPID.kV, DriveConstantsPID.kA, DriveConstantsPID.kStatic, TRACK_WIDTH);
-        RobotLog.dd(TAG, "kV "+Double.toString(DriveConstantsPID.kV)+" kA "+Double.toString(DriveConstantsPID.kA)+" kStatic "+Double.toString(DriveConstantsPID.kStatic));
-        RobotLog.dd(TAG, "TRACK_WIDTH "+Double.toString(DriveConstantsPID.TRACK_WIDTH));
-        RobotLog.dd(TAG, "txP "+Double.toString(DriveConstantsPID.txP)+" txI "+Double.toString(DriveConstantsPID.txI)+" txD "+Double.toString(DriveConstantsPID.txD));
-        RobotLog.dd(TAG, "tyP "+Double.toString(DriveConstantsPID.tyP)+" tyI "+Double.toString(DriveConstantsPID.tyI)+" tyD "+Double.toString(DriveConstantsPID.tyD));
-        RobotLog.dd(TAG, "hP "+Double.toString(DriveConstantsPID.hP)+" hI "+Double.toString(DriveConstantsPID.hI)+" hD "+Double.toString(DriveConstantsPID.hD));
-
+        createControllers();
+    }
+    public SampleMecanumDriveBase(boolean s){
+        super(DriveConstantsPID.kV, DriveConstantsPID.kA, DriveConstantsPID.kStatic, TRACK_WIDTH);
+        strafe = s;
+        createControllers();
+    }
+    public void createControllers()
+    {
         dashboard = FtcDashboard.getInstance();
         dashboard.setTelemetryTransmissionInterval(25);
 
@@ -82,10 +86,18 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
 
         mode = Mode.IDLE;
 
-        xTRANSLATIONAL_PID = new PIDCoefficients(DriveConstantsPID.txP, DriveConstantsPID.txI, DriveConstantsPID.txD);
-        yTRANSLATIONAL_PID = new PIDCoefficients(DriveConstantsPID.tyP, DriveConstantsPID.tyI, DriveConstantsPID.tyD);
-        HEADING_PID = new PIDCoefficients(DriveConstantsPID.hP, DriveConstantsPID.hI, DriveConstantsPID.hD);
+        if (strafe == false) {
+            xTRANSLATIONAL_PID = new PIDCoefficients(DriveConstantsPID.txP, DriveConstantsPID.txI, DriveConstantsPID.txD);
+            yTRANSLATIONAL_PID = new PIDCoefficients(DriveConstantsPID.tyP, DriveConstantsPID.tyI, DriveConstantsPID.tyD);
+            HEADING_PID = new PIDCoefficients(DriveConstantsPID.hP, DriveConstantsPID.hI, DriveConstantsPID.hD);
+        }
+        else
+        {
+            xTRANSLATIONAL_PID = new PIDCoefficients(DriveConstantsPID.stxP, DriveConstantsPID.stxI, DriveConstantsPID.stxD);
+            yTRANSLATIONAL_PID = new PIDCoefficients(DriveConstantsPID.styP, DriveConstantsPID.styI, DriveConstantsPID.styD);
+            HEADING_PID = new PIDCoefficients(DriveConstantsPID.shP, DriveConstantsPID.shI, DriveConstantsPID.shD);
 
+        }
         turnController = new PIDFController(HEADING_PID);
         turnController.setInputBounds(0, 2 * Math.PI);
 
@@ -282,21 +294,43 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
     public abstract void setPIDCoefficients(DcMotor.RunMode runMode, PIDCoefficients coefficients);
     public void print_list_double(List<Double> list){
         //motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
-        for (int i = 0; i < list.size(); i ++)
-        {
-            String wheel_name="";
-            if (i==0)
-                wheel_name = "leftFront";
-            else if (i==1)
-                wheel_name = "leftRear";
-            else if (i==2)
-                wheel_name = "rightRear";
-            else if (i==3)
-                wheel_name = "rightFront";
-            else
-                wheel_name = "unexpected wheel name";
+        int wheel_num = list.size();
+        if (wheel_num == 4) {
+            for (int i = 0; i < list.size(); i++) {
+                String wheel_name = "";
+                if (i == 0)
+                    wheel_name = "leftFront";
+                else if (i == 1)
+                    wheel_name = "leftRear";
+                else if (i == 2)
+                    wheel_name = "rightRear";
+                else if (i == 3)
+                    wheel_name = "rightFront";
+                else
+                    wheel_name = "unexpected wheel name";
 
-            RobotLog.dd(TAG, wheel_name+"  " +Double.toString(list.get(i)));
+                RobotLog.dd(TAG, wheel_name + "  " + Double.toString(list.get(i)));
+            }
+        } else if (wheel_num == 3)
+        {
+            for (int i = 0; i < list.size(); i++) {
+                String wheel_name = "";
+                if (i == 0)
+                    wheel_name = "leftOdom";
+                else if (i == 1)
+                    wheel_name = "rightOdom";
+                else if (i == 2)
+                    wheel_name = "frontOdom";
+
+                RobotLog.dd(TAG, wheel_name + "  " + Double.toString(list.get(i)));
+            }
+        }
+        else
+        {
+            for (int i = 0; i < list.size(); i++) {
+                String wheel_name = "";
+                RobotLog.dd(TAG, wheel_name + "  " + Double.toString(list.get(i)));
+            }
         }
     }
 

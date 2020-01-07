@@ -59,7 +59,7 @@ public class TestOdometry extends LinearOpMode {
 
         DriveConstantsPID.updateConstantsFromProperties();
 
-        drive = new SampleMecanumDriveREV(hardwareMap);
+        drive = new SampleMecanumDriveREV(hardwareMap, false);
 
         waitForStart();
 

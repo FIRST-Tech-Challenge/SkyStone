@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.All.DriveConstant;
 import org.firstinspires.ftc.teamcode.PID.DriveConstantsPID;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveBase;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveREV;
+import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveREVOptimized;
 
 /*
  * This is a simple routine to test turning capabilities.
@@ -27,7 +28,12 @@ public class TurnTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         DriveConstantsPID.updateConstantsFromProperties();
-        SampleMecanumDriveBase drive = new SampleMecanumDriveREV(hardwareMap);
+        SampleMecanumDriveBase drive = null;
+
+        if (DriveConstantsPID.USING_BULK_READ == false)
+            drive = new SampleMecanumDriveREV(hardwareMap, false);
+        else
+            drive = new SampleMecanumDriveREVOptimized(hardwareMap, false);
 
         int selected = 0;
         boolean blocker1 = false;
@@ -76,7 +82,7 @@ public class TurnTest extends LinearOpMode {
 
             if (gamepad1.left_bumper) {
                 DriveConstantsPID.TRACK_WIDTH = TRACK_WIDTH;
-                drive = new SampleMecanumDriveREV(hardwareMap);
+                drive = new SampleMecanumDriveREV(hardwareMap, false);
             }
 
             telemetry.addData("Instructions", "L stick to change distance. R stick to " +

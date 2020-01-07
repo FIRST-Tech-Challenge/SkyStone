@@ -15,6 +15,7 @@ import org.firstinspires.ftc.teamcode.All.HardwareMap;
 import org.firstinspires.ftc.teamcode.PID.DriveConstantsPID;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveBase;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveREV;
+import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveREVOptimized;
 
 /*
  * This is a simple routine to test translational drive capabilities.
@@ -30,7 +31,11 @@ public class StraightTest extends LinearOpMode {
     @Override
     public void runOpMode() {
         DriveConstantsPID.updateConstantsFromProperties();
-        SampleMecanumDriveBase drive = new SampleMecanumDriveREV(hardwareMap);
+        SampleMecanumDriveBase drive = null;
+        if (DriveConstantsPID.USING_BULK_READ == false)
+            drive = new SampleMecanumDriveREV(hardwareMap, false);
+        else
+            drive = new SampleMecanumDriveREVOptimized(hardwareMap, false);
 
         HardwareMap hwMap = new HardwareMap(hardwareMap);
 
@@ -94,7 +99,7 @@ public class StraightTest extends LinearOpMode {
                 trajectory = drive.trajectoryBuilder()
                         .back(DISTANCE)
                         .build();
-                drive = new SampleMecanumDriveREV(hardwareMap);
+                drive = new SampleMecanumDriveREV(hardwareMap, false);
             }
 
             telemetry.addData("Instructions", "L stick to change distance. R stick to " +

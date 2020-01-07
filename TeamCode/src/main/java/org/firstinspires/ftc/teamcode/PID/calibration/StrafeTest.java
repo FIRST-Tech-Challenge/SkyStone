@@ -11,6 +11,8 @@ import org.firstinspires.ftc.teamcode.PID.DriveConstantsPID;
 import org.firstinspires.ftc.teamcode.PID.localizer.StandardTrackingWheelLocalizer;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveBase;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveREV;
+import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveREVOptimized;
+
 import com.qualcomm.robotcore.util.RobotLog;
 
 import java.util.List;
@@ -31,13 +33,23 @@ public class StrafeTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         hwMap = new HardwareMap(hardwareMap);
         DriveConstantsPID.updateConstantsFromProperties();
-        DISTANCE = 72;
+        DISTANCE = DriveConstantsPID.TEST_DISTANCE;
+        SampleMecanumDriveBase drive = null;
+        if (DriveConstantsPID.USING_BULK_READ == false) //NEW Bulk Read Code
+            drive = new SampleMecanumDriveREV(hardwareMap, false);
+        else
+            drive = new SampleMecanumDriveREVOptimized(hardwareMap, false);
+        drive.setBrakeonZeroPower(DriveConstantsPID.BRAKE_ON_ZERO);
+
+/*
+        DISTANCE = 72;  //Non-Bulk Read Code
         SampleMecanumDriveBase drive = new SampleMecanumDriveREV(hardwareMap);
         drive.setBrakeonZeroPower(DriveConstantsPID.BRAKE_ON_ZERO);
 
         DriveConstantsPID.strafeDistance(hardwareMap, 24, false);
         //odometryStrafe(0.2, 24, false);
 
+*/
         RobotLog.dd(TAG, "trajectoryBuilder forward, DISTANCE: "+Double.toString(DISTANCE));
         Trajectory trajectory = drive.trajectoryBuilder()
                 .strafeLeft(DISTANCE)

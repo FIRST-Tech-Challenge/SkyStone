@@ -113,7 +113,7 @@ public class MainAutonomous extends LinearOpMode {
             if (initialize) {
                 telemetry.addData("STATUS", "Calibrating IMU...");
                 telemetry.update();
-                drive = new SampleMecanumDriveREV(hardwareMap);
+                drive = new SampleMecanumDriveREV(hardwareMap, false);
                 telemetry.addData("STATUS", "Done!");
                 telemetry.update();
                 path = new Path(hwMap, this, drive, startingPos, hardwareMap);

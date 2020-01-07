@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.Intake;
  * Uses parkingPlaceNearSkyBridge variable false for near wall, true for near NeutralSkybridge
  */
 
-@Autonomous(name = "RED-MoveFdn-ParkBridge", group = "New-MoveFdn")
+@Autonomous(name = "RED-MoveFdn-ParkBridge", group = "MoveFdn")
 public class RED_MoveFdn_ParkBridge extends LinearOpMode {
 
     Intake autoIntake;

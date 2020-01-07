@@ -1,38 +1,37 @@
-package org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park;
+package org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC4_Skystone_MoveFdn_Park;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.OpModes.AutoUC3_Park;
+import org.firstinspires.ftc.teamcode.OpModes.AutoUC4_Skystone_MoveFdn_Park;
 import org.firstinspires.ftc.teamcode.SubSystems.Arm;
 import org.firstinspires.ftc.teamcode.SubSystems.Chassis;
 import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 
 /**
- * Autonomous Mode Usecase 3
- * Description : Start on wall in Building Zone / Loading Zone ,
- *              Park near wall or near neutral Skybridge
+ * Autonomous Mode Usecase 4
  *
- * Uses playingAlliance variable to select as 1 for Blue, -1 for Red Alliance
- * Uses parkingPlaceNearSkyBridge variable false for near wall, true for near NeutralSkybridge
- * Uses startInBuildingZone variable as true for building zone, false for loading zone
+ * Description : Start on wall in Loading Zone, identify and move 1 skystone to Building zone
+ *                  on foundation, pull foundation to Building zone and
+ *                  park near wall or near neutral Skybridge
  *
+ *  Uses playingAlliance variable to select as 1 for Blue, -1 for Red Alliance
+ *  Uses parkingPlaceNearSkyBridge variable false for near wall, true for near NeutralSkybridge
  */
 
-@Autonomous(name = "RED-ParkWall_fromBuildingZone", group = "Park")
-public class RED_ParkWall_fromBuildingZone extends LinearOpMode {
+@Autonomous(name = "RED-SkyStone-MoveFdn_ParkBridge-Vuforia", group = "Skystone-MoveFdn")
+public class RED_SkyStone_MoveFdn_ParkBridge_Vuforia extends LinearOpMode {
 
     Intake autoIntake;
     Arm autoArm;
     Chassis autoChassis;
 
     int playingAlliance = -1; //1 for Blue, -1 for Red
-    boolean startInBuildingZone = true; // true for building zone, false for loading zone
-    boolean parkingPlaceNearSkyBridge = false;//false for near wall, true for near NeutralSkybridge
-
-    AutoUC3_Park AutoMode;
+    boolean parkingPlaceNearSkyBridge = true;//false for near wall, true for near NeutralSkybridge
 
     boolean parked = false; // Will be true once robot is parked
+
+    AutoUC4_Skystone_MoveFdn_Park AutoMode;
 
     /**
      * Template runOpMode code. Only change Usecase function and call here.
@@ -44,11 +43,14 @@ public class RED_ParkWall_fromBuildingZone extends LinearOpMode {
      */
     @Override
     public void runOpMode() throws InterruptedException {
+        AutoMode = new AutoUC4_Skystone_MoveFdn_Park();
+        telemetry.setAutoClear(false);
 
-        AutoMode = new AutoUC3_Park();
         autoIntake = new Intake(hardwareMap);
         autoArm = new Arm(hardwareMap);
         autoChassis = new Chassis(hardwareMap);
+
+        AutoMode.vuforiaInit(hardwareMap);
 
         waitForStart();
 
@@ -58,11 +60,10 @@ public class RED_ParkWall_fromBuildingZone extends LinearOpMode {
         autoIntake.initIntake();
 
         while (opModeIsActive()&& !isStopRequested() && !parked) {
-            parked = AutoMode.AutoUC3_Park_Method(
+            parked = AutoMode.AutoUC4_Skystone_MoveFdn_Park_Method(
                     this,
                     playingAlliance,
                     parkingPlaceNearSkyBridge,
-                    startInBuildingZone,
                     autoChassis,
                     autoArm,
                     autoIntake);

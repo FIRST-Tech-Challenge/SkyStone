@@ -139,11 +139,9 @@ public class AutoUC2_MoveFdn_Park {
         //Move right by distance or till Chassis light sensor does not detect Blue line to be under blue skybridge
         if (playingAlliance == 1) {
             //Blue Alliance
-            //runTill_ChassisRightColorSensorIsBlue(30, 1, 0.25);
             autoUCChassis.runTill_ChassisRightColorSensorIsBlue(-30, 0, 0.25, callingOpMode);
         } else {
             //Red Alliance
-            //runTill_ChassisLeftColorSensorIsRed(30, -1, 0.25);
             autoUCChassis.runTill_ChassisRightColorSensorIsRed(-30, 0, 0.25, callingOpMode);
         }
 

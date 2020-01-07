@@ -49,7 +49,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  *  Uses parkingPlaceNearSkyBridge variable false for near wall, true for near NeutralSkybridge
  */
 
-public class AutoUC1_Skystone_Park{
+public class AutoUC4_Skystone_MoveFdn_Park {
 
     int skystonePosition;
 
@@ -101,7 +101,7 @@ public class AutoUC1_Skystone_Park{
     //*************Vuforia******************
 
 
-    public boolean AutoUC1_Skystone_Park_Method(
+    public boolean AutoUC4_Skystone_MoveFdn_Park_Method(
             LinearOpMode callingOpMode,
             int playingAlliance,
             boolean parkingPlaceNearSkyBridge,
@@ -188,28 +188,79 @@ public class AutoUC1_Skystone_Park{
         autoUCChassis.turnby90degree(playingAlliance*(-1),0.05, callingOpMode); // was 0.1
         callingOpMode.sleep(500);
 
+
+       //Move forward till Chassis bumber limit switch is pressed.
+        double expectedMaxDistanceToFoundation = 70 + (5 - skystonePosition) * stoneTostone; // was 40 --> 70
+        autoUCChassis.runFwdBackLeftRight(expectedMaxDistanceToFoundation, 0, 0.25, callingOpMode) ;
+
         //Lift Arm
         autoUCArm.moveArm_aboveFoundationLevel();
 
-       //Move forward till Chassis bumber limit switch is pressed.
-        double expectedMaxDistanceToFoundation = 70; // was 40 --> 70
-        autoUCChassis.runFwdTill_frontleftChassisTouchSensor_Pressed(expectedMaxDistanceToFoundation, 0.25, callingOpMode);
+        // Turn 90 degrees right
+        autoUCChassis.turnby90degree(playingAlliance,0.05, callingOpMode); // was 0.1
+
+        //Move forward till Chassis bumber limit switch is pressed
+        autoUCChassis.runFwdTill_frontleftChassisTouchSensor_Pressed(10, 0.25, callingOpMode);
 
         // Drop block
         autoUCIntake.openGrip();
         callingOpMode.sleep(500);
 
-        // Move in between B4 and B3 (Parking)
-        // Park near wall
-        // Move back by distance or till Chassis light sensor does not detect Blue line to be under blue skybridge
-        if (playingAlliance == 1) {
-            autoUCChassis.runTill_ChassisRightColorSensorIsBlue(-55, 0, 0.25, callingOpMode);
-        } else {
-            autoUCChassis.runTill_ChassisLeftColorSensorIsRed(-55, 0, 0.25, callingOpMode);
+        // Drop Arm
+        autoUCArm.moveArm_onFoundationLevel();
+
+        // Hook Foundation
+        autoUCChassis.moveHook_holdFoundation();
+
+        // Strafe Left
+        autoUCChassis.runFwdBackLeftRight(4,-playingAlliance,0.1, callingOpMode);
+
+        // Move Back
+        autoUCChassis.runFwdBackLeftRight(-32,0,0.1,callingOpMode);
+
+        //Lift Arm to Above foundation level and release hook
+        autoUCArm.moveArm_aboveFoundationLevel();
+        autoUCChassis.moveHook_Released();
+        callingOpMode.sleep(500);
+
+        //Push forward to move foundation to end of line
+        double foundationtoEdgeofBuildingSite = 1;
+        autoUCChassis.runFwdBackLeftRight(foundationtoEdgeofBuildingSite,0,0.1, callingOpMode);
+        callingOpMode.sleep(100);
+
+        //Move back till wall is hit
+        autoUCChassis.runFwdBackLeftRight(-4,0,0.25, callingOpMode);
+        callingOpMode.sleep(500);
+
+        //Move out of foundation area
+        autoUCChassis.runFwdBackLeftRight(30, playingAlliance, 0.25, callingOpMode);
+
+        //Move Arm to ground Level
+        autoUCArm.turnArmBrakeModeOn();
+        callingOpMode.sleep(500);
+
+
+        //Optional : Move to park near skybridge Neutral
+        if (parkingPlaceNearSkyBridge){
+            autoUCChassis.runFwdBackLeftRight(25,0,0.25, callingOpMode);
         }
 
+        //Turn by 90 degrees to point arm forward
+        autoUCChassis.turnby90degree(-playingAlliance,0.25, callingOpMode);
 
+        //Park near wall
+        //Move right by distance or till Chassis light sensor does not detect Blue line to be under blue skybridge
+        if (playingAlliance == 1) {
+            //Blue Alliance
+            autoUCChassis.runTill_ChassisRightColorSensorIsBlue(-30, 0, 0.25, callingOpMode);
+        } else {
+            //Red Alliance
+            autoUCChassis.runTill_ChassisRightColorSensorIsRed(-30, 0, 0.25, callingOpMode);
+        }
+
+        //Reached Parking position
         return parkedStatus = true;
+
         //End of Usecase : Should be parked at this time.
     }
 

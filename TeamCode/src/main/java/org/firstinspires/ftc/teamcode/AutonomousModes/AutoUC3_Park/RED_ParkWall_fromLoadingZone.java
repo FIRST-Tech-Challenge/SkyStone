@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.Intake;
  *
  */
 
-@Autonomous(name = "RED-ParkWall_fromLoadingZone", group = "New-Park")
+@Autonomous(name = "RED-ParkWall_fromLoadingZone", group = "Park")
 public class RED_ParkWall_fromLoadingZone extends LinearOpMode {
 
     Intake autoIntake;

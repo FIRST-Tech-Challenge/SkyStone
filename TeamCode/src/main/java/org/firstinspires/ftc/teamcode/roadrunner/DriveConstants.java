@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.roadrunner;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
-import com.qualcomm.hardware.motors.Matrix12vMotor;
+import com.qualcomm.hardware.motors.GoBILDA5202Series;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 /*
@@ -27,8 +27,8 @@ public class DriveConstants {
      * @DeviceProperties and @MotorType annotations.
      */
     private static final MotorConfigurationType MOTOR_CONFIG =
-            MotorConfigurationType.getMotorType(Matrix12vMotor.class);
-            // goBILDA 5202 5.2:1 Planetary
+            MotorConfigurationType.getMotorType(GoBILDA5202Series.class); // goBILDA 5202 Planetary
+    //TODO change configuration to reflect goBILDA motors
 
     /*
      * Set the first flag appropriately. If using the built-in motor velocity PID, update

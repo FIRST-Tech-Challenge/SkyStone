@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import org.firstinspires.ftc.teamcode.opmodesupport.AutoOpMode;
 
 import org.firstinspires.ftc.teamcode.RC;
 import org.firstinspires.ftc.teamcode.newhardware.FXTCRServo;
@@ -19,6 +20,7 @@ import org.firstinspires.ftc.teamcode.newhardware.FXTServo;
 import org.firstinspires.ftc.teamcode.newhardware.Motor;
 import org.firstinspires.ftc.teamcode.roboticslibrary.TaskHandler;
 import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 
 public class Joules  {
@@ -55,7 +57,6 @@ public class Joules  {
         BackRight = new Motor("backR");
         BackLeft = new Motor("backL");
 
-
         Foundation = new FXTServo("Foundation mover");
 
         Daffy = new FXTServo("Box grabber");
@@ -71,6 +72,7 @@ public class Joules  {
         BackRight.setMinimumSpeed(0.1);
         BackLeft.setMinimumSpeed(0.1);
     }
+
 
     //Robot driving
     public void DriveForward(double speed){
@@ -124,6 +126,10 @@ public class Joules  {
         BackRight.setPower(0);
     }
 
+    public long getSeconds(double Voltage, int Seconds){
+        return (long)((Seconds-((50*Voltage)-600)));
+    }
+
     //Capstone
     public void CapDown(){
         Capstone.setPosition(0.05);
@@ -138,7 +144,7 @@ public class Joules  {
         Foundation.setPosition(0.2);
     }
     public void FoundationGrab(){
-        Foundation.setPosition(0.35);
+        Foundation.setPosition(0.44);
     }
 
     public void StoneDown(){
@@ -146,7 +152,7 @@ public class Joules  {
 
     }
     public void StoneUp(){
-        StoneMover.setPosition(0.55);
+        StoneMover.setPosition(0.7);
 
     }
    // public void StoneStop(){
@@ -245,6 +251,7 @@ public class Joules  {
         BackLeft.setPower(speed);
         BackRight.setPower(speed);
     }
+
 
 
 }

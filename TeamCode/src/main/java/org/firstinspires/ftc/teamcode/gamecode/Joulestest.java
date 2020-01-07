@@ -14,29 +14,30 @@ public class Joulestest extends AutoOpMode {
     public void runOp() throws InterruptedException {
         Joules joules = new Joules();
         ColorSensor colorSensor;
-        ColorSensor colorSensorDown;
-        DistanceSensor StoneDist;
+       // ColorSensor colorSensorDown;
+        //DistanceSensor StoneDist;
         int STRAFESTATE = 0;
         int STONESTATE = 0;
         int i = 1;
 
         telemetry.addData("Status", "initialized");
         colorSensor = hardwareMap.colorSensor.get("colour");
-        colorSensorDown = hardwareMap.colorSensor.get("ColourDown");
-        StoneDist = hardwareMap.get(DistanceSensor.class, "Distance");
+        //colorSensorDown = hardwareMap.colorSensor.get("ColourDown");
+        //StoneDist = hardwareMap.get(DistanceSensor.class, "Distance");
         waitForStart();
 
-        joules.DriveForwardEnc(0.5, 2000);
-        sleep(100000);
+//        joules.DriveForwardEnc(0.5, 2000);
+//        sleep(100000);
 
 
 
 
-//      while (opModeIsActive()) {
+      while (opModeIsActive()) {
 
 
 
-//            RC.t.addData("red", colorSensor.red());
+            telemetry.addData("red", colorSensor.red());
+            telemetry.addData("blue", colorSensor.blue());}
 //            RC.t.addData("stone dist", StoneDist.getDistance(DistanceUnit.MM));
 //          RC.t.addData("Stone dist", StoneDist.getDistance(DistanceUnit.MM)); //distance sensor
             //RC.t.addData("bLUE", colorSensor.blue()); // colour sensor for stones blue value

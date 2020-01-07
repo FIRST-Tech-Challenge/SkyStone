@@ -20,27 +20,26 @@ public class JoulesTeleOp extends TeleOpMode {
 
 
     public void loopOpMode() {
-        if (gamepad1.left_bumper){
-            joules.DriveBackward(gamepad1.left_stick_y*2);
-            joules.StrafeRight(gamepad1.left_stick_x*2);
-            joules.TurnLeft(gamepad1.right_stick_x*2);
+
+        if (gamepad1.left_bumper) {
+            float vertical = -gamepad1.right_stick_y/2;
+            float horizontal = gamepad1.right_stick_x/2;
+            float pivot = gamepad1.left_stick_x/2;
+            joules.FrontRight.setPower(-pivot + (vertical - horizontal));
+            joules.BackRight.setPower(-pivot + vertical + horizontal);
+            joules.FrontLeft.setPower(pivot + vertical + horizontal);
+            joules.BackLeft.setPower(pivot + (vertical - horizontal));
+
         }
-        else {
+        else{
             float vertical = -gamepad1.right_stick_y;
             float horizontal = gamepad1.right_stick_x;
             float pivot = gamepad1.left_stick_x;
-
-           // Joules.FrontRight.setPower(-pivot + (vertical - horizontal));
-          //  Joules.BackRight.setPower(-pivot + vertical + horizontal);
-        //    Joules.FrontLeft.setPower(pivot + vertical + horizontal);
-        //    Joules.BackLeft.setPower(pivot + (vertical - horizontal));
+            joules.FrontRight.setPower(-pivot + (vertical - horizontal));
+            joules.BackRight.setPower(-pivot + vertical + horizontal);
+            joules.FrontLeft.setPower(pivot + vertical + horizontal);
+            joules.BackLeft.setPower(pivot + (vertical - horizontal));
         }
-
-
-        /*joules.DriveBackward(gamepad1.left_stick_y*2);
-        joules.StrafeRight(gamepad1.left_stick_x*2);
-        joules.TurnLeft(gamepad1.right_stick_x*2);*/
-
 
         if (joy2.buttonX()){
             joules.StoneUp();

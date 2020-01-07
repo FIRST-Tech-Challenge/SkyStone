@@ -37,7 +37,7 @@ abstract class Movement extends LinearOpMode
         rightback = hardwareMap.get(DcMotor.class, "rightback");
         leftback = hardwareMap.get(DcMotor.class, "leftback");
 
-        // Most robots need the motor on one side to be reve`rsed to drive goForward
+        // Most robots need the motor on one side to be reve`rsed to drive goBackward
         // Reverse the motor that runs backwards when connected directly to the battery
         leftfront.setDirection(DcMotor.Direction.FORWARD);
         rightfront.setDirection(DcMotor.Direction.REVERSE);
@@ -68,7 +68,12 @@ abstract class Movement extends LinearOpMode
         sleep(duration);
     }
 
-    public void goForward(final double power, final int duration) {
+    public void stopWithSleep(final long duration) {
+        stop("Stopping");
+        sleep(duration);
+    }
+
+    public void goBackward(final double power, final int duration) {
         leftfront.setPower(power);
         rightfront.setPower(power);
         rightback.setPower(power);
@@ -79,9 +84,8 @@ abstract class Movement extends LinearOpMode
     }
 
     // Backward is same as forward with reverse power
-    public void goBackward(final double power, final int duration) {
-        goForward(-power, duration);
-        updateTelemetryMessage("Going Backward");
+    public void goForward(final double power, final int duration) {
+        goBackward(-power, duration);
     }
 
     public void goLeft(final double power, final int duration) {
@@ -116,19 +120,19 @@ abstract class Movement extends LinearOpMode
 
     protected void turnRight(final double leftwheelsforwardpower, final double rightwheelsbackwardpower,  final int duration) {
         leftfront.setPower(leftwheelsforwardpower);
-        rightfront.setPower(rightwheelsbackwardpower);
-        rightback.setPower(leftwheelsforwardpower);
-        leftback.setPower(rightwheelsbackwardpower);
+        rightfront.setPower(-rightwheelsbackwardpower);
+        rightback.setPower(-rightwheelsbackwardpower);
+        leftback.setPower(leftwheelsforwardpower);
         sleep(duration);
 
         updateTelemetryMessage("Turning Right");
     }
 
-    protected void turnLeft(final double leftwheelsbackwardpower, final double rightwheelsforwardpower,  final int duration) {
-        leftfront.setPower(leftwheelsbackwardpower);
+   protected void Turnleft(final double leftwheelsbackwardpower, final double rightwheelsforwardpower,  final int duration) {
+        leftfront.setPower(-leftwheelsbackwardpower);
         rightfront.setPower(rightwheelsforwardpower);
-        rightback.setPower(leftwheelsbackwardpower);
-        leftback.setPower(rightwheelsforwardpower);
+        rightback.setPower(rightwheelsforwardpower);
+        leftback.setPower(-leftwheelsbackwardpower);
         sleep(duration);
 
         updateTelemetryMessage("Turning Left");
@@ -145,17 +149,17 @@ abstract class Movement extends LinearOpMode
         armUp(-armpower, duration);
     }
 
-    public void armClamp() {
+
+    public void armclamp() {
+        frontServo.setPosition(0.0);
+        sleep(200);
+    }
+
+    public void armrelease() {
         frontServo.setPosition(0.4);
+        sleep(200);
+   }
 
-        updateTelemetryMessage("Clamp Arm Servo");
-    }
-
-    public void armRelease() {
-        frontServo.setPosition(0.95);
-
-        updateTelemetryMessage("Release Arm Servo");
-    }
 
 
     public void backServosDown() {

@@ -45,6 +45,7 @@ public class BLUE_ParkWall_fromLoadingZone extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
+        AutoMode = new AutoUC3_Park();
         autoIntake = new Intake(hardwareMap);
         autoArm = new Arm(hardwareMap);
         autoChassis = new Chassis(hardwareMap);

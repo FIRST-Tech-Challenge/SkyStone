@@ -42,6 +42,7 @@ public class RED_SkyStone_ParkBridge_Vuforia extends LinearOpMode {
      */
     @Override
     public void runOpMode() throws InterruptedException {
+        AutoMode = new AutoUC1_Skystone_Park();
         telemetry.setAutoClear(false);
 
         autoIntake = new Intake(hardwareMap);

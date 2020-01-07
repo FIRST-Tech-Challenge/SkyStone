@@ -41,6 +41,8 @@ public class AutoUC2_MoveFdn_Park {
 
     boolean parkedStatus = false;
 
+
+
     /**
      * Template runOpMode code. Only change Usecase function and call here.
      * Refer to Autonomous Command Syntax to put right values
@@ -87,7 +89,7 @@ public class AutoUC2_MoveFdn_Park {
         callingOpMode.sleep(500);
 
         //Move Robot Left toward A4 (for XX rotations). Friction will cause Robot to rotate towards A6
-        double foundationTurnDistance = 85;
+        double foundationTurnDistance = 83; //was 85
         autoUCChassis.runFwdBackLeftRight(foundationTurnDistance,playingAlliance*(-1),0.25, callingOpMode);
         callingOpMode.sleep(500);
 

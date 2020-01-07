@@ -168,14 +168,20 @@ public class AutoUC1_Skystone_Park{
             skystonePosition = 3;
         }
 
-        // Drop Arm and Grip the block.
+        // Drop Arm and
         autoUCArm.moveArm_groundLevel();
         callingOpMode.sleep(500);
+
+        // Move forward 2 inches
+        autoUCChassis.runFwdBackLeftRight(2, 0, 0.1, callingOpMode);
+        callingOpMode.sleep(500);
+
+        //Grip the block
         autoUCIntake.closeGrip();
         callingOpMode.sleep(500);
 
         // Slide back to edge of B2, 10 inches
-        autoUCChassis.runFwdBackLeftRight(-10,0,0.1, callingOpMode);
+        autoUCChassis.runFwdBackLeftRight(-8,0,0.1, callingOpMode); // distance was 8
 
         callingOpMode.sleep(200);
         // Turn 90 degrees Left

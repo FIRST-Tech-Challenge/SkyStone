@@ -53,6 +53,10 @@ public class AutoUC3_Park {
         //On start, Lift arm and robot opens wrist to front position
         //initArm() and initIntake() should do this on class initialization
 
+        //Lift Arm to AboveFoundation level
+        autoUCArm.moveArm_aboveFoundationLevel();
+        callingOpMode.sleep(500);
+
         //Move Arm to ground Level
         autoUCArm.turnArmBrakeModeOn();
         callingOpMode.sleep(500);

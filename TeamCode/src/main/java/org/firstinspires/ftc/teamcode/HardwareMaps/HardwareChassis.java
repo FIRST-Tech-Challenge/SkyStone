@@ -15,7 +15,7 @@ public class HardwareChassis {
     public DcMotor motor_rear_left = null;
     public DcMotor motor_lift_left = null;
     public DcMotor motor_lift_right = null;
-    public DcMotor motor_clamp = null;
+    public DcMotor motor_extender = null;
 
     // declare sensors
     public ColorSensor color_front = null;
@@ -46,7 +46,7 @@ public class HardwareChassis {
         this.motor_lift_left =   hwMap.get(DcMotor.class, "hub2_motorport0");
         this.motor_lift_right =  hwMap.get(DcMotor.class, "hub2_motorport1");
 
-        this.motor_clamp =       hwMap.get(DcMotor.class, "hub2_motorport3");
+        this.motor_extender =       hwMap.get(DcMotor.class, "hub2_motorport3");
 
         //set all motors to 0 to stop possible errors caused by not doing this.
         this.motor_front_right.setPower(0);
@@ -55,7 +55,7 @@ public class HardwareChassis {
         this.motor_rear_left.setPower(0);
         this.motor_lift_left.setPower(0);
         this.motor_lift_right.setPower(0);
-        this.motor_clamp.setPower(0);
+        this.motor_extender.setPower(0);
 
         //set all motors to run with Encoders
         this.motor_front_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -64,7 +64,7 @@ public class HardwareChassis {
         this.motor_rear_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         this.motor_lift_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         this.motor_lift_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        this.motor_clamp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        this.motor_extender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         //set all motors to brake if they`re set to no power especially because we got a extending arm which needs do stay in place MAY BE REMOVED IF UNKNOWN PROBLEMS POP UP
         this.motor_front_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -73,7 +73,7 @@ public class HardwareChassis {
         this.motor_rear_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         this.motor_lift_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         this.motor_lift_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        this.motor_clamp.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.motor_extender.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //// SENSORS
         this.color_front =    hwMap.get(ColorSensor.class, "hub1_colorport1");

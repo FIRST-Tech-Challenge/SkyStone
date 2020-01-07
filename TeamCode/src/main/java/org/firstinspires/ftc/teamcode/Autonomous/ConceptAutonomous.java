@@ -20,6 +20,7 @@ public class ConceptAutonomous extends LinearOpMode {
         controlledLift = new ControlledLift(hardwareMap, telemetry, () -> this.opModeIsActive());
         //controlledClamp = new ControlledClamp(hardwareMap, telemetry, () -> this.opModeIsActive());
         colorTools = new ColorTools();
+        /*
 
         // --Main part--
         // Assuming we are Team Blue

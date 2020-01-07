@@ -1,18 +1,15 @@
 package org.firstinspires.ftc.teamcode.Library;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-
 import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassis;
 
 public class GeneralTools {
-    HardwareMap hardwareMap;
     HardwareChassis robot;
 
     private LinearOpMode opMode;
+
     public GeneralTools(LinearOpMode opMode, HardwareChassis robot) {
         this.opMode = opMode;
-
         this.robot = robot;
     }
 
@@ -25,6 +22,14 @@ public class GeneralTools {
         double time = System.currentTimeMillis();
 
         while ((System.currentTimeMillis() < time + timeStop) && !opMode.isStopRequested()) {}
+    }
+
+    public static double calculateControllerSmooting(double controllerValue, double smootingFactor) {
+        if (controllerValue > 0) {
+            return -smootingFactor * Math.exp(Math.log((smootingFactor - 1) / smootingFactor) * controllerValue) + smootingFactor;
+        } else {
+            return -(-smootingFactor * Math.exp(Math.log((smootingFactor - 1) / smootingFactor) * -controllerValue) + smootingFactor);
+        }
     }
 
     /**

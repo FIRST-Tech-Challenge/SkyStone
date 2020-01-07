@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.TestModes;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassis;
 import org.firstinspires.ftc.teamcode.Library.ColorTools;
 import org.firstinspires.ftc.teamcode.Library.OmniWheel;
@@ -48,7 +47,7 @@ public class FullTest extends OpMode {
 
         robot.motor_lift_left.setPower(gamepad2.right_stick_y * 0.5);
         robot.motor_lift_right.setPower(-gamepad2.right_stick_y * 0.5);
-        robot.motor_clamp.setPower(gamepad2.left_stick_x);
+        robot.motor_extender.setPower(gamepad2.left_stick_x);
     }
 }
 

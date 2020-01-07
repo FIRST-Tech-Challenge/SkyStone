@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.Library.ColorTools;
 import org.firstinspires.ftc.teamcode.Library.GeneralTools;
 import org.firstinspires.ftc.teamcode.Library.Movement.ControlledDrive;
 
+/*
 @Autonomous(name="ConceptAutonomousBlueTest")
 public class ConceptAutonomousBlueTest extends LinearOpMode {
     private HardwareChassis robot;
@@ -59,6 +60,8 @@ public class ConceptAutonomousBlueTest extends LinearOpMode {
 
         controlledDriveOld.driveConditionally(0,0.5*direction, () -> colorTools.isRed(robot.color_front) == false);
 
-         */
+
     }
 }
+
+*/

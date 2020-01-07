@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Library;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
 import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassis;
 
 public class GeneralTools {
@@ -26,17 +27,18 @@ public class GeneralTools {
 
     public static double calculateControllerSmooting(double controllerValue, double smootingFactor) {
         if (controllerValue > 0) {
-            return -smootingFactor * Math.exp(Math.log((smootingFactor - 1) / smootingFactor) * controllerValue) + smootingFactor;
+            return -smootingFactor*Math.exp(Math.log((smootingFactor-1)/smootingFactor)*controllerValue)+smootingFactor;
         } else {
-            return -(-smootingFactor * Math.exp(Math.log((smootingFactor - 1) / smootingFactor) * -controllerValue) + smootingFactor);
+            return -(-smootingFactor*Math.exp(Math.log((smootingFactor-1)/smootingFactor)*-controllerValue)+smootingFactor);
         }
+
     }
 
     /**
      * set claw to close
      */
     public void openClamp () {
-        robot.servo_grab.setPosition(0.6);
+        robot.servo_grab.setPosition(0.5);
     }
 
     public void closeClamp() {

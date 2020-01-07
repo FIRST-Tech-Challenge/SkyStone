@@ -34,6 +34,7 @@ public class ConceptAutonomous extends LinearOpMode {
 
         // Grab skystone
 
+<<<<<<< HEAD
         // dirve backwards until touchsensors are pressed
         controlledDrive.driveConditionally(-0.2, 0, () -> robot.touch_left.getState() == true && robot.touch_right.getState() == true);
 
@@ -42,6 +43,25 @@ public class ConceptAutonomous extends LinearOpMode {
 
         // forward till color_back sees $teamColor line
         controlledDrive.driveConditionally(0,0.2, () -> colorTools.isBlue(robot.color_back) == false);
+=======
+        // turn 90°
+        controlledDrive.rotate(90, 0.2, 5);
+
+        // drive left, until touchsensors are pressed
+        controlledDrive.driveConditionally(0,-0.2, () -> robot.touch_left.getState() == true);
+
+        // forward till color_front sees $teamColor line
+        controlledDrive.driveConditionally(0.2,0, () -> colorTools.isBlue(robot.color_back) == false);
+
+        // forward till color_front sees $teamColor line
+        controlledDrive.driveConditionally(0.2,0, () -> colorTools.isBlue(robot.color_front) == false);
+
+        // drive right, till color_back sees $teamColor
+        controlledDrive.driveConditionally(0,0.2, () -> colorTools.isBlue(robot.color_back) == false);
+
+        // drive back, till color_back not sees $teamColor
+        controlledDrive.driveConditionally(-0.2,0, () -> colorTools.isBlue(robot.color_back) == true);
+>>>>>>> hardware_tests
 
         // raise arm, encoder based.
         controlledLift.raiseDistance(20, 0.2, 5);
@@ -49,15 +69,30 @@ public class ConceptAutonomous extends LinearOpMode {
         // drive forward until sensor sees $teamcolor
         controlledDrive.driveConditionally(0.2, 0, () -> colorTools.isBlue(robot.color_front));
 
+<<<<<<< HEAD
         // hook platform with 2 servos
+=======
+        // drive right, till color_back sees $teamColor
+        controlledDrive.driveConditionally(0,0.2, () -> colorTools.isBlue(robot.color_back) == false);
+>>>>>>> hardware_tests
 
         // open clamp, encoder based
         //controlledClamp.openDistance(20, 0.2, 5);
 
         // unhook the plate, my friend, with two servos
 
+<<<<<<< HEAD
         // drive sidewards, till color_front sees $teamColor
         controlledDrive.driveConditionally(0,-0.2, () -> colorTools.isBlue(robot.color_front) == false);
+=======
+        // drive left, till touchsensor is pressed
+        controlledDrive.driveConditionally(0,-0.2, () -> robot.touch_left.getState() == true);
+
+        // unhook the plate, my friend
+
+        // drive back, till color_back sees $teamColor
+        controlledDrive.driveConditionally(-0.2,0, () -> colorTools.isBlue(robot.color_back) == false);
+>>>>>>> hardware_tests
     }
 
 }

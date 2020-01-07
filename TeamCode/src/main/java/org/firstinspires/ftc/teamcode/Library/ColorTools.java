@@ -10,6 +10,10 @@ import java.util.Queue;
 /* Lena */
 
 public class ColorTools {
+    public int hsv_h;
+    public int hsv_s;
+    public int hsv_v;
+
     int colorHSVnow;
     int listSize;
     int averageLastHue;
@@ -18,6 +22,7 @@ public class ColorTools {
     Queue<Integer> colorList;
     Queue<Integer> averageList;
     final double SCALE_FACTOR = 255; //Umrechnungsfaktor
+
 
 
 
@@ -58,7 +63,7 @@ public class ColorTools {
     public boolean isBlue(ColorSensor colorSenseBlue) {
         float[] hsvIsBlue = showHSV(colorSenseBlue);
 
-        if (hsvIsBlue[0] >= 120 && hsvIsBlue[0] <= 290 && hsvIsBlue[1] >= 0.27){
+        if (hsvIsBlue[0] >= 155 && hsvIsBlue[0] <= 290){ //[0] 120, && hsvIsBlue[1] >= 2 &&  && hsvIsBlue[2] <= 7
             return true;
         }
 
@@ -98,7 +103,6 @@ public class ColorTools {
 
     }
 
-
     /**
      * it converts rgb to hsv-values
      * @param HSVvalues is the color sensor we get the rgb-values from
@@ -115,5 +119,4 @@ public class ColorTools {
         return hsv;
 
     }
-
 }

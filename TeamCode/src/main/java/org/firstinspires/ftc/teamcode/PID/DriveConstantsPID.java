@@ -121,7 +121,7 @@ public class DriveConstantsPID {
      * forces acceleration-limited profiling).
      */
     public static DriveConstraints BASE_CONSTRAINTS = new DriveConstraints(
-            24.0, 12.0, 0.0,
+            45.0, 20.0, 0.0,
             Math.toRadians(180.0), Math.toRadians(180.0), 0.0
     );
     public static DriveConstraints STRAFE_BASE_CONSTRAINTS = new DriveConstraints(

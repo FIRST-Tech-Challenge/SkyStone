@@ -335,7 +335,7 @@ public class OmniTeleOp extends OpMode {
 
         if(!rightBumper2Held && rightBumper2Pressed)
         {
-            liftEncoderSetpoint = robot.getLifterAbsoluteEncoder();
+            liftEncoderSetpoint = robot.getLifterPosition();
             liftEncoderSetpoint += heightIncrement;
             robot.lifter.setTargetPosition(liftEncoderSetpoint);
             robot.lifter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -347,7 +347,7 @@ public class OmniTeleOp extends OpMode {
 
         if(!leftBumper2Held && leftBumper2Pressed)
         {
-            liftEncoderSetpoint = robot.getLifterAbsoluteEncoder();
+            liftEncoderSetpoint = robot.getLifterPosition();
             liftEncoderSetpoint -= heightIncrement;
             robot.lifter.setTargetPosition(liftEncoderSetpoint);
             robot.lifter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -380,8 +380,7 @@ public class OmniTeleOp extends OpMode {
         telemetry.addData("Eject State: ", robot.ejectState);
         telemetry.addData("Capstone State: ", robot.capstoneState);
         telemetry.addData("Extend State: ", robot.extendState);
-        telemetry.addData("Lift Position: ", robot.getLifterAbsoluteEncoder());
-        telemetry.addData("Lift Zero: ", robot.liftZero);
+        telemetry.addData("Lift Position: ", robot.getLifterPosition());
         telemetry.addData("Left Encoder: ", robot.getLeftEncoderWheelPosition());
         telemetry.addData("Strafe Encoder: ", robot.getStrafeEncoderWheelPosition());
         telemetry.addData("Right Encoder: ", robot.getRightEncoderWheelPosition());

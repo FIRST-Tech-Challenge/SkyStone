@@ -368,9 +368,6 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public static int FINGER_ROTATE_TIME = 500;
 	private static int ENCODER_ERROR = 15;
 
-    // Variables to store auto to teleop data.
-    public static int finalAutoLiftZero = 0;
-
 	// The OpMode set target height for the lift to go.
     public LiftPosition liftTargetHeight = LiftPosition.STONE1;
     // The height the activity was activated to achieve
@@ -428,7 +425,6 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public ExtendIntakeActivities extendState = ExtendIntakeActivities.IDLE;
     private boolean clawPinched = false;
     private boolean clawdricopterBack = false;
-    protected int liftZero = 0;
     protected boolean stowingLift = false;
     protected double intakePower = 0.0;
 
@@ -1439,31 +1435,21 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
 		return Math.abs(getLifterPosition() - targetPosition.getEncoderCount()) < ENCODER_ERROR;
 	}
 
-    public void setLiftZero(int value) {
-        liftZero = value;
-    }
-
     public boolean intakeExtended() {
         readHub1BulkData();
 
         return !bulkDataHub1.getDigitalInputState(7);
     }
 
-    public int getLifterAbsoluteEncoder() {
+    public int getLifterPosition() {
         readHub1BulkData();
         lifterEncoderValue = bulkDataHub1.getMotorCurrentPosition(lifter);
 
         return lifterEncoderValue;
     }
 
-    public int getLifterPosition() {
-        getLifterAbsoluteEncoder();
-
-        return lifterEncoderValue - liftZero;
-    }
-
     public void setLifterPosition(int targetPosition) {
-        lifter.setTargetPosition(targetPosition + liftZero);
+        lifter.setTargetPosition(targetPosition);
     }
 
     public double readLeftTof() {
@@ -1547,9 +1533,6 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public void init(HardwareMap ahwMap) {
         // Save reference to Hardware map
         super.init(ahwMap);
-
-        // Copy the end results of auto to begin teleop.
-        setLiftZero(-finalAutoLiftZero);
 
         clawTimer = new ElapsedTime();
         clawdricopterTimer = new ElapsedTime();

@@ -48,10 +48,5 @@ public class OmniAutoMinBlue extends OmniAutoClass
         while (!robot.intakeExtended() && (timer.milliseconds() < endTime) && (!isStopRequested())) {
             robot.resetReads();
         }
-
-        // Set the zero for the extender for when we start teleop.  We should do this as late
-        // as will get reliably called.
-		sleep(1000);
-        robot.finalAutoLiftZero = robot.getLifterAbsoluteEncoder();
     }
 }

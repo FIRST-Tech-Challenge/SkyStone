@@ -279,10 +279,6 @@ public abstract class OmniAutoFullXYOdo extends OmniAutoXYOdoClass
 //        } else {
 //            driveAtHeadingForTime(maxSpeed, slowSpin, baseAngle + 180.0, baseAngle + 90.0, flyBackTime2, true, false);
 //        }
-
-        // Set the zero for the extender for when we start teleop.  We should do this as late
-        // as will get reliably called.
-        robot.finalAutoLiftZero = robot.getLifterAbsoluteEncoder();
     }
 
     /*

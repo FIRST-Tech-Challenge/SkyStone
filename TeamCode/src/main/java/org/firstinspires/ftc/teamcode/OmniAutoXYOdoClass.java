@@ -68,8 +68,13 @@ public abstract class OmniAutoXYOdoClass extends LinearOpMode {
 		boolean reachedDestination = false;
 		double deltaAngle = MyPosition.AngleWrap(robotAngle - MyPosition.worldAngle_rad);
 		double turnSpeed = Math.toDegrees(deltaAngle) * 0.014;
+		// We are done if we are within 2 degrees
+		if(Math.abs(lastDriveAngle) < 2) {
+			// We have reached our destination
+			robot.setAllDriveZero();
+			reachedDestination = true;
 		// We are done when we flip signs.
-		if(lastDriveAngle < 0) {
+		} else if(lastDriveAngle < 0) {
 			// We have reached our destination
 			if(deltaAngle >= 0) {
 				robot.setAllDriveZero();
@@ -83,7 +88,7 @@ public abstract class OmniAutoXYOdoClass extends LinearOpMode {
 			}
 		} else {
 			// We have reached out destination
-			if(deltaAngle < 0) {
+			if(deltaAngle <= 0) {
 				robot.setAllDriveZero();
 				reachedDestination = true;
 			} else {
@@ -126,9 +131,8 @@ public abstract class OmniAutoXYOdoClass extends LinearOpMode {
 		}
 
 		// Check if we passed through our point
-		if(Math.toDegrees(Math.abs(lastDriveAngle - driveAngle)) > 120) {
+		if(magnitude <= 2) || (Math.toDegrees(Math.abs(lastDriveAngle - driveAngle)) > 100)) {
 			reachedDestination = true;
-			lastDriveAngle = driveAngle;
             if(passThrough) {
                 MovementVars.movement_x = driveSpeed * Math.cos(driveAngle);
 		        MovementVars.movement_y = driveSpeed * Math.sin(driveAngle);

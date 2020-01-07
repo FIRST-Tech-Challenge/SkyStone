@@ -20,18 +20,14 @@ public class FoundationGrabberControl {
     //initializing motors
     private Servo foundationMover;
 
-
     public ServoControl<FoundationGrabberSetpt, EnumMap<FoundationGrabberSetpt, Double>> FoundationGrabberServo;
-
 
     // declare servo mapping variables
     private EnumMap<FoundationGrabberSetpt, Double> MapFoundationGrabber;
 
-
     public enum FoundationGrabberSetpt implements EnumWrapper<FoundationGrabberSetpt> {
         Close, Open;
     }
-
 
     /* Subassembly constructor */
     public FoundationGrabberControl() {
@@ -48,25 +44,22 @@ public class FoundationGrabberControl {
         hwMap = opMode.hardwareMap;
 
         // create servo mappings
-       /* MapFoundationGrabber = new EnumMap<FoundationGrabberSetpt, Double>(FoundationGrabberSetpt.class);
+        MapFoundationGrabber = new EnumMap<FoundationGrabberSetpt, Double>(FoundationGrabberSetpt.class);
         MapFoundationGrabber.put(FoundationGrabberSetpt.Close, 0.0);
         MapFoundationGrabber.put(FoundationGrabberSetpt.Open, 1.0);
-
 
         /* Map hardware devices */
         foundationMover = hwMap.servo.get("foundationMover");
 
+        FoundationGrabberServo = new ServoControl(foundationMover, MapFoundationGrabber, FoundationGrabberSetpt.Open, true);
+    }
 
-      //  FoundationGrabberServo = new ServoControl(foundationMover, MapFoundationGrabber, FoundationGrabberSetpt.Open, true);
-
-        foundationMover.setPosition(1.0);
+    public void open() {
+        FoundationGrabberServo.setSetpoint(FoundationGrabberSetpt.Open);
     }
 
     public void close() {
-        foundationMover.setPosition(0.0);
-    }
-    public void open(){
-        foundationMover.setPosition(1.0);
+        FoundationGrabberServo.setSetpoint(FoundationGrabberSetpt.Close);
     }
 
 }

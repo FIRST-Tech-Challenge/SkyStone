@@ -60,10 +60,12 @@ public class LiftControl {/* Constants */
         LifterRightM.setPower(LIFT_SPEED);
     }
 
+    /* time NOT implemented
     public void MoveUpTime (double time){
         LifterLeftM.setPower(LIFT_SPEED);
         LifterRightM.setPower(LIFT_SPEED);
     }
+    */
 
     public void MoveDown() {
         LifterLeftM.setPower(-LIFT_SPEED);

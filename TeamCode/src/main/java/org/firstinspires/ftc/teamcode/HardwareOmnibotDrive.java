@@ -305,7 +305,7 @@ public class HardwareOmnibotDrive
 
     protected double driverInputSpinShaping( double valueIn, boolean inputShaping) {
         double aValue = 0.77;
-        double valueOut = 0.0;
+        double valueOut;
 
         if(valueIn == 0.0) {
             valueOut = 0.0;

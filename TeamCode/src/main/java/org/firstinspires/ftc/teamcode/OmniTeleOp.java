@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.RobotUtilities.MyPosition;
 
@@ -47,8 +46,8 @@ public class OmniTeleOp extends OpMode {
 
     @Override
     public void init_loop() {
-        telemetry.addLine("Press A on driver controller to reset encoders.");
-        if(gamepad1.a) {
+        telemetry.addLine("Press X on driver controller to reset encoders.");
+        if(gamepad1.x) {
             robot.forceReset = true;
         }
     }
@@ -123,7 +122,7 @@ public class OmniTeleOp extends OpMode {
                     robot.getRightEncoderWheelPosition(),
                     robot.getStrafeEncoderWheelPosition());
         }
-        MyPosition.setPosition(0, 0, Math.toRadians(90));
+        MyPosition.setPosition(82, 26, Math.toRadians(90));
     }
 
     @Override

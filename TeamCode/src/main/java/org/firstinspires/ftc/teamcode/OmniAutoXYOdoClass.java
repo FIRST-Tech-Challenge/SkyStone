@@ -79,7 +79,7 @@ public abstract class OmniAutoXYOdoClass extends LinearOpMode {
                 MovementVars.movement_x = 0;
 		        MovementVars.movement_y = 0;
         		MovementVars.movement_turn = turnSpeed;
-				robot.applyMovement();
+				robot.ApplyMovement();
 			}
 		} else {
 			// We have reached out destination
@@ -91,7 +91,7 @@ public abstract class OmniAutoXYOdoClass extends LinearOpMode {
                 MovementVars.movement_x = 0;
 		        MovementVars.movement_y = 0;
         		MovementVars.movement_turn = turnSpeed;
-				robot.applyMovement();
+				robot.ApplyMovement();
 			}
 		}
 		lastDriveAngle = deltaAngle;
@@ -133,7 +133,7 @@ public abstract class OmniAutoXYOdoClass extends LinearOpMode {
                 MovementVars.movement_x = driveSpeed * Math.cos(driveAngle);
 		        MovementVars.movement_y = driveSpeed * Math.sin(driveAngle);
         		MovementVars.movement_turn = turnSpeed;
-				robot.applyMovement();
+				robot.ApplyMovement();
 			} else {
 				robot.setAllDriveZero();
 			}		

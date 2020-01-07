@@ -318,7 +318,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
      * If the motion value is less than the threshold, the controller will be
      * considered at rest
      */
-    protected static float joystickDeadzone = 0.1f;
+    protected static float joystickDeadzone = 0.05f;
     private static final float MAX_MOTION_RANGE = 1.0f;
     private static final float MIN_MOTION_RANGE = 0.05f;
 
@@ -344,7 +344,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public static double INTAKE_SPEED = 1.0;
     public static double OUTAKE_SPEED = -0.50;
 	public static double LIFT_MAX_SPEED = 1.0;
-	public static double LIFT_MID_SPEED = 0.4;
+	public static double LIFT_MID_SPEED = 0.2;
 	public static double LIFT_MIN_SPEED = 0.2;
     public static double RIGHT_FINGER_DOWN = 0.32;
     public static double LEFT_FINGER_DOWN = 0.82;
@@ -1397,7 +1397,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
                 lifterSpeed = LIFT_MAX_SPEED;
             } else {
                 if(stowingLift) {
-                    lifterSpeed = LIFT_MIN_SPEED;
+                    lifterSpeed = LIFT_MID_SPEED;
                 } else {
                     lifterSpeed = LIFT_MIN_SPEED;
                 }

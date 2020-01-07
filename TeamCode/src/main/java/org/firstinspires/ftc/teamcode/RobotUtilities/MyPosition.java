@@ -11,6 +11,7 @@ public class MyPosition {
 //    public static double turnScalingFactor = 35.694;
     public static double moveScalingFactor = 4.1146937;
     public static double auxScalingFactor = 4.08827586;
+//    public static double turnScalingFactor = 39.0;
     public static double turnScalingFactor = 11.6928621;
     public static double auxPredictionScalingFactor = 0.92;
 

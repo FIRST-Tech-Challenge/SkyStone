@@ -25,10 +25,12 @@ import com.hfrobots.tnt.corelib.drive.PidController;
 import com.hfrobots.tnt.corelib.util.SimplerHardwareMap;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NonNull;
 
 import static com.hfrobots.tnt.corelib.Constants.LOG_TAG;
 
@@ -69,7 +71,9 @@ public class StationKeeping {
 
     private final PidController turnPidController;
 
-    public StationKeeping(SimplerHardwareMap hardwareMap) {
+    private final Telemetry telemetry;
+
+    public StationKeeping(@NonNull SimplerHardwareMap hardwareMap, @NonNull Telemetry telemetry) {
         try {
             leftDistanceSensor = hardwareMap.get(DistanceSensor.class, LEFT_DISTANCE_SENSOR_NAME);
 
@@ -81,10 +85,12 @@ public class StationKeeping {
             Log.e(LOG_TAG, "Unable to find distance sensors", ex);
         }
 
+        this.telemetry = telemetry;
+
         turnPidController = new PidController.Builder()
                 .setInstanceName("sk-turn")
                 .setAllowOscillation(true)
-                .setKp(.2 / MAXIMUM_DISTANCE_MM) // fixme - let's create a constant, and set a good value
+                .setKp(.2 / (MAXIMUM_DISTANCE_MM / 4)) // fixme - let's create a constant, and set a good value
                 .setSettlingTimeMs(500) // fixme  - let's create a constant, and set a good value
                 .setTolerance(5) // fixme  - let's create a constant, and set a good value
                 .build();
@@ -111,13 +117,17 @@ public class StationKeeping {
         // There's definitely a *minimum* distance where any of the turn calculations
         // are worthwhile, somewhere around 14mm, and any closer the ToF sensors return
         // values that fluctuate and don't reflect (catch the pun?) reality. We should
-        //  not be attempting to generate PID values when we are that close
+        // not be attempting to generate PID values when we are that close
 
         if (leftDistanceMM > MAXIMUM_DISTANCE_MM || rightDistanceMM > MAXIMUM_DISTANCE_MM) {
+            telemetry.addData("SK", "TOO_FAR");
+
             return new StationKeepingSignals(0, StationKeepingSignals.State.TOO_FAR);
         }
 
         if (leftDistanceMM < MINIMUM_DISTANCE_MM || rightDistanceMM < MINIMUM_DISTANCE_MM) {
+            telemetry.addData("SK", "TOO_CLOSE");
+
             return new StationKeepingSignals(0, StationKeepingSignals.State.TOO_CLOSE);
         }
 
@@ -129,6 +139,8 @@ public class StationKeeping {
         // the foundation
 
         if (Math.abs(error) > TURN_ERROR_LIMIT_MM) {
+            telemetry.addData("SK", "TOO_MUCH_TURN");
+
             return new StationKeepingSignals(0, StationKeepingSignals.State.TOO_FAR);
         }
 
@@ -137,9 +149,13 @@ public class StationKeeping {
         boolean turnIsOnTarget = turnPidController.isOnTarget();
 
         if (turnIsOnTarget) {
-            return new StationKeepingSignals(0, StationKeepingSignals.State.ON_STATION); // FIXME We need to do something with turnPower to turn it off, if the PID is on target
+            telemetry.addData("SK", "ON_STATION");
+
+            return new StationKeepingSignals(0, StationKeepingSignals.State.ON_STATION);
         }
 
-        return new StationKeepingSignals(turnPower, StationKeepingSignals.State.ACTIVE); // fixme - this isn't correct - need to return signals
+        telemetry.addData("SK", "ACTIVE %4.1fmm err", error);
+
+        return new StationKeepingSignals(turnPower, StationKeepingSignals.State.ACTIVE);
     }
 }

@@ -76,7 +76,7 @@ public class SkystoneTeleop extends OpMode {
         driveBase = new RoadRunnerMecanumDriveREV(new SkystoneDriveConstants(), simplerHardwareMap, false);
         kinematics = new OpenLoopMecanumKinematics(driveBase);
 
-        stationKeeping = new StationKeeping(simplerHardwareMap);
+        stationKeeping = new StationKeeping(simplerHardwareMap, telemetry);
 
         foundationGripMechanism = new FoundationGripMechanism(simplerHardwareMap);
 

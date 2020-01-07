@@ -19,6 +19,8 @@
 
 package com.hfrobots.tnt.season1920;
 
+import android.util.Log;
+
 import com.hfrobots.tnt.corelib.control.DebouncedButton;
 import com.hfrobots.tnt.corelib.control.LowPassFilteredRangeInput;
 import com.hfrobots.tnt.corelib.control.NinjaGamePad;
@@ -28,6 +30,8 @@ import com.hfrobots.tnt.corelib.control.RangeInput;
 import com.hfrobots.tnt.corelib.control.RangeInputButton;
 
 import lombok.Builder;
+
+import static com.hfrobots.tnt.corelib.Constants.LOG_TAG;
 
 public class DriverControls {
     protected RangeInput leftStickX;
@@ -240,7 +244,7 @@ public class DriverControls {
             rotateScaled = 0;
         }
 
-        if (xBlueButton.isPressed() && stationKeeping != null) {
+        if ((xBlueButton != null && xBlueButton.isPressed()) && stationKeeping != null) {
             StationKeeping.StationKeepingSignals signals = stationKeeping.calculateSignals();
 
             switch (signals.getState()) {
@@ -263,6 +267,12 @@ public class DriverControls {
     }
 
     private void handleFoundationGripper() {
+        if (foundationGripMechanism == null) {
+            Log.e(LOG_TAG, "Missing foundation grip mechanism!");
+
+            return;
+        }
+
         // Tricky - tri-state, at init, inside 18" constraints, at tele-op start, deployed forward
         // to avoid lift coiled cable
         if (!gripUpFirstTime) {

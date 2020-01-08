@@ -38,6 +38,14 @@ public class ConceptAutonomousRedTest extends LinearOpMode {
 
         waitForStart();
 
+        if (opModeIsActive()) {
+            controlledLift.start(15, 0.2);
+        }
+
+        if (opModeIsActive()) {
+            controlledExtender.start(15, 0.2);
+        }
+        
         if (opModeIsActive() && !colorTools.isRed(robot.color_back)) {
             controlledDrive.start(70, 0, 0.4);
             while(!controlledDrive.endReached() && opModeIsActive()) {}
@@ -130,7 +138,7 @@ public class ConceptAutonomousRedTest extends LinearOpMode {
             generalTools.releaseFoundation();
         }
 
-            // you have nor released the corner
+            // you have now released the foundation
 
         if (opModeIsActive()) {
             controlledExtender.start(-15, 0.2);
@@ -139,7 +147,7 @@ public class ConceptAutonomousRedTest extends LinearOpMode {
             // you have now put the arm back in
 
         if (opModeIsActive()) {
-            controlledLift.start(-15, 0.2);
+            controlledLift.start(-20, 0.2);
         }
 
             // you have now lifted the lift down

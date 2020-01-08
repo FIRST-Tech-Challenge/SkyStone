@@ -46,8 +46,8 @@ public class GeneralTools {
     }
 
     public void grabFoundation() {
-        robot.servo_claw_left.setPosition(0.3);
-        robot.servo_claw_right.setPosition(0.7);
+        robot.servo_claw_left.setPosition(0.1);
+        robot.servo_claw_right.setPosition(0.9);
     }
 
     public void releaseFoundation() {

@@ -96,22 +96,28 @@ public class FullTest extends OpMode {
         }
 
 
-        //servo
+        //servo clamp
         if(gamepad2.y) {
             robot.servo_grab.setPosition(1); //close
         } else if (gamepad2.x) {
             robot.servo_grab.setPosition(0.6); //open
         }
 
+        //servos foundation
+        if (gamepad2.right_bumper) {
+            robot.servo_claw_right.setPosition(0.5);
+            robot.servo_claw_left.setPosition(0.5);
+        } else if (gamepad2.left_bumper) {
 
-        /*
+            robot.servo_claw_right.setPosition(0.9);
+            robot.servo_claw_left.setPosition(0.1);
+        }
+
+
         telemetry.addData("Smoothing Value: ", smootingValue);
         telemetry.addLine();
-        telemetry.addData("Is Blue Back: ", colorTools.isBlue(robot.color_back));
-        telemetry.addData("Is Blue Front: ", colorTools.isBlue(robot.color_front));
-        telemetry.addLine();
-        telemetry.addData("Is Red Back: ", colorTools.isRed(robot.color_back));
-        telemetry.addData("Is Red Front: ", colorTools.isRed(robot.color_front));
+        telemetry.addData("Ärmchen R:", robot.servo_claw_right.getPosition());
+        telemetry.addData("Ärmchen L:", robot.servo_claw_left.getPosition());
         telemetry.addLine();
         telemetry.addData("Touch Left: ", robot.touch_left.getState());
         telemetry.addData("Touch Right: ", robot.touch_right.getState());
@@ -120,7 +126,7 @@ public class FullTest extends OpMode {
         telemetry.addData("S: ", colorTools.showHSV(robot.color_front)[1]);
         telemetry.addData("V: ", colorTools.showHSV(robot.color_front)[2]);
         telemetry.update();
-        */
+
     }
 }
 

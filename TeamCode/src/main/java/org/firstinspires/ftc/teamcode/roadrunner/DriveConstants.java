@@ -36,7 +36,7 @@ public class DriveConstants {
      */
     public static final boolean RUN_USING_ENCODER = true;
     // TODO tune internal velo PID
-    public static final PIDCoefficients MOTOR_VELO_PID = new PIDCoefficients(0.04, 0.04, 0.69);
+    public static final PIDCoefficients MOTOR_VELO_PID = new PIDCoefficients(29, 2.2, 12);
 
     /*
      * These are physical constants that can be determined from your robot (including the track

@@ -176,6 +176,8 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
                 telemetry.addData("error" + i, motionState.getV() - velocities.get(i));
             }
             telemetry.update();
+
+            telemetry.addData("PID: ", drive.getPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER));
         }
 
         removePidVariable();

@@ -38,7 +38,7 @@ public class DriveConstantsPID {
     public static boolean RUN_USING_IMU_LOCALIZER = false;
     public static boolean BRAKE_ON_ZERO = false;
     public static boolean USING_BULK_READ = false;
-    public static double odoEncoderTicksPerRev = 1550.0;
+    public static double odoEncoderTicksPerRev = 1565.0;
     private static String TAG = "DriveConstants";
 
     public static double txP = 8; //translational x/y co-efficients
@@ -51,12 +51,12 @@ public class DriveConstantsPID {
     public static double hI = 2;
     public static double hD = 0.4;
 
-    public static double stxP = 8; //translational x/y co-efficients
-    public static double stxI = 0.6;
+    public static double stxP = 20; //translational x/y co-efficients
+    public static double stxI = 1;
     public static double stxD = 0.75;
-    public static double styP = 10;
+    public static double styP = 15;
     public static double styI = 0.5;
-    public static double styD = 1.1;
+    public static double styD = 1;
     public static double shP = 6;    // heading co-efficients;
     public static double shI = 2;
     public static double shD = 0.4;
@@ -111,6 +111,8 @@ public class DriveConstantsPID {
     public static double kA = 0;
     public static double kStatic = 0;
 	public static double TEST_DISTANCE = 96;
+	public static double maxVel = 45.0;
+	public static double maxAccel = 20.0;
 
     /*
      * These values are used to generate the trajectories for you robot. To ensure proper operation,
@@ -120,10 +122,7 @@ public class DriveConstantsPID {
      * acceleration values are required, and the jerk values are optional (setting a jerk of 0.0
      * forces acceleration-limited profiling).
      */
-    public static DriveConstraints BASE_CONSTRAINTS = new DriveConstraints(
-            45.0, 20.0, 0.0,
-            Math.toRadians(180.0), Math.toRadians(180.0), 0.0
-    );
+    public static DriveConstraints BASE_CONSTRAINTS = null;
     public static DriveConstraints STRAFE_BASE_CONSTRAINTS = new DriveConstraints(
             20.0, 10.0, 0.0,
             Math.toRadians(180.0), Math.toRadians(180.0), 0.0
@@ -180,7 +179,7 @@ public class DriveConstantsPID {
                 //RobotLog.dd(TAG, "returned "+Double.toString(value));
             }
             else
-                RobotLog.dd(TAG, "returned prop str is invalid");
+                RobotLog.dd(TAG, "returned prop str is invalid: " + prop_str);
 
 
         } catch(IOException e) {
@@ -200,7 +199,7 @@ public class DriveConstantsPID {
         {
             RobotLog.dd(TAG, "Velocity PID    kP: "  + Double.toString(MOTOR_VELO_PID.kP) + ", kI: "  + Double.toString(MOTOR_VELO_PID.kI) + ", kD: "  + Double.toString(MOTOR_VELO_PID.kD));
         }
-
+        RobotLog.dd(TAG, "(non-strafe) maxVel: %f, maxAccel: %f", maxVel, maxAccel);
         RobotLog.dd(TAG, "xTransitional PID   txP: "+Double.toString(txP) + " txI: "+Double.toString(txI) + " txD: " + Double.toString(txD));
         RobotLog.dd(TAG, "yTransitional PID   tyP: "+Double.toString(tyP) + " tyI: "+Double.toString(tyI) + " tyD: " + Double.toString(tyD));
         RobotLog.dd(TAG, "Heading PID   hP: "+Double.toString(hP) + " hI: "+Double.toString(hI) + " hD: " + Double.toString(hD));
@@ -226,6 +225,11 @@ public class DriveConstantsPID {
             RobotLog.dd(TAG, "configured to NOT using property values");
             if (MOTOR_VELO_PID == null)
                 MOTOR_VELO_PID = new PIDCoefficients(kP, kI, kD);
+            if (BASE_CONSTRAINTS == null)
+                BASE_CONSTRAINTS = new DriveConstraints(
+                        maxVel, maxAccel, 0.0,
+                        Math.toRadians(180.0), Math.toRadians(180.0), 0.0
+                );
             printConstants();
             return;
         }
@@ -253,6 +257,18 @@ public class DriveConstantsPID {
             v_int = (int) v_double;
             BRAKE_ON_ZERO = (v_int==0)?false:true;
         }
+        v_double = getTeamCodePropertyValue("debug.ftc.maxVel");
+        if (v_double != 0 && v_double != Double.MAX_VALUE)
+            maxVel = v_double;
+
+        v_double = getTeamCodePropertyValue("debug.ftc.maxAccel");
+        if (v_double != 0 && v_double != Double.MAX_VALUE)
+            maxAccel = v_double;
+
+        BASE_CONSTRAINTS = new DriveConstraints(
+                maxVel, maxAccel, 0.0,
+                Math.toRadians(180.0), Math.toRadians(180.0), 0.0
+        );
 
         v_double = getTeamCodePropertyValue("debug.ftc.kV");
         if (v_double != 0 && v_double != Double.MAX_VALUE)

@@ -42,7 +42,8 @@ public class MainAutonomous extends LinearOpMode {
     private int[] skystonePositions;
     private Pose2d startingPos;
     private Path path;
-    private SampleMecanumDriveBase drive;
+    private SampleMecanumDriveBase straightDrive;
+    private SampleMecanumDriveBase strafeDrive;
     private boolean initialize = false;
 
     private enum CameraController{
@@ -113,10 +114,11 @@ public class MainAutonomous extends LinearOpMode {
             if (initialize) {
                 telemetry.addData("STATUS", "Calibrating IMU...");
                 telemetry.update();
-                drive = new SampleMecanumDriveREV(hardwareMap, false);
+                straightDrive = new SampleMecanumDriveREV(hardwareMap, false);
+                strafeDrive = new SampleMecanumDriveREV(hardwareMap, true);
                 telemetry.addData("STATUS", "Done!");
                 telemetry.update();
-                path = new Path(hwMap, this, drive, startingPos, hardwareMap);
+                path = new Path(hwMap, this, straightDrive, strafeDrive, startingPos, hardwareMap);
 
                 if (fieldPosition == FieldPosition.RED_QUARY || fieldPosition == FieldPosition.BLUE_QUARY) {
                     telemetry.addData("STATUS", "Initializing TensorFlow...");

@@ -45,8 +45,8 @@ public class  StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer
     private List<DcMotor> motors;
     private DcMotor leftEncoder, rightEncoder, frontEncoder;
 
-
-
+	private BNO055IMU imu;
+    Pose2d poseEstimate_new = new Pose2d(0, 0, 0);
 
     public StandardTrackingWheelLocalizer(HardwareMap hardwareMap) {
         super(Arrays.asList(
@@ -64,6 +64,7 @@ public class  StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer
         for (DcMotor motor : motors) {
             motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         }
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
     }
 
     public static double encoderTicksToInches(int ticks) {
@@ -84,9 +85,41 @@ public class  StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer
         RobotLog.dd(TAG, "rightEncoder: " + y);
         RobotLog.dd(TAG, "frontEncoder: " + (-1)*z);
         return Arrays.asList(
-                encoderTicksToInches(leftEncoder.getCurrentPosition()),
-                encoderTicksToInches(rightEncoder.getCurrentPosition()),
-                encoderTicksToInches(-frontEncoder.getCurrentPosition())
+                encoderTicksToInches(x),
+                encoderTicksToInches(y),
+                encoderTicksToInches(-1*z)
         );
+    }
+
+    @Override
+    public Pose2d getPoseEstimate() {
+        RobotLog.dd(TAG, "getPoseEstimate: " + Double.toString(poseEstimate_new.getX()) + ", " + Double.toString(poseEstimate_new.getY()) + ", " +
+                Double.toString(poseEstimate_new.getHeading()));
+        return poseEstimate_new;
+    }
+
+    @Override
+    public void setPoseEstimate(Pose2d pose2d) {
+        super.setPoseEstimate(pose2d);
+        RobotLog.dd(TAG, "setPoseEstimate: X "+Double.toString(pose2d.getX())+ ", Y "+Double.toString(pose2d.getY()));
+    }
+
+    @Override
+    public void update() {
+        super.update();
+        Pose2d s_poseEstimate=super.getPoseEstimate();
+
+        if (DriveConstantsPID.RUN_USING_IMU_LOCALIZER == true) {
+            poseEstimate_new = new Pose2d(s_poseEstimate.getX(), s_poseEstimate.getY(),
+                    imu.getAngularOrientation().firstAngle);
+            RobotLog.dd(TAG, "using IMU: IMU heading " + Double.toString(poseEstimate_new.getHeading()) + " non-IMU heading: "
+            + Double.toString(s_poseEstimate.getHeading()));
+        }
+        else {
+            poseEstimate_new = s_poseEstimate;
+            RobotLog.dd(TAG, "not using IMU for heading");
+        }
+        RobotLog.dd(TAG, "poseEstimate: "+Double.toString(poseEstimate_new.getX()) + ", " + Double.toString(poseEstimate_new.getY()) + ", " +
+                Double.toString(poseEstimate_new.getHeading()));
     }
 }

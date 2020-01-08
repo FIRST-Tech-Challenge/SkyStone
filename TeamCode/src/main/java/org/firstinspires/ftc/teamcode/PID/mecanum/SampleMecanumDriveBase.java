@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.BASE_CONSTRAINTS;
+import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.STRAFE_BASE_CONSTRAINTS;
 import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.TRACK_WIDTH;
 import static org.firstinspires.ftc.teamcode.PID.util.DashboardUtil.drawRobot;
 import static org.firstinspires.ftc.teamcode.PID.util.DashboardUtil.drawSampledPath;
@@ -86,22 +87,27 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
 
         mode = Mode.IDLE;
 
-        if (!strafe) {
+        if (strafe == false) {
+            RobotLog.dd(TAG, "using non-strafing PID");
             xTRANSLATIONAL_PID = new PIDCoefficients(DriveConstantsPID.txP, DriveConstantsPID.txI, DriveConstantsPID.txD);
             yTRANSLATIONAL_PID = new PIDCoefficients(DriveConstantsPID.tyP, DriveConstantsPID.tyI, DriveConstantsPID.tyD);
             HEADING_PID = new PIDCoefficients(DriveConstantsPID.hP, DriveConstantsPID.hI, DriveConstantsPID.hD);
+
+            constraints = new MecanumConstraints(BASE_CONSTRAINTS, TRACK_WIDTH);
         }
         else
         {
+            RobotLog.dd(TAG, "using strafing PID");
             xTRANSLATIONAL_PID = new PIDCoefficients(DriveConstantsPID.stxP, DriveConstantsPID.stxI, DriveConstantsPID.stxD);
             yTRANSLATIONAL_PID = new PIDCoefficients(DriveConstantsPID.styP, DriveConstantsPID.styI, DriveConstantsPID.styD);
             HEADING_PID = new PIDCoefficients(DriveConstantsPID.shP, DriveConstantsPID.shI, DriveConstantsPID.shD);
+
+            constraints = new MecanumConstraints(STRAFE_BASE_CONSTRAINTS, TRACK_WIDTH);
 
         }
         turnController = new PIDFController(HEADING_PID);
         turnController.setInputBounds(0, 2 * Math.PI);
 
-        constraints = new MecanumConstraints(BASE_CONSTRAINTS, TRACK_WIDTH);
         follower = new HolonomicPIDVAFollower(xTRANSLATIONAL_PID, yTRANSLATIONAL_PID, HEADING_PID);
     }
 

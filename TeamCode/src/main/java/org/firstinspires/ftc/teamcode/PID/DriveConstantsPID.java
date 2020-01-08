@@ -32,7 +32,7 @@ import java.util.List;
 @Config
 public class DriveConstantsPID {
 
-    public static final boolean RUN_USING_PARAMTER_FROM_PROPERTIES = false;
+    public static final boolean RUN_USING_PARAMTER_FROM_PROPERTIES = true;
 
     public static boolean RUN_USING_ODOMETRY_WHEEL = true;
     public static boolean RUN_USING_IMU_LOCALIZER = false;
@@ -121,10 +121,13 @@ public class DriveConstantsPID {
      * forces acceleration-limited profiling).
      */
     public static DriveConstraints BASE_CONSTRAINTS = new DriveConstraints(
-            24.0, 12.0, 0,
-            Math.toRadians(90.0) + 0, Math.toRadians(45.0) + 0, 0.0
+            45.0, 20.0, 0.0,
+            Math.toRadians(180.0), Math.toRadians(180.0), 0.0
     );
-
+    public static DriveConstraints STRAFE_BASE_CONSTRAINTS = new DriveConstraints(
+            20.0, 10.0, 0.0,
+            Math.toRadians(180.0), Math.toRadians(180.0), 0.0
+    );
 
     public static double encoderTicksToInches(double ticks) {
         //double s = WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO * ticks / MOTOR_CONFIG.getTicksPerRev();

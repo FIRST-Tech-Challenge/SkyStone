@@ -35,10 +35,10 @@ public class StrafeTest extends LinearOpMode {
         DriveConstantsPID.updateConstantsFromProperties();
         DISTANCE = DriveConstantsPID.TEST_DISTANCE;
         SampleMecanumDriveBase drive = null;
-        if (DriveConstantsPID.USING_BULK_READ == false) //NEW Bulk Read Code
-            drive = new SampleMecanumDriveREV(hardwareMap, false);
+        if (DriveConstantsPID.USING_BULK_READ == false)
+            drive = new SampleMecanumDriveREV(hardwareMap, true);
         else
-            drive = new SampleMecanumDriveREVOptimized(hardwareMap, false);
+            drive = new SampleMecanumDriveREVOptimized(hardwareMap, true);
         drive.setBrakeonZeroPower(DriveConstantsPID.BRAKE_ON_ZERO);
 
 /*
@@ -50,7 +50,7 @@ public class StrafeTest extends LinearOpMode {
         //odometryStrafe(0.2, 24, false);
 
 */
-        RobotLog.dd(TAG, "trajectoryBuilder forward, DISTANCE: "+Double.toString(DISTANCE));
+        RobotLog.dd(TAG, "trajectoryBuilder strafe, DISTANCE: "+Double.toString(DISTANCE));
         Trajectory trajectory = drive.trajectoryBuilder()
                 .strafeLeft(DISTANCE)
                 .build();
@@ -61,6 +61,7 @@ public class StrafeTest extends LinearOpMode {
 
         drive.followTrajectorySync(trajectory);
         Localizer localizer = drive.getLocalizer();
+        /*
         if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL && (localizer!=null)) {
             StandardTrackingWheelLocalizer t = (StandardTrackingWheelLocalizer)localizer; // @TODO
             List<Double> odo_positions = t.getWheelPositions();
@@ -68,6 +69,7 @@ public class StrafeTest extends LinearOpMode {
             RobotLog.dd(TAG, "odometry positions");
             drive.print_list_double(odo_positions);
         }
+        */
 
         List<Double> positions = drive.getWheelPositions();
         RobotLog.dd(TAG, "wheel positions");

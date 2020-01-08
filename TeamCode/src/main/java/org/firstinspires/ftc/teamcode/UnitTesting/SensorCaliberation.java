@@ -13,7 +13,7 @@ import java.util.Locale;
  * Sensor Calibration TeleOpMode for team Hazmat
  * Displays the RGB Values of Color Sensors and TouchSensor
  */
-@Disabled
+
 @TeleOp(name = "HzSensorCalib", group = "TeleopTest")
 public class SensorCaliberation extends LinearOpMode{
 

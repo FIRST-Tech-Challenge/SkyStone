@@ -120,7 +120,7 @@ public class AutoUC1_Skystone_Park{
         callingOpMode.telemetry.update();
 
         // Move by distance X forward near SB5 : 6 inches to skystone
-        double robotToNearSkystone = 25; // was 27
+        double robotToNearSkystone = 24; // was 25
         autoUCChassis.runFwdBackLeftRight(robotToNearSkystone,0,0.2, callingOpMode);
 
         callingOpMode.sleep(500);
@@ -173,7 +173,7 @@ public class AutoUC1_Skystone_Park{
         callingOpMode.sleep(500);
 
         // Move forward 2 inches
-        autoUCChassis.runFwdBackLeftRight(2, 0, 0.1, callingOpMode);
+        autoUCChassis.runFwdBackLeftRight(4, 0, 0.1, callingOpMode);
         callingOpMode.sleep(500);
 
         //Grip the block
@@ -181,18 +181,18 @@ public class AutoUC1_Skystone_Park{
         callingOpMode.sleep(500);
 
         // Slide back to edge of B2, 10 inches
-        autoUCChassis.runFwdBackLeftRight(-8,0,0.1, callingOpMode); // distance was 8
+        autoUCChassis.runFwdBackLeftRight(-9,0,0.1, callingOpMode); // distance was 8
 
         callingOpMode.sleep(200);
         // Turn 90 degrees Left
-        autoUCChassis.turnby90degree(playingAlliance*(-1),0.05, callingOpMode); // was 0.1
+        autoUCChassis.turnby90degree(playingAlliance*(-1),0.1, callingOpMode);
         callingOpMode.sleep(500);
 
         //Lift Arm
         autoUCArm.moveArm_aboveFoundationLevel();
 
        //Move forward till Chassis bumber limit switch is pressed.
-        double expectedMaxDistanceToFoundation = 70; // was 40 --> 70
+        double expectedMaxDistanceToFoundation = 70 + (5 - skystonePosition) * stoneTostone;; // was 40 --> 70
         autoUCChassis.runFwdTill_frontleftChassisTouchSensor_Pressed(expectedMaxDistanceToFoundation, 0.25, callingOpMode);
 
         // Drop block
@@ -203,9 +203,9 @@ public class AutoUC1_Skystone_Park{
         // Park near wall
         // Move back by distance or till Chassis light sensor does not detect Blue line to be under blue skybridge
         if (playingAlliance == 1) {
-            autoUCChassis.runTill_ChassisRightColorSensorIsBlue(-55, 0, 0.25, callingOpMode);
+            autoUCChassis.runTill_ChassisRightColorSensorIsBlue(-40, 0, 0.2, callingOpMode);
         } else {
-            autoUCChassis.runTill_ChassisLeftColorSensorIsRed(-55, 0, 0.25, callingOpMode);
+            autoUCChassis.runTill_ChassisLeftColorSensorIsRed(-40, 0, 0.2, callingOpMode);
         }
 
 

@@ -120,7 +120,7 @@ public class AutoUC4_Skystone_MoveFdn_Park {
         callingOpMode.telemetry.update();
 
         // Move by distance X forward near SB5 : 6 inches to skystone
-        double robotToNearSkystone = 25; // was 27
+        double robotToNearSkystone = 24; // was 27
         autoUCChassis.runFwdBackLeftRight(robotToNearSkystone,0,0.2, callingOpMode);
 
         callingOpMode.sleep(500);
@@ -173,7 +173,7 @@ public class AutoUC4_Skystone_MoveFdn_Park {
         callingOpMode.sleep(500);
 
         // Move forward 2 inches
-        autoUCChassis.runFwdBackLeftRight(2, 0, 0.1, callingOpMode);
+        autoUCChassis.runFwdBackLeftRight(4, 0, 0.1, callingOpMode);
         callingOpMode.sleep(500);
 
         //Grip the block
@@ -181,17 +181,17 @@ public class AutoUC4_Skystone_MoveFdn_Park {
         callingOpMode.sleep(500);
 
         // Slide back to edge of B2, 10 inches
-        autoUCChassis.runFwdBackLeftRight(-8,0,0.1, callingOpMode); // distance was 8
+        autoUCChassis.runFwdBackLeftRight(-9,0,0.1, callingOpMode); // distance was 8
 
         callingOpMode.sleep(200);
         // Turn 90 degrees Left
-        autoUCChassis.turnby90degree(playingAlliance*(-1),0.05, callingOpMode); // was 0.1
+        autoUCChassis.turnby90degree(playingAlliance*(-1),0.1, callingOpMode); // was 0.1
         callingOpMode.sleep(500);
 
 
        //Move forward till Chassis bumber limit switch is pressed.
-        double expectedMaxDistanceToFoundation = 70 + (5 - skystonePosition) * stoneTostone; // was 40 --> 70
-        autoUCChassis.runFwdBackLeftRight(expectedMaxDistanceToFoundation, 0, 0.25, callingOpMode) ;
+        double expectedMaxDistanceToFoundation = 87 + (5 - skystonePosition) * stoneTostone; // was 40 --> 70
+        autoUCChassis.runFwdBackLeftRight(expectedMaxDistanceToFoundation, 0, 0.35, callingOpMode) ;
 
         //Lift Arm
         autoUCArm.moveArm_aboveFoundationLevel();
@@ -200,11 +200,14 @@ public class AutoUC4_Skystone_MoveFdn_Park {
         autoUCChassis.turnby90degree(playingAlliance,0.05, callingOpMode); // was 0.1
 
         //Move forward till Chassis bumber limit switch is pressed
-        autoUCChassis.runFwdTill_frontleftChassisTouchSensor_Pressed(10, 0.25, callingOpMode);
+        autoUCChassis.runFwdTill_frontleftChassisTouchSensor_Pressed(12, 0.25, callingOpMode);
 
         // Drop block
         autoUCIntake.openGrip();
         callingOpMode.sleep(500);
+
+        //Move right 10 inches
+        autoUCChassis.runFwdBackLeftRight(stoneTostone, playingAlliance, 0.1, callingOpMode);
 
         // Drop Arm
         autoUCArm.moveArm_onFoundationLevel();
@@ -216,7 +219,7 @@ public class AutoUC4_Skystone_MoveFdn_Park {
         autoUCChassis.runFwdBackLeftRight(4,-playingAlliance,0.1, callingOpMode);
 
         // Move Back
-        autoUCChassis.runFwdBackLeftRight(-32,0,0.1,callingOpMode);
+        autoUCChassis.runFwdBackLeftRight(-32,0,0.1, callingOpMode);
 
         //Lift Arm to Above foundation level and release hook
         autoUCArm.moveArm_aboveFoundationLevel();
@@ -233,7 +236,7 @@ public class AutoUC4_Skystone_MoveFdn_Park {
         callingOpMode.sleep(500);
 
         //Move out of foundation area
-        autoUCChassis.runFwdBackLeftRight(30, playingAlliance, 0.25, callingOpMode);
+        autoUCChassis.runFwdBackLeftRight(30, playingAlliance, 0.35, callingOpMode);
 
         //Move Arm to ground Level
         autoUCArm.turnArmBrakeModeOn();
@@ -242,7 +245,7 @@ public class AutoUC4_Skystone_MoveFdn_Park {
 
         //Optional : Move to park near skybridge Neutral
         if (parkingPlaceNearSkyBridge){
-            autoUCChassis.runFwdBackLeftRight(25,0,0.25, callingOpMode);
+            autoUCChassis.runFwdBackLeftRight(25,0,0.35, callingOpMode);
         }
 
         //Turn by 90 degrees to point arm forward
@@ -252,10 +255,10 @@ public class AutoUC4_Skystone_MoveFdn_Park {
         //Move right by distance or till Chassis light sensor does not detect Blue line to be under blue skybridge
         if (playingAlliance == 1) {
             //Blue Alliance
-            autoUCChassis.runTill_ChassisRightColorSensorIsBlue(-30, 0, 0.25, callingOpMode);
+            autoUCChassis.runTill_ChassisRightColorSensorIsBlue(-30, 0, 0.2, callingOpMode);
         } else {
             //Red Alliance
-            autoUCChassis.runTill_ChassisRightColorSensorIsRed(-30, 0, 0.25, callingOpMode);
+            autoUCChassis.runTill_ChassisRightColorSensorIsRed(-30, 0, 0.2, callingOpMode);
         }
 
         //Reached Parking position

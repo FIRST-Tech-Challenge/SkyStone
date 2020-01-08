@@ -67,34 +67,34 @@ public class AutoUC3_Park {
             if (playingAlliance == 1) {
                 //Optional : Move to park near skybridge Neutral
                 if (parkingPlaceNearSkyBridge){
-                    autoUCChassis.runFwdBackLeftRight(25, playingAlliance,0.25, callingOpMode);
+                    autoUCChassis.runFwdBackLeftRight(27, playingAlliance,0.25, callingOpMode);
                 }
                 //Blue Alliance
-                autoUCChassis.runTill_ChassisRightColorSensorIsBlue(-30, 0, 0.25, callingOpMode);
+                autoUCChassis.runTill_ChassisRightColorSensorIsBlue(-30, 0, 0.2, callingOpMode);
             } else {
                 //Optional : Move to park near skybridge Neutral
                 if (parkingPlaceNearSkyBridge){
-                    autoUCChassis.runFwdBackLeftRight(25, playingAlliance,0.25, callingOpMode);
+                    autoUCChassis.runFwdBackLeftRight(27, playingAlliance,0.25, callingOpMode);
                 }
                 //Red Alliance
-                autoUCChassis.runTill_ChassisRightColorSensorIsRed(-30, 0, 0.25, callingOpMode);
+                autoUCChassis.runTill_ChassisRightColorSensorIsRed(-30, 0, 0.2, callingOpMode);
             }
         } else {
             if (playingAlliance == 1) {
                 //Optional : Move to park near skybridge Neutral
                 if (parkingPlaceNearSkyBridge){
-                    autoUCChassis.runFwdBackLeftRight(25, -playingAlliance,0.25, callingOpMode);
+                    autoUCChassis.runFwdBackLeftRight(27, -playingAlliance,0.25, callingOpMode); // Was 22
                 }
                 //Blue Alliance
                 //runTill_ChassisLeftColorSensorIsBlue(30, -1, 0.2);
-                autoUCChassis.runTill_ChassisRightColorSensorIsBlue(-30, 0, 0.25, callingOpMode);
+                autoUCChassis.runTill_ChassisRightColorSensorIsBlue(-30, 0, 0.2, callingOpMode);
             } else {
                 //Optional : Move to park near skybridge Neutral
                 if (parkingPlaceNearSkyBridge){
-                    autoUCChassis.runFwdBackLeftRight(25, -playingAlliance,0.25, callingOpMode);
+                    autoUCChassis.runFwdBackLeftRight(27, -playingAlliance,0.25, callingOpMode);
                 }
                 //Red Alliance
-                autoUCChassis.runTill_ChassisRightColorSensorIsRed(-30, 0, 0.25, callingOpMode);
+                autoUCChassis.runTill_ChassisRightColorSensorIsRed(-30, 0, 0.2, callingOpMode);
             }
         }
         //Reached Parking position

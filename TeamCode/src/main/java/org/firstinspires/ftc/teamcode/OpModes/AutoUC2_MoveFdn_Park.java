@@ -129,7 +129,7 @@ public class AutoUC2_MoveFdn_Park {
 
         //Optional : Move to park near skybridge Neutral
         if (parkingPlaceNearSkyBridge){
-            autoUCChassis.runFwdBackLeftRight(25,0,0.25, callingOpMode);
+            autoUCChassis.runFwdBackLeftRight(27,0,0.25, callingOpMode); // Was 25
         }
 
         //Turn by 90 degrees to point arm forward
@@ -139,10 +139,10 @@ public class AutoUC2_MoveFdn_Park {
         //Move right by distance or till Chassis light sensor does not detect Blue line to be under blue skybridge
         if (playingAlliance == 1) {
             //Blue Alliance
-            autoUCChassis.runTill_ChassisRightColorSensorIsBlue(-30, 0, 0.25, callingOpMode);
+            autoUCChassis.runTill_ChassisRightColorSensorIsBlue(-30, 0, 0.2, callingOpMode);
         } else {
             //Red Alliance
-            autoUCChassis.runTill_ChassisRightColorSensorIsRed(-30, 0, 0.25, callingOpMode);
+            autoUCChassis.runTill_ChassisRightColorSensorIsRed(-30, 0, 0.2, callingOpMode);
         }
 
         //Reached Parking position

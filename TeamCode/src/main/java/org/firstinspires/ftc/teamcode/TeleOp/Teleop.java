@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.All.FourWheelMecanumDrivetrain;
@@ -51,6 +52,8 @@ public class Teleop extends LinearOpMode {
 
     private FourWheelMecanumDrivetrain drivetrain;
     private Lift lift;
+
+    private long lastUpdateTime;
 
     public void runOpMode() {
         hwMap = new HardwareMap(hardwareMap);
@@ -104,10 +107,13 @@ public class Teleop extends LinearOpMode {
 
         telemetry.addData("Status", "Ready");
         hwMap.clawInit.setPosition(TeleopConstants.clawInitPosCapstone);
+        hwMap.redAutoClawJoint1.setPosition(TeleopConstants.autoClaw1Stowed);
+        hwMap.redAutoClawJoint2.setPosition(TeleopConstants.autoClaw2Stowed);
 
         waitForStart();
 
         driveLoop();
+        liftLoop();
         toggleLoop();
 
         while (opModeIsActive()) {
@@ -124,22 +130,6 @@ public class Teleop extends LinearOpMode {
 
             if (gamepad2.y && !buttonLogic.get(2).getState()[0] && buttonLogic.get(1).getState()[0])
                 buttonLogic.get(2).manualActivate(true, false);
-
-            //------------------------------===Servos & Intake/Outake===------------------------------------------
-
-            //for(OnOffButton onOffButton : buttonLogic)
-            //    onOffButton.getGamepadStateAndRun();
-
-            //detectBlock();
-
-            //------------------------------===Linear Sliders===------------------------------------------
-
-            if (gamepad2.right_stick_y != 0) {
-                lift.moveLift(gamepad2.right_stick_y);
-            } else {
-                lift.stop();
-            }
-            lift.detectResetEncoder();
 
             //------------------------------===Capstone===------------------------------------------
 
@@ -212,6 +202,18 @@ public class Teleop extends LinearOpMode {
             } else if (!gamepad1.back && !gamepad1.start && switchBlocker) {
                 switchBlocker = false;
             }
+
+            telemetry.addData("LeftForwardOdometry", hwMap.leftIntake.getCurrentPosition());
+            telemetry.addData("RightForwardOdometry", hwMap.liftTwo.getCurrentPosition());
+            telemetry.addData("SidewaysOdometry", hwMap.rightIntake.getCurrentPosition());
+
+            telemetry.addData("FrontLeft", hwMap.frontLeft.getCurrentPosition());
+            telemetry.addData("BackLeft", hwMap.backLeft.getCurrentPosition());
+            telemetry.addData("FrontRight", hwMap.frontRight.getCurrentPosition());
+            telemetry.addData("BackRight", hwMap.backRight.getCurrentPosition());
+
+            telemetry.addData("LiftOne", hwMap.liftOne.getCurrentPosition());
+
         }
 
 
@@ -310,10 +312,11 @@ public class Teleop extends LinearOpMode {
         Thread drive = new Thread() {
             public void run() {
                 while (opModeIsActive()) {
-                    telemetry.addData("Info", "Press START + BACK on GAMEPAD1 to switch drive modes!");
+                    // telemetry.addData("Info", "Press START + BACK on GAMEPAD1 to switch drive modes!");
 
                     if (tobyMode) {
-                        telemetry.addData("Current Drive Mode", "TOBY MODE");
+                        // maybe move these status teleop to main thread
+                        // telemetry.addData("Current Drive Mode", "TOBY MODE");
                         if (!(gamepad1.left_stick_x == 0 && gamepad1.left_stick_y == 0)) {
 
                             double speed;
@@ -325,7 +328,7 @@ public class Teleop extends LinearOpMode {
                             } else if (gamepad1.left_stick_x == 0) {
                                 speed = Math.abs(gamepad1.left_stick_y);
                             } else {
-                                speed = Math.min(Math.abs(gamepad1.left_stick_x) + Math.abs(gamepad1.right_stick_y), 1);
+                                speed = Math.min(Math.abs(gamepad1.left_stick_x) + Math.abs(gamepad1.left_stick_y), 1);
                             }
 
                             double angle = Math.atan2(gamepad1.left_stick_x, -gamepad1.left_stick_y);
@@ -369,7 +372,7 @@ public class Teleop extends LinearOpMode {
                             drivetrain.stop();
                         }
                     } else {
-                        telemetry.addData("Current Drive Mode", "CLASSIC MODE");
+                        // telemetry.addData("Current Drive Mode", "CLASSIC MODE");
                         drivetrain.setSpeedMultiplier(turboSpeed);
                         drivetrain.setMotorZeroPower(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -396,17 +399,33 @@ public class Teleop extends LinearOpMode {
                         }
                     }
 
-                    telemetry.addData("LeftForwardOdometry", hwMap.leftIntake.getCurrentPosition());
-                    telemetry.addData("RightForwardOdometry", hwMap.liftTwo.getCurrentPosition());
-                    telemetry.addData("SidewaysOdometry", hwMap.rightIntake.getCurrentPosition());
+                    telemetry.addData("Gamepad 1 State", gamepad1.toString());
 
-                    telemetry.addData("FrontLeft", hwMap.frontLeft.getCurrentPosition());
-                    telemetry.addData("BackLeft", hwMap.backLeft.getCurrentPosition());
-                    telemetry.addData("FrontRight", hwMap.frontRight.getCurrentPosition());
-                    telemetry.addData("BackRight", hwMap.backRight.getCurrentPosition());
-
-                    telemetry.addData("LiftOne", hwMap.liftOne.getCurrentPosition());
+                    long deltaTime = System.nanoTime() - lastUpdateTime;
+                    telemetry.addData("Time since last update", deltaTime);
+                    if (deltaTime != 0) {
+                        telemetry.addData("UPS", 1000000000 / deltaTime);
+                    }
                     telemetry.update();
+
+                    lastUpdateTime = System.nanoTime();
+
+                }
+            }
+        };
+        drive.start();
+    }
+
+    private void liftLoop() {
+        Thread drive = new Thread() {
+            public void run() {
+                while (opModeIsActive()) {
+                    if (gamepad2.right_stick_y != 0) {
+                        lift.moveLift(gamepad2.right_stick_y);
+                    } else {
+                        lift.stop();
+                    }
+                    // lift.detectResetEncoder();
                 }
             }
         };

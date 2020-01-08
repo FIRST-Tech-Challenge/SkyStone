@@ -39,7 +39,7 @@ import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.rpmToVelocity
 public class DriveFeedforwardTuner extends LinearOpMode {
     public static final double MAX_POWER = 0.7;
     //public static final double DISTANCE = 100;
-    public static final double DISTANCE = DriveConstantsPID.TEST_DISTANCE;
+    public static double DISTANCE = 0;
     private String TAG = "DriveFeedforwardTuner";
     @Override
     public void runOpMode() throws InterruptedException {

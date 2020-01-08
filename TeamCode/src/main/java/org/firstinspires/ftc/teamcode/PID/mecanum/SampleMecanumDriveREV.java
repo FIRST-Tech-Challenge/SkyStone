@@ -69,7 +69,7 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
             if (RUN_USING_ENCODER) {
                 motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
-            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            motor.setZeroPowerBehavior(DriveConstants.BRAKE_ON_ZERO?DcMotor.ZeroPowerBehavior.BRAKE:DcMotor.ZeroPowerBehavior.FLOAT);
         }
 
         if (RUN_USING_ENCODER && MOTOR_VELO_PID != null) {

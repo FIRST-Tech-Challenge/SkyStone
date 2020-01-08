@@ -156,7 +156,11 @@ public class newAutonomous extends LinearOpMode{
                     else {
                         Drive.turnLeftDistance(0.5,50);
                     }
-                    Drive.moveForwardDistance(0.8, 10.0);
+                    FoundationGrabber.open();
+                    Drive.moveForwardDistance(0.8, 57.0);
+                    Drive.turnLeftDistance(0.8, 100);
+                    Drive.moveForwardDistance(0.8,60.0);
+                    Grabber.open();
                     newState(State.Stop);
                     break;
 

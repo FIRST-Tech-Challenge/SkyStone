@@ -1512,4 +1512,8 @@ public class Robot {
         odometryPoints.append(y);
         odometryPoints.append("\n");
     }
+
+    public boolean isDebug() {
+        return isDebug;
+    }
 }

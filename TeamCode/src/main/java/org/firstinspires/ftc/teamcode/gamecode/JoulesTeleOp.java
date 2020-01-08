@@ -35,10 +35,10 @@ public class JoulesTeleOp extends TeleOpMode {
             float vertical = -gamepad1.right_stick_y;
             float horizontal = gamepad1.right_stick_x;
             float pivot = gamepad1.left_stick_x;
-            joules.FrontRight.setPower(-pivot + (vertical - horizontal));
+            joules.FrontRight.setPower(-pivot + vertical - horizontal);
             joules.BackRight.setPower(-pivot + vertical + horizontal);
             joules.FrontLeft.setPower(pivot + vertical + horizontal);
-            joules.BackLeft.setPower(pivot + (vertical - horizontal));
+            joules.BackLeft.setPower(pivot + vertical - horizontal);
         }
 
         if (joy2.buttonX()){

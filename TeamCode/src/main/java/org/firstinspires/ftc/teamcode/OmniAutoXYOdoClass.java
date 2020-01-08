@@ -108,10 +108,11 @@ public abstract class OmniAutoXYOdoClass extends LinearOpMode {
      * @param x           - The X field coordinate to go to.
      * @param y           - The Y field coordinate to go to.
      * @param robotAngle  - The angle the robot should try to face when reaching destination.
+	 * @param maxSpeed    - Sets the speed when we are driving through the point.
 	 * @param passThrough - Slows the robot down to stop at destination coordinate.
      * @return - Boolean true we have reached destination, false we have not
      */
-    public boolean driveToXY(double x, double y, double robotAngle, boolean passThrough) {
+    public boolean driveToXY(double x, double y, double robotAngle, double maxSpeed, boolean passThrough) {
 		boolean reachedDestination = false;
         double deltaX = x - MyPosition.worldXPosition;
         double deltaY = y - MyPosition.worldYPosition;
@@ -127,7 +128,7 @@ public abstract class OmniAutoXYOdoClass extends LinearOpMode {
 		if(!passThrough) {
             driveSpeed = magnitude * 0.014;
 		} else {
-			driveSpeed = 1.0;
+			driveSpeed = maxSpeed;
 		}
 
 		// Check if we passed through our point

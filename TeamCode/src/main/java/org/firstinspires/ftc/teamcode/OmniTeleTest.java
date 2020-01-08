@@ -162,6 +162,7 @@ public class OmniTeleTest extends OmniAutoClass {
             }
 
             if (!aHeld && aPressed) {
+                robot.clawdricopter.setPosition(robot.CLAWDRICOPTER_FRONT);
                 aHeld = true;
 
             } else if (!aPressed) {

@@ -23,6 +23,9 @@ public class ConceptAutonomousRedTest extends LinearOpMode {
     ControlledLift controlledLift;
     ControlledExtender controlledExtender;
 
+    int extenderEncoderValiue = 4;
+    int liftEncoderValue = 1;
+
     @Override
     public void runOpMode() {
         colorTools = new ColorTools();
@@ -35,24 +38,28 @@ public class ConceptAutonomousRedTest extends LinearOpMode {
 
         generalTools.openClamp();
         generalTools.releaseFoundation();
+        controlledLift.start(-liftEncoderValue, 0.2);
 
         waitForStart();
-
-        if (opModeIsActive()) {
-            controlledLift.start(15, 0.2);
-        }
-
-        if (opModeIsActive()) {
-            controlledExtender.start(15, 0.2);
-        }
         
-        if (opModeIsActive() && !colorTools.isRed(robot.color_back)) {
+        controlledLift.stop();
+
+        if (opModeIsActive() ) {
+            controlledExtender.start(extenderEncoderValiue, 0.2);
+            while(!controlledExtender.endReached() && opModeIsActive()) {}
+            controlledExtender.stop();
+
+            generalTools.stopForMilliSeconds(1000);
+
             controlledDrive.start(70, 0, 0.4);
             while(!controlledDrive.endReached() && opModeIsActive()) {}
             controlledDrive.stop();
 
+            controlledLift.start(liftEncoderValue, 0.2); //lowers the lift
             generalTools.stopForMilliSeconds(500);
             generalTools.closeClamp();
+
+            generalTools.stopForMilliSeconds(500);
         }
 
         // hey... you should have grabbed a stone now...
@@ -67,13 +74,17 @@ public class ConceptAutonomousRedTest extends LinearOpMode {
 
         // you are back at the wall
 
+
         if (opModeIsActive()) {
             omniWheel.setMotors(0.0, 0.1, 0);
             while (!colorTools.isRed(robot.color_back) && opModeIsActive()) {}
             omniWheel.setMotors(0, 0, 0);
+
         }
 
+
         // you are now below the bridge
+
 
         if (opModeIsActive()) {
             backTillButtons();
@@ -95,21 +106,25 @@ public class ConceptAutonomousRedTest extends LinearOpMode {
 
             // you are now in the corner
             // you are now as much as possible close to the wall
+
         if (opModeIsActive()) {
-            controlledLift.start(15, 0.2);
+            controlledExtender.start(4, 0.2);
+            while(!controlledExtender.endReached() && opModeIsActive()) {}
+            controlledExtender.stop();
         }
 
-            // you have now lifted the lift up
-
         if (opModeIsActive()) {
-            controlledExtender.start(15, 0.2);
+            controlledLift.start(-0.5, 0.2);
+            while(!controlledLift.endReached() && opModeIsActive()) {}
+            controlledLift.stop();
         }
 
-            // you have now your arm out
+            // you have now lifted the lift up and extended the arm
+
 
 
         if (opModeIsActive()) {
-            while (!colorTools.isRed(robot.color_front)) {
+            while (!colorTools.isRed(robot.color_front)&&opModeIsActive()) {
                 omniWheel.setMotors(0.2, 0, 0);
             }
         }
@@ -118,6 +133,7 @@ public class ConceptAutonomousRedTest extends LinearOpMode {
 
         if (opModeIsActive()) {
             generalTools.openClamp();
+            generalTools.stopForMilliSeconds(700);
         }
 
             // you have now released the stone on the foundation
@@ -141,13 +157,17 @@ public class ConceptAutonomousRedTest extends LinearOpMode {
             // you have now released the foundation
 
         if (opModeIsActive()) {
-            controlledExtender.start(-15, 0.2);
+            controlledExtender.start(-extenderEncoderValiue, 0.2);
+            while(!controlledExtender.endReached() && opModeIsActive()) {}
+            controlledExtender.stop();
         }
 
             // you have now put the arm back in
 
         if (opModeIsActive()) {
-            controlledLift.start(-20, 0.2);
+            controlledLift.start(0.5, 0.2);
+            while(!controlledLift.endReached() && opModeIsActive()) {}
+            controlledLift.stop();
         }
 
             // you have now lifted the lift down

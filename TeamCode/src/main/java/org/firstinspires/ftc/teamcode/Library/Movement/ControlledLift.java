@@ -50,7 +50,7 @@ public class ControlledLift {
     }
 
     public boolean endReached() {
-        return !(robot.motor_lift_left.isBusy() || robot.motor_lift_right.isBusy());
+        return !(robot.motor_lift_left.isBusy() && robot.motor_lift_right.isBusy());
     }
 
     public void stop() {

@@ -37,11 +37,11 @@ public class GeneralTools {
     /**
      * set claw to close
      */
-    public void openClamp () {
+    public void closeClamp () {
         robot.servo_grab.setPosition(0.5);
     }
 
-    public void closeClamp() {
+    public void openClamp() {
         robot.servo_grab.setPosition(1);
     }
 

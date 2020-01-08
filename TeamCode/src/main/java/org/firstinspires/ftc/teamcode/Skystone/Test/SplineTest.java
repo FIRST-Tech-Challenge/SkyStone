@@ -224,12 +224,5 @@ public class SplineTest extends LinearOpMode
         waitForStart();
         robot.intializeIMU();
         robot.changeRunModeToUsingEncoder();
-
-        while (opModeIsActive()){
-            robot.finalTurn(90);
-
-            sleep(500);
-            break;
-        }
     }
 }

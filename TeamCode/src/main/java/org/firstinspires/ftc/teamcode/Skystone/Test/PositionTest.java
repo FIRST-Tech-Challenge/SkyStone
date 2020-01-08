@@ -26,7 +26,6 @@ public class PositionTest  extends LinearOpMode {
         position2D.startOdometry();
 
         while (opModeIsActive()){
-            robot.finalTurn(90);
             sleep(5000);
             break;
         }

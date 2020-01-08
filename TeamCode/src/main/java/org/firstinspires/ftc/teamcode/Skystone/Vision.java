@@ -110,10 +110,8 @@ public class Vision {
         }
     }
 
-    public Location runDetection(final boolean deactiviated, final boolean isRed) throws InterruptedException{
+    public Location runDetection(final boolean deactiviated, final boolean isRed){
         if(vuforia != null) {
-            final FtcRobotControllerActivity ftcRobotControllerActivity = (FtcRobotControllerActivity) AppUtil.getInstance().getRootActivity();
-
             final ArrayList<Location> resultLocation = new ArrayList<>();
 
             final long startTime = SystemClock.elapsedRealtime();
@@ -121,7 +119,6 @@ public class Vision {
             final ExecutorService executorService = ThreadPool.getDefault();
 
             while (linearOpMode.opModeIsActive() && resultLocation.size() == 0 && SystemClock.elapsedRealtime() - startTime <= 1000) {
-
                 final ConditionVariable resultAvaliable = new ConditionVariable(false);
 
                 vuforia.getFrameOnce(Continuation.create(executorService, new Consumer<Frame>() {
@@ -219,7 +216,6 @@ public class Vision {
         }catch (Exception e){
 
         }
-
         //  Instantiate the Vuforia engine
     }
 }

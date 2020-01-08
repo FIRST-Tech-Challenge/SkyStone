@@ -25,8 +25,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.Skystone.Auto.Actions.Action;
 import org.firstinspires.ftc.teamcode.Skystone.Auto.Actions.Enums.ActionState;
-import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.CurvePoint;
-import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.PathPoints;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.SplineGenerator;
 
@@ -36,10 +34,8 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Vector;
 
 import static org.firstinspires.ftc.teamcode.Skystone.MathFunctions.angleWrap;
-import static org.firstinspires.ftc.teamcode.Skystone.MathFunctions.lineCircleIntersection;
 
 public class Robot {
     //Drive Motors
@@ -215,9 +211,6 @@ public class Robot {
 
         capstoneServo = getServo("markerServo");
         backStopper = getServo("backStopper");
-//
-//        topBarDistance = getRev2mDistanceSensor("topBarDistance");
-//        trayDistance = getRev2mDistanceSensor("trayDistance");
     }
 
     private DcMotor getDcMotor(String name) {
@@ -324,58 +317,6 @@ public class Robot {
         clamp.setPosition(CLAMP_SERVO_INTAKEPOSITION);
     }
 
-//    //normal use method default 2 second kill time
-//    public void finalTurn(double targetHeading, double turnSpeed) {
-//        finalTurn(targetHeading, turnSpeed, 2500);
-//    }
-
-    /**
-     * crappy finalTurn, random deceleration
-     * turns to the absolute heading using odometry
-     *
-     * @param targetHeadingRadians
-     */
-    public void finalTurn(double targetHeadingRadians) {
-
-        targetHeadingRadians = angleWrap(targetHeadingRadians);
-
-        this.setDrivetrainMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        double power = 1;
-
-        double direction = 0;
-
-        while (linearOpMode.opModeIsActive()) {
-
-            // find which direction to turn
-            if (targetHeadingRadians > anglePos) {
-                direction = 1;
-            } else if (targetHeadingRadians < anglePos) {
-                direction = -1;
-            }
-
-            // lol deceleration
-            if (Math.abs(targetHeadingRadians - anglePos) < Math.toRadians(0.15)) {
-                break;
-            } else if (Math.abs(targetHeadingRadians - anglePos) < Math.toRadians(5)) {
-                power = 0.15;
-            } else if (Math.abs(targetHeadingRadians - anglePos) < Math.toRadians(30)) {
-                power = 0.2;
-            } else if (Math.abs(targetHeadingRadians - anglePos) < Math.toRadians(45)) {
-                power = 0.4;
-            }
-
-            // sets the powers
-            fLeft.setPower(power * direction);
-            bLeft.setPower(power * direction);
-            fRight.setPower(-power * direction);
-            bRight.setPower(-power * direction);
-        }
-
-        // upon "break"
-        brakeRobot();
-    }
-
     /**
      * sets all the motor speeds independently
      *
@@ -428,7 +369,6 @@ public class Robot {
      */
     public void moveOuttakeToStoneLevel(int stoneLevel) {
         int outtakeSpoolTargetEncoderPosition = -(STONE_FIRSTLEVEL_POSITION + (stoneLevel * STONE_LEVEL_INCREMENT_TICKS));
-        long startTime = SystemClock.elapsedRealtime();
 
         isMovingLift = true;
         moveLift(outtakeSpoolTargetEncoderPosition);
@@ -470,10 +410,6 @@ public class Robot {
     /**
      * Move outtake using specified positions + actions
      */
-
-    boolean hasExtendedOuttake = false;
-    boolean hasRetractedOuttake = false;
-
     public void moveOuttake() {
         // Move outtake spool motors
         outtakeSpool.setTargetPosition(spoolTargetEncoderTick);
@@ -654,9 +590,6 @@ public class Robot {
         this.setDrivetrainMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
-    /**
-     * idk
-     */
     public void driveMotorsBreakZeroBehavior() {
         //sets drive motors to brake mode
         fLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -828,214 +761,6 @@ public class Robot {
         }
     }
 
-    /**
-     * PURE PURSUIT SECTION
-     */
-
-    public boolean followCurve(double[][] points, double followAngle, double followDistance, double angleLockRadians, double angleLockDistance) {
-
-        PathPoints path = new PathPoints(points, followDistance);
-
-        Vector<CurvePoint> allPoints = path.targetPoints;
-
-        // for angle locking
-        Point secondToLastPoint = new Point(points[points.length - 2][0], points[points.length - 2][1]);
-        Point lastPoint = new Point(points[points.length - 1][0], points[points.length - 1][1]);
-        double lastAngle = Math.atan2(lastPoint.y - secondToLastPoint.y, lastPoint.x - secondToLastPoint.x);
-
-        Vector<CurvePoint> pathExtended = (Vector<CurvePoint>) allPoints.clone();
-
-        PointWithIndex distanceAlongPath = distanceAlongPath(allPoints, robotPos);
-        int currFollowIndex = distanceAlongPath.index + 1;
-
-        CurvePoint followMe = getFollowPointPath(pathExtended, robotPos, allPoints.get(currFollowIndex).followDistance);
-
-        pathExtended.set(pathExtended.size() - 1, extendLine(allPoints.get(allPoints.size() - 2), allPoints.get(allPoints.size() - 1), allPoints.get(allPoints.size() - 1).pointLength * 1.5));
-
-        double distanceToEnd = Math.hypot(distanceAlongPath.x - allPoints.get(allPoints.size() - 1).x, distanceAlongPath.y - allPoints.get(allPoints.size() - 1).y);
-
-        if (distanceToEnd <= followMe.followDistance + 15 || Math.hypot(robotPos.x - allPoints.get(allPoints.size() - 1).x, robotPos.y - allPoints.get(allPoints.size() - 1).y) < followMe.followDistance + 15) {
-            followMe.setPoint(allPoints.get(allPoints.size() - 1).toPoint());
-        }
-
-        // check if finished pp
-        if ((distanceToEnd < 1)) {
-            return false;
-        }
-
-        // get the movements
-        goToPoint(followMe.x, followMe.y, followMe.moveSpeed, followMe.turnSpeed, followAngle, true);
-
-        // angle lock
-        if (distanceToEnd < angleLockDistance) {
-            telemetry.addLine("TURNMOVEMENT: " + turnMovement);
-            telemetry.addLine("go: " + anglePos);
-            telemetry.update();
-            if (Math.abs(anglePos - angleLockRadians) < Math.toRadians(2)) {
-                followAngle = 0;
-            } else {
-                turnMovement = (angleLockRadians - angleWrap(anglePos + 2 * Math.PI)) / Math.PI;
-            }
-        }
-
-        // get the motor powers
-        applyMove();
-        return true;
-    }
-
-    public void moveFollowCurve(double[][] points, double followAngle, double followDistance, double angleLockRadians, double angleLockDistance) {
-        //pathDistance = Math.hypot(points.get(points.size() - 1).x, points.get(points.size() - 1).y);
-        while (linearOpMode.opModeIsActive()) {
-
-            // if followCurve returns false then it is ready to stop
-            // else, it moves
-
-            if (!followCurve(points, followAngle, followDistance, angleLockRadians, angleLockDistance)) {
-                brakeRobot();
-                return;
-            }
-        }
-    }
-
-    public boolean followCurve(double[][] points, double followAngle, double followDistance) {
-
-        PathPoints path = new PathPoints(points, followDistance);
-
-        Vector<CurvePoint> allPoints = path.targetPoints;
-
-        Vector<CurvePoint> pathExtended = (Vector<CurvePoint>) allPoints.clone();
-
-        PointWithIndex distanceAlongPath = distanceAlongPath(allPoints, robotPos);
-        int currFollowIndex = distanceAlongPath.index + 1;
-
-        CurvePoint followMe = getFollowPointPath(pathExtended, robotPos, allPoints.get(currFollowIndex).followDistance);
-
-        pathExtended.set(pathExtended.size() - 1, extendLine(allPoints.get(allPoints.size() - 2), allPoints.get(allPoints.size() - 1), allPoints.get(allPoints.size() - 1).pointLength * 1.5));
-
-        double distanceToEnd = Math.hypot(distanceAlongPath.x - allPoints.get(allPoints.size() - 1).x, distanceAlongPath.y - allPoints.get(allPoints.size() - 1).y);
-
-        if (distanceToEnd <= followMe.followDistance + 15 || Math.hypot(robotPos.x - allPoints.get(allPoints.size() - 1).x, robotPos.y - allPoints.get(allPoints.size() - 1).y) < followMe.followDistance + 15) {
-            followMe.setPoint(allPoints.get(allPoints.size() - 1).toPoint());
-        }
-
-        double decelerationScaleFactor = Range.clip(distanceToEnd / 12, -1, 1);
-
-        goToPoint(followMe.x, followMe.y, followMe.moveSpeed * decelerationScaleFactor, followMe.turnSpeed * decelerationScaleFactor, followAngle, true);
-        if ((distanceToEnd < 0.5)) {
-            return false;
-        }
-
-        applyMove();
-        return true;
-    }
-
-    public void moveFollowCurve(double[][] points, double followAngle, double followDistance) {
-        //pathDistance = Math.hypot(points.get(points.size() - 1).x, points.get(points.size() - 1).y);
-        while (linearOpMode.opModeIsActive()) {
-
-            // if followCurve returns false then it is ready to stop
-            // else, it moves
-
-            if (!followCurve(points, followAngle, followDistance)) {
-                brakeRobot();
-                return;
-            }
-        }
-    }
-
-    public PointWithIndex distanceAlongPath(Vector<CurvePoint> pathPoints, Point robot) {
-        double closestDistance = Integer.MAX_VALUE;
-
-        int closestDistanceIndex = 0;
-
-        Point distanceAlongLine = new Point();
-
-        for (int i = 0; i < pathPoints.size() - 1; i++) {
-            CurvePoint firstPoint = pathPoints.get(i);
-            CurvePoint secondPoint = pathPoints.get(i + 1);
-
-            Point currentDistanceAlongLine = distanceAlongLine(firstPoint, secondPoint, robot);
-
-            double distanceToClip = Math.hypot(robot.x - currentDistanceAlongLine.x, robot.y - currentDistanceAlongLine.y);
-
-            if (distanceToClip < closestDistance) {
-                closestDistance = distanceToClip;
-                closestDistanceIndex = i;
-                distanceAlongLine = currentDistanceAlongLine;
-            }
-        }
-        //return the three things
-        return new PointWithIndex(distanceAlongLine.x, distanceAlongLine.y, closestDistanceIndex);//now return the closestDistanceIndex
-    }
-
-    public class PointWithIndex {
-        private double x;
-        private double y;
-        private int index;
-
-        public PointWithIndex(double xPos, double yPos, int index) {
-            this.x = xPos;
-            this.y = yPos;
-            this.index = index;
-        }
-    }
-
-    public static Point distanceAlongLine(CurvePoint line1, CurvePoint line2, Point robot) {
-        if (line1.x == line2.x) {
-            line1.x = line2.x + 0.01;
-        }
-        if (line1.y == line2.y) {
-            line1.y = line2.y + 0.01;
-        }
-
-        //calculate the slope of the line
-        double m1 = (line2.y - line1.y) / (line2.x - line1.x);
-        //calculate the slope perpendicular to this line
-        double m2 = (line1.x - line2.x) / (line2.y - line1.y);
-
-        //clip the robot's position to be on the line
-        double xAlongLine = ((-m2 * robot.x) + robot.y + (m1 * line1.x) - line1.y) / (m1 - m2);
-        double yAlongLine = (m1 * (xAlongLine - line1.x)) + line1.y;
-        return new Point(xAlongLine, yAlongLine);
-    }
-
-    public CurvePoint extendLine(CurvePoint firstPoint, CurvePoint secondPoint, double distance) {
-        double lineAngle = Math.atan2(secondPoint.y - firstPoint.y, secondPoint.x - firstPoint.x);
-        double lineLength = Math.hypot(secondPoint.x - firstPoint.x, secondPoint.y - firstPoint.y);
-        //extend the line by 1.5 pointLengths
-        double extendedLineLength = lineLength + distance;
-
-        CurvePoint extended = new CurvePoint(secondPoint);
-        extended.x = Math.cos(lineAngle) * extendedLineLength + firstPoint.x;
-        extended.y = Math.sin(lineAngle) * extendedLineLength + firstPoint.y;
-        return extended;
-    }
-
-    private CurvePoint getFollowPointPath(Vector<CurvePoint> pathPoints, Point robotLocation, double followRadius) {
-        CurvePoint followMe = new CurvePoint(pathPoints.get(0));
-
-        for (int i = 0; i < pathPoints.size() - 1; i++) {
-
-            CurvePoint startLine = pathPoints.get(i);
-            CurvePoint endLine = pathPoints.get(i + 1);
-
-            Vector<Point> intersections = lineCircleIntersection(robotLocation, followRadius, startLine.toPoint(), endLine.toPoint());
-
-            double closestAngle = Double.MAX_VALUE;
-
-            for (Point intersectionPoint : intersections) {
-                double angle = Math.atan2(intersectionPoint.y - robotPos.y, intersectionPoint.x - robotPos.x);
-                double deltaAngle = Math.abs(MathFunctions.angleWrap(angle - anglePos));
-
-                if (deltaAngle < closestAngle) {
-                    closestAngle = deltaAngle;
-                    followMe.setPoint(intersectionPoint);
-                }
-            }
-        }
-        return followMe;
-    }
-
     public void goToPoint(double x, double y, double moveSpeed, double turnSpeed, double optimalAngle, boolean willMecanum) {
 
         double distanceToTarget = Math.hypot(x - robotPos.x, y - robotPos.y);
@@ -1068,7 +793,7 @@ public class Robot {
         }
     }
 
-    private void applyMove() {
+    public void applyMove() {
 
         // convert movements to motor powers
         double fLeftPower = (yMovement * 1.414 + turnMovement + xMovement);

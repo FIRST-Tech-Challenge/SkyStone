@@ -38,7 +38,7 @@ public class DriveConstantsPID {
     public static boolean RUN_USING_IMU_LOCALIZER = false;
     public static boolean BRAKE_ON_ZERO = false;
     public static boolean USING_BULK_READ = false;
-    public static double odoEncoderTicksPerRev = 1550.0;
+    public static double odoEncoderTicksPerRev = 1565.0;
     private static String TAG = "DriveConstants";
 
     public static double txP = 8; //translational x/y co-efficients
@@ -51,12 +51,12 @@ public class DriveConstantsPID {
     public static double hI = 2;
     public static double hD = 0.4;
 
-    public static double stxP = 8; //translational x/y co-efficients
-    public static double stxI = 0.6;
+    public static double stxP = 20; //translational x/y co-efficients
+    public static double stxI = 1;
     public static double stxD = 0.75;
-    public static double styP = 10;
+    public static double styP = 15;
     public static double styI = 0.5;
-    public static double styD = 1.1;
+    public static double styD = 1;
     public static double shP = 6;    // heading co-efficients;
     public static double shI = 2;
     public static double shD = 0.4;

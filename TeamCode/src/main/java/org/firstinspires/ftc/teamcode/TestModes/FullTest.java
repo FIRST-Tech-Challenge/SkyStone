@@ -105,8 +105,8 @@ public class FullTest extends OpMode {
 
         //servos foundation
         if (gamepad2.right_bumper) {
-            robot.servo_claw_right.setPosition(0.5);
-            robot.servo_claw_left.setPosition(0.5);
+            robot.servo_claw_right.setPosition(0.6);
+            robot.servo_claw_left.setPosition(0.4);
         } else if (gamepad2.left_bumper) {
 
             robot.servo_claw_right.setPosition(0.9);

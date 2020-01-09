@@ -46,13 +46,13 @@ public class GeneralTools {
     }
 
     public void grabFoundation() {
-        robot.servo_claw_left.setPosition(0.1);
-        robot.servo_claw_right.setPosition(0.9);
+        robot.servo_claw_left.setPosition(0.6);
+        robot.servo_claw_right.setPosition(0.4);
     }
 
     public void releaseFoundation() {
-        robot.servo_claw_left.setPosition(0.5);
-        robot.servo_claw_right.setPosition(0.5);
+        robot.servo_claw_left.setPosition(0.1);
+        robot.servo_claw_right.setPosition(0.9);
     }
 }
 

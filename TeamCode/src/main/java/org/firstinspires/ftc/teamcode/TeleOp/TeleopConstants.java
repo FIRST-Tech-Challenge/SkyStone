@@ -26,9 +26,9 @@ public class TeleopConstants {
     public static double transferHornPosPush = 0;
     public static double transferHornCapstone = 0.1203;
 
-    public static double clawInitPosReset = 0.2;
-    public static double clawInitPosCapstone = 0.822;
-    public static double clawInitPosCapstoneForReal = 0.91;
+    public static double clawInitPosReset = 0.23;
+    public static double clawInitPosCapstone = 0.8588;
+    public static double clawInitPosCapstoneForReal = 0.927;
 
     public static double innerTransferPosTucked = 0.4316;
     public static double innerTransferPosBlock = 0.01632;     //@TODO Get servo position innerTransfer "block" position

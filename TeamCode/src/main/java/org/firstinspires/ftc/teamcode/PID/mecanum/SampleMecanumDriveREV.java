@@ -101,6 +101,70 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
         else
             RobotLog.dd(TAG, "not using Odometry localizer");
     }
+
+    public SampleMecanumDriveREV(HardwareMap hardwareMap, boolean strafe, boolean imuInit) {
+        super(strafe);
+
+        LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
+
+        // TODO: adjust the names of the following hardware devices to match your configuration
+            imu = hardwareMap.get(BNO055IMU.class, "imu");
+            BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+            parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+        if(imuInit) {
+            imu.initialize(parameters);
+        }
+
+        // TODO: if your hub is mounted vertically, remap the IMU axes so that the z-axis points
+        // upward (normal to the floor) using a command like the following:
+        // BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
+
+        leftFront = hardwareMap.get(DcMotorEx.class, "frontLeft");
+        leftRear = hardwareMap.get(DcMotorEx.class, "backLeft");
+        rightRear = hardwareMap.get(DcMotorEx.class, "backRight");
+        rightFront = hardwareMap.get(DcMotorEx.class, "frontRight");
+
+        motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
+        RobotLog.dd(TAG, "SampleMecanumDriveREV created");
+
+        for (DcMotorEx motor : motors) {
+            motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            if (RUN_USING_ENCODER) {
+                motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            }
+            motor.setZeroPowerBehavior(DriveConstantsPID.BRAKE_ON_ZERO?DcMotor.ZeroPowerBehavior.BRAKE:DcMotor.ZeroPowerBehavior.FLOAT);
+        }
+
+        if (RUN_USING_ENCODER && MOTOR_VELO_PID != null) {
+            RobotLog.dd(TAG,"MOTOR_VELO_PID!=0, to setPIDCoefficients " + Double.toString(MOTOR_VELO_PID.kP)
+                    + " " + Double.toString(MOTOR_VELO_PID.kI) + " " + Double.toString(MOTOR_VELO_PID.kD));
+            setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
+        }
+
+        // TODO: reverse any motors using DcMotor.setDirection()
+
+        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightRear.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        // TODO: if desired, use setLocalizer() to change the localization method
+        // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
+
+        //setLocalizer(new TrackingWheelLocalizerWithIMU(hardwareMap, imu));
+        if (DriveConstantsPID.RUN_USING_IMU_LOCALIZER) {
+            RobotLog.dd(TAG, "to setLocalizer to imu");
+            setLocalizer(new TrackingWheelLocalizerWithIMU(hardwareMap, imu));
+        }
+        else
+            RobotLog.dd(TAG, "not using imu");
+
+        if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
+            RobotLog.dd(TAG, "to setLocalizer to StandardTrackingWheelLocalizer");
+            setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
+        }
+        else
+            RobotLog.dd(TAG, "not using Odometry localizer");
+    }
+
     @Override
     public void setBrakeonZeroPower(boolean flag) {
         for (DcMotorEx motor : motors) {
@@ -183,7 +247,12 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
 
     @Override
     public double getRawExternalHeading() {
-        double t = imu.getAngularOrientation().firstAngle;
+        double t = 0;
+        try {
+            t = imu.getAngularOrientation().firstAngle;
+        } catch (Exception e){
+            e.printStackTrace();
+        }
         RobotLog.dd(TAG, "getRawExternalHeading: " + Double.toString(t));
         return t;
     }

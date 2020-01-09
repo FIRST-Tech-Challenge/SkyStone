@@ -23,7 +23,7 @@ public class ConceptAutonomousRedTest extends LinearOpMode {
     ControlledLift controlledLift;
     ControlledExtender controlledExtender;
 
-    int extenderEncoderValiue = 4;
+    int extenderEncoderValue = 4;
     int liftEncoderValue = 1;
 
     @Override
@@ -41,11 +41,11 @@ public class ConceptAutonomousRedTest extends LinearOpMode {
         controlledLift.start(-liftEncoderValue, 0.2);
 
         waitForStart();
-        
+
         controlledLift.stop();
 
         if (opModeIsActive() ) {
-            controlledExtender.start(extenderEncoderValiue, 0.2);
+            controlledExtender.start(extenderEncoderValue, 0.2);
             while(!controlledExtender.endReached() && opModeIsActive()) {}
             controlledExtender.stop();
 
@@ -76,7 +76,7 @@ public class ConceptAutonomousRedTest extends LinearOpMode {
 
 
         if (opModeIsActive()) {
-            omniWheel.setMotors(0.0, 0.1, 0);
+            omniWheel.setMotors(0.0, 0.4, 0);
             while (!colorTools.isRed(robot.color_back) && opModeIsActive()) {}
             omniWheel.setMotors(0, 0, 0);
 
@@ -93,7 +93,7 @@ public class ConceptAutonomousRedTest extends LinearOpMode {
             while(!controlledDrive.endReached() && opModeIsActive()) {}
             controlledDrive.stop();
 
-            omniWheel.setMotors(0.0, 0.1, 0);
+            omniWheel.setMotors(0.0, 0.4, 0);
             while (!colorTools.isRed(robot.color_back) && opModeIsActive()) {
                 if (robot.touch_right.getState() && robot.touch_left.getState()) {
                     omniWheel.setMotors(-0.1, 0, 0);
@@ -108,7 +108,7 @@ public class ConceptAutonomousRedTest extends LinearOpMode {
             // you are now as much as possible close to the wall
 
         if (opModeIsActive()) {
-            controlledExtender.start(4, 0.2);
+            controlledExtender.start(6, 0.2);
             while(!controlledExtender.endReached() && opModeIsActive()) {}
             controlledExtender.stop();
         }
@@ -133,13 +133,13 @@ public class ConceptAutonomousRedTest extends LinearOpMode {
 
         if (opModeIsActive()) {
             generalTools.openClamp();
-            generalTools.stopForMilliSeconds(700);
         }
 
             // you have now released the stone on the foundation
 
         if (opModeIsActive()) {
             generalTools.grabFoundation();
+            generalTools.stopForMilliSeconds(1000);
         }
 
             //you have now grabbed the foundation
@@ -157,7 +157,15 @@ public class ConceptAutonomousRedTest extends LinearOpMode {
             // you have now released the foundation
 
         if (opModeIsActive()) {
-            controlledExtender.start(-extenderEncoderValiue, 0.2);
+            while (colorTools.isRed(robot.color_front)){
+                omniWheel.setMotors(0, -0.2, 0);
+            }
+            omniWheel.setMotors(0,0,0);
+        }
+
+
+        if (opModeIsActive()) {
+            controlledExtender.start(-extenderEncoderValue, 0.2);
             while(!controlledExtender.endReached() && opModeIsActive()) {}
             controlledExtender.stop();
         }
@@ -180,6 +188,7 @@ public class ConceptAutonomousRedTest extends LinearOpMode {
         }
 
             //you are now parked under the bridge
+
     }
 
 

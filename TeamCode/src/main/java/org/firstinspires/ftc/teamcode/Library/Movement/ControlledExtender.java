@@ -12,8 +12,10 @@ import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassis;
 
 public class ControlledExtender {
 
-    // Customized for the 435rpm motor
-    static final double     COUNTS_PER_MOTOR_REV    = 383.6 ;    // eg: TETRIX Motor Encoder
+    // Customized for the 435rpm (was 223) motor
+    //static final double     COUNTS_PER_MOTOR_REV    = 383.6 ;    // eg: TETRIX Motor Encoder
+    // TODO: Fix this...
+    static final double     COUNTS_PER_MOTOR_REV    = 195.4 ;    // eg: TETRIX Motor Encoder
     static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // This is < 1.0 if geared UP
     static final double     COUNTS_PER_CM           = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / 0.8;
 

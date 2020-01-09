@@ -38,6 +38,8 @@ public class Path {
     private LinearOpMode opMode;
     private List<Recognition> tfod;
     private com.qualcomm.robotcore.hardware.HardwareMap hardwareMap;
+    private static String TAG = "AutonomousPath";
+    private Pose2d currentPos;
 
     public Path(HardwareMap hwMap, LinearOpMode opMode, SampleMecanumDriveBase straightDrive,
                 SampleMecanumDriveBase strafeDrive, Pose2d startingPos,
@@ -54,7 +56,25 @@ public class Path {
         this.strafeDrive.getLocalizer().setPoseEstimate(startingPos);
         this.strafeDrive.getLocalizer().update();
     }
-
+    /*
+    input: last pose from previous move;
+    return: drive instance;
+     */
+    public SampleMecanumDriveBase DriveBuilderReset(Pose2d lastPose, boolean isStrafe, boolean init_imu)
+    {
+        SampleMecanumDriveBase _drive;
+        _drive = new SampleMecanumDriveREV(hardwareMap, isStrafe, init_imu);
+        _drive.getLocalizer().setPoseEstimate(lastPose);
+        _drive.getLocalizer().update();
+        if (!isStrafe) {
+            builder = new TrajectoryBuilder(_drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
+        }
+        else {
+            builder = new TrajectoryBuilder(_drive.getPoseEstimate(), DriveConstantsPID.STRAFE_BASE_CONSTRAINTS);
+        }
+        RobotLog.dd(TAG, "drive and builder created, initialized with pose: " + _drive.getPoseEstimate().toString());
+        return _drive;
+    }
     public void RedQuary(int[] skystonePositions) {
         switch (skystonePositions[0]) {
             case 1:
@@ -148,12 +168,12 @@ public class Path {
                 }
                 trajectory = builder.build();
                 strafeDrive.followTrajectorySync(trajectory);
+                currentPos = strafeDrive.getPoseEstimate();
 
                 dropStone(FieldPosition.RED_QUARY);
 
                 strafeDrive = new SampleMecanumDriveREV(hardwareMap, true, false);
-                strafeDrive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(strafeDrive.getPoseEstimate().getX(),
-                        strafeDrive.getPoseEstimate().getY()), strafeDrive.getPoseEstimate().getHeading()));
+                strafeDrive.getLocalizer().setPoseEstimate(currentPos);
                 strafeDrive.getLocalizer().update();
                 builder = new TrajectoryBuilder(strafeDrive.getPoseEstimate(), DriveConstantsPID.STRAFE_BASE_CONSTRAINTS);
                 if(DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
@@ -194,12 +214,11 @@ public class Path {
                 }
                 trajectory = builder.build();
                 strafeDrive.followTrajectorySync(trajectory);
-
+                currentPos = strafeDrive.getPoseEstimate();
                 grabStone(FieldPosition.RED_QUARY);
 
                 strafeDrive = new SampleMecanumDriveREV(hardwareMap, true, false);
-                strafeDrive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(strafeDrive.getPoseEstimate().getX(),
-                        strafeDrive.getPoseEstimate().getY()), strafeDrive.getPoseEstimate().getHeading()));
+                strafeDrive.getLocalizer().setPoseEstimate(currentPos);
                 strafeDrive.getLocalizer().update();
                 builder = new TrajectoryBuilder(strafeDrive.getPoseEstimate(), DriveConstantsPID.STRAFE_BASE_CONSTRAINTS);
                 if(DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
@@ -240,12 +259,11 @@ public class Path {
                 }
                 trajectory = builder.build();
                 strafeDrive.followTrajectorySync(trajectory);
-
+                currentPos = strafeDrive.getPoseEstimate();
                 dropStone(FieldPosition.RED_QUARY);
 
                 strafeDrive = new SampleMecanumDriveREV(hardwareMap, true, false);
-                strafeDrive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(strafeDrive.getPoseEstimate().getX(),
-                        strafeDrive.getPoseEstimate().getY()), strafeDrive.getPoseEstimate().getHeading()));
+                strafeDrive.getLocalizer().setPoseEstimate(currentPos);
                 strafeDrive.getLocalizer().update();
                 builder = new TrajectoryBuilder(strafeDrive.getPoseEstimate(), DriveConstantsPID.STRAFE_BASE_CONSTRAINTS);
                 if(!DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
@@ -277,12 +295,12 @@ public class Path {
                 }
                 trajectory = builder.build();
                 strafeDrive.followTrajectorySync(trajectory);
+                currentPos = strafeDrive.getPoseEstimate();
 
                 grabStone(FieldPosition.RED_QUARY);
 
                 strafeDrive = new SampleMecanumDriveREV(hardwareMap, true, false);
-                strafeDrive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(strafeDrive.getPoseEstimate().getX(),
-                        strafeDrive.getPoseEstimate().getY()), strafeDrive.getPoseEstimate().getHeading()));
+                strafeDrive.getLocalizer().setPoseEstimate(currentPos);
                 strafeDrive.getLocalizer().update();
                 builder = new TrajectoryBuilder(strafeDrive.getPoseEstimate(), DriveConstantsPID.STRAFE_BASE_CONSTRAINTS);
                 if(DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
@@ -314,6 +332,7 @@ public class Path {
                 }
                 trajectory = builder.build();
                 strafeDrive.followTrajectorySync(trajectory);
+                currentPos = strafeDrive.getPoseEstimate();
 
                 dropStone(FieldPosition.RED_QUARY);
 
@@ -323,8 +342,7 @@ public class Path {
                     straightDrive.turnSync(-(straightDrive.getExternalHeading() - 3 * Math.PI / 2));
 
                 strafeDrive = new SampleMecanumDriveREV(hardwareMap, true, false);
-                strafeDrive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(strafeDrive.getPoseEstimate().getX(),
-                        strafeDrive.getPoseEstimate().getY()), strafeDrive.getPoseEstimate().getHeading()));
+                strafeDrive.getLocalizer().setPoseEstimate(currentPos);
                 strafeDrive.getLocalizer().update();
                 builder = new TrajectoryBuilder(strafeDrive.getPoseEstimate(), DriveConstantsPID.STRAFE_BASE_CONSTRAINTS);
                 if(DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
@@ -346,13 +364,13 @@ public class Path {
                 }
                 trajectory = builder.build();
                 straightDrive.followTrajectorySync(trajectory);
+                currentPos = straightDrive.getPoseEstimate();
 
                 hwMap.foundationLock.setPosition(TeleopConstants.foundationLockLock);
                 hwMap.transferLock.setPosition(TeleopConstants.transferLockPosUp);
 
                 straightDrive = new SampleMecanumDriveREV(hardwareMap, true, false);
-                straightDrive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(straightDrive.getPoseEstimate().getX(),
-                        straightDrive.getPoseEstimate().getY()), straightDrive.getPoseEstimate().getHeading()));
+                straightDrive.getLocalizer().setPoseEstimate(currentPos);
                 straightDrive.getLocalizer().update();
                 builder = new TrajectoryBuilder(straightDrive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
                 if(DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {

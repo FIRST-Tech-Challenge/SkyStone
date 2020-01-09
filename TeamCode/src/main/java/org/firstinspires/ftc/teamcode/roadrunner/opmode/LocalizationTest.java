@@ -19,6 +19,7 @@ import org.firstinspires.ftc.teamcode.roadrunner.mecanum.SampleMecanumDriveREV;
  */
 @Config
 @TeleOp(group = "drive")
+//@Disabled
 public class LocalizationTest extends LinearOpMode {
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;

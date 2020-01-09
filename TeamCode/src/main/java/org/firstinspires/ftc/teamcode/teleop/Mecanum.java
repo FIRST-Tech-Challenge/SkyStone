@@ -1,5 +1,6 @@
         package org.firstinspires.ftc.teamcode.teleop;
 
+        import com.qualcomm.robotcore.eventloop.opmode.Disabled;
         import com.qualcomm.robotcore.eventloop.opmode.OpMode;
         import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
         import com.qualcomm.robotcore.hardware.DcMotor;
@@ -17,6 +18,7 @@
  *   - The left stick rotates the bot around its center point (staying in place).
  */
 @TeleOp(name="Mecanum", group="Drive Systems")
+@Disabled
 public class Mecanum extends OpMode {
 
     private DcMotor leftFront, rightFront, leftRear, rightRear;

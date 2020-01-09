@@ -1,11 +1,12 @@
 package org.firstinspires.ftc.teamcode.auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 @Autonomous(name="Individual Encoder Test", group="Test")
-
+@Disabled
 public class IndividualEncoderTest extends LinearOpMode {
 
     private DcMotor front_left, front_right, back_left, back_right, intake_left, intake_right;

@@ -34,8 +34,7 @@ import static org.firstinspires.ftc.teamcode.roadrunner.DriveConstants.kV;
  * WiFi network and navigate to https://192.168.49.1:8080/dash in your browser. Once you've
  * successfully connected, start the program, and your robot will begin moving forward and backward
  * according to a motion profile. Your job is to graph the velocity errors over time and adjust the
- * PID coefficients. Once you've found a satisfactory set of gains, add them to your drive class
- * ctor.
+ * PID coefficients. Once you've found a satisfactory set of gains, add them to your drive class.
  */
 @Config
 @Autonomous(group = "drive")

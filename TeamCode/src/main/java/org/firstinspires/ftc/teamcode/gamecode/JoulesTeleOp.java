@@ -21,25 +21,15 @@ public class JoulesTeleOp extends TeleOpMode {
 
     public void loopOpMode() {
 
-        if (gamepad1.left_bumper) {
-            float vertical = -gamepad1.right_stick_y/2;
-            float horizontal = gamepad1.right_stick_x/2;
-            float pivot = gamepad1.left_stick_x/2;
-            joules.FrontRight.setPower(-pivot + (vertical - horizontal));
-            joules.BackRight.setPower(-pivot + vertical + horizontal);
-            joules.FrontLeft.setPower(pivot + vertical + horizontal);
+
+            float pivot = gamepad1.right_stick_y;
+            float horizontal = -gamepad1.right_stick_x;
+            float vertical = gamepad1.left_stick_x;
+            joules.FrontRight.setPower(-pivot + (vertical + horizontal));
+            joules.BackRight.setPower(-pivot + (vertical - horizontal));
+            joules.FrontLeft.setPower(pivot + (vertical + horizontal));
             joules.BackLeft.setPower(pivot + (vertical - horizontal));
 
-        }
-        else{
-            float vertical = -gamepad1.right_stick_y;
-            float horizontal = gamepad1.right_stick_x;
-            float pivot = gamepad1.left_stick_x;
-            joules.FrontRight.setPower(-pivot + vertical - horizontal);
-            joules.BackRight.setPower(-pivot + vertical + horizontal);
-            joules.FrontLeft.setPower(pivot + vertical + horizontal);
-            joules.BackLeft.setPower(pivot + vertical - horizontal);
-        }
 
         if (joy2.buttonX()){
             joules.StoneUp();
@@ -53,6 +43,13 @@ public class JoulesTeleOp extends TeleOpMode {
         }
         else if (joy2.buttonDown()){
             joules.CapUp();
+        }
+
+        if (joy1.buttonA()){
+            joules.TapeMeasurePush();
+        }
+        else if (joy1.buttonY()){
+            joules.TapeMeasureSpring();
         }
 
         if (joy2.leftTrigger()){

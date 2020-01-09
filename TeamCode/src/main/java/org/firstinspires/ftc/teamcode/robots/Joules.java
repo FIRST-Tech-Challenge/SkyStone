@@ -32,6 +32,7 @@ public class Joules  {
 
     //arm servoes
     private FXTServo Foundation;
+    private FXTServo TapeMeasure;
 
     private FXTServo StoneMover;
     //arm motoraaa  a
@@ -60,6 +61,8 @@ public class Joules  {
         Foundation = new FXTServo("Foundation mover");
 
         Daffy = new FXTServo("Box grabber");
+
+        TapeMeasure = new FXTServo("Tape Measure");
 
         Capstone = new FXTServo("Capstone");
 
@@ -126,6 +129,19 @@ public class Joules  {
         BackRight.setPower(0);
     }
 
+    public void LeftPivot(double speed){
+        FrontLeft.setPower(0);
+        FrontRight.setPower(-speed);
+        BackLeft.setPower(0);
+        BackRight.setPower(-speed);
+    }
+    public void RightPivot(double speed){
+        FrontLeft.setPower(speed);
+        FrontRight.setPower(0);
+        BackLeft.setPower(speed);
+        BackRight.setPower(0);
+    }
+
     public long getSeconds(double Voltage, int Seconds){
         return (long)((Seconds-((50*Voltage)-600)));
     }
@@ -144,8 +160,11 @@ public class Joules  {
         Foundation.setPosition(0.2);
     }
     public void FoundationGrab(){
-        Foundation.setPosition(0.44);
+        Foundation.setPosition(0.42);
     }
+
+    public void TapeMeasureSpring() {TapeMeasure.setPosition(0.2);}
+    public void TapeMeasurePush() {TapeMeasure.setPosition(0.8);}
 
     public void StoneDown(){
         StoneMover.setPosition(0.1);

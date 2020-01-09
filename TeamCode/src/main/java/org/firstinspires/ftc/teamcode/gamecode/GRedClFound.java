@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.gamecode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.teamcode.opmodesupport.AutoOpMode;
@@ -10,7 +9,7 @@ import org.firstinspires.ftc.teamcode.robots.Joules;
 
 @Autonomous
 
-public class GBlClFound extends AutoOpMode {
+public class GRedClFound extends AutoOpMode {
     private VoltageSensor ExpansionHub2_VoltageSensor;
     public void runOp() throws InterruptedException {
         Joules joules = new Joules();
@@ -20,7 +19,7 @@ public class GBlClFound extends AutoOpMode {
         ExpansionHub2_VoltageSensor =  hardwareMap.voltageSensor.get("Expansion Hub 2");
 
 
-        int blueTapeVal = 310;
+        int redTapeVal = 310;
         telemetry.addData("Status", "initialized");
         waitForStart();
 
@@ -32,7 +31,7 @@ public class GBlClFound extends AutoOpMode {
         sleep(1000);
         joules.SlidesStop();
 
-        joules.StrafeLeft(0.3);
+        joules.StrafeRight(0.3);
         sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 800));
         joules.Stop();
 
@@ -46,7 +45,7 @@ public class GBlClFound extends AutoOpMode {
         sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 450));
         joules.Stop();
 
-        joules.LeftPivot(0.01);
+        joules.LeftPivot(0.01); //may have to do right pivot
         sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 200));
         joules.Stop();
 
@@ -70,7 +69,7 @@ public class GBlClFound extends AutoOpMode {
 //        }
 //        joules.Stop();
 
-        joules.StrafeRight(0.5);
+        joules.StrafeLeft(0.5);
         sleep(1150);
         joules.Stop();
 
@@ -78,7 +77,7 @@ public class GBlClFound extends AutoOpMode {
         sleep(600);
         joules.SlidesStop();
 
-        joules.StrafeRight(0.5);
+        joules.StrafeLeft(0.5);
         sleep(700);
         joules.Stop();
 

@@ -26,13 +26,21 @@ public class Joulestest extends AutoOpMode {
         //StoneDist = hardwareMap.get(DistanceSensor.class, "Distance");
         waitForStart();
 
+        joules.LeftPivot(0.4);
+        sleep(1000);
+        joules.Stop();
+
+        joules.RightPivot(0.4);
+        sleep(1000);
+        joules.Stop();
+
 //        joules.DriveForwardEnc(0.5, 2000);
 //        sleep(100000);
 
 
 
 
-      while (opModeIsActive()) {
+      /*while (opModeIsActive()) {
 
 
 
@@ -71,7 +79,7 @@ public class Joulestest extends AutoOpMode {
 //        sleep(1000);
 //        joules.StrafeRight(0.2);
 //        sleep(3000);
-//        joules.Stop();
+//        joules.Stop();*/
 //        }
 
             //        while (opModeIsActive()) {

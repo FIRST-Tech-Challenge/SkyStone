@@ -412,8 +412,10 @@ public class AutonomousRobot {
         telemetry.addData("TURN EXECUTING", "Angle: %.2f degrees", angle);
         telemetry.update();
 
+        hardware.drivetrain.setVelocity(0.1);
         hardware.drivetrain.setTargetHeading(Math.toRadians(angle));
         hardware.drivetrain.rotate();
+        //if (angle - 90 == 90) turn(90);
     }
 
     /**

@@ -95,7 +95,8 @@ public class HardwareOmnibotDrive
             bulkDataHub1 = expansionHub1.getBulkInputData();
             hub1Read = true;
         }
-        return bulkDataHub1.getMotorCurrentPosition(leftIntake);
+        // This is to compensate for GF having a negative left.
+        return -bulkDataHub1.getMotorCurrentPosition(leftIntake);
     }
 
     public int getRightEncoderWheelPosition() {

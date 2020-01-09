@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.teamcode.RobotUtilities.MovementVars;
 import org.firstinspires.ftc.teamcode.RobotUtilities.MyPosition;
 
 import static java.lang.Math.atan2;
@@ -107,6 +108,7 @@ public class OmniTeleTest extends OmniAutoXYOdoClass {
     private boolean gotoHome = false;
     private boolean gotoPosition1 = false;
     private boolean gotoPosition2 = false;
+    private boolean gotoPosition3 = false;
 
 //    @Override
 //    public void start()
@@ -159,7 +161,8 @@ public class OmniTeleTest extends OmniAutoXYOdoClass {
             if (!xHeld && xPressed) {
                 xHeld = true;
                 gotoPosition1 = true;
-                lastDriveAngle = 0;
+                driveToXY(100, 0, 0, 0.3, true, true);
+                robot.resetReads();
             } else if (!xPressed) {
                 xHeld = false;
             }
@@ -177,15 +180,18 @@ public class OmniTeleTest extends OmniAutoXYOdoClass {
             }
 
             if (!aHeld && aPressed) {
+                gotoPosition3 = true;
+                driveToXY(100, 100, 0, 0.3, true, true);
+                robot.resetReads();
                 aHeld = true;
-
             } else if (!aPressed) {
                 aHeld = false;
             }
 
             if (!bHeld && bPressed) {
                 gotoHome = true;
-                lastDriveAngle = 0;
+                driveToXY(0, 0, 0, 0.3, true, true);
+                robot.resetReads();
                 bHeld = true;
             } else if (!bPressed) {
                 bHeld = false;
@@ -193,7 +199,8 @@ public class OmniTeleTest extends OmniAutoXYOdoClass {
 
             if (!yHeld && yPressed) {
                 gotoPosition2 = true;
-                lastDriveAngle = 0;
+                driveToXY(0, 100, 0, 0.3, true, true);
+                robot.resetReads();
                 yHeld = true;
             } else if (!yPressed) {
                 yHeld = false;
@@ -223,7 +230,7 @@ public class OmniTeleTest extends OmniAutoXYOdoClass {
                 leftHeld = false;
             }
             if(gotoHome) {
-                if(driveToXY(0, 0, 0, 0.3, true)) {
+                if(driveToXY(0, 0, 0, 0.3, true, false)) {
                     telemetry.addLine("Drive to Home TRUE");
                     robot.setAllDriveZero();
                     gotoHome = false;
@@ -232,7 +239,7 @@ public class OmniTeleTest extends OmniAutoXYOdoClass {
                 }
             }
             if(gotoPosition1) {
-                if(driveToXY(100, 0, 0, 0.3, true)) {
+                if(driveToXY(100, 0, 0, 0.3, true, false)) {
                     telemetry.addLine("Drive to Position 1 TRUE");
                     robot.setAllDriveZero();
                     gotoPosition1 = false;
@@ -241,12 +248,21 @@ public class OmniTeleTest extends OmniAutoXYOdoClass {
                 }
             }
             if(gotoPosition2) {
-                if(driveToXY(0, 100, 0, 0.3, true)) {
+                if(driveToXY(0, 100, 0, 0.3, true, false)) {
                     telemetry.addLine("Drive to Position 2 TRUE");
                     robot.setAllDriveZero();
                     gotoPosition2 = false;
                 } else {
                     telemetry.addLine("Drive to Position 2 FALSE");
+                }
+            }
+            if(gotoPosition3) {
+                if(driveToXY(100, 100, 0, 0.3, true, false)) {
+                    telemetry.addLine("Drive to Position 3 TRUE");
+                    robot.setAllDriveZero();
+                    gotoPosition3 = false;
+                } else {
+                    telemetry.addLine("Drive to Position 3 FALSE");
                 }
             }
 //        if(!a2Held && a2Pressed)
@@ -348,6 +364,9 @@ public class OmniTeleTest extends OmniAutoXYOdoClass {
             telemetry.addData("World X Position: ", MyPosition.worldXPosition);
             telemetry.addData("World Y Position: ", MyPosition.worldYPosition);
             telemetry.addData("World Angle: ", Math.toDegrees(MyPosition.worldAngle_rad));
+            telemetry.addData("Movement X: ", MovementVars.movement_x);
+            telemetry.addData("Movement Y: ", MovementVars.movement_y);
+            telemetry.addData("Movement Turn: ", Math.toDegrees(MovementVars.movement_turn));
             telemetry.addData("Front Left Power: ", robot.frontLeftMotorPower);
             telemetry.addData("Front Right Power: ", robot.frontRightMotorPower);
             telemetry.addData("Rear Left Power: ", robot.rearLeftMotorPower);

@@ -95,8 +95,8 @@ public class MyPosition {
      */
     public static void PositioningCalculations(){
         // This was due to GF encoder must have been reverse.
-//        double wheelLeftCurrent = -currPos_l;
-        double wheelLeftCurrent = currPos_l;
+        double wheelLeftCurrent = -currPos_l;
+//        double wheelLeftCurrent = currPos_l;
         double wheelRightCurrent= currPos_r;
         double wheelAuxCurrent = currPos_a;
 
@@ -119,9 +119,9 @@ public class MyPosition {
 
         //but use absolute for our actual angle
         double wheelRightTotal = currPos_r-wheelRightInitialReading;
-        // This was due to GF encoder must have been reverse.
-//        double wheelLeftTotal = -(currPos_l-wheelLeftInitialReading);
-        double wheelLeftTotal = currPos_l-wheelLeftInitialReading;
+        // This was due to GF encoder must have been reverse. or something else?
+        double wheelLeftTotal = -(currPos_l-wheelLeftInitialReading);
+//        double wheelLeftTotal = currPos_l-wheelLeftInitialReading;
 
         double worldAngleLast = worldAngle_rad;
         worldAngle_rad = AngleWrap(((wheelLeftTotal-wheelRightTotal)*turnScalingFactor/100000.0) + lastResetAngle);

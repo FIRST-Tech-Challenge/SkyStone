@@ -112,7 +112,7 @@ public abstract class OmniAutoXYOdoClass extends LinearOpMode {
 	 * @param passThrough - Slows the robot down to stop at destination coordinate.
      * @return - Boolean true we have reached destination, false we have not
      */
-    public boolean driveToXY(double x, double y, double robotAngle, double maxSpeed, boolean passThrough) {
+    public boolean driveToXY(double x, double y, double robotAngle, double maxSpeed, boolean passThrough, boolean resetDriveAngle) {
 		boolean reachedDestination = false;
         double deltaX = x - MyPosition.worldXPosition;
         double deltaY = y - MyPosition.worldYPosition;
@@ -121,6 +121,11 @@ public abstract class OmniAutoXYOdoClass extends LinearOpMode {
         double magnitude = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 		double driveSpeed;
 		double turnSpeed = Math.toDegrees(deltaAngle) * 0.014;
+
+		// This should be set on the first call to start us on a new path.
+        if(resetDriveAngle) {
+            lastDriveAngle = driveAngle;
+        }
 
 		// This will allow us to do multi-point routes without huge slowdowns.
 		// Such use cases will be changing angles, or triggering activities at
@@ -134,12 +139,7 @@ public abstract class OmniAutoXYOdoClass extends LinearOpMode {
 		// Check if we passed through our point
 		if((magnitude <= 2) || (Math.abs(Math.toDegrees(Math.abs(lastDriveAngle - driveAngle))) > 100)) {
 			reachedDestination = true;
-            if(passThrough) {
-                MovementVars.movement_x = driveSpeed * Math.cos(driveAngle);
-		        MovementVars.movement_y = driveSpeed * Math.sin(driveAngle);
-        		MovementVars.movement_turn = turnSpeed;
-				robot.ApplyMovement();
-			} else {
+            if(!passThrough) {
 				robot.setAllDriveZero();
 			}		
 		} else {

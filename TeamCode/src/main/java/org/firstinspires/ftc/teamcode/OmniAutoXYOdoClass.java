@@ -61,21 +61,28 @@ public abstract class OmniAutoXYOdoClass extends LinearOpMode {
     }
 
     /**
-     * @param robotAngle  - The angle the robot should try to face when reaching destination.
+     * @param targetAngle  - The angle the robot should try to face when reaching destination.
+	 * @param resetDriveAngle - When we start a new drive, need to reset the starting drive angle.
      * @return - Boolean true we have reached destination, false we have not
      */
-    public boolean rotateToAngle(double robotAngle) {
+    public boolean rotateToAngle(double targetAngle, boolean resetDriveAngle) {
 		boolean reachedDestination = false;
-		double deltaAngle = MyPosition.AngleWrap(robotAngle - MyPosition.worldAngle_rad);
+		double deltaAngle = MyPosition.AngleWrap(targetAngle - MyPosition.worldAngle_rad);
 		double turnSpeed = Math.toDegrees(deltaAngle) * 0.014;
+
+		// This should be set on the first call to start us on a new path.
+        if(resetDriveAngle) {
+            lastDriveAngle = deltaAngle;
+        }
+
 		// We are done if we are within 2 degrees
-		if(Math.abs(lastDriveAngle) < 2) {
-			// We have reached our destination
+		if(Math.abs(deltaAngle) < 2) {
+			// We have reached our destination if the angle is close enough
 			robot.setAllDriveZero();
 			reachedDestination = true;
 		// We are done when we flip signs.
 		} else if(lastDriveAngle < 0) {
-			// We have reached our destination
+			// We have reached our destination if the delta angle sign flips from last reading
 			if(deltaAngle >= 0) {
 				robot.setAllDriveZero();
 				reachedDestination = true;
@@ -87,7 +94,7 @@ public abstract class OmniAutoXYOdoClass extends LinearOpMode {
 				robot.ApplyMovement();
 			}
 		} else {
-			// We have reached out destination
+			// We have reached our destination if the delta angle sign flips
 			if(deltaAngle <= 0) {
 				robot.setAllDriveZero();
 				reachedDestination = true;

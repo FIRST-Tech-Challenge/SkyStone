@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.teamcode.RobotUtilities.MyPosition;
+
 import static java.lang.Math.atan2;
 import static java.lang.Math.toDegrees;
 
@@ -13,7 +15,7 @@ import static java.lang.Math.toDegrees;
  */
 
 @TeleOp(name="Omni: TeleOpTest", group ="TeleOp")
-public class OmniTeleTest extends OmniAutoClass {
+public class OmniTeleTest extends OmniAutoXYOdoClass {
 
     public OmniTeleTest() {
         msStuckDetectInit = 10000;
@@ -25,15 +27,23 @@ public class OmniTeleTest extends OmniAutoClass {
     public void initRobot() {
         telemetry.addLine("Calling robot.init");
         updateTelemetry(telemetry);
-		// Turn off the SDK deadzone so we can do it ourselves
-        gamepad1.setJoystickDeadzone(0.0f);
-        gamepad2.setJoystickDeadzone(0.0f);
         robot.init(hardwareMap);
         robot.setInputShaping(true);
         telemetry.addLine("Ready");
         updateTelemetry(telemetry);
         robot.lifter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.extender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.resetEncoders();
+
+        //give MyPosition our current positions so that it saves the last positions of the wheels
+        //this means we won't teleport when we start the match. Just in case, run this twice
+        for(int i = 0; i < 2 ; i ++){
+            robot.resetReads();
+            MyPosition.initialize(robot.getLeftEncoderWheelPosition(),
+                    robot.getRightEncoderWheelPosition(),
+                    robot.getStrafeEncoderWheelPosition());
+        }
+        MyPosition.setPosition(0, 0, Math.toRadians(0));
     }
 
     private double driverAngle = 0.0;
@@ -94,6 +104,9 @@ public class OmniTeleTest extends OmniAutoClass {
     private double backDistanceTarget = 30;
     private double clawPosition = 0;
     private double clawdricopterPosition = 0;
+    private boolean gotoHome = false;
+    private boolean gotoPosition1 = false;
+    private boolean gotoPosition2 = false;
 
 //    @Override
 //    public void start()
@@ -136,33 +149,34 @@ public class OmniTeleTest extends OmniAutoClass {
             up2Pressed = gamepad2.dpad_up;
             down2Pressed = gamepad2.dpad_down;
 
-            // Allow the robot to read encoders again
+            // Allow the robot to read sensors again
             robot.resetReads();
-
+            robot.readHub1BulkData();
+            MyPosition.giveMePositions(robot.getLeftEncoderWheelPosition(),
+                    robot.getRightEncoderWheelPosition(),
+                    robot.getStrafeEncoderWheelPosition());
 
             if (!xHeld && xPressed) {
                 xHeld = true;
+                gotoPosition1 = true;
+                lastDriveAngle = 0;
             } else if (!xPressed) {
                 xHeld = false;
             }
 
             if (!rightBumperHeld && rightBumperPressed) {
                 rightBumperHeld = true;
-                robot.startExtendingIntake();
             } else if (!rightBumperPressed) {
                 rightBumperHeld = false;
             }
 
             if (!leftBumperHeld && leftBumperPressed) {
                 leftBumperHeld = true;
-                robot.extender.setPower(-1.0);
             } else if (!leftBumperPressed) {
                 leftBumperHeld = false;
-                robot.extender.setPower(0.0);
             }
 
             if (!aHeld && aPressed) {
-                robot.clawdricopter.setPosition(robot.CLAWDRICOPTER_FRONT);
                 aHeld = true;
 
             } else if (!aPressed) {
@@ -170,12 +184,16 @@ public class OmniTeleTest extends OmniAutoClass {
             }
 
             if (!bHeld && bPressed) {
+                gotoHome = true;
+                lastDriveAngle = 0;
                 bHeld = true;
             } else if (!bPressed) {
                 bHeld = false;
             }
 
             if (!yHeld && yPressed) {
+                gotoPosition2 = true;
+                lastDriveAngle = 0;
                 yHeld = true;
             } else if (!yPressed) {
                 yHeld = false;
@@ -204,13 +222,33 @@ public class OmniTeleTest extends OmniAutoClass {
             } else if (!leftPressed) {
                 leftHeld = false;
             }
-
-            robot.performExtendingIntake();
-
-            if(robot.stackStone != HardwareOmnibot.StackActivities.IDLE) {
-                robot.drive(speedMultiplier * xPower, speedMultiplier * yPower, spinMultiplier * spin, driverAngle, robot.defaultInputShaping);
+            if(gotoHome) {
+                if(driveToXY(0, 0, 0, 0.3, true)) {
+                    telemetry.addLine("Drive to Home TRUE");
+                    robot.setAllDriveZero();
+                    gotoHome = false;
+                } else {
+                    telemetry.addLine("Drive to Home FALSE");
+                }
             }
-
+            if(gotoPosition1) {
+                if(driveToXY(100, 0, 0, 0.3, true)) {
+                    telemetry.addLine("Drive to Position 1 TRUE");
+                    robot.setAllDriveZero();
+                    gotoPosition1 = false;
+                } else {
+                    telemetry.addLine("Drive to Position 1 FALSE");
+                }
+            }
+            if(gotoPosition2) {
+                if(driveToXY(0, 100, 0, 0.3, true)) {
+                    telemetry.addLine("Drive to Position 2 TRUE");
+                    robot.setAllDriveZero();
+                    gotoPosition2 = false;
+                } else {
+                    telemetry.addLine("Drive to Position 2 FALSE");
+                }
+            }
 //        if(!a2Held && a2Pressed)
 //        {
 //            a2Held = true;
@@ -291,10 +329,6 @@ public class OmniTeleTest extends OmniAutoClass {
             //telemetry.addData("Left TOF: ", leftTof);
             //telemetry.addData("Right TOF: ", rightTof);
             //telemetry.addData("Back TOF: ", backTof);
-            telemetry.addData("Side Target Distance: ", sideDistanceTarget);
-            telemetry.addData("Back Target Distance: ", backDistanceTarget);
-            telemetry.addData("Back Left TOF: ", backLeftTof);
-            telemetry.addData("Back Right TOF: ", backRightTof);
             telemetry.addData("Lift Target Height: ", robot.liftTargetHeight.toString());
             telemetry.addData("Lift State: ", robot.liftState);
             telemetry.addData("Release State: ", robot.releaseState);
@@ -304,19 +338,20 @@ public class OmniTeleTest extends OmniAutoClass {
             telemetry.addData("Spin: ", spin);
             telemetry.addData("Offset Angle: ", driverAngle);
             telemetry.addData("Gyro Angle: ", gyroAngle);
-            telemetry.addData("Gyro X Angle: ", robot.xAngle);
-            telemetry.addData("Gyro Y Angle: ", robot.yAngle);
-            telemetry.addData("Gyro Z Angle: ", robot.zAngle);
-            telemetry.addData("Front Left Encoder: ", robot.frontLeft.getCurrentPosition());
-            telemetry.addData("Front Right Encoder: ", robot.frontRight.getCurrentPosition());
-            telemetry.addData("Rear Left Encoder: ", robot.rearLeft.getCurrentPosition());
-            telemetry.addData("Rear Right Encoder: ", robot.rearRight.getCurrentPosition());
-            telemetry.addData("Lifter Encoder: ", robot.lifter.getCurrentPosition());
-            telemetry.addData("Extender Encoder: ", robot.extender.getCurrentPosition());
-            telemetry.addData("Claw Front: ", clawFront);
-            telemetry.addData("Claw Open: ", clawOpen);
-            telemetry.addData("Claw Position: ", clawPosition);
-            telemetry.addData("Clawdricopter Position: ", clawdricopterPosition);
+            telemetry.addData("Last Angle", lastDriveAngle);
+            telemetry.addData("Goto Home", gotoHome);
+            telemetry.addData("Goto Position 1", gotoPosition1);
+            telemetry.addData("Goto Position 2", gotoPosition2);
+            telemetry.addData("Left Encoder: ", robot.getLeftEncoderWheelPosition());
+            telemetry.addData("Strafe Encoder: ", robot.getStrafeEncoderWheelPosition());
+            telemetry.addData("Right Encoder: ", robot.getRightEncoderWheelPosition());
+            telemetry.addData("World X Position: ", MyPosition.worldXPosition);
+            telemetry.addData("World Y Position: ", MyPosition.worldYPosition);
+            telemetry.addData("World Angle: ", Math.toDegrees(MyPosition.worldAngle_rad));
+            telemetry.addData("Front Left Power: ", robot.frontLeftMotorPower);
+            telemetry.addData("Front Right Power: ", robot.frontRightMotorPower);
+            telemetry.addData("Rear Left Power: ", robot.rearLeftMotorPower);
+            telemetry.addData("Rear Right Power: ", robot.rearRightMotorPower);
             updateTelemetry(telemetry);
         }
     }

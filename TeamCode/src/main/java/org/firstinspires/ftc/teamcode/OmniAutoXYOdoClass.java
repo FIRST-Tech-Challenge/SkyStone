@@ -132,7 +132,7 @@ public abstract class OmniAutoXYOdoClass extends LinearOpMode {
 		}
 
 		// Check if we passed through our point
-		if((magnitude <= 2) || (Math.toDegrees(Math.abs(lastDriveAngle - driveAngle)) > 100)) {
+		if((magnitude <= 2) || (Math.abs(Math.toDegrees(Math.abs(lastDriveAngle - driveAngle))) > 100)) {
 			reachedDestination = true;
             if(passThrough) {
                 MovementVars.movement_x = driveSpeed * Math.cos(driveAngle);
@@ -142,7 +142,12 @@ public abstract class OmniAutoXYOdoClass extends LinearOpMode {
 			} else {
 				robot.setAllDriveZero();
 			}		
-		}
+		} else {
+            MovementVars.movement_x = driveSpeed * Math.cos(driveAngle);
+            MovementVars.movement_y = driveSpeed * Math.sin(driveAngle);
+            MovementVars.movement_turn = turnSpeed;
+		    robot.ApplyMovement();
+        }
 		lastDriveAngle = driveAngle;
 
         return reachedDestination;

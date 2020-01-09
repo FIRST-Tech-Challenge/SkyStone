@@ -1367,6 +1367,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
             case EJECT:
                 if(intakeExtendTimer.milliseconds() > EJECT_EXTEND_TIME) {
                     startIntake(false);
+                    ejectState = EjectActivity.IDLE;
                     startExtendingIntake();
                 }
             case IDLE:

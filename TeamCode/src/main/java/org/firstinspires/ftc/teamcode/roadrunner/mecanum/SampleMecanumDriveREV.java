@@ -45,9 +45,9 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
         BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
 
         leftFront = hardwareMap.get(DcMotorEx.class, "front_left");
-        leftRear = hardwareMap.get(DcMotorEx.class, "front_right");
-        rightRear = hardwareMap.get(DcMotorEx.class, "back_left");
-        rightFront = hardwareMap.get(DcMotorEx.class, "back_right");
+        leftRear = hardwareMap.get(DcMotorEx.class, "back_left");
+        rightRear = hardwareMap.get(DcMotorEx.class, "back_right");
+        rightFront = hardwareMap.get(DcMotorEx.class, "front_right");
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 

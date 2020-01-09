@@ -12,6 +12,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.teamcode.roadrunner.mecanum.SampleMecanumDriveREV;
 
 import static android.os.SystemClock.sleep;
 
@@ -24,6 +25,7 @@ public class Maccabot {
 
     // Drive Motor Variables
     private DcMotor front_left, front_right, back_left, back_right, intake_left, intake_right, lift_left, lift_right;
+    private SampleMecanumDriveREV drive;
     private CRServo rack;
     private Servo chad;
 
@@ -44,10 +46,11 @@ public class Maccabot {
     public void initializeRobot(){
         parentOpMode.telemetry.addLine("Initializing Drive");
         // Get drive motors
-        front_left = hardwareMap.dcMotor.get("front_left"); // Port 0
-        front_right = hardwareMap.dcMotor.get("front_right"); // Port 1
-        back_left = hardwareMap.dcMotor.get("back_left"); // Port 2
-        back_right = hardwareMap.dcMotor.get("back_right"); // Port 3
+        //front_left = hardwareMap.dcMotor.get("front_left"); // Port 0
+        //front_right = hardwareMap.dcMotor.get("front_right"); // Port 1
+        //back_left = hardwareMap.dcMotor.get("back_left"); // Port 2
+        //back_right = hardwareMap.dcMotor.get("back_right"); // Port 3
+        drive = new SampleMecanumDriveREV(parentOpMode.hardwareMap);
         intake_left = hardwareMap.dcMotor.get("intake_left");
         intake_right = hardwareMap.dcMotor.get("intake_right");
         lift_left = hardwareMap.dcMotor.get("lift_left");
@@ -116,7 +119,8 @@ public class Maccabot {
         double blValue = vtY - vtX - vR;
         double brValue = vtY + vtX + vR;
 
-        drive(flValue, frValue, blValue, brValue);
+        //drive(flValue, frValue, blValue, brValue);
+        drive.setMotorPowers(flValue, blValue, brValue, frValue);
     }
 
     public void intake(double speed) {

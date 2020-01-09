@@ -55,8 +55,8 @@ public class DriveConstants {
      * motor encoders or have elected not to use them for velocity control, these values should be
      * empirically tuned.
      */
-    // Because we are using internal velo PID, DO NOT CHANGE.
-    public static double kV = 1.0 / rpmToVelocity(getMaxRpm());
+    public static double kV = 0.016;
+    // These constants are not used because we are using internal Velo PID
     public static double kA = 0;
     public static double kStatic = 0;
 
@@ -71,6 +71,10 @@ public class DriveConstants {
     public static DriveConstraints BASE_CONSTRAINTS = new DriveConstraints(
             30.0, 30.0, 0.0,
             Math.toRadians(180.0), Math.toRadians(180.0), 0.0
+    );
+    public static DriveConstraints FAST_CONSTRAINTS = new DriveConstraints(
+            40.0, 30.0, 0.0,
+            Math.toRadians(180.0), Math.toRadians(180.0), 0
     );
 
 

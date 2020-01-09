@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.vuforia.CameraDevice;
 
 @Autonomous(name="One SkyStone Red Street", group="Exercises")
 
@@ -19,7 +18,6 @@ public class OneSkyStoneRedStreet extends LinearOpMode {
     @Override
     public void runOpMode() {
         robot.init(hardwareMap);
-        CameraDevice.getInstance().setFlashTorchMode(true);
 
         waitForStart();
 

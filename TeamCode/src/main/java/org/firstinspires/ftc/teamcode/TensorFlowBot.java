@@ -9,6 +9,7 @@ import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import com.vuforia.CameraDevice;
 
 import java.util.List;
 
@@ -98,7 +99,7 @@ public class TensorFlowBot extends PinchArmBot {
         if (tfod != null) {
             tfod.activate();
         }
-
+        CameraDevice.getInstance().setFlashTorchMode(true);
 
     }
 

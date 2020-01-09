@@ -33,6 +33,7 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -40,14 +41,18 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
-@TeleOp(name = "Advanced Holonomic OP", group = "Iterative Opmode")
-public class Advanced_Holonomic_OP extends OpMode {
+@TeleOp(name = "ADVHOP_ARM", group = "Iterative Opmode")
+public class ADVHOP_ARM extends OpMode {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftFrontMotor = null;
     private DcMotor rightFrontMotor = null;
     private DcMotor leftBackMotor = null;
     private DcMotor rightBackMotor = null;
+    private Servo grabberCloseServo = null;
+    private Servo grabberRotateServo = null;
+    private DcMotor armTiltMotor = null;
+    private DcMotor armExtendMotor = null;
     private BNO055IMU imu;
     private float turnSpeed = 0.5f;
 
@@ -77,6 +82,11 @@ public class Advanced_Holonomic_OP extends OpMode {
         leftBackMotor.setDirection(DcMotor.Direction.FORWARD);
         rightBackMotor.setDirection(DcMotor.Direction.REVERSE);
 
+        grabberCloseServo = hardwareMap.get(Servo.class, "grabberCloseServo");
+        grabberRotateServo = hardwareMap.get(Servo.class, "grabberRotateServo");
+        armExtendMotor = hardwareMap.get(DcMotor.class, "armExtendMotor");
+        armTiltMotor = hardwareMap.get(DcMotor.class, "armTiltMotor");
+
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -98,6 +108,20 @@ public class Advanced_Holonomic_OP extends OpMode {
     public void init_loop() {
     }
 
+    // Encapsulate all user input here, it's getting out of hand
+    private void controller_input() {
+
+    }
+
+    private void update_telemetry(double frontLeftPower, double frontRightPower, double backLeftPower, double backRightPower, float angle, double max) {
+        // Show the elapsed game time and wheel power.
+        telemetry.addData("Status", "Run Time: " + runtime.toString());
+        telemetry.addData("Front Motor", " left:(%.2f) right:(%.2f)", frontLeftPower, frontRightPower);
+        telemetry.addData("Back Motor", " left:(%.2f) right:(%.2f)", backLeftPower, backRightPower);
+        telemetry.addData("Angle", "(%.2f)", angle);
+        telemetry.addData("maxPower", "(%.2f)", max);
+        telemetry.update();
+    }
     /*
      * Code to run ONCE when the driver hits PLAY
      */
@@ -112,18 +136,15 @@ public class Advanced_Holonomic_OP extends OpMode {
     @Override
     public void loop() {
         // Setup a variable for each drive wheel to save power level for telemetry
-        double frontLeftPower = 0;
-        double frontRightPower = 0;
-        double backLeftPower = 0;
-        double backRightPower =0;
+        double frontLeftPower;
+        double frontRightPower;
+        double backLeftPower;
+        double backRightPower;
 
-        // Choose to drive using either Tank Mode, or POV Mode
-        // Comment out the method that's not used.  The default below is POV.
-
-        // POV Mode uses left stick to go forward, and right stick to turn.
-        // - This uses basic math to combine motions and is easier to drive straight.
         double drive = -gamepad1.left_stick_y;
-       /* double turn = gamepad1.right_stick_x;
+
+        // Do we need this or not
+        /* double turn = gamepad1.right_stick_x;
         leftPower = Range.clip(drive + turn, -1.0, 1.0);
         rightPower = Range.clip(drive - turn, -1.0, 1.0);
         */
@@ -141,7 +162,6 @@ public class Advanced_Holonomic_OP extends OpMode {
         if (gamepad1.b) {
             speedSwitch = false;
         }
-
 
         frontLeftPower = y + -x;
         frontRightPower = y + x;
@@ -176,7 +196,8 @@ public class Advanced_Holonomic_OP extends OpMode {
             backRightPower += -turnSpeed;
         }
         else{
-         expectedAngle = angle;
+            //Expected angle not implemented -- fix or delete
+            expectedAngle = angle;
         }
 
         double max = Math.abs(findMax(frontLeftPower,frontRightPower,backLeftPower,backRightPower));
@@ -200,16 +221,9 @@ public class Advanced_Holonomic_OP extends OpMode {
         leftBackMotor.setPower(backLeftPower);
         rightBackMotor.setPower(backRightPower);
 
-
-        // Show the elapsed game time and wheel power.
-        telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Front Motor", " left:(%.2f) right:(%.2f)", frontLeftPower, frontRightPower);
-        telemetry.addData("Back Motor", " left:(%.2f) right:(%.2f)", backLeftPower, backRightPower);
-        telemetry.addData("Angle", "(%.2f)", angle);
-        telemetry.addData("maxPower", "(%.2f)", max);
-        telemetry.update();
-        //telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+        update_telemetry(frontLeftPower,frontRightPower,backLeftPower,backRightPower,angle,max);
     }
+
 
     /*
      * Code to run ONCE after the driver hits STOP
@@ -218,10 +232,10 @@ public class Advanced_Holonomic_OP extends OpMode {
     public void stop() {
     }
 
-    private double findMax(double... vals) {
+    private double findMax(double... values) {
         double max = Double.NEGATIVE_INFINITY;
 
-        for (double d : vals) {
+        for (double d : values) {
             if (d > max) max = d;
         }
 

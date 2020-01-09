@@ -18,6 +18,7 @@ public class OneSkyStoneRedStreet extends LinearOpMode {
     @Override
     public void runOpMode() {
         robot.init(hardwareMap);
+
         waitForStart();
 
         setDirection();

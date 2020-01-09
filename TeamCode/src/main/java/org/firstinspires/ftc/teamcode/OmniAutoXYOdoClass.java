@@ -107,20 +107,23 @@ public abstract class OmniAutoXYOdoClass extends LinearOpMode {
     /**
      * @param x           - The X field coordinate to go to.
      * @param y           - The Y field coordinate to go to.
-     * @param robotAngle  - The angle the robot should try to face when reaching destination.
+     * @param targetAngle  - The angle the robot should try to face when reaching destination in radians.
 	 * @param maxSpeed    - Sets the speed when we are driving through the point.
 	 * @param passThrough - Slows the robot down to stop at destination coordinate.
+	 * @param resetDriveAngle - When we start a new drive, need to reset the starting drive angle.
      * @return - Boolean true we have reached destination, false we have not
      */
-    public boolean driveToXY(double x, double y, double robotAngle, double maxSpeed, boolean passThrough, boolean resetDriveAngle) {
+    public boolean driveToXY(double x, double y, double targetAngle, double maxSpeed, boolean passThrough, boolean resetDriveAngle) {
 		boolean reachedDestination = false;
         double deltaX = x - MyPosition.worldXPosition;
         double deltaY = y - MyPosition.worldYPosition;
         double driveAngle = Math.atan2(deltaY, deltaX);
-		double deltaAngle = MyPosition.AngleWrap(robotAngle - MyPosition.worldAngle_rad);
+		double deltaAngle = MyPosition.AngleWrap(targetAngle - MyPosition.worldAngle_rad);
         double magnitude = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 		double driveSpeed;
 		double turnSpeed = Math.toDegrees(deltaAngle) * 0.014;
+		// Have to convert from world angles to robot centric angles.
+		double robotDriveAngle = driveAngle - MyPosition.worldAngle_rad + Math.toRadians(90);
 
 		// This should be set on the first call to start us on a new path.
         if(resetDriveAngle) {
@@ -143,8 +146,8 @@ public abstract class OmniAutoXYOdoClass extends LinearOpMode {
 				robot.setAllDriveZero();
 			}		
 		} else {
-            MovementVars.movement_x = driveSpeed * Math.cos(driveAngle);
-            MovementVars.movement_y = driveSpeed * Math.sin(driveAngle);
+            MovementVars.movement_x = driveSpeed * Math.cos(robotDriveAngle);
+            MovementVars.movement_y = driveSpeed * Math.sin(robotDriveAngle);
             MovementVars.movement_turn = turnSpeed;
 		    robot.ApplyMovement();
         }

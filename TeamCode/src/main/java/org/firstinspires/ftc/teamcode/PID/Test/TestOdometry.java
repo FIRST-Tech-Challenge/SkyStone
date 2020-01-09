@@ -32,7 +32,7 @@ public class TestOdometry extends LinearOpMode {
     private BaseTrajectoryBuilder builder;
     private Trajectory trajectory;
     private static double driftRemoverConstant = 1.3;   //inches
-
+    private double DISTANCE = 0;
     private ArrayList<String> savedData = new ArrayList<>();
 
     private ArrayList<String> odometryLR = new ArrayList<>();
@@ -64,6 +64,7 @@ public class TestOdometry extends LinearOpMode {
 
         while(opModeIsActive()){
             DriveConstantsPID.updateConstantsFromProperties();
+            DISTANCE = DriveConstantsPID.TEST_DISTANCE;
             drive = new SampleMecanumDriveREV(hardwareMap, true);
             /*builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
 
@@ -98,10 +99,11 @@ public class TestOdometry extends LinearOpMode {
             drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(drive.getPoseEstimate().getX(),
                     drive.getPoseEstimate().getY()), drive.getPoseEstimate().getHeading()));    //Strafe Test
             drive.getLocalizer().update();
-            builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
-            builder = builder.setReversed(false).strafeTo(new Vector2d(0,72));
+            builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.STRAFE_BASE_CONSTRAINTS);
+            builder = builder.setReversed(false).strafeTo(new Vector2d(0,DISTANCE));
             trajectory = builder.build();
             drive.followTrajectorySync(trajectory);
+            RobotLog.dd(TAG, "update pose for drive after moving: " + drive.getPoseEstimate().toString());
 
             try{
                 Thread.sleep(500);
@@ -110,10 +112,11 @@ public class TestOdometry extends LinearOpMode {
             //drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(drive.getPoseEstimate().getX(),
             //        drive.getPoseEstimate().getY()), drive.getPoseEstimate().getHeading()));
             //drive.getLocalizer().update();
-            builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
+            builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.STRAFE_BASE_CONSTRAINTS);
             builder = builder.setReversed(false).strafeTo(new Vector2d(0,0));
             trajectory = builder.build();
             drive.followTrajectorySync(trajectory);
+            RobotLog.dd(TAG, "update pose for drive after moving: " + drive.getPoseEstimate().toString());
 
             //drive.turnSync(Math.PI);  //Rotation Test
 

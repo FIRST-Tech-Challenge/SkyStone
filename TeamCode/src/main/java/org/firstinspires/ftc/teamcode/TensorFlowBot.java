@@ -13,7 +13,7 @@ import com.vuforia.CameraDevice;
 
 import java.util.List;
 
-public class TensorFlowBot extends PinchArmBot {
+public class TensorFlowBot extends DistanceSensorBot {
     public TensorFlowBot(LinearOpMode opMode) {
         super(opMode);
     }

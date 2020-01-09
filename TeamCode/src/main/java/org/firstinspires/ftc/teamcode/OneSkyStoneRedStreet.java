@@ -22,13 +22,18 @@ public class OneSkyStoneRedStreet extends LinearOpMode {
         waitForStart();
 
         setDirection();
-        robot.driveStraightByDistance( robot.DIRECTION_LEFT, 400, 0.7);
+//        robot.driveStraightByDistance( robot.DIRECTION_LEFT, 400, 0.7);
+        robot.driveUntilDistance(60, 0.7);
         robot.opMode.sleep(3000);
         if (robot.isSkystoneDetected()) {
             robot.driveStraightByDistance(robot.DIRECTION_FORWARD, 150, 0.6);
-            robot.driveStraightByDistance(robot.DIRECTION_LEFT, 270, 0.5);
+//            robot.driveStraightByDistance(robot.DIRECTION_LEFT, 270, 0.5);
+            robot.driveUntilDistance(20, 0.5);
+
             robot.pickupSkyStone();
-            robot.driveStraightByDistance(robot.DIRECTION_RIGHT, 100, 0.5);
+//            robot.driveStraightByDistance(robot.DIRECTION_RIGHT, 100, 0.5);
+            robot.driveUntilDistance(35, 0.5);
+
             robot.driveStraightByDistance(direction_backward, 1600, 0.8);
             robot.driveStraightByDistance(robot.DIRECTION_LEFT, 250, 0.5);
             robot.dropSkyStone();
@@ -40,9 +45,13 @@ public class OneSkyStoneRedStreet extends LinearOpMode {
             robot.opMode.sleep(3000);
             if (robot.isSkystoneDetected()) {
                 robot.driveStraightByDistance(robot.DIRECTION_FORWARD, 150, 0.6);
-                robot.driveStraightByDistance(robot.DIRECTION_LEFT, 270, 0.5);
+//                robot.driveStraightByDistance(robot.DIRECTION_LEFT, 270, 0.5);
+                robot.driveUntilDistance(20, 0.5);
+
                 robot.pickupSkyStone();
-                robot.driveStraightByDistance(robot.DIRECTION_RIGHT, 100, 0.5);
+//                robot.driveStraightByDistance(robot.DIRECTION_RIGHT, 100, 0.5);
+                robot.driveUntilDistance(35, 0.5);
+
                 robot.driveStraightByDistance(direction_backward, 1800, 0.8);
                 robot.driveStraightByDistance(robot.DIRECTION_LEFT, 250, 0.5);
                 robot.dropSkyStone();
@@ -53,9 +62,13 @@ public class OneSkyStoneRedStreet extends LinearOpMode {
 
                 robot.driveStraightByDistance(direction_forward, 200, 0.6);
                 robot.driveStraightByDistance(robot.DIRECTION_FORWARD, 150, 0.6);
-                robot.driveStraightByDistance(robot.DIRECTION_LEFT, 270, 0.5);
+//                robot.driveStraightByDistance(robot.DIRECTION_LEFT, 270, 0.5);
+                robot.driveUntilDistance(20, 0.5);
+
                 robot.pickupSkyStone();
-                robot.driveStraightByDistance(robot.DIRECTION_RIGHT, 100, 0.5);
+//                robot.driveStraightByDistance(robot.DIRECTION_RIGHT, 100, 0.5);
+                robot.driveUntilDistance(35, 0.5);
+
                 robot.driveStraightByDistance(direction_backward, 2000, 0.8);
                 robot.driveStraightByDistance(robot.DIRECTION_LEFT, 250, 0.5);
                 robot.dropSkyStone();

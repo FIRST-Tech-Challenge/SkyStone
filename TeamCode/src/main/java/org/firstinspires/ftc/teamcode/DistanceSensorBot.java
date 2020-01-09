@@ -39,6 +39,7 @@ import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -74,5 +75,38 @@ public class DistanceSensorBot extends PinchArmBot {
 
         opMode.telemetry.update();
         return sensorSkyStoneQuarry.getDistance(DistanceUnit.INCH);
+    }
+
+    public void driveUntilDistance(double distance, double power) {
+
+        leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        if (sensorSkyStoneQuarry.getDistance(DistanceUnit.CM) > distance) {
+
+            do {
+                leftFront.setPower(- power);
+                rightFront.setPower(power);
+                leftRear.setPower(power);
+                rightRear.setPower(- power);
+            }
+            while (sensorSkyStoneQuarry.getDistance(DistanceUnit.CM) > distance);
+        } else {
+
+            do {
+                leftFront.setPower(power);
+                rightFront.setPower(- power);
+                leftRear.setPower(- power);
+                rightRear.setPower(power);
+            }
+            while (sensorSkyStoneQuarry.getDistance(DistanceUnit.CM) < distance);
+        }
+        leftFront.setPower(0);
+        rightFront.setPower(0);
+        leftRear.setPower(0);
+        rightRear.setPower(0);
+
     }
 }

@@ -168,7 +168,7 @@ public class ADVHOP_ARM extends OpMode {
         backLeftPower = y + x;
         backRightPower = y + -x;
 
-        if (gamepad1.dpad_up || gamepad1.dpad_down) {
+        /*if (gamepad1.dpad_up || gamepad1.dpad_down) {
             int magnitude = (gamepad1.dpad_up ? 1 : 0) + (gamepad1.dpad_down ? -1 : 0);
             frontLeftPower = magnitude * sin;
             frontRightPower = magnitude* cos;
@@ -181,8 +181,7 @@ public class ADVHOP_ARM extends OpMode {
             frontRightPower = magnitude* sin;
             backLeftPower = magnitude* sin;
             backRightPower = -magnitude* cos;
-        }
-
+        }*/
         if ( gamepad1.left_bumper){
             frontLeftPower += -turnSpeed;
             frontRightPower += turnSpeed;

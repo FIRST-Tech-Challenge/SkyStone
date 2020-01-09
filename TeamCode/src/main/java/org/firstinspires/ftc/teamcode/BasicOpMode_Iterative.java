@@ -29,12 +29,10 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
@@ -59,6 +57,8 @@ public class BasicOpMode_Iterative extends OpMode
     private DcMotor frontRight = null;
     private DcMotor backLeft = null;
     private DcMotor backRight = null;
+    private DcMotor intake = null;
+    private int intakeState = 0; // 0 = rest, 1 = forward, -1 = backward
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -147,6 +147,20 @@ public class BasicOpMode_Iterative extends OpMode
         frontRight.setPower(frontRightPower);
         backRight.setPower(backRightPower);
 
+        // Intake code
+        boolean dpadUp = gamepad1.dpad_up;
+        boolean dpadDown = gamepad1.dpad_down;
+        boolean bIsPressed = gamepad1.b;
+
+        if (bIsPressed) {
+            intakeState = 0;
+        } else if (dpadUp) {
+            intakeState = 1;
+        } else if (dpadDown) {
+            intakeState = -1;
+        }
+
+        intake.setPower(intakeState);
 
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + runtime.toString());

@@ -27,10 +27,10 @@ public class DriverControl extends Movement {
                 // Gamepad 1 controls:
 
                 // Left trigger - to move left sideways
-                goLeft(-gamepad1.left_trigger, 0, "Going left");
+                goLeft(-gamepad1.left_trigger, 0);
 
                 // Right trigger - to move right sideways
-                goRight(-gamepad1.right_trigger, 0, "Going right");
+                goRight(-gamepad1.right_trigger, 0);
 
                 // Left stick y - to go forward or backward
                 double drive = -(-gamepad1.left_stick_y);

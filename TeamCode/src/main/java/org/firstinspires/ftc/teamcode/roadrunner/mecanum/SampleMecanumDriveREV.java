@@ -62,7 +62,8 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
             setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
         }
 
-        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        // Because of our bevel drive setup, the back motors are inverted and need to be reversed.
+        leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
         rightRear.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
@@ -101,11 +102,11 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
     }
 
     @Override
-    public void setMotorPowers(double v, double v1, double v2, double v3) {
-        leftFront.setPower(v);
-        leftRear.setPower(v1);
-        rightRear.setPower(v2);
-        rightFront.setPower(v3);
+    public void setMotorPowers(double lf, double lb, double rb, double rf) {
+        leftFront.setPower(lf);
+        leftRear.setPower(lb);
+        rightRear.setPower(rb);
+        rightFront.setPower(rf);
     }
 
     @Override

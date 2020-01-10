@@ -82,12 +82,12 @@ public class RealRobotMecanumWheels extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-
+        servoL.setPosition(1);
+        servoR.setPosition(0);
 
             while (opModeIsActive()) {
 
-                servoL.setPosition(1);
-                servoR.setPosition(0);
+
                 //starting position for left is 1
                 //starting position for right is 0
                 //left will get set down for going forward
@@ -96,7 +96,9 @@ public class RealRobotMecanumWheels extends LinearOpMode {
                     //A is start position
                     servoL.setPosition(1);
                     servoR.setPosition(0);
-                } else if (gamepad2.y) {
+                }
+
+                if (gamepad2.y) {
                     //Y is to go out
                     servoL.setPosition(0.3);
                     servoR.setPosition(0.7);

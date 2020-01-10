@@ -83,11 +83,11 @@ public class Path {
         switch (skystonePositions[0]) {
             case 1:
                 double initStrafeDistance;
-                double yCoordMvmtPlane = -47.0;
-                double wallSkyStoneX = -44.0;
-                double furtherMostSkyStoneX = -27.0;
+                double yCoordMvmtPlane = -46.8;
+                double wallSkyStoneX = -49.0;
+                double furtherMostSkyStoneX = -26.0;
                 double firstRegularStoneX = -34.0;
-                double foundationX = 48.0;
+                double foundationX = 46.0;
                 double strafeDistance = 9.0;
                 double rightStrafeCorrection;
 
@@ -119,7 +119,7 @@ public class Path {
                 if(DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
 
                     builder = builder
-                            .setReversed(true).lineTo(new Vector2d(wallSkyStoneX, yCoordMvmtPlane + strafeDistance));
+                            .setReversed(true).lineTo(new Vector2d(wallSkyStoneX, straightDrive.getPoseEstimate().getY()));
 
                 } else {
                     builder = builder.strafeTo(new Vector2d(straightDrive.getPoseEstimate().getX(),-30)).setReversed(true)
@@ -150,7 +150,7 @@ public class Path {
                 straightDrive = new SampleMecanumDriveREV(hardwareMap, false, false);
                 straightDrive.getLocalizer().setPoseEstimate(currentPos);
                 straightDrive.getLocalizer().update();
-                builder = new TrajectoryBuilder(strafeDrive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
+                builder = new TrajectoryBuilder(straightDrive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
                 if(DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
                     builder = builder.setReversed(false)
                             .lineTo(new Vector2d(foundationX, yCoordMvmtPlane));
@@ -283,7 +283,7 @@ public class Path {
                 strafeDrive.getLocalizer().setPoseEstimate(new Pose2d(currentPos.getX(), currentPos.getY(), currentPos.getHeading()));
                 strafeDrive.getLocalizer().update();
                 builder = new TrajectoryBuilder(strafeDrive.getPoseEstimate(), DriveConstantsPID.STRAFE_BASE_CONSTRAINTS);
-                if(!DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
+                if(DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
                     builder = builder.strafeTo(new Vector2d(foundationX, yCoordMvmtPlane));
                 }
                 trajectory = builder.build();
@@ -295,7 +295,7 @@ public class Path {
                 straightDrive.getLocalizer().setPoseEstimate(currentPos);
                 straightDrive.getLocalizer().update();
                 builder = new TrajectoryBuilder(straightDrive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
-                if(!DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
+                if(DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
                     builder = builder
                             .setReversed(true).lineTo(new Vector2d(firstRegularStoneX, yCoordMvmtPlane));
                 }
@@ -308,7 +308,7 @@ public class Path {
                 strafeDrive.getLocalizer().setPoseEstimate(currentPos);
                 strafeDrive.getLocalizer().update();
                 builder = new TrajectoryBuilder(strafeDrive.getPoseEstimate(), DriveConstantsPID.STRAFE_BASE_CONSTRAINTS);
-                if(!DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
+                if(DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
                     builder = builder
                             .strafeTo(new Vector2d(firstRegularStoneX, yCoordMvmtPlane + strafeDistance));
                 }

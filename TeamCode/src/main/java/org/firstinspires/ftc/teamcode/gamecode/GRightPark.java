@@ -18,8 +18,14 @@ public class GRightPark extends AutoOpMode {
         telemetry.addData("Status", "initialized");
         waitForStart();
 
+        joules.DriveForward(0.5);
+        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(),100));
+        joules.Stop();
+
+        sleep(100);
+
         joules.StrafeRight(0.5);
-        sleep(1200);
+        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(),1200));
         joules.Stop();
 
     }

@@ -157,14 +157,14 @@ public class Joules  {
 
     //foundation
     public void FoundationDrop(){
-        Foundation.setPosition(0.2);
+        Foundation.setPosition(0.25);
     }
     public void FoundationGrab(){
-        Foundation.setPosition(0.42);
+        Foundation.setPosition(0.47);
     }
 
-    public void TapeMeasureSpring() {TapeMeasure.setPosition(0.2);}
-    public void TapeMeasurePush() {TapeMeasure.setPosition(0.8);}
+    public void TapeMeasureSpring() {TapeMeasure.setPosition(0.7);}
+    public void TapeMeasurePush() {TapeMeasure.setPosition(0.2);}
 
     public void StoneDown(){
         StoneMover.setPosition(0.1);

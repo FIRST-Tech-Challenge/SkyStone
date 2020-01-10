@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.gamecode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.teamcode.opmodesupport.AutoOpMode;
@@ -10,7 +9,7 @@ import org.firstinspires.ftc.teamcode.robots.Joules;
 
 @Autonomous
 
-public class GBlClFound extends AutoOpMode {
+public class GBlFarFound extends AutoOpMode {
     private VoltageSensor ExpansionHub2_VoltageSensor;
     public void runOp() throws InterruptedException {
         Joules joules = new Joules();
@@ -90,8 +89,14 @@ public class GBlClFound extends AutoOpMode {
         sleep(600);
         joules.SlidesStop();
 
+        joules.DriveForward(0.4);
+        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(),650));
+        joules.Stop();
+
+        sleep(100);
+
         joules.StrafeRight(0.5);
-        sleep(900);
+        sleep(1000);
         joules.Stop();
 
 

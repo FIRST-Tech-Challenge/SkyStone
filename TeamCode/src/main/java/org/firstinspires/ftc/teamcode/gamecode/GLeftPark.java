@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.robots.Joules;
 
 @Autonomous
 
-public class GRightUpPark extends AutoOpMode {
+public class GLeftPark extends AutoOpMode {
     private VoltageSensor ExpansionHub2_VoltageSensor;
     public void runOp() throws InterruptedException {
         Joules joules = new Joules();
@@ -17,14 +17,14 @@ public class GRightUpPark extends AutoOpMode {
         telemetry.addData("Status", "initialized");
         waitForStart();
 
-        joules.DriveForward(0.4);
-        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(),650));
+        joules.DriveForward(0.5);
+        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(),100));
         joules.Stop();
 
-        sleep(200);
+        sleep(100);
 
-        joules.StrafeRight(0.5);
-        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(),1150));
+        joules.StrafeLeft(0.5);
+        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(),1200));
         joules.Stop();
 
     }

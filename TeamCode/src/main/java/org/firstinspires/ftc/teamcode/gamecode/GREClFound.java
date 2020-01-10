@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.robots.Joules;
 
 @Autonomous
 
-public class GRedClFound extends AutoOpMode {
+public class GREClFound extends AutoOpMode {
     private VoltageSensor ExpansionHub2_VoltageSensor;
     public void runOp() throws InterruptedException {
         Joules joules = new Joules();
@@ -19,8 +19,10 @@ public class GRedClFound extends AutoOpMode {
         ExpansionHub2_VoltageSensor =  hardwareMap.voltageSensor.get("Expansion Hub 2");
 
 
-        int redTapeVal = 310;
+        int blueTapeVal = 310;
         telemetry.addData("Status", "initialized");
+        joules.FoundationDrop();
+        joules.DaffyUp();
         waitForStart();
 
         /*joules.SlidesUp();
@@ -31,22 +33,28 @@ public class GRedClFound extends AutoOpMode {
         sleep(1000);
         joules.SlidesStop();
 
+        joules.DriveForward(0.1);
+        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 100));
+        joules.Stop();
+
         joules.StrafeRight(0.3);
-        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 800));
+        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 1100));
+        joules.Stop();
+
+        sleep(100);
+
+        joules.StrafeLeft(0.3);
+        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 500));
         joules.Stop();
 
         sleep(100);
 
         joules.DriveForward(0.05);
-        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 1650));
+        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 1550));
         joules.Stop();
 
         joules.DriveForward(0.02);
-        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 450));
-        joules.Stop();
-
-        joules.LeftPivot(0.01); //may have to do right pivot
-        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 200));
+        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 400));
         joules.Stop();
 
         joules.FoundationGrab();
@@ -54,13 +62,17 @@ public class GRedClFound extends AutoOpMode {
         joules.Stop();
 
         joules.DriveBackward(0.3);
-        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 1600));
+        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 1800));
         joules.Stop();
 
         sleep(100);
 
         joules.FoundationDrop();
         sleep(2000);
+        joules.Stop();
+
+        joules.DriveBackward(0.1);
+        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(),400));
         joules.Stop();
 
 
@@ -78,7 +90,7 @@ public class GRedClFound extends AutoOpMode {
         joules.SlidesStop();
 
         joules.StrafeLeft(0.5);
-        sleep(700);
+        sleep(900);
         joules.Stop();
 
 

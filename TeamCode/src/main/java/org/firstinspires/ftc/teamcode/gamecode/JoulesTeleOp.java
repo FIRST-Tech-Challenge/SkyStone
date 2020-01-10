@@ -15,6 +15,8 @@ public class JoulesTeleOp extends TeleOpMode {
     public void initialize() {
         joules = new Joules();
         joules.CapDown();
+        joules.TapeMeasurePush();
+        joules.FoundationDrop();
         telemetry.addData("Status", "Initialized");
     }
 
@@ -45,11 +47,14 @@ public class JoulesTeleOp extends TeleOpMode {
             joules.CapUp();
         }
 
-        if (joy1.buttonA()){
+        if (joy1.buttonX()){
             joules.TapeMeasurePush();
+            telemetry.addData("Push", "kj");
         }
-        else if (joy1.buttonY()){
+        else if (joy1.buttonB()){
             joules.TapeMeasureSpring();
+            telemetry.addData("spring", "kj");
+
         }
 
         if (joy2.leftTrigger()){

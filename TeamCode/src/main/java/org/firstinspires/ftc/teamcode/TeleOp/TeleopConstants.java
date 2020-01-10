@@ -41,8 +41,8 @@ public class TeleopConstants {
     public static double autoClaw1Down = 0;
     public static double autoClaw1Up = 0.23452223351931448;
     public static double autoClaw2Init = 0;
-    public static double autoClaw2Open = 0.425600920174437;
-    public static double autoClaw2Close = 0.3156675463246242;
+    public static double autoClaw2Open = 0.556;
+    public static double autoClaw2Close = 0.386;
 
     // Positions in teleop
     public static double autoClaw1Stowed = 0.335;

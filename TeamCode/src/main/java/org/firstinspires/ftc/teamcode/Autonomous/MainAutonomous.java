@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -45,6 +46,7 @@ public class MainAutonomous extends LinearOpMode {
     private SampleMecanumDriveBase straightDrive;
     private SampleMecanumDriveBase strafeDrive;
     private boolean initialize = false;
+    public BNO055IMU imu;
 
     private enum CameraController{
         WEBCAM, PHONECAM
@@ -116,9 +118,15 @@ public class MainAutonomous extends LinearOpMode {
                 telemetry.update();
                 straightDrive = new SampleMecanumDriveREV(hardwareMap, false);
                 strafeDrive = new SampleMecanumDriveREV(hardwareMap, true);
+                imu = hardwareMap.get(BNO055IMU.class, "imu");
+                BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+                parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+                imu.initialize(parameters);
+
+
                 telemetry.addData("STATUS", "Done!");
                 telemetry.update();
-                path = new Path(hwMap, this, straightDrive, strafeDrive, startingPos, hardwareMap);
+                path = new Path(hwMap, this, straightDrive, strafeDrive, startingPos, hardwareMap, imu);
 
                 if (fieldPosition == FieldPosition.RED_QUARY || fieldPosition == FieldPosition.BLUE_QUARY) {
                     telemetry.addData("STATUS", "Initializing TensorFlow...");

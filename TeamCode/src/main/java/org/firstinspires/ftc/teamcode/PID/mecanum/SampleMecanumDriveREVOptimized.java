@@ -17,6 +17,7 @@ import java.util.List;
 import org.firstinspires.ftc.teamcode.PID.DriveConstantsPID;
 import org.firstinspires.ftc.teamcode.PID.localizer.StandardTrackingWheelLocalizer;
 import org.firstinspires.ftc.teamcode.PID.localizer.TrackingWheelLocalizerWithIMU;
+import org.firstinspires.ftc.teamcode.PID.localizer.VuforiaCamLocalizer;
 import org.firstinspires.ftc.teamcode.PID.util.LynxModuleUtil;
 import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.ExpansionHubMotor;
@@ -85,19 +86,17 @@ public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
         //setLocalizer(new TrackingWheelLocalizerWithIMU(hardwareMap, imu));
-        if (DriveConstantsPID.RUN_USING_IMU_LOCALIZER) {
-            RobotLog.dd(TAG, "to setLocalizer to imu");
-            setLocalizer(new TrackingWheelLocalizerWithIMU(hardwareMap, imu));
+        if (DriveConstantsPID.USE_VUFORIA_LOCALIZER)
+        {
+            RobotLog.dd(TAG, "to setLocalizer to VuforiaCamLocalizer");
+            setLocalizer(new VuforiaCamLocalizer(hardwareMap));
         }
-        else
-            RobotLog.dd(TAG, "not using imu");
-
-        if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
+        else if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
             RobotLog.dd(TAG, "to setLocalizer to StandardTrackingWheelLocalizer");
             setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
         }
         else
-            RobotLog.dd(TAG, "not using Odometry localizer");
+            RobotLog.dd(TAG, "use default 4 wheel localizer");
     }
     @Override
     public void setBrakeonZeroPower(boolean flag) {

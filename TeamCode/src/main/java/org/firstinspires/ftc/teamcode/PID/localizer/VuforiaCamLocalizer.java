@@ -85,7 +85,7 @@ import com.qualcomm.robotcore.util.RobotLog;
 
 //@TeleOp(name="SKYSTONE Vuforia Nav", group ="Linear Opmode")
 //@Disabled
-public class VuforiaCamLocalizer extends StandardTrackingWheelLocalizer {
+public class VuforiaCamLocalizer extends StandardTrackingWheelLocalizer implements Runnable {
 
     // IMPORTANT:  For Phone Camera, set 1) the camera source and 2) the orientation, based on how your phone is mounted:
     // 1) Camera Source.  Valid choices are:  BACK (behind screen) or FRONT (selfie side)
@@ -141,6 +141,9 @@ public class VuforiaCamLocalizer extends StandardTrackingWheelLocalizer {
     Pose2d poseEstimate = new Pose2d(0, 0, 0);
     StandardTrackingWheelLocalizer trackingWheelLocalizer;
     double currentX, currentY, currentZ;
+    List<VuforiaTrackable> allTrackables;
+    VuforiaTrackables targetsSkyStone;
+    Thread thread;
     private static String TAG = "VuforiaCamLocalizer";
     @NotNull
     @Override
@@ -157,8 +160,9 @@ public class VuforiaCamLocalizer extends StandardTrackingWheelLocalizer {
     public void update() {
         trackingWheelLocalizer.update();
         Pose2d currentPos = trackingWheelLocalizer.getPoseEstimate();
-        RobotLog.dd(TAG, "Vuforia targetVisible? %d, tracking Pos: %s, Vuforia X %f, Y %f",
-                targetVisible, currentPos.toString(), currentX, currentY);
+        RobotLog.dd(TAG, "Vuforia targetVisible? " + targetVisible + " vuforia X/Y: "
+                + Double.toString(currentX) + " " + Double.toString(currentY));
+        RobotLog.dd(TAG, "Trackwheel pos: " + currentPos.toString());
         if (DriveConstantsPID.USE_VUFORIA_LOCALIZER && targetVisible)
             poseEstimate = new Pose2d(currentX, currentY,
                 currentPos.getHeading());
@@ -168,6 +172,8 @@ public class VuforiaCamLocalizer extends StandardTrackingWheelLocalizer {
 
     public VuforiaCamLocalizer(HardwareMap hardwareMap) {
         super(hardwareMap);
+        trackingWheelLocalizer = new StandardTrackingWheelLocalizer(hardwareMap);
+
         /*
          * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
          * We can pass Vuforia the handle to a camera preview resource (on the RC phone);
@@ -179,14 +185,14 @@ public class VuforiaCamLocalizer extends StandardTrackingWheelLocalizer {
         // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        parameters.cameraDirection   = CAMERA_CHOICE;
+        parameters.cameraDirection = CAMERA_CHOICE;
 
         //  Instantiate the Vuforia engine
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
 
         // Load the data sets for the trackable objects. These particular data
         // sets are stored in the 'assets' part of our application.
-        VuforiaTrackables targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
+        targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
 
         VuforiaTrackable stoneTarget = targetsSkyStone.get(0);
         stoneTarget.setName("Stone Target");
@@ -216,7 +222,7 @@ public class VuforiaCamLocalizer extends StandardTrackingWheelLocalizer {
         rear2.setName("Rear Perimeter 2");
 
         // For convenience, gather together all the trackable objects in one easily-iterable collection */
-        List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
+        allTrackables = new ArrayList<VuforiaTrackable>();
         allTrackables.addAll(targetsSkyStone);
 
         /**
@@ -272,7 +278,7 @@ public class VuforiaCamLocalizer extends StandardTrackingWheelLocalizer {
 
         front1.setLocation(OpenGLMatrix
                 .translation(-halfField, -quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , 90)));
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 90)));
 
         front2.setLocation(OpenGLMatrix
                 .translation(-halfField, quadField, mmTargetHeight)
@@ -288,7 +294,7 @@ public class VuforiaCamLocalizer extends StandardTrackingWheelLocalizer {
 
         rear1.setLocation(OpenGLMatrix
                 .translation(halfField, quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , -90)));
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
 
         rear2.setLocation(OpenGLMatrix
                 .translation(halfField, -quadField, mmTargetHeight)
@@ -317,14 +323,14 @@ public class VuforiaCamLocalizer extends StandardTrackingWheelLocalizer {
 
         // Rotate the phone vertical about the X axis if it's in portrait mode
         if (PHONE_IS_PORTRAIT) {
-            phoneXRotate = 90 ;
+            phoneXRotate = 90;
         }
 
         // Next, translate the camera lens to where it is on the robot.
         // In this example, it is centered (left to right), but forward of the middle of the robot, and above ground level.
-        final float CAMERA_FORWARD_DISPLACEMENT  = 4.0f * mmPerInch;   // eg: Camera is 4 Inches in front of robot center
+        final float CAMERA_FORWARD_DISPLACEMENT = 4.0f * mmPerInch;   // eg: Camera is 4 Inches in front of robot center
         final float CAMERA_VERTICAL_DISPLACEMENT = 8.0f * mmPerInch;   // eg: Camera is 8 Inches above ground
-        final float CAMERA_LEFT_DISPLACEMENT     = 0;     // eg: Camera is ON the robot's center line
+        final float CAMERA_LEFT_DISPLACEMENT = 0;     // eg: Camera is ON the robot's center line
 
         OpenGLMatrix robotFromCamera = OpenGLMatrix
                 .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
@@ -348,14 +354,20 @@ public class VuforiaCamLocalizer extends StandardTrackingWheelLocalizer {
         // Tap the preview window to receive a fresh image.
 
         targetsSkyStone.activate();
+        thread = new Thread(this);
+        thread.start();
+    }
+    public void run(){
+        int print_count = 0;
         while (DriveConstantsPID.keep_vuforia_running) {
-
+            print_count ++;
             // check all the trackable targets to see which one (if any) is visible.
             targetVisible = false;
             for (VuforiaTrackable trackable : allTrackables) {
                 if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
                     //telemetry.addData("Visible Target", trackable.getName());
-                    RobotLog.dd(TAG, "Visible Target" + trackable.getName());
+                    if (print_count%10==0)
+                        RobotLog.dd(TAG, "Visible Target" + trackable.getName());
                     targetVisible = true;
 
                     // getUpdatedRobotLocation() will return null if no new information is available since
@@ -375,7 +387,8 @@ public class VuforiaCamLocalizer extends StandardTrackingWheelLocalizer {
 
                 //telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
                   //      translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
-                RobotLog.dd(TAG, "Pos (in), {X, Y, Z} = %.1f, %.1f, %.1f",
+                if (print_count%10==0)
+                    RobotLog.dd(TAG, "Pos (in), {X, Y, Z} = %.1f, %.1f, %.1f",
                         translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
                 currentX = translation.get(0) / mmPerInch;
                 currentY = translation.get(1) / mmPerInch;
@@ -383,12 +396,18 @@ public class VuforiaCamLocalizer extends StandardTrackingWheelLocalizer {
                 // express the rotation of the robot in degrees.
                 Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
                 //telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
-                RobotLog.dd(TAG, "Rot (deg), {Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
+                if (print_count%10==0)
+                    RobotLog.dd(TAG, "Rot (deg), {Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
             }
             else {
                 //telemetry.addData("Visible Target", "none");
-                RobotLog.dd(TAG, "Visible Target none");
+                if (print_count%10==0)
+                    RobotLog.dd(TAG, "Visible Target none");
             }
+            try{
+                Thread.sleep(100);
+            } catch(Exception e){}
+
         }
 
         // Disable Tracking when we are done;

@@ -44,7 +44,7 @@ public class RED_SkyStone_MoveFdn_ParkBridge_Vuforia extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         AutoMode = new AutoUC4_Skystone_MoveFdn_Park();
-        telemetry.setAutoClear(false);
+        //telemetry.setAutoClear(false);
 
         autoIntake = new Intake(hardwareMap);
         autoArm = new Arm(hardwareMap);

@@ -61,6 +61,12 @@ public class AutoUC3_Park {
         autoUCArm.turnArmBrakeModeOn();
         callingOpMode.sleep(500);
 
+        /***************************************/
+        //Delay to move only by end of autonomous mode
+        callingOpMode.sleep(0);
+        /***************************************/
+
+
         //Park near wall
         //Move back by distance or till Chassis light sensor does not detect Blue line to be under blue skybridge
         if (startInBuildingZone) {

@@ -24,9 +24,10 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 
 /**
- * Autonomous Mode Usecase 1
+ * Autonomous Mode Usecase 4
  *
  * Description : Start on wall in Loading Zone, identify and move 1 skystone to Building zone and
+ *                  place stone on Foundation. Pull foundation to edge of Building zone
  *                  park near wall or near neutral Skybridge
  *
  * Steps:
@@ -42,11 +43,16 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  * Slide back to edge of B2,
  * Turn 90 degrees Left
  * Move to B4
- * Drop block
- * Move in between B4 and B3 (Parking)
+ * Turn right, move forward and drop skystnne on foundation
+ * Slide 10" right and drop arm to hold foundation
+ * Pull foundation to edge of Loading zone
+ * Move right till outside of foundation
+ * (Alternate usecase) : Move forward to align to parking location near neatural sybridge, else stay
+ * to park along the wall.
+ * Move right by distance or till Chassis light sensor does not detect Blue line to be under blue skybridge
  *
- *  Uses playingAlliance variable to select as 1 for Blue, -1 for Red Alliance
- *  Uses parkingPlaceNearSkyBridge variable false for near wall, true for near NeutralSkybridge
+ * Uses playingAlliance variable to select as 1 for Blue, -1 for Red Alliance
+ * Uses parkingPlaceNearSkyBridge variable false for near wall, true for near NeutralSkybridge
  */
 
 public class AutoUC4_Skystone_MoveFdn_Park {
@@ -121,9 +127,9 @@ public class AutoUC4_Skystone_MoveFdn_Park {
 
         // Move by distance X forward near SB5 : 6 inches to skystone
         double robotToNearSkystone = 24; // was 27
-        autoUCChassis.runFwdBackLeftRight(robotToNearSkystone,0,0.2, callingOpMode);
+        autoUCChassis.runFwdBackLeftRight(robotToNearSkystone,0,0.25, callingOpMode);
 
-        callingOpMode.sleep(500);
+        callingOpMode.sleep(200);
 
         callingOpMode.telemetry.addData("before viewforia in loop","");
         callingOpMode.telemetry.update();
@@ -168,63 +174,66 @@ public class AutoUC4_Skystone_MoveFdn_Park {
             skystonePosition = 3;
         }
 
-        // Drop Arm and
+        // Drop Arm
         autoUCArm.moveArm_groundLevel();
-        callingOpMode.sleep(500);
+        callingOpMode.sleep(250);
 
-        // Move forward 2 inches
-        autoUCChassis.runFwdBackLeftRight(4, 0, 0.1, callingOpMode);
-        callingOpMode.sleep(500);
+        // Move forward 5 inches
+        autoUCChassis.runFwdBackLeftRight(5, 0, 0.1, callingOpMode);
+        callingOpMode.sleep(250);
 
         //Grip the block
         autoUCIntake.closeGrip();
-        callingOpMode.sleep(500);
+        callingOpMode.sleep(250);
 
         // Slide back to edge of B2, 10 inches
         autoUCChassis.runFwdBackLeftRight(-9,0,0.1, callingOpMode); // distance was 8
 
         callingOpMode.sleep(200);
         // Turn 90 degrees Left
-        autoUCChassis.turnby90degree(playingAlliance*(-1),0.1, callingOpMode); // was 0.1
-        callingOpMode.sleep(500);
+        autoUCChassis.turnby90degree(playingAlliance*(-1),0.2, callingOpMode); // was 0.1
+        callingOpMode.sleep(250);
 
 
        //Move forward till Chassis bumber limit switch is pressed.
-        double expectedMaxDistanceToFoundation = 87 + (5 - skystonePosition) * stoneTostone; // was 40 --> 70
-        autoUCChassis.runFwdBackLeftRight(expectedMaxDistanceToFoundation, 0, 0.35, callingOpMode) ;
+        double expectedMaxDistanceToFoundation = 82 + (5 - skystonePosition) * stoneTostone; // was 40 --> 70
+        autoUCChassis.runFwdBackLeftRight(expectedMaxDistanceToFoundation, 0, 0.5, callingOpMode) ;
 
         //Lift Arm
         autoUCArm.moveArm_aboveFoundationLevel();
 
         // Turn 90 degrees right
-        autoUCChassis.turnby90degree(playingAlliance,0.05, callingOpMode); // was 0.1
+        autoUCChassis.turnby90degree(playingAlliance,0.1, callingOpMode); // was 0.1
 
         //Move forward till Chassis bumber limit switch is pressed
-        autoUCChassis.runFwdTill_frontleftChassisTouchSensor_Pressed(12, 0.25, callingOpMode);
+        autoUCChassis.runFwdTill_frontleftChassisTouchSensor_Pressed(18, 0.25, callingOpMode);
 
         // Drop block
         autoUCIntake.openGrip();
-        callingOpMode.sleep(500);
+        callingOpMode.sleep(250);
 
-        //Move right 10 inches
-        autoUCChassis.runFwdBackLeftRight(stoneTostone, playingAlliance, 0.1, callingOpMode);
+        //Move right 10 inches to hook the base outside of the stone
+        autoUCChassis.runFwdBackLeftRight(10, playingAlliance, 0.2, callingOpMode);
 
         // Drop Arm
+        autoUCChassis.runFwdBackLeftRight(2,0,0.2, callingOpMode);
         autoUCArm.moveArm_onFoundationLevel();
 
         // Hook Foundation
         autoUCChassis.moveHook_holdFoundation();
 
         // Strafe Left
-        autoUCChassis.runFwdBackLeftRight(4,-playingAlliance,0.1, callingOpMode);
+        autoUCChassis.runFwdBackLeftRight(4,-playingAlliance,0.2, callingOpMode);
+        autoUCArm.moveArm_onFoundationLevel();
 
         // Move Back
-        autoUCChassis.runFwdBackLeftRight(-32,0,0.1, callingOpMode);
+        autoUCChassis.runFwdBackLeftRight(-40,0,0.2, callingOpMode);
 
         //Lift Arm to Above foundation level and release hook
         autoUCArm.moveArm_aboveFoundationLevel();
+        //autoUCArm.moveArm_detectSkystoneLevel();
         autoUCChassis.moveHook_Released();
-        callingOpMode.sleep(500);
+        callingOpMode.sleep(250);
 
         //Push forward to move foundation to end of line
         double foundationtoEdgeofBuildingSite = 1;
@@ -232,15 +241,15 @@ public class AutoUC4_Skystone_MoveFdn_Park {
         callingOpMode.sleep(100);
 
         //Move back till wall is hit
-        autoUCChassis.runFwdBackLeftRight(-4,0,0.25, callingOpMode);
-        callingOpMode.sleep(500);
+        //autoUCChassis.runFwdBackLeftRight(-4,0,0.25, callingOpMode);
+        //callingOpMode.sleep(100);
 
         //Move out of foundation area
-        autoUCChassis.runFwdBackLeftRight(30, playingAlliance, 0.35, callingOpMode);
+        autoUCChassis.runFwdBackLeftRight(20, playingAlliance, 0.35, callingOpMode);
 
         //Move Arm to ground Level
         autoUCArm.turnArmBrakeModeOn();
-        callingOpMode.sleep(500);
+        callingOpMode.sleep(200);
 
 
         //Optional : Move to park near skybridge Neutral
@@ -255,10 +264,10 @@ public class AutoUC4_Skystone_MoveFdn_Park {
         //Move right by distance or till Chassis light sensor does not detect Blue line to be under blue skybridge
         if (playingAlliance == 1) {
             //Blue Alliance
-            autoUCChassis.runTill_ChassisRightColorSensorIsBlue(-30, 0, 0.2, callingOpMode);
+            autoUCChassis.runTill_ChassisRightColorSensorIsBlue(-20, 0, 0.2, callingOpMode);
         } else {
             //Red Alliance
-            autoUCChassis.runTill_ChassisRightColorSensorIsRed(-30, 0, 0.2, callingOpMode);
+            autoUCChassis.runTill_ChassisRightColorSensorIsRed(-20, 0, 0.2, callingOpMode);
         }
 
         //Reached Parking position
@@ -340,7 +349,7 @@ public class AutoUC4_Skystone_MoveFdn_Park {
         //Turn Camera flash on
         CameraDevice.getInstance().setFlashTorchMode(true);
 
-        while(AutonomousTimeOut.milliseconds()<1000 && !targetVisible) {
+        while(AutonomousTimeOut.milliseconds()<500 && !targetVisible) {
             //**************Vuforia********************
             // check all the trackable targets to see which one (if any) is visible.
             /*/TESTCOMMENT for (VuforiaTrackable trackable : allTrackables) {

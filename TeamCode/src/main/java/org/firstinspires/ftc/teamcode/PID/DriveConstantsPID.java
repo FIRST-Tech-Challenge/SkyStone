@@ -84,10 +84,10 @@ public class DriveConstantsPID {
      * MOTOR_VELO_PID with the tuned coefficients from DriveVelocityPIDTuner.
      */
     public static boolean RUN_USING_ENCODER = true;
-    public static PIDCoefficients MOTOR_VELO_PID = null;   //35, 0.5, 2.5
     public static double kP = 0.1;
     public static double kI = 1.52;
     public static double kD = 3.0;
+    public static PIDCoefficients MOTOR_VELO_PID = new PIDCoefficients(kP, kI, kD);   //35, 0.5, 2.5
 
     /*
      * These are physical constants that can be determined from your robot (including the track
@@ -114,6 +114,9 @@ public class DriveConstantsPID {
 	public static double maxVel = 45.0;
 	public static double maxAccel = 20.0;
 
+	public static boolean keep_vuforia_running = true;
+	public static boolean USE_VUFORIA_LOCALIZER = false;
+
     /*
      * These values are used to generate the trajectories for you robot. To ensure proper operation,
      * the constraints should never exceed ~80% of the robot's actual capabilities. While Road
@@ -122,10 +125,13 @@ public class DriveConstantsPID {
      * acceleration values are required, and the jerk values are optional (setting a jerk of 0.0
      * forces acceleration-limited profiling).
      */
-    public static DriveConstraints BASE_CONSTRAINTS = null;
+    public static DriveConstraints BASE_CONSTRAINTS = new DriveConstraints(
+            maxVel, maxAccel, 0.0,
+            Math.toRadians(90.0), Math.toRadians(45.0), 0.0
+    );
     public static DriveConstraints STRAFE_BASE_CONSTRAINTS = new DriveConstraints(
             20.0, 10.0, 0.0,
-            Math.toRadians(180.0), Math.toRadians(180.0), 0.0
+            Math.toRadians(90.0), Math.toRadians(45.0), 0.0
     );
 
     public static double encoderTicksToInches(double ticks) {
@@ -205,6 +211,7 @@ public class DriveConstantsPID {
         RobotLog.dd(TAG, "Heading PID   hP: "+Double.toString(hP) + " hI: "+Double.toString(hI) + " hD: " + Double.toString(hD));
         RobotLog.dd(TAG, "test distance: " + Double.toString(TEST_DISTANCE));
         RobotLog.dd(TAG, "using IMU in localizer? : " + Integer.toString(RUN_USING_IMU_LOCALIZER?1:0));
+        RobotLog.dd(TAG, "using Vuforia in localizer (override IMU and odom)? : " + Integer.toString(USE_VUFORIA_LOCALIZER?1:0));
         RobotLog.dd(TAG, "Driving wheel width? : " + Double.toString(TRACK_WIDTH));
         RobotLog.dd(TAG, "using Odometry? : " + Integer.toString(RUN_USING_ODOMETRY_WHEEL?1:0));
         RobotLog.dd(TAG, "using Bulk read? : " + Integer.toString(USING_BULK_READ?1:0));
@@ -228,7 +235,7 @@ public class DriveConstantsPID {
             if (BASE_CONSTRAINTS == null)
                 BASE_CONSTRAINTS = new DriveConstraints(
                         maxVel, maxAccel, 0.0,
-                        Math.toRadians(180.0), Math.toRadians(180.0), 0.0
+                        Math.toRadians(90.0), Math.toRadians(45.0), 0.0
                 );
             printConstants();
             return;
@@ -240,6 +247,12 @@ public class DriveConstantsPID {
         {
             v_int = (int) v_double;
             RUN_USING_IMU_LOCALIZER = (v_int==0)?false:true;
+        }
+        v_double = getTeamCodePropertyValue("debug.ftc.vuforia");
+        if (v_double != Double.MAX_VALUE)
+        {
+            v_int = (int) v_double;
+            USE_VUFORIA_LOCALIZER = (v_int==0)?false:true;
         }
         v_double = (int) getTeamCodePropertyValue("debug.ftc.odom");
         if (v_double != Double.MAX_VALUE) {
@@ -267,7 +280,7 @@ public class DriveConstantsPID {
 
         BASE_CONSTRAINTS = new DriveConstraints(
                 maxVel, maxAccel, 0.0,
-                Math.toRadians(180.0), Math.toRadians(180.0), 0.0
+                Math.toRadians(90.0), Math.toRadians(45.0), 0.0
         );
 
         v_double = getTeamCodePropertyValue("debug.ftc.kV");

@@ -100,7 +100,7 @@ public class FullTest extends OpMode {
         if(gamepad2.y) {
             robot.servo_grab.setPosition(1); //close
         } else if (gamepad2.x) {
-            robot.servo_grab.setPosition(0.6); //open
+            robot.servo_grab.setPosition(0.1); //open
         }
 
         //servos foundation

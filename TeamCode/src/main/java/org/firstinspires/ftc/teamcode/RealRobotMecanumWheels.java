@@ -92,7 +92,15 @@ public class RealRobotMecanumWheels extends LinearOpMode {
                 //starting position for right is 0
                 //left will get set down for going forward
                 // right will get set up for going forward\
-
+            if (gamepad2.a) {
+                //A is start position
+                servoL.setPosition(1);
+                servoR.setPosition(0);
+            } else if (gamepad2.y) {
+                //Y is to go out
+                servoL.setPosition(0.3);
+                servoR.setPosition(0.7);
+            }
 
 
 

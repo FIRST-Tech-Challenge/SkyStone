@@ -62,7 +62,7 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
     private double turnStart;
 
     private DriveConstraints constraints;
-    private TrajectoryFollower follower;
+    public TrajectoryFollower follower;
 
     private List<Double> lastWheelPositions;
     private double lastTimestamp;

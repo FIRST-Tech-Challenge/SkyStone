@@ -85,7 +85,7 @@ import com.qualcomm.robotcore.util.RobotLog;
 
 //@TeleOp(name="SKYSTONE Vuforia Nav", group ="Linear Opmode")
 //@Disabled
-public class VuforiaCamLocalizer extends StandardTrackingWheelLocalizer implements Runnable {
+public class VuforiaCamLocalizer implements Runnable, Localizer {
 
     // IMPORTANT:  For Phone Camera, set 1) the camera source and 2) the orientation, based on how your phone is mounted:
     // 1) Camera Source.  Valid choices are:  BACK (behind screen) or FRONT (selfie side)
@@ -139,7 +139,7 @@ public class VuforiaCamLocalizer extends StandardTrackingWheelLocalizer implemen
     private float phoneZRotate    = 0;
 
     Pose2d poseEstimate = new Pose2d(0, 0, 0);
-    StandardTrackingWheelLocalizer trackingWheelLocalizer;
+
     double currentX, currentY, currentZ;
     List<VuforiaTrackable> allTrackables;
     VuforiaTrackables targetsSkyStone;
@@ -148,31 +148,27 @@ public class VuforiaCamLocalizer extends StandardTrackingWheelLocalizer implemen
     @NotNull
     @Override
     public Pose2d getPoseEstimate() {
+        update();
         return poseEstimate;
     }
 
     @Override
     public void setPoseEstimate(@NotNull Pose2d pose2d) {
-        trackingWheelLocalizer.setPoseEstimate(pose2d);
+        poseEstimate = pose2d;
     }
 
     @Override
     public void update() {
-        trackingWheelLocalizer.update();
-        Pose2d currentPos = trackingWheelLocalizer.getPoseEstimate();
         RobotLog.dd(TAG, "Vuforia targetVisible? " + targetVisible + " vuforia X/Y: "
                 + Double.toString(currentX) + " " + Double.toString(currentY));
-        RobotLog.dd(TAG, "Trackwheel pos: " + currentPos.toString());
-        if (DriveConstantsPID.USE_VUFORIA_LOCALIZER && targetVisible)
+        if (targetVisible)
             poseEstimate = new Pose2d(currentX, currentY,
-                currentPos.getHeading());
+                0);
         else
-            poseEstimate = trackingWheelLocalizer.getPoseEstimate();
+            poseEstimate = new Pose2d(0, 0, 0);
     }
 
     public VuforiaCamLocalizer(HardwareMap hardwareMap) {
-        super(hardwareMap);
-        trackingWheelLocalizer = new StandardTrackingWheelLocalizer(hardwareMap);
 
         /*
          * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.

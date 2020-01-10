@@ -99,13 +99,7 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
         rightRear.setDirection(DcMotorSimple.Direction.REVERSE);
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
-        if (DriveConstantsPID.USE_VUFORIA_LOCALIZER == true)
-        {
-            RobotLog.dd(TAG, "to setLocalizer to VuforiaCamLocalizer");
-            Localizer t = new VuforiaCamLocalizer(hardwareMap);
-            setLocalizer(t);
-        }
-        else if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL == true) {
+        if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL == true) {
             RobotLog.dd(TAG, "to setLocalizer to StandardTrackingWheelLocalizer");
             setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
         }

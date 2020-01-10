@@ -86,12 +86,7 @@ public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
         //setLocalizer(new TrackingWheelLocalizerWithIMU(hardwareMap, imu));
-        if (DriveConstantsPID.USE_VUFORIA_LOCALIZER)
-        {
-            RobotLog.dd(TAG, "to setLocalizer to VuforiaCamLocalizer");
-            setLocalizer(new VuforiaCamLocalizer(hardwareMap));
-        }
-        else if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
+        if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
             RobotLog.dd(TAG, "to setLocalizer to StandardTrackingWheelLocalizer");
             setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
         }

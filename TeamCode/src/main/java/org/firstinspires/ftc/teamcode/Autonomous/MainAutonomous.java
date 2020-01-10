@@ -175,7 +175,7 @@ public class MainAutonomous extends LinearOpMode {
 
             telemetry.addData("SKYSTONE POSITIONS", Arrays.toString(skystonePositions));
             telemetry.addData("External Heading",
-                    Math.round(Math.toDegrees(path.getExternalHeading()) * 1000.0) / 1000.0);
+                    Math.round(Math.toDegrees(imu.getAngularOrientation().firstAngle) * 1000.0) / 1000.0);
             telemetry.addData("Current (starting) Location", path.getPoseEstimate());
             telemetry.update();
         }

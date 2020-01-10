@@ -35,6 +35,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 //import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -44,7 +45,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 //@Disabled
 public class RealRobotMecanumWheels extends LinearOpMode {
 
-
+    public Servo servoR = null;
+    public Servo servoL = null;
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftFront = null;
     private DcMotor rightFront = null;
@@ -56,6 +58,8 @@ public class RealRobotMecanumWheels extends LinearOpMode {
         telemetry.addData("status", "Initialized");
         telemetry.update();
 
+        servoR = hardwareMap.get(Servo.class, "rightServ");
+        servoL = hardwareMap.get(Servo.class, "leftServ");
         leftFront = hardwareMap.get(DcMotor.class, "left_front");
         leftBack = hardwareMap.get(DcMotor.class, "left_back");
         rightFront = hardwareMap.get(DcMotor.class, "right_front");
@@ -79,6 +83,19 @@ public class RealRobotMecanumWheels extends LinearOpMode {
         runtime.reset();
 
         while (opModeIsActive()) {
+
+            while(opModeIsActive()){
+
+                servoL.setPosition(1);
+                servoR.setPosition(0);
+                //starting position for left is 1
+                //starting position for right is 0
+                //left will get set down for going forward
+                // right will get set up for going forward\
+
+
+
+
             // move forward
             //if ( move >= -1 && move < 0 ) {
             if (gamepad1.dpad_up){

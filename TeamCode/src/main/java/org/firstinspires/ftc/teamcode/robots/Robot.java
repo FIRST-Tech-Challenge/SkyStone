@@ -201,7 +201,7 @@ public class Robot {
         int target = (int)(mm * 1120 / (wheelDiameter * 25.4 * Math.PI)); //convert mm to tiks
         target = Math.round(target);
 
-        RC.t.addData(target);
+        //RC.t.addData(target);
 
         motorL.resetEncoder();
         motorR.resetEncoder();
@@ -442,7 +442,7 @@ public class Robot {
         //Ines added this code
         motorL.resetEncoder();
         motorR.resetEncoder();
-        RC.t.addData("Status", "Resetting Encoders");    //
+      //  RC.t.addData("Status", "Resetting Encoders");    //
 
         //okay done
 

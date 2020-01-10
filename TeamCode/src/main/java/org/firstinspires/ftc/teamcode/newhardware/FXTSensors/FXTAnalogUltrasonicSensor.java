@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DigitalChannelController;
 
 import org.firstinspires.ftc.teamcode.RC;
-import org.firstinspires.ftc.teamcode.robots.Fermion;
+//import org.firstinspires.ftc.teamcode.robots.Fermion;
 
 /**
  * Created by Windows on 2016-12-30.

@@ -64,7 +64,7 @@ public class VuforiaTest extends AutoOpMode {
         while (opModeIsActive()){
 
             bot.forward(0.5);
-            RC.t.addData("Reporting en route");
+            //RC.t.addData("Reporting en route");
             sleep(1000);
             bot.imuTurnR(90, 0.5);
 

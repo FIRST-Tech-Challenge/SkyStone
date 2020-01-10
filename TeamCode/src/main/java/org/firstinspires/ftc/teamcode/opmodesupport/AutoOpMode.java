@@ -64,11 +64,11 @@ public abstract class AutoOpMode extends LinearOpMode {
         for (int i = 0; i < keys.length; i++){
             Object value = RC.global(keys[i]);
             if(value instanceof Double){
-                RC.t.addData(keys[i], ((Double) value).doubleValue());
+                //RC.t.addData(keys[i], ((Double) value).doubleValue());
             } else if(value instanceof Boolean){
-                RC.t.addData(keys[i], ((Boolean) value).booleanValue());
+                //RC.t.addData(keys[i], ((Boolean) value).booleanValue());
             } else if(value instanceof String){
-                RC.t.addData(keys[i], (String)value);
+                //RC.t.addData(keys[i], (String)value);
             }
         }
     }
@@ -271,32 +271,32 @@ public abstract class AutoOpMode extends LinearOpMode {
      * @param overWrite whether or not to overwrite the data there
      */
     public void setDataLogFile (String fileName, boolean overWrite) {
-        RC.t.setDataLogFile(fileName, overWrite);
+      //  RC.t.setDataLogFile(fileName, overWrite);
         this.dataLogFileName = fileName;
     }//setDataLogFile
 
     public void dataLogData(String key, String data) {
-        RC.t.dataLogData(dataLogFileName, key, data);
+       // RC.t.dataLogData(dataLogFileName, key, data);
     }
 
-    public void dataLogData(String data) {
-        RC.t.dataLogData(dataLogFileName, data);
-    }
+//   // public void dataLogData(String data) {
+//        RC.t.dataLogData(dataLogFileName, data);
+//    }
 
     public void dataLogData(String key, double data) {
-        RC.t.dataLogData(dataLogFileName, key, data);
+      //  RC.t.dataLogData(dataLogFileName, key, data);
     }
 
-    public void dataLogData(double data) {
-        RC.t.dataLogData(dataLogFileName, data);
-    }
-
-    public void dataLogData(String key, int data) {
-        RC.t.dataLogData(dataLogFileName, key, data);
-    }
-
-    public void dataLogData(int data) {
-        RC.t.dataLogData(dataLogFileName, data);
-    }
+//   // public void dataLogData(double data) {
+//        RC.t.dataLogData(dataLogFileName, data);
+//    }
+//
+//    public void dataLogData(String key, int data) {
+//        RC.t.dataLogData(dataLogFileName, key, data);
+//    }
+//
+//    public void dataLogData(int data) {
+//        RC.t.dataLogData(dataLogFileName, data);
+//    }
 
 }

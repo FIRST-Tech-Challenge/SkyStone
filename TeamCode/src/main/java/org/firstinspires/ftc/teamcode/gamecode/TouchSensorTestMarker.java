@@ -1,18 +1,14 @@
 package org.firstinspires.ftc.teamcode.gamecode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 
 import org.firstinspires.ftc.teamcode.RC;
-import org.firstinspires.ftc.teamcode.newhardware.FXTCRServo;
-import org.firstinspires.ftc.teamcode.newhardware.FXTServo;
-import org.firstinspires.ftc.teamcode.newhardware.Motor;
 import org.firstinspires.ftc.teamcode.opmodesupport.AutoOpMode;
 import org.firstinspires.ftc.teamcode.robots.Armstrong;
 
 @Autonomous
-public class TouchSensorTest extends AutoOpMode {
+public class TouchSensorTestMarker extends AutoOpMode {
 
     /**
      * The REV Robotics Touch Sensor
@@ -48,16 +44,18 @@ public class TouchSensorTest extends AutoOpMode {
                 armstrong.lifterUp();
                 armstrong.collectServoLeftSlow();
                 armstrong.collectServoRightSlow();
-                RC.t.addData(getSeconds(2));
+               // RC.t.addData(getSeconds(2));
             }
             armstrong.lifterStop();
             armstrong.unlatch();
+            armstrong.MiddleSample();
             sleep(1000);
-            armstrong.forward(0.5);
+            armstrong.forward(0.3);
             sleep(3000);
             armstrong.markDown();
+            sleep(500);
             armstrong.stop();
-
+            return;
 
 
 

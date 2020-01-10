@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.RobotUtilities.MovementVars;
@@ -15,7 +16,7 @@ import static java.lang.Math.toDegrees;
  * Created by Ethan on 12/2/2016.
  */
 
-@TeleOp(name="Omni: TeleOpTest", group ="TeleOp")
+@TeleOp(name="Omni: TeleOpTesty", group ="TeleOp")
 public class OmniTeleTest extends OmniAutoXYOdoClass {
 
     public OmniTeleTest() {
@@ -29,12 +30,10 @@ public class OmniTeleTest extends OmniAutoXYOdoClass {
         telemetry.addLine("Calling robot.init");
         updateTelemetry(telemetry);
         robot.init(hardwareMap);
-        robot.setInputShaping(true);
+        robot.setInputShaping(false);
+        robot.resetEncoders();
         telemetry.addLine("Ready");
         updateTelemetry(telemetry);
-        robot.lifter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.extender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.resetEncoders();
 
         //give MyPosition our current positions so that it saves the last positions of the wheels
         //this means we won't teleport when we start the match. Just in case, run this twice
@@ -109,6 +108,8 @@ public class OmniTeleTest extends OmniAutoXYOdoClass {
     private boolean gotoPosition1 = false;
     private boolean gotoPosition2 = false;
     private boolean gotoPosition3 = false;
+    private ElapsedTime loopTime = new ElapsedTime();
+    private double oneLoop;
 
 //    @Override
 //    public void start()
@@ -127,6 +128,7 @@ public class OmniTeleTest extends OmniAutoXYOdoClass {
         waitForStart();
 
         while (opModeIsActive()) {
+            loopTime.reset();
             //left joystick is for moving
             //right joystick is for rotation
             gyroAngle = robot.readIMU();
@@ -161,7 +163,7 @@ public class OmniTeleTest extends OmniAutoXYOdoClass {
             if (!xHeld && xPressed) {
                 xHeld = true;
                 gotoPosition1 = true;
-                driveToXY(100, 0, 0, 0.3, true, true);
+                rotateToAngle(Math.toRadians(90), true);
                 robot.resetReads();
             } else if (!xPressed) {
                 xHeld = false;
@@ -180,8 +182,6 @@ public class OmniTeleTest extends OmniAutoXYOdoClass {
             }
 
             if (!aHeld && aPressed) {
-                gotoPosition3 = true;
-                driveToXY(100, 100, 0, 0.3, true, true);
                 robot.resetReads();
                 aHeld = true;
             } else if (!aPressed) {
@@ -189,17 +189,20 @@ public class OmniTeleTest extends OmniAutoXYOdoClass {
             }
 
             if (!bHeld && bPressed) {
-                gotoHome = true;
-                driveToXY(0, 0, 0, 0.3, true, true);
-                robot.resetReads();
                 bHeld = true;
+                telemetry.addLine("STOPPING EVERYTHING!!!");
+                gotoHome = false;
+                gotoPosition1 = false;
+                gotoPosition2 = false;
+                gotoPosition3 = false;
+                robot.setAllDriveZero();
             } else if (!bPressed) {
                 bHeld = false;
             }
 
             if (!yHeld && yPressed) {
                 gotoPosition2 = true;
-                driveToXY(0, 100, 0, 0.3, true, true);
+                rotateToAngle(Math.toRadians(-90), true);
                 robot.resetReads();
                 yHeld = true;
             } else if (!yPressed) {
@@ -230,7 +233,7 @@ public class OmniTeleTest extends OmniAutoXYOdoClass {
                 leftHeld = false;
             }
             if(gotoHome) {
-                if(driveToXY(0, 0, 0, 0.3, true, false)) {
+                if(driveToXY(0, 0, 0, 0.3, false, false)) {
                     telemetry.addLine("Drive to Home TRUE");
                     robot.setAllDriveZero();
                     gotoHome = false;
@@ -239,7 +242,7 @@ public class OmniTeleTest extends OmniAutoXYOdoClass {
                 }
             }
             if(gotoPosition1) {
-                if(driveToXY(100, 0, 0, 0.3, true, false)) {
+                if(                rotateToAngle(Math.toRadians(90), false)) {
                     telemetry.addLine("Drive to Position 1 TRUE");
                     robot.setAllDriveZero();
                     gotoPosition1 = false;
@@ -248,7 +251,7 @@ public class OmniTeleTest extends OmniAutoXYOdoClass {
                 }
             }
             if(gotoPosition2) {
-                if(driveToXY(0, 100, 0, 0.3, true, false)) {
+                if(                rotateToAngle(Math.toRadians(-90), false)) {
                     telemetry.addLine("Drive to Position 2 TRUE");
                     robot.setAllDriveZero();
                     gotoPosition2 = false;
@@ -257,7 +260,7 @@ public class OmniTeleTest extends OmniAutoXYOdoClass {
                 }
             }
             if(gotoPosition3) {
-                if(driveToXY(100, 100, 0, 0.3, true, false)) {
+                if(driveToXY(100, 100, 0, 0.3, false, false)) {
                     telemetry.addLine("Drive to Position 3 TRUE");
                     robot.setAllDriveZero();
                     gotoPosition3 = false;
@@ -371,7 +374,9 @@ public class OmniTeleTest extends OmniAutoXYOdoClass {
             telemetry.addData("Front Right Power: ", robot.frontRightMotorPower);
             telemetry.addData("Rear Left Power: ", robot.rearLeftMotorPower);
             telemetry.addData("Rear Right Power: ", robot.rearRightMotorPower);
+            telemetry.addData("Loop time: ", loopTime.milliseconds());
             updateTelemetry(telemetry);
+//            sleep(25);
         }
     }
 

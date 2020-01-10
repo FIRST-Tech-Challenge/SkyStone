@@ -76,7 +76,7 @@ public abstract class OmniAutoXYOdoClass extends LinearOpMode {
         }
 
 		// We are done if we are within 2 degrees
-		if(Math.abs(deltaAngle) < 2) {
+		if(Math.abs(Math.toDegrees(deltaAngle)) < 2) {
 			// We have reached our destination if the angle is close enough
 			robot.setAllDriveZero();
 			reachedDestination = true;
@@ -90,6 +90,9 @@ public abstract class OmniAutoXYOdoClass extends LinearOpMode {
 				// We still have some turning to do.
                 MovementVars.movement_x = 0;
 		        MovementVars.movement_y = 0;
+		        if(turnSpeed > -robot.MIN_SPIN_RATE) {
+		            turnSpeed = -robot.MIN_SPIN_RATE;
+                }
         		MovementVars.movement_turn = turnSpeed;
 				robot.ApplyMovement();
 			}
@@ -102,6 +105,9 @@ public abstract class OmniAutoXYOdoClass extends LinearOpMode {
 				// We still have some turning to do.
                 MovementVars.movement_x = 0;
 		        MovementVars.movement_y = 0;
+                if(turnSpeed < robot.MIN_SPIN_RATE) {
+                    turnSpeed = robot.MIN_SPIN_RATE;
+                }
         		MovementVars.movement_turn = turnSpeed;
 				robot.ApplyMovement();
 			}

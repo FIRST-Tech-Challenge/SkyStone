@@ -31,8 +31,8 @@ import static java.lang.Math.toRadians;
 public class HardwareOmnibotDrive
 {
     /* Public OpMode members. */
-    public final static double MIN_SPIN_RATE = 0.05;
-    public final static double MIN_DRIVE_RATE = 0.05;
+    public final static double MIN_SPIN_RATE = 0.1;
+    public final static double MIN_DRIVE_RATE = 0.1;
 
     // Robot Controller Config Strings
     public final static String IMU = "imu";
@@ -199,7 +199,7 @@ public class HardwareOmnibotDrive
 
     public void setFrontLeftMotorPower(double power)
     {
-        if(Math.abs(power - frontLeftMotorPower) > 0.005)
+        if(Math.abs(power - frontLeftMotorPower) > 0.0005)
         {
             frontLeftMotorPower = power;
             frontLeft.setPower(power);
@@ -208,7 +208,7 @@ public class HardwareOmnibotDrive
 
     public void setRearLeftMotorPower(double power)
     {
-        if(Math.abs(power - rearLeftMotorPower) > 0.005)
+        if(Math.abs(power - rearLeftMotorPower) > 0.0005)
         {
             rearLeftMotorPower = power;
             rearLeft.setPower(power);
@@ -217,7 +217,7 @@ public class HardwareOmnibotDrive
 
     public void setFrontRightMotorPower(double power)
     {
-        if(Math.abs(power - frontRightMotorPower) > 0.005)
+        if(Math.abs(power - frontRightMotorPower) > 0.0005)
         {
             frontRightMotorPower = power;
             frontRight.setPower(power);
@@ -226,7 +226,7 @@ public class HardwareOmnibotDrive
 
     public void setRearRightMotorPower(double power)
     {
-        if(Math.abs(power - rearRightMotorPower) > 0.005)
+        if(Math.abs(power - rearRightMotorPower) > 0.0005)
         {
             rearRightMotorPower = power;
             rearRight.setPower(power);
@@ -242,6 +242,10 @@ public class HardwareOmnibotDrive
 
     public void setAllDriveZero()
     {
+        frontLeft.setPower(0.0);
+        frontRight.setPower(0.0);
+        rearLeft.setPower(0.0);
+        rearRight.setPower(0.0);
         setAllDrive(0.0);
     }
 
@@ -375,10 +379,10 @@ public class HardwareOmnibotDrive
         }
         lastUpdateTime = currTime;
 
-        double tl_power_raw = MovementVars.movement_y-MovementVars.movement_turn+MovementVars.movement_x*1.5;
-        double bl_power_raw = MovementVars.movement_y-MovementVars.movement_turn-MovementVars.movement_x*1.5;
-        double br_power_raw = -MovementVars.movement_y-MovementVars.movement_turn-MovementVars.movement_x*1.5;
-        double tr_power_raw = -MovementVars.movement_y-MovementVars.movement_turn+MovementVars.movement_x*1.5;
+        double tl_power_raw = MovementVars.movement_y-MovementVars.movement_turn+MovementVars.movement_x*1.6;
+        double bl_power_raw = MovementVars.movement_y-MovementVars.movement_turn-MovementVars.movement_x*1.6;
+        double br_power_raw = -MovementVars.movement_y-MovementVars.movement_turn-MovementVars.movement_x*1.6;
+        double tr_power_raw = -MovementVars.movement_y-MovementVars.movement_turn+MovementVars.movement_x*1.6;
 
         //find the maximum of the powers
         double maxRawPower = Math.abs(tl_power_raw);

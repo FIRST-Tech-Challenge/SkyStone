@@ -9,10 +9,16 @@ public class MyPosition {
 //    public static double auxScalingFactor = 12.48;//12.6148;
     // Is this the wheel base?
 //    public static double turnScalingFactor = 35.694;
-    public static double moveScalingFactor = 4.1146937;
-    public static double auxScalingFactor = 4.08827586;
+//    public static double moveScalingFactor = 4.1146937;
+    // Make bigger to make distance shorter
+    public static double moveScalingFactor = 4.15584064;
+//    public static double auxScalingFactor = 4.08827586;
+// Make bigger to make distance shorter
+    public static double auxScalingFactor = 4.12915862;
 //    public static double turnScalingFactor = 39.0;
-    public static double turnScalingFactor = 11.6928621;
+//    public static double turnScalingFactor = 11.6928621;
+//    public static double turnScalingFactor = 10.2897186;
+    public static double turnScalingFactor = 10.2897186;
     public static double auxPredictionScalingFactor = 0.92;
 
 
@@ -124,7 +130,7 @@ public class MyPosition {
 //        double wheelLeftTotal = currPos_l-wheelLeftInitialReading;
 
         double worldAngleLast = worldAngle_rad;
-        worldAngle_rad = AngleWrap(((wheelLeftTotal-wheelRightTotal)*turnScalingFactor/100000.0) + lastResetAngle);
+        worldAngle_rad = -AngleWrap(((wheelLeftTotal-wheelRightTotal)*turnScalingFactor/100000.0) + lastResetAngle);
 
         //get the predicted amount the straif will go
         double tracker_a_prediction = Math.toDegrees(angleIncrement)*(auxPredictionScalingFactor/10.0);

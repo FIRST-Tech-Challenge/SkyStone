@@ -19,6 +19,7 @@ import com.qualcomm.robotcore.util.RobotLog;
 import org.firstinspires.ftc.teamcode.PID.DriveConstantsPID;
 import org.firstinspires.ftc.teamcode.PID.localizer.StandardTrackingWheelLocalizer;
 import org.firstinspires.ftc.teamcode.PID.localizer.TrackingWheelLocalizerWithIMU;
+import org.firstinspires.ftc.teamcode.PID.localizer.VuforiaCamLocalizer;
 import org.firstinspires.ftc.teamcode.PID.util.DashboardUtil;
 import org.firstinspires.ftc.teamcode.PID.util.LynxModuleUtil;
 
@@ -157,12 +158,17 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
         else
             RobotLog.dd(TAG, "not using imu");
 
-        if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
+        if (DriveConstantsPID.USE_VUFORIA_LOCALIZER)
+        {
+            RobotLog.dd(TAG, "to setLocalizer to VuforiaCamLocalizer");
+            setLocalizer(new VuforiaCamLocalizer(hardwareMap));
+        }
+        else if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
             RobotLog.dd(TAG, "to setLocalizer to StandardTrackingWheelLocalizer");
             setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
         }
         else
-            RobotLog.dd(TAG, "not using Odometry localizer");
+            RobotLog.dd(TAG, "use default 4 wheel localizer");
     }
 
     @Override

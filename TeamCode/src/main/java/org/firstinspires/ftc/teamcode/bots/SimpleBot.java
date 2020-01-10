@@ -31,58 +31,42 @@ package org.firstinspires.ftc.teamcode.bots;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import org.firstinspires.ftc.teamcode.components.*;
+import org.firstinspires.ftc.teamcode.components.DriveTrain;
+import org.firstinspires.ftc.teamcode.components.Grapple;
+import org.firstinspires.ftc.teamcode.components.GyroNavigator;
+import org.firstinspires.ftc.teamcode.components.Intake;
+import org.firstinspires.ftc.teamcode.components.Logger;
+import org.firstinspires.ftc.teamcode.components.Ramp;
+import org.firstinspires.ftc.teamcode.components.SkystoneFinder;
+import org.firstinspires.ftc.teamcode.components.WebCamNavigator;
+import org.firstinspires.ftc.teamcode.components.WebCamera;
 
-public class TestBot extends Bot {
+public class SimpleBot extends Bot {
 
     /* BotComponents */
 
     public Logger logger = null;
-    public WebCamera webCamera = null;
     public DriveTrain driveTrain = null;
-    public GyroNavigator gyroNavigator = null;
-    public WebCamNavigator webCamNavigator = null;
-
-    public Grapple grapple = null;
-    //public ColorSensor colorDetection = null;
-    public SkystoneFinder skystoneFinder = null;
-    public Intake intake = null;
-    public Ramp ramp = null;
 
     /* Constructor */
-    public TestBot() {
+    public SimpleBot() {
 
     }
 
-    public TestBot(OpMode aOpMode) {
+    public SimpleBot(OpMode aOpMode) {
         this(aOpMode, false, false);
     }
 
-    public TestBot(OpMode aOpMode, boolean enableTrace, boolean enableTelemetry) {
+    public SimpleBot(OpMode aOpMode, boolean enableTrace, boolean enableTelemetry) {
 
-        logger = new Logger("TestBot", aOpMode, enableTrace, enableTelemetry);
-        gyroNavigator = new GyroNavigator(logger, aOpMode);
+        logger = new Logger("SimpleBot", aOpMode, enableTrace, enableTelemetry);
         driveTrain = new DriveTrain(logger, aOpMode, "frontLeftMotor", "frontRightMotor",
-                "backLeftMotor", "backRightMotor",
-                gyroNavigator);
-
-        webCamera = new WebCamera(logger, aOpMode, "Webcam 1");
-        webCamNavigator = new WebCamNavigator(logger, aOpMode, webCamera);
-
-        grapple = new Grapple(logger, aOpMode, "servo1", "servo2");
-        //colorDetection = new ColorDetection();
-        skystoneFinder = new SkystoneFinder(logger, aOpMode);
-        intake = new Intake(logger, aOpMode, "Right_Intake", "Left_Intake");
-        ramp = new Ramp(logger, aOpMode, "rampServo", "rampServo2");
+                "backLeftMotor", "backRightMotor");
 
     }
 
     public void initAll() {
-        gyroNavigator.init();
         driveTrain.init(DriveTrain.InitType.INIT_4WD);
-        webCamera.init(WebCamera.InitType.INIT_FOR_FIND_GOLD);
-        // webCamNavigator.init();
-        skystoneFinder.init();
     }
 
 }

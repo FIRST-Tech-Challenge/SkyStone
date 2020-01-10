@@ -39,6 +39,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 public class GyroNavigator extends BotComponent {
 
+    private String imuName = "imu";
     private BNO055IMU imu;
     private Orientation lastAngles = new Orientation();
     private double globalAngle, power = .30, correction;
@@ -53,6 +54,12 @@ public class GyroNavigator extends BotComponent {
         super(aLogger, aOpMode);
     }
 
+    public GyroNavigator(Logger aLogger, OpMode aOpMode, String aImuName)
+    {
+        super(aLogger, aOpMode);
+        imuName = aImuName;
+    }
+
     public void init() {
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
@@ -64,7 +71,7 @@ public class GyroNavigator extends BotComponent {
         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
         // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
         // and named "imu".
-        imu = opMode.hardwareMap.get(BNO055IMU.class, "imu");
+        imu = opMode.hardwareMap.get(BNO055IMU.class, imuName);
 
         imu.initialize(parameters);
 

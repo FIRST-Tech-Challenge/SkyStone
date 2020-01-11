@@ -111,8 +111,8 @@ public class DriveConstantsPID {
     public static double kA = 0;
     public static double kStatic = 0;
 	public static double TEST_DISTANCE = 96;
-	public static double maxVel = 45.0;
-	public static double maxAccel = 20.0;
+	public static double maxVel = 55.0; //45.0
+	public static double maxAccel = 25.0;   //20.0
 
 	public static boolean keep_vuforia_running = true;
 	public static boolean USE_VUFORIA_LOCALIZER = false;
@@ -127,11 +127,11 @@ public class DriveConstantsPID {
      */
     public static DriveConstraints BASE_CONSTRAINTS = new DriveConstraints(
             maxVel, maxAccel, 0.0,
-            Math.toRadians(90.0), Math.toRadians(45.0), 0.0
+            Math.toRadians(180), Math.toRadians(180), 0.0
     );
     public static DriveConstraints STRAFE_BASE_CONSTRAINTS = new DriveConstraints(
-            20.0, 10.0, 0.0,
-            Math.toRadians(90.0), Math.toRadians(45.0), 0.0
+            20.0, 10.0, 0.0,    //20.0, 10.0, 0.0
+            Math.toRadians(90), Math.toRadians(45), 0.0
     );
 
     public static double encoderTicksToInches(double ticks) {

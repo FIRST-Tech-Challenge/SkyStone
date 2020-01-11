@@ -16,7 +16,7 @@ public class TeleopConstants {
     public static double clawServo2PosOpen = 0.687;
 
     public static double transferLockPosPlatform = 0.46017;
-    public static double transferLockPosUp = 0.386;
+    public static double transferLockPosUp = 0.4939;
     public static double transferLockPosOut = 0.2716;
 
     public static double foundationLockUnlock = 0.44;

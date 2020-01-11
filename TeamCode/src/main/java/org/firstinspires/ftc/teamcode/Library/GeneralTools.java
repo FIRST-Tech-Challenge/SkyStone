@@ -38,19 +38,36 @@ public class GeneralTools {
      * set claw to close
      */
     public void closeClamp () {
-        robot.servo_grab.setPosition(1);
+        GeneralTools.closeClamp(robot);
     }
 
     public void openClamp() {
-        robot.servo_grab.setPosition(0.1);
+        GeneralTools.openClamp(robot);
     }
 
     public void grabFoundation() {
+        GeneralTools.grabFoundation(robot);
+    }
+
+    public void releaseFoundation() {
+        GeneralTools.releaseFoundation(robot);
+    }
+
+    public static void closeClamp (HardwareChassis robot) {
+        robot.servo_grab.setPosition(0.9);
+    }
+
+    public static void openClamp(HardwareChassis robot) {
+        robot.servo_grab.setPosition(0.2);
+    }
+
+
+    public static void grabFoundation(HardwareChassis robot) {
         robot.servo_claw_left.setPosition(0.6);
         robot.servo_claw_right.setPosition(0.4);
     }
 
-    public void releaseFoundation() {
+    public static void releaseFoundation(HardwareChassis robot) {
         robot.servo_claw_left.setPosition(0.1);
         robot.servo_claw_right.setPosition(0.9);
     }

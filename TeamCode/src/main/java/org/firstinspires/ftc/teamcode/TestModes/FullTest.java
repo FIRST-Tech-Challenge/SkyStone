@@ -103,19 +103,16 @@ public class FullTest extends OpMode {
 
         //servo clamp
         if(gamepad2.y) {
-            robot.servo_grab.setPosition(1); //close
+            GeneralTools.closeClamp(robot);
         } else if (gamepad2.x) {
-            robot.servo_grab.setPosition(0.1); //open
+            GeneralTools.openClamp(robot);
         }
 
         //servos foundation
         if (gamepad2.right_bumper) { //grab
-            robot.servo_claw_right.setPosition(0.4);
-            robot.servo_claw_left.setPosition(0.6);
+            GeneralTools.grabFoundation(robot);
         } else if (gamepad2.left_bumper) { //release
-
-            robot.servo_claw_right.setPosition(0.9);
-            robot.servo_claw_left.setPosition(0.1);
+            GeneralTools.releaseFoundation(robot);
         }
 
         /*

@@ -64,10 +64,10 @@ public class OmniWheel {
      */
     public static double[] calculate(double wheelRadius, double sideDistance, double frontBackDistance, double forwardVelocity, double sidewardsVelocity, double rotationVelocity) {
         double[][] wheel_matrix = {
-                {1, -1, -(sideDistance+frontBackDistance)/2},
-                {1,  1, (sideDistance+frontBackDistance)/2},
-                {1,  1, -(sideDistance+frontBackDistance)/2},
-                {1, -1, (sideDistance+frontBackDistance)/2}
+                {1, -1, -1},
+                {1,  1, 1},
+                {1,  1, -1},
+                {1, -1, 1}
         };
         double[] velocities = {forwardVelocity, sidewardsVelocity, rotationVelocity};
         double[] mat_multiplied = matrixMultiply(wheel_matrix, velocities);

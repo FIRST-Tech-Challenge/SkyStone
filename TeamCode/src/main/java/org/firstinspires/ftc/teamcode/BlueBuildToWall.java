@@ -12,7 +12,7 @@ public class BlueBuildToWall extends Autonomous{
         robot.hookOne.setPosition(0.2);
         //robot.hookTwo.setPosition(0);
 
-        move(20, -1, 1);
+        move(17, -1, 1);
         sleep(100);
         move(34, 1, 0);
         sleep(500);

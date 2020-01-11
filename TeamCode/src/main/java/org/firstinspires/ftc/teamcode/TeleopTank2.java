@@ -52,11 +52,11 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Teleop Tank", group="K9bot")
-public class TeleopTank extends LinearOpMode {
+@TeleOp(name="Teleop Tank 2", group="K9bot")
+public class TeleopTank2 extends LinearOpMode {
 
     /* Declare OpMode members. */
-    HardwareK9bot robot = new HardwareK9bot();              // Use a K9's hardware
+    HardwareK9bot2 robot = new HardwareK9bot2();              // Use a K9's hardware
     double colourStickPosition = robot.COLOURSTICK_HOME;
     //double          armPosition     = robot.ARM_HOME;                   // Servo safe position
     //double          clawPosition    = robot.CLAW_HOME;                  // Servo safe position
@@ -126,24 +126,26 @@ public class TeleopTank extends LinearOpMode {
             //Hook Code
 
             //Grab Code
-            /*if (gamepad1.left_stick_button && grabPos < 1){
-                grabPos += 0.01;
-                robot.grab.setPosition(grabPos);
-            } else if (gamepad1.right_stick_button && grabPos > 0){
-                grabPos -= 0.01;
-                robot.grab.setPosition(grabPos);
-            }*/
+            if (gamepad1.a /* && robot.grab.getPosition() < 100*/){
+                robot.grab.setPosition(1);
+            } else if (gamepad1.b /*&& robot.grab.getPosition() > 0*/){
+                robot.grab.setPosition(-1);
+            } else {
+                robot.grab.setPosition(0);
+            }
             //Grab Code
 
             //Slide Code
-//            if (gamepad1.dpad_up && robot.slide.getCurrentPosition() < 300){
-//                robot.slide.setPower(0.5);
-//            } else if (gamepad1.dpad_down && robot.slide.getCurrentPosition() > 0 ){
-//                robot.slide.setPower(-0.5);
-//            } else {
-//                robot.slide.setPower(0);
-//            }
+            if (gamepad1.dpad_up && robot.slide.getCurrentPosition() < 6000){
+                robot.slide.setPower(0.5);
+            } else if (gamepad1.dpad_down && robot.slide.getCurrentPosition() > 0 ){
+                robot.slide.setPower(-0.5);
+            } else {
+                robot.slide.setPower(0);
+            }
             //Slide Code
+
+            telemetry.addData("Grab",robot.grab.getPosition());
 
             telemetry.addData("Hook",turn);
             telemetry.addData("L",gamepad1.left_bumper);

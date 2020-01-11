@@ -23,7 +23,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  *   As the arm servo approaches 0, the arm position moves up (away from the floor).
  *   As the claw servo approaches 0, the claw opens up (drops the game element).
  */
-public class HardwareK9bot
+public class HardwareK9bot2
 {
     /* Public OpMode members. */
 
@@ -34,8 +34,8 @@ public class HardwareK9bot
     public Servo hookOne = null;
     //public Servo hookTwo = null;
 
-     //public DcMotor slide = null;
-     //public Servo grab = null;
+     public DcMotor slide = null;
+     public Servo grab = null;
 
     //public DcMotor leftMotor   = null;
     //public DcMotor rightMotor  = null;
@@ -74,7 +74,7 @@ public class HardwareK9bot
     private ElapsedTime period  = new ElapsedTime();
 
     /* Constructor */
-    public HardwareK9bot() {
+    public HardwareK9bot2() {
     }
 
     /* Initialize standard Hardware interfaces */
@@ -88,7 +88,7 @@ public class HardwareK9bot
         backLeftMotor   = hwMap.dcMotor.get("back_left_drive");
         backRightMotor  = hwMap.dcMotor.get("back_right_drive");
 
-         //slide = hwMap.dcMotor.get("slide");
+        slide = hwMap.dcMotor.get("slide");
 
 
 
@@ -115,7 +115,7 @@ public class HardwareK9bot
 //      linSlideLeft.setPower(0);
 //      linSlideRight.setPower(0);
 
-        //slide.setPower(0);
+        slide.setPower(0);
         frontLeftMotor.setPower(0);
         frontRightMotor.setPower(0);
         backLeftMotor.setPower(0);
@@ -136,7 +136,7 @@ public class HardwareK9bot
 
         hookOne = hwMap.servo.get("hook_one");
        // hookTwo = hwMap.servo.get("hook_two");
-        //grab = hwMap.servo.get("grab");
+        grab = hwMap.servo.get("grab");
 
 
         //claw = hwMap.servo.get("claw");

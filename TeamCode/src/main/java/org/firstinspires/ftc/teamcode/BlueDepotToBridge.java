@@ -8,7 +8,7 @@ package org.firstinspires.ftc.teamcode;
 public class BlueDepotToBridge extends Autonomous {
     @Override
     public void runPath() {
-        move(30*1.5, 1, 0);
-        move(43*1.5, 1, 1);
+        move(30, 1, 0);
+        move(43, 1, 1);
     }
 }

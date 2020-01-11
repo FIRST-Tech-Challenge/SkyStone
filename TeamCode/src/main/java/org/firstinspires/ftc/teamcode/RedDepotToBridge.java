@@ -9,8 +9,8 @@ public class RedDepotToBridge extends Autonomous {
     @Override
    public void runPath() {
 
-        move(30*1.5, 1, 0);
-        move(53*1.5, -1, 1);
+        move(30, 1, 0);
+        move(53, -1, 1);
 
 
 

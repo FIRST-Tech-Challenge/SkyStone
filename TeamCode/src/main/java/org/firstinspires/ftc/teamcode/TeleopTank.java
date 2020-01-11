@@ -122,13 +122,13 @@ public class TeleopTank extends LinearOpMode {
             }
 
 
-            if (gamepad1.dpad_down){
+           /* if (gamepad1.dpad_down){
                 robot.slide.setPower(-1);
             } else if (gamepad1.dpad_up) {
                 robot.slide.setPower(1);
             } else {
                 robot.slide.setPower(0);
-            }
+            }*/
 
             telemetry.addData("Hook",turn);
             telemetry.addData("L",gamepad1.left_bumper);

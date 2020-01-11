@@ -87,7 +87,7 @@ protected void move(double distance, double power, int direction) {
     robot.backRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
     // old distance // distance = distance * 0.611111111; //used to be 0.55555 (5/9)
-    distance = distance * 1; //(2.5/2)*0.83333333333;
+    distance = distance * 1.7094017094; //(2.5/2)*0.83333333333;
            //sed to be 0.55555 (5/9)
 
 

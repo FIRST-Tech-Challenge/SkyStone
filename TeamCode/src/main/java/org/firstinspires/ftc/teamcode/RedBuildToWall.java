@@ -11,18 +11,18 @@ public class RedBuildToWall extends Autonomous {
         robot.hookOne.setPosition(0);
         robot.hookTwo.setPosition(0);
 
-        move(27*1.5, 1, 1); // was 14*1.5
+        move(27, 1, 1); // was 14*1.5
         sleep(100);
-        move(34*1.5, 1, 0);
+        move(34, 1, 0);
         sleep(500);
         robot.hookOne.setPosition(0.8);
         robot.hookTwo.setPosition(0.8);
         sleep(1500);
-        move(45*1.5, -1, 0);
+        move(45, -1, 0);
         sleep(500);
         robot.hookOne.setPosition(0);
         robot.hookTwo.setPosition(0);
         sleep(500);
-        move(57*1.5, -1, 1);
+        move(57, -1, 1);
     }
 }

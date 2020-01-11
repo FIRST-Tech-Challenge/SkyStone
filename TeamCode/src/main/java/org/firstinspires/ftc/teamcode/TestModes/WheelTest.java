@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.TestModes;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -7,7 +8,9 @@ import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassis;
 import org.firstinspires.ftc.teamcode.Library.GeneralTools;
 import org.firstinspires.ftc.teamcode.Library.OmniWheel;
 
-@TeleOp(name = "WheelTest")
+@Disabled
+
+//@TeleOp(name = "WheelTest")
 
 public class WheelTest extends OpMode {
     HardwareChassis robot;

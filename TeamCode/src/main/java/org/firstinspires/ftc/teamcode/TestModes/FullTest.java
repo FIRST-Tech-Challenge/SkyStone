@@ -46,7 +46,7 @@ public class FullTest extends OpMode {
                 24,
                 GeneralTools.calculateControllerSmooting(-gamepad1.left_stick_y, smootingValue)*0.5,
                 GeneralTools.calculateControllerSmooting(gamepad1.left_stick_x, smootingValue)*0.5,
-                GeneralTools.calculateControllerSmooting(-gamepad1.left_trigger + gamepad1.right_trigger, smootingValue)); //gamepad1.right_stick_x*-0.2
+                GeneralTools.calculateControllerSmooting(-gamepad1.right_trigger + gamepad1.left_trigger, smootingValue)); //gamepad1.right_stick_x*-0.2
 
         robot.motor_front_left.setPower(result[0]);
         robot.motor_front_right.setPower(result[1]);
@@ -82,17 +82,16 @@ public class FullTest extends OpMode {
         //lift
 
         if (-gamepad2.left_stick_y > 0) {
-            robot.motor_lift_left.setPower(0.1 * gamepad2.left_stick_y);
-            robot.motor_lift_right.setPower(-0.1 * gamepad2.left_stick_y);
+            robot.motor_lift_left.setPower(gamepad2.left_stick_y); //0.1*
+            robot.motor_lift_right.setPower(-gamepad2.left_stick_y); //-0.1*
         } else if (-gamepad2.left_stick_y < 0 && (robot.motor_lift_left.getCurrentPosition() <= liftZeros[0] && robot.motor_lift_right.getCurrentPosition() >= liftZeros[1])) {
-            robot.motor_lift_left.setPower(0.1 * gamepad2.left_stick_y);
-            robot.motor_lift_right.setPower(-0.1 * gamepad2.left_stick_y);
-        } else if (-gamepad2.left_stick_y < 0 && gamepad2.b) ( // override/ignore zero
-            robot.motor_lift_left.setPower(0.1 * gamepad2.left_stick_y);
-            robot.motor_lift_right.setPower(-0.1 * gamepad2.left_stick_y);
-        )
-        //set all motors 0 if nothing is pressed
-        else {
+            robot.motor_lift_left.setPower(gamepad2.left_stick_y);
+            robot.motor_lift_right.setPower(-gamepad2.left_stick_y);
+        } else if (-gamepad2.left_stick_y < 0 && gamepad2.b) {  // override/ignore zero
+            robot.motor_lift_left.setPower(gamepad2.left_stick_y);
+            robot.motor_lift_right.setPower(-gamepad2.left_stick_y);
+        }
+        else { // set all motors 0 if nothing is pressed
             robot.motor_lift_left.setPower(0);
             robot.motor_lift_right.setPower(0);
         }
@@ -110,10 +109,10 @@ public class FullTest extends OpMode {
         }
 
         //servos foundation
-        if (gamepad2.right_bumper) {
-            robot.servo_claw_right.setPosition(0.6);
-            robot.servo_claw_left.setPosition(0.4);
-        } else if (gamepad2.left_bumper) {
+        if (gamepad2.right_bumper) { //grab
+            robot.servo_claw_right.setPosition(0.4);
+            robot.servo_claw_left.setPosition(0.6);
+        } else if (gamepad2.left_bumper) { //release
 
             robot.servo_claw_right.setPosition(0.9);
             robot.servo_claw_left.setPosition(0.1);

@@ -34,9 +34,11 @@ public class newAutonomous extends LinearOpMode{
     //This is a list of all of the states
     private enum State {
         Initial,
-        MovetoLineStart,
+        GrabStone,
+        MoveToBuildZone,
+        TurnFoundation,
+        Park,
         Stop,
-        test
     }
 
     //This is a list of all the possible skystone positions
@@ -120,11 +122,11 @@ public class newAutonomous extends LinearOpMode{
                         telemetry.update();
                         Drive.TimeDelay(5.0);
                     }
-                    newState(State.MovetoLineStart);
+                    newState(State.GrabStone);
                     break;
 
-                //moves to line from starting position
-                case MovetoLineStart:
+
+                case GrabStone:
                     telemetry.addLine("grab skystone");
                     telemetry.update();
                     Grabber.open();
@@ -132,6 +134,11 @@ public class newAutonomous extends LinearOpMode{
                     Drive.moveForwardDistance(0.8, 80);
                     Grabber.close();
                     Drive.TimeDelay(0.5);
+                    newState(State.MoveToBuildZone);
+                    break;
+
+
+                case MoveToBuildZone:
                     Drive.moveBackwardDistance(0.8,40);
                     if (AllianceColor == true) {
                         Drive.turnRightDistance(0.5, 50);
@@ -140,6 +147,11 @@ public class newAutonomous extends LinearOpMode{
                         Drive.turnLeftDistance(0.5,50);
                     }
                     Drive.moveForwardDistance(0.8, 175);
+                    newState(State.TurnFoundation);
+                    break;
+
+
+                case TurnFoundation:
                     if (AllianceColor == true) {
                         Drive.turnRightDistance(0.5, 50);
                     }
@@ -157,12 +169,20 @@ public class newAutonomous extends LinearOpMode{
                         Drive.turnLeftDistance(0.5,50);
                     }
                     FoundationGrabber.open();
+                    newState(State.Park);
+                    break;
+
+
+                case Park:
+                    telemetry.addLine("Park");
+                    telemetry.update();
                     Drive.moveForwardDistance(0.8, 57.0);
                     Drive.turnLeftDistance(0.8, 100);
                     Drive.moveForwardDistance(0.8,60.0);
                     Grabber.open();
                     newState(State.Stop);
                     break;
+
 
                 case Stop:
                     telemetry.addLine("Stop");

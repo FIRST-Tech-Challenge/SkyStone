@@ -30,7 +30,8 @@ public class ServoTester extends LinearOpMode {
                 rw.foundationLock,
                 rw.intakeInit,
                 rw.redAutoClawJoint1,
-                rw.redAutoClawJoint2
+                rw.redAutoClawJoint2,
+                rw.parkingServo
                 //rw.blueAutoClawJoint1
                 //rw.blueAutoClawJoint2
         };
@@ -41,7 +42,7 @@ public class ServoTester extends LinearOpMode {
                 TeleopConstants.transferLockPosUp, TeleopConstants.transferHornPosReady,
                 TeleopConstants.clawInitPosCapstone, TeleopConstants.innerTransferPosTucked,
                 TeleopConstants.foundationLockUnlock, TeleopConstants.intakeInitPosReset, TeleopConstants.autoClaw1Init,
-                TeleopConstants.autoClaw2Init};
+                TeleopConstants.autoClaw2Init, TeleopConstants.parkingServoPosLock};
 
         for(int i = 0; i < servos.length; i++) {
             servoPositions.add(pos[i]);

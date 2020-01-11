@@ -17,7 +17,8 @@ import java.util.ArrayList;
 public class HardwareMap {
     public DcMotorEx backLeft, backRight, frontLeft, frontRight, leftIntake, rightIntake, liftOne, liftTwo;
     public Servo clawServo1, clawServo2, foundationLock, transferLock, transferHorn,
-            clawInit, innerTransfer, intakeInit, redAutoClawJoint1, redAutoClawJoint2, blueAutoClawJoint1, blueAutoClawJoint2;
+            clawInit, innerTransfer, intakeInit, redAutoClawJoint1, redAutoClawJoint2, blueAutoClawJoint1, blueAutoClawJoint2,
+            parkingServo;
     public DigitalChannel liftReset, intakeDetect, foundationDetectLeft, foundationDetectRight;
     public BNO055IMU gyro;
     public IntegratingGyroscope imu;
@@ -61,7 +62,8 @@ public class HardwareMap {
         transferHorn = hwMap.get(Servo.class, "transferHorn");
         clawInit = hwMap.get(Servo.class, "clawInit");
         innerTransfer = hwMap.get(Servo.class, "innerTransfer");
-        intakeInit = hwMap.get(Servo.class, "intakeInit");  //@TODO Configure intakeInit on the robot
+        intakeInit = hwMap.get(Servo.class, "intakeInit");
+        parkingServo = hwMap.get(Servo.class, "parkingServo");  //@TODO Configure intakeInit on the robot
 
         //---------------------------------------------------------------------------
         //endregion

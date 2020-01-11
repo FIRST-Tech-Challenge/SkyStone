@@ -80,11 +80,6 @@ public class MainTeleop extends LinearOpMode {
             } else {
                 telemetry.addLine("CURRENT ROBOT MODE: NORMAL");
             }
-
-
-            telemetry.addLine("isBackStopperRest: " + isBackStopperReset);
-            telemetry.addLine("isCapstone: " + isDumpingCapstone);
-            telemetry.addLine("isFoundation: " + foundationToggle);
         }
     }
 
@@ -316,7 +311,7 @@ public class MainTeleop extends LinearOpMode {
             isTogglingBackStopper = false;
         }
 
-        if (currentTime >= backStopperRisingTime + 500 && !isBackStopperDown) {
+        if (currentTime >= backStopperRisingTime + 750 && !isBackStopperDown) {
             isBackStopperReset = true;
         }
     }

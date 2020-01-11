@@ -186,7 +186,7 @@ public class ConceptAutonomousRedTest extends LinearOpMode {
             controlledExtender.stop();
         }
 
-          // you have now put the arm back in
+        // you have now put the arm back in
 
         if (opModeIsActive()) {
             controlledLift.start(liftFoundationValue, 0.2); //distance 0.5
@@ -197,20 +197,16 @@ public class ConceptAutonomousRedTest extends LinearOpMode {
 
         // you have now lifted the lift down
 
-
         if (opModeIsActive()) {
             while (!colorTools.isRed(robot.color_back) && opModeIsActive()){
                 if (robot.touch_right.getState() && robot.touch_left.getState()) {
-                    omniWheel.setMotors(0, 0, 0);
                     omniWheel.setMotors(-0.1, 0, 0);
                     while (robot.touch_right.getState() && robot.touch_left.getState()) {}
                     omniWheel.setMotors(0.0, -0.2, 0);
                 }
             }
 
-
             omniWheel.setMotors(0, 0, 0);
-
         }
 
         //you are now parked under the bridge

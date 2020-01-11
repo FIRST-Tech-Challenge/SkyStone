@@ -182,7 +182,6 @@ public class ConceptAutonomousBlueTest extends LinearOpMode {
             controlledExtender.stop();
         }
 
-
         // you have now put the arm back in
 
         if (opModeIsActive()) {
@@ -194,9 +193,7 @@ public class ConceptAutonomousBlueTest extends LinearOpMode {
 
         // you have now lifted the lift down
 
-
         if (opModeIsActive()) {
-
             while (!colorTools.isBlue(robot.color_back) && opModeIsActive()){
                 if (robot.touch_right.getState() && robot.touch_left.getState()) {
                     omniWheel.setMotors(-0.1, 0, 0);

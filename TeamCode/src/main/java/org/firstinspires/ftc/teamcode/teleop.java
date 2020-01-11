@@ -94,10 +94,6 @@ public class teleop extends LinearOpMode {
 
             //go player 2-----------------------------------------------
 
-            /*if (egamepad2.a.released) {
-                if ()
-                Grabber.grab();
-            }*/
 
             if (egamepad2.b.released){
                 Grabber.grab();
@@ -109,7 +105,7 @@ public class teleop extends LinearOpMode {
                 Grabber.extend();
             }
             if (egamepad2.y.released) {
-                Grabber.Pos1();
+                Grabber.Pos0();
             }
 
             if (egamepad2.left_bumper.released){

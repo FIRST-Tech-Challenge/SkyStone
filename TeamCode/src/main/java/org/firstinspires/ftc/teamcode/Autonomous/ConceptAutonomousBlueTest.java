@@ -78,7 +78,7 @@ public class ConceptAutonomousBlueTest extends LinearOpMode {
 
         if (opModeIsActive()) {
             omniWheel.setMotors(0.0, -0.4, 0);
-            while (!colorTools.isRed(robot.color_back) && opModeIsActive()) {}
+            while (!colorTools.isBlue(robot.color_back) && opModeIsActive()) {}
             omniWheel.setMotors(0, 0, 0);
 
         }
@@ -97,7 +97,7 @@ public class ConceptAutonomousBlueTest extends LinearOpMode {
             */
 
             omniWheel.setMotors(0.0, -0.4, 0);
-            while (!colorTools.isRed(robot.color_back) && opModeIsActive()) {
+            while (!colorTools.isBlue(robot.color_back) && opModeIsActive()) {
                 if (robot.touch_right.getState() && robot.touch_left.getState()) {
                     omniWheel.setMotors(0.1, 0, 0);
                     while (robot.touch_right.getState() && robot.touch_left.getState()) {}
@@ -126,7 +126,7 @@ public class ConceptAutonomousBlueTest extends LinearOpMode {
 
 
         if (opModeIsActive()) {
-            while (!colorTools.isRed(robot.color_front)&&opModeIsActive()) {
+            while (!colorTools.isBlue(robot.color_front)&&opModeIsActive()) {
                 omniWheel.setMotors(0.4, 0, 0);
             }
             omniWheel.setMotors(0, 0, 0);
@@ -192,7 +192,7 @@ public class ConceptAutonomousBlueTest extends LinearOpMode {
         if (opModeIsActive()) {
 
             omniWheel.setMotors(0, 0.2, 0);
-            while (!colorTools.isRed(robot.color_back)){}
+            while (!colorTools.isBlue(robot.color_back)){}
             omniWheel.setMotors(0, 0, 0);
 
         }

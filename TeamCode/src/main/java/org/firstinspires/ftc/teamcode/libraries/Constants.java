@@ -129,7 +129,7 @@ public class Constants {
     static final float WHEEL_DIAMETER = 9.5f;
     static final float WHEEL_GEAR_RATIO = (1f / 1);
     static final float NEVEREST_40_REVOLUTION_ENCODER_COUNT =  694.75f;
-    static final float TRACK_DISTANCE = 30f;
+    static final float TRACK_DISTANCE = 36f;
 
     public enum Direction {FORWARD, BACKWARD, LEFT, RIGHT}
 

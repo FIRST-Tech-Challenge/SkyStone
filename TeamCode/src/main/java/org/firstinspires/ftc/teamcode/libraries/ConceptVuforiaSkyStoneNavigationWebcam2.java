@@ -360,7 +360,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 
 
-@TeleOp(name = "SKYSTONE Vuforia Nav Webcam2", group = "Concept")
+@TeleOp(name = "BlueSide", group = "Concept")
 
 public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
 
@@ -394,7 +394,7 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
     double yPosition = 0;
     double xPosition = 0;
     boolean startIdentify = true;
-    float distanceToDepot =165;
+    float distanceToDepot = 165;
 
     // Class Members
     private OpenGLMatrix lastLocation = null;
@@ -557,7 +557,7 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
 
         targetsSkyStone.activate();
         if (startIdentify) {
-            autoLib.calcMove(43, .9f, Constants.Direction.FORWARD);
+            autoLib.calcMove(15, .9f, Constants.Direction.BACKWARD);    //43
             while (!isStopRequested() && startIdentify) {
 
                 // check all the trackable targets to see which one (if any) is visible.
@@ -591,8 +591,8 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
                     xPosition = translation.get(0);
                     if (yPosition < 0) {
                         positionSkystone = "Right";
-                        autoLib.calcMove(3, .8f, Constants.Direction.RIGHT);
-                        distanceToDepot = distanceToDepot+10;
+//                        autoLib.calcMove(3, .8f, Constants.Direction.RIGHT);
+                        distanceToDepot = distanceToDepot + 10;
                         //  sleep(3000);
                     } else {
                         positionSkystone = "Center";
@@ -600,8 +600,8 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
                         sleep(1000);
                         yPosition = translation.get(1);
                         xPosition = translation.get(0);
-                        finalMove(-xPosition, yPosition);
-                        break;
+//                        finalMove(-xPosition, yPosition);
+                      //  break;
 //                        } else {
 //                            telemetry.addData("Final Position Reached", "none");
 //                        }
@@ -614,7 +614,7 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
                     positionSkystone = "Left";
                     telemetry.addData("Visible Target", "none");
 
-                    autoLib.calcMove(5, .8f, Constants.Direction.LEFT);
+//                    autoLib.calcMove(5, .8f, Constants.Direction.LEFT);
 
                 }
                 telemetry.addData("Skystone Position", positionSkystone);
@@ -627,15 +627,15 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
         targetsSkyStone.deactivate();
     }
 
-    private void finalMove(double xPosition, double yPosition) throws InterruptedException{
+    private void finalMove(double xPosition, double yPosition) throws InterruptedException {
         telemetry.addData("Final Position Reached", "none");
         telemetry.addData("X Position ", xPosition);
         telemetry.addData("Y Position ", yPosition);
         telemetry.update();
 // go near skystone
-        autoLib.calcMove((float) (-xPosition / 10) + 20, .8f, Constants.Direction.BACKWARD);   //changed
-        autoLib.calcMove((float) (yPosition / 10)+10, .8f, Constants.Direction.LEFT);
-        distanceToDepot =distanceToDepot+ (float)yPosition;
+        autoLib.calcMove((float) (-xPosition / 10) + 20, .8f, Constants.Direction.FORWARD);   //changed
+        autoLib.calcMove((float) (yPosition / 10) + 10, .8f, Constants.Direction.LEFT);
+        distanceToDepot = distanceToDepot + (float) yPosition;
 
         //autoLib.calcMove(20, .5f, Constants.Direction.BACKWARD);
         Thread.sleep(500);
@@ -643,14 +643,14 @@ public class ConceptVuforiaSkyStoneNavigationWebcam2 extends LinearOpMode {
         autoLib.grabServo();
         Thread.sleep(500);
         // autoLib.calcMove(10, .8f, Constants.Direction.LEFT);
-        autoLib.calcMove(9, .8f, Constants.Direction.BACKWARD);
+        autoLib.calcMove(9, .8f, Constants.Direction.FORWARD);
         autoLib.calcMove(distanceToDepot, .8f, Constants.Direction.RIGHT);
-        autoLib.calcMove(38, .7f, Constants.Direction.FORWARD);
+        autoLib.calcMove(38, .7f, Constants.Direction.BACKWARD);
         autoLib.latchServoFoundation();
         Thread.sleep(1000);
-        autoLib.calcMove(70, 1f, Constants.Direction.BACKWARD);
+        autoLib.calcMove(70, 1f, Constants.Direction.FORWARD);
         autoLib.restServoFoundation();
-        autoLib.calcMove(distanceToDepot-100,1f, Constants.Direction.LEFT);
+        autoLib.calcMove(distanceToDepot - 100, 1f, Constants.Direction.LEFT);
 
         //Stop intake
 //        autoLib.calcMove(10, .5f, Constants.Direction.LEFT);

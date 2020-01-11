@@ -20,8 +20,9 @@
 package com.hfrobots.tnt.season1920;
 
 import com.google.common.testing.FakeTicker;
-import com.hfrobots.tnt.fakes.FakeDistanceSensor;
+import com.hfrobots.tnt.fakes.sensors.FakeDistanceSensor;
 import com.hfrobots.tnt.fakes.FakeHardwareMap;
+import com.hfrobots.tnt.fakes.FakeTelemetry;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -50,14 +51,13 @@ public class StationKeepingTest {
         leftDistanceSensor = new FakeDistanceSensor();
         rightDistanceSensor = new FakeDistanceSensor();
 
-        // FIXME: Need to put them in the hardware map with real names - look in skystonev2.xml
-        //        for the real names, even better, make those names constant in StationKeeping
-        //        class and use them there, and here!
-
         hardwareMap.addDevice(StationKeeping.LEFT_DISTANCE_SENSOR_NAME, leftDistanceSensor);
         hardwareMap.addDevice(StationKeeping.RIGHT_DISTANCE_SENSOR_NAME, rightDistanceSensor);
 
-        stationKeeping = new StationKeeping(hardwareMap);
+        FakeTelemetry telemetry = new FakeTelemetry();
+        telemetry.setOutputTelemetry(true);
+
+        stationKeeping = new StationKeeping(hardwareMap, telemetry);
     }
 
     @Test
@@ -76,6 +76,9 @@ public class StationKeepingTest {
         signals = stationKeeping.calculateSignals();
 
         Assert.assertEquals(signals.getTurnPower(), 0, .01);
+
+        // We need to extend our old PID code to use StopWatch, so we can deal with "settlingTime"
+        // and make this assertion!
         // Assert.assertEquals(StationKeeping.StationKeepingSignals.State.ON_STATION, signals.getState());
     }
 

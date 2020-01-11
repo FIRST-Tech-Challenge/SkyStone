@@ -90,7 +90,7 @@ public class StationKeeping {
         turnPidController = new PidController.Builder()
                 .setInstanceName("sk-turn")
                 .setAllowOscillation(true)
-                .setKp(.2 / (MAXIMUM_DISTANCE_MM / 4)) // fixme - let's create a constant, and set a good value
+                .setKp(.3 / (MAXIMUM_DISTANCE_MM / 4)) // fixme - let's create a constant, and set a good value
                 .setSettlingTimeMs(500) // fixme  - let's create a constant, and set a good value
                 .setTolerance(5) // fixme  - let's create a constant, and set a good value
                 .build();

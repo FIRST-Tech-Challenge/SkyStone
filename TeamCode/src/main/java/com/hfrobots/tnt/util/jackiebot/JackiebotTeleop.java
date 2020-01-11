@@ -36,7 +36,7 @@ import static com.hfrobots.tnt.corelib.Constants.LOG_TAG;
  * Provide a basic manual operational mode that controls the tank drive.
  */
 @TeleOp(name="Jackiebot", group="Utilities")
-//@Disabled
+@Disabled
 public class JackiebotTeleop extends JackiebotTelemetry
 
 {

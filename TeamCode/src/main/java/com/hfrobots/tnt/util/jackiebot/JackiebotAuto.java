@@ -43,6 +43,7 @@ import com.hfrobots.tnt.corelib.state.StateMachine;
 import com.hfrobots.tnt.corelib.util.RealSimplerHardwareMap;
 import com.hfrobots.tnt.season1819.TntPose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Rotation;
@@ -52,6 +53,7 @@ import java.util.concurrent.TimeUnit;
 import static com.hfrobots.tnt.corelib.Constants.LOG_TAG;
 
 @Autonomous(name="Jackie Auto Test", group="Utilities")
+@Disabled
 @SuppressWarnings("unused")
 public class JackiebotAuto extends OpMode {
     /**

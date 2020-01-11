@@ -383,7 +383,7 @@ public class FtcRobotControllerActivity extends Activity
     }
 
     // Roadrunner - uncomment for tuning
-    FtcDashboard.start();
+    // FtcDashboard.start();
   }
 
   protected UpdateUI createUpdateUI() {
@@ -463,7 +463,7 @@ public class FtcRobotControllerActivity extends Activity
     if (preferencesHelper != null) preferencesHelper.getSharedPreferences().unregisterOnSharedPreferenceChangeListener(sharedPreferencesListener);
 
     // RoadRunner - uncomment for tuning
-    FtcDashboard.stop();
+    // FtcDashboard.stop();
 
     RobotLog.cancelWriteLogcatToDisk();
   }
@@ -658,7 +658,7 @@ public class FtcRobotControllerActivity extends Activity
     RobotLog.vv(FtcRobotControllerService.TAG, "%s.controllerService=bound", TAG);
 
     // RoadRunner - uncomment for tuning
-    FtcDashboard.attachWebServer(service.getWebServer());
+    // FtcDashboard.attachWebServer(service.getWebServer());
 
     controllerService = service;
     updateUI.setControllerService(controllerService);

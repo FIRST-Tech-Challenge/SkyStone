@@ -22,6 +22,7 @@ package com.hfrobots.tnt.season1920;
 import android.util.Log;
 
 import com.acmerobotics.roadrunner.path.heading.ConstantInterpolator;
+import com.acmerobotics.roadrunner.trajectory.BaseTrajectoryBuilder;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.google.common.base.Ticker;
@@ -34,6 +35,7 @@ import com.hfrobots.tnt.corelib.drive.Turn;
 import com.hfrobots.tnt.corelib.drive.mecanum.RoadRunnerMecanumDriveREVOptimized;
 import com.hfrobots.tnt.corelib.drive.mecanum.TrajectoryFollowerState;
 import com.hfrobots.tnt.corelib.drive.mecanum.TurnState;
+import com.hfrobots.tnt.corelib.state.RunnableState;
 import com.hfrobots.tnt.corelib.state.State;
 import com.hfrobots.tnt.corelib.state.StateMachine;
 import com.hfrobots.tnt.corelib.util.RealSimplerHardwareMap;
@@ -58,7 +60,7 @@ public class SkystoneAuto extends OpMode {
 
     // The routes our robot knows how to do
     private enum Routes {
-        //MOVE_FOUNDATION("Move Foundation"),
+        MOVE_FOUNDATION("Move Foundation"),
         //SCAN_SKYSTONES("Scan Skystones"),
         PARK_LEFT_NEAR_POS("Park from left to near"),
         PARK_RIGHT_NEAR_POS("Park from right to near"),
@@ -87,6 +89,9 @@ public class SkystoneAuto extends OpMode {
 
     private int initialDelaySeconds = 0;
 
+    private FoundationGripMechanism foundationGripper;
+
+
     @Override
     public void init() {
         ticker = createAndroidTicker();
@@ -94,9 +99,12 @@ public class SkystoneAuto extends OpMode {
         setupDriverControls();
 
         RealSimplerHardwareMap simplerHardwareMap = new RealSimplerHardwareMap(this.hardwareMap);
-        driveBase = new RoadRunnerMecanumDriveREVOptimized(new SkystoneDriveConstants(), simplerHardwareMap, true);
+        driveBase = new RoadRunnerMecanumDriveREVOptimized(new SkystoneDriveConstants(), simplerHardwareMap, false);
+
+        foundationGripper = new FoundationGripMechanism(simplerHardwareMap);
 
         stateMachine = new StateMachine(telemetry);
+
     }
 
     @Override
@@ -219,9 +227,9 @@ public class SkystoneAuto extends OpMode {
 //                    case SCAN_SKYSTONES:
 //                        setupScanSkytones();
 //                        break;
-//                    case MOVE_FOUNDATION:
-//                        setupMoveFoundation();
-//                        break;
+                    case MOVE_FOUNDATION:
+                        setupMoveFoundation();
+                        break;
                     default:
                         stateMachine.addSequential(newDoneState("Default done"));
                         break;
@@ -313,45 +321,101 @@ public class SkystoneAuto extends OpMode {
 
     protected void setupMoveFoundation() {
         // Robot starts against wall, left side on tile seam nearest to tape
+        // Gripper hooks are forward, which means robot is facing backwards (!)
+
+        // TODO: Does alliance color change which way we turn in any of these steps?
+
+        // YASSSS!
 
         State splineTrajectoryState = new TrajectoryFollowerState("Spline",
                 telemetry, driveBase, ticker, TimeUnit.SECONDS.toMillis(20 * 1000)) {
             @Override
             protected Trajectory createTrajectory() {
-                return driveBase.trajectoryBuilder().splineTo(TntPose2d.toPose2d(9, 28))
-                        .build();
+                BaseTrajectoryBuilder trajectoryBuilder = driveBase.trajectoryBuilder().back(4);
+
+                if (currentAlliance == Constants.Alliance.RED) {
+                    trajectoryBuilder.strafeLeft(9);
+                } else {
+                    trajectoryBuilder.strafeRight(9);
+                }
+
+                trajectoryBuilder.back(25);
+
+                return trajectoryBuilder.build();
             }
         };
 
         // GRIP!
+        State gripState = new RunnableState("grip", telemetry, new Runnable() {
+            @Override
+            public void run() {
+                foundationGripper.down();
+            }
+        });
 
-        // Turn 90 degrees clockwise
-        State turnWithBase = new TurnState("Turn with base",
-                telemetry, new Turn(Rotation.CW, 90), driveBase, ticker, TimeUnit.SECONDS.toMillis(20 * 1000));
-
-        // Forward 5-6"
-
-        State forwardTrajectoryState = new TrajectoryFollowerState("Spline",
+        // Pull back a bit
+        State pullBackState = new TrajectoryFollowerState("Pull",
                 telemetry, driveBase, ticker, TimeUnit.SECONDS.toMillis(20 * 1000)) {
             @Override
             protected Trajectory createTrajectory() {
-                return driveBase.trajectoryBuilder().forward(6)
+                return driveBase.trajectoryBuilder().forward(4)
+                        .build();
+            }
+        };
+
+        // For red alliance
+        Turn turn = new Turn(Rotation.CW, 65);
+
+        if (currentAlliance == Constants.Alliance.BLUE) {
+            turn = turn.invert();
+        }
+
+        // Turn 90 degrees clockwise
+        State turnWithBase = new TurnState("Turn with base",
+                telemetry, turn, driveBase, ticker, TimeUnit.SECONDS.toMillis(20 * 1000));
+
+        // Forward 5-6"
+
+        State pushToWallTrajectoryState = new TrajectoryFollowerState("Push to wall",
+                telemetry, driveBase, ticker, TimeUnit.SECONDS.toMillis(5 * 1000)) {
+            @Override
+            protected Trajectory createTrajectory() {
+                return driveBase.trajectoryBuilder().back(7.5)
                         .build();
             }
         };
 
         // UNGRIP
 
+        State ungripState = new RunnableState("ungrip", telemetry, new Runnable() {
+            @Override
+            public void run() {
+                foundationGripper.up();
+            }
+        });
+
+        State getCleatState = new TrajectoryFollowerState("get clear",
+                telemetry, driveBase, ticker, TimeUnit.SECONDS.toMillis(5 * 1000)) {
+            @Override
+            protected Trajectory createTrajectory() {
+                return driveBase.trajectoryBuilder().forward(10)
+                        .build();
+            }
+        };
+
         // Win!
 
         stateMachine.addSequential(splineTrajectoryState);
-
-        // REMOVE AFTER TESTING
-        {
-            stateMachine.addSequential(newDelayState("wait to turn", 2));
-            stateMachine.addSequential(turnWithBase);
-            stateMachine.addSequential(forwardTrajectoryState);
-        }
+        stateMachine.addSequential(gripState);
+        stateMachine.addSequential(newDelayState("wait for grip", 1));
+        stateMachine.addSequential(pullBackState);
+        stateMachine.addSequential(turnWithBase);
+        stateMachine.addSequential(pushToWallTrajectoryState);
+        stateMachine.addSequential(ungripState);
+        stateMachine.addSequential(newDelayState("wait for un-grip", 1));
+        stateMachine.addSequential(getCleatState);
+        // FIXME: Back up to make it obvious we are clear of the foundation
+        // TODO: Later - for qualifier, offer parking options
 
         stateMachine.addSequential(newDoneState("Done!"));
     }

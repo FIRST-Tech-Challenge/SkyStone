@@ -105,7 +105,7 @@ public class DriverControls {
 
     private final float throttleDeadband = 0;
 
-    private final float lowPassFilterFactor = .92F;
+    private final float lowPassFilterFactor = .95F;
 
     @Builder
     private DriverControls(RangeInput leftStickX,

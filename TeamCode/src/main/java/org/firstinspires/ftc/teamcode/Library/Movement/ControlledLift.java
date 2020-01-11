@@ -30,7 +30,7 @@ public class ControlledLift {
     public void start(double distance, double speed) {
         // Determine new target position
         double startPositionLeft = robot.motor_lift_left.getCurrentPosition();
-        double startPositionRight = robot.motor_lift_left.getCurrentPosition();
+        double startPositionRight = robot.motor_lift_right.getCurrentPosition();
         double targetLeft = startPositionLeft + COUNTS_PER_CM * distance;
         double targetRight = startPositionRight + COUNTS_PER_CM * -distance;
         // And pass to motor controller

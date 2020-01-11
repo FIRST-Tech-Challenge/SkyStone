@@ -126,9 +126,12 @@ public class FullTest extends OpMode {
         telemetry.addLine();
         telemetry.addData("H: ", colorTools.showHSV(robot.color_front)[0]);
         telemetry.addData("S: ", colorTools.showHSV(robot.color_front)[1]);
-        telemetry.addData("V: ", colorTools.showHSV(robot.color_front)[2]);
-        telemetry.update();
          */
+
+        telemetry.addData("LiftLpos: ", (robot.motor_lift_left.getCurrentPosition() - liftZeros[0]) / 712.6);
+        telemetry.addData("LiftRpos: ", (robot.motor_lift_right.getCurrentPosition() - liftZeros[1]) / 712.6);
+        telemetry.update();
+
     }
 
     public void setZeros() {

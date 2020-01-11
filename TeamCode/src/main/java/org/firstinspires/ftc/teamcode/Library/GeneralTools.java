@@ -54,7 +54,7 @@ public class GeneralTools {
     }
 
     public static void closeClamp (HardwareChassis robot) {
-        robot.servo_grab.setPosition(0.9);
+        robot.servo_grab.setPosition(1);
     }
 
     public static void openClamp(HardwareChassis robot) {

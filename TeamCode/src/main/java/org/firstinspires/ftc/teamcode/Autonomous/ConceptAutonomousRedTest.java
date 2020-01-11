@@ -23,8 +23,10 @@ public class ConceptAutonomousRedTest extends LinearOpMode {
     ControlledLift controlledLift;
     ControlledExtender controlledExtender;
 
-    int extenderEncoderValue = 4;
-    int liftEncoderValue = 1;
+    double extenderEncoderValue = 3.5;
+    double liftEncoderValue = 1.5;
+    double liftStartOffset = 0.5;
+    double liftFoundationValue = 1.5;
 
     @Override
     public void runOpMode() {
@@ -56,7 +58,7 @@ public class ConceptAutonomousRedTest extends LinearOpMode {
             while(!controlledExtender.endReached() && opModeIsActive()) {}
             controlledExtender.stop();
 
-            controlledLift.start(liftEncoderValue, 0.2); //lowers the lift
+            controlledLift.start(liftEncoderValue + liftStartOffset, 0.2); //lowers the lift
             generalTools.stopForMilliSeconds(500);
             generalTools.closeClamp();
 
@@ -113,7 +115,7 @@ public class ConceptAutonomousRedTest extends LinearOpMode {
         if (opModeIsActive()) {
             controlledExtender.start(6, 0.3);
 
-            controlledLift.start(-0.5, 0.4);
+            controlledLift.start(-liftFoundationValue, 0.4);
 
             while(!controlledLift.endReached() && opModeIsActive()) {}
             controlledLift.stop();
@@ -181,7 +183,7 @@ public class ConceptAutonomousRedTest extends LinearOpMode {
           // you have now put the arm back in
 
         if (opModeIsActive()) {
-            controlledLift.start(1, 0.2); //distance 0.5
+            controlledLift.start(liftFoundationValue, 0.2); //distance 0.5
             while(!controlledLift.endReached() && opModeIsActive()) {}
             controlledLift.stop();
 

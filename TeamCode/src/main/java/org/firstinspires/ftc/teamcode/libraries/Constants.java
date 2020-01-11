@@ -10,7 +10,7 @@
 // */
 //
 //public class Constants {
-//
+
 //    //********** Gamepad Tolerance Constants **********//
 //    static final float GAMEPAD_JOYSTICK_TOLERANCE = .05f;
 //    static final float GAMEPAD_TRIGGER_TOLERANCE = .05f;

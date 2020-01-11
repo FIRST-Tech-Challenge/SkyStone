@@ -64,7 +64,7 @@ public class DistanceSensorBot extends PinchArmBot {
     }
 
     public double getDistanceToStoneQuarry() {
-        opMode.telemetry.addData("range", String.format("%.01f in", sensorSkyStoneQuarry.getDistance(DistanceUnit.INCH)));
+        opMode.telemetry.addData("range", String.format("%.01f cm", sensorSkyStoneQuarry.getDistance(DistanceUnit.CM)));
 
         // you can also cast this to a Rev2mDistanceSensor if you want to use added
         // methods associated with the Rev2mDistanceSensor class.
@@ -74,7 +74,7 @@ public class DistanceSensorBot extends PinchArmBot {
         opMode.telemetry.addData("did time out", Boolean.toString(sensorTimeOfFlight.didTimeoutOccur()));
 
         opMode.telemetry.update();
-        return sensorSkyStoneQuarry.getDistance(DistanceUnit.INCH);
+        return sensorSkyStoneQuarry.getDistance(DistanceUnit.CM);
     }
 
     public void driveUntilDistance(double distance, double power) {
@@ -84,7 +84,7 @@ public class DistanceSensorBot extends PinchArmBot {
         leftRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        if (sensorSkyStoneQuarry.getDistance(DistanceUnit.CM) > distance) {
+        if (getDistanceToStoneQuarry() > distance) {
 
             do {
                 leftFront.setPower(- power);
@@ -92,7 +92,7 @@ public class DistanceSensorBot extends PinchArmBot {
                 leftRear.setPower(power);
                 rightRear.setPower(- power);
             }
-            while (sensorSkyStoneQuarry.getDistance(DistanceUnit.CM) > distance);
+            while (getDistanceToStoneQuarry() > distance);
         } else {
 
             do {
@@ -101,7 +101,7 @@ public class DistanceSensorBot extends PinchArmBot {
                 leftRear.setPower(- power);
                 rightRear.setPower(power);
             }
-            while (sensorSkyStoneQuarry.getDistance(DistanceUnit.CM) < distance);
+            while (getDistanceToStoneQuarry() < distance);
         }
         leftFront.setPower(0);
         rightFront.setPower(0);

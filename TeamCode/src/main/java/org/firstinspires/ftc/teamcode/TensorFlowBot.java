@@ -99,7 +99,7 @@ public class TensorFlowBot extends DistanceSensorBot {
         if (tfod != null) {
             tfod.activate();
         }
-        CameraDevice.getInstance().setFlashTorchMode(true);
+//        CameraDevice.getInstance().setFlashTorchMode(true);
 
     }
 

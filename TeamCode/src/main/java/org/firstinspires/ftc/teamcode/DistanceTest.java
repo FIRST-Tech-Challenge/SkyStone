@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 @Autonomous(name="DistanceSensor Test", group="Exercises")
 
 public class DistanceTest extends LinearOpMode {
-    private DistanceSensorBot robot = new DistanceSensorBot(this);
+    private TensorFlowBot robot = new TensorFlowBot(this);
 
     @Override
     public void runOpMode() {

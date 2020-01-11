@@ -134,10 +134,10 @@ public class MainAutonomous extends LinearOpMode {
 
                     drivetrain.resetEncoders();
 
-                    if(fieldPosition == FieldPosition.RED_QUARY)
+                    //if(fieldPosition == FieldPosition.RED_QUARY)
                         initVuforia(CameraController.WEBCAM);
-                    else if(fieldPosition == FieldPosition.BLUE_QUARY)
-                        initVuforia(CameraController.PHONECAM);
+                    //else if(fieldPosition == FieldPosition.BLUE_QUARY)
+                    //    initVuforia(CameraController.PHONECAM);
 
                     if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
                         initTfod();

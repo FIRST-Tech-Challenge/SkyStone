@@ -38,8 +38,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * @ChassisAutoMethods : leftColorSensorIsBlue()
  * @ChassisAutoMethods : rightColorSensorIsRed()
  * @ChassisAutoMethods : frontleftChassisTouchSensorIsPressed()
- * @ChassisAutoMethods : moveHook_holdFoundation
- * @ChassisAutoMethods : moveHook_Released
+ * @ChassisAutoMethods : moveHook_holdFoundation()
+ * @ChassisAutoMethods : moveHook_Released()
  *
  */
 

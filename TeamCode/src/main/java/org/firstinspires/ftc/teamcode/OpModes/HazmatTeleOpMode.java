@@ -7,6 +7,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.*;
 
 /**
  * TeleOpMode for team Hazmat
+ * Includes autoplacement routince for automatically placing block on tower
  */
 @TeleOp(name = "HazmatTeleOpMode", group = "Teleop")
 public class HazmatTeleOpMode extends LinearOpMode{
@@ -42,7 +43,12 @@ public class HazmatTeleOpMode extends LinearOpMode{
 
         //Run Robot based on Gamepad1 inputs
         while (opModeIsActive()) {
+            //Run per Gamepad input
             hzGamepad1.runSubsystemByGamepadInput(hzChassis, hzArm, hzIntake);
+
+            //Activate auto placement
+            autoPlaceBlock();
+
             if(HzDEBUG_FLAG) {
                 printDebugMessages();
                 telemetry.update();
@@ -74,6 +80,61 @@ public class HazmatTeleOpMode extends LinearOpMode{
         telemetry.addData("Intake.wristCurrentPosition : ", hzIntake.wristCurrentPosition);
         telemetry.addData("Intake.wrist.getPosition : ", hzIntake.wrist.getPosition());
 
+    }
+
+    /**
+     * Method for automatic placement of block to the brock tower
+     *
+     * Initial state :
+     *  - Block is gripped and held at the level to place.
+     *  - Robot arm is aligned such that block to be placed is right above the existing tower
+     * Activation :
+     *  - Automation button combo is pressed (LeftTrigger and Right Trigger are both fully pressed)
+     *  - With the setup state, Move robot forward and touch base (frontLeftTouchSensor is pressed)
+     * Motion :
+     *  - While automation button combo is pressed
+     *  - Robot moves back distance such that block is right above the tower
+     *  - Arm is lowered such that block is on the tower
+     *  - Grip is opened
+     *  - Robot moves back to release arm and grip from on top of tower
+     *
+     *  Automatic works only when the combo button is kept pressed simultaneously and stops when released
+     */
+    public void autoPlaceBlock(){
+
+        //Distance to be moved for each block level
+        int[] blockLevelDistance = {
+                -8, //ground level
+                -7, //block level 1
+                -6, //block level 2
+                -4, //block level 3
+                -2, //block level 4
+                -1, //block level 5
+                0, //block level 6
+                0 //End Level 7
+        };
+
+        // While automation button combo is pressed (LeftTrigger and Right Trigger are both fully pressed)
+        // Robot moves back distance such that block is right above the tower
+        if(hzGamepad1.getRightTrigger()==1 && hzGamepad1.getLeftTrigger()==1
+                && hzChassis.frontleftChassisTouchSensorIsPressed()){
+            hzChassis.runFwdBackLeftRight(blockLevelDistance[hzArm.currentLevel],0, 0.1, this);
+        }
+
+        //Arm is lowered such that block is on the tower
+        if(hzGamepad1.getRightTrigger()==1 && hzGamepad1.getLeftTrigger()==1){
+            hzArm.moveArm_blockLevelDown();
+        }
+
+        //Grip is opened
+        if(hzGamepad1.getRightTrigger()==1 && hzGamepad1.getLeftTrigger()==1){
+            hzIntake.openGrip();
+        }
+
+        //Robot moves back to release arm and grip from on top of tower
+        if(hzGamepad1.getRightTrigger()==1 && hzGamepad1.getLeftTrigger()==1){
+            hzChassis.runFwdBackLeftRight(-4,0, 0.1, this);
+        }
     }
 
 }

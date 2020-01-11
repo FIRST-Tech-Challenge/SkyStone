@@ -33,15 +33,15 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  * Robot starts on SB5
  * On start, robot opens wrist to front position
  * Lift Arm to Sense Position using Vuforia
- * If Skystone, record Skystone position as SB5, Go to Step 10
- * Else move robot to SB4. Check on Vuforia for Skystone.
- * If Skystone, record Skystone position as SB4, Go to Step 10
- * Else move robot to SB3. record skystone position as SB3.
+ * If Skystone, record Skystone position as SB5,
+ *      Else move robot to SB4. Check on Vuforia for Skystone.
+ * On SB4, If Skystone, record Skystone position as SB4,
+ *      Else move robot to SB3. record skystone position as SB3.
  * Grip and pick the block.
  * Lift Arm to Level 2 Tray Height
  * Slide back to edge of B2,
  * Turn 90 degrees Left
- * Move to B4
+ * Move to B4 or till frontLeft touch sensor is touched (assuming it is due to foundation)
  * Drop block
  * Move in between B4 and B3 (Parking)
  *
@@ -70,7 +70,7 @@ public class AutoUC1_Skystone_Park{
             "AZME4Mr/////AAABmY+MAyxxT0IileR7JBqaAPsxN2XNYlaGBtEjYaHOlVVTqPQf7NH9eIrosYKKQHPGEXLtJUsdMwZ9e3EXBfy6arulcLPvdpW9bqAB2F2MJJXo35lLA096l/t/LQTi+etVso0Xc5RYkTVSIP3YABp1TeOaF8lCSpjVhPIVW3l/c/XlrnEMPhJk9IgqMEp4P/ifqAqMMMUAIKPEqIrXIv79TvAfdIJig46gfQGaQl5tFHr3nmvMbh/LhFrh5AWAy3B/93cCkOszmYkdHxZStbNB5lMdkTnf3sCnYbQY4jviorfhYrAkqHWH6vNOB9lUt8dOSeHsDtlk33e/6xQgOCNYFN80anYMp82JNDBFX3oyGliV";
     // Since ImageTarget trackables use mm to specifiy their dimensions, we must use mm for all the physical dimension.
     // We will define some constants and conversions here
-    private static final float mmPerInch        = 25.4f;
+    private static final float mmPerInch  = 25.4f;
 
     // Constant for Stone Target
     private static final float stoneZ = 2.00f * mmPerInch;
@@ -168,7 +168,7 @@ public class AutoUC1_Skystone_Park{
             skystonePosition = 3;
         }
 
-        // Drop Arm and
+        // Drop Arm
         autoUCArm.moveArm_groundLevel();
         callingOpMode.sleep(500);
 

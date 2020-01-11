@@ -13,7 +13,7 @@ import com.vuforia.CameraDevice;
 
 import java.util.List;
 
-public class TensorFlowBot extends PinchArmBot {
+public class TensorFlowBot extends DistanceSensorBot {
     public TensorFlowBot(LinearOpMode opMode) {
         super(opMode);
     }
@@ -99,7 +99,7 @@ public class TensorFlowBot extends PinchArmBot {
         if (tfod != null) {
             tfod.activate();
         }
-        CameraDevice.getInstance().setFlashTorchMode(true);
+//        CameraDevice.getInstance().setFlashTorchMode(true);
 
     }
 

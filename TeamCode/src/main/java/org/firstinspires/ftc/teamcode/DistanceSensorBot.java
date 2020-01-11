@@ -39,6 +39,7 @@ import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -63,7 +64,7 @@ public class DistanceSensorBot extends PinchArmBot {
     }
 
     public double getDistanceToStoneQuarry() {
-        opMode.telemetry.addData("range", String.format("%.01f in", sensorSkyStoneQuarry.getDistance(DistanceUnit.INCH)));
+        opMode.telemetry.addData("range", String.format("%.01f cm", sensorSkyStoneQuarry.getDistance(DistanceUnit.CM)));
 
         // you can also cast this to a Rev2mDistanceSensor if you want to use added
         // methods associated with the Rev2mDistanceSensor class.
@@ -73,6 +74,39 @@ public class DistanceSensorBot extends PinchArmBot {
         opMode.telemetry.addData("did time out", Boolean.toString(sensorTimeOfFlight.didTimeoutOccur()));
 
         opMode.telemetry.update();
-        return sensorSkyStoneQuarry.getDistance(DistanceUnit.INCH);
+        return sensorSkyStoneQuarry.getDistance(DistanceUnit.CM);
+    }
+
+    public void driveUntilDistance(double distance, double power) {
+
+        leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        if (getDistanceToStoneQuarry() > distance) {
+
+            do {
+                leftFront.setPower(- power);
+                rightFront.setPower(power);
+                leftRear.setPower(power);
+                rightRear.setPower(- power);
+            }
+            while (getDistanceToStoneQuarry() > distance);
+        } else {
+
+            do {
+                leftFront.setPower(power);
+                rightFront.setPower(- power);
+                leftRear.setPower(- power);
+                rightRear.setPower(power);
+            }
+            while (getDistanceToStoneQuarry() < distance);
+        }
+        leftFront.setPower(0);
+        rightFront.setPower(0);
+        leftRear.setPower(0);
+        rightRear.setPower(0);
+
     }
 }

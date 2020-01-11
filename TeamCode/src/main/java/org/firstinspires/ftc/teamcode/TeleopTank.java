@@ -84,7 +84,9 @@ public class TeleopTank extends LinearOpMode {
         double leftside;
         //double lr;
         double turn;
-        turn = 0;
+        turn = 0.2;
+
+        double grabPos = 0;
 
         /* Initialize the hardware variables.
          * The init() method of the hardware class does all the work here
@@ -111,24 +113,37 @@ public class TeleopTank extends LinearOpMode {
             leftside = gamepad1.left_stick_x;
             left = gamepad1.left_stick_y;
 
-            if (gamepad1.right_bumper && turn < 1){
+            //Hook Code
+            if (gamepad1.right_bumper && turn < 1.5){
                 turn += 0.01;
                 robot.hookOne.setPosition(turn);
                 robot.hookTwo.setPosition(turn);
-            } else if (gamepad1.left_bumper && turn > 0){
+            } else if (gamepad1.left_bumper && turn > 0.2){
                 turn -= 0.01;
                 robot.hookOne.setPosition(turn);
                 robot.hookTwo.setPosition(turn);
             }
+            //Hook Code
 
+            //Grab Code
+            if (gamepad1.left_stick_button && grabPos < 1){
+                grabPos += 0.01;
+                robot.grab.setPosition(grabPos);
+            } else if (gamepad1.right_stick_button && grabPos > 0){
+                grabPos -= 0.01;
+                robot.grab.setPosition(grabPos);
+            }
+            //Grab Code
 
-           /* if (gamepad1.dpad_down){
-                robot.slide.setPower(-1);
-            } else if (gamepad1.dpad_up) {
+            //Slide Code
+            if (gamepad1.dpad_up && robot.slide.getCurrentPosition() < 1){
                 robot.slide.setPower(1);
+            } else if (gamepad1.dpad_down && robot.slide.getCurrentPosition() > 0 ){
+                robot.slide.setPower(-1);
             } else {
                 robot.slide.setPower(0);
-            }*/
+            }
+            //Slide Code
 
             telemetry.addData("Hook",turn);
             telemetry.addData("L",gamepad1.left_bumper);
@@ -150,6 +165,7 @@ public class TeleopTank extends LinearOpMode {
                 robot.backRightMotor.setPower(-right);
             }*/
 
+            //Left Movement
             if( Math.abs(leftside) > Math.abs(left)) {
                 robot.frontLeftMotor.setPower(leftside - leftside * 2);
                 robot.backLeftMotor.setPower(leftside);
@@ -160,7 +176,9 @@ public class TeleopTank extends LinearOpMode {
                 robot.frontLeftMotor.setPower(0);
                 robot.backLeftMotor.setPower(0);
             }
+            //Left Movement
 
+            //Right Movement
             if( Math.abs(rightside) > Math.abs(right)) {
                 robot.frontRightMotor.setPower(rightside - rightside * 2);
                 robot.backRightMotor.setPower(rightside);
@@ -171,6 +189,7 @@ public class TeleopTank extends LinearOpMode {
                 robot.frontRightMotor.setPower(0);
                 robot.backRightMotor.setPower(0);
             }
+            //Right Movement
 
 
 

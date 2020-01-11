@@ -34,8 +34,8 @@ public class HardwareK9bot
     public Servo hookOne = null;
     public Servo hookTwo = null;
 
-   // public DcMotor slide = null;
-   // public Servo grab = null;
+    public DcMotor slide = null;
+    public Servo grab = null;
 
     //public DcMotor leftMotor   = null;
     //public DcMotor rightMotor  = null;
@@ -88,7 +88,7 @@ public class HardwareK9bot
         backLeftMotor   = hwMap.dcMotor.get("back_left_drive");
         backRightMotor  = hwMap.dcMotor.get("back_right_drive");
 
-        //slide = hwMap.dcMotor.get("slide");
+        slide = hwMap.dcMotor.get("slide");
 
 
 
@@ -136,7 +136,7 @@ public class HardwareK9bot
         // Define and initialize ALL installed servos. //
         hookOne = hwMap.servo.get("hook_one");
        // hookTwo = hwMap.servo.get("hook_two");
-       // grab = hwMap.servo.get("grab");
+        grab = hwMap.servo.get("grab");
         //claw = hwMap.servo.get("claw");
         //lobster = hwMap.servo.get("lobster");
         //colourStick = hwMap.servo.get("colourStick");

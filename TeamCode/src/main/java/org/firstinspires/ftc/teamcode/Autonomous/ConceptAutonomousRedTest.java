@@ -24,9 +24,10 @@ public class ConceptAutonomousRedTest extends LinearOpMode {
     ControlledExtender controlledExtender;
 
     double extenderEncoderValue = 3.5;
+    double extenderFoundationValue = 4;
     double liftEncoderValue = 1.5;
     double liftStartOffset = 0.5;
-    double liftFoundationValue = 1.5;
+    double liftFoundationValue = 1;
 
     @Override
     public void runOpMode() {
@@ -49,8 +50,6 @@ public class ConceptAutonomousRedTest extends LinearOpMode {
         if (opModeIsActive() ) {
             controlledExtender.start(extenderEncoderValue, 0.4);
 
-            //generalTools.stopForMilliSeconds(1000);
-
             controlledDrive.start(70, 0, 0.4);
             while(!controlledDrive.endReached() && opModeIsActive()) {}
             controlledDrive.stop();
@@ -60,6 +59,11 @@ public class ConceptAutonomousRedTest extends LinearOpMode {
 
             controlledLift.start(liftEncoderValue + liftStartOffset, 0.2); //lowers the lift
             generalTools.stopForMilliSeconds(500);
+
+            while(!controlledDrive.endReached() && opModeIsActive()) {}
+            controlledDrive.stop();
+
+            generalTools.stopForMilliSeconds(1000);
             generalTools.closeClamp();
 
             generalTools.stopForMilliSeconds(500);
@@ -99,6 +103,9 @@ public class ConceptAutonomousRedTest extends LinearOpMode {
             */
 
             omniWheel.setMotors(0.0, 0.4, 0);
+
+            generalTools.stopForMilliSeconds(1000);
+
             while (!colorTools.isRed(robot.color_back) && opModeIsActive()) {
                 if (robot.touch_right.getState() && robot.touch_left.getState()) {
                     omniWheel.setMotors(-0.1, 0, 0);
@@ -113,7 +120,7 @@ public class ConceptAutonomousRedTest extends LinearOpMode {
             // you are now as much as possible close to the wall
 
         if (opModeIsActive()) {
-            controlledExtender.start(6, 0.3);
+            controlledExtender.start(extenderFoundationValue, 0.3);
 
             controlledLift.start(-liftFoundationValue, 0.4);
 
@@ -128,7 +135,7 @@ public class ConceptAutonomousRedTest extends LinearOpMode {
 
 
         if (opModeIsActive()) {
-            while (!colorTools.isRed(robot.color_front)&&opModeIsActive()) {
+            while (!colorTools.isRed(robot.color_front) && opModeIsActive()) {
                 omniWheel.setMotors(0.4, 0, 0);
             }
             omniWheel.setMotors(0, 0, 0);
@@ -144,7 +151,7 @@ public class ConceptAutonomousRedTest extends LinearOpMode {
 
         if (opModeIsActive()) {
             generalTools.grabFoundation();
-            generalTools.stopForMilliSeconds(100);
+            generalTools.stopForMilliSeconds(500);
         }
 
             //you have now grabbed the foundation
@@ -173,12 +180,11 @@ public class ConceptAutonomousRedTest extends LinearOpMode {
         }
 
 
-        /*        if (opModeIsActive()) {
-            controlledExtender.start(-extenderEncoderValue, 0.2);
+        if (opModeIsActive()) {
+            controlledExtender.start(-extenderFoundationValue, 0.2);
             while(!controlledExtender.endReached() && opModeIsActive()) {}
             controlledExtender.stop();
         }
-        */
 
           // you have now put the arm back in
 
@@ -193,9 +199,16 @@ public class ConceptAutonomousRedTest extends LinearOpMode {
 
 
         if (opModeIsActive()) {
+            while (!colorTools.isRed(robot.color_back) && opModeIsActive()){
+                if (robot.touch_right.getState() && robot.touch_left.getState()) {
+                    omniWheel.setMotors(0, 0, 0);
+                    omniWheel.setMotors(-0.1, 0, 0);
+                    while (robot.touch_right.getState() && robot.touch_left.getState()) {}
+                    omniWheel.setMotors(0.0, -0.2, 0);
+                }
+            }
 
-            omniWheel.setMotors(0, -0.2, 0);
-            while (!colorTools.isRed(robot.color_back)){}
+
             omniWheel.setMotors(0, 0, 0);
 
         }

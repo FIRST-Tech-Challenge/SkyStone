@@ -73,14 +73,18 @@ public class MainTeleop extends LinearOpMode {
                 telemetry.addLine("XPODLeft " + robot.getfLeft().getCurrentPosition());
                 telemetry.addLine("XPODRight " + robot.getfRight().getCurrentPosition());
                 telemetry.addLine("YPOD " + robot.getbLeft().getCurrentPosition());
-                if (isIntakeMode) {
-                    telemetry.addLine("CURRENT ROBOT MODE: INTAKE BOT");
-                } else {
-                    telemetry.addLine("CURRENT ROBOT MODE: NORMAL");
-                }
-                telemetry.update();
             }
 
+            if (isIntakeMode) {
+                telemetry.addLine("CURRENT ROBOT MODE: INTAKE BOT");
+            } else {
+                telemetry.addLine("CURRENT ROBOT MODE: NORMAL");
+            }
+
+
+            telemetry.addLine("isBackStopperRest: " + isBackStopperReset);
+            telemetry.addLine("isCapstone: " + isDumpingCapstone);
+            telemetry.addLine("isFoundation: " + foundationToggle);
         }
     }
 
@@ -160,8 +164,12 @@ public class MainTeleop extends LinearOpMode {
         robot.allWheelDrive(fLPower, fRPower, bLPower, bRPower);
     }
 
+    boolean isDumpingCapstone = false;
     private void teamMarkerLogic() {
         if (gamepad2.left_bumper) {
+            robot.getCapstoneServo().getController().pwmEnable();
+
+            isDumpingCapstone = true;
             long startTime = SystemClock.elapsedRealtime();
             robot.getClamp().setPosition(robot.CLAMP_SERVO_INTAKEPOSITION);
             robot.getBackStopper().setPosition(robot.BACK_STOPPER_DOWN);
@@ -241,6 +249,8 @@ public class MainTeleop extends LinearOpMode {
 
             robot.getIntakePusher().setPosition(robot.PUSHER_RETRACTED);
             robot.getClamp().setPosition(robot.CLAMP_SERVO_CLAMPED);
+
+            isDumpingCapstone = false;
         }
     }
 
@@ -263,6 +273,8 @@ public class MainTeleop extends LinearOpMode {
 
     private boolean isTogglingBackStopper = false;
     private boolean isBackStopperDown = false;
+    private boolean isBackStopperReset = true;
+    private long backStopperRisingTime;
 
     private void intakeLogic() {
         if (Math.abs(gamepad2.left_stick_y) <= 0.25) {
@@ -289,13 +301,23 @@ public class MainTeleop extends LinearOpMode {
             if (isBackStopperDown) {
                 robot.getBackStopper().setPosition(robot.BACK_STOPPER_UP);
                 isBackStopperDown = false;
+
+                backStopperRisingTime = SystemClock.elapsedRealtime();
             } else {
                 robot.getBackStopper().setPosition(robot.BACK_STOPPER_DOWN);
                 isBackStopperDown = true;
+
+                isBackStopperReset = false;
             }
             isTogglingBackStopper = true;
+
+            robot.getBackStopper().getController().pwmEnable();
         } else if (gamepad2.right_trigger == 0) {
             isTogglingBackStopper = false;
+        }
+
+        if (currentTime >= backStopperRisingTime + 500 && !isBackStopperDown) {
+            isBackStopperReset = true;
         }
     }
 
@@ -408,7 +430,12 @@ public class MainTeleop extends LinearOpMode {
                 foundationToggle = true;
             }
             resetfoundation = true;
+
+            robot.getLeftFoundation().getController().pwmEnable();
         } else {
+            if (!isDumpingCapstone && !foundationToggle && isBackStopperReset) {
+                robot.getLeftFoundation().getController().pwmDisable();
+            }
             resetfoundation = false;
         }
 

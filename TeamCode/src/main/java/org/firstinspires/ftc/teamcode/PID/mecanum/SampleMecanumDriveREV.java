@@ -7,6 +7,7 @@ import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.localization.Localizer;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -19,6 +20,7 @@ import com.qualcomm.robotcore.util.RobotLog;
 import org.firstinspires.ftc.teamcode.PID.DriveConstantsPID;
 import org.firstinspires.ftc.teamcode.PID.localizer.StandardTrackingWheelLocalizer;
 import org.firstinspires.ftc.teamcode.PID.localizer.TrackingWheelLocalizerWithIMU;
+import org.firstinspires.ftc.teamcode.PID.localizer.VuforiaCamLocalizer;
 import org.firstinspires.ftc.teamcode.PID.util.DashboardUtil;
 import org.firstinspires.ftc.teamcode.PID.util.LynxModuleUtil;
 
@@ -39,81 +41,31 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
     private DcMotorEx leftFront, leftRear, rightRear, rightFront;
     private List<DcMotorEx> motors;
     private BNO055IMU imu;
-    private static String TAG = "REVClass";
-
+    BNO055IMU.Parameters parameters;
+    private static String TAG = "SampleMecanumDriveREVss";
     public SampleMecanumDriveREV(HardwareMap hardwareMap, boolean strafe) {
         super(strafe);
-
-        LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
-
-        // TODO: adjust the names of the following hardware devices to match your configuration
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
-        imu.initialize(parameters);
-
-        // TODO: if your hub is mounted vertically, remap the IMU axes so that the z-axis points
-        // upward (normal to the floor) using a command like the following:
-        // BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
-
-        leftFront = hardwareMap.get(DcMotorEx.class, "frontLeft");
-        leftRear = hardwareMap.get(DcMotorEx.class, "backLeft");
-        rightRear = hardwareMap.get(DcMotorEx.class, "backRight");
-        rightFront = hardwareMap.get(DcMotorEx.class, "frontRight");
-
-        motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
-        RobotLog.dd(TAG, "SampleMecanumDriveREV created");
-
-        for (DcMotorEx motor : motors) {
-            motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            if (RUN_USING_ENCODER) {
-                motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            }
-            motor.setZeroPowerBehavior(DriveConstantsPID.BRAKE_ON_ZERO?DcMotor.ZeroPowerBehavior.BRAKE:DcMotor.ZeroPowerBehavior.FLOAT);
-        }
-
-        if (RUN_USING_ENCODER && MOTOR_VELO_PID != null) {
-            RobotLog.dd(TAG,"MOTOR_VELO_PID!=0, to setPIDCoefficients " + Double.toString(MOTOR_VELO_PID.kP)
-            + " " + Double.toString(MOTOR_VELO_PID.kI) + " " + Double.toString(MOTOR_VELO_PID.kD));
-            setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
-        }
-
-        // TODO: reverse any motors using DcMotor.setDirection()
-
-        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightRear.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        // TODO: if desired, use setLocalizer() to change the localization method
-        // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
-
-        //setLocalizer(new TrackingWheelLocalizerWithIMU(hardwareMap, imu));
-        if (DriveConstantsPID.RUN_USING_IMU_LOCALIZER) {
-            RobotLog.dd(TAG, "to setLocalizer to imu");
-            setLocalizer(new TrackingWheelLocalizerWithIMU(hardwareMap, imu));
-        }
-        else
-            RobotLog.dd(TAG, "not using imu");
-
-        if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
-            RobotLog.dd(TAG, "to setLocalizer to StandardTrackingWheelLocalizer");
-            setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
-        }
-        else
-            RobotLog.dd(TAG, "not using Odometry localizer");
+        create_instance(hardwareMap, strafe);
     }
 
     public SampleMecanumDriveREV(HardwareMap hardwareMap, boolean strafe, boolean imuInit) {
         super(strafe);
-
+        create_instance(hardwareMap, strafe);
+        if(imuInit) {
+            RobotLog.dd(TAG, "start IMU init");
+            imu.initialize(parameters);
+            RobotLog.dd(TAG, "IMU init done");
+        }
+    }
+    private void create_instance(HardwareMap hardwareMap, boolean strafe)
+    {
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
         // TODO: adjust the names of the following hardware devices to match your configuration
-            imu = hardwareMap.get(BNO055IMU.class, "imu");
-            BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-            parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
-        if(imuInit) {
-            imu.initialize(parameters);
-        }
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+        //imu.initialize(parameters);
 
         // TODO: if your hub is mounted vertically, remap the IMU axes so that the z-axis points
         // upward (normal to the floor) using a command like the following:
@@ -145,24 +97,14 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
 
         rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
         rightRear.setDirection(DcMotorSimple.Direction.REVERSE);
-
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
-
-        //setLocalizer(new TrackingWheelLocalizerWithIMU(hardwareMap, imu));
-        if (DriveConstantsPID.RUN_USING_IMU_LOCALIZER) {
-            RobotLog.dd(TAG, "to setLocalizer to imu");
-            setLocalizer(new TrackingWheelLocalizerWithIMU(hardwareMap, imu));
-        }
-        else
-            RobotLog.dd(TAG, "not using imu");
-
-        if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
+        if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL == true) {
             RobotLog.dd(TAG, "to setLocalizer to StandardTrackingWheelLocalizer");
             setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
         }
         else
-            RobotLog.dd(TAG, "not using Odometry localizer");
+            RobotLog.dd(TAG, "use default 4 wheel localizer");
     }
 
     @Override

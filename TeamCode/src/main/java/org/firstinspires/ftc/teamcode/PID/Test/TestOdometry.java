@@ -65,7 +65,7 @@ public class TestOdometry extends LinearOpMode {
         while(opModeIsActive()){
             DriveConstantsPID.updateConstantsFromProperties();
             DISTANCE = DriveConstantsPID.TEST_DISTANCE;
-            drive = new SampleMecanumDriveREV(hardwareMap, true);
+            drive = new SampleMecanumDriveREV(hardwareMap, true, true);
             /*builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
 
             drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(0,0),0));
@@ -106,7 +106,7 @@ public class TestOdometry extends LinearOpMode {
             RobotLog.dd(TAG, "update pose for drive after moving: " + drive.getPoseEstimate().toString());
 
             try{
-                Thread.sleep(500);
+                Thread.sleep(10000);
             } catch(Exception e){}
 
             //drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(drive.getPoseEstimate().getX(),
@@ -121,7 +121,7 @@ public class TestOdometry extends LinearOpMode {
             //drive.turnSync(Math.PI);  //Rotation Test
 
             try{
-                Thread.sleep(500);
+                Thread.sleep(10000);
             } catch(Exception e){}
 
             counter += 1;

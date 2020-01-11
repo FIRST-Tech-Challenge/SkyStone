@@ -27,13 +27,15 @@ public class MechTeleOp extends OpMode {
     final double calibBL = 1.00f;
     final double calibBR = 1.00f;
 
-//    //Other motors
-//    DcMotor liftBottom;
-//    DcMotor liftTop;
-//    DcMotor claw;
+    //claw motors
+    DcMotor clawLeft;
+    DcMotor clawRight;
 
     //servo for foundation clip
-    CRServo foundationClip;
+//    CRServo foundationClip;
+
+    //servo swinging the claw
+//    CRServo clawSwing;
 
     //matrix corresponding to motors
     double[][] motorPowers = {
@@ -153,19 +155,16 @@ public class MechTeleOp extends OpMode {
         motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-//        liftBottom = hardwareMap.get(DcMotor.class, "liftBottom");
-//        liftTop = hardwareMap.get(DcMotor.class, "liftTop");
-//        claw = hardwareMap.get(DcMotor.class, "claw");
-//
-//        liftBottom.setDirection(DcMotorSimple.Direction.FORWARD);
-//        liftTop.setDirection(DcMotorSimple.Direction.FORWARD);
-//        claw.setDirection(DcMotorSimple.Direction.FORWARD);
-//
-//        liftBottom.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//        liftTop.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//        claw.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        clawLeft = hardwareMap.get(DcMotor.class, "clawLeft");
+        clawRight = hardwareMap.get(DcMotor.class, "clawRight");
 
-        foundationClip = hardwareMap.crservo.get("foundationClip");
+        clawLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        clawRight.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        clawLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        clawRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+//        foundationClip = hardwareMap.crservo.get("foundationClip");
 
 //        leftServo = hardwareMap.get(CRServo.class, "leftServo");
 //        rightServo = hardwareMap.get(CRServo.class, "rightServo");
@@ -195,8 +194,8 @@ public class MechTeleOp extends OpMode {
              * to offset that effect.*/
 
             leftXMat = new double[][]{
-                    {-leftX, -leftX}, //Here the negative will probably have to on the bottom motors
-                    { leftX,  leftX}
+                    {leftX, -leftX}, //Here the negative will probably have to on the bottom motors
+                    {-leftX, leftX}
             };
 
             leftYMat = new double[][] {
@@ -216,34 +215,6 @@ public class MechTeleOp extends OpMode {
 
             motorPowers = avgPowerMatrix(leftYMat, leftXMat, rightYMat, rightXMat);
 
-            /*New Implementation of old code*/
-            // switch (Math.max(abs(leftX), abs(leftY), abs(rightX), abs(rightY)) { // Picks the joystick vector with the most distance from the origin
-            //     case leftX:
-            //         motorPowers = new double[][]{
-            //             {-leftX, -leftX},
-            //             { leftX,  leftX}
-            //         }
-            //         break;                
-            //     case leftY:
-            //         motorPowers = new double[][]{
-            //             { leftY,  leftY},
-            //             { leftY,  leftY}
-            //         }
-            //         break;
-            //     case rightX:
-            //         motorPowers = new double[][]{
-            //             {-rightX,  rightX},
-            //             {-rightX,  rightX}
-            //         }
-            //         break;
-            //     case rightY:
-            //         motorPowers = new double[][]{
-            //             { rightY,  rightY},
-            //             { rightY,  rightY}
-            //         }
-            //         break;
-            // }
-
         }else{
             motorPowers = new double[][] {
                 { 0.0,  0.0},
@@ -253,68 +224,32 @@ public class MechTeleOp extends OpMode {
 
         matrixToPowers(motorPowers);
 
-        /*Old Code for Joystick Movement*/
-        // if (Math.abs(getRX()) < Math.abs(getLX()) || Math.abs(getRX()) < Math.abs(getLY())) {
-        //     if (Math.abs(getLX()) < 0.1 && Math.abs(getLY()) < 0.1)
-        //         moveForward(0);
-        //     else if (Math.abs(getLX()) > Math.abs(getLY()))
-        //         straifLeft(Range.clip(getLX(), -1.0, 1.0));
-        //     else if (Math.abs(getLY()) > Math.abs(getLX()))
-        //         moveForward(Range.clip(getLY(), -1.0, 1.0));
-        // } else {
-        //     if (Math.abs(getRX()) < 0.1)
-        //         moveForward(0);
-        //     else
-        //         rotateLeft(getRX());
-        // }
-
-//        if (gamepad1.dpad_up) {
-//            leftServo.setPower(1.0);
-//        } else if (gamepad1.dpad_down) {
-//            leftServo.setPower(-1.0);
-//        } else {
-//            leftServo.setPower(0.0);
-//        }
-//
-//        if (gamepad1.y) {
-//            rightServo.setPower(1.0);
-//        } else if (gamepad1.a) {
-//            rightServo.setPower(-1.0);
-//        } else {
-//            rightServo.setPower(0.0);
-//        }
-
-//        //arm base (closer to the base of the robot) up and down
-//        if (gamepad1.dpad_up)
-//            liftBottom.setPower(0.5);
-//        else if (gamepad1.dpad_down)
-//            liftBottom.setPower(-0.5);
-//        else
-//            liftBottom.setPower(0.0);
-//
-//        //arm base (closer to the hand) up and down
-//        if (gamepad1.dpad_left)
-//            liftTop.setPower(0.5);
-//        else if (gamepad1.dpad_right)
-//            liftTop.setPower(-0.5);
-//        else
-//            liftTop.setPower(0.0);
-//
-//        //hand open close
-//        if (gamepad1.a)
-//            claw.setPower(0.3);
-//        else if (gamepad1.y)
-//            claw.setPower(-0.3);
-//        else
-//            claw.setPower(0.0);
-
-        if (gamepad1.dpad_down) {
-            foundationClip.setPower(1.0);
-        } else if (gamepad1.dpad_up) {
-            foundationClip.setPower(-1.0);
+        //claw control
+        if (gamepad1.right_trigger >= 0.1) {
+            clawRight.setPower(0.5);
+        } else if (gamepad1.right_bumper) {
+            clawRight.setPower(-0.5);
         } else {
-            foundationClip.setPower(0.0);
+            clawRight.setPower(0.0);
         }
+
+        if (gamepad1.left_trigger >= 0.1) {
+            clawLeft.setPower(0.5);
+        } else if (gamepad1.left_bumper) {
+            clawLeft.setPower(-0.5);
+        } else {
+            clawLeft.setPower(0.0);
+        }
+
+
+//        //foundation clip control
+//        if (gamepad1.dpad_down) {
+//            foundationClip.setPower(1.0);
+//        } else if (gamepad1.dpad_up) {
+//            foundationClip.setPower(-1.0);
+//        } else {
+//            foundationClip.setPower(0.0);
+//        }
 
 
     }
@@ -324,15 +259,15 @@ public class MechTeleOp extends OpMode {
     }
 
     public float getLY() {
-        return -gamepad1.left_stick_y;
+        return gamepad1.left_stick_y;
     }
 
     public float getRX() {
         return -gamepad1.right_stick_x;
     }
     
-    public float getRY() { 
-        return -gamepad1.right_stick_y; 
+    public float getRY() {
+        return gamepad1.right_stick_y;
     }
 
 }

@@ -333,13 +333,13 @@ public class SkystoneAuto extends OpMode {
             protected Trajectory createTrajectory() {
                 BaseTrajectoryBuilder trajectoryBuilder = driveBase.trajectoryBuilder().back(4);
 
-                if (currentAlliance == Constants.Alliance.RED) {
-                    trajectoryBuilder.strafeLeft(9);
-                } else {
-                    trajectoryBuilder.strafeRight(9);
-                }
+                //if (currentAlliance == Constants.Alliance.RED) {
+                //    trajectoryBuilder.strafeLeft(11.5);
+                //} else {
+                //    trajectoryBuilder.strafeRight(11.5);
+                //}
 
-                trajectoryBuilder.back(25);
+                trajectoryBuilder.back(27);
 
                 return trajectoryBuilder.build();
             }
@@ -358,13 +358,20 @@ public class SkystoneAuto extends OpMode {
                 telemetry, driveBase, ticker, TimeUnit.SECONDS.toMillis(20 * 1000)) {
             @Override
             protected Trajectory createTrajectory() {
-                return driveBase.trajectoryBuilder().forward(4)
-                        .build();
+                BaseTrajectoryBuilder trajectoryBuilder = driveBase.trajectoryBuilder().forward(4);
+                if(currentAlliance == Constants.Alliance.BLUE)
+                {
+                    trajectoryBuilder.strafeLeft(20);
+                }else{
+                    trajectoryBuilder.strafeRight(20);
+                }
+
+                return trajectoryBuilder.build();
             }
         };
 
         // For red alliance
-        Turn turn = new Turn(Rotation.CW, 65);
+        Turn turn = new Turn(Rotation.CW, 70);
 
         if (currentAlliance == Constants.Alliance.BLUE) {
             turn = turn.invert();
@@ -380,7 +387,7 @@ public class SkystoneAuto extends OpMode {
                 telemetry, driveBase, ticker, TimeUnit.SECONDS.toMillis(5 * 1000)) {
             @Override
             protected Trajectory createTrajectory() {
-                return driveBase.trajectoryBuilder().back(7.5)
+                return driveBase.trajectoryBuilder().back(14)
                         .build();
             }
         };

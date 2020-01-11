@@ -28,11 +28,11 @@ public class FoundationGripMechanism {
     Servo rightFoundationGripServo;
 
     public final static double RIGHT_GRIP_SERVO_INIT = .823;
-    public final static double RIGHT_GRIP_SERVO_DOWN = .243;
+    public final static double RIGHT_GRIP_SERVO_DOWN = .177;
     public final static double RIGHT_GRIP_SERVO_UP = .68;
 
     public final static double LEFT_GRIP_SERVO_INIT = .136;
-    public final static double LEFT_GRIP_SERVO_DOWN = .7;
+    public final static double LEFT_GRIP_SERVO_DOWN = .739;
     public final static double LEFT_GRIP_SERVO_UP = .262;
 
     public FoundationGripMechanism(SimplerHardwareMap hardwareMap) {

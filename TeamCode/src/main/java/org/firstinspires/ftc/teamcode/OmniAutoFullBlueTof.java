@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.opencv.core.Point;
 
-@Autonomous(name="Auto: AutoFullBlueTof", group ="Auto")
+//@Autonomous(name="Auto: AutoFullBlueTof", group ="Auto")
 public class OmniAutoFullBlueTof extends OmniAutoFullToF {
     @Override
     public void setVisionPoints() {

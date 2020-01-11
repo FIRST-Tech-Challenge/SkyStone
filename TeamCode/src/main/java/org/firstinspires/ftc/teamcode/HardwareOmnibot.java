@@ -122,7 +122,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public static int MAX_LIFT = 2800;
     public enum LiftPosition {
 		GRABBING(5),
-        STOWED(10),
+        STOWED(20),
         STONE1_RELEASE(108),
         STONE1(176),
         STONE1_ROTATE(408),
@@ -350,13 +350,14 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public static double LEFT_FINGER_DOWN = 0.82;
     public static double RIGHT_FINGER_UP = 0.89;
     public static double LEFT_FINGER_UP = 0.25;
-//    public static double CLAW_OPEN = 0.22;
-//    public static double CLAW_PINCHED = 0.95;
-    public static double CLAW_OPEN = 1.0;
-    public static double CLAW_PINCHED = 0.21;
-    public static double CLAW_CAPSTONE = 0.20;
+    public static double CLAW_OPEN = 0.22;
+    public static double CLAW_PINCHED = 0.95;
+    public static double CLAW_CAPSTONE = 0.97;
+//    public static double CLAW_OPEN = 1.0;
+//    public static double CLAW_PINCHED = 0.21;
+//    public static double CLAW_CAPSTONE = 0.20;
     public static double CLAWDRICOPTER_FRONT = 0.865;
-    public static double CLAWDRICOPTER_CAPSTONE = 0.725;
+    public static double CLAWDRICOPTER_CAPSTONE = 0.72;
     public static double CLAWDRICOPTER_BACK = 0.20;
     public static int CLAW_OPEN_TIME = 500;
     public static int CLAW_CLOSE_TIME = 800;
@@ -365,7 +366,7 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public static int CLAW_ROTATE_FRONT_TIME = 1000;
     public static int MAX_EXTEND_TIME = 300;
     public static int EJECT_EXTEND_TIME = 700;
-    public static int FINGER_ROTATE_TIME = 500;
+    public static int FINGER_ROTATE_TIME = 700;
 	private static int ENCODER_ERROR = 15;
 
 	// The OpMode set target height for the lift to go.

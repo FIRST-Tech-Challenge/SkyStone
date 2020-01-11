@@ -31,8 +31,10 @@ import static java.lang.Math.toRadians;
 public class HardwareOmnibotDrive
 {
     /* Public OpMode members. */
-    public final static double MIN_SPIN_RATE = 0.1;
-    public final static double MIN_DRIVE_RATE = 0.1;
+    public final static double MIN_SPIN_RATE = 0.12;
+    public final static double MIN_DRIVE_RATE = 0.09;
+    public final static double MIN_STRAFE_RATE = 0.19;
+    public final static double MIN_DRIVE_MAGNITUDE = Math.sqrt(MIN_DRIVE_RATE*MIN_DRIVE_RATE+MIN_DRIVE_RATE*MIN_DRIVE_RATE);
 
     // Robot Controller Config Strings
     public final static String IMU = "imu";
@@ -199,7 +201,7 @@ public class HardwareOmnibotDrive
 
     public void setFrontLeftMotorPower(double power)
     {
-        if(Math.abs(power - frontLeftMotorPower) > 0.0005)
+        if(Math.abs(power - frontLeftMotorPower) > 0.005)
         {
             frontLeftMotorPower = power;
             frontLeft.setPower(power);
@@ -208,7 +210,7 @@ public class HardwareOmnibotDrive
 
     public void setRearLeftMotorPower(double power)
     {
-        if(Math.abs(power - rearLeftMotorPower) > 0.0005)
+        if(Math.abs(power - rearLeftMotorPower) > 0.005)
         {
             rearLeftMotorPower = power;
             rearLeft.setPower(power);
@@ -217,7 +219,7 @@ public class HardwareOmnibotDrive
 
     public void setFrontRightMotorPower(double power)
     {
-        if(Math.abs(power - frontRightMotorPower) > 0.0005)
+        if(Math.abs(power - frontRightMotorPower) > 0.005)
         {
             frontRightMotorPower = power;
             frontRight.setPower(power);
@@ -226,7 +228,7 @@ public class HardwareOmnibotDrive
 
     public void setRearRightMotorPower(double power)
     {
-        if(Math.abs(power - rearRightMotorPower) > 0.0005)
+        if(Math.abs(power - rearRightMotorPower) > 0.005)
         {
             rearRightMotorPower = power;
             rearRight.setPower(power);
@@ -379,10 +381,11 @@ public class HardwareOmnibotDrive
         }
         lastUpdateTime = currTime;
 
-        double tl_power_raw = MovementVars.movement_y-MovementVars.movement_turn+MovementVars.movement_x*1.6;
-        double bl_power_raw = MovementVars.movement_y-MovementVars.movement_turn-MovementVars.movement_x*1.6;
-        double br_power_raw = -MovementVars.movement_y-MovementVars.movement_turn-MovementVars.movement_x*1.6;
-        double tr_power_raw = -MovementVars.movement_y-MovementVars.movement_turn+MovementVars.movement_x*1.6;
+        // 2.1 is the ratio between the minimum power to strafe, 0.19, and driving, 0.09.
+        double tl_power_raw = MovementVars.movement_y-MovementVars.movement_turn+MovementVars.movement_x*2.1;
+        double bl_power_raw = MovementVars.movement_y-MovementVars.movement_turn-MovementVars.movement_x*2.1;
+        double br_power_raw = -MovementVars.movement_y-MovementVars.movement_turn-MovementVars.movement_x*2.1;
+        double tr_power_raw = -MovementVars.movement_y-MovementVars.movement_turn+MovementVars.movement_x*2.1;
 
         //find the maximum of the powers
         double maxRawPower = Math.abs(tl_power_raw);

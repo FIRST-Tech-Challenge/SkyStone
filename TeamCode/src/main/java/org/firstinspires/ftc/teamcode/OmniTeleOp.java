@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.HelperClasses.WayPoint;
 import org.firstinspires.ftc.teamcode.RobotUtilities.MyPosition;
 
 import static java.lang.Math.*;
@@ -57,8 +58,8 @@ public class OmniTeleOp extends OpMode {
     private double driverAngle = 0.0;
     private final double MAX_SPEED = 1.0;
     private final double MAX_SPIN = 1.0;
-    private final double FOUNDATION_SPEED = 0.70;
-    private final double FOUNDATION_SPIN = 0.70;
+    private final double FOUNDATION_SPEED = 0.60;
+    private final double FOUNDATION_SPIN = 0.60;
     private double speedMultiplier = MAX_SPEED;
     private double spinMultiplier = MAX_SPIN;
     private int heightIncrement = 10;
@@ -122,7 +123,7 @@ public class OmniTeleOp extends OpMode {
                     robot.getRightEncoderWheelPosition(),
                     robot.getStrafeEncoderWheelPosition());
         }
-        MyPosition.setPosition(82, 26, Math.toRadians(0));
+        MyPosition.setPosition(335.915, 83.14436, Math.toRadians(180.0));
     }
 
     @Override

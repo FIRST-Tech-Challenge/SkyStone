@@ -22,7 +22,7 @@
 package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name="Auto: AutoOdoCal", group ="Auto")
+//@Autonomous(name="Auto: AutoOdoCal", group ="Auto")
 public class OmniAutoOdoCal extends OmniAutoClass
 {
     final double COUNTS_PER_CM = 241.245387;

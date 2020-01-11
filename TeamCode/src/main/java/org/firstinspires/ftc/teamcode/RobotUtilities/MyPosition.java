@@ -18,7 +18,9 @@ public class MyPosition {
 //    public static double turnScalingFactor = 39.0;
 //    public static double turnScalingFactor = 11.6928621;
 //    public static double turnScalingFactor = 10.2897186;
-    public static double turnScalingFactor = 10.2897186;
+    // 10.525 goes more than 90 cw
+    // 10.55 goes less than 90 cw
+    public static double turnScalingFactor = 10.525;
     public static double auxPredictionScalingFactor = 0.92;
 
 

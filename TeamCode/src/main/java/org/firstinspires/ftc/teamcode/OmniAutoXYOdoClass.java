@@ -68,7 +68,7 @@ public abstract class OmniAutoXYOdoClass extends LinearOpMode {
     public boolean rotateToAngle(double targetAngle, boolean resetDriveAngle) {
 		boolean reachedDestination = false;
 		double deltaAngle = MyPosition.AngleWrap(targetAngle - MyPosition.worldAngle_rad);
-		double turnSpeed = Math.toDegrees(deltaAngle) * 0.014;
+		double turnSpeed = Math.toDegrees(deltaAngle) * 0.016;
 
 		// This should be set on the first call to start us on a new path.
         if(resetDriveAngle) {
@@ -126,7 +126,8 @@ public abstract class OmniAutoXYOdoClass extends LinearOpMode {
 	 * @param resetDriveAngle - When we start a new drive, need to reset the starting drive angle.
      * @return - Boolean true we have reached destination, false we have not
      */
-    public boolean driveToXY(double x, double y, double targetAngle, double maxSpeed, boolean passThrough, boolean resetDriveAngle) {
+    public boolean driveToXY(double x, double y, double targetAngle, double maxSpeed,
+                             boolean passThrough, boolean resetDriveAngle) {
 		boolean reachedDestination = false;
         double deltaX = x - MyPosition.worldXPosition;
         double deltaY = y - MyPosition.worldYPosition;
@@ -137,7 +138,11 @@ public abstract class OmniAutoXYOdoClass extends LinearOpMode {
 		double turnSpeed = Math.toDegrees(deltaAngle) * 0.014;
 		// Have to convert from world angles to robot centric angles.
 		double robotDriveAngle = driveAngle - MyPosition.worldAngle_rad + Math.toRadians(90);
+		double error = 2;
 
+		if(passThrough) {
+		    error = 5;
+        }
 		// This should be set on the first call to start us on a new path.
         if(resetDriveAngle) {
             lastDriveAngle = driveAngle;
@@ -153,12 +158,16 @@ public abstract class OmniAutoXYOdoClass extends LinearOpMode {
 		}
 
 		// Check if we passed through our point
-		if((magnitude <= 2) || (Math.abs(Math.toDegrees(Math.abs(lastDriveAngle - driveAngle))) > 100)) {
+//		if((magnitude <= 2) || (Math.abs(Math.toDegrees(lastDriveAngle - driveAngle)) > 120)) {
+        if(magnitude <= error) {
 			reachedDestination = true;
             if(!passThrough) {
 				robot.setAllDriveZero();
 			}		
 		} else {
+		    if(driveSpeed < robot.MIN_DRIVE_MAGNITUDE) {
+		        driveSpeed = robot.MIN_DRIVE_MAGNITUDE;
+            }
             MovementVars.movement_x = driveSpeed * Math.cos(robotDriveAngle);
             MovementVars.movement_y = driveSpeed * Math.sin(robotDriveAngle);
             MovementVars.movement_turn = turnSpeed;

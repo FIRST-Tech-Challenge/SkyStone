@@ -156,6 +156,9 @@ public class AdvancedBlueAuto extends LinearOpMode {
         rotation = hardwareMap.servo.get("rotation");
         release = hardwareMap.servo.get("release");
 
+        //init sensors
+        blueColorSensor = hardwareMap.colorSensor.get("blueColorSensor");
+        redColorSensor = hardwareMap.colorSensor.get("redColorSensor");
 
 
         if (frontLeft != null)

@@ -24,8 +24,7 @@ public class FullTest extends OpMode {
         colorTools = new ColorTools();
         smootingValue = -0.5;
 
-        liftZeros[0] = robot.motor_lift_left.getCurrentPosition();
-        liftZeros[0] = robot.motor_lift_right.getCurrentPosition();
+        setZeros();
     }
 
     @Override
@@ -88,13 +87,20 @@ public class FullTest extends OpMode {
         } else if (-gamepad2.left_stick_y < 0 && (robot.motor_lift_left.getCurrentPosition() <= liftZeros[0] && robot.motor_lift_right.getCurrentPosition() >= liftZeros[1])) {
             robot.motor_lift_left.setPower(0.1 * gamepad2.left_stick_y);
             robot.motor_lift_right.setPower(-0.1 * gamepad2.left_stick_y);
-        }
+        } else if (-gamepad2.left_stick_y < 0 && gamepad2.b) ( // override/ignore zero
+            robot.motor_lift_left.setPower(0.1 * gamepad2.left_stick_y);
+            robot.motor_lift_right.setPower(-0.1 * gamepad2.left_stick_y);
+        )
         //set all motors 0 if nothing is pressed
         else {
             robot.motor_lift_left.setPower(0);
             robot.motor_lift_right.setPower(0);
         }
 
+        // set new zero-point
+        if (gamepad2.a) {
+            setZeros();
+        }
 
         //servo clamp
         if(gamepad2.y) {
@@ -113,7 +119,7 @@ public class FullTest extends OpMode {
             robot.servo_claw_left.setPosition(0.1);
         }
 
-
+        /*
         telemetry.addData("Smoothing Value: ", smootingValue);
         telemetry.addLine();
         telemetry.addData("Ärmchen R:", robot.servo_claw_right.getPosition());
@@ -126,7 +132,12 @@ public class FullTest extends OpMode {
         telemetry.addData("S: ", colorTools.showHSV(robot.color_front)[1]);
         telemetry.addData("V: ", colorTools.showHSV(robot.color_front)[2]);
         telemetry.update();
+         */
+    }
 
+    public void setZeros() {
+        liftZeros[0] = robot.motor_lift_left.getCurrentPosition();
+        liftZeros[1] = robot.motor_lift_right.getCurrentPosition();
     }
 }
 

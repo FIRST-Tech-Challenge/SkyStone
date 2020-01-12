@@ -28,9 +28,7 @@ class SSMechTeleOp : OpMode() {
     var leftPower: Float = 0.0.toFloat()
     var rightPower: Float = 0.0.toFloat()
     val max = 7700
-    var strafePow: Double = 0.00
     var drive = 0.0
-    var turn = 0.0
 
 
     override fun init() {
@@ -71,6 +69,7 @@ class SSMechTeleOp : OpMode() {
         tooLow = curPos < 0
         //if (curPos > 1500) linSlidePow /= 1.2.toFloat() //slow slide if greater than value
         robot.vSlide?.power = -linSlidePow.toDouble() / 1.5//controls vertical slide, flips sign
+
         // Horizontal slide calcs
         slideP = (gamepad2.left_stick_y.toDouble() / 2) + 0.5 // horizontal slide
         if (touched) { //toggle controls horizontal slide with the left stick of gp2

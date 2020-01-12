@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotor
 /**
  * Created by KasaiYuki on 9/21/2018.
  */
-@Autonomous(name = "SSAuto", group = "Autonomous")
+@Autonomous(name = "SSParkAuto", group = "Autonomous")
 //@Disabled
 class SSParkAuto : LinearOpMode()
 {

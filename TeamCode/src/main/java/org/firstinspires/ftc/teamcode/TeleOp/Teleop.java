@@ -48,6 +48,9 @@ public class Teleop extends LinearOpMode {
     private ArrayList<OnOffButton> buttonLogic = new ArrayList<>();
 
     private boolean blocker = false;
+
+    private boolean dummy = false;
+    private boolean parking = false;
     private ArrayList<String> kVData = new ArrayList<>();
 
     private FourWheelMecanumDrivetrain drivetrain;
@@ -96,25 +99,29 @@ public class Teleop extends LinearOpMode {
                 new double[][]{{TeleopConstants.clawServo1PosOpen, TeleopConstants.clawServo1PosClose},
                         {TeleopConstants.clawServo2PosOpen, TeleopConstants.clawServo2PosClose}},
                 new double[]{TeleopConstants.clawServo1Block, TeleopConstants.clawServo2PosOpen}));
-        /*buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.DPAD_UP,
-                new Servo[] {hwMap.clawInit},
-                new double[][]{ {TeleopConstants.clawInitPosCapstoneForReal, TeleopConstants.clawInitPosCapstone} }));*/
+        //buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.X,
+        //        new Servo[] {hwMap.parkingServo},
+        //        new double[][]{ {TeleopConstants.parkingServoPosUnlock, TeleopConstants.parkingServoPosLock} }));
         buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.DPAD_DOWN,
                 new Servo[]{hwMap.innerTransfer},
                 new double[][]{{TeleopConstants.innerTransferPosBlock, TeleopConstants.innerTransferPosTucked}}));
         buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.LEFT_TRIGGER, new Servo[]{hwMap.transferHorn},
                 new double[][]{{TeleopConstants.transferHornPosPush, TeleopConstants.transferHornPosReady}}));
+        buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.DPAD_LEFT, new Servo[]{hwMap.liftOdometry},
+                new double[][]{{TeleopConstants.liftOdometryUp, TeleopConstants.liftOdometryDown}}));
 
         telemetry.addData("Status", "Ready");
         hwMap.clawInit.setPosition(TeleopConstants.clawInitPosCapstone);
-        hwMap.redAutoClawJoint1.setPosition(TeleopConstants.autoClaw1Stowed);
+        hwMap.redAutoClawJoint1.setPosition(TeleopConstants.autoClaw1TeleOp);
         hwMap.redAutoClawJoint2.setPosition(TeleopConstants.autoClaw2Stowed);
+        hwMap.parkingServo.setPosition(TeleopConstants.parkingServoPosLock);
 
         waitForStart();
 
         driveLoop();
         liftLoop();
         toggleLoop();
+        parkingLoop();
 
         while (opModeIsActive()) {
 
@@ -441,6 +448,38 @@ public class Teleop extends LinearOpMode {
             }
         };
         toggle.start();
+    }
+
+    private void parkingLoop(){
+        Thread parkingServ = new Thread(){
+            public void run(){
+                while(opModeIsActive()){
+                    if(gamepad2.right_trigger >= 0.5){
+                        if(gamepad2.x && !dummy){
+                            if(!parking) {
+                                hwMap.redAutoClawJoint1.setPosition(TeleopConstants.autoClaw1Up - 0.03);
+                                try{
+                                    Thread.sleep(300);
+                                } catch (Exception e){}
+                                hwMap.parkingServo.setPosition(TeleopConstants.parkingServoPosUnlock);
+                                parking = true;
+                            } else {
+                                hwMap.parkingServo.setPosition(TeleopConstants.parkingServoPosLock);
+                                try{
+                                    Thread.sleep(300);
+                                } catch (Exception e){}
+                                hwMap.redAutoClawJoint1.setPosition(TeleopConstants.autoClaw1TeleOp);
+                                parking = false;
+                            }
+                            dummy = true;
+                        } else if(!gamepad2.x && dummy){
+                            dummy = false;
+                        }
+                    }
+                }
+            }
+        };
+        parkingServ.start();
     }
 
     private void saveDataLoop(HardwareMap hw) {

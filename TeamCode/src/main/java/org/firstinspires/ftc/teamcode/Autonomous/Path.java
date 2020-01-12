@@ -93,16 +93,17 @@ public class Path {
         DriveConstantsPID.updateConstantsFromProperties();
         switch (skystonePositions[0]) {
             case 1:
-                double yCoordMvmtPlane = -43.0;
+                double yCoordMvmtPlane = -44.5;
                 double wallSkyStoneX = -44.0;
                 double furtherMostSkyStoneX = -21.0;
                 double firstRegularStoneX = -34.0;
                 double foundationX = 46.0;
-                double strafeDistance = 10.0;
+                double strafeDistance = 9.5;
 
                 transferReset();
                 initIntakeClaw();
 
+                hwMap.parkingServo.setPosition(TeleopConstants.parkingServoPosLock);
                 hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
                 hwMap.transferLock.setPosition(TeleopConstants.transferLockPosPlatform);
 
@@ -339,7 +340,7 @@ public class Path {
 
                 if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
                     builder = builder.setReversed(false)
-                            .setReversed(true).lineTo(new Vector2d(straightDrive.getPoseEstimate().getX(), -24));
+                            .setReversed(true).lineTo(new Vector2d(straightDrive.getPoseEstimate().getX(), -25));
                     //.strafeTo(new Vector2d(42, -30));
                 }
                 trajectory = builder.build();
@@ -388,13 +389,14 @@ public class Path {
                 straightDrive.followTrajectorySync(trajectory);
                 break;
             case 2:
-                yCoordMvmtPlane = -43.0;
+                yCoordMvmtPlane = -44.5;
                 wallSkyStoneX = -53.5;
                 furtherMostSkyStoneX = -29.5;
                 firstRegularStoneX = -34.0;
                 foundationX = 46.0;
-                strafeDistance = 10.0;
+                strafeDistance = 9.5;
 
+                hwMap.parkingServo.setPosition(TeleopConstants.parkingServoPosLock);
                 hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
                 hwMap.transferLock.setPosition(TeleopConstants.transferLockPosPlatform);
 
@@ -608,6 +610,7 @@ public class Path {
 
                 dropStone(FieldPosition.RED_QUARY);*/
 
+                hwMap.parkingServo.setPosition(TeleopConstants.parkingServoPosLock);
                 hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
                 hwMap.transferLock.setPosition(TeleopConstants.transferLockPosOut);
 
@@ -633,7 +636,7 @@ public class Path {
 
                 if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
                     builder = builder.setReversed(false)
-                            .setReversed(true).lineTo(new Vector2d(straightDrive.getPoseEstimate().getX(), -24));
+                            .setReversed(true).lineTo(new Vector2d(straightDrive.getPoseEstimate().getX(), -25));
                     //.strafeTo(new Vector2d(42, -30));
                 }
                 trajectory = builder.build();
@@ -682,13 +685,14 @@ public class Path {
                 straightDrive.followTrajectorySync(trajectory);
                 break;
             case 3:
-                yCoordMvmtPlane = -43.0;
+                yCoordMvmtPlane = -44.5;
                 wallSkyStoneX = -60.5;
                 furtherMostSkyStoneX = -39.0;
                 firstRegularStoneX = -36.0;
                 foundationX = 46.0;
-                strafeDistance = 10.0;
+                strafeDistance = 9.5;
 
+                hwMap.parkingServo.setPosition(TeleopConstants.parkingServoPosLock);
                 hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
                 hwMap.transferLock.setPosition(TeleopConstants.transferLockPosPlatform);
 
@@ -927,7 +931,7 @@ public class Path {
 
                 if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
                     builder = builder.setReversed(false)
-                            .setReversed(true).lineTo(new Vector2d(straightDrive.getPoseEstimate().getX(), -24));
+                            .setReversed(true).lineTo(new Vector2d(straightDrive.getPoseEstimate().getX(), -25));
                     //.strafeTo(new Vector2d(42, -30));
                 }
                 trajectory = builder.build();
@@ -979,33 +983,46 @@ public class Path {
     }
 
     public void RedFoundationPark() {
+        hwMap.parkingServo.setPosition(TeleopConstants.parkingServoPosLock);
         transferReset();
         initIntakeClaw();
         try {
             Thread.sleep(5000);
         } catch (Exception e) {
         }
+
+        intake(0);
+
+        try {
+            Thread.sleep(15000);
+        } catch (Exception e) {
+        }
+
+        hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
+        hwMap.transferLock.setPosition(TeleopConstants.transferLockPosOut);
+
+        try {
+            Thread.sleep(10000);
+        } catch (Exception e) {
+        }
+
+        /*try {
+            Thread.sleep(18000);
+        } catch (Exception e) {
+        }
+
         straightDrive.getLocalizer().setPoseEstimate(startingPos);
         straightDrive.getLocalizer().update();
         builder = new TrajectoryBuilder(straightDrive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
         builder = builder.strafeRight(6).setReversed(false).forward(28);
         trajectory = builder.build();
-        straightDrive.followTrajectorySync(trajectory);
-
-        intake(0);
-
-        try {
-            Thread.sleep(5000);
-        } catch (Exception e) {
-        }
-
-        intake(0);
+        straightDrive.followTrajectorySync(trajectory);*/
     }
 
     public void BlueQuary(int[] skystonePositions) {    // (-x, y)
         switch (skystonePositions[0]) {
             case 1:
-                double yCoordMvmtPlane = 46.0;
+                double yCoordMvmtPlane = 45.5;
                 double wallSkyStoneX = -48.0;
                 double furtherMostSkyStoneX = -25.0;
                 double firstRegularStoneX = -34.0;
@@ -1015,6 +1032,7 @@ public class Path {
                 transferReset();
                 initIntakeClaw();
 
+                hwMap.parkingServo.setPosition(TeleopConstants.parkingServoPosLock);
                 hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
                 hwMap.transferLock.setPosition(TeleopConstants.transferLockPosPlatform);
 
@@ -1300,13 +1318,14 @@ public class Path {
                 straightDrive.followTrajectorySync(trajectory);
                 break;
             case 2:
-                yCoordMvmtPlane = 46.5;
+                yCoordMvmtPlane = 45.5;
                 wallSkyStoneX = -56.5;
                 furtherMostSkyStoneX = -30.5;
                 firstRegularStoneX = -34.0;
                 foundationX = 47.0;
                 strafeDistance = -10.0;
 
+                hwMap.parkingServo.setPosition(TeleopConstants.parkingServoPosLock);
                 hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
                 hwMap.transferLock.setPosition(TeleopConstants.transferLockPosPlatform);
 
@@ -1576,14 +1595,14 @@ public class Path {
                 RobotLog.dd(TAG, "step21, " + straightDrive.getPoseEstimate().toString());
                 currentPos = straightDrive.getPoseEstimate();
 
-                straightDrive = DriveBuilderReset(false, false, "step18");
-
                 hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
                 hwMap.transferLock.setPosition(TeleopConstants.transferLockPosOut);
                 try {
                     Thread.sleep(300);
                 } catch (Exception e) {
                 }
+
+                straightDrive = DriveBuilderReset(false, false, "step18");
 
                 if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
                     //builder = builder.splineTo(new Pose2d(straightDrive.getPoseEstimate().getX() - 12, straightDrive.getPoseEstimate().getY() - 24, PI / 2));
@@ -1594,13 +1613,14 @@ public class Path {
                 straightDrive.followTrajectorySync(trajectory);
                 break;
             case 3:
-                yCoordMvmtPlane = 46.5;
+                yCoordMvmtPlane = 45.5;
                 wallSkyStoneX = -63.5;
                 furtherMostSkyStoneX = -40.0;
                 firstRegularStoneX = -36.0;
                 foundationX = 47.0;
                 strafeDistance = -10.0;
 
+                hwMap.parkingServo.setPosition(TeleopConstants.parkingServoPosLock);
                 hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
                 hwMap.transferLock.setPosition(TeleopConstants.transferLockPosPlatform);
 
@@ -1891,12 +1911,33 @@ public class Path {
     }
 
     public void BlueFoundationPark() {
+        hwMap.parkingServo.setPosition(TeleopConstants.parkingServoPosLock);
         transferReset();
         initIntakeClaw();
         try {
             Thread.sleep(5000);
         } catch (Exception e) {
         }
+
+        intake(0);
+
+        try {
+            Thread.sleep(15000);
+        } catch (Exception e) {
+        }
+
+        hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
+        hwMap.transferLock.setPosition(TeleopConstants.transferLockPosOut);
+
+        try {
+            Thread.sleep(10000);
+        } catch (Exception e) {
+        }
+        /*try {
+            Thread.sleep(18000);
+        } catch (Exception e) {
+        }
+
         straightDrive.getLocalizer().setPoseEstimate(startingPos);
         straightDrive.getLocalizer().update();
         builder = new TrajectoryBuilder(straightDrive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
@@ -1904,14 +1945,7 @@ public class Path {
         trajectory = builder.build();
         straightDrive.followTrajectorySync(trajectory);
 
-        intake(0);
-
-        try {
-            Thread.sleep(5000);
-        } catch (Exception e) {
-        }
-
-        intake(0);
+        intake(0);*/
     }
 
     public void BlueFoundationDrag() {

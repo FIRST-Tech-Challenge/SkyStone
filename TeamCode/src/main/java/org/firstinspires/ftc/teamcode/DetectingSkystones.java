@@ -351,7 +351,7 @@ public class DetectingSkystones extends Movement {
                 stopWithSleep("stop", 200);
                 Turnleft(1,1, 525);
                 stopWithSleep("stop", 200);
-                goForward(0.4, (int) (0.25 *blockdistance));
+                goForward(0.4, (int) (0.8 *blockdistance));
                 goForward(1, 1250);
                 armrelease();
 
@@ -363,8 +363,8 @@ public class DetectingSkystones extends Movement {
                 stopWithSleep(50);
                 turnRight(1, 1, 1225);
                 stopWithSleep(50);
-                goForward(1, 500);
-                goForward(0.4, (int) (0.25 *blockdistance));
+                goForward(1, 460);
+                goForward(0.4, (int) (0.45 *blockdistance));
                 skystone1Detected = false;
                 targetVisible = false;
 
@@ -421,9 +421,9 @@ public class DetectingSkystones extends Movement {
                 stopWithSleep("stopafterarmclamp", 200);
                 goBackward(0.6, 575);
                 stopWithSleep("stop", 100);
-                Turnleft(1,1, 650);
+                Turnleft(1,1, 600);
                 stopWithSleep("stop", 100);
-                goForward(0.4, (int) (0.25 *blockdistance2));
+                goForward(0.8, (int) (0.3 *blockdistance2));
                 goForward(1, 2000);
                 armrelease();
                 stopWithSleep("stop", 100);
@@ -437,7 +437,7 @@ public class DetectingSkystones extends Movement {
                 telemetry.addData("Visible Target", "none");
                 goForward(0.1, 1);
                 blockdistance2 += 1;
-                telemetry.addData("blockdistance",  String.valueOf(blockdistance2));
+                telemetry.addData("blockdistance 2",  String.valueOf(blockdistance2));
                 telemetry.update();
             }
 

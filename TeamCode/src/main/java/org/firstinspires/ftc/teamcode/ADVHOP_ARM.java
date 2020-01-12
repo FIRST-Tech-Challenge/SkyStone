@@ -235,10 +235,10 @@ public class ADVHOP_ARM extends OpMode {
             backRightPower = (backRightPower / max) * basePower;
         }
 
-        leftFrontMotor.setPower(frontLeftPower);
-        rightFrontMotor.setPower(frontRightPower);
-        leftBackMotor.setPower(backLeftPower);
-        rightBackMotor.setPower(backRightPower);
+        leftFrontMotor.setPower(frontLeftPower - correction);
+        rightFrontMotor.setPower(frontRightPower + correction);
+        leftBackMotor.setPower(backLeftPower - correction);
+        rightBackMotor.setPower(backRightPower + correction);
 
         update_telemetry(frontLeftPower, frontRightPower, backLeftPower, backRightPower, max);
 

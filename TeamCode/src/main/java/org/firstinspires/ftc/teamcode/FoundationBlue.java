@@ -9,32 +9,50 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous(name="FoundationBlue", group="Linear Opmode")
 //Disabled
+
 public class FoundationBlue extends Movement {
+    private ElapsedTime runtime = new ElapsedTime();
 
 
-    public void runOpMode() {
+    @Override public void runOpModeImpl() {
 
         waitForStart();
         runtime.reset();
 
         //start with back servos up
-        public void backServosUp();
+        backServosUp();
+
+        goLeft(1, 500);
 
         //drive backward
-        public void goBackward();
+        goBackward(0.5, 1800);
 
         //back servos move down
-        public void backServosDown();
+        backServosDown();
+
+        //stop motors
+        stopWithSleep("motors stopped",300);
 
         //drive forward
-        public void goForward();
+        goForward(0.5,2250);
 
         //back servos move up
-        public void backServosUp();
+        backServosUp();
+
+        //stop motors
+        stopWithSleep("motors stopped",300);
+
+        goForward(1,10);
+
 
         //strafe to the left (maybe park under the bridge)
-        public void goLeft();
+        goRight(1,2250);
+
+        telemetry.addData("Status", "Stop Program");
+        telemetry.update();
+
 
 
     }
 }
+

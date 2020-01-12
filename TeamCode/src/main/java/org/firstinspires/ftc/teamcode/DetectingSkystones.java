@@ -137,7 +137,9 @@ public class DetectingSkystones extends Movement {
     private float phoneZRotate    = 0;
 
     private int blockdistance = 0;
+    private int blockdistance2 = 0;
     private boolean skystone1Detected = true;
+    private boolean skystone2Detected = true;
 
 
     @Override public void runOpModeImpl() {
@@ -301,7 +303,7 @@ public class DetectingSkystones extends Movement {
         // AFTER you hit Init on the Driver Station, use the "options menu" to select "Camera Stream"
         // Tap the preview window to receive a fresh image.
 
-        goLeft(1,1000, "1. Going Right");
+        goLeft(1,1000);
 
         targetsSkyStone.activate();
         while (skystone1Detected) {
@@ -311,6 +313,7 @@ public class DetectingSkystones extends Movement {
             for (VuforiaTrackable trackable : allTrackables) {
                 if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
                     telemetry.addData("Visible Target", trackable.getName());
+                    telemetry.update();
                     targetVisible = true;
 
                     // getUpdatedRobotLocation() will return null if no new information is available since
@@ -330,13 +333,16 @@ public class DetectingSkystones extends Movement {
                 telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
                         translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
 
+                telemetry.update();
                 // express the rotation of the robot in degrees.
                 Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
                 telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
+                telemetry.update();
                 stopWithSleep("Wahoo", 10);
+                frontServo.setPosition(0.4);
+                targetsSkyStone.deactivate();
                 goForward(0.5, 50);
                 Turnleft(1, 1,575);
-                frontServo.setPosition(0.4);
                 goForward(0.4, 475);
                 stopWithSleep("stop", 100);
                 armclamp();
@@ -351,27 +357,91 @@ public class DetectingSkystones extends Movement {
 
 
                 // Turning back for 2nd skystone
+                targetsSkyStone.activate();
                 stopWithSleep(50);
                 goBackward(1, 1250);
                 stopWithSleep(50);
-                Turnright(1, 1, 1175);
+                turnRight(1, 1, 1225);
                 stopWithSleep(50);
+                goForward(1, 500);
                 goForward(0.4, (int) (0.25 *blockdistance));
-
-                // Detect second skystone
                 skystone1Detected = false;
-                break;
+                targetVisible = false;
+
+
             }
             else {
                 telemetry.addData("Visible Target", "none");
                 goForward(0.1, 1);
                 blockdistance += 1;
                 telemetry.addData("blockdistance",  String.valueOf(blockdistance));
+                telemetry.update();
             }
             telemetry.update();
+
         }
 
         // Scan for 2nd skystone
+        // Detect second skystone
+
+        while(skystone2Detected) {
+
+            targetVisible = false;
+            for (VuforiaTrackable trackable : allTrackables) {
+                if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
+                    telemetry.addData("Visible 2 Target", trackable.getName());
+                    telemetry.update();
+                    targetVisible = true;
+
+                    // getUpdatedRobotLocation() will return null if no new information is available since
+                    // the last time that call was made, or if the trackable is not currently visible.
+                    OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
+                    if (robotLocationTransform != null) {
+                        lastLocation = robotLocationTransform;
+                    }
+                    break;
+                }
+            }
+
+            if (targetVisible) {
+
+                VectorF translation = lastLocation.getTranslation();
+                telemetry.addData("2 Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
+                        translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
+                Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
+                telemetry.addData("2 Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
+                telemetry.update();
+                stopWithSleep("Wahoo 2", 10);
+                goForward(0.5, 50);
+                Turnleft(1, 1,575);
+                frontServo.setPosition(0.4);
+                goForward(0.4, 550);
+                stopWithSleep("stop", 100);
+                armclamp();
+                stopWithSleep("stopafterarmclamp", 200);
+                goBackward(0.6, 575);
+                stopWithSleep("stop", 100);
+                Turnleft(1,1, 650);
+                stopWithSleep("stop", 100);
+                goForward(0.4, (int) (0.25 *blockdistance2));
+                goForward(1, 2000);
+                armrelease();
+                stopWithSleep("stop", 100);
+                goBackward(1, 300);
+
+                skystone2Detected = false;
+            }
+
+
+            else {
+                telemetry.addData("Visible Target", "none");
+                goForward(0.1, 1);
+                blockdistance2 += 1;
+                telemetry.addData("blockdistance",  String.valueOf(blockdistance2));
+                telemetry.update();
+            }
+
+        }
 
         // Disable Tracking when we are done;
         targetsSkyStone.deactivate();

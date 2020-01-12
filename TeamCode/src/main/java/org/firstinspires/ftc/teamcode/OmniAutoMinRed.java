@@ -24,7 +24,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-@Autonomous(name="Auto: AutoMinRed", group ="Auto")
+@Autonomous(name="Auto: Red Min Auto", group ="Auto")
 public class OmniAutoMinRed extends OmniAutoClass
 {
     @Override

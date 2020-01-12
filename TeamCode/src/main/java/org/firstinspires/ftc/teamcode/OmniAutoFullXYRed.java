@@ -29,18 +29,18 @@ import org.firstinspires.ftc.teamcode.HelperClasses.WayPoint;
 /**
  * Created by 12090 STEM Punk
  */
-@Autonomous(name="Auto: AutoFullOdoRed", group ="Auto")
+@Autonomous(name="Auto: Red Full Auto", group ="Auto")
 public class OmniAutoFullXYRed extends OmniAutoFullXYOdo
 {
     // Sets the points in the image to detect the skystone.
     @Override
     public void setVisionPoints() {
-        sub1PointA = new Point(185, 239); // Stone4, Position 1
-        sub1PointB = new Point(195, 249);
-        sub2PointA = new Point(185, 174); // Stone5, Position 2
-        sub2PointB = new Point(195, 184);
-        sub3PointA = new Point(185, 99);  // Stone6, Position 3
-        sub3PointB = new Point(195, 109);
+        sub1PointA = new Point(174, 239); // Stone4, Position 1
+        sub1PointB = new Point(184, 249);
+        sub2PointA = new Point(174, 174); // Stone5, Position 2
+        sub2PointB = new Point(184, 184);
+        sub3PointA = new Point(174, 99);  // Stone6, Position 3
+        sub3PointB = new Point(184, 109);
     }
 
     protected double skystoneX = 271.5463;
@@ -76,7 +76,7 @@ public class OmniAutoFullXYRed extends OmniAutoFullXYOdo
                 // Skystone position 4 specific coordinates
                 positionToGrabSkystone2 = new WayPoint(skystoneX, skystone4Y, attackAngle, 1.0, false);
                 grabSkystone2 = new WayPoint(skystoneX - 20.0, skystone4Y - 20.0, attackAngle, 1.0, false);
-                pullBackSkystone2 = new WayPoint(runLaneX, skystone4Y - 20.0, runAngle, 0.5, true);
+                pullBackSkystone2 = new WayPoint(runLaneX, skystone4Y - 20.0, attackAngle, 0.5, true);
                 break;
             case 2:
                 // Skystone position 2 specific coordinates
@@ -105,15 +105,15 @@ public class OmniAutoFullXYRed extends OmniAutoFullXYOdo
         quarryBeforeBridge = new WayPoint(runLaneX, 185.26, runAngle, 0.5, true);
         buildSiteUnderBridge = new WayPoint(runLaneX, 190.8531, runAngle, 1.0, true);
         alignToFoundation = new WayPoint(271.0663, 315.755, Math.toRadians(360), 1.0, false);
-        grabFoundation = new WayPoint(238.0663, 315.755, Math.toRadians(360), 0.1, true);
-        pullFoundation = new WayPoint(285.3956, 271.206, runAngle, 1.0, true);
+        snuggleFoundation = new WayPoint(238.0663, 315.755, Math.toRadians(360.0), 0.3, false);
+        grabFoundation = new WayPoint(232.0663, 315.755, Math.toRadians(360), 0.1, true);
+        pullFoundation = new WayPoint(275.3956, 271.206, Math.toRadians(300), 1.0, true);
         // RCVS Moved 10 less in Y because it couldn't hit point.
-        pushFoundation = new WayPoint(285.3956, 296.785, runAngle, 0.5, true);
+        pushFoundation = new WayPoint(275.3956, 296.785, runAngle, 0.5, false);
         // false until we figure out if we have to wait for lift.
         buildSiteReadyToRun = new WayPoint(runLaneX, 271.206, runAngle, 1.0, false);
         quarryUnderBridge = new WayPoint(runLaneX, 185.26, runAngle, 1.0, true);
         foundationDeposit = new WayPoint(runLaneX, 292.785, runAngle, 1.0, false);
         park = new WayPoint(runLaneX, 204.3875, runAngle, 1.0, false);
-
     }
 }

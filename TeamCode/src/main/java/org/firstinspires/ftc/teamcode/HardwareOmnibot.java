@@ -122,7 +122,8 @@ public class HardwareOmnibot extends HardwareOmnibotDrive
     public static int MAX_LIFT = 2800;
     public enum LiftPosition {
 		GRABBING(5),
-        STOWED(20),
+        STOWED(10),
+        AUTO_OVERCOMP(50),
         STONE1_RELEASE(108),
         STONE1(176),
         STONE1_ROTATE(408),

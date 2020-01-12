@@ -64,6 +64,7 @@ public abstract class OmniAutoFullXYOdo extends OmniAutoXYOdoClass
 
     protected WayPoint buildSiteUnderBridge;
     protected WayPoint alignToFoundation;
+    protected WayPoint snuggleFoundation;
     protected WayPoint grabFoundation;
     protected WayPoint pullFoundation;
     protected WayPoint pushFoundation;
@@ -180,6 +181,7 @@ public abstract class OmniAutoFullXYOdo extends OmniAutoXYOdoClass
 
         telemetry.addLine("Ready");
         updateTelemetry(telemetry);
+        robot.encodersReset = true;
 
         /*
          * Wait for the user to press start on the Driver Station
@@ -211,13 +213,14 @@ public abstract class OmniAutoFullXYOdo extends OmniAutoXYOdoClass
 
 		// Start moving intake out, should be done by the time driving is done.
         robot.startExtendingIntake();
+        robot.moveLift(HardwareOmnibot.LiftPosition.AUTO_OVERCOMP);
 
         driveToWayPoint(distanceFromWall);
         driveToWayPoint(positionToGrabSkystone1);
-        robot.moveLift(HardwareOmnibot.LiftPosition.STOWED);
 
         // Start the intake spinning
         robot.startIntake(false);
+        robot.moveLift(HardwareOmnibot.LiftPosition.STOWED);
 
         // Make sure we are at the right angle
         rotateToWayPointAngle(positionToGrabSkystone1);
@@ -249,6 +252,7 @@ public abstract class OmniAutoFullXYOdo extends OmniAutoXYOdoClass
         rotateToWayPointAngle(alignToFoundation);
 
         // Drive into foundation to grab it
+        driveToWayPoint(snuggleFoundation);
         driveToWayPoint(grabFoundation);
         robot.fingersDown();
         autoTimer.reset();
@@ -259,7 +263,7 @@ public abstract class OmniAutoFullXYOdo extends OmniAutoXYOdoClass
 
         // Pull and rotate the foundation.
         driveToWayPoint(pullFoundation);
-        rotateToWayPointAngle(pullFoundation);
+        rotateToWayPointAngle(pushFoundation);
         // Release the foundation and push it back into the wall.
         driveToWayPoint(pushFoundation);
         robot.fingersUp();
@@ -278,6 +282,7 @@ public abstract class OmniAutoFullXYOdo extends OmniAutoXYOdoClass
 
         // Go under the bridge
         driveToWayPoint(quarryUnderBridge);
+
         // Start the intake spinning
         robot.startIntake(false);
 

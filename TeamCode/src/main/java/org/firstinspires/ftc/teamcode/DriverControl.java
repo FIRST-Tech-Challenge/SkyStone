@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior;
 
 @TeleOp(name="DriverControl", group="Linear Opmode")
 public class DriverControl extends Movement {
@@ -27,10 +28,10 @@ public class DriverControl extends Movement {
                 // Gamepad 1 controls:
 
                 // Left trigger - to move left sideways
-                goLeft(-gamepad1.left_trigger, 0, "Going left");
+                goLeft(-gamepad1.left_trigger, 0);
 
                 // Right trigger - to move right sideways
-                goRight(-gamepad1.right_trigger, 0, "Going right");
+                goRight(-gamepad1.right_trigger, 0);
 
                 // Left stick y - to go forward or backward
                 double drive = -(-gamepad1.left_stick_y);
@@ -56,6 +57,8 @@ public class DriverControl extends Movement {
                 // left bumper - to close claw (front servo)
                 if (gamepad2.left_bumper) {
 
+                    //frontServo.setPosition(0.4);
+                    //sleep(100);
                     frontServo.setPosition(0.4);
                     telemetry.addData("front servo open", "clawposition: 0.4" );
                 }

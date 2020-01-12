@@ -50,6 +50,9 @@ public class GBlClFound extends AutoOpMode {
 
         sleep(100);
 
+        joules.DriveBackward(0.1);
+        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 200));
+
         joules.DriveForward(0.05);
         sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 1550));
         joules.Stop();

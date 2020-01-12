@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.robots.Joules;
 
 @Autonomous
 
-public class GREClFound extends AutoOpMode {
+public class GRedFarFound extends AutoOpMode {
     private VoltageSensor ExpansionHub2_VoltageSensor;
     public void runOp() throws InterruptedException {
         Joules joules = new Joules();
@@ -22,7 +22,7 @@ public class GREClFound extends AutoOpMode {
         int blueTapeVal = 310;
         telemetry.addData("Status", "initialized");
         joules.FoundationDrop();
-        joules.DaffyUp();
+        joules.TapeMeasurePush();
         waitForStart();
 
         /*joules.SlidesUp();
@@ -49,13 +49,14 @@ public class GREClFound extends AutoOpMode {
 
         sleep(100);
 
-        joules.DriveForward(0.05);
-        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 1550));
+        joules.DriveBackward(0.1);
+        sleep(400);
         joules.Stop();
 
-        joules.DriveForward(0.02);
-        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 400));
+        joules.DriveForward(0.01);
+        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 1800));
         joules.Stop();
+
 
         joules.FoundationGrab();
         sleep(2000);
@@ -67,12 +68,16 @@ public class GREClFound extends AutoOpMode {
 
         sleep(100);
 
+        joules.StrafeRight(0.3);
+        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 800));
+        joules.Stop();
+
         joules.FoundationDrop();
         sleep(2000);
         joules.Stop();
 
-        joules.DriveBackward(0.1);
-        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(),400));
+        joules.DriveBackward(0.2);
+        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(),600));
         joules.Stop();
 
 
@@ -81,13 +86,23 @@ public class GREClFound extends AutoOpMode {
 //        }
 //        joules.Stop();
 
+        joules.StrafeLeft(0.3);
+        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 800));
+        joules.Stop();
+
         joules.StrafeLeft(0.5);
         sleep(1150);
         joules.Stop();
 
         joules.SlidesDown();
-        sleep(600);
+        sleep(500);
         joules.SlidesStop();
+
+        joules.DriveForward(0.4);
+        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(),650));
+        joules.Stop();
+
+        sleep(100);
 
         joules.StrafeLeft(0.5);
         sleep(900);

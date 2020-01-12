@@ -80,17 +80,17 @@ public class Joules  {
     //Robot driving
     public void DriveForward(double speed){
         TaskHandler.pauseTask(VEER_CHECK_TASK_KEY);
-        FrontLeft.setPower(speed);
-        FrontRight.setPower(-speed);
-        BackLeft.setPower(speed);
-        BackRight.setPower(-speed);
-    }
-    public void DriveBackward(double speed){
-        TaskHandler.pauseTask(VEER_CHECK_TASK_KEY);
         FrontLeft.setPower(-speed);
         FrontRight.setPower(speed);
         BackLeft.setPower(-speed);
         BackRight.setPower(speed);
+    }
+    public void DriveBackward(double speed){
+        TaskHandler.pauseTask(VEER_CHECK_TASK_KEY);
+        FrontLeft.setPower(speed);
+        FrontRight.setPower(-speed);
+        BackLeft.setPower(speed);
+        BackRight.setPower(-speed);
 
     }
     public void StrafeLeft(double speed){
@@ -163,7 +163,7 @@ public class Joules  {
         Foundation.setPosition(0.47);
     }
 
-    public void TapeMeasureSpring() {TapeMeasure.setPosition(0.7);}
+    public void TapeMeasureSpring() {TapeMeasure.setPosition(0.8);}
     public void TapeMeasurePush() {TapeMeasure.setPosition(0.2);}
 
     public void StoneDown(){

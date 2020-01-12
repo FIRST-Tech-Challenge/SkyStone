@@ -27,7 +27,7 @@ class SSMechTeleOp : OpMode() {
     var curPos = 0
     var leftPower: Float = 0.0.toFloat()
     var rightPower: Float = 0.0.toFloat()
-    val max = 6990
+    val max = 7700
     var strafePow: Double = 0.00
     var drive = 0.0
     var turn = 0.0

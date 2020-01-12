@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotor
  */
 @Autonomous(name = "SSAuto", group = "Autonomous")
 //@Disabled
-class SSAuto : LinearOpMode()
+class SSParkAuto : LinearOpMode()
 {
     val robot = SSMechRobot()
 

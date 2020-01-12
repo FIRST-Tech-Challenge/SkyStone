@@ -124,12 +124,12 @@ class SSMechRobot {
             this.rightHook?.position = 0.7
         }*/
         if(gp.a) { //hook down
-            this.leftHook?.position = 0.72
+            this.leftHook?.position = 0.7
             this.rightHook?.position = 0.72
         }
         else { //default position
-            this.leftHook?.position = 0.0
-            this.rightHook?.position = 0.0
+            this.leftHook?.position = 0.18
+            this.rightHook?.position = 0.21
         }
 
     }

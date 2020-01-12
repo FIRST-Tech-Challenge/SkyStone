@@ -31,7 +31,7 @@ class SSBuildRedAuto : LinearOpMode()
         robot.brake()
         sleep(100)
         robot.drive(0.50) //Drives Forward to the Foundation
-        sleep(1800)
+        sleep(1600)
         robot.brake()
         sleep(1000)
         robot.leftHook?.position = 0.72 // Grabs Onto the Foundation
@@ -41,9 +41,12 @@ class SSBuildRedAuto : LinearOpMode()
         sleep(1000)
         robot.brake()
         robot.drive(-0.50) //Drives back with the foundation
-        sleep(2450)
+        sleep(3000)
         robot.brake()
-        robot.leftHook?.position = 0.0 // Grabs Onto the Foundation
+        robot.leftPow(0.5)
+        sleep(700)
+        robot.brake()
+        robot.leftHook?.position = 0.0 // Lets go of the Foundation
         robot.rightHook?.position = 0.0
         robot.strafe(-1.0)
         sleep(1000)

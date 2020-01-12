@@ -13,8 +13,8 @@ public class PinchArmBot extends FourWheelsDriveBot {
     static final double PINCH_ARM_VERTICAL = 0.55;
     static final double PINCH_ARM_DOWN1 = 0.85;
     static final double PINCH_ARM_DOWN2 = 0.7;
-    static final double PINCH_PINCH = 0.5;
-    static final double PINCH_RELEASE = 0.2;
+    static final double PINCH_PINCH = 0.8;
+    static final double PINCH_RELEASE = 0.5;
     static final double FOUNDATION_DRAG = 0.9;
 
 

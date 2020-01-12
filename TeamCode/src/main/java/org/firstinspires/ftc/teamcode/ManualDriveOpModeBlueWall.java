@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  */
 @TeleOp(name = "Manual Drive Blue")
 public class ManualDriveOpModeBlueWall extends LinearOpMode {
-    private ScoopArmBot robot = new ScoopArmBot(this);
+    private servoDropBot robot = new servoDropBot(this);
     private boolean arcadeMode = false;
     private int gyroCalibratedCount = 0;
 
@@ -32,7 +32,8 @@ public class ManualDriveOpModeBlueWall extends LinearOpMode {
             robot.manualFoundationReset(gamepad1.dpad_up);
             robot.manualPickupSkystone(gamepad1.dpad_left);
             robot.manualDropSkystone(gamepad1.dpad_right);
-
+            robot.toggleButtArm(gamepad1.right_stick_button, gamepad1.left_stick_button);
+            robot.toggleServoDrop(gamepad2.a);
         }
     }
 }

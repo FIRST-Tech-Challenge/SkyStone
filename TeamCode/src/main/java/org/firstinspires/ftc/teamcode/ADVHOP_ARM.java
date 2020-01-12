@@ -47,26 +47,28 @@ public class ADVHOP_ARM extends OpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftFrontMotor = null;
     private DcMotor rightFrontMotor = null;
-    private DcMotor leftBackMotor = null;
+    DcMotor leftBackMotor = null;
     private DcMotor rightBackMotor = null;
     private Servo grabberCloseServo = null;
     private Servo grabberRotateServo = null;
-    private DcMotor armTiltMotor = null;
+    private Servo armTiltServo = null;
     private DcMotor armExtendMotor = null;
     private BNO055IMU imu;
     private float turnSpeed = 0.5f;
-
+    private PIDController pidDrive;
+    private double globalAngle, basePower = .30, correction;
+    private Orientation lastAngles = new Orientation();
     private boolean speedSwitch = false;
+    private boolean turning = false, lastTurning = false;
 
 
-    public float expectedAngle = 0;
     /*
      * Code to run ONCE when the driver hits INIT
      */
     @Override
     public void init() {
-        telemetry.addData("Status", "Initialized");
-
+        telemetry.addData("Status", "Starting up..");
+        telemetry.update();
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
@@ -82,22 +84,41 @@ public class ADVHOP_ARM extends OpMode {
         leftBackMotor.setDirection(DcMotor.Direction.FORWARD);
         rightBackMotor.setDirection(DcMotor.Direction.REVERSE);
 
+        // Brake if no power is applied, allows for higher precision controls.
+        leftFrontMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightFrontMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftBackMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightBackMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+
         grabberCloseServo = hardwareMap.get(Servo.class, "grabberCloseServo");
         grabberRotateServo = hardwareMap.get(Servo.class, "grabberRotateServo");
         armExtendMotor = hardwareMap.get(DcMotor.class, "armExtendMotor");
-        armTiltMotor = hardwareMap.get(DcMotor.class, "armTiltMotor");
+        armTiltServo = hardwareMap.get(Servo.class, "armTiltServo");
 
-        // Tell the driver that initialization is complete.
-        telemetry.addData("Status", "Initialized");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
-        parameters.mode                = BNO055IMU.SensorMode.IMU;
-        parameters.angleUnit           = BNO055IMU.AngleUnit.RADIANS;
-        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.loggingEnabled      = false;
+        parameters.mode = BNO055IMU.SensorMode.IMU;
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.loggingEnabled = false;
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
 
+        // Set PID proportional value to produce non-zero correction value when robot veers off
+        // straight line. P value controls how sensitive the correction is.
+        pidDrive = new PIDController(.05, 0, 0);
+
+        // Set up parameters for driving in a straight line.
+        pidDrive.setSetpoint(0);
+        pidDrive.setOutputRange(0, basePower);
+        pidDrive.setInputRange(-90, 90);
+        pidDrive.enable();
+
+        // Tell the driver that initialization is complete.
+        telemetry.addData("Status", "Initialized");
+        telemetry.addData("Calibration status", imu.getCalibrationStatus().toString());
+        telemetry.update();
 
     }
 
@@ -106,27 +127,22 @@ public class ADVHOP_ARM extends OpMode {
      */
     @Override
     public void init_loop() {
-    }
-
-    // Encapsulate all user input here, it's getting out of hand
-    private void controller_input() {
-
-    }
-
-    private void update_telemetry(double frontLeftPower, double frontRightPower, double backLeftPower, double backRightPower, float angle, double max) {
-        // Show the elapsed game time and wheel power.
-        telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Front Motor", " left:(%.2f) right:(%.2f)", frontLeftPower, frontRightPower);
-        telemetry.addData("Back Motor", " left:(%.2f) right:(%.2f)", backLeftPower, backRightPower);
-        telemetry.addData("Angle", "(%.2f)", angle);
-        telemetry.addData("maxPower", "(%.2f)", max);
+        // Tell the driver that initialization is complete.
+        telemetry.addData("Status", "Initialized");
+        telemetry.addData("Calibration status", imu.getCalibrationStatus().toString());
         telemetry.update();
     }
+
     /*
      * Code to run ONCE when the driver hits PLAY
      */
     @Override
     public void start() {
+        // Set up parameters for driving in a straight line.
+        pidDrive.setSetpoint(0);
+        pidDrive.setOutputRange(0, basePower);
+        pidDrive.setInputRange(-90, 90);
+        pidDrive.enable();
         runtime.reset();
     }
 
@@ -135,38 +151,24 @@ public class ADVHOP_ARM extends OpMode {
      */
     @Override
     public void loop() {
-        // Setup a variable for each drive wheel to save power level for telemetry
+        // Setup a variable for each motor
         double frontLeftPower;
         double frontRightPower;
         double backLeftPower;
         double backRightPower;
 
-        double drive = -gamepad1.left_stick_y;
-
-        // Do we need this or not
-        /* double turn = gamepad1.right_stick_x;
-        leftPower = Range.clip(drive + turn, -1.0, 1.0);
-        rightPower = Range.clip(drive - turn, -1.0, 1.0);
-        */
-        Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS);
-        float angle = (angles.firstAngle);
-        double sin = Math.sin(angle);
-        double cos = Math.cos(angle);
-
         float x = -gamepad1.left_stick_x;
         float y = -gamepad1.left_stick_y;
-
-        if (gamepad1.a) {
-            speedSwitch = true;
-        }
-        if (gamepad1.b) {
-            speedSwitch = false;
-        }
 
         frontLeftPower = y + -x;
         frontRightPower = y + x;
         backLeftPower = y + x;
         backRightPower = y + -x;
+        
+        /*
+        double sin = Math.sin(angle);
+        double cos = Math.cos(angle);
+        */
 
         /*if (gamepad1.dpad_up || gamepad1.dpad_down) {
             int magnitude = (gamepad1.dpad_up ? 1 : 0) + (gamepad1.dpad_down ? -1 : 0);
@@ -182,37 +184,55 @@ public class ADVHOP_ARM extends OpMode {
             backLeftPower = magnitude* sin;
             backRightPower = -magnitude* cos;
         }*/
-        if ( gamepad1.left_bumper){
+
+        if (gamepad1.left_bumper) {
+            turning = true;
             frontLeftPower += -turnSpeed;
             frontRightPower += turnSpeed;
             backLeftPower += -turnSpeed;
             backRightPower += turnSpeed;
-        }
-        else if ( gamepad1.right_bumper) {
+        } else if (gamepad1.right_bumper) {
+            turning = true;
             frontLeftPower += turnSpeed;
             frontRightPower += -turnSpeed;
             backLeftPower += turnSpeed;
             backRightPower += -turnSpeed;
+        } else {
+            turning = false;
+        }
+
+        if (!turning && lastTurning) {
+            resetAngle();
+        }
+
+        if (!turning) {
+            // Use PID with imu input to drive in a straight line.
+            correction = pidDrive.performPID(getAngle());
         }
         else{
-            //Expected angle not implemented -- fix or delete
-            expectedAngle = angle;
+            correction = 0;
         }
 
-        double max = Math.abs(findMax(frontLeftPower,frontRightPower,backLeftPower,backRightPower));
-        double divider;
+        double max = Math.abs(findMax(frontLeftPower, frontRightPower, backLeftPower, backRightPower));
+
+        if (gamepad1.a) {
+            speedSwitch = true;
+        }
+        if (gamepad1.b) {
+            speedSwitch = false;
+        }
 
         if (speedSwitch) {
-            divider = 3.5;
+            basePower = .3;
+        } else {
+            basePower = .6;
         }
-        else {
-            divider = 1.5;
-        }
+
         if (max != 0) {
-            frontLeftPower = (frontLeftPower / max)/ divider;
-            frontRightPower = (frontRightPower / max)/ divider;
-            backLeftPower = (backLeftPower / max)/ divider;
-            backRightPower = (backRightPower / max) /divider;
+            frontLeftPower = (frontLeftPower / max) * basePower;
+            frontRightPower = (frontRightPower / max) * basePower;
+            backLeftPower = (backLeftPower / max) * basePower;
+            backRightPower = (backRightPower / max) * basePower;
         }
 
         leftFrontMotor.setPower(frontLeftPower);
@@ -220,7 +240,9 @@ public class ADVHOP_ARM extends OpMode {
         leftBackMotor.setPower(backLeftPower);
         rightBackMotor.setPower(backRightPower);
 
-        update_telemetry(frontLeftPower,frontRightPower,backLeftPower,backRightPower,angle,max);
+        update_telemetry(frontLeftPower, frontRightPower, backLeftPower, backRightPower, max);
+
+        lastTurning = turning;
     }
 
 
@@ -229,6 +251,56 @@ public class ADVHOP_ARM extends OpMode {
      */
     @Override
     public void stop() {
+    }
+
+    private void update_telemetry(double frontLeftPower, double frontRightPower, double backLeftPower, double backRightPower,  double max) {
+        // Show the elapsed game time and wheel power.
+        telemetry.addData("Status", "Run Time: " + runtime.toString());
+        telemetry.addData("Front Motor", " left:(%.2f) right:(%.2f)", frontLeftPower, frontRightPower);
+        telemetry.addData("Back Motor", " left:(%.2f) right:(%.2f)", backLeftPower, backRightPower);
+        telemetry.addData("Imu heading", "(%.2f)", lastAngles.firstAngle);
+        telemetry.addData("2 global heading", globalAngle);
+        telemetry.addData("3 correction", correction);
+        telemetry.addData("maxPower", "(%.2f)", max);
+        telemetry.addData("Turning: ", turning);
+        telemetry.update();
+    }
+
+    /**
+     * Get current cumulative angle rotation from last reset.
+     * @return Angle in degrees. + = left, - = right from zero point.
+     */
+    private double getAngle()
+    {
+        // We experimentally determined the Z axis is the axis we want to use for heading angle.
+        // We have to process the angle because the imu works in euler angles so the Z axis is
+        // returned as 0 to +180 or 0 to -180 rolling back to -179 or +179 when rotation passes
+        // 180 degrees. We detect this transition and track the total cumulative angle of rotation.
+
+        Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
+        double deltaAngle = angles.firstAngle - lastAngles.firstAngle;
+
+        if (deltaAngle < -180)
+            deltaAngle += 360;
+        else if (deltaAngle > 180)
+            deltaAngle -= 360;
+
+        globalAngle += deltaAngle;
+
+        lastAngles = angles;
+
+        return globalAngle;
+    }
+
+    /**
+     * Resets the cumulative angle tracking to zero.
+     */
+    private void resetAngle()
+    {
+        lastAngles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
+        globalAngle = 0;
     }
 
     private double findMax(double... values) {

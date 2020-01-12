@@ -63,17 +63,17 @@ public class Maccabot {
 
 
 
-        back_left.setDirection(DcMotorSimple.Direction.REVERSE);
-        back_right.setDirection(DcMotorSimple.Direction.REVERSE);
+        //back_left.setDirection(DcMotorSimple.Direction.REVERSE);
+        //back_right.setDirection(DcMotorSimple.Direction.REVERSE);
 
         intake_left.setDirection(DcMotorSimple.Direction.REVERSE);
         lift_right.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // TODO PID!!!
-        front_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        /*front_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         front_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         back_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        back_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        back_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);*/
 
         lift_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         lift_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -82,10 +82,10 @@ public class Maccabot {
         lift_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Drive Motors Shouldn't Drive
-        front_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        /*front_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         front_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         back_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        back_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        back_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);*/
         intake_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         intake_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -102,7 +102,7 @@ public class Maccabot {
     }
 
     public void drive(double flPower, double frPower, double blPower, double brPower){
-        front_left.setPower(flPower);
+        /*front_left.setPower(flPower);
         front_right.setPower(frPower);
         back_left.setPower(blPower);
         back_right.setPower(brPower);
@@ -179,7 +179,7 @@ public class Maccabot {
         back_right.setPower(0);
     }
 
-    public void auto_forward(int pos, double power){//method for autored for the robot to go forward
+    /*public void auto_forward(int pos, double power){//method for autored for the robot to go forward
 
         correction = checkDirection();
 
@@ -556,7 +556,7 @@ public class Maccabot {
 
         // reset angle tracking on new heading.
         resetAngle();
-    }
+    }*/
     public boolean isGyroCalibrated(){return imu.isGyroCalibrated();}
 
 }

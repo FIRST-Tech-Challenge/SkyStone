@@ -68,7 +68,7 @@ public class Robot {
     // Outtake Slide Positions
     public final double OUTTAKE_SLIDE_EXTENDED = .04;
     public final double OUTTAKE_SLIDE_RETRACTED = .67;
-    public final double OUTTAKE_SLIDE_PARTIAL_EXTEND = 0.132;
+    public final double OUTTAKE_SLIDE_PARTIAL_EXTEND = 0.27; // First peg .27, second peg .121
 
     //team marker positions
     public final double CAPSTONE_DUMP = 1;

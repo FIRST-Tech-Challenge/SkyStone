@@ -25,7 +25,7 @@ public class RedFront extends AutoBase {
         double firstSkystoneY = -2;
         double secondSkyStoneY = -15;
         double secondSkyStoneX = 41;
-        double thirdStoneY = -25;
+        double thirdStoneY = -27;
         double thirdStoneX = 35.5;
         double anglelock = 33;
 
@@ -50,14 +50,14 @@ public class RedFront extends AutoBase {
             secondSkyStoneX = 43;
             anglelock = 30;
             thirdStoneX = 45;
-            thirdStoneY = -27.5;
+            thirdStoneY = -30;
         } else if (skystoneLocation == Vision.Location.RIGHT) {
             firstSkystoneY = 4.5;
             secondSkyStoneY = -8;
             secondSkyStoneX = 42;
             anglelock = 33;
             thirdStoneX = 33;
-            thirdStoneY = -21;
+            thirdStoneY = -23;
         }
 
         double[][] toFirstStone = {

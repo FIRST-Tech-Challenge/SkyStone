@@ -23,7 +23,7 @@ public class BlueFront extends AutoBase {
 
         // Positions assuming center Skystone
         double firstSkystoneY = 2;
-        double secondSkyStoneY = 7;
+        double secondSkyStoneY = 9;
         double secondSkyStoneX = 50;
         double thirdStoneY = 25;
         double thirdStoneX = 53;

@@ -100,7 +100,7 @@ public class PIDMecanumMoveTask implements RobotControl {
 //        Logger.logFile("currentDistance: " + currentDistance + ", targetDistance: " + targetDistance);
         boolean noMovement = false;
         if (Math.abs(currentDistance-prevDist[prevNdx])<1) {
-            Logger.logFile("NoMovement - " + currentDistance + " : " + prevDist[prevNdx]);
+            Logger.logFile("MoveBlocked - " + currentDistance + " : " + prevDist[prevNdx]);
             noMovement = true;
         }
         prevDist[prevNdx] = currentDistance;

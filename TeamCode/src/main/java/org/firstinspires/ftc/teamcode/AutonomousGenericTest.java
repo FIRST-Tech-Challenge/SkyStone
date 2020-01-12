@@ -191,14 +191,8 @@ public class AutonomousGenericTest extends LinearOpMode {
         RobotPosition lastPos ;
 
         taskList = new ArrayList<RobotControl>();
-        taskList.add(new ClampOpenCloseTask(robotHardware, robotProfile, RobotHardware.ClampPosition.OPEN));
-        taskList.add(new RobotSleep(200));
-        taskList.add(new ClampOpenCloseTask(robotHardware, robotProfile, RobotHardware.ClampPosition.CLOSE));
-        PIDMecanumMoveTask move = new PIDMecanumMoveTask(robotHardware, robotProfile, navigator);
-        move.setPath(new RobotPosition(0, 0, 0), new RobotPosition(0, 20, 0));
-        taskList.add(move);
-        taskList.add(new ClampOpenCloseTask(robotHardware, robotProfile, RobotHardware.ClampPosition.OPEN));
-        taskList.add(new RobotSleep(200));
+        BuildingPlateMoveTask plateTask = new BuildingPlateMoveTask(robotHardware, robotProfile, navigator, BuildingPlateMoveTask.ApproachFrom.RIGHT);
+        taskList.add(plateTask);
 //        seqList.add(new ClampOpenCloseTask(robotHardware, robotProfile, RobotHardware.ClampPosition.OPEN));
 
 

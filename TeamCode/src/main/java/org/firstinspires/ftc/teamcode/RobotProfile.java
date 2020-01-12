@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import android.graphics.Point;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.io.File;
@@ -43,14 +41,14 @@ public class RobotProfile {
         movement.rotateStopAngle = .1;
         Point[] p = new Point[3];
         p[0] = new Point();
-        p[0].x= 238;
-        p[0].y = 343;
+        p[0].x= 214;
+        p[0].y = 342;
         p[1] = new Point();
-        p[1].x= 297;
-        p[1].y = 348;
+        p[1].x= 270;
+        p[1].y = 349;
         p[2] = new Point();
-        p[2].x= 383;
-        p[2].y = 354;
+        p[2].x= 359;
+        p[2].y = 353;
         this.stoneScanPoints = new HashMap<RobotProfile.StartPosition, Point[]>();
         this.stoneScanPoints.put(RobotProfile.StartPosition.RED_2, p);  //leftMost 1st block is [0], 3rd block is[2]
 
@@ -118,9 +116,10 @@ public class RobotProfile {
         hardwareSpec = new HardwareSpec();
         hardwareSpec.trackWheelDiameter = 3.8;   //cm diameter
         hardwareSpec.trackWheelCPR = 4000;
-        hardwareSpec.leftRightWheelDist = 39.75;  // cm left right dist
+        hardwareSpec.leftRightWheelDist = 39.75;//cm left right dist
         hardwareSpec.sliderOrigPos = 0;
-        hardwareSpec.sliderOutPos = 1500;
+        hardwareSpec.sliderOutPosAutonomous = 1475;       //1385... 1500;
+        hardwareSpec.sliderOutPosDriver = 1355;
         hardwareSpec.sliderOutMax = 1825;
         hardwareSpec.sliderOutMin = 1229;
         hardwareSpec.sliderOutMinCM = 3.0;
@@ -131,15 +130,19 @@ public class RobotProfile {
         hardwareSpec.liftHomeGrabPos = 60;
         hardwareSpec.liftGrabExtra = 127;    // addition high above base before open and lower for grab
         hardwareSpec.liftPerStone = 341;     // addition high per stone
-        hardwareSpec.clampAngleNormal = 0.88;
-        hardwareSpec.clampAngleSide = 0.54;
-        hardwareSpec.clampAngleBack = 0; //0.25
-        hardwareSpec.clampS1Init = 0.5;
-        hardwareSpec.clampS1Open = 0.5; //was open, 0.5
-        hardwareSpec.clampS1Close = 0.585; //was close
-        hardwareSpec.clampS2Init = 0.5;
-        hardwareSpec.clampS2Open= 0.5; //was open, 0.5
-        hardwareSpec.clampS2Close = 0.415; //was close
+        hardwareSpec.clampAngleNormal = 0.825;
+        hardwareSpec.clampAngleSide = 0.51;
+        hardwareSpec.clampAngleBack = 0.2475; //0.25
+        hardwareSpec.clampS1Init = 0.6;
+        hardwareSpec.clampS1Open = 0.4; //was open, 0.5
+        hardwareSpec.clampS1Close = 0.575; //was close
+        hardwareSpec.clampS1WheelHold = 0.60;
+        hardwareSpec.clampS1WheelRelease = 0.64;
+        hardwareSpec.clampS2Init = 0.38;
+        hardwareSpec.clampS2Open= 0.6; //was open, 0.5
+        hardwareSpec.clampS2Close = 0.425; //was close
+        hardwareSpec.clampS2WheelHold = 0.38;
+        hardwareSpec.clampS2WheelRelease = 0.34;
         hardwareSpec.hookS0Open = 0.24;
         hardwareSpec.hookS0Close = 0.66;
         hardwareSpec.hookS1Open = 0.65;
@@ -147,7 +150,10 @@ public class RobotProfile {
         hardwareSpec.capStoneUp = 0.34;
         hardwareSpec.capStoneDown = 0.800;
         hardwareSpec.capStoneOther = 0.15;
-
+        hardwareSpec.holderWheelIn = 0.3;
+        hardwareSpec.holderWheelOut = 0.7;
+        hardwareSpec.holderWheelServoEngage  = 0.625;
+        hardwareSpec.holderWheelServoRetract = 0.425;
         hardwareSpec.leftEncodeForwardSign = -1;
         hardwareSpec.rightEncoderForwardSign = -1;
         hardwareSpec.horizontalEncoderForwardSign = 1;
@@ -234,7 +240,8 @@ public class RobotProfile {
         int sliderOutMin;
         double sliderOutMinCM;
         int sliderCountPerCM;
-        int sliderOutPos;
+        int sliderOutPosAutonomous;
+        int sliderOutPosDriver;
         int liftOrigPos;
         int liftStoneBase;
         int liftHomeGrabPos;
@@ -247,9 +254,13 @@ public class RobotProfile {
         double clampS1Init;
         double clampS1Open;
         double clampS1Close;
+        double clampS1WheelHold;
+        double clampS1WheelRelease;
         double clampS2Init;
         double clampS2Open;
         double clampS2Close;
+        double clampS2WheelHold;
+        double clampS2WheelRelease;
         double hookS0Open;
         double hookS0Close;
         double hookS1Open;
@@ -257,6 +268,10 @@ public class RobotProfile {
         double capStoneUp; //Original position of the CapStoneServo
         double capStoneDown; //Places the Cap Stone on current stone in the intake
         double capStoneOther; //Delivers the Cap Stone by itself
+        double holderWheelIn;
+        double holderWheelOut;
+        double holderWheelServoRetract;
+        double holderWheelServoEngage;
         int leftEncodeForwardSign;
         int rightEncoderForwardSign;
         int horizontalEncoderForwardSign;

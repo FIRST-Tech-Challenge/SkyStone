@@ -5,8 +5,8 @@ import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
-//import com.qualcomm.robotcore.hardware.TouchSensor; Use DigitalChannel instead because BulkData read
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -21,7 +21,8 @@ public class RobotHardware {
     ExpansionHubMotor rrMotor, rlMotor, frMotor, flMotor, intakeMotorLeft, intakeMotorRight, liftMotor, sliderMotor;
     ExpansionHubEx expansionHub1, expansionHub2;
     RevBulkData bulkData1, bulkData2;
-    ExpansionHubServo clampRotationServo, blockHolderServo1, blockHolderServo2, leftFoundationServo, rightFoundationServo, capStoneServo;
+    ExpansionHubServo clampRotationServo, blockHolderServo1, blockHolderServo2, leftFoundationServo, rightFoundationServo, capStoneServo, blockHolderWheelPosServo;
+    Servo blockHolderWheel;
     DigitalChannel sliderTouchChannel;
     Rev2mDistanceSensor rightDistanceSensor;
     //AnalogInput rightDistanceSensor, leftBackDistanceSensor, rightBackDistanceSensor;
@@ -52,6 +53,8 @@ public class RobotHardware {
         imu1 = hardwareMap.get(BNO055IMU.class, "imu1");
         imu1.initialize(parameters);
         capStoneServo = (ExpansionHubServo) hardwareMap.servo.get("CapStoneServo");
+        blockHolderWheel = hardwareMap.servo.get("BlockHolderWheel");
+
         frMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         rrMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -75,6 +78,7 @@ public class RobotHardware {
             blockHolderServo2 = (ExpansionHubServo) hardwareMap.servo.get("BlockHolderServo2");
             leftFoundationServo = (ExpansionHubServo) hardwareMap.servo.get("LeftFoundationServo");
             rightFoundationServo = (ExpansionHubServo) hardwareMap.servo.get("RightFoundationServo");
+            blockHolderWheelPosServo = (ExpansionHubServo) hardwareMap.servo.get("BlockHolderWheelPosServo");
             rightDistanceSensor = hardwareMap.get(Rev2mDistanceSensor.class, "RightDistanceSensor");
             //leftBackDistanceSensor = hardwareMap.analogInput.get("LeftBackDistanceSensor");
             //rightBackDistanceSensor = hardwareMap.analogInput.get("RightBackDistanceSensor");
@@ -232,13 +236,17 @@ public class RobotHardware {
         clampRotationServo.setPosition(profile.hardwareSpec.clampAngleNormal);
     }
 
+    public void rotateGrabberOutPos() {
+        clampRotationServo.setPosition(profile.hardwareSpec.clampAngleSide);
+    }
+
     public void setLiftPosition(int liftPosition){
-        setLiftPosition(liftPosition, 0.5);
+        setLiftPosition(liftPosition, 0.8);
     }
 
     public void setLiftPosition(int liftPosition, double power){
         // Make sure the lift position >0 and < 4000 (around 11 bricks)
-        liftMotor.setTargetPosition(Math.max(0, Math.min(liftPosition, 2000)));
+        liftMotor.setTargetPosition(Math.max(0, Math.min(liftPosition, 3000)));
         liftMotor.setPower(power);
         liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
@@ -270,6 +278,14 @@ public class RobotHardware {
             blockHolderServo1.setPosition(profile.hardwareSpec.clampS1Init);
             blockHolderServo2.setPosition(profile.hardwareSpec.clampS2Init);
         }
+        else if (clampPosition == ClampPosition.RELEASE_1) {
+            blockHolderServo1.setPosition(profile.hardwareSpec.clampS1WheelRelease);
+            blockHolderServo2.setPosition(profile.hardwareSpec.clampS2Init);
+        }
+        else if (clampPosition == ClampPosition.RELEASE_2) {
+            blockHolderServo1.setPosition(profile.hardwareSpec.clampS2WheelRelease);
+            blockHolderServo2.setPosition(profile.hardwareSpec.clampS1Init);
+        }
     }
 
     public void setHookPosition(HookPosition hookPosition){
@@ -289,20 +305,25 @@ public class RobotHardware {
         return angle1;
     }
 
-    public void startIntakeWheel() {
+    public void startIntakeWheels() {
         intakeMotorLeft.setPower(0.5);
         intakeMotorRight.setPower(-0.5);
+        setBlockHolderWheel(HolderWheelPosition.HOLD_IN);
     }
 
-    public void stopIntakeWheel() {
+    public void stopIntakeWheels() {
         intakeMotorLeft.setPower(0);
         intakeMotorRight.setPower(0);
+        setBlockHolderWheel(RobotHardware.HolderWheelPosition.STOP);
     }
 
     public void reverseIntakeWheels(){
         intakeMotorLeft.setPower(-0.5);
         intakeMotorRight.setPower(0.5);
+        setBlockHolderWheel(RobotHardware.HolderWheelPosition.RELEASE);
     }
+
+
 
     public void setCapStoneServo(CapPosition capPosition){
         if(capPosition == CapPosition.CAP_UP){
@@ -330,6 +351,27 @@ public class RobotHardware {
             clampRotationServo.setPosition(profile.hardwareSpec.clampAngleBack);
     }
 
+    // Controls the small green mecanum wheel that holds the block in place
+    public void setBlockHolderWheel(HolderWheelPosition holderWheelPosition) {
+        if(holderWheelPosition == HolderWheelPosition.HOLD_IN) {
+            //blockHolderWheel.setPower(profile.hardwareSpec.holderWheelIn);
+            blockHolderWheel.setPosition(0.1);
+        } else if(holderWheelPosition == HolderWheelPosition.RELEASE){
+            //blockHolderWheel.setPower(profile.hardwareSpec.holderWheelOut);
+            blockHolderWheel.setPosition(0.9);
+        } else {
+            blockHolderWheel.setPosition(0.5);
+        }
+    }
+
+    public void engageBlockHolderWheel() {
+        blockHolderWheelPosServo.setPosition(profile.hardwareSpec.holderWheelServoEngage);
+    }
+
+    public void retractBlockHolderWheel() {
+        blockHolderWheelPosServo.setPosition(profile.hardwareSpec.holderWheelServoRetract);
+    }
+
     /**
      * WARNING WARNING WARNING ****
      * Sensor distance call not supported by BulkData read, this call takes 33ms to complete
@@ -344,8 +386,9 @@ public class RobotHardware {
     public enum EncoderType {LEFT, RIGHT, HORIZONTAL, LIFT, SLIDER}
     public enum ClampAnglePosition{NORMAL, SIDE, BACK}
 
-    public enum ClampPosition {OPEN, CLOSE, INITIAL}
+    public enum ClampPosition {OPEN, CLOSE, INITIAL, RELEASE_1, RELEASE_2}
     public enum HookPosition {HOOK_ON, HOOK_OFF}
     public enum CapPosition {CAP_UP, CAP_DOWN, CAP_OTHER}
+    public enum HolderWheelPosition {HOLD_IN, RELEASE, STOP}
 
 }

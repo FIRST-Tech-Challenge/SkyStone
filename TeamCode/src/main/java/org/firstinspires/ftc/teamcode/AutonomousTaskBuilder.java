@@ -17,16 +17,17 @@ public class AutonomousTaskBuilder {
     RobotNavigator navigator;
     ArrayList<RobotControl> taskList = new ArrayList<>();
     SequentialComboTask pickUpTask;
+    SequentialComboTask releaseWheelTask;
     ParallelComboTask toPickUpTask;
     ParallelComboTask fromPickUpTask;
     SequentialComboTask dropOffTask;
     RobotPosition lastPos;
     PIDMecanumMoveTask lastMovement;
     SequentialComboTask moveBuilderPlateTask;
-    int stoneX, stoneY, dropY, dropX, bridgeY, parkY, pullPlateY, pullPlateX, finalPushX,
+    int stoneX, stoneY, dropY, dropX, bridgeY, parkY, transferY, pullPlateY, pullPlateX, finalPushX,
             finalPushY,  parkWall, parkNeutral;
 
-    public AutonomousTaskBuilder(DriverOptions driverOptions, int skyStonePosition, RobotHardware robotHardware, RobotNavigator navigator, RobotProfile robotProfile){
+    public AutonomousTaskBuilder(DriverOptions driverOptions, int skyStonePosition, RobotHardware robotHardware, RobotNavigator navigator, RobotProfile robotProfile) {
         this.delay = driverOptions.getDelay();
         this.skyStonePosition = skyStonePosition;
         this.startingPositionModes = driverOptions.getStartingPositionModes();
@@ -48,13 +49,14 @@ public class AutonomousTaskBuilder {
     }
 
     //for from starting point to parking point only
-    public ArrayList<RobotControl> buildParkingOnlyTask(String parking){
-        if(this.delay > 0){
+    public ArrayList<RobotControl> buildParkingOnlyTask(String parking) {
+        if (this.delay > 0) {
             taskList.add(new RobotSleep(delay * 1000 ));
         }
+
         Logger.logFile("in buildTask for parking only: "+ parking);
-            if(isParkOnly.equals("yes")){
-                switch (startingPositionModes){
+            if (isParkOnly.equals("yes")) {
+                switch (startingPositionModes) {
                     case "RED_2":
                         parkY = -85;
                         parkWall = 10;
@@ -88,14 +90,15 @@ public class AutonomousTaskBuilder {
                         parkNeutral = 60;
                         break;
                 }
-                addMovement(new RobotPosition(0, 0, 0), new RobotPosition(deliverRoute(deliverRoute), parkY, 0));
+                parking();
+                //addMovement(new RobotPosition(0, 0, 0), new RobotPosition(deliverRoute(deliverRoute), parkY, 0));
             }
         return taskList;
     }
 
     // THIS IS THE 29-POINT MOVE
-    public ArrayList<RobotControl> buildDeliverOneStoneCompleteTask(){
-        if(this.delay > 0){   // add 1 sleep anyway for debug
+    public ArrayList<RobotControl> buildDeliverOneStoneCompleteTask() {
+        if (this.delay > 0) {   // add 1 sleep anyway for debug
             taskList.add(new RobotSleep(delay * 1000 ));
         }
 
@@ -106,8 +109,7 @@ public class AutonomousTaskBuilder {
             // RED_2 and BLUE_2 need to move parallel to the wall, then to stone
             moveToStonePos.add(new RobotPosition(0, stoneY, 0));
             moveToStonePos.add(new RobotPosition(stoneX, stoneY, 0));
-        }
-        else {
+        } else {
             // RED_3 and BLUE_3 move away from wall to parkNutural, then parallel wall to stone,
             // then move up to stone
             moveToStonePos.add(new RobotPosition(deliverRoute(deliverRoute), 0, 0));
@@ -123,8 +125,11 @@ public class AutonomousTaskBuilder {
         //taskList.add(new RobotSleep(15000)); // debug purpose
         moveToPlateAndExtend();
         //taskList.add(dropOffTask);    // move as parallel into moveBuilderPlateTask
-        setupDropAndMoveBuilderPlateTask();    // this needs to be here instead of constructor, because we depends on DropX/DropY, etc.
-        taskList.add(moveBuilderPlateTask);
+        if (moveFoundation.equals("move")) {
+            setupDropAndMoveBuilderPlateTask();    // this needs to be here instead of constructor, because we depends on DropX/DropY, etc.
+            taskList.add(moveBuilderPlateTask);
+        }
+
         parking();
 //
 //        // for now, add sleep, and back to original starting position
@@ -139,14 +144,15 @@ public class AutonomousTaskBuilder {
     // -- RED_3[0] & BLUE_3[0], option is buildDeliverOneStoneCompleteTask(), which includes pick up one sky stone, remove platform and parking
     //
     //If we choose to deliver two stones across the bridge line and park(25 points), our partner only needs to remove the platform and parking(15 points)
-    public ArrayList<RobotControl> buildDropTwoStoneTask(){
+    public ArrayList<RobotControl> buildDropTwoStoneTask() {
 
         populateCommonTask();
 
-        if(startingPositionModes.endsWith("2")){
+        taskList.add(releaseWheelTask);
+        if (startingPositionModes.endsWith("2")) {
             addMovement(new RobotPosition(0, 0, 0), new RobotPosition(0, stoneY, 0));
             addMovement(lastPos, new RobotPosition(stoneX, stoneY, 0));
-        }else if(startingPositionModes.endsWith("3")){
+        } else if (startingPositionModes.endsWith("3")) {
             addMovement(new RobotPosition(0, 0, 0), new RobotPosition(deliverRoute(deliverRoute), 0, 0));
             addMovement(lastPos, new RobotPosition(deliverRoute(deliverRoute), stoneY, 0));
             addMovement(lastPos, new RobotPosition(stoneX, stoneY, 0));
@@ -160,7 +166,6 @@ public class AutonomousTaskBuilder {
 //            addMovement(lastPos, new RobotPosition(parkNeutral, stoneY, 0));
 //            addMovement(lastPos, new RobotPosition(stoneX, stoneY, 0));
 //        }
-
         taskList.add(pickUpTask);
         addMovement(lastPos, new RobotPosition(deliverRoute(deliverRoute), lastPos.getY(), 0));
         addMovement(lastPos, new RobotPosition(deliverRoute(deliverRoute), bridgeY, 0));
@@ -176,56 +181,8 @@ public class AutonomousTaskBuilder {
         return taskList;
     }
 
-//    void goToSkyStone() { //this method is where the robot goes to position itself before pickup at the beginning of autonomous
-//        if (startingPositionModes.equals("RED_2")){
-//            if (skyStonePosition == 0) {
-//            } else if (skyStonePosition == 1) {
-//                addMovement(new RobotPosition(0, 0, 0), new RobotPosition(0, 49,0));
-//                addMovement(lastPos, new RobotPosition(stoneX, 49, 0));
-//            } else if (skyStonePosition == 2) {
-//                addMovement(new RobotPosition(0, 0, 0), new RobotPosition(0, 30, 0));
-//                addMovement(lastPos, new RobotPosition(stoneX, 30, 0));
-//            }
-//        } else if (startingPositionModes.equals("RED_3")){
-//            if (skyStonePosition == 0) {
-//                addMovement(new RobotPosition(0, 0, 0), new RobotPosition(stoneX, 60, 0));
-//            }
-//            else if (skyStonePosition == 1) {
-//                addMovement(new RobotPosition(0, 0, 0), new RobotPosition(stoneX, 40, 0));
-//            }
-//            else if (skyStonePosition == 2) {
-//                addMovement(new RobotPosition(0, 0, 0), new RobotPosition(stoneX, 20, 0));
-//            }
-//        } else if (startingPositionModes.equals("BLUE_2")) {
-//            Logger.logFile("hee");
-//            if (skyStonePosition == 0) {  //special case, cannot get sky stone, grab anyone, assume grab the closest one and move on
-//                addMovement(new RobotPosition(0, 0, 0), new RobotPosition(0, -33, 0));
-//                addMovement(lastPos, new RobotPosition(stoneX, -33, 0));
-//            }
-//            else if (skyStonePosition == 1) {
-//                addMovement(new RobotPosition(0, 0, 0), new RobotPosition(0, -33, 0));
-//                addMovement(lastPos, new RobotPosition(stoneX, -33, 0));
-//            }
-//            else if (skyStonePosition == 2) {
-//                addMovement(new RobotPosition(0, 0, 0), new RobotPosition(0, -26, 0));
-//                addMovement(lastPos, new RobotPosition(stoneX, -26, 0));
-//                Logger.logFile("wee");
-//            }
-//        } else if (startingPositionModes.equals("BLUE_3")) {
-//            if (skyStonePosition == 0) {
-//                addMovement(lastPos, new RobotPosition(stoneX, -53, 0));
-//            } else if (skyStonePosition == 1) {
-//                addMovement(lastPos, new000 RobotPosition(stoneX, -33, 0));
-//            } else if (skyStonePosition == 2) {
-//                addMovement(lastPos, new RobotPosition(stoneX, -13, 0));
-//            }
-//        }
-//
-//                // do pick up now
-//    }
-
-    double goToSkyStone2(int skyStonePosition){
-        if(startingPositionModes.equals("RED_2")){ return 26 + (2 - skyStonePosition) *20;}  //40
+    double goToSkyStone2(int skyStonePosition) {
+        if (startingPositionModes.equals("RED_2")){ return 26 + (2 - skyStonePosition) *20;}  //40
         else if(startingPositionModes.equals("RED_3")){return 26 + (2 - skyStonePosition) *20;}
         else if(startingPositionModes.equals("BLUE_2")){ return -38 + (skyStonePosition-2) * 20;}
         else if(startingPositionModes.equals("BLUE_3")){ return -80 + skyStonePosition * 20;}
@@ -234,8 +191,9 @@ public class AutonomousTaskBuilder {
     }
 
     //the robot is either on RED3 or BLUE3, not for RED2 or BLUE2 since possibility crash might be high
-    public ArrayList<RobotControl> buildMovePlatformAndParkTask(){
+    public ArrayList<RobotControl> buildMovePlatformAndParkTask() {
         populateCommonTask();
+        taskList.add(releaseWheelTask);
         addMovement(new RobotPosition(0, 0, 0), new RobotPosition(parkWall, 0, 0));
         addMovement(lastPos, new RobotPosition(parkWall, dropY, 0));
         addMovement(lastPos, new RobotPosition(dropX, dropY, 0));
@@ -246,17 +204,18 @@ public class AutonomousTaskBuilder {
     }
 
     //deliver one stone across the bridge line and park
-    public ArrayList<RobotControl> buildDeliverOneStoneOnlyTask(){
+    public ArrayList<RobotControl> buildDeliverOneStoneOnlyTask() {
         populateCommonTask();
-        if(startingPositionModes.endsWith("2")){
+
+        taskList.add(releaseWheelTask);
+        if (startingPositionModes.endsWith("2")) {
             addMovement(new RobotPosition(0, 0, 0), new RobotPosition(0, stoneY, 0));
             addMovement(lastPos, new RobotPosition(stoneX, stoneY, 0));
-        }else if(startingPositionModes.endsWith("3")){
+        } else if (startingPositionModes.endsWith("3")) {
             addMovement(new RobotPosition(0, 0, 0), new RobotPosition(parkNeutral, 0, 0));
             addMovement(lastPos, new RobotPosition(parkNeutral, stoneY, 0));
             addMovement(lastPos, new RobotPosition(stoneX, stoneY, 0));
         }
-
         taskList.add(pickUpTask);
         addMovement(lastPos, new RobotPosition(deliverRoute(deliverRoute), lastPos.getY(), 0));
         addMovement(lastPos, new RobotPosition(deliverRoute(deliverRoute), bridgeY, 0));
@@ -265,11 +224,12 @@ public class AutonomousTaskBuilder {
         return taskList;
     }
 
-    int deliverRoute(String deliverRoute){
+    int deliverRoute(String deliverRoute) {
         this.deliverRoute = deliverRoute;
-        if(deliverRoute.equals("BridgeWall")){
+
+        if (deliverRoute.equals("BridgeWall")) {
             return parkWall;
-        } else{
+        } else {
             return parkNeutral;
         }
     }
@@ -300,7 +260,7 @@ public class AutonomousTaskBuilder {
         storeStoneList.add(new SetLiftPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.liftHomeGrabPos,500));
         SequentialComboTask storeStoneTask = new SequentialComboTask();
         storeStoneTask.setTaskList(storeStoneList);
-        // paralell task 2 - move to route
+        // parallel task 2 - move to route
         PIDMecanumMoveTask moveToRoute = new PIDMecanumMoveTask(robotHardware, robotProfile, navigator);
         moveToRoute.setPath(new RobotPosition(stoneX, stoneY, 0), lastPos = new RobotPosition(deliverRoute(deliverRoute), stoneY, 0));
         // compose the parallel task
@@ -344,6 +304,7 @@ public class AutonomousTaskBuilder {
         liftAndExtendList.add(new WaitForNavigationTask(navigator, new RobotPosition(-10, bridgeY, -1), new RobotPosition(100, dropY, 1)));
         liftAndExtendList.add(new SetLiftPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.liftPerStone*3/2, 500));
         liftAndExtendList.add(new SetSliderPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.sliderOutMax, 500));
+        liftAndExtendList.add(new ClampAngleRotationTask(robotHardware, robotProfile, RobotHardware.ClampAnglePosition.SIDE));
         SequentialComboTask liftAndExtendTask = new SequentialComboTask();
         liftAndExtendTask.setTaskList(liftAndExtendList);
         // compose the parallel task
@@ -364,12 +325,20 @@ public class AutonomousTaskBuilder {
 //        dropOffTaskList.add(new SetLiftPositionTask(robotHardware,robotProfile,robotProfile.hardwareSpec.liftPerStone,500));
         dropOffTaskList.add(new ClampOpenCloseTask(robotHardware, robotProfile, RobotHardware.ClampPosition.OPEN));
         dropOffTaskList.add(new RobotSleep(100));
+        dropOffTaskList.add(new ClampAngleRotationTask(robotHardware, robotProfile, RobotHardware.ClampAnglePosition.NORMAL));
 //        dropOffTaskList.add(new SetLiftPositionTask(robotHardware,robotProfile,robotProfile.hardwareSpec.liftPerStone,500));
-        dropOffTaskList.add(new SetSliderPositionTask(robotHardware,robotProfile, robotProfile.hardwareSpec.sliderOrigPos, 500));
-        dropOffTaskList.add(new SetLiftPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.liftOrigPos,500));
+        dropOffTaskList.add(new SetSliderPositionTask(robotHardware,robotProfile, robotProfile.hardwareSpec.sliderOrigPos, 100));
+        dropOffTaskList.add(new SetLiftPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.liftOrigPos,100));
         dropOffTask = new SequentialComboTask();
         dropOffTask.setTaskList(dropOffTaskList);
         dropOffTask.setTaskName("Drop Off Stone");
+    }
+
+    void setupReleaseWheelTask() {
+        releaseWheelTask = new SequentialComboTask();
+        releaseWheelTask.addTask(new ClampOpenCloseTask(robotHardware, robotProfile, RobotHardware.ClampPosition.RELEASE_1));
+        releaseWheelTask.addTask(new ClampOpenCloseTask(robotHardware, robotProfile, RobotHardware.ClampPosition.RELEASE_2));
+        releaseWheelTask.addTask(new ClampOpenCloseTask(robotHardware, robotProfile, RobotHardware.ClampPosition.OPEN));
     }
 
     /**
@@ -387,11 +356,12 @@ public class AutonomousTaskBuilder {
 //                robotProfile.hardwareSpec.liftPerStone + robotProfile.hardwareSpec.liftGrabExtra, 500));
 
         //12/12 try to reduce the height of lift at pick up
+        slideUpExtendTaskList.add(new RobotSleep(1000));
         slideUpExtendTaskList.add(new SetLiftPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.liftStoneBase +
-                robotProfile.hardwareSpec.liftPerStone + robotProfile.hardwareSpec.liftGrabExtra/2, 500));
+                robotProfile.hardwareSpec.liftPerStone + robotProfile.hardwareSpec.liftGrabExtra/2, 100));
 
         // slide out
-        slideUpExtendTaskList.add(new SetSliderPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.sliderOutPos, 500));
+        slideUpExtendTaskList.add(new SetSliderPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.sliderOutPosAutonomous, 100));
         // open clamp
         slideUpExtendTaskList.add(new ClampOpenCloseTask(robotHardware, robotProfile, RobotHardware.ClampPosition.OPEN));
         slideUpExtendTask.setTaskList(slideUpExtendTaskList);
@@ -413,6 +383,7 @@ public class AutonomousTaskBuilder {
         //SequentialComboTask moveAndDeliver = new SequentialComboTask(); // debug for now
         parallelList.add(moveTask);
         parallelList.add(slideUpExtendTask);
+        parallelList.add(releaseWheelTask);
         moveAndDeliver.setTaskList(parallelList);
         moveAndDeliver.setTaskName("Move & Slide Ready Pickup");
         taskList.add(moveAndDeliver);
@@ -447,7 +418,7 @@ public class AutonomousTaskBuilder {
         rotateBackList.add(new RobotSleep(200));    // let the drop happen
 
         MecanumRotateTask rotate = new MecanumRotateTask(robotHardware, robotProfile, navigator);
-        rotate.setRotateHeading(new RobotPosition(dropX, dropY, 0), lastPos = new RobotPosition(dropX - 5, pullPlateY, -Math.PI / 2));
+        rotate.setRotateHeading(new RobotPosition(dropX, dropY,0), lastPos = new RobotPosition(dropX - 5, pullPlateY, -Math.PI / 2));
         rotate.setPower(0.8);
         rotate.setMinPower(0.5);
         //moveBuilderPlateTaskList.add(rotate);
@@ -499,10 +470,29 @@ public class AutonomousTaskBuilder {
         // go back up to bridge direction
         PIDMecanumMoveTask moveOut = new PIDMecanumMoveTask(robotHardware, robotProfile, navigator);
         //moveOut.setPath(new RobotPosition(pullPlateX, pullPlateY, -Math.PI/2), new RobotPosition(pullPlateX, pullPlateY, -Math.PI/2));
-        moveOut.setRelativePath(0, parkY-pullPlateY);
-        moveOut.setPower(0.8);
-        moveOut.setMinPower(0.5);
-        moveBuilderPlateTaskList.add(moveOut);
+        if(parking.equals("BridgeWall")) {
+            moveOut.setRelativePath(0, parkY-pullPlateY);
+            moveOut.setPower(0.8);
+            moveOut.setMinPower(0.5);
+            moveBuilderPlateTaskList.add(moveOut);
+        } else if (parking.equals("BridgeNeutral")){
+            PIDMecanumMoveTask moveSideways = new PIDMecanumMoveTask(robotHardware, robotProfile, navigator);
+            PIDMecanumMoveTask moveOut2 = new PIDMecanumMoveTask(robotHardware, robotProfile, navigator);
+
+            moveOut.setRelativePath(0, transferY-pullPlateY);
+            moveSideways.setRelativePath(parkNeutral, 0);
+            moveOut2.setRelativePath(0, parkY-transferY);
+            moveOut.setPower(0.8);
+            moveOut.setMinPower(0.5);
+            moveSideways.setPower(0.8);
+            moveSideways.setMinPower(0.5);
+            moveOut2.setPower(0.8);
+            moveOut2.setMinPower(0.5);
+            moveBuilderPlateTaskList.add(moveOut);
+            moveBuilderPlateTaskList.add(moveSideways);
+            moveBuilderPlateTaskList.add(moveOut2);
+        }
+
         // Rotate to the bridge and push plate to back wall
 
         moveBuilderPlateTask = new SequentialComboTask();
@@ -517,24 +507,25 @@ public class AutonomousTaskBuilder {
 
         ArrayList<RobotPosition> moveToStonePos = new ArrayList<RobotPosition>();
 
-        stoneX = 90;
-        switch (startingPositionModes){
-            case ("RED_2") :
-                parkY = -85;
-                parkWall = 10;
-                parkNeutral = 50;  //60 robot after long distance travel, angle tilted, almost hit the platform, reduce x to avoid crash
-                stoneY = 46;  // or 44
-                bridgeY = -110;
-                break;
-            case("BLUE_2"):
-                parkY = 85;
-                parkWall = 10; //50;
-                parkNeutral = 60; //120;
-                stoneY = -38;
-                bridgeY = 125;
-                Logger.logFile("stoneY = " + stoneY);
-                break;
-       }
+        populateCommonTask();
+//        stoneX = 90;
+//        switch (startingPositionModes){
+//            case ("RED_2") :
+//                parkY = -85;
+//                parkWall = 10;
+//                parkNeutral = 50;  //60 robot after long distance travel, angle tilted, almost hit the platform, reduce x to avoid crash
+//                stoneY = 46;  // or 44
+//                bridgeY = -110;
+//                break;
+//            case("BLUE_2"):
+//                parkY = 98;
+//                parkWall = 10; //50;
+//                parkNeutral = 60; //120;
+//                stoneY = -38;
+//                bridgeY = 125;
+//                Logger.logFile("stoneY = " + stoneY);
+//                break;
+//       }
         moveToStonePos.add(new RobotPosition(0,0,0));
         moveToStonePos.add(new RobotPosition(0, stoneY, 0));
         moveToStonePos.add(new RobotPosition(stoneX, stoneY, 0));
@@ -600,10 +591,12 @@ public class AutonomousTaskBuilder {
         finalPushX = 50;
 
         int ySign = startingPositionModes.contains("RED") ?-1 : 1;
+
         switch (startingPositionModes){
             case ("RED_2") :
                 dropY = -210; //-180
-                parkY = -90;
+                parkY = -110;
+                transferY = -90 - 60;
                 parkWall = 10;
                 parkNeutral = 60;  //60 robot after long distance travel, angle tilted, almost hit the platform, reduce x to avoid crash
                 stoneY = 28 + (2 - skyStonePosition) *20;
@@ -614,15 +607,17 @@ public class AutonomousTaskBuilder {
                 break;
             case("RED_3"):
                 dropY = -150; //-130
-                parkY = -30;
+                parkY = -50;
+                transferY = -30 - 60;
                 parkWall = 10;
                 parkNeutral = 60;
                 stoneY = 26 + (2 - skyStonePosition) *20;
                 bridgeY = -50;
                 break;
             case("BLUE_2"):
-                dropY = 220; //210
-                parkY = 75;
+                dropY = 230; //210. used to be 220 on 2020.01.10
+                parkY = 115;
+                transferY = 145;
                 parkWall = 10; //50;
                 parkNeutral = 60; //120;
                 stoneY = -80 + skyStonePosition * 20;   //83
@@ -633,8 +628,9 @@ public class AutonomousTaskBuilder {
                 Logger.logFile("stoneY = " + stoneY);
                 break;
             case("BLUE_3"):
-                dropY = 170;  //150 //12/12 set drop off block at further distance and back up create space to hook
-                parkY = 30;
+                dropY = 180;  //150 //12/12 set drop off block at further distance and back up create space to hook. used to be 170 on 2020.01.10
+                parkY =55 ;
+                transferY = 85;
                 parkWall = 10;
                 parkNeutral = 60;
                 stoneY = -38 + (skyStonePosition-2) * 20;
@@ -646,6 +642,7 @@ public class AutonomousTaskBuilder {
         // now we can initialized these after the parameters are set above
         setupPickUpTask();
         setupDropOffTask();
+        setupReleaseWheelTask();
     }
 }
 

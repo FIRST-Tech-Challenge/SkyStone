@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import java.util.Arrays;
@@ -12,7 +13,7 @@ import java.util.Map;
 
 
     @TeleOp(name="Autonomous Options", group="Main")
-
+    @Disabled
     public class AutonomousOptions extends OpMode {
 
         // ADD preference names here
@@ -37,9 +38,6 @@ import java.util.Map;
         public static final String[] PICK_FIRST_BLOCK_BY_WALL ={"yes", "no"};
 
         public static Map<String, String[]> prefMap = new HashMap<>();
-        private static String[] prefKeys = prefMap.keySet().toArray(new String[prefMap.keySet().size()]);
-        private static int keyIdx = 0;
-
         static {
             // ADD entries to preference map here
             prefMap.put(DELAY_PREF, DELAYS);
@@ -52,6 +50,8 @@ import java.util.Map;
             prefMap.put(FIRST_BLOCK_BY_WALL_PREF, PICK_FIRST_BLOCK_BY_WALL);
 
         }
+        private static String[] prefKeys = prefMap.keySet().toArray(new String[prefMap.keySet().size()]);
+        private static int keyIdx = 0;
 
 
         static {

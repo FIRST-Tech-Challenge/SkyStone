@@ -60,4 +60,8 @@ public class SequentialComboTask implements RobotControl {
     public String toString() {
         return taskName;
     }
+
+    public void addTask(RobotControl task) {
+        sqTaskList.add(task);
+    }
 }

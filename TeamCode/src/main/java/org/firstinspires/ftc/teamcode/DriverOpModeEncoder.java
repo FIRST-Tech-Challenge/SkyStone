@@ -70,14 +70,15 @@ public class DriverOpModeEncoder extends OpMode {
         telemetry.addData("LeftE", robotHardware.getEncoderCounts(RobotHardware.EncoderType.LEFT));
         telemetry.addData("RightE", robotHardware.getEncoderCounts(RobotHardware.EncoderType.RIGHT));
         telemetry.addData("HorizE", robotHardware.getEncoderCounts(RobotHardware.EncoderType.HORIZONTAL));
-        telemetry.addData("X", navigator.getWorldX());
-        telemetry.addData("Y", navigator.getWorldY());
-        telemetry.addData("Angle:", navigator.getHeading());
+//        telemetry.addData("X", navigator.getWorldX());
+//        telemetry.addData("Y", navigator.getWorldY());
+//        telemetry.addData("Angle:", navigator.getHeading());
         if (!robotHardware.isPrototype) {
             liftEncoderCnt = robotHardware.getEncoderCounts(RobotHardware.EncoderType.LIFT);
             sliderEncoderCnt = robotHardware.getEncoderCounts(RobotHardware.EncoderType.SLIDER);
             telemetry.addData("LiftE", liftEncoderCnt);
             telemetry.addData("SlideE", sliderEncoderCnt);
+            telemetry.addData("Dist", robotHardware.getRightDistance());
         }
    }
 

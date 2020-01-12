@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-// Steps: Lift arm, rotate grabber 90 degrees, extend delivery slide, lower block onto skystone
 public class ClampOpenCloseTask implements RobotControl {
 
     transient RobotHardware robot;

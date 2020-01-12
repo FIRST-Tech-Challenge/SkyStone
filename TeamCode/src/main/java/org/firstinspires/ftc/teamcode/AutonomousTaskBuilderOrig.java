@@ -276,7 +276,7 @@ public class AutonomousTaskBuilderOrig {
                 robotProfile.hardwareSpec.liftPerStone + robotProfile.hardwareSpec.liftGrabExtra, 500));
         pickUpTaskList.add(new ClampStraightAngleTask(robotHardware, robotProfile));
         //slide out
-        pickUpTaskList.add(new SetSliderPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.sliderOutPos, 500));
+        pickUpTaskList.add(new SetSliderPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.sliderOutPosAutonomous, 500));
         //lift down
         pickUpTaskList.add(new SetLiftPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.liftStoneBase, 500));
         pickUpTaskList.add(new ClampOpenCloseTask(robotHardware, robotProfile, RobotHardware.ClampPosition.CLOSE)); //this is currently close
@@ -303,7 +303,7 @@ public class AutonomousTaskBuilderOrig {
 
         toPickUpTaskList.add(new ClampStraightAngleTask(robotHardware, robotProfile));
         //slide out
-        toPickUpTaskList.add(new SetSliderPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.sliderOutPos, 500));
+        toPickUpTaskList.add(new SetSliderPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.sliderOutPosAutonomous, 500));
         //toPickUpTaskList.add(new RobotSleep(2000));
         //lift down
         //toPickUpTaskList.add(new SetLiftPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.liftStoneBase, 500));
@@ -332,7 +332,7 @@ public class AutonomousTaskBuilderOrig {
         ArrayList <RobotControl> dropOffTaskList = new ArrayList<RobotControl>();
         dropOffTaskList.add(new SetLiftPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.liftPerStone*2, 500));
         addMovement(lastPos, new RobotPosition(stoneX, dropY, 0));
-        dropOffTaskList.add(new SetSliderPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.sliderOutPos, 500));
+        dropOffTaskList.add(new SetSliderPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.sliderOutPosAutonomous, 500));
         dropOffTaskList.add(new SetLiftPositionTask(robotHardware,robotProfile,robotProfile.hardwareSpec.liftPerStone,500));
         dropOffTaskList.add(new ClampOpenCloseTask(robotHardware, robotProfile, RobotHardware.ClampPosition.OPEN));
         dropOffTaskList.add(new SetLiftPositionTask(robotHardware,robotProfile,robotProfile.hardwareSpec.liftPerStone*2,500));
@@ -351,7 +351,7 @@ public class AutonomousTaskBuilderOrig {
                 robotProfile.hardwareSpec.liftPerStone + robotProfile.hardwareSpec.liftGrabExtra, 500));
 //       combo
 //      List2.add(new RobotSleep(100));
-        sequentialList.add(new SetSliderPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.sliderOutPos, 500));
+        sequentialList.add(new SetSliderPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.sliderOutPosAutonomous, 500));
         sequentialList.add(new ClampOpenCloseTask(robotHardware, robotProfile, RobotHardware.ClampPosition.OPEN));
         SequentialComboTask deliverPosition = new SequentialComboTask();
         deliverPosition.setTaskList(sequentialList);

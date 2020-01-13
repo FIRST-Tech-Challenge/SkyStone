@@ -40,12 +40,16 @@ public class MaccaDrive {
     private List<DcMotorEx> driveMotors;
     private BNO055IMU imu;
 
-    public static double velocity_kP, velocity_kI, velocity_kD, velocity_kF, position_kP;
+    private static double velocity_kP;
+    private static double velocity_kI;
+    private static double velocity_kD;
+    private static double velocity_kF;
+    private static double position_kP;
 
-    static double WHEEL_RADIUS = 1.9685; // inches
-    static double TRACK_WIDTH = 13.3858; // inches
-    static double GEAR_RATIO = 5.2 * 2.0 * 1.9;
-    static final MotorConfigurationType MOTOR_CONFIG =
+    private static double WHEEL_RADIUS = 1.9685; // inches
+    private static double TRACK_WIDTH = 13.3858; // inches
+    private static double GEAR_RATIO = 5.2 * 2.0 * 1.9;
+    private static final MotorConfigurationType MOTOR_CONFIG =
             MotorConfigurationType.getMotorType(GoBILDA5202Series.class);
 
     /**
@@ -105,7 +109,7 @@ public class MaccaDrive {
     /***
      * @param mode the mode to which the drive motors should be set
      */
-    public void setMotorModes(DcMotorEx.RunMode mode) {
+    private void setMotorModes(DcMotorEx.RunMode mode) {
         for (DcMotorEx motor : driveMotors) {
             motor.setMode(mode);
         }
@@ -120,7 +124,7 @@ public class MaccaDrive {
      * @param v_kF Velocity FeedForward Constant (normally between 10 and 15)
      * @param p_kP Position Proportional Constant
      */
-    public void setCoefficients(double v_kP, double v_kI, double v_kD, double v_kF, double p_kP) {
+    private void setCoefficients(double v_kP, double v_kI, double v_kD, double v_kF, double p_kP) {
         for (DcMotorEx motor : driveMotors) {
             motor.setVelocityPIDFCoefficients(v_kP, v_kI, v_kD, v_kF);
             motor.setPositionPIDFCoefficients(p_kP);
@@ -214,8 +218,8 @@ public class MaccaDrive {
 
     /**
      * Sets the targets for each side of the drivetrain in encoder ticks.
-     * @param leftTarget
-     * @param rightTarget
+     * @param leftTarget Left Target in Encoder Ticks
+     * @param rightTarget Right Target in Encoder Ticks
      */
     public void setTargetsTicks(int leftTarget, int rightTarget) {
         parentOpMode.telemetry.addData("Setting Left Target: ", leftTarget);
@@ -249,8 +253,8 @@ public class MaccaDrive {
 
     /**
      * Sets the targets for each side of the drivetrain in inches.
-     * @param leftTarget
-     * @param rightTarget
+     * @param leftTarget Left Target in Inches
+     * @param rightTarget Right Target in Inches
      */
     public void setTargetsInches(double leftTarget, double rightTarget) {
         setTargetsTicks(inchesToEncoderTicks(leftTarget), inchesToEncoderTicks(rightTarget));

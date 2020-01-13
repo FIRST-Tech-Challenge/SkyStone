@@ -11,10 +11,10 @@ import org.firstinspires.ftc.teamcode.hardware.MaccabotV2;
 //@Disabled
 public class ConceptEncoderFeedbackTuner extends LinearOpMode {
 
-    MaccabotV2 robot;
+    private MaccabotV2 robot;
 
-    public static int DISTANCE_INCHES = 24;
-    public static int VELOCITY_INCHES = 30;
+    private static int DISTANCE_INCHES = 24;
+    private static int VELOCITY_INCHES = 30;
 
     @Override
     public void runOpMode() throws InterruptedException {

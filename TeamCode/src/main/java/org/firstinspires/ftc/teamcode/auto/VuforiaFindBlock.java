@@ -59,7 +59,8 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
         private float phoneYRotate = 0;
         private float phoneZRotate = 0;
 
-        int x, y;
+        private int x;
+        private int y;
 
         public void runOpMode() throws InterruptedException {
             int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -103,7 +104,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
             VuforiaTrackable rear2 = targetsSkyStone.get(12);
             rear2.setName("Rear Perimeter 2");
 
-            List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
+            List<VuforiaTrackable> allTrackables = new ArrayList<>();
             allTrackables.addAll(targetsSkyStone);
 
             stoneTarget.setLocation(OpenGLMatrix
@@ -178,7 +179,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
                     .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
                     .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
 
-            /**  Let all the trackable listeners know where the phone is.  */
+            /*  Let all the trackable listeners know where the phone is.  */
             for (VuforiaTrackable trackable : allTrackables) {
                 ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
             }

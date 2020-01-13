@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.hardware.MaccabotV2;
 
 public class ConceptMaccaDriveAuto extends LinearOpMode {
 
-    MaccabotV2 robot;
+    private MaccabotV2 robot;
 
     @Override
     public void runOpMode() throws InterruptedException {

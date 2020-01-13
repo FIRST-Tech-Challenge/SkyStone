@@ -6,7 +6,7 @@ import org.firstinspires.ftc.teamcode.hardware.MaccabotV2;
 
 public class TeleOpV2 extends OpMode {
 
-    MaccabotV2 robot;
+    private MaccabotV2 robot;
 
     @Override
     public void init() {

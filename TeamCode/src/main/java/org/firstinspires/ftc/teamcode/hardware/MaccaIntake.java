@@ -36,6 +36,7 @@ public class MaccaIntake {
 
     public void runIntake(double power) {
         intake_left.setPower(power);
+        intake_right.setPower(power);
     }
 
 }

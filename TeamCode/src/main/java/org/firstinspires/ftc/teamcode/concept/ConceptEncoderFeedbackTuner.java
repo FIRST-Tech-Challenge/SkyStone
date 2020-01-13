@@ -28,15 +28,15 @@ public class ConceptEncoderFeedbackTuner extends LinearOpMode {
         while (opModeIsActive()) {
             robot.drive.updateCoefficientsFromConfigutation();
             // Drive forward to target
-            robot.drive.setLinearTargetsInches(DISTANCE_INCHES, DISTANCE_INCHES);
+            robot.drive.setTargetsInches(DISTANCE_INCHES, DISTANCE_INCHES);
             while (opModeIsActive() && robot.drive.isDriveBusy()) {
-                robot.drive.runToTargets(VELOCITY_INCHES);
+                robot.drive.runToTargets(VELOCITY_INCHES, VELOCITY_INCHES);
             }
             robot.drive.setMotorPowers(0, 0, 0, 0);
             // Drive in reverse to origin
-            robot.drive.setLinearTargetsInches(0, 0);
+            robot.drive.setTargetsInches(0, 0);
             while (opModeIsActive() && robot.drive.isDriveBusy()) {
-                robot.drive.runToTargets(VELOCITY_INCHES);
+                robot.drive.runToTargets(VELOCITY_INCHES, VELOCITY_INCHES);
             }
             robot.drive.setMotorPowers(0, 0, 0, 0);
         }

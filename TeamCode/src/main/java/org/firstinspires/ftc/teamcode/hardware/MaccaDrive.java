@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
+import android.util.Pair;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.motors.GoBILDA5202Series;
@@ -40,7 +42,8 @@ public class MaccaDrive {
 
     public static double velocity_kP, velocity_kI, velocity_kD, velocity_kF, position_kP;
 
-    static double WHEEL_RADIUS = 1.9685;
+    static double WHEEL_RADIUS = 1.9685; // inches
+    static double TRACK_WIDTH = 13.3858; // inches
     static double GEAR_RATIO = 5.2 * 2.0 * 1.9;
     static final MotorConfigurationType MOTOR_CONFIG =
             MotorConfigurationType.getMotorType(GoBILDA5202Series.class);
@@ -210,11 +213,11 @@ public class MaccaDrive {
      ****************************/
 
     /**
-     * Sets the targets for each side of the drivetrain.
+     * Sets the targets for each side of the drivetrain in encoder ticks.
      * @param leftTarget
      * @param rightTarget
      */
-    public void setLinearTargetsTicks(int leftTarget, int rightTarget) {
+    public void setTargetsTicks(int leftTarget, int rightTarget) {
         parentOpMode.telemetry.addData("Setting Left Target: ", leftTarget);
         parentOpMode.telemetry.addData("Setting Right Target: ", rightTarget);
         front_left.setTargetPosition(leftTarget);
@@ -222,19 +225,54 @@ public class MaccaDrive {
         front_right.setTargetPosition(rightTarget);
         back_right.setTargetPosition(rightTarget);
     }
-
-    public void setLinearTargetsInches(double leftTarget, double rightTarget) {
-        setLinearTargetsTicks(inchesToEncoderTicks(leftTarget), inchesToEncoderTicks(rightTarget));
+    /**
+     * Wrapper for {@link #setTargetsTicks(int, int)}.
+     * @param targetsPair an integer pair: first is left target, second is right target.
+     */
+    public void setTargetsTicks(Pair<Integer, Integer> targetsPair) {
+        setTargetsTicks(targetsPair.first, targetsPair.second);
     }
 
     /**
-     * A simple single-velocity method for running the robot in straight lines or turning.
-     * @param inchesPerSecond Travel velocity in inches per second
+     * Runs the motors to their target at the given velocity. When turning around center or driving
+     * straight, the two parameters should be the same. They should only be different when driving
+     * in an arc.
+     * @param velocityLeft Drive Left Side Velocity (inches per second)
+     * @param velocityRight Drive Right Side Velocity (inches per second)
      */
-    public void runToTargets(double inchesPerSecond) {
-        for (DcMotorEx motor: driveMotors) {
-            motor.setVelocity(inchesToDegrees(inchesPerSecond), AngleUnit.DEGREES);
-        }
+    public void runToTargets(double velocityLeft, double velocityRight) {
+        front_left.setVelocity(inchesToDegrees(velocityLeft), AngleUnit.DEGREES);
+        back_left.setVelocity(inchesToDegrees(velocityLeft), AngleUnit.DEGREES);
+        front_right.setVelocity(inchesToDegrees(velocityRight), AngleUnit.DEGREES);
+        back_right.setVelocity(inchesToDegrees(velocityRight), AngleUnit.DEGREES);
+    }
+
+    /**
+     * Sets the targets for each side of the drivetrain in inches.
+     * @param leftTarget
+     * @param rightTarget
+     */
+    public void setTargetsInches(double leftTarget, double rightTarget) {
+        setTargetsTicks(inchesToEncoderTicks(leftTarget), inchesToEncoderTicks(rightTarget));
+    }
+
+    /**
+     * Wrapper for {@link #setTargetsInches(double, double)}.
+     * @param targetsPair an integer pair: first is left target, second is right target.
+     */
+    public void setTargetsInches(Pair<Double, Double> targetsPair) {
+        setTargetsInches(targetsPair.first, targetsPair.second);
+    }
+
+    /**
+     * REMEMBER: r_out / v_out = r_in / v_in. Therefore, v_in = (v_out * r_in) / r_out.
+     * @param radius the radius of the arc. Positive values are to the right of the robot.
+     * @return a pair of doubles: first is left target, second is right target
+     */
+    public Pair<Double, Double> calculateArcLengths(double radius) {
+        double left_length = 2 * Math.PI * (radius + TRACK_WIDTH / 2);
+        double right_length = 2 * Math.PI * (radius - TRACK_WIDTH / 2);
+        return new Pair<>(left_length, right_length);
     }
 
     public boolean isDriveBusy() {

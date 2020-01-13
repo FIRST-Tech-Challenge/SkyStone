@@ -18,11 +18,11 @@ public class ConceptMaccaDriveAuto extends LinearOpMode {
         telemetry.clearAll();
         telemetry.addLine("OpMode Started.");
 
-        robot.drive.setLinearTargetsTicks(1000, 1000);
+        robot.drive.setTargetsTicks(1000, 1000);
         telemetry.addLine("Targets set.");
 
         while (opModeIsActive() && robot.drive.isDriveBusy()) {
-            robot.drive.runToTargets(40);
+            robot.drive.runToTargets(40, 40);
         }
         robot.drive.setMotorPowers(0, 0, 0, 0);
         telemetry.addLine("Target achieved. All clear!");

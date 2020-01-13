@@ -1,12 +1,11 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class MaccabotV2 {
 
     private OpMode parentOpMode;
-    private HardwareMap hardwareMap;
+    //private HardwareMap hardwareMap;
 
     public MaccaDrive drive;
     public MaccaIntake intake;
@@ -14,7 +13,7 @@ public class MaccabotV2 {
 
     public MaccabotV2(OpMode parentOpMode) {
         this.parentOpMode = parentOpMode;
-        this.hardwareMap = parentOpMode.hardwareMap;
+        //this.hardwareMap = parentOpMode.hardwareMap;
     }
 
     public void initialize(boolean auto) {

@@ -24,29 +24,30 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 
 /**
- * Autonomous Mode Usecase 1
+ * Autonomous Mode Usecase 1 <BR>
  *
  * Description : Start on wall in Loading Zone, identify and move 1 skystone to Building zone and
- *                  park near wall or near neutral Skybridge
+ *                  park near wall or near neutral Skybridge <BR>
  *
  * Steps:
- * Robot starts on SB5
- * On start, robot opens wrist to front position
- * Lift Arm to Sense Position using Vuforia
- * If Skystone, record Skystone position as SB5,
- *      Else move robot to SB4. Check on Vuforia for Skystone.
- * On SB4, If Skystone, record Skystone position as SB4,
- *      Else move robot to SB3. record skystone position as SB3.
- * Grip and pick the block.
- * Lift Arm to Level 2 Tray Height
- * Slide back to edge of B2,
- * Turn 90 degrees Left
- * Move to B4 or till frontLeft touch sensor is touched (assuming it is due to foundation)
- * Drop block
- * Move in between B4 and B3 (Parking)
- *
- *  Uses playingAlliance variable to select as 1 for Blue, -1 for Red Alliance
- *  Uses parkingPlaceNearSkyBridge variable false for near wall, true for near NeutralSkybridge
+ * <ol>
+ * <li>Robot starts on SB5
+ * <li>On start, robot opens wrist to front position
+ * <li>Lift Arm to Sense Position using Vuforia
+ * <li>If Skystone, record Skystone position as SB5,<BR>
+ *      <emsp><emsp>Else move robot to SB4. Check on Vuforia for Skystone.<BR>
+ * <emsp>On SB4, If Skystone, record Skystone position as SB4,<BR>
+ *      <emsp><emsp>Else move robot to SB3. record skystone position as SB3.<BR>
+ * <li>Grip and pick the block.
+ * <li>Lift Arm to Level 2 Tray Height
+ * <li>Slide back to edge of B2,
+ * <li>Turn 90 degrees Left
+ * <li>Move to B4 or till frontLeft touch sensor is touched (assuming it is due to foundation)
+ * <li>Drop block
+ * <li>Move in between B4 and B3 (Parking)
+ * </ol>
+ *  Uses playingAlliance variable to select as 1 for Blue, -1 for Red Alliance<BR>
+ *  Uses parkingPlaceNearSkyBridge variable false for near wall, true for near NeutralSkybridge<BR>
  */
 
 public class AutoUC1_Skystone_Park{
@@ -213,6 +214,10 @@ public class AutoUC1_Skystone_Park{
         //End of Usecase : Should be parked at this time.
     }
 
+    /**
+     * Method to Initiatlize Vuforia
+     * @param hardwareMap to pass the phone camera
+     */
     public void vuforiaInit(HardwareMap hardwareMap){
         //*************Vuforia******************
         /*
@@ -276,7 +281,10 @@ public class AutoUC1_Skystone_Park{
 
     }
 
-
+    /**
+     * Method to activate Vuforia and identify skystone
+     * @param callingOpMode to use for telemetry updates
+     */
     void vuforiaFindSkystone(LinearOpMode callingOpMode){
         AutonomousTimeOut.reset();
         AutonomousTimeOut.startTime();

@@ -4,11 +4,11 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 /**
- * Definition of Intake Mechanism.
- * Intake has :
- *      1 ServoMotor for Wrist motion that operates in 3 modes -
- *          INITIAL, VERITICAL_BLOCK, HORIZONTAL_BLOCK)
- *      2 ServoMotor which a Servomotor to open and close Grip mechanism
+ * Definition of Intake Mechanism. <BR>
+ * Intake has : <BR>
+ *      1 ServoMotor for Wrist motion that operates in 3 modes - <BR>
+ *          INITIAL, VERITICAL_BLOCK, HORIZONTAL_BLOCK) <BR>
+ *      2 ServoMotor which a Servomotor to open and close Grip mechanism <BR>
  *
  * @IntakeMethods : moveWristToClose()
  * @IntakeMethods : moveWristToHorizontal()
@@ -64,8 +64,10 @@ public class Intake {
         initGrip();
     }
 
-    //On Start for TeleOp, Dont move intake to protect arm from locking intake, manual action required
-    public void initIntakeTeleOp() {
+    /**
+     * On Start for TeleOp, Dont move intake to protect arm from locking intake, manual action required
+     */
+        public void initIntakeTeleOp() {
         //moveWristToHorizontal();
         initGrip();
     }

@@ -9,12 +9,12 @@ import org.firstinspires.ftc.teamcode.SubSystems.Chassis;
 import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 
 /**
- * Autonomous Mode Usecase 2
+ * Autonomous Mode Usecase 2<BR>
  * Description : Start on wall in Building Zone, Grip Foundation with arm, and position it into Building Site.
- *              Using Centrifugal force to hold foundation on its father end and rotate to end position.
- *
- * Uses playingAlliance variable to select as 1 for Blue, -1 for Red Alliance
- * Uses parkingPlaceNearSkyBridge variable false for near wall, true for near NeutralSkybridge
+ *              Using Centrifugal force to hold foundation on its father end and rotate to end position.<BR>
+ * <BR>
+ * Uses playingAlliance variable to select as 1 for Blue, -1 for Red Alliance<BR>
+ * Uses parkingPlaceNearSkyBridge variable false for near wall, true for near NeutralSkybridge<BR>
  */
 
 @Autonomous(name = "BLUE-MoveFdn-ParkBridge", group = "MoveFdn")

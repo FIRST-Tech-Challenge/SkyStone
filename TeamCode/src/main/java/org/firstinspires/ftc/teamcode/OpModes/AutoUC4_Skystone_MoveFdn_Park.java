@@ -24,35 +24,36 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 
 /**
- * Autonomous Mode Usecase 4
+ * Autonomous Mode Usecase 4<BR>
  *
- * Description : Start on wall in Loading Zone, identify and move 1 skystone to Building zone and
- *                  place stone on Foundation. Pull foundation to edge of Building zone
- *                  park near wall or near neutral Skybridge
+ * Description : Start on wall in Loading Zone, identify and move 1 skystone to Building zone and<BR>
+ *                  place stone on Foundation. Pull foundation to edge of Building zone<BR>
+ *                  park near wall or near neutral Skybridge<BR>
  *
- * Steps:
- * Robot starts on SB5
- * On start, robot opens wrist to front position
- * Lift Arm to Sense Position using Vuforia
- * If Skystone, record Skystone position as SB5, Go to Step 10
- * Else move robot to SB4. Check on Vuforia for Skystone.
- * If Skystone, record Skystone position as SB4, Go to Step 10
- * Else move robot to SB3. record skystone position as SB3.
- * Grip and pick the block.
- * Lift Arm to Level 2 Tray Height
- * Slide back to edge of B2,
- * Turn 90 degrees Left
- * Move to B4
- * Turn right, move forward and drop skystnne on foundation
- * Slide 10" right and drop arm to hold foundation
- * Pull foundation to edge of Loading zone
- * Move right till outside of foundation
- * (Alternate usecase) : Move forward to align to parking location near neatural sybridge, else stay
+ * Steps:<BR>
+ * <ol>
+ * <li>Robot starts on SB5
+ * <li>On start, robot opens wrist to front position
+ * <li>Lift Arm to Sense Position using Vuforia
+ * <li>If Skystone, record Skystone position as SB5, Go to Step 10
+ * <emsp><emsp>Else move robot to SB4. Check on Vuforia for Skystone.
+ * <emsp>If Skystone, record Skystone position as SB4, Go to Step 10
+ * <emsp><emsp>Else move robot to SB3. record skystone position as SB3.
+ * <li>Grip and pick the block.
+ * <li>Lift Arm to Level 2 Tray Height
+ * <li>Slide back to edge of B2,
+ * <li>Turn 90 degrees Left
+ * <li>Move to B4
+ * <li>Turn right, move forward and drop skystnne on foundation
+ * <li>Slide 10" right and drop arm to hold foundation
+ * <li>Pull foundation to edge of Loading zone
+ * <li>Move right till outside of foundation
+ * <li>(Alternate usecase) : Move forward to align to parking location near neatural sybridge, else stay
  * to park along the wall.
- * Move right by distance or till Chassis light sensor does not detect Blue line to be under blue skybridge
- *
- * Uses playingAlliance variable to select as 1 for Blue, -1 for Red Alliance
- * Uses parkingPlaceNearSkyBridge variable false for near wall, true for near NeutralSkybridge
+ * <li>Move right by distance or till Chassis light sensor does not detect Blue line to be under blue skybridge
+ * </ol>
+ * Uses playingAlliance variable to select as 1 for Blue, -1 for Red Alliance<BR>
+ * Uses parkingPlaceNearSkyBridge variable false for near wall, true for near NeutralSkybridge<BR>
  */
 
 public class AutoUC4_Skystone_MoveFdn_Park {
@@ -276,6 +277,10 @@ public class AutoUC4_Skystone_MoveFdn_Park {
         //End of Usecase : Should be parked at this time.
     }
 
+    /**
+     * Method to Initiatlize Vuforia
+     * @param hardwareMap to pass the phone camera
+     */
     public void vuforiaInit(HardwareMap hardwareMap){
         //*************Vuforia******************
         /*
@@ -339,7 +344,10 @@ public class AutoUC4_Skystone_MoveFdn_Park {
 
     }
 
-
+    /**
+     * Method to activate Vuforia and identify skystone
+     * @param callingOpMode to use for telemetry updates
+     */
     void vuforiaFindSkystone(LinearOpMode callingOpMode){
         AutonomousTimeOut.reset();
         AutonomousTimeOut.startTime();

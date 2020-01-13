@@ -7,32 +7,21 @@ import org.firstinspires.ftc.teamcode.SubSystems.Chassis;
 import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 
 /**
- * Autonomous Mode Usecase 2
- * Description : Start on wall in Building Zone, Grip Foundation with arm, and position it into Building Site.
- *              Using Centrifugal force to hold foundation on its father end and rotate to end position.
+ * Autonomous Mode Usecase 3<BR>
+ * Description : Start on wall in Building Zone or Loading zone, Park near wall or near neutral skybridge<BR>
  *
- * Code asssumes Blue Alliance, and at end can park either on wall side or near the neutral skybridge
- * Steps:
- * Robot starts between A4, A5 such that it can slight in front of skybridge neutral zone floor
- * On start, robot opens wrist to front position
- * Lift Arm to AboveFoundation level
- * Move robot to in between C5 and C6
- * Move forward till Chassis bumber limit switch is pressed.
- * Drop Arm to OnFoundation level
- * Move Robot forward till foundation hits wall
- * Move Robot Left toward A4 (for XX rotations). Friction will cause Robot to rotate towards A6
- * Pull back till wall is hit (Motor does not move)
- * Slide left till Motor does not move (Foundation corner on Edge)
- * Push forward to move foundation to end of line
- * Lift Arm to Above foundation level
- * Move back till wall is hit
- * Move right till outside of foundation
- * (Alternate usecase) : Move forward to align to parking location near neatural sybridge, else stay
+ * Code asssumes Blue Alliance, and at end can park either on wall side or near the neutral skybridge<BR>
+ * Steps:<BR>
+ * <ol>
+ * <li>Robot starts between A2, A3 if on loading zone facing outwards or on A4, A5 in building zone
+ * <li>On start, robot opens wrist to front position
+ * <li>(Alternate usecase) : Move forward to align to parking location near neatural sybridge, else stay
  * to park along the wall.
- * Move right by distance or till Chassis light sensor does not detect Blue line to be under blue skybridge
- *
- * Uses playingAlliance variable to select as 1 for Blue, -1 for Red Alliance
- * Uses parkingPlaceNearSkyBridge variable false for near wall, true for near NeutralSkybridge
+ * <li>Move right by distance or till Chassis light sensor does not detect Blue line to be under blue skybridge
+ * </ol>
+ * Uses startInBuildingZone variable as true for building zone, false for loading zone<BR>
+ * Uses playingAlliance variable to select as 1 for Blue, -1 for Red Alliance<BR>
+ * Uses parkingPlaceNearSkyBridge variable false for near wall, true for near NeutralSkybridge<BR>
  */
 
 public class AutoUC3_Park {

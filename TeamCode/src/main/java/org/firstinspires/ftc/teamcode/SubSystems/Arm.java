@@ -5,21 +5,21 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
- * Definition of Robot Arm.
- * Arm has :
- *      1 motor to lift Intake to set levels
- *      Levels are :
- *          6 blockLevels for brick placement
- *          groundLevel as the arm is resting on ground
- *          detectSkystoneLevel as the arm is slightly lifted to have Skystone light sensor at
- *              height, used in autonomous mode
- *          aboveFoundationLevel as the arm is just above the foundation, used in autonomous
- *          onFoundationLevel as the arm is holding the foundation
- *      Arm Motor is 5201 Series, 53:1 Ratio, 105 RPM Spur Gear Motor w/Encoder
- *      Encoder Countable Events Per Revolution (Output Shaft)	1,497.325 (Rises & Falls of Ch A & B)
- *      Arm move 90-95 degrees and geared on a 2:3 Gear ration for torque,
- *           so max level is (1497.325/4) *(3/2) = 561 counts.
- *           Actual by experiment is 600 counts
+ * Definition of Robot Arm. <BR>
+ * Arm has : <BR>
+ *      1 motor to lift Intake to set levels <BR>
+ *      Levels are : <BR>
+ *          6 blockLevels for brick placement <BR>
+ *          groundLevel as the arm is resting on ground <BR>
+ *          detectSkystoneLevel as the arm is slightly lifted to have Skystone light sensor at <BR>
+ *              height, used in autonomous mode <BR>
+ *          aboveFoundationLevel as the arm is just above the foundation, used in autonomous <BR>
+ *          onFoundationLevel as the arm is holding the foundation <BR>
+ *      Arm Motor is 5201 Series, 53:1 Ratio, 105 RPM Spur Gear Motor w/Encoder <BR>
+ *      Encoder Countable Events Per Revolution (Output Shaft)	1,497.325 (Rises & Falls of Ch A & B) <BR>
+ *      Arm move 90-95 degrees and geared on a 2:3 Gear ration for torque, <BR>
+ *           so max level is (1497.325/4) *(3/2) = 561 counts. <BR>
+ *           Actual by experiment is 600 counts <BR>
  *
  *
  * @ArmMethods : initArm()
@@ -100,7 +100,7 @@ public class Arm {
     }
 
     /**
-     * Method to set Arm brake mode to ON when Zero (0.0) power is applied.
+     * Method to set Arm brake mode to ON when Zero (0.0) power is applied. <BR>
      * To be used when arm is above groundlevel
      * setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE)
      */
@@ -110,7 +110,7 @@ public class Arm {
     }
 
      /**
-     * Method to set Arm brake mode to OFF when Zero (0.0) power is applied.
+     * Method to set Arm brake mode to OFF when Zero (0.0) power is applied. <BR>
      * To be used when arm is on groundlevel or blockLevel[0]
      * setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE)
      */
@@ -119,7 +119,7 @@ public class Arm {
     }
 
     /**
-     * Reset function for motor encoders to be set to reset state of encoder.
+     * Reset function for motor encoders to be set to reset state of encoder. <BR>
      * Usage of this is typically followed by using setZeroBehaviour and then setting
      * the mode for the motor
      */
@@ -205,9 +205,9 @@ public class Arm {
     }
 
     /**
-     * Method to move arm down by a block level from current level in TeleOp
-     * For blockLevel[1 to MAX_BLOCK_LEVEL], turn Brake Mode On
-     * For blockLevel[0], set to groundlevel and turn Brake Mode Off
+     * Method to move arm down by a block level from current level in TeleOp <BR>
+     * For blockLevel[1 to MAX_BLOCK_LEVEL], turn Brake Mode On <BR>
+     * For blockLevel[0], set to groundlevel and turn Brake Mode Off <BR>
      */
     public void moveArm_blockLevelDown(){
         if (currentLevel > 1) {

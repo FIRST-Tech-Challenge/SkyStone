@@ -9,13 +9,13 @@ import org.firstinspires.ftc.teamcode.SubSystems.Chassis;
 import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 
 /**
- * Autonomous Mode Usecase 3
+ * Autonomous Mode Usecase 3 <BR>
  * Description : Start on wall in Building Zone / Loading Zone ,
- *              Park near wall or near neutral Skybridge
- *
- * Uses playingAlliance variable to select as 1 for Blue, -1 for Red Alliance
- * Uses parkingPlaceNearSkyBridge variable false for near wall, true for near NeutralSkybridge
- * Uses startInBuildingZone variable as true for building zone, false for loading zone
+ *              Park near wall or near neutral Skybridge <BR>
+ * <BR>
+ * Uses playingAlliance variable to select as 1 for Blue, -1 for Red Alliance <BR>
+ * Uses parkingPlaceNearSkyBridge variable false for near wall, true for near NeutralSkybridge <BR>
+ * Uses startInBuildingZone variable as true for building zone, false for loading zone <BR>
  *
  */
 

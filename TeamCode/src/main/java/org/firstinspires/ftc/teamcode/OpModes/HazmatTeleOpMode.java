@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.SubSystems.*;
 
 /**
- * TeleOpMode for team Hazmat
+ * TeleOpMode for Team Hazmat<BR>
  * Includes autoplacement routince for automatically placing block on tower
  */
 @TeleOp(name = "HazmatTeleOpMode", group = "Teleop")
@@ -83,22 +83,22 @@ public class HazmatTeleOpMode extends LinearOpMode{
     }
 
     /**
-     * Method for automatic placement of block to the brock tower
+     * Method for automatic placement of block to the brock tower<BR>
      *
-     * Initial state :
-     *  - Block is gripped and held at the level to place.
-     *  - Robot arm is aligned such that block to be placed is right above the existing tower
-     * Activation :
-     *  - Automation button combo is pressed (LeftTrigger and Right Trigger are both fully pressed)
-     *  - With the setup state, Move robot forward and touch base (frontLeftTouchSensor is pressed)
-     * Motion :
-     *  - While automation button combo is pressed
-     *  - Robot moves back distance such that block is right above the tower
-     *  - Arm is lowered such that block is on the tower
-     *  - Grip is opened
-     *  - Robot moves back to release arm and grip from on top of tower
-     *
-     *  Automatic works only when the combo button is kept pressed simultaneously and stops when released
+     * Initial state :<BR>
+     *  - Block is gripped and held at the level to place.<BR>
+     *  - Robot arm is aligned such that block to be placed is right above the existing tower<BR>
+     * Activation :<BR>
+     *  - Automation button combo is pressed (LeftTrigger and Right Trigger are both fully pressed)<BR>
+     *  - With the setup state, Move robot forward and touch base (frontLeftTouchSensor is pressed)<BR>
+     * Motion :<BR>
+     *  - While automation button combo is pressed<BR>
+     *  - Robot moves back distance such that block is right above the tower<BR>
+     *  - Arm is lowered such that block is on the tower<BR>
+     *  - Grip is opened<BR>
+     *  - Robot moves back to release arm and grip from on top of tower<BR>
+     *<BR>
+     *  Automatic works only when the combo button is kept pressed simultaneously and stops when released<BR>
      */
     public void autoPlaceBlock(){
 

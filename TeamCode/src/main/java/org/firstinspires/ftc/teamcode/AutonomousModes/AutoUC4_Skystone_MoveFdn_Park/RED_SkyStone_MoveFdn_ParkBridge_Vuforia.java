@@ -9,14 +9,14 @@ import org.firstinspires.ftc.teamcode.SubSystems.Chassis;
 import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 
 /**
- * Autonomous Mode Usecase 4
+ * Autonomous Mode Usecase 4 <BR>
  *
  * Description : Start on wall in Loading Zone, identify and move 1 skystone to Building zone
  *                  on foundation, pull foundation to Building zone and
- *                  park near wall or near neutral Skybridge
- *
- *  Uses playingAlliance variable to select as 1 for Blue, -1 for Red Alliance
- *  Uses parkingPlaceNearSkyBridge variable false for near wall, true for near NeutralSkybridge
+ *                  park near wall or near neutral Skybridge <BR>
+ * <BR>
+ *  Uses playingAlliance variable to select as 1 for Blue, -1 for Red Alliance <BR>
+ *  Uses parkingPlaceNearSkyBridge variable false for near wall, true for near NeutralSkybridge <BR>
  */
 
 @Autonomous(name = "RED-SkyStone-MoveFdn_ParkBridge-Vuforia", group = "Skystone-MoveFdn")

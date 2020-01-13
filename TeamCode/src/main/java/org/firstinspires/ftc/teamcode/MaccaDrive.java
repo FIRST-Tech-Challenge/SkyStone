@@ -38,7 +38,7 @@ public class MaccaDrive {
     private List<DcMotorEx> driveMotors;
     private BNO055IMU imu;
 
-    static double velocity_kP, velocity_kI, velocity_kD, velocity_kF, position_kP;
+    public static double velocity_kP, velocity_kI, velocity_kD, velocity_kF, position_kP;
 
     static double WHEEL_RADIUS = 1.9685;
     static double GEAR_RATIO = 5.2 * 2.0 * 1.9;
@@ -124,12 +124,16 @@ public class MaccaDrive {
         }
     }
 
+    public void updateCoefficientsFromConfigutation() {
+        setCoefficients(velocity_kP, velocity_kI, velocity_kD, velocity_kF, position_kP);
+    }
+
     public static double encoderTicksToInches(double ticks) {
         return WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO * ticks / MOTOR_CONFIG.getTicksPerRev();
     }
 
-    public static double inchesToEncoderTicks(double inches) {
-        return (inches * MOTOR_CONFIG.getTicksPerRev()) / (2 * Math.PI * WHEEL_RADIUS * GEAR_RATIO);
+    public static int inchesToEncoderTicks(double inches) {
+        return (int) ((inches * MOTOR_CONFIG.getTicksPerRev()) / (2 * Math.PI * WHEEL_RADIUS * GEAR_RATIO));
     }
 
     public static double inchesToDegrees(double inches) {
@@ -210,13 +214,17 @@ public class MaccaDrive {
      * @param leftTarget
      * @param rightTarget
      */
-    public void setLinearTargets(int leftTarget, int rightTarget) {
+    public void setLinearTargetsTicks(int leftTarget, int rightTarget) {
         parentOpMode.telemetry.addData("Setting Left Target: ", leftTarget);
         parentOpMode.telemetry.addData("Setting Right Target: ", rightTarget);
         front_left.setTargetPosition(leftTarget);
         back_left.setTargetPosition(leftTarget);
         front_right.setTargetPosition(rightTarget);
         back_right.setTargetPosition(rightTarget);
+    }
+
+    public void setLinearTargetsInches(double leftTarget, double rightTarget) {
+        setLinearTargetsTicks(inchesToEncoderTicks(leftTarget), inchesToEncoderTicks(rightTarget));
     }
 
     /**

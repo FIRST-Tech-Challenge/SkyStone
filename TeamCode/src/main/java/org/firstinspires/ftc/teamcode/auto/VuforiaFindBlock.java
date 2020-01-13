@@ -12,7 +12,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
-import org.firstinspires.ftc.teamcode.hardware.Maccabot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +24,6 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
 
 
     public class VuforiaFindBlock extends LinearOpMode {
-        private Maccabot robot;
         // Declare OpMode members.
         private ElapsedTime runtime = new ElapsedTime();
 
@@ -64,8 +62,6 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
         int x, y;
 
         public void runOpMode() throws InterruptedException {
-            robot = new Maccabot(this);
-            robot.initializeRobot();
             int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
             VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 

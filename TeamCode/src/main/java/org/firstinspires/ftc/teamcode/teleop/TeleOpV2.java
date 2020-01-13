@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import org.firstinspires.ftc.teamcode.MaccabotV2;
+import org.firstinspires.ftc.teamcode.hardware.MaccabotV2;
 
 public class TeleOpV2 extends OpMode {
 

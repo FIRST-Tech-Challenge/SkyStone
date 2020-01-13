@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.concept;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.MaccabotV2;
+import org.firstinspires.ftc.teamcode.hardware.MaccabotV2;
 
 public class ConceptMaccaDriveAuto extends LinearOpMode {
 

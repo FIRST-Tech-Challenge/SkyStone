@@ -4,7 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.MaccabotV2;
+import org.firstinspires.ftc.teamcode.hardware.MaccabotV2;
 
 @Config
 @Autonomous(name="Encoder Feedback Tuner", group = "Concept")

@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.auto;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.Maccabot;
+import org.firstinspires.ftc.teamcode.hardware.Maccabot;
 
 @Autonomous(name="TankDriveAuto", group="Needham")
 //@Disabled

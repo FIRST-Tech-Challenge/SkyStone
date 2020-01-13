@@ -178,8 +178,12 @@ public class newAutonomous extends LinearOpMode{
                     telemetry.update();
                     Drive.moveForwardDistance(0.8, 57.0);
                     Drive.turnLeftDistance(0.8, 100);
+                    /*Lift up the grabber slightly*/
                     Drive.moveForwardDistance(0.8,60.0);
                     Grabber.open();
+                    Drive.moveBackwardDistance(0.8,60);
+                    /*Lower lift*/
+                    /*Drive backwards until under skybridge*/
                     newState(State.Stop);
                     break;
 

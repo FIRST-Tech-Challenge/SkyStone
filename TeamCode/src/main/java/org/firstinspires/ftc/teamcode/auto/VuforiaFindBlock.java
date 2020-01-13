@@ -1,28 +1,27 @@
 package org.firstinspires.ftc.teamcode.auto;
 
 
-        import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
         import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-        import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
-        import org.firstinspires.ftc.robotcore.external.ClassFactory;
-        import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
-        import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
-        import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-        import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-        import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
-        import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
-        import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
-        import org.firstinspires.ftc.teamcode.Maccabot;
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
+import org.firstinspires.ftc.teamcode.Maccabot;
 
-        import java.util.ArrayList;
-        import java.util.List;
+import java.util.ArrayList;
+import java.util.List;
 
-        import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
-        import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
-        import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
-        import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
-        import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
+import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
+import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
+import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
+import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
+import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 
 
     public class VuforiaFindBlock extends LinearOpMode {
@@ -208,7 +207,7 @@ package org.firstinspires.ftc.teamcode.auto;
                 }
                 sleep(1000);
 
-                robot.setpower0();*/
+                robot.stop();*/
 
                 //////////////////////////////
 
@@ -217,7 +216,7 @@ package org.firstinspires.ftc.teamcode.auto;
                     robot.runwithoutencoder();
                     robot.withoutencoder_strafe_left(0.25);
                     Thread.sleep(1000);
-                    robot.setpower0();
+                    robot.stop();
                     telemetry.addData("target detected?", targetVisible);
                     telemetry.update();
                     Thread.sleep(400);
@@ -226,7 +225,7 @@ package org.firstinspires.ftc.teamcode.auto;
 
                 telemetry.addData("target detected?", targetVisible);
 
-                robot.setpower0();
+                robot.stop();
 
                 telemetry.update();
 

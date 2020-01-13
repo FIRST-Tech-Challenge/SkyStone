@@ -4,17 +4,12 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.teamcode.roadrunner.mecanum.SampleMecanumDriveREV;
-
-import static android.os.SystemClock.sleep;
 
 public class Maccabot {
 
@@ -24,12 +19,13 @@ public class Maccabot {
     private double encoder;
 
     // Drive Motor Variables
-    private DcMotor front_left, front_right, back_left, back_right, intake_left, intake_right, lift_left, lift_right;
-    private SampleMecanumDriveREV drive;
+    private DcMotorEx front_left, front_right, back_left, back_right, intake_left, intake_right, lift_left, lift_right;
     private CRServo rack;
     private Servo chad;
 
     private double liftTargetPos = 0;
+
+    public boolean isDriveActive = false;
 
     public BNO055IMU imu;
     Orientation lastAngles = new Orientation();
@@ -46,34 +42,30 @@ public class Maccabot {
     public void initializeRobot(){
         parentOpMode.telemetry.addLine("Initializing Drive");
         // Get drive motors
-        //front_left = hardwareMap.dcMotor.get("front_left"); // Port 0
-        //front_right = hardwareMap.dcMotor.get("front_right"); // Port 1
-        //back_left = hardwareMap.dcMotor.get("back_left"); // Port 2
-        //back_right = hardwareMap.dcMotor.get("back_right"); // Port 3
-        drive = new SampleMecanumDriveREV(parentOpMode.hardwareMap);
-        intake_left = hardwareMap.dcMotor.get("intake_left");
-        intake_right = hardwareMap.dcMotor.get("intake_right");
-        lift_left = hardwareMap.dcMotor.get("lift_left");
-        lift_right = hardwareMap.dcMotor.get("lift_right");
+        front_left = hardwareMap.get(DcMotorEx.class, "front_left"); // Port 0
+        front_right = hardwareMap.get(DcMotorEx.class, "front_right"); // Port 1
+        back_left = hardwareMap.get(DcMotorEx.class,"back_left"); // Port 2
+        back_right = hardwareMap.get(DcMotorEx.class,"back_right"); // Port 3
+        intake_left = hardwareMap.get(DcMotorEx.class,"intake_left");
+        intake_right = hardwareMap.get(DcMotorEx.class,"intake_right");
+        lift_left = hardwareMap.get(DcMotorEx.class,"lift_left");
+        lift_right = hardwareMap.get(DcMotorEx.class,"lift_right");
         rack = hardwareMap.crservo.get("bob");
         chad = hardwareMap.servo.get("moveChad");
 
         encoder = 0;
 
-
-
-
-        //back_left.setDirection(DcMotorSimple.Direction.REVERSE);
-        //back_right.setDirection(DcMotorSimple.Direction.REVERSE);
+        back_left.setDirection(DcMotorSimple.Direction.REVERSE);
+        back_right.setDirection(DcMotorSimple.Direction.REVERSE);
 
         intake_left.setDirection(DcMotorSimple.Direction.REVERSE);
         lift_right.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        // TODO PID!!!
-        /*front_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        front_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         front_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         back_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        back_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);*/
+        back_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         lift_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         lift_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -81,11 +73,10 @@ public class Maccabot {
         lift_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         lift_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        // Drive Motors Shouldn't Drive
-        /*front_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        front_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         front_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         back_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        back_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);*/
+        back_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         intake_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         intake_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -102,15 +93,15 @@ public class Maccabot {
     }
 
     public void drive(double flPower, double frPower, double blPower, double brPower){
-        /*front_left.setPower(flPower);
+        front_left.setPower(flPower);
         front_right.setPower(frPower);
         back_left.setPower(blPower);
         back_right.setPower(brPower);
         // print encoder values
-        /*parentOpMode.telemetry.addLine(Integer.toString(front_left.getCurrentPosition()));
-        parentOpMode.telemetry.addLine(Integer.toString(front_right.getCurrentPosition()));
-        parentOpMode.telemetry.addLine(Integer.toString(back_left.getCurrentPosition()));
-        parentOpMode.telemetry.addLine(Integer.toString(back_right.getCurrentPosition()));*/
+        //parentOpMode.telemetry.addLine(Integer.toString(front_left.getCurrentPosition()));
+        //parentOpMode.telemetry.addLine(Integer.toString(front_right.getCurrentPosition()));
+        //parentOpMode.telemetry.addLine(Integer.toString(back_left.getCurrentPosition()));
+        //parentOpMode.telemetry.addLine(Integer.toString(back_right.getCurrentPosition()));
     }
 
     public void mecanumDrive(double vtX, double vtY, double vR){
@@ -119,8 +110,59 @@ public class Maccabot {
         double blValue = vtY - vtX - vR;
         double brValue = vtY + vtX + vR;
 
-        //drive(flValue, frValue, blValue, brValue);
-        drive.setMotorPowers(flValue, blValue, brValue, frValue);
+        drive(flValue, frValue, blValue, brValue);
+        //drive.setMotorPowers(flValue, blValue, brValue, frValue);
+    }
+
+    /***
+     * Returns a 2D array of values that conveys the encoder values and group error.
+     * 0,0: Front Left Position
+     * 0,1: Back Left Position
+     * 0,2: Error in Left Side
+     * 1,0: Front Right Position
+     * 1,1: Back Right Position
+     * 1,2: Error in Right Side
+     */
+    public int[][] getEncoderGroupValues() {
+        int[][] encoderValues = new int[3][2];
+        encoderValues[0][0] = front_left.getCurrentPosition();
+        encoderValues[0][1] = back_left.getCurrentPosition();
+        encoderValues[0][2] = encoderValues[0][0]-encoderValues[0][1];
+        encoderValues[1][0] = front_right.getCurrentPosition();
+        encoderValues[1][1] = front_right.getCurrentPosition();
+        encoderValues[0][2] = encoderValues[1][0]-encoderValues[1][1];
+        return encoderValues;
+    }
+
+    public int[] getEncoderPositions() {
+        int[] values = new int[4];
+        values[0] = front_left.getCurrentPosition();
+        values[1] = front_right.getCurrentPosition();
+        values[2] = back_left.getCurrentPosition();
+        values[3] = back_right.getCurrentPosition();
+        return values;
+    }
+
+    public void runDriveToTarget(int leftTarget, int rightTarget) {
+        runMotorToTarget(front_left, leftTarget);
+        runMotorToTarget(back_left, leftTarget);
+        runMotorToTarget(front_right, rightTarget);
+        runMotorToTarget(back_right, rightTarget);
+        if (front_left.getPower() == 0 && front_right.getPower() == 0 && back_left.getPower() == 0 && back_right.getPower() == 0) {
+            isDriveActive = false;
+        }
+    }
+
+    public void runMotorToTarget(DcMotorEx motor, int target) {
+        int error = target - motor.getCurrentPosition();
+        if (error > 8) {
+            isDriveActive = true;
+            motor.setPower(error * 0.04);
+        }
+    }
+
+    public boolean isDriveBusy() {
+        return isDriveActive;
     }
 
     public void intake(double speed) {
@@ -172,7 +214,7 @@ public class Maccabot {
         }
     }
 
-    public void setpower0(){
+    public void stop(){
         front_left.setPower(0);
         back_left.setPower(0);
         front_right.setPower(0);
@@ -549,7 +591,7 @@ public class Maccabot {
             }
 
         // turn the motors off.
-        setpower0();
+        stop();
 
         // wait for rotation to stop.
         sleep(1000);

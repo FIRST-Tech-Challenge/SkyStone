@@ -128,6 +128,10 @@ public class MaccaDrive {
         return WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO * ticks / MOTOR_CONFIG.getTicksPerRev();
     }
 
+    public static double inchesToEncoderTicks(double inches) {
+        return (inches * MOTOR_CONFIG.getTicksPerRev()) / (2 * Math.PI * WHEEL_RADIUS * GEAR_RATIO);
+    }
+
     public static double inchesToDegrees(double inches) {
         return inches * WHEEL_RADIUS * 2 / 360;
     }
@@ -206,7 +210,7 @@ public class MaccaDrive {
      * @param leftTarget
      * @param rightTarget
      */
-    public void setSideLinearTargets(int leftTarget, int rightTarget) {
+    public void setLinearTargets(int leftTarget, int rightTarget) {
         parentOpMode.telemetry.addData("Setting Left Target: ", leftTarget);
         parentOpMode.telemetry.addData("Setting Right Target: ", rightTarget);
         front_left.setTargetPosition(leftTarget);
@@ -217,11 +221,11 @@ public class MaccaDrive {
 
     /**
      * A simple single-velocity method for running the robot in straight lines or turning.
-     * @param velocity Travel velocity in inches per second
+     * @param inchesPerSecond Travel velocity in inches per second
      */
-    public void runToTargets(double velocity) {
+    public void runToTargets(double inchesPerSecond) {
         for (DcMotorEx motor: driveMotors) {
-            motor.setVelocity(inchesToDegrees(velocity), AngleUnit.DEGREES);
+            motor.setVelocity(inchesToDegrees(inchesPerSecond), AngleUnit.DEGREES);
         }
     }
 

@@ -1,3 +1,4 @@
+//Commented on 1/14/2020
 //package org.firstinspires.ftc.teamcode.libraries;
 //
 ///*
@@ -10,7 +11,7 @@
 // */
 //
 //public class Constants {
-
+//
 //    //********** Gamepad Tolerance Constants **********//
 //    static final float GAMEPAD_JOYSTICK_TOLERANCE = .05f;
 //    static final float GAMEPAD_TRIGGER_TOLERANCE = .05f;
@@ -22,8 +23,6 @@
 //    static final int MOTOR_BACK_RIGHT_WHEEL = 3;
 //    static final int MOTOR_RIGHT_INTAKE = 4;
 //    static final int MOTOR_LEFT_INTAKE = 5;
-//    //    static final int MOTOR_ARM_LEFT = 6;
-////    static final int MOTOR_ARM_RIGHT = 7;
 //    static final int MOTOR_ARM = 6;
 //
 //    //********** Servo Indexes **********//
@@ -31,53 +30,42 @@
 //    static final int SERVO_GRABBER = 1;
 //    static final int SERVO_FOUNDATION1 = 2;
 //    static final int SERVO_FOUNDATION2 = 3;
-//    static final int SERVO_SCORING_ARM = 4;
-//    static final int SERVO_AUTONOMOUS_GRABBER = 5;
-//    static final int SERVO_AUTONOMOUS_ARM = 6;
 //
 //    //********** Servo Positions **********//
 //    static final float SERVO_ARM_POS_RECIEVE = .97f;
 //    static final float SERVO_ARM_POS_SCORE = .27f;
-//    static final float SERVO_GRABBER_GRAB = 0f;
+//    static final float SERVO_GRABBER_GRAB = .1f;
 //    static final float SERVO_GRABBER_REST = .44f;
 //    static final float SERVO_FOUNDATION_GRAB1 = .96f;
 //    static final float SERVO_FOUNDATION_REST1 = .33f;
-//    static final float SERVO_FOUNDATION_GRAB2 = .91f;
+//    static final float SERVO_FOUNDATION_GRAB2 =.91f;
 //    static final float SERVO_FOUNDATION_REST2 = .65f;
-//    static final float SERVO_AUTONOMOUS_GRABBER_GRAB = .75f;
-//    static final float SERVO_AUTONOMOUS_GRABBER_SCORE = 0f;
-//    static final float SERVO_AUTONOMOUS_UP_ARM = .32f;
-//    static final float SERVO_AUTONOMOUS_DOWN_ARM = .77f;
-//    static final float SERVO_TELEOP_ARM_POSITION = .15f;
+//
 //
 //    //********** Touch Sensor Indexes **********//
 //    static final int TOUCH_ARM_BOTTOM = 0;
 //    static final int TOUCH_ARM_TOP = 1;
 //
 //    //********** CalcMove Constants **********//
-//    static final float WHEEL_DIAMETER = 9f;
+//    static final float WHEEL_DIAMETER = 9.5f;
 //    static final float WHEEL_GEAR_RATIO = (1f / 1);
-//    static final float NEVEREST_40_REVOLUTION_ENCODER_COUNT = 1120f;
-//    static final float TRACK_DISTANCE = 30f;
+//
+//    static final float NEVEREST_40_REVOLUTION_ENCODER_COUNT =  694.75f;
+//    static final float TRACK_DISTANCE = 36f;
 //
 //    public enum Direction {FORWARD, BACKWARD, LEFT, RIGHT}
 //
 //    //********** TensorFlow **********//
+//    static final float TENSOR_READING_TIME = 3f;
 //
 //    static final String VUFORIA_KEY = "ARSzhHP/////AAABmQ3dyIKKfkcipjZh0HtnoDEkjuCn18CTNUWRN7PTFoedxZLS+QZmpkyXpQnQXFpQ5ol//l0ZwTejVrGRQ4i/kQBrrFJ8E0C7ckr4lzf5bLCvi1/E9x8anPwt2D0UToZ3MB5jPx4T6s/EOs575BtxjL7uv5jrCbQDsXebm2PROU4zC/Dj7+AYFkKCqD3YYLbGPGV4YoSgp9Ihoe+ZF/eae0FLG8K/o4eyfZj0B3aXkRvYi3dC5LY+c76aU72bKTrQ2PDYSxDG8xCaY1JyEyfDA6XqjHjYMvh0BBbb8bAQvPgG6/G50+5L+c/a8u6sbYJLbvVtXdMtrG1EA4CglbnsDs7GyyJmH5AusSwIDb9DQnTA";
 //
-//    static final Object Coordinates = new Object();
+//    private static final float mmPerInch = 25.4f;
+//    private static final float mmTargetHeight = (6) * mmPerInch;
 //
-//    public static class Coordinates {
-//        public double xPosition;
-//        public double yPosition;
-//
-//        public Coordinates(double xPosition, double yPosition) {
-//            this.xPosition = xPosition;
-//            this.yPosition = yPosition;
-//        }
-//    }
+//    public enum GoldObjectPosition {LEFT, CENTER, RIGHT}
 //}
+//Commented on 1/14/2020
 package org.firstinspires.ftc.teamcode.libraries;
 
 /*
@@ -109,17 +97,40 @@ public class Constants {
     static final int SERVO_GRABBER = 1;
     static final int SERVO_FOUNDATION1 = 2;
     static final int SERVO_FOUNDATION2 = 3;
+    static final int SERVO_SCORING_ARM = 4;
+    static final int SERVO_AUTONOMOUS_GRABBER = 5;
+    static final int SERVO_AUTONOMOUS_ARM = 6;
+    static final int SERVO_INTAKE = 6;
+
+    //********** Ramp *********************//
+    final static float MOTOR_RAMP_FB_POWER_LOWER_LIMIT = 0.3f;
+    final static float MOTOR_RAMP_FB_POWER_UPPER_LIMIT = 0.78f;
+    final static float MOTOR_RAMP_SIDEWAYS_POWER_LOWER_LIMIT = 0.6f;
+    final static float MOTOR_RAMP_SIDEWAYS_POWER_UPPER_LIMIT = 0.78f;
+    final static float MAX_ROBOT_TURN_MOTOR_VELOCITY = 0.78f;
+    final static float MIN_ROBOT_TURN_MOTOR_VELOCITY = 0.15f;
+    final static float LEFT_MOTOR_TRIM_FACTOR = 1.0f;
+    final static float RIGHT_MOTOR_TRIM_FACTOR = 1.0f;
+    final static float MOTOR_LOWER_POWER_THRESHOLD = 0.15f;
+    final static int MAX_MOTOR_LOOP_TIME = 10000;     //max time to wait in a tight loop
+    final static int ENCODED_MOTOR_STALL_TIME_DELTA = 200; //time to wait in stall check code
+    final static float MECANUM_WHEEL_ENCODER_MARGIN = 50;
+
 
     //********** Servo Positions **********//
     static final float SERVO_ARM_POS_RECIEVE = .97f;
     static final float SERVO_ARM_POS_SCORE = .27f;
-    static final float SERVO_GRABBER_GRAB = .1f;
+    static final float SERVO_GRABBER_GRAB = 0f;
     static final float SERVO_GRABBER_REST = .44f;
-    static final float SERVO_FOUNDATION_GRAB1 = .96f;
-    static final float SERVO_FOUNDATION_REST1 = .33f;
-    static final float SERVO_FOUNDATION_GRAB2 =.91f;
+    static final float SERVO_FOUNDATION_GRAB1 = .64f;
+    static final float SERVO_FOUNDATION_REST1 = .46f;
+    static final float SERVO_FOUNDATION_GRAB2 = .91f;
     static final float SERVO_FOUNDATION_REST2 = .65f;
-
+    static final float SERVO_AUTONOMOUS_GRABBER_GRAB = .75f;
+    static final float SERVO_AUTONOMOUS_GRABBER_SCORE = 0f;
+    static final float SERVO_AUTONOMOUS_UP_ARM = .32f;
+    static final float SERVO_AUTONOMOUS_DOWN_ARM = .77f;
+    static final float SERVO_TELEOP_ARM_POSITION = .15f;
 
     //********** Touch Sensor Indexes **********//
     static final int TOUCH_ARM_BOTTOM = 0;
@@ -128,19 +139,25 @@ public class Constants {
     //********** CalcMove Constants **********//
     static final float WHEEL_DIAMETER = 9.5f;
     static final float WHEEL_GEAR_RATIO = (1f / 1);
-
-    static final float NEVEREST_40_REVOLUTION_ENCODER_COUNT =  694.75f;
+    static final float NEVEREST_40_REVOLUTION_ENCODER_COUNT = 694.75f;    //677.8f
     static final float TRACK_DISTANCE = 36f;
 
     public enum Direction {FORWARD, BACKWARD, LEFT, RIGHT}
 
+
     //********** TensorFlow **********//
-    static final float TENSOR_READING_TIME = 3f;
 
     static final String VUFORIA_KEY = "ARSzhHP/////AAABmQ3dyIKKfkcipjZh0HtnoDEkjuCn18CTNUWRN7PTFoedxZLS+QZmpkyXpQnQXFpQ5ol//l0ZwTejVrGRQ4i/kQBrrFJ8E0C7ckr4lzf5bLCvi1/E9x8anPwt2D0UToZ3MB5jPx4T6s/EOs575BtxjL7uv5jrCbQDsXebm2PROU4zC/Dj7+AYFkKCqD3YYLbGPGV4YoSgp9Ihoe+ZF/eae0FLG8K/o4eyfZj0B3aXkRvYi3dC5LY+c76aU72bKTrQ2PDYSxDG8xCaY1JyEyfDA6XqjHjYMvh0BBbb8bAQvPgG6/G50+5L+c/a8u6sbYJLbvVtXdMtrG1EA4CglbnsDs7GyyJmH5AusSwIDb9DQnTA";
 
-    private static final float mmPerInch = 25.4f;
-    private static final float mmTargetHeight = (6) * mmPerInch;
+    static final Object Coordinates = new Object();
 
-    public enum GoldObjectPosition {LEFT, CENTER, RIGHT}
+    public static class Coordinates {
+        public double xPosition;
+        public double yPosition;
+
+        public Coordinates(double xPosition, double yPosition) {
+            this.xPosition = xPosition;
+            this.yPosition = yPosition;
+        }
+    }
 }

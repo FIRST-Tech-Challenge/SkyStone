@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.ops.Auto_Tests;
+package org.firstinspires.ftc.teamcode.ops.autotests;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -36,10 +36,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.bots.TestBot;
 import org.firstinspires.ftc.teamcode.components.DriveTrain;
-import org.firstinspires.ftc.teamcode.components.ConceptTensorFlowObjectDetectionWebcam;
 
 
-@Autonomous(name="WebcamTest", group="Auto_Tests")
+@Autonomous(name="WebcamTest", group="autotests")
 @Disabled
 public class Webcam_Test extends LinearOpMode {
 

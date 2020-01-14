@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.ops.Auto_Tests;
+package org.firstinspires.ftc.teamcode.ops.autotests;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -37,7 +37,7 @@ import org.firstinspires.ftc.teamcode.bots.TestBot;
 import org.firstinspires.ftc.teamcode.components.DriveTrain;
 
 
-@Autonomous(name="Blue_Auto", group="Auto_Tests")
+@Autonomous(name="Blue_Auto", group="autotests")
 //@Disabled
 public class Blue_Auto extends LinearOpMode {
 

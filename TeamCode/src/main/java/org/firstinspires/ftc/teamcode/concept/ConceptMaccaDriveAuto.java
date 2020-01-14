@@ -2,11 +2,14 @@ package org.firstinspires.ftc.teamcode.concept;
 
 import android.media.MediaPlayer;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.R;
 import org.firstinspires.ftc.teamcode.hardware.MaccabotV2;
 
+@Autonomous(name="ConceptMaccaDriveAuto")
+//@Disabled
 public class ConceptMaccaDriveAuto extends LinearOpMode {
 
     private MaccabotV2 robot;
@@ -19,7 +22,7 @@ public class ConceptMaccaDriveAuto extends LinearOpMode {
 
         robot = new MaccabotV2(this);
         robot.initialize(true);
-
+        telemetry.update();
         mp.start();
 
         waitForStart();
@@ -28,15 +31,20 @@ public class ConceptMaccaDriveAuto extends LinearOpMode {
 
         telemetry.clearAll();
         telemetry.addLine("OpMode Started.");
+        telemetry.update();
 
         robot.drive.setTargetsTicks(1000, 1000);
         telemetry.addLine("Targets set.");
-
+        telemetry.update();
+        robot.drive.addMotorPowersToTelemetry();
+        robot.drive.addMotorPositionsToTelemetry();
         while (opModeIsActive() && robot.drive.isDriveBusy()) {
-            robot.drive.runToTargets(40, 40);
+            telemetry.update();
+            robot.drive.runToTargets(750, 750);
         }
         robot.drive.setMotorPowers(0, 0, 0, 0);
         telemetry.addLine("Target achieved. All clear!");
+        telemetry.update();
         sleep(5000);
     }
 }

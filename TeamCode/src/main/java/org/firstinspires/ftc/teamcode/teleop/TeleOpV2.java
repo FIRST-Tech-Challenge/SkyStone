@@ -1,9 +1,12 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.hardware.MaccabotV2;
 
+@TeleOp(name="TeleOp v2")
+//@Disabled
 public class TeleOpV2 extends OpMode {
 
     private MaccabotV2 robot;
@@ -19,6 +22,7 @@ public class TeleOpV2 extends OpMode {
         telemetry.clearAll();
         telemetry.addLine("4466 TELEOP v2 | ACTIVE");
         robot.drawTelemetry(); // puts up debug values for use during practice
+        robot.drive.addMotorPowersToTelemetry(); // motor power debug
         telemetry.update();
     }
 

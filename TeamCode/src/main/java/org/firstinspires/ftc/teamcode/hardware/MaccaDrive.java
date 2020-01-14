@@ -12,14 +12,12 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-
 import java.util.Arrays;
 import java.util.List;
 
 /***
- * This class is an interface for the hardware of the Maccabots Mk. 1 drivetrain, MaccaDrive. To
- * use this class, ensure that the following is true:
+ * This class is an interface for the hardware of the Maccabots Mk. 1 drivetrain. To use this
+ * class, ensure that the following is true:
  * - Motor Port 0 has the front left drive motor plugged in and configured as "front_left"
  * - Motor Port 1 has the front right drive motor plugged in and configured as "front_right"
  * - Motor Port 2 has the back left drive motor plugged in and configured as "back_left"
@@ -40,14 +38,18 @@ public class MaccaDrive {
     private List<DcMotorEx> driveMotors;
     private BNO055IMU imu;
 
-    private static double velocity_kP;
-    private static double velocity_kI;
-    private static double velocity_kD;
-    private static double velocity_kF;
-    private static double position_kP;
+    public static double velocity_kP = 29;
+    public static double velocity_kI = 0;
+    public static double velocity_kD = 12;
+    public static double velocity_kF = 11.9;
+    public static double position_kP = 1;
 
-    private static double WHEEL_RADIUS = 1.9685; // inches
-    private static double TRACK_WIDTH = 13.3858; // inches
+    /*
+     * As configured for MaccaDrive Mk. 1, there are 553.28 encoder ticks per wheel rotation.
+     * A drivetrain with wheels 100mm in diameter will travel 12.37 inches per wheel rotation.
+     */
+    private static double WHEEL_RADIUS = 1.9685; // inches, converted from 100mm
+    private static double TRACK_WIDTH = 13.3858; // inches, converted from 340mm
     private static double GEAR_RATIO = 5.2 * 2.0 * 1.9;
     private static final MotorConfigurationType MOTOR_CONFIG =
             MotorConfigurationType.getMotorType(GoBILDA5202Series.class);
@@ -60,7 +62,6 @@ public class MaccaDrive {
     public MaccaDrive(OpMode parentOpMode) {
         this.parentOpMode = parentOpMode;
         this.hardwareMap = parentOpMode.hardwareMap;
-        driveMotors = Arrays.asList(front_left, front_right, back_left, back_right);
     }
 
     /**
@@ -80,9 +81,11 @@ public class MaccaDrive {
         back_left = hardwareMap.get(DcMotorEx.class,"back_left"); // Port 2
         back_right = hardwareMap.get(DcMotorEx.class,"back_right"); // Port 3
 
+        driveMotors = Arrays.asList(front_left, front_right, back_left, back_right);
+
         // Reverse back motors to accomodate for mounting orientation
-        back_left.setDirection(DcMotorSimple.Direction.REVERSE);
-        back_right.setDirection(DcMotorSimple.Direction.REVERSE);
+        driveMotors.get(2).setDirection(DcMotorSimple.Direction.REVERSE);
+        driveMotors.get(3).setDirection(DcMotorSimple.Direction.REVERSE);
 
         // When the motors stop, they need to really stop.
         for (DcMotorEx motor : driveMotors) {
@@ -92,12 +95,12 @@ public class MaccaDrive {
         setMotorModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER); // Clears encoders from previous runs
         // runToPosition() is used for auto navigation and velocity PID smooths teleop driving
         if (isAuto) {
+            setTargetsTicks(0, 0);
             setMotorModes(DcMotor.RunMode.RUN_TO_POSITION);
+            // PID coefficients need to be tuned when major hardware changes are made.
+            // TODO tune coefficients for MaccaDrive
+            setCoefficients(velocity_kP, velocity_kI, velocity_kD, velocity_kF, position_kP);
         } else { setMotorModes(DcMotor.RunMode.RUN_USING_ENCODER); }
-
-        // PID coefficients need to be tuned when major hardware changes are made.
-        // TODO tune coefficients for MaccaDrive
-        setCoefficients(velocity_kP, velocity_kI, velocity_kD, velocity_kF, position_kP);
 
         parentOpMode.telemetry.addLine("MaccaDrive initialization successful.");
     }
@@ -135,16 +138,26 @@ public class MaccaDrive {
         setCoefficients(velocity_kP, velocity_kI, velocity_kD, velocity_kF, position_kP);
     }
 
+    public void addMotorPowersToTelemetry() {
+        parentOpMode.telemetry.addData("FL Power",driveMotors.get(0).getPower());
+        parentOpMode.telemetry.addData("FR Power",driveMotors.get(1).getPower());
+        parentOpMode.telemetry.addData("BL Power",driveMotors.get(2).getPower());
+        parentOpMode.telemetry.addData("BR Power",driveMotors.get(3).getPower());
+    }
+
+    public void addMotorPositionsToTelemetry() {
+        parentOpMode.telemetry.addData("FL Pos",driveMotors.get(0).getCurrentPosition());
+        parentOpMode.telemetry.addData("FR Pos",driveMotors.get(1).getCurrentPosition());
+        parentOpMode.telemetry.addData("BL Pos",driveMotors.get(2).getCurrentPosition());
+        parentOpMode.telemetry.addData("BR PoS",driveMotors.get(3).getCurrentPosition());
+    }
+
     public static double encoderTicksToInches(double ticks) {
-        return WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO * ticks / MOTOR_CONFIG.getTicksPerRev();
+        return ((WHEEL_RADIUS * 2 * Math.PI)/(MOTOR_CONFIG.getTicksPerRev()*GEAR_RATIO) * ticks);
     }
 
     public static int inchesToEncoderTicks(double inches) {
-        return (int) ((inches * MOTOR_CONFIG.getTicksPerRev()) / (2 * Math.PI * WHEEL_RADIUS * GEAR_RATIO));
-    }
-
-    public static double inchesToDegrees(double inches) {
-        return inches * WHEEL_RADIUS * 2 / 360;
+        return (int) ((MOTOR_CONFIG.getTicksPerRev()*GEAR_RATIO)/(WHEEL_RADIUS * 2 * Math.PI) * inches);
     }
 
     public static double rpmToVelocity(double rpm) {
@@ -176,10 +189,10 @@ public class MaccaDrive {
      * @param brPower Back Right Power (-1 to 1)
      */
     public void setMotorPowers(double flPower, double frPower, double blPower, double brPower) {
-        front_left.setPower(flPower);
-        front_right.setPower(frPower);
-        back_left.setPower(blPower);
-        back_right.setPower(brPower);
+        driveMotors.get(0).setPower(flPower);
+        driveMotors.get(1).setPower(frPower);
+        driveMotors.get(2).setPower(blPower);
+        driveMotors.get(3).setPower(brPower);
     }
 
     /***
@@ -222,12 +235,14 @@ public class MaccaDrive {
      * @param rightTarget Right Target in Encoder Ticks
      */
     public void setTargetsTicks(int leftTarget, int rightTarget) {
+        setMotorModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         parentOpMode.telemetry.addData("Setting Left Target: ", leftTarget);
         parentOpMode.telemetry.addData("Setting Right Target: ", rightTarget);
-        front_left.setTargetPosition(leftTarget);
-        back_left.setTargetPosition(leftTarget);
-        front_right.setTargetPosition(rightTarget);
-        back_right.setTargetPosition(rightTarget);
+        driveMotors.get(0).setTargetPosition(leftTarget);
+        driveMotors.get(2).setTargetPosition(leftTarget);
+        driveMotors.get(1).setTargetPosition(rightTarget);
+        driveMotors.get(3).setTargetPosition(rightTarget);
+        setMotorModes(DcMotor.RunMode.RUN_TO_POSITION);
     }
     /**
      * Wrapper for {@link #setTargetsTicks(int, int)}.
@@ -240,15 +255,34 @@ public class MaccaDrive {
     /**
      * Runs the motors to their target at the given velocity. When turning around center or driving
      * straight, the two parameters should be the same. They should only be different when driving
-     * in an arc.
-     * @param velocityLeft Drive Left Side Velocity (inches per second)
-     * @param velocityRight Drive Right Side Velocity (inches per second)
+     * in an arc. Remember that movement in reverse requires negative velocities.
+     * @param velocityLeft Drive Left Side Velocity (encoder ticks per second)
+     * @param velocityRight Drive Right Side Velocity (encoder ticks per second)
      */
     public void runToTargets(double velocityLeft, double velocityRight) {
-        front_left.setVelocity(inchesToDegrees(velocityLeft), AngleUnit.DEGREES);
-        back_left.setVelocity(inchesToDegrees(velocityLeft), AngleUnit.DEGREES);
-        front_right.setVelocity(inchesToDegrees(velocityRight), AngleUnit.DEGREES);
-        back_right.setVelocity(inchesToDegrees(velocityRight), AngleUnit.DEGREES);
+        driveMotors.get(0).setVelocity(velocityLeft);
+        driveMotors.get(2).setVelocity(velocityLeft);
+        driveMotors.get(1).setVelocity(velocityRight);
+        driveMotors.get(3).setVelocity(velocityRight);
+    }
+
+    /**
+     * Logical wrapper for {@link #runToTargets(double, double)}. Calculates an appropriate maximum
+     * velocity
+     * @param maxVelocity
+     */
+    public void arcToTargets(double maxVelocity) {
+        int leftTarget = Math.abs(driveMotors.get(0).getTargetPosition());
+        int rightTarget = Math.abs(driveMotors.get(1).getTargetPosition());
+        if (rightTarget > leftTarget) {
+            double slowVelocity = (maxVelocity * leftTarget) / rightTarget;
+            runToTargets(slowVelocity, maxVelocity);
+        } else if (leftTarget > rightTarget) { // left side of arc is bigger
+            double slowVelocity = (maxVelocity * rightTarget) / leftTarget;
+            runToTargets(maxVelocity, slowVelocity);
+        } else {
+            runToTargets(maxVelocity, maxVelocity);
+        }
     }
 
     /**
@@ -280,7 +314,7 @@ public class MaccaDrive {
     }
 
     public boolean isDriveBusy() {
-        return front_left.isBusy() || front_right.isBusy();
+        return driveMotors.get(0).isBusy() || driveMotors.get(1).isBusy();
     }
 
 }

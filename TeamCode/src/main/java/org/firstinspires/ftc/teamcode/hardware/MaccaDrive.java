@@ -4,6 +4,7 @@ import android.util.Pair;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.hardware.motors.GoBILDA5202Series;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -11,6 +12,11 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 import java.util.Arrays;
 import java.util.List;
@@ -27,6 +33,8 @@ import java.util.List;
  * This class supports both Driver-Controller and Autonomous functionality. In the AUTO mode,
  * the drivetrain behaves like a differential tank drive. Holonomic capability is only available
  * in the DRIVER mode.
+ *
+ * This class has a structure created surrounding the
  */
 @Config
 public class MaccaDrive {
@@ -37,6 +45,10 @@ public class MaccaDrive {
     private DcMotorEx front_left, front_right, back_left, back_right;
     private List<DcMotorEx> driveMotors;
     private BNO055IMU imu;
+
+    private boolean isGyroTurnBusy;
+    private Orientation lastAngles = new Orientation();
+    private double globalAngle;
 
     public static double velocity_kP = 29;
     public static double velocity_kI = 0;
@@ -101,13 +113,30 @@ public class MaccaDrive {
             // TODO tune coefficients for MaccaDrive
             setCoefficients(velocity_kP, velocity_kI, velocity_kD, velocity_kF, position_kP);
         } else { setMotorModes(DcMotor.RunMode.RUN_USING_ENCODER); }
+        // Initialize IMU if in AUTO mode
+        if (isAuto) {
+            parentOpMode.telemetry.addLine("Initializing IMU...");
+
+            BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+            parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+            parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+            //parameters.calibrationDataFile = "BNO055IMUCalibration.json";
+            parameters.loggingEnabled      = true;
+            parameters.loggingTag          = "IMU"; // value logs accessible through ADB Logcat
+            parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+
+            imu = hardwareMap.get(BNO055IMU.class, "imu");
+            imu.initialize(parameters);
+
+            parentOpMode.telemetry.addLine("IMU Initialization Complete.");
+        }
 
         parentOpMode.telemetry.addLine("MaccaDrive initialization successful.");
     }
 
-    /* *********
-     * UTILITIES
-     ***********/
+    /* *******************
+     * GETTERS AND SETTERS
+     *********************/
 
     /***
      * @param mode the mode to which the drive motors should be set
@@ -138,6 +167,28 @@ public class MaccaDrive {
         setCoefficients(velocity_kP, velocity_kI, velocity_kD, velocity_kF, position_kP);
     }
 
+    /**
+     * @return the angle of the robot in degrees, from 0 to 360.
+     */
+    public double getOrientation() {
+        Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        double deltaAngle = angles.firstAngle - lastAngles.firstAngle;
+
+        if (deltaAngle < -180) {
+            deltaAngle += 360;
+        } else if (deltaAngle > 180) {
+            deltaAngle -= 360;
+        }
+
+        globalAngle += deltaAngle; // integrates the delta logic into the final angle
+        lastAngles = angles;
+        return globalAngle;
+    }
+
+    /* *********
+     * TELEMETRY
+     ***********/
+
     public void addMotorPowersToTelemetry() {
         parentOpMode.telemetry.addData("FL Power",driveMotors.get(0).getPower());
         parentOpMode.telemetry.addData("FR Power",driveMotors.get(1).getPower());
@@ -151,6 +202,10 @@ public class MaccaDrive {
         parentOpMode.telemetry.addData("BL Pos",driveMotors.get(2).getCurrentPosition());
         parentOpMode.telemetry.addData("BR PoS",driveMotors.get(3).getCurrentPosition());
     }
+
+    /* ******************
+     * INTERNAL UTILITIES
+     ********************/
 
     public static double encoderTicksToInches(double ticks) {
         return ((WHEEL_RADIUS * 2 * Math.PI)/(MOTOR_CONFIG.getTicksPerRev()*GEAR_RATIO) * ticks);
@@ -283,6 +338,23 @@ public class MaccaDrive {
         } else {
             runToTargets(maxVelocity, maxVelocity);
         }
+    }
+
+    /**
+     * Uses the built-in REV BNO055 IMU to turn the robot to a specified angle.
+     * @param angle The target angle (in degrees
+     */
+    public void gyroTurnTo(double angle) {
+        double error = angle - getOrientation();
+        if (driveMotors.get(0).getMode() != DcMotor.RunMode.RUN_USING_ENCODER) {
+            setMotorModes(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+        if (error > 0.1) {
+            // vR value contains a tuned constant kP = 0.004, must be tuned with hardware changes
+            // TODO tune gyro turning kP
+            arcadeMecanumDrive(0, 0, error * 0.004);
+        }
+        arcadeMecanumDrive(0, 0, 0);
     }
 
     /**

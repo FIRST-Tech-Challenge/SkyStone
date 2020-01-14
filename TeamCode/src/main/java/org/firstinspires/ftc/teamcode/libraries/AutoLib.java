@@ -818,7 +818,15 @@ public class AutoLib {
         }
         robot.setDcMotorPower(MOTOR_ARM, 0);
     }
+    public void moveArmDownHalfSecond() throws InterruptedException {
+        ElapsedTime time = new ElapsedTime();
 
+        robot.setDcMotorPower(MOTOR_ARM, .7f);
+        while (time.seconds() <= .5) {
+            opMode.idle();
+        }
+        robot.setDcMotorPower(MOTOR_ARM, 0);
+    }
     //********** Servo Methods **********//
 
     public void recieveServoArm() {

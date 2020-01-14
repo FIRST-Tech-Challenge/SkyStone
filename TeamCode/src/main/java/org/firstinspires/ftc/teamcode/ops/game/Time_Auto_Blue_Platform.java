@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.ops.gyrotest;
+package org.firstinspires.ftc.teamcode.ops.game;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.bots.TestBot;
 import org.firstinspires.ftc.teamcode.components.DriveTrain;
 
 
-@Autonomous(name="Time_Auto_Blue_Platform", group="gyrotest")
+@Autonomous(name="Time_Auto_Blue_Platform", group="game")
 //@Disabled
 public class Time_Auto_Blue_Platform extends LinearOpMode {
 

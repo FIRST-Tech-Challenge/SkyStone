@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.ops.game;
+package org.firstinspires.ftc.teamcode.ops.gyrotest;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -8,9 +8,9 @@ import org.firstinspires.ftc.teamcode.bots.TestBot;
 import org.firstinspires.ftc.teamcode.components.DriveTrain;
 
 
-@Autonomous(name="Plan_B_Autonomous_Red_Side", group="game")
+@Autonomous(name="Plan_B_Autonomous_Blue_Side", group="game")
 //@Disabled
-public class Plan_B_Autonomous_Red_Side extends LinearOpMode {
+public class Plan_B_Autonomous_Blue_Side extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -50,8 +50,44 @@ public class Plan_B_Autonomous_Red_Side extends LinearOpMode {
            robot.driveTrain.encoderDrive(1, -10);
            robot.driveTrain.encoderDrive(1, 10); */
 
+        robot.driveTrain.moveBackward(0.63, -0.5);
 
-        robot.driveTrain.moveBackward(.5, -.5);
+        //Pause to let the robot stop moving
+        robot.driveTrain.pause(2 );
+
+        //Move the servos down to grapple the build platform
+        robot.grapple.servoMoveDown();
+        robot.grapple.servo2MoveDown();
+
+        //Pause
+        robot.driveTrain.pause(2);
+
+        //Pull the platform twoards the build zone
+        robot.driveTrain.moveForward(1.35, -0.5);
+
+        //Move because the robot can not fine adjust to make the gyro happy with the platform in tow
+        robot.driveTrain.move(1.1, 1, -1);
+
+        //Move the servos up to release the platform
+        robot.grapple.servoMoveUp();
+        robot.grapple.servo2MoveUp();
+
+        //Push the build platform to the wall to score it
+        robot.driveTrain.moveBackward(.72, -.75);
+
+        //Pause to let the robot stop moving
+        robot.driveTrain.pause(.25);
+
+        //Move the robot to park under the skybridge
+        robot.driveTrain.moveForward(.9,  -.75);
+
+        robot.driveTrain.crabRight(0.6);
+
+        stop();
+
+
+
+        stop();
         /*
         runtime.reset();
 

@@ -128,11 +128,8 @@ public class Constants {
     //********** CalcMove Constants **********//
     static final float WHEEL_DIAMETER = 9.5f;
     static final float WHEEL_GEAR_RATIO = (1f / 1);
-<<<<<<< HEAD
-    static final float NEVEREST_40_REVOLUTION_ENCODER_COUNT = 665;
-=======
+
     static final float NEVEREST_40_REVOLUTION_ENCODER_COUNT =  694.75f;
->>>>>>> 33771a1ab993c12341ec11c8b8bf661029cbf1ca
     static final float TRACK_DISTANCE = 36f;
 
     public enum Direction {FORWARD, BACKWARD, LEFT, RIGHT}

@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.ops.game;
+package org.firstinspires.ftc.teamcode.ops.TeleOP_Tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -40,10 +40,11 @@ import org.firstinspires.ftc.teamcode.bots.TestBot;
 import org.firstinspires.ftc.teamcode.components.DriveTrain;
 import org.firstinspires.ftc.teamcode.components.Intake;
 import org.firstinspires.ftc.teamcode.components.WebCamera;
+import org.firstinspires.ftc.teamcode.components.Ramp;
 
 
-@TeleOp(name="Game_TeleOP", group="game")
-public class Game_TeleOP extends LinearOpMode {
+@TeleOp(name="Game_TeleOp", group="game")
+public class Game_TeleOp extends LinearOpMode {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
     private TestBot robot = null;
@@ -92,6 +93,17 @@ public class Game_TeleOP extends LinearOpMode {
             }
 
             if (robot.intake.isAvailable) {
+                if (gamepad1.left_trigger > 0) {
+                    robot.intake.setIntakePower(-1);
+                }
+                if(gamepad1.left_trigger <= 0)
+                {
+                    robot.intake.setIntakePower(0);
+                }
+            }
+
+
+            if (robot.intake.isAvailable) {
                 if (gamepad1.right_trigger > 0) {
                     robot.intake.setIntakePower(1);
                 }
@@ -99,6 +111,15 @@ public class Game_TeleOP extends LinearOpMode {
                 {
                     robot.intake.setIntakePower(0);
                 }
+            }
+
+            if(gamepad1.right_bumper){
+                robot.ramp.rampUp();
+                robot.ramp.ramp2Up();
+            }
+            if(gamepad1.left_bumper){
+                robot.ramp.rampDown();
+                robot.ramp.ramp2Down();
             }
 
             // Show the elapsed game time.

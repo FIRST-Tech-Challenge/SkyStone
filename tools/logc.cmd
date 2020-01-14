@@ -22,10 +22,10 @@ for /F "tokens=1,2 delims=: " %%a in ("%ftcrobot%") do (
 )
 IF "%1"==""  (
 	rem adb logcat -b all -v color --pid %var% 
-	adb logcat -b all -v color |grep %var%
+	adb logcat -b all |grep %var%
 ) ELSE (
 	rem adb logcat -b all  --pid %var% |wtee %1.log
-	adb logcat -b all -v color |grep %var% |wtee %1.log
+	adb logcat -b all |grep %var% |wtee %1.log
 )
 
 :XX

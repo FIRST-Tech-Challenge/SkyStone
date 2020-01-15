@@ -8,9 +8,9 @@ import org.firstinspires.ftc.teamcode.bots.TestBot;
 import org.firstinspires.ftc.teamcode.components.DriveTrain;
 
 
-@Autonomous(name="Time_Auto_Red_Platform", group="game")
+@Autonomous(name="Red_Build_Side_Wall", group="game")
 //@Disabled
-public class Time_Auto_Red_Platform extends LinearOpMode {
+public class Red_Build_Side_Wall extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -50,20 +50,10 @@ public class Time_Auto_Red_Platform extends LinearOpMode {
            robot.driveTrain.encoderDrive(1, -10);
            robot.driveTrain.encoderDrive(1, 10); */
 
-        //Move the robot down the field twoards the build platform
-        robot.driveTrain.moveBackward(.95, -.75);
 
-        //Rotate the back of the robot twoards the build platform
-        robot.driveTrain.gyroRotate(-85, .75, true, false);
+        robot.driveTrain.moveBackward(.63, -.5);
 
-        //Move the robot so that it is touching the build platform
-        robot.driveTrain.moveBackward(0.7, -0.5);
-
-        //Pause to let the robot stop moving
-        robot.driveTrain.pause(2 );
-
-        //Move the servos down to grapple the build platform
-        //robot.grapple.servoMoveDown();
+        robot.grapple.servoMoveDown();
         robot.grapple.servo2MoveDown();
 
         //Pause
@@ -73,24 +63,26 @@ public class Time_Auto_Red_Platform extends LinearOpMode {
         robot.driveTrain.moveForward(1.25, -0.5);
 
         //Move because the robot can not fine adjust to make the gyro happy with the platform in tow
-        //robot.driveTrain.move(1, -1, 1);
+        robot.driveTrain.move(1.1, -1, 1);
 
-        robot.driveTrain.gyroRotate(95, .5);
+        //robot.driveTrain.gyroRotate(95, .5);
 
         //Move the servos up to release the platform
-        //robot.grapple.servoMoveUp();
-        //robot.grapple.servo2MoveUp();
+        robot.grapple.servoMoveUp();
+        robot.grapple.servo2MoveUp();
 
         //Push the build platform to the wall to score it
-        robot.driveTrain.moveBackward(.5, .75);
+        robot.driveTrain.moveBackward(.72, -.75);
 
         //Pause to let the robot stop moving
         robot.driveTrain.pause(.25);
 
         //Move the robot to park under the skybridge
-        robot.driveTrain.moveForward(0.9,  .75);
+        robot.driveTrain.moveForward(0.55,  -.75);
 
-        robot.driveTrain.pause(5 );
+        robot.driveTrain.crabLeft(0.6);
+
+        stop();
         /*
         runtime.reset();
 

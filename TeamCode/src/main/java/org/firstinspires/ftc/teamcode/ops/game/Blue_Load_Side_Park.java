@@ -8,9 +8,9 @@ import org.firstinspires.ftc.teamcode.bots.TestBot;
 import org.firstinspires.ftc.teamcode.components.DriveTrain;
 
 
-@Autonomous(name="Time_Auto_Red_No_Platform", group="game")
+@Autonomous(name="Blue_Load_Side_Park", group="game")
 //@Disabled
-public class Time_Auto_Red_No_Platform extends LinearOpMode {
+public class Blue_Load_Side_Park extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -39,11 +39,7 @@ public class Time_Auto_Red_No_Platform extends LinearOpMode {
 
         robot.logger.logInfo("runOpMode", "===== [ Start Autonomous ]");
 
-        double angle1 = robot.gyroNavigator.getAngle();
         robot.driveTrain.moveForward(0.5, 1);
-
-
-
 
         // Show the elapsed game time.
         robot.logger.logInfo("runOpMode", "===== [ Autonomous Complete ] Run Time: %s", runtime.toString());

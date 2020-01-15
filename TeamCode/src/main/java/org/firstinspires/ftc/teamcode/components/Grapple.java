@@ -63,15 +63,13 @@ public void servoMoveDown(){
     servo.setPosition(SERVO2_DOWN_POSITION);
 }
 
-public void servo2MoveDown(){
-    servo2.setPosition(SERVO_UP_POSITION);
+public void servo2MoveDown(){servo2.setPosition(SERVO_UP_POSITION);
 }
 
 public void servoMoveUp(){servo.setPosition(SERVO2_UP_POSITION);
 }
 
-public void servo2MoveUp(){
-    servo2.setPosition(SERVO_DOWN_POSITION);
+public void servo2MoveUp(){servo2.setPosition(SERVO_DOWN_POSITION);
 }
 }
 

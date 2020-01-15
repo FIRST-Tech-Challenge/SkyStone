@@ -8,9 +8,9 @@ import org.firstinspires.ftc.teamcode.bots.TestBot;
 import org.firstinspires.ftc.teamcode.components.DriveTrain;
 
 
-@Autonomous(name="Red_Build_Side_Wall", group="game")
+@Autonomous(name="Red_Build_Side_Bridge", group="game")
 //@Disabled
-public class Red_Build_Side_Wall extends LinearOpMode {
+public class Red_Build_Side_Bridge extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -82,7 +82,7 @@ public class Red_Build_Side_Wall extends LinearOpMode {
         //Move the robot to park under the skybridge
         robot.driveTrain.moveForward(0.55,  -.75);
 
-        robot.driveTrain.crabLeft(0.6);
+        robot.driveTrain.crabRight(0.6);
 
         stop();
         /*

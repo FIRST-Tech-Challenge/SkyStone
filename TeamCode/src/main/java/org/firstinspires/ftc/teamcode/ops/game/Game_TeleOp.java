@@ -122,6 +122,15 @@ public class Game_TeleOp extends LinearOpMode {
                 robot.ramp.ramp2Down();
             }
 
+            if(gamepad1.x){
+                robot.grapple.servoMoveDown();
+                robot.grapple.servo2MoveDown();
+            }
+            if (gamepad1.y){
+                robot.grapple.servoMoveUp();
+                robot.grapple.servo2MoveUp();
+            }
+
             // Show the elapsed game time.
             robot.logger.logInfo("runOpMode", "===== [ TeleOp Complete ] Run Time: %s", runtime.toString());
             telemetry.update();

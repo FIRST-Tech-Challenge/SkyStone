@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.ops.game;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -9,9 +8,9 @@ import org.firstinspires.ftc.teamcode.bots.TestBot;
 import org.firstinspires.ftc.teamcode.components.DriveTrain;
 
 
-@Autonomous(name="Blue_Load_Side_Bridge", group="game")
+@Autonomous(name="Red_Load_Side", group="game")
 //@Disabled
-public class Blue_Load_Side_Bridge extends LinearOpMode {
+public class Red_Load_Side extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -52,13 +51,13 @@ public class Blue_Load_Side_Bridge extends LinearOpMode {
            robot.driveTrain.encoderDrive(1, 10); */
 
         //Move the robot down the field twoards the build platform
-        robot.driveTrain.moveBackward(.97, -.75);
+        robot.driveTrain.moveBackward(.95, -.75);
 
         //Rotate the back of the robot twoards the build platform
-        robot.driveTrain.gyroRotate(86, .75, true, false);
+        robot.driveTrain.gyroRotate(-88, .75, true, false);
 
         //Move the robot so that it is touching the build platform
-        robot.driveTrain.moveBackward(0.55, -0.5);
+        robot.driveTrain.moveBackward(0.72, -0.5);
 
         //Pause to let the robot stop moving
         robot.driveTrain.pause(2 );
@@ -71,10 +70,12 @@ public class Blue_Load_Side_Bridge extends LinearOpMode {
         robot.driveTrain.pause(2);
 
         //Pull the platform twoards the build zone
-        robot.driveTrain.moveForward(1.35, -0.5);
+        robot.driveTrain.moveForward(1.25, -0.5);
 
         //Move because the robot can not fine adjust to make the gyro happy with the platform in tow
-        robot.driveTrain.move(1.1, 1, -1);
+        robot.driveTrain.move(1.1, -1, 1);
+
+        //robot.driveTrain.gyroRotate(95, .5);
 
         //Move the servos up to release the platform
         robot.grapple.servoMoveUp();
@@ -87,21 +88,23 @@ public class Blue_Load_Side_Bridge extends LinearOpMode {
         robot.driveTrain.pause(.25);
 
         //Move the robot to park under the skybridge
-        robot.driveTrain.moveForward(.9,  -.75);
+        robot.driveTrain.moveForward(0.55,  -.75);
 
-        robot.driveTrain.crabLeft(0.4);
+        robot.driveTrain.crabRight(0.6);
 
         stop();
+        /*
+        runtime.reset();
 
-        //while(runtime.seconds() < 60){
-          //  robot.driveTrain.moveForward(0.5, 1);
-            //if(robot.skystoneFinder.canSeeSkystone()){
-              //  robot.driveTrain.gyroRotate(.5, .5);
+        while(runtime.seconds() < 60){
+            robot.driveTrain.moveForward(0.5, 1);
+            if(robot.skystoneFinder.canSeeSkystone()){
+                robot.driveTrain.moveForward(.5, .25);
 
-         //   }
-       // }
+            }
+        }
 
-        //With Phone Camera Mounted on Side Pannel
+    //With Phone Camera Mounted on Side Pannel
 
         //robot.logger.logInfo("runOpMode", "Angles: 1:%f", angle1);
 
@@ -114,13 +117,13 @@ public class Blue_Load_Side_Bridge extends LinearOpMode {
         // rotate 45 degrees away from bridge
         robot.driveTrain.gyroRotate(-45, .5);
         // stop do vision
-        //Get x-y-z coordinates from vuforia of skystone
+            //Get x-y-z coordinates from vuforia of skystone
 
-        //If no coordinates, move to set position
+            //If no coordinates, move to set position
 
-        //If corrdinate is found (found x and y position), then find the x-y-z position of skystone
+            //If corrdinate is found (found x and y position), then find the x-y-z position of skystone
 
-        //If x - y matches (23< x <25)recorded position for skystone
+            //If x - y matches (23< x <25)recorded position for skystone
 
 
 
@@ -135,7 +138,7 @@ public class Blue_Load_Side_Bridge extends LinearOpMode {
         // after block pickup, return to set position which is tile adjacent to
         //   alliance and neutral bridge
 
-
+*/
         // Show the elapsed game time.
         robot.logger.logInfo("runOpMode", "===== [ Autonomous Complete ] Run Time: %s", runtime.toString());
         telemetry.update();

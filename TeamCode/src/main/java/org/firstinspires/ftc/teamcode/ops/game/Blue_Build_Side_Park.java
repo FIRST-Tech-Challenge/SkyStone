@@ -8,9 +8,9 @@ import org.firstinspires.ftc.teamcode.bots.TestBot;
 import org.firstinspires.ftc.teamcode.components.DriveTrain;
 
 
-@Autonomous(name="Blue_Load_Side_Park", group="game")
+@Autonomous(name="Blue_Build_Side_Park", group="game")
 //@Disabled
-public class Blue_Load_Side_Park extends LinearOpMode {
+public class Blue_Build_Side_Park extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();

@@ -121,10 +121,10 @@ public class AutoUC1_Skystone_Park{
         callingOpMode.telemetry.update();
 
         // Move by distance X forward near SB5 : 6 inches to skystone
-        double robotToNearSkystone = 24; // was 25
-        autoUCChassis.runFwdBackLeftRight(robotToNearSkystone,0,0.2, callingOpMode);
+        double robotToNearSkystone = 24; // was 27
+        autoUCChassis.runFwdBackLeftRight(robotToNearSkystone,0,0.25, callingOpMode);
 
-        callingOpMode.sleep(500);
+        callingOpMode.sleep(200);
 
         callingOpMode.telemetry.addData("before viewforia in loop","");
         callingOpMode.telemetry.update();
@@ -152,7 +152,7 @@ public class AutoUC1_Skystone_Park{
         }
 
         if(!targetVisible && (skystonePosition == 4)){
-                vuforiaFindSkystone(callingOpMode);
+            vuforiaFindSkystone(callingOpMode);
         }
 
         /*if (targetVisible && (skystonePosition == 4)){
@@ -171,29 +171,30 @@ public class AutoUC1_Skystone_Park{
 
         // Drop Arm
         autoUCArm.moveArm_groundLevel();
-        callingOpMode.sleep(500);
+        autoUCArm.turnArmBrakeModeOn();
+        callingOpMode.sleep(250);
 
-        // Move forward 2 inches
-        autoUCChassis.runFwdBackLeftRight(4, 0, 0.1, callingOpMode);
-        callingOpMode.sleep(500);
+        // Move forward 5 inches
+        autoUCChassis.runFwdBackLeftRight(5, 0, 0.1, callingOpMode);
+        callingOpMode.sleep(250);
 
         //Grip the block
         autoUCIntake.closeGrip();
-        callingOpMode.sleep(500);
+        callingOpMode.sleep(250);
 
         // Slide back to edge of B2, 10 inches
         autoUCChassis.runFwdBackLeftRight(-9,0,0.1, callingOpMode); // distance was 8
 
         callingOpMode.sleep(200);
         // Turn 90 degrees Left
-        autoUCChassis.turnby90degree(playingAlliance*(-1),0.1, callingOpMode);
-        callingOpMode.sleep(500);
+        autoUCChassis.turnby90degree(playingAlliance*(-1),0.2, callingOpMode); // was 0.1
+        callingOpMode.sleep(250);
 
-        //Lift Arm
+        //Lift Arm to hold block high
         autoUCArm.moveArm_aboveFoundationLevel();
 
-       //Move forward till Chassis bumber limit switch is pressed.
-        double expectedMaxDistanceToFoundation = 70 + (5 - skystonePosition) * stoneTostone;; // was 40 --> 70
+        //Move forward till Chassis bumber limit switch is pressed.
+        double expectedMaxDistanceToFoundation = 80 + (5 - skystonePosition) * stoneTostone;; // was 40 --> 70
         autoUCChassis.runFwdTill_frontleftChassisTouchSensor_Pressed(expectedMaxDistanceToFoundation, 0.25, callingOpMode);
 
         // Drop block
@@ -209,6 +210,9 @@ public class AutoUC1_Skystone_Park{
             autoUCChassis.runTill_ChassisLeftColorSensorIsRed(-40, 0, 0.2, callingOpMode);
         }
 
+        //Drop arm to ground
+        autoUCArm.moveArm_groundLevel();
+        autoUCArm.turnArmBrakeModeOn();
 
         return parkedStatus = true;
         //End of Usecase : Should be parked at this time.
@@ -337,9 +341,9 @@ public class AutoUC1_Skystone_Park{
                 x_translate = translation.get(0)/mmPerInch;
                 y_translate = translation.get(1) / mmPerInch;
 
-            } else {
+            } /*else {
                 callingOpMode.telemetry.addData("Visible Target", "none");
-            }
+            }*/
             callingOpMode.telemetry.update();
 
         }

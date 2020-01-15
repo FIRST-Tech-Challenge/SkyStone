@@ -177,6 +177,7 @@ public class AutoUC4_Skystone_MoveFdn_Park {
 
         // Drop Arm
         autoUCArm.moveArm_groundLevel();
+        autoUCArm.turnArmBrakeModeOn();
         callingOpMode.sleep(250);
 
         // Move forward 5 inches
@@ -197,7 +198,7 @@ public class AutoUC4_Skystone_MoveFdn_Park {
 
 
        //Move forward till Chassis bumber limit switch is pressed.
-        double expectedMaxDistanceToFoundation = 82 + (5 - skystonePosition) * stoneTostone; // was 40 --> 70
+        double expectedMaxDistanceToFoundation = 86 + (5 - skystonePosition) * stoneTostone; // was 40 --> 70
         autoUCChassis.runFwdBackLeftRight(expectedMaxDistanceToFoundation, 0, 0.5, callingOpMode) ;
 
         //Lift Arm
@@ -205,6 +206,7 @@ public class AutoUC4_Skystone_MoveFdn_Park {
 
         // Turn 90 degrees right
         autoUCChassis.turnby90degree(playingAlliance,0.1, callingOpMode); // was 0.1
+        callingOpMode.sleep(250);
 
         //Move forward till Chassis bumber limit switch is pressed
         autoUCChassis.runFwdTill_frontleftChassisTouchSensor_Pressed(18, 0.25, callingOpMode);
@@ -214,17 +216,18 @@ public class AutoUC4_Skystone_MoveFdn_Park {
         callingOpMode.sleep(250);
 
         //Move right 10 inches to hook the base outside of the stone
-        autoUCChassis.runFwdBackLeftRight(10, playingAlliance, 0.2, callingOpMode);
+        //autoUCChassis.runFwdBackLeftRight(5, playingAlliance*(-1), 0.2, callingOpMode);
 
         // Drop Arm
-        autoUCChassis.runFwdBackLeftRight(2,0,0.2, callingOpMode);
+        //autoUCChassis.runFwdBackLeftRight(2,0,0.2, callingOpMode);
         autoUCArm.moveArm_onFoundationLevel();
 
         // Hook Foundation
         autoUCChassis.moveHook_holdFoundation();
 
         // Strafe Left
-        autoUCChassis.runFwdBackLeftRight(4,-playingAlliance,0.2, callingOpMode);
+        autoUCChassis.runFwdBackLeftRight(2,-playingAlliance,0.2, callingOpMode);
+        callingOpMode.sleep(250);
         autoUCArm.moveArm_onFoundationLevel();
 
         // Move Back
@@ -237,16 +240,16 @@ public class AutoUC4_Skystone_MoveFdn_Park {
         callingOpMode.sleep(250);
 
         //Push forward to move foundation to end of line
-        double foundationtoEdgeofBuildingSite = 1;
+        /*double foundationtoEdgeofBuildingSite = 1;
         autoUCChassis.runFwdBackLeftRight(foundationtoEdgeofBuildingSite,0,0.1, callingOpMode);
         callingOpMode.sleep(100);
-
+        */
         //Move back till wall is hit
         //autoUCChassis.runFwdBackLeftRight(-4,0,0.25, callingOpMode);
         //callingOpMode.sleep(100);
 
         //Move out of foundation area
-        autoUCChassis.runFwdBackLeftRight(20, playingAlliance, 0.35, callingOpMode);
+        autoUCChassis.runFwdBackLeftRight(35, playingAlliance, 0.35, callingOpMode);
 
         //Move Arm to ground Level
         autoUCArm.turnArmBrakeModeOn();
@@ -259,16 +262,17 @@ public class AutoUC4_Skystone_MoveFdn_Park {
         }
 
         //Turn by 90 degrees to point arm forward
-        autoUCChassis.turnby90degree(-playingAlliance,0.25, callingOpMode);
+        autoUCChassis.turnby90degree(-playingAlliance,0.2, callingOpMode);
+        callingOpMode.sleep(200);
 
         //Park near wall
         //Move right by distance or till Chassis light sensor does not detect Blue line to be under blue skybridge
         if (playingAlliance == 1) {
             //Blue Alliance
-            autoUCChassis.runTill_ChassisRightColorSensorIsBlue(-20, 0, 0.2, callingOpMode);
+            autoUCChassis.runTill_ChassisRightColorSensorIsBlue(-15, 0, 0.2, callingOpMode);
         } else {
             //Red Alliance
-            autoUCChassis.runTill_ChassisRightColorSensorIsRed(-20, 0, 0.2, callingOpMode);
+            autoUCChassis.runTill_ChassisRightColorSensorIsRed(-15, 0, 0.2, callingOpMode);
         }
 
         //Reached Parking position
@@ -400,9 +404,9 @@ public class AutoUC4_Skystone_MoveFdn_Park {
                 x_translate = translation.get(0)/mmPerInch;
                 y_translate = translation.get(1) / mmPerInch;
 
-            } else {
+            } /*else {
                 callingOpMode.telemetry.addData("Visible Target", "none");
-            }
+            }*/
             callingOpMode.telemetry.update();
 
         }

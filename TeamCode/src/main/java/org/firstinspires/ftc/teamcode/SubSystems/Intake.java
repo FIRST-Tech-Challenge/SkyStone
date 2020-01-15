@@ -42,11 +42,11 @@ public class Intake {
     //Wrist position values on servo motor from close to Vertocal to midPositon1 to midPsition2 to Horizontal
     public int wristCurrentPosition;
     public double[] wristPosition = {
-            0.62,  //closePosition
-            0.70, //0.62,  //VerticalPosition
-            0.80, //0.66, //MidPosition1
-            0.90, //0.83, //MidPosition2
-            1.00  //HorizontalPosition
+            0.60,  //closePosition
+            0.70, //VerticalPosition
+            0.80, //MidPosition1
+            0.90, //MidPosition2
+            0.97  //HorizontalPosition
     };
 
     //Constructor

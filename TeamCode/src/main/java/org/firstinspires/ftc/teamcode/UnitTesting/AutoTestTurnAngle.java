@@ -43,7 +43,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.Intake;
  *  * @IntakeAutoMethods : detectSkystoneColorSensorIsYellow()
  *  * @IntakeAutoMethods : detectSkystoneColorSensorIsBlack()
  */
-@Disabled
+
 @Autonomous(name = "HzAutoTurnAngle", group = "AutoTest")
 public class AutoTestTurnAngle extends LinearOpMode{
 
@@ -77,7 +77,8 @@ public class AutoTestTurnAngle extends LinearOpMode{
 
 
         while (opModeIsActive()) {
-            hzChassis.turnby90degree(1,0.1, this);
+            hzChassis.turnby90degree(1,0.2, this);
+            sleep(5000);
             if(HzDEBUG_FLAG) printDebugMessages();
             telemetry.update();
             idle();

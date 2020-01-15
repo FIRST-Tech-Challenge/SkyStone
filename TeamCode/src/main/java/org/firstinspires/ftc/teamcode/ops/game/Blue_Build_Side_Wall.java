@@ -50,10 +50,10 @@ public class Blue_Build_Side_Wall extends LinearOpMode {
            robot.driveTrain.encoderDrive(1, -10);
            robot.driveTrain.encoderDrive(1, 10); */
 
-        robot.driveTrain.moveBackward(0.63, -0.5);
+        robot.driveTrain.moveBackward(0.73, -0.5);
 
         //Pause to let the robot stop moving
-        robot.driveTrain.pause(2 );
+        robot.driveTrain.pause(2);
 
         //Move the servos down to grapple the build platform
         robot.grapple.servoMoveDown();

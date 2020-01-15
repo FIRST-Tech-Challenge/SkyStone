@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.R;
+import org.firstinspires.ftc.teamcode.hardware.MaccaDrive;
 import org.firstinspires.ftc.teamcode.hardware.MaccabotV2;
 
 @Autonomous(name="ConceptMaccaDriveAuto")
@@ -31,16 +32,15 @@ public class ConceptMaccaDriveAuto extends LinearOpMode {
 
         telemetry.clearAll();
         telemetry.addLine("OpMode Started.");
+        robot.drive.composeTelemetry(MaccaDrive.TelemetryLevel.FULL);
         telemetry.update();
 
         robot.drive.setTargetsTicks(1000, 1000);
         telemetry.addLine("Targets set.");
         telemetry.update();
-        robot.drive.addMotorPowersToTelemetry();
-        robot.drive.addMotorPositionsToTelemetry();
         while (opModeIsActive() && robot.drive.isDriveBusy()) {
             telemetry.update();
-            robot.drive.runToTargets(750, 750);
+            robot.drive.runToTargets(1500, 1500);
         }
         robot.drive.setMotorPowers(0, 0, 0, 0);
         telemetry.addLine("Target achieved. All clear!");

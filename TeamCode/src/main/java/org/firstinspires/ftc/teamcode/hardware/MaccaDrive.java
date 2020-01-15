@@ -56,6 +56,8 @@ public class MaccaDrive {
     public static double velocity_kF = 11.9;
     public static double position_kP = 1;
 
+    public enum TelemetryLevel { SILENT, MINIMAL, FULL }
+
     /*
      * As configured for MaccaDrive Mk. 1, there are 553.28 encoder ticks per wheel rotation.
      * A drivetrain with wheels 100mm in diameter will travel 12.37 inches per wheel rotation.
@@ -63,6 +65,7 @@ public class MaccaDrive {
     private static double WHEEL_RADIUS = 1.9685; // inches, converted from 100mm
     private static double TRACK_WIDTH = 13.3858; // inches, converted from 340mm
     private static double GEAR_RATIO = 5.2 * 2.0 * 1.9;
+    private static int COUNTS_PER_REV = 28;
     private static final MotorConfigurationType MOTOR_CONFIG =
             MotorConfigurationType.getMotorType(GoBILDA5202Series.class);
 
@@ -189,6 +192,29 @@ public class MaccaDrive {
      * TELEMETRY
      ***********/
 
+    public void composeTelemetry(TelemetryLevel telemetryLevel) {
+        switch (telemetryLevel) {
+            case SILENT:
+                break;
+            case MINIMAL:
+                parentOpMode.telemetry.addData("Orientation", getOrientation());
+                break;
+            case FULL:
+                parentOpMode.telemetry.addData("Orientation", getOrientation());
+                parentOpMode.telemetry.addLine();
+                parentOpMode.telemetry.addData("FL Power",driveMotors.get(0).getPower());
+                parentOpMode.telemetry.addData("FR Power",driveMotors.get(1).getPower());
+                parentOpMode.telemetry.addData("BL Power",driveMotors.get(2).getPower());
+                parentOpMode.telemetry.addData("BR Power",driveMotors.get(3).getPower());
+                parentOpMode.telemetry.addLine();
+                parentOpMode.telemetry.addData("FL Pos",driveMotors.get(0).getCurrentPosition());
+                parentOpMode.telemetry.addData("FR Pos",driveMotors.get(1).getCurrentPosition());
+                parentOpMode.telemetry.addData("BL Pos",driveMotors.get(2).getCurrentPosition());
+                parentOpMode.telemetry.addData("BR PoS",driveMotors.get(3).getCurrentPosition());
+
+        }
+    }
+
     public void addMotorPowersToTelemetry() {
         parentOpMode.telemetry.addData("FL Power",driveMotors.get(0).getPower());
         parentOpMode.telemetry.addData("FR Power",driveMotors.get(1).getPower());
@@ -208,11 +234,11 @@ public class MaccaDrive {
      ********************/
 
     public static double encoderTicksToInches(double ticks) {
-        return ((WHEEL_RADIUS * 2 * Math.PI)/(MOTOR_CONFIG.getTicksPerRev()*GEAR_RATIO) * ticks);
+        return ((WHEEL_RADIUS * 2 * Math.PI)/(COUNTS_PER_REV * GEAR_RATIO) * ticks);
     }
 
     public static int inchesToEncoderTicks(double inches) {
-        return (int) ((MOTOR_CONFIG.getTicksPerRev()*GEAR_RATIO)/(WHEEL_RADIUS * 2 * Math.PI) * inches);
+        return (int) ((COUNTS_PER_REV*GEAR_RATIO)/(WHEEL_RADIUS * 2 * Math.PI) * inches);
     }
 
     public static double rpmToVelocity(double rpm) {
@@ -225,7 +251,7 @@ public class MaccaDrive {
 
     public static double getTicksPerSec() {
         // note: MotorConfigurationType#getAchieveableMaxTicksPerSecond() isn't quite what we want
-        return (MOTOR_CONFIG.getMaxRPM() * MOTOR_CONFIG.getTicksPerRev() / 60.0);
+        return (MOTOR_CONFIG.getMaxRPM() * COUNTS_PER_REV / 60.0);
     }
 
     @Deprecated
@@ -293,6 +319,7 @@ public class MaccaDrive {
         setMotorModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         parentOpMode.telemetry.addData("Setting Left Target: ", leftTarget);
         parentOpMode.telemetry.addData("Setting Right Target: ", rightTarget);
+        parentOpMode.telemetry.update();
         driveMotors.get(0).setTargetPosition(leftTarget);
         driveMotors.get(2).setTargetPosition(leftTarget);
         driveMotors.get(1).setTargetPosition(rightTarget);
@@ -319,6 +346,10 @@ public class MaccaDrive {
         driveMotors.get(2).setVelocity(velocityLeft);
         driveMotors.get(1).setVelocity(velocityRight);
         driveMotors.get(3).setVelocity(velocityRight);
+    }
+
+    public void runToTargetsInches(double velocityInchesLeft, double velocityInchesRight) {
+        runToTargets(inchesToEncoderTicks(velocityInchesLeft), inchesToEncoderTicks(velocityInchesRight));
     }
 
     /**
@@ -377,11 +408,12 @@ public class MaccaDrive {
     /**
      * REMEMBER: r_out / v_out = r_in / v_in. Therefore, v_in = (v_out * r_in) / r_out.
      * @param radius the radius of the arc. Positive values are to the right of the robot.
+     * @param direction the direction in which the robot should move: -1 is negative, 1 is positive
      * @return a pair of doubles: first is left target, second is right target
      */
-    public Pair<Double, Double> calculateArcLengths(double radius) {
-        double left_length = 2 * Math.PI * (radius + TRACK_WIDTH / 2);
-        double right_length = 2 * Math.PI * (radius - TRACK_WIDTH / 2);
+    public Pair<Double, Double> calculateArcLengths(double radius, int direction) {
+        double left_length = direction * (2 * Math.PI * (radius + TRACK_WIDTH / 2));
+        double right_length = 2 * direction * (Math.PI * (radius - TRACK_WIDTH / 2));
         return new Pair<>(left_length, right_length);
     }
 

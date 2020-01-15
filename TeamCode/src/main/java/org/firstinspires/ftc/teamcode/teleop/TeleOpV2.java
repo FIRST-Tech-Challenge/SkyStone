@@ -22,7 +22,6 @@ public class TeleOpV2 extends OpMode {
         telemetry.clearAll();
         telemetry.addLine("4466 TELEOP v2 | ACTIVE");
         robot.drawTelemetry(); // puts up debug values for use during practice
-        robot.drive.addMotorPowersToTelemetry(); // motor power debug
         telemetry.update();
     }
 

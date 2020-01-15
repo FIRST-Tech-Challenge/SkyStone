@@ -8,9 +8,9 @@ import org.firstinspires.ftc.teamcode.bots.TestBot;
 import org.firstinspires.ftc.teamcode.components.DriveTrain;
 
 
-@Autonomous(name="Time_Auto_Red_No_Platform", group="game")
+@Autonomous(name="Blue_Load_Side_Park", group="game")
 //@Disabled
-public class Time_Auto_Red_No_Platform extends LinearOpMode {
+public class Blue_Load_Side_Park extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -41,6 +41,47 @@ public class Time_Auto_Red_No_Platform extends LinearOpMode {
         runtime.reset();
 
         double angle1 = robot.gyroNavigator.getAngle();
+        //   double angle2 = robot.gyroNavigator2.getAngle();
+
+        //---BEGIN AUTONOMOUS---BEGIN AUTONOMOUS---BEGIN AUTONOMOUS---BEGIN AUTONOMOUS---//
+
+        //With Phone Camera Mounted on Side Pannel
+
+        //robot.logger.logInfo("runOpMode", "Angles: 1:%f", angle1);
+
+        //  with robot in square touching blue bridge and wall
+
+        // with robot orientated with intake towards wall
+
+        // move back 1 tile
+
+        robot.driveTrain.moveBackward(.1, .5);
+
+        // rotate 45 degrees away from the Skybridge
+        robot.driveTrain.gyroRotate(-45, .5);
+
+        // stop do vision
+
+        //Get x-y-z coordinates from vuforia of skystone
+
+        //If no coordinates, move to set position
+
+        //If corrdinate is found (found x and y position), then find the x-y-z position of skystone
+
+        //If x - y matches (23< x <25)recorded position for skystone
+
+
+
+        // if skystone in position 1 (to be determined what position 1 is in coordinates)
+            robot.driveTrain.gyroRotate(135, .5);
+        // if skystone in position 2
+        //    execute sequence picking up from block 2 position
+        // if skystone in position 3
+        //    execute sequence picking up from block 2 position
+
+
+        // after block pickup, return to set position which is tile adjacent to
+        //   alliance and neutral bridge
 
         //SKYSTONE ANALYSIS AND PICKUP PROCEDURE
 
@@ -48,7 +89,7 @@ public class Time_Auto_Red_No_Platform extends LinearOpMode {
         robot.driveTrain.moveBackward(.30, .75);
 
         //Rotate the back of the robot towards the build platform
-        robot.driveTrain.gyroRotate(-95, .75, true, false);
+        robot.driveTrain.gyroRotate(85, .75, true, false);
 
         //Move the robot so that it is touching the build platform
         robot.driveTrain.moveBackward(0.6, 0.5);
@@ -83,45 +124,10 @@ public class Time_Auto_Red_No_Platform extends LinearOpMode {
         while(runtime.seconds() < 60){
             robot.driveTrain.moveForward(0.5, 1);
             if(robot.skystoneFinder.canSeeSkystone()){
-                robot.driveTrain.move(.5, .1,  .1);
+                robot.driveTrain.moveForward(.5, 1);
 
             }
         }
-
-        //With Phone Camera Mounted on Side Pannel
-
-        //robot.logger.logInfo("runOpMode", "Angles: 1:%f", angle1);
-
-        //  with robot in square touching blue bridge and wall
-
-        // with robot orientated with intake towards wall
-
-        // move back 1 tile
-        robot.driveTrain.moveBackward(.1, .5);
-        // rotate 45 degrees away from bridge
-        robot.driveTrain.gyroRotate(-45, .5);
-        // stop do vision
-        //Get x-y-z coordinates from vuforia of skystone
-
-        //If no coordinates, move to set position
-
-        //If corrdinate is found (found x and y position), then find the x-y-z position of skystone
-
-        //If x - y matches (23< x <25)recorded position for skystone
-
-
-
-        // if skystone in position 1 (to be determined what position 1 is in coordinates)
-        //    execute sequence picking up from block 1 position
-        // if skystone in position 2
-        //    execute sequence picking up from block 2 position
-        // if skystone in position 3
-        //    execute sequence picking up from block 2 position
-
-
-        // after block pickup, return to set position which is tile adjacent to
-        //   alliance and neutral bridge
-
 
         // Show the elapsed game time.
         robot.logger.logInfo("runOpMode", "===== [ Autonomous Complete ] Run Time: %s", runtime.toString());

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.ops.gyrotest;
+package org.firstinspires.ftc.teamcode.ops.game;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -8,9 +8,9 @@ import org.firstinspires.ftc.teamcode.bots.TestBot;
 import org.firstinspires.ftc.teamcode.components.DriveTrain;
 
 
-@Autonomous(name="Plan_B_Autonomous_Blue_Side", group="game")
+@Autonomous(name="Red_Load_Side_Bridge", group="game")
 //@Disabled
-public class Plan_B_Autonomous_Blue_Side extends LinearOpMode {
+public class Red_Load_Side_Bridge extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -50,7 +50,14 @@ public class Plan_B_Autonomous_Blue_Side extends LinearOpMode {
            robot.driveTrain.encoderDrive(1, -10);
            robot.driveTrain.encoderDrive(1, 10); */
 
-        robot.driveTrain.moveBackward(0.63, -0.5);
+        //Move the robot down the field twoards the build platform
+        robot.driveTrain.moveBackward(.95, -.75);
+
+        //Rotate the back of the robot twoards the build platform
+        robot.driveTrain.gyroRotate(-88, .75, true, false);
+
+        //Move the robot so that it is touching the build platform
+        robot.driveTrain.moveBackward(0.72, -0.5);
 
         //Pause to let the robot stop moving
         robot.driveTrain.pause(2 );
@@ -63,10 +70,12 @@ public class Plan_B_Autonomous_Blue_Side extends LinearOpMode {
         robot.driveTrain.pause(2);
 
         //Pull the platform twoards the build zone
-        robot.driveTrain.moveForward(1.35, -0.5);
+        robot.driveTrain.moveForward(1.25, -0.5);
 
         //Move because the robot can not fine adjust to make the gyro happy with the platform in tow
-        robot.driveTrain.move(1.1, 1, -1);
+        robot.driveTrain.move(1.1, -1, 1);
+
+        //robot.driveTrain.gyroRotate(95, .5);
 
         //Move the servos up to release the platform
         robot.grapple.servoMoveUp();
@@ -79,13 +88,9 @@ public class Plan_B_Autonomous_Blue_Side extends LinearOpMode {
         robot.driveTrain.pause(.25);
 
         //Move the robot to park under the skybridge
-        robot.driveTrain.moveForward(.9,  -.75);
+        robot.driveTrain.moveForward(0.55,  -.75);
 
         robot.driveTrain.crabRight(0.6);
-
-        stop();
-
-
 
         stop();
         /*

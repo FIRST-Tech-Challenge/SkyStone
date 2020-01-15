@@ -44,7 +44,7 @@ public class LiftTest extends LinearOpMode {
             }
 
             if (egamepad2.a.released){
-                Lift.MoveUpTime(0.5);
+                Lift.MoveUpTime(0.4);
             }
 
             telemetry.update();

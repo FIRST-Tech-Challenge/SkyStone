@@ -8,6 +8,7 @@ import org.firstinspires.ftc.robotcore.internal.opmode.OpModeManagerImpl;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 //This part is importing information from other programs
+import org.firstinspires.ftc.teamcode.SubAssembly.Lift.LiftControl;
 import org.firstinspires.ftc.teamcode.SubAssembly.FoundationGrabber.FoundationGrabberControl;
 import org.firstinspires.ftc.teamcode.SubAssembly.Grabber.GrabberControl;
 import org.firstinspires.ftc.teamcode.SubAssembly.DriveTrain.DriveControl;
@@ -22,6 +23,7 @@ public class newAutonomous extends LinearOpMode{
     GrabberControl Grabber = new GrabberControl();
     ConceptVuforiaSkyStoneNavigationWebcam Webcam = new ConceptVuforiaSkyStoneNavigationWebcam();
     FoundationGrabberControl FoundationGrabber = new FoundationGrabberControl();
+    LiftControl Lift = new LiftControl();
 
     //State setup
     private void newState(State newState) {
@@ -178,11 +180,11 @@ public class newAutonomous extends LinearOpMode{
                     telemetry.update();
                     Drive.moveForwardDistance(0.8, 57.0);
                     Drive.turnLeftDistance(0.8, 100);
-                    /*Lift up the grabber slightly*/
+                    Lift.MoveUpTime(0.4);
                     Drive.moveForwardDistance(0.8,60.0);
                     Grabber.open();
                     Drive.moveBackwardDistance(0.8,60);
-                    /*Lower lift*/
+                    Lift.MoveDownTime(0.4);
                     /*Drive backwards until under skybridge*/
                     newState(State.Stop);
                     break;

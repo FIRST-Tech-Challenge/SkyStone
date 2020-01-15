@@ -81,6 +81,12 @@ public class LiftControl {/* Constants */
         LifterRightM.setPower(-LIFT_SPEED);
     }
 
+    public void MoveDownTime (double time){
+        LifterLeftM.setPower(-LIFT_SPEED);
+        LifterRightM.setPower(-LIFT_SPEED);
+        TimeDelay(time);
+    }
+
     public void Stop() {
         LifterLeftM.setPower(0);
         LifterRightM.setPower(0);

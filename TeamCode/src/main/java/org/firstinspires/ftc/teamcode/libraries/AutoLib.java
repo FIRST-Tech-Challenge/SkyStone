@@ -736,7 +736,7 @@ public class AutoLib {
 
         robot.setServoPosition(SERVO_ARM, SERVO_ARM_POS_SCORE);
 
-        Thread.sleep(250);
+        Thread.sleep(1500);
 
         robot.setDcMotorPower(MOTOR_ARM, .7f);
 
@@ -794,7 +794,7 @@ public class AutoLib {
         ElapsedTime time = new ElapsedTime();
 
         robot.setDcMotorPower(MOTOR_ARM, -1f);
-        while (time.seconds() <= 1) {
+        while (time.seconds() <= .7f) {
             opMode.idle();
         }
         robot.setDcMotorPower(MOTOR_ARM, 0);

@@ -9,7 +9,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 
-@Autonomous(name = "PICK ME FOR RED!!!", group = "Concept")
+@Autonomous(name = "Red No Vuforia", group = "Concept")
 
 public class Red extends LinearOpMode {
 

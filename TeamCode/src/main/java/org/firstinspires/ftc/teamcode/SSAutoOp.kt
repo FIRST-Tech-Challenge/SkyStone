@@ -1,7 +1,4 @@
 package org.firstinspires.ftc.teamcode
-
-
-
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
@@ -15,7 +12,7 @@ import com.qualcomm.robotcore.hardware.DcMotor
 //@Disabled
 class SSAutoOp : LinearOpMode()
 {
-    val robot = SSRobot()
+    val robot = SSMechRobot()
 
     @Throws(InterruptedException::class)
     override fun runOpMode() {
@@ -27,43 +24,26 @@ class SSAutoOp : LinearOpMode()
         //robot.vSlide?.mode = DcMotor.RunMode.RUN_USING_ENCODER
         robot.vSlide?.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         waitForStart()
-        robot.vSlide?.power = 0.60
-        sleep(2000)
-        robot.drive(0.50)
-        sleep(750)
-        robot.claw?.position = 1.0
-        robot.hSlide?.position = 0.01
-        robot.hSlide?.position = 0.01
-        //robot.vSlide?.power = -0.60
-        //sleep(200)
-        //robot.vSlide!!.targetPosition = robot.vSlide!!.currentPosition //sets initial positon to target later
-        //robot.vSlide?.power = 0.60 //raise vertical slide
-        //robot.hSlide?.position = 0.01 //extend h slide
-        //sleep(1500)
-        robot.vSlide?.power = 0.0
-        robot.hSlide?.position = 0.5 //Sets hSlide to no power
-        //robot.claw?.position = 1.0
-        robot.leftDrive?.power = 0.52
-        robot.rightDrive?.power = 0.5
-        sleep(1500)
-        robot.leftDrive?.power = 0.75
-        sleep(500)
-        robot.rightDrive?.power = 0.75
-        sleep(450)
-        robot.leftDrive?.power = 0.52
-        robot.rightDrive?.power = 0.5
-        sleep(150)
-        robot.leftDrive?.power = -0.52
-        robot.rightDrive?.power = 0.5
-        sleep(100)
-        robot.vSlide?.power = -0.60
-        sleep(2000)
-        /*robot.vSlide?.mode = DcMotor.RunMode.RUN_TO_POSITION //runs back to initial position
-        sleep(500)
-        robot.vSlide?.mode = DcMotor.RunMode.RUN_USING_ENCODER //runs back to initial position
-        robot.vSlide?.power = 0.0*/
-        robot.drive(-0.75) //drive backward
-        sleep(3500)
+        robot.leftHook?.position = 0.0
+        robot.rightHook?.position = 0.0
+/*        robot.strafe(1.0) //align with foundation
+        sleep(800)*/
+        robot.brake()
+        robot.bLDrive?.power = (-0.5) //left
+        robot.bRDrive?.power = (0.5)
+        robot.fLDrive?.power = (0.5)
+        robot.fRDrive?.power = (-0.5)
+
+        //br == -      RIGHT
+        //bl ==
+        //fr ==
+        //fl == -
+        sleep(4000)
+        /*sleep(100)
+        robot.strafe(1.0)
+        sleep(750)*/
+        robot.drive(0.50) //Drives Forward to the Foundation
+        sleep(2500)
         robot.brake()
 
 

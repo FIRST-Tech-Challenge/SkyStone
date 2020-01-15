@@ -82,10 +82,10 @@ class SSMechRobot {
         fRDrive?.power = -pow
     }
 
-    fun strafe(pow: Double) //Positive Value = Right Strafe || Negative Value = Left Strafe
+    fun strafe(pow: Double) //Positive Value = Left Strafe || Negative Value = Right Strafe
     {
-        bLDrive?.power = pow
-        fLDrive?.power = -pow
+        bLDrive?.power = -pow
+        fLDrive?.power = pow
         bRDrive?.power = pow
         fRDrive?.power = -pow
     }

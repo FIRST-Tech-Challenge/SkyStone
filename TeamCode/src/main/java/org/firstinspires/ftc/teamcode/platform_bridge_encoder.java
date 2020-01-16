@@ -180,7 +180,7 @@ public class platform_bridge_encoder extends LinearOpMode {
 
             //Unfold the robot and move slightly forward
 
-            if (front_left.getCurrentPosition() <= 921 && UnfoldComplete == false){
+            if (front_left.getCurrentPosition() <= 921 && UnfoldComplete == false) {
 
                 front_left.setPower(.8);
                 front_right.setPower(.8);
@@ -208,7 +208,7 @@ public class platform_bridge_encoder extends LinearOpMode {
 
             //Move forward and clamp the platform
 
-            if (front_left.getCurrentPosition() <= 1921 && Stage1 == true) {
+            if (front_left.getCurrentPosition() <= 8921 && Stage1 == true) {
 
                 front_left.setPower(.8);
                 front_right.setPower(.8);
@@ -216,7 +216,7 @@ public class platform_bridge_encoder extends LinearOpMode {
                 rear_right.setPower(.8);
 
 
-            } else if(Stage1 == false){
+            } else if(Stage1 == true){
 
                 front_left.setPower(0);
                 front_right.setPower(0);
@@ -226,7 +226,6 @@ public class platform_bridge_encoder extends LinearOpMode {
                 Clamp_Right.setPosition(0.15f);
                 Stage1 = false;
                 Stage2 = true;
-                sleep(500);
                 telemetry.addData("Front_Left Encoder Value -", front_left.getCurrentPosition());
                 telemetry.addData("Stage 1"," Complete");
                 telemetry.update();

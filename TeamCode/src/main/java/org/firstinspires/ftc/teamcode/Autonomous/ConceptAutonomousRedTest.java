@@ -26,7 +26,7 @@ public class ConceptAutonomousRedTest extends LinearOpMode {
     double extenderEncoderValue = 3.5;
     double extenderFoundationValue = 4;
     double liftEncoderValue = 1.5;
-    double liftStartOffset = 0.5;
+    double liftStartOffset = 0.75;
     double liftFoundationValue = 1;
 
     @Override
@@ -50,7 +50,7 @@ public class ConceptAutonomousRedTest extends LinearOpMode {
         if (opModeIsActive() ) {
             controlledExtender.start(extenderEncoderValue, 0.4);
 
-            controlledDrive.start(70, 0, 0.4);
+            controlledDrive.start(65, 0, 0.4);
             while(!controlledDrive.endReached() && opModeIsActive()) {}
             controlledDrive.stop();
 

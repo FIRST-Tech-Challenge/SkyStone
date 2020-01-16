@@ -39,7 +39,7 @@ public class HardwareGyro {
         parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
         parameters.loggingEnabled      = true;
-        parameters.loggingTag          = "IMU";
+        parameters.loggingTag          = "imu"; // THIS WAS "IMU" NOT "imu"
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
 
         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port

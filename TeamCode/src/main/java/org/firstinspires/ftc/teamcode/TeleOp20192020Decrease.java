@@ -44,7 +44,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
  */
 
 @TeleOp(name = "Tele-Op 2019 - 2020Decrease", group = "Linear Opmode")
-@Disabled
+//@Disabled
 public class TeleOp20192020Decrease extends LinearOpMode {
 
     // Declare OpMode members.

@@ -180,20 +180,23 @@ public class platform_bridge_encoder extends LinearOpMode {
 
             //Unfold the robot and move slightly forward
 
-            if (front_left.getCurrentPosition() <= 321 && UnfoldComplete == false) {
+            if (front_left.getCurrentPosition() <= 921 && UnfoldComplete == false){
 
                 front_left.setPower(.8);
                 front_right.setPower(.8);
                 rear_left.setPower(.8);
                 rear_right.setPower(.8);
+                lift_left.setPower(.8);
+                lift_right.setPower(.8);
 
-
-            } else if(UnfoldComplete == false){
+            } else if (UnfoldComplete == false){
 
                 front_left.setPower(0);
                 front_right.setPower(0);
                 rear_left.setPower(0);
                 rear_right.setPower(0);
+                lift_left.setPower(0);
+                lift_right.setPower(0);
                 Feeder_Servo.setPosition(1);
                 UnfoldComplete = true;
                 Stage1 = true;
@@ -232,7 +235,7 @@ public class platform_bridge_encoder extends LinearOpMode {
 
             //Move backwards
 
-            if (front_left.getCurrentPosition() >= 500 && Stage2 == true) {
+            if (front_left.getCurrentPosition() >= 700 && Stage2 == true) {
 
                 front_left.setPower(-.8);
                 front_right.setPower(-.8);
@@ -251,7 +254,7 @@ public class platform_bridge_encoder extends LinearOpMode {
 
             //Turn Left
 
-            if (front_left.getCurrentPosition() >= 2000 && Stage3 == true) {
+            if (front_left.getCurrentPosition() <= 2000 && Stage3 == true) {
 
                 front_left.setPower(.8);
                 front_right.setPower(-.8);
@@ -274,7 +277,7 @@ public class platform_bridge_encoder extends LinearOpMode {
 
             //Move Forward
 
-            if (front_left.getCurrentPosition() >= 3000 && Stage4 == true) {
+            if (front_left.getCurrentPosition() >= -1000 && Stage4 == true) {
 
                 front_left.setPower(.8);
                 front_right.setPower(.8);

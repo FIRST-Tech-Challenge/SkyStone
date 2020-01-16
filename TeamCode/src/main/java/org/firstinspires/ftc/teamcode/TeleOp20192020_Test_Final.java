@@ -65,9 +65,10 @@ public class TeleOp20192020_Test_Final extends LinearOpMode {
     private Servo Block_Pickup = null;
     private Servo End_Left = null;
     private Servo End_Right = null;
-    private Servo Block_Kickout = null;
+    //private Servo Block_Kickout = null;
     private Servo Capstone = null;
     private Servo Release_Servo = null;
+    private Servo Release_Servo2 = null;
     private DigitalChannel Top_Sensor_Front = null;
     private DigitalChannel Top_Sensor_Rear = null;
     private DigitalChannel bottom_touch = null;
@@ -139,8 +140,9 @@ public class TeleOp20192020_Test_Final extends LinearOpMode {
         Capstone = hardwareMap.get(Servo.class, "Capstone");
         End_Left = hardwareMap.get(Servo.class, "End_Left");
         End_Right = hardwareMap.get(Servo.class, "End_Right");
-        Block_Kickout = hardwareMap.get(Servo.class, "Block_Kickout");
+        //Block_Kickout = hardwareMap.get(Servo.class, "Block_Kickout");
         Release_Servo = hardwareMap.get(Servo.class, "Release_Servo");
+        Release_Servo2 = hardwareMap.get(Servo.class, "Release_Servo2");
         Top_Sensor_Rear = hardwareMap.get(DigitalChannel.class, "Top_Sensor_Rear");
         Top_Sensor_Front = hardwareMap.get(DigitalChannel.class, "Top_Sensor_Front");
         bottom_touch = hardwareMap.get(DigitalChannel.class, "bottom_touch");
@@ -156,10 +158,16 @@ public class TeleOp20192020_Test_Final extends LinearOpMode {
         rear_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rear_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        front_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        front_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rear_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rear_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        front_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        front_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        rear_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        rear_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+// 1-11-2020 TEst of running with encoders SCP
+        front_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        front_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rear_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rear_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
         // set digital channel to input mode.
@@ -550,6 +558,10 @@ public class TeleOp20192020_Test_Final extends LinearOpMode {
         if (gamepad2.y) {
             telemetry.addData("ReleaseServo", "feeder release");
             Release_Servo.setPosition(0.2);
+          //  sleep(1000);
+            Release_Servo2.setPosition(1);
+            sleep(1000);
+            feeder_motor.setPower(1);
         }
     }
 

@@ -89,7 +89,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 
 @TeleOp(name="Vision_Targeting_Test", group ="Concept")
-@Disabled
+//@Disabled
 
 public class Vision_Target_Test extends LinearOpMode {
 
@@ -144,7 +144,7 @@ public class Vision_Target_Test extends LinearOpMode {
     private float phoneYRotate = 0;
     private float phoneZRotate = 0;
 
-    private ElapsedTime runtime = new ElapsedTime();
+   /* private ElapsedTime runtime = new ElapsedTime();
     private DcMotor front_left = null;
     private DcMotor rear_left = null;
     private DcMotor front_right = null;
@@ -174,7 +174,7 @@ public class Vision_Target_Test extends LinearOpMode {
     private float front_left_modifier = 0;
     private float rear_left_modifier = 0;
     private float front_right_modifier = 0;
-    private float rear_right_modifier = 0;
+    private float rear_right_modifier = 0; */
 
 
     float feederServoPosition = 0;
@@ -182,7 +182,7 @@ public class Vision_Target_Test extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        front_left = hardwareMap.get(DcMotor.class, "front_left");
+       /* front_left = hardwareMap.get(DcMotor.class, "front_left");
         rear_left = hardwareMap.get(DcMotor.class, "rear_left");
         front_right = hardwareMap.get(DcMotor.class, "front_right");
         rear_right = hardwareMap.get(DcMotor.class, "rear_right");
@@ -233,7 +233,7 @@ public class Vision_Target_Test extends LinearOpMode {
         lift_left.setDirection(DcMotor.Direction.REVERSE);
         lift_right.setDirection(DcMotor.Direction.REVERSE);
         feeder_motor.setDirection(DcMotor.Direction.REVERSE);
-        top_motor.setDirection(DcMotor.Direction.FORWARD);
+        top_motor.setDirection(DcMotor.Direction.FORWARD); */
 
         /*
          * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
@@ -455,13 +455,13 @@ public class Vision_Target_Test extends LinearOpMode {
                 if (xPosition < -5 && Skystone_Locked == false) {
                     positionSkystone = "Left";
                     Skystone_Is_Left = true;
-                    //Skystone_Locked = true;
+                    Skystone_Locked = true;
                     //telemetry.addData("Skystone Location", "Locked");
                     telemetry.update();
                 } else {
                     positionSkystone = "Center";
                     Skystone_Is_Center = true;
-                    //Skystone_Locked = true;
+                    Skystone_Locked = true;
                     //telemetry.addData("Skystone Location", "Locked");
                     telemetry.update();
                 }
@@ -471,7 +471,7 @@ public class Vision_Target_Test extends LinearOpMode {
 
                     positionSkystone = "Right";
                     Skystone_Is_Center = true;
-                    //Skystone_Locked = true;
+                    Skystone_Locked = true;
                     //telemetry.addData("Skystone Location", "Locked");
                     telemetry.addData("Visible Target", "none");
                     telemetry.update();
@@ -486,18 +486,84 @@ public class Vision_Target_Test extends LinearOpMode {
 
 
             }
+            if (positionSkystone == "Right" && Skystone_Locked == true) {
+
+                telemetry.addData("Skystone","Right");
+                telemetry.update();
+
+               /* front_left.setPower(1);
+                rear_left.setPower(-1);
+                front_right.setPower(-1);
+                rear_right.setPower(1);
+
+                sleep (500);
+
+                front_left.setPower(0);
+                rear_left.setPower(0);
+                front_right.setPower(0);
+                rear_right.setPower(0); */
+
+            } else if (positionSkystone == "Center" && Skystone_Locked == true) {
+
+                telemetry.addData("Skystone", "Center");
+                telemetry.update();
+
+               /* front_left.setPower(1);
+                rear_left.setPower(1);
+                front_right.setPower(1);
+                rear_right.setPower(1);
+
+                sleep (500);
+
+                front_left.setPower(0);
+                rear_left.setPower(0);
+                front_right.setPower(0);
+                rear_right.setPower(0); */
+
+            } else if (positionSkystone == "Left" && Skystone_Locked == true) {
+
+                telemetry.addData("Skystone", "Left");
+                telemetry.update();
+
+               /* front_left.setPower(-1);
+                rear_left.setPower(1);
+                front_right.setPower(1);
+                rear_right.setPower(-1);
+
+                sleep (500);
+
+                front_left.setPower(0);
+                rear_left.setPower(0);
+                front_right.setPower(0);
+                rear_right.setPower(0); */
+
+            } else if (Skystone_Locked == true) {
+
+
+                telemetry.addData("Error - ", "No Target");
+                telemetry.update();
+
+
+            } else {
+
+
+                telemetry.addData("Error - ", "Not Locked");
+                telemetry.update();
+
+
+            }
 
             // Disable Tracking when we are done;
-            targetsSkyStone.deactivate();
+            //targetsSkyStone.deactivate();
         }
-
+/*
         front_left.setPower(0);
         rear_left.setPower(0);
         front_right.setPower(0);
         rear_right.setPower(0);
 
-        waitForStart();
-        runtime.reset();
+       //waitForStart();
+        //runtime.reset();
         Skystone_Locked = true;
         telemetry.addData("Skystone Location", "Locked");
         telemetry.update();
@@ -558,7 +624,7 @@ public class Vision_Target_Test extends LinearOpMode {
             telemetry.update();
 
 
-        }
+        }  */
 
     }
 

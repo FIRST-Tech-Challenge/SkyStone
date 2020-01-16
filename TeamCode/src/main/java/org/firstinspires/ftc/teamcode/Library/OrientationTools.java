@@ -4,7 +4,9 @@
 
 package org.firstinspires.ftc.teamcode.Library;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -114,6 +116,47 @@ public class OrientationTools {
         if (o <this.MINSPEED && o>0){ o = 0.3;} //0.15
         if(o> -this.MINSPEED && o <0){o = -0.3;} //0.15
         return o;
+    }
+
+    public double getDegree360(BNO055IMU imu){
+        return 180+imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).secondAngle;
+    }
+
+    public void driveSidewardTime(long timeInMillis, double power, double smoothness, BNO055IMU imu, OmniWheel wheel, OpMode op){
+        double current = this.getDegree360(imu);
+        long timeStart = System.currentTimeMillis();
+        int msStuckinLoopStart = op.msStuckDetectLoop;
+        op.msStuckDetectLoop = 1073741824;
+        while (timeStart + timeInMillis > System.currentTimeMillis()) {
+            double offset = this.getDegree360(imu) - current;
+            wheel.setMotors(0, power, offset / smoothness);
+        }
+
+        op.msStuckDetectLoop = msStuckinLoopStart;
+    }
+
+    public void driveSidewardEncoder(int[] EncoderValues, double power, double smoothness, BNO055IMU imu, OmniWheel wheel, OpMode op){
+        double current = this.getDegree360(imu);
+        double offset;
+        int msStuckinLoopStart = op.msStuckDetectLoop;
+        op.msStuckDetectLoop = 1073741824;
+        int[] encValuesStart = new int[4];
+        encValuesStart = new int[]{
+                              wheel.robot.motor_front_left.getCurrentPosition(),
+                              wheel.robot.motor_front_right.getCurrentPosition(),
+                              wheel.robot.motor_rear_left.getCurrentPosition(),
+                              wheel.robot.motor_rear_right.getCurrentPosition()};
+        int[] encValuesCurrent = new int[4];
+        for(int[] diffrence,stop,encValuesCurrent = new int[]{
+                                                                encValuesStart[0]-wheel.robot.motor_front_left.getCurrentPosition(),
+                                                                encValuesStart[0]-wheel.robot.motor_front_right.getCurrentPosition(),
+                                                                encValuesStart[0]-wheel.robot.motor_rear_left.getCurrentPosition(),
+                                                                encValuesStart[0]-wheel.robot.motor_rear_right.getCurrentPosition()}){
+            offset  = this.getDegree360(imu) - current;
+            wheel.setMotors(0, power, offset / smoothness);
+        }
+
+        op.msStuckDetectLoop = msStuckinLoopStart;
     }
 
 

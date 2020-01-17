@@ -79,9 +79,11 @@ public class Blue_Build_Side_Wall extends LinearOpMode {
         robot.driveTrain.pause(.25);
 
         //Move the robot to park under the skybridge
-        robot.driveTrain.moveForward(.9,  -.75);
+        robot.driveTrain.moveForward(.2,  -.75);
 
-        robot.driveTrain.crabRight(0.6);
+        robot.driveTrain.crabRight(0.9);
+
+        robot.driveTrain.moveForward(.7, -.75);
 
         stop();
 

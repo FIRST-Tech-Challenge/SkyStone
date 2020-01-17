@@ -40,8 +40,8 @@ public class Grapple extends BotComponent {
     public Servo servo = null;
     public Servo servo2 = null;
     double SERVO_DOWN_POSITION = 0.77;
-    double SERVO_UP_POSITION = 0.1;
-    double SERVO2_DOWN_POSITION = 0.77;
+    double SERVO_UP_POSITION = -0.2;
+    double SERVO2_DOWN_POSITION = 0.9;
     double SERVO2_UP_POSITION = 0.1;
 public Grapple(){
 }
@@ -66,7 +66,7 @@ public void servoMoveDown(){
 public void servo2MoveDown(){servo2.setPosition(SERVO_UP_POSITION);
 }
 
-public void servoMoveUp(){servo.setPosition(0.3);
+public void servoMoveUp(){servo.setPosition(SERVO2_UP_POSITION);
 }
 
 public void servo2MoveUp(){servo2.setPosition(SERVO_DOWN_POSITION);

@@ -66,14 +66,14 @@ public class Blue_Build_Side_Wall extends LinearOpMode {
         robot.driveTrain.moveForward(1.35, -0.5);
 
         //Move because the robot can not fine adjust to make the gyro happy with the platform in tow
-        robot.driveTrain.move(1.1, 1, -1);
+        robot.driveTrain.move(1.5, 0.7, -0.7);
 
         //Move the servos up to release the platform
         robot.grapple.servoMoveUp();
         robot.grapple.servo2MoveUp();
 
         //Push the build platform to the wall to score it
-        robot.driveTrain.moveBackward(.72, -.75);
+        robot.driveTrain.moveBackward(.62, -.75);
 
         //Pause to let the robot stop moving
         robot.driveTrain.pause(.25);
@@ -83,7 +83,7 @@ public class Blue_Build_Side_Wall extends LinearOpMode {
 
         robot.driveTrain.crabRight(0.9);
 
-        robot.driveTrain.moveForward(.7, -.75);
+        robot.driveTrain.moveForward(.2, -.75);
 
         stop();
 

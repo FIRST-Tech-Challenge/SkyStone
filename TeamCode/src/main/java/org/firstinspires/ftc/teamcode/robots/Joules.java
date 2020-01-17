@@ -80,18 +80,17 @@ public class Joules  {
     //Robot driving
     public void DriveForward(double speed){
         TaskHandler.pauseTask(VEER_CHECK_TASK_KEY);
-        FrontLeft.setPower(speed);
-        FrontRight.setPower(-speed);
-        BackLeft.setPower(speed);
-        BackRight.setPower(-speed);
-    }
-    public void DriveBackward(double speed){
-        TaskHandler.pauseTask(VEER_CHECK_TASK_KEY);
         FrontLeft.setPower(-speed);
         FrontRight.setPower(speed);
         BackLeft.setPower(-speed);
         BackRight.setPower(speed);
-
+    }
+    public void DriveBackward(double speed){
+        TaskHandler.pauseTask(VEER_CHECK_TASK_KEY);
+        FrontLeft.setPower(speed);
+        FrontRight.setPower(-speed);
+        BackLeft.setPower(speed);
+        BackRight.setPower(-speed);
     }
     public void StrafeLeft(double speed){
         TaskHandler.pauseTask(VEER_CHECK_TASK_KEY);
@@ -179,7 +178,7 @@ public class Joules  {
   //  }
 
     public void DaffyUp(){
-        Daffy.setPosition(0);
+        Daffy.setPosition(0.5);
     }
     public void DaffyGrab(){
         Daffy.setPosition(1);

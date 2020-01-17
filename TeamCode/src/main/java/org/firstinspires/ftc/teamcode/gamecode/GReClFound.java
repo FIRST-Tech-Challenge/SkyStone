@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.robots.Joules;
 
 @Autonomous
 
-public class GBlFarFound extends AutoOpMode {
+public class GReClFound extends AutoOpMode {
     private VoltageSensor ExpansionHub2_VoltageSensor;
     public void runOp() throws InterruptedException {
         Joules joules = new Joules();
@@ -24,6 +24,7 @@ public class GBlFarFound extends AutoOpMode {
         joules.FoundationDrop();
         joules.DaffyUp();
         joules.TapeMeasurePush();
+
         waitForStart();
 
         /*joules.SlidesUp();
@@ -38,13 +39,13 @@ public class GBlFarFound extends AutoOpMode {
         sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 100));
         joules.Stop();
 
-        joules.StrafeLeft(0.3);
+        joules.StrafeRight(0.3);
         sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 1100));
         joules.Stop();
 
         sleep(100);
 
-        joules.StrafeRight(0.3);
+        joules.StrafeLeft(0.3);
         sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 500));
         joules.Stop();
 
@@ -82,7 +83,7 @@ public class GBlFarFound extends AutoOpMode {
 //        }
 //        joules.Stop();
 
-        joules.StrafeRight(0.5);
+        joules.StrafeLeft(0.5);
         sleep(1150);
         joules.Stop();
 
@@ -90,14 +91,8 @@ public class GBlFarFound extends AutoOpMode {
         sleep(600);
         joules.SlidesStop();
 
-        joules.DriveForward(0.4);
-        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(),650));
-        joules.Stop();
-
-        sleep(100);
-
-        joules.StrafeRight(0.5);
-        sleep(1000);
+        joules.StrafeLeft(0.5);
+        sleep(900);
         joules.Stop();
 
 

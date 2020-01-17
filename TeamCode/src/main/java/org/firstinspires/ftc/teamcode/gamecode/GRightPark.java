@@ -16,6 +16,8 @@ public class GRightPark extends AutoOpMode {
         ExpansionHub2_VoltageSensor =  hardwareMap.voltageSensor.get("Expansion Hub 2");
 
         telemetry.addData("Status", "initialized");
+        joules.TapeMeasurePush();
+
         waitForStart();
 
         joules.DriveForward(0.5);

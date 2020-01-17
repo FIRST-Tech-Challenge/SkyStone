@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.robots.Joules;
 
 @Autonomous
 
-public class GREClFound extends AutoOpMode {
+public class GReFarFound extends AutoOpMode {
     private VoltageSensor ExpansionHub2_VoltageSensor;
     public void runOp() throws InterruptedException {
         Joules joules = new Joules();
@@ -23,6 +23,8 @@ public class GREClFound extends AutoOpMode {
         telemetry.addData("Status", "initialized");
         joules.FoundationDrop();
         joules.DaffyUp();
+        joules.TapeMeasurePush();
+
         waitForStart();
 
         /*joules.SlidesUp();
@@ -89,8 +91,14 @@ public class GREClFound extends AutoOpMode {
         sleep(600);
         joules.SlidesStop();
 
+        joules.DriveForward(0.4);
+        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(),650));
+        joules.Stop();
+
+        sleep(100);
+
         joules.StrafeLeft(0.5);
-        sleep(900);
+        sleep(1000);
         joules.Stop();
 
 

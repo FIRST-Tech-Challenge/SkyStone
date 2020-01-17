@@ -24,6 +24,7 @@ public class GBlClFound extends AutoOpMode {
         telemetry.addData("Status", "initialized");
         joules.FoundationDrop();
         joules.DaffyUp();
+        joules.TapeMeasurePush();
         waitForStart();
 
         /*joules.SlidesUp();

@@ -49,8 +49,8 @@ public Grapple(Logger aLogger, OpMode aOpMode, String servoName, String servoNam
     super(aLogger, aOpMode);
     //define and initialize motors
     logger.logDebug("initservo", "IamWalrus");
-    servo = initServo(servoName, SERVO2_UP_POSITION);
-    servo2 = initServo(servoName2, SERVO_DOWN_POSITION);
+    servo = initServo(servoName, 0.2);
+    servo2 = initServo(servoName2, 0.77);
     if(servo != null && servo2 != null){
         isAvailable = true;
     }
@@ -66,7 +66,7 @@ public void servoMoveDown(){
 public void servo2MoveDown(){servo2.setPosition(SERVO_UP_POSITION);
 }
 
-public void servoMoveUp(){servo.setPosition(SERVO2_UP_POSITION);
+public void servoMoveUp(){servo.setPosition(0.3);
 }
 
 public void servo2MoveUp(){servo2.setPosition(SERVO_DOWN_POSITION);

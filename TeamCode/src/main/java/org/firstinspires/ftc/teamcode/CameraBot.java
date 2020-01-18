@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -21,6 +22,17 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
 public class CameraBot extends PinchArmBot {
+    public class Area extends Object{
+        public int x;
+        public int y;
+        public int width;
+        public int height;
+    }
+
+    Area box1 = new Area();
+    Area box2 = new Area();
+    Area box3 = new Area();
+
     public CameraBot(LinearOpMode opMode) {
         super(opMode);
     }
@@ -74,6 +86,18 @@ public class CameraBot extends PinchArmBot {
 
     @Override
     public void init(HardwareMap ahwMap) {
+        box1.x = 550;
+        box1.y = 100;
+        box1.width = 100;
+        box1.height = 200;
+        box2.x = 550;
+        box2.y = 300;
+        box2.width = 100;
+        box2.height = 200;
+        box3.x = 550;
+        box3.y = 500;
+        box3.width = 100;
+        box3.height = 200;
         super.init(ahwMap);
 
         initVuforia();
@@ -85,7 +109,25 @@ public class CameraBot extends PinchArmBot {
 
     }
 
-    public void takePhoto() {
+    final int NOSKYSTONE = 0;
+    final int SKYSTONE1 = 1;
+    final int SKYSTONE2 = 2;
+    final int SKYSTONE3 = 3;
+
+    protected void printAndSave(Bitmap bmp, int average, String label){
+//        opMode.telemetry.log().add("Image %s with %d x %d and average RGB (%d, %d, %d)", label, bmp.getWidth(), bmp.getHeight(), Color.red(average), Color.green(average), Color.blue(average));
+        opMode.telemetry.log().add("Image %s with %d x %d and average RGB #%02X #%02X #%02X", label, bmp.getWidth(), bmp.getHeight(), Color.red(average), Color.green(average), Color.blue(average));
+        opMode.telemetry.update();
+        opMode.sleep (3 * 1000);
+        try (FileOutputStream out = new FileOutputStream(String.format("/sdcard/FIRST/ftc_%s.png", label))) {
+            bmp.compress(Bitmap.CompressFormat.PNG, 100, out);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public int detectSkystone() {
         BlockingQueue<VuforiaLocalizer.CloseableFrame> queue = vuforia.getFrameQueue();
 
         try {
@@ -95,22 +137,69 @@ public class CameraBot extends PinchArmBot {
             opMode.telemetry.log().add("Image #0 type = %d with %d x %d", image.getFormat(), image.getWidth(), image.getHeight());
             opMode.telemetry.log().add("Num Bytes = %d", image.getPixels().remaining());
             opMode.telemetry.update();
-            opMode.sleep(10 * 1000);
             Bitmap bmp = vuforia.convertFrameToBitmap(frame);
-            try (FileOutputStream out = new FileOutputStream("/sdcard/FIRST/FTC_Camara.png")) {
-                bmp.compress(Bitmap.CompressFormat.PNG, 100, out);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            printAndSave(bmp, getAverageRGB(bmp), "camera");
             frame.close();
-
+            Bitmap b1, b2, b3;
+            b1 = Bitmap.createBitmap(bmp, box1.x, box1.y, box1.width, box1.height);
+            b2 = Bitmap.createBitmap(bmp, box2.x, box2.y, box2.width, box2.height);
+            b3 = Bitmap.createBitmap(bmp, box3.x, box3.y, box3.width, box3.height);
+            int c1, c2, c3;
+            c1 = getAverageRGB(b1);
+            c2 = getAverageRGB(b2);
+            c3 = getAverageRGB(b3);
+            printAndSave(b1, c1, "box1");
+            printAndSave(b2, c2, "box2");
+            printAndSave(b3, c3, "box3");
+            int skystone = chooseSkystone(c1, c2, c3);
+            return skystone;
         } catch (InterruptedException e) {
             print("Photo taken has been interrupted !");
+            return NOSKYSTONE;
         }
 
     }
 
-    int getAverageRGB(Bitmap bmp){
-        return 0;
+    public int chooseSkystone(int c1, int c2, int c3){
+
+        if (c1 < c2 && c1 < c3) {
+            return SKYSTONE1;
+        } else if (c2 < c1 && c2 < c3) {
+            return SKYSTONE2;
+        } else if (c3 < c1 && c3 < c2) {
+            return SKYSTONE3;
+        }
+
+        return SKYSTONE1;
     }
+
+    protected int getAverageRGB(Bitmap bmp){
+
+        int totalRed = 0;
+        int totalGreen = 0;
+        int totalBlue = 0;
+        int width = bmp.getWidth();
+        int height = bmp.getHeight();
+
+        for (int x=0; x < width; x++) {
+            for (int y=0; y < height; y++) {
+                int pixel = bmp.getPixel(x, y);
+
+                int red = Color.red(pixel);
+                int green = Color.green(pixel);
+                int blue = Color.blue(pixel);
+
+                totalRed += red;
+                totalGreen += green;
+                totalBlue += blue;
+            }
+        }
+
+        int averageRed = totalRed / (width * height);
+        int averageGreen = totalGreen / (width * height);
+        int averageBlue = totalBlue / (width * height);
+
+        return Color.rgb(averageRed, averageGreen, averageBlue);
+    }
+
 }

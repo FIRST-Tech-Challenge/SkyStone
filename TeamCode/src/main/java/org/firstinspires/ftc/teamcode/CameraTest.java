@@ -13,7 +13,8 @@ public class CameraTest extends LinearOpMode {
         robot.init(hardwareMap);
         waitForStart();
         while (opModeIsActive()) {
-            robot.takePhoto();
+            robot.detectSkystone();
+            sleep (100 * 1000);
             break;
         }
     }

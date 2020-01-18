@@ -9,7 +9,7 @@ public class Function_config_file {
         public static boolean linear = true;
         public static boolean quadratic = false;
         public static boolean cubic = false;
-        
+
         //the value with which the x value increments on the function
         public static float dx = 0.05f;
 

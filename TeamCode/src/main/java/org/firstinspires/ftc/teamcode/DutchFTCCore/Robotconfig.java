@@ -27,5 +27,5 @@ public class Robotconfig {
 
     //logging
     public static String teamName = "FTCunits";
-    public static boolean isUsed
+    public static boolean isUsed;
 }

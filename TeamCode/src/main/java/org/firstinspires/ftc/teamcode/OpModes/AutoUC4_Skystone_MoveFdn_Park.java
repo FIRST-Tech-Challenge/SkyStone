@@ -92,7 +92,7 @@ public class AutoUC4_Skystone_MoveFdn_Park {
 
     private double x_translate = 0;
     private double y_translate = 0;
-    double stoneTostone = 8;
+    double stoneTostone = 9;
 
     VuforiaTrackables targetsSkyStone;
     VuforiaTrackable stoneTarget;
@@ -189,7 +189,7 @@ public class AutoUC4_Skystone_MoveFdn_Park {
         callingOpMode.sleep(250);
 
         // Slide back to edge of B2, 10 inches
-        autoUCChassis.runFwdBackLeftRight(-9,0,0.1, callingOpMode); // distance was 8
+        autoUCChassis.runFwdBackLeftRight(-8,0,0.1, callingOpMode); // distance was 8
 
         callingOpMode.sleep(200);
         // Turn 90 degrees Left

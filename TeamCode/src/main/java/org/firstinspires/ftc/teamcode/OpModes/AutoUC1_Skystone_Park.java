@@ -86,7 +86,7 @@ public class AutoUC1_Skystone_Park{
 
     private double x_translate = 0;
     private double y_translate = 0;
-    double stoneTostone = 8;
+    double stoneTostone = 9;
 
     VuforiaTrackables targetsSkyStone;
     VuforiaTrackable stoneTarget;
@@ -121,7 +121,7 @@ public class AutoUC1_Skystone_Park{
         callingOpMode.telemetry.update();
 
         // Move by distance X forward near SB5 : 6 inches to skystone
-        double robotToNearSkystone = 24; // was 27
+        double robotToNearSkystone = 23; // was 27
         autoUCChassis.runFwdBackLeftRight(robotToNearSkystone,0,0.25, callingOpMode);
 
         callingOpMode.sleep(200);
@@ -183,7 +183,7 @@ public class AutoUC1_Skystone_Park{
         callingOpMode.sleep(250);
 
         // Slide back to edge of B2, 10 inches
-        autoUCChassis.runFwdBackLeftRight(-9,0,0.1, callingOpMode); // distance was 8
+        autoUCChassis.runFwdBackLeftRight(-8,0,0.1, callingOpMode); // distance was 8
 
         callingOpMode.sleep(200);
         // Turn 90 degrees Left

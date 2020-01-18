@@ -108,7 +108,7 @@ public class Chassis {
      */
     public void configureRobot(){
         wheelRadius = 1.965*7/5; //100mm and applied correction factor of 7/5 for slippage
-        robotRadius = 8.64*7/5; //Was 9.3//Radius = half of longest diagonal = 0.5*sqrt(sq(14.5)+sq(10.5).and applied correction factor of 7/5 for slippage
+        robotRadius = 8.54*7/5; //Was 8.64 Radius = half of longest diagonal = 0.5*sqrt(sq(14.5)+sq(10.5).and applied correction factor of 7/5 for slippage
         //Set direction of motors wrt motor drive set up, so that wheels go forward +y power
 
         target90degRotations = (Math.PI*robotRadius/2)/(2*Math.PI*wheelRadius);

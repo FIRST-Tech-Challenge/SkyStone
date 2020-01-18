@@ -74,6 +74,7 @@ public class LiftControl {/* Constants */
         LifterLeftM.setPower(LIFT_SPEED);
         LifterRightM.setPower(LIFT_SPEED);
         TimeDelay(time);
+        Stop();
     }
 
     public void MoveDown() {
@@ -85,6 +86,7 @@ public class LiftControl {/* Constants */
         LifterLeftM.setPower(-LIFT_SPEED);
         LifterRightM.setPower(-LIFT_SPEED);
         TimeDelay(time);
+        Stop();
     }
 
     public void Stop() {

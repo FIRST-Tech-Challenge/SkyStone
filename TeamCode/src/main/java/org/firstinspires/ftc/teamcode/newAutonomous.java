@@ -39,8 +39,9 @@ public class newAutonomous extends LinearOpMode{
         GrabStone,
         MoveToBuildZone,
         TurnFoundation,
+        AutoPark,
         Park,
-        Stop,
+        Stop
     }
 
     //This is a list of all the possible skystone positions
@@ -74,14 +75,17 @@ public class newAutonomous extends LinearOpMode{
         Drive.init(this);
         Grabber.init(this);
         FoundationGrabber.init(this);
+        Lift.init(this);
 
         // get user input
         boolean bAnswer;
         boolean AllianceColor;
+        boolean willPark;
 
         //This asks whether you want to delay start or not and whether you are red or blue
         bAnswer = User.getYesNo("Wait?");
         AllianceColor = User.getRedBlue("Alliance Color");
+        willPark = User.getPark("Park?");
 
         /*This will use the skystone position determined by vuforia and the
         alliance color to determine the skystone position*/
@@ -124,7 +128,12 @@ public class newAutonomous extends LinearOpMode{
                         telemetry.update();
                         Drive.TimeDelay(5.0);
                     }
+                    if (willPark == true){
+                        newState(State.Park);
+                    }
+                    else {
                     newState(State.GrabStone);
+                    }
                     break;
 
 
@@ -154,31 +163,33 @@ public class newAutonomous extends LinearOpMode{
 
 
                 case TurnFoundation:
-                    if (AllianceColor == true) {
+                    if (AllianceColor == false) {
                         Drive.turnRightDistance(0.5, 50);
                     }
                     else {
                         Drive.turnLeftDistance(0.5,50);
                     }
-                    Drive.moveBackwardDistance(0.8, 45);
-                    FoundationGrabber.close();
+                    Lift.MoveUpTime(0.4);
+                    Drive.moveForwardDistance(0.5, 35);
+                    Grabber.open();
                     Drive.TimeDelay(1.0);
-                    Drive.moveForwardDistance(0.8, 40);
-                    if (AllianceColor == true) {
+                    Drive.moveBackwardDistance(0.8, 25);
+                    if (AllianceColor == false) {
                         Drive.turnRightDistance(0.5, 50);
                     }
                     else {
                         Drive.turnLeftDistance(0.5,50);
                     }
-                    FoundationGrabber.open();
-                    newState(State.Park);
+                    Lift.MoveDownTime(0.4);
+                    //FoundationGrabber.open();
+                    newState(State.AutoPark);
                     break;
 
 
-                case Park:
+                case AutoPark:
                     telemetry.addLine("Park");
                     telemetry.update();
-                    Drive.moveForwardDistance(0.8, 57.0);
+                    /*Drive.moveForwardDistance(0.8, 30.0);
                     Drive.turnLeftDistance(0.8, 100);
                     Lift.MoveUpTime(0.4);
                     Drive.moveForwardDistance(0.8,60.0);
@@ -186,6 +197,14 @@ public class newAutonomous extends LinearOpMode{
                     Drive.moveBackwardDistance(0.8,60);
                     Lift.MoveDownTime(0.4);
                     /*Drive backwards until under skybridge*/
+                    Drive.moveForwardDistance(0.8,100);
+                    newState(State.Stop);
+                    break;
+
+                case Park:
+                    telemetry.addLine("Park");
+                    telemetry.update();
+                    Drive.moveForwardDistance(0.8, 60);
                     newState(State.Stop);
                     break;
 

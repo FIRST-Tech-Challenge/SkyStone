@@ -54,6 +54,20 @@ public class UserControl {
         return isRed;
     }
 
+    public boolean getPark(String prompt) {
+        boolean willPark = false;
+
+        telemetry.addData("[X = Run Full Auto, B = Park ]", prompt);
+        telemetry.update();
+        do {
+            egamepad1.updateEdge();
+        } while (!egamepad1.x.pressed && !egamepad1.b.pressed && !opmode.isStopRequested());
+        if (egamepad1.b.pressed)
+            willPark = true;
+        egamepad1.updateEdge();
+        return willPark;
+    }
+
     public boolean getYesNo(String prompt) {
         boolean isYes = false;
 

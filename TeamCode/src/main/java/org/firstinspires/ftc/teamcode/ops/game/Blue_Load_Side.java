@@ -64,8 +64,7 @@ public class Blue_Load_Side extends LinearOpMode {
         robot.driveTrain.pause(2 );
 
         //Move the servos down to grapple the build platform
-        robot.grapple.servoMoveDown();
-        robot.grapple.servo2MoveDown();
+        robot.grapple.grappleMoveDown();
 
         //Pause
         robot.driveTrain.pause(2);
@@ -77,8 +76,7 @@ public class Blue_Load_Side extends LinearOpMode {
         robot.driveTrain.move(1.1, 1, -1);
 
         //Move the servos up to release the platform
-        robot.grapple.servoMoveUp();
-        robot.grapple.servo2MoveUp();
+        robot.grapple.grappleMoveUp();
 
         //Push the build platform to the wall to score it
         robot.driveTrain.moveBackward(.72, -.75);

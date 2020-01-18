@@ -39,7 +39,7 @@ public class Blue_Build_Side_Park extends LinearOpMode {
 
         robot.logger.logInfo("runOpMode", "===== [ Start Autonomous ]");
 
-        robot.driveTrain.moveForward(0.5, 1);
+        robot.driveTrain.moveForward(0.1, 1);
 
         // Show the elapsed game time.
         robot.logger.logInfo("runOpMode", "===== [ Autonomous Complete ] Run Time: %s", runtime.toString());

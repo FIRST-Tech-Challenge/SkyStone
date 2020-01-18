@@ -39,37 +39,49 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class Grapple extends BotComponent {
     public Servo servo = null;
     public Servo servo2 = null;
-    double SERVO_DOWN_POSITION = 0.77;
-    double SERVO_UP_POSITION = -0.2;
-    double SERVO2_DOWN_POSITION = 0.9;
-    double SERVO2_UP_POSITION = 0.1;
+    double SERVO_DOWN_POSITION = 0.4;
+    double SERVO_UP_POSITION = -0.4;
+
 public Grapple(){
 }
-public Grapple(Logger aLogger, OpMode aOpMode, String servoName, String servoName2){
+public Grapple(Logger aLogger, OpMode aOpMode, String servoName, String servoName2) {
     super(aLogger, aOpMode);
     //define and initialize motors
     logger.logDebug("initservo", "IamWalrus");
-    servo = initServo(servoName, 0.2);
-    servo2 = initServo(servoName2, 0.77);
-    if(servo != null && servo2 != null){
+    servo = initServo(servoName, -.4);
+    servo2 = initServo(servoName2, -.4);
+    if (servo != null && servo2 != null) {
         isAvailable = true;
     }
 
-    logger .logInfo("Grapple","isAvailable: %b",isAvailable);
+    logger.logInfo("Grapple", "isAvailable: %b", isAvailable);
+
 }
 
 public void servoMoveDown(){
     logger.logDebug("servoMoveDown", "walrus");
-    servo.setPosition(SERVO2_DOWN_POSITION);
+    servo.setPosition(SERVO_DOWN_POSITION);
 }
 
 public void servo2MoveDown(){servo2.setPosition(SERVO_UP_POSITION);
 }
 
-public void servoMoveUp(){servo.setPosition(SERVO2_UP_POSITION);
+public void servoMoveUp(){servo.setPosition(SERVO_UP_POSITION);
 }
 
 public void servo2MoveUp(){servo2.setPosition(SERVO_DOWN_POSITION);
 }
+
+public void grappleMoveDown() {
+    servo.setPosition(SERVO_DOWN_POSITION);
+    servo2.setPosition(SERVO_DOWN_POSITION);
 }
+
+public void grappleMoveUp() {
+    servo.setPosition(SERVO_UP_POSITION);
+    servo2.setPosition(SERVO_UP_POSITION);
+}
+
+}
+
 

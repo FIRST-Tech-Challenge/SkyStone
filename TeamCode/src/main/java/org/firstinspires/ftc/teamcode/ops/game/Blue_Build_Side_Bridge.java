@@ -50,14 +50,13 @@ public class Blue_Build_Side_Bridge extends LinearOpMode {
            robot.driveTrain.encoderDrive(1, -10);
            robot.driveTrain.encoderDrive(1, 10); */
 
-        robot.driveTrain.moveBackward(0.63, -0.5);
+        robot.driveTrain.moveBackward(0.73, -0.5);
 
         //Pause to let the robot stop moving
         robot.driveTrain.pause(2 );
 
         //Move the servos down to grapple the build platform
-        robot.grapple.servoMoveDown();
-        robot.grapple.servo2MoveDown();
+        robot.grapple.grappleMoveDown();
 
         //Pause
         robot.driveTrain.pause(2);
@@ -66,11 +65,10 @@ public class Blue_Build_Side_Bridge extends LinearOpMode {
         robot.driveTrain.moveForward(1.35, -0.5);
 
         //Move because the robot can not fine adjust to make the gyro happy with the platform in tow
-        robot.driveTrain.move(1.1, 1, -1);
+        robot.driveTrain.move(1.5, 0.7, -0.7);
 
         //Move the servos up to release the platform
-        robot.grapple.servoMoveUp();
-        robot.grapple.servo2MoveUp();
+        robot.grapple.grappleMoveUp();
 
         //Push the build platform to the wall to score it
         robot.driveTrain.moveBackward(.72, -.75);
@@ -81,7 +79,7 @@ public class Blue_Build_Side_Bridge extends LinearOpMode {
         //Move the robot to park under the skybridge
         robot.driveTrain.moveForward(.9,  -.75);
 
-        robot.driveTrain.crabLeft(0.6);
+        robot.driveTrain.crabLeft(0.9);
 
         stop();
 

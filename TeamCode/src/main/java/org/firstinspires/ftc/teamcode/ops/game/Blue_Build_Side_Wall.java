@@ -56,8 +56,7 @@ public class Blue_Build_Side_Wall extends LinearOpMode {
         robot.driveTrain.pause(2);
 
         //Move the servos down to grapple the build platform
-        robot.grapple.servoMoveDown();
-        robot.grapple.servo2MoveDown();
+        robot.grapple.grappleMoveDown();
 
         //Pause
         robot.driveTrain.pause(2);
@@ -69,8 +68,7 @@ public class Blue_Build_Side_Wall extends LinearOpMode {
         robot.driveTrain.move(1.5, 0.7, -0.7);
 
         //Move the servos up to release the platform
-        robot.grapple.servoMoveUp();
-        robot.grapple.servo2MoveUp();
+        robot.grapple.grappleMoveUp();
 
         //Push the build platform to the wall to score it
         robot.driveTrain.moveBackward(.62, -.75);
@@ -83,7 +81,7 @@ public class Blue_Build_Side_Wall extends LinearOpMode {
 
         robot.driveTrain.crabRight(0.9);
 
-        robot.driveTrain.moveForward(.2, -.75);
+        robot.driveTrain.moveForward(.3, -.75);
 
         stop();
 

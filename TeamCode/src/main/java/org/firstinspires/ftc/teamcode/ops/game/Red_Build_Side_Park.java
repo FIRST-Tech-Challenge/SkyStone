@@ -40,7 +40,7 @@ public class Red_Build_Side_Park extends LinearOpMode {
         robot.logger.logInfo("runOpMode", "===== [ Start Autonomous ]");
 
         double angle1 = robot.gyroNavigator.getAngle();
-        robot.driveTrain.moveForward(0.5, 1);
+        robot.driveTrain.moveForward(0.1, 1);
 
 
 

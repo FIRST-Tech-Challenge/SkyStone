@@ -123,12 +123,10 @@ public class Game_TeleOp extends LinearOpMode {
             }
 
             if(gamepad1.x){
-                robot.grapple.servoMoveDown();
-                robot.grapple.servo2MoveDown();
+                robot.grapple.grappleMoveDown();
             }
             if (gamepad1.y){
-                robot.grapple.servoMoveUp();
-                robot.grapple.servo2MoveUp();
+                robot.grapple.grappleMoveUp();
             }
 
             // Show the elapsed game time.

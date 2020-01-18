@@ -63,7 +63,7 @@ public class Grapple2 extends BotComponent {
 
     //Functions for GRAPPLE 1
     //GRAPPLE ONE DOWN POSITION STARTS AT AROUND 1 (use 0.8 - 0.7 values)
-    public void grapple1Down() {
+    public void setGrapple1Down() {
         logger.logDebug("servoMoveDown", "walrus");
         grapple1.setPosition(0.77);
     }

@@ -10,6 +10,14 @@ public class Robotconfig {
     public static String MotorFrontRight = "MotorFrontRight";
     public static String MotorBackRight = "MotorBackRight";
 
+    //servo ports
+    public static String Servo0 = "Servo0";
+    public static String Servo1 = "Servo1";
+    public static String Servo2 = "Servo2";
+    public static String Servo3 = "Servo3";
+    public static String Servo4 = "Servo4";
+    public static String Servo5 = "Servo5";
+
     //drivetrains
     public static boolean TankDrive2Motors = false;
     public static boolean TankDrive1Motor = true;

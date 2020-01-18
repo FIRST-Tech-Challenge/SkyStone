@@ -24,7 +24,7 @@ public class RedBuildToBridge extends Autonomous {
         //robot.hookTwo.setPosition(0.2);
         sleep(500);
         move(62/2, -1, 1);
-        move(35, 1, 0);
+        move(24, 1, 0);
         move(62/2, -1, 1);
     }
 }

@@ -133,25 +133,26 @@ public class TeleopTank2 extends LinearOpMode {
             } else {
                 robot.grab.setPosition(0);
             }
+            telemetry.addData("HookPos", robot.grab.getPosition());
             //Grab Code
 
             //Slide Code
-            if (gamepad1.dpad_up && robot.slide.getCurrentPosition() < 6000){
-                robot.slide.setPower(0.5);
-            } else if (gamepad1.dpad_down && robot.slide.getCurrentPosition() > 0 ){
-                robot.slide.setPower(-0.5);
+            if (gamepad1.dpad_up /*&& robot.slide.getCurrentPosition() < 35000 */){
+                robot.slide.setPower(1);
+            } else if (gamepad1.dpad_down /*&& robot.slide.getCurrentPosition() > 0*/ ){
+                robot.slide.setPower(-1);
             } else {
                 robot.slide.setPower(0);
             }
+            telemetry.addData("SlidePos", robot.slide.getCurrentPosition());
             //Slide Code
 
-            telemetry.addData("Grab",robot.grab.getPosition());
-
-            telemetry.addData("Hook",turn);
-            telemetry.addData("L",gamepad1.left_bumper);
-            telemetry.addData("R",gamepad1.right_bumper);
-            telemetry.addData("Y",gamepad1.left_stick_y);
-            telemetry.addData("X",gamepad1.left_stick_x);
+            //telemetry.addData("Grab",robot.grab.getPosition());
+            //telemetry.addData("Hook",turn);
+            //telemetry.addData("L",gamepad1.left_bumper);
+            //telemetry.addData("R",gamepad1.right_bumper);
+            //telemetry.addData("Y",gamepad1.left_stick_y);
+            //telemetry.addData("X",gamepad1.left_stick_x);
             telemetry.update();
 
 

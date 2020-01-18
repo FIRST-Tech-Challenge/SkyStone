@@ -8,6 +8,6 @@ package org.firstinspires.ftc.teamcode;
 public class RedDepotToWall extends Autonomous {
     @Override
     public void runPath() {
-        move(46,-1,1); //left
+        move(33,-1,1); //left //was 46
     }
 }

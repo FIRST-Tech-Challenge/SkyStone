@@ -12,18 +12,18 @@ public class BlueBuildToWall extends Autonomous{
         robot.hookOne.setPosition(0.2);
         //robot.hookTwo.setPosition(0);
 
-        move(17, -1, 1);
+        move(29, -1, 1);
         sleep(100);
-        move(34, 1, 0);
+        move(33, 1, 0);
         sleep(500);
         robot.hookOne.setPosition(01.5);
         //robot.hookTwo.setPosition(0.8);
         sleep(1500);
-        move(48, -1, 0); // was 45*1.5
+        move(46, -1, 0); // was 45*1.5
         sleep(500);
         robot.hookOne.setPosition(0.2);
         //robot.hookTwo.setPosition(0);
         sleep(500);
-        move(53, 1, 1);
+        move(62, 1, 1);
     }
 }

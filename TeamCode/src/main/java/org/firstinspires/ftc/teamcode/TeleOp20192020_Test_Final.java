@@ -68,7 +68,7 @@ public class TeleOp20192020_Test_Final extends LinearOpMode {
     //private Servo Block_Kickout = null;
     private Servo Capstone = null;
     private Servo Release_Servo = null;
-    private Servo Release_Servo2 = null;
+   // private Servo Release_Servo2 = null;
     private DigitalChannel Top_Sensor_Front = null;
     private DigitalChannel Top_Sensor_Rear = null;
     private DigitalChannel bottom_touch = null;
@@ -142,7 +142,7 @@ public class TeleOp20192020_Test_Final extends LinearOpMode {
         End_Right = hardwareMap.get(Servo.class, "End_Right");
         //Block_Kickout = hardwareMap.get(Servo.class, "Block_Kickout");
         Release_Servo = hardwareMap.get(Servo.class, "Release_Servo");
-        Release_Servo2 = hardwareMap.get(Servo.class, "Release_Servo2");
+        //Release_Servo2 = hardwareMap.get(Servo.class, "Release_Servo2");
         Top_Sensor_Rear = hardwareMap.get(DigitalChannel.class, "Top_Sensor_Rear");
         Top_Sensor_Front = hardwareMap.get(DigitalChannel.class, "Top_Sensor_Front");
         bottom_touch = hardwareMap.get(DigitalChannel.class, "bottom_touch");
@@ -559,7 +559,7 @@ public class TeleOp20192020_Test_Final extends LinearOpMode {
             telemetry.addData("ReleaseServo", "feeder release");
             Release_Servo.setPosition(0.2);
           //  sleep(1000);
-            Release_Servo2.setPosition(1);
+          //  Release_Servo2.setPosition(1);
             sleep(1000);
             feeder_motor.setPower(1);
         }

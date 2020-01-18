@@ -34,7 +34,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
@@ -82,62 +81,35 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  * is explained below.
  */
 
-@Autonomous(name="Vision_Targeting_Autonomous", group ="Concept")
+
+@Autonomous(name="Vision_Target_Function_Test", group ="Concept")
 //@Disabled
-public class Vision_Targeting_Test2 extends BaseAutoOpMode {
+
+public class Vision_Target_Function_Test extends BaseAutoOpMode {
 
 
 
     @Override
     public void runOpMode() {
 
-        GetIMU();
 
-        waitForStart();
-
-        GetHardware();
-
-        UnfoldRobot();
-
-        EncoderDrive(DriveDirection.BACKWARD, 300);
-
-        VisionTarget(3000);
-        telemetry.addData("Loop", "Out of vision targeting");
-        telemetry.update();
+        VisionTarget(10000);
 
         if(Skystone_Locked)
         {
-            telemetry.addData("Skystone", "Located");
+            telemetry.addData("Skystone", "Locked");
             telemetry.update();
-
-            feeder_motor.setPower(1);
-
-            rotate(5,1);
-            StopAllDrive();
-
-            EncoderDrive(DriveDirection.BACKWARD, 500);
-
         }
         else
         {
-            rotate(15,1);
-            StopAllDrive();
-
-            VisionTarget(3000);
-
-            if(Skystone_Locked)
-            {
-                telemetry.addData("Skystone", "Located");
-                telemetry.update();
-            }
-            else
-            {
-                rotate(-30, 1);
-                StopAllDrive();
-            }
+            telemetry.addData("Skystone", ":(");
+            telemetry.update();
         }
 
-
-
-        }
     }
+}
+
+
+
+
+

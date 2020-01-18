@@ -101,6 +101,12 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
     boolean Skystone_Locked = false;
 
 
+    @Override
+    public void GetHardware()
+    {
+        super.GetHardware();
+        webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
+    }
 
     public void UnfoldRobot() {
 
@@ -125,7 +131,7 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
 
         Release_Servo.setPosition(0.2);
         //  sleep(1000);
-        Release_Servo2.setPosition(1);
+        //Release_Servo2.setPosition(1);
         sleep(1000);
         feeder_motor.setPower(1);
         sleep(500);
@@ -170,7 +176,7 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
     }
 
     public void VisionTarget(int milliseconds){
-        webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
+
 
         /*
          * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.

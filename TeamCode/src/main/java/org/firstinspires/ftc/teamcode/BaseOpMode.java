@@ -66,7 +66,7 @@ public abstract class BaseOpMode extends LinearOpMode {
     public Servo Block_Pickup = null;
     public Servo Capstone = null;
     public Servo Release_Servo = null;
-    public Servo Release_Servo2 = null;
+    //public Servo Release_Servo2 = null;
     public DigitalChannel Top_Sensor_Front = null;
     public DigitalChannel Top_Sensor_Rear = null;
     public DigitalChannel bottom_touch = null;
@@ -95,7 +95,7 @@ public abstract class BaseOpMode extends LinearOpMode {
         Block_Pickup = hardwareMap.get(Servo.class, "Block_Pickup");
         Capstone = hardwareMap.get(Servo.class, "Capstone");
         Release_Servo = hardwareMap.get(Servo.class, "Release_Servo");
-        Release_Servo2 = hardwareMap.get(Servo.class, "Release_Servo2");
+        //Release_Servo2 = hardwareMap.get(Servo.class, "Release_Servo2");
         Top_Sensor_Rear = hardwareMap.get(DigitalChannel.class, "Top_Sensor_Rear");
         Top_Sensor_Front = hardwareMap.get(DigitalChannel.class, "Top_Sensor_Front");
         bottom_touch = hardwareMap.get(DigitalChannel.class, "bottom_touch");
@@ -119,6 +119,15 @@ public abstract class BaseOpMode extends LinearOpMode {
         lift_right.setDirection(DcMotor.Direction.REVERSE);
         feeder_motor.setDirection(DcMotor.Direction.REVERSE);
         top_motor.setDirection(DcMotor.Direction.FORWARD);
+
+        front_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rear_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        front_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rear_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        front_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rear_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        front_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rear_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     public void GetIMU() {
@@ -246,6 +255,13 @@ public abstract class BaseOpMode extends LinearOpMode {
         DOWN
     }
 
+    public void StopAllDrive() {
+        front_left.setPower(0);
+        front_right.setPower(0);
+        rear_left.setPower(0);
+        rear_right.setPower(0);
+    }
+
     public void Drive(DriveDirection direction) {
         if (direction == DriveDirection.STOP) {
             front_left.setPower(0);
@@ -276,48 +292,60 @@ public abstract class BaseOpMode extends LinearOpMode {
             front_right.setPower(-1);
             rear_left.setPower(-1);
             rear_right.setPower(-1);
+
+
         }
     }
     public void EncoderDrive(DriveDirection direction, int EncoderValue) {
         if (direction == DriveDirection.STOP) {
-            while(front_left.getCurrentPosition() <= EncoderValue) {
                 front_left.setPower(0);
                 front_right.setPower(0);
                 rear_left.setPower(0);
                 rear_right.setPower(0);
-            }
+
         }
         if (direction == DriveDirection.RIGHT) {
-            while(front_left.getCurrentPosition() <= EncoderValue) {
                 front_left.setPower(1);
                 front_right.setPower(-1);
                 rear_left.setPower(1);
                 rear_right.setPower(-1);
-            }
+                front_left.setTargetPosition(EncoderValue);
         }
         if (direction == DriveDirection.LEFT) {
-            while(front_left.getCurrentPosition() <= EncoderValue) {
+
                 front_left.setPower(-1);
                 front_right.setPower(1);
                 rear_left.setPower(-1);
                 rear_right.setPower(1);
-            }
+                front_left.setTargetPosition(EncoderValue);
         }
         if (direction == DriveDirection.FORWARD) {
-            while(front_left.getCurrentPosition() <= EncoderValue) {
-                front_left.setPower(1);
-                front_right.setPower(1);
-                rear_left.setPower(1);
-                rear_right.setPower(1);
-            }
+            front_left.setPower(1);
+            front_right.setPower(1);
+            rear_left.setPower(1);
+            rear_right.setPower(1);
+
+            front_left.setTargetPosition(EncoderValue);
         }
         if (direction == DriveDirection.BACKWARD) {
-            while(front_left.getCurrentPosition() <= EncoderValue) {
-                front_left.setPower(-1);
-                front_right.setPower(-1);
-                rear_left.setPower(-1);
-                rear_right.setPower(-1);
+
+            front_left.setPower(-1);
+            front_right.setPower(-1);
+            rear_left.setPower(-1);
+            rear_right.setPower(-1);
+
+            front_left.setTargetPosition(EncoderValue);
+            front_right.setTargetPosition(EncoderValue);
+            rear_left.setTargetPosition(EncoderValue);
+            rear_right.setTargetPosition(EncoderValue);
+
+            while(front_left.isBusy())
+            {
+               telemetry.addData("Encoder", front_left.getCurrentPosition());
+               telemetry.update();
             }
+
+
         }
     }
 

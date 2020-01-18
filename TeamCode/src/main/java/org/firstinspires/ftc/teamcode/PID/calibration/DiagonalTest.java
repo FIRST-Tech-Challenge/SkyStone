@@ -26,44 +26,43 @@ import java.util.List;
 @Autonomous(name = "DiagonalTest", group = "drive")
 public class DiagonalTest extends LinearOpMode{
 
-    public static double xOffset = 24.0;
-    public static double yOffset = 24.0;
+    public static double xOffset = DriveConstantsPID.TEST_X;
+    public static double yOffset = DriveConstantsPID.TEST_Y;
 
-    public static Pose2d startingPoint = new Pose2d(new Vector2d(0,0), Math.toRadians(0));
     public static Vector2d desiredPoint = new Vector2d(xOffset, yOffset);
-
+    public static Vector2d originalPoint = new Vector2d(0,0);
     private String TAG = "DiagonalTest";
     @Override
     public void runOpMode(){
         DriveConstantsPID.updateConstantsFromProperties();
         SampleMecanumDriveBase drive = null;
         if (DriveConstantsPID.USING_BULK_READ == false)
-            drive = new SampleMecanumDriveREV(hardwareMap, true);
+            drive = new SampleMecanumDriveREV(hardwareMap, false); //base constants not strafe
         else
-            drive = new SampleMecanumDriveREVOptimized(hardwareMap, true);
+            drive = new SampleMecanumDriveREVOptimized(hardwareMap, false); // base constant not strafe
         drive.setBrakeonZeroPower(DriveConstantsPID.BRAKE_ON_ZERO);
         HardwareMap hwMap = new HardwareMap(hardwareMap);
         RobotLog.dd(TAG, "trajectoryBuilder diagonal, X: "+Double.toString(xOffset)+" Y: "+Double.toString(yOffset));
-        Trajectory trajectory = drive.trajectoryBuilder().strafeTo(desiredPoint).build();
+        Trajectory trajectory = drive.trajectoryBuilder().strafeTo(desiredPoint).strafeTo(originalPoint).build();
 
         waitForStart();
+        for(int i=0; i<4; i++){
+            if(isStopRequested()) return;
+            drive.followTrajectorySync(trajectory);
+            Localizer localizer = drive.getLocalizer();
 
-        if(isStopRequested()) return;
-        drive.followTrajectorySync(trajectory);
-        Localizer localizer = drive.getLocalizer();
+            if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL && (localizer!=null)) {
+                StandardTrackingWheelLocalizer t = (StandardTrackingWheelLocalizer)localizer; // @TODO
+                List<Double> odo_positions = t.getWheelPositions();
 
-        if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL && (localizer!=null)) {
-            StandardTrackingWheelLocalizer t = (StandardTrackingWheelLocalizer)localizer; // @TODO
-            List<Double> odo_positions = t.getWheelPositions();
+                RobotLog.dd(TAG, "odometry positions");
+                drive.print_list_double(odo_positions);
+            }
 
-            RobotLog.dd(TAG, "odometry positions");
-            drive.print_list_double(odo_positions);
+            List<Double> positions = drive.getWheelPositions();
+            RobotLog.dd(TAG, "wheel positions");
+            drive.print_list_double(positions);
         }
-
-        List<Double> positions = drive.getWheelPositions();
-        RobotLog.dd(TAG, "wheel positions");
-        drive.print_list_double(positions);
-
 
     }
 

@@ -127,7 +127,7 @@ public class AutoUC4_Skystone_MoveFdn_Park {
         callingOpMode.telemetry.update();
 
         // Move by distance X forward near SB5 : 6 inches to skystone
-        double robotToNearSkystone = 24; // was 27
+        double robotToNearSkystone = 23; // was 27
         autoUCChassis.runFwdBackLeftRight(robotToNearSkystone,0,0.25, callingOpMode);
 
         callingOpMode.sleep(200);
@@ -198,8 +198,8 @@ public class AutoUC4_Skystone_MoveFdn_Park {
 
 
        //Move forward till Chassis bumber limit switch is pressed.
-        double expectedMaxDistanceToFoundation = 86 + (5 - skystonePosition) * stoneTostone; // was 40 --> 70
-        autoUCChassis.runFwdBackLeftRight(expectedMaxDistanceToFoundation, 0, 0.5, callingOpMode) ;
+        double expectedMaxDistanceToFoundation = 84 + (5 - skystonePosition) * stoneTostone; // was 40 --> 70
+        autoUCChassis.runFwdBackLeftRight(expectedMaxDistanceToFoundation, 0, 0.6, callingOpMode) ;
 
         //Lift Arm
         autoUCArm.moveArm_aboveFoundationLevel();
@@ -249,7 +249,7 @@ public class AutoUC4_Skystone_MoveFdn_Park {
         //callingOpMode.sleep(100);
 
         //Move out of foundation area
-        autoUCChassis.runFwdBackLeftRight(35, playingAlliance, 0.35, callingOpMode);
+        autoUCChassis.runFwdBackLeftRight(35, playingAlliance, 0.5, callingOpMode);
 
         //Move Arm to ground Level
         autoUCArm.turnArmBrakeModeOn();
@@ -258,7 +258,7 @@ public class AutoUC4_Skystone_MoveFdn_Park {
 
         //Optional : Move to park near skybridge Neutral
         if (parkingPlaceNearSkyBridge){
-            autoUCChassis.runFwdBackLeftRight(25,0,0.35, callingOpMode);
+            autoUCChassis.runFwdBackLeftRight(25,0,0.5, callingOpMode);
         }
 
         //Turn by 90 degrees to point arm forward

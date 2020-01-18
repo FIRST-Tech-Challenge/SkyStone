@@ -46,6 +46,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,10 +102,15 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
     boolean Skystone_Is_Center = false;
     boolean Skystone_Locked = false;
 
+    private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
+    private static final String LABEL_FIRST_ELEMENT = "Stone";
+    private static final String LABEL_SECOND_ELEMENT = "Skystone";
+
+    private TFObjectDetector tfod;
+
 
     @Override
-    public void GetHardware()
-    {
+    public void GetHardware() {
         super.GetHardware();
         webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
     }
@@ -175,7 +182,7 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
         //telemetry.update();
     }
 
-    public void VisionTarget(int milliseconds){
+    public void VisionTarget(int milliseconds) {
 
 
         /*
@@ -362,10 +369,9 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
         // Tap the preview window to receive a fresh image.
 
 
-
         targetsSkyStone.activate();
         //while (!isStopRequested()) {
-        while(loop < milliseconds) {
+        while (loop < milliseconds) {
 
             // check all the trackable targets to see which one (if any) is visible.
             targetVisible = false;
@@ -385,60 +391,127 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
             }
 
 
+            // Provide feedback as to where the robot is located (if we know).
+            if (targetVisible) {
+                // express position (translation) of robot in inches.
+                VectorF translation = lastLocation.getTranslation();
+                telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
+                        translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
 
-                // Provide feedback as to where the robot is located (if we know).
-                if (targetVisible) {
-                    // express position (translation) of robot in inches.
-                    VectorF translation = lastLocation.getTranslation();
-                    telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
-                            translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
-
-                    // express the rotation of the robot in degrees.
-                    Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
-                    telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
+                // express the rotation of the robot in degrees.
+                Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
+                telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
 
 
-                    double yPosition = translation.get(1);
-                    if (yPosition < -3 && Skystone_Locked == false) {
-                        positionSkystone = "Left";
-                        Skystone_Is_Left = true;
-                        Skystone_Locked = true;
-                        telemetry.addData("Skystone Location", "Left");
-                        telemetry.update();
-
-                    } else if (yPosition > 3 && Skystone_Locked == false) {
-                        positionSkystone = "Right";
-                        Skystone_Is_Right = true;
-                        Skystone_Locked = true;
-                        telemetry.addData("Skystone Location", "Right");
-                        telemetry.update();
-                    } else {
-                        positionSkystone = "Center";
-                        Skystone_Is_Center = true;
-                        Skystone_Locked = true;
-                        telemetry.addData("Skystone Location", "Center");
-                        telemetry.update();
-                    }
-                } else {
-                    telemetry.addData("Skystone Location", "N/A");
+                double yPosition = translation.get(1);
+                if (yPosition < -3 && Skystone_Locked == false) {
+                    positionSkystone = "Left";
+                    Skystone_Is_Left = true;
+                    Skystone_Locked = true;
+                    telemetry.addData("Skystone Location", "Left");
                     telemetry.update();
-                    Skystone_Locked = false;
-                    Skystone_Is_Center = false;
-                    Skystone_Is_Right = false;
-                    Skystone_Is_Left = false;
+
+                } else if (yPosition > 3 && Skystone_Locked == false) {
+                    positionSkystone = "Right";
+                    Skystone_Is_Right = true;
+                    Skystone_Locked = true;
+                    telemetry.addData("Skystone Location", "Right");
+                    telemetry.update();
+                } else {
+                    positionSkystone = "Center";
+                    Skystone_Is_Center = true;
+                    Skystone_Locked = true;
+                    telemetry.addData("Skystone Location", "Center");
+                    telemetry.update();
                 }
-
-
-                // Disable Tracking when we are done;
-                //targetsSkyStone.deactivate();
-                sleep(1);
-                loop++;
+            } else {
+                telemetry.addData("Skystone Location", "N/A");
+                telemetry.update();
+                Skystone_Locked = false;
+                Skystone_Is_Center = false;
+                Skystone_Is_Right = false;
+                Skystone_Is_Left = false;
             }
 
+
+            // Disable Tracking when we are done;
+            //targetsSkyStone.deactivate();
+            sleep(1);
+            loop++;
         }
+
     }
 
-//}
+    public void initTfod() {
+        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
+                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
+        tfodParameters.minimumConfidence = 0.7;
+        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
+    }
+
+    public void initVuforia() {
+        /*
+         * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
+         */
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+
+        parameters.vuforiaLicenseKey = VUFORIA_KEY;
+        parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
+
+        //  Instantiate the Vuforia engine
+        vuforia = ClassFactory.getInstance().createVuforia(parameters);
+
+        // Loading trackables is not necessary for the TensorFlow Object Detection engine.
+
+
+    }
+
+    public void InitVision() {
+        // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
+        // first.
+        initVuforia();
+
+        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
+            initTfod();
+        } else {
+            telemetry.addData("Sorry!", "This device is not compatible with TFOD");
+        }
+        if (tfod != null) {
+            tfod.activate();
+        }
+
+    }
+
+    public List<Recognition> VisionTargetTfod() {
+        List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+        List<Recognition> rSkystonesOnly = new ArrayList<Recognition>();
+        int i = 0;
+        if (updatedRecognitions != null) {
+            for (Recognition recognition : updatedRecognitions) {
+
+                i++;
+                telemetry.addData("Object" + (i), recognition.getLabel());
+                telemetry.addData("ObjectMatch" + (i), recognition.getLabel() == LABEL_SECOND_ELEMENT);
+
+
+                if (recognition.getLabel() == LABEL_SECOND_ELEMENT) {
+
+                    rSkystonesOnly.add(recognition);
+
+                }
+
+            }
+        }
+        return (rSkystonesOnly);
+
+    }
+
+}
+
+
+
 
 
 

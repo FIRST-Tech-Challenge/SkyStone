@@ -124,10 +124,7 @@ public abstract class BaseOpMode extends LinearOpMode {
         rear_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         front_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rear_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        front_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rear_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        front_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rear_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
 
         GetIMU();
     }
@@ -251,6 +248,12 @@ public abstract class BaseOpMode extends LinearOpMode {
         STOP
     }
 
+    public enum Mode {
+        STOP_RESET_ENCODER,
+        RUN_WITH_ENCODER,
+        RUN_WITHOUT_ENCODERS,
+    }
+
     public enum LiftDirection {
         STOP,
         UP,
@@ -311,7 +314,7 @@ public abstract class BaseOpMode extends LinearOpMode {
                 front_right.setPower(-1);
                 rear_left.setPower(1);
                 rear_right.setPower(-1);
-                front_left.setTargetPosition(EncoderValue);
+                //front_left.setTargetPosition(EncoderValue);
         }
         if (direction == DriveDirection.LEFT) {
 
@@ -319,7 +322,7 @@ public abstract class BaseOpMode extends LinearOpMode {
                 front_right.setPower(1);
                 rear_left.setPower(-1);
                 rear_right.setPower(1);
-                front_left.setTargetPosition(EncoderValue);
+               // front_left.setTargetPosition(EncoderValue);
         }
         if (direction == DriveDirection.FORWARD) {
             front_left.setPower(1);
@@ -327,7 +330,7 @@ public abstract class BaseOpMode extends LinearOpMode {
             rear_left.setPower(1);
             rear_right.setPower(1);
 
-            front_left.setTargetPosition(EncoderValue);
+            //front_left.setTargetPosition(EncoderValue);
         }
         if (direction == DriveDirection.BACKWARD) {
 
@@ -340,6 +343,11 @@ public abstract class BaseOpMode extends LinearOpMode {
             front_right.setTargetPosition(EncoderValue);
             rear_left.setTargetPosition(EncoderValue);
             rear_right.setTargetPosition(EncoderValue);
+
+            front_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            front_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rear_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rear_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             while(front_left.isBusy())
             {
@@ -381,6 +389,37 @@ public abstract class BaseOpMode extends LinearOpMode {
         }
 
     }
+
+    public void SetDriveMode(Mode DriveMode){
+
+        if(DriveMode == Mode.STOP_RESET_ENCODER){
+
+            front_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            front_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rear_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rear_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        }
+        if(DriveMode == Mode.RUN_WITH_ENCODER){
+
+            front_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            front_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            rear_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            rear_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        }
+
+        if(DriveMode == Mode.RUN_WITHOUT_ENCODERS){
+
+            front_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            front_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            rear_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            rear_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        }
+
+    }
+
 
 }
 

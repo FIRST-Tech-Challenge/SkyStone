@@ -30,118 +30,64 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
-import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
-import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
-import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
-import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
-import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 
 /**
  * This 2019-2020 OpMode illustrates the basics of using the Vuforia localizer to determine
  * positioning and orientation of robot on the SKYSTONE FTC field.
  * The code is structured as a LinearOpMode
- *
+ * <p>
  * When images are located, Vuforia is able to determine the position and orientation of the
  * image relative to the camera.  This sample code then combines that information with a
  * knowledge of where the target images are on the field, to determine the location of the camera.
- *
+ * <p>
  * From the Audience perspective, the Red Alliance station is on the right and the
  * Blue Alliance Station is on the left.
-
+ * <p>
  * Eight perimeter targets are distributed evenly around the four perimeter walls
  * Four Bridge targets are located on the bridge uprights.
  * Refer to the Field Setup manual for more specific location details
- *
+ * <p>
  * A final calculation then uses the location of the camera on the robot to determine the
  * robot's location and orientation on the field.
  *
  * @see VuforiaLocalizer
  * @see VuforiaTrackableDefaultListener
  * see  skystone/doc/tutorial/FTC_FieldCoordinateSystemDefinition.pdf
- *
+ * <p>
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list.
- *
+ * <p>
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
 
-@Autonomous(name="Vision_Targeting_Autonomous", group ="Concept")
+@Autonomous(name = "VisionTestingTfod", group = "Concept")
 //@Disabled
-public class Vision_Targeting_Test2 extends BaseAutoOpMode {
-
+public class VisionTestingOpMode extends BaseAutoOpMode {
 
 
     @Override
     public void runOpMode() {
 
-       //GetIMU();
+        //GetIMU();
         GetHardware();
         InitVision();
 
         waitForStart();
 
+        while(opModeIsActive()){
 
-        UnfoldRobot();
+            List<Recognition> Skystones = VisionTargetTfod();
+            telemetry.addData("# Of Skystones", Skystones.size());
 
-        EncoderDrive(DriveDirection.BACKWARD, 300);
-
-        List<Recognition> Skystones = VisionTargetTfod();
-        telemetry.addData("Loop", "Out of vision targeting");
-        telemetry.update();
-
-        if(Skystones.size() > 0)
-        {
-            telemetry.addData("Skystone", "Located");
             telemetry.update();
-
-            feeder_motor.setPower(1);
-
-            rotate(5,1);
-            StopAllDrive();
-
-            EncoderDrive(DriveDirection.BACKWARD, 500);
-
-        }
-        else
-        {
-            rotate(15,1);
-            StopAllDrive();
-
-            Skystones = VisionTargetTfod();
-
-            if(Skystones.size() > 0)
-            {
-                telemetry.addData("Skystone", "Located");
-                telemetry.update();
-
-
-            }
-            else
-            {
-                rotate(-30, 1);
-                StopAllDrive();
-            }
-        }
-
-
 
         }
     }
+}

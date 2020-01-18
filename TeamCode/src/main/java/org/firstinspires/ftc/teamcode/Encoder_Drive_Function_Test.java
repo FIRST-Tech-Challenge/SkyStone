@@ -30,28 +30,12 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
-import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
-import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
-import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
-import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
-import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 
 /**
  * This 2019-2020 OpMode illustrates the basics of using the Vuforia localizer to determine
@@ -83,65 +67,18 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  * is explained below.
  */
 
-@Autonomous(name="Vision_Targeting_Autonomous", group ="Concept")
+@Autonomous(name="Encoder_Drive_Function_Test", group ="Concept")
 //@Disabled
-public class Vision_Targeting_Test2 extends BaseAutoOpMode {
-
+public class Encoder_Drive_Function_Test extends BaseAutoOpMode {
 
 
     @Override
     public void runOpMode() {
 
-       //GetIMU();
         GetHardware();
-        InitVision();
 
-        waitForStart();
+        EncoderDrive(DriveDirection.FORWARD, 3000);
 
-
-        UnfoldRobot();
-
-        EncoderDrive(DriveDirection.BACKWARD, 300);
-
-        List<Recognition> Skystones = VisionTargetTfod();
-        telemetry.addData("Loop", "Out of vision targeting");
-        telemetry.update();
-
-        if(Skystones.size() > 0)
-        {
-            telemetry.addData("Skystone", "Located");
-            telemetry.update();
-
-            feeder_motor.setPower(1);
-
-            rotate(5,1);
-            StopAllDrive();
-
-            EncoderDrive(DriveDirection.BACKWARD, 500);
-
-        }
-        else
-        {
-            rotate(15,1);
-            StopAllDrive();
-
-            Skystones = VisionTargetTfod();
-
-            if(Skystones.size() > 0)
-            {
-                telemetry.addData("Skystone", "Located");
-                telemetry.update();
-
-
-            }
-            else
-            {
-                rotate(-30, 1);
-                StopAllDrive();
-            }
-        }
-
-
-
-        }
     }
+
+}

@@ -144,6 +144,36 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
         waitForIdle();
     }
 
+    public void updateDriveConstants(boolean strafe){
+        addSpacer();
+        RobotLog.dd("Pre-Reinstantiate Error", follower.getLastError() + "");
+        RobotLog.dd("Follower PID Constants", strafe ? "STRAFE" : "BASE");
+        if (!strafe) {
+            RobotLog.dd(TAG, "using non-strafing PID, maxVel: %f, maxAccl: %f", BASE_CONSTRAINTS.maxVel, BASE_CONSTRAINTS.maxAccel);
+            xTRANSLATIONAL_PID = new PIDCoefficients(DriveConstantsPID.txP, DriveConstantsPID.txI, DriveConstantsPID.txD);
+            yTRANSLATIONAL_PID = new PIDCoefficients(DriveConstantsPID.tyP, DriveConstantsPID.tyI, DriveConstantsPID.tyD);
+            HEADING_PID = new PIDCoefficients(DriveConstantsPID.hP, DriveConstantsPID.hI, DriveConstantsPID.hD);
+
+            constraints = new MecanumConstraints(BASE_CONSTRAINTS, TRACK_WIDTH);
+        }
+        else
+        {
+            RobotLog.dd(TAG, "using strafing PID, maxVel: %f, maxAccl: %f", BASE_CONSTRAINTS.maxVel, BASE_CONSTRAINTS.maxAccel);
+            xTRANSLATIONAL_PID = new PIDCoefficients(DriveConstantsPID.stxP, DriveConstantsPID.stxI, DriveConstantsPID.stxD);
+            yTRANSLATIONAL_PID = new PIDCoefficients(DriveConstantsPID.styP, DriveConstantsPID.styI, DriveConstantsPID.styD);
+            HEADING_PID = new PIDCoefficients(DriveConstantsPID.shP, DriveConstantsPID.shI, DriveConstantsPID.shD);
+
+            constraints = new MecanumConstraints(BASE_CONSTRAINTS, TRACK_WIDTH);
+
+        }
+        turnController = new PIDFController(HEADING_PID);
+        turnController.setInputBounds(0, 2 * Math.PI);
+        follower = new HolonomicPIDVAFollower(xTRANSLATIONAL_PID, yTRANSLATIONAL_PID, HEADING_PID);
+        RobotLog.dd("STATUS", "Re-Inited Follower");
+        RobotLog.dd("Post-Reinstantiate Error", follower.getLastError() + "");
+        addSpacer();
+    }
+
     public Pose2d getLastError() {
         switch (mode) {
             case FOLLOW_TRAJECTORY:
@@ -356,5 +386,10 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
 
     private static void drawPosition(TelemetryPacket packet, Pose2d poseEstimate){
         DashboardUtil.drawRobot(packet.fieldOverlay(), poseEstimate);
+    }
+
+    private static void addSpacer(){
+        for(int i = 0; i < 10; i++)
+            RobotLog.dd("", "=========--+--=========");
     }
 }

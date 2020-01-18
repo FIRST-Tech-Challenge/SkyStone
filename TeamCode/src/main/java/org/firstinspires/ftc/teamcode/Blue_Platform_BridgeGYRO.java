@@ -58,7 +58,7 @@ public class Blue_Platform_BridgeGYRO extends BaseAutoOpMode {
         telemetry.update();
 
         GetHardware();
-        GetIMU();
+        //GetIMU();
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();

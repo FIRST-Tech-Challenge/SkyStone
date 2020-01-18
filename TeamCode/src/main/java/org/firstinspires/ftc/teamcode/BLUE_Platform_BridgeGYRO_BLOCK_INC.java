@@ -73,7 +73,7 @@ public class BLUE_Platform_BridgeGYRO_BLOCK_INC extends BaseAutoOpMode {
         telemetry.update();
 
         GetHardware();
-        GetIMU();
+        //GetIMU();
 
    /*     // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Resetting Encoders");    //

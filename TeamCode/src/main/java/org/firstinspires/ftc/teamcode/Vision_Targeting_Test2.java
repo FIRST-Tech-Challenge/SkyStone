@@ -91,7 +91,7 @@ public class Vision_Targeting_Test2 extends BaseAutoOpMode {
     @Override
     public void runOpMode() {
 
-        GetIMU();
+        //GetIMU();
 
         waitForStart();
 

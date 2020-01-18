@@ -59,7 +59,7 @@ public class RED_Platform_BridgeGYRO_LEA extends BaseAutoOpMode {
         telemetry.update();
 
         GetHardware();
-        GetIMU();
+        //GetIMU();
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();

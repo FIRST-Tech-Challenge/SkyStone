@@ -60,7 +60,7 @@ public class RED_Platform_BridgeGYRO_BLOCK_INC extends BaseAutoOpMode {
         //Assigns hardware devices names and values
 
         GetHardware();
-        GetIMU();
+        //GetIMU();
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();

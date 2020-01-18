@@ -128,9 +128,11 @@ public abstract class BaseOpMode extends LinearOpMode {
         rear_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         front_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rear_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        GetIMU();
     }
 
-    public void GetIMU() {
+    private void GetIMU() {
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
         parameters.mode = BNO055IMU.SensorMode.IMU;

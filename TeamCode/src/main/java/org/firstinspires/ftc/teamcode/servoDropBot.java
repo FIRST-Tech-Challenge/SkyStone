@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class servoDropBot extends ButtArmBot{
     public Servo servoDrop = null;
-    double position = 0.1;
+    double position = 0.0;
 
     public servoDropBot(LinearOpMode opMode) {
         super(opMode);
@@ -22,7 +22,7 @@ public class servoDropBot extends ButtArmBot{
     }
     public void toggleServoDrop(boolean Abutton){
         if(Abutton){
-            servoDrop.setPosition(position-0.2);
+            servoDrop.setPosition(position+0.3);
         }
     }
 

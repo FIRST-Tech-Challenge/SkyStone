@@ -100,14 +100,44 @@ public class Path {
                 double foundationX = 46.0;
                 double strafeDistance = 9.5;
 
+                yCoordMvmtPlane = -42.5;
+                wallSkyStoneX = -44.0;
+                furtherMostSkyStoneX = -21.0;
+                firstRegularStoneX = -34.0;
+                foundationX = 46.0;
+                strafeDistance = 6.5;
+
                 transferReset();
                 initIntakeClaw();
+
+                straightDrive.updateDriveConstants(true);
 
                 hwMap.parkingServo.setPosition(TeleopConstants.parkingServoPosLock);
                 hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
                 hwMap.transferLock.setPosition(TeleopConstants.transferLockPosPlatform);
 
-                straightDrive = DriveBuilderReset(false, false, "step1, after strafe");
+                prepGrab(FieldPosition.RED_QUARY);
+
+                straightDrive.getLocalizer().setPoseEstimate(straightDrive.getPoseEstimate());
+                straightDrive.getLocalizer().update();
+                builder = new TrajectoryBuilder(straightDrive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
+                builder = builder
+                        .setReversed(false).strafeTo(new Vector2d(wallSkyStoneX, yCoordMvmtPlane + strafeDistance));
+                trajectory = builder.build();   //x - 2.812, y + 7.984
+                straightDrive.followTrajectorySync(trajectory);
+
+                straightDrive.updateDriveConstants(false);
+                grabStone(FieldPosition.RED_QUARY);
+
+                builder = new TrajectoryBuilder(straightDrive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
+                builder = builder.setReversed(false).splineTo(new Pose2d(new Vector2d(-10, yCoordMvmtPlane), 0))
+                        .splineTo(new Pose2d(foundationX, yCoordMvmtPlane + strafeDistance, 0));
+                trajectory = builder.build();
+                straightDrive.followTrajectorySync(trajectory);
+
+                dropStone(FieldPosition.RED_QUARY);
+
+                /*straightDrive = DriveBuilderReset(false, false, "step1, after strafe");
                 if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
 
                     builder = builder
@@ -177,7 +207,7 @@ public class Path {
 
                 dropStone(FieldPosition.RED_QUARY);
 
-                /*strafeDrive = DriveBuilderReset(true, false, "step5, after drop 1st stone");
+                strafeDrive = DriveBuilderReset(true, false, "step5, after drop 1st stone");
                 if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
                     builder = builder.strafeTo(new Vector2d(foundationX, yCoordMvmtPlane));
                 } else {
@@ -251,7 +281,7 @@ public class Path {
                 strafeDrive.followTrajectorySync(trajectory);
                 currentPos = strafeDrive.getPoseEstimate();
 
-                dropStone(FieldPosition.RED_QUARY);*/
+                dropStone(FieldPosition.RED_QUARY);
 
                 /*strafeDrive = DriveBuilderReset(true, false, "step11, dropped 2nd stone");
                 if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
@@ -315,7 +345,7 @@ public class Path {
 
                 dropStone(FieldPosition.RED_QUARY);*/
 
-                hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
+                /*hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
                 hwMap.transferLock.setPosition(TeleopConstants.transferLockPosOut);
 
                 strafeDrive = DriveBuilderReset(true, false, "step17.5");
@@ -386,7 +416,7 @@ public class Path {
                     //.strafeTo(new Vector2d(42, -30));
                 }
                 trajectory = builder.build();
-                straightDrive.followTrajectorySync(trajectory);
+                straightDrive.followTrajectorySync(trajectory);*/
                 break;
             case 2:
                 yCoordMvmtPlane = -44.5;
@@ -472,7 +502,7 @@ public class Path {
 
                 dropStone(FieldPosition.RED_QUARY);
 
-                /*strafeDrive = DriveBuilderReset(true, false, "step5, after drop 1st stone");
+                strafeDrive = DriveBuilderReset(true, false, "step5, after drop 1st stone");
                 if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
                     builder = builder.strafeTo(new Vector2d(foundationX, yCoordMvmtPlane));
                 } else {
@@ -546,7 +576,7 @@ public class Path {
                 strafeDrive.followTrajectorySync(trajectory);
                 currentPos = strafeDrive.getPoseEstimate();
 
-                dropStone(FieldPosition.RED_QUARY);*/
+                dropStone(FieldPosition.RED_QUARY);
 
                 /*strafeDrive = DriveBuilderReset(true, false, "step11, dropped 2nd stone");
                 if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
@@ -768,7 +798,7 @@ public class Path {
 
                 dropStone(FieldPosition.RED_QUARY);
 
-                /*strafeDrive = DriveBuilderReset(true, false, "step5, after drop 1st stone");
+                strafeDrive = DriveBuilderReset(true, false, "step5, after drop 1st stone");
                 if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
                     builder = builder.strafeTo(new Vector2d(foundationX, yCoordMvmtPlane));
                 } else {
@@ -842,7 +872,7 @@ public class Path {
                 strafeDrive.followTrajectorySync(trajectory);
                 currentPos = strafeDrive.getPoseEstimate();
 
-                dropStone(FieldPosition.RED_QUARY);*/
+                dropStone(FieldPosition.RED_QUARY);
 
                 /*strafeDrive = DriveBuilderReset(true, false, "step11, dropped 2nd stone");
                 if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
@@ -2128,12 +2158,12 @@ public class Path {
     private void prepGrab(FieldPosition fieldPosition) {
         hwMap.redAutoClawJoint2.setPosition(TeleopConstants.autoClaw2Open);
         try {
-            Thread.sleep(300);
+            Thread.sleep(100);
         } catch (Exception e) {
         }
         hwMap.redAutoClawJoint1.setPosition(TeleopConstants.autoClaw1Strafe);
         try {
-            Thread.sleep(300);
+            Thread.sleep(100);
         } catch (Exception e) {
         }
     }
@@ -2141,12 +2171,12 @@ public class Path {
     private void grabStone(FieldPosition fieldPosition) {
         hwMap.redAutoClawJoint1.setPosition(TeleopConstants.autoClaw1Down);
         try {
-            Thread.sleep(300);
+            Thread.sleep(100);
         } catch (Exception e) {
         }
         hwMap.redAutoClawJoint2.setPosition(TeleopConstants.autoClaw2Close);
         try {
-            Thread.sleep(300);
+            Thread.sleep(100);
         } catch (Exception e) {
         }
         hwMap.redAutoClawJoint1.setPosition(TeleopConstants.autoClaw1Up);
@@ -2155,12 +2185,12 @@ public class Path {
     private void dropStone(FieldPosition fieldPosition) {
         hwMap.redAutoClawJoint1.setPosition(TeleopConstants.autoClaw1Down);
         try {
-            Thread.sleep(300);
+            Thread.sleep(100);
         } catch (Exception e) {
         }
         hwMap.redAutoClawJoint2.setPosition(TeleopConstants.autoClaw2Open);
         try {
-            Thread.sleep(300);
+            Thread.sleep(100);
         } catch (Exception e) {
         }
         hwMap.redAutoClawJoint1.setPosition(TeleopConstants.autoClaw1Up);
@@ -2271,5 +2301,35 @@ public class Path {
     private double getIMUAngle() {
         return imu.getAngularOrientation().firstAngle >= 0 ? imu.getAngularOrientation().firstAngle :
                 imu.getAngularOrientation().firstAngle + PI * 2;
+    }
+
+    private Function0 prepare(){
+        return new Function0() {
+            @Override
+            public Object invoke() {
+                prepGrab(FieldPosition.RED_QUARY);
+                return Unit.INSTANCE;
+            }
+        };
+    }
+
+    private Function0 grab(){
+        return new Function0() {
+            @Override
+            public Object invoke() {
+                grabStone(FieldPosition.RED_QUARY);
+                return Unit.INSTANCE;
+            }
+        };
+    }
+
+    private Function0 drop(){
+        return new Function0() {
+            @Override
+            public Object invoke() {
+                dropStone(FieldPosition.RED_QUARY);
+                return Unit.INSTANCE;
+            }
+        };
     }
 }

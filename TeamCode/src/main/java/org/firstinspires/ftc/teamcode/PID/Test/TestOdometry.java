@@ -24,6 +24,9 @@ import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveREV;
 
 import java.util.ArrayList;
 
+import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
+
 @Config
 @Autonomous(name = "StraightLineOdometryTest", group = "drive")
 public class TestOdometry extends LinearOpMode {
@@ -59,13 +62,66 @@ public class TestOdometry extends LinearOpMode {
         counter = 0;
 
         //collectData();
+        drive = new SampleMecanumDriveREV(hardwareMap, false, true);
+        drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(0,0),0));
+        drive.getLocalizer().update();
 
         double driftRemover = 0.0;
 
         while(opModeIsActive()){
-            DriveConstantsPID.updateConstantsFromProperties();
+            builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
+            drive.updateDriveConstants(true);
+
+            drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(drive.getPoseEstimate().getX(),
+                    drive.getPoseEstimate().getY()), drive.getPoseEstimate().getHeading()));
+            drive.getLocalizer().update();
+            builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
+            builder = builder.setReversed(false).strafeTo(new Vector2d(48,
+                    48));
+            trajectory = builder.build();
+            drive.followTrajectorySync(trajectory);
+
+            drive.updateDriveConstants(true);
+
+            try{
+                Thread.sleep(500);
+            } catch(Exception e){}
+
+            drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(drive.getPoseEstimate().getX(),
+                    drive.getPoseEstimate().getY()), drive.getPoseEstimate().getHeading()));
+            drive.getLocalizer().update();
+            builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
+            builder = builder.setReversed(false).strafeTo(new Vector2d(0,0));
+            trajectory = builder.build();
+            drive.followTrajectorySync(trajectory);
+
+            try{
+                Thread.sleep(500);
+            } catch(Exception e){}
+
+            counter += 1;
+
+            if(counter == 6)
+                stop();
+
+            /*
             DISTANCE = DriveConstantsPID.TEST_DISTANCE;
-            drive = new SampleMecanumDriveREV(hardwareMap, true, true);
+            drive = new SampleMecanumDriveREV(hardwareMap, false, true);
+
+            builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
+
+            drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(0,0),0));
+            drive.getLocalizer().update();
+
+            drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(drive.getPoseEstimate().getX(),
+                    drive.getPoseEstimate().getY()), drive.getPoseEstimate().getHeading()));    //Straight Test
+            drive.getLocalizer().update();
+            builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
+            builder = builder.setReversed(false).lineTo(new Vector2d(24,0));
+            trajectory = builder.build();
+            drive.followTrajectorySync(trajectory);
+
+            drive.updateDriveConstants(true);*/
             /*builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
 
             drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(0,0),0));
@@ -96,7 +152,7 @@ public class TestOdometry extends LinearOpMode {
             drive.followTrajectorySync(trajectory);
             RobotLog.dd("TAG", "pose: " + drive.getPoseEstimate().toString());*/
 
-            drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(drive.getPoseEstimate().getX(),
+            /*drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(drive.getPoseEstimate().getX(),
                     drive.getPoseEstimate().getY()), drive.getPoseEstimate().getHeading()));    //Strafe Test
             drive.getLocalizer().update();
             builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.STRAFE_BASE_CONSTRAINTS);
@@ -127,8 +183,23 @@ public class TestOdometry extends LinearOpMode {
             counter += 1;
 
             if(counter == 6)
-                stop();
+                stop();*/
         }
+    }
+
+    private Function0 updateConstraints(boolean strafe){
+        return new Function0() {
+            @Override
+            public Object invoke() {
+                Thread thread = new Thread() {
+                    public void run() {
+                        drive.updateDriveConstants(strafe);
+                    }
+                };
+                thread.start();
+                return Unit.INSTANCE;
+            }
+        };
     }
 
     private void collectData(){

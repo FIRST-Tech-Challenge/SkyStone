@@ -1,0 +1,681 @@
+cmd logfilename ps_name
+u0_a213   22643 374   1852432 191076 sys_epoll_ 00000000 S com.qualcomm.ftcrobotcontroller
+22643
+01-15 21:09:36.812   809  1664 I am_proc_start: [0,22643,10213,com.qualcomm.ftcrobotcontroller,activity,com.qualcomm.ftcrobotcontroller/org.firstinspires.ftc.robotcontroller.internal.PermissionValidatorWrapper]
+01-15 21:09:36.852   809  1383 I am_proc_bound: [0,22643,com.qualcomm.ftcrobotcontroller]
+01-15 21:09:46.422 22643 22643 I am_on_resume_called: [0,org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity]
+01-15 21:09:47.162   809   895 I am_pss  : [22643,10213,com.qualcomm.ftcrobotcontroller,129201152,124395520]
+01-15 21:11:04.952 22643 23334 V Robocol : received command: CMD_SET_MATCH_NUMBER(10939) 0
+01-15 21:11:04.952 22643 23334 V Robocol : received command: CMD_INIT_OP_MODE(10940) StraightTestV0
+01-15 21:11:04.972 22643 23333 I RobotCore: ******************** START - OPMODE StraightTestV0 ********************
+01-15 21:11:04.972 22643 23354 I RobotCore: Attempting to switch to op mode StraightTestV0
+01-15 21:11:05.372 22643 23354 D RevExtensions2: Hotswapping hardware map
+01-15 21:11:05.382 22643 23354 V RobotCore: DcMotorImpl(type=goBILDA5202SeriesMotor)
+01-15 21:11:05.392 22643 23354 V RobotCore: DcMotorImpl(type=Matrix12vMotor)
+01-15 21:11:05.392 22643 23354 V RobotCore: DcMotorImpl(type=goBILDA5202SeriesMotor)
+01-15 21:11:05.402 22643 23354 V RobotCore: DcMotorImpl(type=Matrix12vMotor)
+01-15 21:11:05.402 22643 23354 V RobotCore: DcMotorImpl(type=Matrix12vMotor)
+01-15 21:11:05.402 22643 23354 V RobotCore: DcMotorImpl(type=Matrix12vMotor)
+01-15 21:11:05.402 22643 23354 V RobotCore: DcMotorImpl(type=goBILDA5202SeriesMotor)
+01-15 21:11:05.412 22643 23354 V RobotCore: DcMotorImpl(type=goBILDA5202SeriesMotor)
+01-15 21:11:05.432 22643 23354 V ThreadPool: container(0x06f0eb99: LinearOpMode) added id=1957 TID=0 count=1
+01-15 21:11:05.442 22643 23854 V RobotCore: thread: 'LinearOpMode main' starting...
+01-15 21:11:05.442 22643 23395 V Robocol : sending CMD_NOTIFY_INIT_OP_MODE(1064), attempt: 0
+01-15 21:11:05.592 22643 23854 D DriveConstants: debug.ftc.imu : 1
+01-15 21:11:05.702 22643 23854 D DriveConstants: debug.ftc.vuforia : 0
+01-15 21:11:05.812 22643 23854 D DriveConstants: debug.ftc.odom : 1
+01-15 21:11:05.912 22643 23854 D DriveConstants: debug.ftc.bulk : 0
+01-15 21:11:05.992 22643 23854 D DriveConstants: debug.ftc.brake : 1
+01-15 21:11:06.112 22643 23854 D DriveConstants: debug.ftc.maxVel : 45.0
+01-15 21:11:06.242 22643 23854 D DriveConstants: debug.ftc.maxAccel : 20.0
+01-15 21:11:06.342 22643 23854 D DriveConstants: debug.ftc.kV : 0.0111
+01-15 21:11:06.452 22643 23854 D DriveConstants: debug.ftc.kP : 0.1
+01-15 21:11:06.552 22643 23854 D DriveConstants: debug.ftc.kI : 1.52
+01-15 21:11:06.642 22643 23854 D DriveConstants: debug.ftc.kD : 3.0
+01-15 21:11:06.732 22643 23854 D DriveConstants: debug.ftc.odomTrackwidth : 14.8
+01-15 21:11:06.832 22643 23854 D DriveConstants: debug.ftc.odomForwardOffset : -5.5
+01-15 21:11:06.912 22643 23854 D DriveConstants: debug.ftc.trackwidth : 14.2
+01-15 21:11:07.002 22643 23854 D DriveConstants: debug.ftc.txP : 8
+01-15 21:11:07.082 22643 23854 D DriveConstants: debug.ftc.txI : 0.6
+01-15 21:11:07.142 22643 23854 D DriveConstants: debug.ftc.txD : 0.75
+01-15 21:11:07.242 22643 23854 D DriveConstants: debug.ftc.tyP : 10
+01-15 21:11:07.302 22643 23334 V Robocol : received command: CMD_RUN_OP_MODE(10969) StraightTestV0
+01-15 21:11:07.312 22643 23854 D DriveConstants: debug.ftc.tyI : 0.5
+01-15 21:11:07.362 22643 23395 V Robocol : sending CMD_NOTIFY_RUN_OP_MODE(1086), attempt: 0
+01-15 21:11:07.392 22643 23854 D DriveConstants: debug.ftc.tyD : 1.1
+01-15 21:11:07.472 22643 23854 D DriveConstants: debug.ftc.hP : 6
+01-15 21:11:07.552 22643 23854 D DriveConstants: debug.ftc.hI : 2
+01-15 21:11:07.632 22643 23854 D DriveConstants: debug.ftc.hD : 0.4
+01-15 21:11:07.712 22643 23854 D DriveConstants: debug.ftc.stxP : 20
+01-15 21:11:07.782 22643 23854 D DriveConstants: debug.ftc.stxI : 1
+01-15 21:11:07.862 22643 23854 D DriveConstants: debug.ftc.stxD : 0.75
+01-15 21:11:07.942 22643 23854 D DriveConstants: debug.ftc.styP : 15
+01-15 21:11:08.022 22643 23854 D DriveConstants: debug.ftc.styI : 0.5
+01-15 21:11:08.112 22643 23854 D DriveConstants: debug.ftc.styD : 1
+01-15 21:11:08.182 22643 23854 D DriveConstants: debug.ftc.shP : 6
+01-15 21:11:08.252 22643 23854 D DriveConstants: debug.ftc.shI : 2
+01-15 21:11:08.332 22643 23854 D DriveConstants: debug.ftc.shD : 0.4
+01-15 21:11:08.422 22643 23854 D DriveConstants: debug.ftc.strafeMotorPower : 0.19
+01-15 21:11:08.502 22643 23854 D DriveConstants: debug.ftc.strafeTimeDistanceRat : 0.093
+01-15 21:11:08.582 22643 23854 D DriveConstants: debug.ftc.rear_ratio : 1.105
+01-15 21:11:08.662 22643 23854 D DriveConstants: debug.ftc.odoTicksPerRev : 1565
+01-15 21:11:08.752 22643 23854 D DriveConstants: debug.ftc.distance : 24
+01-15 21:11:08.752 22643 23854 D DriveConstants: kP, kI, kD has been set, updated this time
+01-15 21:11:08.832 22643 23854 D DriveConstants: returned prop str is invalid: debug.ftc.useOld
+01-15 21:11:08.832 22643 23854 D DriveConstants: Velocity PID    kP: 0.1, kI: 1.52, kD: 3.0
+01-15 21:11:08.832 22643 23854 D DriveConstants: (non-strafe) maxVel: 45.000000, maxAccel: 20.000000
+01-15 21:11:08.832 22643 23854 D DriveConstants: xTransitional PID   txP: 8.0 txI: 0.6 txD: 0.75
+01-15 21:11:08.832 22643 23854 D DriveConstants: yTransitional PID   tyP: 10.0 tyI: 0.5 tyD: 1.1
+01-15 21:11:08.832 22643 23854 D DriveConstants: Heading PID   hP: 6.0 hI: 2.0 hD: 0.4
+01-15 21:11:08.832 22643 23854 D DriveConstants: test distance: 24.0
+01-15 21:11:08.832 22643 23854 D DriveConstants: using IMU in localizer? : 1
+01-15 21:11:08.832 22643 23854 D DriveConstants: using Vuforia in localizer (override IMU and odom)? : 0
+01-15 21:11:08.832 22643 23854 D DriveConstants: Driving wheel width? : 14.2
+01-15 21:11:08.832 22643 23854 D DriveConstants: using Odometry? : 1
+01-15 21:11:08.832 22643 23854 D DriveConstants: using Bulk read? : 0
+01-15 21:11:08.832 22643 23854 D DriveConstants: Odometry wheel width? : 14.8
+01-15 21:11:08.832 22643 23854 D DriveConstants: Odometry forward offset? -5.5
+01-15 21:11:08.832 22643 23854 D DriveConstants: Odometry EncoderTicksPerRev? 1565.0
+01-15 21:11:08.832 22643 23854 D DriveConstants: Strafing paramters: 
+01-15 21:11:08.832 22643 23854 D DriveConstants: xTransitional PID   txP: 20.0 txI: 1.0 txD: 0.75
+01-15 21:11:08.832 22643 23854 D DriveConstants: yTransitional PID   tyP: 15.0 tyI: 0.5 tyD: 1.0
+01-15 21:11:08.832 22643 23854 D DriveConstants: Heading PID   hP: 6.0 hI: 2.0 hD: 0.4
+01-15 21:11:08.832 22643 23854 D DriveConstants: strafeTimeDistanceRat: 0.093
+01-15 21:11:08.832 22643 23854 D DriveConstants: strafeMotorPower:  0.19
+01-15 21:11:08.832 22643 23854 D DriveConstants: rear_ratio:  1.105
+01-15 21:11:08.862 22643 23854 D SampleMecanumDriveBase: using non-strafing PID, maxVel: 45.000000, maxAccl: 20.000000
+01-15 21:11:08.882 22643 23854 D SampleMecanumDriveREVss: SampleMecanumDriveREV created
+01-15 21:11:08.972 22643 23854 D SampleMecanumDriveREVss: MOTOR_VELO_PID!=0, to setPIDCoefficients 0.1 1.52 3.0
+01-15 21:11:08.972 22643 23854 D DriveConstants: MOTOR_CONFIG.getAchieveableMaxRPMFraction(): 0.85
+01-15 21:11:08.972 22643 23854 D DriveConstants: MOTOR_CONFIG.getMaxRPM(): 60.0
+01-15 21:11:08.972 22643 23854 D DriveConstants: getMaxRpm: hardcoded to: 297.105 from: 435.0
+01-15 21:11:08.972 22643 23854 D DriveConstants: getTicksPerSec 1899.4913000000004
+01-15 21:11:08.972 22643 23854 D DriveConstants: getTicksPerSec 1899.4913000000004
+01-15 21:11:08.982 22643 23854 D DriveConstants: MOTOR_CONFIG.getAchieveableMaxRPMFraction(): 0.85
+01-15 21:11:08.982 22643 23854 D DriveConstants: MOTOR_CONFIG.getMaxRPM(): 60.0
+01-15 21:11:08.982 22643 23854 D DriveConstants: getMaxRpm: hardcoded to: 297.105 from: 435.0
+01-15 21:11:08.982 22643 23854 D DriveConstants: getTicksPerSec 1899.4913000000004
+01-15 21:11:08.982 22643 23854 D SampleMecanumDriveREVss: setPIDCoefficients:
+01-15 21:11:08.982 22643 23854 D SampleMecanumDriveREVss: kP: 0.1 kI: 1.52 kD: 3.0 MotorVelocityF: 17.25040804345879
+01-15 21:11:08.992 22643 23854 D SampleMecanumDriveREVss: to setLocalizer to StandardTrackingWheelLocalizer
+01-15 21:11:09.012 22643 23854 D StandardTrackingWheelLocalizer: StandardTrackingWheelLocalizer created
+01-15 21:11:09.042 22643 23854 D SampleMecanumDriveREVss: setBrakeonZeroPower true
+01-15 21:11:09.042 22643 23854 D StraightTest: trajectoryBuilder forward, DISTANCE: 24.0
+01-15 21:11:09.042 22643 23854 D StandardTrackingWheelLocalizer: getPoseEstimate: 0.0, 0.0, 0.0
+01-15 21:11:09.082 22643 23854 D StandardTrackingWheelLocalizer: getWheelPositions
+01-15 21:11:09.082 22643 23854 D StandardTrackingWheelLocalizer: leftEncoder: 0
+01-15 21:11:09.082 22643 23854 D StandardTrackingWheelLocalizer: rightEncoder: 0
+01-15 21:11:09.082 22643 23854 D StandardTrackingWheelLocalizer: frontEncoder: 0
+01-15 21:11:09.082 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 0.0 inches: 0.0
+01-15 21:11:09.082 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 0.0 inches: 0.0
+01-15 21:11:09.082 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 0.0 inches: 0.0
+01-15 21:11:09.092 22643 23854 V RobotCore: addr=false data=false arb=false clock=false
+01-15 21:11:09.092 22643 23854 E LynxI2cDeviceSynch: readStatusQuery: cbExpected=6 cbRead=0
+01-15 21:11:09.102 22643 23854 E LynxI2cDeviceSynch: placeholder: readStatusQuery
+01-15 21:11:09.102 22643 23854 D StandardTrackingWheelLocalizer: using IMU: IMU heading -0.0 non-IMU heading: 0.0
+01-15 21:11:09.102 22643 23854 D StandardTrackingWheelLocalizer: poseEstimate: 0.0, 0.0, -0.0
+01-15 21:11:09.102 22643 23854 D StandardTrackingWheelLocalizer: getPoseEstimate: 0.0, 0.0, -0.0
+01-15 21:11:09.102 22643 23854 D SampleMecanumDriveBase: update: x 0.0
+01-15 21:11:09.102 22643 23854 D SampleMecanumDriveBase: y 0.0
+01-15 21:11:09.102 22643 23854 D SampleMecanumDriveBase: heading -0.0
+01-15 21:11:09.102 22643 23854 D SampleMecanumDriveBase: xError 0.0
+01-15 21:11:09.102 22643 23854 D SampleMecanumDriveBase: yError 0.0
+01-15 21:11:09.102 22643 23854 D SampleMecanumDriveBase: headingError 0.0
+01-15 21:11:09.102 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftFront: 0.005448805073984659
+01-15 21:11:09.102 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftRear: 0.005448805073984659
+01-15 21:11:09.102 22643 23854 D SampleMecanumDriveREVss: setMotorPowers rightRear: 0.005448805073984659
+01-15 21:11:09.102 22643 23354 D RobotCore: system telemetry: key=$System$Warning$ msg="problem with "imu""
+01-15 21:11:09.102 22643 23854 D SampleMecanumDriveREVss: setMotorPowersrightFront: 0.005448805073984659
+01-15 21:11:09.122 22643 23854 D StandardTrackingWheelLocalizer: getWheelPositions
+01-15 21:11:09.122 22643 23854 D StandardTrackingWheelLocalizer: leftEncoder: 0
+01-15 21:11:09.122 22643 23854 D StandardTrackingWheelLocalizer: rightEncoder: 0
+01-15 21:11:09.122 22643 23854 D StandardTrackingWheelLocalizer: frontEncoder: 0
+01-15 21:11:09.122 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 0.0 inches: 0.0
+01-15 21:11:09.122 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 0.0 inches: 0.0
+01-15 21:11:09.122 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 0.0 inches: 0.0
+01-15 21:11:09.132 22643 23353 D SoundPlayer: playing volume=1.000000 samp=2|ms=2509
+01-15 21:11:09.142 22643 23854 V RobotCore: addr=false data=false arb=false clock=false
+01-15 21:11:09.142 22643 23854 E LynxI2cDeviceSynch: readStatusQuery: cbExpected=6 cbRead=0
+01-15 21:11:09.142 22643 23854 D StandardTrackingWheelLocalizer: using IMU: IMU heading -0.0 non-IMU heading: 0.0
+01-15 21:11:09.142 22643 23854 D StandardTrackingWheelLocalizer: poseEstimate: 0.0, 0.0, -0.0
+01-15 21:11:09.142 22643 23854 D StandardTrackingWheelLocalizer: getPoseEstimate: 0.0, 0.0, -0.0
+01-15 21:11:09.142 22643 23854 D SampleMecanumDriveBase: update: x 0.0
+01-15 21:11:09.142 22643 23854 D SampleMecanumDriveBase: y 0.0
+01-15 21:11:09.142 22643 23854 D SampleMecanumDriveBase: heading -0.0
+01-15 21:11:09.142 22643 23854 D SampleMecanumDriveBase: xError 0.006024161337204967
+01-15 21:11:09.142 22643 23854 D SampleMecanumDriveBase: yError 0.0
+01-15 21:11:09.142 22643 23854 D SampleMecanumDriveBase: headingError 0.0
+01-15 21:11:09.142 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftFront: 0.014613124230547631
+01-15 21:11:09.142 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftRear: 0.014613124230547631
+01-15 21:11:09.142 22643 23854 D SampleMecanumDriveREVss: setMotorPowers rightRear: 0.014613124230547631
+01-15 21:11:09.142 22643 23854 D SampleMecanumDriveREVss: setMotorPowersrightFront: 0.014613124230547631
+01-15 21:11:09.162 22643 23395 V Robocol : sending CMD_PLAY_SOUND(1105), attempt: 0
+01-15 21:11:09.172 22643 23854 D StandardTrackingWheelLocalizer: getWheelPositions
+01-15 21:11:09.172 22643 23854 D StandardTrackingWheelLocalizer: leftEncoder: 0
+01-15 21:11:09.172 22643 23854 D StandardTrackingWheelLocalizer: rightEncoder: 0
+01-15 21:11:09.172 22643 23854 D StandardTrackingWheelLocalizer: frontEncoder: 0
+01-15 21:11:09.172 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 0.0 inches: 0.0
+01-15 21:11:09.172 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 0.0 inches: 0.0
+01-15 21:11:09.172 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 0.0 inches: 0.0
+01-15 21:11:09.182 22643 23854 V RobotCore: addr=false data=false arb=false clock=false
+01-15 21:11:09.182 22643 23854 E LynxI2cDeviceSynch: readStatusQuery: cbExpected=6 cbRead=0
+01-15 21:11:09.182 22643 23854 D StandardTrackingWheelLocalizer: using IMU: IMU heading -0.0 non-IMU heading: 0.0
+01-15 21:11:09.182 22643 23854 D StandardTrackingWheelLocalizer: poseEstimate: 0.0, 0.0, -0.0
+01-15 21:11:09.182 22643 23854 D StandardTrackingWheelLocalizer: getPoseEstimate: 0.0, 0.0, -0.0
+01-15 21:11:09.182 22643 23854 D SampleMecanumDriveBase: update: x 0.0
+01-15 21:11:09.182 22643 23854 D SampleMecanumDriveBase: y 0.0
+01-15 21:11:09.182 22643 23854 D SampleMecanumDriveBase: heading -0.0
+01-15 21:11:09.182 22643 23854 D SampleMecanumDriveBase: xError 0.041072878942066356
+01-15 21:11:09.182 22643 23854 D SampleMecanumDriveBase: yError 0.0
+01-15 21:11:09.182 22643 23854 D SampleMecanumDriveBase: headingError 0.0
+01-15 21:11:09.182 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftFront: 0.030466874978777547
+01-15 21:11:09.182 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftRear: 0.030466874978777547
+01-15 21:11:09.182 22643 23854 D SampleMecanumDriveREVss: setMotorPowers rightRear: 0.030466874978777547
+01-15 21:11:09.182 22643 23854 D SampleMecanumDriveREVss: setMotorPowersrightFront: 0.030466874978777547
+01-15 21:11:09.202 22643 23854 D StandardTrackingWheelLocalizer: getWheelPositions
+01-15 21:11:09.202 22643 23854 D StandardTrackingWheelLocalizer: leftEncoder: 0
+01-15 21:11:09.202 22643 23854 D StandardTrackingWheelLocalizer: rightEncoder: 0
+01-15 21:11:09.202 22643 23854 D StandardTrackingWheelLocalizer: frontEncoder: 0
+01-15 21:11:09.202 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 0.0 inches: 0.0
+01-15 21:11:09.202 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 0.0 inches: 0.0
+01-15 21:11:09.202 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 0.0 inches: 0.0
+01-15 21:11:09.212 22643 23854 V RobotCore: addr=false data=false arb=false clock=false
+01-15 21:11:09.212 22643 23854 E LynxI2cDeviceSynch: readStatusQuery: cbExpected=6 cbRead=0
+01-15 21:11:09.222 22643 23854 D StandardTrackingWheelLocalizer: using IMU: IMU heading -0.0 non-IMU heading: 0.0
+01-15 21:11:09.222 22643 23854 D StandardTrackingWheelLocalizer: poseEstimate: 0.0, 0.0, -0.0
+01-15 21:11:09.222 22643 23854 D StandardTrackingWheelLocalizer: getPoseEstimate: 0.0, 0.0, -0.0
+01-15 21:11:09.222 22643 23854 D SampleMecanumDriveBase: update: x 0.0
+01-15 21:11:09.222 22643 23854 D SampleMecanumDriveBase: y 0.0
+01-15 21:11:09.222 22643 23854 D SampleMecanumDriveBase: heading -0.0
+01-15 21:11:09.222 22643 23854 D SampleMecanumDriveBase: xError 0.11496497025386956
+01-15 21:11:09.222 22643 23854 D SampleMecanumDriveBase: yError 0.0
+01-15 21:11:09.222 22643 23854 D SampleMecanumDriveBase: headingError 0.0
+01-15 21:11:09.222 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftFront: 0.047722288530777306
+01-15 21:11:09.222 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftRear: 0.047722288530777306
+01-15 21:11:09.222 22643 23854 D SampleMecanumDriveREVss: setMotorPowers rightRear: 0.047722288530777306
+01-15 21:11:09.222 22643 23854 D SampleMecanumDriveREVss: setMotorPowersrightFront: 0.047722288530777306
+01-15 21:11:09.242 22643 23854 D StandardTrackingWheelLocalizer: getWheelPositions
+01-15 21:11:09.242 22643 23854 D StandardTrackingWheelLocalizer: leftEncoder: 0
+01-15 21:11:09.242 22643 23854 D StandardTrackingWheelLocalizer: rightEncoder: 0
+01-15 21:11:09.242 22643 23854 D StandardTrackingWheelLocalizer: frontEncoder: 0
+01-15 21:11:09.242 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 0.0 inches: 0.0
+01-15 21:11:09.242 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 0.0 inches: 0.0
+01-15 21:11:09.242 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 0.0 inches: 0.0
+01-15 21:11:09.252 22643 23854 V RobotCore: addr=false data=false arb=false clock=false
+01-15 21:11:09.252 22643 23854 E LynxI2cDeviceSynch: readStatusQuery: cbExpected=6 cbRead=0
+01-15 21:11:09.252 22643 23854 D StandardTrackingWheelLocalizer: using IMU: IMU heading -0.0 non-IMU heading: 0.0
+01-15 21:11:09.252 22643 23854 D StandardTrackingWheelLocalizer: poseEstimate: 0.0, 0.0, -0.0
+01-15 21:11:09.252 22643 23854 D StandardTrackingWheelLocalizer: getPoseEstimate: 0.0, 0.0, -0.0
+01-15 21:11:09.252 22643 23854 D SampleMecanumDriveBase: update: x 0.0
+01-15 21:11:09.252 22643 23854 D SampleMecanumDriveBase: y 0.0
+01-15 21:11:09.252 22643 23854 D SampleMecanumDriveBase: heading -0.0
+01-15 21:11:09.252 22643 23854 D SampleMecanumDriveBase: xError 0.2101083472672475
+01-15 21:11:09.252 22643 23854 D SampleMecanumDriveBase: yError 0.0
+01-15 21:11:09.252 22643 23854 D SampleMecanumDriveBase: headingError 0.0
+01-15 21:11:09.252 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftFront: 0.06521652599438287
+01-15 21:11:09.252 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftRear: 0.06521652599438287
+01-15 21:11:09.252 22643 23854 D SampleMecanumDriveREVss: setMotorPowers rightRear: 0.06521652599438287
+01-15 21:11:09.252 22643 23854 D SampleMecanumDriveREVss: setMotorPowersrightFront: 0.06521652599438287
+01-15 21:11:09.282 22643 23854 D StandardTrackingWheelLocalizer: getWheelPositions
+01-15 21:11:09.282 22643 23854 D StandardTrackingWheelLocalizer: leftEncoder: 0
+01-15 21:11:09.282 22643 23854 D StandardTrackingWheelLocalizer: rightEncoder: 0
+01-15 21:11:09.282 22643 23854 D StandardTrackingWheelLocalizer: frontEncoder: 0
+01-15 21:11:09.282 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 0.0 inches: 0.0
+01-15 21:11:09.282 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 0.0 inches: 0.0
+01-15 21:11:09.282 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 0.0 inches: 0.0
+01-15 21:11:09.292 22643 23854 V RobotCore: addr=false data=false arb=false clock=false
+01-15 21:11:09.292 22643 23854 E LynxI2cDeviceSynch: readStatusQuery: cbExpected=6 cbRead=0
+01-15 21:11:09.292 22643 23854 D StandardTrackingWheelLocalizer: using IMU: IMU heading -0.0 non-IMU heading: 0.0
+01-15 21:11:09.292 22643 23854 D StandardTrackingWheelLocalizer: poseEstimate: 0.0, 0.0, -0.0
+01-15 21:11:09.292 22643 23854 D StandardTrackingWheelLocalizer: getPoseEstimate: 0.0, 0.0, -0.0
+01-15 21:11:09.292 22643 23854 D SampleMecanumDriveBase: update: x 0.0
+01-15 21:11:09.292 22643 23854 D SampleMecanumDriveBase: y 0.0
+01-15 21:11:09.292 22643 23854 D SampleMecanumDriveBase: heading -0.0
+01-15 21:11:09.292 22643 23854 D SampleMecanumDriveBase: xError 0.31930525658754677
+01-15 21:11:09.292 22643 23854 D SampleMecanumDriveBase: yError 0.0
+01-15 21:11:09.292 22643 23854 D SampleMecanumDriveBase: headingError 0.0
+01-15 21:11:09.292 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftFront: 0.08823556198171456
+01-15 21:11:09.292 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftRear: 0.08823556198171456
+01-15 21:11:09.292 22643 23854 D SampleMecanumDriveREVss: setMotorPowers rightRear: 0.08823556198171456
+01-15 21:11:09.292 22643 23854 D SampleMecanumDriveREVss: setMotorPowersrightFront: 0.08823556198171456
+01-15 21:11:09.322 22643 23854 D StandardTrackingWheelLocalizer: getWheelPositions
+01-15 21:11:09.322 22643 23854 D StandardTrackingWheelLocalizer: leftEncoder: 1
+01-15 21:11:09.322 22643 23854 D StandardTrackingWheelLocalizer: rightEncoder: 0
+01-15 21:11:09.322 22643 23854 D StandardTrackingWheelLocalizer: frontEncoder: 1
+01-15 21:11:09.322 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 1.0 inches: 0.005018518615958136
+01-15 21:11:09.322 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 0.0 inches: 0.0
+01-15 21:11:09.322 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 1.0 inches: 0.005018518615958136
+01-15 21:11:09.332 22643 23854 V RobotCore: addr=false data=false arb=false clock=false
+01-15 21:11:09.332 22643 23854 E LynxI2cDeviceSynch: readStatusQuery: cbExpected=6 cbRead=0
+01-15 21:11:09.332 22643 23854 D StandardTrackingWheelLocalizer: using IMU: IMU heading -0.0 non-IMU heading: 6.282846218083914
+01-15 21:11:09.332 22643 23854 D StandardTrackingWheelLocalizer: poseEstimate: 0.0025097939234665187, 0.0031531030980938377, -0.0
+01-15 21:11:09.342 22643 23854 D StandardTrackingWheelLocalizer: getPoseEstimate: 0.0025097939234665187, 0.0031531030980938377, -0.0
+01-15 21:11:09.342 22643 23854 D SampleMecanumDriveBase: update: x 0.0025097939234665187
+01-15 21:11:09.342 22643 23854 D SampleMecanumDriveBase: y 0.0031531030980938377
+01-15 21:11:09.342 22643 23854 D SampleMecanumDriveBase: heading -0.0
+01-15 21:11:09.342 22643 23854 D SampleMecanumDriveBase: xError 0.47935430778785804
+01-15 21:11:09.342 22643 23854 D SampleMecanumDriveBase: yError 0.0
+01-15 21:11:09.342 22643 23854 D SampleMecanumDriveBase: headingError 0.0
+01-15 21:11:09.342 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftFront: 0.1177531746113755
+01-15 21:11:09.342 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftRear: 0.11535898491516075
+01-15 21:11:09.342 22643 23854 D SampleMecanumDriveREVss: setMotorPowers rightRear: 0.1177531746113755
+01-15 21:11:09.342 22643 23854 D SampleMecanumDriveREVss: setMotorPowersrightFront: 0.11535898491516075
+01-15 21:11:09.362 22643 23854 D StandardTrackingWheelLocalizer: getWheelPositions
+01-15 21:11:09.362 22643 23854 D StandardTrackingWheelLocalizer: leftEncoder: 4
+01-15 21:11:09.362 22643 23854 D StandardTrackingWheelLocalizer: rightEncoder: 2
+01-15 21:11:09.362 22643 23854 D StandardTrackingWheelLocalizer: frontEncoder: 1
+01-15 21:11:09.362 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 4.0 inches: 0.020074074463832543
+01-15 21:11:09.362 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 2.0 inches: 0.010037037231916271
+01-15 21:11:09.362 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 1.0 inches: 0.005018518615958136
+01-15 21:11:09.382 22643 23854 V RobotCore: addr=false data=false arb=false clock=false
+01-15 21:11:09.382 22643 23854 E LynxI2cDeviceSynch: readStatusQuery: cbExpected=6 cbRead=0
+01-15 21:11:09.382 22643 23854 D StandardTrackingWheelLocalizer: using IMU: IMU heading -0.0 non-IMU heading: 6.282507128988241
+01-15 21:11:09.382 22643 23854 D StandardTrackingWheelLocalizer: poseEstimate: 0.015055140183712408, 0.0012817318538559355, -0.0
+01-15 21:11:09.382 22643 23854 D StandardTrackingWheelLocalizer: getPoseEstimate: 0.015055140183712408, 0.0012817318538559355, -0.0
+01-15 21:11:09.382 22643 23854 D SampleMecanumDriveBase: update: x 0.015055140183712408
+01-15 21:11:09.382 22643 23854 D SampleMecanumDriveBase: y 0.0012817318538559355
+01-15 21:11:09.382 22643 23854 D SampleMecanumDriveBase: heading -0.0
+01-15 21:11:09.382 22643 23854 D SampleMecanumDriveBase: xError 0.6959497662133054
+01-15 21:11:09.382 22643 23854 D SampleMecanumDriveBase: yError -0.0031531030980938377
+01-15 21:11:09.382 22643 23854 D SampleMecanumDriveBase: headingError 0.0
+01-15 21:11:09.382 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftFront: 0.14271811729164802
+01-15 21:11:09.382 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftRear: 0.14358070439878606
+01-15 21:11:09.382 22643 23854 D SampleMecanumDriveREVss: setMotorPowers rightRear: 0.14271811729164802
+01-15 21:11:09.382 22643 23854 D SampleMecanumDriveREVss: setMotorPowersrightFront: 0.14358070439878606
+01-15 21:11:09.402 22643 23395 V Robocol : sending CMD_PLAY_SOUND(1105), attempt: 1
+01-15 21:11:09.402 22643 23854 D StandardTrackingWheelLocalizer: getWheelPositions
+01-15 21:11:09.402 22643 23854 D StandardTrackingWheelLocalizer: leftEncoder: 9
+01-15 21:11:09.402 22643 23854 D StandardTrackingWheelLocalizer: rightEncoder: 7
+01-15 21:11:09.402 22643 23854 D StandardTrackingWheelLocalizer: frontEncoder: 1
+01-15 21:11:09.402 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 9.0 inches: 0.04516666754362322
+01-15 21:11:09.402 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 7.0 inches: 0.035129630311706954
+01-15 21:11:09.402 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 1.0 inches: 0.005018518615958136
+01-15 21:11:09.412 22643 23854 V RobotCore: addr=false data=false arb=false clock=false
+01-15 21:11:09.412 22643 23854 E LynxI2cDeviceSynch: readStatusQuery: cbExpected=6 cbRead=0
+01-15 21:11:09.412 22643 23854 D StandardTrackingWheelLocalizer: using IMU: IMU heading -0.0 non-IMU heading: 6.282507128988241
+01-15 21:11:09.422 22643 23854 D StandardTrackingWheelLocalizer: poseEstimate: 0.04014772749313961, 0.0012647146057693664, -0.0
+01-15 21:11:09.422 22643 23854 D StandardTrackingWheelLocalizer: getPoseEstimate: 0.04014772749313961, 0.0012647146057693664, -0.0
+01-15 21:11:09.422 22643 23854 D SampleMecanumDriveBase: update: x 0.04014772749313961
+01-15 21:11:09.422 22643 23854 D SampleMecanumDriveBase: y 0.0012647146057693664
+01-15 21:11:09.422 22643 23854 D SampleMecanumDriveBase: heading -0.0
+01-15 21:11:09.422 22643 23854 D SampleMecanumDriveBase: xError 0.9101805726635737
+01-15 21:11:09.422 22643 23854 D SampleMecanumDriveBase: yError -0.0012817318538559355
+01-15 21:11:09.422 22643 23854 D SampleMecanumDriveBase: headingError 0.0
+01-15 21:11:09.422 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftFront: 0.17068792830598145
+01-15 21:11:09.422 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftRear: 0.17041513819630538
+01-15 21:11:09.422 22643 23854 D SampleMecanumDriveREVss: setMotorPowers rightRear: 0.17068792830598145
+01-15 21:11:09.422 22643 23854 D SampleMecanumDriveREVss: setMotorPowersrightFront: 0.17041513819630538
+01-15 21:11:09.462 22643 23854 D StandardTrackingWheelLocalizer: getWheelPositions
+01-15 21:11:09.462 22643 23854 D StandardTrackingWheelLocalizer: leftEncoder: 22
+01-15 21:11:09.462 22643 23854 D StandardTrackingWheelLocalizer: rightEncoder: 19
+01-15 21:11:09.462 22643 23854 D StandardTrackingWheelLocalizer: frontEncoder: 2
+01-15 21:11:09.462 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 22.0 inches: 0.110407409551079
+01-15 21:11:09.462 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 19.0 inches: 0.09535185370320459
+01-15 21:11:09.462 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 2.0 inches: 0.010037037231916271
+01-15 21:11:09.472 22643 23854 V RobotCore: addr=false data=false arb=false clock=false
+01-15 21:11:09.472 22643 23854 E LynxI2cDeviceSynch: readStatusQuery: cbExpected=6 cbRead=0
+01-15 21:11:09.472 22643 23854 D StandardTrackingWheelLocalizer: using IMU: IMU heading -0.0 non-IMU heading: 6.282168039892568
+01-15 21:11:09.472 22643 23854 D StandardTrackingWheelLocalizer: poseEstimate: 0.10288186066915607, 0.004365063149577772, -0.0
+01-15 21:11:09.472 22643 23854 D StandardTrackingWheelLocalizer: getPoseEstimate: 0.10288186066915607, 0.004365063149577772, -0.0
+01-15 21:11:09.472 22643 23854 D SampleMecanumDriveBase: update: x 0.10288186066915607
+01-15 21:11:09.472 22643 23854 D SampleMecanumDriveBase: y 0.004365063149577772
+01-15 21:11:09.472 22643 23854 D SampleMecanumDriveBase: heading -0.0
+01-15 21:11:09.472 22643 23854 D SampleMecanumDriveBase: xError 1.1460534137151006
+01-15 21:11:09.472 22643 23854 D SampleMecanumDriveBase: yError -0.0012647146057693664
+01-15 21:11:09.472 22643 23854 D SampleMecanumDriveBase: headingError 0.0
+01-15 21:11:09.482 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftFront: 0.20996522241595117
+01-15 21:11:09.482 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftRear: 0.20772459574805188
+01-15 21:11:09.482 22643 23854 D SampleMecanumDriveREVss: setMotorPowers rightRear: 0.20996522241595117
+01-15 21:11:09.482 22643 23854 D SampleMecanumDriveREVss: setMotorPowersrightFront: 0.20772459574805188
+01-15 21:11:09.512 22643 23854 D StandardTrackingWheelLocalizer: getWheelPositions
+01-15 21:11:09.522 22643 23854 D StandardTrackingWheelLocalizer: leftEncoder: 45
+01-15 21:11:09.522 22643 23854 D StandardTrackingWheelLocalizer: rightEncoder: 42
+01-15 21:11:09.522 22643 23854 D StandardTrackingWheelLocalizer: frontEncoder: 2
+01-15 21:11:09.522 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 45.0 inches: 0.22583333771811612
+01-15 21:11:09.522 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 42.0 inches: 0.2107777818702417
+01-15 21:11:09.522 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 2.0 inches: 0.010037037231916271
+01-15 21:11:09.532 22643 23854 V RobotCore: addr=false data=false arb=false clock=false
+01-15 21:11:09.532 22643 23854 E LynxI2cDeviceSynch: readStatusQuery: cbExpected=6 cbRead=0
+01-15 21:11:09.532 22643 23854 D StandardTrackingWheelLocalizer: using IMU: IMU heading -0.0 non-IMU heading: 6.282168039892568
+01-15 21:11:09.532 22643 23854 D StandardTrackingWheelLocalizer: poseEstimate: 0.21830772911293397, 0.004247644149031188, -0.0
+01-15 21:11:09.532 22643 23854 D StandardTrackingWheelLocalizer: getPoseEstimate: 0.21830772911293397, 0.004247644149031188, -0.0
+01-15 21:11:09.532 22643 23854 D SampleMecanumDriveBase: update: x 0.21830772911293397
+01-15 21:11:09.532 22643 23854 D SampleMecanumDriveBase: y 0.004247644149031188
+01-15 21:11:09.532 22643 23854 D SampleMecanumDriveBase: heading -0.0
+01-15 21:11:09.532 22643 23854 D SampleMecanumDriveBase: xError 1.5113170055450587
+01-15 21:11:09.532 22643 23854 D SampleMecanumDriveBase: yError -0.004365063149577772
+01-15 21:11:09.532 22643 23854 D SampleMecanumDriveBase: headingError 0.0
+01-15 21:11:09.532 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftFront: 0.25102291751098105
+01-15 21:11:09.532 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftRear: 0.25012639222336586
+01-15 21:11:09.532 22643 23854 D SampleMecanumDriveREVss: setMotorPowers rightRear: 0.25102291751098105
+01-15 21:11:09.532 22643 23854 D SampleMecanumDriveREVss: setMotorPowersrightFront: 0.25012639222336586
+01-15 21:11:09.562 22643 23854 D StandardTrackingWheelLocalizer: getWheelPositions
+01-15 21:11:09.562 22643 23854 D StandardTrackingWheelLocalizer: leftEncoder: 73
+01-15 21:11:09.562 22643 23854 D StandardTrackingWheelLocalizer: rightEncoder: 70
+01-15 21:11:09.562 22643 23854 D StandardTrackingWheelLocalizer: frontEncoder: 2
+01-15 21:11:09.562 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 73.0 inches: 0.36635185896494393
+01-15 21:11:09.562 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 70.0 inches: 0.3512963031170695
+01-15 21:11:09.562 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 2.0 inches: 0.010037037231916271
+01-15 21:11:09.572 22643 23854 V RobotCore: addr=false data=false arb=false clock=false
+01-15 21:11:09.572 22643 23854 E LynxI2cDeviceSynch: readStatusQuery: cbExpected=6 cbRead=0
+01-15 21:11:09.572 22643 23854 D StandardTrackingWheelLocalizer: using IMU: IMU heading -0.0 non-IMU heading: 6.282168039892568
+01-15 21:11:09.572 22643 23854 D StandardTrackingWheelLocalizer: poseEstimate: 0.35882617765318536, 0.004104699278800553, -0.0
+01-15 21:11:09.572 22643 23854 D StandardTrackingWheelLocalizer: getPoseEstimate: 0.35882617765318536, 0.004104699278800553, -0.0
+01-15 21:11:09.572 22643 23854 D SampleMecanumDriveBase: update: x 0.35882617765318536
+01-15 21:11:09.572 22643 23854 D SampleMecanumDriveBase: y 0.004104699278800553
+01-15 21:11:09.572 22643 23854 D SampleMecanumDriveBase: heading -0.0
+01-15 21:11:09.572 22643 23854 D SampleMecanumDriveBase: xError 1.8767649226876382
+01-15 21:11:09.572 22643 23854 D SampleMecanumDriveBase: yError -0.004247644149031188
+01-15 21:11:09.572 22643 23854 D SampleMecanumDriveBase: headingError 0.0
+01-15 21:11:09.572 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftFront: 0.27347769208638134
+01-15 21:11:09.582 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftRear: 0.2726389169791283
+01-15 21:11:09.582 22643 23854 D SampleMecanumDriveREVss: setMotorPowers rightRear: 0.27347769208638134
+01-15 21:11:09.582 22643 23854 D SampleMecanumDriveREVss: setMotorPowersrightFront: 0.2726389169791283
+01-15 21:11:09.602 22643 23854 D StandardTrackingWheelLocalizer: getWheelPositions
+01-15 21:11:09.602 22643 23854 D StandardTrackingWheelLocalizer: leftEncoder: 114
+01-15 21:11:09.602 22643 23854 D StandardTrackingWheelLocalizer: rightEncoder: 117
+01-15 21:11:09.612 22643 23854 D StandardTrackingWheelLocalizer: frontEncoder: -1
+01-15 21:11:09.612 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 114.0 inches: 0.5721111222192276
+01-15 21:11:09.612 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 117.0 inches: 0.5871666780671019
+01-15 21:11:09.612 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: -1.0 inches: -0.005018518615958136
+01-15 21:11:09.622 22643 23854 V RobotCore: addr=false data=false arb=false clock=false
+01-15 21:11:09.622 22643 23854 E LynxI2cDeviceSynch: readStatusQuery: cbExpected=6 cbRead=0
+01-15 21:11:09.622 22643 23854 D StandardTrackingWheelLocalizer: using IMU: IMU heading -0.0 non-IMU heading: 0.001017267287018342
+01-15 21:11:09.622 22643 23854 D StandardTrackingWheelLocalizer: poseEstimate: 0.5796409586709449, 2.390842548434251E-4, -0.0
+01-15 21:11:09.622 22643 23854 D StandardTrackingWheelLocalizer: getPoseEstimate: 0.5796409586709449, 2.390842548434251E-4, -0.0
+01-15 21:11:09.622 22643 23854 D SampleMecanumDriveBase: update: x 0.5796409586709449
+01-15 21:11:09.622 22643 23854 D SampleMecanumDriveBase: y 2.390842548434251E-4
+01-15 21:11:09.632 22643 23854 D SampleMecanumDriveBase: heading -0.0
+01-15 21:11:09.632 22643 23854 D SampleMecanumDriveBase: xError 2.145778020263619
+01-15 21:11:09.632 22643 23854 D SampleMecanumDriveBase: yError -0.004104699278800553
+01-15 21:11:09.632 22643 23854 D SampleMecanumDriveBase: headingError 0.0
+01-15 21:11:09.632 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftFront: 0.30902016738955945
+01-15 21:11:09.632 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftRear: 0.31072398349694547
+01-15 21:11:09.632 22643 23854 D SampleMecanumDriveREVss: setMotorPowers rightRear: 0.30902016738955945
+01-15 21:11:09.632 22643 23854 D SampleMecanumDriveREVss: setMotorPowersrightFront: 0.31072398349694547
+01-15 21:11:09.652 22643 23854 D StandardTrackingWheelLocalizer: getWheelPositions
+01-15 21:11:09.662 22643 23854 D StandardTrackingWheelLocalizer: leftEncoder: 186
+01-15 21:11:09.662 22643 23854 D StandardTrackingWheelLocalizer: rightEncoder: 197
+01-15 21:11:09.662 22643 23854 D StandardTrackingWheelLocalizer: frontEncoder: -4
+01-15 21:11:09.662 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 186.0 inches: 0.9334444625682132
+01-15 21:11:09.662 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 197.0 inches: 0.9886481673437527
+01-15 21:11:09.662 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: -4.0 inches: -0.020074074463832543
+01-15 21:11:09.672 22643 23854 V RobotCore: addr=false data=false arb=false clock=false
+01-15 21:11:09.672 22643 23854 E LynxI2cDeviceSynch: readStatusQuery: cbExpected=6 cbRead=0
+01-15 21:11:09.672 22643 23854 D StandardTrackingWheelLocalizer: using IMU: IMU heading -0.0 non-IMU heading: 0.003729980052400883
+01-15 21:11:09.672 22643 23854 D StandardTrackingWheelLocalizer: poseEstimate: 0.9610475040444082, 0.0010087655801610173, -0.0
+01-15 21:11:09.672 22643 23854 D StandardTrackingWheelLocalizer: getPoseEstimate: 0.9610475040444082, 0.0010087655801610173, -0.0
+01-15 21:11:09.672 22643 23854 D SampleMecanumDriveBase: update: x 0.9610475040444082
+01-15 21:11:09.672 22643 23854 D SampleMecanumDriveBase: y 0.0010087655801610173
+01-15 21:11:09.672 22643 23854 D SampleMecanumDriveBase: heading -0.0
+01-15 21:11:09.672 22643 23854 D SampleMecanumDriveBase: xError 2.4937204962559925
+01-15 21:11:09.672 22643 23854 D SampleMecanumDriveBase: yError -2.390842548434251E-4
+01-15 21:11:09.672 22643 23854 D SampleMecanumDriveBase: headingError 0.0
+01-15 21:11:09.682 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftFront: 0.3049204396313716
+01-15 21:11:09.682 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftRear: 0.30429411674796786
+01-15 21:11:09.682 22643 23854 D SampleMecanumDriveREVss: setMotorPowers rightRear: 0.3049204396313716
+01-15 21:11:09.682 22643 23854 D SampleMecanumDriveREVss: setMotorPowersrightFront: 0.30429411674796786
+01-15 21:11:09.702 22643 23854 D StandardTrackingWheelLocalizer: getWheelPositions
+01-15 21:11:09.702 22643 23854 D StandardTrackingWheelLocalizer: leftEncoder: 292
+01-15 21:11:09.702 22643 23854 D StandardTrackingWheelLocalizer: rightEncoder: 288
+01-15 21:11:09.702 22643 23854 D StandardTrackingWheelLocalizer: frontEncoder: -5
+01-15 21:11:09.702 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 292.0 inches: 1.4654074358597757
+01-15 21:11:09.702 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 288.0 inches: 1.4453333613959432
+01-15 21:11:09.702 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: -5.0 inches: -0.02509259307979068
+01-15 21:11:09.712 22643 23854 V RobotCore: addr=false data=false arb=false clock=false
+01-15 21:11:09.712 22643 23854 E LynxI2cDeviceSynch: readStatusQuery: cbExpected=6 cbRead=0
+01-15 21:11:09.712 22643 23854 D StandardTrackingWheelLocalizer: using IMU: IMU heading -0.0 non-IMU heading: 6.2818289507968945
+01-15 21:11:09.712 22643 23854 D StandardTrackingWheelLocalizer: poseEstimate: 1.4554098635960044, -0.03139787572503564, -0.0
+01-15 21:11:09.712 22643 23854 D StandardTrackingWheelLocalizer: getPoseEstimate: 1.4554098635960044, -0.03139787572503564, -0.0
+01-15 21:11:09.712 22643 23854 D SampleMecanumDriveBase: update: x 1.4554098635960044
+01-15 21:11:09.712 22643 23854 D SampleMecanumDriveBase: y -0.03139787572503564
+01-15 21:11:09.712 22643 23854 D SampleMecanumDriveBase: heading -0.0
+01-15 21:11:09.712 22643 23854 D SampleMecanumDriveBase: xError 2.667005069153895
+01-15 21:11:09.712 22643 23854 D SampleMecanumDriveBase: yError -0.0010087655801610173
+01-15 21:11:09.712 22643 23854 D SampleMecanumDriveBase: headingError 0.0
+01-15 21:11:09.722 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftFront: 0.2606591115063097
+01-15 21:11:09.722 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftRear: 0.2879704001690841
+01-15 21:11:09.722 22643 23854 D SampleMecanumDriveREVss: setMotorPowers rightRear: 0.2606591115063097
+01-15 21:11:09.722 22643 23854 D SampleMecanumDriveREVss: setMotorPowersrightFront: 0.2879704001690841
+01-15 21:11:09.742 22643 23854 D StandardTrackingWheelLocalizer: getWheelPositions
+01-15 21:11:09.742 22643 23854 D StandardTrackingWheelLocalizer: leftEncoder: 401
+01-15 21:11:09.742 22643 23854 D StandardTrackingWheelLocalizer: rightEncoder: 381
+01-15 21:11:09.742 22643 23854 D StandardTrackingWheelLocalizer: frontEncoder: -5
+01-15 21:11:09.742 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 401.0 inches: 2.0124259649992124
+01-15 21:11:09.742 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 381.0 inches: 1.9120555926800498
+01-15 21:11:09.742 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: -5.0 inches: -0.02509259307979068
+01-15 21:11:09.752 22643 23854 V RobotCore: addr=false data=false arb=false clock=false
+01-15 21:11:09.752 22643 23854 E LynxI2cDeviceSynch: readStatusQuery: cbExpected=6 cbRead=0
+01-15 21:11:09.752 22643 23854 D StandardTrackingWheelLocalizer: using IMU: IMU heading -0.0 non-IMU heading: 6.276403525266129
+01-15 21:11:09.752 22643 23854 D StandardTrackingWheelLocalizer: poseEstimate: 1.9621540060598872, -0.06329991491840624, -0.0
+01-15 21:11:09.752 22643 23854 D StandardTrackingWheelLocalizer: getPoseEstimate: 1.9621540060598872, -0.06329991491840624, -0.0
+01-15 21:11:09.752 22643 23854 D SampleMecanumDriveBase: update: x 1.9621540060598872
+01-15 21:11:09.752 22643 23854 D SampleMecanumDriveBase: y -0.06329991491840624
+01-15 21:11:09.752 22643 23854 D SampleMecanumDriveBase: heading -0.0
+01-15 21:11:09.752 22643 23854 D SampleMecanumDriveBase: xError 2.6569030118023966
+01-15 21:11:09.752 22643 23854 D SampleMecanumDriveBase: yError 0.03139787572503564
+01-15 21:11:09.752 22643 23854 D SampleMecanumDriveBase: headingError 0.0
+01-15 21:11:09.752 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftFront: 0.2667476955737086
+01-15 21:11:09.762 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftRear: 0.3005629470595794
+01-15 21:11:09.762 22643 23854 D SampleMecanumDriveREVss: setMotorPowers rightRear: 0.2667476955737086
+01-15 21:11:09.762 22643 23854 D SampleMecanumDriveREVss: setMotorPowersrightFront: 0.3005629470595794
+01-15 21:11:09.782 22643 23854 D StandardTrackingWheelLocalizer: getWheelPositions
+01-15 21:11:09.782 22643 23854 D StandardTrackingWheelLocalizer: leftEncoder: 531
+01-15 21:11:09.782 22643 23854 D StandardTrackingWheelLocalizer: rightEncoder: 504
+01-15 21:11:09.782 22643 23854 D StandardTrackingWheelLocalizer: frontEncoder: -5
+01-15 21:11:09.782 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 531.0 inches: 2.6648333850737704
+01-15 21:11:09.782 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 504.0 inches: 2.5293333824429007
+01-15 21:11:09.782 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: -5.0 inches: -0.02509259307979068
+01-15 21:11:09.792 22643 23854 V RobotCore: addr=false data=false arb=false clock=false
+01-15 21:11:09.792 22643 23854 E LynxI2cDeviceSynch: readStatusQuery: cbExpected=6 cbRead=0
+01-15 21:11:09.792 22643 23854 D StandardTrackingWheelLocalizer: using IMU: IMU heading -0.0 non-IMU heading: 6.274029901596419
+01-15 21:11:09.792 22643 23854 D StandardTrackingWheelLocalizer: poseEstimate: 2.5968722779764164, -0.08141317564285204, -0.0
+01-15 21:11:09.792 22643 23854 D StandardTrackingWheelLocalizer: getPoseEstimate: 2.5968722779764164, -0.08141317564285204, -0.0
+01-15 21:11:09.792 22643 23854 D SampleMecanumDriveBase: update: x 2.5968722779764164
+01-15 21:11:09.792 22643 23854 D SampleMecanumDriveBase: y -0.08141317564285204
+01-15 21:11:09.792 22643 23854 D SampleMecanumDriveBase: heading -0.0
+01-15 21:11:09.792 22643 23854 D SampleMecanumDriveBase: xError 2.6712156139571204
+01-15 21:11:09.792 22643 23854 D SampleMecanumDriveBase: yError 0.06329991491840624
+01-15 21:11:09.792 22643 23854 D SampleMecanumDriveBase: headingError 0.0
+01-15 21:11:09.792 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftFront: 0.24888128939560306
+01-15 21:11:09.792 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftRear: 0.2779665902889239
+01-15 21:11:09.802 22643 23854 D SampleMecanumDriveREVss: setMotorPowers rightRear: 0.24888128939560306
+01-15 21:11:09.802 22643 23854 D SampleMecanumDriveREVss: setMotorPowersrightFront: 0.2779665902889239
+01-15 21:11:09.822 22643 23854 D StandardTrackingWheelLocalizer: getWheelPositions
+01-15 21:11:09.822 22643 23854 D StandardTrackingWheelLocalizer: leftEncoder: 662
+01-15 21:11:09.822 22643 23854 D StandardTrackingWheelLocalizer: rightEncoder: 627
+01-15 21:11:09.822 22643 23854 D StandardTrackingWheelLocalizer: frontEncoder: -8
+01-15 21:11:09.822 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 662.0 inches: 3.3222593237642863
+01-15 21:11:09.822 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 627.0 inches: 3.1466111722057515
+01-15 21:11:09.822 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: -8.0 inches: -0.040148148927665085
+01-15 21:11:09.832 22643 23854 V RobotCore: addr=false data=false arb=false clock=false
+01-15 21:11:09.832 22643 23854 E LynxI2cDeviceSynch: readStatusQuery: cbExpected=6 cbRead=0
+01-15 21:11:09.832 22643 23854 D StandardTrackingWheelLocalizer: using IMU: IMU heading -0.0 non-IMU heading: 6.271317188831038
+01-15 21:11:09.832 22643 23854 D StandardTrackingWheelLocalizer: poseEstimate: 3.2338736451665064, -0.11808655207185248, -0.0
+01-15 21:11:09.832 22643 23854 D StandardTrackingWheelLocalizer: getPoseEstimate: 3.2338736451665064, -0.11808655207185248, -0.0
+01-15 21:11:09.832 22643 23854 D SampleMecanumDriveBase: update: x 3.2338736451665064
+01-15 21:11:09.832 22643 23854 D SampleMecanumDriveBase: y -0.11808655207185248
+01-15 21:11:09.832 22643 23854 D SampleMecanumDriveBase: heading -0.0
+01-15 21:11:09.832 22643 23854 D SampleMecanumDriveBase: xError 2.6028919347280794
+01-15 21:11:09.832 22643 23854 D SampleMecanumDriveBase: yError 0.08141317564285204
+01-15 21:11:09.832 22643 23854 D SampleMecanumDriveBase: headingError 0.0
+01-15 21:11:09.832 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftFront: 0.2270477659297069
+01-15 21:11:09.832 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftRear: 0.2775178506927245
+01-15 21:11:09.832 22643 23854 D SampleMecanumDriveREVss: setMotorPowers rightRear: 0.2270477659297069
+01-15 21:11:09.832 22643 23854 D SampleMecanumDriveREVss: setMotorPowersrightFront: 0.2775178506927245
+01-15 21:11:09.862 22643 23854 D StandardTrackingWheelLocalizer: getWheelPositions
+01-15 21:11:09.862 22643 23854 D StandardTrackingWheelLocalizer: leftEncoder: 820
+01-15 21:11:09.862 22643 23854 D StandardTrackingWheelLocalizer: rightEncoder: 772
+01-15 21:11:09.862 22643 23854 D StandardTrackingWheelLocalizer: frontEncoder: -9
+01-15 21:11:09.862 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 820.0 inches: 4.115185265085671
+01-15 21:11:09.862 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 772.0 inches: 3.874296371519681
+01-15 21:11:09.862 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: -9.0 inches: -0.04516666754362322
+01-15 21:11:09.872 22643 23854 V RobotCore: addr=false data=false arb=false clock=false
+01-15 21:11:09.872 22643 23854 E LynxI2cDeviceSynch: readStatusQuery: cbExpected=6 cbRead=0
+01-15 21:11:09.872 22643 23854 D StandardTrackingWheelLocalizer: using IMU: IMU heading -0.0 non-IMU heading: 6.266909030587291
+01-15 21:11:09.872 22643 23854 D StandardTrackingWheelLocalizer: poseEstimate: 3.993691534517028, -0.15804582826253466, -0.0
+01-15 21:11:09.872 22643 23854 D StandardTrackingWheelLocalizer: getPoseEstimate: 3.993691534517028, -0.15804582826253466, -0.0
+01-15 21:11:09.872 22643 23854 D SampleMecanumDriveBase: update: x 3.993691534517028
+01-15 21:11:09.872 22643 23854 D SampleMecanumDriveBase: y -0.15804582826253466
+01-15 21:11:09.872 22643 23854 D SampleMecanumDriveBase: heading -0.0
+01-15 21:11:09.872 22643 23854 D SampleMecanumDriveBase: xError 2.513806814237826
+01-15 21:11:09.872 22643 23854 D SampleMecanumDriveBase: yError 0.11808655207185248
+01-15 21:11:09.872 22643 23854 D SampleMecanumDriveBase: headingError 0.0
+01-15 21:11:09.872 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftFront: 0.18699184513851652
+01-15 21:11:09.872 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftRear: 0.24847434133927065
+01-15 21:11:09.872 22643 23854 D SampleMecanumDriveREVss: setMotorPowers rightRear: 0.18699184513851652
+01-15 21:11:09.872 22643 23854 D SampleMecanumDriveREVss: setMotorPowersrightFront: 0.24847434133927065
+01-15 21:11:09.892 22643 23854 D StandardTrackingWheelLocalizer: getWheelPositions
+01-15 21:11:09.892 22643 23854 D StandardTrackingWheelLocalizer: leftEncoder: 974
+01-15 21:11:09.892 22643 23854 D StandardTrackingWheelLocalizer: rightEncoder: 912
+01-15 21:11:09.892 22643 23854 D StandardTrackingWheelLocalizer: frontEncoder: -13
+01-15 21:11:09.892 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 974.0 inches: 4.888037131943224
+01-15 21:11:09.892 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 912.0 inches: 4.57688897775382
+01-15 21:11:09.892 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: -13.0 inches: -0.06524074200745576
+01-15 21:11:09.902 22643 23854 V RobotCore: addr=false data=false arb=false clock=false
+01-15 21:11:09.902 22643 23854 E LynxI2cDeviceSynch: readStatusQuery: cbExpected=6 cbRead=0
+01-15 21:11:09.912 22643 23854 D StandardTrackingWheelLocalizer: using IMU: IMU heading -0.0 non-IMU heading: 6.262161783247871
+01-15 21:11:09.912 22643 23854 D StandardTrackingWheelLocalizer: poseEstimate: 4.7304235103064, -0.21797932379975554, -0.0
+01-15 21:11:09.912 22643 23854 D StandardTrackingWheelLocalizer: getPoseEstimate: 4.7304235103064, -0.21797932379975554, -0.0
+01-15 21:11:09.912 22643 23854 D SampleMecanumDriveBase: update: x 4.7304235103064
+01-15 21:11:09.912 22643 23854 D SampleMecanumDriveBase: y -0.21797932379975554
+01-15 21:11:09.912 22643 23854 D SampleMecanumDriveBase: heading -0.0
+01-15 21:11:09.912 22643 23854 D SampleMecanumDriveBase: xError 2.330833139828272
+01-15 21:11:09.912 22643 23854 D SampleMecanumDriveBase: yError 0.15804582826253466
+01-15 21:11:09.912 22643 23854 D SampleMecanumDriveBase: headingError 0.0
+01-15 21:11:09.912 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftFront: 0.19320674414880695
+01-15 21:11:09.912 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftRear: 0.27846865701024387
+01-15 21:11:09.912 22643 23854 D SampleMecanumDriveREVss: setMotorPowers rightRear: 0.19320674414880695
+01-15 21:11:09.912 22643 23854 D SampleMecanumDriveREVss: setMotorPowersrightFront: 0.27846865701024387
+01-15 21:11:09.932 22643 23854 D StandardTrackingWheelLocalizer: getWheelPositions
+01-15 21:11:09.932 22643 23854 D StandardTrackingWheelLocalizer: leftEncoder: 1166
+01-15 21:11:09.932 22643 23854 D StandardTrackingWheelLocalizer: rightEncoder: 1096
+01-15 21:11:09.932 22643 23854 D StandardTrackingWheelLocalizer: frontEncoder: -13
+01-15 21:11:09.932 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 1166.0 inches: 5.851592706207187
+01-15 21:11:09.932 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 1096.0 inches: 5.5002964030901165
+01-15 21:11:09.932 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: -13.0 inches: -0.06524074200745576
+01-15 21:11:09.952 22643 23854 V RobotCore: addr=false data=false arb=false clock=false
+01-15 21:11:09.952 22643 23854 E LynxI2cDeviceSynch: readStatusQuery: cbExpected=6 cbRead=0
+01-15 21:11:09.952 22643 23854 D StandardTrackingWheelLocalizer: using IMU: IMU heading -0.0 non-IMU heading: 6.259449070482489
+01-15 21:11:09.952 22643 23854 D StandardTrackingWheelLocalizer: poseEstimate: 5.673334577078906, -0.25400873721140826, -0.0
+01-15 21:11:09.952 22643 23854 D StandardTrackingWheelLocalizer: getPoseEstimate: 5.673334577078906, -0.25400873721140826, -0.0
+01-15 21:11:09.952 22643 23854 D SampleMecanumDriveBase: update: x 5.673334577078906
+01-15 21:11:09.952 22643 23854 D SampleMecanumDriveBase: y -0.25400873721140826
+01-15 21:11:09.952 22643 23854 D SampleMecanumDriveBase: heading -0.0
+01-15 21:11:09.952 22643 23854 D SampleMecanumDriveBase: xError 2.244389139724234
+01-15 21:11:09.952 22643 23854 D SampleMecanumDriveBase: yError 0.21797932379975554
+01-15 21:11:09.952 22643 23854 D SampleMecanumDriveBase: headingError 0.0
+01-15 21:11:09.952 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftFront: 0.12997980597607006
+01-15 21:11:09.952 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftRear: 0.20952793022456032
+01-15 21:11:09.952 22643 23854 D SampleMecanumDriveREVss: setMotorPowers rightRear: 0.12997980597607006
+01-15 21:11:09.952 22643 23854 D SampleMecanumDriveREVss: setMotorPowersrightFront: 0.20952793022456032
+01-15 21:11:09.992 22643 23854 D StandardTrackingWheelLocalizer: getWheelPositions
+01-15 21:11:09.992 22643 23854 D StandardTrackingWheelLocalizer: leftEncoder: 1444
+01-15 21:11:09.992 22643 23854 D StandardTrackingWheelLocalizer: rightEncoder: 1347
+01-15 21:11:09.992 22643 23854 D StandardTrackingWheelLocalizer: frontEncoder: -16
+01-15 21:11:09.992 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 1444.0 inches: 7.246740881443548
+01-15 21:11:09.992 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 1347.0 inches: 6.759944575695609
+01-15 21:11:09.992 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: -16.0 inches: -0.08029629785533017
+01-15 21:11:10.012 22643 23854 V RobotCore: addr=false data=false arb=false clock=false
+01-15 21:11:10.012 22643 23854 E LynxI2cDeviceSynch: readStatusQuery: cbExpected=6 cbRead=0
+01-15 21:11:10.012 22643 23854 D StandardTrackingWheelLocalizer: using IMU: IMU heading -0.0 non-IMU heading: 6.250293664899322
+01-15 21:11:10.012 22643 23854 D StandardTrackingWheelLocalizer: poseEstimate: 6.998344309673553, -0.35697129695622054, -0.0
+01-15 21:11:10.012 22643 23854 D StandardTrackingWheelLocalizer: getPoseEstimate: 6.998344309673553, -0.35697129695622054, -0.0
+01-15 21:11:10.012 22643 23854 D SampleMecanumDriveBase: update: x 6.998344309673553
+01-15 21:11:10.012 22643 23854 D SampleMecanumDriveBase: y -0.35697129695622054
+01-15 21:11:10.012 22643 23854 D SampleMecanumDriveBase: heading -0.0
+01-15 21:11:10.012 22643 23854 D SampleMecanumDriveBase: xError 1.9596826970159835
+01-15 21:11:10.012 22643 23854 D SampleMecanumDriveBase: yError 0.25400873721140826
+01-15 21:11:10.012 22643 23854 D SampleMecanumDriveBase: headingError 0.0
+01-15 21:11:10.012 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftFront: 0.1381309084993685
+01-15 21:11:10.012 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftRear: 0.25744371567618707
+01-15 21:11:10.012 22643 23854 D SampleMecanumDriveREVss: setMotorPowers rightRear: 0.1381309084993685
+01-15 21:11:10.012 22643 23854 D SampleMecanumDriveREVss: setMotorPowersrightFront: 0.25744371567618707
+01-15 21:11:10.052 22643 23854 D StandardTrackingWheelLocalizer: getWheelPositions
+01-15 21:11:10.052 22643 23854 D StandardTrackingWheelLocalizer: leftEncoder: 1704
+01-15 21:11:10.052 22643 23854 D StandardTrackingWheelLocalizer: rightEncoder: 1646
+01-15 21:11:10.052 22643 23854 D StandardTrackingWheelLocalizer: frontEncoder: -21
+01-15 21:11:10.052 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 1704.0 inches: 8.551555721592663
+01-15 21:11:10.052 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 1646.0 inches: 8.260481641867091
+01-15 21:11:10.052 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: -21.0 inches: -0.10538889093512085
+01-15 21:11:10.072 22643 23854 V RobotCore: addr=false data=false arb=false clock=false
+01-15 21:11:10.072 22643 23854 E LynxI2cDeviceSynch: readStatusQuery: cbExpected=6 cbRead=0
+01-15 21:11:10.072 22643 23854 D StandardTrackingWheelLocalizer: using IMU: IMU heading -0.0 non-IMU heading: 6.263518139630563
+01-15 21:11:10.072 22643 23854 D StandardTrackingWheelLocalizer: poseEstimate: 8.401777574687836, -0.3462030541763852, -0.0
+01-15 21:11:10.072 22643 23854 D StandardTrackingWheelLocalizer: getPoseEstimate: 8.401777574687836, -0.3462030541763852, -0.0
+01-15 21:11:10.072 22643 23854 D SampleMecanumDriveBase: update: x 8.401777574687836
+01-15 21:11:10.072 22643 23854 D SampleMecanumDriveBase: y -0.3462030541763852
+01-15 21:11:10.072 22643 23854 D SampleMecanumDriveBase: heading -0.0
+01-15 21:11:10.072 22643 23854 D SampleMecanumDriveBase: xError 1.7876325299560714
+01-15 21:11:10.072 22643 23854 D SampleMecanumDriveBase: yError 0.35697129695622054
+01-15 21:11:10.072 22643 23854 D SampleMecanumDriveBase: headingError 0.0
+01-15 21:11:10.072 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftFront: 0.11878495863244896
+01-15 21:11:10.072 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftRear: 0.19182910854844265
+01-15 21:11:10.072 22643 23854 D SampleMecanumDriveREVss: setMotorPowers rightRear: 0.11878495863244896
+01-15 21:11:10.072 22643 23854 D SampleMecanumDriveREVss: setMotorPowersrightFront: 0.19182910854844265
+01-15 21:11:10.092 22643 23854 D StandardTrackingWheelLocalizer: getWheelPositions
+01-15 21:11:10.092 22643 23854 D StandardTrackingWheelLocalizer: leftEncoder: 1870
+01-15 21:11:10.092 22643 23854 D StandardTrackingWheelLocalizer: rightEncoder: 1815
+01-15 21:11:10.092 22643 23854 D StandardTrackingWheelLocalizer: frontEncoder: -25
+01-15 21:11:10.092 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 1870.0 inches: 9.384629811841714
+01-15 21:11:10.092 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 1815.0 inches: 9.108611287964017
+01-15 21:11:10.092 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: -25.0 inches: -0.12546296539895338
+01-15 21:11:10.112 22643 23854 V RobotCore: addr=false data=false arb=false clock=false
+01-15 21:11:10.112 22643 23854 E LynxI2cDeviceSynch: readStatusQuery: cbExpected=6 cbRead=0
+01-15 21:11:10.112 22643 23854 D StandardTrackingWheelLocalizer: using IMU: IMU heading -0.0 non-IMU heading: 6.264535406917581
+01-15 21:11:10.112 22643 23854 D StandardTrackingWheelLocalizer: poseEstimate: 9.241947758695595, -0.37678321425796457, -0.0
+01-15 21:11:10.112 22643 23854 D StandardTrackingWheelLocalizer: getPoseEstimate: 9.241947758695595, -0.37678321425796457, -0.0
+01-15 21:11:10.112 22643 23854 D SampleMecanumDriveBase: update: x 9.241947758695595
+01-15 21:11:10.112 22643 23854 D SampleMecanumDriveBase: y -0.37678321425796457
+01-15 21:11:10.112 22643 23854 D SampleMecanumDriveBase: heading -0.0
+01-15 21:11:10.112 22643 23854 D SampleMecanumDriveBase: xError 1.4934949466948932
+01-15 21:11:10.112 22643 23854 D SampleMecanumDriveBase: yError 0.3462030541763852
+01-15 21:11:10.112 22643 23854 D SampleMecanumDriveBase: headingError 0.0
+01-15 21:11:10.112 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftFront: 0.14143380927078333
+01-15 21:11:10.112 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftRear: 0.24443949649003832
+01-15 21:11:10.112 22643 23854 D SampleMecanumDriveREVss: setMotorPowers rightRear: 0.14143380927078333
+01-15 21:11:10.112 22643 23854 D SampleMecanumDriveREVss: setMotorPowersrightFront: 0.24443949649003832
+01-15 21:11:10.142 22643 23854 D StandardTrackingWheelLocalizer: getWheelPositions
+01-15 21:11:10.142 22643 23854 D StandardTrackingWheelLocalizer: leftEncoder: 2078
+01-15 21:11:10.142 22643 23854 D StandardTrackingWheelLocalizer: rightEncoder: 2028
+01-15 21:11:10.142 22643 23854 D StandardTrackingWheelLocalizer: frontEncoder: -20
+01-15 21:11:10.142 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 2078.0 inches: 10.428481683961007
+01-15 21:11:10.142 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 2028.0 inches: 10.1775557531631
+01-15 21:11:10.142 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: -20.0 inches: -0.10037037231916272
+01-15 21:11:10.152 22643 23854 V RobotCore: addr=false data=false arb=false clock=false
+01-15 21:11:10.152 22643 23854 E LynxI2cDeviceSynch: readStatusQuery: cbExpected=6 cbRead=0
+01-15 21:11:10.152 22643 23854 D StandardTrackingWheelLocalizer: using IMU: IMU heading -0.0 non-IMU heading: 6.266230852395946
+01-15 21:11:10.152 22643 23854 D StandardTrackingWheelLocalizer: poseEstimate: 10.298791084500474, -0.3611763209476019, -0.0
+01-15 21:11:10.152 22643 23854 D StandardTrackingWheelLocalizer: getPoseEstimate: 10.298791084500474, -0.3611763209476019, -0.0
+01-15 21:11:10.162 22643 23854 D SampleMecanumDriveBase: update: x 10.298791084500474
+01-15 21:11:10.162 22643 23854 D SampleMecanumDriveBase: y -0.3611763209476019
+01-15 21:11:10.162 22643 23854 D SampleMecanumDriveBase: heading -0.0
+01-15 21:11:10.162 22643 23854 D SampleMecanumDriveBase: xError 1.467390425306471
+01-15 21:11:10.162 22643 23854 D SampleMecanumDriveBase: yError 0.37678321425796457
+01-15 21:11:10.162 22643 23854 D SampleMecanumDriveBase: headingError 0.0
+01-15 21:11:10.162 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftFront: 0.15259801146642168
+01-15 21:11:10.162 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftRear: 0.2258505305834798
+01-15 21:11:10.162 22643 23854 D SampleMecanumDriveREVss: setMotorPowers rightRear: 0.15259801146642168
+01-15 21:11:10.162 22643 23854 D SampleMecanumDriveREVss: setMotorPowersrightFront: 0.2258505305834798
+01-15 21:11:10.182 22643 23854 D StandardTrackingWheelLocalizer: getWheelPositions
+01-15 21:11:10.182 22643 23854 D StandardTrackingWheelLocalizer: leftEncoder: 2266
+01-15 21:11:10.182 22643 23854 D StandardTrackingWheelLocalizer: rightEncoder: 2194
+01-15 21:11:10.182 22643 23854 D StandardTrackingWheelLocalizer: frontEncoder: -20
+01-15 21:11:10.182 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 2266.0 inches: 11.371963183761135
+01-15 21:11:10.182 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: 2194.0 inches: 11.010629843412149
+01-15 21:11:10.182 22643 23854 D StandardTrackingWheelLocalizer: encoderTicksToInches:  ticks: -20.0 inches: -0.10037037231916272
+01-15 21:11:10.192 22643 23854 V RobotCore: addr=false data=false arb=false clock=false
+01-15 21:11:10.192 22643 23854 E LynxI2cDeviceSynch: readStatusQuery: cbExpected=6 cbRead=0
+01-15 21:11:10.192 22643 23854 D StandardTrackingWheelLocalizer: using IMU: IMU heading -0.0 non-IMU heading: 6.2587708922911425
+01-15 21:11:10.192 22643 23854 D StandardTrackingWheelLocalizer: poseEstimate: 11.186028188690065, -0.42056940092883704, -0.0
+01-15 21:11:10.192 22643 23854 D StandardTrackingWheelLocalizer: getPoseEstimate: 11.186028188690065, -0.42056940092883704, -0.0
+01-15 21:11:10.192 22643 23854 D SampleMecanumDriveBase: update: x 11.186028188690065
+01-15 21:11:10.192 22643 23854 D SampleMecanumDriveBase: y -0.42056940092883704
+01-15 21:11:10.192 22643 23854 D SampleMecanumDriveBase: heading -0.0
+01-15 21:11:10.192 22643 23854 D SampleMecanumDriveBase: xError 1.421379007859743
+01-15 21:11:10.192 22643 23854 D SampleMecanumDriveBase: yError 0.3611763209476019
+01-15 21:11:10.192 22643 23854 D SampleMecanumDriveBase: headingError 0.0
+01-15 21:11:10.192 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftFront: 0.08537653294885232
+01-15 21:11:10.192 22643 23854 D SampleMecanumDriveREVss: setMotorPowers leftRear: 0.221768848366779
+01-15 21:11:10.192 22643 23854 D SampleMecanumDriveREVss: setMotorPowers rightRear: 0.08537653294885232
+01-15 21:11:10.192 22643 23854 D SampleTerminate batch job (Y/N)? 

@@ -32,7 +32,7 @@ import java.util.List;
 @Config
 public class DriveConstantsPID {
 
-    public static final boolean RUN_USING_PARAMTER_FROM_PROPERTIES = false;
+    public static final boolean RUN_USING_PARAMTER_FROM_PROPERTIES = true;
 
     public static boolean RUN_USING_ODOMETRY_WHEEL = true;
     public static boolean RUN_USING_IMU_LOCALIZER = false;
@@ -111,6 +111,8 @@ public class DriveConstantsPID {
     public static double kA = 0;
     public static double kStatic = 0;
 	public static double TEST_DISTANCE = 96;
+	public static double TEST_X = 24;
+    public static double TEST_Y = 24;
 	public static double maxVel = 55.0; //45.0
 	public static double maxAccel = 25.0;   //20.0
 

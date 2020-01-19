@@ -32,13 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -49,7 +44,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class DistanceSensorBot extends PinchArmBot {
 
-    protected DistanceSensor sensorSkyStoneQuarry = null;
+    protected DistanceSensor frontSensor = null;
+    protected DistanceSensor backSensor = null;
 
     public DistanceSensorBot(LinearOpMode opMode) {
         super(opMode);
@@ -60,22 +56,38 @@ public class DistanceSensorBot extends PinchArmBot {
         super.init(ahwMap);
 
         // initialize the sensor for skystone quarry detection
-        sensorSkyStoneQuarry = hwMap.get(DistanceSensor.class, "distance_front");
+        frontSensor = hwMap.get(DistanceSensor.class, "distance_front");
+        backSensor = hwMap.get(DistanceSensor.class, "distance_back");
     }
 
-    public double getDistanceToStoneQuarry() {
-        opMode.telemetry.addData("range", String.format("%.01f cm", sensorSkyStoneQuarry.getDistance(DistanceUnit.CM)));
+    public double getDistanceFront() {
+        opMode.telemetry.addData("range", String.format("%.01f cm", frontSensor.getDistance(DistanceUnit.CM)));
 
         // you can also cast this to a Rev2mDistanceSensor if you want to use added
         // methods associated with the Rev2mDistanceSensor class.
-        Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor) sensorSkyStoneQuarry;
+        Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor) frontSensor;
         // Rev2mDistanceSensor specific methods.
         opMode.telemetry.addData("ID", String.format("%x", sensorTimeOfFlight.getModelID()));
         opMode.telemetry.addData("did time out", Boolean.toString(sensorTimeOfFlight.didTimeoutOccur()));
 
         opMode.telemetry.update();
-        return sensorSkyStoneQuarry.getDistance(DistanceUnit.CM);
+        return frontSensor.getDistance(DistanceUnit.CM);
     }
+
+    public double getDistanceBack() {
+        opMode.telemetry.addData("range", String.format("%.01f cm", frontSensor.getDistance(DistanceUnit.CM)));
+
+        // you can also cast this to a Rev2mDistanceSensor if you want to use added
+        // methods associated with the Rev2mDistanceSensor class.
+        Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor) frontSensor;
+        // Rev2mDistanceSensor specific methods.
+        opMode.telemetry.addData("ID", String.format("%x", sensorTimeOfFlight.getModelID()));
+        opMode.telemetry.addData("did time out", Boolean.toString(sensorTimeOfFlight.didTimeoutOccur()));
+
+        opMode.telemetry.update();
+        return frontSensor.getDistance(DistanceUnit.CM);
+    }
+
 
     public void driveUntilDistance(double distance, double power) {
 
@@ -84,7 +96,7 @@ public class DistanceSensorBot extends PinchArmBot {
         leftRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        if (getDistanceToStoneQuarry() > distance) {
+        if (getDistanceFront() > distance) {
 
             do {
                 leftFront.setPower(- power);
@@ -92,7 +104,7 @@ public class DistanceSensorBot extends PinchArmBot {
                 leftRear.setPower(power);
                 rightRear.setPower(- power);
             }
-            while (getDistanceToStoneQuarry() > distance);
+            while (getDistanceFront() > distance);
         } else {
 
             do {
@@ -101,12 +113,39 @@ public class DistanceSensorBot extends PinchArmBot {
                 leftRear.setPower(- power);
                 rightRear.setPower(power);
             }
-            while (getDistanceToStoneQuarry() < distance);
+            while (getDistanceFront() < distance);
         }
         leftFront.setPower(0);
         rightFront.setPower(0);
         leftRear.setPower(0);
         rightRear.setPower(0);
+
+    }
+
+    public void ghettoGyro() {
+
+        leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        if (getDistanceFront() < getDistanceBack()) {
+            do {
+                leftFront.setPower(0.1);
+                rightFront.setPower(-0.1);
+                leftRear.setPower(0.1);
+                rightRear.setPower(-0.1);
+            }
+            while (getDistanceFront() < getDistanceBack());
+        } else if (getDistanceFront() > getDistanceBack()) {
+            do {
+                leftFront.setPower(-0.1);
+                rightFront.setPower(0.1);
+                leftRear.setPower(-0.1);
+                rightRear.setPower(0.1);
+            }
+            while (getDistanceFront() > getDistanceBack());
+        }
 
     }
 }

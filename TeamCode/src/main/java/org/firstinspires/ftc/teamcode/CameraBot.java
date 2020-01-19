@@ -119,7 +119,6 @@ public class CameraBot extends DistanceSensorBot {
 //        opMode.telemetry.log().add("Image %s with %d x %d and average RGB (%d, %d, %d)", label, bmp.getWidth(), bmp.getHeight(), Color.red(average), Color.green(average), Color.blue(average));
         opMode.telemetry.log().add("Image %s with %d x %d and average RGB #%02X #%02X #%02X", label, bmp.getWidth(), bmp.getHeight(), Color.red(average), Color.green(average), Color.blue(average));
         opMode.telemetry.update();
-        opMode.sleep (3 * 1000);
         try (FileOutputStream out = new FileOutputStream(String.format("/sdcard/FIRST/ftc_%s.png", label))) {
             bmp.compress(Bitmap.CompressFormat.PNG, 100, out);
         } catch (IOException e) {

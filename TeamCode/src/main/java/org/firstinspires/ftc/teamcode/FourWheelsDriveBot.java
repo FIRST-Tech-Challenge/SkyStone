@@ -73,7 +73,7 @@ public class FourWheelsDriveBot
 
 
 //    public void driveByHand(double _lf, double _lr, double _rf, double _rr) {
-    public void driveByHandRedWall(double left_stick_x, double left_stick_y, double right_stick_x) {
+    public void driveByHand(double left_stick_x, double left_stick_y, double right_stick_x) {
 
         final double x = Math.pow(left_stick_x, 3.0);
         final double y = Math.pow(left_stick_y, 3.0);
@@ -81,10 +81,12 @@ public class FourWheelsDriveBot
         final double rotation = Math.pow(right_stick_x, 3.0);
         final double direction = Math.atan2(x, y);
         final double speed = Math.min(1.0, Math.sqrt(x * x + y * y));
+
         final double lf = speed * Math.sin(direction + Math.PI / 4.0) + rotation;
         final double rf = speed * Math.cos(direction + Math.PI / 4.0) - rotation;
         final double lr = speed * Math.cos(direction + Math.PI / 4.0) + rotation;
         final double rr = speed * Math.sin(direction + Math.PI / 4.0) - rotation;
+
 
         final double scale = maxAbs(1.0, lf, lr, rf, rr);
         leftFront.setPower(lf / scale);
@@ -92,28 +94,11 @@ public class FourWheelsDriveBot
         rightFront.setPower(rf / scale);
         rightRear.setPower(rr / scale);
 
-    }
 
-    public void driveByHandBlueWall(double left_stick_x, double left_stick_y, double right_stick_x) {
 
-        final double x = Math.pow(left_stick_x, 3.0);
-        final double y = Math.pow(left_stick_y, 3.0);
-
-        final double rotation = Math.pow(right_stick_x, 3.0);
-        final double direction = Math.atan2(-x, -y);
-        final double speed = Math.min(1.0, Math.sqrt(x * x + y * y));
-        final double lf = speed * Math.sin(direction + Math.PI / 4.0) + rotation;
-        final double rf = speed * Math.cos(direction + Math.PI / 4.0) - rotation;
-        final double lr = speed * Math.cos(direction + Math.PI / 4.0) + rotation;
-        final double rr = speed * Math.sin(direction + Math.PI / 4.0) - rotation;
-
-        final double scale = maxAbs(1.0, lf, lr, rf, rr);
-        leftFront.setPower(lf / scale);
-        leftRear.setPower(lr / scale);
-        rightFront.setPower(rf / scale);
-        rightRear.setPower(rr / scale);
 
     }
+
     public void print(String message){
         String caption = "4WD";
         this.opMode.telemetry.addData(caption, message);

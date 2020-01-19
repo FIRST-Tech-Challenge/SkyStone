@@ -86,15 +86,15 @@ public class CameraBot extends PinchArmBot {
 
     @Override
     public void init(HardwareMap ahwMap) {
-        box1.x = 550;
+        box1.x = 750;
         box1.y = 100;
         box1.width = 100;
         box1.height = 200;
-        box2.x = 550;
+        box2.x = 750;
         box2.y = 300;
         box2.width = 100;
         box2.height = 200;
-        box3.x = 550;
+        box3.x = 750;
         box3.y = 500;
         box3.width = 100;
         box3.height = 200;
@@ -118,7 +118,6 @@ public class CameraBot extends PinchArmBot {
 //        opMode.telemetry.log().add("Image %s with %d x %d and average RGB (%d, %d, %d)", label, bmp.getWidth(), bmp.getHeight(), Color.red(average), Color.green(average), Color.blue(average));
         opMode.telemetry.log().add("Image %s with %d x %d and average RGB #%02X #%02X #%02X", label, bmp.getWidth(), bmp.getHeight(), Color.red(average), Color.green(average), Color.blue(average));
         opMode.telemetry.update();
-        opMode.sleep (3 * 1000);
         try (FileOutputStream out = new FileOutputStream(String.format("/sdcard/FIRST/ftc_%s.png", label))) {
             bmp.compress(Bitmap.CompressFormat.PNG, 100, out);
         } catch (IOException e) {

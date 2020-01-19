@@ -13,7 +13,7 @@ public class DistanceTest extends LinearOpMode {
         robot.init(hardwareMap);
         waitForStart();
         while (opModeIsActive()) {
-            robot.getDistanceToStoneQuarry();
+            robot.getDistanceFront();
 
         }
     }

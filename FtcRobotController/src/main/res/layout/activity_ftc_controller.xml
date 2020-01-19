@@ -132,7 +132,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           android:layout_gravity="center|left"
           android:layout_weight="1"
           android:paddingLeft="50dp"
-          android:paddingTop="50dp"
+          android:paddingTop="70dp"
           android:src="@drawable/rectangle"
           android:tint="#0055FF" />
 
@@ -142,7 +142,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           android:layout_height="130dp"
           android:layout_gravity="center"
           android:layout_weight="1"
-          android:paddingTop="50dp"
+          android:paddingTop="70dp"
           android:src="@drawable/rectangle"
           android:tint="#0055FF" />
 
@@ -158,7 +158,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           android:layout_height="130dp"
           android:layout_gravity="center|right"
           android:layout_weight="1"
-          android:paddingTop="50dp"
+          android:paddingTop="70dp"
           android:paddingRight="50dp"
           android:src="@drawable/rectangle"
           android:tint="#0055FF" />

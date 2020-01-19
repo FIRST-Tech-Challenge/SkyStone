@@ -29,7 +29,7 @@ public class OneSkyStoneRedStreet extends LinearOpMode {
             robot.driveStraightByDistance(robot.DIRECTION_FORWARD, 150, 0.6);
 //            robot.driveStraightByDistance(robot.DIRECTION_LEFT, 270, 0.5);
             robot.driveUntilDistance(21, 0.3);
-
+            
             robot.pickupSkyStone();
 //            robot.driveStraightByDistance(robot.DIRECTION_RIGHT, 100, 0.5);
             robot.driveUntilDistance(35, 0.3);

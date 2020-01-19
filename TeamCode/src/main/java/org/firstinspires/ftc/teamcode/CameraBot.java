@@ -5,6 +5,7 @@ import android.graphics.Color;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.RobotLog;
 import com.vuforia.Image;
@@ -21,7 +22,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
-public class CameraBot extends PinchArmBot {
+public class CameraBot extends DistanceSensorBot {
     public class Area extends Object{
         public int x;
         public int y;

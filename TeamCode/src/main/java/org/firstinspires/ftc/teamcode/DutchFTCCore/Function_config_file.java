@@ -13,5 +13,8 @@ public class Function_config_file {
         //the value with which the x value increments on the function
         public static float dx = 0.05f;
 
+        //initial value of drivedirectionspeed
+        public static double drivespeed = 1;
+
 
 }

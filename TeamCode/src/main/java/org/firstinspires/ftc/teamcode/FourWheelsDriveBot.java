@@ -9,6 +9,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.RobotLog;
+
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
@@ -289,4 +291,112 @@ public class FourWheelsDriveBot
                 leftRear.getCurrentPosition(),
                 rightRear.getCurrentPosition()));
     }
+
+    public void driveByDistanceWithAcceleration(int direction, double distance, double maxPower, int accelerationSteps){
+        // distance (in mm) = revolution * pi * diameter (100 mm)
+        int target = (int)(distance / 3.1415 / 100 * DRIVING_MOTOR_TICK_COUNT);
+        int startingPosition = leftFront.getCurrentPosition();
+        double accelerationDelta = maxPower/accelerationSteps;
+        int accelerationInterval = 100;
+        switch (direction){
+            case DIRECTION_FORWARD:
+                leftFront.setTargetPosition(leftFront.getCurrentPosition() + target);
+                rightFront.setTargetPosition(rightFront.getCurrentPosition() + target);
+                leftRear.setTargetPosition(leftRear.getCurrentPosition() + target);
+                rightRear.setTargetPosition(rightRear.getCurrentPosition() + target);
+                break;
+            case DIRECTION_BACKWARD:
+                leftFront.setTargetPosition(leftFront.getCurrentPosition() - target);
+                rightFront.setTargetPosition(rightFront.getCurrentPosition() - target);
+                leftRear.setTargetPosition(leftRear.getCurrentPosition() - target);
+                rightRear.setTargetPosition(rightRear.getCurrentPosition() - target);
+                break;
+            case DIRECTION_LEFT:
+                leftFront.setTargetPosition(leftFront.getCurrentPosition() - target);
+                rightFront.setTargetPosition(rightFront.getCurrentPosition() + target);
+                leftRear.setTargetPosition(leftRear.getCurrentPosition() + target);
+                rightRear.setTargetPosition(rightRear.getCurrentPosition() - target);
+                break;
+            case DIRECTION_RIGHT:
+                leftFront.setTargetPosition(leftFront.getCurrentPosition() + target);
+                rightFront.setTargetPosition(rightFront.getCurrentPosition() - target);
+                leftRear.setTargetPosition(leftRear.getCurrentPosition() - target);
+                rightRear.setTargetPosition(rightRear.getCurrentPosition() + target);
+                break;
+            case DIRECTION_RQUARTER:
+                leftFront.setTargetPosition(leftFront.getCurrentPosition() + target);
+                rightFront.setTargetPosition(rightFront.getCurrentPosition() - target);
+                leftRear.setTargetPosition(leftRear.getCurrentPosition() + target);
+                rightRear.setTargetPosition(rightRear.getCurrentPosition() - target);
+                break;
+            case DIRECTION_LQUARTER:
+                leftFront.setTargetPosition(leftFront.getCurrentPosition() - target);
+                rightFront.setTargetPosition(rightFront.getCurrentPosition() + target);
+                leftRear.setTargetPosition(leftRear.getCurrentPosition() - target);
+                rightRear.setTargetPosition(rightRear.getCurrentPosition() + target);
+                break;
+            default:
+                String msg = String.format("Unaccepted direction value (%d) for driveStraightByDistance()", direction);
+                print(msg);
+        }
+
+        double power = maxPower;
+
+        leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftFront.setPower(accelerationDelta);
+        rightFront.setPower(accelerationDelta);
+        leftRear.setPower(accelerationDelta);
+        rightRear.setPower(accelerationDelta);
+        int step = 1;
+        RobotLog.d("Target: %d AccelerationDelta: %d CurrentPosition: %d Step: %d", target, accelerationDelta, leftFront.getCurrentPosition(), step);
+        while (this.opMode.opModeIsActive() && leftFront.isBusy()) {
+            double distToDecelerate = Math.max(leftFront.getCurrentPosition() - startingPosition, accelerationSteps * accelerationInterval);
+
+            if (leftFront.getCurrentPosition() < (target - distToDecelerate) &&
+                step < accelerationSteps && Math.abs(leftFront.getCurrentPosition() - startingPosition) > step * accelerationInterval) {
+
+                leftFront.setPower(Math.max(accelerationDelta * step, maxPower));
+                rightFront.setPower(Math.max(accelerationDelta * step, maxPower));
+                leftRear.setPower(Math.max(accelerationDelta * step, maxPower));
+                rightRear.setPower(Math.max(accelerationDelta * step, maxPower));
+                step++;
+                RobotLog.d("Target: %d AccelerationDelta: %d CurrentPosition: %d Step: %d", target, accelerationDelta, leftFront.getCurrentPosition(), step);
+
+            }
+
+            if (leftFront.getCurrentPosition() > (target - distToDecelerate) &&
+                step > 1 && Math.abs(leftFront.getCurrentPosition() - target) < step * accelerationInterval) {
+
+                leftFront.setPower(Math.min(accelerationDelta * step, 0));
+                rightFront.setPower(Math.min(accelerationDelta * step, 0));
+                leftRear.setPower(Math.min(accelerationDelta * step, 0));
+                rightRear.setPower(Math.min(accelerationDelta * step, 0));
+                step--;
+                RobotLog.d("Target: %d AccelerationDelta: %d CurrentPosition: %d Step: %d", target, accelerationDelta, leftFront.getCurrentPosition(), step);
+            }
+
+            // Display it for the driver.
+            print(String.format("Target : %7d @ leftFront: %7d, rightFront:%7d, leftRear:%7d, rightRear:%7d",
+                    target,
+                    leftFront.getCurrentPosition(),
+                    rightFront.getCurrentPosition(),
+                    leftRear.getCurrentPosition(),
+                    rightRear.getCurrentPosition()));
+        }
+        // Stop all motion;
+        leftFront.setPower(0);
+        rightFront.setPower(0);
+        leftRear.setPower(0);
+        rightRear.setPower(0);
+        print(String.format("Arrive target : %7d @ leftFront: %7d, rightFront:%7d, leftRear:%7d, rightRear:%7d",
+                target,
+                leftFront.getCurrentPosition(),
+                rightFront.getCurrentPosition(),
+                leftRear.getCurrentPosition(),
+                rightRear.getCurrentPosition()));
+    }
 }
+

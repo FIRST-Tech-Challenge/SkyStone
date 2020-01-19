@@ -28,60 +28,61 @@
  */
 
 package org.firstinspires.ftc.teamcode.components;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.hardware.Servo;
-
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 //@Disabled
-public class Grapple extends BotComponent {
-    public Servo servo = null;
-    public Servo servo2 = null;
-    double SERVO_DOWN_POSITION = 0.4;
-    double SERVO_UP_POSITION = -0.4;
+public class Grapple2 extends BotComponent {
+    //SERVOS ARE OPPOSITE, USE MIRRORED VALUES
+    public Servo grapple1 = null;
+    public Servo grapple2 = null;
 
-public Grapple(){
-}
-public Grapple(Logger aLogger, OpMode aOpMode, String servoName, String servoName2) {
-    super(aLogger, aOpMode);
-    //define and initialize motors
-    logger.logDebug("initservo", "IamWalrus");
-    servo = initServo(servoName, -.4);
-    servo2 = initServo(servoName2, -.4);
-    if (servo != null && servo2 != null) {
-        isAvailable = true;
+    /*
+    instead of using this method, using bare numbers is recommended
+    double SERVO_DOWN_POSITION = 0.77;
+    double SERVO_UP_POSITION = 0.1;
+    double SERVO2_DOWN_POSITION = 0.77;
+    double SERVO2_UP_POSITION = 0.1;
+    */
+    public Grapple2() {
     }
 
-    logger.logInfo("Grapple", "isAvailable: %b", isAvailable);
+    public Grapple2(Logger aLogger, OpMode aOpMode, String servoName, String servoName2) {
+        super(aLogger, aOpMode);
+        //define and initialize motors
+        logger.logDebug("initservo", "IamWalrus");
+        grapple1 = initServo(servoName, 0.2);
+        grapple2 = initServo(servoName2, 0.77);
+        if (grapple1 != null && grapple2 != null) {
+            isAvailable = true;
+        }
 
-}
+        logger.logInfo("Grapple", "isAvailable: %b", isAvailable);
+    }
 
-public void servoMoveDown(){
-    logger.logDebug("servoMoveDown", "walrus");
-    servo.setPosition(SERVO_DOWN_POSITION);
-}
+    //Functions for GRAPPLE 1
+    //GRAPPLE ONE DOWN POSITION STARTS AT AROUND 1 (use 0.8 - 0.7 values)
+    public void setGrapple1Down() {
+        logger.logDebug("servoMoveDown", "walrus");
+        grapple1.setPosition(0.77);
+    }
 
-public void servo2MoveDown(){servo2.setPosition(SERVO_UP_POSITION);
-}
+    //GRAPPLE ONE UP POSITION STARTS AT AROUND 0 (use 0.2 - 0.3 range values)
+    public void setGrapple1Up() {
+        grapple1.setPosition(0.3);
+    }
 
-public void servoMoveUp(){servo.setPosition(SERVO_UP_POSITION);
-}
+    //Functions for GRAPPLE 2
+    //GRAPPLE TWO DOWN POSITION STARTS AT AROUND 0 (use 0.2 - 0.3 range values)
+    public void setGrapple2Down(){
+        grapple2.setPosition(0.2);
+    }
 
-public void servo2MoveUp(){servo2.setPosition(SERVO_DOWN_POSITION);
-}
-
-public void grappleMoveDown() {
-    servo.setPosition(SERVO_DOWN_POSITION);
-    servo2.setPosition(SERVO_DOWN_POSITION);
-}
-
-public void grappleMoveUp() {
-    servo.setPosition(SERVO_UP_POSITION);
-    servo2.setPosition(SERVO_UP_POSITION);
-}
-
+    //GRAPPLE TWO UP POSITION STARTS AT AROUND 1 (use 0.8 - 0.7 range values)
+    public void setGrapple2Up(){
+        grapple2.setPosition(0.77);
+    }
 }
 
 

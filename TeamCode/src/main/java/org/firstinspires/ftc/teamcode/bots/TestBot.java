@@ -48,6 +48,7 @@ public class TestBot extends Bot {
     public SkystoneFinder skystoneFinder = null;
     public Intake intake = null;
     public Ramp ramp = null;
+    public Grapple2 grapple2 = null;
 
     /* Constructor */
     public TestBot() {
@@ -70,6 +71,8 @@ public class TestBot extends Bot {
         webCamNavigator = new WebCamNavigator(logger, aOpMode, webCamera);
 
         grapple = new Grapple(logger, aOpMode, "servo1", "servo2");
+        grapple2 = new Grapple2(logger, aOpMode, "grapple1", "grapple2");
+
         //colorDetection = new ColorDetection();
         skystoneFinder = new SkystoneFinder(logger, aOpMode);
         intake = new Intake(logger, aOpMode, "Right_Intake", "Left_Intake");

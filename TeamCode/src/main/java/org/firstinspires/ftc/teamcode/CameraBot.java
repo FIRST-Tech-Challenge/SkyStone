@@ -5,6 +5,7 @@ import android.graphics.Color;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.RobotLog;
 import com.vuforia.Image;
@@ -21,7 +22,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
-public class CameraBot extends PinchArmBot {
+public class CameraBot extends DistanceSensorBot {
     public class Area extends Object{
         public int x;
         public int y;
@@ -86,15 +87,15 @@ public class CameraBot extends PinchArmBot {
 
     @Override
     public void init(HardwareMap ahwMap) {
-        box1.x = 550;
+        box1.x = 750;
         box1.y = 100;
         box1.width = 100;
         box1.height = 200;
-        box2.x = 550;
+        box2.x = 750;
         box2.y = 300;
         box2.width = 100;
         box2.height = 200;
-        box3.x = 550;
+        box3.x = 750;
         box3.y = 500;
         box3.width = 100;
         box3.height = 200;

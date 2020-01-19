@@ -60,7 +60,7 @@ public class DistanceSensorBot extends PinchArmBot {
         super.init(ahwMap);
 
         // initialize the sensor for skystone quarry detection
-        sensorSkyStoneQuarry = hwMap.get(DistanceSensor.class, "sensor_range");
+        sensorSkyStoneQuarry = hwMap.get(DistanceSensor.class, "distance_front");
     }
 
     public double getDistanceToStoneQuarry() {

@@ -14,13 +14,14 @@ public class RedStreet extends LinearOpMode {
 
     int direction_forward, direction_backward;
 
-    int[] distFirstMove = new int[]{100, 200, 300};
-    int[] distFoundMove = new int[]{1000, 2000, 3000};
+    int[] distFirstMove = new int[]{400, 200, 0};
+    int[] distFoundMove = new int[]{1600, 1800, 2000};
+    int[] distBackMove = new int[]{2200, 2400, 1600};
 
     int skystonePostition;
     protected void setDirection(){
-        direction_forward = robot.DIRECTION_BACKWARD;
-        direction_backward = robot.DIRECTION_FORWARD;
+        direction_forward = robot.DIRECTION_FORWARD;
+        direction_backward = robot.DIRECTION_BACKWARD;
 
     }
 
@@ -36,12 +37,22 @@ public class RedStreet extends LinearOpMode {
             robot.pickupSkyStone();
             robot.driveUntilDistance(35, 0.3);
 
-            robot.driveStraightByDistance(direction_forward, 1600, 0.8);
+            robot.driveStraightByDistance(direction_forward, distFoundMove[skystonePostition - 1], 0.8);
             robot.driveStraightByDistance(robot.DIRECTION_LEFT, 250, 0.5);
             robot.dropSkyStone();
             robot.originalPosition();
-            robot.driveStraightByDistance(robot.DIRECTION_RIGHT, 150, 0.5);
-            robot.driveStraightByDistance(direction_forward, 850, 1);
+            robot.driveStraightByDistance(robot.DIRECTION_RIGHT, 250, 0.5);
+            robot.driveStraightByDistance(direction_backward, distBackMove[skystonePostition - 1], 0.8);
+
+            robot.driveUntilDistance(21, 0.3);
+
+            robot.pickupSkyStone();
+
+            robot.driveStraightByDistance(direction_forward, distFoundMove[skystonePostition - 1], 0.8);
+            robot.driveStraightByDistance(robot.DIRECTION_LEFT, 250, 0.5);
+            robot.dropSkyStone();
+            robot.driveStraightByDistance(robot.DIRECTION_RIGHT, 250, 0.5);
+            robot.driveStraightByDistance(robot.DIRECTION_FORWARD, 300, 1);
 
         }
 

@@ -41,7 +41,7 @@ public class ConceptAutonomousBlueTest extends LinearOpMode {
 
         generalTools.openClamp();
         generalTools.releaseFoundation();
-        controlledLift.start(-liftEncoderValue, 0.2);
+        controlledLift.start(liftEncoderValue, 0.2);
 
         waitForStart();
 
@@ -55,7 +55,7 @@ public class ConceptAutonomousBlueTest extends LinearOpMode {
             while(!controlledExtender.endReached() && opModeIsActive()) {}
             controlledExtender.stop();
 
-            controlledLift.start(liftEncoderValue + liftStartOffset, 0.2); //lowers the lift
+            controlledLift.start(-(liftEncoderValue + liftStartOffset), 0.2); //lowers the lift
 
             while(!controlledDrive.endReached() && opModeIsActive()) {}
             controlledDrive.stop();
@@ -120,7 +120,7 @@ public class ConceptAutonomousBlueTest extends LinearOpMode {
             controlledExtender.start(extenderFoundationValue, 0.3);
 
             // TODO: test this
-            controlledLift.start(-liftFoundationValue, 0.4);
+            controlledLift.start(liftFoundationValue, 0.4);
 
             while(!controlledLift.endReached() && opModeIsActive()) {}
             controlledLift.stop();
@@ -185,7 +185,7 @@ public class ConceptAutonomousBlueTest extends LinearOpMode {
         // you have now put the arm back in
 
         if (opModeIsActive()) {
-            controlledLift.start(liftFoundationValue, 0.2); //distance 0.5
+            controlledLift.start(-liftFoundationValue, 0.2); //distance 0.5
             while(!controlledLift.endReached() && opModeIsActive()) {}
             controlledLift.stop();
 

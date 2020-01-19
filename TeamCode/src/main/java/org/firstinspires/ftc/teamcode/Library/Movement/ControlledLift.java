@@ -10,8 +10,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassis;
 
-import java.util.function.Supplier;
-
 public class ControlledLift {
     // Customized for the 117rpm motor
     static final double     COUNTS_PER_MOTOR_REV    = 1425.2 ;    // eg: TETRIX Motor Encoder
@@ -31,8 +29,8 @@ public class ControlledLift {
         // Determine new target position
         double startPositionLeft = robot.motor_lift_left.getCurrentPosition();
         double startPositionRight = robot.motor_lift_right.getCurrentPosition();
-        double targetLeft = startPositionLeft + COUNTS_PER_CM * distance;
-        double targetRight = startPositionRight + COUNTS_PER_CM * -distance;
+        double targetLeft = startPositionLeft + COUNTS_PER_CM * -distance;
+        double targetRight = startPositionRight + COUNTS_PER_CM * distance;
         // And pass to motor controller
         robot.motor_lift_left.setTargetPosition((int) targetLeft);
         robot.motor_lift_right.setTargetPosition((int) targetRight);
@@ -41,7 +39,7 @@ public class ControlledLift {
         robot.motor_lift_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.motor_lift_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        // reset the timeout time and start motion.
+        // start motion
         if (distance >= 0) {
             setMotors(speed);
         } else if (distance <= 0) {
@@ -64,7 +62,11 @@ public class ControlledLift {
     }
 
     public void setMotors(double power) {
-        robot.motor_lift_left.setPower(power);
-        robot.motor_lift_right.setPower(-power);
+        ControlledLift.setMotors(robot, power);
+    }
+
+    public static void setMotors(HardwareChassis robot, double power) {
+        robot.motor_lift_left.setPower(-power);
+        robot.motor_lift_right.setPower(power);
     }
 }

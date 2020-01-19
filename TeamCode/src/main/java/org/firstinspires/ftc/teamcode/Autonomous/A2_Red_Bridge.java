@@ -39,13 +39,13 @@ public class A2_Red_Bridge extends LinearOpMode {
         controlledExtender = new ControlledExtender(robot, telemetry);
 
         generalTools.releaseFoundation();
-        controlledLift.start(-liftEncoderValue,0.2);
+        controlledLift.start(liftEncoderValue,0.2);
 
         waitForStart();
 
         if (opModeIsActive()){
             controlledExtender.start(extenderEncoderValue,0.4);
-            controlledLift.start(liftEncoderValue + liftStartOffset,0.2);
+            controlledLift.start(-(liftEncoderValue + liftStartOffset),0.2);
         }
 
         if (opModeIsActive()){

@@ -13,7 +13,11 @@ public class CameraTest extends LinearOpMode {
         robot.init(hardwareMap);
         waitForStart();
         while (opModeIsActive()) {
-            robot.detectSkystone();
+
+            int skystonePosition = robot.detectSkystone();
+
+            telemetry.log().add("I think the Skystone is in Position %d", skystonePosition);
+            telemetry.update();
             sleep (100 * 1000);
             break;
         }

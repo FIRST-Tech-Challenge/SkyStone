@@ -3,18 +3,17 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-@Autonomous(name="DistanceSensor Test", group="Exercises")
+@Autonomous(name="Acceleration Backward", group="Tests")
 
-public class DistanceTest extends LinearOpMode {
-    private TensorFlowBot robot = new TensorFlowBot(this);
+public class AccelerationTest2 extends LinearOpMode {
+    private FourWheelsDriveBot robot = new FourWheelsDriveBot(this);
 
     @Override
     public void runOpMode() {
         robot.init(hardwareMap);
         waitForStart();
-        while (opModeIsActive()) {
-            robot.getDistanceBack();
 
-        }
+        robot.driveByDistanceWithAcceleration(robot.DIRECTION_BACKWARD, 2000, 1, 5);
+
     }
 }

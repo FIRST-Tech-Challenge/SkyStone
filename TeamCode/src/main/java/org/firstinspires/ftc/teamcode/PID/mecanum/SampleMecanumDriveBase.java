@@ -144,10 +144,10 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
         waitForIdle();
     }
 
-    public void updateDriveConstants(boolean strafe){
+    public void resetFollowerWithParameters(boolean strafe){
         addSpacer();
-        RobotLog.dd("Pre-Reinstantiate Error", follower.getLastError() + "");
-        RobotLog.dd("Follower PID Constants", strafe ? "STRAFE" : "BASE");
+        //RobotLog.dd("Pre-Reinstantiate Error", follower.getLastError() + "");
+        //RobotLog.dd("Follower PID Constants", strafe ? "STRAFE" : "BASE");
         if (!strafe) {
             RobotLog.dd(TAG, "using non-strafing PID, maxVel: %f, maxAccl: %f", BASE_CONSTRAINTS.maxVel, BASE_CONSTRAINTS.maxAccel);
             xTRANSLATIONAL_PID = new PIDCoefficients(DriveConstantsPID.txP, DriveConstantsPID.txI, DriveConstantsPID.txD);
@@ -169,8 +169,8 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
         turnController = new PIDFController(HEADING_PID);
         turnController.setInputBounds(0, 2 * Math.PI);
         follower = new HolonomicPIDVAFollower(xTRANSLATIONAL_PID, yTRANSLATIONAL_PID, HEADING_PID);
-        RobotLog.dd("STATUS", "Re-Inited Follower");
-        RobotLog.dd("Post-Reinstantiate Error", follower.getLastError() + "");
+        //RobotLog.dd("STATUS", "Re-Inited Follower");
+        //RobotLog.dd("Post-Reinstantiate Error", follower.getLastError() + "");
         addSpacer();
     }
 

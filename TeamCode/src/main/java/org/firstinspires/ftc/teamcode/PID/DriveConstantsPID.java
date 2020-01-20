@@ -112,8 +112,8 @@ public class DriveConstantsPID {
     public static double kStatic = 0;
 	public static double TEST_DISTANCE = 96;
 	public static double maxVel = 70.0; //45.0
-	public static double maxAccel = 30.0;   //20.0
-    public static double strafeMaxVel = 50.0; //45.0
+	public static double maxAccel = 35.0;   //20.0
+    public static double strafeMaxVel = 45.0; //45.0
     public static double strafeMaxAccel = 20.0;   //20.0
     public static double maxAngVel = 135;
     public static double maxAngAccel = 90;

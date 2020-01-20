@@ -101,7 +101,7 @@ public class Path {
                 double strafeDistance = 9.5;
 
                 yCoordMvmtPlane = -41.0;
-                wallSkyStoneX = -43.0;
+                wallSkyStoneX = -41.5;
                 furtherMostSkyStoneX = -20.0;
                 firstRegularStoneX = -34.0;
                 foundationX = 46.0;
@@ -534,7 +534,7 @@ public class Path {
                 strafeDistance = 9.5;
 
                 yCoordMvmtPlane = -42.0;
-                wallSkyStoneX = -50.0;
+                wallSkyStoneX = -51.0;
                 furtherMostSkyStoneX = -28.5;
                 firstRegularStoneX = -34.0;
                 foundationX = 46.0;

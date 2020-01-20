@@ -14,7 +14,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 public class GyroBot extends CameraBot {
 
     BNO055IMU imu;
-    double startAngle, power = .10;
+    double startAngle, power = 0.15;
 
 
     public GyroBot(LinearOpMode opMode) {
@@ -59,14 +59,14 @@ public class GyroBot extends CameraBot {
 
     public void goBacktoStartAngle() {
 
-        double delta = getDeltaAngle();
-
         int direction ;
         leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         leftRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        while (Math.abs(delta) < 1){
+        double delta = getDeltaAngle();
+
+        while (Math.abs(delta) > 0.5){
             if (delta < 0){
                 // turn clockwize
                 direction = 1;
@@ -75,11 +75,17 @@ public class GyroBot extends CameraBot {
                 // turn CC wize
                 direction = -1;
             }
-            leftFront.setPower(power * direction);
-            rightFront.setPower(-power * direction);
+            leftFront.setPower(-power * direction);
+            rightFront.setPower(power * direction);
             leftRear.setPower(-power * direction);
             rightRear.setPower(power * direction);
+            delta = getDeltaAngle();
         }
+        leftFront.setPower(0);
+        rightFront.setPower(0);
+        leftRear.setPower(0);
+        rightRear.setPower(0);
+
 
     }
 }

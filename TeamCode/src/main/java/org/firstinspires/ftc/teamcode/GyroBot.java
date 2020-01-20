@@ -4,18 +4,17 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
-public class GyroBot extends TensorFlowBot {
+public class GyroBot extends CameraBot {
 
-    DcMotor leftMotor, rightMotor;
     BNO055IMU imu;
-    Orientation lastAngles = new Orientation();
-    double globalAngle, power = .30, correction;
+    double startAngle, power = .10;
 
 
     public GyroBot(LinearOpMode opMode) {
@@ -27,12 +26,6 @@ public class GyroBot extends TensorFlowBot {
     public void init(HardwareMap ahwMap) {
         super.init(ahwMap);
 
-        leftMotor = hwMap.dcMotor.get("left_motor");
-        rightMotor = hwMap.dcMotor.get("right_motor");
-
-
-        leftMotor.setDirection(DcMotor.Direction.REVERSE);
-
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
         parameters.mode = BNO055IMU.SensorMode.IMU;
@@ -40,116 +33,53 @@ public class GyroBot extends TensorFlowBot {
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.loggingEnabled = false;
 
+        imu =  hwMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
 
     }
 
     public void resetAngle() {
 
-        lastAngles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-
-        globalAngle = 0;
-
+        Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        RobotLog.d(String.format("Reset Angle : %.3f , %.3f, %.3f", angles.firstAngle, angles.secondAngle, angles.thirdAngle));
+        startAngle = angles.firstAngle;
     }
 
 
-    public double getAngle() {
+    public double getDeltaAngle() {
 
         Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
-        double deltaAngle = angles.firstAngle - lastAngles.firstAngle;
+        double deltaAngle = angles.firstAngle - startAngle;
+        RobotLog.d(String.format("Delta Angle : %.3f from %.3f, %.3f, %.3f", deltaAngle, angles.firstAngle, angles.secondAngle, angles.thirdAngle));
 
-        if (deltaAngle < -180)
-            deltaAngle += 360;
-        else if (deltaAngle > 180)
-            deltaAngle -= 360;
-
-        globalAngle += deltaAngle;
-
-        lastAngles = angles;
-
-        return globalAngle;
+        return deltaAngle;
     }
 
 
-    public double checkDirection() {
+    public void goBacktoStartAngle() {
 
-        double correction, angle;
-        double gain = .10;
+        double delta = getDeltaAngle();
 
-        angle = getAngle();
-
-        if (angle == 0)
-            correction = 0;
-        else
-            correction = -angle;
-
-        correction = correction * gain;
-
-        return correction;
-
-    }
-
-
-    public void rotate(int degrees, double power) {
-
-        double  leftPower, rightPower;
-
-        // restart imu movement tracking.
-        resetAngle();
-
-        // getAngle() returns + when rotating counter clockwise (left) and - when rotating
-        // clockwise (right).
-
-        if (degrees < 0)
-        {   // turn right.
-            leftPower = power;
-            rightPower = -power;
-        }
-        else if (degrees > 0)
-        {   // turn left.
-            leftPower = -power;
-            rightPower = power;
-        }
-        else return;
-
-        // set power to rotate.
+        int direction ;
         leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         leftRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        leftFront.setPower(leftPower);
-        rightFront.setPower(rightPower);
-        leftRear.setPower(leftPower);
-        rightRear.setPower(rightPower);
-
-        // rotate until turn is completed.
-        if (degrees < 0)
-        {
-            // On right turn we have to get off zero first.
-            while (opMode.opModeIsActive() && getAngle() == 0) {}
-
-            while (opMode.opModeIsActive() && getAngle() > degrees) {}
-
-            if (globalAngle == degrees)
-                opMode.sleep(1000);
+        while (Math.abs(delta) < 1){
+            if (delta < 0){
+                // turn clockwize
+                direction = 1;
+            }
+            else{
+                // turn CC wize
+                direction = -1;
+            }
+            leftFront.setPower(power * direction);
+            rightFront.setPower(-power * direction);
+            leftRear.setPower(-power * direction);
+            rightRear.setPower(power * direction);
         }
-        else if (degrees > 0)    // left turn.
-            while (opMode.opModeIsActive() && getAngle() < degrees) {}
-        if (globalAngle == degrees)
-            opMode.sleep(1000);
-
-
-
-        // turn the motors off.
-        rightMotor.setPower(0);
-        leftMotor.setPower(0);
-
-        // wait for rotation to stop.
-        opMode.sleep(1000);
-
-        // reset angle tracking on new heading.
-        resetAngle();
 
     }
 }

@@ -50,7 +50,7 @@ public class ConceptAutonomousRedTest extends LinearOpMode {
         if (opModeIsActive() ) {
             controlledExtender.start(extenderEncoderValue, 0.4);
 
-            controlledDrive.start(65, 0, 0.4);
+            controlledDrive.start(generalTools.ap_forwardGrabStone, 0, 0.4);
             while(!controlledDrive.endReached() && opModeIsActive()) {}
             controlledDrive.stop();
 

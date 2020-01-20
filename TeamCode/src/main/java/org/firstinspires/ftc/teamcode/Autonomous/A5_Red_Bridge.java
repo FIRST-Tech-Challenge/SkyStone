@@ -50,6 +50,8 @@ public class A5_Red_Bridge extends LinearOpMode {
             controlledLift.start(-(liftEncoderValue + liftStartOffset),0.2);
         }
 
+        // you have now lowered the lift and extended the arm
+
         if (opModeIsActive()){
             while (!colorTools.isRed(robot.color_back) && opModeIsActive()){
                 /*if (robot.touch_right.getState() && robot.touch_left.getState()) {
@@ -65,7 +67,11 @@ public class A5_Red_Bridge extends LinearOpMode {
             omniWheel.setMotors(0,0,0);
         }
 
+        // you are now below the bridge
+
         backTillButtons();
+
+        // you are now touching the wall behind
 
     }
 

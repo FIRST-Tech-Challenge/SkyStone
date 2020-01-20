@@ -50,6 +50,8 @@ public class A2_Blue_Bridge extends LinearOpMode {
             controlledLift.start(-(liftEncoderValue + liftStartOffset),0.2);
         }
 
+        // you have now lowered the lift and pulled out the arm
+
         if (opModeIsActive()){
             while (!colorTools.isRed(robot.color_back) && opModeIsActive()){
                 /*if (robot.touch_right.getState() && robot.touch_left.getState()) {
@@ -64,10 +66,14 @@ public class A2_Blue_Bridge extends LinearOpMode {
             }
             omniWheel.setMotors(0,0,0);
         }
+
+        // you are now below the bridge
+
         if (opModeIsActive()){
             backTillButtons();
         }
 
+        //you are now touching the wall behind
     }
     private void backTillButtons() {
         while(robot.touch_right.getState() && robot.touch_left.getState()) {

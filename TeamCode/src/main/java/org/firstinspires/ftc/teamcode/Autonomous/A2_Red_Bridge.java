@@ -63,7 +63,9 @@ public class A2_Red_Bridge extends LinearOpMode {
             omniWheel.setMotors(0,0,0);
         }
 
-        backTillButtons();
+        if (opModeIsActive()) {
+            backTillButtons();
+        }
 
     }
 

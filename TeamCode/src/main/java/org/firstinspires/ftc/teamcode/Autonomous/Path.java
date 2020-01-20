@@ -101,7 +101,7 @@ public class Path {
                 double strafeDistance = 9.5;
 
                 yCoordMvmtPlane = -41.0;
-                wallSkyStoneX = -45.0;
+                wallSkyStoneX = -43.0;
                 furtherMostSkyStoneX = -20.0;
                 firstRegularStoneX = -34.0;
                 foundationX = 46.0;
@@ -119,7 +119,7 @@ public class Path {
                 straightDrive.getLocalizer().update();
                 builder = new TrajectoryBuilder(straightDrive.getPoseEstimate(), DriveConstantsPID.STRAFE_BASE_CONSTRAINTS);
                 builder = builder
-                        .setReversed(false).strafeTo(new Vector2d(wallSkyStoneX, yCoordMvmtPlane + (strafeDistance - 3.3)));
+                        .setReversed(false).strafeTo(new Vector2d(wallSkyStoneX, yCoordMvmtPlane + (strafeDistance - 4.5)));
                 trajectory = builder.build();   //x - 2.812, y + 7.984
                 straightDrive.followTrajectorySync(trajectory);
 
@@ -185,7 +185,7 @@ public class Path {
 
                 builder = new TrajectoryBuilder(straightDrive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
                 builder = builder
-                        .setReversed(false).lineTo(new Vector2d(foundationX + 7, yCoordMvmtPlane));
+                        .setReversed(false).lineTo(new Vector2d(foundationX + 5, yCoordMvmtPlane));
                 trajectory = builder.build();   //x - 2.812, y + 7.984
                 straightDrive.followTrajectorySync(trajectory);
 
@@ -193,7 +193,7 @@ public class Path {
 
                 builder = new TrajectoryBuilder(straightDrive.getPoseEstimate(), DriveConstantsPID.STRAFE_BASE_CONSTRAINTS);
                 builder = builder
-                        .setReversed(false).strafeTo(new Vector2d(foundationX + 7, yCoordMvmtPlane + strafeDistance + 3));
+                        .setReversed(false).strafeTo(new Vector2d(foundationX + 5, yCoordMvmtPlane + strafeDistance + 3));
                 trajectory = builder.build();   //x - 2.812, y + 7.984
                 straightDrive.followTrajectorySync(trajectory);
 
@@ -534,8 +534,8 @@ public class Path {
                 strafeDistance = 9.5;
 
                 yCoordMvmtPlane = -42.0;
-                wallSkyStoneX = -52.0;
-                furtherMostSkyStoneX = -28.5;
+                wallSkyStoneX = -50.7;
+                furtherMostSkyStoneX = -29.0;
                 firstRegularStoneX = -34.0;
                 foundationX = 46.0;
                 strafeDistance = 8.0;

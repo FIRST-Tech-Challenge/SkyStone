@@ -110,15 +110,16 @@ public class DriveConstantsPID {
     public static double kV = 0.0111;   //0.0115
     public static double kA = 0;
     public static double kStatic = 0;
-	public static double TEST_DISTANCE = 96;
+	public static double TEST_DISTANCE = 72;
 	public static double maxVel = 70.0; //45.0
 	public static double maxAccel = 35.0;   //20.0
     public static double strafeMaxVel = 45.0; //45.0
     public static double strafeMaxAccel = 20.0;   //20.0
     public static double maxAngVel = 135;
     public static double maxAngAccel = 90;
-	public static boolean keep_vuforia_running = true;
+	public static boolean keep_vuforia_running = false;
 	public static boolean USE_VUFORIA_LOCALIZER = false;
+    public static boolean RECREATE_DRIVE_AND_BUILDER = false;
 
     /*
      * These values are used to generate the trajectories for you robot. To ensure proper operation,
@@ -219,6 +220,7 @@ public class DriveConstantsPID {
         RobotLog.dd(TAG, "Driving wheel width? : " + Double.toString(TRACK_WIDTH));
         RobotLog.dd(TAG, "using Odometry? : " + Integer.toString(RUN_USING_ODOMETRY_WHEEL?1:0));
         RobotLog.dd(TAG, "using Bulk read? : " + Integer.toString(USING_BULK_READ?1:0));
+        RobotLog.dd(TAG, "recreate drive? : " + Integer.toString(RECREATE_DRIVE_AND_BUILDER?1:0));
         RobotLog.dd(TAG, "Odometry wheel width? : " + Double.toString(ODOMETRY_TRACK_WIDTH));
         RobotLog.dd(TAG, "Odometry forward offset? " + Double.toString(ODOMERY_FORWARD_OFFSET));
         RobotLog.dd(TAG, "Odometry EncoderTicksPerRev? " + Double.toString(odoEncoderTicksPerRev));
@@ -257,6 +259,12 @@ public class DriveConstantsPID {
             v_int = (int) v_double;
             RUN_USING_IMU_LOCALIZER = (v_int==0)?false:true;
         }
+        v_double = (int) getTeamCodePropertyValue("debug.ftc.recreateDrv");
+        if (v_double != Double.MAX_VALUE) {
+            v_int = (int) v_double;
+            RECREATE_DRIVE_AND_BUILDER = (v_int==0)?false:true;
+        }
+
         v_double = getTeamCodePropertyValue("debug.ftc.vuforia");
         if (v_double != Double.MAX_VALUE)
         {

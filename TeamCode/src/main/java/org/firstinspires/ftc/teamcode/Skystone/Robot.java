@@ -67,6 +67,7 @@ public class Robot {
     public final double OUTTAKE_SLIDE_PARTIAL_EXTEND = 0.27; // First peg .27, second peg .121
 
     // Clamp positions
+    public final double FRONTCLAMP_ACTIVATECAPSTONE = 0;
     public final double FRONTCLAMP_CLAMPED = .49;
     public final double FRONTCLAMP_RELEASED = .08;
     public final double BACKCLAMP_CLAMPED = .275;
@@ -89,20 +90,18 @@ public class Robot {
 
     public final long DELAY_CLAMP_ON_EXTEND = 0;
     public final long DELAY_SLIDE_ON_EXTEND = 0;
-    public final long DELAY_PARTIAL_SLIDE_ON_EXTEND = 1200;
 
     public final long DELAY_RELEASE_CLAMP_ON_RETRACT = 0;
     public final long DELAY_PUSHER_ON_RETRACT = 0;
     public final long DELAY_SLIDE_ON_RETRACT = 300;
-    public final long DELAY_RESETCLAMP_ON_RETRACT = 1000;
 
     public final long DELAY_PUSHER_ON_CLAMP = 0;
     public final long DELAY_RETRACT_PUSHER_ON_CLAMP = 450;
     public final long DELAY_CLAMP_ON_CLAMP = 700;
 
     // Constants for spool encoder positions
-    public final double SPOOL_FIRSTLEVEL_POSITION = 100;
-    public final double SPOOL_LEVEL_INCREMENT = 500;
+    public final double SPOOL_FIRSTLEVEL_POSITION = -130;
+    public final double SPOOL_LEVEL_INCREMENT = 330;
 
     //robots position
     private Point robotPos = new Point();

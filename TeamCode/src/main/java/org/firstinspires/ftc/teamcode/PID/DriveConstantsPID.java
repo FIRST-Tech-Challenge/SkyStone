@@ -113,7 +113,10 @@ public class DriveConstantsPID {
 	public static double TEST_DISTANCE = 96;
 	public static double maxVel = 70.0; //45.0
 	public static double maxAccel = 35.0;   //20.0
-
+    public static double strafeMaxVel = 50.0; //45.0
+    public static double strafeMaxAccel = 20.0;   //20.0
+    public static double maxAngVel = 135;
+    public static double maxAngAccel = 90;
 	public static boolean keep_vuforia_running = true;
 	public static boolean USE_VUFORIA_LOCALIZER = false;
 
@@ -127,11 +130,11 @@ public class DriveConstantsPID {
      */
     public static DriveConstraints BASE_CONSTRAINTS = new DriveConstraints(
             maxVel, maxAccel, 0.0,
-            Math.toRadians(135), Math.toRadians(90), 0.0
+            Math.toRadians(maxAngVel), Math.toRadians(maxAngAccel), 0.0
     );
     public static DriveConstraints STRAFE_BASE_CONSTRAINTS = new DriveConstraints(
-            50.0, 20.0, 0.0,    //20.0, 10.0, 0.0
-            Math.toRadians(135), Math.toRadians(90), 0.0
+            strafeMaxVel, strafeMaxAccel, 0.0,    //20.0, 10.0, 0.0
+            Math.toRadians(maxAngVel), Math.toRadians(maxAngAccel), 0.0
     );
 
     public static double encoderTicksToInches(double ticks) {
@@ -206,6 +209,7 @@ public class DriveConstantsPID {
             RobotLog.dd(TAG, "Velocity PID    kP: "  + Double.toString(MOTOR_VELO_PID.kP) + ", kI: "  + Double.toString(MOTOR_VELO_PID.kI) + ", kD: "  + Double.toString(MOTOR_VELO_PID.kD));
         }
         RobotLog.dd(TAG, "(non-strafe) maxVel: %f, maxAccel: %f", maxVel, maxAccel);
+        RobotLog.dd(TAG, "(strafe) maxVel: %f, maxAccel: %f", strafeMaxVel, strafeMaxAccel);
         RobotLog.dd(TAG, "xTransitional PID   txP: "+Double.toString(txP) + " txI: "+Double.toString(txI) + " txD: " + Double.toString(txD));
         RobotLog.dd(TAG, "yTransitional PID   tyP: "+Double.toString(tyP) + " tyI: "+Double.toString(tyI) + " tyD: " + Double.toString(tyD));
         RobotLog.dd(TAG, "Heading PID   hP: "+Double.toString(hP) + " hI: "+Double.toString(hI) + " hD: " + Double.toString(hD));
@@ -235,7 +239,12 @@ public class DriveConstantsPID {
             if (BASE_CONSTRAINTS == null)
                 BASE_CONSTRAINTS = new DriveConstraints(
                         maxVel, maxAccel, 0.0,
-                        Math.toRadians(90.0), Math.toRadians(45.0), 0.0
+                        Math.toRadians(maxAngVel), Math.toRadians(maxAngAccel), 0.0
+                );
+            if (STRAFE_BASE_CONSTRAINTS == null)
+                STRAFE_BASE_CONSTRAINTS = new DriveConstraints(
+                        strafeMaxVel, strafeMaxAccel, 0.0,
+                        Math.toRadians(maxAngVel), Math.toRadians(maxAngAccel), 0.0
                 );
             printConstants();
             return;
@@ -278,9 +287,22 @@ public class DriveConstantsPID {
         if (v_double != 0 && v_double != Double.MAX_VALUE)
             maxAccel = v_double;
 
+        v_double = getTeamCodePropertyValue("debug.ftc.strafeMaxVel");
+        if (v_double != 0 && v_double != Double.MAX_VALUE)
+            strafeMaxVel = v_double;
+
+        v_double = getTeamCodePropertyValue("debug.ftc.strafeMaxAccel");
+        if (v_double != 0 && v_double != Double.MAX_VALUE)
+            strafeMaxAccel = v_double;
+
         BASE_CONSTRAINTS = new DriveConstraints(
                 maxVel, maxAccel, 0.0,
-                Math.toRadians(90.0), Math.toRadians(45.0), 0.0
+                Math.toRadians(maxAngVel), Math.toRadians(maxAngAccel), 0.0
+        );
+
+        STRAFE_BASE_CONSTRAINTS = new DriveConstraints(
+                strafeMaxVel, strafeMaxAccel, 0.0,
+                Math.toRadians(maxAngVel), Math.toRadians(maxAngAccel), 0.0
         );
 
         v_double = getTeamCodePropertyValue("debug.ftc.kV");

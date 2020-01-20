@@ -290,45 +290,39 @@ public class FourWheelsDriveBot
         int target = (int)(distance / 3.1415 / 100 * DRIVING_MOTOR_TICK_COUNT);
         int startingPosition = leftFront.getCurrentPosition();
         double accelerationDelta = maxPower/accelerationSteps;
-        int accelerationInterval = 50;
+        int accelerationInterval = 100;
+        int realTarget;
         switch (direction){
             case DIRECTION_FORWARD:
                 leftFront.setTargetPosition(leftFront.getCurrentPosition() + target);
+                realTarget = leftFront.getCurrentPosition() + target;
                 rightFront.setTargetPosition(rightFront.getCurrentPosition() + target);
                 leftRear.setTargetPosition(leftRear.getCurrentPosition() + target);
                 rightRear.setTargetPosition(rightRear.getCurrentPosition() + target);
                 break;
             case DIRECTION_BACKWARD:
                 leftFront.setTargetPosition(leftFront.getCurrentPosition() - target);
+                realTarget = leftFront.getCurrentPosition() - target;
                 rightFront.setTargetPosition(rightFront.getCurrentPosition() - target);
                 leftRear.setTargetPosition(leftRear.getCurrentPosition() - target);
                 rightRear.setTargetPosition(rightRear.getCurrentPosition() - target);
                 break;
             case DIRECTION_LEFT:
                 leftFront.setTargetPosition(leftFront.getCurrentPosition() - target);
+                realTarget = leftFront.getCurrentPosition() - target;
                 rightFront.setTargetPosition(rightFront.getCurrentPosition() + target);
                 leftRear.setTargetPosition(leftRear.getCurrentPosition() + target);
                 rightRear.setTargetPosition(rightRear.getCurrentPosition() - target);
                 break;
             case DIRECTION_RIGHT:
                 leftFront.setTargetPosition(leftFront.getCurrentPosition() + target);
+                realTarget = leftFront.getCurrentPosition() + target;
                 rightFront.setTargetPosition(rightFront.getCurrentPosition() - target);
-                leftRear.setTargetPosition(leftRear.getCurrentPosition() - target);
-                rightRear.setTargetPosition(rightRear.getCurrentPosition() + target);
-                break;
-            case DIRECTION_RQUARTER:
-                leftFront.setTargetPosition(leftFront.getCurrentPosition() + target);
-                rightFront.setTargetPosition(rightFront.getCurrentPosition() - target);
-                leftRear.setTargetPosition(leftRear.getCurrentPosition() + target);
-                rightRear.setTargetPosition(rightRear.getCurrentPosition() - target);
-                break;
-            case DIRECTION_LQUARTER:
-                leftFront.setTargetPosition(leftFront.getCurrentPosition() - target);
-                rightFront.setTargetPosition(rightFront.getCurrentPosition() + target);
                 leftRear.setTargetPosition(leftRear.getCurrentPosition() - target);
                 rightRear.setTargetPosition(rightRear.getCurrentPosition() + target);
                 break;
             default:
+                realTarget = leftFront.getCurrentPosition() + target;
                 String msg = String.format("Unaccepted direction value (%d) for driveStraightByDistance()", direction);
                 print(msg);
         }
@@ -344,16 +338,16 @@ public class FourWheelsDriveBot
         leftRear.setPower(accelerationDelta);
         rightRear.setPower(accelerationDelta);
         int step = 1;
-        RobotLog.d("Target: %d AccelerationDelta: %.2f CurrentPosition: %d Step: %d", target, accelerationDelta, leftFront.getCurrentPosition(), step);
+        RobotLog.d("Let's go : Target: %d AccelerationDelta: %.2f CurrentPosition: %d Step: %d", realTarget, accelerationDelta, leftFront.getCurrentPosition(), step);
         while (this.opMode.opModeIsActive() && leftFront.isBusy()) {
             double distToDecelerate = Math.min(Math.abs(leftFront.getCurrentPosition() - startingPosition), accelerationSteps * accelerationInterval);
-            RobotLog.d("Target: %d AccelerationDelta: %.2f CurrentPosition: %d Step: %d DistToDecelerate: %.2f", target, accelerationDelta, leftFront.getCurrentPosition(), step, distToDecelerate);
+            RobotLog.d("In loop : CurrentPosition: %d Step: %d DistToDecelerate: %.2f", leftFront.getCurrentPosition(), step, distToDecelerate);
 
-            if (Math.abs(leftFront.getCurrentPosition() - target) > distToDecelerate &&
+            if (Math.abs(leftFront.getCurrentPosition() - realTarget) > distToDecelerate &&
                     step < accelerationSteps &&
                     Math.abs(leftFront.getCurrentPosition() - startingPosition) > step * accelerationInterval) {
 
-                RobotLog.d("Target: %d AccelerationDelta: %.2f CurrentPosition: %d Step: %d DistToDecelerate: %.2f", target, accelerationDelta, leftFront.getCurrentPosition(), step, distToDecelerate);
+                RobotLog.d("Step up CurrentPosition: %d Step: %d DistToDecelerate: %.2f", leftFront.getCurrentPosition(), step, distToDecelerate);
                 step++;
                 leftFront.setPower(Math.max(accelerationDelta * step, maxPower));
                 rightFront.setPower(Math.max(accelerationDelta * step, maxPower));
@@ -363,25 +357,17 @@ public class FourWheelsDriveBot
 
             }
 
-            if (Math.abs(leftFront.getCurrentPosition() - target) < distToDecelerate &&
-                step > 1 && Math.abs(leftFront.getCurrentPosition() - target) < step * accelerationInterval) {
+            if (Math.abs(leftFront.getCurrentPosition() - realTarget) < distToDecelerate &&
+                step > 1 && Math.abs(leftFront.getCurrentPosition() - realTarget) < step * accelerationInterval) {
 
-                RobotLog.d("Target: %d AccelerationDelta: %.2f CurrentPosition: %d Step: %d DistToDecelerate: %.2f", target, accelerationDelta, leftFront.getCurrentPosition(), step, distToDecelerate);
-                step--;
-                leftFront.setPower(Math.min(accelerationDelta * step, 0));
-                rightFront.setPower(Math.min(accelerationDelta * step, 0));
-                leftRear.setPower(Math.min(accelerationDelta * step, 0));
-                rightRear.setPower(Math.min(accelerationDelta * step, 0));
+                RobotLog.d("Step down CurrentPosition: %d Step: %d DistToDecelerate: %.2f", leftFront.getCurrentPosition(), step, distToDecelerate);
+                step = (int)Math.floor(Math.abs(leftFront.getCurrentPosition() - realTarget) / accelerationInterval);
+                leftFront.setPower(Math.max(accelerationDelta * step, 0.1));
+                rightFront.setPower(Math.max(accelerationDelta * step, 0.1));
+                leftRear.setPower(Math.max(accelerationDelta * step, 0.1));
+                rightRear.setPower(Math.max(accelerationDelta * step, 0.1));
 
             }
-
-            // Display it for the driver.
-            print(String.format("Target : %7d @ leftFront: %7d, rightFront:%7d, leftRear:%7d, rightRear:%7d",
-                    target,
-                    leftFront.getCurrentPosition(),
-                    rightFront.getCurrentPosition(),
-                    leftRear.getCurrentPosition(),
-                    rightRear.getCurrentPosition()));
         }
         // Stop all motion;
         leftFront.setPower(0);
@@ -389,7 +375,7 @@ public class FourWheelsDriveBot
         leftRear.setPower(0);
         rightRear.setPower(0);
         print(String.format("Arrive target : %7d @ leftFront: %7d, rightFront:%7d, leftRear:%7d, rightRear:%7d",
-                target,
+                realTarget,
                 leftFront.getCurrentPosition(),
                 rightFront.getCurrentPosition(),
                 leftRear.getCurrentPosition(),

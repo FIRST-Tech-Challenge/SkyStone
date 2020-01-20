@@ -7,6 +7,9 @@ import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassis;
 public class GeneralTools {
     HardwareChassis robot;
 
+    public double ap_underBridgeForward = 50;
+    public double ap_forwardGrabStone = 65;
+
     private LinearOpMode opMode;
 
     public GeneralTools(LinearOpMode opMode, HardwareChassis robot) {
@@ -71,5 +74,6 @@ public class GeneralTools {
         robot.servo_claw_left.setPosition(0.1);
         robot.servo_claw_right.setPosition(0.9);
     }
+
 }
 

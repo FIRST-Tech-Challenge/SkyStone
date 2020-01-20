@@ -26,8 +26,8 @@ import java.util.List;
 @Autonomous(name = "DiagonalTest", group = "drive")
 public class DiagonalTest extends LinearOpMode{
 
-    public static double xOffset = DriveConstantsPID.TEST_X;
-    public static double yOffset = DriveConstantsPID.TEST_Y;
+    public static double xOffset = 0;
+    public static double yOffset = 0;
 
     public static Vector2d desiredPoint = new Vector2d(xOffset, yOffset);
     public static Vector2d originalPoint = new Vector2d(0,0);

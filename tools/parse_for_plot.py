@@ -41,6 +41,7 @@ p_name='noname';
 print_summary=0;
 filepath = sys.argv[1];
 arg_c = len(sys.argv);
+
 if arg_c>=3:
     print_summary = 1;
 
@@ -247,9 +248,9 @@ if print_summary != 0:
     plt.xlim([-60, 96])
     plt.ylim([-60, 60])
     plt.legend();
-
+    plt.show()
     #####################################################################################################
-    plt.figure();
+    """plt.figure();
     im = plt.imread("skystone_field.png");
     implot = plt.imshow(im);
 
@@ -271,3 +272,4 @@ if print_summary != 0:
 
     plt.show();
     plt.close()
+    """

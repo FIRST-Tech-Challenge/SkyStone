@@ -51,7 +51,7 @@ public class Red_Build_Side_Bridge extends LinearOpMode {
            robot.driveTrain.encoderDrive(1, 10); */
 
 
-        robot.driveTrain.moveBackward(.63, -.5);
+        robot.driveTrain.moveBackward(.73, -.5);
 
         robot.driveTrain.pause(2 );
 
@@ -62,7 +62,7 @@ public class Red_Build_Side_Bridge extends LinearOpMode {
         robot.driveTrain.pause(2);
 
         //Pull the platform twoards the build zone
-        robot.driveTrain.moveForward(1.25, -0.5);
+        robot.driveTrain.moveForward(1.35, -0.5);
 
         //Move because the robot can not fine adjust to make the gyro happy with the platform in tow
         robot.driveTrain.move(1.5, -.7, .7);
@@ -79,7 +79,7 @@ public class Red_Build_Side_Bridge extends LinearOpMode {
         robot.driveTrain.pause(.25);
 
         //Move the robot to park under the skybridge
-        robot.driveTrain.moveForward(0.65,  -.75);
+        robot.driveTrain.moveForward(0.7,  -.75);
 
         robot.driveTrain.crabRight(0.6);
 

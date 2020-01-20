@@ -68,20 +68,20 @@ public class TestOdometry extends LinearOpMode {
 
         double driftRemover = 0.0;
 
+        drive.updateDriveConstants(false);
+
         while(opModeIsActive()){
             builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
-            drive.updateDriveConstants(true);
 
             drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(drive.getPoseEstimate().getX(),
                     drive.getPoseEstimate().getY()), drive.getPoseEstimate().getHeading()));
             drive.getLocalizer().update();
             builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
-            builder = builder.setReversed(false).strafeTo(new Vector2d(48,
-                    48));
+            builder = builder.setReversed(false).splineTo(new Pose2d(new Vector2d(24,
+                    -12),0)).lineTo(new Vector2d(48, -12)).splineTo(new Pose2d(new Vector2d(72,
+                    0),0));
             trajectory = builder.build();
             drive.followTrajectorySync(trajectory);
-
-            drive.updateDriveConstants(true);
 
             try{
                 Thread.sleep(500);
@@ -91,7 +91,9 @@ public class TestOdometry extends LinearOpMode {
                     drive.getPoseEstimate().getY()), drive.getPoseEstimate().getHeading()));
             drive.getLocalizer().update();
             builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
-            builder = builder.setReversed(false).strafeTo(new Vector2d(0,0));
+            builder = builder.setReversed(true).splineTo(new Pose2d(new Vector2d(48,
+                    -12),0)).lineTo(new Vector2d(24, -12)).splineTo(new Pose2d(new Vector2d(0,
+                    0),0));
             trajectory = builder.build();
             drive.followTrajectorySync(trajectory);
 

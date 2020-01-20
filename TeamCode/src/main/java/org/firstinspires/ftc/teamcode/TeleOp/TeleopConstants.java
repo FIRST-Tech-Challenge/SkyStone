@@ -40,7 +40,7 @@ public class TeleopConstants {
     public static double autoClaw1Init = 0.33622089656588355;
     public static double autoClaw1Strafe = 0.0815;
     public static double autoClaw1Down = 0;
-    public static double autoClaw1Up = 0.23452223351931448;
+    public static double autoClaw1Up = 0.29;
     public static double autoClaw1TeleOp = 0.3032;
 
     public static double autoClaw2Init = 0;

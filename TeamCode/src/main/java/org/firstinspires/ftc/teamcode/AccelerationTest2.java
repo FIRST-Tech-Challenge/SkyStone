@@ -13,7 +13,7 @@ public class AccelerationTest2 extends LinearOpMode {
         robot.init(hardwareMap);
         waitForStart();
 
-        robot.driveByDistanceWithAcceleration(robot.DIRECTION_BACKWARD, 2000, 1, 5);
+        robot.driveByDistanceWithAcceleration(robot.DIRECTION_BACKWARD, 1500, 0.5, 5);
 
     }
 }

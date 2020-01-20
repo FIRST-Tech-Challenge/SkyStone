@@ -57,10 +57,10 @@ public class OrientationTools {
      * @param speed The speed at which the robot should drive (higher values not recommended, not accurate
      * @param direction direction enum, whether it should turn to the left or to the right (enum added by paul)
      */
-    public void turn (double speed, Direction_Enum direction){
-        if (direction.equals(Direction_Enum.Right)){
+    public void turn (double speed, DirectionEnum direction){
+        if (direction.equals(DirectionEnum.Right)){
             setAllMotors(speed,-speed,-speed,speed);
-        }else if(direction.equals(Direction_Enum.Left)){
+        }else if(direction.equals(DirectionEnum.Left)){
             setAllMotors(-speed,speed,speed,-speed);
         }
     }
@@ -99,7 +99,7 @@ public class OrientationTools {
         float goal = (this.getDegree() + degree)%360;
         while((difference>1 || difference<-1 )  && !opMode.isStopRequested()){
             difference = -1*/*Math.abs*/(goal-this.getDegree());
-            this.turn(this.personalTanH(3*difference/200),Direction_Enum.Right);
+            this.turn(this.personalTanH(3*difference/200), DirectionEnum.Right);
         }
         this.setAllMotors(0,0,0,0);
     }

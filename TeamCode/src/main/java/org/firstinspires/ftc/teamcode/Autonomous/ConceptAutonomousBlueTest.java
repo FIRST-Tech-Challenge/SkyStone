@@ -119,7 +119,6 @@ public class ConceptAutonomousBlueTest extends LinearOpMode {
         if (opModeIsActive()) {
             controlledExtender.start(extenderFoundationValue, 0.3);
 
-            // TODO: test this
             controlledLift.start(liftFoundationValue, 0.4);
 
             while(!controlledLift.endReached() && opModeIsActive()) {}
@@ -188,7 +187,6 @@ public class ConceptAutonomousBlueTest extends LinearOpMode {
             controlledLift.start(-liftFoundationValue, 0.2); //distance 0.5
             while(!controlledLift.endReached() && opModeIsActive()) {}
             controlledLift.stop();
-
         }
 
         // you have now lifted the lift down
@@ -210,7 +208,7 @@ public class ConceptAutonomousBlueTest extends LinearOpMode {
 
 
     private void backTillButtons() {
-        while(robot.touch_right.getState() && robot.touch_left.getState()) {
+        while(robot.touch_right.getState() && robot.touch_left.getState() && opModeIsActive()) {
             omniWheel.setMotors(-0.3, 0, 0);
         }
         omniWheel.setMotors(0, 0, 0);

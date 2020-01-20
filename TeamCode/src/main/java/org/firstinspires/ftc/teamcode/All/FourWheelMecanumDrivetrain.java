@@ -386,7 +386,10 @@ public class FourWheelMecanumDrivetrain {
         rw.backRight.setMode(runMode);
         rw.backLeft.setMode(runMode);
         rw.leftIntake.setMode(runMode);
+
+        // Should these two be here???
         rw.liftTwo.setMode(runMode);
+
         rw.rightIntake.setMode(runMode);
     }
 

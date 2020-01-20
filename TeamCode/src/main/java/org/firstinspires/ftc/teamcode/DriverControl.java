@@ -40,7 +40,7 @@ public class DriverControl extends Movement {
                 double turn  = (-gamepad1.right_stick_x);
 
                 // to drive and turn left?
-                double leftPower = Range.clip(drive + turn, -1.0, 1.0) ;
+            double leftPower = Range.clip(drive + turn, -1.0, 1.0) ;
                 leftfront.setPower(leftPower);
                 leftback.setPower(leftPower);
 
@@ -82,8 +82,8 @@ public class DriverControl extends Movement {
                 // x - to move back servo down
                 if (gamepad2.x) {
 
-                    leftConstruction.setPosition(0.5);
-                    rightConstruction.setPosition(0.4);
+                    leftConstruction.setPosition(0.35);
+                    rightConstruction.setPosition(0.43);
                     telemetry.addData("back servos down", "servoposition: 0,0" );
                 }
 

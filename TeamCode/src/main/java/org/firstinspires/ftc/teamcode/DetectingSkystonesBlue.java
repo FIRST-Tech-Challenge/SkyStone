@@ -81,9 +81,9 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  */
 
 
-@Autonomous(name="DetectingSkystonesFast", group ="Concept")
+@Autonomous(name="DetectingSkystones", group ="Concept")
 //@Disabled
-public class DetectingSkystonesFast extends Movement {
+public class DetectingSkystonesBlue extends Movement {
 
     // IMPORTANT:  For Phone Camera, set 1) the camera source and 2) the orientation, based on how your phone is mounted:
     // 1) Camera Source.  Valid choices are:  BACK (behind screen) or FRONT (selfie side)
@@ -303,7 +303,7 @@ public class DetectingSkystonesFast extends Movement {
         // AFTER you hit Init on the Driver Station, use the "options menu" to select "Camera Stream"
         // Tap the preview window to receive a fresh image.
 
-        goRight(1,1000);
+        goLeft(1,1000);
 
         targetsSkyStone.activate();
         while (skystone1Detected) {
@@ -339,20 +339,19 @@ public class DetectingSkystonesFast extends Movement {
                 telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
                 telemetry.update();
                 stopWithSleep("Wahoo", 10);
-                /*
                 frontServo.setPosition(0.4);
                 targetsSkyStone.deactivate();
-                goForward(1, 25);
+                goForward(0.5, 50);
                 Turnleft(1, 1,575);
-                goForward(0.8, 238);
+                goForward(0.4, 475);
                 stopWithSleep("stop", 100);
                 armclamp();
                 stopWithSleep("stopafterarmclamp", 200);
-                goBackward(0.9, 350);
+                goBackward(0.6, 525);
                 stopWithSleep("stop", 200);
                 Turnleft(1,1, 525);
                 stopWithSleep("stop", 200);
-                goForward(0.8, (int) (0.125 *blockdistance));
+                goForward(0.4, (int) (0.8 *blockdistance));
                 goForward(1, 1250);
                 armrelease();
 
@@ -364,18 +363,16 @@ public class DetectingSkystonesFast extends Movement {
                 stopWithSleep(50);
                 turnRight(1, 1, 1225);
                 stopWithSleep(50);
-                goForward(1, 500);
-                goForward(0.8, (int) (0.125 *blockdistance));
+                goForward(1, 460);
+                goForward(0.4, (int) (0.45 *blockdistance));
                 skystone1Detected = false;
                 targetVisible = false;
-
-                 */
 
 
             }
             else {
                 telemetry.addData("Visible Target", "none");
-                goBackward(0.1, 1);
+                goForward(0.1, 1);
                 blockdistance += 1;
                 telemetry.addData("blockdistance",  String.valueOf(blockdistance));
                 telemetry.update();
@@ -415,18 +412,18 @@ public class DetectingSkystonesFast extends Movement {
                 telemetry.addData("2 Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
                 telemetry.update();
                 stopWithSleep("Wahoo 2", 10);
-                goForward(1, 25);
+                goForward(0.5, 50);
                 Turnleft(1, 1,575);
                 frontServo.setPosition(0.4);
-                goForward(1, 220);
+                goForward(0.4, 550);
                 stopWithSleep("stop", 100);
                 armclamp();
                 stopWithSleep("stopafterarmclamp", 200);
-                goBackward(0.9, 288);
+                goBackward(0.6, 575);
                 stopWithSleep("stop", 100);
-                Turnleft(1,1, 650);
+                Turnleft(1,1, 600);
                 stopWithSleep("stop", 100);
-                goForward(0.8, (int) (0.125 *blockdistance2));
+                goForward(0.8, (int) (0.3 *blockdistance2));
                 goForward(1, 2000);
                 armrelease();
                 stopWithSleep("stop", 100);
@@ -440,7 +437,7 @@ public class DetectingSkystonesFast extends Movement {
                 telemetry.addData("Visible Target", "none");
                 goForward(0.1, 1);
                 blockdistance2 += 1;
-                telemetry.addData("blockdistance",  String.valueOf(blockdistance2));
+                telemetry.addData("blockdistance 2",  String.valueOf(blockdistance2));
                 telemetry.update();
             }
 

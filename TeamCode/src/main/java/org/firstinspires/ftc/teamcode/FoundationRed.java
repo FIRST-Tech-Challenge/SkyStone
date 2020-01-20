@@ -18,6 +18,9 @@ public class FoundationRed extends Movement {
         waitForStart();
         runtime.reset();
 
+        //wait 22 seconds
+        sleep(22000);
+
         //start with back servos up
         backServosUp();
 

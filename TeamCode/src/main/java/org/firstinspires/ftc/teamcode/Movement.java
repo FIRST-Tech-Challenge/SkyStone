@@ -163,8 +163,8 @@ abstract class Movement extends LinearOpMode
 
 
     public void backServosDown() {
-        rightConstruction.setPosition(0.4);
-        leftConstruction.setPosition(0.4);
+        rightConstruction.setPosition(0.43);
+        leftConstruction.setPosition(0.35);
 
         updateTelemetryMessage("Foundation Servos Down");
     }

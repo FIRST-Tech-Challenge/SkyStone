@@ -95,6 +95,7 @@ public class Path {
 
     public void RedQuary(int[] skystonePositions) {
         DriveConstantsPID.updateConstantsFromProperties();
+        RobotLog.dd(TAG, "skystone positions[0]" + skystonePositions[0]);
         switch (skystonePositions[0]) {
             case 1:
                 double yCoordMvmtPlane = -44.5;

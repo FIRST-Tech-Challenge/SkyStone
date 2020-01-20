@@ -6,18 +6,11 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-
-//@Autonomous(name="Drive Encoder2", group="Exercises")
 
 public class FourWheelsDriveBot
 {
@@ -297,7 +290,7 @@ public class FourWheelsDriveBot
         int target = (int)(distance / 3.1415 / 100 * DRIVING_MOTOR_TICK_COUNT);
         int startingPosition = leftFront.getCurrentPosition();
         double accelerationDelta = maxPower/accelerationSteps;
-        int accelerationInterval = 100;
+        int accelerationInterval = 50;
         switch (direction){
             case DIRECTION_FORWARD:
                 leftFront.setTargetPosition(leftFront.getCurrentPosition() + target);
@@ -351,31 +344,35 @@ public class FourWheelsDriveBot
         leftRear.setPower(accelerationDelta);
         rightRear.setPower(accelerationDelta);
         int step = 1;
-        RobotLog.d("Target: %d AccelerationDelta: %d CurrentPosition: %d Step: %d", target, accelerationDelta, leftFront.getCurrentPosition(), step);
+        RobotLog.d("Target: %d AccelerationDelta: %.2f CurrentPosition: %d Step: %d", target, accelerationDelta, leftFront.getCurrentPosition(), step);
         while (this.opMode.opModeIsActive() && leftFront.isBusy()) {
-            double distToDecelerate = Math.max(leftFront.getCurrentPosition() - startingPosition, accelerationSteps * accelerationInterval);
+            double distToDecelerate = Math.min(Math.abs(leftFront.getCurrentPosition() - startingPosition), accelerationSteps * accelerationInterval);
+            RobotLog.d("Target: %d AccelerationDelta: %.2f CurrentPosition: %d Step: %d DistToDecelerate: %.2f", target, accelerationDelta, leftFront.getCurrentPosition(), step, distToDecelerate);
 
-            if (leftFront.getCurrentPosition() < (target - distToDecelerate) &&
-                step < accelerationSteps && Math.abs(leftFront.getCurrentPosition() - startingPosition) > step * accelerationInterval) {
+            if (Math.abs(leftFront.getCurrentPosition() - target) > distToDecelerate &&
+                    step < accelerationSteps &&
+                    Math.abs(leftFront.getCurrentPosition() - startingPosition) > step * accelerationInterval) {
 
+                RobotLog.d("Target: %d AccelerationDelta: %.2f CurrentPosition: %d Step: %d DistToDecelerate: %.2f", target, accelerationDelta, leftFront.getCurrentPosition(), step, distToDecelerate);
+                step++;
                 leftFront.setPower(Math.max(accelerationDelta * step, maxPower));
                 rightFront.setPower(Math.max(accelerationDelta * step, maxPower));
                 leftRear.setPower(Math.max(accelerationDelta * step, maxPower));
                 rightRear.setPower(Math.max(accelerationDelta * step, maxPower));
-                step++;
-                RobotLog.d("Target: %d AccelerationDelta: %d CurrentPosition: %d Step: %d", target, accelerationDelta, leftFront.getCurrentPosition(), step);
+
 
             }
 
-            if (leftFront.getCurrentPosition() > (target - distToDecelerate) &&
+            if (Math.abs(leftFront.getCurrentPosition() - target) < distToDecelerate &&
                 step > 1 && Math.abs(leftFront.getCurrentPosition() - target) < step * accelerationInterval) {
 
+                RobotLog.d("Target: %d AccelerationDelta: %.2f CurrentPosition: %d Step: %d DistToDecelerate: %.2f", target, accelerationDelta, leftFront.getCurrentPosition(), step, distToDecelerate);
+                step--;
                 leftFront.setPower(Math.min(accelerationDelta * step, 0));
                 rightFront.setPower(Math.min(accelerationDelta * step, 0));
                 leftRear.setPower(Math.min(accelerationDelta * step, 0));
                 rightRear.setPower(Math.min(accelerationDelta * step, 0));
-                step--;
-                RobotLog.d("Target: %d AccelerationDelta: %d CurrentPosition: %d Step: %d", target, accelerationDelta, leftFront.getCurrentPosition(), step);
+
             }
 
             // Display it for the driver.

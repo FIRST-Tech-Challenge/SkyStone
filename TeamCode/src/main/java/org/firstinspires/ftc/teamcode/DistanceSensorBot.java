@@ -75,50 +75,77 @@ public class DistanceSensorBot extends PinchArmBot {
     }
 
     public double getDistanceBack() {
-        opMode.telemetry.addData("range", String.format("%.01f cm", frontSensor.getDistance(DistanceUnit.CM)));
+        opMode.telemetry.addData("range", String.format("%.01f cm", backSensor.getDistance(DistanceUnit.CM)));
 
         // you can also cast this to a Rev2mDistanceSensor if you want to use added
         // methods associated with the Rev2mDistanceSensor class.
-        Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor) frontSensor;
+        Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor) backSensor;
         // Rev2mDistanceSensor specific methods.
         opMode.telemetry.addData("ID", String.format("%x", sensorTimeOfFlight.getModelID()));
         opMode.telemetry.addData("did time out", Boolean.toString(sensorTimeOfFlight.didTimeoutOccur()));
 
         opMode.telemetry.update();
-        return frontSensor.getDistance(DistanceUnit.CM);
+        return backSensor.getDistance(DistanceUnit.CM);
     }
 
 
-    public void driveUntilDistance(double distance, double power) {
+    public void driveUntilDistance(double distance, double power, int sensor) {
 
         leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         leftRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        if (getDistanceFront() > distance) {
+        if (sensor == 0) {
+            if (getDistanceFront() > distance) {
 
-            do {
-                leftFront.setPower(- power);
-                rightFront.setPower(power);
-                leftRear.setPower(power);
-                rightRear.setPower(- power);
-            }
-            while (getDistanceFront() > distance);
-        } else {
+                do {
+                    leftFront.setPower(- power);
+                    rightFront.setPower(power);
+                    leftRear.setPower(power);
+                    rightRear.setPower(- power);
+                }
+                while (getDistanceFront() > distance);
+            } else {
 
-            do {
-                leftFront.setPower(power);
-                rightFront.setPower(- power);
-                leftRear.setPower(- power);
-                rightRear.setPower(power);
+                do {
+                    leftFront.setPower(power);
+                    rightFront.setPower(- power);
+                    leftRear.setPower(- power);
+                    rightRear.setPower(power);
+                }
+                while (getDistanceFront() < distance);
             }
-            while (getDistanceFront() < distance);
+            leftFront.setPower(0);
+            rightFront.setPower(0);
+            leftRear.setPower(0);
+            rightRear.setPower(0);
+        } else if (sensor == 1) {
+            if (getDistanceBack() > distance) {
+
+                do {
+                    leftFront.setPower(- power);
+                    rightFront.setPower(power);
+                    leftRear.setPower(power);
+                    rightRear.setPower(- power);
+                }
+                while (getDistanceBack() > distance);
+            } else {
+
+                do {
+                    leftFront.setPower(power);
+                    rightFront.setPower(- power);
+                    leftRear.setPower(- power);
+                    rightRear.setPower(power);
+                }
+                while (getDistanceFront() < distance);
+            }
+            leftFront.setPower(0);
+            rightFront.setPower(0);
+            leftRear.setPower(0);
+            rightRear.setPower(0);
         }
-        leftFront.setPower(0);
-        rightFront.setPower(0);
-        leftRear.setPower(0);
-        rightRear.setPower(0);
+
 
     }
 

@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-@Autonomous(name="Acceleration Test", group="Tests")
+@Autonomous(name="Acceleration Forward", group="Tests")
 
 public class AccelerationTest extends LinearOpMode {
     private FourWheelsDriveBot robot = new FourWheelsDriveBot(this);
@@ -13,7 +13,7 @@ public class AccelerationTest extends LinearOpMode {
         robot.init(hardwareMap);
         waitForStart();
 
-        robot.driveByDistanceWithAcceleration(robot.DIRECTION_FORWARD, 1000, 0.8, 4);
+        robot.driveByDistanceWithAcceleration(robot.DIRECTION_FORWARD, 2000, 1, 10);
 
     }
 }

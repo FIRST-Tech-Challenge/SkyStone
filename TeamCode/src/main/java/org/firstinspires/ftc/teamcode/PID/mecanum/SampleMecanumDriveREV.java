@@ -42,7 +42,7 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
     private List<DcMotorEx> motors;
     private BNO055IMU imu;
     BNO055IMU.Parameters parameters;
-    private static String TAG = "SampleMecanumDriveREVss";
+    private static String TAG = "SampleMecanumDriveREV";
     public SampleMecanumDriveREV(HardwareMap hardwareMap, boolean strafe) {
         super(strafe);
         create_instance(hardwareMap, strafe);

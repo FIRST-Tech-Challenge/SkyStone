@@ -41,7 +41,6 @@ p_name='noname';
 print_summary=0;
 filepath = sys.argv[1];
 arg_c = len(sys.argv);
-
 if arg_c>=3:
     print_summary = 1;
 
@@ -61,6 +60,7 @@ with open(filepath) as fp:
         line = fp.readline();
         #print(line)
         if (("SampleMecanumDriveBase" in line) or ("BaseClass" in line)) and ("update: x" in line):
+            #print(line)
             t1 = line.split("update: x");
             t2 = t1[1].strip();
             t3 = t2.split(' ');
@@ -162,7 +162,7 @@ with open(filepath) as fp:
             t=t[2];
             t=t[:-3].strip();
             auto_h.append(float(t));
-        if ("AutonomousPath: drive and builder created, initialized with pose" in line):
+        if ("AutonomousPath: drive and builder created, initialized with pose" in line) or ("AutonomousPath: drive and builder reset, initialized with pose" in line):
             print(line.rstrip())
             t = line.split('AutonomousPath');
             t1 = get_time(t[0]);
@@ -248,9 +248,9 @@ if print_summary != 0:
     plt.xlim([-60, 96])
     plt.ylim([-60, 60])
     plt.legend();
-    plt.show()
+
     #####################################################################################################
-    """plt.figure();
+    plt.figure();
     im = plt.imread("skystone_field.png");
     implot = plt.imshow(im);
 
@@ -272,4 +272,3 @@ if print_summary != 0:
 
     plt.show();
     plt.close()
-    """

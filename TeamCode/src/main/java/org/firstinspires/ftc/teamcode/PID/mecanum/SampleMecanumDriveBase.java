@@ -158,12 +158,12 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
         }
         else
         {
-            RobotLog.dd(TAG, "using strafing PID, maxVel: %f, maxAccl: %f", BASE_CONSTRAINTS.maxVel, BASE_CONSTRAINTS.maxAccel);
+            RobotLog.dd(TAG, "using strafing PID, maxVel: %f, maxAccl: %f", STRAFE_BASE_CONSTRAINTS.maxVel, STRAFE_BASE_CONSTRAINTS.maxAccel);
             xTRANSLATIONAL_PID = new PIDCoefficients(DriveConstantsPID.stxP, DriveConstantsPID.stxI, DriveConstantsPID.stxD);
             yTRANSLATIONAL_PID = new PIDCoefficients(DriveConstantsPID.styP, DriveConstantsPID.styI, DriveConstantsPID.styD);
             HEADING_PID = new PIDCoefficients(DriveConstantsPID.shP, DriveConstantsPID.shI, DriveConstantsPID.shD);
 
-            constraints = new MecanumConstraints(BASE_CONSTRAINTS, TRACK_WIDTH);
+            constraints = new MecanumConstraints(STRAFE_BASE_CONSTRAINTS, TRACK_WIDTH);
 
         }
         turnController = new PIDFController(HEADING_PID);

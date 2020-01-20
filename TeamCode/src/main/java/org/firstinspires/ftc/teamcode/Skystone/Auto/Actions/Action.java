@@ -85,18 +85,17 @@ public class Action {
 
     private void generateExtendOuttakeActions() {
         motionActions.add(new MotionAction(robot.getIntakePusher(), robot.PUSHER_PUSHED, 0));
-        motionActions.add(new MotionAction(robot.getClamp(), robot.CLAMP_SERVO_CLAMPED, 500));
+        motionActions.add(new MotionAction(robot.getFrontClamp(), robot.FRONTCLAMP_CLAMPED, 500));
+        motionActions.add(new MotionAction(robot.getBackClamp(), robot.BACKCLAMP_CLAMPED, 500));
         motionActions.add(new MotionAction(robot.getIntakePusher(), robot.PUSHER_RETRACTED, 650));
         motionActions.add(new MotionAction(robot.getOuttakeExtender(), robot.OUTTAKE_SLIDE_EXTENDED, 1300));
-        motionActions.add(new MotionAction(robot.getClampPivot(), robot.OUTTAKE_PIVOT_90, 2200));
     }
 
     private void generateDropStoneAndRetractOuttakeActions() {
-        motionActions.add(new MotionAction(robot.getClamp(), robot.CLAMP_SERVO_RELEASED, 0));
-        motionActions.add(new MotionAction(robot.getClampPivot(), robot.OUTTAKE_PIVOT_RETRACTED, 450));
+        motionActions.add(new MotionAction(robot.getBackClamp(), robot.BACKCLAMP_RELEASED, 0));
+        motionActions.add(new MotionAction(robot.getFrontClamp(), robot.FRONTCLAMP_RELEASED, 0));
         motionActions.add(new MotionAction(robot.getOuttakeExtender(), robot.OUTTAKE_SLIDE_RETRACTED, 750));
         motionActions.add(new MotionAction(robot.getIntakePusher(), robot.PUSHER_RETRACTED, 750));
-        motionActions.add(new MotionAction(robot.getClamp(), robot.CLAMP_SERVO_INTAKEPOSITION, 1150));
     }
 
     private void generateExtendFoundationActions() {

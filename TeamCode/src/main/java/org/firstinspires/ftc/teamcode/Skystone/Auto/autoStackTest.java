@@ -85,7 +85,7 @@ public class autoStackTest extends AutoBase {
 //            put(new Point(24, 55), Robot.Actions.RAISE_OUTTAKE_LEVEL1);
 //            put(new Point(24, 45), Robot.Actions.STOP_INTAKE);
 //        }};
-//        robot.getClamp().setPosition(robot.CLAMP_SERVO_RELEASED);
+//        robot.getBackClamp().setPosition(robot.FRONTCLAMP_RELEASED);
 //        sleep(250);
 //        double[][] toSecondStone = {
 //                {toFoundation[toFoundation.length - 1][0], toFoundation[toFoundation.length - 1][1], -10, 0},

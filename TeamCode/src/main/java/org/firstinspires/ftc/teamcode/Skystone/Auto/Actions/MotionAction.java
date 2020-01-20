@@ -14,8 +14,6 @@ public class MotionAction {
 
     private double delayStartTime;
 
-    private boolean isLocationToggle;
-
     private ActionState status = ActionState.PENDING;
 
     public MotionAction(DcMotor actionMotor, double motorPower, double delayStartTime) {
@@ -28,13 +26,6 @@ public class MotionAction {
         this.actionServo = actionServo;
         this.servoPosition = servoPosition;
         this.delayStartTime = delayStartTime;
-    }
-
-    public MotionAction(Servo actionServo, double servoPosition, double delayStartTime, boolean isLocationToggle) {
-        this.actionServo = actionServo;
-        this.servoPosition = servoPosition;
-        this.delayStartTime = delayStartTime;
-        this.isLocationToggle = isLocationToggle;
     }
 
     public void executeMotion() {
@@ -56,9 +47,5 @@ public class MotionAction {
 
     public ActionState getStatus() {
         return status;
-    }
-
-    public boolean isLocationToggle() {
-        return isLocationToggle;
     }
 }

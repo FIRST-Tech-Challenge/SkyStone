@@ -200,7 +200,7 @@ public class BlueFront extends AutoBase {
         robot.dumpPoints("" + startTime, "4");
 
         robot.foundationMovers(false);
-        robot.getClamp().setPosition(robot.CLAMP_SERVO_RELEASED);
+        robot.getBackClamp().setPosition(robot.FRONTCLAMP_RELEASED);
         robot.brakeRobot();
 
         robot.splineMove(toThirdStone, 0.5, 1, 1, 70, 0, Math.toRadians(90), 20,

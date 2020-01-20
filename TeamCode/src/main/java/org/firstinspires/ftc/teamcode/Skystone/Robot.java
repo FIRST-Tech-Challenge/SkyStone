@@ -8,7 +8,6 @@ import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
@@ -54,39 +53,24 @@ public class Robot {
 
     // Outtake Servos
     private Servo outtakeExtender;
-    private Servo clamp;
-    private Servo clampPivot;
+    private Servo backClamp;
+    private Servo frontClamp;
     private Servo intakePusher;
 
     // Foundation Servos
     private Servo leftFoundation;
     private Servo rightFoundation;
 
-    private Servo capstoneServo;
-    private Servo backStopper;
-
     // Outtake Slide Positions
-    public final double OUTTAKE_SLIDE_EXTENDED = .04;
-    public final double OUTTAKE_SLIDE_RETRACTED = .67;
+    public final double OUTTAKE_SLIDE_EXTENDED = .06;
+    public final double OUTTAKE_SLIDE_RETRACTED = .935;
     public final double OUTTAKE_SLIDE_PARTIAL_EXTEND = 0.27; // First peg .27, second peg .121
 
-    //team marker positions
-    public final double CAPSTONE_DUMP = 1;
-    public final double CAPSTONE_RETRACT = .24;
-
-    //back stopper positions
-    public final double BACK_STOPPER_DOWN = 0.75;
-    public final double BACK_STOPPER_UP = 0.54;
-
-    // Outtake Clamp Positions
-    public final double CLAMP_SERVO_CLAMPED = 1;
-    public final double CLAMP_SERVO_RELEASED = .86;
-    public final double CLAMP_SERVO_INTAKEPOSITION = .86;
-
-    // Outtake Pivot Positions
-    public final double OUTTAKE_PIVOT_EXTENDED = 1.05;
-    public final double OUTTAKE_PIVOT_RETRACTED = 0.005;
-    public final double OUTTAKE_PIVOT_90 = .5;
+    // Clamp positions
+    public final double FRONTCLAMP_CLAMPED = .49;
+    public final double FRONTCLAMP_RELEASED = .08;
+    public final double BACKCLAMP_CLAMPED = .275;
+    public final double BACKCLAMP_RELEASED = .635;
 
     // Outtake Pusher Positions
     public final double PUSHER_PUSHED = 0.91;
@@ -105,18 +89,20 @@ public class Robot {
 
     public final long DELAY_CLAMP_ON_EXTEND = 0;
     public final long DELAY_SLIDE_ON_EXTEND = 0;
-    public final long DELAY_PIVOT_ON_EXTEND = 1100;
     public final long DELAY_PARTIAL_SLIDE_ON_EXTEND = 1200;
 
     public final long DELAY_RELEASE_CLAMP_ON_RETRACT = 0;
     public final long DELAY_PUSHER_ON_RETRACT = 0;
-    public final long DELAY_EXTEND_SLIDE_ON_RETRACT = 0;
-    public final long DELAY_PIVOT_ON_RETRACT = 450;
-    public final long DELAY_SLIDE_ON_RETRACT = 1000;
+    public final long DELAY_SLIDE_ON_RETRACT = 300;
+    public final long DELAY_RESETCLAMP_ON_RETRACT = 1000;
 
     public final long DELAY_PUSHER_ON_CLAMP = 0;
-    public final long DELAY_RETRACT_PUSHER_ON_CLAMP = 550;
-    public final long DELAY_CLAMP_ON_CLAMP = 300;
+    public final long DELAY_RETRACT_PUSHER_ON_CLAMP = 450;
+    public final long DELAY_CLAMP_ON_CLAMP = 700;
+
+    // Constants for spool encoder positions
+    public final double SPOOL_FIRSTLEVEL_POSITION = 100;
+    public final double SPOOL_LEVEL_INCREMENT = 500;
 
     //robots position
     private Point robotPos = new Point();
@@ -202,15 +188,12 @@ public class Robot {
         }
 
         outtakeExtender = getServo("outtakeExtender");
-        clamp = getServo("clamp");
-        clampPivot = getServo("clampPivot");
+        backClamp = getServo("backClamp");
+        frontClamp = getServo("frontClamp");
         intakePusher = getServo("intakePusher");
 
         leftFoundation = getServo("leftFoundation");
         rightFoundation = getServo("rightFoundation");
-
-        capstoneServo = getServo("markerServo");
-        backStopper = getServo("backStopper");
     }
 
     private DcMotor getDcMotor(String name) {
@@ -291,30 +274,25 @@ public class Robot {
     }
 
     public void initServos() {
-        capstoneServo.setPosition(CAPSTONE_RETRACT);
-        backStopper.setPosition(BACK_STOPPER_UP);
+        foundationMovers(false);
 
         boolean isRetract = true;
         long outtakeExecutionTime = SystemClock.elapsedRealtime();
         long currentTime;
 
-        foundationMovers(false);
-        clamp.setPosition(CLAMP_SERVO_CLAMPED);
+        frontClamp.setPosition(FRONTCLAMP_RELEASED);
+        backClamp.setPosition(BACKCLAMP_RELEASED);
+        outtakeExtender.setPosition(OUTTAKE_SLIDE_RETRACTED);
         intakePusher.setPosition(PUSHER_RETRACTED);
 
         while (isRetract && !linearOpMode.isStopRequested()) {
             currentTime = SystemClock.elapsedRealtime();
-            if (currentTime - outtakeExecutionTime >= 250 && isRetract) {
-                clampPivot.setPosition(OUTTAKE_PIVOT_RETRACTED);
-            }
-            if (currentTime - outtakeExecutionTime >= 1000 && isRetract) {
-                clamp.setPosition(CLAMP_SERVO_INTAKEPOSITION);
-                outtakeExtender.setPosition(OUTTAKE_SLIDE_RETRACTED);
+            if (currentTime - outtakeExecutionTime >= 1500 && isRetract) {
+                backClamp.setPosition(BACKCLAMP_CLAMPED);
+
                 isRetract = false;
             }
         }
-
-        clamp.setPosition(CLAMP_SERVO_INTAKEPOSITION);
     }
 
     /**
@@ -341,7 +319,7 @@ public class Robot {
         if (toggle) {
             intakeLeft.setPower(1);
             intakeRight.setPower(1);
-            clamp.setPosition(CLAMP_SERVO_INTAKEPOSITION);
+//            backClamp.setPosition(CLAMP_SERVO_INTAKEPOSITION);
         } else {
             intakeLeft.setPower(-1);
             intakeRight.setPower(-1);
@@ -411,115 +389,115 @@ public class Robot {
      * Move outtake using specified positions + actions
      */
     public void moveOuttake() {
-        // Move outtake spool motors
-        outtakeSpool.setTargetPosition(spoolTargetEncoderTick);
-        outtakeSpool2.setTargetPosition(spoolTargetEncoderTick);
-
-        if (extendOuttake || retractOuttake || clampBeforeSpool || !isMovingSpool) { // If extending or retracting outtake, or if not moving spool
-            outtakeSpool.setPower(0.025);
-            outtakeSpool2.setPower(0.025);
-        } else if (returningToPosition && outtakeSpool.getCurrentPosition() > spoolTargetEncoderTick) {
-            outtakeSpool.setPower(0.025);
-            outtakeSpool2.setPower(0.025);
-            isMovingSpool = false;
-            returningToPosition = false;
-            releaseClamp = true;
-        } else if (Math.abs(outtakeSpool.getCurrentPosition() - spoolTargetEncoderTick) <= 50) {
-            if (spoolOvershoot) {
-                extendOuttake = true;
-                startOuttakeMovementTime = SystemClock.elapsedRealtime();
-
-                returningToPosition = true;
-                spoolTargetEncoderTick += SPOOL_OVERSHOOT_AMOUNT;
-            } else {
-                isMovingSpool = false;
-                isRaisingOuttake = false;
-                hasRaisedOuttake = false;
-            }
-
-            outtakeSpool.setPower(0.025);
-            outtakeSpool2.setPower(0.025);
-
-            spoolOvershoot = false; // Reset overshoot toggle
-        } else if (outtakeSpool.getCurrentPosition() < spoolTargetEncoderTick) {
-            outtakeSpool.setPower(-1);
-            outtakeSpool2.setPower(-1);
-        } else {
-            outtakeSpool.setPower(1);
-            outtakeSpool2.setPower(1);
-        }
-
-        // Extend/retract outtake as needed
-        if (clampBeforeSpool) {
-            long currentTime = SystemClock.elapsedRealtime();
-            if (currentTime - startOuttakeMovementTime >= 700) {
-                intakePusher.setPosition(PUSHER_RETRACTED);
-            } else {
-                intakePusher.setPosition(PUSHER_PUSHED);
-            }
-            if (currentTime - startOuttakeMovementTime >= 800) {
-                clamp.setPosition(CLAMP_SERVO_CLAMPED);
-            }
-            if (currentTime - startOuttakeMovementTime >= 1500) {
-                clampBeforeSpool = false;
-            }
-        }
-        if (releaseClamp) {
-            long currentTime = SystemClock.elapsedRealtime();
-            if (currentTime - startOuttakeMovementTime >= 2300) {
-                clamp.setPosition(CLAMP_SERVO_INTAKEPOSITION);
-                releaseClamp = false;
-                isRaisingOuttake = false;
-                hasRaisedOuttake = false;
-            }
-        }
-        if (extendOuttake) {
-            long currentTime = SystemClock.elapsedRealtime();
-
-            if (currentTime - startOuttakeMovementTime >= 200) {
-                intakePusher.setPosition(PUSHER_RETRACTED);
-            }
-            if (currentTime - startOuttakeMovementTime >= 450) {
-                clamp.setPosition(CLAMP_SERVO_CLAMPED);
-            }
-            if (currentTime - startOuttakeMovementTime >= 550) {
-                outtakeExtender.setPosition(OUTTAKE_SLIDE_EXTENDED);
-            }
-            if (currentTime - startOuttakeMovementTime >= 1550) {
-                clampPivot.setPosition(OUTTAKE_PIVOT_EXTENDED);
-            }
-            if (currentTime - startOuttakeMovementTime >= 1850) {
-                outtakeExtender.setPosition(OUTTAKE_SLIDE_PARTIAL_EXTEND);
-            }
-            if (currentTime - startOuttakeMovementTime >= 2150) {
-                extendOuttake = false;
-            }
-        }
-        if (retractOuttake) {
-            long currentTime = SystemClock.elapsedRealtime();
-
-            if (currentTime - startOuttakeMovementTime >= 0) {
-                outtakeExtender.setPosition(OUTTAKE_SLIDE_EXTENDED);
-                getClamp().setPosition(CLAMP_SERVO_CLAMPED);
-                intakePusher.setPosition(PUSHER_RETRACTED);
-            }
-            if (currentTime - startOuttakeMovementTime >= 850) {
-                clampPivot.setPosition(OUTTAKE_PIVOT_RETRACTED);
-            }
-            if (currentTime - startOuttakeMovementTime >= 1400) {
-                getOuttakeExtender().setPosition(OUTTAKE_SLIDE_RETRACTED);
-            }
-            if (currentTime - startOuttakeMovementTime >= 1550) {
-                clamp.setPosition(CLAMP_SERVO_INTAKEPOSITION);
-            }
-            if (currentTime - startOuttakeMovementTime >= 2100) {
-                clamp.setPosition(CLAMP_SERVO_INTAKEPOSITION);
-
-                retractOuttake = false;
-                isRaisingOuttake = false;
-                hasRaisedOuttake = false;
-            }
-        }
+//        // Move outtake spool motors
+//        outtakeSpool.setTargetPosition(spoolTargetEncoderTick);
+//        outtakeSpool2.setTargetPosition(spoolTargetEncoderTick);
+//
+//        if (extendOuttake || retractOuttake || clampBeforeSpool || !isMovingSpool) { // If extending or retracting outtake, or if not moving spool
+//            outtakeSpool.setPower(0.025);
+//            outtakeSpool2.setPower(0.025);
+//        } else if (returningToPosition && outtakeSpool.getCurrentPosition() > spoolTargetEncoderTick) {
+//            outtakeSpool.setPower(0.025);
+//            outtakeSpool2.setPower(0.025);
+//            isMovingSpool = false;
+//            returningToPosition = false;
+//            releaseClamp = true;
+//        } else if (Math.abs(outtakeSpool.getCurrentPosition() - spoolTargetEncoderTick) <= 50) {
+//            if (spoolOvershoot) {
+//                extendOuttake = true;
+//                startOuttakeMovementTime = SystemClock.elapsedRealtime();
+//
+//                returningToPosition = true;
+//                spoolTargetEncoderTick += SPOOL_OVERSHOOT_AMOUNT;
+//            } else {
+//                isMovingSpool = false;
+//                isRaisingOuttake = false;
+//                hasRaisedOuttake = false;
+//            }
+//
+//            outtakeSpool.setPower(0.025);
+//            outtakeSpool2.setPower(0.025);
+//
+//            spoolOvershoot = false; // Reset overshoot toggle
+//        } else if (outtakeSpool.getCurrentPosition() < spoolTargetEncoderTick) {
+//            outtakeSpool.setPower(-1);
+//            outtakeSpool2.setPower(-1);
+//        } else {
+//            outtakeSpool.setPower(1);
+//            outtakeSpool2.setPower(1);
+//        }
+//
+//        // Extend/retract outtake as needed
+//        if (clampBeforeSpool) {
+//            long currentTime = SystemClock.elapsedRealtime();
+//            if (currentTime - startOuttakeMovementTime >= 700) {
+//                intakePusher.setPosition(PUSHER_RETRACTED);
+//            } else {
+//                intakePusher.setPosition(PUSHER_PUSHED);
+//            }
+//            if (currentTime - startOuttakeMovementTime >= 800) {
+//                backClamp.setPosition(FRONTCLAMP_CLAMPED);
+//            }
+//            if (currentTime - startOuttakeMovementTime >= 1500) {
+//                clampBeforeSpool = false;
+//            }
+//        }
+//        if (releaseClamp) {
+//            long currentTime = SystemClock.elapsedRealtime();
+//            if (currentTime - startOuttakeMovementTime >= 2300) {
+//                backClamp.setPosition(CLAMP_SERVO_INTAKEPOSITION);
+//                releaseClamp = false;
+//                isRaisingOuttake = false;
+//                hasRaisedOuttake = false;
+//            }
+//        }
+//        if (extendOuttake) {
+//            long currentTime = SystemClock.elapsedRealtime();
+//
+//            if (currentTime - startOuttakeMovementTime >= 200) {
+//                intakePusher.setPosition(PUSHER_RETRACTED);
+//            }
+//            if (currentTime - startOuttakeMovementTime >= 450) {
+//                backClamp.setPosition(FRONTCLAMP_CLAMPED);
+//            }
+//            if (currentTime - startOuttakeMovementTime >= 550) {
+//                outtakeExtender.setPosition(OUTTAKE_SLIDE_EXTENDED);
+//            }
+//            if (currentTime - startOuttakeMovementTime >= 1550) {
+//                frontClamp.setPosition(OUTTAKE_PIVOT_EXTENDED);
+//            }
+//            if (currentTime - startOuttakeMovementTime >= 1850) {
+//                outtakeExtender.setPosition(OUTTAKE_SLIDE_PARTIAL_EXTEND);
+//            }
+//            if (currentTime - startOuttakeMovementTime >= 2150) {
+//                extendOuttake = false;
+//            }
+//        }
+//        if (retractOuttake) {
+//            long currentTime = SystemClock.elapsedRealtime();
+//
+//            if (currentTime - startOuttakeMovementTime >= 0) {
+//                outtakeExtender.setPosition(OUTTAKE_SLIDE_EXTENDED);
+//                getBackClamp().setPosition(FRONTCLAMP_CLAMPED);
+//                intakePusher.setPosition(PUSHER_RETRACTED);
+//            }
+//            if (currentTime - startOuttakeMovementTime >= 850) {
+//                frontClamp.setPosition(OUTTAKE_PIVOT_RETRACTED);
+//            }
+//            if (currentTime - startOuttakeMovementTime >= 1400) {
+//                getOuttakeExtender().setPosition(OUTTAKE_SLIDE_RETRACTED);
+//            }
+//            if (currentTime - startOuttakeMovementTime >= 1550) {
+//                backClamp.setPosition(CLAMP_SERVO_INTAKEPOSITION);
+//            }
+//            if (currentTime - startOuttakeMovementTime >= 2100) {
+//                backClamp.setPosition(CLAMP_SERVO_INTAKEPOSITION);
+//
+//                retractOuttake = false;
+//                isRaisingOuttake = false;
+//                hasRaisedOuttake = false;
+//            }
+//        }
     }
 
     /**
@@ -999,20 +977,20 @@ public class Robot {
         this.outtakeExtender = outtakeExtender;
     }
 
-    public Servo getClamp() {
-        return clamp;
+    public Servo getBackClamp() {
+        return backClamp;
     }
 
-    public void setClamp(Servo clamp) {
-        this.clamp = clamp;
+    public void setBackClamp(Servo backClamp) {
+        this.backClamp = backClamp;
     }
 
-    public Servo getClampPivot() {
-        return clampPivot;
+    public Servo getFrontClamp() {
+        return frontClamp;
     }
 
-    public void setClampPivot(Servo clampPivot) {
-        this.clampPivot = clampPivot;
+    public void setFrontClamp(Servo frontClamp) {
+        this.frontClamp = frontClamp;
     }
 
     public Servo getIntakePusher() {
@@ -1037,30 +1015,6 @@ public class Robot {
 
     public void setRightFoundation(Servo rightFoundation) {
         this.rightFoundation = rightFoundation;
-    }
-
-    public double getOUTTAKE_SLIDE_EXTENDED() {
-        return OUTTAKE_SLIDE_EXTENDED;
-    }
-
-    public double getOUTTAKE_SLIDE_RETRACTED() {
-        return OUTTAKE_SLIDE_RETRACTED;
-    }
-
-    public double getCLAMP_SERVO_CLAMPED() {
-        return CLAMP_SERVO_CLAMPED;
-    }
-
-    public double getCLAMP_SERVO_RELEASED() {
-        return CLAMP_SERVO_RELEASED;
-    }
-
-    public double getOUTTAKE_PIVOT_EXTENDED() {
-        return OUTTAKE_PIVOT_EXTENDED;
-    }
-
-    public double getOUTTAKE_PIVOT_RETRACTED() {
-        return OUTTAKE_PIVOT_RETRACTED;
     }
 
     public Point getRobotPos() {
@@ -1153,22 +1107,6 @@ public class Robot {
 
     public void setPosition(Position position) {
         this.position = position;
-    }
-
-    public Servo getCapstoneServo() {
-        return capstoneServo;
-    }
-
-    public void setCapstoneServo(Servo capstoneServo) {
-        this.capstoneServo = capstoneServo;
-    }
-
-    public Servo getBackStopper() {
-        return backStopper;
-    }
-
-    public void setBackStopper(Servo backStopper) {
-        this.backStopper = backStopper;
     }
 
     public String getOdometryPoints() {

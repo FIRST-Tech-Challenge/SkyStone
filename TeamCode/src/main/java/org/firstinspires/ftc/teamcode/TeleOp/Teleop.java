@@ -83,7 +83,7 @@ public class Teleop extends LinearOpMode {
 
         lift.resetEncoders();
 
-        lift.setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //lift.setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         hwMap.liftOne.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -95,10 +95,9 @@ public class Teleop extends LinearOpMode {
                 new double[][]{{TeleopConstants.foundationLockLock, TeleopConstants.foundationLockUnlock},
                         {TeleopConstants.transferLockPosUp, TeleopConstants.transferLockPosOut}}));
         buttonLogic.add(new OnOffButton(gamepad2, gamepad2, GamepadButtons.LEFT_BUMPER, GamepadButtons.RIGHT_BUMPER, //Intake-A & B
-                new Servo[]{hwMap.clawServo1, hwMap.clawServo2},
-                new double[][]{{TeleopConstants.clawServo1PosOpen, TeleopConstants.clawServo1PosClose},
-                        {TeleopConstants.clawServo2PosOpen, TeleopConstants.clawServo2PosClose}},
-                new double[]{TeleopConstants.clawServo1Block, TeleopConstants.clawServo2PosOpen}));
+                new Servo[]{hwMap.clawServo2},
+                new double[][]{{TeleopConstants.clawServo2PosOpen, TeleopConstants.clawServo2PosClose}},
+                new double[]{TeleopConstants.clawServo2Block}));
         //buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.X,
         //        new Servo[] {hwMap.parkingServo},
         //        new double[][]{ {TeleopConstants.parkingServoPosUnlock, TeleopConstants.parkingServoPosLock} }));
@@ -122,6 +121,7 @@ public class Teleop extends LinearOpMode {
         liftLoop();
         toggleLoop();
         parkingLoop();
+        armDelayHandler();
 
         while (opModeIsActive()) {
 
@@ -351,8 +351,9 @@ public class Teleop extends LinearOpMode {
                             drivetrain.setMotorZeroPower(DcMotor.ZeroPowerBehavior.FLOAT);
                         }
 
-                        if (gamepad1.left_trigger >= 0.751) {
+                        if (gamepad1.left_trigger >= 0.5) {
                             drivetrain.setMotorZeroPower(DcMotor.ZeroPowerBehavior.BRAKE);
+                            drivetrain.setSpeedMultiplier(normalSpeed - 0.3);
                         } else {
                             drivetrain.setMotorZeroPower(DcMotor.ZeroPowerBehavior.FLOAT);
                         }
@@ -360,7 +361,7 @@ public class Teleop extends LinearOpMode {
                         if (gamepad1.right_trigger >= 0.75) {
                             drivetrain.setSpeedMultiplier(turboSpeed);
                         } else {
-                            drivetrain.setSpeedMultiplier(normalSpeed + 0.1);
+                            drivetrain.setSpeedMultiplier(normalSpeed + 0.2);
                         }
 
                         if (gamepad1.dpad_up) {
@@ -429,6 +430,8 @@ public class Teleop extends LinearOpMode {
                 while (opModeIsActive()) {
                     if (gamepad2.right_stick_y != 0) {
                         lift.moveLift(gamepad2.right_stick_y);
+                    } else if (gamepad2.left_stick_y != 0) {
+                        lift.moveLift(gamepad2.left_stick_y * 0.5);
                     } else {
                         lift.stop();
                     }
@@ -448,6 +451,27 @@ public class Teleop extends LinearOpMode {
             }
         };
         toggle.start();
+    }
+
+    private void armDelayHandler(){
+        Thread armDelay = new Thread(){
+            public void run(){
+                while(opModeIsActive()) {
+                    if (gamepad2.right_bumper && buttonLogic.get(2).getState()[1])
+                        hwMap.clawServo1.setPosition(TeleopConstants.clawServo1Block);
+                    if(gamepad2.left_bumper && !buttonLogic.get(2).getState()[0])
+                        hwMap.clawServo1.setPosition(TeleopConstants.clawServo1PosOpen);
+                    if (gamepad2.left_bumper && buttonLogic.get(2).getState()[0]) {
+                        try {
+                            Thread.sleep(700);
+                        } catch (Exception e) {
+                        }
+                        hwMap.clawServo1.setPosition(TeleopConstants.clawServo1PosClose);
+                    }
+                }
+            }
+        };
+        armDelay.start();
     }
 
     private void parkingLoop(){

@@ -35,7 +35,7 @@ public class DriveConstantsPID {
     public static final boolean RUN_USING_PARAMTER_FROM_PROPERTIES = false;
 
     public static boolean RUN_USING_ODOMETRY_WHEEL = true;
-    public static boolean RUN_USING_IMU_LOCALIZER = false;
+    public static boolean RUN_USING_IMU_LOCALIZER = true;
     public static boolean BRAKE_ON_ZERO = false;
     public static boolean USING_BULK_READ = false;
     public static double odoEncoderTicksPerRev = 1565.0;
@@ -111,9 +111,9 @@ public class DriveConstantsPID {
     public static double kA = 0;
     public static double kStatic = 0;
 	public static double TEST_DISTANCE = 72;
-	public static double maxVel = 70.0; //45.0
-	public static double maxAccel = 35.0;   //20.0
-    public static double strafeMaxVel = 45.0; //45.0
+	public static double maxVel = 70.0; //70.0
+	public static double maxAccel = 35.0;   //35.0
+    public static double strafeMaxVel = 40.0; //40.0
     public static double strafeMaxAccel = 20.0;   //20.0
     public static double maxAngVel = 135;
     public static double maxAngAccel = 90;

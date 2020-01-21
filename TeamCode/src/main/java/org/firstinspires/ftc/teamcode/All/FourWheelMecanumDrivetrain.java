@@ -71,8 +71,14 @@ public class FourWheelMecanumDrivetrain {
 
     public void resetEncoders() {
         DcMotor.RunMode runMode = rw.frontLeft.getMode();
+        DcMotor.RunMode runModeLift = rw.liftTwo.getMode();
+        DcMotor.RunMode runModeIntake = rw.rightIntake.getMode();
         setMotorMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        setLiftMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        setIntakeMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         setMotorMode(runMode);
+        setLiftMode(runModeLift);
+        setIntakeMode(runModeIntake);
     }
     public boolean anyIsBusy() {
         return rw.backLeft.isBusy() || rw.backRight.isBusy() || rw.frontLeft.isBusy() || rw.frontRight.isBusy();
@@ -385,8 +391,14 @@ public class FourWheelMecanumDrivetrain {
         rw.frontLeft.setMode(runMode);
         rw.backRight.setMode(runMode);
         rw.backLeft.setMode(runMode);
-        rw.leftIntake.setMode(runMode);
+    }
+
+    private void setLiftMode(DcMotor.RunMode runMode){
         rw.liftTwo.setMode(runMode);
+    }
+
+    private void setIntakeMode(DcMotor.RunMode runMode){
+        rw.leftIntake.setMode(runMode);
         rw.rightIntake.setMode(runMode);
     }
 

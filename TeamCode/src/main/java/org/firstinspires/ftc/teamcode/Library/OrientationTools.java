@@ -131,7 +131,7 @@ public class OrientationTools {
             double offset = this.getDegree360(imu) - current;
             wheel.setMotors(0, power, offset / smoothness);
         }
-
+        wheel.setMotors(0,0,0);
         op.msStuckDetectLoop = msStuckinLoopStart;
     }
 
@@ -140,22 +140,30 @@ public class OrientationTools {
         double offset;
         int msStuckinLoopStart = op.msStuckDetectLoop;
         op.msStuckDetectLoop = 1073741824;
-        int[] encValuesStart = new int[4];
+        int[] encValuesStart;
         encValuesStart = new int[]{
                               wheel.robot.motor_front_left.getCurrentPosition(),
                               wheel.robot.motor_front_right.getCurrentPosition(),
                               wheel.robot.motor_rear_left.getCurrentPosition(),
                               wheel.robot.motor_rear_right.getCurrentPosition()};
-        int[] encValuesCurrent = new int[4];
-        for(int[] diffrence,stop,encValuesCurrent = new int[]{
-                                                                encValuesStart[0]-wheel.robot.motor_front_left.getCurrentPosition(),
-                                                                encValuesStart[0]-wheel.robot.motor_front_right.getCurrentPosition(),
-                                                                encValuesStart[0]-wheel.robot.motor_rear_left.getCurrentPosition(),
-                                                                encValuesStart[0]-wheel.robot.motor_rear_right.getCurrentPosition()}){
+        int[] encValuesCurrent;
+        boolean doit = true;
+        while(doit){
+            op.telemetry.addData("e",wheel.robot.motor_rear_right.getCurrentPosition());
+            op.telemetry.update();
+            encValuesCurrent = new int[]{
+                    wheel.robot.motor_front_left.getCurrentPosition(),
+                    wheel.robot.motor_front_right.getCurrentPosition(),
+                    wheel.robot.motor_rear_left.getCurrentPosition(),
+                    wheel.robot.motor_rear_right.getCurrentPosition()};
+            if(     (encValuesCurrent[0] > encValuesStart[0]+EncoderValues[0])&&
+                    (encValuesCurrent[1] > encValuesStart[1]+EncoderValues[1])&&
+                    (encValuesCurrent[2] > encValuesStart[3]+EncoderValues[3]) &&
+                    (encValuesCurrent[3] > encValuesStart[3]+EncoderValues[3])){doit = false;}
             offset  = this.getDegree360(imu) - current;
             wheel.setMotors(0, power, offset / smoothness);
         }
-
+        wheel.setMotors(0,0,0);
         op.msStuckDetectLoop = msStuckinLoopStart;
     }
 

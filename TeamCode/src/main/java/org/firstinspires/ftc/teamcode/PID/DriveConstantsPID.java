@@ -38,6 +38,7 @@ public class DriveConstantsPID {
     public static boolean RUN_USING_IMU_LOCALIZER = true;
     public static boolean BRAKE_ON_ZERO = false;
     public static boolean USING_BULK_READ = false;
+    public static boolean USING_STRAFE_DIAGNAL = true;
     public static double odoEncoderTicksPerRev = 1565.0;
     private static String TAG = "DriveConstants";
 
@@ -110,7 +111,8 @@ public class DriveConstantsPID {
     public static double kV = 0.0111;   //0.0115
     public static double kA = 0;
     public static double kStatic = 0;
-	public static double TEST_DISTANCE = 72;
+	public static double TEST_DISTANCE = 24;
+    public static double TEST_DISTANCE_0 = 24;
 	public static double maxVel = 70.0; //70.0
 	public static double maxAccel = 35.0;   //35.0
     public static double strafeMaxVel = 40.0; //40.0
@@ -214,8 +216,9 @@ public class DriveConstantsPID {
         RobotLog.dd(TAG, "xTransitional PID   txP: "+Double.toString(txP) + " txI: "+Double.toString(txI) + " txD: " + Double.toString(txD));
         RobotLog.dd(TAG, "yTransitional PID   tyP: "+Double.toString(tyP) + " tyI: "+Double.toString(tyI) + " tyD: " + Double.toString(tyD));
         RobotLog.dd(TAG, "Heading PID   hP: "+Double.toString(hP) + " hI: "+Double.toString(hI) + " hD: " + Double.toString(hD));
-        RobotLog.dd(TAG, "test distance: " + Double.toString(TEST_DISTANCE));
+        RobotLog.dd(TAG, "test distance: " + Double.toString(TEST_DISTANCE) + "  " + Double.toString(TEST_DISTANCE_0));
         RobotLog.dd(TAG, "using IMU in localizer? : " + Integer.toString(RUN_USING_IMU_LOCALIZER?1:0));
+        RobotLog.dd(TAG, "using STRAFE in diagonal move? : " + Integer.toString(USING_STRAFE_DIAGNAL?1:0));
         RobotLog.dd(TAG, "using Vuforia in localizer (override IMU and odom)? : " + Integer.toString(USE_VUFORIA_LOCALIZER?1:0));
         RobotLog.dd(TAG, "Driving wheel width? : " + Double.toString(TRACK_WIDTH));
         RobotLog.dd(TAG, "using Odometry? : " + Integer.toString(RUN_USING_ODOMETRY_WHEEL?1:0));
@@ -275,6 +278,11 @@ public class DriveConstantsPID {
         if (v_double != Double.MAX_VALUE) {
             v_int = (int) v_double;
             RUN_USING_ODOMETRY_WHEEL = (v_int==0)?false:true;
+        }
+        v_double = (int) getTeamCodePropertyValue("debug.ftc.strafeDiag");
+        if (v_double != Double.MAX_VALUE) {
+            v_int = (int) v_double;
+            USING_STRAFE_DIAGNAL = (v_int==0)?false:true;
         }
         v_double = (int) getTeamCodePropertyValue("debug.ftc.bulk");
         if (v_double != Double.MAX_VALUE) {
@@ -414,6 +422,11 @@ public class DriveConstantsPID {
         if (v_double != 0 && v_double != Double.MAX_VALUE)
         {
             TEST_DISTANCE = v_double;
+        }
+        v_double = getTeamCodePropertyValue("debug.ftc.distance0");
+        if (v_double != 0 && v_double != Double.MAX_VALUE)
+        {
+            TEST_DISTANCE_0 = v_double;
         }
 
         if (MOTOR_VELO_PID == null)

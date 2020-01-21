@@ -132,9 +132,9 @@ public class Path {
                     _drive.followTrajectorySync(trajectory);
 
                     //straightDrive.resetFollowerWithParameters(false);
+                    RobotLog.dd(TAG, "step1.5, after strafe, to grab");
                     grabStone(FieldPosition.RED_QUARY);
-
-                    DriveBuilderReset(true, false, "step2, after grab, to strafe back");
+                    DriveBuilderReset(true, false, "step2, after strafe, grab, to strafe back");
                     //builder = new TrajectoryBuilder(straightDrive.getPoseEstimate(), DriveConstantsPID.STRAFE_BASE_CONSTRAINTS);
                     builder = builder
                             .setReversed(false).strafeTo(new Vector2d(wallSkyStoneX, yCoordMvmtPlane));
@@ -150,7 +150,7 @@ public class Path {
                     trajectory = builder.build();   //x - 2.812, y + 7.984
                     _drive.followTrajectorySync(trajectory);
 
-                    DriveBuilderReset(true, false, "step4, to drop stone");
+                    DriveBuilderReset(true, false, "step4, after long straight to drop stone");
                     //straightDrive.resetFollowerWithParameters(true);
 
                     //builder = new TrajectoryBuilder(_drive.getPoseEstimate(), DriveConstantsPID.STRAFE_BASE_CONSTRAINTS);
@@ -159,16 +159,17 @@ public class Path {
                     trajectory = builder.build();   //x - 2.812, y + 7.984
                     _drive.followTrajectorySync(trajectory);
 
+                    RobotLog.dd(TAG, "step4.5, after strafe");
                     dropStone(FieldPosition.RED_QUARY);
 
-                    DriveBuilderReset(true, false, "step5, after drop");
+                    DriveBuilderReset(true, false, "step5, after strafe and drop stone");
                     //builder = new TrajectoryBuilder(straightDrive.getPoseEstimate(), DriveConstantsPID.STRAFE_BASE_CONSTRAINTS);
                     builder = builder
                             .setReversed(false).strafeTo(new Vector2d(foundationX, yCoordMvmtPlane));
                     trajectory = builder.build();   //x - 2.812, y + 7.984
                     _drive.followTrajectorySync(trajectory);
 
-                    DriveBuilderReset(false, false, "step6, straight move back?");
+                    DriveBuilderReset(false, false, "step6, after strafe, straight move back?");
                     //_drive.resetFollowerWithParameters(false);
 
                     //builder = new TrajectoryBuilder(straightDrive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
@@ -178,7 +179,7 @@ public class Path {
                     _drive.followTrajectorySync(trajectory);
 
                     //straightDrive.resetFollowerWithParameters(true);
-                    DriveBuilderReset(true, false, "step7, to prepGrab");
+                    DriveBuilderReset(true, false, "step7, after straight move, to prepGrab");
                     prepGrab(FieldPosition.RED_QUARY);
 
                     //builder = new TrajectoryBuilder(straightDrive.getPoseEstimate(), DriveConstantsPID.STRAFE_BASE_CONSTRAINTS);
@@ -186,10 +187,10 @@ public class Path {
                             .setReversed(false).strafeTo(new Vector2d(furtherMostSkyStoneX, yCoordMvmtPlane + strafeDistance + 2));
                     trajectory = builder.build();   //x - 2.812, y + 7.984
                     _drive.followTrajectorySync(trajectory);
-
+                    RobotLog.dd(TAG, "step7.5 after strafe, to grab");
                     grabStone(FieldPosition.RED_QUARY);
 
-                    DriveBuilderReset(true, false, "step8, after grab");
+                    DriveBuilderReset(true, false, "step8, after strafe and grab");
                     //builder = new TrajectoryBuilder(straightDrive.getPoseEstimate(), DriveConstantsPID.STRAFE_BASE_CONSTRAINTS);
                     builder = builder
                             .setReversed(false).strafeTo(new Vector2d(furtherMostSkyStoneX, yCoordMvmtPlane));
@@ -197,7 +198,7 @@ public class Path {
                     _drive.followTrajectorySync(trajectory);
 
                     //_drive.resetFollowerWithParameters(false);
-                    DriveBuilderReset(false, false, "step9, strafe back?");
+                    DriveBuilderReset(false, false, "step9, after strafe back");
 
                     //builder = new TrajectoryBuilder(straightDrive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
                     builder = builder
@@ -206,7 +207,7 @@ public class Path {
                     _drive.followTrajectorySync(trajectory);
 
                     //_drive.resetFollowerWithParameters(true);
-                    DriveBuilderReset(true, false, "step10, straight move");
+                    DriveBuilderReset(true, false, "step10, after straight move");
 
                     //builder = new TrajectoryBuilder(straightDrive.getPoseEstimate(), DriveConstantsPID.STRAFE_BASE_CONSTRAINTS);
                     builder = builder
@@ -214,9 +215,10 @@ public class Path {
                     trajectory = builder.build();   //x - 2.812, y + 7.984
                     _drive.followTrajectorySync(trajectory);
 
+                    RobotLog.dd(TAG, "step10.5, after strafe, to drop");
                     dropStone(FieldPosition.RED_QUARY);
                     //_drive.resetFollowerWithParameters(false);
-                    DriveBuilderReset(false, false, "step11, after drop");
+                    DriveBuilderReset(false, false, "step11, after strafe and drop");
 
                     theta = _drive.getExternalHeading() >= 0 ? _drive.getExternalHeading() :
                             _drive.getExternalHeading() + 2 * PI;
@@ -244,7 +246,7 @@ public class Path {
                     } catch (Exception e) {
                     }
 
-                    DriveBuilderReset(false, false, "step13, Dragging foundation");
+                    DriveBuilderReset(false, false, "step13, after straight move, Dragging foundation");
                     //builder = new TrajectoryBuilder(_drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
                     builder = builder.setReversed(false)
                             .splineTo(new Pose2d(new Vector2d(_drive.getPoseEstimate().getX() - 15,
@@ -260,12 +262,13 @@ public class Path {
                     } catch (Exception e) {
                     }
 
-                    DriveBuilderReset(false, false, "step14, parking");
+                    DriveBuilderReset(false, false, "step14, after spline");
                     //builder = new TrajectoryBuilder(_drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
                     builder = builder
                             .setReversed(false).splineTo(new Pose2d(new Vector2d(5, -47.5), PI));
                     trajectory = builder.build();   //x - 2.812, y + 7.984
                     _drive.followTrajectorySync(trajectory);
+                    DriveBuilderReset(false, false, "step15, after spline done parking");
                 break;
             case 2:
                 yCoordMvmtPlane = -44.5;

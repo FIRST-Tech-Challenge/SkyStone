@@ -38,7 +38,11 @@ class SSMechRobot {
         //map for each dc
         //similar for servo and sensor
         hwdMap = ahwdMap
-        bLDrive = ahwdMap.dcMotor.get("bLDrive")
+        var motorList = arrayListOf<DcMotor?>(bLDrive, bRDrive, fLDrive, fRDrive, vSlide)
+        (0..4).forEach { i -> motorList; motorList[i] = ahwdMap.dcMotor.get("bLDrive")}
+
+        var servoList = arrayListOf<Servo?>(hSlide, claw, leftHook, rightHook)
+/*        bLDrive = ahwdMap.dcMotor.get("bLDrive")
         bRDrive = ahwdMap.dcMotor.get("bRDrive")
         fLDrive = ahwdMap.dcMotor.get("fLDrive")
         fRDrive = ahwdMap.dcMotor.get("fRDrive")
@@ -46,7 +50,7 @@ class SSMechRobot {
         hSlide = ahwdMap.servo.get("hSlide")
         claw = ahwdMap.servo.get("claw")
         leftHook = ahwdMap.servo.get("leftHook")
-        rightHook = ahwdMap.servo.get("rightHook")
+        rightHook = ahwdMap.servo.get("rightHook")*/
         touch = ahwdMap.digitalChannel.get("touch")
 
         //Setting direction

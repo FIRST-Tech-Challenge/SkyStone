@@ -261,7 +261,6 @@ public class MainTeleop extends LinearOpMode {
 
             outtakeActions.clear();
 
-            outtakeActions.add(new MotionAction(robot.getFrontClamp(), robot.FRONTCLAMP_CLAMPED, currentTime + robot.DELAY_CLAMP_ON_EXTEND));
             outtakeActions.add(new MotionAction(robot.getOuttakeExtender(), robot.OUTTAKE_SLIDE_EXTENDED, currentTime + robot.DELAY_SLIDE_ON_EXTEND));
         } else if (!gamepad2.a) {
             isTogglingG2A = false;

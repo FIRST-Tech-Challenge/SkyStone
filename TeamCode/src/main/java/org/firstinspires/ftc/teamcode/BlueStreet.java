@@ -3,25 +3,22 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
+@Autonomous(name="New Blue Program", group="New Auto")
 
-@Autonomous(name="New Red Program", group="New Auto")
-
-public class RedStreet extends LinearOpMode {
+public class BlueStreet extends LinearOpMode {
 
     protected GyroBot robot = new GyroBot(this);
 
     int direction_forward, direction_backward;
 
-    int[] distFirstMove = new int[]{300, 100, -100};
+    int[] distFirstMove = new int[]{-100, 100, 300};
     int[] distFoundMove = new int[]{1600, 1800, 2000};
     int[] distBackMove = new int[]{2200, 2400, 1600};
 
     int skystonePostition;
     protected void setDirection(){
-        direction_forward = robot.DIRECTION_FORWARD;
-        direction_backward = robot.DIRECTION_BACKWARD;
+        direction_backward = robot.DIRECTION_FORWARD;
+        direction_forward = robot.DIRECTION_BACKWARD;
 
     }
 

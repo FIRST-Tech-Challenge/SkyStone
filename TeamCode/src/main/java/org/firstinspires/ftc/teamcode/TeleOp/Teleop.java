@@ -96,9 +96,9 @@ public class Teleop extends LinearOpMode {
                 new double[][]{{TeleopConstants.foundationLockLock, TeleopConstants.foundationLockUnlock},
                         {TeleopConstants.transferLockPosUp, TeleopConstants.transferLockPosOut}}));
         buttonLogic.add(new OnOffButton(gamepad2, gamepad2, GamepadButtons.LEFT_BUMPER, GamepadButtons.RIGHT_BUMPER, //Intake-A & B
-                new Servo[]{hwMap.clawServo2},
-                new double[][]{{TeleopConstants.clawServo2PosOpen, TeleopConstants.clawServo2PosClose}},
-                new double[]{TeleopConstants.clawServo2Block}));
+                new Servo[]{hwMap.clawServo1},
+                new double[][]{{TeleopConstants.clawServo1PosOpen, TeleopConstants.clawServo1PosClose}},
+                new double[]{TeleopConstants.clawServo1Block}));
         //buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.X,
         //        new Servo[] {hwMap.parkingServo},
         //        new double[][]{ {TeleopConstants.parkingServoPosUnlock, TeleopConstants.parkingServoPosLock} }));
@@ -474,16 +474,16 @@ public class Teleop extends LinearOpMode {
             public void run(){
                 while(opModeIsActive()) {
                     if (gamepad2.right_bumper && buttonLogic.get(2).getState()[1])
-                        hwMap.clawServo1.setPosition(TeleopConstants.clawServo1Block);
-                    if(gamepad2.left_bumper && !buttonLogic.get(2).getState()[0])
-                        hwMap.clawServo1.setPosition(TeleopConstants.clawServo1PosOpen);
-                    if (gamepad2.left_bumper && buttonLogic.get(2).getState()[0]) {
+                        hwMap.clawServo2.setPosition(TeleopConstants.clawServo2Block);
+                    if(gamepad2.left_bumper && buttonLogic.get(2).getState()[0]) {
                         try {
                             Thread.sleep(700);
                         } catch (Exception e) {
                         }
-                        hwMap.clawServo1.setPosition(TeleopConstants.clawServo1PosClose);
+                        hwMap.clawServo2.setPosition(TeleopConstants.clawServo2PosClose);
                     }
+                    if (gamepad2.left_bumper && !buttonLogic.get(2).getState()[0] && !buttonLogic.get(2).getState()[1])
+                        hwMap.clawServo2.setPosition(TeleopConstants.clawServo2PosOpen);
                 }
             }
         };

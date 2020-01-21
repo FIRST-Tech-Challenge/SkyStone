@@ -27,6 +27,7 @@ import kotlin.Unit;
 import kotlin.jvm.functions.Function0;
 
 import static java.lang.Math.PI;
+import static java.lang.Math.abs;
 import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.rear_ratio;
 
 public class Path {
@@ -75,6 +76,33 @@ public class Path {
         Pose2d error_pose = _drive.follower.getLastError();
         RobotLog.dd(TAG, "start new step: %s, count[%d], currentPos %s, errorPos %s",
                 label, step_count++, currentPos.toString(), error_pose.toString());
+        if (DriveConstantsPID.drvCorrection)
+        {
+            boolean done = false;
+            if (abs(error_pose.getX())>1.0 || abs(error_pose.getY())>1.0 )
+            {
+                RobotLog.dd(TAG, "correct pose by strafing");
+                _drive.resetFollowerWithParameters(true);
+                _drive.followTrajectorySync(
+                        _drive.trajectoryBuilder()
+                                .strafeTo(new Vector2d(currentPos.getX() + error_pose.getX(), currentPos.getY() + error_pose.getY()))
+                                .build());
+                done = true;
+            }
+            if (Math.toDegrees(error_pose.getHeading())>10)
+            {
+                RobotLog.dd(TAG, "correct heading by turning");
+                _drive.resetFollowerWithParameters(false);
+                _drive.turnSync(error_pose.getHeading());
+                done = true;
+            }
+            if (done) {
+                currentPos = _drive.getPoseEstimate();
+                error_pose = _drive.follower.getLastError();
+                RobotLog.dd(TAG, "after correction: currentPos %s, errorPos %s",
+                        currentPos.toString(), error_pose.toString());
+            }
+        }
         //RobotLog.dd(TAG, "vuforia localization info: %s", vu.getPoseEstimate().toString());
 
         if (DriveConstantsPID.RECREATE_DRIVE_AND_BUILDER)
@@ -2394,7 +2422,7 @@ public class Path {
     }
 
     private void updatePoseFromStrafe(double yOdoInitPos, boolean left) {
-        double strafeDistance = Math.abs(hwMap.rightIntake.getCurrentPosition() - yOdoInitPos) /
+        double strafeDistance = abs(hwMap.rightIntake.getCurrentPosition() - yOdoInitPos) /
                 DriveConstantsPID.odoEncoderTicksPerRev * StandardTrackingWheelLocalizer.GEAR_RATIO *
                 2 * Math.PI * StandardTrackingWheelLocalizer.WHEEL_RADIUS;
 
@@ -2427,7 +2455,7 @@ public class Path {
         while (opMode.opModeIsActive()) {
             int sideways = hwMap.rightIntake.getCurrentPosition();
 
-            int sidewaysDiff = Math.abs(sideways - sidewaysStart);
+            int sidewaysDiff = abs(sideways - sidewaysStart);
 
             if (opMode != null) {
                 opMode.telemetry.addData("Side", sidewaysDiff);

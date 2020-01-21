@@ -196,7 +196,7 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
         } catch (Exception e){
             e.printStackTrace();
         }
-        RobotLog.dd(TAG, "getRawExternalHeading: " + Double.toString(t));
+        //RobotLog.dd(TAG, "getRawExternalHeading: " + Double.toString(t));
         return t;
     }
 }

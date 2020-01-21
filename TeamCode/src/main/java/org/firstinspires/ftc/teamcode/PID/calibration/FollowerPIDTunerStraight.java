@@ -39,35 +39,39 @@ public class FollowerPIDTunerStraight extends LinearOpMode {
 
         if (isStopRequested()) return;
 
+        if (DriveConstantsPID.USING_BULK_READ == false)
+            drive = new SampleMecanumDriveREV(hardwareMap, false);
+        else
+            drive = new SampleMecanumDriveREVOptimized(hardwareMap, false);
+
         while (!isStopRequested()) {
-            if (DriveConstantsPID.USING_BULK_READ == false)
-                drive = new SampleMecanumDriveREV(hardwareMap, false);
-            else
-                drive = new SampleMecanumDriveREVOptimized(hardwareMap, false);
             drive.setBrakeonZeroPower(DriveConstantsPID.BRAKE_ON_ZERO);
             drive.setPoseEstimate(new Pose2d(0, 0, 0));
 
-            RobotLog.dd(TAG, "current pose: " + drive.getPoseEstimate().toString());
-            RobotLog.dd(TAG, "move forward: "+Double.toString(DISTANCE));
+            //drive.resetFollowerWithParameters(false);
             drive.followTrajectorySync(
                     drive.trajectoryBuilder()
                             .forward(DISTANCE)
                             .build()
             );
-            RobotLog.dd(TAG, "current pose: " + drive.getPoseEstimate().toString());
-            RobotLog.dd(TAG, "move back: "+Double.toString(DISTANCE));
+            Pose2d currentPos = drive.getPoseEstimate();
+            Pose2d error_pose = drive.follower.getLastError();
+            RobotLog.dd(TAG, "currentPos %s, errorPos %s",currentPos.toString(), error_pose.toString());
             //drive.turnSync(Math.toRadians(90));
             try{
-                Thread.sleep(5000);
+                Thread.sleep(2000);
             } catch(Exception e){}
-
+            //drive.resetFollowerWithParameters(false);
             drive.followTrajectorySync(
                     drive.trajectoryBuilder()
                             .back(DISTANCE)
                             .build()
             );
+            currentPos = drive.getPoseEstimate();
+            error_pose = drive.follower.getLastError();
+            RobotLog.dd(TAG, "currentPos %s, errorPos %s",currentPos.toString(), error_pose.toString());
             try{
-                Thread.sleep(5000);
+                Thread.sleep(2000);
             } catch(Exception e){}
 
         }

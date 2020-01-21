@@ -21,7 +21,7 @@ import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveREVOptimized
 //@Disabled
 public class FollowerPIDTunerStrafe extends LinearOpMode {
     public static double DISTANCE = 0; // update later;
-    private String TAG = "FollowerPIDTunerStraight";
+    private String TAG = "FollowerPIDTunerStrafe";
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -48,8 +48,6 @@ public class FollowerPIDTunerStrafe extends LinearOpMode {
 
             drive.setPoseEstimate(new Pose2d(0, 0, 0));
 
-            RobotLog.dd(TAG, "current pose: " + drive.getPoseEstimate().toString());
-            RobotLog.dd(TAG, "move forward: "+Double.toString(DISTANCE));
             if (DriveConstantsPID.USING_STRAFE_DIAGNAL == true) {
                 drive.resetFollowerWithParameters(true);
                 drive.followTrajectorySync(
@@ -70,7 +68,7 @@ public class FollowerPIDTunerStrafe extends LinearOpMode {
             RobotLog.dd(TAG, "currentPos %s, errorPos %s",currentPos.toString(), error_pose.toString());
             //drive.turnSync(Math.toRadians(90));
             try{
-                Thread.sleep(5000);
+                Thread.sleep(2000);
             } catch(Exception e){}
 
             if (DriveConstantsPID.USING_STRAFE_DIAGNAL == true) {
@@ -91,9 +89,8 @@ public class FollowerPIDTunerStrafe extends LinearOpMode {
             error_pose = drive.follower.getLastError();
             RobotLog.dd(TAG, "currentPos %s, errorPos %s",currentPos.toString(), error_pose.toString());
 
-
             try{
-                Thread.sleep(5000);
+                Thread.sleep(2000);
             } catch(Exception e){}
 
         }

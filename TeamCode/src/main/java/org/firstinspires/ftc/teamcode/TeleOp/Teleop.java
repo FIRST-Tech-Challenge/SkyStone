@@ -4,7 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.All.FourWheelMecanumDrivetrain;
@@ -86,6 +85,8 @@ public class Teleop extends LinearOpMode {
         //lift.setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         hwMap.liftOne.setDirection(DcMotorSimple.Direction.REVERSE);
+        hwMap.liftOne.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        hwMap.liftTwo.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         buttonLogic.add(new OnOffButton(gamepad2, gamepad2, GamepadButtons.A, GamepadButtons.B, //Intake-A & B
                 new DcMotor[]{hwMap.leftIntake, hwMap.rightIntake},
@@ -210,6 +211,12 @@ public class Teleop extends LinearOpMode {
                 switchBlocker = false;
             }
 
+            if (gamepad2.right_stick_y != 0 || gamepad2.left_stick_y != 0) {
+                lift.moveLift(gamepad2.right_stick_y + gamepad2.left_stick_y * TeleopConstants.liftSpeedSlow);
+            } else {
+                lift.stop();
+            }
+
             telemetry.addData("LeftForwardOdometry", hwMap.leftIntake.getCurrentPosition());
             telemetry.addData("RightForwardOdometry", hwMap.liftTwo.getCurrentPosition());
             telemetry.addData("SidewaysOdometry", hwMap.rightIntake.getCurrentPosition());
@@ -316,6 +323,8 @@ public class Teleop extends LinearOpMode {
     }
 
     private void driveLoop() {
+
+
         Thread drive = new Thread() {
             public void run() {
                 while (opModeIsActive()) {
@@ -355,7 +364,7 @@ public class Teleop extends LinearOpMode {
                             drivetrain.setMotorZeroPower(DcMotor.ZeroPowerBehavior.BRAKE);
                             drivetrain.setSpeedMultiplier(normalSpeed - 0.3);
                         } else {
-                            drivetrain.setMotorZeroPower(DcMotor.ZeroPowerBehavior.FLOAT);
+                            drivetrain.setSpeedMultiplier(TeleopConstants.drivePowerNormal);
                         }
 
                         if (gamepad1.right_trigger >= 0.75) {
@@ -385,6 +394,13 @@ public class Teleop extends LinearOpMode {
                         drivetrain.setMotorZeroPower(DcMotor.ZeroPowerBehavior.BRAKE);
 
                         double turn = (-1) * (gamepad1.left_trigger - gamepad1.right_trigger) * turnSpeed;
+
+                        // TODO: change to different button for jimmy
+                        if (gamepad1.left_trigger >= 0.751) {
+                            drivetrain.setSpeedMultiplier(TeleopConstants.drivePowerSlow);
+                        } else {
+                            drivetrain.setSpeedMultiplier(TeleopConstants.drivePowerNormal);
+                        }
 
                         if (!(gamepad1.left_stick_x == 0 && gamepad1.right_stick_y == 0 && turn == 0)) {
 

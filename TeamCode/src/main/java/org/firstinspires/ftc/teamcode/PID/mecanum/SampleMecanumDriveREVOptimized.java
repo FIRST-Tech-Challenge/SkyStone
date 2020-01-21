@@ -201,7 +201,7 @@ public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
     @Override
     public double getRawExternalHeading() {
         double t = imu.getAngularOrientation().firstAngle;
-        RobotLog.dd(TAG, "getRawExternalHeading: " + Double.toString(t));
+        //RobotLog.dd(TAG, "getRawExternalHeading: " + Double.toString(t));
         return t;
     }
 }

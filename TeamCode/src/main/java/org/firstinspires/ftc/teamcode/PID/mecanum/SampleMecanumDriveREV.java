@@ -144,8 +144,8 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
         for (DcMotorEx motor : motors) {
             double t1 = motor.getCurrentPosition();
             double t2 = encoderTicksToInches(t1);
-            RobotLog.dd(TAG, motor.getDeviceName() + "--getWheelPositions: " + "position: " + Double.toString(t1) +
-                    " inches: " + Double.toString(t2));
+            //RobotLog.dd(TAG, motor.getDeviceName() + "getWheelPositions: " + "position: " + Double.toString(t1) +
+              //      " inches: " + Double.toString(t2));
 
             wheelPositions.add(encoderTicksToInches(motor.getCurrentPosition()));
         }

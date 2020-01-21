@@ -17,7 +17,7 @@ public class ControlledExtender {
     // TODO: Fix this...
     static final double     COUNTS_PER_MOTOR_REV    = 195.4 ;    // eg: TETRIX Motor Encoder
     static final double     DRIVE_GEAR_REDUCTION    = 1 ;     // This is < 1.0 if geared UP
-    static final double     COUNTS_PER_CM           = COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION;
+    public static final double     COUNTS_PER_CM           = COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION;
 
     Telemetry telemetry;
     HardwareChassis robot;

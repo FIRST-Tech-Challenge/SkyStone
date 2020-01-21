@@ -15,6 +15,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassis;
 import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassisGyro;
+import org.firstinspires.ftc.teamcode.Library.Movement.ControlledExtender;
 
 public class OrientationTools {
 
@@ -135,31 +136,31 @@ public class OrientationTools {
         op.msStuckDetectLoop = msStuckinLoopStart;
     }
 
-    public void driveSidewardEncoder(int[] EncoderValues, double power, double smoothness, BNO055IMU imu, OmniWheel wheel, OpMode op){
+    public void driveSidewardEncoder(int[] cm, double power, double smoothness, BNO055IMU imu, OmniWheel wheel, OpMode op){
         double current = this.getDegree360(imu);
         double offset;
         int msStuckinLoopStart = op.msStuckDetectLoop;
         op.msStuckDetectLoop = 1073741824;
         int[] encValuesStart;
         encValuesStart = new int[]{
-                              wheel.robot.motor_front_left.getCurrentPosition(),
-                              wheel.robot.motor_front_right.getCurrentPosition(),
-                              wheel.robot.motor_rear_left.getCurrentPosition(),
-                              wheel.robot.motor_rear_right.getCurrentPosition()};
+                              wheel.robot.motor_front_left.getCurrentPosition()*(int)(ControlledExtender.COUNTS_PER_CM),
+                              wheel.robot.motor_front_right.getCurrentPosition()*(int)(ControlledExtender.COUNTS_PER_CM),
+                              wheel.robot.motor_rear_left.getCurrentPosition()*(int)(ControlledExtender.COUNTS_PER_CM),
+                              wheel.robot.motor_rear_right.getCurrentPosition()*(int)(ControlledExtender.COUNTS_PER_CM)};
         int[] encValuesCurrent;
         boolean doit = true;
         while(doit){
             op.telemetry.addData("e",wheel.robot.motor_rear_right.getCurrentPosition());
             op.telemetry.update();
             encValuesCurrent = new int[]{
-                    wheel.robot.motor_front_left.getCurrentPosition(),
-                    wheel.robot.motor_front_right.getCurrentPosition(),
-                    wheel.robot.motor_rear_left.getCurrentPosition(),
-                    wheel.robot.motor_rear_right.getCurrentPosition()};
-            if(     (encValuesCurrent[0] > encValuesStart[0]+EncoderValues[0])&&
-                    (encValuesCurrent[1] > encValuesStart[1]+EncoderValues[1])&&
-                    (encValuesCurrent[2] > encValuesStart[3]+EncoderValues[3]) &&
-                    (encValuesCurrent[3] > encValuesStart[3]+EncoderValues[3])){doit = false;}
+                    wheel.robot.motor_front_left.getCurrentPosition()*(int)(ControlledExtender.COUNTS_PER_CM),
+                    wheel.robot.motor_front_right.getCurrentPosition()*(int)(ControlledExtender.COUNTS_PER_CM),
+                    wheel.robot.motor_rear_left.getCurrentPosition()*(int)(ControlledExtender.COUNTS_PER_CM),
+                    wheel.robot.motor_rear_right.getCurrentPosition()*(int)(ControlledExtender.COUNTS_PER_CM)};
+            if(     (encValuesCurrent[0] > encValuesStart[0]+cm[0])&&
+                    (encValuesCurrent[1] > encValuesStart[1]+cm[1])&&
+                    (encValuesCurrent[2] > encValuesStart[3]+cm[3]) &&
+                    (encValuesCurrent[3] > encValuesStart[3]+cm[3])){doit = false;}
             offset  = this.getDegree360(imu) - current;
             wheel.setMotors(0, power, offset / smoothness);
         }

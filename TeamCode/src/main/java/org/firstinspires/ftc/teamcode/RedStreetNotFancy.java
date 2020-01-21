@@ -3,12 +3,9 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
+@Autonomous(name="Not Fancy?", group="New Auto")
 
-@Autonomous(name="New Red Progeamr?", group="New Auto")
-
-public class RedStreet extends LinearOpMode {
+public class RedStreetNotFancy extends LinearOpMode {
 
     protected GyroBot robot = new GyroBot(this);
 
@@ -37,11 +34,11 @@ public class RedStreet extends LinearOpMode {
             robot.pickupSkyStone();
 //            robot.driveUntilDistance(35, 0.3, 1);
 
-//            robot.driveStraightByDistance(direction_forward, distFoundMove[skystonePostition - 1], 0.8);
+            robot.driveStraightByDistance(direction_forward, distFoundMove[skystonePostition - 1], 0.8);
 
-            robot.driveByDistanceWithAcceleration(direction_forward, distFoundMove[skystonePostition - 1], 1, 10);
+//            robot.driveByDistanceWithAcceleration(direction_forward, distFoundMove[skystonePostition - 1], 1, 10);
 
-            robot.goBacktoStartAngle();
+//            robot.goBacktoStartAngle();
 
             robot.driveStraightByDistance(robot.DIRECTION_LEFT, 200, 0.5);
             robot.dropSkyStone();
@@ -51,18 +48,16 @@ public class RedStreet extends LinearOpMode {
 
             robot.driveByDistanceWithAcceleration(direction_backward, distBackMove[skystonePostition - 1], 1, 10);
 
-            robot.goBacktoStartAngle();
-
-            sleep(1 * 1000);
+//            robot.goBacktoStartAngle();
 
             robot.driveUntilDistance(18, 0.3, 1);
 
             robot.pickupSkyStone();
 
 //            robot.driveUntilDistance(35, 0.3, 1);
-//            robot.driveStraightByDistance(direction_forward, distBackMove[skystonePostition - 1], 0.8);
+            robot.driveStraightByDistance(direction_forward, distBackMove[skystonePostition - 1], 0.8);
 
-            robot.driveByDistanceWithAcceleration(direction_forward, distBackMove[skystonePostition - 1], 1, 10);
+//            robot.driveByDistanceWithAcceleration(direction_forward, distBackMove[skystonePostition - 1], 1, 10);
 
             robot.driveStraightByDistance(robot.DIRECTION_LEFT, 200, 0.5);
             robot.dropSkyStone();

@@ -14,6 +14,8 @@ public class DistanceTest extends LinearOpMode {
         waitForStart();
         while (opModeIsActive()) {
             robot.getDistanceBack();
+            robot.getDistanceFront();
+
 
         }
     }

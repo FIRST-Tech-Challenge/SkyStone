@@ -88,6 +88,30 @@ public class RobotProfile {
         p4[2].y = 358;
         this.stoneScanPoints.put(StartPosition.BLUE_3, p4);
 
+        Point[] p5 = new Point[3];
+        p5[0] = new Point();
+        p5[0].x= 500;
+        p5[0].y = 500;
+        p5[1] = new Point();
+        p5[1].x= 500;
+        p5[1].y = 500;
+        p5[2] = new Point();
+        p5[2].x= 500;
+        p5[2].y = 500;
+        this.stoneScanPoints.put(StartPosition.BLUE_5, p5);
+
+        Point[] p6 = new Point[3];
+        p6[0] = new Point();
+        p6[0].x= 500;
+        p6[0].y = 500;
+        p6[1] = new Point();
+        p6[1].x= 500;
+        p6[1].y = 500;
+        p6[2] = new Point();
+        p6[2].x= 500;
+        p6[2].y = 500;
+        this.stoneScanPoints.put(StartPosition.RED_5, p6);
+
         this.robotStartPoints = new HashMap<StartPosition, RobotPosition>();
         RobotPosition R2_start = new RobotPosition();
         R2_start.setX(335);
@@ -113,6 +137,18 @@ public class RobotProfile {
         B3_start.setHeading(0);
         this.robotStartPoints.put(StartPosition.BLUE_3,B3_start);
 
+        RobotPosition B5_start = new RobotPosition();
+        B5_start.setX(50);
+        B5_start.setY(50);
+        B5_start.setHeading(0);
+        this.robotStartPoints.put(StartPosition.BLUE_5,B5_start);
+
+        RobotPosition R5_start = new RobotPosition();
+        R5_start.setX(50);
+        R5_start.setY(50);
+        R5_start.setHeading(0);
+        this.robotStartPoints.put(StartPosition.RED_5,R5_start);
+
         hardwareSpec = new HardwareSpec();
         hardwareSpec.trackWheelDiameter = 3.8;   //cm diameter
         hardwareSpec.trackWheelCPR = 4000;
@@ -133,18 +169,23 @@ public class RobotProfile {
         hardwareSpec.clampAngleNormal = 0.825;
         hardwareSpec.clampAngleSide = 0.51;
         hardwareSpec.clampAngleBack = 0.2475; //0.25
-        hardwareSpec.clampS1Init = 0.6;
-        hardwareSpec.clampS1Open = 0.4; //was open, 0.5
-        hardwareSpec.clampS1Close = 0.575; //was close
-        hardwareSpec.clampS1WheelHold = 0.60;
-        hardwareSpec.clampS1WheelRelease = 0.64;
-        hardwareSpec.clampS2Init = 0.38;
-        hardwareSpec.clampS2Open= 0.6; //was open, 0.5
-        hardwareSpec.clampS2Close = 0.425; //was close
-        hardwareSpec.clampS2WheelHold = 0.38;
-        hardwareSpec.clampS2WheelRelease = 0.34;
+        /**********************
+         * S1 is the S2 on the robot
+         * S2 is S1 on the robot
+         */
+        hardwareSpec.clampS1Init = 0.48;
+        hardwareSpec.clampS1Open = 0.39; //was open, 0.5
+        hardwareSpec.clampS1Close = 0.45; //was close
+        hardwareSpec.clampS1WheelHold = 0.48;
+        hardwareSpec.clampS1WheelRelease = 0.48;
+        hardwareSpec.clampS2Init = 0.53;
+        hardwareSpec.clampS2Open= 0.66; //was open, 0.5
+        hardwareSpec.clampS2OpenLarge = 0.89; //horizontal position
+        hardwareSpec.clampS2Close = 0.585; //was close
+        hardwareSpec.clampS2WheelHold = 0.53;
+        hardwareSpec.clampS2WheelRelease = 0.53;
         hardwareSpec.hookS0Open = 0.24;
-        hardwareSpec.hookS0Close = 0.66;
+        hardwareSpec.hookS0Close = 0.67;
         hardwareSpec.hookS1Open = 0.65;
         hardwareSpec.hookS1Close = 0.19;
         hardwareSpec.capStoneUp = 0.34;
@@ -193,8 +234,10 @@ public class RobotProfile {
     public enum StartPosition{
         BLUE_2,
         BLUE_3,
+        BLUE_5,
         RED_2,
-        RED_3
+        RED_3,
+        RED_5
     }
 
     class Point {
@@ -253,6 +296,7 @@ public class RobotProfile {
         double clampAngleBack;
         double clampS1Init;
         double clampS1Open;
+        double clampS2OpenLarge;
         double clampS1Close;
         double clampS1WheelHold;
         double clampS1WheelRelease;

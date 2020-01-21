@@ -19,11 +19,13 @@ public class AutonomousOptions2 extends OpMode {
     public static final String START_POS_MODES_PREF = "starting position";
     public static final String DELAY_PREF = "delay";
     public static final String  PARKING_PREF = "parking";
+    private static final String NONE = "none";
     public static final String FOUNDATION_PREF = "foundation";
     public static final String DELIVER_ROUTE_PREF = "deliver mode";
     public static final String PARKING_ONLY_PREF = "only park";
     public static final String STONE_PREF = "two skystones";
     public static final String FIRST_BLOCK_BY_WALL_PREF = "first block by wall";
+
     // ADD preference values here
     public static final String[] START_POS_MODES = {"BLUE_2", "BLUE_3", "BLUE_5", "RED_2", "RED_3", "RED_5"};
     public static final String[] DELAYS = {"0 " + "sec", "1 sec", "2 sec", "3 sec", "4 sec", "5 sec"};
@@ -33,10 +35,8 @@ public class AutonomousOptions2 extends OpMode {
     public static final String[] PARKING_ONLY = {"yes", "no"};
     public static final String[] TWO_SKYSTONES = {"yes", "no"};
     public static final String[] PICK_FIRST_BLOCK_BY_WALL ={"yes", "no"};
-    private static final String NONE = "none";
+
     public static Map<String, String[]> prefMap = new HashMap<>();
-    private static String[] prefKeys = prefMap.keySet().toArray(new String[prefMap.keySet().size()]);
-    private static int keyIdx = 0;
 
     static {
         // ADD entries to preference map here
@@ -49,6 +49,9 @@ public class AutonomousOptions2 extends OpMode {
         prefMap.put(STONE_PREF, TWO_SKYSTONES);
         prefMap.put(FIRST_BLOCK_BY_WALL_PREF, PICK_FIRST_BLOCK_BY_WALL);
     }
+
+    private static String[] prefKeys = prefMap.keySet().toArray(new String[prefMap.keySet().size()]);
+    private static int keyIdx = 0;
 
     static {
         Arrays.sort(prefKeys);

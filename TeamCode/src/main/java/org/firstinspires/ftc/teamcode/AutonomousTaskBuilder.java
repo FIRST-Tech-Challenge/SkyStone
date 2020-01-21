@@ -24,8 +24,9 @@ public class AutonomousTaskBuilder {
     RobotPosition lastPos;
     PIDMecanumMoveTask lastMovement;
     SequentialComboTask moveBuilderPlateTask;
-    int stoneX, stoneY, dropY, dropX, bridgeY, parkY, transferY, pullPlateY, pullPlateX, finalPushX,
-            finalPushY,  parkWall, parkNeutral;
+    int stoneX, stoneY, dropY, dropX, bridgeY, parkX, parkY, pullPlateY, pullPlateX, finalPushX,
+            finalPushY,  parkWall, parkNeutral, afterRotatePlateY;
+    double finalHeading;
 
     public AutonomousTaskBuilder(DriverOptions driverOptions, int skyStonePosition, RobotHardware robotHardware, RobotNavigator navigator, RobotProfile robotProfile) {
         this.delay = driverOptions.getDelay();
@@ -79,6 +80,11 @@ public class AutonomousTaskBuilder {
 //                            addMovement(new RobotPosition(0, 0 , 0), new RobotPosition(0, -30, 0));
 //                        }
                         break;
+                    case "RED_5":
+                        parkY = 100;
+                        parkWall = 10;
+                        parkNeutral = 60;
+                                
                     case "BLUE_2":
                         parkY = 85;
                         parkWall = 10; //50;
@@ -89,6 +95,11 @@ public class AutonomousTaskBuilder {
                         parkWall = 10;
                         parkNeutral = 60;
                         break;
+                    case "BLUE_5":
+                        parkY = -80;
+                        parkWall = 10;
+                        parkNeutral = 60;
+                        break;    
                 }
                 parking();
                 //addMovement(new RobotPosition(0, 0, 0), new RobotPosition(deliverRoute(deliverRoute), parkY, 0));
@@ -118,7 +129,7 @@ public class AutonomousTaskBuilder {
         }
 
         // move to the stone and lift/extend slide, clamp open
-        addMovementAndSlide(new RobotPosition(0, 0, 0), moveToStonePos);
+        moveAndSlideToStone(new RobotPosition(0, 0, 0), moveToStonePos);
         //taskList.add(new RobotSleep(5000)); // debug purpose
         // pick up and put it back inside
         taskList.add(pickUpTask);
@@ -126,7 +137,7 @@ public class AutonomousTaskBuilder {
         moveToPlateAndExtend();
         //taskList.add(dropOffTask);    // move as parallel into moveBuilderPlateTask
         if (moveFoundation.equals("move")) {
-            setupDropAndMoveBuilderPlateTask();    // this needs to be here instead of constructor, because we depends on DropX/DropY, etc.
+            setupDropAndMoveBuilderPlateTaskNew();    // this needs to be here instead of constructor, because we depends on DropX/DropY, etc.
             taskList.add(moveBuilderPlateTask);
         }
 
@@ -181,6 +192,7 @@ public class AutonomousTaskBuilder {
         return taskList;
     }
 
+    // TODO: 1/20/2020  return something with position 5's  
     double goToSkyStone2(int skyStonePosition) {
         if (startingPositionModes.equals("RED_2")){ return 26 + (2 - skyStonePosition) *20;}  //40
         else if(startingPositionModes.equals("RED_3")){return 26 + (2 - skyStonePosition) *20;}
@@ -196,8 +208,9 @@ public class AutonomousTaskBuilder {
         taskList.add(releaseWheelTask);
         addMovement(new RobotPosition(0, 0, 0), new RobotPosition(parkWall, 0, 0));
         addMovement(lastPos, new RobotPosition(parkWall, dropY, 0));
+        taskList.add(new SetLiftPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.liftHomeReadyPos, 500));
         addMovement(lastPos, new RobotPosition(dropX, dropY, 0));
-        setupDropAndMoveBuilderPlateTask();
+        setupDropAndMoveBuilderPlateTaskNew();
         taskList.add(moveBuilderPlateTask);
         parking();
         return taskList;
@@ -326,6 +339,7 @@ public class AutonomousTaskBuilder {
         dropOffTaskList.add(new ClampOpenCloseTask(robotHardware, robotProfile, RobotHardware.ClampPosition.OPEN));
         dropOffTaskList.add(new RobotSleep(100));
         dropOffTaskList.add(new ClampAngleRotationTask(robotHardware, robotProfile, RobotHardware.ClampAnglePosition.NORMAL));
+        dropOffTaskList.add(new ClampOpenCloseTask(robotHardware, robotProfile, RobotHardware.ClampPosition.INITIAL));
 //        dropOffTaskList.add(new SetLiftPositionTask(robotHardware,robotProfile,robotProfile.hardwareSpec.liftPerStone,500));
         dropOffTaskList.add(new SetSliderPositionTask(robotHardware,robotProfile, robotProfile.hardwareSpec.sliderOrigPos, 100));
         dropOffTaskList.add(new SetLiftPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.liftOrigPos,100));
@@ -336,9 +350,10 @@ public class AutonomousTaskBuilder {
 
     void setupReleaseWheelTask() {
         releaseWheelTask = new SequentialComboTask();
-        releaseWheelTask.addTask(new ClampOpenCloseTask(robotHardware, robotProfile, RobotHardware.ClampPosition.RELEASE_1));
-        releaseWheelTask.addTask(new ClampOpenCloseTask(robotHardware, robotProfile, RobotHardware.ClampPosition.RELEASE_2));
-        releaseWheelTask.addTask(new ClampOpenCloseTask(robotHardware, robotProfile, RobotHardware.ClampPosition.OPEN));
+        // do nothing for now
+//        releaseWheelTask.addTask(new ClampOpenCloseTask(robotHardware, robotProfile, RobotHardware.ClampPosition.RELEASE_1));
+//        releaseWheelTask.addTask(new ClampOpenCloseTask(robotHardware, robotProfile, RobotHardware.ClampPosition.RELEASE_2));
+        releaseWheelTask.addTask(new ClampOpenCloseTask(robotHardware, robotProfile, RobotHardware.ClampPosition.INITIAL));
     }
 
     /**
@@ -347,7 +362,7 @@ public class AutonomousTaskBuilder {
      * @param beginP
      * @param posList
      */
-    void addMovementAndSlide(RobotPosition beginP, ArrayList<RobotPosition> posList) {
+    void moveAndSlideToStone(RobotPosition beginP, ArrayList<RobotPosition> posList) {
         // set up lift and slide
         SequentialComboTask slideUpExtendTask = new SequentialComboTask();
         ArrayList<RobotControl> slideUpExtendTaskList = new ArrayList<RobotControl>();
@@ -356,14 +371,16 @@ public class AutonomousTaskBuilder {
 //                robotProfile.hardwareSpec.liftPerStone + robotProfile.hardwareSpec.liftGrabExtra, 500));
 
         //12/12 try to reduce the height of lift at pick up
-        slideUpExtendTaskList.add(new RobotSleep(1000));
+        slideUpExtendTaskList.add(new RobotSleep(100));
         slideUpExtendTaskList.add(new SetLiftPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.liftStoneBase +
                 robotProfile.hardwareSpec.liftPerStone + robotProfile.hardwareSpec.liftGrabExtra/2, 100));
 
         // slide out
         slideUpExtendTaskList.add(new SetSliderPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.sliderOutPosAutonomous, 100));
-        // open clamp
-        slideUpExtendTaskList.add(new ClampOpenCloseTask(robotHardware, robotProfile, RobotHardware.ClampPosition.OPEN));
+        // open clamp side ways
+        slideUpExtendTaskList.add(new ClampOpenCloseTask(robotHardware, robotProfile, RobotHardware.ClampPosition.OPEN_SIDEWAYS));
+        // lift down to base
+        slideUpExtendTaskList.add(new SetLiftPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.liftStoneBase + 45, 100));
         slideUpExtendTask.setTaskList(slideUpExtendTaskList);
 
         // set up moves
@@ -390,114 +407,58 @@ public class AutonomousTaskBuilder {
     }
 
     public void parking(){
-        if(parking.equals("BridgeWall")) {
-            addMovement(lastPos, new RobotPosition(parkWall, parkY, 0));
-            lastMovement.setPower(0.8);
-            lastMovement.setMinPower(0.8);
-
-        } else if (parking.equals("BridgeNeutral")){
-            addMovement(lastPos, new RobotPosition(parkNeutral, parkY, 0));
-            lastMovement.setPower(0.8);
-            lastMovement.setMinPower(0.8);
-        }
+        addMovement(lastPos, new RobotPosition(parkX, lastPos.getY(), finalHeading));
+        lastMovement.setPower(0.8);
+        lastMovement.setMinPower(0.3);
+        addMovement(lastPos, new RobotPosition(parkX, parkY, finalHeading));
+        lastMovement.setPower(0.8);
+        lastMovement.setMinPower(0.8);
     }
 
-    void setupDropAndMoveBuilderPlateTask(){
+    void setupDropAndMoveBuilderPlateTaskNew() {
         ArrayList<RobotControl> moveBuilderPlateTaskList = new ArrayList<RobotControl>();
 
-        // rotation while go out by 5cm and further toward back by 20cm
-        //12/12
-//        int ySign = startingPositionModes.contains("RED") ?-1 : 1;
-//        pullPlateY = dropY;
-//        finalPushY = dropY - ySign*50;
         ParallelComboTask dropAndRotateTask = new ParallelComboTask();
-        ArrayList<RobotControl> dropAndRotateList = new ArrayList<RobotControl>();
-        dropAndRotateList.add(dropOffTask);
+        dropAndRotateTask.addTask(dropOffTask);  //Parallel task 1 - drop off and slide back in
         SequentialComboTask rotateBackTask = new SequentialComboTask();
-        ArrayList<RobotControl> rotateBackList = new ArrayList<RobotControl>();
-        rotateBackList.add(new RobotSleep(200));    // let the drop happen
+        rotateBackTask.addTask(new RobotSleep(200));    // let the drop happen
 
         MecanumRotateTask rotate = new MecanumRotateTask(robotHardware, robotProfile, navigator);
         rotate.setRotateHeading(new RobotPosition(dropX, dropY,0), lastPos = new RobotPosition(dropX - 5, pullPlateY, -Math.PI / 2));
         rotate.setPower(0.8);
         rotate.setMinPower(0.5);
-        //moveBuilderPlateTaskList.add(rotate);
-        rotateBackList.add(rotate);
+        rotateBackTask.addTask(rotate);
 
         // move back to the plate, push back another 10 cm just to be safe
         PIDMecanumMoveTask pushBackMove = new PIDMecanumMoveTask(robotHardware, robotProfile, navigator);
         pushBackMove.setPath(lastPos, new RobotPosition(dropX+10, pullPlateY, -Math.PI / 2));
         pushBackMove.setPower(0.8);
         pushBackMove.setMinPower(0.3);
-        //moveBuilderPlateTaskList.add(pushBackMove);
-        rotateBackList.add(pushBackMove);
-        rotateBackTask.setTaskList(rotateBackList);
-        dropAndRotateList.add(rotateBackTask);
-        dropAndRotateTask.setTaskList(dropAndRotateList);
+        rotateBackTask.addTask(pushBackMove);
+        dropAndRotateTask.addTask(rotateBackTask); // parallel task 2 - wait, rotate, and push back
         moveBuilderPlateTaskList.add(dropAndRotateTask);
 
-        // hook on
         moveBuilderPlateTaskList.add(new HookPositionTask(robotHardware, robotProfile, RobotHardware.HookPosition.HOOK_ON));
-        //moveBuilderPlateTaskList.add(new RobotSleep(100));
-        moveBuilderPlateTaskList.add(new RobotSleep(100));
+        moveBuilderPlateTaskList.add(new RobotSleep(300));
+        PIDMecanumMoveTask lastMove = new PIDMecanumMoveTask(robotHardware, robotProfile, navigator);
+        lastMove.setPath(new RobotPosition(dropX+10, pullPlateY, -Math.PI / 2), new RobotPosition(dropX-35, pullPlateY, -Math.PI / 2));
+        lastMove.setMinPower(0.5);
+        lastMove.setPower(0.8);
+        moveBuilderPlateTaskList.add(lastMove);
+        
+        MecanumRotateTask mecanumRotate = new MecanumRotateTask(robotHardware, robotProfile,navigator);
+        mecanumRotate.setPower(0.8);
+        mecanumRotate.setMinPower(0.8);
+        mecanumRotate.setRotateHeading(new RobotPosition(dropX-30, pullPlateY, -Math.PI / 2), lastPos = new RobotPosition(dropX-55, afterRotatePlateY, finalHeading));
+        moveBuilderPlateTaskList.add(mecanumRotate);
 
-        // move toward the wall for 55 cm
-        PIDMecanumMoveTask pullPlate = new PIDMecanumMoveTask(robotHardware, robotProfile, navigator);
-        //pullPlate.setPath(lastPos, new RobotPosition(dropX-40, dropY + ySign*20, -Math.PI/2));
-        pullPlate.setPath(new RobotPosition(dropX+10, pullPlateY, -Math.PI / 2), new RobotPosition(pullPlateX, pullPlateY, -Math.PI/2));
-        pullPlate.setMinPower(0.5);  //bigger power to pull the foundation platform
-        pullPlate.setPower(0.8);  // max power to pull
-        moveBuilderPlateTaskList.add(pullPlate);  // all the way to the wall
-
-        //moveBuilderPlateTaskList.add(new RobotSleep(2400));
-
-        // rotate with move toward the wall also toward the parking (allow room for plate to swing)
-//        MecanumRotateTask rotateBack = new MecanumRotateTask(robotHardware, robotProfile, navigator);
-//        rotateBack.setRotateHeading(new RobotPosition(dropX - 40, dropY, -Math.PI/2),
-//                lastPos = new RobotPosition(dropX - 50, dropY+10, 0));
-
-        //12/12, different rotation direction for Red and Blue sides
-//        double heading = startingPositionModes.contains("RED") ? 0 : -(Math.PI)*6/7; //150 degree
-//        rotateBack.setRotateHeading(new RobotPosition(dropX-40, dropY + ySign*20, -Math.PI/2), new RobotPosition(dropX -40, dropY, heading));
-
-//        rotateBack.setMinPower(0.8);  //set bigger power to rotate the foundation platform
-//        rotateBack.setPower(1); // max power to rotate
-//        moveBuilderPlateTaskList.add(rotateBack);
-
-        // hook off
         moveBuilderPlateTaskList.add(new HookPositionTask(robotHardware, robotProfile, RobotHardware.HookPosition.HOOK_OFF));
         moveBuilderPlateTaskList.add(new RobotSleep(100));
-        // go back up to bridge direction
-        PIDMecanumMoveTask moveOut = new PIDMecanumMoveTask(robotHardware, robotProfile, navigator);
-        //moveOut.setPath(new RobotPosition(pullPlateX, pullPlateY, -Math.PI/2), new RobotPosition(pullPlateX, pullPlateY, -Math.PI/2));
-        if(parking.equals("BridgeWall")) {
-            moveOut.setRelativePath(0, parkY-pullPlateY);
-            moveOut.setPower(0.8);
-            moveOut.setMinPower(0.5);
-            moveBuilderPlateTaskList.add(moveOut);
-        } else if (parking.equals("BridgeNeutral")){
-            PIDMecanumMoveTask moveSideways = new PIDMecanumMoveTask(robotHardware, robotProfile, navigator);
-            PIDMecanumMoveTask moveOut2 = new PIDMecanumMoveTask(robotHardware, robotProfile, navigator);
-
-            moveOut.setRelativePath(0, transferY-pullPlateY);
-            moveSideways.setRelativePath(parkNeutral, 0);
-            moveOut2.setRelativePath(0, parkY-transferY);
-            moveOut.setPower(0.8);
-            moveOut.setMinPower(0.5);
-            moveSideways.setPower(0.8);
-            moveSideways.setMinPower(0.5);
-            moveOut2.setPower(0.8);
-            moveOut2.setMinPower(0.5);
-            moveBuilderPlateTaskList.add(moveOut);
-            moveBuilderPlateTaskList.add(moveSideways);
-            moveBuilderPlateTaskList.add(moveOut2);
-        }
-
-        // Rotate to the bridge and push plate to back wall
 
         moveBuilderPlateTask = new SequentialComboTask();
         moveBuilderPlateTask.setTaskList(moveBuilderPlateTaskList);
-        moveBuilderPlateTask.setTaskName("Moved BuilderPlate");
+        moveBuilderPlateTask.setTaskName("Move & Rotate BuilderPlate");
+        // Notice the lastPos is set after the final rotate for parking
     }
 
     public ArrayList buildPickUpFirstBlockAndPark(){
@@ -533,7 +494,7 @@ public class AutonomousTaskBuilder {
         moveToStonePos.add(new RobotPosition(stoneX-20, stoneY, 0));
         moveToStonePos.add(new RobotPosition(stoneX-20, stoneY-38, 0));
 
-        addMovementAndSlide(new RobotPosition(0, 0, 0), moveToStonePos);
+        moveAndSlideToStone(new RobotPosition(0, 0, 0), moveToStonePos);
         taskList.add(new ClampAngleRotationTask(robotHardware, robotProfile, RobotHardware.ClampAnglePosition.BACK));
         taskList.add(pickUpTask);
         taskList.add(new ClampAngleRotationTask(robotHardware, robotProfile, RobotHardware.ClampAnglePosition.NORMAL));
@@ -585,20 +546,27 @@ public class AutonomousTaskBuilder {
     }
 
     void populateCommonTask(){
-        stoneX = 70;
+        stoneX = 68;
         dropX = 73;
+        parkWall = 10; //50;
+        parkNeutral = 60; //120;
         pullPlateX = -10;
         finalPushX = 50;
+        int ySign;
 
-        int ySign = startingPositionModes.contains("RED") ?-1 : 1;
+        if (startingPositionModes.contains("RED")) {
+            ySign = -1;
+            finalHeading = 0;
+        }
+        else {
+            ySign = 1;
+            finalHeading = -Math.PI;
+        }
 
         switch (startingPositionModes){
             case ("RED_2") :
                 dropY = -210; //-180
-                parkY = -110;
-                transferY = -90 - 60;
-                parkWall = 10;
-                parkNeutral = 60;  //60 robot after long distance travel, angle tilted, almost hit the platform, reduce x to avoid crash
+                parkY = -120;
                 stoneY = 28 + (2 - skyStonePosition) *20;
                 bridgeY = -110;
                 if (skyStonePosition==0) {
@@ -606,44 +574,50 @@ public class AutonomousTaskBuilder {
                 }
                 break;
             case("RED_3"):
-                dropY = -150; //-130
+                dropY = -160; //-130
                 parkY = -50;
-                transferY = -30 - 60;
-                parkWall = 10;
-                parkNeutral = 60;
                 stoneY = 26 + (2 - skyStonePosition) *20;
                 bridgeY = -50;
+                break;
+            case("RED_5"):
+                dropY = -160 + 120; //-130
+                parkY = -50 + 120;
+                //bridgeY = -50 + 120;
                 break;
             case("BLUE_2"):
                 dropY = 230; //210. used to be 220 on 2020.01.10
                 parkY = 115;
-                transferY = 145;
-                parkWall = 10; //50;
-                parkNeutral = 60; //120;
                 stoneY = -80 + skyStonePosition * 20;   //83
                 if (skyStonePosition==0) {
                     stoneY += 20;   // special situation, we may want to use intake to pick it up
                 }
                 bridgeY = 125;
-                Logger.logFile("stoneY = " + stoneY);
                 break;
             case("BLUE_3"):
-                dropY = 180;  //150 //12/12 set drop off block at further distance and back up create space to hook. used to be 170 on 2020.01.10
-                parkY =55 ;
-                transferY = 85;
-                parkWall = 10;
-                parkNeutral = 60;
+                dropY = 175;  //150 //12/12 set drop off block at further distance and back up create space to hook. used to be 170 on 2020.01.10
+                parkY = 55 ;
                 stoneY = -38 + (skyStonePosition-2) * 20;
                 bridgeY = 65;
                 break;
+            case("BLUE_5"):
+                dropY = 175 - 120;  //150 //12/12 set drop off block at further distance and back up create space to hook. used to be 170 on 2020.01.10
+                parkY =55 - 120 ;
+                //bridgeY = 65 - 120;
+                break;
+        }
+
+        if(parking.equals("BridgeWall")) {
+            parkX = parkWall;
+        }
+        else {
+            parkX = parkNeutral;
         }
         pullPlateY = dropY;
         finalPushY = dropY - ySign * 50;
+        afterRotatePlateY = pullPlateY - ySign * 40;
         // now we can initialized these after the parameters are set above
         setupPickUpTask();
         setupDropOffTask();
         setupReleaseWheelTask();
     }
 }
-
-

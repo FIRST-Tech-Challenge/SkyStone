@@ -245,8 +245,16 @@ public class RobotHardware {
     }
 
     public void setLiftPosition(int liftPosition, double power){
+        long currPos = this.getEncoderCounts(EncoderType.LIFT);
+        if (liftPosition>currPos) {
+            // going up, then can not higher than 3000
+            liftMotor.setTargetPosition(Math.min(liftPosition, 3000));
+        }
+        else {
+            // going down, then can not go lower than 0
+            liftMotor.setTargetPosition(Math.max(0, liftPosition));
+        }
         // Make sure the lift position >0 and < 4000 (around 11 bricks)
-        liftMotor.setTargetPosition(Math.max(0, Math.min(liftPosition, 3000)));
         liftMotor.setPower(power);
         liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
@@ -285,6 +293,9 @@ public class RobotHardware {
         else if (clampPosition == ClampPosition.RELEASE_2) {
             blockHolderServo1.setPosition(profile.hardwareSpec.clampS2WheelRelease);
             blockHolderServo2.setPosition(profile.hardwareSpec.clampS1Init);
+        } else if (clampPosition == ClampPosition.OPEN_SIDEWAYS) {
+            blockHolderServo1.setPosition(profile.hardwareSpec.clampS1Close);
+            blockHolderServo2.setPosition(profile.hardwareSpec.clampS2OpenLarge);
         }
     }
 
@@ -308,21 +319,30 @@ public class RobotHardware {
     public void startIntakeWheels() {
         intakeMotorLeft.setPower(0.5);
         intakeMotorRight.setPower(-0.5);
-        setBlockHolderWheel(HolderWheelPosition.HOLD_IN);
+        setBlockHolderWheel(IntakeDirection.TAKE_IN);
     }
 
     public void stopIntakeWheels() {
         intakeMotorLeft.setPower(0);
         intakeMotorRight.setPower(0);
-        setBlockHolderWheel(RobotHardware.HolderWheelPosition.STOP);
+        setBlockHolderWheel(IntakeDirection.STOP);
     }
 
     public void reverseIntakeWheels(){
         intakeMotorLeft.setPower(-0.5);
         intakeMotorRight.setPower(0.5);
-        setBlockHolderWheel(RobotHardware.HolderWheelPosition.RELEASE);
+        setBlockHolderWheel(IntakeDirection.RELEASE);
     }
 
+    public void setIntakeDirection(IntakeDirection direction){
+        if(direction == IntakeDirection.TAKE_IN){
+            startIntakeWheels();
+        } else if(direction == IntakeDirection.STOP){
+            stopIntakeWheels();
+        } else{
+            reverseIntakeWheels();
+        }
+    }
 
 
     public void setCapStoneServo(CapPosition capPosition){
@@ -352,11 +372,11 @@ public class RobotHardware {
     }
 
     // Controls the small green mecanum wheel that holds the block in place
-    public void setBlockHolderWheel(HolderWheelPosition holderWheelPosition) {
-        if(holderWheelPosition == HolderWheelPosition.HOLD_IN) {
+    public void setBlockHolderWheel(IntakeDirection intakeDirection) {
+        if(intakeDirection == IntakeDirection.TAKE_IN) {
             //blockHolderWheel.setPower(profile.hardwareSpec.holderWheelIn);
             blockHolderWheel.setPosition(0.1);
-        } else if(holderWheelPosition == HolderWheelPosition.RELEASE){
+        } else if(intakeDirection == IntakeDirection.RELEASE){
             //blockHolderWheel.setPower(profile.hardwareSpec.holderWheelOut);
             blockHolderWheel.setPosition(0.9);
         } else {
@@ -386,9 +406,9 @@ public class RobotHardware {
     public enum EncoderType {LEFT, RIGHT, HORIZONTAL, LIFT, SLIDER}
     public enum ClampAnglePosition{NORMAL, SIDE, BACK}
 
-    public enum ClampPosition {OPEN, CLOSE, INITIAL, RELEASE_1, RELEASE_2}
+    public enum ClampPosition {OPEN, CLOSE, INITIAL, RELEASE_1, RELEASE_2, OPEN_SIDEWAYS}
     public enum HookPosition {HOOK_ON, HOOK_OFF}
     public enum CapPosition {CAP_UP, CAP_DOWN, CAP_OTHER}
-    public enum HolderWheelPosition {HOLD_IN, RELEASE, STOP}
+    public enum IntakeDirection {TAKE_IN, RELEASE, STOP}
 
 }

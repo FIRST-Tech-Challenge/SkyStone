@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.opencv.core.Mat;
 import org.opencv.core.Core;
@@ -50,6 +51,7 @@ public class AutonomousGeneric extends LinearOpMode {
     long loopCount = 0;
     int countTasks = 0;
     int skystonePosition = 2;
+    boolean needStoneRecognition = true;
     RobotProfile.StartPosition startPosition;
     String startingPositionModes;
     String parkingLocation;
@@ -65,20 +67,17 @@ public class AutonomousGeneric extends LinearOpMode {
 
         Logger.init();
 
-        robotHardware = new RobotHardware();
-        robotHardware.init(hardwareMap, robotProfile);
+//        robotHardware = new RobotHardware();
+//        robotHardware.init(hardwareMap, robotProfile);
+        robotHardware = RobotFactory.getRobotHardware(hardwareMap,robotProfile);
         robotHardware.setMotorStopBrake(true);
 
         navigator = new RobotNavigator(robotProfile);
         navigator.reset();
         navigator.setInitPosition(0, 0, 0);
 
-        robotHardware.setClampPosition(RobotHardware.ClampPosition.INITIAL);
         robotHardware.getBulkData1();
         robotHardware.getBulkData2();
-        robotHardware.rotateGrabberOriginPos();
-        robotHardware.setHookPosition(RobotHardware.HookPosition.HOOK_OFF);
-        robotHardware.setCapStoneServo(RobotHardware.CapPosition.CAP_UP);
         robotHardware.retractBlockHolderWheel();
 
         driverOptions = new DriverOptions();
@@ -113,25 +112,33 @@ public class AutonomousGeneric extends LinearOpMode {
             this.delay = 0;
         }
 
-        double heading;
+         double heading;
          if (driverOptions.getStartingPositionModes().equals("RED_2")) {
             startPosition = RobotProfile.StartPosition.RED_2;
             heading = 0;
-        } else if (driverOptions.getStartingPositionModes().equals("RED_3")) {
-            startPosition = RobotProfile.StartPosition.RED_3;
-            heading = 0;
+         } else if (driverOptions.getStartingPositionModes().equals("RED_3")) {
+             startPosition = RobotProfile.StartPosition.RED_3;
+             heading = 0;
+         } else if (driverOptions.getStartingPositionModes().equals("RED_5")) {
+             startPosition = RobotProfile.StartPosition.RED_5;
+             heading = 0;
+             needStoneRecognition = false;
         } else if (driverOptions.getStartingPositionModes().equals("BLUE_2")) {
             startPosition = RobotProfile.StartPosition.BLUE_2;
             heading = 0;
-        } else {
+        } else if (driverOptions.getStartingPositionModes().equals("BLUE_3")){
             startPosition = RobotProfile.StartPosition.BLUE_3;
             heading = 0;
-        }
+        } else {
+            startPosition = RobotProfile.StartPosition.BLUE_5;
+            heading = 0;
+            needStoneRecognition = false;
+         }
 
         navigator.setInitPosition(0,0, 0);
-        Logger.logFile("init x: " + robotProfile.robotStartPoints.get(startPosition).getX());
-        Logger.logFile("init y: " + robotProfile.robotStartPoints.get(startPosition).getY());
-        Logger.logFile("heading" + heading );
+//        Logger.logFile("init x: " + robotProfile.robotStartPoints.get(startPosition).getX());
+//        Logger.logFile("init y: " + robotProfile.robotStartPoints.get(startPosition).getY());
+//        Logger.logFile("heading" + heading );
 
         //commented out because we only need to retrieve the option and no need to modify the editor in here.
         //SharedPreferences.Editor editor = prefs.edit();
@@ -143,17 +150,20 @@ public class AutonomousGeneric extends LinearOpMode {
     @Override
     public void runOpMode() {
         initRobot();
-
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        OpenCvCamera phoneCam = new OpenCvInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
-        phoneCam.openCameraDevice();
-        phoneCam.setPipeline(new Pipeline());
-        phoneCam.startStreaming(640, 480, OpenCvCameraRotation.UPRIGHT);
+        OpenCvCamera phoneCam = null;
+        if (needStoneRecognition) {
+            int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+            phoneCam = new OpenCvInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
+            phoneCam.openCameraDevice();
+            phoneCam.setPipeline(new Pipeline());
+            phoneCam.startStreaming(640, 480, OpenCvCameraRotation.UPRIGHT);
+        }
         //setUpTaskList();
 
         waitForStart();
-
-        phoneCam.closeCameraDevice();
+        if (needStoneRecognition) {
+            phoneCam.closeCameraDevice();
+        }
         // initial navigator, reset position since the encoder might have moved during adjustment
         robotHardware.getBulkData1();
         robotHardware.getBulkData2();
@@ -227,7 +237,7 @@ public class AutonomousGeneric extends LinearOpMode {
         } catch (Exception ex) {
         }
 
-        robotHardware.setClampPosition(RobotHardware.ClampPosition.OPEN);
+        robotHardware.setClampPosition(RobotHardware.ClampPosition.INITIAL);
         robotHardware.rotateGrabberOriginPos();
     }
 

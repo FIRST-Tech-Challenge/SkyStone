@@ -1,10 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.content.SharedPreferences;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import java.io.File;
 import java.util.ArrayList;
+
+import static org.firstinspires.ftc.teamcode.AutonomousOptions.START_POS_MODES_PREF;
 
 @TeleOp(name="SKYSTONE DriverOpMode", group="Main")
 //@Disabledxxs
@@ -34,6 +38,7 @@ public class DriverOpMode extends OpMode {
     SequentialComboTask homeGrabTask;
     SequentialComboTask capstonePositionTask;
     SequentialComboTask deliveryPositionTask;
+    SequentialComboTask homeGrabReadyTask;
 
     @Override
     public void init() {
@@ -46,10 +51,18 @@ public class DriverOpMode extends OpMode {
 
         Logger.init();
 
-        robotHardware = new RobotHardware();
-        robotHardware.init(hardwareMap, robotProfile);
+        robotHardware = RobotFactory.getRobotHardware(hardwareMap,robotProfile);
+
+        // Based on the Autonomous mode starting position, define the gyro offset for field mode
+        SharedPreferences prefs = AutonomousOptions.getSharedPrefs(hardwareMap);
 
         gyroAngleOffset = robotHardware.getGyroAngle();
+        if (prefs.getString(START_POS_MODES_PREF, "").contains("RED")) {
+            gyroAngleOffset += 90;
+        }
+        else {
+            gyroAngleOffset -= 90;
+        }
 
         navigator = new RobotNavigator(robotProfile);
         navigator.reset();
@@ -58,10 +71,6 @@ public class DriverOpMode extends OpMode {
 //
 //        }
         setupCombos();
-        robotHardware.rotateGrabberOriginPos();
-        robotHardware.setClampPosition(RobotHardware.ClampPosition.OPEN);
-        robotHardware.setHookPosition(RobotHardware.HookPosition.HOOK_OFF);
-        robotHardware.setCapStoneServo(RobotHardware.CapPosition.CAP_UP);
         robotHardware.engageBlockHolderWheel();
 
         prevLiftEncoderCnt = 0;
@@ -90,7 +99,7 @@ public class DriverOpMode extends OpMode {
             fieldMode = false;  //good luck driving
         }
 
-        // Capstone Needle Control
+        // Capstone Arm Control
         // ***WARNING*** DO NOT UNCOMMENT -- USING THIS IMPROPERLY WILL DAMAGE THE ROBOT
         // ONLY USE FOR TESTING
 
@@ -133,16 +142,23 @@ public class DriverOpMode extends OpMode {
         // clamp open or close
         // Driver 2: a - open, b - close
         if (gamepad2.a && !gamepad2.start) {
-            robotHardware.setClampPosition(RobotHardware.ClampPosition.OPEN);
             if (robotHardware.getEncoderCounts(RobotHardware.EncoderType.SLIDER) > 1000) {
+                robotHardware.setClampPosition(RobotHardware.ClampPosition.OPEN);
                 setupHomePositionTask();
                 currentTask = homePositionTask;
                 currentTask.prepare();
                 Logger.logFile(currentTask.toString());
+            } else {
+                currentTask = homeGrabReadyTask;
+                currentTask.prepare();
+                Logger.logFile(currentTask.toString());
             }
         } else if (gamepad2.b && !gamepad2.start) {
-            robotHardware.setClampPosition(RobotHardware.ClampPosition.CLOSE);
-            robotHardware.stopIntakeWheels();
+            //if (robotHardware.getEncoderCounts(RobotHardware.EncoderType.SLIDER) > 1000 ||
+            //    robotHardware.getEncoderCounts(RobotHardware.EncoderType.LIFT) >= robotProfile.hardwareSpec.liftHomeGrabPos-10) {
+                robotHardware.setClampPosition(RobotHardware.ClampPosition.CLOSE);
+                robotHardware.stopIntakeWheels();
+            //}
         }
 
 //        if (!xAlreadyPressed) {   // same as left dpad already
@@ -230,8 +246,6 @@ public class DriverOpMode extends OpMode {
    @Override
     public void stop() {
         // open the clamp to relief the grabber servo
-       robotHardware.setClampPosition(RobotHardware.ClampPosition.OPEN);
-
        try {
            Logger.flushToFile();
        } catch (Exception e) {
@@ -300,6 +314,13 @@ public class DriverOpMode extends OpMode {
                robotProfile.hardwareSpec.liftHomeGrabPos, 100));
        homeGrabList.add(new ClampOpenCloseTask(robotHardware, robotProfile, RobotHardware.ClampPosition.CLOSE));
        homeGrabTask.setTaskList(homeGrabList);
+
+       homeGrabReadyTask = new SequentialComboTask();
+       homeGrabReadyTask.addTask(new SetSliderPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.sliderOrigPos, 100));
+       homeGrabReadyTask.addTask(new SetLiftPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.liftStoneBase +
+               robotProfile.hardwareSpec.liftHomeReadyPos, 100));
+       homeGrabReadyTask.addTask(new ClampOpenCloseTask(robotHardware, robotProfile, RobotHardware.ClampPosition.OPEN));
+       homeGrabReadyTask.addTask(new IntakeControlTask(robotHardware, robotProfile, RobotHardware.IntakeDirection.TAKE_IN));
 
        ArrayList<RobotControl> deliveryPositionList = new ArrayList<RobotControl>();
        deliveryPositionList.add(new SetSliderPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.sliderOutPosDriver, 100));
@@ -408,7 +429,6 @@ public class DriverOpMode extends OpMode {
                 robotHardware.setSliderPosition(robotProfile.hardwareSpec.sliderOrigPos);
             }
         }
-
         prevLiftEncoderCnt = currLiftPos;
     }
 

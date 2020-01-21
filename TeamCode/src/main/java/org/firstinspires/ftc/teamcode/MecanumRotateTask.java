@@ -58,7 +58,7 @@ public class MecanumRotateTask implements RobotControl {
 //        }
 //    }
         //12/12 try to loose the condition so hook off easier
-        if ((dist<1.5) && (Math.abs(navigator.getHeading() - endAngle.getHeading()) < 1.0/180*Math.PI)){
+        if ((dist < 1.5) && (Math.abs(navigator.getHeading() - endAngle.getHeading()) < 1.0/180*Math.PI)){
             Logger.logFile("Done Rotation - Current Heading: " + Math.toDegrees(currentAngle) + ", Target Heading: " + Math.toDegrees(targetAngle));
             return true;
         } else {

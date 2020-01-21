@@ -32,7 +32,7 @@ public class InteractivePIDTest extends OpMode {
 
     @Override
     public void init() {
-        try{
+        try {
             robotProfile = RobotProfile.loadFromFile(new File("/sdcard/FIRST/profile.json"));
         } catch (Exception e) {
         }

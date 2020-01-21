@@ -22,7 +22,7 @@ public class Logger {
 
     public static void init() {
         try {
-            String timestamp = new SimpleDateFormat("yyyyMMdd-hhmm", Locale.US).format(new Date());
+            String timestamp = new SimpleDateFormat("yyyyMMdd-HHmm", Locale.US).format(new Date());
             File file = new File(Environment.getExternalStorageDirectory().getPath() + "/FIRST/driver_" + timestamp + ".txt");
 
             pw = new PrintWriter(new BufferedWriter(new FileWriter(file)));

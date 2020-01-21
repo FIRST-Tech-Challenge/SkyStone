@@ -1,0 +1,5 @@
+image:
+  file: .gitpod.Dockerfile
+tasks:
+  - before: yes | sdkmanager --licenses
+  - init: ./gradlew build

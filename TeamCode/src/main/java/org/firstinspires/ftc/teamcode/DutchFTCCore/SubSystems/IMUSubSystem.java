@@ -6,7 +6,7 @@ import org.firstinspires.ftc.teamcode.DutchFTCCore.Robot;
 import java.nio.ByteBuffer;
 
 public class IMUSubSystem extends SubSystem {
-    
+
     public static IMUSubSystem instance;
     public static double currHeading;
 

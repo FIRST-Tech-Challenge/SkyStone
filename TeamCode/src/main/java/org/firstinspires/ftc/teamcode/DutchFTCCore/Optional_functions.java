@@ -8,13 +8,13 @@ public class Optional_functions {
     public void drivedirectionspeed(){
 
         if (Function_config_file.drivedirectionspeed){
-
+            double dds = Function_config_file.drivespeed;
             if(Function_config_file.linear){
-                //linear function that take dx
+                dds = dds + Function_config_file.dx;
             }else if(Function_config_file.quadratic){
-                //quadratic functions that takes dx
+                dds = Math.pow(Math.sqrt(dds) + Function_config_file.dx, 2);
             }else if(Function_config_file.cubic){
-                //cubic function that take dx
+                dds = Math.pow(Math.cbrt(dds) + Function_config_file.dx, 3);
             }else{
                 //message that says to select a function
             }

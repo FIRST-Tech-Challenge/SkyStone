@@ -1,8 +1,12 @@
 package org.firstinspires.ftc.teamcode.DutchFTCCore.SubSystems;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.util.ReadWriteFile;
 
+import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.DutchFTCCore.Robot;
+
+import java.io.File;
 import java.nio.ByteBuffer;
 
 public class IMUSubSystem extends SubSystem {
@@ -21,7 +25,16 @@ public class IMUSubSystem extends SubSystem {
     }
 
     public void Calibrate () {
-                //TODO: Implement this instead of the seperate opmode for calibrating
+        BNO055IMU.CalibrationData calibrationData = Robot.instance.imu.readCalibrationData();
+
+        // Save the calibration data to a file. You can choose whatever file
+        // name you wish here, but you'll want to indicate the same file name
+        // when you initialize the IMU in an opmode in which it is used. If you
+        // have more than one IMU on your robot, you'll of course want to use
+        // different configuration file names for each.
+        String filename = "AdafruitIMUCalibration.json";
+        File file = AppUtil.getInstance().getSettingsFile(filename);
+        ReadWriteFile.writeFile(file, calibrationData.serialize());
     }
 
     @Override

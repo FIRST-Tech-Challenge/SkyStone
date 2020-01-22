@@ -46,6 +46,7 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
     public SampleMecanumDriveREV(HardwareMap hardwareMap, boolean strafe) {
         super(strafe);
         create_instance(hardwareMap, strafe);
+        imu.initialize(parameters);
     }
 
     public SampleMecanumDriveREV(HardwareMap hardwareMap, boolean strafe, boolean imuInit) {
@@ -195,7 +196,7 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
         } catch (Exception e){
             e.printStackTrace();
         }
-        RobotLog.dd(TAG, "getRawExternalHeading: " + Double.toString(t));
+        //RobotLog.dd(TAG, "getRawExternalHeading: " + Double.toString(t));
         return t;
     }
 }

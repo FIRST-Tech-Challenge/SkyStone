@@ -62,15 +62,17 @@ public class ScoopArmBot extends PinchArmBot {
             servoPinch.setPosition(PINCH_ARM_FOLD);
         }
     }
-    public void manualPickupSkystone(boolean dpadLeft) {
-        if (dpadLeft) {
-            servoArm.setPosition(PINCH_ARM_DOWN1);
-            opMode.sleep(1000);
-            servoPinch.setPosition(PINCH_PINCH);
-            opMode.sleep(1000);
-            servoArm.setPosition(PINCH_ARM_FOLD);
+    public void manualOperateSkyStone(boolean leftBumper, boolean rightBumper) {
+
+
+        if (leftBumper) {
+            servoArm.setPosition(servoArm.getPosition() + 0.005);
+        } else if (rightBumper) {
+            servoArm.setPosition(servoArm.getPosition() - 0.005);
+
         }
     }
+
     public void manualDropSkystone(boolean dpadRight) {
         if (dpadRight) {
             servoArm.setPosition(PINCH_ARM_DOWN1);
@@ -84,8 +86,14 @@ public class ScoopArmBot extends PinchArmBot {
     }
     public void manualArmRelease(boolean buttonA) {
         if (buttonA) {
-            servoArm.setPosition(PINCH_RELEASE);
+            servoPinch.setPosition(PINCH_RELEASE);
         }
+    }
+    public void manualArmPinch(boolean buttonX) {
+        if (buttonX) {
+            servoPinch.setPosition(PINCH_PINCH);
+        }
+
     }
 
     public void scoopFreeRun(boolean rightBumper, boolean leftBumper) {

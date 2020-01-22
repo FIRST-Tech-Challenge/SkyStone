@@ -75,25 +75,33 @@ public class FourWheelsDriveBot
 //    public void driveByHand(double _lf, double _lr, double _rf, double _rr) {
     public void driveByHand(double left_stick_x, double left_stick_y, double right_stick_x) {
 
-        final double x = Math.pow(left_stick_x, 3.0);
-        final double y = Math.pow(left_stick_y, 3.0);
-
-        final double rotation = Math.pow(right_stick_x, 3.0);
-        final double direction = Math.atan2(x, y);
-        final double speed = Math.min(1.0, Math.sqrt(x * x + y * y));
-
-        final double lf = speed * Math.sin(direction + Math.PI / 4.0) + rotation;
-        final double rf = speed * Math.cos(direction + Math.PI / 4.0) - rotation;
-        final double lr = speed * Math.cos(direction + Math.PI / 4.0) + rotation;
-        final double rr = speed * Math.sin(direction + Math.PI / 4.0) - rotation;
+        double drive  = -left_stick_y;
+        double strafe = left_stick_x;
+        double twist  = right_stick_x;
 
 
-        final double scale = maxAbs(1.0, lf, lr, rf, rr);
-        leftFront.setPower(lf / scale);
-        leftRear.setPower(lr / scale);
-        rightFront.setPower(rf / scale);
-        rightRear.setPower(rr / scale);
+        double[] speeds = {
+                (drive + strafe + twist),
+                (drive - strafe - twist),
+                (drive - strafe + twist),
+                (drive + strafe - twist)
+        };
 
+        double max = Math.abs(speeds[0]);
+        for(int i = 0; i < speeds.length; i++) {
+            if ( max < Math.abs(speeds[i]) ) max = Math.abs(speeds[i]);
+        }
+
+
+        if (max > 1) {
+            for (int i = 0; i < speeds.length; i++) speeds[i] /= max;
+        }
+
+        // apply the calculated values to the motors.
+        leftFront.setPower(speeds[0]);
+        rightFront.setPower(speeds[1]);
+        leftRear.setPower(speeds[2]);
+        rightRear.setPower(speeds[3]);
 
 
 

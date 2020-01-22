@@ -83,6 +83,8 @@ public class GyroBot extends CameraBot {
             leftRear.setPower(-power * direction);
             rightRear.setPower(power * direction);
 
+            delta = getDeltaAngle();
+
         }
         leftFront.setPower(0);
         rightFront.setPower(0);

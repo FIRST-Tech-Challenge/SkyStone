@@ -52,6 +52,9 @@ public class DriveTest extends LinearOpMode {
                 speed -= 0.1;
             speed = Drive.limitSpeedPositive(speed);
 
+            if (egamepad1.a.released)
+                Drive.strafeRightDistance(0.5,15);
+
             // check for move input
             if (egamepad1.dpad_up.state) {
                 Drive.moveForward(speed);

@@ -89,7 +89,7 @@ public class autonomous extends LinearOpMode {
 
         /*This will use the skystone position determined by vuforia and the
         alliance color to determine the skystone position*/
-        if (Webcam.PS == Webcam.PS.CENTER && AllianceColor == true){
+        /*if (Webcam.PS == Webcam.PS.CENTER && AllianceColor == true){
             Skystone = SkystonePosition.R2;
         } else if (Webcam.PS == Webcam.PS.LEFT && AllianceColor == true){
             Skystone = SkystonePosition.R3;
@@ -101,7 +101,7 @@ public class autonomous extends LinearOpMode {
             Skystone = SkystonePosition.B3;
         } else {
             Skystone = SkystonePosition.B1;
-        }
+        }*/
 
         // wait for PLAY button to be pressed on driver station
         telemetry.addLine(">> Press PLAY to start");

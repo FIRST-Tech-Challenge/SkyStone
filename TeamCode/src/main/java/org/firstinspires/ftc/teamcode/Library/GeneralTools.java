@@ -6,6 +6,7 @@ import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassis;
 
 public class GeneralTools {
     HardwareChassis robot;
+    OmniWheel omniWheel;
 
     public double ap_underBridgeForward = 50;
     public double ap_forwardGrabStone = 65;
@@ -15,6 +16,7 @@ public class GeneralTools {
     public GeneralTools(LinearOpMode opMode, HardwareChassis robot) {
         this.opMode = opMode;
         this.robot = robot;
+        omniWheel = new OmniWheel(robot);
     }
 
 
@@ -73,6 +75,13 @@ public class GeneralTools {
     public static void releaseFoundation(HardwareChassis robot) {
         robot.servo_claw_left.setPosition(0.1);
         robot.servo_claw_right.setPosition(0.9);
+    }
+
+    private void backTillButtons() {
+        while(robot.touch_right.getState() && robot.touch_left.getState()) {
+            omniWheel.setMotors(-0.3, 0, 0);
+        }
+        omniWheel.setMotors(0, 0, 0);
     }
 
 }

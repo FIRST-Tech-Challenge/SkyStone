@@ -175,12 +175,9 @@ public class ConceptAutonomousRedTest extends LinearOpMode {
             controlledDrive.start(0, -80, 0.4);
             while(!controlledDrive.endReached() && opModeIsActive()) {}
             controlledDrive.stop();
-            /*
-            while (colorTools.isRed(robot.color_front)){
-                omniWheel.setMotors(0, -0.2, 0);
-            }
-            omniWheel.setMotors(0,0,0); */
         }
+
+        // you are now next to the foundation
 
 
         if (opModeIsActive()) {

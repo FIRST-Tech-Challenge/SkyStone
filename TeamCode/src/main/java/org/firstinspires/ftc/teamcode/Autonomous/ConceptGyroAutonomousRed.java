@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.Library.Movement.ControlledDrive;
 import org.firstinspires.ftc.teamcode.Library.Movement.ControlledExtender;
 import org.firstinspires.ftc.teamcode.Library.Movement.ControlledLift;
 import org.firstinspires.ftc.teamcode.Library.OmniWheel;
+import org.firstinspires.ftc.teamcode.Library.OrientationTools;
 
 @Disabled
 @Autonomous(name = "C_Autonomous_Gyro")
@@ -24,6 +25,7 @@ public class ConceptGyroAutonomousRed extends LinearOpMode {
     OmniWheel omniWheel;
     ControlledLift controlledLift;
     ControlledExtender controlledExtender;
+    OrientationTools orientationTools;
 
     double extenderEncoderValue = 3.5;
     double extenderFoundationValue = 4;
@@ -40,13 +42,20 @@ public class ConceptGyroAutonomousRed extends LinearOpMode {
         omniWheel = new OmniWheel(robot);
         controlledLift = new ControlledLift(robot, telemetry);
         controlledExtender = new ControlledExtender(robot, telemetry);
+        orientationTools = new OrientationTools(robot);
 
-        generalTools.openClamp();
-        generalTools.releaseFoundation();
-        controlledLift.start(liftEncoderValue, 0.2);
 
         waitForStart();
-        controlledLift.stop();
+
+        if (opModeIsActive()) {
+            generalTools.openClamp();
+            generalTools.releaseFoundation();
+            controlledLift.start(liftFoundationValue,0.2);
+            while (!controlledLift.endReached()) {}
+            controlledLift.stop();
+        }
+
+        // you lifted the lift up
 
         if (opModeIsActive() ) {
             controlledExtender.start(extenderEncoderValue, 0.4);
@@ -72,6 +81,107 @@ public class ConceptGyroAutonomousRed extends LinearOpMode {
 
         // hey... you should have grabbed a stone now...
 
+        if (opModeIsActive()) {
+            controlledDrive.start(-10, 0, 0.4);
+        }
 
+        // you have driven back a few cm
+
+        //if (opModeIsActive()) {
+            //orientationTools.driveSidewaysTime();
+        //}
+
+        // you are now on the other side of the bridge
+
+
+        if (opModeIsActive()) {
+            while (!colorTools.isRed(robot.color_front) && opModeIsActive()) {
+                omniWheel.setMotors(0.4, 0, 0);
+            }
+            omniWheel.setMotors(0, 0, 0);
+        }
+
+        // you are now standing right in front of the foundation
+
+        if (opModeIsActive()) {
+            generalTools.openClamp();
+        }
+
+        // you have now released the stone on the foundation
+
+        if (opModeIsActive()) {
+            generalTools.grabFoundation();
+            generalTools.stopForMilliSeconds(500);
+        }
+
+        //you have now grabbed the foundation
+
+        if (opModeIsActive()) {
+
+        }
+
+        // you have now dragged the foundation into the corner (in best case)
+
+        if (opModeIsActive()){
+            generalTools.releaseFoundation();
+        }
+
+        // you have now released the foundation
+
+        if (opModeIsActive()) {
+            controlledDrive.start(0, -80, 0.4);
+            while(!controlledDrive.endReached() && opModeIsActive()) {}
+            controlledDrive.stop();
+        }
+
+        // you are now next to the foundation
+
+
+        if (opModeIsActive()) {
+            controlledExtender.start(-extenderFoundationValue, 0.2);
+            while(!controlledExtender.endReached() && opModeIsActive()) {}
+            controlledExtender.stop();
+        }
+
+        // you have now put the arm back in
+
+        if (opModeIsActive()) {
+            controlledLift.start(-liftFoundationValue, 0.2); //distance 0.5
+            while(!controlledLift.endReached() && opModeIsActive()) {}
+            controlledLift.stop();
+
+        }
+
+        // you have now lifted the lift down
+
+        if (opModeIsActive()) {
+            controlledDrive.start(60, 0, 0.2);
+            while (!controlledDrive.endReached() && opModeIsActive()) {}
+            controlledDrive.stop();
+        }
+
+        // you are now on B4
+
+        if (opModeIsActive()) {
+            while (!colorTools.isRed(robot.color_back) && opModeIsActive()){
+                if (robot.touch_right.getState() && robot.touch_left.getState()) {
+                    omniWheel.setMotors(-0.1, 0, 0);
+                    while (robot.touch_right.getState() && robot.touch_left.getState()) {}
+                    omniWheel.setMotors(0.0, -0.2, 0);
+                }
+            }
+
+            omniWheel.setMotors(0, 0, 0);
+        }
+
+        //you are now parked under the bridge at B3/B4
+
+    }
+
+    private void backTillButtons() {
+        while(robot.touch_right.getState() && robot.touch_left.getState() && opModeIsActive()) {
+            omniWheel.setMotors(-0.3, 0, 0);
+        }
+        omniWheel.setMotors(0, 0, 0);
     }
 }

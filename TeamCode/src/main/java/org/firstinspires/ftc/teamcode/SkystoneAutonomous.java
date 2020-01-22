@@ -16,8 +16,8 @@ import org.firstinspires.ftc.teamcode.Utilities.UserControl;
 import org.firstinspires.ftc.teamcode.Utilities.ConceptVuforiaSkyStoneNavigationWebcam;
 
 
-@Autonomous(name = "New Autonomous", group = "Auto")
-public class newAutonomous extends LinearOpMode{
+@Autonomous(name = "Skystone Autonomous", group = "Auto")
+public class SkystoneAutonomous extends LinearOpMode{
     //This gives the control programs shortened names to refer to them in this program
     DriveControl Drive = new DriveControl();
     GrabberControl Grabber = new GrabberControl();
@@ -36,7 +36,6 @@ public class newAutonomous extends LinearOpMode{
     //This is a list of all of the states
     private enum State {
         Initial,
-        FoundationTest,
         GrabStone,
         MoveToBuildZone,
         TurnFoundation,
@@ -54,8 +53,15 @@ public class newAutonomous extends LinearOpMode{
         B2,
         B3,
     }
+
+    private enum BlueSkystonePosition {
+        B1,
+        B2,
+        B3,
+    }
     //This sets the skystone to a default position
-    private SkystonePosition Skystone = SkystonePosition.B1;
+    private SkystonePosition Skystone = SkystonePosition.R1;
+    //private BlueSkystonePosition BlueSkystone = BlueSkystonePosition.B1;
 
     //This sets the default starting state
     private State mCurrentState = State.Initial;
@@ -90,19 +96,19 @@ public class newAutonomous extends LinearOpMode{
 
         /*This will use the skystone position determined by vuforia and the
         alliance color to determine the skystone position*/
-        /*if (Webcam.PS == Webcam.PS.CENTER && AllianceColor == true){
+        if (Webcam.PRS == Webcam.PRS.CENTER && AllianceColor == true){
             Skystone = SkystonePosition.R2;
-        } else if (Webcam.PS == Webcam.PS.LEFT && AllianceColor == true){
+        } else if (Webcam.PRS == Webcam.PRS.LEFT && AllianceColor == true){
             Skystone = SkystonePosition.R3;
-        } else if (Webcam.PS == Webcam.PS.RIGHT && AllianceColor == true){
+        } else if (Webcam.PRS == Webcam.PRS.RIGHT && AllianceColor == true){
             Skystone = SkystonePosition.R1;
-        } else if (Webcam.PS == Webcam.PS.CENTER && AllianceColor == false){
+        } else if (Webcam.PBS == Webcam.PBS.CENTER && AllianceColor == false){
             Skystone = SkystonePosition.B2;
-        } else if (Webcam.PS == Webcam.PS.RIGHT && AllianceColor == false){
+        } else if (Webcam.PBS == Webcam.PBS.RIGHT && AllianceColor == false){
             Skystone = SkystonePosition.B3;
         } else {
             Skystone = SkystonePosition.B1;
-        }*/
+        }
 
         // wait for PLAY button to be pressed on driver station
         telemetry.addLine(">> Press PLAY to start");
@@ -133,29 +139,26 @@ public class newAutonomous extends LinearOpMode{
                         newState(State.Park);
                     }
                     else {
-                    newState(State.FoundationTest);
+                        newState(State.GrabStone);
                     }
                     break;
 
 
-                case FoundationTest:
-                    FoundationGrabber.close();
-                    Drive.TimeDelay(1.0);
-                    Drive.moveForwardDistance(0.8,70);
-                    Drive.turnRightDistance(0.2,50);
-                    FoundationGrabber.open();
-                    Drive.turnRightDistance(0.5,25);
-                    Drive.moveForwardDistance(0.8, 80);
-                    newState(State.Stop);
-                    break;
-
-                    
                 case GrabStone:
                     telemetry.addLine("grab skystone");
                     telemetry.update();
                     Grabber.open();
                     Grabber.Pos1();
-                    Drive.moveForwardDistance(0.8, 80);
+                    Drive.moveForwardDistance(0.8, 60);
+                    if (Skystone == SkystonePosition.R3 || Skystone == SkystonePosition.B1) {
+                        Drive.moveForwardDistance(0.8, 20);
+                    } else if (AllianceColor == true){
+                        Drive.strafeLeftDistance(0.8, 20.32);
+                        Drive.moveForwardDistance(0.8, 20);
+                    } else {
+                        Drive.strafeRightDistance(0.8, 20.32);
+                        Drive.moveForwardDistance(0.8, 20);
+                    }
                     Grabber.close();
                     Drive.TimeDelay(0.5);
                     newState(State.MoveToBuildZone);
@@ -171,6 +174,8 @@ public class newAutonomous extends LinearOpMode{
                         Drive.turnLeftDistance(0.5,50);
                     }
                     Drive.moveForwardDistance(0.8, 175);
+                    if (Skystone != SkystonePosition.R3 && Skystone != SkystonePosition.B1)
+                        Drive.moveForwardDistance(0.8, 20.32);
                     newState(State.TurnFoundation);
                     break;
 
@@ -229,6 +234,4 @@ public class newAutonomous extends LinearOpMode{
             }
         }
     }
-
-
 }

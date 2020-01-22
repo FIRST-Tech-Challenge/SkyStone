@@ -138,13 +138,19 @@ public class ConceptVuforiaSkyStoneNavigationWebcam extends LinearOpMode {
     private float phoneYRotate    = 0;
     private float phoneZRotate    = 0;
 
-    public enum positionSkystone {
+    public enum positionRedSkystone {
+        LEFT,
+        CENTER,
+        RIGHT,
+    }
+    public enum positionBlueSkystone {
         LEFT,
         CENTER,
         RIGHT,
     }
 
-    public positionSkystone PS = positionSkystone.CENTER;
+    public positionRedSkystone PRS = positionRedSkystone.CENTER;
+    public positionBlueSkystone PBS = positionBlueSkystone.CENTER;
 
     @Override public void runOpMode() {
         /*
@@ -361,14 +367,28 @@ public class ConceptVuforiaSkyStoneNavigationWebcam extends LinearOpMode {
                 VectorF translation = lastLocation.getTranslation();
                 telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
                         translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
-                double yPosition = translation.get(0);
+                double yPositionRed = translation.get(0);
+                double yPositionBlue = translation.get(0);
                 //String positionSkystone = "";
-                if (yPosition<0){
-                    PS = positionSkystone.LEFT;
-                }else if (0<yPosition){
-                    PS = positionSkystone.CENTER;
+                if (yPositionRed<0){
+                    PRS = positionRedSkystone.LEFT;
+                    telemetry.addLine("Red Left");
+                }else if (0<yPositionRed){
+                    PRS = positionRedSkystone.CENTER;
+                    telemetry.addLine("Red Center");
                 }else {
-                    PS = positionSkystone.RIGHT;
+                    PRS = positionRedSkystone.RIGHT;
+                    telemetry.addLine("Red Right");
+                }
+                if (yPositionBlue<0){
+                    PBS = positionBlueSkystone.LEFT;
+                    telemetry.addLine("Blue Left");
+                } else if (0<yPositionBlue){
+                    PBS = positionBlueSkystone.CENTER;
+                    telemetry.addLine("Blue Center");
+                } else {
+                    PBS = positionBlueSkystone.RIGHT;
+                    telemetry.addLine("Blue Right");
                 }
                 // express the rotation of the robot in degrees.
                 Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
@@ -377,7 +397,8 @@ public class ConceptVuforiaSkyStoneNavigationWebcam extends LinearOpMode {
             else {
                 telemetry.addData("Visible Target", "none");
             }
-            telemetry.addData("Skystone Position", PS);
+            telemetry.addData(" Red Skystone Position", PRS);
+            telemetry.addData("Blue Skystone Position", PBS);
             telemetry.update();
         }
 

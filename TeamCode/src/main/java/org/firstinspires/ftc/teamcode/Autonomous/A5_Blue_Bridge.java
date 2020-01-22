@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassis;
@@ -10,6 +11,7 @@ import org.firstinspires.ftc.teamcode.Library.Movement.ControlledDrive;
 import org.firstinspires.ftc.teamcode.Library.Movement.ControlledExtender;
 import org.firstinspires.ftc.teamcode.Library.Movement.ControlledLift;
 import org.firstinspires.ftc.teamcode.Library.OmniWheel;
+
 
 @Autonomous (name = "A5_Blue_Bridge")
 
@@ -27,6 +29,9 @@ public class A5_Blue_Bridge extends LinearOpMode {
     double liftEncoderValue = 1.5;
     double liftStartOffset = 0.75;
 
+    double liftFoundationValue = 1;
+    double extenderFoundationValue = 4;
+
     @Override
     public void runOpMode() {
 
@@ -38,36 +43,39 @@ public class A5_Blue_Bridge extends LinearOpMode {
         controlledLift = new ControlledLift(robot, telemetry);
         controlledExtender = new ControlledExtender(robot, telemetry);
 
-        generalTools.releaseFoundation();
-        controlledLift.start(liftEncoderValue,0.2);
-
         waitForStart();
+
+
+        if (opModeIsActive()) {
+            controlledLift.start(liftFoundationValue,0.2);
+            while (!controlledLift.endReached()) {}
+            controlledLift.stop();
+        }
 
         if (opModeIsActive()){
             controlledExtender.start(extenderEncoderValue,0.4);
+            while (!controlledExtender.endReached()) {}
+            controlledExtender.stop();
             controlledLift.start(-(liftEncoderValue + liftStartOffset),0.2);
+            while (!controlledLift.endReached()) {}
+            controlledLift.stop();
         }
 
         // you have now lowered the lift and extended the arm
 
         if (opModeIsActive()){
-            while (!colorTools.isRed(robot.color_back) && opModeIsActive()){
-                /*if (robot.touch_right.getState() && robot.touch_left.getState()) {
-                    omniWheel.setMotors(-0.1, 0, 0);
-                    while (robot.touch_right.getState() && robot.touch_left.getState()) {}
-                    omniWheel.setMotors(0.0, -0.3, 0);
-                } */
+            while (!colorTools.isBlue(robot.color_back) && opModeIsActive()){
 
                 omniWheel.setMotors(0.0, 0.3, 0);
-                //backTillButtons();
-                //omniWheel.setMotors(0,-1,0);
             }
             omniWheel.setMotors(0,0,0);
         }
 
         // you are now below the bridge
 
-        backTillButtons();
+        if (opModeIsActive()) {
+            backTillButtons();
+        }
 
         // you are now touching the wall behind
     }

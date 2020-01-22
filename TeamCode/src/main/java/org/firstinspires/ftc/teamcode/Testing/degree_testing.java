@@ -26,13 +26,14 @@ public class degree_testing extends OpMode {
         gyro = new HardwareGyro(hardwareMap);
         tool = new OrientationTools(hwmp);
         gyro.init(hardwareMap);
+        //this.msStuckDetectLoop = 1073741824;
     }
 
     @Override
     public void loop() {
         telemetry.addData("°",gyro.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).firstAngle);
         telemetry.update();
-        tool.driveSidewardEncoder(new int[]{0,0,0,0},0.1,100,gyro.imu,wheel,this);
+        tool.driveSidewardEncoder(new int[]{20,20,-20,-20},0.1,500,gyro.imu,wheel,this);
 
     }
 }

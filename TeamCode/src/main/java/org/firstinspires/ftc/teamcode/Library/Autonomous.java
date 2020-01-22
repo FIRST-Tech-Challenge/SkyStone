@@ -26,6 +26,7 @@ public class Autonomous {
     double liftEncoderValue = 1.5;
     double liftStartOffset = 0.5;
     double liftFoundationValue = 1;
+    double driveToRandomStoneValue = 65;
     double side;
 
     public Autonomous(LinearOpMode opMode, ColorEnum color) {
@@ -60,7 +61,7 @@ public class Autonomous {
         controlledLift.start(liftEncoderValue, 0.2);
     }
 
-    public void stopInitListPosition() {
+    public void stopInitLiftPosition() {
         if (opModeIsActive() ) {
             controlledLift.stop();
         }
@@ -72,7 +73,7 @@ public class Autonomous {
         }
     }
 
-    public void driveToQuarry() {
+    public void driveToRandomStone() {
         if (opMode.opModeIsActive()) {
             controlledDrive.start(65, 0, 0.4);
 

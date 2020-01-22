@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassis;
@@ -11,6 +12,7 @@ import org.firstinspires.ftc.teamcode.Library.Movement.ControlledExtender;
 import org.firstinspires.ftc.teamcode.Library.Movement.ControlledLift;
 import org.firstinspires.ftc.teamcode.Library.OmniWheel;
 
+@Disabled
 @Autonomous (name = "C_Autonomous_RedTest")
 
 public class ConceptAutonomousRedTest extends LinearOpMode {
@@ -28,6 +30,7 @@ public class ConceptAutonomousRedTest extends LinearOpMode {
     double liftEncoderValue = 1.5;
     double liftStartOffset = 0.75;
     double liftFoundationValue = 1;
+
 
     @Override
     public void runOpMode() {

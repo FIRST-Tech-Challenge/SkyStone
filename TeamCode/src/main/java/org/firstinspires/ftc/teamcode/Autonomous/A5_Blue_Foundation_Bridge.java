@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassis;
@@ -23,7 +24,7 @@ public class A5_Blue_Foundation_Bridge extends LinearOpMode {
     ControlledExtender controlledExtender;
 
     double extenderEncoderValue = 3.5;
-    double liftEncoderValue = 1.5;
+    double liftEncoderValue = 0.5;
     double liftStartOffset = 0.75;
     double liftFoundationValue = 1;
     double extenderFoundationValue = 4;
@@ -40,16 +41,16 @@ public class A5_Blue_Foundation_Bridge extends LinearOpMode {
         controlledExtender = new ControlledExtender(robot, telemetry);
 
         generalTools.releaseFoundation();
-        controlledLift.start(liftEncoderValue,0.2);
 
         waitForStart();
 
-        if (opModeIsActive()){
-
-            controlledExtender.start(extenderEncoderValue,0.4);
-            controlledLift.start(-(liftEncoderValue + liftStartOffset),0.2);
+        if (opModeIsActive()) {
+            controlledLift.start(liftFoundationValue,0.2);
+            while (!controlledLift.endReached()) {}
+            controlledLift.stop();
         }
-        //now the lift is in front of the robot
+
+        // you have noe uplifted the lift
 
         if (opModeIsActive()){
             while (!colorTools.isBlue(robot.color_back) && opModeIsActive()){
@@ -57,35 +58,47 @@ public class A5_Blue_Foundation_Bridge extends LinearOpMode {
             }
             omniWheel.setMotors(0,0,0);
         }
+
         //now you are in the corner
 
         if (opModeIsActive()){
             backTillButtons();
         }
 
+        // you are now back at the wall
+
         if (opModeIsActive()){
             controlledExtender.start(extenderFoundationValue, 0.3);
-            controlledLift.start(liftFoundationValue, 0.4);
-
-            while(!controlledLift.endReached() && opModeIsActive()) {}
-            controlledLift.stop();
             while(!controlledExtender.endReached() && opModeIsActive()) {}
             controlledExtender.stop();
         }
-        //now the arm of the robot have the right position, to see the foundation
 
-        if (opModeIsActive()){
+        //now the arm of the robot has the right position, to see the foundation
+
+        if (opModeIsActive()) {
+            controlledLift.start(-liftFoundationValue,0.2);
+            while (!controlledLift.endReached()) {}
+            controlledLift.stop();
+        }
+
+        // the lift is now back to the start 0 level, to see the foundation
+
+        if (opModeIsActive() && !colorTools.isBlue(robot.color_front)){
             while (!colorTools.isBlue(robot.color_front) && opModeIsActive()){
                 omniWheel.setMotors(0.3,0,0);
             }
             omniWheel.setMotors(0,0,0);
         }
+
         //now you are in front of the foundation
 
         if (opModeIsActive()){
             generalTools.grabFoundation();
         }
+
         //now you grabbed the foundation
+
+        generalTools.stopForMilliSeconds(1000);
 
         if (opModeIsActive()){
             backTillButtons();
@@ -104,14 +117,13 @@ public class A5_Blue_Foundation_Bridge extends LinearOpMode {
 
         }
 
-        if (opModeIsActive()){
-            controlledLift.start(-liftFoundationValue,0.4);
-            controlledExtender.start(-extenderFoundationValue,0.3);
+        // now you're next to the foundation
+        // it's save to lower the lift
 
+        if (opModeIsActive()) {
+            controlledLift.start(-liftFoundationValue,1);
             while(!controlledLift.endReached() && opModeIsActive()) {}
             controlledLift.stop();
-            while(!controlledExtender.endReached() && opModeIsActive()) {}
-            controlledExtender.stop();
         }
 
         if (opModeIsActive()){
@@ -130,6 +142,5 @@ public class A5_Blue_Foundation_Bridge extends LinearOpMode {
         }
         omniWheel.setMotors(0, 0, 0);
     }
-
 
 }

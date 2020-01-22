@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassis;
@@ -10,6 +11,7 @@ import org.firstinspires.ftc.teamcode.Library.Movement.ControlledDrive;
 import org.firstinspires.ftc.teamcode.Library.Movement.ControlledExtender;
 import org.firstinspires.ftc.teamcode.Library.Movement.ControlledLift;
 import org.firstinspires.ftc.teamcode.Library.OmniWheel;
+
 
 @Autonomous (name = "A2_Blue_Stone_Bridge")
 
@@ -39,13 +41,22 @@ public class A2_Blue_Stone_Bridge extends LinearOpMode {
         controlledLift = new ControlledLift(robot, telemetry);
         controlledExtender = new ControlledExtender(robot, telemetry);
 
-        generalTools.openClamp();
-        generalTools.releaseFoundation();
-        controlledLift.start(liftEncoderValue, 0.2);
-
         waitForStart();
 
-        controlledLift.stop();
+
+        if (opModeIsActive()) {
+            generalTools.openClamp();
+        }
+
+        if (opModeIsActive()) {
+            generalTools.releaseFoundation();
+        }
+
+        if (opModeIsActive()) {
+            controlledLift.start(liftEncoderValue, 0.2);
+            while (!controlledLift.endReached()) {}
+            controlledLift.stop();
+        }
 
         if (opModeIsActive() ) {
             controlledExtender.start(extenderEncoderValue, 0.5);
@@ -91,7 +102,7 @@ public class A2_Blue_Stone_Bridge extends LinearOpMode {
 
 
         if (opModeIsActive()) {
-            controlledDrive.start(0, -30, 0);
+            controlledDrive.start(0, -30, 0.2);
             while (!controlledDrive.endReached() && opModeIsActive()) { }
             controlledDrive.stop();
         }
@@ -112,6 +123,14 @@ public class A2_Blue_Stone_Bridge extends LinearOpMode {
         }
 
         // you are now below the bridge aye
+
+        if (opModeIsActive()) {
+            generalTools.closeClamp();
+        }
+
+        if (opModeIsActive()) {
+            generalTools.stopForMilliSeconds(500);
+        }
 
     }
 

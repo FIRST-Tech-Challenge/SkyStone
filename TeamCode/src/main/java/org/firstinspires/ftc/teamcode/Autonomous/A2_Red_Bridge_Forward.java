@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassis;
@@ -11,6 +12,7 @@ import org.firstinspires.ftc.teamcode.Library.Movement.ControlledExtender;
 import org.firstinspires.ftc.teamcode.Library.Movement.ControlledLift;
 import org.firstinspires.ftc.teamcode.Library.OmniWheel;
 
+@Disabled
 @Autonomous (name = "A2_Red_Bridge_Forward")
 
 public class A2_Red_Bridge_Forward extends LinearOpMode {
@@ -74,14 +76,14 @@ public class A2_Red_Bridge_Forward extends LinearOpMode {
 
         // you are now touching the wall with both touch sensors
 
-        if (opModeIsActive()) {
-            generalTools.stopForMilliSeconds(10000);
-        }
+        //if (opModeIsActive()) {
+        //    generalTools.stopForMilliSeconds(10000);
+        //}
 
         // you have now waited 10 sec
 
         if (opModeIsActive()) {
-            controlledDrive.start(generalTools.ap_underBridgeForward, 0, 0);
+            controlledDrive.start(generalTools.ap_underBridgeForward, 0, 0.2);
             while(!controlledExtender.endReached() && opModeIsActive()) {}
             controlledDrive.stop();
         }

@@ -66,8 +66,8 @@ public class GeneralTools {
 
 
     public static void grabFoundation(HardwareChassis robot) {
-        robot.servo_claw_left.setPosition(0.6);
-        robot.servo_claw_right.setPosition(0.4);
+        robot.servo_claw_left.setPosition(0.6); // 0.6
+        robot.servo_claw_right.setPosition(0.4); // 0.4
     }
 
     public static void releaseFoundation(HardwareChassis robot) {

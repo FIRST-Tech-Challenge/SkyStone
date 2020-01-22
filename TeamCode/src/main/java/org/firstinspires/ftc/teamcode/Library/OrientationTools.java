@@ -150,23 +150,27 @@ public class OrientationTools {
         int[] encValuesCurrent;
         boolean doit = true;
         while(doit){
-            op.telemetry.addData("e",wheel.robot.motor_rear_right.getCurrentPosition());
+            op.telemetry.addData("rr",wheel.robot.motor_rear_right.getCurrentPosition());
+            op.telemetry.addData("rl",wheel.robot.motor_rear_left.getCurrentPosition());
+            op.telemetry.addData("fr",wheel.robot.motor_front_right.getCurrentPosition());
+            op.telemetry.addData("fl",wheel.robot.motor_front_left.getCurrentPosition());
             op.telemetry.update();
             encValuesCurrent = new int[]{
                     wheel.robot.motor_front_left.getCurrentPosition()*(int)(ControlledExtender.COUNTS_PER_CM),
                     wheel.robot.motor_front_right.getCurrentPosition()*(int)(ControlledExtender.COUNTS_PER_CM),
                     wheel.robot.motor_rear_left.getCurrentPosition()*(int)(ControlledExtender.COUNTS_PER_CM),
                     wheel.robot.motor_rear_right.getCurrentPosition()*(int)(ControlledExtender.COUNTS_PER_CM)};
-            if(     (encValuesCurrent[0] > encValuesStart[0]+cm[0])&&
-                    (encValuesCurrent[1] > encValuesStart[1]+cm[1])&&
-                    (encValuesCurrent[2] > encValuesStart[3]+cm[3]) &&
-                    (encValuesCurrent[3] > encValuesStart[3]+cm[3])){doit = false;}
+            if(     (encValuesCurrent[0] > encValuesStart[0]+cm[0])||
+                    (encValuesCurrent[1] > encValuesStart[1]+cm[1])||
+                    (encValuesCurrent[2] > encValuesStart[3]+cm[3])||
+                    (encValuesCurrent[3] > encValuesStart[3]+cm[3])){doit = false; op.telemetry.addData("ewrewrewrew","AEFAWERFRAWRAWRAR"); op.telemetry.update(); throw new Error("JAJAJAJAJAJAJA");}
             offset  = this.getDegree360(imu) - current;
             wheel.setMotors(0, power, offset / smoothness);
         }
         wheel.setMotors(0,0,0);
         op.msStuckDetectLoop = msStuckinLoopStart;
     }
+
 
 
 }

@@ -1,14 +1,16 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Library.ColorEnum;
 import org.firstinspires.ftc.teamcode.Library.Autonomous;
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "FragmentedAutonomousBlue")
+@Disabled
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "FragmentedAutonomousRed")
 
-public class FragmentedAutonomousBlue extends LinearOpMode {
-    Autonomous a = new Autonomous(this, ColorEnum.Blue);
+public class FragmentedAutonomousRed extends LinearOpMode {
+    Autonomous a = new Autonomous(this, ColorEnum.Red);
 
     @Override
     public void runOpMode() {
@@ -18,11 +20,11 @@ public class FragmentedAutonomousBlue extends LinearOpMode {
 
         waitForStart();
 
-        a.stopInitListPosition();
+        a.stopInitLiftPosition();
 
         a.prepareExtender();
 
-        a.driveToQuarry();
+        a.driveToRandomStone();
 
         a.grabQuarryStone();
 

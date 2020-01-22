@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassis;
@@ -11,6 +12,7 @@ import org.firstinspires.ftc.teamcode.Library.Movement.ControlledExtender;
 import org.firstinspires.ftc.teamcode.Library.Movement.ControlledLift;
 import org.firstinspires.ftc.teamcode.Library.OmniWheel;
 
+@Disabled
 @Autonomous (name = "A2_Blue_Stone_Bridge_Forward")
 
 public class A2_Blue_Stone_Bridge_Forward extends LinearOpMode {
@@ -113,7 +115,7 @@ public class A2_Blue_Stone_Bridge_Forward extends LinearOpMode {
 
         if (opModeIsActive()) {
             while (!colorTools.isBlue(robot.color_back)) {
-                omniWheel.setMotors(0, 0.2, 0);
+                omniWheel.setMotors(0, 0.2, 0.2);
             }
             omniWheel.setMotors(0, 0, 0);
         }

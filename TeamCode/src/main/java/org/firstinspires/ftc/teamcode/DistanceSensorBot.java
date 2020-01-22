@@ -32,16 +32,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
@@ -49,7 +45,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class DistanceSensorBot extends PinchArmBot {
 
-    protected DistanceSensor sensorSkyStoneQuarry = null;
+    protected DistanceSensor frontSensor = null;
+    protected DistanceSensor backSensor = null;
+    protected DistanceSensor otherSensor = null;
 
     public DistanceSensorBot(LinearOpMode opMode) {
         super(opMode);
@@ -60,53 +58,145 @@ public class DistanceSensorBot extends PinchArmBot {
         super.init(ahwMap);
 
         // initialize the sensor for skystone quarry detection
-        sensorSkyStoneQuarry = hwMap.get(DistanceSensor.class, "distance_front");
+        frontSensor = hwMap.get(DistanceSensor.class, "distance_front");
+        backSensor = hwMap.get(DistanceSensor.class, "distance_back");
+        otherSensor = hwMap.get(DistanceSensor.class, "distance_other");
     }
 
-    public double getDistanceToStoneQuarry() {
-        opMode.telemetry.addData("range", String.format("%.01f cm", sensorSkyStoneQuarry.getDistance(DistanceUnit.CM)));
+    public double getDistanceFront() {
+        opMode.telemetry.addData("range", String.format("%.01f cm", frontSensor.getDistance(DistanceUnit.CM)));
 
         // you can also cast this to a Rev2mDistanceSensor if you want to use added
         // methods associated with the Rev2mDistanceSensor class.
-        Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor) sensorSkyStoneQuarry;
+        Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor) frontSensor;
         // Rev2mDistanceSensor specific methods.
         opMode.telemetry.addData("ID", String.format("%x", sensorTimeOfFlight.getModelID()));
         opMode.telemetry.addData("did time out", Boolean.toString(sensorTimeOfFlight.didTimeoutOccur()));
 
         opMode.telemetry.update();
-        return sensorSkyStoneQuarry.getDistance(DistanceUnit.CM);
+        return frontSensor.getDistance(DistanceUnit.CM);
     }
 
-    public void driveUntilDistance(double distance, double power) {
+    public double getDistanceBack() {
+        opMode.telemetry.addData("range", String.format("%.01f cm", backSensor.getDistance(DistanceUnit.CM)));
+
+        // you can also cast this to a Rev2mDistanceSensor if you want to use added
+        // methods associated with the Rev2mDistanceSensor class.
+        Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor) backSensor;
+        // Rev2mDistanceSensor specific methods.
+        opMode.telemetry.addData("ID", String.format("%x", sensorTimeOfFlight.getModelID()));
+        opMode.telemetry.addData("did time out", Boolean.toString(sensorTimeOfFlight.didTimeoutOccur()));
+
+        opMode.telemetry.update();
+        return backSensor.getDistance(DistanceUnit.CM);
+    }
+
+    public double getDistanceOther() {
+        opMode.telemetry.addData("range", String.format("%.01f cm", otherSensor.getDistance(DistanceUnit.CM)));
+
+        // you can also cast this to a Rev2mDistanceSensor if you want to use added
+        // methods associated with the Rev2mDistanceSensor class.
+        Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor) otherSensor;
+        // Rev2mDistanceSensor specific methods.
+        opMode.telemetry.addData("ID", String.format("%x", sensorTimeOfFlight.getModelID()));
+        opMode.telemetry.addData("did time out", Boolean.toString(sensorTimeOfFlight.didTimeoutOccur()));
+
+        opMode.telemetry.update();
+        return otherSensor.getDistance(DistanceUnit.CM);
+    }
+
+    public void driveUntilDistance(double distance, double power, int sensor) {
 
         leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         leftRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        if (getDistanceToStoneQuarry() > distance) {
+        if (sensor == 0) {
+            if (getDistanceFront() > distance) {
 
-            do {
-                leftFront.setPower(- power);
-                rightFront.setPower(power);
-                leftRear.setPower(power);
-                rightRear.setPower(- power);
-            }
-            while (getDistanceToStoneQuarry() > distance);
-        } else {
+                do {
+                    leftFront.setPower(- power);
+                    rightFront.setPower(power);
+                    leftRear.setPower(power);
+                    rightRear.setPower(- power);
+                    RobotLog.d(String.format("DRIVING! Distance: %.1f", frontSensor.getDistance(DistanceUnit.CM)));
 
-            do {
-                leftFront.setPower(power);
-                rightFront.setPower(- power);
-                leftRear.setPower(- power);
-                rightRear.setPower(power);
+                }
+                while (getDistanceFront() > distance);
+            } else {
+
+                do {
+                    leftFront.setPower(power);
+                    rightFront.setPower(- power);
+                    leftRear.setPower(- power);
+                    rightRear.setPower(power);
+                    RobotLog.d(String.format("DRIVING! Distance: %.1f", frontSensor.getDistance(DistanceUnit.CM)));
+                }
+                while (getDistanceFront() < distance);
             }
-            while (getDistanceToStoneQuarry() < distance);
+            leftFront.setPower(0);
+            rightFront.setPower(0);
+            leftRear.setPower(0);
+            rightRear.setPower(0);
+            RobotLog.d(String.format("MADE IT! Distance: %.1f", frontSensor.getDistance(DistanceUnit.CM)));
+
+        } else if (sensor == 1) {
+            if (getDistanceBack() > distance) {
+
+                do {
+                    leftFront.setPower(- power);
+                    rightFront.setPower(power);
+                    leftRear.setPower(power);
+                    rightRear.setPower(- power);
+                    RobotLog.d(String.format("DRIVING! Distance: %.1f", backSensor.getDistance(DistanceUnit.CM)));
+                }
+                while (getDistanceBack() > distance);
+            } else {
+
+                do {
+                    leftFront.setPower(power);
+                    rightFront.setPower(- power);
+                    leftRear.setPower(- power);
+                    rightRear.setPower(power);
+                    RobotLog.d(String.format("DRIVING! Distance: %.1f", backSensor.getDistance(DistanceUnit.CM)));
+                }
+                while (getDistanceFront() < distance);
+            }
+            leftFront.setPower(0);
+            rightFront.setPower(0);
+            leftRear.setPower(0);
+            rightRear.setPower(0);
+            RobotLog.d(String.format("MADE IT! Distance: %.1f", backSensor.getDistance(DistanceUnit.CM)));
         }
-        leftFront.setPower(0);
-        rightFront.setPower(0);
-        leftRear.setPower(0);
-        rightRear.setPower(0);
+
+
+    }
+
+    public void ghettoGyro() {
+
+        leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        if (getDistanceFront() < getDistanceBack()) {
+            do {
+                leftFront.setPower(0.1);
+                rightFront.setPower(-0.1);
+                leftRear.setPower(0.1);
+                rightRear.setPower(-0.1);
+            }
+            while (getDistanceFront() < getDistanceBack());
+        } else if (getDistanceFront() > getDistanceBack()) {
+            do {
+                leftFront.setPower(-0.1);
+                rightFront.setPower(0.1);
+                leftRear.setPower(-0.1);
+                rightRear.setPower(0.1);
+            }
+            while (getDistanceFront() > getDistanceBack());
+        }
 
     }
 }

@@ -5,6 +5,7 @@ import android.graphics.Color;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.RobotLog;
 import com.vuforia.Image;
@@ -21,7 +22,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
-public class CameraBot extends PinchArmBot {
+public class CameraBot extends DistanceSensorBot {
     public class Area extends Object{
         public int x;
         public int y;
@@ -86,15 +87,15 @@ public class CameraBot extends PinchArmBot {
 
     @Override
     public void init(HardwareMap ahwMap) {
-        box1.x = 550;
+        box1.x = 750;
         box1.y = 100;
         box1.width = 100;
         box1.height = 200;
-        box2.x = 550;
+        box2.x = 750;
         box2.y = 300;
         box2.width = 100;
         box2.height = 200;
-        box3.x = 550;
+        box3.x = 750;
         box3.y = 500;
         box3.width = 100;
         box3.height = 200;
@@ -115,10 +116,7 @@ public class CameraBot extends PinchArmBot {
     final int SKYSTONE3 = 3;
 
     protected void printAndSave(Bitmap bmp, int average, String label){
-//        opMode.telemetry.log().add("Image %s with %d x %d and average RGB (%d, %d, %d)", label, bmp.getWidth(), bmp.getHeight(), Color.red(average), Color.green(average), Color.blue(average));
-        opMode.telemetry.log().add("Image %s with %d x %d and average RGB #%02X #%02X #%02X", label, bmp.getWidth(), bmp.getHeight(), Color.red(average), Color.green(average), Color.blue(average));
-        opMode.telemetry.update();
-        opMode.sleep (3 * 1000);
+        RobotLog.d("Image %s with %d x %d and average RGB #%02X #%02X #%02X", label, bmp.getWidth(), bmp.getHeight(), Color.red(average), Color.green(average), Color.blue(average));
         try (FileOutputStream out = new FileOutputStream(String.format("/sdcard/FIRST/ftc_%s.png", label))) {
             bmp.compress(Bitmap.CompressFormat.PNG, 100, out);
         } catch (IOException e) {
@@ -129,29 +127,34 @@ public class CameraBot extends PinchArmBot {
 
     public int detectSkystone() {
         BlockingQueue<VuforiaLocalizer.CloseableFrame> queue = vuforia.getFrameQueue();
-
+        RobotLog.d("Detecting Started ...");
         try {
             VuforiaLocalizer.CloseableFrame frame = queue.take();
+            RobotLog.d("Took Frames from Vuforia");
             Image image = frame.getImage(0);
-            opMode.telemetry.log().add("Got %d images from vuforia frame queue", frame.getNumImages());
-            opMode.telemetry.log().add("Image #0 type = %d with %d x %d", image.getFormat(), image.getWidth(), image.getHeight());
-            opMode.telemetry.log().add("Num Bytes = %d", image.getPixels().remaining());
-            opMode.telemetry.update();
             Bitmap bmp = vuforia.convertFrameToBitmap(frame);
-            printAndSave(bmp, getAverageRGB(bmp), "camera");
+            RobotLog.d("Converted Vuforia frame to BMP");
+            // DEBUG : uncomment the following line to save the whole picture captured
+            // printAndSave(bmp, getAverageRGB(bmp), "camera");
+            RobotLog.d("Saved camera BMP");
             frame.close();
+            RobotLog.d("Closed frame");
             Bitmap b1, b2, b3;
             b1 = Bitmap.createBitmap(bmp, box1.x, box1.y, box1.width, box1.height);
             b2 = Bitmap.createBitmap(bmp, box2.x, box2.y, box2.width, box2.height);
             b3 = Bitmap.createBitmap(bmp, box3.x, box3.y, box3.width, box3.height);
+            RobotLog.d("Created 3 sub-bitmaps");
             int c1, c2, c3;
             c1 = getAverageRGB(b1);
             c2 = getAverageRGB(b2);
             c3 = getAverageRGB(b3);
+            RobotLog.d("Calculate AVG for 3 sub-bitmaps");
             printAndSave(b1, c1, "box1");
             printAndSave(b2, c2, "box2");
             printAndSave(b3, c3, "box3");
+            RobotLog.d("Saved for 3 sub-bitmaps");
             int skystone = chooseSkystone(c1, c2, c3);
+            RobotLog.d("Chose skystone from 3 sub-bitmaps");
             return skystone;
         } catch (InterruptedException e) {
             print("Photo taken has been interrupted !");

@@ -20,9 +20,12 @@ public class servoDropBot extends ButtArmBot{
 
         servoDrop.setPosition(position);
     }
-    public void toggleServoDrop(boolean Abutton){
+    public void toggleServoDrop(boolean Abutton, boolean Bbutton){
         if(Abutton){
             servoDrop.setPosition(position+0.3);
+        }
+        if (Bbutton) {
+            servoDrop.setPosition(position);
         }
     }
 

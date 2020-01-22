@@ -40,18 +40,13 @@ public class GyroPlayerTest extends OpMode {
 
     }
 
-    public void driveSidewardTime(Gamepad g, double power, double smoothness, BNO055IMU imu, OmniWheel wheel, OpMode op){
-        /*
-        double current = oTool.getDegree360(imu);
-        long timeStart = System.currentTimeMillis();
-        int msStuckinLoopStart = op.msStuckDetectLoop;
-        op.msStuckDetectLoop = 1073741824;
-        while (false) {
-            //double offset = oTool.getDegree360(imu) - current;
-            //wheel.setMotors(0, power, offset / smoothness);
+    public void driveSidewardGamepad(Gamepad g, double power, double smoothness, BNO055IMU imu, OmniWheel wheel, OpMode op, OrientationTools oTools){
+        double offset = oTools.getDegree() - Math.atan(g.left_stick_y/g.left_stick_x);
+        double startPos = oTools.getDegree() - offset;
+        while(g.left_stick_x !=0 || g.left_stick_y !=0){
+            wheel.setMotors(g.left_stick_x,g.left_stick_y,(startPos-(oTools.getDegree()-offset))/smoothness);
         }
         wheel.setMotors(0,0,0);
-        op.msStuckDetectLoop = msStuckinLoopStart;*/
     }
 
 }

@@ -37,6 +37,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
@@ -46,6 +47,7 @@ public class DistanceSensorBot extends PinchArmBot {
 
     protected DistanceSensor frontSensor = null;
     protected DistanceSensor backSensor = null;
+    protected DistanceSensor otherSensor = null;
 
     public DistanceSensorBot(LinearOpMode opMode) {
         super(opMode);
@@ -58,6 +60,7 @@ public class DistanceSensorBot extends PinchArmBot {
         // initialize the sensor for skystone quarry detection
         frontSensor = hwMap.get(DistanceSensor.class, "distance_front");
         backSensor = hwMap.get(DistanceSensor.class, "distance_back");
+        otherSensor = hwMap.get(DistanceSensor.class, "distance_other");
     }
 
     public double getDistanceFront() {
@@ -88,6 +91,19 @@ public class DistanceSensorBot extends PinchArmBot {
         return backSensor.getDistance(DistanceUnit.CM);
     }
 
+    public double getDistanceOther() {
+        opMode.telemetry.addData("range", String.format("%.01f cm", otherSensor.getDistance(DistanceUnit.CM)));
+
+        // you can also cast this to a Rev2mDistanceSensor if you want to use added
+        // methods associated with the Rev2mDistanceSensor class.
+        Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor) otherSensor;
+        // Rev2mDistanceSensor specific methods.
+        opMode.telemetry.addData("ID", String.format("%x", sensorTimeOfFlight.getModelID()));
+        opMode.telemetry.addData("did time out", Boolean.toString(sensorTimeOfFlight.didTimeoutOccur()));
+
+        opMode.telemetry.update();
+        return otherSensor.getDistance(DistanceUnit.CM);
+    }
 
     public void driveUntilDistance(double distance, double power, int sensor) {
 
@@ -104,6 +120,8 @@ public class DistanceSensorBot extends PinchArmBot {
                     rightFront.setPower(power);
                     leftRear.setPower(power);
                     rightRear.setPower(- power);
+                    RobotLog.d(String.format("DRIVING! Distance: %.1f", frontSensor.getDistance(DistanceUnit.CM)));
+
                 }
                 while (getDistanceFront() > distance);
             } else {
@@ -113,6 +131,7 @@ public class DistanceSensorBot extends PinchArmBot {
                     rightFront.setPower(- power);
                     leftRear.setPower(- power);
                     rightRear.setPower(power);
+                    RobotLog.d(String.format("DRIVING! Distance: %.1f", frontSensor.getDistance(DistanceUnit.CM)));
                 }
                 while (getDistanceFront() < distance);
             }
@@ -120,6 +139,8 @@ public class DistanceSensorBot extends PinchArmBot {
             rightFront.setPower(0);
             leftRear.setPower(0);
             rightRear.setPower(0);
+            RobotLog.d(String.format("MADE IT! Distance: %.1f", frontSensor.getDistance(DistanceUnit.CM)));
+
         } else if (sensor == 1) {
             if (getDistanceBack() > distance) {
 
@@ -128,6 +149,7 @@ public class DistanceSensorBot extends PinchArmBot {
                     rightFront.setPower(power);
                     leftRear.setPower(power);
                     rightRear.setPower(- power);
+                    RobotLog.d(String.format("DRIVING! Distance: %.1f", backSensor.getDistance(DistanceUnit.CM)));
                 }
                 while (getDistanceBack() > distance);
             } else {
@@ -137,6 +159,7 @@ public class DistanceSensorBot extends PinchArmBot {
                     rightFront.setPower(- power);
                     leftRear.setPower(- power);
                     rightRear.setPower(power);
+                    RobotLog.d(String.format("DRIVING! Distance: %.1f", backSensor.getDistance(DistanceUnit.CM)));
                 }
                 while (getDistanceFront() < distance);
             }
@@ -144,6 +167,7 @@ public class DistanceSensorBot extends PinchArmBot {
             rightFront.setPower(0);
             leftRear.setPower(0);
             rightRear.setPower(0);
+            RobotLog.d(String.format("MADE IT! Distance: %.1f", backSensor.getDistance(DistanceUnit.CM)));
         }
 
 

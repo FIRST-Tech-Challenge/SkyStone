@@ -11,9 +11,9 @@ public class BlueStreet extends LinearOpMode {
 
     int direction_forward, direction_backward;
 
-    int[] distFirstMove = new int[]{-100, 100, 300};
-    int[] distFoundMove = new int[]{1600, 1800, 2000};
-    int[] distBackMove = new int[]{2200, 2400, 1600};
+    int[] distFirstMove = new int[]{300, 100, -100};
+    int[] distFoundMove = new int[]{2000, 1800, 1600};
+    int[] distBackMove = new int[]{1600, 2500, 2300};
 
     int skystonePostition;
     protected void setDirection(){
@@ -29,7 +29,7 @@ public class BlueStreet extends LinearOpMode {
         waitForStart();
         setDirection();
         skystonePostition = robot.detectSkystone();
-            robot.driveUntilDistance(18, 0.3, 1);
+            robot.driveUntilDistance(18, 0.3, 0);
             robot.driveStraightByDistance(robot.DIRECTION_FORWARD, distFirstMove[skystonePostition - 1]);
             robot.pickupSkyStone();
 //            robot.driveUntilDistance(35, 0.3, 1);
@@ -52,20 +52,21 @@ public class BlueStreet extends LinearOpMode {
 
             sleep(1 * 1000);
 
-            robot.driveUntilDistance(18, 0.3, 1);
+            robot.driveUntilDistance(18, 0.3, 0);
 
             robot.pickupSkyStone();
 
-//            robot.driveUntilDistance(35, 0.3, 1);
+//            robot.driveUntilDistance(35, 0.3, 0);
 //            robot.driveStraightByDistance(direction_forward, distBackMove[skystonePostition - 1], 0.8);
 
-            robot.driveByDistanceWithAcceleration(direction_forward, distBackMove[skystonePostition - 1], 1, 10);
+            robot.driveByDistanceWithAcceleration(direction_forward, distBackMove[skystonePostition - 1] + 300, 1, 10);
 
             robot.driveStraightByDistance(robot.DIRECTION_LEFT, 200, 0.5);
             robot.dropSkyStone();
             robot.driveStraightByDistance(robot.DIRECTION_RIGHT, 200, 0.5);
-            robot.driveStraightByDistance(direction_backward, 800, 1);
+            robot.driveStraightByDistance(direction_backward, 1300, 1);
 
+            robot.resetAngle();
         }
 
 

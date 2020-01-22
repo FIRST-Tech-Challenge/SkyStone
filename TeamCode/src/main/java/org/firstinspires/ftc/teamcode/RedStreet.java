@@ -62,12 +62,12 @@ public class RedStreet extends LinearOpMode {
 //            robot.driveUntilDistance(35, 0.3, 1);
 //            robot.driveStraightByDistance(direction_forward, distBackMove[skystonePostition - 1], 0.8);
 
-            robot.driveByDistanceWithAcceleration(direction_forward, distBackMove[skystonePostition - 1], 1, 10);
+            robot.driveByDistanceWithAcceleration(direction_forward, distBackMove[skystonePostition - 1] + 300, 1, 10);
 
             robot.driveStraightByDistance(robot.DIRECTION_LEFT, 200, 0.5);
             robot.dropSkyStone();
             robot.driveStraightByDistance(robot.DIRECTION_RIGHT, 200, 0.5);
-            robot.driveStraightByDistance(direction_backward, 800, 1);
+            robot.driveStraightByDistance(direction_backward, 1300, 1);
 
         }
 

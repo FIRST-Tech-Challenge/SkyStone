@@ -36,6 +36,7 @@ public class newAutonomous extends LinearOpMode{
     //This is a list of all of the states
     private enum State {
         Initial,
+        FoundationTest,
         GrabStone,
         MoveToBuildZone,
         TurnFoundation,
@@ -132,11 +133,23 @@ public class newAutonomous extends LinearOpMode{
                         newState(State.Park);
                     }
                     else {
-                    newState(State.GrabStone);
+                    newState(State.FoundationTest);
                     }
                     break;
 
 
+                case FoundationTest:
+                    FoundationGrabber.close();
+                    Drive.TimeDelay(1.0);
+                    Drive.moveForwardDistance(0.8,70);
+                    Drive.turnRightDistance(0.2,50);
+                    FoundationGrabber.open();
+                    Drive.turnRightDistance(0.5,25);
+                    Drive.moveForwardDistance(0.8, 80);
+                    newState(State.Stop);
+                    break;
+
+                    
                 case GrabStone:
                     telemetry.addLine("grab skystone");
                     telemetry.update();

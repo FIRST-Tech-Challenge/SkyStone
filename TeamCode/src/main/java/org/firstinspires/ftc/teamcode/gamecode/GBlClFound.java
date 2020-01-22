@@ -20,7 +20,7 @@ public class GBlClFound extends AutoOpMode {
         ExpansionHub2_VoltageSensor =  hardwareMap.voltageSensor.get("Expansion Hub 2");
 
 
-        int blueTapeVal = 310;
+        int blueFoundVal = 20;
         telemetry.addData("Status", "initialized");
         joules.FoundationDrop();
         joules.DaffyUp();
@@ -51,13 +51,21 @@ public class GBlClFound extends AutoOpMode {
 
         sleep(100);
 
-        joules.DriveForward(0.05);
-        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 1550));
+        while(colorSensor.blue()<blueFoundVal){
+            joules.DriveForward(0.01);
+        }
         joules.Stop();
 
-        joules.DriveForward(0.02);
-        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 400));
-        joules.Stop();
+//        joules.DriveBackward(0.1);
+//        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 200));
+//
+//        joules.DriveForward(0.05);
+//        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 1550));
+//        joules.Stop();
+//
+//        joules.DriveForward(0.02);
+//        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 400));
+//        joules.Stop();
 
         joules.FoundationGrab();
         sleep(2000);

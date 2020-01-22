@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.robots.Joules;
 
 @Autonomous
 
-public class GLeftPark extends AutoOpMode {
+public class GWaitLeftPark extends AutoOpMode {
     private VoltageSensor ExpansionHub2_VoltageSensor;
     public void runOp() throws InterruptedException {
         Joules joules = new Joules();
@@ -16,22 +16,31 @@ public class GLeftPark extends AutoOpMode {
 
         telemetry.addData("Status", "initialized");
         joules.TapeMeasurePush();
-
         waitForStart();
-
-        joules.DriveForward(0.5);
-        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(),100));
+        joules.StrafeRight(0.5);
+        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(),1200));
         joules.Stop();
+
+        sleep(20000);
 
         sleep(100);
 
         joules.StrafeLeft(0.5);
         sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(),1200));
         joules.Stop();
+        sleep(100);
 
-        joules.DriveBackward(0.2);
-        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(),600));
+
+        joules.DriveForward(0.4);
+        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(),750));
         joules.Stop();
+        sleep(100);
+
+
+        joules.StrafeLeft(0.5);
+        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(),1200));
+        joules.Stop();
+
 
 
     }

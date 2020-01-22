@@ -19,7 +19,7 @@ public class GBlFarFound extends AutoOpMode {
         ExpansionHub2_VoltageSensor =  hardwareMap.voltageSensor.get("Expansion Hub 2");
 
 
-        int blueTapeVal = 310;
+        int blueFoundVal = 310;
         telemetry.addData("Status", "initialized");
         joules.FoundationDrop();
         joules.DaffyUp();
@@ -50,12 +50,17 @@ public class GBlFarFound extends AutoOpMode {
 
         sleep(100);
 
-        joules.DriveForward(0.05);
-        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 1550));
-        joules.Stop();
+//        joules.DriveBackward(0.1);
+//        sleep(400);
+//        joules.Stop();
+//
+//        joules.DriveForward(0.01);
+//        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 1800));
+//        joules.Stop();
 
-        joules.DriveForward(0.02);
-        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 400));
+        while(colorSensor.blue()<blueFoundVal){
+            joules.DriveForward(0.01);
+        }
         joules.Stop();
 
         joules.FoundationGrab();
@@ -68,12 +73,16 @@ public class GBlFarFound extends AutoOpMode {
 
         sleep(100);
 
+        joules.StrafeLeft(0.3);
+        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 800));
+        joules.Stop();
+
         joules.FoundationDrop();
         sleep(2000);
         joules.Stop();
 
-        joules.DriveBackward(0.1);
-        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(),400));
+        joules.DriveBackward(0.2);
+        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(),600));
         joules.Stop();
 
 
@@ -81,6 +90,10 @@ public class GBlFarFound extends AutoOpMode {
 //            joules.StrafeRight(0.4);
 //        }
 //        joules.Stop();
+
+        joules.StrafeRight(0.3);
+        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 800));
+        joules.Stop();
 
         joules.StrafeRight(0.5);
         sleep(1150);

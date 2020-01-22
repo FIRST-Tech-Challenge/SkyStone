@@ -91,6 +91,7 @@ public class Joules  {
         FrontRight.setPower(-speed);
         BackLeft.setPower(speed);
         BackRight.setPower(-speed);
+
     }
     public void StrafeLeft(double speed){
         TaskHandler.pauseTask(VEER_CHECK_TASK_KEY);
@@ -162,7 +163,7 @@ public class Joules  {
         Foundation.setPosition(0.47);
     }
 
-    public void TapeMeasureSpring() {TapeMeasure.setPosition(0.7);}
+    public void TapeMeasureSpring() {TapeMeasure.setPosition(0.8);}
     public void TapeMeasurePush() {TapeMeasure.setPosition(0.2);}
 
     public void StoneDown(){
@@ -178,7 +179,7 @@ public class Joules  {
   //  }
 
     public void DaffyUp(){
-        Daffy.setPosition(0.5);
+        Daffy.setPosition(0.4);
     }
     public void DaffyGrab(){
         Daffy.setPosition(1);

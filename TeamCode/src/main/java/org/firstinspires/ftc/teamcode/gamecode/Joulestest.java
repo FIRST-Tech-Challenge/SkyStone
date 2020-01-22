@@ -26,7 +26,7 @@ public class Joulestest extends AutoOpMode {
         //StoneDist = hardwareMap.get(DistanceSensor.class, "Distance");
         waitForStart();
 
-        joules.LeftPivot(0.4);
+/*        joules.LeftPivot(0.4);
         sleep(1000);
         joules.Stop();
 
@@ -37,15 +37,15 @@ public class Joulestest extends AutoOpMode {
 //        joules.DriveForwardEnc(0.5, 2000);
 //        sleep(100000);
 
+*/
+
+
+      while (opModeIsActive()) {
 
 
 
-      /*while (opModeIsActive()) {
-
-
-
-            telemetry.addData("red", colorSensor.red());
-            telemetry.addData("blue", colorSensor.blue());}
+//            telemetry.addData("red", colorSensor.red());
+            telemetry.addData("red", colorSensor.red());}
 //            RC.t.addData("stone dist", StoneDist.getDistance(DistanceUnit.MM));
 //          RC.t.addData("Stone dist", StoneDist.getDistance(DistanceUnit.MM)); //distance sensor
             //RC.t.addData("bLUE", colorSensor.blue()); // colour sensor for stones blue value

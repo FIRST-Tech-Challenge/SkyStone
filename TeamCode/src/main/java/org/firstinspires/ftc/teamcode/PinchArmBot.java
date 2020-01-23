@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.RobotLog;
 
 public class PinchArmBot extends FourWheelsDriveBot {
     static final double INCREMENT   = 0.01;     // amount to slew servo each CYCLE_MS cycle
@@ -39,21 +40,21 @@ public class PinchArmBot extends FourWheelsDriveBot {
 
         servoArm.setPosition(PINCH_ARM_FOLD);
         servoPinch.setPosition(PINCH_RELEASE);
-        print(String.format("After Init : ARM POS : %f, PINCH POS : %f", servoArm.getPosition(), servoPinch.getPosition()));
+        RobotLog.d(String.format("After Init : ARM POS : %f, PINCH POS : %f", servoArm.getPosition(), servoPinch.getPosition()));
     }
 
 
     public void pickupSkyStone(){
 
-        print(String.format("Before Down: ARM POS : %f, PINCH POS : %f", servoArm.getPosition(), servoPinch.getPosition()));
+        RobotLog.d(String.format("Before Down: ARM POS : %f, PINCH POS : %f", servoArm.getPosition(), servoPinch.getPosition()));
         servoArm.setPosition(PINCH_ARM_DOWN1);
-        print(String.format("After Down: ARM POS : %f, PINCH POS : %f", servoArm.getPosition(), servoPinch.getPosition()));
+        RobotLog.d(String.format("After Down: ARM POS : %f, PINCH POS : %f", servoArm.getPosition(), servoPinch.getPosition()));
         opMode.sleep(1000);
         servoPinch.setPosition(PINCH_PINCH);
-        print(String.format("After Pinch: ARM POS : %f, PINCH POS : %f", servoArm.getPosition(), servoPinch.getPosition()));
+        RobotLog.d(String.format("After Pinch: ARM POS : %f, PINCH POS : %f", servoArm.getPosition(), servoPinch.getPosition()));
         opMode.sleep(500);
         servoArm.setPosition(PINCH_ARM_FOLD);
-        print(String.format("After Fold: ARM POS : %f, PINCH POS : %f", servoArm.getPosition(), servoPinch.getPosition()));
+        RobotLog.d(String.format("After Fold: ARM POS : %f, PINCH POS : %f", servoArm.getPosition(), servoPinch.getPosition()));
 //        opMode.idle();
         return;
     }

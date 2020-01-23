@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode
 import com.qualcomm.robotcore.hardware.*
 
 /*
-    TODO: Create abstract class and seperate auto and tele
+    TODO: Create interfaces that lead to abstract class and seperate auto and tele
  */
 
 

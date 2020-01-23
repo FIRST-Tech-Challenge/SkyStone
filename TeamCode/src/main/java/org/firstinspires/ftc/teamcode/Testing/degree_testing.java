@@ -31,14 +31,14 @@ public class degree_testing extends OpMode {
 
     @Override
     public void loop() {
-        //telemetry.addData("°",gyro.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).firstAngle);
-        //telemetry.update();
-        if (gamepad1.a) {
-            tool.driveSidewardEncoderV2(20, 0.1, 500, gyro.imu, wheel, this,this.tool.getDegree360(gyro.imu));
-        }
-        if (gamepad1.b) {
-            tool.driveSidewardEncoder(new int[]{20,20,20,20}, 0.1, 500, gyro.imu, wheel, this, this.tool.getDegree360(gyro.imu));
-        }
+
+        if(gamepad1.a)
+            tool.driveSidewardTime((long)(2000),0.2,(double)(100),gyro.imu,this.wheel,this);
+        if(gamepad1.b)
+            tool.driveSidewardEncoderV2(20,0.2,100,gyro.imu,this.wheel,this,this.tool.getDegree360(gyro.imu));
+        if(gamepad1.y)
+            tool.simeoncopytry(0,20,0.2,this.wheel,this.tool.getDegree360(this.gyro.imu),this.gyro.imu,100);
+
     }
 }
 

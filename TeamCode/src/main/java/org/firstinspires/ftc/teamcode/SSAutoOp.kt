@@ -29,10 +29,11 @@ class SSAutoOp : LinearOpMode()
 /*        robot.strafe(1.0) //align with foundation
         sleep(800)*/
         robot.brake()
-        robot.bLDrive?.power = (-0.5) //left
+/*        robot.bLDrive?.power = (-0.5) //left
         robot.bRDrive?.power = (0.5)
         robot.fLDrive?.power = (0.5)
-        robot.fRDrive?.power = (-0.5)
+        robot.fRDrive?.power = (-0.5)*/
+        robot.strafe(0.5)
 
         //br == -      RIGHT
         //bl ==

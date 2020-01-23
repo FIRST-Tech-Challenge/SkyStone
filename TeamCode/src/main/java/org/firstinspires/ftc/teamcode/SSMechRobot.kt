@@ -39,9 +39,13 @@ class SSMechRobot {
         //similar for servo and sensor
         hwdMap = ahwdMap
         var motorList = arrayListOf<DcMotor?>(bLDrive, bRDrive, fLDrive, fRDrive, vSlide)
-        (0..4).forEach { i -> motorList; motorList[i] = ahwdMap.dcMotor.get("bLDrive")}
+        for (i in 0..motorList.size) {
+            motorList[i] = ahwdMap.dcMotor.get(motorList[i].toString())
+        }
 
         var servoList = arrayListOf<Servo?>(hSlide, claw, leftHook, rightHook)
+        (0..servoList.size).forEach { i -> servoList[i] = ahwdMap.servo.get(servoList[i].toString())}
+
 /*        bLDrive = ahwdMap.dcMotor.get("bLDrive")
         bRDrive = ahwdMap.dcMotor.get("bRDrive")
         fLDrive = ahwdMap.dcMotor.get("fLDrive")

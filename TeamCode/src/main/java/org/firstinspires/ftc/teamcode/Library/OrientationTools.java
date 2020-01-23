@@ -19,6 +19,12 @@ import org.firstinspires.ftc.teamcode.Library.Movement.ControlledExtender;
 
 public class OrientationTools {
 
+    static final double     COUNTS_PER_MOTOR_REV    = 753.2 ;    // eg: TETRIX Motor Encoder
+    static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // This is < 1.0 if geared UP
+    static final double     WHEEL_DIAMETER_CMS      = 10.0 ;     // For figuring circumference
+    static final double     COUNTS_PER_CM           = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_CMS * Math.PI);
+
+
     //Declare a variable to hand over the right wanted hardwaremap for the right layout
     private HardwareChassis hwchss;
     private LinearOpMode opMode;
@@ -164,6 +170,52 @@ public class OrientationTools {
                     (encValuesCurrent[1] > encValuesStart[1]+cm[1])||
                     (encValuesCurrent[2] > encValuesStart[3]+cm[3])||
                     (encValuesCurrent[3] > encValuesStart[3]+cm[3])){doit = false; op.telemetry.addData("ewrewrewrew","AEFAWERFRAWRAWRAR"); op.telemetry.update(); throw new Error("JAJAJAJAJAJAJA");}
+            offset  = this.getDegree360(imu) - current;
+            wheel.setMotors(0, power, offset / smoothness);
+        }
+        wheel.setMotors(0,0,0);
+        op.msStuckDetectLoop = msStuckinLoopStart;
+    }
+
+
+    public void driveSidewardEncoderV2(int cm, double power, double smoothness, BNO055IMU imu, OmniWheel wheel, OpMode op){
+        double current = this.getDegree360(imu);
+        double offset;
+        int msStuckinLoopStart = op.msStuckDetectLoop;
+        op.msStuckDetectLoop = 1073741824;
+        int[] encValuesStart;
+
+
+        double[] wheelSpeeds = OmniWheel.calculate( WHEEL_DIAMETER_CMS / 2, 38, 24, 0, 1, 0);
+
+        // Determine new target position
+        double[] targets = {
+                wheel.robot.motor_front_left.getCurrentPosition() + wheelSpeeds[0] * (COUNTS_PER_CM * cm),
+                wheel.robot.motor_front_right.getCurrentPosition() + wheelSpeeds[1] * (COUNTS_PER_CM * cm),
+                wheel.robot.motor_rear_left.getCurrentPosition() + wheelSpeeds[2] * (COUNTS_PER_CM * cm),
+                wheel.robot.motor_rear_right.getCurrentPosition() + wheelSpeeds[3] * (COUNTS_PER_CM * cm)};
+
+
+
+
+
+        int[] encValuesCurrent;
+        boolean doit = true;
+        while(doit){
+            op.telemetry.addData("rr",wheel.robot.motor_rear_right.getCurrentPosition());
+            op.telemetry.addData("rl",wheel.robot.motor_rear_left.getCurrentPosition());
+            op.telemetry.addData("fr",wheel.robot.motor_front_right.getCurrentPosition());
+            op.telemetry.addData("fl",wheel.robot.motor_front_left.getCurrentPosition());
+            op.telemetry.update();
+            encValuesCurrent = new int[]{
+                    wheel.robot.motor_front_left.getCurrentPosition()*(int)(ControlledExtender.COUNTS_PER_CM),
+                    wheel.robot.motor_front_right.getCurrentPosition()*(int)(ControlledExtender.COUNTS_PER_CM),
+                    wheel.robot.motor_rear_left.getCurrentPosition()*(int)(ControlledExtender.COUNTS_PER_CM),
+                    wheel.robot.motor_rear_right.getCurrentPosition()*(int)(ControlledExtender.COUNTS_PER_CM)};
+            if(     (Math.abs(targets[0]) > Math.abs(encValuesCurrent[0]))||
+                    (Math.abs(targets[1]) > Math.abs(encValuesCurrent[1]))||
+                    (Math.abs(targets[2]) > Math.abs(encValuesCurrent[2]))||
+                    (Math.abs(targets[3]) > Math.abs(encValuesCurrent[3]))){doit = false; op.telemetry.addData("ewrewrewrew","AEFAWERFRAWRAWRAR"); op.telemetry.update(); throw new Error("JAJAJAJAJAJAJA");}
             offset  = this.getDegree360(imu) - current;
             wheel.setMotors(0, power, offset / smoothness);
         }

@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.Library.Movement.ControlledExtender;
 import org.firstinspires.ftc.teamcode.Library.Movement.ControlledLift;
 import org.firstinspires.ftc.teamcode.Library.OmniWheel;
 
+@Disabled
 @Autonomous (name = "A5_Red_Foundation_Bridge")
 public class A5_Red_Foundation_Bridge extends LinearOpMode {
 
@@ -62,7 +63,7 @@ public class A5_Red_Foundation_Bridge extends LinearOpMode {
         //now you are in the corner
 
         if (opModeIsActive()){
-            backTillButtons();
+            generalTools.backTillButtons(robot);
         }
 
         // you are now back at the wall
@@ -101,7 +102,7 @@ public class A5_Red_Foundation_Bridge extends LinearOpMode {
         generalTools.stopForMilliSeconds(1000);
 
         if (opModeIsActive()){
-            backTillButtons();
+            generalTools.backTillButtons(robot);
         }
         //now you have pulled the foundation in the corner
 
@@ -136,11 +137,4 @@ public class A5_Red_Foundation_Bridge extends LinearOpMode {
 
 
     }
-    private void backTillButtons() {
-        while(robot.touch_right.getState() && robot.touch_left.getState()) {
-            omniWheel.setMotors(-0.3, 0, 0);
-        }
-        omniWheel.setMotors(0, 0, 0);
-    }
-
 }

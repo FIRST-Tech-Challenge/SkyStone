@@ -129,8 +129,7 @@ public class OrientationTools {
         return 180+imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).secondAngle;
     }
 
-    public void driveSidewardTime(long timeInMillis, double power, double smoothness, BNO055IMU imu, OmniWheel wheel, OpMode op){
-        double current = this.getDegree360(imu);
+    public void driveSidewardTime(long timeInMillis, double power, double smoothness, BNO055IMU imu, OmniWheel wheel, OpMode op,double current){
         long timeStart = System.currentTimeMillis();
         int msStuckinLoopStart = op.msStuckDetectLoop;
         op.msStuckDetectLoop = 1073741824;
@@ -142,8 +141,7 @@ public class OrientationTools {
         op.msStuckDetectLoop = msStuckinLoopStart;
     }
 
-    public void driveSidewardEncoder(int[] cm, double power, double smoothness, BNO055IMU imu, OmniWheel wheel, OpMode op){
-        double current = this.getDegree360(imu);
+    public void driveSidewardEncoder(int[] cm, double power, double smoothness, BNO055IMU imu, OmniWheel wheel, OpMode op, double current){
         double offset;
         int msStuckinLoopStart = op.msStuckDetectLoop;
         op.msStuckDetectLoop = 1073741824;
@@ -178,22 +176,21 @@ public class OrientationTools {
     }
 
 
-    public void driveSidewardEncoderV2(int cm, double power, double smoothness, BNO055IMU imu, OmniWheel wheel, OpMode op){
-        double current = this.getDegree360(imu);
+    public void driveSidewardEncoderV2(int cm, double power, double smoothness, BNO055IMU imu, OmniWheel wheel, OpMode op,double current){
         double offset;
         int msStuckinLoopStart = op.msStuckDetectLoop;
         op.msStuckDetectLoop = 1073741824;
-        int[] encValuesStart;
 
 
-        double[] wheelSpeeds = OmniWheel.calculate( WHEEL_DIAMETER_CMS / 2, 38, 24, 0, 1, 0);
+
+        double[] wheelSpeeds = OmniWheel.calculate( WHEEL_DIAMETER_CMS / 2, 38, 24, 0, Math.abs(cm)/cm, 0);
 
         // Determine new target position
         double[] targets = {
-                wheel.robot.motor_front_left.getCurrentPosition() + wheelSpeeds[0] * (COUNTS_PER_CM * cm),
-                wheel.robot.motor_front_right.getCurrentPosition() + wheelSpeeds[1] * (COUNTS_PER_CM * cm),
-                wheel.robot.motor_rear_left.getCurrentPosition() + wheelSpeeds[2] * (COUNTS_PER_CM * cm),
-                wheel.robot.motor_rear_right.getCurrentPosition() + wheelSpeeds[3] * (COUNTS_PER_CM * cm)};
+                wheel.robot.motor_front_left.getCurrentPosition() + wheelSpeeds[0] * (COUNTS_PER_CM * Math.abs(cm)),
+                wheel.robot.motor_front_right.getCurrentPosition() + wheelSpeeds[1] * (COUNTS_PER_CM * Math.abs(cm)),
+                wheel.robot.motor_rear_left.getCurrentPosition() + wheelSpeeds[2] * (COUNTS_PER_CM * Math.abs(cm)),
+                wheel.robot.motor_rear_right.getCurrentPosition() + wheelSpeeds[3] * (COUNTS_PER_CM * Math.abs(cm))};
 
 
 

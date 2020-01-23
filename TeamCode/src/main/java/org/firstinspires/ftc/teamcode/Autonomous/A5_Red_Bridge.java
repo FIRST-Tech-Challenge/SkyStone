@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.Library.Movement.ControlledExtender;
 import org.firstinspires.ftc.teamcode.Library.Movement.ControlledLift;
 import org.firstinspires.ftc.teamcode.Library.OmniWheel;
 
-
+@Disabled
 @Autonomous (name =  "A5_Red_Bridge")
 
 public class A5_Red_Bridge extends LinearOpMode {

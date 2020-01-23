@@ -12,7 +12,6 @@ import org.firstinspires.ftc.teamcode.Library.Movement.ControlledExtender;
 import org.firstinspires.ftc.teamcode.Library.Movement.ControlledLift;
 import org.firstinspires.ftc.teamcode.Library.OmniWheel;
 
-@Disabled
 @Autonomous (name =  "A2_Blue_Bridge_Forward")
 
 public class A2_Blue_Bridge_Forward extends LinearOpMode {

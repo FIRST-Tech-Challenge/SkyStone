@@ -12,7 +12,6 @@ import org.firstinspires.ftc.teamcode.Library.Movement.ControlledExtender;
 import org.firstinspires.ftc.teamcode.Library.Movement.ControlledLift;
 import org.firstinspires.ftc.teamcode.Library.OmniWheel;
 
-@Disabled
 @Autonomous (name = "A2_Red_Bridge_Forward")
 
 public class A2_Red_Bridge_Forward extends LinearOpMode {
@@ -55,32 +54,18 @@ public class A2_Red_Bridge_Forward extends LinearOpMode {
 
         if (opModeIsActive()){
             while (!colorTools.isRed(robot.color_back) && opModeIsActive()){
-                /*if (robot.touch_right.getState() && robot.touch_left.getState()) {
-                    omniWheel.setMotors(-0.1, 0, 0);
-                    while (robot.touch_right.getState() && robot.touch_left.getState()) {}
-                    omniWheel.setMotors(0.0, -0.3, 0);
-                } */
 
                 omniWheel.setMotors(0.0, 0.3, 0);
-                //backTillButtons();
-                //omniWheel.setMotors(0,-1,0);
             }
             omniWheel.setMotors(0,0,0);
         }
 
         // you are now below the bridge
+
         if (opModeIsActive()) {
             backTillButtons();
         }
 
-
-        // you are now touching the wall with both touch sensors
-
-        //if (opModeIsActive()) {
-        //    generalTools.stopForMilliSeconds(10000);
-        //}
-
-        // you have now waited 10 sec
 
         if (opModeIsActive()) {
             controlledDrive.start(generalTools.ap_underBridgeForward, 0, 0.2);

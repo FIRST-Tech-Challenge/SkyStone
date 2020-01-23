@@ -12,7 +12,6 @@ import org.firstinspires.ftc.teamcode.Library.Movement.ControlledExtender;
 import org.firstinspires.ftc.teamcode.Library.Movement.ControlledLift;
 import org.firstinspires.ftc.teamcode.Library.OmniWheel;
 
-@Disabled
 @Autonomous (name = "A2_Blue_Stone_Bridge_Forward")
 
 public class A2_Blue_Stone_Bridge_Forward extends LinearOpMode {
@@ -91,7 +90,7 @@ public class A2_Blue_Stone_Bridge_Forward extends LinearOpMode {
         // you are now below the bridge
 
         if (opModeIsActive()) {
-            controlledDrive.start(0, -30, 0);
+            controlledDrive.start(0, -30, 0.2);
             while (!controlledDrive.endReached() && opModeIsActive()) { }
             controlledDrive.stop();
         }
@@ -99,7 +98,7 @@ public class A2_Blue_Stone_Bridge_Forward extends LinearOpMode {
         // yay you should now be at A4, besides the bridge
 
         if (opModeIsActive()) {
-            controlledDrive.start(generalTools.ap_underBridgeForward, 0, 0.2);
+            controlledDrive.start(generalTools.ap_underBridgeForward, 0.2, 0.2);
             while (!controlledDrive.endReached() && opModeIsActive()) { }
             controlledDrive.stop();
 

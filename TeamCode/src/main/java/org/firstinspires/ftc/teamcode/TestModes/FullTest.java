@@ -121,11 +121,11 @@ public class FullTest extends OpMode {
         //telemetry.addData("Ärmchen R:", robot.servo_claw_right.getPosition());
         //telemetry.addData("Ärmchen L:", robot.servo_claw_left.getPosition());
         //telemetry.addLine();
-        //telemetry.addData("Touch Left: ", robot.touch_left.getState());
-        //telemetry.addData("Touch Right: ", robot.touch_right.getState());
+        telemetry.addData("Touch Left: ", robot.touch_left.getState());
+        telemetry.addData("Touch Right: ", robot.touch_right.getState());
         //telemetry.addLine();
-        telemetry.addData("H: ", colorTools.showHSV(robot.color_back)[0]);
-        telemetry.addData("S: ", colorTools.showHSV(robot.color_back)[1]);
+        //telemetry.addData("H: ", colorTools.showHSV(robot.color_back)[0]);
+        //telemetry.addData("S: ", colorTools.showHSV(robot.color_back)[1]);
         telemetry.addLine();
         telemetry.addData("LiftLpos: ", (robot.motor_lift_left.getCurrentPosition() - liftZeros[0]) / 712.6);
         telemetry.addData("LiftRpos: ", (robot.motor_lift_right.getCurrentPosition() - liftZeros[1]) / 712.6);

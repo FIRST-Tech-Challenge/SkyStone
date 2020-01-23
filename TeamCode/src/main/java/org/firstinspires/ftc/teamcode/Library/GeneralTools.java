@@ -77,8 +77,8 @@ public class GeneralTools {
         robot.servo_claw_right.setPosition(0.9);
     }
 
-    private void backTillButtons() {
-        while(robot.touch_right.getState() && robot.touch_left.getState()) {
+    public void backTillButtons(HardwareChassis robot) {
+        while((robot.touch_right.getState() && robot.touch_left.getState()) || (robot.touch_right.getState() && !robot.touch_left.getState()) || (!robot.touch_right.getState() && robot.touch_left.getState())) {
             omniWheel.setMotors(-0.3, 0, 0);
         }
         omniWheel.setMotors(0, 0, 0);

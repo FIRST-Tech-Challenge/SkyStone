@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.Library.Movement.ControlledDrive;
 import org.firstinspires.ftc.teamcode.Library.Movement.ControlledExtender;
 import org.firstinspires.ftc.teamcode.Library.Movement.ControlledLift;
 import org.firstinspires.ftc.teamcode.Library.OmniWheel;
-
+@Disabled
 @Autonomous (name = "A5_Blue_Foundation_Bridge")
 public class A5_Blue_Foundation_Bridge extends LinearOpMode {
 
@@ -137,7 +137,7 @@ public class A5_Blue_Foundation_Bridge extends LinearOpMode {
 
     }
     private void backTillButtons() {
-        while(robot.touch_right.getState() && robot.touch_left.getState()) {
+        while((robot.touch_right.getState() && robot.touch_left.getState()) || (robot.touch_right.getState() && !robot.touch_left.getState()) || (!robot.touch_right.getState() && robot.touch_left.getState())) {
             omniWheel.setMotors(-0.3, 0, 0);
         }
         omniWheel.setMotors(0, 0, 0);

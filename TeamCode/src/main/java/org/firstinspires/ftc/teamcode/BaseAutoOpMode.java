@@ -115,7 +115,7 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
         webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
     }
 
-    public void UnfoldRobot() {
+    public void UnfoldRobotBackwards() {
 
         front_left.setPower(-.8);
         front_right.setPower(-.8);
@@ -136,50 +136,42 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
         lift_left.setPower(0);
         lift_right.setPower(0);
 
-        Release_Servo.setPosition(0.2);
+        Release_Servo.setPosition(1);
+        //  sleep(1000);
+        //Release_Servo2.setPosition(1);
+        sleep(1000);
+        feeder_motor.setPower(-1);
+        sleep(500);
+        feeder_motor.setPower(0);
+    }
+    public void UnfoldRobot() {
+
+        front_left.setPower(.8);
+        front_right.setPower(.8);
+        rear_left.setPower(.8);
+        rear_right.setPower(.8);
+
+        sleep(100);
+
+        front_left.setPower(0);
+        front_right.setPower(0);
+        rear_left.setPower(0);
+        rear_right.setPower(0);
+
+        lift_left.setPower(-1);
+        lift_right.setPower(-1);
+        sleep(400);
+
+        lift_left.setPower(0);
+        lift_right.setPower(0);
+
+        Release_Servo.setPosition(0.8);
         //  sleep(1000);
         //Release_Servo2.setPosition(1);
         sleep(1000);
         feeder_motor.setPower(1);
         sleep(500);
         feeder_motor.setPower(0);
-
-        //telemetry.addData("Encoder test", front_left.getCurrentPosition());
-        //telemetry.update()
-
-        /*lift_left.setPower(1);
-        lift_right.setPower(1);
-        sleep(200)
-
-        lift_left.setPower(0);
-        lift_right.setPower(0);
-        sleep(200);
-
-
-        Clamp_Left.setPosition(0.73f);
-        Clamp_Right.setPosition(0.27f);
-        sleep(250);
-
-         */
-
-
-        //Release_Servo.setPosition(1);
-        //sleep(200);
-        //Release_Servo.setPosition(0);
-        //sleep(100);
-
-
-        //sleep(50);
-
-       /* front_left.setPower(.8);
-        front_right.setPower(.8);
-        rear_left.setPower(.8);
-        rear_right.setPower(.8);
-        sleep(200);
-
-        */
-        //telemetry.addData("Encoder test", front_left.getCurrentPosition());
-        //telemetry.update();
     }
 
     public void VisionTarget(int milliseconds) {

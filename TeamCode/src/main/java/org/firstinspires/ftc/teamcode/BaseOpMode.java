@@ -78,7 +78,6 @@ public abstract class BaseOpMode extends LinearOpMode {
     int loop = 0;
 
 
-
     public void GetHardware() {
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
@@ -131,8 +130,8 @@ public abstract class BaseOpMode extends LinearOpMode {
         GetIMU();
     }
 
-    
-    private void GetIMU() {
+
+    public void GetIMU() {
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
         parameters.mode = BNO055IMU.SensorMode.IMU;
@@ -147,7 +146,7 @@ public abstract class BaseOpMode extends LinearOpMode {
 
         imu.initialize(parameters);
 
-        telemetry.addData("Mode", "calibrating...");
+        telemetry.addData("IMU", "calibrating...");
         telemetry.update();
 
         // make sure the imu gyro is calibrated before continuing.
@@ -155,6 +154,8 @@ public abstract class BaseOpMode extends LinearOpMode {
             sleep(50);
             idle();
         }
+        telemetry.addData("IMU", "calibrated");
+        telemetry.update();
     }
 
     /**
@@ -315,131 +316,94 @@ public abstract class BaseOpMode extends LinearOpMode {
 
     public void EncoderDrive(DriveDirection direction, int EncoderValue) {
         if (direction == DriveDirection.STOP) {
-                front_left.setPower(0);
-                front_right.setPower(0);
-                rear_left.setPower(0);
-                rear_right.setPower(0);
+            front_left.setPower(0);
+            front_right.setPower(0);
+            rear_left.setPower(0);
+            rear_right.setPower(0);
 
         }
         if (direction == DriveDirection.RIGHT) {
 
-                SetDriveMode(Mode.STOP_RESET_ENCODER);
+            SetDriveMode(Mode.RUN_WITHOUT_ENCODERS);
 
+
+            while(front_left.getCurrentPosition() < EncoderValue) {
                 front_left.setPower(1);
                 front_right.setPower(-1);
                 rear_left.setPower(1);
                 rear_right.setPower(-1);
+                sleep(1);
+            }
 
-            front_left.setTargetPosition(EncoderValue);
-            front_right.setTargetPosition(-EncoderValue);
-            rear_left.setTargetPosition(EncoderValue);
-            rear_right.setTargetPosition(-EncoderValue);
+            SetDriveMode(Mode.STOP_RESET_ENCODER);
 
-            front_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            front_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            rear_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            rear_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                //front_left.setTargetPosition(EncoderValue);
+            //front_left.setTargetPosition(EncoderValue
         }
         if (direction == DriveDirection.LEFT) {
 
-            SetDriveMode(Mode.STOP_RESET_ENCODER);
+            SetDriveMode(Mode.RUN_WITHOUT_ENCODERS);
 
-            front_left.setPower(-1);
+
+            while(front_left.getCurrentPosition() < EncoderValue) {
+                front_left.setPower(-1);
                 front_right.setPower(1);
                 rear_left.setPower(-1);
                 rear_right.setPower(1);
+                sleep(1);
+            }
 
-            front_left.setTargetPosition(-EncoderValue);
-            front_right.setTargetPosition(EncoderValue);
-            rear_left.setTargetPosition(-EncoderValue);
-            rear_right.setTargetPosition(EncoderValue);
+            SetDriveMode(Mode.STOP_RESET_ENCODER);
 
-            front_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            front_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            rear_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            rear_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-               // front_left.setTargetPosition(EncoderValue);
+
         }
         if (direction == DriveDirection.FORWARD) {
 
+            //SetDriveMode(Mode.STOP_RESET_ENCODER);
+            SetDriveMode(Mode.RUN_WITHOUT_ENCODERS);
+
+
+            while(front_left.getCurrentPosition() < EncoderValue) {
+                front_left.setPower(1);
+                front_right.setPower(1);
+                rear_left.setPower(1);
+                rear_right.setPower(1);
+                sleep(1);
+            }
+
             SetDriveMode(Mode.STOP_RESET_ENCODER);
-            front_left.setPower(1);
-            front_right.setPower(1);
-            rear_left.setPower(1);
-            rear_right.setPower(1);
-
-            front_left.setTargetPosition(EncoderValue);
-            front_right.setTargetPosition(EncoderValue);
-            rear_left.setTargetPosition(EncoderValue);
-            rear_right.setTargetPosition(EncoderValue);
-
-            front_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            front_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            rear_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            rear_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            //front_left.setTargetPosition(EncoderValue);
         }
         if (direction == DriveDirection.BACKWARD) {
+            SetDriveMode(Mode.RUN_WITHOUT_ENCODERS);
+
+
+            while(front_left.getCurrentPosition() > -EncoderValue) {
+                front_left.setPower(-1);
+                front_right.setPower(-1);
+                rear_left.setPower(-1);
+                rear_right.setPower(-1);
+                sleep(1);
+
+                telemetry.addData("Encoder", front_left.getCurrentPosition());
+                telemetry.update();
+            }
+
             SetDriveMode(Mode.STOP_RESET_ENCODER);
 
-            front_left.setPower(-1);
-            front_right.setPower(-1);
-            rear_left.setPower(-1);
-            rear_right.setPower(-1);
-
-            front_left.setTargetPosition(-EncoderValue);
-            front_right.setTargetPosition(-EncoderValue);
-            rear_left.setTargetPosition(-EncoderValue);
-            rear_right.setTargetPosition(-EncoderValue);
-
-            front_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            front_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            rear_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            rear_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
+            //front_left.setTargetPosition(EncoderValue
         }
 
         if (direction == DriveDirection.STRAFE_LEFT) {
-            SetDriveMode(Mode.STOP_RESET_ENCODER);
 
-            front_left.setPower(-1);
-            front_right.setPower(1);
-            rear_left.setPower(1);
-            rear_right.setPower(-1);
 
-            front_left.setTargetPosition(-EncoderValue);
-            front_right.setTargetPosition(EncoderValue);
-            rear_left.setTargetPosition(EncoderValue);
-            rear_right.setTargetPosition(-EncoderValue);
-
-            front_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            front_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            rear_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            rear_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            // NEED TO ASK DOUG FOR POWER VALUES
 
         }
         if (direction == DriveDirection.STRAFE_RIGHT) {
-            SetDriveMode(Mode.STOP_RESET_ENCODER);
 
-            front_left.setPower(1);
-            front_right.setPower(-1);
-            rear_left.setPower(-1);
-            rear_right.setPower(1);
 
-            front_left.setTargetPosition(EncoderValue);
-            front_right.setTargetPosition(-EncoderValue);
-            rear_left.setTargetPosition(-EncoderValue);
-            rear_right.setTargetPosition(EncoderValue);
-
-            front_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            front_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            rear_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            rear_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            // NEED TO ASK DOUG FOR POWER VALUES
 
         }
-
 
 
     }
@@ -478,9 +442,9 @@ public abstract class BaseOpMode extends LinearOpMode {
     }
 
 
-    public void SetDriveMode(Mode DriveMode){
+    public void SetDriveMode(Mode DriveMode) {
 
-        if(DriveMode == Mode.STOP_RESET_ENCODER){
+        if (DriveMode == Mode.STOP_RESET_ENCODER) {
 
             front_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             front_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -488,7 +452,7 @@ public abstract class BaseOpMode extends LinearOpMode {
             rear_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         }
-        if(DriveMode == Mode.RUN_WITH_ENCODER){
+        if (DriveMode == Mode.RUN_WITH_ENCODER) {
 
             front_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             front_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -497,7 +461,7 @@ public abstract class BaseOpMode extends LinearOpMode {
 
         }
 
-        if(DriveMode == Mode.RUN_WITHOUT_ENCODERS){
+        if (DriveMode == Mode.RUN_WITHOUT_ENCODERS) {
 
             front_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             front_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -507,9 +471,10 @@ public abstract class BaseOpMode extends LinearOpMode {
         }
 
     }
-
-
-
 }
+
+
+
+
 
 

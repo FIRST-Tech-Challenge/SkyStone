@@ -31,12 +31,9 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+
+import java.util.List;
 
 
 /**
@@ -44,10 +41,36 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
  * forwards/backwards and turning left and right, and the right stick controls strafing. (working on diff. control setup currently)
  */
 
-@Autonomous(name = "Red_Platform_BridgeGYRO", group = "Linear Opmode")
+@Autonomous(name = "Test_Encoder_SkystoneLeftAndTop", group = "Linear Opmode")
+//@Disabled
+public class Skystone_Test_SkystoneLeftAndTop extends BaseAutoOpMode {
 
-public class Red_Platform_BridgeGYRO extends Blue_Platform_BridgeGYRO {
-    int startingSide = -1;
 
+    @Override
+    public void runOpMode() {
+        telemetry.addData("Status", "Initialized");
+        telemetry.update();
+
+
+        GetIMU();
+        GetHardware();
+        InitVision();
+
+
+        // Wait for the game to start (driver presses PLAY)
+        waitForStart();
+        runtime.reset();
+        resetAngle();
+
+        //EncoderDrive(DriveDirection.BACKWARD, 2000);
+
+        List<Recognition> Skystones = VisionTargetTfod();
+        
+        while(!isStopRequested()){
+            
+        }
+        
+        
+    }
 }
 

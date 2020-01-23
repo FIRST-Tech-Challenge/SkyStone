@@ -36,16 +36,18 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.internal.system.Deadline;
+
 
 /**
  * This file contains basic code to run a 4 wheeled Mecanum wheel setup. The d-pad controls
  * forwards/backwards and turning left and right, and the right stick controls strafing. (working on diff. control setup currently)
  */
 
-@TeleOp(name = "Tele-Op 2019 - 2020Decrease", group = "Linear Opmode")
-//@Disabled
-public class TeleOp20192020Decrease extends LinearOpMode {
+@TeleOp(name = "TeleOp", group = "Linear Opmode")
+public class SkystoneTeleOp_V1 extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -63,9 +65,10 @@ public class TeleOp20192020Decrease extends LinearOpMode {
     private Servo Block_Pickup = null;
     private Servo End_Left = null;
     private Servo End_Right = null;
-    private Servo Block_Kickout = null;
+    //private Servo Block_Kickout = null;
     private Servo Capstone = null;
     private Servo Release_Servo = null;
+   // private Servo Release_Servo2 = null;
     private DigitalChannel Top_Sensor_Front = null;
     private DigitalChannel Top_Sensor_Rear = null;
     private DigitalChannel bottom_touch = null;
@@ -82,6 +85,36 @@ public class TeleOp20192020Decrease extends LinearOpMode {
 
 
     float feederServoPosition = 0;
+
+    //@Disabled
+
+
+    /*
+     * Change the pattern every 10 seconds in AUTO mode.
+     */
+    private final static int LED_PERIOD = 10;
+
+    /*
+     * Rate limit gamepad button presses to every 500ms.
+     */
+    private final static int GAMEPAD_LOCKOUT = 500;
+
+    com.qualcomm.hardware.rev.RevBlinkinLedDriver blinkinLedDriver;
+    com.qualcomm.hardware.rev.RevBlinkinLedDriver.BlinkinPattern pattern;
+
+    Telemetry.Item patternName;
+    Telemetry.Item display;
+    RevBlinkinLedDriver.DisplayKind displayKind;
+    Deadline ledCycleDeadline;
+    Deadline gamepadRateLimit;
+
+    DigitalChannel blockbutton; // Hardware Device Object
+
+
+    protected enum DisplayKind {
+        MANUAL,
+        AUTO
+    }
 
 
     @Override
@@ -107,12 +140,14 @@ public class TeleOp20192020Decrease extends LinearOpMode {
         Capstone = hardwareMap.get(Servo.class, "Capstone");
         End_Left = hardwareMap.get(Servo.class, "End_Left");
         End_Right = hardwareMap.get(Servo.class, "End_Right");
-        Block_Kickout = hardwareMap.get(Servo.class, "Block_Kickout");
+        //Block_Kickout = hardwareMap.get(Servo.class, "Block_Kickout");
         Release_Servo = hardwareMap.get(Servo.class, "Release_Servo");
+        //Release_Servo2 = hardwareMap.get(Servo.class, "Release_Servo2");
         Top_Sensor_Rear = hardwareMap.get(DigitalChannel.class, "Top_Sensor_Rear");
         Top_Sensor_Front = hardwareMap.get(DigitalChannel.class, "Top_Sensor_Front");
         bottom_touch = hardwareMap.get(DigitalChannel.class, "bottom_touch");
         top_touch = hardwareMap.get(DigitalChannel.class, "top_touch");
+        blockbutton = hardwareMap.get(DigitalChannel.class, "blockbutton");
 
 
         lift_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -123,10 +158,16 @@ public class TeleOp20192020Decrease extends LinearOpMode {
         rear_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rear_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        front_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        front_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rear_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rear_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        front_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        front_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        rear_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        rear_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+// 1-11-2020 TEst of running with encoders SCP
+        front_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        front_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rear_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rear_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
         // set digital channel to input mode.
@@ -147,13 +188,56 @@ public class TeleOp20192020Decrease extends LinearOpMode {
         feeder_motor.setDirection(DcMotor.Direction.REVERSE);
         top_motor.setDirection(DcMotor.Direction.FORWARD);
 
+        displayKind = RevBlinkinLedDriver.DisplayKind.AUTO;
+
+        blinkinLedDriver = hardwareMap.get(com.qualcomm.hardware.rev.RevBlinkinLedDriver.class, "blinkinLedDriver");
+        pattern = com.qualcomm.hardware.rev.RevBlinkinLedDriver.BlinkinPattern.ORANGE;
+
+
+        blinkinLedDriver.setPattern(pattern);
+
+        display = telemetry.addData("Display Kind: ", displayKind.toString());
+        patternName = telemetry.addData("Pattern: ", pattern.toString());
+
+        // set the digital channel to input.
+        blockbutton.setMode(DigitalChannel.Mode.INPUT);
+
+        telemetry.addData("Single Cycle", "Incomplete");
+        telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
 
+
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+
+
+            if (blockbutton.getState() == true) {
+                telemetry.addData("Digital Touch", "Is Not Pressed");
+                //set color black
+                pattern = com.qualcomm.hardware.rev.RevBlinkinLedDriver.BlinkinPattern.BLACK;
+
+            } else {
+                telemetry.addData("Digital Touch", "Is Pressed");
+                ///SET COLOR ORANGE
+                pattern = com.qualcomm.hardware.rev.RevBlinkinLedDriver.BlinkinPattern.ORANGE;
+
+            }
+            blinkinLedDriver.setPattern(pattern);
+            //telemetry.update();
+
+        /*
+        if (displayKind == DisplayKind.AUTO) {
+
+            doAutoDisplay();
+        } else {
+
+            // * MANUAL mode: Nothing to do, setting the pattern as a result of a gamepad event.
+
+        }
+        */
 
 
             //Player 1
@@ -163,8 +247,6 @@ public class TeleOp20192020Decrease extends LinearOpMode {
             UpdateFeeder();
 
             UpdateDriveTrain();
-
-            UpdateFeederServo();
 
             UpdateLift();
 
@@ -176,13 +258,15 @@ public class TeleOp20192020Decrease extends LinearOpMode {
 
             UpdateEndServo();
 
-            UpdateBlockKickout();
+            //UpdateBlockKickout();
 
             UpdateReleaseServo();
 
+            telemetry.addData("Single Cycle", "Complete");
             telemetry.update();
         }
     }
+
 
     public void UpdateClamps() {
         //Clamps
@@ -193,7 +277,7 @@ public class TeleOp20192020Decrease extends LinearOpMode {
 
         } else if (gamepad1.left_trigger > 0) {
             telemetry.addData("Clamps", "Clamp Down");
-            Clamp_Left.setPosition(0.75f);
+            Clamp_Left.setPosition(0.8f);
             Clamp_Right.setPosition(0f);
 
         } else {
@@ -228,7 +312,7 @@ public class TeleOp20192020Decrease extends LinearOpMode {
     }
 
 
-    public void UpdateFeederServo() {
+   /* public void UpdateFeederServo() {
         //feeder Servo Open Close
         if (gamepad1.right_trigger > 0 && feederServoPosition < 1) {
             telemetry.addData("FeederServo", "Feeder Servo Close");
@@ -245,6 +329,8 @@ public class TeleOp20192020Decrease extends LinearOpMode {
 
         }
     }
+
+    */
 
     public void UpdateLift() {
         //Player 2
@@ -288,6 +374,8 @@ public class TeleOp20192020Decrease extends LinearOpMode {
 
         } else if (gamepad2.dpad_right) {
             crane_state = 2;
+        } else if (gamepad2.dpad_down) {
+            crane_state = 0;
         }
 
 
@@ -309,8 +397,8 @@ public class TeleOp20192020Decrease extends LinearOpMode {
     public void UpdateDriveTrain() {
 
         telemetry.addData("front_left Encoder Position", front_left.getCurrentPosition());
-        telemetry.addData("rear_right Encoder Position", rear_left.getCurrentPosition());
-        telemetry.addData("front_left Encoder Position", front_right.getCurrentPosition());
+        telemetry.addData("rear_left Encoder Position", rear_left.getCurrentPosition());
+        telemetry.addData("front_right Encoder Position", front_right.getCurrentPosition());
         telemetry.addData("rear_right Encoder Position", rear_right.getCurrentPosition());
 
         double leftPower;
@@ -327,31 +415,59 @@ public class TeleOp20192020Decrease extends LinearOpMode {
             rear_right.setPower(rightPower);
         } else if (gamepad1.right_stick_x < -0.4 && gamepad1.right_stick_y < 0) {
             telemetry.addData("DriveTrain", "Up and Left");
-            front_left.setPower(-(0.5 + front_left_modifier));
+            front_left.setPower((1 + front_left_modifier));
+            rear_left.setPower(-(1 + rear_left_modifier));
+            front_right.setPower(-(1 + front_right_modifier));
+            rear_right.setPower((1 + rear_right_modifier));
+
+           /* front_left.setPower(-(0.5 + front_left_modifier));
             rear_left.setPower((1 + rear_left_modifier));
             front_right.setPower((1 + front_right_modifier));
             rear_right.setPower(-(0.5 + rear_right_modifier));
 
+            */
+
         } else if (gamepad1.right_stick_x > 0.4 && gamepad1.right_stick_y < 0) {
             telemetry.addData("DriveTrain", "Up and Right");
-            front_left.setPower((1 + front_left_modifier));
+            front_left.setPower(-(1 + front_left_modifier));
+            rear_left.setPower((1 + rear_left_modifier));
+            front_right.setPower((1 + front_right_modifier));
+            rear_right.setPower(-(1 + rear_right_modifier));
+
+            /*front_left.setPower((1 + front_left_modifier));
             rear_left.setPower(-(.5 + rear_left_modifier));
             front_right.setPower(-(.5 + front_right_modifier));
             rear_right.setPower((1 + rear_right_modifier));
 
+             */
+
         } else if (gamepad1.right_stick_x < -0.4 && gamepad1.right_stick_y > 0) {
             telemetry.addData("DriveTrain", "Down and Left");
-            front_left.setPower(-(1 + front_left_modifier));
+            front_left.setPower((1 + front_left_modifier));
+            rear_left.setPower(-(1 + rear_left_modifier));
+            front_right.setPower(-(1 + front_right_modifier));
+            rear_right.setPower((1 + rear_right_modifier));
+
+            /*front_left.setPower(-(1 + front_left_modifier));
             rear_left.setPower((0.5 + rear_left_modifier));
             front_right.setPower((0.5 + front_right_modifier));
             rear_right.setPower(-(1 + rear_right_modifier));
 
+             */
+
         } else if (gamepad1.right_stick_x > 0.4 && gamepad1.right_stick_y > 0) {
             telemetry.addData("DriveTrain", "Down and Right");
-            front_left.setPower((0.5 + front_left_modifier));
+            front_left.setPower(-(1 + front_left_modifier));
+            rear_left.setPower((1 + rear_left_modifier));
+            front_right.setPower((1 + front_right_modifier));
+            rear_right.setPower(-(1 + rear_right_modifier));
+
+           /* front_left.setPower((0.5 + front_left_modifier));
             rear_left.setPower(-(1 + rear_left_modifier));
             front_right.setPower(-(1 + front_right_modifier));
             rear_right.setPower((0.5 + rear_right_modifier));
+
+            */
 
         } else if (gamepad1.right_stick_y > 0) {
             telemetry.addData("DriveTrain", "Moving Backwards");
@@ -409,7 +525,7 @@ public class TeleOp20192020Decrease extends LinearOpMode {
         //Block pick up
         if (gamepad2.right_bumper) {
             telemetry.addData("BlockPickUp", "Block pickup open ");
-            Block_Pickup.setPosition(0f);
+            Block_Pickup.setPosition(0.4f);
 
         } else if (gamepad2.left_bumper) {
             telemetry.addData("BlockPickUp", "Block pickup closed");
@@ -424,7 +540,7 @@ public class TeleOp20192020Decrease extends LinearOpMode {
         //cap stone
         if (gamepad2.a) {
             telemetry.addData("Capstone", "Capstone");
-            Capstone.setPosition(0);
+            Capstone.setPosition(0.3);
         }
     }
 
@@ -437,19 +553,57 @@ public class TeleOp20192020Decrease extends LinearOpMode {
         }
     }
 
-    public void UpdateBlockKickout() {
-        //block kickout
-        if (gamepad2.b) {
-            telemetry.addData("BlockKickout", "block kickout");
-            Block_Kickout.setPosition(.1);
-        }
-    }
-
     public void UpdateReleaseServo() {
         //release servo
         if (gamepad2.y) {
             telemetry.addData("ReleaseServo", "feeder release");
             Release_Servo.setPosition(0.2);
+          //  sleep(1000);
+          //  Release_Servo2.setPosition(1);
+            sleep(1000);
+            feeder_motor.setPower(1);
         }
     }
+
+    protected void handleGamepad() {
+        if (!gamepadRateLimit.hasExpired()) {
+            return;
+        }
+
+        if (gamepad1.a) {
+            setDisplayKind(RevBlinkinLedDriver.DisplayKind.MANUAL);
+            gamepadRateLimit.reset();
+        } else if (gamepad1.b) {
+            setDisplayKind(RevBlinkinLedDriver.DisplayKind.AUTO);
+            gamepadRateLimit.reset();
+        } else if ((displayKind == RevBlinkinLedDriver.DisplayKind.MANUAL) && (gamepad1.left_bumper)) {
+            pattern = pattern.previous();
+            displayPattern();
+            gamepadRateLimit.reset();
+        } else if ((displayKind == RevBlinkinLedDriver.DisplayKind.MANUAL) && (gamepad1.right_bumper)) {
+            pattern = pattern.next();
+            displayPattern();
+            gamepadRateLimit.reset();
+
+        }
+    }
+
+    protected void setDisplayKind(RevBlinkinLedDriver.DisplayKind displayKind) {
+        this.displayKind = displayKind;
+        display.setValue(displayKind.toString());
+    }
+
+    protected void doAutoDisplay() {
+        if (ledCycleDeadline.hasExpired()) {
+            pattern = pattern.next();
+            displayPattern();
+            ledCycleDeadline.reset();
+        }
+    }
+
+    protected void displayPattern() {
+        blinkinLedDriver.setPattern(pattern);
+        patternName.setValue(pattern.toString());
+    }
 }
+

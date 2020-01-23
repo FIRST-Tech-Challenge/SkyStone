@@ -67,19 +67,74 @@ import java.util.List;
  * is explained below.
  */
 
-@Autonomous(name="Encoder_Drive_Function_Test", group ="Concept")
+@Autonomous(name="Vision_Targeting_Autonomous", group ="Concept")
 //@Disabled
-public class Encoder_Drive_Function_Test extends BaseAutoOpMode {
+public class Skystone_Prod_Autonomous_VisionTarget extends BaseAutoOpMode {
+
 
 
     @Override
     public void runOpMode() {
 
+       //GetIMU();
         GetHardware();
+        InitVision();
+        resetAngle();
 
-        EncoderDrive(DriveDirection.FORWARD, 3000);
+        waitForStart();
 
 
+        UnfoldRobotBackwards();
+
+        EncoderDrive(DriveDirection.BACKWARD, 700);
+
+        List<Recognition> Skystones = VisionTargetTfod();
+        telemetry.addData("Loop", "Out of vision targeting");
+        telemetry.addData("Skystones", Skystones.size());
+        telemetry.update();
+
+        if(Skystones.size() > 0)
+        {
+                //telemetry.addData("Skystone", Skystones.size());
+                //telemetry.update();
+
+                SetDriveMode(Mode.RUN_WITHOUT_ENCODERS);
+
+                feeder_motor.setPower(1);
+
+                rotate(10, 1);
+                StopAllDrive();
+                resetAngle();
+
+                SetDriveMode(Mode.STOP_RESET_ENCODER);
+                EncoderDrive(DriveDirection.BACKWARD, 1200);
+
+
+        }
+        else
+        {
+            rotate(15,1);
+            StopAllDrive();
+            resetAngle();
+
+            Skystones = VisionTargetTfod();
+
+            if(Skystones.size() > 0)
+            {
+                telemetry.addData("Skystone", "Located");
+                telemetry.update();
+
+
+            }
+            else
+            {
+                rotate(-30, 1);
+                StopAllDrive();
+                resetAngle();
+            }
+        }
+
+
+
+        }
     }
-
-}

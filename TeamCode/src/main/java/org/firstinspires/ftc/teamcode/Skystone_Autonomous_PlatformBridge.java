@@ -30,38 +30,34 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+
 
 /**
  * This file contains basic code to run a 4 wheeled Mecanum wheel setup. The d-pad controls
  * forwards/backwards and turning left and right, and the right stick controls strafing. (working on diff. control setup currently)
  */
 
-@Autonomous(name = "Blue_Platform_Only", group = "Linear Opmode")
-@Disabled
-public class Blue_Platform_Only extends BaseAutoOpMode {
-
+@Autonomous(name = "Encoder_Blue_Platform_Bridge", group = "Linear Opmode")
+//@Disabled
+public class Skystone_Autonomous_PlatformBridge extends BaseAutoOpMode {
 
 
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
-        telemetry.addData("Coder Note:", "Good Luck!!! - Simon");
         telemetry.update();
 
+
+        GetIMU();
         GetHardware();
+
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
+        resetAngle();
 
-        front_left.setPower(1);
-        rear_left.setPower(-1);
-        front_right.setPower(-1);
-        rear_right.setPower(1);
-        //sleep(200);
-        sleep(500);
-        Drive(DriveDirection.STOP);
+        EncoderDrive(DriveDirection.STRAFE_RIGHT, 200);
 
         UnfoldRobot();
 
@@ -69,41 +65,67 @@ public class Blue_Platform_Only extends BaseAutoOpMode {
         Clamp_Right.setPosition(0.5);
         sleep(1000);
 
-        Drive(DriveDirection.FORWARD);
-        sleep(210);
-        Drive(DriveDirection.STOP);
+        EncoderDrive(DriveDirection.FORWARD, 210);
 
-        Clamp_Left.setPosition(0.8);
+        Clamp_Left.setPosition(0.8f);
         Clamp_Right.setPosition(0f);
         sleep(1000);
 
-        Drive(DriveDirection.BACKWARD);
-        sleep(450);
+        EncoderDrive(DriveDirection.BACKWARD, 410);
 
 
 
-        front_left.setPower(-1);
-        rear_left.setPower(1);
-        front_right.setPower(1);
-        rear_right.setPower(-1);
-        sleep(1200);
+        rotate(90, 1);
 
-        front_left.setPower(-1);
-        rear_left.setPower(-1);
-        front_right.setPower(1);
-        rear_right.setPower(1);
-        sleep(1200);
-        //sleep(2500);
-
-        Drive(DriveDirection.FORWARD);
-        sleep(550);
-        Drive(DriveDirection.STOP);
+        EncoderDrive(DriveDirection.FORWARD, 300);
 
         //End of moving platform
 
         Clamp_Left.setPosition(0f);
         Clamp_Right.setPosition(1f);
         sleep(1000);
+
+
+        top_motor.setPower(-1);
+        sleep(200);
+
+
+        while(Top_Sensor_Rear.getState())
+        {
+            top_motor.setPower(0.5);
+        }
+
+        top_motor.setPower(0);
+
+
+        while(bottom_touch.getState())
+        {
+            lift_left.setPower(1);
+            lift_right.setPower(1);
+        }
+
+        top_motor.setPower(0);
+
+
+      //  lift_left.setPower(1);
+      //  lift_right.setPower(1);
+      //  sleep(1500);
+
+        lift_left.setPower(0);
+        lift_right.setPower(0);
+
+        EncoderDrive(DriveDirection.BACKWARD, 800);
+
+
+
+
+
+
+
+
+
+
+
 
 
     }

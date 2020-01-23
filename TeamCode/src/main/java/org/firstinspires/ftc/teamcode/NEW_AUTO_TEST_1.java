@@ -30,7 +30,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 
 /**
@@ -38,11 +37,14 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
  * forwards/backwards and turning left and right, and the right stick controls strafing. (working on diff. control setup currently)
  */
 
-@Autonomous(name = "Red_Platform_Only", group = "Linear Opmode")
-@Disabled
-public class Red_Platform_Only extends BaseAutoOpMode {
+@Autonomous(name = "NEW AUTO TEST 1", group = "Linear Opmode")
+public class NEW_AUTO_TEST_1 extends BaseAutoOpMode {
 
 
+
+    double globalAngle, power = 1, correction;
+
+    int startingSide = -1;  //Set to 1 for blue and -1 for Red
 
 
     @Override
@@ -50,58 +52,23 @@ public class Red_Platform_Only extends BaseAutoOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
+        //Assigns hardware devices names and values
+
         GetHardware();
+        GetIMU();
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
 
-        front_left.setPower(-1);
-        rear_left.setPower(1);
-        front_right.setPower(1);
-        rear_right.setPower(-1);
-        //sleep(220);
-        sleep(500);
-        Drive(DriveDirection.STOP);
 
+//unfolds here
         UnfoldRobot();
 
-        Clamp_Left.setPosition(0.5);
-        Clamp_Right.setPosition(0.5);
-        sleep(1000);
-
-        Drive(DriveDirection.FORWARD);
-        sleep(210);
-        Drive(DriveDirection.STOP);
-
-        Clamp_Left.setPosition(0.8);
-        Clamp_Right.setPosition(0f);
-        sleep(1000);
-
-        Drive(DriveDirection.BACKWARD);
-        sleep(450);
 
 
 
-        front_left.setPower(1);
-        rear_left.setPower(-1);
-        front_right.setPower(-1);
-        rear_right.setPower(1);
-        sleep(1200);
 
-
-        front_left.setPower(1);
-        rear_left.setPower(1);
-        front_right.setPower(-1);
-        rear_right.setPower(-1);
-        sleep(1200);
-        //sleep(2500);
-
-        Drive(DriveDirection.FORWARD);
-        sleep(550);
-        Drive(DriveDirection.STOP);
-
-        //End of moving platform
 
 
     }

@@ -1,4 +1,4 @@
-   /* Copyright (c) 2017 FIRST. All rights reserved.
+/* Copyright (c) 2017 FIRST. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted (subject to the limitations in the disclaimer below) provided that
@@ -30,47 +30,47 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+
+import java.util.List;
 
 
-   /**
-    * This file contains basic code to run a 4 wheeled Mecanum wheel setup. The d-pad controls
-    * forwards/backwards and turning left and right, and the right stick controls strafing. (working on diff. control setup currently)
-    */
+/**
+ * This file contains basic code to run a 4 wheeled Mecanum wheel setup. The d-pad controls
+ * forwards/backwards and turning left and right, and the right stick controls strafing. (working on diff. control setup currently)
+ */
 
-   @Autonomous(name = "Dash_Platform_Autonomous2", group = "Linear Opmode")
-   @Disabled
-   public class Dash_Platform_Autonomous2 extends BaseAutoOpMode {
-
-
+@Autonomous(name = "Test_Encoder_DriveFunction", group = "Linear Opmode")
+//@Disabled
+public class Skystone_Test_EncoderDriveFunction extends BaseAutoOpMode {
 
 
-       @Override
-       public void runOpMode() {
-           telemetry.addData("Status", "Initialized");
-           telemetry.update();
-
-           GetHardware();
-
-           // Wait for the game to start (driver presses PLAY)
-           waitForStart();
-           runtime.reset();
-
-           //UnfoldRobot();
-
-           Clamp_Left.setPosition(0.7);
-           Clamp_Right.setPosition(0.2);
-           sleep(1000);
-
-           Drive(DriveDirection.FORWARD);
-           sleep(1000);
-           Drive(DriveDirection.STOP);
-
-           Clamp_Left.setPosition(0.75f);
-           Clamp_Right.setPosition(0.25f);
-           sleep(1000);
+    @Override
+    public void runOpMode() {
+        telemetry.addData("Status", "Initialized");
+        telemetry.update();
 
 
-       }
-   }
+        GetIMU();
+        GetHardware();
+        InitVision();
+
+
+        // Wait for the game to start (driver presses PLAY)
+        waitForStart();
+        runtime.reset();
+        resetAngle();
+
+        //EncoderDrive(DriveDirection.BACKWARD, 2000);
+
+        List<Recognition> Skystones = VisionTargetTfod();
+
+        while(!isStopRequested()){
+
+        }
+
+
+    }
+}
 

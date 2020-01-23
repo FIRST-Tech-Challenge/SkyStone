@@ -31,7 +31,11 @@ public class GyroBot extends CameraBot {
         parameters.mode = BNO055IMU.SensorMode.IMU;
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.loggingEnabled = false;
+        parameters.loggingEnabled = true;
+
+//        parameters.calibrationDataFile = "AdafruitIMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingTag          = "IMU";
+
 
         imu =  hwMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
@@ -40,7 +44,7 @@ public class GyroBot extends CameraBot {
 
     public void resetAngle() {
 
-        Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        Orientation angles = imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         RobotLog.d(String.format("Reset Angle : %.3f , %.3f, %.3f", angles.firstAngle, angles.secondAngle, angles.thirdAngle));
         startAngle = angles.firstAngle;
     }
@@ -48,7 +52,6 @@ public class GyroBot extends CameraBot {
 
     public double getDeltaAngle() {
 
-        resetAngle();
         Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
         double deltaAngle = angles.firstAngle - startAngle;
@@ -69,14 +72,14 @@ public class GyroBot extends CameraBot {
         rightRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         double delta = getDeltaAngle();
 
-        while (Math.abs(delta) > 0.5){
+        while (Math.abs(delta) > 2){
             if (delta < 0){
                 // turn clockwize
-                direction = 1;
+                direction = -1;
             }
             else{
                 // turn CC wize
-                direction = -1;
+                direction = 1;
             }
             leftFront.setPower(-power * direction);
             rightFront.setPower(power * direction);
@@ -91,6 +94,5 @@ public class GyroBot extends CameraBot {
         leftRear.setPower(0);
         rightRear.setPower(0);
 
-        resetAngle();
     }
 }

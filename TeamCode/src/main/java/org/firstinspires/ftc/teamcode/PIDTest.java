@@ -19,6 +19,8 @@ public class PIDTest extends LinearOpMode {
         while (opModeIsActive()) {
             if (gamepad1.a) {
                 robot.goBacktoStartAngle();
+                sleep(1000);
+                robot.getDeltaAngle();
             }
         }
 

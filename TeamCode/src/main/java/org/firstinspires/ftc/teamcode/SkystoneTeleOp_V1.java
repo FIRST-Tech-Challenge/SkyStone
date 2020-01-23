@@ -44,6 +44,7 @@ import org.firstinspires.ftc.robotcore.internal.system.Deadline;
 /**
  * This file contains basic code to run a 4 wheeled Mecanum wheel setup. The d-pad controls
  * forwards/backwards and turning left and right, and the right stick controls strafing. (working on diff. control setup currently)
+ * ...Does anybody even read these things? I mean like, this hasn't been updated since I started coding...
  */
 
 @TeleOp(name = "TeleOp", group = "Linear Opmode")

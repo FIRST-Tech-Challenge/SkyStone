@@ -106,7 +106,9 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
 
-    private TFObjectDetector tfod;
+    public TFObjectDetector tfod;
+
+    float LeftSide;
 
 
     @Override
@@ -500,7 +502,23 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
 
     }
 
+    public float GetSkystoneLeftSide(){
+        List<Recognition> Skystones = VisionTargetTfod();
+
+        if (Skystones != null) {
+            for(Recognition recognition : Skystones) {
+                LeftSide = recognition.getLeft();
+            }
+        }
+
+        return(LeftSide);
+    }
+
+
 }
+
+
+
 
 
 

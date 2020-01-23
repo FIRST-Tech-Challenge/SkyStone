@@ -41,9 +41,11 @@ import java.util.List;
  * forwards/backwards and turning left and right, and the right stick controls strafing. (working on diff. control setup currently)
  */
 
-@Autonomous(name = "Test_Encoder_SkystoneLeftAndTop", group = "Linear Opmode")
+@Autonomous(name = "Test_SkystoneLeftAndTop", group = "Linear Opmode")
 //@Disabled
 public class Skystone_Test_SkystoneLeftAndTop extends BaseAutoOpMode {
+
+
 
 
     @Override
@@ -65,9 +67,25 @@ public class Skystone_Test_SkystoneLeftAndTop extends BaseAutoOpMode {
         //EncoderDrive(DriveDirection.BACKWARD, 2000);
 
         List<Recognition> Skystones = VisionTargetTfod();
-        
+
+
+
         while(!isStopRequested()){
-            
+
+            GetSkystoneLeftSide();
+
+            if(LeftSide > 30){
+                telemetry.addData("SkystonePos", "+30");
+            }
+            else if (LeftSide < -30){
+                telemetry.addData("SkystonePos", "-30");
+            }
+            else{
+                telemetry.addData("SkystonePos", "Center");
+            }
+
+            telemetry.update();
+
         }
         
         

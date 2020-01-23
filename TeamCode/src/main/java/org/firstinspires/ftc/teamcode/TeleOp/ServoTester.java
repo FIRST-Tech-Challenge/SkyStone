@@ -4,9 +4,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.teamcode.All.HardwareMap;
+import org.firstinspires.ftc.teamcode.PID.RobotLogger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,9 +74,9 @@ public class ServoTester extends LinearOpMode {
             telemetry.addData("Number of servos: ", servos.length);
             telemetry.addData("Name of selected servo: ", servoNames.get(index));
             telemetry.addData("Servo position", servoPositions.get(index));
-            RobotLog.dd("Number of Servos", String.valueOf(servos.length));
-            RobotLog.dd("Name of Selected Servo", servoNames.get(index));
-            RobotLog.dd("Servo position", String.valueOf(servoPositions.get(index)));
+            RobotLogger.dd("Number of Servos", String.valueOf(servos.length));
+            RobotLogger.dd("Name of Selected Servo", servoNames.get(index));
+            RobotLogger.dd("Servo position", String.valueOf(servoPositions.get(index)));
             telemetry.update();
         }
     }

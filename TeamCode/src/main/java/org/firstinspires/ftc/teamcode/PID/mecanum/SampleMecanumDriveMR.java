@@ -9,7 +9,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.DifferentialControlLoopCoefficients;
-import com.qualcomm.robotcore.util.RobotLog;
+
+import org.firstinspires.ftc.teamcode.PID.RobotLogger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -110,7 +111,7 @@ public class SampleMecanumDriveMR extends SampleMecanumDriveBase {
         for (DcMotorEx motor : motors) {
             double t = motor.getPower();
 
-            RobotLog.dd(TAG, "getMotorPowers: " + "power: " + Double.toString(t));
+            RobotLogger.dd(TAG, "getMotorPowers: " + "power: " + Double.toString(t));
 
             wheelPowers.add(t);
         }

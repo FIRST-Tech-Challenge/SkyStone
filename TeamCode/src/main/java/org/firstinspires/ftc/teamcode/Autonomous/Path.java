@@ -8,12 +8,12 @@ import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.All.HardwareMap;
 import org.firstinspires.ftc.teamcode.Autonomous.Vision.Align;
 import org.firstinspires.ftc.teamcode.PID.DriveConstantsPID;
+import org.firstinspires.ftc.teamcode.PID.RobotLogger;
 import org.firstinspires.ftc.teamcode.PID.localizer.StandardTrackingWheelLocalizer;
 import org.firstinspires.ftc.teamcode.PID.localizer.VuforiaCamLocalizer;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveBase;
@@ -74,14 +74,14 @@ public class Path {
     public SampleMecanumDriveBase DriveBuilderReset(boolean isStrafe, boolean init_imu, String label) {
         currentPos = _drive.getPoseEstimate();
         Pose2d error_pose = _drive.follower.getLastError();
-        RobotLog.dd(TAG, "start new step: %s, count[%d], currentPos %s, errorPos %s",
+        RobotLogger.dd(TAG, "start new step: %s, count[%d], currentPos %s, errorPos %s",
                 label, step_count++, currentPos.toString(), error_pose.toString());
         if (DriveConstantsPID.drvCorrection)
         {
             boolean done = false;
             if (abs(error_pose.getX())>1.0 || abs(error_pose.getY())>1.0 )
             {
-                RobotLog.dd(TAG, "correct pose by strafing");
+                RobotLogger.dd(TAG, "correct pose by strafing");
                 _drive.resetFollowerWithParameters(true);
                 _drive.followTrajectorySync(
                         _drive.trajectoryBuilder()
@@ -91,7 +91,7 @@ public class Path {
             }
             if (Math.toDegrees(error_pose.getHeading())>10)
             {
-                RobotLog.dd(TAG, "correct heading by turning");
+                RobotLogger.dd(TAG, "correct heading by turning");
                 _drive.resetFollowerWithParameters(false);
                 _drive.turnSync(error_pose.getHeading());
                 done = true;
@@ -99,11 +99,11 @@ public class Path {
             if (done) {
                 currentPos = _drive.getPoseEstimate();
                 error_pose = _drive.follower.getLastError();
-                RobotLog.dd(TAG, "after correction: currentPos %s, errorPos %s",
+                RobotLogger.dd(TAG, "after correction: currentPos %s, errorPos %s",
                         currentPos.toString(), error_pose.toString());
             }
         }
-        //RobotLog.dd(TAG, "vuforia localization info: %s", vu.getPoseEstimate().toString());
+        //RobotLogger.dd(TAG, "vuforia localization info: %s", vu.getPoseEstimate().toString());
 
         if (DriveConstantsPID.RECREATE_DRIVE_AND_BUILDER)
             _drive = new SampleMecanumDriveREV(hardwareMap, isStrafe, init_imu);
@@ -117,13 +117,13 @@ public class Path {
         } else {
             builder = new TrajectoryBuilder(_drive.getPoseEstimate(), DriveConstantsPID.STRAFE_BASE_CONSTRAINTS);
         }
-        RobotLog.dd(TAG, "drive and builder reset, initialized with pose: " + _drive.getPoseEstimate().toString());
+        RobotLogger.dd(TAG, "drive and builder reset, initialized with pose: " + _drive.getPoseEstimate().toString());
         return _drive;
     }
 
     public void RedQuary(int[] skystonePositions) {
-        DriveConstantsPID.updateConstantsFromProperties();
-        RobotLog.dd(TAG, "skystone positions[0]" + skystonePositions[0]);
+        //DriveConstantsPID.updateConstantsFromProperties();
+        RobotLogger.dd(TAG, "skystone positions[0]" + skystonePositions[0]);
         switch (skystonePositions[0]) {
             case 1:
                 double yCoordMvmtPlane = -44.5;
@@ -160,7 +160,7 @@ public class Path {
                     _drive.followTrajectorySync(trajectory);
 
                     //straightDrive.resetFollowerWithParameters(false);
-                    RobotLog.dd(TAG, "step1.5, after strafe, to grab");
+                    RobotLogger.dd(TAG, "step1.5, after strafe, to grab");
                     grabStone(FieldPosition.RED_QUARY);
                     DriveBuilderReset(true, false, "step2, after strafe, grab, to strafe back");
                     //builder = new TrajectoryBuilder(straightDrive.getPoseEstimate(), DriveConstantsPID.STRAFE_BASE_CONSTRAINTS);
@@ -187,7 +187,7 @@ public class Path {
                     trajectory = builder.build();   //x - 2.812, y + 7.984
                     _drive.followTrajectorySync(trajectory);
 
-                    RobotLog.dd(TAG, "step4.5, after strafe");
+                    RobotLogger.dd(TAG, "step4.5, after strafe");
                     dropStone(FieldPosition.RED_QUARY);
 
                     DriveBuilderReset(true, false, "step5, after strafe and drop stone");
@@ -215,7 +215,7 @@ public class Path {
                             .setReversed(false).strafeTo(new Vector2d(furtherMostSkyStoneX, yCoordMvmtPlane + strafeDistance + 2));
                     trajectory = builder.build();   //x - 2.812, y + 7.984
                     _drive.followTrajectorySync(trajectory);
-                    RobotLog.dd(TAG, "step7.5 after strafe, to grab");
+                    RobotLogger.dd(TAG, "step7.5 after strafe, to grab");
                     grabStone(FieldPosition.RED_QUARY);
 
                     DriveBuilderReset(true, false, "step8, after strafe and grab");
@@ -243,7 +243,7 @@ public class Path {
                     trajectory = builder.build();   //x - 2.812, y + 7.984
                     _drive.followTrajectorySync(trajectory);
 
-                    RobotLog.dd(TAG, "step10.5, after strafe, to drop");
+                    RobotLogger.dd(TAG, "step10.5, after strafe, to drop");
                     dropStone(FieldPosition.RED_QUARY);
                     //_drive.resetFollowerWithParameters(false);
                     DriveBuilderReset(false, false, "step11, after strafe and drop");
@@ -708,10 +708,10 @@ public class Path {
                 trajectory = builder.build();
                 straightDrive.followTrajectorySync(trajectory);
                 currentPos = straightDrive.getPoseEstimate();
-                RobotLog.dd(TAG, "step20, " + currentPos.toString());
+                RobotLogger.dd(TAG, "step20, " + currentPos.toString());
 
                 straightDrive.turnSync(-Math.toRadians(70));
-                RobotLog.dd(TAG, "step21, " + straightDrive.getPoseEstimate().toString());
+                RobotLogger.dd(TAG, "step21, " + straightDrive.getPoseEstimate().toString());
                 currentPos = straightDrive.getPoseEstimate();
 
                 straightDrive = DriveBuilderReset(false, false, "step18");
@@ -1148,10 +1148,10 @@ public class Path {
                 trajectory = builder.build();
                 straightDrive.followTrajectorySync(trajectory);
                 currentPos = straightDrive.getPoseEstimate();
-                RobotLog.dd(TAG, "step20, " + currentPos.toString());
+                RobotLogger.dd(TAG, "step20, " + currentPos.toString());
 
                 straightDrive.turnSync(-Math.toRadians(70));
-                RobotLog.dd(TAG, "step21, " + straightDrive.getPoseEstimate().toString());
+                RobotLogger.dd(TAG, "step21, " + straightDrive.getPoseEstimate().toString());
                 currentPos = straightDrive.getPoseEstimate();
 
                 straightDrive = DriveBuilderReset(false, false, "step18");
@@ -1486,10 +1486,10 @@ public class Path {
                 trajectory = builder.build();
                 straightDrive.followTrajectorySync(trajectory);
                 currentPos = straightDrive.getPoseEstimate();
-                RobotLog.dd(TAG, "step20, " + currentPos.toString());
+                RobotLogger.dd(TAG, "step20, " + currentPos.toString());
 
                 straightDrive.turnSync(Math.toRadians(70));
-                RobotLog.dd(TAG, "step21, " + straightDrive.getPoseEstimate().toString());
+                RobotLogger.dd(TAG, "step21, " + straightDrive.getPoseEstimate().toString());
                 currentPos = straightDrive.getPoseEstimate();
 
                 hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
@@ -1781,10 +1781,10 @@ public class Path {
                 trajectory = builder.build();
                 straightDrive.followTrajectorySync(trajectory);
                 currentPos = straightDrive.getPoseEstimate();
-                RobotLog.dd(TAG, "step20, " + currentPos.toString());
+                RobotLogger.dd(TAG, "step20, " + currentPos.toString());
 
                 straightDrive.turnSync(Math.toRadians(70));
-                RobotLog.dd(TAG, "step21, " + straightDrive.getPoseEstimate().toString());
+                RobotLogger.dd(TAG, "step21, " + straightDrive.getPoseEstimate().toString());
                 currentPos = straightDrive.getPoseEstimate();
 
                 hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
@@ -2076,10 +2076,10 @@ public class Path {
                 trajectory = builder.build();
                 straightDrive.followTrajectorySync(trajectory);
                 currentPos = straightDrive.getPoseEstimate();
-                RobotLog.dd(TAG, "step20, " + currentPos.toString());
+                RobotLogger.dd(TAG, "step20, " + currentPos.toString());
 
                 straightDrive.turnSync(Math.toRadians(70));
-                RobotLog.dd(TAG, "step21, " + straightDrive.getPoseEstimate().toString());
+                RobotLogger.dd(TAG, "step21, " + straightDrive.getPoseEstimate().toString());
                 currentPos = straightDrive.getPoseEstimate();
 
                 hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
@@ -2426,9 +2426,9 @@ public class Path {
                 DriveConstantsPID.odoEncoderTicksPerRev * StandardTrackingWheelLocalizer.GEAR_RATIO *
                 2 * Math.PI * StandardTrackingWheelLocalizer.WHEEL_RADIUS;
 
-        RobotLog.dd("Current Position (X, Y, Heading)", straightDrive.getPoseEstimate().toString());
-        RobotLog.dd("Strafe Distance", String.valueOf(strafeDistance));
-        RobotLog.dd("Direction", left ? "Left" : "Right");
+        RobotLogger.dd("Current Position (X, Y, Heading)", straightDrive.getPoseEstimate().toString());
+        RobotLogger.dd("Strafe Distance", String.valueOf(strafeDistance));
+        RobotLogger.dd("Direction", left ? "Left" : "Right");
         if (!left)
             strafeDistance = -strafeDistance;
 
@@ -2437,7 +2437,7 @@ public class Path {
         straightDrive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(straightDrive.getPoseEstimate().getX(),
                 straightDrive.getPoseEstimate().getY() + strafeDistance), heading));
         straightDrive.getLocalizer().update();
-        RobotLog.dd("Updated Position (X, Y, Heading)", straightDrive.getPoseEstimate().toString());
+        RobotLogger.dd("Updated Position (X, Y, Heading)", straightDrive.getPoseEstimate().toString());
     }
 
     public void odometryStrafe(double power, double inches, boolean right) {

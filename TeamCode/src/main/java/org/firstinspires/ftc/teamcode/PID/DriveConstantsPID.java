@@ -40,6 +40,8 @@ public class DriveConstantsPID {
     public static boolean USING_BULK_READ = false;
     public static boolean USING_STRAFE_DIAGNAL = true;
     public static double odoEncoderTicksPerRev = 1565.0;
+
+    public static boolean ENABLE_LOGGING = false;
     private static String TAG = "DriveConstants";
 
     public static double txP = 6.0; //translational x/y co-efficients
@@ -235,6 +237,7 @@ public class DriveConstantsPID {
         RobotLog.dd(TAG, "strafeTimeDistanceRat: " + Double.toString(strafeTimeDistanceRatio));
         RobotLog.dd(TAG, "strafeMotorPower:  " + Double.toString(strafeMotorPower));
         RobotLog.dd(TAG, "rear_ratio:  " + Double.toString(rear_ratio));
+        RobotLog.dd(TAG, "enabling Logging? : " + Integer.toString(ENABLE_LOGGING?1:0));
     }
     public static void updateConstantsFromProperties()
     {
@@ -279,6 +282,11 @@ public class DriveConstantsPID {
         if (v_double != Double.MAX_VALUE) {
             v_int = (int) v_double;
             RUN_USING_ODOMETRY_WHEEL = (v_int==0)?false:true;
+        }
+        v_double = (int) getTeamCodePropertyValue("debug.ftc.logging");
+        if (v_double != Double.MAX_VALUE) {
+            v_int = (int) v_double;
+            ENABLE_LOGGING = (v_int==0)?false:true;
         }
         v_double = (int) getTeamCodePropertyValue("debug.ftc.strafeDiag");
         if (v_double != Double.MAX_VALUE) {

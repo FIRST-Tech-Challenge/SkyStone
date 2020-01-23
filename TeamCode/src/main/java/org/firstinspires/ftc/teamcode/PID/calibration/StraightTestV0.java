@@ -7,12 +7,12 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.PID.DriveConstantsPID;
+import org.firstinspires.ftc.teamcode.PID.RobotLogger;
 import org.firstinspires.ftc.teamcode.PID.localizer.StandardTrackingWheelLocalizer;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveBase;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveREV;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveREVOptimized;
 
-import com.qualcomm.robotcore.util.RobotLog;
 
 import java.util.List;
 
@@ -34,7 +34,7 @@ public class StraightTestV0 extends LinearOpMode {
         else
             drive = new SampleMecanumDriveREVOptimized(hardwareMap, false);
         drive.setBrakeonZeroPower(DriveConstantsPID.BRAKE_ON_ZERO);
-        RobotLog.dd(TAG, "trajectoryBuilder forward, DISTANCE: "+Double.toString(DISTANCE));
+        RobotLogger.dd(TAG, "trajectoryBuilder forward, DISTANCE: "+Double.toString(DISTANCE));
         Trajectory trajectory = drive.trajectoryBuilder()
                 .forward(DISTANCE)
                 .build();
@@ -49,12 +49,12 @@ public class StraightTestV0 extends LinearOpMode {
             StandardTrackingWheelLocalizer t = (StandardTrackingWheelLocalizer)localizer; // @TODO
             List<Double> odo_positions = t.getWheelPositions();
 
-            RobotLog.dd(TAG, "odometry positions");
+            RobotLogger.dd(TAG, "odometry positions");
             drive.print_list_double(odo_positions);
         }
 
         List<Double> positions = drive.getWheelPositions();
-        RobotLog.dd(TAG, "wheel positions");
+        RobotLogger.dd(TAG, "wheel positions");
         drive.print_list_double(positions);
 
     }

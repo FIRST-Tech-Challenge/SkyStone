@@ -48,7 +48,7 @@ public class FollowerPIDTunerStraight extends LinearOpMode {
             drive.setBrakeonZeroPower(DriveConstantsPID.BRAKE_ON_ZERO);
             drive.setPoseEstimate(new Pose2d(0, 0, 0));
 
-            //drive.resetFollowerWithParameters(false);
+            drive.resetFollowerWithParameters(false);
             drive.followTrajectorySync(
                     drive.trajectoryBuilder()
                             .forward(DISTANCE)
@@ -61,7 +61,7 @@ public class FollowerPIDTunerStraight extends LinearOpMode {
             try{
                 Thread.sleep(2000);
             } catch(Exception e){}
-            //drive.resetFollowerWithParameters(false);
+            drive.resetFollowerWithParameters(false);
             drive.followTrajectorySync(
                     drive.trajectoryBuilder()
                             .back(DISTANCE)

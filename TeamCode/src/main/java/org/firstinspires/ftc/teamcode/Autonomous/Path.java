@@ -93,6 +93,8 @@ public class Path {
                                 .build());
                 done = true;
                 newPos = _drive.getPoseEstimate();
+                RobotLogger.dd(TAG, "after pose correction: currentPos %s, errorPos %s",
+                        newPos.toString(), _drive.follower.getLastError().toString());
             }
             if ((abs(error_pose.getY())>1.5))// && (abs(error_pose.getX())<abs(error_pose.getY())))
             {
@@ -100,11 +102,13 @@ public class Path {
                 _drive.resetFollowerWithParameters(true, false);
                 _drive.followTrajectorySync(
                         _drive.trajectoryBuilder()
-                                //.setReversed((error_pose.getY()>0)?false:true)
+                                .setReversed(false)
                                 .strafeTo(new Vector2d(newPos.getX(), newPos.getY() + error_pose.getY()))
                                 .build());
                 done = true;
                 newPos = _drive.getPoseEstimate();
+                RobotLogger.dd(TAG, "after pose correction: currentPos %s, errorPos %s",
+                        newPos.toString(), _drive.follower.getLastError().toString());
             }
             /*
             if (Math.toDegrees(error_pose.getHeading())>10)
@@ -116,10 +120,7 @@ public class Path {
                 newPos = _drive.getPoseEstimate();
             }*/
             if (done) {
-                currentPos = _drive.getPoseEstimate();
-                error_pose = _drive.follower.getLastError();
-                RobotLogger.dd(TAG, "after pose correction: currentPos %s, errorPos %s",
-                        currentPos.toString(), error_pose.toString());
+                currentPos = newPos;
             }
         }
         //RobotLogger.dd(TAG, "vuforia localization info: %s", vu.getPoseEstimate().toString());

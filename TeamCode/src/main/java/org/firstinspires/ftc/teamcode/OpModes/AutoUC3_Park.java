@@ -52,7 +52,7 @@ public class AutoUC3_Park {
 
         /***************************************/
         //Delay to move only by end of autonomous mode
-        callingOpMode.sleep(0);
+        callingOpMode.sleep(15000);
         /***************************************/
 
 

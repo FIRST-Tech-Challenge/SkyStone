@@ -74,24 +74,24 @@ public class AutoUC2_MoveFdn_Park {
 
         //Move robot to in between C5 and C6
         double robotToFoundation = 50;
-        autoUCChassis.runFwdBackLeftRight(robotToFoundation, playingAlliance,0.25,callingOpMode);
+        autoUCChassis.runFwdBackLeftRight(robotToFoundation, playingAlliance,0.5,callingOpMode);
 
-        callingOpMode.sleep(500);
+        callingOpMode.sleep(200);
         //Move forward till Chassis bumber limit switch is pressed.
         autoUCChassis.runFwdTill_frontleftChassisTouchSensor_Pressed(7, 0.1, callingOpMode);
-        callingOpMode.sleep(500);
+        callingOpMode.sleep(250);
 
         //Drop Arm and Hook to OnFoundation level
         autoUCArm.moveArm_onFoundationLevel();
         autoUCChassis.moveHook_holdFoundation();
-        callingOpMode.sleep(500);
+        callingOpMode.sleep(300);
 
         //Move foundation to wall and then turn
         autoUCChassis.runFwdBackLeftRight(6,0,0.25, callingOpMode);
-        callingOpMode.sleep(500);
+        callingOpMode.sleep(250);
 
         //Move Robot Left toward A4 (for XX rotations). Friction will cause Robot to rotate towards A6
-        double foundationTurnDistance = 83; //was 85
+        double foundationTurnDistance = 82; //was 85
         autoUCChassis.runFwdBackLeftRight(foundationTurnDistance,playingAlliance*(-1),0.25, callingOpMode);
         callingOpMode.sleep(500);
 

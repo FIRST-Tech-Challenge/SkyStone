@@ -12,7 +12,7 @@
  * becomes relative to the field as opposed to the robot. You can
  * reset the forward heading by pressing "x".
  */
-@TeleOp(name = "Manual Drive Red")
+@TeleOp(name = "Manual Drive")
 public class ManualDriveOpMode extends LinearOpMode {
     private servoDropBot robot = new servoDropBot(this);
 
@@ -32,7 +32,7 @@ public class ManualDriveOpMode extends LinearOpMode {
                 robot.pickupSkyStone();
             }
             robot.toggleButtArm(gamepad2.right_stick_button, gamepad2.left_stick_button);
-            robot.toggleServoDrop(gamepad2.a, gamepad2.y);
+            robot.toggleServoDrop(gamepad2.y, gamepad2.a);
 
         }
     }

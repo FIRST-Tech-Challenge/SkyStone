@@ -27,73 +27,60 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.components;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.hardware.Servo;
-
+package org.firstinspires.ftc.teamcode.bots;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-//@Disabled
-public class Grapple extends BotComponent {
+import org.firstinspires.ftc.teamcode.components.DriveTrain;
+import org.firstinspires.ftc.teamcode.components.Grapple;
+import org.firstinspires.ftc.teamcode.components.Grapple2;
+import org.firstinspires.ftc.teamcode.components.GyroNavigator;
+import org.firstinspires.ftc.teamcode.components.Intake;
+import org.firstinspires.ftc.teamcode.components.Logger;
+import org.firstinspires.ftc.teamcode.components.Ramp;
+import org.firstinspires.ftc.teamcode.components.SkystoneFinder;
+import org.firstinspires.ftc.teamcode.components.WebCamNavigator;
+import org.firstinspires.ftc.teamcode.components.WebCamera;
 
-    private String servoName1;
-    private String servoName2;
+public class GameTeleBot extends Bot {
 
-    public Servo servo = null;
-    public Servo servo2 = null;
+    /* BotComponents */
 
+    public Logger logger = null;
+    public DriveTrain driveTrain = null;
 
-    double SERVO_DOWN_POSITION = 0.5;
-    double SERVO_UP_POSITION = -0.4;
+    public Grapple grapple = null;
+    //public ColorSensor colorDetection = null;
+    public Intake intake = null;
+    public Ramp ramp = null;
 
-public Grapple(){
-}
-public Grapple(Logger aLogger, OpMode aOpMode, String aServoName1, String aServoName2) {
-    super(aLogger, aOpMode);
-    servoName1 = aServoName1;
-    servoName2 = aServoName2;
+    /* Constructor */
+    public GameTeleBot() {
 
-}
-
-public void init( ){
-
-    //define and initialize motors
-    logger.logDebug("initservo", "IamWalrus");
-    servo = initServo(servoName1, -.4);
-    servo2 = initServo(servoName2, -.4);
-    if (servo != null && servo2 != null) {
-        isAvailable = true;
     }
 
-    logger.logInfo("Grapple", "isAvailable: %b", isAvailable);
-}
+    public GameTeleBot(OpMode aOpMode) {
+        this(aOpMode, false, false);
+    }
 
-public void servoMoveDown(){
-    logger.logDebug("servoMoveDown", "walrus");
-    servo.setPosition(SERVO_DOWN_POSITION);
-}
+    public GameTeleBot(OpMode aOpMode, boolean enableTrace, boolean enableTelemetry) {
 
-public void servo2MoveDown(){servo2.setPosition(SERVO_UP_POSITION);
-}
+        logger = new Logger("TestBot", aOpMode, enableTrace, enableTelemetry);
+        driveTrain = new DriveTrain(logger, aOpMode, "frontLeftMotor", "frontRightMotor",
+                "backLeftMotor", "backRightMotor");
 
-public void servoMoveUp(){servo.setPosition(SERVO_UP_POSITION);
-}
+        grapple = new Grapple(logger, aOpMode, "servo1", "servo2");
 
-public void servo2MoveUp(){servo2.setPosition(SERVO_DOWN_POSITION);
-}
+        intake = new Intake(logger, aOpMode, "Right_Intake", "Left_Intake");
+        ramp = new Ramp(logger, aOpMode, "rampServo", "rampServo2");
 
-public void grappleMoveDown() {
-    servo.setPosition(SERVO_DOWN_POSITION);
-    servo2.setPosition(SERVO_DOWN_POSITION);
-}
+    }
 
-public void grappleMoveUp() {
-    servo.setPosition(SERVO_UP_POSITION);
-    servo2.setPosition(SERVO_UP_POSITION);
-}
+    public void initAll() {
+        driveTrain.init(DriveTrain.InitType.INIT_4WD);
+        grapple.init();
+        ramp.init();
+    }
 
 }
-
 

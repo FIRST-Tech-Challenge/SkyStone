@@ -34,19 +34,26 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 //@Disabled
 public class Ramp extends BotComponent {
-    public Servo rampServo = null;
+    private String rampServoName1;
+    private String rampServoName2;
+    public Servo rampServo1 = null;
     public Servo rampServo2 = null;
     double SERVO_DOWN_POSITION = 0;
     double SERVO_UP_POSITION = 1;
 public Ramp(){
 }
-public Ramp(Logger aLogger, OpMode aOpMode, String servoName, String servoName2){
+public Ramp(Logger aLogger, OpMode aOpMode, String aRampServoName1, String aRampServoName2){
     super(aLogger, aOpMode);
-    //define and initialize motors
+    rampServoName1 = aRampServoName1;
+    rampServoName2 = aRampServoName2;
+}
+
+public void init( ){
+
     logger.logDebug("initservo", "IamWalrus");
-    rampServo = initServo(servoName, SERVO_UP_POSITION);
-    rampServo2 = initServo(servoName2, SERVO_UP_POSITION);
-    if(rampServo != null && rampServo2 != null){
+    rampServo1 = initServo(rampServoName1, SERVO_UP_POSITION);
+    rampServo2 = initServo(rampServoName2, SERVO_UP_POSITION);
+    if(rampServo1 != null && rampServo2 != null){
         isAvailable = true;
     }
 
@@ -55,7 +62,7 @@ public Ramp(Logger aLogger, OpMode aOpMode, String servoName, String servoName2)
 
 public void rampDown(){
     logger.logDebug("servoMoveDown", "walrus");
-    rampServo.setPosition(SERVO_DOWN_POSITION);
+    rampServo1.setPosition(SERVO_DOWN_POSITION);
 }
 
 public void ramp2Down(){
@@ -63,7 +70,7 @@ public void ramp2Down(){
 }
 
 public void rampUp(){
-    rampServo.setPosition(SERVO_UP_POSITION);
+    rampServo1.setPosition(SERVO_UP_POSITION);
 }
 
 public void ramp2Up(){

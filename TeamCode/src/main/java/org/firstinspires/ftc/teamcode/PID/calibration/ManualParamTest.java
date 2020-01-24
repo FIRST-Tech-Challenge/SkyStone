@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.acmerobotics.roadrunner.localization.Localizer;
 
 import org.firstinspires.ftc.teamcode.PID.DriveConstantsPID;
+import org.firstinspires.ftc.teamcode.PID.RobotLogger;
 import org.firstinspires.ftc.teamcode.PID.localizer.StandardTrackingWheelLocalizer;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveBase;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveREV;
@@ -14,7 +15,6 @@ import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveREVOptimized
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.util.RobotLog;
 
 import java.util.Arrays;
 import java.util.List;
@@ -59,34 +59,34 @@ public class ManualParamTest extends LinearOpMode {
                 StandardTrackingWheelLocalizer t = (StandardTrackingWheelLocalizer)localizer; // @TODO
                 List<Double>  odo_positions = t.getWheelPositions();
 
-                RobotLog.dd(TAG, "odometry positions");
+                RobotLogger.dd(TAG, "odometry positions");
                 drive.print_list_double(odo_positions);
             }
 
             List<Double> velocities = drive.getWheelVelocities();
-            RobotLog.dd(TAG, "velocities");
+            RobotLogger.dd(TAG, "velocities");
             drive.print_list_double(velocities);
 
             List<Double> positions = drive.getWheelPositions();
-            RobotLog.dd(TAG, "wheel positions");
+            RobotLogger.dd(TAG, "wheel positions");
             drive.print_list_double(positions);
 
             List<Double> w_powers = drive.getMotorPowers(motors);
-            RobotLog.dd(TAG, "wheel powers");
+            RobotLogger.dd(TAG, "wheel powers");
             drive.print_list_double(w_powers);
 
             double heading = drive.getExternalHeading();
-            RobotLog.dd(TAG, "getExternalHeading: x " + heading);
+            RobotLogger.dd(TAG, "getExternalHeading: x " + heading);
 
             Pose2d pose = drive.getPoseEstimate();
-            RobotLog.dd(TAG, "Pose: x " + pose.getX());
-            RobotLog.dd(TAG, "Pose: y " + pose.getY());
-            RobotLog.dd(TAG, "Pose: heading " + Double.toString(pose.getHeading()));
+            RobotLogger.dd(TAG, "Pose: x " + pose.getX());
+            RobotLogger.dd(TAG, "Pose: y " + pose.getY());
+            RobotLogger.dd(TAG, "Pose: heading " + Double.toString(pose.getHeading()));
 
             Pose2d error = drive.getLastError();
-            RobotLog.dd(TAG, "xError " + error.getX());
-            RobotLog.dd(TAG, "yError " + error.getY());
-            RobotLog.dd(TAG, "headingError "  + error.getHeading());
+            RobotLogger.dd(TAG, "xError " + error.getX());
+            RobotLogger.dd(TAG, "yError " + error.getY());
+            RobotLogger.dd(TAG, "headingError "  + error.getHeading());
             Thread.sleep(polling_interval);
         }
     }

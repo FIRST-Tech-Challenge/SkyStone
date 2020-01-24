@@ -18,12 +18,12 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.All.DriveConstant;
 import org.firstinspires.ftc.teamcode.All.HardwareMap;
 import org.firstinspires.ftc.teamcode.PID.DriveConstantsPID;
+import org.firstinspires.ftc.teamcode.PID.RobotLogger;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveBase;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveREV;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveREVOptimized;
@@ -80,7 +80,7 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
     private static MotionProfile generateProfile(boolean movingForward) {
         DriveConstantsPID.updateConstantsFromProperties();
         DISTANCE = DriveConstantsPID.TEST_DISTANCE;
-        RobotLog.dd(TAG, "DISTANCE: "+Double.toString(DISTANCE));
+        RobotLogger.dd(TAG, "DISTANCE: "+Double.toString(DISTANCE));
         MotionState start = new MotionState(movingForward ? 0 : DISTANCE, 0, 0, 0);
         MotionState goal = new MotionState(movingForward ? DISTANCE : 0, 0, 0, 0);
         return MotionProfileGenerator.generateSimpleMotionProfile(start, goal,
@@ -97,7 +97,7 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
             catVar = new CustomVariable();
             dashboard.getConfigRoot().putVariable(catName, catVar);
 
-            RobotLog.w("Unable to find top-level category %s", catName);
+            RobotLogger.dd("", "Unable to find top-level category %s", catName);
         }
 
         CustomVariable pidVar = new CustomVariable();
@@ -166,7 +166,7 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
         imu.initialize(parameters);
 
         if (!RUN_USING_ENCODER) {
-            RobotLog.setGlobalErrorMsg("%s does not need to be run if the built-in motor velocity" +
+            RobotLogger.dd("%s does not need to be run if the built-in motor velocity" +
                     "PID is not in use", getClass().getSimpleName());
         }
         leftFront = hardwareMap.get(DcMotorEx.class, "frontLeft");
@@ -233,21 +233,21 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
             List<Double> velocities = drive.getWheelVelocities();
             List<Double> powers = drive.getMotorPowers(motors);
             List<Double> positions = drive.getWheelPositions();
-            RobotLog.dd(TAG, "getWheelVelocities");
+            RobotLogger.dd(TAG, "getWheelVelocities");
             drive.print_list_double(velocities);
-            RobotLog.dd(TAG, "getMotorPowers");
+            RobotLogger.dd(TAG, "getMotorPowers");
             drive.print_list_double(powers);
-            RobotLog.dd(TAG, "getWheelPositions");
+            RobotLogger.dd(TAG, "getWheelPositions");
             drive.print_list_double(positions);
 
             // update telemetry
             telemetry.addData("targetVelocity", motionState.getV());
-            RobotLog.dd(TAG, "targetVelocity " + Double.toString(motionState.getV()));
+            RobotLogger.dd(TAG, "targetVelocity " + Double.toString(motionState.getV()));
             for (int i = 0; i < velocities.size(); i++) {
                 telemetry.addData("velocity" + i, velocities.get(i));
                 telemetry.addData("error" + i, motionState.getV() - velocities.get(i));
-                RobotLog.dd(TAG, "velocity " + i + " " + Double.toString(velocities.get(i)));
-                RobotLog.dd(TAG, "error " + i + " " + Double.toString(motionState.getV() - velocities.get(i)));
+                RobotLogger.dd(TAG, "velocity " + i + " " + Double.toString(velocities.get(i)));
+                RobotLogger.dd(TAG, "error " + i + " " + Double.toString(motionState.getV() - velocities.get(i)));
 
             }
 

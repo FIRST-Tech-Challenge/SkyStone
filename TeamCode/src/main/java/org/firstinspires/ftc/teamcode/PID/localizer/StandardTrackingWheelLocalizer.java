@@ -10,9 +10,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.teamcode.PID.DriveConstantsPID;
+import org.firstinspires.ftc.teamcode.PID.RobotLogger;
 
 import java.util.Arrays;
 import java.util.List;
@@ -58,7 +58,7 @@ public class  StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer
         leftEncoder = hardwareMap.dcMotor.get("leftIntake");
         rightEncoder = hardwareMap.dcMotor.get("liftTwo");
         frontEncoder = hardwareMap.dcMotor.get("rightIntake");
-        RobotLog.dd(TAG, "StandardTrackingWheelLocalizer created");
+        RobotLogger.dd(TAG, "StandardTrackingWheelLocalizer created");
         motors = Arrays.asList(leftEncoder, rightEncoder, frontEncoder);
 
         for (DcMotor motor : motors) {
@@ -68,7 +68,7 @@ public class  StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer
     }
 
     public static double encoderTicksToInches(int ticks) {
-        RobotLog.dd("StandardTrackingWheelLocalizer", "encoderTicksToInches: " + " ticks: " +
+        RobotLogger.dd("StandardTrackingWheelLocalizer", "encoderTicksToInches: " + " ticks: " +
                 Double.toString(ticks) + " inches: " + Double.toString(WHEEL_RADIUS * 2 * Math.PI *
                 GEAR_RATIO * ticks / DriveConstantsPID.odoEncoderTicksPerRev));
         return WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO * ticks / DriveConstantsPID.odoEncoderTicksPerRev;
@@ -80,10 +80,10 @@ public class  StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer
         int x = leftEncoder.getCurrentPosition();
         int y = rightEncoder.getCurrentPosition();
         int z = frontEncoder.getCurrentPosition();
-        RobotLog.dd(TAG, "getWheelPositions");
-        RobotLog.dd(TAG, "leftEncoder: " + x);
-        RobotLog.dd(TAG, "rightEncoder: " + y);
-        RobotLog.dd(TAG, "frontEncoder: " + (-1)*z);
+        RobotLogger.dd(TAG, "getWheelPositions");
+        RobotLogger.dd(TAG, "leftEncoder: " + x);
+        RobotLogger.dd(TAG, "rightEncoder: " + y);
+        RobotLogger.dd(TAG, "frontEncoder: " + (-1)*z);
         return Arrays.asList(
                 encoderTicksToInches(x),
                 encoderTicksToInches(y),
@@ -93,7 +93,7 @@ public class  StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer
 
     @Override
     public Pose2d getPoseEstimate() {
-        RobotLog.dd(TAG, "getPoseEstimate: " + Double.toString(poseEstimate_new.getX()) + ", " + Double.toString(poseEstimate_new.getY()) + ", " +
+        RobotLogger.dd(TAG, "getPoseEstimate: " + Double.toString(poseEstimate_new.getX()) + ", " + Double.toString(poseEstimate_new.getY()) + ", " +
                 Double.toString(poseEstimate_new.getHeading()));
         return poseEstimate_new;
     }
@@ -101,7 +101,7 @@ public class  StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer
     @Override
     public void setPoseEstimate(Pose2d pose2d) {
         super.setPoseEstimate(pose2d);
-        RobotLog.dd(TAG, "setPoseEstimate: X "+Double.toString(pose2d.getX())+ ", Y "+Double.toString(pose2d.getY()));
+        RobotLogger.dd(TAG, "setPoseEstimate: X "+Double.toString(pose2d.getX())+ ", Y "+Double.toString(pose2d.getY()));
     }
 
     @Override
@@ -112,14 +112,14 @@ public class  StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer
         if (DriveConstantsPID.RUN_USING_IMU_LOCALIZER == true) {
             poseEstimate_new = new Pose2d(s_poseEstimate.getX(), s_poseEstimate.getY(),
                     imu.getAngularOrientation().firstAngle);
-            RobotLog.dd(TAG, "using IMU: IMU heading " + Double.toString(poseEstimate_new.getHeading()) + " non-IMU heading: "
+            RobotLogger.dd(TAG, "using IMU: IMU heading " + Double.toString(poseEstimate_new.getHeading()) + " non-IMU heading: "
             + Double.toString(s_poseEstimate.getHeading()));
         }
         else {
             poseEstimate_new = s_poseEstimate;
-            RobotLog.dd(TAG, "not using IMU for heading");
+            RobotLogger.dd(TAG, "not using IMU for heading");
         }
-        RobotLog.dd(TAG, "poseEstimate: "+Double.toString(poseEstimate_new.getX()) + ", " + Double.toString(poseEstimate_new.getY()) + ", " +
+        RobotLogger.dd(TAG, "poseEstimate: "+Double.toString(poseEstimate_new.getX()) + ", " + Double.toString(poseEstimate_new.getY()) + ", " +
                 Double.toString(poseEstimate_new.getHeading()));
     }
 }

@@ -21,9 +21,9 @@ import com.acmerobotics.roadrunner.trajectory.constraints.MecanumConstraints;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.teamcode.PID.DriveConstantsPID;
+import org.firstinspires.ftc.teamcode.PID.RobotLogger;
 import org.firstinspires.ftc.teamcode.PID.util.DashboardUtil;
 
 import java.util.ArrayList;
@@ -89,7 +89,7 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
         mode = Mode.IDLE;
 
         if (strafe == false) {
-            RobotLog.dd(TAG, "using non-strafing PID, maxVel: %f, maxAccl: %f", BASE_CONSTRAINTS.maxVel, BASE_CONSTRAINTS.maxAccel);
+            RobotLogger.dd(TAG, "using non-strafing PID, maxVel: %f, maxAccl: %f", BASE_CONSTRAINTS.maxVel, BASE_CONSTRAINTS.maxAccel);
             xTRANSLATIONAL_PID = new PIDCoefficients(DriveConstantsPID.txP, DriveConstantsPID.txI, DriveConstantsPID.txD);
             yTRANSLATIONAL_PID = new PIDCoefficients(DriveConstantsPID.tyP, DriveConstantsPID.tyI, DriveConstantsPID.tyD);
             HEADING_PID = new PIDCoefficients(DriveConstantsPID.hP, DriveConstantsPID.hI, DriveConstantsPID.hD);
@@ -98,7 +98,7 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
         }
         else
         {
-            RobotLog.dd(TAG, "using strafing PID, maxVel: %f, maxAccl: %f", STRAFE_BASE_CONSTRAINTS.maxVel, STRAFE_BASE_CONSTRAINTS.maxAccel);
+            RobotLogger.dd(TAG, "using strafing PID, maxVel: %f, maxAccl: %f", STRAFE_BASE_CONSTRAINTS.maxVel, STRAFE_BASE_CONSTRAINTS.maxAccel);
             xTRANSLATIONAL_PID = new PIDCoefficients(DriveConstantsPID.stxP, DriveConstantsPID.stxI, DriveConstantsPID.stxD);
             yTRANSLATIONAL_PID = new PIDCoefficients(DriveConstantsPID.styP, DriveConstantsPID.styI, DriveConstantsPID.styD);
             HEADING_PID = new PIDCoefficients(DriveConstantsPID.shP, DriveConstantsPID.shI, DriveConstantsPID.shD);
@@ -118,7 +118,7 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
 
     public void turn(double angle) {
         double heading = getPoseEstimate().getHeading();
-        RobotLog.dd(TAG, "turn: current heading "+Double.toString(heading)+" angle "+Double.toString(angle));
+        RobotLogger.dd(TAG, "turn: current heading "+Double.toString(heading)+" angle "+Double.toString(angle));
         turnProfile = MotionProfileGenerator.generateSimpleMotionProfile(
                 new MotionState(heading, 0, 0, 0),
                 new MotionState(heading + angle, 0, 0, 0),
@@ -147,10 +147,10 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
 
     public void resetFollowerWithParameters(boolean strafe, boolean rotating){
         addSpacer();
-        RobotLog.dd("Pre-Reinstantiate Error", follower.getLastError() + "");
-        RobotLog.dd("Follower PID Constants", strafe ? "STRAFE" : "BASE");
+        RobotLogger.dd("Pre-Reinstantiate Error", follower.getLastError() + "");
+        RobotLogger.dd("Follower PID Constants", strafe ? "STRAFE" : "BASE");
         if (!strafe) {
-            RobotLog.dd(TAG, "using non-strafing PID, maxVel: %f, maxAccl: %f", BASE_CONSTRAINTS.maxVel, BASE_CONSTRAINTS.maxAccel);
+            RobotLogger.dd(TAG, "using non-strafing PID, maxVel: %f, maxAccl: %f", BASE_CONSTRAINTS.maxVel, BASE_CONSTRAINTS.maxAccel);
             xTRANSLATIONAL_PID = new PIDCoefficients(DriveConstantsPID.txP, DriveConstantsPID.txI, DriveConstantsPID.txD);
             yTRANSLATIONAL_PID = new PIDCoefficients(DriveConstantsPID.tyP, DriveConstantsPID.tyI, DriveConstantsPID.tyD);
             HEADING_PID = new PIDCoefficients(DriveConstantsPID.hP, DriveConstantsPID.hI, DriveConstantsPID.hD);
@@ -159,7 +159,7 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
         }
         else
         {
-            RobotLog.dd(TAG, "using strafing PID, maxVel: %f, maxAccl: %f", STRAFE_BASE_CONSTRAINTS.maxVel, STRAFE_BASE_CONSTRAINTS.maxAccel);
+            RobotLogger.dd(TAG, "using strafing PID, maxVel: %f, maxAccl: %f", STRAFE_BASE_CONSTRAINTS.maxVel, STRAFE_BASE_CONSTRAINTS.maxAccel);
             xTRANSLATIONAL_PID = new PIDCoefficients(DriveConstantsPID.stxP, DriveConstantsPID.stxI, DriveConstantsPID.stxD);
             yTRANSLATIONAL_PID = new PIDCoefficients(DriveConstantsPID.styP, DriveConstantsPID.styI, DriveConstantsPID.styD);
             HEADING_PID = new PIDCoefficients(DriveConstantsPID.shP, DriveConstantsPID.shI, DriveConstantsPID.shD);
@@ -179,8 +179,8 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
         turnController = new PIDFController(HEADING_PID);
         turnController.setInputBounds(0, 2 * Math.PI);
         follower = new HolonomicPIDVAFollower(xTRANSLATIONAL_PID, yTRANSLATIONAL_PID, HEADING_PID);
-        RobotLog.dd("STATUS", "Re-Inited Follower");
-        RobotLog.dd("Post-Reinstantiate Error", follower.getLastError() + "");
+        RobotLogger.dd("STATUS", "Re-Inited Follower");
+        RobotLogger.dd("Post-Reinstantiate Error", follower.getLastError() + "");
         addSpacer();
     }
 
@@ -215,13 +215,13 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
         packet.put("yError", lastError.getY());
         packet.put("headingError", lastError.getHeading());
 
-        RobotLog.dd(TAG, "update: x " + currentPose.getX());
-        RobotLog.dd(TAG, "y " + currentPose.getY());
-        RobotLog.dd(TAG, "heading " + Double.toString(currentPose.getHeading()));
+        RobotLogger.dd(TAG, "update: x " + currentPose.getX());
+        RobotLogger.dd(TAG, "y " + currentPose.getY());
+        RobotLogger.dd(TAG, "heading " + Double.toString(currentPose.getHeading()));
 
-        RobotLog.dd(TAG, "xError " + lastError.getX());
-        RobotLog.dd(TAG, "yError " + lastError.getY());
-        RobotLog.dd(TAG, "headingError "  + lastError.getHeading());
+        RobotLogger.dd(TAG, "xError " + lastError.getX());
+        RobotLogger.dd(TAG, "yError " + lastError.getY());
+        RobotLogger.dd(TAG, "headingError "  + lastError.getHeading());
 
         drawPosition(packet, currentPose);
 
@@ -239,8 +239,8 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
                 double targetOmega = targetState.getV();
                 double targetAlpha = targetState.getA();
                 double correction = turnController.update(currentPose.getHeading(), targetOmega);
-                RobotLog.dd(TAG, "TURN: targetOmega "+Double.toString(targetOmega)+" targetAlpha "+Double.toString(targetAlpha));
-                RobotLog.dd(TAG, "correction "+Double.toString(correction));
+                RobotLogger.dd(TAG, "TURN: targetOmega "+Double.toString(targetOmega)+" targetAlpha "+Double.toString(targetAlpha));
+                RobotLogger.dd(TAG, "correction "+Double.toString(correction));
                 setDriveSignal(new DriveSignal(new Pose2d(
                         0, 0, targetOmega + correction
                 ), new Pose2d(
@@ -315,19 +315,19 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
         {
             t=t+Double.toString(lastWheelPositions.get(i)) + "\t";
         }
-        RobotLog.dd(TAG,"last ts: "+Double.toString(lastTimestamp)+" last wheel position: "+t);
+        RobotLogger.dd(TAG,"last ts: "+Double.toString(lastTimestamp)+" last wheel position: "+t);
         t="";
         for (int i = 0; i < positions.size(); i ++)
         {
             t=t+Double.toString(positions.get(i)) + "\t";
         }
-        RobotLog.dd(TAG,"current ts: "+Double.toString(currentTimestamp)+" current wheel position: "+t);
+        RobotLogger.dd(TAG,"current ts: "+Double.toString(currentTimestamp)+" current wheel position: "+t);
         t="";
         for (int i = 0; i < velocities.size(); i ++)
         {
             t=t+Double.toString(velocities.get(i)) + "\t";
         }
-        RobotLog.dd(TAG, "velocity: "+t);
+        RobotLogger.dd(TAG, "velocity: "+t);
 
         lastTimestamp = currentTimestamp;
         lastWheelPositions = positions;
@@ -355,7 +355,7 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
                 else
                     wheel_name = "unexpected wheel name";
 
-                RobotLog.dd(TAG, wheel_name + "  " + Double.toString(list.get(i)));
+                RobotLogger.dd(TAG, wheel_name + "  " + Double.toString(list.get(i)));
             }
         } else if (wheel_num == 3)
         {
@@ -368,14 +368,14 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
                 else if (i == 2)
                     wheel_name = "frontOdom";
 
-                RobotLog.dd(TAG, wheel_name + "  " + Double.toString(list.get(i)));
+                RobotLogger.dd(TAG, wheel_name + "  " + Double.toString(list.get(i)));
             }
         }
         else
         {
             for (int i = 0; i < list.size(); i++) {
                 String wheel_name = "";
-                RobotLog.dd(TAG, wheel_name + "  " + Double.toString(list.get(i)));
+                RobotLogger.dd(TAG, wheel_name + "  " + Double.toString(list.get(i)));
             }
         }
     }
@@ -400,6 +400,6 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
 
     private static void addSpacer(){
         for(int i = 0; i < 10; i++)
-            RobotLog.dd("", "=========--+--=========");
+            RobotLogger.dd("", "=========--+--=========");
     }
 }

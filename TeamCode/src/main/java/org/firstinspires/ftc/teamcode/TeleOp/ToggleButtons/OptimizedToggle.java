@@ -4,7 +4,8 @@ import com.qualcomm.robotcore.exception.RobotCoreException;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.RobotLog;
+
+import org.firstinspires.ftc.teamcode.PID.RobotLogger;
 
 import java.nio.ByteBuffer;
 
@@ -98,7 +99,7 @@ public class OptimizedToggle {
             gamepadState2 += (gamepadSituation2.right_trigger >= 0.5 ? 1 : 0) << 16;
             gamepadState2 += (gamepadSituation2.left_trigger >= 0.5 ? 1 : 0) << 17;
         } catch (RobotCoreException e) {
-            RobotLog.e("Error while ");
+            RobotLogger.e("Error while ");
         }
         if (situation == Situation.ONE_BUTTON_MOTOR || situation == Situation.ONE_BUTTON_SERVO)
             oneButtonHandler();

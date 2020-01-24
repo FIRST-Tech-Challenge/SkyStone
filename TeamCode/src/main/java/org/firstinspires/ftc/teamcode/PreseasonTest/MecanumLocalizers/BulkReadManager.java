@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.PreseasonTest.MecanumLocalizers;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
@@ -59,7 +58,7 @@ public class BulkReadManager {
             csvAppender.appendLine(String.valueOf(elapsedTime), String.valueOf(pollrate));
         }
         catch (IOException e) {
-            RobotLog.e("Failed to write to log file");
+            RobotLogger.e("Failed to write to log file");
         }*/
 
         revBulkData = expansionHub.getBulkInputData();

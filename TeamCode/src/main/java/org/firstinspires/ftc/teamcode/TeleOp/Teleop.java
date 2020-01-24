@@ -95,16 +95,16 @@ public class Teleop extends LinearOpMode {
         buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.Y, new Servo[]{hwMap.foundationLock, hwMap.transferLock},   //Foundation Lock-Y
                 new double[][]{{TeleopConstants.foundationLockLock, TeleopConstants.foundationLockUnlock},
                         {TeleopConstants.transferLockPosUp, TeleopConstants.transferLockPosOut}}));
-        buttonLogic.add(new OnOffButton(gamepad2, gamepad2, GamepadButtons.LEFT_BUMPER, GamepadButtons.RIGHT_BUMPER, //Intake-A & B
+        /*buttonLogic.add(new OnOffButton(gamepad2, gamepad2, GamepadButtons.LEFT_BUMPER, GamepadButtons.RIGHT_BUMPER, //Intake-A & B
                 new Servo[]{hwMap.clawServo1},
                 new double[][]{{TeleopConstants.clawServo1PosOpen, TeleopConstants.clawServo1PosClose}},
-                new double[]{TeleopConstants.clawServo1Block}));
+                new double[]{TeleopConstants.clawServo1Block}));*/
         //buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.X,
         //        new Servo[] {hwMap.parkingServo},
         //        new double[][]{ {TeleopConstants.parkingServoPosUnlock, TeleopConstants.parkingServoPosLock} }));
-        buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.DPAD_DOWN,
+        /*buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.DPAD_DOWN,
                 new Servo[]{hwMap.innerTransfer},
-                new double[][]{{TeleopConstants.innerTransferPosBlock, TeleopConstants.innerTransferPosTucked}}));
+                new double[][]{{TeleopConstants.innerTransferPosBlock, TeleopConstants.innerTransferPosTucked}}));*/
         buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.LEFT_TRIGGER, new Servo[]{hwMap.transferHorn},
                 new double[][]{{TeleopConstants.transferHornPosPush, TeleopConstants.transferHornPosReady}}));
         buttonLogic.add(new OnOffButton(gamepad2, GamepadButtons.DPAD_LEFT, new Servo[]{hwMap.liftOdometry},
@@ -126,15 +126,15 @@ public class Teleop extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            if (gamepad2.a && buttonLogic.get(0).getState()[0] && buttonLogic.get(4).getState()[0]) {
-                buttonLogic.get(4).manualActivate(true, false);
+            if (gamepad2.a && buttonLogic.get(0).getState()[0] && buttonLogic.get(3).getState()[0]) {
+                buttonLogic.get(3).manualActivate(true, false);
 
                 if (!buttonLogic.get(2).getState()[1])
-                    buttonLogic.get(4).manualActivate(false, true);
+                    buttonLogic.get(3).manualActivate(false, true);
             }
 
-            if (gamepad2.left_trigger >= 0.5 && buttonLogic.get(3).getState()[0])
-                buttonLogic.get(3).manualActivate(true, false);
+            //if (gamepad2.left_trigger >= 0.5 && buttonLogic.get(3).getState()[0])
+            //    buttonLogic.get(3).manualActivate(true, false);
 
             if (gamepad2.y && !buttonLogic.get(2).getState()[0] && buttonLogic.get(1).getState()[0])
                 buttonLogic.get(2).manualActivate(true, false);
@@ -144,60 +144,57 @@ public class Teleop extends LinearOpMode {
             if (gamepad2.dpad_up && !blockerCapstone) {
                 blockerCapstone = true;
 
-                if (!buttonLogic.get(4).getState()[0])
-                    buttonLogic.get(4).manualActivate(true, false);
+                hwMap.innerTransfer.setPosition(TeleopConstants.innerTransferPosTucked);
+                hwMap.clawServo1.setPosition(TeleopConstants.clawServo1Capstone);
 
-                if (buttonLogic.get(0).getState()[0])
-                    buttonLogic.get(0).manualActivate(true, false);
-                else if (buttonLogic.get(0).getState()[1])
-                    buttonLogic.get(0).manualActivate(false, true);
+                try{
+                    Thread.sleep(300);
+                } catch(Exception e){}
 
-                //hwMap.leftIntake.setPower(0);
-                //hwMap.rightIntake.setPower(0);
+                if (!buttonLogic.get(2).getState()[0])
+                    buttonLogic.get(2).manualActivate(true, false);
 
-                try {
-                    Thread.sleep(1000);
-                } catch (Exception e) {
-                }
+                try{
+                    Thread.sleep(500);
+                } catch (Exception e){}
 
-                hwMap.clawInit.setPosition(TeleopConstants.clawInitPosCapstoneForReal);
+                hwMap.innerTransfer.setPosition(TeleopConstants.innerTransferPosClosed);
 
-                try {
-                    Thread.sleep(700);
-                } catch (Exception e) {
-                }
+                try{
+                    Thread.sleep(500);
+                } catch (Exception e){}
 
-                if (buttonLogic.get(4).getState()[0])
-                    buttonLogic.get(4).manualActivate(true, false);
+                hwMap.innerTransfer.setPosition(TeleopConstants.innerTransferPosTucked);
 
-                if (buttonLogic.get(3).getState()[0])
-                    buttonLogic.get(3).manualActivate(true, false);
+                try{
+                    Thread.sleep(300);
+                } catch (Exception e){}
 
-                if (!buttonLogic.get(2).getState()[1])
-                    buttonLogic.get(2).manualActivate(false, true);
+                if (buttonLogic.get(2).getState()[0])
+                    buttonLogic.get(2).manualActivate(true, false);
 
-                try {
-                    Thread.sleep(700);
-                } catch (Exception e) {
-                }
+                try{
+                    Thread.sleep(300);
+                } catch (Exception e){}
 
-                if (!buttonLogic.get(4).getState()[0])
-                    buttonLogic.get(4).manualActivate(true, false);
+                hwMap.clawServo1.setPosition(TeleopConstants.clawServo1PosOpen);
+                hwMap.clawServo2.setPosition(TeleopConstants.clawServo2Block);
 
-                try {
-                    Thread.sleep(1500);
-                } catch (Exception e) {
-                }
+                try{
+                    Thread.sleep(300);
+                } catch (Exception e){}
+
+                if (!buttonLogic.get(2).getState()[0])
+                    buttonLogic.get(2).manualActivate(true, false);
+
+                try{
+                    Thread.sleep(300);
+                } catch (Exception e){}
             } else if (!gamepad2.dpad_up && blockerCapstone) {
                 blockerCapstone = false;
 
-                if (buttonLogic.get(4).getState()[0])
-                    buttonLogic.get(4).manualActivate(true, false);
-
-                hwMap.clawInit.setPosition(TeleopConstants.clawInitPosCapstone);
-
-                if (!buttonLogic.get(2).getState()[1])
-                    buttonLogic.get(2).manualActivate(false, true);
+                if (buttonLogic.get(2).getState()[0])
+                    buttonLogic.get(2).manualActivate(true, false);
 
                 hwMap.innerTransfer.setPosition(TeleopConstants.innerTransferPosTucked);
             }
@@ -473,17 +470,53 @@ public class Teleop extends LinearOpMode {
         Thread armDelay = new Thread(){
             public void run(){
                 while(opModeIsActive()) {
-                    if (gamepad2.right_bumper && buttonLogic.get(2).getState()[1])
-                        hwMap.clawServo2.setPosition(TeleopConstants.clawServo2Block);
-                    if(gamepad2.left_bumper && buttonLogic.get(2).getState()[0]) {
-                        try {
-                            Thread.sleep(700);
-                        } catch (Exception e) {
+                    if (gamepad2.left_bumper && !blocker) {
+                        if (!intake) {
+                            hwMap.clawServo1.setPosition(TeleopConstants.clawServo1PosOpen);
+                            hwMap.clawServo2.setPosition(TeleopConstants.clawServo2PosOpen);
+                            intake = true;
+                            outake = false;
+                        } else {
+                            hwMap.clawServo1.setPosition(TeleopConstants.clawServo1Prep);
+                            try{
+                                Thread.sleep(500);
+                            } catch (Exception e){}
+                            hwMap.clawServo2.setPosition(TeleopConstants.clawServo2PosClose);
+                            try{
+                                Thread.sleep(500);
+                            } catch (Exception e){}
+                            hwMap.clawServo1.setPosition(TeleopConstants.clawServo1PosClose);
+                            intake = false;
+                            outake = false;
                         }
-                        hwMap.clawServo2.setPosition(TeleopConstants.clawServo2PosClose);
+                        blocker = true;
                     }
-                    if (gamepad2.left_bumper && !buttonLogic.get(2).getState()[0] && !buttonLogic.get(2).getState()[1])
-                        hwMap.clawServo2.setPosition(TeleopConstants.clawServo2PosOpen);
+
+                    if (gamepad2.right_bumper && !blocker) {
+                        if (!outake) {
+                            hwMap.clawServo1.setPosition(TeleopConstants.clawServo1PosOpen);
+                            hwMap.clawServo2.setPosition(TeleopConstants.clawServo2Block);
+                            intake = false;
+                            outake = true;
+                        } else {
+                            hwMap.clawServo1.setPosition(TeleopConstants.clawServo1Prep);
+                            try{
+                                Thread.sleep(500);
+                            } catch (Exception e){}
+                            hwMap.clawServo2.setPosition(TeleopConstants.clawServo2PosClose);
+                            try{
+                                Thread.sleep(500);
+                            } catch (Exception e){}
+                            hwMap.clawServo1.setPosition(TeleopConstants.clawServo1PosClose);
+                            intake = false;
+                            outake = false;
+                        }
+                        blocker = true;
+                    }
+
+                    if (!gamepad2.right_bumper && !gamepad2.left_bumper) {
+                        blocker = false;
+                    }
                 }
             }
         };

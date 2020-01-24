@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.BASE_CONSTRAINTS;
+import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.ROTATION_CONSTRAINTS;
 import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.STRAFE_BASE_CONSTRAINTS;
 import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.TRACK_WIDTH;
 import static org.firstinspires.ftc.teamcode.PID.util.DashboardUtil.drawRobot;
@@ -146,7 +147,7 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
         waitForIdle();
     }
 
-    public void resetFollowerWithParameters(boolean strafe){
+    public void resetFollowerWithParameters(boolean strafe, boolean rotating){
         addSpacer();
         RobotLogger.dd("Pre-Reinstantiate Error", follower.getLastError() + "");
         RobotLogger.dd("Follower PID Constants", strafe ? "STRAFE" : "BASE");
@@ -168,6 +169,15 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
             constraints = new MecanumConstraints(STRAFE_BASE_CONSTRAINTS, TRACK_WIDTH);
 
         }
+
+        if(rotating){
+            xTRANSLATIONAL_PID = new PIDCoefficients(DriveConstantsPID.txP, DriveConstantsPID.txI, DriveConstantsPID.txD);
+            yTRANSLATIONAL_PID = new PIDCoefficients(DriveConstantsPID.tyP, DriveConstantsPID.tyI, DriveConstantsPID.tyD);
+            HEADING_PID = new PIDCoefficients(DriveConstantsPID.hP, DriveConstantsPID.hI, DriveConstantsPID.hD);
+
+            constraints = new MecanumConstraints(ROTATION_CONSTRAINTS, TRACK_WIDTH);
+        }
+
         turnController = new PIDFController(HEADING_PID);
         turnController.setInputBounds(0, 2 * Math.PI);
         follower = new HolonomicPIDVAFollower(xTRANSLATIONAL_PID, yTRANSLATIONAL_PID, HEADING_PID);

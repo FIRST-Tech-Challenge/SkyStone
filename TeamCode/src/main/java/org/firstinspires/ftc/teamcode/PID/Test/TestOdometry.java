@@ -68,7 +68,7 @@ public class TestOdometry extends LinearOpMode {
 
         double driftRemover = 0.0;
 
-        drive.resetFollowerWithParameters(false);
+        drive.resetFollowerWithParameters(false, false);
 
         while(opModeIsActive()){
             builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
@@ -195,7 +195,7 @@ public class TestOdometry extends LinearOpMode {
             public Object invoke() {
                 Thread thread = new Thread() {
                     public void run() {
-                        drive.resetFollowerWithParameters(strafe);
+                        drive.resetFollowerWithParameters(strafe, false);
                     }
                 };
                 thread.start();

@@ -48,14 +48,14 @@ public class FollowerPIDTunerStrafe extends LinearOpMode {
             drive.setPoseEstimate(new Pose2d(0, 0, 0));
 
             if (DriveConstantsPID.USING_STRAFE_DIAGNAL == true) {
-                drive.resetFollowerWithParameters(true);
+                drive.resetFollowerWithParameters(true, false);
                 drive.followTrajectorySync(
                         drive.trajectoryBuilder()
                                 .strafeTo(new Vector2d(DriveConstantsPID.TEST_DISTANCE, DriveConstantsPID.TEST_DISTANCE_0))
                                 .build());
             }
             else {
-                drive.resetFollowerWithParameters(false);
+                drive.resetFollowerWithParameters(false, false);
                 drive.followTrajectorySync(
                         drive.trajectoryBuilder()
                                 .lineTo(new Vector2d(DriveConstantsPID.TEST_DISTANCE, DriveConstantsPID.TEST_DISTANCE_0))

@@ -206,40 +206,40 @@ public class FourWheelsDriveBot
         int startingPosition = leftFront.getCurrentPosition();
         switch (direction){
             case DIRECTION_FORWARD:
-                leftFront.setTargetPosition(leftFront.getCurrentPosition() + target);
-                rightFront.setTargetPosition(rightFront.getCurrentPosition() + target);
-                leftRear.setTargetPosition(leftRear.getCurrentPosition() + target);
-                rightRear.setTargetPosition(rightRear.getCurrentPosition() + target);
+                leftFront.setTargetPosition(leftFront.getCurrentPosition() - target);
+                rightFront.setTargetPosition(rightFront.getCurrentPosition() - target);
+                leftRear.setTargetPosition(leftRear.getCurrentPosition() - target);
+                rightRear.setTargetPosition(rightRear.getCurrentPosition() - target);
                 break;
             case DIRECTION_BACKWARD:
-                leftFront.setTargetPosition(leftFront.getCurrentPosition() - target);
-                rightFront.setTargetPosition(rightFront.getCurrentPosition() - target);
-                leftRear.setTargetPosition(leftRear.getCurrentPosition() - target);
-                rightRear.setTargetPosition(rightRear.getCurrentPosition() - target);
+                leftFront.setTargetPosition(leftFront.getCurrentPosition() + target);
+                rightFront.setTargetPosition(rightFront.getCurrentPosition() + target);
+                leftRear.setTargetPosition(leftRear.getCurrentPosition() + target);
+                rightRear.setTargetPosition(rightRear.getCurrentPosition() + target);
                 break;
             case DIRECTION_LEFT:
-                leftFront.setTargetPosition(leftFront.getCurrentPosition() - target);
-                rightFront.setTargetPosition(rightFront.getCurrentPosition() + target);
-                leftRear.setTargetPosition(leftRear.getCurrentPosition() + target);
-                rightRear.setTargetPosition(rightRear.getCurrentPosition() - target);
+                leftFront.setTargetPosition(leftFront.getCurrentPosition() + target);
+                rightFront.setTargetPosition(rightFront.getCurrentPosition()- target);
+                leftRear.setTargetPosition(leftRear.getCurrentPosition() - target);
+                rightRear.setTargetPosition(rightRear.getCurrentPosition() + target);
                 break;
             case DIRECTION_RIGHT:
-                leftFront.setTargetPosition(leftFront.getCurrentPosition() + target);
-                rightFront.setTargetPosition(rightFront.getCurrentPosition() - target);
-                leftRear.setTargetPosition(leftRear.getCurrentPosition() - target);
-                rightRear.setTargetPosition(rightRear.getCurrentPosition() + target);
-                break;
-            case DIRECTION_RQUARTER:
-                leftFront.setTargetPosition(leftFront.getCurrentPosition() + target);
-                rightFront.setTargetPosition(rightFront.getCurrentPosition() - target);
+                leftFront.setTargetPosition(leftFront.getCurrentPosition() - target);
+                rightFront.setTargetPosition(rightFront.getCurrentPosition() + target);
                 leftRear.setTargetPosition(leftRear.getCurrentPosition() + target);
                 rightRear.setTargetPosition(rightRear.getCurrentPosition() - target);
                 break;
-            case DIRECTION_LQUARTER:
+            case DIRECTION_RQUARTER:
                 leftFront.setTargetPosition(leftFront.getCurrentPosition() - target);
                 rightFront.setTargetPosition(rightFront.getCurrentPosition() + target);
                 leftRear.setTargetPosition(leftRear.getCurrentPosition() - target);
                 rightRear.setTargetPosition(rightRear.getCurrentPosition() + target);
+                break;
+            case DIRECTION_LQUARTER:
+                leftFront.setTargetPosition(leftFront.getCurrentPosition() + target);
+                rightFront.setTargetPosition(rightFront.getCurrentPosition() - target);
+                leftRear.setTargetPosition(leftRear.getCurrentPosition() + target);
+                rightRear.setTargetPosition(rightRear.getCurrentPosition() - target);
                 break;
             default:
                 String msg = String.format("Unaccepted direction value (%d) for driveStraightByDistance()", direction);
@@ -287,35 +287,35 @@ public class FourWheelsDriveBot
         int realTarget;
         switch (direction){
             case DIRECTION_FORWARD:
-                leftFront.setTargetPosition(leftFront.getCurrentPosition() + target);
-                realTarget = leftFront.getCurrentPosition() + target;
-                rightFront.setTargetPosition(rightFront.getCurrentPosition() + target);
-                leftRear.setTargetPosition(leftRear.getCurrentPosition() + target);
-                rightRear.setTargetPosition(rightRear.getCurrentPosition() + target);
+                leftFront.setTargetPosition(leftFront.getCurrentPosition() - target);
+                realTarget = leftFront.getCurrentPosition() - target;
+                rightFront.setTargetPosition(rightFront.getCurrentPosition() - target);
+                leftRear.setTargetPosition(leftRear.getCurrentPosition() - target);
+                rightRear.setTargetPosition(rightRear.getCurrentPosition() - target);
                 break;
             case DIRECTION_BACKWARD:
-                leftFront.setTargetPosition(leftFront.getCurrentPosition() - target);
-                realTarget = leftFront.getCurrentPosition() - target;
-                rightFront.setTargetPosition(rightFront.getCurrentPosition() - target);
-                leftRear.setTargetPosition(leftRear.getCurrentPosition() - target);
-                rightRear.setTargetPosition(rightRear.getCurrentPosition() - target);
-                break;
-            case DIRECTION_LEFT:
-                leftFront.setTargetPosition(leftFront.getCurrentPosition() - target);
-                realTarget = leftFront.getCurrentPosition() - target;
+                leftFront.setTargetPosition(leftFront.getCurrentPosition() + target);
+                realTarget = leftFront.getCurrentPosition() + target;
                 rightFront.setTargetPosition(rightFront.getCurrentPosition() + target);
                 leftRear.setTargetPosition(leftRear.getCurrentPosition() + target);
-                rightRear.setTargetPosition(rightRear.getCurrentPosition() - target);
+                rightRear.setTargetPosition(rightRear.getCurrentPosition() + target);
                 break;
-            case DIRECTION_RIGHT:
+            case DIRECTION_LEFT:
                 leftFront.setTargetPosition(leftFront.getCurrentPosition() + target);
                 realTarget = leftFront.getCurrentPosition() + target;
                 rightFront.setTargetPosition(rightFront.getCurrentPosition() - target);
                 leftRear.setTargetPosition(leftRear.getCurrentPosition() - target);
                 rightRear.setTargetPosition(rightRear.getCurrentPosition() + target);
                 break;
+            case DIRECTION_RIGHT:
+                leftFront.setTargetPosition(leftFront.getCurrentPosition() - target);
+                realTarget = leftFront.getCurrentPosition() - target;
+                rightFront.setTargetPosition(rightFront.getCurrentPosition() + target);
+                leftRear.setTargetPosition(leftRear.getCurrentPosition() + target);
+                rightRear.setTargetPosition(rightRear.getCurrentPosition() - target);
+                break;
             default:
-                realTarget = leftFront.getCurrentPosition() + target;
+                realTarget = leftFront.getCurrentPosition() - target;
                 String msg = String.format("Unaccepted direction value (%d) for driveStraightByDistance()", direction);
                 print(msg);
         }

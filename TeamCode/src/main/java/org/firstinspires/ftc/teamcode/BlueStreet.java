@@ -44,7 +44,7 @@ public class BlueStreet extends LinearOpMode {
             robot.driveStraightByGyro(direction_forward, distFoundMove[skystonePostition - 1], 1, false);
             sleep(500);
 
-        RobotLog.d(String.format("Made it to the foundation!"));
+            RobotLog.d(String.format("Made it to the foundation!"));
 
 
 //            robot.goBacktoStartAngle();
@@ -89,8 +89,6 @@ public class BlueStreet extends LinearOpMode {
             robot.driveStraightByDistance(robot.DIRECTION_RIGHT, 200, 0.5);
             RobotLog.d(String.format("Moved away from foundation!"));
 
-
-//            robot.goBacktoStartAngle();
 
             robot.driveStraightByDistance(direction_backward, 1300, 1);
             RobotLog.d(String.format("Parked!"));

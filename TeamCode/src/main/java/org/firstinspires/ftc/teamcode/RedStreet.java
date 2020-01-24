@@ -70,8 +70,6 @@ public class RedStreet extends LinearOpMode {
             robot.dropSkyStone();
             robot.driveStraightByDistance(robot.DIRECTION_RIGHT, 200, 0.5);
 
-            robot.goBacktoStartAngle();
-
             robot.driveStraightByDistance(direction_backward, 1300, 1);
 
         }

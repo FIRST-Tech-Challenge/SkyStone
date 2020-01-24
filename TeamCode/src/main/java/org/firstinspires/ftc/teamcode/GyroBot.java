@@ -128,13 +128,19 @@ public class GyroBot extends CameraBot {
         rightRear.setPower(0);
     }
 
-    public void driveStraightByGyro(int direction, double distance, double maxPower) {
+    public void driveStraightByGyro(int direction, double distance, double maxPower, boolean useCurrentAngle) {
         if (direction != DIRECTION_FORWARD && direction != DIRECTION_BACKWARD && direction != DIRECTION_LEFT && direction != DIRECTION_RIGHT){
             String msg = String.format("Unaccepted direction value (%d) for driveStraightByGyro()", direction);
             print(msg);
             return;
         }
-        double originalAngle = getAngle();
+        double originalAngle;
+        if (useCurrentAngle) {
+            originalAngle = getAngle();
+        } else {
+            originalAngle = startAngle;
+        }
+
         // distance (in mm) = revolution * pi * diameter (100 mm)
         int distanceTicks = (int) (distance / 3.1415 / 100 * DRIVING_MOTOR_TICK_COUNT);
         int startingPosition = leftFront.getCurrentPosition();
@@ -185,5 +191,6 @@ public class GyroBot extends CameraBot {
         rightFront.setPower(0);
         leftRear.setPower(0);
         rightRear.setPower(0);
+        opMode.sleep(500);
     }
 }

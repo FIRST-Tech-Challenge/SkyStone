@@ -73,33 +73,47 @@ public class Path {
      */
     public SampleMecanumDriveBase DriveBuilderReset(boolean isStrafe, boolean init_imu, String label) {
         currentPos = _drive.getPoseEstimate();
+        Pose2d newPos = currentPos;
         Pose2d error_pose = _drive.follower.getLastError();
         RobotLogger.dd(TAG, "start new step: %s, count[%d], currentPos %s, errorPos %s",
                 label, step_count++, currentPos.toString(), error_pose.toString());
         if (DriveConstantsPID.drvCorrection)
         {
             boolean done = false;
-            if (abs(error_pose.getX())>1.0 || abs(error_pose.getY())>1.0 )
+            if (abs(error_pose.getX())>1.5)
             {
-                RobotLogger.dd(TAG, "correct pose by strafing");
+                RobotLogger.dd(TAG, "pose correction by straight move");
                 _drive.resetFollowerWithParameters(true);
                 _drive.followTrajectorySync(
                         _drive.trajectoryBuilder()
-                                .strafeTo(new Vector2d(currentPos.getX() + error_pose.getX(), currentPos.getY() + error_pose.getY()))
+                                .lineTo(new Vector2d(newPos.getX() + error_pose.getX(), newPos.getY()))
                                 .build());
                 done = true;
+                newPos = _drive.getPoseEstimate();
+            }
+            if (abs(error_pose.getY())>1.5)
+            {
+                RobotLogger.dd(TAG, "pose correction by strafing");
+                _drive.resetFollowerWithParameters(true);
+                _drive.followTrajectorySync(
+                        _drive.trajectoryBuilder()
+                                .strafeTo(new Vector2d(newPos.getX(), newPos.getY() + error_pose.getY()))
+                                .build());
+                done = true;
+                newPos = _drive.getPoseEstimate();
             }
             if (Math.toDegrees(error_pose.getHeading())>10)
             {
-                RobotLogger.dd(TAG, "correct heading by turning");
+                RobotLogger.dd(TAG, "pose correction by turning");
                 _drive.resetFollowerWithParameters(false);
                 _drive.turnSync(error_pose.getHeading());
                 done = true;
+                newPos = _drive.getPoseEstimate();
             }
             if (done) {
                 currentPos = _drive.getPoseEstimate();
                 error_pose = _drive.follower.getLastError();
-                RobotLogger.dd(TAG, "after correction: currentPos %s, errorPos %s",
+                RobotLogger.dd(TAG, "after pose correction: currentPos %s, errorPos %s",
                         currentPos.toString(), error_pose.toString());
             }
         }
@@ -118,6 +132,7 @@ public class Path {
             builder = new TrajectoryBuilder(_drive.getPoseEstimate(), DriveConstantsPID.STRAFE_BASE_CONSTRAINTS);
         }
         RobotLogger.dd(TAG, "drive and builder reset, initialized with pose: " + _drive.getPoseEstimate().toString());
+        currentPos = newPos;
         return _drive;
     }
 

@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotor
  * Created by KasaiYuki on 9/21/2018.
  */
 @Autonomous(name = "SSAutoOp", group = "Autonomous")
-//@Disabled
+@Disabled
 class SSAutoOp : LinearOpMode()
 {
     val robot = SSMechRobot()

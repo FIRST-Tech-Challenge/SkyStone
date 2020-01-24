@@ -27,7 +27,7 @@ class SSMechTeleOp : OpMode() {
     var curPos = 0
     var leftPower: Float = 0.0.toFloat()
     var rightPower: Float = 0.0.toFloat()
-    val max = 7700
+    val max = 10740
     var drive = 0.0
 
 
@@ -68,7 +68,8 @@ class SSMechTeleOp : OpMode() {
         tooHigh = curPos >= max
         tooLow = curPos < 0
         //if (curPos > 1500) linSlidePow /= 1.2.toFloat() //slow slide if greater than value
-        robot.vSlide?.power = -linSlidePow.toDouble() / 1.5//controls vertical slide, flips sign
+        robot.vSlide?.power = -linSlidePow.toDouble() / 1//controls vertical slide, flips sign
+        curPos = robot.vSlide!!.currentPosition
 
         // Horizontal slide calcs
         slideP = (gamepad2.left_stick_y.toDouble() / 2) + 0.5 // horizontal slide
@@ -76,9 +77,11 @@ class SSMechTeleOp : OpMode() {
             if (slideP > 0.5) robot.hSlide?.position = slideP //1=back; 0=forward
             else robot.hSlide?.position = 0.5
         } else robot.hSlide?.position = slideP
+
         robot.pinch(gamepad2) //operates claw
-        curPos = robot.vSlide!!.currentPosition
-        robot.dropHook(gamepad2)
+
+        robot.dropHook(gamepad2) //operates hooks
+
 
         if (touched) telemetry.addData("Touch Sensor:", "Activated")
 
@@ -96,6 +99,8 @@ class SSMechTeleOp : OpMode() {
 
         telemetry.addData("GP: stick 1 = ${gamepad1.left_stick_x}, ${gamepad1.left_stick_y}; " +
                 "stick 2 = ${gamepad1.right_stick_x}, ${gamepad1.right_stick_y}", "")
+
+        telemetry.addData("Hook: ${robot.leftHook?.position}", "")
     }
 
     override fun stop() {

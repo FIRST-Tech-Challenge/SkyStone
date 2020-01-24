@@ -26,14 +26,17 @@ class SSBuildRedAuto : LinearOpMode()
         waitForStart()
         robot.leftHook?.position = 0.0
         robot.rightHook?.position = 0.0
-/*        robot.strafe(1.0) //align with foundation
+/*      robot.strafe(1.0) //align with foundation
         sleep(800)*/
+        //Positive Value = Left Strafe || Negative Value = Right Strafe
+        robot.strafe(1.0) //align with foundation
+        sleep(500)
         robot.brake()
         sleep(100)
         robot.strafe(0.5)
         sleep(800)
         robot.drive(0.50) //Drives Forward to the Foundation
-        sleep(1600)
+        sleep(1575)
         robot.brake()
         sleep(1000)
         robot.leftHook?.position = 0.72 // Grabs Onto the Foundation

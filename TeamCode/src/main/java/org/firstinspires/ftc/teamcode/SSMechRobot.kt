@@ -38,15 +38,15 @@ class SSMechRobot {
         //map for each dc
         //similar for servo and sensor
         hwdMap = ahwdMap
-        var motorList = arrayListOf<DcMotor?>(bLDrive, bRDrive, fLDrive, fRDrive, vSlide)
+/*        var motorList = arrayListOf<DcMotor?>(bLDrive, bRDrive, fLDrive, fRDrive, vSlide)
         for (i in 0..motorList.size) {
             motorList[i] = ahwdMap.dcMotor.get(motorList[i].toString())
         }
 
         var servoList = arrayListOf<Servo?>(hSlide, claw, leftHook, rightHook)
-        (0..servoList.size).forEach { i -> servoList[i] = ahwdMap.servo.get(servoList[i].toString())}
+        (0..servoList.size).forEach { i -> servoList[i] = ahwdMap.servo.get(servoList[i].toString())}*/
 
-/*        bLDrive = ahwdMap.dcMotor.get("bLDrive")
+        bLDrive = ahwdMap.dcMotor.get("bLDrive")
         bRDrive = ahwdMap.dcMotor.get("bRDrive")
         fLDrive = ahwdMap.dcMotor.get("fLDrive")
         fRDrive = ahwdMap.dcMotor.get("fRDrive")
@@ -54,7 +54,7 @@ class SSMechRobot {
         hSlide = ahwdMap.servo.get("hSlide")
         claw = ahwdMap.servo.get("claw")
         leftHook = ahwdMap.servo.get("leftHook")
-        rightHook = ahwdMap.servo.get("rightHook")*/
+        rightHook = ahwdMap.servo.get("rightHook")
         touch = ahwdMap.digitalChannel.get("touch")
 
         //Setting direction
@@ -92,9 +92,9 @@ class SSMechRobot {
 
     fun strafe(pow: Double) //Positive Value = Left Strafe || Negative Value = Right Strafe
     {
-        bLDrive?.power = -pow
+        bLDrive?.power = -pow / 1.05
         fLDrive?.power = pow
-        bRDrive?.power = pow
+        bRDrive?.power = pow / 1.05
         fRDrive?.power = -pow
     }
 
@@ -142,6 +142,11 @@ class SSMechRobot {
 
     }
 
+    fun clamp(gp: Gamepad)
+    {
+        if(gp.a) this.claw?.position = 0.55
+        if(gp.b) this.claw?.position = 0.45
+    }
 
 
     fun pinch(gp: Gamepad) {

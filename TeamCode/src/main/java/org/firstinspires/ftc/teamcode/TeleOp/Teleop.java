@@ -133,8 +133,8 @@ public class Teleop extends LinearOpMode {
                     buttonLogic.get(3).manualActivate(false, true);
             }
 
-            if (gamepad2.left_trigger >= 0.5 && buttonLogic.get(3).getState()[0])
-                buttonLogic.get(3).manualActivate(true, false);
+            //if (gamepad2.left_trigger >= 0.5 && buttonLogic.get(3).getState()[0])
+            //    buttonLogic.get(3).manualActivate(true, false);
 
             if (gamepad2.y && !buttonLogic.get(2).getState()[0] && buttonLogic.get(1).getState()[0])
                 buttonLogic.get(2).manualActivate(true, false);

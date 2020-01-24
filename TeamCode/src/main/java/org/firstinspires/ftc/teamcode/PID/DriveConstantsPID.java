@@ -113,16 +113,16 @@ public class DriveConstantsPID {
     public static double kStatic = 0;
 	public static double TEST_DISTANCE = 24;
     public static double TEST_DISTANCE_0 = 24;
-	public static double maxVel = 90.0; //70.0
+	public static double maxVel = 90.0; //90.0
 	public static double maxAccel = 35.0;   //35.0
-    public static double strafeMaxVel = 15; //40.0
-    public static double strafeMaxAccel = 10.0;   //20.0
-    public static double maxAngVel = 135;
-    public static double maxAngAccel = 90;
+    public static double strafeMaxVel = 20.0; //40.0
+    public static double strafeMaxAccel = 15.0;   //20.0
+    public static double maxAngVel = 135.0;
+    public static double maxAngAccel = 90.0;
 	public static boolean keep_vuforia_running = false;
 	public static boolean USE_VUFORIA_LOCALIZER = false;
     public static boolean RECREATE_DRIVE_AND_BUILDER = false;
-    public static boolean drvCorrection = true;
+    public static boolean drvCorrection = false;
     /*
      * These values are used to generate the trajectories for you robot. To ensure proper operation,
      * the constraints should never exceed ~80% of the robot's actual capabilities. While Road
@@ -135,9 +135,15 @@ public class DriveConstantsPID {
             maxVel, maxAccel, 0.0,
             Math.toRadians(maxAngVel), Math.toRadians(maxAngAccel), 0.0
     );
+
     public static DriveConstraints STRAFE_BASE_CONSTRAINTS = new DriveConstraints(
             strafeMaxVel, strafeMaxAccel, 0.0,    //20.0, 10.0, 0.0
             Math.toRadians(maxAngVel), Math.toRadians(maxAngAccel), 0.0
+    );
+
+    public static DriveConstraints ROTATION_CONSTRAINTS = new DriveConstraints(
+            maxVel, maxAccel, 0.0,
+            Math.toRadians(270.0), Math.toRadians(180.0), 0.0
     );
 
     public static double encoderTicksToInches(double ticks) {

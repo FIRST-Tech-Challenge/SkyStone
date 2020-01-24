@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.PID;
 
-import android.util.Log;
-
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.internal.system.Misc;

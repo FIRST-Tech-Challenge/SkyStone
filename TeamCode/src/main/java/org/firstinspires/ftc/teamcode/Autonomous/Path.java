@@ -80,28 +80,31 @@ public class Path {
         if (DriveConstantsPID.drvCorrection)
         {
             boolean done = false;
-            if (abs(error_pose.getX())>1.5)
+            if ((abs(error_pose.getX())>1.5))// && (abs(error_pose.getX())>abs(error_pose.getY())))
             {
                 RobotLogger.dd(TAG, "pose correction by straight move");
-                _drive.resetFollowerWithParameters(true);
+                _drive.resetFollowerWithParameters(false);
                 _drive.followTrajectorySync(
                         _drive.trajectoryBuilder()
+                                .setReversed((error_pose.getX()>0)?false:true)
                                 .lineTo(new Vector2d(newPos.getX() + error_pose.getX(), newPos.getY()))
                                 .build());
                 done = true;
                 newPos = _drive.getPoseEstimate();
             }
-            if (abs(error_pose.getY())>1.5)
+            if ((abs(error_pose.getY())>1.5))// && (abs(error_pose.getX())<abs(error_pose.getY())))
             {
                 RobotLogger.dd(TAG, "pose correction by strafing");
                 _drive.resetFollowerWithParameters(true);
                 _drive.followTrajectorySync(
                         _drive.trajectoryBuilder()
+                                //.setReversed((error_pose.getY()>0)?false:true)
                                 .strafeTo(new Vector2d(newPos.getX(), newPos.getY() + error_pose.getY()))
                                 .build());
                 done = true;
                 newPos = _drive.getPoseEstimate();
             }
+            /*
             if (Math.toDegrees(error_pose.getHeading())>10)
             {
                 RobotLogger.dd(TAG, "pose correction by turning");
@@ -109,7 +112,7 @@ public class Path {
                 _drive.turnSync(error_pose.getHeading());
                 done = true;
                 newPos = _drive.getPoseEstimate();
-            }
+            }*/
             if (done) {
                 currentPos = _drive.getPoseEstimate();
                 error_pose = _drive.follower.getLastError();

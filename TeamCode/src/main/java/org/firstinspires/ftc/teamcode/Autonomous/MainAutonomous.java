@@ -116,8 +116,8 @@ public class MainAutonomous extends LinearOpMode {
             if (initialize) {
                 telemetry.addData("STATUS", "Calibrating IMU...");
                 telemetry.update();
-                straightDrive = new SampleMecanumDriveREV(hardwareMap, false);
-                strafeDrive = new SampleMecanumDriveREV(hardwareMap, true);
+                straightDrive = new SampleMecanumDriveREV(hardwareMap, false, false);
+                strafeDrive = new SampleMecanumDriveREV(hardwareMap, true, false);
                 imu = hardwareMap.get(BNO055IMU.class, "imu");
                 BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
                 parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;

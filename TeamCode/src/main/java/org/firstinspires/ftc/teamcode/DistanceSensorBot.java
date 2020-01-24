@@ -116,10 +116,10 @@ public class DistanceSensorBot extends PinchArmBot {
             if (getDistanceFront() > distance) {
 
                 do {
-                    leftFront.setPower(power);
-                    rightFront.setPower(- power);
-                    leftRear.setPower(- power);
-                    rightRear.setPower(power);
+                    leftFront.setPower(- power);
+                    rightFront.setPower(power);
+                    leftRear.setPower(power);
+                    rightRear.setPower(- power);
                     RobotLog.d(String.format("DRIVING! Distance: %.1f", frontSensor.getDistance(DistanceUnit.CM)));
 
                 }
@@ -127,10 +127,10 @@ public class DistanceSensorBot extends PinchArmBot {
             } else {
 
                 do {
-                    leftFront.setPower(- power);
-                    rightFront.setPower(power);
-                    leftRear.setPower(power);
-                    rightRear.setPower(- power);
+                    leftFront.setPower(power);
+                    rightFront.setPower(- power);
+                    leftRear.setPower(- power);
+                    rightRear.setPower(power);
                     RobotLog.d(String.format("DRIVING! Distance: %.1f", frontSensor.getDistance(DistanceUnit.CM)));
                 }
                 while (getDistanceFront() < distance);
@@ -145,20 +145,20 @@ public class DistanceSensorBot extends PinchArmBot {
             if (getDistanceBack() > distance) {
 
                 do {
-                    leftFront.setPower(power);
-                    rightFront.setPower(- power);
-                    leftRear.setPower(- power);
-                    rightRear.setPower(power);
+                    leftFront.setPower(- power);
+                    rightFront.setPower(power);
+                    leftRear.setPower(power);
+                    rightRear.setPower(- power);
                     RobotLog.d(String.format("DRIVING! Distance: %.1f", backSensor.getDistance(DistanceUnit.CM)));
                 }
                 while (getDistanceBack() > distance);
             } else {
 
                 do {
-                    leftFront.setPower(- power);
-                    rightFront.setPower(power);
-                    leftRear.setPower(power);
-                    rightRear.setPower(- power);
+                    leftFront.setPower(power);
+                    rightFront.setPower(- power);
+                    leftRear.setPower(- power);
+                    rightRear.setPower(power);
                     RobotLog.d(String.format("DRIVING! Distance: %.1f", backSensor.getDistance(DistanceUnit.CM)));
                 }
                 while (getDistanceFront() < distance);

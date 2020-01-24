@@ -86,10 +86,10 @@ public class GyroBot extends CameraBot {
                 // turn CC wize
                 direction = 1;
             }
-            leftFront.setPower(-power * direction);
-            rightFront.setPower(power * direction);
-            leftRear.setPower(-power * direction);
-            rightRear.setPower(power * direction);
+            leftFront.setPower(power * direction);
+            rightFront.setPower(-power * direction);
+            leftRear.setPower(power * direction);
+            rightRear.setPower(-power * direction);
 
             delta = getDeltaAngle();
 
@@ -114,10 +114,10 @@ public class GyroBot extends CameraBot {
         double power = pid.getOutput(angle, startAngle);
         while (Math.abs(power) > 0.06) {
             RobotLog.d(String.format("PID(source: %.3f, target: %.3f) = power: %.3f", angle, startAngle, power));
-            leftFront.setPower(power);
-            rightFront.setPower(-power);
-            leftRear.setPower(power);
-            rightRear.setPower(-power);
+            leftFront.setPower(-power);
+            rightFront.setPower(power);
+            leftRear.setPower(-power);
+            rightRear.setPower(power);
             opMode.sleep(50);
             angle = getAngle();
             power = pid.getOutput(angle, startAngle);
@@ -158,28 +158,28 @@ public class GyroBot extends CameraBot {
             RobotLog.d(String.format("driveStraightByGyro : Current: %d - Start:%d > 10 => power: %.3f  +/- PID(source: %.3f, target: %.3f) = adjustPower: %.3f", currentPosition, startingPosition, maxPower, angle, originalAngle, adjustPower));
             switch (direction){
                 case DIRECTION_FORWARD:
-                    leftFront.setPower(- maxPower + adjustPower);
-                    rightFront.setPower(- maxPower - adjustPower);
-                    leftRear.setPower(- maxPower + adjustPower);
-                    rightRear.setPower(- maxPower - adjustPower);
+                    leftFront.setPower(maxPower - adjustPower);
+                    rightFront.setPower(maxPower + adjustPower);
+                    leftRear.setPower(maxPower - adjustPower);
+                    rightRear.setPower(maxPower + adjustPower);
                     break;
                 case DIRECTION_BACKWARD:
-                    leftFront.setPower(maxPower + adjustPower);
-                    rightFront.setPower(maxPower - adjustPower);
-                    leftRear.setPower(maxPower + adjustPower);
-                    rightRear.setPower(maxPower - adjustPower);
+                    leftFront.setPower(- maxPower - adjustPower);
+                    rightFront.setPower(- maxPower + adjustPower);
+                    leftRear.setPower(- maxPower - adjustPower);
+                    rightRear.setPower(- maxPower + adjustPower);
                     break;
                 case DIRECTION_LEFT:
-                    leftFront.setPower(+ maxPower + adjustPower);
-                    rightFront.setPower(- maxPower - adjustPower);
-                    leftRear.setPower(- maxPower + adjustPower);
-                    rightRear.setPower(+ maxPower - adjustPower);
+                    leftFront.setPower(- maxPower - adjustPower);
+                    rightFront.setPower(+ maxPower + adjustPower);
+                    leftRear.setPower(+ maxPower - adjustPower);
+                    rightRear.setPower(- maxPower + adjustPower);
                     break;
                 case DIRECTION_RIGHT:
-                    leftFront.setPower(- maxPower + adjustPower);
-                    rightFront.setPower(+ maxPower - adjustPower);
-                    leftRear.setPower(+ maxPower + adjustPower);
-                    rightRear.setPower(- maxPower - adjustPower);
+                    leftFront.setPower(+ maxPower - adjustPower);
+                    rightFront.setPower(- maxPower + adjustPower);
+                    leftRear.setPower(- maxPower - adjustPower);
+                    rightRear.setPower(+ maxPower + adjustPower);
                     break;
             }
             opMode.sleep(50);

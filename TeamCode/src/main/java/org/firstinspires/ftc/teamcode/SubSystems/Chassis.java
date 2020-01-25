@@ -58,7 +58,9 @@ public class Chassis {
     public ColorSensor leftColorSensor;
     public ColorSensor rightColorSensor;
 
-    public Servo hook;
+    // public Servo hook;
+    public Servo lefthook;
+    public Servo righthook;
 
     //Declare Chassis Configuration variables
     public double wheelRadius;
@@ -72,8 +74,14 @@ public class Chassis {
 
     public double ChassisMotorEncoderCount = 723.24;
 
-    public double HOOK_HOLD = 0.87;
-    public double HOOK_RELEASED = 0.22;
+    //public double HOOK_HOLD = 0.87;
+    //public double HOOK_RELEASED = 0.22;
+
+    public double LEFT_HOOK_HOLD = 1;
+    public double LEFT_HOOK_RELEASED = 0.54;
+
+    public double RIGHT_HOOK_HOLD = 0.46;
+    public double RIGHT_HOOK_RELEASED = 0.93;
 
     /**
      * Constructor of Chassis. <BR>
@@ -97,7 +105,7 @@ public class Chassis {
         rightColorSensor = hardwareMap.get(ColorSensor.class, "ch_right_color");
 
         //Map Hook from configuration
-        hook = hardwareMap.servo.get("hook");
+        //hook = hardwareMap.servo.get("hook");
 
         //Configure Robot to dimensions and modified for wheel type
         configureRobot();
@@ -603,14 +611,17 @@ public class Chassis {
      * Method to move hook  to hold on foundation
      */
     public void moveHook_holdFoundation(){
-        moveHookServo(HOOK_HOLD);
+
+        //moveHookServo(HOOK_HOLD);
+        moveHookServo(LEFT_HOOK_HOLD,RIGHT_HOOK_HOLD);
     }
 
     /**
      * Method to move hold to released default state
      */
     public void moveHook_Released(){
-        moveHookServo(HOOK_RELEASED);
+        //moveHookServo(HOOK_RELEASED);
+        moveHookServo(LEFT_HOOK_RELEASED,RIGHT_HOOK_RELEASED);
     }
 
 
@@ -618,16 +629,42 @@ public class Chassis {
      * Mothod to move the hook to the set level
      * @param hookLevel
      */
-    public void moveHookServo(double hookLevel){
-        if (hookLevel <= HOOK_RELEASED){
+    public void moveHookServo(double lefthookLevel, double righthookLevel) {
+    /*    if (hookLevel <= HOOK_RELEASED) {
             hookLevel = HOOK_RELEASED;
         }
 
-        if (hookLevel >= HOOK_HOLD){
+        if (hookLevel >= HOOK_HOLD) {
             hookLevel = HOOK_HOLD;
         }
+    */
+        if (lefthookLevel <= LEFT_HOOK_RELEASED) {
+            lefthookLevel = LEFT_HOOK_RELEASED;
+        }
 
-        hook.setPosition(hookLevel);
+        if (lefthookLevel >= LEFT_HOOK_HOLD) {
+            lefthookLevel = LEFT_HOOK_HOLD;
+        }
+
+        if (righthookLevel <= RIGHT_HOOK_RELEASED) {
+            righthookLevel = RIGHT_HOOK_RELEASED;
+        }
+
+        if (righthookLevel >= RIGHT_HOOK_HOLD) {
+            righthookLevel = RIGHT_HOOK_HOLD;
+        }
+
+
+        //hook.setPosition(hookLevel);
+        lefthook.setPosition(lefthookLevel);
+        righthook.setPosition(righthookLevel);
     }
+
+    public void gripFoundation(double hookLevel){
+        hookLevel = -
+
+    }
+
+
 
 }

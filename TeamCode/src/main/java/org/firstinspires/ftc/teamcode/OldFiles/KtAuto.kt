@@ -7,12 +7,13 @@ package org.firstinspires.ftc.teamcode
 
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import org.firstinspires.ftc.teamcode.OldFiles.KtRobot
 
 
 @Autonomous(name="KtAuto", group = "Autonomous")
-//@Disabled
+@Disabled
 class KtAuto : LinearOpMode()
 {
     //adds robot objects for variables and methods

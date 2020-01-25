@@ -30,13 +30,13 @@ class SSBuildRedAuto : LinearOpMode()
         sleep(800)*/
         //Positive Value = Left Strafe || Negative Value = Right Strafe
         robot.strafe(1.0) //align with foundation
-        sleep(500)
+        sleep(450)
         robot.brake()
         sleep(100)
         robot.strafe(0.5)
         sleep(800)
         robot.drive(0.50) //Drives Forward to the Foundation
-        sleep(1575)
+        sleep(1550)
         robot.brake()
         sleep(1000)
         robot.leftHook?.position = 0.72 // Grabs Onto the Foundation

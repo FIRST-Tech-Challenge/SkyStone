@@ -26,7 +26,7 @@ class SSMechTeleOp : OpMode() {
     var curPos = 0
     var leftPower: Float = 0.0.toFloat()
     var rightPower: Float = 0.0.toFloat()
-    val max = 10740
+    val max = 10740 //10600
     var drive = 0.0
 
 
@@ -137,9 +137,9 @@ class SSMechTeleOp : OpMode() {
         // about signs)
         //need to compensate for difference in core hex and 40:1 motors
         robot.fLDrive?.power = (frontLeftPower / slowDown) * 1.05
-        robot.bLDrive?.power = (backLeftPower / slowDown) * 1.05
+        robot.bLDrive?.power = (backLeftPower / slowDown) * 1.05 / 1.12
         robot.fRDrive?.power = (frontRightPower / slowDown) * 1.05
-        robot.bRDrive?.power = (backRightPower / slowDown) * 1.05
+        robot.bRDrive?.power = (backRightPower / slowDown) * 1.05 / 1.12
         telemetry.addData("front left: ${robot.fLDrive?.power}, front right: ${robot.fRDrive?.power}, " +
                 "back left: ${robot.bLDrive?.power}, back right: ${robot.bRDrive?.power}; normalized value: $nor", "")
     }

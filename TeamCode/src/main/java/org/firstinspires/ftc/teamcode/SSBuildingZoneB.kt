@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
-import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.DcMotor
 
@@ -30,13 +29,20 @@ class SSBuildingZoneB : LinearOpMode()
         robot.vSlide?.power = 0.1
         pause()
         robot.drive(0.50) //Drives Forward to the Stones
-        sleep(1100)
+        sleep(1550)
         pause()
-        robot.claw?.position = 0.28
+        robot.claw?.position = 0.0
+        pause()
+        sleep(500)
+        robot.drive(-0.50)
+        sleep(350)
         pause()
         robot.strafe(1.0)//Heads to Foundation
         sleep(3550)
-        robot.claw?.position = 0.0
+        robot.drive(0.5)
+        sleep(250)
+        pause()
+        robot.claw?.position = robot.clawPinchPos
         pause()
         robot.strafe(0.5)
         sleep(1000)

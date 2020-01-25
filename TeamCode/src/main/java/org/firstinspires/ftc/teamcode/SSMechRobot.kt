@@ -24,6 +24,7 @@ class SSMechRobot {
     var rightHook: Servo? = null
     var leftHook: Servo? = null
     var touch: DigitalChannel? = null
+    val clawPinchPos = 0.40
 
 
     var motF = DcMotorSimple.Direction.FORWARD
@@ -93,9 +94,9 @@ class SSMechRobot {
 
     fun strafe(pow: Double) //Positive Value = Left Strafe || Negative Value = Right Strafe
     {
-        bLDrive?.power = -pow / 1.05
+        bLDrive?.power = -pow / 1.11
         fLDrive?.power = pow
-        bRDrive?.power = pow / 1.05
+        bRDrive?.power = pow / 1.12
         fRDrive?.power = -pow
     }
 
@@ -155,7 +156,7 @@ class SSMechRobot {
             this.claw?.position = 0.00
         }
         else { //default position
-            this.claw?.position = 0.28
+            this.claw?.position = clawPinchPos
         }
         /*
         Toggle Function

@@ -7,9 +7,9 @@ import com.qualcomm.robotcore.hardware.DcMotor
 /**
  * Created by KasaiYuki on 9/21/2018.
  */
-@Autonomous(name = "SSFoundZoneB", group = "Autonomous")
+@Autonomous(name = "SSFoundZoneR", group = "Autonomous")
 //@Disabled
-class SSFoundZoneB : LinearOpMode()
+class SSFoundZoneR : LinearOpMode()
 {
     val robot = SSMechRobot()
 
@@ -27,13 +27,13 @@ class SSFoundZoneB : LinearOpMode()
         robot.claw?.position = robot.clawPinchPos
         robot.vSlide?.targetPosition = 90 + robot.vSlide!!.currentPosition
         robot.vSlide?.power = 0.5
-        robot.strafe(0.75) //align with foundation
+        robot.strafe(-0.75) //align with foundation
         sleep(500)
         pause()
         robot.drive(0.50) //Drives Forward to the Foundation
         sleep(1100)
         pause()
-        robot.strafe(-1.0)
+        robot.strafe(1.0)
         sleep(3550)
         pause()
         robot.drive(0.5)
@@ -44,7 +44,7 @@ class SSFoundZoneB : LinearOpMode()
         robot.drive(-0.4)
         sleep(750)
         pause()
-        robot.strafe(1.0)
+        robot.strafe(-1.0)
         sleep(2700)
         pause()
 /*        robot.vSlide?.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
@@ -55,14 +55,14 @@ class SSFoundZoneB : LinearOpMode()
         sleep(1000)*/
         robot.vSlide?.targetPosition = robot.vSlide!!.currentPosition + 3000
         sleep(1500)
-        robot.strafe(1.0)
+        robot.strafe(-1.0)
         sleep(800)
         pause()
         //robot.vSlide?.targetPosition = robot.vSlide!!.currentPosition - 100
         robot.claw?.position = robot.clawPinchPos
         sleep(1000)
         robot.vSlide?.targetPosition = robot.vSlide!!.currentPosition - 3000
-        robot.strafe(-1.0)
+        robot.strafe(1.0)
         sleep(2000)
 /*        robot.leftHook?.position = 0.7
         robot.rightHook?.position = 0.72

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.PID.localizer;
 
 import android.support.annotation.NonNull;
+import android.util.TimingLogger;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -77,13 +78,13 @@ public class  StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer
     @NonNull
     @Override
     public List<Double> getWheelPositions() {
+        RobotLogger.dd(TAG, "getWheelPositions");
         int x = leftEncoder.getCurrentPosition();
         int y = rightEncoder.getCurrentPosition();
         int z = frontEncoder.getCurrentPosition();
-        RobotLogger.dd(TAG, "getWheelPositions");
-        RobotLogger.dd(TAG, "leftEncoder: " + x);
-        RobotLogger.dd(TAG, "rightEncoder: " + y);
-        RobotLogger.dd(TAG, "frontEncoder: " + (-1)*z);
+        //RobotLogger.dd(TAG, "leftEncoder: " + x);
+        //RobotLogger.dd(TAG, "rightEncoder: " + y);
+        //RobotLogger.dd(TAG, "frontEncoder: " + (-1)*z);
         return Arrays.asList(
                 encoderTicksToInches(x),
                 encoderTicksToInches(y),
@@ -93,8 +94,8 @@ public class  StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer
 
     @Override
     public Pose2d getPoseEstimate() {
-        RobotLogger.dd(TAG, "getPoseEstimate: " + Double.toString(poseEstimate_new.getX()) + ", " + Double.toString(poseEstimate_new.getY()) + ", " +
-                Double.toString(poseEstimate_new.getHeading()));
+        //RobotLogger.dd(TAG, "getPoseEstimate: " + Double.toString(poseEstimate_new.getX()) + ", " + Double.toString(poseEstimate_new.getY()) + ", " +
+        //        Double.toString(poseEstimate_new.getHeading()));
         return poseEstimate_new;
     }
 
@@ -110,6 +111,7 @@ public class  StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer
         Pose2d s_poseEstimate=super.getPoseEstimate();
 
         if (DriveConstantsPID.RUN_USING_IMU_LOCALIZER == true) {
+            RobotLogger.dd(TAG, "to read IMU");
             poseEstimate_new = new Pose2d(s_poseEstimate.getX(), s_poseEstimate.getY(),
                     imu.getAngularOrientation().firstAngle);
             RobotLogger.dd(TAG, "using IMU: IMU heading " + Double.toString(poseEstimate_new.getHeading()) + " non-IMU heading: "

@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.PID.mecanum;
 
+import android.util.TimingLogger;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.config.Config;
@@ -197,7 +199,9 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
     }
 
     public void update() {
+        TimingLogger timings = new TimingLogger(TAG, "roadrunner control loop");
         updatePoseEstimate();
+        timings.addSplit("updatePoseEstimate");
 
         Pose2d currentPose = getPoseEstimate();
         Pose2d lastError = getLastError();
@@ -224,6 +228,7 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
         RobotLogger.dd(TAG, "headingError "  + lastError.getHeading());
 
         drawPosition(packet, currentPose);
+        timings.addSplit("before mode");
 
         switch (mode) {
             case IDLE:
@@ -278,8 +283,9 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
                 break;
             }
         }
-
         dashboard.sendTelemetryPacket(packet);
+        timings.addSplit("setDriveSignal");
+        timings.dumpToLog();
     }
     /// new function added;
     public abstract List<Double> getMotorPowers(List<DcMotorEx> motors);

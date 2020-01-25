@@ -117,14 +117,14 @@ public class DriveConstantsPID {
     public static double TEST_DISTANCE_0 = 24;
 	public static double maxVel = 90.0; //90.0
 	public static double maxAccel = 35.0;   //35.0
-    public static double strafeMaxVel = 20.0; //40.0
+    public static double strafeMaxVel = 30.0; //40.0
     public static double strafeMaxAccel = 15.0;   //20.0
     public static double maxAngVel = 135.0;
     public static double maxAngAccel = 90.0;
 	public static boolean keep_vuforia_running = false;
 	public static boolean USE_VUFORIA_LOCALIZER = false;
     public static boolean RECREATE_DRIVE_AND_BUILDER = false;
-    public static boolean drvCorrection = false;
+    public static boolean drvCorrection = true;
     /*
      * These values are used to generate the trajectories for you robot. To ensure proper operation,
      * the constraints should never exceed ~80% of the robot's actual capabilities. While Road

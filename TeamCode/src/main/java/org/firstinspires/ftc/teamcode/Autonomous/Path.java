@@ -82,28 +82,35 @@ public class Path {
         if (DriveConstantsPID.drvCorrection)
         {
             boolean done = false;
-            if (abs(error_pose.getX())>1.5)
+            if ((abs(error_pose.getX())>1.5))// && (abs(error_pose.getX())>abs(error_pose.getY())))
             {
-                RobotLog.dd(TAG, "correct pose by strafing");
-                _drive.resetFollowerWithParameters(true, false);
+                RobotLogger.dd(TAG, "pose correction by straight move");
+                _drive.resetFollowerWithParameters(false, false);
                 _drive.followTrajectorySync(
                         _drive.trajectoryBuilder()
+                                .setReversed((error_pose.getX()>0)?false:true)
                                 .lineTo(new Vector2d(newPos.getX() + error_pose.getX(), newPos.getY()))
                                 .build());
                 done = true;
                 newPos = _drive.getPoseEstimate();
+                RobotLogger.dd(TAG, "after pose correction: currentPos %s, errorPos %s",
+                        newPos.toString(), _drive.follower.getLastError().toString());
             }
-            if (abs(error_pose.getY())>1.5)
+            if ((abs(error_pose.getY())>1.5))// && (abs(error_pose.getX())<abs(error_pose.getY())))
             {
                 RobotLogger.dd(TAG, "pose correction by strafing");
                 _drive.resetFollowerWithParameters(true, false);
                 _drive.followTrajectorySync(
                         _drive.trajectoryBuilder()
+                                .setReversed(false)
                                 .strafeTo(new Vector2d(newPos.getX(), newPos.getY() + error_pose.getY()))
                                 .build());
                 done = true;
                 newPos = _drive.getPoseEstimate();
+                RobotLogger.dd(TAG, "after pose correction: currentPos %s, errorPos %s",
+                        newPos.toString(), _drive.follower.getLastError().toString());
             }
+            /*
             if (Math.toDegrees(error_pose.getHeading())>10)
             {
                 RobotLog.dd(TAG, "correct heading by turning");
@@ -111,12 +118,9 @@ public class Path {
                 _drive.turnSync(error_pose.getHeading());
                 done = true;
                 newPos = _drive.getPoseEstimate();
-            }
+            }*/
             if (done) {
-                currentPos = _drive.getPoseEstimate();
-                error_pose = _drive.follower.getLastError();
-                RobotLogger.dd(TAG, "after pose correction: currentPos %s, errorPos %s",
-                        currentPos.toString(), error_pose.toString());
+                currentPos = newPos;
             }
         }
         //RobotLogger.dd(TAG, "vuforia localization info: %s", vu.getPoseEstimate().toString());

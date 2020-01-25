@@ -178,13 +178,13 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
     @Override
     public void setMotorPowers(double v, double v1, double v2, double v3) {
         RobotLogger.dd(TAG, "setMotorPowers "+"leftFront: " + Double.toString(v));
-        RobotLogger.dd(TAG, "setMotorPowers "+"leftRear: "+Double.toString(v1));
-        RobotLogger.dd(TAG, "setMotorPowers "+"rightRear: "+Double.toString(v2));
-        RobotLogger.dd(TAG, "setMotorPowers"+"rightFront: "+Double.toString(v3));
         leftFront.setPower(v);
         leftRear.setPower(v1);
         rightRear.setPower(v2);
         rightFront.setPower(v3);
+        RobotLogger.dd(TAG, "setMotorPowers "+"leftRear: "+Double.toString(v1));
+        RobotLogger.dd(TAG, "setMotorPowers "+"rightRear: "+Double.toString(v2));
+        RobotLogger.dd(TAG, "setMotorPowers"+"rightFront: "+Double.toString(v3));
     }
 
     @Override

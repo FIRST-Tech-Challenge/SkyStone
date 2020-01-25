@@ -1,0 +1,426 @@
+@startuml
+
+title __TEAMCODE's Class Diagram__\n
+
+  namespace org.firstinspires.ftc.teamcode {
+    namespace AutonomousModes.AutoUC1_Skystone_Park {
+      class org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC1_Skystone_Park.BLUE_SkyStone_ParkBridge_Vuforia {
+      }
+    }
+  }
+  
+
+  namespace org.firstinspires.ftc.teamcode {
+    namespace AutonomousModes.AutoUC1_Skystone_Park {
+      class org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC1_Skystone_Park.RED_SkyStone_ParkBridge_Vuforia {
+      }
+    }
+  }
+  
+
+  namespace org.firstinspires.ftc.teamcode {
+    namespace AutonomousModes.AutoUC2_MoveFdn_Park {
+      class org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC2_MoveFdn_Park.BLUE_MoveFdn_ParkBridge {
+      }
+    }
+  }
+  
+
+  namespace org.firstinspires.ftc.teamcode {
+    namespace AutonomousModes.AutoUC2_MoveFdn_Park {
+      class org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC2_MoveFdn_Park.BLUE_MoveFdn_ParkWall {
+      }
+    }
+  }
+  
+
+  namespace org.firstinspires.ftc.teamcode {
+    namespace AutonomousModes.AutoUC2_MoveFdn_Park {
+      class org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC2_MoveFdn_Park.RED_MoveFdn_ParkBridge {
+      }
+    }
+  }
+  
+
+  namespace org.firstinspires.ftc.teamcode {
+    namespace AutonomousModes.AutoUC2_MoveFdn_Park {
+      class org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC2_MoveFdn_Park.RED_MoveFdn_ParkWall {
+      }
+    }
+  }
+  
+
+  namespace org.firstinspires.ftc.teamcode {
+    namespace AutonomousModes.AutoUC3_Park {
+      class org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.BLUE_ParkBridge_fromBuildingZone {
+      }
+    }
+  }
+  
+
+  namespace org.firstinspires.ftc.teamcode {
+    namespace AutonomousModes.AutoUC3_Park {
+      class org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.BLUE_ParkBridge_fromLoadingZone {
+      }
+    }
+  }
+  
+
+  namespace org.firstinspires.ftc.teamcode {
+    namespace AutonomousModes.AutoUC3_Park {
+      class org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.BLUE_ParkWall_fromBuildingZone {
+      }
+    }
+  }
+  
+
+  namespace org.firstinspires.ftc.teamcode {
+    namespace AutonomousModes.AutoUC3_Park {
+      class org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.BLUE_ParkWall_fromLoadingZone {
+      }
+    }
+  }
+  
+
+  namespace org.firstinspires.ftc.teamcode {
+    namespace AutonomousModes.AutoUC3_Park {
+      class org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.RED_ParkBridge_fromBuildingZone {
+      }
+    }
+  }
+  
+
+  namespace org.firstinspires.ftc.teamcode {
+    namespace AutonomousModes.AutoUC3_Park {
+      class org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.RED_ParkBridge_fromLoadingZone {
+      }
+    }
+  }
+  
+
+  namespace org.firstinspires.ftc.teamcode {
+    namespace AutonomousModes.AutoUC3_Park {
+      class org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.RED_ParkWall_fromBuildingZone {
+      }
+    }
+  }
+  
+
+  namespace org.firstinspires.ftc.teamcode {
+    namespace AutonomousModes.AutoUC3_Park {
+      class org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.RED_ParkWall_fromLoadingZone {
+      }
+    }
+  }
+  
+
+  namespace org.firstinspires.ftc.teamcode {
+    namespace AutonomousModes.AutoUC4_Skystone_MoveFdn_Park {
+      class org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC4_Skystone_MoveFdn_Park.BLUE_SkyStone_MoveFdn_ParkBridge_Vuforia {
+      }
+    }
+  }
+  
+
+  namespace org.firstinspires.ftc.teamcode {
+    namespace AutonomousModes.AutoUC4_Skystone_MoveFdn_Park {
+      class org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC4_Skystone_MoveFdn_Park.BLUE_SkyStone_MoveFdn_ParkWall_Vuforia {
+      }
+    }
+  }
+  
+
+  namespace org.firstinspires.ftc.teamcode {
+    namespace AutonomousModes.AutoUC4_Skystone_MoveFdn_Park {
+      class org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC4_Skystone_MoveFdn_Park.RED_SkyStone_MoveFdn_ParkBridge_Vuforia {
+      }
+    }
+  }
+  
+
+  namespace org.firstinspires.ftc.teamcode {
+    namespace AutonomousModes.AutoUC4_Skystone_MoveFdn_Park {
+      class org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC4_Skystone_MoveFdn_Park.RED_SkyStone_MoveFdn_ParkWall_Vuforia {
+      }
+    }
+  }
+  
+
+  namespace org.firstinspires.ftc.teamcode {
+    class org.firstinspires.ftc.teamcode.BuildConfig {
+    }
+  }
+  
+
+  namespace org.firstinspires.ftc.teamcode {
+    namespace OpModes {
+      class org.firstinspires.ftc.teamcode.OpModes.AutoUC1_Skystone_Park {
+      }
+    }
+  }
+  
+
+  namespace org.firstinspires.ftc.teamcode {
+    namespace OpModes {
+      class org.firstinspires.ftc.teamcode.OpModes.AutoUC2_MoveFdn_Park {
+      }
+    }
+  }
+  
+
+  namespace org.firstinspires.ftc.teamcode {
+    namespace OpModes {
+      class org.firstinspires.ftc.teamcode.OpModes.AutoUC3_Park {
+      }
+    }
+  }
+  
+
+  namespace org.firstinspires.ftc.teamcode {
+    namespace OpModes {
+      class org.firstinspires.ftc.teamcode.OpModes.AutoUC4_Skystone_MoveFdn_Park {
+      }
+    }
+  }
+  
+
+  namespace org.firstinspires.ftc.teamcode {
+    namespace OpModes {
+      class org.firstinspires.ftc.teamcode.OpModes.HazmatTeleOpMode {
+      }
+    }
+  }
+  
+
+  namespace org.firstinspires.ftc.teamcode {
+    namespace SubSystems {
+      class org.firstinspires.ftc.teamcode.SubSystems.Arm {
+      }
+    }
+  }
+  
+
+  namespace org.firstinspires.ftc.teamcode {
+    namespace SubSystems {
+      class org.firstinspires.ftc.teamcode.SubSystems.Chassis {
+      }
+    }
+  }
+  
+
+  namespace org.firstinspires.ftc.teamcode {
+    namespace SubSystems {
+      class org.firstinspires.ftc.teamcode.SubSystems.HzGamepad1 {
+      }
+    }
+  }
+  
+
+  namespace org.firstinspires.ftc.teamcode {
+    namespace SubSystems {
+      class org.firstinspires.ftc.teamcode.SubSystems.Intake {
+      }
+    }
+  }
+  
+
+  namespace org.firstinspires.ftc.teamcode {
+    namespace UnitTesting {
+      class org.firstinspires.ftc.teamcode.UnitTesting.AutoTestRunDistance {
+      }
+    }
+  }
+  
+
+  namespace org.firstinspires.ftc.teamcode {
+    namespace UnitTesting {
+      class org.firstinspires.ftc.teamcode.UnitTesting.AutoTestTurnAngle {
+      }
+    }
+  }
+  
+
+  namespace org.firstinspires.ftc.teamcode {
+    namespace UnitTesting {
+      class org.firstinspires.ftc.teamcode.UnitTesting.AutonomousTester {
+      }
+    }
+  }
+  
+
+  namespace org.firstinspires.ftc.teamcode {
+    namespace UnitTesting {
+      class org.firstinspires.ftc.teamcode.UnitTesting.ConceptTensorFlowObjectDetection {
+      }
+    }
+  }
+  
+
+  namespace org.firstinspires.ftc.teamcode {
+    namespace UnitTesting {
+      class org.firstinspires.ftc.teamcode.UnitTesting.ConceptVuforiaSkyStoneNavigation {
+      }
+    }
+  }
+  
+
+  namespace org.firstinspires.ftc.teamcode {
+    namespace UnitTesting {
+      class org.firstinspires.ftc.teamcode.UnitTesting.NewArmConfiguration {
+      }
+    }
+  }
+  
+
+  namespace org.firstinspires.ftc.teamcode {
+    namespace UnitTesting {
+      class org.firstinspires.ftc.teamcode.UnitTesting.NewGripTest {
+      }
+    }
+  }
+  
+
+  namespace org.firstinspires.ftc.teamcode {
+    namespace UnitTesting {
+      class org.firstinspires.ftc.teamcode.UnitTesting.SensorCaliberation {
+      }
+    }
+  }
+  
+
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC1_Skystone_Park.BLUE_SkyStone_ParkBridge_Vuforia -up-|> com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC1_Skystone_Park.BLUE_SkyStone_ParkBridge_Vuforia o-- org.firstinspires.ftc.teamcode.OpModes.AutoUC1_Skystone_Park : AutoMode
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC1_Skystone_Park.BLUE_SkyStone_ParkBridge_Vuforia o-- org.firstinspires.ftc.teamcode.SubSystems.Arm : autoArm
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC1_Skystone_Park.BLUE_SkyStone_ParkBridge_Vuforia o-- org.firstinspires.ftc.teamcode.SubSystems.Chassis : autoChassis
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC1_Skystone_Park.BLUE_SkyStone_ParkBridge_Vuforia o-- org.firstinspires.ftc.teamcode.SubSystems.Intake : autoIntake
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC1_Skystone_Park.RED_SkyStone_ParkBridge_Vuforia -up-|> com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC1_Skystone_Park.RED_SkyStone_ParkBridge_Vuforia o-- org.firstinspires.ftc.teamcode.OpModes.AutoUC1_Skystone_Park : AutoMode
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC1_Skystone_Park.RED_SkyStone_ParkBridge_Vuforia o-- org.firstinspires.ftc.teamcode.SubSystems.Arm : autoArm
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC1_Skystone_Park.RED_SkyStone_ParkBridge_Vuforia o-- org.firstinspires.ftc.teamcode.SubSystems.Chassis : autoChassis
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC1_Skystone_Park.RED_SkyStone_ParkBridge_Vuforia o-- org.firstinspires.ftc.teamcode.SubSystems.Intake : autoIntake
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC2_MoveFdn_Park.BLUE_MoveFdn_ParkBridge -up-|> com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC2_MoveFdn_Park.BLUE_MoveFdn_ParkBridge o-- org.firstinspires.ftc.teamcode.OpModes.AutoUC2_MoveFdn_Park : AutoMode
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC2_MoveFdn_Park.BLUE_MoveFdn_ParkBridge o-- org.firstinspires.ftc.teamcode.SubSystems.Arm : autoArm
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC2_MoveFdn_Park.BLUE_MoveFdn_ParkBridge o-- org.firstinspires.ftc.teamcode.SubSystems.Chassis : autoChassis
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC2_MoveFdn_Park.BLUE_MoveFdn_ParkBridge o-- org.firstinspires.ftc.teamcode.SubSystems.Intake : autoIntake
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC2_MoveFdn_Park.BLUE_MoveFdn_ParkWall -up-|> com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC2_MoveFdn_Park.BLUE_MoveFdn_ParkWall o-- org.firstinspires.ftc.teamcode.OpModes.AutoUC2_MoveFdn_Park : AutoMode
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC2_MoveFdn_Park.BLUE_MoveFdn_ParkWall o-- org.firstinspires.ftc.teamcode.SubSystems.Arm : autoArm
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC2_MoveFdn_Park.BLUE_MoveFdn_ParkWall o-- org.firstinspires.ftc.teamcode.SubSystems.Chassis : autoChassis
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC2_MoveFdn_Park.BLUE_MoveFdn_ParkWall o-- org.firstinspires.ftc.teamcode.SubSystems.Intake : autoIntake
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC2_MoveFdn_Park.RED_MoveFdn_ParkBridge -up-|> com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC2_MoveFdn_Park.RED_MoveFdn_ParkBridge o-- org.firstinspires.ftc.teamcode.OpModes.AutoUC2_MoveFdn_Park : AutoMode
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC2_MoveFdn_Park.RED_MoveFdn_ParkBridge o-- org.firstinspires.ftc.teamcode.SubSystems.Arm : autoArm
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC2_MoveFdn_Park.RED_MoveFdn_ParkBridge o-- org.firstinspires.ftc.teamcode.SubSystems.Chassis : autoChassis
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC2_MoveFdn_Park.RED_MoveFdn_ParkBridge o-- org.firstinspires.ftc.teamcode.SubSystems.Intake : autoIntake
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC2_MoveFdn_Park.RED_MoveFdn_ParkWall -up-|> com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC2_MoveFdn_Park.RED_MoveFdn_ParkWall o-- org.firstinspires.ftc.teamcode.OpModes.AutoUC2_MoveFdn_Park : AutoMode
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC2_MoveFdn_Park.RED_MoveFdn_ParkWall o-- org.firstinspires.ftc.teamcode.SubSystems.Arm : autoArm
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC2_MoveFdn_Park.RED_MoveFdn_ParkWall o-- org.firstinspires.ftc.teamcode.SubSystems.Chassis : autoChassis
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC2_MoveFdn_Park.RED_MoveFdn_ParkWall o-- org.firstinspires.ftc.teamcode.SubSystems.Intake : autoIntake
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.BLUE_ParkBridge_fromBuildingZone -up-|> com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.BLUE_ParkBridge_fromBuildingZone o-- org.firstinspires.ftc.teamcode.OpModes.AutoUC3_Park : AutoMode
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.BLUE_ParkBridge_fromBuildingZone o-- org.firstinspires.ftc.teamcode.SubSystems.Arm : autoArm
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.BLUE_ParkBridge_fromBuildingZone o-- org.firstinspires.ftc.teamcode.SubSystems.Chassis : autoChassis
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.BLUE_ParkBridge_fromBuildingZone o-- org.firstinspires.ftc.teamcode.SubSystems.Intake : autoIntake
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.BLUE_ParkBridge_fromLoadingZone -up-|> com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.BLUE_ParkBridge_fromLoadingZone o-- org.firstinspires.ftc.teamcode.OpModes.AutoUC3_Park : AutoMode
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.BLUE_ParkBridge_fromLoadingZone o-- org.firstinspires.ftc.teamcode.SubSystems.Arm : autoArm
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.BLUE_ParkBridge_fromLoadingZone o-- org.firstinspires.ftc.teamcode.SubSystems.Chassis : autoChassis
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.BLUE_ParkBridge_fromLoadingZone o-- org.firstinspires.ftc.teamcode.SubSystems.Intake : autoIntake
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.BLUE_ParkWall_fromBuildingZone -up-|> com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.BLUE_ParkWall_fromBuildingZone o-- org.firstinspires.ftc.teamcode.OpModes.AutoUC3_Park : AutoMode
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.BLUE_ParkWall_fromBuildingZone o-- org.firstinspires.ftc.teamcode.SubSystems.Arm : autoArm
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.BLUE_ParkWall_fromBuildingZone o-- org.firstinspires.ftc.teamcode.SubSystems.Chassis : autoChassis
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.BLUE_ParkWall_fromBuildingZone o-- org.firstinspires.ftc.teamcode.SubSystems.Intake : autoIntake
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.BLUE_ParkWall_fromLoadingZone -up-|> com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.BLUE_ParkWall_fromLoadingZone o-- org.firstinspires.ftc.teamcode.OpModes.AutoUC3_Park : AutoMode
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.BLUE_ParkWall_fromLoadingZone o-- org.firstinspires.ftc.teamcode.SubSystems.Arm : autoArm
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.BLUE_ParkWall_fromLoadingZone o-- org.firstinspires.ftc.teamcode.SubSystems.Chassis : autoChassis
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.BLUE_ParkWall_fromLoadingZone o-- org.firstinspires.ftc.teamcode.SubSystems.Intake : autoIntake
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.RED_ParkBridge_fromBuildingZone -up-|> com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.RED_ParkBridge_fromBuildingZone o-- org.firstinspires.ftc.teamcode.OpModes.AutoUC3_Park : AutoMode
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.RED_ParkBridge_fromBuildingZone o-- org.firstinspires.ftc.teamcode.SubSystems.Arm : autoArm
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.RED_ParkBridge_fromBuildingZone o-- org.firstinspires.ftc.teamcode.SubSystems.Chassis : autoChassis
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.RED_ParkBridge_fromBuildingZone o-- org.firstinspires.ftc.teamcode.SubSystems.Intake : autoIntake
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.RED_ParkBridge_fromLoadingZone -up-|> com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.RED_ParkBridge_fromLoadingZone o-- org.firstinspires.ftc.teamcode.OpModes.AutoUC3_Park : AutoMode
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.RED_ParkBridge_fromLoadingZone o-- org.firstinspires.ftc.teamcode.SubSystems.Arm : autoArm
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.RED_ParkBridge_fromLoadingZone o-- org.firstinspires.ftc.teamcode.SubSystems.Chassis : autoChassis
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.RED_ParkBridge_fromLoadingZone o-- org.firstinspires.ftc.teamcode.SubSystems.Intake : autoIntake
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.RED_ParkWall_fromBuildingZone -up-|> com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.RED_ParkWall_fromBuildingZone o-- org.firstinspires.ftc.teamcode.OpModes.AutoUC3_Park : AutoMode
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.RED_ParkWall_fromBuildingZone o-- org.firstinspires.ftc.teamcode.SubSystems.Arm : autoArm
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.RED_ParkWall_fromBuildingZone o-- org.firstinspires.ftc.teamcode.SubSystems.Chassis : autoChassis
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.RED_ParkWall_fromBuildingZone o-- org.firstinspires.ftc.teamcode.SubSystems.Intake : autoIntake
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.RED_ParkWall_fromLoadingZone -up-|> com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.RED_ParkWall_fromLoadingZone o-- org.firstinspires.ftc.teamcode.OpModes.AutoUC3_Park : AutoMode
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.RED_ParkWall_fromLoadingZone o-- org.firstinspires.ftc.teamcode.SubSystems.Arm : autoArm
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.RED_ParkWall_fromLoadingZone o-- org.firstinspires.ftc.teamcode.SubSystems.Chassis : autoChassis
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC3_Park.RED_ParkWall_fromLoadingZone o-- org.firstinspires.ftc.teamcode.SubSystems.Intake : autoIntake
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC4_Skystone_MoveFdn_Park.BLUE_SkyStone_MoveFdn_ParkBridge_Vuforia -up-|> com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC4_Skystone_MoveFdn_Park.BLUE_SkyStone_MoveFdn_ParkBridge_Vuforia o-- org.firstinspires.ftc.teamcode.OpModes.AutoUC4_Skystone_MoveFdn_Park : AutoMode
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC4_Skystone_MoveFdn_Park.BLUE_SkyStone_MoveFdn_ParkBridge_Vuforia o-- org.firstinspires.ftc.teamcode.SubSystems.Arm : autoArm
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC4_Skystone_MoveFdn_Park.BLUE_SkyStone_MoveFdn_ParkBridge_Vuforia o-- org.firstinspires.ftc.teamcode.SubSystems.Chassis : autoChassis
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC4_Skystone_MoveFdn_Park.BLUE_SkyStone_MoveFdn_ParkBridge_Vuforia o-- org.firstinspires.ftc.teamcode.SubSystems.Intake : autoIntake
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC4_Skystone_MoveFdn_Park.BLUE_SkyStone_MoveFdn_ParkWall_Vuforia -up-|> com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC4_Skystone_MoveFdn_Park.BLUE_SkyStone_MoveFdn_ParkWall_Vuforia o-- org.firstinspires.ftc.teamcode.OpModes.AutoUC4_Skystone_MoveFdn_Park : AutoMode
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC4_Skystone_MoveFdn_Park.BLUE_SkyStone_MoveFdn_ParkWall_Vuforia o-- org.firstinspires.ftc.teamcode.SubSystems.Arm : autoArm
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC4_Skystone_MoveFdn_Park.BLUE_SkyStone_MoveFdn_ParkWall_Vuforia o-- org.firstinspires.ftc.teamcode.SubSystems.Chassis : autoChassis
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC4_Skystone_MoveFdn_Park.BLUE_SkyStone_MoveFdn_ParkWall_Vuforia o-- org.firstinspires.ftc.teamcode.SubSystems.Intake : autoIntake
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC4_Skystone_MoveFdn_Park.RED_SkyStone_MoveFdn_ParkBridge_Vuforia -up-|> com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC4_Skystone_MoveFdn_Park.RED_SkyStone_MoveFdn_ParkBridge_Vuforia o-- org.firstinspires.ftc.teamcode.OpModes.AutoUC4_Skystone_MoveFdn_Park : AutoMode
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC4_Skystone_MoveFdn_Park.RED_SkyStone_MoveFdn_ParkBridge_Vuforia o-- org.firstinspires.ftc.teamcode.SubSystems.Arm : autoArm
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC4_Skystone_MoveFdn_Park.RED_SkyStone_MoveFdn_ParkBridge_Vuforia o-- org.firstinspires.ftc.teamcode.SubSystems.Chassis : autoChassis
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC4_Skystone_MoveFdn_Park.RED_SkyStone_MoveFdn_ParkBridge_Vuforia o-- org.firstinspires.ftc.teamcode.SubSystems.Intake : autoIntake
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC4_Skystone_MoveFdn_Park.RED_SkyStone_MoveFdn_ParkWall_Vuforia -up-|> com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC4_Skystone_MoveFdn_Park.RED_SkyStone_MoveFdn_ParkWall_Vuforia o-- org.firstinspires.ftc.teamcode.OpModes.AutoUC4_Skystone_MoveFdn_Park : AutoMode
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC4_Skystone_MoveFdn_Park.RED_SkyStone_MoveFdn_ParkWall_Vuforia o-- org.firstinspires.ftc.teamcode.SubSystems.Arm : autoArm
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC4_Skystone_MoveFdn_Park.RED_SkyStone_MoveFdn_ParkWall_Vuforia o-- org.firstinspires.ftc.teamcode.SubSystems.Chassis : autoChassis
+  org.firstinspires.ftc.teamcode.AutonomousModes.AutoUC4_Skystone_MoveFdn_Park.RED_SkyStone_MoveFdn_ParkWall_Vuforia o-- org.firstinspires.ftc.teamcode.SubSystems.Intake : autoIntake
+  org.firstinspires.ftc.teamcode.OpModes.HazmatTeleOpMode -up-|> com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+  org.firstinspires.ftc.teamcode.OpModes.HazmatTeleOpMode o-- org.firstinspires.ftc.teamcode.SubSystems.Arm : hzArm
+  org.firstinspires.ftc.teamcode.OpModes.HazmatTeleOpMode o-- org.firstinspires.ftc.teamcode.SubSystems.Chassis : hzChassis
+  org.firstinspires.ftc.teamcode.OpModes.HazmatTeleOpMode o-- org.firstinspires.ftc.teamcode.SubSystems.HzGamepad1 : hzGamepad1
+  org.firstinspires.ftc.teamcode.OpModes.HazmatTeleOpMode o-- org.firstinspires.ftc.teamcode.SubSystems.Intake : hzIntake
+  org.firstinspires.ftc.teamcode.UnitTesting.AutoTestRunDistance -up-|> com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+  org.firstinspires.ftc.teamcode.UnitTesting.AutoTestRunDistance o-- org.firstinspires.ftc.teamcode.SubSystems.Arm : autoArm
+  org.firstinspires.ftc.teamcode.UnitTesting.AutoTestRunDistance o-- org.firstinspires.ftc.teamcode.SubSystems.Chassis : autoChassis
+  org.firstinspires.ftc.teamcode.UnitTesting.AutoTestRunDistance o-- org.firstinspires.ftc.teamcode.SubSystems.Intake : autoIntake
+  org.firstinspires.ftc.teamcode.UnitTesting.AutoTestRunDistance o-- org.firstinspires.ftc.teamcode.SubSystems.HzGamepad1 : hzGamepad1
+  org.firstinspires.ftc.teamcode.UnitTesting.AutoTestTurnAngle -up-|> com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+  org.firstinspires.ftc.teamcode.UnitTesting.AutoTestTurnAngle o-- org.firstinspires.ftc.teamcode.SubSystems.Arm : hzArm
+  org.firstinspires.ftc.teamcode.UnitTesting.AutoTestTurnAngle o-- org.firstinspires.ftc.teamcode.SubSystems.Chassis : hzChassis
+  org.firstinspires.ftc.teamcode.UnitTesting.AutoTestTurnAngle o-- org.firstinspires.ftc.teamcode.SubSystems.HzGamepad1 : hzGamepad1
+  org.firstinspires.ftc.teamcode.UnitTesting.AutoTestTurnAngle o-- org.firstinspires.ftc.teamcode.SubSystems.Intake : hzIntake
+  org.firstinspires.ftc.teamcode.UnitTesting.AutonomousTester -up-|> com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+  org.firstinspires.ftc.teamcode.UnitTesting.AutonomousTester o-- org.firstinspires.ftc.teamcode.SubSystems.Arm : autoArm
+  org.firstinspires.ftc.teamcode.UnitTesting.AutonomousTester o-- org.firstinspires.ftc.teamcode.SubSystems.Chassis : autoChassis
+  org.firstinspires.ftc.teamcode.UnitTesting.AutonomousTester o-- org.firstinspires.ftc.teamcode.SubSystems.Intake : autoIntake
+  org.firstinspires.ftc.teamcode.UnitTesting.ConceptTensorFlowObjectDetection -up-|> com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+  org.firstinspires.ftc.teamcode.UnitTesting.ConceptVuforiaSkyStoneNavigation -up-|> com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+  org.firstinspires.ftc.teamcode.UnitTesting.NewArmConfiguration -up-|> com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+  org.firstinspires.ftc.teamcode.UnitTesting.NewArmConfiguration o-- org.firstinspires.ftc.teamcode.SubSystems.Arm : hzArm
+  org.firstinspires.ftc.teamcode.UnitTesting.NewArmConfiguration o-- org.firstinspires.ftc.teamcode.SubSystems.Chassis : hzChassis
+  org.firstinspires.ftc.teamcode.UnitTesting.NewArmConfiguration o-- org.firstinspires.ftc.teamcode.SubSystems.HzGamepad1 : hzGamepad1
+  org.firstinspires.ftc.teamcode.UnitTesting.NewArmConfiguration o-- org.firstinspires.ftc.teamcode.SubSystems.Intake : hzIntake
+  org.firstinspires.ftc.teamcode.UnitTesting.NewGripTest -up-|> com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+  org.firstinspires.ftc.teamcode.UnitTesting.NewGripTest o-- org.firstinspires.ftc.teamcode.SubSystems.Arm : hzArm
+  org.firstinspires.ftc.teamcode.UnitTesting.NewGripTest o-- org.firstinspires.ftc.teamcode.SubSystems.Chassis : hzChassis
+  org.firstinspires.ftc.teamcode.UnitTesting.NewGripTest o-- org.firstinspires.ftc.teamcode.SubSystems.HzGamepad1 : hzGamepad1
+  org.firstinspires.ftc.teamcode.UnitTesting.NewGripTest o-- org.firstinspires.ftc.teamcode.SubSystems.Intake : hzIntake
+  org.firstinspires.ftc.teamcode.UnitTesting.SensorCaliberation -up-|> com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+  org.firstinspires.ftc.teamcode.UnitTesting.SensorCaliberation o-- org.firstinspires.ftc.teamcode.SubSystems.Arm : hzArm
+  org.firstinspires.ftc.teamcode.UnitTesting.SensorCaliberation o-- org.firstinspires.ftc.teamcode.SubSystems.Chassis : hzChassis
+  org.firstinspires.ftc.teamcode.UnitTesting.SensorCaliberation o-- org.firstinspires.ftc.teamcode.SubSystems.HzGamepad1 : hzGamepad1
+  org.firstinspires.ftc.teamcode.UnitTesting.SensorCaliberation o-- org.firstinspires.ftc.teamcode.SubSystems.Intake : hzIntake
+
+
+right footer
+
+
+PlantUML diagram generated by SketchIt! (https://bitbucket.org/pmesmeur/sketch.it)
+For more information about this tool, please contact philippe.mesmeur@gmail.com
+endfooter
+
+@enduml

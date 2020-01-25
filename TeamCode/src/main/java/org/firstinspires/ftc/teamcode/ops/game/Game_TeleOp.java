@@ -62,7 +62,6 @@ public class Game_TeleOp extends LinearOpMode {
         /* Use either robot.initAll or select only the components that need initializing below */
         //robot.initAll();
         robot.driveTrain.init(DriveTrain.InitType.INIT_4WD);
-        robot.intake.init(Intake.InitType.INIT_INTAKE);
 
         robot.logger.logInfo("runOpMode", "===== [ Initialization Complete ]");
         telemetry.update();
@@ -71,6 +70,7 @@ public class Game_TeleOp extends LinearOpMode {
         waitForStart();
         robot.grapple.init();
         robot.ramp.init();
+        robot.intake.init();
 
         robot.logger.logInfo("runOpMode", "===== [ Start TeleOp ]");
         runtime.reset();

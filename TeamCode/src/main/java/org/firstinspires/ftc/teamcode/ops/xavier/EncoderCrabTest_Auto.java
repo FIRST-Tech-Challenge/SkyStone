@@ -27,60 +27,59 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.components;
+package org.firstinspires.ftc.teamcode.ops.xavier;
 
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.bots.SimpleBot;
+import org.firstinspires.ftc.teamcode.components.DriveTrain;
+
+
+@Autonomous(name="EncoderCrabTest_Auto", group="xavier")
 //@Disabled
-public class Intake extends BotComponent {
-    private String rightIntakeName;
-    private String leftIntakeName;
+public class EncoderCrabTest_Auto extends LinearOpMode {
 
-    public DcMotor Right_Intake = null;
-    public DcMotor Left_Intake = null;
+    // Declare OpMode members.
+    private ElapsedTime runtime = new ElapsedTime();
+    private SimpleBot robot = null;
+    private boolean logEnableTrace = true;
+    private boolean logToTelemetry = true;
 
 
-    private boolean rightIntakeEnabled = true;
-    private boolean leftIntakeEnabled = true;
+    @Override
+    public void runOpMode() {
 
-    public Intake(){
+        robot = new SimpleBot(this, logEnableTrace, logToTelemetry);
+
+        robot.logger.logInfo("runOpMode", "===== [ Start Initializing ]");
+
+        /* Use either robot.initAll or select only the components that need initializing below */
+        //robot.initAll();
+
+        robot.driveTrain.init(DriveTrain.InitType.INIT_4WD);
+
+
+        robot.logger.logInfo("runOpMode", "===== [ Initialization Complete ]");
+        telemetry.update();
+
+        // Wait for the game to start (driver presses PLAY)
+        waitForStart();
+
+        robot.logger.logInfo("runOpMode", "===== [ Start Autonomous ]");
+        runtime.reset();
+
+
+        /********** Put Your Code Here **********/
+
+        robot.driveTrain.crabEncoderRight(0.5,12);
+        sleep(2000);
+        robot.driveTrain.crabEncoderLeft(0.5,12);
+
+        // Show the elapsed game time.
+        robot.logger.logInfo("runOpMode", "===== [ Autonomous Complete ] Run Time: %s", runtime.toString());
+        telemetry.update();
 
     }
-
-    public Intake(Logger aLogger, OpMode aOpMode,
-                  String aRightIntakeName, String aleftIntakeName) {
-            super (aLogger, aOpMode);
-        rightIntakeName = aRightIntakeName;
-        leftIntakeName = aleftIntakeName;
-
-
-
-    }
-
-    public void init() {
-
-        //define and initialize motors
-
-        Right_Intake = initMotor(rightIntakeName, DcMotor.Direction.REVERSE);
-        Left_Intake = initMotor(leftIntakeName, DcMotor.Direction.REVERSE);
-
-        if (Right_Intake != null && Left_Intake != null) {
-            isAvailable = true;
-        }
-
-        logger.logInfo("Intake", "isAvailable: %b", isAvailable);
-    }
-
-
-    public void setIntakePower (double power){
-        Left_Intake.setPower(power);
-        Right_Intake.setPower(-power);
-    }
-
-
-
-
 }
-

@@ -34,15 +34,24 @@ public class DriveConstantsPID {
 
     public static final boolean RUN_USING_PARAMTER_FROM_PROPERTIES = false;
 
+    public static boolean ENABLE_LOGGING = false;
     public static boolean RUN_USING_ODOMETRY_WHEEL = true;
-    public static boolean RUN_USING_IMU_LOCALIZER = true;
+    public static boolean RUN_USING_IMU_LOCALIZER = false;
     public static boolean BRAKE_ON_ZERO = false;
     public static boolean USING_BULK_READ = false;
     public static boolean USING_STRAFE_DIAGNAL = true;
     public static double odoEncoderTicksPerRev = 1565.0;
-
-    public static boolean ENABLE_LOGGING = false;
     private static String TAG = "DriveConstants";
+
+    /*public static double txP = 6.0; //translational x/y co-efficients
+    public static double txI = 0.6;
+    public static double txD = 0.75;
+    public static double tyP = 5.0;
+    public static double tyI = 0.001;
+    public static double tyD = 0.00001;
+    public static double hP = 6;    // heading co-efficients;
+    public static double hI = 2;
+    public static double hD = 0.4;*/
 
     public static double txP = 8; //translational x/y co-efficients
     public static double txI = 0.6;
@@ -113,7 +122,7 @@ public class DriveConstantsPID {
     public static double kV = 0.0111;   //0.0115
     public static double kA = 0;
     public static double kStatic = 0;
-	public static double TEST_DISTANCE = 60;
+	public static double TEST_DISTANCE = 24;
     public static double TEST_DISTANCE_0 = 24;
 	public static double maxVel = 55.0; //90.0
 	public static double maxAccel = 25.0;   //35.0
@@ -135,11 +144,6 @@ public class DriveConstantsPID {
      */
     public static DriveConstraints BASE_CONSTRAINTS = new DriveConstraints(
             maxVel, maxAccel, 0.0,
-            Math.toRadians(maxAngVel), Math.toRadians(maxAngAccel), 0.0
-    );
-
-    public static DriveConstraints SLOW_CONSTRAINTS = new DriveConstraints(
-            40.0, 20.0, 0.0,
             Math.toRadians(maxAngVel), Math.toRadians(maxAngAccel), 0.0
     );
 
@@ -248,7 +252,6 @@ public class DriveConstantsPID {
         RobotLog.dd(TAG, "strafeTimeDistanceRat: " + Double.toString(strafeTimeDistanceRatio));
         RobotLog.dd(TAG, "strafeMotorPower:  " + Double.toString(strafeMotorPower));
         RobotLog.dd(TAG, "rear_ratio:  " + Double.toString(rear_ratio));
-        RobotLog.dd(TAG, "enabling Logging? : " + Integer.toString(ENABLE_LOGGING?1:0));
     }
     public static void updateConstantsFromProperties()
     {
@@ -293,11 +296,6 @@ public class DriveConstantsPID {
         if (v_double != Double.MAX_VALUE) {
             v_int = (int) v_double;
             RUN_USING_ODOMETRY_WHEEL = (v_int==0)?false:true;
-        }
-        v_double = (int) getTeamCodePropertyValue("debug.ftc.logging");
-        if (v_double != Double.MAX_VALUE) {
-            v_int = (int) v_double;
-            ENABLE_LOGGING = (v_int==0)?false:true;
         }
         v_double = (int) getTeamCodePropertyValue("debug.ftc.strafeDiag");
         if (v_double != Double.MAX_VALUE) {

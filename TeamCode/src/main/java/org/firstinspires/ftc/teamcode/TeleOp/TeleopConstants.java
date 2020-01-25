@@ -20,12 +20,12 @@ public class TeleopConstants {
     public static double clawServo2PosClose = 0.58319;
     public static double clawServo2PosOpen = 0.8786;
 
-    public static double transferLockPosPlatform = 0.46017;
+    public static double transferLockPosPlatform = 0.52;
     public static double transferLockPosUp = 0.4939;
     public static double transferLockPosOut = 0.2716;
 
     public static double foundationLockUnlock = 0.44;
-    public static double foundationLockLock = 0.14;
+    public static double foundationLockLock = 0.188;
 
     public static double transferHornPosReady = 0.5862;
     public static double transferHornPosPush = 0;

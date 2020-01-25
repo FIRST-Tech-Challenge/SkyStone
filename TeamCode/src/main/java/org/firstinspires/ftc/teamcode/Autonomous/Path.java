@@ -322,7 +322,7 @@ public class Path {
 
                 if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
                     builder = builder.setReversed(false)
-                            .setReversed(true).lineTo(new Vector2d(straightDrive.getPoseEstimate().getX(), -25));
+                            .setReversed(true).lineTo(new Vector2d(straightDrive.getPoseEstimate().getX(), -30));
                     //.strafeTo(new Vector2d(42, -30));
                 }
                 trajectory = builder.build();
@@ -1918,33 +1918,36 @@ public class Path {
         Thread thread = new Thread() {
             public void run() {
                 hwMap.clawInit.setPosition(TeleopConstants.clawInitPosCapstone);
-                //hwMap.clawServo1.setPosition(TeleopConstants.clawServo1PosClose);
-                hwMap.clawServo2.setPosition(TeleopConstants.clawServo2Block);
+                hwMap.clawServo2.setPosition(TeleopConstants.clawServo2Block + 0.08);
                 //resetLift(TeleopConstants.liftPower);
-                hwMap.intakeInit.setPosition(TeleopConstants.intakeInitPosLeft);
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(300);
                 } catch (Exception e) {
                 }
-                hwMap.intakeInit.setPosition(TeleopConstants.intakeInitPosRight);
+                hwMap.innerTransfer.setPosition(TeleopConstants.intakeInitPosRight);
+                try {
+                    Thread.sleep(700);
+                } catch (Exception e) {
+                }
+                hwMap.innerTransfer.setPosition(TeleopConstants.intakeInitPosLeft);
                 //intake(1);
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(700);
                 } catch (Exception e) {
                 }
 
-                hwMap.intakeInit.setPosition(TeleopConstants.intakeInitPosReset);
+                hwMap.innerTransfer.setPosition(TeleopConstants.intakeInitPosReset);
+            }
+        };
 
-                try {
-                    Thread.sleep(800);
-                } catch (Exception e) {
-                }
+        Thread t = new Thread(){
+            public void run(){
                 //hwMap.clawInit.setPosition(TeleopConstants.clawInitPosReset);
                 hwMap.clawInit.setPosition(TeleopConstants.clawInitPosReset);
 
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(800);
                 } catch (Exception e) {
                 }
 
@@ -1952,6 +1955,7 @@ public class Path {
             }
         };
         thread.start();
+        t.start();
     }
 
     private void prepStone(double sliderEncoders) {

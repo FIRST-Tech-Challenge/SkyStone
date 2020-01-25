@@ -513,6 +513,16 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
 
         return(LeftSide);
     }
+    public void PrepareForBridge(){
+
+        while(Top_Sensor_Rear.getState()){
+            feeder_motor.setPower(0.5);
+        }
+        while(bottom_touch.getState()){
+            Lift(LiftDirection.DOWN);
+        }
+
+    }
 
 
 }

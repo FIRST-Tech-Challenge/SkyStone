@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 
 import java.util.List;
@@ -41,9 +42,11 @@ import java.util.List;
  * forwards/backwards and turning left and right, and the right stick controls strafing. (working on diff. control setup currently)
  */
 
-@Autonomous(name = "Test_Encoder_DriveFunction", group = "Linear Opmode")
+@Autonomous(name = "Test_SkystoneLeftFuctionValues", group = "Linear Opmode")
 //@Disabled
-public class Skystone_Test_EncoderDriveFunction extends BaseAutoOpMode {
+public class Skystone_Test_SkystoneLeftFuctionValues extends BaseAutoOpMode {
+
+
 
 
     @Override
@@ -54,6 +57,7 @@ public class Skystone_Test_EncoderDriveFunction extends BaseAutoOpMode {
 
         GetIMU();
         GetHardware();
+        InitVision();
 
 
         // Wait for the game to start (driver presses PLAY)
@@ -61,9 +65,25 @@ public class Skystone_Test_EncoderDriveFunction extends BaseAutoOpMode {
         runtime.reset();
         resetAngle();
 
-        EncoderDrive(DriveDirection.BACKWARD, 2000);
+        //EncoderDrive(DriveDirection.BACKWARD, 2000);
+
+        List<Recognition> Skystones = VisionTargetTfod();
 
 
+
+        while(!isStopRequested()){
+
+            GetSkystoneLeftSide();
+
+            telemetry.addData("LeftSidePosition: ", LeftSide);
+
+            telemetry.update();
+
+            sleep(5);
+
+        }
+        
+        
     }
 }
 

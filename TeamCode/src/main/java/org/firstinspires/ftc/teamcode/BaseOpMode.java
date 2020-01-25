@@ -428,7 +428,7 @@ public abstract class BaseOpMode extends LinearOpMode {
             }
 
             SetDriveMode(Mode.STOP_RESET_ENCODER);
-            
+
 
         }
 

@@ -35,6 +35,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 //@Disabled
 public class Intake extends BotComponent {
+    private String rightIntakeName;
+    private String leftIntakeName;
 
     public DcMotor Right_Intake = null;
     public DcMotor Left_Intake = null;
@@ -53,16 +55,27 @@ public class Intake extends BotComponent {
     }
 
     public Intake(Logger aLogger, OpMode aOpMode,
-                  String rightIntakeName, String leftIntakeName) {
+                  String aRightIntakeName, String aleftIntakeName) {
             super (aLogger, aOpMode);
+        rightIntakeName = aRightIntakeName;
+        leftIntakeName = aleftIntakeName;
 
-        Right_Intake = initMotor(rightIntakeName, DcMotor.Direction.REVERSE);
-        Left_Intake = initMotor(leftIntakeName, DcMotor.Direction.REVERSE);
+
 
     }
 
     public void init() {
-        init(InitType.INIT_INTAKE);
+
+        //define and initialize motors
+
+        Right_Intake = initMotor(rightIntakeName, DcMotor.Direction.REVERSE);
+        Left_Intake = initMotor(leftIntakeName, DcMotor.Direction.REVERSE);
+
+        if (Right_Intake != null && Left_Intake != null) {
+            isAvailable = true;
+        }
+
+        logger.logInfo("Intake", "isAvailable: %b", isAvailable);
     }
 
     public void init(InitType initType) {

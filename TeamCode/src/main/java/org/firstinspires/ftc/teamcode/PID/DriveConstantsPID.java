@@ -117,7 +117,7 @@ public class DriveConstantsPID {
     public static double TEST_DISTANCE_0 = 24;
 	public static double maxVel = 90.0; //90.0
 	public static double maxAccel = 35.0;   //35.0
-    public static double strafeMaxVel = 30.0; //40.0
+    public static double strafeMaxVel = 25.0; //40.0
     public static double strafeMaxAccel = 15.0;   //20.0
     public static double maxAngVel = 135.0;
     public static double maxAngAccel = 90.0;
@@ -135,6 +135,11 @@ public class DriveConstantsPID {
      */
     public static DriveConstraints BASE_CONSTRAINTS = new DriveConstraints(
             maxVel, maxAccel, 0.0,
+            Math.toRadians(maxAngVel), Math.toRadians(maxAngAccel), 0.0
+    );
+
+    public static DriveConstraints SLOW_CONSTRAINTS = new DriveConstraints(
+            40.0, 20.0, 0.0,
             Math.toRadians(maxAngVel), Math.toRadians(maxAngAccel), 0.0
     );
 

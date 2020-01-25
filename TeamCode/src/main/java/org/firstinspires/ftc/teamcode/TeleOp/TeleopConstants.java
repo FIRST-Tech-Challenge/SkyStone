@@ -38,9 +38,9 @@ public class TeleopConstants {
     public static double innerTransferPosTucked = 0.3516; //0.1201 closed,
     public static double innerTransferPosClosed = 0.01632;     //@TODO Get servo position innerTransfer "block" position
 
-    public static double intakeInitPosLeft = 0.65953;     //@TODO Get intakeInit servo positions
-    public static double intakeInitPosRight = 0;
-    public static double intakeInitPosReset = 0.30124;
+    public static double intakeInitPosLeft = 0.4187;     //@TODO Get intakeInit servo positions
+    public static double intakeInitPosRight = 0.18306;
+    public static double intakeInitPosReset = 0.3108;
 
     public static double autoClaw1Init = 0.33622089656588355;
     public static double autoClaw1Strafe = 0.115;
@@ -49,7 +49,7 @@ public class TeleopConstants {
     public static double autoClaw1TeleOp = 0.3032;
 
     public static double autoClaw2Init = 0;
-    public static double autoClaw2Open = 0.606;
+    public static double autoClaw2Open = 0.57;
     public static double autoClaw2Close = 0.4;
 
     public static double parkingServoPosUnlock = 0.4959;

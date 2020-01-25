@@ -36,6 +36,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.bots.GameTeleBot;
 import org.firstinspires.ftc.teamcode.bots.TestBot;
 import org.firstinspires.ftc.teamcode.components.DriveTrain;
 import org.firstinspires.ftc.teamcode.components.Intake;
@@ -47,7 +48,7 @@ import org.firstinspires.ftc.teamcode.components.Ramp;
 public class Game_TeleOp extends LinearOpMode {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private TestBot robot = null;
+    private GameTeleBot robot = null;
     private boolean logEnableTrace = false;
     private boolean logToTelemetry = true;
 
@@ -55,12 +56,11 @@ public class Game_TeleOp extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        robot = new TestBot(this, logEnableTrace, logToTelemetry);
+        robot = new GameTeleBot(this, logEnableTrace, logToTelemetry);
         robot.logger.logInfo("runOpMode", "===== [ Start Initializing ]");
 
         /* Use either robot.initAll or select only the components that need initializing below */
         //robot.initAll();
-        robot.gyroNavigator.init();
         robot.driveTrain.init(DriveTrain.InitType.INIT_4WD);
         robot.intake.init(Intake.InitType.INIT_INTAKE);
 
@@ -69,6 +69,8 @@ public class Game_TeleOp extends LinearOpMode {
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
+        robot.grapple.init();
+        robot.ramp.init();
 
         robot.logger.logInfo("runOpMode", "===== [ Start TeleOp ]");
         runtime.reset();
@@ -88,7 +90,6 @@ public class Game_TeleOp extends LinearOpMode {
                 telemetry.addData("Status", "Run Time: " + runtime.toString());
                 telemetry.addData("Left", "X (%.2f), Y (%.2f)", leftX, leftY);
                 telemetry.addData("Right", "X (%.2f), Y (%.2f)", rightX, rightY);
-
 
             }
 

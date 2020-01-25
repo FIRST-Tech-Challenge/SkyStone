@@ -21,6 +21,9 @@ public class JoulesTeleOp extends TeleOpMode {
     }
 
 
+
+
+
     public void loopOpMode() {
         if (joy1.leftTrigger()) {
             float pivot = gamepad1.right_stick_y/2;

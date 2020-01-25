@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.robots.Joules;
 
 @Autonomous
 
-public class GColorBlFarFound extends AutoOpMode {
+public class GColorRedFarFound extends AutoOpMode {
     private VoltageSensor ExpansionHub2_VoltageSensor;
     public void runOp() throws InterruptedException {
         Joules joules = new Joules();
@@ -21,7 +21,7 @@ public class GColorBlFarFound extends AutoOpMode {
         waitForStart();
 
 
-        int blueFoundVal = 20;
+        int RedFoundVal = 20; //May have to change this value. the red colour sensor is already set to be programmed in Joulestest
         telemetry.addData("Status", "initialized");
         joules.FoundationDrop();
         joules.DaffyUp();
@@ -37,13 +37,13 @@ public class GColorBlFarFound extends AutoOpMode {
         sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 100));
         joules.Stop();
 
-        joules.StrafeLeft(0.3);
+        joules.StrafeRight(0.3);
         sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 1100));
         joules.Stop();
 
         sleep(100);
 
-        joules.StrafeRight(0.3);
+        joules.StrafeLeft(0.3);
         sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 500));
         joules.Stop();
 
@@ -58,7 +58,7 @@ public class GColorBlFarFound extends AutoOpMode {
         joules.Stop();
 
         clearTimer(1);
-        while(colorSensor.blue()<blueFoundVal || getMilliSeconds(1)< 10000){
+        while(colorSensor.red()<RedFoundVal || getMilliSeconds(1) < 10000){
             joules.DriveForward(0.01);
         }
         joules.Stop();
@@ -75,7 +75,7 @@ public class GColorBlFarFound extends AutoOpMode {
 
         sleep(100);
 
-        joules.StrafeLeft(0.3);
+        joules.StrafeRight(0.3);
         sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 800));
         joules.Stop();
 

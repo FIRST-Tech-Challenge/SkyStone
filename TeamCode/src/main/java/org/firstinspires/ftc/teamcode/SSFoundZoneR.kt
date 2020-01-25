@@ -24,7 +24,6 @@ class SSFoundZoneR : LinearOpMode()
         waitForStart()
         robot.leftHook?.position = 0.0
         robot.rightHook?.position = 0.0
-        robot.claw?.position = robot.clawPinchPos
         robot.vSlide?.targetPosition = 90 + robot.vSlide!!.currentPosition
         robot.vSlide?.power = 0.5
         robot.strafe(-0.75) //align with foundation
@@ -36,6 +35,8 @@ class SSFoundZoneR : LinearOpMode()
         robot.strafe(1.0)
         sleep(3550)
         pause()
+        robot.claw?.position = robot.clawPinchPos
+        sleep(1000)
         robot.drive(0.5)
         sleep(800)
         pause()

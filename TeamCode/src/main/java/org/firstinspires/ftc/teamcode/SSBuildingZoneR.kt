@@ -7,9 +7,9 @@ import com.qualcomm.robotcore.hardware.DcMotor
 /**
  * Created by KasaiYuki on 9/21/2018.
  */
-@Autonomous(name = "SSBuildingZoneB", group = "Autonomous")
+@Autonomous(name = "SSBuildingZoneR", group = "Autonomous")
 //@Disabled
-class SSBuildingZoneB : LinearOpMode()
+class SSBuildingZoneR : LinearOpMode()
 {
     val robot = SSMechRobot()
 
@@ -38,18 +38,18 @@ class SSBuildingZoneB : LinearOpMode()
         robot.drive(-0.50)
         sleep(450)
         pause()
-        robot.strafe(1.0)//Heads to Foundation
+        robot.strafe(-1.0)//Heads to Foundation
         sleep(3550)
         robot.drive(0.5)
         sleep(250)
         pause()
         robot.claw?.position = robot.clawPinchPos
         pause()
-        robot.strafe(-0.5)
+        robot.strafe(0.5)
         sleep(500)
         robot.claw?.position = 0.0
         pause()
-        robot.strafe(-0.5)
+        robot.strafe(0.5)
         sleep(500)
         pause()
         robot.vSlide?.targetPosition = robot.vSlide!!.currentPosition - 100

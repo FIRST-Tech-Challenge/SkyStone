@@ -1,0 +1,130 @@
+@startuml
+
+title __INTERNAL's Class Diagram__\n
+
+  namespace org.firstinspires.ftc.robotcontroller.internal {
+    class org.firstinspires.ftc.robotcontroller.internal.FtcOpModeRegister {
+        + register()
+    }
+  }
+  
+
+  namespace org.firstinspires.ftc.robotcontroller.internal {
+    class org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity {
+        {static} + TAG : String
+        # buttonMenu : ImageButton
+        # callback : Callback
+        # cfgFileMgr : RobotConfigFileManager
+        # connection : ServiceConnection
+        # context : Context
+        # controllerService : FtcRobotControllerService
+        # deviceNameStartResult : StartResult
+        # dimmer : Dimmer
+        # entireScreenLayout : LinearLayout
+        # eventLoop : FtcEventLoop
+        # immersion : ImmersiveMode
+        # motionDetection : MotionDetection
+        # networkType : NetworkType
+        # prefRemoterStartResult : StartResult
+        # preferencesHelper : PreferencesHelper
+        # programmingModeManager : ProgrammingModeManager
+        # receivedUsbAttachmentNotifications : Queue<UsbDevice>
+        # serviceShouldUnbind : boolean
+        # textDeviceName : TextView
+        # textErrorMessage : TextView
+        # textGamepad : TextView[]
+        # textNetworkConnectionStatus : TextView
+        # textOpMode : TextView
+        # textRobotStatus : TextView
+        # updateUI : UpdateUI
+        # utility : Utility
+        # wifiLock : WifiLock
+        # wifiMuteStateMachine : WifiMuteStateMachine
+        {static} - NUM_GAMEPADS : int
+        {static} - REQUEST_CONFIG_WIFI_CHANNEL : int
+        {static} - permissionsValidated : boolean
+        - wifiDirectChannelChanger : WifiDirectChannelChanger
+        + getTag()
+        + onConfigurationChanged()
+        + onCreateOptionsMenu()
+        + onOptionsItemSelected()
+        + onServiceBind()
+        + onUserInteraction()
+        + onWindowFocusChanged()
+        {static} + setPermissionsValidated()
+        # bindToService()
+        # createOpModeRegister()
+        # createUICallback()
+        # createUpdateUI()
+        # enforcePermissionValidator()
+        # hittingMenuButtonBrightensScreen()
+        # initWifiMute()
+        # logDeviceSerialNumber()
+        # logPackageVersions()
+        # onActivityResult()
+        # onCreate()
+        # onDestroy()
+        # onNewIntent()
+        # onPause()
+        # onResume()
+        # onStart()
+        # onStop()
+        # passReceivedUsbAttachmentsToEventLoop()
+        # readNetworkType()
+        # unbindFromService()
+        - checkPreferredChannel()
+        - isRobotRunning()
+        - requestRobotRestart()
+        - requestRobotSetup()
+        - showRestartRobotCompleteToast()
+        - shutdownRobot()
+        - updateMonitorLayout()
+        - updateUIAndRequestRobotSetup()
+    }
+  }
+  
+
+  namespace org.firstinspires.ftc.robotcontroller.internal {
+    class org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity.RobotRestarter {
+        + requestRestart()
+    }
+  }
+  
+
+  namespace org.firstinspires.ftc.robotcontroller.internal {
+    class org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity.SharedPreferencesListener {
+        + onSharedPreferenceChanged()
+    }
+  }
+  
+
+  namespace org.firstinspires.ftc.robotcontroller.internal {
+    class org.firstinspires.ftc.robotcontroller.internal.PermissionValidatorWrapper {
+        # robotControllerPermissions : List<String>
+        - TAG : String
+        {static} - startApplication : Class
+        + mapPermissionToExplanation()
+        # onCreate()
+        # onStartApplication()
+    }
+  }
+  
+
+  org.firstinspires.ftc.robotcontroller.internal.FtcOpModeRegister .up.|> com.qualcomm.robotcore.eventloop.opmode.OpModeRegister
+  org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity -up-|> android.app.Activity
+  org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity o-- org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity.SharedPreferencesListener : sharedPreferencesListener
+  org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity +-down- org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity.RobotRestarter
+  org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity +-down- org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity.SharedPreferencesListener
+  org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity.RobotRestarter .up.|> com.qualcomm.ftccommon.Restarter
+  org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity.SharedPreferencesListener .up.|> android.content.SharedPreferences.OnSharedPreferenceChangeListener
+  org.firstinspires.ftc.robotcontroller.internal.PermissionValidatorWrapper -up-|> org.firstinspires.ftc.robotcore.internal.system.PermissionValidatorActivity
+
+
+right footer
+
+
+PlantUML diagram generated by SketchIt! (https://bitbucket.org/pmesmeur/sketch.it)
+For more information about this tool, please contact philippe.mesmeur@gmail.com
+endfooter
+
+@enduml

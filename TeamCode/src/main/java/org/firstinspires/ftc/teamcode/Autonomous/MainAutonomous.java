@@ -185,6 +185,9 @@ public class MainAutonomous extends LinearOpMode {
 
         waitForStart();
 
+        if (tfod != null)
+            tfod.shutdown();
+
         if (opModeIsActive() && fieldPosition != null) {
             sendData();
             //resetLiftEncoder();

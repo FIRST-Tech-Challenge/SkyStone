@@ -157,12 +157,12 @@ public class Path {
                 double strafeDistance = 9.5;
                 double theta = 0;
 
-                yCoordMvmtPlane = -41.0;
+                yCoordMvmtPlane = -42.0;
                 wallSkyStoneX = -46.0;
-                furtherMostSkyStoneX = -24.5;
+                furtherMostSkyStoneX = -27.0;
                 firstRegularStoneX = -34.0;
-                foundationX = 46.0;
-                strafeDistance = 6.0;
+                foundationX = 44.5;
+                strafeDistance = 7.0;
 
                 transferReset();
                 initIntakeClaw();
@@ -210,13 +210,13 @@ public class Path {
                 trajectory = builder.build();   //x - 2.812, y + 7.984
                 _drive.followTrajectorySync(trajectory);
 
-                /*RobotLog.dd(TAG, "step4.5, after strafe");
+                RobotLog.dd(TAG, "step4.5, after strafe");
                 dropStone(FieldPosition.RED_QUARY);
 
                 DriveBuilderReset(true, false, "step5, after strafe and drop stone", false);
                 //builder = new TrajectoryBuilder(straightDrive.getPoseEstimate(), DriveConstantsPID.STRAFE_BASE_CONSTRAINTS);
                 builder = builder
-                        .setReversed(false).strafeTo(new Vector2d(foundationX, yCoordMvmtPlane));
+                        .setReversed(false).strafeTo(new Vector2d(foundationX, yCoordMvmtPlane + 3));
                 trajectory = builder.build();   //x - 2.812, y + 7.984
                 _drive.followTrajectorySync(trajectory);
 
@@ -225,7 +225,7 @@ public class Path {
 
                 //builder = new TrajectoryBuilder(straightDrive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
                 builder = builder
-                        .setReversed(true).lineTo(new Vector2d(furtherMostSkyStoneX, yCoordMvmtPlane + 3));
+                        .setReversed(true).lineTo(new Vector2d(furtherMostSkyStoneX, yCoordMvmtPlane + 4));
                 trajectory = builder.build();   //x - 2.812, y + 7.984
                 _drive.followTrajectorySync(trajectory);
 
@@ -244,7 +244,7 @@ public class Path {
                 DriveBuilderReset(true, false, "step8, after strafe and grab", false);
                 //builder = new TrajectoryBuilder(straightDrive.getPoseEstimate(), DriveConstantsPID.STRAFE_BASE_CONSTRAINTS);
                 builder = builder
-                        .setReversed(false).strafeTo(new Vector2d(furtherMostSkyStoneX, yCoordMvmtPlane + 2));
+                        .setReversed(false).strafeTo(new Vector2d(furtherMostSkyStoneX, yCoordMvmtPlane + 3));
                 trajectory = builder.build();   //x - 2.812, y + 7.984
                 _drive.followTrajectorySync(trajectory);
 
@@ -253,7 +253,7 @@ public class Path {
 
                 //builder = new TrajectoryBuilder(straightDrive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
                 builder = builder
-                        .setReversed(false).lineTo(new Vector2d(foundationX + 4, yCoordMvmtPlane + 3));
+                        .setReversed(false).lineTo(new Vector2d(foundationX + 4, yCoordMvmtPlane + 4));
                 trajectory = builder.build();   //x - 2.812, y + 7.984
                 _drive.followTrajectorySync(trajectory);
 
@@ -264,26 +264,38 @@ public class Path {
                 builder = builder
                         .setReversed(false).strafeTo(new Vector2d(foundationX + 4, yCoordMvmtPlane + strafeDistance + 6));
                 trajectory = builder.build();   //x - 2.812, y + 7.984
-                _drive.followTrajectorySync(trajectory);*/
+                _drive.followTrajectorySync(trajectory);
 
                 RobotLog.dd(TAG, "step10.5, after strafe, to drop");
                 dropStone(FieldPosition.RED_QUARY);
-                hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
-                hwMap.transferLock.setPosition(TeleopConstants.transferLockPosOut);
                 //_drive.resetFollowerWithParameters(false);
                 DriveBuilderReset(false, false, "step11, after strafe and drop", true);
+
+                resetClaw();
+                try {
+                    Thread.sleep(100);
+                } catch (Exception e) {
+                }
 
                 theta = _drive.getExternalHeading() >= 0 ? _drive.getExternalHeading() :
                         _drive.getExternalHeading() + 2 * PI;
 
                 if (theta > PI)
-                    _drive.turnSync(-(_drive.getExternalHeading() - 3 * PI / 2) + PI / 8);
+                    _drive.turnSync(-(_drive.getExternalHeading() - 3 * PI / 2) + PI / 6);
                 else
-                    _drive.turnSync(-(_drive.getExternalHeading() + 2 * PI - 3 * PI / 2) + PI / 8);
+                    _drive.turnSync(-(_drive.getExternalHeading() + 2 * PI - 3 * PI / 2) + PI / 6);
+
+                hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
+                hwMap.transferLock.setPosition(TeleopConstants.transferLockPosOut);
+
+                try {
+                    Thread.sleep(100);
+                } catch (Exception e) {
+                }
 
                 DriveBuilderReset(false, false, "step12, after turn", false);
                 //builder = new TrajectoryBuilder(straightDrive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
-                builder = builder.setReversed(true).lineTo(new Vector2d(_drive.getPoseEstimate().getX(),
+                builder = builder.setReversed(true).lineTo(new Vector2d(_drive.getPoseEstimate().getX() - 2,
                         _drive.getPoseEstimate().getY() + 8));
                 trajectory = builder.build();   //x - 2.812, y + 7.984
                 _drive.followTrajectorySync(trajectory);
@@ -306,7 +318,6 @@ public class Path {
 
                 hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
                 hwMap.transferLock.setPosition(TeleopConstants.transferLockPosOut);
-                resetClaw();
 
                 try {
                     Thread.sleep(100);
@@ -1811,12 +1822,12 @@ public class Path {
     private void prepGrab(FieldPosition fieldPosition) {
         hwMap.redAutoClawJoint2.setPosition(TeleopConstants.autoClaw2Open);
         try {
-            Thread.sleep(50);
+            Thread.sleep(150);
         } catch (Exception e) {
         }
         hwMap.redAutoClawJoint1.setPosition(TeleopConstants.autoClaw1Strafe);
         try {
-            Thread.sleep(50);
+            Thread.sleep(150);
         } catch (Exception e) {
         }
     }
@@ -1824,12 +1835,12 @@ public class Path {
     private void grabStone(FieldPosition fieldPosition) {
         hwMap.redAutoClawJoint1.setPosition(TeleopConstants.autoClaw1Down);
         try {
-            Thread.sleep(100);
+            Thread.sleep(150);
         } catch (Exception e) {
         }
         hwMap.redAutoClawJoint2.setPosition(TeleopConstants.autoClaw2Close);
         try {
-            Thread.sleep(50);
+            Thread.sleep(150);
         } catch (Exception e) {
         }
         hwMap.redAutoClawJoint1.setPosition(TeleopConstants.autoClaw1Up);
@@ -1838,12 +1849,12 @@ public class Path {
     private void dropStone(FieldPosition fieldPosition) {
         hwMap.redAutoClawJoint1.setPosition(TeleopConstants.autoClaw1Down);
         try {
-            Thread.sleep(50);
+            Thread.sleep(150);
         } catch (Exception e) {
         }
         hwMap.redAutoClawJoint2.setPosition(TeleopConstants.autoClaw2Open);
         try {
-            Thread.sleep(50);
+            Thread.sleep(200);
         } catch (Exception e) {
         }
         hwMap.redAutoClawJoint1.setPosition(TeleopConstants.autoClaw1Up);
@@ -1852,12 +1863,12 @@ public class Path {
     private void resetClaw() {
         hwMap.redAutoClawJoint2.setPosition(TeleopConstants.autoClaw2Init);
         try {
-            Thread.sleep(50);
+            Thread.sleep(150);
         } catch (Exception e) {
         }
         hwMap.redAutoClawJoint1.setPosition(TeleopConstants.autoClaw1Init);
         try {
-            Thread.sleep(50);
+            Thread.sleep(150);
         } catch (Exception e) {
         }
     }

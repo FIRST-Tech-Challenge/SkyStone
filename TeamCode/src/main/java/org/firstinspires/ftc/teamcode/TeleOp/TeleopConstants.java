@@ -43,14 +43,14 @@ public class TeleopConstants {
     public static double intakeInitPosReset = 0.30124;
 
     public static double autoClaw1Init = 0.33622089656588355;
-    public static double autoClaw1Strafe = 0.0815;
+    public static double autoClaw1Strafe = 0.115;
     public static double autoClaw1Down = 0;
     public static double autoClaw1Up = 0.29;
     public static double autoClaw1TeleOp = 0.3032;
 
     public static double autoClaw2Init = 0;
-    public static double autoClaw2Open = 0.556;
-    public static double autoClaw2Close = 0.386;
+    public static double autoClaw2Open = 0.606;
+    public static double autoClaw2Close = 0.4;
 
     public static double parkingServoPosUnlock = 0.4959;
     public static double parkingServoPosLock = 0.3815;

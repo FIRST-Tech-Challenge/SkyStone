@@ -44,12 +44,12 @@ public class DriveConstantsPID {
     public static boolean ENABLE_LOGGING = false;
     private static String TAG = "DriveConstants";
 
-    public static double txP = 6.0; //translational x/y co-efficients
+    public static double txP = 8; //translational x/y co-efficients
     public static double txI = 0.6;
     public static double txD = 0.75;
-    public static double tyP = 5.0;
-    public static double tyI = 0.001;
-    public static double tyD = 0.00001;
+    public static double tyP = 10;
+    public static double tyI = 0.5;
+    public static double tyD = 1.1;
     public static double hP = 6;    // heading co-efficients;
     public static double hI = 2;
     public static double hD = 0.4;
@@ -115,10 +115,10 @@ public class DriveConstantsPID {
     public static double kStatic = 0;
 	public static double TEST_DISTANCE = 60;
     public static double TEST_DISTANCE_0 = 24;
-	public static double maxVel = 90.0; //90.0
-	public static double maxAccel = 35.0;   //35.0
-    public static double strafeMaxVel = 25.0; //40.0
-    public static double strafeMaxAccel = 15.0;   //20.0
+	public static double maxVel = 55.0; //90.0
+	public static double maxAccel = 25.0;   //35.0
+    public static double strafeMaxVel = 20.0; //40.0
+    public static double strafeMaxAccel = 10.0;   //20.0
     public static double maxAngVel = 135.0;
     public static double maxAngAccel = 90.0;
 	public static boolean keep_vuforia_running = false;

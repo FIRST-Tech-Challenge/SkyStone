@@ -80,6 +80,7 @@ public class GameTeleBot extends Bot {
         driveTrain.init(DriveTrain.InitType.INIT_4WD);
         grapple.init();
         ramp.init();
+        intake.init();
     }
 
 }

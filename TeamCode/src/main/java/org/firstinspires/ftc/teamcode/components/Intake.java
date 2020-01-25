@@ -41,11 +41,6 @@ public class Intake extends BotComponent {
     public DcMotor Right_Intake = null;
     public DcMotor Left_Intake = null;
 
-    public enum InitType {
-        INIT_RIGHT_INTAKE,
-        INIT_LEFT_INTAKE,
-        INIT_INTAKE
-    }
 
     private boolean rightIntakeEnabled = true;
     private boolean leftIntakeEnabled = true;
@@ -78,40 +73,8 @@ public class Intake extends BotComponent {
         logger.logInfo("Intake", "isAvailable: %b", isAvailable);
     }
 
-    public void init(InitType initType) {
-
-        switch (initType) {
-
-            case INIT_RIGHT_INTAKE:
-                rightIntakeEnabled = (Right_Intake != null);
-                isAvailable = rightIntakeEnabled;
-                break;
-
-            case INIT_LEFT_INTAKE:
-                leftIntakeEnabled = (Left_Intake != null);
-                isAvailable = leftIntakeEnabled;
-                break;
-
-            case INIT_INTAKE:
-                rightIntakeEnabled = (Right_Intake != null);
-                leftIntakeEnabled = (Left_Intake != null);
-                isAvailable = rightIntakeEnabled && leftIntakeEnabled;
-                break;
-        }
-
-    }
-
-    public void setRightIntakePower(double power){
-            Right_Intake.setPower(power);
-    }
-
-    public void setLeftIntakePower(double power){
-            Left_Intake.setPower(power);
-    }
 
     public void setIntakePower (double power){
-            //setLeftIntakePower(-power);
-            //setRightIntakePower(power);
         Left_Intake.setPower(power);
         Right_Intake.setPower(-power);
     }

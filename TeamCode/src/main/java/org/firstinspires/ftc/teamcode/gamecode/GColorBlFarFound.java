@@ -21,7 +21,7 @@ public class GColorBlFarFound extends AutoOpMode {
         waitForStart();
 
 
-        int blueFoundVal = 20;
+        int blueFoundVal = 24;
         telemetry.addData("Status", "initialized");
         joules.FoundationDrop();
         joules.DaffyUp();
@@ -59,7 +59,7 @@ public class GColorBlFarFound extends AutoOpMode {
 
         clearTimer(1);
         while(colorSensor.blue()<blueFoundVal || getMilliSeconds(1)< 10000){
-            joules.DriveForward(0.01);
+            joules.DriveForward(0.001);
         }
         joules.Stop();
         telemetry.addData("foundation grabbed", "value");

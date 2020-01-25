@@ -59,6 +59,7 @@ public class Joules  {
     private FXTServo Daffy;
     private FXTCRServo ChainArm;
 
+
     public static int STONESTATE;
     private float GEAR_RATIO = 1/2;
 
@@ -80,8 +81,6 @@ public class Joules  {
         Daffy = new FXTServo("Box grabber");
 
         TapeMeasure = new FXTServo("Tape Measure");
-
-        Capstone = new FXTServo("Capstone");
 
         StoneMover = new FXTServo("Stone mover");
 

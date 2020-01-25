@@ -38,8 +38,8 @@ public class Joulestest extends AutoOpMode {
 //        sleep(100000);
 
 */
-
-
+//17
+//25
       while (opModeIsActive()) {
 
 

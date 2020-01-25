@@ -8,9 +8,9 @@ import com.qualcomm.robotcore.hardware.DcMotor
 /**
  * Created by KasaiYuki on 9/21/2018.
  */
-@Autonomous(name = "SSBuildBlueAuto", group = "Autonomous")
+@Autonomous(name = "SSFoundZoneB", group = "Autonomous")
 //@Disabled
-class SSBuildBlueAuto : LinearOpMode()
+class SSFoundZoneB : LinearOpMode()
 {
     val robot = SSMechRobot()
 
@@ -47,10 +47,19 @@ class SSBuildBlueAuto : LinearOpMode()
         pause()
         robot.strafe(1.0)
         sleep(3500)
-        robot.claw?.position = 0.28
-
         robot.vSlide?.targetPosition = robot.vSlide!!.currentPosition - 100
-
+        robot.claw?.position = 0.28
+        robot.leftHook?.position = 0.7
+        robot.rightHook?.position = 0.72
+        robot.drive(0.5)
+        sleep(110)
+        pause()
+        robot.drive(-0.50) //Drives Back the Foundation
+        sleep(1100)
+        pause()
+        robot.strafe(0.5)
+        sleep(1000)
+        pause()
         //https://www.reddit.com/r/FTC/comments/78l5o0/how_to_program_encoders/
         telemetry.addData("Status: ", "Autonomous Terminated")
         telemetry.update()

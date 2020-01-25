@@ -11,7 +11,6 @@ import kotlin.math.max
  * Created by KasaiYuki on 9/20/2019.
  */
 
-//TODO: Compute new max VSlide from current position and calibration upward
 @TeleOp(name = "SSMechTeleOp", group = "TeleOp")
 //@Disabled
 class SSMechTeleOp : OpMode() {
@@ -122,10 +121,10 @@ class SSMechTeleOp : OpMode() {
         var strafe = -gamepad1.right_stick_x.toDouble()
         var nor = 0.0
 
-        var frontLeftPower = (drive + turn + strafe) / slowDown
-        var backLeftPower = (drive - turn + strafe) / slowDown
-        var frontRightPower = (drive - turn - strafe) / slowDown
-        var backRightPower = (drive + turn - strafe) / slowDown
+        var frontLeftPower = (drive + turn + strafe)
+        var backLeftPower = (drive - turn + strafe)
+        var frontRightPower = (drive - turn - strafe)
+        var backRightPower = (drive + turn - strafe)
 
         if (abs(frontLeftPower) > 1 || abs(backLeftPower) > 1 ||
                 abs(frontRightPower) > 1 || abs(backRightPower) > 1) { //normalizing values to [-1.0,1.0]

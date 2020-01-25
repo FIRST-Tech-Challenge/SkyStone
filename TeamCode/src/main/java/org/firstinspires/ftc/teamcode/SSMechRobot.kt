@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.*
 
 /*
     TODO: Create interfaces that lead to abstract class and seperate auto and tele
+    TODO: Add PROPER Documentation
  */
 
 
@@ -113,7 +114,7 @@ class SSMechRobot {
         this.drive(0.0)
     }
 
-    fun dropHook(gp: Gamepad)
+    fun dropHook(gp: Gamepad) //Controls Foundation Hooks
     {
 /*        var down = false
         var changed = false
@@ -142,14 +143,14 @@ class SSMechRobot {
 
     }
 
-    fun clamp(gp: Gamepad)
+    fun clamp(gp: Gamepad) //Controls claw for grabbing stones
     {
         if(gp.a) this.claw?.position = 0.55
         if(gp.b) this.claw?.position = 0.45
     }
 
 
-    fun pinch(gp: Gamepad) {
+    fun pinch(gp: Gamepad) { //Controls claw for grabbing stones
         if(gp.left_bumper) { //hook down
             this.claw?.position = 0.00
         }

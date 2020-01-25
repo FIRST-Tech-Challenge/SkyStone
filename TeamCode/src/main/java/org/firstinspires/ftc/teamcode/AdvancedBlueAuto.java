@@ -41,6 +41,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import android.app.Activity;
 import android.graphics.Color;
 import android.view.View;
+
+import java.lang.reflect.Array;
 //import com.qualcomm.robotcore.util.*;
 //import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 //import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -105,8 +107,13 @@ public class AdvancedBlueAuto extends LinearOpMode {
 
     // Other
     int skystonePosition; // Can equal 1, 2, or 3. This corresponds to the A, B and C patterns.
-    boolean Stone1isBlack; // Is the first stone black?
-    boolean Stone2isBlack; // Is the second stone black?
+    boolean Stone1isYellow; // Is the first stone black?
+    boolean Stone2isYellow; // Is the second stone black?
+
+    int colorDiff;
+
+    // int red = new int[]{10,10,10};  //(red, green, blue) values for yellow currently, this is the color to be searched for when detecting
+
     final int backward = 1;
     final int forward = -1;
     final int left = -1;
@@ -181,11 +188,6 @@ public class AdvancedBlueAuto extends LinearOpMode {
         waitForStart();
 
 
-
-        telemetry.addData("Back Left Encoder Value: ", backLeft.getCurrentPosition());
-        telemetry.update();
-        sleep(500);
-
         //ReleaseCollector(-1.0);
         //AutoMecanumMove(1500*EncoderBack, 0, 0.5, -0.1);
         //Strafe DiagonalLeftForward
@@ -203,6 +205,10 @@ public class AdvancedBlueAuto extends LinearOpMode {
         AutoMecanumMove(3000 * encoderForward, 0.77 * right, 0.6 * forward, -0.06); //Strafe Into Wall
         AutoMecanumMove(3000 * encoderForward, 0.3 * right, 0.6 * forward, 0.18); //Front left counterclockwise arc rotation
         DetectColorRGB(); //Determine Skystone Pattern
+        telemetry.addData("Hi","Hello" );
+        telemetry.addData("Skystone Position: ", skystonePosition);
+        telemetry.update();
+        sleep(5000);
         if(skystonePosition == 1)
         {
 
@@ -486,38 +492,55 @@ public class AdvancedBlueAuto extends LinearOpMode {
     }
     public void DetectColorRGB() {
         int leftSensorColorValueRed = blueColorSensor.red(); // red value from 0-255 from the blue color sensor
-        int leftSensorColorValueBlue = blueColorSensor.blue(); // blue value from 0-255 from the blue color sensor
-        int leftSensorColorValueGreen = blueColorSensor.green(); // green value from 0-255 from the blue color sensor
+        // int leftSensorColorValueBlue = blueColorSensor.blue(); // blue value from 0-255 from the blue color sensor
+        // int leftSensorColorValueGreen = blueColorSensor.green(); // green value from 0-255 from the blue color sensor
 
         int rightSensorColorValueRed = redColorSensor.red(); // red value from 0-255 from the red color sensor
-        int rightSensorColorValueBlue = redColorSensor.blue(); // blue value from 0-255 from the red color sensor
-        int rightSensorColorValueGreen = redColorSensor.green(); // green value from 0-255 from the red color sensor
+        // int rightSensorColorValueBlue = redColorSensor.blue(); // blue value from 0-255 from the red color sensor
+        // int rightSensorColorValueGreen = redColorSensor.green(); // green value from 0-255 from the red color sensor
+        colorDiff = Math.abs(leftSensorColorValueRed - rightSensorColorValueRed);
+
+        //if (colorDiff <= 5) skystonePosition = 3 Pattern C
+        //if (colorDiff >= 5 && rightSensorColorValueRed < leftSensorColorValueRed) skystonePosition = 2 Pattern B
+        //if (colorDiff >= 5 && rightSensorColorValueRed > leftSensorColorValueRed) skystonePosition = 1 Pattern A
 
 
-        if (leftSensorColorValueRed == 0 && leftSensorColorValueBlue == 0 && leftSensorColorValueGreen == 0) {
+        if (colorDiff > 5 && rightSensorColorValueRed > leftSensorColorValueRed) {
+
+            Stone1isYellow = false;
             skystonePosition = 1;
             telemetry.addData("Block 1 is: ", "SkyStone");
             telemetry.addData("Pattern ", "A");
             telemetry.update();
 
+
+
         } else {
-            Stone1isBlack = false;
+
+            Stone1isYellow = true;
             telemetry.addData("Block 1 is: ", "Stone");
             telemetry.update();
 
+
         }
-        if (rightSensorColorValueRed == 0 && rightSensorColorValueBlue == 0 && rightSensorColorValueGreen == 0) {
+        if (colorDiff > 5 && rightSensorColorValueRed < leftSensorColorValueRed) {
+
+            Stone2isYellow = false;
             skystonePosition = 2;
             telemetry.addData("Block 2 is : ", "SkyStone");
             telemetry.addData("Pattern ", "B");
             telemetry.update();
+
+
         } else {
-            Stone2isBlack = false;
+
+            Stone2isYellow = true;
             telemetry.addData("Block 2 is : ", "Stone");
+            telemetry.update();
 
         }
 
-        if (!Stone1isBlack && !Stone2isBlack) {
+        if (colorDiff < 5 || Stone1isYellow && Stone2isYellow) {
             skystonePosition = 3;
             telemetry.addData("Block 3 is : ", "SkyStone");
             telemetry.addData("Pattern ", "C");

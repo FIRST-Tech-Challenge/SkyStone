@@ -64,7 +64,7 @@
 
     @TeleOp(name="Alexander_TeleOp", group="Linear OpMode")
     //@Disabled
-    public class Alexander_Teleop extends LinearOpMode {
+    public class Alexander_TeleOp extends LinearOpMode {
 
 
         private DcMotor getNewMotor(String motorName) { //these could be made generic using type notation

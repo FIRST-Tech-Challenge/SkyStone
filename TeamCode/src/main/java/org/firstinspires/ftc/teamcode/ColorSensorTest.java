@@ -41,6 +41,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import android.app.Activity;
 import android.graphics.Color;
 import android.view.View;
+
+import java.lang.reflect.Array;
 //import com.qualcomm.robotcore.util.*;
 //import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 //import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -66,9 +68,9 @@ import android.view.View;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="BlueAutonomous", group="Linear OpMode")
+@Autonomous(name="ColorSensorTest", group="Linear OpMode")
 //@Disabled
-public class BlueAutonomous extends LinearOpMode {
+public class ColorSensorTest extends LinearOpMode {
 
 
     private DcMotor getNewMotor(String motorName) { //these could be made generic using type notation
@@ -105,8 +107,13 @@ public class BlueAutonomous extends LinearOpMode {
 
     // Other
     int skystonePosition; // Can equal 1, 2, or 3. This corresponds to the A, B and C patterns.
-    boolean Stone1isBlack; // Is the first stone black?
-    boolean Stone2isBlack; // Is the second stone black?
+    boolean Stone1isYellow; // Is the first stone black?
+    boolean Stone2isYellow; // Is the second stone black?
+
+    int colorDiff;
+
+    // int red = new int[]{10,10,10};  //(red, green, blue) values for yellow currently, this is the color to be searched for when detecting
+
     final int backward = 1;
     final int forward = -1;
     final int left = -1;
@@ -156,6 +163,9 @@ public class BlueAutonomous extends LinearOpMode {
         rotation = hardwareMap.servo.get("rotation");
         release = hardwareMap.servo.get("release");
 
+        //init sensors
+        blueColorSensor = hardwareMap.colorSensor.get("blueColorSensor");
+        redColorSensor = hardwareMap.colorSensor.get("redColorSensor");
 
 
         if (frontLeft != null)
@@ -186,62 +196,25 @@ public class BlueAutonomous extends LinearOpMode {
         //ReleaseCollector(-1.0);
         //AutoMecanumMove(1500*EncoderBack, 0, 0.5, -0.1);
         //Strafe DiagonalLeftForward
-        AutoMecanumMove(3850 * encoderBack, 0.65 * right, 0.5 * backward, 0.025); //Drive to foundation
-        AutoMecanumMove(50 * encoderBack, 0 * right, 0.25 * backward, -0.035); //Align
-        sleep(1000);
-        MoveHook(1.0); //Grab Foundation
-        sleep(1000);
-        AutoMecanumMove(2200 * encoderForward, 0.2 * left, 0.5 * forward, -0.18); //Back left clockwise arc rotation
-        MoveHook(0.0);
-        sleep(1000);
-        AutoMecanumMove(4000 * encoderBack, 0.3 * left, 0.5 * backward, 0); //Push into foundation
-        ReleaseCollector(-1.0);
-        sleep(1000);
-        AutoMecanumMove(3000 * encoderForward, 0.77 * right, 0.6 * forward, -0.06); //Strafe Into Wall
-        AutoMecanumMove(3000 * encoderForward, 0.3 * right, 0.6 * forward, 0.18); //Front left counterclockwise arc rotation
+
         DetectColorRGB(); //Determine Skystone Pattern
-        if(skystonePosition == 1)
+
+        while (5 == 5)
         {
+            DetectColorRGB(); //Determine Skystone Pattern
 
-            CollectorWait(0.0, -1.0, 500); // Move right block out of the way
-            CollectorGo(1.0, 1.0); // Collect SkyStone
-            AutoMecanumMove(500 * encoderForward, 0.0 * right, 0.3 * forward, -0.18); //Align with Blocks
-            CollectorStop(); //Stop collector
-            AutoMecanumMove(3850 * encoderBack, 0.65 * left, 0.5 * forward, 0.025); //Strafe left to parl
-            CollectorGo(-1.0, -1.0); // Eject SkyStone
-            sleep(1000);
-            CollectorStop();
+            telemetry.addData("Skystone Position: ", skystonePosition);
+            telemetry.addData("ColorDiff: ", colorDiff);
+            telemetry.addData("Left Color Sensor Red: ", blueColorSensor.red());
+            //   telemetry.addData("Left Color Sensor Blue: ", blueColorSensor.blue());
+            //   telemetry.addData("Left Color Sensor Green: ", blueColorSensor.green());
 
+            telemetry.addData("Right Color Sensor Red: ", redColorSensor.red());
+            //   telemetry.addData("Right Color Sensor Blue: ", redColorSensor.blue());
+            //   telemetry.addData("Right Color Sensor Green: ", redColorSensor.green());
 
-
+            telemetry.update();
         }
-        else if(skystonePosition == 2)
-        {
-
-            CollectorWait(-1.0, 0.0, 500); // Move left block out of the way
-            CollectorGo(1.0, 1.0); // Collect SkyStone
-            AutoMecanumMove(500 * encoderForward, 0.0 * right, 0.3 * forward, 0.18); //Align with Blocks
-            CollectorStop(); //Stop collector
-            AutoMecanumMove(3850 * encoderBack, 0.65 * left, 0.5 * forward, 0.025); //Strafe left to parl
-            CollectorGo(-1.0, -1.0); // Eject SkyStone
-            sleep(1000);
-            CollectorStop();
-
-        }
-        else if(skystonePosition == 3)
-        {
-            AutoMecanumMove(500 * encoderForward, 0.5 * right, 0.0 * forward, 0.03); //Strafe Right to Skystone
-            CollectorWait(-1.0, 0.0, 500); // Move left block out of the way
-            CollectorGo(1.0, 1.0); // Collect SkyStone
-            AutoMecanumMove(500 * encoderForward, 0.0 * right, 0.3 * forward, 0.18); //Align with Blocks
-            CollectorStop(); //Stop collector
-            AutoMecanumMove(3850 * encoderBack, 0.65 * left, 0.5 * forward, 0.025); //Strafe left to parl
-            CollectorGo(-1.0, -1.0); // Eject SkyStone
-            sleep(1000);
-            CollectorStop();
-
-        }
-
 
 
 
@@ -483,38 +456,55 @@ public class BlueAutonomous extends LinearOpMode {
     }
     public void DetectColorRGB() {
         int leftSensorColorValueRed = blueColorSensor.red(); // red value from 0-255 from the blue color sensor
-        int leftSensorColorValueBlue = blueColorSensor.blue(); // blue value from 0-255 from the blue color sensor
-        int leftSensorColorValueGreen = blueColorSensor.green(); // green value from 0-255 from the blue color sensor
+        // int leftSensorColorValueBlue = blueColorSensor.blue(); // blue value from 0-255 from the blue color sensor
+        // int leftSensorColorValueGreen = blueColorSensor.green(); // green value from 0-255 from the blue color sensor
 
         int rightSensorColorValueRed = redColorSensor.red(); // red value from 0-255 from the red color sensor
-        int rightSensorColorValueBlue = redColorSensor.blue(); // blue value from 0-255 from the red color sensor
-        int rightSensorColorValueGreen = redColorSensor.green(); // green value from 0-255 from the red color sensor
+        // int rightSensorColorValueBlue = redColorSensor.blue(); // blue value from 0-255 from the red color sensor
+        // int rightSensorColorValueGreen = redColorSensor.green(); // green value from 0-255 from the red color sensor
+        colorDiff = Math.abs(leftSensorColorValueRed - rightSensorColorValueRed);
+
+        //if (colorDiff <= 5) skystonePosition = 3 Pattern C
+        //if (colorDiff >= 5 && rightSensorColorValueRed < leftSensorColorValueRed) skystonePosition = 2 Pattern B
+        //if (colorDiff >= 5 && rightSensorColorValueRed > leftSensorColorValueRed) skystonePosition = 1 Pattern A
 
 
-        if (leftSensorColorValueRed == 0 && leftSensorColorValueBlue == 0 && leftSensorColorValueGreen == 0) {
+        if (colorDiff > 5 && rightSensorColorValueRed > leftSensorColorValueRed) {
+
+            Stone1isYellow = false;
             skystonePosition = 1;
             telemetry.addData("Block 1 is: ", "SkyStone");
             telemetry.addData("Pattern ", "A");
             telemetry.update();
 
+
+
         } else {
-            Stone1isBlack = false;
+
+            Stone1isYellow = true;
             telemetry.addData("Block 1 is: ", "Stone");
             telemetry.update();
 
+
         }
-        if (rightSensorColorValueRed == 0 && rightSensorColorValueBlue == 0 && rightSensorColorValueGreen == 0) {
+        if (colorDiff > 5 && rightSensorColorValueRed < leftSensorColorValueRed) {
+
+            Stone2isYellow = false;
             skystonePosition = 2;
             telemetry.addData("Block 2 is : ", "SkyStone");
             telemetry.addData("Pattern ", "B");
             telemetry.update();
+
+
         } else {
-            Stone2isBlack = false;
+
+            Stone2isYellow = true;
             telemetry.addData("Block 2 is : ", "Stone");
+            telemetry.update();
 
         }
 
-        if (!Stone1isBlack && !Stone2isBlack) {
+        if (colorDiff < 5 || Stone1isYellow && Stone2isYellow) {
             skystonePosition = 3;
             telemetry.addData("Block 3 is : ", "SkyStone");
             telemetry.addData("Pattern ", "C");
@@ -551,7 +541,4 @@ public class BlueAutonomous extends LinearOpMode {
     }
 
 }
-
-
-
 

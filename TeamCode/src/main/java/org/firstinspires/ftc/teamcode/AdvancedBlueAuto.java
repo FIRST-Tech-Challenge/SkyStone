@@ -100,6 +100,10 @@ public class AdvancedBlueAuto extends LinearOpMode {
     private Servo rotation = null;
     private Servo foundation = null;
     private Servo release = null;
+    private Servo foundationLeft = null;
+    private Servo foundationRight = null;
+    private CRServo extenderTop = null;
+    private CRServo extenderBottom = null;
 
     //Sensors
     private ColorSensor blueColorSensor = null;
@@ -162,6 +166,10 @@ public class AdvancedBlueAuto extends LinearOpMode {
         foundation = hardwareMap.servo.get("foundation");
         rotation = hardwareMap.servo.get("rotation");
         release = hardwareMap.servo.get("release");
+        foundationLeft = hardwareMap.servo.get("foundationLeft");
+        foundationRight = hardwareMap.servo.get("foundationRight");
+        extenderTop = hardwareMap.crservo.get("extenderTop");
+        extenderBottom = hardwareMap.crservo.get("extenderBottom");
 
         //init sensors
         blueColorSensor = hardwareMap.colorSensor.get("blueColorSensor");
@@ -203,7 +211,9 @@ public class AdvancedBlueAuto extends LinearOpMode {
         ReleaseCollector(-1.0);
         sleep(1000);
         AutoMecanumMove(3000 * encoderForward, 0.77 * right, 0.6 * forward, -0.06); //Strafe Into Wall
-        AutoMecanumMove(3000 * encoderForward, 0.3 * right, 0.6 * forward, 0.18); //Front left counterclockwise arc rotation
+
+
+        AutoMecanumMove(2500 * encoderForward, 0.2 * left, 0.4 * forward, -0.03); //Front left counterclockwise arc rotation
         DetectColorRGB(); //Determine Skystone Pattern
         telemetry.addData("Hi","Hello" );
         telemetry.addData("Skystone Position: ", skystonePosition);
@@ -573,6 +583,35 @@ public class AdvancedBlueAuto extends LinearOpMode {
 
         collectorLeft.setPower(0);
         collectorRight.setPower(0);
+
+    }
+    private void MoveHooks(double position) {
+
+        foundationLeft.setPosition(position);
+        foundationRight.setPosition(position);
+
+        double foundationLeftPosition = foundationLeft.getPosition();
+        double foundationRightPosition = foundationRight.getPosition();
+
+        while(foundationLeftPosition != position && foundationLeftPosition != position)
+        {
+
+            foundationLeftPosition = foundation.getPosition();
+            foundationRightPosition = foundation.getPosition();
+
+        }
+        sleep(500);
+
+    }
+    private void ExtendTape(double power, long time) {
+
+            extenderTop.setPower(power);
+            extenderBottom.setPower(power);
+
+            sleep(time);
+
+            extenderTop.setPower(0);
+            extenderBottom.setPower(0);
 
     }
 

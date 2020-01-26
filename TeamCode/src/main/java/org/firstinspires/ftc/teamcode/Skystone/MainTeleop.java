@@ -8,13 +8,12 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Skystone.Auto.Actions.MotionAction;
-import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
 import org.firstinspires.ftc.teamcode.Skystone.Odometry.Position2D;
 
 import java.util.LinkedList;
 import java.util.Queue;
 
-@TeleOp(name = "MainTeleOpSky", group = "Linear Opmode")
+@TeleOp(name = "MainTeleOpSky2", group = "Linear Opmode")
 public class MainTeleop extends LinearOpMode {
     Robot robot;
 
@@ -130,6 +129,15 @@ public class MainTeleop extends LinearOpMode {
             }
         }
 
+        if(robot.getOuttakeSpool().getCurrentPosition() >= 2750){
+            if(spoolPower == 0){
+                spoolPower += 0.15;
+            }
+            spoolPower = Math.min(spoolPower/2,0.15);
+        }
+        if(spoolPower < 0 && robot.getOuttakeSpool().getCurrentPosition() <= 0){
+            spoolPower = 0;
+        }
         robot.getOuttakeSpool().setPower(spoolPower);
         robot.getOuttakeSpool2().setPower(spoolPower);
 

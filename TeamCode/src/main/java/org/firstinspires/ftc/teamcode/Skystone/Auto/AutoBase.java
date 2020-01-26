@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.Skystone.Auto;
 
-import android.os.SystemClock;
-
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 ;

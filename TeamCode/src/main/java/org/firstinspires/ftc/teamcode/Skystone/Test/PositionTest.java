@@ -3,9 +3,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.SplineInterpolate;
 import org.firstinspires.ftc.teamcode.Skystone.Odometry.Position2D;
-import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.PathPoints;
 import org.firstinspires.ftc.teamcode.Skystone.Robot;
 
 @Disabled

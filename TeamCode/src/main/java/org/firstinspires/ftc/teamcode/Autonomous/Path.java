@@ -375,7 +375,7 @@ public class Path {
 
                 break;
             case 2:
-                yCoordMvmtPlane = -44.5;
+                yCoordMvmtPlane = -42.5;
                 wallSkyStoneX = -53.5;
                 furtherMostSkyStoneX = -29.5;
                 firstRegularStoneX = -34.0;
@@ -584,7 +584,7 @@ public class Path {
                 strafeDrive = DriveBuilderReset(true, false, "step17.5");
 
                 if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
-                    builder = builder.setReversed(false).strafeTo(new Vector2d(foundationX, yCoordMvmtPlane - 6));
+                    builder = builder.setReversed(false).strafeTo(new Vector2d(foundationX, yCoordMvmtPlane - 3.5));
                     //.strafeTo(new Vector2d(42, -30));
                 }
                 trajectory = builder.build();
@@ -603,7 +603,7 @@ public class Path {
 
                 if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
                     builder = builder.setReversed(false)
-                            .setReversed(true).lineTo(new Vector2d(straightDrive.getPoseEstimate().getX(), -25));
+                            .setReversed(true).lineTo(new Vector2d(straightDrive.getPoseEstimate().getX(), -27));
                     //.strafeTo(new Vector2d(42, -30));
                 }
                 trajectory = builder.build();

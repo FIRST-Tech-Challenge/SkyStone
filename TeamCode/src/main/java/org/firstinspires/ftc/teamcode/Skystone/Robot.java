@@ -280,7 +280,7 @@ public class Robot {
         long currentTime;
 
         frontClamp.setPosition(FRONTCLAMP_RELEASED);
-        backClamp.setPosition(BACKCLAMP_RELEASED);
+        backClamp.setPosition(BACKCLAMP_CLAMPED);
         outtakeExtender.setPosition(OUTTAKE_SLIDE_RETRACTED);
         intakePusher.setPosition(PUSHER_RETRACTED);
 
@@ -355,8 +355,8 @@ public class Robot {
     public void moveLift(int target) {
         if (Math.abs(outtakeSpool.getCurrentPosition() - target) < 50) {
             isMovingLift = false;
-            outtakeSpool.setPower(0.05);
-            outtakeSpool2.setPower(0.05);
+            outtakeSpool.setPower(0.15);
+            outtakeSpool2.setPower(0.15);
         } else if (outtakeSpool.getCurrentPosition() > target && isMovingLift) {
             outtakeSpool.setPower(1);
             outtakeSpool2.setPower(1);
@@ -365,8 +365,8 @@ public class Robot {
             outtakeSpool2.setPower(-1);
         } else {
             isMovingLift = false;
-            outtakeSpool.setPower(0.05);
-            outtakeSpool2.setPower(0.05);
+            outtakeSpool.setPower(0.15);
+            outtakeSpool2.setPower(0.15);
         }
     }
 
@@ -819,7 +819,7 @@ public class Robot {
         long startTime = SystemClock.elapsedRealtime();
 
         // keep on running this
-        while (linearOpMode.opModeIsActive() && SystemClock.elapsedRealtime() - startTime < totalTimeSeconds * 1000) {
+        while (linearOpMode.opModeIsActive() && SystemClock.elapsedRealtime() - startTime < totalTimeSeconds * 2000) {
 
             // store your current position in variables
             double xPos = robotPos.x;

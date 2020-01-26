@@ -7,6 +7,10 @@ import org.firstinspires.ftc.teamcode.Skystone.Robot;
 public class Odometry {
     //for constant velo
 
+    public double oldLeftPod = 0;
+    public double oldRightPod = 0;
+    public double oldMecanumPod = 0;
+
     double xPosGlobal = 0;
     double yPosGlobal = 0;
     double angleGlobal = 0;
@@ -133,9 +137,6 @@ public class Odometry {
         }
     };
 
-    private double oldLeftPod = 0;
-    private double oldRightPod = 0;
-    private double oldMecanumPod = 0;
     public void linearOdometry (Robot robot) {
         double leftPodNew = -1 * robot.getfLeft().getCurrentPosition(); // fix this for new odo config
         double rightPodNew = -1 * robot.getfRight().getCurrentPosition(); //fix this for new odo config
@@ -205,6 +206,20 @@ public class Odometry {
 //        robot.getTelemetry().update();
 //    }
 
+    public void resetOdometry(){
+        xPosGlobal = 0;
+        yPosGlobal = 0;
+        angleGlobal = 0;
+
+        //circular odometry stuff
+        mecanumPodOld = 0;
+        rightPodOld = 0;
+        leftPodOld = 0;
+
+        worldX = 0;
+        worldY = 0;
+        worldAngle = 0;
+    }
 
     public double getWorldX() {
         return worldX;

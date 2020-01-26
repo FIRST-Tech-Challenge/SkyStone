@@ -8,9 +8,10 @@ import org.firstinspires.ftc.teamcode.Skystone.Robot;
 public class Position2D{
     Robot robot;
     NewThread newThread;
+    public Odometry o;
     public Position2D(Robot robot) {
         this.robot = robot;
-        Odometry o = new Odometry();
+        o = new Odometry();
         newThread = new NewThread(robot,o);
     }
 

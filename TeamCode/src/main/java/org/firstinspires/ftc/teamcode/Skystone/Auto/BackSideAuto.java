@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.Skystone.Auto;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.Skystone.Auto.Actions.Action;
+import org.firstinspires.ftc.teamcode.Skystone.Auto.Actions.Enums.ActionType;
+import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
 
 import java.util.ArrayList;
 
@@ -35,6 +37,8 @@ public class BackSideAuto extends AutoBase{
                 {0,0,10,0},
                 {10,0,10,0}};
         ArrayList<Action> toParkActions = new ArrayList<Action>();
+        toParkActions.add(new Action(ActionType.EXTEND_OUTTAKE, new Point(0,0), robot));
+
 
         robot.splineMove(toPark,1,1,0.5,15,0,Math.toRadians(0),10,toParkActions);
 

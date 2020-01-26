@@ -29,11 +29,26 @@ public class IMUTest extends AutoOpMode {
         BNO055IMU imu;
         Orientation angles;
         Acceleration gravity;
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingEnabled      = true;
+        parameters.loggingTag          = "IMU";
+        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
+
         telemetry.addData("Status", "initialized");
 
         waitForStart();
 
-        telemetry.addData("w", "w");
+        angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        telemetry.addData("angle1", angles.firstAngle);
+        telemetry.addData("angle2", angles.secondAngle);
+        telemetry.addData("angle 3", angles.thirdAngle);
+
 
     }
 }

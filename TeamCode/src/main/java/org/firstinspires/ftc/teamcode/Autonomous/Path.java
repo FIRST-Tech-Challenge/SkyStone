@@ -95,7 +95,7 @@ public class Path {
         switch (skystonePositions[0]) {
             case 1:
                 double yCoordMvmtPlane = -44.5;
-                double wallSkyStoneX = -44.0;
+                double wallSkyStoneX = -45.0;
                 double furtherMostSkyStoneX = -21.0;
                 double firstRegularStoneX = -34.0;
                 double foundationX = 46.0;
@@ -177,6 +177,7 @@ public class Path {
                 currentPos = strafeDrive.getPoseEstimate();
 
                 dropStone(FieldPosition.RED_QUARY);
+
 
                 /*strafeDrive = DriveBuilderReset(true, false, "step5, after drop 1st stone");
                 if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
@@ -303,7 +304,7 @@ public class Path {
                 strafeDrive = DriveBuilderReset(true, false, "step17.5");
 
                 if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
-                    builder = builder.setReversed(false).strafeTo(new Vector2d(foundationX, yCoordMvmtPlane - 6));
+                    builder = builder.setReversed(false).strafeTo(new Vector2d(foundationX, yCoordMvmtPlane - 3.5));
                     //.strafeTo(new Vector2d(42, -30));
                 }
                 trajectory = builder.build();
@@ -331,6 +332,7 @@ public class Path {
 
                 hwMap.foundationLock.setPosition(TeleopConstants.foundationLockLock);
                 hwMap.transferLock.setPosition(TeleopConstants.transferLockPosUp);
+                retractClaw();
 
                 try {
                     Thread.sleep(300);
@@ -369,6 +371,8 @@ public class Path {
                 }
                 trajectory = builder.build();
                 straightDrive.followTrajectorySync(trajectory);
+
+
                 break;
             case 2:
                 yCoordMvmtPlane = -44.5;
@@ -1914,6 +1918,14 @@ public class Path {
         thread.run();
     }
 
+    private void retractClaw(){
+        Thread thread = new Thread(){
+            public void run(){
+                hwMap.blueAutoClawJoint1.setPosition(TeleopConstants.autoClaw1Init);
+                hwMap.blueAutoClawJoint2.setPosition(TeleopConstants.autoClaw2Init);
+            }
+        };
+    }
     private void initIntakeClaw() {
         Thread thread = new Thread() {
             public void run() {

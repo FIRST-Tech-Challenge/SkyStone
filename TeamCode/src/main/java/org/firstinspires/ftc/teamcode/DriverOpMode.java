@@ -279,7 +279,8 @@ public class DriverOpMode extends OpMode {
        SequentialComboTask delayLiftDown = new SequentialComboTask();
 
        delayLiftDown.addTask(new RobotSleep(300));
-       delayLiftDown.addTask(new SetLiftPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.liftHomeGrabPos, 100));
+       delayLiftDown.addTask(new ClampOpenCloseTask(robotHardware, robotProfile, RobotHardware.ClampPosition.INITIAL));
+       delayLiftDown.addTask(new SetLiftPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.liftOrigPos, 100));
 
        slideInLiftDown.addTask(new SetSliderPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.sliderOrigPos, 100));
        slideInLiftDown.addTask(delayLiftDown);
@@ -288,7 +289,7 @@ public class DriverOpMode extends OpMode {
        /**homePositionTask.addTask(new SetSliderPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.sliderOrigPos, 100));
        homePositionTask.addTask(new SetLiftPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.liftHomeGrabPos, 100)); **/
 
-       robotHardware.startIntakeWheels();
+       //robotHardware.startIntakeWheels();
    }
 
    void setupCombos() {

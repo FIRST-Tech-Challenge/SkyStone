@@ -26,6 +26,7 @@ import java.util.Map;
         public static final String PARKING_ONLY_PREF = "only park";
         public static final String STONE_PREF = "two skystones";
         public static final String FIRST_BLOCK_BY_WALL_PREF = "first block by wall";
+        public static final String SECOND_SKYSTONE_GROUP_POSITION_PREF = "second group skystone(red or blue 2)";
 
         // ADD preference values here
         public static final String[] START_POS_MODES = {"BLUE_2", "BLUE_3", "BLUE_5", "RED_2", "RED_3", "RED_5"};
@@ -36,6 +37,7 @@ import java.util.Map;
         public static final String[] PARKING_ONLY = {"yes", "no"};
         public static final String[] TWO_SKYSTONES = {"yes", "no"};
         public static final String[] PICK_FIRST_BLOCK_BY_WALL ={"yes", "no"};
+        public static final String[] SECOND_SKYSTONE_GROUP_POSITION ={"yes","no"};
 
         public static Map<String, String[]> prefMap = new HashMap<>();
         static {
@@ -48,6 +50,7 @@ import java.util.Map;
             prefMap.put(PARKING_ONLY_PREF, PARKING_ONLY);
             prefMap.put(STONE_PREF, TWO_SKYSTONES);
             prefMap.put(FIRST_BLOCK_BY_WALL_PREF, PICK_FIRST_BLOCK_BY_WALL);
+            prefMap.put(SECOND_SKYSTONE_GROUP_POSITION_PREF,SECOND_SKYSTONE_GROUP_POSITION);
 
         }
         private static String[] prefKeys = prefMap.keySet().toArray(new String[prefMap.keySet().size()]);

@@ -70,6 +70,7 @@ public class AutonomousGeneric extends LinearOpMode {
 //        robotHardware = new RobotHardware();
 //        robotHardware.init(hardwareMap, robotProfile);
         robotHardware = RobotFactory.getRobotHardware(hardwareMap,robotProfile);
+        robotHardware.setClampPosition(RobotHardware.ClampPosition.INITIAL);
         robotHardware.setMotorStopBrake(true);
 
         navigator = new RobotNavigator(robotProfile);

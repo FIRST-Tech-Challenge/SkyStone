@@ -10,6 +10,7 @@ public class DriverOptions {
     private String isTwoSkystones;
     private boolean isFirstBlockByWall;
     private String stoneDestination;
+    private boolean getSecondSkystoneGroup;
 
     public String getStartingPositionModes() {
         return startingPositionModes;
@@ -61,8 +62,11 @@ public class DriverOptions {
 
     public boolean getIsFirstBlockByWall(){return isFirstBlockByWall;}
 
+    public boolean getSecondSkystoneGroupPosition() {return getSecondSkystoneGroup;}
+
     public void setIsFirstBlockByWall(String isFirstBlockByWall) {
         this.isFirstBlockByWall = isFirstBlockByWall.equals("yes");
+
     }
 
     public String getStoneDestination(){return stoneDestination;}

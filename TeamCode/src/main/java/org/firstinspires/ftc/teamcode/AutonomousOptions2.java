@@ -23,9 +23,10 @@ public class AutonomousOptions2 extends OpMode {
     public static final String FOUNDATION_PREF = "foundation";
     public static final String DELIVER_ROUTE_PREF = "deliver mode";
     public static final String PARKING_ONLY_PREF = "only park";
-    public static final String STONE_PREF = "two skystones";
+    public static final String STONE_PREF = "skystones";
     public static final String FIRST_BLOCK_BY_WALL_PREF = "first block by wall";
-
+    private static String[] prefKeys = {START_POS_MODES_PREF,STONE_PREF, DELAY_PREF, DELIVER_ROUTE_PREF,FOUNDATION_PREF,PARKING_ONLY_PREF,
+            PARKING_PREF};
     // ADD preference values here
     public static final String[] START_POS_MODES = {"BLUE_2", "BLUE_3", "BLUE_5", "RED_2", "RED_3", "RED_5"};
     public static final String[] DELAYS = {"0 " + "sec", "1 sec", "2 sec", "3 sec", "4 sec", "5 sec"};
@@ -33,7 +34,7 @@ public class AutonomousOptions2 extends OpMode {
     public static final String[] MOVE_FOUNDATION = {"move", "no move", "move only"};
     public static final String[] DELIVER_ROUTE = {"BridgeWall", "BridgeNeutral"};
     public static final String[] PARKING_ONLY = {"yes", "no"};
-    public static final String[] TWO_SKYSTONES = {"yes", "no"};
+    public static final String[] STONE_OPTIONS = {"no", "group1","group2", "both"};
     public static final String[] PICK_FIRST_BLOCK_BY_WALL ={"yes", "no"};
 
     public static Map<String, String[]> prefMap = new HashMap<>();
@@ -46,16 +47,17 @@ public class AutonomousOptions2 extends OpMode {
         prefMap.put(FOUNDATION_PREF, MOVE_FOUNDATION);
         prefMap.put(DELIVER_ROUTE_PREF, DELIVER_ROUTE);
         prefMap.put(PARKING_ONLY_PREF, PARKING_ONLY);
-        prefMap.put(STONE_PREF, TWO_SKYSTONES);
+        prefMap.put(STONE_PREF, STONE_OPTIONS);
         prefMap.put(FIRST_BLOCK_BY_WALL_PREF, PICK_FIRST_BLOCK_BY_WALL);
     }
 
-    private static String[] prefKeys = prefMap.keySet().toArray(new String[prefMap.keySet().size()]);
+    //private static String[] prefKeys = prefMap.keySet().toArray(new String[prefMap.keySet().size()]);
+
     private static int keyIdx = 0;
 
-    static {
-        Arrays.sort(prefKeys);
-    }
+//    static {
+//        Arrays.sort(prefKeys);
+//    }
 
     public boolean isUpPressed;
     public boolean isDownPressed;
@@ -85,8 +87,8 @@ public class AutonomousOptions2 extends OpMode {
         prefs = getSharedPrefs(hardwareMap);
         editor = prefs.edit();
         editor.apply();
-        for (String key : prefs.getAll().keySet()) {
-            telemetry.addData(key, prefs.getString(key, NONE));
+        for (int i = 0; i < prefKeys.length; i++ ) {
+            telemetry.addData(prefKeys[i], prefs.getString(prefKeys[i], NONE));
         }
     }
 
@@ -163,6 +165,7 @@ public class AutonomousOptions2 extends OpMode {
             }
 
             editor.putString(key, array[selectionIdx]);
+            updateAutoPref(key, array[selectionIdx]);
             editor.apply();
             isRightPressed = true;
         }
@@ -179,6 +182,7 @@ public class AutonomousOptions2 extends OpMode {
             }
 
             editor.putString(key, array[selectionIdx]);
+            updateAutoPref(key, array[selectionIdx]);
             editor.apply();
             isLeftPressed = true;
         }
@@ -193,6 +197,24 @@ public class AutonomousOptions2 extends OpMode {
 //        if (!gamepad1.y) {
 //            isYPressed = false;
 //        }
+    }
+    void updateAutoPref(String key, String value) {
+        if (key.equals(START_POS_MODES_PREF)) {
+            if (value.equals("RED_5") || value.equals("BLUE_5")) {
+                editor.putString(STONE_PREF, "no");
+            }
+            if(value.equals("RED_3") || value.equals("BLUE_3")){
+                editor.putString(STONE_PREF, "group2");
+            }
+        }
+        if(key.equals(PARKING_ONLY_PREF) && value.equals("yes")) {
+            editor.putString(STONE_PREF, "no");
+            editor.putString(FOUNDATION_PREF, "no move");
+        }
+        if(key.equals(FOUNDATION_PREF) && value.equals("move only")) {
+            editor.putString(STONE_PREF, "no");
+        }
+
     }
 }
 

@@ -213,7 +213,56 @@ public class MainTeleop extends LinearOpMode {
 
     private void capstoneLogic() {
         if (gamepad2.right_trigger != 0) {
+            robot.getIntakePusher().setPosition(robot.PUSHER_PUSHED);
+            long startTime = SystemClock.elapsedRealtime();
+
+            while(SystemClock.elapsedRealtime() - startTime <= 350){
+                robotModeLogic();
+
+                slowDriveLogic();
+                driveLogic();
+
+                foundationLogic();
+
+                outtakeLogic();
+                spoolLogic();
+                intakeLogic();
+            }
+
+
+            startTime = SystemClock.elapsedRealtime();
             robot.getFrontClamp().setPosition(robot.FRONTCLAMP_ACTIVATECAPSTONE);
+
+            while(SystemClock.elapsedRealtime() - startTime <= 200){
+                robotModeLogic();
+
+                slowDriveLogic();
+                driveLogic();
+
+                foundationLogic();
+
+                outtakeLogic();
+                spoolLogic();
+                intakeLogic();
+            }
+            startTime = SystemClock.elapsedRealtime();
+            robot.getIntakePusher().setPosition(robot.PUSHER_RETRACTED);
+
+            while(SystemClock.elapsedRealtime() - startTime <= 200){
+                robotModeLogic();
+
+                slowDriveLogic();
+                driveLogic();
+
+                foundationLogic();
+
+                outtakeLogic();
+                spoolLogic();
+                intakeLogic();
+            }
+
+            robot.getFrontClamp().setPosition(robot.FRONTCLAMP_CLAMPED);
+
         }
     }
 

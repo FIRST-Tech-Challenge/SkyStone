@@ -114,7 +114,7 @@ public class Action {
         motionActions.add(new MotionAction(robot.getIntakePusher(), robot.PUSHER_RETRACTED, 350, robot));
 
         motionActions.add(new MotionAction(robot.getFrontClamp(), robot.FRONTCLAMP_CLAMPED, 650, robot));
-        motionActions.add(new MotionAction(robot.getOuttakeSpool(), 0, liftHeight, 1400, robot));
+        motionActions.add(new MotionAction(robot.getOuttakeSpool(), 0, liftHeight, 1200, robot));
 
         motionActions.add(new MotionAction(robot.getOuttakeExtender(), robot.OUTTAKE_SLIDE_EXTENDED, 1500, robot));
     }

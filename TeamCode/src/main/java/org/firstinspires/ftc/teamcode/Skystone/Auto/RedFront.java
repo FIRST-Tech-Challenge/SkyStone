@@ -78,9 +78,9 @@ public class RedFront extends AutoBase {
                 {22, 67, 0, 20},
                 {22, 68, 0, 20},
                 {21, 80, 0, 20},
-                {33, 88, 0, 10}};
+                {33, 89, 0, 10}};
         ArrayList<Action> toFoundationActions = new ArrayList<Action>();
-        toFoundationActions.add(new Action(ActionType.EXTEND_OUTTAKE, new Point(24,35), robot));
+        toFoundationActions.add(new Action(ActionType.EXTEND_OUTTAKE, new Point(24,35), robot, 150));
         toFoundationActions.add(new Action(ActionType.EXTEND_FOUNDATION, robot, true, 150));
         toFoundationActions.add(new Action(ActionType.STOP_INTAKE, new Point(24,45), robot));
 
@@ -111,7 +111,7 @@ public class RedFront extends AutoBase {
                 {26, 29, 0, 20},
                 {19, 47, 0, 10},
                 {19, 50, 0, 10},
-                {15, 55, 0, 10}};
+                {10, 55, 0, 10}};
         ArrayList<Action> toDepositSecondStoneActions = new ArrayList<Action>();
         toDepositSecondStoneActions.add(new Action(ActionType.EXTEND_OUTTAKE, new Point(28,17), robot, 150));
         toDepositSecondStoneActions.add(new Action(ActionType.STOP_INTAKE, new Point(35,15), robot));
@@ -134,7 +134,7 @@ public class RedFront extends AutoBase {
                 {27, -15, 0, -10},
                 {22, 29, 0, 20},
                 {19, 45, 0, 10},
-                {10, 55, 0, 10}};
+                {28, 55, 0, 10}};
         ArrayList<Action> toParkAfterThirdStoneActions = new ArrayList<Action>();
         toParkAfterThirdStoneActions.add(new Action(ActionType.EXTEND_OUTTAKE, new Point(23,7), robot, 150));
         toParkAfterThirdStoneActions.add(new Action(ActionType.STOP_INTAKE, new Point(toThirdStone[toThirdStone.length - 1][0] - 15, toThirdStone[toThirdStone.length - 1][1] + 20), robot, 150));
@@ -178,17 +178,17 @@ public class RedFront extends AutoBase {
 
         robot.dumpPoints("" + startTime, "4");
 
-        robot.splineMove(toDepositSecondStone, 1, 1, 0.3, 30, Math.toRadians(180), Math.toRadians(270), 18,
-                toDepositSecondStoneActions, true, 3500);
+        robot.splineMove(toDepositSecondStone, 1, 1, 0.44, 30, Math.toRadians(180), Math.toRadians(270), 18,
+                toDepositSecondStoneActions, true, 4500);
 
         robot.dumpPoints("" + startTime, "5");
 
-        robot.splineMove(toThirdStone, 1, 1, 1, 70, 0, Math.toRadians(270), 20,
+        robot.splineMove(toThirdStone, 1, 1, 1, 70, 0, Math.toRadians(270), 30,
                 toThirdStoneActions, true, 3000);
 
         robot.dumpPoints("" + startTime, "6");
         if (SystemClock.elapsedRealtime() - startTime < 26000) {
-            robot.splineMove(toDepositThirdStone, 1, 1, .3, 30, Math.toRadians(180), Math.toRadians(270), 20, toParkAfterThirdStoneActions, true, 3500);
+            robot.splineMove(toDepositThirdStone, 1, 1, .44, 30, Math.toRadians(180), Math.toRadians(270), 20, toParkAfterThirdStoneActions, true, 3500);
 
             robot.dumpPoints("" + startTime, "7");
 

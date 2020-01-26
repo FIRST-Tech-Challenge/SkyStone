@@ -24,16 +24,24 @@ public class Joulestest extends AutoOpMode {
         colorSensor = hardwareMap.colorSensor.get("colour");
         //colorSensorDown = hardwareMap.colorSensor.get("ColourDown");
         //StoneDist = hardwareMap.get(DistanceSensor.class, "Distance");
+        joules.ScissorLift.setPosition(0.2);
+
         waitForStart();
+        joules.ScissorLift.setPosition(0.3);
 
-        for (int x = 0; x<5; x++) {
-            telemetry.addData("currnt position", joules.ScissorLift.getPosition());
-            telemetry.addData("position plus one", joules.ScissorLift.getPosition() - 0.1);
-            telemetry.addData("position minus", joules.ScissorLift.getPosition() - 0.1);
 
-            joules.ScissorLift.setPosition(joules.ScissorLift.getPosition() - 0.1);
-            sleep(5000);
-        }
+        sleep(300000);
+
+
+
+//        for (int x = 0; x<5; x++) {
+//            telemetry.addData("currnt position", joules.ScissorLift.getPosition());
+//            telemetry.addData("position plus one", joules.ScissorLift.getPosition() + 0.1);
+//            telemetry.addData("position minus", joules.ScissorLift.getPosition() - 0.1);
+//
+//            joules.ScissorLift.setPosition(joules.ScissorLift.getPosition() + 0.1);
+//            sleep(5000);
+//        }
 
 
 /*        joules.LeftPivot(0.4);

@@ -3,18 +3,6 @@ package org.firstinspires.ftc.teamcode.robots;
 import android.graphics.Paint;
 import android.hardware.Sensor;
 
-//import com.qualcomm.ftccommon.configuration.ConfigureFromTemplateActivity;
-//import com.qualcomm.hardware.bosch.BNO055IMU;
-//import com.qualcomm.robotcore.hardware.CRServo;
-//import com.qualcomm.robotcore.hardware.DcMotor;
-//import com.qualcomm.robotcore.hardware.DcMotorController;
-//import com.qualcomm.robotcore.hardware.HardwareDevice;
-//import com.qualcomm.robotcore.hardware.HardwareMap;
-//import com.qualcomm.robotcore.hardware.Servo;
-//
-//import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-//import org.firstinspires.ftc.teamcode.opmodesupport.AutoOpMode;
-
 import org.firstinspires.ftc.teamcode.RC;
 import org.firstinspires.ftc.teamcode.newhardware.FXTCRServo;
 import org.firstinspires.ftc.teamcode.newhardware.FXTSensors.DigitalColourSensor;
@@ -22,18 +10,26 @@ import org.firstinspires.ftc.teamcode.newhardware.FXTSensors.FXTAnalogUltrasonic
 import org.firstinspires.ftc.teamcode.newhardware.FXTServo;
 import org.firstinspires.ftc.teamcode.newhardware.Motor;
 import org.firstinspires.ftc.teamcode.roboticslibrary.TaskHandler;
-//import com.qualcomm.robotcore.hardware.ColorSensor;
-//import com.qualcomm.robotcore.hardware.VoltageSensor;
-//
-//import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
-//import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-//import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-//import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-//import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-//import org.firstinspires.ftc.robotcore.external.navigation.Position;
-//import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
-//import org.firstinspires.ftc.robotcore.external.Func;
-//​
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.hardware.ColorSensor;
+import org.firstinspires.ftc.teamcode.opmodesupport.AutoOpMode;
+import org.firstinspires.ftc.teamcode.robots.Joules;
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+//import com.qualcomm.robotcore.util.ElapsedTime;​
+import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
+//import org.firstinspires.ftc.robotcore.external.Func;​
 import java.util.Locale;
 
 
@@ -45,6 +41,13 @@ public class Joules  {
     public Motor BackLeft;
     private String VEER_CHECK_TASK_KEY = "Joules.VEERCHECK";
 
+    public Boolean ScissorUp = Boolean.FALSE;
+    public Boolean ScissorDown = Boolean.FALSE;
+
+    BNO055IMU imu;
+    Orientation angles;
+    Acceleration gravity;
+    BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
 
     //arm servoes
@@ -67,6 +70,15 @@ public class Joules  {
     public void init(){
         Foundation.setPosition(0.2);
         Capstone.setPosition(0.05);
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingEnabled      = true;
+        parameters.loggingTag          = "IMU";
+        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+
+        imu.initialize(parameters);
+
    }
 
     public Joules(){
@@ -189,10 +201,16 @@ public class Joules  {
 
     public void ScissorLiftDown(){ScissorLift.setPosition(0.2);}
     public void ScissorLiftUp(){ScissorLift.setPosition(0.8);}
-    public void ScissorLiftOut(){ScissorLift.setPosition(ScissorLift.getPosition() + 0.1);}
+    public void ScissorLiftEst(){ScissorLift.setPosition(0.7);}//subject to chnage
 
-    public void ScissorLiftIn(){
-        ScissorLift.setPosition(ScissorLift.getPosition() - 0.1);}
+
+    public double ScissorValues() {return ScissorLift.getPosition();}
+
+    public void ScissorLiftOut(){ScissorLift.setPosition(ScissorLift.getPosition() + 0.005);}
+
+
+    public void ScissorLiftIn(){ScissorLift.setPosition(ScissorLift.getPosition() - 0.005);}
+
 
 
 
@@ -262,6 +280,8 @@ public class Joules  {
         BackLeft.setPower(speed);
         BackRight.setPower(speed);
     }
+
+
 
 
 

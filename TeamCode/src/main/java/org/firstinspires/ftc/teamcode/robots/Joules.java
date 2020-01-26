@@ -50,6 +50,7 @@ public class Joules  {
     //arm servoes
     private FXTServo Foundation;
     private FXTServo TapeMeasure;
+    public FXTServo ScissorLift;
 
     private FXTServo StoneMover;
     //arm motoraaa  a
@@ -85,6 +86,10 @@ public class Joules  {
         StoneMover = new FXTServo("Stone mover");
 
         ChainArm =  new FXTCRServo("Scoring arm");
+
+        ScissorLift = new FXTServo("ScissorLift");
+
+        Capstone = new FXTServo("Capstone");
 
         FrontRight.setMinimumSpeed(0.1);
         FrontLeft.setMinimumSpeed(0.1);
@@ -181,6 +186,15 @@ public class Joules  {
 
     public void TapeMeasureSpring() {TapeMeasure.setPosition(0.8);}
     public void TapeMeasurePush() {TapeMeasure.setPosition(0.2);}
+
+    public void ScissorLiftDown(){ScissorLift.setPosition(0.2);}
+    public void ScissorLiftUp(){ScissorLift.setPosition(0.8);}
+    public void ScissorLiftOut(){ScissorLift.setPosition(ScissorLift.getPosition() + 0.1);}
+
+    public void ScissorLiftIn(){
+        ScissorLift.setPosition(ScissorLift.getPosition() - 0.1);}
+
+
 
     public void StoneDown(){
         StoneMover.setPosition(0.1);

@@ -20,10 +20,6 @@ public class JoulesTeleOp extends TeleOpMode {
         telemetry.addData("Status", "Initialized");
     }
 
-
-
-
-
     public void loopOpMode() {
         if (joy1.leftTrigger()) {
             float pivot = gamepad1.right_stick_y/2;
@@ -68,6 +64,20 @@ public class JoulesTeleOp extends TeleOpMode {
             telemetry.addData("spring", "kj");
 
         }
+
+        if (joy1.buttonY()){
+            joules.ScissorLiftUp();
+        }
+        else if (joy1.buttonA()){
+            joules.ScissorLiftDown();
+        }
+        else if (joy1.rightBumper()){
+            joules.ScissorLiftOut();
+        }
+        else if (joy1.rightTrigger()){
+            joules.ScissorLiftIn();
+        }
+
 
         if (joy2.leftTrigger()){
             joules.DaffyGrab();

@@ -58,11 +58,11 @@ public class GColorRedFarFound extends AutoOpMode {
         joules.Stop();
 
         clearTimer(1);
-        while(colorSensor.red()<RedFoundVal || getMilliSeconds(1) < 10000){
-            joules.DriveForward(0.01);
+        while (opModeIsActive() && colorSensor.blue()<RedFoundVal && getMilliSeconds(1)< 10000){
+            telemetry.addData("secondss", getMilliSeconds(1)/1000);
+            joules.DriveForward(0.001);
         }
         joules.Stop();
-        telemetry.addData("foundation grabbed", "value");
 
 
         joules.FoundationGrab();

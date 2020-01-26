@@ -62,6 +62,7 @@ public class GColorRedFarFound extends AutoOpMode {
             telemetry.addData("secondss", getMilliSeconds(1)/1000);
             joules.DriveForward(0.001);
         }
+
         joules.Stop();
 
 
